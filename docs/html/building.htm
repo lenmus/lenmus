@@ -1,0 +1,43 @@
+<html>
+<!-- RCS-ID: $Id: building.htm,v 1.1 2005/10/14 14:51:37 cecilios Exp $ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Procedure to build LenMus</title>
+<link rel="stylesheet" media="all" href="singledoc.css" type="text/css" />
+</head>
+<body>
+
+<h1>Building LenMus</h1>
+
+<p>It takes some time to setup the development environment, as you need to download and install
+two required cmponents:</p>
+<ul>
+<li>wxWidgets</li>
+<li>wxMidi</li>
+</ul>
+
+<p>So, to set up the development environment you should:</p>
+<ol>
+<li>Download and install wxWidgets as wxWidgets260</li>
+<li>Download and install wxMidi</li>
+<li>Download LenMus source files</li>
+</ol>
+
+<p>LenMus makefiles expect to find both components, wxWidgest and wxMidi, in folders at the
+same level than lenmus folder:</p>
+
+<pre>
+some_folder
+  |
+  + lenmus
+  |
+  + wxWidgets260
+  |
+  + wxMidi
+</pre>
+
+<p>If this were not the case in your machine, you will have to change the makefiles in
+accordance to your specific needs.</p>
+
+</body>
+</html>

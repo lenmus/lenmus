@@ -1,0 +1,14 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+</head><body>
+<object type="text/site properties">
+	<param name="imagetype" value="folder">
+</object>
+<ul>
+	<li> <object type="text/sitemap">
+		<param name="Name" value="Introduction">
+		<param name="Local" value="page1.htm">
+		</object></li>
+</ul>
+</body></html>

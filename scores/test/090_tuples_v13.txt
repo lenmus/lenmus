@@ -1,0 +1,19 @@
+(Partitura
+   (Vers 1.3)
+   (NumInstrumentos 1)
+   (Instrumento 1
+      (NumPartes 1)
+      (Parte 1
+        (c 1
+            (Clave Sol)
+            (Tonalidad Do)
+            (Metrica 2 4)
+            (n c4 c (g + t3))
+            (n e4 c)
+            (n g4 c l g-)
+            (n g4 n)
+            (Barra Simple)
+         )
+      )
+   )
+)

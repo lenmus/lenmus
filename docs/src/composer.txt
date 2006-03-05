@@ -1,0 +1,105 @@
+/*
+
+Composer 5 algorithm
+
+----------------------------------------------------------------------------------------
+
+Fragments will be divided into 'segments'. Each segment division line is a point
+in wich a barline can be inserted:
+
+
+    =====|=============|============|===============|=======
+    
+    
+
+In some cases the pattern represented by the fragment requires a certain barline
+alignment. Let's define: 
+
+    tam - Time to align to barline ('am' stands for 'align to measure')
+    
+    <------------- tam ------------->               
+    =====|=============|============||===============|=======
+    
+If a fragment does not require any special alignment for a barline then tam=0
+    
+    
+    
+A fragment can start in any place, not necesarily aligned to beat. Therefore
+there will be a required time to align to beat:
+
+    tab - Time to align to beat ('ab' stands for 'align to beat')
+
+    <--tab--><------------- tam ------------->   
+    |        =====|=============|============||===============|=======
+    
+    
+If the fragment starts aligned to beat then tab=0
+In theory, a fragment will never start with rests, as starting with a rest is equivalent to not being
+beat aligned.
+Important: in practice, the way of indicate that the fragment is not beat aligned is by
+starting the segment with rests. These rests will be removed by the program and its 
+duration will be assigned to time tab.
+
+
+
+Algorithm to fill
+
+Let's assume that we have a measure M partially filled. Let's call:
+
+    tm - the duration of a measure
+    tb - the duration of a beat (problem: in irregular time signatures, such as 7/8, beat
+            duration is not constant. But we can consider the appropiate tb at each time (?))
+    tc - the time already 'consumed' in that measure,
+    tcb - the consumed time of last beat (tcb = tc % tb)
+    tr - the remaining time (tr = tm - tc)
+
+
+           <----------------- tm ---------------->  
+         ||<----------- tc ----------><----tr---->||         || = barline
+xxxxxxxxx||xxxxxxxxx|xxxxxxxxx|xxxxxxx..|.........||           
+         ||                    <-tcb->            ||         |  = beat line
+           <--tb--->|<--tb--->|<--tb--->|<--tb--->
+
+
+The problem now is, how to use a fragment F to fill the measure M?
+
+
+Case 1. Fragment F does not require measure aligment (tam = 0).
+
+Get the first segment S and compute its duration ts:
+
+
+                              |.......xx|xxxxxxxxx|           
+                               <-tab-><----ts---->             
+
+Then segment S will fit in measure only when
+   
+        tr >= ts and tcb <= tab
+
+
+If it fits, then the procedure will be:
+
+    1. Add rest R(tab-tcb).
+    2. Add segment S
+    3. Update remaining time:  tr = tr - ts - (tab - tcb)
+
+Important: Before adding a rest (step 1) we need to check if the previous element is
+a tied-to-next note. If it is, we must remove the tie or replace the rest by a note.
+If we always add a note of the same pitch than the previous one we save the trouble
+of having to do the check and removing the tie!. It is only necessary to get the
+the pitch of the previous note. If notes instantiation is done after creating the
+measure, we will also save this.
+
+So, taking all this into consideration we will add a note instead of a rest. The
+simplified modified algorithm will be:
+
+    1. Add note N(tab-tcb).
+    2. Add segment S
+    3. Update remaining time:  tr = tr - ts - (tab - tcb)
+
+
+
+Case 2.  Fragment requires measure aligment (tam > 0)
+
+
+*/

@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
+    <object class="wxWizard" name="ID_WIZARD" subclass="MidiWizard">
+        <style>wxDEFAULT_DIALOG_STYLE|wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
+        <exstyle>wxWIZARD_EX_HELPBUTTON</exstyle>
+        <title>MIDI configuration wizard</title>
+        <object class="wxWizardPageSimple" name="ID_WIZARD_DEVICES_PAGE" subclass="WizardDevicesPage">
+            <style>wxTAB_TRAVERSAL</style>
+            <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                    <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                    <border>5</border>
+                    <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                            <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                            <border>5</border>
+                            <object class="wxStaticText" name="wxID_STATIC">
+                                <font>
+                                    <size>14</size>
+                                    <family>swiss</family>
+                                    <style>normal</style>
+                                    <weight>bold</weight>
+                                    <underlined>0</underlined>
+                                    <face>Arial</face>
+                                </font>
+                                <label>Midi devices to use</label>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+                <object class="sizeritem">
+                    <flag>wxGROW|wxALL</flag>
+                    <border>5</border>
+                    <option>1</option>
+                    <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                            <flag>wxGROW|wxALL</flag>
+                            <border>5</border>
+                            <option>1</option>
+                            <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL|wxADJUST_MINSIZE</flag>
+                                    <border>5</border>
+                                    <option>1</option>
+                                    <object class="wxStaticText" name="wxID_STATIC">
+                                        <size>250,-1</size>
+                                        <label>To generate sounds the program needs a MIDI synthesizer device. Normally, one of these devices is included in the sound board of the PC, but your PC might have more than one.</label>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL|wxADJUST_MINSIZE</flag>
+                                    <border>5</border>
+                                    <option>1</option>
+                                    <object class="wxStaticText" name="wxID_STATIC">
+                                        <size>250,-1</size>
+                                        <label>If your PC has more than one device, choose one of them. You can test all of them and choose the one whose sound you prefer.</label>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                        <object class="sizeritem">
+                            <flag>wxGROW|wxALL</flag>
+                            <border>5</border>
+                            <object class="wxStaticLine" name="wxID_STATIC">
+                                <style>wxLI_VERTICAL</style>
+                            </object>
+                        </object>
+                        <object class="sizeritem">
+                            <flag>wxGROW|wxALL</flag>
+                            <border>5</border>
+                            <option>1</option>
+                            <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
+                                    <border>5</border>
+                                    <object class="wxStaticText" name="wxID_STATIC">
+                                        <label>Output device:</label>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                                    <border>5</border>
+                                    <object class="wxComboBox" name="ID_COMBO_OUT_DEVICES">
+                                        <size>250,-1</size>
+                                        <style>wxCB_DROPDOWN</style>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
+                                    <border>5</border>
+                                    <object class="wxStaticText" name="wxID_STATIC">
+                                        <label>Input device:</label>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                                    <border>5</border>
+                                    <object class="wxComboBox" name="ID_COMBO_IN_DEVICES">
+                                        <size>250,-1</size>
+                                        <style>wxCB_DROPDOWN</style>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+        <object class="wxWizardPageSimple" name="ID_WIZARD_INSTRUMENTS_PAGE" subclass="WizardInstrumentsPage">
+            <style>wxTAB_TRAVERSAL</style>
+            <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                    <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                    <border>5</border>
+                    <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                            <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                            <border>5</border>
+                            <object class="wxStaticText" name="wxID_STATIC">
+                                <font>
+                                    <size>14</size>
+                                    <family>swiss</family>
+                                    <style>normal</style>
+                                    <weight>bold</weight>
+                                    <underlined>0</underlined>
+                                    <face>Arial</face>
+                                </font>
+                                <label>Voice channel and instrument</label>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+                <object class="sizeritem">
+                    <flag>wxGROW|wxALL</flag>
+                    <border>5</border>
+                    <option>1</option>
+                    <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                            <flag>wxGROW|wxALL</flag>
+                            <border>5</border>
+                            <option>1</option>
+                            <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL|wxADJUST_MINSIZE</flag>
+                                    <border>5</border>
+                                    <option>1</option>
+                                    <object class="wxStaticText" name="wxID_STATIC">
+                                        <size>250,-1</size>
+                                        <label>Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one).</label>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL|wxADJUST_MINSIZE</flag>
+                                    <border>5</border>
+                                    <option>1</option>
+                                    <object class="wxStaticText" name="wxID_STATIC">
+                                        <size>250,-1</size>
+                                        <label>To facilitate access to the instruments they are grouped into sections. First choose a section and then choose the desired instrument.</label>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                        <object class="sizeritem">
+                            <flag>wxGROW|wxALL</flag>
+                            <border>5</border>
+                            <object class="wxStaticLine" name="wxID_STATIC">
+                                <style>wxLI_VERTICAL</style>
+                            </object>
+                        </object>
+                        <object class="sizeritem">
+                            <flag>wxGROW|wxALL</flag>
+                            <border>5</border>
+                            <option>1</option>
+                            <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
+                                    <border>5</border>
+                                    <object class="wxStaticText" name="wxID_STATIC">
+                                        <label>Channel:</label>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxComboBox" name="ID_COMBO_CHANNEL">
+                                        <size>70,-1</size>
+                                        <style>wxCB_DROPDOWN</style>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxBoxSizer">
+                                        <orient>wxVERTICAL</orient>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
+                                    <border>5</border>
+                                    <object class="wxStaticText" name="wxID_STATIC">
+                                        <label>Section:</label>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                                    <border>5</border>
+                                    <object class="wxComboBox" name="ID_COMBO_SECTION">
+                                        <size>250,-1</size>
+                                        <style>wxCB_DROPDOWN</style>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
+                                    <border>5</border>
+                                    <object class="wxStaticText" name="wxID_STATIC">
+                                        <label>Instrument:</label>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                                    <border>5</border>
+                                    <object class="wxComboBox" name="ID_COMBO_INSTRUMENT">
+                                        <size>250,-1</size>
+                                        <style>wxCB_DROPDOWN</style>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxButton" name="ID_BUTTON_TEST_SOUND">
+                                        <label>Test sound</label>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+        <object class="wxWizardPageSimple" name="ID_WIZARD_METRONOME_PAGE" subclass="WizardMetronomePage">
+            <style>wxTAB_TRAVERSAL</style>
+            <object class="wxBoxSizer">
+                <orient>wxVERTICAL</orient>
+                <object class="sizeritem">
+                    <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                    <border>5</border>
+                    <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                            <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                            <border>5</border>
+                            <object class="wxStaticText" name="wxID_STATIC">
+                                <font>
+                                    <size>14</size>
+                                    <family>swiss</family>
+                                    <style>normal</style>
+                                    <weight>bold</weight>
+                                    <underlined>0</underlined>
+                                    <face>Arial</face>
+                                </font>
+                                <label>Metronome channel and sounds</label>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+                <object class="sizeritem">
+                    <flag>wxGROW|wxALL</flag>
+                    <border>5</border>
+                    <option>1</option>
+                    <object class="wxBoxSizer">
+                        <orient>wxHORIZONTAL</orient>
+                        <object class="sizeritem">
+                            <flag>wxGROW|wxALL</flag>
+                            <border>5</border>
+                            <option>1</option>
+                            <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL|wxADJUST_MINSIZE</flag>
+                                    <border>5</border>
+                                    <option>1</option>
+                                    <object class="wxStaticText" name="wxID_STATIC">
+                                        <size>250,-1</size>
+                                        <label>Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one).</label>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL|wxADJUST_MINSIZE</flag>
+                                    <border>5</border>
+                                    <option>1</option>
+                                    <object class="wxStaticText" name="wxID_STATIC">
+                                        <size>250,-1</size>
+                                        <label>To better identify the first beat of each measure it is possible to assign a different sound to it. But also you can choose the same sound for both, the first beat and the others.</label>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                        <object class="sizeritem">
+                            <flag>wxGROW|wxALL</flag>
+                            <border>5</border>
+                            <object class="wxStaticLine" name="wxID_STATIC">
+                                <style>wxLI_VERTICAL</style>
+                            </object>
+                        </object>
+                        <object class="sizeritem">
+                            <flag>wxGROW|wxALL</flag>
+                            <border>5</border>
+                            <option>1</option>
+                            <object class="wxBoxSizer">
+                                <orient>wxVERTICAL</orient>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
+                                    <border>5</border>
+                                    <object class="wxStaticText" name="wxID_STATIC">
+                                        <label>Channel:</label>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxComboBox" name="ID_COMBO_MTR_CHANNEL">
+                                        <size>70,-1</size>
+                                        <style>wxCB_DROPDOWN</style>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxBoxSizer">
+                                        <orient>wxVERTICAL</orient>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
+                                    <border>5</border>
+                                    <object class="wxStaticText" name="wxID_STATIC">
+                                        <label>Sound for first beat of each measure:</label>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                                    <border>5</border>
+                                    <object class="wxComboBox" name="ID_COMBO_MTR_INSTR1">
+                                        <size>250,-1</size>
+                                        <style>wxCB_DROPDOWN</style>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE</flag>
+                                    <border>5</border>
+                                    <object class="wxStaticText" name="wxID_STATIC">
+                                        <label>Sound for other beats of each measure:</label>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                                    <border>5</border>
+                                    <object class="wxComboBox" name="ID_COMBO_MTR_INSTR2">
+                                        <size>250,-1</size>
+                                        <style>wxCB_DROPDOWN</style>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_LEFT|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxButton" name="ID_BUTTON">
+                                        <label>Test sound</label>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

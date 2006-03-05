@@ -1,0 +1,50 @@
+<html>
+<!-- RCS-ID: $Id: translating_emusicbooks.htm,v 1.1 2005/10/14 14:51:37 cecilios Exp $ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>LenMus - Guidelines for translators</title>
+<link rel="stylesheet" media="all" href="singledoc.css" type="text/css" />
+</head>
+<body>
+
+<h1>Translating eMusicBooks</h1>
+
+<p>LenMus eMusicBooks are writen in standard HTML, using a subset of all avilable tags. Scores and
+interactive exercises are included by using "object" tags. All the pages that form the book are bundled
+in a standdard .zip file, and its extension is changed to .htb</p>
+
+<h4>Steps to translate an eMusicBook</h4>
+<p>Translating an eMusicBook
+is just translating a collection of HTML pages and takes three steps:</p>
+
+<ol>
+<li>
+Download the book to translate. Change its extension to .zip, and unzip it.
+</li>
+
+<li>
+Translate each .htm document. Pay attention to translate only the text content, not the
+html tags!
+</li>
+
+<li>
+Bundle the translated files into a .zip file, change its extension to .htb and upload for
+inclusion in the distribution package.
+</li>
+
+</ol>
+
+<h4>Set up the right language code</h4>
+<p>You need to make sure that in all the files the right language code is specified. For
+the index file (.hhk), the table of content file (.hhc) and for all the .htm files,
+the language code is in a META tag at the beginning:</p>
+<pre>
+&lt;meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1""&gt;
+</pre>
+<p>For the .hhp project file, the language code is in the Charset line:</p>
+<pre>
+Charset=iso-8859-1
+</pre>
+
+</body>
+</html>

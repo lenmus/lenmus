@@ -1,0 +1,65 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 0.7 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
+<score-partwise>
+	<work>
+		<work-number>03</work-number>
+		<work-title>Test: rest inside a beamed group</work-title>
+	</work>
+	<part-list>
+		<score-part id="P1">
+			<part-name>Voice</part-name>
+		</score-part>
+	</part-list>
+	<part id="P1">
+		<measure number="1">
+			<attributes>
+				<divisions>16</divisions>
+				<key>
+					<fifths>3</fifths>
+					<mode>major</mode>
+				</key>
+				<time>
+					<beats>2</beats>
+					<beat-type>4</beat-type>
+				</time>
+				<clef>
+					<sign>G</sign>
+					<line>2</line>
+				</clef>
+			</attributes>
+			<note>
+				<pitch>
+					<step>C</step>
+					<octave>4</octave>
+				</pitch>
+				<duration>8</duration>
+				<type>eighth</type>
+				<beam number="1">begin</beam>
+			</note>
+			<note>
+				<pitch>
+					<step>D</step>
+					<octave>4</octave>
+				</pitch>
+				<duration>8</duration>
+				<type>eighth</type>
+				<beam number="1">continue</beam>
+			</note>
+			<note>
+				<rest/>
+				<duration>8</duration>
+				<type>eighth</type>
+				<beam number="1">continue</beam>
+			</note>
+			<note>
+				<pitch>
+					<step>E</step>
+					<octave>4</octave>
+				</pitch>
+				<duration>8</duration>
+				<type>eighth</type>
+				<beam number="1">end</beam>
+			</note>
+		</measure>
+	</part>
+</score-partwise>

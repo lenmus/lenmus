@@ -1,0 +1,368 @@
+// RCS-ID: $Id: architecture.txt,v 1.7 2006/02/23 19:15:19 cecilios Exp $
+//--------------------------------------------------------------------------------------
+//    LenMus Phonascus: The teacher of music
+//    Copyright (c) 2002-2006 Cecilio Salmeron
+//
+//    This program is free software; you can redistribute it and/or modify it under the 
+//    terms of the GNU General Public License as published by the Free Software Foundation;
+//    either version 2 of the License, or (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License along with this 
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    Fifth Floor, Boston, MA  02110-1301, USA.
+//
+//    For any comment, suggestion or feature request, please contact the manager of 
+//    the project at cecilios@users.sourceforge.net
+//
+//-------------------------------------------------------------------------------------
+/*! @page architecture        Notes on LenMus architecture
+
+
+LenMus architecture
+--------------------
+
+LenMus architecture is based on the document/view architecture as this makes it easy to 
+support multiple views, multiple document types, splitter windows, and other valuable 
+user-interface features.
+The document/view implementation separates the data itself from its display and from user 
+operations on the data. All changes to the data are managed through the document class. 
+The view calls this interface to access and update the data.
+
+Documents, their associated views, and the frame windows that frame the views are created by 
+a document template. The document template is responsible for creating and managing all 
+documents of one document type.
+
+Data management is separated into two main classes:
+ 
+The lmScoreDocument contains the score and  
+represents the unit of data that the user typically opens with the Open command on the 
+File menu and saves with the Save command on the File menu.
+
+@section ScoreView_class The lmScoreView class
+<!-- ======================================= -->
+
+The lmScoreView class provides the functionality for viewing and editing a lmScoreDocument.
+A lmScoreView is attached to a lmScoreDocument and acts as an intermediary 
+between the document and the user: the view renders an image of the document on the screen 
+and interprets user input as operations upon the document. The view also renders the image 
+for both printing and print preview.
+
+The view deals with two objects: the frame and the canvas.
+
+When a view is created (via main menu 'file > new'  or 'file > open') class wxDocTemplate
+invokes ::CreateDocument and ::CreateView. This last one creates the lmScoreView object and 
+invokes lmScoreView::OnCreate.
+In this method the lmScoreView object request from the App to create a new child frame-window
+(.CreateProjectFrame). The App object then creates the child MDI frame (->CreateCanvas) and
+show it (->Show). The Show operation request the view to display itself (OnDraw). Also, 
+when the frame must be redrawn it invokes the view OnDraw.
+
+More than one view can share a frame window, as in the
+case of a splitter window.
+
+All drawing operations are made through a device-context (DC) object, which encapsulates the operating
+system APIs for drawing lines, shapes, and text, and allow device-independent drawing. 
+
+
+
+@section TheApp_class The lmTheApp class
+<!-- ======================================= -->
+
+@copydoc lmTheApp
+
+
+
+Frame windows
+-------------
+In addition, it is needed a frame or window class to contain the view.
+
+A frame is a container window that can be moved and resized, can have a border and can have
+additional features, such as a menu. For edition the lmScoreCanvas will be contained
+in a frame: lmEditFrame, an wxDocMDIChildFrame.
+It contains the "canvas" (DC) on which all drawing and interaction takes place, as well as
+additional user interface items such as the window frame, menus, scroll bars, etc.
+The frame-window class manages the frame, and a view class manages the contents. 
+
+frame windows are responsible for numerous tasks involved in coordinating the frame with its 
+view and with the application.
+The frame window also forwards commands to its views and can respond to notification 
+messages from control windows. 
+a frame window keeps track of a currently active view. If the frame window contains more 
+than one view, as for example in a splitter window, the current view is the most recent 
+view in use. The active view is independent of the active window in Windows or the current 
+input focus.
+
+There is a main frame window in LenMus (class lmMainFrame). Inside this frame
+two MIDI child windows can be opened:
+
+	- lmEditFrame: MDI Child windows that contains the lmScoreCanvas
+	- lmTextBookFrame: MDI Child window that contains the eMusicBook controller
+	
+To always have synchronized the menu and toolbar items and its status (enable/disabled) with
+the allowd menu items /ttols for a child frame, all MDI Child windows must implement
+an OnActivate() handler and, from there, invoke parent frame (the main frame) method
+UpdateMenuAndToolbar().
+	
+
+@section Paper_class lmPaper, lmPage and lmScore classes
+<!-- ======================================= -->
+
+lmPage defines and manages the page layout: width, height, margins, borders, etc. in microns
+
+lmPaper
+-----
+Encapsulates a DC, creates an manages off-screen bitmaps and manages virtual paper
+cursors
+lmPaper -> Prepare a MemoryDC for a bitmap for a whole page (size, in pixels, is 
+            scale*page settings)
+            
+lmScore.Draw() -> Render score in the DC prepared by lmPaper. Conversion between microns and
+                pixels is done by lmPaper. lmStaff line width is defined by calling to lmPaper,
+                as the difference bettween
+                pPaper->GetRightMarginXPos() and GetPageLeftMargin()
+                
+                
+
+ScoreControl
+---------------------
+ScoreControl 
+
+
+@section internal_links Design rationale: internal html links
+<!-- ========================================================= -->
+
+In version 2.0, the first character of the URL string indicates the type of link:
+    P - link to another theme inside the document
+    D - a link to another document:
+    O - command for embedded object
+    T - Command: play score/measure.
+    F - link to close documentation browser and open a Visual Basic Form 
+
+a) theme/document links (types P, D):
+    These are normal HTML links, No special treatment needed
+    
+b) cmd for embedded object links (types O, T):
+    Patch module htmlwin.cpp, method wxHtmlWindow::LoadPage():
+        if (location[?] == wxT('\#LenMusCmd')) do my process by calling back to my processor.
+        How to specify the LenMus Processor? -> define a member variable m_pLinkProcessor
+        and a method to set it:  wxHtmlWindow::SetLinkProcessor()
+        
+    Alternative 2: wxHtmlWindow has a virtual method, named OnLinkClicked(), that is called 
+    when user clicks on a cell that corresponds to a hypertext link. So I can create a 
+    new class MtHtmlWindow and derive from wxHtmlWindow.
+    
+    Problems of alternative 2: I have now to hook on
+    HtmlController to use my help window class instead of the standard class. Well, for 
+    GUI presentation reasons it would be convenient to write my own help controller class.
+    The use of my help window class seems to force me to, definetively, write this class. Let's
+    call it lmTextBookController.
+    - I started by derivating lmTextBookController from wxHelpController; and it is enought to
+    override virtual method CreateHelpFrame()
+    - The real problem is with wxHtmlHelpFrame: it is not possible to derive from it and 
+    it must be created new. I tried to copy helpfrm.cpp and to change names. Problems appeared
+    because helpper classes such as wxHtmlHelpFrameOptionsDialog or wxHtmlHelpMergedIndex,
+    so I renamed wxHtmlHelp* -> TextBookHelp*
+    
+    
+
+    
+    How to identify the object?:
+    keep a list of objects that are included in the rendered page.
+    links containing commands for these embedded objects will have as parameter the number of
+    the object (in objects table) to which the command refers
+    
+c) general cmd links (type F):
+    The same treatment as b) but referring to object number 0.
+    
+    
+@section context_for_notes Design rationale: context for notes
+<!-- ========================================================= -->
+
+To properly deal with a note it is necessary to know the context (clef,
+time, key, accidentals, other?) affecting the note.
+
+a) alternative 1
+The score has a global list of context objects. As the context changes a new object with
+the new context is created. All Stafobj have a pointer to their current context.
+
+When inserting/deleting staffobjects that modify the context ???
+
+b) alternative 2:
+As in MusicXML, each note keeps information about displayed accidentals and sound accidentals
+
+
+@section internationalization Notes on internationalization
+<!-- ========================================================= -->
+
+In order to support for multiple languages it must be compiled as unicode. Multi-byte builds
+does not support languages such as Japanise or Chinesse (I am not sure of this but it seems
+to be implied by the code of internat sample).
+
+
+@section play_rationale Design rationale: how to play a score
+<!-- ========================================================= -->
+
+Use MIDI commands.
+
+Requirements:
+1. support for Play, Pause, and Stops commands
+2. Metronome on/off while playing
+3. Metronome setting changed while playing
+
+Metronome requirement 3 implies that timestamps for noteOn/NoteOff commands can not be
+precomputed as they will vary if metronome speed is changed.
+
+To satisfy real time requirements, it was decided not to generate MIDI commands from the objects
+model, but to preprocess the score and to represent it as a table of sound events (lmSoundManager
+object).
+
+For playing, in Phonascus (Visual Basic) the table was explored in a loop an each sound command
+was emited at appropiate time. To wait for the right time, sentence DoWaitEvents():
+
+        Public Sub DoWaitEvents(msWait As Long)
+            Dim msEnd As Long
+            msEnd = GetTickCount + msWait
+            Do
+                DoEvents
+            Loop While GetTickCount < msEnd
+        End Sub
+
+This worked OK, and sentence DoEvents allows for time to process GUI events.
+
+When migrating this code to C++ and wxWidgets, DoWaitEvents was replaced by ::wxMilliSleep().
+This retain execution flow and prevents that GUI events be served; this "frezzes" the GUI and
+it is not possible to serve user commands, such as stopping the music or changing metronome
+settings.
+
+To solve this problem I moved the Play() method to execute in a different thread. This is
+the solution implemented in backup 2005-08-15. This solution works but it has another problem:
+the GUI can not be updated from the tread (see  wxWidgets documentation, topic:
+Topic overview: Multithreading overview). Therefore other alternatives must be explored.
+
+1. Use wxMidi facilities to accept timestamped commands and take care of executing them
+    at right time. 
+    
+2. Replace DoWaitEvents() for C++ code.
+
+3. Create GUI_UPDATE events from the thread. GUI_UPDATE events will take care of VisualOn/Off
+    commands.
+
+4. Replace DoWaitEvents() by creating a new SOUND_EVENT; control is returned to main event loop
+    and SOUND_EVENT is processed by lmSoundManager
+
+
+Alternative 1 is not acceptable as it will not be possible to emit all music commands, due
+to metronome requirements (mainly, req.3)
+    
+Alternatives 2 and 4, are very similar. They probably will work OK as this worked in Visual Basic
+but timing is not very acurate: priority is on the main loop not on the sound event.
+
+Alternative 3 is the most acurate but is perhaps the most complex as a thread must be maintained
+and a GUI_UPDATE event must be implemented. For timing accuracy, the thread must have high
+execution priority, so it prevails over GUI user commands and VisualOn / VisualOff GUI_UPDATE
+events.
+
+Lets try alternative 3 (2005-08-16).
+
+
+@section metronome How metronome works
+<!-- ====================================================== -->
+There are "two" metronomes:
+
+	1. An independent one, to be used when the student is practising side reading. The
+		idea is to use it as a normal metrone while practising side reading of the
+		score displayed.
+	2. A metronome that sounds when a score is being played. In this case, the metronome
+		is synchronized with the score tempo, and the metronome starts and stops in
+		synchronisation with the score duration.
+
+		
+a. The independent metronome
+
+	It is started / stopped by clicking the 'metronome' main toolbar button.
+
+	Any independent metronome used by the program is implemented by an instance of object
+	lmMetronome. This object is responsible for producing the metronome click sound and,
+	simultaneously, generating an event so that the metronome owner can do things shuch as
+	visula effects (flashing led) or other, in syncrhronism with metronome clicks. The
+	lmMetronome can be running/stopped and enabled/muted
+
+	There exists only one lmMetronome instance, created by the lmMainFrame object, and 
+	associated to the main frame metronome controls (toolbar button and speed ctrol)
+	
+	
+b. The 'play' metronome
+
+	It is NOT implemented using an lmMetronome object, but by means of the sounds
+	events table.
+	
+	- When the play button (main toolbar / menu) is clicked the independent metronome
+	is muted.
+
+	- During sound events table generation, also metronome click events are always 
+	generated (it does not matter any metronome option; metronome events are always
+	generated). Tempo is choosen by program; but one of the options is to use
+	independent metronome settings (the default but for spceific exercises, such as
+	play intervals or play scales).
+
+	- During sound events table execution, metronome clicks sounds are generated if
+	at that instant the independent metronome is running (it is mutted, anyway).
+	
+	- So, independent metronome settings have no effect on 'play' metronome. Only 
+	independent metronome running state and tempo settings matters.
+	
+	
+Therefore, from the user point of view, all metronome activity is controlled with the
+	metronome on/off main toolbar button and tempo settings:
+	- very intuitive
+	- the metronome check box in Score Side Reading control (old LenMus versions) is
+	no longer necessary.
+		
+
+
+
+@section html_controller Html Help Controller: How links between books work
+<!-- ========================================================= -->
+
+After some testing these are my conclusions:
+
+- It is required to have all books in the same folder. Otherwise different problems
+	appear to have links between books:
+		- The content is not updated to show the displayed page. Content listbox interprets
+			that the a page of the same book is being displayed and, thus, subsequent clicks
+			on pages of the same book does not work as it only looks for pages in that book.
+		- 
+	
+- Links to other books' pages must use the 'chapter name' format. Otherwise the content
+	pane is not updated.
+	
+- In content pane, books are ordered in the AddBook() calling sequence.
+
+
+@section side_reading_modes Html SideReadingCtrol: modes for score generation
+<!-- ========================================================================= -->
+
+In version 2.0 there were 4 modes:
+
+1. Notes reading - force to use specific settings for notes reading
+2. Personal settings - use the personal settings
+3. According to lesson - use settings according lesson/level params/settings
+4. By program - use the settings passed as arguments
+
+param 'cboMode' only controls if mode selection combo box is displayed. Operation
+mode is controlled by the selected value in this combo box. Initial selection is controlled
+by param 'mode'. If combo box is not displayed user can not change mode.
+
+The 'settings' link visible only when the cboMode is visible. If the cboMode is
+visible it allways contains the three first modes to be selected by the user.
+
+In version 3.0 mode 'According to lesson' is not necessary as level/lesson settings
+are always included as parameters, so it is replaced by 'By program' mode. If user
+would like to practise a specific lesson now he/she will be force to go to that lesson.
+
+
+*/

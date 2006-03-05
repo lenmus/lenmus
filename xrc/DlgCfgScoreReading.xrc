@@ -1,0 +1,990 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
+    <object class="wxDialog" name="DlgCfgScoreReading">
+        <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
+        <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
+        <title>Score generation settings</title>
+        <centered>1</centered>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <object class="wxNotebook" name="bookCtrol">
+                    <style>wxNB_TOP</style>
+                    <object class="notebookpage">
+                        <label>Clefs and Notes</label>
+                        <object class="wxPanel" name="panelClefs">
+                            <style>wxTAB_TRAVERSAL</style>
+                            <object class="wxStaticBoxSizer" name="wxID_ANY">
+                                <orient>wxHORIZONTAL</orient>
+                                <label></label>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxBoxSizer">
+                                        <orient>wxVERTICAL</orient>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxBoxSizer">
+                                        <orient>wxVERTICAL</orient>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_LEFT|wxALL|wxADJUST_MINSIZE</flag>
+                                            <border>5</border>
+                                            <object class="wxStaticText" name="wxID_STATIC">
+                                                <font>
+                                                    <size>10</size>
+                                                    <family>swiss</family>
+                                                    <style>normal</style>
+                                                    <weight>bold</weight>
+                                                    <underlined>0</underlined>
+                                                    <face>Tahoma</face>
+                                                </font>
+                                                <label>Mark the clefts to use and set up the minimun and
+maximum pitches for the notes to use with each selected clef.</label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxGROW</flag>
+                                            <border>5</border>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkGClef">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>G clef (violin)</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="spacer">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <option>1</option>
+                                                    <size>5,5</size>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Min. note</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxComboBox" name="cboMinNoteG">
+                                                        <size>80,-1</size>
+                                                        <style>wxCB_DROPDOWN</style>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Max. note</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxComboBox" name="cboMaxNoteG">
+                                                        <size>80,-1</size>
+                                                        <style>wxCB_DROPDOWN</style>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticBitmap" name="bmpErrorRangeG">
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxGROW</flag>
+                                            <border>5</border>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkF4Clef">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>F clef on 4th line (bass)</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="spacer">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <option>1</option>
+                                                    <size>5,5</size>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Min. note</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxComboBox" name="cboMinNoteF4">
+                                                        <size>80,-1</size>
+                                                        <style>wxCB_DROPDOWN</style>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Max. note</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxComboBox" name="cboMaxNoteF4">
+                                                        <size>80,-1</size>
+                                                        <style>wxCB_DROPDOWN</style>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticBitmap" name="bmpErrorRangeF4">
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxGROW</flag>
+                                            <border>5</border>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkF3Clef">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>F clef on 3rd line</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="spacer">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <option>1</option>
+                                                    <size>5,5</size>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Min. note</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxComboBox" name="cboMinNoteF3">
+                                                        <size>80,-1</size>
+                                                        <style>wxCB_DROPDOWN</style>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Max. note</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxComboBox" name="cboMaxNoteF3">
+                                                        <size>80,-1</size>
+                                                        <style>wxCB_DROPDOWN</style>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticBitmap" name="bmpErrorRangeF3">
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxGROW</flag>
+                                            <border>5</border>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkC1Clef">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>C clef on 1st line (soprano)</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="spacer">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <option>1</option>
+                                                    <size>5,5</size>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Min. note</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxComboBox" name="cboMinNoteC1">
+                                                        <size>80,-1</size>
+                                                        <style>wxCB_DROPDOWN</style>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Max. note</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxComboBox" name="cboMaxNoteC1">
+                                                        <size>80,-1</size>
+                                                        <style>wxCB_DROPDOWN</style>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticBitmap" name="bmpErrorRangeC1">
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxGROW</flag>
+                                            <border>5</border>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkC2Clef">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>C clef on 2nd line (mezzo soprano)</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="spacer">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <option>1</option>
+                                                    <size>5,5</size>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Min. note</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxComboBox" name="cboMinNoteC2">
+                                                        <size>80,-1</size>
+                                                        <style>wxCB_DROPDOWN</style>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Max. note</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxComboBox" name="cboMaxNoteC2">
+                                                        <size>80,-1</size>
+                                                        <style>wxCB_DROPDOWN</style>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticBitmap" name="bmpErrorRangeC2">
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxGROW</flag>
+                                            <border>5</border>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkC3Clef">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>C clef on 3rd line (contralto)</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="spacer">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <option>1</option>
+                                                    <size>5,5</size>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Min. note</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxComboBox" name="cboMinNoteC3">
+                                                        <size>80,-1</size>
+                                                        <style>wxCB_DROPDOWN</style>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Max. note</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxComboBox" name="cboMaxNoteC3">
+                                                        <size>80,-1</size>
+                                                        <style>wxCB_DROPDOWN</style>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticBitmap" name="bmpErrorRangeC3">
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxGROW</flag>
+                                            <border>5</border>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkC4Clef">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>C clef on 4th line (tenor)</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="spacer">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <option>1</option>
+                                                    <size>5,5</size>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Min. note</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxComboBox" name="cboMinNoteC4">
+                                                        <size>80,-1</size>
+                                                        <style>wxCB_DROPDOWN</style>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxRIGHT|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label>Max. note</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxComboBox" name="cboMaxNoteC4">
+                                                        <size>80,-1</size>
+                                                        <style>wxCB_DROPDOWN</style>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticBitmap" name="bmpErrorRangeC4">
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxGROW|wxALL</flag>
+                                            <border>5</border>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxBoxSizer">
+                                                        <orient>wxHORIZONTAL</orient>
+                                                        <object class="sizeritem">
+                                                            <flag>wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM</flag>
+                                                            <border>5</border>
+                                                            <object class="wxStaticBitmap" name="bmpClefError">
+                                                            </object>
+                                                        </object>
+                                                        <object class="sizeritem">
+                                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                                            <border>5</border>
+                                                            <object class="wxStaticText" name="wxID_STATIC">
+                                                            </object>
+                                                        </object>
+                                                        <object class="sizeritem">
+                                                            <flag>wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE</flag>
+                                                            <border>5</border>
+                                                            <object class="wxStaticText" name="lblClefError">
+                                                                <bg>#FFD7D7</bg>
+                                                                <label>You must choose at least one clef! </label>
+                                                            </object>
+                                                        </object>
+                                                    </object>
+                                                </object>
+                                                <object class="spacer">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <option>1</option>
+                                                    <size>5,5</size>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxBoxSizer">
+                                                        <orient>wxHORIZONTAL</orient>
+                                                        <object class="sizeritem">
+                                                            <flag>wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM</flag>
+                                                            <border>5</border>
+                                                            <object class="wxStaticBitmap" name="bmpRangeError">
+                                                            </object>
+                                                        </object>
+                                                        <object class="sizeritem">
+                                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                                            <border>5</border>
+                                                            <object class="wxStaticText" name="wxID_STATIC">
+                                                            </object>
+                                                        </object>
+                                                        <object class="sizeritem">
+                                                            <flag>wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE</flag>
+                                                            <border>5</border>
+                                                            <object class="wxStaticText" name="lblRangeError">
+                                                                <bg>#FFD7D7</bg>
+                                                                <label>Minimum pitch must be lower than maximum one </label>
+                                                            </object>
+                                                        </object>
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_LEFT|wxALL</flag>
+                                            <border>5</border>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxHORIZONTAL</orient>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                        <font>
+                                                            <size>9</size>
+                                                            <family>swiss</family>
+                                                            <style>normal</style>
+                                                            <weight>bold</weight>
+                                                            <underlined>0</underlined>
+                                                            <face>Tahoma</face>
+                                                        </font>
+                                                        <label>Maximum interval between two consecutive notes</label>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxSpinCtrl" name="spinMaxInterval">
+                                                        <size>50,-1</size>
+                                                        <style>wxSP_ARROW_KEYS</style>
+                                                        <value>0</value>
+                                                        <min>0</min>
+                                                        <max>100</max>
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="notebookpage">
+                        <label>Time signatures</label>
+                        <object class="wxPanel" name="panelTimeSign">
+                            <style>wxTAB_TRAVERSAL</style>
+                            <object class="wxStaticBoxSizer" name="wxID_ANY">
+                                <orient>wxVERTICAL</orient>
+                                <label></label>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxBoxSizer">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                            <border>5</border>
+                                            <object class="wxStaticBoxSizer" name="wxID_ANY">
+                                                <orient>wxVERTICAL</orient>
+                                                <label>Binary subdivision</label>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkTime24">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>2 4 time signature</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkTime34">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>3 4</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkTime44">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>4 4</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="spacer">
+                                                    <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <size>5,5</size>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkTime28">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>2 8</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="spacer">
+                                                    <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <size>5,5</size>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkTime22">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>2 2</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkTime32">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>3 2</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_TOP|wxALL</flag>
+                                            <border>5</border>
+                                            <object class="wxStaticBoxSizer" name="wxID_ANY">
+                                                <orient>wxVERTICAL</orient>
+                                                <label>Ternary subdivision</label>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkTime68">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>6 8 time signature</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkTime98">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>9 8</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkTime128">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>12 8</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="spacer">
+                                                    <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <size>5,5</size>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkTime38">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>3 8</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_CENTER_HORIZONTAL</flag>
+                                    <border>5</border>
+                                    <object class="wxBoxSizer">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM</flag>
+                                            <border>5</border>
+                                            <object class="wxStaticBitmap" name="bmpTimeError">
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                            <border>5</border>
+                                            <object class="wxStaticText" name="wxID_STATIC">
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE</flag>
+                                            <border>5</border>
+                                            <object class="wxStaticText" name="lblTimeError">
+                                                <bg>#FFD7D7</bg>
+                                                <label>You must choose at least one time signature! </label>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="notebookpage">
+                        <label>Key signatures</label>
+                        <object class="wxPanel" name="panelKeySign">
+                            <style>wxTAB_TRAVERSAL</style>
+                            <object class="wxStaticBoxSizer" name="wxID_ANY">
+                                <orient>wxVERTICAL</orient>
+                                <label></label>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxBoxSizer">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_TOP|wxALL</flag>
+                                            <border>5</border>
+                                            <option>1</option>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxVERTICAL</orient>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkKeyC">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>C Major / A minor</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkKeyG">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>G Major / E minor</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxGROW|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkKeyD">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>D Major / B minor</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxGROW|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkKeyA">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>A Major / F# minor</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxGROW|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkKeyE">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>E Major / C# minor</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxGROW|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkKeyB">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>B Major / G# minor</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxGROW|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkKeyFSharp">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>F# Major / D# minor</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxGROW|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkKeyCSharp">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>C# Major / A# minor</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_TOP|wxALL</flag>
+                                            <border>5</border>
+                                            <option>1</option>
+                                            <object class="wxBoxSizer">
+                                                <orient>wxVERTICAL</orient>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkKeyCFlat">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>Cb Major / Ab minor</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_LEFT|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkKeyGFlat">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>Gb Major / Eb minor</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxGROW|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkKeyDFlat">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>D Major / B minor</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxGROW|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkKeyAFlat">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>Ab Major / F minor</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxGROW|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkKeyEFlat">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>Eb Major / C minor</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxGROW|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkKeyBFlat">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>Bb Major / G minor</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxGROW|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxCheckBox" name="chkKeyF">
+                                                        <style>wxCHK_2STATE</style>
+                                                        <label>F Major / D minor</label>
+                                                        <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_CENTER_HORIZONTAL</flag>
+                                    <border>5</border>
+                                    <object class="wxBoxSizer">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM</flag>
+                                            <border>5</border>
+                                            <object class="wxStaticBitmap" name="bmpKeySignError">
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE</flag>
+                                            <border>5</border>
+                                            <object class="wxStaticText" name="lblKeySignError">
+                                                <bg>#FFD7D7</bg>
+                                                <label>You must choose at least one key signature! </label>
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                            <border>5</border>
+                                            <object class="wxStaticText" name="wxID_STATIC">
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="notebookpage">
+                        <label>Rhymths</label>
+                        <object class="wxPanel" name="panelRhymths">
+                            <style>wxTAB_TRAVERSAL</style>
+                            <object class="wxStaticBoxSizer" name="wxID_ANY">
+                                <orient>wxVERTICAL</orient>
+                                <label></label>
+                                <object class="sizeritem">
+                                    <flag>wxGROW|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="unknown" name="ID_FOREIGN">
+                                        <size>100,100</size>
+                                        <style>wxSIMPLE_BORDER</style>
+                                    </object>
+                                </object>
+                                <object class="sizeritem">
+                                    <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                    <border>5</border>
+                                    <object class="wxBoxSizer">
+                                        <orient>wxHORIZONTAL</orient>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                            <border>5</border>
+                                            <object class="wxButton" name="btnAddRhythm">
+                                                <label>Add rhythm</label>
+                                            </object>
+                                        </object>
+                                        <object class="spacer">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                            <border>5</border>
+                                            <size>5,5</size>
+                                        </object>
+                                        <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                            <border>5</border>
+                                            <object class="wxButton" name="ID_BUTTON2">
+                                                <label>Delete rhythm</label>
+                                            </object>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                <border>5</border>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="buttonAccept">
+                            <label>Accept</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="buttonCancel">
+                            <label>&amp;Cancel</label>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

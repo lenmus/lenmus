@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 8.00
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lenmus", "lenmus.vcproj", "{41628115-AEA6-43E7-A4C8-DFCA9E58B27C}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfiguration) = preSolution
+		Debug = Debug
+		Release = Release
+	EndGlobalSection
+	GlobalSection(ProjectConfiguration) = postSolution
+		{41628115-AEA6-43E7-A4C8-DFCA9E58B27C}.Debug.ActiveCfg = Debug|Win32
+		{41628115-AEA6-43E7-A4C8-DFCA9E58B27C}.Debug.Build.0 = Debug|Win32
+		{41628115-AEA6-43E7-A4C8-DFCA9E58B27C}.Release.ActiveCfg = Release|Win32
+		{41628115-AEA6-43E7-A4C8-DFCA9E58B27C}.Release.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

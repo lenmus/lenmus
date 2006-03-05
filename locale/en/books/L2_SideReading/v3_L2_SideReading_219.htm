@@ -1,0 +1,139 @@
+<html>
+<head><title>Side Reading exercises</title></head>
+<body>
+
+<h1>219 - Subdivisión binaria. La corchea con puntillo</h1>
+<p>En este tema se introducen el patrón de corchea con puntillo en ritmos de subdivisión binaria:</p>
+<object type="application/LenMusScore" width="300" height="300"   border="0">\n   <param name="type" value="short" />\n
+    <param name="control_play" value="Tocar" />\n<param name="control_measures" value="Compas %d" />
+    <param name="music" value="
+        (Metrica 2 4 NoVisible) (opciones (EspacioAntesParte 20))
+           (g (n * c.)(n * s)) (Barra Doble) )
+        (c (n * n +l)(g (n * c.)(n * s)) (Barra Doble) )
+        (c (g (n * c)(n * c +l))(g (n * c.)(n * s)) (Barra Final))
+        " />
+</object>
+
+<h2>Escucha y observa las diferencias</h2>
+<p>Como siempre que tengas alguna dificultad con un ritmo, trata de descomponerlo en otros mas sencillos
+suprimiendo ligados. Observa cómo el ritmo de corchea con puntillo resulta del ritmo de corchea y dos semicorcheas,
+ya estudiado, al ligar la corchea. A su vez, el ritmo de cochea y dos semicorcheas puede obtenerse del de cuatro
+semicurcheas al ligar las dos primeras.</p>
+
+<object type="application/LenMusScore" width="300" height="300"   border="0">\n   <param name="type" value="short" />\n
+    <param name="control_play" value="Tocar" />\n<param name="control_measures" value="Compas %d" />
+    <param name="music" value="
+        (Metrica 2 8) (opciones (EspacioAntesParte 20))
+           (g (n * c)(n * s)(n * s)) )
+        (c (g (n * c +l)(n * s)(n * s)) )
+        (c (g (n * c.)(n * s)) )
+        (c (g (n * s)(n * s)(n * s)(n * s)) )
+        (c (g (n * s +l)(n * s)(n * s)(n * s)) )
+        (c (g (n * c)(n * s)(n * s)) ) (Barra Final))
+        " />
+</object>
+
+<p space="3">De forma similar, puedes obtener y aprender los otros dos patrones de esta lección:</p>
+
+<object type="application/LenMusScore" width="300" height="300"   border="0">\n   <param name="type" value="short" />\n
+    <param name="control_play" value="Tocar" />\n<param name="control_measures" value="Compas %d" />
+    <param name="music" value="
+        (Metrica 2 8) (opciones (EspacioAntesParte 20))
+           (n * n)(g (n * c.)(n * s)) )
+        (c (n * n +l)(g (n * c.)(n * s)) )
+        (c (g (n * c)(n * c))(g (n * c.)(n * s)) )
+        (c (g (n * c)(n * c +l))(g (n * c.)(n * s)) (Barra Final))
+        " />
+</object>
+
+
+<h2>Ejercicios</h2>
+<object type="Application/LenMusTheoSideReading" width="100%" height="300" border="0">
+    <p>Ejercicio 1.</p>
+    <parametros>
+        <titulo>La corchea con puntillo</titulo>
+        <p>Pulsa 'Tocar' y escucha el ritmo.</p>
+        <param name="control" value="play">\n    <param name="control" value="solfa">\n    <param name="control" value="optMetronome">\n
+        <modo>porPrograma</modo>
+        <opciones>
+            <patrones>
+                <patron ritmo="B" valor="(g (n * c.)(n * s))" />
+            </patrones>
+            <claves>
+    <param name="clef" value="Sol;a4;b4" />
+            </claves>
+            <metricas>
+    <param name="time" value="x4" />
+
+            <tonalidades>
+    <param name="key" value="Do" />
+            </tonalidades>
+        </opciones>
+    </parametros>
+</object>
+<p>Educa el oido: el patrón de corchea con puntillo.</p>
+
+<object type="Application/LenMusTheoSideReading" width="100%" height="300" border="0">
+    <p>Ejercicio 2.</p>
+    <parametros>
+        <titulo>La nota negra ligada a corchea con puntillo</titulo>
+        <p>Pulsa 'Tocar' y escucha el ritmo.</p>
+        <param name="control" value="play">\n    <param name="control" value="solfa">\n    <param name="control" value="optMetronome">\n
+        <modo>porPrograma</modo>
+        <opciones>
+            <patrones>
+                <patron ritmo="B" valor="(n * n +l)(g (n * c.)(n * s))" />
+            </patrones>
+            <claves>
+    <param name="clef" value="Sol;a4;b4" />
+            </claves>
+            <metricas>
+    <param name="time" value="x4" />
+
+            <tonalidades>
+    <param name="key" value="Do" />
+            </tonalidades>
+        </opciones>
+    </parametros>
+</object>
+<p>Educa el oido: la nota negra ligada a corchea con puntillo.</p>
+
+<object type="Application/LenMusTheoSideReading" width="100%" height="300" border="0">
+    <p>Ejercicio 3.</p>
+    <parametros>
+        <titulo>Grupo de dos corcheas ligado a corchea con puntillo</titulo>
+        <p>Pulsa 'Tocar' y escucha el ritmo.</p>
+        <param name="control" value="play">\n    <param name="control" value="solfa">\n    <param name="control" value="optMetronome">\n
+        <modo>porPrograma</modo>
+        <opciones>
+            <patrones>
+                <patron ritmo="B" valor="(g (n * c)(n * c +l))(g (n * c.)(n * s))" />
+            </patrones>
+            <claves>
+    <param name="clef" value="Sol;a4;b4" />
+            </claves>
+            <metricas>
+    <param name="time" value="x4" />
+
+            <tonalidades>
+    <param name="key" value="Do" />
+            </tonalidades>
+        </opciones>
+    </parametros>
+</object>
+<p>Educa el oido: grupo de dos corcheas ligado a corchea con puntillo.</p>
+
+<object type="Application/LenMusTheoSideReading" width="100%" height="300" border="0">
+    <p>Ejercicio 4.</p>
+    <parametros>
+        <controles problema="si" tocar="si" solfear="si" cboModo="no" optMetronomo="si"/>
+        <modo leccion="219">segunLeccion</modo>
+    </parametros>
+</object>
+<p>Practica la lectura de partituras que contienen los ritmos estudiados en este tema.</p>
+
+
+
+
+</body>
+</html>

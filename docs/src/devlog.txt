@@ -1,0 +1,298 @@
+// RCS-ID: $Id: devlog.txt,v 1.28 2006/03/03 15:01:16 cecilios Exp $
+//--------------------------------------------------------------------------------------
+//    LenMus Phonascus: The teacher of music
+//    Copyright (c) 2002-2006 Cecilio Salmeron
+//
+//    This program is free software; you can redistribute it and/or modify it under the 
+//    terms of the GNU General Public License as published by the Free Software Foundation;
+//    either version 2 of the License, or (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License along with this 
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    Fifth Floor, Boston, MA  02110-1301, USA.
+//
+//    For any comment, suggestion or feature request, please contact the manager of 
+//    the project at cecilios@users.sourceforge.net
+//
+//-------------------------------------------------------------------------------------
+/*
+================================================================================================
+ Development log
+
+ Its purpose is to have all relevant documentation about work in progress or thinks to do in
+ short time, as well as to keep a recording of changes done each day. This log of changes can
+ be useful for many purposes, i.e. to locate the backup copy to use to recover a previous
+ implementation of a certain feature
+================================================================================================
+
+doxytags tags found in code:
+
+ @todo        Warnings about things to do to finish something that have been coded provisionally.
+ @limit       Program limitation (i.e. size of a table, ...)
+ @attention   Explanations about side effects or important facts of a piece of code. These
+              comments do not, necessarily, go to the doxygen documentation.    
+
+other tags in code:
+ BUG_BYPASS:  code to bypass a bug. It doesn't solve it but avoid a program crash.
+ THINK: Considerations and thoughts to think about for improving the program.
+ WXDEP: Code copied from wxWidgets or based on wxWidgets source code. The original
+        code could change in future wxWidgets versions and we have to review to 
+        adapt to those future changes.
+ OBSOLETE: To mark obselete parts that remain there for reference (i.e. to illustrate how
+        to do something)
+
+-----------------------------------------------------------------------------------------------
+
+LenMus project philosophy (to remind me to always stay on this):
+
+    - p.156
+    - I do it for fun, for learning and to help others, no for economical benefit -->
+        - Free and Open Source for benefit of others.
+        - No commitments that:
+            - Takes me out of having a good knowledge of program code and
+                of doing some programming.
+        - Creates me time preasure or stress.
+    - World wide usability -> comply with low end equipment (640x480)
+  
+
+-----------------------------------------------------------------------------------------------
+ WHAT I AM DOING?:
+    This is not a planning, but a list of things to do.
+    This section is a LIFO queue. Tasks are added on top of the lists. I always work on
+    the first task of the list and when finished, it is deleted from the list and the work
+    continues with ne next list item. Usually, top list items are subtask of bottom list items.
+    The entries at the end of the lists    are remainders of things to do with very low priority.
+
+--------------------------------------------------------------------------------------------------
+
+  - smile
+  - Besides the C++ Programming Language, by Bjarne Stroustrup, the "official" guide to C++,
+   I highly recommend Inside the C++ Object Model, by Stanley B. Lippman. (Lippman was one
+    of the C++ honchos at Bell Labs.) This book will tell you what _not_ to do, as well
+     as why everything in C++ is as it is. If you are confused by anything in C++,
+      Lippman's book is the cure.
+  - request wxWidgets book ?
+  
+  ---------------------------------------------------------------------------------------
+  
+******************************************************************************************
+Planning: comming releases 
+******************************************************************************************
+
+4/mar/2005 - Alpha 3.0a2 release
+--------------------------------------------------
+
+   Version 3.0 for Windows of the LenMus program is ready. All known bugs have been fixed and
+   all unfinished code, necessary for the features included in version 3.0, has been completed. 
+   The GUI has been revised and icons and art work has been completed; a splash window 
+   has also been included. All single exercises now include a 'settings' button
+   to allow user to customize the exercise to his/her needs. But the program is not yet
+   ready to move to beta status. What is missing?: More testing, eBooks, 
+   a help file and the translation into Spanish.
+   
+   eBooks are indispensable for rhythm and side reading exercises, so the student has
+   exercises width increasing level of difficulty. The pre-defined rhythmic cell selection
+   facilities of version 2.0 were too limitative for users as to set up a customized side
+   reading exercise more functionality is needed (i.e. a rhythmic patterns editor). This
+   probably will be included in version 3.1
+   
+   So, with the release of this last alpha version I will reduce programming activities
+   to start writing some eBooks for rhythm and side reading,
+   as well as the help file. Also, I will do tests to look for bugs and
+   to write a installer for Windows. 
+   
+   
+?/???/2005 - Beta 3.0b0 release
+--------------------------------------------------
+
+    Features and changes:
+        - Spanish translation
+        - Help file
+        - eBooks for side reading
+        - Installer for Windows
+        
+    Tasks:
+		1 - <object> strong param verification and error reporting
+        1 - Side reading eBooks. Needed to have exercises width increasing level of difficulty.
+        1 - Translation of program into Spanish
+        1 - Translation of eBooks into English
+        1 - Write NSIS installer for Windows
+        2 - Splash: finish it.
+        3 - For each exercise prepare an html page to explain it in the website. It could be
+            also part of the help book
+        3 - Prepare program help
+
+    Other:
+    - Replacement of version 2.0 that will be dropped from web site.
+
+
+??/???/2006 - Stable 3.0 release
+---------------------------------------------------
+
+
+Upcomig releases features 
+----------------------------------------------
+-General:
+    - Implement "Counters" sub-control for exercises.
+
+- Ear intervals:
+    2 - Link 'Show solution': besides drawing the score it should print the interval's name.
+    2 - Add check box to select not to show the solution when answered right and continue
+        proposing a new problem
+
+- Theo Key signatures:
+    2 - Add checkbox buttons to choose direct and inverse problems
+
+3.1
+---------------------------------------------------
+        - Beams that continue in next system
+        - Problem with chord stems (vanished)in faur_reve_sample.xml
+
+
+
+******************************************************************************************
+Known bugs:
+******************************************************************************************
+
+    2 - Bug: error when opening "chords v13.txt" and then closing the app.
+  
+
+------------------------------------------------------------------------------------------
+
+- Settings dialog for ScoreSideReading: 
+    Implementation of DlgCfgScoreReading dialog finished for Side reading options except
+    fragments tab options, that requiere to finish DlgPatternEditor.
+    DlgCfgScoreReading Side reading options is
+    not necessary for 3.0 release as single side reading exercises will be replaced by
+    side reading exercises in each lesson. The 'new' single side reading exercise will
+    requiere to have a fragments editor:
+        
+- Settings in html embedded objects:
+    - All objects must have a settings param specifying either the settings key to use
+        to save user settings or that user settings are not allowed.
+    - If user settings are allowed, parameters specified in the html object must be
+        used only as default settings for prefs->Read methods.  
+
+- In some exercises it would be nice to add an additional link "Explain solution" to 
+    provide guidance to the student about the steps followed to find the solution. 
+    This link will be enabled only after displaying a solution and will be disabled 
+    when 'new problem' clicked.
+
+- Modify UrlAuxCtrol to optionally include an icon at the left.
+
+- A strong parser for SideReading params. Actually any mistake produces a program crash.
+    
+- Composer5:
+    Barline alignment constrains
+    
+  - Ties: 
+    - too much space if stems up
+    - continuation in next system
+    
+  - lmIntervals' constructor to build interval from constrains: replace dbg messages to
+    use lmLogger methods
+  
+  - lmLogger: program DefineTraceMask() and GetDefinedTraceMask() methods.
+  - Create dialog for Debug/Set trace level  and use previous methods.
+  
+  - Re-program lmTheoScalesCtrol and lmTheoIntervalsCtrol so that scale/inerval generator
+    is isolated and can be systematically tested.
+
+  - Play /Stop play labels toggle in lmTheoIntervalsCtrol class and lmScoreCtrol. 
+  
+  - Control single instance running and IPC server. See wxGuide and demo sample.
+  
+  - Add most recent files history to File menu. See wxFileHistory
+  
+  - Clarify issue of instrument in metronome settings (channel 10 & 16)
+  
+  - Review colors for scores. Use global variables instead of constants (wxBLACK, wxBLUE, ...)
+    so that 1) avoid inconsistencies, and 2) allow user preferences.
+  
+  - selection rectangles sizes and positions: base them on a data file with information
+    about the font metrics. Font module wedelmusic/openwedelmusic-1.0/source/fon/lioofont.cpp
+    deal with .FON files (bitmap) and renders the font by setting bits on/off. Aparently
+    no font resizing is possible. See also MuseScore/fonts/mscore20.sfd; in this file all
+    information from mscore20.ttf is extracted and there is a reference to a utility for doing
+    this
+    
+  - adjust selection rectangle of: KeySignatures, Accidentals in notes
+
+  - Tuples: Positioning of bracket:
+        - when notes not beamed
+        - AutoPosition()
+        - Selection rectangle for bracket
+        - Number position: Take bracket line slope into consideration
+  
+  - lmNote: Dump of notations (fermata)
+  
+  - Change lmVStaff iteration from lmInstrument for something similar to iteration of 
+    instruments from a score
+    
+  - Fromatter3::RenderJustified(). Things to review next:
+    - lmVStaff::GetVStaffHeight
+    
+  - Windows: accept scrolling from mouse wheel
+  
+  - Metronome: implement LED. LED events created in two places: metronome, lmSoundManager.
+    
+
+TODO:
+-------------------
+   - Why Notes can not be moved?
+   - Note LONG (> cuadrada) --> Consultar Enciclopedia Britanica online?
+   - Chords: reverse the noteheads position when two notes collide in consecutive line
+     and space
+   - Too much space beetween notes in TheoIntervals
+     
+
+     
+     
+*/
+/*
+<!-- LOG OF THINGS DONE (CHANGE LOG)                                                                  -->
+<!-- ================================================================================================ -->
+
+<!--
+<center>
+  <table width="64" class="Lista">
+    <tr valign="top"> 
+      <td height="32" class="ListaImpar"><strong>Type</strong></td>
+      <td class="ListaImpar"><strong>Description</strong></td>
+    </tr>
+    <tr valign="top"> 
+      <td width="6" height="32" class="ListaPar">FIX</td>
+      <td width="94" class="ListaPar">Fix a bug</td>
+    </tr>
+    <tr valign="top"> 
+      <td class="ListaPar">NEW</td>
+      <td class="ListaPar">Added a new functionality to the program.</td>
+    </tr>
+    <tr valign="top"> 
+      <td class="ListaPar">GUI</td>
+      <td class="ListaPar">Change in the user interface to improve ergonomy or for
+      other reasons.</td>
+    </tr>
+    <tr valign="top"> 
+      <td class="ListaPar">CHG</td>
+      <td class="ListaPar">Internal technical change. Does not add new functionality neither
+        changes the GUI. It serve to other purposes: to enable future functionalities,
+        to improve coding, to improve performance, etc.</td>
+    </tr>
+  </table>
+</center>
+<p>&nbsp;</p>
+-->
+
+<tr valign="top">
+    <td class="ListaPar">21-oct-05</td>
+    <td class="ListaPar">
+        Composer5: Note generation and instantation finised.
+        - Starting to code DataBase.cpp/.h
+       </td></tr>
+
+*/

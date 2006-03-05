@@ -1,0 +1,1512 @@
+<html>
+<head>
+<title>LenMus: Log of things done (ChangeLog)</title>
+<!-- RCS-ID: $Id: changelog.htm,v 1.42 2006/03/03 15:01:16 cecilios Exp $ -->
+<link rel="stylesheet" media="all" href="singledoc.css" type="text/css" />
+</head>
+<body>
+
+<h1><a name="top">Log of things done (ChangeLog)</a></h1>
+
+<p>Please, note that this page is updated in the website only at the end of each week.
+</p>
+<a href="#Feb06">Feb 06</a>
+| <a href="#Jan06">Jan 06</a> | <a href="#Dec05">Dec 05</a> | <a href="#Nov05">Nov 05</a>
+| <a href="#Oct05">Oct 05</a>| <a href="#Sep05">Sep 05</a>| <a href="#Aug05">Aug 05</a>
+| <a href="#Jul05">Jul 05</a>| <a href="#Jun05">Jun 05</a>| <a href="#May05">May 05</a>
+| <a href="#Apr05">Apr 05</a>| <a href="#Mar05">Mar 05</a>| <a href="#Feb05">Feb 05 to start</a>
+<p>&nbsp;</p>
+
+<h2><a name="Mar06">March 2006</a></h2>
+<a href="#top">Go to top of document</a>
+<table class="Lista">
+<tr valign="top">
+    <td class="ListaImpar">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td class="ListaImpar">Changes<p>
+    </td></tr>
+
+<tr valign="top">
+    <td class="ListaPar">3-mar-06</td>
+    <td class="ListaPar">
+    Testing version Beta 3.0b0 and improving program robustness:
+    <ul>
+      <li>Bug fixed in Conversion.cpp: note names in upper case letters caused problems in
+       TheoScalesCtrol.</li>
+      <li>Bug fixed in lmTheoScalesCtrol::NewProblem(): type of problem not initialized.</li>
+      <li>Bug fixed in TheoIntervalsCtrol::NewProblem(): note type was upper case and caused
+        problems in parsing.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">2-mar-06</td>
+    <td class="ListaPar">
+    Testing version Beta 3.0b0 and improving program robustness:
+    <ul>
+      <li>Bug fixed in ScoreCtrolParams and TheoSideReadingCtrolParms: old G syntax improperly
+       detected when triplets.</li>
+      <li>Homogenized html params for control play and control solfa between ScoreCtrol and
+       SideReading Ctrol. lmSideReadingCtrolOptions modified to include play and solfa labels.</li>
+      <li>Bug fixed in SoundManager and VStaff: play a measure did not worked properly.</li>
+      <li>LDPParser: replaced wxASSERT with code to deal with the error,  
+        to avoid program crashes when bad score syntax, in methods AnalyzeNote(),
+        AnalyzeBarline(), AnalyzeClef().</li>
+    </ul>
+    LDP Parser: Added AnalyzeTimeSignature(). Modified AnalyzeMeasure() to use it.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">1-mar-06</td>
+    <td class="ListaPar">
+    Testing version Beta 3.0b0 and improving program robustness:
+    <ul>
+      <li>ScoreCtrolParams: moved from Tag.cpp to a file. Modified to include error 
+        reporting and to avoid crashes when invalid html params. Cleaning code.</li>
+      <li>lmLDPParser: modified method PopNode() to avoid crashes when bad score syntax.
+        Added A5_ExitError state to automata.</li>
+      <li>Documenting: how to write eMusicBooks</li>
+    </ul>
+    </td></tr>
+</table>
+
+<h2><a name="Feb06">February 2006</a></h2>
+<a href="#top">Go to top of document</a>
+<table class="Lista" ID="Table10">
+<tr valign="top">
+    <td class="ListaImpar">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td class="ListaImpar">Changes<p>
+    </td></tr>
+
+<tr valign="top">
+    <td class="ListaPar">28-feb-06</td>
+    <td class="ListaPar">
+    Testing version Beta 3.0b0:
+    <ul>
+      <li>Bug fixed in TheoSideReadingCtrolParms: key signatures not properly parsed.
+        <ul>
+          <li>TheoSideReadingCtrolParms: modified to include error reporting; member variable
+            m_sParamErrors included.</li> 
+          <li>AuxString.cpp: Global function LDPNameToKey() added.</li>
+          <li>LDPParser: added method ParenthesisMatch()</li>
+        </ul></li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">25-feb-06</td>
+    <td class="ListaPar">
+    Testing version Beta 3.0b0:
+    <ul>
+      <li>Bug fixed: in the first run, when no .ini file, the splash hides the MIDI 
+        wizard. SplashFrame: added method TerminateSplash(). TheApp: added cursor
+        busy logic.</li>
+      <li>Default value for toolbar: changed to labels under icon.</li>
+      <li>Bug fixed in DlgCfgReadingSettings: for Notes reading settings variables 
+        for Side reading options where initialized after having destroyed panels not
+        used in notes reading options.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">23-feb-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>AboutDialog: added credits for icons. Memory leaks detected and fixed.</li>
+      <li>MainFrame: added conditional compilation statment to define wxID_NEW and wx_ID_OPEN 
+        in debug version.</li>
+      <li>Copyright year updated to 2006 in all files.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">21-feb-06</td>
+    <td class="ListaPar">
+    Implementation of DlgCfgScoreReading dialog finished for Side reading options except
+    fragments tab options, that requiere to finish DlgPatternEditor.
+    DlgCfgScoreReading Side reading options is
+    not necessary for 3.0 release as single side reading exercises will be replaced by
+    side reading exercises in each lesson. The 'new' single side reading exercise will
+    requiere to have a fragments editor:
+    <ul>
+      <li>DlgCfgScoreReading: Time signatures selection implemented and tested. 
+        ScoreConstrains: Load / save time signature settings implemented and tested.</li>
+      <li>DlgCfgScoreReading: Key signatures selection implemented and tested. 
+        ScoreConstrains: Load / save key signature settings implemented and tested.</li>
+      <li>Bug fixed in lmTheoSideReadingCtrolParms::AnalyzeKeys() causing improper
+        setings when html param value=all</li>
+    </ul>
+      Bug fixed in TheoKeySignCtrol: in reverse problem (ask for number of accidentals)
+       the link 'show solution' did nothing.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">17-feb-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>DlgCfgScoreRedaing dialog finished for Notes reading options. Default
+       settings now taken from html param tags.</li>
+      <li>Some cleaning to prepare beta release:
+        <ul>
+        <li>lmSplash: removed informative text field.</li>
+        <li>lmMainFrame: disabled all menu/toolbar related to unfinished features (notation
+        editor, open/import LDP scores and MusicXML scores).</li>
+        </ul></li>
+      <li>Starting implementation of DlgCfgScoreReading dialog for Side reading options.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">15-feb-06</td>
+    <td class="ListaPar">
+    Continue implementation of DlgCfgScoreRedaing dialog, Notes reading options:
+    <ul>
+      <li>lmTheoSideReadingCtrolParams: modified method CreateHtmlCell() in include
+        constrains verification.</li>
+      <li>lmScoreConstrains: coded methods SaveSettings(), Verify().</li>
+    </ul>
+    The implementation of default settings, based on html params, is more difficult than
+    expected. This will require some thinking.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">14-feb-06</td>
+    <td class="ListaPar">
+    Continue implementation of DlgCfgScoreRedaing dialog, Notes reading options:
+    <ul>
+      <li>lmScoreConstrains: added methods SetMaxNote() and SetMinNote(). Removed
+        methods and variables related to lesson/level.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">13-feb-06</td>
+    <td class="ListaPar">
+    Removing cboMode and chkMetronome from lmTheoSideReadingCtrol:
+    <ul>
+      <li>Remove related variables and methods from lmTheoSideReadingCtrolParms,
+        lmSideReadingCtrolOptions and lmTheoSideReadingCtrol</li>
+      <li>Notes reading exercise added to single exercises book</li>
+    </ul>
+    Coding missing parts to acknowledge min and max pitch params and
+    max interval in Composer5.
+    <ul>
+      <li>Fixed bug in lmTheoSideReadingCtrolParms::AnalyzeClef() causing bad
+        minPitch and maxPitch settings</li>
+      <li>Detected coherence problem: missing upper/lower case in 'normalized'
+        LDP elements. Old normalization was upper case; new normalization is
+        lower case; now some methods expect lower case and others upper case.
+        Reviewed all methods dealing with LDP and source code.</li>
+    </ul>
+    DataBase object removed. No longer needed.
+    <p>Starting to rebuild DlgCfgScoreRedaing dialog.</p>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">12-feb-06</td>
+    <td class="ListaPar">
+    Analyzing parameters for lmTheoSideReadingCtrol to finish this control. Implemented
+    params &quot;control_settings&quot; and &quot;control cboMode&quot;. After some
+    considerations I think cboMode is not necessary: it is a heritage from old lenmus
+    architecture (based on independent exercises) and the need to reuse an VB Forms for
+    different exercises. Now this is not necessary and is not in line with
+    current architecture. Studying how to finally leave this.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">11-feb-06</td>
+    <td class="ListaPar">
+    Migrated lesson 206 to test ternary rhythms. Testing and debugging composer algorithm:
+    <ul>
+      <li>Fixed bug in LDPNoteTypeToDuration()</li>
+      <li>Composer5: Added methods CreateNoteRest(), CreateRest() and CreateFinalMeasure()</li>
+      <li>Fixed bug in lmNoteRest::AddMidiEvents() causing bad MIDI event generation in tied notes.
+       Method IsTiedToPrev() added to Note.h</li>
+      <li>Fixed bug in lmScoreCtrol::Play() causing metronome settings not being taken into account.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">9-feb-06</td>
+    <td class="ListaPar">
+    Improving composer algorithm to optimize segment insertion:
+    <ul>
+      <li>Score.h: added enum ENotesDuration</li>
+      <li>Composer5: added methods AddSegment() and CreateNote(). Testing.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">8-feb-06</td>
+    <td class="ListaPar">
+    Continue implementation of new composer algorithm:
+    <ul>
+      <li>ScoreConstrains: finishing classes for segments and reviewed code for fragaments</li>
+      <li>Composer5: implement the new algorithm. Starting testing.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">7-feb-06</td>
+    <td class="ListaPar">
+    Starting implementation of new composer algorithm:
+    <ul>
+      <li>AuxString: added methods SrcSplitPattern(), SrcGetPatternDuracion()</li>
+      <li>ScoreConstrains: implementing classes for segments</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">6-feb-06</td>
+    <td class="ListaPar">
+    Review and document algorithm for composer object. Design a new algorithm to take
+    into account beat alignment and barline aligment constrains. 
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">5-feb-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>Continue implementation of DlgPatternEditor.</li>
+      <li>Looking for bugs in Composer5.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">3-feb-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>Reviewed and modified documentation in mainpage of doxygen documentation and 
+        related pages.</li>
+      <li>Reviewing and documenting params for html ScoreCtrol and SideReadingCtrol, in order
+        to finish the implementation and fixing anything related to this before 
+        finishing the conversion of old level 2 side reading book and starting the conversion
+        of other books.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">2-feb-06</td>
+    <td class="ListaPar">
+    Implementation of metronome check box for SideReadingCtrol:
+    <ul>
+      <li>Reviewing and documenting how metronome works. As metronome implementation is
+      different from LenMus 2.0 version, now it is more user intuitive and everything is
+      controlled from the main toolbar metronome settings. Therefore the metronome check
+      box is no longer needed in SideReadingControl.</li>
+      <li>lmTheoSideReadingCtrolParms: removed code to deal with param 'control metronome'</li>
+    </ul>
+    Reviewing and documenting params for html ScoreCtrol and SideReadingCtrol, in order
+    to finish the implementation and fixing anything related to this before 
+    finishing the conversion of old level 2 side reading book and starting the conversion
+    of other books.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">1-feb-06</td>
+    <td class="ListaPar">
+    'Go back to theory' link implemented and operative:
+    <ul>
+      <li>lmSideReadingCtrolOptions: added variables fGoBackLink and sGoBackURL.
+        Added method SetGoBackURL()</li>
+      <li>lmTheoSideReadingCtrolParms: added param 'control_go_back'</li>
+      <li>lmTheoSideReadingCtrol: layout revised to reduce unused space.
+        Added optional link "Go back to theory". Method OnGoBackButton() implemented</li>
+    </ul>
+    </td></tr>
+</table>
+
+<h2><a name="Jan06">January 2006</a></h2>
+<a href="#top">Go to top of document</a>
+<table class="Lista" ID="Table1">
+<tr valign="top">
+    <td class="ListaImpar">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td class="ListaImpar">Changes<p>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">31-jan-06</td>
+    <td class="ListaPar">
+	  Implementing a method to jump to a sideReading dialog customized for the needs
+	  of a lesson:
+    <ul>
+      <li>Successful tests using internal links.</li>
+      <li>lmHtmlWindow::OnLinkClicked() modified to include a new internal link type: LenMusEmbedded.</li>
+      <li>Test example now operative.</li>
+    </ul>
+    Now studying how to implement the link 'Go back to theory'
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">30-jan-06</td>
+    <td class="ListaPar">
+      DlgPatternEditor implementation suspended. Preparing level 2 score side reading
+      exercises:
+      <ul>
+        <li>Starting conversion of old level 2 side reading book. Splitted into
+        pages. Tags changed. Reviewing score control.</li>
+        <li>lmScoreCtrolOptions: added flag fMusicBorder to control border around music.
+        Added option &lt;param name="music_border" value="0 | 1" &gt; to 
+	      lmScoreCtrolParams::AddParam() (in Tags.cpp)</li>
+	      <li>Adjusted the positioning and margins of ScoreCtrol. Test example now 
+	      operative.</li>
+      </ul>
+      Embbeding a SideReadingCtrol in side reading books is not a good solution as normally
+	    there are two or more exercises associated to a lesson. So, as in version 2 behaviour,
+	    it is necessary to jump to a sideReading dialog customized
+	    according exercises needs; and this dialog must have a "return to theory" link.
+	    Starting to think about the best way to implement this.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">26-jan-06</td>
+    <td class="ListaPar">
+      For free Side Reading exercises, the user must be able to set up the rhythmic patterns
+      she/he would like to practise. In the previous version this was implemented by choosing
+      patterns from a graphical list. The problem is that list grew too much. For this new version
+      I will implement a rhythmic patterns editor, so the user can easliy enter the patterns
+      to practise.<br /><br />
+      Implementing DlgPatternEditor. Provisionally invoked from debug menu.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">25-jan-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>TheoIntervalsConstrains:
+        <ul>
+          <li>Implementation of load/save settings finished.</li>
+          <li>Internationalization of button headings and labels.</li>
+          <li>Layout reviewed to reduce page height so that it now fits in display (1024x768)</li>
+        </ul></li>
+        <li>TheoScalesCtrol: width of score sub-control enlarged: the scale did not fit when an 
+        accidental in each note.</li>
+        <li>Starting to review ScoreReading settings</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">23-jan-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Implementation of DlgCfgTheoIntervals finished.</li>
+        <li>Implementing TheoIntervalsConstrains load/save settings.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">20-jan-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Implementation of EarIntervalsConstrains load/save settings finished.
+          The key name included as a parameter in lmEarIntvalConstrains constructor</li>
+        <li>Methods FirstNoteEqual() and SetFirstNoteEqual() added to 
+          EarIntvalConstrains.</li>
+        <li>Implementation of settings for Ear compare exercises finised.</li>
+        <li>Theo Intervals configuration: link "settings" created. Created XML layout for
+          DlgCfgTheoIntervals. Created the .cpp and h files. Dialog linked to program.
+          Now working in the implementation of DlgCfgTheoIntervals.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">19-jan-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Name of global constants defined in score.h changed from XXXXXX to lmXXXXXXX.</li>
+        <li>Implementation of DlgCfgEarIntervals finished.</li>
+        <li>Starting implementation of EarIntervalsConstrains load/save settings.</li>
+        <li>Implementation of settings for Ear Interval exercises finised.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">18-jan-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Continue implementation of DlgCfgEarIntervals.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">17-jan-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Link 'Reset counters' hidden in EarCompareIntvCtrol, EarIntervalsCtrol,
+          TheoIntervalsCtrol and TheoKeySignCtrol. The link is usseles until 
+          answer counters implemented.</li>
+        <li>EarIntervalsCtrol: Width of answer buttons reduced to 100px</li>
+        <li>Continue implementation of DlgCfgEarIntervals.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">16-jan-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Icon names standard finished. Icons renamed.</li>
+        <li>TextBookController:
+        <ul>
+          <li>Toolbar re-created when toolbar settings changed. Methods CreateMyToolBar()
+            and UpdateToolbarsLayout()</li>
+          <li>Button names shown/hiden according toolbar options settings.</li>
+          <li>Initial state of toolbar button 'Index' (TextBookController) now synchronized
+            to real state shown. It always started pressed.</li>
+        </ul></li>
+        <li>toolbar option &quot;icon size: large&quot; disabled in 3.0 version as large icons set
+        is not yet created.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">2-jan-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>LangOptionsPanel changed to use XML resources.</li>
+        <li>Created icons for all options. Size 24x24 finally choosen.</li>
+        <li>All options panels reviewed to include title and icon.</li>
+        <li>ColorsOptPanel removed from current version (commented out in OptionsDlg) as
+        is not yet operative.</li>
+      </ul>
+    </td></tr>
+</table>
+
+<h2><a name="Dec05">December 2005</a></h2>
+<a href="#top">Go to top of document</a>
+<table class="Lista">
+<tr valign="top">
+    <td class="ListaImpar">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td class="ListaImpar">Changes<p>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">26-dec-05 </td>
+    <td class="ListaPar">
+      <ul>
+        <li>Class IntervalConstrains removed. It is better not to integrate configuration options
+        for ear exercises and theory exercises as the requirements are different. For example,
+        in ear exercises key signature is importants but for theory exercises it is better to
+        choose if accidentals and double accidentals are allowed.</li>
+        <li>EarIntervalsControl: settings link added. DlgCfgEarIntervals invoked.</li> 
+        <li>Filling details in DlgCfgEarIntervals: veto tab change if errors in current
+        tab data. Solving how to show errors. Implementing all this for notes range.</li>
+      </ul> 
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">23-dec-05 </td>
+    <td class="ListaPar">
+      Studying how to integrate interval exercises options (ear and theory).
+      Class IntervalConstrains created. 
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">22-dec-05 </td>
+    <td class="ListaPar">
+      Integration DlgCfgEarIntervals into the program
+      <ul>
+        <li>TheoIntervalsControl: settings link added. DlgCfgEarIntervals invoked.</li> 
+        <li>AuxString: Added global method LoadCboBoxWithNoteNames().</li>
+        <li>Note: added global method GetNoteNamePhysicists().</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">21-dec-05 </td>
+    <td class="ListaPar">
+      <ul>
+        <li>Comment out all wxLogMessages left by.</li>
+        <li>Create DlgCfgEarIntervals dialog.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">20-dec-05 </td>
+    <td class="ListaPar">
+      Tracing memory leaks. Problem not solved. It happends when the ScoreAuxCtrol
+      is resized. It is something as consecuence of invoking score->Draw() but I
+      could not continue. Problem marked as pending.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">19-dec-05 </td>
+    <td class="ListaPar">
+      <ul>
+        <li>Fixed bug affecting lmScoreAuxCtrol: it does not resize the score when
+        the window is resized.
+          <ul>
+            <li>TheoSideReadingCtrol: Added Expand option to score sizer.</li>
+            <li>lmPaper: setting flag m_fRedraw in method SetPageSize().
+            Method Prepare() now re-creates the bitmaps also if paper size has changed.</li>
+            </ul>
+            The problem is now solved but now I have memory leaks!!
+           </li>
+        <li>DlgCfgScoreReading: starting with personal options.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">16-dec-05 </td>
+    <td class="ListaPar">
+      <ul>
+        <li>Menu bar: added incons for MSW and GTK+ builds (MAC does not support this).</li>
+        <li>Fixed bug: Help/Content menu item now syncronized with OpenHelp toolbar button
+         and with help controller display status.</li>
+        <li>Fixed hand cursor in UrlAuxCtrol. It was modified by wxWidgets 2.6.2</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">15-dec-05 </td>
+    <td class="ListaPar">
+      <ul>
+        <li>Toolbar: added options button. Fixed tool tips and tool types.</li>
+        <li>NavigationToolbar: test to move out this toolbar from TextBookController.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">13-dec-05 </td>
+    <td class="ListaPar">
+      <ul>
+        <li>Test to use wxIFM to implement draggable & dockable toolbars.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">12-dec-05 </td>
+    <td class="ListaPar">
+      <ul>
+        <li>Upgrade to wxWidgets 2.6.2.</li>
+        <li>Finding alternatives to implement draggable & dockable toolbars.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">10-dec-05 </td>
+    <td class="ListaPar">
+      <ul>
+        <li>Splash: test to insert a text field for informational messages.</li>
+        <li>TheApp: controlling ellapsed time since splash shown and not finishing
+          app. initialization until the splash minimum display time is ellapsed.</li>
+        <li>NavigationToolbar: test to move out this toolbar from TextBookController.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">9-dec-05 </td>
+    <td class="ListaPar">
+      <ul>
+        <li>OptionsDlg: returning to creating the dialog programatically, not by XML resources.
+          This dialog is very simple and if I use
+          XML I have problems with the panels, so better not to spend more time with this.</li>
+        <li>ToolbarsOptPanel implemented with XML resources and operative.</li>
+        <li>lmMainFrame: added method UpdateToolbarsLayout() to update
+          toolbars inmediately after user changing the options.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">8-dec-05 </td>
+    <td class="ListaPar">
+      Looking for icons. Designing and adapting. Preparing icons in png format.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">7-dec-05 </td>
+    <td class="ListaPar">
+      Including new icons
+      <ul>
+        <li>Replacing BMP format. Bitmaps removed from .rc file</li>
+        <li>lmArProvider modified to support PNG format and to allow for different icon sizes.</li>
+        <li>lmPaths modified to include &quot;images&quot; folder.</li>
+        <li>Change in TheoScalesCtrol to shift scale depending on clef.</li>
+        <li>TextBookFrame: method AddToolbarButtons() modified to include a parameter for
+        icon sizes. Method Create() now sets the size according to user preferences.</li>
+        <li>OptionsDlg: starting changes to: 1) use lmArtProvider; 2) to use XML resources to
+          create the dialog and the panels; and 3) to include Toolbars preferences.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">6-dec-05 </td>
+    <td class="ListaPar">
+      Looking for icons. Designing and adapting. Preparing icons in png format.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">5-dec-05 </td>
+    <td class="ListaPar">
+      Preparing a shaped splash image with shadows and testing it. Minor changes to
+      support a shaped image in TheApp.cpp
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">2-dec-05 </td>
+    <td class="ListaPar">
+      Code fixed in lmKeySignature::SetKeySignature() that caused a bug in score exercises.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">1-dec-05 </td>
+    <td class="ListaPar">
+      Reviewing the update of menu and toolbar status to use UpdateUI events:
+      <ul>
+        <li>SetOpenBookButton() changed. Event handler OnOpenBookUI() added.</li>
+        <li>SetOpenHelpButton() changed. Event handler OnOpenHelpUI() added.</li>
+      </ul>
+    </td></tr>
+</table>
+
+<h2><a name="Nov05">November 2005</a></h2>
+<a href="#top">Go to top of document</a>
+<table class="Lista">
+<tr valign="top">
+    <td class="ListaImpar">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td class="ListaImpar">Changes<p>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">30-nov-05 </td>
+    <td class="ListaPar">
+      Reestructuring main menu: Adding &quot;View toolbars&quot; and &quot;View status bar&quot;
+      menu items and their implementation:
+      <ul>
+        <li>RecreateToolbar() method renamed to CreateMyToolBar(). Method DeleteToolBar() added.
+          Event handler OnToolbarUI() added.</li>
+        <li>Methods CreateMyStatusBar() and DeleteStatusBar() added.
+          Event handler OnStatusbarUI() added.</li>
+        <li>Problems detected with SetOpenBookButton() and UpdateMenuAndToolbar(); commented
+          out and starting to review and re-structure this.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">29-nov-05 </td>
+    <td class="ListaPar">
+      <ul>
+        <li>Reviewing all to systematically use lmArtProvider. The main changes are
+          in MainFrame::CreateMyToolBar().</li>
+        <li>Application icon added. Some icons in BookController replaced</li>
+        <li>Tests to customize TextBookController toolbar.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">28-nov-05 </td>
+    <td class="ListaPar">
+      <ul>
+        <li>A shaped splash window implemented:
+          <ul>
+          <li>Class lmSplashFrame created and implemented.</li>
+          <li>TheApp.cpp modified to show the splash.</li>
+          </ul></li>
+        <li>Starting the implementation of lmArProvider to centralize all icons and bitmaps
+          management and to override standard wxWidgets icons when desired</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">24-nov-05 </td>
+    <td class="ListaPar">
+      Fixing things to prepare 3.0 alpha 1 release.
+        <ul>
+        <li>Previous day solution to problem detected for including links to other book
+          not working fine: new problems found. A provisional solution implemented but,
+          probably, i will have to code my own text book controlling.</li>
+        <li>With this I close alpha 1 release.</li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">23-nov-05 </td>
+    <td class="ListaPar">
+      Fixing things to prepare 3.0 alpha 1 release.
+        <ul>
+        <li>Open &quot;Introduction&quot; book at program start.</li>
+        <li>Starting to prepare alpha release books. Problem detected to jump from one
+          book to another. Solutions analyzed and, finally, one programmed.</li>
+        <li>For development, books will be organized into folders, one folder per book.
+          lmMainFrame::InitializeBooks() modified to search for books in subfolders when
+          a development version detected.</li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">22-nov-05 </td>
+    <td class="ListaPar">
+      Fixing things to prepare 3.0 alpha 1 release.
+        <ul>
+        <li>Menu and ToolBar: Buttons 'open book' and 'open help' synchronized with menu items.
+          Toggle status synchronized with real display status even when the help/book window
+          is directly closed. Need to create class lmHelpController, derived from
+          wxHtmlHelpController, to override virtual member OnQuit() so that the application
+          gets informed if the help window is directly closed.</li>
+        <li>Update the menu items and toolbar controls when the active window changes,
+          so that they are correctly enabled/disabled:
+          <ul>
+          <li>lmMainFrame::UpdateMenuAndToolbar() implemented. Method EnableMenuItems() removed.</li>
+          <li>OnActivate() handler implemented in lmEditFrame and lmTextBookFrame.</li>
+          <li>TheApp:CreateProjectFrame(): remove creation of menubar for MDIChild frames.</li>
+          </ul></li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">21-nov-05 </td>
+    <td class="ListaPar">
+      Fixing things to prepare 3.0 alpha 1 release.
+        <ul>
+        <li>Tuples: LDPParser modified to deal with tuplets in G elements. LDP manual modified
+          to document G and T notations.</li>
+        <li>Menu: item revised. Removed those not used by now.</li>
+        <li>Toolbar: removed zoom combo. Fixed 'open book' button so that it closes the book
+          opened when toggled.</li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">17-nov-05 </td>
+    <td class="ListaPar">
+        <ul>
+        <li>Ties: algorithm to compute the tie reviewed and completed to take into account
+          tie splitting when the tie continues in next system. Algorithm documented.</li>
+        <li>Notes: information about glyphs now stored in a table. Selecction rectangles, heighs and
+          offsets fixed. Bad selection rectangle information caused mispositionement of ties in
+          eight notes.</li>
+        <li>Starting to study the problem of splitting a beam when the group continues
+          in the next system. Some test code for this added to Beam.cpp.</li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">16-nov-05 </td>
+    <td class="ListaPar">
+        <ul>
+        <li>Beamed groups: algorithm to compute and trim stem heights in groups reviewed,
+          completed and documented. Height of stems now ok.</li>
+        <li>Bug fixed in LDPParser::AnalyzeNote() that caused reversed eBeamForward and
+          eBeamBackward lines.</li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">15-nov-05 </td>
+    <td class="ListaPar">
+        Continue with support for lessons in html:
+        <ul>
+        <li>Parameters for lmTheoSideReadingCtrol parsed.</li>
+        <li>lmScoreConstrains modified to include
+          the fragments table, as well as all necessary parameters.</li>
+        <li>Composer5 modified to use only lmScoreConstrains.</li>
+        <li>DataBase not used now.</li>
+        <li>Definition of a book for score reading, level 5, started to test usability.</li>
+        </ul>
+        Now I will continue finishing things in score renderization:
+        <ul>
+        <li>LDP parser: added check and error message for bad syntax in groups.</li>
+        <li>Starting with trimming stems in groups.</li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">14-nov-05 </td>
+    <td class="ListaPar">
+        <ul>
+        <li>Continue with DataBase and Composer5. Bug fixed in
+        lmLessonsTimeSignsTable::LoadTimeSignsForLesson(): the first entry was
+        ignored.</li>
+        <li>After some analysis, it is not clear if DataBase and ini files are necessary.
+    In the eMusicBooks system, each level/lesson is defined by an html object tag, with
+    all the necessary parameters. Therefore, DataBase and ini files seem to be unnecessary
+    and seem to be a relic inherited from version 1.
+    So, I will stop further DataBase migration (although it is practically finished, except
+    the key signatures table) and I will continue defining lessons in html:
+        <ul>
+        <li>Defined param structure for lmTheoSideReadingCtrol. Now implementing param analysis.</li>
+        <li>Class lmSideReadingCtrolOptions defined.</li>
+        </ul></li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">11-nov-05 </td>
+    <td class="ListaPar">
+        DlgCfgScoreReading finished (level and lesson settings). ScoreConfig settings
+        saved to user profile. Starting loading Lessons-Clefs-Scope table in lmDataBase and using
+        it in Composer5:
+        <ul>
+        <li>AuxString: added global function LDPNameToClef(). LDPParser::AnalyzeClef() modified
+          to use this function.</li>
+        <li>lmClefConstrain modified to include pitch scope.</li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">10-nov-05 </td>
+    <td class="ListaPar">
+        DlgCfgScoreReading combo box and spin control loaded with database strings.
+        ScoreConfig settings now modified in previous dialog.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">8-nov-05 </td>
+    <td class="ListaPar">
+        Coding dialog to set options for score generation (DlgCfgScoreReading):
+        <ul>
+        <li>Designing and maintaining dialogs by hand is too time consuming. So I have
+        looked for alternatives and I am going to study and test the XRC system. I will do
+        the tests with this new dialog lmDlgCfgScoreReading.</li>
+        <li>XRC is great! I will use it with all the dialogs. Folder xrc created and DialogBlocks
+        project created. Skeletons for MidiWizard and OptionsDlg created.</li>
+        <li>lmPaths: added GetXrcPath().</li>
+        <li>DataBase: Classes lmLessonNamesTable and lmLessonNamesEntry created. Lesson names
+        loaded from ini file.</li>
+        <li>Testing initializing DlgCfgScoreReading combo box with lesson names.</li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">4-nov-05 </td>
+    <td class="ListaPar">
+        Debug and finish Lessons-Fragments. Starting to add the 'settings' link to
+        Score side reading exercise.
+        <ul>
+        <li>lmPatternsTable: fix bugs in SelectRows() and ChooseRandom().</li>
+        <li>TheoSideReading: added combo to choose mode setting and link to open settings dialog.</li>
+        <li>Starting skeleton for settings dialog (DlgCfgScoreReading).</li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">3-nov-05 </td>
+    <td class="ListaPar">
+        Load of lmDataBase Lessons-TimeSignatures table finished. Continue with procedures to load
+        other tables: starting with Lessons-Fragments. Modifying Composer5 to use level and
+        lesson settings. Finishing lmScoreConstrains to add all constrains needed; methods in
+        lmDataBase to set up constrains according to level and lesson. Other:
+        <ul>
+        <li>lmPaths: added GetDataPath().</li>
+        <li>lmTimeSignMask replaced by lmTimeSignConstrains object. Related methods moved
+            to lmTimeSignConstrains object.</li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">2-nov-05 </td>
+    <td class="ListaPar">
+        Memory leaks problem solved. Now loading lmDataBase from .ini initialization files.
+        Starting with Lessons-TimeSignatures.
+        <ul>
+        <li>lmDataBase: Table Lessons-TimeSignatures defined.</li>
+        <li>lmDataBase: methods LoadFile() and AnalyzeLine() skeleton coded. Testing.</li>
+        <li>lmPaths: added GetBinPath().</li>
+        </ul>
+    </td></tr>
+</table>
+
+<h2><a name="Oct05">October 2005</a></h2>
+<a href="#top">Go to top of document</a>
+<table class="Lista">
+<tr valign="top">
+    <td class="ListaImpar">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td class="ListaImpar">Changes<p>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">31-oct-05 </td>
+    <td class="ListaPar">
+        Continue writting the LDP language reference manual and prepare upload to website.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">28-oct-05 </td>
+    <td class="ListaPar">
+        Continue writting the LDP language reference manual.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">27-oct-05 </td>
+    <td class="ListaPar">
+        Documentation: Starting to translate and review the LDP language reference manual.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">25-oct-05 </td>
+    <td class="ListaPar">
+        Continue with Composer5 and related methods to generate scores:
+        <ul>
+        <li>Composer algorithm modified not to use beats but measure duration.</li>
+        <li>TimeSignature.cpp/.h: Added global functions GetBeatDuration() and GetMeasureDuration()</li>
+        <li>NoteRest.cpp/.h: Added global functions LDPNoteTypeToEnumNoteType(),
+            LDPNoteTypeToDuration() and NoteTypeToDuration().</li>
+        <li>LDPParser.cpp: Modified GetDefaultDuration() to use NoteTypeToDuration()</li>
+        <li>AuxString.cpp/.h: Added global function SrcGetElementDuracion()</li>
+        <li>DataBase.cpp/.h: Modified to be a singleton. Methods to deal with beats changed to
+            deal with elements.</li>
+        <li>Changes operative but memory leaks detected.</li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">24-oct-05 </td>
+    <td class="ListaPar">
+        Continue with Composer5 and related methods to generate scores:
+        <ul>
+        <li>Problems to aling patterns detected. The algorithm is reviewed and version 2 was
+            programmed and tested. Instead of generating beats, the main loop is now
+            organised around generating measures. Now patterns can be musical phrases
+            instead of full measures. If necessary, patterns may contain barline alignment
+            information. </li>
+        <li>All this programmed and tested. Result OK</li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">21-oct-05 </td>
+    <td class="ListaPar">
+        Continue with Composer5 and related methods to generate scores:
+        <ul>
+        <li>skeleton of lmDataBase operative. Data not loaded from files but inline for testing. </li>
+        <li>InstantiateNotes(). Bug fixed: need to repeat the same note if the previous one
+            is tied.</li>
+        <li>lmLDPParser::AnalyzeRest(): Fix code to include a rest inside a beamed group.</li>
+        <li>Method GetNumBeatsFromTimeSignType() moved from lmConverter to lmTimeSignature.
+            Added two new global functions: GetBeatTypeFromTimeSignType() and
+            GetNumUnitsFromTimeSignType().</li>
+        <li>Added constructor to lmTimeSignature from enum time sig.; added method to VStaff
+            using this constructor.</li>
+        <li>Defined a 'Time signature mask' for selecting patterns; this also solves the
+            problem of pattern alignment. Method lmDataBase::CreateMask() added.</li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">20-oct-05 </td>
+    <td class="ListaPar">
+        Composer5: First version, including note generation and instantation is ready. Starting tests.
+        <ul>
+        <li>lmConverter: added methods MidiPitchToPitch(), MidiPitchToLDPName() and PitchToLDPName().</li>
+        <li>AuxString.cpp: method LDPDataToPitch() modified to take MIDI data into account.</li>
+        <li>lmLDPParser: method AnalyzeNote() modified to take MIDI data into account.</li>
+        <li>Starting to code DataBase.cpp/.h  </li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">19-oct-05 </td>
+    <td class="ListaPar">
+        <ul>
+        <li>lmNote: fixed bug: dots not drawn because dot radius was in physical units.</li>
+        <li>lmLDPParser: changed some messages that where in Spanish</li>
+        <li>lmConverter: Method GetNumBeatsFromTimeSignType() added</li>
+        <li>lmComposer5: Algorithm revised and documented. Main loop coded and tested. Pattern generation tested. Note generation and instantiation not finished; problems with instantiation: LDP parser bug?  </li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">18-oct-05 </td>
+    <td class="ListaPar">
+        <ul>
+        <li>Added class lmComposer4 with a dummy methods to generate measures.</li>
+        <li>lmGenerator: method GeneratePitch() renamed as GenerateRandomPitch().</li>
+        <li>LDPParser: Modified method AnalyzeNote() to generate automatically the beaming information.</li>
+        <li>Added methods GetNoteType() and SetBeamType() to lmNoteRest</li>
+        <li>Beams drawing algorithm revised to deal with forward and backward hooks. Methods DrawBeamSegment() and ComputeYPosOfSegment() added.  </li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">17-oct-05 </td>
+    <td class="ListaPar">
+        <ul>
+        <li>Adding Score Side Reading exercises; created clases lmTheoSideReadingCtrol and lmTheoSideReadingCtrolParms. Abstract class lmObjectParams extracted from Tags.cpp and moved to a file. Created class lmScoreConstrains.</li>
+        <li>score.h : add range (lmMIN_TIME_SIGN, lmMAX_TIME_SIGN) in ETimeSignature</li>
+        <li>Constrains.cpp, .h : add lmTimeSignConstrains</li>
+        <li>Generator.cpp,.h : add GenerateTimeSign() and RandomTimeSignature()</li>
+        <li>Added lmComposer abstract class and lmComposer5 class (just skeleton; returns a constant score for testing).  </li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">13-oct-05 </td>
+    <td class="ListaPar">
+        <ul>
+        <li>TheApp:
+    <ul>
+    <li>Fix bug: changed calls to CreateMenuBar to honor gReleaseVersion flag</li>
+    <li>gReleaseVersion value automatically set from preprocesor constant</li>
+    </ul></li>
+        <li>Paths: temp folder chaged to 'temp'</li>
+        <li>Fix bug: create temp folder if it does not exist. Otherwise the program will fail when the user tries to open an eMusicBook</li>
+        <li>EarIntervalsCtrol: Do not start automatically the first exercise. Wait for user clicking on 'new problem'</li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">4-oct-05 </td>
+    <td class="ListaPar">
+        <ul>
+        <li>Fix bug in SoundManager: need to sort events also by measure number and to give priority to VISUAL_OFF events</li>
+    </ul>
+    </td></tr>
+</table>
+
+<h2><a name="Sep05">September 2005</a></h2>
+<a href="#top">Go to top of document</a>
+<table class="Lista" ID="Table2">
+<tr valign="top">
+    <td class="ListaImpar">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td class="ListaImpar">Changes<p>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">29-sep-05 </td>
+    <td class="ListaPar">
+        <ul>
+        <li>Key Signatures exercise finished</li>
+        <li>Dialog AboutDialog revised and finished.  </li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">22-sep-05 </td>
+    <td class="ListaPar">
+        <ul>
+        <li>Ear compare intervals exercise finished</li>
+        <li>Implementation of Key Signatures exercise started:
+            <ul>
+            <li>Classes lmTheoKeySignCtrol and lmTheoKeySignConstrains created</li>
+            <li>html objects of type="Application/LenMusTheoKeySignatures" implemented</li>
+            <li>Class lmTheoKeySignCtrolParms created  </li>
+            </ul></li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">21-sep-05 </td>
+    <td class="ListaPar">
+        <ul>
+        <li>lmVStaffAddKeySignature: alternative constructor from EKySignature added.</li>
+        <li>lmKeySignature: new global method KeySignatureToNumFifths()</li>
+        <li>Class lmEarIntervalsConstrains finished.</li>
+        <li>Class lmRandomGenerator: method FlipCoin() added</li>
+        <li>Class lmEarCompareIntvCtrol added and implemented. Ready for final tests</li>
+        <li>html objects of type="Application/LenMusEarCompareIntervals" included</li>
+        <li>Class lmEarCompareIntvCtrolParms created  </li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">20-sep-05 </td>
+    <td class="ListaPar">
+        <ul>
+        <li>lmEarIntervalsConstrains implemented. Initialization with default values is done in constructor.</li>
+        <li>lmScoreAuxCtrol: added methods SetScore() and HideScore()</li>
+        <li>lmIntervals: Added constructor to build interval from constrains</li>
+        <li>lmConverter: added PitchToMidiPitch() and IsNaturalNote() methods</li>
+        <li>Class lmEarIntervalsConstrains now operative. It is necessary to do final tests and cleaning.  </li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">19-sep-05 </td>
+    <td class="ListaPar">
+        <ul>
+        <li>Class lmEarIntervalsConstrains created</li>
+        <li>Firts test of an embeded object of class LenMusEarIntervals  </li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">16-sep-05 </td>
+    <td class="ListaPar">
+        <ul>
+        <li>lmSoundmanager. Bug solved: when playing measure #1 it plays one extra note.</li>
+        <li>lmTheoIntervalsCtrol: added debugging methods and links.</li>
+        <li>lmEarIntervalsCtrol: starting its coding  </li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">15-sep-05 </td>
+    <td class="ListaPar">
+        <ul>
+        <li>Review lmScoreCtrol to finish it</li>
+        <li>lmSoundmanager: added PlayMeasure.</li>
+        <li>lmSoundManager: measures table computed.</li>
+        <li>lmUrlAuxCtrol: modified to have two labels: normal and alternative</li>
+        <li>lmScoreAuxCtrol: method PlayMeasure added.</li>
+        <li>lmScore: method PlayMeasure added.  </li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">13-sep-05 </td>
+    <td class="ListaPar">Included standard documentation headers for all files. Changed Tabs by Spaces. Class names changed to have prefix "lm". Prefix "sb" replaced by "lm"..
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">12-sep-05 </td>
+    <td class="ListaPar">Included standard documentation headers for all files in folder src..
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">7-sep-05 </td>
+    <td class="ListaPar">Starting to organise documentation and to document for Doxygen. Tags TODO and LIMITS replaced. Change log reformatted..
+    </td></tr>
+</table>
+
+<h2><a name="Aug05">August 2005</a></h2>
+<a href="#top">Go to top of document</a>
+<table class="Lista" ID="Table3">
+<tr valign="top">
+    <td class="ListaImpar">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td class="ListaImpar">Changes<p>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">25-aug-05</td>
+    <td class="ListaPar">Dialog to show error messages while importing a MusicXML file. Menu: include debug option to select trace masks to use.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">24-aug-05</td>
+    <td class="ListaPar">Class lmLogger created. File DataError.log is now created and all XML parsing errors are written there.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">22-aug-05</td>
+    <td class="ListaPar">Crash on closing application solved. It happend only when the scoreview is closed before closing the application and was causes because the OnClose event of the frame (lmEditFrame) does not propagate to the base class wxDocMDIChildFrame.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">21-aug-05</td>
+    <td class="ListaPar">Created event End_Of_Play. A handler implemented in TheoScoreCtrol in order to change "Sop playing" label.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">20-aug-05</td>
+    <td class="ListaPar">Implemented OnScoreHighlight event handler for lmScoreAuxCtrol. lmMetronome object created. The mess of all global metronome flags eliminated. Play /Stop play labels toggled in TheoScaleCtrol class and operative.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">19-aug-05</td>
+    <td class="ListaPar">Methods for Play, Stop and Pause implemented (Resume is implicit in Play if the score is paused). SounManagerThread properly terminated. Implemented list of highlighted scoreobjs so that all highlight is removed if score playing is stopped.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">18-aug-05</td>
+    <td class="ListaPar">PlaySegment running ok in an independent thread. Visual highlihgt implemented with an event. Parameter pPaper removed from Play() methods as paper's DC (created in scoreView::Play() ) is not valid and then pPaper is useless. Now DC is created in the scoreView::OnScoreHiglight method.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">15-aug-05</td>
+    <td class="ListaPar">PlayScore parameters review finished. lmTheoScalesCtrol and lmTheoIntervalsCtrol now play at a proper metronome rate. Global flag g_ShowDebugLinks created. Debug methods added to lmScoreAuxCtrol. lmTheoScalesCtrol and lmTheoIntervalsCtrol modified to use debug links. lmSoundManagerPlaySegment() moved to an independent thread. This works to solve the main GUI freezing problem but now a new problem appears: it is not possible to update the GUI from the thread. wxWidgets documentation (topic: Topic overview: Multithreading overview) explains that this).
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">14-aug-05</td>
+    <td class="ListaPar">Problem solved: Play score does not play first instrument (only plays the piano part) in score "Four reveries sample"). The problem was in lmSoundManagerAppend due to a bad usage of Alloc(). Also a time rounding problem was solved. Parameters added to method lmScoreAuxCtrolPlayScore. Starting to review parameters in several places and Play() mehods.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">13-aug-05</td>
+    <td class="ListaPar">lmPaths and the program, in general, assumed unix or win32 syntax rules for paths and file names. This will no work for other platforms with diferent syntax rules. So I have reviewed the program and change code to use object wxFileName for dealing with path and file names. Some colors changed to use lmColors.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">12-aug-05</td>
+    <td class="ListaPar">Paths revised to use lmPaths object.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">11-aug-05</td>
+    <td class="ListaPar">Options dialog operative. Language selection operative.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">10-aug-05</td>
+    <td class="ListaPar">Continue with options dialog. Module lmPaths and Languages created. lmColors moved to folder globals. Internationalization tested and working.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">09-aug-05</td>
+    <td class="ListaPar">Basic architecture for options selection created (classes lmOptionsDlg, lmOptionsPanel and two test panels: lmLangOptionsPanel &amp; lmColorsOptPanel) and tested.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">08-aug-05</td>
+    <td class="ListaPar">Starting with Internationalization (set up language and catalogs; choose language in first run).
+    </td></tr>
+</table>
+
+<h2><a name="Jul05">July 2005</a></h2>
+<a href="#top">Go to top of document</a>
+<table class="Lista" ID="Table4">
+<tr valign="top">
+    <td class="ListaImpar">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td class="ListaImpar">Changes<p>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">26-jul-05</td>
+    <td class="ListaPar">Minor changes to adapt to chages in wxMidi interface.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">15-jul-05</td>
+    <td class="ListaPar">lmTheoScalesCtrol finished and operative.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">14-jul-05</td>
+    <td class="ListaPar">Tags.cpp modified to implement dealing with &lt;object type="Application/LenMusTheoScales"&gt;. Object lmColors created to avoid inconsistencies, and to allow user preferences.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">13-jul-05</td>
+    <td class="ListaPar">Visual higlight when playing a score implemented. This will have to be reviewed when multipage scores. Skeleton for lmTheoScalesCtrol and lmTheoScalesConstrains created.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">12-jul-05</td>
+    <td class="ListaPar">lmMidiWizard: added metronome settings.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">11-jul-05</td>
+    <td class="ListaPar">Simultaneous metronome operative. I have modified lmVStaffComputeMidiEvents() to generate RithmChange MIDI events, implement this in lmSoundManager and, finally, complete metronome in lmSoundManager.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">08-jul-05</td>
+    <td class="ListaPar">Independent metronome operative. Current settings saved and restored when the program is exit / run again.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">07-jul-05</td>
+    <td class="ListaPar">Adding metronome controls to toolbar.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">06-jul-05</td>
+    <td class="ListaPar">Created lmScoreCtrol with all needed sub-controls. Recoded Tags.cpp to use it. Created lmScoreCtrolOptions class.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">05-jul-05</td>
+    <td class="ListaPar">Analyzed and defined the structure of URLs to implement commands for embedded objects in a book (but probably will not be used as consequence of following item). Analyzed the architecture for html ctrols.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">04-jul-05</td>
+    <td class="ListaPar">Notes duration issue (different if LDP than if XML) fixed.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">01-jul-05</td>
+    <td class="ListaPar">Play score operative. Clarifying notes duration issue: different if LDP than if XML !.
+    </td></tr>
+</table>
+
+<h2><a name="Jun05">June 2005</a></h2>
+<a href="#top">Go to top of document</a>
+<table class="Lista" ID="Table5">
+<tr valign="top">
+    <td class="ListaImpar">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td class="ListaImpar">Changes<p>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">30-jun-05</td>
+    <td class="ListaPar">All menu creation code centralized in lmTheApp:CreateMenuBar(). Midi events table created and displayed. Working on playing it.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">29-jun-05</td>
+    <td class="ListaPar">MIDI wizard: old configuration restored if wizard is cancelled. Migrating methods to create the table of MIDI events.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">28-jun-05</td>
+    <td class="ListaPar">MIDI wizard: combo boxes are now initialized to leave selected current Midi configuration, as saved in lenmus.in.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">24-jun-05</td>
+    <td class="ListaPar">Created object lmMidiManager to centralize all MIDI configuration and managemen.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">23-jun-05</td>
+    <td class="ListaPar">Created object sbPreferences. Midi wizard pages 1 and 2 finished and tested.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">22-jun-05</td>
+    <td class="ListaPar">Configuration changed from Unicode to Multibyte. Use of wxMidi tested. Starting with lmMidiWizard. Global MIDI variables created. Testing lmMidiWizard pages 1 and 2.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">07-jun-05</td>
+    <td class="ListaPar">Context updated in notes and at the start of measures. Starting to play music.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">03-jun-05</td>
+    <td class="ListaPar">reviewing how pitch information is stored. Fixing things related to pitch.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">02-jun-05</td>
+    <td class="ListaPar">Context objects created and added to the staff list. Context object assigned to Notes and Rests. All program reviewed to use methods to access the context.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">01-jun-05</td>
+    <td class="ListaPar">lmScoreAuxCtrol: methods to adjust scale, margins and staff lenght. Object Context created.
+    </td></tr>
+</table>
+
+<h2><a name="May05">May 2005</a></h2>
+<a href="#top">Go to top of document</a>
+<table class="Lista" ID="Table6">
+<tr valign="top">
+    <td class="ListaImpar">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td class="ListaImpar">Changes<p>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">31-may-05</td>
+    <td class="ListaPar">TheoIntervals control implemented. Params for configuring lmTheoIntervalsCtrol and Constrains objected implemented. Generator, Conversion and lmInterval classes implemented.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">26-may-05</td>
+    <td class="ListaPar">memory leaks problem solved. Object lmInterval created.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">25-may-05</td>
+    <td class="ListaPar">Continue with lmTheoIntervalsCtrol: All links and buttons operative. Methods DisplayMessage() and DisplayScore() added to lmScoreAuxCtrol. Generation of the score (with dummy notes). Now starting the generation of the interval. Memory leaks detected.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">24-may-05</td>
+    <td class="ListaPar">lmTheoIntervalsCtrol: layout developed. Buttons operative.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">23-may-05</td>
+    <td class="ListaPar">Experiments to include a Form in the html text. Now implementing the lmTheoIntervalsCtrol class.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">20-may-05</td>
+    <td class="ListaPar">&lt;param play_control&gt;. Implemented the inclusion of the "Play" control.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">19-may-05</td>
+    <td class="ListaPar">LDPParser modified to accept parsing from text instead of from file. &lt;object&gt; params type and music parsed. Opertative now
+        <ul>
+        <li>include music data inline. Type short</li>
+        <li>import a MusicXML file. Type XMLFile</li>
+        <li>import an LDP file. Type LDPFile Parameter width modified to accept percentage. Default set to 100% </li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">18-may-05</td>
+    <td class="ListaPar">Starting processing of &lt;object&gt;. &lt;param&gt; tag parser architecture implemented.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">17-may-05</td>
+    <td class="ListaPar">Created a new class lmHtmlWindow, derived from wxHtmlWindow, to have control when a link is clicked. In test mode scan documentation folder and load all books (.hhp files) found Class TextBookForm modified to be MDIChil.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">16-may-05</td>
+    <td class="ListaPar">Migration to wxWidgets 2.6. Static linking. Created classes lmTextBookController and TextBookForm Investigated how to intercept clicks on link tags (&lt;a&gt;): wxHtmlWindow has a virtual method, named OnLinkClicked(), that is called when user clicks on a cell that corresponds to a hypertext link.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">11-may-05</td>
+    <td class="ListaPar">Class lmScoreAuxCtrol added with very basic code, just to test that scores can be displayed as part of html pages by using tag &lt;object type="image/LenMusScore"&gt;.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">10-may-05</td>
+    <td class="ListaPar">Added help content capabilities, based on html help controller. Testing html windows to show music.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">09-may-05</td>
+    <td class="ListaPar">Problem with ordering of Clef, lmTimeSignature and lmKeySignature in XM solved by re-ordering them at XML parser objects creation. DrawProlog() modified to include Time and Key signatures. Fixed a bug in DrawTimeSignature() and in DrawKeySignature(): they only draw in the first staff; now corrected. lmAccidental object created. Accidentals included in notes.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">06-may-05</td>
+    <td class="ListaPar">lmKeySignature basic implementation done. Same problem than with lmTimeSignature.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">05-may-05</td>
+    <td class="ListaPar">lmTimeSignature basic implementation done. Designing a more general method to code time signature information, as a ennumeration is not powerful enough. Modified XML parser XML to accept time signature information. An important problem has been detected with XML. Time signature is treated as an attribute of the measure, not as an object. Therefore, ordering (clef, tonal key, time signature) is not important for XML and there are examples in wich this information is encoded in reversed orders (i.e. time signature, clef). This causes problems as LenMus expects that this objects are defined in right order.
+    </td></tr>
+</table>
+
+<h2><a name="Apr05">April 2005</a></h2>
+<a href="#top">Go to top of document</a>
+<table class="Lista" ID="Table7">
+<tr valign="top">
+    <td class="ListaImpar">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td class="ListaImpar">Changes<p>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">29-apr-05</td>
+    <td class="ListaPar">Fixed problem with ties when start and end notes have stems in opposite directions.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">28-apr-05</td>
+    <td class="ListaPar">Ties drawn using Bezier curves. Modification to introduce MakeUp phase.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">27-apr-05</td>
+    <td class="ListaPar">fixed problem with beamed group tied to previous note.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">26-apr-05</td>
+    <td class="ListaPar">Fixed several problems with beams:
+        <ul>
+        <li>stems up and down in the same beam</li>
+        <li>only force stems' direction if all stems' type is eDefaultType</li>
+        <li>beam line too high or too low when chords involved (test score P01). </li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">25-apr-05</td>
+    <td class="ListaPar">Invocation of lmBeamComputeStems has been moved from lmNoteRestCreateBeam to lmNoteDrawObject and lmRestDrawObject. This has been necesary because the base note of the beam is the one that contains the beaming information. in contradiction with what was assumed, it could not the last note of the beam as for chords, there are still notes to be added. Additiona minor fixes for properly drawing beams in beamed chords across staves.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">21-apr-05</td>
+    <td class="ListaPar">lmTupletBracket changed to derive from lmSimpleObj instead of lmAuxObj to solve problem of font. Tuplet number now rendered. Beams: dealing with the issue of including Rests in a beam. This forces to move beaming information from lmNote object to lmNoteRest object. And this forces some changes: a new method CreateBeam() and method IsInChord() moved to lmNoteRest as pure virtual. In Beams: all methods changed to deal with NoteRests instead of Notes. In Rests: variable m_yShift and method SetDisplacement() added.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">20-apr-05</td>
+    <td class="ListaPar">lmTupletBracket drawing implemented. Problem of font to use.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">19-apr-05</td>
+    <td class="ListaPar">Parameter rDuration included in lmNoteRest constructor (and lmNote and lmRest constructors). Default duration computed in lmLDPParser. Method SetDuration() deleted. All this is to solve a problem with SetDuration(): it is called after the note is stored into the ColStaffObj, but duration is necessary to compute rTimePos. lmXMLParser: parsing notation &lt;tuplet&gt;. Object lmTupletBracket created.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">18-apr-05</td>
+    <td class="ListaPar">Fixed problem with alignment in lmTimeposTableArrangeStaffobjsByTime(.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">14-apr-05</td>
+    <td class="ListaPar">Elements &lt;backup&gt; and &lt;forward&gt; implemented. Starting revision of lmFormatter3 to finish it and to fix problems.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">13-apr-05</td>
+    <td class="ListaPar">Class lmLyric implemented as a derivative from lmNoteRestObj and lmBasicText. Method lmFormatter3RedistributeFreeSpace() migrated.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">08-apr-05</td>
+    <td class="ListaPar">lmBasicText class implemented. WordsDirective derived from it. Now working on lmLyri.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">07-apr-05</td>
+    <td class="ListaPar">Clarifying XML 1.0 positioning attributes. Starting the creation of lmLyric class.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">06-apr-05</td>
+    <td class="ListaPar">Class lmFermata created. Derived from new class lmNoteRestObj. All this added some clarification to the objects hierarchy but not enough. So I will continue with different types of texts. Class lmWordsDirection implemented. lmXMLParser modified to include parse &lt;direction&gt;. Two general parsing methods added: ParsePosition() and ParseFont(). Structures RXMLPositionData and RFontData defined.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">05-apr-05</td>
+    <td class="ListaPar">lmRest object: sizing and positioning selection rectangles fixed.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">04-apr-05</td>
+    <td class="ListaPar">lmRest object implemented. Parsing rests implemented in XML and LDP. TODO: sizing and positioning selection rectangles.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">01-apr-05</td>
+    <td class="ListaPar">lmVStaff::FindSelectableObject() fixed to take into account CompositeObjs. Implementation of lmRest object started. DrawObject() reviewed.
+    </td></tr>
+</table>
+
+<h2><a name="Mar05">March 2005</a></h2>
+<a href="#top">Go to top of document</a>
+<table class="Lista" ID="Table8">
+<tr valign="top">
+    <td class="ListaImpar">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td class="ListaImpar">Changes<p>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">31-mar-05</td>
+    <td class="ListaPar">Object's model hierarchy refined. Composite StaffObjs created. lmNote as composite object. Selection of Ties implemented and working.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">30-mar-05</td>
+    <td class="ListaPar">Yesterday's attemp was not good. New model hierarchy created: lmScoreObj -&gt; lmSimpleObj -&gt; lmAuxObj, lmStaffObj. lmVStaff restored as a non derivate class. Working on drawing selRect of Ties and defining the interface of AuxObjs.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">29-mar-05</td>
+    <td class="ListaPar">Developing the model hierarchy of ScoreObjs. Created the "Composite" pattern. Objects lmScoreObj, lmSimpleObj and lmCompositeObj defined. StaffObjs now are a derivate class from lmSimpleObj. lmVStaff is now derived from lmCompositeObj.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">17-mar-05</td>
+    <td class="ListaPar">lmFontManager improved to deal with fontNames and other parameters. Global StaffObjs list implemented in lmScore object to store non-directly related StaffObjs. Method for renderization of score titles. lmFormatter3 changed to render titles.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">16-mar-05</td>
+    <td class="ListaPar">XML parsing: added &lt;stem&gt; tag. Stem info added to lmNote constructor. Added notehead positioning information (m_noteheadRect). Rendering of ties: start and end positions OK. Considering the creation of a more general class lmScoreObj to deal better with non-directly staff related objects. Implementing lmText object to test ideas.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">15-mar-05</td>
+    <td class="ListaPar">Classes lmArch and lmTie created. lmNote constructor changed to account for absolute pitch (MusicXML) as an alternative to relative pitch (LDP). Methods lmVStaffFindPossibleStartOfTie and lmNoteCanBeTied. Studying how to do the rendering of ties.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">14-mar-05</td>
+    <td class="ListaPar">Fixed the details for drawing stems and beams for chords and to take beam thickness into account. Finished lmVStaffDrawProlog(). Store current clef while rendering the score.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">11-mar-05</td>
+    <td class="ListaPar">RenderJustified() is now operative. Starting with modifications to draw stems and beams for chords and to fix beam drawing details..
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">10-mar-05</td>
+    <td class="ListaPar">Finishing Formater3::RenderJustified(): the minimun functionality to start testing. Starting testing and correcting bugs.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">09-mar-05</td>
+    <td class="ListaPar">Starting with Formater3::RenderJustified(). lmTimeposTable object created. Changes in a lot of places.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">08-mar-05</td>
+    <td class="ListaPar">Compilation problem with class Chord solved: it seems to be that there is a function named "Chord" defined in WinGDI.h. And this causes a name conflict to the compiler. So Chord class has been renamed as lmChord.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">07-mar-05</td>
+    <td class="ListaPar">
+        <ul>
+        <li>lmXMLParser: added parsing of tags &lt;note&gt;.&lt;staff&gt;, &lt;note&gt;.&lt;chord&gt; and &lt;note&gt;.&lt;beam&gt;.</li>
+        <li>lmBeam object more or less operative. Need to improve drawing (line thick and spacing).</li>
+        <li>Starting with chords. Object Chord created. lmNote modified. Trying to compile. Ref.loop between Chord and lmNote as Chord uses a list of notes and lmNote uses Chord. </li>
+        </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">04-mar-05</td>
+    <td class="ListaPar">Continue with lmXMLParser: parsing barlines. Starting with beam grouping: lmLDPParser modified to parse G tag; grouping informattion added to lmNote constructor. lmBeam object created. Working on completing it.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">03-mar-05</td>
+    <td class="ListaPar">Continue with lmXMLParser: parsing notes; parsing measure attributes; parsing clefs.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">02-mar-05</td>
+    <td class="ListaPar">Continue with lmXMLParser: parsing skeleton defined; parsing operative until ParseMeasure.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">01-mar-05</td>
+    <td class="ListaPar">lmBarline object finished, including drag image and dragging. Direct call to EndDrag() has been replaced by lmScoreCommand to enable undo/redo operations. Undo/Redo menu commands implemented. Menu "Import" added. Starting the creation of class lmXMLParser for parsing MusicXML.
+    </td></tr>
+</table>
+
+<h2><a name="Feb05">February 2005 and begining of project</a></h2>
+<a href="#top">Go to top of document</a>
+<table class="Lista" ID="Table9">
+<tr valign="top">
+    <td class="ListaImpar">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td class="ListaImpar">Changes<p>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">28-feb-05</td>
+    <td class="ListaPar">lmBarline object operative except drag image and dragging. Storage of StaffObjs into the collection: computation of TimePos. Dump of timepos.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">25-feb-05</td>
+    <td class="ListaPar">Source code generation methods finished (at current program state). Bars taken into account in lmColStaffObjs. Parsing of barlines added to lmLDPParser. Starting the implementation of lmBarline object. MusicXML source generation skeleton implemented.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">24-feb-05</td>
+    <td class="ListaPar">Class lmStaffObjIterator created. Program code reviewed to use this class.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">18-feb-05 </td>
+    <td class="ListaPar">Modification of logical units to microns. Review of all code and documentation. Three options added to debug menu: Dump, Source and XML. Dialog lmDlgDebug created. Starting with lmScore.Dum.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">10-dec-04</td>
+    <td class="ListaPar">LenMus coding started. No knowledge of wxWidgets so I will not log more entries in this log until a minimum of functionality is achieved.
+    </td></tr>
+</table>
+
+
+</body>
+</html>

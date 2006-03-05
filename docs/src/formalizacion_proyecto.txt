@@ -1,0 +1,17 @@
+Sonia
+
+- Enseñar proyecto y que me orientes sobre cómo lo ve y quién podría estar interesado en participar y ayudarme. Quiero ampliar su ámbito y formar un equipo con gente de la Escuela, la ETSIT y la Facultad de Informática
+
+Idea:
+
+- Crear un equipo de trabajo:
+    Via Escuela Municipal:
+    - gente relacionada con la música para escribir material didáctico y proponer ejercicios
+    - Dirección técnica (musical)
+    
+    Via ETSIT:
+    - desarrollo de código relacionado con recitar/cantar partituras
+    
+    Vía Facultad de Informática:
+    - gente para programar y diseñar algoritmos
+    - publicación de trabajos académicos

@@ -1,0 +1,99 @@
+<html>
+<!-- RCS-ID: $Id: installation.htm,v 1.2 2005/11/03 16:58:30 cecilios Exp $ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>LenMus installation procedure</title>
+<link rel="stylesheet" media="all" href="singledoc.css" type="text/css" />
+</head>
+<body>
+
+<h1>LenMus 3.0 installation</h1>
+
+<p><b>Release:</b> 3.0 alpha x</p>
+
+
+<h2>Microsoft Windows LenMus 3.0 installation</h2>
+
+<h3>Manual installation</h3>
+
+<p>LenMus does not requiere special installation procedures. Just copy the files wherever you'd like
+(DO NOT ALTER names and/or structure). Then install the
+LenMus music font. That's all. No registry keys or other stuff.
+Follow this procedure:<p/>
+
+<ol>
+<li>Create a folder to install LenMus and unzip lenmus30a0.zip there.</li>
+
+<li>Install the font <em>LeMusNot.ttf</em> contained in folder <em>/bin</em>. For example:
+    <ol>
+        <li>Open Windows Control Panel</li>
+        <li>Open Fonts</li>
+        <li>Choose "File/install font" and follow instructions</li>
+    </ol>
+    </li>
+
+<li>Optionally, create any desired shortcuts on desktop, programs menu, etc.</li>
+</ol>
+
+
+<h3>LenMus 3.0 directories</h3>
+<p>After unziping you should have the following folders and content:</p>
+
+<table class="Lista">
+<thead class="ListaImpar">
+    <td class="ListaImpar">Directory</td>
+    <td class="ListaImpar">Files</td>
+    <td class="ListaImpar">Contents</td></thead>
+<tr class="ListaPar">
+    <td rowspan="2" class="ListaPar">bin</td>
+    <td class="ListaPar">lenmus.exe</td><td class="ListaPar">Executable</td></tr>
+<tr>
+    <td class="ListaPar">LeMusNot.ttf&nbsp;</td>
+    <td class="ListaPar">True Type font with music symbols. You MUST install it in the
+        Windows/fonts directory.</td></tr>
+<tr class="ListaPar">
+    <td class="ListaPar">data</td>
+    <td class="ListaPar">*.ini</td><td class="ListaPar">LenMus database files. These files
+    define score generation constrains for each level and lesson.</td></tr>
+<tr>
+    <td class="ListaPar">scores</td>
+    <td class="ListaPar">&nbsp;</td>
+    <td class="ListaPar">Sample scores. There are two subdirectories: one for
+        MusicXML scores and another for LDP (LenMus score language) scores.</td></tr>
+<tr>
+    <td class="ListaPar">scores/MusicXML</td>
+    <td class="ListaPar">*.xml</td>
+    <td class="ListaPar">Test MusicXML samples. Load them into LenMus
+        by using File/Import </td></tr>
+<tr>
+    <td class="ListaPar">scores/test</td>
+    <td class="ListaPar">*.txt</td>
+    <td class="ListaPar">Test LDP samples. Load them into LenMus by using File/Open</td></tr>
+<tr>
+    <td class="ListaPar">temp</td>
+    <td class="ListaPar">empty</td>
+    <td class="ListaPar">Empty folder. Used during LenMus execution. Can be changed
+        with the 'options' menu</td></tr>
+<tr class="ListaPar">
+    <td class="ListaPar">locale</td>
+    <td class="ListaPar">&nbsp;</td>
+    <td class="ListaPar">Contains all language dependent files.
+        There is a subdirectory for each supported language.
+        Subdirectories are named, following RFC 1766, with the two letter
+        language code (.i.e. 'en' for English, 'es' for Spanish, etc.) or with the five chars
+        language-culture code (i.e. 'en-EN' for USA English or 'es-ES' for the Modern Spanish).
+        </td></tr>
+<tr>
+    <td rowspan="3" class="ListaPar">locale/xx</td>
+    <td class="ListaPar">*.mo</td><td class="ListaPar">The .mo message translation
+    catalogs, except for English language (not needed).</td></tr>
+<tr>
+    <td class="ListaPar">help.htb</td>
+    <td class="ListaPar">The help file</td></tr>
+<tr>
+    <td class="ListaPar">*.htb</td>
+    <td class="ListaPar">Other .htb files are eMusicBooks.</td></tr>
+</table>
+
+</body>
+</html>
