@@ -5,30 +5,30 @@
 <h1>216 - Subdivisión ternaria. El tresillo con parte fuerte ligada</h1>
 <p>En este tema se introduce un nuevo patrón rítmico, resultante de ligar un grupo de dos semicorcheas y corchea con
 otro de corchea y dos semicorcheas. Observa que puede escribirse también con una negra:</p>
-<object type="application/LenMusScore" width="300" height="300"   border="0">
-    <param name="type" value="short" />
-    <param name="control_play" value="Tocar" />\n<param name="control_measures" value="Compas %d" />
+<object type="application/LenMusScore" width="300" height="80" border="0">
+    <param name="type" value="short">
+    <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
-        (Metrica 6 8 NoVisible)(g (n * c)(n * c)(n * c +l))(g (n * c)(n * c)(n * c)) )
+        (Metrica 6 8 NoVisible)(n * c g+)(n * c)(n * c +l))(n * c g+)(n * c)(n * c)) )
         (c (n * n)(n * c +l)(n * c)(n * n) )
-        (c (n * n)(n * c +l)(g (n * c)(n * c)(n * c)) (Barra Final))
-        " />
+        (c (n * n)(n * c +l)(n * c g+)(n * c)(n * c)) (Barra Final))
+        ">
 </object>
 
 <h2>Escucha y observa las diferencias</h2>
 <p>Observa la diferencia entre el primer y el segundo compas. Observa cómo
 éste se obtiene al ligar los dos grupos del primer compas.</p>
 
-<object type="application/LenMusScore" width="300" height="300"   border="0">
-    <param name="type" value="short" />
-    <param name="control_play" value="Tocar" />\n<param name="control_measures" value="Compas %d" />
+<object type="application/LenMusScore" width="300" height="80" border="0">
+    <param name="type" value="short">
+    <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
-        (Metrica 6 8)(g (n * c)(n * c)(n * c +l))(g (n * c)(n * c)(n * c)) )
-        (c (g (n * c)(n * c)(n * c +l))(g (n * c)(n * c)(n * c)) )
+        (Metrica 6 8)(n * c g+)(n * c)(n * c +l))(n * c g+)(n * c)(n * c)) )
+        (c (n * c g+)(n * c)(n * c +l))(n * c g+)(n * c)(n * c)) )
         (c (n * n)(n * c +l)(n * c)(n * n) )
         (c (n * n)(n * c +l)(n * c)(n * n) )
-        (c (n * n)(n * c +l)(g (n * c)(n * c)(n * c))(Barra Final))
-        " />
+        (c (n * n)(n * c +l)(n * c g+)(n * c)(n * c))(Barra Final))
+        ">
 </object>
 
 <h2>Ejercicios</h2>
@@ -41,17 +41,17 @@ otro de corchea y dos semicorcheas. Observa que puede escribirse también con una
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="T" valor="(g (n * c)(n * c)(n * c +l))(g (n * c)(n * c)(n * c))" />
-                <patron ritmo="T" valor="(n * n)(n * c +l)(n * c)(n * n)" />
+                <patron ritmo="T" valor="(n * c g+)(n * c)(n * c +l))(n * c g+)(n * c)(n * c))">
+                <patron ritmo="T" valor="(n * n)(n * c +l)(n * c)(n * n)">
             </patrones>
             <claves>
-    <param name="clef" value="Sol;a4;b4" />
+    <param name="clef" value="Sol;a4;b4">
             </claves>
             <metricas>
-    <param name="time" value="68" />
+    <param name="time" value="68">
 
             <tonalidades>
-    <param name="key" value="Do" />
+    <param name="key" value="Do">
             </tonalidades>
         </opciones>
     </parametros>

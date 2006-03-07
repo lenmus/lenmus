@@ -547,7 +547,7 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
         return pScore;
     } else {
         m_sVersion = (pX->GetParameter(1))->GetName();
-        i = m_sVersion.Find(L'.');
+        i = m_sVersion.Find(_T('.'));
         long nVers, nRev;
        if (i != -1) {
             (m_sVersion.Mid(0, i)).ToLong(&nVers);

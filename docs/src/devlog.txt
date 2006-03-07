@@ -83,30 +83,17 @@ LenMus project philosophy (to remind me to always stay on this):
 Planning: comming releases 
 ******************************************************************************************
 
-4/mar/2005 - Alpha 3.0a2 release
---------------------------------------------------
+Bugs to solve:
+	2 - stems too long if a rest in middle (lesson 212)
+	1 - AuxString::SrcGetPatternDuracion() does not work for irregular groups (i.e. triplets).
+		This causes Composer5 bad compositions.
+		
+Modifications to L2_SideReading eBook:
+	- Once finished, review clefs and notes ranges.
+	- Lesson 14: Triplets. Review content.
 
-   Version 3.0 for Windows of the LenMus program is ready. All known bugs have been fixed and
-   all unfinished code, necessary for the features included in version 3.0, has been completed. 
-   The GUI has been revised and icons and art work has been completed; a splash window 
-   has also been included. All single exercises now include a 'settings' button
-   to allow user to customize the exercise to his/her needs. But the program is not yet
-   ready to move to beta status. What is missing?: More testing, eBooks, 
-   a help file and the translation into Spanish.
-   
-   eBooks are indispensable for rhythm and side reading exercises, so the student has
-   exercises width increasing level of difficulty. The pre-defined rhythmic cell selection
-   facilities of version 2.0 were too limitative for users as to set up a customized side
-   reading exercise more functionality is needed (i.e. a rhythmic patterns editor). This
-   probably will be included in version 3.1
-   
-   So, with the release of this last alpha version I will reduce programming activities
-   to start writing some eBooks for rhythm and side reading,
-   as well as the help file. Also, I will do tests to look for bugs and
-   to write a installer for Windows. 
-   
-   
-?/???/2005 - Beta 3.0b0 release
+
+?/???/2006 - Beta 3.0b0 release
 --------------------------------------------------
 
     Features and changes:
@@ -116,7 +103,7 @@ Planning: comming releases
         - Installer for Windows
         
     Tasks:
-		1 - <object> strong param verification and error reporting
+        1 - <object> strong param verification and error reporting
         1 - Side reading eBooks. Needed to have exercises width increasing level of difficulty.
         1 - Translation of program into Spanish
         1 - Translation of eBooks into English
@@ -126,16 +113,24 @@ Planning: comming releases
             also part of the help book
         3 - Prepare program help
 
+
+??/???/2006 - Stable 3.0 release (beta 3.0b0 + 1 month)
+---------------------------------------------------
     Other:
     - Replacement of version 2.0 that will be dropped from web site.
 
 
-??/???/2006 - Stable 3.0 release
----------------------------------------------------
+??/???/2006 - Beta 3.1b0 release
+----------------------------------------------
 
+    Features and changes:
+        - Support for LDP tags internationalization.
+        - Pattern editor
+        
 
 Upcomig releases features 
 ----------------------------------------------
+
 -General:
     - Implement "Counters" sub-control for exercises.
 
@@ -147,10 +142,6 @@ Upcomig releases features
 - Theo Key signatures:
     2 - Add checkbox buttons to choose direct and inverse problems
 
-3.1
----------------------------------------------------
-        - Beams that continue in next system
-        - Problem with chord stems (vanished)in faur_reve_sample.xml
 
 
 
@@ -160,17 +151,14 @@ Known bugs:
 
     2 - Bug: error when opening "chords v13.txt" and then closing the app.
   
+        - Beams that continue in next system
+        - Problem with chord stems (vanished)in faur_reve_sample.xml
+
+
+
 
 ------------------------------------------------------------------------------------------
 
-- Settings dialog for ScoreSideReading: 
-    Implementation of DlgCfgScoreReading dialog finished for Side reading options except
-    fragments tab options, that requiere to finish DlgPatternEditor.
-    DlgCfgScoreReading Side reading options is
-    not necessary for 3.0 release as single side reading exercises will be replaced by
-    side reading exercises in each lesson. The 'new' single side reading exercise will
-    requiere to have a fragments editor:
-        
 - Settings in html embedded objects:
     - All objects must have a settings param specifying either the settings key to use
         to save user settings or that user settings are not allowed.

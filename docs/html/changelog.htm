@@ -26,6 +26,39 @@
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">7-mar-06</td>
+    <td class="ListaPar">
+    Testing version Beta 3.0b0 and improving program robustness:
+    <ul>
+      <li>Bug fixed: Dot was drawn too high in dotted rests.</li>
+     </ul>
+    Converted side reading lessons 212 and 214. Detected problems with triplets.
+     <ul>
+      <li>Starting to fix bug: Bad composed scores when triplets in patterns. The problem
+        is in current method AuxString::SrcGetPatternDuracion(). It does not 
+        work for irregular groups (i.e. triplets). This causes badly composed scores.
+        Intended solution: not to work with source patterns but convert source to a score;
+        then take duration from score. Modifications: Added methods
+        lmVStaff::GetTotalDuration(), lmFragmentsTable::GetPatternDuracion(). Need to
+        review lmFragmentsTable::GetFirstSegmentDuracion().</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">6-mar-06</td>
+    <td class="ListaPar">
+    Testing version Beta 3.0b0 and improving program robustness:
+    <ul>
+      <li>Bad code fixed: replaced Unicode constants L'*' by build type dependent 
+        expresion _T('*').</li>
+      <li>Bug fixed in lmComposer5::GenerateScore(): Key signature was not generated according to
+        exercise constrains but at ramdom.</li>
+      <li>Starting to fix bug: Dot drawn too high in dotted rests. lmRest::DrawObject() modified
+        to add vertical displacement. Struct lmGlyph moved from Note.cpp to Glyph.h and 
+        Glyph.cpp</li>
+    </ul>
+    Converted side reading lessons 208, 209, 210 and 211.
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">3-mar-06</td>
     <td class="ListaPar">
     Testing version Beta 3.0b0 and improving program robustness:

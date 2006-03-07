@@ -1004,30 +1004,25 @@ la siguiente tabla:</p>
 <p>A character to specify the note or rest type (whole, quarter, eighth, ...) followed by dots in case the
 note or rest is dotted</p>
 
-<p class="important">The characters choosen to represent the duration are taken from the Spanish name. LDP supports using
-a customized set for each language but I have not yet defined any tags set for English. I would
-prefer that a native English speaker define it taking into account that it must be very easy to
-remember the encoding. So, meanwhile, the English set of tags for duration will be the Spanish one.</p>
-
 <p>
 <center>
 <table class="grid">
-    <tr><td class="grid">LDP</td><td class="grid">English US</td><td class="grid">English UK</td><td class="grid">Spanish</td></tr>
-    <tr><td class="grid">d</td><td class="grid">long</td><td class="grid">breve</td><td class="grid">cua<b>d</b>rada</td></tr>
-    <tr><td class="grid">r</td><td class="grid">whole</td><td class="grid">semibreve</td><td class="grid"><b>r</b>edonda</td></tr>
-    <tr><td class="grid">b</td><td class="grid">half</td><td class="grid">minim</td><td class="grid"><b>b</b>lanca</td></tr>
-    <tr><td class="grid">n</td><td class="grid">quarter</td><td class="grid">crochet</td><td class="grid"><b>n</b>egra</td></tr>
-    <tr><td class="grid">c</td><td class="grid">8th</td><td class="grid">quaver</td><td class="grid"><b>c</b>orchea</td></tr>
-    <tr><td class="grid">s</td><td class="grid">16th</td><td class="grid">semiquaver</td><td class="grid"><b>s</b>emicorchea</td></tr>
-    <tr><td class="grid">f</td><td class="grid">32th</td><td class="grid">demisemiquaver</td><td class="grid"><b>f</b>usa</td></tr>
-    <tr><td class="grid">m</td><td class="grid">64th</td><td class="grid">hemidemisemiquaver</td><td class="grid">se<b>m</b>ifusa</td></tr>
-    <tr><td class="grid">g</td><td class="grid">128th</td><td class="grid">?</td><td class="grid"><b>g</b>arrapatea</td></tr>
-    <tr><td class="grid">p</td><td class="grid">256th</td><td class="grid">?</td><td class="grid">semigarra<b>p</b>atea</td></tr>
+    <tr><td class="grid">English US (English UK)</td><td class="grid">Spanish</td></tr>
+    <tr><td class="grid">d - <b>d</b>ouble whole, long (breve)</td><td class="grid">d - cua<b>d</b>rada</td></tr>
+    <tr><td class="grid">w - <b>w</b>hole (semibreve)</td><td class="grid">r - <b>r</b>edonda</td></tr>
+    <tr><td class="grid">h - <b>h</b>alf (minim)</td><td class="grid">b - <b>b</b>lanca</td></tr>
+    <tr><td class="grid">q - <b>q</b>uarter (crochet)</td><td class="grid">n - <b>n</b>egra</td></tr>
+    <tr><td class="grid">e - <b>e</b>ighth, 8th (quaver)</td><td class="grid">c - <b>c</b>orchea</td></tr>
+    <tr><td class="grid">s - <b>s</b>ixteenth, 16th (semiquaver)</td><td class="grid">s - <b>s</b>emicorchea</td></tr>
+    <tr><td class="grid">t - <b>3</b>2th (demisemiquaver)</td><td class="grid">f - <b>f</b>usa</td></tr>
+    <tr><td class="grid">x - <b>6</b>4th (hemidemisemiquaver)</td><td class="grid">m - se<b>m</b>ifusa</td></tr>
+    <tr><td class="grid">o - <b>1</b>28th (?)</td><td class="grid">g - <b>g</b>arrapatea</td></tr>
+    <tr><td class="grid">f - 2<b>5</b>6th (?)</td><td class="grid">p - semigarra<b>p</b>atea</td></tr>
     </table>
 </center>
 </p>
 
-<p>For example: <q class="example">n.</q> means a dotted quatter note and <q class="example">c..</q> means
+<p>For example: <q class="example">q.</q> means a dotted quatter note and <q class="example">e..</q> means
 a double dotted eighth note</p>
 
 <!--
@@ -2937,7 +2932,7 @@ implemented in the parser: only the Spanish tags
 are understood by the parser. As LenMus aims at facilitating the user to use his/her own language
 it was decided to introduce support for set of tags in any other language. Currently this support
 is not yet available (but I hope to be
-able to include it as part of 3.0 release). Meanwhile, if you would like to read or write an LDP
+able to include it as part of 3.1 release). Meanwhile, if you would like to read or write an LDP
 score, here is a table with the Spanish tags to use instead of the English ones used in this LDP reference
 manual.
 </p>

@@ -294,19 +294,19 @@ int LetterToStep(wxString sStep)
     //analyze the letter and return it as diatonic note number
     wxChar cStep = sStep.GetChar(0);
     switch (cStep) {
-        case L'c':
+        case _T('c'):
             return 0;
-        case L'd':
+        case _T('d'):
             return 1;
-        case L'e':
+        case _T('e'):
             return 2;
-        case L'f':
+        case _T('f'):
             return 3;
-        case L'g':
+        case _T('g'):
             return 4;
-        case L'a':
+        case _T('a'):
             return 5;
-        case L'b':
+        case _T('b'):
             return 6;
         default:
             return 0;   //error

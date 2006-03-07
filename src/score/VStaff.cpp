@@ -1091,6 +1091,26 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
     
 }
 
+float lmVStaff::GetTotalDuration()
+{
+    //iterate over the stafobjs collection to accumulate measures duration
+    lmStaffObj* pSO;
+    lmNoteRest* pNR;
+    lmTimeSignature* pTS;
+    lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
+    float rTime = 0.;
+    while(!pIter->EndOfList()) {
+        pSO = pIter->GetCurrent();
+        if (pSO->GetType() == eTPO_Barline) {
+            rTime += pSO->GetTimePos();        //add measure duration
+        }
+        pIter->MoveNext();
+    }
+    delete pIter;
+    return rTime;
+    
+}
+
 lmNote* lmVStaff::FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep)
 {
     /*

@@ -134,6 +134,9 @@ public:
     //sound related methods
     lmSoundManager* ComputeMidiEvents(int nChannel);
 
+    //other methods
+    float GetTotalDuration();
+
 
 
 private:

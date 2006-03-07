@@ -4,24 +4,24 @@
 
 <h1>222 - Subdivisión binaria. Grupos de dos semicorcheas</h1>
 <p>En este tema se introducen los siguientes patrones:</p>
-<object type="application/LenMusScore" width="300" height="300"   border="0">\n   <param name="type" value="short" />\n
-    <param name="control_play" value="Tocar" />\n<param name="control_measures" value="Compas %d" />
+<object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
+    <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
         (Metrica 2 8 NoVisible) (opciones (EspacioAntesParte 20))
-           (s c)(g (n * s)(n * s)) (Barra Doble) )
-        (c (g (n * s)(n * s))(s c) (Barra Final))
-        " />
+           (s c)(n * s g+)(n * s)) (Barra Doble) )
+        (c (n * s g+)(n * s))(s c) (Barra Final))
+        ">
 </object>
 
 <h2>Escucha y observa las diferencias</h2>
 
-<object type="application/LenMusScore" width="300" height="300"   border="0">\n   <param name="type" value="short" />\n
-    <param name="control_play" value="Tocar" />\n<param name="control_measures" value="Compas %d" />
+<object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
+    <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
         (Metrica 2 8) (opciones (EspacioAntesParte 20))
-           (s c)(g (n * s)(n * s)) )
-        (c (g (n * s)(n * s))(s c) (Barra Final))
-        " />
+           (s c)(n * s g+)(n * s)) )
+        (c (n * s g+)(n * s))(s c) (Barra Final))
+        ">
 </object>
 
 <h2>Ejercicios</h2>
@@ -34,16 +34,16 @@
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="B" valor="(s c)(g (n * s)(n * s))" />
+                <patron ritmo="B" valor="(s c)(n * s g+)(n * s))">
             </patrones>
             <claves>
-    <param name="clef" value="Sol;a4;b4" />
+    <param name="clef" value="Sol;a4;b4">
             </claves>
             <metricas>
-    <param name="time" value="24" />
+    <param name="time" value="24">
 
             <tonalidades>
-    <param name="key" value="Do" />
+    <param name="key" value="Do">
             </tonalidades>
         </opciones>
     </parametros>
@@ -59,16 +59,16 @@
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="B" valor="(g (n * s)(n * s))(s c)" />
+                <patron ritmo="B" valor="(n * s g+)(n * s))(s c)">
             </patrones>
             <claves>
-    <param name="clef" value="Sol;a4;b4" />
+    <param name="clef" value="Sol;a4;b4">
             </claves>
             <metricas>
-    <param name="time" value="24" />
+    <param name="time" value="24">
 
             <tonalidades>
-    <param name="key" value="Do" />
+    <param name="key" value="Do">
             </tonalidades>
         </opciones>
     </parametros>

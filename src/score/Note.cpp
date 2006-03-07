@@ -43,63 +43,7 @@
 #include "wx/debug.h"
 #include "../ldp_parser/AuxString.h"
 
-//---------------------------------------------------------
-//   Glyphs info
-//---------------------------------------------------------
-
-// Definition of an entry of the Glyphs table
-struct lmGlyph
-{
-    // all measurements in tenths
-    wxString    GlyphChar;
-    int         GlyphOffset;
-    int         SelRectShift;
-    int         SelRectHeight;
-    wxString    sName;
-
-    lmGlyph(const wxString g, int yo, int ys, int h, const wxString n)
-        : GlyphChar(g), GlyphOffset(yo), SelRectShift(ys), SelRectHeight(h), sName(n)
-        {
-        }
-
-};
-
-//the glyphs table
-const lmGlyph aGlyphsInfo[] =
-{
-      //                       sel rectangle
-      //       Glyph   offset  shift   height 
-      lmGlyph(_T("N"),  10,     55,     10,    _T("Notehead redonda")) , 
-      lmGlyph(_T("O"),  10,     55,     10,    _T("Notehead blanca")) , 
-      lmGlyph(_T("P"),  10,     55,     10,    _T("Notehead negra")) , 
-      lmGlyph(_T("L"),  10,     55,     10,    _T("Notehead aspa")) ,
-      lmGlyph(_T("V"),  30,     15,     40,    _T("Corchea down")) , 
-      lmGlyph(_T("Q"), -10,     25,     40,    _T("Corchea up")) , 
-      lmGlyph(_T("W"),  30,     15,     45,    _T("Semicorchea down")) , 
-      lmGlyph(_T("R"), -10,     25,     40,    _T("Semicorchea up")) , 
-      lmGlyph(_T("X"),  30,     15,     55,    _T("Fusa down")) , 
-      lmGlyph(_T("S"), -10,     20,     45,    _T("Fusa up")) ,
-      lmGlyph(_T("Y"),  30,     15,     60,    _T("Semifusa down")) , 
-      lmGlyph(_T("T"), -10,     20,     45,    _T("Semifusa up"))
-};
-
-//indexes for the table
-enum lmGlyphIndex {
-    eg_Notehead_redonda = 0, 
-    eg_Notehead_blanca, 
-    eg_Notehead_negra, 
-    eg_Notehead_aspa,
-    eg_Corchea_down, 
-    eg_Corchea_up, 
-    eg_Semicorchea_down, 
-    eg_Semicorchea_up, 
-    eg_Fusa_down, 
-    eg_Fusa_up,
-    eg_Semifusa_down, 
-    eg_Semifusa_up, 
-};
-
-
+#include "Glyph.h"
 
 //implementation of the Notes List
 #include <wx/listimpl.cpp>
@@ -394,37 +338,37 @@ void lmNote::ClearChordInformation()
 wxBitmap* lmNote::GetBitmap(double rScale)
 {
 
-    lmGlyphIndex nGlyph = eg_Corchea_up;
+    lmEGlyphIndex nGlyph = GLYPH_EIGHTH_NOTE_UP;
     switch (m_nNoteType) {
         case eEighth :
-            nGlyph = (m_fStemDown ? eg_Corchea_down : eg_Corchea_up);
+            nGlyph = (m_fStemDown ? GLYPH_EIGHTH_NOTE_DOWN : GLYPH_EIGHTH_NOTE_UP);
             break;
         case e16th :
-            nGlyph = (m_fStemDown ? eg_Semicorchea_down : eg_Semicorchea_up);
+            nGlyph = (m_fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
             break;
         case e32th :
-            nGlyph = (m_fStemDown ? eg_Fusa_down : eg_Fusa_up);
+            nGlyph = (m_fStemDown ? GLYPH_32TH_NOTE_DOWN : GLYPH_32TH_NOTE_UP);
             break;
         case e64th :
-            nGlyph = (m_fStemDown ? eg_Semifusa_down : eg_Semifusa_up);
+            nGlyph = (m_fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);
             break;
         case eWhole:
-            nGlyph = eg_Notehead_redonda;
+            nGlyph = GLYPH_NOTEHEAD_WHOLE;
             break;
         case eHalf:
-            nGlyph = eg_Notehead_blanca;
+            nGlyph = GLYPH_NOTEHEAD_HALF;
             break;
         case eQuarter:
-            nGlyph = eg_Notehead_negra;
+            nGlyph = GLYPH_NOTEHEAD_QUARTER;
             break;
         //case ecn_Aspa:                    /// @todo ecn_Aspa is a notehead type not a note type
-        //    nGlyph = eg_Notehead_aspa;
+        //    nGlyph = GLYPH_NOTEHEAD_CROSS;
         //    break;
         default:
             wxASSERT(false);
     }
 
-    wxString sGlyph = aGlyphsInfo[nGlyph].GlyphChar;
+    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
     return PrepareBitMap(rScale, sGlyph);
 
 }
@@ -761,25 +705,26 @@ void lmNote::DrawSingleNote(wxDC* pDC, bool fMeasuring, ENoteType nNoteType,
     In DO_MEASURE mode also stores measurements.
     */
         
-    lmGlyphIndex nGlyph = eg_Corchea_up;
+    lmEGlyphIndex nGlyph = GLYPH_EIGHTH_NOTE_UP;
     switch (nNoteType) {
         case eEighth :
-            nGlyph = (m_fStemDown ? eg_Corchea_down : eg_Corchea_up);
+            nGlyph = (m_fStemDown ? GLYPH_EIGHTH_NOTE_DOWN : GLYPH_EIGHTH_NOTE_UP);
             break;
         case e16th :
-            nGlyph = (m_fStemDown ? eg_Semicorchea_down : eg_Semicorchea_up);
+            nGlyph = (m_fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
             break;
         case e32th :
-            nGlyph = (m_fStemDown ? eg_Fusa_down : eg_Fusa_up);
+            nGlyph = (m_fStemDown ? GLYPH_32TH_NOTE_DOWN : GLYPH_32TH_NOTE_UP);
             break;
         case e64th :
-            nGlyph = (m_fStemDown ? eg_Semifusa_down : eg_Semifusa_up);
+            nGlyph = (m_fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);
             break;
+        //! @todo add case statements for remaining note types
         default:
             wxASSERT(false);
     }
 
-    wxString sGlyph = aGlyphsInfo[nGlyph].GlyphChar;
+    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
   
     if (fMeasuring) {
         // store glyph position
@@ -814,25 +759,25 @@ void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ECabezaNotas nNoteheadType
     // draws a notehead of type nNoteheadType on position (nxLeft, nyTop) with color colorC.
     // In DO_MEASURE mode also stores measurements.
     
-    lmGlyphIndex nGlyph = eg_Notehead_negra;
+    lmEGlyphIndex nGlyph = GLYPH_NOTEHEAD_QUARTER;
     switch (nNoteheadType) {
         case ecn_Redonda:
-            nGlyph = eg_Notehead_redonda;
+            nGlyph = GLYPH_NOTEHEAD_WHOLE;
             break;
         case ecn_Blanca:
-            nGlyph = eg_Notehead_blanca;
+            nGlyph = GLYPH_NOTEHEAD_HALF;
             break;
         case ecn_Negra:
-            nGlyph = eg_Notehead_negra;
+            nGlyph = GLYPH_NOTEHEAD_QUARTER;
             break;
         case ecn_Aspa:
-            nGlyph = eg_Notehead_aspa;
+            nGlyph = GLYPH_NOTEHEAD_CROSS;
             break;
         default:
             wxASSERT(false);
     }
 
-    wxString sGlyph = aGlyphsInfo[nGlyph].GlyphChar;
+    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
 
     if (fMeasuring) {
         // store positions

@@ -45,14 +45,13 @@
 #include "../ldp_parser/LDPParser.h"
 #include "../score/score.h"
 #include "../auxmusic/ComposerV5.h"
-#include "../auxmusic/ComposerV4.h"
 #include "../app/DlgCfgScoreReading.h"
 #include "../app/MainFrame.h"
 #include "../html/TextBookController.h"
 
 
 // access to global functions
-extern void ComputeAccidentals(EKeySignatures nKeySignature, int    nAccidentals[]);
+extern void ComputeAccidentals(EKeySignatures nKeySignature, int nAccidentals[]);
 extern int GetRootNoteIndex(EKeySignatures nKeySignature);
 extern const wxString& GetKeySignatureName(EKeySignatures nKeySignature);
 

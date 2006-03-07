@@ -49,24 +49,24 @@
 
 
 //constants for comparation
-const wxChar chTab = L'\t';
-const wxChar chSpace = L' ';
-const wxChar chApostrophe = L'\'';
-const wxChar chOpenParenthesis = L'(';
-const wxChar chCloseParenthesis = L')';
-const wxChar chSlash = L'/';
-const wxChar chUnderscore = L'_';
-const wxChar chDot = L'.';
-const wxChar chPlusSign = L'+';
-const wxChar chMinusSign = L'-';
-const wxChar chEqualSign = L'=';
-const wxChar chQuotes = L'"';
-const wxChar chLowerSign = L'<';
-const wxChar chGreaterSign = L'>';
-const wxChar chDollar = L'$';
+const wxChar chTab = _T('\t');
+const wxChar chSpace = _T(' ');
+const wxChar chApostrophe = _T('\'');
+const wxChar chOpenParenthesis = _T('(');
+const wxChar chCloseParenthesis = _T(')');
+const wxChar chSlash = _T('/');
+const wxChar chUnderscore = _T('_');
+const wxChar chDot = _T('.');
+const wxChar chPlusSign = _T('+');
+const wxChar chMinusSign = _T('-');
+const wxChar chEqualSign = _T('=');
+const wxChar chQuotes = _T('"');
+const wxChar chLowerSign = _T('<');
+const wxChar chGreaterSign = _T('>');
+const wxChar chDollar = _T('$');
 
-const wxChar nEOF = L'\x0003';        //ETX
-const wxChar nEOL = L'\x0004';        //EOT
+const wxChar nEOF = _T('\x03');        //ETX
+const wxChar nEOL = _T('\x04');        //EOT
 
 const wxString sLetters = _T("ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwxyz");
 const wxString sNumbers = _T("0123456789");
@@ -342,7 +342,7 @@ void lmLDPTokenBuilder::ParseNewToken()
 
             case FT_EOF04:
                 GNC();
-                if (m_curChar == L'E') {
+                if (m_curChar == _T('E')) {
                     nState = FT_EOF05;
                 } else {
                     nState = FT_Error;
@@ -351,7 +351,7 @@ void lmLDPTokenBuilder::ParseNewToken()
 
             case FT_EOF05:
                 GNC();
-                if (m_curChar == L'O') {
+                if (m_curChar == _T('O')) {
                     nState = FT_EOF06;
                 } else {
                     nState = FT_Error;
@@ -360,7 +360,7 @@ void lmLDPTokenBuilder::ParseNewToken()
 
             case FT_EOF06:
                 GNC();
-                if (m_curChar == L'F') {
+                if (m_curChar == _T('F')) {
                     nState = FT_EOF07;
                 } else {
                     nState = FT_Error;

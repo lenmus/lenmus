@@ -4,14 +4,14 @@
 
 <h1>219 - Subdivisión binaria. La corchea con puntillo</h1>
 <p>En este tema se introducen el patrón de corchea con puntillo en ritmos de subdivisión binaria:</p>
-<object type="application/LenMusScore" width="300" height="300"   border="0">\n   <param name="type" value="short" />\n
-    <param name="control_play" value="Tocar" />\n<param name="control_measures" value="Compas %d" />
+<object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
+    <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
         (Metrica 2 4 NoVisible) (opciones (EspacioAntesParte 20))
            (g (n * c.)(n * s)) (Barra Doble) )
         (c (n * n +l)(g (n * c.)(n * s)) (Barra Doble) )
-        (c (g (n * c)(n * c +l))(g (n * c.)(n * s)) (Barra Final))
-        " />
+        (c (n * c g+)(n * c +l))(g (n * c.)(n * s)) (Barra Final))
+        ">
 </object>
 
 <h2>Escucha y observa las diferencias</h2>
@@ -20,30 +20,30 @@ suprimiendo ligados. Observa cómo el ritmo de corchea con puntillo resulta del r
 ya estudiado, al ligar la corchea. A su vez, el ritmo de cochea y dos semicorcheas puede obtenerse del de cuatro
 semicurcheas al ligar las dos primeras.</p>
 
-<object type="application/LenMusScore" width="300" height="300"   border="0">\n   <param name="type" value="short" />\n
-    <param name="control_play" value="Tocar" />\n<param name="control_measures" value="Compas %d" />
+<object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
+    <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
         (Metrica 2 8) (opciones (EspacioAntesParte 20))
-           (g (n * c)(n * s)(n * s)) )
+           (n * c g+)(n * s)(n * s)) )
         (c (g (n * c +l)(n * s)(n * s)) )
         (c (g (n * c.)(n * s)) )
-        (c (g (n * s)(n * s)(n * s)(n * s)) )
+        (c (n * s g+)(n * s)(n * s)(n * s)) )
         (c (g (n * s +l)(n * s)(n * s)(n * s)) )
-        (c (g (n * c)(n * s)(n * s)) ) (Barra Final))
-        " />
+        (c (n * c g+)(n * s)(n * s)) ) (Barra Final))
+        ">
 </object>
 
 <p space="3">De forma similar, puedes obtener y aprender los otros dos patrones de esta lección:</p>
 
-<object type="application/LenMusScore" width="300" height="300"   border="0">\n   <param name="type" value="short" />\n
-    <param name="control_play" value="Tocar" />\n<param name="control_measures" value="Compas %d" />
+<object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
+    <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
         (Metrica 2 8) (opciones (EspacioAntesParte 20))
            (n * n)(g (n * c.)(n * s)) )
         (c (n * n +l)(g (n * c.)(n * s)) )
-        (c (g (n * c)(n * c))(g (n * c.)(n * s)) )
-        (c (g (n * c)(n * c +l))(g (n * c.)(n * s)) (Barra Final))
-        " />
+        (c (n * c g+)(n * c))(g (n * c.)(n * s)) )
+        (c (n * c g+)(n * c +l))(g (n * c.)(n * s)) (Barra Final))
+        ">
 </object>
 
 
@@ -57,16 +57,16 @@ semicurcheas al ligar las dos primeras.</p>
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="B" valor="(g (n * c.)(n * s))" />
+                <patron ritmo="B" valor="(g (n * c.)(n * s))">
             </patrones>
             <claves>
-    <param name="clef" value="Sol;a4;b4" />
+    <param name="clef" value="Sol;a4;b4">
             </claves>
             <metricas>
-    <param name="time" value="x4" />
+    <param name="time" value="x4">
 
             <tonalidades>
-    <param name="key" value="Do" />
+    <param name="key" value="Do">
             </tonalidades>
         </opciones>
     </parametros>
@@ -82,16 +82,16 @@ semicurcheas al ligar las dos primeras.</p>
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="B" valor="(n * n +l)(g (n * c.)(n * s))" />
+                <patron ritmo="B" valor="(n * n +l)(g (n * c.)(n * s))">
             </patrones>
             <claves>
-    <param name="clef" value="Sol;a4;b4" />
+    <param name="clef" value="Sol;a4;b4">
             </claves>
             <metricas>
-    <param name="time" value="x4" />
+    <param name="time" value="x4">
 
             <tonalidades>
-    <param name="key" value="Do" />
+    <param name="key" value="Do">
             </tonalidades>
         </opciones>
     </parametros>
@@ -107,16 +107,16 @@ semicurcheas al ligar las dos primeras.</p>
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="B" valor="(g (n * c)(n * c +l))(g (n * c.)(n * s))" />
+                <patron ritmo="B" valor="(n * c g+)(n * c +l))(g (n * c.)(n * s))">
             </patrones>
             <claves>
-    <param name="clef" value="Sol;a4;b4" />
+    <param name="clef" value="Sol;a4;b4">
             </claves>
             <metricas>
-    <param name="time" value="x4" />
+    <param name="time" value="x4">
 
             <tonalidades>
-    <param name="key" value="Do" />
+    <param name="key" value="Do">
             </tonalidades>
         </opciones>
     </parametros>

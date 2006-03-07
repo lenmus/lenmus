@@ -5,28 +5,28 @@
 <h1>217 - Subdivisión binaria. Tresillo ligado a siguiente nota</h1>
 <p>En este tema se introducen dos nuevos patrones rítmicos, resultantes de ligar la última corchea de un tresillo
 a la parte fuerte del siguiente tiempo:</p>
-<object type="application/LenMusScore" width="300" height="300"   border="0">\n   <param name="type" value="short" />\n
-    <param name="control_play" value="Tocar" />\n<param name="control_measures" value="Compas %d" />
+<object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
+    <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
         (Metrica 2 4 NoVisible) (opciones (EspacioAntesParte 20))
-        (g (n * c)(n * c)(n * c +l) t3)(n * n) )
-        (c (g (n * c)(n * c)(n * c +l) t3)(g (n * c)(n * c)) (Barra Final))
-        " />
+        (n * c g+)(n * c)(n * c +l) t3)(n * n) )
+        (c (n * c g+)(n * c)(n * c +l) t3)(n * c g+)(n * c)) (Barra Final))
+        ">
 </object>
 
 <h2>Escucha y observa las diferencias</h2>
 <p>Observa la diferencia entre el primer y el segundo compas, y entre el tercero y el cuarto. Observa cómo
 los compases 2 y 4 son similares a los compases 1 y 3 pero ligando los tresillos.</p>
 
-<object type="application/LenMusScore" width="300" height="300"   border="0">\n   <param name="type" value="short" />\n
-    <param name="control_play" value="Tocar" />\n<param name="control_measures" value="Compas %d" />
+<object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
+    <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
         (Metrica 2 4) (opciones (EspacioAntesParte 20))
-           (g (n * c)(n * c)(n * c) t3)(n * n) )
-        (c (g (n * c)(n * c)(n * c +l) t3)(n * n) )
-        (c (g (n * c)(n * c)(n * c) t3)(g (n * c)(n * c)) )
-        (c (g (n * c)(n * c)(n * c +l) t3)(g (n * c)(n * c)) (Barra Final))
-        " />
+           (n * c (g + t3))(n * c)(n * c g-)(n * n) )
+        (c (n * c g+)(n * c)(n * c +l) t3)(n * n) )
+        (c (n * c (g + t3))(n * c)(n * c g-)(n * c g+)(n * c)) )
+        (c (n * c g+)(n * c)(n * c +l) t3)(n * c g+)(n * c)) (Barra Final))
+        ">
 </object>
 
 <h2>Ejercicios</h2>
@@ -39,17 +39,17 @@ los compases 2 y 4 son similares a los compases 1 y 3 pero ligando los tresillos
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="B" valor="(g (n * c)(n * c)(n * c +l) t3)(n * n)" />
-                <patron ritmo="B" valor="(g (n * c)(n * c)(n * c +l) t3)(g (n * c)(n * c))" />
+                <patron ritmo="B" valor="(n * c g+)(n * c)(n * c +l) t3)(n * n)">
+                <patron ritmo="B" valor="(n * c g+)(n * c)(n * c +l) t3)(n * c g+)(n * c))">
             </patrones>
             <claves>
-    <param name="clef" value="Sol;a4;b4" />
+    <param name="clef" value="Sol;a4;b4">
             </claves>
             <metricas>
-    <param name="time" value="x4" />
+    <param name="time" value="x4">
 
             <tonalidades>
-    <param name="key" value="Do" />
+    <param name="key" value="Do">
             </tonalidades>
         </opciones>
     </parametros>

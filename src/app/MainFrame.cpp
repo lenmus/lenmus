@@ -1295,7 +1295,7 @@ void lmMainFrame::OnComboZoom(wxCommandEvent& event)
     wxString sValue = event.GetString();
     if (sValue.Cmp(_("Adjust to page")) == 0) {
         //wxLogStatus(_T("Ajustar a página"));
-    } else if (sValue.Find(L'%') != -1) {
+    } else if (sValue.Find(_T('%')) != -1) {
         //wxLogStatus(_T("Zoom '%s'"), sValue.c_str());
     } else {
         //wxLogStatus(_T("Combobox string '%s' selected"), event.GetString().c_str());

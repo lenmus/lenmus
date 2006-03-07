@@ -30,6 +30,8 @@
 #ifndef __REST_H__        //to avoid nested includes
 #define __REST_H__
 
+#include "Glyph.h"
+
 
 class lmRest: public lmNoteRest
 {
@@ -71,10 +73,7 @@ public:
 
 private:
     // access to glyph data to define character to use and selection rectangle 
-    lmTenths GetSelRectHeight();
-    lmTenths GetSelRectShift();
-    lmTenths GetGlyphOffset();
-    wxString GetLenMusChar();
+    lmEGlyphIndex GetGlyphIndex();
 
         // member variables
 

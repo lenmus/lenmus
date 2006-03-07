@@ -197,6 +197,8 @@ private:
     int SplitFragment(wxString sSource);
     wxString GetFirstSegmentDuracion(wxString sSegment,
                                 float* pSegmentDuration, float* pTimeAlignBeat);
+    float GetPatternDuracion(wxString sPattern, lmTimeSignConstrains* pValidTimeSigns);
+
 
 
     // the table

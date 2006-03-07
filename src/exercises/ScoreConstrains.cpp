@@ -35,7 +35,8 @@
 #endif
 
 #include "ScoreConstrains.h"
-#include "../ldp_Parser/AuxString.h"
+#include "../ldp_parser/AuxString.h"
+#include "../ldp_parser/LDPParser.h"
 #include "Generators.h"
 
 // access to the config object
@@ -274,7 +275,7 @@ void lmFragmentsTable::AddEntry(lmTimeSignConstrains* pValidTimeSigns, wxString 
             fFirstSegment = false;
         }
         else {
-            rSegmentDuration = SrcGetPatternDuracion(sSegment);
+            rSegmentDuration = GetPatternDuracion(sSegment, pValidTimeSigns);
             rTimeAlignBeat = 0.0;
         }
 
@@ -452,4 +453,38 @@ int lmFragmentsTable::SplitFragment(wxString sSource)
     return -1;      // not found
         
 }
+
+float lmFragmentsTable::GetPatternDuracion(wxString sPattern, lmTimeSignConstrains* pValidTimeSigns)
+{
+    /*
+        return the total duration of the pattern
+    */
+
+    //prepare source with a measure and instatiate note pitches
+    wxString sSource = _T("(c 1 ") + sPattern;
+    sSource += _T("(Barra Final))");
+    sSource.Replace(_T("*"), _T("a4"));
+
+    // prepare and initialize the score
+    lmLDPParser parserLDP;
+    lmLDPNode* pNode;
+    lmScore* pScore = new lmScore();
+    pScore->AddInstrument(1,0,0);                  //one vstaff, MIDI channel 0, MIDI instr 0
+    lmVStaff *pVStaff = pScore->GetVStaff(1, 1);   //get first vstaff of instr.1
+    pVStaff->AddClef(eclvSol);
+    pVStaff->AddKeySignature(earmDo);
+    //pVStaff->AddTimeSignature( m_nTimeSign );
+    pNode = parserLDP.ParseText(sSource);
+    parserLDP.AnalyzeMeasure(pNode, pVStaff);
+    float rPatternDuration = pVStaff->GetTotalDuration();
+
+    delete pScore;
+
+    //float rPatternDuration=0.0;
+    //rPatternDuration = SrcGetPatternDuracion(sPattern);
+
+    return rPatternDuration;
+
+}
+
 

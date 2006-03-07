@@ -225,6 +225,12 @@
 				RelativePath="..\..\src\score\Formatter3.h">
 			</File>
 			<File
+				RelativePath="..\..\src\score\Glyph.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\score\Glyph.h">
+			</File>
+			<File
 				RelativePath="..\..\src\score\Instrument.cpp">
 			</File>
 			<File

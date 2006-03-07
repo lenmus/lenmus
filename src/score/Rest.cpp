@@ -43,19 +43,7 @@
 #include "wx/debug.h"
 #include "../ldp_parser/AuxString.h"
 
-
-// chars for drawing rests (LeMus font)
-//! @todo                                //larga
-//! @todo                                //breve, cuadrada
-#define CHAR_WHOLE_REST        _T("{")    //redonda
-#define CHAR_HALF_REST        _T("z")    //blanca
-#define CHAR_QUARTER_REST    _T("y")    //negra
-#define CHAR_EIGHT_REST        _T("x")    //corchea
-#define CHAR_16TH_REST        _T("w")    //semicorchea
-#define CHAR_32ND_REST        _T("v")    //fusa
-#define CHAR_64TH_REST        _T("u")    //semifusa
-//! @todo                                //garrapatea
-//! @todo                                //semigarrapatea
+#include "Glyph.h"
 
 
 lmRest::lmRest(lmVStaff* pVStaff, ENoteType nNoteType, float rDuration, bool fDotted, bool fDoubleDotted,
@@ -88,93 +76,24 @@ lmRest::~lmRest()
 // get glyph data to define character to use and selection rectangle 
 //--------------------------------------------------------------------------------------
 
-// returns the y-axis offset from paper cursor position so that shape get correctly
-// positioned over a five-lines staff (units: tenths of inter-line space)
-lmTenths lmRest::GetGlyphOffset()
+lmEGlyphIndex lmRest::GetGlyphIndex()
 {
-    lmTenths yOffset;
-    switch(m_nNoteType)
-    {
-        case eWhole:    yOffset = -20;    break;
-        case eHalf:        yOffset = -20;    break;
-        case eQuarter:        yOffset = -15;    break;
-        case eEighth:    yOffset = -20;    break;
-        case e16th: yOffset = -15;    break;
-        case e32th:        yOffset = -10;    break;
-        case e64th:    yOffset = -25;    break;
-        default:
-            yOffset = 0;
-            wxASSERT_MSG( false, _T("Invalid value for attribute m_nNoteType"));
-    }
+    // returns the index (over global glyphs table) to the character to use to print 
+    // the rest (LenMus font)
 
-    return yOffset;
-
-}
-
-// returns the y-axis offset from bitmap rectangle to the selection rectangle origin
-// (units: tenths of inter-line space)
-lmTenths lmRest::GetSelRectShift()
-{
-    lmTenths yOffset;
-    switch(m_nNoteType)
-    {
-        case eWhole:    yOffset = 30;    break;
-        case eHalf:        yOffset = 35;    break;
-        case eQuarter:        yOffset = 20;    break;
-        case eEighth:    yOffset = 28;    break;
-        case e16th: yOffset = 18;    break;
-        case e32th:        yOffset = 10;    break;
-        case e64th:    yOffset = 25;    break;
-        default:
-            yOffset = 0;
-            wxASSERT_MSG( false, _T("Invalid value for attribute m_nNoteType"));
-    }
-
-    return yOffset;
-
-}
-
-// returns the height of the selection rectangle
-// units: tenths (tenths of inter-line space)
-lmTenths lmRest::GetSelRectHeight()
-{
-    lmTenths nHeight;
-    switch(m_nNoteType)
-    {
-        case eWhole:    nHeight = 5;    break;
-        case eHalf:        nHeight = 5;    break;
-        case eQuarter:        nHeight = 30;    break;
-        case eEighth:    nHeight = 20;    break;
-        case e16th: nHeight = 30;    break;
-        case e32th:        nHeight = 40;    break;
-        case e64th:    nHeight = 50;    break;
-        default:
-            nHeight = 80;
-            wxASSERT_MSG( false, _T("Invalid value for attribute m_nNoteType"));
-    }
-
-    return nHeight;
-
-}
-
-wxString lmRest::GetLenMusChar()
-{
-    // returns the character to use to print the rest (LenMus font)
-
-    wxString sGlyph = CHAR_QUARTER_REST;
     switch (m_nNoteType) {
-        case eWhole:    sGlyph = CHAR_WHOLE_REST;        break;
-        case eHalf:        sGlyph = CHAR_HALF_REST;        break;
-        case eQuarter:        sGlyph = CHAR_QUARTER_REST;        break;
-        case eEighth:    sGlyph = CHAR_EIGHT_REST;        break;
-        case e16th: sGlyph = CHAR_16TH_REST;        break;
-        case e32th:        sGlyph = CHAR_32ND_REST;        break;
-        case e64th:    sGlyph = CHAR_64TH_REST;        break;
+        case eWhole:        return GLYPH_WHOLE_REST;
+        case eHalf:         return GLYPH_HALF_REST;        
+        case eQuarter:      return GLYPH_QUARTER_REST;     
+        case eEighth:       return GLYPH_EIGHTH_REST;       
+        case e16th:         return GLYPH_16TH_REST;        
+        case e32th:         return GLYPH_32ND_REST;        
+        case e64th:         return GLYPH_64TH_REST;        
         default:
             wxASSERT(false);
+            return GLYPH_QUARTER_REST;
     }
 
-    return sGlyph;
 }
 
 //====================================================================================================
@@ -184,7 +103,8 @@ wxString lmRest::GetLenMusChar()
 wxBitmap* lmRest::GetBitmap(double rScale)
 {
     // Create the drag image.
-    wxString sGlyph = GetLenMusChar();
+    lmEGlyphIndex nGlyph = GetGlyphIndex();
+    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
     return PrepareBitMap(rScale, sGlyph);
 
 }
@@ -225,21 +145,22 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //----------------------------------------------------------------------------------
 //    if (fMeasuring) { m_xAnchor = CSng(xLeft)
 //    xAncho = m_oPapel.PintarSilencio(fMeasuring, m_nNoteType, xLeft, yTop)
-    wxString sGlyph = GetLenMusChar();
+    lmEGlyphIndex nGlyph = GetGlyphIndex();
+    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
     if (fMeasuring) {
 
         // store position
         m_glyphPos.x = 0;
         m_glyphPos.y = nyTop - m_paperPos.y +
-            m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
+            m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
 
         // store selection rectangle position and size
         lmMicrons nWidth, nHeight;
         pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
         m_selRect.width = nWidth;
-        m_selRect.height = m_pVStaff->TenthsToLogical( GetSelRectHeight(), m_nStaffNum );
+        m_selRect.height = m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
         m_selRect.x = m_glyphPos.x;
-        m_selRect.y = m_glyphPos.y + m_pVStaff->TenthsToLogical( GetSelRectShift(), m_nStaffNum );
+        m_selRect.y = m_glyphPos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum );
 
         // store total width
         lmMicrons afterSpace = m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
@@ -257,18 +178,19 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //------------------------------------------------------------
     if (m_fDotted || m_fDoubleDotted) {
         nxLeft += m_pVStaff->TenthsToLogical(4, m_nStaffNum);
+        lmMicrons nShift = aGlyphsInfo[nGlyph].SelRectShift + (aGlyphsInfo[nGlyph].SelRectHeight / 2);
         if (!fMeasuring) {
-            //! @todo dot positioning. Shift seems to depend on rest type
             lmMicrons nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
-            lmMicrons yPos = m_glyphPos.y + m_paperPos.y; //nyTop + m_pVStaff->TenthsToLogical(15, m_nStaffNum);
+            lmMicrons yPos = m_glyphPos.y + m_paperPos.y + m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);
             pDC->DrawCircle(nxLeft, yPos, nDotRadius);
         }
-    }
-
-    if (m_fDoubleDotted) {
-        nxLeft += m_pVStaff->TenthsToLogical(4, m_nStaffNum);
-        if (!fMeasuring) {
-            //! @todo dot positioning and drawing
+        if (m_fDoubleDotted) {
+            nxLeft += m_pVStaff->TenthsToLogical(4, m_nStaffNum);
+            if (!fMeasuring) {
+                lmMicrons nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
+                lmMicrons yPos = m_glyphPos.y + m_paperPos.y + m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);
+                pDC->DrawCircle(nxLeft, yPos, nDotRadius);
+            }
         }
     }
 
