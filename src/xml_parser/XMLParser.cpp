@@ -1495,14 +1495,14 @@ bool lmXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     if (fIsRest) {
         pNR = pVStaff->AddRest(nNoteType, rDuration,
                         fDotted, fDoubleDotted,  
-                        nNumStaff, eTP_NoTupla, fBeamed, BeamInfo);
+                        nNumStaff, fBeamed, BeamInfo);
     }
     else {
         pNR = pVStaff->AddNote(true,    //absolute pitch
                         sStep, sOctave, sAlter, nAccidentals,
                         nNoteType, rDuration,
                         fDotted, fDoubleDotted,  
-                        nNumStaff, eTP_NoTupla, fBeamed, BeamInfo, fInChord, fTie,
+                        nNumStaff, fBeamed, BeamInfo, fInChord, fTie,
                         nStem);
     }
 

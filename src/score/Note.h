@@ -41,7 +41,6 @@ public:
         bool fDotted, bool fDoubleDotted,
         wxInt32 nStaff,
         lmContext* pContext, 
-        ETuplas nTupla,
         bool fBeamed, lmTBeamInfo BeamInfo[],
         bool fInChord,
         bool fTie,

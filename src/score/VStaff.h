@@ -64,7 +64,6 @@ public:
     lmRest*    AddRest(ENoteType nNoteType, float rDuration,
                       bool fDotted, bool fDoubleDotted,
                       wxInt32 nStaff,
-                      ETuplas nTupla,
                       bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL);
 
     lmNote*    AddNote(bool fAbsolutePitch,
@@ -73,7 +72,6 @@ public:
                     ENoteType nNoteType, float rDuration,
                     bool fDotted, bool fDoubleDotted,
                     wxInt32 nStaff,
-                    ETuplas nTupla = eTP_NoTupla,
                     bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL,
                     bool fInChord = false,
                     bool fTie = false,
@@ -133,9 +131,6 @@ public:
 
     //sound related methods
     lmSoundManager* ComputeMidiEvents(int nChannel);
-
-    //other methods
-    float GetTotalDuration();
 
 
 

@@ -275,13 +275,6 @@ enum ETipoBarra
     etbDobleRepeticion              //dos puntos-fina-fina-dos puntos
 };
 
-// types of tuples
-enum ETuplas
-{
-    eTP_NoTupla = 0,
-    eTP_Tresillo
-};
-
 //Play modes: instrument to use to play a score
 enum EPlayMode
 {

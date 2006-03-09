@@ -26,6 +26,28 @@
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">9-mar-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>MainFrame: added method DumpScore() to facilitate debugging.</li>
+      <li>Bug detected and fixed: notes duration for second and third note in a triplet is
+        computed wrong in LDP Parser. Method AnalyzeNote() modified. Reviewed usage of enum
+        ETuplas. It were used in version 2.0 but with the creation of object lmTupletBracket it
+        is no longer needed. Removed from all program. With all this the bug of 7/mar (Bad
+        composed scores when triplets in patterns) is fixed. </li>
+      <li>Method VStaff::GetTotalDuration() removed. Too specific and currently not used.</li>
+     </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">8-mar-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>lmFragmentsTable::GetFirstSegmentDuracion() re-coded to convert source pattern 
+        to a score and take duration from score info. Testing.</li>
+      <li>Starting to document Score API.</li>
+     </ul>
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">7-mar-06</td>
     <td class="ListaPar">
     Testing version Beta 3.0b0 and improving program robustness:

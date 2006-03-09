@@ -47,8 +47,7 @@
 
 
 lmRest::lmRest(lmVStaff* pVStaff, ENoteType nNoteType, float rDuration, bool fDotted, bool fDoubleDotted,
-        wxInt32 nStaff, lmContext* pContext, ETuplas nTupla,
-        bool fBeamed, lmTBeamInfo BeamInfo[])
+        wxInt32 nStaff, lmContext* pContext, bool fBeamed, lmTBeamInfo BeamInfo[])
     : lmNoteRest(pVStaff, DEFINE_REST, nNoteType, rDuration, fDotted, fDoubleDotted, nStaff)
 {
 

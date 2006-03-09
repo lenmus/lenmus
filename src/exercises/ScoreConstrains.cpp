@@ -38,6 +38,12 @@
 #include "../ldp_parser/AuxString.h"
 #include "../ldp_parser/LDPParser.h"
 #include "Generators.h"
+#include "../score/Score.h"
+
+//debug
+//#include "../app/MainFrame.h"
+//extern lmMainFrame *GetMainFrame();
+
 
 // access to the config object
 extern wxConfigBase *g_pPrefs;
@@ -381,57 +387,57 @@ lmSegmentEntry* lmFragmentsTable::GetNextSegment()
 
 }
 
-wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
-                                float* pSegmentDuration, float* pTimeAlignBeat)
-{
-    /*
-        - Removes any rests at the beginig of the segment and returns the
-            remaining elements.
-        - Computes the duration of the removed rests and updates with this
-            value variable pointed by pTimeAlignBeat
-        - Computes the duration of the remaining elements and updates with this
-            value variable pointed by pSegmentDuration
-    */
-    int iEnd;
-    wxString sElement;
-    float rSegmentDuration = 0.0;
-    float rTimeToBeatAlign = 0.0;
-    float rElementDuration = 0.0;
-    bool fIsInitialRest;
-    bool fProcessingInitialRests = true;
-    wxString sFirstSegment = _T("");
-
-    wxString sSource = sSegment;
-    while (sSource != _T("") )
-    {
-        //extract the element and remove it from source
-        iEnd = SrcSplitPattern(sSource) + 1;
-        sElement = sSource.Mid(0, iEnd);
-        sSource = sSource.Mid(iEnd);
-
-        //compute element's duration
-        rElementDuration = SrcGetElementDuracion(sElement);
-
-        //determine element type
-        fIsInitialRest = (fProcessingInitialRests ? SrcIsRest(sElement) : false);
-
-        // accumulate element duration
-        if (fIsInitialRest) {
-            rTimeToBeatAlign += rElementDuration;
-        }
-        else {
-            fProcessingInitialRests = false;
-            sFirstSegment += sElement;
-            rSegmentDuration += rElementDuration;
-        }
-    }
-
-    //return results
-    *pSegmentDuration = rSegmentDuration;
-    *pTimeAlignBeat = rTimeToBeatAlign;
-    return sFirstSegment;
-
-}
+//wxString lmFragmentsTable::Old_GetFirstSegmentDuracion(wxString sSegment,
+//                                float* pSegmentDuration, float* pTimeAlignBeat)
+//{
+//    /*
+//        - Removes any rests at the beginig of the segment and returns the
+//            remaining elements.
+//        - Computes the duration of the removed rests and updates with this
+//            value variable pointed by pTimeAlignBeat
+//        - Computes the duration of the remaining elements and updates with this
+//            value variable pointed by pSegmentDuration
+//    */
+//    int iEnd;
+//    wxString sElement;
+//    float rSegmentDuration = 0.0;
+//    float rTimeToBeatAlign = 0.0;
+//    float rElementDuration = 0.0;
+//    bool fIsInitialRest;
+//    bool fProcessingInitialRests = true;
+//    wxString sFirstSegment = _T("");
+//
+//    wxString sSource = sSegment;
+//    while (sSource != _T("") )
+//    {
+//        //extract the element and remove it from source
+//        iEnd = SrcSplitPattern(sSource) + 1;
+//        sElement = sSource.Mid(0, iEnd);
+//        sSource = sSource.Mid(iEnd);
+//
+//        //compute element's duration
+//        rElementDuration = SrcGetElementDuracion(sElement);
+//
+//        //determine element type
+//        fIsInitialRest = (fProcessingInitialRests ? SrcIsRest(sElement) : false);
+//
+//        // accumulate element duration
+//        if (fIsInitialRest) {
+//            rTimeToBeatAlign += rElementDuration;
+//        }
+//        else {
+//            fProcessingInitialRests = false;
+//            sFirstSegment += sElement;
+//            rSegmentDuration += rElementDuration;
+//        }
+//    }
+//
+//    //return results
+//    *pSegmentDuration = rSegmentDuration;
+//    *pTimeAlignBeat = rTimeToBeatAlign;
+//    return sFirstSegment;
+//
+//}
 
 int lmFragmentsTable::SplitFragment(wxString sSource)
 {                    
@@ -476,15 +482,114 @@ float lmFragmentsTable::GetPatternDuracion(wxString sPattern, lmTimeSignConstrai
     //pVStaff->AddTimeSignature( m_nTimeSign );
     pNode = parserLDP.ParseText(sSource);
     parserLDP.AnalyzeMeasure(pNode, pVStaff);
-    float rPatternDuration = pVStaff->GetTotalDuration();
 
+    //The score is built. Traverse it to get total duration
+    lmStaffObj* pSO;
+    lmStaffObjIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
+    pIter->MoveLast();
+    pSO = pIter->GetCurrent();
+    wxASSERT(pSO->GetType() == eTPO_Barline);
+    float rPatternDuration = pSO->GetTimePos();
+
+    // iterator no longer needed. delete it
+    delete pIter;
+
+    //the score is no longer needed. Delete it
     delete pScore;
-
-    //float rPatternDuration=0.0;
-    //rPatternDuration = SrcGetPatternDuracion(sPattern);
 
     return rPatternDuration;
 
 }
+
+wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
+                                float* pSegmentDuration, float* pTimeAlignBeat)
+{
+    /*
+        - Removes any rests at the beginig of the segment and returns the
+            remaining elements.
+        - Computes the duration of the removed rests and updates with this
+            value variable pointed by pTimeAlignBeat
+        - Computes the duration of the remaining elements and updates with this
+            value variable pointed by pSegmentDuration
+    */
+    //prepare source with a measure and instatiate note pitches
+    wxString sSource = _T("(c 1 ") + sSegment;
+    sSource += _T("(Barra Final))");
+    sSource.Replace(_T("*"), _T("a4"));
+
+    // prepare and initialize the score
+    lmLDPParser parserLDP;
+    lmLDPNode* pNode;
+    lmScore* pScore = new lmScore();
+    pScore->AddInstrument(1,0,0);                  //one vstaff, MIDI channel 0, MIDI instr 0
+    lmVStaff *pVStaff = pScore->GetVStaff(1, 1);   //get first vstaff of instr.1
+    pVStaff->AddClef(eclvSol);
+    pVStaff->AddKeySignature(earmDo);
+    //pVStaff->AddTimeSignature( m_nTimeSign );
+    pNode = parserLDP.ParseText(sSource);
+    parserLDP.AnalyzeMeasure(pNode, pVStaff);
+
+    //The score is built. Traverse it to get total duration
+    lmStaffObj* pSO;
+    lmNoteRest* pNR;
+    lmStaffObjIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
+
+    // compute initial rests duration
+    float rRestsDuration = 0.0;
+    while(!pIter->EndOfList()) {
+        pSO = pIter->GetCurrent();
+        if (pSO->GetType() == eTPO_NoteRest) {
+            pNR = (lmNoteRest*) pSO;
+            if (pNR->IsRest()) {
+                rRestsDuration += pNR->GetDuration();        //add duration
+            }
+            else
+                break;
+        }
+        pIter->MoveNext();
+    }
+
+    //now compute remaining duration
+    float rSegmentDuration = 0.0;
+    float rTimeToBeatAlign = 0.0;
+    pIter->MoveLast();
+    pSO = pIter->GetCurrent();
+    wxASSERT(pSO->GetType() == eTPO_Barline);
+    rSegmentDuration = pSO->GetTimePos() - rRestsDuration;
+
+    // iterator no longer needed. delete it
+    delete pIter;
+
+    //the score is no longer needed. Delete it
+    //GetMainFrame()->DumpScore(pScore);  //debug
+    delete pScore;
+
+    // Now remove any rests from the begining of the pattern
+    int iEnd;
+
+    wxString sElement;
+    sSource = sSegment;
+    while (sSource != _T("") ) 
+    {
+        //extract an element
+        iEnd = SrcSplitPattern(sSource) + 1;
+        sElement = sSource.Mid(0, iEnd);
+
+        // if it is a rest remove it from pattern; otherwise finish loop
+        if (SrcIsRest(sElement)) {
+            sSource = sSource.Mid(iEnd);
+        }
+        else {
+            break;
+        }
+    }
+
+    //return results
+    *pSegmentDuration = rSegmentDuration;
+    *pTimeAlignBeat = rTimeToBeatAlign;
+    return sSource;
+
+}
+
 
 

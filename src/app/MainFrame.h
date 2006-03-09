@@ -141,6 +141,10 @@ public:
     void UpdateMenuAndToolbar();
     void UpdateToolbarsLayout();
 
+    //debug method
+    void DumpScore(lmScore* pScore);
+
+
     lmTextBookController* GetBookController() { return m_pBookController; }
 
 

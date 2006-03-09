@@ -1078,13 +1078,6 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     */
 
-    //nTuplet As ETuplas = eTP_NoTupla,
-    //nBeamMode As ETipoAgrupacion = etaSinAgrupar)
-    //Ojo: se le añaden dos parámetros opcionales nTuplet y nBeamMode para compatibilidad con
-    //la sintaxis anterior de los grupos. Estos parámetros son PARA USO EXCLUSIVO de AnalizarGrupo.
-    //Cuando se quiten, es preciso asteriscar/desasteriscar las sentencias marcadas con //ojogrupo
-
-
     wxASSERT(pNode->GetName() == _T("n") || pNode->GetName() == _T("na") );
     
     EStemType nStem = eDefaultStem;
@@ -1099,18 +1092,18 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
 //    Set cAnotaciones = new Collection
     
     
+    //Tuplet brakets
+    bool fEndTuplet = false;
+    int nTupletNumber = 0;      // 0 = no tuplet
+
     //default values
-    ETuplas nTuplet = eTP_NoTupla;                    //ojogrupo
     bool fDotted = false;
     bool fDoubleDotted = false;
     ENoteType nNoteType = eQuarter;
-    float rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nTuplet);
+    float rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nTupletNumber);
     wxString sStep = _T("c");
     wxString sOctave = _T("4");
     EAccidentals nAccidentals = eNoAccidentals;
-
-    //Tuplet brakets
-    bool fEndTuplet = false;
 
 
     //get parameters
@@ -1123,7 +1116,7 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
         return pVStaff->AddNote(false,    //relative pitch
                                 _T("c"), _T("4"), _T("0"), nAccidentals,
                                 nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff,
-                                nTuplet, fBeamed, BeamInfo, fInChord, fTie, nStem);
+                                fBeamed, BeamInfo, fInChord, fTie, nStem);
     }
    
     //analyze firts parameter: pitch and accidentals
@@ -1191,20 +1184,14 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
             // parse G element (G + Tn)
             lmLDPNode* pX = pNode->GetParameter(iP);
             sData = (pX->GetParameter(2))->GetName();     //tuple type
-            int nTupletNumber;
             if (sData == _T("t3")) {
                 nTupletNumber = 3;
-                nTuplet = eTP_Tresillo;
             }
             else if (sData == _T("t4")) {
                 nTupletNumber = 4;
-                nTuplet = eTP_Tresillo;  /// @todo
             }
             else {
-                //wxLogMessage(_T("[lmLDPParser::AnalyzeNote] Tupla: %s"), sData);
-                // triplet assumed
-                nTupletNumber = 3;
-                nTuplet = eTP_Tresillo;
+                wxLogMessage(_T("[lmLDPParser::AnalyzeNote] Tuple type not implemented: %s"), sData);
             }
             //! @todo other tuples (T2, T4, T5, T6, T7).
 
@@ -1357,12 +1344,19 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
         }
     }
 
+    //if not first note of tuple, tuple information is not present and need to be taken from
+    //previous note
+    if (m_pTupletBracket) {
+        // a tuplet is open
+       nTupletNumber = m_pTupletBracket->GetTupletNumber();
+    }
+
     // calculation of duration
-    rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nTuplet);
+    rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nTupletNumber);
 
     lmNote* pNR = pVStaff->AddNote(false,    //relative pitch
                             sStep, sOctave, _T("0"), nAccidentals,
-                            nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff, nTuplet, 
+                            nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff, 
                             fBeamed, BeamInfo, fInChord, fTie, nStem);
 
     // Add notations
@@ -1381,12 +1375,6 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 lmRest* lmLDPParser::AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
-//        Optional ByVal nTupla As ETuplas = eTP_NoTupla, _
-//        Optional ByVal nBeamMode As ETipoAgrupacion = etaSinAgrupar) As CPONota
-//Ojo: se le añaden dos parámetros opcionales nTupla y nBeamMode para compatibilidad con
-//la sintaxis anterior de los grupos. Estos parámetros son PARA USO EXCLUSIVO de AnalizarGrupo.
-//Cuando se quiten, es preciso asteriscar/desasteriscar las sentencias marcadas con //ojogrupo
-
     /*
     Analyze the source of a Rest and with its information builds a lmRest object and appends
     it to the lmVStaff received as parameter. Returns a pointer to the lmRest created.
@@ -1397,13 +1385,17 @@ lmRest* lmLDPParser::AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     wxASSERT(pNode->GetName() == _T("s") );
     
-    
+    //Tuplet brakets
+    bool fEndTuplet = false;
+    int nTupletNumber = 0;      // 0 = no tuplet
+
+    //! @todo rests in a tuplet
+  
     //default values
-    ETuplas nTupla = eTP_NoTupla;                    //ojogrupo
     bool fDotted = false;
     bool fDoubleDotted = false;
     ENoteType nNoteType = eQuarter;
-    float rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nTupla);
+    float rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nTupletNumber);
 
 
     //get parameters
@@ -1413,7 +1405,7 @@ lmRest* lmLDPParser::AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff)
             _T("Faltan parámetros en nodo silencio <%s>. Se supone (s n)."),
             pNode->ToString() ));
         return pVStaff->AddRest(nNoteType, rDuration, fDotted, fDoubleDotted,
-                                m_nCurStaff, nTupla);
+                                m_nCurStaff);
     }
    
     //analyze first parameter: duration and dots
@@ -1500,10 +1492,10 @@ lmRest* lmLDPParser::AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
     
     // compute duration
-    rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nTupla);
+    rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nTupletNumber);
 
     return pVStaff->AddRest(nNoteType, rDuration, fDotted, fDoubleDotted,
-                            m_nCurStaff, nTupla, fBeamed, BeamInfo);
+                            m_nCurStaff, fBeamed, BeamInfo);
 
 }
 
@@ -2121,18 +2113,21 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
 //
 
 float lmLDPParser::GetDefaultDuration(ENoteType nNoteType, bool fDotted, bool fDoubleDotted,
-                      ETuplas nTupla)
+                      int nTupletNumber)
 {
     //compute duration without modifiers
     float rDuration = NoteTypeToDuration(nNoteType, fDotted, fDoubleDotted);
     
     //alter by modifiers (i.e. tupla)
-    switch (nTupla) {
-        case eTP_Tresillo:
+    switch (nTupletNumber) {
+        case 0:     //no tuplet
+            break;
+        case 3:     // triplet
             rDuration = (rDuration * 2) / 3;
             break;
         default:
-            // no alteration needed
+            wxLogMessage(_T("[lmLDPParser::GetDefaultDuration] TODO: other tuplets different from triplet"));
+            //! @todo other tuplets different from triplet
             ;
     }
     

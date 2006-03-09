@@ -855,7 +855,8 @@ equal (=). They representent, respectively, sharps, flats, and naturals. So, for
 <p>With all this, the pitch is just the combination of the previous signs. Examples:</p>
 
 <pre class="example">
-+c4     a sharp C4 note (C of octave 4, the central C)</p>
++c4     a sharp C4 note (C of octave 4, the central C)
+
 --b3    a double flat B3 note (B of octave 3, the B inmediatly below C4)
 </pre>
 
@@ -1743,12 +1744,14 @@ in the first and the last notes of the tuplet.</p>
 that it is the start or the end of a tuplet. After the plus sign there must be a number
 to indicate the tuplet type. For example:</p>
 
-<code class="example">
+<pre class="example">
 (n c4 c (t + 3)) (n d4 c) (n e4 c (t -))
-</code>
+</pre>
 
 <p>This example is a triplet of eight notes, that is, the three notes must be played
 in the time normally allotted for two eight notes.</p>
+
+<p>Additional parameters could be introduce in future to deal with renderization options.</p>
 
 <p>As tuplets are very frequent, to simplify the writting, the tuplet element allows for
 a collapsed syntax: </p>
@@ -1758,9 +1761,9 @@ a collapsed syntax: </p>
 
 <p>So, the previous example can be written as:</p>
 
-<code class="example">
+<pre class="example">
 (n c4 c t3) (n d4 c) (n e4 c t-)
-</code>
+</pre>
 
 
 <p>Also, as the notes in a tuplet are normally beamed, it si not necessary to include
@@ -1768,11 +1771,27 @@ the tuplet notation in the notes and instead can
 be included as a parameter of the group notation. In this cases, only
 the start of the tuplet is required. For example:</p>
 
-<code class="example">
-(n c4 c (g + t3)) (n d4 c)(n e4 c g-)
-</code>
+<pre class="example">
+(n c4 c (g + t3)) (n d4 c) (n e4 c g-)
+</pre>
 
+<div class="important">
+<p><b>To think about:</b> The <q class="example">(g + t3)</q> syntax is dirty: it forces
+to assume that <q class="example">g-</q> implies <q class="example">t-</q> (and this is not
+the case in real scores); it moves the t3 notation inside de g notation; and the gain to
+save writting is minimal. I think it should
+be eliminated. Compare with the alternative: <q class="example">(n c4 c g+ t3) (n d4 c) (n e4 c g- t-)</q></p>
+</div>
 
+<p>Notation <b>t</b> and <b>g</b> can be combined as needed. Examples:</p>
+
+<pre class="example">
+(n c4 c g+) (n d4 s t3) (n c4 s) (n b3 s t- g-)
+</pre>
+
+<pre class="example">
+(n c4 s g+ t3) (n d4 s t3) (n e3 s t-) (n f4 s t3) (n g4 s) (n a4 s t- g-)
+</pre>
 
 
 <!--

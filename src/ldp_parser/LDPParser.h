@@ -72,7 +72,7 @@ public:
 
     // auxiliary methods
     float   GetDefaultDuration(ENoteType nNoteType, bool fDotted, bool fDoubleDotted,
-                      ETuplas nTupla);
+                      int nTupletNumber);
     int     GetBeamingLevel(ENoteType nNoteType);
     bool    ParenthesisMatch(const wxString& sSource);
 

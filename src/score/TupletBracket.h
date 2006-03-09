@@ -31,7 +31,7 @@
 #define __TUPLETBRACKET_H__
 
 
-/*
+/*! @class lmTupletBracket
     A lmTupletBracket represents the optional bracket graphically associated
     to tuplets. The lmTupletBracket object does not have any effect on sound. It is only to  
     describe how a tuplet must be displayed.
@@ -42,9 +42,12 @@
     a pure graphical element, not associated to any note, and I will record here the new
     ideas as they happen.
 
+    During LDP parsing the lmTupletBracket object serves to store tuplet information for
+    coming notes, as only the first note has the tuplet information and it must be
+    propagated to the remaining notes in the tuplet.
+
     1. I'm affraid that there is a need to keep, at least, links to start and end NoteRests
-    so that it is possible to stablish start and end positioning points (as if the bracket
-    where a tie).
+    so that it is possible to stablish start and end positioning points (as in ties).
 
     2. For bracket positioning it is necessry to take into consideration intermediate notes,
     as if a tuplet where a beamed group (this is usually the case)
@@ -71,12 +74,13 @@ public:
     wxString SourceXML();
 
     //specific method of this object
-    void        Include(lmNoteRest* pNR);
-    void        Remove(lmNoteRest* pNR);
-    int            NumNotes();
-    lmNoteRest*    GetStartNote();
-    lmNoteRest*    GetEndNote();
-    void        AutoPosition();
+    void Include(lmNoteRest* pNR);
+    void Remove(lmNoteRest* pNR);
+    int NumNotes();
+    lmNoteRest* GetStartNote();
+    lmNoteRest* GetEndNote();
+    void AutoPosition();
+    int GetTupletNumber() { return m_nTupletNumber; }
 
 
 
@@ -84,17 +88,17 @@ protected:
     void ComputePosition();
 
 
-    NoteRestsList    m_cNotes;    // list of notes/rest grouped by this bracket. 
+    NoteRestsList    m_cNotes;  // list of notes/rest grouped by this bracket. 
                                 // For chords only the base note of the chord 
                                 // is included in this list
     lmMicrons    m_xPaperLeft;
     lmMicrons    m_xPaperRight;
 
     // graphical attributes
-    bool    m_fShowNumber;        // display tuplet number
-    int        m_nTupletNumber;    // number to display
-    bool    m_fBracket;            // display bracket
-    bool    m_fAbove;            // bracket positioned above the notes
+    bool    m_fShowNumber;      // display tuplet number
+    int     m_nTupletNumber;    // number to display
+    bool    m_fBracket;         // display bracket
+    bool    m_fAbove;           // bracket positioned above the notes
 
     // start and end poins coordinates, relative to start note current paper position
     lmMicrons    m_xStart;
@@ -104,7 +108,7 @@ protected:
 
     //For rendering tuplet number. TODO: Replace in future by lmBasicText derivation?
     wxString    m_sFontName;
-    int            m_nFontSize;
+    int         m_nFontSize;
     bool        m_fBold;
     bool        m_fItalic;
 

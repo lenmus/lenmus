@@ -1517,3 +1517,11 @@ void lmMainFrame::OnMetronomeUpdateText(wxCommandEvent& WXUNUSED(event))
     if (m_pMtr) m_pMtr->SetMM(nMM);
 }
 
+void lmMainFrame::DumpScore(lmScore* pScore)
+{
+    if (!pScore) return;
+    lmDlgDebug dlg(this, _T("lmStaff objects dump"), pScore->Dump());
+    dlg.ShowModal();
+
+}
+
