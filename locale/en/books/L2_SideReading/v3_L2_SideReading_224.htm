@@ -7,9 +7,9 @@
 <object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
     <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
-        (Metrica 2 4 NoVisible) (opciones (EspacioAntesParte 20))
-           (n * n +l)(n * s g+)(n * s)(n * s)(n * s)) (Barra Doble) )
-        (c (n * c g+)(n * c +l))(n * s g+)(n * s)(n * s)(n * s)) (Barra Final))
+        (Metrica 2 4 NoVisible)
+           (n * n +l)(n * s g+)(n * s)(n * s)(n * s g-)(Barra Doble))
+        (c (n * c g+)(n * c +l g-)(n * s g+)(n * s)(n * s)(n * s g-)(Barra Final))
         ">
 </object>
 
@@ -18,9 +18,9 @@
 <object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
     <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
-        (Metrica 2 4) (opciones (EspacioAntesParte 20))
-           (n * n +l)(n * s g+)(n * s)(n * s)(n * s)) )
-        (c (n * c g+)(n * c +l))(n * s g+)(n * s)(n * s)(n * s)) (Barra Final))
+        (Metrica 2 4)
+           (n * n +l)(n * s g+)(n * s)(n * s)(n * s g-))
+        (c (n * c g+)(n * c +l g-)(n * s g+)(n * s)(n * s)(n * s g-)(Barra Final))
         ">
 </object>
 
@@ -34,7 +34,7 @@
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="B" valor="(n * n +l)(n * s g+)(n * s)(n * s)(n * s))">
+                <patron ritmo="B" valor="(n * n +l)(n * s g+)(n * s)(n * s)(n * s g-)">
             </patrones>
             <claves>
     <param name="clef" value="Sol;a4;b4">
@@ -59,7 +59,7 @@
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="B" valor="(n * c g+)(n * c +l))(n * s g+)(n * s)(n * s)(n * s))">
+                <patron ritmo="B" valor="(n * c g+)(n * c +l g-)(n * s g+)(n * s)(n * s)(n * s g-)">
             </patrones>
             <claves>
     <param name="clef" value="Sol;a4;b4">

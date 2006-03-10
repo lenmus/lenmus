@@ -12,9 +12,9 @@
 </p>
 <a href="#Feb06">Feb 06</a>
 | <a href="#Jan06">Jan 06</a> | <a href="#Dec05">Dec 05</a> | <a href="#Nov05">Nov 05</a>
-| <a href="#Oct05">Oct 05</a>| <a href="#Sep05">Sep 05</a>| <a href="#Aug05">Aug 05</a>
-| <a href="#Jul05">Jul 05</a>| <a href="#Jun05">Jun 05</a>| <a href="#May05">May 05</a>
-| <a href="#Apr05">Apr 05</a>| <a href="#Mar05">Mar 05</a>| <a href="#Feb05">Feb 05 to start</a>
+| <a href="#Oct05">Oct 05</a> | <a href="#Sep05">Sep 05</a> | <a href="#Aug05">Aug 05</a>
+| <a href="#Jul05">Jul 05</a> | <a href="#Jun05">Jun 05</a> | <a href="#May05">May 05</a>
+| <a href="#Apr05">Apr 05</a> | <a href="#Mar05">Mar 05</a> | <a href="#Feb05">Feb 05 to start</a>
 <p>&nbsp;</p>
 
 <h2><a name="Mar06">March 2006</a></h2>
@@ -25,6 +25,25 @@
     <td class="ListaImpar">Changes<p>
     </td></tr>
 
+<tr valign="top">
+    <td class="ListaPar">10-mar-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>LDP syntax for tuplets reviewed. The '(g + t3)' 
+        syntax is dirty: it forces to assume that 'g-' implies 't-' (and this is 
+        not always the case in real scores); it moves the 't3' notation inside 
+        de 'g' notation (more complex); and the gain to save writting is 
+        minimal. Compare with the alternative: '(n c4 c g+ t3) (n d4 c) (n e4 c 
+        g- t-)'. So the '(g + t3)' syntax has been removed. LDPParser modified 
+        accordingly.</li>
+      <li>lmLDPParser::AnalysisError() method modified to 
+        accept a variable argument list (as printf) and, thus, avoiding to have 
+        to invoke wxString::Format constantly. 
+        <li>All error messages in LDPParser translated to 
+        English and reviewed for internationalization. </li>
+     </ul>
+    Converted side reading lesson 215.
+    </td></tr>
 <tr valign="top">
     <td class="ListaPar">9-mar-06</td>
     <td class="ListaPar">

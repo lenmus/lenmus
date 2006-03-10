@@ -7,10 +7,10 @@
 <object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
     <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
-        (Metrica 2 4 NoVisible) (opciones (EspacioAntesParte 20))
-           (n * s g+)(n * c.)) (Barra Doble) )
-        (c (n * s g+)(n * c. +l))(n * n) (Barra Doble) )
-        (c (n * s g+)(n * c. +l))(n * c g+)(n * c)) (Barra Final))
+        (Metrica 2 4 NoVisible)
+           (n * s g+)(n * c. g-)(Barra Doble))
+        (c (n * s g+)(n * c. +l g-)(n * n)(Barra Doble))
+        (c (n * s g+)(n * c. +l g-)(n * c g+)(n * c g-)(Barra Final))
         ">
 </object>
 
@@ -19,10 +19,10 @@
 <object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
     <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
-        (Metrica 2 4) (opciones (EspacioAntesParte 20))
-           (n * s g+)(n * c.)) (n * s g+)(n * c.)) )
-        (c (n * s g+)(n * c. +l))(n * n) )
-        (c (n * s g+)(n * c. +l))(n * c g+)(n * c)) (Barra Final))
+        (Metrica 2 4)
+           (n * s g+)(n * c. g-)(n * s g+)(n * c. g-))
+        (c (n * s g+)(n * c. +l g-)(n * n))
+        (c (n * s g+)(n * c. +l g-)(n * c g+)(n * c g-)(Barra Final))
         ">
 </object>
 
@@ -36,7 +36,7 @@
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="B" valor="(n * s g+)(n * c.))">
+                <patron ritmo="B" valor="(n * s g+)(n * c. g-)">
             </patrones>
             <claves>
     <param name="clef" value="Sol;a4;b4">
@@ -61,7 +61,7 @@
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="B" valor="(n * s g+)(n * c. +l))(n * n)">
+                <patron ritmo="B" valor="(n * s g+)(n * c. +l g-)(n * n)">
             </patrones>
             <claves>
     <param name="clef" value="Sol;a4;b4">
@@ -86,7 +86,7 @@
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="B" valor="(n * s g+)(n * c. +l))(n * c g+)(n * c))">
+                <patron ritmo="B" valor="(n * s g+)(n * c. +l g-)(n * c g+)(n * c g-)">
             </patrones>
             <claves>
     <param name="clef" value="Sol;a4;b4">

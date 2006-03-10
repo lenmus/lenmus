@@ -7,10 +7,10 @@
 <object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
     <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
-        (Metrica 2 4 NoVisible) (opciones (EspacioAntesParte 20))
-           (g (n * c.)(n * s)) (Barra Doble) )
-        (c (n * n +l)(g (n * c.)(n * s)) (Barra Doble) )
-        (c (n * c g+)(n * c +l))(g (n * c.)(n * s)) (Barra Final))
+        (Metrica 2 4 NoVisible)
+           (n * c. g+)(n * s g-)(Barra Doble))
+        (c (n * n +l)(n * c. g+)(n * s g-)(Barra Doble))
+        (c (n * c g+)(n * c +l g-)(n * c. g+)(n * s g-)(Barra Final))
         ">
 </object>
 
@@ -23,13 +23,13 @@ semicurcheas al ligar las dos primeras.</p>
 <object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
     <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
-        (Metrica 2 8) (opciones (EspacioAntesParte 20))
-           (n * c g+)(n * s)(n * s)) )
-        (c (g (n * c +l)(n * s)(n * s)) )
-        (c (g (n * c.)(n * s)) )
-        (c (n * s g+)(n * s)(n * s)(n * s)) )
-        (c (g (n * s +l)(n * s)(n * s)(n * s)) )
-        (c (n * c g+)(n * s)(n * s)) ) (Barra Final))
+        (Metrica 2 8)
+           (n * c g+)(n * s)(n * s g-))
+        (c (n * c +l g+)(n * s)(n * s g-))
+        (c (n * c. g+)(n * s g-))
+        (c (n * s g+)(n * s)(n * s)(n * s g-))
+        (c (n * s +l g+)(n * s)(n * s)(n * s g-))
+        (c (n * c g+)(n * s)(n * s g-))(Barra Final))
         ">
 </object>
 
@@ -38,11 +38,11 @@ semicurcheas al ligar las dos primeras.</p>
 <object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
     <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
-        (Metrica 2 8) (opciones (EspacioAntesParte 20))
-           (n * n)(g (n * c.)(n * s)) )
-        (c (n * n +l)(g (n * c.)(n * s)) )
-        (c (n * c g+)(n * c))(g (n * c.)(n * s)) )
-        (c (n * c g+)(n * c +l))(g (n * c.)(n * s)) (Barra Final))
+        (Metrica 2 8)
+           (n * n)(n * c. g+)(n * s g-))
+        (c (n * n +l)(n * c. g+)(n * s g-))
+        (c (n * c g+)(n * c g-)(n * c. g+)(n * s g-))
+        (c (n * c g+)(n * c +l g-)(n * c. g+)(n * s g-)(Barra Final))
         ">
 </object>
 
@@ -57,7 +57,7 @@ semicurcheas al ligar las dos primeras.</p>
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="B" valor="(g (n * c.)(n * s))">
+                <patron ritmo="B" valor="(n * c. g+)(n * s g-)">
             </patrones>
             <claves>
     <param name="clef" value="Sol;a4;b4">
@@ -82,7 +82,7 @@ semicurcheas al ligar las dos primeras.</p>
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="B" valor="(n * n +l)(g (n * c.)(n * s))">
+                <patron ritmo="B" valor="(n * n +l)(n * c. g+)(n * s g-)">
             </patrones>
             <claves>
     <param name="clef" value="Sol;a4;b4">
@@ -107,7 +107,7 @@ semicurcheas al ligar las dos primeras.</p>
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="B" valor="(n * c g+)(n * c +l))(g (n * c.)(n * s))">
+                <patron ritmo="B" valor="(n * c g+)(n * c +l g-)(n * c. g+)(n * s g-)">
             </patrones>
             <claves>
     <param name="clef" value="Sol;a4;b4">

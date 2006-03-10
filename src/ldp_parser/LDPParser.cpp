@@ -231,10 +231,16 @@ void lmLDPParser::ParseError(EParsingStates nState, lmLDPToken* pTk)
     
 }
 
-void lmLDPParser::AnalysisError(wxString sMsg)
+void lmLDPParser::AnalysisError(const wxChar* szFormat, ...)
 {
     m_nErrors++;
-    wxLogMessage( _T("** LDP ERROR **: Semantic error. %s"), sMsg );
+
+    va_list argptr;
+    va_start(argptr, szFormat);
+    wxString sMsg = _T("** LDP ERROR **: ") + wxString::FormatV(szFormat, argptr);
+    wxLogMessage(sMsg);
+    va_end(argptr);
+
 }
 
 //void lmLDPParser::MsjeDebug(sEstado As String, m_pTk As lmLDPToken, sMsje As String)
@@ -370,8 +376,8 @@ lmLDPNode* lmLDPParser::LexicalAnalysis()
     
     // at this point m_pCurNode is all the tree. Verify it.
     if (m_pCurNode->GetName() != _T("Root Node")) {
-        AnalysisError( wxString::Format(_T("Error de programa: Element RAIZ expected but found element %s. Analysis stopped."), 
-            m_pCurNode->GetName() ));
+        AnalysisError( _("Element RAIZ expected but found element %s. Analysis stopped."), 
+            m_pCurNode->GetName() );
         m_pCurNode->DumpNode();
         return (lmLDPNode*) NULL;
     }
@@ -526,9 +532,8 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
     int i;
 
     if (pNode->GetName() != _T("Partitura")) {
-        AnalysisError(wxString::Format(
-            _("Element 'Partitura' expected but found element %s. Analysis stopped."),
-            pNode->GetName() ));
+        AnalysisError( _("Element 'Partitura' expected but found element %s. Analysis stopped."),
+            pNode->GetName() );
         return pScore;
     }
     
@@ -541,9 +546,8 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
     iP = 1;
     pX = pNode->GetParameter(iP);     //version
     if (pX->GetName() != _T("Vers")) {
-        AnalysisError(wxString::Format(
-            _("Element 'Vers' expected but found element %s. Analysis stopped."),
-            pX->GetName() ));
+        AnalysisError( _("Element 'Vers' expected but found element %s. Analysis stopped."),
+            pX->GetName() );
         return pScore;
     } else {
         m_sVersion = (pX->GetParameter(1))->GetName();
@@ -566,9 +570,8 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
             pScore = AnalyzeScoreV102(pNode);
             break;
         default:
-            AnalysisError(wxString::Format(
-                _("Error analysing LDP score: LDP version (%d) not supported. Analysis stopped."),
-                m_sVersion ));
+            AnalysisError( _("Error analysing LDP score: LDP version (%d) not supported. Analysis stopped."),
+                m_sVersion );
             return pScore;
     }
 
@@ -600,9 +603,8 @@ lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)
     long nInstruments = 0;
     pX = pNode->GetParameter(iP);
     if (pX->GetName() != _T("NumInstrumentos")) {
-        AnalysisError(wxString::Format(
-            _("Element 'NumInstrumentos' expected but found element %s. Analysis stopped."),
-            pX->GetName() ));
+        AnalysisError( _("Element 'NumInstrumentos' expected but found element %s. Analysis stopped."),
+            pX->GetName() );
         return pScore;
     } else {
         sData = pX->GetParameter(1)->GetName();
@@ -648,9 +650,8 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
     iP = 1;
     
     if (pNode->GetName() != _T("Instrumento")) {
-        AnalysisError(wxString::Format(
-            _T("Element 'Instrumento' expected but found element %s. Analysis stopped."),
-            pNode->GetName() ));
+        AnalysisError( _("Element 'Instrumento' expected but found element %s. Analysis stopped."),
+            pNode->GetName() );
         return;
     }
 
@@ -669,9 +670,8 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
     long nVStaves=0;
     pX = pNode->GetParameter(iP);
     if (pX->GetName() != sLabelNumVStaves) {
-        AnalysisError(wxString::Format(
-            _T("Element %s expected but found element %s. Analysis stopped."),
-            sLabelNumVStaves, pX->GetName() ));
+        AnalysisError( _("Element %s expected but found element %s. Analysis stopped."),
+            sLabelNumVStaves, pX->GetName() );
         return;
     } else {
         sData = (pX->GetParameter(1))->GetName();
@@ -723,9 +723,8 @@ void lmLDPParser::AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
     
     if (pNode->GetName() != sLabel) {
-        AnalysisError(wxString::Format(
-            _T("Se esperaba nodo %s pero viene un nodo %s. Se termina el análisis."),
-            sLabel, pNode->GetName() ));
+        AnalysisError( _("Expected node '%s' but found node '%s'. Analysis ended."),
+            sLabel, pNode->GetName() );
         return;
     }
     
@@ -743,9 +742,8 @@ void lmLDPParser::AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff)
     //analyze first parameter: num of this lmVStaff
     wxString sData1 = (pNode->GetParameter(iP))->GetName();
     if (! sData1.IsNumber()) {
-        AnalysisError(wxString::Format(
-            _T("Se esperaba número de parte y viene %s. Se termina el análisis."),
-            pNode->GetName() ));
+        AnalysisError( _("Expected 'número de parte' but found '%s'. Analysis stopped."),
+            pNode->GetName() );
         return;
     }
     iP++;
@@ -756,9 +754,8 @@ void lmLDPParser::AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff)
     if (pX->IsSimple()) {
         sNumStaves = pX->GetName();
         if (!sNumStaves.IsNumber()) {
-            AnalysisError(wxString::Format(
-                _T("Se esperaba número de pentagramas y viene %s. Se termina el análisis."),
-                pX->GetName() ));
+            AnalysisError( _("Number of staves expected but found '%s'. Analysis stopped."),
+                pX->GetName() );
             return;
         } else {
             iP++;
@@ -883,9 +880,8 @@ void lmLDPParser::AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff)
             //case "TEXTO"
             //    AnalizarDirectivaTexto pVStaff, pX
         } else {
-            AnalysisError(wxString::Format(
-                _T("[AnalyzeMeasure]: Se esperaba nodo 'Figura', 'Grupo', 'Atributo' o 'Desplazamiento' pero viene un nodo <%s>. Se ignora este nodo."),
-                sName ));
+            AnalysisError( _("[AnalyzeMeasure]: Expected node 'Figura', 'Grupo', 'Atributo' or 'Desplazamiento' but found node '%s'. Node ignored."),
+                sName );
         }
     }
 
@@ -1110,9 +1106,8 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
     bool fInChord = (pNode->GetName() == _T("na"));
     long nParms = pNode->GetNumParms();
     if (nParms < 2) {
-        AnalysisError(wxString::Format(
-            _T("Faltan parámetros en nodo nota <%s>. Se supone (n c4 n)."),
-            pNode->ToString() ));
+        AnalysisError( _("Missing parameters in node nota '%s'. Assumed (n c4 n)."),
+            pNode->ToString() );
         return pVStaff->AddNote(false,    //relative pitch
                                 _T("c"), _T("4"), _T("0"), nAccidentals,
                                 nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff,
@@ -1129,17 +1124,15 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
         sAltura = oConverter.MidiPitchToLDPName((lmPitch)nMidi);
     }
     if (LDPDataToPitch(sAltura, &nAccidentals, &sStep, &sOctave)) {
-        AnalysisError(wxString::Format(
-            _T("Altura de nota en <%s> desconocida. Se supone c4."),
-            pNode->ToString() ));
+        AnalysisError( _("Unknown note pitch in '%s'. Assumed 'c4'."),
+            pNode->ToString() );
     }
 
     //analyze second parameter: duration and dots
     wxString sDuration = (pNode->GetParameter(2))->GetName();
     if (NoteTypeToData(sDuration, &nNoteType, &fDotted, &fDoubleDotted)) {
-        AnalysisError(wxString::Format(
-            _T("Note type unknown in %s. A quarter note assumed."),
-            pNode->ToString() ));
+        AnalysisError( _("Note type unknown in '%s'. A quarter note assumed."),
+            pNode->ToString() );
     }
     
     //analyze remaining parameters: annotations
@@ -1150,142 +1143,136 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
 //    nTipoStem = eDefaultStem
 //    
     wxString sData;
+    lmLDPNode* pX;
     int iLevel, nLevel;
     for (int iP = 3; iP <= nParms; iP++)
     {
-        sData = (pNode->GetParameter(iP))->GetName();
-//            case "AMR"       //Articulaciones y acentos: marca de respiración
-//                cAnotaciones.Add sData
-//                
-//            case "C"        //Calderón
-//                nCalderon = eC_ConCalderon
-//                
-        if (sData == _T("+l") || sData == _T("l") ) {       //Tied to the next one
-            fTie = true;
-        }
-        else if (sData == _T("g+")) {       //Start of beamed group. Simple parameter
-            //compute beaming level dependig on note type
-            nLevel = GetBeamingLevel(nNoteType);
-            if (nLevel == -1) {
-                AnalysisError(
-                    _("Requesting beaming a note longer than eight. Beaming ignored."));
+        pX = pNode->GetParameter(iP);
+        if (pX->IsSimple()) {
+            //
+            // Analysis of simple notations
+            //
+            sData = pX->GetName();
+    //            case "AMR"       //Articulaciones y acentos: marca de respiración
+    //                cAnotaciones.Add sData
+    //                
+    //            case "C"        //Calderón
+    //                nCalderon = eC_ConCalderon
+    //                
+            if (sData == _T("+l") || sData == _T("l") ) {       //Tied to the next one
+                fTie = true;
             }
-            else {
-                fBeamed = true;
-                for (iLevel=0; iLevel <= nLevel; iLevel++) {
-                    BeamInfo[iLevel].Type = eBeamBegin;
-                    //wxLogMessage(wxString::Format(
-                    //    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamBegin"), iLevel));
-                }
-            }
-
-        }
-        else if (sData == _T("g")) {       //Start of group element
-            // parse G element (G + Tn)
-            lmLDPNode* pX = pNode->GetParameter(iP);
-            sData = (pX->GetParameter(2))->GetName();     //tuple type
-            if (sData == _T("t3")) {
-                nTupletNumber = 3;
-            }
-            else if (sData == _T("t4")) {
-                nTupletNumber = 4;
-            }
-            else {
-                wxLogMessage(_T("[lmLDPParser::AnalyzeNote] Tuple type not implemented: %s"), sData);
-            }
-            //! @todo other tuples (T2, T4, T5, T6, T7).
-
-            // beaming information
-            if (m_pTupletBracket) {
-                //there is already a beamed group open and not closed
-                AnalysisError(_("Requesting to start a beaming group but there is already a group open. Beaming ignored."));
-            }
-            else {
-                fBeamed = true;
-                BeamInfo[0].Type = eBeamBegin;
-
-                // tuplet braket information
-                bool fShowTupletBracket = true;
-                bool fShowNumber = true;
-                bool fTupletAbove = true;
-                m_pTupletBracket = new lmTupletBracket(fShowNumber, nTupletNumber, 
-                                                    fShowTupletBracket, fTupletAbove);
-            }
-
-        }
-        else if (sData == _T("g-")) {       //End of beamed group
-            // if the group is a tuplet, close the tuplet bracket
-            if (m_pTupletBracket) {
-                fEndTuplet = true;
-            }
-
-            //proceed to close the beamid group
-            bool fCloseBeam = true;     
-
-            //There must exist a previous note/rest
-            if (!g_pLastNoteRest) {
-                AnalysisError(
-                    _("Requesting ending a beaming a group but there is not a  previous note. Beaming ignored."));
-                fCloseBeam = false;
-            }
-            else {
-                // and the previous note must be beamed
-                if (!g_pLastNoteRest->IsBeamed()) {
+            else if (sData == _T("g+")) {       //Start of beamed group. Simple parameter
+                //compute beaming level dependig on note type
+                nLevel = GetBeamingLevel(nNoteType);
+                if (nLevel == -1) {
                     AnalysisError(
-                        _("Requesting ending a beaming a group but previous note is not beamed. Beaming ignored."));
-                    fCloseBeam = false;
-                }
-            }
-
-            //proceed to close all previous open levels
-            if (fCloseBeam) {
-                fBeamed = true;
-                int nCurLevel = GetBeamingLevel(nNoteType);
-                int nPrevLevel = GetBeamingLevel(g_pLastNoteRest->GetNoteType());
-
-                // close commom levels (as this must be done in each if/else branch it has
-                // been moved here to optimize. A commnet has been included there instead to
-                // facilitate the understanding of the algorithm)
-                for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++) {
-                    BeamInfo[iLevel].Type = eBeamEnd;
-                    //wxLogMessage(wxString::Format(
-                    //    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamEnd"), iLevel));
-                }
-
-                // deal with differences between curren and previous levels
-                if (nCurLevel > nPrevLevel) {
-                    // current level is grater than previous one ==> 
-                    // close common levels (done) and put forward in current deeper levels
-                    for (; iLevel <= nCurLevel; iLevel++) {
-                        BeamInfo[iLevel].Type = eBeamForward;
-                        //wxLogMessage(wxString::Format(
-                        //    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamForward"), iLevel));
-                    }
-                }
-                else if  (nCurLevel < nPrevLevel) {
-                    // current level is lower than previous one:
-                    // close common levels (done) and close deeper levels in previous note
-                    for (; iLevel <= nPrevLevel; iLevel++) {
-                        if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
-                            g_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
-                            //wxLogMessage(wxString::Format(
-                            //    _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel));
-                        }
-                        else if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
-                            g_pLastNoteRest->SetBeamType(iLevel, eBeamBackward);
-                            //wxLogMessage(wxString::Format(
-                            //    _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamBackward"), iLevel));
-                        }
-                    }
+                        _("Requesting beaming a note longer than eight. Beaming ignored."));
                 }
                 else {
-                    // current level is equal than previous one:
-                    // close common levels (done)
+                    fBeamed = true;
+                    for (iLevel=0; iLevel <= nLevel; iLevel++) {
+                        BeamInfo[iLevel].Type = eBeamBegin;
+                        //wxLogMessage(wxString::Format(
+                        //    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamBegin"), iLevel));
+                    }
                 }
             }
 
-        }
-                
+            else if (sData == _T("t3")) {       //start of triplet. Simple parameter
+                if (m_pTupletBracket) {
+                    //there is already a tuplet open and not closed
+                    AnalysisError(_("Requesting to start a tuplet but there is already a tuplet open. Tag 't3' ignored."));
+                }
+                else {
+                    nTupletNumber = 3;
+
+                    // tuplet braket information
+                    bool fShowTupletBracket = true;
+                    bool fShowNumber = true;
+                    bool fTupletAbove = true;
+                    m_pTupletBracket = new lmTupletBracket(fShowNumber, nTupletNumber, 
+                                                        fShowTupletBracket, fTupletAbove);
+                }
+            }
+
+            else if (sData == _T("t-")) {       //end of tuplet
+                // if there is an open tuplet, close the tuplet bracket
+                if (m_pTupletBracket) {
+                    fEndTuplet = true;
+                }
+                else {
+                    AnalysisError(_("Requesting to end a tuplet but there is not an open tuplet. Tag 't-' ignored."));
+                }
+            }
+
+            else if (sData == _T("g-")) {       //End of beamed group
+                //allow to close the beamed group
+                bool fCloseBeam = true;     
+
+                //There must exist a previous note/rest
+                if (!g_pLastNoteRest) {
+                    AnalysisError(
+                        _("Requesting ending a beaming a group but there is not a  previous note. Beaming ignored."));
+                    fCloseBeam = false;
+                }
+                else {
+                    // and the previous note must be beamed
+                    if (!g_pLastNoteRest->IsBeamed()) {
+                        AnalysisError(
+                            _("Requesting ending a beaming a group but previous note is not beamed. Beaming ignored."));
+                        fCloseBeam = false;
+                    }
+                }
+
+                //proceed to close all previous open levels
+                if (fCloseBeam) {
+                    fBeamed = true;
+                    int nCurLevel = GetBeamingLevel(nNoteType);
+                    int nPrevLevel = GetBeamingLevel(g_pLastNoteRest->GetNoteType());
+
+                    // close commom levels (as this must be done in each if/else branch it has
+                    // been moved here to optimize. A commnet has been included there instead to
+                    // facilitate the understanding of the algorithm)
+                    for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++) {
+                        BeamInfo[iLevel].Type = eBeamEnd;
+                        //wxLogMessage(wxString::Format(
+                        //    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamEnd"), iLevel));
+                    }
+
+                    // deal with differences between curren and previous levels
+                    if (nCurLevel > nPrevLevel) {
+                        // current level is grater than previous one ==> 
+                        // close common levels (done) and put forward in current deeper levels
+                        for (; iLevel <= nCurLevel; iLevel++) {
+                            BeamInfo[iLevel].Type = eBeamForward;
+                            //wxLogMessage(wxString::Format(
+                            //    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamForward"), iLevel));
+                        }
+                    }
+                    else if  (nCurLevel < nPrevLevel) {
+                        // current level is lower than previous one:
+                        // close common levels (done) and close deeper levels in previous note
+                        for (; iLevel <= nPrevLevel; iLevel++) {
+                            if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
+                                g_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
+                                //wxLogMessage(wxString::Format(
+                                //    _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel));
+                            }
+                            else if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
+                                g_pLastNoteRest->SetBeamType(iLevel, eBeamBackward);
+                                //wxLogMessage(wxString::Format(
+                                //    _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamBackward"), iLevel));
+                            }
+                        }
+                    }
+                    else {
+                        // current level is equal than previous one:
+                        // close common levels (done)
+                    }
+                }
+            }
+
 //            case "PLICA"     //Dirección de la plica
 //                //falta: analizar direccon de la plica
 //                nTipoStem = eStemUp
@@ -1297,6 +1284,23 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
 //                    AnalysisError(wxString::Format(_T("Error: Anotación <" & sData & "> desconocida. Se ignora"
 //                }
 //        }
+
+       }
+
+        else {
+            //
+            // Analysis of compound notations
+            //
+            if (sData == _T("g")) {       //Start of group element
+                wxLogMessage(_T("[lmLDPParser::AnalyzeNote] Old (G + T3) syntax?"));
+                AnalysisError(_("Notation '%s' unknown or not implemented."), sData);
+            }
+
+            else {
+                AnalysisError(_("Notation '%s' unknown or not implemented."), sData);
+            }
+
+        }
     }
     
     //force beaming for notes between eBeamBegin and eBeamEnd
@@ -1401,9 +1405,8 @@ lmRest* lmLDPParser::AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff)
     //get parameters
     long nParms = pNode->GetNumParms();
     if (nParms < 1) {
-        AnalysisError(wxString::Format(
-            _T("Faltan parámetros en nodo silencio <%s>. Se supone (s n)."),
-            pNode->ToString() ));
+        AnalysisError( _("Missing parameters in rest node '%s'. Node replaced by '(s n)'."),
+            pNode->ToString() );
         return pVStaff->AddRest(nNoteType, rDuration, fDotted, fDoubleDotted,
                                 m_nCurStaff);
     }
@@ -1411,9 +1414,8 @@ lmRest* lmLDPParser::AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff)
     //analyze first parameter: duration and dots
     wxString sDuration = (pNode->GetParameter(1))->GetName();
     if (NoteTypeToData(sDuration, &nNoteType, &fDotted, &fDoubleDotted)) {
-        AnalysisError(wxString::Format(
-            _T("Note type unknown in %s. A quarter note assumed."),
-            pNode->ToString() ));
+        AnalysisError( _("Note type unknown in '%s'. A quarter note assumed."),
+            pNode->ToString() );
     }
     
 //    //analiza restantes parámetros: anotaciones
@@ -1549,8 +1551,8 @@ bool lmLDPParser::AnalyzeBarline(lmVStaff* pVStaff, lmLDPNode* pNode)
 
     //check that bar type is specified
     if(pNode->GetNumParms() < 1) {
-        AnalysisError(wxString::Format(
-            _("Element 'Barra' has less parameters that the minimum required. Assumed '(Barra Simple)'.") ));
+        AnalysisError(
+            _("Element 'Barra' has less parameters that the minimum required. Assumed '(Barra Simple)'.") );
         pVStaff->AddBarline(etbBarraNormal, true);
         return false;
     }
@@ -1574,8 +1576,8 @@ bool lmLDPParser::AnalyzeBarline(lmVStaff* pVStaff, lmLDPNode* pNode)
     } else if (sType == _T("DobleRepeticion")) {
         nType = etbDobleRepeticion;
     } else {
-        AnalysisError(wxString::Format(_("Unknown barline type <%s>. Assumed simple barline."),
-            (pNode->GetParameter(1))->GetName() ));
+        AnalysisError( _("Unknown barline type '%s'. Assumed 'Simple' barline."),
+            (pNode->GetParameter(1))->GetName() );
     }
 
     if (pNode->GetNumParms() == 2) {
@@ -1599,8 +1601,8 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
 
     //check that clef type is specified
     if(pNode->GetNumParms() < 1) {
-        AnalysisError(wxString::Format(
-            _("Element 'Clave' has less parameters that the minimum required. Assumed '(Clef Sol)'.") ));
+        AnalysisError(
+            _("Element 'Clave' has less parameters that the minimum required. Assumed '(Clef Sol)'.") );
         pVStaff->AddClef(eclvSol, 1, true);
         return false;
     }
@@ -1609,7 +1611,7 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
     wxString sName = (pNode->GetParameter(iP))->GetName();
     EClefType nClef = LDPNameToClef(sName);
     if (nClef == (EClefType)-1) {
-        AnalysisError(wxString::Format(_("Unknown clef '%s'. Assumed 'Sol'."), sName));
+        AnalysisError( _("Unknown clef '%s'. Assumed 'Sol'."), sName );
         nClef = eclvSol;
     }
     iP++;
@@ -1795,8 +1797,7 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
 
     //check that the two numbers are specified
     if(pNode->GetNumParms() < 2) {
-        AnalysisError(wxString::Format(
-            _("Element 'Metrica' has less parameters that the minimum required. Assumed '(Metrica 4 4)'.") ));
+        AnalysisError( _("Element 'Metrica' has less parameters that the minimum required. Assumed '(Metrica 4 4)'.") );
         pVStaff->AddTimeSignature(emtr44);
         return false;
     }
@@ -1804,9 +1805,9 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
     wxString sNum1 = (pNode->GetParameter(1))->GetName();
     wxString sNum2 = (pNode->GetParameter(2))->GetName();
     if (!sNum1.IsNumber() || !sNum2.IsNumber()) {
-        AnalysisError(wxString::Format( wxString::Format(
+        AnalysisError(
             _("Element 'Metrica': Two numbers expected but found '%s' and '%s'. Assumed '(Metrica 4 4)'."),
-            sNum1, sNum2 )));
+            sNum1, sNum2 );
         pVStaff->AddTimeSignature(emtr44);
         return false;
     }

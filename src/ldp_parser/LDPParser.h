@@ -67,8 +67,11 @@ public:
 
     // for lmLDPToken
     const wxString& GetNewBuffer();
-    void            AnalysisError(wxString sMsg);
-    void            ParseMsje(wxString sMsg);
+
+    // error and logging
+    void AnalysisError(const wxChar* szFormat, ...);
+    void ParseMsje(wxString sMsg);
+
 
     // auxiliary methods
     float   GetDefaultDuration(ENoteType nNoteType, bool fDotted, bool fDoubleDotted,

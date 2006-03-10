@@ -85,8 +85,6 @@ Planning: comming releases
 
 Bugs to solve:
 	2 - stems too long if a rest in middle (lesson 212)
-	1 - AuxString::SrcGetPatternDuracion() does not work for irregular groups (i.e. triplets).
-		This causes Composer5 bad compositions.
 		
 Modifications to L2_SideReading eBook:
 	- Once finished, review clefs and notes ranges.

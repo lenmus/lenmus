@@ -1737,7 +1737,7 @@ s (g2 + t3)) (n * s)(n * s g1-)</p>
 (a tuplet bracked and/or a number) marks this group of notes. The notes in a tuplet are
 usually beamed together but this is not always the case.</p>
 
-<p>In LDP, to specify the notes that form a tuplet a notation <b>t</b> (tuplet) must be included
+<p>In LDP, to specify the notes that form a tuplet, a notation <b>t</b> (tuplet) must be included
 in the first and the last notes of the tuplet.</p>
 
 <p>The first parameter is a plus sign (+) or a minus sign (-) to signal, respectively,
@@ -1751,7 +1751,7 @@ to indicate the tuplet type. For example:</p>
 <p>This example is a triplet of eight notes, that is, the three notes must be played
 in the time normally allotted for two eight notes.</p>
 
-<p>Additional parameters could be introduce in future to deal with renderization options.</p>
+<p>Additional parameters could be introduced in future to deal with renderization options.</p>
 
 <p>As tuplets are very frequent, to simplify the writting, the tuplet element allows for
 a collapsed syntax: </p>
@@ -1766,24 +1766,8 @@ a collapsed syntax: </p>
 </pre>
 
 
-<p>Also, as the notes in a tuplet are normally beamed, it si not necessary to include
-the tuplet notation in the notes and instead can
-be included as a parameter of the group notation. In this cases, only
-the start of the tuplet is required. For example:</p>
-
-<pre class="example">
-(n c4 c (g + t3)) (n d4 c) (n e4 c g-)
-</pre>
-
-<div class="important">
-<p><b>To think about:</b> The <q class="example">(g + t3)</q> syntax is dirty: it forces
-to assume that <q class="example">g-</q> implies <q class="example">t-</q> (and this is not
-the case in real scores); it moves the t3 notation inside de g notation; and the gain to
-save writting is minimal. I think it should
-be eliminated. Compare with the alternative: <q class="example">(n c4 c g+ t3) (n d4 c) (n e4 c g- t-)</q></p>
-</div>
-
-<p>Notation <b>t</b> and <b>g</b> can be combined as needed. Examples:</p>
+<p>Notation <b>t</b> does not implies beaming. Therefore notations <b>t</b> and <b>g</b>
+must be combined as needed. Examples:</p>
 
 <pre class="example">
 (n c4 c g+) (n d4 s t3) (n c4 s) (n b3 s t- g-)

@@ -8,9 +8,9 @@ a la parte fuerte del siguiente tiempo:</p>
 <object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
     <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
-        (Metrica 2 4 NoVisible) (opciones (EspacioAntesParte 20))
-        (n * c g+)(n * c)(n * c +l) t3)(n * n) )
-        (c (n * c g+)(n * c)(n * c +l) t3)(n * c g+)(n * c)) (Barra Final))
+        (Metrica 2 4 NoVisible)
+        (n * c g+ t3)(n * c)(n * c g- t-)(n * n))
+        (c (n * c g+ t3)(n * c)(n * c g- t-)(n * c g+)(n * c g-)(Barra Final))
         ">
 </object>
 
@@ -21,11 +21,11 @@ los compases 2 y 4 son similares a los compases 1 y 3 pero ligando los tresillos
 <object type="application/LenMusScore" width="300" height="80" border="0">\n   <param name="type" value="short">\n
     <param name="control_play" value="Tocar">\n<param name="control_measures" value="Compas %d">
     <param name="music" value="
-        (Metrica 2 4) (opciones (EspacioAntesParte 20))
-           (n * c (g + t3))(n * c)(n * c g-)(n * n) )
-        (c (n * c g+)(n * c)(n * c +l) t3)(n * n) )
-        (c (n * c (g + t3))(n * c)(n * c g-)(n * c g+)(n * c)) )
-        (c (n * c g+)(n * c)(n * c +l) t3)(n * c g+)(n * c)) (Barra Final))
+        (Metrica 2 4)
+           (n * c g+ t3)(n * c)(n * c g- t-)(n * n))
+        (c (n * c g+ t3)(n * c)(n * c g- t-)(n * n))
+        (c (n * c g+ t3)(n * c)(n * c g- t-)(n * c g+)(n * c g-))
+        (c (n * c g+ t3)(n * c)(n * c +l g- t-)(n * c g+)(n * c g-)(Barra Final))
         ">
 </object>
 
@@ -39,8 +39,8 @@ los compases 2 y 4 son similares a los compases 1 y 3 pero ligando los tresillos
         <modo>porPrograma</modo>
         <opciones>
             <patrones>
-                <patron ritmo="B" valor="(n * c g+)(n * c)(n * c +l) t3)(n * n)">
-                <patron ritmo="B" valor="(n * c g+)(n * c)(n * c +l) t3)(n * c g+)(n * c))">
+                <patron ritmo="B" valor="(n * c g+ t3)(n * c)(n * c +l g- t-)(n * n)">
+                <patron ritmo="B" valor="(n * c g+ t3)(n * c)(n * c +l g- t-)(n * c g+)(n * c g-)">
             </patrones>
             <claves>
     <param name="clef" value="Sol;a4;b4">
