@@ -88,7 +88,6 @@ Bugs to solve:
 		
 Modifications to L2_SideReading eBook:
 	- Once finished, review clefs and notes ranges.
-	- Lesson 14: Triplets. Review content.
 
 
 ?/???/2006 - Beta 3.0b0 release

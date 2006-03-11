@@ -176,7 +176,7 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //draw dots
     //------------------------------------------------------------
     if (m_fDotted || m_fDoubleDotted) {
-        nxLeft += m_pVStaff->TenthsToLogical(4, m_nStaffNum);
+        nxLeft += m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         lmMicrons nShift = aGlyphsInfo[nGlyph].SelRectShift + (aGlyphsInfo[nGlyph].SelRectHeight / 2);
         if (!fMeasuring) {
             lmMicrons nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
@@ -184,7 +184,7 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
             pDC->DrawCircle(nxLeft, yPos, nDotRadius);
         }
         if (m_fDoubleDotted) {
-            nxLeft += m_pVStaff->TenthsToLogical(4, m_nStaffNum);
+            nxLeft += m_pVStaff->TenthsToLogical(5, m_nStaffNum);
             if (!fMeasuring) {
                 lmMicrons nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
                 lmMicrons yPos = m_glyphPos.y + m_paperPos.y + m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);

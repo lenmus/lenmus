@@ -482,7 +482,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //draw dots
     //------------------------------------------------------------
     if (m_fDotted || m_fDoubleDotted) {
-        nxLeft += m_pVStaff->TenthsToLogical(4, m_nStaffNum);
+        nxLeft += m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         if (!fMeasuring) {
             lmMicrons halfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
             lmMicrons nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
@@ -497,7 +497,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     }
 
     if (m_fDoubleDotted) {
-        nxLeft += m_pVStaff->TenthsToLogical(4, m_nStaffNum);
+        nxLeft += m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         if (!fMeasuring) {
             lmMicrons halfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
             lmMicrons nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);

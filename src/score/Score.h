@@ -107,16 +107,16 @@ This definition of note type has the following properties:
 */
 enum ENoteType
 {
-    eLong = 0,      // es: cuadrada,        en-UK: breve
-    eWhole,         // es: redonda,         en-UK: semibreve
-    eHalf,          // es: blanca,          en-UK: minim
-    eQuarter,       // es: negra,           en-UK: crochet
-    eEighth,        // es: corchea,         en-UK: quaver
-    e16th,          // es: semicorchea,     en-UK: semiquaver
-    e32th,          // es: fusa,            en-UK: demisemiquaver
-    e64th,          // es: semifusa,        en-UK: hemidemisemiquaver
-    e128th,         // es: garrapatea
-    e256th          // es: semigarrapatea
+    eLong = 0,      // es: cuadrada,        en-UK: breve                    en-USA: double whole
+    eWhole,         // es: redonda,         en-UK: semibreve                en_USA: whole
+    eHalf,          // es: blanca,          en-UK: minim                    en_USA: half
+    eQuarter,       // es: negra,           en-UK: crochet                  en_USA: quarter
+    eEighth,        // es: corchea,         en-UK: quaver                   en_USA: eighth
+    e16th,          // es: semicorchea,     en-UK: semiquaver               en_USA: 16th
+    e32th,          // es: fusa,            en-UK: demisemiquaver           en_USA: 32th
+    e64th,          // es: semifusa,        en-UK: hemidemisemiquaver       en_USA: 64th
+    e128th,         // es: garrapatea       en-UK: semihemidemisemiquaver   en_USA: 128th
+    e256th          // es: semigarrapatea   en-UK: ?                        en_USA: 256th
 };
 
 // to facilitate access to standard notes' duration. 
