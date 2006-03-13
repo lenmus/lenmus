@@ -31,7 +31,7 @@
 		- @ref internationalization
 		- @ref context_for_notes
 		- @ref internal_links
-		- @ref side_reading_modes
+		- @ref music_reading_modes
 		
     - @subpage algorithms
 		- @ref xml_measure_atributes

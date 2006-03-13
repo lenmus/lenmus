@@ -48,9 +48,9 @@ extern lmMainFrame* g_pMainFrame;
     <!-- ====================================== -->
 
     There are cases in which it is necessary to have links containing commands for the
-    program. For example, embbeding a SideReadingCtrol in side reading books is not a 
+    program. For example, embbeding a MusicReadingCtrol in music reading books is not a 
     good solution as normally there are two or more exercises associated to a lesson. 
-    So, it is necessary to jump to a sideReading dialog customized
+    So, it is necessary to jump to a MusicReading dialog customized
 	according exercises needs; and this dialog must have a "return to theory" link. All
     these forward/backward links must be managed by the program, as well as the dynamic
     generation of the html page.

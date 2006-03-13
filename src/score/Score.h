@@ -113,7 +113,7 @@ enum ENoteType
     eQuarter,       // es: negra,           en-UK: crochet                  en_USA: quarter
     eEighth,        // es: corchea,         en-UK: quaver                   en_USA: eighth
     e16th,          // es: semicorchea,     en-UK: semiquaver               en_USA: 16th
-    e32th,          // es: fusa,            en-UK: demisemiquaver           en_USA: 32th
+    e32th,          // es: fusa,            en-UK: demisemiquaver           en_USA: 32nd
     e64th,          // es: semifusa,        en-UK: hemidemisemiquaver       en_USA: 64th
     e128th,         // es: garrapatea       en-UK: semihemidemisemiquaver   en_USA: 128th
     e256th          // es: semigarrapatea   en-UK: ?                        en_USA: 256th

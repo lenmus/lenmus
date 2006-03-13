@@ -58,15 +58,15 @@ extern lmPaths* g_pPaths;
 
 /*
     This dialog is called from to different exercises:
-        - Notes reading (key = "single_notes_reading")
-        - Side reading (user configurated) (key="single_side_reading")
+        - Notes reading (key = "single_clefs_reading")
+        - Music reading (user configurated) (key="single_music_reading")
 
-    For 'Notes reading' the dialog allows user to configure:
+    For 'Clefs reading' the dialog allows user to configure:
         - Clefs and notes range
         - Key signatures
         - Max interval
 
-    For 'Side Reading' the dialog allows user to configure all parameters
+    For 'Music Reading' the dialog allows user to configure all parameters
     and to invoke the Pattern Editor Dialog
 */
 
@@ -161,11 +161,11 @@ lmDlgCfgScoreReading::lmDlgCfgScoreReading(wxWindow * parent,
     m_pConstrains = pConstrains;
     m_sSettingsKey = sSettingsKey;
     
-    if (m_sSettingsKey == _T("single_notes_reading")) {
+    if (m_sSettingsKey == _T("single_clefs_reading")) {
         m_nDialogType = eDlgNotesReading;
     }
-    else if (m_sSettingsKey == _T("single_side_reading")) {
-        m_nDialogType = eDlgSideReading;
+    else if (m_sSettingsKey == _T("single_music_reading")) {
+        m_nDialogType = eDlgMusicReading;
     }
     else {
         m_nDialogType = eDlgCfgError;
@@ -354,7 +354,7 @@ lmDlgCfgScoreReading::lmDlgCfgScoreReading(wxWindow * parent,
         m_pBook->DeletePage(1);    // Key Sigantures (note that after deleting a page pages get renumbered)
         m_pBook->DeletePage(1);    // Rhythm signatures
     }
-    else {    //single_side_reading key
+    else {    //single_music_reading key
         // all panels visible
     }
 
@@ -390,22 +390,26 @@ void lmDlgCfgScoreReading::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     // save maxInterval
     m_pConstrains->SetMaxInterval( m_pSpinMaxInterval->GetValue() );
 
-    //
-    // Save data from panel 1: allowed time signatures
-    //
-    lmTimeSignConstrains* pTimeSigns = m_pConstrains->GetTimeSignConstrains();
-    for (i=0; i < lmMAX_TIME_SIGN - lmMIN_TIME_SIGN + 1; i++) {
-        pTimeSigns->SetValid((ETimeSignature)(i+lmMIN_TIME_SIGN), m_pChkTime[i]->GetValue() );
-    }
+    //save data from next pages only when they exists!
+    if (m_nDialogType != eDlgNotesReading) {
 
-    //
-    // Save data from panel 2: allowed key signatures
-    //
-    lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
-    for (i=0; i < earmFa+1; i++) {
-        pKeyConstrains->SetValid((EKeySignatures)i, m_pChkKeySign[i]->GetValue());
-    }
+        //
+        // Save data from panel 1: allowed time signatures
+        //
+        lmTimeSignConstrains* pTimeSigns = m_pConstrains->GetTimeSignConstrains();
+        for (i=0; i < lmMAX_TIME_SIGN - lmMIN_TIME_SIGN + 1; i++) {
+            pTimeSigns->SetValid((ETimeSignature)(i+lmMIN_TIME_SIGN), m_pChkTime[i]->GetValue() );
+        }
 
+        //
+        // Save data from panel 2: allowed key signatures
+        //
+        lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
+        for (i=0; i < earmFa+1; i++) {
+            pKeyConstrains->SetValid((EKeySignatures)i, m_pChkKeySign[i]->GetValue());
+        }
+
+    }
 
     //terminate the dialog 
     //! @todo save the currently shown panel number to open this panel next time
@@ -476,49 +480,52 @@ bool lmDlgCfgScoreReading::VerifyData()
     }
     fGlobalError |= fError;
 
-        //
-        //  Data in panel 1: allowed time signatures
-        //
+    //verify next pages only when they exists!
+    if (m_nDialogType != eDlgNotesReading) {
 
-    // hide error messages and error icons
-    m_pLblTimeError->Show(false);
-    m_pBmpTimeError->Show(false);
+            //
+            //  Data in panel 1: allowed time signatures
+            //
 
-    // check that at least one time signature is selected
-    fAtLeastOne = false;
-    for (i=0; i < 7; i++) {
-        if (m_pChkTime[i]->GetValue()) {
-            fAtLeastOne = true;
+        // hide error messages and error icons
+        m_pLblTimeError->Show(false);
+        m_pBmpTimeError->Show(false);
+
+        // check that at least one time signature is selected
+        fAtLeastOne = false;
+        for (i=0; i < 7; i++) {
+            if (m_pChkTime[i]->GetValue()) {
+                fAtLeastOne = true;
+            }
         }
+        fError = !fAtLeastOne;
+        if (fError) {
+            m_pLblTimeError->Show(true);
+            m_pBmpTimeError->Show(true);
+        }
+        fGlobalError |= fError;
+
+            //
+            //  Data in panel 2: allowed key signatures
+            //
+
+        // hide error messages and error icons
+        m_pBmpKeySignError->Show(false);
+        m_pLblKeySignError->Show(false);
+
+        // check that at least one key signature has been choosen
+        fAtLeastOne = false;
+        for (i=0; i < earmFa+1; i++) {
+            fAtLeastOne |= m_pChkKeySign[i]->GetValue();
+        }
+        fError = !fAtLeastOne;
+        if (fError) {
+            m_pLblKeySignError->Show(true);
+            m_pBmpKeySignError->Show(true);
+        }
+        fGlobalError |= fError;
+
     }
-    fError = !fAtLeastOne;
-    if (fError) {
-        m_pLblTimeError->Show(true);
-        m_pBmpTimeError->Show(true);
-    }
-    fGlobalError |= fError;
-
-        //
-        //  Data in panel 2: allowed key signatures
-        //
-
-    // hide error messages and error icons
-    m_pBmpKeySignError->Show(false);
-    m_pLblKeySignError->Show(false);
-
-    // check that at least one key signature has been choosen
-    fAtLeastOne = false;
-    for (i=0; i < earmFa+1; i++) {
-        fAtLeastOne |= m_pChkKeySign[i]->GetValue();
-    }
-    fError = !fAtLeastOne;
-    if (fError) {
-        m_pLblKeySignError->Show(true);
-        m_pBmpKeySignError->Show(true);
-    }
-    fGlobalError |= fError;
-
-
 
     //! @todo verify that there are fragments for the choosen time signatures 
 

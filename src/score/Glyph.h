@@ -75,8 +75,8 @@ enum lmEGlyphIndex {
     GLYPH_EIGHTH_NOTE_UP, 
     GLYPH_16TH_NOTE_DOWN,   //16th, semicorchea
     GLYPH_16TH_NOTE_UP, 
-    GLYPH_32TH_NOTE_DOWN,   //32th, fusa 
-    GLYPH_32TH_NOTE_UP,
+    GLYPH_32ND_NOTE_DOWN,   //32nd, fusa 
+    GLYPH_32ND_NOTE_UP,
     GLYPH_64TH_NOTE_DOWN,   //64th, semifusa 
     GLYPH_64TH_NOTE_UP,
     ////! @todo,    //128th garrapatea
@@ -90,7 +90,7 @@ enum lmEGlyphIndex {
     GLYPH_QUARTER_REST,     //quarter, negra
     GLYPH_EIGHTH_REST,      //eighth, corchea
     GLYPH_16TH_REST,        //16th, semicorchea
-    GLYPH_32ND_REST,        //32th, fusa
+    GLYPH_32ND_REST,        //32nd, fusa
     GLYPH_64TH_REST,        //64th, semifusa
     ////! @todo,    //128th garrapatea
     ////! @todo,    //256th semigarrapatea

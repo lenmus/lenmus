@@ -52,7 +52,7 @@
     lmTheoKeySignCtrol : public wxWindow
     lmEarIntervalsCtrol : public wxWindow
     lmEarCompareIntvCtrol : public wxWindow
-    lmTheoSideReadingCtrol : public wxWindow
+    lmTheoMusicReadingCtrol : public wxWindow
 
 
     <object> directives and param classes
@@ -105,7 +105,7 @@
 #include "../exercises/EarIntvalConstrains.h"
 #include "../exercises/TheoKeySignConstrains.h"
 #include "../exercises/TheoKeySignCtrol.h"
-#include "../exercises/TheoSideReadingCtrol.h"
+#include "../exercises/TheoMusicReadingCtrol.h"
 
 /*
 \<object\>
@@ -116,7 +116,7 @@
 */
 
 #include "ObjectParams.h"
-#include "TheoSideReadingCtrolParms.h"
+#include "TheoMusicReadingCtrolParms.h"
 #include "ScoreCtrolParams.h"
 
 
@@ -909,7 +909,7 @@ enum EHtmlObjectTypes {
     eHO_Exercise_TheoKeySignatures,
     eHO_Exercise_EarIntervals,
     eHO_Exercise_EarCompareIntervals,
-    eHO_Exercise_TheoSideReading,
+    eHO_Exercise_TheoMusicReading,
     eHO_Control
 };
 
@@ -961,8 +961,8 @@ TAG_HANDLER_PROC(tag)
                 nType = eHO_Exercise_EarIntervals;
             else if (sType.Upper() == _T("APPLICATION/LENMUSEARCOMPAREINTERVALS"))
                 nType = eHO_Exercise_EarCompareIntervals;
-            else if (sType.Upper() == _T("APPLICATION/LENMUSTHEOSIDEREADING"))
-                nType = eHO_Exercise_TheoSideReading;
+            else if (sType.Upper() == _T("APPLICATION/LENMUSTHEOMUSICREADING"))
+                nType = eHO_Exercise_TheoMusicReading;
         }
         if (nType == eHO_Unknown) return true;        // type non processable by LenMus
 
@@ -1032,8 +1032,8 @@ TAG_HANDLER_PROC(tag)
                     nPercent, nStyle);
                 break;
 
-            case eHO_Exercise_TheoSideReading:
-                m_pObjectParams = new lmTheoSideReadingCtrolParms(tag, nWidth, nHeight, 
+            case eHO_Exercise_TheoMusicReading:
+                m_pObjectParams = new lmTheoMusicReadingCtrolParms(tag, nWidth, nHeight, 
                     nPercent, nStyle);
                 break;
 

@@ -77,7 +77,7 @@ const lmGlyph aGlyphsInfo[] =
     lmGlyph(_T('y'), -15,     20,     30,    _T("")) ,    //quarter negra
     lmGlyph(_T('x'), -15,     28,     20,    _T("")) ,    //eighth corchea
     lmGlyph(_T('w'),  -7,     18,     30,    _T("")) ,    //16th semicorchea
-    lmGlyph(_T('v'),  -7,     10,     40,    _T("")) ,    //32th fusa
+    lmGlyph(_T('v'),  -7,     10,     40,    _T("")) ,    //32nd fusa
     lmGlyph(_T('u'), -25,     25,     40,    _T("")) ,    //64th semifusa
 //  lmGlyph(_T('?'), -20,     30,     5,     _T("")) ,    //128th garrapatea
 //  lmGlyph(_T('?'), -20,     30,     5,     _T("")) ,    //256th semigarrapatea

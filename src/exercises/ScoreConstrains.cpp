@@ -51,7 +51,7 @@ extern wxConfigBase *g_pPrefs;
 
 lmScoreConstrains::lmScoreConstrains()
 {
-    /*  Score Constrains objec are only created in html ScoreSideReading exercises.
+    /*  Score Constrains objec are only created in html ScoreMusicReading exercises.
         The exercise must provide all necessary values.
         When a 'section key' is provided - by invoking method SetSection() - this object
         valuaes are loaded from cofiguration file (or with default values if the key

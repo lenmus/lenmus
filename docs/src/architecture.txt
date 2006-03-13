@@ -273,8 +273,8 @@ Lets try alternative 3 (2005-08-16).
 <!-- ====================================================== -->
 There are "two" metronomes:
 
-	1. An independent one, to be used when the student is practising side reading. The
-		idea is to use it as a normal metrone while practising side reading of the
+	1. An independent one, to be used when the student is practising music reading. The
+		idea is to use it as a normal metrone while practising music reading of the
 		score displayed.
 	2. A metronome that sounds when a score is being played. In this case, the metronome
 		is synchronized with the score tempo, and the metronome starts and stops in
@@ -319,7 +319,7 @@ b. The 'play' metronome
 Therefore, from the user point of view, all metronome activity is controlled with the
 	metronome on/off main toolbar button and tempo settings:
 	- very intuitive
-	- the metronome check box in Score Side Reading control (old LenMus versions) is
+	- the metronome check box in Score Music Reading control (old LenMus versions) is
 	no longer necessary.
 		
 
@@ -343,12 +343,12 @@ After some testing these are my conclusions:
 - In content pane, books are ordered in the AddBook() calling sequence.
 
 
-@section side_reading_modes Html SideReadingCtrol: modes for score generation
+@section music_reading_modes Html MusicReadingCtrol: modes for score generation
 <!-- ========================================================================= -->
 
 In version 2.0 there were 4 modes:
 
-1. Notes reading - force to use specific settings for notes reading
+1. Clefs reading - force to use specific settings for clefs reading
 2. Personal settings - use the personal settings
 3. According to lesson - use settings according lesson/level params/settings
 4. By program - use the settings passed as arguments

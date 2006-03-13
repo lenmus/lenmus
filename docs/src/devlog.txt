@@ -86,7 +86,7 @@ Planning: comming releases
 Bugs to solve:
 	2 - stems too long if a rest in middle (lesson 212)
 		
-Modifications to L2_SideReading eBook:
+Modifications to L2_MusicReading eBook:
 	- Once finished, review clefs and notes ranges.
 
 
@@ -96,12 +96,12 @@ Modifications to L2_SideReading eBook:
     Features and changes:
         - Spanish translation
         - Help file
-        - eBooks for side reading
+        - eBooks for music reading
         - Installer for Windows
         
     Tasks:
         1 - <object> strong param verification and error reporting
-        1 - Side reading eBooks. Needed to have exercises width increasing level of difficulty.
+        1 - Music reading eBooks. Needed to have exercises width increasing level of difficulty.
         1 - Translation of program into Spanish
         1 - Translation of eBooks into English
         1 - Write NSIS installer for Windows
@@ -169,7 +169,7 @@ Known bugs:
 
 - Modify UrlAuxCtrol to optionally include an icon at the left.
 
-- A strong parser for SideReading params. Actually any mistake produces a program crash.
+- A strong parser for MusicReading params. Actually any mistake produces a program crash.
     
 - Composer5:
     Barline alignment constrains

@@ -223,7 +223,7 @@ private:
 #define lmNO_DEFAULTS   false
 
 /*! @class lmScoreConstrains
-    @brief Options for lmTheoSideReadingCtrol control
+    @brief Options for lmTheoMusicReadingCtrol control
 */
 class lmScoreConstrains
 {

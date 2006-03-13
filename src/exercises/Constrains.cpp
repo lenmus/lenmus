@@ -189,10 +189,10 @@ void lmTheoIntervalsConstrains::LoadSettings()
 
 
 //-------------------------------------------------------------------------------------------
-// lmSideReadingCtrolOptions
+// lmMusicReadingCtrolOptions
 //-------------------------------------------------------------------------------------------
 
-void lmSideReadingCtrolOptions::SetLabels(wxString& sLabel, wxString* pStart, wxString* pStop)
+void lmMusicReadingCtrolOptions::SetLabels(wxString& sLabel, wxString* pStart, wxString* pStop)
 {
     //find the bar
     int i = sLabel.Find(_T("|"));

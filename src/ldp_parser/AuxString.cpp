@@ -224,7 +224,7 @@ bool StringToPitch(wxString sStep, wxString sOctave, int* pPitch)
 //  quarter      crochet                negra            n       eQuarter = 3
 //  eighth       quaver                 corchea          c       eEighth = 4
 //  sixteenth    semiquaver             semicorchea      s       e16th = 5
-//  32th         demisemiquaver         fusa             f       e32th = 6
+//  32nd         demisemiquaver         fusa             f       e32th = 6
 //  64th         hemidemisemiquaver     semifusa         m       e64th = 7
 //  128th                               garrapatea       g       e128th = 8
 //  256th                               semigarrapatea   p       e256th = 9

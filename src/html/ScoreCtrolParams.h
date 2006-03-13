@@ -138,7 +138,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
                             is optional. Default labels: "Play|Stop"
 
         control_solfa       Include 'solfa' link. Default: do not include it.
-                            Value="side read label|stop side reading label". i.e.: 
+                            Value="music read label|stop music reading label". i.e.: 
                             "Play|Stop". Stop label is optional.
                             Default labels: "Read|Stop"
 

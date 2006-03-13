@@ -346,7 +346,7 @@ wxBitmap* lmNote::GetBitmap(double rScale)
             nGlyph = (m_fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
             break;
         case e32th :
-            nGlyph = (m_fStemDown ? GLYPH_32TH_NOTE_DOWN : GLYPH_32TH_NOTE_UP);
+            nGlyph = (m_fStemDown ? GLYPH_32ND_NOTE_DOWN : GLYPH_32ND_NOTE_UP);
             break;
         case e64th :
             nGlyph = (m_fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);
@@ -713,7 +713,7 @@ void lmNote::DrawSingleNote(wxDC* pDC, bool fMeasuring, ENoteType nNoteType,
             nGlyph = (m_fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
             break;
         case e32th :
-            nGlyph = (m_fStemDown ? GLYPH_32TH_NOTE_DOWN : GLYPH_32TH_NOTE_UP);
+            nGlyph = (m_fStemDown ? GLYPH_32ND_NOTE_DOWN : GLYPH_32ND_NOTE_UP);
             break;
         case e64th :
             nGlyph = (m_fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);

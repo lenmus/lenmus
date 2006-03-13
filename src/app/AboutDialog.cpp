@@ -103,69 +103,71 @@ lmAboutDialog::lmAboutDialog(wxWindow * parent)
     informationStr += wxT("<br>\n");
 
 
-    wxString par1Str = _( 
-        "LenMus is a free program written by a team of volunteer developers "
-        "around the world (well this is a hope, for now it is developed only by me). "
-        "LenMus is available for Windows but soon it will be also available "
-        "for Mac OS X, Linux, and other Unix-like operating systems.");
+    wxString par1Str = wxGetTranslation( 
+        _T("LenMus is a free program written by a team of volunteer developers ")
+        _T("around the world (well this is a hope, for now it is developed only by me). ")
+        _T("LenMus is available for Windows but soon it will be also available ")
+        _T("for Mac OS X, Linux, and other Unix-like operating systems.")
+    );
 
     wxString par2Str;
     if (g_fReleaseVersion)    {
-        par2Str = _(
-            "This is a stable, completed release of LenMus.  However, if "
-            "you find a bug or have a suggestion, please contact us.  ");
+        par2Str = wxGetTranslation(
+            _T("This is a stable, completed release of LenMus.  However, if ")
+            _T("you find a bug or have a suggestion, please contact us.  "));
     }
     else if (g_fReleaseBehaviour) {
-         par2Str = _(
-            "This is a debug version of the program but some debug features (i.e. the "
-            "Debug menu item) are disabled and release version behaviour is enforced. "
-            "This is so to facilitate debugging. As this is a beta version it may contain "
-            "bugs and unfinished features.  ");
+         par2Str = wxGetTranslation(
+            _T("This is a debug version of the program but some debug features (i.e. the ")
+            _T("Debug menu item) are disabled and release version behaviour is enforced. ")
+            _T("This is so to facilitate debugging. As this is a beta version it may contain ")
+            _T("bugs and unfinished features.  "));
     }
     else {
-         par2Str = _(
-            "This is a debug development version of the program.  It may contain "
-            "bugs and unfinished features.  ");
+         par2Str = wxGetTranslation(
+            _T("This is a debug development version of the program.  It may contain ")
+            _T("bugs and unfinished features.  "));
     }
-    par2Str += _("We depend on feedback from you in order to continue to improve "
-                "LenMus. So please visit our website and give us your bug reports  "
-                "and feature requests.");
+    par2Str += wxGetTranslation(
+                _T("We depend on feedback from you in order to continue to improve ")
+                _T("LenMus. So please visit our website and give us your bug reports  ")
+                _T("and feature requests."));
 
     //
     // Credits
     //
 
-    wxString sCredits =
-        _("<p>Some icons are original artwork for LenMus project; all these original icons are released "
-            "under GNU GPL licence and under Creative Commons Attribution-ShareAlike "
-            "license, you can choose the one you prefer for the intended usage. The other "
-            "icons are taken from different sources:<br /><br /></p>"
-            "<ul>"
-            "<li>Taken or derived from those available in the Ximian collection "
-            "(http://www.novell.com/coolsolutions/feature/1637.html). "
-            "Novell, who retains the copyright, has released these icons under the LGPL license. "
-            "This means that you can use the icons in your "
-            "programs free of charge. If you want to fork the icons into your own icon collection, you need "
-            "to retain the license and the original copyrights, but from there you're free to do what "
-            "you want.<br /></li> "
-            "<li>Taken or derived from the GNOME project (http://art.gnome.org/themes/icon/1150), "
-            "Tango theme. These icons are released under the Creative Commons Attribution-ShareAlike "
-            "license.<br /></li> "
-            "<li>These icons are taken or derived from KDE project "
-            "(http://kde.openoffice.org/servlets/ProjectDocumentList?folderID=314&amp;expandFolder=314). "
-            "These icons are released under the GNU GPL license.<br /></li> "
-            "<li>Taken or derived from eMule project (http://sourceforge.net/projects/emule) "
-            "icons. eMule is a GNU GPL project so I assume that its icons are also available under GNU GPL.<br /></li> "
-            "<li>Taken or derived from John Zaitseff's icons "
-            "(http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). According to what "
-            "is said there, these icons are released under the "
-            "terms of the GNU General Public License.<br /><br /></li>"
-            "</ul>"
-            "To LenMus developers knowledge, all used icons are freely usable either "
-            "under GNU GPL, "
-            "LGPL licence, or Creative Commons. If this were not the case, please, let us "
-            "know to stop using them. "
-            "See file \"icons.htm\" in folder \"res/icons\" for more details.</p>");
+    wxString sCredits = wxGetTranslation(
+        _T("<p>Some icons are original artwork for LenMus project; all these original icons are released ")
+        _T("under GNU GPL licence and under Creative Commons Attribution-ShareAlike ")
+        _T("license, you can choose the one you prefer for the intended usage. The other ")
+        _T("icons are taken from different sources:<br /><br /></p>")
+        _T("<ul>")
+        _T("<li>Taken or derived from those available in the Ximian collection ")
+        _T("(http://www.novell.com/coolsolutions/feature/1637.html). ")
+        _T("Novell, who retains the copyright, has released these icons under the LGPL license. ")
+        _T("This means that you can use the icons in your ")
+        _T("programs free of charge. If you want to fork the icons into your own icon collection, you need ")
+        _T("to retain the license and the original copyrights, but from there you're free to do what ")
+        _T("you want.<br /></li> ")
+        _T("<li>Taken or derived from the GNOME project (http://art.gnome.org/themes/icon/1150), ")
+        _T("Tango theme. These icons are released under the Creative Commons Attribution-ShareAlike ")
+        _T("license.<br /></li> ")
+        _T("<li>These icons are taken or derived from KDE project ")
+        _T("(http://kde.openoffice.org/servlets/ProjectDocumentList?folderID=314&amp;expandFolder=314). ")
+        _T("These icons are released under the GNU GPL license.<br /></li> ")
+        _T("<li>Taken or derived from eMule project (http://sourceforge.net/projects/emule) ")
+        _T("icons. eMule is a GNU GPL project so I assume that its icons are also available under GNU GPL.<br /></li> ")
+        _T("<li>Taken or derived from John Zaitseff's icons ")
+        _T("(http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). According to what ")
+        _T("is said there, these icons are released under the ")
+        _T("terms of the GNU General Public License.<br /><br /></li>")
+        _T("</ul>")
+        _T("To LenMus developers knowledge, all used icons are freely usable either ")
+        _T("under GNU GPL, ")
+        _T("LGPL licence, or Creative Commons. If this were not the case, please, let us ")
+        _T("know to stop using them. ")
+        _T("See file \"icons.htm\" in folder \"res/icons\" for more details.</p>"));
 
 
     wxString managersCredits, developersCredits, translatorsCredits;
@@ -198,17 +200,19 @@ lmAboutDialog::lmAboutDialog(wxWindow * parent)
 
     // Licence
 
-    wxString sLicence =
+    wxString sLicence = 
         _T("LenMus ") + versionStr + 
         _(" Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n.") +
-        _("<p>This program is free software; you can redistribute it and/or modify it "
-          "under the terms of the GNU General Public License as published by the Free "
-          "Software Foundation; either version 2 of the License, or (at your option) "
-          "any later version.") +
-        _("<p>This program is distributed in the hope that it will be useful, but "
-          "WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
-          "or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General "
-          "Public License at http://www.gnu.org/licenses/licenses.html");
+        wxGetTranslation(
+            _T("<p>This program is free software; you can redistribute it and/or modify it ")
+            _T("under the terms of the GNU General Public License as published by the Free ")
+            _T("Software Foundation; either version 2 of the License, or (at your option) ")
+            _T("any later version.")) +
+        wxGetTranslation(
+            _T("<p>This program is distributed in the hope that it will be useful, but ")
+            _T("WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ")
+            _T("or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General ")
+            _T("Public License at http://www.gnu.org/licenses/licenses.html"));
 
     wxString sContent = 
       _T("<html>")

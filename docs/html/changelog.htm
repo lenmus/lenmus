@@ -26,6 +26,23 @@
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">12-mar-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>Bug fixed: crash when clicking on settins button in clefs reading exercise.
+        The problem was in lmDlgCfgScoreReading::VerifyData(); it was modified to not verify
+        data in non-displayed tabs.</li>
+      <li>Bug fixed: crash when acceptin new settings in clefs reading exercise.
+        The problem was in lmDlgCfgScoreReading::OnAcceptClicked(); it was modified to
+        not save data from non-displayed tabs.</li>
+      <li>AboutDialog: changed string initialization for supoorting Unicode.</li>
+      <li>Fixing bad English: Note name 32th changed to 32nd. Side Reading changed to
+        Music Reading. TheoSideReadingCtrol and TheoSideReadingCtrolParams renamed as
+        TheoMusicReadingCtrol and TheoMusicReadingCtrolParams</li>
+     </ul>
+    Lesson 214. Content reviewed. Lessons formatting reviewed.
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">11-mar-06</td>
     <td class="ListaPar">
     <ul>
@@ -52,7 +69,7 @@
         <li>All error messages in LDPParser translated to 
         English and reviewed for internationalization. </li>
      </ul>
-    Converted side reading lesson 215.
+    Converted music reading lesson 215.
     </td></tr>
 <tr valign="top">
     <td class="ListaPar">9-mar-06</td>
@@ -83,7 +100,7 @@
     <ul>
       <li>Bug fixed: Dot was drawn too high in dotted rests.</li>
      </ul>
-    Converted side reading lessons 212 and 214. Detected problems with triplets.
+    Converted music reading lessons 212 and 214. Detected problems with triplets.
      <ul>
       <li>Starting to fix bug: Bad composed scores when triplets in patterns. The problem
         is in current method AuxString::SrcGetPatternDuracion(). It does not 
@@ -107,7 +124,7 @@
         to add vertical displacement. Struct lmGlyph moved from Note.cpp to Glyph.h and 
         Glyph.cpp</li>
     </ul>
-    Converted side reading lessons 208, 209, 210 and 211.
+    Converted music reading lessons 208, 209, 210 and 211.
     </td></tr>
 <tr valign="top">
     <td class="ListaPar">3-mar-06</td>
@@ -126,10 +143,10 @@
     <td class="ListaPar">
     Testing version Beta 3.0b0 and improving program robustness:
     <ul>
-      <li>Bug fixed in ScoreCtrolParams and TheoSideReadingCtrolParms: old G syntax improperly
+      <li>Bug fixed in ScoreCtrolParams and TheoMusicReadingCtrolParms: old G syntax improperly
        detected when triplets.</li>
       <li>Homogenized html params for control play and control solfa between ScoreCtrol and
-       SideReading Ctrol. lmSideReadingCtrolOptions modified to include play and solfa labels.</li>
+       MusicReading Ctrol. lmMusicReadingCtrolOptions modified to include play and solfa labels.</li>
       <li>Bug fixed in SoundManager and VStaff: play a measure did not worked properly.</li>
       <li>LDPParser: replaced wxASSERT with code to deal with the error,  
         to avoid program crashes when bad score syntax, in methods AnalyzeNote(),
@@ -164,9 +181,9 @@
     <td class="ListaPar">
     Testing version Beta 3.0b0:
     <ul>
-      <li>Bug fixed in TheoSideReadingCtrolParms: key signatures not properly parsed.
+      <li>Bug fixed in TheoMusicReadingCtrolParms: key signatures not properly parsed.
         <ul>
-          <li>TheoSideReadingCtrolParms: modified to include error reporting; member variable
+          <li>TheoMusicReadingCtrolParms: modified to include error reporting; member variable
             m_sParamErrors included.</li> 
           <li>AuxString.cpp: Global function LDPNameToKey() added.</li>
           <li>LDPParser: added method ParenthesisMatch()</li>
@@ -182,9 +199,9 @@
         wizard. SplashFrame: added method TerminateSplash(). TheApp: added cursor
         busy logic.</li>
       <li>Default value for toolbar: changed to labels under icon.</li>
-      <li>Bug fixed in DlgCfgReadingSettings: for Notes reading settings variables 
-        for Side reading options where initialized after having destroyed panels not
-        used in notes reading options.</li>
+      <li>Bug fixed in DlgCfgReadingSettings: for clefs reading settings variables 
+        for music reading options where initialized after having destroyed panels not
+        used in clefs reading options.</li>
     </ul>
     </td></tr>
 <tr valign="top">
@@ -200,18 +217,18 @@
 <tr valign="top">
     <td class="ListaPar">21-feb-06</td>
     <td class="ListaPar">
-    Implementation of DlgCfgScoreReading dialog finished for Side reading options except
+    Implementation of DlgCfgScoreReading dialog finished for music reading options except
     fragments tab options, that requiere to finish DlgPatternEditor.
-    DlgCfgScoreReading Side reading options is
-    not necessary for 3.0 release as single side reading exercises will be replaced by
-    side reading exercises in each lesson. The 'new' single side reading exercise will
+    DlgCfgScoreReading music reading options is
+    not necessary for 3.0 release as single music reading exercises will be replaced by
+    music reading exercises in each lesson. The 'new' single music reading exercise will
     requiere to have a fragments editor:
     <ul>
       <li>DlgCfgScoreReading: Time signatures selection implemented and tested. 
         ScoreConstrains: Load / save time signature settings implemented and tested.</li>
       <li>DlgCfgScoreReading: Key signatures selection implemented and tested. 
         ScoreConstrains: Load / save key signature settings implemented and tested.</li>
-      <li>Bug fixed in lmTheoSideReadingCtrolParms::AnalyzeKeys() causing improper
+      <li>Bug fixed in lmTheoMusicReadingCtrolParms::AnalyzeKeys() causing improper
         setings when html param value=all</li>
     </ul>
       Bug fixed in TheoKeySignCtrol: in reverse problem (ask for number of accidentals)
@@ -221,7 +238,7 @@
     <td class="ListaPar">17-feb-06</td>
     <td class="ListaPar">
     <ul>
-      <li>DlgCfgScoreRedaing dialog finished for Notes reading options. Default
+      <li>DlgCfgScoreRedaing dialog finished for clefs reading options. Default
        settings now taken from html param tags.</li>
       <li>Some cleaning to prepare beta release:
         <ul>
@@ -229,15 +246,15 @@
         <li>lmMainFrame: disabled all menu/toolbar related to unfinished features (notation
         editor, open/import LDP scores and MusicXML scores).</li>
         </ul></li>
-      <li>Starting implementation of DlgCfgScoreReading dialog for Side reading options.</li>
+      <li>Starting implementation of DlgCfgScoreReading dialog for music reading options.</li>
     </ul>
     </td></tr>
 <tr valign="top">
     <td class="ListaPar">15-feb-06</td>
     <td class="ListaPar">
-    Continue implementation of DlgCfgScoreRedaing dialog, Notes reading options:
+    Continue implementation of DlgCfgScoreRedaing dialog, clefs reading options:
     <ul>
-      <li>lmTheoSideReadingCtrolParams: modified method CreateHtmlCell() in include
+      <li>lmTheoMusicReadingCtrolParams: modified method CreateHtmlCell() in include
         constrains verification.</li>
       <li>lmScoreConstrains: coded methods SaveSettings(), Verify().</li>
     </ul>
@@ -247,7 +264,7 @@
 <tr valign="top">
     <td class="ListaPar">14-feb-06</td>
     <td class="ListaPar">
-    Continue implementation of DlgCfgScoreRedaing dialog, Notes reading options:
+    Continue implementation of DlgCfgScoreRedaing dialog, clefs reading options:
     <ul>
       <li>lmScoreConstrains: added methods SetMaxNote() and SetMinNote(). Removed
         methods and variables related to lesson/level.</li>
@@ -256,16 +273,16 @@
 <tr valign="top">
     <td class="ListaPar">13-feb-06</td>
     <td class="ListaPar">
-    Removing cboMode and chkMetronome from lmTheoSideReadingCtrol:
+    Removing cboMode and chkMetronome from lmTheoMusicReadingCtrol:
     <ul>
-      <li>Remove related variables and methods from lmTheoSideReadingCtrolParms,
-        lmSideReadingCtrolOptions and lmTheoSideReadingCtrol</li>
-      <li>Notes reading exercise added to single exercises book</li>
+      <li>Remove related variables and methods from lmTheoMusicReadingCtrolParms,
+        lmMusicReadingCtrolOptions and lmTheoMusicReadingCtrol</li>
+      <li>Clefs reading exercise added to single exercises book</li>
     </ul>
     Coding missing parts to acknowledge min and max pitch params and
     max interval in Composer5.
     <ul>
-      <li>Fixed bug in lmTheoSideReadingCtrolParms::AnalyzeClef() causing bad
+      <li>Fixed bug in lmTheoMusicReadingCtrolParms::AnalyzeClef() causing bad
         minPitch and maxPitch settings</li>
       <li>Detected coherence problem: missing upper/lower case in 'normalized'
         LDP elements. Old normalization was upper case; new normalization is
@@ -278,7 +295,7 @@
 <tr valign="top">
     <td class="ListaPar">12-feb-06</td>
     <td class="ListaPar">
-    Analyzing parameters for lmTheoSideReadingCtrol to finish this control. Implemented
+    Analyzing parameters for lmTheoMusicReadingCtrol to finish this control. Implemented
     params &quot;control_settings&quot; and &quot;control cboMode&quot;. After some
     considerations I think cboMode is not necessary: it is a heritage from old lenmus
     architecture (based on independent exercises) and the need to reuse an VB Forms for
@@ -344,26 +361,26 @@
     <ul>
       <li>Reviewed and modified documentation in mainpage of doxygen documentation and 
         related pages.</li>
-      <li>Reviewing and documenting params for html ScoreCtrol and SideReadingCtrol, in order
+      <li>Reviewing and documenting params for html ScoreCtrol and MusicReadingCtrol, in order
         to finish the implementation and fixing anything related to this before 
-        finishing the conversion of old level 2 side reading book and starting the conversion
+        finishing the conversion of old level 2 music reading book and starting the conversion
         of other books.</li>
     </ul>
     </td></tr>
 <tr valign="top">
     <td class="ListaPar">2-feb-06</td>
     <td class="ListaPar">
-    Implementation of metronome check box for SideReadingCtrol:
+    Implementation of metronome check box for MusicReadingCtrol:
     <ul>
       <li>Reviewing and documenting how metronome works. As metronome implementation is
       different from LenMus 2.0 version, now it is more user intuitive and everything is
       controlled from the main toolbar metronome settings. Therefore the metronome check
-      box is no longer needed in SideReadingControl.</li>
-      <li>lmTheoSideReadingCtrolParms: removed code to deal with param 'control metronome'</li>
+      box is no longer needed in MusicReadingControl.</li>
+      <li>lmTheoMusicReadingCtrolParms: removed code to deal with param 'control metronome'</li>
     </ul>
-    Reviewing and documenting params for html ScoreCtrol and SideReadingCtrol, in order
+    Reviewing and documenting params for html ScoreCtrol and MusicReadingCtrol, in order
     to finish the implementation and fixing anything related to this before 
-    finishing the conversion of old level 2 side reading book and starting the conversion
+    finishing the conversion of old level 2 music reading book and starting the conversion
     of other books.
     </td></tr>
 <tr valign="top">
@@ -371,10 +388,10 @@
     <td class="ListaPar">
     'Go back to theory' link implemented and operative:
     <ul>
-      <li>lmSideReadingCtrolOptions: added variables fGoBackLink and sGoBackURL.
+      <li>lmMusicReadingCtrolOptions: added variables fGoBackLink and sGoBackURL.
         Added method SetGoBackURL()</li>
-      <li>lmTheoSideReadingCtrolParms: added param 'control_go_back'</li>
-      <li>lmTheoSideReadingCtrol: layout revised to reduce unused space.
+      <li>lmTheoMusicReadingCtrolParms: added param 'control_go_back'</li>
+      <li>lmTheoMusicReadingCtrol: layout revised to reduce unused space.
         Added optional link "Go back to theory". Method OnGoBackButton() implemented</li>
     </ul>
     </td></tr>
@@ -390,7 +407,7 @@
 <tr valign="top">
     <td class="ListaPar">31-jan-06</td>
     <td class="ListaPar">
-	  Implementing a method to jump to a sideReading dialog customized for the needs
+	  Implementing a method to jump to a MusicReading dialog customized for the needs
 	  of a lesson:
     <ul>
       <li>Successful tests using internal links.</li>
@@ -402,10 +419,10 @@
 <tr valign="top">
     <td class="ListaPar">30-jan-06</td>
     <td class="ListaPar">
-      DlgPatternEditor implementation suspended. Preparing level 2 score side reading
+      DlgPatternEditor implementation suspended. Preparing level 2 score music reading
       exercises:
       <ul>
-        <li>Starting conversion of old level 2 side reading book. Splitted into
+        <li>Starting conversion of old level 2 music reading book. Splitted into
         pages. Tags changed. Reviewing score control.</li>
         <li>lmScoreCtrolOptions: added flag fMusicBorder to control border around music.
         Added option &lt;param name="music_border" value="0 | 1" &gt; to 
@@ -413,16 +430,16 @@
 	      <li>Adjusted the positioning and margins of ScoreCtrol. Test example now 
 	      operative.</li>
       </ul>
-      Embbeding a SideReadingCtrol in side reading books is not a good solution as normally
+      Embbeding a MusicReadingCtrol in music reading books is not a good solution as normally
 	    there are two or more exercises associated to a lesson. So, as in version 2 behaviour,
-	    it is necessary to jump to a sideReading dialog customized
+	    it is necessary to jump to a MusicReading dialog customized
 	    according exercises needs; and this dialog must have a "return to theory" link.
 	    Starting to think about the best way to implement this.
     </td></tr>
 <tr valign="top">
     <td class="ListaPar">26-jan-06</td>
     <td class="ListaPar">
-      For free Side Reading exercises, the user must be able to set up the rhythmic patterns
+      For free Music Reading exercises, the user must be able to set up the rhythmic patterns
       she/he would like to practise. In the previous version this was implemented by choosing
       patterns from a graphical list. The problem is that list grew too much. For this new version
       I will implement a rhythmic patterns editor, so the user can easliy enter the patterns
@@ -582,7 +599,7 @@
         <li>Fixed bug affecting lmScoreAuxCtrol: it does not resize the score when
         the window is resized.
           <ul>
-            <li>TheoSideReadingCtrol: Added Expand option to score sizer.</li>
+            <li>TheoMusicReadingCtrol: Added Expand option to score sizer.</li>
             <li>lmPaper: setting flag m_fRedraw in method SetPageSize().
             Method Prepare() now re-creates the bitmaps also if paper size has changed.</li>
             </ul>
@@ -820,7 +837,7 @@
     <td class="ListaPar">
         Continue with support for lessons in html:
         <ul>
-        <li>Parameters for lmTheoSideReadingCtrol parsed.</li>
+        <li>Parameters for lmTheoMusicReadingCtrol parsed.</li>
         <li>lmScoreConstrains modified to include
           the fragments table, as well as all necessary parameters.</li>
         <li>Composer5 modified to use only lmScoreConstrains.</li>
@@ -847,8 +864,8 @@
     So, I will stop further DataBase migration (although it is practically finished, except
     the key signatures table) and I will continue defining lessons in html:
         <ul>
-        <li>Defined param structure for lmTheoSideReadingCtrol. Now implementing param analysis.</li>
-        <li>Class lmSideReadingCtrolOptions defined.</li>
+        <li>Defined param structure for lmTheoMusicReadingCtrol. Now implementing param analysis.</li>
+        <li>Class lmMusicReadingCtrolOptions defined.</li>
         </ul></li>
         </ul>
     </td></tr>
@@ -890,10 +907,10 @@
     <td class="ListaPar">4-nov-05 </td>
     <td class="ListaPar">
         Debug and finish Lessons-Fragments. Starting to add the 'settings' link to
-        Score side reading exercise.
+        Score music reading exercise.
         <ul>
         <li>lmPatternsTable: fix bugs in SelectRows() and ChooseRandom().</li>
-        <li>TheoSideReading: added combo to choose mode setting and link to open settings dialog.</li>
+        <li>TheoMusicReading: added combo to choose mode setting and link to open settings dialog.</li>
         <li>Starting skeleton for settings dialog (DlgCfgScoreReading).</li>
         </ul>
     </td></tr>
@@ -1028,7 +1045,7 @@
     <td class="ListaPar">17-oct-05 </td>
     <td class="ListaPar">
         <ul>
-        <li>Adding Score Side Reading exercises; created clases lmTheoSideReadingCtrol and lmTheoSideReadingCtrolParms. Abstract class lmObjectParams extracted from Tags.cpp and moved to a file. Created class lmScoreConstrains.</li>
+        <li>Adding Score Music Reading exercises; created clases lmTheoMusicReadingCtrol and lmTheoMusicReadingCtrolParms. Abstract class lmObjectParams extracted from Tags.cpp and moved to a file. Created class lmScoreConstrains.</li>
         <li>score.h : add range (lmMIN_TIME_SIGN, lmMAX_TIME_SIGN) in ETimeSignature</li>
         <li>Constrains.cpp, .h : add lmTimeSignConstrains</li>
         <li>Generator.cpp,.h : add GenerateTimeSign() and RandomTimeSignature()</li>

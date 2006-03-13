@@ -241,13 +241,13 @@ private:
 };
 
 
-/*! @class lmSideReadingCtrolOptions
-    @brief Options for lmTheoSideReadingCtrol control
+/*! @class lmMusicReadingCtrolOptions
+    @brief Options for lmTheoMusicReadingCtrol control
 */
-class lmSideReadingCtrolOptions
+class lmMusicReadingCtrolOptions
 {
 public:
-    lmSideReadingCtrolOptions() {
+    lmMusicReadingCtrolOptions() {
             //default values
             fPlayCtrol = false;
             fSolfaCtrol = false;
@@ -260,7 +260,7 @@ public:
             sStopSolfaLabel = _("Stop");
         }
 
-    ~lmSideReadingCtrolOptions() {}
+    ~lmMusicReadingCtrolOptions() {}
     void SetControlPlay(bool fValue, wxString sLabels = _T(""))
         { 
             fPlayCtrol = fValue;

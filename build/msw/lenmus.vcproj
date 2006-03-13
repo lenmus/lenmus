@@ -154,6 +154,81 @@
 			<Tool
 				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
+		<Configuration
+			Name="Debug Unicode|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="1">
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalOptions="/GZ"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\..\wxWidgets262\include;..\..\..\wxWidgets262\lib\vs_lib\mswd;..\..\..\wxWidgets262\include\msvc;..\..\..\wxMidi\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;__WINDOWS__;__WXMSW__;__WXDEBUG__;WXDEBUG=1;__WIN95__;__WIN32__;WINVER=0x0400;STRICT"
+				RuntimeLibrary="3"
+				EnableEnhancedInstructionSet="0"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderThrough="wx/wxprec.h"
+				PrecompiledHeaderFile="..\..\z_debug\lenmus.pch"
+				AssemblerListingLocation="..\..\z_debug\"
+				ObjectFile="..\..\z_debug\"
+				ProgramDataBaseFileName="..\..\z_debug\"
+				BrowseInformation="1"
+				BrowseInformationFile="$(IntDir)\"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexud.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxmsw26ud_adv.lib wxmsw26ud_core.lib wxmsw26ud_dbgrid.lib wxmsw26ud_gl.lib wxmsw26ud_html.lib wxmsw26ud_media.lib wxmsw26ud_qa.lib wxmsw26ud_xrc.lib wxbase26ud.lib wxbase26ud_net.lib wxbase26ud_odbc.lib wxbase26ud_xml.lib wxmidi11ud.lib"
+				ShowProgress="0"
+				OutputFile="..\..\z_bin\lenmus.exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="..\..\..\wxWidgets262\lib\vc_lib;..\..\..\wxWidgets262\contrib\lib;..\..\..\wxMidi\lib;..\..\..\wxMidi\lib\pm"
+				IgnoreAllDefaultLibraries="FALSE"
+				IgnoreDefaultLibraryNames="libcd.lib;libc.lib;libcmt.lib"
+				GenerateDebugInformation="TRUE"
+				AssemblyDebug="0"
+				ProgramDatabaseFile="..\..\z_debug\lenmus.pbd"
+				SubSystem="2"/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName="..\..\z_debug/lenmus.tlb"/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+				AdditionalIncludeDirectories="..\..\..\wxWidgets262\include;..\..\..\wxWidgets262\contrib\include;..\..\..\wxWidgets262\include\msvc"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
 	</Configurations>
 	<References>
 	</References>
@@ -567,7 +642,7 @@
 				RelativePath="..\..\src\html\TextBookFrame.h">
 			</File>
 			<File
-				RelativePath="..\..\src\html\TheoSideReadingCtrolParms.h">
+				RelativePath="..\..\src\html\TheoMusicReadingCtrolParms.h">
 			</File>
 		</Filter>
 		<Filter
@@ -643,16 +718,16 @@
 				RelativePath="..\..\src\exercises\TheoKeySignCtrol.h">
 			</File>
 			<File
+				RelativePath="..\..\src\exercises\TheoMusicReadingCtrol.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\TheoMusicReadingCtrol.h">
+			</File>
+			<File
 				RelativePath="..\..\src\exercises\TheoScalesCtrol.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\TheoScalesCtrol.h">
-			</File>
-			<File
-				RelativePath="..\..\src\exercises\TheoSideReadingCtrol.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\exercises\TheoSideReadingCtrol.h">
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\UrlAuxCtrol.cpp">
@@ -774,6 +849,9 @@
 			</File>
 			<File
 				RelativePath="..\..\src\ldp_parser\LDPParser.h">
+			</File>
+			<File
+				RelativePath="..\..\src\ldp_parser\LDPTags.h">
 			</File>
 			<File
 				RelativePath="..\..\src\ldp_parser\LDPToken.cpp">

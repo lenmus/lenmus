@@ -40,8 +40,8 @@
 //Dialog types
 enum EScoreReadingDlg
 {
-    eDlgNotesReading = 0,       //single_notes_reading key
-    eDlgSideReading,            //single_side_reading key
+    eDlgNotesReading = 0,       //single_clefs_reading key
+    eDlgMusicReading,            //single_music_reading key
     eDlgCfgError,               //bad key           
 };
 
