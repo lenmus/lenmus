@@ -250,8 +250,8 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
         //While (there are segments in the current fragment and the measure is not full) {
         while (pSegment && rOccupiedDuration < rMeasureDuration) {
             //check if segment fits in. A segment S will fit in the measure
-            //only when (tr >= ts && tcb <= tab), that is only when
-            //rTimeRemaining >= rSegmentDuration && rConsumedBeatTime <= rSegmentAlignBeatTime
+            //only when (tr >= ts && tcb <= tab)
+
             rTimeRemaining =rMeasureDuration - rOccupiedDuration;
             rSegmentDuration = pSegment->GetSegmentDuration();
             rConsumedBeatTime = rOccupiedDuration;  //this line and next two ones compute tcb = tc % tb;
@@ -271,8 +271,19 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
             if (fFits) {
                 //it fits. Add it to current measure
                 float rNoteTime = rSegmentAlignBeatTime - rConsumedBeatTime;
-                AddSegment(&sMeasure, pSegment, rNoteTime);
+                if (rNoteTime > 0.0) {
+                    if (rConsumedBeatTime > 0)
+                        sMeasure += CreateNote((int)rNoteTime);
+                    else
+                        sMeasure += CreateRest((int)rNoteTime);
+                }
+
+                //add segment    
+                sMeasure += pSegment->GetSource();
+
+                //update tr
                 rOccupiedDuration += rSegmentDuration + rNoteTime;
+
                 //get next segment
                 pSegment = pConstrains->GetNextSegment();
                 nSegmentLoopCounter = 0;
@@ -450,14 +461,14 @@ wxString lmComposer5::InstantiateNotes(wxString sPattern, bool fRootPitch)
     bool fRoot = fRootPitch;
 
     int i = sSource.Find(_T("*"));
-    int j = sSource.Find(_T("+l"));
+    int j = sSource.Find(_T(" l"));
     while (i != -1) {
         sResult += sSource.Mid(0, i);
         fRepeat = (fFirstNote ? m_fTied : (j != -1 && j < i) ); 
         sResult += GenerateNewNote(fRepeat, fRoot);
         sSource = sSource.Mid(i + 1);
         i = sSource.Find(_T("*"));
-        j = sSource.Find(_T("+l"));
+        j = sSource.Find(_T(" l"));
         fFirstNote = false;
         fRoot = false;
     }

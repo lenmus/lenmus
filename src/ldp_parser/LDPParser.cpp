@@ -61,6 +61,10 @@
 #include "../app/MainFrame.h"
 extern lmMainFrame *GetMainFrame();
 
+//access to logger
+#include "../app/Logger.h"
+extern lmLogger* g_pLogger;
+
 const wxString sEOF = _T("<<$$EOF$$>>");
 
 lmLDPParser::lmLDPParser()
@@ -1159,7 +1163,7 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
     //            case "C"        //Calderón
     //                nCalderon = eC_ConCalderon
     //                
-            if (sData == _T("+l") || sData == _T("l") ) {       //Tied to the next one
+            if (sData == _T("l") ) {       //Tied to the next one
                 fTie = true;
             }
             else if (sData == _T("g+")) {       //Start of beamed group. Simple parameter
@@ -1236,18 +1240,18 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
                     // facilitate the understanding of the algorithm)
                     for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++) {
                         BeamInfo[iLevel].Type = eBeamEnd;
-                        //wxLogMessage(wxString::Format(
-                        //    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamEnd"), iLevel));
+                        g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                            _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamEnd"), iLevel);
                     }
 
-                    // deal with differences between curren and previous levels
+                    // deal with differences between current note level and previous note level
                     if (nCurLevel > nPrevLevel) {
                         // current level is grater than previous one ==> 
-                        // close common levels (done) and put forward in current deeper levels
+                        // close common levels (done) and put backward in current deeper levels
                         for (; iLevel <= nCurLevel; iLevel++) {
-                            BeamInfo[iLevel].Type = eBeamForward;
-                            //wxLogMessage(wxString::Format(
-                            //    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamForward"), iLevel));
+                            BeamInfo[iLevel].Type = eBeamBackward;
+                            g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                                _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamBackward"), iLevel);
                         }
                     }
                     else if  (nCurLevel < nPrevLevel) {
@@ -1256,13 +1260,13 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
                         for (; iLevel <= nPrevLevel; iLevel++) {
                             if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
                                 g_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
-                                //wxLogMessage(wxString::Format(
-                                //    _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel));
+                                g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                                    _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel);
                             }
                             else if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
-                                g_pLastNoteRest->SetBeamType(iLevel, eBeamBackward);
-                                //wxLogMessage(wxString::Format(
-                                //    _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamBackward"), iLevel));
+                                g_pLastNoteRest->SetBeamType(iLevel, eBeamForward);
+                                g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                                    _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamForward"), iLevel);
                             }
                         }
                     }
@@ -1271,19 +1275,17 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
                         // close common levels (done)
                     }
                 }
-            }
-
 //            case "PLICA"     //Dirección de la plica
 //                //falta: analizar direccon de la plica
 //                nTipoStem = eStemUp
 //                
-//            default:
-//                if (Left$(sData, 1) = "P") {   //num_pentagrama
-//                    m_nCurStaff = AnalizarNumPentagrama(sData)
-//                } else {
-//                    AnalysisError(wxString::Format(_T("Error: Anotación <" & sData & "> desconocida. Se ignora"
-//                }
-//        }
+        //default:
+        //    if (Left$(sData, 1) = "P") {   //num_pentagrama
+        //        m_nCurStaff = AnalizarNumPentagrama(sData)
+            }
+            else {
+                AnalysisError(_("Error: notation '%s' unknown. It will be ignored."), sData );
+            }
 
        }
 
@@ -1323,24 +1325,32 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
                     // continue common levels
                     for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++) {
                         BeamInfo[iLevel].Type = eBeamContinue;
-                        //wxLogMessage(wxString::Format(
-                        //    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamContinue"), iLevel));
+                        g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                            _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamContinue"), iLevel);
                     }
 
                     if (nCurLevel > nPrevLevel) {
                         // current level is grater than previous one, start new beams
                         for (; iLevel <= nCurLevel; iLevel++) {
                             BeamInfo[iLevel].Type = eBeamBegin;
-                            //wxLogMessage(wxString::Format(
-                            //    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamBegin"), iLevel));
+                            g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                                _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamBegin"), iLevel);
                         }
                     }
                     else if  (nCurLevel < nPrevLevel) {
-                        // current level is lower than previous one, close the remaining beams
+                        // current level is lower than previous one
+                        // close common levels (done) and close deeper levels in previous note
                         for (; iLevel <= nPrevLevel; iLevel++) {
-                            BeamInfo[iLevel].Type = eBeamEnd;
-                            //wxLogMessage(wxString::Format(
-                            //    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamEnd"), iLevel));
+                            if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
+                                g_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
+                                g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                                    _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel);
+                            }
+                            else if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
+                                g_pLastNoteRest->SetBeamType(iLevel, eBeamForward);
+                                g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                                    _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamFordward"), iLevel);
+                            }
                         }
                     }
                 }

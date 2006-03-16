@@ -26,7 +26,39 @@
     </td></tr>
 
 <tr valign="top">
-    <td class="ListaPar">12-mar-06</td>
+    <td class="ListaPar">16-mar-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>Bug fixed: backward and forward hooks not parsed properly in MusicXML. Modified
+        lmXMLParser::ParseMusicDataNote().</li>
+      <li>Bug fixed: forward and backward hooks in beamed groups not parallel to main beam.
+        The problem was in LDParser::AnalyzeNote() that set wrong beam tags.</li>
+     </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">15-mar-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>Bug fixed in ScoreConstrains: time to align to beat computed wrongly in
+        lmFragmentsTable::GetFirstSegmentDuracion().</li>
+      <li>Bug fixed in Composer5: when the selected fragment is going to start a measure, and if
+        the fragment starts with a rest, the rest was not included. Composer algorithm
+        reviewed; modified lmComposer5::GenerateScore().</li>
+      <li>Bug fixed in Composer5: method InstatiateNotes() was based in old '+l' LDP tags for
+        ties and did not take into account new 'l' tags. Reviewed lmLDPParser::AnalyzeNote()
+        to change old syntax as well as sample scores and eBoooks.</li>
+      <li>Bug fixed: stems too long if a rest inside the beamed group. The problem was in
+        lmBeam::TrimStems()</li>
+     </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">14-mar-06</td>
+    <td class="ListaPar">
+    Converted music reading lessons 216, 217, 219, 220, 221, 222, 223 and 224. Level 2
+    coversion finished. Pending lesson names and final review.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">13-mar-06</td>
     <td class="ListaPar">
     <ul>
       <li>Bug fixed: crash when clicking on settins button in clefs reading exercise.
@@ -40,7 +72,6 @@
         Music Reading. TheoSideReadingCtrol and TheoSideReadingCtrolParams renamed as
         TheoMusicReadingCtrol and TheoMusicReadingCtrolParams</li>
      </ul>
-    Lesson 214. Content reviewed. Lessons formatting reviewed.
     </td></tr>
 <tr valign="top">
     <td class="ListaPar">11-mar-06</td>
@@ -56,17 +87,17 @@
     <td class="ListaPar">10-mar-06</td>
     <td class="ListaPar">
     <ul>
-      <li>LDP syntax for tuplets reviewed. The '(g + t3)' 
-        syntax is dirty: it forces to assume that 'g-' implies 't-' (and this is 
-        not always the case in real scores); it moves the 't3' notation inside 
-        de 'g' notation (more complex); and the gain to save writting is 
-        minimal. Compare with the alternative: '(n c4 c g+ t3) (n d4 c) (n e4 c 
-        g- t-)'. So the '(g + t3)' syntax has been removed. LDPParser modified 
+      <li>LDP syntax for tuplets reviewed. The '(g + t3)'
+        syntax is dirty: it forces to assume that 'g-' implies 't-' (and this is
+        not always the case in real scores); it moves the 't3' notation inside
+        de 'g' notation (more complex); and the gain to save writting is
+        minimal. Compare with the alternative: '(n c4 c g+ t3) (n d4 c) (n e4 c
+        g- t-)'. So the '(g + t3)' syntax has been removed. LDPParser modified
         accordingly.</li>
-      <li>lmLDPParser::AnalysisError() method modified to 
-        accept a variable argument list (as printf) and, thus, avoiding to have 
-        to invoke wxString::Format constantly. 
-        <li>All error messages in LDPParser translated to 
+      <li>lmLDPParser::AnalysisError() method modified to
+        accept a variable argument list (as printf) and, thus, avoiding to have
+        to invoke wxString::Format constantly.
+        <li>All error messages in LDPParser translated to
         English and reviewed for internationalization. </li>
      </ul>
     Converted music reading lesson 215.
@@ -88,7 +119,7 @@
     <td class="ListaPar">8-mar-06</td>
     <td class="ListaPar">
     <ul>
-      <li>lmFragmentsTable::GetFirstSegmentDuracion() re-coded to convert source pattern 
+      <li>lmFragmentsTable::GetFirstSegmentDuracion() re-coded to convert source pattern
         to a score and take duration from score info. Testing.</li>
       <li>Starting to document Score API.</li>
      </ul>
@@ -103,7 +134,7 @@
     Converted music reading lessons 212 and 214. Detected problems with triplets.
      <ul>
       <li>Starting to fix bug: Bad composed scores when triplets in patterns. The problem
-        is in current method AuxString::SrcGetPatternDuracion(). It does not 
+        is in current method AuxString::SrcGetPatternDuracion(). It does not
         work for irregular groups (i.e. triplets). This causes badly composed scores.
         Intended solution: not to work with source patterns but convert source to a score;
         then take duration from score. Modifications: Added methods
@@ -116,12 +147,12 @@
     <td class="ListaPar">
     Testing version Beta 3.0b0 and improving program robustness:
     <ul>
-      <li>Bad code fixed: replaced Unicode constants L'*' by build type dependent 
+      <li>Bad code fixed: replaced Unicode constants L'*' by build type dependent
         expresion _T('*').</li>
       <li>Bug fixed in lmComposer5::GenerateScore(): Key signature was not generated according to
         exercise constrains but at ramdom.</li>
       <li>Starting to fix bug: Dot drawn too high in dotted rests. lmRest::DrawObject() modified
-        to add vertical displacement. Struct lmGlyph moved from Note.cpp to Glyph.h and 
+        to add vertical displacement. Struct lmGlyph moved from Note.cpp to Glyph.h and
         Glyph.cpp</li>
     </ul>
     Converted music reading lessons 208, 209, 210 and 211.
@@ -148,7 +179,7 @@
       <li>Homogenized html params for control play and control solfa between ScoreCtrol and
        MusicReading Ctrol. lmMusicReadingCtrolOptions modified to include play and solfa labels.</li>
       <li>Bug fixed in SoundManager and VStaff: play a measure did not worked properly.</li>
-      <li>LDPParser: replaced wxASSERT with code to deal with the error,  
+      <li>LDPParser: replaced wxASSERT with code to deal with the error,
         to avoid program crashes when bad score syntax, in methods AnalyzeNote(),
         AnalyzeBarline(), AnalyzeClef().</li>
     </ul>
@@ -159,7 +190,7 @@
     <td class="ListaPar">
     Testing version Beta 3.0b0 and improving program robustness:
     <ul>
-      <li>ScoreCtrolParams: moved from Tag.cpp to a file. Modified to include error 
+      <li>ScoreCtrolParams: moved from Tag.cpp to a file. Modified to include error
         reporting and to avoid crashes when invalid html params. Cleaning code.</li>
       <li>lmLDPParser: modified method PopNode() to avoid crashes when bad score syntax.
         Added A5_ExitError state to automata.</li>
@@ -184,7 +215,7 @@
       <li>Bug fixed in TheoMusicReadingCtrolParms: key signatures not properly parsed.
         <ul>
           <li>TheoMusicReadingCtrolParms: modified to include error reporting; member variable
-            m_sParamErrors included.</li> 
+            m_sParamErrors included.</li>
           <li>AuxString.cpp: Global function LDPNameToKey() added.</li>
           <li>LDPParser: added method ParenthesisMatch()</li>
         </ul></li>
@@ -195,11 +226,11 @@
     <td class="ListaPar">
     Testing version Beta 3.0b0:
     <ul>
-      <li>Bug fixed: in the first run, when no .ini file, the splash hides the MIDI 
+      <li>Bug fixed: in the first run, when no .ini file, the splash hides the MIDI
         wizard. SplashFrame: added method TerminateSplash(). TheApp: added cursor
         busy logic.</li>
       <li>Default value for toolbar: changed to labels under icon.</li>
-      <li>Bug fixed in DlgCfgReadingSettings: for clefs reading settings variables 
+      <li>Bug fixed in DlgCfgReadingSettings: for clefs reading settings variables
         for music reading options where initialized after having destroyed panels not
         used in clefs reading options.</li>
     </ul>
@@ -209,7 +240,7 @@
     <td class="ListaPar">
     <ul>
       <li>AboutDialog: added credits for icons. Memory leaks detected and fixed.</li>
-      <li>MainFrame: added conditional compilation statment to define wxID_NEW and wx_ID_OPEN 
+      <li>MainFrame: added conditional compilation statment to define wxID_NEW and wx_ID_OPEN
         in debug version.</li>
       <li>Copyright year updated to 2006 in all files.</li>
     </ul>
@@ -224,9 +255,9 @@
     music reading exercises in each lesson. The 'new' single music reading exercise will
     requiere to have a fragments editor:
     <ul>
-      <li>DlgCfgScoreReading: Time signatures selection implemented and tested. 
+      <li>DlgCfgScoreReading: Time signatures selection implemented and tested.
         ScoreConstrains: Load / save time signature settings implemented and tested.</li>
-      <li>DlgCfgScoreReading: Key signatures selection implemented and tested. 
+      <li>DlgCfgScoreReading: Key signatures selection implemented and tested.
         ScoreConstrains: Load / save key signature settings implemented and tested.</li>
       <li>Bug fixed in lmTheoMusicReadingCtrolParms::AnalyzeKeys() causing improper
         setings when html param value=all</li>
@@ -345,7 +376,7 @@
     <td class="ListaPar">6-feb-06</td>
     <td class="ListaPar">
     Review and document algorithm for composer object. Design a new algorithm to take
-    into account beat alignment and barline aligment constrains. 
+    into account beat alignment and barline aligment constrains.
     </td></tr>
 <tr valign="top">
     <td class="ListaPar">5-feb-06</td>
@@ -359,10 +390,10 @@
     <td class="ListaPar">3-feb-06</td>
     <td class="ListaPar">
     <ul>
-      <li>Reviewed and modified documentation in mainpage of doxygen documentation and 
+      <li>Reviewed and modified documentation in mainpage of doxygen documentation and
         related pages.</li>
       <li>Reviewing and documenting params for html ScoreCtrol and MusicReadingCtrol, in order
-        to finish the implementation and fixing anything related to this before 
+        to finish the implementation and fixing anything related to this before
         finishing the conversion of old level 2 music reading book and starting the conversion
         of other books.</li>
     </ul>
@@ -379,7 +410,7 @@
       <li>lmTheoMusicReadingCtrolParms: removed code to deal with param 'control metronome'</li>
     </ul>
     Reviewing and documenting params for html ScoreCtrol and MusicReadingCtrol, in order
-    to finish the implementation and fixing anything related to this before 
+    to finish the implementation and fixing anything related to this before
     finishing the conversion of old level 2 music reading book and starting the conversion
     of other books.
     </td></tr>
@@ -407,8 +438,8 @@
 <tr valign="top">
     <td class="ListaPar">31-jan-06</td>
     <td class="ListaPar">
-	  Implementing a method to jump to a MusicReading dialog customized for the needs
-	  of a lesson:
+      Implementing a method to jump to a MusicReading dialog customized for the needs
+      of a lesson:
     <ul>
       <li>Successful tests using internal links.</li>
       <li>lmHtmlWindow::OnLinkClicked() modified to include a new internal link type: LenMusEmbedded.</li>
@@ -425,16 +456,16 @@
         <li>Starting conversion of old level 2 music reading book. Splitted into
         pages. Tags changed. Reviewing score control.</li>
         <li>lmScoreCtrolOptions: added flag fMusicBorder to control border around music.
-        Added option &lt;param name="music_border" value="0 | 1" &gt; to 
-	      lmScoreCtrolParams::AddParam() (in Tags.cpp)</li>
-	      <li>Adjusted the positioning and margins of ScoreCtrol. Test example now 
-	      operative.</li>
+        Added option &lt;param name="music_border" value="0 | 1" &gt; to
+          lmScoreCtrolParams::AddParam() (in Tags.cpp)</li>
+          <li>Adjusted the positioning and margins of ScoreCtrol. Test example now
+          operative.</li>
       </ul>
       Embbeding a MusicReadingCtrol in music reading books is not a good solution as normally
-	    there are two or more exercises associated to a lesson. So, as in version 2 behaviour,
-	    it is necessary to jump to a MusicReading dialog customized
-	    according exercises needs; and this dialog must have a "return to theory" link.
-	    Starting to think about the best way to implement this.
+        there are two or more exercises associated to a lesson. So, as in version 2 behaviour,
+        it is necessary to jump to a MusicReading dialog customized
+        according exercises needs; and this dialog must have a "return to theory" link.
+        Starting to think about the best way to implement this.
     </td></tr>
 <tr valign="top">
     <td class="ListaPar">26-jan-06</td>
@@ -456,7 +487,7 @@
           <li>Internationalization of button headings and labels.</li>
           <li>Layout reviewed to reduce page height so that it now fits in display (1024x768)</li>
         </ul></li>
-        <li>TheoScalesCtrol: width of score sub-control enlarged: the scale did not fit when an 
+        <li>TheoScalesCtrol: width of score sub-control enlarged: the scale did not fit when an
         accidental in each note.</li>
         <li>Starting to review ScoreReading settings</li>
       </ul>
@@ -475,7 +506,7 @@
       <ul>
         <li>Implementation of EarIntervalsConstrains load/save settings finished.
           The key name included as a parameter in lmEarIntvalConstrains constructor</li>
-        <li>Methods FirstNoteEqual() and SetFirstNoteEqual() added to 
+        <li>Methods FirstNoteEqual() and SetFirstNoteEqual() added to
           EarIntvalConstrains.</li>
         <li>Implementation of settings for Ear compare exercises finised.</li>
         <li>Theo Intervals configuration: link "settings" created. Created XML layout for
@@ -505,7 +536,7 @@
     <td class="ListaPar">
       <ul>
         <li>Link 'Reset counters' hidden in EarCompareIntvCtrol, EarIntervalsCtrol,
-          TheoIntervalsCtrol and TheoKeySignCtrol. The link is usseles until 
+          TheoIntervalsCtrol and TheoKeySignCtrol. The link is usseles until
           answer counters implemented.</li>
         <li>EarIntervalsCtrol: Width of answer buttons reduced to 100px</li>
         <li>Continue implementation of DlgCfgEarIntervals.</li>
@@ -556,23 +587,23 @@
         for ear exercises and theory exercises as the requirements are different. For example,
         in ear exercises key signature is importants but for theory exercises it is better to
         choose if accidentals and double accidentals are allowed.</li>
-        <li>EarIntervalsControl: settings link added. DlgCfgEarIntervals invoked.</li> 
+        <li>EarIntervalsControl: settings link added. DlgCfgEarIntervals invoked.</li>
         <li>Filling details in DlgCfgEarIntervals: veto tab change if errors in current
         tab data. Solving how to show errors. Implementing all this for notes range.</li>
-      </ul> 
+      </ul>
     </td></tr>
 <tr valign="top">
     <td class="ListaPar">23-dec-05 </td>
     <td class="ListaPar">
       Studying how to integrate interval exercises options (ear and theory).
-      Class IntervalConstrains created. 
+      Class IntervalConstrains created.
     </td></tr>
 <tr valign="top">
     <td class="ListaPar">22-dec-05 </td>
     <td class="ListaPar">
       Integration DlgCfgEarIntervals into the program
       <ul>
-        <li>TheoIntervalsControl: settings link added. DlgCfgEarIntervals invoked.</li> 
+        <li>TheoIntervalsControl: settings link added. DlgCfgEarIntervals invoked.</li>
         <li>AuxString: Added global method LoadCboBoxWithNoteNames().</li>
         <li>Note: added global method GetNoteNamePhysicists().</li>
       </ul>

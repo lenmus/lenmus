@@ -84,10 +84,12 @@ Planning: comming releases
 ******************************************************************************************
 
 Bugs to solve:
-	2 - stems too long if a rest in middle (lesson 212)
-		
+      - Score sizes different in laptop than in fixed PC.
+        
 Modifications to L2_MusicReading eBook:
-	- Once finished, review clefs and notes ranges.
+    - Once finished, review clefs and notes ranges.
+    - review title and content lesson 216
+    - review lesson numbers
 
 
 ?/???/2006 - Beta 3.0b0 release
@@ -100,7 +102,7 @@ Modifications to L2_MusicReading eBook:
         - Installer for Windows
         
     Tasks:
-        1 - <object> strong param verification and error reporting
+        1 + <object> strong param verification and error reporting
         1 - Music reading eBooks. Needed to have exercises width increasing level of difficulty.
         1 - Translation of program into Spanish
         1 - Translation of eBooks into English

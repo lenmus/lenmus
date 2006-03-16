@@ -81,20 +81,24 @@ public:
     void OnImportFile(wxCommandEvent& WXUNUSED(event));
     void OnAbout(wxCommandEvent& WXUNUSED(event));
     void OnOpenHelp(wxCommandEvent& event);
-    void OnOpenHelpUI(wxUpdateUIEvent &event);
+    void OnOpenHelpUI(wxUpdateUIEvent& event);
     void OnOpenBook(wxCommandEvent& event);
     void OnOpenBookUI(wxUpdateUIEvent &event);
 
     void OnDebugForceReleaseBehaviour(wxCommandEvent& event);
     void OnDebugShowDebugLinks(wxCommandEvent& event);
     void OnDebugRecSelec(wxCommandEvent& event);
-    void OnDebugDumpStaffObjs(wxCommandEvent& event);
-    void OnDebugSeeSource(wxCommandEvent& event);
-    void OnDebugSeeXML(wxCommandEvent& event);
     void OnDebugTestMidi(wxCommandEvent& event);
-    void OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event));
     void OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event));
     void OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event));
+    void OnDebugDumpStaffObjs(wxCommandEvent& event);
+    void OnDebugDumpStaffObjsUI(wxUpdateUIEvent& event);
+    void OnDebugSeeSource(wxCommandEvent& event);
+    void OnDebugSeeSourceUI(wxUpdateUIEvent& event);
+    void OnDebugSeeXML(wxCommandEvent& event);
+    void OnDebugSeeXMLUI(wxUpdateUIEvent& event);
+    void OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event));
+    void OnDebugSeeMidiEventsUI(wxUpdateUIEvent& event);
 
     void OnComboZoom(wxCommandEvent& event);
     void OnZoom(wxCommandEvent& event, wxInt32 nZoom);

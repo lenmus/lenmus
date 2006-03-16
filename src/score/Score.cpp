@@ -106,8 +106,8 @@ lmScore::~lmScore()
     m_cHighlighted.DeleteContents(false);    //Staffobjs must not be deleted, only the list
     m_cHighlighted.Clear();
 
-    if (m_pTitle) delete m_pTitle;
-    if (m_pSubtitle) delete m_pSubtitle;
+    //if (m_pTitle) delete m_pTitle;
+    //if (m_pSubtitle) delete m_pSubtitle;
 
 }
 

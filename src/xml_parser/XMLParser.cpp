@@ -1032,9 +1032,9 @@ bool lmXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
                 BeamInfo[nLevel].Type = eBeamContinue;
             else if (sValue == _T("end"))
                 BeamInfo[nLevel].Type = eBeamEnd;
-            else if (sValue == _T("end"))
+            else if (sValue == _T("forward hook"))
                 BeamInfo[nLevel].Type = eBeamForward;
-            else if (sValue == _T("end"))
+            else if (sValue == _T("backward hook"))
                 BeamInfo[nLevel].Type = eBeamBackward;
             else
                 ParseError(

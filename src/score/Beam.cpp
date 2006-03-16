@@ -315,17 +315,25 @@ void lmBeam::TrimStems()
                        Ax
         The x position of the stem has beeen computed in Note object during the
         measurement phase.
+
+        The loop is also used to look for the shortest stem
     */          
     lmMicrons Ay = yTop[nNumNotes] - yTop[1];
     lmMicrons x1 = m_pFirstNote->GetXStem();
     lmMicrons Ax = m_pLastNote->GetXStem() - x1;
     lmNoteRest* pNR;
+    int nMinStem;
     for(i=1, pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++) 
     {
         pNR = (lmNoteRest*)pNode->GetData();
         if (!pNR->IsRest()) {
             pNote = (lmNote*)pNR;
             yTop[i] = yTop[1] + (Ay * (pNote->GetXStem() - x1)) / Ax;
+            //save the shortest stem
+            if (i==1)
+                nMinStem = abs(yBase[1] - yTop[1]);
+            else
+                nMinStem = wxMin(nMinStem, abs(yBase[i] - yTop[i]));
         }
     }
 
@@ -339,12 +347,6 @@ void lmBeam::TrimStems()
     lmMicrons dyStem = m_pFirstNote->GetDefaultStemLength();
     int dyMin = (2 * dyStem) / 3;
     bool fAdjust;
-
-    // look for the shortest stem
-    int nMinStem = abs(yBase[1] - yTop[1]);
-    for (i=2; i <= nNumNotes; i++) {
-        nMinStem = wxMin(nMinStem, abs(yBase[i] - yTop[i]));
-    }
 
     // compare the shortest with this minimun required
     int yIncr;
@@ -586,5 +588,8 @@ void lmBeam::DrawBeamSegment(wxDC* pDC, bool fStemDown, int xStart, int yStart,
         wxPoint(xEnd, yEnd)
     };
     pDC->DrawPolygon(4, points);
+
+    //wxLogMessage(_T("[lmBeam::DrawBeamSegment] xStart=%d, yStart=%d, xEnd=%d, yEnd=%d, nThickness=%d, yStartIncr=%d, yEndIncr=%d, fStemDown=%s"),
+    //    xStart, yStart, xEnd, yEnd, nThickness, yStartIncr, yEndIncr, (fStemDown ? _T("down") : _T("up")) );
 
 }

@@ -44,6 +44,10 @@
 //#include "../app/MainFrame.h"
 //extern lmMainFrame *GetMainFrame();
 
+//access to logger
+#include "../app/Logger.h"
+extern lmLogger* g_pLogger;
+
 
 // access to the config object
 extern wxConfigBase *g_pPrefs;
@@ -512,6 +516,10 @@ wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
         - Computes the duration of the remaining elements and updates with this
             value variable pointed by pSegmentDuration
     */
+    g_pLogger->LogTrace(_T("lmFragmentsTable::GetFirstSegmentDuracion"),
+            _T("[lmFragmentsTable::GetFirstSegmentDuracion] analyzing='%s'"),
+            sSegment );
+
     //prepare source with a measure and instatiate note pitches
     wxString sSource = _T("(c 1 ") + sSegment;
     sSource += _T("(Barra Final))");
@@ -551,7 +559,6 @@ wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
 
     //now compute remaining duration
     float rSegmentDuration = 0.0;
-    float rTimeToBeatAlign = 0.0;
     pIter->MoveLast();
     pSO = pIter->GetCurrent();
     wxASSERT(pSO->GetType() == eTPO_Barline);
@@ -585,8 +592,12 @@ wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     }
 
     //return results
+    g_pLogger->LogTrace(_T("lmFragmentsTable::GetFirstSegmentDuracion"),
+            _T("[lmFragmentsTable::GetFirstSegmentDuracion] sSource='%s', ts=%.2f, tab=%.2f"),
+            sSource, rSegmentDuration, rRestsDuration );
+
     *pSegmentDuration = rSegmentDuration;
-    *pTimeAlignBeat = rTimeToBeatAlign;
+    *pTimeAlignBeat = rRestsDuration;
     return sSource;
 
 }

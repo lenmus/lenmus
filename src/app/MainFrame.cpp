@@ -292,12 +292,16 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_MENU (MENU_Debug_ForceReleaseBehaviour, lmMainFrame::OnDebugForceReleaseBehaviour)
     EVT_MENU (MENU_Debug_ShowDebugLinks, lmMainFrame::OnDebugShowDebugLinks)
     EVT_MENU (MENU_Debug_recSelec, lmMainFrame::OnDebugRecSelec)
-    EVT_MENU (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugDumpStaffObjs)
-    EVT_MENU (MENU_Debug_SeeSource, lmMainFrame::OnDebugSeeSource)
-    EVT_MENU (MENU_Debug_SeeXML, lmMainFrame::OnDebugSeeXML)
-    EVT_MENU (MENU_Debug_SeeMIDIEvents, lmMainFrame::OnDebugSeeMidiEvents)
     EVT_MENU (MENU_Debug_SetTraceLevel, lmMainFrame::OnDebugSetTraceLevel)
     EVT_MENU (MENU_Debug_PatternEditor, lmMainFrame::OnDebugPatternEditor)
+    EVT_MENU      (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugDumpStaffObjs)
+    EVT_UPDATE_UI (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugDumpStaffObjsUI)
+    EVT_MENU      (MENU_Debug_SeeSource, lmMainFrame::OnDebugSeeSource)
+    EVT_UPDATE_UI (MENU_Debug_SeeSource, lmMainFrame::OnDebugSeeSourceUI)
+    EVT_MENU      (MENU_Debug_SeeXML, lmMainFrame::OnDebugSeeXML)
+    EVT_UPDATE_UI (MENU_Debug_SeeXML, lmMainFrame::OnDebugSeeXMLUI)
+    EVT_MENU      (MENU_Debug_SeeMIDIEvents, lmMainFrame::OnDebugSeeMidiEvents)
+    EVT_UPDATE_UI (MENU_Debug_SeeMIDIEvents, lmMainFrame::OnDebugSeeMidiEventsUI)
 
     EVT_COMBOBOX (ID_COMBO_ZOOM, lmMainFrame::OnComboZoom)
 
@@ -699,8 +703,6 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* view,
             _T("Force to draw selection rectangles around staff objects"), wxITEM_CHECK);
         debug_menu->Append(MENU_Debug_SetTraceLevel, _T("Set trace level ...") );
         debug_menu->Append(MENU_Debug_PatternEditor, _T("Test Pattern Editor") );
-    }
-    if (fEdit && fDebug) {
         debug_menu->Append(MENU_Debug_DumpStaffObjs, _T("&Dump of score") ); 
         debug_menu->Append(MENU_Debug_SeeSource, _T("See &LDP source") ); 
         debug_menu->Append(MENU_Debug_SeeXML, _T("See &XML") );
@@ -1223,6 +1225,12 @@ void lmMainFrame::OnDebugDumpStaffObjs(wxCommandEvent& event)
 
 }
 
+void lmMainFrame::OnDebugDumpStaffObjsUI(wxUpdateUIEvent& event)
+{
+    lmScoreView* pView = g_pTheApp->GetActiveView();
+    event.Enable( (pView != (lmScoreView*)NULL) );
+}
+
 void lmMainFrame::OnDebugSeeSource(wxCommandEvent& event)
 {
     // get the score
@@ -1233,6 +1241,12 @@ void lmMainFrame::OnDebugSeeSource(wxCommandEvent& event)
     lmDlgDebug dlg(this, _T("Generated source code"), pScore->SourceLDP());
     dlg.ShowModal();
 
+}
+
+void lmMainFrame::OnDebugSeeSourceUI(wxUpdateUIEvent& event)
+{
+    lmScoreView* pView = g_pTheApp->GetActiveView();
+    event.Enable( (pView != (lmScoreView*)NULL) );
 }
 
 void lmMainFrame::OnDebugSeeXML(wxCommandEvent& event)
@@ -1247,6 +1261,12 @@ void lmMainFrame::OnDebugSeeXML(wxCommandEvent& event)
 
 }
 
+void lmMainFrame::OnDebugSeeXMLUI(wxUpdateUIEvent& event)
+{
+    lmScoreView* pView = g_pTheApp->GetActiveView();
+    event.Enable( (pView != (lmScoreView*)NULL) );
+}
+
 void lmMainFrame::OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event))
 {
     // get the score
@@ -1257,6 +1277,12 @@ void lmMainFrame::OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event))
     lmDlgDebug dlg(this, _T("MIDI events table"), pScore->DumpMidiEvents() );
     dlg.ShowModal();
 
+}
+
+void lmMainFrame::OnDebugSeeMidiEventsUI(wxUpdateUIEvent& event)
+{
+    lmScoreView* pView = g_pTheApp->GetActiveView();
+    event.Enable( (pView != (lmScoreView*)NULL) );
 }
 
 void lmMainFrame::OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event))
