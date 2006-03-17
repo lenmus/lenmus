@@ -54,6 +54,7 @@
 #include "LDPParser.h"
 #include "AuxString.h"
 #include "../auxmusic/Conversion.h"
+#include "LDPTags.h"
 
 
 //the next three lines ar for getting the main frame for wxMessageBox
@@ -73,6 +74,7 @@ lmLDPParser::lmLDPParser()
     m_pCurNode = (lmLDPNode*) NULL;
     m_fDebugMode = false;
     m_pTupletBracket = (lmTupletBracket*)NULL;
+    m_pTags = lmLdpTagsTable::GetInstance();
 
 }
 
@@ -535,8 +537,8 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
     lmScore* pScore = (lmScore*) NULL;
     int i;
 
-    if (pNode->GetName() != _T("Partitura")) {
-        AnalysisError( _("Element 'Partitura' expected but found element %s. Analysis stopped."),
+    if (pNode->GetName() != _T("Score")) {
+        AnalysisError( _("Element 'Score' expected but found element %s. Analysis stopped."),
             pNode->GetName() );
         return pScore;
     }
@@ -585,7 +587,7 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
 
 lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)
 {
-    //<Partitura> = (Partitura <Vers> [<Creditos>] <NumInstruments> <Instrumento>*)
+    //<Score> = (Partitura <Vers> [<Creditos>] <NumInstruments> <Instrumento>*)
     //<Creditos> = (Creditos [..])
     //<NumInstrumentos> = (NumInstrumentos num)
 
@@ -653,9 +655,9 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
     long iP;
     iP = 1;
     
-    if (pNode->GetName() != _T("Instrumento")) {
-        AnalysisError( _("Element 'Instrumento' expected but found element %s. Analysis stopped."),
-            pNode->GetName() );
+    if (pNode->GetName() != m_pTags->TagName(_T("Instrument")) ) {
+        AnalysisError( _("Element '%s' expected but found element %s. Analysis stopped."),
+            m_pTags->TagName(_T("Instrument")), pNode->GetName() );
         return;
     }
 

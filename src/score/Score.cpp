@@ -383,7 +383,7 @@ wxString lmScore::Dump()
 wxString lmScore::SourceLDP()
 {
     wxString sSource = 
-        wxString::Format(_T("Partitura\n   (Vers 1.3)\n   (NumInstrumentos %d)\n"),
+        wxString::Format(_T("Score\n   (Vers 1.3)\n   (NumInstrumentos %d)\n"),
                     m_cInstruments.GetCount() );
 
     //loop for each instrument
@@ -413,7 +413,7 @@ wxString lmScore::SourceXML()
 ////            <part-name>Voice</part-name>
 ////        </score-part>
 //
-////    sFuente = sFuente & "<Partitura" & sCrLf & "   (Vers 1.3)" & sCrLf & "   (NumInstrumentos " & _
+////    sFuente = sFuente & "<Score" & sCrLf & "   (Vers 1.3)" & sCrLf & "   (NumInstrumentos " & _
 ////        m_cInstruments.Count & ")" & sCrLf
 //    for (i = 1 To m_cInstruments.Count
 //        sFuente = sFuente & "    <score-part id=""P" & i & """ >" & sCrLf

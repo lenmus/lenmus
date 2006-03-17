@@ -35,6 +35,7 @@
 
 #include "LDPNode.h"
 #include "LDPToken.h"
+#include "LDPTags.h"
 
 #include "../score/score.h"
 
@@ -106,7 +107,8 @@ private:
 
     void ParseError(EParsingStates nState, lmLDPToken* pTk);
 
-
+    //LDP tags table
+    lmLdpTagsTable*     m_pTags;
 
     // variables to store temporary values as the file is being analized.
     wxInt32     m_nCurStaff;        //default staff num. for the lmNoteRest being processed

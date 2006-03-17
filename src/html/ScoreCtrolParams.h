@@ -315,7 +315,7 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 wxString lmScoreCtrolParams::FinishShortScore(wxString sPattern)
 {
     //prepare the score adding the begining and closing it.
-    wxString sPart = _T("(Partitura (Vers 1.3)(NumInstrumentos 1)") 
+    wxString sPart = _T("(Score (Vers 1.3)(NumInstrumentos 1)") 
         _T("(Instrumento 1 (NumPartes 1)")
             _T("(Parte 1 ")
                 _T("(c 1 (Clave Sol)")

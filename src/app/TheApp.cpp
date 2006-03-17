@@ -112,6 +112,9 @@ void __cdecl wxAssert(int n, char const * s,int m,char const *s2,char const *s3)
 //access to error's logger
 #include "Logger.h"
 
+//to delete the LDP tags table
+#include "../ldp_parser/LDPTags.h"
+
 
 //-------------------------------------------------------------------------------------------
 // global variables
@@ -454,6 +457,8 @@ int lmTheApp::OnExit(void)
     // the error's logger
     delete g_pLogger;
 
+    // the LDP tags table
+    lmLdpTagsTable::DeleteInstance();
 
     return 0;
 }

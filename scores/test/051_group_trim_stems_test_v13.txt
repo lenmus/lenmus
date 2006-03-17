@@ -1,4 +1,4 @@
-(Partitura
+(Score
    (Vers 1.3)
    (NumInstrumentos 1)
    (Instrumento 1
@@ -12,8 +12,8 @@
             (n f4 c g+)(n c5 s)(n a4 s g-)
          )
          (c 2 (n b4 s g+)(n c4 s)(n f4 c g-)
-         	  (s n)
-      	 )
+              (s n)
+         )
       )
    )
 )
