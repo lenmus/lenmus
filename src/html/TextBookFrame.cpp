@@ -446,6 +446,9 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
     }
 
     m_HtmlWin->SetRelatedFrame(this, m_TitleFormat);
+//CSG Added
+    g_pMainFrame->SetHtmlWindow(m_HtmlWin);
+//End CSG Added
 
 //CSG removed
 //#if wxUSE_STATUSBAR

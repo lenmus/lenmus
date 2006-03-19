@@ -202,6 +202,7 @@ enum
     MENU_OpenBook,
 
     // Menu Print
+    MENU_Print,
     MENU_Print_Preview,
     MENU_Page_Setup,
 
@@ -257,7 +258,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_MENU (MENU_File_Import, lmMainFrame::OnImportFile)
     EVT_MENU (MENU_Print_Preview, lmMainFrame::OnPrintPreview)
     EVT_MENU (wxID_PRINT_SETUP, lmMainFrame::OnPrintSetup)
-    EVT_MENU (wxID_PRINT, lmMainFrame::OnPrint)
+    EVT_MENU (MENU_Print, lmMainFrame::OnPrint)
 
     EVT_MENU      (MENU_View_Tools, lmMainFrame::OnViewTools)
     EVT_MENU      (MENU_View_Rulers, lmMainFrame::OnViewRulers)
@@ -445,7 +446,7 @@ void lmMainFrame::CreateMyToolBar()
     m_pToolbar->AddTool(wxID_COPY, _("Copy"), wxArtProvider::GetIcon(_T("tool_copy"), wxART_TOOLBAR, nSize), _("Copy"));
     m_pToolbar->AddTool(wxID_CUT, _("Cut"), wxArtProvider::GetIcon(_T("tool_cut"), wxART_TOOLBAR, nSize), _("Cut"));
     m_pToolbar->AddTool(wxID_PASTE, _("Paste"), wxArtProvider::GetIcon(_T("tool_paste"), wxART_TOOLBAR, nSize), _("Paste"));
-    m_pToolbar->AddTool(wxID_PRINT, _("Print"), wxArtProvider::GetIcon(_T("tool_print"), wxART_TOOLBAR, nSize), _("Print document"));
+    m_pToolbar->AddTool(MENU_Print, _("Print"), wxArtProvider::GetIcon(_T("tool_print"), wxART_TOOLBAR, nSize), _("Print document"));
     m_pToolbar->AddSeparator();
     m_pToolbar->AddTool(MENU_Options, _("Options"), wxArtProvider::GetIcon(_T("tool_options"), wxART_TOOLBAR, nSize), _("Options"));
     m_pToolbar->AddTool(MENU_OpenHelp, _("Help"), wxArtProvider::GetIcon(_T("tool_help"), wxART_TOOLBAR, nSize), _("Help button"), wxITEM_CHECK);
@@ -641,7 +642,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* view,
     file_menu->Append(wxID_CLOSE, _("&Close\tCtrl+W"));
     file_menu->AppendSeparator();
 
-    pItem = new wxMenuItem(file_menu, wxID_PRINT, _("&Print ...\tCtrl+P"));
+    pItem = new wxMenuItem(file_menu, MENU_Print, _("&Print ...\tCtrl+P"));
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_print"), wxART_TOOLBAR, nIconSize) );
     file_menu->Append(pItem); 
 
@@ -659,7 +660,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* view,
     file_menu->Append(wxID_SAVEAS, _("Save &as ...\tCtrl+Shift+S"));
     file_menu->Append(wxID_CLOSE, _("&Close\tCtrl+W"));
     file_menu->AppendSeparator();
-    file_menu->Append(wxID_PRINT, _("&Print ...\tCtrl+P"));
+    file_menu->Append(MENU_Print, _("&Print ...\tCtrl+P"));
     file_menu->Append(wxID_PRINT_SETUP, _("Print &Setup..."));
     file_menu->Append(MENU_Print_Preview, _("Print Pre&view\tCtrl+Shift+P"));
     file_menu->AppendSeparator();
@@ -877,7 +878,7 @@ void lmMainFrame::UpdateMenuAndToolbar()
     //pToolBar->EnableTool(wxID_COPY, fEdit);
     //pToolBar->EnableTool(wxID_CUT, fEdit);
     //pToolBar->EnableTool(wxID_PASTE, fEdit);
-    //pToolBar->EnableTool(wxID_PRINT, fEdit);
+    //pToolBar->EnableTool(MENU_Print, fEdit);
 
     // view rulers
     pMenuBar->Enable(MENU_View_Rulers, fView);
@@ -909,7 +910,7 @@ void lmMainFrame::UpdateMenuAndToolbar()
         pToolBar->EnableTool(wxID_COPY, false);
         pToolBar->EnableTool(wxID_CUT, false);
         pToolBar->EnableTool(wxID_PASTE, false);
-        pToolBar->EnableTool(wxID_PRINT, false);
+        pToolBar->EnableTool(MENU_Print, false);
 
     }
 

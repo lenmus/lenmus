@@ -145,6 +145,10 @@ public:
     void UpdateMenuAndToolbar();
     void UpdateToolbarsLayout();
 
+    //eBooks controller
+    void SetHtmlWindow(lmHtmlWindow* pHtmlWin) { m_pHtmlWin = pHtmlWin; }
+    lmHtmlWindow* GetHtmlWindow() { return m_pHtmlWin; }
+
     //debug method
     void DumpScore(lmScore* pScore);
 
@@ -160,6 +164,7 @@ protected:
 
     lmToolsDlg*             m_pToolsDlg;
     lmTextBookController*   m_pBookController;
+    lmHtmlWindow*           m_pHtmlWin;
     lmHelpController*       m_pHelp;
     wxSpinCtrl*             m_pSpinMetronome;
 

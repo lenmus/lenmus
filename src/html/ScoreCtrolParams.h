@@ -45,6 +45,8 @@
 #include "../exercises/ScoreConstrains.h"
 #include "../ldp_parser/AuxString.h"
 
+#include "../app/MainFrame.h"           //CSG_ADDED
+extern lmMainFrame* g_pMainFrame;       //CSG_ADDED
 
 enum EHtmlScoreTypes
 {
@@ -299,7 +301,9 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     m_pOptions->fBorder = (m_nWindowStyle == wxSIMPLE_BORDER);
 
     // create the lmScoreCtrol
-    wnd = new lmScoreCtrol((wxWindow*)pHtmlParser->GetWindow(), -1, m_pScore,
+    //wnd = new lmScoreCtrol((wxWindow*)pHtmlParser->GetWindow(), -1, m_pScore,
+    //    m_pOptions, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
+    wnd = new lmScoreCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, m_pScore,
         m_pOptions, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
