@@ -1,5 +1,5 @@
 <html>
-<!-- RCS-ID: $Id: installation.htm,v 1.2 2005/11/03 16:58:30 cecilios Exp $ -->
+<!-- $Id: 2006/20/03 -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>LenMus installation procedure</title>
@@ -9,10 +9,15 @@
 
 <h1>LenMus 3.0 installation</h1>
 
-<p><b>Release:</b> 3.0 alpha x</p>
+<p><b>Release:</b> 3.0 beta x</p>
 
 
 <h2>Microsoft Windows LenMus 3.0 installation</h2>
+
+<h3>Automatic installation</h3>
+
+<p>Just run the installer (lenmus_3.0.bx_setup.exe). It will ask you for the path to install LenMus
+and ask you about installing or not optional components.</p>
 
 <h3>Manual installation</h3>
 
@@ -22,7 +27,7 @@ LenMus music font. That's all. No registry keys or other stuff.
 Follow this procedure:<p/>
 
 <ol>
-<li>Create a folder to install LenMus and unzip lenmus30a0.zip there.</li>
+<li>Create a folder to install LenMus and unzip lenmus_30bx.zip there.</li>
 
 <li>Install the font <em>LeMusNot.ttf</em> contained in folder <em>/bin</em>. For example:
     <ol>
@@ -37,7 +42,8 @@ Follow this procedure:<p/>
 
 
 <h3>LenMus 3.0 directories</h3>
-<p>After unziping you should have the following folders and content:</p>
+<p>After installation, in the chosen installation folder you will find some documentation,
+such as licence and installation procedure, and the following folders and content: </p>
 
 <table class="Lista">
 <thead class="ListaImpar">
@@ -49,26 +55,24 @@ Follow this procedure:<p/>
     <td class="ListaPar">lenmus.exe</td><td class="ListaPar">Executable</td></tr>
 <tr>
     <td class="ListaPar">LeMusNot.ttf&nbsp;</td>
-    <td class="ListaPar">True Type font with music symbols. You MUST install it in the
-        Windows/fonts directory.</td></tr>
-<tr class="ListaPar">
-    <td class="ListaPar">data</td>
-    <td class="ListaPar">*.ini</td><td class="ListaPar">LenMus database files. These files
-    define score generation constrains for each level and lesson.</td></tr>
+    <td class="ListaPar">True Type font with music symbols. <b>If you install LenMus without using
+    the setup program, YOU MUST INSTALL this font in the
+        Windows/fonts directory.</b></td></tr>
+<tr>
+    <td class="ListaPar">res</td>
+    <td class="ListaPar">&nbsp;</td>
+    <td class="ListaPar">Icons, bitmaps and related files. There are two subdirectories: one for
+        bitmaps and another for icons.</td></tr>
+<tr>
+    <td class="ListaPar">xrc</td>
+    <td class="ListaPar">*.xrc</td>
+    <td class="ListaPar">XRC resources used by the program.</td></tr>
 <tr>
     <td class="ListaPar">scores</td>
     <td class="ListaPar">&nbsp;</td>
-    <td class="ListaPar">Sample scores. There are two subdirectories: one for
-        MusicXML scores and another for LDP (LenMus score language) scores.</td></tr>
-<tr>
-    <td class="ListaPar">scores/MusicXML</td>
-    <td class="ListaPar">*.xml</td>
-    <td class="ListaPar">Test MusicXML samples. Load them into LenMus
-        by using File/Import </td></tr>
-<tr>
-    <td class="ListaPar">scores/test</td>
-    <td class="ListaPar">*.txt</td>
-    <td class="ListaPar">Test LDP samples. Load them into LenMus by using File/Open</td></tr>
+    <td class="ListaPar">Sample scores. There are two subdirectories. One, named 'MusicXML' for
+        MusicXML scores; load them using File/Import. And another, named 'test, for LDP (LenMus
+        score language) scores; load them using File/Open.</td></tr>
 <tr>
     <td class="ListaPar">temp</td>
     <td class="ListaPar">empty</td>

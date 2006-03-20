@@ -218,23 +218,21 @@ void lmMidiWizard::OnWizardFinished( wxWizardEvent& event )
 void lmMidiWizard::OnWizardCancel( wxWizardEvent& event )
 {
     /*
-    restore old configuration
+    restore old configuration if any
     */
 
-    //devices
-    g_pMidi->SetInDevice(m_nOldInDevId);
-    g_pMidi->SetOutDevice(m_nOldOutDevId);
+    if (g_pMidi->IsConfigured()) {
+        //devices
+        g_pMidi->SetInDevice(m_nOldInDevId);
+        g_pMidi->SetOutDevice(m_nOldOutDevId);
 
-    //voice instruments
-    g_pMidi->VoiceChange(m_nOldVoiceChannel, m_nOldVoiceInstr);
+        //voice instruments
+        g_pMidi->VoiceChange(m_nOldVoiceChannel, m_nOldVoiceInstr);
 
-    //metronome configuration
-    g_pMidi->VoiceChange(m_nOldMtrChannel, m_nOldMtrInstr);
-    g_pMidi->SetMetronomeTones(m_nOldMtrTone1, m_nOldMtrTone2);
-
-
-    wxMessageBox(_("Midi set up cancelled. Old configuration restored."));
-
+        //metronome configuration
+        g_pMidi->VoiceChange(m_nOldMtrChannel, m_nOldMtrInstr);
+        g_pMidi->SetMetronomeTones(m_nOldMtrTone1, m_nOldMtrTone2);
+    }
 }
 
 

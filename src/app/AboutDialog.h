@@ -29,7 +29,7 @@
 #include <wx/dialog.h>
 
 // Increment this every time you release a new version
-#define LM_VERSION_STR _T("3.0 alpha 2")
+#define LM_VERSION_STR _T("3.0 alpha 3")
 
 
 

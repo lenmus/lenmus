@@ -1,10 +1,26 @@
 ;==============================================================================================
-;lenmus for Windows installer. NSIS v2.15 script for generating the exe installer and uninstaller
-;Cecilio Salmeron <cecilio@lenmus.org>
+; Windows installer for LenMus
+; NSIS v2.15 script for generating the exe installer and uninstaller
 ;
-; To generate a new version:
-; -  Change APP_VERSION
-; -  Change Name 
+;--------------------------------------------------------------------------------------
+;    LenMus Phonascus: The teacher of music
+;    Copyright (c) 2002-2006 Cecilio Salmeron
+;
+;    This program is free software; you can redistribute it and/or modify it under the 
+;    terms of the GNU General Public License as published by the Free Software Foundation;
+;    either version 2 of the License, or (at your option) any later version.
+;
+;    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+;    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+;    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+;
+;    You should have received a copy of the GNU General Public License along with this 
+;    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+;    Fifth Floor, Boston, MA  02110-1301, USA.
+;
+;    For any comment, suggestion or feature request, please contact the manager of 
+;    the project at cecilios@users.sourceforge.net
+;
 ;==============================================================================================
 
 ;perform a CRC on the installer before allowing an install to make sure the installer
@@ -18,11 +34,11 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_NAME "lenmus Phonascus"
-  !define APP_VERSION "3.0.b0"
+  !define APP_VERSION "3.0.a3"
+  !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v3.0 beta 0"     ;product name displayed by the installer
+  Name "lenmus v3.0 alpha 3"     ;product name displayed by the installer
 
 
 ;support for Modern UI
@@ -117,7 +133,7 @@
 
 
 ;define filename of installer and uninstaller
-  !define INSTALLER_NAME "lenmus_${APP_VERSION}.exe"
+  !define INSTALLER_NAME "lenmus_${APP_VERSION}_setup.exe"
   !define UNINSTALLER_NAME "uninstall_lenmus.exe"
 
 ;variable to retry installation when error found
@@ -130,28 +146,33 @@
 ;define the default installation directory
   InstallDir "$PROGRAMFILES\LenMus"
 
-;Registry key to check for directory, so if you install again, it will take the old one
-;as default installation directory instead of the previously defined.
-  InstallDirRegKey  HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\lenmus.exe" ""
-
 ;instruct installer and uninstaller to show install/uninstall log to the user
   ShowInstDetails show                   ;show install log 
   ShowUnInstDetails show                 ;show uninstall log
 
 
-;languaje files to support different languages <---- Está comentado durante el desarrollo. 
+
+
+;---------------------------------------------------------------------------------------------------
+;---------------------------------------------------------------------------------------------------
+; Language files. 
+; If this grows too much, move to language files, and uncomment the three next senteces
+;---------------------------------------------------------------------------------------------------
+;---------------------------------------------------------------------------------------------------
+;languaje files to support different languages <---- Commented for now
   ;!addincludedir "."
   ;!include "lenmus_spanish.nsh"
   ;!include "lenmus_english.nsh"
 
-; Este trozo sólo durante el desarrollo. Luego cortar, llevar a 
-; "lenmus_Spanish.nsh" y quitar los comentarios de las dos sentencias anteriores
+
+
+; File "lenmus_spanish.nsh"
 ;========================================================================================
 
 ;Spanish language file for lenmus installer/uninstaller
 ;---------------------------------------------------------------------------------------------------------
 
-LicenseLangString license ${LANG_Spanish} "license_spa.rtf"
+LicenseLangString license ${LANG_Spanish} "license_spanish.txt"
 
 ;strings to customize MUI pages
 LangString MSG_OptionalComponents   ${LANG_Spanish} "Por favor, seleccione los componentes opcionales que desee instalar"
@@ -160,12 +181,12 @@ LangString MSG_OptionalComponents   ${LANG_Spanish} "Por favor, seleccione los c
 ;section titles, what user sees to select components for installation
 LangString TITLE_CreateIcon     ${LANG_Spanish} "Acceso directo en escritorio"
 LangString TITLE_Scores         ${LANG_Spanish} "Partituras de ejemplo"
-LangString TITLE_RegKeys        ${LANG_Spanish} "Incluir en panel de control (en 'Agregar/quitar software')"
+LangString TITLE_RegKeys        ${LANG_Spanish} "Incluir en panel de control ('Agregar/quitar software')"
 
 ;descriptions for the sections. Displayed to user when mouse hovers over a section
 LangString DESC_CreateIcon      ${LANG_Spanish} "Crear un icono de acceso directo en el escritorio"
 LangString DESC_Scores          ${LANG_Spanish} "Crear una carpeta con algunas partituras de ejemplo"
-LangString DESC_RegKeys         ${LANG_Spanish} "Crear claves en el Registro de Windows para que el LenMus aparezca en panel de control, en 'Agregar/quitar programas'"
+LangString DESC_RegKeys         ${LANG_Spanish} "Crea claves en el Registro de Windows para que LenMus aparezca en 'Agregar/quitar programas'"
 
 
 ;error messages and other texts
@@ -173,7 +194,6 @@ LangString ERROR_CopyFiles          ${LANG_Spanish} "Error copiando archivos de 
 LangString ERROR_InstallFonts       ${LANG_Spanish} "Error instalando el font"
 LangString ERROR_CreateIcon         ${LANG_Spanish} "Error creando acceso directo en el escritorio"
 LangString ERROR_CopyScores         ${LANG_Spanish} "Error copiando partituras de ejemplo"
-LangString ERROR_DeterminarOS       ${LANG_Spanish} "Error al tratar de determinar cual es el sistema operativo"
 LangString MSG_CONTINUE             ${LANG_Spanish} "¿Quiere continuar instalando?"
 LangString MSG_ABORT                ${LANG_Spanish} "Instalación cancelada"
 
@@ -186,10 +206,14 @@ LangString SHORTCUT_NAME_UNINSTALL      ${LANG_Spanish} "Desinstalar ${APP_NAME}
 ;End Spanish language file
 ;=========================================================================================
 
+
+
+; File "lenmus_english.nsh"
+;========================================================================================
 ;English language file for lenmus installer/uninstaller
 ;---------------------------------------------------------------------------------------------------------
 
-LicenseLangString license ${LANG_English} "license_eng.rtf"
+LicenseLangString license ${LANG_English} "license_english.txt"
 
 ;strings to customize MUI pages
 LangString MSG_OptionalComponents   ${LANG_English} "Please, choose the optional components you would like to install"
@@ -203,7 +227,7 @@ LangString TITLE_RegKeys        ${LANG_English} "Add to Control Panel (to 'Add/R
 ;descriptions for the sections. Displayed to user when mouse hovers over a section
 LangString DESC_CreateIcon      ${LANG_English} "Create a shorcut icon on the desktop"
 LangString DESC_Scores          ${LANG_English} "Create a folder containing some examples of music scores"
-LangString DESC_RegKeys         ${LANG_English} "Create keys in Windows Registry to add LenMus to the 'Add/Remove Programs' section in the Control Panel."
+LangString DESC_RegKeys         ${LANG_English} "Create keys in Windows Registry to add LenMus to 'Add/Remove Programs' in the Control Panel."
 
 
 ;error messages and other texts
@@ -211,7 +235,6 @@ LangString ERROR_CopyFiles          ${LANG_English} "Error copying program files
 LangString ERROR_InstallFonts       ${LANG_English} "Error installing font"
 LangString ERROR_CreateIcon         ${LANG_English} "Error creating shortcut on desktop"
 LangString ERROR_CopyScores         ${LANG_English} "Error copying examples of music scores"
-LangString ERROR_DeterminarOS       ${LANG_English} "Error trying to identify operting system"
 LangString MSG_CONTINUE             ${LANG_English} "Would you like to continue the installation?"
 LangString MSG_ABORT                ${LANG_English} "Installation canceled"
 
@@ -238,7 +261,7 @@ FunctionEnd
 
 
 ;Install all the mandatory components
-Section  "-" "SeccionBasica"
+Section  "-" "MainSection"
 
   ; vars initialization
   StrCpy "$STEP" "Nil" 
@@ -259,10 +282,11 @@ Section  "-" "SeccionBasica"
      SetOverWrite try
      SetOutPath "$INSTDIR"
      File "..\..\docs\html\licence.htm"
+     File "..\..\docs\html\installation.htm"
      File "..\..\docs\html\singledoc.css"
      File "..\..\docs\release\licence.txt"
-     File "license_eng.rtf"
-     File "license_spa.rtf"
+     File "license_english.txt"
+     File "license_spanish.txt"
 
      SetOutPath "$INSTDIR\bin"
      File "..\..\z_bin\lenmus.exe"
@@ -350,7 +374,7 @@ Section $(TITLE_CreateIcon) CreateIcon
 SectionEnd
 
 ;-----------------------------------------------------------------------------------------------
-; example score sheets 
+; example scores 
 ;-----------------------------------------------------------------------------------------------
 Section $(TITLE_Scores) Scores
 
@@ -408,7 +432,7 @@ SectionEnd
 ;                                 Uninstaller                                              ;
 ############################################################################################
 
-;get the stored language preference
+;get the language preference
 Function un.onInit
   !insertmacro MUI_UNGETLANGUAGE
 FunctionEnd
@@ -471,9 +495,11 @@ Section un.Install
   RMDir $MUI_TEMP
   DeleteRegKey /ifempty HKCU "Software\LenMus"
 
-  ;erase registry keys
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\LenMus"
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\App Paths\lenmus.exe"
+  ;erase registry keys created by the installer
+  DeleteRegKey  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\LenMus\DisplayName"
+  DeleteRegKey  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\LenMus\UninstallString"
+  DeleteRegKey  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\LenMus\NoModifiy"
+  DeleteRegKey  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\LenMus\NoRepair"
   
   SetAutoClose false
   

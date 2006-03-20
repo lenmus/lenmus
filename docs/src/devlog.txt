@@ -85,6 +85,7 @@ Planning: comming releases
 
 Bugs to solve:
       - Score sizes different in laptop than in fixed PC.
+      - Fail on first run if MIDI wizard cancelled by user. 
         
 Modifications to L2_MusicReading eBook:
     - Once finished, review clefs and notes ranges.
@@ -106,7 +107,7 @@ Modifications to L2_MusicReading eBook:
         1 - Music reading eBooks. Needed to have exercises width increasing level of difficulty.
         1 - Translation of program into Spanish
         1 - Translation of eBooks into English
-        1 - Write NSIS installer for Windows
+        1 + Write NSIS installer for Windows
         2 - Splash: finish it.
         3 - For each exercise prepare an html page to explain it in the website. It could be
             also part of the help book

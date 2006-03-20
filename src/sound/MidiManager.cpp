@@ -148,7 +148,7 @@ void lmMidiManager::SetOutDevice(int nOutDevId)
     wxMidiError nErr;
 
     //if out device Id has changed close current device and open the new one
-    if (!g_pMidiOut || m_nOutDevId != nOutDevId)
+    if (!g_pMidiOut || (m_nOutDevId != nOutDevId))
     {
         //close current device
          if (g_pMidiOut) {
@@ -189,7 +189,7 @@ void lmMidiManager::SetInDevice(int nInDevId)
     wxMidiError nErr;
 
     //if in device Id has changed close current device and open the new one
-    if (!g_pMidiIn || m_nInDevId != nInDevId)
+    if (!g_pMidiIn || (m_nInDevId != nInDevId))
     {
         //close current device
          if (g_pMidiIn) {
