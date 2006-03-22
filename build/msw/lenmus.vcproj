@@ -434,6 +434,10 @@
 				RelativePath="..\..\docs\src\devlog.txt">
 			</File>
 			<File
+				RelativePath="..\..\docs\html\known_issues.htm"
+				DeploymentContent="TRUE">
+			</File>
+			<File
 				RelativePath="..\..\docs\src\mainpage.txt">
 			</File>
 			<File

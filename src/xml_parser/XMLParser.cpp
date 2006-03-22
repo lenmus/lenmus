@@ -66,7 +66,7 @@ lmXMLParser::~lmXMLParser()
 lmScore* lmXMLParser::ParseMusicXMLFile(const wxString& filename, bool fNewLog, bool fShowLog) 
 {
     if (fNewLog) g_pLogger->FlushDataErrorLog();
-    g_pLogger->LogDataMessage(_("Importing XML file %s\r\n\r\n"), filename);
+    g_pLogger->LogDataMessage(_("Importing XML file %s\n\n"), filename);
 
     // load the XML file as tree of nodes
     wxXmlDocument xdoc;
@@ -91,7 +91,7 @@ lmScore* lmXMLParser::ParseMusicXMLFile(const wxString& filename, bool fNewLog, 
     ParseScorePartwise(pRoot, pScore);
 
     // report errors
-    g_pLogger->LogDataMessage(_("\r\nMusicXML file imported OK. There are %d warnings."), m_nErrors);
+    g_pLogger->LogDataMessage(_("\nMusicXML file imported OK. There are %d warnings."), m_nErrors);
     if (fShowLog && m_nErrors != 0) {
         g_pLogger->ShowDataErrors(_("Warnings while importing a MusicXML score."));
     }

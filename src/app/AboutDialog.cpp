@@ -3,19 +3,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -103,9 +103,9 @@ lmAboutDialog::lmAboutDialog(wxWindow * parent)
     informationStr += wxT("<br>\n");
 
 
-    wxString par1Str = wxGetTranslation( 
-        _T("LenMus is a free program written by a team of volunteer developers ")
-        _T("around the world (well this is a hope, for now it is developed only by me). ")
+    wxString par1Str = wxGetTranslation(
+        wxT("LenMus is a free program written by a team of volunteer developers \
+            around the world (well this is a hope, for now it is developed only by me). ")
         _T("LenMus is available for Windows but soon it will be also available ")
         _T("for Mac OS X, Linux, and other Unix-like operating systems.")
     );
@@ -200,21 +200,20 @@ lmAboutDialog::lmAboutDialog(wxWindow * parent)
 
     // Licence
 
-    wxString sLicence = 
-        _T("LenMus ") + versionStr + 
+    wxString sLicence =
+        _T("LenMus ") + versionStr +
         _(" Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n.") +
-        wxGetTranslation(
-            _T("<p>This program is free software; you can redistribute it and/or modify it ")
-            _T("under the terms of the GNU General Public License as published by the Free ")
-            _T("Software Foundation; either version 2 of the License, or (at your option) ")
-            _T("any later version.")) +
+_("<p>This program is free software; you can redistribute it and/or modify it \
+under the terms of the GNU General Public License as published by the Free \
+Software Foundation; either version 2 of the License, or (at your option) \
+any later version.") +
         wxGetTranslation(
             _T("<p>This program is distributed in the hope that it will be useful, but ")
             _T("WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ")
             _T("or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General ")
             _T("Public License at http://www.gnu.org/licenses/licenses.html"));
 
-    wxString sContent = 
+    wxString sContent =
       _T("<html>")
       _T("<head><META http-equiv=\"Content-Type\" content=\"text/html; charset=")
       + localeStr +
@@ -247,7 +246,7 @@ lmAboutDialog::lmAboutDialog(wxWindow * parent)
       _T("</center></body>")
       _T("</html>");
 
-    wxString sTitle = 
+    wxString sTitle =
       _T("<html>")
       _T("<head><META http-equiv=\"Content-Type\" content=\"text/html; charset=")
       + localeStr +
@@ -267,16 +266,16 @@ lmAboutDialog::lmAboutDialog(wxWindow * parent)
     wxStaticBitmap* pIcon = new wxStaticBitmap(this, -1, *pLogo, wxPoint(15, 10));
     delete pLogo;
 
-    wxHtmlWindow *pTitle = new wxHtmlWindow(this, -1, 
+    wxHtmlWindow *pTitle = new wxHtmlWindow(this, -1,
                                          wxPoint(110, 10),
-                                         wxSize(490, 80), 
+                                         wxSize(490, 80),
                                          wxHW_SCROLLBAR_NEVER | wxNO_BORDER );
 
     pTitle->SetPage(sTitle);
 
-    wxHtmlWindow *html = new wxHtmlWindow(this, -1, 
+    wxHtmlWindow *html = new wxHtmlWindow(this, -1,
                                          wxPoint(20, 90),
-                                         wxSize(560, 260), 
+                                         wxSize(560, 260),
                                          wxHW_SCROLLBAR_AUTO | wxSIMPLE_BORDER );
     html->SetPage(sContent);
 

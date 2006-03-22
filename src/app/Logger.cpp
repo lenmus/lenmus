@@ -143,7 +143,7 @@ void lmLogger::ReportProblem(const wxChar* szFormat, ...)
     va_start(argptr, szFormat);
     wxString sMsg = wxString::FormatV(szFormat, argptr);
     if (m_pTrace) {
-        sMsg += _T("\r\n");
+        sMsg += _T("\n");
         m_pTrace->Write(sMsg.c_str(), sMsg.Length() );
     }
     else {
@@ -159,7 +159,7 @@ void lmLogger::ReportBug(const wxChar* szFormat, ...)
 {
     va_list argptr;
     va_start(argptr, szFormat);
-    wxString sMsg = wxString::FormatV(szFormat, argptr) + _T("\r\n");
+    wxString sMsg = wxString::FormatV(szFormat, argptr) + _T("\n");
     if (m_pDataError) {
         m_pDataError->Write(sMsg.c_str(), sMsg.Length() );
     }
@@ -195,10 +195,10 @@ void lmLogger::ShowDataErrors(wxString sTitle)
     wxTextFile oFile(m_sDataErrorPath);
     oFile.Open();
     wxString sContent = oFile.GetFirstLine();
-    sContent += _T("\r\n");
+    sContent += _T("\n");
     while (!oFile.Eof()) {
         sContent += oFile.GetNextLine();
-        sContent += _T("\r\n");
+        sContent += _T("\n");
     }
     oFile.Close();
      lmDlgDebug dlg(g_pMainFrame, _T("Errors"), sContent);
@@ -213,7 +213,7 @@ void lmLogger::LogDataError(const wxChar* szFormat, ...)
     va_start(argptr, szFormat);
     wxString sMsg = wxString::FormatV(szFormat, argptr);
     if (m_pDataError) {
-        sMsg += _T("\r\n");
+        sMsg += _T("\n");
         m_pDataError->Write(sMsg.c_str(), sMsg.Length() );
     }
     else {

@@ -107,6 +107,9 @@
 #include "../exercises/TheoKeySignCtrol.h"
 #include "../exercises/TheoMusicReadingCtrol.h"
 
+#include "../app/MainFrame.h"
+extern lmMainFrame* g_pMainFrame;
+
 /*
 \<object\>
     width            pixels | percent        default: 100%
@@ -342,7 +345,7 @@ void lmTheoKeySignParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     }
 
     // create the window
-    wxWindow* wnd = new lmTheoKeySignCtrol((wxWindow*)pHtmlParser->GetWindow(), -1, 
+    wxWindow* wnd = new lmTheoKeySignCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, 
         m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
@@ -501,7 +504,7 @@ void lmTheoIntervalsCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     }
 
     // create the window
-    wxWindow* wnd = new lmTheoIntervalsCtrol((wxWindow*)pHtmlParser->GetWindow(), -1, 
+    wxWindow* wnd = new lmTheoIntervalsCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, 
         m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
@@ -607,7 +610,7 @@ void lmEarIntervalsCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     }
 
     // create the window
-    wxWindow* wnd = new lmEarIntervalsCtrol((wxWindow*)pHtmlParser->GetWindow(), -1, 
+    wxWindow* wnd = new lmEarIntervalsCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, 
         m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
@@ -713,7 +716,7 @@ void lmEarCompareIntvCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     }
 
     // create the window
-    wxWindow* wnd = new lmEarCompareIntvCtrol((wxWindow*)pHtmlParser->GetWindow(), -1, 
+    wxWindow* wnd = new lmEarCompareIntvCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, 
         m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
@@ -889,7 +892,7 @@ void lmTheoScalesCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     }
 
     // create the window
-    wxWindow* wnd = new lmTheoScalesCtrol((wxWindow*)pHtmlParser->GetWindow(), -1, 
+    wxWindow* wnd = new lmTheoScalesCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, 
         m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));

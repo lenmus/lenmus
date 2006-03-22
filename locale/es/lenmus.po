@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.0\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-03-12 19:06+0100\n"
+"PO-Revision-Date: 2006-03-22 19:10+0100\n"
 "Last-Translator: cs <cs>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -14,14 +14,14 @@ msgstr ""
 "X-Poedit-SearchPath-0: score\n"
 "X-Poedit-SearchPath-1: auxmusic\n"
 "X-Poedit-SearchPath-2: ldp_parser\n"
-"X-Poedit-SearchPath-3: app\n"
-"X-Poedit-SearchPath-4: exercises\n"
-"X-Poedit-SearchPath-5: globals\n"
-"X-Poedit-SearchPath-6: html\n"
+"X-Poedit-SearchPath-3: exercises\n"
+"X-Poedit-SearchPath-4: html\n"
+"X-Poedit-SearchPath-5: xml_parser\n"
+"X-Poedit-SearchPath-6: app\n"
 "X-Poedit-SearchPath-7: options\n"
 "X-Poedit-SearchPath-8: sound\n"
 "X-Poedit-SearchPath-9: widgets\n"
-"X-Poedit-SearchPath-10: xml_parser\n"
+"X-Poedit-SearchPath-10: globals\n"
 
 #: score/Direction.cpp:156
 #: score/NoteRestObj.cpp:145
@@ -349,715 +349,142 @@ msgstr ""
 msgid " double diminished"
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:379
+#: ldp_parser/LDPParser.cpp:385
 #, c-format
 msgid "Element RAIZ expected but found element %s. Analysis stopped."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:510
+#: ldp_parser/LDPParser.cpp:516
 msgid "Syntax error: more closing parenthesis than parenthesis opened. Analysis stopped."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:535
+#: ldp_parser/LDPParser.cpp:541
 #, c-format
-msgid "Element 'Partitura' expected but found element %s. Analysis stopped."
+msgid "Element 'Score' expected but found element %s. Analysis stopped."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:549
+#: ldp_parser/LDPParser.cpp:555
 #, c-format
 msgid "Element 'Vers' expected but found element %s. Analysis stopped."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:573
+#: ldp_parser/LDPParser.cpp:579
 #, c-format
 msgid "Error analysing LDP score: LDP version (%d) not supported. Analysis stopped."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:606
+#: ldp_parser/LDPParser.cpp:612
 #, c-format
 msgid "Element 'NumInstrumentos' expected but found element %s. Analysis stopped."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:653
+#: ldp_parser/LDPParser.cpp:659
 #, c-format
-msgid "Element 'Instrumento' expected but found element %s. Analysis stopped."
+msgid "Element '%s' expected but found element %s. Analysis stopped."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:673
+#: ldp_parser/LDPParser.cpp:679
 #, c-format
 msgid "Element %s expected but found element %s. Analysis stopped."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:726
+#: ldp_parser/LDPParser.cpp:732
 #, c-format
 msgid "Expected node '%s' but found node '%s'. Analysis ended."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:745
+#: ldp_parser/LDPParser.cpp:751
 #, c-format
 msgid "Expected 'número de parte' but found '%s'. Analysis stopped."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:757
+#: ldp_parser/LDPParser.cpp:763
 #, c-format
 msgid "Number of staves expected but found '%s'. Analysis stopped."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:883
+#: ldp_parser/LDPParser.cpp:889
 #, c-format
 msgid "[AnalyzeMeasure]: Expected node 'Figura', 'Grupo', 'Atributo' or 'Desplazamiento' but found node '%s'. Node ignored."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1109
+#: ldp_parser/LDPParser.cpp:1115
 #, c-format
 msgid "Missing parameters in node nota '%s'. Assumed (n c4 n)."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1127
+#: ldp_parser/LDPParser.cpp:1133
 #, c-format
 msgid "Unknown note pitch in '%s'. Assumed 'c4'."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1134
-#: ldp_parser/LDPParser.cpp:1417
+#: ldp_parser/LDPParser.cpp:1140
+#: ldp_parser/LDPParser.cpp:1429
 #, c-format
 msgid "Note type unknown in '%s'. A quarter note assumed."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1170
+#: ldp_parser/LDPParser.cpp:1176
 msgid "Requesting beaming a note longer than eight. Beaming ignored."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1185
+#: ldp_parser/LDPParser.cpp:1191
 msgid "Requesting to start a tuplet but there is already a tuplet open. Tag 't3' ignored."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1205
+#: ldp_parser/LDPParser.cpp:1211
 msgid "Requesting to end a tuplet but there is not an open tuplet. Tag 't-' ignored."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1216
+#: ldp_parser/LDPParser.cpp:1222
 msgid "Requesting ending a beaming a group but there is not a  previous note. Beaming ignored."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1223
+#: ldp_parser/LDPParser.cpp:1229
 msgid "Requesting ending a beaming a group but previous note is not beamed. Beaming ignored."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1296
+#: ldp_parser/LDPParser.cpp:1289
+#, c-format
+msgid "Error: notation '%s' unknown. It will be ignored."
+msgstr ""
+
 #: ldp_parser/LDPParser.cpp:1300
+#: ldp_parser/LDPParser.cpp:1304
 #, c-format
 msgid "Notation '%s' unknown or not implemented."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1408
+#: ldp_parser/LDPParser.cpp:1420
 #, c-format
 msgid "Missing parameters in rest node '%s'. Node replaced by '(s n)'."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1555
+#: ldp_parser/LDPParser.cpp:1567
 msgid "Element 'Barra' has less parameters that the minimum required. Assumed '(Barra Simple)'."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1579
+#: ldp_parser/LDPParser.cpp:1591
 #, c-format
 msgid "Unknown barline type '%s'. Assumed 'Simple' barline."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1605
+#: ldp_parser/LDPParser.cpp:1617
 msgid "Element 'Clave' has less parameters that the minimum required. Assumed '(Clef Sol)'."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1614
+#: ldp_parser/LDPParser.cpp:1626
 #, c-format
 msgid "Unknown clef '%s'. Assumed 'Sol'."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1800
+#: ldp_parser/LDPParser.cpp:1812
 msgid "Element 'Metrica' has less parameters that the minimum required. Assumed '(Metrica 4 4)'."
 msgstr ""
 
-#: ldp_parser/LDPParser.cpp:1809
+#: ldp_parser/LDPParser.cpp:1821
 #, c-format
 msgid "Element 'Metrica': Two numbers expected but found '%s' and '%s'. Assumed '(Metrica 4 4)'."
-msgstr ""
-
-#: app/AboutDialog.cpp:68
-msgid "About LenMus..."
-msgstr "Acerca de LenMus..."
-
-#: app/AboutDialog.cpp:79
-#: app/MainFrame.cpp:1093
-#, c-format
-msgid ""
-"Language: %s\n"
-"System locale name: %s\n"
-"Canonical locale name: %s\n"
-msgstr ""
-
-#: app/AboutDialog.cpp:89
-msgid "Program build date:"
-msgstr ""
-
-#: app/AboutDialog.cpp:97
-msgid "wxMidi Version "
-msgstr ""
-
-#: app/AboutDialog.cpp:107
-msgid "LenMus is a free program written by a team of volunteer developers around the world (well this is a hope, for now it is developed only by me). LenMus is available for Windows but soon it will be also available for Mac OS X, Linux, and other Unix-like operating systems."
-msgstr ""
-
-#: app/AboutDialog.cpp:115
-msgid "This is a stable, completed release of LenMus.  However, if you find a bug or have a suggestion, please contact us.  "
-msgstr ""
-
-#: app/AboutDialog.cpp:120
-msgid "This is a debug version of the program but some debug features (i.e. the Debug menu item) are disabled and release version behaviour is enforced. This is so to facilitate debugging. As this is a beta version it may contain bugs and unfinished features.  "
-msgstr ""
-
-#: app/AboutDialog.cpp:127
-msgid "This is a debug development version of the program.  It may contain bugs and unfinished features.  "
-msgstr ""
-
-#: app/AboutDialog.cpp:130
-msgid "We depend on feedback from you in order to continue to improve LenMus. So please visit our website and give us your bug reports  and feature requests."
-msgstr ""
-
-#: app/AboutDialog.cpp:139
-msgid "<p>Some icons are original artwork for LenMus project; all these original icons are released under GNU GPL licence and under Creative Commons Attribution-ShareAlike license, you can choose the one you prefer for the intended usage. The other icons are taken from different sources:<br /><br /></p><ul><li>Taken or derived from those available in the Ximian collection (http://www.novell.com/coolsolutions/feature/1637.html). Novell, who retains the copyright, has released these icons under the LGPL license. This means that you can use the icons in your programs free of charge. If you want to fork the icons into your own icon collection, you need to retain the license and the original copyrights, but from there you're free to do what you want.<br /></li> <li>Taken or derived from the GNOME project (http://art.gnome.org/themes/icon/1150), Tango theme. These icons are released under the Creative Commons Attribution-ShareAlike license.<br /></li> <li>These icons are taken or derived from KDE project (http://kde.openoffice.org/servlets/ProjectDocumentList?folderID=314&amp;expandFolder=314). These icons are released under the GNU GPL license.<br /></li> <li>Taken or derived from eMule project (http://sourceforge.net/projects/emule) icons. eMule is a GNU GPL project so I assume that its icons are also available under GNU GPL.<br /></li> <li>Taken or derived from John Zaitseff's icons (http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). According to what is said there, these icons are released under the terms of the GNU General Public License.<br /><br /></li></ul>To LenMus developers knowledge, all used icons are freely usable either under GNU GPL, LGPL licence, or Creative Commons. If this were not the case, please, let us know to stop using them. See file \"icons.htm\" in folder \"res/icons\" for more details.</p>"
-msgstr ""
-
-#: app/AboutDialog.cpp:175
-msgid "Management and developent"
-msgstr ""
-
-#: app/AboutDialog.cpp:180
-msgid "Developers</b>"
-msgstr ""
-
-#: app/AboutDialog.cpp:185
-msgid "Art desings"
-msgstr ""
-
-#: app/AboutDialog.cpp:189
-msgid "Musical direction"
-msgstr ""
-
-#: app/AboutDialog.cpp:193
-msgid "Translators</b>"
-msgstr ""
-
-#: app/AboutDialog.cpp:203
-msgid " Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n."
-msgstr ""
-
-#: app/AboutDialog.cpp:204
-msgid "<p>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-msgstr ""
-
-#: app/AboutDialog.cpp:208
-msgid "<p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General Public License at http://www.gnu.org/licenses/licenses.html"
-msgstr ""
-
-#: app/AboutDialog.cpp:226
-msgid "Licence"
-msgstr ""
-
-#: app/AboutDialog.cpp:230
-msgid "Release information"
-msgstr ""
-
-#: app/AboutDialog.cpp:234
-msgid "Art Design Credits"
-msgstr ""
-
-#: app/AboutDialog.cpp:242
-msgid "Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n"
-msgstr ""
-
-#: app/AboutDialog.cpp:255
-msgid "A free program for music language learning"
-msgstr ""
-
-#: app/AboutDialog.cpp:279
-msgid "Accept"
-msgstr ""
-
-#: app/DlgDebug.cpp:77
-#: app/LangChoiceDlg.cpp:100
-msgid "OK"
-msgstr ""
-
-#: app/LangChoiceDlg.cpp:78
-msgid "Choose language to use:"
-msgstr ""
-
-#: app/Logger.cpp:154
-msgid "Error message"
-msgstr ""
-
-#: app/MainFrame.cpp:355
-msgid "Welcome to LenMus!"
-msgstr ""
-
-#: app/MainFrame.cpp:424
-msgid "New score"
-msgstr ""
-
-#: app/MainFrame.cpp:425
-msgid "Open score"
-msgstr ""
-
-#: app/MainFrame.cpp:440
-msgid "Save"
-msgstr ""
-
-#: app/MainFrame.cpp:440
-msgid "Save current score to disk"
-msgstr ""
-
-#: app/MainFrame.cpp:441
-msgid "Copy"
-msgstr ""
-
-#: app/MainFrame.cpp:442
-msgid "Cut"
-msgstr ""
-
-#: app/MainFrame.cpp:443
-msgid "Paste"
-msgstr ""
-
-#: app/MainFrame.cpp:444
-#: html/TextBookFrame.cpp:793
-msgid "Print"
-msgstr ""
-
-#: app/MainFrame.cpp:444
-msgid "Print document"
-msgstr ""
-
-#: app/MainFrame.cpp:446
-msgid "Options"
-msgstr ""
-
-#: app/MainFrame.cpp:447
-#: html/TextBookFrame.cpp:385
-msgid "Help"
-msgstr "Ayuda"
-
-#: app/MainFrame.cpp:447
-msgid "Help button"
-msgstr ""
-
-#: app/MainFrame.cpp:448
-msgid "Books"
-msgstr "Libros"
-
-#: app/MainFrame.cpp:448
-msgid "Show the music books"
-msgstr ""
-
-#: app/MainFrame.cpp:452
-msgid "Metronome"
-msgstr "Metronomo"
-
-#: app/MainFrame.cpp:452
-msgid "Turn metronome on/off"
-msgstr ""
-
-#: app/MainFrame.cpp:522
-#: html/TextBookFrame.cpp:559
-#: html/TextBookFrame.cpp:735
-msgid "Index"
-msgstr "Indice"
-
-#: app/MainFrame.cpp:523
-#: html/TextBookFrame.cpp:736
-msgid "Show/hide navigation panel"
-msgstr ""
-
-#: app/MainFrame.cpp:535
-#: html/TextBookFrame.cpp:748
-msgid "Go back"
-msgstr "Atrás"
-
-#: app/MainFrame.cpp:538
-#: html/TextBookFrame.cpp:754
-msgid "Go forward"
-msgstr ""
-
-#: app/MainFrame.cpp:543
-#: html/TextBookFrame.cpp:763
-msgid "Go one level up in document hierarchy"
-msgstr ""
-
-#: app/MainFrame.cpp:546
-msgid "Previous page"
-msgstr ""
-
-#: app/MainFrame.cpp:549
-msgid "Next page"
-msgstr ""
-
-#: app/MainFrame.cpp:557
-#: html/TextBookFrame.cpp:785
-#: html/TextBookFrame.cpp:1704
-msgid "Open HTML document"
-msgstr ""
-
-#: app/MainFrame.cpp:563
-#: html/TextBookFrame.cpp:794
-msgid "Print this page"
-msgstr ""
-
-#: app/MainFrame.cpp:569
-msgid "Display options dialog"
-msgstr ""
-
-#: app/MainFrame.cpp:616
-#: app/MainFrame.cpp:650
-msgid "&New\tCtrl+N"
-msgstr "&Nuevo\tCtrl+N"
-
-#: app/MainFrame.cpp:616
-#: app/MainFrame.cpp:650
-msgid "Open new blank score"
-msgstr ""
-
-#: app/MainFrame.cpp:620
-#: app/MainFrame.cpp:651
-msgid "&Open ...\tCtrl+O"
-msgstr ""
-
-#: app/MainFrame.cpp:620
-#: app/MainFrame.cpp:651
-msgid "Open a score"
-msgstr ""
-
-#: app/MainFrame.cpp:624
-#: app/MainFrame.cpp:652
-msgid "Open &books"
-msgstr ""
-
-#: app/MainFrame.cpp:624
-#: app/MainFrame.cpp:652
-msgid "Hide/show eMusicBooks"
-msgstr ""
-
-#: app/MainFrame.cpp:629
-#: app/MainFrame.cpp:653
-msgid "&Import..."
-msgstr "&Importar..."
-
-#: app/MainFrame.cpp:631
-#: app/MainFrame.cpp:654
-msgid "&Save\tCtrl+S"
-msgstr "&Guardar\tCtrl+S"
-
-#: app/MainFrame.cpp:635
-#: app/MainFrame.cpp:655
-msgid "Save &as ...\tCtrl+Shift+S"
-msgstr "Guardar &como ...\tCtrl+Shift+S"
-
-#: app/MainFrame.cpp:637
-#: app/MainFrame.cpp:656
-msgid "&Close\tCtrl+W"
-msgstr ""
-
-#: app/MainFrame.cpp:640
-#: app/MainFrame.cpp:658
-msgid "&Print ...\tCtrl+P"
-msgstr ""
-
-#: app/MainFrame.cpp:644
-#: app/MainFrame.cpp:659
-msgid "Print &Setup..."
-msgstr ""
-
-#: app/MainFrame.cpp:645
-#: app/MainFrame.cpp:660
-msgid "Print Pre&view\tCtrl+Shift+P"
-msgstr ""
-
-#: app/MainFrame.cpp:647
-#: app/MainFrame.cpp:662
-msgid "&Quit\tCtrl+Q"
-msgstr ""
-
-#: app/MainFrame.cpp:674
-msgid "&Undo"
-msgstr ""
-
-#: app/MainFrame.cpp:675
-msgid "&Redo"
-msgstr ""
-
-#: app/MainFrame.cpp:682
-msgid "Tool &bar"
-msgstr ""
-
-#: app/MainFrame.cpp:682
-msgid "Hide/show the tools bar"
-msgstr ""
-
-#: app/MainFrame.cpp:683
-msgid "&Status bar"
-msgstr ""
-
-#: app/MainFrame.cpp:683
-msgid "Hide/show the status bar"
-msgstr ""
-
-#: app/MainFrame.cpp:686
-msgid "&Rulers"
-msgstr ""
-
-#: app/MainFrame.cpp:686
-msgid "Hide/show rulers"
-msgstr ""
-
-#: app/MainFrame.cpp:722
-#: app/MainFrame.cpp:736
-msgid "&Play"
-msgstr ""
-
-#: app/MainFrame.cpp:726
-#: app/MainFrame.cpp:737
-msgid "S&top"
-msgstr ""
-
-#: app/MainFrame.cpp:730
-#: app/MainFrame.cpp:738
-msgid "P&ause"
-msgstr ""
-
-#: app/MainFrame.cpp:743
-msgid "&Run Midi wizard"
-msgstr ""
-
-#: app/MainFrame.cpp:744
-msgid "Midi configuration wizard"
-msgstr ""
-
-#: app/MainFrame.cpp:746
-msgid "&Test sound"
-msgstr ""
-
-#: app/MainFrame.cpp:746
-msgid "Play an scale to test sound"
-msgstr ""
-
-#: app/MainFrame.cpp:747
-msgid "&All sounds off"
-msgstr ""
-
-#: app/MainFrame.cpp:748
-msgid "Stop inmediatly all sounds"
-msgstr ""
-
-#: app/MainFrame.cpp:753
-msgid "&Preferences"
-msgstr "&Preferencias"
-
-#: app/MainFrame.cpp:757
-msgid "&About\tF1"
-msgstr "&Acerca de\tF1"
-
-#: app/MainFrame.cpp:760
-#: app/MainFrame.cpp:766
-msgid "&Content\tCtrl+Alt+F1"
-msgstr "&Contenido\tCtrl+Alt+F1"
-
-#: app/MainFrame.cpp:776
-#: html/TextBookFrame.cpp:413
-msgid "&File"
-msgstr "&Archivo"
-
-#: app/MainFrame.cpp:777
-msgid "&Edit"
-msgstr "&Editar"
-
-#: app/MainFrame.cpp:778
-msgid "&View"
-msgstr "&Ver"
-
-#: app/MainFrame.cpp:779
-msgid "&Sound"
-msgstr "&Sonido"
-
-#: app/MainFrame.cpp:780
-msgid "&Debug"
-msgstr "&Depurar"
-
-#: app/MainFrame.cpp:781
-#: app/MainFrame.cpp:868
-msgid "&Zoom"
-msgstr "&Zoom"
-
-#: app/MainFrame.cpp:782
-msgid "&Options"
-msgstr "&Opciones"
-
-#: app/MainFrame.cpp:783
-#: html/TextBookFrame.cpp:414
-#: options/OptionsDlg.cpp:243
-msgid "&Help"
-msgstr "&Ayuda"
-
-#: app/MainFrame.cpp:975
-msgid "LenMus help"
-msgstr ""
-
-#: app/MainFrame.cpp:981
-msgid "Test mode: using .hhp help file"
-msgstr ""
-
-#: app/MainFrame.cpp:988
-#: app/MainFrame.cpp:1074
-#, c-format
-msgid "Failed adding book %s"
-msgstr ""
-
-#: app/MainFrame.cpp:1026
-msgid "Available books"
-msgstr ""
-
-#: app/MainFrame.cpp:1058
-#, c-format
-msgid "Error when trying to move to folder %s"
-msgstr ""
-
-#: app/MainFrame.cpp:1264
-msgid "Mask to add"
-msgstr ""
-
-#: app/MainFrame.cpp:1296
-msgid "Adjust to page"
-msgstr ""
-
-#: app/MainFrame.cpp:1398
-msgid ""
-"There was a problem previewing.\n"
-"Perhaps your current printer is not set correctly?"
-msgstr ""
-
-#: app/MainFrame.cpp:1398
-msgid "Previewing"
-msgstr ""
-
-#: app/MainFrame.cpp:1402
-msgid "Preview"
-msgstr ""
-
-#: app/MainFrame.cpp:1443
-msgid ""
-"There is a problem for printing.\n"
-"Perhaps your current printer is not set correctly?"
-msgstr ""
-
-#: app/MainFrame.cpp:1445
-msgid "Printing canceled"
-msgstr ""
-
-#: app/MidiWizard.cpp:101
-msgid "MIDI configuration wizard"
-msgstr ""
-
-#: app/MidiWizard.cpp:236
-msgid "Midi set up cancelled. Old configuration restored."
-msgstr ""
-
-#: app/MidiWizard.cpp:308
-#: app/MidiWizard.cpp:312
-#: app/MidiWizard.cpp:426
-msgid "None"
-msgstr ""
-
-#: app/MidiWizard.cpp:336
-msgid "Midi devices to use"
-msgstr ""
-
-#: app/MidiWizard.cpp:346
-msgid "To generate sounds the program needs a MIDI synthesizer device. Normally, one of these devices is included in the sound board of the PC, but your PC might have more than one."
-msgstr ""
-
-#: app/MidiWizard.cpp:349
-msgid "If your PC has more than one device, choose one of them. You can test all of them and choose the one whose sound you prefer."
-msgstr ""
-
-#: app/MidiWizard.cpp:358
-msgid "Output device:"
-msgstr ""
-
-#: app/MidiWizard.cpp:365
-msgid "Input device:"
-msgstr ""
-
-#: app/MidiWizard.cpp:526
-msgid "Voice channel and instrument"
-msgstr ""
-
-#: app/MidiWizard.cpp:536
-msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one)."
-msgstr ""
-
-#: app/MidiWizard.cpp:539
-msgid "To facilitate access to the instruments they are grouped into sections. First choose a section and then choose the desired instrument."
-msgstr ""
-
-#: app/MidiWizard.cpp:548
-#: app/MidiWizard.cpp:785
-msgid "Channel:"
-msgstr ""
-
-#: app/MidiWizard.cpp:558
-msgid "Section:"
-msgstr ""
-
-#: app/MidiWizard.cpp:565
-msgid "lmInstrument:"
-msgstr ""
-
-#: app/MidiWizard.cpp:572
-#: app/MidiWizard.cpp:809
-msgid "Test sound"
-msgstr ""
-
-#: app/MidiWizard.cpp:763
-msgid "lmMetronome channel and sounds"
-msgstr ""
-
-#: app/MidiWizard.cpp:773
-msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one)."
-msgstr ""
-
-#: app/MidiWizard.cpp:776
-msgid "To better identify the first beat of each measure it is possible to assign a different sound to it. But also you can choose the same sound for both, the first beat and the others."
-msgstr ""
-
-#: app/MidiWizard.cpp:795
-msgid "Sound for first beat of each measure:"
-msgstr ""
-
-#: app/MidiWizard.cpp:802
-msgid "Sound for other beats of each measure:"
-msgstr ""
-
-#: app/Paper.cpp:259
-msgid "Sorry, not enough memory to create a pBitmap to display the page."
-msgstr ""
-
-#: app/TheApp.cpp:535
-msgid "LenMus First Run"
-msgstr ""
-
-#: app/ToolsDlg.cpp:71
-msgid "Notes"
-msgstr ""
-
-#: app/ToolsDlg.cpp:75
-msgid "Clefs"
 msgstr ""
 
 #: exercises/EarCompareIntvCtrol.cpp:109
@@ -1077,6 +504,7 @@ msgstr ""
 #: exercises/ScoreCtrol.cpp:183
 #: exercises/TheoIntervalsCtrol.cpp:168
 #: exercises/TheoKeySignCtrol.cpp:162
+#: exercises/TheoMusicReadingCtrol.cpp:153
 #: exercises/TheoScalesCtrol.cpp:182
 #: exercises/TheoSideReadingCtrol.cpp:153
 msgid "See source score"
@@ -1087,6 +515,7 @@ msgstr ""
 #: exercises/ScoreCtrol.cpp:187
 #: exercises/TheoIntervalsCtrol.cpp:172
 #: exercises/TheoKeySignCtrol.cpp:166
+#: exercises/TheoMusicReadingCtrol.cpp:157
 #: exercises/TheoScalesCtrol.cpp:186
 #: exercises/TheoSideReadingCtrol.cpp:157
 msgid "Dump score"
@@ -1096,6 +525,7 @@ msgstr ""
 #: exercises/EarIntervalsCtrol.cpp:192
 #: exercises/ScoreCtrol.cpp:191
 #: exercises/TheoIntervalsCtrol.cpp:176
+#: exercises/TheoMusicReadingCtrol.cpp:161
 #: exercises/TheoScalesCtrol.cpp:190
 #: exercises/TheoSideReadingCtrol.cpp:161
 msgid "See MIDI events"
@@ -1105,6 +535,7 @@ msgstr ""
 #: exercises/EarIntervalsCtrol.cpp:215
 #: exercises/TheoIntervalsCtrol.cpp:198
 #: exercises/TheoKeySignCtrol.cpp:185
+#: exercises/TheoMusicReadingCtrol.cpp:132
 #: exercises/TheoScalesCtrol.cpp:164
 #: exercises/TheoSideReadingCtrol.cpp:132
 msgid "New problem"
@@ -1131,6 +562,7 @@ msgstr "Ver solución"
 #: exercises/EarCompareIntvCtrol.cpp:194
 #: exercises/EarIntervalsCtrol.cpp:210
 #: exercises/TheoIntervalsCtrol.cpp:193
+#: exercises/TheoMusicReadingCtrol.cpp:170
 #: exercises/TheoSideReadingCtrol.cpp:170
 msgid "Settings"
 msgstr "Preferencias"
@@ -1258,15 +690,15 @@ msgstr ""
 msgid "Program error: Loop detected in lmRandomGenerator::GenerateTime."
 msgstr ""
 
-#: exercises/ScoreConstrains.cpp:197
+#: exercises/ScoreConstrains.cpp:201
 msgid "Global error: No clef constrains specified\n"
 msgstr ""
 
-#: exercises/ScoreConstrains.cpp:207
+#: exercises/ScoreConstrains.cpp:211
 msgid "Global error: No time signature constrains specified\n"
 msgstr ""
 
-#: exercises/ScoreConstrains.cpp:217
+#: exercises/ScoreConstrains.cpp:221
 msgid "Global error: No key signature constrains specified\n"
 msgstr ""
 
@@ -1296,7 +728,7 @@ msgstr ""
 
 #: exercises/TheoIntervalsCtrol.cpp:109
 msgid "dim2"
-msgstr ""
+msgstr "2ª dism"
 
 #: exercises/TheoIntervalsCtrol.cpp:109
 msgid "dim3"
@@ -1364,15 +796,15 @@ msgstr ""
 
 #: exercises/TheoIntervalsCtrol.cpp:111
 msgid "P8"
-msgstr ""
+msgstr "8º justa"
 
 #: exercises/TheoIntervalsCtrol.cpp:112
 msgid "aug2"
-msgstr ""
+msgstr "2º aum"
 
 #: exercises/TheoIntervalsCtrol.cpp:112
 msgid "aug3"
-msgstr ""
+msgstr "3º aum"
 
 #: exercises/TheoIntervalsCtrol.cpp:112
 msgid "aug4"
@@ -1637,6 +1069,11 @@ msgstr "6 b"
 msgid "7 b"
 msgstr "7 b"
 
+#: exercises/TheoMusicReadingCtrol.cpp:126
+#: exercises/TheoSideReadingCtrol.cpp:126
+msgid "Go back to theory"
+msgstr ""
+
 #: exercises/TheoScalesCtrol.cpp:149
 msgid "Display scales without key signature accidentals"
 msgstr "Dibujar la escala sin armadura"
@@ -1678,27 +1115,23 @@ msgstr ""
 msgid ", natural (eólica, antigua)"
 msgstr ""
 
-#: exercises/TheoSideReadingCtrol.cpp:126
-msgid "Go back to theory"
-msgstr ""
-
 #: html/ObjectParams.cpp:58
 msgid "Default <object> window: you MUST implement this virtual method!"
 msgstr ""
 
-#: html/Tags.cpp:327
-#: html/Tags.cpp:486
+#: html/Tags.cpp:330
+#: html/Tags.cpp:489
 #, c-format
 msgid "lmTheoIntervalsCtrol. Unknown param: <param %s >/n"
 msgstr ""
 
-#: html/Tags.cpp:592
-#: html/Tags.cpp:698
+#: html/Tags.cpp:595
+#: html/Tags.cpp:701
 #, c-format
 msgid "lmEarIntervalsCtrol. Unknown param: <param %s >/n"
 msgstr ""
 
-#: html/Tags.cpp:866
+#: html/Tags.cpp:869
 #, c-format
 msgid "lmTheoScalesCtrol. Unknown param: <param %s >/n"
 msgstr ""
@@ -1713,6 +1146,11 @@ msgstr ""
 msgid "Adding book %s"
 msgstr ""
 
+#: html/TextBookFrame.cpp:385
+#: app/MainFrame.cpp:452
+msgid "Help"
+msgstr "Ayuda"
+
 #: html/TextBookFrame.cpp:404
 msgid "&Open..."
 msgstr ""
@@ -1726,240 +1164,268 @@ msgstr ""
 msgid "&About..."
 msgstr ""
 
-#: html/TextBookFrame.cpp:474
-#: html/TextBookFrame.cpp:1234
-#: html/TextBookFrame.cpp:1889
+#: html/TextBookFrame.cpp:413
+#: app/MainFrame.cpp:779
+msgid "&File"
+msgstr "&Archivo"
+
+#: html/TextBookFrame.cpp:414
+#: app/MainFrame.cpp:786
+#: options/OptionsDlg.cpp:243
+msgid "&Help"
+msgstr "&Ayuda"
+
+#: html/TextBookFrame.cpp:477
+#: html/TextBookFrame.cpp:1237
+#: html/TextBookFrame.cpp:1892
 msgid "(bookmarks)"
 msgstr ""
 
-#: html/TextBookFrame.cpp:487
+#: html/TextBookFrame.cpp:490
 msgid "Add current page to bookmarks"
 msgstr ""
 
-#: html/TextBookFrame.cpp:488
+#: html/TextBookFrame.cpp:491
 msgid "Remove current page from bookmarks"
 msgstr ""
 
-#: html/TextBookFrame.cpp:519
+#: html/TextBookFrame.cpp:522
 msgid "Contents"
 msgstr ""
 
-#: html/TextBookFrame.cpp:534
+#: html/TextBookFrame.cpp:537
 msgid "Find"
 msgstr ""
 
-#: html/TextBookFrame.cpp:536
+#: html/TextBookFrame.cpp:539
 msgid "Show all"
 msgstr ""
 
-#: html/TextBookFrame.cpp:546
+#: html/TextBookFrame.cpp:549
 msgid "Display all index items that contain given substring. Search is case insensitive."
 msgstr ""
 
-#: html/TextBookFrame.cpp:547
+#: html/TextBookFrame.cpp:550
 msgid "Show all items in index"
 msgstr ""
 
-#: html/TextBookFrame.cpp:577
+#: html/TextBookFrame.cpp:562
+#: html/TextBookFrame.cpp:738
+#: app/MainFrame.cpp:527
+msgid "Index"
+msgstr "Indice"
+
+#: html/TextBookFrame.cpp:580
 msgid "Case sensitive"
 msgstr ""
 
-#: html/TextBookFrame.cpp:578
+#: html/TextBookFrame.cpp:581
 msgid "Whole words only"
 msgstr ""
 
-#: html/TextBookFrame.cpp:579
-#: html/TextBookFrame.cpp:594
+#: html/TextBookFrame.cpp:582
+#: html/TextBookFrame.cpp:597
 msgid "Search"
 msgstr ""
 
-#: html/TextBookFrame.cpp:581
+#: html/TextBookFrame.cpp:584
 msgid "Search contents of help book(s) for all occurences of the text you typed above"
 msgstr ""
 
-#: html/TextBookFrame.cpp:749
+#: html/TextBookFrame.cpp:739
+#: app/MainFrame.cpp:528
+msgid "Show/hide navigation panel"
+msgstr ""
+
+#: html/TextBookFrame.cpp:751
+#: app/MainFrame.cpp:540
+msgid "Go back"
+msgstr "Atrás"
+
+#: html/TextBookFrame.cpp:752
 msgid "Go to previous page in navigation log"
 msgstr ""
 
-#: html/TextBookFrame.cpp:755
+#: html/TextBookFrame.cpp:757
+#: app/MainFrame.cpp:543
+msgid "Go forward"
+msgstr ""
+
+#: html/TextBookFrame.cpp:758
 msgid "Go to next page in navigation log"
 msgstr ""
 
-#: html/TextBookFrame.cpp:762
+#: html/TextBookFrame.cpp:765
 msgid "Parent"
 msgstr ""
 
-#: html/TextBookFrame.cpp:768
+#: html/TextBookFrame.cpp:766
+#: app/MainFrame.cpp:548
+msgid "Go one level up in document hierarchy"
+msgstr ""
+
+#: html/TextBookFrame.cpp:771
 msgid "Back Page"
 msgstr ""
 
-#: html/TextBookFrame.cpp:769
+#: html/TextBookFrame.cpp:772
 msgid "Previous page of current document"
 msgstr ""
 
-#: html/TextBookFrame.cpp:774
+#: html/TextBookFrame.cpp:777
 msgid "next Page"
 msgstr ""
 
-#: html/TextBookFrame.cpp:775
+#: html/TextBookFrame.cpp:778
 msgid "Next page of current document"
 msgstr ""
 
-#: html/TextBookFrame.cpp:784
+#: html/TextBookFrame.cpp:787
 msgid "Open doc"
 msgstr ""
 
-#: html/TextBookFrame.cpp:802
+#: html/TextBookFrame.cpp:788
+#: html/TextBookFrame.cpp:1707
+#: app/MainFrame.cpp:562
+msgid "Open HTML document"
+msgstr ""
+
+#: html/TextBookFrame.cpp:796
+#: app/MainFrame.cpp:449
+msgid "Print"
+msgstr ""
+
+#: html/TextBookFrame.cpp:797
+#: app/MainFrame.cpp:568
+msgid "Print this page"
+msgstr ""
+
+#: html/TextBookFrame.cpp:805
 msgid "Fonts"
 msgstr ""
 
-#: html/TextBookFrame.cpp:803
+#: html/TextBookFrame.cpp:806
 msgid "Change font settings"
 msgstr ""
 
-#: html/TextBookFrame.cpp:933
+#: html/TextBookFrame.cpp:936
 msgid "Please choose the page to display:"
 msgstr ""
 
-#: html/TextBookFrame.cpp:934
+#: html/TextBookFrame.cpp:937
 msgid "Help Topics"
-msgstr ""
+msgstr "Help Topics"
 
-#: html/TextBookFrame.cpp:988
+#: html/TextBookFrame.cpp:991
 msgid "Searching..."
 msgstr ""
 
-#: html/TextBookFrame.cpp:989
+#: html/TextBookFrame.cpp:992
 msgid "No matching page found yet"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1006
+#: html/TextBookFrame.cpp:1009
 #, c-format
 msgid "Found %i matches"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1096
+#: html/TextBookFrame.cpp:1099
 msgid "(Help)"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1162
-#: html/TextBookFrame.cpp:1164
-#: html/TextBookFrame.cpp:1828
-#: html/TextBookFrame.cpp:1861
+#: html/TextBookFrame.cpp:1165
+#: html/TextBookFrame.cpp:1167
+#: html/TextBookFrame.cpp:1831
+#: html/TextBookFrame.cpp:1864
 #, c-format
 msgid "%i of %i"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1180
+#: html/TextBookFrame.cpp:1183
 msgid "Search in all books"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1332
+#: html/TextBookFrame.cpp:1335
 msgid "Help Browser Options"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1337
+#: html/TextBookFrame.cpp:1340
 msgid "Normal font:"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1338
+#: html/TextBookFrame.cpp:1341
 msgid "Fixed font:"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1339
+#: html/TextBookFrame.cpp:1342
 msgid "Font size:"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1354
+#: html/TextBookFrame.cpp:1357
 msgid "Preview:"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1381
+#: html/TextBookFrame.cpp:1384
 msgid "font size"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1392
+#: html/TextBookFrame.cpp:1395
 msgid "Normal face<br>and <u>underlined</u>. "
 msgstr ""
 
-#: html/TextBookFrame.cpp:1393
+#: html/TextBookFrame.cpp:1396
 msgid "<i>Italic face.</i> "
 msgstr ""
 
-#: html/TextBookFrame.cpp:1394
+#: html/TextBookFrame.cpp:1397
 msgid "<b>Bold face.</b> "
 msgstr ""
 
-#: html/TextBookFrame.cpp:1395
+#: html/TextBookFrame.cpp:1398
 msgid "<b><i>Bold italic face.</i></b><br>"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1398
+#: html/TextBookFrame.cpp:1401
 msgid "Fixed size face.<br> <b>bold</b> <i>italic</i> "
 msgstr ""
 
-#: html/TextBookFrame.cpp:1399
+#: html/TextBookFrame.cpp:1402
 msgid "<b><i>bold italic <u>underlined</u></i></b><br>"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1685
+#: html/TextBookFrame.cpp:1688
 msgid "Help Printing"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1687
+#: html/TextBookFrame.cpp:1690
 msgid "Cannot print empty page."
 msgstr ""
 
-#: html/TextBookFrame.cpp:1697
+#: html/TextBookFrame.cpp:1700
 msgid "HTML files (*.html;*.htm)|*.html;*.htm|"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1698
+#: html/TextBookFrame.cpp:1701
 msgid "Help books (*.htb)|*.htb|Help books (*.zip)|*.zip|"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1699
+#: html/TextBookFrame.cpp:1702
 msgid "HTML Help Project (*.hhp)|*.hhp|"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1701
+#: html/TextBookFrame.cpp:1704
 msgid "Compressed HTML Help file (*.chm)|*.chm|"
 msgstr ""
 
-#: html/TextBookFrame.cpp:1703
+#: html/TextBookFrame.cpp:1706
 msgid "All files (*.*)|*"
-msgstr ""
-
-#: options/ColorsOptPanel.cpp:65
-msgid "Choose colors to use:"
-msgstr ""
-
-#: options/LangOptionsPanel.cpp:97
-#, c-format
-msgid "Language '%s' will be used the next time you run LenMus."
-msgstr ""
-
-#: options/OptionsDlg.cpp:237
-msgid "&Accept"
-msgstr "&Aceptar"
-
-#: options/OptionsDlg.cpp:240
-msgid "&Cancel"
-msgstr "&Cancelar"
-
-#: sound/SoundManager.cpp:489
-msgid "Can't create a thread!"
-msgstr ""
-
-#: sound/SoundManager.cpp:502
-msgid "Can't start the thread!"
-msgstr ""
+msgstr "Todos los archivos (*.*)|*"
 
 #: xml_parser/XMLParser.cpp:69
 #, c-format
 msgid ""
-"Importing XML file %s\r\n"
-"\r\n"
+"Importing XML file %s\n"
+"\n"
 msgstr ""
 
 #: xml_parser/XMLParser.cpp:75
@@ -1974,7 +1440,7 @@ msgstr ""
 #: xml_parser/XMLParser.cpp:94
 #, c-format
 msgid ""
-"\r\n"
+"\n"
 "MusicXML file imported OK. There are %d warnings."
 msgstr ""
 
@@ -2140,8 +1606,517 @@ msgstr ""
 msgid "<placement> element has an invalid value \"%s\". Asumed 'above'"
 msgstr ""
 
-#: app/Logger.h:116
-msgid "Errors"
+#: app/AboutDialog.cpp:68
+msgid "About LenMus..."
+msgstr ""
+
+#: app/AboutDialog.cpp:79
+#: app/MainFrame.cpp:1096
+#, c-format
+msgid ""
+"Language: %s\n"
+"System locale name: %s\n"
+"Canonical locale name: %s\n"
+msgstr ""
+
+#: app/AboutDialog.cpp:89
+msgid "Program build date:"
+msgstr "Fecha de construcción del programa:"
+
+#: app/AboutDialog.cpp:97
+msgid "wxMidi Version "
+msgstr "Versiuón de wxMidi"
+
+#: app/AboutDialog.cpp:177
+msgid "Management and developent"
+msgstr ""
+
+#: app/AboutDialog.cpp:182
+msgid "Developers</b>"
+msgstr ""
+
+#: app/AboutDialog.cpp:187
+msgid "Art desings"
+msgstr ""
+
+#: app/AboutDialog.cpp:191
+msgid "Musical direction"
+msgstr ""
+
+#: app/AboutDialog.cpp:195
+msgid "Translators</b>"
+msgstr ""
+
+#: app/AboutDialog.cpp:205
+msgid " Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n."
+msgstr ""
+
+#: app/AboutDialog.cpp:206
+msgid "<p>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
+msgstr ""
+
+#: app/AboutDialog.cpp:229
+msgid "Licence"
+msgstr ""
+
+#: app/AboutDialog.cpp:233
+msgid "Release information"
+msgstr ""
+
+#: app/AboutDialog.cpp:237
+msgid "Art Design Credits"
+msgstr ""
+
+#: app/AboutDialog.cpp:245
+msgid "Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n"
+msgstr ""
+
+#: app/AboutDialog.cpp:258
+msgid "A free program for music language learning"
+msgstr ""
+
+#: app/AboutDialog.cpp:282
+msgid "Accept"
+msgstr ""
+
+#: app/DlgDebug.cpp:77
+#: app/LangChoiceDlg.cpp:100
+msgid "OK"
+msgstr ""
+
+#: app/LangChoiceDlg.cpp:78
+msgid "Choose language to use:"
+msgstr ""
+
+#: app/Logger.cpp:154
+msgid "Error message"
+msgstr ""
+
+#: app/MainFrame.cpp:360
+msgid "Welcome to LenMus!"
+msgstr ""
+
+#: app/MainFrame.cpp:429
+msgid "New score"
+msgstr ""
+
+#: app/MainFrame.cpp:430
+msgid "Open score"
+msgstr ""
+
+#: app/MainFrame.cpp:445
+msgid "Save"
+msgstr ""
+
+#: app/MainFrame.cpp:445
+msgid "Save current score to disk"
+msgstr ""
+
+#: app/MainFrame.cpp:446
+msgid "Copy"
+msgstr ""
+
+#: app/MainFrame.cpp:447
+msgid "Cut"
+msgstr ""
+
+#: app/MainFrame.cpp:448
+msgid "Paste"
+msgstr ""
+
+#: app/MainFrame.cpp:449
+msgid "Print document"
+msgstr ""
+
+#: app/MainFrame.cpp:451
+msgid "Options"
+msgstr ""
+
+#: app/MainFrame.cpp:452
+msgid "Help button"
+msgstr ""
+
+#: app/MainFrame.cpp:453
+msgid "Books"
+msgstr ""
+
+#: app/MainFrame.cpp:453
+msgid "Show the music books"
+msgstr ""
+
+#: app/MainFrame.cpp:457
+msgid "Metronome"
+msgstr ""
+
+#: app/MainFrame.cpp:457
+msgid "Turn metronome on/off"
+msgstr ""
+
+#: app/MainFrame.cpp:551
+msgid "Previous page"
+msgstr "Página anterior"
+
+#: app/MainFrame.cpp:554
+msgid "Next page"
+msgstr "Siguiente página"
+
+#: app/MainFrame.cpp:574
+msgid "Display options dialog"
+msgstr "Mostrar el diálogo de opciones"
+
+#: app/MainFrame.cpp:621
+#: app/MainFrame.cpp:655
+msgid "&New\tCtrl+N"
+msgstr "&Nueva\tCtrl+N"
+
+#: app/MainFrame.cpp:621
+#: app/MainFrame.cpp:655
+msgid "Open new blank score"
+msgstr "Abrir una partitura en blanco"
+
+#: app/MainFrame.cpp:625
+#: app/MainFrame.cpp:656
+msgid "&Open ...\tCtrl+O"
+msgstr "&Abrir ...\tCtrl+O"
+
+#: app/MainFrame.cpp:625
+#: app/MainFrame.cpp:656
+msgid "Open a score"
+msgstr "Abrir una partitura"
+
+#: app/MainFrame.cpp:629
+#: app/MainFrame.cpp:657
+msgid "Open &books"
+msgstr "Abrir li&bros"
+
+#: app/MainFrame.cpp:629
+#: app/MainFrame.cpp:657
+msgid "Hide/show eMusicBooks"
+msgstr "Mostrar/ocultar libros"
+
+#: app/MainFrame.cpp:634
+#: app/MainFrame.cpp:658
+msgid "&Import..."
+msgstr "&Importar..."
+
+#: app/MainFrame.cpp:636
+#: app/MainFrame.cpp:659
+msgid "&Save\tCtrl+S"
+msgstr "&Guardar\tCtrl+S"
+
+#: app/MainFrame.cpp:640
+#: app/MainFrame.cpp:660
+msgid "Save &as ...\tCtrl+Shift+S"
+msgstr "&Guardar como...\tCtrl+May+S"
+
+#: app/MainFrame.cpp:642
+#: app/MainFrame.cpp:661
+msgid "&Close\tCtrl+W"
+msgstr "&Cerrar\tCtrl+W"
+
+#: app/MainFrame.cpp:645
+#: app/MainFrame.cpp:663
+msgid "&Print ...\tCtrl+P"
+msgstr "&Imprimir ...\tCtrl+P"
+
+#: app/MainFrame.cpp:649
+#: app/MainFrame.cpp:664
+msgid "Print &Setup..."
+msgstr "Configurar impresora..."
+
+#: app/MainFrame.cpp:650
+#: app/MainFrame.cpp:665
+msgid "Print Pre&view\tCtrl+Shift+P"
+msgstr ""
+
+#: app/MainFrame.cpp:652
+#: app/MainFrame.cpp:667
+msgid "&Quit\tCtrl+Q"
+msgstr "&Salir\tCtrl+Q"
+
+#: app/MainFrame.cpp:679
+msgid "&Undo"
+msgstr "&Deshacer"
+
+#: app/MainFrame.cpp:680
+msgid "&Redo"
+msgstr "Rehacer"
+
+#: app/MainFrame.cpp:687
+msgid "Tool &bar"
+msgstr "&Barra de herramientas"
+
+#: app/MainFrame.cpp:687
+msgid "Hide/show the tools bar"
+msgstr "Mostrar/ocultar la barra de herramientas"
+
+#: app/MainFrame.cpp:688
+msgid "&Status bar"
+msgstr "&Barra de estado"
+
+#: app/MainFrame.cpp:688
+msgid "Hide/show the status bar"
+msgstr "Mostrar/ocultar barra de estado"
+
+#: app/MainFrame.cpp:691
+msgid "&Rulers"
+msgstr "&Reglas"
+
+#: app/MainFrame.cpp:691
+msgid "Hide/show rulers"
+msgstr "Mostrar/ocultar reglas"
+
+#: app/MainFrame.cpp:725
+#: app/MainFrame.cpp:739
+msgid "&Play"
+msgstr "Tocar"
+
+#: app/MainFrame.cpp:729
+#: app/MainFrame.cpp:740
+msgid "S&top"
+msgstr "Parar"
+
+#: app/MainFrame.cpp:733
+#: app/MainFrame.cpp:741
+msgid "P&ause"
+msgstr "P&ausa"
+
+#: app/MainFrame.cpp:746
+msgid "&Run Midi wizard"
+msgstr ""
+
+#: app/MainFrame.cpp:747
+msgid "Midi configuration wizard"
+msgstr ""
+
+#: app/MainFrame.cpp:749
+msgid "&Test sound"
+msgstr ""
+
+#: app/MainFrame.cpp:749
+msgid "Play an scale to test sound"
+msgstr ""
+
+#: app/MainFrame.cpp:750
+msgid "&All sounds off"
+msgstr ""
+
+#: app/MainFrame.cpp:751
+msgid "Stop inmediatly all sounds"
+msgstr ""
+
+#: app/MainFrame.cpp:756
+msgid "&Preferences"
+msgstr ""
+
+#: app/MainFrame.cpp:760
+msgid "&About\tF1"
+msgstr ""
+
+#: app/MainFrame.cpp:763
+#: app/MainFrame.cpp:769
+msgid "&Content\tCtrl+Alt+F1"
+msgstr ""
+
+#: app/MainFrame.cpp:780
+msgid "&Edit"
+msgstr "&Editar"
+
+#: app/MainFrame.cpp:781
+msgid "&View"
+msgstr "&Ver"
+
+#: app/MainFrame.cpp:782
+msgid "&Sound"
+msgstr "&Sonido"
+
+#: app/MainFrame.cpp:783
+msgid "&Debug"
+msgstr "&Depurar"
+
+#: app/MainFrame.cpp:784
+#: app/MainFrame.cpp:871
+msgid "&Zoom"
+msgstr "&Zoom"
+
+#: app/MainFrame.cpp:785
+msgid "&Options"
+msgstr "&Opciones"
+
+#: app/MainFrame.cpp:978
+msgid "LenMus help"
+msgstr "Ayuda de LenMus"
+
+#: app/MainFrame.cpp:984
+msgid "Test mode: using .hhp help file"
+msgstr "Modo test: se usa el archivo de ayuda .hhp"
+
+#: app/MainFrame.cpp:991
+#: app/MainFrame.cpp:1077
+#, c-format
+msgid "Failed adding book %s"
+msgstr "Problemas al añadir el libro %s"
+
+#: app/MainFrame.cpp:1029
+msgid "Available books"
+msgstr "Libros disponibles"
+
+#: app/MainFrame.cpp:1061
+#, c-format
+msgid "Error when trying to move to folder %s"
+msgstr ""
+
+#: app/MainFrame.cpp:1291
+msgid "Mask to add"
+msgstr ""
+
+#: app/MainFrame.cpp:1323
+msgid "Adjust to page"
+msgstr ""
+
+#: app/MainFrame.cpp:1425
+msgid ""
+"There was a problem previewing.\n"
+"Perhaps your current printer is not set correctly?"
+msgstr ""
+
+#: app/MainFrame.cpp:1425
+msgid "Previewing"
+msgstr ""
+
+#: app/MainFrame.cpp:1429
+msgid "Preview"
+msgstr ""
+
+#: app/MainFrame.cpp:1470
+msgid ""
+"There is a problem for printing.\n"
+"Perhaps your current printer is not set correctly?"
+msgstr ""
+
+#: app/MainFrame.cpp:1472
+msgid "Printing canceled"
+msgstr ""
+
+#: app/MidiWizard.cpp:101
+msgid "MIDI configuration wizard"
+msgstr ""
+
+#: app/MidiWizard.cpp:306
+#: app/MidiWizard.cpp:310
+#: app/MidiWizard.cpp:424
+msgid "None"
+msgstr ""
+
+#: app/MidiWizard.cpp:334
+msgid "Midi devices to use"
+msgstr ""
+
+#: app/MidiWizard.cpp:344
+msgid "To generate sounds the program needs a MIDI synthesizer device. Normally, one of these devices is included in the sound board of the PC, but your PC might have more than one."
+msgstr ""
+
+#: app/MidiWizard.cpp:347
+msgid "If your PC has more than one device, choose one of them. You can test all of them and choose the one whose sound you prefer."
+msgstr ""
+
+#: app/MidiWizard.cpp:356
+msgid "Output device:"
+msgstr ""
+
+#: app/MidiWizard.cpp:363
+msgid "Input device:"
+msgstr ""
+
+#: app/MidiWizard.cpp:524
+msgid "Voice channel and instrument"
+msgstr ""
+
+#: app/MidiWizard.cpp:534
+msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one)."
+msgstr ""
+
+#: app/MidiWizard.cpp:537
+msgid "To facilitate access to the instruments they are grouped into sections. First choose a section and then choose the desired instrument."
+msgstr ""
+
+#: app/MidiWizard.cpp:546
+#: app/MidiWizard.cpp:783
+msgid "Channel:"
+msgstr ""
+
+#: app/MidiWizard.cpp:556
+msgid "Section:"
+msgstr "Sección:"
+
+#: app/MidiWizard.cpp:563
+msgid "lmInstrument:"
+msgstr ""
+
+#: app/MidiWizard.cpp:570
+#: app/MidiWizard.cpp:807
+msgid "Test sound"
+msgstr ""
+
+#: app/MidiWizard.cpp:761
+msgid "lmMetronome channel and sounds"
+msgstr ""
+
+#: app/MidiWizard.cpp:771
+msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one)."
+msgstr ""
+
+#: app/MidiWizard.cpp:774
+msgid "To better identify the first beat of each measure it is possible to assign a different sound to it. But also you can choose the same sound for both, the first beat and the others."
+msgstr ""
+
+#: app/MidiWizard.cpp:793
+msgid "Sound for first beat of each measure:"
+msgstr ""
+
+#: app/MidiWizard.cpp:800
+msgid "Sound for other beats of each measure:"
+msgstr ""
+
+#: app/Paper.cpp:259
+msgid "Sorry, not enough memory to create a pBitmap to display the page."
+msgstr "Lo siento, no hay suficiente memoria para crear un bitmap para mostrar la página."
+
+#: app/TheApp.cpp:540
+msgid "LenMus First Run"
+msgstr "Primera ejecución de LenMus"
+
+#: app/ToolsDlg.cpp:71
+msgid "Notes"
+msgstr "Notas"
+
+#: app/ToolsDlg.cpp:75
+msgid "Clefs"
+msgstr "Claves"
+
+#: options/ColorsOptPanel.cpp:65
+msgid "Choose colors to use:"
+msgstr "Elija los colores a utilizar:"
+
+#: options/LangOptionsPanel.cpp:97
+#, c-format
+msgid "Language '%s' will be used the next time you run LenMus."
+msgstr "El idioma '%s' será utilizado la próxima vez que ejecute LenMus."
+
+#: options/OptionsDlg.cpp:237
+msgid "&Accept"
+msgstr ""
+
+#: options/OptionsDlg.cpp:240
+msgid "&Cancel"
+msgstr ""
+
+#: sound/SoundManager.cpp:489
+msgid "Can't create a thread!"
+msgstr ""
+
+#: sound/SoundManager.cpp:502
+msgid "Can't start the thread!"
 msgstr ""
 
 #: exercises/Constrains.h:194
@@ -2149,58 +2124,59 @@ msgstr ""
 #: exercises/Constrains.h:258
 #: exercises/Constrains.h:260
 msgid "Stop"
-msgstr ""
+msgstr "Parar"
 
 #: exercises/Constrains.h:195
 #: exercises/Constrains.h:259
 msgid "Read"
-msgstr ""
+msgstr "Leer"
 
 #: exercises/Constrains.h:197
 #, c-format
 msgid "Measure %d"
-msgstr ""
+msgstr "Compas %d"
 
 #: exercises/Constrains.h:198
 #, c-format
 msgid "Stop %d"
-msgstr ""
+msgstr "Parar %d"
 
-#: html/ScoreCtrolParams.h:171
+#: html/ScoreCtrolParams.h:173
 msgid "Invalid score: old G syntax.\n"
 msgstr ""
 
-#: html/ScoreCtrolParams.h:190
+#: html/ScoreCtrolParams.h:192
 #, c-format
 msgid "Invalid param value in:/n<param %s >/nAcceptable values: short | full | pattern\n"
 msgstr ""
 
-#: html/ScoreCtrolParams.h:211
+#: html/ScoreCtrolParams.h:213
 #, c-format
 msgid "Invalid param value in:/n<param %s >/nAcceptable values: 1 | 0 \n"
 msgstr ""
 
-#: html/ScoreCtrolParams.h:220
+#: html/ScoreCtrolParams.h:222
 #, c-format
 msgid "Unknown param: <param %s >/n"
 msgstr ""
 
-#: html/ScoreCtrolParams.h:248
+#: html/ScoreCtrolParams.h:250
 msgid "Invalid score: unmatched parenthesis.\n"
 msgstr ""
 
-#: html/ScoreCtrolParams.h:289
+#: html/ScoreCtrolParams.h:291
 #, c-format
 msgid ""
 "Errors in score: it can not be created. Score:\n"
 "%s\n"
 msgstr ""
 
-#: html/TheoSideReadingCtrolParms.h:314
+#: html/TheoMusicReadingCtrolParms.h:314
 #, c-format
-msgid "lmTheoSideReadingCtrol. Unknown param: <param %s >\n"
+msgid "lmTheoMusicReadingCtrol. Unknown param: <param %s >\n"
 msgstr ""
 
+#: html/TheoMusicReadingCtrolParms.h:453
 #: html/TheoSideReadingCtrolParms.h:453
 #, c-format
 msgid ""
@@ -2208,14 +2184,25 @@ msgid ""
 "In fragment: '%s'\n"
 msgstr ""
 
+#: html/TheoMusicReadingCtrolParms.h:463
 #: html/TheoSideReadingCtrolParms.h:463
 #, c-format
 msgid "Invalid fragment. Unmatched parenthesis: '%s'\n"
 msgstr ""
 
+#: html/TheoMusicReadingCtrolParms.h:467
 #: html/TheoSideReadingCtrolParms.h:467
 #, c-format
 msgid "Invalid fragment. Old G syntax: '%s'\n"
+msgstr ""
+
+#: html/TheoSideReadingCtrolParms.h:314
+#, c-format
+msgid "lmTheoSideReadingCtrol. Unknown param: <param %s >\n"
+msgstr ""
+
+#: app/Logger.h:116
+msgid "Errors"
 msgstr ""
 
 #: options/OptionsDlg.h:93

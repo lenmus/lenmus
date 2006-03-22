@@ -1,7 +1,7 @@
 <html>
 <head>
 <title>LenMus: Log of things done (ChangeLog)</title>
-<!-- RCS-ID: $Id: changelog.htm,v 1.42 2006/03/03 15:01:16 cecilios Exp $ -->
+<!-- RCS-ID: $Id$ -->
 <link rel="stylesheet" media="all" href="singledoc.css" type="text/css" />
 </head>
 <body>
@@ -26,11 +26,36 @@
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">22-mar-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>Bug patched: Program crash when printing a lesson. The problem was traced back to
+        wxHtmlHelpController. wxHtmlWidgetCell is not prepared for printing and ignores 
+        the DC, rendering always on the parent window. When printing, the parent window is
+        NULL and this causes a program chrash. The bug has been patched by forcing to
+        point to book controller window so that the program doesn't crash, but printing
+        doesn't take place, so lessons are printed without the LenMus emmbedded objects.</li>
+      <li>MusicReading level 2 eBook: adjusted height of scores.</li>
+     </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">20-mar-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>Windows installer final tests.</li>
+      <li>Build release 3.0 alpha 3 using the installer.</li>
+      <li>Release it and web site modifications.</li>
+     </ul>
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">18-mar-06</td>
     <td class="ListaPar">
     <ul>
-      <li>Bug fixed: printing.</li>
+      <li>Bug fixed: Button (in main toolbar) for printing a score doesn't work. The problem
+        was solved replacing event identifier wxID_PRINT to MENU_Print. When using
+        wxID_PRINT the event never arrived to lmMainFrame::OnPrint()</li>
       <li>Windows installer coding and testing. Ready for final tests.</li>
+      <li>Bug fixed: Fail on first run if MIDI wizard cancelled by user.</li>
      </ul>
     </td></tr>
 <tr valign="top">

@@ -45,8 +45,8 @@
 #include "../exercises/ScoreConstrains.h"
 #include "../ldp_parser/AuxString.h"
 
-#include "../app/MainFrame.h"           //CSG_ADDED
-extern lmMainFrame* g_pMainFrame;       //CSG_ADDED
+#include "../app/MainFrame.h"
+extern lmMainFrame* g_pMainFrame;
 
 enum EHtmlScoreTypes
 {
