@@ -102,33 +102,33 @@ lmDlgPatternEditor::lmDlgPatternEditor(wxWindow * parent)
         //get pointers to all controls
         //
 
-    m_pTxtPattern = XRCCTRL(*this, _T("txtPattern"), wxTextCtrl);
+    m_pTxtPattern = XRCCTRL(*this, "txtPattern", wxTextCtrl);
 
     // attributes for notes buttons
-    m_pBtnDotted = XRCCTRL(*this, _T("btnDotted"), wxBitmapButton);
-    m_pBtnTiedNext = XRCCTRL(*this, _T("btnTiedNext"), wxBitmapButton);
-    m_pBtnNotBeamed = XRCCTRL(*this, _T("btnNotBeamed"), wxBitmapButton);
-    m_pBtnStartBeam = XRCCTRL(*this, _T("btnStartBeam"), wxBitmapButton);
-    m_pBtnContinueBeam = XRCCTRL(*this, _T("btnContinueBeam"), wxBitmapButton);
-    m_pBtnEndBeam = XRCCTRL(*this, _T("btnEndBeam"), wxBitmapButton);
+    m_pBtnDotted = XRCCTRL(*this,"btnDotted", wxBitmapButton);
+    m_pBtnTiedNext = XRCCTRL(*this, "btnTiedNext", wxBitmapButton);
+    m_pBtnNotBeamed = XRCCTRL(*this, "btnNotBeamed", wxBitmapButton);
+    m_pBtnStartBeam = XRCCTRL(*this, "btnStartBeam", wxBitmapButton);
+    m_pBtnContinueBeam = XRCCTRL(*this, "btnContinueBeam", wxBitmapButton);
+    m_pBtnEndBeam = XRCCTRL(*this, "btnEndBeam", wxBitmapButton);
 
     // Notes buttons
-    m_pBtnNote[0] = XRCCTRL(*this, _T("btnNote1"), wxBitmapButton);
-    m_pBtnNote[1] = XRCCTRL(*this, _T("btnNote2"), wxBitmapButton);
-    m_pBtnNote[2] = XRCCTRL(*this, _T("btnNote4"), wxBitmapButton);
-    m_pBtnNote[3] = XRCCTRL(*this, _T("btnNote8"), wxBitmapButton);
-    m_pBtnNote[4] = XRCCTRL(*this, _T("btnNote16"), wxBitmapButton);
-    m_pBtnNote[5] = XRCCTRL(*this, _T("btnNote32"), wxBitmapButton);
-    m_pBtnNote[6] = XRCCTRL(*this, _T("btnNote64"), wxBitmapButton);
+    m_pBtnNote[0] = XRCCTRL(*this, "btnNote1", wxBitmapButton);
+    m_pBtnNote[1] = XRCCTRL(*this, "btnNote2", wxBitmapButton);
+    m_pBtnNote[2] = XRCCTRL(*this, "btnNote4", wxBitmapButton);
+    m_pBtnNote[3] = XRCCTRL(*this, "btnNote8", wxBitmapButton);
+    m_pBtnNote[4] = XRCCTRL(*this, "btnNote16", wxBitmapButton);
+    m_pBtnNote[5] = XRCCTRL(*this, "btnNote32", wxBitmapButton);
+    m_pBtnNote[6] = XRCCTRL(*this, "btnNote64", wxBitmapButton);
 
     // Rests buttons
-    m_pBtnRest[0] = XRCCTRL(*this, _T("btnRest1"), wxBitmapButton);
-    m_pBtnRest[1] = XRCCTRL(*this, _T("btnRest2"), wxBitmapButton);
-    m_pBtnRest[2] = XRCCTRL(*this, _T("btnRest4"), wxBitmapButton);
-    m_pBtnRest[3] = XRCCTRL(*this, _T("btnRest8"), wxBitmapButton);
-    m_pBtnRest[4] = XRCCTRL(*this, _T("btnRest16"), wxBitmapButton);
-    m_pBtnRest[5] = XRCCTRL(*this, _T("btnRest32"), wxBitmapButton);
-    m_pBtnRest[6] = XRCCTRL(*this, _T("btnRest64"), wxBitmapButton);
+    m_pBtnRest[0] = XRCCTRL(*this, "btnRest1", wxBitmapButton);
+    m_pBtnRest[1] = XRCCTRL(*this, "btnRest2", wxBitmapButton);
+    m_pBtnRest[2] = XRCCTRL(*this, "btnRest4", wxBitmapButton);
+    m_pBtnRest[3] = XRCCTRL(*this, "btnRest8", wxBitmapButton);
+    m_pBtnRest[4] = XRCCTRL(*this, "btnRest16", wxBitmapButton);
+    m_pBtnRest[5] = XRCCTRL(*this, "btnRest32", wxBitmapButton);
+    m_pBtnRest[6] = XRCCTRL(*this, "btnRest64", wxBitmapButton);
 
     // set buttons' icons
     m_pBtnNote[0]->SetBitmapLabel( wxArtProvider::GetBitmap(_T("whole_note"), wxART_TOOLBAR, m_nSize) );

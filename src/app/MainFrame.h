@@ -115,9 +115,11 @@ public:
     void OnStatusbarUI(wxUpdateUIEvent &event);
 
     void OnPrintPreview(wxCommandEvent& WXUNUSED(event));
+    void OnPrintPreviewUI(wxUpdateUIEvent &event);
     //void OnPageSetup(wxCommandEvent& WXUNUSED(event));
     void OnPrintSetup(wxCommandEvent& WXUNUSED(event));
     void OnPrint(wxCommandEvent& WXUNUSED(event));
+    void OnPrintUI(wxUpdateUIEvent &event);
 
     void OnPlayStart(wxCommandEvent& WXUNUSED(event));
     void OnPlayStop(wxCommandEvent& WXUNUSED(event));

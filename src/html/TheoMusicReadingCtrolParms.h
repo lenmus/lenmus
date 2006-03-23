@@ -253,12 +253,12 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
     else if ( sName == _T("CLEF") ) {
         wxString sClef = tag.GetParam(_T("VALUE"));
         if (AnalyzeClef(sClef)) {
-            m_sParamErrors += wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:\n<param %s >\n")
-                _T("Invalid value = %s \n")
-                _T("Acceptable format: <Clef,LowerNote,UpperNote> \n")
-                _T("Acceptable clef values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1 \n")
-                _T("Acceptable note pitch: c0 - c9")),
+            m_sParamErrors += wxString::Format(
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable format: <Clef,LowerNote,UpperNote> \n \
+Acceptable clef values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1 \n \
+Acceptable note pitch: c0 - c9"),
                 tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
         }
     }
@@ -269,10 +269,10 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
     else if ( sName == _T("TIME") ) {
         wxString sTime = tag.GetParam(_T("VALUE"));
         if (AnalyzeTime(sTime)) {
-            m_sParamErrors += wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:\n<param %s >\n")
-                _T("Invalid value = %s \n")
-                _T("Acceptable format: list of time signatures \n")),
+            m_sParamErrors += wxString::Format( 
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable format: list of time signatures \n"),
                 tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
         }
     }
@@ -283,10 +283,10 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
     else if ( sName == _T("KEY") ) {
         wxString sKeys = tag.GetParam(_T("VALUE"));
         if (AnalyzeKeys(sKeys)) {
-            m_sParamErrors += wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:\n<param %s >\n")
-                _T("Invalid value = %s \n")
-                _T("Acceptable format: list of key signatures or keyword 'all' \n")),
+            m_sParamErrors += wxString::Format(
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable format: list of key signatures or keyword 'all' \n"),
                 tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
         }
     }
@@ -297,10 +297,10 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
         long nMaxInterval;
         bool fOK = sMaxInterval.ToLong(&nMaxInterval);
         if (!fOK || nMaxInterval < 0 ) {
-            m_sParamErrors += wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:/n<param %s >/n")
-                _T("Invalid value = %s /n")
-                _T("Acceptable values: numeric, greater than 0\n") ),
+            m_sParamErrors += wxString::Format( 
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable values: numeric, greater than 0\n"),
                 tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
         }
         else {

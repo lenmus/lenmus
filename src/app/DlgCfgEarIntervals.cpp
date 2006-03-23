@@ -140,70 +140,70 @@ lmDlgCfgEarIntervals::lmDlgCfgEarIntervals(wxWindow * parent,
         //
 
     // error messages and bitmaps
-    m_pLblRangeError = XRCCTRL(*this, _T("lblRangeError"), wxStaticText);
-    m_pBmpRangeError = XRCCTRL(*this, _T("bmpRangeError"), wxStaticBitmap);
-    m_pBmpIntvalTypeError = XRCCTRL(*this, _T("bmpIntvalTypeError"), wxStaticBitmap);
-    m_pLblIntvalTypeError = XRCCTRL(*this, _T("lblIntvalTypeError"), wxStaticText);
-    m_pChkStartSameNote = XRCCTRL(*this, _T("chkStartSameNote"), wxCheckBox);
-    m_pBmpKeySignError = XRCCTRL(*this, _T("bmpKeySignError"), wxStaticBitmap);
-    m_pLblKeySignError = XRCCTRL(*this, _T("lblKeySignError"), wxStaticText);
-    m_pBmpAllowedIntvalError = XRCCTRL(*this, _T("bmpAllowedIntvalError"), wxStaticBitmap);
-    m_pLblAllowedIntvalError = XRCCTRL(*this, _T("lblAllowedIntvalError"), wxStaticText);
-    m_pLblGeneralError = XRCCTRL(*this, _T("lblGeneralError"), wxStaticText);
-    m_pBmpGeneralError = XRCCTRL(*this, _T("bmpGeneralError"), wxStaticBitmap);
+    m_pLblRangeError = XRCCTRL(*this, "lblRangeError", wxStaticText);
+    m_pBmpRangeError = XRCCTRL(*this, "bmpRangeError", wxStaticBitmap);
+    m_pBmpIntvalTypeError = XRCCTRL(*this, "bmpIntvalTypeError", wxStaticBitmap);
+    m_pLblIntvalTypeError = XRCCTRL(*this, "lblIntvalTypeError", wxStaticText);
+    m_pChkStartSameNote = XRCCTRL(*this, "chkStartSameNote", wxCheckBox);
+    m_pBmpKeySignError = XRCCTRL(*this, "bmpKeySignError", wxStaticBitmap);
+    m_pLblKeySignError = XRCCTRL(*this, "lblKeySignError", wxStaticText);
+    m_pBmpAllowedIntvalError = XRCCTRL(*this, "bmpAllowedIntvalError", wxStaticBitmap);
+    m_pLblAllowedIntvalError = XRCCTRL(*this, "lblAllowedIntvalError", wxStaticText);
+    m_pLblGeneralError = XRCCTRL(*this, "lblGeneralError", wxStaticText);
+    m_pBmpGeneralError = XRCCTRL(*this, "bmpGeneralError", wxStaticBitmap);
 
     // allowed intervals checkboxes
-    m_pChkIntval[ein_1] = XRCCTRL(*this, _T("chkIntval1"), wxCheckBox);
-    m_pChkIntval[ein_2min] = XRCCTRL(*this, _T("chkIntval2min"), wxCheckBox);
-    m_pChkIntval[ein_2maj] = XRCCTRL(*this, _T("chkIntval2maj"), wxCheckBox);
-    m_pChkIntval[ein_3min] = XRCCTRL(*this, _T("chkIntval3min"), wxCheckBox);
-    m_pChkIntval[ein_3maj] = XRCCTRL(*this, _T("chkIntval3maj"), wxCheckBox);
-    m_pChkIntval[ein_4] = XRCCTRL(*this, _T("chkIntval4"), wxCheckBox);
-    m_pChkIntval[ein_4aug] = XRCCTRL(*this, _T("chkIntval4aug"), wxCheckBox);
-    m_pChkIntval[ein_5] = XRCCTRL(*this, _T("chkIntval5"), wxCheckBox);
-    m_pChkIntval[ein_6min] = XRCCTRL(*this, _T("chkIntval6min"), wxCheckBox);
-    m_pChkIntval[ein_6maj] = XRCCTRL(*this, _T("chkIntval6maj"), wxCheckBox);
-    m_pChkIntval[ein_7min] = XRCCTRL(*this, _T("chkIntval7min"), wxCheckBox);
-    m_pChkIntval[ein_7maj] = XRCCTRL(*this, _T("chkIntval7maj"), wxCheckBox);
-    m_pChkIntval[ein_8] = XRCCTRL(*this, _T("chkIntval8"), wxCheckBox);
-    m_pChkIntval[ein_9min] = XRCCTRL(*this, _T("chkIntval9min"), wxCheckBox);
-    m_pChkIntval[ein_9maj] = XRCCTRL(*this, _T("chkIntval9maj"), wxCheckBox);
-    m_pChkIntval[ein_10min] = XRCCTRL(*this, _T("chkIntval10min"), wxCheckBox);
-    m_pChkIntval[ein_10maj] = XRCCTRL(*this, _T("chkIntval10maj"), wxCheckBox);
-    m_pChkIntval[ein_11] = XRCCTRL(*this, _T("chkIntval11"), wxCheckBox);
-    m_pChkIntval[ein_11aug] = XRCCTRL(*this, _T("chkIntval11aug"), wxCheckBox);
-    m_pChkIntval[ein_12] = XRCCTRL(*this, _T("chkIntval12"), wxCheckBox);
-    m_pChkIntval[ein_13min] = XRCCTRL(*this, _T("chkIntval13min"), wxCheckBox);
-    m_pChkIntval[ein_13maj] = XRCCTRL(*this, _T("chkIntval13maj"), wxCheckBox);
-    m_pChkIntval[ein_14min] = XRCCTRL(*this, _T("chkIntval14min"), wxCheckBox);
-    m_pChkIntval[ein_14maj] = XRCCTRL(*this, _T("chkIntval14maj"), wxCheckBox);
-    m_pChkIntval[ein_2oct] = XRCCTRL(*this, _T("chkIntval2oct"), wxCheckBox);
+    m_pChkIntval[ein_1] = XRCCTRL(*this, "chkIntval1", wxCheckBox);
+    m_pChkIntval[ein_2min] = XRCCTRL(*this, "chkIntval2min", wxCheckBox);
+    m_pChkIntval[ein_2maj] = XRCCTRL(*this, "chkIntval2maj", wxCheckBox);
+    m_pChkIntval[ein_3min] = XRCCTRL(*this, "chkIntval3min", wxCheckBox);
+    m_pChkIntval[ein_3maj] = XRCCTRL(*this, "chkIntval3maj", wxCheckBox);
+    m_pChkIntval[ein_4] = XRCCTRL(*this, "chkIntval4", wxCheckBox);
+    m_pChkIntval[ein_4aug] = XRCCTRL(*this, "chkIntval4aug", wxCheckBox);
+    m_pChkIntval[ein_5] = XRCCTRL(*this, "chkIntval5", wxCheckBox);
+    m_pChkIntval[ein_6min] = XRCCTRL(*this, "chkIntval6min", wxCheckBox);
+    m_pChkIntval[ein_6maj] = XRCCTRL(*this, "chkIntval6maj", wxCheckBox);
+    m_pChkIntval[ein_7min] = XRCCTRL(*this, "chkIntval7min", wxCheckBox);
+    m_pChkIntval[ein_7maj] = XRCCTRL(*this, "chkIntval7maj", wxCheckBox);
+    m_pChkIntval[ein_8] = XRCCTRL(*this, "chkIntval8", wxCheckBox);
+    m_pChkIntval[ein_9min] = XRCCTRL(*this, "chkIntval9min", wxCheckBox);
+    m_pChkIntval[ein_9maj] = XRCCTRL(*this, "chkIntval9maj", wxCheckBox);
+    m_pChkIntval[ein_10min] = XRCCTRL(*this, "chkIntval10min", wxCheckBox);
+    m_pChkIntval[ein_10maj] = XRCCTRL(*this, "chkIntval10maj", wxCheckBox);
+    m_pChkIntval[ein_11] = XRCCTRL(*this, "chkIntval11", wxCheckBox);
+    m_pChkIntval[ein_11aug] = XRCCTRL(*this, "chkIntval11aug", wxCheckBox);
+    m_pChkIntval[ein_12] = XRCCTRL(*this, "chkIntval12", wxCheckBox);
+    m_pChkIntval[ein_13min] = XRCCTRL(*this, "chkIntval13min", wxCheckBox);
+    m_pChkIntval[ein_13maj] = XRCCTRL(*this, "chkIntval13maj", wxCheckBox);
+    m_pChkIntval[ein_14min] = XRCCTRL(*this, "chkIntval14min", wxCheckBox);
+    m_pChkIntval[ein_14maj] = XRCCTRL(*this, "chkIntval14maj", wxCheckBox);
+    m_pChkIntval[ein_2oct] = XRCCTRL(*this, "chkIntval2oct", wxCheckBox);
 
     // Allowed key signatures
-    m_pChkKeySign[earmDo] = XRCCTRL(*this, _T("chkKeyC"), wxCheckBox);
-    m_pChkKeySign[earmSol] = XRCCTRL(*this, _T("chkKeyG"), wxCheckBox);
-    m_pChkKeySign[earmRe] = XRCCTRL(*this, _T("chkKeyD"), wxCheckBox);
-    m_pChkKeySign[earmLa] = XRCCTRL(*this, _T("chkKeyA"), wxCheckBox);
-    m_pChkKeySign[earmMi] = XRCCTRL(*this, _T("chkKeyE"), wxCheckBox);
-    m_pChkKeySign[earmSi] = XRCCTRL(*this, _T("chkKeyB"), wxCheckBox);
-    m_pChkKeySign[earmFas] = XRCCTRL(*this, _T("chkKeyFSharp"), wxCheckBox);
-    m_pChkKeySign[earmDos] = XRCCTRL(*this, _T("chkKeyCSharp"), wxCheckBox);
-    m_pChkKeySign[earmDob] = XRCCTRL(*this, _T("chkKeyCFlat"), wxCheckBox);
-    m_pChkKeySign[earmSolb] = XRCCTRL(*this, _T("chkKeyGFlat"), wxCheckBox);
-    m_pChkKeySign[earmReb] = XRCCTRL(*this, _T("chkKeyDFlat"), wxCheckBox);
-    m_pChkKeySign[earmLab] = XRCCTRL(*this, _T("chkKeyAFlat"), wxCheckBox);
-    m_pChkKeySign[earmMib] = XRCCTRL(*this, _T("chkKeyEFlat"), wxCheckBox);
-    m_pChkKeySign[earmSib] = XRCCTRL(*this, _T("chkKeyBFlat"), wxCheckBox);
-    m_pChkKeySign[earmFa] = XRCCTRL(*this, _T("chkKeyF"), wxCheckBox);
+    m_pChkKeySign[earmDo] = XRCCTRL(*this, "chkKeyC", wxCheckBox);
+    m_pChkKeySign[earmSol] = XRCCTRL(*this, "chkKeyG", wxCheckBox);
+    m_pChkKeySign[earmRe] = XRCCTRL(*this, "chkKeyD", wxCheckBox);
+    m_pChkKeySign[earmLa] = XRCCTRL(*this, "chkKeyA", wxCheckBox);
+    m_pChkKeySign[earmMi] = XRCCTRL(*this, "chkKeyE", wxCheckBox);
+    m_pChkKeySign[earmSi] = XRCCTRL(*this, "chkKeyB", wxCheckBox);
+    m_pChkKeySign[earmFas] = XRCCTRL(*this, "chkKeyFSharp", wxCheckBox);
+    m_pChkKeySign[earmDos] = XRCCTRL(*this, "chkKeyCSharp", wxCheckBox);
+    m_pChkKeySign[earmDob] = XRCCTRL(*this, "chkKeyCFlat", wxCheckBox);
+    m_pChkKeySign[earmSolb] = XRCCTRL(*this, "chkKeyGFlat", wxCheckBox);
+    m_pChkKeySign[earmReb] = XRCCTRL(*this, "chkKeyDFlat", wxCheckBox);
+    m_pChkKeySign[earmLab] = XRCCTRL(*this, "chkKeyAFlat", wxCheckBox);
+    m_pChkKeySign[earmMib] = XRCCTRL(*this, "chkKeyEFlat", wxCheckBox);
+    m_pChkKeySign[earmSib] = XRCCTRL(*this, "chkKeyBFlat", wxCheckBox);
+    m_pChkKeySign[earmFa] = XRCCTRL(*this, "chkKeyF", wxCheckBox);
 
     // notes range
-    m_pCboFromNote = XRCCTRL(*this, _T("cboFromNote"), wxComboBox);
-    m_pCboToNote = XRCCTRL(*this, _T("cboToNote"), wxComboBox);
+    m_pCboFromNote = XRCCTRL(*this, "cboFromNote", wxComboBox);
+    m_pCboToNote = XRCCTRL(*this, "cboToNote", wxComboBox);
 
     // allowed types of intervals
-    m_pChkIntvalType[0] = XRCCTRL(*this, _T("chkIntvalTypeHarmonic"), wxCheckBox);
-    m_pChkIntvalType[1] = XRCCTRL(*this, _T("chkIntvalTypeMelodicAsc"), wxCheckBox);
-    m_pChkIntvalType[2] = XRCCTRL(*this, _T("chkIntvalTypeMelodicDesc"), wxCheckBox);
+    m_pChkIntvalType[0] = XRCCTRL(*this, "chkIntvalTypeHarmonic", wxCheckBox);
+    m_pChkIntvalType[1] = XRCCTRL(*this, "chkIntvalTypeMelodicAsc", wxCheckBox);
+    m_pChkIntvalType[2] = XRCCTRL(*this, "chkIntvalTypeMelodicDesc", wxCheckBox);
 
     //set error icons
     wxBitmap bmpError =
@@ -246,7 +246,7 @@ lmDlgCfgEarIntervals::lmDlgCfgEarIntervals(wxWindow * parent,
     }
 
     //accidentals: only in key signature or chromatic accidentals also allowed
-    wxRadioBox* pAccidentals = XRCCTRL(*this, _T("radAccidentals"), wxRadioBox);
+    wxRadioBox* pAccidentals = XRCCTRL(*this, "radAccidentals", wxRadioBox);
     if (m_pConstrains->OnlyNatural()) {
         pAccidentals->SetSelection(0);
         EnableKeySignCheckBoxes(true);
@@ -313,7 +313,7 @@ void lmDlgCfgEarIntervals::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     }
     
     // save accidentals option and selected key signatures
-    wxRadioBox* pAccidentals = XRCCTRL(*this, _T("radAccidentals"), wxRadioBox);
+    wxRadioBox* pAccidentals = XRCCTRL(*this, "radAccidentals", wxRadioBox);
     bool fOnlyNatural = (pAccidentals->GetSelection() == 0);
     m_pConstrains->SetOnlyNatural( fOnlyNatural );
     if (fOnlyNatural) {
@@ -416,7 +416,7 @@ bool lmDlgCfgEarIntervals::VerifyData()
     // accidentals: if only natural intervals allowed check that at least one
     // key signature has been choosen
     fAtLeastOne = true;     // assume no error
-    wxRadioBox* pAccidentals = XRCCTRL(*this, _T("radAccidentals"), wxRadioBox);
+    wxRadioBox* pAccidentals = XRCCTRL(*this, "radAccidentals", wxRadioBox);
     if (pAccidentals->GetSelection() == 0) {
         fAtLeastOne = false;
         for (i=0; i < earmFa+1; i++) {
@@ -452,9 +452,10 @@ bool lmDlgCfgEarIntervals::VerifyData()
     }
     
     if (fError) {
-        m_pLblGeneralError->SetLabel( _T("It is nor possible to generate any interval. "
-            "Selected notes range interval (tab 'Other settings') is lower than "
-            "minimum allowed interval (tab 'Intervals')"));
+        m_pLblGeneralError->SetLabel(
+_("It is nor possible to generate any interval. \
+Selected notes range interval (tab 'Other settings') is lower than \
+minimum allowed interval (tab 'Intervals')"));
     }
     else {
         //check that it is possible to generate the maximun allowed interval
@@ -463,9 +464,9 @@ bool lmDlgCfgEarIntervals::VerifyData()
                 if (m_pChkIntval[i]->GetValue()) {
                     fError = true;
                     m_pLblGeneralError->SetLabel(
-                        _T("It is nor possible to generate all the selected intervals. "
-                        "Selected notes range interval (tab 'Other settings') is lower than "
-                        "maximum allowed interval (tab 'Intervals')"));
+_("It is nor possible to generate all the selected intervals. \
+Selected notes range interval (tab 'Other settings') is lower than \
+maximum allowed interval (tab 'Intervals')"));
                     break;
                 }
             }
@@ -483,7 +484,7 @@ bool lmDlgCfgEarIntervals::VerifyData()
     
 
     //enable / disable accept button
-    wxButton* pButtonAccept = XRCCTRL(*this, _T("buttonAccept"), wxButton);
+    wxButton* pButtonAccept = XRCCTRL(*this, "buttonAccept", wxButton);
     pButtonAccept->Enable(!fLocalError && !fGlobalError);
 
     return fLocalError;
@@ -528,7 +529,7 @@ void lmDlgCfgEarIntervals::EnableKeySignCheckBoxes(bool fEnable)
 
 void lmDlgCfgEarIntervals::OnRadAccidentalsClicked(wxCommandEvent& WXUNUSED(event))
 {
-    wxRadioBox* pAccidentals = XRCCTRL(*this, _T("radAccidentals"), wxRadioBox);
+    wxRadioBox* pAccidentals = XRCCTRL(*this, "radAccidentals", wxRadioBox);
     bool fEnable = (pAccidentals->GetSelection() == 0);
     EnableKeySignCheckBoxes(fEnable);
 

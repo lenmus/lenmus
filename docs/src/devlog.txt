@@ -170,7 +170,7 @@ Known bugs:
 
 - Modify UrlAuxCtrol to optionally include an icon at the left.
 
-- A strong parser for MusicReading params. Actually any mistake produces a program crash.
++ A strong parser for MusicReading params. Actually any mistake produces a program crash.
     
 - Composer5:
     Barline alignment constrains
@@ -222,7 +222,7 @@ Known bugs:
   - Fromatter3::RenderJustified(). Things to review next:
     - lmVStaff::GetVStaffHeight
     
-  - Windows: accept scrolling from mouse wheel
+  + Windows: accept scrolling from mouse wheel
   
   - Metronome: implement LED. LED events created in two places: metronome, lmSoundManager.
     

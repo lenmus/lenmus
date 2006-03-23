@@ -117,7 +117,7 @@ lmOptionsDlg::lmOptionsDlg( wxWindow* parent, wxWindowID id, const wxString& cap
     }
 
     //Get last used panel
-    m_nCurPanel = g_pPrefs->Read("/UserOptions/OptionsPanel", 0L);
+    m_nCurPanel = g_pPrefs->Read(_T("/UserOptions/OptionsPanel"), 0L);
     if (m_nCurPanel < 0 || m_nCurPanel >= eOptMaxValue)
         m_nCurPanel = 0;
 
@@ -136,12 +136,12 @@ lmOptionsDlg::lmOptionsDlg( wxWindow* parent, wxWindowID id, const wxString& cap
     m_cPanels[m_nCurPanel] = m_pPanel;
 
     //get the pointers to the controls
-    m_pTreeCtrl = XRCCTRL(*this, _T("idTreeCtrl"), wxTreeCtrl);
-    m_pPanel = XRCCTRL(*this, _T("idPanel"), lmOptionsPanel);
-    m_pSplitWindow = XRCCTRL(*this, _T("idSplitterWindow"), wxSplitterWindow);
-    m_pBtnOK  = XRCCTRL(*this, _T("idBtnOK"), wxButton);
-    m_pBtnCancel  = XRCCTRL(*this, _T("idBtnCancel"), wxButton);
-    m_pBtnHelp  = XRCCTRL(*this, _T("idBtnHelp"), wxButton);
+    m_pTreeCtrl = XRCCTRL(*this, "idTreeCtrl", wxTreeCtrl);
+    m_pPanel = XRCCTRL(*this, "idPanel", lmOptionsPanel);
+    m_pSplitWindow = XRCCTRL(*this, "idSplitterWindow", wxSplitterWindow);
+    m_pBtnOK  = XRCCTRL(*this, "idBtnOK", wxButton);
+    m_pBtnCancel  = XRCCTRL(*this, "idBtnCancel", wxButton);
+    m_pBtnHelp  = XRCCTRL(*this, "idBtnHelp", wxButton);
 
     */
 

@@ -189,7 +189,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
             m_nScoreType = eHST_fileLDP;
         else
             m_sParamErrors += wxString::Format(
-                _("Invalid param value in:/n<param %s >/nAcceptable values: short | full | pattern\n"),
+                _("Invalid param value in:\n<param %s >\nAcceptable values: short | full | pattern\n"),
                 tag.GetAllParams() );
     }
 
@@ -210,7 +210,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
         fOK = tag.GetParamAsInt(_T("VALUE"), &nBorder);
         if (!fOK) 
             m_sParamErrors += wxString::Format(
-                _("Invalid param value in:/n<param %s >/nAcceptable values: 1 | 0 \n"),
+                _("Invalid param value in:\n<param %s >\nAcceptable values: 1 | 0 \n"),
                 tag.GetAllParams() );
         else
             m_pOptions->fMusicBorder = (nBorder != 0);
@@ -219,7 +219,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
     // Unknown param
     else
         m_sParamErrors += wxString::Format( 
-            _("Unknown param: <param %s >/n"),
+            _("Unknown param: <param %s >\n"),
             tag.GetAllParams() );
 
 }

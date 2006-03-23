@@ -244,9 +244,9 @@ bool lmTheApp::OnInit(void)
     g_pPaths->LoadUserPreferences();
 
     // Set up locale object
-    m_locale.Init("", lang, "", true, true);
+    m_locale.Init(_T(""), lang, _T(""), true, true);
     m_locale.AddCatalogLookupPathPrefix( g_pPaths->GetLocalePath() );
-    m_locale.AddCatalog("lenmus");
+    m_locale.AddCatalog(_T("lenmus"));
 
     // open log file and redirec all loging there
     wxFileName oFilename(g_pPaths->GetTempPath(), _T("DataError"), _T("log"), wxPATH_NATIVE);

@@ -54,11 +54,11 @@ lmLangOptionsPanel::lmLangOptionsPanel(wxWindow* parent)
     wxXmlResource::Get()->LoadPanel(this, parent, _T("LangOptionsPanel"));
    
     //load icon
-    wxStaticBitmap* pBmpIcon = XRCCTRL(*this, _T("bmpIconTitle"), wxStaticBitmap);
+    wxStaticBitmap* pBmpIcon = XRCCTRL(*this, "bmpIconTitle", wxStaticBitmap);
     pBmpIcon->SetBitmap( wxArtProvider::GetIcon(_T("opt_language"), wxART_TOOLBAR, wxSize(24,24)) );
 
     //store pointer to wxChoice control
-    m_pChoice = XRCCTRL(*this, _T("choiceLang"), wxChoice);
+    m_pChoice = XRCCTRL(*this, "choiceLang", wxChoice);
 
     //Get current selected language
     m_sCurLang = g_pPrefs->Read(_T("/Locale/Language"), _T("en"));

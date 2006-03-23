@@ -153,27 +153,27 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     LangHash reverseHash;
 
     //List of local translations. //! @todo Add more languages
-    localLanguageName["bg"] = _T("Balgarski");
-    localLanguageName["ca"] = _T("Catalan");
-    localLanguageName["da"] = _T("Dansk");
-    localLanguageName["de"] = _T("Deutsch");
-    localLanguageName["en"] = _T("English");
-    localLanguageName["es"] = _T("Español");
-    localLanguageName["fi"] = _T("Suomi");
-    localLanguageName["fr"] = _T("Français");
-    localLanguageName["it"] = _T("Italiano");
-    localLanguageName["ja"] = _T("Nihongo");
-    localLanguageName["hu"] = _T("Magyar");
-    localLanguageName["mk"] = _T("Makedonski");
-    localLanguageName["nl"] = _T("Nederlands");
-    localLanguageName["nb"] = _T("Norsk");
-    localLanguageName["pl"] = _T("Polski");
-    localLanguageName["pt"] = _T("Português");
-    localLanguageName["ru"] = _T("Russky");
-    localLanguageName["sl"] = _T("Slovenscina");
-    localLanguageName["sv"] = _T("Svenska");
-    localLanguageName["uk"] = _T("Ukrainska");
-    localLanguageName["zh"] = _T("Chinese(Simplified)");
+    localLanguageName[_T("bg")] = _T("Balgarski");
+    localLanguageName[_T("ca")] = _T("Catalan");
+    localLanguageName[_T("da")] = _T("Dansk");
+    localLanguageName[_T("de")] = _T("Deutsch");
+    localLanguageName[_T("en")] = _T("English");
+    localLanguageName[_T("es")] = _T("Español");
+    localLanguageName[_T("fi")] = _T("Suomi");
+    localLanguageName[_T("fr")] = _T("Français");
+    localLanguageName[_T("it")] = _T("Italiano");
+    localLanguageName[_T("ja")] = _T("Nihongo");
+    localLanguageName[_T("hu")] = _T("Magyar");
+    localLanguageName[_T("mk")] = _T("Makedonski");
+    localLanguageName[_T("nl")] = _T("Nederlands");
+    localLanguageName[_T("nb")] = _T("Norsk");
+    localLanguageName[_T("pl")] = _T("Polski");
+    localLanguageName[_T("pt")] = _T("Português");
+    localLanguageName[_T("ru")] = _T("Russky");
+    localLanguageName[_T("sl")] = _T("Slovenscina");
+    localLanguageName[_T("sv")] = _T("Svenska");
+    localLanguageName[_T("uk")] = _T("Ukrainska");
+    localLanguageName[_T("zh")] = _T("Chinese(Simplified)");
 
     wxArrayString pathList;
     pathList.Add( g_pPaths->GetLocaleRootPath() );
@@ -215,7 +215,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
                 found = true;
             }
 
-            if (code == "en" && !found) {
+            if (code == _T("en") && !found) {
                 tempCodes.Add(code);
                 tempNames.Add(name);
                 found = true;

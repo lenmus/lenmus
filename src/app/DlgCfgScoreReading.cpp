@@ -180,92 +180,92 @@ lmDlgCfgScoreReading::lmDlgCfgScoreReading(wxWindow * parent,
         //
     
     // the notebook control
-    m_pBook = XRCCTRL(*this, _T("bookCtrol"), wxNotebook);
+    m_pBook = XRCCTRL(*this, "bookCtrol", wxNotebook);
 
         // Panel 0: Clefs & Notes
     
     // Error messages and bitmaps
-    m_pLblClefError = XRCCTRL(*this, _T("lblClefError"), wxStaticText);
-    m_pBmpClefError = XRCCTRL(*this, _T("bmpClefError"), wxStaticBitmap);
-    m_pBmpRangeError = XRCCTRL(*this, _T("bmpRangeError"), wxStaticBitmap);
-    m_pLblRangeError = XRCCTRL(*this, _T("lblRangeError"), wxStaticText);
-    m_pBmpErrorRange[0] = XRCCTRL(*this, _T("bmpErrorRangeG"), wxStaticBitmap);
-    m_pBmpErrorRange[1] = XRCCTRL(*this, _T("bmpErrorRangeF4"), wxStaticBitmap);
-    m_pBmpErrorRange[2] = XRCCTRL(*this, _T("bmpErrorRangeF3"), wxStaticBitmap);
-    m_pBmpErrorRange[3] = XRCCTRL(*this, _T("bmpErrorRangeC1"), wxStaticBitmap);
-    m_pBmpErrorRange[4] = XRCCTRL(*this, _T("bmpErrorRangeC2"), wxStaticBitmap);
-    m_pBmpErrorRange[5] = XRCCTRL(*this, _T("bmpErrorRangeC3"), wxStaticBitmap);
-    m_pBmpErrorRange[6] = XRCCTRL(*this, _T("bmpErrorRangeC4"), wxStaticBitmap);
+    m_pLblClefError = XRCCTRL(*this, "lblClefError", wxStaticText);
+    m_pBmpClefError = XRCCTRL(*this, "bmpClefError", wxStaticBitmap);
+    m_pBmpRangeError = XRCCTRL(*this, "bmpRangeError", wxStaticBitmap);
+    m_pLblRangeError = XRCCTRL(*this, "lblRangeError", wxStaticText);
+    m_pBmpErrorRange[0] = XRCCTRL(*this, "bmpErrorRangeG", wxStaticBitmap);
+    m_pBmpErrorRange[1] = XRCCTRL(*this, "bmpErrorRangeF4", wxStaticBitmap);
+    m_pBmpErrorRange[2] = XRCCTRL(*this, "bmpErrorRangeF3", wxStaticBitmap);
+    m_pBmpErrorRange[3] = XRCCTRL(*this, "bmpErrorRangeC1", wxStaticBitmap);
+    m_pBmpErrorRange[4] = XRCCTRL(*this, "bmpErrorRangeC2", wxStaticBitmap);
+    m_pBmpErrorRange[5] = XRCCTRL(*this, "bmpErrorRangeC3", wxStaticBitmap);
+    m_pBmpErrorRange[6] = XRCCTRL(*this, "bmpErrorRangeC4", wxStaticBitmap);
 
     // Allowed clefs
-    m_pChkClef[0] = XRCCTRL(*this, _T("chkGClef"), wxCheckBox);
-    m_pChkClef[1] = XRCCTRL(*this, _T("chkF4Clef"), wxCheckBox);
-    m_pChkClef[2] = XRCCTRL(*this, _T("chkF3Clef"), wxCheckBox);
-    m_pChkClef[3] = XRCCTRL(*this, _T("chkC1Clef"), wxCheckBox);
-    m_pChkClef[4] = XRCCTRL(*this, _T("chkC2Clef"), wxCheckBox);
-    m_pChkClef[5] = XRCCTRL(*this, _T("chkC3Clef"), wxCheckBox);
-    m_pChkClef[6] = XRCCTRL(*this, _T("chkC4Clef"), wxCheckBox);
+    m_pChkClef[0] = XRCCTRL(*this, "chkGClef", wxCheckBox);
+    m_pChkClef[1] = XRCCTRL(*this, "chkF4Clef", wxCheckBox);
+    m_pChkClef[2] = XRCCTRL(*this, "chkF3Clef", wxCheckBox);
+    m_pChkClef[3] = XRCCTRL(*this, "chkC1Clef", wxCheckBox);
+    m_pChkClef[4] = XRCCTRL(*this, "chkC2Clef", wxCheckBox);
+    m_pChkClef[5] = XRCCTRL(*this, "chkC3Clef", wxCheckBox);
+    m_pChkClef[6] = XRCCTRL(*this, "chkC4Clef", wxCheckBox);
 
     // Note ranges for each clef
-    m_pCboMinNote[0] = XRCCTRL(*this, _T("cboMinNoteG"), wxComboBox);
-    m_pCboMinNote[1] = XRCCTRL(*this, _T("cboMinNoteF4"), wxComboBox);
-    m_pCboMinNote[2] = XRCCTRL(*this, _T("cboMinNoteF3"), wxComboBox);
-    m_pCboMinNote[3] = XRCCTRL(*this, _T("cboMinNoteC1"), wxComboBox);
-    m_pCboMinNote[4] = XRCCTRL(*this, _T("cboMinNoteC2"), wxComboBox);
-    m_pCboMinNote[5] = XRCCTRL(*this, _T("cboMinNoteC3"), wxComboBox);
-    m_pCboMinNote[6] = XRCCTRL(*this, _T("cboMinNoteC4"), wxComboBox);
+    m_pCboMinNote[0] = XRCCTRL(*this, "cboMinNoteG", wxComboBox);
+    m_pCboMinNote[1] = XRCCTRL(*this, "cboMinNoteF4", wxComboBox);
+    m_pCboMinNote[2] = XRCCTRL(*this, "cboMinNoteF3", wxComboBox);
+    m_pCboMinNote[3] = XRCCTRL(*this, "cboMinNoteC1", wxComboBox);
+    m_pCboMinNote[4] = XRCCTRL(*this, "cboMinNoteC2", wxComboBox);
+    m_pCboMinNote[5] = XRCCTRL(*this, "cboMinNoteC3", wxComboBox);
+    m_pCboMinNote[6] = XRCCTRL(*this, "cboMinNoteC4", wxComboBox);
 
-    m_pCboMaxNote[0] = XRCCTRL(*this, _T("cboMaxNoteG"), wxComboBox);
-    m_pCboMaxNote[1] = XRCCTRL(*this, _T("cboMaxNoteF4"), wxComboBox);
-    m_pCboMaxNote[2] = XRCCTRL(*this, _T("cboMaxNoteF3"), wxComboBox);
-    m_pCboMaxNote[3] = XRCCTRL(*this, _T("cboMaxNoteC1"), wxComboBox);
-    m_pCboMaxNote[4] = XRCCTRL(*this, _T("cboMaxNoteC2"), wxComboBox);
-    m_pCboMaxNote[5] = XRCCTRL(*this, _T("cboMaxNoteC3"), wxComboBox);
-    m_pCboMaxNote[6] = XRCCTRL(*this, _T("cboMaxNoteC4"), wxComboBox);
+    m_pCboMaxNote[0] = XRCCTRL(*this, "cboMaxNoteG", wxComboBox);
+    m_pCboMaxNote[1] = XRCCTRL(*this, "cboMaxNoteF4", wxComboBox);
+    m_pCboMaxNote[2] = XRCCTRL(*this, "cboMaxNoteF3", wxComboBox);
+    m_pCboMaxNote[3] = XRCCTRL(*this, "cboMaxNoteC1", wxComboBox);
+    m_pCboMaxNote[4] = XRCCTRL(*this, "cboMaxNoteC2", wxComboBox);
+    m_pCboMaxNote[5] = XRCCTRL(*this, "cboMaxNoteC3", wxComboBox);
+    m_pCboMaxNote[6] = XRCCTRL(*this, "cboMaxNoteC4", wxComboBox);
 
     // max interval between two consecutive notes
-    m_pSpinMaxInterval = XRCCTRL(*this, _T("spinMaxInterval"), wxSpinCtrl);
+    m_pSpinMaxInterval = XRCCTRL(*this, "spinMaxInterval", wxSpinCtrl);
 
         // Panel 1: Time signatures
     
     // Error messages and bitmaps
-    m_pLblTimeError = XRCCTRL(*this, _T("lblTimeError"), wxStaticText);
-    m_pBmpTimeError = XRCCTRL(*this, _T("bmpTimeError"), wxStaticBitmap);
+    m_pLblTimeError = XRCCTRL(*this, "lblTimeError", wxStaticText);
+    m_pBmpTimeError = XRCCTRL(*this, "bmpTimeError", wxStaticBitmap);
 
     // Time signatures check boxes
-    m_pChkTime[emtr24 - lmMIN_TIME_SIGN] = XRCCTRL(*this, _T("chkTime24"), wxCheckBox);
-    m_pChkTime[emtr34 - lmMIN_TIME_SIGN] = XRCCTRL(*this, _T("chkTime34"), wxCheckBox);
-    m_pChkTime[emtr44 - lmMIN_TIME_SIGN] = XRCCTRL(*this, _T("chkTime44"), wxCheckBox);
-    m_pChkTime[emtr68 - lmMIN_TIME_SIGN] = XRCCTRL(*this, _T("chkTime68"), wxCheckBox);
-    m_pChkTime[emtr98 - lmMIN_TIME_SIGN] = XRCCTRL(*this, _T("chkTime98"), wxCheckBox);
-    m_pChkTime[emtr128 - lmMIN_TIME_SIGN] = XRCCTRL(*this, _T("chkTime128"), wxCheckBox);
-    m_pChkTime[emtr28 - lmMIN_TIME_SIGN] = XRCCTRL(*this, _T("chkTime28"), wxCheckBox);
-    m_pChkTime[emtr38 - lmMIN_TIME_SIGN] = XRCCTRL(*this, _T("chkTime38"), wxCheckBox);
-    m_pChkTime[emtr22 - lmMIN_TIME_SIGN] = XRCCTRL(*this, _T("chkTime22"), wxCheckBox);
-    m_pChkTime[emtr32 - lmMIN_TIME_SIGN] = XRCCTRL(*this, _T("chkTime32"), wxCheckBox);
+    m_pChkTime[emtr24 - lmMIN_TIME_SIGN] = XRCCTRL(*this, "chkTime24", wxCheckBox);
+    m_pChkTime[emtr34 - lmMIN_TIME_SIGN] = XRCCTRL(*this, "chkTime34", wxCheckBox);
+    m_pChkTime[emtr44 - lmMIN_TIME_SIGN] = XRCCTRL(*this, "chkTime44", wxCheckBox);
+    m_pChkTime[emtr68 - lmMIN_TIME_SIGN] = XRCCTRL(*this, "chkTime68", wxCheckBox);
+    m_pChkTime[emtr98 - lmMIN_TIME_SIGN] = XRCCTRL(*this, "chkTime98", wxCheckBox);
+    m_pChkTime[emtr128 - lmMIN_TIME_SIGN] = XRCCTRL(*this, "chkTime128", wxCheckBox);
+    m_pChkTime[emtr28 - lmMIN_TIME_SIGN] = XRCCTRL(*this, "chkTime28", wxCheckBox);
+    m_pChkTime[emtr38 - lmMIN_TIME_SIGN] = XRCCTRL(*this, "chkTime38", wxCheckBox);
+    m_pChkTime[emtr22 - lmMIN_TIME_SIGN] = XRCCTRL(*this, "chkTime22", wxCheckBox);
+    m_pChkTime[emtr32 - lmMIN_TIME_SIGN] = XRCCTRL(*this, "chkTime32", wxCheckBox);
 
         // Panel 2: Key signatures
     
     // Error messages and bitmaps
-    m_pBmpKeySignError = XRCCTRL(*this, _T("bmpKeySignError"), wxStaticBitmap);
-    m_pLblKeySignError = XRCCTRL(*this, _T("lblKeySignError"), wxStaticText);
+    m_pBmpKeySignError = XRCCTRL(*this, "bmpKeySignError", wxStaticBitmap);
+    m_pLblKeySignError = XRCCTRL(*this, "lblKeySignError", wxStaticText);
 
     // Allowed key signatures
-    m_pChkKeySign[earmDo] = XRCCTRL(*this, _T("chkKeyC"), wxCheckBox);
-    m_pChkKeySign[earmSol] = XRCCTRL(*this, _T("chkKeyG"), wxCheckBox);
-    m_pChkKeySign[earmRe] = XRCCTRL(*this, _T("chkKeyD"), wxCheckBox);
-    m_pChkKeySign[earmLa] = XRCCTRL(*this, _T("chkKeyA"), wxCheckBox);
-    m_pChkKeySign[earmMi] = XRCCTRL(*this, _T("chkKeyE"), wxCheckBox);
-    m_pChkKeySign[earmSi] = XRCCTRL(*this, _T("chkKeyB"), wxCheckBox);
-    m_pChkKeySign[earmFas] = XRCCTRL(*this, _T("chkKeyFSharp"), wxCheckBox);
-    m_pChkKeySign[earmDos] = XRCCTRL(*this, _T("chkKeyCSharp"), wxCheckBox);
-    m_pChkKeySign[earmDob] = XRCCTRL(*this, _T("chkKeyCFlat"), wxCheckBox);
-    m_pChkKeySign[earmSolb] = XRCCTRL(*this, _T("chkKeyGFlat"), wxCheckBox);
-    m_pChkKeySign[earmReb] = XRCCTRL(*this, _T("chkKeyDFlat"), wxCheckBox);
-    m_pChkKeySign[earmLab] = XRCCTRL(*this, _T("chkKeyAFlat"), wxCheckBox);
-    m_pChkKeySign[earmMib] = XRCCTRL(*this, _T("chkKeyEFlat"), wxCheckBox);
-    m_pChkKeySign[earmSib] = XRCCTRL(*this, _T("chkKeyBFlat"), wxCheckBox);
-    m_pChkKeySign[earmFa] = XRCCTRL(*this, _T("chkKeyF"), wxCheckBox);
+    m_pChkKeySign[earmDo] = XRCCTRL(*this, "chkKeyC", wxCheckBox);
+    m_pChkKeySign[earmSol] = XRCCTRL(*this, "chkKeyG", wxCheckBox);
+    m_pChkKeySign[earmRe] = XRCCTRL(*this, "chkKeyD", wxCheckBox);
+    m_pChkKeySign[earmLa] = XRCCTRL(*this, "chkKeyA", wxCheckBox);
+    m_pChkKeySign[earmMi] = XRCCTRL(*this, "chkKeyE", wxCheckBox);
+    m_pChkKeySign[earmSi] = XRCCTRL(*this, "chkKeyB", wxCheckBox);
+    m_pChkKeySign[earmFas] = XRCCTRL(*this, "chkKeyFSharp", wxCheckBox);
+    m_pChkKeySign[earmDos] = XRCCTRL(*this, "chkKeyCSharp", wxCheckBox);
+    m_pChkKeySign[earmDob] = XRCCTRL(*this, "chkKeyCFlat", wxCheckBox);
+    m_pChkKeySign[earmSolb] = XRCCTRL(*this, "chkKeyGFlat", wxCheckBox);
+    m_pChkKeySign[earmReb] = XRCCTRL(*this, "chkKeyDFlat", wxCheckBox);
+    m_pChkKeySign[earmLab] = XRCCTRL(*this, "chkKeyAFlat", wxCheckBox);
+    m_pChkKeySign[earmMib] = XRCCTRL(*this, "chkKeyEFlat", wxCheckBox);
+    m_pChkKeySign[earmSib] = XRCCTRL(*this, "chkKeyBFlat", wxCheckBox);
+    m_pChkKeySign[earmFa] = XRCCTRL(*this, "chkKeyF", wxCheckBox);
 
 
 
@@ -532,7 +532,7 @@ bool lmDlgCfgScoreReading::VerifyData()
     //
     //enable / disable accept button
     //
-    wxButton* pButtonAccept = XRCCTRL(*this, _T("buttonAccept"), wxButton);
+    wxButton* pButtonAccept = XRCCTRL(*this, "buttonAccept", wxButton);
     pButtonAccept->Enable(!fGlobalError);
 
     return fGlobalError;

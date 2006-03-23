@@ -96,24 +96,24 @@ lmDlgCfgTheoIntervals::lmDlgCfgTheoIntervals(wxWindow * parent,
         //
 
     // error messages and bitmaps
-    m_pLblClefError = XRCCTRL(*this, _T("lblClefError"), wxStaticText);
-    m_pBmpClefError = XRCCTRL(*this, _T("bmpClefError"), wxStaticBitmap);
+    m_pLblClefError = XRCCTRL(*this, "lblClefError", wxStaticText);
+    m_pBmpClefError = XRCCTRL(*this, "bmpClefError", wxStaticBitmap);
 
     //// Allowed clefs
-    m_pChkClef[0] = XRCCTRL(*this, _T("chkGClef"), wxCheckBox);
-    m_pChkClef[1] = XRCCTRL(*this, _T("chkF4Clef"), wxCheckBox);
-    m_pChkClef[2] = XRCCTRL(*this, _T("chkF3Clef"), wxCheckBox);
-    m_pChkClef[3] = XRCCTRL(*this, _T("chkC1Clef"), wxCheckBox);
-    m_pChkClef[4] = XRCCTRL(*this, _T("chkC2Clef"), wxCheckBox);
-    m_pChkClef[5] = XRCCTRL(*this, _T("chkC3Clef"), wxCheckBox);
-    m_pChkClef[6] = XRCCTRL(*this, _T("chkC4Clef"), wxCheckBox);
+    m_pChkClef[0] = XRCCTRL(*this, "chkGClef", wxCheckBox);
+    m_pChkClef[1] = XRCCTRL(*this, "chkF4Clef", wxCheckBox);
+    m_pChkClef[2] = XRCCTRL(*this, "chkF3Clef", wxCheckBox);
+    m_pChkClef[3] = XRCCTRL(*this, "chkC1Clef", wxCheckBox);
+    m_pChkClef[4] = XRCCTRL(*this, "chkC2Clef", wxCheckBox);
+    m_pChkClef[5] = XRCCTRL(*this, "chkC3Clef", wxCheckBox);
+    m_pChkClef[6] = XRCCTRL(*this, "chkC4Clef", wxCheckBox);
 
     // allowed accidentals
-    m_pChkDoubleAccidentals = XRCCTRL(*this, _T("chkDoubleAccidentals"), wxCheckBox);
-    m_pChkAccidentals = XRCCTRL(*this, _T("chkAccidentals"), wxCheckBox);
+    m_pChkDoubleAccidentals = XRCCTRL(*this, "chkDoubleAccidentals", wxCheckBox);
+    m_pChkAccidentals = XRCCTRL(*this, "chkAccidentals", wxCheckBox);
 
     // problem type
-    m_radProblemType = XRCCTRL(*this, _T("radProblemType"), wxRadioBox);
+    m_radProblemType = XRCCTRL(*this, "radProblemType", wxRadioBox);
 
     //set error icons
     wxBitmap bmpError =
@@ -215,7 +215,7 @@ bool lmDlgCfgTheoIntervals::VerifyData()
     }
     
     //enable / disable accept button
-    wxButton* pButtonAccept = XRCCTRL(*this, _T("buttonAccept"), wxButton);
+    wxButton* pButtonAccept = XRCCTRL(*this, "buttonAccept", wxButton);
     pButtonAccept->Enable(!fGlobalError);
 
     return fGlobalError;

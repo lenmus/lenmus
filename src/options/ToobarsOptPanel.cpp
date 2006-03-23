@@ -64,7 +64,7 @@ lmToolbarsOptPanel::lmToolbarsOptPanel(wxWindow* parent)
     wxXmlResource::Get()->LoadPanel(this, parent, _T("ToolbarsOptPanel"));
    
     //load icon
-    wxStaticBitmap* pBmpIcon = XRCCTRL(*this, _T("bmpIconTitle"), wxStaticBitmap);
+    wxStaticBitmap* pBmpIcon = XRCCTRL(*this, "bmpIconTitle", wxStaticBitmap);
     pBmpIcon->SetBitmap( wxArtProvider::GetIcon(_T("opt_tools"), wxART_TOOLBAR, wxSize(24,24)) );
 
     //
@@ -72,7 +72,7 @@ lmToolbarsOptPanel::lmToolbarsOptPanel(wxWindow* parent)
     //
 
     //icons' size
-    wxRadioBox* pOptIconSize = XRCCTRL(*this, _T("optIconSize"), wxRadioBox);
+    wxRadioBox* pOptIconSize = XRCCTRL(*this, "optIconSize", wxRadioBox);
     long nIconSize = g_pPrefs->Read(_T("/Toolbars/IconSize"), 16);
     if (nIconSize == 32)
         m_nSizeIndex = 2;
@@ -89,7 +89,7 @@ lmToolbarsOptPanel::lmToolbarsOptPanel(wxWindow* parent)
 
     // labels
     m_nLabelsIndex = (int) g_pPrefs->Read(_T("/Toolbars/Labels"), 1L);
-    wxRadioBox* pOptLabels = XRCCTRL(*this, _T("optLabels"), wxRadioBox);
+    wxRadioBox* pOptLabels = XRCCTRL(*this, "optLabels", wxRadioBox);
     pOptLabels->SetSelection(m_nLabelsIndex);
 }
 
@@ -105,7 +105,7 @@ bool lmToolbarsOptPanel::Verify()
 void lmToolbarsOptPanel::Apply()
 {
     // icons' size
-    wxRadioBox* pOptIconSize = XRCCTRL(*this, _T("optIconSize"), wxRadioBox);
+    wxRadioBox* pOptIconSize = XRCCTRL(*this, "optIconSize", wxRadioBox);
     int nSizeIndex = pOptIconSize->GetSelection();
     if (nSizeIndex != m_nSizeIndex) {
         long nIconSize;
@@ -119,7 +119,7 @@ void lmToolbarsOptPanel::Apply()
     }
 
     // labels
-    wxRadioBox* pOptLabels = XRCCTRL(*this, _T("optLabels"), wxRadioBox);
+    wxRadioBox* pOptLabels = XRCCTRL(*this, "optLabels", wxRadioBox);
     int nLabelsIndex = pOptLabels->GetSelection();
     if (nLabelsIndex != m_nLabelsIndex) {
         g_pPrefs->Write(_T("/Toolbars/Labels"), nLabelsIndex);

@@ -251,10 +251,10 @@ void lmTheoKeySignParms::AddParam(const wxHtmlTag& tag)
         long nAccidentals;
         bool fOK = sAccidentals.ToLong(&nAccidentals);
         if (!fOK || nAccidentals < 0 || nAccidentals > 7) {
-            LogError(wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:/n<param %s >/n")
-                _T("Invalid value = %s /n")
-                _T("Acceptable values: numeric, 0..7") ),
+            LogError( wxString::Format(
+                _("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable values: numeric, 0..7"),
                 tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
         }
         else {
@@ -273,10 +273,10 @@ void lmTheoKeySignParms::AddParam(const wxHtmlTag& tag)
         else if (sProblem == _T("BOTH"))
             m_pConstrains->SetProblemType( eBothKeySignProblems );
         else
-            LogError(wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:/n<param %s >/n")
-                _T("Invalid value = %s /n")
-                _T("Acceptable values: DeduceKey | WriteKey | Both") ),
+            LogError(wxString::Format( 
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable values: DeduceKey | WriteKey | Both"),
                 tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
     }
 
@@ -299,10 +299,10 @@ void lmTheoKeySignParms::AddParam(const wxHtmlTag& tag)
         else if (sClef == _T("DO1"))
             m_pConstrains->SetClef(eclvDo1, true);
         else
-            LogError(wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:/n<param %s >/n")
-                _T("Invalid value = %s /n")
-                _T("Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1") ),
+            LogError(wxString::Format(
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"),
                 tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
     }
 
@@ -317,17 +317,17 @@ void lmTheoKeySignParms::AddParam(const wxHtmlTag& tag)
         else if (sProblem == _T("BOTH"))
             m_pConstrains->SetScaleMode( eMayorAndMinorModes );
         else
-            LogError(wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:/n<param %s >/n")
-                _T("Invalid value = %s /n")
-                _T("Acceptable values: Major | Minor | Both") ),
+            LogError(wxString::Format( 
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable values: Major | Minor | Both"),
                 tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
     }
 
     // Unknown param
     else
         LogError(wxString::Format( 
-            _("lmTheoIntervalsCtrol. Unknown param: <param %s >/n"),
+            _("lmTheoIntervalsCtrol. Unknown param: <param %s >\n"),
             tag.GetAllParams() ));
 
 }
@@ -432,10 +432,10 @@ void lmTheoIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
         else if (sAccidentals == _T("DOUBLE"))
             m_pConstrains->SetDoubleAccidentals(true);
         else
-            LogError(wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:/n<param %s >/n")
-                _T("Invalid value = %s /n")
-                _T("Acceptable values: none | simple | double") ),
+            LogError(wxString::Format(
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable values: none | simple | double"),
                 tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
     }
 
@@ -450,10 +450,10 @@ void lmTheoIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
         else if (sProblem == _T("BOTH"))
             m_pConstrains->SetProblemType( ePT_Both );
         else
-            LogError(wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:/n<param %s >/n")
-                _T("Invalid value = %s /n")
-                _T("Acceptable values: DeduceInterval | BuildInterval | Both") ),
+            LogError(wxString::Format(
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable values: DeduceInterval | BuildInterval | Both"),
                 tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
     }
 
@@ -476,17 +476,17 @@ void lmTheoIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
         else if (sClef == _T("DO1"))
             m_pConstrains->SetClef(eclvDo1, true);
         else
-            LogError(wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:/n<param %s >/n")
-                _T("Invalid value = %s /n")
-                _T("Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1") ),
+            LogError(wxString::Format( 
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"),
                 tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
     }
 
     // Unknown param
     else
         LogError(wxString::Format( 
-            _("lmTheoIntervalsCtrol. Unknown param: <param %s >/n"),
+            _("lmTheoIntervalsCtrol. Unknown param: <param %s >\n"),
             tag.GetAllParams() ));
 
 }
@@ -583,8 +583,8 @@ void lmEarIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
         //    m_pConstrains->SetDoubleAccidentals(true);
         //else
         //    LogError(wxString::Format( wxGetTranslation(
-        //        _T("Invalid param value in:/n<param %s >/n")
-        //        _T("Invalid value = %s /n")
+        //        _T("Invalid param value in:\n<param %s >\n")
+        //        _T("Invalid value = %s \n")
         //        _T("Acceptable values: none | simple | double") ),
         //        tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
     }
@@ -592,7 +592,7 @@ void lmEarIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
     // Unknown param
     else
         LogError(wxString::Format( 
-            _("lmEarIntervalsCtrol. Unknown param: <param %s >/n"),
+            _("lmEarIntervalsCtrol. Unknown param: <param %s >\n"),
             tag.GetAllParams() ));
 
 }
@@ -689,8 +689,8 @@ void lmEarCompareIntvCtrolParms::AddParam(const wxHtmlTag& tag)
         //    m_pConstrains->SetDoubleAccidentals(true);
         //else
         //    LogError(wxString::Format( wxGetTranslation(
-        //        _T("Invalid param value in:/n<param %s >/n")
-        //        _T("Invalid value = %s /n")
+        //        _T("Invalid param value in:\n<param %s >\n")
+        //        _T("Invalid value = %s \n")
         //        _T("Acceptable values: none | simple | double") ),
         //        tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
     }
@@ -698,7 +698,7 @@ void lmEarCompareIntvCtrolParms::AddParam(const wxHtmlTag& tag)
     // Unknown param
     else
         LogError(wxString::Format( 
-            _("lmEarIntervalsCtrol. Unknown param: <param %s >/n"),
+            _("lmEarIntervalsCtrol. Unknown param: <param %s >\n"),
             tag.GetAllParams() ));
 
 }
@@ -799,10 +799,10 @@ void lmTheoScalesCtrolParms::AddParam(const wxHtmlTag& tag)
         else if (sScaleType == _T("MINOR"))
             m_pConstrains->SetMinorType(true);
         else
-            LogError(wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:/n<param %s >/n")
-                _T("Invalid value = %s /n")
-                _T("Acceptable values: major | minor") ),
+            LogError(wxString::Format( 
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable values: major | minor"),
                 tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
     }
 
@@ -817,10 +817,10 @@ void lmTheoScalesCtrolParms::AddParam(const wxHtmlTag& tag)
         else if (sProblem == _T("BOTH"))
             m_pConstrains->SetProblemType( ePTS_Both );
         else
-            LogError(wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:/n<param %s >/n")
-                _T("Invalid value = %s /n")
-                _T("Acceptable values: DeduceScale | BuildScale | Both") ),
+            LogError(wxString::Format( 
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable values: DeduceScale | BuildScale | Both"),
                 tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
     }
 
@@ -843,10 +843,10 @@ void lmTheoScalesCtrolParms::AddParam(const wxHtmlTag& tag)
         else if (sClef == _T("DO1"))
             m_pConstrains->SetClef(eclvDo1, true);
         else
-            LogError(wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:/n<param %s >/n")
-                _T("Invalid value = %s /n")
-                _T("Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1") ),
+            LogError(wxString::Format( 
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"),
                 tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
     }
     // control            chkKeySignature
@@ -856,17 +856,17 @@ void lmTheoScalesCtrolParms::AddParam(const wxHtmlTag& tag)
         if (sProblem == _T("CHKKEYSIGNATURE"))
             m_pConstrains->SetCtrolKeySignature(true);
         else
-            LogError(wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:/n<param %s >/n")
-                _T("Invalid value = %s /n")
-                _T("Acceptable values: chkKeySignature") ),
+            LogError(wxString::Format( 
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable values: chkKeySignature"),
                 tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
     }
 
     // Unknown param
     else
         LogError(wxString::Format( 
-            _("lmTheoScalesCtrol. Unknown param: <param %s >/n"),
+            _("lmTheoScalesCtrol. Unknown param: <param %s >\n"),
             tag.GetAllParams() ));
 
 }

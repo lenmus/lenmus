@@ -256,9 +256,11 @@ enum
 IMPLEMENT_CLASS(lmMainFrame, wxDocMDIParentFrame)
 BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_MENU (MENU_File_Import, lmMainFrame::OnImportFile)
-    EVT_MENU (MENU_Print_Preview, lmMainFrame::OnPrintPreview)
-    EVT_MENU (wxID_PRINT_SETUP, lmMainFrame::OnPrintSetup)
-    EVT_MENU (MENU_Print, lmMainFrame::OnPrint)
+    EVT_MENU      (MENU_Print_Preview, lmMainFrame::OnPrintPreview)
+    EVT_UPDATE_UI (MENU_Print_Preview, lmMainFrame::OnPrintPreviewUI)
+    EVT_MENU      (wxID_PRINT_SETUP, lmMainFrame::OnPrintSetup)
+    EVT_MENU      (MENU_Print, lmMainFrame::OnPrint)
+    EVT_UPDATE_UI (MENU_Print, lmMainFrame::OnPrintUI)
 
     EVT_MENU      (MENU_View_Tools, lmMainFrame::OnViewTools)
     EVT_MENU      (MENU_View_Rulers, lmMainFrame::OnViewRulers)
@@ -1422,7 +1424,7 @@ void lmMainFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event))
     wxPrintPreview *preview = new wxPrintPreview(new lmPrintout(pView), new lmPrintout(pView), &printDialogData);
     if (!preview->Ok()) {
         delete preview;
-        wxMessageBox(_("There was a problem previewing.\nPerhaps your current printer is not set correctly?"), _("Previewing"), wxOK);
+        wxMessageBox(_("There is a problem previewing.\nPerhaps your current printer is not set correctly?"), _("Previewing"), wxOK);
         return;
     }
     
@@ -1431,6 +1433,13 @@ void lmMainFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event))
     frame->Initialize();
     frame->Show(true);
 }
+
+void lmMainFrame::OnPrintPreviewUI(wxUpdateUIEvent &event)
+{
+    lmScoreView* pView = g_pTheApp->GetActiveView();
+    event.Enable( (pView != (lmScoreView*)NULL) );
+}
+
 
 //void lmMainFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))
 //{
@@ -1475,6 +1484,13 @@ void lmMainFrame::OnPrint(wxCommandEvent& WXUNUSED(event))
         (*g_pPrintData) = printer.GetPrintDialogData().GetPrintData();
     }
 }
+
+void lmMainFrame::OnPrintUI(wxUpdateUIEvent &event)
+{
+    lmScoreView* pView = g_pTheApp->GetActiveView();
+    event.Enable( (pView != (lmScoreView*)NULL) );
+}
+
 
 //---------------------------------
 

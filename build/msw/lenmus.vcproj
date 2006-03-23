@@ -46,7 +46,7 @@
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexd.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxmsw26d_adv.lib wxmsw26d_core.lib wxmsw26d_dbgrid.lib wxmsw26d_gl.lib wxmsw26d_html.lib wxmsw26d_media.lib wxmsw26d_qa.lib wxmsw26d_xrc.lib wxbase26d.lib wxbase26d_net.lib wxbase26d_odbc.lib wxbase26d_xml.lib wxmidi11d.lib"
 				ShowProgress="0"
-				OutputFile="..\..\z_bin\lenmus.exe"
+				OutputFile="..\..\z_bin\lenmus_d.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="..\..\..\wxWidgets262\lib\vc_lib;..\..\..\wxWidgets262\contrib\lib;..\..\..\wxMidi\lib;..\..\..\wxMidi\lib\pm"
@@ -156,8 +156,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug Unicode|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="..\..\z_debug_unicode"
+			IntermediateDirectory="..\..\z_debug_unicode"
 			ConfigurationType="1"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="FALSE"
@@ -172,10 +172,10 @@
 				EnableEnhancedInstructionSet="0"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="wx/wxprec.h"
-				PrecompiledHeaderFile="..\..\z_debug\lenmus.pch"
-				AssemblerListingLocation="..\..\z_debug\"
-				ObjectFile="..\..\z_debug\"
-				ProgramDataBaseFileName="..\..\z_debug\"
+				PrecompiledHeaderFile="..\..\z_debug_unicode\lenmus.pch"
+				AssemblerListingLocation="..\..\z_debug_unicode\"
+				ObjectFile="..\..\z_debug_unicode\"
+				ProgramDataBaseFileName="..\..\z_debug_unicode\"
 				BrowseInformation="1"
 				BrowseInformationFile="$(IntDir)\"
 				WarningLevel="3"
@@ -190,15 +190,15 @@
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexud.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxmsw26ud_adv.lib wxmsw26ud_core.lib wxmsw26ud_dbgrid.lib wxmsw26ud_gl.lib wxmsw26ud_html.lib wxmsw26ud_media.lib wxmsw26ud_qa.lib wxmsw26ud_xrc.lib wxbase26ud.lib wxbase26ud_net.lib wxbase26ud_odbc.lib wxbase26ud_xml.lib wxmidi11ud.lib"
 				ShowProgress="0"
-				OutputFile="..\..\z_bin\lenmus.exe"
+				OutputFile="..\..\z_bin\lenmus_ud.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="..\..\..\wxWidgets262\lib\vc_lib;..\..\..\wxWidgets262\contrib\lib;..\..\..\wxMidi\lib;..\..\..\wxMidi\lib\pm"
+				AdditionalLibraryDirectories="..\..\..\wxWidgets262\lib\vc_lib;..\..\..\wxWidgets262\contrib\lib;..\..\..\wxMidi\lib;..\..\..\wxMidi\lib\pmd"
 				IgnoreAllDefaultLibraries="FALSE"
 				IgnoreDefaultLibraryNames="libcd.lib;libc.lib;libcmt.lib"
 				GenerateDebugInformation="TRUE"
 				AssemblyDebug="0"
-				ProgramDatabaseFile="..\..\z_debug\lenmus.pbd"
+				ProgramDatabaseFile="..\..\z_debug_unicode\lenmus.pbd"
 				SubSystem="2"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -206,7 +206,7 @@
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName="..\..\z_debug/lenmus.tlb"/>
+				TypeLibraryName="..\..\z_debug_unicode/lenmus.tlb"/>
 			<Tool
 				Name="VCPostBuildEventTool"/>
 			<Tool
