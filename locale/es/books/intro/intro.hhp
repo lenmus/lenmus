@@ -1,0 +1,7 @@
+[OPTIONS]
+Contents file=intro.hhc
+Charset=ISO-8859-1
+Index file=intro.hhk
+Title=LenMus. Introduction
+Default topic=intro_welcome.htm
+
