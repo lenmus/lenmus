@@ -84,39 +84,55 @@ Planning: comming releases
 ******************************************************************************************
 
 Bugs to solve:
+    - When changing language a flag must be stored so that at next run the program must
+      clean the temp folder. Otherwise, as books have the same names in English and
+      in Spanish, the new language .hcc and hhk files will not be properly loaded.
         
-Modifications to L2_MusicReading eBook:
-    - Once finished, review clefs and notes ranges.
-    - review title and content lesson 216
-    - review lesson numbers
-
 
 ?/???/2006 - Beta 3.0b0 release
 --------------------------------------------------
 
     Features and changes:
         - Spanish translation
+        - eBooks in English
         - Help file
         - eBooks for music reading
         - Installer for Windows
         
     Tasks:
-        1 + <object> strong param verification and error reporting
-        1 + Music reading eBooks. Needed to have exercises width increasing level of difficulty.
-        1 - Translation of program into Spanish
-        1 - Translation of eBooks into English
-        1 + Write NSIS installer for Windows
-        2 - Splash: finish it.
-        3 - For each exercise prepare an html page to explain it in the website. It could be
+        - Translation of program into Spanish
+            + prepare .po file
+            - translate .po
+            + translate/review L2_MusicReading eBook
+            + translate/review intro eBook
+            + translate/review SingleExercises eBook
+            
+        + Translation of eBooks into English
+            + translate/review L2_MusicReading eBook
+            + translate/review intro eBook
+            + translate/review SingleExercises eBook
+            
+        - Installer for Windows
+            + Write NSIS installer for Windows
+            - Test it with VMWare in Win2000 and verify that pormidi and wxMidi are
+                installed. How are they included?
+                
+        - Splash: finish it.
+            - write fixed copyright/credits text
+            - prepare new image with this text
+            
+        - For each exercise prepare an html page to explain it in the website. It could be
             also part of the help book
-        3 - Prepare program help
+            
+        - Prepare program help
 
 
 ??/???/2006 - Stable 3.0 release (beta 3.0b0 + 1 month)
 ---------------------------------------------------
     Other:
     - Replacement of version 2.0 that will be dropped from web site.
-
+ 
+ 
 
 ??/???/2006 - Beta 3.1b0 release
 ----------------------------------------------
@@ -140,6 +156,13 @@ Upcomig releases features
 - Theo Key signatures:
     2 - Add checkbox buttons to choose direct and inverse problems
 
+
+ - Title tag in LDP
+ - Tuples: t2
+ - Beamed groups in LDP: automatic identification of typical groups
+ - Slurs
+ - Bug: hook beam after rest in group. Drawn wrong
+ - Error window with LDP parsing errors in Open command
 
 
 

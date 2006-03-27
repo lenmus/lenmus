@@ -4,7 +4,7 @@
 </head><body>
 <ul>
     <li> <object type="text/sitemap">
-        <param name="Name" value="Welcome">
+        <param name="Name" value="Presentación">
         <param name="Local" value="intro_welcome.htm">
         </object>
     </li>

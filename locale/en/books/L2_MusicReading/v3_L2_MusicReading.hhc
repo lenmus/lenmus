@@ -31,7 +31,7 @@
   </li>
 
   <li><object type="text/sitemap">
-    <param name="Name" value=" 4. Compound time. 8th note tied to 16th notes">
+    <param name="Name" value=" 4. Compound time of 12/8. 8th note tied to 16th notes">
     <param name="Local" value="v3_L2_MusicReading_208.htm">
     </object>
   </li>
@@ -85,37 +85,37 @@
   </li>
 
   <li><object type="text/sitemap">
-    <param name="Name" value="14. Dotted 8th note">
+    <param name="Name" value="13. Dotted 8th note">
     <param name="Local" value="v3_L2_MusicReading_219.htm">
     </object>
   </li>
 
   <li><object type="text/sitemap">
-    <param name="Name" value="15. Compound time. 8th note tied to next beat">
+    <param name="Name" value="14. Compound time. 8th note tied to next beat">
     <param name="Local" value="v3_L2_MusicReading_220.htm">
     </object>
   </li>
 
   <li><object type="text/sitemap">
-    <param name="Name" value="16. Tied dotted 8th note">
+    <param name="Name" value="15. Tied dotted 8th note">
     <param name="Local" value="v3_L2_MusicReading_221.htm">
     </object>
   </li>
 
   <li><object type="text/sitemap">
-    <param name="Name" value="17. Groups of two 16th notes">
+    <param name="Name" value="16. Groups of two 16th notes">
     <param name="Local" value="v3_L2_MusicReading_222.htm">
     </object>
   </li>
 
   <li><object type="text/sitemap">
-    <param name="Name" value="18. Compound time. 8th note tied to next beat (2)">
+    <param name="Name" value="17. Compound time. 8th note tied to next beat (2)">
     <param name="Local" value="v3_L2_MusicReading_223.htm">
     </object>
   </li>
 
   <li><object type="text/sitemap">
-    <param name="Name" value="19. Note tied to four 16th notes">
+    <param name="Name" value="18. Note tied to four 16th notes">
     <param name="Local" value="v3_L2_MusicReading_224.htm">
     </object>
   </li>
