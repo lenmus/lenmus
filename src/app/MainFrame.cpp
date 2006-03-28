@@ -1127,7 +1127,7 @@ void lmMainFrame::OnOpenHelp(wxCommandEvent& event)
         wxASSERT(m_pHelp);
 
         // open it
-        m_pHelp->Display(_T("Test HELPFILE"));
+        m_pHelp->Display(_T("index.htm"));
         m_fHelpOpened = true;
     }
 

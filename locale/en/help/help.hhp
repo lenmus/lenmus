@@ -1,6 +1,6 @@
 [OPTIONS]
 Contents file=help.hhc
 Index file=help.hhk
-Title=Help for LenMus Phonascus
-Default topic=page1.htm
+Title=User's guide
+Default topic=index.htm
 
