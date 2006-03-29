@@ -958,8 +958,11 @@ lmMainFrame::~lmMainFrame()
 void lmMainFrame::InitializeHelp()
 {
     // create the help window 
-    m_pHelp = new lmHelpController(wxHF_DEFAULT_STYLE | wxHF_FLAT_TOOLBAR );
-
+    //m_pHelp = new lmHelpController(wxHF_DEFAULT_STYLE | wxHF_FLAT_TOOLBAR );
+    // previous sentence commented out and replaced by next one to remove
+    // index and search panels.
+    m_pHelp = new lmHelpController(wxHF_TOOLBAR | wxHF_FLAT_TOOLBAR | wxHF_CONTENTS |
+                        wxHF_BOOKMARKS | wxHF_PRINT);
     // set the config object
     m_pHelp->UseConfig(wxConfig::Get(), _T("HelpController"));        
 

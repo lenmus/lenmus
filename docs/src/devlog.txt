@@ -89,7 +89,7 @@ Bugs to solve:
       in Spanish, the new language .hcc and hhk files will not be properly loaded.
         
 
-?/???/2006 - Beta 3.0b0 release
+?/Apr/2006 - Beta 3.0b0 release
 --------------------------------------------------
 
     Features and changes:
@@ -121,10 +121,9 @@ Bugs to solve:
             - write fixed copyright/credits text
             - prepare new image with this text
             
-        - For each exercise prepare an html page to explain it in the website. It could be
-            also part of the help book
-            
         - Prepare program help
+            + prepare help in English
+            - translate it into Spanish
 
 
 ??/???/2006 - Stable 3.0 release (beta 3.0b0 + 1 month)
@@ -164,6 +163,9 @@ Upcomig releases features
  - Bug: hook beam after rest in group. Drawn wrong
  - Error window with LDP parsing errors in Open command
 
+- For each exercise prepare an html page to explain it in the website. It could be
+    also part of the help book
+            
 
 
 ******************************************************************************************

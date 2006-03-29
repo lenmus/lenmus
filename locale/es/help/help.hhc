@@ -4,59 +4,59 @@
 </HEAD><BODY>
 <UL>
     <li> <object type="text/sitemap">
-        <param name="Name" value="LenMus Phonascus Basics">
+        <param name="Name" value="Lo más básico">
         <param name="Local" value="basics.htm">
         </object>
     <li> <object type="text/sitemap">
-        <param name="Name" value="User Interface Overview">
+        <param name="Name" value="La interfaz de usuario">
         <param name="Local" value="ui.htm">
         </object>
         <ul>
         <li> <object type="text/sitemap">
-            <param name="Name" value="Menu and Toolbar">
+            <param name="Name" value="El menú y la barra de herramientas">
             <param name="Local" value="menu.htm">
             </object>
             <ul>
             <li> <object type="text/sitemap">
-                <param name="Name" value="File menu">
+                <param name="Name" value="El menú 'Archivo'">
                 <param name="Local" value="menu_file.htm">
                 </object>
             <li> <object type="text/sitemap">
-                <param name="Name" value="View menu">
+                <param name="Name" value="El menú 'Ver'">
                 <param name="Local" value="menu_view.htm">
                 </object>
             <li> <object type="text/sitemap">
-                <param name="Name" value="Sound menu">
+                <param name="Name" value="El menú 'Sonido'">
                 <param name="Local" value="menu_sound.htm">
                 </object>
             <li> <object type="text/sitemap">
-                <param name="Name" value="Options menu">
+                <param name="Name" value="El menú 'Opciones'">
                 <param name="Local" value="menu_options.htm">
                 </object>
             <li> <object type="text/sitemap">
-                <param name="Name" value="Window menu">
+                <param name="Name" value="El menú 'Ventanas'">
                 <param name="Local" value="menu_window.htm">
                 </object>
             <li> <object type="text/sitemap">
-                <param name="Name" value="Help menu">
+                <param name="Name" value="El menú 'Ayuda'">
                 <param name="Local" value="menu_help.htm">
                 </object>
             </ul>
         <li> <object type="text/sitemap">
-            <param name="Name" value="Preferences and Sound Settings">
+            <param name="Name" value="Preferencias y configuración del sonido">
             <param name="Local" value="settings.htm">
             </object>
         <li> <object type="text/sitemap">
-            <param name="Name" value="eBooks Manager">
+            <param name="Name" value="El gestor de libros (eBooks)">
             <param name="Local" value="manager.htm">
             </object>
             </ul>
     <li> <object type="text/sitemap">
-        <param name="Name" value="Known problems">
+        <param name="Name" value="Problemas conocidos">
         <param name="Local" value="known_problems.htm">
         </object>
     <li> <object type="text/sitemap">
-        <param name="Name" value="License">
+        <param name="Name" value="Licencia">
         <param name="Local" value="license.htm">
         </object>
 </UL>
