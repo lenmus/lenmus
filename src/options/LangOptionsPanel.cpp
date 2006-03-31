@@ -93,6 +93,13 @@ void lmLangOptionsPanel::Apply()
     wxString sLang = m_cLangCodes[m_pChoice->GetSelection()];
     g_pPrefs->Write(_T("/Locale/Language"), sLang);
     if (sLang != m_sCurLang) {
+        // When changing language a flag must be stored so that at next run the program must
+        // clean the temp folder. Otherwise, as books have the same names in English and
+        // in Spanish, the new language .hcc and hhk files will not be properly loaded.
+        bool f = true;
+        g_pPrefs->Write(_T("/Locale/LanguageChanged"), f);
+
+        //inform user
         wxMessageBox(wxString::Format(
             _("Language '%s' will be used the next time you run LenMus."),
             sLangName )); 

@@ -166,22 +166,22 @@ lmOptionsDlg::lmOptionsDlg( wxWindow* parent, wxWindowID id, const wxString& cap
 
     // Root node
     CreateImageList();
-    wxTreeItemId rootId = m_pTreeCtrl->AddRoot(_T("Preferences"),
+    wxTreeItemId rootId = m_pTreeCtrl->AddRoot(_("Preferences"),
                     eIconRoot, eIconRoot,
                     new lmTreeItemData(-1) );
 
     // Language options
-    wxTreeItemId languageId = m_pTreeCtrl->AppendItem(rootId, _T("Language"),
+    wxTreeItemId languageId = m_pTreeCtrl->AppendItem(rootId, _("Language"),
                     eIconLanguages, eIconLanguages,
                     new lmTreeItemData((long)eOptLanguage) );
 
     // Colors options
-    //wxTreeItemId colorsId = m_pTreeCtrl->AppendItem(rootId, _T("Colors"),
+    //wxTreeItemId colorsId = m_pTreeCtrl->AppendItem(rootId, _("Colors"),
     //                eIconColors, eIconColors,
     //                new lmTreeItemData((long)eOptColors) );
 
     // Toolbars options
-    wxTreeItemId ToolbarsId = m_pTreeCtrl->AppendItem(rootId, _T("Toolbars"),
+    wxTreeItemId ToolbarsId = m_pTreeCtrl->AppendItem(rootId, _("Toolbars"),
                     eIconToolbars, eIconToolbars,
                     new lmTreeItemData((long)eOptToolbars) );
 

@@ -84,12 +84,12 @@ Planning: comming releases
 ******************************************************************************************
 
 Bugs to solve:
-    - When changing language a flag must be stored so that at next run the program must
-      clean the temp folder. Otherwise, as books have the same names in English and
-      in Spanish, the new language .hcc and hhk files will not be properly loaded.
+    - When changing interval settings in earIntervalCtrol it is necessary to rebuild
+      the control as buttons number and names are changed. Also crashes will
+      happen as buttons displayed does not correspond to constrains.
         
 
-?/Apr/2006 - Beta 3.0b0 release
+2/Apr/2006 - Beta 3.0b0 release
 --------------------------------------------------
 
     Features and changes:
@@ -100,9 +100,9 @@ Bugs to solve:
         - Installer for Windows
         
     Tasks:
-        - Translation of program into Spanish
+        + Translation of program into Spanish
             + prepare .po file
-            - translate .po
+            + translate .po
             + translate/review L2_MusicReading eBook
             + translate/review intro eBook
             + translate/review SingleExercises eBook
@@ -121,12 +121,12 @@ Bugs to solve:
             - write fixed copyright/credits text
             - prepare new image with this text
             
-        - Prepare program help
+        + Prepare program help
             + prepare help in English
-            - translate it into Spanish
+            + translate it into Spanish
 
 
-??/???/2006 - Stable 3.0 release (beta 3.0b0 + 1 month)
+?/???/2006 - Stable 3.0 release (beta 3.0b0 + 1 month)
 ---------------------------------------------------
     Other:
     - Replacement of version 2.0 that will be dropped from web site.

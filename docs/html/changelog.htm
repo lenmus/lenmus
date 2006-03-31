@@ -26,6 +26,30 @@
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">31-mar-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>Help documentation (Spanish) reviewed and finished.</li>
+      <li>Modified MainFrame.cpp to change help controller to restore 
+        search pannel.</li>
+      <li>Bug fixed: When changing language, the new language .hcc and hhk files are not
+        loaded properly. Solution: a flag is stored (at lmLangOptionsPanel::Apply) so that
+        at next run the program knows about the language change and can 
+        clean the temp folder. This flag is checked at lmPaths::LoadUserPreferences() and,
+        if set, removes all files from temp folder.</li>
+      <li>Translation (Spanish) of internationalization file finished. Some small changes
+        in some strings to fix translation problems.</li>
+      <li>Bug bypassed in lmEarIntervalCtrol: conflict with event IDs.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">30-mar-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>Continue writing help documentation (Spanish).</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">29-mar-06</td>
     <td class="ListaPar">
     <ul>

@@ -1,35 +1,40 @@
 <html>
 <head>
-<title>LenMus: Known issues and problems</title>
+<title>LenMus: Problemas conocidos</title>
 </head>
 <body>
 
-<h1><a name="top">Known issues and problems</a></h1>
+<h1><a name="top">Problemas conocidos</a></h1>
 
 <table border="0">
 
 <tr valign="top">
-    <td colspan="2"><b>Two 'print' buttons in toolbars</b></td></tr>
+    <td colspan="2"><b>Hay dos botones 'imprimir' en las barras de herramientas</b></td></tr>
 <tr valign="top">
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>
-        This is a technical problem to be solved in a future version. It is caused by
-        the usage a pre-packaged module (wxHtmlHelpController) to accelerate the release
-        of version 3.0. I have plans to re-write the functionality provided
-        by this module and, then, unify both print buttons.
+        Ello se debe a un problema de naturaleza técnica, como consecuencia de la
+        utilización de un componente externo (wxHtmlHelpController) para acelerar
+        el lanzamiento de la versión 3.0. Tengo planificado reescribir las
+        funciones que realiza este componente para, entre otras cosas, resolver
+        este problema.
         <br /><br />
     </td></tr>
 
 <tr valign="top">
-    <td colspan="2"><b>Scores and exercises not printed when printing a lesson</b></td></tr>
+    <td colspan="2"><b>Cuando se imprime una lección no aparecen las partituras ni los
+        controles de los ejercicios.</b></td></tr>
 <tr valign="top">
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td>
-        This is a technical problem reported to wxWidgets maintainers. If you are
-        curious about the nature of the problem, its cause was traced back to
-        wxHtmlHelpController. wxHtmlWidgetCell is not prepared for printing and ignores
-        the DC, rendering always on the parent window. Then lesson content is printed
-        correctly but not LenMus embedded objects (i.e., scores) that are ignored.
+        Se debe a un problema técnico de la herramienta utilizada para desarrollar
+        el programa LenMus (wxWidgets). El problema está ya reportado a los
+        desarrolladores de dicha herramienta. Si tienes curiosidad por las cuestiones
+        técnicas, el motivo del problema reside en que el objeto wxHtmlWidgetCell del
+        paquete wxHtmlHelpController no está
+        preparado para imprimir e ignora el DC (Device Context) que recibe, limitándose
+        a dibujando el contenido en la ventana padre; en consecuencia, en vez de
+        dibujar la partitura en la impresora la vuelve a pintar en la pantalla.
         <br /><br />
     </td></tr>
 

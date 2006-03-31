@@ -75,7 +75,7 @@ const int NUM_LINKS = 3;                //links for actions
 
 //IDs for controls
 enum {
-    ID_LINK_SEE_SOURCE = 1000,
+    ID_LINK_SEE_SOURCE = 100,
     ID_LINK_DUMP,
     ID_LINK_MIDI_EVENTS,
     ID_BUTTON,
@@ -84,7 +84,7 @@ enum {
     ID_LINK_RESET_COUNTERS,
     ID_LINK_PLAY,
     ID_LINK_SOLUTION,
-    ID_LINK_SETTINGS
+    ID_LINK_SETTINGS,
 };
 
 
@@ -142,7 +142,6 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
     int i;
     for (i=0; i < lmEAR_INVAL_NUM_BUTTONS; i++) { m_pAnswerButton[i] = (wxButton*)NULL; }
     m_nRespIndex = 0;
-    EnableButtons(false);
     m_fProblemCreated = false;
     m_fPlayEnabled = false;
     m_pScore = (lmScore*)NULL;
@@ -153,7 +152,8 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
     int j = 0;
     for (i=0; i < lmEAR_INVAL_NUM_BUTTONS; i++) {
         if (m_pConstrains->IsIntervalAllowed(i)) {
-            m_nRealIntval[j++] = i;
+            m_nRealIntval[j] = i;
+            j++;
         }
     }
     m_nValidIntervals = j;
@@ -206,10 +206,6 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
     //iCtrol = CrearObjetoMarcador
     //m_oTeoIntervalos.SetContadores lblTexto(iCtrol), lblTexto(iCtrol + 1), lblTexto(iCtrol + 2)
     
-    // settings link
-    lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
-    pCountersSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxALL, 10) );
-
     // "new problem" button
     pCountersSizer->Add(
         new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") ),
@@ -225,6 +221,10 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
         new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") ),
         wxSizerFlags(0).Left().Border(wxALL, 10) );
     
+    // settings link
+    lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
+    pCountersSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxALL, 10) );
+
     // "reset counters" button
     //pCountersSizer->Add(
     //    new lmUrlAuxCtrol(this, ID_LINK_RESET_COUNTERS, _("Reset counters") ),

@@ -428,8 +428,8 @@ void lmMainFrame::CreateMyToolBar()
     m_pToolbar->SetToolBitmapSize(nSize);
 
     //Load the tools
-    m_pToolbar->AddTool(MENU_File_New, _T("New"), wxArtProvider::GetIcon(_T("tool_new"), wxART_TOOLBAR, nSize), _("New score"));
-    m_pToolbar->AddTool(MENU_File_Open, _T("Open"), wxArtProvider::GetIcon(_T("tool_open"), wxART_TOOLBAR, nSize), _("Open score"));
+    m_pToolbar->AddTool(MENU_File_New, _("New"), wxArtProvider::GetIcon(_T("tool_new"), wxART_TOOLBAR, nSize), _("New score"));
+    m_pToolbar->AddTool(MENU_File_Open, _("Open"), wxArtProvider::GetIcon(_T("tool_open"), wxART_TOOLBAR, nSize), _("Open score"));
 
 //    //! @todo How to do it in these platforms?
 //    // the generic toolbar doesn't really support this
@@ -960,9 +960,9 @@ void lmMainFrame::InitializeHelp()
     // create the help window 
     //m_pHelp = new lmHelpController(wxHF_DEFAULT_STYLE | wxHF_FLAT_TOOLBAR );
     // previous sentence commented out and replaced by next one to remove
-    // index and search panels.
+    // index panel.
     m_pHelp = new lmHelpController(wxHF_TOOLBAR | wxHF_FLAT_TOOLBAR | wxHF_CONTENTS |
-                        wxHF_BOOKMARKS | wxHF_PRINT);
+                        wxHF_SEARCH | wxHF_BOOKMARKS | wxHF_PRINT);
     // set the config object
     m_pHelp->UseConfig(wxConfig::Get(), _T("HelpController"));        
 

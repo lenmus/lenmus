@@ -135,6 +135,26 @@ void lmPaths::LoadUserPreferences()
     if (!::wxDirExists(m_sTemp)) {
         ::wxMkDir(m_sTemp);
     }
+    else {
+        // When changing language a flag was stored so that at next run the program must
+        // clean the temp folder. Otherwise, as books have the same names in English and
+        // in Spanish, the new language .hcc and hhk files will not be properly loaded.
+        // Here I test this flag and if true, remove all files in temp folder
+        bool fClearTemp;
+        g_pPrefs->Read(_T("/Locale/LanguageChanged"), &fClearTemp, false );
+        if (fClearTemp) {
+            wxString sFile = wxFindFirstFile(m_sTemp);
+            while ( !sFile.empty() ) {
+                if (!::wxRemoveFile(sFile)) {
+                    wxLogMessage(_T("[lmPaths::LoadUserPreferences] Error deleting %s"), sFile );
+                }
+                sFile = wxFindNextFile();
+            }
+            //reset flag
+            fClearTemp = false;
+            g_pPrefs->Write(_T("/Locale/LanguageChanged"), fClearTemp);
+        }
+    }
 
     SetLocalePathNames(m_sLangCode);
 }

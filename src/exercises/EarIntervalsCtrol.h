@@ -95,7 +95,7 @@ private:
     lmPitch         m_ntPitch[2];           //the pitch of the two notes
     bool            m_fPlayEnabled;         //Play enabled
 
-    //buttons for the answers: 6 rows, 8 buttons per row
+    //buttons for the answers: 5 rows, 5 buttons per row
     wxButton*       m_pAnswerButton[lmEAR_INVAL_NUM_BUTTONS];
     int             m_nRespIndex;           //index to the button with the right answer
     bool            m_fButtonsEnabled;      //buttons enabled
