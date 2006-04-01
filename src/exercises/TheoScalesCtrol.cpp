@@ -78,7 +78,7 @@ const int NUM_BUTTONS = 48;                //buttons for answers
 const int NUM_LINKS = 3;                //links for actions
 
 //IDs for controls
-const int  ID_BUTTON        = 100;
+const int  ID_BUTTON        = 3000;
 const int  ID_LINK            = ID_BUTTON + NUM_BUTTONS;
 const int  ID_LINK_NEW_PROBLEM        = ID_LINK+1;
 const int  ID_LINK_RESET_COUNTERS    = ID_LINK+2;

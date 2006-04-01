@@ -75,7 +75,7 @@ const int NUM_LINKS = 3;                //links for actions
 
 //IDs for controls
 enum {
-    ID_LINK_SEE_SOURCE = 100,
+    ID_LINK_SEE_SOURCE = 3000,
     ID_LINK_DUMP,
     ID_LINK_MIDI_EVENTS,
     ID_BUTTON,
@@ -105,34 +105,6 @@ END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmEarIntervalsCtrol, wxWindow)
 
-static wxString sBtLabel[lmEAR_INVAL_NUM_BUTTONS] = {
-        _("Unison"),               // _("Unisono"),
-        _("minor 2nd"),            // _("2ª menor"),
-        _("major 2nd"),            // _("2ª mayor"),
-        _("minor 3rd"),            // _("3ª menor"),
-        _("major 3rd"),            // _("3ª mayor"),
-        _("4th perfect"),          // _("4ª justa"),
-        _("aug.4th/dim.5th"),      // _("4ª aum/ 5ª dism"),
-        _("perfect 5th"),          // _("5ª justa"),
-        _("minor 6th"),            // _("6ª menor"),
-        _("major 6th"),            // _("6ª mayor"),
-        _("minor 7th"),            // _("7ª menor"),
-        _("major 7th"),            // _("7ª mayor"),
-        _("perfect 8th"),          // _("8ª justa"),
-        _("minor 9th"),            // _("9ª menor"),
-        _("major 9th"),            // _("9ª mayor"),
-        _("minor 10th"),           // _("10ª menor"),
-        _("major 10th"),           // _("10ª mayor"),
-        _("perfect 11th"),         // _("11ª justa"),
-        _("aug.11th / dim.12th"),  // _("11ª aum/ 12ª dis"),
-        _("perfect 12th"),         // _("12ª justa"),
-        _("minor 13th"),           // _("13ª menor"),
-        _("major 13th"),           // _("13ª mayor"),
-        _("minor 14th"),           // _("14ª menor"),
-        _("major 14th"),           // _("14ª mayor"),
-        _("two octaves")           // _("Dos octavas")
-};
-
 lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id, 
                            lmEarIntervalsConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
@@ -147,6 +119,36 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
     m_pScore = (lmScore*)NULL;
     m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
     m_pConstrains = pConstrains;
+
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    wxString sBtLabel[lmEAR_INVAL_NUM_BUTTONS];
+    sBtLabel[0] = _("Unison");
+    sBtLabel[1] = _("minor 2nd");
+    sBtLabel[2] = _("major 2nd");
+    sBtLabel[3] = _("minor 3rd");
+    sBtLabel[4] = _("major 3rd");
+    sBtLabel[5] = _("4th perfect");
+    sBtLabel[6] = _("aug.4th/dim.5th");
+    sBtLabel[7] = _("perfect 5th");
+    sBtLabel[8] = _("minor 6th");
+    sBtLabel[9] = _("major 6th");
+    sBtLabel[10] = _("minor 7th");
+    sBtLabel[11] = _("major 7th");
+    sBtLabel[12] = _("perfect 8th");
+    sBtLabel[13] = _("minor 9th");
+    sBtLabel[14] = _("major 9th");
+    sBtLabel[15] = _("minor 10th");
+    sBtLabel[16] = _("major 10th");
+    sBtLabel[17] = _("perfect 11th");
+    sBtLabel[18] = _("aug.11th / dim.12th");
+    sBtLabel[19] = _("perfect 12th");
+    sBtLabel[20] = _("minor 13th");
+    sBtLabel[21] = _("major 13th");
+    sBtLabel[22] = _("minor 14th");
+    sBtLabel[23] = _("major 14th");
+    sBtLabel[24] = _("two octaves");
+
 
     // set interval associated to each button
     int j = 0;

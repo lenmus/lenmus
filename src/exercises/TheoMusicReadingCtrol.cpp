@@ -70,7 +70,7 @@ extern lmMainFrame *GetMainFrame();
 
 //IDs for controls
 enum {
-    ID_LINK_NEW_PROBLEM = 100,
+    ID_LINK_NEW_PROBLEM = 3000,
     ID_LINK_PLAY,
     ID_LINK_SEE_SOURCE,
     ID_LINK_DUMP,

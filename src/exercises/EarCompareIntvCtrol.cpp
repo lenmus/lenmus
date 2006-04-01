@@ -74,7 +74,7 @@ const int NUM_LINKS = 3;                //links for actions
 
 //IDs for controls
 enum {
-    ID_LINK_SEE_SOURCE = 1000,
+    ID_LINK_SEE_SOURCE = 3000,
     ID_LINK_DUMP,
     ID_LINK_MIDI_EVENTS,
     ID_BUTTON,
@@ -105,12 +105,6 @@ END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmEarCompareIntvCtrol, wxWindow)
 
-static wxString sBtLabel[3] = {
-        _("First one greater"),
-        _("Second one greater"),
-        _("Both are equal")
-};
-
 lmEarCompareIntvCtrol::lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id, 
                            lmEarIntervalsConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
@@ -126,6 +120,13 @@ lmEarCompareIntvCtrol::lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id,
     m_pScore[1] = (lmScore*)NULL;
     m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
     m_pConstrains = pConstrains;
+
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    wxString sBtLabel[3];
+    sBtLabel[0] = _("First one greater");
+    sBtLabel[1] = _("Second one greater");
+    sBtLabel[2] = _("Both are equal");
 
     //the window is divided into two regions: top, for score on left and counters and links
     //on the right, and bottom region, for answer buttons 

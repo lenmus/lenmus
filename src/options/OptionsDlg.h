@@ -42,7 +42,7 @@ class wxTreeCtrl;
 
 // control identifiers
 enum {
-    ID_DIALOG = 10000,
+    ID_DIALOG = 2100,
     ID_SPLITTERWINDOW,
     ID_TREECTRL,
     ID_PANEL,

@@ -75,7 +75,7 @@ const int NUM_LINKS = 3;                //links for actions
 
 //IDs for controls
 enum {
-    ID_LINK_SEE_SOURCE = 1000,
+    ID_LINK_SEE_SOURCE = 3000,
     ID_LINK_DUMP,
     ID_LINK_MIDI_EVENTS,
     ID_BUTTON,
@@ -104,27 +104,6 @@ END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmTheoIntervalsCtrol, wxWindow)
 
-static wxString sButtonLabel[NUM_BUTTONS] = {
-    _("Unison"), _("dd2"),  _("dd3"),   _("dd4"),   _("dd5"),   _("dd5"),   _("dd7"),   _("dd8"),
-    _T(""),     _("dim2"),  _("dim3"),  _("dim4"),  _("dim5"),  _("dim6"),  _("dim7"),  _("dim8"),
-    _T(""),     _("m2"),    _("m3"),    _T(""),     _T(""),     _("m6"),    _("m7"),    _T(""),
-    _T(""),     _("M2"),    _("M3"),    _("P4"),    _("P5"),    _("M6"),    _("M7"),    _("P8"),
-    _T(""),     _("aug2"),  _("aug3"),  _("aug4"),  _("aug5"),  _("aug6"),  _("aug7"),  _("aug8"),
-    _T(""),     _("da2"),   _("da3"),   _("da4"),   _("da5"),   _("da6"),   _("da7"),   _("da7")
-};
-
-static wxString sColumnLabel[7] = {
-    _("2nd"), _("3rd"), _("4th"), _("5th"), _("6th"), _("7th"), _("8th")
-};
-
-static wxString sRowLabel[6] = {
-    _("dd - double diminished"),
-    _("dim - diminished"),
-    _("m - minor"),
-    _("M, P - Major, Perfect"),
-    _("aug - augmented"),
-    _("da - double augmented")
-};
 
 lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id, 
                            lmTheoIntervalsConstrains* pConstrains,
@@ -140,6 +119,76 @@ lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
     m_pScore = (lmScore*)NULL;
     m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
     m_pConstrains = pConstrains;
+
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    wxString sRowLabel[6];
+    sRowLabel[0] = _("dd - double diminished");
+    sRowLabel[1] = _("dim - diminished");
+    sRowLabel[2] = _("m - minor");
+    sRowLabel[3] = _("M, P - Major, Perfect");
+    sRowLabel[4] = _("aug - augmented");
+    sRowLabel[5] = _("da - double augmented");
+
+    wxString sColumnLabel[7];
+    sColumnLabel[0] = _("2nd");
+    sColumnLabel[1] = _("3rd");
+    sColumnLabel[2] = _("4th");
+    sColumnLabel[3] = _("5th");
+    sColumnLabel[4] = _("6th");
+    sColumnLabel[5] = _("7th");
+    sColumnLabel[6] = _("8th");
+
+    wxString sButtonLabel[NUM_BUTTONS];
+    sButtonLabel[0] = _("Unison");
+    sButtonLabel[1] = _("dd2");
+    sButtonLabel[2] = _("dd3");
+    sButtonLabel[3] = _("dd4");
+    sButtonLabel[4] = _("dd5");
+    sButtonLabel[5] = _("dd5");
+    sButtonLabel[6] = _("dd7");
+    sButtonLabel[7] = _("dd8");
+    sButtonLabel[8] = _T("");
+    sButtonLabel[9] = _("dim2");
+    sButtonLabel[10] = _("dim3");
+    sButtonLabel[11] = _("dim4");
+    sButtonLabel[12] = _("dim5");
+    sButtonLabel[13] = _("dim6");
+    sButtonLabel[14] = _("dim7");
+    sButtonLabel[15] = _("dim8");
+    sButtonLabel[16] = _T("");
+    sButtonLabel[17] = _("m2");
+    sButtonLabel[18] = _("m3");
+    sButtonLabel[19] = _T("");
+    sButtonLabel[20] = _T("");
+    sButtonLabel[21] = _("m6");
+    sButtonLabel[22] = _("m7");
+    sButtonLabel[23] = _T("");
+    sButtonLabel[24] = _T("");
+    sButtonLabel[25] = _("M2");
+    sButtonLabel[26] = _("M3");
+    sButtonLabel[27] = _("P4");
+    sButtonLabel[28] = _("P5");
+    sButtonLabel[29] = _("M6");
+    sButtonLabel[30] = _("M7");
+    sButtonLabel[31] = _("P8");
+    sButtonLabel[32] = _T("");
+    sButtonLabel[33] = _("aug2");
+    sButtonLabel[34] = _("aug3");
+    sButtonLabel[35] = _("aug4");
+    sButtonLabel[36] = _("aug5");
+    sButtonLabel[37] = _("aug6");
+    sButtonLabel[38] = _("aug7");
+    sButtonLabel[39] = _("aug8");
+    sButtonLabel[40] = _T("");
+    sButtonLabel[41] = _("da2");
+    sButtonLabel[42] = _("da3");
+    sButtonLabel[43] = _("da4");
+    sButtonLabel[44] = _("da5");
+    sButtonLabel[45] = _("da6");
+    sButtonLabel[46] = _("da7");
+    sButtonLabel[47] = _("da7");
+
 
     //the window is divided into two regions: top, for score on left and counters and links
     //on the right, and bottom region, for answer buttons 

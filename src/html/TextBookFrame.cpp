@@ -248,8 +248,7 @@ void lmTextBookFrame::UpdateMergedIndex()
 // Command IDs :
 enum
 {
-    //wxID_HTML_HELPFRAME = wxID_HIGHEST + 1,
-    wxID_HTML_PANEL = wxID_HIGHEST + 2,
+    wxID_HTML_PANEL = 2000,
     wxID_HTML_BACK,
     wxID_HTML_FORWARD,
     wxID_HTML_UPNODE,

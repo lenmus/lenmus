@@ -61,7 +61,7 @@ const int NUM_LINKS = 3;                //links for actions
 
 //IDs for controls
 enum {
-    ID_LINK_SEE_SOURCE = 1000,
+    ID_LINK_SEE_SOURCE = 3000,
     ID_LINK_DUMP,
     ID_BUTTON,
     ID_LINK = ID_BUTTON + lmTHEO_KEYSIGN_NUM_BUTTONS,

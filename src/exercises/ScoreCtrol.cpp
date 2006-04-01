@@ -67,7 +67,7 @@ const int BUTTONS_DISTANCE    = 5;        //pixels
 
 //IDs for controls
 enum {
-    ID_LINK_SEE_SOURCE = 1000,
+    ID_LINK_SEE_SOURCE = 3500,
     ID_LINK_DUMP,
     ID_LINK_MIDI_EVENTS,
     ID_LINK_PLAY,
