@@ -34,11 +34,11 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "3.0.a3"
+  !define APP_VERSION "3.0.b0"
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v3.0 alpha 3"     ;product name displayed by the installer
+  Name "lenmus v3.0 beta 0"     ;product name displayed by the installer
 
 
 ;support for Modern UI
@@ -61,7 +61,7 @@
   ;show a warning when the user cancels the install
     !define MUI_ABORTWARNING
   ;icons to associate to the resulting installer and uninstaller
-    !define MUI_ICON "lenmus16c.ico"
+    !define MUI_ICON "win-install.ico"
     !define MUI_UNICON "win-uninstall.ico"
 
 !define MUI_HEADERIMAGE
@@ -291,6 +291,8 @@ Section  "-" "MainSection"
      SetOutPath "$INSTDIR\bin"
      File "..\..\z_bin\lenmus.exe"
      File "..\..\fonts\LeMusNot.ttf"
+     File "msvcr71.dll"
+     ;File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
 
      SetOutPath "$INSTDIR\locale\en"
      File "..\..\locale\en\*.*"
@@ -360,7 +362,7 @@ Section $(TITLE_CreateIcon) CreateIcon
 
   CreateIcon:
      ClearErrors
-     CreateShortCut "$DESKTOP\lenmus.lnk" "$INSTDIR\bin\lenmus.exe"
+     CreateShortCut "$DESKTOP\lenmus ${APP_VERSION}.lnk" "$INSTDIR\bin\lenmus.exe"
      IfErrors +1 EndCreateIcon
         StrCmp $STEP "ErrorCreatingIcon" "Error_CreateIcon"
         StrCpy "$STEP" "ErrorCreatingIcon" 
@@ -486,7 +488,7 @@ Section un.Install
   RMDir "$LENMUS_DIR"
 
   ;delete ico on desktop
-  Delete "$DESKTOP\lenmus.lnk"
+  Delete "$DESKTOP\lenmus ${APP_VERSION}.lnk"
   
   ;delete Start Menu folder entries
   !insertmacro MUI_STARTMENU_GETFOLDER Application $MUI_TEMP
