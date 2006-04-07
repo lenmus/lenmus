@@ -3,19 +3,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -70,24 +70,24 @@ lmFormatter3::~lmFormatter3()
 //    Set m_pScore = oScore
 //    m_nIdLastCanvas = 0
 //    m_nLastCanvasWidth = 0
-//    
+//
 //}
 //
-void lmFormatter3::RenderScore(lmPaper* pPaper) 
+void lmFormatter3::RenderScore(lmPaper* pPaper)
 {
 //            Optional fMetodoJustificado As Boolean = true, _
 //            Optional nTipoEspaciado As ESpacingMethod = esm_PropConstantShortNote, _
 //            Optional fJustificada As Boolean = true, _
 //            Optional fTruncarUltimoSistema As Boolean = false, _
 //            Optional rFactorAjuste As Single = 1#)
-            
+
     bool fMetodoJustificado = true;
     if (fMetodoJustificado) {
         RenderJustified(pPaper);
     } else {
         RenderMinimal(pPaper);
     }
-    
+
 }
 
 void lmFormatter3::RenderMinimal(lmPaper* pPaper)
@@ -111,7 +111,7 @@ void lmFormatter3::RenderMinimal(lmPaper* pPaper)
         //for each lmVStaff
         for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
             pVStaff = pInstr->GetVStaff(iVStaff);
-            
+
             // draw one lmVStaff
             yPos = pPaper->GetCursorY();
             pVStaff->Draw(pPaper);
@@ -129,7 +129,7 @@ void lmFormatter3::RenderMinimal(lmPaper* pPaper)
         //for each lmVStaff
         for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
             pVStaff = pInstr->GetVStaff(iVStaff);
-            
+
             // draw one lmVStaff
             yPos = pPaper->GetCursorY();
             pVStaff->Draw(pPaper);
@@ -140,7 +140,7 @@ void lmFormatter3::RenderMinimal(lmPaper* pPaper)
         }
     }
     // End DEBUG ------------------------------------------------------------------------
-    
+
     //    m_oCanvas.FinalizarDocumento
 
 }
@@ -160,25 +160,25 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
     // - rFactorAjuste: Factor de ajuste. Se aplica a todas las modalides salvo en
     //   esm_PropVariableNumBars
     */
-             
+
 //    m_rFactorAjuste = rFactorAjuste
 //    m_nSpacingMethod = nTipoEspaciado
 
     //---------------------------------------------------------------------------------------
     //Render a score justifying measures so that they fit exactly in the width of the staff
     //---------------------------------------------------------------------------------------
-//    Dim nC As Long, i As Long, 
+//    Dim nC As Long, i As Long,
     int nTotalMeasures;
     int iIni;
     //, nAvailable As Long
-//    
+//
 //    Dim j As Long
 //    Dim nDesplz As Long
     lmMicrons xStartOfMeasure;
-    
+
     //verify that there is a score
     if (!m_pScore || m_pScore->GetNumInstruments() == 0) return;
-    
+
     pPaper->RestartPageCursors();    //ensure that page cursors are at top-left corner
 
     //for each staff size, setup fonts of right point size for that staff size
@@ -197,31 +197,35 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
     m_pScore->WriteTitles(DO_MEASURE, pPaper);
     pPaper->RestartPageCursors();                                //restore page cursors are at top-left corner
      pPaper->IncrementCursorY(m_pScore->TopSystemDistance());    //advance to skip headers
-   
+
     int nSystem;        //number of system in process
     int nAbsMeasure;    //number of bar in process (absolute, counted from the start of the score)
     int nRelMeasure;        //number of bar in process (relative, counted from the start of current system)
-    
+
     /*
     The algorithm has two independent loops:
-     1. In the first one the number of measures that fits in the system is calculated, as 
-        well as their size and the position of all their StaffObjs.
-        The number of measures per system is stored in .... and the positioning information is stored
-        in each lmStaffObj.
-     2. In the second loop the StaffObjs are just rendered using the information compiled in 
-        first loop.
+
+        1. Phase DO_MEASURE
+            In the first one the number of measures that fits in the system is calculated, as
+            well as their size and the position of all their StaffObjs.
+            The number of measures per system is stored in .... and the positioning information is stored
+            in each lmStaffObj.
+
+        2. Phase DO_DRAW
+            In the second loop the StaffObjs are just rendered using the information compiled
+            in first loop.
     */
-    
+
     //! @todo Optimization for repaints
 //    if (Not (m_nIdLastCanvas = m_oCanvas.ID And m_nLastCanvasWidth = m_oCanvas.Ancho)) {
 //        //Optimization for re-paints: As the division in systems and the positioning information do
 //        //not change if canvas is not changed, the code to perform the division in systems and
 //        //the positioning is not executed if the canvas is the same than in a the previous invocation
 //        //to this method and its width has not changed.
-//        
+//
 //        m_nIdLastCanvas = m_oCanvas.ID
 //        m_nLastCanvasWidth = m_oCanvas.Ancho
-        
+
         //First loop: splitting the score into systems, and do all positioning and spacing.
         //Each loop cycle computes and justifies one system
         //----------------------------------------------------------------------------------
@@ -229,17 +233,17 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
         nAbsMeasure = 1;
         nTotalMeasures = ((m_pScore->GetFirstInstrument())->GetVStaff(1))->GetNumMeasures();    //num measures in the score
             //! @limit It is assumed that all staves have the same number of measures
-        nSystem = 1;            
-        
+        nSystem = 1;
+
         while (nAbsMeasure <= nTotalMeasures)
         {
             m_nMeasuresInSystem = 0;
-            
+
             //set up tables for storing StaffObjs positioning information
             for (int i=1; i <= MAX_MEASURES_PER_SYSTEM; i++) {
                 m_oTimepos[i].CleanTable();
             }
-            
+
             //-------------------------------------------------------------------------------
             //Step 1: Form and size a measure column.
             //-------------------------------------------------------------------------------
@@ -248,43 +252,43 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
             //The loop is exited when there is not enough space for including in this system
             //the measure column just computed
             //-------------------------------------------------------------------------------
-            
+
             //if this is not the first system advance vertically the inter-systems space
             if (nSystem != 1) {
                 pPaper->IncrementCursorY( m_pScore->SystemsDistance() );
             }
             m_ySystemPos[nSystem] = pPaper->GetCursorY();  //save the start of system position
-            
+
             nRelMeasure = 1;    // the first measure in current system
             while (nAbsMeasure <= nTotalMeasures)
             {
                 //reposition paper vertically at the start of the system. It has been advanced
                 //when sizing the previous measure column
                 pPaper->SetCursorY( m_ySystemPos[nSystem] );
-                
+
                 //size this measure column
-                m_nMeasureSize[nRelMeasure] = 
+                m_nMeasureSize[nRelMeasure] =
                     SizeMeasureColumn(nAbsMeasure, nRelMeasure, nSystem, pPaper);
 
 ///*LogDbg*/        wxLogMessage(wxString::Format(_T("[lmFormatter3::RenderJustified]: ")
-//                    _T("m_nMeasureSize[%d] = %d"), nRelMeasure, m_nMeasureSize[nRelMeasure] ));  
-                
+//                    _T("m_nMeasureSize[%d] = %d"), nRelMeasure, m_nMeasureSize[nRelMeasure] ));
+
                 //if this is the first measure column compute the space available in
                 //this system. The method is a little tricky. The total space available
-                //is (pPaper->GetPageRightMargin() - pPaper->GetCursorX()). But we have 
-                //to take into account the space that will be used by the prolog. As the 
+                //is (pPaper->GetPageRightMargin() - pPaper->GetCursorX()). But we have
+                //to take into account the space that will be used by the prolog. As the
                 //left position of the first measure column has taken all this into account,
                 //it is posible to use that value by just doing:
                 if (nRelMeasure == 1) {
-                    m_nFreeSpace = 
+                    m_nFreeSpace =
                         pPaper->GetRightMarginXPos() - m_oTimepos[nRelMeasure].GetStartOfBarPosition();
                }
 
 ///*LogDbg*/        wxLogMessage(wxString::Format(_T("[lmFormatter3::RenderJustified]: ")
 //                    _T("m_nFreeSpace = %d, PageRightMargin=%d, StartOfBar=%d"),
-//                    m_nFreeSpace, pPaper->GetPageRightMargin(), m_oTimepos[nRelMeasure].GetStartOfBarPosition() ));  
+//                    m_nFreeSpace, pPaper->GetPageRightMargin(), m_oTimepos[nRelMeasure].GetStartOfBarPosition() ));
 ///*LogDbg*/        wxLogMessage(m_oTimepos[nRelMeasure].DumpTimeposTable());
-    
+
                 //substract space ocupied by this measure from space available in the system
                 if (m_nFreeSpace < m_nMeasureSize[nRelMeasure]) {
                     //there is no enough space for this measure column.
@@ -296,14 +300,14 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
                     m_nFreeSpace -= m_nMeasureSize[nRelMeasure];
                     m_nMeasuresInSystem++;
                 }
-                
+
                 //advance to next bar
                 nAbsMeasure++;
                 nRelMeasure++;
-                
+
             }    //end of loop to process a measure column
-    
-            
+
+
             //-------------------------------------------------------------------------------
             //Step 2: Justify measures (distribute remainnig space across all measures)
             //-------------------------------------------------------------------------------
@@ -330,7 +334,7 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
                 */
                 return;
             }
-        
+
             //dbg --------------
             if (m_fDebugMode) {
                 wxLogMessage(_T("Before distributing free space"));
@@ -341,9 +345,9 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
                 }
             }
             //dbg ---------------
-    
+
             if (fJustified) RedistributeFreeSpace(m_nFreeSpace);
-            
+
             //dbg --------------
             if (m_fDebugMode) {
                 wxLogMessage(_T("After distributing free space"));
@@ -354,9 +358,9 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
                 }
             }
             //dbg --------------
-    
-            
-            
+
+
+
             //-------------------------------------------------------------------------------
             //Step 3: Re-position StaffObjs.
             //-------------------------------------------------------------------------------
@@ -364,7 +368,7 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
             //must have each measure column of this system.
             //Now proceed to change StaffObjs locations so that they are evenly distributed across
             //the the bar.
-            
+
             //dbg ------------------------------------------------------------------------------
             if (m_fDebugMode) {
                 wxLogMessage(_T("Before repositioning objects"));
@@ -372,13 +376,13 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
                 wxLogMessage( m_pScore->Dump() );
             }
             //dbg ------------------------------------------------------------------------------
-            
+
             xStartOfMeasure = m_oTimepos[1].GetStartOfBarPosition();
             for (int i=1; i <= m_nMeasuresInSystem; i++) {
                 //GrabarTrace "RedistributeSpace: nNewSize = " & m_nMeasureSize(i) & ", newStart = " & xStartOfMeasure    //dbg
                 xStartOfMeasure = m_oTimepos[i].RedistributeSpace(m_nMeasureSize[i], xStartOfMeasure);
             }
-                   
+
             //dbg ------------------------------------------------------------------------------
             if (m_fDebugMode) {
                 wxLogMessage(_T("After repositioning objects"));
@@ -386,27 +390,27 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
                 wxLogMessage( m_pScore->Dump() );
             }
             //dbg ------------------------------------------------------------------------------
-    
+
             //Store information about this system
             m_nNumMeasures[nSystem] = m_nMeasuresInSystem;
             m_nNumSystems = nSystem;
-            
+
             //increment loop information
             iIni += m_nMeasuresInSystem;
             nAbsMeasure = iIni;
             nSystem++;
             if (nSystem > MAX_SYSTEMS) {       //verify that program limits are observed
-                //! @todo log and display message properly 
+                //! @todo log and display message properly
                 wxLogMessage(
                     _("[lmFormatter3::RenderJustified]: Program limitation: Maximum number of systems per score has been exceeded.") );
                 wxASSERT(false);
             }
-            
+
         }    //while (nAbsMeasure <= nTotalMeasures)
-        
+
     //}     //Fin del bloque que no se ejecuta si es el mismo papel
-    
-    
+
+
     //Drawing loop --------------------------------------------------------------------------
     //Everything has been sized and positioned. Proceed with the drawing
     //---------------------------------------------------------------------------------------
@@ -414,14 +418,14 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
     // write score titles
     m_pScore->WriteTitles(DO_DRAW, pPaper);
     pPaper->RestartPageCursors();                //restore page cursors are at top-left corner
-   
+
     int nMeasuresInSystem;           //number of measure columns that fit in current system
     iIni = 1;
     for (nSystem = 1; nSystem <= m_nNumSystems; nSystem++)
     {
         //Each loop pass corresponds to a new system. Get its positioning information
         nMeasuresInSystem = m_nNumMeasures[nSystem];
-        
+
         //At this point paper position is not in the right place as it has been advanced
         //during the measurement operations.
         //This is not a problem for StaffObjs as they have stored its positioning information.
@@ -430,7 +434,7 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
         //system position in m_ySystemPos[] and must restore it here.
         //! @todo include positioning information in the lmStaff objects
         pPaper->SetCursorY( m_ySystemPos[nSystem] );
-        
+
         wxInt32 iVStaff;
         lmInstrument *pInstr;
         lmVStaff *pVStaff;
@@ -455,16 +459,16 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
                     //! @todo Length of staff lines
                     pVStaff->DrawStaffLines(DO_DRAW, pPaper, 0, 50);
 //                }
-        
+
                 //draw the prolog, except if this is the first system
-                if (nSystem != 1) 
+                if (nSystem != 1)
                     pVStaff->DrawProlog(DO_DRAW, (nSystem == 1), pPaper);
-                
+
                 //draw the measures in this system
                 for (int i = iIni; i < iIni + nMeasuresInSystem; i++) {
                     DrawMeasure(pVStaff, i, pPaper);
                 }
-                
+
                 // advance paper: height off this lmVStaff
                 pVStaff->NewLine(pPaper);
                 //! @todo advance inter-staff distance
@@ -472,7 +476,7 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
             } // next lmVStaff
         } // next lmInstrument
 
-        
+
         //Draw the initial barline that joins all staffs in a system
         pInstr = m_pScore->GetFirstInstrument();
         pVStaff = pInstr->GetVStaff(1);                    // first lmVStaff of this system
@@ -490,11 +494,11 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
         pDC->SetBrush(brush);
         pDC->DrawLine((wxCoord)xPos, (wxCoord)yTop, (wxCoord)xPos, (wxCoord)yBottom);
 
-        
+
         iIni += nMeasuresInSystem;
-        
+
     }   // nSystem
-        
+
 //    m_oCanvas.FinalizarDocumento    //! @todo anything?
 
 }
@@ -507,17 +511,17 @@ lmMicrons lmFormatter3::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int 
      All measurements are stored in the global object m_oTimepos[nRelMeasure], so that other
      procedures can take decisions about the final number of measures to include and for
      repositioning the StaffObjs.
-    
+
      Input parameters:
        nAbsMeasure - Measure number (absolute) to size
        nRelMeasure - Measure number (relative) to size
        nSystem - System number
-    
+
      Returns:
        - The size of this measure column.
        - positioning information for this measure column is stored in m_oTimepos[nRelMeasure]
     */
-    
+
     wxInt32 iVStaff;
     lmInstrument *pInstr;
     lmVStaff *pVStaff;
@@ -527,12 +531,12 @@ lmMicrons lmFormatter3::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int 
     {
         //verify that program limits are observed
         if (pInstr->GetNumStaves() > MAX_STAVES_PER_SYSTEM) {
-            //! @todo log and display message properly 
+            //! @todo log and display message properly
             wxLogMessage(
                 _("[lmFormatter3::RenderJustified]: Program limitation: Maximum number of staves per system has been exceeded."));
             wxASSERT(false);
         }
-        
+
         //loop. For current instrument, explore all its staves to size the measures that are part
         //of measure column nAbsMeasure. All collected information is stored in m_oTimepos[nRelMeasure]
         for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
@@ -546,9 +550,9 @@ lmMicrons lmFormatter3::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int 
             //   are no StaffObjs representing the prolog.
             if (nSystem != 1 && nRelMeasure == 1)
                 pVStaff->DrawProlog(DO_MEASURE, (nSystem == 1), pPaper);
-            
+
             SizeMeasure(pVStaff, nAbsMeasure, nRelMeasure, pPaper);
-            
+
             //advance paper position to next staff.
             //@attention As advancing one staff has the effect of returning
             //x position to the left marging, all x position information stored
@@ -559,13 +563,13 @@ lmMicrons lmFormatter3::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int 
         }    // next lmVStaff
 
     }    // next lmInstrument
-    
+
     //all measures in measure column number nAbsMeasure have been sized. The information is stored in
     //object m_oTimepos[nRelMeasure]. Now proced to re-position the StaffObjs so that all StaffObjs
     //sounding at the same time will have the same x coordinate. The method .ArrageStaffobjsByTime
     //returns the measure column size
     return m_oTimepos[nRelMeasure].ArrangeStaffobjsByTime(m_fDebugMode);      //true = debug on
-    
+
 }
 
 //////void lmFormatter3::Calculations(nTotalLinea As Long, nLin As Long, _
@@ -636,10 +640,10 @@ void lmFormatter3::RedistributeFreeSpace(lmMicrons nAvailable)
 {
     //Step 3: Justify measures (distribute remainnig space across all measures)
     //-------------------------------------------------------------------------------
-    //In summary, the algoritm computes the average size of all measure columns and 
-    //increases the size of all measure columns that are narrower than the average size, 
-    //so that their size is grown to the average size. The process of computing the new 
-    //average and enlarging the narrower than average measures is repeated until all 
+    //In summary, the algoritm computes the average size of all measure columns and
+    //increases the size of all measure columns that are narrower than the average size,
+    //so that their size is grown to the average size. The process of computing the new
+    //average and enlarging the narrower than average measures is repeated until all
     //space is distributed.
     //
     //on entering in this function:
@@ -650,13 +654,13 @@ void lmFormatter3::RedistributeFreeSpace(lmMicrons nAvailable)
     //on exit:
     // - the values stored in table m_nMeasureSize() are modified to reflect the new size
     //   for the bar columns, so that the line get justified.
-    
+
     //-------------------------------------------------------------------------------------
-    
+
     if (nAvailable <= 0) return;       //no space to distribute
-    
+
     lmMicrons nDif[MAX_MEASURES_PER_SYSTEM];
-    
+
     //compute average measure column size
     lmMicrons nAverage = 0;
     for (int i = 1; i <= m_nMeasuresInSystem; i++) {
@@ -720,7 +724,7 @@ void lmFormatter3::RedistributeFreeSpace(lmMicrons nAvailable)
 // Methods to deal with measures
 //=========================================================================================
 
-void lmFormatter3::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasure, 
+void lmFormatter3::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasure,
                              lmPaper* pPaper)
 {
     /*
@@ -733,7 +737,7 @@ void lmFormatter3::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
        all measurements are stored in global variable  m_oTimepos[nRelMeasure]
 
     */
-    
+
     wxASSERT(nAbsMeasure <= pVStaff->GetNumMeasures());
 
     //! @todo Review this commented code. Must review also DrawMeasure
@@ -742,11 +746,11 @@ void lmFormatter3::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     //StaffObjs can be correctly positioned.
     //The stored value is accesible by method //GetXInicioCompas//
 //    pVStaff->SetXInicioCompas = pPaper->GetCursorX()
-//    
+//
     //start new thread
     m_oTimepos[nRelMeasure].NewThread();
     m_oTimepos[nRelMeasure].SetCurXLeft( pPaper->GetCursorX() );
-    
+
     //if this is not the first measure of the score advance (horizontally) a space to leave a gap
     //between the previous barline (or the prolog, if first measure in system) and the first note
     if (nAbsMeasure != 1) {
@@ -754,7 +758,7 @@ void lmFormatter3::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
         lmMicrons nSpaceAfterBarline = 2000;    // 2mm
         pPaper->IncrementCursorX(nSpaceAfterBarline);       //space after barline
     }
-    
+
     lmNote* pNote = (lmNote*)NULL;
     lmNoteRest* pNoteRest = (lmNoteRest*)NULL;
     lmClef* pClef = (lmClef*)NULL;
@@ -763,7 +767,7 @@ void lmFormatter3::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     lmMicrons nClefXPos=0;                //x left position of previous clef
     int nClefStaffNum=0;                //number of staff in which the previous clef was located
     lmMicrons xChordPos=0;                //position of base note of a chord
-    
+
     //loop to process all StaffObjs in this measure
     lmStaffObj* pSO = (lmStaffObj*)NULL;
     lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
@@ -771,9 +775,9 @@ void lmFormatter3::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     while(!pIT->EndOfList())
     {
         pSO = pIT->GetCurrent();
-             
+
         if (pSO->GetType() == eTPO_Barline) break;         //End of measure: exit loop.
-        
+
         if (pSO->GetType() == eTPO_Control) {
             //start a new thread, returning x pos to the same x pos than the previous thread
             m_oTimepos[nRelMeasure].NewThread();
@@ -787,7 +791,7 @@ void lmFormatter3::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
             } else {
                 oTimepos.AddEntry (-1, pSO);
             }
-            
+
             //if this lmStaffObj is a lmNoteRest that is part of a chord its
             //anchor x position must be the same than that of the base note
             if (pSO->GetType() == eTPO_NoteRest) {
@@ -814,7 +818,7 @@ void lmFormatter3::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
                     //Is a rest or is a lmNote not in chord. Store its x position
                     oTimepos.SetCurXLeft(pPaper->GetCursorX());
                 }
-                
+
             } else {
                 //it is not a lmNoteRest. Store current x position for this lmStaffObj.
                 if (pSO->GetType() == eTPO_Clef) {
@@ -847,7 +851,7 @@ void lmFormatter3::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
                 //}
 
                 oTimepos.SetCurXLeft(pPaper->GetCursorX());
-                
+
                 //if it is a clef save xLeft position just in case the next
                 //lmStaffObj is also the clef for other staff
                 fPreviousWasClef = (pSO->GetType() == eTPO_Clef);
@@ -876,7 +880,7 @@ void lmFormatter3::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
         pIT->MoveNext();
     }
     delete pIT;
-    
+
     //The barline lmStaffObj is not included in the loop as it might not exist in the last
     //bar of a score. In theses cases, the loop is exited because the end of the score is
     //reached.
@@ -891,14 +895,14 @@ void lmFormatter3::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     }
     //now store final x position of this measure
     m_oTimepos[nRelMeasure].SetCurXFinal(pPaper->GetCursorX());
-    
+
 }
 
 ////Función de dibujo que va tratando cada PentObj
 ////Esta función sólo se utiliza cuando se dibuja la partitura sin justificar. Cuando la
 ////partitura se dibuja justificada se utiliza DrawMeasure
 //void lmFormatter3::DibujarTodo(pVStaff As CStaff, fModoMedida As Boolean)
-//    
+//
 //    Dim pSO As IPentObj, oTI As CIterador
 //
 //    Set oTI = pVStaff->StartPentobjsIterator(eTR_ByTime)
@@ -915,7 +919,7 @@ void lmFormatter3::DrawMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper)
 {
     /*
     Draw all StaffObjs in measure nMeasure, including the barline.
-    It is assumed that all positioning information is already computed 
+    It is assumed that all positioning information is already computed
     */
 
     wxASSERT(nMeasure <= pVStaff->GetNumMeasures());
@@ -928,14 +932,14 @@ void lmFormatter3::DrawMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper)
     //posición de inicio del compas. Para ello, se guarda aquí, de forma
     //que el método GetXInicioCompas pueda devolver este valor
     //pVStaff->SetXInicioCompas = pPaper->GetCursorX()
-    
+
     //! @todo Review this
     ////si no es el primer compas de la partitura avanza separación con la barra de compas
     ////o con prólogo, si es comienzo de línea.
     //if (nMeasure != 1) {
     //    m_oCanvas.Avanzar        //separación con la barra de compas
     //}
-    
+
     //space occupied by clefs is computed only when all clefs has been drawn, so that we
     //can properly align notes and othe StaffObjs. The next flag is used to signal that
     //it is pending to compute clefs space.
@@ -950,7 +954,7 @@ void lmFormatter3::DrawMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper)
     while(!pIT->EndOfList())
     {
         pSO = pIT->GetCurrent();
-        
+
         if (pSO->GetType() == eTPO_Clef) {
             //clefs don't consume space until a lmStaffObj of other type is found
             if (!fSpacePending) {
@@ -969,11 +973,11 @@ void lmFormatter3::DrawMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper)
             if (fSpacePending) {
                 nMaxClefWidth = wxMax(nMaxClefWidth, pPaper->GetCursorX() - xClefs);
             }
-            
+
             //! @todo Is next code up to date? usefull for anything?
             //Set oClave = pSO
             //pVStaff->SetCurrentKey(oClave.Pentagrama) = pSO
-            
+
         } else {
             //It is not a clef. Just draw it
 
@@ -989,7 +993,7 @@ void lmFormatter3::DrawMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper)
                 fSpacePending = false;
             }
             pSO->Draw(DO_DRAW, pPaper);
-            
+
         }
 
         // if barline, exit loop: end of measure reached
@@ -998,7 +1002,7 @@ void lmFormatter3::DrawMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper)
         pIT->MoveNext();
     }
     delete pIT;
-    
+
 }
 
 

@@ -3,19 +3,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -27,12 +27,12 @@
     @ingroup app_gui
     @brief lmTheApp class represents the application itself
 
-    Derived from wxApp class, lmTheApp class represents the application itself. Takes care of 
-    implementing the main event loop and to handle events not handled by other objects in 
+    Derived from wxApp class, lmTheApp class represents the application itself. Takes care of
+    implementing the main event loop and to handle events not handled by other objects in
     the application. The two main visible responsibilities are:
 
-    - To set and get application-wide properties; 
-    - To initiate application processing via wxApp::OnInit; 
+    - To set and get application-wide properties;
+    - To initiate application processing via wxApp::OnInit;
 
 */
 #ifdef __GNUG__
@@ -70,7 +70,7 @@ void __cdecl wxAssert(int n, char const * s,int m,char const *s2,char const *s3)
 #error "You must set wxUSE_MENUS to 1 in setup.h!"
 #endif
 
-#ifdef __WXMSW__ 
+#ifdef __WXMSW__
 // Detecting and isolating memory leaks with Visual C++
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
@@ -177,9 +177,20 @@ bool lmTheApp::OnInit(void)
     // Error reporting and trace
     g_pLogger = new lmLogger();
 
+#ifdef _DEBUG
+	// For debugging: send log messages to a file
+    FILE* pFile;
+    pFile = fopen(_T("LenMus_error_log.txt"), _T("w"));
+	wxLog *logger = new wxLogStderr(pFile);
+    wxLogChain *logChain = new wxLogChain(logger);
+	//delete wxLog::SetActiveTarget(logger);
+#endif
+
+
+
     // set information about this application
     SetVendorName(_T("LenMus"));
-    SetAppName(_T("LenMus")); 
+    SetAppName(_T("LenMus"));
 
         //
         // Get program directory and set up global paths object
@@ -212,7 +223,7 @@ bool lmTheApp::OnInit(void)
             _T("lenmus"), wxCONFIG_USE_LOCAL_FILE );
     wxConfigBase::Set(pConfig);
 
-    // force writing back the default values just in case 
+    // force writing back the default values just in case
     // they're not present in the config file
     pConfig->SetRecordDefaults();
 
@@ -221,7 +232,7 @@ bool lmTheApp::OnInit(void)
         // global variables that depend on user preferences.
         //
 
-    // Load user preferences or default values if first run    
+    // Load user preferences or default values if first run
     InitPreferences();
 
     // colors
@@ -248,6 +259,7 @@ bool lmTheApp::OnInit(void)
     m_locale.AddCatalogLookupPathPrefix( g_pPaths->GetLocalePath() );
     m_locale.AddCatalog(_T("lenmus"));
     m_locale.AddCatalog(_T("wxwidgets"));
+    m_locale.AddCatalog(_T("wxmidi"));
 
     // open log file and redirec all loging there
     wxFileName oFilename(g_pPaths->GetTempPath(), _T("DataError"), _T("log"), wxPATH_NATIVE);
@@ -257,7 +269,7 @@ bool lmTheApp::OnInit(void)
     // Set the art provider and get current user selected background bitmap
     wxImage::AddHandler( new wxPNGHandler );    //wxJPEGHandler );
     wxArtProvider::PushProvider(new lmArtProvider());
-    m_background = wxArtProvider::GetBitmap(_T("backgrnd"));
+    //m_background = wxArtProvider::GetBitmap(_T("backgrnd"));
 
     //Include support for zip files
     wxFileSystem::AddHandler(new wxZipFSHandler);
@@ -266,7 +278,7 @@ bool lmTheApp::OnInit(void)
         // XRC resource system
         //
 
-    // Initialize all the XRC handlers. 
+    // Initialize all the XRC handlers.
     wxXmlResource::Get()->InitAllHandlers();
 
     // get path for xrc resources
@@ -322,7 +334,7 @@ bool lmTheApp::OnInit(void)
     GetMainWindowPlacement(&wndRect, &fMaximized);
 
     g_pMainFrame = new lmMainFrame((wxDocManager *) m_pDocManager, (wxFrame *) NULL,
-                      _T("LenMus"),                             // title 
+                      _T("LenMus"),                             // title
                       wxPoint(wndRect.x, wndRect.y),            // origin
                       wxSize(wndRect.width, wndRect.height),    // size
                       wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE, m_locale);
@@ -339,7 +351,7 @@ bool lmTheApp::OnInit(void)
     int nMilliseconds = 3000;   // at least visible for 3 seconds
 	long nSplashTime = (long) time( NULL );
     lmSplashFrame* pSplash = (lmSplashFrame*) NULL;
-    if (bitmap.Ok() && bitmap.GetHeight() > 100) 
+    if (bitmap.Ok() && bitmap.GetHeight() > 100)
 	{
 		//the bitmap exists and it is not the error bitmap (height > 100 pixels). Show it
         wxColour colorTransparent(255, 0, 255);   //cyan mask
@@ -357,7 +369,7 @@ bool lmTheApp::OnInit(void)
     // create global data structures for printer settings
     g_pPrintData = new wxPrintData;
     g_pPaperSetupData = new wxPageSetupDialogData;
-    
+
     ////Make a menubar and associate it with the frame
     //wxMenuBar* menu_bar = g_pMainFrame->CreateMenuBar(NULL, NULL, false, !g_fReleaseVersion);        //fEdit, fDebug
     //g_pMainFrame->SetMenuBar(menu_bar);
@@ -413,7 +425,7 @@ bool lmTheApp::OnInit(void)
 	// allow for splash destruction
     if (pSplash) pSplash->AllowDestroy();
 
-//remove this in debug version to start with nothing displayed 
+//remove this in debug version to start with nothing displayed
 #if !_DEBUG
     //force to show book frame
     wxCommandEvent event;       //it is not used, so not need to initialize it
@@ -431,7 +443,7 @@ int lmTheApp::OnExit(void)
         //Save any other user preferences and values, not saved yet
         //
 
-    
+
         //
         // delete all objects used by lmTheApp
         //
@@ -487,7 +499,7 @@ void lmTheApp::GetDefaultMainWindowRect(wxRect *defRect)
 }
 
 
-// Calculate where to place the main window 
+// Calculate where to place the main window
 void lmTheApp::GetMainWindowPlacement(wxRect *frameRect, bool *fMaximized)
 {
     *fMaximized = false;        // default: not maximized
@@ -502,7 +514,7 @@ void lmTheApp::GetMainWindowPlacement(wxRect *frameRect, bool *fMaximized)
     frameRect->SetHeight(pConfig->Read(_T("/MainFrame/Height"), defWndRect.GetHeight()));
     frameRect->SetLeft(pConfig->Read(_T("/MainFrame/Left"), defWndRect.GetLeft() ));
     frameRect->SetTop(pConfig->Read(_T("/MainFrame/Top"), defWndRect.GetTop() ));
-    
+
     pConfig->Read(_T("/MainFrame/Maximized"), fMaximized);
 
         //--- Make sure that the Window will be completely visible -------------

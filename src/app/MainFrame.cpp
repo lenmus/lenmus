@@ -331,7 +331,8 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
 	#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__)
 		SetIcon(wxArtProvider::GetIcon(_T("app_icon"), wxART_OTHER));
 	#else
-		SetIcon(wxICON(app_icon));
+        //macro wxICON creates an icon using an icon resource on Windows.
+        SetIcon(wxICON(app_icon));
 	#endif
 
 	// create main metronome and associate it to frame metronome controls
@@ -639,7 +640,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* view,
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_save"), wxART_TOOLBAR, nIconSize) );
     file_menu->Append(pItem); 
 
-    file_menu->Append(wxID_SAVEAS, _("Save &as ...\tCtrl+Shift+S"));
+    file_menu->Append(wxID_SAVEAS, wxString::Format(_T("%s\tCtrl+Shift+S"), _("Save &as ...")) );
 
     file_menu->Append(wxID_CLOSE, _("&Close\tCtrl+W"));
     file_menu->AppendSeparator();
@@ -649,7 +650,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* view,
     file_menu->Append(pItem); 
 
     file_menu->Append(wxID_PRINT_SETUP, _("Print &Setup..."));
-    file_menu->Append(MENU_Print_Preview, _("Print Pre&view\tCtrl+Shift+P"));
+    file_menu->Append(MENU_Print_Preview, wxString::Format(_T("%s\tCtrl+Shift+P"), _("Print Pre&view")) );
     file_menu->AppendSeparator();
     file_menu->Append(wxID_EXIT, _("&Quit\tCtrl+Q"));
 

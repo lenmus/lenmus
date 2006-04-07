@@ -167,7 +167,7 @@ Virtual paper layout
 |   |
 |   |    <-------------------------- pageSize.width ----------------------->
 |   +-->+-------------------------------------------------------------------+
-|       |                                   A               (lmPaper object)  |
+|       |                                   A               (lmPaper object)|
 |       |                                   |                               |
 |       |                               nTopMarging                         |      
 |       |   +-- nLeftMarging                |             nRightMarging-+   |

@@ -1,0 +1,135 @@
+<html>
+<!-- $Id: 2006/04/07 16:00:00 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>LenMus installation procedure</title>
+<link rel="stylesheet" media="all" href="singledoc.css" type="text/css" />
+</head>
+<body>
+
+<h1>Score representations</h1>
+
+
+<h2>A. Theoretical aims and considerations</h2>
+<!-- ++++++++++++++++++++++++++++++++++++++ -->
+
+<p><b>Note</b>. I have ended up with a representation strategy similar to that used by the GUIDO system; the IIR corresponds to the AR in GUIDO. Althoug I like very much the Kai Renz's <a href="http://www.salieri.org/guido/doc.html">PhD thesis</a>, describing the GUIDO system, and it is an important reference to me, this convergence in representation strategy is purely by chance, due to evolution of LenMus program as it had to support new features. This convergence is not surprising as: 1) LenMus had an initial orientation as a notation edition program and GUIDO also had that bias; 2) the documen-view model is a need in any interactive edition application; and 3) to have at least two different representations (sound, graphical) is also a need in any music application.</p>
+
+
+<h3>Internal Independent Representation</h3>
+<!-- ----------------------------------- -->
+
+<p>The required format for an application generally differs depending on the application itself, as the requirements vary: a music notation application has different needs than a musical analysis tool.</p>
+
+<p>The Internal Independent Representation (IIR) or just inner representation is an abstract representation of the score, containing all necessary information to derive any other representation when needed, but not oriented to any particular use. It should not favor any particular use (renderization, play back, ...) but try to serve all them equally. It contains all information present in a score in a flexible and powerful format suitable for processing, oriented to manipulation and transformation, that is, to generate other specific representations. When a particular use is intended, the corresponding optimized representation is derived from the IIR.</p>
+
+<p>The IIR helps to enforce the document-view processing model that describes how an application can encapsulate its data from the actual display and manipulation of the data. Within the document-view model, the document contains the data (IIR reperesentation), which is displayed and manipulated by different views. Retrieval and change of the data by its views is done by using only strictly defined interface functions; this ensures that an alteration of the data in one view is reflecected immediately in all other views of the same data. The concept of view is a generic one: a view can either be a print out of a conventional music score, or it can be a textual representation in LDP or MusicXML, or a play back oriented representation such a table of MIDI events, or some other interpretation of the musical information contained in the IIR score.</p>
+
+<p>Next figure shows the IIR in the context of the document view model:</p>
+
+<pre>
+
+           Application Depentent Representations (ADRs)
+
+IIR <---+----> Interchange (TR - LDP, other formats: MusicXML, abc, ...)
+        |
+        +----> Renderization (GR - ScoreObjs)
+        |
+        +----> PlayBack (SR - SoundEvents table)
+        |
+        ....
+
+</pre>
+
+<p>These 'aplication dependent representations (ADRs) should comply with the principle of coherence of the document-view model. This implies that all elements of an ADR must be directly connected to elements of the IIR; this is important so that any further process which directly manipulate the ADR (for example, a sound edition program or a score notation aplication), can be directly reflected in the corresponding element of the IIR, so that other related views can be kept updated.</p>
+
+
+
+<h3>Application dependent representations (ADRs)</h3>
+<!-- ============================================= -->
+
+<h4>Graphical Representation (GR)</h4>
+<!-- ----------------------------- -->
+<p>It is a representation oriented to renderization and interactive edition (notation editor).
+Similar to IIR but including additional control ScoreObjs to define things such as page breaks.</p>
+
+
+<h4>Sound Representation (SR)</h4>
+<!-- ------------------------- -->
+<p>It is a representation oriented to play back. Currently it is represented by a lmSoundEvents table.</p>
+
+<h4>Textual representation (TR)</h4>
+<!-- --------------------------- -->
+<p>It is oriented to data entry by humans. Therefore, it has two strong requirements: Easy for humans to read and to remember; and easy (not verbose) to enter with a QWERTY keyboard. In LenMus, the textual representation language is LDP. Instead of developing LDP I could have used an existing language, such as MusicXML, GUIDO, or abc. The main reasons to discard these languages and develop LDP were:</p>
+
+<ul>
+    <li>When LenMus project was started (November 2002) the <a href="http://www.recordare.com/">MusicXML</a> format did not supported positioning information and there were no plans to do it. It was not until MusicXML 1.1 version (March 2005) that this information was suported by the MusicXML format. Uncertainty about other future needs that could not be supported by MusicXML. Nevertheless, MusicXML (partwise format) has a very clear structure form the 'human readability' point of view. LDP is trying to keep this structure but to reduce its verbosity, inherent to any XML oriented language.<br /><br /></li>
+
+    <li>The <a href="http://www.salieri.org/guido/doc.html">GUIDO</a> language could have been a good choice, but when I started the LenMus project, I didn't know about it. I must say that I like the GUIDO architecture and currently, it is a useful reference for me.<br /><br /></li>
+
+    <li>The <a href="http://abc.sourceforge.net/">abc</a> language is batch oriented format from the time of the punched cards. It was rejected due to this, because it was not very 'human readable' and its structure is old.</li>
+
+</ul>
+
+<h4>Interchange formats (IFs)</h4>
+<!-- ------------------------- -->
+<p>LenMus will support some file music formats used in other non-LenMus applications, such as MusicXML or abc. Currently only MusicXML is supported. But due to the lack of control over these foreing formats the document-view coherence principle can not be ensured. Due to this, these IFs will be considered just as import/export facilities, limited to the supported features.</p>
+
+
+
+
+<h2>B. Current implementation/situation/plans</h2>
+<!-- +++++++++++++++++++++++++++++++++++++++++ -->
+
+<p>Currently, the internal representation favors (is optimized for) renderization as this is the more frequent use (at least in LenMus Phonascus program) and it is very costing.</p>
+
+<p>Currently the lmFormatter object updates information but do not inserts new ScoreObjs, so there is no separation between the IIR and the GR. GR is just the IIR and this is causing some problems such as the difficulty to control spacing or page breaks. So I must evolve the program to separate both representations.</p>
+
+<pre>
+
+lmScore
+
+    void Draw(lmPaper* pPaper);
+    void Play(bool fVisualTracking,  ...)
+    wxString SourceLDP()
+    wxString SourceXML()
+
+
+Play():
+    //generate an updated sound representation SR
+    if SR is not valid (- the SoundEvents table -) then ComputeMidiEvents()
+    //play it
+    SoundMngr->Play()
+
+
+Draw(pPaper):
+    Formatter->RenderScore(pPaper)
+        The algorithm has two independent loops:
+
+        1. Phase DO_MEASURE
+            The number of measures that fits in the system is calculated, as well
+            as their size and the position of all their StaffObjs. The number of
+            measures per system is stored in .... and the positioning information
+            is stored in each lmStaffObj.
+
+        2. Phase DO_DRAW
+            In the second loop the StaffObjs are just rendered using the information
+            compiled in first loop.
+
+    Renderization takes place in two phases:
+    - the first one is to generate the representation
+    - the last one is to display it
+
+    So, the move could be similar to the Play() method:
+
+    Formatter->RenderScore(pPaper)
+        //generate an updated graphic representation (GR)
+        if GR is not valid then ComputeGR(pPaper)
+        //render it
+        GR->Render(pPaper)
+
+
+</pre>
+
+</body>
+</html>

@@ -1,7 +1,7 @@
 // RCS-ID: $Id: objects_model.txt,v 1.1.1.1 2005/10/06 15:55:30 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2001-2005 Cecilio Salmeron
+//    Copyright (c) 2001-2006 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -23,7 +23,7 @@
 
 lmScoreObj:
 ---------
-    Is the most abstract class for all objects that can appear in an LenMus document
+    Is the most abstract class for all objects that can appear in a LenMus document
     structure. Its subclasses define both primitive symbols (like a clef) and structural
     elements (like an staff with all its rests and notes). This should be useful, for
     example, to simplify copy/paste operations.
@@ -45,7 +45,7 @@ lmScoreObj:
     
     Selection (selectable objects)
     ------------------------------
-    ScoreObjs are selectable by definition as the user should be able to select (and copy,
+    ScoreObjs are selectable by definition, as the user should be able to select (and copy,
     delete, move, ...) any rendered object. But the procedure to select an object will
     vary. Simple objects, such as notes or clefs, will have a clear boundling rectangle, that
     normally will not intersect the boundling rectangle of neigbourgh objects; selection 
@@ -168,7 +168,7 @@ StaffObjs:  ScoreObjs that appear in an staff/measure. All are selectable.
     
     
   
-      There are two main types of ScoreObjs: those that "consume time" and those which do not.
+    There are two main types of ScoreObjs: those that "consume time" and those which do not.
     The first group is formed by all those objects that, by necessity, must go in
     sequence in a staff (such as notes, rests, clefs and keys). When one of these
     signs appear they add time to the measure duration. 
@@ -224,14 +224,14 @@ StaffObjs:  ScoreObjs that appear in an staff/measure. All are selectable.
                     |  |  |  |  lmTie
                     |  |  |  |  |
 -------------------------------------------------
-lmScoreObj            x  x  x  x  x
-lmStaffObj            x  x  x  x
-lmAuxObj                          x
-lmSimpleObj              x  x  x
-lmCompositeObj        x
+lmScoreObj          x  x  x  x  x
+lmStaffObj          x  x  x  x
+lmAuxObj                        x
+lmSimpleObj            x  x  x
+lmCompositeObj      x
 -------------------------------------------------
 Selectable          x  x  x  x  x
-Draggable            x  x  x  x
+Draggable           x  x  x  x
 FontRendered        x  x     x
 TimePositioned      x  x  x
 
@@ -247,5 +247,9 @@ Notes, Rests and NoteRests
         return false for rests.
     . lmBeam will be created not in the lmNoteRest constructor but in a specific method invoked
     from the lmRest and lmNote constructors, once the needed relevant information is set up.
-    
+
+
+
+
+
 */
