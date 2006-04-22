@@ -86,7 +86,7 @@ Planning: comming releases
 Bugs to solve:
     - When changing interval settings in earIntervalCtrol it is necessary to rebuild
       the control as buttons number and names are changed. Also crashes will
-      happen as buttons displayed does not correspond to constrains.
+      occur, as buttons displayed does not correspond to constrains.
         
 
 2/Apr/2006 - Beta 3.0b0 release
