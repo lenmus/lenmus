@@ -562,7 +562,7 @@ void lmTheoIntervalsCtrol::NewProblem()
         EnableButtons(true);
     } else {
         //inverse problem
-        m_sAnswer += _T(" starting at ") + oConv.GetNoteName(m_ntPitch[0]);
+        m_sAnswer += _(" starting at ") + oConv.GetNoteName(m_ntPitch[0]);
         if (sAlter[0] == _T("+")) m_sAnswer += _T("#");
         if (sAlter[0] == _T("-")) m_sAnswer += _T("b");
         m_pScoreCtrol->DisplayMessage(m_sAnswer, 5000);

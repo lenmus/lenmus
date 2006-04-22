@@ -154,13 +154,13 @@ void lmPaper::Prepare(lmScore* pScore, lmMicrons paperWidth, lmMicrons paperHeig
         // @attention method lmScore.Draw() will call NewPage() when need a new page. This will
         // select a new bitmap into de memDC.
 
-        //DEBUG: draw red lines on last page to show cursor position
-        lmMicrons yCur = GetCursorY();
-        lmMicrons xCur = GetCursorX();
-        m_pDC->SetPen(*wxRED_PEN);
-        m_pDC->DrawLine(0, yCur, GetPaperSize().GetWidth(), yCur);
-        m_pDC->DrawLine(xCur, 0, xCur, GetPaperSize().GetHeight());
-        //End DEBUG --------------------------------------------
+        ////DEBUG: draw red lines on last page to show cursor position
+        //lmMicrons yCur = GetCursorY();
+        //lmMicrons xCur = GetCursorX();
+        //m_pDC->SetPen(*wxRED_PEN);
+        //m_pDC->DrawLine(0, yCur, GetPaperSize().GetWidth(), yCur);
+        //m_pDC->DrawLine(xCur, 0, xCur, GetPaperSize().GetHeight());
+        ////End DEBUG --------------------------------------------
 
         // deselect last page bitmap
         if (m_pDC->IsKindOf(CLASSINFO(wxMemoryDC))) {
@@ -206,19 +206,19 @@ void lmPaper::NewPage()
     m_pDC->SetMapMode(lmDC_MODE);
     m_pDC->SetUserScale( m_rScale, m_rScale );
 
-    //DEBUG: draw green lines to show initial cursor position
-    if (m_numPages==1) {
-        lmMicrons yCur = GetCursorY();
-        lmMicrons xCur = GetCursorX();
-        m_pDC->SetPen(*wxGREEN_PEN);
-        m_pDC->DrawLine(0, yCur, GetPaperSize().GetWidth(), yCur);
-        m_pDC->DrawLine(xCur, 0, xCur, GetPaperSize().GetHeight());
+    ////DEBUG: draw green lines to show initial cursor position
+    //if (m_numPages==1) {
+    //    lmMicrons yCur = GetCursorY();
+    //    lmMicrons xCur = GetCursorX();
+    //    m_pDC->SetPen(*wxGREEN_PEN);
+    //    m_pDC->DrawLine(0, yCur, GetPaperSize().GetWidth(), yCur);
+    //    m_pDC->DrawLine(xCur, 0, xCur, GetPaperSize().GetHeight());
 
-        m_pDC->DrawLine(0, GetPaperSize().GetHeight()-100, 
-                        GetPaperSize().GetWidth(), 
-                        GetPaperSize().GetHeight()-100);
-    }
-    //End DEBUG --------------------------------------------
+    //    m_pDC->DrawLine(0, GetPaperSize().GetHeight()-100, 
+    //                    GetPaperSize().GetWidth(), 
+    //                    GetPaperSize().GetHeight()-100);
+    //}
+    ////End DEBUG --------------------------------------------
 
 }
 

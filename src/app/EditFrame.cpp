@@ -80,7 +80,7 @@ void lmEditFrame::OnActivate(wxActivateEvent& event)
 {
     //this window is being activated/deactivated
     //Inform the parent frame to update menu and toolbar
-    wxLogMessage(_T("[lmEditFrame::OnActivate] event.GetActive = %s"), (event.GetActive() ? _T("True") : _T("false")));
+    //wxLogMessage(_T("[lmEditFrame::OnActivate] event.GetActive = %s"), (event.GetActive() ? _T("True") : _T("false")));
     g_pMainFrame->UpdateMenuAndToolbar();
 
 }

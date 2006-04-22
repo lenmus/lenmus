@@ -49,6 +49,9 @@
 #include "../html/TextBookController.h"
 #include "../html/HelpController.h"
 
+#include "wx/numdlg.h"
+
+
 // Class lmMainFrame defines the main MDI frame for the application
 class lmMainFrame: public wxDocMDIParentFrame
 {
@@ -105,7 +108,7 @@ public:
     void OnZoom75(wxCommandEvent& event) { OnZoom(event, 75); }
     void OnZoom100(wxCommandEvent& event) { OnZoom(event, 100); }
     void OnZoom150(wxCommandEvent& event) { OnZoom(event, 150); }
-    void OnZoom200(wxCommandEvent& event) { OnZoom(event, 200); }
+    void OnZoom200(wxCommandEvent& event); // { OnZoom(event, 200); }
 
     void OnViewTools(wxCommandEvent& WXUNUSED(event));
     void OnViewRulers(wxCommandEvent& event);

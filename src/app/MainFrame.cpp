@@ -1173,12 +1173,7 @@ void lmMainFrame::OnOpenBook(wxCommandEvent& event)
         wxASSERT(m_pBookController);
 
         // open it and display book "intro"
-        //lmTextBookFrame* pBookFrame = m_pBookController->GetFrame();
-        ////pBookFrame->NotifyPageChanged();
-        ////pBookFrame->RefreshLists();
-        ////pBookFrame->Display(_T("intro"));
-        //m_pBookController->Display(_T("LenMus. Introduction"));     //By book name: Title parameter of .hhp file
-        m_pBookController->Display(_T("Welcome"));     //By chapter name: from .hhc file
+        m_pBookController->Display(_T("intro_welcome.htm"));     //By page name
     }
 
 }
@@ -1322,6 +1317,13 @@ void lmMainFrame::OnZoom(wxCommandEvent& event, wxInt32 nZoom)
     //g_pTheApp->UpdateCurrentDocViews();
 
 }
+
+void lmMainFrame::OnZoom200(wxCommandEvent& event)
+{
+    wxInt32 nZoom = (wxInt32) ::wxGetNumberFromUser(_T(""), _T("Scale?"), _T(""), 200, 0, 1000);  
+    OnZoom(event, nZoom);
+}
+
 
 void lmMainFrame::OnComboZoom(wxCommandEvent& event)
 {

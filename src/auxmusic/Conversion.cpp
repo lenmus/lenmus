@@ -40,10 +40,22 @@
 static wxString sEnglishNoteName[7] = { 
             _T("c"),  _T("d"), _T("e"), _T("f"), _T("g"), _T("a"), _T("b") };
 
-static wxString sNoteName[7] = {
-            _("c"),  _("d"), _("e"), _("f"), _("g"), _("a"), _("b") };
+static wxString sNoteName[7];
 
 
+lmConverter::lmConverter()
+{
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    sNoteName[0] = _("c");
+    sNoteName[1] = _("d");
+    sNoteName[2] = _("e");
+    sNoteName[3] = _("f");
+    sNoteName[4] = _("g");
+    sNoteName[5] = _("a");
+    sNoteName[6] = _("b");
+
+}
             
 lmPitch lmConverter::PitchToMidiPitch(lmPitch nPitch)
 {

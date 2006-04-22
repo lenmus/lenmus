@@ -98,7 +98,7 @@ void lmScoreAuxCtrol::SetScale(float rScale)
     //Scale is the zooming factor. It does not affect to margins
     m_rZoom = rScale;
     m_rScale = rScale * lmSCALE;
-    wxLogMessage(_T("[lmScoreAuxCtrol::SetScale]rScale=%f, lmSCALE=%f"), rScale, lmSCALE);
+    //wxLogMessage(_T("[lmScoreAuxCtrol::SetScale]rScale=%f, lmSCALE=%f"), rScale, lmSCALE);
     ResizePaper();
 }
 
@@ -122,10 +122,10 @@ void lmScoreAuxCtrol::ResizePaper()
     m_Paper.SetPageLeftMargin(m_nLeftMargin / m_rZoom);
     m_Paper.SetPageRightMargin(m_nRightMargin / m_rZoom);
 
-    wxLogMessage(wxString::Format(
-        _T("[lmScoreAuxCtrol]Paper size = (%d, %d), m_rScale=%f, scaling factor=%f, margins: left=%d, right=%d, top=%d"),
-        xMicrons, yMicrons, m_rScale, m_yScalingFactor, (int)(m_nLeftMargin / m_rZoom), (int)(m_nRightMargin / m_rZoom), 
-        (int)(m_nTopMargin / m_rZoom) ));
+    //wxLogMessage(wxString::Format(
+    //    _T("[lmScoreAuxCtrol::ResizePaper]Paper size = (%d, %d), m_rScale=%f, scaling factor=%f, margins: left=%d, right=%d, top=%d"),
+    //    xMicrons, yMicrons, m_rScale, m_yScalingFactor, (int)(m_nLeftMargin / m_rZoom), (int)(m_nRightMargin / m_rZoom), 
+    //    (int)(m_nTopMargin / m_rZoom) ));
 }
 
 void lmScoreAuxCtrol::OnSize(wxSizeEvent& WXUNUSED(event))

@@ -44,7 +44,7 @@
 class lmConverter
 {
 public:
-    lmConverter() {}
+    lmConverter();
     ~lmConverter() {}
     
     //MIDI pitch

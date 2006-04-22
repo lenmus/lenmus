@@ -40,25 +40,7 @@
 
 
 
-static wxString sIntervalName[16] = {
-    _T(""),
-    _("Unison"),
-    _("2nd"),
-    _("3rd"),
-    _("4th"),
-    _("5th"),
-    _("6th"),
-    _("7th"),
-    _("octave"),
-    _("9th"),
-    _("10th"),
-    _("11th"),
-    _("12th"),
-    _("13th"),
-    _("14th"),
-    _("Two octaves")
-
-};
+static wxString sIntervalName[16];
 
 //-------------------------------------------------------------------------------------
 // Implementation of lmInterval class
@@ -66,6 +48,26 @@ static wxString sIntervalName[16] = {
 
 lmInterval::lmInterval(lmNote* pNote1, lmNote* pNote2, EKeySignatures nKey)
 {
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    sIntervalName[0] = _T("");
+    sIntervalName[1] = _("Unison");
+    sIntervalName[2] = _("2nd");
+    sIntervalName[3] = _("3rd");
+    sIntervalName[4] = _("4th");
+    sIntervalName[5] = _("5th");
+    sIntervalName[6] = _("6th");
+    sIntervalName[7] = _("7th");
+    sIntervalName[8] = _("octave");
+    sIntervalName[9] = _("9th");
+    sIntervalName[10] = _("10th");
+    sIntervalName[11] = _("11th");
+    sIntervalName[12] = _("12th");
+    sIntervalName[13] = _("13th");
+    sIntervalName[14] = _("14th");
+    sIntervalName[15] = _("Two octaves");
+
+    //save parameters and compute the interval
     m_ntMidi1 = pNote1->GetMidiPitch();
     m_ntMidi2 = pNote2->GetMidiPitch();
     m_ntDiat1 = pNote1->GetPitch();

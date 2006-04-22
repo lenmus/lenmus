@@ -609,7 +609,10 @@ void lmScoreView::SetScale(double rScale)
         m_yDisplayPixelsPerLU = (double)dc.LogicalToDeviceYRel(100000) / 100000.0;
 
         //reposition controls
-        ResizeControls();        
+        ResizeControls();    
+
+        //wxLogMessage(_T("[lmScoreView::SetScale] scale=%f, m_rScale=%f, DisplayPixelsPerLU=(%f, %f)"),
+        //    rScale, m_rScale, m_xDisplayPixelsPerLU, m_yDisplayPixelsPerLU);
     }
 
     m_pCanvas->Refresh(true);    //erase background
@@ -1029,6 +1032,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
             yInterpageGap = m_yInterpageGap,
             xLeftMargin = m_xBorder,
             yTopMargin = m_yBorder;
+
 
     //First page at (xLeftMargin, yTopMargin), size (xPageSize, yPageSize)
     //Second page at (xLeftMargin, yTopMargin+yPageSize+yInterpageGap)

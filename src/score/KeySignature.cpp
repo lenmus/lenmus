@@ -42,38 +42,7 @@
 #include "Score.h"
 
 
-static wxString sKeySignatureName[] = {
-    _("C Major"),
-    _("G Major"),
-    _("D Major"),
-    _("A Major"),
-    _("E Major"),
-    _("B Major"),
-    _("F # Major"),
-    _("C # Major"),
-    _("C b Major"),
-    _("G b Major"),
-    _("D b Major"),
-    _("A b Major"),
-    _("E b Major"),
-    _("B b Major"),
-    _("F Major"),
-    _("A minor"),
-    _("E minor"),
-    _("B minor"),
-    _("F # minor"),
-    _("C # minor"),
-    _("G # minor"),
-    _("D # minor"),
-    _("A # minor"),
-    _("A b minor"),
-    _("E b minor"),
-    _("B b minor"),
-    _("F minor"),
-    _("C minor"),
-    _("G minor"),
-    _("D minor")
-};
+static wxString sKeySignatureName[30];
 
 //-------------------------------------------------------------------------------------------------
 // lmKeySignature object implementation
@@ -87,6 +56,41 @@ static wxString sKeySignatureName[] = {
 lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool fVisible) :
     lmSimpleObj(eTPO_KeySignature, pVStaff, 1, fVisible, sbDRAGGABLE)
 {
+
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    sKeySignatureName[0] = _("C Major");
+    sKeySignatureName[1] = _("G Major");
+    sKeySignatureName[2] = _("D Major");
+    sKeySignatureName[3] = _("A Major");
+    sKeySignatureName[4] = _("E Major");
+    sKeySignatureName[5] = _("B Major");
+    sKeySignatureName[6] = _("F # Major");
+    sKeySignatureName[7] = _("C # Major");
+    sKeySignatureName[8] = _("C b Major");
+    sKeySignatureName[9] = _("G b Major");
+    sKeySignatureName[10] = _("D b Major");
+    sKeySignatureName[11] = _("A b Major");
+    sKeySignatureName[12] = _("E b Major");
+    sKeySignatureName[13] = _("B b Major");
+    sKeySignatureName[14] = _("F Major");
+    sKeySignatureName[15] = _("A minor");
+    sKeySignatureName[16] = _("E minor");
+    sKeySignatureName[17] = _("B minor");
+    sKeySignatureName[18] = _("F # minor");
+    sKeySignatureName[19] = _("C # minor");
+    sKeySignatureName[20] = _("G # minor");
+    sKeySignatureName[21] = _("D # minor");
+    sKeySignatureName[22] = _("A # minor");
+    sKeySignatureName[23] = _("A b minor");
+    sKeySignatureName[24] = _("E b minor");
+    sKeySignatureName[25] = _("B b minor");
+    sKeySignatureName[26] = _("F minor");
+    sKeySignatureName[27] = _("C minor");
+    sKeySignatureName[28] = _("G minor");
+    sKeySignatureName[29] = _("D minor");
+
+
     m_fTraditional = true;
     m_nFifths = nFifths;
     m_fMajor = fMajor;

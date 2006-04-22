@@ -84,41 +84,9 @@ END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmTheoKeySignCtrol, wxWindow)
 
-static wxString sMajor[15] = {
-        _("C major"),
-        _("G major"),
-        _("D major"),
-        _("A major"),
-        _("E major"),
-        _("B major"),
-        _("F # major"),
-        _("C # major"),
-        _("C b major"),
-        _("G b major"),
-        _("D b major"),
-        _("A b major"),
-        _("E b major"),
-        _("B b major"),
-        _("F major")
-};
+static wxString sMajor[15];
+static wxString sMinor[15];
 
-static wxString sMinor[15] = {
-        _("A minor"),
-        _("E minor"),
-        _("B minor"),
-        _("F # minor"),
-        _("C # minor"),
-        _("G # minor"),
-        _("D # minor"),
-        _("A # minor"),
-        _("A b minor"),
-        _("E b minor"),
-        _("B b minor"),
-        _("F minor"),
-        _("C minor"),
-        _("G minor"),
-        _("D minor")
-};
 
 lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id, 
                            lmTheoKeySignConstrains* pConstrains,
@@ -135,6 +103,40 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
     m_pScore = (lmScore*)NULL;
     m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
     m_pConstrains = pConstrains;
+
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    sMajor[0] = _("C major");
+    sMajor[1] = _("G major");
+    sMajor[2] = _("D major");
+    sMajor[3] = _("A major");
+    sMajor[4] = _("E major");
+    sMajor[5] = _("B major");
+    sMajor[6] = _("F # major");
+    sMajor[7] = _("C # major");
+    sMajor[8] = _("C b major");
+    sMajor[9] = _("G b major");
+    sMajor[10] = _("D b major");
+    sMajor[11] = _("A b major");
+    sMajor[12] = _("E b major");
+    sMajor[13] = _("B b major");
+    sMajor[14] = _("F major");
+
+    sMinor[0] = _("A minor");
+    sMinor[1] = _("E minor");
+    sMinor[2] = _("B minor");
+    sMinor[3] = _("F # minor");
+    sMinor[4] = _("C # minor");
+    sMinor[5] = _("G # minor");
+    sMinor[6] = _("D # minor");
+    sMinor[7] = _("A # minor");
+    sMinor[8] = _("A b minor");
+    sMinor[9] = _("E b minor");
+    sMinor[10] = _("B b minor");
+    sMinor[11] = _("F minor");
+    sMinor[12] = _("C minor");
+    sMinor[13] = _("G minor");
+    sMinor[14] = _("D minor");
 
     //the window is divided into two regions: top, for score on left and counters and links
     //on the right, and bottom region, for answer buttons 

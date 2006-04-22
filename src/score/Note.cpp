@@ -404,7 +404,8 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         wxDC* pDC = pPaper->GetDC();
         wxASSERT(pDC);
         wxASSERT(pDC->Ok());
-        wxPen pen(colorC, 200, wxSOLID);    // width = 200 microns = 0.2 mm 
+        int nStemWidth = m_pVStaff->TenthsToLogical(1, m_nStaffNum);
+        wxPen pen(colorC, nStemWidth, wxSOLID);
         wxBrush brush(colorC, wxSOLID);
         pDC->SetPen(pen);
         pDC->SetBrush(brush);
@@ -437,7 +438,8 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         else {
             m_pAccidentals->Draw(DO_DRAW, pPaper, colorC);
         }
-        nxLeft += m_pAccidentals->GetSelRect().width + 300;        // after space = 0.3 mm
+        nxLeft += m_pAccidentals->GetSelRect().width +
+            m_pVStaff->TenthsToLogical(20, m_nStaffNum)/3;        // after space = 1.5 tenths (0.3 mm)
     }
     
     //render the note
@@ -527,11 +529,11 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
             // compute and store start position of stem
             if (m_fStemDown) {
                 //stem down: line down on the left of the notehead
-                m_xStem = m_noteheadRect.x;
+                m_xStem = m_noteheadRect.x + nStemWidth/2;
                 m_yStem = nyTop - m_paperPos.y;
             } else {
                 //stem up: line up on the right of the notehead
-                m_xStem = m_noteheadRect.x + m_noteheadRect.width;
+                m_xStem = m_noteheadRect.x + m_noteheadRect.width - nStemWidth/2;
                 m_yStem = nyTop - m_paperPos.y;
             }
 
@@ -799,6 +801,10 @@ void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ECabezaNotas nNoteheadType
         wxPoint pos = GetGlyphPosition();
         pDC->SetTextForeground(colorC);
         pDC->DrawText(sGlyph, pos.x, pos.y );
+        //lmMicrons nWidth, nHeight;
+        //pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
+        //pDC->DrawRectangle(pos.x, pos.y, nWidth, nHeight);
+        //wxLogMessage(_T("[lmNote::DrawNoteHead] pos=(%d, %d)"), pos.x, pos.y);
     }
 
 }

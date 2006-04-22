@@ -552,7 +552,7 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
     // the font for drawing is scaled by the DC.
     pStaff->SetFontDraw( pPaper->GetFont(3 * dyLinesL) );        //logical points
 
-    wxLogMessage(_T("[lmVStaff::SetFont] dyLinesL=%d")); 
+    //wxLogMessage(_T("[lmVStaff::SetFont] dyLinesL=%d"), dyLinesL); 
 
     //// the font for dragging is not scaled by the DC as all dragging operations takes
     //// place dealing with device units
