@@ -81,8 +81,8 @@ lmScore::lmScore()
     m_pSoundMngr = (lmSoundManager*)NULL;
 
     //! @todo fill this not with constants
-    m_nSystemsDistance = 20000;            // 2 cm = 20 mm = 20,000 microns
-    m_nTopSystemDistance = 20000;        // 2 cm = 20 mm = 20,000 microns
+    m_nSystemsDistance = lmToLogicalUnits(2, lmCENTIMETERS);    // 2 cm
+    m_nTopSystemDistance = lmToLogicalUnits(2, lmCENTIMETERS);    // 2 cm
     m_nSystemsLeftMargin = 0;
     m_nSystemsRightMargin = 0;
 
@@ -195,9 +195,9 @@ void lmScore::Draw(lmPaper *pPaper)
     ////DEBUG: draw green lines to show page borders
     //wxDC* pDC = pPaper->GetDC();
     //wxASSERT(pDC);
-    //lmMicrons yTop = pPaper->GetCursorY();
-    //lmMicrons xLeft = pPaper->GetLeftMarginXPos();
-    //lmMicrons xRight = pPaper->GetRightMarginXPos();
+    //lmLUnits yTop = pPaper->GetCursorY();
+    //lmLUnits xLeft = pPaper->GetLeftMarginXPos();
+    //lmLUnits xRight = pPaper->GetRightMarginXPos();
     //pDC->SetPen(*wxGREEN_PEN);
     //pDC->DrawLine(xLeft, yTop, xRight, yTop);    //top horizontal
     //pDC->DrawLine(xLeft, yTop, xLeft, (pPaper->GetPaperSize()).GetHeight());    //left vertical
@@ -213,7 +213,7 @@ void lmScore::Draw(lmPaper *pPaper)
 void lmScore::WriteTitles(bool fMeasuring, lmPaper *pPaper)
 {
     long nWidth, nHeight;
-    lmMicrons xPos=0;
+    lmLUnits xPos=0;
 
     if (fMeasuring) {
         // Measurement phase ---------------------------------------------------

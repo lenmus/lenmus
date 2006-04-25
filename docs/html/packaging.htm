@@ -1,7 +1,7 @@
 <html>
 <head>
 <title>LenMus package preparation check list</title>
-<!-- RCS-ID: $Id: packaging.htm,v 1.3 2006/02/21 17:06:35 cecilios Exp $ -->
+<!-- RCS-ID: $Id: 2006/04/24 17:06:35 $ -->
 <link rel="stylesheet" media="all" href="singledoc.css" type="text/css" />
 </head>
 <body>
@@ -14,7 +14,7 @@
     <ol>
     <li>Change version string in global.h. No need to change release flags in TheApp.cpp
         as they are changed automatically by pre-processor directives when
-        chossing Release build.</li>
+        choosing Release build.</li>
     <li>Create the executable</li>
     <li>Pack the help file</li>
     <li>Pack the eBooks</li>
@@ -22,10 +22,8 @@
 
 <li>Create package
     <ol>
-    <li>Create a folder to prepare the package: i.e. lenmus_3.0</li>
-    <li>Create the LenMus package folder structure tree</li>
-    <li>Copy the files</li>
-    <li>zip all</li>
+    <li>Change version string in installer (installer.nsi)</li>
+    <li>Generate and test the installer</li>
     </ol><br /></li>
 
 <li>Test package
@@ -36,11 +34,11 @@
 
 <li>Prepare release
     <ol>
-    <li>CVS: tag release as 'release_x_x_x_x'</li>
+    <li>SVN: tag release as 'Release x.x nnnn x'</li>
     <li>Prepare release description for SourceForge</li>
     <li>Prepare news item for web lenmus.org and for SourceForge</li>
-    <li>Prepare newsletter for lenmus subscribers</li>
-    <li>If needed, prepare changes in 'downloads' page</li>
+    <li>Prepare changes in 'downloads' page</li>
+    <li>Prepare 'release notes' page</li>
     </ol><br /></li>
 
 <li>Upload package
@@ -55,11 +53,17 @@
     <li>Go to the downloads page and check that you can download the new release.</li>
     </ol><br /></li>
 
-<li>Send news
+<li>Send news in sourceforge
     <ol>
-    <li>News in web lenmus.org</li>
-    <li>News in sourceforge</li>
-    <li>Send newsletter</li>
+    <li>Go to the LenMus News page (Summary / News) </li>
+    <li>After the menu press 'Submit'. Fill in news information.</li>
+    </ol><br /></li>
+
+<li>Update website
+    <ol>
+    <li>News</li>
+    <li>Downloads page</li>
+    <li>Release notes page</li>
     </ol><br /></li>
 
 </ol>

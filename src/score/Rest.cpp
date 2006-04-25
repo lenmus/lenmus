@@ -125,9 +125,9 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
 
     // move to right staff
-    lmMicrons nyTop = m_paperPos.y + GetStaffOffset() + 
+    lmLUnits nyTop = m_paperPos.y + GetStaffOffset() + 
                       m_pVStaff->TenthsToLogical(m_yShift, m_nStaffNum);
-    lmMicrons nxLeft = m_paperPos.x;
+    lmLUnits nxLeft = m_paperPos.x;
 
     // prepare DC
     wxDC* pDC = pPaper->GetDC();
@@ -154,7 +154,7 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
             m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
 
         // store selection rectangle position and size
-        lmMicrons nWidth, nHeight;
+        lmLUnits nWidth, nHeight;
         pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
         m_selRect.width = nWidth;
         m_selRect.height = m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
@@ -162,7 +162,7 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         m_selRect.y = m_glyphPos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum );
 
         // store total width
-        lmMicrons afterSpace = m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
+        lmLUnits afterSpace = m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
         m_nWidth = nWidth + afterSpace;
 
     } else {
@@ -177,17 +177,17 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //------------------------------------------------------------
     if (m_fDotted || m_fDoubleDotted) {
         nxLeft += m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-        lmMicrons nShift = aGlyphsInfo[nGlyph].SelRectShift + (aGlyphsInfo[nGlyph].SelRectHeight / 2);
+        lmLUnits nShift = aGlyphsInfo[nGlyph].SelRectShift + (aGlyphsInfo[nGlyph].SelRectHeight / 2);
         if (!fMeasuring) {
-            lmMicrons nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
-            lmMicrons yPos = m_glyphPos.y + m_paperPos.y + m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);
+            lmLUnits nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
+            lmLUnits yPos = m_glyphPos.y + m_paperPos.y + m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);
             pDC->DrawCircle(nxLeft, yPos, nDotRadius);
         }
         if (m_fDoubleDotted) {
             nxLeft += m_pVStaff->TenthsToLogical(5, m_nStaffNum);
             if (!fMeasuring) {
-                lmMicrons nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
-                lmMicrons yPos = m_glyphPos.y + m_paperPos.y + m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);
+                lmLUnits nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
+                lmLUnits yPos = m_glyphPos.y + m_paperPos.y + m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);
                 pDC->DrawCircle(nxLeft, yPos, nDotRadius);
             }
         }
@@ -200,8 +200,8 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         for (; pNode; pNode = pNode->GetNext() ) {
             pNRO = (lmNoteRestObj*)pNode->GetData();
             if (fMeasuring) {
-                 lmMicrons xPos = 0;
-                lmMicrons yPos = 0;
+                 lmLUnits xPos = 0;
+                lmLUnits yPos = 0;
                 switch(pNRO->GetSymbolType()) {
                     case eST_Fermata:
                         // set position (relative to paperPos)
@@ -320,7 +320,7 @@ wxPoint lmRest::EndDrag(const wxPoint& pos)
 // implementation of virtual methods defined in base class lmScoreObj
 //====================================================================================================
 
-void lmRest::SetLeft(lmMicrons nLeft)
+void lmRest::SetLeft(lmLUnits nLeft)
 {
     lmScoreObj::SetLeft(nLeft);
 }

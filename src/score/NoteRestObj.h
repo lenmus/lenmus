@@ -64,7 +64,7 @@ public:
     // specific methods of this class
     ESymbolType GetSymbolType() { return m_nSymbolType; }
     virtual void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nStaffNum,
-                         lmMicrons xPos, lmMicrons yPos)=0;
+                         lmLUnits xPos, lmLUnits yPos)=0;
     virtual void UpdateMeasurements();
 
     virtual void SetOwner(lmNoteRest* pOwner) { m_pOwner = pOwner; }
@@ -87,7 +87,7 @@ public:
     // overrides for pure virtual methods of base class lmNoteRestObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
     void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nStaffNum,
-                         lmMicrons xPos, lmMicrons yPos);
+                         lmLUnits xPos, lmLUnits yPos);
 
 private:
     bool    m_fOverNote;
@@ -107,7 +107,7 @@ public:
     // definitions for pure virtual methods of base class lmNoteRestObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
     void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nStaffNum,
-                         lmMicrons xPos, lmMicrons yPos);
+                         lmLUnits xPos, lmLUnits yPos);
 
     // overrides for virtual methods of base class lmNoteRestObj
     void SetOwner(lmNoteRest* pOwner);

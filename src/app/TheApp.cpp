@@ -613,5 +613,35 @@ lmMainFrame* GetMainFrame(void)
     return g_pMainFrame;
 }
 
+int lmToLogicalUnits(int nValue, lmUnits nUnits)
+{
+    switch(nUnits) {
+        case lmMICRONS:         return (nValue / 100);      break;
+        case lmMILLIMETERS:     return (nValue * 10);       break;
+        case lmCENTIMETERS:     return (nValue * 100);      break;
+        case lmINCHES:          return (nValue * 254);      break;
+        default:
+            wxASSERT(false);
+            return 10;
+    }
+
+}
+
+int lmToLogicalUnits(double rValue, lmUnits nUnits)
+{
+    switch(nUnits) {
+        case lmMICRONS:         return (int)(rValue / 100);      break;
+        case lmMILLIMETERS:     return (int)(rValue * 10);       break;
+        case lmCENTIMETERS:     return (int)(rValue * 100);      break;
+        case lmINCHES:          return (int)(rValue * 254);      break;
+        default:
+            wxASSERT(false);
+            return 10;
+    }
+
+}
+
+
+
 
 

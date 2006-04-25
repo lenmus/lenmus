@@ -137,7 +137,9 @@ lmTheoScalesCtrol::lmTheoScalesCtrol(wxWindow* parent, wxWindowID id,
 
     // create score ctrl 
     m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, wxSize(500,200), eSIMPLE_BORDER);
-    m_pScoreCtrol->SetMargins(10000, 10000, 20000);        //right=1cm, left=1cm, top=2cm
+    m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
+                              lmToLogicalUnits(10, lmMILLIMETERS),
+                              lmToLogicalUnits(20, lmMILLIMETERS));        //right=1cm, left=1cm, top=2cm
     m_pScoreCtrol->SetScale((float)1.3);
     pLeftSizer->Add(
         m_pScoreCtrol,
@@ -416,7 +418,7 @@ void lmTheoScalesCtrol::NewProblem()
     lmLDPParser parserLDP;
     lmLDPNode* pNode;
     m_pScore = new lmScore();
-    m_pScore->SetTopSystemDistance(5000);            //5mm
+    m_pScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
     m_pScore->AddInstrument(1,0,0);                    //one vstaff, MIDI channel 0, MIDI instr 0
     lmVStaff *pVStaff = m_pScore->GetVStaff(1, 1);    //get first vstaff of instr.1
     pVStaff->AddClef( nClef );
@@ -482,7 +484,7 @@ void lmTheoScalesCtrol::NewProblem()
         m_fPlayEnabled = true;
     } else {
         //inverse problem
-        m_pScoreCtrol->DisplayMessage(m_sAnswer, 10000);
+        m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(10, lmMILLIMETERS));
         m_fPlayEnabled = false;
     }
     m_fProblemCreated = true;
@@ -503,7 +505,7 @@ void lmTheoScalesCtrol::OnRespButton(wxCommandEvent& event)
 void lmTheoScalesCtrol::DisplaySolution()
 {
     if (m_fDeduceScale) {
-        m_pScoreCtrol->DisplayMessage(m_sAnswer, 10000, false);
+        m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(10, lmMILLIMETERS), false);
     } else {
         m_pScoreCtrol->DisplayScore(m_pScore, false);
         m_pScore = (lmScore*)NULL;    //no longer owned. Now owned by lmScoreAuxCtrol
@@ -568,11 +570,11 @@ void lmTheoScalesCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
 void lmTheoScalesCtrol::ResetExercise()
 {
     //! @todo When Counters implemented: code this method
-    m_pScoreCtrol->DisplayMessage(_T("TODO: ResetExercise()"), 10000);
+    m_pScoreCtrol->DisplayMessage(_T("TODO: ResetExercise()"), lmToLogicalUnits(10, lmMILLIMETERS));
 }
 
 void lmTheoScalesCtrol::ResetCounters()
 {
     //! @todo When Counters implemented: code this method
-    m_pScoreCtrol->DisplayMessage(_T("TODO: ResetCounters()"), 10000);
+    m_pScoreCtrol->DisplayMessage(_T("TODO: ResetCounters()"), lmToLogicalUnits(10, lmMILLIMETERS));
 }

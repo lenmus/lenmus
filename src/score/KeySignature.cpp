@@ -125,7 +125,7 @@ void lmKeySignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour color
 {    
     if (fMeasuring) {
         // get the shift to the staff on which the key signature must be drawn
-        lmMicrons yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
+        lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
 
         // store glyph position
         m_glyphPos.x = 0;
@@ -138,7 +138,7 @@ void lmKeySignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour color
 }
 
 // returns the width of the draw (logical units)
-lmMicrons lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {    
     wxDC* pDC = pPaper->GetDC();
     wxASSERT(pDC);
@@ -148,7 +148,7 @@ lmMicrons lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxC
     //Key signature is common to all lmVStaff staves, but it is only present, as lmStaffObj, in
     //the first staff. Therefore, for renderization, it is necessary to repeat for
     //each staff
-    lmMicrons yOffset = 0;
+    lmLUnits yOffset = 0;
     lmStaff* pStaff = m_pVStaff->GetFirstStaff();
     for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++) {
         //get current clef
@@ -178,16 +178,16 @@ lmMicrons lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxC
         
 }
 
-lmMicrons lmKeySignature::DrawAccidental(bool fMeasuring, wxDC* pDC, EAccidentals nAlter,
-        lmMicrons nxLeft, lmMicrons nyTop, int nStaff)
+lmLUnits lmKeySignature::DrawAccidental(bool fMeasuring, wxDC* pDC, EAccidentals nAlter,
+        lmLUnits nxLeft, lmLUnits nyTop, int nStaff)
 {
     //render the accidental nAlter at position nxLeft, nyTop. Returns its width
 
     wxString sGlyph;
-    lmMicrons nTotalWidth = 0;
+    lmLUnits nTotalWidth = 0;
     long nWidth, nHeight;
 
-    lmMicrons yPos = nyTop - m_pVStaff->TenthsToLogical( 10, nStaff );
+    lmLUnits yPos = nyTop - m_pVStaff->TenthsToLogical( 10, nStaff );
     
     switch(nAlter) {
         case eNatural:
@@ -233,7 +233,7 @@ lmMicrons lmKeySignature::DrawAccidental(bool fMeasuring, wxDC* pDC, EAccidental
 
 }
 
-lmMicrons lmKeySignature::DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos,
+lmLUnits lmKeySignature::DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos,
                                EClefType nClef, int nStaff, wxColour colorC)
 {
     /*
@@ -242,15 +242,15 @@ lmMicrons lmKeySignature::DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos,
     This method returns the width of the draw
     */
 
-    lmMicrons nSharpPos[8];        //orden de aparición de los sostenidos
-    lmMicrons nFlatPos[8];        //orden de aparición de los bemoles
-    lmMicrons nOneLine;            //space, in microns, for half line
+    lmLUnits nSharpPos[8];        //orden de aparición de los sostenidos
+    lmLUnits nFlatPos[8];        //orden de aparición de los bemoles
+    lmLUnits nOneLine;            //space, in microns, for half line
 
     nOneLine = m_pVStaff->TenthsToLogical( 10, nStaff );
     EKeySignatures nKeySignature = m_nKeySignature;
 
     //Compute position of sharps and flats. Depends on the clef
-    lmMicrons yPos = pos.y;
+    lmLUnits yPos = pos.y;
     switch(nClef) {
         case eclvSol:
             nSharpPos[1] = yPos - 5 * nOneLine;            //line 5 (Fa)
@@ -332,7 +332,7 @@ lmMicrons lmKeySignature::DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos,
     nNumAccidentals = abs(nNumAccidentals);
 
     //Render the required flats / sharps
-    lmMicrons nWidth=0, nHeight=0;
+    lmLUnits nWidth=0, nHeight=0;
     if (fDrawFlats) {
         for (int i=1; i <= nNumAccidentals; i++) {
             nWidth += 

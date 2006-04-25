@@ -68,7 +68,7 @@ lmFermata::lmFermata(lmNoteRest* pOwner, bool fOverNote) : lmNoteRestObj(eST_Fer
 }
 
 void lmFermata::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nStaffNum,
-                             lmMicrons xPos, lmMicrons yPos)
+                             lmLUnits xPos, lmLUnits yPos)
 {
     /*
     This method does the measurement phase
@@ -82,7 +82,7 @@ void lmFermata::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nSta
 
     // prepare glyph and measure it
     wxString sGlyph = (m_fOverNote ? CHAR_FERMATA_OVER : CHAR_FERMATA_UNDER );
-    lmMicrons nWidth, nHeight;
+    lmLUnits nWidth, nHeight;
     pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
 
     // store glyph position
@@ -171,7 +171,7 @@ void lmLyric::SetOwner(lmNoteRest* pOwner)
 }
 
 void lmLyric::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nStaffNum,
-                        lmMicrons xPos, lmMicrons yPos)
+                        lmLUnits xPos, lmLUnits yPos)
 {
     /*
     This method does the measurement phase
@@ -186,7 +186,7 @@ void lmLyric::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nStaff
     pDC->SetFont(*m_pFont);
 
     // prepare the text and measure it
-    lmMicrons nWidth, nHeight;
+    lmLUnits nWidth, nHeight;
     pDC->GetTextExtent(m_sText, &nWidth, &nHeight);
     m_nWidth = nWidth;
 

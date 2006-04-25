@@ -444,6 +444,10 @@
 				RelativePath="..\..\docs\src\objects_model.txt">
 			</File>
 			<File
+				RelativePath="..\..\docs\html\release_notes.htm"
+				DeploymentContent="TRUE">
+			</File>
+			<File
 				RelativePath="..\..\docs\html\score_api.htm"
 				DeploymentContent="TRUE">
 			</File>

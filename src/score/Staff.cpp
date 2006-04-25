@@ -52,15 +52,17 @@ WX_DEFINE_LIST(StaffList);
 
 
 //constructor
-lmStaff::lmStaff(lmScore* pScore, wxInt32 nNumLines, lmMicrons nMicrons)
+lmStaff::lmStaff(lmScore* pScore, wxInt32 nNumLines, lmLUnits nMicrons)
 {
     m_numLines = nNumLines;
-    m_lineThick = 100;            // 0.1mm 
-    m_spacing = nMicrons;        // in logical units. Default 1800 -> lmStaff height = 7.2 mm
-    //m_spacing = 2500;            // lmStaff height = 10 mm. Font size = 24
+    m_lineThick = lmToLogicalUnits(0.1, lmMILLIMETERS);            // 0.1mm 
+    if (nMicrons == 0)
+        m_spacing = lmToLogicalUnits(1.8, lmMILLIMETERS);   //Default 1.8 mm -> lmStaff height = 7.2 mm
+    else
+        m_spacing = nMicrons;        // in logical units
 
     // margins
-    m_afterSpace = 10000;        // 10 mm
+    m_afterSpace = lmToLogicalUnits(10, lmMILLIMETERS);    // 10 mm
     m_leftMargin = 0;
     m_rightMargin = 0;
 
@@ -79,7 +81,7 @@ lmStaff::~lmStaff()
 
 }
 
-lmMicrons lmStaff::GetHeight()
+lmLUnits lmStaff::GetHeight()
 {
     // returns the height (in logical units) of the staff without margins, that is, the 
     // distance between first and last line
@@ -181,11 +183,11 @@ lmContext* lmStaff::NewContext(lmContext* pCurrentContext, int nNewAccidentals, 
       Two problems had to be solved:
 
         Problem 1: How to propagate changes to Notes using the context ?
-            When an alteration is inserted in/ deleted from a note it is the note who must
+            When an accidental is inserted in/ deleted from a note it is the note who must
             invoke for a change in context. And context propagates changes to the start of 
-            a new measure. To update pitched I devise two alternatives:
+            a new measure. To update pitch I devise two alternatives:
             1. If notes does not have precomputed pitch but it is computed when needed, nothing
-                else must be done: context is updated and pitched will be updated when required.
+                else must be done: context is updated and pitch will be updated when required.
             2. If notes must have pitch updated, then context must invoke a process to update
                 the pitch of all notes in the measure.
     
@@ -195,7 +197,7 @@ lmContext* lmStaff::NewContext(lmContext* pCurrentContext, int nNewAccidentals, 
             were to create a new context and what are the affected staffobj? ->
             There MUST exist a context for each measure. Too expensive?
 
-        A third alternative could solve both problems and keep picth updated: When an alteration
+        A third alternative could solve both problems and keep picth updated: When an accidental
         is inserted in or deleted from a note this note invokes a method (in lmVStaff) to update
         contexts. lmVStaff, through the lmColStaffObjs, has information
         about where each measure starts and which StaffObjs belong to each staff. So lmVStaff
@@ -204,7 +206,7 @@ lmContext* lmStaff::NewContext(lmContext* pCurrentContext, int nNewAccidentals, 
         to update their contexts.
 
         Solution:
-        In current implementation we used the third alternative, so in this method it is
+        In current implementation I use the third alternative, so in this method it is
         not necessary to do anything about, as te lmVStaff method UpdateContext() takes care
         of everything
     */

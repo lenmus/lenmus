@@ -456,15 +456,15 @@ public:
     lmInstrument* XML_FindInstrument(wxString sId);
 
     //layout related methods
-    lmMicrons SystemsDistance() { return m_nSystemsDistance; }
-    lmMicrons TopSystemDistance() { return m_nTopSystemDistance + m_nHeadersHeight; }
-    lmMicrons SystemsLeftMargin() { return m_nSystemsLeftMargin; }
-    lmMicrons SystemsRightMargin() { return m_nSystemsRightMargin; }
+    lmLUnits SystemsDistance() { return m_nSystemsDistance; }
+    lmLUnits TopSystemDistance() { return m_nTopSystemDistance + m_nHeadersHeight; }
+    lmLUnits SystemsLeftMargin() { return m_nSystemsLeftMargin; }
+    lmLUnits SystemsRightMargin() { return m_nSystemsRightMargin; }
 
-    void SetSystemsDistance(lmMicrons nDistance) { m_nSystemsDistance = nDistance; }
-    void SetTopSystemDistance(lmMicrons nDistance) { m_nTopSystemDistance = nDistance; }
-    void SetSystemsLeftMargin(lmMicrons nDistance) { m_nSystemsLeftMargin = nDistance; }
-    void SetSystemsRightMargin(lmMicrons nDistance) { m_nSystemsRightMargin = nDistance; }
+    void SetSystemsDistance(lmLUnits nDistance) { m_nSystemsDistance = nDistance; }
+    void SetTopSystemDistance(lmLUnits nDistance) { m_nTopSystemDistance = nDistance; }
+    void SetSystemsLeftMargin(lmLUnits nDistance) { m_nSystemsLeftMargin = nDistance; }
+    void SetSystemsRightMargin(lmLUnits nDistance) { m_nSystemsRightMargin = nDistance; }
 
     //global lmStaffObj list related methods
     void IncludeInGlobalList(lmStaffObj* pSO);
@@ -492,11 +492,11 @@ private:
     StaffObjsList    m_cHighlighted;        //list of highlighted staffobjs
 
     //Layout related variables
-    lmMicrons        m_nSystemsDistance;
-    lmMicrons        m_nTopSystemDistance;
-    lmMicrons        m_nSystemsLeftMargin;
-    lmMicrons        m_nSystemsRightMargin;
-    lmMicrons        m_nHeadersHeight;
+    lmLUnits        m_nSystemsDistance;
+    lmLUnits        m_nTopSystemDistance;
+    lmLUnits        m_nSystemsLeftMargin;
+    lmLUnits        m_nSystemsRightMargin;
+    lmLUnits        m_nHeadersHeight;
 
     //other variables
     lmFormatter*    m_pFormatter;            //rendering algorithm

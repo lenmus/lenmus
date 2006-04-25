@@ -164,7 +164,10 @@ lmEarCompareIntvCtrol::lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id,
     }
 
     wxBoxSizer* pCountersSizer = new wxBoxSizer( wxVERTICAL );
-    m_pScoreCtrol->SetMargins(10000, 10000, 20000);        //right=1cm, left=1cm, top=2cm
+    m_pScoreCtrol->SetMargins(
+            lmToLogicalUnits(1, lmCENTIMETERS),
+            lmToLogicalUnits(1, lmCENTIMETERS),
+            lmToLogicalUnits(2, lmCENTIMETERS));        //right=1cm, left=1cm, top=2cm
     m_pScoreCtrol->SetScale((float)1.3);
 
 
@@ -419,7 +422,7 @@ void lmEarCompareIntvCtrol::NewProblem()
     //create the two single-interval scores
     for (i=0; i<2; i++) {
         m_pScore[i] = new lmScore();
-        m_pScore[i]->SetTopSystemDistance(5000);               //5mm
+        m_pScore[i]->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) ); //5mm
         m_pScore[i]->AddInstrument(1,0,0);                     //one vstaff, MIDI channel 0, MIDI instr 0
         pVStaff = m_pScore[i]->GetVStaff(1, 1);      //get first vstaff of instr.1
         pVStaff->AddClef( nClef );
@@ -436,7 +439,7 @@ void lmEarCompareIntvCtrol::NewProblem()
 
     //create the answer score with both intervals
     lmScore* pTotalScore = new lmScore();
-    pTotalScore->SetTopSystemDistance(5000);               //5mm
+    pTotalScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
     pTotalScore->AddInstrument(1,0,0);                     //one vstaff, MIDI channel 0, MIDI instr 0
     pVStaff = pTotalScore->GetVStaff(1, 1);      //get first vstaff of instr.1
     pVStaff->AddClef( nClef );

@@ -72,7 +72,7 @@ public:
     wxString SourceXML();
 
     //rendering related methods
-    lmMicrons DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC = *wxBLACK);
+    lmLUnits DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC = *wxBLACK);
 
     //sound related methods
     void AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime, int nMeasure);
@@ -86,7 +86,7 @@ private:
     lmTenths GetSelRectShift();
     lmTenths GetGlyphOffset();
     wxString GetLenMusChar();
-    lmMicrons DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);
+    lmLUnits DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);
 
         // member variables
 

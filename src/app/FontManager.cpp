@@ -112,8 +112,8 @@ wxFont* lmFontManager::GetFont(int nPointSize, wxString sFontName,
     }
 
     // Font does not exist. Allocate it.
-    //wxLogMessage(_T("[lmFontManager::GetFont]: Allocating new font. size=%d, name=%s"),
-    //        nPointSize, sFontName);
+    wxLogMessage(_T("[lmFontManager::GetFont]: Allocating new font. size=%d, name=%s"),
+            nPointSize, sFontName);
 
     pFont = new wxFont(nPointSize, nFamily, nStyle, nWeight, fUnderline, 
                         sFontName, wxFONTENCODING_DEFAULT);

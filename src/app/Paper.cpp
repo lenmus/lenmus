@@ -114,7 +114,7 @@ wxSize& lmPaper::GetPaperSize()
 }
 
 
-void lmPaper::Prepare(lmScore* pScore, lmMicrons paperWidth, lmMicrons paperHeight, double rScale)
+void lmPaper::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight, double rScale)
 {
     // If the score has changed or the scale has changed or paper size has changed 
     // we need to recreate the bitmaps
@@ -155,8 +155,8 @@ void lmPaper::Prepare(lmScore* pScore, lmMicrons paperWidth, lmMicrons paperHeig
         // select a new bitmap into de memDC.
 
         ////DEBUG: draw red lines on last page to show cursor position
-        //lmMicrons yCur = GetCursorY();
-        //lmMicrons xCur = GetCursorX();
+        //lmLUnits yCur = GetCursorY();
+        //lmLUnits xCur = GetCursorX();
         //m_pDC->SetPen(*wxRED_PEN);
         //m_pDC->DrawLine(0, yCur, GetPaperSize().GetWidth(), yCur);
         //m_pDC->DrawLine(xCur, 0, xCur, GetPaperSize().GetHeight());
@@ -178,7 +178,7 @@ void lmPaper::RestartPageCursors()
 
 }
 
-void lmPaper::NewLine(lmMicrons nSpace)
+void lmPaper::NewLine(lmLUnits nSpace)
 {
     m_yCursor += nSpace;
     m_xCursor = GetPageLeftMargin();
@@ -208,8 +208,8 @@ void lmPaper::NewPage()
 
     ////DEBUG: draw green lines to show initial cursor position
     //if (m_numPages==1) {
-    //    lmMicrons yCur = GetCursorY();
-    //    lmMicrons xCur = GetCursorX();
+    //    lmLUnits yCur = GetCursorY();
+    //    lmLUnits xCur = GetCursorX();
     //    m_pDC->SetPen(*wxGREEN_PEN);
     //    m_pDC->DrawLine(0, yCur, GetPaperSize().GetWidth(), yCur);
     //    m_pDC->DrawLine(xCur, 0, xCur, GetPaperSize().GetHeight());
@@ -222,12 +222,12 @@ void lmPaper::NewPage()
 
 }
 
-lmMicrons lmPaper::GetRightMarginXPos()
+lmLUnits lmPaper::GetRightMarginXPos()
 { 
     return GetPaperSize().GetWidth() - GetPageRightMargin();
 }
 
-lmMicrons lmPaper::GetLeftMarginXPos()
+lmLUnits lmPaper::GetLeftMarginXPos()
 {
     return GetPageLeftMargin();
 }
@@ -250,6 +250,8 @@ wxBitmap* lmPaper::GetPageBitmap(wxInt32 nPage)
     } else {
         //No bitmap allocated. Create one
         pBitmap = new wxBitmap(m_xPageSize, m_yPageSize);
+        wxLogMessage(_T("[lmPaper::GetPageBitmap] Allocated bitmap (%d, %d) pixels, %d bits/pixel. Size= %.02f MB"),
+            m_xPageSize, m_yPageSize, pBitmap->GetDepth(), (double)((m_xPageSize * m_yPageSize * pBitmap->GetDepth())/8000000.) );
         if (!pBitmap || !pBitmap->Ok()) {
             if (pBitmap) {
                 delete pBitmap;

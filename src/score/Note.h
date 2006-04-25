@@ -50,7 +50,7 @@ public:
 
     //implementation of virtual methods of base classes
         // lmScoreObj
-    void SetLeft(lmMicrons nLeft);
+    void SetLeft(lmLUnits nLeft);
         // lmStaffObj
     wxBitmap*   GetBitmap(double rScale);
     void        DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
@@ -67,28 +67,28 @@ public:
 
 
     // methods related to note positioning information
-    lmMicrons GetPitchShift() { return (m_pVStaff->TenthsToLogical(GetPosOnStaff() * 10, m_nStaffNum )) / 2 ; }
-    lmMicrons GetAnchorPos() { return m_xAnchor; }
+    lmLUnits GetPitchShift() { return (m_pVStaff->TenthsToLogical(GetPosOnStaff() * 10, m_nStaffNum )) / 2 ; }
+    lmLUnits GetAnchorPos() { return m_xAnchor; }
     int GetPosOnStaff();        //line/space on which note is rendered
 
     // bounds of image. Abolute position (->referred to page origin)
-    lmMicrons GetBoundsTop();
-    lmMicrons GetBoundsBottom();
-    lmMicrons GetBoundsLeft();
-    lmMicrons GetBoundsRight();
+    lmLUnits GetBoundsTop();
+    lmLUnits GetBoundsBottom();
+    lmLUnits GetBoundsLeft();
+    lmLUnits GetBoundsRight();
 
     //methos related to stems
     EStemType   GetStemType() { return m_nStemType; }
-    lmMicrons   GetDefaultStemLength() { return m_pVStaff->TenthsToLogical(35, m_nStaffNum); }
-    void        SetStemLength(lmMicrons length) { m_nStemLength = length; };
+    lmLUnits   GetDefaultStemLength() { return m_pVStaff->TenthsToLogical(35, m_nStaffNum); }
+    void        SetStemLength(lmLUnits length) { m_nStemLength = length; };
     void        SetStemDirection(bool fStemDown) { m_fStemDown = fStemDown; }
-    lmMicrons   GetXStem() {return m_xStem + m_paperPos.x; }
-    lmMicrons   GetYStem() {return m_yStem + m_paperPos.y; }
-    lmMicrons   GetStemLength() { return m_nStemLength; }
-    lmMicrons   GetFinalYStem() {
+    lmLUnits   GetXStem() {return m_xStem + m_paperPos.x; }
+    lmLUnits   GetYStem() {return m_yStem + m_paperPos.y; }
+    lmLUnits   GetStemLength() { return m_nStemLength; }
+    lmLUnits   GetFinalYStem() {
                     return GetYStem() + (m_fStemDown ? m_nStemLength : -m_nStemLength); }
     bool        StemGoesDown() { return m_fStemDown; }
-    void        SetStemInfo(lmMicrons xStem, lmMicrons yStem, lmMicrons length) {
+    void        SetStemInfo(lmLUnits xStem, lmLUnits yStem, lmLUnits length) {
                     m_xStem = xStem;
                     m_yStem = yStem;
                     m_nStemLength = length;
@@ -126,11 +126,11 @@ private:
     // rendering
     void MakeUpPhase(lmPaper* pPaper);
     void DrawSingleNote(wxDC* pDC, bool fMeasuring, ENoteType nTipoNota,
-                        bool fStemAbajo, lmMicrons nxLeft, lmMicrons nyTop, wxColour colorC);
+                        bool fStemAbajo, lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC);
     void DrawNoteHead(wxDC* pDC, bool fMeasuring, ECabezaNotas nNoteheadType,
-                        lmMicrons nxLeft, lmMicrons nyTop, wxColour colorC);
-    void DrawAdditionalLines(wxDC* pDC, int nPosOnStaff, lmMicrons yTopLine, lmMicrons xPos,
-                        lmMicrons width, int nROP = wxCOPY);
+                        lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC);
+    void DrawAdditionalLines(wxDC* pDC, int nPosOnStaff, lmLUnits yTopLine, lmLUnits xPos,
+                        lmLUnits width, int nROP = wxCOPY);
 
     //auxiliary
     wxInt32 PosOnStaffToPitch(wxInt32 nSteps);
@@ -178,13 +178,13 @@ private:
     lmContext*      m_pContext;         //context for this note
 
     // additional positioning related variables
-    lmMicrons       m_xAnchor;          // x position of anchor line (relative to m_paperPos.x)
+    lmLUnits       m_xAnchor;          // x position of anchor line (relative to m_paperPos.x)
     wxRect          m_noteheadRect;     // notehead bounding rectangle (relative to paper)
 
     // stem information
-    lmMicrons       m_xStem;           //pos and length of stem (relative to m_paperPos)
-    lmMicrons       m_yStem;           //yStem refers to the notehead nearest position
-    lmMicrons       m_nStemLength;     //length of stem;
+    lmLUnits       m_xStem;           //pos and length of stem (relative to m_paperPos)
+    lmLUnits       m_yStem;           //yStem refers to the notehead nearest position
+    lmLUnits       m_nStemLength;     //length of stem;
     bool            m_fStemDown;       //stem direccion. true if down
     EStemType       m_nStemType;       //type of stem
 

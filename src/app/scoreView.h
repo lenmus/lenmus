@@ -72,6 +72,7 @@ public:
 
     //methods for dealing with user interaction
     void OnMouseEvent(wxMouseEvent& event, wxDC* pDC);
+    void OnMouseWheel(wxMouseEvent& event);
     void OnScroll(wxScrollEvent& event);
 
     //scrolling and painting

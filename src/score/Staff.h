@@ -36,17 +36,17 @@ class lmStaff
 {
 public:
     //ctor and dtor
-    lmStaff(lmScore* pScore, wxInt32 nNumLines=5, lmMicrons nMicrons=1800);
+    lmStaff(lmScore* pScore, wxInt32 nNumLines=5, lmLUnits nMicrons=0);
     ~lmStaff();
 
     // margins
-    lmMicrons GetAfterSpace() { return m_afterSpace; }
-    lmMicrons GetLeftMargin() { return m_leftMargin; }
-    lmMicrons GetRightMargin() { return m_rightMargin; }
-    void SetAfterSpace(lmMicrons nLogicalUnits) { m_afterSpace = nLogicalUnits; }
-    void SetLeftMargin(lmMicrons nLogicalUnits) { m_leftMargin = nLogicalUnits; }
-    void SetRightMargin(lmMicrons nLogicalUnits) { m_rightMargin = nLogicalUnits; }
-    void SetMargins(lmMicrons nLeft, lmMicrons nRight, lmMicrons nAfter) {
+    lmLUnits GetAfterSpace() { return m_afterSpace; }
+    lmLUnits GetLeftMargin() { return m_leftMargin; }
+    lmLUnits GetRightMargin() { return m_rightMargin; }
+    void SetAfterSpace(lmLUnits nLogicalUnits) { m_afterSpace = nLogicalUnits; }
+    void SetLeftMargin(lmLUnits nLogicalUnits) { m_leftMargin = nLogicalUnits; }
+    void SetRightMargin(lmLUnits nLogicalUnits) { m_rightMargin = nLogicalUnits; }
+    void SetMargins(lmLUnits nLeft, lmLUnits nRight, lmLUnits nAfter) {
                 m_afterSpace = nAfter;
                 m_leftMargin = nLeft;
                 m_rightMargin = nRight;
@@ -55,11 +55,11 @@ public:
     // sizes
     wxInt32 GetHeight();
 
-    lmMicrons GetLineSpacing() { return m_spacing; }
-    lmMicrons GetLineThick() { return m_lineThick; }
+    lmLUnits GetLineSpacing() { return m_spacing; }
+    lmLUnits GetLineThick() { return m_lineThick; }
     wxInt32 GetNumLines() { return m_numLines; }
 
-    lmMicrons TenthsToLogical(wxInt32 nTenths) { return (m_spacing * nTenths)/10; }
+    lmLUnits TenthsToLogical(wxInt32 nTenths) { return (m_spacing * nTenths)/10; }
     wxFont* GetFontDraw() { return m_pFontDraw; }
     void SetFontDraw(wxFont* pFont) { m_pFontDraw = pFont; }
 
@@ -81,14 +81,14 @@ public:
     lmContext* GetLastContext();
 
 private:
-    lmMicrons    m_lineThick;        // in logical units
+    lmLUnits    m_lineThick;        // in logical units
     wxInt32        m_numLines;
-    lmMicrons    m_spacing;            // in logical units (thousandths of a mm.,microns)
+    lmLUnits    m_spacing;            // in logical units (thousandths of a mm.,microns)
     wxFont*        m_pFontDraw;        // font to use for drawing on this staff
 
-    lmMicrons    m_leftMargin;        // lmStaff margins (logical units))
-    lmMicrons    m_rightMargin;
-    lmMicrons    m_afterSpace;
+    lmLUnits    m_leftMargin;        // lmStaff margins (logical units))
+    lmLUnits    m_rightMargin;
+    lmLUnits    m_afterSpace;
 
     // These variables are used to track current clef, tonal key and time key while processing
     // the score, either when rendering it, when exporting the score or when building from file

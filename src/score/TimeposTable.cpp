@@ -207,7 +207,7 @@ int lmTimeposTable::GetStartOfBarPosition()
     
 }
 
-lmMicrons lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
+lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
 {
     /*
     Pentobjs positions are arranged so that all StaffObjs that must sound at the same time
@@ -236,7 +236,7 @@ lmMicrons lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
     //-----------------------------------------------------------------------------------
     int nThread;            //auxiliary. The thread in process
     float rTime;            //auxiliary. The time value in process
-    lmMicrons nShift;        //auxiliary. x shift to apply
+    lmLUnits nShift;        //auxiliary. x shift to apply
     int nMinStartPos;        //minimum start position for StaffObjs of current time value
     //As the position for a time value must be greater than the maximum final position of
     //the StaffObjs located at the previous time value we have to:
@@ -373,7 +373,7 @@ lmMicrons lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
     //return the measure column size
     lmTimeposEntry* pEnd = m_aTimePos[m_aTimePos.GetCount() - 1];
     lmTimeposEntry* pStart = m_aTimePos[0];
-    lmMicrons nColumnSize = pEnd->m_xFinal - pStart->m_xLeft;
+    lmLUnits nColumnSize = pEnd->m_xFinal - pStart->m_xLeft;
 
     //if trace requested dump tables to log
     if (fTrace) {

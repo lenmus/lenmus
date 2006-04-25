@@ -250,7 +250,7 @@ void lmBeam::TrimStems()
     for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++) 
     {
         pNote = (lmNote*)pNode->GetData();
-         lmMicrons dyStem = pNote->GetDefaultStemLength();
+         lmLUnits dyStem = pNote->GetDefaultStemLength();
         if (pNote->IsInChord()) {
              pMinNote = (pNote->GetChord())->GetMinNote();
              pMaxNote = (pNote->GetChord())->GetMaxNote();
@@ -278,7 +278,7 @@ void lmBeam::TrimStems()
     for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++) 
     {
         pNote = (lmNote*)pNode->GetData();
-        lmMicrons dyStem = pNote->GetDefaultStemLength();
+        lmLUnits dyStem = pNote->GetDefaultStemLength();
         if (pNote->IsInChord()) {
             pMinNote = (pNote->GetChord())->GetMinNote();
             pMaxNote = (pNote->GetChord())->GetMaxNote();
@@ -318,9 +318,9 @@ void lmBeam::TrimStems()
 
         The loop is also used to look for the shortest stem
     */          
-    lmMicrons Ay = yTop[nNumNotes] - yTop[1];
-    lmMicrons x1 = m_pFirstNote->GetXStem();
-    lmMicrons Ax = m_pLastNote->GetXStem() - x1;
+    lmLUnits Ay = yTop[nNumNotes] - yTop[1];
+    lmLUnits x1 = m_pFirstNote->GetXStem();
+    lmLUnits Ax = m_pLastNote->GetXStem() - x1;
     lmNoteRest* pNR;
     int nMinStem;
     for(i=1, pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++) 
@@ -344,7 +344,7 @@ void lmBeam::TrimStems()
         So let's avoid these problems by adjusting the stems so that all stems have 
         a minimum height
     */
-    lmMicrons dyStem = m_pFirstNote->GetDefaultStemLength();
+    lmLUnits dyStem = m_pFirstNote->GetDefaultStemLength();
     int dyMin = (2 * dyStem) / 3;
     bool fAdjust;
 
@@ -382,7 +382,7 @@ void lmBeam::TrimStems()
     // Transfer the computed values to the notes
     for(i=1, pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++) 
     {
-        lmMicrons nLength = (yBase[i] > yTop[i] ? yBase[i] - yTop[i] : yTop[i] - yBase[i]);
+        lmLUnits nLength = (yBase[i] > yTop[i] ? yBase[i] - yTop[i] : yTop[i] - yBase[i]);
         pNR = (lmNoteRest*)pNode->GetData();
         if (pNR->IsRest()) {
             ((lmRest*)pNR)->SetDisplacement(m_nPosForRests);
@@ -417,7 +417,7 @@ void lmBeam::TrimStems()
 //    
 //}
 
-void lmBeam::DrawBeamLines(wxDC* pDC, lmMicrons nThickness, lmMicrons nBeamSpacing)
+void lmBeam::DrawBeamLines(wxDC* pDC, lmLUnits nThickness, lmLUnits nBeamSpacing)
 {
     /*
     This method is only called from lmNote::DrawObject(), in particular from the last note
@@ -552,7 +552,7 @@ int lmBeam::ComputeYPosOfSegment(lmNote* pNote, bool fStemDown, int yShift)
 }
 
 void lmBeam::DrawBeamSegment(wxDC* pDC, bool fStemDown, int xStart, int yStart,
-                             int xEnd, int yEnd, lmMicrons nThickness,
+                             int xEnd, int yEnd, lmLUnits nThickness,
                              lmNote* pStartNote, lmNote* pEndNote)
 {
     //check to see if the beam segment has to be splitted in two systems
@@ -565,8 +565,8 @@ void lmBeam::DrawBeamSegment(wxDC* pDC, bool fStemDown, int xStart, int yStart,
             wxLogMessage(_T("***** BEAM SPLIT ***"));
             return; //to avoid rendering bad lines across the score. It is less noticeable
             // pPaper must be a parameter of this method. It is necessary to replace pDC
-            //lmMicrons xLeft = pPaper->GetLeftMarginXPos();
-            //lmMicrons xRight = pPaper->GetRightMarginXPos();
+            //lmLUnits xLeft = pPaper->GetLeftMarginXPos();
+            //lmLUnits xRight = pPaper->GetRightMarginXPos();
         }
     }
 

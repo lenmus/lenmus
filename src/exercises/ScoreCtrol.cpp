@@ -126,7 +126,9 @@ lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
     m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, pScore, wxDefaultPosition, size,
                             (m_pOptions->fMusicBorder ? eSIMPLE_BORDER : eNO_BORDER) );
     pMainSizer->Add(m_pScoreCtrol, 1, wxGROW|wxALL, 5);
-    m_pScoreCtrol->SetMargins(10000, 10000, -15000);        //right=1cm, left=1cm, top= -1.5 cm
+    m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
+                              lmToLogicalUnits(10, lmMILLIMETERS),
+                              - lmToLogicalUnits(15, lmMILLIMETERS));        //right=1cm, left=1cm, top= -1.5 cm
     m_pScoreCtrol->SetScale((float)1.3);
 
     //

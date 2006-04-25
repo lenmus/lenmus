@@ -52,7 +52,7 @@ lmAccidental::lmAccidental(lmNoteRest* pOwner, EAccidentals nType) :
 }
 
 void lmAccidental::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nStaffNum,
-                             lmMicrons xPos, lmMicrons yPos)
+                             lmLUnits xPos, lmLUnits yPos)
 {
     /*
     This method does the measurement phase
@@ -65,7 +65,7 @@ void lmAccidental::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 n
 
     // prepare glyph and measure it
     wxString sGlyphs = GetAccidentalGlyphs(m_nType);
-    lmMicrons nWidth, nHeight;
+    lmLUnits nWidth, nHeight;
     pDC->GetTextExtent(sGlyphs, &nWidth, &nHeight);
 
     // store glyphs position

@@ -183,7 +183,7 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
     lmLDPParser parserLDP;
     lmLDPNode* pNode;
     lmScore* pScore = new lmScore();
-    pScore->SetTopSystemDistance(5000);            //5mm
+    pScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );            //5mm
     pScore->AddInstrument(1,0,0);                  //one vstaff, MIDI channel 0, MIDI instr 0
     lmVStaff *pVStaff = pScore->GetVStaff(1, 1);   //get first vstaff of instr.1
     pVStaff->AddClef( m_nClef );

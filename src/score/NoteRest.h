@@ -117,7 +117,7 @@ public:
     virtual lmScoreObj* FindSelectableObject(wxPoint& pt)=0;
 
     // methods related to note/rest positioning information
-    lmMicrons GetStaffOffset() { return m_pVStaff->GetStaffOffset(m_nStaffNum); }
+    lmLUnits GetStaffOffset() { return m_pVStaff->GetStaffOffset(m_nStaffNum); }
 
     //methods related to associated AuxObjs management
     void AddFermata(bool fOverNote = true);

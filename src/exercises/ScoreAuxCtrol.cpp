@@ -70,7 +70,9 @@ lmScoreAuxCtrol::lmScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScor
     m_sMsg = wxEmptyString;
     m_fDisplayMessage = false;
 
-    SetMargins(10000, 10000, 10000);    //right=1cm, left=1cm, top=1cm
+    SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
+               lmToLogicalUnits(10, lmMILLIMETERS),
+               lmToLogicalUnits(10, lmMILLIMETERS));    //right=1cm, left=1cm, top=1cm
     SetScale(1.0);
 
     m_fHidden = false;
@@ -82,7 +84,7 @@ lmScoreAuxCtrol::~lmScoreAuxCtrol()
     if (m_pScore) delete m_pScore;
 }
 
-void lmScoreAuxCtrol::SetMargins(lmMicrons nLeft, lmMicrons nRight, lmMicrons nTop)
+void lmScoreAuxCtrol::SetMargins(lmLUnits nLeft, lmLUnits nRight, lmLUnits nTop)
 {
     /*
     Margings are absolute, that is, independent of the scale
@@ -193,7 +195,7 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
 
 }
 
-void lmScoreAuxCtrol::DisplayMessage(wxString sMsg, lmMicrons posMsg, bool fClearScore)
+void lmScoreAuxCtrol::DisplayMessage(wxString sMsg, lmLUnits posMsg, bool fClearScore)
 {
     if (m_pScore && !m_fHidden && fClearScore) {
         delete m_pScore;

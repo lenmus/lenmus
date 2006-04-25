@@ -65,8 +65,8 @@ wxBitmap* lmBarline::GetBitmap(double rScale)
     wxScreenDC dc;
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale(rScale, rScale);
-    lmMicrons hL = m_pVStaff->GetYBottom() - m_pVStaff->GetYTop();
-    lmMicrons wL = DrawBarline(DO_MEASURE, &dc, 0, 0, hL, g_pColors->ScoreSelected());
+    lmLUnits hL = m_pVStaff->GetYBottom() - m_pVStaff->GetYTop();
+    lmLUnits wL = DrawBarline(DO_MEASURE, &dc, 0, 0, hL, g_pColors->ScoreSelected());
 
     // allocate a memory DC for drawing into a bitmap
     wxMemoryDC dc2;
@@ -156,13 +156,13 @@ wxString lmBarline::SourceXML()
 
 void lmBarline::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {
-    lmMicrons yTop = m_pVStaff->GetYTop();
-    lmMicrons yBottom = m_pVStaff->GetYBottom();
+    lmLUnits yTop = m_pVStaff->GetYTop();
+    lmLUnits yBottom = m_pVStaff->GetYBottom();
     
     wxDC* pDC = pPaper->GetDC();
     wxASSERT(pDC);
-    lmMicrons xPos = pPaper->GetCursorX();
-    lmMicrons nWidth = DrawBarline(fMeasuring, pDC, xPos, yTop, yBottom, colorC);
+    lmLUnits xPos = pPaper->GetCursorX();
+    lmLUnits nWidth = DrawBarline(fMeasuring, pDC, xPos, yTop, yBottom, colorC);
 
     if (fMeasuring) {
         // store selection rectangle measures and position
@@ -182,11 +182,11 @@ void lmBarline::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 }
 
 // returns the width of the barline (in microns)
-lmMicrons lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmMicrons xPos, lmMicrons yTop,
-                               lmMicrons yBottom, wxColour colorC)
+lmLUnits lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUnits yTop,
+                               lmLUnits yBottom, wxColour colorC)
 {
-#define THIN_LINE_WIDTH        200        // thin line width will be 0.2 mm (200 microns)
-#define THICK_LINE_WIDTH    1000    // thick line width will be 1.0 mm (1000 microns)
+    lmLUnits THIN_LINE_WIDTH = lmToLogicalUnits(0.2, lmMILLIMETERS);    // thin line width will be 0.2 mm
+    lmLUnits THICK_LINE_WIDTH = lmToLogicalUnits(1, lmMILLIMETERS);    // thick line width will be 1.0 mm
 
     int nSpacing = m_pVStaff->TenthsToLogical(4, 1);    //space between lines: 4 tenths
     if (!fMeasuring) {
@@ -204,7 +204,7 @@ lmMicrons lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmMicrons xPos, lmM
                 xPos += THIN_LINE_WIDTH + nSpacing;
                 DrawThinLine(pDC, xPos, yTop, yBottom);
             }
-            return (lmMicrons)(nSpacing + THIN_LINE_WIDTH + THIN_LINE_WIDTH);
+            return (lmLUnits)(nSpacing + THIN_LINE_WIDTH + THIN_LINE_WIDTH);
             break;
             
         case etbBarraFinRepeticion:
@@ -215,7 +215,7 @@ lmMicrons lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmMicrons xPos, lmM
                 xPos += THIN_LINE_WIDTH + nSpacing;
                 DrawThickLine(pDC, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
             }
-            return (lmMicrons)(nSpacing + nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
+            return (lmLUnits)(nSpacing + nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
             break;
 
         case etbBarraInicioRepeticion:
@@ -226,7 +226,7 @@ lmMicrons lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmMicrons xPos, lmM
                 xPos += nSpacing/2;
                 DrawTwoDots(pDC, xPos, yTop);
             }
-            return (lmMicrons)(nSpacing + nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
+            return (lmLUnits)(nSpacing + nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
             break;
             
         case etbDobleRepeticion:
@@ -239,7 +239,7 @@ lmMicrons lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmMicrons xPos, lmM
                 xPos += THIN_LINE_WIDTH + nSpacing/2;
                 DrawTwoDots(pDC, xPos, yTop);
             }
-            return (lmMicrons)(nSpacing + nSpacing + THIN_LINE_WIDTH + THIN_LINE_WIDTH);
+            return (lmLUnits)(nSpacing + nSpacing + THIN_LINE_WIDTH + THIN_LINE_WIDTH);
             break;
         
         case etbBarraInicial:
@@ -248,7 +248,7 @@ lmMicrons lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmMicrons xPos, lmM
                 xPos += THICK_LINE_WIDTH + nSpacing;
                 DrawThinLine(pDC, xPos, yTop, yBottom);
             }
-            return (lmMicrons)(nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
+            return (lmLUnits)(nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
             break;
             
         case etbBarraFinal:
@@ -257,7 +257,7 @@ lmMicrons lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmMicrons xPos, lmM
                 xPos += THIN_LINE_WIDTH + nSpacing;
                 DrawThickLine(pDC, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
             }
-            return (lmMicrons)(nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
+            return (lmLUnits)(nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
             break;
 
         case etbBarraNormal:
@@ -274,7 +274,7 @@ lmMicrons lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmMicrons xPos, lmM
     }
 }
 
-void lmBarline::DrawThinLine(wxDC* pDC, lmMicrons xPos, lmMicrons yTop, lmMicrons yBottom)
+void lmBarline::DrawThinLine(wxDC* pDC, lmLUnits xPos, lmLUnits yTop, lmLUnits yBottom)
 {
     /*
     The DC must have pen and brush properly set
@@ -284,8 +284,8 @@ void lmBarline::DrawThinLine(wxDC* pDC, lmMicrons xPos, lmMicrons yTop, lmMicron
 }
 
 
-void lmBarline::DrawThickLine(wxDC* pDC, lmMicrons xLeft, lmMicrons yTop, lmMicrons nWidth,
-                            lmMicrons nHeight)
+void lmBarline::DrawThickLine(wxDC* pDC, lmLUnits xLeft, lmLUnits yTop, lmLUnits nWidth,
+                            lmLUnits nHeight)
 {
     /*
     We can not use DrawLine because with DrawLine function we get end of lines rounded
@@ -297,11 +297,11 @@ void lmBarline::DrawThickLine(wxDC* pDC, lmMicrons xLeft, lmMicrons yTop, lmMicr
 
 }
 
-void lmBarline::DrawTwoDots(wxDC* pDC, lmMicrons xPos, lmMicrons yPos)
+void lmBarline::DrawTwoDots(wxDC* pDC, lmLUnits xPos, lmLUnits yPos)
 {            
-    lmMicrons radius = m_pVStaff->TenthsToLogical(2, 1);    // 2 tenths
-    lmMicrons shift1 = m_pVStaff->TenthsToLogical(15, 1) + radius;    // 1.5 lines
-    lmMicrons shift2 = m_pVStaff->TenthsToLogical(25, 1) + radius;    // 2.5 lines
+    lmLUnits radius = m_pVStaff->TenthsToLogical(2, 1);    // 2 tenths
+    lmLUnits shift1 = m_pVStaff->TenthsToLogical(15, 1) + radius;    // 1.5 lines
+    lmLUnits shift2 = m_pVStaff->TenthsToLogical(25, 1) + radius;    // 2.5 lines
     pDC->DrawCircle((wxCoord)xPos, (wxCoord)(yPos + shift1), (wxCoord)radius);
     pDC->DrawCircle((wxCoord)xPos, (wxCoord)(yPos + shift2), (wxCoord)radius);
     

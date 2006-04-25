@@ -47,7 +47,7 @@ public:
 
     //implementation of virtual methods of base classes
         // lmScoreObj
-    void SetLeft(lmMicrons nLeft);
+    void SetLeft(lmLUnits nLeft);
         // lmStaffObj
     wxBitmap*    GetBitmap(double rScale);
     void        DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);

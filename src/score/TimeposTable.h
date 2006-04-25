@@ -97,7 +97,7 @@ public:
     int        nThread;        //num. of the thread to which this element belongs
     int        nItem;            //index to TimePos table
     float    rTimePos;        //timepos for this entry
-    lmMicrons    nShift;        //x position shift to apply to this entry
+    lmLUnits    nShift;        //x position shift to apply to this entry
 
 };
 
@@ -131,7 +131,7 @@ public:
     //methods to compute results
     int        GetStartOfBarPosition();
     int        GetGrossBarSize();
-    lmMicrons    ArrangeStaffobjsByTime(bool fTrace = false);
+    lmLUnits    ArrangeStaffobjsByTime(bool fTrace = false);
     int        RedistributeSpace(int nNewBarSize, int nNewStart);
 
     //methods for debugging

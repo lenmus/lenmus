@@ -84,47 +84,7 @@ Planning: comming releases
 ******************************************************************************************
 
 Bugs to solve:
-    - When changing interval settings in earIntervalCtrol it is necessary to rebuild
-      the control as buttons number and names are changed. Also crashes will
-      occur, as buttons displayed does not correspond to constrains.
         
-
-2/Apr/2006 - Beta 3.0b0 release
---------------------------------------------------
-
-    Features and changes:
-        - Spanish translation
-        - eBooks in English
-        - Help file
-        - eBooks for music reading
-        - Installer for Windows
-        
-    Tasks:
-        + Translation of program into Spanish
-            + prepare .po file
-            + translate .po
-            + translate/review L2_MusicReading eBook
-            + translate/review intro eBook
-            + translate/review SingleExercises eBook
-            
-        + Translation of eBooks into English
-            + translate/review L2_MusicReading eBook
-            + translate/review intro eBook
-            + translate/review SingleExercises eBook
-            
-        - Installer for Windows
-            + Write NSIS installer for Windows
-            - Test it with VMWare in Win2000 and verify that pormidi and wxMidi are
-                installed. How are they included?
-                
-        - Splash: finish it.
-            - write fixed copyright/credits text
-            - prepare new image with this text
-            
-        + Prepare program help
-            + prepare help in English
-            + translate it into Spanish
-
 
 ?/???/2006 - Stable 3.0 release (beta 3.0b0 + 1 month)
 ---------------------------------------------------
@@ -138,8 +98,12 @@ Bugs to solve:
 
     Features and changes:
         - Support for LDP tags internationalization.
-        - Pattern editor
-        
+        - Music patterns editor, to customize music reading exercises.
+		- 'Wrong / right answers' counters for all exercises.
+		- Answer buttons for Scales exercises.
+		- Continue extending support to include more musical signs in scores and texts.
+		- Exercises on chords.
+
 
 Upcomig releases features 
 ----------------------------------------------
@@ -178,7 +142,7 @@ Known bugs:
         - Problem with chord stems (vanished)in faur_reve_sample.xml
 
 
-
+	- If Midi Wizard is cancelled some non-relevant error messages are displayed.
 
 ------------------------------------------------------------------------------------------
 
@@ -195,8 +159,6 @@ Known bugs:
 
 - Modify UrlAuxCtrol to optionally include an icon at the left.
 
-+ A strong parser for MusicReading params. Actually any mistake produces a program crash.
-    
 - Composer5:
     Barline alignment constrains
     
@@ -262,48 +224,5 @@ TODO:
      
 
      
-     
-*/
-/*
-<!-- LOG OF THINGS DONE (CHANGE LOG)                                                                  -->
-<!-- ================================================================================================ -->
-
-<!--
-<center>
-  <table width="64" class="Lista">
-    <tr valign="top"> 
-      <td height="32" class="ListaImpar"><strong>Type</strong></td>
-      <td class="ListaImpar"><strong>Description</strong></td>
-    </tr>
-    <tr valign="top"> 
-      <td width="6" height="32" class="ListaPar">FIX</td>
-      <td width="94" class="ListaPar">Fix a bug</td>
-    </tr>
-    <tr valign="top"> 
-      <td class="ListaPar">NEW</td>
-      <td class="ListaPar">Added a new functionality to the program.</td>
-    </tr>
-    <tr valign="top"> 
-      <td class="ListaPar">GUI</td>
-      <td class="ListaPar">Change in the user interface to improve ergonomy or for
-      other reasons.</td>
-    </tr>
-    <tr valign="top"> 
-      <td class="ListaPar">CHG</td>
-      <td class="ListaPar">Internal technical change. Does not add new functionality neither
-        changes the GUI. It serve to other purposes: to enable future functionalities,
-        to improve coding, to improve performance, etc.</td>
-    </tr>
-  </table>
-</center>
-<p>&nbsp;</p>
--->
-
-<tr valign="top">
-    <td class="ListaPar">21-oct-05</td>
-    <td class="ListaPar">
-        Composer5: Note generation and instantation finised.
-        - Starting to code DataBase.cpp/.h
-       </td></tr>
 
 */

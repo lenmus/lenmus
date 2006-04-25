@@ -34,7 +34,7 @@
 //// Types used for portability
 
 //units
-#define lmMicrons    int        // lmPaper logical units. 32 bits int
+#define lmLUnits    int        // lmPaper logical units. 32 bits int
 #define lmTenths    int        // Staff relative units.  32 bits int
 #define lmPixels    int        // Device units (usually pixels).  32 bits int
 
@@ -57,6 +57,18 @@
 
 // DC user mode
 #define lmDC_MODE    wxMM_LOMETRIC    // mode for DC (logical unit: one tenth of mm)
-#define lmSCALE        0.01            // scaling factor so that logical units become microns
+#define lmSCALE        1.0            // scaling factor so that logical units become microns
+
+enum lmUnits {
+    lmMICRONS = 0,
+    lmMILLIMETERS,
+    lmCENTIMETERS,
+    lmINCHES
+};
+
+// defined in TheApp.cpp
+extern int lmToLogicalUnits(int nValue, lmUnits nUnits);
+extern int lmToLogicalUnits(double rValue, lmUnits nUnits);
+
 
 #endif    // __DEFS_H__ 

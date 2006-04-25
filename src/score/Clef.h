@@ -68,7 +68,7 @@ public:
     wxString SourceXML();
 
     //rendering related methods
-    lmMicrons DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC = *wxBLACK);
+    lmLUnits DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC = *wxBLACK);
 
 
 
@@ -78,7 +78,7 @@ private:
     lmTenths GetSelRectShift();
     lmTenths GetGlyphOffset();
     wxString GetLenMusChar();
-    lmMicrons DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);
+    lmLUnits DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);
 
 };
 

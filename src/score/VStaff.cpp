@@ -123,7 +123,7 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
     m_leftMargin = 0;
     m_topMargin = 0;
     m_rightMargin = 0;
-    m_bottomMargin = 100;    // 1 cm
+    m_bottomMargin = lmToLogicalUnits(1, lmCENTIMETERS);    // 1 cm
 
     //create one standard staff (five lines, 7.2 mm height)
     lmStaff* pStaff = new lmStaff(pScore);
@@ -139,7 +139,7 @@ lmVStaff::~lmVStaff()
     m_cStaves.Clear();
 }
 
-lmStaff* lmVStaff::AddStaff(wxInt32 nNumLines, lmMicrons nMicrons)
+lmStaff* lmVStaff::AddStaff(wxInt32 nNumLines, lmLUnits nMicrons)
 {
     lmStaff* pStaff = new lmStaff(m_pScore, nNumLines, nMicrons);
     m_cStaves.Append(pStaff);
@@ -181,7 +181,7 @@ lmStaff* lmVStaff::GetLastStaff()
     return (m_pStaffNode ? (lmStaff *)m_pStaffNode->GetData() : (lmStaff *)m_pStaffNode);
 }
 
-lmMicrons lmVStaff::TenthsToLogical(lmTenths nTenths, wxInt32 nStaff)
+lmLUnits lmVStaff::TenthsToLogical(lmTenths nTenths, wxInt32 nStaff)
 {
     lmStaff* pStaff = GetStaff(nStaff);
     wxASSERT(pStaff);
@@ -445,10 +445,10 @@ void lmVStaff::Draw(lmPaper* pPaper)
 
 void lmVStaff::DrawStaffLines(bool fMeasuring,
                             lmPaper* pPaper,
-                            lmMicrons dyInicial,
-                            lmMicrons dyEntrePentagramas,
-                            lmMicrons xFrom,
-                            lmMicrons xTo)
+                            lmLUnits dyInicial,
+                            lmLUnits dyEntrePentagramas,
+                            lmLUnits xFrom,
+                            lmLUnits xTo)
 {
     /*
         Draw all staff lines of this lmVStaff and store their sizes and positions
@@ -470,15 +470,15 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
 
     wxDC* pDC = pPaper->GetDC();
 
-    lmMicrons xRight, yCur;
+    lmLUnits xRight, yCur;
 
-    //DEBUG: draw top border of lmVStaff region
-    m_xLeft = pPaper->GetLeftMarginXPos();
-    xRight = pPaper->GetRightMarginXPos();
-    yCur = pPaper->GetCursorY();
-    pDC->SetPen(*wxRED_PEN);
-    pDC->DrawLine(m_xLeft, yCur-1, xRight, yCur-1);
-    //-----------------------------------------
+    ////DEBUG: draw top border of lmVStaff region
+    //m_xLeft = pPaper->GetLeftMarginXPos();
+    //xRight = pPaper->GetRightMarginXPos();
+    //yCur = pPaper->GetCursorY();
+    //pDC->SetPen(*wxRED_PEN);
+    //pDC->DrawLine(m_xLeft, yCur-1, xRight, yCur-1);
+    ////-----------------------------------------
 
 
     //Set left position and lenght of lines, and save them
@@ -489,10 +489,10 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
     yCur = pPaper->GetCursorY() + m_topMargin;
     m_yLinTop = yCur;              //save y coord. for first line start point
 
-    //DEBUG: draw top border of first lmStaff region
-    pDC->SetPen(*wxCYAN_PEN);
-    pDC->DrawLine(m_xLeft, yCur-1, xRight, yCur-1);
-    //-----------------------------------------
+    ////DEBUG: draw top border of first lmStaff region
+    //pDC->SetPen(*wxCYAN_PEN);
+    //pDC->DrawLine(m_xLeft, yCur-1, xRight, yCur-1);
+    ////-----------------------------------------
 
     //??    pDC->DrawWidth = m_nGrosorLineas;
     pDC->SetPen(*wxBLACK_PEN);
@@ -547,12 +547,12 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
     //       Let dyLines be the distance between lines (logical units), then
     //       Font size = 3 * dyLines   (logical points)
 
-    lmMicrons dyLinesL = pStaff->GetLineSpacing();
+    lmLUnits dyLinesL = pStaff->GetLineSpacing();
 
     // the font for drawing is scaled by the DC.
     pStaff->SetFontDraw( pPaper->GetFont(3 * dyLinesL) );        //logical points
 
-    //wxLogMessage(_T("[lmVStaff::SetFont] dyLinesL=%d"), dyLinesL); 
+    wxLogMessage(_T("[lmVStaff::SetFont] dyLinesL=%d"), dyLinesL); 
 
     //// the font for dragging is not scaled by the DC as all dragging operations takes
     //// place dealing with device units
@@ -604,11 +604,11 @@ lmScoreObj* lmVStaff::FindSelectableObject(wxPoint& pt)
 
 }
 
-lmMicrons lmVStaff::GetStaffOffset(wxInt32 nStaff)
+lmLUnits lmVStaff::GetStaffOffset(wxInt32 nStaff)
 {
     //returns the Y offset to staff nStaff (1..n)
     wxASSERT(nStaff <= GetNumStaves() );
-    lmMicrons yOffset = m_topMargin;
+    lmLUnits yOffset = m_topMargin;
 
     // iterate over the collection of Staves (lmStaff Objects) to add up the
     // height and after space of all previous staves to the requested one
@@ -747,12 +747,12 @@ wxString lmVStaff::SourceXML()
 // to know the y coordinate of the top most upper line of first staff and the bottom most lower
 // line of the last staff.
 
-lmMicrons lmVStaff::GetYTop()
+lmLUnits lmVStaff::GetYTop()
 {
     return m_yLinTop;
 }
 
-lmMicrons lmVStaff::GetYBottom()
+lmLUnits lmVStaff::GetYBottom()
 {
     return m_yLinBottom;
 }
@@ -761,7 +761,7 @@ lmMicrons lmVStaff::GetYBottom()
 //    Largo = m_dxLin
 //}
 
-lmMicrons lmVStaff::GetVStaffHeight()
+lmLUnits lmVStaff::GetVStaffHeight()
 {
     //! @todo all
     //devuelve la altura (incluido el espacio de separación posterior) del conjunto de pentagramas
@@ -775,7 +775,7 @@ lmMicrons lmVStaff::GetVStaffHeight()
     //}  // iP
     //
     //return rAlto - pStaff->GetAfterSpace() + m_bottomMargin
-    return 20000;    // 2cm
+    return lmToLogicalUnits(2, lmCENTIMETERS);      // 2cm
     
 }
 
@@ -964,7 +964,7 @@ void lmVStaff::DrawProlog(bool fMeasuring, bool fDrawTimekey, lmPaper* pPaper)
     */
 
     wxDC* pDC = pPaper->GetDC();
-    lmMicrons nPrologWidth = 0;
+    lmLUnits nPrologWidth = 0;
 
     wxASSERT(pDC);
     lmClef* pClef = (lmClef*)NULL;
@@ -974,16 +974,16 @@ void lmVStaff::DrawProlog(bool fMeasuring, bool fDrawTimekey, lmPaper* pPaper)
 
     //@attention when this method is invoked the paper position must be at the left marging,
     //at the start of a new system.
-    lmMicrons xStartPos = pPaper->GetCursorX();         //Save x to align all clefs
-    lmMicrons yStartPos = pPaper->GetCursorY();
+    lmLUnits xStartPos = pPaper->GetCursorX();         //Save x to align all clefs
+    lmLUnits yStartPos = pPaper->GetCursorY();
     
     //iterate over the collection of lmStaff objects to draw current cleft and key signature
 
     wxStaffListNode* pNode = m_cStaves.GetFirst();
     lmStaff* pStaff = (lmStaff*)NULL;
-    lmMicrons yOffset = 0;
-    lmMicrons xPos=0;
-    lmMicrons nWidth=0;
+    lmLUnits yOffset = 0;
+    lmLUnits xPos=0;
+    lmLUnits nWidth=0;
 
     for (int nStaff=1; pNode; pNode = pNode->GetNext(), nStaff++)
     {

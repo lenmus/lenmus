@@ -41,18 +41,18 @@ public:
     lmArch();
     ~lmArch() {}
 
-    void SetStartPoint(lmMicrons xPos, lmMicrons yPos);
-    void SetEndPoint(lmMicrons xPos, lmMicrons yPos);
-    void SetCtrolPoint1(lmMicrons xPos, lmMicrons yPos);
-    void SetCtrolPoint2(lmMicrons xPos, lmMicrons yPos);
-    inline lmMicrons GetStartPosX() { return m_xStart; }
-    inline lmMicrons GetStartPosY() { return m_yStart; }
-    inline lmMicrons GetEndPosX() { return m_xEnd; }
-    inline lmMicrons GetEndPosY() { return m_yEnd; }
-    inline lmMicrons GetCtrol1PosX() { return m_xCtrol1; }
-    inline lmMicrons GetCtrol1PosY() { return m_yCtrol1; }
-    inline lmMicrons GetCtrol2PosX() { return m_xCtrol2; }
-    inline lmMicrons GetCtrol2PosY() { return m_yCtrol2; }
+    void SetStartPoint(lmLUnits xPos, lmLUnits yPos);
+    void SetEndPoint(lmLUnits xPos, lmLUnits yPos);
+    void SetCtrolPoint1(lmLUnits xPos, lmLUnits yPos);
+    void SetCtrolPoint2(lmLUnits xPos, lmLUnits yPos);
+    inline lmLUnits GetStartPosX() { return m_xStart; }
+    inline lmLUnits GetStartPosY() { return m_yStart; }
+    inline lmLUnits GetEndPosX() { return m_xEnd; }
+    inline lmLUnits GetEndPosY() { return m_yEnd; }
+    inline lmLUnits GetCtrol1PosX() { return m_xCtrol1; }
+    inline lmLUnits GetCtrol1PosY() { return m_yCtrol1; }
+    inline lmLUnits GetCtrol2PosX() { return m_xCtrol2; }
+    inline lmLUnits GetCtrol2PosY() { return m_yCtrol2; }
 
     void Draw(wxDC* pDC, wxColour colorC);
 
@@ -61,10 +61,10 @@ protected:
 
 
     // start, end and control poins coordinates, absolute paper position
-    lmMicrons    m_xStart, m_yStart;
-    lmMicrons    m_xEnd, m_yEnd;
-    lmMicrons    m_xCtrol1, m_yCtrol1;
-    lmMicrons    m_xCtrol2, m_yCtrol2;
+    lmLUnits    m_xStart, m_yStart;
+    lmLUnits    m_xEnd, m_yEnd;
+    lmLUnits    m_xCtrol1, m_yCtrol1;
+    lmLUnits    m_xCtrol2, m_yCtrol2;
 
 };
 
@@ -82,8 +82,8 @@ public:
     void Remove(lmNote* pNote);
     lmNote* GetStartNote() const { return m_pStartNote; }
     lmNote* GetEndNote() const { return m_pEndNote; }
-    void SetStartPoint(lmMicrons xPos, lmMicrons yPos, lmMicrons xPaperRight, bool fUnderNote);
-    void SetEndPoint(lmMicrons xPos, lmMicrons yPos, lmMicrons xPaperLeft);
+    void SetStartPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperRight, bool fUnderNote);
+    void SetEndPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperLeft);
     bool IsUnderNote() { return m_fTieUnderNote; }
 
     void UpdateMeasurements();
@@ -100,8 +100,8 @@ protected:
     lmNote*     m_pEndNote;
     lmArch      m_mainArc;          // the arc that normally renders the tie
     lmArch*     m_pExtraArc;        // in case the tie continues in the next system
-    lmMicrons   m_xPaperLeft;
-    lmMicrons   m_xPaperRight;
+    lmLUnits   m_xPaperLeft;
+    lmLUnits   m_xPaperRight;
     bool        m_fTieUnderNote;    // tie must go under note
 
 };

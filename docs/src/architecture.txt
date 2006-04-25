@@ -194,6 +194,21 @@ When inserting/deleting staffobjects that modify the context ???
 b) alternative 2:
 As in MusicXML, each note keeps information about displayed accidentals and sound accidentals
 
+@section context_for_objects Design rationale: contexts
+<!-- ========================================================= -->
+
+There are a number of parameters that controls behaviour of all renderization / play 
+back / other processes. For maximum control users should be allowed to modify any
+of these parameters.
+
+Currently these parameters are variables and constants defined in each staff objects. The constants
+could be transformed into variables, so that its value could be changed by the user.
+
+These will bring us to a huge amount of variables associated to each staffobj. Appart of the
+amount of memory required we have to solve the problem of updating the values:
+1. Global updates: a global change will imply updating the value in all objects
+2. Local updates: a local update will imply updating the value only on the selected objects
+
 
 @section internationalization Notes on internationalization
 <!-- ========================================================= -->

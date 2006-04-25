@@ -44,7 +44,6 @@
 ////
 
 #include "EarIntervalsCtrol.h"
-#include "UrlAuxCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
 #include "../auxmusic/Conversion.h"
@@ -59,7 +58,7 @@ extern lmColors* g_pColors;
 
 // access to global external variables
 extern bool g_fReleaseVersion;            // in TheApp.cpp
-extern bool g_fReleaseBehaviour;        // in TheApp.cpp
+extern bool g_fReleaseBehaviour;          // in TheApp.cpp
 extern bool g_fShowDebugLinks;            // in TheApp.cpp
 
 //------------------------------------------------------------------------------------
@@ -71,6 +70,8 @@ extern bool g_fShowDebugLinks;            // in TheApp.cpp
 //Layout definitions
 const int BUTTONS_DISTANCE    = 5;        //pixels
 const int NUM_LINKS = 3;                //links for actions
+
+static wxString sBtLabel[lmEAR_INVAL_NUM_BUTTONS];
 
 
 //IDs for controls
@@ -122,7 +123,6 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
 
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
-    wxString sBtLabel[lmEAR_INVAL_NUM_BUTTONS];
     sBtLabel[0] = _("Unison");
     sBtLabel[1] = _("minor 2nd");
     sBtLabel[2] = _("major 2nd");
@@ -150,20 +150,11 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
     sBtLabel[24] = _("two octaves");
 
 
-    // set interval associated to each button
-    int j = 0;
-    for (i=0; i < lmEAR_INVAL_NUM_BUTTONS; i++) {
-        if (m_pConstrains->IsIntervalAllowed(i)) {
-            m_nRealIntval[j] = i;
-            j++;
-        }
-    }
-    m_nValidIntervals = j;
+        // create the controls
 
     //the window is divided into two regions: top, for score on left and counters and links
     //on the right, and bottom region, for answer buttons 
     wxBoxSizer* pMainSizer = new wxBoxSizer( wxVERTICAL );
-
     wxBoxSizer* pTopSizer = new wxBoxSizer( wxHORIZONTAL );
 
     // Inside TopSizer we set up a vertical sizer: score on top, debugg links bottom
@@ -182,21 +173,23 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
         pScoreSizer->Add(pDbgSizer, 0, wxALIGN_LEFT|wxALL, 5);
 
         // "See source score"
-        pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, _("See source score") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
+        m_pSeeSource = new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, _("See source score") );
+        pDbgSizer->Add(m_pSeeSource, wxSizerFlags(0).Left().Border(wxALL, 10) );
+
         // "Dump score"
-        pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_DUMP, _("Dump score") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
+        m_pDumpScore = new lmUrlAuxCtrol(this, ID_LINK_DUMP, _("Dump score") );
+        pDbgSizer->Add(m_pDumpScore, wxSizerFlags(0).Left().Border(wxALL, 10) );
+
         // "See MIDI events"
-        pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, _("See MIDI events") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
+        m_pSeeMidi = new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, _("See MIDI events") );
+        pDbgSizer->Add(m_pSeeMidi, wxSizerFlags(0).Left().Border(wxALL, 10) );
     }
 
     wxBoxSizer* pCountersSizer = new wxBoxSizer( wxVERTICAL );
-    m_pScoreCtrol->SetMargins(10000, 10000, 20000);        //right=1cm, left=1cm, top=2cm
+    m_pScoreCtrol->SetMargins(
+            lmToLogicalUnits(10, lmMILLIMETERS),
+            lmToLogicalUnits(10, lmMILLIMETERS),
+            lmToLogicalUnits(20, lmMILLIMETERS));     //right=1cm, left=1cm, top=2cm
     m_pScoreCtrol->SetScale((float)1.3);
 
 
@@ -209,23 +202,20 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
     //m_oTeoIntervalos.SetContadores lblTexto(iCtrol), lblTexto(iCtrol + 1), lblTexto(iCtrol + 2)
     
     // "new problem" button
-    pCountersSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") ),
-        wxSizerFlags(0).Left().Border(wxALL, 10) );
+    m_pNewProblem = new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") );
+    pCountersSizer->Add(m_pNewProblem, wxSizerFlags(0).Left().Border(wxALL, 10) );
     
     // "play" button
-    pCountersSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_PLAY, _("Play") ),
-        wxSizerFlags(0).Left().Border(wxALL, 10) );
+    m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, _("Play") );
+    pCountersSizer->Add(m_pPlayButton, wxSizerFlags(0).Left().Border(wxALL, 10) );
     
     // "show solution" button
-    pCountersSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") ),
-        wxSizerFlags(0).Left().Border(wxALL, 10) );
+    m_pShowSolution = new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") );
+    pCountersSizer->Add(m_pShowSolution, wxSizerFlags(0).Left().Border(wxALL, 10) );
     
     // settings link
-    lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
-    pCountersSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxALL, 10) );
+    m_pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
+    pCountersSizer->Add(m_pSettingsLink, wxSizerFlags(0).Left().Border(wxALL, 10) );
 
     // "reset counters" button
     //pCountersSizer->Add(
@@ -242,8 +232,9 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
         wxSizerFlags(0).Left().Border(wxALL, 10) );
 
     //create up to 25 buttons for the answers: five rows, five buttons per row
-    wxBoxSizer* pRowSizer;
+    //Buttons are created disbaled and no visible
     wxButton* pButton;
+    wxBoxSizer* pRowSizer;
     int iB = 0;
     const int NUM_ROWS = 5;
     const int NUM_COLS = 5;
@@ -253,22 +244,24 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
 
         for (int iCol=0; iCol < NUM_COLS; iCol++) {
             iB = iCol + iRow * NUM_COLS;    // button index: 0 .. 24         
-            pButton = new wxButton( this, ID_BUTTON + iB, sBtLabel[m_nRealIntval[iB]],
+            pButton = new wxButton( this, ID_BUTTON + iB, _T("provisional"),
                 wxDefaultPosition, wxSize(100, 24));
             m_pAnswerButton[iB++] = pButton;
             pRowSizer->Add(
                 pButton,
                 wxSizerFlags(0).Border(wxALL, BUTTONS_DISTANCE) );
-            if (iB == m_nValidIntervals) break;
         }
         pMainSizer->Add(    
             pRowSizer,
             wxSizerFlags(0).Left());
-        if (iB == m_nValidIntervals) break;
     }
 
     SetSizer( pMainSizer );                // use the sizer for window layout
     pMainSizer->SetSizeHints( this );        // set size hints to honour minimum size
+
+
+    // now put labels and enable the answer buttons
+    SetUpButtons();
 
     m_pScoreCtrol->DisplayMessage(_("Click on 'New problem' to start"), 1000, true);
 
@@ -292,6 +285,41 @@ lmEarIntervalsCtrol::~lmEarIntervalsCtrol()
     }
 }
 
+void lmEarIntervalsCtrol::SetUpButtons()
+{
+    int i;
+
+    // compute interval associated to each button
+    int j = 0;
+    for (i=0; i < lmEAR_INVAL_NUM_BUTTONS; i++) {
+        if (m_pConstrains->IsIntervalAllowed(i)) {
+            m_nRealIntval[j] = i;
+            j++;
+        }
+    }
+    m_nValidIntervals = j;
+
+
+    //set up the button labels
+    int iB;     // button index: 0 .. 24 
+    for (iB = 0; iB < m_nValidIntervals; iB++) {
+        m_pAnswerButton[iB]->SetLabel( sBtLabel[m_nRealIntval[iB]] );
+        m_pAnswerButton[iB]->Show(true);
+        m_pAnswerButton[i]->Enable(false);
+    }
+
+    // hide all non used buttons
+    if (m_nValidIntervals < lmEAR_INVAL_NUM_BUTTONS) {
+        for (iB = m_nValidIntervals; iB < lmEAR_INVAL_NUM_BUTTONS; iB++) {
+            m_pAnswerButton[iB]->Show(false);
+        }
+    }
+
+    m_pPlayButton->Enable(false);
+    m_pShowSolution->Enable(false);
+
+}
+
 void lmEarIntervalsCtrol::EnableButtons(bool fEnable)
 {
     for (int i=0; i < lmEAR_INVAL_NUM_BUTTONS; i++) {
@@ -299,6 +327,9 @@ void lmEarIntervalsCtrol::EnableButtons(bool fEnable)
             m_pAnswerButton[i]->Enable(fEnable);
     }
     m_fButtonsEnabled = fEnable;
+
+    m_pPlayButton->Enable(fEnable);
+    m_pShowSolution->Enable(fEnable);
 
 }
 
@@ -309,7 +340,12 @@ void lmEarIntervalsCtrol::OnSettingsButton(wxCommandEvent& event)
 {
     lmDlgCfgEarIntervals dlg(this, m_pConstrains );
     int retcode = dlg.ShowModal();
-    if (retcode == wxID_OK) m_pConstrains->SaveSettings();
+    if (retcode == wxID_OK) {
+        m_pConstrains->SaveSettings();
+        // When changing interval settings it is necessary review the buttons
+        // as number of buttons and/or its name could have changed.
+        SetUpButtons();
+    }
 
 }
 
@@ -447,7 +483,7 @@ void lmEarIntervalsCtrol::NewProblem()
     lmLDPParser parserLDP;
     lmLDPNode* pNode;
     m_pScore = new lmScore();
-    m_pScore->SetTopSystemDistance(5000);               //5mm
+    m_pScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
     m_pScore->AddInstrument(1,0,0);                     //one vstaff, MIDI channel 0, MIDI instr 0
     lmVStaff *pVStaff = m_pScore->GetVStaff(1, 1);      //get first vstaff of instr.1
     pVStaff->AddClef( nClef );

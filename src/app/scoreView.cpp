@@ -135,7 +135,7 @@ Considerations for the choice of logical units and data types:
 
     For future portability and to improve program legibility we are going to use our own
     types:
-        lmMicrons - for logical units. Mapped to int32
+        lmLUnits - for logical units. Mapped to int32
         lmPixels - for device units. Mapped to int32
         lmTenths - for staff relative units. Mapped to int32
 
@@ -264,6 +264,7 @@ bool gfDrawSelRec;        //draw selection rectangles around staff objects
 BEGIN_EVENT_TABLE(lmScoreView, wxView)
     EVT_COMMAND_SCROLL(CTROL_HScroll, lmScoreView::OnScroll)
     EVT_COMMAND_SCROLL(CTROL_VScroll, lmScoreView::OnScroll)
+    EVT_MOUSEWHEEL(lmScoreView::OnMouseWheel)
 END_EVENT_TABLE()
 
 lmScoreView::lmScoreView() {
@@ -419,9 +420,9 @@ void lmScoreView::AdjustScrollbars()
     //bool fHScroll = (dxCanvas < m_xPageSizeD),
     //     fVScroll = (dyCanvas < m_yPageSizeD);
 
-    // scroll step size will be 5 mm (50 tenths). transform into device units (pixels)
-    m_pixelsPerStepX = wxMax(50 * m_xDisplayPixelsPerLU, 1);
-    m_pixelsPerStepY = wxMax(50 * m_yDisplayPixelsPerLU, 1);
+    // scroll step size will be 5 mm . transform into device units (pixels)
+    m_pixelsPerStepX = wxMax(lmToLogicalUnits(5, lmMILLIMETERS) * m_xDisplayPixelsPerLU, 1);
+    m_pixelsPerStepY = wxMax(lmToLogicalUnits(5, lmMILLIMETERS) * m_yDisplayPixelsPerLU, 1);
 
     // compute height and width of the whole view (all pages in the view plus margins)
     lmPixels xViewD = m_xPageSizeD + 2 * m_xBorder, 
@@ -611,8 +612,8 @@ void lmScoreView::SetScale(double rScale)
         //reposition controls
         ResizeControls();    
 
-        //wxLogMessage(_T("[lmScoreView::SetScale] scale=%f, m_rScale=%f, DisplayPixelsPerLU=(%f, %f)"),
-        //    rScale, m_rScale, m_xDisplayPixelsPerLU, m_yDisplayPixelsPerLU);
+        wxLogMessage(_T("[lmScoreView::SetScale] scale=%f, m_rScale=%f, DisplayPixelsPerLU=(%f, %f)"),
+            rScale, m_rScale, m_xDisplayPixelsPerLU, m_yDisplayPixelsPerLU);
     }
 
     m_pCanvas->Refresh(true);    //erase background
@@ -874,6 +875,50 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 
     }
 
+    else if (event.GetEventType() == wxEVT_MOUSEWHEEL ) {
+        OnMouseWheel(event);
+    }
+
+}
+
+void lmScoreView::OnMouseWheel(wxMouseEvent& event)
+{
+
+    int nWheelRotation = event.GetWheelRotation();
+    int lines = nWheelRotation / event.GetWheelDelta();
+    nWheelRotation -= lines * event.GetWheelDelta();
+
+    if (lines != 0) {
+
+        wxScrollEvent newEvent;
+
+        newEvent.SetPosition(0);
+        newEvent.SetOrientation(wxVERTICAL);
+        newEvent.SetEventObject(m_pCanvas);
+
+        if (event.IsPageScroll())
+        {
+            if (lines > 0)
+                newEvent.SetEventType(wxEVT_SCROLL_PAGEUP);
+            else
+                newEvent.SetEventType(wxEVT_SCROLL_PAGEDOWN);
+
+            OnScroll(newEvent);
+        }
+        else
+        {
+            lines *= event.GetLinesPerAction();
+            if (lines > 0)
+                newEvent.SetEventType(wxEVT_SCROLL_LINEUP);
+            else
+                newEvent.SetEventType(wxEVT_SCROLL_LINEDOWN);
+
+            int times = abs(lines);
+            for (; times > 0; times--)
+                OnScroll(newEvent);
+        }
+    }
+
 }
 
 void lmScoreView::OnScroll(wxScrollEvent& event)
@@ -1133,5 +1178,4 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     memoryDC.SelectObject(wxNullBitmap);
 
 }
-
 

@@ -41,13 +41,13 @@
 #include "Score.h"
 #include "Text.h"
 
-//Aux. function to convert font pointsize to lmMicrons
-int PointsToMicrons(lmMicrons nPoints)
+//Aux. function to convert font pointsize to lmLUnits
+int PointsToLUnits(lmLUnits nPoints)
 {
     //One point equals 1/72 of an inch
-    //One inch equals 2.54 mm = 25.4 mm = 25,400 microns
-    //then 1 pt = 25,400/72 microns
-    return nPoints * 25400 / 72;
+    //One inch equals 2.54 cm = 25.4 mm
+    //then 1 pt = 25.4/72 mm
+    return lmToLogicalUnits(nPoints * 25.4 / 72.0, lmMILLIMETERS);
 }
 
 //Global variables used as default initializators
@@ -68,7 +68,7 @@ lmBasicText::lmBasicText(wxString sText, wxString sLanguage,
 
     // font data
     m_sFontName = oFontData.sFontName;
-    m_nFontSize = PointsToMicrons(oFontData.nFontSize);
+    m_nFontSize = PointsToLUnits(oFontData.nFontSize);
     m_fBold = oFontData.fBold;
     m_fItalic = oFontData.fItalic;
 
@@ -88,14 +88,14 @@ lmBasicText::lmBasicText(wxString sText, wxString sLanguage,
 //==========================================================================================
 
 lmText::lmText(lmScore* pScore, wxString sText,
-            lmMicrons xPos, lmMicrons yPos, bool fXAbs, bool fYAbs,
+            lmLUnits xPos, lmLUnits yPos, bool fXAbs, bool fYAbs,
             wxString sFontName, int nFontSize, bool fBold, bool fItalic) :
     lmSimpleObj(eTPO_Text, (lmVStaff*)NULL, 0, true, sbDRAGGABLE)
 {
     m_pScore = pScore;
     m_sText = sText;
     m_sFontName = sFontName;
-    m_nFontSize = PointsToMicrons(nFontSize);
+    m_nFontSize = PointsToLUnits(nFontSize);
     m_fBold = fBold;
     m_fItalic = fItalic;
     m_xPos = xPos;
@@ -146,7 +146,7 @@ void lmText::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     pDC->SetFont(*m_pFont);
 
     if (fMeasuring) {
-        lmMicrons nWidth, nHeight;
+        lmLUnits nWidth, nHeight;
         pDC->GetTextExtent(m_sText, &nWidth, &nHeight);
 
          // store selection rectangle (relative to m_paperPos)

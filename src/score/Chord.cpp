@@ -150,8 +150,8 @@ void lmChord::DrawStem(wxDC* pDC)
     wxASSERT(pDC);
 
     lmNote* pBaseNote = (lmNote*)(m_cNotes.GetFirst())->GetData();
-    lmMicrons xStem = pBaseNote->GetXStem();
-    lmMicrons yStemStart=0, yStemEnd=0;
+    lmLUnits xStem = pBaseNote->GetXStem();
+    lmLUnits yStemStart=0, yStemEnd=0;
     
     if (pBaseNote->StemGoesDown()) {
         //stem down: line at left of noteheads

@@ -52,9 +52,9 @@ public:
     wxDC* GetDC() const { return m_pDC; }
     void SetDC(wxDC* pDC) { m_pDC = pDC; }
 
-    void Prepare(lmScore* pScore, lmMicrons paperWidth, lmMicrons paperHeight, double rScale);
+    void Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight, double rScale);
     void NewPage();
-    void NewLine(lmMicrons nSpace);
+    void NewLine(lmLUnits nSpace);
 
     void ForceRedraw() { m_fRedraw = true; }
     void RestartPageCursors();
@@ -62,23 +62,24 @@ public:
     wxInt32 GetNumPages() { return m_numPages; }
 
     // page cursor position
-    lmMicrons GetCursorX() { return m_xCursor; }
-    lmMicrons GetCursorY() { return m_yCursor; }
-    void SetCursorX(lmMicrons rValor) { m_xCursor = rValor; }
-    void SetCursorY(lmMicrons rValor) { m_yCursor = rValor; }
-    void IncrementCursorX(lmMicrons rValor) { m_xCursor += rValor; }
-    void IncrementCursorY(lmMicrons rValor) { m_yCursor += rValor; }
+    lmLUnits GetCursorX() { return m_xCursor; }
+    lmLUnits GetCursorY() { return m_yCursor; }
+    void SetCursorX(lmLUnits rValor) { m_xCursor = rValor; }
+    void SetCursorY(lmLUnits rValor) { m_yCursor = rValor; }
+    void IncrementCursorX(lmLUnits rValor) { m_xCursor += rValor; }
+    void IncrementCursorY(lmLUnits rValor) { m_yCursor += rValor; }
 
     // page size and margings
-    lmMicrons GetPageTopMargin() { return m_Page.TopMargin(); }
-    lmMicrons GetPageLeftMargin() { return m_Page.LeftMargin(); }
-    lmMicrons GetPageRightMargin() { return m_Page.RightMargin(); }
+    lmLUnits GetPageTopMargin() { return m_Page.TopMargin(); }
+    lmLUnits GetPageLeftMargin() { return m_Page.LeftMargin(); }
+    lmLUnits GetPageRightMargin() { return m_Page.RightMargin(); }
     wxSize& GetPaperSize();
+    lmLUnits GetMaximumY() {return m_Page.GetUsableHeight() + m_Page.TopMargin(); }
 
-    void SetPageTopMargin(lmMicrons nValue) { m_Page.SetTopMargin(nValue); }
-    void SetPageLeftMargin(lmMicrons nValue) { m_Page.SetLeftMargin(nValue); }
-    void SetPageRightMargin(lmMicrons nValue) { m_Page.SetRightMargin(nValue); }
-    void SetPageSize(lmMicrons nWidth, lmMicrons nHeight)
+    void SetPageTopMargin(lmLUnits nValue) { m_Page.SetTopMargin(nValue); }
+    void SetPageLeftMargin(lmLUnits nValue) { m_Page.SetLeftMargin(nValue); }
+    void SetPageRightMargin(lmLUnits nValue) { m_Page.SetRightMargin(nValue); }
+    void SetPageSize(lmLUnits nWidth, lmLUnits nHeight)
             {
                 m_Page.SetPageSize(nWidth, nHeight);
                 m_fRedraw = true;       //force to redraw the score
@@ -88,17 +89,17 @@ public:
     wxBitmap* GetOffscreenBitmap(wxInt32 nPage = 0);
 
     // unit conversion
-    lmMicrons DeviceToLogicalX(lmPixels x) { return m_pDC->DeviceToLogicalXRel(x); }
-    lmMicrons DeviceToLogicalY(lmPixels y) { return m_pDC->DeviceToLogicalYRel(y); }
+    lmLUnits DeviceToLogicalX(lmPixels x) { return m_pDC->DeviceToLogicalXRel(x); }
+    lmLUnits DeviceToLogicalY(lmPixels y) { return m_pDC->DeviceToLogicalYRel(y); }
 
-    lmPixels LogicalToDeviceX(lmMicrons x) { return m_pDC->LogicalToDeviceXRel(x); }
-    lmPixels LogicalToDeviceY(lmMicrons y) { return m_pDC->LogicalToDeviceYRel(y); }
+    lmPixels LogicalToDeviceX(lmLUnits x) { return m_pDC->LogicalToDeviceXRel(x); }
+    lmPixels LogicalToDeviceY(lmLUnits y) { return m_pDC->LogicalToDeviceYRel(y); }
     //wxPoint LogicalToDevice(wxPoint pt) {
     //        return wxPoint(m_pDC->LogicalToDeviceX(pt.x), m_pDC->LogicalToDeviceY(pt.y) );
     //    }
 
-    lmMicrons GetRightMarginXPos();
-    lmMicrons GetLeftMarginXPos();
+    lmLUnits GetRightMarginXPos();
+    lmLUnits GetLeftMarginXPos();
 
     double GetScale() { return m_rScale; }
 
@@ -129,7 +130,7 @@ private:
     double      m_rScale;              // drawing scale
 
     // page cursors
-    lmMicrons   m_xCursor, m_yCursor;       // current default drawing position. Logical units
+    lmLUnits   m_xCursor, m_yCursor;       // current default drawing position. Logical units
                                             // relative to origin of paper
 
     // miscelaneous 

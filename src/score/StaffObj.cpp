@@ -152,7 +152,7 @@ wxPoint lmScoreObj::EndDrag(const wxPoint& pos)
 wxBitmap* lmScoreObj::PrepareBitMap(double rScale, const wxString sGlyph)
 {
     // Get size of glyph, in logical units
-    lmMicrons wL, hL;
+    lmLUnits wL, hL;
     wxScreenDC dc;
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale(rScale, rScale);

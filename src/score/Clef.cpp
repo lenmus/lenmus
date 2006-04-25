@@ -194,14 +194,14 @@ void lmClef::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
     if (fMeasuring) {
         // get the shift to the staff on which the clef must be drawn
-        lmMicrons yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
+        lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
 
         // store glyph position
         m_glyphPos.x = 0;
         m_glyphPos.y = yShift + m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
     }
 
-    lmMicrons nWidth = DrawClef(fMeasuring, pPaper,
+    lmLUnits nWidth = DrawClef(fMeasuring, pPaper,
         (m_fSelected ? g_pColors->ScoreSelected() : g_pColors->ScoreNormal() ));
 
     if (fMeasuring) {
@@ -218,7 +218,7 @@ void lmClef::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 }
 
 // returns the width of the draw (logical units)
-lmMicrons lmClef::DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmClef::DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {    
     wxDC* pDC = pPaper->GetDC();
     wxASSERT(pDC);
@@ -226,7 +226,7 @@ lmMicrons lmClef::DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
     wxString sGlyph = GetLenMusChar();
     if (fMeasuring) {
-        lmMicrons width, height;
+        lmLUnits width, height;
         pDC->GetTextExtent(sGlyph, &width, &height);
         return width;
     } else {
@@ -238,7 +238,7 @@ lmMicrons lmClef::DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
 }
 
-lmMicrons lmClef::DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC)
+lmLUnits lmClef::DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC)
 {
     /*
     This method is, primarely, to be used when rendering the prolog

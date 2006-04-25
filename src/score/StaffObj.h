@@ -125,7 +125,7 @@ public:
     // methods related to positioning
     inline wxPoint& GetOrigin() { return m_paperPos; }
     bool IsAtPoint(wxPoint& pt);
-    virtual void SetLeft(lmMicrons nLeft) { m_paperPos.x = nLeft; }
+    virtual void SetLeft(lmLUnits nLeft) { m_paperPos.x = nLeft; }
     bool IsFixed() const { return m_fFixedPos; }
     void SetFixed(bool fFixed) { m_fFixedPos = fFixed; }
 
@@ -257,7 +257,7 @@ public:
     //virtual wxInt32 GetDurationOld();
 
     // methods related to positioning
-    virtual lmMicrons GetAnchorPos() {return 0; }
+    virtual lmLUnits GetAnchorPos() {return 0; }
 
     // implementation of pure virtual methods of base class
     virtual void Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);

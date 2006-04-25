@@ -61,11 +61,11 @@ public:
 
 
 private:
-    lmMicrons DrawBarline(bool fMeasuring, wxDC* pDC, lmMicrons xPos, lmMicrons yTop,
-                          lmMicrons yBottom, wxColour colorC = *wxBLACK);
-    void DrawThinLine(wxDC* pDC, lmMicrons xPos, lmMicrons yTop, lmMicrons yBottom);
-    void DrawThickLine(wxDC* pDC, lmMicrons xLeft, lmMicrons yTop, lmMicrons nWidth, lmMicrons nHeight);
-    void DrawTwoDots(wxDC* pDC, lmMicrons xPos, lmMicrons yPos);
+    lmLUnits DrawBarline(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUnits yTop,
+                          lmLUnits yBottom, wxColour colorC = *wxBLACK);
+    void DrawThinLine(wxDC* pDC, lmLUnits xPos, lmLUnits yTop, lmLUnits yBottom);
+    void DrawThickLine(wxDC* pDC, lmLUnits xLeft, lmLUnits yTop, lmLUnits nWidth, lmLUnits nHeight);
+    void DrawTwoDots(wxDC* pDC, lmLUnits xPos, lmLUnits yPos);
 
 private:
     ETipoBarra        m_nBarlineType;        //type of barline

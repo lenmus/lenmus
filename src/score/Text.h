@@ -66,7 +66,7 @@ class lmText :  public lmSimpleObj
 {
 public:
     lmText(lmScore* pScore, wxString sText,
-           lmMicrons xPos=0, lmMicrons yPos=0, bool fXAbs=false, bool fYAbs=false, 
+           lmLUnits xPos=0, lmLUnits yPos=0, bool fXAbs=false, bool fYAbs=false, 
            wxString sFontName=_T("Arial"), int nFontSize=12, 
            bool fBold=false, bool fItalic=false);
 
@@ -93,8 +93,8 @@ public:
 private:
     wxString    m_sText;
     lmScore*        m_pScore;
-    lmMicrons    m_xPos;
-    lmMicrons    m_yPos;
+    lmLUnits    m_xPos;
+    lmLUnits    m_yPos;
     bool        m_fXAbs;
     bool        m_fYAbs;
     wxString    m_sFontName;
@@ -105,7 +105,7 @@ private:
 };
 
 //global functions defined in this module
-extern int PointsToMicrons(lmMicrons nPoints);
+extern int PointsToLUnits(lmLUnits nPoints);
 
 #endif    // __SBTEXT__H__
 

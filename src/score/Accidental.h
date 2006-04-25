@@ -61,7 +61,7 @@ public:
     // overrides for pure virtual methods of base class lmNoteRestObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
     void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nStaffNum,
-                         lmMicrons xPos, lmMicrons yPos);
+                         lmLUnits xPos, lmLUnits yPos);
 
 private:
     EAccidentals    m_nType;        //accidental type

@@ -67,7 +67,7 @@ void lmWordsDirection::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour col
     pDC->SetFont(*m_pFont);
 
     if (fMeasuring) {
-        lmMicrons nWidth, nHeight;
+        lmLUnits nWidth, nHeight;
         pDC->GetTextExtent(m_sText, &nWidth, &nHeight);
 
         // set total width

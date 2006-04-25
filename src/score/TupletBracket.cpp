@@ -55,7 +55,7 @@ lmTupletBracket::lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket, b
 
     //! @todo Allow user to change this values
     m_sFontName = _T("Arial");
-    m_nFontSize = PointsToMicrons(8);
+    m_nFontSize = PointsToLUnits(8);
     m_fBold = false;
     m_fItalic = true;
 
@@ -69,7 +69,7 @@ lmTupletBracket::~lmTupletBracket()
     m_cNotes.Clear();
 }
 
-//void lmTupletBracket::SetStartPoint(lmMicrons xPos, lmMicrons yPos, lmMicrons xPaperLeft)
+//void lmTupletBracket::SetStartPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperLeft)
 //{
 //    m_xStart = xPos;
 //    m_yStart = yPos;
@@ -77,7 +77,7 @@ lmTupletBracket::~lmTupletBracket()
 //
 //}
 //
-//void lmTupletBracket::SetEndPoint(lmMicrons xPos, lmMicrons yPos, lmMicrons xPaperRight)
+//void lmTupletBracket::SetEndPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperRight)
 //{
 //    m_xEnd = xPos;
 //    m_yEnd = yPos;
@@ -163,11 +163,13 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
     //Prepare DC
     wxDC* pDC = pPaper->GetDC();
     wxPen oldPen = pDC->GetPen();
-    wxPen pen((m_fSelected ? g_pColors->ScoreSelected() : colorC), 200, wxSOLID);    // width = 200 microns = 0.2 mm
+    wxPen pen((m_fSelected ? g_pColors->ScoreSelected() : colorC),
+              lmToLogicalUnits(0.2, lmMILLIMETERS),         // width = 0.2 mm
+              wxSOLID);
     pDC->SetPen(pen);
 
     //Mesure number
-    lmMicrons nNumberWidth=0, nNumberHeight=0;
+    lmLUnits nNumberWidth=0, nNumberHeight=0;
     wxString sNumber = _T("");
     if (m_fShowNumber) {
         sNumber = wxString::Format(_T("%d"), m_nTupletNumber);
@@ -178,23 +180,23 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
 
     //compute bracket position
     //------------------------------------------------
-#define BORDER_LENGHT        1000    // 1 mm
-#define BRACKET_DISTANCE    3000    // 3 mm
-#define NUMBER_DISTANCE        1000    // 1 mm
+    lmLUnits BORDER_LENGHT = lmToLogicalUnits(1, lmMILLIMETERS);  // 1 mm
+    lmLUnits BRACKET_DISTANCE = lmToLogicalUnits(3, lmMILLIMETERS);  // 3 mm
+    lmLUnits NUMBER_DISTANCE = lmToLogicalUnits(1, lmMILLIMETERS);  // 1 mm
 
-    lmMicrons xStart = pStartNote->GetBoundsLeft();
-    lmMicrons yStart = (m_fAbove ? pStartNote->GetBoundsTop() : pStartNote->GetBoundsBottom() );
-    lmMicrons xEnd = pEndNote->GetBoundsRight();
-    lmMicrons yEnd = (m_fAbove ? pEndNote->GetBoundsTop() : pEndNote->GetBoundsBottom() );
-    lmMicrons yLineStart, yLineEnd, yStartBorder, yEndBorder, yNumber;
+    lmLUnits xStart = pStartNote->GetBoundsLeft();
+    lmLUnits yStart = (m_fAbove ? pStartNote->GetBoundsTop() : pStartNote->GetBoundsBottom() );
+    lmLUnits xEnd = pEndNote->GetBoundsRight();
+    lmLUnits yEnd = (m_fAbove ? pEndNote->GetBoundsTop() : pEndNote->GetBoundsBottom() );
+    lmLUnits yLineStart, yLineEnd, yStartBorder, yEndBorder, yNumber;
 
     ////DEBUG: Draw the boundling rectangle of start and end notes ------------------
     //pDC->SetPen( wxPen(*wxRED, 1, wxSOLID) );
     //pDC->SetBrush( *wxTRANSPARENT_BRUSH );
-    //lmMicrons xLeft = pStartNote->GetBoundsLeft();
-    //lmMicrons xRight = pStartNote->GetBoundsRight();
-    //lmMicrons yTop = pStartNote->GetBoundsTop();
-    //lmMicrons yBottom = pStartNote->GetBoundsBottom();
+    //lmLUnits xLeft = pStartNote->GetBoundsLeft();
+    //lmLUnits xRight = pStartNote->GetBoundsRight();
+    //lmLUnits yTop = pStartNote->GetBoundsTop();
+    //lmLUnits yBottom = pStartNote->GetBoundsBottom();
     //pDC->DrawRectangle(xLeft, yTop, xRight-xLeft, yBottom-yTop);
     //xLeft = pEndNote->GetBoundsLeft();
     //xRight = pEndNote->GetBoundsRight();
@@ -216,7 +218,7 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
         yEndBorder = yLineEnd - BORDER_LENGHT;        
         yNumber = yStartBorder + NUMBER_DISTANCE;
     }
-    lmMicrons xNumber = (xStart + xEnd - nNumberWidth)/2;
+    lmLUnits xNumber = (xStart + xEnd - nNumberWidth)/2;
     
 
     //draw bracket
@@ -373,7 +375,7 @@ void lmTupletBracket::ComputePosition()
 //    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++) 
 //    {
 //        pNR = (lmNoteRest*)pNode->GetData();
-//         lmMicrons dyStem = pNR->GetDefaultStemLength();
+//         lmLUnits dyStem = pNR->GetDefaultStemLength();
 //        if (pNR->IsInChord()) {
 //            if (m_fStemsDown) {
 //                //use chord minimum pich for the computation
@@ -393,7 +395,7 @@ void lmTupletBracket::ComputePosition()
 //    }
 //    
 //    //trim stem length of intermediate notes
-//    lmMicrons dyA = (yTop[nNumNotes] - yTop[1]) / (nNumNotes - 1);
+//    lmLUnits dyA = (yTop[nNumNotes] - yTop[1]) / (nNumNotes - 1);
 //    for (i = 2; i < nNumNotes; i++) {
 //        yTop[i] = yTop[i - 1] + dyA;
 //    }
@@ -431,7 +433,7 @@ void lmTupletBracket::ComputePosition()
 //    for(i=1, pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++) 
 //    {
 //        pNR = (lmNoteRest*)pNode->GetData();
-//        lmMicrons nLength = (yBase[i] > yTop[i] ? yBase[i] - yTop[i] : yTop[i] - yBase[i]);
+//        lmLUnits nLength = (yBase[i] > yTop[i] ? yBase[i] - yTop[i] : yTop[i] - yBase[i]);
 //        if (pNR->IsRest())
 //            ;
 //        //! @todo lmRest

@@ -60,11 +60,11 @@ public:
     void OnSize(wxSizeEvent& WXUNUSED(event));
     void OnVisualHighlight(lmScoreHighlightEvent& event);
 
-    void DisplayMessage(wxString sMsg, lmMicrons posMsg, bool fClearScore = true);
+    void DisplayMessage(wxString sMsg, lmLUnits posMsg, bool fClearScore = true);
     void DisplayScore(lmScore* pScore, bool fClearMessage = true);
 
     //settings
-    void SetMargins(lmMicrons nLeft, lmMicrons nRight, lmMicrons nTop);
+    void SetMargins(lmLUnits nLeft, lmLUnits nRight, lmLUnits nTop);
     void SetScale(float rScale);
     void SetScore(lmScore* pScore, bool fHidden = false);
     void HideScore(bool fHide);
@@ -102,14 +102,14 @@ private:
     //message management
     wxString        m_sMsg;                    // message to display
     bool            m_fDisplayMessage;        
-    lmMicrons       m_yMsg;                    // message position (microns)
+    lmLUnits       m_yMsg;                    // message position (microns)
     float           m_yScalingFactor;        // pixels per micron
 
     //paper margins
     float           m_rZoom;            //zooming factor (default 1.0)
-    lmMicrons       m_nTopMargin;
-    lmMicrons       m_nLeftMargin;
-    lmMicrons       m_nRightMargin;
+    lmLUnits       m_nTopMargin;
+    lmLUnits       m_nLeftMargin;
+    lmLUnits       m_nRightMargin;
 
     DECLARE_EVENT_TABLE()
 };

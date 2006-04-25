@@ -38,35 +38,37 @@ class lmPage
 public:
     lmPage();
     ~lmPage() {}
-    void SetTopMargin(lmMicrons nMicrons) { m_nTopMargin = nMicrons; }
-    void SetBottomMargin(lmMicrons nMicrons) { m_nBottomMargin = nMicrons; }
-    void SetLeftMargin(lmMicrons nMicrons) { m_nLeftMargin = nMicrons; }
-    void SetRightMargin(lmMicrons nMicrons) { m_nRightMargin = nMicrons; }
-    void SetBindingMargin(lmMicrons nMicrons) { m_nBindingMargin = nMicrons; }
-    void SetPageSize(lmMicrons width, lmMicrons height);
+    void SetTopMargin(lmLUnits nMicrons) { m_nTopMargin = nMicrons; }
+    void SetBottomMargin(lmLUnits nMicrons) { m_nBottomMargin = nMicrons; }
+    void SetLeftMargin(lmLUnits nMicrons) { m_nLeftMargin = nMicrons; }
+    void SetRightMargin(lmLUnits nMicrons) { m_nRightMargin = nMicrons; }
+    void SetBindingMargin(lmLUnits nMicrons) { m_nBindingMargin = nMicrons; }
+    void SetPageSize(lmLUnits width, lmLUnits height);
 
     // Access
 
-    lmMicrons TopMargin() { return m_nTopMargin; }
-    lmMicrons BottomMargin() { return m_nBottomMargin; }
-    lmMicrons LeftMargin() {
+    lmLUnits TopMargin() { return m_nTopMargin; }
+    lmLUnits BottomMargin() { return m_nBottomMargin; }
+    lmLUnits LeftMargin() {
         return (m_nPageNum % 2) ? m_nLeftMargin + m_nBindingMargin : m_nLeftMargin ;
     }
-    lmMicrons RightMargin() {
+    lmLUnits RightMargin() {
         return (m_nPageNum % 2) ? m_nRightMargin : m_nRightMargin + m_nBindingMargin ;
     }
     wxSize& PageSize() { return m_pageSize; }
+    lmLUnits GetUsableHeight() { return m_pageSize.GetHeight() - m_nTopMargin - m_nBottomMargin; }
+
 
 
 private:
     // Mesaures: all in logical units
-    lmMicrons        m_nLeftMargin;
-    lmMicrons        m_nRightMargin;
-    lmMicrons        m_nTopMargin;
-    lmMicrons        m_nBottomMargin;
-    lmMicrons        m_nBindingMargin;
+    lmLUnits        m_nLeftMargin;
+    lmLUnits        m_nRightMargin;
+    lmLUnits        m_nTopMargin;
+    lmLUnits        m_nBottomMargin;
+    lmLUnits        m_nBindingMargin;
     wxSize            m_pageSize;            // paper size
-    lmMicrons        m_nPageNum;            // absolute num of page
+    lmLUnits        m_nPageNum;            // absolute num of page
 
 
 };

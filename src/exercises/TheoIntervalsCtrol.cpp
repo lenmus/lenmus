@@ -202,7 +202,9 @@ lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
 
     // create score ctrl 
     m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, wxSize(420,150), eSIMPLE_BORDER);
-    m_pScoreCtrol->SetMargins(10000, 10000, 15000);        //right=1cm, left=1cm, top=1cm
+    m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
+                              lmToLogicalUnits(10, lmMILLIMETERS),
+                              lmToLogicalUnits(10, lmMILLIMETERS));        //right=1cm, left=1cm, top=1cm
     pScoreSizer->Add(
         m_pScoreCtrol,
         wxSizerFlags(1).Left().Border(wxALL, 10));
@@ -565,7 +567,7 @@ void lmTheoIntervalsCtrol::NewProblem()
         m_sAnswer += _(" starting at ") + oConv.GetNoteName(m_ntPitch[0]);
         if (sAlter[0] == _T("+")) m_sAnswer += _T("#");
         if (sAlter[0] == _T("-")) m_sAnswer += _T("b");
-        m_pScoreCtrol->DisplayMessage(m_sAnswer, 5000);
+        m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS));
     }
     m_fPlayEnabled = false;
     m_fProblemCreated = true;
@@ -586,7 +588,7 @@ void lmTheoIntervalsCtrol::Play()
 void lmTheoIntervalsCtrol::DisplaySolution()
 {
     if (m_fIntervalKnown) {
-        m_pScoreCtrol->DisplayMessage(m_sAnswer, 5000, false);
+        m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
     } else {
         m_pScoreCtrol->DisplayScore(m_pScore, false);
         m_pScore = (lmScore*)NULL;    //no longer owned. Now owned by lmScoreAuxCtrol

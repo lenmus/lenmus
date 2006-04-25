@@ -49,12 +49,12 @@ public:
     int     NumNotes();
     void    ComputeStems();
     void    TrimStems();
-    void    DrawBeamLines(wxDC* pDC, lmMicrons nThickness, lmMicrons nBeamSpacing);
+    void    DrawBeamLines(wxDC* pDC, lmLUnits nThickness, lmLUnits nBeamSpacing);
 
 
 private:
     void DrawBeamSegment(wxDC* pDC, bool fStemDown, int xStart, int yStart,
-                         int xEnd, int yEnd, lmMicrons nThickness,
+                         int xEnd, int yEnd, lmLUnits nThickness,
                          lmNote* pStartNote, lmNote* pEndNote);
     int ComputeYPosOfSegment(lmNote* pNote, bool fStemDown, int yShift);
 

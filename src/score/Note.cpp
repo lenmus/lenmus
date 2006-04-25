@@ -388,8 +388,8 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     */
 
 
-    lmMicrons yStaffBaseLine=0;            // position of staff (top line)
-    lmMicrons nxLeft=0, nyTop=0;    // current pos. as positioning computation takes place
+    lmLUnits yStaffBaseLine=0;            // position of staff (top line)
+    lmLUnits nxLeft=0, nyTop=0;    // current pos. as positioning computation takes place
     bool fDrawStem = true;            // assume stem down
     bool fInChord = IsInChord();
 
@@ -397,7 +397,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //if (fMeasuring) {
         int nPosOnStaff = GetPosOnStaff();
         yStaffBaseLine = m_paperPos.y + GetStaffOffset();
-        lmMicrons yPitchShift = GetPitchShift();
+        lmLUnits yPitchShift = GetPitchShift();
         nyTop = yStaffBaseLine - yPitchShift;
         nxLeft = m_paperPos.x;
     //} else {
@@ -430,8 +430,8 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     if (m_pAccidentals) {
         if (fMeasuring) {
             // set position (relative to paperPos)
-             lmMicrons xPos = nxLeft - m_paperPos.x;
-            lmMicrons yPos = nyTop - m_paperPos.y;
+             lmLUnits xPos = nxLeft - m_paperPos.x;
+            lmLUnits yPos = nyTop - m_paperPos.y;
             m_pAccidentals->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
             m_pAccidentals->UpdateMeasurements();
         }
@@ -486,9 +486,9 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     if (m_fDotted || m_fDoubleDotted) {
         nxLeft += m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         if (!fMeasuring) {
-            lmMicrons halfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-            lmMicrons nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
-            lmMicrons yPos = nyTop + m_pVStaff->TenthsToLogical(50, m_nStaffNum);
+            lmLUnits halfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
+            lmLUnits nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
+            lmLUnits yPos = nyTop + m_pVStaff->TenthsToLogical(50, m_nStaffNum);
             if (nPosOnStaff % 2 == 0) {
                 // notehead is over a line. Shift up the dot
                 pDC->DrawCircle(nxLeft, yPos - halfLine, nDotRadius);
@@ -501,9 +501,9 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     if (m_fDoubleDotted) {
         nxLeft += m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         if (!fMeasuring) {
-            lmMicrons halfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-            lmMicrons nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
-            lmMicrons yPos = nyTop + m_pVStaff->TenthsToLogical(50, m_nStaffNum);
+            lmLUnits halfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
+            lmLUnits nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
+            lmLUnits yPos = nyTop + m_pVStaff->TenthsToLogical(50, m_nStaffNum);
             if (nPosOnStaff % 2 == 0) {
                 // notehead is over a line. Shift up the dot
                 pDC->DrawCircle(nxLeft, yPos - halfLine, nDotRadius);
@@ -549,17 +549,17 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     }
 
     // set total width
-    lmMicrons afterSpace = m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
+    lmLUnits afterSpace = m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
     if (fMeasuring) m_nWidth = nxLeft + afterSpace - m_paperPos.x;
 
     // draw lineas adicionales if necessary
     //--------------------------------------------
     if (!fMeasuring) {
-        lmMicrons xLine = m_noteheadRect.x - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
+        lmLUnits xLine = m_noteheadRect.x - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
         // in DO_DRAW phase dxNotehead is 0. In DO_MEASRUE phase it is the width of the
         // glyph and then it is not right, particularly with notes drawn in block
-        // lmMicrons widthLine = dxNotehead + m_pVStaff->TenthsToLogical(8, m_nStaffNum);
-        lmMicrons widthLine = m_pVStaff->TenthsToLogical(20, m_nStaffNum);
+        // lmLUnits widthLine = dxNotehead + m_pVStaff->TenthsToLogical(8, m_nStaffNum);
+        lmLUnits widthLine = m_pVStaff->TenthsToLogical(20, m_nStaffNum);
         DrawAdditionalLines(pDC, nPosOnStaff, yStaffBaseLine, xLine, widthLine);
     }
     
@@ -570,8 +570,8 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         for (; pNode; pNode = pNode->GetNext() ) {
             pNRO = (lmNoteRestObj*)pNode->GetData();
             if (fMeasuring) {
-                 lmMicrons xPos = 0;
-                lmMicrons yPos = 0;
+                 lmLUnits xPos = 0;
+                lmLUnits yPos = 0;
                 switch(pNRO->GetSymbolType()) {
                     case eST_Fermata:
                         // set position (relative to paperPos)
@@ -597,8 +597,8 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
             pLyric = (lmLyric*)pNode->GetData();
             if (fMeasuring) {
                 // set position (relative to paperPos)
-                 lmMicrons xPos = m_noteheadRect.x;
-                lmMicrons yPos = yStaffBaseLine - m_paperPos.y;
+                 lmLUnits xPos = m_noteheadRect.x;
+                lmLUnits yPos = yStaffBaseLine - m_paperPos.y;
                 pLyric->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
                 pLyric->UpdateMeasurements();
             }
@@ -618,8 +618,8 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //if this is the last note of a beamed group draw the beam lines
     //--------------------------------------------------------------------------------------
     if (!fMeasuring && m_fBeamed && m_BeamInfo[0].Type == eBeamEnd) {
-        lmMicrons nThickness = m_pVStaff->TenthsToLogical(4, m_nStaffNum);
-        lmMicrons nBeamSpacing = m_pVStaff->TenthsToLogical(7, m_nStaffNum);
+        lmLUnits nThickness = m_pVStaff->TenthsToLogical(4, m_nStaffNum);
+        lmLUnits nBeamSpacing = m_pVStaff->TenthsToLogical(7, m_nStaffNum);
         m_pBeam->DrawBeamLines(pDC, nThickness, nBeamSpacing);
     }
 
@@ -642,8 +642,8 @@ void lmNote::MakeUpPhase(lmPaper* pPaper)
     //Ties. If this note is the end of a tie, store tie end point
     if (m_pTiePrev) {
         // compute end point, relative to end note paperPos (this note) 
-        lmMicrons xPos = m_noteheadRect.x + m_noteheadRect.width / 2;
-        lmMicrons yPos = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
+        lmLUnits xPos = m_noteheadRect.x + m_noteheadRect.width / 2;
+        lmLUnits yPos = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         yPos = (m_pTiePrev->IsUnderNote() ? 
                 m_noteheadRect.y + m_noteheadRect.height + yPos :
                 m_noteheadRect.y - yPos );
@@ -654,8 +654,8 @@ void lmNote::MakeUpPhase(lmPaper* pPaper)
     //by start note stem direction
     if (m_pTieNext) {
         // compute start point, relative to start note paperPos (this note) 
-        lmMicrons xPos = m_noteheadRect.x + m_noteheadRect.width / 2;
-        lmMicrons yPos = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
+        lmLUnits xPos = m_noteheadRect.x + m_noteheadRect.width / 2;
+        lmLUnits yPos = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         yPos = (m_fStemDown ? 
                 m_noteheadRect.y - yPos : m_noteheadRect.y + m_noteheadRect.height + yPos);
         m_pTieNext->SetStartPoint(xPos, yPos, pPaper->GetRightMarginXPos(), !m_fStemDown);
@@ -663,7 +663,7 @@ void lmNote::MakeUpPhase(lmPaper* pPaper)
 
 }
 
-void lmNote::DrawAdditionalLines(wxDC* pDC, int nPosOnStaff, lmMicrons yStaffBaseLine, lmMicrons xPos, lmMicrons width, int nROP)
+void lmNote::DrawAdditionalLines(wxDC* pDC, int nPosOnStaff, lmLUnits yStaffBaseLine, lmLUnits xPos, lmLUnits width, int nROP)
 {
     if (nPosOnStaff > 0 && nPosOnStaff < 12) return;
 
@@ -672,7 +672,7 @@ void lmNote::DrawAdditionalLines(wxDC* pDC, int nPosOnStaff, lmMicrons yStaffBas
     xPos += m_paperPos.x;        // make it absolute
 
     wxInt32 i;
-    lmMicrons yPos, nTenths;
+    lmLUnits yPos, nTenths;
     if (nPosOnStaff > 11) {
         // lines at top
         for (i=12; i <= nPosOnStaff; i++) {
@@ -699,7 +699,7 @@ void lmNote::DrawAdditionalLines(wxDC* pDC, int nPosOnStaff, lmMicrons yStaffBas
 }
 
 void lmNote::DrawSingleNote(wxDC* pDC, bool fMeasuring, ENoteType nNoteType,
-        bool fStemAbajo, lmMicrons nxLeft, lmMicrons nyTop, wxColour colorC)
+        bool fStemAbajo, lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC)
 {
     /*
     Draws a note by using a glyph. 
@@ -735,7 +735,7 @@ void lmNote::DrawSingleNote(wxDC* pDC, bool fMeasuring, ENoteType nNoteType,
 
 
         // define selection rectangle (relative to m_paperPos)
-        lmMicrons nWidth, nHeight;
+        lmLUnits nWidth, nHeight;
         pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
         m_selRect.width = nWidth;
         m_selRect.height = m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
@@ -755,7 +755,7 @@ void lmNote::DrawSingleNote(wxDC* pDC, bool fMeasuring, ENoteType nNoteType,
 }
 
 void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ECabezaNotas nNoteheadType,
-    lmMicrons nxLeft, lmMicrons nyTop, wxColour colorC)
+    lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC)
 {
     // draws a notehead of type nNoteheadType on position (nxLeft, nyTop) with color colorC.
     // In DO_MEASURE mode also stores measurements.
@@ -786,7 +786,7 @@ void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ECabezaNotas nNoteheadType
         m_glyphPos.y = nyTop - m_paperPos.y - m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum);
 
         // store selection rectangle position and size
-        lmMicrons nWidth, nHeight;
+        lmLUnits nWidth, nHeight;
         pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
         m_selRect.height = m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum);
         m_selRect.width = nWidth;
@@ -801,7 +801,7 @@ void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ECabezaNotas nNoteheadType
         wxPoint pos = GetGlyphPosition();
         pDC->SetTextForeground(colorC);
         pDC->DrawText(sGlyph, pos.x, pos.y );
-        //lmMicrons nWidth, nHeight;
+        //lmLUnits nWidth, nHeight;
         //pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
         //pDC->DrawRectangle(pos.x, pos.y, nWidth, nHeight);
         //wxLogMessage(_T("[lmNote::DrawNoteHead] pos=(%d, %d)"), pos.x, pos.y);
@@ -817,7 +817,7 @@ void lmNote::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& of
     A note must stay on staff lines or spaces
     */
 
-    lmMicrons dyHalfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum );
+    lmLUnits dyHalfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum );
     wxPoint nShiftVector = pagePosL - dragStartPosL;    // the displacement
     wxInt32 nSteps = (nShiftVector.y % dyHalfLine);        // trim the displacement to half line steps
     nShiftVector.y -= nSteps;
@@ -842,8 +842,8 @@ wxPoint lmNote::EndDrag(const wxPoint& pos)
     /*
     Notes can not freely moved. They must stay on staff lines or spaces
     */
-    lmMicrons dyHalfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum );
-    lmMicrons nShift = - (pos.y - GetGlyphPosition().y);
+    lmLUnits dyHalfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum );
+    lmLUnits nShift = - (pos.y - GetGlyphPosition().y);
     wxInt32 nSteps = nShift / dyHalfLine;        // trim the displacement to half line steps
 
     // compute new pitch
@@ -970,27 +970,27 @@ int lmNote::GetPosOnStaff()
 }
 
 // Rectangle that bounds the image. Absolute position referred to page origin
-lmMicrons lmNote::GetBoundsTop()
+lmLUnits lmNote::GetBoundsTop()
 {
     return (m_fStemDown ? m_selRect.GetTop() + m_paperPos.y : GetFinalYStem() );
 }
 
-lmMicrons lmNote::GetBoundsBottom()
+lmLUnits lmNote::GetBoundsBottom()
 {
     return (m_fStemDown ? GetFinalYStem() : m_selRect.GetBottom() + m_paperPos.y );
 }
 
-lmMicrons lmNote::GetBoundsLeft()
+lmLUnits lmNote::GetBoundsLeft()
 {
     return (m_fStemDown ? GetXStem() : m_selRect.GetLeft() + m_paperPos.x );
 }
 
-lmMicrons lmNote::GetBoundsRight()
+lmLUnits lmNote::GetBoundsRight()
 {
     return (m_fStemDown ? m_selRect.GetRight() + m_paperPos.x : GetXStem() );
 }
 
-void lmNote::SetLeft(lmMicrons nLeft)
+void lmNote::SetLeft(lmLUnits nLeft)
 {
     /*
     The SetLeft() method is overriden to take into account the possible existence of

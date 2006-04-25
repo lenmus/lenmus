@@ -61,18 +61,18 @@ public:
     wxString SourceXML();
 
     //rendering related methods
-    lmMicrons DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, EClefType nClef, 
+    lmLUnits DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, EClefType nClef, 
                      int nStaff, wxColour colorC = *wxBLACK);
 
 
 
 private:
     void SetKeySignatureType();
-    lmMicrons DrawAccidental(bool fMeasuring, wxDC* pDC, EAccidentals nAlter,
-                    lmMicrons nxLeft, lmMicrons nyTop, int nStaff);
+    lmLUnits DrawAccidental(bool fMeasuring, wxDC* pDC, EAccidentals nAlter,
+                    lmLUnits nxLeft, lmLUnits nyTop, int nStaff);
 
     // get fixed measures and values that depend on lmKeySignature type
-    lmMicrons DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);
+    lmLUnits DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);
 
         // member variables
 

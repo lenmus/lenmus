@@ -91,8 +91,8 @@ protected:
     NoteRestsList    m_cNotes;  // list of notes/rest grouped by this bracket. 
                                 // For chords only the base note of the chord 
                                 // is included in this list
-    lmMicrons    m_xPaperLeft;
-    lmMicrons    m_xPaperRight;
+    lmLUnits    m_xPaperLeft;
+    lmLUnits    m_xPaperRight;
 
     // graphical attributes
     bool    m_fShowNumber;      // display tuplet number
@@ -101,10 +101,10 @@ protected:
     bool    m_fAbove;           // bracket positioned above the notes
 
     // start and end poins coordinates, relative to start note current paper position
-    lmMicrons    m_xStart;
-    lmMicrons    m_yStart;
-    lmMicrons    m_xEnd;
-    lmMicrons    m_yEnd;
+    lmLUnits    m_xStart;
+    lmLUnits    m_yStart;
+    lmLUnits    m_xEnd;
+    lmLUnits    m_yEnd;
 
     //For rendering tuplet number. TODO: Replace in future by lmBasicText derivation?
     wxString    m_sFontName;

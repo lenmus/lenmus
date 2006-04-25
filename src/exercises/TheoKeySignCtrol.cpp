@@ -170,7 +170,9 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
     }
 
     wxBoxSizer* pCountersSizer = new wxBoxSizer( wxVERTICAL );
-    m_pScoreCtrol->SetMargins(10000, 10000, 20000);        //right=1cm, left=1cm, top=2cm
+    m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
+                              lmToLogicalUnits(10, lmMILLIMETERS),
+                              lmToLogicalUnits(20, lmMILLIMETERS));        //right=1cm, left=1cm, top=2cm
     m_pScoreCtrol->SetScale((float)1.3);
 
 
@@ -620,7 +622,7 @@ void lmTheoKeySignCtrol::NewProblem()
     
     //create the score
     m_pScore = new lmScore();
-    m_pScore->SetTopSystemDistance(5000);             //5mm
+    m_pScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
     m_pScore->AddInstrument(1,0,0);                   //one vstaff, MIDI channel 0, MIDI instr 0
     lmVStaff *pVStaff = m_pScore->GetVStaff(1, 1);    //get first vstaff of instr.1
     pVStaff->AddClef( nClef );
@@ -640,7 +642,7 @@ void lmTheoKeySignCtrol::NewProblem()
     } else {
         //inverse problem
         m_sAnswer = (m_fMajorMode ? sMajor[nAnswer] : sMinor[nAnswer] );
-        m_pScoreCtrol->DisplayMessage(m_sAnswer, 10000);
+        m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(10, lmMILLIMETERS));
     }
     m_fProblemCreated = true;
     EnableButtons(true);
@@ -650,7 +652,7 @@ void lmTheoKeySignCtrol::NewProblem()
 void lmTheoKeySignCtrol::DisplaySolution()
 {
     if (m_fIdentifyKey) {
-        m_pScoreCtrol->DisplayMessage(m_sAnswer, 10000, false);
+        m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(10, lmMILLIMETERS), false);
     } else {
         m_pScoreCtrol->DisplayScore(m_pScore, false);
         m_pScore = (lmScore*)NULL;    //no longer owned. Now owned by lmScoreAuxCtrol

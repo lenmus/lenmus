@@ -143,7 +143,7 @@ void lmTimeSignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
 {    
     if (fMeasuring) {
         // get the shift to the staff on which the time key must be drawn
-        lmMicrons yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
+        lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
 
         // store glyph position
         m_glyphPos.x = 0;
@@ -154,7 +154,7 @@ void lmTimeSignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
 
 }
 // returns the width of the draw (logical units)
-lmMicrons lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {    
     wxDC* pDC = pPaper->GetDC();
     wxASSERT(pDC);
@@ -164,7 +164,7 @@ lmMicrons lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, w
     wxString sBottomGlyphs = wxString::Format(_T("%d"), m_nBeatType );
 
     if (fMeasuring) {
-        lmMicrons nWidth1, nHeight1, nWidth2, nHeight2;
+        lmLUnits nWidth1, nHeight1, nWidth2, nHeight2;
         pDC->GetTextExtent(sTopGlyphs, &nWidth1, &nHeight1);
         pDC->GetTextExtent(sBottomGlyphs, &nWidth2, &nHeight2);
 
@@ -183,7 +183,7 @@ lmMicrons lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, w
         //the first staff. Therefore, for renderization, it is necessary to repeat it for
         //each staff
         pDC->SetTextForeground(colorC);
-        lmMicrons yOffset = 0;
+        lmLUnits yOffset = 0;
         lmStaff* pStaff = m_pVStaff->GetFirstStaff();
         for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++) {
             // Draw the time signature
@@ -247,7 +247,7 @@ wxPoint lmTimeSignature::EndDrag(const wxPoint& pos)
     return wxPoint(0,0);
 }
 
-lmMicrons lmTimeSignature::DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC)
+lmLUnits lmTimeSignature::DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC)
 {
     return 0;
 }

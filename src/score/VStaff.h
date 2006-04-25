@@ -42,7 +42,7 @@ public:
     lmVStaff(lmScore* pScore, lmInstrument* pInstr);
     ~lmVStaff();
 
-    lmStaff*    AddStaff(wxInt32 nNumLines=5, lmMicrons nMicrons=1800);
+    lmStaff*    AddStaff(wxInt32 nNumLines=5, lmLUnits nMicrons=0);
     lmClef*    AddClef(EClefType nClefType, wxInt32 nStaff = 1, bool fVisible = true);
 
     lmTimeSignature* AddTimeSignature(int nBeats, int nBeatType,
@@ -90,25 +90,25 @@ public:
     void Draw(lmPaper* pPaper);
     void DrawStaffLines(bool fMeasuring,
                             lmPaper* pPaper,
-                            lmMicrons dyInicial,
-                            lmMicrons dyEntrePentagramas,
-                            lmMicrons xFrom = 0,
-                            lmMicrons xTo = 0);
+                            lmLUnits dyInicial,
+                            lmLUnits dyEntrePentagramas,
+                            lmLUnits xFrom = 0,
+                            lmLUnits xTo = 0);
     void DrawProlog(bool fMeasuring, bool fDrawTimekey, lmPaper* pPaper);
     void NewLine(lmPaper* pPaper);
-    lmMicrons GetVStaffHeight();
+    lmLUnits GetVStaffHeight();
     void SetUpFonts(lmPaper* pPaper);
 
 
     lmScoreObj* FindSelectableObject(wxPoint& pt);
     lmNote* FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep);
 
-    lmMicrons TenthsToLogical(lmTenths nTenths, wxInt32 nStaff);
+    lmLUnits TenthsToLogical(lmTenths nTenths, wxInt32 nStaff);
     lmStaff* GetStaff(wxInt32 nStaff);
-    lmMicrons GetStaffOffset(wxInt32 nStaff);
-    lmMicrons GetXStartOfStaff() { return m_xLeft; }
-    lmMicrons GetYTop();
-    lmMicrons GetYBottom();
+    lmLUnits GetStaffOffset(wxInt32 nStaff);
+    lmLUnits GetXStartOfStaff() { return m_xLeft; }
+    lmLUnits GetYTop();
+    lmLUnits GetYBottom();
 
 
     //Debug methods
@@ -169,15 +169,15 @@ private:
     wxStaffListNode*    m_pStaffNode;   //for navigation
 
     //to store positions and sizes of Staves
-    lmMicrons    m_xLeft;           //X coord.: start of staff lines
-    lmMicrons    m_yLinTop;         //Y coord. of first line (line 5, first staff)
-    lmMicrons    m_yLinBottom;      //Y coord. of last line (line 1, last staff)
-    lmMicrons    m_dxLin;           //length of lines
+    lmLUnits    m_xLeft;           //X coord.: start of staff lines
+    lmLUnits    m_yLinTop;         //Y coord. of first line (line 5, first staff)
+    lmLUnits    m_yLinBottom;      //Y coord. of last line (line 1, last staff)
+    lmLUnits    m_dxLin;           //length of lines
 
-    lmMicrons    m_leftMargin;      // lmVStaff margins (logical units)
-    lmMicrons    m_topMargin;
-    lmMicrons    m_rightMargin;
-    lmMicrons    m_bottomMargin;
+    lmLUnits    m_leftMargin;      // lmVStaff margins (logical units)
+    lmLUnits    m_topMargin;
+    lmLUnits    m_rightMargin;
+    lmLUnits    m_bottomMargin;
 
     ////variables temporales que almacenan valores mientras se dibuja la partitura
     //m_xInicioCompas As Long     //coordenada x de inicio del compas en proceso

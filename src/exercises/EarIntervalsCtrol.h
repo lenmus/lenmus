@@ -44,6 +44,8 @@
 #include "EarIntvalConstrains.h"
 #include "../score/score.h"
 #include "ScoreAuxCtrol.h"
+#include "UrlAuxCtrol.h"
+
 
 const int lmEAR_INVAL_NUM_BUTTONS = 25;               //buttons for answers
 
@@ -77,6 +79,9 @@ public:
     void OnDebugDumpScore(wxCommandEvent& event);
     void OnDebugShowMidiEvents(wxCommandEvent& event);
 
+    // other methods
+    void SetUpButtons();
+
 private:
     void EnableButtons(bool fEnable);
     void Play();
@@ -88,22 +93,31 @@ private:
         // member variables
 
     lmScore*            m_pScore;           // the score with the interval
-    lmScoreAuxCtrol*    m_pScoreCtrol;
     lmEarIntervalsConstrains* m_pConstrains;
     bool            m_fProblemCreated;      //there is a problem prepared
     lmPitch         m_ntMidi[2];            //the midi pitch of the two notes
     lmPitch         m_ntPitch[2];           //the pitch of the two notes
     bool            m_fPlayEnabled;         //Play enabled
-
-    //buttons for the answers: 5 rows, 5 buttons per row
-    wxButton*       m_pAnswerButton[lmEAR_INVAL_NUM_BUTTONS];
     int             m_nRespIndex;           //index to the button with the right answer
     bool            m_fButtonsEnabled;      //buttons enabled
     int             m_nRealIntval[lmEAR_INVAL_NUM_BUTTONS]; // intval. that corresponds
                                                             // to each valid button
     int             m_nValidIntervals;      // num of enabled buttons 
-
     wxString        m_sAnswer;              //name of the interval
+
+    // controls on the window
+    wxButton*       m_pAnswerButton[lmEAR_INVAL_NUM_BUTTONS];
+    lmScoreAuxCtrol*    m_pScoreCtrol;
+
+    lmUrlAuxCtrol*  m_pSeeSource;     //See source link
+    lmUrlAuxCtrol*  m_pDumpScore;     //Dump score link
+    lmUrlAuxCtrol*  m_pSeeMidi;       //See MIDI events link
+    
+    lmUrlAuxCtrol*  m_pNewProblem;       // "new problem" button
+    lmUrlAuxCtrol*  m_pPlayButton;       // "play" button
+    lmUrlAuxCtrol*  m_pShowSolution;     // "show solution" button
+    lmUrlAuxCtrol*  m_pSettingsLink;     // settings link
+
 
     DECLARE_EVENT_TABLE()
 };

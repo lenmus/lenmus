@@ -49,19 +49,19 @@ lmPage::lmPage()
 {
     // default values
     // TODO: Load default values from user defined templates
-    m_nLeftMargin = 20000;    // 20 mm
-    m_nRightMargin = 15000;    // 15 mm
-    m_nTopMargin = 20000;        // 20 mm
-    m_nBottomMargin = 20000;    // 20 mm
+    m_nLeftMargin = lmToLogicalUnits(20, lmMILLIMETERS);    // 20 mm
+    m_nRightMargin = lmToLogicalUnits(15, lmMILLIMETERS);   // 15 mm
+    m_nTopMargin = lmToLogicalUnits(20, lmMILLIMETERS);     // 20 mm
+    m_nBottomMargin = lmToLogicalUnits(20, lmMILLIMETERS);  // 20 mm
     m_nBindingMargin = 0;    // no binding margin
 
-    m_pageSize.SetHeight(297000);        //DIN A4: 210.0 x 297.0 mm
-    m_pageSize.SetWidth(210000);
+    m_pageSize.SetHeight(lmToLogicalUnits(297, lmMILLIMETERS));        //DIN A4: 210.0 x 297.0 mm
+    m_pageSize.SetWidth(lmToLogicalUnits(210, lmMILLIMETERS));
     m_nPageNum = 1;
 
 }
 
-void lmPage::SetPageSize(lmMicrons width, lmMicrons height)
+void lmPage::SetPageSize(lmLUnits width, lmLUnits height)
 {
     m_pageSize.SetWidth(width);
     m_pageSize.SetHeight(height);

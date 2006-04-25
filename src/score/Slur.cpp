@@ -52,26 +52,26 @@ lmArch::lmArch()
     //up         = true;
 }
 
-void lmArch::SetStartPoint(lmMicrons xPos, lmMicrons yPos)
+void lmArch::SetStartPoint(lmLUnits xPos, lmLUnits yPos)
 {
     m_xStart = xPos;
     m_yStart = yPos;
 }
 
-void lmArch::SetEndPoint(lmMicrons xPos, lmMicrons yPos)
+void lmArch::SetEndPoint(lmLUnits xPos, lmLUnits yPos)
 {
     m_xEnd = xPos;
     m_yEnd = yPos;
 
 }
 
-void lmArch::SetCtrolPoint1(lmMicrons xPos, lmMicrons yPos)
+void lmArch::SetCtrolPoint1(lmLUnits xPos, lmLUnits yPos)
 {
     m_xCtrol1 = xPos;
     m_yCtrol1 = yPos;
 }
 
-void lmArch::SetCtrolPoint2(lmMicrons xPos, lmMicrons yPos)
+void lmArch::SetCtrolPoint2(lmLUnits xPos, lmLUnits yPos)
 {
     m_xCtrol2 = xPos;
     m_yCtrol2 = yPos;
@@ -80,14 +80,14 @@ void lmArch::SetCtrolPoint2(lmMicrons xPos, lmMicrons yPos)
 void lmArch::Draw(wxDC* pDC, wxColour colorC)
 {
     wxPen oldPen = pDC->GetPen();
-    wxPen pen(colorC, 200, wxSOLID);    // width = 200 microns = 0.2 mm
+    wxPen pen(colorC, lmToLogicalUnits(0.2, lmMILLIMETERS), wxSOLID);    // width = 0.2 mm
     pDC->SetPen(pen);
 
     //lmArch is rendered as a cubic bezier curve. The number of points to draw is
     // variable, to suit a minimun resolution of 5 points / mm. 
 
     // determine number of interpolation points to use
-    int nNumPoints = (m_xEnd - m_xStart) / 200;
+    int nNumPoints = (m_xEnd - m_xStart) / lmToLogicalUnits(0.2, lmMILLIMETERS);
     if (nNumPoints < 5) nNumPoints = 5;
 
     // compute increment for mu variable
@@ -184,7 +184,7 @@ void lmTie::Remove(lmNote* pNote)
     }
 }
 
-void lmTie::SetStartPoint(lmMicrons xPos, lmMicrons yPos, lmMicrons xPaperRight, bool fUnderNote)
+void lmTie::SetStartPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperRight, bool fUnderNote)
 {
     m_fTieUnderNote = fUnderNote;
 
@@ -194,16 +194,16 @@ void lmTie::SetStartPoint(lmMicrons xPos, lmMicrons yPos, lmMicrons xPaperRight,
 
 }
 
-void lmTie::SetEndPoint(lmMicrons xPos, lmMicrons yPos, lmMicrons xPaperLeft)
+void lmTie::SetEndPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperLeft)
 {
     wxPoint paperPosEnd = m_pEndNote->GetOrigin();
-    lmMicrons xEnd = xPos + paperPosEnd.x;
-    lmMicrons yEnd = yPos + paperPosEnd.y;
+    lmLUnits xEnd = xPos + paperPosEnd.x;
+    lmLUnits yEnd = yPos + paperPosEnd.y;
     m_mainArc.SetEndPoint(xEnd, yEnd);
     m_xPaperLeft = xPaperLeft;
 
     // check if the tie have to be splitted
-    lmMicrons xStart, yStart;
+    lmLUnits xStart, yStart;
     wxPoint paperPosStart = m_pStartNote->GetOrigin();
     if (paperPosEnd.y != paperPosStart.y) {
         //if start note paperPos Y is not the same than end note paperPos Y the notes are
@@ -233,12 +233,13 @@ void lmTie::SetEndPoint(lmMicrons xPos, lmMicrons yPos, lmMicrons xPaperLeft)
     xEnd = m_mainArc.GetEndPosX();
     yEnd = m_mainArc.GetEndPosY();
 
-    lmMicrons xCtrol = xStart + (xEnd - xStart) / 3;
-    lmMicrons yCtrol = yStart + (m_fTieUnderNote ? 2000 : -2000);
+    lmLUnits xCtrol = xStart + (xEnd - xStart) / 3;
+    lmLUnits yDsplz = lmToLogicalUnits(2, lmMILLIMETERS);
+    lmLUnits yCtrol = yStart + (m_fTieUnderNote ? yDsplz : -yDsplz);
     m_mainArc.SetCtrolPoint1(xCtrol, yCtrol);
     
     xCtrol += (xEnd - xStart) / 3;
-    yCtrol = yEnd + (m_fTieUnderNote ? 2000 : -2000);
+    yCtrol = yEnd + (m_fTieUnderNote ? yDsplz : -yDsplz);
     m_mainArc.SetCtrolPoint2(xCtrol, yCtrol);
 
 
@@ -249,12 +250,12 @@ void lmTie::SetEndPoint(lmMicrons xPos, lmMicrons yPos, lmMicrons xPaperLeft)
         xEnd = m_pExtraArc->GetEndPosX();
         yEnd = m_pExtraArc->GetEndPosY();
 
-        lmMicrons xCtrol = xStart + (xEnd - xStart) / 3;
-        lmMicrons yCtrol = yStart + (m_fTieUnderNote ? 2000 : -2000);
+        lmLUnits xCtrol = xStart + (xEnd - xStart) / 3;
+        lmLUnits yCtrol = yStart + (m_fTieUnderNote ? yDsplz : -yDsplz);
         m_pExtraArc->SetCtrolPoint1(xCtrol, yCtrol);
         
         xCtrol += (xEnd - xStart) / 3;
-        yCtrol = yEnd + (m_fTieUnderNote ? 2000 : -2000);
+        yCtrol = yEnd + (m_fTieUnderNote ? yDsplz : -yDsplz);
         m_pExtraArc->SetCtrolPoint2(xCtrol, yCtrol);
     }
 

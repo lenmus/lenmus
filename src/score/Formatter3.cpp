@@ -174,7 +174,7 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
 //
 //    Dim j As Long
 //    Dim nDesplz As Long
-    lmMicrons xStartOfMeasure;
+    lmLUnits xStartOfMeasure;
 
     //verify that there is a score
     if (!m_pScore || m_pScore->GetNumInstruments() == 0) return;
@@ -196,7 +196,7 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
     // write score titles
     m_pScore->WriteTitles(DO_MEASURE, pPaper);
     pPaper->RestartPageCursors();                                //restore page cursors are at top-left corner
-     pPaper->IncrementCursorY(m_pScore->TopSystemDistance());    //advance to skip headers
+    pPaper->IncrementCursorY(m_pScore->TopSystemDistance());    //advance to skip headers
 
     int nSystem;        //number of system in process
     int nAbsMeasure;    //number of bar in process (absolute, counted from the start of the score)
@@ -235,6 +235,8 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
             //! @limit It is assumed that all staves have the same number of measures
         nSystem = 1;
 
+        lmLUnits nSystemHeight;
+
         while (nAbsMeasure <= nTotalMeasures)
         {
             m_nMeasuresInSystem = 0;
@@ -254,10 +256,22 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
             //-------------------------------------------------------------------------------
 
             //if this is not the first system advance vertically the inter-systems space
+            m_fNewPage[nSystem] = false;    // assume no new page after this system
             if (nSystem != 1) {
-                pPaper->IncrementCursorY( m_pScore->SystemsDistance() );
+                //compute Y position after adding after system space and a new system
+                lmLUnits yNew = pPaper->GetCursorY() + m_pScore->SystemsDistance() + nSystemHeight;
+                if (yNew > pPaper->GetMaximumY() ) {
+                    wxLogMessage(_T("Page break needed. yCur=%d, yNew=%d, MaximumY=%d"), pPaper->GetCursorY(), yNew, pPaper->GetMaximumY());
+                    m_fNewPage[nSystem] = true;
+                    pPaper->RestartPageCursors();       //restore page cursors are at top-left corner
+                }
+                else {
+                    pPaper->IncrementCursorY( m_pScore->SystemsDistance() );
+                    m_fNewPage[nSystem] = false;
+                }
             }
             m_ySystemPos[nSystem] = pPaper->GetCursorY();  //save the start of system position
+            wxLogMessage(_T("[lmFormatter3::RenderJustified] Starting to print nSystem=%d. Ypos=%d"), nSystem, m_ySystemPos[nSystem] );
 
             nRelMeasure = 1;    // the first measure in current system
             while (nAbsMeasure <= nTotalMeasures)
@@ -395,6 +409,13 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
             m_nNumMeasures[nSystem] = m_nMeasuresInSystem;
             m_nNumSystems = nSystem;
 
+            // compute system height
+            if (nSystem == 1) {
+                nSystemHeight = pPaper->GetCursorY() - m_ySystemPos[nSystem];
+                wxLogMessage(_T("[lmFormatter3::RenderJustified] nSystemHeight = %d"), nSystemHeight );
+            }
+
+
             //increment loop information
             iIni += m_nMeasuresInSystem;
             nAbsMeasure = iIni;
@@ -423,6 +444,11 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
     iIni = 1;
     for (nSystem = 1; nSystem <= m_nNumSystems; nSystem++)
     {
+        // aknowledge new pages
+        if (m_fNewPage[nSystem]) {
+            pPaper->NewPage();
+        }
+
         //Each loop pass corresponds to a new system. Get its positioning information
         nMeasuresInSystem = m_nNumMeasures[nSystem];
 
@@ -450,7 +476,7 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
                     to properly draw barlines it is necessary that staff lines are already drawn.
                     so, start the drawing by the staff lines
                 */
-//                if (nSystem = m_nNumSystems And fTruncarUltimoSistema) {
+//                if (nSystem == m_nNumSystems And fTruncarUltimoSistema) {
 //                    //es el último sistema y se pide truncar: dibuja las líneas del pentagrama
 //                    //para que lleguen sólo hasta la barra de fin de partitura
 //                    pVStaff->PintarPentagrama DO_DRAW, , pVStaff->GetXPosBarraFinal - 1
@@ -480,13 +506,13 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
         //Draw the initial barline that joins all staffs in a system
         pInstr = m_pScore->GetFirstInstrument();
         pVStaff = pInstr->GetVStaff(1);                    // first lmVStaff of this system
-        lmMicrons xPos = pVStaff->GetXStartOfStaff();
-        lmMicrons yTop = pVStaff->GetYTop();
+        lmLUnits xPos = pVStaff->GetXStartOfStaff();
+        lmLUnits yTop = pVStaff->GetYTop();
         pInstr = m_pScore->GetLastInstrument();
         pVStaff = pInstr->GetVStaff(pInstr->GetNumStaves());    //last staff of this system
-        lmMicrons yBottom = pVStaff->GetYBottom();
+        lmLUnits yBottom = pVStaff->GetYBottom();
 
-#define THIN_LINE_WIDTH        200        // thin line width will be 0.2 mm (200 microns)
+        lmLUnits THIN_LINE_WIDTH = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm
         wxDC* pDC = pPaper->GetDC();
         wxPen pen(*wxBLACK, THIN_LINE_WIDTH, wxSOLID);
         wxBrush brush(*wxBLACK, wxSOLID);
@@ -503,7 +529,7 @@ void lmFormatter3::RenderJustified(lmPaper* pPaper)
 
 }
 
-lmMicrons lmFormatter3::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem,
+lmLUnits lmFormatter3::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem,
                                         lmPaper* pPaper)
 {
     /*
@@ -636,7 +662,7 @@ lmMicrons lmFormatter3::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int 
 //////
 //////}
 
-void lmFormatter3::RedistributeFreeSpace(lmMicrons nAvailable)
+void lmFormatter3::RedistributeFreeSpace(lmLUnits nAvailable)
 {
     //Step 3: Justify measures (distribute remainnig space across all measures)
     //-------------------------------------------------------------------------------
@@ -659,17 +685,17 @@ void lmFormatter3::RedistributeFreeSpace(lmMicrons nAvailable)
 
     if (nAvailable <= 0) return;       //no space to distribute
 
-    lmMicrons nDif[MAX_MEASURES_PER_SYSTEM];
+    lmLUnits nDif[MAX_MEASURES_PER_SYSTEM];
 
     //compute average measure column size
-    lmMicrons nAverage = 0;
+    lmLUnits nAverage = 0;
     for (int i = 1; i <= m_nMeasuresInSystem; i++) {
         nAverage += m_nMeasureSize[i];
     }
     nAverage /= m_nMeasuresInSystem;
 
-    lmMicrons nMeanPrev = 0;
-    lmMicrons nDifTotal = 0;
+    lmLUnits nMeanPrev = 0;
+    lmLUnits nDifTotal = 0;
     while (nAvailable > 0 && nAverage != nMeanPrev) {
         //for each measure column, compute the diference between its size and the average size
         //sum up all the diferences in nDifTotal
@@ -755,7 +781,7 @@ void lmFormatter3::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     //between the previous barline (or the prolog, if first measure in system) and the first note
     if (nAbsMeasure != 1) {
         //! @todo review this fixed barline after space
-        lmMicrons nSpaceAfterBarline = 2000;    // 2mm
+        lmLUnits nSpaceAfterBarline = lmToLogicalUnits(2, lmMILLIMETERS);    // 2mm
         pPaper->IncrementCursorX(nSpaceAfterBarline);       //space after barline
     }
 
@@ -764,9 +790,9 @@ void lmFormatter3::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     lmClef* pClef = (lmClef*)NULL;
     lmKeySignature* pKey = (lmKeySignature*)NULL;
     bool fPreviousWasClef = false;        //the previous lmStaffObj was a clef
-    lmMicrons nClefXPos=0;                //x left position of previous clef
+    lmLUnits nClefXPos=0;                //x left position of previous clef
     int nClefStaffNum=0;                //number of staff in which the previous clef was located
-    lmMicrons xChordPos=0;                //position of base note of a chord
+    lmLUnits xChordPos=0;                //position of base note of a chord
 
     //loop to process all StaffObjs in this measure
     lmStaffObj* pSO = (lmStaffObj*)NULL;
@@ -944,8 +970,8 @@ void lmFormatter3::DrawMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper)
     //can properly align notes and othe StaffObjs. The next flag is used to signal that
     //it is pending to compute clefs space.
     bool fSpacePending = false;        //initialy not clefs ==> no space pending
-    lmMicrons xClefs=0;                //x position of first clef. To align all clefs
-    lmMicrons nMaxClefWidth=0;        //to save the width of the wider clef
+    lmLUnits xClefs=0;                //x position of first clef. To align all clefs
+    lmLUnits nMaxClefWidth=0;        //to save the width of the wider clef
 
     //loop to process all StaffObjs in this measure
     lmStaffObj* pSO = (lmStaffObj*)NULL;
