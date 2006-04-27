@@ -75,7 +75,6 @@ LenMus project philosophy (to remind me to always stay on this):
     of the C++ honchos at Bell Labs.) This book will tell you what _not_ to do, as well
      as why everything in C++ is as it is. If you are confused by anything in C++,
       Lippman's book is the cure.
-  - request wxWidgets book ?
   
   ---------------------------------------------------------------------------------------
   

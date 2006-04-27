@@ -360,6 +360,7 @@ class StaffList;
 class lmContext;
 class ContextList;
 class lmSoundManager;
+class lmGraphicManager;
 
 
 
@@ -391,6 +392,7 @@ class lmSoundManager;
 #include "../app/global.h"
 #include "../app/Paper.h"
 #include "../sound/SoundManager.h"
+#include "../graphic/GraphicManager.h"
 
 
 
@@ -490,6 +492,9 @@ private:
     //Variables related to polyphonic interpretation
     lmSoundManager*    m_pSoundMngr;        //Sound events table & manager
     StaffObjsList    m_cHighlighted;        //list of highlighted staffobjs
+
+    //Variables related to renderization
+    lmGraphicManager*   m_pGraphicMngr;
 
     //Layout related variables
     lmLUnits        m_nSystemsDistance;

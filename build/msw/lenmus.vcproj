@@ -900,6 +900,34 @@
 				RelativePath="..\..\src\xml_parser\XMLParser.h">
 			</File>
 		</Filter>
+		<Filter
+			Name="graphic"
+			Filter="">
+			<File
+				RelativePath="..\..\src\graphic\BoxPage.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\BoxPage.h">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\BoxScore.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\BoxScore.h">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\Formatter4.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\Formatter4.h">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\GraphicManager.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\GraphicManager.h">
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

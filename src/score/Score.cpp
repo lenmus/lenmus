@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Score.cpp,v 1.3 2006/02/23 19:23:54 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -79,6 +78,7 @@ lmScore::lmScore()
 
     //initializations
     m_pSoundMngr = (lmSoundManager*)NULL;
+    m_pGraphicMngr = (lmGraphicManager*) NULL;
 
     //! @todo fill this not with constants
     m_nSystemsDistance = lmToLogicalUnits(2, lmCENTIMETERS);    // 2 cm
@@ -98,6 +98,10 @@ lmScore::~lmScore()
     m_cGlobalStaffobjs.DeleteContents(true);
     m_cGlobalStaffobjs.Clear();
 
+    if (m_pGraphicMngr) {
+        delete m_pGraphicMngr;
+    }
+
     if (m_pSoundMngr) {
         m_pSoundMngr->DeleteEventsTable();
         delete m_pSoundMngr;
@@ -105,9 +109,6 @@ lmScore::~lmScore()
 
     m_cHighlighted.DeleteContents(false);    //Staffobjs must not be deleted, only the list
     m_cHighlighted.Clear();
-
-    //if (m_pTitle) delete m_pTitle;
-    //if (m_pSubtitle) delete m_pSubtitle;
 
 }
 
@@ -184,13 +185,6 @@ lmInstrument* lmScore::XML_FindInstrument(wxString sId)
 
 void lmScore::Draw(lmPaper *pPaper)
 {
-//            Optional fMetodoJustificado As Boolean = True, _
-//            Optional nTipoEspaciado As ESpacingMethod = esm_PropConstantShortNote, _
-//            Optional fJustificada As Boolean = True, _
-//            Optional fTruncarUltimoSistema As Boolean = False, _
-//            Optional rFactorAjuste As Single = 1#)
-//
-
 
     ////DEBUG: draw green lines to show page borders
     //wxDC* pDC = pPaper->GetDC();
@@ -204,9 +198,13 @@ void lmScore::Draw(lmPaper *pPaper)
     //pDC->DrawLine(xRight, yTop, xRight, (pPaper->GetPaperSize()).GetHeight());    //right vertical
     ////End DEBUG --------------------------------------------
 
-    //WriteTitles(DO_MEASURE, pPaper);
-    //WriteTitles(DO_DRAW, pPaper);
-    m_pFormatter->RenderScore(pPaper);
+    //m_pFormatter->RenderScore(pPaper);
+    if (!m_pGraphicMngr) {
+        m_pGraphicMngr = new lmGraphicManager(this, pPaper);
+        m_pGraphicMngr->Layout();
+    }
+
+    m_pGraphicMngr->Render(pPaper);
 
 }
 

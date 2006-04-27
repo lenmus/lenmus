@@ -51,6 +51,7 @@
     @defgroup html_management		Objects to manage and display HTML code
     @defgroup generators			Generators and constrains for interactive exercises
     @defgroup sound_management		Management of sound generation and score playback
+    @defgroup graphic_management	Management of score renderization and printing
     @defgroup app_gui				Application GUI classes
     @defgroup options_management    Dialogs for user preferences
     @defgroup configuration			Management of user preferences and configuration

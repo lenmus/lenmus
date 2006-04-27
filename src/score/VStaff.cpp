@@ -26,7 +26,7 @@
 //--------------------------------------------------------------------------------------------------
 /*! @class lmVStaff
     @ingroup score_kernel
-    @brief A generalization of the 'satff' concept.
+    @brief A generalization of the 'staff' concept.
 
     The object lmVStaff (Virtual staff) is a generalization of the concept 'staff': it is a staff
     with an great number of lines and spaces (almost infinite) so to represent all posible pitches,
@@ -52,20 +52,12 @@
     Bars are not modelled by objects. They are just the collection of lmStaffObj found between
     two lmStaffObj of type 'barline' (and between the start of the score and the first barline).
     Nevertheless, tha concept of bar is very important at least in two situations:
-        1. In interpretation (paying the score). For example:  play from bar #7
-        2. When rendering the score, as all the objects in a bar must be rendered toghedtr in the same
-        paper line.
-    Due to this, althoug the bar is not modelled as an object, there exits methods in the VirtualStaff
-    object to deal with bars.
+        1. In interpretation (playing back the score). For example:  play from bar #7
+        2. When rendering the score, as all the objects in a bar must be rendered together in
+           the same paper line.
+    Due to this, althoug the bar is not modelled as an object, there exits methods in the
+    VStaff object to deal with bars.
 
-    La definición de compas que se ha adoptado (el conjunto de los staffobj que haya
-    entre dos staffobj de tipo "barra de compas") implica que todos los elementos de una
-    partitura, menos la barra final de cierre, pertenecen a algún compas. Así pues la
-    definición adoptada engloba también a la de que "una parte es un conjunto de compases" pero
-    es más general.
-
-    Nota: como el objeto CStaff proviene de la evolución, por generalización, del objeto CStaff
-    pueden quedar, en comentarios y nombres, referencias a Pentagrama en vez de Parte
 */
 //-------------------------------------------------------------------------------------------------
 
@@ -74,8 +66,6 @@
 //   - Todos los StaffObjs que componen el pentagrama están en la colección m_cStaffObjs, ordenados por
 //   orden de creación
 //   - Cada staffobj:
-//       - tiene un ID único, lo que permite identificarlo y comparar si dos referencias
-//           se refieren al mismo staffobj
 //       - mantiene el núm del compas al que pertenece. Si se inserta o se borra un compas
 //           hay que renumerar
 //   - La colección m_cPoInicioCompas contiene un puntero al primer staffobj de cada compas

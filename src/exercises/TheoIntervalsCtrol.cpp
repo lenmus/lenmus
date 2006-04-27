@@ -507,7 +507,7 @@ void lmTheoIntervalsCtrol::NewProblem()
     lmLDPParser parserLDP;
     lmLDPNode* pNode;
     m_pScore = new lmScore();
-    m_pScore->SetTopSystemDistance(5000);            //5mm
+    m_pScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
     m_pScore->AddInstrument(1,0,0);                    //one vstaff, MIDI channel 0, MIDI instr 0
     lmVStaff *pVStaff = m_pScore->GetVStaff(1, 1);    //get first vstaff of instr.1
     pVStaff->AddClef( nClef );
