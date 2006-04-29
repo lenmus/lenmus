@@ -34,6 +34,7 @@
 #endif
 
 #include "GraphicManager.h"
+#include "Formatter4.h"
 
 //access to colors
 #include "../globals/Colors.h"
@@ -72,7 +73,8 @@ void lmGraphicManager::Layout()
         delete m_pBoxScore;
         m_pBoxScore = (lmBoxScore*) NULL;
     }
-    m_pBoxScore = m_oFormatter.Layout(m_pScore, m_pPaper);
+    lmFormatter4 oFormatter;   //the formatter object
+    m_pBoxScore = oFormatter.Layout(m_pScore, m_pPaper);
 
 }
 

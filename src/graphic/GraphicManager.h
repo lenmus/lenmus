@@ -36,9 +36,8 @@
 #include "wx/wx.h"
 #endif
 
-#include "../score/score.h"
-#include "Formatter4.h"
 #include "BoxScore.h"
+#include "../score/score.h"
 
 
 //Class lmGraphicManager stores and manages all score renderization issues
@@ -56,7 +55,6 @@ private:
     lmScore*        m_pScore;       //score to be rendered
     lmPaper*        m_pPaper;       //paper to use
 
-    lmFormatter4    m_oFormatter;   //the formatter object
     lmBoxScore*     m_pBoxScore;    //the main container
 
 

@@ -18,12 +18,12 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file BoxPage.h
-    @brief Header file for class lmBoxPage
+/*! @file BoxSystem.h
+    @brief Header file for class lmBoxSystem
     @ingroup graphic_management
 */
-#ifndef __BOXPAGE_H__        //to avoid nested includes
-#define __BOXPAGE_H__
+#ifndef __BOXSYSTEM_H__        //to avoid nested includes
+#define __BOXSYSTEM_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -36,43 +36,39 @@
 #include "wx/wx.h"
 #endif
 
-#include "BoxSystem.h"
+#include "../score/score.h"
 
 /*
-    Class lmBoxPage contains one or more instances of class lmBoxSystem. An instance
-    of class lmBoxPage knows about its height and width and also about the size of
-    its margins. Some graphical elements of the score, like for instance the visible
-    title and composer of a piece are also controlled by class lmBoxPage. Class lmBoxPage
-    contains one or more instances of class lmBoxSystem.
+    Class lmBoxSystem represents a line of music in the printed score. It is made up from
+    one or more instances of class lmBoxSysSlice.
 */
 
-// to manage systems let's define an array to contain pointers to systems
-#include "wx/dynarray.h"
-WX_DEFINE_ARRAY(lmBoxSystem*, ArrayBoxSystems);
-
-
-class lmBoxPage
+class lmBoxSystem
 {
 public:
-    lmBoxPage();
-    ~lmBoxPage();
-    int GetFirstSystem() { return m_nFirstSystem; }
-    int GetLastSystem() { return m_nLastSystem; }
+    lmBoxSystem();
+    ~lmBoxSystem();
 
-    lmBoxSystem* AddSystem(int nSystem);
-    void Render(lmScore* pScore, lmPaper* pPaper);
+    void SetNumMeasures(int nMeasures) { m_nNumMeasures = nMeasures; }
+    int GetNumMeasures() { return m_nNumMeasures; }
+
+    void SetFirstMeasure(int nMeasure) { m_nFirstMeasure = nMeasure; }
+
+    void SetPositionY(lmLUnits nLUnits) { m_nYPos = nLUnits; }
+    lmLUnits GetPositionY() { return m_nYPos; }
+
+    void Render(int nSystem, lmScore* pScore, lmPaper* pPaper);
 
 private:
-    int     m_nFirstSystem;
-    int     m_nLastSystem;
+    void RenderMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper);
 
-    // a lmBoxPage is, mainly, a collection of lmBoxSystems
-    ArrayBoxSystems  m_aSystems;       //array of ptrs to systems that form this page
-
+    int         m_nNumMeasures;     //number of measures that fit in this system
+    int         m_nFirstMeasure;    //number of first measure
+    lmLUnits    m_nYPos;
 
 };
 
 
 
-#endif  // __BOXPAGE_H__
+#endif  // __BOXSYSTEM_H__
 

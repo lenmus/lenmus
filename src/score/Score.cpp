@@ -72,13 +72,8 @@ lmScore::lmScore()
     m_pTitle = (lmText*)NULL;        //no title
     m_pSubtitle = (lmText*)NULL;    //no subtitle
 
-    //create the renderer object
-    m_pFormatter = new lmFormatter3();
-    m_pFormatter->SetScore(this);
-
     //initializations
     m_pSoundMngr = (lmSoundManager*)NULL;
-    m_pGraphicMngr = (lmGraphicManager*) NULL;
 
     //! @todo fill this not with constants
     m_nSystemsDistance = lmToLogicalUnits(2, lmCENTIMETERS);    // 2 cm
@@ -91,16 +86,11 @@ lmScore::lmScore()
 lmScore::~lmScore()
 {
     //wxLogMessage(_T("[lmScore::~lmScore] Deleting lmScore object"));
-    if (m_pFormatter) delete m_pFormatter;
     m_cInstruments.DeleteContents(true);
     m_cInstruments.Clear();
 
     m_cGlobalStaffobjs.DeleteContents(true);
     m_cGlobalStaffobjs.Clear();
-
-    if (m_pGraphicMngr) {
-        delete m_pGraphicMngr;
-    }
 
     if (m_pSoundMngr) {
         m_pSoundMngr->DeleteEventsTable();
@@ -181,31 +171,6 @@ lmInstrument* lmScore::XML_FindInstrument(wxString sId)
         if (pInstr->XML_GetId() == sId) break;
     }
     return pInstr;
-}
-
-void lmScore::Draw(lmPaper *pPaper)
-{
-
-    ////DEBUG: draw green lines to show page borders
-    //wxDC* pDC = pPaper->GetDC();
-    //wxASSERT(pDC);
-    //lmLUnits yTop = pPaper->GetCursorY();
-    //lmLUnits xLeft = pPaper->GetLeftMarginXPos();
-    //lmLUnits xRight = pPaper->GetRightMarginXPos();
-    //pDC->SetPen(*wxGREEN_PEN);
-    //pDC->DrawLine(xLeft, yTop, xRight, yTop);    //top horizontal
-    //pDC->DrawLine(xLeft, yTop, xLeft, (pPaper->GetPaperSize()).GetHeight());    //left vertical
-    //pDC->DrawLine(xRight, yTop, xRight, (pPaper->GetPaperSize()).GetHeight());    //right vertical
-    ////End DEBUG --------------------------------------------
-
-    //m_pFormatter->RenderScore(pPaper);
-    if (!m_pGraphicMngr) {
-        m_pGraphicMngr = new lmGraphicManager(this, pPaper);
-        m_pGraphicMngr->Layout();
-    }
-
-    m_pGraphicMngr->Render(pPaper);
-
 }
 
 void lmScore::WriteTitles(bool fMeasuring, lmPaper *pPaper)

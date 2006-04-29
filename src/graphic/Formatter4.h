@@ -27,17 +27,14 @@
 #define __FORMATTER4_H__
 
 //constants to define some tables' size
-//! @limit a score can not have more than 30 systems (very strong: only a couple of pages)
 //! @limit a system can not have more than 30 staves
 //! @limit a system can not have more than 20 measures
 //! @todo Review all code to avoid limits: dynamic tables
 #define MAX_STAVES_PER_SYSTEM        30    //max number of staves in a system
-#define MAX_SYSTEMS                    30    //max number of systems in a score
 #define MAX_MEASURES_PER_SYSTEM        20    //max number of measures in a system
 
 #include "../score/score.h"
-#include "../score/TimeposTable.h"
-class lmBoxScore;
+#include "TimeposTable.h"
 #include "BoxScore.h"
 
 class lmFormatter4
@@ -69,18 +66,6 @@ private:
     lmLUnits        m_nFreeSpace;                               //free space available on current system
     lmLUnits        m_nMeasureSize[MAX_STAVES_PER_SYSTEM+1];    //size of all measure columns of current system
     int             m_nMeasuresInSystem;                        //the number of measures in current system
-
-    ////variables de dibujo que se pasan como parámetros a diversas funciones y que defino aqui para evitarlo
-    //m_rFactorAjuste As Single           //factor de ajuste para espaciado proporcional
-    //m_nSpacingMethod As ESpacingMethod
-    //
-    ////to optimize re-paints if canvas has not changed
-    //m_nIdLastCanvas As Long                        //Id of canvas used last time RenderScore was invoked
-    //m_nLastCanvasWidth As Long
-    int         m_nNumMeasures[MAX_SYSTEMS+1];  //num of measures in each system
-    lmLUnits    m_ySystemPos[MAX_SYSTEMS+1];    //paper y position at which each system starts
-    bool        m_fNewPage[MAX_SYSTEMS+1];      //insert 'new page' after system i
-    int         m_nNumSystems;                  //num of systems in which the score has been splitted
 
     // variables for debugging
     bool        m_fDebugMode;            //debug on/off

@@ -69,6 +69,7 @@
 #include "Page.h"
 #include "FontManager.h"
 #include "Paper.h"
+#include "../graphic/GraphicManager.h"
 
 
 // global data structures for printing. Defined in TheApp.cpp
@@ -149,7 +150,12 @@ void lmPaper::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight
         NewPage();
 
         // Ask the score to draw itself onto this lmPaper
-        m_pScore->Draw(this);
+        //m_pScore->Draw(this);
+        // ask the graphics manager to render the score on this paper
+        lmGraphicManager oGraphicMngr(m_pScore, this);
+        oGraphicMngr.Layout();
+        oGraphicMngr.Render(this);
+
 
         // @attention method lmScore.Draw() will call NewPage() when need a new page. This will
         // select a new bitmap into de memDC.

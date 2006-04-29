@@ -46,8 +46,10 @@
 #include "wx/debug.h"
 #include "wx/list.h"
 #include "../score/Score.h"
-#include "../score/TimeposTable.h"
+#include "TimeposTable.h"
 #include "Formatter4.h"
+#include "BoxSystem.h"
+
 
 lmFormatter4::lmFormatter4()
 {
@@ -90,7 +92,7 @@ lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
     //paper length limitations.
     // This very simple renderer is usefull for tests and in some rare occations
 
-    lmBoxScore* pBoxScore = new lmBoxScore(m_pScore, pPaper);
+    lmBoxScore* pBoxScore = new lmBoxScore(m_pScore);
 
     wxInt32 iVStaff;
     lmInstrument *pInstr;
@@ -175,7 +177,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     //verify that there is a score
     if (!m_pScore || m_pScore->GetNumInstruments() == 0) return (lmBoxScore*)NULL;
 
-    lmBoxScore* pBoxScore = new lmBoxScore(m_pScore, pPaper);
+    lmBoxScore* pBoxScore = new lmBoxScore(m_pScore);
 
 
     pPaper->RestartPageCursors();    //ensure that page cursors are at top-left corner
@@ -200,7 +202,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     int nSystem;        //number of system in process
     int nAbsMeasure;    //number of bar in process (absolute, counted from the start of the score)
     int nRelMeasure;        //number of bar in process (relative, counted from the start of current system)
-
+    lmLUnits ySystemPos;    //paper y position at which current system starts
     /*
     The algorithm has two independent loops:
 
@@ -234,7 +236,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //! @limit It is assumed that all staves have the same number of measures
         nSystem = 1;
         lmBoxPage* pBoxPage = pBoxScore->GetCurrentPage();
-        pBoxPage->SetFirstSystem(nSystem);      //start of this page in first system
+        lmBoxSystem* pBoxSystem;
 
         lmLUnits nSystemHeight;
 
@@ -257,33 +259,35 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //-------------------------------------------------------------------------------
 
             //if this is not the first system advance vertically the inter-systems space
-            m_fNewPage[nSystem] = false;    // assume no new page after this system
             if (nSystem != 1) {
                 //compute Y position after adding after system space and a new system
                 lmLUnits yNew = pPaper->GetCursorY() + m_pScore->SystemsDistance() + nSystemHeight;
                 if (yNew > pPaper->GetMaximumY() ) {
                     wxLogMessage(_T("Page break needed. yCur=%d, yNew=%d, MaximumY=%d"), pPaper->GetCursorY(), yNew, pPaper->GetMaximumY());
-                    m_fNewPage[nSystem] = true;
                     pPaper->RestartPageCursors();       //restore page cursors are at top-left corner
-                    pBoxPage->SetLastSystem(nSystem - 1);
                     //start a new page
                     pBoxPage = pBoxScore->AddPage();
-                    pBoxPage->SetFirstSystem(nSystem);      //start of this page in current system
                 }
                 else {
                     pPaper->IncrementCursorY( m_pScore->SystemsDistance() );
-                    m_fNewPage[nSystem] = false;
                 }
             }
-            m_ySystemPos[nSystem] = pPaper->GetCursorY();  //save the start of system position
-            wxLogMessage(_T("[lmFormatter4::RenderJustified] Starting to print nSystem=%d. Ypos=%d"), nSystem, m_ySystemPos[nSystem] );
+
+            //create the system container
+            pBoxSystem = pBoxPage->AddSystem(nSystem);
+            ySystemPos = pPaper->GetCursorY();  //save the start of system position
+            pBoxSystem->SetPositionY(ySystemPos);
+            pBoxSystem->SetFirstMeasure(nAbsMeasure);
+
+            wxLogMessage(_T("[lmFormatter4::RenderJustified] Starting to print nSystem=%d. Ypos=%d"),
+                nSystem, ySystemPos );
 
             nRelMeasure = 1;    // the first measure in current system
             while (nAbsMeasure <= nTotalMeasures)
             {
                 //reposition paper vertically at the start of the system. It has been advanced
                 //when sizing the previous measure column
-                pPaper->SetCursorY( m_ySystemPos[nSystem] );
+                pPaper->SetCursorY( ySystemPos );
 
                 //size this measure column
                 m_nMeasureSize[nRelMeasure] =
@@ -411,13 +415,13 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //dbg ------------------------------------------------------------------------------
 
             //Store information about this system
-            m_nNumMeasures[nSystem] = m_nMeasuresInSystem;
-            m_nNumSystems = nSystem;
+            pBoxSystem->SetNumMeasures(m_nMeasuresInSystem);
 
             // compute system height
             if (nSystem == 1) {
-                nSystemHeight = pPaper->GetCursorY() - m_ySystemPos[nSystem];
-                wxLogMessage(_T("[lmFormatter4::RenderJustified] nSystemHeight = %d"), nSystemHeight );
+                nSystemHeight = pPaper->GetCursorY() - ySystemPos;
+                wxLogMessage(_T("[lmFormatter4::RenderJustified] nSystemHeight = %d"),
+                    nSystemHeight );
             }
 
 
@@ -425,20 +429,11 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             iIni += m_nMeasuresInSystem;
             nAbsMeasure = iIni;
             nSystem++;
-            if (nSystem > MAX_SYSTEMS) {       //verify that program limits are observed
-                //! @todo log and display message properly
-                wxLogMessage(
-                    _("[lmFormatter4::RenderJustified]: Program limitation: Maximum number of systems per score has been exceeded.") );
-                wxASSERT(false);
-            }
 
         }    //while (nAbsMeasure <= nTotalMeasures)
 
     //}     //Fin del bloque que no se ejecuta si es el mismo papel
 
-    pBoxPage->SetLastSystem(nSystem - 1);
-
-    pBoxScore->CopyData(m_nNumMeasures, m_ySystemPos, m_fNewPage, m_nNumSystems);
     return pBoxScore;
 
 }
@@ -511,70 +506,6 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
     return m_oTimepos[nRelMeasure].ArrangeStaffobjsByTime(m_fDebugMode);      //true = debug on
 
 }
-
-//////void lmFormatter4::Calculations(nTotalLinea As Long, nLin As Long, _
-//////            ByRef nOcupa() As Long, ByRef nAvailable As Long)
-//////
-//////    //Paso 2: Calcular el tamaño de cada compas y el de la línea -------------------------
-//////    //
-//////    //Step 2: Calculations. As the size of each corresponding bar in each staff could be
-//////    //different in this step I use the data stored in tables compiled in step 1, to calculate
-//////    //the size of each bar so that all StaffObjs in different staves can fit in the bar.
-//////    //As a consecuence, the number of measures in this system get stablished
-//////
-//////    //Como todas las líneas del sistema tienen que tener los mismos compases y de igual
-//////    //tamaño basta con ir tomando, para cada compas, el tamaño de la línea en que sea mayor. A la
-//////    //vez se va dejando en nAvailable el tamaño que va teniendo la línea.
-//////    //En este proceso puede suceder que no quepan todos los compases previstos y haya que
-//////    //descartar alguno
-//////    //
-//////    //Argumentos:
-//////    // - m_nMeasureSize(linea, compas) contiene el tamaño de cada compas.
-//////    // - m_nMeasuresInSystem está el número de compases que caben. Puede ser alterado en esta función
-//////    // - nTotalLinea: El tamaño de la línea vacía
-//////    // - nLin es el número total de líneas del sistema
-//////    //
-//////    // Los restantes argumentos son de salida:
-//////    // - nOcupa(compas) = el tamaño de cada compas
-//////    // - nAvailable = lo que sobra de la línea
-//////
-//////    // Actualiza m_nMeasuresInSystem para dejar el número de los que realemnte caben
-//////    //
-//////    //-------------------------------------------------------------------------------------
-//////
-//////    //2. Mirar cuantos campases caben realmente en el systema
-//////    Dim iC As Long, iL As Long      //indices de compas y de línea, respectivamente
-//////
-//////    nAvailable = nTotalLinea
-//////    for (iC = 1 To m_nMeasuresInSystem
-//////
-//////        //1.ajustar datos
-//////        m_oTimepos(iC).ArrangeStaffobjsByTime //true
-//////
-//////        //dbg
-//////        GrabarTrace "Despues de ArrangeStaffobjsByTime:" & sCrLf & _
-//////                    "***************************************" & sCrLf & _
-//////                    m_pScore->Dump & sCrLf
-//////
-//////        //2. Tomar como tamaño del compas el del mayor
-//////        nOcupa(iC) = m_nMeasureSize(1, iC)
-//////        for (iL = 2 To nLin
-//////            nOcupa(iC) = MaxLong(m_nMeasureSize(iL, iC), nOcupa(iC))
-//////        }   // iL
-//////
-//////        //3.descontar el espacio que ocupa el compas
-//////        nAvailable = nAvailable - nOcupa(iC)
-//////        if (nAvailable < 0) {
-//////            //el último compas ya no cabe. Descontarlo y finalizar
-//////            nAvailable = nAvailable + nOcupa(iC)
-//////            m_nMeasuresInSystem = iC
-//////            Exit For
-//////        }
-//////    }   // iC
-//////
-//////
-//////
-//////}
 
 void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable)
 {

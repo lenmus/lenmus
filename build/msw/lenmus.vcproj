@@ -288,18 +288,6 @@
 				RelativePath="..\..\src\score\Direction.h">
 			</File>
 			<File
-				RelativePath="..\..\src\score\Formatter.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\score\Formatter.h">
-			</File>
-			<File
-				RelativePath="..\..\src\score\Formatter3.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\score\Formatter3.h">
-			</File>
-			<File
 				RelativePath="..\..\src\score\Glyph.cpp">
 			</File>
 			<File
@@ -388,12 +376,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\score\Text.h">
-			</File>
-			<File
-				RelativePath="..\..\src\score\TimeposTable.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\score\TimeposTable.h">
 			</File>
 			<File
 				RelativePath="..\..\src\score\TimeSignature.cpp">
@@ -916,6 +898,12 @@
 				RelativePath="..\..\src\graphic\BoxScore.h">
 			</File>
 			<File
+				RelativePath="..\..\src\graphic\BoxSystem.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\BoxSystem.h">
+			</File>
+			<File
 				RelativePath="..\..\src\graphic\Formatter4.cpp">
 			</File>
 			<File
@@ -926,6 +914,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\GraphicManager.h">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\TimeposTable.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\TimeposTable.h">
 			</File>
 		</Filter>
 	</Files>

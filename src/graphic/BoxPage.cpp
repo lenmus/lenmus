@@ -48,8 +48,36 @@ lmBoxPage::lmBoxPage()
 
 }
 
-
 lmBoxPage::~lmBoxPage()
 {
+    //delete all systems
+    WX_CLEAR_ARRAY(m_aSystems);
 }
+
+lmBoxSystem* lmBoxPage::AddSystem(int nSystem)
+{
+    //Update references
+    if (m_nFirstSystem == 0) m_nFirstSystem = nSystem;
+    m_nLastSystem = nSystem;
+
+    //create the system
+    lmBoxSystem* pSystem = new lmBoxSystem();
+    m_aSystems.Add(pSystem);
+    return pSystem;
+
+}
+
+void lmBoxPage::Render(lmScore* pScore, lmPaper* pPaper)
+{
+    int iSystem;                //number of system in process
+    int i;
+    lmBoxSystem* pBoxSystem;
+    //loop to render the systems in this page
+    for(i=0, iSystem = m_nFirstSystem; iSystem <= m_nLastSystem; iSystem++, i++) {
+        pBoxSystem = m_aSystems.Item(i);
+        pBoxSystem->Render(iSystem, pScore, pPaper);
+    }
+
+}
+
 

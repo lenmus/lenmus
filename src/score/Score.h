@@ -353,14 +353,11 @@ struct lmTBeamInfo;
 class lmNote;
 class lmRest;
 
-class lmFormatter;
-class lmFormatter3;
 class lmStaff;
 class StaffList;
 class lmContext;
 class ContextList;
 class lmSoundManager;
-class lmGraphicManager;
 
 
 
@@ -387,12 +384,9 @@ class lmGraphicManager;
 #include "Note.h"
 #include "Rest.h"
 #include "Chord.h"
-#include "Formatter.h"
-#include "Formatter3.h"
 #include "../app/global.h"
 #include "../app/Paper.h"
 #include "../sound/SoundManager.h"
-#include "../graphic/GraphicManager.h"
 
 
 
@@ -411,7 +405,6 @@ public:
     lmInstrument* AddInstrument(wxInt32 nVStaves, wxInt32 nMIDIChannel, wxInt32 nMIDIInstr);
     lmVStaff* GetVStaff(wxInt32 nInstr, wxInt32 nVStaff=1);
     wxInt32 GetNumMeasures();
-    void Draw(lmPaper* pPaper);
 
     // play methods
     void Play(bool fVisualTracking = lmNO_VISUAL_TRACKING, 
@@ -483,18 +476,13 @@ private:
         //
 
     // a lmScore is, mainly, a collection of Instruments plus some data (composer, title, ...)
-    InstrumentsList        m_cInstruments;    //wxList of instruments that compose this score
-
-    //identification information
-    lmText*        m_pTitle;
-    lmText*        m_pSubtitle;
+    InstrumentsList     m_cInstruments;    //list of instruments that form this score
+    lmText*             m_pTitle;
+    lmText*             m_pSubtitle;
 
     //Variables related to polyphonic interpretation
-    lmSoundManager*    m_pSoundMngr;        //Sound events table & manager
-    StaffObjsList    m_cHighlighted;        //list of highlighted staffobjs
-
-    //Variables related to renderization
-    lmGraphicManager*   m_pGraphicMngr;
+    lmSoundManager*     m_pSoundMngr;       //Sound events table & manager
+    StaffObjsList       m_cHighlighted;     //list of highlighted staffobjs
 
     //Layout related variables
     lmLUnits        m_nSystemsDistance;
@@ -504,8 +492,7 @@ private:
     lmLUnits        m_nHeadersHeight;
 
     //other variables
-    lmFormatter*    m_pFormatter;            //rendering algorithm
-    wxInstrumentsListNode *m_pNode;        //last returned instrument node
+    wxInstrumentsListNode*  m_pNode;        //last returned instrument node
     StaffObjsList    m_cGlobalStaffobjs;    //list of other StaffObjs not included in an lmVStaff
 
 };

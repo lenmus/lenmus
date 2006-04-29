@@ -36,8 +36,8 @@
 #include "wx/wx.h"
 #endif
 
-#include "../score/score.h"
 #include "BoxPage.h"
+#include "../score/score.h"
 
 // to manage pages let's define an array to contain pointers to pages
 #include "wx/dynarray.h"
@@ -52,29 +52,18 @@ WX_DEFINE_ARRAY(lmBoxPage*, ArrayBoxPages);
 class lmBoxScore
 {
 public:
-    lmBoxScore(lmScore* pScore, lmPaper* pPaper);
+    lmBoxScore(lmScore* pScore);
     ~lmBoxScore();
 
     lmBoxPage* AddPage();
 
     void Render(lmPaper* pPaper);      // do the drawing phase
 
-    void CopyData(int nNumMeasures[], lmLUnits ySystemPos[], bool fNewPage[], int nNumSystems);
     lmBoxPage* GetCurrentPage() { return m_aPages.Item( m_aPages.GetCount() - 1); }
 
 
 private:
-    void RenderMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper);
-    int RenderSystem(int nSystem, int iIni, lmPaper* pPaper);
-
     lmScore*        m_pScore;       //score to be rendered
-    lmPaper*        m_pPaper;       //paper to use
-
-    //data for now imported from Formatter
-    int         m_nNumMeasures[MAX_SYSTEMS+1];  //num of measures in each system
-    lmLUnits    m_ySystemPos[MAX_SYSTEMS+1];    //paper y position at which each system starts
-    bool        m_fNewPage[MAX_SYSTEMS+1];      //insert 'new page' after system i
-    int         m_nNumSystems;                  //num of systems in which the score has been splitted
 
     // a lmBoxScore is, mainly, a collection of lmBoxPages
     ArrayBoxPages  m_aPages;       //array of ptrs to pages that form this score
