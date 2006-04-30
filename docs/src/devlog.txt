@@ -1,4 +1,3 @@
-// RCS-ID: $Id: devlog.txt,v 1.28 2006/03/03 15:01:16 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -23,10 +22,7 @@
 ================================================================================================
  Development log
 
- Its purpose is to have all relevant documentation about work in progress or thinks to do in
- short time, as well as to keep a recording of changes done each day. This log of changes can
- be useful for many purposes, i.e. to locate the backup copy to use to recover a previous
- implementation of a certain feature
+ Just my notes about work in progress or thinks to do in short time
 ================================================================================================
 
 doxytags tags found in code:
@@ -60,15 +56,6 @@ LenMus project philosophy (to remind me to always stay on this):
   
 
 -----------------------------------------------------------------------------------------------
- WHAT I AM DOING?:
-    This is not a planning, but a list of things to do.
-    This section is a LIFO queue. Tasks are added on top of the lists. I always work on
-    the first task of the list and when finished, it is deleted from the list and the work
-    continues with ne next list item. Usually, top list items are subtask of bottom list items.
-    The entries at the end of the lists    are remainders of things to do with very low priority.
-
---------------------------------------------------------------------------------------------------
-
   - smile
   - Besides the C++ Programming Language, by Bjarne Stroustrup, the "official" guide to C++,
    I highly recommend Inside the C++ Object Model, by Stanley B. Lippman. (Lippman was one
@@ -82,8 +69,46 @@ LenMus project philosophy (to remind me to always stay on this):
 Planning: comming releases 
 ******************************************************************************************
 
-Bugs to solve:
+	- Lyrics: compute maximum y and position lyric at a greater y
+
+Organizational issues:
+	- Integrate wxMidi so that LenMus package at SVN be self-contained.
+	- Modify panel pendrive so that erased files do not re-appear
+	
+	- Strategy: work in secuence in all areas and plan things so that each cicle produces
+		some visible result: launch a new release every month. a new document, etc.
+		
+Area 0: Bugs to solve
         
+Area 1: New features to add in short term to working release
+	+ Wrong/right answer counters for exercises
+	- Too much space beetween notes in TheoIntervals
+	- Notes spacing in scales exercise: the control is now too wide
+	- Buttons for answers in scales exercise
+	- Split TheoIntervalsCtrol into two exercises: one for identification (current) and 
+		one for construction (current code but adding answer buttons for building 
+		the intervals).
+	
+Area 2: Notation editor
+	- divide notation features in phases and proceed by phases
+	- slurs
+
+Area 3: Analysis and algorithms
+	- sequences (Lylipond) vs. back/forward (MusicXML)
+	- Role of GraphicManager vs. lmPaper. Gradualy move lmPaper methods to lmBoxPage. 
+	
+Area 4: Documentation
+
+Area 5: Prepare a new book
+	- theory; level 1
+	
+Area 6: Design new exercises
+	- chords
+	- Problem with chord stems (vanished)in faur_reve_sample.xml
+	- Chords: reverse the noteheads position when two notes collide in consecutive line
+		and space
+			
+			
 
 ?/???/2006 - Stable 3.0 release (beta 3.0b0 + 1 month)
 ---------------------------------------------------
@@ -138,7 +163,6 @@ Known bugs:
     2 - Bug: error when opening "chords v13.txt" and then closing the app.
   
         - Beams that continue in next system
-        - Problem with chord stems (vanished)in faur_reve_sample.xml
 
 
 	- If Midi Wizard is cancelled some non-relevant error messages are displayed.
@@ -217,9 +241,6 @@ TODO:
 -------------------
    - Why Notes can not be moved?
    - Note LONG (> cuadrada) --> Consultar Enciclopedia Britanica online?
-   - Chords: reverse the noteheads position when two notes collide in consecutive line
-     and space
-   - Too much space beetween notes in TheoIntervals
      
 
      

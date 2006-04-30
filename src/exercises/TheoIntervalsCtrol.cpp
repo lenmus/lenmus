@@ -1,4 +1,3 @@
-// RCS-ID: $Id: TheoIntervalsCtrol.cpp,v 1.10 2006/03/03 14:59:44 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -34,17 +33,7 @@
 #pragma hdrstop
 #endif
 
-//////contadores de respuestas correctas/fallidas
-//    int            m_nRightAnswers;
-//    int            m_nWrongAnswers;
-//    wxString    m_lblRight As Label
-//    wxString    m_lblWrong As Label
-//    wxString    m_lblMark As Label
-////
-////
-
 #include "TheoIntervalsCtrol.h"
-#include "UrlAuxCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
 #include "../auxmusic/Conversion.h"
@@ -81,7 +70,6 @@ enum {
     ID_BUTTON,
     ID_LINK = ID_BUTTON + NUM_BUTTONS,
     ID_LINK_NEW_PROBLEM,
-    ID_LINK_RESET_COUNTERS,
     ID_LINK_PLAY,
     ID_LINK_SOLUTION,
     ID_LINK_SETTINGS
@@ -96,7 +84,6 @@ BEGIN_EVENT_TABLE(lmTheoIntervalsCtrol, wxWindow)
     LM_EVT_URL_CLICK    (ID_LINK_MIDI_EVENTS, lmTheoIntervalsCtrol::OnDebugShowMidiEvents)
 
     LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, lmTheoIntervalsCtrol::OnNewProblem)
-    LM_EVT_URL_CLICK    (ID_LINK_RESET_COUNTERS, lmTheoIntervalsCtrol::OnResetCounters)
     LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmTheoIntervalsCtrol::OnPlay)
     LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, lmTheoIntervalsCtrol::OnDisplaySolution)
     LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmTheoIntervalsCtrol::OnSettingsButton)
@@ -194,25 +181,10 @@ lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
     //on the right, and bottom region, for answer buttons 
     wxBoxSizer* pMainSizer = new wxBoxSizer( wxVERTICAL );
 
-    wxBoxSizer* pTopSizer = new wxBoxSizer( wxHORIZONTAL );
-
-    // Inside TopSizer we set up a vertical sizer: score on top, debugg links bottom
-    wxBoxSizer* pScoreSizer = new wxBoxSizer( wxVERTICAL );
-    pTopSizer->Add(pScoreSizer, 0, wxALIGN_LEFT|wxALL, 5);
-
-    // create score ctrl 
-    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, wxSize(420,150), eSIMPLE_BORDER);
-    m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
-                              lmToLogicalUnits(10, lmMILLIMETERS),
-                              lmToLogicalUnits(10, lmMILLIMETERS));        //right=1cm, left=1cm, top=1cm
-    pScoreSizer->Add(
-        m_pScoreCtrol,
-        wxSizerFlags(1).Left().Border(wxALL, 10));
-
     // debug buttons
     if (g_fShowDebugLinks && !g_fReleaseVersion) {
         wxBoxSizer* pDbgSizer = new wxBoxSizer( wxHORIZONTAL );
-        pScoreSizer->Add(pDbgSizer, 0, wxALIGN_LEFT|wxALL, 5);
+        pMainSizer->Add(pDbgSizer, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
 
         // "See source score"
         pDbgSizer->Add(
@@ -228,55 +200,80 @@ lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
             wxSizerFlags(0).Left().Border(wxALL, 10) );
     }
 
-    wxBoxSizer* pCountersSizer = new wxBoxSizer( wxVERTICAL );
+    // sizer for the scoreCtrol and the CountersCtrol
+    wxBoxSizer* pTopSizer = new wxBoxSizer( wxHORIZONTAL );
+    pMainSizer->Add(
+        pTopSizer,
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+
+    // create score ctrl 
+    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, wxSize(400,150), eSIMPLE_BORDER);
+    m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),      //left=1cm
+                              lmToLogicalUnits(20, lmMILLIMETERS),      //right=2cm
+                              lmToLogicalUnits(10, lmMILLIMETERS));     //top=1cm
+    pTopSizer->Add(
+        m_pScoreCtrol,
+        wxSizerFlags(1).Left().Border(wxTOP|wxBOTTOM, 10));
+
     m_pScoreCtrol->SetScale((float)1.3);
 
 
-    //'crear control de marcador de totales
-    //Dim iCtrol As Long
-    //m_oAtributos.rLeft = rLeft
-    //m_oAtributos.rTop = picObj(m_iPic).Top
-    //m_oAtributos.nSpace = 0
-    //iCtrol = CrearObjetoMarcador
-    //m_oTeoIntervalos.SetContadores lblTexto(iCtrol), lblTexto(iCtrol + 1), lblTexto(iCtrol + 2)
-    
-    // settings link
-    lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
-    pCountersSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxALL, 10) );
-
-    // "new problem" button
-    pCountersSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") ),
-        wxSizerFlags(0).Left().Border(wxALL, 10) );
-    
-    // "play" button
-    pCountersSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_PLAY, _("Play") ),
-        wxSizerFlags(0).Left().Border(wxALL, 10) );
-    
-    // "show solution" button
-    pCountersSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") ),
-        wxSizerFlags(0).Left().Border(wxALL, 10) );
-    
-    // "reset counters" button
-    //pCountersSizer->Add(
-    //    new lmUrlAuxCtrol(this, ID_LINK_RESET_COUNTERS, _("Reset counters") ),
-    //    wxSizerFlags(0).Left().Border(wxALL, 10) );
-    
+    // sizer for the CountersCtrol and the settings link
+    wxBoxSizer* pCountersSizer = new wxBoxSizer( wxVERTICAL );
     pTopSizer->Add(
         pCountersSizer,
-        wxSizerFlags(0).Right().Border(wxALL, 10) );
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10).Expand() );
 
+    // right/wrong answers counters control
+    m_pCounters = new lmCountersCtrol(this, wxID_ANY);
+    pCountersSizer->Add(
+        m_pCounters,
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
 
+    // spacer to move the settings link to bottom
+    pCountersSizer->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+    // settings link
+    lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
+    pCountersSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+
+    // spacer to move the settings link a little up
+    pCountersSizer->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+    
+
+        //links 
+
+    wxBoxSizer* pLinksSizer = new wxBoxSizer( wxHORIZONTAL );
     pMainSizer->Add(
-        pTopSizer,
-        wxSizerFlags(0).Left().Border(wxALL, 10) );
+        pLinksSizer,
+        wxSizerFlags(0).Center().Border(wxLEFT|wxALL, 10) );
 
+
+    // "new problem" button
+    pLinksSizer->Add(
+        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") ),
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
+    
+    // "play" button
+    m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, _("Play") );
+    pLinksSizer->Add(
+        m_pPlayButton,
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
+    
+    // "show solution" button
+    pLinksSizer->Add(
+        new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") ),
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
+    
     //create 48 buttons for the answers: six rows, eight buttons per row
     
     //unison button
     wxBoxSizer* pUnisonSizer = new wxBoxSizer( wxHORIZONTAL );
+    pMainSizer->Add(
+        pUnisonSizer,
+        wxSizerFlags(0).Left() );
+
     wxButton* pButton;
     int iB = 0;
     pButton = new wxButton( this, ID_BUTTON, _("Unison") );
@@ -285,12 +282,13 @@ lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
         pButton,
         wxSizerFlags(0).Border(wxALL, BUTTONS_DISTANCE) );
 
-    pMainSizer->Add(
-        pUnisonSizer,
-        wxSizerFlags(0).Left() );
 
     // labels for columns, with interval number
     wxBoxSizer* pRowSizer = new wxBoxSizer( wxHORIZONTAL );
+    pMainSizer->Add(    
+        pRowSizer,
+        wxSizerFlags(0).Left());
+
     pRowSizer->Add(15+BUTTONS_DISTANCE, 24, 0);    //spacer to center labels
     for (int iRow=0; iRow < 7; iRow++) {        // six rows
         pRowSizer->Add(
@@ -298,13 +296,13 @@ lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
                         wxDefaultPosition, wxSize(54, 15)),
             wxSizerFlags(0).Left().Border(wxRIGHT | wxLEFT, BUTTONS_DISTANCE) );
     }
-    pMainSizer->Add(    
-        pRowSizer,
-        wxSizerFlags(0).Left());
 
     //remaining buttons
     for (int iRow=0; iRow < 6; iRow++) {        // six rows
         pRowSizer = new wxBoxSizer( wxHORIZONTAL );
+        pMainSizer->Add(    
+            pRowSizer,
+            wxSizerFlags(0).Left());
 
         for (int iCol=0; iCol < 8; iCol++) {        //eight columns
             iB = iCol + iRow * 8;    // button index: 0 .. 47            
@@ -328,9 +326,6 @@ lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
             new wxStaticText(this, -1, sRowLabel[iRow] ),
             wxSizerFlags(0).Left().Border(wxALL, 10) );
 
-        pMainSizer->Add(    
-            pRowSizer,
-            wxSizerFlags(0).Left());
     }
 
     SetSizer( pMainSizer );                // use the sizer for window layout
@@ -394,11 +389,6 @@ void lmTheoIntervalsCtrol::OnNewProblem(wxCommandEvent& event)
     NewProblem();
 }
 
-void lmTheoIntervalsCtrol::OnResetCounters(wxCommandEvent& event)
-{
-    ResetCounters();
-}
-
 void lmTheoIntervalsCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
     DisplaySolution();
@@ -419,32 +409,14 @@ void lmTheoIntervalsCtrol::OnRespButton(wxCommandEvent& event)
     //prepare sound and color, and update counters
     if (fSuccess) {
         pColor = &(g_pColors->Success());
-        //TODO
-        //SonidoAcierto
-        //m_nRightAnswers = m_nRightAnswers + 1
+        //! @todo Sound for sucess
+        m_pCounters->IncrementRight();
     } else {
         pColor = &(g_pColors->Failure());
-        //TODO
-        //SonidoFallo
-        //m_nWrongAnswers = m_nWrongAnswers + 1
+        //! @todo Sound for failure
+        m_pCounters->IncrementWrong();
     }
         
-    //update counters display
-    //TODO
-////    Dim rAciertos As Single
-////    rAciertos = 10# * CSng(m_nRightAnswers) / CSng(m_nRightAnswers + m_nWrongAnswers)
-////    if (!m_lblRight Is Nothing) { m_lblRight.Caption = m_nRightAnswers
-////    if (!m_lblWrong Is Nothing) { m_lblWrong.Caption = m_nWrongAnswers
-////    if (!m_lblMark Is Nothing) {
-////        if (rAciertos = 10#) {
-////            m_lblMark.Caption = "10"
-////        } else if { rAciertos = 0#) {
-////            m_lblMark.Caption = "0"
-////        } else {
-////            m_lblMark.Caption = Format$(Round(rAciertos, 1), "#0.0")
-////        }
-////    }
-
     //if failure, display the solution. If succsess, generate a new problem
     if (!fSuccess) {
         //failure: mark wrong button in red and right one in green
@@ -453,7 +425,7 @@ void lmTheoIntervalsCtrol::OnRespButton(wxCommandEvent& event)
 
         //show the solucion
         DisplaySolution();
-        EnableButtons(true);
+        EnableButtons(false);
 
     } else {
         NewProblem();
@@ -502,6 +474,9 @@ void lmTheoIntervalsCtrol::NewProblem()
         sPatron[i] += oConv.GetEnglishNoteName(m_ntPitch[i]) + _T(" r)");
     }
     
+    //sPatron[0] = _T("(n +e4 r)");
+    //sPatron[1] = _T("(n f4 r)");
+
     //create the score
     lmNote* pNote[2];
     lmLDPParser parserLDP;
@@ -562,12 +537,14 @@ void lmTheoIntervalsCtrol::NewProblem()
         m_pScoreCtrol->DisplayScore(m_pScore);
         m_pScore = (lmScore*)NULL;    //no longer owned. Now owned by lmScoreAuxCtrol
         EnableButtons(true);
+        m_pPlayButton->Enable(true);
     } else {
         //inverse problem
         m_sAnswer += _(" starting at ") + oConv.GetNoteName(m_ntPitch[0]);
-        if (sAlter[0] == _T("+")) m_sAnswer += _T("#");
-        if (sAlter[0] == _T("-")) m_sAnswer += _T("b");
+        if (sAlter[0] == _T("+")) m_sAnswer += _T(" #");
+        if (sAlter[0] == _T("-")) m_sAnswer += _T(" b");
         m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS));
+        m_pPlayButton->Enable(false);
     }
     m_fPlayEnabled = false;
     m_fProblemCreated = true;
@@ -605,8 +582,10 @@ void lmTheoIntervalsCtrol::DisplaySolution()
 ////        End With
 ////    }
 
+    m_pPlayButton->Enable(true);
     m_fPlayEnabled = true;
     m_fProblemCreated = false;
+    EnableButtons(false);           //student must not give now the answer
     
 }
 
@@ -638,18 +617,5 @@ void lmTheoIntervalsCtrol::ResetExercise()
         delete m_pScore;
         m_pScore = (lmScore*)NULL;
     }
-    
-}
-
-void lmTheoIntervalsCtrol::ResetCounters()
-{
-    //! @todo When Counters implemented: code this method
-//    m_nRightAnswers = 0;
-//    m_nWrongAnswers = 0;
-//    
-//    m_lblRight = _T("0");
-//    m_lblWrong = _T("0");
-//    m_lblMark = _T("-");
-    
     
 }

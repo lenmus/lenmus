@@ -651,6 +651,9 @@
 				RelativePath="..\..\src\exercises\CountersCtrol.cpp">
 			</File>
 			<File
+				RelativePath="..\..\src\exercises\CountersCtrol.h">
+			</File>
+			<File
 				RelativePath="..\..\src\exercises\EarCompareIntvCtrol.cpp">
 			</File>
 			<File

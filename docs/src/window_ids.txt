@@ -19,3 +19,4 @@ Dialogs: 2100-2199
 Html: Main Controls: 3000-3499
       Aux controls:
             ScoreCtrol: 35xx
+            CountersCtrol: 36xx

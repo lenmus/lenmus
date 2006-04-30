@@ -1,4 +1,3 @@
-// RCS-ID: $Id: TheoIntervalsCtrol.h,v 1.3 2006/02/23 19:19:53 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -44,6 +43,8 @@
 #include "Constrains.h"
 #include "../score/score.h"
 #include "ScoreAuxCtrol.h"
+#include "CountersCtrol.h"
+#include "UrlAuxCtrol.h"
 
 
 class lmTheoIntervalsCtrol : public wxWindow    
@@ -65,7 +66,6 @@ public:
     void OnRespButton(wxCommandEvent& event);
     void OnPlay(wxCommandEvent& event);
     void OnNewProblem(wxCommandEvent& event);
-    void OnResetCounters(wxCommandEvent& event);
     void OnDisplaySolution(wxCommandEvent& event);
     void OnSettingsButton(wxCommandEvent& event);
 
@@ -80,12 +80,15 @@ private:
     void NewProblem();
     void DisplaySolution();
     void ResetExercise();
-    void ResetCounters();
 
         // member variables
 
     lmScore*            m_pScore;           // the score with the interval
     lmScoreAuxCtrol*    m_pScoreCtrol;
+    lmCountersCtrol*    m_pCounters;
+
+    lmUrlAuxCtrol*      m_pPlayButton;      // "play" button
+
     lmTheoIntervalsConstrains* m_pConstrains;
     bool            m_fProblemCreated;      //there is a problem prepared
     lmPitch         m_ntMidi[2];            //the midi pitch of the two notes
