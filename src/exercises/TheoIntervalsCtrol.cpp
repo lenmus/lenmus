@@ -309,7 +309,7 @@ lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
             //column (unisons) is not created. Button for unison already created
             if (iCol != 0) {
                 if (sButtonLabel[iB].IsEmpty()) {
-                    pRowSizer->Add(54+BUTTONS_DISTANCE+BUTTONS_DISTANCE, 24, 0);    //spacer
+                    pRowSizer->Add(54+BUTTONS_DISTANCE+BUTTONS_DISTANCE, 20, 0);    //spacer
                 }
                 else {
                     pButton = new wxButton( this, ID_BUTTON + iB, sButtonLabel[iB],
@@ -317,14 +317,14 @@ lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
                     m_pAnswerButton[iB++] = pButton;
                     pRowSizer->Add(
                         pButton,
-                        wxSizerFlags(0).Border(wxALL, BUTTONS_DISTANCE) );
+                        wxSizerFlags(0).Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
                 }
             }
         }
 
         pRowSizer->Add(
             new wxStaticText(this, -1, sRowLabel[iRow] ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
+            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
 
     }
 
@@ -391,7 +391,10 @@ void lmTheoIntervalsCtrol::OnNewProblem(wxCommandEvent& event)
 
 void lmTheoIntervalsCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
+    //! @todo Sound for failure
+    m_pCounters->IncrementWrong();
     DisplaySolution();
+    EnableButtons(false);           //student must not give now the answer
 }
 
 void lmTheoIntervalsCtrol::OnRespButton(wxCommandEvent& event)
@@ -474,8 +477,15 @@ void lmTheoIntervalsCtrol::NewProblem()
         sPatron[i] += oConv.GetEnglishNoteName(m_ntPitch[i]) + _T(" r)");
     }
     
+    ////DEBUG: un-comment and modify values for testing a certain interval
     //sPatron[0] = _T("(n +e4 r)");
-    //sPatron[1] = _T("(n f4 r)");
+    //sPatron[1] = _T("(n e4 r)");
+
+    //delete the previous exercise
+    if (m_pScore) {
+        delete m_pScore;
+        m_pScore = (lmScore*)NULL;
+    }
 
     //create the score
     lmNote* pNote[2];
@@ -585,7 +595,6 @@ void lmTheoIntervalsCtrol::DisplaySolution()
     m_pPlayButton->Enable(true);
     m_fPlayEnabled = true;
     m_fProblemCreated = false;
-    EnableButtons(false);           //student must not give now the answer
     
 }
 

@@ -1,4 +1,3 @@
-// RCS-ID: $Id: KeySignature.cpp,v 1.6 2006/02/28 17:40:21 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -40,6 +39,11 @@
 
 #include "wx/image.h"
 #include "Score.h"
+
+//access to error's logger
+#include "../app/Logger.h"
+extern lmLogger* g_pLogger;
+
 
 
 static wxString sKeySignatureName[30];
@@ -90,19 +94,23 @@ lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool
     sKeySignatureName[28] = _("G minor");
     sKeySignatureName[29] = _("D minor");
 
-
     m_fTraditional = true;
     m_nFifths = nFifths;
     m_fMajor = fMajor;
+
     SetKeySignatureType();
+
+    g_pLogger->LogTrace(_T("lmKeySignature"),
+        _T("[lmKeySignature::lmKeySignature] m_nFifths=%d, m_fMajor=%s, nKey=%d"),
+            m_nFifths, (m_fMajor ? _T("yes") : _T("no")), m_nKeySignature );
 
 }
 
 wxString lmKeySignature::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tKey Sign. %d %s\tTimePos=%.2f\n"),
-        m_nId, m_nFifths, (m_fMajor ? _T("major") : _T("minor")), m_rTimePos );
+        _T("%d\tKey Sign. %d %s Key=%d\tTimePos=%.2f\n"),
+        m_nId, m_nFifths, (m_fMajor ? _T("major") : _T("minor")), m_nKeySignature, m_rTimePos );
     return sDump;
 }
 
@@ -329,6 +337,12 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos,
     // Check if it is necessary to draw sharps or flats, and how many.
     int nNumAccidentals = KeySignatureToNumFifths(nKeySignature);   
     bool fDrawFlats = (nNumAccidentals < 0);    //true if flats, false if sharps
+
+    g_pLogger->LogTrace(_T("lmKeySignature"),
+        _T("[lmKeySignature::DrawAt] nNumAccidentals=%d, fDrawFlats=%s, m_nFifths=%d, m_fMajor=%s, nKey=%d"),
+            nNumAccidentals, (fDrawFlats ? _T("yes") : _T("no")),
+            m_nFifths, (m_fMajor ? _T("yes") : _T("no")), nKeySignature );
+
     nNumAccidentals = abs(nNumAccidentals);
 
     //Render the required flats / sharps

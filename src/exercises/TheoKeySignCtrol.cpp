@@ -1,4 +1,3 @@
-// RCS-ID: $Id: TheoKeySignCtrol.cpp,v 1.5 2006/02/23 19:19:53 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -48,6 +47,11 @@ extern bool g_fReleaseVersion;            // in TheApp.cpp
 extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 extern bool g_fShowDebugLinks;            // in TheApp.cpp
 
+//access to error's logger
+#include "../app/Logger.h"
+extern lmLogger* g_pLogger;
+
+
 
 //------------------------------------------------------------------------------------
 // Implementation of lmTheoKeySignCtrol
@@ -65,9 +69,8 @@ enum {
     ID_LINK_DUMP,
     ID_BUTTON,
     ID_LINK = ID_BUTTON + lmTHEO_KEYSIGN_NUM_BUTTONS,
-    ID_LINK_NEW_PROBLEM,        //ID_LINK+1;
-    ID_LINK_RESET_COUNTERS,     //ID_LINK+2;
-    ID_LINK_SOLUTION            //ID_LINK+3;
+    ID_LINK_NEW_PROBLEM,
+    ID_LINK_SOLUTION
 };
 
 BEGIN_EVENT_TABLE(lmTheoKeySignCtrol, wxWindow)
@@ -78,7 +81,6 @@ BEGIN_EVENT_TABLE(lmTheoKeySignCtrol, wxWindow)
     LM_EVT_URL_CLICK    (ID_LINK_DUMP, lmTheoKeySignCtrol::OnDebugDumpScore)
 
     LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, lmTheoKeySignCtrol::OnNewProblem)
-    LM_EVT_URL_CLICK    (ID_LINK_RESET_COUNTERS, lmTheoKeySignCtrol::OnResetCounters)
     LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, lmTheoKeySignCtrol::OnDisplaySolution)
 END_EVENT_TABLE()
 
@@ -142,22 +144,10 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
     //on the right, and bottom region, for answer buttons 
     wxBoxSizer* pMainSizer = new wxBoxSizer( wxVERTICAL );
 
-    wxBoxSizer* pTopSizer = new wxBoxSizer( wxHORIZONTAL );
-
-    // Inside TopSizer we set up a vertical sizer: score on top, debugg links bottom
-    wxBoxSizer* pScoreSizer = new wxBoxSizer( wxVERTICAL );
-    pTopSizer->Add(pScoreSizer, 0, wxALIGN_LEFT|wxALL, 5);
-
-    // create score ctrl 
-    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, wxSize(420,200), eSIMPLE_BORDER);
-    pScoreSizer->Add(
-        m_pScoreCtrol,
-        wxSizerFlags(1).Left().Border(wxALL, 10));
-
     // debug buttons
     if (g_fShowDebugLinks && !g_fReleaseVersion) {
         wxBoxSizer* pDbgSizer = new wxBoxSizer( wxHORIZONTAL );
-        pScoreSizer->Add(pDbgSizer, 0, wxALIGN_LEFT|wxALL, 5);
+        pMainSizer->Add(pDbgSizer, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
 
         // "See source score"
         pDbgSizer->Add(
@@ -169,44 +159,45 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
             wxSizerFlags(0).Left().Border(wxALL, 10) );
     }
 
-    wxBoxSizer* pCountersSizer = new wxBoxSizer( wxVERTICAL );
-    m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
-                              lmToLogicalUnits(10, lmMILLIMETERS),
-                              lmToLogicalUnits(20, lmMILLIMETERS));        //right=1cm, left=1cm, top=2cm
-    m_pScoreCtrol->SetScale((float)1.3);
-
-
-    //'crear control de marcador de totales
-    //Dim iCtrol As Long
-    //m_oAtributos.rLeft = rLeft
-    //m_oAtributos.rTop = picObj(m_iPic).Top
-    //m_oAtributos.nSpace = 0
-    //iCtrol = CrearObjetoMarcador
-    //m_oTeoIntervalos.SetContadores lblTexto(iCtrol), lblTexto(iCtrol + 1), lblTexto(iCtrol + 2)
-    
-    // "new problem" button
-    pCountersSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") ),
-        wxSizerFlags(0).Left().Border(wxALL, 10) );
-    
-    // "show solution" button
-    pCountersSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") ),
-        wxSizerFlags(0).Left().Border(wxALL, 10) );
-    
-    // "reset counters" button
-    //pCountersSizer->Add(
-    //    new lmUrlAuxCtrol(this, ID_LINK_RESET_COUNTERS, _("Reset counters") ),
-    //    wxSizerFlags(0).Left().Border(wxALL, 10) );
-    
-    pTopSizer->Add(
-        pCountersSizer,
-        wxSizerFlags(0).Right().Border(wxALL, 10) );
-
-
+    // sizer for the scoreCtrol and the CountersCtrol
+    wxBoxSizer* pTopSizer = new wxBoxSizer( wxHORIZONTAL );
     pMainSizer->Add(
         pTopSizer,
-        wxSizerFlags(0).Left().Border(wxALL, 10) );
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+
+    // create score ctrl 
+    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, wxSize(350,150), eSIMPLE_BORDER);
+    pTopSizer->Add(m_pScoreCtrol,
+                   wxSizerFlags(1).Left().Border(wxTOP|wxBOTTOM, 10));
+    m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),      //left=1cm
+                              lmToLogicalUnits(10, lmMILLIMETERS),      //right=1cm
+                              lmToLogicalUnits(10, lmMILLIMETERS));     //top=1cm
+    m_pScoreCtrol->SetScale((float)1.3);
+
+    // right/wrong answers counters control
+    m_pCounters = new lmCountersCtrol(this, wxID_ANY);
+    pTopSizer->Add(
+        m_pCounters,
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+    
+
+        //links 
+
+    wxBoxSizer* pLinksSizer = new wxBoxSizer( wxHORIZONTAL );
+    pMainSizer->Add(
+        pLinksSizer,
+        wxSizerFlags(0).Center().Border(wxALL, 10) );
+
+    // "new problem" button
+    pLinksSizer->Add(
+        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") ),
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT|wxBOTTOM, 20) );
+    
+    // "show solution" button
+    pLinksSizer->Add(
+        new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") ),
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT|wxBOTTOM, 20) );
+    
 
     //create 15 buttons for the answers: three rows, five buttons per row
     wxBoxSizer* pRowSizer;
@@ -216,6 +207,9 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
     const int NUM_COLS = 5;
     for (int iRow=0; iRow < NUM_ROWS; iRow++) {
         pRowSizer = new wxBoxSizer( wxHORIZONTAL );
+        pMainSizer->Add(    
+            pRowSizer,
+            wxSizerFlags(0).Left());
         pRowSizer->Add(20+BUTTONS_DISTANCE, 24, 0);    //spacer to center labels
 
         for (int iCol=0; iCol < NUM_COLS; iCol++) {
@@ -227,9 +221,6 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
                 pButton,
                 wxSizerFlags(0).Border(wxALL, BUTTONS_DISTANCE) );
         }
-        pMainSizer->Add(    
-            pRowSizer,
-            wxSizerFlags(0).Left());
     }
 
     SetSizer( pMainSizer );                // use the sizer for window layout
@@ -281,14 +272,12 @@ void lmTheoKeySignCtrol::OnNewProblem(wxCommandEvent& event)
     NewProblem();
 }
 
-void lmTheoKeySignCtrol::OnResetCounters(wxCommandEvent& event)
-{
-    ResetCounters();
-}
-
 void lmTheoKeySignCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
+    //! @todo Sound for failure
+    m_pCounters->IncrementWrong();
     DisplaySolution();
+    EnableButtons(false);           //student must not give now the answer
 }
 
 void lmTheoKeySignCtrol::OnRespButton(wxCommandEvent& event)
@@ -300,31 +289,13 @@ void lmTheoKeySignCtrol::OnRespButton(wxCommandEvent& event)
     
     //produce feedback sound, and update counters
     if (fSuccess) {
-        //! @todo feedback sound, counters
-        //SonidoAcierto
-        //m_nRightAnswers++;
+        //! @todo Sound for sucess
+        m_pCounters->IncrementRight();
     } else {
-        //! @todo feedback sound, counters
-        //SonidoFallo
-        //m_nWrongAnswers++;
+        //! @todo Sound for failure
+        m_pCounters->IncrementWrong();
     }
         
-    //update counters display
-        //! @todo counters
-////    Dim rAciertos As Single
-////    rAciertos = 10# * CSng(m_nRightAnswers) / CSng(m_nRightAnswers + m_nWrongAnswers)
-////    if (!m_lblRight Is Nothing) { m_lblRight.Caption = m_nRightAnswers
-////    if (!m_lblWrong Is Nothing) { m_lblWrong.Caption = m_nWrongAnswers
-////    if (!m_lblMark Is Nothing) {
-////        if (rAciertos = 10#) {
-////            m_lblMark.Caption = "10"
-////        } else if { rAciertos = 0#) {
-////            m_lblMark.Caption = "0"
-////        } else {
-////            m_lblMark.Caption = Format$(Round(rAciertos, 1), "#0.0")
-////        }
-////    }
-
     //if failure, display the solution. if succsess, generate a new problem
     if (!fSuccess) {
         //failure: mark wrong button in red and right one in green
@@ -333,7 +304,7 @@ void lmTheoKeySignCtrol::OnRespButton(wxCommandEvent& event)
 
         //show the solucion
         DisplaySolution();
-        EnableButtons(true);
+        EnableButtons(false);
 
     } else {
         NewProblem();
@@ -545,7 +516,7 @@ void lmTheoKeySignCtrol::NewProblem()
             }
         }
     }
-                        
+
     // choose type of problem
     if (m_pConstrains->GetProblemType() == eBothKeySignProblems) {
         m_fIdentifyKey = oGenerator.FlipCoin();
@@ -553,6 +524,14 @@ void lmTheoKeySignCtrol::NewProblem()
     else {
         m_fIdentifyKey = (m_pConstrains->GetProblemType() == eIdentifyKeySignature);
     }
+
+    g_pLogger->LogTrace(_T("lmTheoKeySignCtrol"),
+        _T("[lmTheoKeySignCtrol::NewProblem] m_fIdentifyKey=%s, m_fMajorMode=%s, fFlats=%s, nKey=%d, nAnswer=%d, m_nIndexKeyName=%d"),
+            (m_fIdentifyKey ? _T("yes") : _T("no")),
+            (m_fMajorMode ? _T("yes") : _T("no")),
+            (fFlats ? _T("yes") : _T("no")),
+            nKey, nAnswer, m_nIndexKeyName);
+
 
     // store index to right answer button (for guess-number-of-accidentals problems)
     if (!m_fIdentifyKey) {
@@ -619,7 +598,13 @@ void lmTheoKeySignCtrol::NewProblem()
         m_pAnswerButton[13]->SetLabel(_("6 b"));
         m_pAnswerButton[14]->SetLabel(_("7 b"));
     }
-    
+
+    //delete the previous exercise
+    if (m_pScore) {
+        delete m_pScore;
+        m_pScore = (lmScore*)NULL;
+    }
+
     //create the score
     m_pScore = new lmScore();
     m_pScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
@@ -642,7 +627,7 @@ void lmTheoKeySignCtrol::NewProblem()
     } else {
         //inverse problem
         m_sAnswer = (m_fMajorMode ? sMajor[nAnswer] : sMinor[nAnswer] );
-        m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(10, lmMILLIMETERS));
+        m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS));
     }
     m_fProblemCreated = true;
     EnableButtons(true);
@@ -652,7 +637,7 @@ void lmTheoKeySignCtrol::NewProblem()
 void lmTheoKeySignCtrol::DisplaySolution()
 {
     if (m_fIdentifyKey) {
-        m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(10, lmMILLIMETERS), false);
+        m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
     } else {
         m_pScoreCtrol->DisplayScore(m_pScore, false);
         m_pScore = (lmScore*)NULL;    //no longer owned. Now owned by lmScoreAuxCtrol
@@ -687,18 +672,4 @@ void lmTheoKeySignCtrol::ResetExercise()
     }
     
 }
-
-void lmTheoKeySignCtrol::ResetCounters()
-{
-    //! @todo When Counters implemented: code this method
-//    m_nRightAnswers = 0;
-//    m_nWrongAnswers = 0;
-//    
-//    m_lblRight = _T("0");
-//    m_lblWrong = _T("0");
-//    m_lblMark = _T("-");
-    
-    
-}
-
 

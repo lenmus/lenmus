@@ -1,4 +1,3 @@
-// RCS-ID: $Id: TheoKeySignCtrol.h,v 1.4 2006/02/23 19:19:53 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -45,6 +44,7 @@
 #include "TheoKeySignConstrains.h"
 #include "../score/score.h"
 #include "ScoreAuxCtrol.h"
+#include "CountersCtrol.h"
 
 
 const int lmTHEO_KEYSIGN_NUM_BUTTONS = 15;               //buttons for answers
@@ -68,7 +68,6 @@ public:
     void OnRespButton(wxCommandEvent& event);
     void OnPlay(wxCommandEvent& event);
     void OnNewProblem(wxCommandEvent& event);
-    void OnResetCounters(wxCommandEvent& event);
     void OnDisplaySolution(wxCommandEvent& event);
 
     // event handlers related to debugging
@@ -80,12 +79,13 @@ private:
     void NewProblem();
     void DisplaySolution();
     void ResetExercise();
-    void ResetCounters();
 
         // member variables
 
     lmScore*            m_pScore;           // the score with the interval
     lmScoreAuxCtrol*    m_pScoreCtrol;
+    lmCountersCtrol*    m_pCounters;
+
     lmTheoKeySignConstrains* m_pConstrains;
     bool            m_fProblemCreated;      //there is a problem prepared
 

@@ -79,6 +79,9 @@ Organizational issues:
 		some visible result: launch a new release every month. a new document, etc.
 		
 Area 0: Bugs to solve
+	- if the new score pointer has the same address than the previous one, lmPaper does not
+		re-drwa it and the old non-valid bitmaps get displayed.
+	- Delete old pScore in all exercises when generating a new one.
         
 Area 1: New features to add in short term to working release
 	+ Wrong/right answer counters for exercises

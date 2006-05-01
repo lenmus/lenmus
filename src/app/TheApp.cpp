@@ -186,6 +186,12 @@ bool lmTheApp::OnInit(void)
 	//delete wxLog::SetActiveTarget(logger);
 #endif
 
+    //define trace mask to be known by trace system
+    g_pLogger->DefineTraceMask(_T("lmKeySignature"));    
+    g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
+    g_pLogger->DefineTraceMask(_T("lmComposer5"));
+    g_pLogger->DefineTraceMask(_T("lmXMLParser"));
+
 
 
     // set information about this application

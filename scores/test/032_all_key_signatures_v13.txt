@@ -1,0 +1,21 @@
+(Score
+   (Vers 1.3)
+   (NumInstrumentos 1)
+   (Instrumento 1
+      (NumPartes 1)
+      (Parte 1 1
+         (c 1 (Clave Sol)
+              (Tonalidad Do)
+              (Barra Simple) 
+         )
+         (c   (Tonalidad Sol)(Barra Simple))
+         (c   (Tonalidad Re)(Barra Simple))
+         (c   (Tonalidad La)(Barra Simple))
+         (c   (Tonalidad Mi)(Barra Simple))
+         (c   (Tonalidad Si)(Barra Simple))
+         (c   (Tonalidad Fas)(Barra Simple))
+         (c   (Tonalidad Dos)(Barra Simple))
+      )
+   )
+)
+

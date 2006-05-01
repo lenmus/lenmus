@@ -54,7 +54,6 @@ lmComposer5::lmComposer5() : lmComposer()
 
 {
     m_nNumNotes = 0;
-    g_pLogger->DefineTraceMask(_T("lmComposer5"));    //to be known by trace system
 
 }
 

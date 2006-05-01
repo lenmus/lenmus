@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.0\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-04-30 17:24+0100\n"
+"PO-Revision-Date: 2006-05-01 12:36+0100\n"
 "Last-Translator: cs <cs>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -252,7 +252,7 @@ msgstr "Unísono"
 #: auxmusic/Interval.cpp:55
 #: exercises/TheoIntervalsCtrol.cpp:121
 msgid "2nd"
-msgstr "2º"
+msgstr "2ª"
 
 #: auxmusic/Interval.cpp:56
 #: exercises/TheoIntervalsCtrol.cpp:122
@@ -951,32 +951,32 @@ msgstr "Do b Mayor"
 
 #: exercises/TheoKeySignCtrol.cpp:118
 msgid "G b major"
-msgstr "Do b Mayor"
+msgstr "Sol b Mayor"
 
 #: exercises/TheoKeySignCtrol.cpp:119
 msgid "D b major"
-msgstr "Do b Mayor"
+msgstr "Re b Mayor"
 
 #: exercises/TheoKeySignCtrol.cpp:120
 msgid "A b major"
-msgstr "Do b Mayor"
+msgstr "La b Mayor"
 
 #: exercises/TheoKeySignCtrol.cpp:121
 msgid "E b major"
-msgstr "Do b Mayor"
+msgstr "Mi b Mayor"
 
 #: exercises/TheoKeySignCtrol.cpp:122
 msgid "B b major"
-msgstr "Do b Mayor"
+msgstr "Si b Mayor"
 
 #: exercises/TheoKeySignCtrol.cpp:123
 #: exercises/TheoKeySignCtrol.cpp:576
 msgid "F major"
-msgstr "Fa # Mayor"
+msgstr "Fa Mayor"
 
 #: exercises/TheoKeySignCtrol.cpp:569
 msgid "C flat major"
-msgstr "Do # Mayor"
+msgstr "Do b Mayor"
 
 #: exercises/TheoKeySignCtrol.cpp:571
 msgid "C sharp major"
@@ -984,11 +984,11 @@ msgstr "Do # Mayor"
 
 #: exercises/TheoKeySignCtrol.cpp:572
 msgid "D flat major"
-msgstr "Re Mayor"
+msgstr "Re b Mayor"
 
 #: exercises/TheoKeySignCtrol.cpp:574
 msgid "E flat major"
-msgstr "Mi Mayor"
+msgstr "Mi b Mayor"
 
 #: exercises/TheoKeySignCtrol.cpp:577
 msgid "F sharp major"
@@ -996,47 +996,47 @@ msgstr "Fa # Mayor"
 
 #: exercises/TheoKeySignCtrol.cpp:578
 msgid "G flat major"
-msgstr "Sol Mayor"
+msgstr "Sol b Mayor"
 
 #: exercises/TheoKeySignCtrol.cpp:580
 msgid "A flat major"
-msgstr "La Mayor"
+msgstr "La b Mayor"
 
 #: exercises/TheoKeySignCtrol.cpp:582
 msgid "B flat major"
-msgstr "Si Mayor"
+msgstr "Si b Mayor"
 
 #: exercises/TheoKeySignCtrol.cpp:588
 msgid "C sharp minor"
-msgstr "Do sostenido menor"
+msgstr "Do # menor"
 
 #: exercises/TheoKeySignCtrol.cpp:590
 msgid "D sharp minor"
-msgstr "Re sostenido menor"
+msgstr "Re # menor"
 
 #: exercises/TheoKeySignCtrol.cpp:591
 msgid "E flat minor"
-msgstr "Mi bemol menor"
+msgstr "Mi b menor"
 
 #: exercises/TheoKeySignCtrol.cpp:594
 msgid "F sharp minor"
-msgstr "Fa sostenido menor"
+msgstr "Fa # menor"
 
 #: exercises/TheoKeySignCtrol.cpp:596
 msgid "G sharp minor"
-msgstr "Sol sostenido menor"
+msgstr "Sol  # menor"
 
 #: exercises/TheoKeySignCtrol.cpp:597
 msgid "A flat minor"
-msgstr "La bemol menor"
+msgstr "La b menor"
 
 #: exercises/TheoKeySignCtrol.cpp:599
 msgid "A sharp minor"
-msgstr "La sostenido menor"
+msgstr "La # menor"
 
 #: exercises/TheoKeySignCtrol.cpp:600
 msgid "B flat minor"
-msgstr "Si bemol menor"
+msgstr "Si b menor"
 
 #: exercises/TheoKeySignCtrol.cpp:606
 msgid "No accidentals"

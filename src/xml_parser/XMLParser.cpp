@@ -52,7 +52,6 @@ extern lmLogger* g_pLogger;
 
 lmXMLParser::lmXMLParser()
 {
-    g_pLogger->DefineTraceMask(_T("lmXMLParser"));    //to be known by trace system
     m_pTupletBracket = (lmTupletBracket*)NULL;        //no tuplet being created
     m_nCurrentDivisions = 0;                        //not set yet
 
