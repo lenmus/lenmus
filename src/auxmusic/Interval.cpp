@@ -41,6 +41,7 @@
 
 
 static wxString sIntervalName[16];
+static fStringsInitialized = false;
 
 //-------------------------------------------------------------------------------------
 // Implementation of lmInterval class
@@ -48,24 +49,7 @@ static wxString sIntervalName[16];
 
 lmInterval::lmInterval(lmNote* pNote1, lmNote* pNote2, EKeySignatures nKey)
 {
-    //language dependent strings. Can not be statically initiallized because
-    //then they do not get translated
-    sIntervalName[0] = _T("");
-    sIntervalName[1] = _("Unison");
-    sIntervalName[2] = _("2nd");
-    sIntervalName[3] = _("3rd");
-    sIntervalName[4] = _("4th");
-    sIntervalName[5] = _("5th");
-    sIntervalName[6] = _("6th");
-    sIntervalName[7] = _("7th");
-    sIntervalName[8] = _("octave");
-    sIntervalName[9] = _("9th");
-    sIntervalName[10] = _("10th");
-    sIntervalName[11] = _("11th");
-    sIntervalName[12] = _("12th");
-    sIntervalName[13] = _("13th");
-    sIntervalName[14] = _("14th");
-    sIntervalName[15] = _("Two octaves");
+    if (!fStringsInitialized) InitializeStrings();
 
     //save parameters and compute the interval
     m_ntMidi1 = pNote1->GetMidiPitch();
@@ -81,6 +65,8 @@ lmInterval::lmInterval(lmNote* pNote1, lmNote* pNote2, EKeySignatures nKey)
 lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax,
         bool AllowedIntervals[], EIntervalDirection nDir, EKeySignatures nKey)
 {
+    if (!fStringsInitialized) InitializeStrings();
+
     bool fAscending = ((nDir == edi_Ascending || nDir == edi_Both) && (rand() & 0x01));
     //dbg------------------------------------------------------
     wxLogMessage(wxString::Format(_T("Posibles (nDir) = %s, %s, %s\n"), 
@@ -342,5 +328,29 @@ void lmInterval::Analyze()
 //    m_sPattern[1] = NotaMidiToPatron(m_ntMidi2, m_nKey, m_ntDiat2);
        
     
+}
+
+void lmInterval::InitializeStrings()
+{
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    sIntervalName[0] = _T("");
+    sIntervalName[1] = _("Unison");
+    sIntervalName[2] = _("2nd");
+    sIntervalName[3] = _("3rd");
+    sIntervalName[4] = _("4th");
+    sIntervalName[5] = _("5th");
+    sIntervalName[6] = _("6th");
+    sIntervalName[7] = _("7th");
+    sIntervalName[8] = _("octave");
+    sIntervalName[9] = _("9th");
+    sIntervalName[10] = _("10th");
+    sIntervalName[11] = _("11th");
+    sIntervalName[12] = _("12th");
+    sIntervalName[13] = _("13th");
+    sIntervalName[14] = _("14th");
+    sIntervalName[15] = _("Two octaves");
+
+    fStringsInitialized = true;
 }
 

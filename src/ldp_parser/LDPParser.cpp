@@ -267,9 +267,9 @@ void lmLDPParser::AnalysisError(const wxChar* szFormat, ...)
 //
 
 
-//Enum ELigados
-//    eL_NoLigada = 0
-//    eL_Ligada
+//Enum ETies
+//    eL_NotTied = 0
+//    eL_Tied
 //End Enum
 //
 //Enum ECalderon
@@ -892,7 +892,7 @@ void lmLDPParser::AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 
     if (fSomethingAdded && !fBarline) {
-        pVStaff->AddBarline(etbBarraNormal);    //finish the bar
+        pVStaff->AddBarline(etb_SimpleBarline);    //finish the bar
     }
 
 }
@@ -1142,9 +1142,9 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
     
     //analyze remaining parameters: annotations
-//    Dim nLigada As ELigados, nCalderon As ECalderon, nValor As Long
+//    Dim nLigada As ETies, nCalderon As ECalderon, nValor As Long
 //    Dim nTipoStem As EStemType
-//    nLigada = eL_NoLigada
+//    nLigada = eL_NotTied
 //    nCalderon = eC_SinCalderon
 //    nTipoStem = eDefaultStem
 //    
@@ -1565,28 +1565,28 @@ bool lmLDPParser::AnalyzeBarline(lmVStaff* pVStaff, lmLDPNode* pNode)
     if(pNode->GetNumParms() < 1) {
         AnalysisError(
             _("Element 'Barra' has less parameters that the minimum required. Assumed '(Barra Simple)'.") );
-        pVStaff->AddBarline(etbBarraNormal, true);
+        pVStaff->AddBarline(etb_SimpleBarline, true);
         return false;
     }
     
     bool fVisible = true;
-    ETipoBarra nType = etbBarraNormal;
+    EBarline nType = etb_SimpleBarline;
     
     wxString sType = (pNode->GetParameter(1))->GetName();
     if (sType == _T("FinRepeticion")) {
-        nType = etbBarraFinRepeticion;
+        nType = etb_EndRepetitionBarline;
     } else if (sType == _T("InicioRepeticion")) {
-        nType = etbBarraInicioRepeticion;
+        nType = etb_StartRepetitionBarline;
     } else if (sType == _T("Final")) {
-        nType = etbBarraFinal;
+        nType = etb_EndBarline;
     } else if (sType == _T("Doble")) {
-        nType = etbBarraDoble;
+        nType = etb_DoubleBarline;
     } else if (sType == _T("Simple")) {
-        nType = etbBarraNormal;
+        nType = etb_SimpleBarline;
     } else if (sType == _T("Inicial")) {
-        nType = etbBarraInicial;
+        nType = etb_StartBarline;
     } else if (sType == _T("DobleRepeticion")) {
-        nType = etbDobleRepeticion;
+        nType = etb_DoubleRepetitionBarline;
     } else {
         AnalysisError( _("Unknown barline type '%s'. Assumed 'Simple' barline."),
             (pNode->GetParameter(1))->GetName() );

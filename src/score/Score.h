@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Score.h,v 1.6 2006/02/23 19:23:54 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -62,22 +61,22 @@ enum EClefType
     eclvDo2,
     eclvDo3,
     eclvDo4,
-    eclvSinClave        //For percusion scores
+    eclvPercusion        //For percusion scores
 };
 // @attention enum constats EClefType are going to be ramdomly generated in object
 // Generators. The next constant defines de range.
 #define lmMIN_CLEF        eclvSol
-#define lmMAX_CLEF        eclvSinClave
+#define lmMAX_CLEF        eclvPercusion
 // @attention enum constats EClefType are going to be used as indexes in ClefConstrains
 
 
 enum EStemType
 {
-    eDefaultStem = 0,    //default: as decided by program
+    eDefaultStem = 0,   //default: as decided by program
     eStemUp,            //up: force stem up
-    eStemDown,            //down: force stem down
-    eStemNone,            //none: force no stem
-    eStemDouble            //double: force doble line. Direction as decided by program
+    eStemDown,          //down: force stem down
+    eStemNone,          //none: force no stem
+    eStemDouble         //double: force doble line. Direction as decided by program
 };
 
 // Beaming: type of beaming
@@ -96,11 +95,11 @@ enum EBeamType {
 /*!
 This definition of note type has the following properties:
 @verbatim
-   a)  2 ^ (NoteType - 1)    is the number used as divider in the American English name
+   a)  2 ^ (NoteType - 1)   is the number used as divider in the American English name
                             of the note. Examples:
-                               crochet (quarter) = 2^(3-1) = 4
-                               quaver (eighth) = 2^(4-1) = 8
-   b)  2 ^ (9 - NoteType)    is the note's duration, relative to the shortest note (256th).
+                                crochet (quarter) = 2^(3-1) = 4
+                                quaver (eighth) = 2^(4-1) = 8
+   b)  2 ^ (9 - NoteType)   is the note's duration, relative to the shortest note (256th).
                             So the longest one (long, breve, cuadrada) last 512 units and
                             the shortest one (256th, semigarrapatea) last 1 unit.
 @endverbatim
@@ -242,10 +241,10 @@ enum ETimeSignature
 #define lmMAX_TIME_SIGN  emtr32
 
 
-enum ELigados
+enum ETies
 {
-    eL_NoLigada = 0,
-    eL_Ligada
+    eL_NotTied = 0,
+    eL_Tied
 };
 
 enum ECalderon
@@ -255,33 +254,33 @@ enum ECalderon
 };
 
 //noteheads
-enum ECabezaNotas
+enum ENoteHeads
 {
-    ecn_Redonda = 1,
-    ecn_Blanca,
-    ecn_Negra,
-    ecn_Aspa
+    enh_Whole = 1,          //Whole note (redonda)
+    enh_Half,               //Half note (blanca)
+    enh_Quarter,            //Quarter note (negra)
+    enh_Cross               //Cross (for percussion) (aspa)
 };
 
 // barlines
-enum ETipoBarra
+enum EBarline
 {
-    etbBarraNormal = 1,             //linea fina
-    etbBarraDoble,                  //dos lineas finas
-    etbBarraFinal,                  //fina-gruesa
-    etbBarraInicioRepeticion,       //Gruesa-fina-dos puntos
-    etbBarraFinRepeticion,          //dos puntos-fina-gruesa
-    etbBarraInicial,                //Gruesa-fina
-    etbDobleRepeticion              //dos puntos-fina-fina-dos puntos
+    etb_SimpleBarline = 1,          //thin line
+    etb_DoubleBarline,              //two thin lines
+    etb_EndBarline,                 //thin-thick lines
+    etb_StartRepetitionBarline,     //thick-thin-two dots
+    etb_EndRepetitionBarline,       //two dots-thin-thick
+    etb_StartBarline,               //thick-thin
+    etb_DoubleRepetitionBarline     //two dots-thin-thin-two dots
 };
 
 //Play modes: instrument to use to play a score
 enum EPlayMode
 {
     ePM_NormalInstrument = 1,        //play using normal instrument
-    ePM_RitmoInstrument,
-    ePM_RitmoPercusion,
-    ePM_SolfeoVoz
+    ePM_RhythmInstrument,
+    ePM_RhythmPercussion,
+    ePM_RhythmHumanVoice
 };
 
 //Highlight when playing a score
@@ -320,9 +319,9 @@ extern RFontData goBasicTextDefaultFont;
 #define XML_DURATION_TO_LDP  64        //factor to convert between LDP duration and MusicXML duration
 
 //options for Play() method
-#define lmVISUAL_TRACKING            true        //highligth notes on the score as they are played
+#define lmVISUAL_TRACKING           true        //highligth notes on the score as they are played
 #define lmNO_VISUAL_TRACKING        false
-#define NO_MARCAR_COMPAS_PREVIO    false
+#define NO_MARCAR_COMPAS_PREVIO     false
 
 // forward declarations
 class lmPaper;
@@ -465,6 +464,9 @@ public:
     void IncludeInGlobalList(lmStaffObj* pSO);
     void RemoveFromGlobalList(lmStaffObj* pSO);
 
+    //other methods
+    long GetID() { return m_nID; }
+
 
 private:
     void ComputeMidiEvents();
@@ -493,7 +495,8 @@ private:
 
     //other variables
     wxInstrumentsListNode*  m_pNode;        //last returned instrument node
-    StaffObjsList    m_cGlobalStaffobjs;    //list of other StaffObjs not included in an lmVStaff
+    StaffObjsList   m_cGlobalStaffobjs;     //list of other StaffObjs not included in an lmVStaff
+    long            m_nID;                  //unique ID for this score
 
 };
 

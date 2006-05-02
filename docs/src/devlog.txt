@@ -65,53 +65,55 @@ LenMus project philosophy (to remind me to always stay on this):
   
   ---------------------------------------------------------------------------------------
   
-******************************************************************************************
-Planning: comming releases 
-******************************************************************************************
-
-	- Lyrics: compute maximum y and position lyric at a greater y
-
 Organizational issues:
-	- Integrate wxMidi so that LenMus package at SVN be self-contained.
-	- Modify panel pendrive so that erased files do not re-appear
-	
-	- Strategy: work in secuence in all areas and plan things so that each cicle produces
-		some visible result: launch a new release every month. a new document, etc.
-		
+    - Integrate wxMidi so that LenMus package at SVN be self-contained.
+    - Modify panel pendrive so that erased files do not re-appear
+    
+    - Strategy: work in secuence in all areas and plan things so that each cicle produces
+        some visible result: launch a new release every month. a new document, etc.
+        
 Area 0: Bugs to solve
-	- if the new score pointer has the same address than the previous one, lmPaper does not
-		re-drwa it and the old non-valid bitmaps get displayed.
-	- Delete old pScore in all exercises when generating a new one.
+    - Test score: 032_all_key_signatures_v13.txt renders nothing.
+    - lmInterval: fix names Unison augmented, Unison perfect, etc...
+    - Add 'Chromatic semitone' to TheoIntervals answer buttons 
+
         
 Area 1: New features to add in short term to working release
-	+ Wrong/right answer counters for exercises
-	- Too much space beetween notes in TheoIntervals
-	- Notes spacing in scales exercise: the control is now too wide
-	- Buttons for answers in scales exercise
-	- Split TheoIntervalsCtrol into two exercises: one for identification (current) and 
-		one for construction (current code but adding answer buttons for building 
-		the intervals).
-	
+    + Wrong/right answer counters for exercises
+    - Too much space beetween notes in TheoIntervals
+    - Notes spacing in scales exercise: the control is now too wide
+    - Buttons for answers in scales exercise
+    - Split TheoIntervalsCtrol into two exercises: one for identification (current) and 
+        one for construction (current code but adding answer buttons for building 
+        the intervals).
+    
 Area 2: Notation editor
-	- divide notation features in phases and proceed by phases
-	- slurs
+    - divide notation features in phases and proceed by phases
+    - slurs
 
 Area 3: Analysis and algorithms
-	- sequences (Lylipond) vs. back/forward (MusicXML)
-	- Role of GraphicManager vs. lmPaper. Gradualy move lmPaper methods to lmBoxPage. 
-	
+    - sequences (Lylipond) vs. back/forward (MusicXML)
+    - Role of GraphicManager vs. lmPaper. Gradualy move lmPaper methods to lmBoxPage. 
+    
 Area 4: Documentation
 
 Area 5: Prepare a new book
-	- theory; level 1
-	
+    - theory; level 1
+    
 Area 6: Design new exercises
-	- chords
-	- Problem with chord stems (vanished)in faur_reve_sample.xml
-	- Chords: reverse the noteheads position when two notes collide in consecutive line
-		and space
-			
-			
+    - chords
+    - Problem with chord stems (vanished)in faur_reve_sample.xml
+    - Chords: reverse the noteheads position when two notes collide in consecutive line
+        and space
+            
+Other:
+    - Lyrics: compute maximum y and position lyric at a greater y
+
+
+
+******************************************************************************************
+Planning: comming releases 
+******************************************************************************************
 
 ?/???/2006 - Stable 3.0 release (beta 3.0b0 + 1 month)
 ---------------------------------------------------
@@ -126,10 +128,10 @@ Area 6: Design new exercises
     Features and changes:
         - Support for LDP tags internationalization.
         - Music patterns editor, to customize music reading exercises.
-		- 'Wrong / right answers' counters for all exercises.
-		- Answer buttons for Scales exercises.
-		- Continue extending support to include more musical signs in scores and texts.
-		- Exercises on chords.
+        - 'Wrong / right answers' counters for all exercises.
+        - Answer buttons for Scales exercises.
+        - Continue extending support to include more musical signs in scores and texts.
+        - Exercises on chords.
 
 
 Upcomig releases features 
@@ -168,7 +170,7 @@ Known bugs:
         - Beams that continue in next system
 
 
-	- If Midi Wizard is cancelled some non-relevant error messages are displayed.
+    - If Midi Wizard is cancelled some non-relevant error messages are displayed.
 
 ------------------------------------------------------------------------------------------
 

@@ -77,7 +77,7 @@ public:
                     bool fTie = false,
                     EStemType nStem = eDefaultStem);
 
-    lmBarline* AddBarline(ETipoBarra nType = etbBarraNormal, bool fVisible = true);
+    lmBarline* AddBarline(EBarline nType = etb_SimpleBarline, bool fVisible = true);
 
     lmWordsDirection* AddWordsDirection(wxString sText, wxString sLanguage,
                         RXMLPositionData oPos, RFontData oFontData);

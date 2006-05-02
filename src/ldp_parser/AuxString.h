@@ -58,6 +58,6 @@ extern EKeySignatures LDPNameToKey(wxString sKeyName);
 
 // MusicXML related 
 extern bool XmlDataToClef(wxString sClefLine, EClefType* pClef);
-extern bool XmlDataToBarStyle(wxString sBarStyle, ETipoBarra* pType);
+extern bool XmlDataToBarStyle(wxString sBarStyle, EBarline* pType);
 
 #endif    // __AUXSTRING_H

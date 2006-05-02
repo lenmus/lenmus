@@ -26,6 +26,24 @@
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">2-may-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>Bug fixed: In occations, bad answers given for the exercises. The problem was
+        caused by lmPaper optimization code: if the new score pointer has the same address
+        than the previous one, lmPaper did not re-draw the score and the old non-valid
+        bitmaps got displayed.</li>
+      <li>CountersCtrol included in EarIntervalsCtrol. Some re-layout needed. 
+        Enabled/disabled button links when appropiate. Name of interval now displayed
+        when requesting to show the solution.</li>
+      <li>Bug fixed in lmIntervals: strings initialized only in one constructor.
+        Initializations moved to a private method and invoked from both constructors.</li>
+      <li>CountersCtrol included in EarCompareIntvCtrol. Some re-layout needed. 
+        Enabled/disabled button links when appropiate. Name of intervals now displayed
+        when requesting to show the solution.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">1-may-06</td>
     <td class="ListaPar">
     <ul>
@@ -60,12 +78,15 @@
 <tr valign="top">
     <td class="ListaPar">28-apr-06</td>
     <td class="ListaPar">
-      Continue implementing formatting based on container classes. 
-      Created class lmBoxSystem. Method Score->Draw() removed. Now Paper calls GraphicManager
-      to render the score.<br /><br />
-      This removes a program limit: now a score can have an infinite number of systems;
-      available memory is the only limitation.<br /><br />
-      Removed classes lmFormatter and lmFormatter3. File TimeposTable moved to folder 'graphics'
+    <ul>
+      <li>Continue implementing formatting based on container classes. 
+        Created class lmBoxSystem. Method Score->Draw() removed.
+        Now Paper calls GraphicManager to render the score.</li>
+      <li>This removes a program limit: now a score can have an infinite number of systems;
+        available memory is the only limitation.</li>
+      <li>Removed classes lmFormatter and lmFormatter3. File TimeposTable moved to folder
+       'graphics'</li>
+    </ul>
     </td></tr>
 <tr valign="top">
     <td class="ListaPar">27-apr-06</td>

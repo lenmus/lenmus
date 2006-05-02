@@ -231,7 +231,7 @@ void lmScoreCtrol::OnPlay(wxCommandEvent& event)
 
 void lmScoreCtrol::OnSolfa(wxCommandEvent& event)
 {
-    Play(ePM_SolfeoVoz, m_pSolfaLink);
+    Play(ePM_RhythmHumanVoice, m_pSolfaLink);
 }
 
 void lmScoreCtrol::OnPlayMeasure(wxCommandEvent& event)

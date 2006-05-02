@@ -531,7 +531,7 @@ EClefType LDPNameToClef(wxString sClefName)
     } else if (sClefName == _T("Fa4")) {
         return eclvFa4;
     } else if (sClefName == _T("SinClave")) {
-        return eclvSinClave;
+        return eclvPercusion;
     } else {
         return (EClefType)-1;
     }
@@ -609,7 +609,7 @@ bool XmlDataToClef(wxString sClefLine, EClefType* pClef)
     } else if (sClefLine == _T("F4")) {
         *pClef = eclvFa4;
     } else if (sClefLine == _T("SINCLAVE")) {
-        *pClef = eclvSinClave;
+        *pClef = eclvPercusion;
     } else {
         return true;    //error
     }
@@ -618,22 +618,22 @@ bool XmlDataToClef(wxString sClefLine, EClefType* pClef)
 
 }
 
-bool XmlDataToBarStyle(wxString sBarStyle, ETipoBarra* pType)
+bool XmlDataToBarStyle(wxString sBarStyle, EBarline* pType)
 {
     if (sBarStyle == _T("FINREPETICION")) {
-        *pType = etbBarraFinRepeticion;
+        *pType = etb_EndRepetitionBarline;
     } else if (sBarStyle == _T("INICIOREPETICION")) {
-        *pType = etbBarraInicioRepeticion;
+        *pType = etb_StartRepetitionBarline;
     } else if (sBarStyle == _T("light-heavy")) {
-        *pType = etbBarraFinal;
+        *pType = etb_EndBarline;
     } else if (sBarStyle == _T("light-light")) {
-        *pType = etbBarraDoble;
+        *pType = etb_DoubleBarline;
     } else if (sBarStyle == _T("regular")) {
-        *pType = etbBarraNormal;
+        *pType = etb_SimpleBarline;
     } else if (sBarStyle == _T("heavy-light")) {
-        *pType = etbBarraInicial;
+        *pType = etb_StartBarline;
     } else if (sBarStyle == _T("DOBLEREPETICION")) {
-        *pType = etbDobleRepeticion;
+        *pType = etb_DoubleRepetitionBarline;
     } else {
         //! @todo Add styles dotted, heavy, heavy-heavy, none
         //! @todo Remove styles FINREPETICION, INICIOREPETICION, DOBLEREPETICION

@@ -61,6 +61,9 @@ lmBeam*        g_pCurBeam;            // lmBeam object that is being built ot NU
 #include "../globals/Colors.h"
 extern lmColors* g_pColors;
 
+//to give a unique ID to each score
+static long m_nCounterID = 0;
+
 //---------------------------------------------------------------------------------------
 // lmScore constructors and destructor
 //---------------------------------------------------------------------------------------
@@ -68,6 +71,8 @@ extern lmColors* g_pColors;
 lmScore::lmScore()
 {
     //Set up an empty score, that is, without any lmInstrument.
+
+    m_nID = ++m_nCounterID;
     
     m_pTitle = (lmText*)NULL;        //no title
     m_pSubtitle = (lmText*)NULL;    //no subtitle

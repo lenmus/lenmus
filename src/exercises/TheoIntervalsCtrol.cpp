@@ -481,12 +481,6 @@ void lmTheoIntervalsCtrol::NewProblem()
     //sPatron[0] = _T("(n +e4 r)");
     //sPatron[1] = _T("(n e4 r)");
 
-    //delete the previous exercise
-    if (m_pScore) {
-        delete m_pScore;
-        m_pScore = (lmScore*)NULL;
-    }
-
     //create the score
     lmNote* pNote[2];
     lmLDPParser parserLDP;
@@ -501,10 +495,10 @@ void lmTheoIntervalsCtrol::NewProblem()
 //    pVStaff->AddEspacio 24
     pNode = parserLDP.ParseText( sPatron[0] );
     pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etbBarraNormal, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pVStaff->AddBarline(etb_SimpleBarline, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
     pNode = parserLDP.ParseText( sPatron[1] );
     pNote[1] = parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etbBarraFinal, sbNO_VISIBLE);
+    pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
 
     //compute the right answer
     lmInterval oIntv(pNote[0], pNote[1], earmDo);

@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>LenMus 3.0 beta 1 Release Notes</title>
+<link rel="stylesheet" media="all" href="singledoc.css" type="text/css" />
+</head>
+<body>
+
+<h1>LenMus Phonascus 3.0 beta 1 Release Notes</h1>
+
+<h2>What's New in 3.0 beta 1</h2>
+
+<p>Release 3.0 beta 1 is mainly a bug fix release. Improvements include:</p>
+
+<ul>
+  <li>Counters for right/wrong answers and total marks included in all exercises.</li>
+  <li>Name of intervals now displayed in ear training exercises when requesting to
+    show the solution.</li>
+  <li>More than 5 bug fixes.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+
+<h2>Details</h2>
+
+<p>The following table details all changes an new features included
+in this release. Type of change is encoded as follows:</p>
+
+
+<ul>
+  <li>FIX - Fix a bug</li>
+  <li>NEW - Added a new functionality to the program</li>
+  <li>GUI - Change in the user interface (to improve ergonomy, to prepare for new
+    functionalities, ...)
+  </li>
+  <li>TEC - Internal technical change. Does not add new functionality neither
+    changes the GUI. It serves for other purposes: to enable future functionalities,
+    to improve coding, to improve performance, etc.</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<table class="Lista">
+<tr valign="top">
+  <td class="ListaImpar"><strong>Type</strong></td>
+  <td class="ListaImpar"><strong>Description</strong></td>
+</tr>
+
+<tr valign="top">
+    <td class="ListaPar">FIX</td>
+    <td class="ListaPar">
+      <b>Interval name not displayed in ear interval exercise.</b><br />
+      The problem was caused by lmInterval due to strings initialized only in one 
+      constructor.
+      Now, initializations have been moved to a private method and it is invoked from both
+      constructors.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">FIX</td>
+    <td class="ListaPar">
+      <b>In occations, bad answers given for the exercises.</b><br />The problem was
+      caused by lmPaper optimization code: if the new score pointer has the same address
+      than the previous one, lmPaper did not re-draw the score and the old non-valid
+      bitmaps got displayed.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">FIX</td>
+    <td class="ListaPar">
+      <b>Wrong answers in key signatures exercise, Spanish version.</b><br />They were
+      caused by some bad translated strings .</li>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">FIX</td>
+    <td class="ListaPar">
+    <b>Scores not rendered in Windows 98.</b><br />
+    The problem disappeared when changing the logical units
+    to one tenth of millimeter.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">FIX</td>
+    <td class="ListaPar">
+    <b>Occasional crashes after changing interval settings in earIntervalCtrol.</b><br />
+    They were caused
+    because the answer buttons and their names changed but the displayed
+    buttons were not re-generated to match the new exercise constrains. Links for 'play' and
+    'show solution' now enabled/disabled when appropiate.
+    </td></tr>
+
+</table>
+
+
+</body>
+</html>
+

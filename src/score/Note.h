@@ -127,7 +127,7 @@ private:
     void MakeUpPhase(lmPaper* pPaper);
     void DrawSingleNote(wxDC* pDC, bool fMeasuring, ENoteType nTipoNota,
                         bool fStemAbajo, lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC);
-    void DrawNoteHead(wxDC* pDC, bool fMeasuring, ECabezaNotas nNoteheadType,
+    void DrawNoteHead(wxDC* pDC, bool fMeasuring, ENoteHeads nNoteheadType,
                         lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC);
     void DrawAdditionalLines(wxDC* pDC, int nPosOnStaff, lmLUnits yTopLine, lmLUnits xPos,
                         lmLUnits width, int nROP = wxCOPY);

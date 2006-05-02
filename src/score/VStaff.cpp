@@ -845,7 +845,7 @@ lmLUnits lmVStaff::GetVStaffHeight()
 //    MetricaInicial = m_oIniMetrica.Valor
 //}
 //
-lmBarline* lmVStaff::AddBarline(ETipoBarra nType, bool fVisible)
+lmBarline* lmVStaff::AddBarline(EBarline nType, bool fVisible)
 {
     lmBarline* pBarline = new lmBarline(nType, this, fVisible);
     m_cStaffObjs.Store(pBarline);

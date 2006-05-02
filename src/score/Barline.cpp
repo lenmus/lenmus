@@ -49,7 +49,7 @@
 //constructors and destructor
 //
 
-lmBarline::lmBarline(ETipoBarra nBarlineType, lmVStaff* pVStaff, bool fVisible) :
+lmBarline::lmBarline(EBarline nBarlineType, lmVStaff* pVStaff, bool fVisible) :
     lmSimpleObj(eTPO_Barline, pVStaff, 1, fVisible, sbDRAGGABLE)
 {
     m_nBarlineType = nBarlineType;
@@ -198,7 +198,7 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUn
 
     switch(m_nBarlineType)
     {
-        case etbBarraDoble:
+        case etb_DoubleBarline:
             if (!fMeasuring) {
                 DrawThinLine(pDC, xPos, yTop, yBottom);
                 xPos += THIN_LINE_WIDTH + nSpacing;
@@ -207,7 +207,7 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUn
             return (lmLUnits)(nSpacing + THIN_LINE_WIDTH + THIN_LINE_WIDTH);
             break;
             
-        case etbBarraFinRepeticion:
+        case etb_EndRepetitionBarline:
             if (!fMeasuring) {
                 DrawTwoDots(pDC, xPos, yTop);
                 xPos += nSpacing;
@@ -218,7 +218,7 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUn
             return (lmLUnits)(nSpacing + nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
             break;
 
-        case etbBarraInicioRepeticion:
+        case etb_StartRepetitionBarline:
             if (!fMeasuring) {
                 DrawThickLine(pDC, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
                 xPos += THICK_LINE_WIDTH + nSpacing;
@@ -229,7 +229,7 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUn
             return (lmLUnits)(nSpacing + nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
             break;
             
-        case etbDobleRepeticion:
+        case etb_DoubleRepetitionBarline:
             if (!fMeasuring) {
                 DrawTwoDots(pDC, xPos, yTop);
                 xPos += nSpacing;
@@ -242,7 +242,7 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUn
             return (lmLUnits)(nSpacing + nSpacing + THIN_LINE_WIDTH + THIN_LINE_WIDTH);
             break;
         
-        case etbBarraInicial:
+        case etb_StartBarline:
             if (!fMeasuring) {
                 DrawThickLine(pDC, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
                 xPos += THICK_LINE_WIDTH + nSpacing;
@@ -251,7 +251,7 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUn
             return (lmLUnits)(nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
             break;
             
-        case etbBarraFinal:
+        case etb_EndBarline:
             if (!fMeasuring) {
                 DrawThinLine(pDC, xPos, yTop, yBottom);
                 xPos += THIN_LINE_WIDTH + nSpacing;
@@ -260,7 +260,7 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUn
             return (lmLUnits)(nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
             break;
 
-        case etbBarraNormal:
+        case etb_SimpleBarline:
             if (!fMeasuring) {
                 DrawThinLine(pDC, xPos, yTop, yBottom);
             }
@@ -311,23 +311,23 @@ void lmBarline::DrawTwoDots(wxDC* pDC, lmLUnits xPos, lmLUnits yPos)
 // global functions related to barlines
 //-------------------------------------------------------------------------------------------------
 
-wxString GetBarlineLDPNameFromType(ETipoBarra nBarlineType)
+wxString GetBarlineLDPNameFromType(EBarline nBarlineType)
 {
     switch(nBarlineType)
     {
-        case etbBarraFinRepeticion:
+        case etb_EndRepetitionBarline:
             return _T("FinRepeticion");
-        case etbBarraInicioRepeticion:
+        case etb_StartRepetitionBarline:
             return _T("InicioRepeticion");
-        case etbBarraFinal:
+        case etb_EndBarline:
             return _T("Final");
-        case etbBarraDoble:
+        case etb_DoubleBarline:
             return _T("Doble");
-        case etbBarraNormal:
+        case etb_SimpleBarline:
             return _T("Simple");
-        case etbBarraInicial:
+        case etb_StartBarline:
             return _T("Inicial");
-        case etbDobleRepeticion:
+        case etb_DoubleRepetitionBarline:
             return _T("DobleRepeticion");
         default:
             wxASSERT(false);

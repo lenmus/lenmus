@@ -1,4 +1,3 @@
-// RCS-ID: $Id: EarCompareIntvCtrol.h,v 1.4 2006/02/23 19:19:15 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -44,6 +43,9 @@
 #include "EarIntvalConstrains.h"
 #include "../score/score.h"
 #include "ScoreAuxCtrol.h"
+#include "UrlAuxCtrol.h"
+#include "CountersCtrol.h"
+
 
 class lmEarCompareIntvCtrol : public wxWindow    
 {
@@ -84,8 +86,9 @@ private:
         // member variables
 
     lmScore*            m_pScore[2];        // two scores, one for each interval
-
     lmScoreAuxCtrol*    m_pScoreCtrol;
+    lmCountersCtrol*    m_pCounters;
+
     lmEarIntervalsConstrains* m_pConstrains;    //use same constrains than for intervals
     bool            m_fProblemCreated;      //there is a problem prepared
     lmPitch         m_ntMidi[2];            //the midi pitch of the two notes
@@ -98,6 +101,9 @@ private:
     bool            m_fFirstGreater;        //two flags to encode the right answer
     bool            m_fBothEqual;
     wxString        m_sAnswer[2];           //The names of each interval
+
+    lmUrlAuxCtrol*  m_pPlayButton;       // "play" button
+    lmUrlAuxCtrol*  m_pShowSolution;     // "show solution" button
 
     DECLARE_EVENT_TABLE()
 };

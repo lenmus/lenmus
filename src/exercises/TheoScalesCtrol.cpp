@@ -434,11 +434,11 @@ void lmTheoScalesCtrol::NewProblem()
     for (i=0; i < 7; i++) {
         pNode = parserLDP.ParseText( sSource[i] );
         pNote[i] = parserLDP.AnalyzeNote(pNode, pVStaff);
-        pVStaff->AddBarline(etbBarraNormal, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+        pVStaff->AddBarline(etb_SimpleBarline, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
     }
     pNode = parserLDP.ParseText( sSource[7] );
     pNote[7] = parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etbBarraFinal, sbNO_VISIBLE);
+    pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
     
     //    
     //compute the right answer

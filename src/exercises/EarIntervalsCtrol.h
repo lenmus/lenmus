@@ -45,6 +45,7 @@
 #include "../score/score.h"
 #include "ScoreAuxCtrol.h"
 #include "UrlAuxCtrol.h"
+#include "CountersCtrol.h"
 
 
 const int lmEAR_INVAL_NUM_BUTTONS = 25;               //buttons for answers
@@ -69,7 +70,6 @@ public:
     void OnRespButton(wxCommandEvent& event);
     void OnPlay(wxCommandEvent& event);
     void OnNewProblem(wxCommandEvent& event);
-    void OnResetCounters(wxCommandEvent& event);
     void OnDisplaySolution(wxCommandEvent& event);
     void OnSettingsButton(wxCommandEvent& event);
 
@@ -88,11 +88,10 @@ private:
     void NewProblem();
     void DisplaySolution();
     void ResetExercise();
-    void ResetCounters();
 
         // member variables
 
-    lmScore*            m_pScore;           // the score with the interval
+    lmScore*        m_pScore;               // the score with the interval
     lmEarIntervalsConstrains* m_pConstrains;
     bool            m_fProblemCreated;      //there is a problem prepared
     lmPitch         m_ntMidi[2];            //the midi pitch of the two notes
@@ -106,17 +105,12 @@ private:
     wxString        m_sAnswer;              //name of the interval
 
     // controls on the window
-    wxButton*       m_pAnswerButton[lmEAR_INVAL_NUM_BUTTONS];
+    wxButton*           m_pAnswerButton[lmEAR_INVAL_NUM_BUTTONS];
     lmScoreAuxCtrol*    m_pScoreCtrol;
+    lmCountersCtrol*    m_pCounters;
 
-    lmUrlAuxCtrol*  m_pSeeSource;     //See source link
-    lmUrlAuxCtrol*  m_pDumpScore;     //Dump score link
-    lmUrlAuxCtrol*  m_pSeeMidi;       //See MIDI events link
-    
-    lmUrlAuxCtrol*  m_pNewProblem;       // "new problem" button
     lmUrlAuxCtrol*  m_pPlayButton;       // "play" button
     lmUrlAuxCtrol*  m_pShowSolution;     // "show solution" button
-    lmUrlAuxCtrol*  m_pSettingsLink;     // settings link
 
 
     DECLARE_EVENT_TABLE()

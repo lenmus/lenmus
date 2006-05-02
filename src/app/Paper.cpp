@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Paper.cpp,v 1.4 2006/02/23 19:17:12 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -94,8 +93,7 @@ lmPaper::lmPaper()
     m_rScale = 0;
     m_numPages = 0;
     m_fRedraw = true;
-
-
+    m_pScore = (lmScore*)NULL;
 
 }
 
@@ -121,7 +119,7 @@ void lmPaper::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight
     // we need to recreate the bitmaps
     bool fDrawScore = m_fRedraw;
     m_fRedraw = false;
-    if (m_pScore != pScore || m_rScale != rScale || fDrawScore) {
+    if (!m_pScore || m_pScore->GetID() != pScore->GetID() || m_rScale != rScale || fDrawScore) {
 
         fDrawScore = true;
 

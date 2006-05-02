@@ -90,6 +90,8 @@ public:
 
 private:
     void Analyze();
+    void InitializeStrings();
+
 
         //member variables
 

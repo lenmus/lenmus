@@ -1,4 +1,3 @@
-// RCS-ID: $Id: EarIntervalsCtrol.cpp,v 1.7 2006/02/23 19:19:15 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -33,15 +32,6 @@
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
-
-//////contadores de respuestas correctas/fallidas
-//    int            m_nRightAnswers;
-//    int            m_nWrongAnswers;
-//    wxString    m_lblRight As Label
-//    wxString    m_lblWrong As Label
-//    wxString    m_lblMark As Label
-////
-////
 
 #include "EarIntervalsCtrol.h"
 #include "Constrains.h"
@@ -82,7 +72,6 @@ enum {
     ID_BUTTON,
     ID_LINK = ID_BUTTON + lmEAR_INVAL_NUM_BUTTONS,
     ID_LINK_NEW_PROBLEM,
-    ID_LINK_RESET_COUNTERS,
     ID_LINK_PLAY,
     ID_LINK_SOLUTION,
     ID_LINK_SETTINGS,
@@ -98,7 +87,6 @@ BEGIN_EVENT_TABLE(lmEarIntervalsCtrol, wxWindow)
     LM_EVT_URL_CLICK    (ID_LINK_MIDI_EVENTS, lmEarIntervalsCtrol::OnDebugShowMidiEvents)
 
     LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, lmEarIntervalsCtrol::OnNewProblem)
-    LM_EVT_URL_CLICK    (ID_LINK_RESET_COUNTERS, lmEarIntervalsCtrol::OnResetCounters)
     LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmEarIntervalsCtrol::OnPlay)
     LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, lmEarIntervalsCtrol::OnDisplaySolution)
     LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmEarIntervalsCtrol::OnSettingsButton)
@@ -155,84 +143,97 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
     //the window is divided into two regions: top, for score on left and counters and links
     //on the right, and bottom region, for answer buttons 
     wxBoxSizer* pMainSizer = new wxBoxSizer( wxVERTICAL );
-    wxBoxSizer* pTopSizer = new wxBoxSizer( wxHORIZONTAL );
-
-    // Inside TopSizer we set up a vertical sizer: score on top, debugg links bottom
-    wxBoxSizer* pScoreSizer = new wxBoxSizer( wxVERTICAL );
-    pTopSizer->Add(pScoreSizer, 0, wxALIGN_LEFT|wxALL, 5);
-
-    // create score ctrl 
-    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, wxSize(420,200), eSIMPLE_BORDER);
-    pScoreSizer->Add(
-        m_pScoreCtrol,
-        wxSizerFlags(1).Left().Border(wxALL, 10));
 
     // debug buttons
     if (g_fShowDebugLinks && !g_fReleaseVersion) {
         wxBoxSizer* pDbgSizer = new wxBoxSizer( wxHORIZONTAL );
-        pScoreSizer->Add(pDbgSizer, 0, wxALIGN_LEFT|wxALL, 5);
+        pMainSizer->Add(pDbgSizer, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
 
         // "See source score"
-        m_pSeeSource = new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, _("See source score") );
-        pDbgSizer->Add(m_pSeeSource, wxSizerFlags(0).Left().Border(wxALL, 10) );
+        pDbgSizer->Add(
+            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, _("See source score") ),
+            wxSizerFlags(0).Left().Border(wxALL, 10) );
 
         // "Dump score"
-        m_pDumpScore = new lmUrlAuxCtrol(this, ID_LINK_DUMP, _("Dump score") );
-        pDbgSizer->Add(m_pDumpScore, wxSizerFlags(0).Left().Border(wxALL, 10) );
+        pDbgSizer->Add(
+            new lmUrlAuxCtrol(this, ID_LINK_DUMP, _("Dump score") ),
+            wxSizerFlags(0).Left().Border(wxALL, 10) );
 
         // "See MIDI events"
-        m_pSeeMidi = new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, _("See MIDI events") );
-        pDbgSizer->Add(m_pSeeMidi, wxSizerFlags(0).Left().Border(wxALL, 10) );
+        pDbgSizer->Add(
+            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, _("See MIDI events") ),
+            wxSizerFlags(0).Left().Border(wxALL, 10) );
     }
 
-    wxBoxSizer* pCountersSizer = new wxBoxSizer( wxVERTICAL );
-    m_pScoreCtrol->SetMargins(
-            lmToLogicalUnits(10, lmMILLIMETERS),
-            lmToLogicalUnits(10, lmMILLIMETERS),
-            lmToLogicalUnits(20, lmMILLIMETERS));     //right=1cm, left=1cm, top=2cm
+    // sizer for the scoreCtrol and the CountersCtrol
+    wxBoxSizer* pTopSizer = new wxBoxSizer( wxHORIZONTAL );
+    pMainSizer->Add(
+        pTopSizer,
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+
+    // create score ctrl 
+    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, wxSize(360,150), eSIMPLE_BORDER);
+    m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),      //left=1cm
+                              lmToLogicalUnits(10, lmMILLIMETERS),      //right=1cm
+                              lmToLogicalUnits(10, lmMILLIMETERS));     //top=1cm
+    pTopSizer->Add(
+        m_pScoreCtrol,
+        wxSizerFlags(1).Left().Border(wxTOP|wxBOTTOM, 10));
+
     m_pScoreCtrol->SetScale((float)1.3);
 
 
-    //control to count failures and right answers
-    //Dim iCtrol As Long
-    //m_oAtributos.rLeft = rLeft
-    //m_oAtributos.rTop = picObj(m_iPic).Top
-    //m_oAtributos.nSpace = 0
-    //iCtrol = CrearObjetoMarcador
-    //m_oTeoIntervalos.SetContadores lblTexto(iCtrol), lblTexto(iCtrol + 1), lblTexto(iCtrol + 2)
-    
+    // sizer for the CountersCtrol and the settings link
+    wxBoxSizer* pCountersSizer = new wxBoxSizer( wxVERTICAL );
+    pTopSizer->Add(
+        pCountersSizer,
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10).Expand() );
+
+    // right/wrong answers counters control
+    m_pCounters = new lmCountersCtrol(this, wxID_ANY);
+    pCountersSizer->Add(
+        m_pCounters,
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+
+    // spacer to move the settings link to bottom
+    pCountersSizer->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+    // settings link
+    lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
+    pCountersSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+
+    // spacer to move the settings link a little up
+    pCountersSizer->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+        //
+        //links 
+        //
+
+    wxBoxSizer* pLinksSizer = new wxBoxSizer( wxHORIZONTAL );
+    pMainSizer->Add(
+        pLinksSizer,
+        wxSizerFlags(0).Center().Border(wxLEFT|wxALL, 10) );
+
     // "new problem" button
-    m_pNewProblem = new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") );
-    pCountersSizer->Add(m_pNewProblem, wxSizerFlags(0).Left().Border(wxALL, 10) );
+    pLinksSizer->Add(
+        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") ),
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
     
     // "play" button
     m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, _("Play") );
-    pCountersSizer->Add(m_pPlayButton, wxSizerFlags(0).Left().Border(wxALL, 10) );
+    pLinksSizer->Add(
+        m_pPlayButton,
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
     
     // "show solution" button
     m_pShowSolution = new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") );
-    pCountersSizer->Add(m_pShowSolution, wxSizerFlags(0).Left().Border(wxALL, 10) );
+    pLinksSizer->Add(
+        m_pShowSolution,
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT|wxBOTTOM, 20) );
     
-    // settings link
-    m_pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
-    pCountersSizer->Add(m_pSettingsLink, wxSizerFlags(0).Left().Border(wxALL, 10) );
-
-    // "reset counters" button
-    //pCountersSizer->Add(
-    //    new lmUrlAuxCtrol(this, ID_LINK_RESET_COUNTERS, _("Reset counters") ),
-    //    wxSizerFlags(0).Left().Border(wxALL, 10) );
-
-    pTopSizer->Add(
-        pCountersSizer,
-        wxSizerFlags(0).Right().Border(wxALL, 10) );
-
-
-    pMainSizer->Add(
-        pTopSizer,
-        wxSizerFlags(0).Left().Border(wxALL, 10) );
 
     //create up to 25 buttons for the answers: five rows, five buttons per row
-    //Buttons are created disbaled and no visible
+    //Buttons are created disabled and no visible
     wxButton* pButton;
     wxBoxSizer* pRowSizer;
     int iB = 0;
@@ -240,7 +241,6 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
     const int NUM_COLS = 5;
     for (int iRow=0; iRow < NUM_ROWS; iRow++) {
         pRowSizer = new wxBoxSizer( wxHORIZONTAL );
-        pRowSizer->Add(20+BUTTONS_DISTANCE, 24, 0);    //spacer to center labels
 
         for (int iCol=0; iCol < NUM_COLS; iCol++) {
             iB = iCol + iRow * NUM_COLS;    // button index: 0 .. 24         
@@ -249,7 +249,7 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
             m_pAnswerButton[iB++] = pButton;
             pRowSizer->Add(
                 pButton,
-                wxSizerFlags(0).Border(wxALL, BUTTONS_DISTANCE) );
+                wxSizerFlags(0).Border(wxTOP|wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
         }
         pMainSizer->Add(    
             pRowSizer,
@@ -263,7 +263,9 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
     // now put labels and enable the answer buttons
     SetUpButtons();
 
-    m_pScoreCtrol->DisplayMessage(_("Click on 'New problem' to start"), 1000, true);
+    m_pScoreCtrol->DisplayMessage(_("Click on 'New problem' to start"), 
+                                  lmToLogicalUnits(10, lmMILLIMETERS),
+                                  true);
 
 }
 
@@ -366,14 +368,12 @@ void lmEarIntervalsCtrol::OnNewProblem(wxCommandEvent& event)
     NewProblem();
 }
 
-void lmEarIntervalsCtrol::OnResetCounters(wxCommandEvent& event)
-{
-    ResetCounters();
-}
-
 void lmEarIntervalsCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
+    //! @todo Sound for failure
+    m_pCounters->IncrementWrong();
     DisplaySolution();
+    EnableButtons(false);
 }
 
 void lmEarIntervalsCtrol::OnRespButton(wxCommandEvent& event)
@@ -389,32 +389,14 @@ void lmEarIntervalsCtrol::OnRespButton(wxCommandEvent& event)
     //prepare sound and color, and update counters
     if (fSuccess) {
         pColor = &(g_pColors->Success());
-        //! @todo update counters & success sound 
-        //SonidoAcierto
-        //m_nRightAnswers = m_nRightAnswers + 1
+        //! @todo Sound for sucess
+        m_pCounters->IncrementRight();
     } else {
         pColor = &(g_pColors->Failure());
-        //| @todo update counters & failure sound
-        //SonidoFallo
-        //m_nWrongAnswers = m_nWrongAnswers + 1
+        //! @todo Sound for failure
+        m_pCounters->IncrementWrong();
     }
         
-    //update counters display
-    //! @todo update counters display
-////    Dim rAciertos As Single
-////    rAciertos = 10# * CSng(m_nRightAnswers) / CSng(m_nRightAnswers + m_nWrongAnswers)
-////    if (!m_lblRight Is Nothing) { m_lblRight.Caption = m_nRightAnswers
-////    if (!m_lblWrong Is Nothing) { m_lblWrong.Caption = m_nWrongAnswers
-////    if (!m_lblMark Is Nothing) {
-////        if (rAciertos = 10#) {
-////            m_lblMark.Caption = "10"
-////        } else if { rAciertos = 0#) {
-////            m_lblMark.Caption = "0"
-////        } else {
-////            m_lblMark.Caption = Format$(Round(rAciertos, 1), "#0.0")
-////        }
-////    }
-
     //if failure, display the solution. If succsess, generate a new problem
     if (!fSuccess) {
         //failure: mark wrong button in red and right one in green
@@ -492,16 +474,14 @@ void lmEarIntervalsCtrol::NewProblem()
 //    pVStaff->AddEspacio 24
     pNode = parserLDP.ParseText( sPattern[0] );
     pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etbBarraNormal, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pVStaff->AddBarline(etb_SimpleBarline, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
     pNode = parserLDP.ParseText( sPattern[1] );
     pNote[1] = parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etbBarraFinal, sbNO_VISIBLE);
+    pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
 
     //compute the right answer
     m_sAnswer = oIntv.GetName();
-    if (oIntv.GetInterval() != 1) {
-        m_sAnswer += (oIntv.IsAscending() ? _(", ascending") : _(", descending") );
-    }
+
     m_ntMidi[0] = oIntv.GetMidiNote1();
     m_ntMidi[1] = oIntv.GetMidiNote2();
     
@@ -521,9 +501,6 @@ void lmEarIntervalsCtrol::NewProblem()
     m_fProblemCreated = true;
     EnableButtons(true);
     
-    //! @todo Piano feedback
-    //if (FMain.fFrmPiano) FPiano.DesmarcarTeclas
-
 }
 
 void lmEarIntervalsCtrol::Play()
@@ -537,18 +514,7 @@ void lmEarIntervalsCtrol::Play()
 void lmEarIntervalsCtrol::DisplaySolution()
 {
     m_pScoreCtrol->HideScore(false);
-    
-    //if piano visile, mark the notes
-    //! @todo piano feedback
-////    if (FMain.fFrmPiano) {
-////        With FPiano
-////            .HabilitarMarcado = true
-////            .MarcarTecla m_ntMidi[0]
-////            .MarcarTecla m_ntMidi[1]
-////            .HabilitarMarcado = false
-////        End With
-////    }
-
+    m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
     m_fPlayEnabled = true;
     m_fProblemCreated = false;
     
@@ -584,23 +550,3 @@ void lmEarIntervalsCtrol::ResetExercise()
     }
     
 }
-
-void lmEarIntervalsCtrol::ResetCounters()
-{
-    //! @todo When Counters implemented: code this method
-//    m_nRightAnswers = 0;
-//    m_nWrongAnswers = 0;
-//    
-//    m_lblRight = _T("0");
-//    m_lblWrong = _T("0");
-//    m_lblMark = _T("-");
-    
-}
-
-/*
-Private Sub MostrarArmadura()
-    oPapel.IniciarHoja
-    oPartArm.Dibujar oPapel, False
-    
-End Sub
-*/

@@ -609,13 +609,13 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                 case ePM_NormalInstrument:
                     g_pMidi->VoiceChange(m_aEvents[i]->Channel, m_aEvents[i]->lmInstrument);
                     break;
-                case ePM_RitmoInstrument:
+                case ePM_RhythmInstrument:
                     g_pMidi->VoiceChange(m_aEvents[i]->Channel, 57);        //57 = Trumpet
                     break;
-                case ePM_RitmoPercusion:
+                case ePM_RhythmPercussion:
                     g_pMidi->VoiceChange(m_aEvents[i]->Channel, 66);        //66 = High Timbale
                     break;
-                case ePM_SolfeoVoz:
+                case ePM_RhythmHumanVoice:
                     //do nothing. Wave sound will be used
                     break;
                 default:
@@ -741,15 +741,15 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                         g_pMidiOut->NoteOn(m_aEvents[i]->Channel, m_aEvents[i]->NotePitch,
                                           m_aEvents[i]->Volume);
                         break;
-                    case ePM_RitmoInstrument:
+                    case ePM_RhythmInstrument:
                         g_pMidiOut->NoteOn(m_aEvents[i]->Channel, SOLFA_NOTE,
                                           m_aEvents[i]->Volume);
                         break;
-                    case ePM_RitmoPercusion:
+                    case ePM_RhythmPercussion:
                         g_pMidiOut->NoteOn(nPercussionChannel, SOLFA_NOTE,
                                           m_aEvents[i]->Volume);
                         break;
-                    case ePM_SolfeoVoz:
+                    case ePM_RhythmHumanVoice:
                         //WaveOn .NoteStep, m_aEvents[i]->Volume);
                         break;
                     default:
@@ -769,11 +769,11 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                 {
                     case ePM_NormalInstrument:
                         g_pMidiOut->NoteOff(m_aEvents[i]->Channel, m_aEvents[i]->NotePitch, 127);
-                    case ePM_RitmoInstrument:
+                    case ePM_RhythmInstrument:
                         g_pMidiOut->NoteOff(m_aEvents[i]->Channel, SOLFA_NOTE, 127);
-                    case ePM_RitmoPercusion:
+                    case ePM_RhythmPercussion:
                         g_pMidiOut->NoteOff(nPercussionChannel, SOLFA_NOTE, 127);
-                    case ePM_SolfeoVoz:
+                    case ePM_RhythmHumanVoice:
                         //WaveOff
                         break;
                     default:
@@ -821,13 +821,13 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                     case ePM_NormalInstrument:
                         g_pMidi->VoiceChange(m_aEvents[i]->Channel, m_aEvents[i]->NotePitch);
                         break;
-                    case ePM_RitmoInstrument:
+                    case ePM_RhythmInstrument:
                         g_pMidi->VoiceChange(m_aEvents[i]->Channel, 57);        //57 = Trumpet
                         break;
-                    case ePM_RitmoPercusion:
+                    case ePM_RhythmPercussion:
                         g_pMidi->VoiceChange(m_aEvents[i]->Channel, 66);        //66 = High Timbale
                         break;
-                    case ePM_SolfeoVoz:
+                    case ePM_RhythmHumanVoice:
                         //do nothing. Wave sound will be used
                         break;
                     default:

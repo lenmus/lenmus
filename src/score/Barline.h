@@ -40,11 +40,11 @@ class lmBarline:  public lmSimpleObj
 {
 public:
     //constructor and destructor
-    lmBarline(ETipoBarra nBarlineType, lmVStaff* pStaff, bool fVisible);
+    lmBarline(EBarline nBarlineType, lmVStaff* pStaff, bool fVisible);
     ~lmBarline() {}
 
     //other methods
-    ETipoBarra GetType() {return m_nBarlineType;}
+    EBarline GetType() {return m_nBarlineType;}
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
@@ -68,14 +68,14 @@ private:
     void DrawTwoDots(wxDC* pDC, lmLUnits xPos, lmLUnits yPos);
 
 private:
-    ETipoBarra        m_nBarlineType;        //type of barline
+    EBarline        m_nBarlineType;        //type of barline
 
 };
 
 //
 // global functions related to barlines
 //
-wxString GetBarlineLDPNameFromType(ETipoBarra nBarlineType);
+wxString GetBarlineLDPNameFromType(EBarline nBarlineType);
 
 
 #endif    // __BARLINE_H__

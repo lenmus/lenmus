@@ -599,12 +599,6 @@ void lmTheoKeySignCtrol::NewProblem()
         m_pAnswerButton[14]->SetLabel(_("7 b"));
     }
 
-    //delete the previous exercise
-    if (m_pScore) {
-        delete m_pScore;
-        m_pScore = (lmScore*)NULL;
-    }
-
     //create the score
     m_pScore = new lmScore();
     m_pScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
@@ -612,7 +606,7 @@ void lmTheoKeySignCtrol::NewProblem()
     lmVStaff *pVStaff = m_pScore->GetVStaff(1, 1);    //get first vstaff of instr.1
     pVStaff->AddClef( nClef );
     pVStaff->AddKeySignature(nKey);
-    pVStaff->AddBarline(etbBarraFinal, sbNO_VISIBLE);
+    pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
 
     //wxLogMessage(wxString::Format(
     //    _T("[lmTheoKeySignCtrol::NewProblem] m_nIndexKeyName=%d, oIntv.GetInterval()=%d"),

@@ -360,7 +360,7 @@ wxBitmap* lmNote::GetBitmap(double rScale)
         case eQuarter:
             nGlyph = GLYPH_NOTEHEAD_QUARTER;
             break;
-        //case ecn_Aspa:                    /// @todo ecn_Aspa is a notehead type not a note type
+        //case enh_Cross:                    /// @todo enh_Cross is a notehead type not a note type
         //    nGlyph = GLYPH_NOTEHEAD_CROSS;
         //    break;
         default:
@@ -460,18 +460,18 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         //------------------------------------------------------------------------------
     
         //--- draw the notehead -------------------------------------
-        ECabezaNotas nNotehead;
+        ENoteHeads nNotehead;
         //if (! m_fCabezaX) {
             if (m_nNoteType == eHalf) {
-                nNotehead = ecn_Blanca;
+                nNotehead = enh_Half;
             } else if (m_nNoteType == eWhole) {
-                nNotehead = ecn_Redonda;
+                nNotehead = enh_Whole;
                 fDrawStem = false;
             } else {
-                nNotehead = ecn_Negra;
+                nNotehead = enh_Quarter;
             }
         //} else {
-        //    nNotehead = ecn_Aspa;
+        //    nNotehead = enh_Cross;
         //}
         
         DrawNoteHead(pDC, fMeasuring, nNotehead, nxLeft, nyTop, 
@@ -754,7 +754,7 @@ void lmNote::DrawSingleNote(wxDC* pDC, bool fMeasuring, ENoteType nNoteType,
 
 }
 
-void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ECabezaNotas nNoteheadType,
+void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ENoteHeads nNoteheadType,
     lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC)
 {
     // draws a notehead of type nNoteheadType on position (nxLeft, nyTop) with color colorC.
@@ -762,16 +762,16 @@ void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ECabezaNotas nNoteheadType
     
     lmEGlyphIndex nGlyph = GLYPH_NOTEHEAD_QUARTER;
     switch (nNoteheadType) {
-        case ecn_Redonda:
+        case enh_Whole:
             nGlyph = GLYPH_NOTEHEAD_WHOLE;
             break;
-        case ecn_Blanca:
+        case enh_Half:
             nGlyph = GLYPH_NOTEHEAD_HALF;
             break;
-        case ecn_Negra:
+        case enh_Quarter:
             nGlyph = GLYPH_NOTEHEAD_QUARTER;
             break;
-        case ecn_Aspa:
+        case enh_Cross:
             nGlyph = GLYPH_NOTEHEAD_CROSS;
             break;
         default:
@@ -1088,7 +1088,7 @@ wxString lmNote::SourceLDP()
 
     //! @todo Finish lmNote LDP Source code generation method
 
-//    if (nLigado == eL_Ligada) { m_sFuente = m_sFuente & _T(" L");
+//    if (nLigado == eL_Tied) { m_sFuente = m_sFuente & _T(" L");
 //    if (nBeamMode == etaInicioGrupo) {
 //        if (nTupla == eTP_Tresillo) {
 //            m_sFuente = m_sFuente & _T(" (G + T3)");
