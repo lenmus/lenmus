@@ -1,4 +1,3 @@
-// RCS-ID: $Id: EarIntervalsCtrol.h,v 1.3 2006/02/23 19:19:15 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron

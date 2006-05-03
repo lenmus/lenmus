@@ -1,4 +1,3 @@
-// RCS-ID: $Id: StaffObj.h,v 1.3 2006/02/23 19:24:42 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -173,25 +172,25 @@ protected:
 
 
     // type and identification
-    EScoreObjType    m_nType;            //Type of lmScoreObj
-    wxInt32            m_nId;                //unique number, to identify each lmScoreObj
+    EScoreObjType   m_nType;        //Type of lmScoreObj
+    wxInt32         m_nId;          //unique number, to identify each lmScoreObj
 
     //positioning. Coordinates relative to origin of page (in logical units); updated each
     // time this object is drawn
-    wxPoint        m_paperPos;        // paper xPos, yBase position to render this object
-    bool        m_fFixedPos;    // its position is fixed. Do not recalculate it
-    wxCoord        m_nWidth;        // total width of the image, including after space
+    wxPoint     m_paperPos;         // paper xPos, yBase position to render this object
+    bool        m_fFixedPos;        // its position is fixed. Do not recalculate it
+    wxCoord     m_nWidth;           // total width of the image, including after space
 
     // selection related variables
-    bool        m_fSelected;    // this obj is selected
-    wxRect        m_selRect;        // selection rectangle (logical units, relative to paperPos)
+    bool        m_fSelected;        // this obj is selected
+    wxRect      m_selRect;          // selection rectangle (logical units, relative to paperPos)
 
     // Info for draggable objects
     bool        m_fIsDraggable;
 
     // variables related to font rendered objects
-    wxFont*        m_pFont;        // font to use for drawing this object
-    wxPoint        m_glyphPos;        // origing to position the glyph (relative to m_paperPos)
+    wxFont*     m_pFont;            // font to use for drawing this object
+    wxPoint     m_glyphPos;         // origing to position the glyph (relative to m_paperPos)
 
 };
 
@@ -242,6 +241,7 @@ public:
     virtual inline bool IsComposite()=0;
     virtual inline bool IsSizeable() { return false; }
     virtual inline bool IsFontRederized() { return false; }
+    inline bool IsVisible() { return m_fVisible; }
 
     // source code related methods
     virtual wxString SourceLDP() = 0;
@@ -282,15 +282,15 @@ protected:
         //----------------
 
     //properties
-    bool        m_fVisible;        // this lmScoreObj is visible on the score
+    bool        m_fVisible;         // this lmScoreObj is visible on the score
 
     // time related variables
-    float            m_rTimePos;            // time from start of measure
+    float       m_rTimePos;         // time from start of measure
 
     // Info about staff ownership
-    lmVStaff*            m_pVStaff;            // lmVStaff to which this lmStaffObj belongs or NULL
-    wxInt32            m_nStaffNum;        // lmStaff (1..n) on which this object is located
-    wxInt32            m_numMeasure;        // measure number in which this lmStaffObj is included
+    lmVStaff*   m_pVStaff;          // lmVStaff to which this lmStaffObj belongs or NULL
+    wxInt32     m_nStaffNum;        // lmStaff (1..n) on which this object is located
+    wxInt32     m_numMeasure;       // measure number in which this lmStaffObj is included
 
 };
 

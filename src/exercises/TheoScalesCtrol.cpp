@@ -1,4 +1,3 @@
-// RCS-ID: $Id: TheoScalesCtrol.cpp,v 1.8 2006/03/03 14:59:44 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -55,16 +54,12 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 extern bool g_fShowDebugLinks;            // in TheApp.cpp
 
 
+static wxString sRowLabel[2];
+static wxString sButtonLabel[8];
 
 //------------------------------------------------------------------------------------
 // Implementation of lmTheoScalesCtrol
 //------------------------------------------------------------------------------------
-
-/*! @todo
-    In this implementation, copied from lmTheoIntervalsCtrol, there remains answer
-    buttons that and method without use. They should be deleted or, alternatively,
-    implement answer buttons and score counters.
-*/
 
 /*! @todo
     It would be nice to add an additional link "Explain solution" to provide guidance
@@ -73,27 +68,27 @@ extern bool g_fShowDebugLinks;            // in TheApp.cpp
 */
 
 //Layout definitions
-const int BUTTONS_DISTANCE    = 5;        //pixels
-const int NUM_BUTTONS = 48;                //buttons for answers
-const int NUM_LINKS = 3;                //links for actions
+const int BUTTONS_DISTANCE = 5;     //pixels
+const int NUM_BUTTONS = 8;          //buttons for answers
 
 //IDs for controls
-const int  ID_BUTTON        = 3000;
-const int  ID_LINK            = ID_BUTTON + NUM_BUTTONS;
-const int  ID_LINK_NEW_PROBLEM        = ID_LINK+1;
-const int  ID_LINK_RESET_COUNTERS    = ID_LINK+2;
-const int  ID_LINK_PLAY                = ID_LINK+3;
-const int  ID_LINK_SOLUTION            = ID_LINK+4;
-const int  ID_LINK_SEE_SOURCE        = ID_LINK+5;
-const int  ID_LINK_DUMP                = ID_LINK+6;
-const int  ID_LINK_MIDI_EVENTS        = ID_LINK+7;
+enum {
+    ID_BUTTON = 3000,
+    ID_LINK = ID_BUTTON + NUM_BUTTONS,
+    ID_LINK_NEW_PROBLEM,
+    ID_LINK_PLAY,
+    ID_LINK_SOLUTION,
+    ID_LINK_SEE_SOURCE,
+    ID_LINK_DUMP,
+    ID_LINK_MIDI_EVENTS,
+    ID_LINK_SETTINGS
+};
 
 
 BEGIN_EVENT_TABLE(lmTheoScalesCtrol, wxWindow)
     EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmTheoScalesCtrol::OnRespButton)
     EVT_SIZE            (lmTheoScalesCtrol::OnSize)
     LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, lmTheoScalesCtrol::OnNewProblem)
-    LM_EVT_URL_CLICK    (ID_LINK_RESET_COUNTERS, lmTheoScalesCtrol::OnResetCounters)
     LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmTheoScalesCtrol::OnPlay)
     LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, lmTheoScalesCtrol::OnDisplaySolution)
     LM_EVT_URL_CLICK    (ID_LINK_SEE_SOURCE, lmTheoScalesCtrol::OnDebugShowSourceScore)
@@ -121,29 +116,68 @@ lmTheoScalesCtrol::lmTheoScalesCtrol(wxWindow* parent, wxWindowID id,
     m_fPlaying = false;
     m_fClosing = false;
 
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    sRowLabel[0] = _("Major");
+    sRowLabel[1] = _("minor");
+
+    //      major scales
+    sButtonLabel[0] = _("Natural");
+    sButtonLabel[1] = _("Type II");
+    sButtonLabel[2] = _("Type III");
+    sButtonLabel[3] = _("Type IV");
+    //      minor scales
+    sButtonLabel[4] = _("Natural");
+    sButtonLabel[5] = _("Dorian");
+    sButtonLabel[6] = _("Harmonic");
+    sButtonLabel[7] = _("Melodic");
+
+
     //the window is divided into two regions: top, for score on left and counters and links
     //on the right, and bottom region, for answer buttons 
     wxBoxSizer* pMainSizer = new wxBoxSizer( wxVERTICAL );
 
+    // debug buttons
+    if (g_fShowDebugLinks && !g_fReleaseVersion) {
+        wxBoxSizer* pDbgSizer = new wxBoxSizer( wxHORIZONTAL );
+        pMainSizer->Add(pDbgSizer, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
+
+        // "See source score"
+        pDbgSizer->Add(
+            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, _("See source score") ),
+            wxSizerFlags(0).Left().Border(wxALL, 10) );
+        // "Dump score"
+        pDbgSizer->Add(
+            new lmUrlAuxCtrol(this, ID_LINK_DUMP, _("Dump score") ),
+            wxSizerFlags(0).Left().Border(wxALL, 10) );
+        // "See MIDI events"
+        pDbgSizer->Add(
+            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, _("See MIDI events") ),
+            wxSizerFlags(0).Left().Border(wxALL, 10) );
+    }
+
+    // sizer for the scoreCtrol and the CountersCtrol
     wxBoxSizer* pTopSizer = new wxBoxSizer( wxHORIZONTAL );
     pMainSizer->Add(
         pTopSizer,
-        wxSizerFlags(0).Left().Border(wxALL, 10) );
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
 
-    wxBoxSizer* pLeftSizer = new wxBoxSizer( wxVERTICAL );
+    // sizer for the ScoreCtrol and the checkBox to "Display scales without key signature"
+    wxBoxSizer* pScoreSizer = new wxBoxSizer( wxVERTICAL );
     pTopSizer->Add(
-        pLeftSizer,
-        wxSizerFlags(1).Left().Border(wxALL, 10));
+        pScoreSizer,
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10).Expand() );
 
     // create score ctrl 
-    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, wxSize(500,200), eSIMPLE_BORDER);
-    m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
-                              lmToLogicalUnits(10, lmMILLIMETERS),
-                              lmToLogicalUnits(20, lmMILLIMETERS));        //right=1cm, left=1cm, top=2cm
-    m_pScoreCtrol->SetScale((float)1.3);
-    pLeftSizer->Add(
+    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, wxSize(320,150), eSIMPLE_BORDER);
+    m_pScoreCtrol->SetMargins(lmToLogicalUnits(5, lmMILLIMETERS),      //left=5mm
+                              lmToLogicalUnits(5, lmMILLIMETERS),      //right=5mm
+                              lmToLogicalUnits(15, lmMILLIMETERS));    //top=15mm
+    pScoreSizer->Add(
         m_pScoreCtrol,
-        wxSizerFlags(1).Left().Border(wxALL, 10));
+        wxSizerFlags(1).Left().Border(wxTOP|wxBOTTOM, 10));
+
+    m_pScoreCtrol->SetScale((float)1.3);
 
     // checkBox to "Display scales without key signature accidentals"
     if (m_pConstrains->CtrolKeySignature()) {
@@ -151,55 +185,98 @@ lmTheoScalesCtrol::lmTheoScalesCtrol(wxWindow* parent, wxWindowID id,
             _("Display scales without key signature accidentals"),
             wxDefaultPosition);
         m_pChkKeySignature->SetValue(false);
-        pLeftSizer->Add(
+        pScoreSizer->Add(
             m_pChkKeySignature,
             wxSizerFlags(0).Border(wxALL, 10));
     }
         
+
+    // sizer for the CountersCtrol and the settings link
     wxBoxSizer* pCountersSizer = new wxBoxSizer( wxVERTICAL );
     pTopSizer->Add(
         pCountersSizer,
-        wxSizerFlags(0).Right().Border(wxALL, 10) );
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10).Expand() );
+
+    // right/wrong answers counters control
+    m_pCounters = new lmCountersCtrol(this, wxID_ANY);
+    pCountersSizer->Add(
+        m_pCounters,
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+
+    // spacer to move the settings link to bottom
+    pCountersSizer->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+    // settings link
+    lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
+    pCountersSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+
+    // spacer to move the settings link a little up
+    pCountersSizer->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+    
+
+        //links 
+
+    wxBoxSizer* pLinksSizer = new wxBoxSizer( wxHORIZONTAL );
+    pMainSizer->Add(
+        pLinksSizer,
+        wxSizerFlags(0).Center().Border(wxLEFT|wxALL, 10) );
+
 
     // "new problem" button
-    pCountersSizer->Add(
+    pLinksSizer->Add(
         new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") ),
-        wxSizerFlags(0).Left().Border(wxALL, 10) );
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
     
     // "play" button
-    m_pPlayLink = new lmUrlAuxCtrol(this, ID_LINK_PLAY, _("Play"), _("Stop playing") );
-    pCountersSizer->Add(
-        m_pPlayLink,
-        wxSizerFlags(0).Left().Border(wxALL, 10) );
+    m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, _("Play") );
+    pLinksSizer->Add(
+        m_pPlayButton,
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
     
     // "show solution" button
-    pCountersSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") ),
-        wxSizerFlags(0).Left().Border(wxALL, 10) );
-
-    // debug buttons
-    if (g_fShowDebugLinks && !g_fReleaseVersion) {
-        // "See source score"
-        pCountersSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, _("See source score") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
-        // "Dump score"
-        pCountersSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_DUMP, _("Dump score") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
-        // "See MIDI events"
-        pCountersSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, _("See MIDI events") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
-    }
+    m_pShowSolution = new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") );
+    pLinksSizer->Add(
+        m_pShowSolution,
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
     
+    //create 8 buttons for the answers: two rows, four buttons per row
+    wxBoxSizer* pRowSizer;
+    wxButton* pButton;
+    int iB = 0;
+    const int NUM_ROWS = 2;
+    const int NUM_COLS = 4;
+    for (int iRow=0; iRow < NUM_ROWS; iRow++) {
+        pRowSizer = new wxBoxSizer( wxHORIZONTAL );
+        pMainSizer->Add(    
+            pRowSizer,
+            wxSizerFlags(0).Left());
+
+        //add label for type of scale
+        pRowSizer->Add(
+            new wxStaticText(this, -1, sRowLabel[iRow], wxDefaultPosition, wxSize(60, 24)),
+            wxSizerFlags(0).Left().Border(wxRIGHT|wxLEFT|wxTOP, BUTTONS_DISTANCE) );
+
+        //add this row buttons
+        for (int iCol=0; iCol < NUM_COLS; iCol++) {
+            iB = iCol + iRow * NUM_COLS;    // button index: 0 .. 7         
+            pButton = new wxButton( this, ID_BUTTON + iB, sButtonLabel[iB],
+                wxDefaultPosition, wxSize(90, 24));
+            m_pAnswerButton[iB++] = pButton;
+            pRowSizer->Add(
+                pButton,
+                wxSizerFlags(0).Border(wxRIGHT|wxLEFT|wxTOP, BUTTONS_DISTANCE) );
+        }
+    }
+
     SetSizer( pMainSizer );                // use the sizer for window layout
     pMainSizer->SetSizeHints( this );        // set size hints to honour minimum size
+
+    pSettingsLink->Enable(false);   //disabled until settings implemented
 
     NewProblem();
 
 }
-
 
 lmTheoScalesCtrol::~lmTheoScalesCtrol()
 {
@@ -221,11 +298,11 @@ lmTheoScalesCtrol::~lmTheoScalesCtrol()
 
 void lmTheoScalesCtrol::EnableButtons(bool fEnable)
 {
-    //for (int i=0; i < NUM_BUTTONS; i++) {
- //       if (m_pAnswerButton[i])
-    //        m_pAnswerButton[i]->Enable(fEnable);
-    //}
- //   m_fButtonsEnabled = fEnable;
+    for (int i=0; i < NUM_BUTTONS; i++) {
+        if (m_pAnswerButton[i])
+            m_pAnswerButton[i]->Enable(fEnable);
+    }
+    m_fButtonsEnabled = fEnable;
 
 }
 
@@ -274,20 +351,22 @@ void lmTheoScalesCtrol::OnNewProblem(wxCommandEvent& event)
     NewProblem();
 }
 
-void lmTheoScalesCtrol::OnResetCounters(wxCommandEvent& event)
-{
-    ResetCounters();
-}
-
 void lmTheoScalesCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
+    //! @todo Sound for failure
+    m_pCounters->IncrementWrong();
     DisplaySolution();
+    EnableButtons(false);           //student must not give now the answer
+    m_pPlayButton->Enable(true);    //but allow to play the scale
+
 }
 
 
 void lmTheoScalesCtrol::NewProblem()
 {
     int i, j;
+
+    ResetExercise();
 
     //Generate a problem
     lmRandomGenerator oGenerator;
@@ -310,35 +389,36 @@ void lmTheoScalesCtrol::NewProblem()
     int iRoot = GetRootNoteIndex(nKeySignature);
 
     //Convert index to pitch; depends on clef
+    lmPitch     ntPitch[8];           //the pitch of the scale notes
     //! @todo Adjust scales for clefs Do1, Do2, Do3 and Do4
     switch(nClef) {
         case eclvSol:
             //b3 to a4
-            m_ntPitch[0] = (iRoot==6 ? iRoot + lmC3PITCH : iRoot + lmC4PITCH);
+            ntPitch[0] = (iRoot==6 ? iRoot + lmC3PITCH : iRoot + lmC4PITCH);
             break;
         case eclvFa4:
             //e2 to d3
-            m_ntPitch[0] = (iRoot > 1 ? iRoot + lmC2PITCH : iRoot + lmC3PITCH);
+            ntPitch[0] = (iRoot > 1 ? iRoot + lmC2PITCH : iRoot + lmC3PITCH);
             break;
         case eclvFa3:
             //g2 to f3
-            m_ntPitch[0] = (iRoot > 3 ? iRoot + lmC2PITCH : iRoot + lmC3PITCH);
+            ntPitch[0] = (iRoot > 3 ? iRoot + lmC2PITCH : iRoot + lmC3PITCH);
             break;
         case eclvDo1:
             //b3 to a4
-            m_ntPitch[0] = (iRoot==6 ? iRoot + lmC4PITCH : iRoot + lmC4PITCH);
+            ntPitch[0] = (iRoot==6 ? iRoot + lmC4PITCH : iRoot + lmC4PITCH);
             break;
         case eclvDo2:
             //b3 to a4
-            m_ntPitch[0] = (iRoot==6 ? iRoot + lmC4PITCH : iRoot + lmC4PITCH);
+            ntPitch[0] = (iRoot==6 ? iRoot + lmC4PITCH : iRoot + lmC4PITCH);
             break;
         case eclvDo3:
             //b3 to a4
-            m_ntPitch[0] = (iRoot==6 ? iRoot + lmC4PITCH : iRoot + lmC4PITCH -6);
+            ntPitch[0] = (iRoot==6 ? iRoot + lmC4PITCH : iRoot + lmC4PITCH -6);
             break;
         case eclvDo4:
             //b3 to a4
-            m_ntPitch[0] = (iRoot==6 ? iRoot + lmC4PITCH : iRoot + lmC4PITCH -6);
+            ntPitch[0] = (iRoot==6 ? iRoot + lmC4PITCH : iRoot + lmC4PITCH -6);
             break;
         default:
             wxASSERT(false);
@@ -346,7 +426,7 @@ void lmTheoScalesCtrol::NewProblem()
 
     //Generate pitch for the other notes of the scale
     for(i=1; i<8; i++) {
-        m_ntPitch[i] = m_ntPitch[i-1] + 1;
+        ntPitch[i] = ntPitch[i-1] + 1;
     }
     
     //Convert problem to LDP pattern
@@ -401,7 +481,7 @@ void lmTheoScalesCtrol::NewProblem()
         else {
             sSource[i] += sAlter[i];
         }
-        sSource[i] += oConv.GetEnglishNoteName(m_ntPitch[i]) + _T(" r)");
+        sSource[i] += oConv.GetEnglishNoteName(ntPitch[i]) + _T(" r)");
     }
 
     //compute number of accidentals in key signature
@@ -454,24 +534,32 @@ void lmTheoScalesCtrol::NewProblem()
         //major scale
         if (sAlter[6] != _T("") && sAlter[5] != _T("")) {
             m_sAnswer += _(", Type III");
+            m_nRespIndex = 2;
         } else if (sAlter[5] != _T("")) {
             m_sAnswer += _(", harmonic (Type II)");
+            m_nRespIndex = 1;
         } else if (sAlter[6] != _T("")) {
             m_sAnswer += _(", mixolydian (Type IV)");    //mixolidia
+            m_nRespIndex = 3;
         } else {
             m_sAnswer += _(", natural (Type I)");
+            m_nRespIndex = 0;
         }
     }
     else {
         //minor scale
         if (sAlter[6] != _T("") && sAlter[5] != _T("")) {
             m_sAnswer += _(", melodic");
-        } else if (sAlter[5] != _T("")) {
-            m_sAnswer += _(", dorian");            //dórica
+            m_nRespIndex = 7;
+       } else if (sAlter[5] != _T("")) {
+            m_sAnswer += _(", dorian");
+            m_nRespIndex = 5;
         } else if (sAlter[6] != _T("")) {
             m_sAnswer += _(", harmonic");
+            m_nRespIndex = 6;
         } else {
-            m_sAnswer += _(", natural (eólica, antigua)");    //! @todo translation
+            m_sAnswer += _(", natural");
+            m_nRespIndex = 4;
         }
     }
     
@@ -484,20 +572,54 @@ void lmTheoScalesCtrol::NewProblem()
         m_fPlayEnabled = true;
     } else {
         //inverse problem
-        m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(10, lmMILLIMETERS));
+        m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS));
         m_fPlayEnabled = false;
     }
     m_fProblemCreated = true;
+
+    EnableButtons(m_fDeduceScale);  //enable buttons only for deduce scale
+    m_pShowSolution->Enable(true);
+    m_pPlayButton->Enable(m_fDeduceScale);
     
-    //! @todo piano dlg
-    //if (FMain.fFrmPiano) { FPiano.DesmarcarTeclas
-        
 }
 
 void lmTheoScalesCtrol::OnRespButton(wxCommandEvent& event)
 {
     int nIndex = event.GetId() - ID_BUTTON;
-    wxMessageBox(wxString::Format(_T("Pulsado botón %d"), nIndex));
+
+    //buttons are only enabled in m_fDeduceScale type problems
+    bool fSuccess;
+    wxColour* pColor;
+    
+    //verify if success or failure
+    if (!m_fDeduceScale) return;
+    fSuccess = (nIndex == m_nRespIndex);
+    
+    //prepare sound and color, and update counters
+    if (fSuccess) {
+        pColor = &(g_pColors->Success());
+        //! @todo Sound for sucess
+        m_pCounters->IncrementRight();
+    } else {
+        pColor = &(g_pColors->Failure());
+        //! @todo Sound for failure
+        m_pCounters->IncrementWrong();
+    }
+        
+    //if failure, display the solution. If succsess, generate a new problem
+    if (!fSuccess) {
+        //failure: mark wrong button in red and right one in green
+        m_pAnswerButton[m_nRespIndex]->SetBackgroundColour(g_pColors->Success());
+        m_pAnswerButton[nIndex]->SetBackgroundColour(g_pColors->Failure());
+
+        //show the solucion
+        DisplaySolution();
+        EnableButtons(false);
+        m_pShowSolution->Enable(false);
+
+    } else {
+        NewProblem();
+    }
     
 }
 
@@ -505,7 +627,7 @@ void lmTheoScalesCtrol::OnRespButton(wxCommandEvent& event)
 void lmTheoScalesCtrol::DisplaySolution()
 {
     if (m_fDeduceScale) {
-        m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(10, lmMILLIMETERS), false);
+        m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
     } else {
         m_pScoreCtrol->DisplayScore(m_pScore, false);
         m_pScore = (lmScore*)NULL;    //no longer owned. Now owned by lmScoreAuxCtrol
@@ -526,7 +648,7 @@ void lmTheoScalesCtrol::Play()
         // Play button pressed
 
         //change link from "Play" to "Stop playing"
-        m_pPlayLink->SetLabel(_("Stop playing"));
+        m_pPlayButton->SetLabel(_("Stop playing"));
 
         //As scale is built using whole notes, we will play scale at MM=320 so
         //that real note rate will be 80.
@@ -541,14 +663,12 @@ void lmTheoScalesCtrol::Play()
         // "Stop playing" button pressed
         m_pScoreCtrol->Stop();
     }
-    //! @todo Piano form
-//    if (FMain.fFrmPiano) { FPiano.HabilitarMarcado = false;
 
 }
 
 void lmTheoScalesCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
 {
-    m_pPlayLink->SetLabel(_("Play"));
+    m_pPlayButton->SetLabel(_("Play"));
     m_fPlaying = false;
 }
 
@@ -569,12 +689,16 @@ void lmTheoScalesCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
 
 void lmTheoScalesCtrol::ResetExercise()
 {
-    //! @todo When Counters implemented: code this method
-    m_pScoreCtrol->DisplayMessage(_T("TODO: ResetExercise()"), lmToLogicalUnits(10, lmMILLIMETERS));
-}
+    for (int i=0; i < NUM_BUTTONS; i++) {
+        if (m_pAnswerButton[i]) {
+            m_pAnswerButton[i]->SetBackgroundColour( g_pColors->Normal() );
+        }
+    }
+    EnableButtons(false);
 
-void lmTheoScalesCtrol::ResetCounters()
-{
-    //! @todo When Counters implemented: code this method
-    m_pScoreCtrol->DisplayMessage(_T("TODO: ResetCounters()"), lmToLogicalUnits(10, lmMILLIMETERS));
+    if (m_pScore) {
+        delete m_pScore;
+        m_pScore = (lmScore*)NULL;
+    }
+    
 }

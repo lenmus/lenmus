@@ -1,4 +1,3 @@
-// RCS-ID: $Id: VStaff.h,v 1.4 2006/02/23 19:25:14 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -87,13 +86,12 @@ public:
     wxInt32 GetNumMeasures();
 
     // rendering methods
-    void Draw(lmPaper* pPaper);
     void DrawStaffLines(bool fMeasuring,
-                            lmPaper* pPaper,
-                            lmLUnits dyInicial,
-                            lmLUnits dyEntrePentagramas,
-                            lmLUnits xFrom = 0,
-                            lmLUnits xTo = 0);
+                        lmPaper* pPaper,
+                        lmLUnits dyInicial,
+                        lmLUnits dyEntrePentagramas,
+                        lmLUnits xFrom = 0,
+                        lmLUnits xTo = 0);
     void DrawProlog(bool fMeasuring, bool fDrawTimekey, lmPaper* pPaper);
     void NewLine(lmPaper* pPaper);
     lmLUnits GetVStaffHeight();
@@ -149,20 +147,7 @@ private:
     lmScore        *m_pScore;           //lmScore to which this lmVStaff belongs
     lmInstrument   *m_pInstrument;      //lmInstrument to which this lmVStaff belongs
 
-    //m_oUltTonalidad As CPOTonalidad
-    //m_oUltMetrica As CPOMetrica
-    //m_oIniMetrica As CPOMetrica       //métrica con la que empieza el pentagrama
-
     lmColStaffObjs    m_cStaffObjs;        //collection of StaffObjs that form this lmVStaff
-
-    ////variables que almacenan la situación temporal a medida que se analiza el archivo con la
-    ////partitura y se añaden notas y pentobjs. Una vez cargada la partitura dejan de tener sentido.
-    ////Todas, salvo m_anContexto, vuelven a necesitarse en distintos momentos:
-    ////   - al dibujar la partitura, para ir llevando la situación hasta el punto por donde va dibujando
-    //m_anContexto(0 To 6) As Long    //alteraciones actuales
-    //m_oCurClave() As CPOClave         //clave actual en cada pentagrama
-    //m_oCurTonalidad As CPOTonalidad
-    //m_oCurMetrica As CPOMetrica
 
     // staves
     StaffList           m_cStaves;      //list of Staves (lmStaff objects) that form this lmVStaff
@@ -178,16 +163,6 @@ private:
     lmLUnits    m_topMargin;
     lmLUnits    m_rightMargin;
     lmLUnits    m_bottomMargin;
-
-    ////variables temporales que almacenan valores mientras se dibuja la partitura
-    //m_xInicioCompas As Long     //coordenada x de inicio del compas en proceso
-
-
-    ////variables para dibujo
-    //m_oPapel As CPapel
-    //m_rEspacioPost As Single        //espaciado para las notas en partituras sin justificar.
- //                                       //Se fija en EstablecerPapel
-
 
 };
 

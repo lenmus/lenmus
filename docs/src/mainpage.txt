@@ -32,6 +32,8 @@
 		- @ref context_for_notes
 		- @ref internal_links
 		- @ref music_reading_modes
+		- @ref graphic_manager
+
 		
     - @subpage algorithms
 		- @ref xml_measure_atributes

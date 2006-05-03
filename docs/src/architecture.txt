@@ -1,4 +1,3 @@
-// RCS-ID: $Id: architecture.txt,v 1.7 2006/02/23 19:15:19 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -378,6 +377,33 @@ visible it allways contains the three first modes to be selected by the user.
 In version 3.0 mode 'According to lesson' is not necessary as level/lesson settings
 are always included as parameters, so it is replaced by 'By program' mode. If user
 would like to practise a specific lesson now he/she will be force to go to that lesson.
+
+
+@section graphic_manager The GraphicManager: renderization of scores
+<!-- ========================================================================= -->
+
+Class lmGraphicManager stores and manages all score renderization issues.
+
+Renderization options, should be in the score? in the view?
+
+If we consider a notation editor all renderization issues are part of the file describing 
+the score
+
+If we consider only the score as its musical contents then renderization parameters are
+part of the view: depending on the type of view the renderization parameters could vary.
+
+Conclusions:
+
+1. The external score file must include all renderization parameters related to renderizating
+	the score in the different posible views (i.e. paper, sound, ...) so that the document
+	is always rendered/printed/interpreted as the author set it (i.e. as a 'PDF document').
+	Nevertheless the user, by using the edition options, would be able to alter anything.
+	
+2. In the doc/view model there could be different views of the same score, if they share
+	the renderization parameters the views will be the equal. (Well, if the type of view
+	is the same - paper score - this is logical and coherent, so no problem) 
+	
+From 1 & 2 ==> All parameters for renderization are part of the document.
 
 
 */

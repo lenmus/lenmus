@@ -76,7 +76,7 @@ lmBoxScore* lmFormatter4::Layout(lmScore* pScore, lmPaper* pPaper)
 //            Optional rFactorAjuste As Single = 1#)
 
     m_pScore = pScore;
-    bool fMetodoJustificado = true;
+    bool fMetodoJustificado = false;
     if (fMetodoJustificado) {
         return RenderJustified(pPaper);
     } else {
@@ -90,53 +90,82 @@ lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
     //drawing a score without bar justification and without breaking it into systems.
     //That is, it draws all the score in a single system without taking into consideration
     //paper length limitations.
-    // This very simple renderer is usefull for tests and in some rare occations
+    // This very simple renderer is usefull for simple scores and in some rare occations
 
     lmBoxScore* pBoxScore = new lmBoxScore(m_pScore);
 
+    pPaper->RestartPageCursors();    //ensure that page cursors are at top-left corner
+
+    //for each staff size, setup fonts of right point size for that staff size
     wxInt32 iVStaff;
     lmInstrument *pInstr;
     lmVStaff *pVStaff;
-    wxInt32 yPos;
+    for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
+    {
+        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
+            pVStaff = pInstr->GetVStaff(iVStaff);
+            pVStaff->SetUpFonts(pPaper);
+        }
+    }
 
-    // write titles
-    //m_pScore->WriteTitles();
+    // write score titles
+    m_pScore->WriteTitles(DO_MEASURE, pPaper);
+    pPaper->RestartPageCursors();                                //restore page cursors are at top-left corner
+    pPaper->IncrementCursorY(m_pScore->TopSystemDistance());    //advance to skip headers
+
+    //prepare the only page
+    lmBoxPage* pBoxPage = pBoxScore->GetCurrentPage();
+    lmBoxSystem* pBoxSystem;
 
     //for each instrument
+    lmLUnits nSpaceAfterBarline;
+    int nAbsMeasure;
     for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
     {
         //for each lmVStaff
-        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
+        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
+        {
             pVStaff = pInstr->GetVStaff(iVStaff);
+            nSpaceAfterBarline = pVStaff->TenthsToLogical(20, 1);
 
-            // draw one lmVStaff
-            yPos = pPaper->GetCursorY();
-            pVStaff->Draw(pPaper);
+            pBoxSystem = pBoxPage->AddSystem(iVStaff);
+            int ySystemPos = pPaper->GetCursorY();      //save the start of system position
+            pBoxSystem->SetPositionY(ySystemPos);
+            nAbsMeasure = 1;
+            pBoxSystem->SetFirstMeasure(nAbsMeasure);
 
-            // draw the staff lines
-            pPaper->SetCursorY(yPos);
-            pVStaff->DrawStaffLines(DO_DRAW, pPaper, 0, 50);
+            //loop to process all StaffObjs in this VStaff
+            lmStaffObj* pSO = (lmStaffObj*)NULL;
+            lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
+            pIT->MoveFirst();
+            while(!pIT->EndOfList())
+            {
+                pSO = pIT->GetCurrent();
+                pSO->Draw(DO_MEASURE, pPaper);  //measure the staffobj
+
+                if (pSO->GetType() == eTPO_Barline) {
+                    if (pSO->IsVisible()) {
+                        //add space after barline
+                        pPaper->IncrementCursorX(nSpaceAfterBarline);
+                    }
+                    nAbsMeasure++;
+                }
+                else if (pSO->GetType() == eTPO_Clef) {
+                    //update current clef for this staff
+                    lmClef* pClef = (lmClef*)pSO;
+                    int nStaff = pClef->GetStaffNum();
+                    lmStaff* pStaff = pVStaff->GetStaff(nStaff);
+                    pStaff->SetCurrentClef(pClef);
+                }
+
+                pIT->MoveNext();
+            }
+            delete pIT;
+
+            pBoxSystem->SetNumMeasures(--nAbsMeasure);
+
         }
     }
-
-    //DEBUG: Let's print a second page --------------------------------------------------
-    pPaper->NewPage();
-    for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
-    {
-        //for each lmVStaff
-        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
-            pVStaff = pInstr->GetVStaff(iVStaff);
-
-            // draw one lmVStaff
-            yPos = pPaper->GetCursorY();
-            pVStaff->Draw(pPaper);
-
-            // draw the staff lines
-            pPaper->SetCursorY(yPos);
-            pVStaff->DrawStaffLines(DO_DRAW, pPaper, 0, 50);
-        }
-    }
-    // End DEBUG ------------------------------------------------------------------------
 
     return pBoxScore;
 

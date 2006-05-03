@@ -553,9 +553,6 @@ void lmTheoIntervalsCtrol::NewProblem()
     m_fPlayEnabled = false;
     m_fProblemCreated = true;
     
-    //! @todo Piano feedback
-    //if (FMain.fFrmPiano) FPiano.DesmarcarTeclas
-
 }
 
 void lmTheoIntervalsCtrol::Play()
@@ -575,17 +572,6 @@ void lmTheoIntervalsCtrol::DisplaySolution()
         m_pScore = (lmScore*)NULL;    //no longer owned. Now owned by lmScoreAuxCtrol
     }
     
-    //if piano visile, mark the notes
-    //! @todo piano feedback
-////    if (FMain.fFrmPiano) {
-////        With FPiano
-////            .HabilitarMarcado = true
-////            .MarcarTecla m_ntMidi[0]
-////            .MarcarTecla m_ntMidi[1]
-////            .HabilitarMarcado = false
-////        End With
-////    }
-
     m_pPlayButton->Enable(true);
     m_fPlayEnabled = true;
     m_fProblemCreated = false;

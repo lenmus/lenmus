@@ -415,24 +415,6 @@ wxInt32 lmVStaff::GetNumMeasures()
     return m_cStaffObjs.GetNumMeasures();
 }
 
-void lmVStaff::Draw(lmPaper* pPaper)
-{
-    // setup the fonts with the right size
-    SetUpFonts(pPaper);
-
-    //iterate over the collection to draw the StaffObjs
-    lmStaffObj* pSO;
-    lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
-    while(!pIter->EndOfList()) {
-        pSO = pIter->GetCurrent();
-        pSO->Draw(DO_MEASURE, pPaper);
-        pSO->Draw(DO_DRAW, pPaper);
-        pIter->MoveNext();
-    }
-    delete pIter;
-
-}
-
 void lmVStaff::DrawStaffLines(bool fMeasuring,
                             lmPaper* pPaper,
                             lmLUnits dyInicial,

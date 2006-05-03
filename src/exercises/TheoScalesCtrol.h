@@ -1,4 +1,3 @@
-// RCS-ID: $Id: TheoScalesCtrol.h,v 1.3 2006/02/23 19:19:53 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -47,6 +46,7 @@
 #include "../score/score.h"
 #include "ScoreAuxCtrol.h"
 #include "UrlAuxCtrol.h"
+#include "CountersCtrol.h"
 #include "../sound/SoundEvents.h"
 
 
@@ -70,7 +70,6 @@ public:
     void OnRespButton(wxCommandEvent& event);
     void OnPlay(wxCommandEvent& event);
     void OnNewProblem(wxCommandEvent& event);
-    void OnResetCounters(wxCommandEvent& event);
     void OnDisplaySolution(wxCommandEvent& event);
 
     // event handlers related to debugging
@@ -88,29 +87,30 @@ private:
     void NewProblem();
     void DisplaySolution();
     void ResetExercise();
-    void ResetCounters();
 
         // member variables
 
-    lmScore*                    m_pScore;            // the score with the scale
-    lmScoreAuxCtrol*            m_pScoreCtrol;
-    wxCheckBox*                m_pChkKeySignature;
+    lmScore*            m_pScore;            // the score with the scale
+    lmScoreAuxCtrol*    m_pScoreCtrol;
+    lmCountersCtrol*    m_pCounters;
+    wxCheckBox*         m_pChkKeySignature;
+
     lmTheoScalesConstrains*    m_pConstrains;
-    bool        m_fProblemCreated;    //there is a problem prepared
-    lmPitch        m_ntMidi[8];        //the midi pitch of the two notes
-    lmPitch        m_ntPitch[8];        //the pitch of the two notes
-    bool        m_fPlayEnabled;        //Play enabled
+    bool        m_fProblemCreated;      //there is a problem prepared
+    bool        m_fPlayEnabled;         //Play enabled
     bool        m_fDeduceScale;
 
-    //buttons for the answers: 6 rows, 8 buttons per row
-    wxButton*    m_pAnswerButton[48];
-    int            m_nRespIndex;           //index to the button with the right answer
-    bool        m_fButtonsEnabled;        //buttons enabled
+    //buttons for the answers: 2 rows, 4 buttons per row
+    wxButton*   m_pAnswerButton[8];
+    int         m_nRespIndex;           //index to the button with the right answer
+    bool        m_fButtonsEnabled;      //buttons enabled
 
-    wxString        m_sAnswer;            //scale name
-    lmUrlAuxCtrol*    m_pPlayLink;    
-    bool            m_fPlaying;            //playing
-    bool            m_fClosing;        // waiting for play stopped to close the window
+    wxString        m_sAnswer;          //scale name
+    bool            m_fPlaying;         //playing
+    bool            m_fClosing;         // waiting for play stopped to close the window
+
+    lmUrlAuxCtrol*  m_pPlayButton;      // "play" button
+    lmUrlAuxCtrol*  m_pShowSolution;    // "show solution" button
 
     DECLARE_EVENT_TABLE()
 };
