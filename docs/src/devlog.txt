@@ -80,12 +80,13 @@ Area 0: Bugs to solve
         
 Area 1: New features to add in short term to working release
     + Wrong/right answer counters for exercises
-    - Too much space beetween notes in TheoIntervals
-    - Notes spacing in scales exercise: the control is now too wide
-    - Buttons for answers in scales exercise
+    + Too much space beetween notes in TheoIntervals
+    + Notes spacing in scales exercise: the control is now too wide
+    + Buttons for answers in scales exercise
     - Split TheoIntervalsCtrol into two exercises: one for identification (current) and 
         one for construction (current code but adding answer buttons for building 
         the intervals).
+    - TheoIntervals: double accidentals not generated. Analyze issue of 'four times augmnted'
     
 Area 2: Notation editor
     - divide notation features in phases and proceed by phases

@@ -59,7 +59,7 @@ extern bool g_fShowDebugLinks;            // in TheApp.cpp
 
 //Layout definitions
 const int BUTTONS_DISTANCE    = 5;        //pixels
-const int NUM_BUTTONS = 48;                //buttons for answers
+const int NUM_BUTTONS = 50;                //buttons for answers
 const int NUM_LINKS = 3;                //links for actions
 
 //IDs for controls
@@ -74,6 +74,10 @@ enum {
     ID_LINK_SOLUTION,
     ID_LINK_SETTINGS
 };
+
+static wxString m_sIntvButtonLabel[NUM_BUTTONS];
+static wxString m_sNotesButtonLabel[NUM_BUTTONS];
+
 
 BEGIN_EVENT_TABLE(lmTheoIntervalsCtrol, wxWindow)
     EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmTheoIntervalsCtrol::OnRespButton)
@@ -126,55 +130,101 @@ lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
     sColumnLabel[5] = _("7th");
     sColumnLabel[6] = _("8th");
 
-    wxString sButtonLabel[NUM_BUTTONS];
-    sButtonLabel[0] = _("Unison");
-    sButtonLabel[1] = _("dd2");
-    sButtonLabel[2] = _("dd3");
-    sButtonLabel[3] = _("dd4");
-    sButtonLabel[4] = _("dd5");
-    sButtonLabel[5] = _("dd5");
-    sButtonLabel[6] = _("dd7");
-    sButtonLabel[7] = _("dd8");
-    sButtonLabel[8] = _T("");
-    sButtonLabel[9] = _("dim2");
-    sButtonLabel[10] = _("dim3");
-    sButtonLabel[11] = _("dim4");
-    sButtonLabel[12] = _("dim5");
-    sButtonLabel[13] = _("dim6");
-    sButtonLabel[14] = _("dim7");
-    sButtonLabel[15] = _("dim8");
-    sButtonLabel[16] = _T("");
-    sButtonLabel[17] = _("m2");
-    sButtonLabel[18] = _("m3");
-    sButtonLabel[19] = _T("");
-    sButtonLabel[20] = _T("");
-    sButtonLabel[21] = _("m6");
-    sButtonLabel[22] = _("m7");
-    sButtonLabel[23] = _T("");
-    sButtonLabel[24] = _T("");
-    sButtonLabel[25] = _("M2");
-    sButtonLabel[26] = _("M3");
-    sButtonLabel[27] = _("P4");
-    sButtonLabel[28] = _("P5");
-    sButtonLabel[29] = _("M6");
-    sButtonLabel[30] = _("M7");
-    sButtonLabel[31] = _("P8");
-    sButtonLabel[32] = _T("");
-    sButtonLabel[33] = _("aug2");
-    sButtonLabel[34] = _("aug3");
-    sButtonLabel[35] = _("aug4");
-    sButtonLabel[36] = _("aug5");
-    sButtonLabel[37] = _("aug6");
-    sButtonLabel[38] = _("aug7");
-    sButtonLabel[39] = _("aug8");
-    sButtonLabel[40] = _T("");
-    sButtonLabel[41] = _("da2");
-    sButtonLabel[42] = _("da3");
-    sButtonLabel[43] = _("da4");
-    sButtonLabel[44] = _("da5");
-    sButtonLabel[45] = _("da6");
-    sButtonLabel[46] = _("da7");
-    sButtonLabel[47] = _("da7");
+        //button labels (intervals)
+    m_sIntvButtonLabel[0] = _("Unison");
+    m_sIntvButtonLabel[1] = _T("");         //dd2
+    m_sIntvButtonLabel[2] = _("dd3");
+    m_sIntvButtonLabel[3] = _("dd4");
+    m_sIntvButtonLabel[4] = _("dd5");
+    m_sIntvButtonLabel[5] = _("dd5");
+    m_sIntvButtonLabel[6] = _("dd7");
+    m_sIntvButtonLabel[7] = _("dd8");
+    m_sIntvButtonLabel[8] = _T("");     
+    m_sIntvButtonLabel[9] = _T("");         //dim2
+    m_sIntvButtonLabel[10] = _("dim3");
+    m_sIntvButtonLabel[11] = _("dim4");
+    m_sIntvButtonLabel[12] = _("dim5");
+    m_sIntvButtonLabel[13] = _("dim6");
+    m_sIntvButtonLabel[14] = _("dim7");
+    m_sIntvButtonLabel[15] = _("dim8");
+    m_sIntvButtonLabel[16] = _T("");
+    m_sIntvButtonLabel[17] = _("m2");
+    m_sIntvButtonLabel[18] = _("m3");
+    m_sIntvButtonLabel[19] = _T("");
+    m_sIntvButtonLabel[20] = _T("");
+    m_sIntvButtonLabel[21] = _("m6");
+    m_sIntvButtonLabel[22] = _("m7");
+    m_sIntvButtonLabel[23] = _T("");
+    m_sIntvButtonLabel[24] = _T("");
+    m_sIntvButtonLabel[25] = _("M2");
+    m_sIntvButtonLabel[26] = _("M3");
+    m_sIntvButtonLabel[27] = _("P4");
+    m_sIntvButtonLabel[28] = _("P5");
+    m_sIntvButtonLabel[29] = _("M6");
+    m_sIntvButtonLabel[30] = _("M7");
+    m_sIntvButtonLabel[31] = _("P8");
+    m_sIntvButtonLabel[32] = _T("");
+    m_sIntvButtonLabel[33] = _("aug2");
+    m_sIntvButtonLabel[34] = _("aug3");
+    m_sIntvButtonLabel[35] = _("aug4");
+    m_sIntvButtonLabel[36] = _("aug5");
+    m_sIntvButtonLabel[37] = _("aug6");
+    m_sIntvButtonLabel[38] = _("aug7");
+    m_sIntvButtonLabel[39] = _("aug8");
+    m_sIntvButtonLabel[40] = _T("");
+    m_sIntvButtonLabel[41] = _("da2");
+    m_sIntvButtonLabel[42] = _("da3");
+    m_sIntvButtonLabel[43] = _("da4");
+    m_sIntvButtonLabel[44] = _("da5");
+    m_sIntvButtonLabel[45] = _("da6");
+    m_sIntvButtonLabel[46] = _("da7");
+    m_sIntvButtonLabel[47] = _("da7");
+    m_sIntvButtonLabel[48] = _("Chromatic semitone");
+    m_sIntvButtonLabel[49] = _T("");  //("Prime double augmented");
+
+        //button labels (for notes)
+    m_sNotesButtonLabel[0] = _T("bb");
+    m_sNotesButtonLabel[1] = _T("b");         
+    m_sNotesButtonLabel[2] = _("C");
+    m_sNotesButtonLabel[3] = _T("#");
+    m_sNotesButtonLabel[4] = _T("x");
+
+    m_sNotesButtonLabel[5] = _T("bb");
+    m_sNotesButtonLabel[6] = _T("b");
+    m_sNotesButtonLabel[7] = _("D");
+    m_sNotesButtonLabel[8] = _T("#");
+    m_sNotesButtonLabel[9] = _T("x");
+
+    m_sNotesButtonLabel[10] = _T("bb");
+    m_sNotesButtonLabel[11] = _T("b");
+    m_sNotesButtonLabel[12] = _("E");
+    m_sNotesButtonLabel[13] = _T("#");
+    m_sNotesButtonLabel[14] = _T("x");
+
+    m_sNotesButtonLabel[15] = _T("bb");
+    m_sNotesButtonLabel[16] = _T("b");
+    m_sNotesButtonLabel[17] = _("F");
+    m_sNotesButtonLabel[18] = _T("#");
+    m_sNotesButtonLabel[19] = _T("x");
+
+    m_sNotesButtonLabel[20] = _T("bb");
+    m_sNotesButtonLabel[21] = _T("b");
+    m_sNotesButtonLabel[22] = _("G");
+    m_sNotesButtonLabel[23] = _T("#");
+    m_sNotesButtonLabel[24] = _T("x");
+
+    m_sNotesButtonLabel[25] = _T("bb");
+    m_sNotesButtonLabel[26] = _T("b");
+    m_sNotesButtonLabel[27] = _("A");
+    m_sNotesButtonLabel[28] = _T("#");
+    m_sNotesButtonLabel[29] = _T("x");
+
+    m_sNotesButtonLabel[30] = _T("bb");
+    m_sNotesButtonLabel[31] = _T("b");
+    m_sNotesButtonLabel[32] = _("B");
+    m_sNotesButtonLabel[33] = _T("#");
+    m_sNotesButtonLabel[34] = _T("x");
+
 
 
     //the window is divided into two regions: top, for score on left and counters and links
@@ -265,68 +315,86 @@ lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
     pLinksSizer->Add(
         new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") ),
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
-    
-    //create 48 buttons for the answers: six rows, eight buttons per row
-    
-    //unison button
+
+        //
+        //create 48 buttons for the answers: six rows, eight buttons per row
+        //
+
+    const int NUM_ROWS = 6;
+    const int NUM_COLS = 8;
+    wxButton* pButton;
+    int iB;
+
+    wxFlexGridSizer* pGridSizer = new wxFlexGridSizer(NUM_ROWS+1, NUM_COLS, 0, 0);
+    pMainSizer->Add(
+        pGridSizer,
+        wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 10)  );
+
+    //row with column labels
+    pGridSizer->Add(5, 5, 0);               //spacer for labels column
+    for (int iCol=0; iCol < 7; iCol++) {
+        pGridSizer->Add(
+            new wxStaticText(this, -1, sColumnLabel[iCol]),
+            0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+    }
+
+    //remaining rows with buttons
+    for (int iRow=0; iRow < NUM_ROWS; iRow++) {
+        pGridSizer->Add(
+            new wxStaticText(this, -1, sRowLabel[iRow]),
+            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
+
+        // the buttons for this row
+        for (int iCol=0; iCol < NUM_COLS; iCol++) {
+            iB = iCol + iRow * NUM_COLS;    // button index: 0 .. 47            
+            //column 0 (unisons) is not created, as buttons for it will be created later
+            if (iCol != 0) {
+                m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, m_sIntvButtonLabel[iB],
+                    wxDefaultPosition, wxSize(54, 20));
+                pGridSizer->Add(
+                    m_pAnswerButton[iB],
+                    wxSizerFlags(0).Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
+                if (m_sIntvButtonLabel[iB].IsEmpty()) {
+                    m_pAnswerButton[iB]->Show(false);
+                    m_pAnswerButton[iB]->Enable(false);
+                }
+            }
+        }
+    }
+
+
+    //Additional row with buttons for unison and related
     wxBoxSizer* pUnisonSizer = new wxBoxSizer( wxHORIZONTAL );
     pMainSizer->Add(
         pUnisonSizer,
-        wxSizerFlags(0).Left() );
+        wxSizerFlags(0).Left().Border(wxTOP, 10)  );
 
-    wxButton* pButton;
-    int iB = 0;
-    pButton = new wxButton( this, ID_BUTTON, _("Unison") );
-    m_pAnswerButton[iB++] = pButton;
+        //spacer to skip the labels
+    pUnisonSizer->Add(120+BUTTONS_DISTANCE+BUTTONS_DISTANCE+10, 20, 0);
+
+        //unison button
+    iB = 0;
+    pButton = new wxButton( this, ID_BUTTON + iB, m_sIntvButtonLabel[iB] );
+    m_pAnswerButton[iB] = pButton;
     pUnisonSizer->Add(
         pButton,
         wxSizerFlags(0).Border(wxALL, BUTTONS_DISTANCE) );
 
+        //two additional buttons for "chromatic semitone" and "Prime double augmented"
+    iB = 48;
+    m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, m_sIntvButtonLabel[iB] );
+    pUnisonSizer->Add(
+        m_pAnswerButton[iB],
+        wxSizerFlags(0).Border(wxALL, BUTTONS_DISTANCE) );
 
-    // labels for columns, with interval number
-    wxBoxSizer* pRowSizer = new wxBoxSizer( wxHORIZONTAL );
-    pMainSizer->Add(    
-        pRowSizer,
-        wxSizerFlags(0).Left());
+    //iB = 49;
+    //pButton = new wxButton( this, ID_BUTTON + iB, m_sIntvButtonLabel[iB] );
+    //m_pAnswerButton[iB] = pButton;
+    //pUnisonSizer->Add(
+    //    pButton,
+    //    wxSizerFlags(0).Border(wxALL, BUTTONS_DISTANCE) );
 
-    pRowSizer->Add(15+BUTTONS_DISTANCE, 24, 0);    //spacer to center labels
-    for (int iRow=0; iRow < 7; iRow++) {        // six rows
-        pRowSizer->Add(
-            new wxStaticText(this, -1, sColumnLabel[iRow],
-                        wxDefaultPosition, wxSize(54, 15)),
-            wxSizerFlags(0).Left().Border(wxRIGHT | wxLEFT, BUTTONS_DISTANCE) );
-    }
 
-    //remaining buttons
-    for (int iRow=0; iRow < 6; iRow++) {        // six rows
-        pRowSizer = new wxBoxSizer( wxHORIZONTAL );
-        pMainSizer->Add(    
-            pRowSizer,
-            wxSizerFlags(0).Left());
-
-        for (int iCol=0; iCol < 8; iCol++) {        //eight columns
-            iB = iCol + iRow * 8;    // button index: 0 .. 47            
-            //column (unisons) is not created. Button for unison already created
-            if (iCol != 0) {
-                if (sButtonLabel[iB].IsEmpty()) {
-                    pRowSizer->Add(54+BUTTONS_DISTANCE+BUTTONS_DISTANCE, 20, 0);    //spacer
-                }
-                else {
-                    pButton = new wxButton( this, ID_BUTTON + iB, sButtonLabel[iB],
-                        wxDefaultPosition, wxSize(54, 20));
-                    m_pAnswerButton[iB++] = pButton;
-                    pRowSizer->Add(
-                        pButton,
-                        wxSizerFlags(0).Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
-                }
-            }
-        }
-
-        pRowSizer->Add(
-            new wxStaticText(this, -1, sRowLabel[iRow] ),
-            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
-
-    }
 
     SetSizer( pMainSizer );                // use the sizer for window layout
     pMainSizer->SetSizeHints( this );        // set size hints to honour minimum size
@@ -354,9 +422,9 @@ lmTheoIntervalsCtrol::~lmTheoIntervalsCtrol()
 
 void lmTheoIntervalsCtrol::EnableButtons(bool fEnable)
 {
-    for (int i=0; i < NUM_BUTTONS; i++) {
-        if (m_pAnswerButton[i])
-            m_pAnswerButton[i]->Enable(fEnable);
+    for (int iB=0; iB < NUM_BUTTONS; iB++) {
+        if (!m_sIntvButtonLabel[iB].IsEmpty())
+            m_pAnswerButton[iB]->Enable(fEnable);
     }
     m_fButtonsEnabled = fEnable;
 
@@ -442,6 +510,7 @@ void lmTheoIntervalsCtrol::NewProblem()
     ResetExercise();
 
     // choose type of problem
+    lmRandomGenerator oGenerator;
     switch (m_pConstrains->GetProblemType())
     {
         case ePT_DeduceInterval:
@@ -451,34 +520,42 @@ void lmTheoIntervalsCtrol::NewProblem()
             m_fIntervalKnown = false;
             break;
         case ePT_Both:
-            m_fIntervalKnown = ((rand() % 2) == 0);
+            m_fIntervalKnown = oGenerator.FlipCoin();
             break;
     }
     
     //Generate two random note-pos in range -1 to 7 (from two ledge lines down to two up)
-    lmRandomGenerator oGenerator;
     EClefType nClef = oGenerator.GenerateClef(m_pConstrains->GetClefConstrains());
     m_ntPitch[0] = oGenerator.GenerateRandomPitch(0, 8, false, nClef);
     m_ntPitch[1] = oGenerator.GenerateRandomPitch(0, 8, false, nClef);
-    while (m_ntPitch[0] == m_ntPitch[1]) {
-        m_ntPitch[1] = oGenerator.GenerateRandomPitch(0, 8, false, nClef);
-    }
+    //while (m_ntPitch[0] == m_ntPitch[1]) {
+    //    m_ntPitch[1] = oGenerator.GenerateRandomPitch(0, 8, false, nClef);
+    //}
     
-    //Convert problem to LDP pattern
+    //Decide accidentals
     wxString sPatron[2], sAlter[2];
     lmConverter oConv;
     for (int i=0; i < 2; i++) {
-        sPatron[i] = _T("(n ");
         sAlter[i] = _T("");
-        if (m_pConstrains->GetAccidentals() && ((rand() % 2) == 0) ) {
-            sAlter[i] = ((rand() % 2) == 0 ? _T("-") : _T("+"));
-            sPatron[i] += sAlter[i];
+        if (m_pConstrains->GetAccidentals() && oGenerator.FlipCoin() ) {
+            sAlter[i] = (oGenerator.FlipCoin() ? _T("-") : _T("+"));
         }
+    }
+
+    //remove two accidentals in unison
+    if (m_ntPitch[0] == m_ntPitch[1] && sAlter[0] != _T("") && sAlter[1] != _T("")) {
+        sAlter[1] = _T("");
+    }
+
+    //prepare LDP pattern
+    for (int i=0; i < 2; i++) {
+        sPatron[i] = _T("(n ");
+        sPatron[i] += sAlter[i];
         sPatron[i] += oConv.GetEnglishNoteName(m_ntPitch[i]) + _T(" r)");
     }
     
     ////DEBUG: un-comment and modify values for testing a certain interval
-    //sPatron[0] = _T("(n +e4 r)");
+    //sPatron[0] = _T("(n -e4 r)");
     //sPatron[1] = _T("(n e4 r)");
 
     //create the score
@@ -531,6 +608,23 @@ void lmTheoIntervalsCtrol::NewProblem()
         default:
             wxASSERT(false);
     }
+    //special cases: unison and related
+    if (oIntv.GetInterval() == 1) {
+        switch (oIntv.GetType()) {
+            case eti_Perfect:
+                m_nRespIndex = 0;       //unison
+                break;                
+            case eti_Augmented:
+                m_nRespIndex = 48;      //chromatic semitone
+                break;                
+            case eti_DoubleAugmented:
+                m_nRespIndex = 49;      //prime double augmented
+                break;                
+            default:
+                wxASSERT(false);
+        }
+    }
+
     //wxLogMessage(wxString::Format(
     //    _T("[lmTheoIntervalsCtrol::NewProblem] m_nRespIndex=%d, oIntv.GetInterval()=%d"),
     //    m_nRespIndex, oIntv.GetInterval() ));
@@ -552,6 +646,8 @@ void lmTheoIntervalsCtrol::NewProblem()
     }
     m_fPlayEnabled = false;
     m_fProblemCreated = true;
+
+    SetUpButtons();
     
 }
 
@@ -567,6 +663,7 @@ void lmTheoIntervalsCtrol::DisplaySolution()
 {
     if (m_fIntervalKnown) {
         m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
+        m_pAnswerButton[m_nRespIndex]->SetBackgroundColour(g_pColors->Success());
     } else {
         m_pScoreCtrol->DisplayScore(m_pScore, false);
         m_pScore = (lmScore*)NULL;    //no longer owned. Now owned by lmScoreAuxCtrol
@@ -595,9 +692,9 @@ void lmTheoIntervalsCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
 
 void lmTheoIntervalsCtrol::ResetExercise()
 {
-    for (int i=0; i < NUM_BUTTONS; i++) {
-        if (m_pAnswerButton[i]) {
-            m_pAnswerButton[i]->SetBackgroundColour( g_pColors->Normal() );
+    for (int iB=0; iB < NUM_BUTTONS; iB++) {
+        if (!m_sIntvButtonLabel[iB].IsEmpty()) {
+            m_pAnswerButton[iB]->SetBackgroundColour( g_pColors->Normal() );
         }
     }
     EnableButtons(false);
@@ -607,4 +704,31 @@ void lmTheoIntervalsCtrol::ResetExercise()
         m_pScore = (lmScore*)NULL;
     }
     
+}
+
+void lmTheoIntervalsCtrol::SetUpButtons()
+{
+    int iB;
+    const int NUM_ROWS = 6;
+    const int NUM_COLS = 8;
+    for (int iRow=0; iRow < 5; iRow++) {
+        for (int iCol=0; iCol < NUM_COLS; iCol++) {
+            iB = iCol + iRow * NUM_COLS;    // button index: 0 .. 47            
+            if (iCol != 0) {
+                m_pAnswerButton[iB]->Show(true);
+                m_pAnswerButton[iB]->SetLabel(m_sNotesButtonLabel[iB]);
+                m_pAnswerButton[iB]->Enable(true);
+            }
+        }
+    }
+    for (int iRow=5; iRow < NUM_ROWS; iRow++) {
+        for (int iCol=0; iCol < NUM_COLS; iCol++) {
+            iB = iCol + iRow * NUM_COLS;    // button index: 0 .. 47            
+            if (iCol != 0) {
+                m_pAnswerButton[iB]->Show(false);
+                m_pAnswerButton[iB]->Enable(false);
+            }
+        }
+    }
+
 }

@@ -69,18 +69,21 @@ lmFormatter4::~lmFormatter4()
 
 lmBoxScore* lmFormatter4::Layout(lmScore* pScore, lmPaper* pPaper)
 {
-//            Optional fMetodoJustificado As Boolean = true, _
 //            Optional nTipoEspaciado As ESpacingMethod = esm_PropConstantShortNote, _
 //            Optional fJustificada As Boolean = true, _
 //            Optional fTruncarUltimoSistema As Boolean = false, _
 //            Optional rFactorAjuste As Single = 1#)
 
     m_pScore = pScore;
-    bool fMetodoJustificado = false;
-    if (fMetodoJustificado) {
-        return RenderJustified(pPaper);
-    } else {
-        return RenderMinimal(pPaper);
+    switch (pScore->GetRenderizationType())
+    {
+        case eRenderJustified:
+            return RenderJustified(pPaper);
+        case eRenderSimple:
+            return RenderMinimal(pPaper);
+        default:
+            wxASSERT(false);
+            return (lmBoxScore*)NULL;
     }
 
 }

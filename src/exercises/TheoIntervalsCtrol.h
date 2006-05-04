@@ -80,6 +80,8 @@ private:
     void NewProblem();
     void DisplaySolution();
     void ResetExercise();
+    void SetUpButtons();
+
 
         // member variables
 
@@ -96,8 +98,8 @@ private:
     bool            m_fPlayEnabled;         //Play enabled
     bool            m_fIntervalKnown;
 
-    //buttons for the answers: 6 rows, 8 buttons per row
-    wxButton*       m_pAnswerButton[48];
+    //buttons for the answers: 6 rows, 8 buttons per row + 2 buttons
+    wxButton*       m_pAnswerButton[50];
     int             m_nRespIndex;           //index to the button with the right answer
     bool            m_fButtonsEnabled;      //buttons enabled
 

@@ -291,6 +291,48 @@ enum EHighlightType
     eRemoveAllHighlight
 };
 
+/*  Renderization options
+    ---------------------
+    eRenderJustified
+        Render a score justifying measures so that they fit exactly in the width of the 
+        staff
+
+    eRenderSimple
+        Render a score without bar justification and without breaking it into systems.
+        That is, it draws all the score in a single system without taking into consideration
+        paper length limitations.
+        This very simple renderer is usefull for simple scores and in some rare occations
+*/
+enum ERenderizationType
+{
+    eRenderJustified = 1,
+    eRenderSimple
+};
+
+///*  Spacing methods for rendering scores  (obsolete?)
+//    -------------------------------------
+//    Two basic methods:
+//    1. Fixed: the spacing between notes is constant, independently of note duration.
+//    2. Proportional: the spacing is adjusted so that note position is proportional to time.
+//
+//    In the proportional method several alternatives are posible:
+//    1. ProportionalConstant: the proportion factor between time and space is fixed. Two alternative
+//        methods for fixing this factor:
+//        a) Fixed: is given by the vaule of a parameter
+//        b) ShortNote: is computed for the shorter note in the score
+//    2. ProportionalVariable: the proportion factor is computed for each bar. Two alternatives:
+//        a) ShortNote: is computed for the shorter note in the bar
+//        b) NumBars: Computed so taht the number of bars in the system is a predefined number
+//*/
+//enum ESpacingMethod
+//{
+//    esm_Fixed = 1,                    //used in RenderSimple
+//    esm_PropConstantFixed,            //Used in FTeoria
+//    esm_PropConstantShortNote,        //Default method in lmFormatter.RenderScore(). Not used
+//    esm_PropVariableShortNote,        //Not used/implemented
+//    esm_PropVariableNumBars           //Not used/implemented
+//};
+
 
 // XML position data
 typedef struct lmTXMLPositionData {
@@ -464,6 +506,14 @@ public:
     void IncludeInGlobalList(lmStaffObj* pSO);
     void RemoveFromGlobalList(lmStaffObj* pSO);
 
+    //renderization options
+    void SetRenderizationType(ERenderizationType nType) { m_nRenderizationType = nType; }
+    //SetSpacingMethod(ESpacingMethod nMethod) { m_nSpacingMethod = nMethod; }
+        // accessors for lmFormatter only
+    ERenderizationType GetRenderizationType() const { return m_nRenderizationType; }
+    //ESpacingMethod GetSpacingMethod() const { return m_nSpacingMethod; }
+
+
     //other methods
     long GetID() { return m_nID; }
 
@@ -492,6 +542,10 @@ private:
     lmLUnits        m_nSystemsLeftMargin;
     lmLUnits        m_nSystemsRightMargin;
     lmLUnits        m_nHeadersHeight;
+
+    //renderization options
+    ERenderizationType  m_nRenderizationType;
+    //ESpacingMethod      m_nSpacingMethod;
 
     //other variables
     wxInstrumentsListNode*  m_pNode;        //last returned instrument node

@@ -519,13 +519,37 @@ void lmTheoScalesCtrol::NewProblem()
     pNode = parserLDP.ParseText( sSource[7] );
     pNote[7] = parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
+
+    //use simple renderer
+    m_pScore->SetRenderizationType(eRenderSimple);
     
     //    
     //compute the right answer
     //
 
-    /*! @todo translations
-        "phrygian", "lydian", "aeolian", "ionian", "locrian" 
+    /*
+        Medievals modes         Mode    Greek modes
+        ---------------------   ----    --------------------------
+        Protus      auténtico   I       Dorico          dorian
+                    plagal      II      Hipodórico
+        Deuterus    auténtico   III     Frigio          phrygian
+                    plagal      IV      Hipofrigio
+        Tritus      auténtico   V       Lidio           lydian
+                    plagal      VI      Hipolidio
+        Tetrardus   auténtico   VII     Mixolidio       mixolydian
+                    plagal      VIII    Hipomixolidio
+
+        Modes introduced in 1547:
+
+                    auténtico   IX      Eolio           aeolian
+                    plagal      X       Hipoeolio
+                    auténtico   XI      Jónico          ionian
+                    plagal      XII     Hipojónico
+
+        Later introduced modes (rarely used):
+
+                                XIII    Locrio          locrian
+                                XIV     Hipolocrio
     */
 
 
@@ -539,7 +563,7 @@ void lmTheoScalesCtrol::NewProblem()
             m_sAnswer += _(", harmonic (Type II)");
             m_nRespIndex = 1;
         } else if (sAlter[6] != _T("")) {
-            m_sAnswer += _(", mixolydian (Type IV)");    //mixolidia
+            m_sAnswer += _(", mixolydian (Type IV)");
             m_nRespIndex = 3;
         } else {
             m_sAnswer += _(", natural (Type I)");

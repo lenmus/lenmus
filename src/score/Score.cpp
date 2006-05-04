@@ -86,6 +86,9 @@ lmScore::lmScore()
     m_nSystemsLeftMargin = 0;
     m_nSystemsRightMargin = 0;
 
+    //default renderization options
+    m_nRenderizationType = eRenderJustified;
+
 }
 
 lmScore::~lmScore()
