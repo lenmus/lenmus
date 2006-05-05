@@ -1,4 +1,3 @@
-// RCS-ID: $Id: AboutDialog.h,v 1.4 2006/02/28 17:39:55 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -29,7 +28,7 @@
 #include <wx/dialog.h>
 
 // Increment this every time you release a new version
-#define LM_VERSION_STR _T("3.0 alpha 3")
+#define LM_VERSION_STR _T("3.0 beta 1")
 
 
 

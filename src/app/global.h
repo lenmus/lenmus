@@ -1,4 +1,3 @@
-// RCS-ID: $Id: global.h,v 1.6 2006/02/28 17:39:55 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron

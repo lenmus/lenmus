@@ -80,12 +80,14 @@ private:
     void NewProblem();
     void DisplaySolution();
     void ResetExercise();
-    void SetUpButtons();
+    void SetButtonsForNotes();
+    void SetButtonsForIntervals();
 
 
         // member variables
 
-    lmScore*            m_pScore;           // the score with the interval
+    lmScore*            m_pIntervalScore;   // the score with the interval
+    lmScore*            m_pProblemScore;    // the score with the problem
     lmScoreAuxCtrol*    m_pScoreCtrol;
     lmCountersCtrol*    m_pCounters;
 
@@ -97,13 +99,21 @@ private:
     lmPitch         m_ntPitch[2];           //the pitch of the two notes
     bool            m_fPlayEnabled;         //Play enabled
     bool            m_fIntervalKnown;
+    int             m_nCurrentKeyboard;     //not avoid unnecessary redrawing 
+    wxFlexGridSizer* m_pKeyboardSizer;      //to force re-layouts
 
-    //buttons for the answers: 6 rows, 8 buttons per row + 2 buttons
-    wxButton*       m_pAnswerButton[50];
+    //buttons for the answers: 6 rows, 7 cols + 2 extra buttons (Unisons) = 44 buttons
+    wxButton*       m_pAnswerButton[44];
+    wxStaticText*   m_pRowLabel[6];
+    wxStaticText*   m_pColumnLabel[7];
+
     int             m_nRespIndex;           //index to the button with the right answer
     bool            m_fButtonsEnabled;      //buttons enabled
 
+    //to give the answer
     wxString        m_sAnswer;              //name of the interval
+    EClefType       m_nClef;
+
 
     DECLARE_EVENT_TABLE()
 };

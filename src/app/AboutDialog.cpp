@@ -1,4 +1,3 @@
-// RCS-ID: $Id: AboutDialog.cpp,v 1.3 2006/02/23 19:15:54 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -139,7 +138,7 @@ and feature requests."
     // Credits
     //
 
-    wxString sCredits1 = 
+    wxString sArtCredits1 = 
 _("<p>Some icons are original artwork for LenMus project; all these original icons are released \
 under GNU GPL licence and under Creative Commons Attribution-ShareAlike \
 license, you can choose the one you prefer for the intended usage. The other \
@@ -154,7 +153,7 @@ to retain the license and the original copyrights, but from there you're free to
 you want.<br /></li>"
 );
     
-    wxString sCredits2 = 
+    wxString sArtCredits2 = 
 _("<li>Taken or derived from the GNOME project (http://art.gnome.org/themes/icon/1150), \
 Tango theme. These icons are released under the Creative Commons Attribution-ShareAlike \
 license.<br /></li> \
@@ -170,13 +169,27 @@ terms of the GNU General Public License.<br /><br /></li>\
 </ul>"
 );
 
-    wxString sCredits3 = 
+    wxString sArtCredits3 = 
 _("To LenMus developers knowledge, all used icons are freely usable either \
 under GNU GPL, \
 LGPL licence, or Creative Commons. If this were not the case, please, let us \
 know to stop using them. \
 See file \"icons.htm\" in folder \"res/icons\" for more details.</p>"
     );
+
+    wxString sSoftCredits1 = 
+_("<p>LenMus Phonascus uses <b>PortMidi</b> the Portable Real-Time MIDI Library \
+(http://www.cs.cmu.edu/~music/portmusic/). PortMidi is copyright (c) 1999-2000 Ross \
+Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg. Its licence permits \
+free use. Thank you PortMidi team.</p>"
+);
+
+    wxString sSoftCredits2 = 
+_("<p>LenMus Phonascus is build using the <b>wxWidgets</b> application framework \
+(http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is \
+ease to learn and extend, it has a helpful community, and also has the possibility \
+to use it in commercial products without licencing. Thank you wxWidgets team.</p>"
+);
 
 
     wxString managersCredits, developersCredits, translatorsCredits;
@@ -244,15 +257,18 @@ Public License at http://www.gnu.org/licenses/licenses.html"
       _T("<p><br>")
       + informationStr +
       _T("<p>&nbsp;</p>") +
-      _T("<center><b>") + _("Art Design Credits") + _T("</b></center>")
-      + sCredits1 + sCredits2 + sCredits3 +
+      _T("<center><b>") + _("Art Design Credits") + _T("</b></center>") +
+      sArtCredits1 + sArtCredits2 + sArtCredits3 +
+      _T("<p>&nbsp;</p>") +
+      _T("<center><b>") + _("Software Credits") + _T("</b></center>") +
+      sSoftCredits1 + sSoftCredits2 +
 //      + managersCredits
 //      + developersCredits +
  //     + musicalDirectionCredits
  //     + artDesignersCredits
  //     + translatorsCredits +
       _T("<p>&nbsp;</p><p>&nbsp;</p><center>") +
-      _("Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n") +
+      _("LenMus Phonascus. Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n") +
       _T("</center></body>")
       _T("</html>");
 

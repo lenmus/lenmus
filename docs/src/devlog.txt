@@ -52,7 +52,7 @@ LenMus project philosophy (to remind me to always stay on this):
             - Takes me out of having a good knowledge of program code and
                 of doing some programming.
         - Creates me time preasure or stress.
-    - World wide usability -> comply with low end equipment (640x480)
+    - World wide usability -> Internationalization, comply with low end equipment (640x480)
   
 
 -----------------------------------------------------------------------------------------------
@@ -74,19 +74,16 @@ Organizational issues:
         
 Area 0: Bugs to solve
     - Test score: 032_all_key_signatures_v13.txt renders nothing.
-    - lmInterval: fix names Unison augmented, Unison perfect, etc...
-    - Add 'Chromatic semitone' to TheoIntervals answer buttons 
+    - ¿lmInterval: fix names Unison augmented, Unison perfect, etc...?
+    - issue of scored owned by the ScoreAuxCtrol.
 
         
 Area 1: New features to add in short term to working release
-    + Wrong/right answer counters for exercises
-    + Too much space beetween notes in TheoIntervals
-    + Notes spacing in scales exercise: the control is now too wide
-    + Buttons for answers in scales exercise
-    - Split TheoIntervalsCtrol into two exercises: one for identification (current) and 
-        one for construction (current code but adding answer buttons for building 
-        the intervals).
+	- Change Single exercises book: name of theo intervals exercise
+    - Add buttons for answers in scales build exercise.
     - TheoIntervals: double accidentals not generated. Analyze issue of 'four times augmnted'
+    - TheoIntervals settings re-design: choose interval types (major, minor, augmented, double augmented...)
+    - TheoIntervals: if no accidentals allowed, remove buttons for augmented, diminished, and double.
     
 Area 2: Notation editor
     - divide notation features in phases and proceed by phases
