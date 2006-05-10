@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Tags.cpp,v 1.11 2006/03/01 19:19:31 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -48,7 +47,7 @@
     ---------------------------------------         -------------------------------------
     lmScoreCtrol : public wxWindow                  lmScoreAuxCtrol : public wxWindow
     lmTheoIntervalsCtrol : public wxWindow          lmUrlAuxCtrol : public wxStaticText
-    lmTheoScalesCtrol : public wxWindow
+    lmTheoScalesCtrol : public wxWindow             lmCountersCtrol : public wxWindow
     lmTheoKeySignCtrol : public wxWindow
     lmEarIntervalsCtrol : public wxWindow
     lmEarCompareIntvCtrol : public wxWindow

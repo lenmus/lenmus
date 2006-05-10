@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Paths.h,v 1.5 2006/02/23 19:20:28 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -45,6 +44,7 @@ public:
     wxString GetDataPath() { return m_sData; }
     wxString GetTempPath() { return m_sTemp; }
     wxString GetImagePath() { return m_sImages; }
+    wxString GetSoundsPath() { return m_sSounds; }
     wxString GetLocaleRootPath() { return m_sLocaleRoot; }
 
     // paths that depend on the language name
@@ -76,7 +76,8 @@ private:
     wxString    m_sData;        //path for .ini database files
     wxString    m_sXrc;         //path for .xrc and .xrs resource files
     wxString    m_sImages;      //path for resource images
-    
+    wxString    m_sSounds;      //path for wave sounds
+
 };
 
 #endif    // __SBPATHS_H__

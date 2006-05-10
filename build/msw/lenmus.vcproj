@@ -584,6 +584,12 @@
 			<File
 				RelativePath="..\..\src\app\ToolsDlg.h">
 			</File>
+			<File
+				RelativePath="..\..\src\app\Updater.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\app\Updater.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="widgets"
@@ -786,6 +792,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\sound\SoundManager.h">
+			</File>
+			<File
+				RelativePath="..\..\src\sound\WaveManager.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\sound\WaveManager.h">
 			</File>
 		</Filter>
 		<Filter

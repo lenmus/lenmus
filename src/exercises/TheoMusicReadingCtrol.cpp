@@ -293,15 +293,16 @@ void lmTheoMusicReadingCtrol::NewProblem()
     lmComposer5 oComposer;
     m_pScore = oComposer.GenerateScore(m_pConstrains);
 
+    //delete previous score
+    if (m_pScore) {
+        delete m_pScore;
+        m_pScore = (lmScore*)NULL;
+    }
     //display the score
     m_pScoreCtrol->DisplayScore(m_pScore);
-    m_pScore = (lmScore*)NULL;    //no longer owned. Now owned by lmScoreAuxCtrol
     m_fPlayEnabled = true;
     m_fProblemCreated = true;
     
-    //! @todo piano dlg
-    //if (FMain.fFrmPiano) { FPiano.DesmarcarTeclas
-        
 }
 
 /*! Playback the score.
@@ -328,8 +329,6 @@ void lmTheoMusicReadingCtrol::Play()
         // "Stop playing" button pressed
         m_pScoreCtrol->Stop();
     }
-    //! @todo Piano form
-//    if (FMain.fFrmPiano) { FPiano.HabilitarMarcado = false;
 
 }
 

@@ -18,30 +18,60 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file AboutDialog.h
-    @brief Header file for class lmAboutDialog
-    @ingroup app_gui
+/*! @file WaveManager.h
+    @brief Header file for class lmWaveManager
+    @ingroup sound_management
 */
-#ifndef __ABOUTDLGH__        //to avoid nested includes
-#define __ABOUTDLGH__
+#ifndef __WAVEMANAGER_H__        //to avoid nested includes
+#define __WAVEMANAGER_H__
 
-#include <wx/dialog.h>
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wxprec.h"
 
-// Increment this every time you release a new version
-#define LM_VERSION_STR _T("3.0")
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
+#include "wx/sound.h"
 
 
-
-class lmAboutDialog:public wxDialog {
-    DECLARE_DYNAMIC_CLASS(lmAboutDialog)
-
+//This class is a singleton
+class lmWaveManager
+{
 public:
-    lmAboutDialog(wxWindow * parent);
-    ~lmAboutDialog();
+    ~lmWaveManager();
+    static lmWaveManager* GetInstance();
+    static void Destroy();
 
-    void OnOK(wxCommandEvent& WXUNUSED(event));
+    //produce predefined sounds
+    void WrongAnswerSound();
+    void RightAnswerSound();
 
-    DECLARE_EVENT_TABLE()
+    //set up configuration
+
+protected:
+    lmWaveManager();
+
+private:
+    //default values and user preferences
+    void LoadUserPreferences();
+    void SaveUserPreferences();
+
+        //
+        // member variables
+        //
+
+    static lmWaveManager*    m_pInstance;    //the only instance of this class
+
+    wxSound     m_oWrong;       //sound for wrong answers
+    wxSound     m_oRight;       //sound for right answers
+
 };
 
-#endif    // __ABOUTDLGH__
+
+#endif    // __WAVEMANAGER_H__
+

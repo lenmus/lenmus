@@ -1,4 +1,3 @@
-// RCS-ID: $Id: ScoreAuxCtrol.cpp,v 1.3 2006/02/23 19:19:53 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -63,9 +62,11 @@ END_EVENT_TABLE()
 
 
 lmScoreAuxCtrol::lmScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
-                           const wxPoint& pos, const wxSize& size, EScoreStyles style) :
+                                 const wxPoint& pos, 
+                                 const wxSize& size, EScoreStyles style) :
     wxWindow(parent, id, pos, size, style)
 {
+
     m_pScore = pScore;
     m_sMsg = wxEmptyString;
     m_fDisplayMessage = false;
@@ -81,7 +82,6 @@ lmScoreAuxCtrol::lmScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScor
 
 lmScoreAuxCtrol::~lmScoreAuxCtrol()
 {
-    if (m_pScore) delete m_pScore;
 }
 
 void lmScoreAuxCtrol::SetMargins(lmLUnits nLeft, lmLUnits nRight, lmLUnits nTop)
@@ -200,7 +200,6 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
 void lmScoreAuxCtrol::DisplayMessage(wxString sMsg, lmLUnits posMsg, bool fClearScore)
 {
     if (m_pScore && !m_fHidden && fClearScore) {
-        delete m_pScore;
         m_pScore = (lmScore*)NULL;
     }
     m_sMsg = sMsg;
@@ -218,10 +217,6 @@ void lmScoreAuxCtrol::DisplayScore(lmScore* pScore, bool fClearMessage)
 
 void lmScoreAuxCtrol::SetScore(lmScore* pScore, bool fHidden)
 {
-    if (m_pScore) {
-        delete m_pScore;
-        m_pScore = (lmScore*)NULL;
-    }
     m_fHidden = fHidden;
     m_pScore = pScore;
 }

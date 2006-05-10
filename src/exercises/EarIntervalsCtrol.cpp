@@ -370,7 +370,6 @@ void lmEarIntervalsCtrol::OnNewProblem(wxCommandEvent& event)
 
 void lmEarIntervalsCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
-    //! @todo Sound for failure
     m_pCounters->IncrementWrong();
     DisplaySolution();
     EnableButtons(false);
@@ -389,11 +388,9 @@ void lmEarIntervalsCtrol::OnRespButton(wxCommandEvent& event)
     //prepare sound and color, and update counters
     if (fSuccess) {
         pColor = &(g_pColors->Success());
-        //! @todo Sound for sucess
         m_pCounters->IncrementRight();
     } else {
         pColor = &(g_pColors->Failure());
-        //! @todo Sound for failure
         m_pCounters->IncrementWrong();
     }
         
@@ -493,7 +490,6 @@ void lmEarIntervalsCtrol::NewProblem()
     
     //play the interval
     m_pScoreCtrol->SetScore(m_pScore, true);            //true: the score must be hidden
-    m_pScore = (lmScore*)NULL;    //no longer owned. Now owned by lmScoreAuxCtrol
     m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
     Play();
 

@@ -1,4 +1,3 @@
-// RCS-ID: $Id: ScoreCtrol.cpp,v 1.6 2006/02/23 19:19:53 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -108,9 +107,13 @@ lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
                            const wxPoint& pos, const wxSize& size, int style)
     : wxWindow(parent, id, pos, size, style )
 {
+
+    // save parameters
+    m_pScore = pScore;
+    m_pOptions = pOptions;
+
     //initializations
     m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
-    m_pOptions = pOptions;
     m_fPlaying = false;
     m_pPlayLink = (lmUrlAuxCtrol*) NULL;
     m_pSolfaLink = (lmUrlAuxCtrol*) NULL;
@@ -209,6 +212,11 @@ lmScoreCtrol::~lmScoreCtrol()
     if (m_pOptions) {
         delete m_pOptions;
         m_pOptions = (lmScoreCtrolOptions*) NULL;
+    }
+
+    if (m_pScore) {
+        delete m_pScore;
+        m_pScore = (lmScore*)NULL;
     }
 
 }

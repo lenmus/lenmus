@@ -86,6 +86,7 @@ private:
         // member variables
 
     lmScore*            m_pScore[2];        // two scores, one for each interval
+    lmScore*            m_pTotalScore;      //solution score with both intervals
     lmScoreAuxCtrol*    m_pScoreCtrol;
     lmCountersCtrol*    m_pCounters;
 

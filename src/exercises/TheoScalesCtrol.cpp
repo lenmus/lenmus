@@ -353,7 +353,6 @@ void lmTheoScalesCtrol::OnNewProblem(wxCommandEvent& event)
 
 void lmTheoScalesCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
-    //! @todo Sound for failure
     m_pCounters->IncrementWrong();
     DisplaySolution();
     EnableButtons(false);           //student must not give now the answer
@@ -592,7 +591,6 @@ void lmTheoScalesCtrol::NewProblem()
     if (m_fDeduceScale) {
         //direct problem
         m_pScoreCtrol->DisplayScore(m_pScore);
-        m_pScore = (lmScore*)NULL;    //no longer owned. Now owned by lmScoreAuxCtrol
         m_fPlayEnabled = true;
     } else {
         //inverse problem
@@ -622,11 +620,9 @@ void lmTheoScalesCtrol::OnRespButton(wxCommandEvent& event)
     //prepare sound and color, and update counters
     if (fSuccess) {
         pColor = &(g_pColors->Success());
-        //! @todo Sound for sucess
         m_pCounters->IncrementRight();
     } else {
         pColor = &(g_pColors->Failure());
-        //! @todo Sound for failure
         m_pCounters->IncrementWrong();
     }
         
@@ -654,7 +650,6 @@ void lmTheoScalesCtrol::DisplaySolution()
         m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
     } else {
         m_pScoreCtrol->DisplayScore(m_pScore, false);
-        m_pScore = (lmScore*)NULL;    //no longer owned. Now owned by lmScoreAuxCtrol
     }
     
     m_fPlayEnabled = true;

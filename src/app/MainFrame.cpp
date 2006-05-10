@@ -1,4 +1,3 @@
-// RCS-ID: $Id: MainFrame.cpp,v 1.16 2006/02/25 15:15:58 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -62,11 +61,14 @@
 #include "Printout.h"
 #include "MidiWizard.h"                    //Use lmMidiWizard
 #include "wx/helpbase.h"		//for wxHELP constants
+#include "wx/wxhtml.h"          //for OnCheckForUpdates
+
 
 
 #include "../../wxMidi/include/wxMidi.h"    //MIDI support throgh Portmidi lib
-#include "../sound/MidiManager.h"                //access to Midi configuration
-#include "Preferences.h"                //access to user preferences
+#include "../sound/MidiManager.h"           //access to Midi configuration
+#include "Preferences.h"                    //access to user preferences
+#include "Updater.h"                        //to use the updater
 
 //access to error's logger
 #include "../app/Logger.h"
@@ -199,6 +201,7 @@ enum
     // Menu Help
     MENU_Help_About,
     MENU_OpenHelp,
+    MENU_CheckForUpdates,
     MENU_OpenBook,
 
     // Menu Print
@@ -284,14 +287,15 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
 
     EVT_MENU (MENU_Options, lmMainFrame::OnOptions)
 
-    EVT_MENU (MENU_Help_About, lmMainFrame::OnAbout)
-    EVT_MENU      (MENU_OpenHelp, lmMainFrame::OnOpenHelp)
-    EVT_UPDATE_UI (MENU_OpenHelp, lmMainFrame::OnOpenHelpUI)
-    
     EVT_MENU      (MENU_OpenBook, lmMainFrame::OnOpenBook)
     EVT_UPDATE_UI (MENU_OpenBook, lmMainFrame::OnOpenBookUI)
     EVT_MENU      (MENU_Metronome, lmMainFrame::OnMetronomeOnOff)
 
+    EVT_MENU (MENU_Help_About, lmMainFrame::OnAbout)
+    EVT_MENU      (MENU_OpenHelp, lmMainFrame::OnOpenHelp)
+    EVT_UPDATE_UI (MENU_OpenHelp, lmMainFrame::OnOpenHelpUI)
+    EVT_MENU      (MENU_CheckForUpdates, lmMainFrame::OnCheckForUpdates)
+ 
     EVT_MENU (MENU_Debug_ForceReleaseBehaviour, lmMainFrame::OnDebugForceReleaseBehaviour)
     EVT_MENU (MENU_Debug_ShowDebugLinks, lmMainFrame::OnDebugShowDebugLinks)
     EVT_MENU (MENU_Debug_recSelec, lmMainFrame::OnDebugRecSelec)
@@ -760,7 +764,8 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* view,
 
     // help menu
     wxMenu *help_menu = new wxMenu;
-    help_menu->Append(MENU_Help_About, _("&About\tF1"));
+    help_menu->Append(MENU_Help_About, _("&About\tF1"),
+                _("Display information about program version and credits") );
     help_menu->AppendSeparator();
 #if defined(__WXMSW__) || defined(__WXGTK__)
     pItem = new wxMenuItem(help_menu, MENU_OpenHelp,  _("&Content\tCtrl+Alt+F1"),
@@ -772,6 +777,9 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* view,
     help_menu->Append(MENU_OpenHelp, _("&Content\tCtrl+Alt+F1"),
         _T("Open help book"), wxITEM_CHECK);
 #endif
+    help_menu->AppendSeparator();
+    help_menu->Append(MENU_CheckForUpdates, _("Check for &updates"), 
+        _("Connect to Internet and check for program updates") );
 
     // set up the menubar.
     // AWARE: As lmMainFrame is derived from wxMDIParentFrame, in MSWindows build the menu 
@@ -1091,6 +1099,46 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
 // ----------------------------------------------------------------------------
 // menu callbacks
 // ----------------------------------------------------------------------------
+
+void lmMainFrame::OnCheckForUpdates(wxCommandEvent& WXUNUSED(event))
+{
+    lmUpdater oUpdater;
+    if (oUpdater.CheckForUpdates()) {
+        //update available. Create and show dialog
+        wxBoxSizer *topsizer;
+        wxHtmlWindow *html;
+        wxDialog dlg(this, wxID_ANY, wxString(_("Updates available")));
+
+        topsizer = new wxBoxSizer(wxVERTICAL);
+
+        html = new wxHtmlWindow(&dlg, wxID_ANY, wxDefaultPosition, 
+                            wxSize(560, 260),
+                            wxHW_SCROLLBAR_AUTO | wxSIMPLE_BORDER );
+        html->SetBorders(0);
+        html->SetPage(
+            wxString::Format(
+                _T("<html><body>Updates available. Version='%s'. Description: %s</body></html>"),
+                oUpdater.GetVersion(), oUpdater.GetDescription() ));
+        html->SetSize(html->GetInternalRepresentation()->GetWidth(),
+                        html->GetInternalRepresentation()->GetHeight());
+
+        topsizer->Add(html, 1, wxALL, 10);
+
+        wxButton *bu1 = new wxButton(&dlg, wxID_OK, _("OK"));
+        bu1->SetDefault();
+
+        topsizer->Add(bu1, 0, wxALL | wxALIGN_RIGHT, 15);
+
+        dlg.SetSizer(topsizer);
+        topsizer->Fit(&dlg);
+
+        dlg.ShowModal();
+    }
+    else {
+        //no updates available
+        wxMessageBox(_T("No updates available."));
+    }
+}
 
 void lmMainFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {

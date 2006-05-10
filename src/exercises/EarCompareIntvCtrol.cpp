@@ -106,6 +106,7 @@ lmEarCompareIntvCtrol::lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id,
     m_fPlayEnabled = false;
     m_pScore[0] = (lmScore*)NULL;
     m_pScore[1] = (lmScore*)NULL;
+    m_pTotalScore = (lmScore*)NULL;
     m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
     m_pConstrains = pConstrains;
 
@@ -258,6 +259,10 @@ lmEarCompareIntvCtrol::~lmEarCompareIntvCtrol()
         delete m_pScore[1];
         m_pScore[1] = (lmScore*)NULL;
     }
+    if (m_pTotalScore) {
+        delete m_pTotalScore;
+        m_pTotalScore = (lmScore*)NULL;
+    }
 }
 
 void lmEarCompareIntvCtrol::EnableButtons(bool fEnable)
@@ -300,7 +305,6 @@ void lmEarCompareIntvCtrol::OnNewProblem(wxCommandEvent& event)
 
 void lmEarCompareIntvCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
-    //! @todo Sound for failure
     m_pCounters->IncrementWrong();
     DisplaySolution();
     EnableButtons(false);
@@ -323,10 +327,8 @@ void lmEarCompareIntvCtrol::OnRespButton(wxCommandEvent& event)
 
     //produce feedback sound, and update counters
     if (fSuccess) {
-        //! @todo Sound for sucess
         m_pCounters->IncrementRight();
     } else {
-        //! @todo Sound for failure
         m_pCounters->IncrementWrong();
     }
         
@@ -420,10 +422,10 @@ void lmEarCompareIntvCtrol::NewProblem()
     }
 
     //create the answer score with both intervals
-    lmScore* pTotalScore = new lmScore();
-    pTotalScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
-    pTotalScore->AddInstrument(1,0,0);                     //one vstaff, MIDI channel 0, MIDI instr 0
-    pVStaff = pTotalScore->GetVStaff(1, 1);      //get first vstaff of instr.1
+    m_pTotalScore = new lmScore();
+    m_pTotalScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
+    m_pTotalScore->AddInstrument(1,0,0);                     //one vstaff, MIDI channel 0, MIDI instr 0
+    pVStaff = m_pTotalScore->GetVStaff(1, 1);      //get first vstaff of instr.1
     pVStaff->AddClef( nClef );
     pVStaff->AddKeySignature(nKey);
     pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
@@ -451,8 +453,7 @@ void lmEarCompareIntvCtrol::NewProblem()
     m_fBothEqual = (oIntv0.GetNumSemitones() == oIntv1.GetNumSemitones());
     
     //load total score into the control
-    m_pScoreCtrol->SetScore(pTotalScore, true);   //true: the score must be hidden
-    pTotalScore = (lmScore*)NULL;         //no longer owned. Now owned by lmScoreAuxCtrol
+    m_pScoreCtrol->SetScore(m_pTotalScore, true);   //true: the score must be hidden
     m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
 
     m_fPlayEnabled = true;
@@ -557,5 +558,9 @@ void lmEarCompareIntvCtrol::ResetExercise()
         delete m_pScore[1];
         m_pScore[1] = (lmScore*)NULL;
     }
-    
+    if (m_pTotalScore) {
+        delete m_pTotalScore;
+        m_pTotalScore = (lmScore*)NULL;
+    }
+
 }

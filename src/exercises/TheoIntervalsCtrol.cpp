@@ -121,6 +121,7 @@ lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
     m_fProblemCreated = false;
     m_fPlayEnabled = false;
     m_pIntervalScore = (lmScore*)NULL;
+    m_pProblemScore = (lmScore*)NULL;
     m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
     m_pConstrains = pConstrains;
 
@@ -436,6 +437,11 @@ lmTheoIntervalsCtrol::~lmTheoIntervalsCtrol()
         delete m_pIntervalScore;
         m_pIntervalScore = (lmScore*)NULL;
     }
+
+    if (m_pProblemScore) {
+        delete m_pProblemScore;
+        m_pProblemScore = (lmScore*)NULL;
+    }
 }
 
 void lmTheoIntervalsCtrol::EnableButtons(bool fEnable)
@@ -487,7 +493,6 @@ void lmTheoIntervalsCtrol::OnNewProblem(wxCommandEvent& event)
 
 void lmTheoIntervalsCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
-    //! @todo Sound for failure
     m_pCounters->IncrementWrong();
     DisplaySolution();
     EnableButtons(false);           //student must not give now the answer
@@ -504,14 +509,12 @@ void lmTheoIntervalsCtrol::OnRespButton(wxCommandEvent& event)
     //verify if success or failure
     fSuccess = (nIndex == m_nRespIndex);
     
-    //prepare sound and color, and update counters
+    //prepare color, and update counters
     if (fSuccess) {
         pColor = &(g_pColors->Success());
-        //! @todo Sound for sucess
         m_pCounters->IncrementRight();
     } else {
         pColor = &(g_pColors->Failure());
-        //! @todo Sound for failure
         m_pCounters->IncrementWrong();
     }
         
@@ -721,19 +724,18 @@ void lmTheoIntervalsCtrol::NewProblem()
     if (m_fIntervalKnown) {
         //direct problem: identify interval
         m_pScoreCtrol->DisplayScore(m_pIntervalScore);
-        m_pIntervalScore = (lmScore*)NULL;    //no longer owned. Now owned by lmScoreAuxCtrol
-        EnableButtons(true);
+        m_pScoreCtrol->DisplayMessage(_("Identify the next interval:"), lmToLogicalUnits(5, lmMILLIMETERS), false);
         m_pPlayButton->Enable(true);
         SetButtonsForIntervals();
     } else {
         //inverse problem: build interval
         m_pScoreCtrol->DisplayScore(m_pProblemScore);
-        m_pProblemScore = (lmScore*)NULL;    //no longer owned. Now owned by lmScoreAuxCtrol
         wxString sProblem = _("Build a ") + m_sAnswer;
         m_pScoreCtrol->DisplayMessage(sProblem, lmToLogicalUnits(5, lmMILLIMETERS), false);
         m_pPlayButton->Enable(false);
         SetButtonsForNotes();
     }
+    EnableButtons(true);
     m_fPlayEnabled = false;
     m_fProblemCreated = true;
 
@@ -756,7 +758,6 @@ void lmTheoIntervalsCtrol::DisplaySolution()
     }
     else {
         m_pScoreCtrol->DisplayScore(m_pIntervalScore, false);
-        m_pIntervalScore = (lmScore*)NULL;    //no longer owned. Now owned by lmScoreAuxCtrol
     }
     
     m_pPlayButton->Enable(true);
@@ -797,6 +798,12 @@ void lmTheoIntervalsCtrol::ResetExercise()
         m_pIntervalScore = (lmScore*)NULL;
     }
     
+    if (m_pProblemScore) {
+        delete m_pProblemScore;
+        m_pProblemScore = (lmScore*)NULL;
+    }
+    
+
 }
 
 void lmTheoIntervalsCtrol::SetButtonsForNotes()

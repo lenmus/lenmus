@@ -33,6 +33,7 @@
 		- @ref internal_links
 		- @ref music_reading_modes
 		- @ref graphic_manager
+		- @ref updates_management
 
 		
     - @subpage algorithms

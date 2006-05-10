@@ -1,4 +1,3 @@
-// RCS-ID: $Id: ScoreCtrol.h,v 1.3 2006/02/23 19:19:53 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -56,7 +55,7 @@ public:
 
     // constructor and destructor    
     lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
-               lmScoreCtrolOptions* pOptions, 
+              lmScoreCtrolOptions* pOptions, 
                const wxPoint& pos = wxDefaultPosition, 
                const wxSize& size = wxDefaultSize, int style = 0);
 
@@ -84,10 +83,11 @@ private:
 
     lmScoreAuxCtrol*        m_pScoreCtrol;
     lmScoreCtrolOptions*    m_pOptions;
+    lmScore*                m_pScore;       //the score to display
 
     //to control play back
     lmUrlAuxCtrol*      m_CurPlayLink;      // link that is being played back
-    bool                m_fPlaying;            ///< the score is being played back
+    bool                m_fPlaying;         ///< the score is being played back
 
     //controls
     lmUrlAuxCtrol*      m_pPlayLink;

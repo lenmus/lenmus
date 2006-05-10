@@ -26,6 +26,26 @@
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">10-may-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>The issue of scores owned by lmScoreAuxCtrol revised. Now scores no longer
+        owned by the aux ctrol but by the main ctrol. All ctrols modified accordingly.
+      </li>
+      <li>Added sound feedback (wrong/right answer sound) to all exercises. To do this the
+        following changes done:
+        <ul>
+          <li>Wave sounds directory created. lmPaths modified to take this new path into
+            account.</li>
+          <li>Class lmWaveManager created. It is a singleton destroyed at TheApp::OnExit().</li>
+          <li>lmCountersCtrol::IncrementWrong() and lmCountersCtrol::IncrementRight() modified
+            to produce the appropiate sound.</li>
+      </ul></li>
+      <li>Starting to implement internet updater. Menu item 'check for updates'
+        added to lmMainFrame. Class lmUpdater added.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">5-may-06</td>
     <td class="ListaPar">
     <ul>

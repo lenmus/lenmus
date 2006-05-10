@@ -1,4 +1,3 @@
-// RCS-ID: $Id: ScoreAuxCtrol.h,v 1.4 2006/02/23 19:19:53 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -93,23 +92,23 @@ private:
 
         // member variables
 
-    lmScore*        m_pScore;       //the score to display
+    lmScore*        m_pScore;       //the score to display. Never owned
     bool            m_fHidden;      //the score is hidden, that is, it must not be displayed
-                                    //      but can be played back
+                                        //but can be played back
     double          m_rScale;       //presentation scale (default 1.0)
     lmPaper         m_Paper;        //the lmPaper object to use
 
     //message management
-    wxString        m_sMsg;                    // message to display
+    wxString        m_sMsg;                 // message to display
     bool            m_fDisplayMessage;        
-    lmLUnits       m_yMsg;                    // message position (microns)
-    float           m_yScalingFactor;        // pixels per micron
+    lmLUnits        m_yMsg;                 // message position (microns)
+    float           m_yScalingFactor;       // pixels per micron
 
     //paper margins
-    float           m_rZoom;            //zooming factor (default 1.0)
-    lmLUnits       m_nTopMargin;
-    lmLUnits       m_nLeftMargin;
-    lmLUnits       m_nRightMargin;
+    float           m_rZoom;                //zooming factor (default 1.0)
+    lmLUnits        m_nTopMargin;
+    lmLUnits        m_nLeftMargin;
+    lmLUnits        m_nRightMargin;
 
     DECLARE_EVENT_TABLE()
 };

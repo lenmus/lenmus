@@ -1,4 +1,3 @@
-// RCS-ID: $Id: TheApp.cpp,v 1.20 2006/03/03 14:59:45 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -105,6 +104,9 @@ void __cdecl wxAssert(int n, char const * s,int m,char const *s2,char const *s3)
 //access to Midi configuration
 #include "../sound/MidiManager.h"
 
+//access to Wave sound manager
+#include "../sound/WaveManager.h"
+
 //access to global objects
 #include "../globals/Paths.h"
 #include "../globals/Colors.h"
@@ -191,6 +193,7 @@ bool lmTheApp::OnInit(void)
     g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
     g_pLogger->DefineTraceMask(_T("lmComposer5"));
     g_pLogger->DefineTraceMask(_T("lmXMLParser"));
+    g_pLogger->DefineTraceMask(_T("lmUpdater"));
 
 
 
@@ -368,7 +371,6 @@ bool lmTheApp::OnInit(void)
     }
     wxSafeYield();
 
-
     // Give the main frame an icon (this is ignored in MDI mode: uses resources)
     g_pMainFrame->SetIcon(wxArtProvider::GetIcon(_T("app_icon"), wxART_OTHER));
 
@@ -456,6 +458,9 @@ int lmTheApp::OnExit(void)
 
     // the Midi configuration and related objects
     delete g_pMidi;
+
+    // the wave sound manager object
+    lmWaveManager::Destroy();
 
     // the docManager
     delete m_pDocManager;

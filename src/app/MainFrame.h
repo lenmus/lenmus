@@ -1,4 +1,3 @@
-// RCS-ID: $Id: MainFrame.h,v 1.8 2006/02/23 19:17:12 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -85,6 +84,7 @@ public:
     void OnAbout(wxCommandEvent& WXUNUSED(event));
     void OnOpenHelp(wxCommandEvent& event);
     void OnOpenHelpUI(wxUpdateUIEvent& event);
+    void OnCheckForUpdates(wxCommandEvent& WXUNUSED(event));
     void OnOpenBook(wxCommandEvent& event);
     void OnOpenBookUI(wxUpdateUIEvent &event);
 

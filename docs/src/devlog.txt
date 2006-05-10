@@ -75,10 +75,13 @@ Organizational issues:
 Area 0: Bugs to solve
     - Test score: 032_all_key_signatures_v13.txt renders nothing.
     - ¿lmInterval: fix names Unison augmented, Unison perfect, etc...?
-    - issue of scored owned by the ScoreAuxCtrol.
 
         
 Area 1: New features to add in short term to working release
+	- Internet updates:
+		- check if a new version is available
+		- open browser in download page
+	- Feedback sound in exercises for right/wrong answers
 	- Change Single exercises book: name of theo intervals exercise
     - Add buttons for answers in scales build exercise.
     - TheoIntervals: double accidentals not generated. Analyze issue of 'four times augmnted'
@@ -113,20 +116,22 @@ Other:
 Planning: comming releases 
 ******************************************************************************************
 
-?/???/2006 - Stable 3.0 release (beta 3.0b0 + 1 month)
+	- Modify help to include 'check for updates'
+	
+27/may/2006 - 3.0 release (beta 3.0b1 + 3 weeks)
 ---------------------------------------------------
-    Other:
     - Replacement of version 2.0 that will be dropped from web site.
+    - Internet updates checking
+    - Sound feedback in exercise
  
  
 
-??/???/2006 - Beta 3.1b0 release
+??/???/2006 - 3.1 release
 ----------------------------------------------
 
     Features and changes:
         - Support for LDP tags internationalization.
         - Music patterns editor, to customize music reading exercises.
-        - 'Wrong / right answers' counters for all exercises.
         - Answer buttons for Scales exercises.
         - Continue extending support to include more musical signs in scores and texts.
         - Exercises on chords.
@@ -134,9 +139,6 @@ Planning: comming releases
 
 Upcomig releases features 
 ----------------------------------------------
-
--General:
-    - Implement "Counters" sub-control for exercises.
 
 - Ear intervals:
     2 - Link 'Show solution': besides drawing the score it should print the interval's name.
