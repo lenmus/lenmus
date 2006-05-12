@@ -489,6 +489,12 @@
 				RelativePath="..\..\src\app\EditFrame.h">
 			</File>
 			<File
+				RelativePath="..\..\src\app\ErrorDlg.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\app\ErrorDlg.h">
+			</File>
+			<File
 				RelativePath="..\..\src\app\FontManager.cpp">
 			</File>
 			<File
@@ -583,12 +589,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\app\ToolsDlg.h">
-			</File>
-			<File
-				RelativePath="..\..\src\app\Updater.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\app\Updater.h">
 			</File>
 		</Filter>
 		<Filter
@@ -935,6 +935,22 @@
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\TimeposTable.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="updater"
+			Filter="">
+			<File
+				RelativePath="..\..\src\updater\Updater.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\updater\Updater.h">
+			</File>
+			<File
+				RelativePath="..\..\src\updater\UpdaterDlg.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\updater\UpdaterDlg.h">
 			</File>
 		</Filter>
 	</Files>

@@ -18,3 +18,6 @@ wxrc LangOptionsPanel.xrc -g >> xrc_strings.cpp
 
 echo //ToolbarsOptPanel.xrc >> xrc_strings.cpp
 wxrc ToolbarsOptPanel.xrc -g >> xrc_strings.cpp
+
+echo //UpdaterDlg.xrc >> xrc_strings.cpp
+wxrc UpdaterDlg.xrc -g >> xrc_strings.cpp

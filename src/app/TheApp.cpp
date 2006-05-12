@@ -323,6 +323,14 @@ bool lmTheApp::OnInit(void)
     oXrcFile = wxFileName(sPath, _T("DlgPatternEditor"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
+    // Updater dialog
+    oXrcFile = wxFileName(sPath, _T("UpdaterDlg"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
+    // Error dialog
+    oXrcFile = wxFileName(sPath, _T("ErrorDlg"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
         //
         // Create document manager and templates
         //

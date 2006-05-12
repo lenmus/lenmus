@@ -61,14 +61,13 @@
 #include "Printout.h"
 #include "MidiWizard.h"                    //Use lmMidiWizard
 #include "wx/helpbase.h"		//for wxHELP constants
-#include "wx/wxhtml.h"          //for OnCheckForUpdates
 
 
 
 #include "../../wxMidi/include/wxMidi.h"    //MIDI support throgh Portmidi lib
 #include "../sound/MidiManager.h"           //access to Midi configuration
 #include "Preferences.h"                    //access to user preferences
-#include "Updater.h"                        //to use the updater
+#include "../updater/Updater.h"                        //to use the updater
 
 //access to error's logger
 #include "../app/Logger.h"
@@ -1103,41 +1102,7 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
 void lmMainFrame::OnCheckForUpdates(wxCommandEvent& WXUNUSED(event))
 {
     lmUpdater oUpdater;
-    if (oUpdater.CheckForUpdates()) {
-        //update available. Create and show dialog
-        wxBoxSizer *topsizer;
-        wxHtmlWindow *html;
-        wxDialog dlg(this, wxID_ANY, wxString(_("Updates available")));
-
-        topsizer = new wxBoxSizer(wxVERTICAL);
-
-        html = new wxHtmlWindow(&dlg, wxID_ANY, wxDefaultPosition, 
-                            wxSize(560, 260),
-                            wxHW_SCROLLBAR_AUTO | wxSIMPLE_BORDER );
-        html->SetBorders(0);
-        html->SetPage(
-            wxString::Format(
-                _T("<html><body>Updates available. Version='%s'. Description: %s</body></html>"),
-                oUpdater.GetVersion(), oUpdater.GetDescription() ));
-        html->SetSize(html->GetInternalRepresentation()->GetWidth(),
-                        html->GetInternalRepresentation()->GetHeight());
-
-        topsizer->Add(html, 1, wxALL, 10);
-
-        wxButton *bu1 = new wxButton(&dlg, wxID_OK, _("OK"));
-        bu1->SetDefault();
-
-        topsizer->Add(bu1, 0, wxALL | wxALIGN_RIGHT, 15);
-
-        dlg.SetSizer(topsizer);
-        topsizer->Fit(&dlg);
-
-        dlg.ShowModal();
-    }
-    else {
-        //no updates available
-        wxMessageBox(_T("No updates available."));
-    }
+    oUpdater.CheckForUpdates(this, lmNOT_SILENT);
 }
 
 void lmMainFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
