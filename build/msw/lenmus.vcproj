@@ -941,6 +941,12 @@
 			Name="updater"
 			Filter="">
 			<File
+				RelativePath="..\..\src\updater\Downloader.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\updater\Downloader.h">
+			</File>
+			<File
 				RelativePath="..\..\src\updater\Updater.cpp">
 			</File>
 			<File

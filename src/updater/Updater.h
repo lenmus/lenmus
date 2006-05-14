@@ -38,6 +38,8 @@
 
 #include "wx/xml/xml.h"          // to use wxXmlDocument
 
+//#include "Downloader.h"
+
 // values for flag fSilent (method CheckForUpdates)
 #define lmNOT_SILENT    false
 #define lmSILENT        true
@@ -51,6 +53,7 @@ public:
 
     //actions
     void CheckForUpdates(wxFrame* pParent, bool fSilent);
+    bool DownloadFile();
     const wxString& GetVersion() { return m_sVersion; }
     const wxString& GetDescription() { return m_sDescription; }
     const wxString& GetUrl() { return m_sUrl; }
@@ -85,6 +88,9 @@ private:
     wxString    m_sDescription;
     wxString    m_sUrl;                 //url for download
     bool        m_fNeedsUpdate;
+
+    //lmDownloadThread*   m_pThread;      //download thread
+
 
 };
 

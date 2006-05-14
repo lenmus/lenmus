@@ -19,41 +19,55 @@
 //
 //-------------------------------------------------------------------------------------
 /*! @file UpdaterDlg.h
-    @brief Header file for class lmUpdaterDlg
+    @brief Header file for all dialog classes used only by the updater
     @ingroup updates_management
 */
-#ifndef __UPDATERDLG_H__        //to avoid nested includes
+#ifndef __UPDATERDLG_H__
 #define __UPDATERDLG_H__
 
-// GCC interface
 #if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "UpdaterDlg.h"
+#pragma interface "lmUpdaterDlg.cpp"
 #endif
 
-// headers
-#include "wx/dialog.h"
-#include "wx/wxhtml.h" 
+#include <wx/checklst.h>
 
-#include "Updater.h"
-
-
-// class definition
-class lmUpdaterDlg : public wxDialog
-{
-
+class lmUpdaterDlgStart: public wxDialog
+{    
 public:
-    lmUpdaterDlg(wxWindow * parent, lmUpdater* pUpdater);
-    virtual ~lmUpdaterDlg();
+    lmUpdaterDlgStart(wxWindow* parent);
+    ~lmUpdaterDlgStart() {}
+
+    // event handlers
+    void OnProceedClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_OK); }
+    void OnCancelClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_CANCEL); }
+
+    void AddPackage(wxString sPackage, wxString sSize, wxString sDescription);
+
+private:
+
+    DECLARE_EVENT_TABLE()
+};
+
+// lmUpdaterDlgInfo
+class lmUpdaterDlgInfo: public wxDialog
+{    
+public:
+    lmUpdaterDlgInfo(wxWindow* parent);
+    ~lmUpdaterDlgInfo() {}
 
     // event handlers
     void OnDownloadClicked(wxCommandEvent& WXUNUSED(event));
     void OnCancelClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_CANCEL); }
 
+    void AddPackage(wxString sPackage, wxString sSize, wxString sDescription);
+
 private:
-    wxHtmlWindow*       m_pHtmlWindow;
-    lmUpdater*          m_pUpdater;
+    //controls
+    wxCheckListBox*     m_pUpdates;
+    wxStaticText*       m_pDescription;
 
     DECLARE_EVENT_TABLE()
 };
+
 
 #endif    // __UPDATERDLG_H__

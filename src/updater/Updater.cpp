@@ -34,6 +34,12 @@
 #endif
 
 #include <wx/dialup.h>
+#include "wx/wfstream.h"
+#include "wx/protocol/http.h"
+#include "wx/mstream.h"         //to use files in memory
+#include <wx/mimetype.h> // mimetype support
+#include <wx/url.h>
+
 
 
 #include "Updater.h"
@@ -56,10 +62,21 @@ extern lmLogger* g_pLogger;
 
 lmUpdater::lmUpdater()
 {
+    //initializations
+    //m_pThread = (lmDownloadThread*)NULL;
+
+
 }
 
 lmUpdater::~lmUpdater()
 {
+    //if (m_pThread) {
+    //    m_pThread->Delete();
+    //    m_pThread->Wait();
+    //    delete m_pThread;
+    //    m_pThread = (lmDownloadThread*)NULL;
+    //}
+
 }
 
 void lmUpdater::LoadUserPreferences()
@@ -82,51 +99,64 @@ bool lmUpdater::DoCheck(wxString sPlatform, bool fSilent)
 {
     m_sPlatform = sPlatform;
 
-    if (!fSilent) {
-        //open dlg to show connection status
-    }
-
     //verify if internet is available
     if (!CheckInternetConnection()) {
-        lmErrorDlg dlg(m_pParent, _("Error"), _("You are not connected to internet!\n\n \
+        if (!fSilent) {
+            lmErrorDlg dlg(m_pParent, _("Error"), _("You are not connected to internet!\n\n \
 To check for updates LenMus needs internet connection. \n \
 Please, connect to internet and then retry."));
-        dlg.ShowModal();
+            dlg.ShowModal();
+        }
         return true;
     }
 
-    ////create download thread and download UpdateData.txt
-    //m_dThread = new lmDownloadThread(this);
-    //if (m_dThread->Create() != wxTHREAD_NO_ERROR ||
-    //    m_dThread->Run() != wxTHREAD_NO_ERROR) {
-    //    wxMessageBox(wxT("Low resources; cannot run the WebUpdate dialog...\n")
-    //        wxT("Close some applications and then retry."),
-    //        wxT("Error"), wxOK | wxICON_ERROR);
-    //    wxLogAdvMsg(wxT("wxWebUpdateDlg::InitThreads - cannot run the download thread !"));
-    //    return true;
-    //}
+    // ensure we can build a wxURL from the given URL
+    wxString sUrl = _T("http://www.lenmus.org");
+    wxURL oURL(sUrl);
+    wxASSERT( oURL.GetError() == wxURL_NOERR);
 
+    //Setup user-agent string to be identified not as a bot but as a browser
+    //wxProtocol& oProt = oURL.GetProtocol();
+    //wxHTTP* pHTTP = (wxHTTP*)&oProt;
+    //pHTTP->SetHeader(_T("User-Agent"), 
+    //            _T("Mozilla/5.0 (Windows; U; Windows NT 5.1; es-ES; rv:1.8.0.1) Gecko/20060111 Firefox/1.5.0.1"));
 
-    //if error display message. Suggest posible firewall problem and terminate
-    if (false) {
-        lmErrorDlg dlg(m_pParent, _("Error"), _("Connection with the server could \
+    // Try to get the input stream (connects to the given URL)
+    //wxYield();
+    //oProt.SetTimeout(90);              // 90 sec
+
+    //create the input stream
+    wxInputStream* pInput = oURL.GetInputStream();
+    if (!pInput) {
+        // something is wrong with the input URL...
+        if (!fSilent)
+            wxMessageBox(_("Something is wrong with the input URL: ") + sUrl);
+        return true;
+    }
+    if (!pInput->IsOk()) {
+        delete pInput;
+        if (!fSilent) {
+            lmErrorDlg dlg(m_pParent, _("Error"), _("Connection with the server could \
 not be established. \
 Check that you are connected to the internet and that no firewalls are blocking \
 this program; then try again. If problems continue, the server \
 may be down. Please, try again later."));
-        dlg.ShowModal();
+            dlg.ShowModal();
+        }
         return true;
     }
 
-    //load file into memory stream
+    //download file into memory stream
+    wxMemoryOutputStream oOutStream;
+    wxOutputStream* pOut = (wxOutputStream*)&oOutStream;
+    pInput->Read(*pOut);
+    delete pInput;
 
-    //wxXmlDocument load from memory stream
+    //UpdateData.xml file is now in memory. Analyze it
+    wxMemoryInputStream oIn(oOutStream);
     wxXmlDocument oDoc;
-    //if (!oDoc.Load(inputstream)) 
-    wxString sFilename = _T("c:\\usr\\desarrollo_wx\\lenmus\\docs\\src\\UpdateData.txt");
-    if (!oDoc.Load(sFilename) )
-    {
-        g_pLogger->ReportProblem(_("Error loading XML file ") + sFilename);
+    if (!oDoc.Load(oIn)) {
+        g_pLogger->ReportProblem(_("Error loading XML file "));
         return true;
     }
 
@@ -237,6 +267,12 @@ void lmUpdater::CheckForUpdates(wxFrame* pParent, bool fSilent)
     m_pParent = pParent;
     m_fNeedsUpdate = false;
     
+    //Inform user and ask permision to proceed
+    if (!fSilent) {
+        lmUpdaterDlgStart dlgStart(m_pParent);
+        if (dlgStart.ShowModal() == wxID_CANCEL) return;  //updater canceled
+    }
+
     //conect to server and get information about updates
     if (DoCheck(_T("Win32"), fSilent)) {
         //Error. Not posible to do check
@@ -249,12 +285,45 @@ void lmUpdater::CheckForUpdates(wxFrame* pParent, bool fSilent)
         if (!fSilent) wxMessageBox(_T("No updates available."));
     }
     else {
-        //update available. Create and show dialog
-        lmUpdaterDlg dlg(m_pParent, this);
+        //update available. Create and show informative dialog
+        lmUpdaterDlgInfo dlg(m_pParent);
+        dlg.AddPackage(GetVersion(), _T("100KB"), GetDescription());
         dlg.ShowModal();
     }
 
 }
+
+
+bool lmUpdater::DownloadFile()
+{
+    ::wxLaunchDefaultBrowser( m_sUrl );
+
+//    //create downloader thread
+//    m_pThread = new lmDownloadThread((wxEvtHandler*)NULL);
+//    if (m_pThread->Create() != wxTHREAD_NO_ERROR ||
+//        m_pThread->Run() != wxTHREAD_NO_ERROR) {
+//        lmErrorDlg dlg(m_pParent, _("Error"),
+//            _("Low resources; cannot run the thread for downloading files.\n\n \
+//Close some applications and then retry."));
+//        dlg.ShowModal();
+//        wxLogMessage(wxT("[lmUpdater::DoCheck] Can not run the download thread."));
+//        return true;
+//    }
+//
+//    //According to wxWidgets documentation if you want to use sockets or derived 
+//    //classes such as wxFTP in a secondary thread, call wxSocketBase::Initialize()
+//    //(undocumented) from the main thread before creating any sockets 
+//    wxSocketBase::Initialize();
+//
+//
+//    //start download of file
+//    m_pThread->SetURL( m_sUrl );
+//    m_pThread->StartDownload();
+//
+    return false;
+
+}
+
 
 //--------------------------------------------------------------------------------------
 // Copied from XMLParser.cpp

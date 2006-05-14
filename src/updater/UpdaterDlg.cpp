@@ -14,21 +14,19 @@
 //    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    for (any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of 
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
 /*! @file UpdaterDlg.cpp
-    @brief Implementation file for class lmUpdaterDlg
+    @brief Implementation file for all dialog classes used only by the updater
     @ingroup updates_management
 */
-
-//for GCC
-#ifdef __GNUG__
-    #pragma implementation "UpdaterDlg.h"
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma implementation "UpdaterDlg.h"
 #endif
 
-// for (compilers that support precompilation, includes "wx/wx.h".
+// For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
@@ -39,79 +37,91 @@
 #include "wx/wx.h"
 #endif
 
-#include <wx/dialog.h>
-#include <wx/button.h>
-
 #include "wx/xrc/xmlres.h"
+#include <wx/listctrl.h>
+
+
 
 
 #include "UpdaterDlg.h"
 
 
-static wxSize m_nSize(24,24);
 
 //-----------------------------------------------------------------------------
-// Event table: connect the events to the handler functions to process them
+// Implementation of class lmUpdaterDlgStart
 //-----------------------------------------------------------------------------
 
 
-BEGIN_EVENT_TABLE(lmUpdaterDlg, wxDialog)
-    EVT_BUTTON( XRCID( "btnDownload" ), lmUpdaterDlg::OnDownloadClicked )
-    EVT_BUTTON( XRCID( "btnCancel" ), lmUpdaterDlg::OnCancelClicked )
+BEGIN_EVENT_TABLE(lmUpdaterDlgStart, wxDialog)
+    EVT_BUTTON( XRCID( "btnProceed" ), lmUpdaterDlgStart::OnProceedClicked )
+    EVT_BUTTON( XRCID( "btnCancel" ), lmUpdaterDlgStart::OnCancelClicked )
 
 END_EVENT_TABLE()
 
 
 
-lmUpdaterDlg::lmUpdaterDlg(wxWindow * parent, lmUpdater* pUpdater)
+lmUpdaterDlgStart::lmUpdaterDlgStart(wxWindow* parent)
 {
-    m_pUpdater = pUpdater;
-
     // create the dialog controls
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("UpdaterDlg"));
+    wxXmlResource::Get()->LoadDialog(this, parent, _T("UpdaterDlgStart"));
 
         //
         //get pointers to all controls
         //
 
-    m_pHtmlWindow = XRCCTRL(*this, "htmlDisplay", wxHtmlWindow);
-
-    //prepare information to display
-    wxString sPage = _T("<html><body><p><b>");
-    sPage += _("There is a more recent version available");
-    sPage += _T("</b></p><p>");
-    sPage += _("Latest version: ");
-    sPage += m_pUpdater->GetVersion();
-    sPage += _T("</p><p><b>");
-    sPage += _("Details:");
-    sPage += _T("</b></p>");
-    sPage += m_pUpdater->GetDescription();
-    sPage += _T("</body></html>");
-
-    //load it in the dialog
-    m_pHtmlWindow->SetPage(sPage);
+    //load updater logo
+    wxStaticBitmap* pBmpUpdaterLogo = XRCCTRL(*this, "bmpUpdaterLogo", wxStaticBitmap);
+    pBmpUpdaterLogo->SetBitmap( wxArtProvider::GetIcon(_T("msg_error"), wxART_TOOLBAR, wxSize(32,32)) );
 
     CentreOnScreen();
 
 }
 
-lmUpdaterDlg::~lmUpdaterDlg()
+
+
+
+//-----------------------------------------------------------------------------
+// Implementation of class lmUpdaterDlgInfo
+//-----------------------------------------------------------------------------
+
+
+BEGIN_EVENT_TABLE(lmUpdaterDlgInfo, wxDialog)
+    EVT_BUTTON( XRCID( "btnDownload" ), lmUpdaterDlgInfo::OnDownloadClicked )
+    EVT_BUTTON( XRCID( "btnCancel" ), lmUpdaterDlgInfo::OnCancelClicked )
+
+END_EVENT_TABLE()
+
+
+
+lmUpdaterDlgInfo::lmUpdaterDlgInfo(wxWindow* parent)
 {
+    // create the dialog controls
+    wxXmlResource::Get()->LoadDialog(this, parent, _T("UpdaterDlgInfo"));
+
+        //
+        //get pointers to all controls
+        //
+    m_pUpdates = XRCCTRL(*this, "lstUpdates", wxCheckListBox);
+    m_pDescription = XRCCTRL(*this, "txtDescription", wxStaticText);
+
+    //load updater logo
+    wxStaticBitmap* pBmpUpdaterLogo = XRCCTRL(*this, "bmpUpdaterLogo", wxStaticBitmap);
+    pBmpUpdaterLogo->SetBitmap( wxArtProvider::GetIcon(_T("msg_error"), wxART_TOOLBAR, wxSize(32,32)) );
+
+    CentreOnScreen();
+
 }
 
-void lmUpdaterDlg::OnDownloadClicked(wxCommandEvent& WXUNUSED(event))
+void lmUpdaterDlgInfo::AddPackage(wxString sPackage, wxString sSize, wxString sDescription)
 {
-    //show download page
-    wxString sPage = _T("<html><body><p><b>");
-    sPage += _("Downloading ....");
-    sPage += _T("</b></p><p>");
-    sPage += m_pUpdater->GetUrl();
-    sPage += _T("</p></body></html>");
+    m_pUpdates->Set(1, &sPackage);
+    m_pDescription->SetLabel(sDescription);
 
-    //load it in the dialog
-    m_pHtmlWindow->SetPage(sPage);
-
-    //terminate the dialog 
-    //EndModal(wxID_OK);      
 }
 
+void lmUpdaterDlgInfo::OnDownloadClicked(wxCommandEvent& WXUNUSED(event))
+{
+    //m_pUpdater->DownloadFile();
+    EndDialog(wxID_OK);
+
+}

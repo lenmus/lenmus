@@ -327,6 +327,22 @@ bool lmTheApp::OnInit(void)
     oXrcFile = wxFileName(sPath, _T("UpdaterDlg"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
+    // Updater panel: start
+    oXrcFile = wxFileName(sPath, _T("UpdaterPanelStart"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
+    // Updater dialog: start
+    oXrcFile = wxFileName(sPath, _T("UpdaterDlgStart"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
+    // Updater dialog: info
+    oXrcFile = wxFileName(sPath, _T("UpdaterDlgInfo"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
+    // Updater panel for html
+    oXrcFile = wxFileName(sPath, _T("UpdaterPanelHtml"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
     // Error dialog
     oXrcFile = wxFileName(sPath, _T("ErrorDlg"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
