@@ -44,6 +44,7 @@
 
 
 #include "UpdaterDlg.h"
+//#include "Updater.h"
 
 
 
@@ -71,9 +72,9 @@ lmUpdaterDlgStart::lmUpdaterDlgStart(wxWindow* parent)
 
     //load updater logo
     wxStaticBitmap* pBmpUpdaterLogo = XRCCTRL(*this, "bmpUpdaterLogo", wxStaticBitmap);
-    pBmpUpdaterLogo->SetBitmap( wxArtProvider::GetIcon(_T("msg_error"), wxART_TOOLBAR, wxSize(32,32)) );
+    pBmpUpdaterLogo->SetBitmap( wxArtProvider::GetIcon(_T("banner_updater"), wxART_OTHER) );
 
-    CentreOnScreen();
+    CentreOnParent();
 
 }
 
@@ -89,11 +90,14 @@ BEGIN_EVENT_TABLE(lmUpdaterDlgInfo, wxDialog)
     EVT_BUTTON( XRCID( "btnDownload" ), lmUpdaterDlgInfo::OnDownloadClicked )
     EVT_BUTTON( XRCID( "btnCancel" ), lmUpdaterDlgInfo::OnCancelClicked )
 
+    // global UI updates
+    EVT_UPDATE_UI(wxID_ANY, lmUpdaterDlgInfo::OnUpdateUI)
+
 END_EVENT_TABLE()
 
 
 
-lmUpdaterDlgInfo::lmUpdaterDlgInfo(wxWindow* parent)
+lmUpdaterDlgInfo::lmUpdaterDlgInfo(wxWindow* parent, lmUpdater* pUpdater)
 {
     // create the dialog controls
     wxXmlResource::Get()->LoadDialog(this, parent, _T("UpdaterDlgInfo"));
@@ -103,25 +107,47 @@ lmUpdaterDlgInfo::lmUpdaterDlgInfo(wxWindow* parent)
         //
     m_pUpdates = XRCCTRL(*this, "lstUpdates", wxCheckListBox);
     m_pDescription = XRCCTRL(*this, "txtDescription", wxStaticText);
+    m_pBtnDownload = XRCCTRL(*this, "btnDownload", wxButton);
 
     //load updater logo
     wxStaticBitmap* pBmpUpdaterLogo = XRCCTRL(*this, "bmpUpdaterLogo", wxStaticBitmap);
-    pBmpUpdaterLogo->SetBitmap( wxArtProvider::GetIcon(_T("msg_error"), wxART_TOOLBAR, wxSize(32,32)) );
+    pBmpUpdaterLogo->SetBitmap( wxArtProvider::GetIcon(_T("banner_updater"), wxART_OTHER) );
 
-    CentreOnScreen();
+    //initializations
+    m_nNumItems = 0;
+    m_pUpdater = pUpdater;
+
+    CentreOnParent();
 
 }
 
-void lmUpdaterDlgInfo::AddPackage(wxString sPackage, wxString sSize, wxString sDescription)
+void lmUpdaterDlgInfo::AddPackage(wxString sPackage, wxString sDescription)
 {
     m_pUpdates->Set(1, &sPackage);
+    m_pUpdates->Check(m_nNumItems, true);
     m_pDescription->SetLabel(sDescription);
+    m_nNumItems++;
 
 }
 
 void lmUpdaterDlgInfo::OnDownloadClicked(wxCommandEvent& WXUNUSED(event))
 {
-    //m_pUpdater->DownloadFile();
+    m_pUpdater->DownloadFiles();
     EndDialog(wxID_OK);
+
+}
+
+void lmUpdaterDlgInfo::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
+{
+    //enable / disable download button
+    bool fEnableDownload = false;
+    int i;
+    for (i=0; i < m_nNumItems; i++) {
+        if (m_pUpdates->IsChecked(i) ) {
+            fEnableDownload = true;
+            break;
+        }
+    }
+    m_pBtnDownload->Enable(fEnableDownload);
 
 }

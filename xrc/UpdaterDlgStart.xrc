@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="windows-1252"?>
 <resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
     <object class="wxDialog" name="UpdaterDlgStart" subclass="lmUdaterDlgStart">
-        <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
+        <style>wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
-        <size>400,300</size>
+        <size>500,370</size>
         <title>LenMus Phonascus updater</title>
         <centered>1</centered>
         <object class="wxBoxSizer">
@@ -11,6 +11,7 @@
             <object class="sizeritem">
                 <flag>wxGROW|wxALL</flag>
                 <border>5</border>
+                <option>1</option>
                 <object class="wxBoxSizer">
                     <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">

@@ -81,7 +81,6 @@ Area 1: New features to add in short term to working release
 	- Internet updates:
 		- check if a new version is available
 		- open browser in download page
-	- Feedback sound in exercises for right/wrong answers
 	- Change Single exercises book: name of theo intervals exercise
     - Add buttons for answers in scales build exercise.
     - TheoIntervals: double accidentals not generated. Analyze issue of 'four times augmnted'
@@ -135,6 +134,8 @@ Planning: comming releases
         - Answer buttons for Scales exercises.
         - Continue extending support to include more musical signs in scores and texts.
         - Exercises on chords.
+        - Ear training: identify key signature
+        - Ear training: identify scale
 
 
 Upcomig releases features 
@@ -170,7 +171,8 @@ Known bugs:
         - Beams that continue in next system
 
 
-    - If Midi Wizard is cancelled some non-relevant error messages are displayed.
+    - If Midi Wizard is cancelled some non-relevant error messages are displayed when
+		there is no soundcard on the computer (tested with VMWare)
 
 ------------------------------------------------------------------------------------------
 

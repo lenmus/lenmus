@@ -196,6 +196,10 @@ wxBitmap lmArtProvider::CreateBitmap(const wxArtID& id,
         sFile = _T("splash30");
 		sSize = _T(".png");
     }
+    else if (id == _T("banner_updater")) {
+        sFile = _T("UpdaterBanner");
+		sSize = _T(".png");
+    }
 
     // other IDs
     else {

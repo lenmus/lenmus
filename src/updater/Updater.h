@@ -53,8 +53,9 @@ public:
 
     //actions
     void CheckForUpdates(wxFrame* pParent, bool fSilent);
-    bool DownloadFile();
+    bool DownloadFiles();
     const wxString& GetVersion() { return m_sVersion; }
+    const wxString& GetPackage() { return m_sPackage; }
     const wxString& GetDescription() { return m_sDescription; }
     const wxString& GetUrl() { return m_sUrl; }
 
@@ -85,6 +86,7 @@ private:
     bool        m_fCheckForUpdates;     //user allows this checking
     wxString    m_sPlatform;
     wxString    m_sVersion;
+    wxString    m_sPackage;
     wxString    m_sDescription;
     wxString    m_sUrl;                 //url for download
     bool        m_fNeedsUpdate;

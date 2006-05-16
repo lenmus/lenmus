@@ -19,5 +19,9 @@ wxrc LangOptionsPanel.xrc -g >> xrc_strings.cpp
 echo //ToolbarsOptPanel.xrc >> xrc_strings.cpp
 wxrc ToolbarsOptPanel.xrc -g >> xrc_strings.cpp
 
-echo //UpdaterDlg.xrc >> xrc_strings.cpp
-wxrc UpdaterDlg.xrc -g >> xrc_strings.cpp
+echo //UpdaterDlgInfo.xrc >> xrc_strings.cpp
+wxrc UpdaterDlgInfo.xrc -g >> xrc_strings.cpp
+
+echo //UpdaterDlgStart.xrc >> xrc_strings.cpp
+wxrc UpdaterDlgStart.xrc -g >> xrc_strings.cpp
+

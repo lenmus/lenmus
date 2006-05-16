@@ -31,6 +31,8 @@
 
 #include <wx/checklst.h>
 
+#include "Updater.h"
+
 class lmUpdaterDlgStart: public wxDialog
 {    
 public:
@@ -52,19 +54,24 @@ private:
 class lmUpdaterDlgInfo: public wxDialog
 {    
 public:
-    lmUpdaterDlgInfo(wxWindow* parent);
+    lmUpdaterDlgInfo(wxWindow* parent, lmUpdater* pUpdater);
     ~lmUpdaterDlgInfo() {}
 
     // event handlers
     void OnDownloadClicked(wxCommandEvent& WXUNUSED(event));
     void OnCancelClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_CANCEL); }
+    void OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event));
 
-    void AddPackage(wxString sPackage, wxString sSize, wxString sDescription);
+    void AddPackage(wxString sPackage, wxString sDescription);
 
 private:
+    lmUpdater*          m_pUpdater;     // the lmUpdater object owning this dialog
+
     //controls
     wxCheckListBox*     m_pUpdates;
     wxStaticText*       m_pDescription;
+    wxButton*           m_pBtnDownload;
+    int                 m_nNumItems;    //num items in CheckListBox
 
     DECLARE_EVENT_TABLE()
 };

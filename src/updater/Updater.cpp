@@ -53,6 +53,11 @@ extern lmLogger* g_pLogger;
 //access to user preferences
 #include "../app/Preferences.h"
 
+// access to global external variables
+extern bool g_fReleaseVersion;          // in TheApp.cpp
+extern bool g_fReleaseBehaviour;        // in TheApp.cpp
+
+
 #include "UpdaterDlg.h"
 
 
@@ -99,65 +104,72 @@ bool lmUpdater::DoCheck(wxString sPlatform, bool fSilent)
 {
     m_sPlatform = sPlatform;
 
-    //verify if internet is available
-    if (!CheckInternetConnection()) {
-        if (!fSilent) {
-            lmErrorDlg dlg(m_pParent, _("Error"), _("You are not connected to internet!\n\n \
+    wxXmlDocument oDoc;
+
+    //for developing and testing do not connect to internet (it implies firewall
+    //rules modification each tiem I recompile) unless explicitly selected 'Release
+    //behaviour' in Debug menu.
+    if (g_fReleaseVersion || g_fReleaseBehaviour)
+    {
+        //Release behaviour. Access to internet
+
+        //verify if internet is available
+        if (!CheckInternetConnection()) {
+            if (!fSilent) {
+                lmErrorDlg dlg(m_pParent, _("Error"), _("You are not connected to internet!\n\n \
 To check for updates LenMus needs internet connection. \n \
 Please, connect to internet and then retry."));
-            dlg.ShowModal();
+                dlg.ShowModal();
+            }
+            return true;
         }
-        return true;
-    }
 
-    // ensure we can build a wxURL from the given URL
-    wxString sUrl = _T("http://www.lenmus.org");
-    wxURL oURL(sUrl);
-    wxASSERT( oURL.GetError() == wxURL_NOERR);
+        // ensure we can build a wxURL from the given URL
+        wxString sUrl = _T("http://www.lenmus.org");
+        wxURL oURL(sUrl);
+        wxASSERT( oURL.GetError() == wxURL_NOERR);
 
-    //Setup user-agent string to be identified not as a bot but as a browser
-    //wxProtocol& oProt = oURL.GetProtocol();
-    //wxHTTP* pHTTP = (wxHTTP*)&oProt;
-    //pHTTP->SetHeader(_T("User-Agent"), 
-    //            _T("Mozilla/5.0 (Windows; U; Windows NT 5.1; es-ES; rv:1.8.0.1) Gecko/20060111 Firefox/1.5.0.1"));
+        //Setup user-agent string to be identified not as a bot but as a browser
+        wxProtocol& oProt = oURL.GetProtocol();
+        wxHTTP* pHTTP = (wxHTTP*)&oProt;
+        pHTTP->SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
+        oProt.SetTimeout(90);              // 90 sec
 
-    // Try to get the input stream (connects to the given URL)
-    //wxYield();
-    //oProt.SetTimeout(90);              // 90 sec
-
-    //create the input stream
-    wxInputStream* pInput = oURL.GetInputStream();
-    if (!pInput) {
-        // something is wrong with the input URL...
-        if (!fSilent)
-            wxMessageBox(_("Something is wrong with the input URL: ") + sUrl);
-        return true;
-    }
-    if (!pInput->IsOk()) {
-        delete pInput;
-        if (!fSilent) {
-            lmErrorDlg dlg(m_pParent, _("Error"), _("Connection with the server could \
+        //create the input stream by establishing http connection
+        wxInputStream* pInput = oURL.GetInputStream();
+        if (!pInput) {
+            // something is wrong with the input URL...
+            if (!fSilent)
+                wxMessageBox(_("Something is wrong with the input URL: ") + sUrl);
+            return true;
+        }
+        if (!pInput->IsOk()) {
+            delete pInput;
+            if (!fSilent) {
+                lmErrorDlg dlg(m_pParent, _("Error"), _("Connection with the server could \
 not be established. \
 Check that you are connected to the internet and that no firewalls are blocking \
 this program; then try again. If problems continue, the server \
 may be down. Please, try again later."));
-            dlg.ShowModal();
+                dlg.ShowModal();
+            }
+            return true;
         }
-        return true;
+
+        //download updates data file and analyze it
+        if (!oDoc.Load(*pInput)) {
+            g_pLogger->ReportProblem(_("Error loading XML file "));
+            return true;
+        }
+
     }
-
-    //download file into memory stream
-    wxMemoryOutputStream oOutStream;
-    wxOutputStream* pOut = (wxOutputStream*)&oOutStream;
-    pInput->Read(*pOut);
-    delete pInput;
-
-    //UpdateData.xml file is now in memory. Analyze it
-    wxMemoryInputStream oIn(oOutStream);
-    wxXmlDocument oDoc;
-    if (!oDoc.Load(oIn)) {
-        g_pLogger->ReportProblem(_("Error loading XML file "));
-        return true;
+    else {
+        //Debug behaviour. Instead of accesing Internet use local files
+        wxString sFilename = _T("c:\\usr\\desarrollo_wx\\lenmus\\docs\\src\\UpdateData.xml");
+        if (!oDoc.Load(sFilename) ) {
+            g_pLogger->ReportProblem(_("Error loading XML file "));
+            return true;
+        }
     }
 
     //Verify type of document. Must be <UpdateData>
@@ -197,6 +209,7 @@ void lmUpdater::ParseDocument(wxXmlNode* pNode)
     //initialize results
     m_sVersion = _T("");
     m_sDescription = _T("");
+    m_sPackage = _T("No package!");
 
     //start parsing. Loop to find <platform> tag for this platform
     g_pLogger->LogTrace(_T("lmUpdater"),
@@ -226,11 +239,11 @@ void lmUpdater::ParseDocument(wxXmlNode* pNode)
                     if (pElement->GetName() == _T("version")) {
                         m_sVersion = GetText(pElement);
                     }
+                    else if (pElement->GetName() == _T("package")) {
+                        m_sPackage = GetText(pElement);
+                    }
                     else if (pElement->GetName() == _T("description")) {
                         m_sDescription = GetText(pElement);
-                        // replace "{" and "}" by "<" and ">", respectively
-                        m_sDescription.Replace(_T("{"), _T("<"));
-                        m_sDescription.Replace(_T("}"), _T(">"));
                     }
                     else if (pElement->GetName() == _T("download_url")) {
                         m_sUrl = GetText(pElement);
@@ -257,7 +270,6 @@ void lmUpdater::ParseDocument(wxXmlNode* pNode)
     }
 
 }
-
 
 void lmUpdater::CheckForUpdates(wxFrame* pParent, bool fSilent)
 {
@@ -286,17 +298,24 @@ void lmUpdater::CheckForUpdates(wxFrame* pParent, bool fSilent)
     }
     else {
         //update available. Create and show informative dialog
-        lmUpdaterDlgInfo dlg(m_pParent);
-        dlg.AddPackage(GetVersion(), _T("100KB"), GetDescription());
+        lmUpdaterDlgInfo dlg(m_pParent, this);
+        dlg.AddPackage(GetPackage(), GetDescription());
         dlg.ShowModal();
     }
 
 }
 
 
-bool lmUpdater::DownloadFile()
+bool lmUpdater::DownloadFiles()
 {
+    wxLogMessage(_T("[lmUpdater::DownloadFiles] Openning internet browser. Url = '%s'"), m_sUrl);
     ::wxLaunchDefaultBrowser( m_sUrl );
+
+    // In order to allow for download cancellation, it is going to be implemented
+    // in a thread. Communication with the thread takes place by events
+    // generated in the thread.
+    //
+    //
 
 //    //create downloader thread
 //    m_pThread = new lmDownloadThread((wxEvtHandler*)NULL);
