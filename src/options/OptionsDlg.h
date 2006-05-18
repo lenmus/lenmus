@@ -1,4 +1,3 @@
-// RCS-ID: $Id: OptionsDlg.h,v 1.4 2006/02/23 19:22:19 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -66,6 +65,7 @@ enum EOptionsPanels {
     eOptLanguage = 0,
     eOptColors,
     eOptToolbars,
+    eOptOther,
     //TO_ADD: Add, before this line, a new eOptXXXXXX code for the new options panel
     eOptMaxValue    // end of table 
 };

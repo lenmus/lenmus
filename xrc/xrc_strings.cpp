@@ -1,9 +1,3 @@
-//OptionsDlg.xrc 
-_("Configuration options");
-_("OK");
-_("&Cancel");
-_("&Help");
-//DlgCfgEarIntervals.xrc 
 _("Configuration: Intervals - identification by ear");
 _("Intervals");
 _("Intervals to practise");
@@ -195,3 +189,18 @@ _("Labels");
 _("&No labels");
 _("&Labels bottom");
 _("&Labels right");
+//OtherOptionsPanel.xrc 
+_("Other options");
+_("Automatically check for updates at program start");
+//UpdaterDlgInfo.xrc 
+_("LenMus Phonascus updater");
+_("Available updates");
+_("Item description");
+_("Download selected items");
+_("&Cancel");
+//UpdaterDlgStart.xrc 
+_("LenMus Phonascus updater");
+_("Checking for available updates");
+_("This program will connect to LenMus website and look for \navailable updates.\n\nPress 'Proceed' to start.");
+_("Proceed");
+_("&Cancel");

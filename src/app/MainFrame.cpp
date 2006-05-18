@@ -67,7 +67,6 @@
 #include "../../wxMidi/include/wxMidi.h"    //MIDI support throgh Portmidi lib
 #include "../sound/MidiManager.h"           //access to Midi configuration
 #include "Preferences.h"                    //access to user preferences
-#include "../updater/Updater.h"                        //to use the updater
 
 //access to error's logger
 #include "../app/Logger.h"
@@ -201,6 +200,7 @@ enum
     MENU_Help_About,
     MENU_OpenHelp,
     MENU_CheckForUpdates,
+    MENU_VisitWebsite,
     MENU_OpenBook,
 
     // Menu Print
@@ -294,6 +294,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_MENU      (MENU_OpenHelp, lmMainFrame::OnOpenHelp)
     EVT_UPDATE_UI (MENU_OpenHelp, lmMainFrame::OnOpenHelpUI)
     EVT_MENU      (MENU_CheckForUpdates, lmMainFrame::OnCheckForUpdates)
+    EVT_MENU      (MENU_VisitWebsite, lmMainFrame::OnVisitWebsite)
  
     EVT_MENU (MENU_Debug_ForceReleaseBehaviour, lmMainFrame::OnDebugForceReleaseBehaviour)
     EVT_MENU (MENU_Debug_ShowDebugLinks, lmMainFrame::OnDebugShowDebugLinks)
@@ -759,7 +760,16 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* view,
 
     // Options menu
     wxMenu* options_menu = new wxMenu;
+#if defined(__WXMSW__) || defined(__WXGTK__)
+    pItem = new wxMenuItem(options_menu, MENU_Options,  _("&Preferences"),
+                            _T("Open help book"), wxITEM_CHECK);
+    pItem->SetBitmaps( wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nIconSize),
+                       wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nIconSize) ); 
+    options_menu->Append(pItem); 
+#else
     options_menu->Append(MENU_Options, _("&Preferences"));
+#endif
+
 
     // help menu
     wxMenu *help_menu = new wxMenu;
@@ -777,8 +787,19 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* view,
         _T("Open help book"), wxITEM_CHECK);
 #endif
     help_menu->AppendSeparator();
-    help_menu->Append(MENU_CheckForUpdates, _("Check for &updates"), 
+    help_menu->Append(MENU_CheckForUpdates, _("Check now for &updates"), 
         _("Connect to Internet and check for program updates") );
+
+#if defined(__WXMSW__) || defined(__WXGTK__)
+    pItem = new wxMenuItem(help_menu, MENU_VisitWebsite,  _("&Visit LenMus website"),
+                            _T("Open the Internet browser and go to LenMus website") );
+    pItem->SetBitmaps( wxArtProvider::GetBitmap(_T("tool_website"), wxART_TOOLBAR, nIconSize),
+                       wxArtProvider::GetBitmap(_T("tool_website"), wxART_TOOLBAR, nIconSize) ); 
+    help_menu->Append(pItem); 
+#else
+    help_menu->Append(MENU_VisitWebsite, _("&Visit LenMus website"), 
+        _("Open the Internet browser and go to LenMus website") );
+#endif
 
     // set up the menubar.
     // AWARE: As lmMainFrame is derived from wxMDIParentFrame, in MSWindows build the menu 
@@ -1095,14 +1116,25 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
 
 }
 
+void lmMainFrame::DoCheckForUpdates(bool fSilent)
+{
+    lmUpdater oUpdater;
+    oUpdater.CheckForUpdates(this, fSilent);
+}
+
+
 // ----------------------------------------------------------------------------
 // menu callbacks
 // ----------------------------------------------------------------------------
 
+void lmMainFrame::OnVisitWebsite(wxCommandEvent& WXUNUSED(event))
+{
+    LaunchDefaultBrowser( _T("www.lenmus.org") );
+}
+
 void lmMainFrame::OnCheckForUpdates(wxCommandEvent& WXUNUSED(event))
 {
-    lmUpdater oUpdater;
-    oUpdater.CheckForUpdates(this, lmNOT_SILENT);
+    DoCheckForUpdates(lmNOT_SILENT);
 }
 
 void lmMainFrame::OnAbout(wxCommandEvent& WXUNUSED(event))

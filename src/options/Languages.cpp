@@ -57,10 +57,8 @@ bool TranslationExists(wxArrayString& pathList, wxString code)
 
     if (sPattern == _T("")) return false;
 
-    //DBG: To have a place to put a break for language "bg", "cs", "de", "fr", "ja", "ka", "pl", "ru"
-    if (sPattern == _T("bg") ||sPattern == _T("cs") ||sPattern == _T("de") ||
-        sPattern == _T("fr") ||sPattern == _T("ja") ||sPattern == _T("ka") ||
-        sPattern == _T("pl") ||sPattern == _T("ru") ) {
+    //DBG: To have a place to put a break
+    if (sPattern == _T("es") ) {
         int kk;
         kk=23;
     }
@@ -176,7 +174,8 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     localLanguageName[_T("zh")] = _T("Chinese(Simplified)");
 
     wxArrayString pathList;
-    pathList.Add( g_pPaths->GetLocaleRootPath() );
+    wxString sLocalePath = g_pPaths->GetLocaleRootPath();
+    pathList.Add( sLocalePath );
     wxString lastCode = _T("");
 
     //explore wxLanguages list to form file names

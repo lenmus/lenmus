@@ -70,7 +70,7 @@ lmPaths::~lmPaths()
 }
 
 
-void lmPaths::SetLocalePathNames(wxString sLangCode)
+void lmPaths::SetLanguageCode(wxString sLangCode)
 {
     /*
     Lang code has changed. It is necessary to rebuild paths depending on language
@@ -160,7 +160,7 @@ void lmPaths::LoadUserPreferences()
         }
     }
 
-    SetLocalePathNames(m_sLangCode);
+    //SetLocalePathNames(m_sLangCode);
 }
 
 //! save path settings in user configuration data

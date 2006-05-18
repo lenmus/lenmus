@@ -75,13 +75,11 @@ Organizational issues:
 Area 0: Bugs to solve
     - Test score: 032_all_key_signatures_v13.txt renders nothing.
     - ¿lmInterval: fix names Unison augmented, Unison perfect, etc...?
+    - If Midi Wizard is cancelled some non-relevant error messages are displayed when
+		there is no soundcard on the computer (tested with VMWare)
 
         
 Area 1: New features to add in short term to working release
-	- Internet updates:
-		- check if a new version is available
-		- open browser in download page
-	- Change Single exercises book: name of theo intervals exercise
     - Add buttons for answers in scales build exercise.
     - TheoIntervals: double accidentals not generated. Analyze issue of 'four times augmnted'
     - TheoIntervals settings re-design: choose interval types (major, minor, augmented, double augmented...)
@@ -115,13 +113,13 @@ Other:
 Planning: comming releases 
 ******************************************************************************************
 
-	- Modify help to include 'check for updates'
 	
 27/may/2006 - 3.0 release (beta 3.0b1 + 3 weeks)
 ---------------------------------------------------
     - Replacement of version 2.0 that will be dropped from web site.
     - Internet updates checking
-    - Sound feedback in exercise
+    - Sound feedback in exercises
+    - Updated help file and Single Exercises eBook to reflect program changes.
  
  
 
@@ -171,8 +169,6 @@ Known bugs:
         - Beams that continue in next system
 
 
-    - If Midi Wizard is cancelled some non-relevant error messages are displayed when
-		there is no soundcard on the computer (tested with VMWare)
 
 ------------------------------------------------------------------------------------------
 

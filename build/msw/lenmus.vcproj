@@ -831,6 +831,12 @@
 				RelativePath="..\..\src\options\OptionsPanel.h">
 			</File>
 			<File
+				RelativePath="..\..\src\options\OtherOptionsPanel.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\options\OtherOptionsPanel.h">
+			</File>
+			<File
 				RelativePath="..\..\src\options\ToobarsOptPanel.cpp">
 			</File>
 			<File

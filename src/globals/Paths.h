@@ -52,8 +52,7 @@ public:
     wxString GetHelpPath() { return m_sHelp; }
     wxString GetBooksPath() { return m_sBooks; }
 
-    void SetLocalePathNames(wxString sLangCode);
-    void SetLanguageCode(wxString sLangCode) { m_sLangCode = sLangCode; }
+    void SetLanguageCode(wxString sLangCode);
 
 private:
 

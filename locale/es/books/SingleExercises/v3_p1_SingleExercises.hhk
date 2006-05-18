@@ -13,7 +13,7 @@
     </li>
 
     <li><object type="text/sitemap">
-        <param name="Name" value="Identificación de intervalos (en partitura)">
+        <param name="Name" value="Identificación y construcción de intervalos (en partitura)">
         <param name="Local" value="v3_p1_TheoIntervals.htm">
         </object>
     </li>

@@ -1,4 +1,3 @@
-// RCS-ID: $Id: OptionsDlg.cpp,v 1.8 2006/02/23 19:22:19 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -63,6 +62,7 @@
 #include "LangOptionsPanel.h"
 #include "ColorsOptPanel.h"
 #include "ToolbarsOptPanel.h"
+#include "OtherOptionsPanel.h"
 //TO_ADD: add here the new panel include file
 
 //access to preferences object
@@ -76,6 +76,8 @@ enum
     eIconLanguages,
     eIconColors,
     eIconToolbars,
+    eIconOther,
+    //TO_ADD: add the new element
     TreeCtrlIcon_EOF        //AWARE: Must be the last one. Just to know how many items
 };
 
@@ -84,8 +86,11 @@ static wxString sImageID[] = {
     _T("tool_options"),
     _T("opt_language"),
     _T("opt_colors"),
-    _T("opt_tools")
+    _T("opt_tools"),
+    _T("opt_other")
+//TO_ADD: Add image identifier here
 };
+
 
 
 BEGIN_EVENT_TABLE( lmOptionsDlg, wxDialog )
@@ -185,6 +190,11 @@ lmOptionsDlg::lmOptionsDlg( wxWindow* parent, wxWindowID id, const wxString& cap
                     eIconToolbars, eIconToolbars,
                     new lmTreeItemData((long)eOptToolbars) );
 
+    // Other options
+    wxTreeItemId otherId = m_pTreeCtrl->AppendItem(rootId, _("Other"),
+                    eIconOther, eIconOther,
+                    new lmTreeItemData((long)eOptOther) );
+
     //TO_ADD: add a new code block to add a new entry in the Tree Control
 
     //Select in TreeCtrl the item that goes with selected panel
@@ -198,6 +208,9 @@ lmOptionsDlg::lmOptionsDlg( wxWindow* parent, wxWindowID id, const wxString& cap
         //    break;
         case eOptToolbars:
             itemId = ToolbarsId;
+            break;
+        case eOptOther:
+            itemId = otherId;
             break;
         //TO_ADD: Add a new case block for selecting the right item
         default:
@@ -223,7 +236,7 @@ void lmOptionsDlg::CreateControls()
 
     m_pTreeCtrl = new wxTreeCtrl( m_pSplitWindow, ID_TREECTRL,
                             wxDefaultPosition, wxSize(180, 180),
-                            wxTR_SINGLE | wxTR_HAS_BUTTONS |wxSUNKEN_BORDER );
+                            wxTR_SINGLE | wxTR_HAS_BUTTONS | wxNO_BORDER  );
 
     m_pPanel = CreatePanel((EOptionsPanels) m_nCurPanel);
     m_cPanels[m_nCurPanel] = m_pPanel;
@@ -256,7 +269,7 @@ void lmOptionsDlg::CreateImageList()
     For each item in TreeCtrol you have to:
         1. define an icon id string (unique)
         2. Add a PNG file to res/icons
-        3. Modify lmArtController to deal with it and return the bitmap
+        3. Modify lmArtProvider to deal with it and return the bitmap
 
     */
 
@@ -301,6 +314,8 @@ lmOptionsPanel* lmOptionsDlg::CreatePanel(EOptionsPanels nPanel)
             return new lmColorsOptPanel( m_pSplitWindow );
         case eOptToolbars:
             return new lmToolbarsOptPanel( m_pSplitWindow );
+        case eOptOther:
+            return new lmOtherOptionsPanel( m_pSplitWindow );
         //TO_ADD: Add a new case block for creating the panel
         default:
             wxASSERT(false);

@@ -96,6 +96,10 @@ private:
 
 };
 
+//global function
+bool LaunchDefaultBrowser(const wxString& url);
+
+
 
 #endif    // __UPDATER_H__
 

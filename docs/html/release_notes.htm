@@ -5,7 +5,7 @@
 </head>
 <body>
 
-<h1>LenMus Phonascus 3.1 Release Notes</h1>
+<h1>LenMus Phonascus 3.0 Release Notes</h1>
 
 <h2>What's New in 3.1</h2>
 
@@ -13,20 +13,27 @@
 
 <ul>
   <li>Sound feedback (wrong/right answer sound) added to all exercises.</li>
-  <li>Automatically checks if a new version of the program ia available.</li>
-  <li>Several bug fixes.</li>
+  <li>Automatically checks if a new version of the program is available.</li>
+  <li>Menu item to access to LenMus website.</li>
+  <li>Several bug fixes (<a href="#details">see details</a>).</li>
 </ul>
 
 <p>&nbsp;</p>
 
 
-<h2>Bug fixed details</h2>
+<h2><a name="details">Bug fixed details</a></h2>
 
 <table class="Lista">
 <tr valign="top">
   <td class="ListaImpar"><strong>Description</strong></td>
 </tr>
 
+<tr valign="top">
+    <td class="ListaPar">
+    <b>In first run installed languages are not recognized.</b><br />
+    It was caused by not properly setting the locale folder as paths were instantiated
+    before the language was chosen.
+    </td></tr>
 <tr valign="top">
     <td class="ListaPar">
     <b>Keyboard for answers in build intervals exercises disabled after first answer given.</b><br />

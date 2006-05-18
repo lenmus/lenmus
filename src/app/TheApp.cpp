@@ -243,6 +243,7 @@ bool lmTheApp::OnInit(void)
 
     // Load user preferences or default values if first run
     InitPreferences();
+    g_pPaths->LoadUserPreferences();
 
     // colors
     g_pColors = new lmColors();
@@ -261,7 +262,6 @@ bool lmTheApp::OnInit(void)
     }
     // Now that language code is know we can finish lmPaths initialization
     g_pPaths->SetLanguageCode(lang);
-    g_pPaths->LoadUserPreferences();
 
     // Set up locale object
     m_locale.Init(_T(""), lang, _T(""), true, true);
@@ -311,6 +311,10 @@ bool lmTheApp::OnInit(void)
     oXrcFile = wxFileName(sPath, _T("LangOptionsPanel"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
+    // Configuration options: other options panel
+    oXrcFile = wxFileName(sPath, _T("OtherOptionsPanel"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
     // Ear Interval exercises: configuration dialog
     oXrcFile = wxFileName(sPath, _T("DlgCfgEarIntervals"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
@@ -323,24 +327,12 @@ bool lmTheApp::OnInit(void)
     oXrcFile = wxFileName(sPath, _T("DlgPatternEditor"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
-    // Updater dialog
-    oXrcFile = wxFileName(sPath, _T("UpdaterDlg"), _T("xrc"), wxPATH_NATIVE);
-    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-
-    // Updater panel: start
-    oXrcFile = wxFileName(sPath, _T("UpdaterPanelStart"), _T("xrc"), wxPATH_NATIVE);
-    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-
     // Updater dialog: start
     oXrcFile = wxFileName(sPath, _T("UpdaterDlgStart"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
     // Updater dialog: info
     oXrcFile = wxFileName(sPath, _T("UpdaterDlgInfo"), _T("xrc"), wxPATH_NATIVE);
-    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
-
-    // Updater panel for html
-    oXrcFile = wxFileName(sPath, _T("UpdaterPanelHtml"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
     // Error dialog
@@ -464,8 +456,15 @@ bool lmTheApp::OnInit(void)
     g_pMainFrame->OnOpenBook(event);
 #endif
 
+    //check for updates if this option is set up. Default: do check
+    bool fCheckForUpdates;
+    g_pPrefs->Read(_T("/Options/CheckForUpdates"), &fCheckForUpdates, true );
+    if (fCheckForUpdates)
+        g_pMainFrame->DoCheckForUpdates(lmSILENT);
+
     //cursor normal and terminate
     ::wxEndBusyCursor();
+
     return true;
 }
 

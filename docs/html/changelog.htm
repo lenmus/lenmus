@@ -26,11 +26,39 @@
     </td></tr>
 
 <tr valign="top">
-    <td class="ListaPar">16-may-06</td>
+    <td class="ListaPar">18-may-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>Problem with wxLaunchDefaultBrowser bypassed by taking the lates code from
+        wxWidgets CVS. Internet Updater now operative.</li>
+      <li>Panel lmOtherOptionsPanel created to include other options no related
+        to the available setting groups. Currently only the 'automatically check for
+        updates' option.</li>
+      <li>Help documentation updated to reflect new help menu options as well as
+        the new 'Others' setting group.</li>
+      <li>Created icons for 'visit LenMus website' menu item and for 'Other' setting
+        group.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">17-may-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>TheApp:OnInit() modified to invoke CheckForUpdates() if flag set on lenmus.ini
+        file.</li>
+      <li>Bug fixed: In first run installed languages are not recognized.
+        It was caused by not properly setting the locale folder, as paths were 
+        instantiated before the language was chosen.</li>
+      <li>Updated Single Exercises book (name and description of theo intervals and
+		    key signatures exercises) to reflect new features.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">11 to 16-may-06</td>
     <td class="ListaPar">
     <ul>
       <li>Implementing internet updater. Clases for dialogs (file UpdaterDlg.cpp) added.
-        Now operative: check if a new version is available. Problems with wxWidgets to
+        Checking if a new version is available now operative. Problems with wxWidgets to
 		    open browser in download page.</li>
     </ul>
     </td></tr>

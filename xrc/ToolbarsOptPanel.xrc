@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1252"?>
 <resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
     <object class="wxPanel" name="ToolbarsOptPanel" subclass="lmToolbarsOptPanel">
-        <style>wxSUNKEN_BORDER|wxTAB_TRAVERSAL</style>
+        <style>wxNO_BORDER|wxTAB_TRAVERSAL</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
         <size>400,300</size>
         <object class="wxBoxSizer">

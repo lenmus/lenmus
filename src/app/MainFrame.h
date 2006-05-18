@@ -50,6 +50,10 @@
 
 #include "wx/numdlg.h"
 
+#include "../updater/Updater.h"     //to give access to constants lmSILENT and lmNOT_SILENT to
+                                    //any one invoking DoCheckForUpdates()
+
+
 
 // Class lmMainFrame defines the main MDI frame for the application
 class lmMainFrame: public wxDocMDIParentFrame
@@ -81,10 +85,6 @@ public:
 
     // to process menu events
     void OnImportFile(wxCommandEvent& WXUNUSED(event));
-    void OnAbout(wxCommandEvent& WXUNUSED(event));
-    void OnOpenHelp(wxCommandEvent& event);
-    void OnOpenHelpUI(wxUpdateUIEvent& event);
-    void OnCheckForUpdates(wxCommandEvent& WXUNUSED(event));
     void OnOpenBook(wxCommandEvent& event);
     void OnOpenBookUI(wxUpdateUIEvent &event);
 
@@ -137,6 +137,12 @@ public:
     //void OnMidiWizardFinished(wxWizardEvent& event);
     void DoRunMidiWizard();
 
+    void OnAbout(wxCommandEvent& WXUNUSED(event));
+    void OnOpenHelp(wxCommandEvent& event);
+    void OnOpenHelpUI(wxUpdateUIEvent& event);
+    void OnCheckForUpdates(wxCommandEvent& WXUNUSED(event));
+    void OnVisitWebsite(wxCommandEvent& WXUNUSED(event));
+
     //other even managers
     void OnMetronomeTimer(wxTimerEvent& event);
     void OnMetronomeOnOff(wxCommandEvent& WXUNUSED(event));
@@ -149,6 +155,8 @@ public:
     void SetOpenHelpButton(bool fButtonPressed);
     void UpdateMenuAndToolbar();
     void UpdateToolbarsLayout();
+    void DoCheckForUpdates(bool fSilent);
+
 
     //eBooks controller
     void SetHtmlWindow(lmHtmlWindow* pHtmlWin) { m_pHtmlWin = pHtmlWin; }
