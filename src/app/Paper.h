@@ -127,6 +127,7 @@ private:
     bool        m_fRedraw;             // force to redraw the score
 
     lmScore*    m_pScore;              // the score to draw in this paper
+    long        m_nLastScoreID;        // the ID of the last rendered score
     double      m_rScale;              // drawing scale
 
     // page cursors

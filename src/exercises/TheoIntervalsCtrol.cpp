@@ -537,7 +537,7 @@ void lmTheoIntervalsCtrol::OnRespButton(wxCommandEvent& event)
 void lmTheoIntervalsCtrol::NewProblem()
 {
 
-    ResetExercise();
+    ResetExercise();        //reset button colors and delete scores
 
     // choose type of problem
     lmRandomGenerator oGenerator;
@@ -723,12 +723,14 @@ void lmTheoIntervalsCtrol::NewProblem()
     //display the problem
     if (m_fIntervalKnown) {
         //direct problem: identify interval
+        //wxLogMessage(_T("[lmTheoIntervalsCtrol::NewProblem] IntervalScoreID=%d"), m_pIntervalScore->GetID() );
         m_pScoreCtrol->DisplayScore(m_pIntervalScore);
         m_pScoreCtrol->DisplayMessage(_("Identify the next interval:"), lmToLogicalUnits(5, lmMILLIMETERS), false);
         m_pPlayButton->Enable(true);
         SetButtonsForIntervals();
     } else {
         //inverse problem: build interval
+        //wxLogMessage(_T("[lmTheoIntervalsCtrol::NewProblem] ProblemScoreID=%d"), m_pProblemScore->GetID() );
         m_pScoreCtrol->DisplayScore(m_pProblemScore);
         wxString sProblem = _("Build a ") + m_sAnswer;
         m_pScoreCtrol->DisplayMessage(sProblem, lmToLogicalUnits(5, lmMILLIMETERS), false);
@@ -786,10 +788,17 @@ void lmTheoIntervalsCtrol::ResetExercise()
     //restore colors
     if (m_nCurrentKeyboard == eKeyboardIntv)
     {
+        // Intervals keyboard
         for (int iB=0; iB < NUM_BUTTONS; iB++) {
             if (!m_sIntvButtonLabel[iB].IsEmpty()) {
                 m_pAnswerButton[iB]->SetBackgroundColour( g_pColors->Normal() );
             }
+        }
+    }
+    else {
+        // Notes keyboard
+        for (int iB=0; iB < 35; iB++) {
+            m_pAnswerButton[iB]->SetBackgroundColour( g_pColors->Normal() );
         }
     }
 

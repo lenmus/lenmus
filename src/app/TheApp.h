@@ -1,4 +1,3 @@
-// RCS-ID: $Id: TheApp.h,v 1.4 2006/02/23 19:17:49 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -48,6 +47,7 @@ class lmTheApp: public wxApp
 	// event handlers
     bool OnInit();
     int OnExit();
+
 
     lmEditFrame* CreateProjectFrame(wxDocument* doc, wxView* view);
     void UpdateCurrentDocViews();

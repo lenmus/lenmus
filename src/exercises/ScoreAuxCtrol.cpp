@@ -210,6 +210,7 @@ void lmScoreAuxCtrol::DisplayMessage(wxString sMsg, lmLUnits posMsg, bool fClear
 
 void lmScoreAuxCtrol::DisplayScore(lmScore* pScore, bool fClearMessage)
 {
+    //wxLogMessage(_T("[lmScoreAuxCtrol::DisplayScore] ScoreID=%d"), pScore->GetID() );
     SetScore(pScore, false);        //false: not hidden
     if (fClearMessage) m_fDisplayMessage = false;
     Refresh();

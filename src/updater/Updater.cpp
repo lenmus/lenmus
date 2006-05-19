@@ -109,8 +109,8 @@ bool lmUpdater::DoCheck(wxString sPlatform, bool fSilent)
     //for developing and testing do not connect to internet (it implies firewall
     //rules modification each tiem I recompile) unless explicitly selected 'Release
     //behaviour' in Debug menu.
-    if (g_fReleaseVersion || g_fReleaseBehaviour)
-    {
+    //if (g_fReleaseVersion || g_fReleaseBehaviour)
+    //{
         //Release behaviour. Access to internet
 
         //verify if internet is available
@@ -125,7 +125,7 @@ Please, connect to internet and then retry."));
         }
 
         // ensure we can build a wxURL from the given URL
-        wxString sUrl = _T("http://www.lenmus.org");
+        wxString sUrl = _T("http://www.lenmus.org/sw/UpdateData.xml");
         wxURL oURL(sUrl);
         wxASSERT( oURL.GetError() == wxURL_NOERR);
 
@@ -133,26 +133,18 @@ Please, connect to internet and then retry."));
         wxProtocol& oProt = oURL.GetProtocol();
         wxHTTP* pHTTP = (wxHTTP*)&oProt;
         pHTTP->SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
-        oProt.SetTimeout(90);              // 90 sec
+        oProt.SetTimeout(10);              // 90 sec
 
         //create the input stream by establishing http connection
         wxInputStream* pInput = oURL.GetInputStream();
-        if (!pInput) {
-            // something is wrong with the input URL...
-            if (!fSilent)
-                wxMessageBox(_("Something is wrong with the input URL: ") + sUrl);
-            return true;
-        }
-        if (!pInput->IsOk()) {
-            delete pInput;
-            if (!fSilent) {
-                lmErrorDlg dlg(m_pParent, _("Error"), _("Connection with the server could \
-not be established. \
+        if (!pInput || !pInput->IsOk()) {
+            if (pInput) delete pInput;
+            lmErrorDlg dlg(m_pParent, _("Error checking for updates"),
+_("Connection with the server could not be established. \
 Check that you are connected to the internet and that no firewalls are blocking \
 this program; then try again. If problems continue, the server \
 may be down. Please, try again later."));
-                dlg.ShowModal();
-            }
+            dlg.ShowModal();
             return true;
         }
 
@@ -162,15 +154,15 @@ may be down. Please, try again later."));
             return true;
         }
 
-    }
-    else {
-        //Debug behaviour. Instead of accesing Internet use local files
-        wxString sFilename = _T("c:\\usr\\desarrollo_wx\\lenmus\\docs\\src\\UpdateData.xml");
-        if (!oDoc.Load(sFilename) ) {
-            g_pLogger->ReportProblem(_("Error loading XML file "));
-            return true;
-        }
-    }
+    //}
+    //else {
+    //    //Debug behaviour. Instead of accesing Internet use local files
+    //    wxString sFilename = _T("c:\\usr\\desarrollo_wx\\lenmus\\docs\\src\\UpdateData.xml");
+    //    if (!oDoc.Load(sFilename) ) {
+    //        g_pLogger->ReportProblem(_("Error loading XML file "));
+    //        return true;
+    //    }
+    //}
 
     //Verify type of document. Must be <UpdateData>
     wxXmlNode *pRoot = oDoc.GetRoot();

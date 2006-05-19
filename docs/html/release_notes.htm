@@ -7,14 +7,14 @@
 
 <h1>LenMus Phonascus 3.0 Release Notes</h1>
 
-<h2>What's New in 3.1</h2>
+<h2>What's New in 3.0 (since 3.0 beta 1)</h2>
 
-<p>Release 3.1 include new features and improvements and some bug fixes:</p>
+<p>Release 3.0 include new features and improvements and some bug fixes:</p>
 
 <ul>
   <li>Sound feedback (wrong/right answer sound) added to all exercises.</li>
   <li>Automatically checks if a new version of the program is available.</li>
-  <li>Menu item to access to LenMus website.</li>
+  <li>A new menu item to access to LenMus website.</li>
   <li>Several bug fixes (<a href="#details">see details</a>).</li>
 </ul>
 
@@ -30,14 +30,29 @@
 
 <tr valign="top">
     <td class="ListaPar">
-    <b>In first run installed languages are not recognized.</b><br />
-    It was caused by not properly setting the locale folder as paths were instantiated
-    before the language was chosen.
+      <b>Button colours in keyboard for answers in build intervals exercises not reset.</b><br />
+      As build interval exercise was added later, code to reset keyboard did not take into
+      account the added keyboard. Now fixed.
     </td></tr>
 <tr valign="top">
     <td class="ListaPar">
-    <b>Keyboard for answers in build intervals exercises disabled after first answer given.</b><br />
-    It was due to forgeting to re-enable the keyboard after generating a new exercise.
+      <b>In occasions, bad answers given for the exercises.</b><br />
+      The problem was
+      caused by lmPaper optimization code: if the new score pointer has the same address
+      than the previous one, lmPaper did not re-draw the score and the old non-valid
+      bitmaps got displayed. I tried to fix this bug (2-may-06) but fix did not take
+      into account all cases. Now I hope this problem is definitely fixed.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">
+      <b>In first run installed languages are not recognized.</b><br />
+      It was caused by not properly setting the locale folder as paths were instantiated
+      before the language was chosen.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">
+      <b>Keyboard for answers in build intervals exercises disabled after first answer given.</b><br />
+      It was due to forgeting to re-enable the keyboard after generating a new exercise.
     </td></tr>
 
 </table>

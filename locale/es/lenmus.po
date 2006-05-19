@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.0\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-05-18 14:31+0100\n"
+"PO-Revision-Date: 2006-05-20 00:23+0100\n"
 "Last-Translator: cs <cs>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -23,6 +23,8 @@ msgstr ""
 "X-Poedit-SearchPath-9: widgets\n"
 "X-Poedit-SearchPath-10: globals\n"
 "X-Poedit-SearchPath-11: ../xrc\n"
+"X-Poedit-SearchPath-12: updater\n"
+"X-Poedit-SearchPath-13: graphic\n"
 
 #: score/Direction.cpp:156
 #: score/NoteRestObj.cpp:145
@@ -429,7 +431,7 @@ msgstr "Se solicita iniciar una tupla pero ya hay una abierta. Se ignora etiquet
 
 #: ldp_parser/LDPParser.cpp:1211
 msgid "Requesting to end a tuplet but there is not an open tuplet. Tag 't-' ignored."
-msgstr "SE solicita finalizar una tupla pero no hay ninguna iniciada. Se ignora etiqueta 't-'."
+msgstr "Se solicita finalizar una tupla pero no hay ninguna iniciada. Se ignora etiqueta 't-'."
 
 #: ldp_parser/LDPParser.cpp:1222
 msgid "Requesting ending a beaming a group but there is not a  previous note. Beaming ignored."
@@ -1070,11 +1072,11 @@ msgstr ", ascendente"
 msgid ", descending"
 msgstr ", descendente"
 
-#: exercises/TheoIntervalsCtrol.cpp:727
+#: exercises/TheoIntervalsCtrol.cpp:728
 msgid "Identify the next interval:"
-msgstr ""
+msgstr "Identificar el siguiente intervalo:"
 
-#: exercises/TheoIntervalsCtrol.cpp:733
+#: exercises/TheoIntervalsCtrol.cpp:735
 msgid "Build a "
 msgstr "Construir una "
 
@@ -1497,7 +1499,7 @@ msgid "Adding book %s"
 msgstr "Añadiendo el libro %s"
 
 #: html/TextBookFrame.cpp:384
-#: app/MainFrame.cpp:459
+#: app/MainFrame.cpp:460
 msgid "Help"
 msgstr "Ayuda"
 
@@ -1515,12 +1517,12 @@ msgid "&About..."
 msgstr "&Acerca de..."
 
 #: html/TextBookFrame.cpp:412
-#: app/MainFrame.cpp:810
+#: app/MainFrame.cpp:811
 msgid "&File"
 msgstr "&Archivo"
 
 #: html/TextBookFrame.cpp:413
-#: app/MainFrame.cpp:817
+#: app/MainFrame.cpp:818
 #: options/OptionsDlg.cpp:256
 msgid "&Help"
 msgstr "&Ayuda"
@@ -1561,7 +1563,7 @@ msgstr "Muestra todos los items del índice"
 
 #: html/TextBookFrame.cpp:561
 #: html/TextBookFrame.cpp:737
-#: app/MainFrame.cpp:534
+#: app/MainFrame.cpp:535
 msgid "Index"
 msgstr "Indice"
 
@@ -1583,12 +1585,12 @@ msgid "Search contents of help book(s) for all occurences of the text you typed 
 msgstr "Busca en el contenido de todos los libros y muestra todas las ocurrencias del texto que se haya tecleado antes"
 
 #: html/TextBookFrame.cpp:738
-#: app/MainFrame.cpp:535
+#: app/MainFrame.cpp:536
 msgid "Show/hide navigation panel"
 msgstr "Mostrar/ocultar el panel de navegación"
 
 #: html/TextBookFrame.cpp:750
-#: app/MainFrame.cpp:547
+#: app/MainFrame.cpp:548
 msgid "Go back"
 msgstr "Atrás"
 
@@ -1597,7 +1599,7 @@ msgid "Go to previous page in navigation log"
 msgstr "Ir a la página anterior del historial de navegación"
 
 #: html/TextBookFrame.cpp:756
-#: app/MainFrame.cpp:550
+#: app/MainFrame.cpp:551
 msgid "Go forward"
 msgstr "Siguiente"
 
@@ -1610,7 +1612,7 @@ msgid "Parent"
 msgstr "Padre"
 
 #: html/TextBookFrame.cpp:765
-#: app/MainFrame.cpp:555
+#: app/MainFrame.cpp:556
 msgid "Go one level up in document hierarchy"
 msgstr "Subir un nivel en la jerarquía de documentos"
 
@@ -1636,17 +1638,17 @@ msgstr "Abrir documento"
 
 #: html/TextBookFrame.cpp:787
 #: html/TextBookFrame.cpp:1706
-#: app/MainFrame.cpp:569
+#: app/MainFrame.cpp:570
 msgid "Open HTML document"
 msgstr "Abrir documento HTML"
 
 #: html/TextBookFrame.cpp:795
-#: app/MainFrame.cpp:456
+#: app/MainFrame.cpp:457
 msgid "Print"
 msgstr "Imprimir"
 
 #: html/TextBookFrame.cpp:796
-#: app/MainFrame.cpp:575
+#: app/MainFrame.cpp:576
 msgid "Print this page"
 msgstr "Imprimir esta página"
 
@@ -1786,6 +1788,7 @@ msgstr "Error en análisis de archivo XML "
 
 #: xml_parser/XMLParser.cpp:82
 #: app/Updater.cpp:105
+#: updater/Updater.cpp:171
 #, c-format
 msgid "Error. <%s> files are not supported"
 msgstr "Error. Archivos <%s> no soportados"
@@ -1966,7 +1969,7 @@ msgid "About LenMus..."
 msgstr "Acerca de LenMus..."
 
 #: app/AboutDialog.cpp:78
-#: app/MainFrame.cpp:1147
+#: app/MainFrame.cpp:1151
 #, c-format
 msgid ""
 "Language: %s\n"
@@ -2111,325 +2114,330 @@ msgstr "Elija el idima a utilizar:"
 msgid "Error message"
 msgstr "Mensaje de error"
 
-#: app/MainFrame.cpp:367
+#: app/MainFrame.cpp:366
 msgid "Welcome to LenMus!"
 msgstr "LenMus te da la bienvenida"
 
-#: app/MainFrame.cpp:436
+#: app/MainFrame.cpp:437
 msgid "New"
 msgstr "Nueva"
 
-#: app/MainFrame.cpp:436
+#: app/MainFrame.cpp:437
 msgid "New score"
 msgstr "Nueva partitura"
 
-#: app/MainFrame.cpp:437
+#: app/MainFrame.cpp:438
 msgid "Open"
 msgstr "Abrir"
 
-#: app/MainFrame.cpp:437
+#: app/MainFrame.cpp:438
 msgid "Open score"
 msgstr "Abrir partitura"
 
-#: app/MainFrame.cpp:452
+#: app/MainFrame.cpp:453
 msgid "Save"
 msgstr "Guardar"
 
-#: app/MainFrame.cpp:452
+#: app/MainFrame.cpp:453
 msgid "Save current score to disk"
 msgstr "Guardar la partitura en el disco"
 
-#: app/MainFrame.cpp:453
+#: app/MainFrame.cpp:454
 msgid "Copy"
 msgstr "Copiar"
 
-#: app/MainFrame.cpp:454
+#: app/MainFrame.cpp:455
 msgid "Cut"
 msgstr "Cortar"
 
-#: app/MainFrame.cpp:455
+#: app/MainFrame.cpp:456
 msgid "Paste"
 msgstr "Pegar"
 
-#: app/MainFrame.cpp:456
+#: app/MainFrame.cpp:457
 msgid "Print document"
 msgstr "Imprimir documento"
 
-#: app/MainFrame.cpp:458
-msgid "Options"
-msgstr "Opciones"
+#: app/MainFrame.cpp:459
+#: options/OptionsDlg.cpp:174
+msgid "Preferences"
+msgstr "Preferencias"
 
 #: app/MainFrame.cpp:459
+msgid "Set user preferences"
+msgstr "Cambiar preferencias de usuario"
+
+#: app/MainFrame.cpp:460
 msgid "Help button"
 msgstr "Botón de ayuda"
 
-#: app/MainFrame.cpp:460
+#: app/MainFrame.cpp:461
 msgid "Books"
 msgstr "Libros"
 
-#: app/MainFrame.cpp:460
+#: app/MainFrame.cpp:461
 msgid "Show the music books"
 msgstr "Mostrar los libros de música"
 
-#: app/MainFrame.cpp:464
+#: app/MainFrame.cpp:465
 msgid "Metronome"
 msgstr "Metrónomo"
 
-#: app/MainFrame.cpp:464
+#: app/MainFrame.cpp:465
 msgid "Turn metronome on/off"
 msgstr "Enceder / apagar el metrónomo"
 
-#: app/MainFrame.cpp:558
+#: app/MainFrame.cpp:559
 msgid "Previous page"
 msgstr "Página anterior"
 
-#: app/MainFrame.cpp:561
+#: app/MainFrame.cpp:562
 msgid "Next page"
 msgstr "Siguiente página"
 
-#: app/MainFrame.cpp:581
+#: app/MainFrame.cpp:582
 msgid "Display options dialog"
 msgstr "Mostrar el diálogo de opciones"
 
-#: app/MainFrame.cpp:628
-#: app/MainFrame.cpp:662
+#: app/MainFrame.cpp:629
+#: app/MainFrame.cpp:663
 msgid "&New\tCtrl+N"
 msgstr "&Nueva\tCtrl+N"
 
-#: app/MainFrame.cpp:628
-#: app/MainFrame.cpp:662
+#: app/MainFrame.cpp:629
+#: app/MainFrame.cpp:663
 msgid "Open new blank score"
 msgstr "Abrir una partitura en blanco"
 
-#: app/MainFrame.cpp:632
-#: app/MainFrame.cpp:663
+#: app/MainFrame.cpp:633
+#: app/MainFrame.cpp:664
 msgid "&Open ...\tCtrl+O"
 msgstr "&Abrir ...\tCtrl+O"
 
-#: app/MainFrame.cpp:632
-#: app/MainFrame.cpp:663
+#: app/MainFrame.cpp:633
+#: app/MainFrame.cpp:664
 msgid "Open a score"
 msgstr "Abrir una partitura"
 
-#: app/MainFrame.cpp:636
-#: app/MainFrame.cpp:664
+#: app/MainFrame.cpp:637
+#: app/MainFrame.cpp:665
 msgid "Open &books"
 msgstr "Abrir li&bros"
 
-#: app/MainFrame.cpp:636
-#: app/MainFrame.cpp:664
+#: app/MainFrame.cpp:637
+#: app/MainFrame.cpp:665
 msgid "Hide/show eMusicBooks"
 msgstr "Mostrar/ocultar libros"
 
-#: app/MainFrame.cpp:641
-#: app/MainFrame.cpp:665
+#: app/MainFrame.cpp:642
+#: app/MainFrame.cpp:666
 msgid "&Import..."
 msgstr "&Importar..."
 
-#: app/MainFrame.cpp:643
-#: app/MainFrame.cpp:666
+#: app/MainFrame.cpp:644
+#: app/MainFrame.cpp:667
 msgid "&Save\tCtrl+S"
 msgstr "&Guardar\tCtrl+S"
 
-#: app/MainFrame.cpp:647
+#: app/MainFrame.cpp:648
 msgid "Save &as ..."
 msgstr "&Guardar como..."
 
-#: app/MainFrame.cpp:649
-#: app/MainFrame.cpp:668
+#: app/MainFrame.cpp:650
+#: app/MainFrame.cpp:669
 msgid "&Close\tCtrl+W"
 msgstr "&Cerrar\tCtrl+W"
 
-#: app/MainFrame.cpp:652
-#: app/MainFrame.cpp:670
+#: app/MainFrame.cpp:653
+#: app/MainFrame.cpp:671
 msgid "&Print ...\tCtrl+P"
 msgstr "&Imprimir ...\tCtrl+P"
 
-#: app/MainFrame.cpp:656
-#: app/MainFrame.cpp:671
+#: app/MainFrame.cpp:657
+#: app/MainFrame.cpp:672
 msgid "Print &Setup..."
 msgstr "Configurar impresora..."
 
-#: app/MainFrame.cpp:657
+#: app/MainFrame.cpp:658
 msgid "Print Pre&view"
 msgstr "Imprimir: pre&visualizar"
 
-#: app/MainFrame.cpp:659
-#: app/MainFrame.cpp:674
+#: app/MainFrame.cpp:660
+#: app/MainFrame.cpp:675
 msgid "&Quit\tCtrl+Q"
 msgstr "&Salir\tCtrl+Q"
 
-#: app/MainFrame.cpp:667
+#: app/MainFrame.cpp:668
 msgid "Save &as ...\tCtrl+Shift+S"
 msgstr "&Guardar como...\tCtrl+May+S"
 
-#: app/MainFrame.cpp:672
+#: app/MainFrame.cpp:673
 msgid "Print Pre&view\tCtrl+Shift+P"
 msgstr "Previsualizar\tCtrl+May+P"
 
-#: app/MainFrame.cpp:686
+#: app/MainFrame.cpp:687
 msgid "&Undo"
 msgstr "&Deshacer"
 
-#: app/MainFrame.cpp:687
+#: app/MainFrame.cpp:688
 msgid "&Redo"
 msgstr "Rehacer"
 
-#: app/MainFrame.cpp:694
+#: app/MainFrame.cpp:695
 msgid "Tool &bar"
 msgstr "&Barra de herramientas"
 
-#: app/MainFrame.cpp:694
+#: app/MainFrame.cpp:695
 msgid "Hide/show the tools bar"
 msgstr "Mostrar/ocultar la barra de herramientas"
 
-#: app/MainFrame.cpp:695
+#: app/MainFrame.cpp:696
 msgid "&Status bar"
 msgstr "&Barra de estado"
 
-#: app/MainFrame.cpp:695
+#: app/MainFrame.cpp:696
 msgid "Hide/show the status bar"
 msgstr "Mostrar/ocultar barra de estado"
 
-#: app/MainFrame.cpp:698
+#: app/MainFrame.cpp:699
 msgid "&Rulers"
 msgstr "&Reglas"
 
-#: app/MainFrame.cpp:698
+#: app/MainFrame.cpp:699
 msgid "Hide/show rulers"
 msgstr "Mostrar/ocultar reglas"
 
-#: app/MainFrame.cpp:732
-#: app/MainFrame.cpp:746
+#: app/MainFrame.cpp:733
+#: app/MainFrame.cpp:747
 msgid "&Play"
 msgstr "Tocar"
 
-#: app/MainFrame.cpp:736
-#: app/MainFrame.cpp:747
+#: app/MainFrame.cpp:737
+#: app/MainFrame.cpp:748
 msgid "S&top"
 msgstr "Parar"
 
-#: app/MainFrame.cpp:740
-#: app/MainFrame.cpp:748
+#: app/MainFrame.cpp:741
+#: app/MainFrame.cpp:749
 msgid "P&ause"
 msgstr "P&ausa"
 
-#: app/MainFrame.cpp:753
+#: app/MainFrame.cpp:754
 msgid "&Run Midi wizard"
 msgstr "&Asistente MIDI"
 
-#: app/MainFrame.cpp:754
+#: app/MainFrame.cpp:755
 msgid "Midi configuration wizard"
 msgstr "Asistente para configurar MIDI"
 
-#: app/MainFrame.cpp:756
+#: app/MainFrame.cpp:757
 msgid "&Test sound"
 msgstr "&Comprobar el sonido"
 
-#: app/MainFrame.cpp:756
+#: app/MainFrame.cpp:757
 msgid "Play an scale to test sound"
 msgstr "Tocar una escala para comprobar el sonido"
 
-#: app/MainFrame.cpp:757
+#: app/MainFrame.cpp:758
 msgid "&All sounds off"
 msgstr "&Detener sonidos"
 
-#: app/MainFrame.cpp:758
+#: app/MainFrame.cpp:759
 msgid "Stop inmediatly all sounds"
 msgstr "&Denere inmediatamente todos los sonidos"
 
-#: app/MainFrame.cpp:764
-#: app/MainFrame.cpp:770
+#: app/MainFrame.cpp:765
+#: app/MainFrame.cpp:771
 msgid "&Preferences"
 msgstr "&Preferencias"
 
-#: app/MainFrame.cpp:776
+#: app/MainFrame.cpp:777
 msgid "&About\tF1"
 msgstr "&Acerca de\tF1"
 
-#: app/MainFrame.cpp:777
+#: app/MainFrame.cpp:778
 msgid "Display information about program version and credits"
-msgstr ""
+msgstr "Mostrar información sobre versión y créditos"
 
-#: app/MainFrame.cpp:780
-#: app/MainFrame.cpp:786
+#: app/MainFrame.cpp:781
+#: app/MainFrame.cpp:787
 msgid "&Content\tCtrl+Alt+F1"
 msgstr "&Contenido\tCtrl+Alt+F1"
 
-#: app/MainFrame.cpp:790
-msgid "Check now for &updates"
-msgstr ""
-
 #: app/MainFrame.cpp:791
+msgid "Check now for &updates"
+msgstr "Buscar &actualizaciones"
+
+#: app/MainFrame.cpp:792
 msgid "Connect to Internet and check for program updates"
 msgstr "Conectar a internet y comprobar si hay actualizaciones"
 
-#: app/MainFrame.cpp:794
-#: app/MainFrame.cpp:800
+#: app/MainFrame.cpp:795
+#: app/MainFrame.cpp:801
 msgid "&Visit LenMus website"
 msgstr "&Ver la web de LenMus"
 
-#: app/MainFrame.cpp:801
+#: app/MainFrame.cpp:802
 msgid "Open the Internet browser and go to LenMus website"
 msgstr "Abrir el navegador de internet y visitar la web de LenMus"
 
-#: app/MainFrame.cpp:811
+#: app/MainFrame.cpp:812
 msgid "&Edit"
 msgstr "&Editar"
 
-#: app/MainFrame.cpp:812
+#: app/MainFrame.cpp:813
 msgid "&View"
 msgstr "&Ver"
 
-#: app/MainFrame.cpp:813
+#: app/MainFrame.cpp:814
 msgid "&Sound"
 msgstr "&Sonido"
 
-#: app/MainFrame.cpp:814
+#: app/MainFrame.cpp:815
 msgid "&Debug"
 msgstr "&Depurar"
 
-#: app/MainFrame.cpp:815
-#: app/MainFrame.cpp:902
+#: app/MainFrame.cpp:816
+#: app/MainFrame.cpp:903
 msgid "&Zoom"
 msgstr "&Zoom"
 
-#: app/MainFrame.cpp:816
+#: app/MainFrame.cpp:817
 msgid "&Options"
 msgstr "&Opciones"
 
-#: app/MainFrame.cpp:1012
+#: app/MainFrame.cpp:1013
 msgid "LenMus help"
 msgstr "Ayuda de LenMus"
 
-#: app/MainFrame.cpp:1018
+#: app/MainFrame.cpp:1019
 msgid "Test mode: using .hhp help file"
 msgstr "Modo test: se usa el archivo de ayuda .hhp"
 
-#: app/MainFrame.cpp:1025
-#: app/MainFrame.cpp:1111
+#: app/MainFrame.cpp:1026
+#: app/MainFrame.cpp:1112
 #, c-format
 msgid "Failed adding book %s"
 msgstr "Problemas al añadir el libro %s"
 
-#: app/MainFrame.cpp:1063
+#: app/MainFrame.cpp:1064
 msgid "Available books"
 msgstr "Libros disponibles"
 
-#: app/MainFrame.cpp:1095
+#: app/MainFrame.cpp:1096
 #, c-format
 msgid "Error when trying to move to folder %s"
 msgstr "Error al tratar de cambiar a la carpeta %s"
 
-#: app/MainFrame.cpp:1337
+#: app/MainFrame.cpp:1341
 msgid "Mask to add"
 msgstr "Máscara a añadir"
 
-#: app/MainFrame.cpp:1376
+#: app/MainFrame.cpp:1380
 msgid "Adjust to page"
 msgstr "Ajustar a página"
 
-#: app/MainFrame.cpp:1478
+#: app/MainFrame.cpp:1482
 msgid ""
 "There is a problem previewing.\n"
 "Perhaps your current printer is not set correctly?"
@@ -2437,15 +2445,15 @@ msgstr ""
 "Hay un problema para generar la vista previa.\n"
 "Compruebe que la impresora está configurada correctamente."
 
-#: app/MainFrame.cpp:1478
+#: app/MainFrame.cpp:1482
 msgid "Previewing"
 msgstr "Previsualizando"
 
-#: app/MainFrame.cpp:1482
+#: app/MainFrame.cpp:1486
 msgid "Preview"
 msgstr "Previsualizar"
 
-#: app/MainFrame.cpp:1530
+#: app/MainFrame.cpp:1534
 msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
@@ -2453,7 +2461,7 @@ msgstr ""
 "Hay algún problema para imprimir.\n"
 "Compruebe que la impresora está configurada correctamente."
 
-#: app/MainFrame.cpp:1532
+#: app/MainFrame.cpp:1536
 msgid "Printing canceled"
 msgstr "Impresión cancelada"
 
@@ -2537,11 +2545,11 @@ msgstr "Sonido para el primer tiempo de cada compás:"
 msgid "Sound for other beats of each measure:"
 msgstr "Sonido para los restantes tiempos:"
 
-#: app/Paper.cpp:265
+#: app/Paper.cpp:267
 msgid "Sorry, not enough memory to create a pBitmap to display the page."
 msgstr "Lo siento, no hay suficiente memoria para crear un bitmap para mostrar la página."
 
-#: app/TheApp.cpp:587
+#: app/TheApp.cpp:589
 msgid "LenMus First Run"
 msgstr "Primera ejecución de LenMus"
 
@@ -2554,6 +2562,7 @@ msgid "Clefs"
 msgstr "Claves"
 
 #: app/Updater.cpp:97
+#: updater/Updater.cpp:153
 msgid "Error loading XML file "
 msgstr "Error en análisis del archivo XML "
 
@@ -2565,10 +2574,6 @@ msgstr "Elija los colores a utilizar:"
 #, c-format
 msgid "Language '%s' will be used the next time you run LenMus."
 msgstr "El idioma '%s' será utilizado la próxima vez que ejecute LenMus."
-
-#: options/OptionsDlg.cpp:174
-msgid "Preferences"
-msgstr "Preferencias"
 
 #: options/OptionsDlg.cpp:179
 msgid "Language"
@@ -3178,6 +3183,34 @@ msgstr ""
 #: ../xrc/xrc_strings.cpp:205
 msgid "Proceed"
 msgstr "Iniciar"
+
+#: updater/Updater.cpp:119
+msgid "Error"
+msgstr "Error"
+
+#: updater/Updater.cpp:119
+msgid ""
+"You are not connected to internet!\n"
+"\n"
+" To check for updates LenMus needs internet connection. \n"
+" Please, connect to internet and then retry."
+msgstr ""
+"No hay conexión con internet\n"
+"\n"
+"Para comprobar si hay actualizaciones LenMus necesita conectarse a internet.\n"
+"Por favor, verifique la conexión a internet y reinténtelo."
+
+#: updater/Updater.cpp:142
+msgid "Error checking for updates"
+msgstr "Error al buscar actualizaciones"
+
+#: updater/Updater.cpp:143
+msgid "Connection with the server could not be established. Check that you are connected to the internet and that no firewalls are blocking this program; then try again. If problems continue, the server may be down. Please, try again later."
+msgstr "No se ha podido comunicar con el servidor. Verifique que hay conexión con internet y que no haya un firewall que bloquee a este programa; luego, reinténtelo. Si el problema continua, el servidor podría estar caido. Por favor, reinténtelo más tarde."
+
+#: graphic/Formatter4.cpp:503
+msgid "[lmFormatter4::RenderJustified]: Program limitation: Maximum number of staves per system has been exceeded."
+msgstr "[lmFormatter4::RenderJustified]: Límitación de programa: Se ha excedido el máximo número de pentagramas por sistema."
 
 #: exercises/Constrains.h:194
 #: exercises/Constrains.h:196

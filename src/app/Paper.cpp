@@ -94,6 +94,7 @@ lmPaper::lmPaper()
     m_numPages = 0;
     m_fRedraw = true;
     m_pScore = (lmScore*)NULL;
+    m_nLastScoreID = -1;
 
 }
 
@@ -119,12 +120,13 @@ void lmPaper::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight
     // we need to recreate the bitmaps
     bool fDrawScore = m_fRedraw;
     m_fRedraw = false;
-    if (!m_pScore || m_pScore->GetID() != pScore->GetID() || m_rScale != rScale || fDrawScore) {
+    if (!m_pScore || m_nLastScoreID != pScore->GetID() || m_rScale != rScale || fDrawScore) {
 
         fDrawScore = true;
 
         //store new values
         m_pScore = pScore;
+        m_nLastScoreID = m_pScore->GetID();
         m_rScale = rScale;
         m_xPageSize = paperWidth;
         m_yPageSize = paperHeight;

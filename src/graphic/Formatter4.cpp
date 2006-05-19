@@ -295,7 +295,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
                 //compute Y position after adding after system space and a new system
                 lmLUnits yNew = pPaper->GetCursorY() + m_pScore->SystemsDistance() + nSystemHeight;
                 if (yNew > pPaper->GetMaximumY() ) {
-                    wxLogMessage(_T("Page break needed. yCur=%d, yNew=%d, MaximumY=%d"), pPaper->GetCursorY(), yNew, pPaper->GetMaximumY());
+                    //wxLogMessage(_T("Page break needed. yCur=%d, yNew=%d, MaximumY=%d"), pPaper->GetCursorY(), yNew, pPaper->GetMaximumY());
                     pPaper->RestartPageCursors();       //restore page cursors are at top-left corner
                     //start a new page
                     pBoxPage = pBoxScore->AddPage();
@@ -311,8 +311,8 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             pBoxSystem->SetPositionY(ySystemPos);
             pBoxSystem->SetFirstMeasure(nAbsMeasure);
 
-            wxLogMessage(_T("[lmFormatter4::RenderJustified] Starting to print nSystem=%d. Ypos=%d"),
-                nSystem, ySystemPos );
+            //wxLogMessage(_T("[lmFormatter4::RenderJustified] Starting to print nSystem=%d. Ypos=%d"),
+            //    nSystem, ySystemPos );
 
             nRelMeasure = 1;    // the first measure in current system
             while (nAbsMeasure <= nTotalMeasures)
@@ -452,8 +452,8 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             // compute system height
             if (nSystem == 1) {
                 nSystemHeight = pPaper->GetCursorY() - ySystemPos;
-                wxLogMessage(_T("[lmFormatter4::RenderJustified] nSystemHeight = %d"),
-                    nSystemHeight );
+                //wxLogMessage(_T("[lmFormatter4::RenderJustified] nSystemHeight = %d"),
+                //    nSystemHeight );
             }
 
 

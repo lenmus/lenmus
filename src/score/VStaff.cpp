@@ -1,4 +1,3 @@
-// RCS-ID: $Id: VStaff.cpp,v 1.5 2006/03/03 15:01:11 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -524,7 +523,7 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
     // the font for drawing is scaled by the DC.
     pStaff->SetFontDraw( pPaper->GetFont(3 * dyLinesL) );        //logical points
 
-    wxLogMessage(_T("[lmVStaff::SetFont] dyLinesL=%d"), dyLinesL); 
+    //wxLogMessage(_T("[lmVStaff::SetFont] dyLinesL=%d"), dyLinesL); 
 
     //// the font for dragging is not scaled by the DC as all dragging operations takes
     //// place dealing with device units

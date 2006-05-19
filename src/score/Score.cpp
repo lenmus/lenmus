@@ -330,7 +330,7 @@ lmInstrument* lmScore::GetLastInstrument()
 
 wxString lmScore::Dump()
 {
-    wxString sDump = _T("Global objects:\n");
+    wxString sDump = wxString::Format(_T("Score ID: %d\nGlobal objects:\n"), GetID());
 
     //loop to dump global StaffObjs
     lmStaffObj* pSO;
@@ -354,8 +354,8 @@ wxString lmScore::Dump()
 wxString lmScore::SourceLDP()
 {
     wxString sSource = 
-        wxString::Format(_T("Score\n   (Vers 1.3)\n   (NumInstrumentos %d)\n"),
-                    m_cInstruments.GetCount() );
+        wxString::Format(_T("Score ID: %d\n\n(Score\n   (Vers 1.3)\n   (NumInstrumentos %d)\n"),
+                    GetID(), m_cInstruments.GetCount() );
 
     //loop for each instrument
      lmInstrument *pInstr = GetFirstInstrument();

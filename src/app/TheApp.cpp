@@ -81,7 +81,6 @@ void __cdecl wxAssert(int n, char const * s,int m,char const *s2,char const *s3)
 
 
 
-
 #include "TheApp.h"
 #include "MainFrame.h"
 #include "ScoreDoc.h"
@@ -456,14 +455,17 @@ bool lmTheApp::OnInit(void)
     g_pMainFrame->OnOpenBook(event);
 #endif
 
+    //cursor normal and terminate
+    ::wxEndBusyCursor();
+
     //check for updates if this option is set up. Default: do check
     bool fCheckForUpdates;
     g_pPrefs->Read(_T("/Options/CheckForUpdates"), &fCheckForUpdates, true );
-    if (fCheckForUpdates)
-        g_pMainFrame->DoCheckForUpdates(lmSILENT);
-
-    //cursor normal and terminate
-    ::wxEndBusyCursor();
+    if (fCheckForUpdates) {
+        g_pMainFrame->SilentlyCheckForUpdates(true);
+        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, MENU_CheckForUpdates);
+        wxPostEvent(g_pMainFrame, event);
+    }
 
     return true;
 }

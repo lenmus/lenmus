@@ -50,9 +50,12 @@
 
 #include "wx/numdlg.h"
 
-#include "../updater/Updater.h"     //to give access to constants lmSILENT and lmNOT_SILENT to
-                                    //any one invoking DoCheckForUpdates()
-
+//IDs for menu events that must be public (i.e. to generate them by program)
+enum
+{
+    MENU_CheckForUpdates = 1100,
+    MENU_Last_Public_ID
+};
 
 
 // Class lmMainFrame defines the main MDI frame for the application
@@ -155,7 +158,7 @@ public:
     void SetOpenHelpButton(bool fButtonPressed);
     void UpdateMenuAndToolbar();
     void UpdateToolbarsLayout();
-    void DoCheckForUpdates(bool fSilent);
+    void SilentlyCheckForUpdates(bool fSilent);
 
 
     //eBooks controller
@@ -192,6 +195,8 @@ protected:
     wxToolBar*      m_pToolbar;
     wxStatusBar*    m_pStatusbar;
     wxToolBar*      m_pNavigationToolbar;
+
+    bool    m_fSilentCheck;
 
 
     DECLARE_EVENT_TABLE()

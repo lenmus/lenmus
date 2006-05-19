@@ -67,6 +67,7 @@
 #include "../../wxMidi/include/wxMidi.h"    //MIDI support throgh Portmidi lib
 #include "../sound/MidiManager.h"           //access to Midi configuration
 #include "Preferences.h"                    //access to user preferences
+#include "../updater/Updater.h" 
 
 //access to error's logger
 #include "../app/Logger.h"
@@ -152,13 +153,13 @@ enum
     // Menu File
     MENU_File_New = wxID_NEW,
     MENU_File_Open = wxID_OPEN,
-    MENU_File_Import = 1005,
 #else
     // Menu File
     MENU_File_New = 1000,
     MENU_File_Open,
-    MENU_File_Import = 1005,
 #endif
+    MENU_File_Import = MENU_Last_Public_ID,
+    MENU_OpenBook,
 
      // Menu View
     MENU_View_Tools,
@@ -194,14 +195,12 @@ enum
     MENU_Play_Pause,
 
     //Menu Options
-    MENU_Options,
+    MENU_Preferences,
 
     // Menu Help
     MENU_Help_About,
     MENU_OpenHelp,
-    MENU_CheckForUpdates,
     MENU_VisitWebsite,
-    MENU_OpenBook,
 
     // Menu Print
     MENU_Print,
@@ -284,7 +283,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_MENU (MENU_Play_Stop, lmMainFrame::OnPlayStop)
     EVT_MENU (MENU_Play_Pause, lmMainFrame::OnPlayPause)
 
-    EVT_MENU (MENU_Options, lmMainFrame::OnOptions)
+    EVT_MENU (MENU_Preferences, lmMainFrame::OnOptions)
 
     EVT_MENU      (MENU_OpenBook, lmMainFrame::OnOpenBook)
     EVT_UPDATE_UI (MENU_OpenBook, lmMainFrame::OnOpenBookUI)
@@ -372,6 +371,8 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     m_fBookOpened = false;
     m_fHelpOpened = false;
 
+    m_fSilentCheck = false;     //default: visible 'check for updates' process
+
 
     //! @todo metronome LED
     // Set picMetronomoOn = LoadResPicture("METRONOMO_ON", vbResBitmap)
@@ -455,7 +456,7 @@ void lmMainFrame::CreateMyToolBar()
     m_pToolbar->AddTool(wxID_PASTE, _("Paste"), wxArtProvider::GetIcon(_T("tool_paste"), wxART_TOOLBAR, nSize), _("Paste"));
     m_pToolbar->AddTool(MENU_Print, _("Print"), wxArtProvider::GetIcon(_T("tool_print"), wxART_TOOLBAR, nSize), _("Print document"));
     m_pToolbar->AddSeparator();
-    m_pToolbar->AddTool(MENU_Options, _("Options"), wxArtProvider::GetIcon(_T("tool_options"), wxART_TOOLBAR, nSize), _("Options"));
+    m_pToolbar->AddTool(MENU_Preferences, _("Preferences"), wxArtProvider::GetIcon(_T("tool_options"), wxART_TOOLBAR, nSize), _("Set user preferences"));
     m_pToolbar->AddTool(MENU_OpenHelp, _("Help"), wxArtProvider::GetIcon(_T("tool_help"), wxART_TOOLBAR, nSize), _("Help button"), wxITEM_CHECK);
     m_pToolbar->AddTool(MENU_OpenBook, _("Books"), wxArtProvider::GetIcon(_T("tool_open_ebook"), wxART_TOOLBAR, nSize), _("Show the music books"), wxITEM_CHECK);
 
@@ -761,13 +762,13 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* view,
     // Options menu
     wxMenu* options_menu = new wxMenu;
 #if defined(__WXMSW__) || defined(__WXGTK__)
-    pItem = new wxMenuItem(options_menu, MENU_Options,  _("&Preferences"),
+    pItem = new wxMenuItem(options_menu, MENU_Preferences,  _("&Preferences"),
                             _T("Open help book"), wxITEM_CHECK);
     pItem->SetBitmaps( wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nIconSize),
                        wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nIconSize) ); 
     options_menu->Append(pItem); 
 #else
-    options_menu->Append(MENU_Options, _("&Preferences"));
+    options_menu->Append(MENU_Preferences, _("&Preferences"));
 #endif
 
 
@@ -1116,10 +1117,9 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
 
 }
 
-void lmMainFrame::DoCheckForUpdates(bool fSilent)
+void lmMainFrame::SilentlyCheckForUpdates(bool fSilent)
 {
-    lmUpdater oUpdater;
-    oUpdater.CheckForUpdates(this, fSilent);
+    m_fSilentCheck = fSilent;
 }
 
 
@@ -1134,7 +1134,11 @@ void lmMainFrame::OnVisitWebsite(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnCheckForUpdates(wxCommandEvent& WXUNUSED(event))
 {
-    DoCheckForUpdates(lmNOT_SILENT);
+    lmUpdater oUpdater;
+    oUpdater.CheckForUpdates(this, m_fSilentCheck);
+
+    //force a visible 'check for updates' process unless previously reset flag
+    SilentlyCheckForUpdates(false);
 }
 
 void lmMainFrame::OnAbout(wxCommandEvent& WXUNUSED(event))

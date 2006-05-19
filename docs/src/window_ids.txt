@@ -10,7 +10,7 @@ same time. According wxWidgets documentation you can use wxID_HIGHEST to determi
 the number above which it is safe to define your own identifiers. Or, you can
 use identifiers below wxID_LOWEST.
 
-MainFrame: 1000 - 1199
+MainFrame: 1000 - 1299
 
 TextBookFrame: 2000-2099
 
