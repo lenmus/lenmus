@@ -50,6 +50,9 @@
 #include "wx/image.h"
 #include "wx/xrc/xmlres.h"          // use the xrc resource system
 #include "wx/splash.h"
+#include <wx/datetime.h>
+
+
 
 #if !_DEBUG
 extern void __cdecl wxAssert(int n, char const * s,int m,char const *s2,char const *s3);
@@ -459,12 +462,51 @@ bool lmTheApp::OnInit(void)
     ::wxEndBusyCursor();
 
     //check for updates if this option is set up. Default: do check
-    bool fCheckForUpdates;
-    g_pPrefs->Read(_T("/Options/CheckForUpdates"), &fCheckForUpdates, true );
-    if (fCheckForUpdates) {
-        g_pMainFrame->SilentlyCheckForUpdates(true);
-        wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, MENU_CheckForUpdates);
-        wxPostEvent(g_pMainFrame, event);
+    wxString sCheckFreq = g_pPrefs->Read(_T("/Options/CheckForUpdates/Frequency"), _T("Weekly") );
+    if (sCheckFreq != _T("Never")) {
+        //get date of last sucessful check
+        bool fDoCheck = false;
+        wxString sLastCheckDate = 
+            g_pPrefs->Read(_T("/Options/CheckForUpdates/LastCheck"), _T(""));
+        if (sLastCheckDate == _T("")) {
+            fDoCheck = true;
+        }
+        else {
+            wxDateTime dtLastCheck, dtNextCheck;
+            wxDateSpan dsSpan;
+            const wxChar *p = dtLastCheck.ParseDate(sLastCheckDate);
+            if ( !p ) {
+                wxLogMessage(_T("[TheApp::OnInit] Error parsing the last check for updates date '%s'.\n"), sLastCheckDate);
+                fDoCheck = true;
+            }
+            else {
+                //verify elapsed time
+                if (sCheckFreq == _T("Daily"))
+                    dsSpan = wxDateSpan::Days(1);
+                else if (sCheckFreq == _T("Weekly"))
+                    dsSpan = wxDateSpan::Weeks(1);
+                else
+                    dsSpan = wxDateSpan::Months(1);
+
+                dtNextCheck = dtLastCheck;
+                dtNextCheck.Add(dsSpan); 
+                fDoCheck = (dtNextCheck <= wxDateTime::Now());
+            }
+
+            wxLogMessage(_T("[TheApp::OnInit] CheckForUpdates: dtLastCheck='%s', sCheckFreq=%s (%d), dtNextCheck='%s', fDoCheck=%s"),
+                    dtLastCheck.Format(_T("%x")).c_str(),
+                    sCheckFreq, dsSpan.GetTotalDays(),
+                    dtNextCheck.Format(_T("%x")).c_str(),
+                    (fDoCheck ? _T("True") : _T("False")) );
+
+        }
+
+        // if time for another check, do it
+        if (fDoCheck) {
+            g_pMainFrame->SilentlyCheckForUpdates(true);
+            wxCommandEvent event(wxEVT_COMMAND_MENU_SELECTED, MENU_CheckForUpdates);
+            wxPostEvent(g_pMainFrame, event);
+        }
     }
 
     return true;

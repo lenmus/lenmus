@@ -48,14 +48,55 @@
                 <flag>wxGROW|wxALL</flag>
                 <border>5</border>
                 <object class="wxBoxSizer">
-                    <orient>wxHORIZONTAL</orient>
+                    <orient>wxVERTICAL</orient>
                     <object class="sizeritem">
-                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <flag>wxGROW|wxALL</flag>
                         <border>5</border>
-                        <object class="wxCheckBox" name="chkUpdates">
-                            <style>wxCHK_2STATE</style>
-                            <label>Automatically check for updates at program start</label>
-                            <checked>0</checked>
+                        <object class="wxStaticBoxSizer" name="wxID_ANY">
+                            <orient>wxVERTICAL</orient>
+                            <label>Software updates</label>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_LEFT|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxBoxSizer">
+                                    <orient>wxHORIZONTAL</orient>
+                                    <object class="sizeritem">
+                                        <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                        <border>5</border>
+                                        <object class="wxStaticText" name="wxID_STATIC">
+                                            <label>Check for updates</label>
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                        <border>5</border>
+                                        <object class="wxComboBox" name="cboCheckFreq">
+                                            <style>wxCB_DROPDOWN</style>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_LEFT|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxBoxSizer">
+                                    <orient>wxHORIZONTAL</orient>
+                                    <object class="sizeritem">
+                                        <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                        <border>5</border>
+                                        <object class="wxStaticText" name="wxID_STATIC">
+                                            <label>Last successful check:</label>
+                                        </object>
+                                    </object>
+                                    <object class="sizeritem">
+                                        <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                        <border>5</border>
+                                        <object class="wxStaticText" name="txtLastCheckDate">
+                                            <label>dd/mm/aaaa</label>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
                         </object>
                     </object>
                 </object>

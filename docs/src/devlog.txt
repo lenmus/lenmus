@@ -65,6 +65,9 @@ LenMus project philosophy (to remind me to always stay on this):
   
   ---------------------------------------------------------------------------------------
   
+  - Proxy issue for Updater
+  - Bug: Clefs reading exercise: nothing displayed in ScoreAuxCtrl area
+  
 Organizational issues:
     - Integrate wxMidi so that LenMus package at SVN be self-contained.
     - Modify panel pendrive so that erased files do not re-appear

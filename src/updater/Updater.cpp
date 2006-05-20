@@ -37,8 +37,9 @@
 #include "wx/wfstream.h"
 #include "wx/protocol/http.h"
 #include "wx/mstream.h"         //to use files in memory
-#include <wx/mimetype.h> // mimetype support
+#include <wx/mimetype.h>        // mimetype support
 #include <wx/url.h>
+#include <wx/datetime.h>        //to get and save the date of last successful check
 
 
 
@@ -294,6 +295,10 @@ void lmUpdater::CheckForUpdates(wxFrame* pParent, bool fSilent)
         dlg.AddPackage(GetPackage(), GetDescription());
         dlg.ShowModal();
     }
+
+    //save the date of last successful check
+    wxString sLastCheckDate = (wxDateTime::Now()).Format(_T("%x"));
+    g_pPrefs->Write(_T("/Options/CheckForUpdates/LastCheck"), sLastCheckDate);
 
 }
 

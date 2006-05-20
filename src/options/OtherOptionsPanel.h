@@ -42,7 +42,8 @@ public:
 
 private:
     // controls
-    wxCheckBox*     m_pChkUpdates;
+    wxStaticText*   m_pTxtLastCheck;
+    wxComboBox*     m_pCboCheckFreq;
 
     // other member variables
     bool            m_fCheckForUpdates;

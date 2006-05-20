@@ -56,11 +56,37 @@ lmOtherOptionsPanel::lmOtherOptionsPanel(wxWindow* parent)
     pBmpIcon->SetBitmap( wxArtProvider::GetIcon(_T("opt_other"), wxART_TOOLBAR, wxSize(24,24)) );
 
     //store pointer to wxChoice control
-    m_pChkUpdates = XRCCTRL(*this, "chkUpdates", wxCheckBox);
+    m_pCboCheckFreq = XRCCTRL(*this, "cboCheckFreq", wxComboBox);
+    m_pTxtLastCheck = XRCCTRL(*this, "txtLastCheckDate", wxStaticText);
 
-    //Get current selected value
-    g_pPrefs->Read(_T("/Options/CheckForUpdates"), &m_fCheckForUpdates, true );
-    m_pChkUpdates->SetValue(m_fCheckForUpdates);
+    // populate combo box
+    m_pCboCheckFreq->Append( _("Never") );
+    m_pCboCheckFreq->Append( _("Daily") );
+    m_pCboCheckFreq->Append( _("Weekly") );
+    m_pCboCheckFreq->Append( _("Monthly") );
+
+    //Select current setting
+    wxString sCheckFreq = g_pPrefs->Read(_T("/Options/CheckForUpdates/Frequency"), _T("Weekly") );
+    if (sCheckFreq == _("Never"))
+        m_pCboCheckFreq->SetSelection(0);
+    else if (sCheckFreq == _("Daily"))
+        m_pCboCheckFreq->SetSelection(1);
+    else if (sCheckFreq == _("Weekly"))
+        m_pCboCheckFreq->SetSelection(2);
+    else if (sCheckFreq == _("Monthly"))
+        m_pCboCheckFreq->SetSelection(3);
+    else {
+        m_pCboCheckFreq->SetSelection(2);       // assume weekly
+        wxLogMessage(_T("[lmOtherOptionsPanel] Invalid value in ini file. Key '/Options/CheckForUpdates/Frequency', value='%s'"),
+            sCheckFreq );
+    }
+
+    //display last check date
+    wxString sLastCheckDate = g_pPrefs->Read(_T("/Options/CheckForUpdates/LastCheck"), _T(""));
+    if (sLastCheckDate == _T("")) {
+        sLastCheckDate = _("Never");
+    }
+    m_pTxtLastCheck->SetLabel(sLastCheckDate);
 
 
 }
@@ -76,6 +102,6 @@ bool lmOtherOptionsPanel::Verify()
 
 void lmOtherOptionsPanel::Apply()
 {
-    m_fCheckForUpdates = m_pChkUpdates->GetValue();
-    g_pPrefs->Write(_T("/Options/CheckForUpdates"), m_fCheckForUpdates );
+    wxString sCheckFreq = m_pCboCheckFreq->GetValue();
+    g_pPrefs->Write(_T("/Options/CheckForUpdates/Frequency"), sCheckFreq);
 }
