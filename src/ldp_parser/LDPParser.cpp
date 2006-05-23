@@ -1,4 +1,3 @@
-// RCS-ID: $Id: LDPParser.cpp,v 1.16 2006/03/03 15:01:11 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -1224,7 +1223,8 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
                 }
                 else {
                     // and the previous note must be beamed
-                    if (!g_pLastNoteRest->IsBeamed()) {
+                    if (!g_pLastNoteRest->IsBeamed() || 
+                        g_pLastNoteRest->GetBeamType(0) == eBeamEnd) {
                         AnalysisError(
                             _("Requesting ending a beaming a group but previous note is not beamed. Beaming ignored."));
                         fCloseBeam = false;

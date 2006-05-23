@@ -26,6 +26,40 @@
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">23-may-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>Bug fixed: LDP parser did not detect correctly invalid 'g-' flag when a valid
+        'g-' flag in previous note/rest. Now fixed.</li>
+      <li>Bug fixed: primary and secondary beams too near. Distance has been adjusted.</li>
+      <li>Bug fixed in Music Reading Level 2 eBook: patterns for lessons 13 (219) and (222)
+        had barlines marks in erroneous places. As a result invalid scores were generated.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">22-may-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>Bug fixed: Clefs reading exercise does not displays any score. The bug was
+        caused by the fix to memory leaks problem (3/may); as the fix code was introduced
+        in all exercises, in case of lmMusicReadingCtrol it was, inadvertely,
+        placed after creating the new score, instead of before. Now fixed.</li>
+      <li>AboutDialog fully re-coded. It has been re-designed to facilitate access to
+        information and maintenance. Now uses XRC resources. Displayed information
+        has been reviewed for final stable version.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">21-may-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>Improving updater: Testing and fixing issues with/without internet connection; 
+        fixing problem to run updater from TheApp::OnInit(). Added options to select
+        frequency of checkings (never, daily, weekly or monthly); panel
+        lmOtherOptionsPanel modified accordingly.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">19-may-06</td>
     <td class="ListaPar">
     <ul>
@@ -34,7 +68,6 @@
         than the previous one, lmPaper did not re-draw the score and the old non-valid
         bitmaps got displayed. I tried to fix this bug (2-may-06) but fix did not take
         into account all cases. No I think this problem is definitely fixed.</li>
-</li>
     </ul>
     </td></tr>
 <tr valign="top">

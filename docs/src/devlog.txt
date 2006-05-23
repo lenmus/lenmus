@@ -38,6 +38,7 @@ other tags in code:
  WXDEP: Code copied from wxWidgets or based on wxWidgets source code. The original
         code could change in future wxWidgets versions and we have to review to 
         adapt to those future changes.
+ DOC: Important comment to copy/adapt for program documentation. 
  OBSOLETE: To mark obselete parts that remain there for reference (i.e. to illustrate how
         to do something)
 
@@ -64,10 +65,7 @@ LenMus project philosophy (to remind me to always stay on this):
       Lippman's book is the cure.
   
   ---------------------------------------------------------------------------------------
-  
-  - Proxy issue for Updater
-  - Bug: Clefs reading exercise: nothing displayed in ScoreAuxCtrl area
-  
+ 
 Organizational issues:
     - Integrate wxMidi so that LenMus package at SVN be self-contained.
     - Modify panel pendrive so that erased files do not re-appear
@@ -79,10 +77,11 @@ Area 0: Bugs to solve
     - Test score: 032_all_key_signatures_v13.txt renders nothing.
     - ¿lmInterval: fix names Unison augmented, Unison perfect, etc...?
     - If Midi Wizard is cancelled some non-relevant error messages are displayed when
-		there is no soundcard on the computer (tested with VMWare)
+        there is no soundcard on the computer (tested with VMWare)
 
         
 Area 1: New features to add in short term to working release
+    - Proxy issue for Updater
     - Add buttons for answers in scales build exercise.
     - TheoIntervals: double accidentals not generated. Analyze issue of 'four times augmnted'
     - TheoIntervals settings re-design: choose interval types (major, minor, augmented, double augmented...)
@@ -94,7 +93,7 @@ Area 2: Notation editor
 
 Area 3: Analysis and algorithms
     - sequences (Lylipond) vs. back/forward (MusicXML)
-    - Role of GraphicManager vs. lmPaper. Gradualy move lmPaper methods to lmBoxPage. 
+    - Role of GraphicManager vs. lmPaper. Gradually move lmPaper methods to lmBoxPage. 
     
 Area 4: Documentation
 
@@ -109,6 +108,8 @@ Area 6: Design new exercises
             
 Other:
     - Lyrics: compute maximum y and position lyric at a greater y
+    - To facilitate internationalization, eBooks Introduction and Single Exercises should
+    be coded inside the program instead of being external html files.
 
 
 
@@ -116,7 +117,7 @@ Other:
 Planning: comming releases 
 ******************************************************************************************
 
-	
+    
 27/may/2006 - 3.0 release (beta 3.0b1 + 3 weeks)
 ---------------------------------------------------
     - Replacement of version 2.0 that will be dropped from web site.

@@ -109,6 +109,7 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
     m_pInstrument = pInstr;
 
     // default lmVStaff margins (logical units = tenths of mm)
+    m_nHeight = 0;          //a value of 0 means 'compute it'
     m_leftMargin = 0;
     m_topMargin = 0;
     m_rightMargin = 0;
@@ -734,19 +735,21 @@ lmLUnits lmVStaff::GetYBottom()
 
 lmLUnits lmVStaff::GetVStaffHeight()
 {
-    //! @todo all
-    //devuelve la altura (incluido el espacio de separación posterior) del conjunto de pentagramas
-    //que componen esta parte. Está expresado en décimas de línea
-    
-    //Dim iP As Long, rAlto As Single
-    //rAlto = m_topMargin
-    //iP = 1
-    //for (iP = 1 To m_nNumStaves
-    //    rAlto = rAlto + CSng((m_nNumLineas(iP) - 1) * 10) + pStaff->GetAfterSpace()
-    //}  // iP
-    //
-    //return rAlto - pStaff->GetAfterSpace() + m_bottomMargin
-    return lmToLogicalUnits(2, lmCENTIMETERS);      // 2cm
+    if (m_nHeight == 0) {
+        m_nHeight = m_topMargin + m_bottomMargin;
+        // iterate over the collection of Staves (lmStaff Objects) to add up its
+        // height and its after space
+        lmStaff* pStaff;
+        StaffList::Node* pNode = m_cStaves.GetFirst();
+        for ( ; pNode; ) {
+            pStaff = (lmStaff *)pNode->GetData();
+            m_nHeight += pStaff->GetHeight();
+            m_nHeight += pStaff->GetAfterSpace();
+            pNode = pNode->GetNext();
+        }
+    }
+
+    return m_nHeight;
     
 }
 

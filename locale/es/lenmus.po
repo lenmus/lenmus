@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.0\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-05-20 00:23+0100\n"
+"PO-Revision-Date: 2006-05-23 21:11+0100\n"
 "Last-Translator: cs <cs>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr ""
 #: score/NoteRestObj.cpp:145
 #: score/Text.cpp:225
 #: score/TupletBracket.cpp:281
-#: app/FontManager.cpp:121
+#: app/FontManager.cpp:120
 msgid "Sorry, an error has occurred while allocating the font."
 msgstr "Ha ocurrido un error al cargar el tipo de letra."
 
@@ -176,42 +176,42 @@ msgstr "Sol menor"
 msgid "D minor"
 msgstr "Re menor"
 
-#: score/Note.cpp:1392
+#: score/Note.cpp:1400
 #, c-format
 msgid "c%d"
 msgstr "c%d"
 
-#: score/Note.cpp:1392
+#: score/Note.cpp:1400
 #, c-format
 msgid "d%d"
 msgstr "d%d"
 
-#: score/Note.cpp:1392
+#: score/Note.cpp:1400
 #, c-format
 msgid "e%d"
 msgstr "e%d"
 
-#: score/Note.cpp:1392
+#: score/Note.cpp:1400
 #, c-format
 msgid "f%d"
 msgstr "f%d"
 
-#: score/Note.cpp:1392
+#: score/Note.cpp:1400
 #, c-format
 msgid "g%d"
 msgstr "g%d"
 
-#: score/Note.cpp:1392
+#: score/Note.cpp:1400
 #, c-format
 msgid "a%d"
 msgstr "a%d"
 
-#: score/Note.cpp:1392
+#: score/Note.cpp:1400
 #, c-format
 msgid "b%d"
 msgstr "b%d"
 
-#: auxmusic/ComposerV5.cpp:221
+#: auxmusic/ComposerV5.cpp:220
 msgid "[lmComposer5::GenerateScore] No usable fragments!"
 msgstr "[lmComposer5::GenerateScore] ¡Ningún fragmento utilizable!"
 
@@ -346,94 +346,94 @@ msgstr "14ª"
 msgid "Two octaves"
 msgstr "dos octavas"
 
-#: ldp_parser/LDPParser.cpp:385
+#: ldp_parser/LDPParser.cpp:384
 #, c-format
 msgid "Element RAIZ expected but found element %s. Analysis stopped."
 msgstr "Se esperaba elemento 'RAIZ' pero viene un elemento '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:516
+#: ldp_parser/LDPParser.cpp:515
 msgid "Syntax error: more closing parenthesis than parenthesis opened. Analysis stopped."
 msgstr "Error de sintaxis: hay más paréntesis de cierre que de apertura. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:541
+#: ldp_parser/LDPParser.cpp:540
 #, c-format
 msgid "Element 'Score' expected but found element %s. Analysis stopped."
 msgstr "Se esperaba elemento 'Partitura' pero viene un elemento '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:555
+#: ldp_parser/LDPParser.cpp:554
 #, c-format
 msgid "Element 'Vers' expected but found element %s. Analysis stopped."
 msgstr "Se esperaba elemento 'Vers' pero viene un elemento '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:579
+#: ldp_parser/LDPParser.cpp:578
 #, c-format
 msgid "Error analysing LDP score: LDP version (%d) not supported. Analysis stopped."
 msgstr "Error analizando una partitura LDP: La versión de LDP (%d) no está soportada. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:612
+#: ldp_parser/LDPParser.cpp:611
 #, c-format
 msgid "Element 'NumInstrumentos' expected but found element %s. Analysis stopped."
 msgstr "Se esperaba elemento 'NumInstrumentos' pero viene un elemento '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:659
+#: ldp_parser/LDPParser.cpp:658
 #, c-format
 msgid "Element '%s' expected but found element %s. Analysis stopped."
 msgstr "Se esperaba elemento '%s' pero viene un elemento '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:679
+#: ldp_parser/LDPParser.cpp:678
 #, c-format
 msgid "Element %s expected but found element %s. Analysis stopped."
 msgstr "Se esperaba elemento '%s' pero viene un elemento '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:732
+#: ldp_parser/LDPParser.cpp:731
 #, c-format
 msgid "Expected node '%s' but found node '%s'. Analysis ended."
 msgstr "Se esperaba un nodo '%s' pero viene un nodo '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:751
+#: ldp_parser/LDPParser.cpp:750
 #, c-format
 msgid "Expected 'número de parte' but found '%s'. Analysis stopped."
 msgstr "Se esperaba un 'número de parte' pero viene '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:763
+#: ldp_parser/LDPParser.cpp:762
 #, c-format
 msgid "Number of staves expected but found '%s'. Analysis stopped."
 msgstr "Se esperaba el número de pentagramas pero viene '%s'. Analisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:889
+#: ldp_parser/LDPParser.cpp:888
 #, c-format
 msgid "[AnalyzeMeasure]: Expected node 'Figura', 'Grupo', 'Atributo' or 'Desplazamiento' but found node '%s'. Node ignored."
 msgstr "[AnalyzeMeasure]: Se esperaba nodo 'Figura', 'Grupo', 'Atributo' o 'Desplazamiento' pero vieneun nodo '%s'. Nodo ignorado."
 
-#: ldp_parser/LDPParser.cpp:1115
+#: ldp_parser/LDPParser.cpp:1114
 #, c-format
 msgid "Missing parameters in node nota '%s'. Assumed (n c4 n)."
 msgstr "Falta parámetro en nodo nota '%s'. Se utilizará (n c4 n)."
 
-#: ldp_parser/LDPParser.cpp:1133
+#: ldp_parser/LDPParser.cpp:1132
 #, c-format
 msgid "Unknown note pitch in '%s'. Assumed 'c4'."
 msgstr "Altura de nota desconocida en '%s'. Se usará 'c4'."
 
-#: ldp_parser/LDPParser.cpp:1140
+#: ldp_parser/LDPParser.cpp:1139
 #: ldp_parser/LDPParser.cpp:1429
 #, c-format
 msgid "Note type unknown in '%s'. A quarter note assumed."
 msgstr "Tipo de nota desconocido en '%s'. Se supone negra."
 
-#: ldp_parser/LDPParser.cpp:1176
+#: ldp_parser/LDPParser.cpp:1175
 msgid "Requesting beaming a note longer than eight. Beaming ignored."
 msgstr "Sa solicita agrupar una nota mayor que la corchea. Agrupación ignorada. "
 
-#: ldp_parser/LDPParser.cpp:1191
+#: ldp_parser/LDPParser.cpp:1190
 msgid "Requesting to start a tuplet but there is already a tuplet open. Tag 't3' ignored."
 msgstr "Se solicita iniciar una tupla pero ya hay una abierta. Se ignora etiqueta 't3'."
 
-#: ldp_parser/LDPParser.cpp:1211
+#: ldp_parser/LDPParser.cpp:1210
 msgid "Requesting to end a tuplet but there is not an open tuplet. Tag 't-' ignored."
 msgstr "Se solicita finalizar una tupla pero no hay ninguna iniciada. Se ignora etiqueta 't-'."
 
-#: ldp_parser/LDPParser.cpp:1222
+#: ldp_parser/LDPParser.cpp:1221
 msgid "Requesting ending a beaming a group but there is not a  previous note. Beaming ignored."
 msgstr "Se solicita finalizar grupo pero no hay ninguno iniciado. Se ignora."
 
@@ -517,7 +517,7 @@ msgstr "Ambos son iguales"
 #: exercises/ScoreCtrol.cpp:188
 #: exercises/TheoIntervalsCtrol.cpp:270
 #: exercises/TheoKeySignCtrol.cpp:154
-#: exercises/TheoMusicReadingCtrol.cpp:153
+#: exercises/TheoMusicReadingCtrol.cpp:152
 #: exercises/TheoScalesCtrol.cpp:147
 #: exercises/TheoSideReadingCtrol.cpp:153
 msgid "See source score"
@@ -528,7 +528,7 @@ msgstr "Ver partitura fuente"
 #: exercises/ScoreCtrol.cpp:192
 #: exercises/TheoIntervalsCtrol.cpp:274
 #: exercises/TheoKeySignCtrol.cpp:158
-#: exercises/TheoMusicReadingCtrol.cpp:157
+#: exercises/TheoMusicReadingCtrol.cpp:156
 #: exercises/TheoScalesCtrol.cpp:151
 #: exercises/TheoSideReadingCtrol.cpp:157
 msgid "Dump score"
@@ -538,7 +538,7 @@ msgstr "Volcado de partitura"
 #: exercises/EarIntervalsCtrol.cpp:164
 #: exercises/ScoreCtrol.cpp:196
 #: exercises/TheoIntervalsCtrol.cpp:278
-#: exercises/TheoMusicReadingCtrol.cpp:161
+#: exercises/TheoMusicReadingCtrol.cpp:160
 #: exercises/TheoScalesCtrol.cpp:155
 #: exercises/TheoSideReadingCtrol.cpp:161
 msgid "See MIDI events"
@@ -547,7 +547,7 @@ msgstr "Ver eventos MIDI"
 #: exercises/EarCompareIntvCtrol.cpp:179
 #: exercises/EarIntervalsCtrol.cpp:202
 #: exercises/TheoIntervalsCtrol.cpp:316
-#: exercises/TheoMusicReadingCtrol.cpp:170
+#: exercises/TheoMusicReadingCtrol.cpp:169
 #: exercises/TheoScalesCtrol.cpp:210
 #: exercises/TheoSideReadingCtrol.cpp:170
 msgid "Settings"
@@ -557,7 +557,7 @@ msgstr "Preferencias"
 #: exercises/EarIntervalsCtrol.cpp:219
 #: exercises/TheoIntervalsCtrol.cpp:334
 #: exercises/TheoKeySignCtrol.cpp:193
-#: exercises/TheoMusicReadingCtrol.cpp:132
+#: exercises/TheoMusicReadingCtrol.cpp:131
 #: exercises/TheoScalesCtrol.cpp:228
 #: exercises/TheoSideReadingCtrol.cpp:132
 msgid "New problem"
@@ -1271,7 +1271,7 @@ msgstr "6 b"
 msgid "7 b"
 msgstr "7 b"
 
-#: exercises/TheoMusicReadingCtrol.cpp:126
+#: exercises/TheoMusicReadingCtrol.cpp:125
 #: exercises/TheoSideReadingCtrol.cpp:126
 msgid "Go back to theory"
 msgstr "Volver a la teoría"
@@ -1788,7 +1788,7 @@ msgstr "Error en análisis de archivo XML "
 
 #: xml_parser/XMLParser.cpp:82
 #: app/Updater.cpp:105
-#: updater/Updater.cpp:171
+#: updater/Updater.cpp:172
 #, c-format
 msgid "Error. <%s> files are not supported"
 msgstr "Error. Archivos <%s> no soportados"
@@ -1964,133 +1964,113 @@ msgstr "Analizando <placement>: placement='%s'>"
 msgid "<placement> element has an invalid value \"%s\". Asumed 'above'"
 msgstr "Elemento <placement> tiene un valor no válido '%s'. Se utilizará 'above'"
 
-#: app/AboutDialog.cpp:67
-msgid "About LenMus..."
-msgstr "Acerca de LenMus..."
-
-#: app/AboutDialog.cpp:78
-#: app/MainFrame.cpp:1151
-#, c-format
-msgid ""
-"Language: %s\n"
-"System locale name: %s\n"
-"Canonical locale name: %s\n"
-msgstr ""
-"Idioma: %s\n"
-"Nombre del 'System locale': %s\n"
-"Nombre canónico del ' locale': %s\n"
-
-#: app/AboutDialog.cpp:88
-msgid "Program build date:"
-msgstr "Fecha de construcción del programa:"
-
-#: app/AboutDialog.cpp:96
-msgid "wxMidi Version "
-msgstr "Versiuón de wxMidi"
-
-#: app/AboutDialog.cpp:106
-msgid "LenMus is a free program to help you in the study of music theory and ear training. It is available for Windows but soon it will be also available for Mac OS X, Linux, and other Unix-like operating systems."
-msgstr "LenMus es un programa gratuito para ayudarte en el estudio del lenguaje musical y en la educación del oido. EStá disponible para Windows pero pronto estará también para Mac OS X, Linux, y demás sistemas basados en Unix."
-
-#: app/AboutDialog.cpp:114
-msgid "This is a stable, completed release of LenMus.  However, if you find a bug or have a suggestion, please contact us."
-msgstr "Esta es una versión estable y completa del programa LenMus. Sin embargo, si encuentras algún error o tienes alguna sugerencia, por favor, contacta con nosotros."
-
-#: app/AboutDialog.cpp:119
-msgid "This is a debug version of the program but some debug features (i.e. the Debug menu item) are disabled and release version behaviour is enforced. This is so to facilitate debugging. As this is a beta version it may contain bugs and unfinished features."
-msgstr "Esta es una versión de depuración pero algunas características orientadas a la detección de errores (por ejemplo, el item 'Debug'  del menu) están desactivadas y se sigue el comportamineto de la versión de producción en la mayor parte del código. Como es una versión de depuración, seguramente contiene errores y características sin terminar."
-
-#: app/AboutDialog.cpp:127
-msgid "This is a debug development version of the program.  It may contain bugs and unfinished features."
-msgstr "Esta es una versión de depuración. Seguramente contiene errores y características sin terminar."
-
-#: app/AboutDialog.cpp:132
-msgid "We depend on feedback from you in order to continue to improve LenMus. So please visit our website and give us your bug reports  and feature requests."
-msgstr "Dependemos de tus comentarios y sugerencias para continuar mejorando el programa. Por favor, visita nuestra web y comunícanos los errores que detectes y las sugerencias que tengas. Muchas gracias."
-
-#: app/AboutDialog.cpp:142
-msgid "<p>Some icons are original artwork for LenMus project; all these original icons are released under GNU GPL licence and under Creative Commons Attribution-ShareAlike license, you can choose the one you prefer for the intended usage. The other icons are taken from different sources:<br /><br /></p><ul><li>Taken or derived from those available in the Ximian collection (http://www.novell.com/coolsolutions/feature/1637.html). Novell, who retains the copyright, has released these icons under the LGPL license. This means that you can use the icons in your programs free of charge. If you want to fork the icons into your own icon collection, you need to retain the license and the original copyrights, but from there you're free to do what you want.<br /></li>"
-msgstr "<p>Algunos iconos son diseños originales del proyecto LenMus; todos ellos se licencian bajp la licencia GNU GPL y bajo licencia Creative Commons Attribution-ShareAlike license; puedes elegir la que mejor se adapte a los fines para los que quieres utilizarlos. Los restantes iconos se han tomado de diversas fuentes:<br /><br /></p><ul><li>Copiados o derivados de los iconos disponibles en la colección Ximian (http://www.novell.com/coolsolutions/feature/1637.html). Novell, quien posee los derechos, licencia estos iconos bajo licencia GNU LGPL.<br /></li>"
-
-#: app/AboutDialog.cpp:157
-msgid "<li>Taken or derived from the GNOME project (http://art.gnome.org/themes/icon/1150), Tango theme. These icons are released under the Creative Commons Attribution-ShareAlike license.<br /></li> <li>These icons are taken or derived from KDE project (http://kde.openoffice.org/servlets/ProjectDocumentList?folderID=314&amp;expandFolder=314). These icons are released under the GNU GPL license.<br /></li> <li>Taken or derived from eMule project (http://sourceforge.net/projects/emule) icons. eMule is a GNU GPL project so I assume that its icons are also available under GNU GPL.<br /></li> <li>Taken or derived from John Zaitseff's icons (http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). According to what is said there, these icons are released under the terms of the GNU General Public License.<br /><br /></li></ul>"
-msgstr "<li>Copiados o derivados de los iconos del proyecto GNOME (http://art.gnome.org/themes/icon/1150), tema 'Tango'. Estos iconos se hayan sujetos a la licencia Creative Commons Attribution-ShareAlike license.<br /></li> <li>Tomados del proyecto KDE (http://kde.openoffice.org/servlets/ProjectDocumentList?folderID=314&amp;expandFolder=314). Estos iconos se hayan sujetos a la licencia GNU GPL license.<br /></li> <li>Copiados o derivados del proyecto eMule (http://sourceforge.net/projects/emule) icons. eMule es un proyecto con licencia GNU GPL. Por tanto, afalta de más detalles, se ha supuesto que los iconos tambén está sujetos a esa licencia.<br /></li> <li>Copiados o derivados de la colección de  John Zaitseff's (http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). SEgún lo expuesto en dicha página, esos iconos están sujetos a la licencia GNU General Public License.<br /><br /></li></ul>"
-
-#: app/AboutDialog.cpp:173
-msgid "To LenMus developers knowledge, all used icons are freely usable either under GNU GPL, LGPL licence, or Creative Commons. If this were not the case, please, let us know to stop using them. See file \"icons.htm\" in folder \"res/icons\" for more details.</p>"
-msgstr "Hasta donde he podido averiguar, todos los iconos usados estan sujetos a una de las licencias GNU GPL, GNU LGPL o Creative Commomns, por lo que pueden usarse en este proyecto. Si no fuera así, por favor, comunícamelo inmediatamente para dejar de utilizarlos. Para más detalles consulta el documento \"icons.htm\" en la carpeta \"res/icons\".</p>"
-
-#: app/AboutDialog.cpp:181
-msgid "<p>LenMus Phonascus uses <b>PortMidi</b> the Portable Real-Time MIDI Library (http://www.cs.cmu.edu/~music/portmusic/). PortMidi is copyright (c) 1999-2000 Ross Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg. Its licence permits free use. Thank you PortMidi team.</p>"
-msgstr "<p>LenMus Phonascus utiliza <b>PortMidi</b> (the Portable Real-Time MIDI Library) disponible en http://www.cs.cmu.edu/~music/portmusic/. PortMidi tiene copyright (c) 1999-2000 Ross Bencina y Phil Burk y copyright (c) 2001 Roger B. Dannenberg. Su licencia permite uso gratuito. Gracias al eqipo de PortMidi.</p>"
-
-#: app/AboutDialog.cpp:188
-msgid "<p>LenMus Phonascus is build using the <b>wxWidgets</b> application framework (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is ease to learn and extend, it has a helpful community, and also has the possibility to use it in commercial products without licencing. Thank you wxWidgets team.</p>"
-msgstr "<p>LenMus Phonascus está construido utilizando <b>wxWidgets</b>, un conjunto de clases C++ para desarrollo de aplicaciones multiplataforma (http://www.wxwidgets.org). wxWidgets es 'Open Source', es fácil de aprender, tiene una generosa comunidad de usuarios y puede usarse tambien en productos comerciales sin necesidad de licencia. Muchas gracias al euipo y a la comunidad de wxWidgets.</p>"
-
-#: app/AboutDialog.cpp:199
-msgid "Management and developent"
-msgstr "Dirección y desarrollo"
-
-#: app/AboutDialog.cpp:204
-msgid "Developers</b>"
-msgstr "Desarrolladores</b>"
-
-#: app/AboutDialog.cpp:209
-msgid "Art desings"
-msgstr "Diseño artístico"
-
-#: app/AboutDialog.cpp:213
-msgid "Musical direction"
-msgstr "Dirección musical"
-
-#: app/AboutDialog.cpp:217
-msgid "Translators</b>"
-msgstr "Traductores</b>"
-
-#: app/AboutDialog.cpp:227
-msgid " Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n."
-msgstr "Derechos reservados &copy; 2002-2006 Cecilio Salmer&oacute;n."
-
-#: app/AboutDialog.cpp:228
-msgid "<p>This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-msgstr "<p>Este programa es 'Software Libre'. Está permitido redistribuirlo y/omodificarlo, siempre y cuando se haga bajo los términosy condiciones de la Licencia Pública General GNU publicada porla Free Software Foundation, ya sea en su versión 2 ocualquier otra de las posteriores a la misma."
-
-#: app/AboutDialog.cpp:233
-msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General Public License at http://www.gnu.org/licenses/licenses.html"
-msgstr "Este programa se distribuye con la intención de que sea útil, sin embargo carece de garantía, nisiquiera tiene la garantía implícita de tipo comercial o inherente al propósito del mismo programa. Ver la Licencia Pública General GNU para más detalles, consultándola en http://www.gnu.org/licenses/licenses.html"
-
-#: app/AboutDialog.cpp:252
-msgid "Licence"
-msgstr "Licencia"
-
-#: app/AboutDialog.cpp:256
-msgid "Release information"
-msgstr "Información de versión"
-
-#: app/AboutDialog.cpp:260
-msgid "Art Design Credits"
-msgstr "Diseño artístico. Créditos."
-
-#: app/AboutDialog.cpp:263
-msgid "Software Credits"
-msgstr "Software. Créditos"
-
-#: app/AboutDialog.cpp:271
-msgid "LenMus Phonascus. Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n"
-msgstr "LenMus Phonascus. Derechos reservados &copy; 2002-2006 Cecilio Salmer&oacute;n."
-
-#: app/AboutDialog.cpp:284
+#: app/AboutDialog.cpp:99
 msgid "A free program for music language learning"
 msgstr "Un programa gratuito para el aprendizaje del lenguaje musical"
 
-#: app/AboutDialog.cpp:308
-#: ../xrc/xrc_strings.cpp:62
-#: ../xrc/xrc_strings.cpp:127
-#: ../xrc/xrc_strings.cpp:147
-#: ../xrc/xrc_strings.cpp:177
-msgid "Accept"
-msgstr "Aceptar"
+#: app/AboutDialog.cpp:122
+msgid "Purpose"
+msgstr "Propósito"
+
+#: app/AboutDialog.cpp:124
+msgid "LenMus is a free program to help you in the study of music theory and ear training. It is available for Windows but soon it will be also available for Mac OS X, Linux, and other Unix-like operating systems."
+msgstr "LenMus es un programa gratuito para ayudarte en el estudio del lenguaje musical y en la educación del oido. EStá disponible para Windows pero pronto estará también para Mac OS X, Linux, y demás sistemas basados en Unix."
+
+#: app/AboutDialog.cpp:128
+msgid "The LenMus Project is an open project, committed to the principles of Open Source, free education, and free access to information. It has no comercial purpose. It is an open workbench for working on all areas related to teaching music, and music representation and management with computers. It aims at developping public knowledge, methods and algorithms related to all these areas and at the same time provides free quality software for music students, amateurs, and teachers."
+msgstr "El proyecto LenMus es un proyecto abierto, sin objetivos comerciales, y comprometido con el software libre, la libertad de acceso a la enseñanza y a la información. Busca explorar ideas, desarrollar algoritmos públicos, aprender e investigar en todas las áreas relacionadas con el lenguaje musical, su enseñanza, y su representación y manejo por ordenadores. Y a la vez, proporciona software de calidad y gratuito a estudiantes, profesores y músicos aficionados."
+
+#: app/AboutDialog.cpp:136
+msgid "If you find a bug or have a suggestion, please contact us. We depend on your feedback in order to continue to improve LenMus. So please visit our website and give us your bug reports  and feature requests. Thank you very much."
+msgstr "Si encuentras algún error o tienes alguna sugerencia, por favor, comunícanoslo. Dependemos de tus comentarios y sugerencias para continuar mejorando el programa. Por favor, visita nuestra web y comunícanos los errores que detectes y las sugerencias que tengas. Muchas gracias."
+
+#: app/AboutDialog.cpp:150
+msgid "License"
+msgstr "Licencia"
+
+#: app/AboutDialog.cpp:152
+msgid " Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n."
+msgstr "Derechos reservados &copy; 2002-2006 Cecilio Salmer&oacute;n."
+
+#: app/AboutDialog.cpp:154
+msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
+msgstr "Este programa es 'Software Libre'. Está permitido redistribuirlo y/o modificarlo, siempre y cuando se haga bajo los términos y condiciones de la Licencia Pública General GNU publicada por la Free Software Foundation, ya sea en su versión 2 o cualquier otra de las posteriores a la misma."
+
+#: app/AboutDialog.cpp:159
+msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General Public License at http://www.gnu.org/licenses/licenses.html"
+msgstr "Este programa se distribuye con la intención de que sea útil, sin embargo carece de garantía, nisiquiera tiene la garantía implícita de tipo comercial o inherente al propósito del mismo programa. Ver la Licencia Pública General GNU para más detalles, consultándola en http://www.gnu.org/licenses/licenses.html"
+
+#: app/AboutDialog.cpp:173
+msgid "Art desing credits"
+msgstr "Diseño artístico. Créditos."
+
+#: app/AboutDialog.cpp:174
+msgid "Some icons are original artwork for LenMus project; all these original icons are released under GNU GPL licence and under Creative Commons Attribution-ShareAlike license, you can choose the one you prefer for the intended usage. The other icons are taken from different sources:"
+msgstr "Algunos iconos son diseños originales del proyecto LenMus; todos ellos se licencian bajo la licencia GNU GPL y bajo licencia Creative Commons Attribution-ShareAlike; puedes elegir la que mejor se adapte a los fines para los que quieres utilizarlos. Los restantes iconos se han tomado de diversas fuentes:"
+
+#: app/AboutDialog.cpp:179
+msgid "Taken or derived from those available in the Ximian collection (http://www.novell.com/coolsolutions/feature/1637.html). Novell, who retains the copyright, has released these icons under the LGPL license. This means that you can use the icons in your programs free of charge. If you want to fork the icons into your own icon collection, you need to retain the license and the original copyrights, but from there you're free to do what you want."
+msgstr "Copiados o derivados de los iconos disponibles en la colección Ximian (http://www.novell.com/coolsolutions/feature/1637.html). Novell, quien posee los derechos, licencia estos iconos bajo licencia GNU LGPL."
+
+#: app/AboutDialog.cpp:187
+msgid "Taken or derived from the GNOME project (http://art.gnome.org/themes/icon/1150), Tango theme. These icons are released under the Creative Commons Attribution-ShareAlike license."
+msgstr "Copiados o derivados de los iconos del proyecto GNOME (http://art.gnome.org/themes/icon/1150), tema 'Tango'. Estos iconos se hayan sujetos a la licencia Creative Commons Attribution-ShareAlike license."
+
+#: app/AboutDialog.cpp:191
+msgid "These icons are taken or derived from KDE project (http://kde.openoffice.org/servlets/ProjectDocumentList?folderID=314&amp;expandFolder=314). These icons are released under the GNU GPL license."
+msgstr "Tomados del proyecto KDE (http://kde.openoffice.org/servlets/ProjectDocumentList?folderID=314&amp;expandFolder=314). Estos iconos se hayan sujetos a la licencia GNU GPL license."
+
+#: app/AboutDialog.cpp:195
+msgid "Taken or derived from eMule project (http://sourceforge.net/projects/emule) icons. eMule is a GNU GPL project so I assume that its icons are also available under GNU GPL.<br /></li> <li>Taken or derived from John Zaitseff's icons (http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). According to what is said there, these icons are released under the terms of the GNU General Public License."
+msgstr "Copiados o derivados del proyecto eMule (http://sourceforge.net/projects/emule) icons. eMule es un proyecto con licencia GNU GPL. Por tanto, a falta de más detalles, se ha supuesto que los iconos tambén está sujetos a esa licencia.<br /></li> <li>Copiados o derivados de la colección de  John Zaitseff's (http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). Según lo expuesto en dicha página, esos iconos están sujetos a la licencia GNU General Public License."
+
+#: app/AboutDialog.cpp:202
+msgid "To LenMus developers knowledge, all used icons are freely usable either under GNU GPL, LGPL licence, or Creative Commons. If this were not the case, please, let us know to stop using them. See file \"icons.htm\" in folder \"res/icons\" for more details."
+msgstr "Hasta donde he podido averiguar, todos los iconos usados estan sujetos a una de las licencias GNU GPL, GNU LGPL o Creative Commomns, por lo que pueden usarse en este proyecto. Si no fuera así, por favor, comunícamelo inmediatamente para dejar de utilizarlos. Para más detalles consulta el documento \"icons.htm\" en la carpeta \"res/icons\".</p>"
+
+#: app/AboutDialog.cpp:217
+msgid "Software credits"
+msgstr "Software. Créditos"
+
+#: app/AboutDialog.cpp:218
+msgid "LenMus Phonascus uses <b>PortMidi</b> the Portable Real-Time MIDI Library (http://www.cs.cmu.edu/~music/portmusic/). PortMidi is copyright (c) 1999-2000 Ross Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg. Its licence permits free use. Thank you PortMidi team."
+msgstr "LenMus Phonascus utiliza <b>PortMidi</b> (the Portable Real-Time MIDI Library) disponible en http://www.cs.cmu.edu/~music/portmusic/. PortMidi tiene copyright (c) 1999-2000 Ross Bencina y Phil Burk y copyright (c) 2001 Roger B. Dannenberg. Su licencia permite uso gratuito. Gracias al eqipo de PortMidi."
+
+#: app/AboutDialog.cpp:223
+msgid "LenMus Phonascus is build using the <b>wxWidgets</b> application framework (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is ease to learn and extend, it has a helpful community, and also has the possibility to use it in commercial products without licencing. Thank you wxWidgets team."
+msgstr "LenMus Phonascus está construido utilizando <b>wxWidgets</b>, un conjunto de clases C++ para desarrollo de aplicaciones multiplataforma (http://www.wxwidgets.org). wxWidgets es 'Open Source', es fácil de aprender, tiene una generosa comunidad de usuarios y puede usarse tambien en productos comerciales sin necesidad de licencia. Muchas gracias al equipo y a la comunidad de wxWidgets."
+
+#: app/AboutDialog.cpp:237
+msgid "Build information"
+msgstr "Información de versión"
+
+#: app/AboutDialog.cpp:238
+msgid "Program build date:"
+msgstr "Fecha de construcción del programa:"
+
+#: app/AboutDialog.cpp:241
+msgid "wxMidi Version "
+msgstr "Versiuón de wxMidi"
+
+#: app/AboutDialog.cpp:242
+msgid "Language: "
+msgstr "Idioma:"
+
+#: app/AboutDialog.cpp:243
+msgid "System locale name: "
+msgstr "Configuración regional del sistema:"
+
+#: app/AboutDialog.cpp:244
+msgid "Canonical locale name: "
+msgstr "Configuración regional (canónica):"
+
+#: app/AboutDialog.cpp:255
+msgid "Developers"
+msgstr "Desarrolladores"
+
+#: app/AboutDialog.cpp:257
+msgid "This program has been designed and developed by Cecilio Salmer&oacute;n. If you would like to help developing this program or join the project to help in any other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and leave a message in the 'contact' page. Thank you and welcome."
+msgstr "Este programa ha sido diseñado y construido por Cecilio Salmerón. Si quieres unirte al proyecto y ayudar en la programación o de cualquier otra manera, eres calurosamente bienvenido/a. Por favor, visita la web de LenMus en www.lenmus.org y déjame un mesaje en la página de 'contactar'. Muchas gracias y bienvenido/a."
 
 #: app/DlgCfgEarIntervals.cpp:456
 msgid "It is nor possible to generate any interval. Selected notes range interval (tab 'Other settings') is lower than minimum allowed interval (tab 'Intervals')"
@@ -2429,6 +2409,17 @@ msgstr "Libros disponibles"
 msgid "Error when trying to move to folder %s"
 msgstr "Error al tratar de cambiar a la carpeta %s"
 
+#: app/MainFrame.cpp:1151
+#, c-format
+msgid ""
+"Language: %s\n"
+"System locale name: %s\n"
+"Canonical locale name: %s\n"
+msgstr ""
+"Idioma: %s\n"
+"Nombre del 'System locale': %s\n"
+"Nombre canónico del ' locale': %s\n"
+
 #: app/MainFrame.cpp:1341
 msgid "Mask to add"
 msgstr "Máscara a añadir"
@@ -2549,7 +2540,7 @@ msgstr "Sonido para los restantes tiempos:"
 msgid "Sorry, not enough memory to create a pBitmap to display the page."
 msgstr "Lo siento, no hay suficiente memoria para crear un bitmap para mostrar la página."
 
-#: app/TheApp.cpp:589
+#: app/TheApp.cpp:635
 msgid "LenMus First Run"
 msgstr "Primera ejecución de LenMus"
 
@@ -2562,7 +2553,7 @@ msgid "Clefs"
 msgstr "Claves"
 
 #: app/Updater.cpp:97
-#: updater/Updater.cpp:153
+#: updater/Updater.cpp:154
 msgid "Error loading XML file "
 msgstr "Error en análisis del archivo XML "
 
@@ -2597,6 +2588,27 @@ msgstr "&Aceptar"
 #: ../xrc/xrc_strings.cpp:206
 msgid "&Cancel"
 msgstr "&Cancelar"
+
+#: options/OtherOptionsPanel.cpp:63
+#: options/OtherOptionsPanel.cpp:70
+#: options/OtherOptionsPanel.cpp:87
+msgid "Never"
+msgstr "Nunca"
+
+#: options/OtherOptionsPanel.cpp:64
+#: options/OtherOptionsPanel.cpp:72
+msgid "Daily"
+msgstr "Diariamente"
+
+#: options/OtherOptionsPanel.cpp:65
+#: options/OtherOptionsPanel.cpp:74
+msgid "Weekly"
+msgstr "Semanalmente"
+
+#: options/OtherOptionsPanel.cpp:66
+#: options/OtherOptionsPanel.cpp:76
+msgid "Monthly"
+msgstr "Mensualmente"
 
 #: sound/SoundManager.cpp:489
 msgid "Can't create a thread!"
@@ -2817,6 +2829,13 @@ msgstr "Melódico descendente"
 #: ../xrc/xrc_strings.cpp:61
 msgid "Start both intervals with the same note"
 msgstr "Iniciar ambos intervalos en la misma nota"
+
+#: ../xrc/xrc_strings.cpp:62
+#: ../xrc/xrc_strings.cpp:127
+#: ../xrc/xrc_strings.cpp:147
+#: ../xrc/xrc_strings.cpp:177
+msgid "Accept"
+msgstr "Aceptar"
 
 #: ../xrc/xrc_strings.cpp:63
 #: ../xrc/xrc_strings.cpp:148
@@ -3184,11 +3203,11 @@ msgstr ""
 msgid "Proceed"
 msgstr "Iniciar"
 
-#: updater/Updater.cpp:119
+#: updater/Updater.cpp:120
 msgid "Error"
 msgstr "Error"
 
-#: updater/Updater.cpp:119
+#: updater/Updater.cpp:120
 msgid ""
 "You are not connected to internet!\n"
 "\n"
@@ -3200,15 +3219,15 @@ msgstr ""
 "Para comprobar si hay actualizaciones LenMus necesita conectarse a internet.\n"
 "Por favor, verifique la conexión a internet y reinténtelo."
 
-#: updater/Updater.cpp:142
+#: updater/Updater.cpp:143
 msgid "Error checking for updates"
 msgstr "Error al buscar actualizaciones"
 
-#: updater/Updater.cpp:143
+#: updater/Updater.cpp:144
 msgid "Connection with the server could not be established. Check that you are connected to the internet and that no firewalls are blocking this program; then try again. If problems continue, the server may be down. Please, try again later."
 msgstr "No se ha podido comunicar con el servidor. Verifique que hay conexión con internet y que no haya un firewall que bloquee a este programa; luego, reinténtelo. Si el problema continua, el servidor podría estar caido. Por favor, reinténtelo más tarde."
 
-#: graphic/Formatter4.cpp:503
+#: graphic/Formatter4.cpp:505
 msgid "[lmFormatter4::RenderJustified]: Program limitation: Maximum number of staves per system has been exceeded."
 msgstr "[lmFormatter4::RenderJustified]: Límitación de programa: Se ha excedido el máximo número de pentagramas por sistema."
 

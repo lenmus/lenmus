@@ -22,11 +22,12 @@
     @brief Implementation file for class lmAboutDialog
     @ingroup app_gui
 */
+//for GCC
 #ifdef __GNUG__
-// #pragma implementation
+    #pragma implementation "ErrorDlg.h"
 #endif
 
-// For compilers that support precompilation, includes "wx/wx.h".
+// for (compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
@@ -38,16 +39,10 @@
 #endif
 
 #include <wx/dialog.h>
-#include <wx/html/htmlwin.h>
 #include <wx/button.h>
-#include <wx/dcclient.h>
-#include <wx/sizer.h>
-#include <wx/statbmp.h>
-#include <wx/intl.h>
+#include "wx/xrc/xmlres.h"
 
-#include "TheApp.h"
 #include "AboutDialog.h"
-#include "global.h"
 
 //to determine debug/release version
 extern bool g_fReleaseVersion;        // to enable/disable debug features
@@ -57,258 +52,57 @@ extern bool g_fReleaseBehaviour;    // This flag is only used to force release b
 //to get wxMidi version
 #include "wxMidi.h"
 
+#include "TheApp.h"         //to get access to locale info.
+
+
 BEGIN_EVENT_TABLE(lmAboutDialog, wxDialog)
-   EVT_BUTTON(wxID_OK, lmAboutDialog::OnOK)
+    EVT_BUTTON( XRCID( "btnAccept" ), lmAboutDialog::OnAccept )
+    EVT_BUTTON( XRCID( "btnPurpose" ), lmAboutDialog::OnPurpose )
+    EVT_BUTTON( XRCID( "btnLicense" ), lmAboutDialog::OnLicense )
+    EVT_BUTTON( XRCID( "btnDevelopers" ), lmAboutDialog::OnDevelopers )
+    EVT_BUTTON( XRCID( "btnArtCredits" ), lmAboutDialog::OnArtCredits )
+    EVT_BUTTON( XRCID( "btnSoftwareCredits" ), lmAboutDialog::OnSoftwareCredits )
+    EVT_BUTTON( XRCID( "btnBuildInfo" ), lmAboutDialog::OnBuildInfo )
+
 END_EVENT_TABLE()
 
-IMPLEMENT_CLASS(lmAboutDialog, wxDialog)
 
-lmAboutDialog::lmAboutDialog(wxWindow * parent)
-:  wxDialog(parent, -1, _("About LenMus..."),
-         wxDefaultPosition, wxSize(600, 430), wxDEFAULT_DIALOG_STYLE)
+
+lmAboutDialog::lmAboutDialog(wxWindow* pParent)
 {
-    wxString versionStr = LM_VERSION_STR;
-
-    // locale info
-    wxString sLocale = wxGetApp().GetLocaleName();
-    wxString sSysname = wxGetApp().GetLocaleSysName();
-    wxString sCanname = wxGetApp().GetLanguageCanonicalName();
-
-    wxString sLocaleInfo;
-    sLocaleInfo.Printf( _("Language: %s\nSystem locale name: %s\nCanonical locale name: %s\n"),
-        sLocale.c_str(), sSysname.c_str(), sCanname.c_str() );
+    // create the dialog controls
+    wxXmlResource::Get()->LoadDialog(this, pParent, _T("AboutDialog"));
 
         //
-        // Build information
+        //get pointers to all controls
         //
 
-    wxString informationStr;
+    m_pTxtTitle = XRCCTRL(*this, "txtTitle", wxStaticText);
+    m_pTxtSubtitle = XRCCTRL(*this, "txtSubtitle", wxStaticText);
+    m_pHtmlWindow = XRCCTRL(*this, "htmlWindow", wxHtmlWindow);
 
-    // Build date
-    informationStr += _("Program build date:");
-    informationStr += wxT(" ") __TDATE__ wxT("<br>\n");
+    //load error icon
+    wxStaticBitmap* pBmpError = XRCCTRL(*this, "bmpLogo", wxStaticBitmap);
+    pBmpError->SetBitmap( wxArtProvider::GetIcon(_T("logo50x67"), wxART_OTHER) );
 
-    // wxWindows version:
-    informationStr += wxVERSION_STRING;
-    informationStr += wxT("<br>\n");
-
-    // wxMidi version
-    informationStr += _("wxMidi Version ");
-    informationStr += wxMIDI_VERSION;
-    informationStr += wxT("<br>\n");
-
-    // Locale info
-    informationStr += sLocaleInfo;
-    informationStr += wxT("<br>\n");
-
-
-    wxString par1Str = 
-    _("LenMus is a free program to help you in the study of music theory and ear training. \
-It is available for Windows but soon it will be also available \
-for Mac OS X, Linux, and other Unix-like operating systems."
-    );
-
-    wxString par2Str;
-    if (g_fReleaseVersion)    {
-        par2Str = 
-_("This is a stable, completed release of LenMus.  However, if \
-you find a bug or have a suggestion, please contact us.");
-    }
-    else if (g_fReleaseBehaviour) {
-         par2Str = 
-_("This is a debug version of the program but some debug features (i.e. the \
-Debug menu item) are disabled and release version behaviour is enforced. \
-This is so to facilitate debugging. As this is a beta version it may contain \
-bugs and unfinished features."
-);
-    }
-    else {
-         par2Str = 
-_("This is a debug development version of the program.  It may contain \
-bugs and unfinished features."
-    );
-    }
-    par2Str += 
-_("We depend on feedback from you in order to continue to improve \
-LenMus. So please visit our website and give us your bug reports  \
-and feature requests."
-   );
-
-    //
-    // Credits
-    //
-
-    wxString sArtCredits1 = 
-_("<p>Some icons are original artwork for LenMus project; all these original icons are released \
-under GNU GPL licence and under Creative Commons Attribution-ShareAlike \
-license, you can choose the one you prefer for the intended usage. The other \
-icons are taken from different sources:<br /><br /></p>\
-<ul>\
-<li>Taken or derived from those available in the Ximian collection \
-(http://www.novell.com/coolsolutions/feature/1637.html). \
-Novell, who retains the copyright, has released these icons under the LGPL license. \
-This means that you can use the icons in your \
-programs free of charge. If you want to fork the icons into your own icon collection, you need \
-to retain the license and the original copyrights, but from there you're free to do what \
-you want.<br /></li>"
-);
-    
-    wxString sArtCredits2 = 
-_("<li>Taken or derived from the GNOME project (http://art.gnome.org/themes/icon/1150), \
-Tango theme. These icons are released under the Creative Commons Attribution-ShareAlike \
-license.<br /></li> \
-<li>These icons are taken or derived from KDE project \
-(http://kde.openoffice.org/servlets/ProjectDocumentList?folderID=314&amp;expandFolder=314). \
-These icons are released under the GNU GPL license.<br /></li> \
-<li>Taken or derived from eMule project (http://sourceforge.net/projects/emule) \
-icons. eMule is a GNU GPL project so I assume that its icons are also available under GNU GPL.<br /></li> \
-<li>Taken or derived from John Zaitseff's icons \
-(http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). According to what \
-is said there, these icons are released under the \
-terms of the GNU General Public License.<br /><br /></li>\
-</ul>"
-);
-
-    wxString sArtCredits3 = 
-_("To LenMus developers knowledge, all used icons are freely usable either \
-under GNU GPL, \
-LGPL licence, or Creative Commons. If this were not the case, please, let us \
-know to stop using them. \
-See file \"icons.htm\" in folder \"res/icons\" for more details.</p>"
-    );
-
-    wxString sSoftCredits1 = 
-_("<p>LenMus Phonascus uses <b>PortMidi</b> the Portable Real-Time MIDI Library \
-(http://www.cs.cmu.edu/~music/portmusic/). PortMidi is copyright (c) 1999-2000 Ross \
-Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg. Its licence permits \
-free use. Thank you PortMidi team.</p>"
-);
-
-    wxString sSoftCredits2 = 
-_("<p>LenMus Phonascus is build using the <b>wxWidgets</b> application framework \
-(http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is \
-ease to learn and extend, it has a helpful community, and also has the possibility \
-to use it in commercial products without licencing. Thank you wxWidgets team.</p>"
-);
-
-
-    wxString managersCredits, developersCredits, translatorsCredits;
-    wxString artDesignersCredits, musicalDirectionCredits;
-    managersCredits += _T("<p><center><b>");
-    //managersCredits += _("Project management");
-    managersCredits += _("Management and developent");
-    managersCredits += _T("<br>Cecilio Salmer&oacute;n");
-    managersCredits += _T("</b></center>");
-
-    developersCredits += _T("<p><center><b>");
-    developersCredits += _("Developers</b>");
-    developersCredits += _T("<br>Cecilio Salmer&oacute;n");
-    developersCredits += _T("</center>");
-
-    artDesignersCredits += _T("<p><center><b>");
-    artDesignersCredits += _("Art desings");
-    artDesignersCredits += _T("</b></center>");
-
-    musicalDirectionCredits += _T("<p><center><b>");
-    musicalDirectionCredits += _("Musical direction");
-    musicalDirectionCredits += _T("</b></center>");
-
-    translatorsCredits += _T("<p><center><b>");
-    translatorsCredits += _("Translators</b>");
-    translatorsCredits += _T("<br>English translation by Cecilio Salmer&oacute;n.");
-    translatorsCredits += _T("</center>");
-
-    wxString localeStr = wxLocale::GetSystemEncodingName();
-
-    // Licence
-
-    wxString sLicence =
-        _T("LenMus ") + versionStr +
-        _(" Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n.") +
-_("<p>This program is free software; you can redistribute it and/or modify it \
-under the terms of the GNU General Public License as published by the Free \
-Software Foundation; either version 2 of the License, or (at your option) \
-any later version.") +
-        _T("<p>") +
-        _("This program is distributed in the hope that it will be useful, but \
-WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY \
-or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General \
-Public License at http://www.gnu.org/licenses/licenses.html"
-        );
-
-    wxString sContent =
+    //initializations
+    m_sHeader =
       _T("<html>")
-      _T("<head><META http-equiv=\"Content-Type\" content=\"text/html; charset=")
-      + localeStr +
+      _T("<head><META http-equiv=\"Content-Type\" content=\"text/html; charset=") +
+      wxLocale::GetSystemEncodingName() +
       _T("\"></head>")
       _T("<body bgcolor=\"#ffffff\">")
-      _T("<font size=1>") +
-      par1Str +
-      _T("<p>") +
-      par2Str +
-      _T("<p><center>")
-      _T("http://www.lenmus.org/")
-      _T("</center><p>")
-      _T("<center><b>") + _("Licence") + _T("</b></center>") +
-      _T("<p><br>") +
-      sLicence +
-      _T("<p>")
-      _T("<center><b>") + _("Release information") + _T("</b></center>")
-      _T("<p><br>")
-      + informationStr +
-      _T("<p>&nbsp;</p>") +
-      _T("<center><b>") + _("Art Design Credits") + _T("</b></center>") +
-      sArtCredits1 + sArtCredits2 + sArtCredits3 +
-      _T("<p>&nbsp;</p>") +
-      _T("<center><b>") + _("Software Credits") + _T("</b></center>") +
-      sSoftCredits1 + sSoftCredits2 +
-//      + managersCredits
-//      + developersCredits +
- //     + musicalDirectionCredits
- //     + artDesignersCredits
- //     + translatorsCredits +
-      _T("<p>&nbsp;</p><p>&nbsp;</p><center>") +
-      _("LenMus Phonascus. Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n") +
-      _T("</center></body>")
-      _T("</html>");
+      _T("<font size=1>");
 
-    wxString sTitle =
-      _T("<html>")
-      _T("<head><META http-equiv=\"Content-Type\" content=\"text/html; charset=")
-      + localeStr +
-      _T("\"></head>")
-      _T("<body bgcolor=\"#ffffff\">")
-      _T("<font size=1>")
-      _T("<center>")
-      _T("<h3>LenMus ") + versionStr + _T("</h3><b>") +
-      _("A free program for music language learning") +
-      _T("</b></center></body>")
-      _T("</html>");
+    //title and subtitle
+    m_pTxtTitle->SetLabel(m_pTxtTitle->GetLabel() + LM_VERSION_STR);
+    m_pTxtSubtitle->SetLabel(_("A free program for music language learning"));
 
-    Centre();
-    this->SetBackgroundColour(wxColour(255, 255, 255));
+    CentreOnScreen();
 
-    wxBitmap* pLogo = new wxBITMAP(logo50x67_bmp);
-    wxStaticBitmap* pIcon = new wxStaticBitmap(this, -1, *pLogo, wxPoint(15, 10));
-    delete pLogo;
-
-    wxHtmlWindow *pTitle = new wxHtmlWindow(this, -1,
-                                         wxPoint(110, 10),
-                                         wxSize(490, 80),
-                                         wxHW_SCROLLBAR_NEVER | wxNO_BORDER );
-
-    pTitle->SetPage(sTitle);
-
-    wxHtmlWindow *html = new wxHtmlWindow(this, -1,
-                                         wxPoint(20, 90),
-                                         wxSize(560, 260),
-                                         wxHW_SCROLLBAR_AUTO | wxSIMPLE_BORDER );
-    html->SetPage(sContent);
-
-    wxButton *pOK = new wxButton(this, wxID_OK, _("Accept"), wxPoint(250, 370),
-                                wxSize(100, 24));
-    pOK->SetDefault();
-    pOK->SetFocus();
+    //display purpose information
+    wxCommandEvent event;       //no need to initialize it as it is not used
+    OnPurpose(event);
 
 }
 
@@ -316,7 +110,157 @@ lmAboutDialog::~lmAboutDialog()
 {
 }
 
-void lmAboutDialog::OnOK(wxCommandEvent& WXUNUSED(event))
+void lmAboutDialog::OnAccept(wxCommandEvent& WXUNUSED(event))
 {
    EndModal(wxID_OK);
 }
+
+void lmAboutDialog::OnPurpose(wxCommandEvent& WXUNUSED(event))
+{
+    wxString sContent = m_sHeader +
+      _T("<center>")
+      _T("<h3>") + _("Purpose") + _T("</h3>")
+      _T("</center><p>") +
+      _("LenMus is a free program to help you in the study of music theory and ear training. \
+It is available for Windows but soon it will be also available \
+for Mac OS X, Linux, and other Unix-like operating systems.") +
+      _T("</p><p>") +
+      _("The LenMus Project is an open project, committed to the principles of \
+Open Source, free education, and free access to information. It has no comercial \
+purpose. It is an open workbench for working on all areas related to teaching music, \
+and music representation and management with computers. It aims at developping \
+public knowledge, methods and algorithms related to all these areas and at the \
+same time provides free quality software for music students, amateurs, and \
+teachers.") +
+      _T("</p><p>") +
+      _("If you find a bug or have a suggestion, please contact us. \
+We depend on your feedback in order to continue to improve \
+LenMus. So please visit our website and give us your bug reports  \
+and feature requests. Thank you very much.") +
+      _T("</p></body></html>");
+
+    m_pHtmlWindow->SetPage(sContent);
+
+}
+
+void lmAboutDialog::OnLicense(wxCommandEvent& WXUNUSED(event))
+{
+    wxString sContent = m_sHeader +
+        _T("<center>")
+        _T("<h3>") + _("License") + _T("</h3></center><p>")
+        _T("LenMus ") + LM_VERSION_STR +
+        _(" Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n.") +
+        _T("</p><p>") +
+        _("This program is free software; you can redistribute it and/or modify it \
+under the terms of the GNU General Public License as published by the Free \
+Software Foundation; either version 2 of the License, or (at your option) \
+any later version.") +
+        _T("</p><p>") +
+        _("This program is distributed in the hope that it will be useful, but \
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY \
+or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General \
+Public License at http://www.gnu.org/licenses/licenses.html") +
+        _T("</p></body></html>");
+
+        m_pHtmlWindow->SetPage(sContent);
+
+}
+
+void lmAboutDialog::OnArtCredits(wxCommandEvent& WXUNUSED(event))
+{
+    wxString sContent = m_sHeader +
+        _T("<center>")
+        _T("<h3>") + _("Art desing credits") + _T("</h3></center><p>") +
+        _("Some icons are original artwork for LenMus project; all these original icons are released \
+under GNU GPL licence and under Creative Commons Attribution-ShareAlike \
+license, you can choose the one you prefer for the intended usage. The other \
+icons are taken from different sources:") +
+        _T("<br /><br /></p><ul><li>") +
+        _("Taken or derived from those available in the Ximian collection \
+(http://www.novell.com/coolsolutions/feature/1637.html). \
+Novell, who retains the copyright, has released these icons under the LGPL license. \
+This means that you can use the icons in your \
+programs free of charge. If you want to fork the icons into your own icon collection, you need \
+to retain the license and the original copyrights, but from there you're free to do what \
+you want.") +
+        _T("<br /></li><li>") +
+        _("Taken or derived from the GNOME project (http://art.gnome.org/themes/icon/1150), \
+Tango theme. These icons are released under the Creative Commons Attribution-ShareAlike \
+license.") +
+        _T("<br /></li><li>") +
+        _("These icons are taken or derived from KDE project \
+(http://kde.openoffice.org/servlets/ProjectDocumentList?folderID=314&amp;expandFolder=314). \
+These icons are released under the GNU GPL license.") +
+        _T("<br /></li><li>") +
+        _("Taken or derived from eMule project (http://sourceforge.net/projects/emule) \
+icons. eMule is a GNU GPL project so I assume that its icons are also available under GNU GPL.<br /></li> \
+<li>Taken or derived from John Zaitseff's icons \
+(http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). According to what \
+is said there, these icons are released under the \
+terms of the GNU General Public License.") +
+        _T("<br /><br /></li></ul>") +
+        _("To LenMus developers knowledge, all used icons are freely usable either \
+under GNU GPL, \
+LGPL licence, or Creative Commons. If this were not the case, please, let us \
+know to stop using them. \
+See file \"icons.htm\" in folder \"res/icons\" for more details.") +
+        _T("</p></body></html>");
+
+        m_pHtmlWindow->SetPage(sContent);
+
+}
+
+void lmAboutDialog::OnSoftwareCredits(wxCommandEvent& WXUNUSED(event))
+{
+    wxString sContent = m_sHeader +
+        _T("<center>")
+        _T("<h3>") + _("Software credits") + _T("</h3></center><p>") +
+        _("LenMus Phonascus uses <b>PortMidi</b> the Portable Real-Time MIDI Library \
+(http://www.cs.cmu.edu/~music/portmusic/). PortMidi is copyright (c) 1999-2000 Ross \
+Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg. Its licence permits \
+free use. Thank you PortMidi team.") +
+        _T("</p><p>") +
+        _("LenMus Phonascus is build using the <b>wxWidgets</b> application framework \
+(http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is \
+ease to learn and extend, it has a helpful community, and also has the possibility \
+to use it in commercial products without licencing. Thank you wxWidgets team.") +
+        _T("</p></body></html>");
+
+        m_pHtmlWindow->SetPage(sContent);
+
+}
+
+void lmAboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
+{
+    wxString sContent = m_sHeader +
+        _T("<center>")
+        _T("<h3>") + _("Build information") + _T("</h3></center><p>") +
+        _("Program build date:") +
+        _T(" ") __TDATE__ _T("<br>") +
+        wxVERSION_STRING + _T("<br>") +
+        _("wxMidi Version ") + wxMIDI_VERSION + _T("<br>") +
+        _("Language: ") + wxLocale::GetSystemEncodingName() + _T("<br>") +
+        _("System locale name: ") + wxGetApp().GetLocaleSysName() + _T("<br>") +
+        _("Canonical locale name: ") + wxGetApp().GetLanguageCanonicalName() +
+        _T("<br></body></html>");
+
+        m_pHtmlWindow->SetPage(sContent);
+
+}
+
+void lmAboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
+{
+    wxString sContent = m_sHeader +
+      _T("<center>")
+      _T("<h3>") + _("Developers") + _T("</h3>")
+      _T("</center><p>") +
+      _("This program has been designed and developed by Cecilio Salmer&oacute;n. \
+If you would like to help developing this program or join the project to help in any \
+other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and \
+leave a message in the 'contact' page. Thank you and welcome.") +
+      _T("</p></body></html>");
+
+    m_pHtmlWindow->SetPage(sContent);
+
+}
+

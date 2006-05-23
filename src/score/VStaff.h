@@ -163,6 +163,7 @@ private:
     lmLUnits    m_topMargin;
     lmLUnits    m_rightMargin;
     lmLUnits    m_bottomMargin;
+    lmLUnits    m_nHeight;          //TopMargin + Staves height + BottomMargin
 
 };
 

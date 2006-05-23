@@ -256,8 +256,8 @@ wxBitmap* lmPaper::GetPageBitmap(wxInt32 nPage)
     } else {
         //No bitmap allocated. Create one
         pBitmap = new wxBitmap(m_xPageSize, m_yPageSize);
-        wxLogMessage(_T("[lmPaper::GetPageBitmap] Allocated bitmap (%d, %d) pixels, %d bits/pixel. Size= %.02f MB"),
-            m_xPageSize, m_yPageSize, pBitmap->GetDepth(), (double)((m_xPageSize * m_yPageSize * pBitmap->GetDepth())/8000000.) );
+        //wxLogMessage(_T("[lmPaper::GetPageBitmap] Allocated bitmap (%d, %d) pixels, %d bits/pixel. Size= %.02f MB"),
+        //    m_xPageSize, m_yPageSize, pBitmap->GetDepth(), (double)((m_xPageSize * m_yPageSize * pBitmap->GetDepth())/8000000.) );
         if (!pBitmap || !pBitmap->Ok()) {
             if (pBitmap) {
                 delete pBitmap;

@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Note.cpp,v 1.8 2006/02/23 19:23:54 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -619,7 +618,16 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //--------------------------------------------------------------------------------------
     if (!fMeasuring && m_fBeamed && m_BeamInfo[0].Type == eBeamEnd) {
         lmLUnits nThickness = m_pVStaff->TenthsToLogical(4, m_nStaffNum);
-        lmLUnits nBeamSpacing = m_pVStaff->TenthsToLogical(7, m_nStaffNum);
+        //DOC: Beam spacing
+        // ----------------
+        //according to http://www2.coloradocollege.edu/dept/mu/Musicpress/engraving.html
+        //distance between primary and secondary beams should be 1/4 space (2.5 tenths) 
+        //But if I use 3 tenths (2.5 up rounding) beam spacing is practicaly
+        //invisible. In pictures displayed in the above mentioned www page, spacing
+        //is about 1/2 space, not 1/4 space. So I will use 5 tenths.
+        //So the number to put in next statement is 9:
+        //  4 for beam thikness + 5 for beams spacing
+        lmLUnits nBeamSpacing = m_pVStaff->TenthsToLogical(9, m_nStaffNum);
         m_pBeam->DrawBeamLines(pDC, nThickness, nBeamSpacing);
     }
 

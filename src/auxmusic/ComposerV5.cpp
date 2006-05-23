@@ -1,21 +1,20 @@
-// RCS-ID: $Id: ComposerV5.cpp,v 1.16 2006/02/23 19:18:28 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -72,15 +71,15 @@ lmComposer5::~lmComposer5()
                 BeatsToGenerate = Beats_per_measure x N
                 NumBeats = 0
         2. while (NumBeats < BeatsToGenerate) {
-            2.1 Randomly choose a pattern satisfying the constrains (lesson, level, time 
+            2.1 Randomly choose a pattern satisfying the constrains (lesson, level, time
                 signature, etc.).
-            2.2 Instantiate the choosen pattern by assingning note pitches 
+            2.2 Instantiate the choosen pattern by assingning note pitches
             2.3 NumBeats = NumBeats + num. beats in choosen pattern
         }
         3. Divide generated beats string into measures (just assign to each measure the
            next n beats -- where n=Beats_per_measure -- )
 
-        Problems: 
+        Problems:
             - difficulties for using patterns that are not full measures
             - difficulties for aligning patterns to barlines at specific points
             - strong limitation: requires patterns divided into beats. It would be
@@ -140,9 +139,9 @@ lmComposer5::~lmComposer5()
             pitch of the used key signature.
 
             Notes.
-            - It is assumed that all beats are equal. Therefore, current algorith 
+            - It is assumed that all beats are equal. Therefore, current algorith
                 works only for regular time signature rhythms. It will
-                not work, for example, with 7/8. 
+                not work, for example, with 7/8.
 
 
 
@@ -262,7 +261,7 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
             g_pLogger->LogTrace(_T("lmComposer5"), _T("[GenerateScore] sMeasure=%s, pSegment=%s, tr=%.2f, ts=%.2f, tcb=%.2f, tab=%.2f, tc=%.2f, tb=%.2f, fits=%s"),
                     sMeasure,
                     pSegment->GetSource(), rTimeRemaining, rSegmentDuration,
-                    rConsumedBeatTime, rSegmentAlignBeatTime, 
+                    rConsumedBeatTime, rSegmentAlignBeatTime,
                     rOccupiedDuration, rBeatDuration,
                     (fFits ? _T("yes") : _T("no")) );
 
@@ -277,7 +276,7 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
                         sMeasure += CreateRest((int)rNoteTime);
                 }
 
-                //add segment    
+                //add segment
                 sMeasure += pSegment->GetSource();
 
                 //update tr
@@ -304,16 +303,18 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
 
         // if measure is full, close it and increment measures count
        if (rOccupiedDuration >= rMeasureDuration) {
- 
+
             // close current measure
             fMeasure = false;   // no measure opened
             sMeasure += _T("(Barra Simple))");
-        
+
             // increment measures counter
             nNumMeasures++;
 
             // Instantiate the notes by assigning note pitches and add
             // the measure to the score
+            g_pLogger->LogTrace(_T("lmComposer5"),
+                    _T("[GenerateScore] Adding measure = '%s')"), sMeasure);
             pNode = parserLDP.ParseText( InstantiateNotes(sMeasure) );
             parserLDP.AnalyzeMeasure(pNode, pVStaff);
         }
@@ -322,10 +323,13 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
 
     // add a final measure with a root pitch note lasting, at least, one beat
     sMeasure = CreateLastMeasure(++nNumMeasures, m_nTimeSign);
+    g_pLogger->LogTrace(_T("lmComposer5"),
+            _T("[GenerateScore] Adding final measure = '%s')"), sMeasure);
     pNode = parserLDP.ParseText( InstantiateNotes(sMeasure, true) );
     parserLDP.AnalyzeMeasure(pNode, pVStaff);
 
     // done
+    //pScore->Dump(_T("lenus_score_dump.txt"));
     return pScore;
 
 }
@@ -363,7 +367,7 @@ wxString lmComposer5::GenerateNewNote(bool fRepeat, bool fRootPitch)
         }
     }
     else if (fRepeat) {
-        newPitch = m_lastPitch; 
+        newPitch = m_lastPitch;
     }
     else {
         //int nStep = oGenerator.RandomNumber(1, m_pConstrains->GetMaxInterval());
@@ -380,7 +384,7 @@ wxString lmComposer5::GenerateNewNote(bool fRepeat, bool fRootPitch)
         //else if (newPitch < m_minPitch) newPitch = m_minPitch;
 
         int nRange = m_pConstrains->GetMaxInterval();
-        int lowLimit = wxMax(m_lastPitch - nRange, m_minPitch); 
+        int lowLimit = wxMax(m_lastPitch - nRange, m_minPitch);
         int upperLimit = wxMin(m_lastPitch + nRange, m_maxPitch);
         newPitch = oGenerator.RandomNumber(lowLimit, upperLimit);
     }
@@ -395,7 +399,7 @@ wxString lmComposer5::GenerateNewNote(bool fRepeat, bool fRootPitch)
 }
 
 
-/*! returns the pitch of root note (in octave 4) for the given key signature. For example, 
+/*! returns the pitch of root note (in octave 4) for the given key signature. For example,
     for C major returns 29 (c4); for A sharp minor returns 34 (a4).
 */
 lmPitch lmComposer5::RootNote(EKeySignatures nKey)
@@ -463,7 +467,7 @@ wxString lmComposer5::InstantiateNotes(wxString sPattern, bool fRootPitch)
     int j = sSource.Find(_T(" l"));
     while (i != -1) {
         sResult += sSource.Mid(0, i);
-        fRepeat = (fFirstNote ? m_fTied : (j != -1 && j < i) ); 
+        fRepeat = (fFirstNote ? m_fTied : (j != -1 && j < i) );
         sResult += GenerateNewNote(fRepeat, fRoot);
         sSource = sSource.Mid(i + 1);
         i = sSource.Find(_T("*"));
@@ -478,7 +482,7 @@ wxString lmComposer5::InstantiateNotes(wxString sPattern, bool fRootPitch)
 
 }
 
-/*! This method adds the segment to the measure. 
+/*! This method adds the segment to the measure.
     Precondition: it must be checked that segment fits in measure
     The procedure is:
         1. Add note N(tab-tcb).
@@ -548,7 +552,7 @@ wxString lmComposer5::CreateNoteRest(int nNoteRestDuration, bool fNote)
         }
         else if (nTimeNeeded >= e16thDuration) {
             sElement += _T("s)");
-            nDuration = e16thDuration; 
+            nDuration = e16thDuration;
         }
         else if (nTimeNeeded >= e32thDottedDuration) {
             sElement += _T("f.)");
@@ -584,10 +588,10 @@ wxString lmComposer5::CreateNoteRest(int nNoteRestDuration, bool fNote)
     }
     g_pLogger->LogTrace(_T("lmComposer5"), _T("[CreateNoteRest] Needed duration= %d, added=%s"), nNoteRestDuration, sElement);
     return sElement;
-            
+
 }
 
-/*! Returns a final meaure. This final measure has only a note, long enough, and 
+/*! Returns a final meaure. This final measure has only a note, long enough, and
     a final bar
 */
 wxString lmComposer5::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign)

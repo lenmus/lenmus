@@ -290,18 +290,20 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //the measure column just computed
             //-------------------------------------------------------------------------------
 
-            //if this is not the first system advance vertically the inter-systems space
+            //if this is not the first system advance vertically the previous system height
             if (nSystem != 1) {
-                //compute Y position after adding after system space and a new system
-                lmLUnits yNew = pPaper->GetCursorY() + m_pScore->SystemsDistance() + nSystemHeight;
+                //Here Paper is positioned at the start of the new current system. No
+                //computation for this is needed as staves' height and spacing have been
+                //added to paper as renderization took place.
+                //Lets' verify is there is space left in paper for next system
+                //! @todo It is assumed that next system height is equal to previous one.
+                //!     It is necesary to compute each system height
+                lmLUnits yNew = pPaper->GetCursorY() + nSystemHeight;
                 if (yNew > pPaper->GetMaximumY() ) {
                     //wxLogMessage(_T("Page break needed. yCur=%d, yNew=%d, MaximumY=%d"), pPaper->GetCursorY(), yNew, pPaper->GetMaximumY());
                     pPaper->RestartPageCursors();       //restore page cursors are at top-left corner
                     //start a new page
                     pBoxPage = pBoxScore->AddPage();
-                }
-                else {
-                    pPaper->IncrementCursorY( m_pScore->SystemsDistance() );
                 }
             }
 

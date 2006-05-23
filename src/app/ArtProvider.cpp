@@ -1,4 +1,3 @@
-// RCS-ID: $Id: ArtProvider.cpp,v 1.8 2006/02/23 19:15:54 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -180,7 +179,6 @@ wxBitmap lmArtProvider::CreateBitmap(const wxArtID& id,
         sFile = id;
     }
 
-
     //miscelaneous
     else if (id == _T("backgrnd")) {
         if (image.LoadFile(_T("backgrnd.png"), wxBITMAP_TYPE_PNG)) {
@@ -198,6 +196,10 @@ wxBitmap lmArtProvider::CreateBitmap(const wxArtID& id,
     }
     else if (id == _T("banner_updater")) {
         sFile = _T("UpdaterBanner");
+		sSize = _T(".png");
+    }
+    else if (id == _T("logo50x67")) {
+        sFile = _T("logo50x67");
 		sSize = _T(".png");
     }
 

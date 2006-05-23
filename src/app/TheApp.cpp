@@ -341,6 +341,10 @@ bool lmTheApp::OnInit(void)
     oXrcFile = wxFileName(sPath, _T("ErrorDlg"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
+    // About box
+    oXrcFile = wxFileName(sPath, _T("AboutDialog"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
         //
         // Create document manager and templates
         //
@@ -389,8 +393,8 @@ bool lmTheApp::OnInit(void)
     }
     wxSafeYield();
 
-    // Give the main frame an icon (this is ignored in MDI mode: uses resources)
-    g_pMainFrame->SetIcon(wxArtProvider::GetIcon(_T("app_icon"), wxART_OTHER));
+    //// Give the main frame an icon (this is ignored in MDI mode: uses resources)
+    //g_pMainFrame->SetIcon(wxArtProvider::GetIcon(_T("app_icon"), wxART_OTHER));
 
     // create global data structures for printer settings
     g_pPrintData = new wxPrintData;

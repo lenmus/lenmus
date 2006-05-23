@@ -1,4 +1,3 @@
-// RCS-ID: $Id: TheoMusicReadingCtrol.cpp,v 1.15 2006/03/03 14:59:44 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -289,15 +288,16 @@ void lmTheoMusicReadingCtrol::OnNewProblem(wxCommandEvent& event)
 
 void lmTheoMusicReadingCtrol::NewProblem()
 {
-    //Generate a random score
-    lmComposer5 oComposer;
-    m_pScore = oComposer.GenerateScore(m_pConstrains);
-
     //delete previous score
     if (m_pScore) {
         delete m_pScore;
         m_pScore = (lmScore*)NULL;
     }
+
+    //Generate a random score
+    lmComposer5 oComposer;
+    m_pScore = oComposer.GenerateScore(m_pConstrains);
+
     //display the score
     m_pScoreCtrol->DisplayScore(m_pScore);
     m_fPlayEnabled = true;

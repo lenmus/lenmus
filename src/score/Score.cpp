@@ -48,6 +48,7 @@
 #include "wx/wx.h"
 #endif
 
+#include <wx/file.h>
 #include "wx/debug.h"
 #include "wx/list.h"
 #include "Score.h"
@@ -81,10 +82,7 @@ lmScore::lmScore()
     m_pSoundMngr = (lmSoundManager*)NULL;
 
     //! @todo fill this not with constants
-    m_nSystemsDistance = lmToLogicalUnits(2, lmCENTIMETERS);    // 2 cm
     m_nTopSystemDistance = lmToLogicalUnits(2, lmCENTIMETERS);    // 2 cm
-    m_nSystemsLeftMargin = 0;
-    m_nSystemsRightMargin = 0;
 
     //default renderization options
     m_nRenderizationType = eRenderJustified;
@@ -328,7 +326,25 @@ lmInstrument* lmScore::GetLastInstrument()
 //
 ////== End of Friend methods for lmFormatter object ============================================
 
-wxString lmScore::Dump()
+void lmScore::WriteToFile(wxString sFilename, wxString sContent)
+{
+    if (sFilename == _T("")) return;
+
+    wxFile oFile;     //open for writing, delete any previous content
+    oFile.Create(sFilename, true);
+    oFile.Open(sFilename, wxFile::write);
+    if (!oFile.IsOpened()) {
+        wxLogMessage(_T("[lmScore::WriteToFile] File '%s' could not be openned. Write to file cancelled"),
+            sFilename);
+    }
+    else {
+        oFile.Write(sContent);
+        oFile.Close();
+    }
+
+}
+
+wxString lmScore::Dump(wxString sFilename)
 {
     wxString sDump = wxString::Format(_T("Score ID: %d\nGlobal objects:\n"), GetID());
 
@@ -348,10 +364,14 @@ wxString lmScore::Dump()
         sDump += wxString::Format(_T("\nInstrument %d\n"), i );
         sDump += pInstr->Dump();
     }
+
+    //write to file, if requested
+    WriteToFile(sFilename, sDump);
+
     return sDump;
 }
 
-wxString lmScore::SourceLDP()
+wxString lmScore::SourceLDP(wxString sFilename)
 {
     wxString sSource = 
         wxString::Format(_T("Score ID: %d\n\n(Score\n   (Vers 1.3)\n   (NumInstrumentos %d)\n"),
@@ -366,10 +386,14 @@ wxString lmScore::SourceLDP()
         sSource += _T("   )\n");
     }
     sSource += _T(")");
+
+    //write to file, if requested
+    WriteToFile(sFilename, sSource);
+
     return sSource;
 }
 
-wxString lmScore::SourceXML()
+wxString lmScore::SourceXML(wxString sFilename)
 {
     wxString sSource = _T("TODO: lmScore XML Source code generation methods");
 
@@ -399,6 +423,10 @@ wxString lmScore::SourceXML()
 //        sFuente = sFuente & "  </part>" & sCrLf
 //    }    // i
 //    FuenteXML = sFuente & "</score-partwise>" & sCrLf
+
+    //write to file, if requested
+    WriteToFile(sFilename, sSource);
+
     return sSource;
         
 }
@@ -539,9 +567,11 @@ void lmScore::ComputeMidiEvents()
     
 }
 
-wxString lmScore::DumpMidiEvents()
+wxString lmScore::DumpMidiEvents(wxString sFilename)
 {
     if (!m_pSoundMngr) ComputeMidiEvents();
-    return m_pSoundMngr->DumpMidiEvents();
+    wxString sDump = m_pSoundMngr->DumpMidiEvents();
+    WriteToFile(sFilename, sDump);
+    return sDump;
 }
 

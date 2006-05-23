@@ -468,11 +468,11 @@ public:
 
     lmScoreObj* FindSelectableObject(wxPoint& pt);
 
-    // Debug methods
-    wxString Dump();
-    wxString SourceLDP();
-    wxString SourceXML();
-    wxString DumpMidiEvents();
+    // Debug methods. If filename provided writes also to file
+    wxString Dump(wxString sFilename = _T(""));
+    wxString SourceLDP(wxString sFilename = _T(""));
+    wxString SourceXML(wxString sFilename = _T(""));
+    wxString DumpMidiEvents(wxString sFilename = _T(""));
 
     int GetNumInstruments() { return (int)m_cInstruments.GetCount(); }
 
@@ -492,15 +492,7 @@ public:
     lmInstrument* XML_FindInstrument(wxString sId);
 
     //layout related methods
-    lmLUnits SystemsDistance() { return m_nSystemsDistance; }
     lmLUnits TopSystemDistance() { return m_nTopSystemDistance + m_nHeadersHeight; }
-    lmLUnits SystemsLeftMargin() { return m_nSystemsLeftMargin; }
-    lmLUnits SystemsRightMargin() { return m_nSystemsRightMargin; }
-
-    void SetSystemsDistance(lmLUnits nDistance) { m_nSystemsDistance = nDistance; }
-    void SetTopSystemDistance(lmLUnits nDistance) { m_nTopSystemDistance = nDistance; }
-    void SetSystemsLeftMargin(lmLUnits nDistance) { m_nSystemsLeftMargin = nDistance; }
-    void SetSystemsRightMargin(lmLUnits nDistance) { m_nSystemsRightMargin = nDistance; }
 
     //global lmStaffObj list related methods
     void IncludeInGlobalList(lmStaffObj* pSO);
@@ -519,6 +511,7 @@ public:
 
 
 private:
+    void WriteToFile(wxString sFilename, wxString sContent);
     void ComputeMidiEvents();
     void RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper);
 
@@ -537,10 +530,7 @@ private:
     StaffObjsList       m_cHighlighted;     //list of highlighted staffobjs
 
     //Layout related variables
-    lmLUnits        m_nSystemsDistance;
     lmLUnits        m_nTopSystemDistance;
-    lmLUnits        m_nSystemsLeftMargin;
-    lmLUnits        m_nSystemsRightMargin;
     lmLUnits        m_nHeadersHeight;
 
     //renderization options
