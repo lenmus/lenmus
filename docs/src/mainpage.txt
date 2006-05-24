@@ -40,6 +40,9 @@
 		- @ref xml_measure_atributes
 		- @ref algorithm_stems_in_beamed_groups 
 		- @ref algorithm_ties
+		
+	- @subpage user interaction
+		- @ref spacing_margins
 
     - @subpage objects_model
     - @subpage note_names

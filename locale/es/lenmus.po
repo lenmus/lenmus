@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.0\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-05-23 21:11+0100\n"
+"PO-Revision-Date: 2006-05-24 17:59+0100\n"
 "Last-Translator: cs <cs>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -1965,16 +1965,18 @@ msgid "<placement> element has an invalid value \"%s\". Asumed 'above'"
 msgstr "Elemento <placement> tiene un valor no válido '%s'. Se utilizará 'above'"
 
 #: app/AboutDialog.cpp:99
+#: ../xrc/xrc_strings.cpp:213
 msgid "A free program for music language learning"
 msgstr "Un programa gratuito para el aprendizaje del lenguaje musical"
 
 #: app/AboutDialog.cpp:122
+#: ../xrc/xrc_strings.cpp:214
 msgid "Purpose"
 msgstr "Propósito"
 
 #: app/AboutDialog.cpp:124
 msgid "LenMus is a free program to help you in the study of music theory and ear training. It is available for Windows but soon it will be also available for Mac OS X, Linux, and other Unix-like operating systems."
-msgstr "LenMus es un programa gratuito para ayudarte en el estudio del lenguaje musical y en la educación del oido. EStá disponible para Windows pero pronto estará también para Mac OS X, Linux, y demás sistemas basados en Unix."
+msgstr "LenMus es un programa gratuito para ayudarte en el estudio del lenguaje musical y en la educación del oido. Está disponible para Windows pero pronto estará también para Mac OS X, Linux, y demás sistemas basados en Unix."
 
 #: app/AboutDialog.cpp:128
 msgid "The LenMus Project is an open project, committed to the principles of Open Source, free education, and free access to information. It has no comercial purpose. It is an open workbench for working on all areas related to teaching music, and music representation and management with computers. It aims at developping public knowledge, methods and algorithms related to all these areas and at the same time provides free quality software for music students, amateurs, and teachers."
@@ -1982,7 +1984,7 @@ msgstr "El proyecto LenMus es un proyecto abierto, sin objetivos comerciales, y 
 
 #: app/AboutDialog.cpp:136
 msgid "If you find a bug or have a suggestion, please contact us. We depend on your feedback in order to continue to improve LenMus. So please visit our website and give us your bug reports  and feature requests. Thank you very much."
-msgstr "Si encuentras algún error o tienes alguna sugerencia, por favor, comunícanoslo. Dependemos de tus comentarios y sugerencias para continuar mejorando el programa. Por favor, visita nuestra web y comunícanos los errores que detectes y las sugerencias que tengas. Muchas gracias."
+msgstr "Si encuentras algún error o tienes alguna sugerencia, por favor, comunícanoslo. Dependemos de tus comentarios y sugerencias para continuar mejorando el programa. Por favor, visita nuestra web e infórmanos de los errores que detectes y las sugerencias que tengas. Muchas gracias."
 
 #: app/AboutDialog.cpp:150
 msgid "License"
@@ -1998,7 +2000,7 @@ msgstr "Este programa es 'Software Libre'. Está permitido redistribuirlo y/o mod
 
 #: app/AboutDialog.cpp:159
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General Public License at http://www.gnu.org/licenses/licenses.html"
-msgstr "Este programa se distribuye con la intención de que sea útil, sin embargo carece de garantía, nisiquiera tiene la garantía implícita de tipo comercial o inherente al propósito del mismo programa. Ver la Licencia Pública General GNU para más detalles, consultándola en http://www.gnu.org/licenses/licenses.html"
+msgstr "Este programa se distribuye con la intención de que sea útil, sin embargo carece de garantía, ni siquiera tiene la garantía implícita de tipo comercial o inherente al propósito del mismo programa. Ver la Licencia Pública General GNU para más detalles, consultándola en http://www.gnu.org/licenses/licenses.html"
 
 #: app/AboutDialog.cpp:173
 msgid "Art desing credits"
@@ -2029,6 +2031,7 @@ msgid "To LenMus developers knowledge, all used icons are freely usable either u
 msgstr "Hasta donde he podido averiguar, todos los iconos usados estan sujetos a una de las licencias GNU GPL, GNU LGPL o Creative Commomns, por lo que pueden usarse en este proyecto. Si no fuera así, por favor, comunícamelo inmediatamente para dejar de utilizarlos. Para más detalles consulta el documento \"icons.htm\" en la carpeta \"res/icons\".</p>"
 
 #: app/AboutDialog.cpp:217
+#: ../xrc/xrc_strings.cpp:218
 msgid "Software credits"
 msgstr "Software. Créditos"
 
@@ -2050,7 +2053,7 @@ msgstr "Fecha de construcción del programa:"
 
 #: app/AboutDialog.cpp:241
 msgid "wxMidi Version "
-msgstr "Versiuón de wxMidi"
+msgstr "Versión de wxMidi "
 
 #: app/AboutDialog.cpp:242
 msgid "Language: "
@@ -2065,6 +2068,7 @@ msgid "Canonical locale name: "
 msgstr "Configuración regional (canónica):"
 
 #: app/AboutDialog.cpp:255
+#: ../xrc/xrc_strings.cpp:216
 msgid "Developers"
 msgstr "Desarrolladores"
 
@@ -2584,8 +2588,8 @@ msgstr "&Aceptar"
 
 #: options/OptionsDlg.cpp:253
 #: ../xrc/xrc_strings.cpp:128
-#: ../xrc/xrc_strings.cpp:200
-#: ../xrc/xrc_strings.cpp:206
+#: ../xrc/xrc_strings.cpp:203
+#: ../xrc/xrc_strings.cpp:209
 msgid "&Cancel"
 msgstr "&Cancelar"
 
@@ -2834,6 +2838,7 @@ msgstr "Iniciar ambos intervalos en la misma nota"
 #: ../xrc/xrc_strings.cpp:127
 #: ../xrc/xrc_strings.cpp:147
 #: ../xrc/xrc_strings.cpp:177
+#: ../xrc/xrc_strings.cpp:220
 msgid "Accept"
 msgstr "Aceptar"
 
@@ -3163,31 +3168,43 @@ msgid "Other options"
 msgstr "Otras opciones"
 
 #: ../xrc/xrc_strings.cpp:194
-msgid "Automatically check for updates at program start"
-msgstr "Comprobar si hay actualizaciones al iniciar el programa"
+msgid "Software updates"
+msgstr "Actualizaciones del software"
+
+#: ../xrc/xrc_strings.cpp:195
+msgid "Check for updates"
+msgstr "Buscar &actualizaciones"
 
 #: ../xrc/xrc_strings.cpp:196
-#: ../xrc/xrc_strings.cpp:202
+msgid "Last successful check:"
+msgstr "Ultima comprobación:"
+
+#: ../xrc/xrc_strings.cpp:197
+msgid "dd/mm/aaaa"
+msgstr "dd/mm/aaaa"
+
+#: ../xrc/xrc_strings.cpp:199
+#: ../xrc/xrc_strings.cpp:205
 msgid "LenMus Phonascus updater"
 msgstr "Actualizador de LenMus Phonascus"
 
-#: ../xrc/xrc_strings.cpp:197
+#: ../xrc/xrc_strings.cpp:200
 msgid "Available updates"
 msgstr "Actualizaciones disponibles"
 
-#: ../xrc/xrc_strings.cpp:198
+#: ../xrc/xrc_strings.cpp:201
 msgid "Item description"
 msgstr "Descripción del elemento"
 
-#: ../xrc/xrc_strings.cpp:199
+#: ../xrc/xrc_strings.cpp:202
 msgid "Download selected items"
 msgstr "Descargar seleccionados"
 
-#: ../xrc/xrc_strings.cpp:203
+#: ../xrc/xrc_strings.cpp:206
 msgid "Checking for available updates"
 msgstr "Comprobando si hay actualizaciones"
 
-#: ../xrc/xrc_strings.cpp:204
+#: ../xrc/xrc_strings.cpp:207
 msgid ""
 "This program will connect to LenMus website and look for \n"
 "available updates.\n"
@@ -3199,9 +3216,29 @@ msgstr ""
 "\n"
 "Pulse 'Iniciar' para continuar."
 
-#: ../xrc/xrc_strings.cpp:205
+#: ../xrc/xrc_strings.cpp:208
 msgid "Proceed"
 msgstr "Iniciar"
+
+#: ../xrc/xrc_strings.cpp:211
+msgid "About LenMus Phonascus"
+msgstr "Acerca de LenMus Phonascus"
+
+#: ../xrc/xrc_strings.cpp:212
+msgid "LenMus Phonascus "
+msgstr "LenMus Phonascus"
+
+#: ../xrc/xrc_strings.cpp:215
+msgid "Licence"
+msgstr "Licencia"
+
+#: ../xrc/xrc_strings.cpp:217
+msgid "Art design credits"
+msgstr "Diseño artístico. Créditos."
+
+#: ../xrc/xrc_strings.cpp:219
+msgid "Build info."
+msgstr "Información de versión"
 
 #: updater/Updater.cpp:120
 msgid "Error"

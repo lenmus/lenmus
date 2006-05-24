@@ -493,6 +493,7 @@ public:
 
     //layout related methods
     lmLUnits TopSystemDistance() { return m_nTopSystemDistance + m_nHeadersHeight; }
+    void SetTopSystemDistance(lmLUnits nDistance) { m_nTopSystemDistance = nDistance; }
 
     //global lmStaffObj list related methods
     void IncludeInGlobalList(lmStaffObj* pSO);

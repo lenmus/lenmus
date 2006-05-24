@@ -191,7 +191,10 @@ _("&Labels bottom");
 _("&Labels right");
 //OtherOptionsPanel.xrc 
 _("Other options");
-_("Automatically check for updates at program start");
+_("Software updates");
+_("Check for updates");
+_("Last successful check:");
+_("dd/mm/aaaa");
 //UpdaterDlgInfo.xrc 
 _("LenMus Phonascus updater");
 _("Available updates");
@@ -204,3 +207,14 @@ _("Checking for available updates");
 _("This program will connect to LenMus website and look for \navailable updates.\n\nPress 'Proceed' to start.");
 _("Proceed");
 _("&Cancel");
+//AboutDialog.xrc 
+_("About LenMus Phonascus");
+_("LenMus Phonascus ");
+_("A free program for music language learning");
+_("Purpose");
+_("Licence");
+_("Developers");
+_("Art design credits");
+_("Software credits");
+_("Build info.");
+_("Accept");

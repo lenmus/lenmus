@@ -25,3 +25,5 @@ wxrc UpdaterDlgInfo.xrc -g >> xrc_strings.cpp
 echo //UpdaterDlgStart.xrc >> xrc_strings.cpp
 wxrc UpdaterDlgStart.xrc -g >> xrc_strings.cpp
 
+echo //AboutDialog.xrc >> xrc_strings.cpp
+wxrc AboutDialog.xrc -g >> xrc_strings.cpp

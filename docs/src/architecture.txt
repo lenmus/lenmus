@@ -406,4 +406,31 @@ Conclusions:
 From 1 & 2 ==> All parameters for renderization are part of the document.
 
 
+@section spacing_margins Page, systems and staves spacing and margins
+<!-- ========================================================================= -->
+
+A score is just a long long single line. To fit in the paper it must be broken into
+systems. So:
+
+1.	By nature, the height of all systems is the same, as they are splitted sections of a
+	continous single system.
+	
+2.	For aesthetical reasons the user must be able to alter space distribution in a
+	specific system.
+	
+Page grasps:
+	- top, bottom, left, right margins. All pages or a specific one. Stored in BoxPage.
+	
+System grasps:
+	- left, right space. Apply to all selected systems. Stored in BoxSystem. Also
+		stores all VStaff and staff spacing data, so that user can alter anything in
+		a specific system.
+		
+		==> Need to create BoxVStaff and BoxStaff 
+		
+		==> How to save BoxPage, BoxSystem, BoxVStaff and BoxStaff information in LDP?
+		
+Staff grasps:
+	- left, right, top, bottom spacing. 
+
 */
