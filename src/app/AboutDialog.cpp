@@ -193,11 +193,11 @@ license.") +
 These icons are released under the GNU GPL license.") +
         _T("<br /></li><li>") +
         _("Taken or derived from eMule project (http://sourceforge.net/projects/emule) \
-icons. eMule is a GNU GPL project so I assume that its icons are also available under GNU GPL.<br /></li> \
-<li>Taken or derived from John Zaitseff's icons \
+icons. eMule is a GNU GPL project so I assume that its icons are also available under GNU GPL.") +
+        _T("<br /></li><li>") +
+_("Taken or derived from John Zaitseff's icons \
 (http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). According to what \
-is said there, these icons are released under the \
-terms of the GNU General Public License.") +
+is said there, these icons are released under the terms of the GNU General Public License.") +
         _T("<br /><br /></li></ul>") +
         _("To LenMus developers knowledge, all used icons are freely usable either \
 under GNU GPL, \
