@@ -1,4 +1,3 @@
-// RCS-ID: $Id: objects_model.txt,v 1.1.1.1 2005/10/06 15:55:30 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2001-2006 Cecilio Salmeron
@@ -166,7 +165,7 @@ StaffObjs:  ScoreObjs that appear in an staff/measure. All are selectable.
 
 -----------------------------------------------------------------------------------------
     
-    
+	ScoreObjs:  The most abstract object. Anything that can appear in an score
   
     There are two main types of ScoreObjs: those that "consume time" and those which do not.
     The first group is formed by all those objects that, by necessity, must go in
@@ -182,6 +181,16 @@ StaffObjs:  ScoreObjs that appear in an staff/measure. All are selectable.
         of a measure, such as clefs, notes and barlines. They "consume time" and, therefore,
         they have timing information. They must belong to an staff and, therefore,
         they will get included in the staff objects collection associated to an lmVStaff.
+        
+        lmStaffObj specialices in two classes:
+        
+			lmSimpleObj
+				Current:	lmBarline, lmClef, lmWordsDirection, lmKeySignature, lmSOControl,
+							lmText, lmTimeSignature, lmTupletBracket
+				
+			lmCompositeObj
+				Current:	lmNoteRest (lmNote, lmRest)
+		
 
     lmAuxObj
         Other symbols, related either to an staff, the score (paper) or
@@ -203,13 +212,25 @@ StaffObjs:  ScoreObjs that appear in an staff/measure. All are selectable.
         in it (i.e. lmScore titles). In these cases, it will be necessary to include
         flags to signal that the operation will be performed by the owner and, so,
         to skip that object.
+        
+        Current:	lmTie, lmNoteRestObj
 
-    lmNoteRestObj
-        AuxObjs related to NoteRests. The rendering is controlled by the owner lmNoteRest and
-        the measurement and drawing phases are implemented by two different methods instead
-        of the combined method Draw() used by StaffObjs.
-    
+		lmNoteRestObj
+			AuxObjs related to NoteRests. The rendering is controlled by the owner lmNoteRest and
+			the measurement and drawing phases are implemented by two different methods instead
+			of the combined method Draw() used by StaffObjs.
+	    
+			Current lmNOteRestObj: lmFermata, lmLyric, lmAccidental
 
+
+
+	Non-derived classes:
+	
+		Current:	lmBeam, lmChord, lmArch, lmStaff
+		
+					lmColStaffObjs, lmContext, lmGlyph, lmInstrument, lmScore,
+					lmStaffObjIterator, lmVStaff
+				
 
                               
     DraggableObject

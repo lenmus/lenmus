@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="yes"?>
+<UpdateData>
+
+<platform name="Win32">
+    <version>3.0</version>
+    <package>LenMus Phonascus 3.0 stable (1,73 MB)</package>
+    <description>
+        Release 3.0 include new features and improvements and some bug fixes.
+        It replace version 2.0.
+    </description>
+    <download_url>http://www.lenmus.org/sw/page.php?pid=paginas&amp;name=downloads</download_url>
+</platform>
+
+</UpdateData>
