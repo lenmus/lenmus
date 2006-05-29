@@ -1,4 +1,3 @@
-// RCS-ID: $Id: LDPParser.h,v 1.7 2006/03/01 19:19:31 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -57,13 +56,19 @@ public:
     // the type of text parsed
     lmScore*    AnalyzeScore(lmLDPNode* pNode);
     void        AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInstr);
+    void        AnalyzeInstrument104(lmLDPNode* pNode, lmScore* pScore, int nInstr);
     void        AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode);
     bool        AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode);
-    lmNote*     AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff);
+    lmNote*     AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);
     lmRest*     AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff);
-    bool        AnalyzeBarline(lmVStaff* pVStaff, lmLDPNode* pNode);
+    bool        AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff);
+
+    void        AnalyzeVoice(lmLDPNode* pNode, lmVStaff* pVStaff);
+    void        AnalyzeSplit(lmLDPNode* pNode, lmVStaff* pVStaff);
+    void        AnalyzeChord(lmLDPNode* pNode, lmVStaff* pVStaff);
+
 
 
     // for lmLDPToken
@@ -94,6 +99,7 @@ private:
 
     lmLDPNode*  LexicalAnalysis();
     lmScore*    AnalyzeScoreV102(lmLDPNode* pNode);
+    lmScore*    AnalyzeScoreV104(lmLDPNode* pNode);
     void        AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff);
 
     void Clear();

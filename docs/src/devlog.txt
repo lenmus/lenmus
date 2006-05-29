@@ -66,6 +66,8 @@ LenMus project philosophy (to remind me to always stay on this):
   
   ---------------------------------------------------------------------------------------
  
+ - implement AnalizarTonalidad en LDP Parser
+ 
 Organizational issues:
     - Integrate wxMidi so that LenMus package at SVN be self-contained.
     - Modify panel pendrive so that erased files do not re-appear
@@ -74,6 +76,7 @@ Organizational issues:
         some visible result: launch a new release every month. a new document, etc.
         
 Area 0: Bugs to solve
+    - Crash when closing score 060_chords_v14.txt
     - Test score: 032_all_key_signatures_v13.txt renders nothing.
     - ¿lmInterval: fix names Unison augmented, Unison perfect, etc...?
     - If Midi Wizard is cancelled some non-relevant error messages are displayed when
@@ -92,7 +95,7 @@ Area 2: Notation editor
     - slurs
 
 Area 3: Analysis and algorithms
-    - sequences (Lylipond) vs. back/forward (MusicXML)
+    - sequences (Lylipond, Guido) vs. back/forward (MusicXML)
     - Role of GraphicManager vs. lmPaper. Gradually move lmPaper methods to lmBoxPage. 
     
 Area 4: Documentation
@@ -157,9 +160,7 @@ Upcomig releases features
  - Beamed groups in LDP: automatic identification of typical groups
  - Slurs
  - Bug: hook beam after rest in group. Drawn wrong
- - Error window with LDP parsing errors in Open command
-
-- For each exercise prepare an html page to explain it in the website. It could be
+ - For each exercise prepare an html page to explain it in the website. It could be
     also part of the help book
             
 

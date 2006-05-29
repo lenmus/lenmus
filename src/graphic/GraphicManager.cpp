@@ -80,6 +80,7 @@ void lmGraphicManager::Layout()
 
 void lmGraphicManager::Render(lmPaper* pPaper)
 {
+    if (!m_pBoxScore) return;
     m_pBoxScore->Render(pPaper);
 
 }

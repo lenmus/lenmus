@@ -1,4 +1,3 @@
-// RCS-ID: $Id$
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -82,7 +81,7 @@ public:
 	static lmLdpTagsTable* GetInstance();
     static void DeleteInstance();
 
-	void LoadTags(wxString sLanguage);
+	void LoadTags(wxString sLanguage, wxString sCharset);
 
 	const wxString& TagName(lmELdpTags nTag) { return m_sTags2[nTag]; }
 	const wxString& TagName(wxString sTag) { return m_Tags[sTag]; }

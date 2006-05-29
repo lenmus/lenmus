@@ -26,6 +26,19 @@
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">29-may-06</td>
+    <td class="ListaPar">
+    Reviewing the LDP language to continue developing the score editor and modifying LDP
+    parser accordingly:
+    <ul>
+      <li>Error window now displayed in Open command, to show
+        the errors found during LDP score parsing and analysis.</li>
+      <li>Tag 'language' parsed and implemented. Now LDP parser supports internationalization.
+        Default changed to English. Tags will be internationalized as I review the parser.</li>
+      <li>Tags Score, Instrument reviewed. Tags Voice and Chord implemented.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">23-may-06</td>
     <td class="ListaPar">
     <ul>
@@ -53,7 +66,7 @@
     <td class="ListaPar">21-may-06</td>
     <td class="ListaPar">
     <ul>
-      <li>Improving updater: Testing and fixing issues with/without internet connection; 
+      <li>Improving updater: Testing and fixing issues with/without internet connection;
         fixing problem to run updater from TheApp::OnInit(). Added options to select
         frequency of checkings (never, daily, weekly or monthly); panel
         lmOtherOptionsPanel modified accordingly.</li>
@@ -92,10 +105,10 @@
       <li>TheApp:OnInit() modified to invoke CheckForUpdates() if flag set on lenmus.ini
         file.</li>
       <li>Bug fixed: In first run installed languages are not recognized.
-        It was caused by not properly setting the locale folder, as paths were 
+        It was caused by not properly setting the locale folder, as paths were
         instantiated before the language was chosen.</li>
       <li>Updated Single Exercises book (name and description of theo intervals and
-		    key signatures exercises) to reflect new features.</li>
+            key signatures exercises) to reflect new features.</li>
     </ul>
     </td></tr>
 <tr valign="top">
@@ -104,7 +117,7 @@
     <ul>
       <li>Implementing internet updater. Clases for dialogs (file UpdaterDlg.cpp) added.
         Checking if a new version is available now operative. Problems with wxWidgets to
-		    open browser in download page.</li>
+            open browser in download page.</li>
     </ul>
     </td></tr>
 <tr valign="top">
@@ -153,8 +166,8 @@
     <ul>
       <li>Bug fixed: Memory leaks in scales exercise. The problem was
         caused because old exercise score was not deleted.</li>
-      <li>Answer buttons added for 'deduce scale' problem type. in 
-        TheoScalesCtrol. CountersCtrol included. Some re-layout needed. 
+      <li>Answer buttons added for 'deduce scale' problem type. in
+        TheoScalesCtrol. CountersCtrol included. Some re-layout needed.
         Enabled/disabled button links when appropiate.</li>
       <li>Fixing notes spacing problem (too much space beetween notes in intervals and
         scales exercises). In version 2.0 RenderMinimal method was used to render these
@@ -169,12 +182,12 @@
         caused by lmPaper optimization code: if the new score pointer has the same address
         than the previous one, lmPaper did not re-draw the score and the old non-valid
         bitmaps got displayed.</li>
-      <li>CountersCtrol included in EarIntervalsCtrol. Some re-layout needed. 
+      <li>CountersCtrol included in EarIntervalsCtrol. Some re-layout needed.
         Enabled/disabled button links when appropiate. Name of interval now displayed
         when requesting to show the solution.</li>
       <li>Bug fixed in lmIntervals: strings initialized only in one constructor.
         Initializations moved to a private method and invoked from both constructors.</li>
-      <li>CountersCtrol included in EarCompareIntvCtrol. Some re-layout needed. 
+      <li>CountersCtrol included in EarCompareIntvCtrol. Some re-layout needed.
         Enabled/disabled button links when appropiate. Name of intervals now displayed
         when requesting to show the solution.</li>
     </ul>
@@ -183,7 +196,7 @@
     <td class="ListaPar">1-may-06</td>
     <td class="ListaPar">
     <ul>
-      <li>CountersCtrol included in TheoKeySignCtrol. Some re-layout needed. 
+      <li>CountersCtrol included in TheoKeySignCtrol. Some re-layout needed.
         Enabled/disabled button links when appropiate.</li>
       <li>Bug fixed: Wrong answers in key signatures exercise (Spanish version). They were
         caused by bad translated strings.</li>
@@ -191,8 +204,8 @@
     </td></tr>
 
 </table>
-    
-    
+
+
 <h2><a name="Apr06">April 2006</a></h2>
 <a href="#top">Go to top of document</a>
 <table class="Lista" ID="Table11">
@@ -205,7 +218,7 @@
     <td class="ListaPar">30-apr-06</td>
     <td class="ListaPar">
     <ul>
-      <li>Created control with counters for wrong/right answers (class lmCountersCtrol), 
+      <li>Created control with counters for wrong/right answers (class lmCountersCtrol),
         to be included in all exercises. Tested and finished.</li>
       <li>CountersCtrol included in TheoIntervalsCtrol. Some re-layout needed.</li>
       <li>TheoIntervalsCtrol: enable/disable button links when appropiate.</li>
@@ -215,7 +228,7 @@
     <td class="ListaPar">28-apr-06</td>
     <td class="ListaPar">
     <ul>
-      <li>Continue implementing formatting based on container classes. 
+      <li>Continue implementing formatting based on container classes.
         Created class lmBoxSystem. Method Score->Draw() removed.
         Now Paper calls GraphicManager to render the score.</li>
       <li>This removes a program limit: now a score can have an infinite number of systems;

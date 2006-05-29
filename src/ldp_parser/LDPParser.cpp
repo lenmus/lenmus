@@ -124,10 +124,17 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename)
     m_nErrors = 0;
     m_nWarnings = 0;
     lmLDPNode* pRoot = LexicalAnalysis();
+    lmScore* pScore = (lmScore*) NULL;
     if (pRoot) 
-        return AnalyzeScore(pRoot);
-    else
-        return (lmScore*) NULL;
+        pScore = AnalyzeScore(pRoot);
+
+    // report errors
+    bool fShowLog = true;
+    if (fShowLog && m_nErrors != 0) {
+        g_pLogger->ShowDataErrors(_("Warnings/errores while reading LenMus score."));
+    }
+
+    return pScore;
 
 }
 
@@ -244,6 +251,7 @@ void lmLDPParser::AnalysisError(const wxChar* szFormat, ...)
     va_start(argptr, szFormat);
     wxString sMsg = _T("** LDP ERROR **: ") + wxString::FormatV(szFormat, argptr);
     wxLogMessage(sMsg);
+    g_pLogger->LogDataError(sMsg);
     va_end(argptr);
 
 }
@@ -357,7 +365,8 @@ lmLDPNode* lmLDPParser::LexicalAnalysis()
                 Do_WaitingForName();
                 break;
             case A2_WaitingForParameter:
-                Do_WaitingForParameter();
+                //Do_WaitingForParameter();     //changed to allow for elements without parameters
+                Do_ProcessingParameter();
                 break;
             case A3_ProcessingParameter:
                 Do_ProcessingParameter();
@@ -536,8 +545,8 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
     lmScore* pScore = (lmScore*) NULL;
     int i;
 
-    if (pNode->GetName() != _T("Score")) {
-        AnalysisError( _("Element 'Score' expected but found element %s. Analysis stopped."),
+    if (!(pNode->GetName() == _T("score") || pNode->GetName() == _T("Score")) ) {
+        AnalysisError( _("Element 'score' expected but found element %s. Analysis stopped."),
             pNode->GetName() );
         return pScore;
     }
@@ -550,8 +559,8 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
     //parse version
     iP = 1;
     pX = pNode->GetParameter(iP);     //version
-    if (pX->GetName() != _T("Vers")) {
-        AnalysisError( _("Element 'Vers' expected but found element %s. Analysis stopped."),
+    if (!(pX->GetName() == _T("Vers") || pX->GetName() == _T("vers"))) {
+        AnalysisError( _("Element 'vers' expected but found element %s. Analysis stopped."),
             pX->GetName() );
         return pScore;
     } else {
@@ -574,9 +583,12 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
         case 103:
             pScore = AnalyzeScoreV102(pNode);
             break;
+        case 104:
+            pScore = AnalyzeScoreV104(pNode);
+            break;
         default:
             AnalysisError( _("Error analysing LDP score: LDP version (%d) not supported. Analysis stopped."),
-                m_sVersion );
+                m_nVersion );
             return pScore;
     }
 
@@ -586,20 +598,21 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
 
 lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)
 {
-    //<Score> = (Partitura <Vers> [<Creditos>] <NumInstruments> <Instrumento>*)
-    //<Creditos> = (Creditos [..])
-    //<NumInstrumentos> = (NumInstrumentos num)
+    //<score> = (score <vers> [<credits>] <instrument>*)
 
     lmLDPNode* pX;
     long i, iP;
     wxString sData;
     lmScore* pScore = (lmScore*) NULL;
 
-    //parse element <Creditos>
+    //for version 1.3 or lower all tags in Spanish
+    m_pTags->LoadTags(_T("es"), _T("iso-8859-1"));
+
+    //parse element <credits>
     wxString sTitle = _T("");
     iP = 2;      //first parameter is always the version and is already analyzed. So, skip it
     pX = pNode->GetParameter(iP);
-    if (pX->GetName() == _T("Creditos")) {
+    if (pX->GetName() == _T("Credits") ) {
         //! @todo no treatment yet. Ignore
         iP++;
     }
@@ -624,8 +637,8 @@ lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)
 
     //if (sTitulo != _T(""))pScore->Set.Title(sTitle);
     
-    // loop to parse elements <Instrumento>
-    for (i = 0; i < nInstruments; i++, iP++) {
+    // loop to parse elements <instrument>
+    for (i=0; iP <= pNode->GetNumParms(); i++, iP++) {
         pX = pNode->GetParameter(iP);
         AnalyzeInstrument(pX, pScore, i);
     }
@@ -634,15 +647,222 @@ lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)
     
 }
 
+lmScore* lmLDPParser::AnalyzeScoreV104(lmLDPNode* pNode)
+{
+    //<score> = (score <vers> [<language>] [<credits>] <instrument>*)
+    //<language> = (language LanguageCode Charset ) 
+
+    lmLDPNode* pX;
+    long i, iP;
+    wxString sData;
+    lmScore* pScore = (lmScore*) NULL;
+
+    //parse element <language>
+    wxString sLangCode = _T("en");
+    wxString sCharset = _T("");
+    iP = 2;      //first parameter is always the version and is already analyzed. So, skip it
+    pX = pNode->GetParameter(iP);
+    if (pX->GetName() == _T("language") ) {
+        if (pX->GetNumParms() != 2) {
+        }
+        else {
+            sLangCode = (pX->GetParameter(1))->GetName();
+            sCharset = (pX->GetParameter(2))->GetName();
+            m_pTags->LoadTags(sLangCode, sCharset);
+        }
+        iP++;
+    }
+    
+    //parse element <credits>
+    wxString sTitle = _T("");
+    pX = pNode->GetParameter(iP);
+    if (pX->GetName() == m_pTags->TagName(_T("credits")) ) {
+        //! @todo no treatment yet. Ignore
+        iP++;
+    }
+    
+    // create the score
+    pScore = new lmScore();
+
+    //if (sTitulo != _T(""))pScore->Set.Title(sTitle);
+    
+    // loop to parse elements <instrument>
+    for (i=0; iP <= pNode->GetNumParms(); i++, iP++) {
+        pX = pNode->GetParameter(iP);
+        AnalyzeInstrument104(pX, pScore, i);
+    }
+    
+    return pScore;
+    
+}
+
+void lmLDPParser::AnalyzeInstrument104(lmLDPNode* pNode, lmScore* pScore, int nInstr)
+{
+    //<instrument> = (instrument [<instrName>][<infoMIDI>][<staves>] (<voice> | <split>) )
+
+    //<instrName string [string]) - nombre, [abreviatura]
+    //<infoMIDI num [num]> - Num.Instrumento MIDI, [Num.Dispositivo MIDI]
+    //<staves> = 
+    //<voice> = (voice <compas>* )
+    
+    lmLDPNode* pX;
+    wxString sData;
+    long iP;
+    iP = 1;
+    
+    if (pNode->GetName() != m_pTags->TagName(_T("instrument")) ) {
+        AnalysisError( _("Element '%s' expected but found element %s. Analysis stopped."),
+            m_pTags->TagName(_T("instrument")), pNode->GetName() );
+        return;
+    }
+
+    // parse optional elements until <voice> or <split> tags found
+    int nMIDIChannel=0, nMIDIInstr=0;       //default MIDI values: channel 0, instr=Piano
+    bool fMusicFound = false;               // <voice> or <split> tags found
+    for (; iP <= pNode->GetNumParms(); iP++) {
+        pX = pNode->GetParameter(iP);
+
+        if (pX->GetName() == m_pTags->TagName(_T("voice")) ||
+            pX->GetName() == m_pTags->TagName(_T("split")) ) {
+                
+            fMusicFound = true;
+            break;      //end of instrument analysis
+        }
+        else if (pX->GetName() == m_pTags->TagName(_T("instrName")) ) {
+            //! @todo No treatment for now
+        }
+        else if (pX->GetName() == m_pTags->TagName(_T("infoMIDI")) ) {
+            //! @todo No treatment for now
+            //    nMIDIChannel = nMidiCanalVoz
+            //    nMIDIInstr = nMidiInstrVoz
+            //    
+            //    if (pX->GetName() = "INFOMIDI") {
+            //        AnalizarInfoMIDI pX, nMIDIChannel, nMIDIInstr
+            //        iP = iP + 1
+            //    }
+        }
+        else if (pX->GetName() == m_pTags->TagName(_T("staves")) ) {
+            //wxString sNumStaves = _T("1");       //default value
+            //pX = pNode->GetParameter(iP);
+            //if (pX->IsSimple()) {
+            //    sNumStaves = pX->GetName();
+            //    if (!sNumStaves.IsNumber()) {
+            //        AnalysisError( _("Number of staves expected but found '%s'. Analysis stopped."),
+            //            pX->GetName() );
+            //        return;
+            //    } else {
+            //        iP++;
+            //    }
+            //}
+            //sNumStaves.ToLong(&m_nNumStaves);
+        }
+        else {
+            AnalysisError( _("Element '%s' found. Uknown in '%s' context. Element ignored."),
+                pNode->GetName(), m_pTags->TagName(_T("Instrument")) );
+        }
+    }
+
+    if (!fMusicFound) {
+        AnalysisError( _("Expected '%s' or '%s' but found element %s. Analysis stopped."),
+            m_pTags->TagName(_T("voice")), m_pTags->TagName(_T("split")), pNode->GetName() );
+        return;
+    }
+
+    // create the instrument with one empty VStaff
+    pScore->AddInstrument(1, nMIDIChannel, nMIDIInstr);
+    lmVStaff* pVStaff = pScore->GetVStaff(nInstr, 1);      //get the VStaff created
+
+    //analyze the voice or split tag
+    if (pX->GetName() = m_pTags->TagName(_T("voice")) ) {
+        AnalyzeVoice(pX, pVStaff);
+    }
+    else {
+        AnalyzeSplit(pX, pVStaff);
+    }
+
+}
+
+void lmLDPParser::AnalyzeVoice(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+    // <voice> = (voice <music>* )
+    // <music> ::= {<Figura> | <Grupo> | <Atributo> | <Indicacion> |
+    //              <Barra> | <desplazamiento> | <opciones>}
+    // <Atributo> ::= (<Clave> | <Tonalidad> | <Metrica>)
+    // <Indicacion> ::= (<Metronomo>)
+
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("voice")));
+
+    //loop to analyze remaining elements: music
+    long iP;
+    wxString sName;
+    lmLDPNode* pX;
+
+    for(iP=1; iP <= pNode->GetNumParms(); iP++) {
+        pX = pNode->GetParameter(iP);
+        sName = pX->GetName();
+        if (sName == _T("n")) {             // note
+            AnalyzeNote(pX, pVStaff);
+        } else if (sName == _T("s")) {      // rest
+            AnalyzeRest(pX, pVStaff);
+        } else if (sName == m_pTags->TagName(_T("clef")) ) {
+            AnalyzeClef(pVStaff, pX);
+        } else if (sName == m_pTags->TagName(_T("time")) ) {
+            AnalyzeTimeSignature(pVStaff, pX);
+        } else if (sName == m_pTags->TagName(_T("key")) ) {
+            //    AnalizarTonalidad(pVStaff, pX)
+        } else if (sName == m_pTags->TagName(_T("barline")) ) {
+            AnalyzeBarline(pX, pVStaff);
+        } else if (sName == m_pTags->TagName(_T("chord")) ) {
+            AnalyzeChord(pX, pVStaff);
+        } else {
+            AnalysisError( _("[AnalyzeMeasure]: Expected node 'Figura', 'Grupo', 'Atributo' or 'Desplazamiento' but found node '%s'. Node ignored."),
+                sName );
+        }
+    }
+
+}
+
+void lmLDPParser::AnalyzeSplit(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+    //! @todo   AnalyzeSplit code
+
+}
+
+void lmLDPParser::AnalyzeChord(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+    // <chord> = (chord <Note>* )
+
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("chord")));
+
+    //loop to analyze remaining elements: notes
+    long iP;
+    wxString sName;
+    lmLDPNode* pX;
+
+    for(iP=1; iP <= pNode->GetNumParms(); iP++) {
+        pX = pNode->GetParameter(iP);
+        sName = pX->GetName();
+        if (sName == _T("n")) {
+            AnalyzeNote(pX, pVStaff, (iP != 1));     //first note is base of chord
+        }
+        else {
+            AnalysisError( _("[AnalyzeChord]: Expecting notes found element '%s'. Element ignored."),
+                sName );
+        }
+    }
+
+}
+
+
 void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInstr)
 {
-    //<Instrumento> = (Instrumento [<NombreInstrumento> | num ] <NumPartes> [<InfoMIDI>] <Parte>*)
-    //<NombreInstrument string [string]) - nombre, [abreviatura]
+    //<instrument> = (instrument [<instrName>][<infoMIDI>] <Parte>*)
+
+    //<NombreInstrumento string [string]) - nombre, [abreviatura]
     //<NumPartes> = (NumPartes num ) - num vstaffs
     //<InfoMIDI num [num]> - Num.Instrumento MIDI, [Num.Dispositivo MIDI]
     //<Parte> = (Parte num [num pentagramas] <compas>* )
     
-    // Name of element <NumPentagramas> was changed in version 1.3 to <NumPartes>
     // <Parte> represents an lmVStaff
     wxString sLabelNumVStaves;
     sLabelNumVStaves = (m_nVersion > 102 ? _T("NumPartes") : _T("NumPentagramas"));
@@ -654,9 +874,9 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
     long iP;
     iP = 1;
     
-    if (pNode->GetName() != m_pTags->TagName(_T("Instrument")) ) {
+    if (pNode->GetName() != _T("Instrumento") ) {
         AnalysisError( _("Element '%s' expected but found element %s. Analysis stopped."),
-            m_pTags->TagName(_T("Instrument")), pNode->GetName() );
+            _T("Instrumento"), pNode->GetName() );
         return;
     }
 
@@ -709,7 +929,8 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
         AnalyzeVStaff(pX, pVStaff);
         iP++;
     }
-    
+
+   
 }
 
 void lmLDPParser::AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
@@ -871,7 +1092,7 @@ void lmLDPParser::AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff)
             //case "METRONOMO"
             //    fSomethingAdded = Not AnalizarMetronomo(pVStaff, pX)
         } else if (sName == _T("Barra")) {
-                fBarline = !AnalyzeBarline(pVStaff, pX);
+                fBarline = !AnalyzeBarline(pX, pVStaff);
             //case "OPCIONES"
             //    AnalizarOpciones pVStaff, pX
             ////avances y retrocesos ----------------------------------------
@@ -1068,7 +1289,7 @@ void lmLDPParser::AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff)
 //
 //}
 
-lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
+lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord)
 {
     /*
     Analyze the source of a Note and with its information builds a lmNote object and appends
@@ -1108,7 +1329,7 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 
     //get parameters
-    bool fInChord = (pNode->GetName() == _T("na"));
+    bool fInChord = (pNode->GetName() == _T("na")) || fChord;
     long nParms = pNode->GetNumParms();
     if (nParms < 2) {
         AnalysisError( _("Missing parameters in node nota '%s'. Assumed (n c4 n)."),
@@ -1552,19 +1773,18 @@ lmRest* lmLDPParser::AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff)
 //    
 //}
 //
-bool lmLDPParser::AnalyzeBarline(lmVStaff* pVStaff, lmLDPNode* pNode)
+bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
     //returns true if error; in this case nothing is added to the lmVStaff
 
     //<Barra> ::= ("Barra" <Tipo_barra> [<Visible>])
     //<Tipo_barra> ::= {"InicioRepeticion" | "FinRepeticion" | "Final" | "Doble" | "Simple" }
 
-    wxASSERT(pNode->GetName() == _T("Barra"));
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("barline")) );
 
     //check that bar type is specified
     if(pNode->GetNumParms() < 1) {
-        AnalysisError(
-            _("Element 'Barra' has less parameters that the minimum required. Assumed '(Barra Simple)'.") );
+        //assume simple barline, visible
         pVStaff->AddBarline(etb_SimpleBarline, true);
         return false;
     }
@@ -1609,12 +1829,13 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
 //  <Clave> = ("Clave" {"Sol" | "Fa4" | "Fa3" | "Do1" | "Do2" | "Do3" | "Do4" | "SinClave" }
 //                [<num_pentagrama>] [<Visible>] )
     
-    wxASSERT(pNode->GetName() == _T("Clave"));
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("clef")) );
 
     //check that clef type is specified
     if(pNode->GetNumParms() < 1) {
         AnalysisError(
-            _("Element 'Clave' has less parameters that the minimum required. Assumed '(Clef Sol)'.") );
+            _("Element '%s' has less parameters that the minimum required. Assumed '(%s Sol)'."),
+            m_pTags->TagName(_T("clef")), m_pTags->TagName(_T("clef")) );
         pVStaff->AddClef(eclvSol, 1, true);
         return false;
     }
@@ -1805,11 +2026,12 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
 {
 //  <Métrica> ::= ("Metrica" <num> <num> [<Visible>])
     
-    wxASSERT(pNode->GetName() == _T("Metrica"));
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("time")) );
 
     //check that the two numbers are specified
     if(pNode->GetNumParms() < 2) {
-        AnalysisError( _("Element 'Metrica' has less parameters that the minimum required. Assumed '(Metrica 4 4)'.") );
+        AnalysisError( _("Element '%s' has less parameters that the minimum required. Assumed '(Metrica 4 4)'."),
+            m_pTags->TagName(_T("time")));
         pVStaff->AddTimeSignature(emtr44);
         return false;
     }
@@ -1818,8 +2040,8 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
     wxString sNum2 = (pNode->GetParameter(2))->GetName();
     if (!sNum1.IsNumber() || !sNum2.IsNumber()) {
         AnalysisError(
-            _("Element 'Metrica': Two numbers expected but found '%s' and '%s'. Assumed '(Metrica 4 4)'."),
-            sNum1, sNum2 );
+            _("Element '%s': Two numbers expected but found '%s' and '%s'. Assumed '(%s 4 4)'."),
+            m_pTags->TagName(_T("time")), sNum1, sNum2, m_pTags->TagName(_T("time")) );
         pVStaff->AddTimeSignature(emtr44);
         return false;
     }

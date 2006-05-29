@@ -1,4 +1,3 @@
-// RCS-ID: $Id$
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -34,7 +33,7 @@
 	When parsing a score, if the score has a 'lang=xx' tag, then the tags set
 	for that language will be loaded.
 
-	The 'Score' and 'Language' tags are the only non-translatable, according to
+	The 'score' and 'language' tags are the only non-translatable, according to
 	LDP standard v4.0
 
 */
@@ -91,8 +90,8 @@ void lmLdpTagsTable::Initialize()
 {
 
     // initialize table with default Spanish values
-    m_sTags2[LDP_TAG_SCORE] = _T("Score");
-    m_sTags2[LDP_TAG_LANGUAGE] = _T("Language");
+    m_sTags2[LDP_TAG_SCORE] = _T("score");
+    m_sTags2[LDP_TAG_LANGUAGE] = _T("language");
 	m_sTags2[LDP_TAG_PART] = _T("Parte");
 	m_sTags2[LDP_TAG_NUMINSTR] = _T("NumInstr");
 	m_sTags2[LDP_TAG_INSTRUMENT] = _T("Instrumento");
@@ -131,10 +130,42 @@ void lmLdpTagsTable::Initialize()
 }
 
 //load tags set for given language
-void lmLdpTagsTable::LoadTags(wxString sLanguage)
+void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
 {
-    // initialize table with default Spanish values
-    m_sTags2[LDP_TAG_SCORE] = _T("Score");
-    m_sTags2[LDP_TAG_LANGUAGE] = _T("Language");
+    //! @todo For now charset is ignored
+
+    //clear table
+    m_Tags.clear();
+
+
+    //! @todo   For now I will load tags from program. This must be changed to load them
+    //!         from file ''LDP_Tags.txt' in given language directory.
+    if (sLanguage == _T("es")) {
+        m_Tags[_T("instrument")] = _T("instrumento");
+        m_Tags[_T("instrName")] = _T("nombreInstrumento");
+        m_Tags[_T("infoMIDI")] = _T("infoMIDI");
+        m_Tags[_T("voice")] = _T("voz");
+        m_Tags[_T("split")] = _T("partes");
+        m_Tags[_T("staves")] = _T("numPentagramas");
+        m_Tags[_T("barline")] = _T("Barra");            //! @todo change for 1.4
+        m_Tags[_T("clef")] = _T("Clave");            //! @todo change for 1.4
+        m_Tags[_T("acorde")] = _T("acorde");
+        m_Tags[_T("key")] = _T("Tonalidad");          //! @todo change for 1.4
+        m_Tags[_T("time")] = _T("Metrica");        //! @todo change for 1.4
+    }
+    else {
+        // initialize table with default English values
+        m_Tags[_T("instrument")] = _T("instrument");
+        m_Tags[_T("instrName")] = _T("instrName");
+        m_Tags[_T("infoMIDI")] = _T("infoMIDI");
+        m_Tags[_T("voice")] = _T("voice");
+        m_Tags[_T("split")] = _T("split");
+        m_Tags[_T("staves")] = _T("staves");
+        m_Tags[_T("barline")] = _T("barline");
+        m_Tags[_T("clef")] = _T("clef");
+        m_Tags[_T("chord")] = _T("chord");
+        m_Tags[_T("key")] = _T("key");
+        m_Tags[_T("time")] = _T("time");
+    }
 }
 
