@@ -386,9 +386,9 @@ lmTimeSignature* lmVStaff::AddTimeSignature(lmTimeSignature* pTS)
     return pTS;
 }
 
-lmKeySignature* lmVStaff::AddKeySignature(int nFifths, bool fMajor)
+lmKeySignature* lmVStaff::AddKeySignature(int nFifths, bool fMajor, bool fVisible)
 {
-    lmKeySignature* pKS = new lmKeySignature(nFifths, fMajor, this);
+    lmKeySignature* pKS = new lmKeySignature(nFifths, fMajor, this, fVisible);
     m_cStaffObjs.Store(pKS);
 
     //Store current key signature
@@ -403,11 +403,11 @@ lmKeySignature* lmVStaff::AddKeySignature(int nFifths, bool fMajor)
     return pKS;
 }
 
-lmKeySignature* lmVStaff::AddKeySignature(EKeySignatures nKeySignature)
+lmKeySignature* lmVStaff::AddKeySignature(EKeySignatures nKeySignature, bool fVisible)
 {
     int nFifths = KeySignatureToNumFifths(nKeySignature);
     bool fMajor = IsMajor(nKeySignature);
-    return AddKeySignature(nFifths, fMajor);
+    return AddKeySignature(nFifths, fMajor, fVisible);
 }
 
 wxInt32 lmVStaff::GetNumMeasures()
@@ -831,6 +831,18 @@ lmLUnits lmVStaff::GetVStaffHeight()
 //
 lmBarline* lmVStaff::AddBarline(EBarline nType, bool fVisible)
 {
+    //save the contexts
+    int nStaff;
+    lmStaff* pStaff;
+    lmSOControl* pCtrol;
+    wxStaffListNode* pNode = m_cStaves.GetFirst();
+    for (nStaff=1; pNode; pNode = pNode->GetNext(), nStaff++) {
+        pStaff = (lmStaff *)pNode->GetData();
+        pCtrol = new lmSOControl(lmCONTEXT, this, nStaff, pStaff->GetLastContext() );
+        m_cStaffObjs.Store(pCtrol);
+    }
+
+    //create and save the barline
     lmBarline* pBarline = new lmBarline(nType, this, fVisible);
     m_cStaffObjs.Store(pBarline);
     
@@ -858,7 +870,7 @@ void lmVStaff::ResetContexts()
     for (; pNode; pNode = pNode->GetNext() ) {
         pStaff = (lmStaff *)pNode->GetData();
 
-         pOldContext = pStaff->GetLastContext();
+        pOldContext = pStaff->GetLastContext();
         pNewContext = new lmContext(pOldContext->GetClef(),
                                     pOldContext->GeyKey(),
                                     pOldContext->GetTime() );
@@ -925,7 +937,7 @@ void lmVStaff::NewLine(lmPaper* pPaper)
     
 }
 
-void lmVStaff::DrawProlog(bool fMeasuring, bool fDrawTimekey, lmPaper* pPaper)
+void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPaper* pPaper)
 {
     /*
     The prolog (clef and key signature) must be rendered on each system,
@@ -935,6 +947,12 @@ void lmVStaff::DrawProlog(bool fMeasuring, bool fDrawTimekey, lmPaper* pPaper)
     So, for the other systems it is necessary to force the rendering
     of the prolog because there are no StaffObjs representing it.
     This method does it.
+
+    To know what clef, key and time signature to draw we take this information from the
+    context associated to first note of the measure on each sttaf. If there are no notes,
+    the context is taken from the context_control object before the barline. If, finally,
+    no context found, no prolog is drawn.
+
     */
 
     wxDC* pDC = pPaper->GetDC();
@@ -944,7 +962,7 @@ void lmVStaff::DrawProlog(bool fMeasuring, bool fDrawTimekey, lmPaper* pPaper)
     lmClef* pClef = (lmClef*)NULL;
     EClefType nClef = eclvUndefined;
     lmKeySignature* pKey = (lmKeySignature*)NULL;
-    //ETimeSignature nTimeKey;
+    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
 
     //@attention when this method is invoked the paper position must be at the left marging,
     //at the start of a new system.
@@ -959,35 +977,71 @@ void lmVStaff::DrawProlog(bool fMeasuring, bool fDrawTimekey, lmPaper* pPaper)
     lmLUnits xPos=0;
     lmLUnits nWidth=0;
 
+    lmContext* pContext = (lmContext*)NULL;
+    lmStaffObj* pSO = (lmStaffObj*) NULL;
+    lmNoteRest* pNR = (lmNoteRest*)NULL;
+    lmNote* pNote = (lmNote*)NULL;
     for (int nStaff=1; pNode; pNode = pNode->GetNext(), nStaff++)
     {
         pStaff = (lmStaff *)pNode->GetData();
         xPos = xStartPos;
 
-        //render clef
-        pClef = pStaff->GetCurrentClef();
-        if (pClef) {
-            nClef = pClef->GetType();
-            wxPoint pos = wxPoint(xPos, yStartPos+yOffset);        //absolute position
-            nWidth = pClef->DrawAt(fMeasuring, pDC, pos);
-            xPos += nWidth;
+        //locate first context for this staff
+        pContext = (lmContext*)NULL;
+        lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
+        pIter->AdvanceToMeasure(nMeasure);
+        while(!pIter->EndOfList()) {
+            pSO = pIter->GetCurrent();
+            if (pSO->GetType() == eTPO_NoteRest) {
+                pNR = (lmNoteRest*)pSO;
+                if (!pNR->IsRest() && pNR->GetStaffNum() == nStaff) {
+                    //OK. Note fount. Take context
+                    pNote = (lmNote*)pSO;
+                    pContext = pNote->GetContext();
+                    break;
+                }
+            }
+            else if (pSO->GetType() == eTPO_Ctrol) {
+                lmSOControl* pSOCtrol = (lmSOControl*)pSO;
+                if (pSOCtrol->GetCtrolType() == lmCONTEXT && pSOCtrol->GetStaffNum() == nStaff) {
+                    //OK. Context fount. Take context
+                    pContext = pSOCtrol->GetContext();
+                    break;
+                }
+            }
+            pIter->MovePrev();
         }
-        
-        //render key signature
-        pKey = pStaff->GetCurrentKey();
-        if (pKey) {
-            wxASSERT(nClef != eclvUndefined);
-            wxPoint pos = wxPoint(xPos, yStartPos+yOffset);        //absolute position
-            nWidth = pKey->DrawAt(fMeasuring, pDC, pos, nClef, nStaff);
-            xPos += nWidth;
-//        
-//        //if requested (flag fDrawTimekey), render time key (only on first staff)
-//        if (fDrawTimekey And iStf = 1 {
-//            if (Not m_oCurMetrica Is Nothing {
-//                nTimeKey = m_oCurMetrica.Valor
-//                pPaper->PintarMetrica fMeasuring, nTimeKey, yDesplz
-//            }
-//        }
+        delete pIter;
+
+        if (pContext) {
+            pClef = pContext->GetClef();
+            pKey = pContext->GeyKey();
+            pTime = pContext->GetTime();
+
+            //render clef
+            if (pClef) {
+                nClef = pClef->GetType();
+                wxPoint pos = wxPoint(xPos, yStartPos+yOffset);        //absolute position
+                nWidth = pClef->DrawAt(fMeasuring, pDC, pos);
+                xPos += nWidth;
+            }
+            
+            //render key signature
+            if (pKey) {
+                wxASSERT(nClef != eclvUndefined);
+                wxPoint pos = wxPoint(xPos, yStartPos+yOffset);        //absolute position
+                nWidth = pKey->DrawAt(fMeasuring, pDC, pos, nClef, nStaff);
+                xPos += nWidth;
+            }
+
+            //if requested (flag fDrawTimekey), render time key (only on first staff)
+            //if (fDrawTimekey And iStf = 1 {
+            //    if (Not m_oCurMetrica Is Nothing {
+            //        nTimeKey = m_oCurMetrica.Valor
+            //        pPaper->PintarMetrica fMeasuring, nTimeKey, yDesplz
+            //    }
+            //}
+
         }
 
         //compute prolog width
@@ -1229,8 +1283,21 @@ void lmVStaff::ShiftTime(float rTimeShift)
 
     //Insert a control object to signal the shift event so that we can start a 
     //new thread at rendering
-    lmSOControl* pControl = new lmSOControl(this, rTimeShift);
+    lmSOControl* pControl = new lmSOControl(lmTIME_SHIFT, this, rTimeShift);
     m_cStaffObjs.Store(pControl);
+    
+}
+
+lmSOControl* lmVStaff::AddNewSystem()
+{
+    /*
+    Inserts a control lmStaffObj to signal a new system
+    */
+
+    //Insert the control object
+    lmSOControl* pControl = new lmSOControl(lmNEW_SYSTEM, this);
+    m_cStaffObjs.Store(pControl);
+    return pControl;
     
 }
 

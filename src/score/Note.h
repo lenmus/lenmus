@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Note.h,v 1.5 2006/02/23 19:23:54 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -79,13 +78,13 @@ public:
 
     //methos related to stems
     EStemType   GetStemType() { return m_nStemType; }
-    lmLUnits   GetDefaultStemLength() { return m_pVStaff->TenthsToLogical(35, m_nStaffNum); }
+    lmLUnits    GetDefaultStemLength() { return m_pVStaff->TenthsToLogical(35, m_nStaffNum); }
     void        SetStemLength(lmLUnits length) { m_nStemLength = length; };
     void        SetStemDirection(bool fStemDown) { m_fStemDown = fStemDown; }
-    lmLUnits   GetXStem() {return m_xStem + m_paperPos.x; }
-    lmLUnits   GetYStem() {return m_yStem + m_paperPos.y; }
-    lmLUnits   GetStemLength() { return m_nStemLength; }
-    lmLUnits   GetFinalYStem() {
+    lmLUnits    GetXStem() {return m_xStem + m_paperPos.x; }
+    lmLUnits    GetYStem() {return m_yStem + m_paperPos.y; }
+    lmLUnits    GetStemLength() { return m_nStemLength; }
+    lmLUnits    GetFinalYStem() {
                     return GetYStem() + (m_fStemDown ? m_nStemLength : -m_nStemLength); }
     bool        StemGoesDown() { return m_fStemDown; }
     void        SetStemInfo(lmLUnits xStem, lmLUnits yStem, lmLUnits length) {
@@ -118,7 +117,8 @@ public:
     int     GetStep() { return m_nStep; }        //0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
 
     //other methods
-    bool    UpdateContext(int nStep, int nNewAccidentals, lmContext* pNewContext);
+    bool        UpdateContext(int nStep, int nNewAccidentals, lmContext* pNewContext);
+    lmContext*  GetContext() { return m_pContext; }
 
 
 
@@ -178,13 +178,13 @@ private:
     lmContext*      m_pContext;         //context for this note
 
     // additional positioning related variables
-    lmLUnits       m_xAnchor;          // x position of anchor line (relative to m_paperPos.x)
+    lmLUnits        m_xAnchor;          // x position of anchor line (relative to m_paperPos.x)
     wxRect          m_noteheadRect;     // notehead bounding rectangle (relative to paper)
 
     // stem information
-    lmLUnits       m_xStem;           //pos and length of stem (relative to m_paperPos)
-    lmLUnits       m_yStem;           //yStem refers to the notehead nearest position
-    lmLUnits       m_nStemLength;     //length of stem;
+    lmLUnits        m_xStem;           //pos and length of stem (relative to m_paperPos)
+    lmLUnits        m_yStem;           //yStem refers to the notehead nearest position
+    lmLUnits        m_nStemLength;     //length of stem;
     bool            m_fStemDown;       //stem direccion. true if down
     EStemType       m_nStemType;       //type of stem
 

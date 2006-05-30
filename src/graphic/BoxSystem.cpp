@@ -89,7 +89,7 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
 
             //draw the prolog, except if this is the first system
             if (nSystem != 1)
-                pVStaff->DrawProlog(DO_DRAW, false, pPaper);
+                pVStaff->DrawProlog(DO_DRAW, m_nFirstMeasure, false, pPaper);
 
             //draw the measures in this system
             for (int i = m_nFirstMeasure; i < m_nFirstMeasure + m_nNumMeasures; i++) {

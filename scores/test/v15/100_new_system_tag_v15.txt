@@ -1,0 +1,51 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument
+      (voice
+         (clef Sol)
+         
+         //sharps. Major keys
+         (key Do)(barline Doble)
+         (key Sol)(barline Doble)
+         (key Re)(barline Doble)
+         (key La)(barline Doble)
+         (key Mi)(barline Doble)
+         (key Si)(barline Doble)
+         (key Fa#)(barline Doble)
+         (key Do#)(barline Doble)
+         (newSystem)
+         
+         // flats. Major keys
+         (key Fa)(barline Doble)
+         (key Sib)(barline Doble)
+         (key Mib)(barline Doble)
+         (key Lab)(barline Doble)
+         (key Reb)(barline Doble)
+         (key Solb)(barline Doble)
+         (key Dob)(barline Doble)
+         (newSystem)
+
+         
+         //sharps. Minor keys
+         (key Lam)(barline Doble)
+         (key Mim)(barline Doble)
+         (key Sim)(barline Doble)
+         (key Fa#m)(barline Doble)
+         (key Do#m)(barline Doble)
+         (key Sol#m)(barline Doble)
+         (key Re#m)(barline Doble)
+         (key La#m)(barline Doble)
+         (newSystem)
+         
+         // flats. Minor keys
+         (key Rem)(barline Doble)
+         (key Solm)(barline Doble)
+         (key Dom)(barline Doble)
+         (key Fam)(barline Doble)
+         (key Sibm)(barline Doble)
+         (key Mibm)(barline Doble)
+         (key Labm)(barline Final)
+      )
+   )
+)
+

@@ -51,10 +51,11 @@ private:
     lmBoxScore* RenderMinimal(lmPaper *pPaper);
     lmBoxScore* RenderJustified(lmPaper* pPaper);
 
-    lmLUnits SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem, lmPaper* pPaper);
+    lmLUnits SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem, 
+                               lmPaper* pPaper, bool* pNewSystem);
     void RedistributeFreeSpace(lmLUnits nAvailable);
     void DrawMeasure(lmVStaff* pVStaff, int iMeasure, lmPaper* pPaper);
-    void SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasure, lmPaper* pPaper);
+    bool SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasure, lmPaper* pPaper);
 
 
         // member variables

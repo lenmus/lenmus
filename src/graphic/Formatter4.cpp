@@ -287,7 +287,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //inner loop: each loop cycle corresponds to processing a measure column
             //The measure column is sized and this space discunted from available line space.
             //The loop is exited when there is not enough space for including in this system
-            //the measure column just computed
+            //the measure column just computed or when a newSystem tag is found
             //-------------------------------------------------------------------------------
 
             //if this is not the first system advance vertically the previous system height
@@ -316,6 +316,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //wxLogMessage(_T("[lmFormatter4::RenderJustified] Starting to print nSystem=%d. Ypos=%d"),
             //    nSystem, ySystemPos );
 
+            bool fNewSystem = false;
             nRelMeasure = 1;    // the first measure in current system
             while (nAbsMeasure <= nTotalMeasures)
             {
@@ -325,7 +326,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 
                 //size this measure column
                 m_nMeasureSize[nRelMeasure] =
-                    SizeMeasureColumn(nAbsMeasure, nRelMeasure, nSystem, pPaper);
+                    SizeMeasureColumn(nAbsMeasure, nRelMeasure, nSystem, pPaper, &fNewSystem);
 
 ///*LogDbg*/        wxLogMessage(wxString::Format(_T("[lmFormatter4::RenderJustified]: ")
 //                    _T("m_nMeasureSize[%d] = %d"), nRelMeasure, m_nMeasureSize[nRelMeasure] ));
@@ -349,7 +350,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
                 //substract space ocupied by this measure from space available in the system
                 if (m_nFreeSpace < m_nMeasureSize[nRelMeasure]) {
                     //there is no enough space for this measure column.
-                    //save measure column data and exit the loop. The system is finished
+                    //exit the loop. The system is finished
                     break;
                 } else {
                     //there is enough space for this measure column. Add it to current system and
@@ -357,6 +358,9 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
                     m_nFreeSpace -= m_nMeasureSize[nRelMeasure];
                     m_nMeasuresInSystem++;
                 }
+
+                //if newSystem tag found force to finish current system
+                if (fNewSystem) break;
 
                 //advance to next bar
                 nAbsMeasure++;
@@ -473,7 +477,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 }
 
 lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem,
-                                        lmPaper* pPaper)
+                                        lmPaper* pPaper, bool* pNewSystem)
 {
     /*
      For each instrument and staff it is computed how many measures could fit in the system.
@@ -489,11 +493,14 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
      Returns:
        - The size of this measure column.
        - positioning information for this measure column is stored in m_oTimepos[nRelMeasure]
+       - Updates flag pointed by pNewSystem and sets it to true if newSystem tag found
+            in this measure
     */
 
     wxInt32 iVStaff;
     lmInstrument *pInstr;
     lmVStaff *pVStaff;
+    bool fNewSystem = false;
 
     // explore all instruments in the score
     for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
@@ -506,8 +513,8 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             wxASSERT(false);
         }
 
-        //loop. For current instrument, explore all its staves to size the measures that are part
-        //of measure column nAbsMeasure. All collected information is stored in m_oTimepos[nRelMeasure]
+        //loop. For current instrument, explore all its staves to size the measure
+        //column nAbsMeasure. All collected information is stored in m_oTimepos[nRelMeasure]
         for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
             pVStaff = pInstr->GetVStaff(iVStaff);
 
@@ -518,9 +525,9 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             //2. but for the other systems we must force the rendering of the prolog because there
             //   are no StaffObjs representing the prolog.
             if (nSystem != 1 && nRelMeasure == 1)
-                pVStaff->DrawProlog(DO_MEASURE, (nSystem == 1), pPaper);
+                pVStaff->DrawProlog(DO_MEASURE, nAbsMeasure, (nSystem == 1), pPaper);
 
-            SizeMeasure(pVStaff, nAbsMeasure, nRelMeasure, pPaper);
+            fNewSystem |= SizeMeasure(pVStaff, nAbsMeasure, nRelMeasure, pPaper);
 
             //advance paper position to next staff.
             //@attention As advancing one staff has the effect of returning
@@ -537,6 +544,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
     //object m_oTimepos[nRelMeasure]. Now proced to re-position the StaffObjs so that all StaffObjs
     //sounding at the same time will have the same x coordinate. The method .ArrageStaffobjsByTime
     //returns the measure column size
+    *pNewSystem = fNewSystem;
     return m_oTimepos[nRelMeasure].ArrangeStaffobjsByTime(m_fDebugMode);      //true = debug on
 
 }
@@ -629,7 +637,7 @@ void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable)
 // Methods to deal with measures
 //=========================================================================================
 
-void lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasure,
+bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasure,
                              lmPaper* pPaper)
 {
     /*
@@ -640,6 +648,8 @@ void lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
        nRelMeasure - number of this measure (relative, referred to current system)
     Results:
        all measurements are stored in global variable  m_oTimepos[nRelMeasure]
+
+       return bool: true if newSystem tag found in this measure
 
     */
 
@@ -674,6 +684,7 @@ void lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     lmLUnits xChordPos=0;                //position of base note of a chord
 
     //loop to process all StaffObjs in this measure
+    bool fNewSystem = false;                // newSystem tag found
     lmStaffObj* pSO = (lmStaffObj*)NULL;
     lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
     pIT->AdvanceToMeasure(nAbsMeasure);
@@ -684,9 +695,19 @@ void lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
         if (pSO->GetType() == eTPO_Barline) break;         //End of measure: exit loop.
 
         if (pSO->GetType() == eTPO_Control) {
-            //start a new thread, returning x pos to the same x pos than the previous thread
-            m_oTimepos[nRelMeasure].NewThread();
-            pPaper->SetCursorX(m_oTimepos[nRelMeasure].GetCurXLeft());
+            lmSOControl* pSOCtrol = (lmSOControl*)pSO;
+            ESOCtrolType nType = pSOCtrol->GetCtrolType();
+            if (lmTIME_SHIFT == nType) {
+                //start a new thread, returning x pos to the same x pos than the 
+                //previous thread
+                m_oTimepos[nRelMeasure].NewThread();
+                pPaper->SetCursorX(m_oTimepos[nRelMeasure].GetCurXLeft());
+            }
+            else if(lmNEW_SYSTEM == nType) {
+                //new system tag found in this measure
+                fNewSystem = true;
+            }
+           // else ignore it
         }
         else {
             //collect data about the lmStaffObj
@@ -801,5 +822,6 @@ void lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     //now store final x position of this measure
     m_oTimepos[nRelMeasure].SetCurXFinal(pPaper->GetCursorX());
 
+    return fNewSystem;
 }
 

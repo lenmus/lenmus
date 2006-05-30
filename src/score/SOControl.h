@@ -30,17 +30,29 @@
 #ifndef __SOCONTROL_H__        //to avoid nested includes
 #define __SOCONTROL_H__
 
+enum ESOCtrolType
+{
+    lmTIME_SHIFT = 1,       // forward / backwards
+    lmNEW_SYSTEM,           // force a new system
+    lmCONTEXT,              // to save measure context in empty measures
+};
+
 class lmSOControl:  public lmSimpleObj
 {
 public:
-    //constructor and destructor
-    lmSOControl(lmVStaff* pVStaff, float rTimeShift);
+    //constructors and destructor
+    lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, float rTimeShift);   //lmTIME_SHIFT
+    lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff);                     //lmNEW_SYSTEM
+    lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, wxInt32 nStaff,      //lmCONTEXT
+                lmContext* pContext);    
     ~lmSOControl() {}
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC) {};
     wxBitmap* GetBitmap(double rScale) { return (wxBitmap*)NULL; };
 
+    //SOControl specfic methods
+    ESOCtrolType GetCtrolType() { return m_nCtrolType; }
 
     //    debugging
     wxString Dump();
@@ -49,7 +61,8 @@ public:
 
 
 private:
-    float            m_rTimeShift;        //the time shift (positive or negative) applied
+    ESOCtrolType    m_nCtrolType;
+    float           m_rTimeShift;        //the time shift (positive or negative) applied
 
 };
 

@@ -1,4 +1,3 @@
-// RCS-ID: $Id: LDPToken.cpp,v 1.4 2006/02/23 19:21:45 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -64,6 +63,8 @@ const wxChar chQuotes = _T('"');
 const wxChar chLowerSign = _T('<');
 const wxChar chGreaterSign = _T('>');
 const wxChar chDollar = _T('$');
+const wxChar chSharp = _T('#');
+
 
 const wxChar nEOF = _T('\x03');        //ETX
 const wxChar nEOL = _T('\x04');        //EOT
@@ -409,7 +410,8 @@ void lmLDPTokenBuilder::ParseNewToken()
                 GNC();
                 if (IsLetter(m_curChar) || IsNumber(m_curChar) ||
                     m_curChar == chUnderscore || m_curChar == chDot ||
-                    m_curChar == chPlusSign || m_curChar == chMinusSign)
+                    m_curChar == chPlusSign || m_curChar == chMinusSign ||
+                    m_curChar == chSharp)
                 {
                     nState = FT_ETQ01;
                 } else {

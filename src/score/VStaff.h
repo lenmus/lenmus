@@ -57,15 +57,15 @@ public:
     lmTimeSignature* AddTimeSignature(int nNumFractions, int nBeats[], int nBeatType[],
                         bool fVisible = true);    //for type eTS_Multiple
 
-    lmKeySignature* AddKeySignature(int nFifths, bool fMajor);
-    lmKeySignature* AddKeySignature(EKeySignatures nKeySignature);
+    lmKeySignature* AddKeySignature(int nFifths, bool fMajor, bool fVisible = true);
+    lmKeySignature* AddKeySignature(EKeySignatures nKeySignature, bool fVisible = true);
 
-    lmRest*    AddRest(ENoteType nNoteType, float rDuration,
+    lmRest*     AddRest(ENoteType nNoteType, float rDuration,
                       bool fDotted, bool fDoubleDotted,
                       wxInt32 nStaff,
                       bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL);
 
-    lmNote*    AddNote(bool fAbsolutePitch,
+    lmNote*     AddNote(bool fAbsolutePitch,
                     wxString sStep, wxString sOctave, wxString sAlter,
                     EAccidentals nAccidentals,
                     ENoteType nNoteType, float rDuration,
@@ -76,7 +76,10 @@ public:
                     bool fTie = false,
                     EStemType nStem = eDefaultStem);
 
-    lmBarline* AddBarline(EBarline nType = etb_SimpleBarline, bool fVisible = true);
+    lmBarline*  AddBarline(EBarline nType = etb_SimpleBarline, bool fVisible = true);
+
+    lmSOControl* AddNewSystem();
+
 
     lmWordsDirection* AddWordsDirection(wxString sText, wxString sLanguage,
                         RXMLPositionData oPos, RFontData oFontData);
@@ -92,7 +95,7 @@ public:
                         lmLUnits dyEntrePentagramas,
                         lmLUnits xFrom = 0,
                         lmLUnits xTo = 0);
-    void DrawProlog(bool fMeasuring, bool fDrawTimekey, lmPaper* pPaper);
+    void DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPaper* pPaper);
     void NewLine(lmPaper* pPaper);
     lmLUnits GetVStaffHeight();
     void SetUpFonts(lmPaper* pPaper);

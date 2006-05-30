@@ -56,7 +56,7 @@ public:
     // the type of text parsed
     lmScore*    AnalyzeScore(lmLDPNode* pNode);
     void        AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInstr);
-    void        AnalyzeInstrument104(lmLDPNode* pNode, lmScore* pScore, int nInstr);
+    void        AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr);
     void        AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode);
@@ -64,10 +64,12 @@ public:
     lmNote*     AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);
     lmRest*     AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff);
+    bool        AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff);
 
     void        AnalyzeVoice(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeSplit(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeChord(lmLDPNode* pNode, lmVStaff* pVStaff);
+    bool        AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff);
 
 
 
@@ -99,7 +101,7 @@ private:
 
     lmLDPNode*  LexicalAnalysis();
     lmScore*    AnalyzeScoreV102(lmLDPNode* pNode);
-    lmScore*    AnalyzeScoreV104(lmLDPNode* pNode);
+    lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
     void        AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff);
 
     void Clear();

@@ -74,6 +74,7 @@ lmLDPParser::lmLDPParser()
     m_fDebugMode = false;
     m_pTupletBracket = (lmTupletBracket*)NULL;
     m_pTags = lmLdpTagsTable::GetInstance();
+    m_pTags->LoadTags(_T("es"), _T("iso-8859-1"));      //default tags in Spanish
 
 }
 
@@ -134,6 +135,7 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename)
         g_pLogger->ShowDataErrors(_("Warnings/errores while reading LenMus score."));
     }
 
+    if (pScore) pScore->Dump(_T("lenmus_score_dump.txt"));      //dbg
     return pScore;
 
 }
@@ -583,8 +585,8 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
         case 103:
             pScore = AnalyzeScoreV102(pNode);
             break;
-        case 104:
-            pScore = AnalyzeScoreV104(pNode);
+        case 105:
+            pScore = AnalyzeScoreV105(pNode);
             break;
         default:
             AnalysisError( _("Error analysing LDP score: LDP version (%d) not supported. Analysis stopped."),
@@ -647,7 +649,7 @@ lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)
     
 }
 
-lmScore* lmLDPParser::AnalyzeScoreV104(lmLDPNode* pNode)
+lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 {
     //<score> = (score <vers> [<language>] [<credits>] <instrument>*)
     //<language> = (language LanguageCode Charset ) 
@@ -689,14 +691,14 @@ lmScore* lmLDPParser::AnalyzeScoreV104(lmLDPNode* pNode)
     // loop to parse elements <instrument>
     for (i=0; iP <= pNode->GetNumParms(); i++, iP++) {
         pX = pNode->GetParameter(iP);
-        AnalyzeInstrument104(pX, pScore, i);
+        AnalyzeInstrument105(pX, pScore, i);
     }
     
     return pScore;
     
 }
 
-void lmLDPParser::AnalyzeInstrument104(lmLDPNode* pNode, lmScore* pScore, int nInstr)
+void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr)
 {
     //<instrument> = (instrument [<instrName>][<infoMIDI>][<staves>] (<voice> | <split>) )
 
@@ -785,7 +787,7 @@ void lmLDPParser::AnalyzeInstrument104(lmLDPNode* pNode, lmScore* pScore, int nI
 void lmLDPParser::AnalyzeVoice(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
     // <voice> = (voice <music>* )
-    // <music> ::= {<Figura> | <Grupo> | <Atributo> | <Indicacion> |
+    // <music> ::= {<Figure> | <Attribute> | <Indicacion> |
     //              <Barra> | <desplazamiento> | <opciones>}
     // <Atributo> ::= (<Clave> | <Tonalidad> | <Metrica>)
     // <Indicacion> ::= (<Metronomo>)
@@ -809,13 +811,15 @@ void lmLDPParser::AnalyzeVoice(lmLDPNode* pNode, lmVStaff* pVStaff)
         } else if (sName == m_pTags->TagName(_T("time")) ) {
             AnalyzeTimeSignature(pVStaff, pX);
         } else if (sName == m_pTags->TagName(_T("key")) ) {
-            //    AnalizarTonalidad(pVStaff, pX)
+            AnalyzeKeySignature(pX, pVStaff);
         } else if (sName == m_pTags->TagName(_T("barline")) ) {
             AnalyzeBarline(pX, pVStaff);
         } else if (sName == m_pTags->TagName(_T("chord")) ) {
             AnalyzeChord(pX, pVStaff);
+        } else if (sName == m_pTags->TagName(_T("newSystem")) ) {
+            AnalyzeNewSystem(pX, pVStaff);
         } else {
-            AnalysisError( _("[AnalyzeMeasure]: Expected node 'Figura', 'Grupo', 'Atributo' or 'Desplazamiento' but found node '%s'. Node ignored."),
+            AnalysisError( _("[AnalyzeVoice]: Expected node 'Figure', 'Attribute' or 'Desplazamiento' but found node '%s'. Node ignored."),
                 sName );
         }
     }
@@ -1088,7 +1092,7 @@ void lmLDPParser::AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff)
         } else if (sName == _T("Metrica")) {
             fSomethingAdded = ! AnalyzeTimeSignature(pVStaff, pX);
         } else if (sName == _T("Tonalidad")) {
-            //    fSomethingAdded = Not AnalizarTonalidad(pVStaff, pX)
+            //    fSomethingAdded = Not AnalyzeKeySignature(pX, pVStaff)
             //case "METRONOMO"
             //    fSomethingAdded = Not AnalizarMetronomo(pVStaff, pX)
         } else if (sName == _T("Barra")) {
@@ -1993,33 +1997,45 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
 //    AnalizarDirectivaTexto = false       //no hay error
 //    
 //}
-//
-////Devuelve true si hay error, es decir si no añade objeto al pentagrama
-//Function AnalizarTonalidad(lmVStaff* pVStaff, lmLDPNode* pNode) As Boolean
-////  <Tonalidad> ::= ("Tonalidad" {"Do" | "Sol" | "Re" | "La" | "Mi" | "Si" | "Fa+" |
-////                        | "Sol-" | "Re-" | "La-" | "Mi-" | "Si-" | "Fa" } [<Visible>])
-//    
-//    wxASSERT(pNode->GetName() = "TONALIDAD"
-//    wxASSERT(pNode->GetNumParms() = 1 Or pNode->GetNumParms() = 2
-//    
-//    Dim fVisible As Boolean
-//    Dim nTonalidad As EKeySignatures, sData1 As String
-//    
-//    sData1 = (pNode->GetParameter(1))->GetName();
-//    nTonalidad = LDPNameToKey(sData1)
-//    
-//    fVisible = true
-//    if (pNode->GetNumParms() = 2) {
-//        if ((pNode->GetParameter(2))->GetName(); = "NO_VISIBLE") {
-//            fVisible = false
-//        }
-//    }
-//    
-//    pVStaff.AddArmadura nTonalidad, fVisible
-//    
-//    AnalizarTonalidad = false       //no hay error
-//    
-//}
+
+//returns true if error; in this case nothing is added to the lmVStaff
+bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+    //  <KeySignature> ::= (key {"Do" | "Sol" | "Re" | "La" | "Mi" | "Si" | "Fa+" |
+    //                        | "Sol-" | "Re-" | "La-" | "Mi-" | "Si-" | "Fa" } [<Visible>])
+
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("key")) );
+
+    //check that key value is specified
+    if(pNode->GetNumParms() < 1) {
+        AnalysisError(
+            _("Element '%s' has less parameters that the minimum required. Assumed '(%s Do)'."),
+            m_pTags->TagName(_T("key")), m_pTags->TagName(_T("key")) );
+        pVStaff->AddKeySignature(earmDo);
+        return false;
+    }
+    
+    long iP = 1;
+    wxString sName = (pNode->GetParameter(iP))->GetName();
+    EKeySignatures nKey = LDPNameToKey(sName);
+    if (nKey == (EKeySignatures)-1) {
+        AnalysisError( _("Unknown key '%s'. Assumed 'Do'."), sName );
+        nKey = earmDo;
+    }
+    iP++;
+    
+    //analyze second parameter (optional): visible or not
+    lmLDPNode* pX;
+    bool fVisible = true;
+    if (pNode->GetNumParms() >= iP) {
+        pX = pNode->GetParameter(iP);
+        if (pX->GetName() == _T("NoVisible")) fVisible = false;
+    }
+    
+    pVStaff->AddKeySignature(nKey, fVisible);
+    return false;
+    
+}
 
 //returns true if error and in this case nothing is added to the lmVStaff
 bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
@@ -2059,6 +2075,26 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
     
     pVStaff->AddTimeSignature((int)nBeats, (int)nBeatType, fVisible);
     return false;
+}
+
+//returns true if error; in this case nothing is added to the lmVStaff
+bool lmLDPParser::AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+    //<newSystem> ::= (newSystem}
+
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("newSystem")) );
+
+    //check if there are parameters
+    if(pNode->GetNumParms() >= 1) {
+        //for now, no parameters allowed
+        wxASSERT(false);
+        return true;
+    }
+
+    //add control object
+    pVStaff->AddNewSystem();
+    return false;
+    
 }
 
 ////Devuelve, en las variables sFontName, nFontSize, fBold y fItalic, los valores obtenidos
@@ -2258,61 +2294,6 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
 //    
 //    AnalizarDirectivaRepeticion = false       //no hay error
 //    
-//}
-//
-//void lmLDPParser::AnalizarLineaV100(lmLDPNode* pNode, lmVStaff* pVStaff)
-////v1.0  <Linea> ::= ("Linea" <num> <Clave> <Tonalidad> <Métrica> <Compas>* )
-//    
-//    Dim sData1 As String
-//    
-//    
-//    //obtiene parámetros
-//    Dim int nParms, lmLDPNode* pX
-//    nParms = pNode->GetNumParms()
-//    
-//    //analiza número de línea
-//    sData1 = (pNode->GetParameter(1))->GetName();
-//    if (Not IsNumeric(sData1)) {
-//        AnalysisError(wxString::Format(_T("Se esperaba número de línea y viene " & pNode->GetName() & _
-//            ". Se termina el análisis."
-//        return;
-//    }
-//    
-//    //analiza clave
-//    Set pX = pNode->GetParameter(2)
-//    if (pX->GetName() != "CLAVE") {
-//        AnalysisError(wxString::Format(_T("Se esperaba nodo CLAVE y viene un nodo " & pX->GetName() & _
-//            ". Se termina el análisis."
-//        return;
-//    }
-//    AnalyzeClef pVStaff, pX
-//    
-//    //analiza Tonalidad
-//    Set pX = pNode->GetParameter(3)
-//    if (pX->GetName() != "TONALIDAD") {
-//        AnalysisError(wxString::Format(_T("Se esperaba nodo TONALIDAD y viene un nodo " & pX->GetName() & _
-//            ". Se termina el análisis."
-//        return;
-//    }
-//    AnalizarTonalidad pVStaff, pX
-//   
-//    //analiza la métrica
-//    Set pX = pNode->GetParameter(4)
-//    if (pX->GetName() != "METRICA") {
-//        AnalysisError(wxString::Format(_T("Se esperaba nodo METRICA y viene un nodo " & pX->GetName() & _
-//            ". Se termina el análisis."
-//        return;
-//    }
-//    AnalyzeTimeSignature pVStaff, pX
-//        
-//    //analiza los compases
-//    Dim iC As Long, nMaxCompas As Long
-//    nMaxCompas = pNode->GetNumParms()
-//    for (iC = 5 To nMaxCompas
-//        Set pX = pNode->GetParameter(iC)
-//        AnalyzeMeasure pX, pVStaff
-//    }   // iC
-//        
 //}
 //
 ////analiza una anotación Pxx.  xx debe ser menor o igual que m_nNumStaves

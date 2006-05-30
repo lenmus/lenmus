@@ -66,8 +66,6 @@ LenMus project philosophy (to remind me to always stay on this):
   
   ---------------------------------------------------------------------------------------
  
- - implement AnalizarTonalidad en LDP Parser
- 
 Organizational issues:
     - Integrate wxMidi so that LenMus package at SVN be self-contained.
     - Modify panel pendrive so that erased files do not re-appear
@@ -77,6 +75,8 @@ Organizational issues:
         
 Area 0: Bugs to solve
     - Crash when closing score 060_chords_v14.txt
+    - If key signature changes this is not taken into account in system prolog. See
+		all_key_signatures score.
     - Test score: 032_all_key_signatures_v13.txt renders nothing.
     - ¿lmInterval: fix names Unison augmented, Unison perfect, etc...?
     - If Midi Wizard is cancelled some non-relevant error messages are displayed when

@@ -27,7 +27,9 @@
     @ingroup score_kernel
     @brief This object represents a control operation (i.e. a timepos shift)
 
-    This object represents a control operation, for now only a timepos shift.
+    This object represents a control operation, currently:
+      - a timepos shift.
+      - a 'new system' tag
 */
 
 #ifdef __GNUG__
@@ -56,26 +58,58 @@
 //constructors and destructor
 //
 
-lmSOControl::lmSOControl(lmVStaff* pVStaff, float rTimeShift)
+lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, float rTimeShift)
     : lmSimpleObj(eTPO_Control, pVStaff, 1, sbNO_VISIBLE, sbNO_DRAGGABLE)
 {
+    wxASSERT(nType == lmTIME_SHIFT);
+    m_nCtrolType = lmTIME_SHIFT;
     m_rTimeShift = rTimeShift;
+    m_pContext = (lmContext*)NULL;
 }
 
+lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff)
+    : lmSimpleObj(eTPO_Control, pVStaff, 1, sbNO_VISIBLE, sbNO_DRAGGABLE)
+{
+    wxASSERT(nType == lmNEW_SYSTEM);
+    m_nCtrolType = lmNEW_SYSTEM;
+    m_rTimeShift = 0.0;
+    m_pContext = (lmContext*)NULL;
+}
+
+lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, wxInt32 nStaff,
+                         lmContext* pContext)
+    : lmSimpleObj(eTPO_Control, pVStaff, nStaff, sbNO_VISIBLE, sbNO_DRAGGABLE)
+{
+    wxASSERT(nType == lmCONTEXT);
+    m_nCtrolType = lmCONTEXT;
+    m_rTimeShift = 0.0;
+    m_pContext = pContext;
+}
 
 wxString lmSOControl::Dump()
 {
-    wxString sType = _T("");
-    if (m_rTimeShift < 0) {
-        sType = _T("<backup>");
+    wxString sDump;
+    if (m_nCtrolType == lmTIME_SHIFT) {
+        wxString sType = _T("");
+        if (m_rTimeShift < 0) {
+            sType = _T("<backup>");
+        }
+        else {
+            sType = _T("<forward>");
+        }
+        sDump = wxString::Format(
+            _T("%d\tControl %s\tTimeShift=%.2f\n"),
+            m_nId, sType, m_rTimeShift);
     }
-    else {
-        sType = _T("<forward>");
+    else (m_nCtrolType == lmTIME_SHIFT) {
+        sDump = wxString::Format(
+            _T("%d\tControl <newSystem>\n"), m_nId);
     }
-    
-    wxString sDump = wxString::Format(
-        _T("%d\tControl %s\tTimeShift=%.2f\n"),
-        m_nId, sType, m_rTimeShift);
+    else (m_nCtrolType == lmCONTEXT) {
+        sDump = wxString::Format(
+            _T("%d\tControl <context>\n"), m_nId);
+    }
+
     return sDump;
 }
 
