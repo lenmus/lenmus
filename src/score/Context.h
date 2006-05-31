@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Context.h,v 1.3 2006/02/23 19:22:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -86,6 +85,8 @@ private:
 #include "wx/list.h"
 WX_DECLARE_LIST(lmContext, ContextList);
 
+// this defines the type ArrayOfContexts as an array of lmContext pointers
+WX_DEFINE_ARRAY(lmContext*, ArrayOfContexts);
 
 
 #endif  // __CONTEXT_H__

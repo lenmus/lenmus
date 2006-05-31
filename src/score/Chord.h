@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Chord.h,v 1.3 2006/02/23 19:22:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -43,20 +42,26 @@ public:
     void AddNote(lmNote* pNote);
     void RemoveNote(lmNote* pNote);
     bool IsLastNoteOfChord(lmNote* pNote);
-    void lmChord::DrawStem(wxDC* pDC);
+    void DrawStem(bool fMeasuring, wxDC* pDC, wxColour colorC, wxFont* pFont,
+                  lmVStaff* pVStaff, int nStaff);
 
 
 private:
+    lmLUnits DrawFlag(bool fMeasuring, wxDC* pDC, lmNote* pBaseNote, wxPoint pos,
+                      wxColour colorC, wxFont* pFont, lmVStaff* pVStaff, int nStaff);
+    void ComputeStemDirection();
+
 
 
         // member variables
 
 
-    NotesList    m_cNotes;        //list of notes that form the chord
-    lmNote*        m_pMinNote;        //lowest pitch note
-    lmNote*        m_pMaxNote;        //highest pitch note
-    bool        m_fPlicasAbajo;      //dirección de la plica del acorde
-    lmNote*        m_oNotaPrevia;      //nota que precede a la primera del acorde
+    NotesList   m_cNotes;           //list of notes that form the chord
+    lmNote*     m_pMinNote;         //lowest pitch note
+    lmNote*     m_pMaxNote;         //highest pitch note
+    bool        m_fStemDown;        //chord stem direction
+
+    lmNote*     m_oNotaPrevia;      //nota que precede a la primera del acorde
                         //m_oNotaPrevia es la nota que precede al comienzo del acorde. Es preciso tener acceso
                         //a ella porque si está ligada a la primera del acorde la dirección de las plicas del acorde
                         //debería hacerse coincidir con la de la nota previa.

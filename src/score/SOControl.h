@@ -1,4 +1,3 @@
-// RCS-ID: $Id: SOControl.h,v 1.3 2006/02/23 19:24:42 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -34,7 +33,6 @@ enum ESOCtrolType
 {
     lmTIME_SHIFT = 1,       // forward / backwards
     lmNEW_SYSTEM,           // force a new system
-    lmCONTEXT,              // to save measure context in empty measures
 };
 
 class lmSOControl:  public lmSimpleObj
@@ -43,8 +41,6 @@ public:
     //constructors and destructor
     lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, float rTimeShift);   //lmTIME_SHIFT
     lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff);                     //lmNEW_SYSTEM
-    lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, wxInt32 nStaff,      //lmCONTEXT
-                lmContext* pContext);    
     ~lmSOControl() {}
 
     //implementation of virtual methods defined in abstract base class lmStaffObj

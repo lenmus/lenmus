@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Barline.cpp,v 1.3 2006/02/23 19:22:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -53,6 +52,18 @@ lmBarline::lmBarline(EBarline nBarlineType, lmVStaff* pVStaff, bool fVisible) :
     lmSimpleObj(eTPO_Barline, pVStaff, 1, fVisible, sbDRAGGABLE)
 {
     m_nBarlineType = nBarlineType;
+}
+
+void lmBarline::AddContext(lmContext* pContext, int nStaff)
+{
+    wxASSERT(nStaff-1 == m_aContexts.GetCount());
+    m_aContexts.Add(pContext);
+}
+
+lmContext* lmBarline::GetContext(int nStaff)
+{ 
+    wxASSERT(nStaff <= (int)m_aContexts.GetCount());
+    return m_aContexts.Item(nStaff-1);
 }
 
 // Create the drag image.

@@ -610,6 +610,18 @@ wxString lmVStaff::Dump()
         pIter->MoveNext();
     }
     delete pIter;
+
+    //dump measures table
+    sDump += _T("\nMeasures:\n");
+    wxStaffObjsListNode* pNode;
+    int iM;
+    for (iM=1; iM <= m_cStaffObjs.GetNumMeasures(); iM++) {
+        pNode = m_cStaffObjs.GetFirstInMeasure(iM);
+        pSO = (lmStaffObj*)pNode->GetData();
+        sDump += wxString::Format(_T("\tMeasure %d: starts with object Id %d\n"),
+                                  iM, pSO->GetID() );
+    }
+
     return sDump;
  
 }
@@ -831,21 +843,21 @@ lmLUnits lmVStaff::GetVStaffHeight()
 //
 lmBarline* lmVStaff::AddBarline(EBarline nType, bool fVisible)
 {
-    //save the contexts
-    int nStaff;
-    lmStaff* pStaff;
-    lmSOControl* pCtrol;
-    wxStaffListNode* pNode = m_cStaves.GetFirst();
-    for (nStaff=1; pNode; pNode = pNode->GetNext(), nStaff++) {
-        pStaff = (lmStaff *)pNode->GetData();
-        pCtrol = new lmSOControl(lmCONTEXT, this, nStaff, pStaff->GetLastContext() );
-        m_cStaffObjs.Store(pCtrol);
-    }
-
     //create and save the barline
     lmBarline* pBarline = new lmBarline(nType, this, fVisible);
     m_cStaffObjs.Store(pBarline);
-    
+
+    //save the contexts in the barline
+    int nStaff;
+    lmStaff* pStaff;
+    lmContext* pContext;
+    wxStaffListNode* pNode = m_cStaves.GetFirst();
+    for (nStaff=1; pNode; pNode = pNode->GetNext(), nStaff++) {
+        pStaff = (lmStaff *)pNode->GetData();
+        pContext = pStaff->GetLastContext();
+        pBarline->AddContext(pContext, nStaff);
+    }
+
     //Reset contexts for the new measure that starts
     ResetContexts();
 
@@ -950,8 +962,8 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
 
     To know what clef, key and time signature to draw we take this information from the
     context associated to first note of the measure on each sttaf. If there are no notes,
-    the context is taken from the context_control object before the barline. If, finally,
-    no context found, no prolog is drawn.
+    the context is taken from the barline. If, finally, no context is found, no prolog
+    is drawn.
 
     */
 
@@ -1001,15 +1013,12 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
                     break;
                 }
             }
-            else if (pSO->GetType() == eTPO_Ctrol) {
-                lmSOControl* pSOCtrol = (lmSOControl*)pSO;
-                if (pSOCtrol->GetCtrolType() == lmCONTEXT && pSOCtrol->GetStaffNum() == nStaff) {
-                    //OK. Context fount. Take context
-                    pContext = pSOCtrol->GetContext();
-                    break;
-                }
+            else if (pSO->GetType() == eTPO_Barline) {
+                lmBarline* pBar = (lmBarline*)pSO;
+                pContext = pBar->GetContext(nStaff);
+                break;
             }
-            pIter->MovePrev();
+            pIter->MoveNext();
         }
         delete pIter;
 

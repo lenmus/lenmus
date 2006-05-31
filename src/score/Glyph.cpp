@@ -1,4 +1,3 @@
-// RCS-ID: $Id$
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -81,6 +80,40 @@ const lmGlyph aGlyphsInfo[] =
     lmGlyph(_T('u'), -25,     25,     40,    _T("")) ,    //64th semifusa
 //  lmGlyph(_T('?'), -20,     30,     5,     _T("")) ,    //128th garrapatea
 //  lmGlyph(_T('?'), -20,     30,     5,     _T("")) ,    //256th semigarrapatea
+
+// auxiliary objects. 
+
+    //flags for notes.
+    //  shift and height info is no needed
+    //  offset is the offetset to the stem join point
+    //                       sel rectangle
+    //       Glyph   offset  shift   height 
+    lmGlyph(_T('o'), -50,     15,     40,    _T("Eight note flag down")) ,  //OK
+    lmGlyph(_T('f'), -40,     25,     40,    _T("Corchea up")) , 
+    lmGlyph(_T('n'), -35,     15,     45,    _T("Semicorchea down")) ,  //OK -10
+    lmGlyph(_T('e'), -35,     25,     40,    _T("Semicorchea up")) , 
+    lmGlyph(_T('m'), -30,     15,     55,    _T("Fusa down")) ,         //OK -10
+    lmGlyph(_T('d'), -30,     20,     45,    _T("Fusa up")) ,
+    lmGlyph(_T('l'), -40,     15,     60,    _T("Semifusa down")) , 
+    lmGlyph(_T('c'), -40,     20,     45,    _T("Semifusa up")),
+    lmGlyph(_T('k'), -40,     15,     55,    _T("Fusa down")) , 
+    lmGlyph(_T('b'), -40,     20,     45,    _T("Fusa up")) ,
+    lmGlyph(_T('j'), -40,     15,     60,    _T("Semifusa down")) , 
+    lmGlyph(_T('a'), -40,     20,     45,    _T("Semifusa up")),
+/*
+Private Const CHAR_CORCHETE_DEBAJO_1 = "o"
+Private Const CHAR_CORCHETE_ENCIMA_1 = "f"
+Private Const CHAR_CORCHETE_DEBAJO_2 = "n"
+Private Const CHAR_CORCHETE_ENCIMA_2 = "e"
+Private Const CHAR_CORCHETE_DEBAJO_3 = "m"
+Private Const CHAR_CORCHETE_ENCIMA_3 = "d"
+Private Const CHAR_CORCHETE_DEBAJO_4 = "l"
+Private Const CHAR_CORCHETE_ENCIMA_4 = "c"
+Private Const CHAR_CORCHETE_DEBAJO_5 = "k"
+Private Const CHAR_CORCHETE_ENCIMA_5 = "b"
+Private Const CHAR_CORCHETE_DEBAJO_6 = "j"
+Private Const CHAR_CORCHETE_ENCIMA_6 = "a"
+*/
 
 };
 

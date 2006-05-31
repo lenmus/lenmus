@@ -94,6 +94,7 @@ lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool
     sKeySignatureName[28] = _("G minor");
     sKeySignatureName[29] = _("D minor");
 
+    m_fHidden = false;
     m_fTraditional = true;
     m_nFifths = nFifths;
     m_fMajor = fMajor;
@@ -131,6 +132,8 @@ wxString lmKeySignature::SourceXML()
 
 void lmKeySignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {    
+    if (m_fHidden) return;
+
     if (fMeasuring) {
         // get the shift to the staff on which the key signature must be drawn
         lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);

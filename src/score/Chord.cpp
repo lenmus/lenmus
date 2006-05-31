@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Chord.cpp,v 1.3 2006/02/23 19:22:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -53,6 +52,8 @@
 #endif
 
 #include "Score.h"
+#include "Glyph.h"
+
 
 /*! Creates the chord object, with only the base note.
 */
@@ -96,7 +97,10 @@ void lmChord::AddNote(lmNote* pNote)
     } else if (m_pMaxNote->GetPitch() < pNote->GetPitch()) {
         m_pMaxNote = pNote;
     }
-    
+
+    //compute stem direction
+    ComputeStemDirection();
+
 }
 
 /*! @brief Removes a note from a chord.
@@ -144,45 +148,66 @@ int lmChord::GetNumNotes()
     Once the last notehead of a chord has been drawn this method is invoked (from the
     last lines of lmNote::DrawObject() ) to draw the stem of the chord.
     The stem position is stored in the base note.
+
 */
-void lmChord::DrawStem(wxDC* pDC)
+void lmChord::DrawStem(bool fMeasuring, wxDC* pDC, wxColour colorC, wxFont* pFont,
+                       lmVStaff* pVStaff, int nStaff)
 {
     wxASSERT(pDC);
 
     lmNote* pBaseNote = (lmNote*)(m_cNotes.GetFirst())->GetData();
     lmLUnits xStem = pBaseNote->GetXStem();
     lmLUnits yStemStart=0, yStemEnd=0;
-    
-    if (pBaseNote->StemGoesDown()) {
-        //stem down: line at left of noteheads
-        if (pBaseNote->IsBeamed()) {
-            // chord beamed: use base note information
-            yStemStart = m_pMaxNote->GetYStem();
-            yStemEnd = yStemStart + pBaseNote->GetStemLength();
-        }
-        else {
-            // chord not beamed. Use max and min notes information
+
+    #define TWO_NOTES_DEFAULT true          //! @todo move to layout user options
+
+
+    if (!pBaseNote->IsBeamed()) {
+        //compute y positions
+        if (m_fStemDown) {
             yStemStart = m_pMaxNote->GetYStem();
             yStemEnd = m_pMinNote->GetFinalYStem();
         }
-    } else {
-        //stem up: line at right of noteheads
-        if (pBaseNote->IsBeamed()) {
-            // chord beamed: use base note information
-            yStemStart = m_pMinNote->GetYStem();
-            yStemEnd = yStemStart - pBaseNote->GetStemLength();
-        }
         else {
-            // chord not beamed. Use max and min notes information
             yStemStart = m_pMinNote->GetYStem();
             yStemEnd = m_pMaxNote->GetFinalYStem();
         }
-    }
-     pDC->DrawLine(xStem, yStemStart, xStem, yStemEnd);
 
-    if (!pBaseNote->IsBeamed() && pBaseNote->GetType() > eQuarter) {
-        //! @todo Draw the stem for chords not beamed
-        //pPaper->PintarCorchete fMeasuring, pBaseNote.Tipo, pBaseNote->StemGoesDown(), xStem, yStemEnd)
+    }
+    else {
+        if (pBaseNote->StemGoesDown()) {
+            //stem down: line at left of noteheads
+            if (pBaseNote->IsBeamed()) {
+                // chord beamed: use base note information
+                yStemStart = m_pMaxNote->GetYStem();
+                yStemEnd = yStemStart + pBaseNote->GetStemLength();
+            }
+            else {
+                // chord not beamed. Use max and min notes information
+                yStemStart = m_pMaxNote->GetYStem();
+                yStemEnd = m_pMinNote->GetFinalYStem();
+            }
+        } else {
+            //stem up: line at right of noteheads
+            if (pBaseNote->IsBeamed()) {
+                // chord beamed: use base note information
+                yStemStart = m_pMinNote->GetYStem();
+                yStemEnd = yStemStart - pBaseNote->GetStemLength();
+            }
+            else {
+                // chord not beamed. Use max and min notes information
+                yStemStart = m_pMinNote->GetYStem();
+                yStemEnd = m_pMaxNote->GetFinalYStem();
+            }
+        }
+    }
+
+    pDC->DrawLine(xStem, yStemStart, xStem, yStemEnd);
+
+    //draw the flag for chords not beamed
+    if (!pBaseNote->IsBeamed() && pBaseNote->GetNoteType() > eQuarter) {
+        DrawFlag(fMeasuring, pDC, pBaseNote, wxPoint(xStem, yStemEnd), colorC, pFont,
+                 pVStaff, nStaff);
     }
     
 }
@@ -195,8 +220,123 @@ bool lmChord::IsLastNoteOfChord(lmNote* pNote)
     
 }
 
-//void lmChord::Duracion() As Long
-//    //Devuelve la duracion del acorde (por ahora, la de la nota base)
-//    Duracion = m_cNotes(1).Duracion
-//    
-//}
+lmLUnits lmChord::DrawFlag(bool fMeasuring, wxDC* pDC, lmNote* pBaseNote,
+                                 wxPoint pos, wxColour colorC, wxFont* pFont,
+                                 lmVStaff* pVStaff, int nStaff)
+{
+    //
+    //Draws the flag using a glyph. Returns the flag width
+    //
+
+    ENoteType nNoteType = pBaseNote->GetNoteType();
+    bool fStemDown = pBaseNote->StemGoesDown(); 
+        
+    lmEGlyphIndex nGlyph = GLYPH_EIGHTH_FLAG_DOWN;
+    switch (nNoteType) {
+        case eEighth :
+            nGlyph = (fStemDown ? GLYPH_EIGHTH_FLAG_DOWN : GLYPH_EIGHTH_FLAG_UP);
+            break;
+        case e16th :
+            nGlyph = (fStemDown ? GLYPH_16TH_FLAG_DOWN : GLYPH_16TH_FLAG_UP);
+            break;
+        case e32th :
+            nGlyph = (fStemDown ? GLYPH_32ND_FLAG_DOWN : GLYPH_32ND_FLAG_UP);
+            break;
+        case e64th :
+            nGlyph = (fStemDown ? GLYPH_64TH_FLAG_DOWN : GLYPH_64TH_FLAG_UP);
+            break;
+        case e128th :
+            nGlyph = (fStemDown ? GLYPH_128TH_FLAG_DOWN : GLYPH_128TH_FLAG_UP);
+            break;
+        case e256th :
+            nGlyph = (fStemDown ? GLYPH_256TH_FLAG_DOWN : GLYPH_256TH_FLAG_UP);
+            break;
+        default:
+            wxLogMessage(_T("[lmChord::DrawFlag] Error: invalid note type %d."),
+                        nNoteType);
+        }
+
+    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
+  
+    pDC->SetFont(*pFont);
+    if (!fMeasuring) {
+        // drawing phase: do the draw
+        pDC->SetTextForeground(colorC);
+        pDC->DrawText(sGlyph, pos.x, 
+            pos.y + pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, nStaff ) );
+    }
+
+    lmLUnits width, height;
+    pDC->GetTextExtent(sGlyph, &width, &height);
+    return width;
+        
+}
+
+void lmChord::ComputeStemDirection()
+{
+    //  Rules (taken from www.coloradocollege.edu/dept/mu/mu2/musicpress/NotesStems.html
+    //
+    //  a) Two Notes on a stem:
+    //    a1. If the interval above the middle line is greater than the interval below the
+    //      middle line: downward stems. i.e. (a4,d5) (f4,f5) (a4,g5)
+    //      ==>   (MaxNotePos + MinNotePos)/2 > MiddleLinePos
+    //
+    //    a2. If the interval below the middle line is greater than the interval above the
+    //      middle line: upward stems. i.e. (e4,c5)(g4,c5)(d4,e5)
+    //
+    //    a3. If the two notes are the same distance from the middle line: stem can go in
+    //      either direction, but most engravers prefer downward stems. i.e. (g4.d5)(a4,c5)
+    //
+    //
+    //  b) More than two notes on a stem:
+    //
+    //    b1. If the interval of the highest note above the middle line is greater than the
+    //      interval of the lowest note below the middle line: downward stems. 
+    //      ==>   same than a1
+    //
+    //    b2. If the interval of the lowest note below the middle line is greater than the
+    //      interval of the highest note above the middle line: upward stems. 
+    //      ==>   same than a2
+    //
+    //    b3. If the highest and the lowest notes are the same distance from the middle line
+    //      use the majority rule to determine stem direction: If the majority of the notes
+    //      are above the middle: downward stems. Else: upward stems. 
+    //      ==>   Mean(NotePos) > MiddleLinePos -> downward
+
+
+    if (m_cNotes.GetCount() < 2) return;
+
+    lmNote* pBaseNote = (lmNote*)(m_cNotes.GetFirst())->GetData();
+
+    #define TWO_NOTES_DEFAULT true          //! @todo move to layout user options
+
+    m_fStemDown = pBaseNote->StemGoesDown();     //defaul value
+
+    //Rules
+    int nWeight = m_pMinNote->GetPosOnStaff() + m_pMaxNote->GetPosOnStaff();
+    if (nWeight > 12)
+        m_fStemDown = true;
+    else if (nWeight < 12)
+        m_fStemDown = false;
+    else {
+        //majority rule if more than two notes. Else default for two notes case
+        m_fStemDown = TWO_NOTES_DEFAULT;
+        if (m_cNotes.GetCount() > 2) {
+            int iN;
+            nWeight = 0;
+            lmNote* pNote;
+            wxNotesListNode *pNode = m_cNotes.GetFirst();
+            for(iN=0; pNode; pNode=pNode->GetNext(), iN++) {
+                pNote = (lmNote*)pNode->GetData();
+                nWeight += pNote->GetPosOnStaff();
+            }
+            m_fStemDown = (nWeight >= 6*iN);
+        }
+    }
+
+    //update max and min notes with conclusion about stem direction
+    m_pMinNote->SetStemDirection(m_fStemDown);
+    m_pMaxNote->SetStemDirection(m_fStemDown);
+    pBaseNote->SetStemDirection(m_fStemDown);
+
+}

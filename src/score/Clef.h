@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Clef.h,v 1.3 2006/02/23 19:22:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -38,14 +37,6 @@
 
 class lmClef: public lmSimpleObj
 {
-    //// attributes
-private:
-    EClefType        m_nClefType;        //type of clef
-
-public:
-
-    //// methods
-
 public:
     //constructor and destructor
     lmClef(EClefType nClefType, lmVStaff* pStaff, wxInt32 nNumStaff=1, bool fVisible=true);
@@ -70,6 +61,9 @@ public:
     //rendering related methods
     lmLUnits DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC = *wxBLACK);
 
+    //methods for hiding the clef in prologs
+    void Hide(bool fHide) { m_fHidden = fHide; }
+
 
 
 private:
@@ -79,6 +73,10 @@ private:
     lmTenths GetGlyphOffset();
     wxString GetLenMusChar();
     lmLUnits DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);
+
+        //variables
+    EClefType       m_nClefType;        //type of clef
+    bool            m_fHidden;          //to hide it in system prolog
 
 };
 

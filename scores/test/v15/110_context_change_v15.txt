@@ -1,0 +1,19 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument
+      (voice
+         
+         //measure 1
+         (clef Sol)
+         (key Sol)
+         (newSystem)
+         (barline Doble)
+         
+         //measure 2 (in new system)
+         (clef Fa4)
+         (key Fa)
+         (barline Final)
+      )
+   )
+)
+

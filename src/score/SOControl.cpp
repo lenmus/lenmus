@@ -1,4 +1,3 @@
-// RCS-ID: $Id: SOControl.cpp,v 1.3 2006/02/23 19:24:42 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -64,7 +63,6 @@ lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, float rTimeShift
     wxASSERT(nType == lmTIME_SHIFT);
     m_nCtrolType = lmTIME_SHIFT;
     m_rTimeShift = rTimeShift;
-    m_pContext = (lmContext*)NULL;
 }
 
 lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff)
@@ -73,17 +71,6 @@ lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff)
     wxASSERT(nType == lmNEW_SYSTEM);
     m_nCtrolType = lmNEW_SYSTEM;
     m_rTimeShift = 0.0;
-    m_pContext = (lmContext*)NULL;
-}
-
-lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, wxInt32 nStaff,
-                         lmContext* pContext)
-    : lmSimpleObj(eTPO_Control, pVStaff, nStaff, sbNO_VISIBLE, sbNO_DRAGGABLE)
-{
-    wxASSERT(nType == lmCONTEXT);
-    m_nCtrolType = lmCONTEXT;
-    m_rTimeShift = 0.0;
-    m_pContext = pContext;
 }
 
 wxString lmSOControl::Dump()
@@ -101,13 +88,13 @@ wxString lmSOControl::Dump()
             _T("%d\tControl %s\tTimeShift=%.2f\n"),
             m_nId, sType, m_rTimeShift);
     }
-    else (m_nCtrolType == lmTIME_SHIFT) {
+    else if (m_nCtrolType == lmNEW_SYSTEM) {
         sDump = wxString::Format(
             _T("%d\tControl <newSystem>\n"), m_nId);
     }
-    else (m_nCtrolType == lmCONTEXT) {
+    else {
         sDump = wxString::Format(
-            _T("%d\tControl <context>\n"), m_nId);
+            _T("%d\tControl <??? UNKNOWN ???>\n"), m_nId);
     }
 
     return sDump;

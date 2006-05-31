@@ -94,6 +94,20 @@ enum lmEGlyphIndex {
     GLYPH_64TH_REST,        //64th, semifusa
     ////! @todo,    //128th garrapatea
     ////! @todo,    //256th semigarrapatea
+
+    //note flags
+    GLYPH_EIGHTH_FLAG_DOWN,     //eighth, corchea 
+    GLYPH_EIGHTH_FLAG_UP, 
+    GLYPH_16TH_FLAG_DOWN,       //16th, semicorchea
+    GLYPH_16TH_FLAG_UP, 
+    GLYPH_32ND_FLAG_DOWN,       //32nd, fusa 
+    GLYPH_32ND_FLAG_UP,
+    GLYPH_64TH_FLAG_DOWN,       //64th, semifusa 
+    GLYPH_64TH_FLAG_UP,
+    GLYPH_128TH_FLAG_DOWN,      //128th, garrapatea
+    GLYPH_128TH_FLAG_UP,
+    GLYPH_256TH_FLAG_DOWN,      //256th, semigarrapatea
+    GLYPH_256TH_FLAG_UP,
 };
 
 

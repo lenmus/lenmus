@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Clef.cpp,v 1.3 2006/02/23 19:22:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -42,10 +41,10 @@
 #include "Score.h"
 
 //Font LeMus : characters to draw clefs
-#define CHAR_G_CLEF        _T("A")
-#define CHAR_F_CLEF        _T("B")
-#define CHAR_C_CLEF        _T("C")
-#define CHAR_NO_CLEF    _T("G")
+#define CHAR_G_CLEF         _T("A")
+#define CHAR_F_CLEF         _T("B")
+#define CHAR_C_CLEF         _T("C")
+#define CHAR_NO_CLEF        _T("G")
 
 
 //-------------------------------------------------------------------------------------------------
@@ -60,7 +59,7 @@ lmClef::lmClef(EClefType nClefType, lmVStaff* pStaff, wxInt32 nNumStaff, bool fV
     lmSimpleObj(eTPO_Clef, pStaff, nNumStaff, fVisible, sbDRAGGABLE)
 {
     m_nClefType = nClefType;
-
+    m_fHidden = false;
 }
 
 // Create the drag image.
@@ -192,7 +191,10 @@ void lmClef::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
     */
 
+    if (!fMeasuring && m_fHidden) return;
+
     if (fMeasuring) {
+
         // get the shift to the staff on which the clef must be drawn
         lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
 

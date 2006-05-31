@@ -1,4 +1,3 @@
-// RCS-ID: $Id: KeySignature.h,v 1.4 2006/02/28 17:40:21 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -64,6 +63,9 @@ public:
     lmLUnits DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, EClefType nClef, 
                      int nStaff, wxColour colorC = *wxBLACK);
 
+    //methods for hiding the key in prologs
+    void Hide(bool fHide) { m_fHidden = fHide; }
+
 
 
 private:
@@ -76,10 +78,9 @@ private:
 
         // member variables
 
-    // attributes.
-
-    bool              m_fTraditional;   //it's a traditional signature. Encoded by the
-                                        // redundant enumaeration and fifths/mode pair
+    bool              m_fHidden;          //to hide it in system prolog
+    bool              m_fTraditional;     //it's a traditional signature. Encoded by the
+                                          // redundant enumaeration and fifths/mode pair
     EKeySignatures    m_nKeySignature;
     int               m_nFifths;
     bool              m_fMajor;

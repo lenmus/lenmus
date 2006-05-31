@@ -414,6 +414,11 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //If drawing phase do first MakeUp phase
     if (!fMeasuring) MakeUpPhase(pPaper);
 
+    ////if this is the base note (the firts one) of a chord compute its stem
+    //if (fMeasuring && IsBaseOfChord()) {
+    //    m_pChord->ComputeStem();
+    //}
+
     //if this is the first note/rest of a beam, measure beam
     //@attention This must be done before using stem information, as the beam could
     //change stem direction if it is not determined for some/all the notes in the beam
@@ -611,7 +616,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     if (!fMeasuring && IsInChord() && m_pChord->IsLastNoteOfChord(this) 
         && m_nNoteType >= eHalf)
     {
-        m_pChord->DrawStem(pDC);
+        m_pChord->DrawStem(fMeasuring, pDC, colorC, m_pFont, m_pVStaff, m_nStaffNum);
     }
 
     //if this is the last note of a beamed group draw the beam lines

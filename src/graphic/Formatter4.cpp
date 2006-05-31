@@ -684,26 +684,29 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     lmLUnits xChordPos=0;                //position of base note of a chord
 
     //loop to process all StaffObjs in this measure
+    bool fNoteRestFound = false;            
     bool fNewSystem = false;                // newSystem tag found
+    EScoreObjType nType;                    //type of score obj being processed
     lmStaffObj* pSO = (lmStaffObj*)NULL;
     lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
     pIT->AdvanceToMeasure(nAbsMeasure);
     while(!pIT->EndOfList())
     {
         pSO = pIT->GetCurrent();
+        nType = pSO->GetType();
 
-        if (pSO->GetType() == eTPO_Barline) break;         //End of measure: exit loop.
+        if (nType == eTPO_Barline) break;         //End of measure: exit loop.
 
-        if (pSO->GetType() == eTPO_Control) {
+        if (nType == eTPO_Control) {
             lmSOControl* pSOCtrol = (lmSOControl*)pSO;
-            ESOCtrolType nType = pSOCtrol->GetCtrolType();
-            if (lmTIME_SHIFT == nType) {
+            ESOCtrolType nCtrolType = pSOCtrol->GetCtrolType();
+            if (lmTIME_SHIFT == nCtrolType) {
                 //start a new thread, returning x pos to the same x pos than the 
                 //previous thread
                 m_oTimepos[nRelMeasure].NewThread();
                 pPaper->SetCursorX(m_oTimepos[nRelMeasure].GetCurXLeft());
             }
-            else if(lmNEW_SYSTEM == nType) {
+            else if(lmNEW_SYSTEM == nCtrolType) {
                 //new system tag found in this measure
                 fNewSystem = true;
             }
@@ -712,7 +715,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
         else {
             //collect data about the lmStaffObj
             lmTimeposTable& oTimepos = m_oTimepos[nRelMeasure];
-            if (pSO->GetType() == eTPO_NoteRest) {
+            if (nType == eTPO_NoteRest) {
                 oTimepos.AddEntry(pSO->GetTimePos(), pSO);
             } else {
                 oTimepos.AddEntry (-1, pSO);
@@ -720,7 +723,8 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
 
             //if this lmStaffObj is a lmNoteRest that is part of a chord its
             //anchor x position must be the same than that of the base note
-            if (pSO->GetType() == eTPO_NoteRest) {
+            if (nType == eTPO_NoteRest) {
+                fNoteRestFound = true;
                 fPreviousWasClef = false;            //this lmStaffObj is not a clef
                 pNoteRest = (lmNoteRest*)pSO;
                 pNote = (lmNote*)pSO;        //@attention we do not know yet if it is a note or a rest,
@@ -746,7 +750,18 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
                 }
 
             } else {
-                //it is not a lmNoteRest. Store current x position for this lmStaffObj.
+                //it is not a lmNoteRest.
+
+                //if it is a clef or a key hide(unhide it in prologs
+                bool fHide = (nAbsMeasure != 1 && nRelMeasure == 1 && !fNoteRestFound);
+                if (nType == eTPO_Clef) {
+                    ((lmClef*)pSO)->Hide(fHide);
+                }
+                if (nType == eTPO_KeySignature) {
+                    ((lmKeySignature*)pSO)->Hide(fHide);
+                }
+                
+                //Store current x position for this lmStaffObj.
                 if (pSO->GetType() == eTPO_Clef) {
                     //update current clef for this staff
                     pClef = (lmClef*)pSO;

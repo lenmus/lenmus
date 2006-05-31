@@ -26,6 +26,17 @@
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">31-may-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>New method for drawing the system prolog implemented.</li>
+      <li>Starting to implement unfinished issues and code related to chords.
+        Computation of stem direccion for not beamed chords finished. Added
+        method lmChord::ComputeStemDirection(). Full engraving rules implemented
+        and tested.</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">30-may-06</td>
     <td class="ListaPar">
     Reviewing the LDP language to continue developing the score editor and modifying LDP
@@ -35,6 +46,8 @@
         methods modified to add fVisible parameter.</li>
       <li>Tag 'newSystem' introduced. Need to do modifications in several places, mainly
         in SOControl, VStaff, LDPParser, Formatter4.</li>
+      <li>Reviewing and finishing the issue of drawing the system prolog. Designing an
+        implementing a solution based on using the context information stored on notes.</li>
     </ul>
     </td></tr>
 <tr valign="top">

@@ -53,6 +53,12 @@ public:
                          const wxPoint& ptLog, const wxPoint& dragStartPosL, const wxPoint& ptPixels);
     wxPoint EndDrag(const wxPoint& pos);
 
+        //specific methods for barline
+
+    //deal with contexts array
+    void AddContext(lmContext* pContext, int nStaff);
+    lmContext* GetContext(int nStaff);
+
 
     //    debugging
     wxString Dump();
@@ -68,8 +74,8 @@ private:
     void DrawTwoDots(wxDC* pDC, lmLUnits xPos, lmLUnits yPos);
 
 private:
-    EBarline        m_nBarlineType;        //type of barline
-
+    EBarline            m_nBarlineType;     //type of barline
+    ArrayOfContexts     m_aContexts;        //pointers to contexts at barline position
 };
 
 //

@@ -1,0 +1,103 @@
+(score
+   (vers 1.4)(language en iso-8859-1)
+   (instrument
+      (voice
+         //measure 1
+         (clef Sol)
+         (Tonalidad Do)
+         (Metrica 2 4)
+         (chord (n c5 n) (n e5 n) (n g5 n))
+         (chord (n c5 c g+) (n f5 c) (n a5 c))
+         (chord (n d5 c) (n g5 c) (n b5 c g-))
+         (barline)
+
+         //measure 2
+         (n c5 s g+) (na e5 s) (na g5 s)
+         (n c5 s) (na f5 s) (na a5 s)
+               (n d5 s) (na g5 s) (na b5 s)
+               (n g4 s) (na e5 s) (na g5 s g-)
+            (n c5 s g+) (na e5 s) (na g5 s)
+               (n c5 s) (na f5 s) (na a5 s)
+               (n d5 c) (na g5 c) (na b5 c g-)
+         (barline)
+
+         //measure 3
+            (n c5 c g+) (na e5 c) (na g5 c)
+               (n c5 s) (na f5 s) (na a5 s)
+               (n d5 s) (na g5 s) (na b5 s g-)
+            (n c5 s g+) (na e5 s) (na g5 s)
+               (n c5 c) (na f5 c) (na a5 c)
+               (n d5 s) (na g5 s) (na b5 s g-)
+         (barline)
+
+         //measure 4
+            (n c5 c. g+) (na e5 c.) (na g5 c.)
+               (n c5 s) (na f5 s) (na a5 s g-)
+            (n c5 s g+) (na e5 s) (na g5 s)
+               (n c5 c.) (na f5 c.) (na a5 c. g-)
+         (barline)
+
+         //measure 5
+            (n c5 c. g+) (na e5 c.) (na g5 c.)
+               (n c5 s) (na f5 s) (na a5 s)
+               (n c5 c.) (na f5 c.) (na a5 c.)
+               (n c5 s) (na e5 s) (na g5 s g-)
+         (barline)
+
+         //measure 6
+            (n c4 n) (na e4 n) (na g4 n)
+            (n c4 c g+) (na f4 c) (na a4 c)
+               (n d4 c) (na g4 c) (na b4 c g-)
+         (barline)
+
+         //measure 7
+            (n c4 s g+) (na e4 s) (na g4 s)
+               (n c4 s) (na f4 s) (na a4 s)
+               (n d4 s) (na g4 s) (na b4 s)
+               (n g3 s) (na e4 s) (na g4 s g-)
+            (n c4 s g+) (na e4 s) (na g4 s)
+               (n c4 s) (na f4 s) (na a4 s)
+               (n d4 c) (na g4 c) (na b4 c g-)
+         (barline)
+
+         //measure 8
+            (n c4 c g+) (na e4 c) (na g4 c)
+               (n c4 s) (na f4 s) (na a4 s)
+               (n d4 s) (na g4 s) (na b4 s g-)
+            (n c4 s g+) (na e4 s) (na g4 s)
+               (n c4 c) (na f4 c) (na a4 c)
+               (n d4 s) (na g4 s) (na b4 s g-)
+         (barline)
+
+         //measure 9
+         (n c4 c. g+) (na e4 c.) (na g4 c.)
+         (n c4 s) (na f4 s) (na a4 s g-)
+         (n c4 s g+) (na e4 s) (na g4 s)
+            (n c4 c.) (na f4 c.) (na a4 c. g-)
+         (barline)
+
+         //measure 10
+            (n c4 c. g+) (na e4 c.) (na g4 c.)
+               (n c4 s) (na f4 s) (na a4 s)
+               (n c4 c.) (na f4 c.) (na a4 c.)
+               (n c4 s) (na e4 s) (na g4 s g-)
+         (barline)
+
+         //measure 11
+         (n c4 n) (na e4 n) (na g4 n)
+         (n c4 c) (na f4 c) (na a4 c)
+         (n d5 c) (na g5 c) (na b5 c)
+         (barline)
+
+         //measure 12
+         (n c4 c g+ t3) (na f4 c) (na a4 c)
+           (n d4 c) (na g4 c) (na b4 c)
+           (n d4 c) (na g4 c) (na b4 c g- t-)
+         (n c5 c g+ t3) (na f5 c) (na a5 c)
+           (n d5 c) (na g5 c) (na b5 c)
+           (n d5 c) (na g5 c) (na b5 c g- t-)
+         (barline Final)
+      )
+   )
+)
+

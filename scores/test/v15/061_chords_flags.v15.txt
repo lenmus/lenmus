@@ -1,0 +1,34 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument
+      (voice
+         (clef Sol)
+         (key Do)
+         (time 2 4)
+         (chord (n c4 n)(n e4 n)(n g4 n))
+         (chord (n c5 c)(n e5 c)(n g5 c))
+         (chord (n c5 s)(n f5 s)(n a5 s))
+         (chord (n d5 f)(n g5 f)(n b5 f))
+         (barline)
+         
+         //two notes. stems down (a4,d5) (f4,f5) (a4,g5)
+         (chord (n a4 n)(n d5 n))
+         (chord (n f4 n)(n f5 n))
+         (chord (n a4 n)(n g5 n))
+         (barline)
+
+         //two notes. stems up (e4,c5)(g4,c5)(d4,e5)
+         (chord (n e4 n)(n c5 n))
+         (chord (n g4 n)(n c5 n))
+         (chord (n d4 n)(n e5 n))
+         (barline)
+         
+         //two notes. stems at your preference. Default down. (g4.d5)(a4,c5)
+         (chord (n g4 n)(n d5 n))
+         (chord (n a4 n)(n c5 n))
+         (barline)
+         
+      )
+   )
+)
+
