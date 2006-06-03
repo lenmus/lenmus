@@ -136,7 +136,7 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
     //if measurement phase and this is the first note/rest of a beam, measure beam
     if (fMeasuring && m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
-        m_pBeam->ComputeStems();
+        m_pBeam->ComputeStemsDirection();
     }
 
 

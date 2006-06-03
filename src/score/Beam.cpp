@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Beam.cpp,v 1.7 2006/02/23 19:22:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -56,11 +55,11 @@
 
 lmBeam::lmBeam(lmNoteRest* pNotePrev)
 {
-    /*
-    m_pNotePrev is the note preceding the beamed group. It is necessary to have access to
-    it because if this note is tied to the first one of the group, the stems og the group
-    are forced to go in the same direction than this previous note.
-    */
+    //
+    // m_pNotePrev is the note preceding the beamed group. It is necessary to have access to
+    // it because if this note is tied to the first one of the group, the stems og the group
+    // are forced to go in the same direction than this previous note.
+    //
     m_pNotePrev = pNotePrev;
 
     m_pFirstNote = (lmNote*)NULL;
@@ -69,8 +68,8 @@ lmBeam::lmBeam(lmNoteRest* pNotePrev)
 }
 lmBeam::~lmBeam()
 {
-    //notes will not be deleted when deleting the list, as they are part of a lmScore 
-    //and will be deleted there.
+    // notes will not be deleted when deleting the list, as they are part of a lmScore 
+    // and will be deleted there.
     m_cNotes.DeleteContents(false);
     m_cNotes.Clear();
 }
@@ -96,30 +95,30 @@ int lmBeam::NumNotes()
     return m_cNotes.GetCount();
 }
 
-/*! 
-    This method is invoked during the measurement phase, from the first note of a beamed
-    group. Here we precompute some rendering information: stems length, m_fStemsDown 
-    and position for rests included in the beamed group (m_nPosForRests).
-
-    In chords, if the stem goes up only the highest pitch note should be used for computations.
-    But if the stem goes dows it must be the loest pitch note.
-    Be aware that only the base note is included in the beam.
-
-    The exact length of stems can not be computed here because it is not yet known the
-    exact x positions of noteheads. So this final trimming is delayed to drawing phase and
-    is performed in method TrimStems()
-
-*/
-void lmBeam::ComputeStems()
+//! 
+//!   This method is invoked during the measurement phase, from the first note of a beamed
+//!   group. Here we precompute some rendering information: stems length, m_fStemsDown 
+//!   and position for rests included in the beamed group (m_nPosForRests).
+//!
+//!   In chords, if the stem goes up only the highest pitch note should be used for computations.
+//!   But if the stem goes down it must be the lowest pitch note.
+//!   Be aware that for chords only the base note is included in the beam.
+//!
+//!   The exact length of stems can not be computed here because it is not yet known the
+//!   exact x positions of noteheads. So this final trimming is delayed to drawing phase and
+//!   is performed in method TrimStems()
+//!
+void lmBeam::ComputeStemsDirection()
 {
-    /*  BUG_BYPASS: There is a bug in Composer5 and it some times generate scores 
-        ending with a start of group. As this start is in the last note of the score,
-        the group has only one note.
-    */
+    //  BUG_BYPASS: There is a bug in Composer5 and it some times generate scores 
+    //    ending with a start of group. As this start is in the last note of the score,
+    //    the group has only one note.
+    //
     if (m_cNotes.GetCount()==1) {
         wxLogMessage(_T("*** ERROR *** Group with just one note!"));
         return;
     }
+    // End of BUG_BYPASS
 
     lmNote* pNote;
     wxNoteRestsListNode *pNode;
@@ -212,27 +211,27 @@ void lmBeam::ComputeStems()
 */
 void lmBeam::TrimStems()
 {
-    /*  BUG_BYPASS: There is a bug in Composer5 and it some times generate scores 
-        ending with a start of group. As this start is in the last note of the score,
-        the group has only one note.
-    */
+    //  BUG_BYPASS: There is a bug in Composer5 and it some times generate scores 
+    //    ending with a start of group. As this start is in the last note of the score,
+    //    the group has only one note.
+    //
     if (m_cNotes.GetCount()==1) {
         wxLogMessage(_T("*** ERROR *** Group with just one note!"));
         return;
     }
+    // End of BUG_BYPASS
 
 
-    /*  At this point all stems have the standard size and the stem start point (the point
-        nearest to the notehead) is computed. Now we are goin to compute the end point
-        for each stem. 
-        As we are interested in the stems' length, not in the exact coordinates, instead
-        of using the real start coordinates, we are going to compute an arbitrary start
-        coordinate relative to zero. This has the advantage, over using the real coordinates,
-        that all stems will be in the same system, and this is better when we have to split
-        the beam into two systems.
-        The computed start and end positions for each stem will be stored in the auxiliary
-        arrays yBase and yTop, respectively.
-    */
+    // At this point all stems have the standard size and the stem start point (the point
+    // nearest to the notehead) is computed. Now we are goin to compute the end point
+    // for each stem. 
+    // As we are interested in the stems' length, not in the exact coordinates, instead
+    // of using the real start coordinates, we are going to compute an arbitrary start
+    // coordinate relative to zero. This has the advantage, over using the real coordinates,
+    // that all stems will be in the same system, and this is better when we have to split
+    // the beam into two systems.
+    // The computed start and end positions for each stem will be stored in the auxiliary
+    // arrays yBase and yTop, respectively.
 
     int nNumNotes = m_cNotes.GetCount();
     wxArrayInt yBase, yTop;
@@ -303,21 +302,21 @@ void lmBeam::TrimStems()
 #endif
 
 
-    /*  lmBeam line position is established by the first and last notes' stems. Now
-        let's adjust the intermediate notes' stem lengths to end up in the beam line.
-        This is just a proportional share based on line slope:
-        If (x1,y1) and (xn,yn) are, respectively, the position of first and last notes of
-        the group, the y position of an intermediate note i can be computed as:
-            Ay = yn-y1
-            Ax = xn-x1
-                       Ay
-            yi = y1 + ---- (xi-x1)
-                       Ax
-        The x position of the stem has beeen computed in Note object during the
-        measurement phase.
+    // lmBeam line position is established by the first and last notes' stems. Now
+    // let's adjust the intermediate notes' stem lengths to end up in the beam line.
+    // This is just a proportional share based on line slope:
+    // If (x1,y1) and (xn,yn) are, respectively, the position of first and last notes of
+    // the group, the y position of an intermediate note i can be computed as:
+    //     Ay = yn-y1
+    //     Ax = xn-x1
+    //                Ay
+    //     yi = y1 + ---- (xi-x1)
+    //                Ax
+    // The x position of the stem has beeen computed in Note object during the
+    // measurement phase.
+    //
+    // The loop is also used to look for the shortest stem
 
-        The loop is also used to look for the shortest stem
-    */          
     lmLUnits Ay = yTop[nNumNotes] - yTop[1];
     lmLUnits x1 = m_pFirstNote->GetXStem();
     lmLUnits Ax = m_pLastNote->GetXStem() - x1;
@@ -337,13 +336,13 @@ void lmBeam::TrimStems()
         }
     }
 
-    /* If there is a note in the group out of the interval formed by the first note and the
-        last note, then stem could be too too short. For example, a group of three notes,
-        the first and the last ones D4 and the middle one G4; the beam is horizontal, nearly
-        the G4 line; so the midle notehead would be positioned just on the beam line.
-        So let's avoid these problems by adjusting the stems so that all stems have 
-        a minimum height
-    */
+    // If there is a note in the group out of the interval formed by the first note and the
+    // last note, then stem could be too too short. For example, a group of three notes,
+    // the first and the last ones D4 and the middle one G4; the beam is horizontal, nearly
+    // the G4 line; so the midle notehead would be positioned just on the beam line.
+    // So let's avoid these problems by adjusting the stems so that all stems have 
+    // a minimum height
+
     lmLUnits dyStem = m_pFirstNote->GetDefaultStemLength();
     int dyMin = (2 * dyStem) / 3;
     bool fAdjust;
@@ -395,35 +394,13 @@ void lmBeam::TrimStems()
 
 }
 
-//void lmBeam::Duracion() As Long
-//    //Devuelve la duracion del grupo
-//    Dim i As Long, nDur As Long
-//    for (i = 1 To m_cNotes.Count
-//        nDur = nDur + m_cNotes(i).DuracionEnAcorde
-//    }   //   i
-//    
-//    //corrige la duración del grupo si es una tupla. Se hace aqui en vez de en cada nota
-//    //individualmente porque al ser la duración un Long se producian errores de redondeo que
-//    //implicaban una unidad, lo que equivale a un silencio de semigarrapatea.
-//    if (m_nTupla <> eTP_NoTupla) {
-//        switch (m_nTupla
-//            case eTP_Tresillo
-//                nDur = (nDur * 2#) \ 3#
-//            case } else {
-//                // no modificar el valor
-//        }
-//    }
-//    Duracion = nDur
-//    
-//}
-
 void lmBeam::DrawBeamLines(wxDC* pDC, lmLUnits nThickness, lmLUnits nBeamSpacing)
 {
-    /*
-    This method is only called from lmNote::DrawObject(), in particular from the last note
-    of a group of beamed notes. The purpose of this method is to draw all the beam lines
-    of the group.
-    */
+    //
+    // This method is only called from lmNote::DrawObject(), in particular from the last note
+    // of a group of beamed notes. The purpose of this method is to draw all the beam lines
+    // of the group.
+    //
 
     int xStart=0, xEnd=0, yStart=0, yEnd=0; // start and end points for a segment
     int xPrev=0, yPrev=0, xCur=0, yCur=0;   // points for previous and current note
@@ -534,12 +511,12 @@ int lmBeam::ComputeYPosOfSegment(lmNote* pNote, bool fStemDown, int yShift)
     int yPos;
     if (pNote->IsInChord()) {
         if (fStemDown) {
-            lmNote* pMaxNote = (pNote->GetChord())->GetMaxNote();
-            yPos = pMaxNote->GetYStem() + pNote->GetStemLength();
+            lmNote* pMinNote = (pNote->GetChord())->GetMinNote();
+            yPos = pMinNote->GetYStem() + pNote->GetStemLength();
         }
         else {
-            lmNote* pMinNote = (pNote->GetChord())->GetMinNote();
-            yPos = pMinNote->GetYStem() - pNote->GetStemLength();
+            lmNote* pMaxNote = (pNote->GetChord())->GetMaxNote();
+            yPos = pMaxNote->GetYStem() - pNote->GetStemLength();
         }
     }
     else {

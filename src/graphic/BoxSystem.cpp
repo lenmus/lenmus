@@ -126,10 +126,10 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
 
 void lmBoxSystem::RenderMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper)
 {
-    /*
-    Draw all StaffObjs in measure nMeasure, including the barline.
-    It is assumed that all positioning information is already computed
-    */
+    //
+    // Draw all StaffObjs in measure nMeasure, including the barline.
+    // It is assumed that all positioning information is already computed
+    //
 
     wxASSERT(nMeasure <= pVStaff->GetNumMeasures());
 
@@ -183,20 +183,8 @@ void lmBoxSystem::RenderMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper
                 nMaxClefWidth = wxMax(nMaxClefWidth, pPaper->GetCursorX() - xClefs);
             }
 
-            //! @todo Is next code up to date? usefull for anything?
-            //Set oClave = pSO
-            //pVStaff->SetCurrentKey(oClave.Pentagrama) = pSO
-
         } else {
             //It is not a clef. Just draw it
-
-            //! @todo Is next code up to date? usefull for anything?
-            //if (pSO->GetType() = eTPO_KeySignature) {
-            //    pVStaff->SetCurrentTonalKey = pSO
-            //ElseIf pSO->GetType() = eTPO_TimeSignature) {
-            //    pVStaff->SetCurrentTimeKey = pSO
-            //}
-
             if (fSpacePending) {
                 pPaper->SetCursorX(xClefs + nMaxClefWidth);
                 fSpacePending = false;

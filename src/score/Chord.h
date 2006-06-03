@@ -42,6 +42,7 @@ public:
     void AddNote(lmNote* pNote);
     void RemoveNote(lmNote* pNote);
     bool IsLastNoteOfChord(lmNote* pNote);
+    void SetStemDirection(bool fStemDown);
     void DrawStem(bool fMeasuring, wxDC* pDC, wxColour colorC, wxFont* pFont,
                   lmVStaff* pVStaff, int nStaff);
 
@@ -50,6 +51,8 @@ private:
     lmLUnits DrawFlag(bool fMeasuring, wxDC* pDC, lmNote* pBaseNote, wxPoint pos,
                       wxColour colorC, wxFont* pFont, lmVStaff* pVStaff, int nStaff);
     void ComputeStemDirection();
+    void ArrangeNoteheads();
+
 
 
 

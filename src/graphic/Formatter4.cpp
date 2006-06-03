@@ -153,13 +153,6 @@ lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
                     }
                     nAbsMeasure++;
                 }
-                else if (pSO->GetType() == eTPO_Clef) {
-                    //update current clef for this staff
-                    lmClef* pClef = (lmClef*)pSO;
-                    int nStaff = pClef->GetStaffNum();
-                    lmStaff* pStaff = pVStaff->GetStaff(nStaff);
-                    pStaff->SetCurrentClef(pClef);
-                }
 
                 pIT->MoveNext();
             }
@@ -763,33 +756,16 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
                 
                 //Store current x position for this lmStaffObj.
                 if (pSO->GetType() == eTPO_Clef) {
-                    //update current clef for this staff
-                    pClef = (lmClef*)pSO;
-                     int nStaff = pClef->GetStaffNum();
-                    lmStaff* pStaff = pVStaff->GetStaff(nStaff);
-                    pStaff->SetCurrentClef(pClef);
                     //if previous lmStaffObj was also a cleft and this new is in a
                     //different staff than the previous one, the left position of this new
                     //cleft must be the same than that of the previous clef so that
                     //both clefs are aligned.
+                    pClef = (lmClef*)pSO;
+                    int nStaff = pClef->GetStaffNum();
                      if (fPreviousWasClef && (nStaff != nClefStaffNum)) {
                         pPaper->SetCursorX(nClefXPos);  //paper back to aling both clefs
                     }
                 }
-
-                //if it is a Key signature or a time signature, update current values
-                if (pSO->GetType() == eTPO_KeySignature) {
-                    pKey = (lmKeySignature*)pSO;
-                     int nStaff = pKey->GetStaffNum();
-                    lmStaff* pStaff = pVStaff->GetStaff(nStaff);
-                    pStaff->SetCurrentKey(pKey);
-                }
-                //else if (pSO->GetType() == eTPO_TimeSignature) {
-    //                pTS = (lmTimeSignature*)pSO;
-             //        int nStaff = pTS->GetStaffNum();
-                //    lmStaff* pStaff = pVStaff->GetStaff(nStaff);
-                //    pStaff->SetCurrentTimeSignature(pTS);
-                //}
 
                 oTimepos.SetCurXLeft(pPaper->GetCursorX());
 

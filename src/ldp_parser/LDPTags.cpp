@@ -144,33 +144,39 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
     //! @todo   For now I will load Spanish tags as default. This must not be changed
     //!         while program generated tags are in Spanish.
     if (sLanguage == _T("en")) {
-        m_Tags[_T("instrument")] = _T("instrument");
-        m_Tags[_T("instrName")] = _T("instrName");
+        m_Tags[_T("barline")] = _T("barline");
+        m_Tags[_T("chord")] = _T("chord");
+        m_Tags[_T("clef")] = _T("clef");
+        m_Tags[_T("down")] = _T("down");
         m_Tags[_T("infoMIDI")] = _T("infoMIDI");
-        m_Tags[_T("voice")] = _T("voice");
+        m_Tags[_T("instrName")] = _T("instrName");
+        m_Tags[_T("instrument")] = _T("instrument");
+        m_Tags[_T("key")] = _T("key");
+        m_Tags[_T("newSystem")] = _T("newSystem");
         m_Tags[_T("split")] = _T("split");
         m_Tags[_T("staves")] = _T("staves");
-        m_Tags[_T("barline")] = _T("barline");
-        m_Tags[_T("clef")] = _T("clef");
-        m_Tags[_T("chord")] = _T("chord");
-        m_Tags[_T("key")] = _T("key");
+        m_Tags[_T("stem")] = _T("stem");
         m_Tags[_T("time")] = _T("time");
-        m_Tags[_T("newSystem")] = _T("newSystem");
+        m_Tags[_T("up")] = _T("up");
+        m_Tags[_T("voice")] = _T("voice");
     }
     else {
         // initialize table with default Spanish values
-        m_Tags[_T("instrument")] = _T("instrumento");
-        m_Tags[_T("instrName")] = _T("nombreInstrumento");
+        m_Tags[_T("barline")] = _T("Barra");            //! @todo change for 1.4
+        m_Tags[_T("chord")] = _T("acorde");
+        m_Tags[_T("clef")] = _T("Clave");            //! @todo change for 1.4
+        m_Tags[_T("down")] = _T("abajo");
         m_Tags[_T("infoMIDI")] = _T("infoMIDI");
-        m_Tags[_T("voice")] = _T("voz");
+        m_Tags[_T("instrName")] = _T("nombreInstrumento");
+        m_Tags[_T("instrument")] = _T("instrumento");
+        m_Tags[_T("key")] = _T("Tonalidad");          //! @todo change for 1.4
+        m_Tags[_T("newSystem")] = _T("nuevoSistema");
         m_Tags[_T("split")] = _T("partes");
         m_Tags[_T("staves")] = _T("numPentagramas");
-        m_Tags[_T("barline")] = _T("Barra");            //! @todo change for 1.4
-        m_Tags[_T("clef")] = _T("Clave");            //! @todo change for 1.4
-        m_Tags[_T("acorde")] = _T("acorde");
-        m_Tags[_T("key")] = _T("Tonalidad");          //! @todo change for 1.4
+        m_Tags[_T("stem")] = _T("plica");
         m_Tags[_T("time")] = _T("Metrica");        //! @todo change for 1.4
-        m_Tags[_T("newSystem")] = _T("nuevoSistema");
+        m_Tags[_T("up")] = _T("arriba");
+        m_Tags[_T("voice")] = _T("voz");
     }
 }
 

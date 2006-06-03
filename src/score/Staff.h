@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Staff.h,v 1.3 2006/02/23 19:24:42 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -63,11 +62,8 @@ public:
     wxFont* GetFontDraw() { return m_pFontDraw; }
     void SetFontDraw(wxFont* pFont) { m_pFontDraw = pFont; }
 
-    //access to current clef and keys. Only valid during renderization process
-    void SetCurrentClef(lmClef* pClef) { m_pCurClef = pClef; }
-    void SetCurrentKey(lmKeySignature* pKS) { m_pCurKey = pKS; }
-    lmClef* GetCurrentClef() { return m_pCurClef; }
-    lmKeySignature* GetCurrentKey() { return m_pCurKey; };
+    //access to current clef. Only used by key signatures for renderization
+    lmClef* GetCurrentClef() { return GetLastClef(); }
 
     //context management
     lmContext* NewContext(lmClef* pClef);
@@ -82,24 +78,16 @@ public:
 
 private:
     lmLUnits    m_lineThick;        // in logical units
-    wxInt32        m_numLines;
-    lmLUnits    m_spacing;            // in logical units (thousandths of a mm.,microns)
-    wxFont*        m_pFontDraw;        // font to use for drawing on this staff
+    wxInt32     m_numLines;
+    lmLUnits    m_spacing;          // in logical units (thousandths of a mm.,microns)
+    wxFont*     m_pFontDraw;        // font to use for drawing on this staff
 
-    lmLUnits    m_leftMargin;        // lmStaff margins (logical units))
+    lmLUnits    m_leftMargin;       // lmStaff margins (logical units))
     lmLUnits    m_rightMargin;
     lmLUnits    m_afterSpace;
 
-    // These variables are used to track current clef, tonal key and time key while processing
-    // the score, either when rendering it, when exporting the score or when building from file
-    // reading/importing
-    lmClef*            m_pCurClef;            // current clef
-    lmKeySignature*    m_pCurKey;            // current key signature
-
     // List of contexts
     ContextList        m_cContext;
-
-                                    
 
 };
 

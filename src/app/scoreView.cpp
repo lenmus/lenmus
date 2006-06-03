@@ -612,8 +612,8 @@ void lmScoreView::SetScale(double rScale)
         //reposition controls
         ResizeControls();    
 
-        wxLogMessage(_T("[lmScoreView::SetScale] scale=%f, m_rScale=%f, DisplayPixelsPerLU=(%f, %f)"),
-            rScale, m_rScale, m_xDisplayPixelsPerLU, m_yDisplayPixelsPerLU);
+        //wxLogMessage(_T("[lmScoreView::SetScale] scale=%f, m_rScale=%f, DisplayPixelsPerLU=(%f, %f)"),
+        //    rScale, m_rScale, m_xDisplayPixelsPerLU, m_yDisplayPixelsPerLU);
     }
 
     m_pCanvas->Refresh(true);    //erase background

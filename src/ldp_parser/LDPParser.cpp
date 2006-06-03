@@ -1092,7 +1092,7 @@ void lmLDPParser::AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff)
         } else if (sName == _T("Metrica")) {
             fSomethingAdded = ! AnalyzeTimeSignature(pVStaff, pX);
         } else if (sName == _T("Tonalidad")) {
-            //    fSomethingAdded = Not AnalyzeKeySignature(pX, pVStaff)
+            fSomethingAdded = ! AnalyzeKeySignature(pX, pVStaff);
             //case "METRONOMO"
             //    fSomethingAdded = Not AnalizarMetronomo(pVStaff, pX)
         } else if (sName == _T("Barra")) {
@@ -1438,7 +1438,17 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChor
 
             else if (sData == _T("g-")) {       //End of beamed group
                 //allow to close the beamed group
-                bool fCloseBeam = true;     
+                bool fCloseBeam = true;
+
+                //! @todo   Beaming information only allowed in base note of chords
+                //!         This program should move this information to base note
+                //!         as this restriction is un-coherent with forcing the t- flag
+                //!         to be in the last note of the chord.
+                if (fInChord) {
+                    AnalysisError(
+                        _("Requesting ending a beaming a group in a note that is note the first one of a chord. Beaming ignored."));
+                    fCloseBeam = false;
+                }
 
                 //There must exist a previous note/rest
                 if (!g_pLastNoteRest) {
@@ -1502,10 +1512,6 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChor
                         // close common levels (done)
                     }
                 }
-//            case "PLICA"     //Dirección de la plica
-//                //falta: analizar direccon de la plica
-//                nTipoStem = eStemUp
-//                
         //default:
         //    if (Left$(sData, 1) = "P") {   //num_pentagrama
         //        m_nCurStaff = AnalizarNumPentagrama(sData)
@@ -1520,11 +1526,13 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChor
             //
             // Analysis of compound notations
             //
+            sData = pX->GetName();
             if (sData == _T("g")) {       //Start of group element
-                wxLogMessage(_T("[lmLDPParser::AnalyzeNote] Old (G + T3) syntax?"));
-                AnalysisError(_("Notation '%s' unknown or not implemented."), sData);
+                AnalysisError(_("Notation '%s' unknown or not implemented. Old (g + t3) syntax?"), sData);
             }
-
+            else if (sData == m_pTags->TagName(_T("stem")) ) {       //stem attributes
+                nStem = AnalyzeStem(pX, pVStaff);
+            }
             else {
                 AnalysisError(_("Notation '%s' unknown or not implemented."), sData);
             }
@@ -1532,8 +1540,9 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChor
         }
     }
     
-    //force beaming for notes between eBeamBegin and eBeamEnd
-    if (!fBeamed && nNoteType > eQuarter) {
+    //force beaming for notes between eBeamBegin and eBeamEnd (only for single notes
+    //and chord base notes, not for secondary notes of a chord)
+    if (!fBeamed && !fInChord && nNoteType > eQuarter) {
         if (g_pLastNoteRest) {
             if (g_pLastNoteRest->IsBeamed()) {
                 //it can be the end of a group. Let's verify that at least a beam is open
@@ -2094,6 +2103,35 @@ bool lmLDPParser::AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff)
     //add control object
     pVStaff->AddNewSystem();
     return false;
+    
+}
+
+EStemType lmLDPParser::AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+    //<Stem> ::= (stem [up | down] <lenght> }
+
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("stem")) );
+
+    EStemType nStem = eDefaultStem;
+
+    //check that there are parameters
+    if(pNode->GetNumParms() < 1) {
+        AnalysisError( _("Element '%s' has less parameters that the minimum required. Tag ignored. Assumed default stem."),
+            m_pTags->TagName(_T("stem")));
+        return nStem;
+    }
+    
+    //get stem direction
+    wxString sDir = (pNode->GetParameter(1))->GetName();
+    if (sDir == m_pTags->TagName(_T("up")) )
+        nStem = eStemUp;
+    else if (sDir == m_pTags->TagName(_T("down")) )
+        nStem = eStemDown;
+    else {
+        AnalysisError( _("Invalid stem direction '%s'. Default direction taken."), sDir);
+    }
+
+    return nStem;
     
 }
 

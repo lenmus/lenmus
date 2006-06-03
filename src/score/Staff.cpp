@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Staff.cpp,v 1.3 2006/02/23 19:24:42 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -65,10 +64,6 @@ lmStaff::lmStaff(lmScore* pScore, wxInt32 nNumLines, lmLUnits nMicrons)
     m_afterSpace = lmToLogicalUnits(10, lmMILLIMETERS);    // 10 mm
     m_leftMargin = 0;
     m_rightMargin = 0;
-
-    //default values
-    m_pCurClef = (lmClef*)NULL;
-    m_pCurKey = (lmKeySignature*)NULL;
 
 }
 

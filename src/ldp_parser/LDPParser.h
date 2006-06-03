@@ -71,6 +71,9 @@ public:
     void        AnalyzeChord(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff);
 
+    EStemType   AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff);
+
+
 
 
     // for lmLDPToken

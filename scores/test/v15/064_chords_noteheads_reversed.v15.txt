@@ -1,0 +1,16 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument
+      (voice
+         (clef Sol)
+         (chord (n c4 n)(n d4 n)(n g4 n))
+         (chord (n c5 n)(n d5 n)(n a5 n))
+         (barline)
+         
+         (chord (n +c4 n)(n d4 n)(n g4 n))
+         (chord (n c5 n)(n -d5 n)(n a5 n))
+         (barline Final)
+      )
+   )
+)
+

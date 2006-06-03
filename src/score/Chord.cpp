@@ -101,6 +101,9 @@ void lmChord::AddNote(lmNote* pNote)
     //compute stem direction
     ComputeStemDirection();
 
+    //arrange noteheads at left/right of stem to avoid collisions
+    ArrangeNoteheads();
+
 }
 
 /*! @brief Removes a note from a chord.
@@ -175,30 +178,19 @@ void lmChord::DrawStem(bool fMeasuring, wxDC* pDC, wxColour colorC, wxFont* pFon
 
     }
     else {
+        // If the chord is beamed, the stem length was computed during beam computation and
+        // stored in the base note
         if (pBaseNote->StemGoesDown()) {
             //stem down: line at left of noteheads
-            if (pBaseNote->IsBeamed()) {
-                // chord beamed: use base note information
-                yStemStart = m_pMaxNote->GetYStem();
-                yStemEnd = yStemStart + pBaseNote->GetStemLength();
-            }
-            else {
-                // chord not beamed. Use max and min notes information
-                yStemStart = m_pMaxNote->GetYStem();
-                yStemEnd = m_pMinNote->GetFinalYStem();
-            }
+            yStemStart = m_pMaxNote->GetYStem();
+            yStemEnd = m_pMinNote->GetYStem() + pBaseNote->GetStemLength();
+            //yStemEnd = yStemStart + pBaseNote->GetStemLength();
+            //yStemEnd = m_pMinNote->GetFinalYStem();
         } else {
             //stem up: line at right of noteheads
-            if (pBaseNote->IsBeamed()) {
-                // chord beamed: use base note information
-                yStemStart = m_pMinNote->GetYStem();
-                yStemEnd = yStemStart - pBaseNote->GetStemLength();
-            }
-            else {
-                // chord not beamed. Use max and min notes information
-                yStemStart = m_pMinNote->GetYStem();
-                yStemEnd = m_pMaxNote->GetFinalYStem();
-            }
+            yStemStart = m_pMinNote->GetYStem();
+            yStemEnd = m_pMaxNote->GetYStem() - pBaseNote->GetStemLength();
+            //yStemEnd = yStemStart - pBaseNote->GetStemLength();
         }
     }
 
@@ -334,9 +326,60 @@ void lmChord::ComputeStemDirection()
         }
     }
 
-    //update max and min notes with conclusion about stem direction
-    m_pMinNote->SetStemDirection(m_fStemDown);
-    m_pMaxNote->SetStemDirection(m_fStemDown);
+    //update max and min notes with conclusion about stem direction.
+    //@aware for chords, setting the base note forces to call lmChord::SetStemDirection()
+    //  to setup also max and min notes
     pBaseNote->SetStemDirection(m_fStemDown);
 
 }
+
+void lmChord::SetStemDirection(bool fStemDown)
+{
+    m_fStemDown = fStemDown;
+    lmNote* pBaseNote = (lmNote*)(m_cNotes.GetFirst())->GetData();
+    if (pBaseNote != m_pMinNote)    //check to avoid infinite loops
+        m_pMinNote->SetStemDirection(m_fStemDown);
+    if (pBaseNote != m_pMaxNote)    //check to avoid infinite loops
+        m_pMaxNote->SetStemDirection(m_fStemDown);
+
+}
+
+void lmChord::ArrangeNoteheads()
+{
+    //arrange noteheads at left/right of stem to avoid collisions
+    //This method aaume that the stem direction has been computed
+
+    if (m_cNotes.GetCount() < 2) return;
+
+    //lmNote* pBaseNote = (lmNote*)(m_cNotes.GetFirst())->GetData();
+
+    bool fSomeReversed = false;
+    int nPosPrev = 1000;    // a very high number not posible in real world
+    int nPos;
+    lmNote* pNote;
+    wxNotesListNode *pNode = m_cNotes.GetFirst();
+    for(; pNode; pNode=pNode->GetNext() ) {
+        pNote = (lmNote*)pNode->GetData();
+        nPos = pNote->GetPosOnStaff();
+        if (abs(nPosPrev - nPos) < 2) {
+            //collision. Reverse position of this notehead
+            fSomeReversed = true;
+            pNote->SetRightShift(!m_fStemDown);
+            nPosPrev = 1000;
+        }
+        else {
+            pNote->SetRightShift(m_fStemDown);
+            nPosPrev = nPos;
+        }
+    }
+
+    //if stems downwards and no notehead reversed, remove all right shifts
+    if (m_fStemDown && !fSomeReversed) {
+        int iN;
+        for (iN=0; iN < (int)m_cNotes.GetCount(); iN++) {
+            pNote->SetRightShift(false);
+        }
+    }
+
+}
+

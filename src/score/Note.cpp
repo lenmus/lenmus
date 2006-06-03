@@ -86,8 +86,8 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
     m_xStem = 0;            // will be updated in lmNote::DrawObject, in measurement phase
     m_yStem = 0;            // will be updated in lmNote::DrawObject, in measurement phase
     m_nStemType = nStem;    
-    m_nStemLength = GetDefaultStemLength();        //default. If beamed note, this value will
-                                                //be updated in lmBeam::ComputeStems
+    m_nStemLength = GetDefaultStemLength();     //default. If beamed note, this value will
+                                                //be updated in lmBeam::ComputeStemsDirection
 
 
     // accidentals
@@ -161,7 +161,7 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
     m_nPitch = StepAndOctaveToPitch(m_nStep, m_nOctave);
     m_nMidiPitch = PitchToMidi(m_nPitch, m_nAlter);
 
-    SetUpStemDirection();
+    SetUpStemDirection();       // and standard lenght
 
 //    Set m_cPentobjs = new Collection
 //    
@@ -185,6 +185,7 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
     //if the note is part of a chord find the base note and take some values from it
     m_fIsNoteBase = true;        //by default all notes are base notes
     m_pChord = (lmChord*)NULL;    //by defaul note is not in chord
+    m_fShiftNoteheadRight = false;
     if (fInChord) {
         if (!g_pLastNoteRest || g_pLastNoteRest->IsRest()) {
             ; //! @todo
@@ -192,6 +193,7 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
             //    " base definida. Se ignora acorde"
         }
         else {
+            m_fIsNoteBase = false;
             lmNote* pLastNote = (lmNote*)g_pLastNoteRest;
             if (pLastNote->IsInChord()) {
                 m_pChord = pLastNote->GetChord();
@@ -199,7 +201,6 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
                 m_pChord = pLastNote->StartChord();
             }
             m_pChord->AddNote(this);
-            m_fIsNoteBase = false;
         }
     }
     
@@ -231,8 +232,7 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
     CreateBeam(fBeamed, BeamInfo);
     
     
-    
-    g_pLastNoteRest = this;
+    if (!IsInChord() || IsBaseOfChord()) g_pLastNoteRest = this;
 
 }
 
@@ -393,31 +393,25 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     bool fInChord = IsInChord();
 
     // move to right staff
-    //if (fMeasuring) {
-        int nPosOnStaff = GetPosOnStaff();
-        yStaffBaseLine = m_paperPos.y + GetStaffOffset();
-        lmLUnits yPitchShift = GetPitchShift();
-        nyTop = yStaffBaseLine - yPitchShift;
-        nxLeft = m_paperPos.x;
-    //} else {
-        wxDC* pDC = pPaper->GetDC();
-        wxASSERT(pDC);
-        wxASSERT(pDC->Ok());
-        int nStemWidth = m_pVStaff->TenthsToLogical(1, m_nStaffNum);
-        wxPen pen(colorC, nStemWidth, wxSOLID);
-        wxBrush brush(colorC, wxSOLID);
-        pDC->SetPen(pen);
-        pDC->SetBrush(brush);
-        pDC->SetFont(*m_pFont);
-    //}
+    int nPosOnStaff = GetPosOnStaff();
+    yStaffBaseLine = m_paperPos.y + GetStaffOffset();
+    lmLUnits yPitchShift = GetPitchShift();
+    nyTop = yStaffBaseLine - yPitchShift;
+    nxLeft = m_paperPos.x;
+
+    //prepare DC
+    wxDC* pDC = pPaper->GetDC();
+    wxASSERT(pDC);
+    wxASSERT(pDC->Ok());
+    int nStemWidth = m_pVStaff->TenthsToLogical(1, m_nStaffNum);
+    wxPen pen(colorC, nStemWidth, wxSOLID);
+    wxBrush brush(colorC, wxSOLID);
+    pDC->SetPen(pen);
+    pDC->SetBrush(brush);
+    pDC->SetFont(*m_pFont);
 
     //If drawing phase do first MakeUp phase
     if (!fMeasuring) MakeUpPhase(pPaper);
-
-    ////if this is the base note (the firts one) of a chord compute its stem
-    //if (fMeasuring && IsBaseOfChord()) {
-    //    m_pChord->ComputeStem();
-    //}
 
     //if this is the first note/rest of a beam, measure beam
     //@attention This must be done before using stem information, as the beam could
@@ -427,14 +421,14 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //posible to adjust lentghts until the x position of the notes is finally established, and
     //this takes place AFTER the measurement phase, once the lines are justified.
     if (fMeasuring && m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
-        m_pBeam->ComputeStems();
+        m_pBeam->ComputeStemsDirection();
     }
 
     //render accidental signs if exist
     if (m_pAccidentals) {
         if (fMeasuring) {
             // set position (relative to paperPos)
-             lmLUnits xPos = nxLeft - m_paperPos.x;
+            lmLUnits xPos = nxLeft - m_paperPos.x;
             lmLUnits yPos = nyTop - m_paperPos.y;
             m_pAccidentals->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
             m_pAccidentals->UpdateMeasurements();
@@ -556,7 +550,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     lmLUnits afterSpace = m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
     if (fMeasuring) m_nWidth = nxLeft + afterSpace - m_paperPos.x;
 
-    // draw lineas adicionales if necessary
+    // draw leger lines if necessary
     //--------------------------------------------
     if (!fMeasuring) {
         lmLUnits xLine = m_noteheadRect.x - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
@@ -574,12 +568,12 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         for (; pNode; pNode = pNode->GetNext() ) {
             pNRO = (lmNoteRestObj*)pNode->GetData();
             if (fMeasuring) {
-                 lmLUnits xPos = 0;
+                lmLUnits xPos = 0;
                 lmLUnits yPos = 0;
                 switch(pNRO->GetSymbolType()) {
                     case eST_Fermata:
                         // set position (relative to paperPos)
-                         xPos = m_noteheadRect.x + m_noteheadRect.width / 2;
+                        xPos = m_noteheadRect.x + m_noteheadRect.width / 2;
                         yPos = yStaffBaseLine - m_paperPos.y;
                         pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
                         pNRO->UpdateMeasurements();
@@ -601,7 +595,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
             pLyric = (lmLyric*)pNode->GetData();
             if (fMeasuring) {
                 // set position (relative to paperPos)
-                 lmLUnits xPos = m_noteheadRect.x;
+                lmLUnits xPos = m_noteheadRect.x;
                 lmLUnits yPos = yStaffBaseLine - m_paperPos.y;
                 pLyric->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
                 pLyric->UpdateMeasurements();
@@ -923,14 +917,14 @@ void lmNote::SetUpStemDirection()
 {
     switch (m_nStemType) {
         case eDefaultStem:
-            m_fStemDown = (GetPosOnStaff() >= 5);
+            m_fStemDown = (GetPosOnStaff() >= 6);
             break;
         case eStemDouble:
             /*! @todo
                 I understand that "eStemDouble" means two stems: one up and one down.
                 This is not yet implemented and is treated as eDefaultStem
             */
-            m_fStemDown = (GetPosOnStaff() >= 5);
+            m_fStemDown = (GetPosOnStaff() >= 6);
             break;
         case eStemUp:
             m_fStemDown = false;
@@ -944,8 +938,72 @@ void lmNote::SetUpStemDirection()
         default:
             wxASSERT(false);
     }
+
+    m_nStemLength = GetStandardStemLenght();
+
     //wxLogMessage( wxString::Format(wxT("SetUpPitchRelatedVariables: tipoStem=%d, plica=%s, nPosOnStaff %d"), 
     //    m_nStemType, (m_fStemDown ? _T("Abajo") : _T("Arriba")), GetPosOnStaff() ) );
+
+}
+
+lmLUnits lmNote::GetDefaultStemLength()
+{
+    // Returns the standard default value for stem lengths. This value is used as
+    // starting point for stem computations, for example, to compute the stem in beams.
+
+    // According to engraving rules, normal length is one octave (3.5 spaces)
+    #define DEFAULT_STEM_LEGHT      35      //! in tenths. @todo move to user options
+
+    return m_pVStaff->TenthsToLogical(DEFAULT_STEM_LEGHT, m_nStaffNum);
+}
+
+lmUnits lmNote::GetStandardStemLenght()
+{
+    // Returns the stem lenght that this note should have, according to engraving
+    // rules. It takes into account the `posiotion of the note on the staff.
+    //
+    // a1 - Normal length is one octave (3.5 spaces), but only for notes between the spaces
+    //      previous to first leger lines (b3 and b5, in Sol key, both inclusive).
+    //
+    // a2 - Notes with stems upwards from c5 inclusive, or with stems downwards from
+    //      g4 inclusive have a legth of 2.5 spaces.
+    //
+    // a3 - If a note is on or above the second leger line above the staff, or
+    //      on or below the second leger line below the staff: the end of stem
+    //      have to touch the middle staff line. 
+
+    int nPos = GetPosOnStaff();     //0 = first leger line below staff
+    int nTenths;
+
+    // rule a3
+    if (nPos >= 14 && m_fStemDown) {
+        nTenths = 5 * (nPos-6);     // touch middle line
+    }
+    else if (nPos <= -2 && !m_fStemDown) {
+        nTenths = 5 *(6-nPos);     // touch middle line
+    }
+
+    // rule a2
+    else if ((nPos >= 7 && !m_fStemDown) || (nPos <= 4 && m_fStemDown)) {
+        nTenths = 25;     // 2.5 spaces
+    }
+
+    // rule a1 and any other case not covered (I did not analyze completness)
+    else {
+        nTenths = 35;     // 3.5 spaces
+    }
+
+    return (lmUnits)m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
+
+}
+
+void lmNote::SetStemDirection(bool fStemDown)
+{
+    m_fStemDown = fStemDown;
+    if (IsBaseOfChord()) {
+        //propagate change to max and min notes of chord
+        m_pChord->SetStemDirection(fStemDown);
+    }
 
 }
 
@@ -1049,8 +1107,14 @@ wxString lmNote::Dump()
         _T("%d\tNote\tType=%d, Pitch=%d, MidiPitch=%d, PosOnStaff=%d, Step=%d, Alter=%d, TimePos=%.2f, rDuration=%.2f, StemType=%d"),
         m_nId, m_nNoteType, m_nPitch, m_nMidiPitch, GetPosOnStaff(), m_nStep, m_nAlter, m_rTimePos, m_rDuration,
         m_nStemType);
-    if (m_pTieNext) sDump += _T("TiedNext");
-    if (m_pTiePrev) sDump += _T("TiedPrev");
+    if (m_pTieNext) sDump += _T(", TiedNext");
+    if (m_pTiePrev) sDump += _T(", TiedPrev");
+    if (IsBaseOfChord())
+        sDump += _T(", BaseOfChord");
+    if (IsInChord()) {
+        sDump += wxString::Format(_T(", InChord, Notehead shift = %s"), 
+            (m_fShiftNoteheadRight ? _T("yes") : _T("no")) );
+    }
     if (m_fBeamed) {
         sDump += wxString::Format(_T(", Beamed: BeamTypes(%d"), m_BeamInfo[0].Type);
         for (int i=1; i < 6; i++) {
@@ -1070,7 +1134,7 @@ wxString lmNote::Dump()
     }
     //stem info
     if (m_nStemType != eStemNone) {
-        sDump += wxString::Format(_T("xStem=%d, yStem=%d, length=%d"), 
+        sDump += wxString::Format(_T(", xStem=%d, yStem=%d, length=%d"), 
                     m_xStem, m_yStem,m_nStemLength );
     }
     sDump += _T("\n");

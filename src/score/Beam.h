@@ -47,7 +47,7 @@ public:
     void    Include(lmNoteRest* pNR);
     void    Remove(lmNoteRest* pNR);
     int     NumNotes();
-    void    ComputeStems();
+    void    ComputeStemsDirection();
     void    TrimStems();
     void    DrawBeamLines(wxDC* pDC, lmLUnits nThickness, lmLUnits nBeamSpacing);
 

@@ -5,27 +5,23 @@
          (clef Sol)
          (key Do)
          (time 2 4)
-         (chord (n c4 n)(n e4 n)(n g4 n))
+         
+         //stems down
          (chord (n c5 c)(n e5 c)(n g5 c))
          (chord (n c5 s)(n f5 s)(n a5 s))
          (chord (n d5 f)(n g5 f)(n b5 f))
+         (chord (n c5 m)(n e5 m)(n g5 m))
+         (chord (n d4 g)(n b4 g)(n d5 g)(n g5 g))
+         (chord (n f4 p)(n c5 p)(n e5 p))
          (barline)
          
-         //two notes. stems down (a4,d5) (f4,f5) (a4,g5)
-         (chord (n a4 n)(n d5 n))
-         (chord (n f4 n)(n f5 n))
-         (chord (n a4 n)(n g5 n))
-         (barline)
-
-         //two notes. stems up (e4,c5)(g4,c5)(d4,e5)
-         (chord (n e4 n)(n c5 n))
-         (chord (n g4 n)(n c5 n))
-         (chord (n d4 n)(n e5 n))
-         (barline)
-         
-         //two notes. stems at your preference. Default down. (g4.d5)(a4,c5)
-         (chord (n g4 n)(n d5 n))
-         (chord (n a4 n)(n c5 n))
+         //two notes. stems up
+         (chord (n c4 c)(n e4 c)(n c5 c))
+         (chord (n d4 s)(n g4 s)(n b4 s))
+         (chord (n b3 f)(n d4 f)(n e5 f))
+         (chord (n d4 m)(n f4 m)(n a4 m)(n g5 m))
+         (chord (n e4 g)(n f4 s)(n a4 s)(n f5 s))
+         (chord (n c4 p)(n e4 p)(n c5 p))
          (barline)
          
       )

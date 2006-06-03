@@ -66,7 +66,6 @@ LenMus project philosophy (to remind me to always stay on this):
   
   ---------------------------------------------------------------------------------------
  
-	- remove old code related to keeping information (clef, key) to draw prolog
 	
 Organizational issues:
     - Integrate wxMidi so that LenMus package at SVN be self-contained.
@@ -76,8 +75,6 @@ Organizational issues:
         some visible result: launch a new release every month. a new document, etc.
         
 Area 0: Bugs to solve
-    - Crash when closing score 060_chords_v14.txt. It is something related to beamed chords
-    - Test score: 032_all_key_signatures_v13.txt renders nothing.
     - ¿lmInterval: fix names Unison augmented, Unison perfect, etc...?
     - If Midi Wizard is cancelled some non-relevant error messages are displayed when
         there is no soundcard on the computer (tested with VMWare)
@@ -169,8 +166,6 @@ Upcomig releases features
 Known bugs:
 ******************************************************************************************
 
-    2 - Bug: error when opening "chords v13.txt" and then closing the app.
-  
         - Beams that continue in next system
 
 

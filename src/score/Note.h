@@ -67,7 +67,7 @@ public:
 
     // methods related to note positioning information
     lmLUnits GetPitchShift() { return (m_pVStaff->TenthsToLogical(GetPosOnStaff() * 10, m_nStaffNum )) / 2 ; }
-    lmLUnits GetAnchorPos() { return m_xAnchor; }
+    lmLUnits GetAnchorPos() { return (m_fShiftNoteheadRight ? m_xAnchor+m_selRect.width : m_xAnchor); }
     int GetPosOnStaff();        //line/space on which note is rendered
 
     // bounds of image. Abolute position (->referred to page origin)
@@ -78,10 +78,11 @@ public:
 
     //methos related to stems
     EStemType   GetStemType() { return m_nStemType; }
-    lmLUnits    GetDefaultStemLength() { return m_pVStaff->TenthsToLogical(35, m_nStaffNum); }
+    lmLUnits    GetDefaultStemLength();
+    lmUnits     GetStandardStemLenght();
     void        SetStemLength(lmLUnits length) { m_nStemLength = length; };
-    void        SetStemDirection(bool fStemDown) { m_fStemDown = fStemDown; }
-    lmLUnits    GetXStem() {return m_xStem + m_paperPos.x; }
+    void        SetStemDirection(bool fStemDown);
+    lmLUnits    GetXStem() {return m_xStem + m_paperPos.x + (m_fShiftNoteheadRight ? m_selRect.width : 0); }
     lmLUnits    GetYStem() {return m_yStem + m_paperPos.y; }
     lmLUnits    GetStemLength() { return m_nStemLength; }
     lmLUnits    GetFinalYStem() {
@@ -93,12 +94,13 @@ public:
                     m_nStemLength = length;
                 }
 
-    //additional methods related to chords
+    // methods related to chords
     bool        IsInChord() { return (m_pChord != (lmChord*)NULL); }        
     bool        IsBaseOfChord() { return m_pChord && m_fIsNoteBase; }
     lmChord*    GetChord() { return m_pChord; }
     lmChord*    StartChord();
     void        ClearChordInformation();
+    void        SetRightShift(bool fShiftRight) { m_fShiftNoteheadRight = fShiftRight; }
 
     //methods related to ties
     bool    CanBeTied(lmPitch nMidiPitch, int nStep);
@@ -141,29 +143,29 @@ private:
         // member variables 
         //============================================================
 
-    /*
-    Pitch information is stored in:
-    a) variables related to sound:
-        m_nMidiPitch        real pitch. accidentals and context already included
-        m_nAlter            accidentals added to diatonic pitch implied by the combination of
-                            m_nStep, m_nOctave and context accidentals. If displayed music 
-                            coincides with played music then the combination of m_nPitch and
-                            m_nAlter should match the real pitch m_nMidiPitch.
-
-    b) variables related to how the note should look:
-        m_nStep                note name: 0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
-        m_nOctave            octave: 0 .. 9.  4 = the octave started by middle C.
-        m_nPitch            diatonic pitch: the combination of m_nStep and m_nOctave
-        m_pAccidentals        to render in this note. Other than the implied by key signature
-
-    */
+    //
+    // Pitch information is stored in:
+    // a) variables related to sound:
+    //    m_nMidiPitch        real pitch. accidentals and context already included
+    //    m_nAlter            accidentals added to diatonic pitch implied by the combination of
+    //                        m_nStep, m_nOctave and context accidentals. If displayed music 
+    //                        coincides with played music then the combination of m_nPitch and
+    //                        m_nAlter should match the real pitch m_nMidiPitch.
+    //
+    // b) variables related to how the note should look:
+    //    m_nStep             note name: 0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
+    //    m_nOctave           octave: 0 .. 9.  4 = the octave started by middle C.
+    //    m_nPitch            diatonic pitch: the combination of m_nStep and m_nOctave
+    //    m_pAccidentals      to render in this note. Other than the implied by key signature
+    //
+    //
 
     // variables related to how the note should sound when playing the score
     //-----------------------------------------------------------------------
-    lmPitch        m_nMidiPitch;    //real pitch: combination of all three previous vars.
-    int            m_nAlter;        //chromatic alteration in number of semitones
-                                //(e.g., -1 for flat, 1 for sharp).
-                                //! @todo accept decimal values like 0.5 (quarter tone sharp)
+    lmPitch     m_nMidiPitch;    //real pitch: combination of all three previous vars.
+    int         m_nAlter;        //chromatic alteration in number of semitones
+                                 //(e.g., -1 for flat, 1 for sharp).
+                                 //! @todo accept decimal values like 0.5 (quarter tone sharp)
 
 
     // variables related to how the note should look when rendering the score
@@ -198,6 +200,8 @@ private:
     lmChord*    m_pChord;           //chord to which this note belongs or NULL if it is a single note
     bool        m_fIsNoteBase;      //in chords identifies the first note of the chord. For notes not in
                                     //  in chord is always true
+    bool        m_fShiftNoteheadRight;      //to allow for notehead reversing
+
     //tie related variables
     lmTie*      m_pTiePrev;         //Tie to previous note. Null in note not tied
     lmTie*      m_pTieNext;         //Tie to next note. Null in note not tied

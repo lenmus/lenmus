@@ -64,7 +64,7 @@
 	
 		Nevertheless, during the measurement phase, when in a Note object is detected that
 	the note is the first one of a beamed group, the beam object is invoked (method
-	ComputeStems) to do certain computations:
+	ComputeStemsDirection) to do certain computations:
 	- Fix stems direction. If one note has is stem direction forced (by a tie with a previous
 		note, or by the user) this forces all the group stems to this direction.
 	- Do a rough computation of stems heigh. This is necessary to set the Y position for

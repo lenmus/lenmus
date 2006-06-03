@@ -1,0 +1,2215 @@
+<html>
+<!-- $Id: 2006/05/29 17:44:29 $ -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>LenMus LDP Music representation language. Reference manual</title>
+<link rel="stylesheet" media="all" href="singledoc.css" type="text/css" />
+</head>
+<body>
+
+<h1>LDP Music representation language. Reference manual</h1>
+
+<p>Version 1.5. Revision: May, 2006</p>
+
+<div class="important">
+<p><b>Please be aware that this manual is not yet finished.</b>
+I have to write more and currently it only documents the minimun to start with the LDP language.</p>
+</div>
+
+<p>&nbsp;</p>
+
+
+<h2><a name="TOC">Table of Contents</a></h2>
+
+<dl><dt>Part I: Introduction</dt>
+    <dt>1. <a href="#The_LDP_language">The LDP language</a></dt>
+    <dt>2. <a href="#The_Hello_world_sample">The 'Hello world' sample: A very simple score</a></dt>
+    <dt>3. <a href="#grammar_notation">Notation used</a></dt>
+    <dt><br /><br />Part II: detailed description</dt>
+    <dt>3. <a href="#description_score">The Score element</a></dt>
+    <dt>4. <a href="#description_Instrument">The Instrument element</a></dt>
+    <dt>5. <a href="#description_Voice">The Voice element</a></dt>
+    <dt>6. <a href="#description_Split">The Split element</a></dt>
+    <dd><dl>
+        <dt>6.1. <a href="#description_Clef">The Clef element</a></dt>
+        <dt>6.2. <a href="#description_Key">The Key element</a></dt>
+        <dt>6.3. <a href="#description_TimeSign">The Time element</a></dt>
+        <dt>6.4. <a href="#description_Barline">The Barline element</a></dt>
+        </dl></dd></dt>
+    <dt>8. <a href="#Notes_Rests_Chords">Notes, rests and chords</a>
+    <dd><dl>
+        <dt>8.1. <a href="#Pitch">Pitch</a></dt>
+        <dt>8.2. <a href="#description_Duration">Duration</a></dt>
+        </dl></dd></dt>
+    <dt>9. <a href="#description_Notation">Notations</a>
+    <dd><dl>
+        <dt>9.1. <a href="#description_Traditional_Notations">Traditional notations</a>
+        <dd><dl>
+            <dt>9.1.1. <a href="#beamed_group_notation">Beamed groups</a></dt>
+            <dt>9.1.2. <a href="#tuplet_notation">Tuplets</a></dt>
+            <dt>9.1.3. <a href="#tie_notation">Ties</a></dt>
+            <dt>9.1.4. <a href="#caesura_notation">Caesura</a></dt>
+            </dl></dd></dt>
+    </dl></dd></dt>
+
+    <dt>10. <a href="#FormattingTags">Tags to control format</a>
+<!--        <dd><dl>
+            <dt>8.1. <a href="#Pitch">Pitch</a></dt>
+            <dt>8.2. <a href="#description_Duration">Duration</a></dt>
+            </dl></dd> -->
+    </dt>
+
+
+    <dt><br /><br />Annex I: Syntax rules in alphabetical order
+    <dd><dl>
+        <dt><a href="#rule_accidentals">Accidentals</a></dt>
+        <dt><a href="#rule_attribute">Attribute</a></dt>
+        <dt><a href="#rule_barline">Barline</a></dt>
+        <dt><a href="#rule_clef">Clef</a></dt>
+        <dt><a href="#rule_instrument">Instrument</a></dt>
+        <dt><a href="#rule_key">Key</a></dt>
+        <dt><a href="#rule_language">Language</a></dt>
+        <dt><a href="#rule_voice">Measure</a></dt>
+        <dt><a href="#rule_midi_pitch">MIDI_pitch</a></dt>
+        <dt><a href="#rule_note">note</a></dt>
+        <dt><a href="#rule_num_instruments">NumInstruments</a></dt>
+        <dt><a href="#rule_part">Music</a></dt>
+        <dt><a href="#rule_score">Score</a></dt>
+        <dt><a href="#rule_time_signature">Time signature</a></dt>
+        </dl></dt>
+
+    <dt><br /><br />Annex II: <a href="#SpanishTags">Equivalence between Spanish and English tags</a></dt>
+
+</dl>
+
+
+<h1>Part I. Introduction</h1>
+
+
+
+<h2><a name="The_LDP_language">The LDP language</a></h2>
+<a href="#TOC">TOC</a>
+<p>The LenMus LDP notation language is a general purpose formal language for representing
+music scores in a platform independent, plain-text and human-readable way.
+This language is named LDP because I named it after the
+Spanish acronym for 'Lenguaje de Descripción de Musicituras', that is 'Language
+to Describe Scores'. Why to define a new language instead of using a existing
+one such as MIDI,  MusicXML, abc or Guido?</p>
+
+<ul>
+ <li>MIDI: oriented
+     to playing back scores. It does not encode information to draw and render
+     scores.</li>
+ <li>MusicXML: MusicXML started as an interchange format. It might be adecuate but it lacks
+     of facilities for accurate positioning of the different musical objects (note: in
+     version 1.1 MusicXML started to intruduce better positioning information, but this
+     was after the decision to start with LDP was taken).
+     It is also too verbose to
+     write scores by hand, and to be used as internal intermediate representation.</li>
+ <li>Abc: It is an 'old' language designed when nearly everything was batch processed.
+    Althoug it has a
+    great base of users it didn't suit LenMus project needs.</li>
+ <li>Guido: I didn't know about GUIDO when I started this project. Probably it would have been
+    the right choice but I had a lot of LDP code written when I heared about GUIDO.</li>
+</ul>
+
+<p>At the time the LenMus project started it was finally decide to design a new language because:
+</p>
+
+<ul>
+ <li>I did not find any suitable accepted standard. In fact the only "standard" available was be MusicXML.</li>
+ <li>The need to code music scores by hand: In MusicXML this task is very tedious and
+     takes a lot of time; at that time MusicXML was not a good option
+     for specifying detailed positioning information.</li>
+
+ <li>Designing my own language forced me to study more in depth the problems
+    associated to the representation of music in all its aspects. This was
+    more in line with the objectives of the project.</li>
+ <li>Finally, using my own language would give me more freedom in case MusicXML could
+    not fully satisfy the LenMus project needs.</li>
+</ul>
+
+<p>Nevertheless it was not the objective of the
+LenMus Project to develop a new representation language. LDP is a pragmatic
+approach and its development has the direct benefit of forcing me to study un
+depth the problems to represent music and to enter this information by using an
+alfanumeric keyborad. Although the internal language for the LenMus project is
+LDP, the LenMus program will incluye facilities to import and export music
+scores to MusicXML. Wherever possible, I tried to follow MusicXML structure so
+that translation to/from LDP and MusicXML would be easily programmed.</p>
+
+
+<h2><a name="The_Hello_world_sample">The 'Hello world' sample: A very simple score</a></h2>
+<a href="#TOC">TOC</a>
+
+<p>Let's see how a very simple score is encoded. The score will be just one measure, in G clef,
+time signature will be C major (no accidentals) and time signature will be 4 by 4. The measure
+will have a whole c note. Here is how it would look:</p>
+
+<p>
+
+<table cellpadding=0 cellspacing=0>
+ <tr>
+  <td width=253 height=0></td>
+ </tr>
+ <tr>
+  <td></td>
+  <td><img width=145 height=80
+  src="image001.jpg"></td>
+ </tr>
+</table>
+
+<br />
+In LDP this score is described as follows:</p>
+
+<pre class="example">
+  (score
+     (vers 1.4)
+     (instrument
+        (voice
+            (clef Sol)
+            (key Do)
+            (time 4 4)
+            (n c4 r)
+            (barline)
+        )
+     )
+  )
+
+</pre>
+
+<p>&nbsp;</p>
+
+<p>Let's analyse this code. First note that in LDP all the information is structured
+as <i>elements</i>. An <i>element</i> is a list of keywords and data values enclosed in parenthesis.
+An element always starts with a keyword (i.e. NumInstruments) and it is followed by data items.
+These data items can be just
+simple data (single word values, such as '1' or 'Sol') or complex data: other elements --
+those of you with an
+information science background will note that this is a LISP like syntax  --</p>
+<p>Blank space, indentation, tabs and line breaks have no meaning: they are just a visual help
+for humans to improve readability, and you can use them at your desire or not use them
+at all. For example, the previous score can be written in a single line as:</p>
+
+<pre class="example">
+(score (vers 1.4)(instrument 1 (voice ( ... ))
+</pre>
+
+<p>Or in two lines, for example as:</p>
+
+<pre class="example">
+(score (vers 1.4)(instrument
+(voice ( ... ))
+</pre>
+
+<p>The only rule is that you can not break keywords or simple data values. So you can not
+write, for example,</p>
+<pre class="example">
+( s c o r e ( ...))
+</pre>
+
+<p>In the example, we can note that all the score is a list starting with the keyword 'score'.
+The first data item of this element is also a list, '(vers 1.4)': it starts with the
+keyword 'Vers' and has only a simple  data item, the number 1.4.</p>
+
+<p>To improve human legibility and understandig it is allowed to include comments.
+Two consecutive slash characters (//) will be interpreted as the start of a comment and
+all text until the end of the line will be ignored. For example:</p>
+<pre class="example">
+(score
+    (vers 1.4)              // version 1.4 of LDP is used
+    (instrument             // Start of music for the first voice
+        (voice              // start this only voice
+            (clef Sol)      // Clef: Sol (G on line 2)
+            (key Do)        // Key signature: Do (C major)
+            (time 4 4)      // Time signature: 4 4
+            (n c4 w)        // Note. Pitch: C4, duration: w (whole note)
+            (barline)       // a simple barline
+        )
+    )
+)
+</pre>
+
+<p>LDP supports to use a customized set of tags for each language, so that, for example, if you would prefer to
+encode the scores using tags in Spanish instead of tags in English, you would write:</p>
+<pre class="example">
+  (score                            //the score and language tags are the only non-translatable
+     (language es ISO-8859-1)       //specifies to use the Spanish set of tags
+     (vers 1.4)
+     (instrumento 1
+        (voz
+            (clave Sol)         //note the keyword 'Clave' instead of 'Clef'
+            (tonalidad Do)
+            (metrica 4 4)
+            (n c4 r)            // duration: r (redonda = whole note)
+            (barra)
+        )
+     )
+  )
+
+</pre>
+
+
+
+<h2><a name="grammar_notation">Notation used</a></h2>
+<a href="#TOC">TOC</a>
+
+<p>To describe the language, Backus Naur like form (BNF) syntax rules will be used.
+The meta-symbols used are the following:</p>
+
+<dl compact>
+
+<dt><b>:=</b></dt><dd>Meaning "is defined as"<br /><br /></dd>
+
+<dt><b>|</b></dt><dd> Meaning "or", that is, different alternatives.<br /><br /></dd>
+
+<dt><b>{&nbsp;}</b></dt><dd>To indicate a list of alternatives. For example:<br />
+<pre class="example">
+{ alpha | beta | gamma }
+</pre>
+means the value can be either alpha, beta o gamma, but only one of
+them.<br /><br /></dd>
+
+<dt><span class="t">bold_face</span><dt><dd>A symbol in bold face means a terminal symbol, that is, a string
+that must be written exactly
+as it is stated. Appart of bold face, if this manual is
+printed or displayed using colors, blue color will be used for terminal symbols.<br /><br /></dd>
+
+<dt><span class="nt">italics</span><dt><dd>A symbol in <i>italics</i> means a non-terminal
+symbol, that is, a category name (syntax rules names). If color is possible they will appear in
+green color.<br /><br /></dd>
+
+<dt><b>[&nbsp;]</b></dt><dd>Optional items will be enclosed in squared brakets. For example:<br />
+<blockquote class="example">
+<span class="nt">Clef</span> :=
+  <span class="t">(clef</span> <span class="nt">clef_name</span>
+   [<span class="nt">visible</span>]
+   <span class="t">)</span>
+</blockquote>
+means that an element of type <i>clef</i> must start with the keyword <b>clef</b> and must
+be followed by a clef name; optionally, after the clef name it could come an element
+of type <i>visible</i>.<br /><br /></dd>
+
+<dt><b>+</b></dt><dd>A plus sign after a non-terminal symbol means one or more repetitions.
+For example:<br />
+<blockquote class="example">
+<span class="nt">number</span> := <span class="nt">digit</span>+
+</blockquote>
+means that a <i>number</i> is a sequence of <i>digits</i>; at least one <i>digit</i> is
+necessary.<br /><br /></dd>
+
+<dt><b>*</b></dt><dd>An asterisk after a non-terminal symbol means zero or
+more repetitions.<br /><br /></dd>
+
+
+</dl>
+
+<p>LDP language is case sensitive, so for example, &quot;score&quot;,
+&quot;Score&quot; and &quot;SCORE&quot; will not be taken as the same token.</p>
+
+
+<p>To reduce the work for typing a score some elements allow a <i>collapsed</i> syntax.
+This abbreviation consists on supressing the parenthesis and any blank space, so the element
+is reduced to a string. For example,
+if element &lt;algo&gt; allows collapsing, then
+writting <q class="example">(algo 3 nx)</q> would be equivalent to writting
+<q class="example">algo3nx</q>,
+writting <q class="example">(algo +)</q> would be equivalent to writting
+<q class="example">algo+</q> , or
+writting <q class="example">(algo -)</q> would be equivalent to writting
+<q class="example">algo-</q> .
+</p>
+
+
+
+<h1>Part II. Detailed description</h1>
+
+
+
+<h2><a name="description_score">The Score element</a></h2>
+<a href="#TOC">TOC</a>
+
+<p>A Score is, basically, a collection of Instruments and some optional information such as the title or
+the author.</p>
+
+<p>
+<a name="rule_score">&nbsp;</a>
+<span class="nt">score</span> :=
+    <span class="t">(score</span>
+    <span class="nt">Version</span>
+    [<span class="nt">Language</span>]
+    [<span class="nt">Credits</span>]
+    <span class="nt">NumInstruments</span>
+    <span class="nt">Instrument</span>*
+    <span class="t">)</span>
+</p>
+
+<p>The <em>Version</em> element is just a number to indicate the LDP language version used
+to encode the score. For example:</p>
+<pre class="example">
+(vers 1.4)      the score is encoded using LDP version 1.4
+</pre>
+
+<p>In case you would like to use a different set of tags than the English set or to use
+non Western characters (ISO-8859-1) the <em>Language</em> element allows to specify these
+characteristics.</p>
+
+<p>
+<a name="rule_language">&nbsp;</a>
+<span class="nt">Language</span> :=
+    <span class="t">(language</span>
+    <span class="nt">LanguageCode</span>
+    <span class="nt">Charset</span>
+    <span class="t">)</span>
+<br />
+
+&nbsp;<span class="nt">Charser</span> := Any ISO charset code name, i.e. &quot;ISO-8859-1&quot;
+<br />
+
+&nbsp;<span class="nt">LanguageCode</span> := Any language code, i.e. &quot;es&quot;
+</p>
+
+<p>Examples:</p>
+<pre class="example">
+(language es iso-8859-1)      use the Spanish set of tags
+(language en iso-8859-1)      use the English set of tags
+</pre>
+
+
+
+<h2><a name="description_Instrument">The Instrument element</a></h2>
+<a href="#TOC">TOC</a>
+
+<p>An Instrument is a collection of elements, describing the music for that instrument.</p>
+
+<p>
+<a name="rule_instrument">&nbsp;</a>
+<span class="nt">Instrument</span> :=
+    <span class="t">(instrument</span>
+    [ <span class="nt">InstrName</span> ]
+    [<span class="nt">MIDI_Info</span>]
+    [<span class="nt">NumStaves</span>]
+    { <span class="nt">Voice</span> | <span class="nt">Split</span> }
+    <span class="t">)</span>
+</p>
+
+
+<p>The 'music' is described by just Voice element or a Split element. What are they?
+Any plain-text music representation has to describe music in secuence. But a music
+score is not just a secuence of musical objects; the vertical organization of simultaneous
+voices is equally important. So, when trying to describe music as a sequence of
+elements we are confronted to a dilema: To describe a polyphonic composition, should
+each voice be described in secuence? or should it be described as a secuence of chords?
+Should the horizontal
+organization of musical parts be primary, or should the vertical organization of musical
+measures? The answer is different for every music application.
+
+But the representation language have to be flexible to allow for representing music both
+ways, and be able to switch between them easily.</p>
+
+<div class="comparison">
+<p><b>Guido</b> and <b>LilyPond</b> offer two orthogonal constructors to allow for describing music
+either horizontally, as a sequence of in time consecutive musical objects,
+or vertically (in parallel), as a series of simultaneous - in time - musical objects.
+The most simple form of parallelism
+is a chord where the voices consist of single notes.</p>
+
+<p>Sequence:<br />
+- GUIDO: '[ ... ]'<br />
+- LilyPond: '{ ... }'</p>
+
+<p>Parallelism:<br />
+- GUIDO: '{ ... }'<br />
+- LilyPond: '&lt;&lt; ... &gt;&gt;'</p>
+
+<p>Both constructors can be mixed and recursively used, giving a lot of flexibility to
+the user to describe music in whatever way it is more suitable.</p>
+
+
+<p><b>MusicXML</b> is less flexible. It offers both approaches (score-partwise DTD or
+score_timewise DTD) but only for the whole score. The two aproaches can not be
+combined or applied recursively. This creates some problems and, from a user point of
+view, is quite unflexible. To give some more flexibility and provide a solution to
+allow certain paralelism in secuential descriptions,
+two by-passes are provided:</p>
+
+<ul>
+    <li>An explicit chord contructor to describe chors.</li>
+    <li>A non-declarative but procedural approach to allow
+        paralelism inside a secuential description: tags 'backwards' and 'forward' are
+        used to reposition an 'internal time counter' and create parallel descriptions.
+        This paralellism is only allowed inside a measure.</li>
+</ul>
+</div>
+
+
+<!-- ==================================================================================================== -->
+
+
+<h2><a name="description_Voice">The Voice element</a></h2>
+<a href="#TOC">TOC</a>
+
+<p>In music a <i>voice</i> is a sequence of sounds. Voices are, usually,
+monophonic sequences but
+polyphony is also posible (see 'Chords and polyphony'). In LDP a
+Voice is a collection of diferent objects, mainly Notes and Rests, but also other
+elements, such as Clefs or KeySignatures, are possible.</p>
+
+<div class="comparison">
+<p>The voice element is equivalent to GUIDO sequence constructor '[ ... ]' and to
+LilyPond sequence constructor '{ ... }'</p>
+</div>
+
+<p>
+<a name="rule_voice">&nbsp;</a>
+<span class="nt">Voice</span> :=
+    { <span class="nt">Note</span> |
+      <span class="nt">Rest</span> |
+      <span class="nt">Attribute</span> |
+      <span class="nt">Notation</span> |
+      <span class="nt">Barline</span> |
+      <span class="nt">Shift</span> |
+      <span class="nt">Option</span> }*
+<br />
+
+<a name="rule_attribute">&nbsp;</a>
+<span class="nt">Attribute</span> :=
+    { <span class="nt">Clef</span> |
+    <span class="nt">KeySignature</span> |
+    <span class="nt">TimeSignature</span> }
+</p>
+
+
+<p>Examples:</p>
+
+<pre class="example">
+Single note:
+    (voice (n c4 n))
+
+C major scale:
+    (voice (n c4 n)(n d4 n)(n e4 n)(n f4 n)(n g4 n)(n a4 n)(n b4 n)(n c5 n))
+
+Short fragment with a measure:
+    (voice (clef sol)(key do)(time 2 4)(n c4 q)(n e4 q)(n g4 q)(n c5 q)(barline))
+
+</pre>
+
+
+<!-- ==================================================================================================== -->
+<h2><a name="description_Chord">Chords, polyphony and the Split element</a></h2>
+<a href="#TOC">TOC</a>
+
+<p>A chord is just a list of notes played at the same time:</p>
+<p>
+<a name="rule_chord">&nbsp;</a>
+<span class="nt">Chord</span> :=
+    <span class="t">(chord</span>
+    { <span class="nt">Note</span> }*
+    <span class="t">)</span>
+</p>
+
+
+<p>Example:</p>
+
+<pre class="example">
+(chord (n c4 n)(n e4 n)(n g4 n))    // C major chord
+</pre>
+
+<p>Polyphony can be seen as a generalization of chords, where instead of using a list
+of notes they are replaced by a list of voices:</p>
+
+<p>(chord &lt;voices&gt;*)</p>
+
+<p>Formally, the 'chord' element requires a list of notes as argument, not a list
+of voices. So we are going to introduce a new tag, the Split tag, equivalent to
+the chord tag but whose argument is a list of voices:</p>
+
+<p>(split &lt;voices&gt;*)</p>
+
+<p>This improves legibility and, conceptually, both tags, chord and split, are
+totally equivalent;</p>
+
+
+<div class="comparison">
+<p><i>split</i> constructor is equivalent to GUIDO segments '{ ... }' and to
+LilyPond constructor '&lt;&lt; ... &gt;&gt;'
+</p>
+</div>
+
+<p>Note that constructors (split &lt;voices&gt;) and (voice &lt;music&gt;)
+are orthogonal, that is,
+they describe music either as series of temporally consecutive
+musical objects, or as  a number of simultaneous musical objects.
+Also note that mixed descriptions (i.e.: voices containing splits) and recursive
+descriptions (i.e.: splits containing splits) are allowed.</p>
+
+<p>Examples:</p>
+
+<pre class="example">
+Score with just a staff:
+    (instrument (voice &lt;music&gt;))
+
+Score with two voices in single staff
+    (instrument (split (voice &lt;music&gt;)
+                       (voice &lt;music&gt;)))
+
+
+Score with three voices in single instrument, but across two staves (i.e.: left hand,
+right hand, third voice:
+    (instrument (staves 2)
+                (instrName "Piano")
+                (split (voice &lt;music&gt;)
+                       (voice &lt;music&gt;)
+                       (voice &lt;music&gt;))
+    )
+
+Score with two instruments, each one on its staff:
+    (instrument (instrName "Flute") (voice &lt;music&gt;))              //one staff
+    (instrument (staves 2)(instrName "Piano") (voice &lt;music&gt;))    //Two staves
+
+
+</pre>
+
+<!-- ==================================================================================================== -->
+
+<h3><a name="description_Barline">The Barline element</a></h3>
+<a href="#TOC">TOC</a>
+
+<p>To simplify writting music in LDP, it is not mandatory to specify a barline at the end of each measure when
+it is a normal barline (simple line). If no barline is specified it is always assumed to be a simple barline. Otherwise
+a barline type must be specified. You can specify a barline to be 'invisible' (that is, it will not be rendered, as
+if it did not exist).</p>
+
+<a name="rule_barline">&nbsp;</a>
+<p>
+<span class="nt">Barline</span> :=
+    <span class="t">(barline</span>
+    <span class="nt">Barline_type</span>
+    [<span class="nt">Visible</span>]
+    <span class="t">)</span>
+</p>
+
+
+<p>
+<span class="nt">Barline_type</span> :=
+    { <span class="t"><u>simple</u></span> |
+      <span class="t">double</span> |
+      <span class="t">end</span> |
+      <span class="t">start</span> |
+      <span class="t">startRepetition</span> |
+      <span class="t">endRepetition</span> |
+      <span class="t">doubleRepetition</span> }
+</p>
+
+<!--
+<p>The <em>Barline_type</em> can be either a tag or a graphical sign (as in abc language):</p>
+<p>
+<span class="nt">Barline_type</span> :=
+    { <span class="t">|</span> |
+      <span class="t">||</span> |
+      <span class="t">|]</span> |
+      <span class="t">[|</span> |
+      <span class="t">:|</span> |
+      <span class="t">|:</span> |
+      <span class="t">::</span> }
+</p>
+-->
+
+<p>Example:</p>
+<pre class="example">
+(n c4 e)(n e4 e)(barline end)
+</pre>
+
+<!-- ==================================================================================================== -->
+
+<h3><a name="description_Clef">The Clef element</a></h3>
+<a href="#TOC">TOC</a>
+
+<a name="rule_clef" />
+<p>
+<span class="nt">Clef</span> :=
+    <span class="t">(clef</span>
+    {<span class="t">Sol</span> |
+      <span class="t">Fa4</span> |
+      <span class="t">Fa3</span> |
+      <span class="t">Do1</span> |
+      <span class="t">Do2</span> |
+      <span class="t">Do3</span> |
+      <span class="t">Do4</span> |
+      <span class="t">Percussion</span> }
+      [ <span class="nt">Visible</span> ]
+    <span class="t">)</span>
+</p>
+
+<p>Examples:</p>
+<pre class="example">
+(clef Sol)
+(clef Fa4)
+</pre>
+
+
+
+
+<!-- ==================================================================================================== -->
+
+<h3><a name="description_Key">The Key element</a></h3>
+<a href="#TOC">TOC</a>
+
+<a name="rule_key">&nbsp;</a>
+<p>
+<span class="nt">Key</span> :=
+    <span class="t">(Key</span>
+    <span class="nt">Key_name</span>
+    [<span class="nt">Visible</span>]
+    <span class="t">)</span>
+</p>
+<p>
+<span class="nt">Key_name</span> := A tag from the following table:
+</p>
+
+<p>
+<center>
+<table class="grid">
+    <tr><td class="grid">Key_name</td><td class="grid">Key signature</td><td class="grid">Kae_name</td><td class="grid">Key signature</td></tr>
+    <tr><td class="grid">Do</td><td class="grid">C major</td>         <td class="grid">Lam</td><td class="grid">A minor</td></tr>
+    <tr><td class="grid">Sol</td><td class="grid">G major</td>        <td class="grid">Mim</td><td class="grid">E minor</td></tr>
+    <tr><td class="grid">Re</td><td class="grid">D major</td>         <td class="grid">Sim</td><td class="grid">B minor</td></tr>
+    <tr><td class="grid">La</td><td class="grid">A major</td>         <td class="grid">Fa+m</td><td class="grid">F sharp minor</td></tr>
+    <tr><td class="grid">Mi</td><td class="grid">E major</td>         <td class="grid">Do+m</td><td class="grid">C sharp minor</td></tr>
+    <tr><td class="grid">Si</td><td class="grid">B major</td>         <td class="grid">Sol+m</td><td class="grid">G sharp minor</td></tr>
+    <tr><td class="grid">Fa+</td><td class="grid">F sharp major</td>  <td class="grid">Re+m</td><td class="grid">D sharp minor</tr>
+    <tr><td class="grid">Do+</td><td class="grid">C sharp major</td>  <td class="grid">La+m</td><td class="grid">A sharp minor</td></tr>
+    <tr><td class="grid">Do-</td><td class="grid">C flat major</td>   <td class="grid">La-m</td><td class="grid">A flat minor</td></tr>
+    <tr><td class="grid">Sol-</td><td class="grid">G flat major</td>  <td class="grid">Mi-m</td><td class="grid">E flat minor</td></tr>
+    <tr><td class="grid">Re-</td><td class="grid">D flat major</td>   <td class="grid">Si-m</td><td class="grid">B flat minor</td></tr>
+    <tr><td class="grid">La-</td><td class="grid">A flat major</td>   <td class="grid">Fa-m</td><td class="grid">F flat minor</td></tr>
+    <tr><td class="grid">Mi-</td><td class="grid">E flat major</td>   <td class="grid">Do-m</td><td class="grid">C flat minor</td></tr>
+    <tr><td class="grid">Si-</td><td class="grid">B flat major</td>   <td class="grid">Sol-m</td><td class="grid">G flat minor</td></tr>
+    <tr><td class="grid">Fa</td><td class="grid">F major</td>         <td class="grid">Re-m</td><td class="grid">D flat minor</td></tr>
+    </table>
+</center>
+</p>
+
+
+
+<!-- ==================================================================================================== -->
+
+<h3><a name="description_TimeSign">The Time Signature element</a></h3>
+<a href="#TOC">TOC</a>
+
+<a name="rule_time_signature" />
+<p>
+<span class="nt">TimeSignature</span> :=
+    <span class="t">(TimeSign</span>
+    <span class="nt">TopNumber</span>
+    <span class="nt">BottomNumber</span>
+    [<span class="nt">Visible</span>]
+    <span class="t">)</span>
+</p>
+
+
+<!-- ==================================================================================================== -->
+
+<h2><a name="Notes_Rests_Chords">Notes, rests and chords</a></h2>
+<a href="#TOC">TOC</a>
+
+<p>Rests can be considered as notes with no pitch, so in LDP notes and rests are instances
+of a more general concept: <i>noterests</i>. A noterest is either a note or a rest.</p>
+
+<p>The minimum information required to represent notes is its pitch and its duration.</p>
+<blockquote class="grammar">
+<span class="nt">Note</span> := <span class="t">(n</span>
+  <span class="nt">pitch</span> <span class="nt">duration</span>
+  <span class="t">)</span>
+</blockquote>
+
+<p>For rests only its duration is needed.</p>
+<blockquote class="grammar">
+<span class="nt">Rest</span> :=
+  <span class="t">(s</span> <span class="nt">duration</span>
+  <span class="t">)</span>
+</blockquote>
+
+
+<h3><a name="Pitch">Pitch</a></h3>
+<a href="#TOC">TOC</a>
+
+<p>The pitch is represented by combining the notename, the octave and the accidentals.</p>
+<p>The <i>notename</i> is a letter that represents the diatonic step:
+<span class="t">c d e f g a b</span></p>
+<!--
+There are different systems of notenames:
+c d e f g a h/b (diatonic) 1.
+c cis d dis e f fis g gis a ais h/b (chromatic) 2.
+do re me fa sol la si/ti (solfege)
+-->
+<p>The <i>octave</i> is an integer number indicating the octave of the note, where octave 4
+is the central one (a4 = 440Hz). All octaves start with notename c and ends in notename b, so note
+c4 is the c note just below the a4 note. Octaves range is 0 to 9.</p>
+
+<p>Accidentals are represented by combinations of the signs plus (+), minus (-) and
+equal (=). They representent, respectively, sharps, flats, and naturals. So, for example,
+++ represents a double sharp, and =- represents  a natural flat.</p>
+
+<p>With all this, the pitch is just the combination of the previous signs. Examples:</p>
+
+<pre class="example">
++c4     a sharp C4 note (C of octave 4, the central C)
+
+--b3    a double flat B3 note (B of octave 3, the B inmediatly below C4)
+</pre>
+
+<!--
+<p>La alteración representa el número de semitonos (ej. -1 para bemol, +1 para
+sostenido). Se pueden usar valores decimales (ej. +0,5 = un cuarto de tono
+arriba) para microtonos.</p>
+-->
+<div class="note">
+<p>
+<b>Important: </b>
+In LDP accidentals are not absolute (as in MusicXML) but relative to the context. That is, you must
+write or not an accidental following the same rules than when you write music by hand
+in lined music paper. You have to write only those accidental that are not implied by
+the key signature or that are not implied for a previous accidental in the same measure.
+</p>
+</div>
+
+<p>
+Then, in the following example:</p>
+<pre class="example">
+  (c1 (Key Fa) (n b4 n))
+</pre>
+
+<p>the eighth b4 note will be a flat b4, as it is in F major key.</p>
+
+<!--
+<p>En aquellos
+caso en que pudiera interesar especificar la altura absoluta, esto es, la que
+debe tener con independencia del contexto, hay que indicarlo expresamente
+mediante la marca ABS colocada inmediatamente tras el dato de altura.</p>
+-->
+
+<!--
+<p>Si se quisiera
+codificar toda la partitura con alturas absolutas (tal como se hace en
+ style='display:none;background:yellow'>MusicXML style='display:
+none;background:yellow'>), evitando asi tener que incluir el parámtro ABS en
+cada nota, esta circunstancia hay que especificarla como un parámetro global
+del elemento &lt;Musicitura&gt;</p>
+-->
+
+<p>It is also possible to specify pitch as a number, and this will be interpreted as the
+absolute MIDI pitch. For example, 43 will be the central c note (c4).
+This way of encoding pitch is discouraged as some musical information is lost.
+This facility has been included to facilitate importing MIDI files and scores written by other
+programs. <b>Possibly this feature will removed from the language in future versions</b>.</p>
+
+
+
+<h3><a name="description_Duration">Duration</a></h3>
+<a href="#TOC">TOC</a>
+
+<p>A character to specify the note or rest type (whole, quarter, eighth, ...) followed by dots in case the
+note or rest is dotted</p>
+
+<p>
+<center>
+<table class="grid">
+    <tr><td class="grid">English US (English UK)</td><td class="grid">Spanish</td></tr>
+    <tr><td class="grid">d - <b>d</b>ouble whole, long (breve)</td><td class="grid">d - cua<b>d</b>rada</td></tr>
+    <tr><td class="grid">w - <b>w</b>hole (semibreve)</td><td class="grid">r - <b>r</b>edonda</td></tr>
+    <tr><td class="grid">h - <b>h</b>alf (minim)</td><td class="grid">b - <b>b</b>lanca</td></tr>
+    <tr><td class="grid">q - <b>q</b>uarter (crochet)</td><td class="grid">n - <b>n</b>egra</td></tr>
+    <tr><td class="grid">e - <b>e</b>ighth, 8th (quaver)</td><td class="grid">c - <b>c</b>orchea</td></tr>
+    <tr><td class="grid">s - <b>s</b>ixteenth, 16th (semiquaver)</td><td class="grid">s - <b>s</b>emicorchea</td></tr>
+    <tr><td class="grid">t - <b>3</b>2th (demisemiquaver)</td><td class="grid">f - <b>f</b>usa</td></tr>
+    <tr><td class="grid">x - <b>6</b>4th (hemidemisemiquaver)</td><td class="grid">m - se<b>m</b>ifusa</td></tr>
+    <tr><td class="grid">o - <b>1</b>28th (?)</td><td class="grid">g - <b>g</b>arrapatea</td></tr>
+    <tr><td class="grid">f - 2<b>5</b>6th (?)</td><td class="grid">p - semigarra<b>p</b>atea</td></tr>
+    </table>
+</center>
+</p>
+
+<p>For example: <q class="example">q.</q> means a dotted quatter note and <q class="example">e..</q> means
+a double dotted eighth note</p>
+
+
+
+
+
+
+
+
+
+<h2><a name="description_Notation">Notations</a></h2>
+<a href="#TOC">TOC</a>
+
+<p>A <em>notation</em> is the way to describe any additional characteristic affecting the element
+being described, for example, a note. Notations are classified into three cathegories:</p>
+<ol>
+<li>Traditional notations. These are the usual notations used in traditional notation language
+and, therefore, thay have a graphic symbol in the score.</li>
+<li>Rendering notations. They are additional information to control the renderization process. For
+example, the exact coordinates to position an object in the score</li>
+<li>Interpretation notations. These are clues and tips for playingback the score. For example,
+the MIDI instrument no use.</li>
+</ol>
+
+<a name="rule_notation">&nbsp;</a>
+<div class="example">
+<span class="nt">Notation</span> :=
+    { <span class="nt">Traditional_notation</span> |
+      <span class="nt">Rendering_notation</span> |
+      <span class="nt">Playback_notation</span> }
+    <br /><br />
+
+<span class="nt">Traditional_notation</span> :=
+    { <span class="nt">Tie</span> |
+      <span class="nt">Caesura</span> |
+      <span class="nt">Articulation</span> |
+      <span class="nt">Beamed</span> |
+      <span class="nt">Tuplet</span> }
+    <br /><br />
+
+<span class="nt">Rendering_notation</span> :=
+    { <span class="nt">note_head</span> |
+      <span class="nt">stem</span> |
+      <span class="nt">displayed_accidentals</span> |
+      <span class="nt">xy</span> |
+      <span class="nt">text</span> }
+    <br /><br />
+
+<span class="nt">Playback_notation</span> :=
+    { <span class="nt">Instrument</span> |
+      <span class="nt">duration</span> }
+</div>
+<br /><br />
+
+<a name="description_Traditional_Notations" />
+<h3>Traditional notations</h3>
+<a href="#TOC">TOC</a>
+
+<p>
+<span class="nt">Traditional_notation</span> :=
+    { <span class="nt">Tie</span> |
+      <span class="nt">Caesura</span> |
+      <span class="nt">Articulation</span> |
+      <span class="nt">Beamed</span> |
+      <span class="nt">Tuplet</span> }
+</p>
+
+<p>Notations are encoded in collapsed syntax, that is, a notation is just a string of one or more characters without
+blank spaces. The first character determines the type of notation and the remaining characters, when exist,
+indicates additional characteristics. The following table shows the currently implemented notations:</p>
+
+<p>
+<center>
+<table class="grid">
+    <tr><td class="grid">l</td><td class="grid">Tied to next note</td>        <td class="grid">c</td><td class="grid">Caesura</td></tr>
+    <tr><td class="grid">a</td><td class="grid">Articulations</td>            <td class="grid">g</td><td class="grid">Beamed group</td></tr>
+    <tr><td class="grid">t</td><td class="grid">Tuplet</td>                   <td class="grid">&nbsp;</td><td class="grid">&nbsp;</td></tr>
+<!--
+    <tr><td class="grid">t</td><td class="grid">Tupla</td>                    <td class="grid">x</td><td class="grid">Ligadura de expresion</td></tr>
+    <tr><td class="grid">s</td><td class="grid">Glissando</td>                <td class="grid">n</td><td class="grid">Dinámica</td></tr>
+    <tr><td class="grid">r</td><td class="grid">Arpegiato</td>                <td class="grid">np</td><td class="grid">No arpegiado</td></tr>
+    <tr><td class="grid">g</td><td class="grid">Beamed group</td>             <td class="grid">p</td><td class="grid">Pentagrama</td></tr>
+    <tr><td class="grid">l</td><td class="grid">Deslizando</td>               <td class="grid">z</td><td class="grid">Caesura</td></tr>
+    <tr><td class="grid">c</td><td class="grid">Caesura</td>                  <td class="grid">o</td><td class="grid">Ornamento</td></tr>
+    <tr><td class="grid">a</td><td class="grid">Articulations</td>            <td class="grid">t</td><td class="grid">Anotacion técnica</td></tr>
+-->
+    </table>
+</center>
+</p>
+
+
+
+<h4><a name="tie_notation">Ties</a></h4>
+<p>A character &quot;L&quot; indicates the start of a tie that will end in the next comming note of the
+same voice, staff and pitch than the one on wich this notation is included. No additional parameters are
+needed.
+Example:</p>
+<code class="example">
+(n c4 n l)(n c4 c)(n e4 c)
+</code>
+
+<p>A quarter C4 note tied to an eighth one, followed by an eighth E4 note.</p>
+
+
+
+<h4><a name="caesura_notation">Caesura</a></h4>
+<p>A character &quot;C&quot; indicates that the rest or note has a caesura. No additional parameters are
+needed.
+Example:</p>
+<code class="example">
+(n c4 n c)
+</code>
+
+<p>Is a quarter C4 note with caesura.</p>
+
+
+<h4><a name="beamed_group_notation">Beamed groups</a></h4>
+<p>When several consecutive notes have their stems beamed together this is coded by a notation
+<b>g</b> (group).  The first parameter is a plus sign (+) or a minus sign (-) to mean, respectively,
+that it is the start or the end of a group. After this sign other parameters are possible.
+When the only parameters specified are the start/end sign, the
+<b>g</b> element admits a collapsed syntax <b>g+</b> in
+the starting note and a notation <b>g-</b> in the endind one.
+Example:</p>
+<code class="example">
+(n c4 n g+)(n d4 c)(n e4 c g-)
+</code>
+
+<p>A group of beamed notes, formed by a quarter C4 note, an eighth D4 note and an eighth E4 note.</p>
+
+
+
+
+<h4><a name="tuplet_notation">Tuplets</a></h4>
+
+<p>A tuplet is a group of notes whose duration is modified; normally a graphic element
+(a tuplet bracked and/or a number) marks this group of notes. The notes in a tuplet are
+usually beamed together but this is not always the case.</p>
+
+<p>In LDP, to specify the notes that form a tuplet, a notation <b>t</b> (tuplet) must be included
+in the first and the last notes of the tuplet.</p>
+
+<p>The first parameter is a plus sign (+) or a minus sign (-) to signal, respectively,
+that it is the start or the end of a tuplet. After the plus sign there must be a number
+to indicate the tuplet type. For example:</p>
+
+<pre class="example">
+(n c4 c (t + 3)) (n d4 c) (n e4 c (t -))
+</pre>
+
+<p>This example is a triplet of eight notes, that is, the three notes must be played
+in the time normally allotted for two eight notes.</p>
+
+<p>Additional parameters could be introduced in future to deal with renderization options.</p>
+
+<p>As tuplets are very frequent, to simplify the writting, the tuplet element allows for
+a collapsed syntax: </p>
+<p>
+(t -) can be written as t-<br />
+(t + x) can be written as tx</p>
+
+<p>So, the previous example can be written as:</p>
+
+<pre class="example">
+(n c4 c t3) (n d4 c) (n e4 c t-)
+</pre>
+
+
+<p>Notation <b>t</b> does not implies beaming. Therefore notations <b>t</b> and <b>g</b>
+must be combined as needed. Examples:</p>
+
+<pre class="example">
+(n c4 c g+) (n d4 s t3) (n c4 s) (n b3 s t- g-)
+</pre>
+
+<pre class="example">
+(n c4 s g+ t3) (n d4 s t) (n e3 s t-) (n f4 s t3) (n g4 s) (n a4 s t- g-)
+</pre>
+
+
+
+<!--
+
+
+
+
+<h2><a name="_Toc86206005">Acordes </a> style='font-weight:normal'>(chords)</h2>
+
+<p>Para escribir un acorde es preciso poder indicar que una
+nota debe comenzar a la vez que la anterior, en vez de a continuación de ella.
+Y esta es precisamente la función del elemento <b>NA</b> (<b>N</b>ota en <b>A</b>corde)
+utilizado en lugar del <b>N</b>. Es exactamente igual que el elemento <b>N</b>
+pero implica que la nota que se define se agrupe con la previamente definida
+para formar un acorde. Así, un acorde de negras de Do mayor podría codificarse
+como:</p>
+
+<p>(n c4 n) (na e4 n) (na g4 n)</p>
+
+<p>&nbsp;</p>
+
+<p>Es decir se define primero una nota normal de
+altura c4 y luego dos notas adicionales agrupadas con ella para formar el
+acorde.</p>
+
+<p>Si en un acorde hay notas con diferentes
+duraciones es obligatorio que se vayan definiendo de mayor a menor duración</p>
+
+<p>&nbsp;</p>
+
+<h1><a name="_Toc86206006">
+lang=ES>Instrumentos polifónicos y partituras multipentagrama</a></h1>
+
+<p>En instrumentos que requieren más de un pentagrama,
+como el piano, o en obras para varios instrumentos la complejidad para
+describirlas aumenta. Aparecen distintos problemas relacionados, en general,
+con el hecho de tener que describir secuencialmente distintos fenómenos
+musicales que se producen simultánmeamente en el tiempo. Por ejemplo:</p>
+
+<ul style='margin-top:0cm' type=square>
+ <li>Si coinciden dos o más voces en un mismo
+     pentagrama, ¿cómo especificar a que voz corresponde cada nota?</li>
+ <li>Si coinciden dos o más voces en un mismo
+     pentagrama, ¿cómo especificar aspectos de dibujo? (por ejemplo, una nota
+     negra de la melodía que coincide con una semicorchea de un arpegio del acomañamiento:
+     nota con dos plicas, una del grupo y otra de la nota suelta).</li>
+ <li>En instrumentos que requieren más de un
+     pentagrama, como el piano, ¿cómo especificar en qué pentagrama se dibuja
+     el figsil ? ¿cómo indicar que una melodía que empezó a dibujarse en el
+     pentagrama inferior continue en el superior?</li>
+</ul>
+
+<p>Se describen en esta sección aquellos elementos orientados a
+satisfacer las necesidades de representación de música polifonica. En LDP existen
+dos elementos para facilitar la descripción de pasajes polifónicos: el elemento
+&lt;pentagrama&gt; y el elemento &lt;voz&gt;. El primero está orientado a la
+representación gráfica mientras que el segundo lo está hacia la interpretación.
+Además, existen elementos, tal cmo &lt;desplazamiento&gt;, orientados a
+sincronizar partes que, necesariamente, por la naturaleza secuencial del
+lenguaje de descripción, coincidadn en el tiempo. </p>
+
+<p>&nbsp;</p>
+
+
+
+-->
+
+<!--
+
+
+
+
+
+<h2><a name="_Toc86206007">Desplazamientos</a></h2>
+
+<p>La representación de dos o más melodías musicales simultáneas
+en un mismo pentagrama o en sistemas de más de un pentagrama (por ejemplo, un
+sistema para piano) presenta el problema de que una vez definida una de las
+melodías es necesario poder retroceder al punto donde debe comenzar la
+siguiente. Igualmente, puede ser necesario avanzar sin tener que introducir
+silencios. Para ello, el leguaje dispone del elemento <b>desplazamiento</b>:</p>
+
+<p>&lt;desplazamiento&gt; = { &lt;retroceso&gt; |
+&lt;avance&gt; }</p>
+
+<p>&lt;retroceso&gt; = (<b>retroceso</b> { <i>partes</i> |
+&quot;inicio&quot; } )</p>
+
+<p>&lt;avance&gt; = (<b>avance</b> { <i>partes</i> |
+&quot;fin&quot; } )</p>
+
+<p><i>partes</i> = { <i>expresión</i> | <i>num</i> }</p>
+
+<p>&nbsp;</p>
+
+<p>donde <i>partes</i> puede ser:</p>
+
+<ul style='margin-top:0cm' type=square>
+ <li>una expresión algebráica, formada por sumas de notas, que
+     indica lo que se avanza o retrocede. Por ejemplo,  &quot;3n+s&quot;
+     indica que se avance/retroceda tres notas negras y una semicorchea. La
+     expresión no puede contener espacios en blanco.</li>
+ <li>Un número que indica directamente el número de semigarrapateas
+     que se avanza o retrocede (1 negra = 64 semigarrapateas). Nótese que un
+     número es también una expresión algebráica.</li>
+</ul>
+
+<p>Los literales &quot;inicio&quot; y &quot;fin&quot; que
+indican, respectivamente, que se retroceda hasta el inicio del compás o que se
+avance hasta el final del compás. </p>
+
+
+
+
+-->
+
+<!--
+
+
+
+
+
+<h1><a name="_Toc86206008">Anotaciones
+para representación gráfica</a></h1>
+
+<p>Un aspecto fundamental del lenguaje LDP es la distinction
+entre elementos orientados a representar el sonido de la música y aquellos
+otros orientados a representar el aspecto visual de la partitura. Se describen
+en este capítulo aquellos elementos cuya finalidad principal es especificar los
+aspectos gráficos de la representación de partituras.</p>
+
+
+
+-->
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<h2><a name="FormattingTags">Tags to control format</a></h2>
+<a href="#TOC">TOC</a>
+
+
+<h4><a name="newSystem">newSystem</a></h4>
+
+<p>Forces to start a new system after current measure.</p>
+
+<p>
+<span class="nt">newSystem</span> :=
+    <span class="t">(newSystem</span>
+    <span class="t">)</span>
+</p>
+
+
+<p>Example:</p>
+
+<pre class="example">
+(newSystem)
+</pre>
+
+
+
+<!--
+
+
+
+
+
+<h2>Unidades utilizadas en LDP</h2>
+
+<p>Los atributos de posición,
+en MusicXML (common.dtd), utilizan
+unidades relativas: décimas del espacio entre líneas de pentagrama (nota 7).
+Ahora bien, espaciado
+entre líneas y, en consecuencia, todos los demas valores relativos a esta
+medida de un pentagrama, debe poder establecerse para cada pentagrama, ya que
+en una misma pieza pueden coexistir pentagramas de distinto tamaño; por
+ejemplo, en partituras de piano en obras para varios instrumentos, el piano va
+en grande mientras que la línea para el otro instrumento va en pequeñito. En
+consecuencia, no parece una unidad adecuada para una página en la que se
+mezclen pentagramas de distinto tamaño y habrá que utilizar una unidad que no
+varíe entre pentagramas, al menos para  parámetros no asociados a un solo
+pentagrama, tales como espaciados entre pentagramas o márgenes de página. Para
+estos parámetros se decide utilizar como unidad  una décima de milímetro<a
+href="#_ftn8" name="_ftnref8" title=""> class=MsoFootnoteReference>
+class=MsoFootnoteReference> style='font-size:11.0pt;font-family:Arial'>[8]</a>.
+ style='display:none;background:yellow'>En aquellos elementos claramente
+asociados a un pentagrama se permite elegir entre décimas de línea o unidades
+absolutas. En estos casos, para distinguir, las unidades irán siempre seguidas
+del nombre de la unidad (ur-unidades relativas = décimas de línea, ua-unidades
+absolutas = decimas de milímetro o la que haya definido el usuario), </p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=ES
+style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</p>
+
+
+
+-->
+
+<!--
+
+
+
+
+
+<h2><a name="_Toc86206010">Posicion </a> lang=ES
+style='font-weight:normal'>&lt;<i>position</i>&gt; lang=ES>.</h2>
+
+<p>La posición puede ser relativa, referida a la
+barra de fin de compás que preceda a este elemento<a href="#_ftn9"
+name="_ftnref9" title=""> class=MsoFootnoteReference>
+class=MsoFootnoteReference> lang=ES style='font-size:11.0pt;font-family:
+Arial'>[9]</a>, (x=0 es la barra de inicio del compas, y=0
+es la linea base - la primera línea adicional por debajo -) o absoluta, referida
+a la esquina superior izquierda del lienzo de la partitura. La coordenada x se
+incrementa hacia la derecha, y la coordenada y hacia abajo. El punto de anclaje
+del objeto a posicionar es siempre la esquina inferior izquierda del rectángulo
+que enmarca el objeto. Por ejemplo, en el texto &quot;Hola&quot; el punto de
+anclaje al que se refiere el elemento &lt;posición&gt; sería el punto inferior
+de la línea izquierda de la H. </p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=ES
+style='font-size:10.0pt;font-family:"Courier New"'>&lt;posicion&gt; = (<b>xy</b>
+[&quot;x&lt;modo&gt;&lt;pos&gt;&quot;] [&quot;y&lt;modo&gt;&lt;pos&gt;&quot;]
+[&lt;offset&gt;])</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-autospace:none'> lang=ES style='font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=ES
+style='font-size:10.0pt;font-family:"Courier New"'>&lt;modo&gt; = { r | a }</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=ES
+style='font-size:10.0pt;font-family:"Courier New"'>&lt;pos&gt; = num entero con
+signo opcional</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=ES
+style='font-size:10.0pt;font-family:"Courier New"'>&lt;offset&gt; = (offset <i>num</i>)</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=ES
+style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</p>
+
+<p>R = relativa a origen del compás, A =
+absoluta, referida a origen del papel. El elemento &lt;offset&gt; es un
+desplazamiento especificado en porcentaje del tamaño del compás (num de 0 a
+100). Su principal utilidad es poder situar un elemento centrado o al final del
+compás sin tener que variar las coordenadas de posición cada vez que hay una
+variación en el tamaño del compás.</p>
+
+<p>Ejemplos:</p>
+
+<p style='margin-left:63.8pt;text-indent:-63.8pt'>
+lang=ES>(xy xa54)  lang=ES >à
+lang=ES> coordenada x: 54 décimas de línea desde el origen del lienzo</p>
+
+<p style='margin-left:63.8pt;text-indent:-63.8pt'>(xy xr-54)
+>à coordenada x: 54 décimas de línea menos que
+la x de origen de la barra de inicio del compas  </p>
+
+<p style='margin-left:63.8pt;text-indent:-63.8pt'>&nbsp;</p>
+
+<p><b> lang=ES style='display:none;background:yellow'>Lugar</b>
+lang=ES style='display:none;background:yellow'> &lt;<i>placement</i>&gt;.
+Indica si se sitúa encima o debajo; la interpretación de lo que es
+&quot;encima&quot; o &quot;debajo&quot; depende del elemento a que se refieran<a
+href="#_ftn10" name="_ftnref10" title=""> class=MsoFootnoteReference>
+class=MsoFootnoteReference> lang=ES style='font-size:11.0pt;font-family:
+Arial;display:none'>[10]</a>.</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-autospace:none'> style='font-size:10.0pt;font-family:
+"Courier New";display:none;background:yellow'> &lt;lugar&gt; =
+(&quot;encima&quot; | &quot;debajo&quot; )</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-autospace:none'> style='font-size:10.0pt;font-family:
+"Courier New";display:none;background:yellow'> </p>
+
+<p style='margin-left:63.8pt;text-indent:-63.8pt'>&nbsp;</p>
+
+<h2 style='background:#FFFF99'> style='display:none'>Directivas
+style='display:none;font-weight:normal'>&lt;direction&gt;</h2>
+
+<p style='background:#FFFF99'> style='display:none'>Las
+directivas son indicaciones no ligadas a una nota en particular.</p>
+
+<p style='background:#FFFF99'> style='display:none'>Pueden
+ser de varios tipos: textos, reguladores, signos de repetición (segno, coda,
+fine,.), rehearsal, dashes, pedal, metronomo, y desplazamientos de octava (signos
+de 8ª y demás)</p>
+
+<p>&lt;directiva&gt; = (<b>directiva </b>&lt;lugar&gt;
+&lt;tipo&gt; [&lt;offset&gt; %editorial-voice;, staff?, sound?]) </p>
+
+<p>&lt;tipo&gt; = &lt;texto&gt; | &lt;repeticion&gt; |
+&lt;regulador&gt; | </p>
+
+<p>      dynamics+ | dashes | bracket | pedal | </p>
+
+<p>      metronome | octave-shift | damp |
+damp-all | </p>
+
+<p>      other-direction&gt;</p>
+
+<p>&nbsp;</p>
+
+<p style='background:#FFFF99'> style='display:none'>&nbsp;</p>
+
+<p style='background:#FFFF99'> style='display:none'>&nbsp;</p>
+
+
+
+-->
+
+<!--
+
+
+
+
+
+<h2><a name="_Toc86206011">Directiva de tipo texto </a> style='font-weight:
+normal'>&lt;words&gt;</h2>
+
+<p>Las directivas de tipo &quot;texto&quot; se utilizan para
+escribir texto en la partitura.</p>
+
+<p>&lt;texto&gt; = (<b>texto </b>string &lt;posicion&gt;[&lt;font&gt;
+style='display:none;background:yellow'>&lt;alineacion&gt;&lt;idioma&gt;])</p>
+
+<p>     lang=FR>&lt;posicion&gt; </p>
+
+<p> lang=FR>    &lt;font&gt; = (<b>font &lt;</b>nombre&gt;
+&lt;size&gt; [&lt;estilo&gt;])</p>
+
+<p> lang=FR>      &lt;estilo&gt; = &quot;normal&quot; |
+&quot;negrita&quot; | &quot;cursiva&quot; | &quot;negrita,cursiva&quot;</p>
+
+<p>               &quot;bold&quot; |
+&quot;italic&quot; | &quot;bold,italic&quot;</p>
+
+<p>      &lt;size&gt; = <i>num</i></p>
+
+<p>      Se asume &quot;Arial&quot; 10pt
+normal</p>
+
+<p> lang=PT-BR style='display:none'>
+lang=FR style='display:none;background:yellow'>&lt;alineacion&gt; =
+&quot;izqda&quot; | &quot;centrado&quot; | &quot;dcha&quot;</p>
+
+<p style='margin-left:49.65pt'> style='display:none;
+background:yellow'>La alineación se refiere a la forma en que se escibe el
+texto y a la posición del punto de anclaje del mismo. Si está alineado a
+izquierda, el punto de anclaje es la posición izquierda y el texto se coloca a
+la derecha del punto de anclaje, comenzando en él. Si está alineado a derecha,
+el punto de anclaje es el final del texto y el texto se distribuye hacia su
+izquierda. Si está &quot;centrado&quot; el punto de anclaje se encuentra en el
+centro del texto. Si no se especifica se asume alineado a izquierda.</p>
+
+<p> style='display:none;background:yellow'>
+lang=FR style='display:none;background:yellow'>&lt;idioma&gt; = string </p>
+
+<p style='margin-left:49.65pt'> style='font-size:11.0pt;
+font-family:Arial;display:none;background:yellow'>Se asume idioma=italiano</p>
+
+<p> lang=FR>&nbsp;</p>
+
+<p>Ejemplo:</p>
+
+<p>      a) en MusicXML</p>
+
+<p>      &lt;direction placement=&quot;above&quot;&gt;</p>
+
+<p>        &lt;direction-type&gt;</p>
+
+<p>          &lt;words
+xml:lang=&quot;la&quot; relative-y=&quot;5&quot;
+relative-x=&quot;-5&quot;&gt;Angelus</p>
+
+<p>
+ dicit:&lt;/words&gt;</p>
+
+<p>        &lt;/direction-type&gt;</p>
+
+<p>      &lt;/direction&gt;</p>
+
+<p>&nbsp;</p>
+
+<p>b) en LDP:</p>
+
+<p>      (texto &quot;Angelus dicit:&quot; (xy xr-5 yr60))</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+
+
+-->
+
+<!--
+
+
+
+
+
+<h2><a name="_Toc86206012"> lang=FR>Reguladores </a> lang=FR
+style='font-weight:normal'>&lt;wedges&gt;</h2>
+
+<p> lang=FR>Las directivas de tipo &quot;regulador&quot;
+sirven para dibujar reguladores (signo de dinámica). En un regulador hay
+que especificar tres parámetros:</p>
+
+<p>            -
+el punto de inicio y el tipo de regulador (crescedo o diminuendo)</p>
+
+<p>            -
+el punto de final (tipo=stop)</p>
+
+<p>            - la anchura del regulador en la zona ancha &lt;spread&gt;</p>
+
+<p>            La anchura se mide en décimas de línea y debe
+especificarse donde corresponda (en tipo=stop para crescendo o en punto de
+inicio (tipo=diminuendo) para diminuendos.</p>
+
+<p>&nbsp;</p>
+
+<p>&lt;regulador&gt; = (<b>regulador </b>&lt;tipo&gt;
+</p>
+
+<p>    &lt;tipo&gt; = &quot;crescendo&quot;
+| &quot;diminuendo&quot; | &quot;stop&quot;</p>
+
+<p>    number %beam-level; #IMPLIED</p>
+
+<p>    &lt;anchura&gt; = num</p>
+
+<p>    &lt;posición&gt; </p>
+
+<p>&nbsp;</p>
+
+<p>Ejemplo:</p>
+
+<p>a) En MusicXML:</p>
+
+<p>&lt;direction
+placement=&quot;above&quot;&gt; </p>
+
+<p>            &lt;direction-type&gt; </p>
+
+<p>                  &lt;wedge
+type=&quot;crescendo&quot; spread=&quot;0&quot; relative-y=&quot;5&quot;/&gt; </p>
+
+<p>             &lt;/direction-type&gt; </p>
+
+<p>             &lt;offset&gt;-4&lt;/offset&gt;
+</p>
+
+<p>&lt;/direction&gt;</p>
+
+<p> </p>
+
+<p>b) En LDP:</p>
+
+<p>      (regulador crescendo encima (xy
+yr-5))</p>
+
+<p>      El parámetro offset no se
+implementa</p>
+
+<p>&nbsp;</p>
+
+<p>The offset element measures horizontal
+direction in terms of divisions, just like the duration element. </p>
+
+<p>If two directions go together, they can
+be linked by having multiple direction-type elements within a single direction.
+</p>
+
+<p style='margin-left:63.8pt;text-indent:-63.8pt'>
+lang=EN-GB>&nbsp;</p>
+
+
+
+-->
+
+<!--
+
+
+
+
+
+<h2><a name="_Toc86206013">Signos de repetición</a></h2>
+
+<p><b>&nbsp;</b></p>
+
+<p>Los signos de repetición asociados a barras de compás se
+definen en el elemento &lt;barra&gt;. Los restantes se definen aquí.</p>
+
+<p>&lt;repeticion&gt; = (<b>repeticion</b> &lt;valor&gt;
+&lt;posicion&gt; [&lt;font&gt;])</p>
+
+<p>&lt;valor&gt; =</p>
+
+<p>            &quot;DaCapo&quot; |</p>
+
+<p>            &quot;Segno&quot; | (&quot;Segno&quot; <i>num</i>)
+|</p>
+
+<p>            &quot;DalSegno&quot; | (&quot;DalSegno&quot; <i>num</i>)
+|</p>
+
+<p>            &quot;Coda&quot; | (&quot;Coda&quot;
+<i>num</i>) |</p>
+
+<p>            &quot;AlCoda&quot; | (&quot;AlCoda&quot;
+<i>num</i>) |</p>
+
+<p>            &quot;Fine&quot; |</p>
+
+<p>            &quot;AlFine&quot; |</p>
+
+<p>            (&quot;repeticion&quot;
+<i>num</i>)</p>
+
+<p>&nbsp;</p>
+
+<p>El parámetro <i>num</i>  sirve para distinguirlos cuando hay
+varios. El valor &quot;repetición&quot; &lt;rehearsal&gt; se refiere a las
+indicaciones de 1ª y 2ª vez</p>
+
+
+
+-->
+
+<!--
+
+
+
+
+
+<h2><a name="_Toc86206014">Dirección de la plica </a> style='font-weight:
+normal'>&lt;stem&gt;</h2>
+
+<p>La dirección de la plica se codifica mediante un elemento <b>plica</b>.
+No es obligatorio especificarlo ya que todas las notas tienen una plica por
+defecto según su tipo y altura:</p>
+
+<p>&lt;plica&gt; = (<b>plica</b> [ &quot;arriba&quot; |
+&quot;abajo&quot; | &quot;sin-plica&quot; |  style='display:none;
+background:yellow'>&quot;doble&quot;]) </p>
+
+<p>&nbsp;</p>
+
+<p><b> lang=ES style='display:none;background:yellow'>Cabeza</b>
+lang=ES style='display:none;background:yellow'> &lt;<i>notehead</i>&gt; Para
+forzar un glifo distinto del de por defecto:</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-autospace:none'> lang=ES style='font-size:10.0pt;
+font-family:"Courier New";display:none;background:yellow'>(<b>cabeza</b>
+{&quot;barra&quot;, &quot;triangulo&quot;, &quot;rombo&quot;,
+&quot;cuadrado&quot;, &quot;cruz&quot;, &quot;x&quot;, &quot;circulo-x&quot;,
+&quot;sin-cabeza&quot; })</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-autospace:none'> lang=ES style='font-size:10.0pt;
+font-family:"Courier New";display:none;background:yellow'> </p>
+
+<p> lang=ES style='display:none;background:yellow'>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p><b> lang=ES style='display:none;background:yellow'>Orientación</b>
+lang=ES style='display:none;background:yellow'> &lt;<i>orientation</i>&gt;.
+Indica si los ligados van encima o debajo (¿no vale con &lt;lugar&gt;)?</p>
+
+<p><b> lang=ES style='display:none;background:yellow'>Aspecto</b>
+lang=ES style='display:none;background:yellow'> &lt;<i>printout</i>&gt;. Son
+indicaciones para controlar que no se dibujen cosas. Por ejemplo notas,
+puntillos o silencios en casos de solapamientos de voces.</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=EN-GB
+style='font-size:10.0pt;font-family:"Courier New";display:none;background:yellow'>&lt;!ENTITY
+% printout</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-autospace:none'> lang=EN-GB style='font-size:10.0pt;
+font-family:"Courier New";display:none;background:yellow'> &quot;print-object
+%yes-no;  #IMPLIED</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-autospace:none'> lang=EN-GB style='font-size:10.0pt;
+font-family:"Courier New";display:none;background:yellow'>  print-dot
+%yes-no;  #IMPLIED</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-autospace:none'> lang=EN-GB style='font-size:10.0pt;
+font-family:"Courier New";display:none;background:yellow'>  print-spacing
+%yes-no;  #IMPLIED&quot;&gt;</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-autospace:none'> lang=EN-GB style='font-size:10.0pt;
+font-family:"Courier New";display:none;background:yellow'>&nbsp;</p>
+
+<p> &nbsp;</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-autospace:none'> lang=PT-BR style='font-size:10.0pt;
+font-family:"Courier New"'>&nbsp;</p>
+
+<p><b> style='display:none;background:yellow'>Alteraciones-d</b>
+style='display:none;background:yellow'> &lt;<i>accidentals</i>&gt;.
+lang=ES style='display:none;background:yellow'>Son indicaciones para el dibujo
+no para la interpretación. Para interpretación el sonido está fijado por el
+tono &lt;<i>pitch</i>&gt;</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-autospace:none'> lang=ES style='font-size:10.0pt;
+font-family:"Courier New";display:none;background:yellow'>                                                                                              &lt;alteraciones-d&gt;
+= ( [&quot;c&quot;] &lt;tipo&gt; [&quot;t&quot;&lt;num&gt;] )</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-autospace:none'> lang=ES style='font-size:10.0pt;
+font-family:"Courier New";display:none;background:yellow'>&nbsp;</p>
+
+<table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+ style='margin-left:4.0cm;border-collapse:collapse;display:none;border:none'>
+ <tr style='display:none'>
+  <td width=36 valign=top
+
+  <p>
+  style='display:none;background:yellow'>- </p>
+  </td>
+  <td width=168 valign=top
+  border-left:none;
+  <p>
+  style='display:none;background:yellow'>bemol</p>
+  </td>
+  <td width=36 valign=top
+  border-left:none;
+  <p>
+  style='display:none;background:yellow'>=</p>
+  </td>
+  <td width=180 valign=top
+  border-left:none;
+  <p>
+  style='display:none;background:yellow'>becuadro</p>
+  </td>
+ </tr>
+ <tr style='display:none'>
+  <td width=36 valign=top
+  border-top:none;
+  <p>
+  style='display:none;background:yellow'>+ </p>
+  </td>
+  <td width=168 125.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <p>
+  style='display:none;background:yellow'>sostenido</p>
+  </td>
+  <td width=36 27.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <p>
+  style='display:none;background:yellow'>=-</p>
+  </td>
+  <td width=180 134.9pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <p>
+  style='display:none;background:yellow'>becuadro bemol</p>
+  </td>
+ </tr>
+ <tr style='display:none'>
+  <td width=36 valign=top
+  border-top:none;
+  <p>
+  style='display:none;background:yellow'> </p>
+  </td>
+  <td width=168 125.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <p>
+  style='display:none;background:yellow'>doble bemol</p>
+  </td>
+  <td width=36 27.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <p>
+  style='display:none;background:yellow'>=+</p>
+  </td>
+  <td width=180 134.9pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <p>
+  style='display:none;background:yellow'>becuadro sostenido</p>
+  </td>
+ </tr>
+ <tr style='display:none'>
+  <td width=36 valign=top
+  border-top:none;
+  <p>
+  style='display:none;background:yellow'>++ </p>
+  </td>
+  <td width=168 125.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <p>
+  style='display:none;background:yellow'>dos sostenidos</p>
+  </td>
+  <td width=36 27.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <p>
+  style='display:none;background:yellow'>x</p>
+  </td>
+  <td width=180 134.9pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <p>
+  style='display:none;background:yellow'>doble sostenido</p>
+  </td>
+ </tr>
+</table>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-autospace:none'> lang=ES style='font-size:10.0pt;
+font-family:"Courier New";display:none;background:yellow'>&nbsp;</p>
+
+<p> lang=ES style='display:none;background:yellow'>La
+letra &quot;c&quot; que, opcionalmente, precede al tipo de alteración indica
+que es una alteración de cortesía (debe dibujarse entre paréntesis).</p>
+
+<p> lang=ES style='display:none;background:yellow'>Al
+final puede venir una &quot;t&quot; seguida de un número para indicar que se
+dibuje de un tamaño distinto al que por defecto le correspondería. El número
+indica el factor de escala (1,0=100%) (ej. En notas de apoyatura).</p>
+
+<p> lang=ES style='display:none;background:yellow'>&nbsp;</p>
+
+<h1><a name="_Toc86206015">Control del formato, espaciados y
+opciones &lt;print&gt;</a></h1>
+
+<p>MusicXML lang=ES> no se ha metido
+ha estudiar el problema del dibujo, sólo el de cómo representar el sonido o los
+signos musicales. Por ello, prácticamente no hay directivas para controlar en
+detalle los aspectos de dibujo. El único elemento que hay es el elemento &lt;print&gt;
+y apenas tiene un par de atributos. En LDP se va a tratar de que todos los
+elementos tengan subelementos que permitan controlar todos las aspectos de
+dibujo. </p>
+
+<p>En LDP se va a definir un elemento &lt;opcion&gt;
+que sirva para definir los parámetros de dibujo de cualquier elemento. </p>
+
+<p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;
+margin-left:18.0pt'> style='font-size:10.0pt;font-family:"Courier New"'>&lt;opcion&gt;
+= (opcion &lt;valor&gt;+)</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New";display:none;background:yellow'>&nbsp;</p>
+
+<p>Los valores y atributos de este elemento
+dependerán del elemento al que estén asociados. A continuación se
+definen los valores disponibles para cada tipo de elemento:</p>
+
+<p style='margin-left:14.2pt;text-indent:-14.2pt'>a)
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp; <b>Control de saltos
+de página, sección y sistema.</b> Son posibles en cualquier compás:</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(saltoPagina <i>si-no</i>)</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(saltoSistema <i>si-no</i>)</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(saltoSeccion)</p>
+
+<p style='margin-bottom:6.0pt'>&nbsp;</p>
+
+<p style='margin-bottom:6.0pt'>Si el valor es &quot;no&quot;
+obliga a que el compas siga en la misma página/sistema; por ejemplo, para
+forzar a que una página no cambie en un compás. <u> lang=EN-GB
+style='color:red'>If used in multi-part music, they should be placed in the
+same positions within each part, or the results are undefined</u>
+lang=EN-GB>.</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-autospace:none'> lang=EN-GB style='font-size:10.0pt;
+font-family:"Courier New";display:none;background:yellow'>&nbsp;</p>
+
+<p style='margin-left:14.2pt;text-indent:-14.2pt'>b)
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp; <b>Especificación del
+tamaño del papel y los márgenes de página</b>. Sólo son posibles cuando cambia
+a nueva página  >à en el primer compás
+de una partitura o en el compás siguiente a un elemento &lt;SaltoSeccion&gt; y
+&lt;SaltoPagina&gt;</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(AltoPagina mm)</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(AnchoPagina mm)</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>&nbsp;</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(PaginaMargenSup <i>mm</i>)</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(PaginaMargenDcho <i>mm</i>)</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(PaginaMargenIzqdo <i>mm</i>)</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>&nbsp;</p>
+
+<p style='margin-left:14.2pt;text-indent:-14.2pt'>c)
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp; <b>Márgenes de
+sistema. </b>Cada sistema puede tener unos márgenes distintos. La
+especificación de márgenes debe hacerse en el primer compás del sistema</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(sistemaMargenDcho <i>decimas</i>)</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(sistemaMargenIzqdo <i>decimas</i>)</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>&nbsp;</p>
+
+<p style='margin-left:14.2pt;text-indent:-14.2pt'>d)
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp; <b>Espaciados.</b>
+Sólo son posibles cuanto se inicia un nuevo pentagrama de un instrumento
+>à En el primer compás o en el compás que
+sigue a un elemento &lt;SaltoPagina&gt;, &lt;SaltoSeccion&gt; y &lt;SaltoSistema&gt;</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(EspaciadoLineas { (<b>pantalla</b>  <i>pixels</i>)
+| (<b>papel</b> <i>mm</i>) } </p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>&nbsp;</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(EspacioNotas <i>decimas</i>)
+lang=PT-BR style='font-size:10.0pt;font-family:Wingdings'>ß
+style='font-size:10.0pt;font-family:"Courier New"'> separación mínima entre
+notas</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(EspacioAntesMusice <i>decimas</i>)</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=PT-BR
+style='font-size:10.0pt;font-family:"Courier New"'>(EspacioPentagramas <i>decimas</i>)
+ lang=PT-BR style='font-size:10.0pt;font-family:Wingdings'>ß
+lang=PT-BR style='font-size:10.0pt;font-family:"Courier New"'> para instr.
+multipentagramas (piano)</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(EspacioTrasMusice <i>decimas</i>)</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(EspacioSistemas <i>decimas</i>)</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>(EspacioNegra <i>decimas</i>)
+lang=PT-BR style='font-size:10.0pt;font-family:Wingdings'>ß
+style='font-size:10.0pt;font-family:"Courier New"'> factor conversión
+tiempo/espacio </p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> style='font-size:
+10.0pt;font-family:"Courier New"'>&nbsp;</p>
+
+<p><b>d) Opciones de dibujo. </b>Son posibles en cualquier compas</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=PT-BR
+style='font-size:10.0pt;font-family:"Courier New"'>&lt;PosicionTuplas
+&quot;defecto&quot; | &quot;encima&quot; | &quot;debajo&quot;&gt;</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=PT-BR
+style='font-size:10.0pt;font-family:"Courier New"'>
+lang=EN-GB style='font-size:10.0pt;font-family:"Courier New"'>&lt;tuplet-placement
+(default | near-note-heads |</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=EN-GB
+style='font-size:10.0pt;font-family:"Courier New"'>            near-note-stems
+| above | below)</p>
+
+<p style='margin-bottom:6.0pt'>Tuplet-placement
+provides a global control  for where tuplet notations should go.</p>
+
+<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=EN-GB
+style='font-size:10.0pt;font-family:"Courier New";display:none;background:yellow'>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<b> lang=EN-GB style='font-size:12.0pt;font-family:Arial;display:none;
+background:yellow'><br clear=all >
+</b>
+
+
+
+-->
+
+<!--
+
+
+
+
+
+<h2> lang=ES style='display:none;background:yellow'>Diccionario</h2>
+
+<p> lang=ES style='display:none;background:yellow'>&nbsp;</p>
+
+<p>
+lang=ES style='display:none;background:yellow'>Cue note     apoyatura</p>
+
+<p>
+lang=ES style='display:none;background:yellow'>Grace note     ¿mordente?
+¿acciaccatura?</p>
+
+<p>
+lang=ES style='display:none;background:yellow'>Measure     Compás</p>
+
+<p>
+lang=ES style='display:none;background:yellow'>Trill-mark     trino</p>
+
+<p>
+lang=ES style='display:none;background:yellow'>Turn        Grupeto</p>
+
+<p>
+lang=ES style='display:none;background:yellow'>Upper mordent   praller</p>
+
+<p>
+lang=ES style='display:none;background:yellow'>Lower mordent   mordente</p>
+
+<p>
+style='display:none;background:yellow'>Appoggiatura     apoyatura</p>
+
+<p>
+style='display:none;background:yellow'>Schleifer     apoyatura múltiple</p>
+
+<p>
+style='background:yellow'>Slur                             Ligadura de
+expresión</p>
+
+<p>
+style='background:yellow'>Tie                               Ligadura</p>
+
+<p>
+style='background:yellow'>Fermata                      Calderón</p>
+
+<p>
+style='background:yellow'>Stacato                       Picado</p>
+
+<p>
+style='background:yellow'>Tenuto                        &lt;la raya encima de
+la nota&gt;</p>
+
+</div>
+
+<div><br clear=all>
+
+<hr align=left size=1 width="33%">
+
+<div id=ftn1>
+
+<p class=MsoFootnoteText><a href="#_ftnref1" name="_ftn1" title="">
+class=MsoFootnoteReference> class=MsoFootnoteReference>
+lang=ES style='font-size:10.0pt;font-family:Arial'>[1]</a>
+lang=EN-GB> Alter having taken this decision, a year later more or less,
+version 1.4 of MusicXML started to introduce tags to allow for the
+representation of positioning information.</p>
+
+</div>
+
+<div id=ftn2>
+
+<p class=MsoFootnoteText><a href="#_ftnref2" name="_ftn2" title="">
+class=MsoFootnoteReference> class=MsoFootnoteReference>
+lang=ES style='font-size:10.0pt;font-family:Arial'>[2]</a>
+lang=EN-GB> LDP currently supports tags both in English and in Spanish. In this
+reference manual the examples will be presented normally using the Spanish
+tags. When a new tag is introduced its English version will be included in
+italics bold, i.e. <b><i>[score]</i></b>. A Spanish - English equivalence table
+is included in annex 1.</p>
+
+</div>
+
+<div id=ftn3>
+
+<p class=MsoFootnoteText><a href="#_ftnref3" name="_ftn3" title="">
+class=MsoFootnoteReference> class=MsoFootnoteReference>
+lang=ES style='font-size:10.0pt;font-family:Arial'>[3]</a>
+lang=EN-GB> La utilidad de poder dividir la codificación en partes se verá más adelante.</p>
+
+</div>
+
+<div id=ftn4>
+
+<p class=MsoFootnoteText><a href="#_ftnref4" name="_ftn4" title="">
+class=MsoFootnoteReference> class=MsoFootnoteReference>
+lang=ES style='font-size:10.0pt;font-family:Arial'>[4]</a>
+lang=EN-GB> Se ha elegido esta nomenclatura para simplificar la
+escritura ya que cada nota va designada por una sola letra: A=La, B=Si, C=Do,
+D=Re, E=Mi, F=Fa, G=Sol.</p>
+
+</div>
+
+<div id=ftn5>
+
+<p class=MsoFootnoteText><a href="#_ftnref5" name="_ftn5" title="">
+class=MsoFootnoteReference> class=MsoFootnoteReference>
+lang=ES style='font-size:10.0pt;font-family:Arial'>[5]</a>
+lang=ES> A=La, B=Si, C=Do, D=Re, E=Mi, F=Fa, G=Sol</p>
+
+</div>
+
+<div id=ftn6>
+
+<p class=MsoFootnoteText><a href="#_ftnref6" name="_ftn6" title="">
+class=MsoFootnoteReference> class=MsoFootnoteReference>
+lang=ES style='font-size:10.0pt;font-family:Arial'>[6]</a>
+lang=ES> Cuando LeMus incluya facilidades para edición de partituras
+seguramente se requerirán parámetros opcionales para poder fijar cosas tales
+como el ángulo de las barras o sus tamaños exactos. Por ahora se ignora todo
+eso.</p>
+
+</div>
+
+<div id=ftn7>
+
+<p class=MsoFootnoteText><a href="#_ftnref7" name="_ftn7" title="">
+class=MsoFootnoteReference> class=MsoFootnoteReference>
+lang=ES style='font-size:10.0pt;font-family:Arial'>[7]</a>
+lang=ES> En PDF el posicionamiento en el <i>user space </i>se mide por defecto
+en 1/72 de pulgada, ya que esa unidad es ampliamente utilizada en la industria
+tipográfica y equivale, aproximadamente, a un punto tipográfico. Su valor es de
+0,35 mm. (parece poco precisa). Para fonts utiliza una resolución 1000 veces
+mayor. Además, las unidades en el <i>user space </i>pueden definirse con otra
+precisión distinta, según necesidades. En  lang=ES>MusicXML
+lang=ES>, las unidades son fijas y relativas, y utiliza como unidad una décima
+del espacio entre líneas de pentagrama. Suponiendo un espaciado entre líneas de
+3mm tendríamos una precisión de 0,3 mm, del estilo de la estándar en PDF. Como
+cuesta lo mismo, me decanto por permitir más precisión y que pueda variarse
+según necesidades, según hace PDF.</p>
+
+</div>
+
+<div id=ftn8>
+
+<p class=MsoFootnoteText><a href="#_ftnref8" name="_ftn8" title="">
+class=MsoFootnoteReference> class=MsoFootnoteReference>
+lang=ES style='font-size:10.0pt;font-family:Arial'>[8]</a>
+lang=ES> En un futuro se permitirá, mediante algún elemento de opciones,
+que el usuario defina otra.</p>
+
+</div>
+
+<div id=ftn9>
+
+<p class=MsoFootnoteText><a href="#_ftnref9" name="_ftn9" title="">
+class=MsoFootnoteReference> class=MsoFootnoteReference>
+lang=ES style='font-size:10.0pt;font-family:Arial'>[9]</a>
+lang=ES> Normalmente será relativo al inicio del compás, salvo que la directiva
+se haya colocado tras la barra de fin de compás definida en ese compás ya que
+en estos casos los elementos definidos detrás se considera que forman parte del
+siguiente compás.</p>
+
+</div>
+
+<div id=ftn10>
+
+<p class=MsoFootnoteText><a href="#_ftnref10" name="_ftn10" title="">
+class=MsoFootnoteReference> class=MsoFootnoteReference>
+lang=ES style='font-size:10.0pt;font-family:Arial'>[10]</a>
+lang=ES> Yo creo que este elemento &lt;placement&gt; es redundante ya
+que al especificar la posición (elemento &lt;position&gt;) bastaría con
+indicar  y=0 o y=60 para hacer lo mismo que &quot;debajo&quot; y
+&quot;encima&quot;, respectivamente. Por ello, de momento, mientras no haya más
+información sobre la posible necesidad de este elemento, no se implementa.</p>
+
+</div>
+
+</div>
+
+<div>
+
+<hr class=msocomoff align=left size=1 width="33%">
+
+<div>
+
+<div id="_com_1" class=msocomtxt language=JavaScript
+onmouseover="msoCommentShow('_anchor_1','_com_1')"
+onmouseout="msoCommentHide('_com_1')"><a name="_msocom_1"></a>
+
+<p class=MsoCommentText> class=MsoCommentReference> lang=ES
+style='font-size:8.0pt'>&nbsp;<a href="#_msoanchor_1" class=msocomoff>[CSG1]</a>Hay
+casos en los que sin información adicional no se puede determinar la forma de
+dibujar los corchetes. Por ejemplo, un grupo de dos tresillos de semicorcheas
+que tengan en común la primera plica no puede distinguirse de un seisillo de
+semicorcheas. Para resolverlo veo dos alternativas:</p>
+
+<p class=MsoCommentText>1. Algún flag que indique la opción deseada.</p>
+
+<p class=MsoCommentText>2. Desagregar la información como en MusicMXL</p>
+
+<p class=MsoCommentText>Esta segunda opción parece mejor pero hay que buscar el
+modo de compatibilizarla con la notación actual para evitar la prolijidad de MusicXML
+y posibilitar asi que su uso quede restringido a los casos estrictamente
+necesarios</p>
+
+<p class=MsoCommentText>&nbsp;</p>
+
+</div>
+
+</div>
+
+</div>
+-->
+
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<h2><a name="SpanishTags">Spanish and English tags</a></h2>
+<a href="#TOC">TOC</a>
+
+<p>As LenMus aims at facilitating the user to use his/her own language
+it was decided to introduce support to use tags in any language. Currently English and
+Spanish tags are supported. Any other language can be is easyly added without
+program recompilation. It is just an issue of creating an external file with
+the list of tag names.
+</p>
+<table class="Lista">
+<tr><td class="ListaImpar">Element</td><td class="ListaImpar">English tag</td><td class="ListaImpar">Spanish tag</td></tr>
+<tr><td class="ListaPar">barline</td><td class="ListaPar">Barline</td><td class="ListaPar">Barra</td></tr>
+<tr><td class="ListaPar" colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;Barline types</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">Simple</td><td class="ListaPar">Simple</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">Double</td><td class="ListaPar">Doble</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">Start</td><td class="ListaPar">Inicio</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">End</td><td class="ListaPar">Fin</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">StartRepetition</td><td class="ListaPar">InicioRepeticion</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">EndRepetition</td><td class="ListaPar">FinRepeticion</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">DoubleRepetition</td><td class="ListaPar">DobleRepeticion</td></tr>
+<tr><td class="ListaPar" colspan="3">&nbsp;</td></tr>
+<tr><td class="ListaPar">Clef</td><td class="ListaPar">clef</td><td class="ListaPar">Clave</td></tr>
+<tr><td class="ListaPar">Instrument</td><td class="ListaPar">instrument</td><td class="ListaPar">Instrumento</td></tr>
+<tr><td class="ListaPar">Key signature</td><td class="ListaPar">key</td><td class="ListaPar">Tonalidad</td></tr>
+<tr><td class="ListaPar">Note</td><td class="ListaPar">n (note)</td><td class="ListaPar">n (nota)</td></tr>
+<tr><td class="ListaPar">Num.Instruments</td><td class="ListaPar">numInstr</td><td class="ListaPar">NumInstr</td></tr>
+<tr><td class="ListaPar">Music</td><td class="ListaPar">Music</td><td class="ListaPar">Musice</td></tr>
+<tr><td class="ListaPar">Rest</td><td class="ListaPar">r (rest)</td><td class="ListaPar">s (silencio)</td></tr>
+<tr><td class="ListaPar">Time signature</td><td class="ListaPar">time</td><td class="ListaPar">Metrica</td></tr>
+
+<tr><td class="ListaPar" colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;Other tags</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">split</td><td class="ListaPar">Partes</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">staves</td><td class="ListaPar">numPentagramas</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">chord</td><td class="ListaPar">acorde</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">newSystem</td><td class="ListaPar">nuevoSistema</td></tr>
+</table>
+
+</body>
+</html>
