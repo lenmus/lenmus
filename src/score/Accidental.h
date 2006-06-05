@@ -72,7 +72,13 @@ private:
 //global methods related to accidentals
 //------------------------------------------------------------------------------------
 
-wxString GetAccidentalGlyphs(EAccidentals nType);
+wxString GetAccidentalGlyphs(EAccidentals nType, 
+                             lmLUnits* pOffset = (lmLUnits*)NULL,
+                             lmLUnits* pWidth = (lmLUnits*)NULL,
+                             lmLUnits* pHeight = (lmLUnits*)NULL, 
+                             lmLUnits* pShift = (lmLUnits*)NULL,
+                             lmVStaff* pVStaff = (lmVStaff*)NULL,
+                             wxInt32 nStaffNum = 0);
 
 
 

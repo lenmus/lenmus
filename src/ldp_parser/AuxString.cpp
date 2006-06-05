@@ -1,4 +1,3 @@
-// RCS-ID: $Id: AuxString.cpp,v 1.10 2006/02/28 17:39:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -83,11 +82,12 @@
        -  : flat
        +  : sharp
        -- : double flat
-       ++ : double sharp
+       ++ : sharp-sharp (two sharps)
        =  : natural
        =- : natural-flat
        =+ : natural-sharp
-  i.e.:  ++c3, =+c3, +c3, =c3, -c3, --c3, =-c3
+       x  : double sharp
+  i.e.:  ++c3, =+c3, +c3, =c3, -c3, --c3, =-c3, xc3
 
   Pitch name can also be a number, representing MIDI pitch. i.e.: (n 29 n) = (n c4 n)
 @endverbatim
@@ -158,7 +158,7 @@ bool PitchNameToData(wxString sPitch, int* pPitch, EAccidentals* pAccidentals)
         *pAccidentals = eNoAccidentals;
     } else if (sAlter.StartsWith( _T("+") )) {
         if (sAlter.StartsWith( _T("++") )) {
-            *pAccidentals = eDoubleSharp;
+            *pAccidentals = eSharpSharp;
         } else {
             *pAccidentals = eSharp;
         }
@@ -174,6 +174,8 @@ bool PitchNameToData(wxString sPitch, int* pPitch, EAccidentals* pAccidentals)
         *pAccidentals = eNaturalFlat;
     } else if (sAlter.StartsWith( _T("=") )) {
         *pAccidentals = eNatural;
+    } else if (sAlter.StartsWith( _T("x") )) {
+        *pAccidentals = eDoubleSharp;
     } else {
         return true;  //error
     }
@@ -488,7 +490,7 @@ bool LDPDataToPitch(wxString sPitch, EAccidentals* pAccidentals,
         *pAccidentals = eNoAccidentals;
     } else if (sAlter.StartsWith( _T("+") )) {
         if (sAlter.StartsWith( _T("++") )) {
-            *pAccidentals = eDoubleSharp;
+            *pAccidentals = eSharpSharp;
         } else {
             *pAccidentals = eSharp;
         }
@@ -504,6 +506,8 @@ bool LDPDataToPitch(wxString sPitch, EAccidentals* pAccidentals,
         *pAccidentals = eNaturalFlat;
     } else if (sAlter.StartsWith( _T("=") )) {
         *pAccidentals = eNatural;
+    } else if (sAlter.StartsWith( _T("x") )) {
+        *pAccidentals = eDoubleSharp;
     } else {
         return true;  //error
     }

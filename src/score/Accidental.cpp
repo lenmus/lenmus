@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Accidental.cpp,v 1.3 2006/02/23 19:22:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -63,22 +62,25 @@ void lmAccidental::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 n
     wxDC* pDC = pPaper->GetDC();
     pDC->SetFont( *(m_pOwner->GetFont()) );
 
-    // prepare glyph and measure it
-    wxString sGlyphs = GetAccidentalGlyphs(m_nType);
-    lmLUnits nWidth, nHeight;
-    pDC->GetTextExtent(sGlyphs, &nWidth, &nHeight);
+    // prepare glyphs and measure them
+    lmLUnits nOffset, nWidth, nHeight, nShift, nNotUsed;
+    wxString sGlyphs = GetAccidentalGlyphs(m_nType, &nOffset, &nWidth, &nHeight, &nShift,
+                                           pVStaff, nStaffNum );
+    pDC->GetTextExtent(sGlyphs, &nWidth, &nNotUsed);
 
     // store glyphs position
     m_glyphPos.x = xPos;
-    m_glyphPos.y = yPos - pVStaff->TenthsToLogical( 10, nStaffNum );
+    m_glyphPos.y = yPos + nOffset;
 
     // store selection rectangle position and size
     m_selRect.width = nWidth;
-    m_selRect.height = (m_nType == eDoubleSharp ?
-                            pVStaff->TenthsToLogical( 12, nStaffNum ) :
-                            pVStaff->TenthsToLogical( 30, nStaffNum ) );
+    m_selRect.height = nHeight;
+    //m_selRect.height = (m_nType == eDoubleSharp ?
+    //                        pVStaff->TenthsToLogical( 12, nStaffNum ) :
+    //                        pVStaff->TenthsToLogical( 30, nStaffNum ) );
     m_selRect.x = m_glyphPos.x;
-    m_selRect.y = m_glyphPos.y + pVStaff->TenthsToLogical( 45, nStaffNum );
+    m_selRect.y = m_glyphPos.y + nShift;
+    //m_selRect.y = m_glyphPos.y + pVStaff->TenthsToLogical( 45, nStaffNum );
 
 }
 
@@ -98,33 +100,41 @@ void lmAccidental::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
 //global methods related to accidentals
 
-wxString GetAccidentalGlyphs(EAccidentals nType)
+wxString GetAccidentalGlyphs(EAccidentals nType,
+                             lmLUnits* pOffset,
+                             lmLUnits* pWidth, lmLUnits* pHeight, 
+                             lmLUnits* pShift,
+                             lmVStaff* pVStaff, wxInt32 nStaff)
 {
     wxString sGlyphs;
+    int nGlyph[2] = { -1, -1};
     switch(nType) {
         case eNatural:
-            sGlyphs = _T("'");
+            nGlyph[0] = GLYPH_NATURAL_ACCIDENTAL;
             break;
         case eSharp:
-            sGlyphs = _T("#");
+            nGlyph[0] = GLYPH_SHARP_ACCIDENTAL;
             break;
         case eFlat:
-            sGlyphs = _T("%");
+            nGlyph[0] = GLYPH_FLAT_ACCIDENTAL;
             break;
         case eFlatFlat:
-            sGlyphs = _T("&");
+            nGlyph[0] = GLYPH_DOUBLE_FLAT_ACCIDENTAL;
             break;
         case eDoubleSharp:
-            sGlyphs = _T("$");
+            nGlyph[0] = GLYPH_DOUBLE_SHARP_ACCIDENTAL;
             break;
         case eNaturalFlat:
-            sGlyphs = _T("'%");
+            nGlyph[0] = GLYPH_NATURAL_ACCIDENTAL;
+            nGlyph[1] = GLYPH_FLAT_ACCIDENTAL;
             break;
         case eNaturalSharp:
-            sGlyphs = _T("'#");
+            nGlyph[0] = GLYPH_NATURAL_ACCIDENTAL;
+            nGlyph[1] = GLYPH_SHARP_ACCIDENTAL;
             break;
         case eSharpSharp:
-            sGlyphs = _T("##");
+            nGlyph[0] = GLYPH_SHARP_ACCIDENTAL;
+            nGlyph[1] = GLYPH_SHARP_ACCIDENTAL;
             break;
         case eQuarterFlat:
             wxASSERT(false);    //! @todo Not implemented
@@ -141,6 +151,24 @@ wxString GetAccidentalGlyphs(EAccidentals nType)
         default:
             wxASSERT(false);
     }
+
+    sGlyphs = aGlyphsInfo[nGlyph[0]].GlyphChar;
+    if (pVStaff) {
+        *pOffset = (lmLUnits)pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph[0]].GlyphOffset , nStaff );
+        *pHeight = (lmLUnits)pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph[0]].SelRectHeight , nStaff );
+        *pShift = (lmLUnits)pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph[0]].SelRectShift , nStaff );
+    }
+
+    if (nGlyph[1] != -1) {
+        sGlyphs += aGlyphsInfo[nGlyph[1]].GlyphChar;
+        if (pVStaff) {
+            lmLUnits nShift2 = (lmLUnits)pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph[1]].SelRectShift , nStaff );
+            lmLUnits nHeight2 = (lmLUnits)pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph[1]].SelRectHeight , nStaff );
+            *pHeight = wxMax(*pHeight+*pShift, nHeight2+nShift2) - wxMin(*pShift, nShift2);
+            *pShift = wxMin(*pShift, nShift2);
+       }
+    }
+
     return sGlyphs;
 
 }

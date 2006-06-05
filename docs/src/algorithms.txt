@@ -1,4 +1,3 @@
-// RCS-ID: $Id: algorithms.txt,v 1.6 2006/02/23 19:15:19 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -117,5 +116,49 @@
 	it is not the same, it implies that the notes are in different systems and, therefore,
 	the tie must be splitted.
 
+
+@section algorithm_chords Renderization of chords
+<!-- ============================================================================ -->
+
+	1. compute which noteheads go shifted to right
+	
+	Loop to render accidentals:
+	2. Set x pos to start of chord x pos
+	3. Render accidental. If collision with other accidental:
+		Do while collision:
+			set x pos after collisioning accidental
+			Render accidental
+			test if collision
+		end do
+		
+	Loop to render noteheads:
+	4. set x pos to start of chord x pos
+	5. Render notehead. If collision with an accidental:
+		Do while collision:
+			set x pos after collisioning accidental
+			Render notehead
+			test if collision
+		end do
+
+	Loop to shift noteheads to have a common anchor line:
+	6. Compute common anchor line as the max anchor line position
+	7. Add a shift to each note so that its anchor line become the max anchor line
+	
+	
+	
+	Current note renderization algorithm
+	--------------------------------------
+	
+	1. Render accidental at xPaperPos. To control its position there is a variable in lmNote
+		(m_alterPos) but is never initialized and not used. I think it is useless.
+	2. Advance xPos to after accidental (it includes the accidental afterspace). This position
+		is saved as anchor position.
+	3. Render notehead. It is rendered at that position. There is nothing to include more
+		space after the accidental. 
+	4. Advance xPos by adding notehead width
+	5. Draw dots
+	6. Add note afterspace and compute total width 
+	7. To draw the stem, the pen is repositioned at notehead.x or 
+		notehead.x + notehead.width, depending on stem direction.
 	
 */

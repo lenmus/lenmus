@@ -53,10 +53,10 @@ I have to write more and currently it only documents the minimun to start with t
     </dl></dd></dt>
 
     <dt>10. <a href="#FormattingTags">Tags to control format</a>
-<!--        <dd><dl>
-            <dt>8.1. <a href="#Pitch">Pitch</a></dt>
-            <dt>8.2. <a href="#description_Duration">Duration</a></dt>
-            </dl></dd> -->
+        <dd><dl>
+            <dt>10.1. <a href="#newSystem">New system</a></dt>
+            <dt>10.2. <a href="#stem">Stem</a></dt>
+            </dl></dd>
     </dt>
 
 
@@ -747,9 +747,10 @@ do re me fa sol la si/ti (solfege)
 is the central one (a4 = 440Hz). All octaves start with notename c and ends in notename b, so note
 c4 is the c note just below the a4 note. Octaves range is 0 to 9.</p>
 
-<p>Accidentals are represented by combinations of the signs plus (+), minus (-) and
-equal (=). They representent, respectively, sharps, flats, and naturals. So, for example,
-++ represents a double sharp, and =- represents  a natural flat.</p>
+<p>Accidentals are represented by combinations of the signs plus (+), minus (-),
+equal (=) and the letter x (x). They representent, respectively, sharps, flats, naturals
+and the double sharp symbol. So, for example,
+++ represents two sharps, x a double sharp, and =- represents  a natural flat.</p>
 
 <p>With all this, the pitch is just the combination of the previous signs. Examples:</p>
 
@@ -1172,6 +1173,30 @@ aspectos gráficos de la representación de partituras.</p>
 
 
 
+<h4><a name="stem">stem</a></h4>
+<a href="#TOC">TOC</a>
+
+<p>Normally stem direction and size is automatically computed by the program,
+according to usual engraving rules. Nevertheless, the stem of a note can
+be fully specified by usig the Stem element. It forces stem direction.</p>
+
+<p>
+<span class="nt">Stem</span> :=
+    <span class="t">(stem</span>
+    { <span class="t">up</span> | <span class="t">down</span> }
+    <span class="t">)</span>
+</p>
+
+
+<p>Example:</p>
+
+<pre class="example">
+(n e4 n (stem down))
+</pre>
+
+
+
+
 <!--
 
 
@@ -1551,24 +1576,11 @@ indicaciones de 1ª y 2ª vez</p>
 
 -->
 
+
+
 <!--
 
 
-
-
-
-<h2><a name="_Toc86206014">Dirección de la plica </a> style='font-weight:
-normal'>&lt;stem&gt;</h2>
-
-<p>La dirección de la plica se codifica mediante un elemento <b>plica</b>.
-No es obligatorio especificarlo ya que todas las notas tienen una plica por
-defecto según su tipo y altura:</p>
-
-<p>&lt;plica&gt; = (<b>plica</b> [ &quot;arriba&quot; |
-&quot;abajo&quot; | &quot;sin-plica&quot; |  style='display:none;
-background:yellow'>&quot;doble&quot;]) </p>
-
-<p>&nbsp;</p>
 
 <p><b> lang=ES style='display:none;background:yellow'>Cabeza</b>
 lang=ES style='display:none;background:yellow'> &lt;<i>notehead</i>&gt; Para

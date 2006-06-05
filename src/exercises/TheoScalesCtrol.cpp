@@ -466,7 +466,7 @@ void lmTheoScalesCtrol::NewProblem()
                     if (nContext[(iRoot + i) % 7] == -1) {    //if it is a flat put a natural sign
                         sAlter[i] = (fDrawWithoutKeySignature ? _T("") : _T("="));
                     } else if (nContext[(iRoot + i) % 7] == 1) {    //if it is a sharp put a double sharp
-                        sAlter[i] = _T("++");
+                        sAlter[i] = _T("x");
                     } else {
                         sAlter[i] = _T("+");    //it is a natural. Put a sharp
                     }

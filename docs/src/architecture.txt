@@ -247,7 +247,7 @@ was emited at appropiate time. To wait for the right time, sentence DoWaitEvents
 
 This worked OK, and sentence DoEvents allows for time to process GUI events.
 
-When migrating this code to C++ and wxWidgets, DoWaitEvents was replaced by ::wxMilliSleep().
+When migrating this code to Cx  and wxWidgets, DoWaitEvents was replaced by ::wxMilliSleep().
 This retain execution flow and prevents that GUI events be served; this "frezzes" the GUI and
 it is not possible to serve user commands, such as stopping the music or changing metronome
 settings.
@@ -260,7 +260,7 @@ Topic overview: Multithreading overview). Therefore other alternatives must be e
 1. Use wxMidi facilities to accept timestamped commands and take care of executing them
     at right time. 
     
-2. Replace DoWaitEvents() for C++ code.
+2. Replace DoWaitEvents() for Cx  code.
 
 3. Create GUI_UPDATE events from the thread. GUI_UPDATE events will take care of VisualOn/Off
     commands.

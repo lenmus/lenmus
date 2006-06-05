@@ -403,7 +403,8 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     wxDC* pDC = pPaper->GetDC();
     wxASSERT(pDC);
     wxASSERT(pDC->Ok());
-    int nStemWidth = m_pVStaff->TenthsToLogical(1, m_nStaffNum);
+    #define STEM_WIDTH   1      //default stem line width (tenths)  @todo user selectable
+    int nStemWidth = m_pVStaff->TenthsToLogical(STEM_WIDTH, m_nStaffNum);
     wxPen pen(colorC, nStemWidth, wxSOLID);
     wxBrush brush(colorC, wxSOLID);
     pDC->SetPen(pen);
@@ -436,8 +437,9 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         else {
             m_pAccidentals->Draw(DO_DRAW, pPaper, colorC);
         }
+        #define ACCIDENTALS_AFTERSPACE  7      //in tenths   @todo user options
         nxLeft += m_pAccidentals->GetSelRect().width +
-            m_pVStaff->TenthsToLogical(20, m_nStaffNum)/3;        // after space = 1.5 tenths (0.3 mm)
+            m_pVStaff->TenthsToLogical(ACCIDENTALS_AFTERSPACE, m_nStaffNum);
     }
     
     //render the note
@@ -445,7 +447,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
     if (!m_fBeamed && m_nNoteType > eQuarter && !fInChord) {
         //-------------------------------------------------------------------
-        // It is a single note with corchete: draw it in one step with a glyph
+        // It is a single note with flag: draw it in one step with a glyph
         //-------------------------------------------------------------------
         DrawSingleNote(pDC, fMeasuring, m_nNoteType, m_fStemDown, 
                        nxLeft, nyTop, (m_fSelected ? g_pColors->ScoreSelected() : colorC) );
@@ -523,15 +525,17 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //-----------------------------------------------------------------------------------
     if (m_nStemType != eStemNone) {
         if (fMeasuring) {
-            nyTop += m_pVStaff->TenthsToLogical(50, m_nStaffNum);
+                //nyTop += m_pVStaff->TenthsToLogical(50, m_nStaffNum);       
             // compute and store start position of stem
             if (m_fStemDown) {
                 //stem down: line down on the left of the notehead
-                m_xStem = m_noteheadRect.x + nStemWidth/2;
+                nyTop += m_pVStaff->TenthsToLogical(51, m_nStaffNum);       
+                m_xStem = m_noteheadRect.x;
                 m_yStem = nyTop - m_paperPos.y;
             } else {
                 //stem up: line up on the right of the notehead
-                m_xStem = m_noteheadRect.x + m_noteheadRect.width - nStemWidth/2;
+                nyTop += m_pVStaff->TenthsToLogical(49, m_nStaffNum);       
+                m_xStem = m_noteheadRect.x + m_noteheadRect.width;
                 m_yStem = nyTop - m_paperPos.y;
             }
 
@@ -547,8 +551,9 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     }
 
     // set total width
-    lmLUnits afterSpace = m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
-    if (fMeasuring) m_nWidth = nxLeft + afterSpace - m_paperPos.x;
+    #define NOTE_AFTERSPACE     10      //one line space     @todo user options
+    lmLUnits nAfterSpace = m_pVStaff->TenthsToLogical(NOTE_AFTERSPACE, m_nStaffNum);
+    if (fMeasuring) m_nWidth = nxLeft + nAfterSpace - m_paperPos.x;
 
     // draw leger lines if necessary
     //--------------------------------------------
@@ -802,6 +807,9 @@ void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ENoteHeads nNoteheadType,
 
         // store notehead position and size. selRect bounds the notehead, so just copy it
         m_noteheadRect = m_selRect;
+
+        //fix for width. It is not correctly computed by DC->GetTextExtent
+        m_noteheadRect.width -= m_pVStaff->TenthsToLogical(10, m_nStaffNum)/10;
 
     } else {
         // else (drawing phase) do the draw
@@ -1353,35 +1361,35 @@ wxString MIDINoteToLDPPattern(lmPitch nPitchMIDI, EKeySignatures nTonalidad, lmP
         case earmLa:
         case earmFasm:
             //            "C  C# D  D# E  F  F# G  G# A  A# B  " #FCG
-            sPattern = _T("b+ c  d  d+ e  e+ f  f++g  a  a+ b  ");
+            sPattern = _T("b+ c  d  d+ e  e+ f  fx g  a  a+ b  ");
             sDisplcm = _T("-1 0  1  1  2  2  3  3  4  5  5  6  ");
             break;
 
         case earmMi:
         case earmDosm:
             //            "C  C# D  D# E  F  F# G  G# A  A# B  " #FCGD
-            sPattern = _T("b+ c  c++d  e  e+ f  f++g  a  a+ b  ");
+            sPattern = _T("b+ c  cx d  e  e+ f  fx g  a  a+ b  ");
             sDisplcm = _T("-1 0  0  1  2  2  3  3  4  5  5  6  ");
             break;
 
         case earmSi:
         case earmSolsm:
             //            "C  C# D  D# E  F  F# G  G# A  A# B  " #FCGDA
-            sPattern = _T("b+ c  c++d  e  e+ f  f++g  g++a  b  ");
+            sPattern = _T("b+ c  cx d  e  e+ f  fx g  gx a  b  ");
             sDisplcm = _T("-1 0  0  1  2  2  3  3  4  4  5  6  ");
             break;
 
         case earmFas:
         case earmResm:
             //            "C  C# D  D# E  F  F# G  G# A  A# B  " #FCGDAE
-            sPattern = _T("b+ c  c++d  d++e  f  f++g  g++a  b  ");
+            sPattern = _T("b+ c  cx d  dx e  f  fx g  gx a  b  ");
             sDisplcm = _T("-1 0  0  1  1  2  3  3  4  4  5  6  ");
             break;
 
         case earmDos:
         case earmLasm:
             //            "C  C# D  D# E  F  F# G  G# A  A# B  " #FCGDAEB
-            sPattern = _T("b  c  c++d  d++e  f  f++g  g++a  a++");
+            sPattern = _T("b  c  cx d  dx e  f  fx g  gx a  ax ");
             sDisplcm = _T("-1 0  0  1  1  2  3  3  4  4  5  5  ");
             break;
 

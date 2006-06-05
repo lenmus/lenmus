@@ -1,4 +1,3 @@
-// RCS-ID: $Id$
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -108,6 +107,14 @@ enum lmEGlyphIndex {
     GLYPH_128TH_FLAG_UP,
     GLYPH_256TH_FLAG_DOWN,      //256th, semigarrapatea
     GLYPH_256TH_FLAG_UP,
+
+    //accidentals
+    GLYPH_NATURAL_ACCIDENTAL,
+    GLYPH_SHARP_ACCIDENTAL,
+    GLYPH_FLAT_ACCIDENTAL,
+    GLYPH_DOUBLE_SHARP_ACCIDENTAL,
+    GLYPH_DOUBLE_FLAT_ACCIDENTAL,
+
 };
 
 
