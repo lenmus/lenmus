@@ -63,8 +63,12 @@ public:
     void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nStaffNum,
                          lmLUnits xPos, lmLUnits yPos);
 
+    lmLUnits GetWidth();
+    void SetAfterspace(lmLUnits nSpace) { m_nAfterSpace = nSpace; }
+
 private:
     EAccidentals    m_nType;        //accidental type
+    lmLUnits        m_nAfterSpace;
 
 };
 

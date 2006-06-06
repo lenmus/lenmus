@@ -75,12 +75,11 @@ void lmAccidental::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 n
     // store selection rectangle position and size
     m_selRect.width = nWidth;
     m_selRect.height = nHeight;
-    //m_selRect.height = (m_nType == eDoubleSharp ?
-    //                        pVStaff->TenthsToLogical( 12, nStaffNum ) :
-    //                        pVStaff->TenthsToLogical( 30, nStaffNum ) );
     m_selRect.x = m_glyphPos.x;
     m_selRect.y = m_glyphPos.y + nShift;
-    //m_selRect.y = m_glyphPos.y + pVStaff->TenthsToLogical( 45, nStaffNum );
+
+    #define ACCIDENTALS_AFTERSPACE  7      //in tenths   @todo user options
+    m_nAfterSpace = pVStaff->TenthsToLogical(ACCIDENTALS_AFTERSPACE, nStaffNum);
 
 }
 
@@ -97,6 +96,15 @@ void lmAccidental::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     pDC->DrawText(sGlyphs, pos.x, pos.y );
 
 }
+
+lmLUnits lmAccidental::GetWidth()
+{
+    return GetSelRect().width + m_nAfterSpace;
+
+}
+
+
+
 
 //global methods related to accidentals
 

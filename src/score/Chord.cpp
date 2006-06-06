@@ -162,9 +162,6 @@ void lmChord::DrawStem(bool fMeasuring, wxDC* pDC, wxColour colorC, wxFont* pFon
     lmLUnits xStem = pBaseNote->GetXStem();
     lmLUnits yStemStart=0, yStemEnd=0;
 
-    #define TWO_NOTES_DEFAULT true          //! @todo move to layout user options
-
-
     if (!pBaseNote->IsBeamed()) {
         //compute y positions
         if (m_fStemDown) {
@@ -184,17 +181,14 @@ void lmChord::DrawStem(bool fMeasuring, wxDC* pDC, wxColour colorC, wxFont* pFon
             //stem down: line at left of noteheads
             yStemStart = m_pMaxNote->GetYStem();
             yStemEnd = m_pMinNote->GetYStem() + pBaseNote->GetStemLength();
-            //yStemEnd = yStemStart + pBaseNote->GetStemLength();
-            //yStemEnd = m_pMinNote->GetFinalYStem();
         } else {
             //stem up: line at right of noteheads
             yStemStart = m_pMinNote->GetYStem();
             yStemEnd = m_pMaxNote->GetYStem() - pBaseNote->GetStemLength();
-            //yStemEnd = yStemStart - pBaseNote->GetStemLength();
         }
     }
 
-    pDC->DrawLine(xStem, yStemStart, xStem, yStemEnd);
+    if (!fMeasuring) pDC->DrawLine(xStem, yStemStart, xStem, yStemEnd);
 
     //draw the flag for chords not beamed
     if (!pBaseNote->IsBeamed() && pBaseNote->GetNoteType() > eQuarter) {
@@ -347,7 +341,7 @@ void lmChord::SetStemDirection(bool fStemDown)
 void lmChord::ArrangeNoteheads()
 {
     //arrange noteheads at left/right of stem to avoid collisions
-    //This method aaume that the stem direction has been computed
+    //This method asumes that the stem direction has been computed
 
     if (m_cNotes.GetCount() < 2) return;
 
@@ -383,3 +377,66 @@ void lmChord::ArrangeNoteheads()
 
 }
 
+void lmChord::DrawChord(lmPaper* pPaper, bool fMeasuring, wxPoint paperPos, wxColour colorC)
+{
+	//Loop to render accidentals:
+	//- Set x pos to start of chord x pos
+	//- Render accidental. If collision with other accidental:
+	//	    Do while collision:
+	//		    set x pos after collisioning accidental
+	//		    Render accidental
+	//		    test if collision
+	//	    end do
+    //
+    int iN;
+    int xPos = paperPos.x;
+    int yPos = paperPos.y;
+    lmAccidental* pAccidental;
+    lmNote* pNote;
+    lmNote* pCrashNote;
+    wxNotesListNode *pNode = m_cNotes.GetFirst();
+    for(iN=1; pNode; pNode=pNode->GetNext(), iN++ ) {
+        pNote = (lmNote*)pNode->GetData();
+        if (pNote->HasAccidentals()) {
+            pNote->DrawAccidentals(pPaper, fMeasuring, xPos, yPos, colorC);
+            pAccidental = pNote->GetAccidentals();
+            //check if collision with any previous note accidentals
+            pCrashNote = CheckIfCollision(iN, pAccidental);
+            while (pCrashNote) {
+                //try to render at right of colliding accidental
+                xPos += (pCrashNote->GetAccidentals())->GetWidth();
+                pNote->DrawAccidentals(pPaper, fMeasuring, xPos, yPos, colorC);
+                //check again for collision
+                pCrashNote = CheckIfCollision(iN, pAccidental);
+            }
+        }
+    }
+
+    //Here all accidentals are positioned without collisions
+
+
+}
+
+lmNote* lmChord::CheckIfCollision(int iCurNote, lmAccidental* pAccidental)
+{
+	//Check to see if the accidental position overlaps any other previous
+    //accidental. If no collision returns NULL, otherwse, returns the Note
+    //owning the accidental that collides
+    int iN;
+    bool fCollision = false;
+    lmNote* pNote;
+    wxNotesListNode *pNode = m_cNotes.GetFirst();
+    for(iN=0; pNode && iN < iCurNote && !fCollision; pNode=pNode->GetNext(), iN++ ) {
+        pNote = (lmNote*)pNode->GetData();
+        if (pNote->HasAccidentals()) {
+            if ( pAccidental->CheckForCollision(pNote->GetAccidentals()) ) {
+                //collision
+                return pNote;
+            }
+        }
+    }
+
+    //no collision
+    return (lmNote*)NULL;
+
+}

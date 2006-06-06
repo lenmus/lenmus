@@ -52,6 +52,12 @@ lmBarline::lmBarline(EBarline nBarlineType, lmVStaff* pVStaff, bool fVisible) :
     lmSimpleObj(eTPO_Barline, pVStaff, 1, fVisible, sbDRAGGABLE)
 {
     m_nBarlineType = nBarlineType;
+        //DBG
+    if (GetID() == 95) {
+        // break here
+        int nDbg = 0;
+    }
+
 }
 
 void lmBarline::AddContext(lmContext* pContext, int nStaff)

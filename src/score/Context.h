@@ -51,6 +51,7 @@ public:
 
     void SetAccidental(int i, int nValue) { m_nAccidentals[i] = nValue; }
     int GetAccidentals(int i) { return m_nAccidentals[i]; }
+    void CopyAccidentals(lmContext* pContext);
 
     lmClef*            GetClef() { return m_pClef; }
     lmKeySignature*    GeyKey() { return m_pKey; }

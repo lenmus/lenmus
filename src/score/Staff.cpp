@@ -91,18 +91,20 @@ lmContext* lmStaff::NewContext(lmClef* pNewClef)
     lmClef* pClef = (lmClef*)NULL;
     lmKeySignature* pKey = (lmKeySignature*)NULL;
     lmTimeSignature* pTime = (lmTimeSignature*)NULL;
-    lmContext* pContext;
+    lmContext* pLastContext;
     if (pNode) {
-        pContext = pNode->GetData();
-        pClef = pContext->GetClef();
-        pKey = pContext->GeyKey();
-        pTime = pContext->GetTime();
+        pLastContext = pNode->GetData();
+        pClef = pLastContext->GetClef();
+        pKey = pLastContext->GeyKey();
+        pTime = pLastContext->GetTime();
     }
 
     //create a new context and store it
-    pContext = new lmContext(pNewClef, pKey, pTime);
-    m_cContext.Append(pContext);
-    return pContext;
+    lmContext* pNewContext = new lmContext(pNewClef, pKey, pTime);
+    if (pNode) pNewContext->CopyAccidentals(pLastContext);
+
+    m_cContext.Append(pNewContext);
+    return pNewContext;
 
 }
 
@@ -113,18 +115,20 @@ lmContext* lmStaff::NewContext(lmKeySignature* pNewKey)
     lmClef* pClef = (lmClef*)NULL;
     lmKeySignature* pKey = (lmKeySignature*)NULL;
     lmTimeSignature* pTime = (lmTimeSignature*)NULL;
-    lmContext* pContext;
+    lmContext* pLastContext;
     if (pNode) {
-        pContext = pNode->GetData();
-        pClef = pContext->GetClef();
-        pKey = pContext->GeyKey();
-        pTime = pContext->GetTime();
+        pLastContext = pNode->GetData();
+        pClef = pLastContext->GetClef();
+        pKey = pLastContext->GeyKey();
+        pTime = pLastContext->GetTime();
     }
 
     //create a new context and store it
-    pContext = new lmContext(pClef, pNewKey, pTime);
-    m_cContext.Append(pContext);
-    return pContext;
+    lmContext* pNewContext = new lmContext(pClef, pNewKey, pTime);
+    if (pNode) pNewContext->CopyAccidentals(pLastContext);
+
+    m_cContext.Append(pNewContext);
+    return pNewContext;
 
 }
 
@@ -135,18 +139,20 @@ lmContext* lmStaff::NewContext(lmTimeSignature* pNewTime)
     lmClef* pClef = (lmClef*)NULL;
     lmKeySignature* pKey = (lmKeySignature*)NULL;
     lmTimeSignature* pTime = (lmTimeSignature*)NULL;
-    lmContext* pContext;
+    lmContext* pLastContext;
     if (pNode) {
-        pContext = pNode->GetData();
-        pClef = pContext->GetClef();
-        pKey = pContext->GeyKey();
-        pTime = pContext->GetTime();
+        pLastContext = pNode->GetData();
+        pClef = pLastContext->GetClef();
+        pKey = pLastContext->GeyKey();
+        pTime = pLastContext->GetTime();
     }
 
     //create a new context and store it
-    pContext = new lmContext(pClef, pKey, pNewTime);
-    m_cContext.Append(pContext);
-    return pContext;
+    lmContext* pNewContext = new lmContext(pClef, pKey, pNewTime);
+    if (pNode) pNewContext->CopyAccidentals(pLastContext);
+
+    m_cContext.Append(pNewContext);
+    return pNewContext;
 
 }
 
@@ -166,6 +172,7 @@ lmContext* lmStaff::NewContext(lmContext* pCurrentContext, int nNewAccidentals, 
     lmContext* pNewContext = new lmContext(pCurrentContext->GetClef(),
                                     pCurrentContext->GeyKey(),
                                     pCurrentContext->GetTime() );
+    pNewContext->CopyAccidentals(pCurrentContext);
     pNewContext->SetAccidental(nStep, nNewAccidentals);
 
     //insert new context after the received one

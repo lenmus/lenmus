@@ -102,6 +102,13 @@ public:
     void        ClearChordInformation();
     void        SetRightShift(bool fShiftRight) { m_fShiftNoteheadRight = fShiftRight; }
 
+    //methods related to accidentals
+    bool HasAccidentals() { return (m_pAccidentals != (lmAccidental*)NULL); }
+    lmAccidental* GetAccidentals() { return m_pAccidentals; }
+    lmLUnits DrawAccidentals(lmPaper* pPaper, bool fMeasuring,
+                        lmLUnits xLeft, lmLUnits yTop, wxColour colorC);
+
+
     //methods related to ties
     bool    CanBeTied(lmPitch nMidiPitch, int nStep);
     bool    NeedToBeTied() { return m_fNeedToBeTied; }
@@ -133,6 +140,7 @@ private:
                         lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC);
     void DrawAdditionalLines(wxDC* pDC, int nPosOnStaff, lmLUnits yTopLine, lmLUnits xPos,
                         lmLUnits width, int nROP = wxCOPY);
+
 
     //auxiliary
     wxInt32 PosOnStaffToPitch(wxInt32 nSteps);
@@ -180,6 +188,7 @@ private:
     lmContext*      m_pContext;         //context for this note
 
     // additional positioning related variables
+    lmLUnits        m_nSpacePrev;       // space (after accidental) before note
     lmLUnits        m_xAnchor;          // x position of anchor line (relative to m_paperPos.x)
     wxRect          m_noteheadRect;     // notehead bounding rectangle (relative to paper)
 
@@ -189,9 +198,6 @@ private:
     lmLUnits        m_nStemLength;     //length of stem;
     bool            m_fStemDown;       //stem direccion. true if down
     EStemType       m_nStemType;       //type of stem
-
-    //accidentals positioning
-    wxPoint        m_alterPos;
 
     // common for sound and look 
     //-----------------------------------------------------------------------

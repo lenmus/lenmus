@@ -1,21 +1,17 @@
 <html>
 <head>
-<title>LenMus 3.0 beta 1 Release Notes</title>
+<title>LenMus 3.1 Release Notes</title>
 <link rel="stylesheet" media="all" href="singledoc.css" type="text/css" />
 </head>
 <body>
 
-<h1>LenMus Phonascus 3.0 Release Notes</h1>
+<h1>LenMus Phonascus 3.1 Release Notes</h1>
 
-<h2>What's New in 3.0 (since 3.0 beta 1)</h2>
+<h2>What's new in 3.1</h2>
 
-<p>Release 3.0 include new features and improvements and some bug fixes:</p>
+<p>Release 3.1 include new features and improvements and some bug fixes:</p>
 
 <ul>
-  <li>Sound feedback (wrong/right answer sound) added to all exercises.</li>
-  <li>Automatically checks if a new version of the program is available.</li>
-  <li>A new menu item to access to LenMus website.</li>
-  <li>About box improved to facilitate user accessibility to information.</li>
   <li>Several bug fixes (<a href="#details">see details</a>).</li>
 </ul>
 
@@ -31,46 +27,8 @@
 
 <tr valign="top">
     <td class="ListaPar">
-      <b>Clefs reading exercise does not display any score.</b><br />
-      The bug was caused by the fix to memory leaks problem (3/may); the fix code was,
-      inadvertely, placed in the wrong place. Now fixed.
-    </td></tr>
-<tr valign="top">
-    <td class="ListaPar">
-      <b>Button colours in keyboard for answers in build intervals exercises not reset.</b><br />
-      As 'build interval' exercise was added later, existing code to reset keyboard did 
-      not take into account the later added keyboard. Now fixed.
-    </td></tr>
-<tr valign="top">
-    <td class="ListaPar">
-      <b>In occasions, bad answers given for the exercises.</b><br />
-      The problem was caused by rendering optimization code: if by chance the new score
-      pointer has the same address than the previous one, it was not re-drawn and the
-      previous score non-valid bitmaps got displayed. I tried to fix this bug (2-may-06)
-      but the fix did not take into account all cases. Now I hope this problem is 
-      definitely fixed.
-    </td></tr>
-<tr valign="top">
-    <td class="ListaPar">
-      <b>In first run installed languages are not recognized.</b><br />
-      It was caused by not properly setting the locale folder, as paths were instantiated
-      after the language was chosen.
-    </td></tr>
-<tr valign="top">
-    <td class="ListaPar">
-      <b>Keyboard for answers in build intervals exercises disabled after first answer given.</b><br />
-      It was due to forgeting to re-enable the keyboard after generating a new exercise.
-    </td></tr>
-<tr valign="top">
-    <td class="ListaPar">
-      <b>Primary and secondary beams too near.</b><br />
-      Distance has been adjusted.
-    </td></tr>
-<tr valign="top">
-    <td class="ListaPar">
-      <b>Invalid scores were sometimes generated in Music Reading Level 2 eBook, lessons 13 and 16.</b><br />
-      The problem was caused by patterns with barlines marks in erroneous places. Patterns
-      in eBook now fixed.
+      <b>When playing back a score, accidentals not always propagated along the measure.</b><br />
+      The problem is now solved.
     </td></tr>
 
 </table>

@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Context.cpp,v 1.3 2006/02/23 19:22:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -66,117 +65,13 @@ void lmContext::InitializeAccidentals()
 
     ComputeAccidentals(m_pKey->GetType(), m_nAccidentals);
 
+}
 
-    //// add accidentals implied by key signature
- //   switch (m_pKey->GetType()) {
-    //    case earmDo:
-    //    case earmLam:
- //           //no accidentals
-    //        break;
-
- //       //Sharps ---------------------------------------
- //       case earmSol:
-    //    case earmMim:
- //           m_nAccidentals[3] = 1;     //Fa #
-    //        break;
- //       case earmRe:
-    //    case earmSim:
- //           m_nAccidentals[3] = 1;     //Fa #
- //           m_nAccidentals[0] = 1;     //Do #
-    //        break;
- //       case earmLa:
-    //    case earmFasm:
- //           m_nAccidentals[3] = 1;     //Fa #
- //           m_nAccidentals[0] = 1;     //Do #
- //           m_nAccidentals[4] = 1;     //Sol #
- //            break;
- //      case earmMi:
-    //    case earmDosm:
- //           m_nAccidentals[3] = 1;     //Fa #
- //           m_nAccidentals[0] = 1;     //Do #
- //           m_nAccidentals[4] = 1;     //Sol #
- //           m_nAccidentals[1] = 1;     //Re #
-    //        break;
- //       case earmSi:
-    //    case earmSolsm:
- //           m_nAccidentals[3] = 1;     //Fa #
- //           m_nAccidentals[0] = 1;     //Do #
- //           m_nAccidentals[4] = 1;     //Sol #
- //           m_nAccidentals[1] = 1;     //Re #
- //           m_nAccidentals[5] = 1;     //La #
-    //        break;
- //       case earmFas:
-    //    case earmResm:
- //           m_nAccidentals[3] = 1;     //Fa #
- //           m_nAccidentals[0] = 1;     //Do #
- //           m_nAccidentals[4] = 1;     //Sol #
- //           m_nAccidentals[1] = 1;     //Re #
- //           m_nAccidentals[5] = 1;     //La #
- //           m_nAccidentals[2] = 1;     //Mi #
-    //        break;
- //       case earmDos:
-    //    case earmLasm:
- //           m_nAccidentals[3] = 1;     //Fa #
- //           m_nAccidentals[0] = 1;     //Do #
- //           m_nAccidentals[4] = 1;     //Sol #
- //           m_nAccidentals[1] = 1;     //Re #
- //           m_nAccidentals[5] = 1;     //La #
- //           m_nAccidentals[2] = 1;     //Mi #
- //           m_nAccidentals[6] = 1;     //Si #
- //            break;
-
-    //    //Flats -------------------------------------------
-    //    case earmFa:
-    //    case earmRem:
- //           m_nAccidentals[6] = -1;         //Si b
-    //        break;
- //       case earmSib:
-    //    case earmSolm:
- //           m_nAccidentals[6] = -1;         //Si b
- //           m_nAccidentals[2] = -1;         //Mi b
- //            break;
- //      case earmMib:
-    //    case earmDom:
- //           m_nAccidentals[6] = -1;         //Si b
- //           m_nAccidentals[2] = -1;         //Mi b
- //           m_nAccidentals[5] = -1;         //La b
-    //        break;
- //       case earmLab:
-    //    case earmFam:
- //           m_nAccidentals[6] = -1;         //Si b
- //           m_nAccidentals[2] = -1;         //Mi b
- //           m_nAccidentals[5] = -1;         //La b
- //           m_nAccidentals[1] = -1;         //Re b
- //            break;
- //       case earmReb:
-    //    case earmSibm:
- //           m_nAccidentals[6] = -1;         //Si b
- //           m_nAccidentals[2] = -1;         //Mi b
- //           m_nAccidentals[5] = -1;         //La b
- //           m_nAccidentals[1] = -1;         //Re b
- //           m_nAccidentals[4] = -1;         //Sol b
-    //        break;
- //       case earmSolb:
-    //    case earmMibm:
- //           m_nAccidentals[6] = -1;         //Si b
- //           m_nAccidentals[2] = -1;         //Mi b
- //           m_nAccidentals[5] = -1;         //La b
- //           m_nAccidentals[1] = -1;         //Re b
- //           m_nAccidentals[4] = -1;         //Sol b
- //           m_nAccidentals[0] = -1;         //Do b
-    //        break;
- //       case earmDob:
-    //    case earmLabm:
- //           m_nAccidentals[6] = -1;         //Si b
- //           m_nAccidentals[2] = -1;         //Mi b
- //           m_nAccidentals[5] = -1;         //La b
- //           m_nAccidentals[1] = -1;         //Re b
- //           m_nAccidentals[4] = -1;         //Sol b
- //           m_nAccidentals[0] = -1;         //Do b
- //           m_nAccidentals[3] = -1;         //Fa b
-    //        break;
- //       default:
-    //        wxASSERT(false);
- //   }
+void lmContext::CopyAccidentals(lmContext* pContext)
+{
+    int i;
+    for (i=0; i < 7; i++) {
+        m_nAccidentals[i] = pContext->GetAccidentals(i);
+    }
 
 }

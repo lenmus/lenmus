@@ -128,6 +128,8 @@ public:
     bool IsFixed() const { return m_fFixedPos; }
     void SetFixed(bool fFixed) { m_fFixedPos = fFixed; }
 
+    //methods to detect conflicts in positioning
+    virtual bool CheckForCollision(lmScoreObj* pSO);
 
     // methods related to selection
     inline bool IsSelected() { return m_fSelected; }

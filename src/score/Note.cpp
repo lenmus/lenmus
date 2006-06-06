@@ -88,7 +88,11 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
     m_nStemType = nStem;    
     m_nStemLength = GetDefaultStemLength();     //default. If beamed note, this value will
                                                 //be updated in lmBeam::ComputeStemsDirection
-
+    //DBG
+    if (GetID() == 96 || GetID() == 101) {
+        // break here
+        int nDbg = 0;
+    }
 
     // accidentals
     if (nAccidentals == eNoAccidentals) {
@@ -233,6 +237,9 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
     
     
     if (!IsInChord() || IsBaseOfChord()) g_pLastNoteRest = this;
+
+    //initializations for renderization
+    m_nSpacePrev = 0;
 
 }
 
@@ -427,20 +434,13 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
     //render accidental signs if exist
     if (m_pAccidentals) {
-        if (fMeasuring) {
-            // set position (relative to paperPos)
-            lmLUnits xPos = nxLeft - m_paperPos.x;
-            lmLUnits yPos = nyTop - m_paperPos.y;
-            m_pAccidentals->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
-            m_pAccidentals->UpdateMeasurements();
-        }
-        else {
-            m_pAccidentals->Draw(DO_DRAW, pPaper, colorC);
-        }
-        #define ACCIDENTALS_AFTERSPACE  7      //in tenths   @todo user options
-        nxLeft += m_pAccidentals->GetSelRect().width +
-            m_pVStaff->TenthsToLogical(ACCIDENTALS_AFTERSPACE, m_nStaffNum);
+        lmLUnits xPos = nxLeft - m_paperPos.x;
+        lmLUnits yPos = nyTop - m_paperPos.y;
+        nxLeft += DrawAccidentals(pPaper, fMeasuring, xPos, yPos, colorC);
     }
+
+    //advance space before note
+    nxLeft += m_nSpacePrev;
     
     //render the note
     if (fMeasuring) { m_xAnchor = nxLeft - m_paperPos.x; }
@@ -641,6 +641,21 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         m_pTupletBracket->Draw(fMeasuring, pPaper, colorC);
     }
     
+}
+
+lmLUnits lmNote::DrawAccidentals(lmPaper* pPaper, bool fMeasuring,
+                        lmLUnits xPos, lmLUnits yPos, wxColour colorC)
+{
+    //render accidental. Returns width of accidental + accidental afterspace
+    if (fMeasuring) {
+        m_pAccidentals->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
+        m_pAccidentals->UpdateMeasurements();
+    }
+    else {
+        m_pAccidentals->Draw(DO_DRAW, pPaper, colorC);
+    }
+    return m_pAccidentals->GetWidth();
+
 }
 
 void lmNote::MakeUpPhase(lmPaper* pPaper)

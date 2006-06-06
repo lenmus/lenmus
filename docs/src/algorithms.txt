@@ -160,5 +160,23 @@
 	6. Add note afterspace and compute total width 
 	7. To draw the stem, the pen is repositioned at notehead.x or 
 		notehead.x + notehead.width, depending on stem direction.
+		
+		
+		
+		
+		
+@section contexts  Context for notes
+<!-- ============================================================================ -->
+
+	After creating a new barline (in method VStaff::AddBarline) method lmVStaff::ResetContexts
+	is invoked to reset the context if it was modified by accidentals in notes, and leave
+	a new context with only the key signature accidentals.
 	
+		lmVStaff::ResetContexts:
+			Verify if current context is just the key signature accidentals. If not,
+			create a new context.
+			This method is invoked after a barline to reset the context if it was modified 
+			by accidentals in notes
+
+
 */

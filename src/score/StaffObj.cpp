@@ -1,4 +1,3 @@
-// RCS-ID: $Id: StaffObj.cpp,v 1.3 2006/02/23 19:24:42 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -90,6 +89,11 @@ void lmScoreObj::DrawSelRectangle(lmPaper* pPaper, wxColour colorC)
     pDC->SetPen( wxPen(colorC, 1, wxSOLID) );
     pDC->SetBrush( *wxTRANSPARENT_BRUSH );
     pDC->DrawRectangle(GetSelRect().GetPosition(), GetSelRect().GetSize());
+}
+
+bool lmScoreObj::CheckForCollision(lmScoreObj* pSO)
+{
+    return false;   //! @todo
 }
 
 //======================================================================================
