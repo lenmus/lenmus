@@ -45,7 +45,7 @@ public:
     void SetStemDirection(bool fStemDown);
     void DrawStem(bool fMeasuring, wxDC* pDC, wxColour colorC, wxFont* pFont,
                   lmVStaff* pVStaff, int nStaff);
-    void DrawChord(lmPaper* pPaper, bool fMeasuring, wxPoint paperPos, wxColour colorC);
+    void ComputeLayout(lmPaper* pPaper, wxPoint paperPos, wxColour colorC);
 
 
 private:
@@ -53,7 +53,7 @@ private:
                       wxColour colorC, wxFont* pFont, lmVStaff* pVStaff, int nStaff);
     void ComputeStemDirection();
     void ArrangeNoteheads();
-    lmNote* CheckIfCollision(int iCurNote, lmAccidental* pAccidental);
+    lmNote* CheckIfCollisionWithAccidentals(int iCurNote, lmScoreObj* pSO);
 
 
 

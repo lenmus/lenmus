@@ -66,6 +66,7 @@ LenMus project philosophy (to remind me to always stay on this):
   
   ---------------------------------------------------------------------------------------
  
+	- include playback buttons in main toolbar
 	
 Organizational issues:
     - Integrate wxMidi so that LenMus package at SVN be self-contained.

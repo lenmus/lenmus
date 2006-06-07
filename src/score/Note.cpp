@@ -81,6 +81,10 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
 //        fCabezaX As Boolean, _
 //        nVoz As Long, _
 
+    //shapes initialization
+    m_pNoteheadShape = (lmShapeGlyph*)NULL;
+    m_pStemLine = (lmShapeLine*)NULL;
+    m_pFlagShape = (lmShapeGlyph*)NULL;
     
     // stem information
     m_xStem = 0;            // will be updated in lmNote::DrawObject, in measurement phase
@@ -89,7 +93,7 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
     m_nStemLength = GetDefaultStemLength();     //default. If beamed note, this value will
                                                 //be updated in lmBeam::ComputeStemsDirection
     //DBG
-    if (GetID() == 96 || GetID() == 101) {
+    if (GetID() == 13) {
         // break here
         int nDbg = 0;
     }
@@ -281,6 +285,20 @@ lmNote::~lmNote()
         m_pAccidentals = (lmAccidental*)NULL;
     }
 
+    //delete the shapes
+    if (m_pNoteheadShape) {
+        delete m_pNoteheadShape;
+        m_pNoteheadShape = (lmShapeGlyph*)NULL;
+    }
+    if (m_pStemLine) {
+        delete m_pStemLine;
+        m_pStemLine = (lmShapeLine*)NULL;
+    }
+    if (m_pFlagShape) {
+        delete m_pFlagShape;
+        m_pFlagShape = (lmShapeGlyph*)NULL;
+    }
+
 }
 
 bool lmNote::UpdateContext(int nStep, int nNewAccidentals, lmContext* pNewContext)
@@ -421,6 +439,19 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //If drawing phase do first MakeUp phase
     if (!fMeasuring) MakeUpPhase(pPaper);
 
+    //In measuring phase, if this is the first note of a chord, give lmChord the
+    //responsibility for computing chord layout (notes and rests' positions). If it is 
+    //any other note of a chord, do nothing and mark the note as 'already measured'.
+    bool fMeasured = false;
+    if (fMeasuring) {
+        if (IsBaseOfChord()) {
+            m_pChord->ComputeLayout(pPaper, m_paperPos, colorC);
+        }
+        else if (IsInChord()) {
+            fMeasured = true;
+        }
+    }
+
     //if this is the first note/rest of a beam, measure beam
     //@attention This must be done before using stem information, as the beam could
     //change stem direction if it is not determined for some/all the notes in the beam
@@ -433,7 +464,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     }
 
     //render accidental signs if exist
-    if (m_pAccidentals) {
+    if (!fMeasured && m_pAccidentals) {
         lmLUnits xPos = nxLeft - m_paperPos.x;
         lmLUnits yPos = nyTop - m_paperPos.y;
         nxLeft += DrawAccidentals(pPaper, fMeasuring, xPos, yPos, colorC);
@@ -813,12 +844,22 @@ void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ENoteHeads nNoteheadType,
         m_glyphPos.y = nyTop - m_paperPos.y - m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum);
 
         // store selection rectangle position and size
-        lmLUnits nWidth, nHeight;
-        pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
-        m_selRect.height = m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum);
-        m_selRect.width = nWidth;
-        m_selRect.x = m_glyphPos.x;
-        m_selRect.y = m_glyphPos.y + m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum);
+        //lmLUnits nWidth, nHeight;
+        //pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
+        //m_selRect.height = m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum);
+        //m_selRect.width = nWidth;
+        //m_selRect.x = m_glyphPos.x;
+        //m_selRect.y = m_glyphPos.y + m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum);
+
+        //create the ShapeObj
+        if (!m_pNoteheadShape) m_pNoteheadShape = new lmShapeGlyph(this, nGlyph, m_pFont);
+        m_pNoteheadShape->Measure(pDC, m_nStaffNum);
+
+        //COMPATIBILITY
+
+        m_selRect = m_pNoteheadShape->GetBoundsRect();
+        m_selRect.x += (nxLeft - m_paperPos.x);
+        m_selRect.y += (nyTop - m_paperPos.y);
 
         // store notehead position and size. selRect bounds the notehead, so just copy it
         m_noteheadRect = m_selRect;
@@ -826,15 +867,13 @@ void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ENoteHeads nNoteheadType,
         //fix for width. It is not correctly computed by DC->GetTextExtent
         m_noteheadRect.width -= m_pVStaff->TenthsToLogical(10, m_nStaffNum)/10;
 
+
     } else {
         // else (drawing phase) do the draw
-        wxPoint pos = GetGlyphPosition();
-        pDC->SetTextForeground(colorC);
-        pDC->DrawText(sGlyph, pos.x, pos.y );
-        //lmLUnits nWidth, nHeight;
-        //pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
-        //pDC->DrawRectangle(pos.x, pos.y, nWidth, nHeight);
-        //wxLogMessage(_T("[lmNote::DrawNoteHead] pos=(%d, %d)"), pos.x, pos.y);
+        //wxPoint pos = GetGlyphPosition();
+        //pDC->SetTextForeground(colorC);
+        //pDC->DrawText(sGlyph, pos.x, pos.y );
+        m_pNoteheadShape->Render(pDC, wxPoint(nxLeft, nyTop), colorC);
     }
 
 }

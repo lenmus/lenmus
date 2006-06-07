@@ -937,6 +937,12 @@
 				RelativePath="..\..\src\graphic\GraphicManager.h">
 			</File>
 			<File
+				RelativePath="..\..\src\graphic\Shape.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\Shape.h">
+			</File>
+			<File
 				RelativePath="..\..\src\graphic\TimeposTable.cpp">
 			</File>
 			<File

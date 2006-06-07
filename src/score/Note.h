@@ -29,6 +29,7 @@
 #ifndef __NOTE_H__        //to avoid nested includes
 #define __NOTE_H__
 
+#include "../graphic/Shape.h"
 
 class lmNote: public lmNoteRest
 {
@@ -186,6 +187,11 @@ private:
     lmAccidental*   m_pAccidentals;     //accidentals
     EClefType       m_nClef;            //clef to draw this note
     lmContext*      m_pContext;         //context for this note
+
+    // constituent shapes
+    lmShapeGlyph*   m_pNoteheadShape;
+    lmShapeLine*    m_pStemLine;
+    lmShapeGlyph*   m_pFlagShape;
 
     // additional positioning related variables
     lmLUnits        m_nSpacePrev;       // space (after accidental) before note

@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Accidental.h,v 1.3 2006/02/23 19:22:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -30,6 +29,8 @@
 #ifndef __ACCIDENTAL_H__        //to avoid nested includes
 #define __ACCIDENTAL_H__
 
+#include "../graphic/Shape.h"
+
 
 /*
     An lmAccidental represents the accidental sign associated to notes.
@@ -56,7 +57,7 @@ class lmAccidental : public lmNoteRestObj
 {
 public:
     lmAccidental(lmNoteRest* pOwner, EAccidentals nType);
-    ~lmAccidental() {}
+    ~lmAccidental();
 
     // overrides for pure virtual methods of base class lmNoteRestObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
@@ -67,16 +68,7 @@ public:
     void SetAfterspace(lmLUnits nSpace) { m_nAfterSpace = nSpace; }
 
 private:
-    EAccidentals    m_nType;        //accidental type
-    lmLUnits        m_nAfterSpace;
-
-};
-
-
-//global methods related to accidentals
-//------------------------------------------------------------------------------------
-
-wxString GetAccidentalGlyphs(EAccidentals nType, 
+    wxString GetAccidentalGlyphs(EAccidentals nType, 
                              lmLUnits* pOffset = (lmLUnits*)NULL,
                              lmLUnits* pWidth = (lmLUnits*)NULL,
                              lmLUnits* pHeight = (lmLUnits*)NULL, 
@@ -84,7 +76,21 @@ wxString GetAccidentalGlyphs(EAccidentals nType,
                              lmVStaff* pVStaff = (lmVStaff*)NULL,
                              wxInt32 nStaffNum = 0);
 
+    wxString CreateShapes(EAccidentals nType, 
+                             lmLUnits* pOffset = (lmLUnits*)NULL,
+                             lmLUnits* pWidth = (lmLUnits*)NULL,
+                             lmLUnits* pHeight = (lmLUnits*)NULL, 
+                             lmLUnits* pShift = (lmLUnits*)NULL,
+                             lmVStaff* pVStaff = (lmVStaff*)NULL,
+                             wxInt32 nStaffNum = 0);
 
+    EAccidentals    m_nType;        //accidental type
+    lmLUnits        m_nAfterSpace;
+
+    lmShapeGlyph*   m_pShape[2];
+
+
+};
 
 #endif    // __ACCIDENTAL_H__
 
