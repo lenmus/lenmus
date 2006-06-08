@@ -34,15 +34,6 @@
 
 /*
     An lmAccidental represents the accidental sign associated to notes.
-    <!--
-    Actual notated accidentals. Valid values include: sharp,
-    natural, flat, double-sharp, sharp-sharp, flat-flat,
-    natural-sharp, natural-flat, quarter-flat, quarter-sharp,
-    three-quarters-flat, and three-quarters-sharp. Editorial
-    and cautionary indications, are indicated by attributes.
-    Values for these attributes are "no" if not present.
--->
-<!ELEMENT accidental (#PCDATA)>
 <!ATTLIST accidental
     cautionary %yes-no; #IMPLIED
     editorial %yes-no; #IMPLIED
@@ -67,27 +58,17 @@ public:
     lmLUnits GetWidth();
     void SetAfterspace(lmLUnits nSpace) { m_nAfterSpace = nSpace; }
 
+    void Measure(wxDC* pDC, lmStaff* pStaff, wxPoint shift);
+    void Render(wxDC* pDC, wxPoint pos, wxColour color = *wxBLACK);
+
+
 private:
-    wxString GetAccidentalGlyphs(EAccidentals nType, 
-                             lmLUnits* pOffset = (lmLUnits*)NULL,
-                             lmLUnits* pWidth = (lmLUnits*)NULL,
-                             lmLUnits* pHeight = (lmLUnits*)NULL, 
-                             lmLUnits* pShift = (lmLUnits*)NULL,
-                             lmVStaff* pVStaff = (lmVStaff*)NULL,
-                             wxInt32 nStaffNum = 0);
+    void CreateShapes();
 
-    wxString CreateShapes(EAccidentals nType, 
-                             lmLUnits* pOffset = (lmLUnits*)NULL,
-                             lmLUnits* pWidth = (lmLUnits*)NULL,
-                             lmLUnits* pHeight = (lmLUnits*)NULL, 
-                             lmLUnits* pShift = (lmLUnits*)NULL,
-                             lmVStaff* pVStaff = (lmVStaff*)NULL,
-                             wxInt32 nStaffNum = 0);
-
-    EAccidentals    m_nType;        //accidental type
+    EAccidentals    m_nType;            //accidental type
     lmLUnits        m_nAfterSpace;
 
-    lmShapeGlyph*   m_pShape[2];
+    lmShapeGlyph*   m_pShape[2];        //the shapes to render the accidental
 
 
 };

@@ -464,10 +464,19 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     }
 
     //render accidental signs if exist
-    if (!fMeasured && m_pAccidentals) {
+    if (m_pAccidentals) {
         lmLUnits xPos = nxLeft - m_paperPos.x;
         lmLUnits yPos = nyTop - m_paperPos.y;
-        nxLeft += DrawAccidentals(pPaper, fMeasuring, xPos, yPos, colorC);
+        if (!fMeasured && fMeasuring) {
+            //m_pAccidentals->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
+            //m_pAccidentals->UpdateMeasurements();
+            m_pAccidentals->Measure(pDC, m_pVStaff->GetStaff(m_nStaffNum), wxPoint(xPos, yPos));
+        }
+        else {
+            m_pAccidentals->Render(pDC, m_paperPos, colorC);
+            m_pAccidentals->Draw(DO_DRAW, pPaper, colorC);  //compatibility: to draw selrect
+        }
+        nxLeft += m_pAccidentals->GetWidth();
     }
 
     //advance space before note
@@ -853,7 +862,7 @@ void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ENoteHeads nNoteheadType,
 
         //create the ShapeObj
         if (!m_pNoteheadShape) m_pNoteheadShape = new lmShapeGlyph(this, nGlyph, m_pFont);
-        m_pNoteheadShape->Measure(pDC, m_nStaffNum);
+        m_pNoteheadShape->Measure(pDC, m_pVStaff->GetStaff(m_nStaffNum), wxPoint(0,0));
 
         //COMPATIBILITY
 

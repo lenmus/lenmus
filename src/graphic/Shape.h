@@ -43,6 +43,7 @@
 #include "../score/defs.h"      // lmLUnits
 class lmScoreObj;
 class lmStaffObj;
+class lmStaff;
 
 
 
@@ -60,14 +61,19 @@ public:
 
     virtual void Render(wxDC* pDC, wxPoint pos, wxColour color = *wxBLACK) {};
 
+    // methods related to selection rectangle
+    void SetSelRectangle(int x, int y, int nWidth, int nHeight);
+    virtual void DrawSelRectangle(wxDC* pDC, wxPoint pos, wxColour colorC = *wxBLUE);
+    wxRect GetSelRectangle() const { return m_SelRect; }
+
 
 protected:
     lmShapeObj(lmScoreObj* pOwner);
 
     lmScoreObj*     m_pOwner;       //musical object owning this shape
-    wxPoint         m_pos;          //position (referred to m_paperPos)
 
-    wxRect          m_BoundsRect;   // selection rectangle (logical units, relative to paperPos)
+    wxRect          m_BoundsRect;   // boundling rectangle (logical units, relative to renderization point)
+    wxRect          m_SelRect;      // selection rectangle (logical units, relative to renderization point)
 
 };
 
@@ -96,14 +102,17 @@ protected:
 class lmShapeComposite : public lmShapeObj
 {
 public:
-    virtual ~lmShapeComposite() {};
+    lmShapeComposite(lmScoreObj* pOwner);
+    virtual ~lmShapeComposite();
+
+    //implementation of virtual methods from base class
+    void Render(wxDC* pDC, wxPoint pos, wxColour color = *wxBLACK);
+    virtual void DrawSelRectangle(wxDC* pDC, wxPoint pos, wxColour colorC = *wxBLUE);
 
     //dealing with components
-    virtual void Add(lmShapeObj* pShape) {};
-    virtual void Remove(lmShapeObj* pShape) {};
+    virtual void Add(lmShapeObj* pShape);
 
 protected:
-    lmShapeComposite(lmScoreObj* pOwner);
 
     bool            m_fGrouped;         //its component shapes must be rendered as a single object
     ShapesList      m_Components;       //list of its component shapes
@@ -131,15 +140,16 @@ private:
 class lmShapeGlyph : public lmShapeSimple
 {
 public:
-    lmShapeGlyph(lmStaffObj* pOwner, int nGlyph, wxFont* pFont);
+    lmShapeGlyph(lmScoreObj* pOwner, int nGlyph, wxFont* pFont);
     ~lmShapeGlyph() {}
 
     //implementation of virtual methods from base class
     void Render(wxDC* pDC, wxPoint pos, wxColour color = *wxBLACK);
 
     //specific methods
-    void Measure(wxDC* pDC, int nStaffNum = 1);
+    void Measure(wxDC* pDC, lmStaff* pStaff, wxPoint shift);
     void SetShift(lmLUnits x, lmLUnits y);
+    void SetFont(wxFont *pFont);
 
 
 private:

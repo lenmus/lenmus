@@ -52,13 +52,26 @@ lmShapeObj::lmShapeObj(lmScoreObj* pOwner)
 {
     m_pOwner = pOwner;
 
-    //default values
-    m_pos.x = 0;
-    m_pos.y = 0;
-
 }
 
+void lmShapeObj::SetSelRectangle(int x, int y, int nWidth, int nHeight)
+{
+    m_SelRect.width = nWidth;
+    m_SelRect.height = nHeight;
+    m_SelRect.x = x;
+    m_SelRect.y = y;
+}
 
+void lmShapeObj::DrawSelRectangle(wxDC* pDC, wxPoint pos, wxColour colorC)
+{
+    wxPen oldPen = pDC->GetPen();
+    wxPen pen(colorC, 1, wxSOLID);      //width = 1px
+    pDC->SetPen(pen);
+    pDC->SetBrush( *wxTRANSPARENT_BRUSH );
+    pDC->DrawRectangle(m_SelRect.GetPosition()+pos, m_SelRect.GetSize());
+    pDC->SetPen(oldPen);
+
+}
 
 //========================================================================================
 // lmShapeSimple object implementation
@@ -87,6 +100,36 @@ lmShapeComposite::lmShapeComposite(lmScoreObj* pOwner) : lmShapeObj(pOwner)
 
 }
 
+lmShapeComposite::~lmShapeComposite()
+{
+    m_Components.DeleteContents(true);
+    m_Components.Clear();
+}
+
+void lmShapeComposite::Add(lmShapeObj* pShape)
+{
+    m_Components.Append(pShape);
+}
+
+void lmShapeComposite::Render(wxDC* pDC, wxPoint pos, wxColour color)
+{
+    lmShapeObj* pShape;
+    ShapesList::Node* pNode = m_Components.GetFirst();
+    while (pNode) {
+        pShape = (lmShapeObj*)pNode->GetData();
+        pShape->Render(pDC, pos, color);
+        pNode = pNode->GetNext();
+    }
+}
+
+void lmShapeComposite::DrawSelRectangle(wxDC* pDC, wxPoint pos, wxColour color)
+{
+    //use the first selection rectangle
+    ShapesList::Node* pNode = m_Components.GetFirst();
+    lmShapeObj* pShape = (lmShapeObj*)pNode->GetData();
+    pShape->DrawSelRectangle(pDC, pos, color);
+
+}
 
 
 
@@ -124,7 +167,7 @@ void lmShapeLine::Render(wxDC* pDC, wxPoint pos, wxColour color)
 // lmShapeGlyph object implementation
 //========================================================================================
 
-lmShapeGlyph::lmShapeGlyph(lmStaffObj* pOwner, int nGlyph, wxFont* pFont)
+lmShapeGlyph::lmShapeGlyph(lmScoreObj* pOwner, int nGlyph, wxFont* pFont)
     : lmShapeSimple(pOwner)
 {
     m_nGlyph = nGlyph;
@@ -138,22 +181,23 @@ lmShapeGlyph::lmShapeGlyph(lmStaffObj* pOwner, int nGlyph, wxFont* pFont)
 
 }
 
-void lmShapeGlyph::Measure(wxDC* pDC, int nStaffNum)
+void lmShapeGlyph::Measure(wxDC* pDC, lmStaff* pStaff, wxPoint shift)
 {
-    lmVStaff* pVStaff = ((lmStaffObj*)m_pOwner)->GetVStaff();
-
     // store positions
-    m_shift.x = 0;
-    m_shift.y = - pVStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].GlyphOffset, nStaffNum);
+    m_shift.x = shift.x;
+    m_shift.y = shift.y - pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].GlyphOffset);
 
-    // store selection rectangle position and size
+    // store boundling rectangle position and size
     lmLUnits nWidth, nHeight;
     wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
     pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
-    m_BoundsRect.height = pVStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectHeight, nStaffNum);
+    m_BoundsRect.height = pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectHeight);
     m_BoundsRect.width = nWidth;
     m_BoundsRect.x = m_shift.x;
-    m_BoundsRect.y = m_shift.y + pVStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectShift, nStaffNum);
+    m_BoundsRect.y = m_shift.y + pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectShift);
+
+    // store selection rectangle position and size
+    m_SelRect = m_BoundsRect;
 
 }
 
@@ -166,6 +210,11 @@ void lmShapeGlyph::Render(wxDC* pDC, wxPoint pos, wxColour color)
     pDC->SetTextForeground(color);
     pDC->DrawText(sGlyph, pos.x + m_shift.x, pos.y + m_shift.y );
 
+}
+
+void lmShapeGlyph::SetFont(wxFont *pFont)
+{
+    m_pFont = pFont;
 }
 
 void lmShapeGlyph::SetShift(lmLUnits x, lmLUnits y)

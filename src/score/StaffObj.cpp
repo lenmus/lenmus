@@ -74,7 +74,15 @@ lmScoreObj::lmScoreObj(EScoreObjType nType, bool fIsDraggable)
     // initializations: selection related info
     m_fSelected = false;
 
+    //transitional
+    SetShapeRendered(false);
+    m_pShape = (lmShapeObj*)NULL;
 
+}
+
+lmScoreObj::~lmScoreObj()
+{
+    if (m_pShape) delete m_pShape;
 }
 
 bool lmScoreObj::IsAtPoint(wxPoint& pt)
@@ -85,10 +93,16 @@ bool lmScoreObj::IsAtPoint(wxPoint& pt)
 
 void lmScoreObj::DrawSelRectangle(lmPaper* pPaper, wxColour colorC)
 {
-    wxDC* pDC = pPaper->GetDC();
-    pDC->SetPen( wxPen(colorC, 1, wxSOLID) );
-    pDC->SetBrush( *wxTRANSPARENT_BRUSH );
-    pDC->DrawRectangle(GetSelRect().GetPosition(), GetSelRect().GetSize());
+    if (IsShapeRendered()) {
+        wxDC* pDC = pPaper->GetDC();
+        m_pShape->DrawSelRectangle(pDC, m_paperPos, colorC);
+    }
+    else {
+        wxDC* pDC = pPaper->GetDC();
+        pDC->SetPen( wxPen(*wxRED, 1, wxSOLID) );
+        pDC->SetBrush( *wxTRANSPARENT_BRUSH );
+        pDC->DrawRectangle(GetSelRect().GetPosition(), GetSelRect().GetSize());
+    }
 }
 
 bool lmScoreObj::CheckForCollision(lmScoreObj* pSO)

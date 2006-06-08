@@ -30,6 +30,7 @@
 #define __STAFFOBJ_H__
 
 #include "../app/TheApp.h"
+#include "../graphic/Shape.h"
 
 #if wxUSE_GENERIC_DRAGIMAGE
 #include "wx/generic/dragimgg.h"
@@ -112,7 +113,7 @@ All positions are relative to m_paperPos
 class lmScoreObj
 {
 public:
-    virtual ~lmScoreObj() {}
+    virtual ~lmScoreObj();
 
     // methods related to type and identificaction
     wxInt32 GetID() { return m_nId; }
@@ -140,7 +141,7 @@ public:
                 m_selRect.x = x;
                 m_selRect.y = y;
         }
-    void DrawSelRectangle(lmPaper* pPaper, wxColour colorC = *wxBLUE);
+    void DrawSelRectangle(lmPaper* pPaper, wxColour colorC = *wxRED);
     wxRect GetSelRect() const { return wxRect(m_selRect.x + m_paperPos.x, 
                                               m_selRect.y + m_paperPos.y,
                                               m_selRect.width,
@@ -163,6 +164,12 @@ public:
     wxPoint GetGlyphPosition() const {
             return wxPoint(m_paperPos.x + m_glyphPos.x, m_paperPos.y + m_glyphPos.y);
         }
+
+    //transitional methods to shapes renderization
+    void SetShapeRendered(bool fValue) { m_fShapeRendered = fValue; }
+    bool IsShapeRendered() { return m_fShapeRendered; }
+    void SetShape(lmShapeObj* pShape) { m_pShape = pShape; }
+    lmShapeObj* GetShape() { return m_pShape; }
 
 
 protected:
@@ -193,6 +200,10 @@ protected:
     // variables related to font rendered objects
     wxFont*     m_pFont;            // font to use for drawing this object
     wxPoint     m_glyphPos;         // origing to position the glyph (relative to m_paperPos)
+
+    //transitional variables: renderization based on shapes
+    bool            m_fShapeRendered;
+    lmShapeObj*     m_pShape;
 
 };
 
