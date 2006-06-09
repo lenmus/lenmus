@@ -162,7 +162,46 @@
 		notehead.x + notehead.width, depending on stem direction.
 		
 		
+	Current renderization algorithm
+	---------------------------------
+	
+	1. Measure phase:
+		- StaffObjs are explored in sequence. For each one, method Draw() is invoked.
+		- Method Draw is implemented in lmStaffObj. There, the StaffObj paper position
+			(m_paperPos) is updated with current paper cursor pos, and method DrawObject()
+			is invoked.
+		- Method DrawObject() is implemented in each specific StaffObj type. This method
+			responsibility, at measurement phase, is to compute this object rendering
+			positioning information. All positioning information is relative to m_paperPos.
+			Absolute values or m_paperPos can not be stored as the real m_paperPos could be
+			changed during system justification process. 
+		- Control returns to Draw(). There, the x paper position is updated by adding
+			the StaffObj width. The y paper position only changed when starting a new system
+			Additionaly, if it is required to draw the selection rectangle, this method
+			does it.
+			
+		Notes:
+			- Each StaffObj has the responsibility to invoke DrawObject() method for
+				its children.
 		
+	2. Drawing phase:
+		- It is the same procedure than the measurement phase but methods DrawObject()
+			must render the object at the precomputed stored positions instead of computing
+			positions.
+			
+	[NEW] In shapes based renderization:
+		- During the measurement phase, shape object is created and positioned. The shape
+		    object and children shapes are added to current BoxSystem.
+		    
+		- Renderization is just	BoxSystem asking its contained shapes to render themselves.
+			Method StaffObj::Draw() is not used and, therefore, methods DrawObject() are
+			not invoked: the internal model has no role in renderizatio; it is the
+			graphical model who takes the responsibility.
+		
+		
+	
+		
+		 
 		
 		
 @section contexts  Context for notes

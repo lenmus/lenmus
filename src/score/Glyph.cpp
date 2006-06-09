@@ -105,11 +105,11 @@ const lmGlyph aGlyphsInfo[] =
 
     //                       sel rectangle
     //       Glyph   offset  shift   height 
-    lmGlyph(_T('\''),-10,     45,     30,    _T("Natural accidental")) ,
-    lmGlyph(_T('#'), -10,     45,     30,    _T("Sharp accidental")) ,
-    lmGlyph(_T('%'), -10,     40,     27,    _T("Flat accidental")) ,
-    lmGlyph(_T('$'), -10,     54,     11,    _T("Double sharp accidental")) ,
-    lmGlyph(_T('&'), -10,     40,     27,    _T("Double flat accidental")) ,
+    lmGlyph(_T('\''), 10,     45,     30,    _T("Natural accidental")) ,
+    lmGlyph(_T('#'),  10,     45,     30,    _T("Sharp accidental")) ,
+    lmGlyph(_T('%'),  10,     40,     27,    _T("Flat accidental")) ,
+    lmGlyph(_T('$'),  10,     54,     11,    _T("Double sharp accidental")) ,
+    lmGlyph(_T('&'),  10,     40,     27,    _T("Double flat accidental")) ,
 
 
 };

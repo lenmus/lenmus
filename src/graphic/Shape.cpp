@@ -98,6 +98,8 @@ lmShapeComposite::lmShapeComposite(lmScoreObj* pOwner) : lmShapeObj(pOwner)
     //default values
     m_fGrouped = false;
 
+    m_SelRect = wxRect(0,0,0,0);
+
 }
 
 lmShapeComposite::~lmShapeComposite()
@@ -109,6 +111,10 @@ lmShapeComposite::~lmShapeComposite()
 void lmShapeComposite::Add(lmShapeObj* pShape)
 {
     m_Components.Append(pShape);
+
+    //compute new selection rectangle by union of individual selection rectangles
+    m_SelRect.Union(pShape->GetSelRectangle());
+
 }
 
 void lmShapeComposite::Render(wxDC* pDC, wxPoint pos, wxColour color)
@@ -120,15 +126,6 @@ void lmShapeComposite::Render(wxDC* pDC, wxPoint pos, wxColour color)
         pShape->Render(pDC, pos, color);
         pNode = pNode->GetNext();
     }
-}
-
-void lmShapeComposite::DrawSelRectangle(wxDC* pDC, wxPoint pos, wxColour color)
-{
-    //use the first selection rectangle
-    ShapesList::Node* pNode = m_Components.GetFirst();
-    lmShapeObj* pShape = (lmShapeObj*)pNode->GetData();
-    pShape->DrawSelRectangle(pDC, pos, color);
-
 }
 
 

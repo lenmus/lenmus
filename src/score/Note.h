@@ -130,6 +130,8 @@ public:
     bool        UpdateContext(int nStep, int nNewAccidentals, lmContext* pNewContext);
     lmContext*  GetContext() { return m_pContext; }
 
+    bool DrawNote(lmPaper* pPaper, bool fMeasuring,
+                  lmLUnits xOffset, lmLUnits yOffset, wxColour colorC);
 
 
 private:
@@ -139,9 +141,8 @@ private:
                         bool fStemAbajo, lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC);
     void DrawNoteHead(wxDC* pDC, bool fMeasuring, ENoteHeads nNoteheadType,
                         lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC);
-    void DrawAdditionalLines(wxDC* pDC, int nPosOnStaff, lmLUnits yTopLine, lmLUnits xPos,
+    void DrawLegerLines(wxDC* pDC, int nPosOnStaff, lmLUnits yTopLine, lmLUnits xPos,
                         lmLUnits width, int nROP = wxCOPY);
-
 
     //auxiliary
     wxInt32 PosOnStaffToPitch(wxInt32 nSteps);

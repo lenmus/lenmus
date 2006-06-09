@@ -63,7 +63,7 @@ public:
 
     // methods related to selection rectangle
     void SetSelRectangle(int x, int y, int nWidth, int nHeight);
-    virtual void DrawSelRectangle(wxDC* pDC, wxPoint pos, wxColour colorC = *wxBLUE);
+    void DrawSelRectangle(wxDC* pDC, wxPoint pos, wxColour colorC = *wxBLUE);
     wxRect GetSelRectangle() const { return m_SelRect; }
 
 
@@ -107,7 +107,6 @@ public:
 
     //implementation of virtual methods from base class
     void Render(wxDC* pDC, wxPoint pos, wxColour color = *wxBLACK);
-    virtual void DrawSelRectangle(wxDC* pDC, wxPoint pos, wxColour colorC = *wxBLUE);
 
     //dealing with components
     virtual void Add(lmShapeObj* pShape);

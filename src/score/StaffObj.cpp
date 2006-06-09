@@ -274,8 +274,20 @@ void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     // set the font
     if (fMeasuring) SetFont(pPaper);
 
-    // ask derived object to draw itself
-    DrawObject(fMeasuring, pPaper, colorC);
+    if (IsShapeRendered()) {
+        if (fMeasuring) {
+            // ask derived object to measure itself
+            DrawObject(fMeasuring, pPaper, colorC);
+        }
+        else {
+            wxDC* pDC = pPaper->GetDC();
+            m_pShape->Render(pDC, m_paperPos, colorC);
+        }
+    }
+    else {
+        // ask derived object to draw itself
+        DrawObject(fMeasuring, pPaper, colorC);
+    }
 
     // update paper cursor position
     pPaper->SetCursorX(m_paperPos.x + m_nWidth);

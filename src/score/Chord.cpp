@@ -397,14 +397,15 @@ void lmChord::ComputeLayout(lmPaper* pPaper, wxPoint paperPos, wxColour colorC)
     wxNotesListNode *pNode = m_cNotes.GetFirst();
     for(iN=1; pNode; pNode=pNode->GetNext(), iN++ ) {
         pNote = (lmNote*)pNode->GetData();
-        if (pNote->HasAccidentals()) {
-            ///@aware The font to render the note and its accidentals is set in method
-            ///     lmStaffObj::Draw() before invoking lmNote->DrawObject(). To compute
-            ///     the chord layout it is necessary to have the font set, so I force
-            ///     to set it in next sentence.
-            pNote->SetFont(pPaper);
+        ///@aware The font to render the note and its accidentals is set in method
+        ///     lmStaffObj::Draw() before invoking lmNote->DrawObject(). To compute
+        ///     the chord layout it is necessary to have the font set, so I force
+        ///     to set it in next sentence.
+        pNote->SetFont(pPaper);
 
-            //Now, accidental layout can be computed.
+        if (pNote->HasAccidentals()) {
+
+            //Now, accidentals layout can be computed.
             pNote->DrawAccidentals(pPaper, DO_MEASURE, xPos, yPos, colorC);
             pAccidental = pNote->GetAccidentals();
             //check if collision with any previous note accidentals
@@ -436,9 +437,9 @@ void lmChord::ComputeLayout(lmPaper* pPaper, wxPoint paperPos, wxColour colorC)
     pNode = m_cNotes.GetFirst();
     for(iN=1; pNode; pNode=pNode->GetNext(), iN++ ) {
         pNote = (lmNote*)pNode->GetData();
-            ////compute notehead's position
-            ////pNote->DrawAccidentals(pPaper, DO_MEASURE, xPos, yPos, colorC);
-            ////check if collision with any previous note accidentals
+            //compute notehead's position
+            pNote->DrawNote(pPaper, DO_MEASURE, xPos, yPos, colorC);
+            //check if collision with any previous note accidentals
             //pCrashNote = CheckIfCollisionWithAccidentals((int)m_cNotes.GetCount(), pNoteHead);
             //while (pCrashNote) {
             //    //try to render at right of colliding accidental

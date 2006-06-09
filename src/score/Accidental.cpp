@@ -76,7 +76,7 @@ void lmAccidental::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 n
 //    m_selRect.y = m_glyphPos.y + nShift;
 }
 
-void lmAccidental::Measure(wxDC* pDC, lmStaff* pStaff, wxPoint shift)
+void lmAccidental::Measure(wxDC* pDC, lmStaff* pStaff, wxPoint offset)
 {
     //set again the font, just in case the scale has changed
     wxFont* pFont = m_pOwner->GetFont();
@@ -84,8 +84,22 @@ void lmAccidental::Measure(wxDC* pDC, lmStaff* pStaff, wxPoint shift)
     if (m_pShape[1]) m_pShape[1]->SetFont(pFont);
 
     //do the measurement
-    m_pShape[0]->Measure(pDC, pStaff, shift);
-    if (m_pShape[1]) m_pShape[1]->Measure(pDC, pStaff, shift);
+    m_pShape[0]->Measure(pDC, pStaff, offset);
+    if (m_pShape[1]) {
+        int width = (m_pShape[0]->GetSelRectangle()).width;
+        m_pShape[1]->Measure(pDC, pStaff, wxPoint(offset.x+width, offset.y));
+    }
+
+    //set the ScoreObj shape
+    if (m_pShape[1]) {
+        lmShapeComposite* pShape = new lmShapeComposite(this);
+        pShape->Add(m_pShape[0]);
+        pShape->Add(m_pShape[1]);
+        SetShape(pShape);
+    }
+    else {
+        SetShape(m_pShape[0]);
+    }
 
     //set up the after space
     #define ACCIDENTALS_AFTERSPACE  7      //in tenths   @todo user options
@@ -107,21 +121,6 @@ lmLUnits lmAccidental::GetWidth()
     return (GetShape()->GetSelRectangle()).width + m_nAfterSpace;
 
 }
-
-//    sGlyphs = aGlyphsInfo[nGlyph[0]].GlyphChar;
-//    if (pVStaff) {
-//        *pOffset = (lmLUnits)pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph[0]].GlyphOffset , nStaff );
-//        *pHeight = (lmLUnits)pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph[0]].SelRectHeight , nStaff );
-//        *pShift = (lmLUnits)pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph[0]].SelRectShift , nStaff );
-//    }
-//
-//    if (nGlyph[1] != -1) {
-//        sGlyphs += aGlyphsInfo[nGlyph[1]].GlyphChar;
-//        if (pVStaff) {
-//            lmLUnits nShift2 = (lmLUnits)pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph[1]].SelRectShift , nStaff );
-//            lmLUnits nHeight2 = (lmLUnits)pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph[1]].SelRectHeight , nStaff );
-//            *pHeight = wxMax(*pHeight+*pShift, nHeight2+nShift2) - wxMin(*pShift, nShift2);
-//            *pShift = wxMin(*pShift, nShift2);
 
 void lmAccidental::CreateShapes()
 {
@@ -178,15 +177,5 @@ void lmAccidental::CreateShapes()
     else
         m_pShape[1] = (lmShapeGlyph*)NULL;
 
-    //set the ScoreObj shape
-    if (m_pShape[1]) {
-        lmShapeComposite* pShape = new lmShapeComposite(this);
-        pShape->Add(m_pShape[0]);
-        pShape->Add(m_pShape[1]);
-        SetShape(pShape);
-    }
-    else {
-        SetShape(m_pShape[0]);
-    }
 
 }
