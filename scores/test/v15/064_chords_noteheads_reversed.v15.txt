@@ -10,6 +10,10 @@
          (chord (n +c4 n)(n d4 n)(n g4 n))
          (chord (n c5 n)(n -d5 n)(n a5 n))
          (barline Final)
+
+         (chord (n +c4 n)(n +d4 n)(n =g4 n))
+         (chord (n c5 n)(n -d5 n)(n a5 n))
+         (barline Final)
       )
    )
 )

@@ -105,10 +105,7 @@ void lmScoreObj::DrawSelRectangle(lmPaper* pPaper, wxColour colorC)
     }
 }
 
-bool lmScoreObj::CheckForCollision(lmScoreObj* pSO)
-{
-    return false;   //! @todo
-}
+
 
 //======================================================================================
 // methods only for daggable objects

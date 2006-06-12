@@ -68,7 +68,7 @@ public:
 
     // methods related to note positioning information
     lmLUnits GetPitchShift() { return (m_pVStaff->TenthsToLogical(GetPosOnStaff() * 10, m_nStaffNum )) / 2 ; }
-    lmLUnits GetAnchorPos() { return (m_fShiftNoteheadRight ? m_xAnchor+m_selRect.width : m_xAnchor); }
+    lmLUnits GetAnchorPos() { return m_xAnchor; } //(m_fShiftNoteheadRight ? m_xAnchor+m_selRect.width : m_xAnchor); }
     int GetPosOnStaff();        //line/space on which note is rendered
 
     // bounds of image. Abolute position (->referred to page origin)
@@ -83,7 +83,7 @@ public:
     lmUnits     GetStandardStemLenght();
     void        SetStemLength(lmLUnits length) { m_nStemLength = length; };
     void        SetStemDirection(bool fStemDown);
-    lmLUnits    GetXStem() {return m_xStem + m_paperPos.x + (m_fShiftNoteheadRight ? m_selRect.width : 0); }
+    lmLUnits    GetXStem() {return m_xStem + m_paperPos.x; } // + (m_fShiftNoteheadRight ? m_selRect.width : 0); }
     lmLUnits    GetYStem() {return m_yStem + m_paperPos.y; }
     lmLUnits    GetStemLength() { return m_nStemLength; }
     lmLUnits    GetFinalYStem() {

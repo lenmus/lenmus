@@ -91,14 +91,16 @@ void lmAccidental::Measure(wxDC* pDC, lmStaff* pStaff, wxPoint offset)
     }
 
     //set the ScoreObj shape
-    if (m_pShape[1]) {
-        lmShapeComposite* pShape = new lmShapeComposite(this);
-        pShape->Add(m_pShape[0]);
-        pShape->Add(m_pShape[1]);
-        SetShape(pShape);
-    }
-    else {
-        SetShape(m_pShape[0]);
+    if (!GetShape()) {
+        if (m_pShape[1]) {
+            lmShapeComposite* pShape = new lmShapeComposite(this);
+            pShape->Add(m_pShape[0]);
+            pShape->Add(m_pShape[1]);
+            SetShape(pShape);
+        }
+        else {
+            SetShape(m_pShape[0]);
+        }
     }
 
     //set up the after space

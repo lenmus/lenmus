@@ -66,6 +66,10 @@ public:
     void DrawSelRectangle(wxDC* pDC, wxPoint pos, wxColour colorC = *wxBLUE);
     wxRect GetSelRectangle() const { return m_SelRect; }
 
+    // methods related to bounds
+    wxRect GetBoundsRectangle() const { return m_BoundsRect; }
+    lmLUnits GetWidth() { return m_BoundsRect.width; }
+
 
 protected:
     lmShapeObj(lmScoreObj* pOwner);

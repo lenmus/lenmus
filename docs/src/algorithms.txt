@@ -183,6 +183,11 @@
 		Notes:
 			- Each StaffObj has the responsibility to invoke DrawObject() method for
 				its children.
+			- Each StaffObj receives a paper position (m_paperPos). The y position corresponds
+				to the position of the VStaff. It is responsibility of the StaffObj to
+				compute the y shift to the right staff and staff line.
+				
+				
 		
 	2. Drawing phase:
 		- It is the same procedure than the measurement phase but methods DrawObject()

@@ -129,9 +129,6 @@ public:
     bool IsFixed() const { return m_fFixedPos; }
     void SetFixed(bool fFixed) { m_fFixedPos = fFixed; }
 
-    //methods to detect conflicts in positioning
-    virtual bool CheckForCollision(lmScoreObj* pSO);
-
     // methods related to selection
     inline bool IsSelected() { return m_fSelected; }
     void SetSelected(bool fValue) { m_fSelected = fValue; }
@@ -170,6 +167,7 @@ public:
     bool IsShapeRendered() { return m_fShapeRendered; }
     void SetShape(lmShapeObj* pShape) { m_pShape = pShape; }
     lmShapeObj* GetShape() { return m_pShape; }
+
 
 
 protected:

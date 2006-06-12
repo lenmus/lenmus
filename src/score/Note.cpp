@@ -412,17 +412,8 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     */
 
 
-    lmLUnits yStaffBaseLine=0;            // position of staff (top line)
-    lmLUnits nxLeft=0, nyTop=0;    // current pos. as positioning computation takes place
     bool fDrawStem = true;            // assume stem down
     bool fInChord = IsInChord();
-
-    // move to right staff
-    int nPosOnStaff = GetPosOnStaff();
-    yStaffBaseLine = m_paperPos.y + GetStaffOffset();
-    lmLUnits yPitchShift = GetPitchShift();
-    nyTop = yStaffBaseLine - yPitchShift;
-    nxLeft = m_paperPos.x;
 
     //prepare DC
     wxDC* pDC = pPaper->GetDC();
@@ -436,6 +427,15 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     pDC->SetBrush(brush);
     pDC->SetFont(*m_pFont);
 
+    // move to right staff
+    lmLUnits yStaffTopLine = m_paperPos.y + GetStaffOffset();   // staff y position (top line)
+    lmLUnits nxLeft=0, nyTop=0;    // current pos. as positioning computation takes place
+    int nPosOnStaff = GetPosOnStaff();
+    lmLUnits yPitchShift = GetPitchShift();
+    nyTop = yStaffTopLine - yPitchShift;
+    nxLeft = m_paperPos.x;
+
+
     //If drawing phase do first MakeUp phase
     if (!fMeasuring) MakeUpPhase(pPaper);
 
@@ -446,6 +446,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     if (fMeasuring) {
         if (IsBaseOfChord()) {
             m_pChord->ComputeLayout(pPaper, m_paperPos, colorC);
+            fMeasured = true;
         }
         else if (IsInChord()) {
             fMeasured = true;
@@ -476,9 +477,9 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     if (fMeasuring) { m_xAnchor = nxLeft - m_paperPos.x; }
 
     //render the notehead (or the full note if single glyph)
-    //if (!fMeasuring || !fMeasured && fMeasuring) {
+    if (!fMeasuring || !fMeasured && fMeasuring) {
         fDrawStem = DrawNote(pPaper, fMeasuring, nxLeft - m_paperPos.x, nyTop - m_paperPos.y, colorC);
-    //}
+    }
     nxLeft += m_noteheadRect.width;
 
 
@@ -566,7 +567,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         // glyph and then it is not right, particularly with notes drawn in block
         // lmLUnits widthLine = dxNotehead + m_pVStaff->TenthsToLogical(8, m_nStaffNum);
         lmLUnits widthLine = m_pVStaff->TenthsToLogical(20, m_nStaffNum);
-        DrawLegerLines(pDC, nPosOnStaff, yStaffBaseLine, xLine, widthLine);
+        DrawLegerLines(pDC, nPosOnStaff, yStaffTopLine, xLine, widthLine);
     }
     
     // render associated notations ------------------------------------------------------
@@ -582,7 +583,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
                     case eST_Fermata:
                         // set position (relative to paperPos)
                         xPos = m_noteheadRect.x + m_noteheadRect.width / 2;
-                        yPos = yStaffBaseLine - m_paperPos.y;
+                        yPos = yStaffTopLine - m_paperPos.y;
                         pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
                         pNRO->UpdateMeasurements();
                         break;
@@ -604,7 +605,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
             if (fMeasuring) {
                 // set position (relative to paperPos)
                 lmLUnits xPos = m_noteheadRect.x;
-                lmLUnits yPos = yStaffBaseLine - m_paperPos.y;
+                lmLUnits yPos = yStaffTopLine - m_paperPos.y;
                 pLyric->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
                 pLyric->UpdateMeasurements();
             }
@@ -739,7 +740,7 @@ void lmNote::MakeUpPhase(lmPaper* pPaper)
 
 }
 
-void lmNote::DrawLegerLines(wxDC* pDC, int nPosOnStaff, lmLUnits yStaffBaseLine, lmLUnits xPos, lmLUnits width, int nROP)
+void lmNote::DrawLegerLines(wxDC* pDC, int nPosOnStaff, lmLUnits yStaffTopLine, lmLUnits xPos, lmLUnits width, int nROP)
 {
     if (nPosOnStaff > 0 && nPosOnStaff < 12) return;
 
@@ -754,7 +755,7 @@ void lmNote::DrawLegerLines(wxDC* pDC, int nPosOnStaff, lmLUnits yStaffBaseLine,
         for (i=12; i <= nPosOnStaff; i++) {
             if (i % 2 == 0) {
                 nTenths = 5 * (i - 10);
-                yPos = yStaffBaseLine - m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
+                yPos = yStaffTopLine - m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
                 pDC->DrawLine(xPos, yPos, xPos + width, yPos);
             }
         }
@@ -764,7 +765,7 @@ void lmNote::DrawLegerLines(wxDC* pDC, int nPosOnStaff, lmLUnits yStaffBaseLine,
         for (i=nPosOnStaff; i <= 0; i++) {
             if (i % 2 == 0) {
                 nTenths = 5 * (10 - i);
-                yPos = yStaffBaseLine + m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
+                yPos = yStaffTopLine + m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
                 pDC->DrawLine(xPos, yPos, xPos + width, yPos);
             }
         }
