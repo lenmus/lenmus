@@ -68,7 +68,8 @@ public:
 
     // methods related to note positioning information
     lmLUnits GetPitchShift() { return (m_pVStaff->TenthsToLogical(GetPosOnStaff() * 10, m_nStaffNum )) / 2 ; }
-    lmLUnits GetAnchorPos() { return m_xAnchor; } //(m_fShiftNoteheadRight ? m_xAnchor+m_selRect.width : m_xAnchor); }
+    lmLUnits GetAnchorPos() { return m_xAnchor; }
+    void SetAnchorPos(lmLUnits xPos) { m_xAnchor = xPos; }
     int GetPosOnStaff();        //line/space on which note is rendered
 
     // bounds of image. Abolute position (->referred to page origin)
@@ -83,7 +84,7 @@ public:
     lmUnits     GetStandardStemLenght();
     void        SetStemLength(lmLUnits length) { m_nStemLength = length; };
     void        SetStemDirection(bool fStemDown);
-    lmLUnits    GetXStem() {return m_xStem + m_paperPos.x; } // + (m_fShiftNoteheadRight ? m_selRect.width : 0); }
+    lmLUnits    GetXStem() {return m_xStem + m_paperPos.x; }
     lmLUnits    GetYStem() {return m_yStem + m_paperPos.y; }
     lmLUnits    GetStemLength() { return m_nStemLength; }
     lmLUnits    GetFinalYStem() {
@@ -101,7 +102,8 @@ public:
     lmChord*    GetChord() { return m_pChord; }
     lmChord*    StartChord();
     void        ClearChordInformation();
-    void        SetRightShift(bool fShiftRight) { m_fShiftNoteheadRight = fShiftRight; }
+    void        SetNoteheadReversed(bool fValue) { m_fNoteheadReversed = fValue; }
+    bool        IsNoteheadReversed() { return m_fNoteheadReversed; }
 
     //methods related to accidentals
     bool HasAccidentals() { return (m_pAccidentals != (lmAccidental*)NULL); }
@@ -126,12 +128,16 @@ public:
     lmPitch GetMidiPitch() { return m_nMidiPitch; }
     int     GetStep() { return m_nStep; }        //0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
 
+    // methods used during layout computation
+    bool DrawNote(lmPaper* pPaper, bool fMeasuring,
+                  lmLUnits xOffset, lmLUnits yOffset, wxColour colorC);
+    lmShapeObj* GetNoteheadShape() { return m_pNoteheadShape; }
+    void ShiftNoteShape(lmLUnits xShift);
+
     //other methods
     bool        UpdateContext(int nStep, int nNewAccidentals, lmContext* pNewContext);
     lmContext*  GetContext() { return m_pContext; }
 
-    bool DrawNote(lmPaper* pPaper, bool fMeasuring,
-                  lmLUnits xOffset, lmLUnits yOffset, wxColour colorC);
 
 
 private:
@@ -213,7 +219,7 @@ private:
     lmChord*    m_pChord;           //chord to which this note belongs or NULL if it is a single note
     bool        m_fIsNoteBase;      //in chords identifies the first note of the chord. For notes not in
                                     //  in chord is always true
-    bool        m_fShiftNoteheadRight;      //to allow for notehead reversing
+    bool        m_fNoteheadReversed;      //this notehead is reversed to avoid collisions
 
     //tie related variables
     lmTie*      m_pTiePrev;         //Tie to previous note. Null in note not tied

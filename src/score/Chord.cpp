@@ -54,6 +54,14 @@
 #include "Score.h"
 #include "Glyph.h"
 
+int GlobalPitchCompare(const void* pNote1, const void* pNote2)
+{
+    if ((*(lmNote**)pNote1)->StemGoesDown())
+        return ((*(lmNote**)pNote1)->GetPitch() < (*(lmNote**)pNote2)->GetPitch());
+    else
+        return ((*(lmNote**)pNote1)->GetPitch() > (*(lmNote**)pNote2)->GetPitch());
+}
+
 
 /*! Creates the chord object, with only the base note.
 */
@@ -100,9 +108,6 @@ void lmChord::AddNote(lmNote* pNote)
 
     //compute stem direction
     ComputeStemDirection();
-
-    //arrange noteheads at left/right of stem to avoid collisions
-    ArrangeNoteheads();
 
 }
 
@@ -345,40 +350,40 @@ void lmChord::ArrangeNoteheads()
 
     if (m_cNotes.GetCount() < 2) return;
 
-    //lmNote* pBaseNote = (lmNote*)(m_cNotes.GetFirst())->GetData();
+    //arrange notes by pitch
+    NotesList cNotes = m_cNotes;
+    cNotes.Sort(GlobalPitchCompare);
 
     bool fSomeReversed = false;
     int nPosPrev = 1000;    // a very high number not posible in real world
     int nPos;
     lmNote* pNote;
-    wxNotesListNode *pNode = m_cNotes.GetFirst();
+    wxNotesListNode *pNode = cNotes.GetFirst();
     for(; pNode; pNode=pNode->GetNext() ) {
         pNote = (lmNote*)pNode->GetData();
         nPos = pNote->GetPosOnStaff();
         if (abs(nPosPrev - nPos) < 2) {
             //collision. Reverse position of this notehead
             fSomeReversed = true;
-            pNote->SetRightShift(!m_fStemDown);
+            pNote->SetNoteheadReversed(true);
             nPosPrev = 1000;
         }
         else {
-            pNote->SetRightShift(m_fStemDown);
+            pNote->SetNoteheadReversed(false);
             nPosPrev = nPos;
         }
     }
 
-    //if stems downwards and no notehead reversed, remove all right shifts
-    if (m_fStemDown && !fSomeReversed) {
-        int iN;
-        for (iN=0; iN < (int)m_cNotes.GetCount(); iN++) {
-            pNote->SetRightShift(false);
-        }
-    }
+    return;
+
 
 }
 
 void lmChord::ComputeLayout(lmPaper* pPaper, wxPoint paperPos, wxColour colorC)
 {
+    //arrange noteheads at left/right of stem to avoid collisions
+    ArrangeNoteheads();
+
 	//Loop to compute position for accidentals:
 	//- Set x pos to start of chord x pos
 	//- Render accidental. If collision with other accidental:
@@ -392,10 +397,10 @@ void lmChord::ComputeLayout(lmPaper* pPaper, wxPoint paperPos, wxColour colorC)
     lmLUnits xPos, yPos;
     lmLUnits yStaffTopLine;
     lmAccidental* pAccidental;
-    lmShapeObj* pAccShape;
     lmNote* pNote;
-    lmNote* pCrashNote;
-    wxNotesListNode *pNode = m_cNotes.GetFirst();
+    //first loop to process notes not shitfted to right
+    wxNotesListNode* pNode = m_cNotes.GetFirst();
+    wxLogMessage(_T("[lmChord::ComputeLayout] First loop to process notes not shitfted to right"));
     for(iN=1; pNode; pNode=pNode->GetNext(), iN++ ) {
         pNote = (lmNote*)pNode->GetData();
         ///@aware The font to render the note and its accidentals is set in method
@@ -404,40 +409,23 @@ void lmChord::ComputeLayout(lmPaper* pPaper, wxPoint paperPos, wxColour colorC)
         ///     to set it in next sentence.
         pNote->SetFont(pPaper);
 
-        if (pNote->HasAccidentals())
-        {
-            //compute offset
-            yStaffTopLine = pNote->GetStaffOffset();   // staff y position (top line)
-            yPos = yStaffTopLine - pNote->GetPitchShift();
-            xPos = 0;
-
-            //compute accidentals layout
-            pNote->DrawAccidentals(pPaper, DO_MEASURE, xPos, yPos, colorC);
-            pAccidental = pNote->GetAccidentals();
-            pAccShape = pAccidental->GetShape();
-
-            //check if collision with any previous note accidentals
-            pCrashNote = CheckIfCollisionWithAccidentals(iN, pAccShape);
-            while (pCrashNote) {
-                //try to render at right of colliding accidental
-
-                xPos += ((pCrashNote->GetAccidentals())->GetShape())->GetWidth();
-                pNote->DrawAccidentals(pPaper, DO_MEASURE, xPos, yPos, colorC);
-                //check again for collision
-                pCrashNote = CheckIfCollisionWithAccidentals(iN, pAccShape);
-            }
-            //DBG
-            wxRect rect3 = (pAccidental->GetShape())->GetBoundsRectangle();
-            wxLogMessage(_T("[lmChord::ComputeLayout] Procesing note %d. Final rect=(%d,%d,%d,%d)"),
-                iN, rect3.x, rect3.y, rect3.width, rect3.height);
-        }
+        if (!pNote->IsNoteheadReversed() && pNote->HasAccidentals())
+            ComputeAccidentalLayout(true, pNote, iN, pPaper, paperPos, colorC);
+    }
+    //second loop to process notes  shitfted to right
+    wxLogMessage(_T("[lmChord::ComputeLayout] Second loop to process notes  shitfted to right"));
+    pNode = m_cNotes.GetFirst();
+    for(iN=1; pNode; pNode=pNode->GetNext(), iN++ ) {
+        pNote = (lmNote*)pNode->GetData();
+        if (pNote->IsNoteheadReversed() && pNote->HasAccidentals())
+            ComputeAccidentalLayout(false, pNote, iN, pPaper, paperPos, colorC);
     }
 
     //Here all accidentals are positioned without collisions. Procceed to compute
     //noteheads positions
-    //
-	//Loop to compute noteheads' position:
-	//- Set x pos to start of chord x pos
+
+    //Loop to compute noteheads' position:
+	//- Set x pos to start of chord x pos + note's accidental width (if exists)
 	//- Render notehead. If collision with an accidental:
 	//	Do while collision:
 	//		set x pos after collisioning accidental
@@ -445,8 +433,8 @@ void lmChord::ComputeLayout(lmPaper* pPaper, wxPoint paperPos, wxColour colorC)
 	//		test if collision
 	//	end do
 
-    xPos = paperPos.x;
-    yPos = paperPos.y;
+    lmShapeObj* pNoteHead;
+    lmNote* pCrashNote;
     pNode = m_cNotes.GetFirst();
     for(iN=1; pNode; pNode=pNode->GetNext(), iN++ )
     {
@@ -456,45 +444,112 @@ void lmChord::ComputeLayout(lmPaper* pPaper, wxPoint paperPos, wxColour colorC)
         //compute offset
         yStaffTopLine = pNote->GetStaffOffset();   // staff y position (top line)
         yPos = yStaffTopLine - pNote->GetPitchShift();
+        xPos = 0;
         if (pNote->HasAccidentals()) {
             pAccidental = pNote->GetAccidentals();
-            xPos = pAccidental->GetWidth();
+            //! @todo instead of width it must be position+width
+            xPos += pAccidental->GetWidth();
         }
-        else {
-            xPos = 0;
-        }
+
         //compute notehead's position
         pNote->DrawNote(pPaper, DO_MEASURE, xPos, yPos, colorC);
+        pNoteHead = pNote->GetNoteheadShape();
         //check if collision with any previous note accidentals
-        //pCrashNote = CheckIfCollisionWithAccidentals((int)m_cNotes.GetCount(), pNoteHead);
-        //while (pCrashNote) {
-        //    //try to render at right of colliding accidental
-        //    xPos += (pCrashNote->GetAccidentals())->GetWidth();
-        //    pNote->DrawAccidentals(pPaper, DO_MEASURE, xPos, yPos, colorC);
-        //    //check again for collision
-        //    pCrashNote = CheckIfCollision(iN, pAccidental);
-        //}
+        pCrashNote = CheckIfNoteCollision(pNoteHead);
+        while (pCrashNote) {
+            //try to render at right of colliding accidental
+            xPos += (pCrashNote->GetAccidentals())->GetWidth();
+            pNote->DrawNote(pPaper, DO_MEASURE, xPos, yPos, colorC);
+            //check again for collision
+            pCrashNote = CheckIfNoteCollision(pNoteHead);
+        }
+    }
+
+    //Here all noteheads are positioned without collisions. Proceed to shift
+    //noteheads positions to have a common anchor line, so that accidentals get
+    //not shifted in justification process
+
+    //a) Compute common anchor line as the max anchor line position
+
+    lmLUnits nMaxAnchor = -99999;
+    pNode = m_cNotes.GetFirst();
+    for(; pNode; pNode=pNode->GetNext()) {
+        pNote = (lmNote*)pNode->GetData();
+        nMaxAnchor = wxMax(nMaxAnchor, pNote->GetAnchorPos());
+    }
+
+	//b) Add a shift to each note so that its anchor line become the max anchor line
+    lmLUnits nShift;
+    pNode = m_cNotes.GetFirst();
+    for(; pNode; pNode=pNode->GetNext()) {
+        pNote = (lmNote*)pNode->GetData();
+        pNoteHead = pNote->GetNoteheadShape();
+        nShift = nMaxAnchor - pNote->GetAnchorPos();
+        pNote->ShiftNoteShape(nShift);
     }
 
 }
 
-lmNote* lmChord::CheckIfCollisionWithAccidentals(int iCurNote, lmShapeObj* pShape)
+lmNote* lmChord::CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNote, lmShapeObj* pShape)
 {
 	//Check to see if the shape pShape overlaps any accidental of
     //the chord, from first note to note iCurNote (excluded, range: 1..m_cNotes.GetCount())
     //If no collision returns NULL, otherwse, returns the Note
     //owning the accidental that collides
     int iN;
-    bool fCollision = false;
     lmNote* pNote;
     lmAccidental* pAccidental;
-    wxRect rect1 = pShape->GetBoundsRectangle();
     wxNotesListNode *pNode = m_cNotes.GetFirst();
-    for(iN=1; pNode && iN < iCurNote && !fCollision; pNode=pNode->GetNext(), iN++ ) {
+    for(iN=1; pNode && iN < iCurNote; pNode=pNode->GetNext(), iN++ ) {
+        pNote = (lmNote*)pNode->GetData();
+        if (fOnlyLeftNotes && !pNote->IsNoteheadReversed() || !fOnlyLeftNotes) {
+            if (pNote->HasAccidentals()) {
+                pAccidental = pNote->GetAccidentals();
+                if ( pShape->Collision(pAccidental->GetShape()) ) {
+                    //collision
+                    return pNote;
+                }
+            }
+        }
+    }
+
+    //In second loop, when checking accidentals for right shifted notes, it is necessary
+    //to verify collisions with all remaining notes at left
+    if (!fOnlyLeftNotes) {
+        for(iN=iCurNote; pNode && iN <= (int)m_cNotes.GetCount(); pNode=pNode->GetNext(), iN++ ) {
+            pNote = (lmNote*)pNode->GetData();
+            if (!pNote->IsNoteheadReversed()) {
+                if (pNote->HasAccidentals()) {
+                    pAccidental = pNote->GetAccidentals();
+                    if ( pShape->Collision(pAccidental->GetShape()) ) {
+                        //collision
+                        return pNote;
+                    }
+                }
+            }
+        }
+    }
+
+    //no collision
+    return (lmNote*)NULL;
+
+}
+
+lmNote* lmChord::CheckIfNoteCollision(lmShapeObj* pShape)
+{
+	//Check to see if the shape pShape overlaps any accidental of the chord
+    //If no collision returns NULL, otherwse, returns the Note
+    //owning the accidental that collides
+
+    int iN;
+    lmNote* pNote;
+    lmAccidental* pAccidental;
+    wxNotesListNode *pNode = m_cNotes.GetFirst();
+    for(iN=1; pNode && iN <= (int)m_cNotes.GetCount(); pNode=pNode->GetNext(), iN++ ) {
         pNote = (lmNote*)pNode->GetData();
         if (pNote->HasAccidentals()) {
             pAccidental = pNote->GetAccidentals();
-            if ( rect1.Intersects( (pAccidental->GetShape())->GetBoundsRectangle() )) {
+            if ( pShape->Collision(pAccidental->GetShape()) ) {
                 //collision
                 return pNote;
             }
@@ -503,5 +558,32 @@ lmNote* lmChord::CheckIfCollisionWithAccidentals(int iCurNote, lmShapeObj* pShap
 
     //no collision
     return (lmNote*)NULL;
+
+}
+
+void lmChord::ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, int iN, lmPaper* pPaper, wxPoint paperPos, wxColour colorC)
+{
+    wxASSERT(pNote->HasAccidentals());
+
+    //compute offset
+    lmLUnits yStaffTopLine = pNote->GetStaffOffset();   // staff y position (top line)
+    lmLUnits yPos = yStaffTopLine - pNote->GetPitchShift();
+    lmLUnits xPos = 0;
+
+    //compute accidentals layout
+    pNote->DrawAccidentals(pPaper, DO_MEASURE, xPos, yPos, colorC);
+    lmAccidental* pAccidental = pNote->GetAccidentals();
+    lmShapeObj* pAccShape = pAccidental->GetShape();
+
+    //check if collision with any previous note accidentals
+    lmNote* pCrashNote = CheckIfCollisionWithAccidentals(fOnlyLeftNotes, iN, pAccShape);
+    while (pCrashNote) {
+        //try to render at right of colliding accidental
+
+        xPos += ((pCrashNote->GetAccidentals())->GetShape())->GetWidth();
+        pNote->DrawAccidentals(pPaper, DO_MEASURE, xPos, yPos, colorC);
+        //check again for collision
+        pCrashNote = CheckIfCollisionWithAccidentals(fOnlyLeftNotes, iN, pAccShape);
+    }
 
 }

@@ -65,8 +65,13 @@ LenMus project philosophy (to remind me to always stay on this):
       Lippman's book is the cure.
   
   ---------------------------------------------------------------------------------------
- 
+	- width of chord = max width of its notes
+	- render accidentals in notes order
+	
+	
 	- include playback buttons in main toolbar
+	- need to devise a renderization algorithm based on plugins so that different
+		algoritms can be used to compute layout
 	
 Organizational issues:
     - Integrate wxMidi so that LenMus package at SVN be self-contained.

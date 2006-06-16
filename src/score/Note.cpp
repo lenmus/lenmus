@@ -193,7 +193,7 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
     //if the note is part of a chord find the base note and take some values from it
     m_fIsNoteBase = true;        //by default all notes are base notes
     m_pChord = (lmChord*)NULL;    //by defaul note is not in chord
-    m_fShiftNoteheadRight = false;
+    m_fNoteheadReversed = false;
     if (fInChord) {
         if (!g_pLastNoteRest || g_pLastNoteRest->IsRest()) {
             ; //! @todo
@@ -465,6 +465,11 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     }
 
     //render accidental signs if exist
+    //@aware:
+    //  Accidentals shape can not be part of note shape. This is required to allow
+    //  independent positioning when user select the accidental and moves it.
+    //  On the other hand, the note and its accidentals are not taken into account by the
+    //  system justification process, as they are considered part of the note
     if (m_pAccidentals) {
         if (!fMeasuring || !fMeasured && fMeasuring) {
             DrawAccidentals(pPaper, fMeasuring, nxLeft - m_paperPos.x, nyTop - m_paperPos.y, colorC);
@@ -474,7 +479,6 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
     //advance space before note
     nxLeft += m_nSpacePrev;
-    if (fMeasuring) { m_xAnchor = nxLeft - m_paperPos.x; }
 
     //render the notehead (or the full note if single glyph)
     if (!fMeasuring || !fMeasured && fMeasuring) {
@@ -526,22 +530,24 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     // draw the stem
     // In measurement phase the stem is measured even if it must not be drawn. This is
     // necessary to have information for positioning tuplets' bracket
+    // @aware x position was set in DrawNote()
     //-----------------------------------------------------------------------------------
     if (m_nStemType != eStemNone) {
         if (fMeasuring) {
-                //nyTop += m_pVStaff->TenthsToLogical(50, m_nStaffNum);       
             // compute and store start position of stem
             if (m_fStemDown) {
                 //stem down: line down on the left of the notehead
                 nyTop += m_pVStaff->TenthsToLogical(51, m_nStaffNum);       
-                m_xStem = m_noteheadRect.x;
                 m_yStem = nyTop - m_paperPos.y;
             } else {
                 //stem up: line up on the right of the notehead
                 nyTop += m_pVStaff->TenthsToLogical(49, m_nStaffNum);       
-                m_xStem = m_noteheadRect.x + m_noteheadRect.width;
                 m_yStem = nyTop - m_paperPos.y;
             }
+            //if (fDrawStem) {
+            //    if (!m_pStemLine) m_pStemLine = new lmShapeLine(this, m
+
+            //}
 
         } else {
             // not measuring. Do draw stem unless it is a note in chord. In this case
@@ -563,10 +569,11 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //--------------------------------------------
     if (!fMeasuring) {
         lmLUnits xLine = m_noteheadRect.x - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
-        // in DO_DRAW phase dxNotehead is 0. In DO_MEASRUE phase it is the width of the
-        // glyph and then it is not right, particularly with notes drawn in block
-        // lmLUnits widthLine = dxNotehead + m_pVStaff->TenthsToLogical(8, m_nStaffNum);
-        lmLUnits widthLine = m_pVStaff->TenthsToLogical(20, m_nStaffNum);
+        //lmLUnits xLine = m_pNoteheadShape->GetBoundsRectangle().x - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
+        lmLUnits widthLine = m_noteheadRect.width + 
+                             m_pVStaff->TenthsToLogical(8, m_nStaffNum);
+        //lmLUnits widthLine = m_pNoteheadShape->GetBoundsRectangle().width + 
+        //                     m_pVStaff->TenthsToLogical(8, m_nStaffNum);
         DrawLegerLines(pDC, nPosOnStaff, yStaffTopLine, xLine, widthLine);
     }
     
@@ -644,6 +651,9 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     if (m_pTupletBracket && (m_pTupletBracket->GetEndNote())->GetID() == m_nId) {
         m_pTupletBracket->Draw(fMeasuring, pPaper, colorC);
     }
+
+    ////DBG
+    //if (fMeasuring) wxLogMessage( m_pNoteheadShape->Dump() );
     
 }
 
@@ -665,15 +675,19 @@ lmLUnits lmNote::DrawAccidentals(lmPaper* pPaper, bool fMeasuring,
 }
 
 
-// draws the notehead (or the full note if single glyph) and returns flag to draw or not
-// the stem
 bool lmNote::DrawNote(lmPaper* pPaper, bool fMeasuring,
                       lmLUnits xOffset, lmLUnits yOffset, wxColour colorC)
 {
+    // draws the notehead (or the full note if single glyph) and returns flag to 
+    // draw or not the stem
+
     wxDC* pDC = pPaper->GetDC();
     lmLUnits nxLeft = xOffset + m_paperPos.x;
     lmLUnits nyTop = yOffset + m_paperPos.y;
     bool fDrawStem = true;
+
+    //initially set anchor point at left side of notehead
+    if (fMeasuring) { m_xAnchor = xOffset; }
 
     if (!m_fBeamed && m_nNoteType > eQuarter && !IsInChord()) {
         // It is a single note with flag: draw it in one step with a glyph
@@ -703,10 +717,44 @@ bool lmNote::DrawNote(lmPaper* pPaper, bool fMeasuring,
                      (m_fSelected ? g_pColors->ScoreSelected() : colorC) );
     }
 
+    //set stem x position
+    //x position is set even if stem must not be drawn. This is
+    //necessary to have information for positioning tuplets' bracket
+    if (fMeasuring) {
+        if (m_fStemDown) {
+            //stem down: line down on the left of the notehead unless notehead reversed
+            m_xStem = m_noteheadRect.x;
+            if (m_fNoteheadReversed) m_xStem += m_noteheadRect.width;
+        } else {
+            //stem up: line up on the right of the notehead unless notehead reversed
+            m_xStem = m_noteheadRect.x;
+            if (!m_fNoteheadReversed) m_xStem += m_noteheadRect.width;
+        }
+    }
+
+    //in chords, if nothehead is reversed the anchor point have to be at the other side
+    if (fMeasuring && m_fNoteheadReversed) {
+        m_xAnchor += (m_fStemDown ? m_noteheadRect.width : -m_noteheadRect.width);
+    }
+
+
     return fDrawStem;
 
 }
 
+void lmNote::ShiftNoteShape(lmLUnits xShift)
+{
+    //reposition the note shape and all directly related measurements: stem x pos,
+    //anchor pos,
+    //This method does not change the accidentals position, only the note itself.
+
+    m_pNoteheadShape->Shift(xShift);    // shift notehead
+    m_xAnchor += xShift;                // shift anchor line
+    m_noteheadRect.x += xShift;
+    m_selRect.x += xShift;
+    m_xStem += xShift;
+
+}
 
 void lmNote::MakeUpPhase(lmPaper* pPaper)
 {
@@ -869,7 +917,7 @@ void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ENoteHeads nNoteheadType,
         m_glyphPos.y = nyTop - m_paperPos.y - m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum);
 
         // store selection rectangle position and size
-        m_selRect = m_pNoteheadShape->GetBoundsRect();
+        m_selRect = m_pNoteheadShape->GetSelRectangle();
 
         // store notehead position and size. selRect bounds the notehead, so just copy it
         m_noteheadRect = m_selRect;
@@ -1131,11 +1179,11 @@ lmLUnits lmNote::GetBoundsRight()
 
 void lmNote::SetLeft(lmLUnits nLeft)
 {
-    /*
-    The SetLeft() method is overriden to take into account the possible existence of
-    associated AuxObjs, such as Ties and Accidentals. These AuxObjs have to be moved
-    when the note is moved
-    */
+    //
+    // The SetLeft() method in StaffObj is overriden to take into account the possible
+    // existence of associated AuxObjs, such as Ties and Accidentals. These AuxObjs have
+    // also to be moved when the note is moved
+    //
 
     m_paperPos.x = nLeft;
 
@@ -1181,7 +1229,7 @@ wxString lmNote::Dump()
         sDump += _T(", BaseOfChord");
     if (IsInChord()) {
         sDump += wxString::Format(_T(", InChord, Notehead shift = %s"), 
-            (m_fShiftNoteheadRight ? _T("yes") : _T("no")) );
+            (m_fNoteheadReversed ? _T("yes") : _T("no")) );
     }
     if (m_fBeamed) {
         sDump += wxString::Format(_T(", Beamed: BeamTypes(%d"), m_BeamInfo[0].Type);

@@ -192,7 +192,11 @@
 	2. Drawing phase:
 		- It is the same procedure than the measurement phase but methods DrawObject()
 			must render the object at the precomputed stored positions instead of computing
-			positions.
+			positions. 
+			
+			m_paperPos.x is set in method SetLeft(). This method is invoked from 
+			Formatter4, during the justification process.
+			
 			
 	[NEW] In shapes based renderization:
 		- During the measurement phase, shape object is created and positioned. The shape

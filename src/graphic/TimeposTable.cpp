@@ -519,7 +519,7 @@ wxString lmTimeposTable::DumpTimeposTable()
             sMsg += wxT("----------------------------------------------------------------------------\n");
         }
         pTE = m_aTimePos[i];
-        sMsg += wxString::Format(_T("%4d:\t%d\t"), i, pTE->m_nThread);
+        sMsg += wxString::Format(_T("%4d:\t%d"), i, pTE->m_nThread);
         switch (pTE->m_nType)
         {
             case eAlfa:

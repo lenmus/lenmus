@@ -68,7 +68,14 @@ public:
 
     // methods related to bounds
     wxRect GetBoundsRectangle() const { return m_BoundsRect; }
-    lmLUnits GetWidth() { return m_BoundsRect.width; }
+    bool Collision(lmShapeObj* pShape);
+    virtual lmLUnits GetWidth() { return m_BoundsRect.width; }
+
+    //methods related to position
+    virtual void Shift(lmLUnits xIncr) = 0;
+
+    //Debug related methods
+    virtual wxString Dump() = 0;
 
 
 protected:
@@ -92,8 +99,9 @@ class lmShapeSimple : public lmShapeObj
 public:
     virtual ~lmShapeSimple() {}
 
-    //specific methods
-    virtual wxRect GetBoundsRect() const;
+    //implementation of virtual methods from base class
+    virtual wxString Dump() = 0;
+    virtual void Shift(lmLUnits xIncr) = 0;
 
 
 protected:
@@ -111,6 +119,8 @@ public:
 
     //implementation of virtual methods from base class
     void Render(wxDC* pDC, wxPoint pos, wxColour color = *wxBLACK);
+    virtual wxString Dump() { return _T("ShapeComposite"); }
+    virtual void Shift(lmLUnits xIncr);
 
     //dealing with components
     virtual void Add(lmShapeObj* pShape);
@@ -131,7 +141,8 @@ public:
 
     //implementation of virtual methods from base class
     void Render(wxDC* pDC, wxPoint pos, wxColour color = *wxBLACK);
-
+    wxString Dump();
+    void Shift(lmLUnits xIncr);
 
 private:
     lmLUnits    m_nLength;
@@ -148,17 +159,18 @@ public:
 
     //implementation of virtual methods from base class
     void Render(wxDC* pDC, wxPoint pos, wxColour color = *wxBLACK);
+    wxString Dump();
+    void Shift(lmLUnits xIncr);
 
     //specific methods
     void Measure(wxDC* pDC, lmStaff* pStaff, wxPoint shift);
-    void SetShift(lmLUnits x, lmLUnits y);
     void SetFont(wxFont *pFont);
 
 
 private:
     int         m_nGlyph;
     wxFont*     m_pFont;
-    wxPoint     m_shift;         // to correctly position the glyph (relative to render point)
+    wxPoint     m_shift;         // to correctly position the glyph (relative to shape offset point)
 
 };
 
