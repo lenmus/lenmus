@@ -70,8 +70,8 @@ LenMus project philosophy (to remind me to always stay on this):
 	
 	
 	- include playback buttons in main toolbar
-	- need to devise a renderization algorithm based on plugins so that different
-		algoritms can be used to compute layout
+	- need to devise a renderization method based on plugins so that different
+		algorithms, user selectable, can be used to compute layout
 	
 Organizational issues:
     - Integrate wxMidi so that LenMus package at SVN be self-contained.

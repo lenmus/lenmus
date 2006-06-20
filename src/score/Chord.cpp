@@ -70,6 +70,7 @@ lmChord::lmChord(lmNote* pBaseNote)
     m_cNotes.Append(pBaseNote);
 
     // as this is the only note it is the max and the min one
+    m_pBaseNote = pBaseNote;
     m_pMinNote = pBaseNote;
     m_pMaxNote = pBaseNote;
 }
@@ -93,17 +94,46 @@ lmChord::~lmChord()
     m_cNotes.Clear();
 }
 
+wxString lmChord::Dump()
+{
+    wxString sDump = wxString::Format(_T("Chord: num.notes=%d ("), m_cNotes.GetCount());
+
+    int iPos;
+    wxNotesListNode *pNode = m_cNotes.GetFirst();
+    lmNote* pNote;
+    for(iPos=0; pNode; pNode=pNode->GetNext(), iPos++) {
+        pNote = (lmNote*)pNode->GetData();
+        sDump += wxString::Format(_T("%d,") ,pNote->GetPitch() );
+    }
+    sDump += wxString::Format(_T("), max=%d, min=%d, base=%d, stem="),
+                m_pMaxNote->GetPitch(), m_pMinNote->GetPitch(), m_pBaseNote->GetPitch() );
+    sDump += (m_fStemDown ? _T("down") : _T("up"));
+
+    return sDump;
+}
+
 /*!  @brief Add a note to the chord.
 */
-void lmChord::AddNote(lmNote* pNote)
+void lmChord::AddNote(lmNote* pNewNote)
 {
-    m_cNotes.Append(pNote);
+    //Notes will be kept ordered by pitch. First item lowest pitch
+    //When this method is invoked at least the base note is in the collection
+    wxASSERT(m_cNotes.GetCount() > 0);
+
+    int iPos;
+    wxNotesListNode *pNode = m_cNotes.GetFirst();
+    lmNote* pNote;
+    for(iPos=0; pNode; pNode=pNode->GetNext(), iPos++) {
+        pNote = (lmNote*)pNode->GetData();
+        if (pNote->GetPitch() > pNewNote->GetPitch()) break;
+    }
+    m_cNotes.Insert((size_t)iPos, pNewNote);
     
     //Update Max and Min note 
-    if (m_pMinNote->GetPitch() > pNote->GetPitch()) {
-        m_pMinNote = pNote;
-    } else if (m_pMaxNote->GetPitch() < pNote->GetPitch()) {
-        m_pMaxNote = pNote;
+    if (m_pMinNote->GetPitch() > pNewNote->GetPitch()) {
+        m_pMinNote = pNewNote;
+    } else if (m_pMaxNote->GetPitch() < pNewNote->GetPitch()) {
+        m_pMaxNote = pNewNote;
     }
 
     //compute stem direction
@@ -143,7 +173,7 @@ void lmChord::RemoveNote(lmNote* pNote)
 
 lmNote* lmChord::GetBaseNote()
 {
-    return (lmNote*)(m_cNotes.GetFirst())->GetData();
+    return m_pBaseNote;
 }
 
 int lmChord::GetNumNotes()
@@ -163,7 +193,7 @@ void lmChord::DrawStem(bool fMeasuring, wxDC* pDC, wxColour colorC, wxFont* pFon
 {
     wxASSERT(pDC);
 
-    lmNote* pBaseNote = (lmNote*)(m_cNotes.GetFirst())->GetData();
+    lmNote* pBaseNote = GetBaseNote();
     lmLUnits xStem = pBaseNote->GetXStem();
     lmLUnits yStemStart=0, yStemEnd=0;
 
@@ -297,7 +327,7 @@ void lmChord::ComputeStemDirection()
 
     if (m_cNotes.GetCount() < 2) return;
 
-    lmNote* pBaseNote = (lmNote*)(m_cNotes.GetFirst())->GetData();
+    lmNote* pBaseNote = GetBaseNote();
 
     #define TWO_NOTES_DEFAULT true          //! @todo move to layout user options
 
@@ -335,7 +365,7 @@ void lmChord::ComputeStemDirection()
 void lmChord::SetStemDirection(bool fStemDown)
 {
     m_fStemDown = fStemDown;
-    lmNote* pBaseNote = (lmNote*)(m_cNotes.GetFirst())->GetData();
+    lmNote* pBaseNote = GetBaseNote();
     if (pBaseNote != m_pMinNote)    //check to avoid infinite loops
         m_pMinNote->SetStemDirection(m_fStemDown);
     if (pBaseNote != m_pMaxNote)    //check to avoid infinite loops
@@ -351,15 +381,15 @@ void lmChord::ArrangeNoteheads()
     if (m_cNotes.GetCount() < 2) return;
 
     //arrange notes by pitch
-    NotesList cNotes = m_cNotes;
-    cNotes.Sort(GlobalPitchCompare);
+    //NotesList cNotes = m_cNotes;
+    //cNotes.Sort(GlobalPitchCompare);
 
     bool fSomeReversed = false;
     int nPosPrev = 1000;    // a very high number not posible in real world
     int nPos;
     lmNote* pNote;
-    wxNotesListNode *pNode = cNotes.GetFirst();
-    for(; pNode; pNode=pNode->GetNext() ) {
+    wxNotesListNode *pNode = (m_fStemDown ? m_cNotes.GetLast() : m_cNotes.GetFirst());
+    for(; pNode; pNode=(m_fStemDown ? pNode->GetPrevious() : pNode->GetNext()) ) {
         pNote = (lmNote*)pNode->GetData();
         nPos = pNote->GetPosOnStaff();
         if (abs(nPosPrev - nPos) < 2) {

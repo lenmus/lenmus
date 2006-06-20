@@ -445,6 +445,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     bool fMeasured = false;
     if (fMeasuring) {
         if (IsBaseOfChord()) {
+            wxLogMessage( m_pChord->Dump() );
             m_pChord->ComputeLayout(pPaper, m_paperPos, colorC);
             fMeasured = true;
         }

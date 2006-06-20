@@ -47,6 +47,9 @@ public:
                   lmVStaff* pVStaff, int nStaff);
     void ComputeLayout(lmPaper* pPaper, wxPoint paperPos, wxColour colorC);
 
+    //debug
+    wxString Dump();
+
 
 private:
     lmLUnits DrawFlag(bool fMeasuring, wxDC* pDC, lmNote* pBaseNote, wxPoint pos,
@@ -66,6 +69,7 @@ private:
 
 
     NotesList   m_cNotes;           //list of notes that form the chord
+    lmNote*     m_pBaseNote;        //base note (first note in chord definition)
     lmNote*     m_pMinNote;         //lowest pitch note
     lmNote*     m_pMaxNote;         //highest pitch note
     bool        m_fStemDown;        //chord stem direction

@@ -700,7 +700,7 @@ if it did not exist).</p>
 <a name="rule_time_signature" />
 <p>
 <span class="nt">TimeSignature</span> :=
-    <span class="t">(TimeSign</span>
+    <span class="t">(time</span>
     <span class="nt">TopNumber</span>
     <span class="nt">BottomNumber</span>
     [<span class="nt">Visible</span>]
@@ -770,15 +770,15 @@ arriba) para microtonos.</p>
 <b>Important: </b>
 In LDP accidentals are not absolute (as in MusicXML) but relative to the context. That is, you must
 write or not an accidental following the same rules than when you write music by hand
-in lined music paper. You have to write only those accidental that are not implied by
-the key signature or that are not implied for a previous accidental in the same measure.
+in music paper. You have to write only those accidentals that are not implied by
+the key signature or that are not implied by a previous accidental in the same measure.
 </p>
 </div>
 
 <p>
 Then, in the following example:</p>
 <pre class="example">
-  (c1 (Key Fa) (n b4 n))
+  (c1 (key Fa) (n b4 n))
 </pre>
 
 <p>the eighth b4 note will be a flat b4, as it is in F major key.</p>
@@ -1018,31 +1018,8 @@ must be combined as needed. Examples:</p>
 
 
 
-<h2><a name="_Toc86206005">Acordes </a> style='font-weight:normal'>(chords)</h2>
-
-<p>Para escribir un acorde es preciso poder indicar que una
-nota debe comenzar a la vez que la anterior, en vez de a continuación de ella.
-Y esta es precisamente la función del elemento <b>NA</b> (<b>N</b>ota en <b>A</b>corde)
-utilizado en lugar del <b>N</b>. Es exactamente igual que el elemento <b>N</b>
-pero implica que la nota que se define se agrupe con la previamente definida
-para formar un acorde. Así, un acorde de negras de Do mayor podría codificarse
-como:</p>
-
-<p>(n c4 n) (na e4 n) (na g4 n)</p>
-
-<p>&nbsp;</p>
-
-<p>Es decir se define primero una nota normal de
-altura c4 y luego dos notas adicionales agrupadas con ella para formar el
-acorde.</p>
-
-<p>Si en un acorde hay notas con diferentes
-duraciones es obligatorio que se vayan definiendo de mayor a menor duración</p>
-
-<p>&nbsp;</p>
-
 <h1><a name="_Toc86206006">
-lang=ES>Instrumentos polifónicos y partituras multipentagrama</a></h1>
+Instrumentos polifónicos y partituras multipentagrama</a></h1>
 
 <p>En instrumentos que requieren más de un pentagrama,
 como el piano, o en obras para varios instrumentos la complejidad para
@@ -1050,7 +1027,7 @@ describirlas aumenta. Aparecen distintos problemas relacionados, en general,
 con el hecho de tener que describir secuencialmente distintos fenómenos
 musicales que se producen simultánmeamente en el tiempo. Por ejemplo:</p>
 
-<ul style='margin-top:0cm' type=square>
+<ul>
  <li>Si coinciden dos o más voces en un mismo
      pentagrama, ¿cómo especificar a que voz corresponde cada nota?</li>
  <li>Si coinciden dos o más voces en un mismo
@@ -1362,37 +1339,34 @@ damp-all | </p>
 
 
 
-<h2><a name="_Toc86206011">Directiva de tipo texto </a> style='font-weight:
-normal'>&lt;words&gt;</h2>
+<h2><a name="_Toc86206011">Directiva de tipo texto </a></h2>
 
 <p>Las directivas de tipo &quot;texto&quot; se utilizan para
 escribir texto en la partitura.</p>
 
 <p>&lt;texto&gt; = (<b>texto </b>string &lt;posicion&gt;[&lt;font&gt;
-style='display:none;background:yellow'>&lt;alineacion&gt;&lt;idioma&gt;])</p>
+&lt;alineacion&gt;&lt;idioma&gt;])</p>
 
-<p>     lang=FR>&lt;posicion&gt; </p>
+<p>&lt;posicion&gt; </p>
 
-<p> lang=FR>    &lt;font&gt; = (<b>font &lt;</b>nombre&gt;
+<p>&lt;font&gt; = (<b>font &lt;</b>nombre&gt;
 &lt;size&gt; [&lt;estilo&gt;])</p>
 
-<p> lang=FR>      &lt;estilo&gt; = &quot;normal&quot; |
+<p>&lt;estilo&gt; = &quot;normal&quot; |
 &quot;negrita&quot; | &quot;cursiva&quot; | &quot;negrita,cursiva&quot;</p>
 
-<p>               &quot;bold&quot; |
+<p>&quot;bold&quot; |
 &quot;italic&quot; | &quot;bold,italic&quot;</p>
 
-<p>      &lt;size&gt; = <i>num</i></p>
+<p>&lt;size&gt; = <i>num</i></p>
 
-<p>      Se asume &quot;Arial&quot; 10pt
+<p>Se asume &quot;Arial&quot; 10pt
 normal</p>
 
-<p> lang=PT-BR style='display:none'>
-lang=FR style='display:none;background:yellow'>&lt;alineacion&gt; =
+<p>&lt;alineacion&gt; =
 &quot;izqda&quot; | &quot;centrado&quot; | &quot;dcha&quot;</p>
 
-<p style='margin-left:49.65pt'> style='display:none;
-background:yellow'>La alineación se refiere a la forma en que se escibe el
+<p>La alineación se refiere a la forma en que se escibe el
 texto y a la posición del punto de anclaje del mismo. Si está alineado a
 izquierda, el punto de anclaje es la posición izquierda y el texto se coloca a
 la derecha del punto de anclaje, comenzando en él. Si está alineado a derecha,
@@ -1400,13 +1374,11 @@ el punto de anclaje es el final del texto y el texto se distribuye hacia su
 izquierda. Si está &quot;centrado&quot; el punto de anclaje se encuentra en el
 centro del texto. Si no se especifica se asume alineado a izquierda.</p>
 
-<p> style='display:none;background:yellow'>
-lang=FR style='display:none;background:yellow'>&lt;idioma&gt; = string </p>
+<p>&lt;idioma&gt; = string </p>
 
-<p style='margin-left:49.65pt'> style='font-size:11.0pt;
-font-family:Arial;display:none;background:yellow'>Se asume idioma=italiano</p>
+<p>Se asume idioma=italiano</p>
 
-<p> lang=FR>&nbsp;</p>
+<p>&nbsp;</p>
 
 <p>Ejemplo:</p>
 
