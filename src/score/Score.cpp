@@ -75,13 +75,10 @@ lmScore::lmScore()
 
     m_nID = ++m_nCounterID;
     
-    m_pTitle = (lmText*)NULL;        //no title
-    m_pSubtitle = (lmText*)NULL;    //no subtitle
-
     //initializations
     m_pSoundMngr = (lmSoundManager*)NULL;
 
-    //! @todo fill this not with constants
+    //! @todo user options, not a constant
     m_nTopSystemDistance = lmToLogicalUnits(2, lmCENTIMETERS);    // 2 cm
 
     //default renderization options
@@ -106,32 +103,28 @@ lmScore::~lmScore()
     m_cHighlighted.DeleteContents(false);    //Staffobjs must not be deleted, only the list
     m_cHighlighted.Clear();
 
+    //@aware:   titles must not be deleted. As they are included in global list they
+    //          have been deleted a couple of lines above. Following lines produce a crash.
+    //m_cTitles.DeleteContents(true);
+    //m_cTitles.Clear();
+
 }
 
 //---------------------------------------------------------------------------------------
 // score object methods
 //---------------------------------------------------------------------------------------
 
-void lmScore::SetTitle(wxString title)
+void lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign,
+                       lmLUnits xPos, lmLUnits yPos, 
+                       wxString sFontName, int nFontSize, 
+                       lmETextStyle nStyle)
 {
-    if (!m_pTitle) {
-        m_pTitle = new lmText(this, title, 0, 0, false, false, _T("Garamond"), 14, true, false );
-        IncludeInGlobalList(m_pTitle);
-    }
-    else {
-        m_pTitle->SetText(title);
-    }
-}
+    lmText* pTitle = new lmText(this, sTitle, nAlign, xPos, yPos,
+                                sFontName, nFontSize, nStyle );
 
-void lmScore::SetSubtitle(wxString subtitle)
-{
-    if (!m_pSubtitle) {
-        m_pSubtitle = new lmText(this, subtitle, 0, 0, false, false, _T("Garamond"), 11, false, true );
-        IncludeInGlobalList(m_pSubtitle);
-    }
-    else {
-        m_pSubtitle->SetText(subtitle);
-    }
+    IncludeInGlobalList(pTitle);    //so that it is selectable for edition
+    m_cTitles.Append(pTitle);
+
 }
 
 wxInt32 lmScore::GetNumMeasures()
@@ -181,62 +174,78 @@ lmInstrument* lmScore::XML_FindInstrument(wxString sId)
 
 void lmScore::WriteTitles(bool fMeasuring, lmPaper *pPaper)
 {
-    long nWidth, nHeight;
-    lmLUnits xPos=0;
+    long nHeight;
 
-    if (fMeasuring) {
-        // Measurement phase ---------------------------------------------------
+    if (fMeasuring) m_nHeadersHeight = 0;
 
-        m_nHeadersHeight = 0;
-
-        // measure Title if exits
-        if (m_pTitle) {
-            // center Title
-            if (!m_pTitle->IsFixed()) {
-                m_pTitle->Draw(DO_MEASURE, pPaper);
-                nWidth = m_pTitle->GetSelRect().width;
-                nHeight = m_pTitle->GetSelRect().height;
-                xPos = (pPaper->GetRightMarginXPos() - pPaper->GetLeftMarginXPos() - nWidth)/2;
-                pPaper->SetCursorX(pPaper->GetLeftMarginXPos() + xPos);
-            }
-            m_pTitle->Draw(DO_MEASURE, pPaper);
-            m_pTitle->SetFixed(true);
-            nWidth = m_pTitle->GetSelRect().width;
-            nHeight = m_pTitle->GetSelRect().height;
-
-            // advance paper and update headers total height
-            pPaper->IncrementCursorY(nHeight);
+    lmText* pTitle;
+    wxStaffObjsListNode* pNode;
+    for(pNode = m_cTitles.GetFirst(); pNode; pNode = pNode->GetNext()) {
+        pTitle = (lmText*)pNode->GetData();
+        if (fMeasuring) {
+            nHeight = MeasureTitle(pPaper, pTitle);
             m_nHeadersHeight += nHeight;
         }
+        else {
+            pTitle->Draw(DO_DRAW, pPaper);
+        }
+    }
 
-        // measure Subtitle if exits
-        if (m_pSubtitle) {
-            // center subtitle
-            if (!m_pSubtitle->IsFixed()) {
-                m_pSubtitle->Draw(DO_MEASURE, pPaper);
-                nWidth = m_pSubtitle->GetSelRect().width;
-                nHeight = m_pSubtitle->GetSelRect().height;
-                xPos = (pPaper->GetRightMarginXPos() - pPaper->GetLeftMarginXPos() - nWidth)/2;
-                pPaper->SetCursorX(pPaper->GetLeftMarginXPos() + xPos);
-            }
+}
 
-            //render subtitle
-            m_pSubtitle->Draw(DO_MEASURE, pPaper);
-            m_pSubtitle->SetFixed(true);
-            nWidth = m_pSubtitle->GetSelRect().width;
-            nHeight = m_pSubtitle->GetSelRect().height;
+lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmText* pTitle)
+{
+    // returns height of title
 
-            //update headers total height
-            m_nHeadersHeight += nHeight;
+    lmLUnits nWidth, nHeight;
+
+    // measure title
+    if (!pTitle->IsFixed())
+    {
+        lmEAlignment nAlign = pTitle->GetAlignment();
+
+        //measure the text so that it can be properly positioned 
+        pTitle->Draw(DO_MEASURE, pPaper);
+        nWidth = pTitle->GetSelRect().width;
+        nHeight = pTitle->GetSelRect().height;
+
+        //Force new line if no space in current line
+        lmLUnits xSpace = pPaper->GetRightMarginXPos() - pPaper->GetCursorX();
+        if (xSpace < nWidth) {
+            pPaper->SetCursorX(pPaper->GetLeftMarginXPos());
+            pPaper->SetCursorY(pPaper->GetCursorY() + nHeight);
         }
 
+        if (nAlign == lmALIGN_CENTER)
+        {
+            // 'center' alignment forces to center the string in current line, 
+            // without taking into account the space consumed by any posible existing
+            // left title. That is, 'center' always means 'centered in the line'
+
+            lmLUnits xPos = (pPaper->GetRightMarginXPos() - pPaper->GetLeftMarginXPos() - nWidth)/2;
+            pPaper->SetCursorX(pPaper->GetLeftMarginXPos() + xPos);
+        }
+
+        else if (nAlign == lmALIGN_LEFT)
+        {   
+            //align left.
+            pPaper->SetCursorX(pPaper->GetLeftMarginXPos());
+        }
+
+        else
+        {   
+            //align right
+            lmLUnits xPos = (pPaper->GetRightMarginXPos() - nWidth);
+            pPaper->SetCursorX(xPos);
+        }
     }
 
-    else {
-        // Drawing phase ---------------------------------------------------
-        if (m_pTitle) m_pTitle->Draw(DO_DRAW, pPaper);
-        if (m_pSubtitle) m_pSubtitle->Draw(DO_DRAW, pPaper);
-    }
+    pTitle->Draw(DO_MEASURE, pPaper);
+    pTitle->SetFixed(true);
+    nWidth = pTitle->GetSelRect().width;
+    nHeight = pTitle->GetSelRect().height;
+
+    return nHeight;
 
 }
 

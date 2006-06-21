@@ -151,6 +151,16 @@ code, pre, tt {
     font-size: 75%;
 }
 
+.aknowledgment {
+    padding-left: 2em;
+    padding-right: 1em;
+    margin-left: 0em;
+    margin-right: 0em;
+    background-color: #f4f4f4;
+    border: 1px solid #bbbbbb;
+    font-size: 75%;
+}
+
 .example {
     padding-left: 1em;
     margin-left: 4em;

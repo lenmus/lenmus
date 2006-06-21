@@ -76,6 +76,13 @@ lmLDPParser::lmLDPParser()
     m_pTags = lmLdpTagsTable::GetInstance();
     m_pTags->LoadTags(_T("es"), _T("iso-8859-1"));      //default tags in Spanish
 
+    // default values for font and aligment for <title> elements
+    //! @todo user options instead of fixed values
+    m_nTitleAlignment = lmALIGN_CENTER;
+    m_sTitleFontName = _T("Times New Roman");
+    m_nTitleFontSize = 14; 
+    m_nTitleStyle = lmTEXT_BOLD;
+
 }
 
 lmLDPParser::~lmLDPParser()
@@ -651,13 +658,14 @@ lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)
 
 lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 {
-    //<score> = (score <vers> [<language>] [<credits>] <instrument>*)
+    //<score> = (score <vers> [<language>] [<titles>] <instrument>*)
     //<language> = (language LanguageCode Charset ) 
 
     lmLDPNode* pX;
     long i, iP;
     wxString sData;
     lmScore* pScore = (lmScore*) NULL;
+    int nNumParms = pNode->GetNumParms();
 
     //parse element <language>
     wxString sLangCode = _T("en");
@@ -675,23 +683,23 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
         iP++;
     }
     
-    //parse element <credits>
-    wxString sTitle = _T("");
-    pX = pNode->GetParameter(iP);
-    if (pX->GetName() == m_pTags->TagName(_T("credits")) ) {
-        //! @todo no treatment yet. Ignore
-        iP++;
-    }
-    
     // create the score
     pScore = new lmScore();
 
-    //if (sTitulo != _T(""))pScore->Set.Title(sTitle);
+    //parse element <titles>
+    pX = pNode->GetParameter(iP);
+    while(pX->GetName() == m_pTags->TagName(_T("title")) &&  iP <= nNumParms) {
+        AnalyzeTitle(pX, pScore);
+        iP++;
+        if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+    }
     
     // loop to parse elements <instrument>
-    for (i=0; iP <= pNode->GetNumParms(); i++, iP++) {
-        pX = pNode->GetParameter(iP);
-        AnalyzeInstrument105(pX, pScore, i);
+    i=0;
+    while(pX->GetName() == m_pTags->TagName(_T("instrument")) &&  iP <= nNumParms) {
+        AnalyzeInstrument105(pX, pScore, i++);
+        iP++;
+        if (iP <= nNumParms) pX = pNode->GetParameter(iP);
     }
     
     return pScore;
@@ -1962,7 +1970,66 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
 //    AnalizarStem = false       //no hay error
 //    
 //}
-//
+
+//returns true if error; in this case nothing is added to the score
+bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
+{
+    //  (title <alignment> string [<font>][<location>])
+
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("title")) );
+
+    //check that at least two parameters (aligment and text string) are specified
+    if(pNode->GetNumParms() < 2) {
+        AnalysisError(
+            _("Element '%s' has less parameters that the minimum required. Element ignored."),
+            m_pTags->TagName(_T("title")) );
+        return true;
+    }
+    
+    wxString sTitle;
+    lmEAlignment nAlign = m_nTitleAlignment;
+    lmLUnits xPos = -99999, yPos = -99999;
+    wxString sFontName = m_sTitleFontName;
+    int nFontSize = m_nTitleFontSize; 
+    lmETextStyle nStyle = m_nTitleStyle;
+
+    //get the aligment
+    long iP = 1;
+    wxString sName = (pNode->GetParameter(iP))->GetName();
+    if (sName == m_pTags->TagName(_T("left")) )
+        nAlign = lmALIGN_LEFT;
+    else if (sName == m_pTags->TagName(_T("right")) )
+        nAlign = lmALIGN_RIGHT;
+    else if (sName == m_pTags->TagName(_T("center")) )
+        nAlign = lmALIGN_CENTER;
+    else {
+        AnalysisError( _("Invalid alignment value '%s'. Assumed '%s'."),
+            sName, m_pTags->TagName(_T("center")) );
+        nAlign = lmALIGN_CENTER;
+    }
+    //save alignment as new default for titles
+    m_nTitleAlignment = nAlign;
+    iP++;
+
+    //get the string
+    sTitle = (pNode->GetParameter(iP))->GetName();
+    iP++;
+
+    //optional. Get font
+    if (iP <= pNode->GetNumParms()) {
+        AnalyzeFont(pNode->GetParameter(iP), &sFontName, &nFontSize, &nStyle);
+        iP++;
+        //save font values as new default for titles
+        m_sTitleFontName = sFontName;
+        m_nTitleFontSize = nFontSize; 
+        m_nTitleStyle = nStyle;
+    }
+
+    pScore->AddTitle(sTitle, nAlign, xPos, yPos, sFontName, nFontSize, nStyle);
+    return false;
+    
+}
+
 ////Devuelve true si hay error, es decir si no añade objeto al pentagrama
 //Function AnalizarDirectivaTexto(lmVStaff* pVStaff, lmLDPNode* pNode) As Boolean
 ////<texto> = (texto string <posicion><font><alineacion><idioma>)
@@ -2135,53 +2202,78 @@ EStemType lmLDPParser::AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff)
     
 }
 
-////Devuelve, en las variables sFontName, nFontSize, fBold y fItalic, los valores obtenidos
-////tras el análisis
-//void lmLDPParser::AnalizarFont(lmLDPNode* pNode, _
-//        ByRef sFontName As String, ByRef nFontSize As Long, _
-//        ByRef fBold As Boolean, ByRef fItalic As Boolean)
-//        
-////    <font> = (font <nombre> <size> [<estilo>])
-////    <estilo> = "normal" | "negrita" | "cursiva" | "negrita,cursiva" |
-////               "bold" | "italic" | "bold,italic"
-////    <size> = num
-////    Se asume "Arial" 10pt normal
-//
-//    wxASSERT(pNode->GetName() = "FONT"
-//    wxASSERT(pNode->GetNumParms() = 2 Or pNode->GetNumParms() = 3
-//    
-//    Dim wxString sData
-//    Dim long iP
-//    
-//    //inicializa valores a devolver
-//    sFontName = "Arial"
-//    nFontSize = 10
-//    fBold = false
-//    fItalic = false
-//    
-//    //análisis del nombre del font
-//    iP = 1
-//    sFontName = (pNode->GetParameter(iP))->GetName();;
-//        
-//    //analysis del fontSize
-//    iP = 2
-//    sData = (pNode->GetParameter(iP))->GetName();;
-//    if (Not IsNumeric(sData)) {
-//        AnalysisError(wxString::Format(_T("Analizando Font: El FontSize debe ser numérico y viene <" & _
-//            sData & ">. Se supone 10."
-//        sData = "10"
-//    }
-//    nFontSize = CLng(sData)
-//    
-//    //análisis del estilo
-//    iP = 3
-//    if (iP > pNode->GetNumParms()) { return;
-//    sData = UCase$((pNode->GetParameter(iP))->GetName();;)
-//    fBold = (InStr(sData, "BOLD") != 0) Or (InStr(sData, "NEGRITA") != 0)
-//    fItalic = (InStr(sData, "ITALIC") != 0) Or (InStr(sData, "CURSIVA") != 0)
-//        
-//}
-//
+void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, wxString* pFontName, int* pFontSize,
+                              lmETextStyle* pStyle)
+{        
+    // <font> = (font <name> <size> <style>)
+
+    //returns, in variables pointed by pFontName, pFontSize and pStyleDevuelve the
+    //result of the analysis. No default values are returned, only the real values
+    //found. Any defaults must be set before invoking this method
+
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("font")) );
+
+    //check that there are parameters
+    if (!(pNode->GetNumParms()== 2 || pNode->GetNumParms() == 3)) {
+        AnalysisError( _("Element '%s' has less parameters that the minimum required. Tag ignored. Assumed default stem."),
+            m_pTags->TagName(_T("stem")));
+    }
+
+    //flags to control that the corresponding parameter has been processed
+    bool fName = false;
+    bool fSize = false;
+    bool fStyle = false;
+    
+    //get parameters. The come in any order
+    int iP;
+    wxString sParm;
+
+    for(iP=1; iP <= pNode->GetNumParms(); iP++) {
+        sParm = (pNode->GetParameter(iP))->GetName();
+
+        if (!fStyle) {
+            //try style
+            fStyle = true;
+            if (sParm == m_pTags->TagName(_T("bold")) )
+                *pStyle = lmTEXT_BOLD;
+            else if (sParm == m_pTags->TagName(_T("normal")) )
+                *pStyle = lmTEXT_NORMAL;
+            else if (sParm == m_pTags->TagName(_T("italic")) )
+                *pStyle = lmTEXT_ITALIC;
+            else if (sParm == m_pTags->TagName(_T("bold-italic")) )
+                *pStyle = lmTEXT_ITALIC_BOLD;
+            else {
+                fStyle = false;
+            }
+        }
+
+        else if (!fSize) {
+            wxString sSize = sParm;
+            if (sParm.Length() > 2 && sParm.Right(2) == _T("pt")) {
+                sSize = sParm.Left(sParm.Length() - 2);
+            }
+            if (sSize.IsNumber()) {
+                long nSize;
+                sSize.ToLong(&nSize);
+                *pFontSize = (int)nSize;
+                fSize = true;
+            }
+        }
+
+        else if (!fName) {
+            //assume it is the name
+            fName = true;
+            *pFontName = (pNode->GetParameter(iP))->GetName();
+        }
+
+        else {
+            AnalysisError( _("Element '%s': invalid parameter '%s'. It is ignored."),
+                m_pTags->TagName(_T("font")), sParm );
+        }
+    }
+    
+}
+
 ////Devuelve, en las variables nX, nY, fXabs y fYabs, los valores obtenidos tras el análisis
 //void lmLDPParser::AnalizarPosicion(lmLDPNode* pNode, _
 //        ByRef nX As Long, ByRef nY As Long, _

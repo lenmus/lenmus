@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Text.cpp,v 1.3 2006/02/23 19:24:42 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -82,7 +81,6 @@ lmBasicText::lmBasicText(wxString sText, wxString sLanguage,
 
 }
 
-
 //==========================================================================================
 // lmText implementation
 //==========================================================================================
@@ -102,8 +100,30 @@ lmText::lmText(lmScore* pScore, wxString sText,
     m_yPos = yPos;
     m_fXAbs = fXAbs;
     m_fYAbs = fYAbs;
+    m_nAlignment = lmALIGN_DEFAULT;
 
 }
+
+lmText::lmText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,
+           lmLUnits xPos, lmLUnits yPos, 
+           wxString sFontName, int nFontSize, lmETextStyle nStyle) :
+    lmSimpleObj(eTPO_Text, (lmVStaff*)NULL, 0, true, sbDRAGGABLE)
+{
+    m_pScore = pScore;
+    m_sText = sTitle;
+    m_sFontName = sFontName;
+    m_nFontSize = PointsToLUnits(nFontSize);
+    m_fBold = (nStyle == lmTEXT_BOLD || nStyle == lmTEXT_ITALIC_BOLD);
+    m_fItalic = (nStyle == lmTEXT_ITALIC || nStyle == lmTEXT_ITALIC_BOLD);
+    m_xPos = xPos;
+    m_yPos = yPos;
+    m_fXAbs = false;
+    m_fYAbs = false;
+    m_nAlignment = nAlign;
+
+}
+
+
 
 
 //-----------------------------------------------------------------------------------------

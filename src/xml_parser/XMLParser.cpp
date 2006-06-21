@@ -1,4 +1,3 @@
-// RCS-ID: $Id: XMLParser.cpp,v 1.4 2006/02/23 19:26:43 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -1588,6 +1587,9 @@ void lmXMLParser::ParseWork(wxXmlNode* pNode, lmScore* pScore)
     g_pLogger->LogTrace(_T("lmXMLParser"), _T("Entering parser for %s"), sElement);
     wxASSERT(pNode->GetName() == sElement);
 
+    wxString sTitle = _T("");
+    wxString sNum = _T("");
+
     //find first child
     pNode = GetFirstChild(pNode);
     wxXmlNode* pElement = pNode;
@@ -1599,12 +1601,12 @@ void lmXMLParser::ParseWork(wxXmlNode* pNode, lmScore* pScore)
 
         //----------------------------------------------------------------------------
         if (sTag == _T("work-title")) {
-            pScore->SetTitle( GetText(pElement) );
+            sTitle = GetText(pElement);
         }
 
         //----------------------------------------------------------------------------
         else if (sTag == _T("work-number")) {
-            pScore->SetSubtitle( GetText(pElement) );
+            sNum = GetText(pElement);
         }
 
         //----------------------------------------------------------------------------
@@ -1620,6 +1622,16 @@ void lmXMLParser::ParseWork(wxXmlNode* pNode, lmScore* pScore)
         // Find next sibling 
         pNode = GetNextSibling(pNode);
         pElement = pNode;
+    }
+
+    if (sTitle == _T("")) {
+        if (sNum != _T(""))
+            pScore->AddTitle(sNum, lmALIGN_CENTER, 0, 0, _T("Times New Roman"), 14, lmTEXT_BOLD);
+    }
+    else if (sNum != _T("")) {
+        sTitle += ", ";
+        sTitle += sNum;
+        pScore->AddTitle(sTitle, lmALIGN_CENTER, 0, 0, _T("Times New Roman"), 14, lmTEXT_BOLD);
     }
 
 }

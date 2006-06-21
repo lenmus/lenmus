@@ -274,6 +274,25 @@ enum EBarline
     etb_DoubleRepetitionBarline     //two dots-thin-thin-two dots
 };
 
+// aligments
+enum lmEAlignment
+{
+    lmALIGN_DEFAULT = 0,
+    lmALIGN_LEFT,
+    lmALIGN_RIGHT,
+    lmALIGN_CENTER
+};
+
+// text styles
+enum lmETextStyle
+{
+    lmTEXT_DEFAULT = 0,
+    lmTEXT_NORMAL,
+    lmTEXT_BOLD,
+    lmTEXT_ITALIC,
+    lmTEXT_ITALIC_BOLD,
+};
+
 //Play modes: instrument to use to play a score
 enum EPlayMode
 {
@@ -484,8 +503,8 @@ public:
     lmInstrument* GetLastInstrument();
 
     // titles related methods
-    void SetTitle(wxString title);
-    void SetSubtitle(wxString subtitle);
+    void AddTitle(wxString sTitle, lmEAlignment nAlign, lmLUnits xPos, lmLUnits yPos, 
+                  wxString sFontName, int nFontSize, lmETextStyle nStyle);
     void WriteTitles(bool fMeasuring, lmPaper *pPaper);
 
     // methods related to MusicXML import/export
@@ -515,6 +534,7 @@ private:
     void WriteToFile(wxString sFilename, wxString sContent);
     void ComputeMidiEvents();
     void RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper);
+    lmLUnits MeasureTitle(lmPaper *pPaper, lmText* pTitle);
 
 
         //
@@ -522,9 +542,8 @@ private:
         //
 
     // a lmScore is, mainly, a collection of Instruments plus some data (composer, title, ...)
-    InstrumentsList     m_cInstruments;    //list of instruments that form this score
-    lmText*             m_pTitle;
-    lmText*             m_pSubtitle;
+    InstrumentsList     m_cInstruments;     //list of instruments that form this score
+    StaffObjsList       m_cTitles;          //list of score titles
 
     //Variables related to polyphonic interpretation
     lmSoundManager*     m_pSoundMngr;       //Sound events table & manager
@@ -536,7 +555,6 @@ private:
 
     //renderization options
     ERenderizationType  m_nRenderizationType;
-    //ESpacingMethod      m_nSpacingMethod;
 
     //other variables
     wxInstrumentsListNode*  m_pNode;        //last returned instrument node

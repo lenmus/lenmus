@@ -1,4 +1,3 @@
-// RCS-ID: $Id: TupletBracket.cpp,v 1.3 2006/02/23 19:24:42 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -279,7 +278,7 @@ void lmTupletBracket::SetFont(lmPaper* pPaper)
 
     if (!m_pFont) {
         wxMessageBox(_("Sorry, an error has occurred while allocating the font."),
-            _T("lmText::SetFont"), wxOK);
+            _T("lmTupletBracket::SetFont"), wxOK);
         ::wxExit();
     }
 }

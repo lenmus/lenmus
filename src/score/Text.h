@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Text.h,v 1.3 2006/02/23 19:24:42 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -55,7 +54,7 @@ protected:
 
     // font
     wxString    m_sFontName;
-    int            m_nFontSize;
+    int         m_nFontSize;
     bool        m_fBold;
     bool        m_fItalic;
 
@@ -69,6 +68,10 @@ public:
            lmLUnits xPos=0, lmLUnits yPos=0, bool fXAbs=false, bool fYAbs=false, 
            wxString sFontName=_T("Arial"), int nFontSize=12, 
            bool fBold=false, bool fItalic=false);
+
+    lmText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,
+           lmLUnits xPos, lmLUnits yPos, 
+           wxString sFontName, int nFontSize, lmETextStyle nStyle);
 
     ~lmText() {}
 
@@ -88,19 +91,21 @@ public:
 
     //specific method of this object
     void SetText(wxString text) { m_sText = text; }
+    lmEAlignment GetAlignment() { return m_nAlignment; }
 
 
 private:
-    wxString    m_sText;
+    wxString        m_sText;
     lmScore*        m_pScore;
-    lmLUnits    m_xPos;
-    lmLUnits    m_yPos;
-    bool        m_fXAbs;
-    bool        m_fYAbs;
-    wxString    m_sFontName;
-    int            m_nFontSize;
-    bool        m_fBold;
-    bool        m_fItalic;
+    lmLUnits        m_xPos;
+    lmLUnits        m_yPos;
+    bool            m_fXAbs;
+    bool            m_fYAbs;
+    wxString        m_sFontName;
+    int             m_nFontSize;
+    bool            m_fBold;
+    bool            m_fItalic;
+    lmEAlignment    m_nAlignment;
 
 };
 

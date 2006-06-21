@@ -1,5 +1,5 @@
 <html>
-<!-- $Id: 2006/05/29 17:44:29 $ -->
+<!-- $Id: 2006/06/21 17:44:29 $ -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>LenMus LDP Music representation language. Reference manual</title>
@@ -9,7 +9,7 @@
 
 <h1>LDP Music representation language. Reference manual</h1>
 
-<p>Version 1.5. Revision: May, 2006</p>
+<p>Version 1.5. Revision: Jun, 2006</p>
 
 <div class="important">
 <p><b>Please be aware that this manual is not yet finished.</b>
@@ -94,7 +94,7 @@ music scores in a platform independent, plain-text and human-readable way.
 This language is named LDP because I named it after the
 Spanish acronym for 'Lenguaje de Descripción de Musicituras', that is 'Language
 to Describe Scores'. Why to define a new language instead of using a existing
-one such as MIDI,  MusicXML, abc or Guido?</p>
+one such as MIDI,  MusicXML, abc, Guido or others?</p>
 
 <ul>
  <li>MIDI: oriented
@@ -110,21 +110,25 @@ one such as MIDI,  MusicXML, abc or Guido?</p>
     Althoug it has a
     great base of users it didn't suit LenMus project needs.</li>
  <li>Guido: I didn't know about GUIDO when I started this project. Probably it would have been
-    the right choice but I had a lot of LDP code written when I heared about GUIDO.</li>
+    a good choice but I had a lot of LDP code written when I heared about GUIDO.</li>
+ <li>Again, I did not consider any other existing language such as LilyPond or Mup,
+    because I didn't know about them when I started this project.</li>
 </ul>
 
 <p>At the time the LenMus project started it was finally decide to design a new language because:
 </p>
 
 <ul>
- <li>I did not find any suitable accepted standard. In fact the only "standard" available was be MusicXML.</li>
+ <li>I did not find any accepted standard. In fact the only "standard" available was be MusicXML.</li>
  <li>The need to code music scores by hand: In MusicXML this task is very tedious and
      takes a lot of time; at that time MusicXML was not a good option
      for specifying detailed positioning information.</li>
 
- <li>Designing my own language forced me to study more in depth the problems
+ <li>More important: designing my own language forced me to study more in depth
+    the problems
     associated to the representation of music in all its aspects. This was
     more in line with the objectives of the project.</li>
+
  <li>Finally, using my own language would give me more freedom in case MusicXML could
     not fully satisfy the LenMus project needs.</li>
 </ul>
@@ -135,8 +139,7 @@ approach and its development has the direct benefit of forcing me to study un
 depth the problems to represent music and to enter this information by using an
 alfanumeric keyborad. Although the internal language for the LenMus project is
 LDP, the LenMus program will incluye facilities to import and export music
-scores to MusicXML. Wherever possible, I tried to follow MusicXML structure so
-that translation to/from LDP and MusicXML would be easily programmed.</p>
+scores to MusicXML.</p>
 
 
 <h2><a name="The_Hello_world_sample">The 'Hello world' sample: A very simple score</a></h2>
@@ -238,7 +241,7 @@ encode the scores using tags in Spanish instead of tags in English, you would wr
      (vers 1.4)
      (instrumento 1
         (voz
-            (clave Sol)         //note the keyword 'Clave' instead of 'Clef'
+            (clave Sol)         //note the keyword 'clave' instead of 'clef'
             (tonalidad Do)
             (metrica 4 4)
             (n c4 r)            // duration: r (redonda = whole note)
@@ -308,9 +311,28 @@ more repetitions.<br /><br /></dd>
 &quot;Score&quot; and &quot;SCORE&quot; will not be taken as the same token.</p>
 
 
-<p>To reduce the work for typing a score some elements allow a <i>collapsed</i> syntax.
-This abbreviation consists on supressing the parenthesis and any blank space, so the element
-is reduced to a string. For example,
+<p>To reduce the work for typing a score or to improve legibility in some cases
+ an <i>abbreviated</i> syntax is allowed.
+This abbreviation consists on either:</p>
+
+<ul>
+
+<li>For elements with just one parameter, the syntax "(name param)"
+can be also written as "name=param". This improves legibility. For example,
+the following element
+    <pre class="example">
+    (title right "Franz Schubert" (x 40mm)(y 30mm))
+    </pre>
+can also be written as:
+    <pre class="example">
+    (title right "Franz Schubert" x=40mm y=30mm)
+    </pre>
+
+</li>
+
+<li>For elements with more than one parameter, in certain cases it is allowed
+to supress the parenthesis and any blank space, so the element
+is reduced to a string. This abbreviated form will be named "collapsing". For example,
 if element &lt;algo&gt; allows collapsing, then
 writting <q class="example">(algo 3 nx)</q> would be equivalent to writting
 <q class="example">algo3nx</q>,
@@ -318,7 +340,10 @@ writting <q class="example">(algo +)</q> would be equivalent to writting
 <q class="example">algo+</q> , or
 writting <q class="example">(algo -)</q> would be equivalent to writting
 <q class="example">algo-</q> .
-</p>
+Collapsing is only allowed for those elements in which it is explicitly stated.
+</li>
+
+</ul>
 
 
 
@@ -338,7 +363,7 @@ the author.</p>
     <span class="t">(score</span>
     <span class="nt">Version</span>
     [<span class="nt">Language</span>]
-    [<span class="nt">Credits</span>]
+    [<span class="nt">Titles</span>]
     <span class="nt">NumInstruments</span>
     <span class="nt">Instrument</span>*
     <span class="t">)</span>
@@ -899,7 +924,7 @@ the MIDI instrument no use.</li>
       <span class="nt">Tuplet</span> }
 </p>
 
-<p>Notations are encoded in collapsed syntax, that is, a notation is just a string of one or more characters without
+<p>Notations are encoded in abbreviated syntax, that is, a notation is just a string of one or more characters without
 blank spaces. The first character determines the type of notation and the remaining characters, when exist,
 indicates additional characteristics. The following table shows the currently implemented notations:</p>
 
@@ -953,7 +978,7 @@ Example:</p>
 <b>g</b> (group).  The first parameter is a plus sign (+) or a minus sign (-) to mean, respectively,
 that it is the start or the end of a group. After this sign other parameters are possible.
 When the only parameters specified are the start/end sign, the
-<b>g</b> element admits a collapsed syntax <b>g+</b> in
+<b>g</b> element admits a abbreviated syntax <b>g+</b> in
 the starting note and a notation <b>g-</b> in the endind one.
 Example:</p>
 <code class="example">
@@ -988,7 +1013,7 @@ in the time normally allotted for two eight notes.</p>
 <p>Additional parameters could be introduced in future to deal with renderization options.</p>
 
 <p>As tuplets are very frequent, to simplify the writting, the tuplet element allows for
-a collapsed syntax: </p>
+a abbreviated syntax: </p>
 <p>
 (t -) can be written as t-<br />
 (t + x) can be written as tx</p>
@@ -1175,110 +1200,6 @@ be fully specified by usig the Stem element. It forces stem direction.</p>
 
 
 <!--
-
-
-
-
-
-<h2>Unidades utilizadas en LDP</h2>
-
-<p>Los atributos de posición,
-en MusicXML (common.dtd), utilizan
-unidades relativas: décimas del espacio entre líneas de pentagrama (nota 7).
-Ahora bien, espaciado
-entre líneas y, en consecuencia, todos los demas valores relativos a esta
-medida de un pentagrama, debe poder establecerse para cada pentagrama, ya que
-en una misma pieza pueden coexistir pentagramas de distinto tamaño; por
-ejemplo, en partituras de piano en obras para varios instrumentos, el piano va
-en grande mientras que la línea para el otro instrumento va en pequeñito. En
-consecuencia, no parece una unidad adecuada para una página en la que se
-mezclen pentagramas de distinto tamaño y habrá que utilizar una unidad que no
-varíe entre pentagramas, al menos para  parámetros no asociados a un solo
-pentagrama, tales como espaciados entre pentagramas o márgenes de página. Para
-estos parámetros se decide utilizar como unidad  una décima de milímetro<a
-href="#_ftn8" name="_ftnref8" title=""> class=MsoFootnoteReference>
-class=MsoFootnoteReference> style='font-size:11.0pt;font-family:Arial'>[8]</a>.
- style='display:none;background:yellow'>En aquellos elementos claramente
-asociados a un pentagrama se permite elegir entre décimas de línea o unidades
-absolutas. En estos casos, para distinguir, las unidades irán siempre seguidas
-del nombre de la unidad (ur-unidades relativas = décimas de línea, ua-unidades
-absolutas = decimas de milímetro o la que haya definido el usuario), </p>
-
-<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
-text-align:left;text-indent:35.4pt;text-autospace:none'> lang=ES
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</p>
-
-
-
--->
-
-<!--
-
-
-
-
-
-<h2><a name="_Toc86206010">Posicion </a> lang=ES
-style='font-weight:normal'>&lt;<i>position</i>&gt; lang=ES>.</h2>
-
-<p>La posición puede ser relativa, referida a la
-barra de fin de compás que preceda a este elemento<a href="#_ftn9"
-name="_ftnref9" title=""> class=MsoFootnoteReference>
-class=MsoFootnoteReference> lang=ES style='font-size:11.0pt;font-family:
-Arial'>[9]</a>, (x=0 es la barra de inicio del compas, y=0
-es la linea base - la primera línea adicional por debajo -) o absoluta, referida
-a la esquina superior izquierda del lienzo de la partitura. La coordenada x se
-incrementa hacia la derecha, y la coordenada y hacia abajo. El punto de anclaje
-del objeto a posicionar es siempre la esquina inferior izquierda del rectángulo
-que enmarca el objeto. Por ejemplo, en el texto &quot;Hola&quot; el punto de
-anclaje al que se refiere el elemento &lt;posición&gt; sería el punto inferior
-de la línea izquierda de la H. </p>
-
-<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
-text-align:left;text-indent:35.4pt;text-autospace:none'> lang=ES
-style='font-size:10.0pt;font-family:"Courier New"'>&lt;posicion&gt; = (<b>xy</b>
-[&quot;x&lt;modo&gt;&lt;pos&gt;&quot;] [&quot;y&lt;modo&gt;&lt;pos&gt;&quot;]
-[&lt;offset&gt;])</p>
-
-<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
-text-align:left;text-autospace:none'> lang=ES style='font-size:10.0pt;
-font-family:"Courier New"'>&nbsp;</p>
-
-<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
-text-align:left;text-indent:35.4pt;text-autospace:none'> lang=ES
-style='font-size:10.0pt;font-family:"Courier New"'>&lt;modo&gt; = { r | a }</p>
-
-<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
-text-align:left;text-indent:35.4pt;text-autospace:none'> lang=ES
-style='font-size:10.0pt;font-family:"Courier New"'>&lt;pos&gt; = num entero con
-signo opcional</p>
-
-<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
-text-align:left;text-indent:35.4pt;text-autospace:none'> lang=ES
-style='font-size:10.0pt;font-family:"Courier New"'>&lt;offset&gt; = (offset <i>num</i>)</p>
-
-<p align=left style='margin-bottom:0cm;margin-bottom:.0001pt;
-text-align:left;text-indent:35.4pt;text-autospace:none'> lang=ES
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</p>
-
-<p>R = relativa a origen del compás, A =
-absoluta, referida a origen del papel. El elemento &lt;offset&gt; es un
-desplazamiento especificado en porcentaje del tamaño del compás (num de 0 a
-100). Su principal utilidad es poder situar un elemento centrado o al final del
-compás sin tener que variar las coordenadas de posición cada vez que hay una
-variación en el tamaño del compás.</p>
-
-<p>Ejemplos:</p>
-
-<p style='margin-left:63.8pt;text-indent:-63.8pt'>
-lang=ES>(xy xa54)  lang=ES >à
-lang=ES> coordenada x: 54 décimas de línea desde el origen del lienzo</p>
-
-<p style='margin-left:63.8pt;text-indent:-63.8pt'>(xy xr-54)
->à coordenada x: 54 décimas de línea menos que
-la x de origen de la barra de inicio del compas  </p>
-
-<p style='margin-left:63.8pt;text-indent:-63.8pt'>&nbsp;</p>
 
 <p><b> lang=ES style='display:none;background:yellow'>Lugar</b>
 lang=ES style='display:none;background:yellow'> &lt;<i>placement</i>&gt;.
