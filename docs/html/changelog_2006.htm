@@ -31,6 +31,20 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">22-jun-06</td>
+    <td class="ListaPar">
+    <ul>
+      <li>LDP Parser modified to introduce compact notation [ name=value --> (name value) ].
+        Changes only in lmLDPTokenBuilder::ReadToken() and 
+        lmLDPTokenBuilder::ParseNewToken().</li>
+      <li>LDP Parser: added method AnalyzeLocation(). AnalizeTitle() modified to accept
+        location parameter.</li>
+      <li>LDP Parser modified to accept numbers followed by letters, so numbers with
+        units (i.e.: 12pt, 10mm) can be processed. Requiered a modification in 
+        lmLDPTokenBuilder::ParseNewToken().</li>
+    </ul>
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">21-jun-06</td>
     <td class="ListaPar">
     <ul>

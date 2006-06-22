@@ -370,6 +370,31 @@ typedef struct lmTFontData {
     bool fItalic;
 } RFontData;
 
+//Location source data
+enum lmELocationUnits
+{
+    lmTENTHS = 0,
+    lmMM,
+    lmCM,
+    lmINCHES
+};
+
+enum lmELocationType
+{
+    lmLOCATION_RELATIVE = 0,
+    lmLOCATION_ABSOLUTE,
+    lmLOCATION_DEFAULT
+};
+
+typedef struct lmLocationStruct {
+    int x;
+    int y;
+    lmELocationType xType;
+    lmELocationType yType;
+    lmELocationUnits xUnits;
+    lmELocationUnits yUnits;
+} lmLocation;
+
 //Global variables used as default initializators
 extern RFontData goLyricDefaultFont;        // defined in NoteRestObj.cpp
 extern RXMLPositionData goDefaultPos;        // defined in Text.cpp
@@ -383,6 +408,7 @@ extern RFontData goBasicTextDefaultFont;
 #define lmVISUAL_TRACKING           true        //highligth notes on the score as they are played
 #define lmNO_VISUAL_TRACKING        false
 #define NO_MARCAR_COMPAS_PREVIO     false
+
 
 // forward declarations
 class lmPaper;
@@ -503,7 +529,7 @@ public:
     lmInstrument* GetLastInstrument();
 
     // titles related methods
-    void AddTitle(wxString sTitle, lmEAlignment nAlign, lmLUnits xPos, lmLUnits yPos, 
+    void AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation pos,
                   wxString sFontName, int nFontSize, lmETextStyle nStyle);
     void WriteTitles(bool fMeasuring, lmPaper *pPaper);
 

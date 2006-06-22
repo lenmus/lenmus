@@ -62,6 +62,7 @@ public:
     void        AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInstr);
     void        AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr);
     bool        AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff);
+    void        AnalyzeLocation(lmLDPNode* pNode, int* pValue, wxString* pUnit);
     void        AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmNote*     AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);

@@ -114,12 +114,10 @@ lmScore::~lmScore()
 // score object methods
 //---------------------------------------------------------------------------------------
 
-void lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign,
-                       lmLUnits xPos, lmLUnits yPos, 
-                       wxString sFontName, int nFontSize, 
-                       lmETextStyle nStyle)
+void lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation pos,
+                       wxString sFontName, int nFontSize, lmETextStyle nStyle)
 {
-    lmText* pTitle = new lmText(this, sTitle, nAlign, xPos, yPos,
+    lmText* pTitle = new lmText(this, sTitle, nAlign, pos.x, pos.y,
                                 sFontName, nFontSize, nStyle );
 
     IncludeInGlobalList(pTitle);    //so that it is selectable for edition

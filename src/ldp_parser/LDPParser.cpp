@@ -1988,10 +1988,15 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     
     wxString sTitle;
     lmEAlignment nAlign = m_nTitleAlignment;
-    lmLUnits xPos = -99999, yPos = -99999;
     wxString sFontName = m_sTitleFontName;
     int nFontSize = m_nTitleFontSize; 
     lmETextStyle nStyle = m_nTitleStyle;
+
+    lmLocation pos;
+    pos.xType = lmLOCATION_DEFAULT;
+    pos.xUnits = lmTENTHS;
+    pos.yType = lmLOCATION_DEFAULT;
+    pos.yUnits = lmTENTHS;
 
     //get the aligment
     long iP = 1;
@@ -2015,17 +2020,57 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     sTitle = (pNode->GetParameter(iP))->GetName();
     iP++;
 
-    //optional. Get font
-    if (iP <= pNode->GetNumParms()) {
-        AnalyzeFont(pNode->GetParameter(iP), &sFontName, &nFontSize, &nStyle);
-        iP++;
-        //save font values as new default for titles
-        m_sTitleFontName = sFontName;
-        m_nTitleFontSize = nFontSize; 
-        m_nTitleStyle = nStyle;
+    //analyze remaining parameters (optional): font, location
+    lmLDPNode* pX;
+    for(; iP <= pNode->GetNumParms(); iP++) {
+        pX = pNode->GetParameter(iP);
+        sName = pX->GetName();
+
+        if (sName == m_pTags->TagName(_T("font")) ) {
+            AnalyzeFont(pX, &sFontName, &nFontSize, &nStyle);
+            //save font values as new default for titles
+            m_sTitleFontName = sFontName;
+            m_nTitleFontSize = nFontSize; 
+            m_nTitleStyle = nStyle;
+        }
+        else if (sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) ||
+                 sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) )
+        {
+            int nValue;
+            wxString sUnits;
+            AnalyzeLocation(pX, &nValue, &sUnits);
+            wxLogMessage(_T("[lmLDPParser::AnalyzeTitle] Location: %d units='%s'"), nValue, sUnits);
+            if (sName == m_pTags->TagName(_T("x")) ) {
+                //x
+                pos.x = nValue;
+                pos.xType = lmLOCATION_ABSOLUTE;
+                pos.xUnits = ????;
+            }
+            else if (sName == m_pTags->TagName(_T("dx")) ) {
+                //dx
+                xPos = nValue;
+                sXUnits = sUnits;
+            }
+            else if (sName == m_pTags->TagName(_T("y")) ) {
+                //y
+                yPos = nValue;
+                fYAbs = true;
+                sYUnits = sUnits;
+            }
+            else {
+                //dy
+                yPos = nValue;
+                sYUnits = sUnits;
+            }
+        }
+        else {
+            AnalysisError( _("Unknown parameter '%s'. Ignored."), sName);
+        }
     }
 
-    pScore->AddTitle(sTitle, nAlign, xPos, yPos, sFontName, nFontSize, nStyle);
+    //create the title
+    pScore->AddTitle(sTitle, nAlign, pos, sFontName, nFontSize, nStyle);
+    
     return false;
     
 }
@@ -2215,7 +2260,7 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, wxString* pFontName, int* pFontS
 
     //check that there are parameters
     if (!(pNode->GetNumParms()== 2 || pNode->GetNumParms() == 3)) {
-        AnalysisError( _("Element '%s' has less parameters that the minimum required. Tag ignored. Assumed default stem."),
+        AnalysisError( _("Element '%s' has less parameters than the minimum required. Tag ignored."),
             m_pTags->TagName(_T("stem")));
     }
 
@@ -2272,6 +2317,48 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, wxString* pFontName, int* pFontS
         }
     }
     
+}
+
+void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, int* pValue, wxString* pUnits)
+{        
+    // <location> = (x num) | (y num) | (dx num) | (dy num)
+    // <num> = number [units]
+
+    //returns, in variables pointed by pValue and pUnits the
+    //result of the analysis. 
+
+    //check that there are parameters
+    if (pNode->GetNumParms()!= 1) {
+        AnalysisError( _("Element '%s' has less or more parameters than required. Tag ignored."),
+            pNode->GetName() );
+    }
+
+    //get value
+    *pUnits = _T("");       //default: no units
+    wxString sParm = (pNode->GetParameter(1))->GetName();
+    long nValue;
+    wxString sValue = sParm;
+    if (sParm.Length() > 2) {
+        wxString sUnits = sParm.Right(2);
+        if (sUnits == _T("mm") || sUnits == _T("cm") || sUnits == _T("in") ) {
+            sValue = sParm.Left(sParm.Length() - 2);
+            *pUnits = sUnits;
+        }
+        else {
+            AnalysisError( _("Element '%s': Invalid units '%s'. Ignored"),
+                pNode->GetName(), sUnits );
+        }
+    }
+    if (sValue.IsNumber()) {
+        sValue.ToLong(&nValue);
+        *pValue = (int)nValue;
+    }
+    else {
+        AnalysisError( _("Element '%s': Invalid value '%s'. It must be a number with optional units. Zero assumed."),
+            pNode->GetName(), sParm );
+        *pValue = 0;
+    }
+
 }
 
 ////Devuelve, en las variables nX, nY, fXabs y fYabs, los valores obtenidos tras el análisis

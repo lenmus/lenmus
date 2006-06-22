@@ -115,49 +115,55 @@ wxString lmLDPToken::GetDescription()
 // Implementation of class lmLDPTokenBuilder
 //-------------------------------------------------------------------------------------------
 
-//Estas funciones realiza un análisis a nivel de caracteres. Cuando durante
-//el análisis se encuentra la secuencia "//" se ignora hasta fin de línea, incluyendo
-//ambos caracteres, y se prosigue el análisis como si el trozo ignorado no hubiera
-//existido.
+//These methods perform an analysis at character level to form tokens.
+//If during the analyisis the char sequence "//" is found the remaining chars until
+//end of line are ignoerd, including both "//" chars. An then analyisis continues as 
+//if all those ignored chars never existed.
 
 lmLDPTokenBuilder::lmLDPTokenBuilder(lmLDPParser* pParser)
 {
     m_pParser = pParser;
     m_fRepeatToken = false;
     m_sInBuf = _T("");            // no buffer read
+
+    //to deal with compact notation
+    m_fEndOfElementPending = false;
+    m_fNamePartPending = false;
+    m_fValuePartPending = false;
 }
 
 
 lmLDPToken* lmLDPTokenBuilder::ReadToken()
 {
-static long nTimes=0;
-
-//switch(nTimes++) {
-//    case 0:
-//        m_token.Set(tkStartOfElement, _T("("));
-//        return &m_token;
-//    case 1:
-//        m_token.Set(tkLabel, _T("N"));
-//        return &m_token;
-//    case 2:
-//        m_token.Set(tkLabel, _T("S"));
-//        return &m_token;
-//    case 3:
-//        m_token.Set(tkEndOfElement, _T(")"));
-//        return &m_token;
-//    case 4:
-//        m_token.Set(tkEndOfFile, _T(""));
-//        return &m_token;
-//    default:
-//        m_token.Set(tkEndOfFile, _T(""));
-//        return &m_token;
-//}
 
     if (m_fRepeatToken) {
         m_fRepeatToken = false;
         return &m_token;
     }
-    
+
+    // To deal with compact notation [ name=value --> (name value) ]
+    if (m_fEndOfElementPending) {
+        // when flag 'm_fEndOfElementPending' is set it implies that the 'value' part was
+        // the last returned token. Therefore, the next token to return is an implicit ')'
+        m_fEndOfElementPending = false;
+        m_token.Set(tkEndOfElement, chCloseParenthesis);
+        return &m_token;
+    }
+    if (m_fNamePartPending) {
+        // when flag 'm_fNamePartPending' is set this implies that last returned token
+        // was an implicit '(' and that the real token (the 'name' part of an element
+        // written in compact notation) is pending and must be returned now
+        m_fNamePartPending = false;
+        m_fValuePartPending = true;
+        return &m_tokenNamePart;
+    }
+    if (m_fValuePartPending) {
+        //next token is the 'value' part. Set flag to indicate that after the value
+        //part an implicit 'end of element' must be issued
+        m_fValuePartPending = false;
+        m_fEndOfElementPending = true;
+    }
+
     // loop until a token is found
     while(true) {
         if (m_sInBuf == _T("")) GetNewBuffer();
@@ -226,7 +232,7 @@ bool lmLDPTokenBuilder::IsNumber(wxChar ch)
 
 void lmLDPTokenBuilder::ParseNewToken()
 {
-    //cuando entra aquí m_lastPos señala al último caracter leido
+    //at this point m_lastPos points to last read char
     int iStart;
 
     enum tkStatus {
@@ -252,6 +258,7 @@ void lmLDPTokenBuilder::ParseNewToken()
         FT_S03,
         FT_Error
     };
+
     tkStatus nState = FT_Start;
 
     iStart = m_lastPos + 1;     //token starts in the first char not yet read
@@ -414,7 +421,16 @@ void lmLDPTokenBuilder::ParseNewToken()
                     m_curChar == chSharp)
                 {
                     nState = FT_ETQ01;
-                } else {
+                }
+                else if (m_curChar == chEqualSign) {
+                    // compact notation [ name=vale --> (name value) ]
+                    // 'name' part is parsed and we've found the '=' sign
+                    m_fNamePartPending = true;
+                    m_tokenNamePart.Set(tkLabel, Extract(iStart, m_lastPos-1));
+                    m_token.Set(tkStartOfElement, chOpenParenthesis);
+                    return;
+                }
+                else {
                     m_lastPos = m_lastPos - 1;     //repeat last char
                     m_token.Set(tkLabel, Extract(iStart, m_lastPos) );
                     return;
@@ -427,6 +443,8 @@ void lmLDPTokenBuilder::ParseNewToken()
                     nState = FT_NUM01;
                 } else if (m_curChar == chDot) {
                     nState = FT_NUM02;
+                } else if (IsLetter(m_curChar)) {
+                    nState = FT_ETQ01;
                 } else {
                     m_lastPos = m_lastPos - 1;     //repeat last char
                     m_token.Set(tkIntegerNumber, Extract(iStart, m_lastPos) );

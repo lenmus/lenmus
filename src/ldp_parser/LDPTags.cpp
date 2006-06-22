@@ -151,6 +151,8 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[_T("chord")] = _T("chord");
         m_Tags[_T("clef")] = _T("clef");
         m_Tags[_T("down")] = _T("down");
+        m_Tags[_T("dx")] = _T("dx");
+        m_Tags[_T("dy")] = _T("dy");
         m_Tags[_T("font")] = _T("font");
         m_Tags[_T("infoMIDI")] = _T("infoMIDI");
         m_Tags[_T("instrName")] = _T("instrName");
@@ -168,6 +170,8 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[_T("title")] = _T("title");
         m_Tags[_T("up")] = _T("up");
         m_Tags[_T("voice")] = _T("voice");
+        m_Tags[_T("x")] = _T("x");
+        m_Tags[_T("y")] = _T("y");
     }
     else {
         // initialize table with default Spanish values
@@ -178,6 +182,8 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[_T("chord")] = _T("acorde");
         m_Tags[_T("clef")] = _T("Clave");            //! @todo change for 1.4
         m_Tags[_T("down")] = _T("abajo");
+        m_Tags[_T("dx")] = _T("dx");
+        m_Tags[_T("dy")] = _T("dy");
         m_Tags[_T("font")] = _T("font");
         m_Tags[_T("infoMIDI")] = _T("infoMIDI");
         m_Tags[_T("instrName")] = _T("nombreInstrumento");
@@ -195,6 +201,8 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[_T("title")] = _T("titulo");
         m_Tags[_T("up")] = _T("arriba");
         m_Tags[_T("voice")] = _T("voz");
+        m_Tags[_T("x")] = _T("x");
+        m_Tags[_T("y")] = _T("y");
     }
 
 

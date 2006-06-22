@@ -1,4 +1,3 @@
-// RCS-ID: $Id: LDPToken.h,v 1.4 2006/03/01 19:19:31 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -23,10 +22,6 @@
     @brief Header file for class lmLDPToken
     @ingroup ldp_parser
 */
-#ifdef __GNUG__
-// #pragma interface
-#endif
-
 #ifndef __LMTOKEN_H        //to avoid nested includes
 #define __LMTOKEN_H
 
@@ -99,6 +94,13 @@ private:
                                 // Zero means "no char read yet"
     long        m_maxPos;       // buffer size - 1 = maximum value for m_lastPos
     wxChar      m_curChar;      // character being processed. It is read by GNC()
+
+    //to deal with compact notation [  name=value  -->  (name value)  ]
+    bool        m_fEndOfElementPending;
+    bool        m_fValuePartPending;
+    bool        m_fNamePartPending;
+    lmLDPToken  m_tokenNamePart;
+
 
 
 };
