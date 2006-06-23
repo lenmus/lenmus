@@ -738,8 +738,8 @@ bool lmXMLParser::ParseMusicDataDirection(wxXmlNode* pNode, lmVStaff* pVStaff)
     wxString sText;
     wxString sJustify;
     wxString sLanguage;
-    RFontData oFontData = goBasicTextDefaultFont;            
-    RXMLPositionData oPos = goDefaultPos;
+    lmFontInfo oFontData = goBasicTextDefaultFont;            
+    lmXMLPosition oPos = goDefaultPos;
 
 
     //default values
@@ -1624,14 +1624,18 @@ void lmXMLParser::ParseWork(wxXmlNode* pNode, lmScore* pScore)
         pElement = pNode;
     }
 
+    lmLocation tPos;
+    tPos.xType = lmLOCATION_DEFAULT;
+    tPos.yType = lmLOCATION_DEFAULT;
+
     if (sTitle == _T("")) {
         if (sNum != _T(""))
-            pScore->AddTitle(sNum, lmALIGN_CENTER, 0, 0, _T("Times New Roman"), 14, lmTEXT_BOLD);
+            pScore->AddTitle(sNum, lmALIGN_CENTER, tPos, _T("Times New Roman"), 14, lmTEXT_BOLD);
     }
     else if (sNum != _T("")) {
         sTitle += ", ";
         sTitle += sNum;
-        pScore->AddTitle(sTitle, lmALIGN_CENTER, 0, 0, _T("Times New Roman"), 14, lmTEXT_BOLD);
+        pScore->AddTitle(sTitle, lmALIGN_CENTER, tPos, _T("Times New Roman"), 14, lmTEXT_BOLD);
     }
 
 }
@@ -1829,7 +1833,7 @@ void lmXMLParser::ParseScorePart(wxXmlNode* pNode, lmScore* pScore)
 //----------------------------------------------------------------------------------------
 // common.dtd
 //----------------------------------------------------------------------------------------
-void lmXMLParser::ParsePosition(wxXmlNode* pElement, RXMLPositionData* pPos)
+void lmXMLParser::ParsePosition(wxXmlNode* pElement, lmXMLPosition* pPos)
 {
     /*
     For most elements, any program will compute a default x and y position. 
@@ -1897,7 +1901,7 @@ void lmXMLParser::ParsePosition(wxXmlNode* pElement, RXMLPositionData* pPos)
 
 }
 
-void lmXMLParser::ParseFont(wxXmlNode* pElement, RFontData* pFontData)
+void lmXMLParser::ParseFont(wxXmlNode* pElement, lmFontInfo* pFontData)
 {
     /*
     The font entity gathers together attributes for determining the font within a 
@@ -1928,11 +1932,20 @@ void lmXMLParser::ParseFont(wxXmlNode* pElement, RFontData* pFontData)
     //! @todo verify values
     //weight: normal or bold
     sValue = GetAttribute(pElement, _T("font-weight"), _T("normal"));
-    pFontData->fBold = (sValue == _T("bold"));
+    bool fBold = (sValue == _T("bold"));
 
     //style: normal or italic
     sValue = GetAttribute(pElement, _T("font-style"), _T("normal"));
-    pFontData->fItalic = (sValue == _T("italic"));
+    bool fItalic = (sValue == _T("italic"));
+
+    if (fBold && fItalic)
+        pFontData->nStyle = lmTEXT_ITALIC_BOLD;
+    else if (fBold)
+        pFontData->nStyle = lmTEXT_BOLD;
+    else if (fItalic)
+        pFontData->nStyle = lmTEXT_ITALIC;
+    else
+        pFontData->nStyle = lmTEXT_NORMAL;
 
 }
 

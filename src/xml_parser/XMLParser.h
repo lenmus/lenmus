@@ -86,8 +86,8 @@ private:
     int ParseDivisions(wxXmlNode* pElement);
 
         // common.dtd
-    void ParsePosition(wxXmlNode* pElement, RXMLPositionData* pPos);
-    void ParseFont(wxXmlNode* pElement, RFontData* pFontData);
+    void ParsePosition(wxXmlNode* pElement, lmXMLPosition* pPos);
+    void ParseFont(wxXmlNode* pElement, lmFontInfo* pFontData);
     bool ParsePlacement(wxXmlNode* pElement, bool fDefault=true);
 
 

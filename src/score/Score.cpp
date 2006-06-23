@@ -114,12 +114,15 @@ lmScore::~lmScore()
 // score object methods
 //---------------------------------------------------------------------------------------
 
-void lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation pos,
+void lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation tPos,
                        wxString sFontName, int nFontSize, lmETextStyle nStyle)
 {
-    lmText* pTitle = new lmText(this, sTitle, nAlign, pos.x, pos.y,
-                                sFontName, nFontSize, nStyle );
+    lmFontInfo tFont;
+    tFont.nFontSize = nFontSize;
+    tFont.nStyle = nStyle;
+    tFont.sFontName = sFontName;
 
+    lmText* pTitle = new lmText(this, sTitle, nAlign, tPos, tFont);
     IncludeInGlobalList(pTitle);    //so that it is selectable for edition
     m_cTitles.Append(pTitle);
 
@@ -172,22 +175,22 @@ lmInstrument* lmScore::XML_FindInstrument(wxString sId)
 
 void lmScore::WriteTitles(bool fMeasuring, lmPaper *pPaper)
 {
-    long nHeight;
+    lmLUnits yPaperPos;
 
-    if (fMeasuring) m_nHeadersHeight = 0;
+    if (fMeasuring) yPaperPos = pPaper->GetCursorY();
 
     lmText* pTitle;
     wxStaffObjsListNode* pNode;
     for(pNode = m_cTitles.GetFirst(); pNode; pNode = pNode->GetNext()) {
         pTitle = (lmText*)pNode->GetData();
-        if (fMeasuring) {
-            nHeight = MeasureTitle(pPaper, pTitle);
-            m_nHeadersHeight += nHeight;
-        }
-        else {
+        if (fMeasuring)
+            MeasureTitle(pPaper, pTitle);
+        else
             pTitle->Draw(DO_DRAW, pPaper);
-        }
     }
+
+   if (fMeasuring)
+       m_nHeadersHeight = pPaper->GetCursorY() - yPaperPos;
 
 }
 
@@ -201,6 +204,41 @@ lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmText* pTitle)
     if (!pTitle->IsFixed())
     {
         lmEAlignment nAlign = pTitle->GetAlignment();
+        lmLUnits xPaperPos = pPaper->GetCursorX();
+        lmLUnits yPaperPos = pPaper->GetCursorY();
+
+        //if need to reposition paper, convert units to tenths
+        lmLUnits xPos, yPos;
+        lmLocation tPos = pTitle->GetLocation();
+        if (tPos.xType != lmLOCATION_DEFAULT) {
+            if (tPos.xUnits == lmTENTHS)
+                xPos = tPos.x;
+            else
+                xPos = lmToLogicalUnits(tPos.x, tPos.xUnits);
+        }
+
+        if (tPos.yType != lmLOCATION_DEFAULT) {
+            if (tPos.yUnits == lmTENTHS)
+                yPos = tPos.y;
+            else
+                yPos = lmToLogicalUnits(tPos.y, tPos.yUnits);
+        }
+
+        //reposition paper according text required positioning info
+        if (tPos.xType == lmLOCATION_RELATIVE) {
+            xPaperPos += xPos;
+        }
+        else if (tPos.xType == lmLOCATION_ABSOLUTE) {
+            xPaperPos = xPos + pPaper->GetLeftMarginXPos();
+        }
+
+        if (tPos.yType == lmLOCATION_RELATIVE) {
+            yPaperPos += yPos;
+        }
+        else if (tPos.yType == lmLOCATION_ABSOLUTE) {
+            yPaperPos = yPos + pPaper->GetPageTopMargin();
+        }
+        pPaper->SetCursorY( yPaperPos );
 
         //measure the text so that it can be properly positioned 
         pTitle->Draw(DO_MEASURE, pPaper);
@@ -220,21 +258,31 @@ lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmText* pTitle)
             // without taking into account the space consumed by any posible existing
             // left title. That is, 'center' always means 'centered in the line'
 
-            lmLUnits xPos = (pPaper->GetRightMarginXPos() - pPaper->GetLeftMarginXPos() - nWidth)/2;
-            pPaper->SetCursorX(pPaper->GetLeftMarginXPos() + xPos);
+            if (tPos.xType == lmLOCATION_DEFAULT) {
+                xPos = (pPaper->GetRightMarginXPos() - pPaper->GetLeftMarginXPos() - nWidth)/2;
+                pPaper->SetCursorX(pPaper->GetLeftMarginXPos() + xPos);
+            }
+            else {
+                pPaper->SetCursorX( xPaperPos );
+            }
         }
 
         else if (nAlign == lmALIGN_LEFT)
         {   
             //align left.
-            pPaper->SetCursorX(pPaper->GetLeftMarginXPos());
+            if (tPos.xType == lmLOCATION_DEFAULT)
+                pPaper->SetCursorX(pPaper->GetLeftMarginXPos());
+            else
+                pPaper->SetCursorX( xPaperPos );
         }
 
         else
         {   
             //align right
-            lmLUnits xPos = (pPaper->GetRightMarginXPos() - nWidth);
-            pPaper->SetCursorX(xPos);
+            if (tPos.xType == lmLOCATION_DEFAULT)
+                pPaper->SetCursorX(pPaper->GetRightMarginXPos() - nWidth);
+            else
+                pPaper->SetCursorX(xPaperPos - nWidth);
         }
     }
 

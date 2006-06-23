@@ -68,6 +68,8 @@ LenMus project philosophy (to remind me to always stay on this):
 	- width of chord = max width of its notes
 	- render accidentals in notes order
 	
+	- draw page margins
+	
 	
 	- include playback buttons in main toolbar
 	- need to devise a renderization method based on plugins so that different

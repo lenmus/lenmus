@@ -283,15 +283,6 @@ enum lmEAlignment
     lmALIGN_CENTER
 };
 
-// text styles
-enum lmETextStyle
-{
-    lmTEXT_DEFAULT = 0,
-    lmTEXT_NORMAL,
-    lmTEXT_BOLD,
-    lmTEXT_ITALIC,
-    lmTEXT_ITALIC_BOLD,
-};
 
 //Play modes: instrument to use to play a score
 enum EPlayMode
@@ -354,31 +345,31 @@ enum ERenderizationType
 
 
 // XML position data
-typedef struct lmTXMLPositionData {
+typedef struct lmXMLPositionStruct {
     lmTenths xRel;
     lmTenths yRel;
     lmTenths xDef;
     lmTenths yDef;
     bool fOverrideDefaultX;
     bool fOverrideDefaultY;
-} RXMLPositionData;
+} lmXMLPosition;
 
-typedef struct lmTFontData {
+// font specification
+enum lmETextStyle           // text styles
+{
+    lmTEXT_DEFAULT = 0,
+    lmTEXT_NORMAL,
+    lmTEXT_BOLD,
+    lmTEXT_ITALIC,
+    lmTEXT_ITALIC_BOLD,
+};
+typedef struct lmFontInfoStruct {
     wxString sFontName;
     int nFontSize;
-    bool fBold;
-    bool fItalic;
-} RFontData;
+    lmETextStyle nStyle;
+} lmFontInfo;
 
 //Location source data
-enum lmELocationUnits
-{
-    lmTENTHS = 0,
-    lmMM,
-    lmCM,
-    lmINCHES
-};
-
 enum lmELocationType
 {
     lmLOCATION_RELATIVE = 0,
@@ -391,14 +382,14 @@ typedef struct lmLocationStruct {
     int y;
     lmELocationType xType;
     lmELocationType yType;
-    lmELocationUnits xUnits;
-    lmELocationUnits yUnits;
+    lmEUnits xUnits;
+    lmEUnits yUnits;
 } lmLocation;
 
 //Global variables used as default initializators
-extern RFontData goLyricDefaultFont;        // defined in NoteRestObj.cpp
-extern RXMLPositionData goDefaultPos;        // defined in Text.cpp
-extern RFontData goBasicTextDefaultFont;
+extern lmFontInfo goLyricDefaultFont;        // defined in NoteRestObj.cpp
+extern lmXMLPosition goDefaultPos;        // defined in Text.cpp
+extern lmFontInfo goBasicTextDefaultFont;
 
 
 //Constants

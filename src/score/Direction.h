@@ -34,7 +34,7 @@ class lmWordsDirection : public lmSimpleObj, public lmBasicText
 {
 public:
     lmWordsDirection(lmVStaff* pStaff, wxString sText, wxString sLanguage,
-                   RXMLPositionData oPos, RFontData oFontData);
+                   lmXMLPosition oPos, lmFontInfo oFontData);
     ~lmWordsDirection() {}
 
     // properties related to the clasification of this lmStaffObj

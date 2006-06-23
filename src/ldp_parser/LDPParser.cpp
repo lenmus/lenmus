@@ -1992,11 +1992,11 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     int nFontSize = m_nTitleFontSize; 
     lmETextStyle nStyle = m_nTitleStyle;
 
-    lmLocation pos;
-    pos.xType = lmLOCATION_DEFAULT;
-    pos.xUnits = lmTENTHS;
-    pos.yType = lmLOCATION_DEFAULT;
-    pos.yUnits = lmTENTHS;
+    lmLocation tPos;
+    tPos.xType = lmLOCATION_DEFAULT;
+    tPos.xUnits = lmTENTHS;
+    tPos.yType = lmLOCATION_DEFAULT;
+    tPos.yUnits = lmTENTHS;
 
     //get the aligment
     long iP = 1;
@@ -2037,30 +2037,32 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
                  sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) )
         {
             int nValue;
-            wxString sUnits;
-            AnalyzeLocation(pX, &nValue, &sUnits);
-            wxLogMessage(_T("[lmLDPParser::AnalyzeTitle] Location: %d units='%s'"), nValue, sUnits);
+            lmEUnits nUnits;
+            AnalyzeLocation(pX, &nValue, &nUnits);
+            wxLogMessage(_T("[lmLDPParser::AnalyzeTitle] Location: %d units='%d'"), nValue, nUnits);
             if (sName == m_pTags->TagName(_T("x")) ) {
                 //x
-                pos.x = nValue;
-                pos.xType = lmLOCATION_ABSOLUTE;
-                pos.xUnits = ????;
+                tPos.x = nValue;
+                tPos.xType = lmLOCATION_ABSOLUTE;
+                tPos.xUnits = nUnits;
             }
             else if (sName == m_pTags->TagName(_T("dx")) ) {
                 //dx
-                xPos = nValue;
-                sXUnits = sUnits;
+                tPos.x = nValue;
+                tPos.xType = lmLOCATION_RELATIVE;
+                tPos.xUnits = nUnits;
             }
             else if (sName == m_pTags->TagName(_T("y")) ) {
                 //y
-                yPos = nValue;
-                fYAbs = true;
-                sYUnits = sUnits;
+                tPos.y = nValue;
+                tPos.yType = lmLOCATION_ABSOLUTE;
+                tPos.yUnits = nUnits;
             }
             else {
                 //dy
-                yPos = nValue;
-                sYUnits = sUnits;
+                tPos.y = nValue;
+                tPos.yType = lmLOCATION_RELATIVE;
+                tPos.yUnits = nUnits;
             }
         }
         else {
@@ -2069,7 +2071,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     }
 
     //create the title
-    pScore->AddTitle(sTitle, nAlign, pos, sFontName, nFontSize, nStyle);
+    pScore->AddTitle(sTitle, nAlign, tPos, sFontName, nFontSize, nStyle);
     
     return false;
     
@@ -2319,7 +2321,7 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, wxString* pFontName, int* pFontS
     
 }
 
-void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, int* pValue, wxString* pUnits)
+void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, int* pValue, lmEUnits* pUnits)
 {        
     // <location> = (x num) | (y num) | (dx num) | (dy num)
     // <num> = number [units]
@@ -2334,15 +2336,22 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, int* pValue, wxString* pUnit
     }
 
     //get value
-    *pUnits = _T("");       //default: no units
     wxString sParm = (pNode->GetParameter(1))->GetName();
     long nValue;
     wxString sValue = sParm;
     if (sParm.Length() > 2) {
         wxString sUnits = sParm.Right(2);
-        if (sUnits == _T("mm") || sUnits == _T("cm") || sUnits == _T("in") ) {
+        if (sUnits == _T("mm")) {
             sValue = sParm.Left(sParm.Length() - 2);
-            *pUnits = sUnits;
+            *pUnits = lmMILLIMETERS;
+        }
+        else if (sUnits == _T("cm")) {
+            sValue = sParm.Left(sParm.Length() - 2);
+            *pUnits = lmCENTIMETERS;
+        }
+        else if (sUnits == _T("in")) {
+            sValue = sParm.Left(sParm.Length() - 2);
+            *pUnits = lmINCHES;
         }
         else {
             AnalysisError( _("Element '%s': Invalid units '%s'. Ignored"),

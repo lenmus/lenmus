@@ -1,4 +1,3 @@
-// RCS-ID: $Id: scoreView.cpp,v 1.5 2006/02/23 19:17:49 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -318,6 +317,8 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
 {
     m_pFrame = wxGetApp().CreateProjectFrame(doc, this);
     m_pFrame->SetTitle(_T("lmScoreView"));
+    m_pFrame->SetBackgroundColour( wxColour(98,98,124) );
+
 
 #ifdef __X__
     // X seems to require a forced resize

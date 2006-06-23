@@ -34,7 +34,7 @@ class lmBasicText
 {
 public:
     lmBasicText(wxString sText, wxString sLanguage,
-                   RXMLPositionData oPos, RFontData oFontData);
+                   lmXMLPosition oPos, lmFontInfo oFontData);
 
     ~lmBasicText() {}
 
@@ -64,14 +64,8 @@ protected:
 class lmText :  public lmSimpleObj
 {
 public:
-    lmText(lmScore* pScore, wxString sText,
-           lmLUnits xPos=0, lmLUnits yPos=0, bool fXAbs=false, bool fYAbs=false, 
-           wxString sFontName=_T("Arial"), int nFontSize=12, 
-           bool fBold=false, bool fItalic=false);
-
     lmText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,
-           lmLUnits xPos, lmLUnits yPos, 
-           wxString sFontName, int nFontSize, lmETextStyle nStyle);
+           lmLocation tPos, lmFontInfo tFont);
 
     ~lmText() {}
 
@@ -92,20 +86,19 @@ public:
     //specific method of this object
     void SetText(wxString text) { m_sText = text; }
     lmEAlignment GetAlignment() { return m_nAlignment; }
-
+    lmLocation GetLocation() { return m_tPos; }
 
 private:
     wxString        m_sText;
     lmScore*        m_pScore;
-    lmLUnits        m_xPos;
-    lmLUnits        m_yPos;
-    bool            m_fXAbs;
-    bool            m_fYAbs;
+
+    lmLocation      m_tPos;
+    lmEAlignment    m_nAlignment;
+
     wxString        m_sFontName;
     int             m_nFontSize;
     bool            m_fBold;
     bool            m_fItalic;
-    lmEAlignment    m_nAlignment;
 
 };
 

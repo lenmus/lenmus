@@ -461,7 +461,7 @@ two by-passes are provided:</p>
 <ul>
     <li>An explicit chord contructor to describe chors.</li>
     <li>A non-declarative but procedural approach to allow
-        paralelism inside a secuential description: tags 'backwards' and 'forward' are
+        paralelism inside a secuential description: tags 'backup' and 'forward' are
         used to reposition an 'internal time counter' and create parallel descriptions.
         This paralellism is only allowed inside a measure.</li>
 </ul>
@@ -901,7 +901,7 @@ the MIDI instrument no use.</li>
     { <span class="nt">note_head</span> |
       <span class="nt">stem</span> |
       <span class="nt">displayed_accidentals</span> |
-      <span class="nt">xy</span> |
+      <span class="nt">location</span> |
       <span class="nt">text</span> }
     <br /><br />
 
@@ -1012,8 +1012,8 @@ in the time normally allotted for two eight notes.</p>
 
 <p>Additional parameters could be introduced in future to deal with renderization options.</p>
 
-<p>As tuplets are very frequent, to simplify the writting, the tuplet element allows for
-a abbreviated syntax: </p>
+<p>As tuplets are very frequent, to simplify the writting, the tuplet element allows
+abbreviated syntax: </p>
 <p>
 (t -) can be written as t-<br />
 (t + x) can be written as tx</p>
@@ -1021,7 +1021,7 @@ a abbreviated syntax: </p>
 <p>So, the previous example can be written as:</p>
 
 <pre class="example">
-(n c4 c t3) (n d4 c) (n e4 c t-)
+(n c4 c t3)(n d4 c)(n e4 c t-)
 </pre>
 
 
@@ -1856,223 +1856,6 @@ background:yellow'><br clear=all >
 
 
 
--->
-
-<!--
-
-
-
-
-
-<h2> lang=ES style='display:none;background:yellow'>Diccionario</h2>
-
-<p> lang=ES style='display:none;background:yellow'>&nbsp;</p>
-
-<p>
-lang=ES style='display:none;background:yellow'>Cue note     apoyatura</p>
-
-<p>
-lang=ES style='display:none;background:yellow'>Grace note     ¿mordente?
-¿acciaccatura?</p>
-
-<p>
-lang=ES style='display:none;background:yellow'>Measure     Compás</p>
-
-<p>
-lang=ES style='display:none;background:yellow'>Trill-mark     trino</p>
-
-<p>
-lang=ES style='display:none;background:yellow'>Turn        Grupeto</p>
-
-<p>
-lang=ES style='display:none;background:yellow'>Upper mordent   praller</p>
-
-<p>
-lang=ES style='display:none;background:yellow'>Lower mordent   mordente</p>
-
-<p>
-style='display:none;background:yellow'>Appoggiatura     apoyatura</p>
-
-<p>
-style='display:none;background:yellow'>Schleifer     apoyatura múltiple</p>
-
-<p>
-style='background:yellow'>Slur                             Ligadura de
-expresión</p>
-
-<p>
-style='background:yellow'>Tie                               Ligadura</p>
-
-<p>
-style='background:yellow'>Fermata                      Calderón</p>
-
-<p>
-style='background:yellow'>Stacato                       Picado</p>
-
-<p>
-style='background:yellow'>Tenuto                        &lt;la raya encima de
-la nota&gt;</p>
-
-</div>
-
-<div><br clear=all>
-
-<hr align=left size=1 width="33%">
-
-<div id=ftn1>
-
-<p class=MsoFootnoteText><a href="#_ftnref1" name="_ftn1" title="">
-class=MsoFootnoteReference> class=MsoFootnoteReference>
-lang=ES style='font-size:10.0pt;font-family:Arial'>[1]</a>
-lang=EN-GB> Alter having taken this decision, a year later more or less,
-version 1.4 of MusicXML started to introduce tags to allow for the
-representation of positioning information.</p>
-
-</div>
-
-<div id=ftn2>
-
-<p class=MsoFootnoteText><a href="#_ftnref2" name="_ftn2" title="">
-class=MsoFootnoteReference> class=MsoFootnoteReference>
-lang=ES style='font-size:10.0pt;font-family:Arial'>[2]</a>
-lang=EN-GB> LDP currently supports tags both in English and in Spanish. In this
-reference manual the examples will be presented normally using the Spanish
-tags. When a new tag is introduced its English version will be included in
-italics bold, i.e. <b><i>[score]</i></b>. A Spanish - English equivalence table
-is included in annex 1.</p>
-
-</div>
-
-<div id=ftn3>
-
-<p class=MsoFootnoteText><a href="#_ftnref3" name="_ftn3" title="">
-class=MsoFootnoteReference> class=MsoFootnoteReference>
-lang=ES style='font-size:10.0pt;font-family:Arial'>[3]</a>
-lang=EN-GB> La utilidad de poder dividir la codificación en partes se verá más adelante.</p>
-
-</div>
-
-<div id=ftn4>
-
-<p class=MsoFootnoteText><a href="#_ftnref4" name="_ftn4" title="">
-class=MsoFootnoteReference> class=MsoFootnoteReference>
-lang=ES style='font-size:10.0pt;font-family:Arial'>[4]</a>
-lang=EN-GB> Se ha elegido esta nomenclatura para simplificar la
-escritura ya que cada nota va designada por una sola letra: A=La, B=Si, C=Do,
-D=Re, E=Mi, F=Fa, G=Sol.</p>
-
-</div>
-
-<div id=ftn5>
-
-<p class=MsoFootnoteText><a href="#_ftnref5" name="_ftn5" title="">
-class=MsoFootnoteReference> class=MsoFootnoteReference>
-lang=ES style='font-size:10.0pt;font-family:Arial'>[5]</a>
-lang=ES> A=La, B=Si, C=Do, D=Re, E=Mi, F=Fa, G=Sol</p>
-
-</div>
-
-<div id=ftn6>
-
-<p class=MsoFootnoteText><a href="#_ftnref6" name="_ftn6" title="">
-class=MsoFootnoteReference> class=MsoFootnoteReference>
-lang=ES style='font-size:10.0pt;font-family:Arial'>[6]</a>
-lang=ES> Cuando LeMus incluya facilidades para edición de partituras
-seguramente se requerirán parámetros opcionales para poder fijar cosas tales
-como el ángulo de las barras o sus tamaños exactos. Por ahora se ignora todo
-eso.</p>
-
-</div>
-
-<div id=ftn7>
-
-<p class=MsoFootnoteText><a href="#_ftnref7" name="_ftn7" title="">
-class=MsoFootnoteReference> class=MsoFootnoteReference>
-lang=ES style='font-size:10.0pt;font-family:Arial'>[7]</a>
-lang=ES> En PDF el posicionamiento en el <i>user space </i>se mide por defecto
-en 1/72 de pulgada, ya que esa unidad es ampliamente utilizada en la industria
-tipográfica y equivale, aproximadamente, a un punto tipográfico. Su valor es de
-0,35 mm. (parece poco precisa). Para fonts utiliza una resolución 1000 veces
-mayor. Además, las unidades en el <i>user space </i>pueden definirse con otra
-precisión distinta, según necesidades. En  lang=ES>MusicXML
-lang=ES>, las unidades son fijas y relativas, y utiliza como unidad una décima
-del espacio entre líneas de pentagrama. Suponiendo un espaciado entre líneas de
-3mm tendríamos una precisión de 0,3 mm, del estilo de la estándar en PDF. Como
-cuesta lo mismo, me decanto por permitir más precisión y que pueda variarse
-según necesidades, según hace PDF.</p>
-
-</div>
-
-<div id=ftn8>
-
-<p class=MsoFootnoteText><a href="#_ftnref8" name="_ftn8" title="">
-class=MsoFootnoteReference> class=MsoFootnoteReference>
-lang=ES style='font-size:10.0pt;font-family:Arial'>[8]</a>
-lang=ES> En un futuro se permitirá, mediante algún elemento de opciones,
-que el usuario defina otra.</p>
-
-</div>
-
-<div id=ftn9>
-
-<p class=MsoFootnoteText><a href="#_ftnref9" name="_ftn9" title="">
-class=MsoFootnoteReference> class=MsoFootnoteReference>
-lang=ES style='font-size:10.0pt;font-family:Arial'>[9]</a>
-lang=ES> Normalmente será relativo al inicio del compás, salvo que la directiva
-se haya colocado tras la barra de fin de compás definida en ese compás ya que
-en estos casos los elementos definidos detrás se considera que forman parte del
-siguiente compás.</p>
-
-</div>
-
-<div id=ftn10>
-
-<p class=MsoFootnoteText><a href="#_ftnref10" name="_ftn10" title="">
-class=MsoFootnoteReference> class=MsoFootnoteReference>
-lang=ES style='font-size:10.0pt;font-family:Arial'>[10]</a>
-lang=ES> Yo creo que este elemento &lt;placement&gt; es redundante ya
-que al especificar la posición (elemento &lt;position&gt;) bastaría con
-indicar  y=0 o y=60 para hacer lo mismo que &quot;debajo&quot; y
-&quot;encima&quot;, respectivamente. Por ello, de momento, mientras no haya más
-información sobre la posible necesidad de este elemento, no se implementa.</p>
-
-</div>
-
-</div>
-
-<div>
-
-<hr class=msocomoff align=left size=1 width="33%">
-
-<div>
-
-<div id="_com_1" class=msocomtxt language=JavaScript
-onmouseover="msoCommentShow('_anchor_1','_com_1')"
-onmouseout="msoCommentHide('_com_1')"><a name="_msocom_1"></a>
-
-<p class=MsoCommentText> class=MsoCommentReference> lang=ES
-style='font-size:8.0pt'>&nbsp;<a href="#_msoanchor_1" class=msocomoff>[CSG1]</a>Hay
-casos en los que sin información adicional no se puede determinar la forma de
-dibujar los corchetes. Por ejemplo, un grupo de dos tresillos de semicorcheas
-que tengan en común la primera plica no puede distinguirse de un seisillo de
-semicorcheas. Para resolverlo veo dos alternativas:</p>
-
-<p class=MsoCommentText>1. Algún flag que indique la opción deseada.</p>
-
-<p class=MsoCommentText>2. Desagregar la información como en MusicMXL</p>
-
-<p class=MsoCommentText>Esta segunda opción parece mejor pero hay que buscar el
-modo de compatibilizarla con la notación actual para evitar la prolijidad de MusicXML
-y posibilitar asi que su uso quede restringido a los casos estrictamente
-necesarios</p>
-
-<p class=MsoCommentText>&nbsp;</p>
-
-</div>
-
-</div>
-
-</div>
 -->
 
 <p>&nbsp;</p>

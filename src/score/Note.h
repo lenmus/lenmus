@@ -81,7 +81,7 @@ public:
     //methos related to stems
     EStemType   GetStemType() { return m_nStemType; }
     lmLUnits    GetDefaultStemLength();
-    lmUnits     GetStandardStemLenght();
+    lmEUnits     GetStandardStemLenght();
     void        SetStemLength(lmLUnits length) { m_nStemLength = length; };
     void        SetStemDirection(bool fStemDown);
     lmLUnits    GetXStem() {return m_xStem + m_paperPos.x; }

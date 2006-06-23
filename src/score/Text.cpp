@@ -50,8 +50,8 @@ int PointsToLUnits(lmLUnits nPoints)
 }
 
 //Global variables used as default initializators
-RXMLPositionData goDefaultPos = { 0,0,0,0,false,false};
-RFontData goBasicTextDefaultFont = { _T("Arial"), 12, false, false };
+lmXMLPosition goDefaultPos = { 0,0,0,0,false,false};
+lmFontInfo goBasicTextDefaultFont = { _T("Arial"), 12, lmTEXT_NORMAL };
 
 
 
@@ -60,24 +60,24 @@ RFontData goBasicTextDefaultFont = { _T("Arial"), 12, false, false };
 //==========================================================================================
 
 lmBasicText::lmBasicText(wxString sText, wxString sLanguage,
-                   RXMLPositionData oPos, RFontData oFontData) 
+                   lmXMLPosition tPos, lmFontInfo tFontData) 
 {
     m_sText = sText;
     m_sLanguage = sLanguage;
 
     // font data
-    m_sFontName = oFontData.sFontName;
-    m_nFontSize = PointsToLUnits(oFontData.nFontSize);
-    m_fBold = oFontData.fBold;
-    m_fItalic = oFontData.fItalic;
+    m_sFontName = tFontData.sFontName;
+    m_nFontSize = PointsToLUnits(tFontData.nFontSize);
+    m_fBold = (tFontData.nStyle == lmTEXT_BOLD || tFontData.nStyle == lmTEXT_ITALIC_BOLD);
+    m_fItalic = (tFontData.nStyle == lmTEXT_ITALIC || tFontData.nStyle == lmTEXT_ITALIC_BOLD);
 
     // position data
-    m_xDef = oPos.xDef;
-    m_yDef = oPos.yDef;
-    m_xRel = oPos.xRel;
-    m_yRel = oPos.yRel;
-    m_fOverrideDefaultX = oPos.fOverrideDefaultX;
-    m_fOverrideDefaultY = oPos.fOverrideDefaultY;
+    m_xDef = tPos.xDef;
+    m_yDef = tPos.yDef;
+    m_xRel = tPos.xRel;
+    m_yRel = tPos.yRel;
+    m_fOverrideDefaultX = tPos.fOverrideDefaultX;
+    m_fOverrideDefaultY = tPos.fOverrideDefaultY;
 
 }
 
@@ -85,40 +85,17 @@ lmBasicText::lmBasicText(wxString sText, wxString sLanguage,
 // lmText implementation
 //==========================================================================================
 
-lmText::lmText(lmScore* pScore, wxString sText,
-            lmLUnits xPos, lmLUnits yPos, bool fXAbs, bool fYAbs,
-            wxString sFontName, int nFontSize, bool fBold, bool fItalic) :
-    lmSimpleObj(eTPO_Text, (lmVStaff*)NULL, 0, true, sbDRAGGABLE)
-{
-    m_pScore = pScore;
-    m_sText = sText;
-    m_sFontName = sFontName;
-    m_nFontSize = PointsToLUnits(nFontSize);
-    m_fBold = fBold;
-    m_fItalic = fItalic;
-    m_xPos = xPos;
-    m_yPos = yPos;
-    m_fXAbs = fXAbs;
-    m_fYAbs = fYAbs;
-    m_nAlignment = lmALIGN_DEFAULT;
-
-}
-
 lmText::lmText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,
-           lmLUnits xPos, lmLUnits yPos, 
-           wxString sFontName, int nFontSize, lmETextStyle nStyle) :
+               lmLocation tPos, lmFontInfo tFont) :
     lmSimpleObj(eTPO_Text, (lmVStaff*)NULL, 0, true, sbDRAGGABLE)
 {
     m_pScore = pScore;
     m_sText = sTitle;
-    m_sFontName = sFontName;
-    m_nFontSize = PointsToLUnits(nFontSize);
-    m_fBold = (nStyle == lmTEXT_BOLD || nStyle == lmTEXT_ITALIC_BOLD);
-    m_fItalic = (nStyle == lmTEXT_ITALIC || nStyle == lmTEXT_ITALIC_BOLD);
-    m_xPos = xPos;
-    m_yPos = yPos;
-    m_fXAbs = false;
-    m_fYAbs = false;
+    m_sFontName = tFont.sFontName;
+    m_nFontSize = PointsToLUnits(tFont.nFontSize);
+    m_fBold = (tFont.nStyle == lmTEXT_BOLD || tFont.nStyle == lmTEXT_ITALIC_BOLD);
+    m_fItalic = (tFont.nStyle == lmTEXT_ITALIC || tFont.nStyle == lmTEXT_ITALIC_BOLD);
+    m_tPos = tPos;
     m_nAlignment = nAlign;
 
 }

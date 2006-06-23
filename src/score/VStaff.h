@@ -82,7 +82,7 @@ public:
 
 
     lmWordsDirection* AddWordsDirection(wxString sText, wxString sLanguage,
-                        RXMLPositionData oPos, RFontData oFontData);
+                        lmXMLPosition oPos, lmFontInfo oFontData);
 
     void ShiftTime(float rTimeShift);
 

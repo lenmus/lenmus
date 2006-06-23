@@ -59,16 +59,17 @@
 #define lmDC_MODE    wxMM_LOMETRIC    // mode for DC (logical unit: one tenth of mm)
 #define lmSCALE        1.0            // scaling factor so that logical units become microns
 
-enum lmUnits {
+enum lmEUnits {
     lmMICRONS = 0,
     lmMILLIMETERS,
     lmCENTIMETERS,
-    lmINCHES
+    lmINCHES,
+    lmTENTHS
 };
 
 // defined in TheApp.cpp
-extern int lmToLogicalUnits(int nValue, lmUnits nUnits);
-extern int lmToLogicalUnits(double rValue, lmUnits nUnits);
+extern int lmToLogicalUnits(int nValue, lmEUnits nUnits);
+extern int lmToLogicalUnits(double rValue, lmEUnits nUnits);
 
 
 #endif    // __DEFS_H__ 

@@ -122,7 +122,7 @@ void lmFermata::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 // lmLyric object implementation
 //========================================================================================
 //Global variable used as default initializators
-RFontData goLyricDefaultFont = { _T("Arial"), 8, false, true };
+lmFontInfo goLyricDefaultFont = { _T("Arial"), 8, lmTEXT_ITALIC };
 
 lmLyric::lmLyric(lmNoteRest* pOwner, wxString sText, ESyllabicTypes nSyllabic,
             int nNumLine, wxString sLanguage )

@@ -695,7 +695,7 @@ lmMainFrame* GetMainFrame(void)
     return g_pMainFrame;
 }
 
-int lmToLogicalUnits(int nValue, lmUnits nUnits)
+int lmToLogicalUnits(int nValue, lmEUnits nUnits)
 {
     switch(nUnits) {
         case lmMICRONS:         return (nValue / 100);      break;
@@ -709,7 +709,7 @@ int lmToLogicalUnits(int nValue, lmUnits nUnits)
 
 }
 
-int lmToLogicalUnits(double rValue, lmUnits nUnits)
+int lmToLogicalUnits(double rValue, lmEUnits nUnits)
 {
     switch(nUnits) {
         case lmMICRONS:         return (int)(rValue / 100);      break;

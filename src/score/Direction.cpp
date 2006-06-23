@@ -44,7 +44,7 @@
 
 
 lmWordsDirection::lmWordsDirection(lmVStaff* pVStaff, wxString sText, wxString sLanguage,
-                   RXMLPositionData oPos, RFontData oFontData) 
+                   lmXMLPosition oPos, lmFontInfo oFontData) 
     : lmSimpleObj(eTPO_WordsDirection, pVStaff, 1, true, sbDRAGGABLE),
       lmBasicText(sText, sLanguage, oPos, oFontData)
 {

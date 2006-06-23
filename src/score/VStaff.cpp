@@ -315,10 +315,10 @@ lmRest* lmVStaff::AddRest(ENoteType nNoteType, float rDuration,
 }
 
 lmWordsDirection* lmVStaff::AddWordsDirection(wxString sText, wxString sLanguage,
-                            RXMLPositionData oPos, RFontData oFontData)
+                            lmXMLPosition tPos, lmFontInfo tFontData)
 {
     lmWordsDirection* pWD = new lmWordsDirection(this, sText, sLanguage,
-                        oPos, oFontData);
+                        tPos, tFontData);
 
     m_cStaffObjs.Store(pWD);
     return pWD;

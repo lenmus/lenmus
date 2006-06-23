@@ -1074,7 +1074,7 @@ lmLUnits lmNote::GetDefaultStemLength()
     return m_pVStaff->TenthsToLogical(DEFAULT_STEM_LEGHT, m_nStaffNum);
 }
 
-lmUnits lmNote::GetStandardStemLenght()
+lmEUnits lmNote::GetStandardStemLenght()
 {
     // Returns the stem lenght that this note should have, according to engraving
     // rules. It takes into account the `posiotion of the note on the staff.
@@ -1110,7 +1110,7 @@ lmUnits lmNote::GetStandardStemLenght()
         nTenths = 35;     // 3.5 spaces
     }
 
-    return (lmUnits)m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
+    return (lmEUnits)m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
 
 }
 
