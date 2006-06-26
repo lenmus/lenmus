@@ -154,6 +154,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[_T("dx")] = _T("dx");
         m_Tags[_T("dy")] = _T("dy");
         m_Tags[_T("font")] = _T("font");
+        m_Tags[_T("hasWidth")] = _T("hasWidth");
         m_Tags[_T("infoMIDI")] = _T("infoMIDI");
         m_Tags[_T("instrName")] = _T("instrName");
         m_Tags[_T("instrument")] = _T("instrument");
@@ -166,6 +167,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[_T("split")] = _T("split");
         m_Tags[_T("staves")] = _T("staves");
         m_Tags[_T("stem")] = _T("stem");
+        m_Tags[_T("text")] = _T("text");
         m_Tags[_T("time")] = _T("time");
         m_Tags[_T("title")] = _T("title");
         m_Tags[_T("up")] = _T("up");
@@ -185,6 +187,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[_T("dx")] = _T("dx");
         m_Tags[_T("dy")] = _T("dy");
         m_Tags[_T("font")] = _T("font");
+        m_Tags[_T("hasWidth")] = _T("tieneAnchura");
         m_Tags[_T("infoMIDI")] = _T("infoMIDI");
         m_Tags[_T("instrName")] = _T("nombreInstrumento");
         m_Tags[_T("instrument")] = _T("instrumento");
@@ -197,6 +200,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[_T("split")] = _T("partes");
         m_Tags[_T("staves")] = _T("numPentagramas");
         m_Tags[_T("stem")] = _T("plica");
+        m_Tags[_T("text")] = _T("texto");
         m_Tags[_T("time")] = _T("Metrica");        //! @todo change for 1.4
         m_Tags[_T("title")] = _T("titulo");
         m_Tags[_T("up")] = _T("arriba");

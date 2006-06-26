@@ -74,7 +74,7 @@ void lmGraphicManager::Layout()
         m_pBoxScore = (lmBoxScore*) NULL;
     }
     lmFormatter4 oFormatter;   //the formatter object
-    m_pBoxScore = oFormatter.Layout(m_pScore, m_pPaper);
+    m_pBoxScore = oFormatter.Layout(m_pScore, m_pPaper, &m_options);
 
 }
 

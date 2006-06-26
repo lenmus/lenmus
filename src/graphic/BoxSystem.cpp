@@ -60,7 +60,7 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     //But for other objects such as staff lines and the prolog, that are drawn at current
     //paper position, this caouses incorrect positioning. Therefore, we restore here the
     //start of system position.
-    pPaper->SetCursorY( m_nYPos );
+    pPaper->SetCursorY( m_yPos );
 
     wxInt32 iVStaff;
     lmInstrument *pInstr;
@@ -70,24 +70,15 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     for (pInstr = pScore->GetFirstInstrument(); pInstr; pInstr=pScore->GetNextInstrument())
     {
         //for each lmVStaff
-        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
+        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
+        {
             pVStaff = pInstr->GetVStaff(iVStaff);
-            /*! @todo
-                Finish next code for fTruncarUltimoSistema
-                to properly draw barlines it is necessary that staff lines are already drawn.
-                so, start the drawing by the staff lines
-            */
-//                if (nSystem == m_nNumSystems And fTruncarUltimoSistema) {
-//                    //es el último sistema y se pide truncar: dibuja las líneas del pentagrama
-//                    //para que lleguen sólo hasta la barra de fin de partitura
-//                    pVStaff->PintarPentagrama DO_DRAW, , pVStaff->GetXPosBarraFinal - 1
-//                } else {
-                //staff lines to the right margin
-                //! @todo Length of staff lines
-                pVStaff->DrawStaffLines(DO_DRAW, pPaper, 0, 50);
-//                }
 
-            //draw the prolog, except if this is the first system
+            //to properly draw barlines it is necessary that staff lines are already drawn.
+            //so, start the drawing by the staff lines
+            pVStaff->DrawStaffLines(DO_DRAW, pPaper, 0, 50, 0, m_xFinal);
+
+            //now draw the prolog, except if this is the first system
             if (nSystem != 1)
                 pVStaff->DrawProlog(DO_DRAW, m_nFirstMeasure, false, pPaper);
 

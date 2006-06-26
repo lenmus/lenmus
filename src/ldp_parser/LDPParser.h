@@ -63,6 +63,7 @@ public:
     void        AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr);
     bool        AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeLocation(lmLDPNode* pNode, int* pValue, lmEUnits* pUnit);
+    void        AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos);
     void        AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmNote*     AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);
@@ -70,6 +71,7 @@ public:
     lmScore*    AnalyzeScore(lmLDPNode* pNode);
     void        AnalyzeSplit(lmLDPNode* pNode, lmVStaff* pVStaff);
     EStemType   AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff);
+    bool        AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore);
     bool        AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode);
     void        AnalyzeVoice(lmLDPNode* pNode, lmVStaff* pVStaff);
@@ -159,6 +161,11 @@ private:
     wxString        m_sTitleFontName;
     int             m_nTitleFontSize; 
     lmETextStyle    m_nTitleStyle;
+
+    // font for <text> elements
+    wxString        m_sTextFontName;
+    int             m_nTextFontSize; 
+    lmETextStyle    m_nTextStyle;
 
 
 };

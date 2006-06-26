@@ -314,11 +314,11 @@ lmRest* lmVStaff::AddRest(ENoteType nNoteType, float rDuration,
     
 }
 
-lmWordsDirection* lmVStaff::AddWordsDirection(wxString sText, wxString sLanguage,
-                            lmXMLPosition tPos, lmFontInfo tFontData)
+lmWordsDirection* lmVStaff::AddWordsDirection(wxString sText, lmEAlignment nAlign,
+                            lmLocation* pPos, lmFontInfo tFontData, bool fHasWidth)
 {
-    lmWordsDirection* pWD = new lmWordsDirection(this, sText, sLanguage,
-                        tPos, tFontData);
+    lmWordsDirection* pWD = new lmWordsDirection(this, sText, nAlign,
+                                                 pPos, tFontData, fHasWidth);
 
     m_cStaffObjs.Store(pWD);
     return pWD;
@@ -924,22 +924,27 @@ void lmVStaff::ResetContexts()
 //    //Devuelve el número que hace esta parte (1..n) dentro de los de su instrumento
 //    NumParte = m_nStaff
 //}
-//
-//Function GetXPosBarraFinal() As Long
-//    //devuelve la posición de la barra del último compas
-//    Dim oIT As CIterador, oPo As IPentObj
-//    Set oIT = m_cStaffObjs.CreateIterator(eTR_AsStored)
-//    oIT.AvanzarAlUltimo
-//    Do While oIT.QuedanItems
-//        Set oPo = oIT.GetItem
-//        if (oPo.Tipo = eTPO_Barline { Exit Do
-//        oIT.RetrocederCursor
-//    Loop
-//    wxASSERT(oPo.Tipo = eTPO_Barline
-//    
-//    GetXPosBarraFinal = oPo.Right
-//    
-//}
+
+lmLUnits lmVStaff::GetXPosFinalBarline()
+{
+    // returns the x position of last barline
+    lmStaffObj* pSO = (lmStaffObj*) NULL;
+    lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_AsStored);
+    pIter->MoveLast();
+    while(!pIter->EndOfList())
+    {
+        pSO = pIter->GetCurrent();
+        if (pSO->GetType() == eTPO_Barline) break;
+        pIter->MovePrev();
+    }
+    delete pIter;
+
+    //check that a barline is found. Otherwise no barlines in the score!!
+    wxASSERT(pSO->GetType() == eTPO_Barline);
+
+    return pSO->GetOrigin().x;
+
+}
 
 void lmVStaff::NewLine(lmPaper* pPaper)
 {        

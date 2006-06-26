@@ -40,6 +40,22 @@
 #include "../score/score.h"
 
 
+// fStopStaffLinesAtFinalBarline:
+//      Staff lines must finish at final barline instead of continuing to right margin
+//      of paper
+//
+class lmRenderOptions
+{
+public:
+    lmRenderOptions() {
+        m_fStopStaffLinesAtFinalBarline = true;
+    }
+
+    bool    m_fStopStaffLinesAtFinalBarline;
+
+};
+
+
 //Class lmGraphicManager stores and manages all score renderization issues
 class lmGraphicManager
 {
@@ -56,6 +72,8 @@ private:
     lmPaper*        m_pPaper;       //paper to use
 
     lmBoxScore*     m_pBoxScore;    //the main container
+
+    lmRenderOptions m_options;      //renderization options
 
 
 };

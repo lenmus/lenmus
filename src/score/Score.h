@@ -344,16 +344,6 @@ enum ERenderizationType
 //};
 
 
-// XML position data
-typedef struct lmXMLPositionStruct {
-    lmTenths xRel;
-    lmTenths yRel;
-    lmTenths xDef;
-    lmTenths yDef;
-    bool fOverrideDefaultX;
-    bool fOverrideDefaultY;
-} lmXMLPosition;
-
 // font specification
 enum lmETextStyle           // text styles
 {
@@ -388,7 +378,6 @@ typedef struct lmLocationStruct {
 
 //Global variables used as default initializators
 extern lmFontInfo goLyricDefaultFont;        // defined in NoteRestObj.cpp
-extern lmXMLPosition goDefaultPos;        // defined in Text.cpp
 extern lmFontInfo goBasicTextDefaultFont;
 
 

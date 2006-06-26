@@ -67,18 +67,18 @@ lmFormatter4::~lmFormatter4()
 
 }
 
-lmBoxScore* lmFormatter4::Layout(lmScore* pScore, lmPaper* pPaper)
+lmBoxScore* lmFormatter4::Layout(lmScore* pScore, lmPaper* pPaper,
+                                 lmRenderOptions* pOptions)
 {
 //            Optional nTipoEspaciado As ESpacingMethod = esm_PropConstantShortNote, _
 //            Optional fJustificada As Boolean = true, _
-//            Optional fTruncarUltimoSistema As Boolean = false, _
 //            Optional rFactorAjuste As Single = 1#)
 
     m_pScore = pScore;
     switch (pScore->GetRenderizationType())
     {
         case eRenderJustified:
-            return RenderJustified(pPaper);
+            return RenderJustified(pPaper, pOptions);
         case eRenderSimple:
             return RenderMinimal(pPaper);
         default:
@@ -167,18 +167,15 @@ lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
 
 }
 
-lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
+lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOptions)
 {
 
 //            nTipoEspaciado As ESpacingMethod, _
 //            fJustified As Boolean, _
-//            fTruncarUltimoSistema As Boolean, _
 //            rFactorAjuste As Single)
     bool fJustified = true;
     /*
     // - fJustified: justificar compases a derecha
-    // - fTruncarUltimoSistema: las líneas del pentagrama finalizan en la barra de fin de
-    //   partitura, en vez de continuar hasta el margen derecho del papel.
     // - rFactorAjuste: Factor de ajuste. Se aplica a todas las modalides salvo en
     //   esm_PropVariableNumBars
     */
@@ -447,6 +444,18 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 
             //Store information about this system
             pBoxSystem->SetNumMeasures(m_nMeasuresInSystem);
+            if (nAbsMeasure + m_nMeasuresInSystem == nTotalMeasures && 
+                pOptions->m_fStopStaffLinesAtFinalBarline)
+            {
+                //this is the last system and it has been requested to stop staff lines
+                //in last measure. So, set final x so staff lines go to final bar line
+                pBoxSystem->SetFinalX( pVStaff->GetXPosFinalBarline() - 1 );
+            }
+            else {
+                //staff lines go to the rigth margin
+                pBoxSystem->SetFinalX( pPaper->GetRightMarginXPos() );
+            }
+
 
             // compute system height
             if (nSystem == 1) {

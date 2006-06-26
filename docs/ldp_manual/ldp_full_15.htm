@@ -600,23 +600,21 @@ Score with two instruments, each one on its staff:
 <h3><a name="description_Barline">The Barline element</a></h3>
 <a href="#TOC">TOC</a>
 
-<p>To simplify writting music in LDP, it is not mandatory to specify a barline at the end of each measure when
-it is a normal barline (simple line). If no barline is specified it is always assumed to be a simple barline. Otherwise
-a barline type must be specified. You can specify a barline to be 'invisible' (that is, it will not be rendered, as
-if it did not exist).</p>
+<p>Element 'barline' is used to specify a barline at the end of a measure.
+You can specify a barline to be 'invisible' (that is, it will not be rendered).
+If the type of barline is not specified it is assumed to be
+a normal barline (simple line).</p>
 
-<a name="rule_barline">&nbsp;</a>
 <p>
+<a name="rule_barline">&nbsp;</a>
 <span class="nt">Barline</span> :=
-    <span class="t">(barline</span>
-    <span class="nt">Barline_type</span>
+    (<span class="t">barline</span>
+    [<span class="nt">Barline_type</span>]
     [<span class="nt">Visible</span>]
     <span class="t">)</span>
-</p>
 
-
-<p>
-<span class="nt">Barline_type</span> :=
+<br />
+&nbsp;<span class="nt">Barline_type</span> :=
     { <span class="t"><u>simple</u></span> |
       <span class="t">double</span> |
       <span class="t">end</span> |
@@ -695,7 +693,7 @@ if it did not exist).</p>
 <p>
 <center>
 <table class="grid">
-    <tr><td class="grid">Key_name</td><td class="grid">Key signature</td><td class="grid">Kae_name</td><td class="grid">Key signature</td></tr>
+    <tr><td class="grid">Key_name</td><td class="grid">Key signature</td><td class="grid">Key_name</td><td class="grid">Key signature</td></tr>
     <tr><td class="grid">Do</td><td class="grid">C major</td>         <td class="grid">Lam</td><td class="grid">A minor</td></tr>
     <tr><td class="grid">Sol</td><td class="grid">G major</td>        <td class="grid">Mim</td><td class="grid">E minor</td></tr>
     <tr><td class="grid">Re</td><td class="grid">D major</td>         <td class="grid">Sim</td><td class="grid">B minor</td></tr>

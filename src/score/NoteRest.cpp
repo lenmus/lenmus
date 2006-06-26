@@ -1,4 +1,3 @@
-// RCS-ID: $Id: NoteRest.cpp,v 1.6 2006/02/23 19:23:54 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -47,12 +46,6 @@
     que forman un acorde.
 
 */
-//THINK:
-//   Grupos y acordes son entidades que agrupan varias notas. En algunos casos no interesan
-//   las propiedades de cada nota sino las del conjunto. Por ejemplo, la duración de un
-//   acorde es la de una de sus notas. ¿Metodos globales que contemplen esta problemática?
-//
-//--------------------------------------------------------------------------------------------------
 
 #ifdef __GNUG__
 // #pragma implementation
@@ -199,23 +192,13 @@ void lmNoteRest::AddLyric(lmLyric* pLyric)
 //====================================================================================================
 
 
-//---------------------------------------------------------------------------------------------
-// Receives a string (sDato) with the letter for the type of note and, optionally, dots "."
-// Set up variables m_nNoteType and flags m_fDotted and m_fDoubleDotted.
-//
-//                cuadrada    d   0
-//                redonda     r   1
-//   half        blanca      b   2
-//   quarter    negra       n   3
-//   eighth        corchea     c   4
-//   sixteenth    semicorchea s   5
-//                fusa        f   6
-//                semifusa    m   7
-//
-// Returns true if error in parsing
-//---------------------------------------------------------------------------------------------
 bool lmNoteRest::ParseTipoNota(wxString& sDato)
 {
+    // Receives a string (sDato) with the letter for the type of note and, optionally, 
+    // dots "."
+    // Set up variables m_nNoteType and flags m_fDotted and m_fDoubleDotted.
+    // Returns true if error in parsing
+
     //normalize
     sDato.Trim(false);        //remove spaces from left
     sDato.Trim(true);        //and from the right
@@ -241,20 +224,6 @@ bool lmNoteRest::ParseTipoNota(wxString& sDato)
     
 }
 
-//void lmNoteRest::Let IPentObj_Left(nLeft As Long)
-//    Dim nDsplz As Long
-//    nDsplz = nLeft - m_rLeft
-//    m_rLeft = nLeft
-//    m_xPos = m_xPos + nDsplz
-//    m_xStem = m_xStem + nDsplz
-//    m_rRight = m_rRight + nDsplz
-//    
-//}
-//
-//void lmNoteRest::Get IPentObj_Anchor() As Single
-//    IPentObj_Anchor = m_xAnchor - m_rLeft
-//}
-//
 ////=========================================================================================
 ////Uso exclusivo por CBeam para transferencia de datos y dibujo de barras de corchete
 ////=========================================================================================
@@ -272,107 +241,11 @@ bool lmNoteRest::ParseTipoNota(wxString& sDato)
 //
 //}
 
-////================================================================================================
-//// Funciones para manejar acordes
-////================================================================================================
-//void lmNoteRest::Get DuracionEnAcorde() As Long
-//    //Si la nota no pertenece a un acorde devuelve la duración de la nota.
-//    //Si pertenece a un acorde devuelve la duración del acorde si esta es la nota de comienzo
-//    //o cero si esta es una de las restantes del acorde.
-//    //Este comportamiento permite llamar a DuraciónAcorde en vez de a Duración y conseguir
-//    //un tratamiento uniforme
-//    if (this.InChord) {
-//        if (m_fNotaBase) {
-//            DuracionEnAcorde = m_oAcorde.Duracion
-//        } else {
-//            DuracionEnAcorde = 0
-//        }
-//    } else {
-//        //nota suelta no en acorde
-//        DuracionEnAcorde = this.Duracion
-//    }
-//
-//}
-//
-////================================================================================================
-//// Funciones para manejar grupos. Empaquetan el acceso al beam asociado
-////================================================================================================
-//
-//void lmNoteRest::Get DuracionAgrupada() As Long
-//    //Devuelve la duración total del grupo que comienza en esta nota, o la de esta nota si
-//    //no es comienzo de grupo
-//    if (m_nBeamGrouping = etaInicioGrupo) {
-//        DuracionAgrupada = m_oBeam.Duracion
-//    } else {
-//        DuracionAgrupada = this.DuracionEnAcorde
-//    }
-//
-//}
-//
-//Function NumNotes() As Long
-//    //Devuelve el número de NoteRests que componen el grupo que empieza en esta nota o cero si
-//    //esta nota no es comienzo de grupo
-//    if (m_nBeamGrouping = etaInicioGrupo) {
-//        NumNotes = m_oBeam.NumNotes
-//    } else {
-//        NumNotes = 0
-//    }
-//
-//}
-//
-////================================================================================================
-//
-//Friend void lmNoteRest::Get notaMidi() As Integer
-//    Dim nResto As Long
-//    nResto = m_nPitch Mod 7
-//    notaMidi = PitchToMidi(m_nPitch)
-//
-//    //modifica la altura de la nota en función del contexto
-//    if (nResto = 0) {  //nota Si
-//        nResto = 6
-//    } else {
-//        nResto = nResto - 1
-//    }
-//    notaMidi = notaMidi + m_anContexto(nResto)
-//   
-//    //modifica la nota en función de las alteraciones propias
-//    if (m_nAlteraciones = eDoubleSharp) {
-//        if (m_anContexto(nResto) = 1) {
-//            notaMidi = notaMidi + 1
-//        } else {if (m_anContexto(nResto) = 0) {
-//            notaMidi = notaMidi + 2
-//        } else {
-//            notaMidi = notaMidi - m_anContexto(nResto) + 2
-//        }
-//    } else {if (m_nAlteraciones = eSharp Or m_nAlteraciones = eNaturalSharp) {
-//        notaMidi = notaMidi - m_anContexto(nResto) + 1
-//    } else {if (m_nAlteraciones = eNatural) {
-//        if (m_anContexto(nResto) > 0) {
-//                notaMidi = notaMidi - 1
-//        } else {if (m_anContexto(nResto) < 0) {
-//                notaMidi = notaMidi + 1
-//        }
-//    } else {if (m_nAlteraciones = eFlatFlat) {
-//        if (m_anContexto(nResto) = -1) {
-//            notaMidi = notaMidi - 1
-//        } else {if (m_anContexto(nResto) = 0) {
-//            notaMidi = notaMidi - 2
-//        } else {
-//            notaMidi = notaMidi - m_anContexto(nResto) - 2
-//        }
-//    } else {if (m_nAlteraciones = eFlat Or m_nAlteraciones = eNaturalFlat) {
-//        notaMidi = notaMidi - m_anContexto(nResto) - 1
-//    }
-//    
-//}
-
 void lmNoteRest::AddMidiEvents(lmSoundManager* pSM, float rMeasureStartTime, int nChannel,
                              int nMeasure)
 {
-    /*
-    Coumpute MIDI events for this lmNoteRest and add them to the lmSoundManager object received
-    as parameter.
-    */
+    // Coumpute MIDI events for this lmNoteRest and add them to the lmSoundManager
+    // object received as parameter.
 
     //Generate Note ON event
     float rTime = m_rTimePos + rMeasureStartTime;
@@ -452,42 +325,6 @@ wxString lmNoteRest::GetLDPNoteType()
 
 }
 
-
-//void lmNoteRest::Redibujar(nColor As Long)
-//    m_oPapel.color = nColor
-//    m_oPapel.xPos = m_xPos
-//    m_oPapel.yBase = m_yPos
-//    Dibujar false
-//    m_oPapel.color = colorNegro
-//    
-//}
-//
-//void lmNoteRest::Dibujar(fModoMedida As Boolean)
-//    //Esta función es llamada sólo desde lmNoteRest.IPentObj_Dibujate y desde lmNoteRest.Redibujar
-//    
-//    //guarda los datos para "Redibujar"
-//    m_xPos = m_oPapel.xPos
-//    m_yPos = m_oPapel.yBase
-//    
-//    if (m_nPitch != 0) {
-//        DibujarNota fModoMedida
-//    } else {
-//        DibujarSilencio fModoMedida
-//    }
-//    
-//    //si es la última nota de un acorde y son notas con plica dibuja la plica del acorde
-//    if (this.InChord) {
-//        if (m_oAcorde.EsUltimaNota(this) And m_nNoteType >= eHalf) {
-//            m_oAcorde.DibujarStem fModoMedida, m_oPapel
-//        }
-//    }
-//
-//    //Si es la última nota de un grupo dibuja los corchetes del grupo
-//    if (m_nBeamGrouping = etaFinGrupo) { m_oBeam.DibujarCorchetes fModoMedida, m_oPapel, m_fStemDown
-//    
-//}
-//
-//
 
 /*! Receives a string (sNoteType) with the LDP letter for the type of note and, optionally,
     dots ".". It is assumed the source is normalized (no spaces, lower case)

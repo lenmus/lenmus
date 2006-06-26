@@ -34,7 +34,7 @@ class lmBasicText
 {
 public:
     lmBasicText(wxString sText, wxString sLanguage,
-                   lmXMLPosition oPos, lmFontInfo oFontData);
+                   lmLocation* pPos, lmFontInfo oFontData);
 
     ~lmBasicText() {}
 
@@ -47,10 +47,7 @@ protected:
     wxString    m_sLanguage;
 
     // position
-    lmTenths    m_xDef, m_yDef;
-    lmTenths    m_xRel, m_yRel;
-    bool        m_fOverrideDefaultX;
-    bool        m_fOverrideDefaultY;
+    lmLocation  m_tPos;
 
     // font
     wxString    m_sFontName;

@@ -65,16 +65,28 @@ LenMus project philosophy (to remind me to always stay on this):
       Lippman's book is the cure.
   
   ---------------------------------------------------------------------------------------
-	- width of chord = max width of its notes
-	- render accidentals in notes order
-	
-	- draw page margins
-	
-	
-	- include playback buttons in main toolbar
-	- need to devise a renderization method based on plugins so that different
-		algorithms, user selectable, can be used to compute layout
-	
+  
+    - move logs to temp directory
+    
+    - width of chord = max width of its notes
+    - render accidentals in notes order
+    
+    - draw page margins:
+        - margins must be line objects in PageBox. They must be
+            'non-visible' and there must be a method to render them when required.
+            As any ScoreObj it must be draggable.
+        - View menu: page margins
+    
+    - Required for theory book:
+        - text above/below a measure. Parameter centered
+        - Render options: stop staff lines at final barline
+
+    - MusicXML import: note pitch.
+    
+    - include playback buttons in main toolbar
+    - need to devise a renderization method based on plugins so that different
+        algorithms, user selectable, can be used to compute layout
+    
 Organizational issues:
     - Integrate wxMidi so that LenMus package at SVN be self-contained.
     - Modify panel pendrive so that erased files do not re-appear

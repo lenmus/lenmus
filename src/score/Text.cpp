@@ -50,7 +50,6 @@ int PointsToLUnits(lmLUnits nPoints)
 }
 
 //Global variables used as default initializators
-lmXMLPosition goDefaultPos = { 0,0,0,0,false,false};
 lmFontInfo goBasicTextDefaultFont = { _T("Arial"), 12, lmTEXT_NORMAL };
 
 
@@ -60,7 +59,7 @@ lmFontInfo goBasicTextDefaultFont = { _T("Arial"), 12, lmTEXT_NORMAL };
 //==========================================================================================
 
 lmBasicText::lmBasicText(wxString sText, wxString sLanguage,
-                   lmXMLPosition tPos, lmFontInfo tFontData) 
+                   lmLocation* pPos, lmFontInfo tFontData) 
 {
     m_sText = sText;
     m_sLanguage = sLanguage;
@@ -72,12 +71,7 @@ lmBasicText::lmBasicText(wxString sText, wxString sLanguage,
     m_fItalic = (tFontData.nStyle == lmTEXT_ITALIC || tFontData.nStyle == lmTEXT_ITALIC_BOLD);
 
     // position data
-    m_xDef = tPos.xDef;
-    m_yDef = tPos.yDef;
-    m_xRel = tPos.xRel;
-    m_yRel = tPos.yRel;
-    m_fOverrideDefaultX = tPos.fOverrideDefaultX;
-    m_fOverrideDefaultY = tPos.fOverrideDefaultY;
+    m_tPos = *pPos;
 
 }
 

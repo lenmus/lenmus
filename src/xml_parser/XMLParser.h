@@ -1,4 +1,3 @@
-// RCS-ID: $Id: XMLParser.h,v 1.3 2006/02/23 19:26:44 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -86,7 +85,7 @@ private:
     int ParseDivisions(wxXmlNode* pElement);
 
         // common.dtd
-    void ParsePosition(wxXmlNode* pElement, lmXMLPosition* pPos);
+    void ParsePosition(wxXmlNode* pElement, lmLocation* pPos);
     void ParseFont(wxXmlNode* pElement, lmFontInfo* pFontData);
     bool ParsePlacement(wxXmlNode* pElement, bool fDefault=true);
 

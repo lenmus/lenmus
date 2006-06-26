@@ -83,6 +83,13 @@ lmLDPParser::lmLDPParser()
     m_nTitleFontSize = 14; 
     m_nTitleStyle = lmTEXT_BOLD;
 
+    // default values for font and aligment for <text> elements
+    //! @todo user options instead of fixed values
+    m_sTextFontName = _T("Times New Roman");
+    m_nTextFontSize = 10; 
+    m_nTextStyle = lmTEXT_NORMAL;
+
+
 }
 
 lmLDPParser::~lmLDPParser()
@@ -824,10 +831,12 @@ void lmLDPParser::AnalyzeVoice(lmLDPNode* pNode, lmVStaff* pVStaff)
             AnalyzeBarline(pX, pVStaff);
         } else if (sName == m_pTags->TagName(_T("chord")) ) {
             AnalyzeChord(pX, pVStaff);
+        } else if (sName == m_pTags->TagName(_T("text")) ) {
+            AnalyzeText(pX, pVStaff);
         } else if (sName == m_pTags->TagName(_T("newSystem")) ) {
             AnalyzeNewSystem(pX, pVStaff);
         } else {
-            AnalysisError( _("[AnalyzeVoice]: Expected node 'Figure', 'Attribute' or 'Desplazamiento' but found node '%s'. Node ignored."),
+            AnalysisError( _("[AnalyzeVoice]: Unknown or not allowed element '%s' found. Element ignored."),
                 sName );
         }
     }
@@ -2036,34 +2045,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
         else if (sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) ||
                  sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) )
         {
-            int nValue;
-            lmEUnits nUnits;
-            AnalyzeLocation(pX, &nValue, &nUnits);
-            wxLogMessage(_T("[lmLDPParser::AnalyzeTitle] Location: %d units='%d'"), nValue, nUnits);
-            if (sName == m_pTags->TagName(_T("x")) ) {
-                //x
-                tPos.x = nValue;
-                tPos.xType = lmLOCATION_ABSOLUTE;
-                tPos.xUnits = nUnits;
-            }
-            else if (sName == m_pTags->TagName(_T("dx")) ) {
-                //dx
-                tPos.x = nValue;
-                tPos.xType = lmLOCATION_RELATIVE;
-                tPos.xUnits = nUnits;
-            }
-            else if (sName == m_pTags->TagName(_T("y")) ) {
-                //y
-                tPos.y = nValue;
-                tPos.yType = lmLOCATION_ABSOLUTE;
-                tPos.yUnits = nUnits;
-            }
-            else {
-                //dy
-                tPos.y = nValue;
-                tPos.yType = lmLOCATION_RELATIVE;
-                tPos.yUnits = nUnits;
-            }
+            AnalyzeLocation(pX, &tPos);
         }
         else {
             AnalysisError( _("Unknown parameter '%s'. Ignored."), sName);
@@ -2077,49 +2059,86 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     
 }
 
-////Devuelve true si hay error, es decir si no añade objeto al pentagrama
-//Function AnalizarDirectivaTexto(lmVStaff* pVStaff, lmLDPNode* pNode) As Boolean
-////<texto> = (texto string <posicion><font><alineacion><idioma>)
-////    <posicion>
-////    <font> = (font nombre size estilo)
-////    <alineacion> = "izqda" | "centrado" | "dcha"
-////Se assume alineado a izquierda
-////    <idioma> = string
-////Se assume idioma=italiano
-//    
-//    wxASSERT(pNode->GetName() = "TEXTO"
-//    wxASSERT(pNode->GetNumParms() > 1
-//    
-//    Dim lmLDPNode* pX, long iP
-//    Dim sTexto As String
-//    
-//    sTexto = (pNode->GetParameter(1))->GetName();
-//
-//    //obtiene posicion
-//    iP = 2
-//    Set pX = pNode->GetParameter(iP)
-//    Dim nX As Long, nY As Long, fXAbs As Boolean, fYAbs As Boolean
-//    AnalizarPosicion pX, nX, nY, fXAbs, fYAbs
-//    
-//    //obtiene font
-//    iP = 3
-//    Dim sFontName As String, nFontSize As Long, fBold As Boolean, fItalic As Boolean
-//    if (iP <= pNode->GetNumParms()) {
-//        Set pX = pNode->GetParameter(iP)
-//        AnalizarFont pX, sFontName, nFontSize, fBold, fItalic
-//    } else {
-//        sFontName = "Arial"
-//        nFontSize = 10
-//        fBold = false
-//        fItalic = false
-//    }
-//    
-//    //crea el pentobj
-//    pVStaff.AddDirectivaTexto sTexto, nX, nY, fXAbs, fYAbs, sFontName, nFontSize, fBold, fItalic
-//    
-//    AnalizarDirectivaTexto = false       //no hay error
-//    
-//}
+//returns true if error; in this case nothing is added to the VStaff
+bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+    // <text> = (text string <location>[<font><alingment>])
+
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("text")) );
+
+    //check that at least two parameters (location and text string) are specified
+    if(pNode->GetNumParms() < 2) {
+        AnalysisError(
+            _("Element '%s' has less parameters that the minimum required. Element ignored."),
+            m_pTags->TagName(_T("text")) );
+        return true;
+    }
+    
+    wxString sText;
+    lmEAlignment nAlign = lmALIGN_LEFT;     //! @todo user options instead of fixed values
+    wxString sFontName = m_sTextFontName;
+    int nFontSize = m_nTextFontSize; 
+    lmETextStyle nStyle = m_nTextStyle;
+
+    bool fHasWidth = false;
+
+    lmLocation tPos;
+    tPos.xType = lmLOCATION_DEFAULT;
+    tPos.xUnits = lmTENTHS;
+    tPos.yType = lmLOCATION_DEFAULT;
+    tPos.yUnits = lmTENTHS;
+
+    int iP = 1;
+
+    //get the string
+    sText = (pNode->GetParameter(iP))->GetName();
+    iP++;
+
+    //get remaining parameters: location, font, alignment
+    lmLDPNode* pX;
+    wxString sName;
+    for(; iP <= pNode->GetNumParms(); iP++)
+    {
+        pX = pNode->GetParameter(iP);
+        sName = pX->GetName();
+
+        if (sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) ||
+                 sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) )
+        {
+            AnalyzeLocation(pX, &tPos);
+        }
+        else if (sName == m_pTags->TagName(_T("font")) ) {
+            AnalyzeFont(pX, &sFontName, &nFontSize, &nStyle);
+            //save font values as new default for titles
+            m_sTextFontName = sFontName;
+            m_nTextFontSize = nFontSize; 
+            m_nTextStyle = nStyle;
+        }
+        else if (sName == m_pTags->TagName(_T("left")) ) {
+            nAlign = lmALIGN_LEFT;
+        }
+        else if (sName == m_pTags->TagName(_T("right")) ) {
+            nAlign = lmALIGN_RIGHT;
+        }
+        else if (sName == m_pTags->TagName(_T("center")) ) {
+            nAlign = lmALIGN_CENTER;
+        }
+        else if (sName == m_pTags->TagName(_T("hasWidth")) ) {
+            fHasWidth = true;
+        }
+        else {
+            AnalysisError( _("[Element '%s'. Invalid parameter '%s'. Ignored."),
+                m_pTags->TagName(_T("text")), sName );
+        }
+    }
+
+    //create the text
+    lmFontInfo tFont = { sFontName, nFontSize, nStyle };
+    pVStaff->AddWordsDirection(sText, nAlign, &tPos, tFont, fHasWidth);
+    
+    return false;
+    
+}
 
 //returns true if error; in this case nothing is added to the lmVStaff
 bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
@@ -2369,6 +2388,45 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, int* pValue, lmEUnits* pUnit
     }
 
 }
+
+void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
+{
+    //analyze location
+    wxString sName = pNode->GetName();
+
+    wxASSERT(sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) ||
+        sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) );
+
+    int nValue;
+    lmEUnits nUnits;
+    AnalyzeLocation(pNode, &nValue, &nUnits);
+    if (sName == m_pTags->TagName(_T("x")) ) {
+        //x
+        pPos->x = nValue;
+        pPos->xType = lmLOCATION_ABSOLUTE;
+        pPos->xUnits = nUnits;
+    }
+    else if (sName == m_pTags->TagName(_T("dx")) ) {
+        //dx
+        pPos->x = nValue;
+        pPos->xType = lmLOCATION_RELATIVE;
+        pPos->xUnits = nUnits;
+    }
+    else if (sName == m_pTags->TagName(_T("y")) ) {
+        //y
+        pPos->y = nValue;
+        pPos->yType = lmLOCATION_ABSOLUTE;
+        pPos->yUnits = nUnits;
+    }
+    else {
+        //dy
+        pPos->y = nValue;
+        pPos->yType = lmLOCATION_RELATIVE;
+        pPos->yUnits = nUnits;
+    }
+
+}
+
 
 ////Devuelve, en las variables nX, nY, fXabs y fYabs, los valores obtenidos tras el análisis
 //void lmLDPParser::AnalizarPosicion(lmLDPNode* pNode, _

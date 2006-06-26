@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Direction.cpp,v 1.3 2006/02/23 19:22:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -43,11 +42,13 @@
 #include "Direction.h"
 
 
-lmWordsDirection::lmWordsDirection(lmVStaff* pVStaff, wxString sText, wxString sLanguage,
-                   lmXMLPosition oPos, lmFontInfo oFontData) 
+lmWordsDirection::lmWordsDirection(lmVStaff* pVStaff, wxString sText, lmEAlignment nAlign,
+                   lmLocation* pPos, lmFontInfo oFontData, bool fHasWidth) 
     : lmSimpleObj(eTPO_WordsDirection, pVStaff, 1, true, sbDRAGGABLE),
-      lmBasicText(sText, sLanguage, oPos, oFontData)
+      lmBasicText(sText, _T(""), pPos, oFontData)
 {
+    m_fHasWidth = fHasWidth;
+    m_nAlign = nAlign;
 }
 
 
@@ -73,25 +74,43 @@ void lmWordsDirection::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour col
         // set total width
         m_nWidth = nWidth;
 
-        // store glyph position (relative to paper pos).
-        // Remember: XML positioning values origin is the left-hand side of the note 
-        // or the musical position within the bar (x) and the top line of the staff (y)
-        m_glyphPos.x = m_pVStaff->TenthsToLogical(m_xRel, m_nStaffNum);
-        // as relative-y refers to the top line of the staff, so 5 lines must be 
-        // substracted from yBase position
-        m_glyphPos.y = m_pVStaff->TenthsToLogical(m_yRel-50, m_nStaffNum);
-        if (m_fOverrideDefaultX) {
-            m_glyphPos.x += m_pVStaff->TenthsToLogical(m_xDef, m_nStaffNum) - m_paperPos.x;
+        //compute paper x shift to align text
+        lmLUnits xPaperShift;
+        if (m_nAlign == lmALIGN_CENTER) {
+            xPaperShift = - nWidth/2;
         }
-        if (m_fOverrideDefaultY) {
-            m_glyphPos.y += m_pVStaff->TenthsToLogical(m_yDef, m_nStaffNum) - m_paperPos.y;
+        else if (m_nAlign == lmALIGN_RIGHT) {   
+            xPaperShift = - nWidth;
         }
+        else {   
+            xPaperShift = 0;
+        }
+
+        // store glyph position. Take into account that it is relative to paper pos.
+        if (m_tPos.xType == lmLOCATION_RELATIVE) 
+            m_glyphPos.x = m_pVStaff->TenthsToLogical(m_tPos.x, m_nStaffNum) + xPaperShift;
+        else if (m_tPos.xType == lmLOCATION_ABSOLUTE)
+            m_glyphPos.x = m_pVStaff->TenthsToLogical(m_tPos.x, m_nStaffNum) - m_paperPos.x  + xPaperShift;
+        else
+            m_glyphPos.x = xPaperShift;
+
+        //method DC::DrawText position text with reference to its upper left
+        //corner but lenmus anchor point is lower left corner. Therefore, it
+        //is necessary to shift text up by text height
+        if (m_tPos.yType == lmLOCATION_RELATIVE) 
+            m_glyphPos.y = m_pVStaff->TenthsToLogical(m_tPos.y, m_nStaffNum) - nHeight;
+        else if (m_tPos.yType == lmLOCATION_ABSOLUTE)
+            m_glyphPos.y = m_pVStaff->TenthsToLogical(m_tPos.y, m_nStaffNum) - m_paperPos.y - nHeight;
+        else
+            m_glyphPos.y = - nHeight;
 
          // store selection rectangle (relative to m_paperPos). Coincides with glyph rectangle
         m_selRect.width = nWidth;
         m_selRect.height = nHeight;
         m_selRect.x = m_glyphPos.x;
         m_selRect.y = m_glyphPos.y;
+
+        if (!m_fHasWidth) m_nWidth=0;
 
     }
     else {

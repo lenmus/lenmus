@@ -54,8 +54,10 @@ public:
 
     void SetFirstMeasure(int nMeasure) { m_nFirstMeasure = nMeasure; }
 
-    void SetPositionY(lmLUnits nLUnits) { m_nYPos = nLUnits; }
-    lmLUnits GetPositionY() { return m_nYPos; }
+    void SetPositionY(lmLUnits nLUnits) { m_yPos = nLUnits; }
+    lmLUnits GetPositionY() { return m_yPos; }
+
+    void SetFinalX(lmLUnits nLUnits) { m_xFinal = nLUnits; }
 
     void Render(int nSystem, lmScore* pScore, lmPaper* pPaper);
 
@@ -64,7 +66,8 @@ private:
 
     int         m_nNumMeasures;     //number of measures that fit in this system
     int         m_nFirstMeasure;    //number of first measure
-    lmLUnits    m_nYPos;
+    lmLUnits    m_yPos;             // y pos to render first staff
+    lmLUnits    m_xFinal;           // x pos for end of staff lines
 
 };
 

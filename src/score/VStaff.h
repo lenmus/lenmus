@@ -81,8 +81,8 @@ public:
     lmSOControl* AddNewSystem();
 
 
-    lmWordsDirection* AddWordsDirection(wxString sText, wxString sLanguage,
-                        lmXMLPosition oPos, lmFontInfo oFontData);
+    lmWordsDirection* AddWordsDirection(wxString sText, lmEAlignment nAlign,
+                        lmLocation* pPos, lmFontInfo oFontData, bool fHasWidth);
 
     void ShiftTime(float rTimeShift);
 
@@ -132,6 +132,9 @@ public:
 
     //sound related methods
     lmSoundManager* ComputeMidiEvents(int nChannel);
+
+    //renderization related methods
+    lmLUnits GetXPosFinalBarline();
 
 
 

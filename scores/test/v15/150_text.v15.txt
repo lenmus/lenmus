@@ -1,0 +1,36 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+
+   (title center "Test of text in a measure" (font bold 14))
+
+   (instrument
+      (voice
+         (clef Sol)
+         (text "Allegor" dy=0)
+         (n -e4 n)
+         (n =e4 n)
+         (n +e4 n)
+         (barline)
+         
+         (text "Second" dy=0 hasWidth)
+         (n f4 c g+)
+         (n g4 c g-)
+         (n +e4 n)
+         (barline)
+
+         (text "Center" dy=40 center (font bold 14))
+         (n f4 c g+)
+         (n g4 c g-)
+         (n +e4 n)
+         (barline)
+         
+         (text "Right" dy=40 right (font normal 24))
+         (n f4 c g+)
+         (n g4 c g-)
+         (n +e4 n)
+         
+         (barline Final)
+      )
+   )
+)
+

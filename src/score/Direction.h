@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Direction.h,v 1.3 2006/02/23 19:22:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -33,8 +32,8 @@
 class lmWordsDirection : public lmSimpleObj, public lmBasicText
 {
 public:
-    lmWordsDirection(lmVStaff* pStaff, wxString sText, wxString sLanguage,
-                   lmXMLPosition oPos, lmFontInfo oFontData);
+    lmWordsDirection(lmVStaff* pStaff, wxString sText, lmEAlignment nAlign,
+                   lmLocation* pPos, lmFontInfo oFontData, bool fHasWidth);
     ~lmWordsDirection() {}
 
     // properties related to the clasification of this lmStaffObj
@@ -54,6 +53,8 @@ public:
 
 
 private:
+    bool            m_fHasWidth;
+    lmEAlignment    m_nAlign;
 
 };
 

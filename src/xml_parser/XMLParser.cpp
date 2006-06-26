@@ -739,7 +739,7 @@ bool lmXMLParser::ParseMusicDataDirection(wxXmlNode* pNode, lmVStaff* pVStaff)
     wxString sJustify;
     wxString sLanguage;
     lmFontInfo oFontData = goBasicTextDefaultFont;            
-    lmXMLPosition oPos = goDefaultPos;
+    lmLocation tPos;
 
 
     //default values
@@ -793,7 +793,7 @@ bool lmXMLParser::ParseMusicDataDirection(wxXmlNode* pNode, lmVStaff* pVStaff)
 
                     // get font and position info
                     ParseFont(pElmnt, &oFontData);    
-                    ParsePosition(pElmnt, &oPos);
+                    ParsePosition(pElmnt, &tPos);
 
                     //! @todo Verify attributes
 
@@ -853,7 +853,7 @@ bool lmXMLParser::ParseMusicDataDirection(wxXmlNode* pNode, lmVStaff* pVStaff)
             return false;    //nothing added to lmVStaff
             break;
         case eWords:
-            pVStaff->AddWordsDirection(sText, sLanguage, oPos, oFontData);
+            pVStaff->AddWordsDirection(sText, lmALIGN_LEFT, &tPos, oFontData, false);
             break;
         default:
             wxASSERT(false);
@@ -1833,7 +1833,7 @@ void lmXMLParser::ParseScorePart(wxXmlNode* pNode, lmScore* pScore)
 //----------------------------------------------------------------------------------------
 // common.dtd
 //----------------------------------------------------------------------------------------
-void lmXMLParser::ParsePosition(wxXmlNode* pElement, lmXMLPosition* pPos)
+void lmXMLParser::ParsePosition(wxXmlNode* pElement, lmLocation* pPos)
 {
     /*
     For most elements, any program will compute a default x and y position. 
@@ -1861,43 +1861,58 @@ void lmXMLParser::ParsePosition(wxXmlNode* pElement, lmXMLPosition* pPos)
     */
     wxString sXDef = GetAttribute(pElement, _T("default-x"), _T("NoData"));
     wxString sYDef = GetAttribute(pElement, _T("default-y"), _T("NoData"));
-    wxString sXRel = GetAttribute(pElement, _T("relative-x"), _T("0"));
-    wxString sYRel = GetAttribute(pElement, _T("relative-y"), _T("0"));
+    wxString sXRel = GetAttribute(pElement, _T("relative-x"), _T("NoData"));
+    wxString sYRel = GetAttribute(pElement, _T("relative-y"), _T("NoData"));
 
     long nValue=0;
     bool fError = false;
 
-    // default-x
-    if (sXDef == _T("NoData"))
-        pPos->fOverrideDefaultX = false;
-    else {
-        pPos->fOverrideDefaultX = true;
+    //initialization with defaults
+    pPos->x=0;
+    pPos->y = 0;
+    pPos->xUnits = lmTENTHS;
+    pPos->yUnits = lmTENTHS;
+    pPos->xType = lmLOCATION_RELATIVE;
+    pPos->yType = lmLOCATION_RELATIVE;
+
+    // default-x (Absolute position)
+    if (sXDef != _T("NoData")) {
+        pPos->xType = lmLOCATION_ABSOLUTE;
         fError = !sXDef.ToLong(&nValue);
         //! @todo control error and range
         wxASSERT(!fError);
-        pPos->xRel = (lmTenths)nValue;
+        pPos->x = (int)nValue;
     }
 
-    // default-y
-    if (sYDef == _T("NoData"))
-        pPos->fOverrideDefaultY = false;
-    else {
-        pPos->fOverrideDefaultY = true;
+    // default-y  (Absolute position)
+    if (sYDef != _T("NoData")) {
+        pPos->yType = lmLOCATION_ABSOLUTE;
         fError = !sYDef.ToLong(&nValue);
         //! @todo control error and range
         wxASSERT(!fError);
-        pPos->yRel = (lmTenths)nValue;
+        pPos->y = (int)nValue;
     }
 
-    // relative x, y
-    fError = !sXRel.ToLong(&nValue);
-    //! @todo control error and range
-    wxASSERT(!fError);
-    pPos->xRel = (lmTenths)nValue;
-    fError = !sYRel.ToLong(&nValue);
-    //! @todo control error and range
-    wxASSERT(!fError);
-    pPos->yRel = -(lmTenths)nValue;        // we reverse sign as, for LenMus, positive y is down, negative y is up
+    // relative-x (relative position)
+    if (sXRel != _T("NoData")) {
+        pPos->xType = lmLOCATION_RELATIVE;
+        fError = !sXRel.ToLong(&nValue);
+        //! @todo control error and range
+        wxASSERT(!fError);
+        pPos->x = (int)nValue;
+    }
+
+    // relative-y (relative position)
+    if (sYRel != _T("NoData")) {
+        pPos->yType = lmLOCATION_RELATIVE;
+        fError = !sYRel.ToLong(&nValue);
+        //! @todo control error and range
+        wxASSERT(!fError);
+        pPos->y = -(int)nValue;     // reverse sign as, for LenMus, positive y is down, negative y is up
+        // as relative-y refers to the top line of the staff, so 5 lines must be 
+        // substracted from yBase position 
+        pPos->y -= 50;      //50 tenths = 5 lines
+   }
 
 }
 
