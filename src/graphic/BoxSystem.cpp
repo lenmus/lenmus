@@ -70,6 +70,7 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     for (pInstr = pScore->GetFirstInstrument(); pInstr; pInstr=pScore->GetNextInstrument())
     {
         //for each lmVStaff
+        lmLUnits yPaperPos = pPaper->GetCursorY();
         for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
         {
             pVStaff = pInstr->GetVStaff(iVStaff);
@@ -87,11 +88,16 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
                 RenderMeasure(pVStaff, i, pPaper);
             }
 
-            // advance paper: height off this lmVStaff
-            pVStaff->NewLine(pPaper);
-            //! @todo advance inter-staff distance
+            //// advance paper: height off this lmVStaff
+            //pVStaff->NewLine(pPaper);
+            ////! @todo advance inter-staff distance
+            pPaper->SetCursorY( yPaperPos );
 
         } // next lmVStaff
+        // advance paper: height off this lmVStaff
+        pVStaff->NewLine(pPaper);
+        //! @todo advance inter-staff distance
+
     } // next lmInstrument
 
 

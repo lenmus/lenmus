@@ -1,0 +1,57 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+
+   (title center "Two instruments, three staves" (font bold 14))
+
+   (instrument
+      (voice
+         (clef Sol)
+         
+         (n -e4 n)
+         (n =e4 n)
+         (n +e4 n)
+         
+         (barline Final)
+(Partitura
+   (Vers 1.2)
+   (NumInstrumentos 2)
+   (Instrumento 1
+      (NumPentagramas 1)
+      (infoMIDI c1 i41)     //i41 - violín en canal 1
+      (Pentagrama 1
+         (c 1
+            (Clave Sol)
+            (Tonalidad Do)
+            (Metrica 2 4)
+            (n e4 c g+)(n g4 c g-)(n d4 c g+)(n g4 c g-)
+         )
+         (c 2 (n f4 c)(n a4 c)(n e5 c g+)(n g4 s)(n e4 s g-)(Barra Final))
+      )
+   )
+//====================================
+   (Instrumento 2
+      (NumPentagramas 2)
+      (infoMIDI c2 i1)      //i1 - piano en canal 2
+//------------------------------------
+      (Pentagrama 1
+         (c 1
+            (Clave Sol)
+            (Tonalidad Do)
+            (Metrica 2 4)
+            (n c4 n)(n b3 n)
+         )
+         (c 2 (n c4 n)(n c5 n)(Barra Final))
+      )
+//------------------------------------
+      (Pentagrama 2
+         (c 1
+            (Clave Fa4)
+            (Tonalidad Do)
+            (Metrica 2 4)
+            (n g3 n)(n g3 n)
+         )
+         (c 2 (n f3 n)(n g3 n)(Barra Final))
+      )
+   )
+)
+

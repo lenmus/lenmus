@@ -410,14 +410,21 @@ characteristics.</p>
 <p>
 <a name="rule_instrument">&nbsp;</a>
 <span class="nt">Instrument</span> :=
-    <span class="t">(instrument</span>
-    [ <span class="nt">InstrName</span> ]
+    (<span class="t">instrument</span>
+    [<span class="nt">InstrName</span>]
     [<span class="nt">MIDI_Info</span>]
-    [<span class="nt">NumStaves</span>]
-    { <span class="nt">Voice</span> | <span class="nt">Split</span> }
+    [<span class="nt">Staves</span>]
+    {<span class="nt">Voice</span> |
+     <span class="nt">Split</span> }
     <span class="t">)</span>
+<br />
+&nbsp;<span class="nt">Staves</span> :=
+    (<span class="t">staves</span>
+     <span class="nt">num</span>)
 </p>
 
+<p>Instruments can have a name
+</p>
 
 <p>The 'music' is described by just Voice element or a Split element. What are they?
 Any plain-text music representation has to describe music in secuence. But a music

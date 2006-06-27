@@ -105,6 +105,7 @@ private:
     };
 
     lmLDPNode*  LexicalAnalysis();
+    int         AnayzeNumStaff(wxString sNotation);
     lmScore*    AnalyzeScoreV102(lmLDPNode* pNode);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
     void        AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff);

@@ -517,6 +517,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
 
         //loop. For current instrument, explore all its staves to size the measure
         //column nAbsMeasure. All collected information is stored in m_oTimepos[nRelMeasure]
+        lmLUnits yPaperPos = pPaper->GetCursorY();
         for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
             pVStaff = pInstr->GetVStaff(iVStaff);
 
@@ -531,14 +532,16 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
 
             fNewSystem |= SizeMeasure(pVStaff, nAbsMeasure, nRelMeasure, pPaper);
 
+            pPaper->SetCursorY( yPaperPos );
             //advance paper position to next staff.
             //@attention As advancing one staff has the effect of returning
             //x position to the left marging, all x position information stored
             //in m_timepos is relative to the start of the measure
             //! @todo add inter-staff space
-            pVStaff->NewLine(pPaper);
+//            pVStaff->NewLine(pPaper);
 
         }    // next lmVStaff
+        pVStaff->NewLine(pPaper);
 
     }    // next lmInstrument
 

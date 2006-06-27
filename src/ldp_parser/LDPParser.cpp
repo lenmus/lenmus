@@ -654,7 +654,7 @@ lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)
     //if (sTitulo != _T(""))pScore->Set.Title(sTitle);
     
     // loop to parse elements <instrument>
-    for (i=0; iP <= pNode->GetNumParms(); i++, iP++) {
+    for (i=1; iP <= pNode->GetNumParms(); i++, iP++) {
         pX = pNode->GetParameter(iP);
         AnalyzeInstrument(pX, pScore, i);
     }
@@ -715,12 +715,12 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 
 void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr)
 {
-    //<instrument> = (instrument [<instrName>][<infoMIDI>][<staves>] (<voice> | <split>) )
+    //<instrument> = (instrument [<instrName>][<infoMIDI>][<staves>] <voice>* )
 
-    //<instrName string [string]) - nombre, [abreviatura]
+    //<instrName string [string]) - name, [abbreviation]
     //<infoMIDI num [num]> - Num.Instrumento MIDI, [Num.Dispositivo MIDI]
-    //<staves> = 
-    //<voice> = (voice <compas>* )
+    //<staves> = (staves num)
+    //<voice> = (voice <music>* )
     
     lmLDPNode* pX;
     wxString sData;
@@ -733,17 +733,18 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         return;
     }
 
-    // parse optional elements until <voice> or <split> tags found
+    //default values
     int nMIDIChannel=0, nMIDIInstr=0;       //default MIDI values: channel 0, instr=Piano
     bool fMusicFound = false;               // <voice> or <split> tags found
+    wxString sNumStaves = _T("1");
+
+    // parse optional elements until <voice> tag found
     for (; iP <= pNode->GetNumParms(); iP++) {
         pX = pNode->GetParameter(iP);
 
-        if (pX->GetName() == m_pTags->TagName(_T("voice")) ||
-            pX->GetName() == m_pTags->TagName(_T("split")) ) {
-                
+        if (pX->GetName() == m_pTags->TagName(_T("voice")) ) {
             fMusicFound = true;
-            break;      //end of instrument analysis
+            break;      //start of voice. Exit this loop
         }
         else if (pX->GetName() == m_pTags->TagName(_T("instrName")) ) {
             //! @todo No treatment for now
@@ -759,19 +760,17 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             //    }
         }
         else if (pX->GetName() == m_pTags->TagName(_T("staves")) ) {
-            //wxString sNumStaves = _T("1");       //default value
-            //pX = pNode->GetParameter(iP);
-            //if (pX->IsSimple()) {
-            //    sNumStaves = pX->GetName();
-            //    if (!sNumStaves.IsNumber()) {
-            //        AnalysisError( _("Number of staves expected but found '%s'. Analysis stopped."),
-            //            pX->GetName() );
-            //        return;
-            //    } else {
-            //        iP++;
-            //    }
-            //}
-            //sNumStaves.ToLong(&m_nNumStaves);
+            pX = pNode->GetParameter(iP);
+            if (pX->IsSimple()) {
+                sNumStaves = pX->GetName();
+                if (!sNumStaves.IsNumber()) {
+                    AnalysisError( _("Number of staves expected but found '%s'. Element '%s' ignored."),
+                        sNumStaves, m_pTags->TagName(_T("staves")) );
+                }
+                else {
+                    sNumStaves.ToLong(&m_nNumStaves);
+                }
+            }
         }
         else {
             AnalysisError( _("Element '%s' found. Uknown in '%s' context. Element ignored."),
@@ -780,21 +779,30 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     }
 
     if (!fMusicFound) {
-        AnalysisError( _("Expected '%s' or '%s' but found element %s. Analysis stopped."),
-            m_pTags->TagName(_T("voice")), m_pTags->TagName(_T("split")), pNode->GetName() );
+        AnalysisError( _("Expected '%s' but found element %s. Analysis stopped."),
+            m_pTags->TagName(_T("voice")), pX->GetName() );
         return;
     }
 
     // create the instrument with one empty VStaff
-    pScore->AddInstrument(1, nMIDIChannel, nMIDIInstr);
-    lmVStaff* pVStaff = pScore->GetVStaff(nInstr, 1);      //get the VStaff created
+    lmInstrument* pInstr = pScore->AddInstrument(1, nMIDIChannel, nMIDIInstr);
+    lmVStaff* pVStaff = pInstr->GetVStaff(1);      //get the VStaff created
 
-    //analyze the voice or split tag
-    if (pX->GetName() = m_pTags->TagName(_T("voice")) ) {
-        AnalyzeVoice(pX, pVStaff);
-    }
-    else {
-        AnalyzeSplit(pX, pVStaff);
+    // analyce first voice
+    AnalyzeVoice(pX, pVStaff);
+    iP++;
+
+    //analyze other voice elements
+    for(; iP <= pNode->GetNumParms(); iP++) {
+        pX = pNode->GetParameter(iP);
+        if (pX->GetName() = m_pTags->TagName(_T("voice")) ) {
+            pVStaff = pInstr->AddVStaff();
+            AnalyzeVoice(pX, pVStaff);
+        }
+        else {
+            AnalysisError( _("Expected '%s' but found element %s. Element ignored."),
+                m_pTags->TagName(_T("voice")), pX->GetName() );
+        }
     }
 
 }
@@ -809,12 +817,32 @@ void lmLDPParser::AnalyzeVoice(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     wxASSERT(pNode->GetName() == m_pTags->TagName(_T("voice")));
 
-    //loop to analyze remaining elements: music
-    long iP;
+    long iP = 1;
     wxString sName;
     lmLDPNode* pX;
 
-    for(iP=1; iP <= pNode->GetNumParms(); iP++) {
+    //analyze firts parameter (optional): number of staves of this lmVStaff
+    wxString sNumStaves = _T("1");       //default value
+    pX = pNode->GetParameter(iP);
+    if (pX->IsSimple()) {
+        sNumStaves = pX->GetName();
+        if (!sNumStaves.IsNumber()) {
+            AnalysisError( _("Number of staves expected but found '%s'. Analysis stopped."),
+                pX->GetName() );
+            return;
+        } else {
+            iP++;
+        }
+    }
+    sNumStaves.ToLong(&m_nNumStaves);
+    int i;
+    //the VStaff already contains one staff. So we have to add nNumStaves - 1
+    for(i=1; i < m_nNumStaves; i++) {
+        pVStaff->AddStaff(5);    //five lines staff, standard size
+    }
+
+    //loop to analyze remaining elements: music
+    for(; iP <= pNode->GetNumParms(); iP++) {
         pX = pNode->GetParameter(iP);
         sName = pX->GetName();
         if (sName == _T("n")) {             // note
@@ -1009,7 +1037,11 @@ void lmLDPParser::AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff)
         }
     }
     sNumStaves.ToLong(&m_nNumStaves);
-    //! @todo pVStaff->SetNumPentagramas = m_nNumStaves;
+    int i;
+    //the VStaff already contains one staff. So we have to add nNumStaves - 1
+    for(i=1; i < m_nNumStaves; i++) {
+        pVStaff->AddStaff(5);    //five lines staff, standard size
+    }
 
     //analyze remaining parameters: bars
     for (; iP <= pNode->GetNumParms(); iP++) {
@@ -1529,9 +1561,9 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChor
                         // close common levels (done)
                     }
                 }
-        //default:
-        //    if (Left$(sData, 1) = "P") {   //num_pentagrama
-        //        m_nCurStaff = AnalizarNumPentagrama(sData)
+            }
+            else if (sData.Left(1) == _T("p")) {       //staff number
+                m_nCurStaff = AnayzeNumStaff(sData);
             }
             else {
                 AnalysisError(_("Error: notation '%s' unknown. It will be ignored."), sData );
@@ -1680,14 +1712,21 @@ lmRest* lmLDPParser::AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff)
         AnalysisError( _("Note type unknown in '%s'. A quarter note assumed."),
             pNode->ToString() );
     }
+
+    //analyze remaining parameters: notations
     
-//    //analiza restantes parámetros: anotaciones
 //    Dim nCalderon As ECalderon
 //    nCalderon = eC_SinCalderon
-//    for (i = 2 To nParms
-//        sData = pNode->GetParameter(i).GetName();
-//        if (Left$(sData, 1) = "P") {   //num_pentagrama
-//            m_nCurStaff = AnalizarNumPentagrama(sData)
+    wxString sData;
+    lmLDPNode* pX;
+    int iP;
+    for (iP = 2; iP <= nParms; iP++)
+    {
+        pX = pNode->GetParameter(iP);
+        sData = pX->GetName();
+        if (sData.Left(1) == _T("p")) {       //staff number
+            m_nCurStaff = AnayzeNumStaff(sData);
+        }
 //        } else {
 //            switch (sData
 //                case "AMR"       //Articulaciones y acentos: marca de respiración
@@ -1700,7 +1739,7 @@ lmRest* lmLDPParser::AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff)
 //                    MsgBox "Error: Anotación <" & sData & "> desconocida. Se ignora"
 //            }
 //        }
-//    }   // i
+    }
 
 
     //beaming information for rests inside a beamed group
@@ -1857,7 +1896,7 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
 bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
 {
 //  <Clave> = ("Clave" {"Sol" | "Fa4" | "Fa3" | "Do1" | "Do2" | "Do3" | "Do4" | "SinClave" }
-//                [<num_pentagrama>] [<Visible>] )
+//                [<numStaff>] [<Visible>] )
     
     wxASSERT(pNode->GetName() == m_pTags->TagName(_T("clef")) );
 
@@ -1884,11 +1923,11 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
     long nStaff = 1;
     if (pNode->GetNumParms() >= iP) {
         pX = pNode->GetParameter(iP);
-        //wxString sStaffNum = pX->GetName();
-        //if (Left$(sStaffNum, 1) = "P") {
-        //    nStaff = AnalizarNumPentagrama(sStaffNum)
-        //    iP++;
-        //}
+        wxString sStaffNum = pX->GetName();
+        if (sStaffNum.Left(1) == _T("p")) {
+            nStaff = AnayzeNumStaff(sStaffNum);
+            iP++;
+        }
     }
     
     //analyze third parameter (optional): visible or not
@@ -2579,38 +2618,34 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
 //    AnalizarDirectivaRepeticion = false       //no hay error
 //    
 //}
-//
-////analiza una anotación Pxx.  xx debe ser menor o igual que m_nNumStaves
-//Function AnalizarNumPentagrama(sAnotacion As String) As Long
-//
-//    Dim wxString sData, nValor As Long
-//    
-//    AnalizarNumPentagrama = 1           //valor por defecto
-//    
-//    if (Left$(sAnotacion, 1) != "P") {
-//        AnalysisError(wxString::Format(_T("Se esperaba anotación P (num_pentagrama) pero viene <" & sAnotacion & ">. " & _
-//            "Se sustituye por P1."
-//        Exit Function
-//    }
-//    
-//    sData = Mid$(sAnotacion, 2)         //elimina la P
-//    if (Not IsNumeric(sData)) {
-//        AnalysisError(wxString::Format(_T("Anotación P no va seguida de número: <" & sAnotacion & ">. " & _
-//            "Se ignora."
-//        Exit Function
-//    }
-//    
-//    nValor = sData
-//    if (nValor > m_nNumStaves) {
-//        AnalysisError(wxString::Format(_T("Anotación <" & sAnotacion & ">: El número es mayor que el " & _
-//            "número de pentagramas definido. Se sustituye por P1."
-//        nValor = 1
-//    }
-//    
-//    AnalizarNumPentagrama = nValor
-//
-//}
-//
+
+int lmLDPParser::AnayzeNumStaff(wxString sNotation)
+{
+    //analyzes a notation Pxx.  xx must be lower or equal than m_nNumStaves
+
+    if (sNotation.Left(1) != _T("p")) {
+        AnalysisError( _("Notation P expected but found '%s'. Replaced by 'p1'"),
+            sNotation );
+        return 1;
+    }
+    
+    wxString sData = sNotation.Mid(1);         //remove char 'P'
+    if (!sData.IsNumber()) {
+        AnalysisError( _("Notation P not followed by number (%s). Replaced by 'p1'"),
+            sNotation );
+        return 1;
+    }
+    
+    long nValue;
+    sData.ToLong(&nValue);
+    if (nValue > m_nNumStaves) {
+        AnalysisError( _("Notation '%s': number is greater than number of staves defined (%d). Replaced by 'P1'."),
+            sNotation, m_nNumStaves );
+        return 1;
+    }
+    return (int)nValue;
+
+}
 
 float lmLDPParser::GetDefaultDuration(ENoteType nNoteType, bool fDotted, bool fDoubleDotted,
                       int nTupletNumber)

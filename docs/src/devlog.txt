@@ -65,7 +65,16 @@ LenMus project philosophy (to remind me to always stay on this):
       Lippman's book is the cure.
   
   ---------------------------------------------------------------------------------------
-  
+  Now:
+	- document several VStaffs in one Instrument
+	- flag overlayered.
+	- use flag in Formatter4 and BoxSystem
+	- move num-staves to instrument tag
+	- allow for num_staves in voice tag only for non-overlayered voices
+	- How to deal for example with four voices piano reductions 
+		(two overlayered instruments)
+	
+	
     - move logs to temp directory
     
     - width of chord = max width of its notes

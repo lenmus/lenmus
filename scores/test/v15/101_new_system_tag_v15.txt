@@ -1,0 +1,14 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument
+      (voice
+         (clef Sol)
+         (n c4 n)
+         (newSystem)
+         (barline Simple NoVisible)
+         (n e4 n)
+         (barline Final)
+      )
+   )
+)
+

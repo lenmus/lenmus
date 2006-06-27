@@ -1,0 +1,24 @@
+(score
+   (Vers 1.3)
+   (NumInstrumentos 1)
+   (Instrumento 1
+      (NumPartes 1) // solo una parte: los dos pentagramas del piano
+      (Parte 1 2    //Comienzo de la parte 1ª: tiene 2 pentagramas
+         (c 1
+            (Clave Sol p1)  //clave de sol en pentagrama 1
+            (Clave Fa4 p2)  //clave de fa en pentagrama 2
+            (Tonalidad Lab) //tonalidad La b 
+            (Metrica 4 4)   //metrica 4/4
+            (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // la 1ª nota está en pentagrama 1. Sigue ahí mientras no cambie
+            (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
+            (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 1
+            (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
+         )
+         (c 2
+            (n g3 c g+)(n b3 c)(n d4 c p1)(n g4 c g-)   // grupo a caballo entre ambos pentagramas
+         )
+         (c 3 (n f4 n)(n c5 n))     //todo en p1
+      )
+   )
+)
+

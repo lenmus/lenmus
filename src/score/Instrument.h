@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Instrument.h,v 1.3 2006/02/23 19:23:54 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -39,6 +38,7 @@ public:
     lmInstrument(lmScore* pScore, wxInt32 nNumStaves, wxInt32 nMIDIChannel, wxInt32 nMIDIInstr);
     ~lmInstrument();
 
+    lmVStaff* AddVStaff();
     //returns lmVStaff number nStaff (1..n)
     lmVStaff* GetVStaff(wxInt32 nStaff);
 

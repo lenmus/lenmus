@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Instrument.cpp,v 1.3 2006/02/23 19:23:54 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -55,10 +54,10 @@ WX_DEFINE_LIST(InstrumentsList);
 lmInstrument::lmInstrument(lmScore* pScore, wxInt32 nNumStaves, wxInt32 nMIDIChannel, wxInt32 nMIDIInstr)
 {
     //constructor: 
-    //    oScore        - score to which this instrument belongs
-    //    nStaves        - num of VStaves that will have. Usually only one lmVStaff.
-    //    nChannel    - MIDI channel that will be used for playing this lmInstrument.
-    //    nInstr        - MIDI instrument that will be used for playing this lmInstrument.
+    //    pScore    - score to which this instrument belongs
+    //    nStaves   - num of VStaves that will have. Usually only one lmVStaff.
+    //    nChannel  - MIDI channel that will be used for playing this lmInstrument.
+    //    nInstr    - MIDI instrument that will be used for playing this lmInstrument.
                 
     m_pScore = pScore;
     m_sNombre = _T("");
@@ -69,9 +68,8 @@ lmInstrument::lmInstrument(lmScore* pScore, wxInt32 nNumStaves, wxInt32 nMIDICha
     //! @todo Review for lmVStaff with more than one lmStaff
     //¿Qué es esto de más de un lmVStaff en un instrumento?
     //¿Se usa en LenMus?
-    for (wxInt32 i = 1; i==nNumStaves; i++) {
-        lmVStaff *pStaff = new lmVStaff(pScore, this);
-        m_cStaves.Append(pStaff);
+    for (wxInt32 i = 1; i <= nNumStaves; i++) {
+        AddVStaff();
     }
         
 }
@@ -79,6 +77,14 @@ lmInstrument::lmInstrument(lmScore* pScore, wxInt32 nNumStaves, wxInt32 nMIDICha
 lmInstrument::~lmInstrument()
 {
     m_cStaves.DeleteContents(true);
+}
+
+lmVStaff* lmInstrument::AddVStaff()
+{
+    lmVStaff *pStaff = new lmVStaff(m_pScore, this);
+    m_cStaves.Append(pStaff);
+    return pStaff;
+
 }
 
 //returns lmVStaff number nStaff (1..n)
