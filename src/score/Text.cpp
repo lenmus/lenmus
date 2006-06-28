@@ -50,7 +50,7 @@ int PointsToLUnits(lmLUnits nPoints)
 }
 
 //Global variables used as default initializators
-lmFontInfo goBasicTextDefaultFont = { _T("Arial"), 12, lmTEXT_NORMAL };
+lmFontInfo tBasicTextDefaultFont = { _T("Arial"), 12, lmTEXT_NORMAL };
 
 
 

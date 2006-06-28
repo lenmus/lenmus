@@ -187,7 +187,7 @@ void lmColStaffObjs::Store(lmStaffObj *pSO)
     }
     
     //store, inside the lmStaffObj, the measure number in which the lmStaffObj is included
-    pSO->SetNumMeasure((wxInt32)m_aStartMeasure.GetCount() );
+    pSO->SetNumMeasure((int)m_aStartMeasure.GetCount() );
 
     //Finally, if this lmStaffObj is a barline, signal that a new measure must be started
     //for the next lmStaffObj and reset time counters
@@ -223,10 +223,10 @@ int lmColStaffObjs::GetNumStaffObjs()
     return m_cStaffobjs.GetCount();
 }
 
-wxInt32 lmColStaffObjs::GetNumMeasures()
+int lmColStaffObjs::GetNumMeasures()
 {
     //returns the number of bars in the collection
-    return (wxInt32)m_aStartMeasure.GetCount();
+    return (int)m_aStartMeasure.GetCount();
     
 }
 
@@ -238,7 +238,7 @@ wxStaffObjsListNode* lmColStaffObjs::GetFirstInMeasure(int nMeasure)
     //   - It does not either instantiate an iterator nor return any index to instantiate an
     //   iterator
     //---------------------------------------------------------------------------------------
-    wxASSERT(nMeasure > 0 && nMeasure <= (wxInt32)m_aStartMeasure.GetCount());
+    wxASSERT(nMeasure > 0 && nMeasure <= (int)m_aStartMeasure.GetCount());
     wxStaffObjsListNode* pNode = m_aStartMeasure.Item(nMeasure-1);
     wxASSERT(pNode);
     return pNode;

@@ -92,7 +92,7 @@ bool lmScoreDocument::OnNewDocument()
 
     // create an empty score
     m_pScore = new lmScore();
-    m_pScore->AddInstrument(1,0,0);        //one vstaff, MIDI channel 0, MIDI instr 0
+    m_pScore->AddInstrument(1,0,0,_T(""));        //one vstaff, MIDI channel 0, MIDI instr 0
 
     wxString name;
     GetDocumentManager()->MakeDefaultName(name);

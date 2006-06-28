@@ -100,7 +100,7 @@ private:
 
     // Auxiliary for scrolling
     int CalcScrollInc(wxScrollEvent& event);
-    void DoScroll(wxInt32 orientation, wxInt32 nScrollSteps);
+    void DoScroll(int orientation, int nScrollSteps);
 
         ////-- variables ---
 
@@ -114,11 +114,11 @@ private:
     wxScrollBar*    m_pVScroll;
 
     // scrolling management
-    wxInt32        m_xScrollPosition, m_yScrollPosition;    // current display origin (scroll units)
-    wxInt32        m_pixelsPerStepX, m_pixelsPerStepY;        // pixels per scroll unit
-    wxInt32        m_xMaxScrollSteps, m_yMaxScrollSteps;            // num of scroll units to scroll the full view
-    wxInt32        m_xScrollStepsPerPage, m_yScrollStepsPerPage;    // scroll units to scroll a page
-    wxInt32        m_thumbX, m_thumbY;                        // scrollbars thumbs size
+    int        m_xScrollPosition, m_yScrollPosition;    // current display origin (scroll units)
+    int        m_pixelsPerStepX, m_pixelsPerStepY;        // pixels per scroll unit
+    int        m_xMaxScrollSteps, m_yMaxScrollSteps;            // num of scroll units to scroll the full view
+    int        m_xScrollStepsPerPage, m_yScrollStepsPerPage;    // scroll units to scroll a page
+    int        m_thumbX, m_thumbY;                        // scrollbars thumbs size
 
     double        m_rScale;        // presentation scale
     lmPaper        m_Paper;        // the lmPaper object to use
@@ -132,7 +132,7 @@ private:
     lmPixels    m_xBorder;                // margin on both sides, left and rigth, of the page
     lmPixels    m_yBorder;                // top margin before the first page
     lmPixels    m_yInterpageGap;        // gap between pages
-    wxInt32        m_numPages;                // the current number of pages contained in the view space
+    int        m_numPages;                // the current number of pages contained in the view space
 
     // scaling factors between display pixels and logical units
     double        m_xDisplayPixelsPerLU;

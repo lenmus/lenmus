@@ -129,7 +129,7 @@ lmVStaff::~lmVStaff()
     m_cStaves.Clear();
 }
 
-lmStaff* lmVStaff::AddStaff(wxInt32 nNumLines, lmLUnits nMicrons)
+lmStaff* lmVStaff::AddStaff(int nNumLines, lmLUnits nMicrons)
 {
     lmStaff* pStaff = new lmStaff(m_pScore, nNumLines, nMicrons);
     m_cStaves.Append(pStaff);
@@ -138,10 +138,10 @@ lmStaff* lmVStaff::AddStaff(wxInt32 nNumLines, lmLUnits nMicrons)
 
 }
 
-lmStaff* lmVStaff::GetStaff(wxInt32 nStaff)
+lmStaff* lmVStaff::GetStaff(int nStaff)
 {
     //iterate over the collection of Staves (lmStaff Objects) to locate staff nStaff
-    wxInt32 iS;
+    int iS;
     StaffList::Node* pNode = m_cStaves.GetFirst();
     for (iS=1 ; iS != nStaff && pNode; iS++ ) {
         pNode = pNode->GetNext();    //get next lmStaff
@@ -171,7 +171,7 @@ lmStaff* lmVStaff::GetLastStaff()
     return (m_pStaffNode ? (lmStaff *)m_pStaffNode->GetData() : (lmStaff *)m_pStaffNode);
 }
 
-lmLUnits lmVStaff::TenthsToLogical(lmTenths nTenths, wxInt32 nStaff)
+lmLUnits lmVStaff::TenthsToLogical(lmTenths nTenths, int nStaff)
 {
     lmStaff* pStaff = GetStaff(nStaff);
     wxASSERT(pStaff);
@@ -255,7 +255,7 @@ void lmVStaff::UpdateContext(lmNote* pStartNote, int nStaff, int nStep,
 ////añade un staffobj de tipo lmClef al final de la colección.
 ////Si con este staffobj se inicia un compas, incrementa la cuenta de compases y guarda el índice al
 ////staffobj con el que comienza (este que se añade)
-lmClef* lmVStaff::AddClef(EClefType nClefType, wxInt32 nStaff, bool fVisible)
+lmClef* lmVStaff::AddClef(EClefType nClefType, int nStaff, bool fVisible)
 {    
     wxASSERT_MSG(nStaff <= GetNumStaves(), _T(""));
     
@@ -273,7 +273,7 @@ lmNote* lmVStaff::AddNote(bool fAbsolutePitch,
                     EAccidentals nAccidentals,
                     ENoteType nNoteType, float rDuration,
                     bool fDotted, bool fDoubleDotted,
-                    wxInt32 nStaff,
+                    int nStaff,
                     bool fBeamed, lmTBeamInfo BeamInfo[],
                     bool fInChord,
                     bool fTie,
@@ -298,7 +298,7 @@ lmNote* lmVStaff::AddNote(bool fAbsolutePitch,
 // returns a pointer to the lmRest object just created
 lmRest* lmVStaff::AddRest(ENoteType nNoteType, float rDuration,
                       bool fDotted, bool fDoubleDotted,
-                      wxInt32 nStaff,
+                      int nStaff,
                       bool fBeamed, lmTBeamInfo BeamInfo[])
 {
     wxASSERT(nStaff <= GetNumStaves() );
@@ -410,7 +410,7 @@ lmKeySignature* lmVStaff::AddKeySignature(EKeySignatures nKeySignature, bool fVi
     return AddKeySignature(nFifths, fMajor, fVisible);
 }
 
-wxInt32 lmVStaff::GetNumMeasures()
+int lmVStaff::GetNumMeasures()
 {
     return m_cStaffObjs.GetNumMeasures();
 }
@@ -474,7 +474,7 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
     lmStaff* pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
     for ( ; pStaff; ) {
         //draw one staff
-        for (wxInt32 iL = 1; iL <= pStaff->GetNumLines(); iL++ ) {
+        for (int iL = 1; iL <= pStaff->GetNumLines(); iL++ ) {
             pDC->DrawLine (m_xLeft, yCur, xRight, yCur);
             m_yLinBottom = yCur;                        //save line position
             yCur = yCur + pStaff->GetLineSpacing();     //+ m_nGrosorLineas - 1
@@ -528,7 +528,7 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
 
     //// the font for dragging is not scaled by the DC as all dragging operations takes
     //// place dealing with device units
-    //wxInt32 dyLinesD = pPaper->LogicalToDeviceY(100 * dyLinesL);
+    //int dyLinesD = pPaper->LogicalToDeviceY(100 * dyLinesL);
     //pStaff->SetFontDrag( pPaper->GetFont((3 * dyLinesD) / 100) );
 
     ////Calcula, en pixels, el grosor de las líneas (es de 51 FUnits, la décima parte de la distancia entre líneas)
@@ -576,7 +576,7 @@ lmScoreObj* lmVStaff::FindSelectableObject(wxPoint& pt)
 
 }
 
-lmLUnits lmVStaff::GetStaffOffset(wxInt32 nStaff)
+lmLUnits lmVStaff::GetStaffOffset(int nStaff)
 {
     //returns the Y offset to staff nStaff (1..n)
     wxASSERT(nStaff <= GetNumStaves() );
@@ -586,7 +586,7 @@ lmLUnits lmVStaff::GetStaffOffset(wxInt32 nStaff)
     // height and after space of all previous staves to the requested one
     lmStaff* pStaff;
     StaffList::Node* pNode = m_cStaves.GetFirst();
-    for (wxInt32 iS=1 ; iS < nStaff && pNode; iS++) {
+    for (int iS=1 ; iS < nStaff && pNode; iS++) {
         pStaff = (lmStaff *)pNode->GetData();
         yOffset += pStaff->GetHeight();
         yOffset += pStaff->GetAfterSpace();

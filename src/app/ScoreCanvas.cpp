@@ -160,7 +160,7 @@ void lmScoreCanvas::OnEraseBackground(wxEraseEvent& event)
         wxSize sz = GetClientSize();    // size (pixels) of the visible area
         int xOrg, yOrg;
         m_pView->GetViewStart(&xOrg, &yOrg);        // start point (scroll units) of the visible portion of the window
-        wxInt32 pixelsPerStepX, pixelsPerStepY;
+        int pixelsPerStepX, pixelsPerStepY;
         m_pView->GetScrollPixelsPerUnit(&pixelsPerStepX, &pixelsPerStepY);
         xOrg *= pixelsPerStepX;
         yOrg *= pixelsPerStepY;
@@ -197,13 +197,13 @@ bool lmScoreCanvas::TileBitmap(const wxRect& rect, wxDC& dc, wxBitmap& bitmap)
 }
 
 //wxRect lmScoreCanvas::DrawGlyphs(bool fMeasuring, wxString sGlifos,
-//    wxInt32 nxLeft, wxInt32 nyTop, wxColour colorC)
+//    int nxLeft, int nyTop, wxColour colorC)
 //{
 //    if (! fMeasuring) {
 //        m_pDC->SetTextForeground(colorC);
 //        m_pDC->DrawText(sGlifos, nxLeft, nyTop);
 //    }
-//    wxInt32 nWidth, nHeight;
+//    int nWidth, nHeight;
 //    m_pDC->GetTextExtent(sGlifos, &nWidth, &nHeight);
 //    return wxRect(nxLeft - m_pageOrg.x, nyTop - m_pageOrg.y, nWidth, nHeight);
 //

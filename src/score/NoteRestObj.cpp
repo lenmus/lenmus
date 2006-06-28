@@ -67,7 +67,7 @@ lmFermata::lmFermata(lmNoteRest* pOwner, bool fOverNote) : lmNoteRestObj(eST_Fer
     m_fOverNote = fOverNote;
 }
 
-void lmFermata::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nStaffNum,
+void lmFermata::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
                              lmLUnits xPos, lmLUnits yPos)
 {
     /*
@@ -122,13 +122,13 @@ void lmFermata::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 // lmLyric object implementation
 //========================================================================================
 //Global variables used as default initializators
-lmFontInfo goLyricDefaultFont = { _T("Arial"), 8, lmTEXT_ITALIC };
+lmFontInfo tLyricDefaultFont = { _T("Arial"), 8, lmTEXT_ITALIC };
 lmLocation tDefaultPos = {0,0,lmLOCATION_RELATIVE,lmLOCATION_RELATIVE,lmTENTHS,lmTENTHS};
 
 lmLyric::lmLyric(lmNoteRest* pOwner, wxString sText, ESyllabicTypes nSyllabic,
             int nNumLine, wxString sLanguage )
     : lmNoteRestObj(eST_Lyric, pOwner),
-      lmBasicText(sText, sLanguage, &tDefaultPos, goLyricDefaultFont)
+      lmBasicText(sText, sLanguage, &tDefaultPos, tLyricDefaultFont)
 {
     m_nNumLine = nNumLine;
 }
@@ -171,7 +171,7 @@ void lmLyric::SetOwner(lmNoteRest* pOwner)
     m_nStaffNum = pOwner->GetStaffNum();
 }
 
-void lmLyric::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nStaffNum,
+void lmLyric::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
                         lmLUnits xPos, lmLUnits yPos)
 {
     /*

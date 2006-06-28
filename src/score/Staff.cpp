@@ -51,7 +51,7 @@ WX_DEFINE_LIST(StaffList);
 
 
 //constructor
-lmStaff::lmStaff(lmScore* pScore, wxInt32 nNumLines, lmLUnits nMicrons)
+lmStaff::lmStaff(lmScore* pScore, int nNumLines, lmLUnits nMicrons)
 {
     m_numLines = nNumLines;
     m_lineThick = lmToLogicalUnits(0.1, lmMILLIMETERS);            // 0.1mm 

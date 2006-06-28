@@ -55,7 +55,7 @@
 //constructors and destructor
 //
 
-lmClef::lmClef(EClefType nClefType, lmVStaff* pStaff, wxInt32 nNumStaff, bool fVisible) :
+lmClef::lmClef(EClefType nClefType, lmVStaff* pStaff, int nNumStaff, bool fVisible) :
     lmSimpleObj(eTPO_Clef, pStaff, nNumStaff, fVisible, sbDRAGGABLE)
 {
     m_nClefType = nClefType;

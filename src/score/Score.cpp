@@ -128,7 +128,7 @@ void lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation tPos,
 
 }
 
-wxInt32 lmScore::GetNumMeasures()
+int lmScore::GetNumMeasures()
 {
     //! @limit it is being assumed that all instruments and staves have the same number of bars
     InstrumentsList::Node *node = m_cInstruments.GetFirst();
@@ -137,20 +137,23 @@ wxInt32 lmScore::GetNumMeasures()
     return(pStaff->GetNumMeasures());
 }
 
-lmInstrument* lmScore::AddInstrument(wxInt32 nVStaves, wxInt32 nMIDIChannel, wxInt32 nMIDIInstr)
+lmInstrument* lmScore::AddInstrument(int nVStaves,
+                                     int nMIDIChannel, int nMIDIInstr,
+                                     wxString sName, wxString sAbbrev)
 {
     //add an lmInstrument with nVStaves (1..m) empty VStaves.
     //nMIDIChannel is the MIDI channel to use for playing this instrument
-    lmInstrument* pInstr = new lmInstrument(this, nVStaves, nMIDIChannel, nMIDIInstr);
+    lmInstrument* pInstr = new lmInstrument(this, nVStaves, nMIDIChannel, nMIDIInstr,
+                                            sName, sAbbrev);
     m_cInstruments.Append(pInstr);
     return pInstr;
     
 }
 
 //returns lmVStaff number nVStaff (1..n), of lmInstrument nInstr (1..m)
-lmVStaff* lmScore::GetVStaff(wxInt32 nInstr, wxInt32 nVStaff)
+lmVStaff* lmScore::GetVStaff(int nInstr, int nVStaff)
 {
-    wxInt32 i;
+    int i;
     InstrumentsList::Node *node;
     lmInstrument *pInstr;
     //iterate over the list to locate lmInstrument nInstr
@@ -311,7 +314,7 @@ void lmScore::RemoveFromGlobalList(lmStaffObj* pSO)
 
 lmScoreObj* lmScore::FindSelectableObject(wxPoint& pt)
 {
-    wxInt32 iVStaff;
+    int iVStaff;
     lmInstrument *pInstr;
     lmVStaff *pStaff;
     InstrumentsList::Node *node;

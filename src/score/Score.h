@@ -353,11 +353,18 @@ enum lmETextStyle           // text styles
     lmTEXT_ITALIC,
     lmTEXT_ITALIC_BOLD,
 };
+
 typedef struct lmFontInfoStruct {
     wxString sFontName;
     int nFontSize;
     lmETextStyle nStyle;
 } lmFontInfo;
+
+    //global variables used as default initializators
+extern lmFontInfo tLyricDefaultFont;            // defined in NoteRestObj.cpp
+extern lmFontInfo tInstrumentDefaultFont;       // defined in Instrument.cpp
+extern lmFontInfo tBasicTextDefaultFont;        // defined in NoteRestObj.cpp
+
 
 //Location source data
 enum lmELocationType
@@ -376,9 +383,8 @@ typedef struct lmLocationStruct {
     lmEUnits yUnits;
 } lmLocation;
 
-//Global variables used as default initializators
-extern lmFontInfo goLyricDefaultFont;        // defined in NoteRestObj.cpp
-extern lmFontInfo goBasicTextDefaultFont;
+    //global variables used as default initializators
+extern lmLocation tDefaultPos;          // defined in NoteRestObj.cpp
 
 
 //Constants
@@ -468,9 +474,11 @@ public:
     lmScore();
     ~lmScore();
 
-    lmInstrument* AddInstrument(wxInt32 nVStaves, wxInt32 nMIDIChannel, wxInt32 nMIDIInstr);
-    lmVStaff* GetVStaff(wxInt32 nInstr, wxInt32 nVStaff=1);
-    wxInt32 GetNumMeasures();
+    lmInstrument* AddInstrument(int nVStaves,
+                                int nMIDIChannel, int nMIDIInstr,
+                                wxString sName, wxString sAbbrev=_T(""));
+    lmVStaff* GetVStaff(int nInstr, int nVStaff=1);
+    int GetNumMeasures();
 
     // play methods
     void Play(bool fVisualTracking = lmNO_VISUAL_TRACKING, 

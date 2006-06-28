@@ -56,7 +56,7 @@ lmAccidental::~lmAccidental()
 {
 }
 
-void lmAccidental::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nStaffNum,
+void lmAccidental::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
                              lmLUnits xPos, lmLUnits yPos)
 {
 //    // prepare glyphs and measure them

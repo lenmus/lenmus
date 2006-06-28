@@ -67,12 +67,12 @@ LenMus project philosophy (to remind me to always stay on this):
   ---------------------------------------------------------------------------------------
   Now:
 	- document several VStaffs in one Instrument
-	- flag overlayered.
+	- flag overlayered in VStaff.
 	- use flag in Formatter4 and BoxSystem
 	- move num-staves to instrument tag
-	- allow for num_staves in voice tag only for non-overlayered voices
-	- How to deal for example with four voices piano reductions 
-		(two overlayered instruments)
+	- ( allow for num_staves in voice tag only for non-overlayered voices ) ?
+	- How to deal for example with four voices piano reductions:
+		- flag overlayered in Instruments.
 	
 	
     - move logs to temp directory

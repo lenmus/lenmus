@@ -48,7 +48,7 @@ WX_DEFINE_LIST(StaffObjsList);
 //implementation of the AuxObjs List
 WX_DEFINE_LIST(AuxObjsList);
 
-static wxInt32 m_IdCounter = 0;        //to assign unique IDs to ScoreObjs
+static int m_IdCounter = 0;        //to assign unique IDs to ScoreObjs
 
 //-------------------------------------------------------------------------------------------------
 // lmScoreObj implementation
@@ -236,7 +236,7 @@ void lmAuxObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 // lmStaffObj implementation
 //-------------------------------------------------------------------------------------------------
 
-lmStaffObj::lmStaffObj(EScoreObjType nType, lmVStaff* pStaff, wxInt32 nStaff,
+lmStaffObj::lmStaffObj(EScoreObjType nType, lmVStaff* pStaff, int nStaff,
                    bool fVisible, bool fIsDraggable) :
     lmScoreObj(nType, fIsDraggable)
 {
@@ -310,7 +310,7 @@ void lmStaffObj::SetFont(lmPaper* pPaper)
 //-------------------------------------------------------------------------------------------------
 // lmSimpleObj implementation
 //-------------------------------------------------------------------------------------------------
-lmSimpleObj::lmSimpleObj(EScoreObjType nType, lmVStaff* pStaff, wxInt32 nStaff,
+lmSimpleObj::lmSimpleObj(EScoreObjType nType, lmVStaff* pStaff, int nStaff,
              bool fVisible, bool fIsDraggable)
     : lmStaffObj(nType, pStaff, nStaff, fVisible, fIsDraggable)
 {
@@ -319,7 +319,7 @@ lmSimpleObj::lmSimpleObj(EScoreObjType nType, lmVStaff* pStaff, wxInt32 nStaff,
 //-------------------------------------------------------------------------------------------------
 // lmCompositeObj implementation
 //-------------------------------------------------------------------------------------------------
-lmCompositeObj::lmCompositeObj(EScoreObjType nType, lmVStaff* pStaff, wxInt32 nStaff,
+lmCompositeObj::lmCompositeObj(EScoreObjType nType, lmVStaff* pStaff, int nStaff,
              bool fVisible, bool fIsDraggable)
     : lmStaffObj(nType, pStaff, nStaff, fVisible, fIsDraggable)
 {

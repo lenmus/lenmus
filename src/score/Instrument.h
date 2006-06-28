@@ -35,15 +35,26 @@ class lmInstrument
 {
 public:
     //ctor and dtor
-    lmInstrument(lmScore* pScore, wxInt32 nNumStaves, wxInt32 nMIDIChannel, wxInt32 nMIDIInstr);
+    lmInstrument(lmScore* pScore, int nNumStaves, 
+                 int nMIDIChannel, int nMIDIInstr,
+                 wxString sName, wxString sAbbrev);
     ~lmInstrument();
 
     lmVStaff* AddVStaff();
     //returns lmVStaff number nStaff (1..n)
-    lmVStaff* GetVStaff(wxInt32 nStaff);
+    lmVStaff* GetVStaff(int nStaff);
 
     //Returns the number of VStaves that this lmInstrument has (1..n)
-    inline wxInt32 GetNumStaves() {return (wxInt32)m_cStaves.GetCount(); }
+    inline int GetNumStaves() {return (int)m_cStaves.GetCount(); }
+
+    //layout
+    void SetIndent(lmLocation* pPos);
+    lmLUnits GetIndent() { return m_nIndent; }
+    wxString GetName() { return m_sName; }
+    wxString GetShortName() { return m_sShortName; }
+
+    void Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);
+
 
     //Debug methods
     wxString Dump();
@@ -59,12 +70,16 @@ public:
     const wxString XML_GetId() { return m_xmlId; }
 
 private:
-    lmScore        *m_pScore;            //score to whith this instrument belongs
-    VStavesList    m_cStaves;            //wxList of VStaves that this instrument has
-    wxString    m_sNombre;            //instrument name
-    wxString    m_sShortName;        //name abreviation to use
-    wxInt32        m_nMidiInstr;        //num. of MIDI instrument no use for this lmInstrument
-    wxInt32        m_nMidiChannel;        //MIDI channel to use
+    lmScore*        m_pScore;           //score to whith this instrument belongs
+    VStavesList     m_cStaves;          //wxList of VStaves that this instrument has
+    wxString        m_sName;            //instrument name
+    wxString        m_sShortName;       //name abreviated name to use
+    int             m_nMidiInstr;       //num. of MIDI instrument no use for this lmInstrument
+    int             m_nMidiChannel;     //MIDI channel to use
+    lmLUnits        m_nIndent;          //space to indent first system
+
+    StaffObjsList*  m_pAuxObjs;         //list of auxiliary objects (i.e. name)
+
 
     // variables related to MusicXML import/export
     wxString    m_xmlId;            // part id

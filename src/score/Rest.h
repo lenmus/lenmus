@@ -39,7 +39,7 @@ public:
     lmRest(lmVStaff* pVStaff, 
         ENoteType nNoteType, float rDuration,
         bool fDotted, bool fDoubleDotted,
-        wxInt32 nStaff,
+        int nStaff,
         lmContext* pContext, 
         bool fBeamed, lmTBeamInfo BeamInfo[]);
 

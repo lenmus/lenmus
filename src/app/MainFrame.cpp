@@ -1355,7 +1355,7 @@ void lmMainFrame::OnSoundTest(wxCommandEvent& WXUNUSED(event))
 
 }
 
-void lmMainFrame::OnZoom(wxCommandEvent& event, wxInt32 nZoom)
+void lmMainFrame::OnZoom(wxCommandEvent& event, int nZoom)
 {
  //   wxString msg = wxString::Format(wxT("Menu command %d"), event.GetId());
  //   msg += wxString::Format(wxT(" (Zoom = %d)"), nZoom);
@@ -1369,7 +1369,7 @@ void lmMainFrame::OnZoom(wxCommandEvent& event, wxInt32 nZoom)
 
 void lmMainFrame::OnZoom200(wxCommandEvent& event)
 {
-    wxInt32 nZoom = (wxInt32) ::wxGetNumberFromUser(_T(""), _T("Scale?"), _T(""), 200, 0, 1000);  
+    int nZoom = (int) ::wxGetNumberFromUser(_T(""), _T("Scale?"), _T(""), 200, 0, 1000);  
     OnZoom(event, nZoom);
 }
 

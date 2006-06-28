@@ -58,6 +58,7 @@ public:
     lmLUnits GetPositionY() { return m_yPos; }
 
     void SetFinalX(lmLUnits nLUnits) { m_xFinal = nLUnits; }
+    void SetIndent(lmLUnits nLUnits) { m_nIndent = nLUnits; }
 
     void Render(int nSystem, lmScore* pScore, lmPaper* pPaper);
 
@@ -68,6 +69,7 @@ private:
     int         m_nFirstMeasure;    //number of first measure
     lmLUnits    m_yPos;             // y pos to render first staff
     lmLUnits    m_xFinal;           // x pos for end of staff lines
+    lmLUnits    m_nIndent;          // indentation
 
 };
 

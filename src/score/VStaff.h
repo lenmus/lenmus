@@ -41,8 +41,8 @@ public:
     lmVStaff(lmScore* pScore, lmInstrument* pInstr);
     ~lmVStaff();
 
-    lmStaff*    AddStaff(wxInt32 nNumLines=5, lmLUnits nMicrons=0);
-    lmClef*    AddClef(EClefType nClefType, wxInt32 nStaff = 1, bool fVisible = true);
+    lmStaff*    AddStaff(int nNumLines=5, lmLUnits nMicrons=0);
+    lmClef*    AddClef(EClefType nClefType, int nStaff = 1, bool fVisible = true);
 
     lmTimeSignature* AddTimeSignature(int nBeats, int nBeatType,
                         bool fVisible = true);    //for type eTS_Normal
@@ -62,7 +62,7 @@ public:
 
     lmRest*     AddRest(ENoteType nNoteType, float rDuration,
                       bool fDotted, bool fDoubleDotted,
-                      wxInt32 nStaff,
+                      int nStaff,
                       bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL);
 
     lmNote*     AddNote(bool fAbsolutePitch,
@@ -70,7 +70,7 @@ public:
                     EAccidentals nAccidentals,
                     ENoteType nNoteType, float rDuration,
                     bool fDotted, bool fDoubleDotted,
-                    wxInt32 nStaff,
+                    int nStaff,
                     bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL,
                     bool fInChord = false,
                     bool fTie = false,
@@ -86,7 +86,7 @@ public:
 
     void ShiftTime(float rTimeShift);
 
-    wxInt32 GetNumMeasures();
+    int GetNumMeasures();
 
     // rendering methods
     void DrawStaffLines(bool fMeasuring,
@@ -104,9 +104,9 @@ public:
     lmScoreObj* FindSelectableObject(wxPoint& pt);
     lmNote* FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep);
 
-    lmLUnits TenthsToLogical(lmTenths nTenths, wxInt32 nStaff);
-    lmStaff* GetStaff(wxInt32 nStaff);
-    lmLUnits GetStaffOffset(wxInt32 nStaff);
+    lmLUnits TenthsToLogical(lmTenths nTenths, int nStaff);
+    lmStaff* GetStaff(int nStaff);
+    lmLUnits GetStaffOffset(int nStaff);
     lmLUnits GetXStartOfStaff() { return m_xLeft; }
     lmLUnits GetYTop();
     lmLUnits GetYBottom();

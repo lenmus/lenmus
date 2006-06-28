@@ -57,8 +57,8 @@ public:
 
    ~lmRuler();
     void NewSize(int x, int y, int length);
-    void SetLentgh(wxInt32 length);
-    wxInt32 GetWidth() { return ( (m_Orientation == wxHORIZONTAL) ? m_height : m_width ); }
+    void SetLentgh(int length);
+    int GetWidth() { return ( (m_Orientation == wxHORIZONTAL) ? m_height : m_width ); }
     void ShowPosition(wxPoint pt);
 
     void OnPaint(wxPaintEvent &evt);
@@ -68,7 +68,7 @@ public:
     void SetBounds(int left, int top, int length);
     void SetScale(double rScale) { m_rScale = rScale; }
     void SetFormat(RulerFormat format) { m_format = format; }
-    void SetOffset(wxInt32 offset) { m_offset = offset; }
+    void SetOffset(int offset) { m_offset = offset; }
 
 private:
     int            m_left, m_top, m_width, m_height;
@@ -78,7 +78,7 @@ private:
     RulerFormat m_format;
     wxPoint        m_oldPos;            // last known mouse position over score canvas
     lmScoreView*    m_pView;            // view who controls the scrolling
-    wxInt32        m_offset;            // offset to add to the marker line
+    int        m_offset;            // offset to add to the marker line
 
     DECLARE_EVENT_TABLE()
 };

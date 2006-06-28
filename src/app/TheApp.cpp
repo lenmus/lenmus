@@ -658,7 +658,7 @@ void lmTheApp::UpdateCurrentDocViews(void)
 lmEditFrame* lmTheApp::CreateProjectFrame(wxDocument* doc, wxView* view)
 {
     //Get the size of the main frame client area
-    wxInt32 nWidth, nHeight;
+    int nWidth, nHeight;
     GetMainFrame()->GetClientSize(&nWidth, &nHeight);
 
     // Create a child frame

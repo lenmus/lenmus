@@ -432,5 +432,12 @@ System grasps:
 		
 Staff grasps:
 	- left, right, top, bottom spacing. 
+	
+	
+@section VStaff_rationale Instruments, virtual staves and voice layers
+<!-- ========================================================================= -->
+
+Normally, only one lmVStaff with one or two lmStaff.  If more than one, they
+normally represent overlayered additional voices.
 
 */

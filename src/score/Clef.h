@@ -39,7 +39,7 @@ class lmClef: public lmSimpleObj
 {
 public:
     //constructor and destructor
-    lmClef(EClefType nClefType, lmVStaff* pStaff, wxInt32 nNumStaff=1, bool fVisible=true);
+    lmClef(EClefType nClefType, lmVStaff* pStaff, int nNumStaff=1, bool fVisible=true);
     ~lmClef() {}
 
     //other methods

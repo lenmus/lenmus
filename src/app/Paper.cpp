@@ -240,13 +240,13 @@ lmLUnits lmPaper::GetLeftMarginXPos()
 
 // Get the bitmap for page nPage. If no bitmap is allocated, do it.
 // nPage = 0 .. n-1
-wxBitmap* lmPaper::GetPageBitmap(wxInt32 nPage)
+wxBitmap* lmPaper::GetPageBitmap(int nPage)
 {
     wxASSERT(nPage >= 0);
     wxASSERT(nPage <= m_numPages);    // m_numPages could be not yet incremented
 
     wxBitmap* pBitmap;
-    wxInt32 nNumBitmaps = m_cBitmaps.GetCount();
+    int nNumBitmaps = m_cBitmaps.GetCount();
     if (nNumBitmaps > 0 && nNumBitmaps > nPage ) {
         // bitmap already exits. Get it.
         wxBitmapListNode* pNode = m_cBitmaps.Item(nPage);
@@ -286,7 +286,7 @@ wxFont* lmPaper::GetFont(int nPointSize, wxString sFontName,
 
 
 // nPage = 0 ... n-1
-wxBitmap* lmPaper::GetOffscreenBitmap(wxInt32 nPage)
+wxBitmap* lmPaper::GetOffscreenBitmap(int nPage)
 {
     wxASSERT(nPage >=0 && nPage < m_numPages);
     wxASSERT(m_cBitmaps.GetCount());

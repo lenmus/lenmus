@@ -150,7 +150,7 @@ void lmRuler::NewSize(int x, int y, int length)
     Refresh();
 }
 
-void lmRuler::SetLentgh(wxInt32 length)
+void lmRuler::SetLentgh(int length)
 {
     if (m_Orientation == wxHORIZONTAL) {
         m_width = length;
@@ -204,10 +204,10 @@ void lmRuler::OnPaint(wxPaintEvent &evt)
     //numbers every centimeter
     dc.SetPen(*wxBLACK_PEN);
     dc.SetFont(*m_pFont);
-    wxInt32 x=0, y=0;
+    int x=0, y=0;
     wxString sBuffer;
-    wxInt32 fW, fH;            // font width and height
-    wxInt32 fX, fY;            // font position
+    int fW, fH;            // font width and height
+    int fX, fY;            // font position
     if (m_Orientation == wxHORIZONTAL) {
         for (x=0; x <= m_width; x+=10) {
             if ((x % 100) == 0) {

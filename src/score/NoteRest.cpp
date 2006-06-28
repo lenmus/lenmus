@@ -77,7 +77,7 @@ WX_DEFINE_LIST(NoteRestsList);
 //Constructors and destructors
 //====================================================================================================
 lmNoteRest::lmNoteRest(lmVStaff* pVStaff, bool IsRest, ENoteType nNoteType, float rDuration,
-                   bool fDotted, bool fDoubleDotted, wxInt32 nStaff) :
+                   bool fDotted, bool fDoubleDotted, int nStaff) :
     lmCompositeObj(eTPO_NoteRest, pVStaff, nStaff, true, sbDRAGGABLE)
 {
     // initialize all atributes
@@ -85,7 +85,6 @@ lmNoteRest::lmNoteRest(lmVStaff* pVStaff, bool IsRest, ENoteType nNoteType, floa
     m_nNoteType = nNoteType;
     m_fDotted = fDotted;
     m_fDoubleDotted = fDoubleDotted;
-    m_nPentagrama = nStaff;
     m_fIsRest = IsRest;
 
     m_pNotations = (AuxObjsList*)NULL;

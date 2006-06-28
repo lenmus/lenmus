@@ -145,7 +145,7 @@ Considerations for the choice of logical units and data types:
 
 Logical units
 ----------------------
-  - All internal units (the so called 'logical units') are wxInt32 and represent tenths of
+  - All internal units (the so called 'logical units') are int and represent tenths of
     millimeter (scale mode wxMM_LOMETRIC).
 
   - The 'logical coordinates space' represents the virtual paper on which real music
@@ -361,21 +361,21 @@ void lmScoreView::ResizeControls()
 {
 
     // Get client area
-    wxInt32 dxFrame, dyFrame;
+    int dxFrame, dyFrame;
     m_pFrame->GetClientSize(&dxFrame, &dyFrame);
-    wxInt32 dxFree = dxFrame,
+    int dxFree = dxFrame,
             dyFree = dyFrame;
 
     // Discount scrollbars
     // default value is ugly (14 pixels). Lets have wider scrollbars 
-    wxInt32 dxVScroll = 16,    //m_pVScroll->GetSize().GetWidth(),
+    int dxVScroll = 16,    //m_pVScroll->GetSize().GetWidth(),
             dyHScroll = 16;    //m_pHScroll->GetSize().GetHeight();
 
     dxFree -= dxVScroll;
     dyFree -= dyHScroll;
 
     // Discount rulers witdth plus 2 pixels for separation
-    wxInt32 vrWidth = 0, hrWidth = 0;
+    int vrWidth = 0, hrWidth = 0;
     if (m_fRulers) {
         wxASSERT(m_pHRuler && m_pVRuler);
         vrWidth = m_pVRuler->GetWidth() + 2;
@@ -385,16 +385,16 @@ void lmScoreView::ResizeControls()
     }
 
     // Compute space available for canvas
-    wxInt32 cvMaxDx = Min(m_xPageSizeD+m_xBorder+m_xBorder, dxFree),
+    int cvMaxDx = Min(m_xPageSizeD+m_xBorder+m_xBorder, dxFree),
             cvMaxDy = Min(m_yPageSizeD, dyFree);
 
     // Compute view origin, to center everything
     dxFree -= cvMaxDx;
-    wxInt32 left = (dxFree > 0 ? dxFree/2 : 0);
+    int left = (dxFree > 0 ? dxFree/2 : 0);
 
     // Move controls to the computed positions
     if (m_fRulers) {
-        wxInt32 dxHR = (cvMaxDx >= m_xPageSizeD+m_xBorder ? m_xPageSizeD : cvMaxDx-m_xBorder);
+        int dxHR = (cvMaxDx >= m_xPageSizeD+m_xBorder ? m_xPageSizeD : cvMaxDx-m_xBorder);
         m_pHRuler->NewSize(left+vrWidth+m_xBorder, 0, dxHR);
         m_pVRuler->NewSize(left, hrWidth, cvMaxDy);
     }
@@ -416,7 +416,7 @@ void lmScoreView::AdjustScrollbars()
     if (!m_pCanvas) return;
 
     // Lets verify if scrollbars are needed
-    wxInt32 dxCanvas, dyCanvas;
+    int dxCanvas, dyCanvas;
     m_pCanvas->GetSize(&dxCanvas, &dyCanvas);
     //bool fHScroll = (dxCanvas < m_xPageSizeD),
     //     fVScroll = (dyCanvas < m_yPageSizeD);
@@ -827,7 +827,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         // If mouse outside of canvas window let's force autoscrolling.
         bool fDoScroll = false;
         wxSize canvasSize = m_pCanvas->GetSize();
-        wxInt32 nUnits=0, orientation=0;
+        int nUnits=0, orientation=0;
 
         if (canvasPosD.x < 0) {
             fDoScroll = true;
@@ -929,11 +929,11 @@ void lmScoreView::OnScroll(wxScrollEvent& event)
     DoScroll(event.GetOrientation(), nScrollSteps);
 }
 
-void lmScoreView::DoScroll(wxInt32 orientation, wxInt32 nScrollSteps)
+void lmScoreView::DoScroll(int orientation, int nScrollSteps)
 {
     // verify limits
-    wxInt32 newPos;
-    wxInt32 xMaxSteps = m_xMaxScrollSteps - m_thumbX,
+    int newPos;
+    int xMaxSteps = m_xMaxScrollSteps - m_thumbX,
             yMaxSteps = m_yMaxScrollSteps - m_thumbY;
 
     if (orientation == wxHORIZONTAL) {
@@ -1104,7 +1104,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     lmScore *pScore = ((lmScoreDocument *)GetDocument())->GetScore();
     if (!pScore) return;
     m_Paper.Prepare(pScore, xPageSize, yPageSize, m_rScale);
-    wxInt32 nTotalPages = m_Paper.GetNumPages();
+    int nTotalPages = m_Paper.GetNumPages();
     if (nTotalPages != m_numPages) {
         // number of pages has changed. Adjust scrollbars
         m_numPages = nTotalPages;
@@ -1149,11 +1149,11 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
 
             // Intersection rectangle is referred to view origin. To refer it
             // to bitmap coordinates we need to substract page origin
-            wxInt32 xBitmap = interRect.x - pageRect.x,
+            int xBitmap = interRect.x - pageRect.x,
                     yBitmap = interRect.y - pageRect.y;
             // and to refer it to canvas window coordinates we need to 
             // substract scroll origin
-            wxInt32 xCanvas = interRect.x - xOrg,
+            int xCanvas = interRect.x - xOrg,
                     yCanvas = interRect.y - yOrg;
 
             // Copy the damaged rectangle onto the device DC

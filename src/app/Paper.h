@@ -59,7 +59,7 @@ public:
     void ForceRedraw() { m_fRedraw = true; }
     void RestartPageCursors();
 
-    wxInt32 GetNumPages() { return m_numPages; }
+    int GetNumPages() { return m_numPages; }
 
     // page cursor position
     lmLUnits GetCursorX() { return m_xCursor; }
@@ -86,7 +86,7 @@ public:
             }
 
     //public access to the offscreen bitmap of page nPage
-    wxBitmap* GetOffscreenBitmap(wxInt32 nPage = 0);
+    wxBitmap* GetOffscreenBitmap(int nPage = 0);
 
     // unit conversion
     lmLUnits DeviceToLogicalX(lmPixels x) { return m_pDC->DeviceToLogicalXRel(x); }
@@ -113,7 +113,7 @@ public:
 
 private:
     void DeleteBitmaps();
-    wxBitmap* GetPageBitmap(wxInt32 nPage);
+    wxBitmap* GetPageBitmap(int nPage);
 
 
     wxDC*       m_pDC;              // the DC to use
@@ -123,7 +123,7 @@ private:
     BitmapList  m_cBitmaps;            // list of bitmaps for offscreen painting
     lmPixels    m_xBitmapSize, m_yBitmapSize;    // size of bitmaps in pixels
     lmPixels    m_xPageSize, m_yPageSize;        // size of page in pixels
-    wxInt32     m_numPages;            // num pages that current score has
+    int     m_numPages;            // num pages that current score has
     bool        m_fRedraw;             // force to redraw the score
 
     lmScore*    m_pScore;              // the score to draw in this paper

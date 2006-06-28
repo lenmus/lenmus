@@ -39,7 +39,7 @@ public:
         EAccidentals nAccidentals,
         ENoteType nNoteType, float rDuration,
         bool fDotted, bool fDoubleDotted,
-        wxInt32 nStaff,
+        int nStaff,
         lmContext* pContext, 
         bool fBeamed, lmTBeamInfo BeamInfo[],
         bool fInChord,
@@ -151,7 +151,7 @@ private:
                         lmLUnits width, int nROP = wxCOPY);
 
     //auxiliary
-    wxInt32 PosOnStaffToPitch(wxInt32 nSteps);
+    int PosOnStaffToPitch(int nSteps);
     void SetUpPitchRelatedVariables(lmPitch nNewPitch);
     void SetUpStemDirection();
 

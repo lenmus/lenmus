@@ -715,12 +715,12 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 
 void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr)
 {
-    //<instrument> = (instrument [<instrName>][<infoMIDI>][<staves>] <voice>* )
+    //<instrument> = (instrument [<InstrName>][<InfoMIDI>][<Staves>] <Voice>+ )
 
-    //<instrName string [string]) - name, [abbreviation]
-    //<infoMIDI num [num]> - Num.Instrumento MIDI, [Num.Dispositivo MIDI]
-    //<staves> = (staves num)
-    //<voice> = (voice <music>* )
+    //<InstrName> = (instrName name-string [abbreviation-string])
+    //<InfoMIDI> = (infoMIDI num-instr [num-device])
+    //<Staves> = (staves {num | overlayered} )
+    //<Voice> = (voice <music>+ )
     
     lmLDPNode* pX;
     wxString sData;
@@ -735,8 +735,9 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
 
     //default values
     int nMIDIChannel=0, nMIDIInstr=0;       //default MIDI values: channel 0, instr=Piano
-    bool fMusicFound = false;               // <voice> or <split> tags found
-    wxString sNumStaves = _T("1");
+    bool fMusicFound = false;               // <voice> tag found
+    wxString sNumStaves = _T("1");          //one staff
+    wxString sInstrName = _T("");           //no name for instrument
 
     // parse optional elements until <voice> tag found
     for (; iP <= pNode->GetNumParms(); iP++) {
@@ -747,7 +748,14 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             break;      //start of voice. Exit this loop
         }
         else if (pX->GetName() == m_pTags->TagName(_T("instrName")) ) {
-            //! @todo No treatment for now
+            pX = pX->GetParameter(1);
+            if (pX->IsSimple()) {
+                sInstrName = pX->GetName();
+            }
+            else {
+                AnalysisError( _("Expected name string for %s but found element '%s'. Ignored."),
+                    m_pTags->TagName(_T("instrName")), pX->GetName() );
+           }
         }
         else if (pX->GetName() == m_pTags->TagName(_T("infoMIDI")) ) {
             //! @todo No treatment for now
@@ -760,24 +768,30 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             //    }
         }
         else if (pX->GetName() == m_pTags->TagName(_T("staves")) ) {
-            pX = pNode->GetParameter(iP);
+            pX = pX->GetParameter(1);
             if (pX->IsSimple()) {
                 sNumStaves = pX->GetName();
                 if (!sNumStaves.IsNumber()) {
                     AnalysisError( _("Number of staves expected but found '%s'. Element '%s' ignored."),
                         sNumStaves, m_pTags->TagName(_T("staves")) );
-                }
-                else {
-                    sNumStaves.ToLong(&m_nNumStaves);
+                    sNumStaves = _T("1");
                 }
             }
+            else {
+                AnalysisError( _("Expected value for %s but found element '%s'. Ignored."),
+                    m_pTags->TagName(_T("staves")), pX->GetName() );
+           }
         }
         else {
-            AnalysisError( _("Element '%s' found. Uknown in '%s' context. Element ignored."),
-                pNode->GetName(), m_pTags->TagName(_T("Instrument")) );
+            AnalysisError( _("[%s]: unknown element '%s' found. Element ignored."),
+                m_pTags->TagName(_T("instrument")), pNode->GetName() );
         }
     }
 
+    //set number of staves
+    sNumStaves.ToLong(&m_nNumStaves);
+
+    //process firts voice
     if (!fMusicFound) {
         AnalysisError( _("Expected '%s' but found element %s. Analysis stopped."),
             m_pTags->TagName(_T("voice")), pX->GetName() );
@@ -785,7 +799,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     }
 
     // create the instrument with one empty VStaff
-    lmInstrument* pInstr = pScore->AddInstrument(1, nMIDIChannel, nMIDIInstr);
+    lmInstrument* pInstr = pScore->AddInstrument(1, nMIDIChannel, nMIDIInstr, sInstrName);
     lmVStaff* pVStaff = pInstr->GetVStaff(1);      //get the VStaff created
 
     // analyce first voice
@@ -809,7 +823,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
 
 void lmLDPParser::AnalyzeVoice(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
-    // <voice> = (voice <music>* )
+    // <voice> = (voice <music>+ )
     // <music> ::= {<Figure> | <Attribute> | <Indicacion> |
     //              <Barra> | <desplazamiento> | <opciones>}
     // <Atributo> ::= (<Clave> | <Tonalidad> | <Metrica>)
@@ -821,24 +835,13 @@ void lmLDPParser::AnalyzeVoice(lmLDPNode* pNode, lmVStaff* pVStaff)
     wxString sName;
     lmLDPNode* pX;
 
-    //analyze firts parameter (optional): number of staves of this lmVStaff
-    wxString sNumStaves = _T("1");       //default value
-    pX = pNode->GetParameter(iP);
-    if (pX->IsSimple()) {
-        sNumStaves = pX->GetName();
-        if (!sNumStaves.IsNumber()) {
-            AnalysisError( _("Number of staves expected but found '%s'. Analysis stopped."),
-                pX->GetName() );
-            return;
-        } else {
-            iP++;
+    //the VStaff only contains one staff. So if more thant one staves requested for
+    //current instrument we have to add nNumStaves - 1
+    if (m_nNumStaves > 1) {
+        int i;
+        for(i=1; i < m_nNumStaves; i++) {
+            pVStaff->AddStaff(5);    //five lines staff, standard size
         }
-    }
-    sNumStaves.ToLong(&m_nNumStaves);
-    int i;
-    //the VStaff already contains one staff. So we have to add nNumStaves - 1
-    for(i=1; i < m_nNumStaves; i++) {
-        pVStaff->AddStaff(5);    //five lines staff, standard size
     }
 
     //loop to analyze remaining elements: music
@@ -968,7 +971,7 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
     
     // create the instrument with empty VStaves
     nMIDIChannel=0, nMIDIInstr=0;        //dbg
-    pScore->AddInstrument(nVStaves, nMIDIChannel, nMIDIInstr);
+    pScore->AddInstrument(nVStaves, nMIDIChannel, nMIDIInstr, _T(""));
     
     //Loop to analyze elements <Pentagrama>
     lmVStaff* pVStaff;

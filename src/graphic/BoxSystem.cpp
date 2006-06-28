@@ -62,13 +62,18 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     //start of system position.
     pPaper->SetCursorY( m_yPos );
 
-    wxInt32 iVStaff;
+    int iVStaff;
     lmInstrument *pInstr;
     lmVStaff *pVStaff;
 
     //for each lmInstrument
+    pPaper->IncrementCursorX( m_nIndent );
+    lmLUnits xFrom = pPaper->GetCursorX();
     for (pInstr = pScore->GetFirstInstrument(); pInstr; pInstr=pScore->GetNextInstrument())
     {
+        //if first system, draw instrument name
+        if (nSystem == 1) pInstr->Draw(DO_DRAW, pPaper);
+
         //for each lmVStaff
         lmLUnits yPaperPos = pPaper->GetCursorY();
         for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
@@ -77,7 +82,7 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
 
             //to properly draw barlines it is necessary that staff lines are already drawn.
             //so, start the drawing by the staff lines
-            pVStaff->DrawStaffLines(DO_DRAW, pPaper, 0, 50, 0, m_xFinal);
+            pVStaff->DrawStaffLines(DO_DRAW, pPaper, 0, 50, xFrom, m_xFinal);
 
             //now draw the prolog, except if this is the first system
             if (nSystem != 1)

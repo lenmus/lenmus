@@ -125,8 +125,8 @@ private:
     lmLdpTagsTable*     m_pTags;
 
     // variables to store temporary values as the file is being analized.
-    wxInt32     m_nCurStaff;        //default staff num. for the lmNoteRest being processed
-    wxInt32     m_nCurVoice;        //default voice num. for the lmNoteRest being processed
+    int     m_nCurStaff;        //default staff num. for the lmNoteRest being processed
+    int     m_nCurVoice;        //default voice num. for the lmNoteRest being processed
     long        m_nNumStaves;       //number of staffs for the lmVStaff being processed
     lmTupletBracket* m_pTupletBracket;      //tuplet being analyzed
 

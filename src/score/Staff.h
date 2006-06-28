@@ -35,7 +35,7 @@ class lmStaff
 {
 public:
     //ctor and dtor
-    lmStaff(lmScore* pScore, wxInt32 nNumLines=5, lmLUnits nMicrons=0);
+    lmStaff(lmScore* pScore, int nNumLines=5, lmLUnits nMicrons=0);
     ~lmStaff();
 
     // margins
@@ -52,13 +52,13 @@ public:
     }
 
     // sizes
-    wxInt32 GetHeight();
+    int GetHeight();
 
     lmLUnits GetLineSpacing() { return m_spacing; }
     lmLUnits GetLineThick() { return m_lineThick; }
-    wxInt32 GetNumLines() { return m_numLines; }
+    int GetNumLines() { return m_numLines; }
 
-    lmLUnits TenthsToLogical(wxInt32 nTenths) { return (m_spacing * nTenths)/10; }
+    lmLUnits TenthsToLogical(int nTenths) { return (m_spacing * nTenths)/10; }
     wxFont* GetFontDraw() { return m_pFontDraw; }
     void SetFontDraw(wxFont* pFont) { m_pFontDraw = pFont; }
 
@@ -78,7 +78,7 @@ public:
 
 private:
     lmLUnits    m_lineThick;        // in logical units
-    wxInt32     m_numLines;
+    int     m_numLines;
     lmLUnits    m_spacing;          // in logical units (thousandths of a mm.,microns)
     wxFont*     m_pFontDraw;        // font to use for drawing on this staff
 

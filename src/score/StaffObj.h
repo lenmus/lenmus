@@ -116,7 +116,7 @@ public:
     virtual ~lmScoreObj();
 
     // methods related to type and identificaction
-    wxInt32 GetID() { return m_nId; }
+    int GetID() { return m_nId; }
     EScoreObjType GetType() { return m_nType; }
 
     // capabilities
@@ -180,7 +180,7 @@ protected:
 
     // type and identification
     EScoreObjType   m_nType;        //Type of lmScoreObj
-    wxInt32         m_nId;          //unique number, to identify each lmScoreObj
+    int         m_nId;          //unique number, to identify each lmScoreObj
 
     //positioning. Coordinates relative to origin of page (in logical units); updated each
     // time this object is drawn
@@ -265,7 +265,7 @@ public:
     float GetTimePos() { return m_rTimePos; }
     void SetTimePos(float rTimePos) { m_rTimePos = rTimePos; }
     virtual float GetTimePosIncrement() { return 0; }
-    //virtual wxInt32 GetDurationOld();
+    //virtual int GetDurationOld();
 
     // methods related to positioning
     virtual lmLUnits GetAnchorPos() {return 0; }
@@ -275,15 +275,15 @@ public:
     virtual void SetFont(lmPaper* pPaper);
 
     // methods related to staff ownership
-    void    SetNumMeasure(wxInt32 nNum) { m_numMeasure = nNum; }
-    wxInt32    GetStaffNum() { return m_nStaffNum; }
+    void    SetNumMeasure(int nNum) { m_numMeasure = nNum; }
+    int    GetStaffNum() { return m_nStaffNum; }
     lmVStaff* GetVStaff() { return m_pVStaff; }
 
 
 
 protected:
     lmStaffObj(EScoreObjType nType, 
-             lmVStaff* pStaff = (lmVStaff*)NULL, wxInt32 nStaff=1,    // only for staff owned objects    
+             lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,    // only for staff owned objects    
              bool fVisible = true, 
              bool fIsDraggable = false);
 
@@ -300,8 +300,8 @@ protected:
 
     // Info about staff ownership
     lmVStaff*   m_pVStaff;          // lmVStaff to which this lmStaffObj belongs or NULL
-    wxInt32     m_nStaffNum;        // lmStaff (1..n) on which this object is located
-    wxInt32     m_numMeasure;       // measure number in which this lmStaffObj is included
+    int     m_nStaffNum;        // lmStaff (1..n) on which this object is located
+    int     m_numMeasure;       // measure number in which this lmStaffObj is included
 
 };
 
@@ -323,7 +323,7 @@ public:
 
 protected:
     lmSimpleObj(EScoreObjType nType, 
-             lmVStaff* pStaff = (lmVStaff*)NULL, wxInt32 nStaff=1,
+             lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,
              bool fVisible = true, 
              bool fIsDraggable = false);
 
@@ -343,7 +343,7 @@ public:
 
 protected:
     lmCompositeObj(EScoreObjType nType, 
-             lmVStaff* pStaff = (lmVStaff*)NULL, wxInt32 nStaff=1,
+             lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,
              bool fVisible = true, 
              bool fIsDraggable = false);
 

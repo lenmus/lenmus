@@ -738,7 +738,7 @@ bool lmXMLParser::ParseMusicDataDirection(wxXmlNode* pNode, lmVStaff* pVStaff)
     wxString sText;
     wxString sJustify;
     wxString sLanguage;
-    lmFontInfo oFontData = goBasicTextDefaultFont;            
+    lmFontInfo oFontData = tBasicTextDefaultFont;            
     lmLocation tPos;
 
 
@@ -1783,7 +1783,7 @@ void lmXMLParser::ParseScorePart(wxXmlNode* pNode, lmScore* pScore)
     g_pLogger->LogTrace(_T("lmXMLParser"), _T("Procesing score-part id = "), sId);
     long nVStaves=1;
     int nMIDIChannel=0, nMIDIInstr=0;        //dbg
-    lmInstrument* pInstr = pScore->AddInstrument(nVStaves, nMIDIChannel, nMIDIInstr);
+    lmInstrument* pInstr = pScore->AddInstrument(nVStaves, nMIDIChannel, nMIDIInstr, _T(""));
     pInstr->XML_SetId(sId);
 
     //while (!node.isNull()) {

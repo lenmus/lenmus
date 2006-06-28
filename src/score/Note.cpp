@@ -54,7 +54,7 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
         EAccidentals nAccidentals,
         ENoteType nNoteType, float rDuration,
         bool fDotted, bool fDoubleDotted,
-        wxInt32 nStaff,
+        int nStaff,
         lmContext* pContext, 
         bool fBeamed, lmTBeamInfo BeamInfo[],
         bool fInChord,
@@ -797,7 +797,7 @@ void lmNote::DrawLegerLines(wxDC* pDC, int nPosOnStaff, lmLUnits yStaffTopLine, 
 
     xPos += m_paperPos.x;        // make it absolute
 
-    wxInt32 i;
+    int i;
     lmLUnits yPos, nTenths;
     if (nPosOnStaff > 11) {
         // lines at top
@@ -943,7 +943,7 @@ void lmNote::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& of
 
     lmLUnits dyHalfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum );
     wxPoint nShiftVector = pagePosL - dragStartPosL;    // the displacement
-    wxInt32 nSteps = (nShiftVector.y % dyHalfLine);        // trim the displacement to half line steps
+    int nSteps = (nShiftVector.y % dyHalfLine);        // trim the displacement to half line steps
     nShiftVector.y -= nSteps;
     wxPoint newPaperPos = m_paperPos + nShiftVector;
     // then the shape must be drawn at:
@@ -954,7 +954,7 @@ void lmNote::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& of
 
     /*
     // compute new pitch
-    wxInt32 nNewPitch = PosOnStaffToPitch(nSteps);
+    int nNewPitch = PosOnStaffToPitch(nSteps);
     SetUpPitchRelatedVariables(nNewPitch);
     */
 }
@@ -968,10 +968,10 @@ wxPoint lmNote::EndDrag(const wxPoint& pos)
     */
     lmLUnits dyHalfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum );
     lmLUnits nShift = - (pos.y - GetGlyphPosition().y);
-    wxInt32 nSteps = nShift / dyHalfLine;        // trim the displacement to half line steps
+    int nSteps = nShift / dyHalfLine;        // trim the displacement to half line steps
 
     // compute new pitch
-    wxInt32 nNewPitch = PosOnStaffToPitch(nSteps);
+    int nNewPitch = PosOnStaffToPitch(nSteps);
     SetUpPitchRelatedVariables(nNewPitch);
 
     wxLogMessage( wxString::Format(wxT("EndDrag: nShift=%d, nSteps=%d, nNewPitch=%d"), 
@@ -989,7 +989,7 @@ wxPoint lmNote::EndDrag(const wxPoint& pos)
 
 }
 
-wxInt32 lmNote::PosOnStaffToPitch(wxInt32 nSteps)
+int lmNote::PosOnStaffToPitch(int nSteps)
 {
     /*
     When the note is dragged it is necessary to compute the new pitch from the

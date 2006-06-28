@@ -91,7 +91,7 @@ wxFont* lmFontManager::GetFont(int nPointSize, wxString sFontName,
     */
 
     wxFont* pFont;
-    wxInt32 nNumFonts = m_cFonts.GetCount();
+    int nNumFonts = m_cFonts.GetCount();
     if (nNumFonts > 0) {
         //iterate over the collection of fonts
         wxFontsListNode* pNode = m_cFonts.GetFirst();

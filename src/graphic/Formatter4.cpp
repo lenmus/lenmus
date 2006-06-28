@@ -100,7 +100,7 @@ lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
     pPaper->RestartPageCursors();    //ensure that page cursors are at top-left corner
 
     //for each staff size, setup fonts of right point size for that staff size
-    wxInt32 iVStaff;
+    int iVStaff;
     lmInstrument *pInstr;
     lmVStaff *pVStaff;
     for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
@@ -205,7 +205,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOpt
     pPaper->RestartPageCursors();    //ensure that page cursors are at top-left corner
 
     //for each staff size, setup fonts of right point size for that staff size
-    wxInt32 iVStaff;
+    int iVStaff;
     lmInstrument *pInstr;
     lmVStaff *pVStaff;
     for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
@@ -303,8 +303,19 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOpt
             pBoxSystem->SetPositionY(ySystemPos);
             pBoxSystem->SetFirstMeasure(nAbsMeasure);
 
-            //wxLogMessage(_T("[lmFormatter4::RenderJustified] Starting to print nSystem=%d. Ypos=%d"),
-            //    nSystem, ySystemPos );
+            //for the first system it is necessary to compute the indentation
+            lmLUnits nSystemIndent = 0;
+            if (nSystem == 1) {
+                lmInstrument *pI;
+                for (pI = m_pScore->GetFirstInstrument(); pI; pI=m_pScore->GetNextInstrument())
+                {
+                    pI->Draw(DO_MEASURE, pPaper);
+                    nSystemIndent = wxMax(nSystemIndent, pI->GetIndent());
+                }
+            }
+            pBoxSystem->SetIndent( nSystemIndent );
+            pPaper->IncrementCursorX( nSystemIndent );
+
 
             bool fNewSystem = false;
             nRelMeasure = 1;    // the first measure in current system
@@ -499,7 +510,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             in this measure
     */
 
-    wxInt32 iVStaff;
+    int iVStaff;
     lmInstrument *pInstr;
     lmVStaff *pVStaff;
     bool fNewSystem = false;

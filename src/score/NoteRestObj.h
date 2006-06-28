@@ -63,7 +63,7 @@ public:
 
     // specific methods of this class
     ESymbolType GetSymbolType() { return m_nSymbolType; }
-    virtual void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nStaffNum,
+    virtual void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
                          lmLUnits xPos, lmLUnits yPos)=0;
     virtual void UpdateMeasurements();
 
@@ -86,7 +86,7 @@ public:
 
     // overrides for pure virtual methods of base class lmNoteRestObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
-    void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nStaffNum,
+    void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
                          lmLUnits xPos, lmLUnits yPos);
 
 private:
@@ -106,7 +106,7 @@ public:
 
     // definitions for pure virtual methods of base class lmNoteRestObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
-    void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, wxInt32 nStaffNum,
+    void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
                          lmLUnits xPos, lmLUnits yPos);
 
     // overrides for virtual methods of base class lmNoteRestObj
@@ -120,7 +120,7 @@ public:
 private:
     int                m_nNumLine;
     lmVStaff*            m_pVStaff;            // lmVStaff to which the owner NoterRest belongs
-    wxInt32            m_nStaffNum;        // Staff (1..n) on which owner NoterRest is located
+    int            m_nStaffNum;        // Staff (1..n) on which owner NoterRest is located
 
 };
 

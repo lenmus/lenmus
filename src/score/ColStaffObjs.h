@@ -46,7 +46,7 @@ public:
     ~lmColStaffObjs();
 
     void Store(lmStaffObj *pSO);
-    wxInt32 GetNumMeasures();
+    int GetNumMeasures();
     void ShiftTime(float rTimeShift);
 
     //iterator related methods

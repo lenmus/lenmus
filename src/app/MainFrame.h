@@ -107,7 +107,7 @@ public:
     void OnDebugSeeMidiEventsUI(wxUpdateUIEvent& event);
 
     void OnComboZoom(wxCommandEvent& event);
-    void OnZoom(wxCommandEvent& event, wxInt32 nZoom);
+    void OnZoom(wxCommandEvent& event, int nZoom);
     void OnZoom75(wxCommandEvent& event) { OnZoom(event, 75); }
     void OnZoom100(wxCommandEvent& event) { OnZoom(event, 100); }
     void OnZoom150(wxCommandEvent& event) { OnZoom(event, 150); }

@@ -1,4 +1,3 @@
-// RCS-ID: $Id: NoteRest.h,v 1.4 2006/02/23 19:23:54 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -103,7 +102,7 @@ class lmNoteRest:  public lmCompositeObj
 public:
     //ctors and dtor
     lmNoteRest(lmVStaff* pVStaff, bool IsRest, ENoteType nNoteType, float rDuration,
-             bool fDotted, bool fDoubleDotted, wxInt32 nStaff);
+             bool fDotted, bool fDoubleDotted, int nStaff);
     virtual ~lmNoteRest();
 
     virtual void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC) = 0;
@@ -152,8 +151,6 @@ protected:
         //
 
     bool        m_fIsRest;          //This lmNoteRest is a rest
-
-    wxInt32     m_nPentagrama;      //num of staff on which this lmNoteRest is drawn 
     ENoteType   m_nNoteType;        //type of note / rest
     
     //duration and time modifiers
@@ -169,8 +166,6 @@ protected:
 
     //tuplet related variables
     lmTupletBracket*    m_pTupletBracket;    //ptr to lmTupletBracket if this note/rest is part of a tuplet
-
-    //wxInt32        m_xPos, m_yPos;    //parámetros para Redibujar
 
     //AuxObjs associated to this note
     AuxObjsList*    m_pNotations;     //list of Notations

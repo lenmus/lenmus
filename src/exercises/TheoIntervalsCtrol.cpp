@@ -610,7 +610,7 @@ void lmTheoIntervalsCtrol::NewProblem()
 
     m_pIntervalScore = new lmScore();
     m_pIntervalScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
-    m_pIntervalScore->AddInstrument(1,0,0);                    //one vstaff, MIDI channel 0, MIDI instr 0
+    m_pIntervalScore->AddInstrument(1,0,0,_T(""));                    //one vstaff, MIDI channel 0, MIDI instr 0
     pVStaff = m_pIntervalScore->GetVStaff(1, 1);    //get first vstaff of instr.1
     pVStaff->AddClef( m_nClef );
     pVStaff->AddKeySignature(0, true);                    // 0 fifths, major
@@ -642,7 +642,7 @@ void lmTheoIntervalsCtrol::NewProblem()
     if (!m_fIntervalKnown) {
         m_pProblemScore = new lmScore();
         m_pProblemScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
-        m_pProblemScore->AddInstrument(1,0,0);                    //one vstaff, MIDI channel 0, MIDI instr 0
+        m_pProblemScore->AddInstrument(1,0,0,_T(""));                    //one vstaff, MIDI channel 0, MIDI instr 0
         pVStaff = m_pProblemScore->GetVStaff(1, 1);    //get first vstaff of instr.1
         pVStaff->AddClef( m_nClef );
         pVStaff->AddKeySignature(0, true);                    // 0 fifths, major
