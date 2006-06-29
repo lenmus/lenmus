@@ -99,7 +99,7 @@ WX_DEFINE_LIST(VStavesList);
 
 
 //constructor
-lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
+lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
 {
     //pScore is the lmScore to which this vstaff belongs.
     //Initially the lmVStaff will have only one standard five-lines staff. This can be
@@ -107,6 +107,7 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr)
        
     m_pScore = pScore;
     m_pInstrument = pInstr;
+    m_fOverlayered = fOverlayered;
 
     // default lmVStaff margins (logical units = tenths of mm)
     m_nHeight = 0;          //a value of 0 means 'compute it'
@@ -454,8 +455,10 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
 
 
     //Set left position and lenght of lines, and save them
-    m_xLeft = ((xFrom==0) ? pPaper->GetLeftMarginXPos() + m_leftMargin : xFrom);
-    xRight = ((xTo == 0) ? pPaper->GetRightMarginXPos() - m_rightMargin : xTo);
+    //m_xLeft = ((xFrom==0) ? pPaper->GetLeftMarginXPos() + m_leftMargin : xFrom);
+    //xRight = ((xTo == 0) ? pPaper->GetRightMarginXPos() - m_rightMargin : xTo);
+    m_xLeft = xFrom;
+    xRight = xTo;
     m_dxLin = xRight - m_xLeft;            //largo de las líneas
    
     yCur = pPaper->GetCursorY() + m_topMargin;

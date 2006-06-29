@@ -67,18 +67,40 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     lmVStaff *pVStaff;
 
     //for each lmInstrument
-    pPaper->IncrementCursorX( m_nIndent );
-    lmLUnits xFrom = pPaper->GetCursorX();
+    lmLUnits xPaperPos, yPaperPos;
+    lmLUnits xStartPos = pPaper->GetCursorX();
+    lmLUnits xFrom;
     for (pInstr = pScore->GetFirstInstrument(); pInstr; pInstr=pScore->GetNextInstrument())
     {
-        //if first system, draw instrument name
-        if (nSystem == 1) pInstr->Draw(DO_DRAW, pPaper);
+        pPaper->SetCursorX( xStartPos );    //align staves in system
+
+        //draw instrument name or abbreviation
+        if (nSystem == 1) {
+            pInstr->DrawName(pPaper);
+        }
+        else {
+            pInstr->DrawAbbreviation(pPaper);
+        }
+        pPaper->IncrementCursorX( m_nIndent );
 
         //for each lmVStaff
-        lmLUnits yPaperPos = pPaper->GetCursorY();
+        xFrom = pPaper->GetCursorX();
         for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
         {
             pVStaff = pInstr->GetVStaff(iVStaff);
+
+             //if it is not first VStaff, set paper position for this VStaff 
+            if (iVStaff != 1) {
+                if (pVStaff->IsOverlayered()) {
+                    //overlayered: restore paper position to previous VStaff position
+                    pPaper->SetCursorX( xPaperPos );
+                    pPaper->SetCursorY( yPaperPos );
+                }
+            }
+
+            //save this VStaff paper position
+            xPaperPos = pPaper->GetCursorX();
+            yPaperPos = pPaper->GetCursorY();
 
             //to properly draw barlines it is necessary that staff lines are already drawn.
             //so, start the drawing by the staff lines
@@ -93,17 +115,13 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
                 RenderMeasure(pVStaff, i, pPaper);
             }
 
-            //// advance paper: height off this lmVStaff
-            //pVStaff->NewLine(pPaper);
-            ////! @todo advance inter-staff distance
-            pPaper->SetCursorY( yPaperPos );
+            //advance paper in height off this lmVStaff
+            pVStaff->NewLine(pPaper);
+            //! @todo advance inter-staff distance
 
-        } // next lmVStaff
-        // advance paper: height off this lmVStaff
-        pVStaff->NewLine(pPaper);
-        //! @todo advance inter-staff distance
+        } // process next VStaff
 
-    } // next lmInstrument
+    } // process next Instrument
 
 
     //Draw the initial barline that joins all staffs in a system
@@ -115,7 +133,7 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     pVStaff = pInstr->GetVStaff(pInstr->GetNumStaves());    //last staff of this system
     lmLUnits yBottom = pVStaff->GetYBottom();
 
-    lmLUnits THIN_LINE_WIDTH = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm
+    lmLUnits THIN_LINE_WIDTH = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
     wxDC* pDC = pPaper->GetDC();
     wxPen pen(*wxBLACK, THIN_LINE_WIDTH, wxSOLID);
     wxBrush brush(*wxBLACK, wxSOLID);

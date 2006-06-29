@@ -38,7 +38,7 @@ class lmVStaff
 {
 public:
     //ctor and dtor
-    lmVStaff(lmScore* pScore, lmInstrument* pInstr);
+    lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered);
     ~lmVStaff();
 
     lmStaff*    AddStaff(int nNumLines=5, lmLUnits nMicrons=0);
@@ -99,6 +99,7 @@ public:
     void NewLine(lmPaper* pPaper);
     lmLUnits GetVStaffHeight();
     void SetUpFonts(lmPaper* pPaper);
+    bool IsOverlayered() { return m_fOverlayered; }
 
 
     lmScoreObj* FindSelectableObject(wxPoint& pt);
@@ -152,6 +153,7 @@ private:
 
     lmScore        *m_pScore;           //lmScore to which this lmVStaff belongs
     lmInstrument   *m_pInstrument;      //lmInstrument to which this lmVStaff belongs
+    bool            m_fOverlayered;     //this VStaff is overlayered on previous one
 
     lmColStaffObjs    m_cStaffObjs;        //collection of StaffObjs that form this lmVStaff
 

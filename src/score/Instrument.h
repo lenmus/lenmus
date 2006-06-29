@@ -40,7 +40,7 @@ public:
                  wxString sName, wxString sAbbrev);
     ~lmInstrument();
 
-    lmVStaff* AddVStaff();
+    lmVStaff* AddVStaff(bool fOverlayered);
     //returns lmVStaff number nStaff (1..n)
     lmVStaff* GetVStaff(int nStaff);
 
@@ -48,12 +48,14 @@ public:
     inline int GetNumStaves() {return (int)m_cStaves.GetCount(); }
 
     //layout
-    void SetIndent(lmLocation* pPos);
-    lmLUnits GetIndent() { return m_nIndent; }
-    wxString GetName() { return m_sName; }
-    wxString GetShortName() { return m_sShortName; }
+    void SetIndentFirst(lmLocation* pPos) { SetIndent(&m_nIndentFirst, pPos); }
+    void SetIndentOther(lmLocation* pPos) { SetIndent(&m_nIndentOther, pPos); }
+    lmLUnits GetIndentFirst() { return m_nIndentFirst; }
+    lmLUnits GetIndentOther() { return m_nIndentOther; }
 
-    void Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);
+    void MeasureNames(lmPaper* pPaper);
+    void DrawName(lmPaper* pPaper, wxColour colorC = *wxBLACK);
+    void DrawAbbreviation(lmPaper* pPaper, wxColour colorC = *wxBLACK);
 
 
     //Debug methods
@@ -70,15 +72,17 @@ public:
     const wxString XML_GetId() { return m_xmlId; }
 
 private:
+    void SetIndent(lmLUnits* pIndent, lmLocation* pPos);
+
     lmScore*        m_pScore;           //score to whith this instrument belongs
     VStavesList     m_cStaves;          //wxList of VStaves that this instrument has
-    wxString        m_sName;            //instrument name
-    wxString        m_sShortName;       //name abreviated name to use
     int             m_nMidiInstr;       //num. of MIDI instrument no use for this lmInstrument
     int             m_nMidiChannel;     //MIDI channel to use
-    lmLUnits        m_nIndent;          //space to indent first system
 
-    StaffObjsList*  m_pAuxObjs;         //list of auxiliary objects (i.e. name)
+    lmLUnits        m_nIndentFirst;     //indentation for first system
+    lmLUnits        m_nIndentOther;     //indentation for other systems
+    lmText*         m_pName;            //instrument name
+    lmText*         m_pAbbreviation;    //abreviated name to use
 
 
     // variables related to MusicXML import/export

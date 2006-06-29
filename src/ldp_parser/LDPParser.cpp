@@ -738,6 +738,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     bool fMusicFound = false;               // <voice> tag found
     wxString sNumStaves = _T("1");          //one staff
     wxString sInstrName = _T("");           //no name for instrument
+    wxString sInstrAbbrev = _T("");         //no abreviated name for instrument
 
     // parse optional elements until <voice> tag found
     for (; iP <= pNode->GetNumParms(); iP++) {
@@ -748,14 +749,26 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             break;      //start of voice. Exit this loop
         }
         else if (pX->GetName() == m_pTags->TagName(_T("instrName")) ) {
-            pX = pX->GetParameter(1);
-            if (pX->IsSimple()) {
-                sInstrName = pX->GetName();
+            lmLDPNode* pIN;
+            pIN = pX->GetParameter(1);
+            if (pIN->IsSimple()) {
+                sInstrName = pIN->GetName();
             }
             else {
                 AnalysisError( _("Expected name string for %s but found element '%s'. Ignored."),
-                    m_pTags->TagName(_T("instrName")), pX->GetName() );
-           }
+                    m_pTags->TagName(_T("instrName")), pIN->GetName() );
+            }
+            //abbreviation (optional)
+            if (pX->GetNumParms() > 1) {
+                pIN = pX->GetParameter(2);
+                if (pIN->IsSimple()) {
+                    sInstrAbbrev = pIN->GetName();
+                }
+                else {
+                    AnalysisError( _("Expected name string for %s but found element '%s'. Ignored."),
+                        m_pTags->TagName(_T("instrName")), pIN->GetName() );
+                }
+            }
         }
         else if (pX->GetName() == m_pTags->TagName(_T("infoMIDI")) ) {
             //! @todo No treatment for now
@@ -784,7 +797,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         }
         else {
             AnalysisError( _("[%s]: unknown element '%s' found. Element ignored."),
-                m_pTags->TagName(_T("instrument")), pNode->GetName() );
+                m_pTags->TagName(_T("instrument")), pX->GetName() );
         }
     }
 
@@ -799,7 +812,8 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     }
 
     // create the instrument with one empty VStaff
-    lmInstrument* pInstr = pScore->AddInstrument(1, nMIDIChannel, nMIDIInstr, sInstrName);
+    lmInstrument* pInstr = pScore->AddInstrument(1, nMIDIChannel, nMIDIInstr,
+                                        sInstrName, sInstrAbbrev);
     lmVStaff* pVStaff = pInstr->GetVStaff(1);      //get the VStaff created
 
     // analyce first voice
@@ -810,7 +824,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     for(; iP <= pNode->GetNumParms(); iP++) {
         pX = pNode->GetParameter(iP);
         if (pX->GetName() = m_pTags->TagName(_T("voice")) ) {
-            pVStaff = pInstr->AddVStaff();
+            pVStaff = pInstr->AddVStaff(true);      //true -> overlayered
             AnalyzeVoice(pX, pVStaff);
         }
         else {

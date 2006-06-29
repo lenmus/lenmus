@@ -67,31 +67,27 @@ lmInstrument::lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel,
     //    sAbbrev   - abbreviation to use in second and following systems
                 
     m_pScore = pScore;
-    m_sName = sName;
-    m_sShortName = sAbbrev;
     m_nMidiInstr = nMIDIInstr;
     m_nMidiChannel = nMIDIChannel;
-    m_nIndent = 100;
+    m_nIndentFirst = 0;
+    m_nIndentOther = 0;
 
     //Normally, only one lmVStaff with one or two lmStaff
     //If more than one, they normally represent overlayered additional voices
     for (int i = 1; i <= nNumStaves; i++) {
-        AddVStaff();
+        AddVStaff( (i!=1) );    //second and remaining overlayered
     }
 
     //create auxiliary objects for name and abbreviation
-    m_pAuxObjs = (StaffObjsList*)NULL;
+    m_pName = (lmText*)NULL;
+    m_pAbbreviation = (lmText*)NULL;
     if (sName != _T("")) {
-        m_pAuxObjs = new StaffObjsList();
-        lmText* pText = new lmText(m_pScore, sName, lmALIGN_LEFT,
-                                   tDefaultPos, tInstrumentDefaultFont);
-        m_pAuxObjs->Append(pText);
+        m_pName = new lmText(m_pScore, sName, lmALIGN_LEFT,
+                             tDefaultPos, tInstrumentDefaultFont);
     }
     if (sAbbrev != _T("")) {
-        if (!m_pAuxObjs) m_pAuxObjs = new StaffObjsList();
-        lmText* pText = new lmText(m_pScore, sAbbrev, lmALIGN_LEFT,
-                                   tDefaultPos, tInstrumentDefaultFont);
-        m_pAuxObjs->Append(pText);
+        m_pAbbreviation = new lmText(m_pScore, sAbbrev, lmALIGN_LEFT,
+                                     tDefaultPos, tInstrumentDefaultFont);
     }
 
 }
@@ -100,30 +96,26 @@ lmInstrument::~lmInstrument()
 {
     m_cStaves.DeleteContents(true);
 
-    if (m_pAuxObjs) {
-        m_pAuxObjs->DeleteContents(true);
-        m_pAuxObjs->Clear();
-        delete m_pAuxObjs;
-        m_pAuxObjs = (StaffObjsList*)NULL;
-    }
+    if (m_pName) delete m_pName;
+    if (m_pAbbreviation) delete m_pAbbreviation;
 
 }
 
-void lmInstrument::SetIndent(lmLocation* pPos)
+void lmInstrument::SetIndent(lmLUnits* pIndent, lmLocation* pPos)
 {
     if (pPos->xUnits == lmTENTHS) {
         lmVStaff *pVStaff = GetVStaff(1);
-        m_nIndent = pVStaff->TenthsToLogical(pPos->x, 1);
+        *pIndent = pVStaff->TenthsToLogical(pPos->x, 1);
     }
     else {
-        m_nIndent = lmToLogicalUnits(pPos->x, pPos->xUnits);
+        *pIndent = lmToLogicalUnits(pPos->x, pPos->xUnits);
     }
 
 }
 
-lmVStaff* lmInstrument::AddVStaff()
+lmVStaff* lmInstrument::AddVStaff(bool fOverlayered)
 {
-    lmVStaff *pStaff = new lmVStaff(m_pScore, this);
+    lmVStaff *pStaff = new lmVStaff(m_pScore, this, fOverlayered);
     m_cStaves.Append(pStaff);
     return pStaff;
 
@@ -184,40 +176,70 @@ wxString lmInstrument::SourceXML()
 
 }
 
-void lmInstrument::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmInstrument::MeasureNames(lmPaper* pPaper)
 {
-    // render associated aux objects
-    //! @todo it is assumed that all associated AuxObjs are lmText
-
     //when this method is invoked paper is positioned at top left corner of instrument
     //renderization point (x = left margin, y = top line of first staff)
 
-    if (m_pAuxObjs) {
-        lmText* pText;
-        lmLUnits nWidth, nHeight;
-        wxStaffObjsListNode* pNode = m_pAuxObjs->GetFirst();
-        for (; pNode; pNode = pNode->GetNext() ) {
-            pText = (lmText*)pNode->GetData();
-            if (fMeasuring) {
-                // measure text extent
-                pText->Draw(DO_MEASURE, pPaper);
-                nWidth = pText->GetSelRect().width;
-                nHeight = pText->GetSelRect().height;
+    //As name/abbreviation are StaffObjs, method Draw() advances paper to
+    //end of name/abbreviation. Let's save original position to restore it
+    lmLUnits xPaper = pPaper->GetCursorX();
 
-                // advance x pos in text extend + after text space
-                m_nIndent = nWidth + 30;    //! @todo user options
-                pPaper->IncrementCursorX( m_nIndent );
+    m_nIndentFirst = 0;
+    m_nIndentOther = 0;
 
-                // set y pos so that text is at center of VStaff
-
-            }
-            else {
-                pPaper->IncrementCursorX( m_nIndent );
-                pText->Draw(DO_DRAW, pPaper, colorC);
-                pPaper->IncrementCursorX( -m_nIndent );
-            }
-        }
+    if (m_pName) {
+        // measure text extent
+        m_pName->Draw(DO_MEASURE, pPaper);
+        // set indent =  text extend + after text space
+        m_nIndentFirst = m_pName->GetSelRect().width + 30;    //! @todo user options
     }
 
+    if (m_pAbbreviation) {
+        // measure text extent
+        m_pAbbreviation->Draw(DO_MEASURE, pPaper);
+        // set indent =  text extend + after text space
+        m_nIndentOther = m_pAbbreviation->GetSelRect().width + 30;    //! @todo user options
+    }
+
+    //restore original paper position
+    pPaper->SetCursorX( xPaper );
+
+}
+
+void lmInstrument::DrawName(lmPaper* pPaper, wxColour colorC)
+{
+    //when this method is invoked paper is positioned at top left corner of instrument
+    //renderization point (x = left margin, y = top line of first staff)
+    //after rendering, paper position is not advanced
+
+    if (m_pName) {
+        //As name/abbreviation are StaffObjs, method Draw() should be invoked but
+        //it draws the object not at current paper pos but at stored m_paperPos.
+        //It also performs other non necessary thigs.
+        //So, I will invoke directly DarwObject and, previouly, set the text
+        //position at current paper position
+        m_pName->MoveTo(wxPoint(pPaper->GetCursorX(), pPaper->GetCursorY()));
+        m_pName->DrawObject(DO_DRAW, pPaper, colorC);
+    }
+}
+
+void lmInstrument::DrawAbbreviation(lmPaper* pPaper, wxColour colorC)
+{
+    //when this method is invoked paper is positioned at top left corner of instrument
+    //renderization point (x = left margin, y = top line of first staff)
+    //after rendering, paper position is not advanced
+
+    if (m_pAbbreviation) {
+        //As name/abbreviation are StaffObjs, method Draw() should be invoked but
+        //it draws the object not at current paper pos but at stored m_paperPos.
+        //It also performs other non necessary thigs.
+        //More: Abbreviation is written on every system but Draw will always
+        //draw it at the same position.
+        //So, I will invoke directly DarwObject and, previouly, set the text
+        //position at current paper position.
+        m_pAbbreviation->MoveTo(wxPoint(pPaper->GetCursorX(), pPaper->GetCursorY()));
+        m_pAbbreviation->DrawObject(DO_DRAW, pPaper, colorC);
+    }
 }
 

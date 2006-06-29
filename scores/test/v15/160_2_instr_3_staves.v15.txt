@@ -3,55 +3,70 @@
 
    (title center "Two instruments, three staves" (font bold 14))
 
-   (instrument
-      (voice
-         (clef Sol)
-         
-         (n -e4 n)
-         (n =e4 n)
-         (n +e4 n)
-         
-         (barline Final)
-(Partitura
-   (Vers 1.2)
-   (NumInstrumentos 2)
-   (Instrumento 1
-      (NumPentagramas 1)
-      (infoMIDI c1 i41)     //i41 - violín en canal 1
-      (Pentagrama 1
-         (c 1
-            (Clave Sol)
-            (Tonalidad Do)
-            (Metrica 2 4)
+   (instrument (instrName "Flute" "F")
+      (voice 
+            (clef Sol)
+            (key La)
+            (time 2 4)
             (n e4 c g+)(n g4 c g-)(n d4 c g+)(n g4 c g-)
-         )
-         (c 2 (n f4 c)(n a4 c)(n e5 c g+)(n g4 s)(n e4 s g-)(Barra Final))
+            (barline)
+
+            (n f4 c)(n a4 c)(n e5 c g+)(n g4 s)(n e4 s g-)
+            (barline)
+
+            (n e4 c g+)(n g4 c g-)(n d4 c g+)(n g4 c g-)
+            (barline)
+
+            (n f4 c)(n a4 c)(n e5 c g+)(n g4 s)(n e4 s g-)
+            (barline Final)
       )
    )
-//====================================
-   (Instrumento 2
-      (NumPentagramas 2)
-      (infoMIDI c2 i1)      //i1 - piano en canal 2
-//------------------------------------
-      (Pentagrama 1
-         (c 1
-            (Clave Sol)
-            (Tonalidad Do)
-            (Metrica 2 4)
-            (n c4 n)(n b3 n)
-         )
-         (c 2 (n c4 n)(n c5 n)(Barra Final))
-      )
-//------------------------------------
-      (Pentagrama 2
-         (c 1
-            (Clave Fa4)
-            (Tonalidad Do)
-            (Metrica 2 4)
-            (n g3 n)(n g3 n)
-         )
-         (c 2 (n f3 n)(n g3 n)(Barra Final))
+   
+   (instrument (instrName "Piano" "P") (staves 2)
+      (voice 
+            (clef Sol p1)   //sol clef in staff 1
+            (clef Fa4 p2)   //fa4 clef in staff 2
+            (key La)
+            (time 2 4)
+            (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // la 1ª nota está en pentagrama 1. Sigue ahí mientras no cambie
+            (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
+            (barline)
+
+            (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 1
+            (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
+            (barline)
+
+            (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // la 1ª nota está en pentagrama 1. Sigue ahí mientras no cambie
+            (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
+            (barline)
+
+            (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 1
+            (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
+            (barline Final)
       )
    )
+   
+//   (instrument (instrName "Piano") (staves 2)
+//      (voice 
+//            (clef Sol p1)
+//            (key Do)
+//            (time 2 4)
+//            (n c4 n)(n b3 n)
+//            (barline)
+//
+//            (n c4 n)(n c5 n)
+//            (barline Final)
+//      )
+//      (voice 
+//            (clef Fa4 p2)
+//            (key Do)
+//            (time 2 4)
+//            (n g3 n)(n g3 n)
+//            (barline)
+//
+//            (n f3 n)(n g3 n)
+//            (barline Final)
+//      )
+//   )
 )
 

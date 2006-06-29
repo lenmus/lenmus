@@ -108,30 +108,6 @@ wxBitmap* lmText::GetBitmap(double rScale)
 
 void lmText::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {
-    //! @todo review this code for text with relative positioning
-
-//    Dim nxLeft As Long, nyTop As Long
-//    
-//    If m_fXAbs Then
-//        nxLeft = m_oStaff.GetXStartOfStaff + oPapel.EscalarDecimas(m_xPos)
-//    Else
-//        nxLeft = m_oStaff.GetXInicioCompas + oPapel.EscalarDecimas(m_xPos)
-//    End If
-//    
-//    If m_fYAbs Then
-//        nyTop = oPapel.EscalarDecimas(m_yPos)
-//    Else
-//        //calcula el desplazamiento al pentagrama adecuado
-//        Dim yDesplz As Single, yBase As Single
-//        yDesplz = (m_oStaff.GetDesplazamiento(1) * oPapel.dyLinea) / 10#
-//        yBase = oPapel.yBase + yDesplz
-//        //le añade el desplazamiento relativo
-//        nyTop = yBase + oPapel.EscalarDecimas(m_yPos)
-//    End If
-//        
-//    oPapel.EscribirTexto m_sTexto, nxLeft, nyTop, _
-//        m_sFontName, m_nFontSize, m_fBold, m_fItalic
-
     wxDC* pDC = pPaper->GetDC();
     wxASSERT(pDC);
     pDC->SetFont(*m_pFont);

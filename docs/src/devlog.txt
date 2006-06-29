@@ -66,13 +66,14 @@ LenMus project philosophy (to remind me to always stay on this):
   
   ---------------------------------------------------------------------------------------
   Now:
-	- document several VStaffs in one Instrument
-	- flag overlayered in VStaff.
-	- use flag in Formatter4 and BoxSystem
-	- move num-staves to instrument tag
+	+ document several VStaffs in one Instrument
+	+ flag overlayered in VStaff.
+	+ use flag in Formatter4 and BoxSystem
+	+ move num-staves to instrument tag
 	- ( allow for num_staves in voice tag only for non-overlayered voices ) ?
 	- How to deal for example with four voices piano reductions:
 		- flag overlayered in Instruments.
+	- name and abbreviation
 	
 	
     - move logs to temp directory
@@ -141,6 +142,16 @@ Other:
     be coded inside the program instead of being external html files.
 
 
+Spanish translation errors:
+	- AboutBox:
+		Falta espacio al final de:
+			- LenMus Phonascus
+			- conf. regional del sistema
+			- conf. reg. (cononica):
+			
+	- La notación '' es desconocida o no está todavía soportada.
+	               |--- falta %s
+    
 
 ******************************************************************************************
 Planning: comming releases 

@@ -239,251 +239,244 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOpt
             in first loop.
     */
 
-    //! @todo Optimization for repaints
-//    if (Not (m_nIdLastCanvas = m_oCanvas.ID And m_nLastCanvasWidth = m_oCanvas.Ancho)) {
-//        //Optimization for re-paints: As the division in systems and the positioning information do
-//        //not change if canvas is not changed, the code to perform the division in systems and
-//        //the positioning is not executed if the canvas is the same than in a the previous invocation
-//        //to this method and its width has not changed.
-//
-//        m_nIdLastCanvas = m_oCanvas.ID
-//        m_nLastCanvasWidth = m_oCanvas.Ancho
+    //compute systems indentation 
+    lmLUnits nFirstSystemIndent = 0;
+    lmLUnits nOtherSystemIndent = 0;
+    lmInstrument *pI;
+    for (pI = m_pScore->GetFirstInstrument(); pI; pI=m_pScore->GetNextInstrument())
+    {
+        pI->MeasureNames(pPaper);
+        nFirstSystemIndent = wxMax(nFirstSystemIndent, pI->GetIndentFirst());
+        nOtherSystemIndent = wxMax(nOtherSystemIndent, pI->GetIndentOther());
+    }
 
-        //First loop: splitting the score into systems, and do all positioning and spacing.
-        //Each loop cycle computes and justifies one system
-        //----------------------------------------------------------------------------------
-        iIni = 1;                //iIni = Measure in which the system starts
-        nAbsMeasure = 1;
-        nTotalMeasures = ((m_pScore->GetFirstInstrument())->GetVStaff(1))->GetNumMeasures();    //num measures in the score
-            //! @limit It is assumed that all staves have the same number of measures
-        nSystem = 1;
-        lmBoxPage* pBoxPage = pBoxScore->GetCurrentPage();
-        lmBoxSystem* pBoxSystem;
 
-        lmLUnits nSystemHeight;
+    //First loop: splitting the score into systems, and do all positioning and spacing.
+    //Each loop cycle computes and justifies one system
+    //----------------------------------------------------------------------------------
+    iIni = 1;                //iIni = Measure in which the system starts
+    nAbsMeasure = 1;
+    nTotalMeasures = ((m_pScore->GetFirstInstrument())->GetVStaff(1))->GetNumMeasures();    //num measures in the score
+        //! @limit It is assumed that all staves have the same number of measures
+    nSystem = 1;
+    lmBoxPage* pBoxPage = pBoxScore->GetCurrentPage();
+    lmBoxSystem* pBoxSystem;
 
+    lmLUnits nSystemHeight;
+
+    while (nAbsMeasure <= nTotalMeasures)
+    {
+        m_nMeasuresInSystem = 0;
+
+        //set up tables for storing StaffObjs positioning information
+        for (int i=1; i <= MAX_MEASURES_PER_SYSTEM; i++) {
+            m_oTimepos[i].CleanTable();
+        }
+
+        //-------------------------------------------------------------------------------
+        //Step 1: Form and size a measure column.
+        //-------------------------------------------------------------------------------
+        //inner loop: each loop cycle corresponds to processing a measure column
+        //The measure column is sized and this space discunted from available line space.
+        //The loop is exited when there is not enough space for including in this system
+        //the measure column just computed or when a newSystem tag is found
+        //-------------------------------------------------------------------------------
+
+        //if this is not the first system advance vertically the previous system height
+        if (nSystem != 1) {
+            //Here Paper is positioned at the start of the new current system. No
+            //computation for this is needed as staves' height and spacing have been
+            //added to paper as renderization took place.
+            //Lets' verify is there is space left in paper for next system
+            //! @todo It is assumed that next system height is equal to previous one.
+            //!     It is necesary to compute each system height
+            lmLUnits yNew = pPaper->GetCursorY() + nSystemHeight;
+            if (yNew > pPaper->GetMaximumY() ) {
+                //wxLogMessage(_T("Page break needed. yCur=%d, yNew=%d, MaximumY=%d"), pPaper->GetCursorY(), yNew, pPaper->GetMaximumY());
+                pPaper->RestartPageCursors();       //restore page cursors are at top-left corner
+                //start a new page
+                pBoxPage = pBoxScore->AddPage();
+            }
+        }
+
+        //create the system container
+        pBoxSystem = pBoxPage->AddSystem(nSystem);
+        ySystemPos = pPaper->GetCursorY();  //save the start of system position
+        pBoxSystem->SetPositionY(ySystemPos);
+        pBoxSystem->SetFirstMeasure(nAbsMeasure);
+        pBoxSystem->SetIndent(((nSystem == 1) ? nFirstSystemIndent : nOtherSystemIndent ));
+
+        bool fNewSystem = false;
+        nRelMeasure = 1;    // the first measure in current system
         while (nAbsMeasure <= nTotalMeasures)
         {
-            m_nMeasuresInSystem = 0;
+            //reposition paper vertically at the start of the system. It has been advanced
+            //when sizing the previous measure column
+            pPaper->SetCursorY( ySystemPos );
 
-            //set up tables for storing StaffObjs positioning information
-            for (int i=1; i <= MAX_MEASURES_PER_SYSTEM; i++) {
-                m_oTimepos[i].CleanTable();
+            //if start of system, add system indentation to paper x pos.
+            if (nRelMeasure == 1) {
+                pPaper->IncrementCursorX(
+                    ((nSystem == 1) ? nFirstSystemIndent : nOtherSystemIndent ));
             }
 
-            //-------------------------------------------------------------------------------
-            //Step 1: Form and size a measure column.
-            //-------------------------------------------------------------------------------
-            //inner loop: each loop cycle corresponds to processing a measure column
-            //The measure column is sized and this space discunted from available line space.
-            //The loop is exited when there is not enough space for including in this system
-            //the measure column just computed or when a newSystem tag is found
-            //-------------------------------------------------------------------------------
-
-            //if this is not the first system advance vertically the previous system height
-            if (nSystem != 1) {
-                //Here Paper is positioned at the start of the new current system. No
-                //computation for this is needed as staves' height and spacing have been
-                //added to paper as renderization took place.
-                //Lets' verify is there is space left in paper for next system
-                //! @todo It is assumed that next system height is equal to previous one.
-                //!     It is necesary to compute each system height
-                lmLUnits yNew = pPaper->GetCursorY() + nSystemHeight;
-                if (yNew > pPaper->GetMaximumY() ) {
-                    //wxLogMessage(_T("Page break needed. yCur=%d, yNew=%d, MaximumY=%d"), pPaper->GetCursorY(), yNew, pPaper->GetMaximumY());
-                    pPaper->RestartPageCursors();       //restore page cursors are at top-left corner
-                    //start a new page
-                    pBoxPage = pBoxScore->AddPage();
-                }
-            }
-
-            //create the system container
-            pBoxSystem = pBoxPage->AddSystem(nSystem);
-            ySystemPos = pPaper->GetCursorY();  //save the start of system position
-            pBoxSystem->SetPositionY(ySystemPos);
-            pBoxSystem->SetFirstMeasure(nAbsMeasure);
-
-            //for the first system it is necessary to compute the indentation
-            lmLUnits nSystemIndent = 0;
-            if (nSystem == 1) {
-                lmInstrument *pI;
-                for (pI = m_pScore->GetFirstInstrument(); pI; pI=m_pScore->GetNextInstrument())
-                {
-                    pI->Draw(DO_MEASURE, pPaper);
-                    nSystemIndent = wxMax(nSystemIndent, pI->GetIndent());
-                }
-            }
-            pBoxSystem->SetIndent( nSystemIndent );
-            pPaper->IncrementCursorX( nSystemIndent );
-
-
-            bool fNewSystem = false;
-            nRelMeasure = 1;    // the first measure in current system
-            while (nAbsMeasure <= nTotalMeasures)
-            {
-                //reposition paper vertically at the start of the system. It has been advanced
-                //when sizing the previous measure column
-                pPaper->SetCursorY( ySystemPos );
-
-                //size this measure column
-                m_nMeasureSize[nRelMeasure] =
-                    SizeMeasureColumn(nAbsMeasure, nRelMeasure, nSystem, pPaper, &fNewSystem);
+            //size this measure column
+            m_nMeasureSize[nRelMeasure] =
+                SizeMeasureColumn(nAbsMeasure, nRelMeasure, nSystem, pPaper, &fNewSystem);
 
 ///*LogDbg*/        wxLogMessage(wxString::Format(_T("[lmFormatter4::RenderJustified]: ")
 //                    _T("m_nMeasureSize[%d] = %d"), nRelMeasure, m_nMeasureSize[nRelMeasure] ));
 
-                //if this is the first measure column compute the space available in
-                //this system. The method is a little tricky. The total space available
-                //is (pPaper->GetPageRightMargin() - pPaper->GetCursorX()). But we have
-                //to take into account the space that will be used by the prolog. As the
-                //left position of the first measure column has taken all this into account,
-                //it is posible to use that value by just doing:
-                if (nRelMeasure == 1) {
-                    m_nFreeSpace =
-                        pPaper->GetRightMarginXPos() - m_oTimepos[nRelMeasure].GetStartOfBarPosition();
-               }
+            //if this is the first measure column compute the space available in
+            //this system. The method is a little tricky. The total space available
+            //is (pPaper->GetPageRightMargin() - pPaper->GetCursorX()). But we have
+            //to take into account the space that will be used by the prolog. As the
+            //left position of the first measure column has taken all this into account,
+            //it is posible to use that value by just doing:
+            if (nRelMeasure == 1) {
+                m_nFreeSpace =
+                    pPaper->GetRightMarginXPos() - m_oTimepos[nRelMeasure].GetStartOfBarPosition();
+            }
 
 ///*LogDbg*/        wxLogMessage(wxString::Format(_T("[lmFormatter4::RenderJustified]: ")
 //                    _T("m_nFreeSpace = %d, PageRightMargin=%d, StartOfBar=%d"),
 //                    m_nFreeSpace, pPaper->GetPageRightMargin(), m_oTimepos[nRelMeasure].GetStartOfBarPosition() ));
 ///*LogDbg*/        wxLogMessage(m_oTimepos[nRelMeasure].DumpTimeposTable());
 
-                //substract space ocupied by this measure from space available in the system
-                if (m_nFreeSpace < m_nMeasureSize[nRelMeasure]) {
-                    //there is no enough space for this measure column.
-                    //exit the loop. The system is finished
-                    break;
-                } else {
-                    //there is enough space for this measure column. Add it to current system and
-                    //discount the space that the measure will take
-                    m_nFreeSpace -= m_nMeasureSize[nRelMeasure];
-                    m_nMeasuresInSystem++;
-                }
-
-                //if newSystem tag found force to finish current system
-                if (fNewSystem) break;
-
-                //advance to next bar
-                nAbsMeasure++;
-                nRelMeasure++;
-
-            }    //end of loop to process a measure column
-
-
-            //-------------------------------------------------------------------------------
-            //Step 2: Justify measures (distribute remainnig space across all measures)
-            //-------------------------------------------------------------------------------
-            //At this point the number of measures to include in current system has been computed
-            //and some data is stored in the following global variables:
-            //
-            //   m_oTimepos[1..MaxBar] - positioning information for measure columns
-            //   m_nFreeSpace - free space available on this system
-            //   m_nMeasureSize[1..MaxBar] - stores the minimum size for each measure column for
-            //           the current system.
-            //   m_nMeasuresInSystem  - the number of measures that fit in this system
-            //
-            //Now we preceed to re-distribute the remaining free space across all measures, so that
-            //the system is justified. This step only computes the new measure column sizes and stores
-            //them in table m_nMeasureSize[1..MaxBar] but changes nothing in the StaffObjs
-            //-------------------------------------------------------------------------------
-            if (m_nMeasuresInSystem == 0) {
-                //The line width is not enough for drawing just one bar!!!
-                pPaper->RestartPageCursors();    //as cursors has been modified by measurements
-                RenderMinimal(pPaper);
-                /*! @todo
-                    this is too simple as RenderMinimal only produces good rendering
-                    in simple short scores (no multi-line or multi-instrument)
-                */
-                return (lmBoxScore*) NULL;
+            //substract space ocupied by this measure from space available in the system
+            if (m_nFreeSpace < m_nMeasureSize[nRelMeasure]) {
+                //there is no enough space for this measure column.
+                //exit the loop. The system is finished
+                break;
+            } else {
+                //there is enough space for this measure column. Add it to current system and
+                //discount the space that the measure will take
+                m_nFreeSpace -= m_nMeasureSize[nRelMeasure];
+                m_nMeasuresInSystem++;
             }
 
-            //dbg --------------
-            if (m_fDebugMode) {
-                wxLogMessage(_T("Before distributing free space"));
-                wxLogMessage(_T("***************************************\n"));
-                for (int i = 1; i <= m_nMeasuresInSystem; i++) {
-                    wxLogMessage(wxString::Format(
-                        _T("Bar column %d. Size = %d"), i, m_nMeasureSize[i]));
-                }
+            //if newSystem tag found force to finish current system
+            if (fNewSystem) break;
+
+            //advance to next bar
+            nAbsMeasure++;
+            nRelMeasure++;
+
+        }    //end of loop to process a measure column
+
+
+        //-------------------------------------------------------------------------------
+        //Step 2: Justify measures (distribute remainnig space across all measures)
+        //-------------------------------------------------------------------------------
+        //At this point the number of measures to include in current system has been computed
+        //and some data is stored in the following global variables:
+        //
+        //   m_oTimepos[1..MaxBar] - positioning information for measure columns
+        //   m_nFreeSpace - free space available on this system
+        //   m_nMeasureSize[1..MaxBar] - stores the minimum size for each measure column for
+        //           the current system.
+        //   m_nMeasuresInSystem  - the number of measures that fit in this system
+        //
+        //Now we preceed to re-distribute the remaining free space across all measures, so that
+        //the system is justified. This step only computes the new measure column sizes and stores
+        //them in table m_nMeasureSize[1..MaxBar] but changes nothing in the StaffObjs
+        //-------------------------------------------------------------------------------
+        if (m_nMeasuresInSystem == 0) {
+            //The line width is not enough for drawing just one bar!!!
+            pPaper->RestartPageCursors();    //as cursors has been modified by measurements
+            RenderMinimal(pPaper);
+            /*! @todo
+                this is too simple as RenderMinimal only produces good rendering
+                in simple short scores (no multi-line or multi-instrument)
+            */
+            return (lmBoxScore*) NULL;
+        }
+
+        //dbg --------------
+        if (m_fDebugMode) {
+            wxLogMessage(_T("Before distributing free space"));
+            wxLogMessage(_T("***************************************\n"));
+            for (int i = 1; i <= m_nMeasuresInSystem; i++) {
+                wxLogMessage(wxString::Format(
+                    _T("Bar column %d. Size = %d"), i, m_nMeasureSize[i]));
             }
-            //dbg ---------------
+        }
+        //dbg ---------------
 
-            if (fJustified) RedistributeFreeSpace(m_nFreeSpace);
+        if (fJustified) RedistributeFreeSpace(m_nFreeSpace);
 
-            //dbg --------------
-            if (m_fDebugMode) {
-                wxLogMessage(_T("After distributing free space"));
-                wxLogMessage(_T("***************************************\n"));
-                for (int i = 1; i <= m_nMeasuresInSystem; i++) {
-                    wxLogMessage(wxString::Format(
-                        _T("Bar column %d. Size = %d"), i, m_nMeasureSize[i]));
-                }
+        //dbg --------------
+        if (m_fDebugMode) {
+            wxLogMessage(_T("After distributing free space"));
+            wxLogMessage(_T("***************************************\n"));
+            for (int i = 1; i <= m_nMeasuresInSystem; i++) {
+                wxLogMessage(wxString::Format(
+                    _T("Bar column %d. Size = %d"), i, m_nMeasureSize[i]));
             }
-            //dbg --------------
+        }
+        //dbg --------------
 
 
 
-            //-------------------------------------------------------------------------------
-            //Step 3: Re-position StaffObjs.
-            //-------------------------------------------------------------------------------
-            //when reaching this point the table m_nMeasureSize[i] stores the final size that
-            //must have each measure column of this system.
-            //Now proceed to change StaffObjs locations so that they are evenly distributed across
-            //the the bar.
+        //-------------------------------------------------------------------------------
+        //Step 3: Re-position StaffObjs.
+        //-------------------------------------------------------------------------------
+        //when reaching this point the table m_nMeasureSize[i] stores the final size that
+        //must have each measure column of this system.
+        //Now proceed to change StaffObjs locations so that they are evenly distributed across
+        //the the bar.
 
-            //dbg ------------------------------------------------------------------------------
-            if (m_fDebugMode) {
-                wxLogMessage(_T("Before repositioning objects"));
-                wxLogMessage(_T("***************************************\n"));
-                wxLogMessage( m_pScore->Dump() );
-            }
-            //dbg ------------------------------------------------------------------------------
+        //dbg ------------------------------------------------------------------------------
+        if (m_fDebugMode) {
+            wxLogMessage(_T("Before repositioning objects"));
+            wxLogMessage(_T("***************************************\n"));
+            wxLogMessage( m_pScore->Dump() );
+        }
+        //dbg ------------------------------------------------------------------------------
 
-            xStartOfMeasure = m_oTimepos[1].GetStartOfBarPosition();
-            for (int i=1; i <= m_nMeasuresInSystem; i++) {
-                //GrabarTrace "RedistributeSpace: nNewSize = " & m_nMeasureSize(i) & ", newStart = " & xStartOfMeasure    //dbg
-                xStartOfMeasure = m_oTimepos[i].RedistributeSpace(m_nMeasureSize[i], xStartOfMeasure);
-            }
+        xStartOfMeasure = m_oTimepos[1].GetStartOfBarPosition();
+        for (int i=1; i <= m_nMeasuresInSystem; i++) {
+            //GrabarTrace "RedistributeSpace: nNewSize = " & m_nMeasureSize(i) & ", newStart = " & xStartOfMeasure    //dbg
+            xStartOfMeasure = m_oTimepos[i].RedistributeSpace(m_nMeasureSize[i], xStartOfMeasure);
+        }
 
-            //dbg ------------------------------------------------------------------------------
-            if (m_fDebugMode) {
-                wxLogMessage(_T("After repositioning objects"));
-                wxLogMessage(_T("***************************************\n"));
-                wxLogMessage( m_pScore->Dump() );
-            }
-            //dbg ------------------------------------------------------------------------------
+        //dbg ------------------------------------------------------------------------------
+        if (m_fDebugMode) {
+            wxLogMessage(_T("After repositioning objects"));
+            wxLogMessage(_T("***************************************\n"));
+            wxLogMessage( m_pScore->Dump() );
+        }
+        //dbg ------------------------------------------------------------------------------
 
-            //Store information about this system
-            pBoxSystem->SetNumMeasures(m_nMeasuresInSystem);
-            if (nAbsMeasure + m_nMeasuresInSystem == nTotalMeasures && 
-                pOptions->m_fStopStaffLinesAtFinalBarline)
-            {
-                //this is the last system and it has been requested to stop staff lines
-                //in last measure. So, set final x so staff lines go to final bar line
-                pBoxSystem->SetFinalX( pVStaff->GetXPosFinalBarline() - 1 );
-            }
-            else {
-                //staff lines go to the rigth margin
-                pBoxSystem->SetFinalX( pPaper->GetRightMarginXPos() );
-            }
-
-
-            // compute system height
-            if (nSystem == 1) {
-                nSystemHeight = pPaper->GetCursorY() - ySystemPos;
-                //wxLogMessage(_T("[lmFormatter4::RenderJustified] nSystemHeight = %d"),
-                //    nSystemHeight );
-            }
+        //Store information about this system
+        pBoxSystem->SetNumMeasures(m_nMeasuresInSystem);
+        if (nAbsMeasure + m_nMeasuresInSystem == nTotalMeasures && 
+            pOptions->m_fStopStaffLinesAtFinalBarline)
+        {
+            //this is the last system and it has been requested to stop staff lines
+            //in last measure. So, set final x so staff lines go to final bar line
+            pBoxSystem->SetFinalX( pVStaff->GetXPosFinalBarline() - 1 );
+        }
+        else {
+            //staff lines go to the rigth margin
+            pBoxSystem->SetFinalX( pPaper->GetRightMarginXPos() );
+        }
 
 
-            //increment loop information
-            iIni += m_nMeasuresInSystem;
-            nAbsMeasure = iIni;
-            nSystem++;
+        // compute system height
+        if (nSystem == 1) {
+            nSystemHeight = pPaper->GetCursorY() - ySystemPos;
+            //wxLogMessage(_T("[lmFormatter4::RenderJustified] nSystemHeight = %d"),
+            //    nSystemHeight );
+        }
 
-        }    //while (nAbsMeasure <= nTotalMeasures)
 
-    //}     //Fin del bloque que no se ejecuta si es el mismo papel
+        //increment loop information
+        iIni += m_nMeasuresInSystem;
+        nAbsMeasure = iIni;
+        nSystem++;
+
+    }    //while (nAbsMeasure <= nTotalMeasures)
 
     return pBoxScore;
 
@@ -516,6 +509,8 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
     bool fNewSystem = false;
 
     // explore all instruments in the score
+    lmLUnits xPaperPos, yPaperPos;
+    lmLUnits xStartPos = pPaper->GetCursorX();      //save x pos to align staves in system
     for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
     {
         //verify that program limits are observed
@@ -526,11 +521,26 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             wxASSERT(false);
         }
 
+        pPaper->SetCursorX( xStartPos );    //align staves in system
+
         //loop. For current instrument, explore all its staves to size the measure
         //column nAbsMeasure. All collected information is stored in m_oTimepos[nRelMeasure]
-        lmLUnits yPaperPos = pPaper->GetCursorY();
-        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
+        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
+        {
             pVStaff = pInstr->GetVStaff(iVStaff);
+
+            //if it is not first VStaff, set paper position for this VStaff 
+            if (iVStaff != 1) {
+                if (pVStaff->IsOverlayered()) {
+                    //overlayered: restore paper position to previous VStaff position
+                    pPaper->SetCursorX( xPaperPos );
+                    pPaper->SetCursorY( yPaperPos );
+                }
+            }
+
+            //save this VStaff paper position
+            xPaperPos = pPaper->GetCursorX();
+            yPaperPos = pPaper->GetCursorY();
 
             //The prolog must be rendered on each system, but the
             //matching StaffObjs only exist in the first system. Therefore:
@@ -543,16 +553,14 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
 
             fNewSystem |= SizeMeasure(pVStaff, nAbsMeasure, nRelMeasure, pPaper);
 
-            pPaper->SetCursorY( yPaperPos );
-            //advance paper position to next staff.
+            //advance paper in height off this lmVStaff
             //@attention As advancing one staff has the effect of returning
             //x position to the left marging, all x position information stored
             //in m_timepos is relative to the start of the measure
+            pVStaff->NewLine(pPaper);
             //! @todo add inter-staff space
-//            pVStaff->NewLine(pPaper);
 
         }    // next lmVStaff
-        pVStaff->NewLine(pPaper);
 
     }    // next lmInstrument
 
@@ -672,6 +680,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     wxASSERT(nAbsMeasure <= pVStaff->GetNumMeasures());
 
     //! @todo Review this commented code. Must review also DrawMeasure
+    //      I think this code is only for positioning text relative to barline
     //StaffObjs could have positioning information relative to the start of barline position.
     //Therfore, it is necessary to store start of barline position so that relative positioned
     //StaffObjs can be correctly positioned.
