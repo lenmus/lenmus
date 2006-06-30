@@ -122,7 +122,7 @@ void lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation tPos,
     tFont.nStyle = nStyle;
     tFont.sFontName = sFontName;
 
-    lmText* pTitle = new lmText(this, sTitle, nAlign, tPos, tFont);
+    lmScoreText* pTitle = new lmScoreText(this, sTitle, nAlign, tPos, tFont);
     IncludeInGlobalList(pTitle);    //so that it is selectable for edition
     m_cTitles.Append(pTitle);
 
@@ -145,6 +145,18 @@ lmInstrument* lmScore::AddInstrument(int nVStaves,
     //nMIDIChannel is the MIDI channel to use for playing this instrument
     lmInstrument* pInstr = new lmInstrument(this, nVStaves, nMIDIChannel, nMIDIInstr,
                                             sName, sAbbrev);
+    m_cInstruments.Append(pInstr);
+    return pInstr;
+    
+}
+
+lmInstrument* lmScore::AddInstrument(int nVStaves, int nMIDIChannel, int nMIDIInstr,
+                                lmScoreText* pName, lmScoreText* pAbbrev)
+{
+    //add an lmInstrument with nVStaves (1..m) empty VStaves.
+    //nMIDIChannel is the MIDI channel to use for playing this instrument
+    lmInstrument* pInstr = new lmInstrument(this, nVStaves, nMIDIChannel, nMIDIInstr,
+                                            pName, pAbbrev);
     m_cInstruments.Append(pInstr);
     return pInstr;
     
@@ -182,10 +194,10 @@ void lmScore::WriteTitles(bool fMeasuring, lmPaper *pPaper)
 
     if (fMeasuring) yPaperPos = pPaper->GetCursorY();
 
-    lmText* pTitle;
+    lmScoreText* pTitle;
     wxStaffObjsListNode* pNode;
     for(pNode = m_cTitles.GetFirst(); pNode; pNode = pNode->GetNext()) {
-        pTitle = (lmText*)pNode->GetData();
+        pTitle = (lmScoreText*)pNode->GetData();
         if (fMeasuring)
             MeasureTitle(pPaper, pTitle);
         else
@@ -197,7 +209,7 @@ void lmScore::WriteTitles(bool fMeasuring, lmPaper *pPaper)
 
 }
 
-lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmText* pTitle)
+lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle)
 {
     // returns height of title
 
@@ -431,17 +443,14 @@ wxString lmScore::Dump(wxString sFilename)
 
 wxString lmScore::SourceLDP(wxString sFilename)
 {
-    wxString sSource = 
-        wxString::Format(_T("Score ID: %d\n\n(Score\n   (Vers 1.3)\n   (NumInstrumentos %d)\n"),
-                    GetID(), m_cInstruments.GetCount() );
+    wxString sSource = wxString::Format(_T("Score ID: %d\n\n"), m_nID);
+    sSource += _T("(score\n   (vers 1.5)(language en iso-8859-1)\n");
 
     //loop for each instrument
      lmInstrument *pInstr = GetFirstInstrument();
     for (int i=1; i<= (int)m_cInstruments.GetCount(); i++, pInstr = GetNextInstrument())
     {
-        sSource += wxString::Format(_T("   (Instrumento %d\n"), i);
         sSource += pInstr->SourceLDP();
-        sSource += _T("   )\n");
     }
     sSource += _T(")");
 

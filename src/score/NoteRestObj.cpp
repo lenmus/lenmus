@@ -123,12 +123,12 @@ void lmFermata::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 //========================================================================================
 //Global variables used as default initializators
 lmFontInfo tLyricDefaultFont = { _T("Arial"), 8, lmTEXT_ITALIC };
-lmLocation tDefaultPos = {0,0,lmLOCATION_RELATIVE,lmLOCATION_RELATIVE,lmTENTHS,lmTENTHS};
+lmLocation g_tDefaultPos = {0,0,lmLOCATION_RELATIVE,lmLOCATION_RELATIVE,lmTENTHS,lmTENTHS};
 
 lmLyric::lmLyric(lmNoteRest* pOwner, wxString sText, ESyllabicTypes nSyllabic,
             int nNumLine, wxString sLanguage )
     : lmNoteRestObj(eST_Lyric, pOwner),
-      lmBasicText(sText, sLanguage, &tDefaultPos, tLyricDefaultFont)
+      lmBasicText(sText, sLanguage, &g_tDefaultPos, tLyricDefaultFont)
 {
     m_nNumLine = nNumLine;
 }

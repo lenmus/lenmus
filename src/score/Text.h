@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 /*! @file Text.h
-    @brief Header file for classes lmBasicText and lmText
+    @brief Header file for classes lmBasicText and lmScoreText
     @ingroup score_kernel
 */
 #ifdef __GNUG__
@@ -58,13 +58,13 @@ protected:
 };
 
 
-class lmText :  public lmSimpleObj
+class lmScoreText :  public lmSimpleObj
 {
 public:
-    lmText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,
+    lmScoreText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,
            lmLocation tPos, lmFontInfo tFont);
 
-    ~lmText() {}
+    ~lmScoreText() {}
 
     // properties related to the clasification of this lmStaffObj
     //EPositioningType GetPositioningType() { return ePos_Predefined; }

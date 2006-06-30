@@ -52,25 +52,40 @@ WX_DEFINE_LIST(InstrumentsList);
 
 
 //Global variables used as default initializators
-lmFontInfo tInstrumentDefaultFont = { _T("Arial"), 14, lmTEXT_BOLD };
+lmFontInfo g_tInstrumentDefaultFont = { _T("Times New Roman"), 14, lmTEXT_BOLD };
 
 
 lmInstrument::lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel,
                            int nMIDIInstr, wxString sName, wxString sAbbrev)
 {
-    //constructor: 
-    //    pScore    - score to which this instrument belongs
-    //    nStaves   - num of VStaves that will have. Usually only one lmVStaff.
-    //    nChannel  - MIDI channel that will be used for playing this lmInstrument.
-    //    nInstr    - MIDI instrument that will be used for playing this lmInstrument.
-    //    sName     - name of the instrument
-    //    sAbbrev   - abbreviation to use in second and following systems
-                
+    //create objects for name and abbreviation
+    lmScoreText* pName = (lmScoreText*)NULL;
+    lmScoreText* pAbbreviation = (lmScoreText*)NULL;
+    if (sName != _T("")) {
+        pName = new lmScoreText(pScore, sName, lmALIGN_LEFT,
+                           g_tDefaultPos, g_tInstrumentDefaultFont);
+    }
+    if (sAbbrev != _T("")) {
+        pAbbreviation = new lmScoreText(pScore, sAbbrev, lmALIGN_LEFT,
+                                   g_tDefaultPos, g_tInstrumentDefaultFont);
+    }
+
+    //create the instrument
+    lmInstrument(pScore, nNumStaves, nMIDIChannel, nMIDIInstr, pName, pAbbreviation);
+
+}
+
+lmInstrument::lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel, int nMIDIInstr,
+                 lmScoreText* pName, lmScoreText* pAbbrev)
+{
     m_pScore = pScore;
     m_nMidiInstr = nMIDIInstr;
     m_nMidiChannel = nMIDIChannel;
     m_nIndentFirst = 0;
     m_nIndentOther = 0;
+    m_pName = pName;
+    m_pAbbreviation = pAbbrev;
+
 
     //Normally, only one lmVStaff with one or two lmStaff
     //If more than one, they normally represent overlayered additional voices
@@ -78,17 +93,11 @@ lmInstrument::lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel,
         AddVStaff( (i!=1) );    //second and remaining overlayered
     }
 
-    //create auxiliary objects for name and abbreviation
-    m_pName = (lmText*)NULL;
-    m_pAbbreviation = (lmText*)NULL;
-    if (sName != _T("")) {
-        m_pName = new lmText(m_pScore, sName, lmALIGN_LEFT,
-                             tDefaultPos, tInstrumentDefaultFont);
-    }
-    if (sAbbrev != _T("")) {
-        m_pAbbreviation = new lmText(m_pScore, sAbbrev, lmALIGN_LEFT,
-                                     tDefaultPos, tInstrumentDefaultFont);
-    }
+    //include name/abbrev. in global list so that they are selectable for edition
+    //the owner of them is now the score. Do not delete them.
+    if (m_pName) pScore->IncludeInGlobalList(m_pName);
+    if (m_pAbbreviation) pScore->IncludeInGlobalList(m_pAbbreviation);
+
 
 }
 
@@ -96,8 +105,15 @@ lmInstrument::~lmInstrument()
 {
     m_cStaves.DeleteContents(true);
 
-    if (m_pName) delete m_pName;
-    if (m_pAbbreviation) delete m_pAbbreviation;
+    //remove name/abbrev. from global list and delete them
+    if (m_pName) {
+        m_pScore->RemoveFromGlobalList(m_pName);
+        delete m_pName;
+    }
+    if (m_pAbbreviation) {
+        m_pScore->RemoveFromGlobalList(m_pAbbreviation);
+        delete m_pAbbreviation;
+    }
 
 }
 
@@ -151,20 +167,25 @@ wxString lmInstrument::Dump()
 
 wxString lmInstrument::SourceLDP()
 {
-    wxString sSource = 
-        wxString::Format(_T("      (NumPartes %d)\n"), m_cStaves.GetCount() );
+    wxString sSource = _T("   (instrument");
+
+    //num of staves
+    wxVStavesListNode *pNode = m_cStaves.GetFirst();
+    lmVStaff* pVStaff = (lmVStaff*) pNode->GetData();
+    if (pVStaff->GetNumStaves() > 1) {
+        sSource += wxString::Format(_T(" (staves %d)"), pVStaff->GetNumStaves());
+    }
 
     //loop for each lmVStaff
-    wxVStavesListNode *pNode;
-    lmVStaff* pVStaff;
-    int i;
-    for (i=1, pNode = m_cStaves.GetFirst(); pNode; pNode = pNode->GetNext(), i++)
+    for (; pNode; pNode = pNode->GetNext())
     {
         pVStaff = (lmVStaff*) pNode->GetData();
-        sSource += wxString::Format(_T("      (Parte %d\n"), i);
+        sSource += _T("\n      (voice\n");
         sSource += pVStaff->SourceLDP();
         sSource += _T("      )\n");
     }
+
+    sSource += _T("   )\n");
     return sSource;
 
 }
@@ -193,6 +214,51 @@ void lmInstrument::MeasureNames(lmPaper* pPaper)
         m_pName->Draw(DO_MEASURE, pPaper);
         // set indent =  text extend + after text space
         m_nIndentFirst = m_pName->GetSelRect().width + 30;    //! @todo user options
+
+        //lmLUnits xPaperPos = pPaper->GetCursorX();
+        //lmLUnits yPaperPos = pPaper->GetCursorY();
+
+        ////if need to reposition paper, convert units to tenths
+        //lmLUnits xPos, yPos;
+        //lmLocation tPos = m_pName->GetLocation();
+        //if (tPos.xType != lmLOCATION_DEFAULT) {
+        //    if (tPos.xUnits == lmTENTHS)
+        //        xPos = tPos.x;
+        //    else
+        //        xPos = lmToLogicalUnits(tPos.x, tPos.xUnits);
+        //}
+
+        //if (tPos.yType != lmLOCATION_DEFAULT) {
+        //    if (tPos.yUnits == lmTENTHS)
+        //        yPos = tPos.y;
+        //    else
+        //        yPos = lmToLogicalUnits(tPos.y, tPos.yUnits);
+        //}
+
+        ////reposition paper according text required positioning info
+        //if (tPos.xType == lmLOCATION_RELATIVE) {
+        //    xPaperPos += xPos;
+        //}
+        //else if (tPos.xType == lmLOCATION_ABSOLUTE) {
+        //    xPaperPos = xPos + pPaper->GetLeftMarginXPos();
+        //}
+
+        //if (tPos.yType == lmLOCATION_RELATIVE) {
+        //    yPaperPos += yPos;
+        //}
+        //else if (tPos.yType == lmLOCATION_ABSOLUTE) {
+        //    yPaperPos = yPos + pPaper->GetPageTopMargin();
+        //}
+        //pPaper->SetCursorY( yPaperPos );
+
+        ////Ignore alignment. Always align left.
+        //if (tPos.xType == lmLOCATION_DEFAULT)
+        //    pPaper->SetCursorX(pPaper->GetLeftMarginXPos());
+        //else
+        //    pPaper->SetCursorX( xPaperPos );
+
+        //m_pName->Draw(DO_MEASURE, pPaper);
+        //m_nIndentFirst = m_pName->GetSelRect().width + 30;    //! @todo user options
     }
 
     if (m_pAbbreviation) {

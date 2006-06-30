@@ -300,8 +300,14 @@ wxString lmClef::Dump()
 
 wxString lmClef::SourceLDP()
 {
-    wxString sSource = _T("            (Clave ");
+    wxString sSource = _T("         (clef ");
     sSource += GetClefLDPNameFromType(m_nClefType);
+
+    //staff num
+    if (m_pVStaff->GetNumStaves() > 1) {
+        sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
+    }
+
     if (!m_fVisible) { sSource += _T(" no_visible"); }
     sSource += _T(")\n");
     return sSource;

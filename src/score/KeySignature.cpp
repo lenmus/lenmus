@@ -46,7 +46,14 @@ extern lmLogger* g_pLogger;
 
 
 
-static wxString sKeySignatureName[30];
+static wxString m_sKeySignatureName[30];
+static wxString m_sLDPKeyName[30] = {
+        "Do", "Sol", "Re", "La", "Mi", "Si",
+        "Fas", "Dos", "Dob", "Solb", "Reb", "Lab",
+        "Mib", "Sib", "Fa", "Lam", "Mim", "Sim",
+        "Fasm", "Dosm", "Solsm", "Resm", "Lasm", "Labm",
+        "Mibm", "Sibm", "Fam", "Dom", "Solm", "Rem"
+};
 
 //-------------------------------------------------------------------------------------------------
 // lmKeySignature object implementation
@@ -63,36 +70,36 @@ lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool
 
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
-    sKeySignatureName[0] = _("C Major");
-    sKeySignatureName[1] = _("G Major");
-    sKeySignatureName[2] = _("D Major");
-    sKeySignatureName[3] = _("A Major");
-    sKeySignatureName[4] = _("E Major");
-    sKeySignatureName[5] = _("B Major");
-    sKeySignatureName[6] = _("F # Major");
-    sKeySignatureName[7] = _("C # Major");
-    sKeySignatureName[8] = _("C b Major");
-    sKeySignatureName[9] = _("G b Major");
-    sKeySignatureName[10] = _("D b Major");
-    sKeySignatureName[11] = _("A b Major");
-    sKeySignatureName[12] = _("E b Major");
-    sKeySignatureName[13] = _("B b Major");
-    sKeySignatureName[14] = _("F Major");
-    sKeySignatureName[15] = _("A minor");
-    sKeySignatureName[16] = _("E minor");
-    sKeySignatureName[17] = _("B minor");
-    sKeySignatureName[18] = _("F # minor");
-    sKeySignatureName[19] = _("C # minor");
-    sKeySignatureName[20] = _("G # minor");
-    sKeySignatureName[21] = _("D # minor");
-    sKeySignatureName[22] = _("A # minor");
-    sKeySignatureName[23] = _("A b minor");
-    sKeySignatureName[24] = _("E b minor");
-    sKeySignatureName[25] = _("B b minor");
-    sKeySignatureName[26] = _("F minor");
-    sKeySignatureName[27] = _("C minor");
-    sKeySignatureName[28] = _("G minor");
-    sKeySignatureName[29] = _("D minor");
+    m_sKeySignatureName[0] = _("C Major");
+    m_sKeySignatureName[1] = _("G Major");
+    m_sKeySignatureName[2] = _("D Major");
+    m_sKeySignatureName[3] = _("A Major");
+    m_sKeySignatureName[4] = _("E Major");
+    m_sKeySignatureName[5] = _("B Major");
+    m_sKeySignatureName[6] = _("F # Major");
+    m_sKeySignatureName[7] = _("C # Major");
+    m_sKeySignatureName[8] = _("C b Major");
+    m_sKeySignatureName[9] = _("G b Major");
+    m_sKeySignatureName[10] = _("D b Major");
+    m_sKeySignatureName[11] = _("A b Major");
+    m_sKeySignatureName[12] = _("E b Major");
+    m_sKeySignatureName[13] = _("B b Major");
+    m_sKeySignatureName[14] = _("F Major");
+    m_sKeySignatureName[15] = _("A minor");
+    m_sKeySignatureName[16] = _("E minor");
+    m_sKeySignatureName[17] = _("B minor");
+    m_sKeySignatureName[18] = _("F # minor");
+    m_sKeySignatureName[19] = _("C # minor");
+    m_sKeySignatureName[20] = _("G # minor");
+    m_sKeySignatureName[21] = _("D # minor");
+    m_sKeySignatureName[22] = _("A # minor");
+    m_sKeySignatureName[23] = _("A b minor");
+    m_sKeySignatureName[24] = _("E b minor");
+    m_sKeySignatureName[25] = _("B b minor");
+    m_sKeySignatureName[26] = _("F minor");
+    m_sKeySignatureName[27] = _("C minor");
+    m_sKeySignatureName[28] = _("G minor");
+    m_sKeySignatureName[29] = _("D minor");
 
     m_fHidden = false;
     m_fTraditional = true;
@@ -117,11 +124,12 @@ wxString lmKeySignature::Dump()
 
 wxString lmKeySignature::SourceLDP()
 {
-  //  wxString sFuente = 
-        //_T("            (Tonalidad " & GetNombreLDP_Tonalidad(m_nKeySignature)
-//    if (Not m_fVisible ) { sFuente = sFuente & " no_visible"
-//    sFuente = sFuente & ")"
-    return _T("");
+    wxString sSource = _T("         (key ");
+    sSource += m_sLDPKeyName[m_nKeySignature];
+    if (!m_fVisible) { sSource += _T(" no_visible"); }
+    sSource += _T(")\n");
+    return sSource;
+
 }
 
 wxString lmKeySignature::SourceXML()
@@ -640,7 +648,7 @@ bool IsMajor(EKeySignatures nKeySignature)
 
 const wxString& GetKeySignatureName(EKeySignatures nKeySignature)
 {
-    return sKeySignatureName[nKeySignature - lmMIN_KEY];
+    return m_sKeySignatureName[nKeySignature - lmMIN_KEY];
 }
 
 //! Retunrs the number of fifths that corresponds to the encoded key signature

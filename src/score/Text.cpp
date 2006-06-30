@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 /*! @file Text.cpp
-    @brief Implementation file for classes lmBasicText and lmText
+    @brief Implementation file for classes lmBasicText and lmScoreText
     @ingroup score_kernel
 */
 #ifdef __GNUG__
@@ -76,10 +76,10 @@ lmBasicText::lmBasicText(wxString sText, wxString sLanguage,
 }
 
 //==========================================================================================
-// lmText implementation
+// lmScoreText implementation
 //==========================================================================================
 
-lmText::lmText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,
+lmScoreText::lmScoreText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,
                lmLocation tPos, lmFontInfo tFont) :
     lmSimpleObj(eTPO_Text, (lmVStaff*)NULL, 0, true, sbDRAGGABLE)
 {
@@ -101,12 +101,12 @@ lmText::lmText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,
 // implementation of virtual methods defined in base abstract class lmStaffObj
 //-----------------------------------------------------------------------------------------
 
-wxBitmap* lmText::GetBitmap(double rScale)
+wxBitmap* lmScoreText::GetBitmap(double rScale)
 {
     return PrepareBitMap(rScale, m_sText);
 }
 
-void lmText::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmScoreText::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {
     wxDC* pDC = pPaper->GetDC();
     wxASSERT(pDC);
@@ -138,7 +138,7 @@ void lmText::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
 }
 
-wxString lmText::Dump()
+wxString lmScoreText::Dump()
 {
     wxString sDump = wxString::Format(
         _T("%d\tText %s\tfixed=%s paperPos=(%d, %d)\n"),
@@ -148,19 +148,19 @@ wxString lmText::Dump()
             
 }
 
-wxString lmText::SourceLDP()
+wxString lmScoreText::SourceLDP()
 {
-    wxString sSource = _T("         (text ");
+    wxString sSource = _T("(text ");
     sSource += m_sText;
-    sSource += _T(")\n");
+    sSource += _T(")");
     return sSource;
 
 }
 
-wxString lmText::SourceXML()
+wxString lmScoreText::SourceXML()
 {
     //! @todo all
-    wxString sSource = _T("TODO: lmText XML Source code generation methods");
+    wxString sSource = _T("TODO: lmScoreText XML Source code generation methods");
     return sSource;
 
 ////    <direction placement="above">
@@ -179,10 +179,10 @@ wxString lmText::SourceXML()
 //    
 }
 
-void lmText::SetFont(lmPaper* pPaper)
+void lmScoreText::SetFont(lmPaper* pPaper)
 {
     //wxLogMessage(wxString::Format(
-    //    _T("[lmText::SetFont]: size=%d, name=%s"), m_nFontSize, m_sFontName));
+    //    _T("[lmScoreText::SetFont]: size=%d, name=%s"), m_nFontSize, m_sFontName));
 
     int nWeight = (m_fBold ? wxBOLD : wxNORMAL);
     int nStyle = (m_fItalic ? wxITALIC : wxNORMAL);
@@ -190,7 +190,7 @@ void lmText::SetFont(lmPaper* pPaper)
 
     if (!m_pFont) {
         wxMessageBox(_("Sorry, an error has occurred while allocating the font."),
-            _T("lmText::SetFont"), wxOK);
+            _T("lmScoreText::SetFont"), wxOK);
         ::wxExit();
     }
 }

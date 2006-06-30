@@ -632,60 +632,20 @@ wxString lmVStaff::Dump()
 wxString lmVStaff::SourceLDP()
 {
     wxString sSource;
-    wxStaffObjsListNode* pNode;
 
     //iterate over the collection of StaffObjs
-    int iC = 1;            // bar number
     lmStaffObj* pSO;
     lmStaffObjIterator* pIT = m_cStaffObjs.CreateIterator(eTR_AsStored);  //THINK: Should be eTR_ByTime?
     while(!pIT->EndOfList())
     {
         pSO = pIT->GetCurrent();
-        //verify if this lmStaffObj is the start of a new bar
-        wxASSERT(GetNumMeasures() > 0);
-        if (iC <= GetNumMeasures())
-        {
-            pNode = m_cStaffObjs.GetFirstInMeasure(iC);
-            wxASSERT(pNode);
-            if (pSO->GetID() == ((lmStaffObj*)pNode->GetData())->GetID() )
-            {
-                //if it is not the first bar close the previous one
-                if (iC != 1) { sSource += _T("      )\n"); }
-                //start a new bar
-                sSource += wxString::Format(_T("         (C %d\n"), iC);
-                iC++;
-            }
-        }
-
         sSource += pSO->SourceLDP();
         pIT->MoveNext();
     }
     delete pIT;
 
-    sSource += _T("         )\n");        // end of last bar
     return sSource;
 
-//    Do While oIT.QuedanItems
-//        Set oPo = oIT.GetItem
-//        //determina si empieza compas
-//        if (iC <= this.NumCompases {
-//            if (oPo.ID = m_cStaffObjs.GetFirstInMeasure(iC).ID {
-//                //si no es el primer compas cierra el precedente
-//                if (iC != 1 { sFuente = sFuente & "      )" & sCrLf
-//                //inicia nuevo compas
-//                sFuente = sFuente & "         (C " & iC & sCrLf
-//                iC = iC + 1
-//            }
-//        }
-//        //obtiene el fuente del staffobj
-//        sFuente = sFuente & oPo.Fuente & sCrLf
-//        //avanza al siguiente staffobj
-//        oIT.AdvanceCursor
-//    Loop
-//    //cierra último compas
-//    sFuente = sFuente & "         )" & sCrLf
-//    Fuente = sFuente
-    
 }
 
 wxString lmVStaff::SourceXML()

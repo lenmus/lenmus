@@ -362,7 +362,7 @@ typedef struct lmFontInfoStruct {
 
     //global variables used as default initializators
 extern lmFontInfo tLyricDefaultFont;            // defined in NoteRestObj.cpp
-extern lmFontInfo tInstrumentDefaultFont;       // defined in Instrument.cpp
+extern lmFontInfo g_tInstrumentDefaultFont;       // defined in Instrument.cpp
 extern lmFontInfo tBasicTextDefaultFont;        // defined in NoteRestObj.cpp
 
 
@@ -384,7 +384,7 @@ typedef struct lmLocationStruct {
 } lmLocation;
 
     //global variables used as default initializators
-extern lmLocation tDefaultPos;          // defined in NoteRestObj.cpp
+extern lmLocation g_tDefaultPos;          // defined in NoteRestObj.cpp
 
 
 //Constants
@@ -409,7 +409,7 @@ class VStavesList;
 class StaffObjsList;
 
 class lmBasicText;
-class lmText;
+class lmScoreText;
 class lmWordsDirection;
 class lmSOControl;
 class lmClef;
@@ -474,9 +474,11 @@ public:
     lmScore();
     ~lmScore();
 
-    lmInstrument* AddInstrument(int nVStaves,
-                                int nMIDIChannel, int nMIDIInstr,
+    lmInstrument* AddInstrument(int nVStaves, int nMIDIChannel, int nMIDIInstr,
                                 wxString sName, wxString sAbbrev=_T(""));
+    lmInstrument* AddInstrument(int nVStaves, int nMIDIChannel, int nMIDIInstr,
+                                lmScoreText* pName, lmScoreText* pAbbrev);
+
     lmVStaff* GetVStaff(int nInstr, int nVStaff=1);
     int GetNumMeasures();
 
@@ -548,7 +550,7 @@ private:
     void WriteToFile(wxString sFilename, wxString sContent);
     void ComputeMidiEvents();
     void RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper);
-    lmLUnits MeasureTitle(lmPaper *pPaper, lmText* pTitle);
+    lmLUnits MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle);
 
 
         //

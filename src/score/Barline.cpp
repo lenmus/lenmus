@@ -150,7 +150,7 @@ wxString lmBarline::Dump()
 
 wxString lmBarline::SourceLDP()
 {
-    wxString sSource = _T("            (Barra ");
+    wxString sSource = _T("         (barline ");
     sSource += GetBarlineLDPNameFromType(m_nBarlineType);
     if (!m_fVisible) { sSource += _T(" no_visible"); }
     sSource += _T(")\n");

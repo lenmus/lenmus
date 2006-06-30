@@ -125,12 +125,11 @@ wxString lmTimeSignature::Dump()
 
 wxString lmTimeSignature::SourceLDP()
 {
-//    Dim sFuente As String
-//    sFuente = "            (Metrica " & GetNombreMetrica(m_nTimeSignature)
-//    If Not m_fVisible Then sFuente = sFuente & " no_visible"
-//    sFuente = sFuente & ")"
-//    IPentObj_Fuente = sFuente
-    return _T("");
+    wxString sSource = wxString::Format(_T("         (time %d %d"), m_nBeats, m_nBeatType);
+    if (!m_fVisible) { sSource += _T(" no_visible"); }
+    sSource += _T(")\n");
+    return sSource;
+
 }
 
 wxString lmTimeSignature::SourceXML()

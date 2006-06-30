@@ -4,7 +4,7 @@
    (title center "Prelude 4" (font bold 14))
    (title right "F. Chopin" dy=10mm (font normal 12))
 
-   (instrument (instrName "4.") (staves 2)
+   (instrument (name "4.") (staves 2)
       (voice 
             (clef Sol p1)   //sol clef in staff 1
             (clef Fa4 p2)   //fa4 clef in staff 2

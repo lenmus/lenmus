@@ -73,7 +73,7 @@ LenMus project philosophy (to remind me to always stay on this):
 	- ( allow for num_staves in voice tag only for non-overlayered voices ) ?
 	- How to deal for example with four voices piano reductions:
 		- flag overlayered in Instruments.
-	- name and abbreviation
+	+ name and abbreviation
 	
 	
     - move logs to temp directory

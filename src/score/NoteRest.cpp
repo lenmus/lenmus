@@ -298,25 +298,25 @@ wxString lmNoteRest::GetLDPNoteType()
 {
     switch(m_nNoteType) {
         case eLong:
-            return _T("D");
+            return _T("d");
         case eWhole:
-            return _T("R");
+            return _T("r");
         case eHalf:
-            return _T("B");
+            return _T("b");
         case eQuarter:
-            return _T("N");
+            return _T("n");
         case eEighth:
-            return _T("C");
+            return _T("c");
         case e16th:
-            return _T("S");
+            return _T("s");
         case e32th:
-            return _T("F");
+            return _T("f");
         case e64th:
-            return _T("M");
+            return _T("m");
         case e128th:
-            return _T("G");
+            return _T("g");
         case e256th:
-            return _T("P");
+            return _T("p");
         default:
             wxASSERT(false);
             return _T("");        //compiler happy

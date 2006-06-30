@@ -1272,26 +1272,47 @@ wxString lmNote::Dump()
 
 wxString lmNote::SourceLDP()
 {
-    wxString sSource = _T("            (n ");    
+    wxString sSource = _T("         (n ");    
     //(fInChord ? _T("            (NA "), _T("            (N "));
     sSource += MIDINoteToLDPPattern(PitchToMidi(m_nPitch,0), earmDo, (lmPitch*)NULL);
     sSource += _T(" ");
     sSource += GetLDPNoteType();
+    if (m_fDotted) sSource += _T(".");
+    if (m_fDoubleDotted) sSource += _T(".");
 
     //! @todo take tonal key into account
 
     //! @todo Finish lmNote LDP Source code generation method
 
-//    if (nLigado == eL_Tied) { m_sFuente = m_sFuente & _T(" L");
-//    if (nBeamMode == etaInicioGrupo) {
-//        if (nTupla == eTP_Tresillo) {
-//            m_sFuente = m_sFuente & _T(" (G + T3)");
-//        } else {
-//            m_sFuente = m_sFuente & _T(" G+");
-//        }
-//    } else if (nBeamMode == etaFinGrupo) {
-//        m_sFuente = m_sFuente & _T(" G-");
-//    }
+    //tied
+    if (IsTiedToNext()) sSource += _T(" l");
+
+    //start or end of group
+    if (m_fBeamed) {
+        if (m_BeamInfo[0].Type == eBeamBegin) {
+            sSource += _T(" g+");
+        }
+        else if (m_BeamInfo[0].Type == eBeamEnd) {
+            sSource += _T(" g-");
+        }
+    }
+
+    //tuplets
+    if (m_pTupletBracket) {
+        if ((lmNoteRest*)this == m_pTupletBracket->GetStartNote()) {
+            sSource += wxString::Format(_T(" t%d"), m_pTupletBracket->GetTupletNumber());
+        }
+        else if((lmNoteRest*)this == m_pTupletBracket->GetEndNote()) {
+            sSource += _T(" t-");
+        }
+    }
+
+    //staff num
+    if (m_pVStaff->GetNumStaves() > 1) {
+        sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
+    }
+
+
 //    if (nCalderon == eC_ConCalderon) m_sFuente = m_sFuente & " C";
 //    for (int i=1; i <= cAnotaciones.Count; i++) {
 //        m_sFuente = m_sFuente & " " & cAnotaciones.Item(i);

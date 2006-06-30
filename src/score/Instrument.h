@@ -34,10 +34,11 @@
 class lmInstrument
 {
 public:
-    //ctor and dtor
-    lmInstrument(lmScore* pScore, int nNumStaves, 
-                 int nMIDIChannel, int nMIDIInstr,
+    //ctors and dtor
+    lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel, int nMIDIInstr,
                  wxString sName, wxString sAbbrev);
+    lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel, int nMIDIInstr,
+                 lmScoreText* pName, lmScoreText* pAbbrev);
     ~lmInstrument();
 
     lmVStaff* AddVStaff(bool fOverlayered);
@@ -81,8 +82,8 @@ private:
 
     lmLUnits        m_nIndentFirst;     //indentation for first system
     lmLUnits        m_nIndentOther;     //indentation for other systems
-    lmText*         m_pName;            //instrument name
-    lmText*         m_pAbbreviation;    //abreviated name to use
+    lmScoreText*         m_pName;            //instrument name
+    lmScoreText*         m_pAbbreviation;    //abreviated name to use
 
 
     // variables related to MusicXML import/export

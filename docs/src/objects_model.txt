@@ -186,7 +186,7 @@ StaffObjs:  ScoreObjs that appear in an staff/measure. All are selectable.
         
 			lmSimpleObj
 				Current:	lmBarline, lmClef, lmWordsDirection, lmKeySignature, lmSOControl,
-							lmText, lmTimeSignature, lmTupletBracket
+							lmScoreText, lmTimeSignature, lmTupletBracket
 				
 			lmCompositeObj
 				Current:	lmNoteRest (lmNote, lmRest)

@@ -144,6 +144,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
     //! @todo   For now I will load Spanish tags as default. This must not be changed
     //!         while program generated tags are in Spanish.
     if (sLanguage == _T("en")) {
+        m_Tags[_T("abbrev")] = _T("abbrev");
         m_Tags[_T("barline")] = _T("barline");
         m_Tags[_T("bold")] = _T("bold");
         m_Tags[_T("bold_italic")] = _T("bold-italic");
@@ -161,6 +162,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[_T("italic")] = _T("italic");
         m_Tags[_T("key")] = _T("key");
         m_Tags[_T("left")] = _T("left");
+        m_Tags[_T("name")] = _T("name");
         m_Tags[_T("newSystem")] = _T("newSystem");
         m_Tags[_T("normal")] = _T("normal");
         m_Tags[_T("right")] = _T("right");
@@ -177,6 +179,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
     }
     else {
         // initialize table with default Spanish values
+        m_Tags[_T("abbrev")] = _T("abrev");
         m_Tags[_T("barline")] = _T("Barra");            //! @todo change for 1.4
         m_Tags[_T("bold")] = _T("negrita");
         m_Tags[_T("bold_italic")] = _T("negrita-cursiva");
@@ -194,6 +197,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[_T("italic")] = _T("cursiva");
         m_Tags[_T("key")] = _T("Tonalidad");          //! @todo change for 1.4
         m_Tags[_T("left")] = _T("izqda");
+        m_Tags[_T("name")] = _T("nombre");
         m_Tags[_T("newSystem")] = _T("nuevoSistema");
         m_Tags[_T("normal")] = _T("normal");
         m_Tags[_T("right")] = _T("dcha");

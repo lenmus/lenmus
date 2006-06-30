@@ -737,8 +737,22 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     int nMIDIChannel=0, nMIDIInstr=0;       //default MIDI values: channel 0, instr=Piano
     bool fMusicFound = false;               // <voice> tag found
     wxString sNumStaves = _T("1");          //one staff
+
+    //default values for name
+    //! @todo user options instead of fixed values
     wxString sInstrName = _T("");           //no name for instrument
+    lmEAlignment nNameAlign = lmALIGN_LEFT;     
+    bool fNameHasWidth = false;
+    lmFontInfo tNameFont = g_tInstrumentDefaultFont;
+    lmLocation tNamePos = g_tDefaultPos;
+
+    //default values for abbreviation
+    //! @todo user options instead of fixed values
     wxString sInstrAbbrev = _T("");         //no abreviated name for instrument
+    lmEAlignment nAbbrevAlign = lmALIGN_LEFT;     
+    bool fAbbrevHasWidth = false;
+    lmFontInfo tAbbrevFont = g_tInstrumentDefaultFont;
+    lmLocation tAbbrevPos = g_tDefaultPos;
 
     // parse optional elements until <voice> tag found
     for (; iP <= pNode->GetNumParms(); iP++) {
@@ -748,27 +762,13 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             fMusicFound = true;
             break;      //start of voice. Exit this loop
         }
-        else if (pX->GetName() == m_pTags->TagName(_T("instrName")) ) {
-            lmLDPNode* pIN;
-            pIN = pX->GetParameter(1);
-            if (pIN->IsSimple()) {
-                sInstrName = pIN->GetName();
-            }
-            else {
-                AnalysisError( _("Expected name string for %s but found element '%s'. Ignored."),
-                    m_pTags->TagName(_T("instrName")), pIN->GetName() );
-            }
-            //abbreviation (optional)
-            if (pX->GetNumParms() > 1) {
-                pIN = pX->GetParameter(2);
-                if (pIN->IsSimple()) {
-                    sInstrAbbrev = pIN->GetName();
-                }
-                else {
-                    AnalysisError( _("Expected name string for %s but found element '%s'. Ignored."),
-                        m_pTags->TagName(_T("instrName")), pIN->GetName() );
-                }
-            }
+        else if (pX->GetName() == m_pTags->TagName(_T("name")) ) {
+            AnalyzeTextString(pX, &sInstrName, &nNameAlign, &tNamePos,
+                              &tNameFont, &fNameHasWidth);
+        }
+        else if (pX->GetName() == m_pTags->TagName(_T("abbrev")) ) {
+            AnalyzeTextString(pX, &sInstrAbbrev, &nAbbrevAlign, &tAbbrevPos,
+                              &tAbbrevFont, &fAbbrevHasWidth);
         }
         else if (pX->GetName() == m_pTags->TagName(_T("infoMIDI")) ) {
             //! @todo No treatment for now
@@ -812,8 +812,15 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     }
 
     // create the instrument with one empty VStaff
+    lmScoreText* pName = (lmScoreText*)NULL;
+    lmScoreText* pAbbrev = (lmScoreText*)NULL;
+    if (sInstrName != _T(""))
+        pName = new lmScoreText(pScore, sInstrName, nNameAlign, tNamePos, tNameFont);
+    if (sInstrAbbrev != _T(""))
+        pAbbrev = new lmScoreText(pScore, sInstrAbbrev, nAbbrevAlign, tAbbrevPos, tAbbrevFont);
+
     lmInstrument* pInstr = pScore->AddInstrument(1, nMIDIChannel, nMIDIInstr,
-                                        sInstrName, sInstrAbbrev);
+                                        pName, pAbbrev);
     lmVStaff* pVStaff = pInstr->GetVStaff(1);      //get the VStaff created
 
     // analyce first voice
@@ -2053,10 +2060,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     
     wxString sTitle;
     lmEAlignment nAlign = m_nTitleAlignment;
-    wxString sFontName = m_sTitleFontName;
-    int nFontSize = m_nTitleFontSize; 
-    lmETextStyle nStyle = m_nTitleStyle;
-
+    lmFontInfo tFont = {m_sTitleFontName, m_nTitleFontSize, m_nTitleStyle};
     lmLocation tPos;
     tPos.xType = lmLOCATION_DEFAULT;
     tPos.xUnits = lmTENTHS;
@@ -2092,11 +2096,11 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
         sName = pX->GetName();
 
         if (sName == m_pTags->TagName(_T("font")) ) {
-            AnalyzeFont(pX, &sFontName, &nFontSize, &nStyle);
+            AnalyzeFont(pX, &tFont);
             //save font values as new default for titles
-            m_sTitleFontName = sFontName;
-            m_nTitleFontSize = nFontSize; 
-            m_nTitleStyle = nStyle;
+            m_sTitleFontName = tFont.sFontName;
+            m_nTitleFontSize = tFont.nFontSize; 
+            m_nTitleStyle = tFont.nStyle;
         }
         else if (sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) ||
                  sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) )
@@ -2109,10 +2113,87 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     }
 
     //create the title
-    pScore->AddTitle(sTitle, nAlign, tPos, sFontName, nFontSize, nStyle);
+    pScore->AddTitle(sTitle, nAlign, tPos, tFont.sFontName, tFont.nFontSize, tFont.nStyle);
     
     return false;
     
+}
+
+bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, 
+                                    lmEAlignment* pAlign, lmLocation* pPos,
+                                    lmFontInfo* pFont, bool* pHasWidth)
+{
+    //A certain number of LDP elements accepts a text-string with additional parameters,
+    //such as location font or alignment. This method parses these elements.
+    //Default values for information not present must be initialized in return variables
+    //before invoking this method.
+    //Returns true if error; in this case return variables are not changed.
+    //If no error all variables but pNode are loaded with parsed information
+
+    // <text-string> = (any-tag string [<location>][<font>][<alingment>])
+
+    //check that at least one parameter (text string) is specified
+    if(pNode->GetNumParms() < 1) {
+        AnalysisError(
+            _("Element '%s' has less parameters that the minimum required. Element ignored."),
+            pNode->GetName() );
+        return true;
+    }
+    
+    wxString sText;
+    lmEAlignment nAlign = *pAlign;
+    lmFontInfo tFont = {pFont->sFontName, pFont->nFontSize, pFont->nStyle};
+    lmLocation tPos = *pPos;
+    bool fHasWidth = *pHasWidth;
+
+    int iP = 1;
+
+    //get the string
+    sText = (pNode->GetParameter(iP))->GetName();
+    iP++;
+
+    //get remaining optional parameters: location, font, alignment
+    lmLDPNode* pX;
+    wxString sName;
+    for(; iP <= pNode->GetNumParms(); iP++)
+    {
+        pX = pNode->GetParameter(iP);
+        sName = pX->GetName();
+
+        if (sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) ||
+                 sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) )
+        {
+            AnalyzeLocation(pX, &tPos);
+        }
+        else if (sName == m_pTags->TagName(_T("font")) ) {
+            AnalyzeFont(pX, &tFont);
+        }
+        else if (sName == m_pTags->TagName(_T("left")) ) {
+            nAlign = lmALIGN_LEFT;
+        }
+        else if (sName == m_pTags->TagName(_T("right")) ) {
+            nAlign = lmALIGN_RIGHT;
+        }
+        else if (sName == m_pTags->TagName(_T("center")) ) {
+            nAlign = lmALIGN_CENTER;
+        }
+        else if (sName == m_pTags->TagName(_T("hasWidth")) ) {
+            fHasWidth = true;
+        }
+        else {
+            AnalysisError( _("[Element '%s'. Invalid parameter '%s'. Ignored."),
+                pNode->GetName(), sName );
+        }
+    }
+
+    //return parsed values
+    *pText = sText;
+    *pAlign = nAlign;
+    *pPos = tPos;
+    *pFont = tFont;
+    *pHasWidth = fHasWidth;
+    return false;
+
 }
 
 //returns true if error; in this case nothing is added to the VStaff
@@ -2129,69 +2210,28 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
             m_pTags->TagName(_T("text")) );
         return true;
     }
-    
+
     wxString sText;
     lmEAlignment nAlign = lmALIGN_LEFT;     //! @todo user options instead of fixed values
-    wxString sFontName = m_sTextFontName;
-    int nFontSize = m_nTextFontSize; 
-    lmETextStyle nStyle = m_nTextStyle;
-
     bool fHasWidth = false;
-
+    lmFontInfo tFont = {m_sTextFontName, m_nTextFontSize, m_nTextStyle};
     lmLocation tPos;
     tPos.xType = lmLOCATION_DEFAULT;
     tPos.xUnits = lmTENTHS;
     tPos.yType = lmLOCATION_DEFAULT;
     tPos.yUnits = lmTENTHS;
 
-    int iP = 1;
-
-    //get the string
-    sText = (pNode->GetParameter(iP))->GetName();
-    iP++;
-
-    //get remaining parameters: location, font, alignment
-    lmLDPNode* pX;
-    wxString sName;
-    for(; iP <= pNode->GetNumParms(); iP++)
-    {
-        pX = pNode->GetParameter(iP);
-        sName = pX->GetName();
-
-        if (sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) ||
-                 sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) )
-        {
-            AnalyzeLocation(pX, &tPos);
-        }
-        else if (sName == m_pTags->TagName(_T("font")) ) {
-            AnalyzeFont(pX, &sFontName, &nFontSize, &nStyle);
-            //save font values as new default for titles
-            m_sTextFontName = sFontName;
-            m_nTextFontSize = nFontSize; 
-            m_nTextStyle = nStyle;
-        }
-        else if (sName == m_pTags->TagName(_T("left")) ) {
-            nAlign = lmALIGN_LEFT;
-        }
-        else if (sName == m_pTags->TagName(_T("right")) ) {
-            nAlign = lmALIGN_RIGHT;
-        }
-        else if (sName == m_pTags->TagName(_T("center")) ) {
-            nAlign = lmALIGN_CENTER;
-        }
-        else if (sName == m_pTags->TagName(_T("hasWidth")) ) {
-            fHasWidth = true;
-        }
-        else {
-            AnalysisError( _("[Element '%s'. Invalid parameter '%s'. Ignored."),
-                m_pTags->TagName(_T("text")), sName );
-        }
-    }
+    if (AnalyzeTextString(pNode, &sText, &nAlign, &tPos, &tFont, &fHasWidth)) return true;
+    
+    //no error:
+    //save font values as new default for titles
+    m_sTextFontName = tFont.sFontName;
+    m_nTextFontSize = tFont.nFontSize; 
+    m_nTextStyle = tFont.nStyle;
 
     //create the text
-    lmFontInfo tFont = { sFontName, nFontSize, nStyle };
     pVStaff->AddWordsDirection(sText, nAlign, &tPos, tFont, fHasWidth);
-    
+
     return false;
     
 }
@@ -2324,8 +2364,7 @@ EStemType lmLDPParser::AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff)
     
 }
 
-void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, wxString* pFontName, int* pFontSize,
-                              lmETextStyle* pStyle)
+void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
 {        
     // <font> = (font <name> <size> <style>)
 
@@ -2338,7 +2377,7 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, wxString* pFontName, int* pFontS
     //check that there are parameters
     if (!(pNode->GetNumParms()== 2 || pNode->GetNumParms() == 3)) {
         AnalysisError( _("Element '%s' has less parameters than the minimum required. Tag ignored."),
-            m_pTags->TagName(_T("stem")));
+            pNode->GetName());
     }
 
     //flags to control that the corresponding parameter has been processed
@@ -2347,6 +2386,7 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, wxString* pFontName, int* pFontS
     bool fStyle = false;
     
     //get parameters. The come in any order
+    lmFontInfo tFont = *pFont;
     int iP;
     wxString sParm;
 
@@ -2357,13 +2397,13 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, wxString* pFontName, int* pFontS
             //try style
             fStyle = true;
             if (sParm == m_pTags->TagName(_T("bold")) )
-                *pStyle = lmTEXT_BOLD;
+                tFont.nStyle = lmTEXT_BOLD;
             else if (sParm == m_pTags->TagName(_T("normal")) )
-                *pStyle = lmTEXT_NORMAL;
+                tFont.nStyle = lmTEXT_NORMAL;
             else if (sParm == m_pTags->TagName(_T("italic")) )
-                *pStyle = lmTEXT_ITALIC;
+                tFont.nStyle = lmTEXT_ITALIC;
             else if (sParm == m_pTags->TagName(_T("bold-italic")) )
-                *pStyle = lmTEXT_ITALIC_BOLD;
+                tFont.nStyle = lmTEXT_ITALIC_BOLD;
             else {
                 fStyle = false;
             }
@@ -2377,7 +2417,7 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, wxString* pFontName, int* pFontS
             if (sSize.IsNumber()) {
                 long nSize;
                 sSize.ToLong(&nSize);
-                *pFontSize = (int)nSize;
+                tFont.nFontSize = (int)nSize;
                 fSize = true;
             }
         }
@@ -2385,7 +2425,7 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, wxString* pFontName, int* pFontS
         else if (!fName) {
             //assume it is the name
             fName = true;
-            *pFontName = (pNode->GetParameter(iP))->GetName();
+            tFont.sFontName = (pNode->GetParameter(iP))->GetName();
         }
 
         else {
@@ -2393,6 +2433,8 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, wxString* pFontName, int* pFontS
                 m_pTags->TagName(_T("font")), sParm );
         }
     }
+
+    *pFont = tFont;
     
 }
 

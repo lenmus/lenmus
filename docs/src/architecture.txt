@@ -440,4 +440,55 @@ Staff grasps:
 Normally, only one lmVStaff with one or two lmStaff.  If more than one, they
 normally represent overlayered additional voices.
 
+
+@section text_objects Objects that represent text on the score
+<!-- ========================================================================= -->
+
+lmBasicText
+	A container for text. Auxiliary object for other objects.
+	
+	
+A draggable and editable text attached to an StaffObj (i.e. a barline, a note,..):
+	- It is draggable and editable.
+	- Its position is always relative to parent's object position:
+		- if parent moves then the text moves, maintaing relative position.
+		- if text moves, parent an other objects not affected. Collisions with
+			other objects will not be solved unless forced by user.
+	- it is always an auxiliary object, so never included in the StaffObjCollection. It
+		is kept in the parent object.
+	- As it is draggable and editable it mus be included and removed in the GlobalList or
+		managed by the parents object.
+
+lmWordsDirection
+A draggable and editable text attached to an VStaff (measure):
+	- It is draggable and editable.
+	- it is included in the StaffObjCollection. So it consumes space unless the text
+		has the null-width flag.
+	- Its position is always relative to measure position:
+		- if parent moves then the text moves, maintaing relative position.
+		- if text moves, parent is not affected but staff objects after it will be
+			affected unless it has the null-width flag.
+	- As it is included in the VStaff StaffObjCollection no need to do anything to
+		get draggable and editable behaviour.
+
+lmScoreText
+A text not attached to an StaffObj or the Staff itself, but to the Score itself 
+(for example, score titles, instrument names, ...):
+	- It is draggable and editable.
+	- Its position is always relative to current paper position:
+		- if parent moves then the text moves, maintaing relative position.
+		- if text moves, comming objects might or might not move. It will depent on 
+			setting for flag fFreeMove. If true moving text will not afect to any other
+			object (it must be false for titles, true for instrument names).
+	- it is always kept by the parent object (score, instrument).
+	- As it is draggable and editable it mus be included and removed in the GlobalList or
+		managed by the parents object.
+		
+		
+Movement behaviour options:
+	- vertical shift allowed
+	- horizontal shift allowed
+	- changes current paper pos for coming objects
+
+
 */

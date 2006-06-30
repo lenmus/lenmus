@@ -3,7 +3,7 @@
 
    (title center "Two instruments, three staves" (font bold 14))
 
-   (instrument (instrName "Flute" "F")
+   (instrument (name "Flute")(abbrev "F") 
       (voice 
             (clef Sol)
             (key La)
@@ -22,7 +22,7 @@
       )
    )
    
-   (instrument (instrName "Piano" "P") (staves 2)
+   (instrument (name "Piano")(abbrev "P")(staves 2)
       (voice 
             (clef Sol p1)   //sol clef in staff 1
             (clef Fa4 p2)   //fa4 clef in staff 2

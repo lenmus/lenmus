@@ -57,8 +57,7 @@ public:
     bool        AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeChord(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode);
-    void        AnalyzeFont(lmLDPNode* pNode, wxString* pFontName, int* pFontSize,
-                            lmETextStyle* pStyle);
+    void        AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont);
     void        AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInstr);
     void        AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr);
     bool        AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff);
@@ -108,6 +107,9 @@ private:
     int         AnayzeNumStaff(wxString sNotation);
     lmScore*    AnalyzeScoreV102(lmLDPNode* pNode);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
+    bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, 
+                                  lmEAlignment* pAlign, lmLocation* pPos,
+                                  lmFontInfo* pFont, bool* pHasWidth);
     void        AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff);
 
     void Clear();
