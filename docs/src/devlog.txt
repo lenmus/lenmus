@@ -66,34 +66,67 @@ LenMus project philosophy (to remind me to always stay on this):
   
   ---------------------------------------------------------------------------------------
   Now:
-	+ document several VStaffs in one Instrument
-	+ flag overlayered in VStaff.
-	+ use flag in Formatter4 and BoxSystem
-	+ move num-staves to instrument tag
-	- ( allow for num_staves in voice tag only for non-overlayered voices ) ?
-	- How to deal for example with four voices piano reductions:
-		- flag overlayered in Instruments.
-	+ name and abbreviation
-	
-	
+    + document several VStaffs in one Instrument
+    + flag overlayered in VStaff.
+    + use flag in Formatter4 and BoxSystem
+    + move num-staves to instrument tag
+    - ( allow for num_staves in voice tag only for non-overlayered voices ) ?
+    - How to deal for example with four voices piano reductions:
+        - flag overlayered in Instruments.
+    + name and abbreviation
+    
+    
+  Tasks for release 3.1
+  ------------------------
+    - LDP internationalization: review current tags, specially note names:
+		- introduce context for tags?
+    - Duplets and other tuplets:
+		+ change LDP syntax to specify occupied time.
+		+ LDPParser
+		- Treatment of tuplets in rests
+		- Treatment of ActualNotes and NormalNotes in XLMParser
+    - Slurs
+    - include playback buttons in main toolbar
+    - prepare score samples
+    - re-structure LDP manual: more didactical
+    - disable rulers
+    - change background for score: no page frame but all window for the score
+    
+    
+ Spanish translation errors:
+ ---------------------------
+    - AboutBox:
+        Falta espacio al final de:
+            - LenMus Phonascus
+            - conf. regional del sistema
+            - conf. reg. (cononica):
+            
+    - La notación '' es desconocida o no está todavía soportada.
+                   |--- falta %s
+    
+
+
+  Web site
+  -------------------------
+    - Remove changelog page
+    - Add Acknowledgments page
+    + Re-build home page
+    - Add news:
+		- Next release preview
+
+
+
+
     - move logs to temp directory
     
     - width of chord = max width of its notes
     - render accidentals in notes order
     
-    - draw page margins:
-        - margins must be line objects in PageBox. They must be
-            'non-visible' and there must be a method to render them when required.
-            As any ScoreObj it must be draggable.
-        - View menu: page margins
-    
     - Required for theory book:
         - text above/below a measure. Parameter centered
         - Render options: stop staff lines at final barline
 
-    - MusicXML import: note pitch.
     
-    - include playback buttons in main toolbar
     - need to devise a renderization method based on plugins so that different
         algorithms, user selectable, can be used to compute layout
     
@@ -108,6 +141,7 @@ Area 0: Bugs to solve
     - ¿lmInterval: fix names Unison augmented, Unison perfect, etc...?
     - If Midi Wizard is cancelled some non-relevant error messages are displayed when
         there is no soundcard on the computer (tested with VMWare)
+    - MusicXML import: note pitch.
 
         
 Area 1: New features to add in short term to working release
@@ -119,13 +153,23 @@ Area 1: New features to add in short term to working release
     
 Area 2: Notation editor
     - divide notation features in phases and proceed by phases
-    - slurs
-
+    - slurs, duplets, other tuplets
+    - draw page margins:
+        - margins must be line objects in PageBox. They must be
+            'non-visible' and there must be a method to render them when required.
+            As any ScoreObj it must be draggable.
+        - View menu: page margins
+    
+ 
 Area 3: Analysis and algorithms
     - sequences (Lylipond, Guido) vs. back/forward (MusicXML)
     - Role of GraphicManager vs. lmPaper. Gradually move lmPaper methods to lmBoxPage. 
     
 Area 4: Documentation
+    - Re-structure LDP manual: more didactical
+    - Set up DocBook edition environment
+    - Move LDP manual to DocBook
+    - Move all docs (algorithms, architecture, etc. to DocBook)
 
 Area 5: Prepare a new book
     - theory; level 1
@@ -142,39 +186,35 @@ Other:
     be coded inside the program instead of being external html files.
 
 
-Spanish translation errors:
-	- AboutBox:
-		Falta espacio al final de:
-			- LenMus Phonascus
-			- conf. regional del sistema
-			- conf. reg. (cononica):
-			
-	- La notación '' es desconocida o no está todavía soportada.
-	               |--- falta %s
-    
-
 ******************************************************************************************
 Planning: comming releases 
 ******************************************************************************************
 
     
-27/may/2006 - 3.0 release (beta 3.0b1 + 3 weeks)
+15/ago/2006 - 3.1 release
 ---------------------------------------------------
-    - Replacement of version 2.0 that will be dropped from web site.
-    - Internet updates checking
-    - Sound feedback in exercises
-    - Updated help file and Single Exercises eBook to reflect program changes.
- 
- 
-
-??/???/2006 - 3.1 release
-----------------------------------------------
 
     Features and changes:
         - Support for LDP tags internationalization.
+        - Scores publication and edition 
+ 
+
+15/sep/2006 - 3.2 release
+----------------------------------------------
+
+    Features and changes:
+        - Ear training: identify key signature
+        - Ear training: identify scale
+        - Exercises on chords: triads
+
+
+??/s???/2006 - 3.3 release
+----------------------------------------------
+
+    Features and changes:
+        - Continue extending support to include more musical signs in scores and texts.
         - Music patterns editor, to customize music reading exercises.
         - Answer buttons for Scales exercises.
-        - Continue extending support to include more musical signs in scores and texts.
         - Exercises on chords.
         - Ear training: identify key signature
         - Ear training: identify scale
@@ -192,7 +232,6 @@ Upcomig releases features
     2 - Add checkbox buttons to choose direct and inverse problems
 
 
- - Title tag in LDP
  - Tuples: t2
  - Beamed groups in LDP: automatic identification of typical groups
  - Slurs

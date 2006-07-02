@@ -13,7 +13,7 @@
 
 <div class="important">
 <p><b>Please be aware that this manual is not yet finished.</b>
-I have to write more and currently it only documents the minimun to start with the LDP language.</p>
+I have to write more and currently it only documents the minimum to start with the LDP language.</p>
 </div>
 
 <p>&nbsp;</p>
@@ -23,7 +23,7 @@ I have to write more and currently it only documents the minimun to start with t
 
 <dl><dt>Part I: Introduction</dt>
     <dt>1. <a href="#The_LDP_language">The LDP language</a></dt>
-    <dt>2. <a href="#The_Hello_world_sample">The 'Hello world' sample: A very simple score</a></dt>
+    <dt>2. <a href="#a_very_simple_score">A very simple introductory score</a></dt>
     <dt>3. <a href="#grammar_notation">Notation used</a></dt>
     <dt><br /><br />Part II: detailed description</dt>
     <dt>3. <a href="#description_score">The Score element</a></dt>
@@ -91,8 +91,9 @@ I have to write more and currently it only documents the minimun to start with t
 <a href="#TOC">TOC</a>
 <p>The LenMus LDP notation language is a general purpose formal language for representing
 music scores in a platform independent, plain-text and human-readable way.
-This language is named LDP because I named it after the
-Spanish acronym for 'Lenguaje de Descripción de Musicituras', that is 'Language
+This language is named LDP because I started this project in Spanish and I named this
+language after the
+Spanish acronym for 'Lenguaje de Descripción de Partituras, that is 'Language
 to Describe Scores'. Why to define a new language instead of using a existing
 one such as MIDI,  MusicXML, abc, Guido or others?</p>
 
@@ -100,17 +101,17 @@ one such as MIDI,  MusicXML, abc, Guido or others?</p>
  <li>MIDI: oriented
      to playing back scores. It does not encode information to draw and render
      scores.</li>
- <li>MusicXML: MusicXML started as an interchange format. It might be adecuate but it lacks
+ <li>MusicXML: MusicXML started as an interchange format. It might be adequate but it lacks
      of facilities for accurate positioning of the different musical objects (note: in
-     version 1.1 MusicXML started to intruduce better positioning information, but this
+     version 1.1 MusicXML started to introduce better positioning information, but this
      was after the decision to start with LDP was taken).
      It is also too verbose to
      write scores by hand, and to be used as internal intermediate representation.</li>
  <li>Abc: It is an 'old' language designed when nearly everything was batch processed.
-    Althoug it has a
+    Although it has a
     great base of users it didn't suit LenMus project needs.</li>
  <li>Guido: I didn't know about GUIDO when I started this project. Probably it would have been
-    a good choice but I had a lot of LDP code written when I heared about GUIDO.</li>
+    a good choice but I had a lot of LDP code written when I heard about GUIDO.</li>
  <li>Again, I did not consider any other existing language such as LilyPond or Mup,
     because I didn't know about them when I started this project.</li>
 </ul>
@@ -129,20 +130,19 @@ one such as MIDI,  MusicXML, abc, Guido or others?</p>
     associated to the representation of music in all its aspects. This was
     more in line with the objectives of the project.</li>
 
- <li>Finally, using my own language would give me more freedom in case MusicXML could
+ <li>Finally, using my own language would give me more freedom in case MusicXML or
+    any other choosen language could
     not fully satisfy the LenMus project needs.</li>
 </ul>
 
-<p>Nevertheless it was not the objective of the
-LenMus Project to develop a new representation language. LDP is a pragmatic
-approach and its development has the direct benefit of forcing me to study un
-depth the problems to represent music and to enter this information by using an
-alfanumeric keyborad. Although the internal language for the LenMus project is
-LDP, the LenMus program will incluye facilities to import and export music
-scores to MusicXML.</p>
+<p>LDP is a pragmatic
+approach and its development has the direct benefit of forcing me to study in
+depth the problems of representing music in textual form. Although the internal
+language for LenMus project scores is LDP, the LenMus program will include
+facilities to import and export music scores to other formats, such as MusicXML.</p>
 
 
-<h2><a name="The_Hello_world_sample">The 'Hello world' sample: A very simple score</a></h2>
+<h2><a name="a_very_simple_score">A very simple introductory score</a></h2>
 <a href="#TOC">TOC</a>
 
 <p>Let's see how a very simple score is encoded. The score will be just one measure, in G clef,
@@ -167,7 +167,7 @@ In LDP this score is described as follows:</p>
 
 <pre class="example">
   (score
-     (vers 1.4)
+     (vers 1.5)
      (instrument
         (voice
             (clef Sol)
@@ -195,13 +195,13 @@ for humans to improve readability, and you can use them at your desire or not us
 at all. For example, the previous score can be written in a single line as:</p>
 
 <pre class="example">
-(score (vers 1.4)(instrument 1 (voice ( ... ))
+(score (vers 1.5)(instrument 1 (voice ( ... ))
 </pre>
 
 <p>Or in two lines, for example as:</p>
 
 <pre class="example">
-(score (vers 1.4)(instrument
+(score (vers 1.5)(instrument
 (voice ( ... ))
 </pre>
 
@@ -212,17 +212,17 @@ write, for example,</p>
 </pre>
 
 <p>In the example, we can note that all the score is a list starting with the keyword 'score'.
-The first data item of this element is also a list, '(vers 1.4)': it starts with the
-keyword 'Vers' and has only a simple  data item, the number 1.4.</p>
+The first data item of this element is also a list, '(vers 1.5)': it starts with the
+keyword 'Vers' and has only a simple  data item, the number 1.5.</p>
 
-<p>To improve human legibility and understandig it is allowed to include comments.
+<p>To improve human legibility and understanding it is allowed to include comments.
 Two consecutive slash characters (//) will be interpreted as the start of a comment and
 all text until the end of the line will be ignored. For example:</p>
 <pre class="example">
 (score
-    (vers 1.4)              // version 1.4 of LDP is used
+    (vers 1.5)              // version 1.5 of LDP is used
     (instrument             // Start of music for the first voice
-        (voice              // start this only voice
+        (voice              // start this voice
             (clef Sol)      // Clef: Sol (G on line 2)
             (key Do)        // Key signature: Do (C major)
             (time 4 4)      // Time signature: 4 4
@@ -233,13 +233,14 @@ all text until the end of the line will be ignored. For example:</p>
 )
 </pre>
 
-<p>LDP supports to use a customized set of tags for each language, so that, for example, if you would prefer to
+<p>LDP supports to use a customized set of tags for each language, so if, for example,
+you would prefer to
 encode the scores using tags in Spanish instead of tags in English, you would write:</p>
 <pre class="example">
   (score                            //the score and language tags are the only non-translatable
      (language es ISO-8859-1)       //specifies to use the Spanish set of tags
-     (vers 1.4)
-     (instrumento 1
+     (vers 1.5)
+     (instrumento
         (voz
             (clave Sol)         //note the keyword 'clave' instead of 'clef'
             (tonalidad Do)
@@ -275,14 +276,14 @@ them.<br /><br /></dd>
 
 <dt><span class="t">bold_face</span><dt><dd>A symbol in bold face means a terminal symbol, that is, a string
 that must be written exactly
-as it is stated. Appart of bold face, if this manual is
-printed or displayed using colors, blue color will be used for terminal symbols.<br /><br /></dd>
+as it is stated. Apart of bold face, if this manual is
+printed or displayed using colours, blue colour will be used for terminal symbols.<br /><br /></dd>
 
 <dt><span class="nt">italics</span><dt><dd>A symbol in <i>italics</i> means a non-terminal
-symbol, that is, a category name (syntax rules names). If color is possible they will appear in
-green color.<br /><br /></dd>
+symbol, that is, a category name (syntax rules names). If colour is possible they will appear in
+green colour.<br /><br /></dd>
 
-<dt><b>[&nbsp;]</b></dt><dd>Optional items will be enclosed in squared brakets. For example:<br />
+<dt><b>[&nbsp;]</b></dt><dd>Optional items will be enclosed in squared brackets. For example:<br />
 <blockquote class="example">
 <span class="nt">Clef</span> :=
   <span class="t">(clef</span> <span class="nt">clef_name</span>
@@ -331,14 +332,14 @@ can also be written as:
 </li>
 
 <li>For elements with more than one parameter, in certain cases it is allowed
-to supress the parenthesis and any blank space, so the element
+to suppress the parenthesis and any blank space, so the element
 is reduced to a string. This abbreviated form will be named "collapsing". For example,
 if element &lt;algo&gt; allows collapsing, then
-writting <q class="example">(algo 3 nx)</q> would be equivalent to writting
+writing <q class="example">(algo 3 nx)</q> would be equivalent to writing
 <q class="example">algo3nx</q>,
-writting <q class="example">(algo +)</q> would be equivalent to writting
+writing <q class="example">(algo +)</q> would be equivalent to witting
 <q class="example">algo+</q> , or
-writting <q class="example">(algo -)</q> would be equivalent to writting
+witting <q class="example">(algo -)</q> would be equivalent to witting
 <q class="example">algo-</q> .
 Collapsing is only allowed for those elements in which it is explicitly stated.
 </li>
@@ -372,7 +373,7 @@ the author.</p>
 <p>The <em>Version</em> element is just a number to indicate the LDP language version used
 to encode the score. For example:</p>
 <pre class="example">
-(vers 1.4)      the score is encoded using LDP version 1.4
+(vers 1.5)      the score is encoded using LDP version 1.4
 </pre>
 
 <p>In case you would like to use a different set of tags than the English set or to use
@@ -427,11 +428,11 @@ characteristics.</p>
 </p>
 
 <p>The 'music' is described by just Voice element or a Split element. What are they?
-Any plain-text music representation has to describe music in secuence. But a music
-score is not just a secuence of musical objects; the vertical organization of simultaneous
+Any plain-text music representation has to describe music in sequence. But a music
+score is not just a sequence of musical objects; the vertical organization of simultaneous
 voices is equally important. So, when trying to describe music as a sequence of
-elements we are confronted to a dilema: To describe a polyphonic composition, should
-each voice be described in secuence? or should it be described as a secuence of chords?
+elements we are confronted to a dilemma: To describe a polyphonic composition, should
+each voice be described in sequence? or should it be described as a sequence of chords?
 Should the horizontal
 organization of musical parts be primary, or should the vertical organization of musical
 measures? The answer is different for every music application.
@@ -459,18 +460,18 @@ the user to describe music in whatever way it is more suitable.</p>
 
 
 <p><b>MusicXML</b> is less flexible. It offers both approaches (score-partwise DTD or
-score_timewise DTD) but only for the whole score. The two aproaches can not be
+score_timewise DTD) but only for the whole score. The two approaches can not be
 combined or applied recursively. This creates some problems and, from a user point of
-view, is quite unflexible. To give some more flexibility and provide a solution to
-allow certain paralelism in secuential descriptions,
+view, is quite inflexible. To give some more flexibility and provide a solution to
+allow certain parallelism in sequential descriptions,
 two by-passes are provided:</p>
 
 <ul>
-    <li>An explicit chord contructor to describe chors.</li>
+    <li>An explicit chord constructor to describe chords.</li>
     <li>A non-declarative but procedural approach to allow
-        paralelism inside a secuential description: tags 'backup' and 'forward' are
+        parallelism inside a sequential description: tags 'backup' and 'forward' are
         used to reposition an 'internal time counter' and create parallel descriptions.
-        This paralellism is only allowed inside a measure.</li>
+        This parallelism is only allowed inside a measure.</li>
 </ul>
 </div>
 
@@ -483,8 +484,8 @@ two by-passes are provided:</p>
 
 <p>In music a <i>voice</i> is a sequence of sounds. Voices are, usually,
 monophonic sequences but
-polyphony is also posible (see 'Chords and polyphony'). In LDP a
-Voice is a collection of diferent objects, mainly Notes and Rests, but also other
+polyphony is also possible (see 'Chords and polyphony'). In LDP a
+Voice is a collection of different objects, mainly Notes and Rests, but also other
 elements, such as Clefs or KeySignatures, are possible.</p>
 
 <div class="comparison">
@@ -764,8 +765,8 @@ of a more general concept: <i>noterests</i>. A noterest is either a note or a re
 <h3><a name="Pitch">Pitch</a></h3>
 <a href="#TOC">TOC</a>
 
-<p>The pitch is represented by combining the notename, the octave and the accidentals.</p>
-<p>The <i>notename</i> is a letter that represents the diatonic step:
+<p>The pitch is represented by combining the note name, the octave and the accidentals.</p>
+<p>The <i>note name</i> is a letter that represents the diatonic step:
 <span class="t">c d e f g a b</span></p>
 <!--
 There are different systems of notenames:
@@ -774,11 +775,11 @@ c cis d dis e f fis g gis a ais h/b (chromatic) 2.
 do re me fa sol la si/ti (solfege)
 -->
 <p>The <i>octave</i> is an integer number indicating the octave of the note, where octave 4
-is the central one (a4 = 440Hz). All octaves start with notename c and ends in notename b, so note
+is the central one (a4 = 440Hz). All octaves start with note name c and ends in note name b, so note
 c4 is the c note just below the a4 note. Octaves range is 0 to 9.</p>
 
 <p>Accidentals are represented by combinations of the signs plus (+), minus (-),
-equal (=) and the letter x (x). They representent, respectively, sharps, flats, naturals
+equal (=) and the letter x (x). They represent, respectively, sharps, flats, naturals
 and the double sharp symbol. So, for example,
 ++ represents two sharps, x a double sharp, and =- represents  a natural flat.</p>
 
@@ -787,7 +788,7 @@ and the double sharp symbol. So, for example,
 <pre class="example">
 +c4     a sharp C4 note (C of octave 4, the central C)
 
---b3    a double flat B3 note (B of octave 3, the B inmediatly below C4)
+--b3    a double flat B3 note (B of octave 3, the B immediately below C4)
 </pre>
 
 <!--
@@ -861,7 +862,7 @@ note or rest is dotted</p>
 </center>
 </p>
 
-<p>For example: <q class="example">q.</q> means a dotted quatter note and <q class="example">e..</q> means
+<p>For example: <q class="example">q.</q> means a dotted quarter note and <q class="example">e..</q> means
 a double dotted eighth note</p>
 
 
@@ -876,13 +877,13 @@ a double dotted eighth note</p>
 <a href="#TOC">TOC</a>
 
 <p>A <em>notation</em> is the way to describe any additional characteristic affecting the element
-being described, for example, a note. Notations are classified into three cathegories:</p>
+being described, for example, a note. Notations are classified into three categories:</p>
 <ol>
 <li>Traditional notations. These are the usual notations used in traditional notation language
-and, therefore, thay have a graphic symbol in the score.</li>
+and, therefore, they have a graphic symbol in the score.</li>
 <li>Rendering notations. They are additional information to control the renderization process. For
 example, the exact coordinates to position an object in the score</li>
-<li>Interpretation notations. These are clues and tips for playingback the score. For example,
+<li>Interpretation notations. These are clues and tips for playing back the score. For example,
 the MIDI instrument no use.</li>
 </ol>
 
@@ -955,8 +956,8 @@ indicates additional characteristics. The following table shows the currently im
 
 
 <h4><a name="tie_notation">Ties</a></h4>
-<p>A character &quot;L&quot; indicates the start of a tie that will end in the next comming note of the
-same voice, staff and pitch than the one on wich this notation is included. No additional parameters are
+<p>A character &quot;L&quot; indicates the start of a tie that will end in the next coming note of the
+same voice, staff and pitch than the one on which this notation is included. No additional parameters are
 needed.
 Example:</p>
 <code class="example">
@@ -984,7 +985,7 @@ Example:</p>
 that it is the start or the end of a group. After this sign other parameters are possible.
 When the only parameters specified are the start/end sign, the
 <b>g</b> element admits a abbreviated syntax <b>g+</b> in
-the starting note and a notation <b>g-</b> in the endind one.
+the starting note and a notation <b>g-</b> in the ending one.
 Example:</p>
 <code class="example">
 (n c4 n g+)(n d4 c)(n e4 c g-)
@@ -998,30 +999,63 @@ Example:</p>
 <h4><a name="tuplet_notation">Tuplets</a></h4>
 
 <p>A tuplet is a group of notes whose duration is modified; normally a graphic element
-(a tuplet bracked and/or a number) marks this group of notes. The notes in a tuplet are
+(a tuplet bracket and/or a number) marks this group of notes. The notes in a tuplet are
 usually beamed together but this is not always the case.</p>
 
 <p>In LDP, to specify the notes that form a tuplet, a notation <b>t</b> (tuplet) must be included
 in the first and the last notes of the tuplet.</p>
 
+<p>
+<a name="rule_tuplet">&nbsp;</a>
+<span class="nt">Tuplet</span> :=
+    (<span class="t">t</span>
+    {<span class="t">-</span> |
+    <span class="t">+</span>
+    <span class="nt">ActualNotes</span>
+    [<span class="nt">NormalNotes</span>] }
+    <span class="t">)</span>
+</p>
+
+
 <p>The first parameter is a plus sign (+) or a minus sign (-) to signal, respectively,
 that it is the start or the end of a tuplet. After the plus sign there must be a number
-to indicate the tuplet type. For example:</p>
+to indicate the tuplet type.</p>
+
+<p>The ActualNotes element describes
+    how many notes are played in the time usually occupied
+    by the number of NormalNotes.
+    If there are different types of notes in the tuplet (e.g. eighth and 16th
+    notes) then ActualNotes and NumNotes must always refer to the shortest
+    note type (e.g. 16th notes).</p>
+
+<p>Default values for NormalNotes:</p>
+<ul>
+    <li>triplet: three notes in time allotted for two:   (t + 3) --> (t + 3 2)</li>
+    <li>duplet: two notes in time allotted for three:    (t + 2) --> (t + 2 3)</li>
+    <li>4-tuplet: four notes in time allotted for 6:     (t + 4) --> (t + 4 6)</li>
+    <li>5-tuplet: five notes in time allotted for 6:     (t + 5) --> (t + 5 6)</li>
+</ul>
+
+<p>In all other cases NormalNotes must be specified.</p>
+<p>Examples:</p>
+
 
 <pre class="example">
 (n c4 c (t + 3)) (n d4 c) (n e4 c (t -))
 </pre>
 
-<p>This example is a triplet of eight notes, that is, the three notes must be played
+<p>This example is a triplet of eighth notes, that is, the three notes must be played
 in the time normally allotted for two eight notes.</p>
 
-<p>Additional parameters could be introduced in future to deal with renderization options.</p>
+<p>Additional parameters would be introduced in future to deal with renderization options.</p>
 
-<p>As tuplets are very frequent, to simplify the writting, the tuplet element allows
+<p>As tuplets are very frequent, to simplify the writing, the tuplet element allows
 abbreviated syntax: </p>
 <p>
 (t -) can be written as t-<br />
-(t + x) can be written as tx</p>
+(t + x) can be written as tx, and<br />
+(t + n m) can be abbreviated as t+n,m
+</p>
 
 <p>So, the previous example can be written as:</p>
 
@@ -1185,7 +1219,7 @@ aspectos gráficos de la representación de partituras.</p>
 
 <p>Normally stem direction and size is automatically computed by the program,
 according to usual engraving rules. Nevertheless, the stem of a note can
-be fully specified by usig the Stem element. It forces stem direction.</p>
+be fully specified by using the Stem element. It forces stem direction.</p>
 
 <p>
 <span class="nt">Stem</span> :=
@@ -1872,7 +1906,7 @@ background:yellow'><br clear=all >
 
 <p>As LenMus aims at facilitating the user to use his/her own language
 it was decided to introduce support to use tags in any language. Currently English and
-Spanish tags are supported. Any other language can be is easyly added without
+Spanish tags are supported. Any other language can be is easily added without
 program recompilation. It is just an issue of creating an external file with
 the list of tag names.
 </p>

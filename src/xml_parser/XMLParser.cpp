@@ -1279,7 +1279,8 @@ bool lmXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
                     if (sTupletType == _T("start")) {
                         wxASSERT(!m_pTupletBracket);
                         m_pTupletBracket = new lmTupletBracket(fShowNumber, nTupletNumber, 
-                                                            fTupletBracket, fTupletAbove);
+                                fTupletBracket, fTupletAbove, nTupletNumber, nTupletNumber);
+                        //! @todo Get nActualNotes and nNormalNotes
                     }
                     else if (sTupletType == _T("stop")) {
                         //signal that bracket must be ended

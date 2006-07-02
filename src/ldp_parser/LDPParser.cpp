@@ -1377,7 +1377,8 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChor
 
     */
 
-    wxASSERT(pNode->GetName() == _T("n") || pNode->GetName() == _T("na") );
+    wxString sElmName = pNode->GetName();       //for error messages
+    wxASSERT(sElmName == _T("n") || sElmName == _T("na") );
     
     EStemType nStem = eDefaultStem;
     bool fBeamed = false;
@@ -1394,12 +1395,14 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChor
     //Tuplet brakets
     bool fEndTuplet = false;
     int nTupletNumber = 0;      // 0 = no tuplet
+    int nActualNotes = 0;       // 0 = no tuplet
+    int nNormalNotes = 0;
 
     //default values
     bool fDotted = false;
     bool fDoubleDotted = false;
     ENoteType nNoteType = eQuarter;
-    float rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nTupletNumber);
+    float rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nActualNotes, nNormalNotes);
     wxString sStep = _T("c");
     wxString sOctave = _T("4");
     EAccidentals nAccidentals = eNoAccidentals;
@@ -1439,9 +1442,8 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChor
     }
     
     //analyze remaining parameters: annotations
-//    Dim nLigada As ETies, nCalderon As ECalderon, nValor As Long
+//    Dim nCalderon As ECalderon
 //    Dim nTipoStem As EStemType
-//    nLigada = eL_NotTied
 //    nCalderon = eC_SinCalderon
 //    nTipoStem = eDefaultStem
 //    
@@ -1482,31 +1484,54 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChor
                 }
             }
 
-            else if (sData == _T("t3")) {       //start of triplet. Simple parameter
-                if (m_pTupletBracket) {
-                    //there is already a tuplet open and not closed
-                    AnalysisError(_("Requesting to start a tuplet but there is already a tuplet open. Tag 't3' ignored."));
+            else if (sData.Left(1) == _T("t")) {       //start/end of tuplet. Simple parameter (tn / t-)
+                lmTupletBracket* pTuplet;
+                bool fOpenTuplet = (m_pTupletBracket ? false : true);
+                if (!AnalyzeTuplet(pX, sElmName, fOpenTuplet, !fOpenTuplet,
+                     &pTuplet, &nActualNotes, &nNormalNotes))
+                {
+                    if (pTuplet) {
+                        // start of tuplet
+                        m_pTupletBracket = pTuplet;
+                    }
+                    else {
+                        //end of tuplet
+                        fEndTuplet = true;
+                    }
                 }
-                else {
-                    nTupletNumber = 3;
 
-                    // tuplet braket information
-                    bool fShowTupletBracket = true;
-                    bool fShowNumber = true;
-                    bool fTupletAbove = true;
-                    m_pTupletBracket = new lmTupletBracket(fShowNumber, nTupletNumber, 
-                                                        fShowTupletBracket, fTupletAbove);
-                }
-            }
+                //if (sData == _T("t-")) {       //end of tuplet
+                //    // if there is an open tuplet, close the tuplet bracket
+                //    if (m_pTupletBracket) {
+                //        fEndTuplet = true;
+                //    }
+                //    else {
+                //        AnalysisError(_("Requesting to end a tuplet but there is not an open tuplet. Tag 't-' ignored."));
+                //    }
+                //}
+                //else {
+                //    wxString sNumTuplet = sData.Mid(1);
+                //    if (!sNumTuplet.IsNumber()) {
+                //        AnalysisError(_("[%s] Fount unknown tag '%s'. Ignored."),
+                //            sElmName, sData);
+                //    }
+                //    else if (m_pTupletBracket) {
+                //        //there is already a tuplet open and not closed
+                //        AnalysisError(_("Requesting to start a tuplet but there is already a tuplet open. Tag 't3' ignored."));
+                //    }
+                //    else {
+                //        long nTuplet;
+                //        sNumTuplet.ToLong(&nTuplet);
+                //        nTupletNumber = (int)nTuplet;
 
-            else if (sData == _T("t-")) {       //end of tuplet
-                // if there is an open tuplet, close the tuplet bracket
-                if (m_pTupletBracket) {
-                    fEndTuplet = true;
-                }
-                else {
-                    AnalysisError(_("Requesting to end a tuplet but there is not an open tuplet. Tag 't-' ignored."));
-                }
+                //        // tuplet braket information
+                //        bool fShowTupletBracket = true;
+                //        bool fShowNumber = true;
+                //        bool fTupletAbove = true;
+                //        m_pTupletBracket = new lmTupletBracket(fShowNumber, nTupletNumber, 
+                //                                            fShowTupletBracket, fTupletAbove);
+                //    }
+                //}
             }
 
             else if (sData == _T("g-")) {       //End of beamed group
@@ -1587,7 +1612,7 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChor
                 }
             }
             else if (sData.Left(1) == _T("p")) {       //staff number
-                m_nCurStaff = AnayzeNumStaff(sData);
+                m_nCurStaff = AnalyzeNumStaff(sData);
             }
             else {
                 AnalysisError(_("Error: notation '%s' unknown. It will be ignored."), sData );
@@ -1671,11 +1696,12 @@ lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChor
     //previous note
     if (m_pTupletBracket) {
         // a tuplet is open
-       nTupletNumber = m_pTupletBracket->GetTupletNumber();
+       nActualNotes = m_pTupletBracket->GetActualNotes();
+       nNormalNotes = m_pTupletBracket->GetNormalNotes();
     }
 
     // calculation of duration
-    rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nTupletNumber);
+    rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nActualNotes, nNormalNotes);
 
     lmNote* pNR = pVStaff->AddNote(false,    //relative pitch
                             sStep, sOctave, _T("0"), nAccidentals,
@@ -1711,6 +1737,8 @@ lmRest* lmLDPParser::AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff)
     //Tuplet brakets
     bool fEndTuplet = false;
     int nTupletNumber = 0;      // 0 = no tuplet
+    int nActualNotes = 0;       // 0 = no tuplet
+    int nNormalNotes;
 
     //! @todo rests in a tuplet
   
@@ -1718,7 +1746,7 @@ lmRest* lmLDPParser::AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff)
     bool fDotted = false;
     bool fDoubleDotted = false;
     ENoteType nNoteType = eQuarter;
-    float rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nTupletNumber);
+    float rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nActualNotes, nNormalNotes);
 
 
     //get parameters
@@ -1749,7 +1777,7 @@ lmRest* lmLDPParser::AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff)
         pX = pNode->GetParameter(iP);
         sData = pX->GetName();
         if (sData.Left(1) == _T("p")) {       //staff number
-            m_nCurStaff = AnayzeNumStaff(sData);
+            m_nCurStaff = AnalyzeNumStaff(sData);
         }
 //        } else {
 //            switch (sData
@@ -1820,12 +1848,155 @@ lmRest* lmLDPParser::AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
     
     // compute duration
-    rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted, nTupletNumber);
+    rDuration = GetDefaultDuration(nNoteType, fDotted, fDoubleDotted,
+                        nActualNotes, nNormalNotes);
+
 
     return pVStaff->AddRest(nNoteType, rDuration, fDotted, fDoubleDotted,
                             m_nCurStaff, fBeamed, BeamInfo);
 
 }
+
+bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
+                                bool fOpenAllowed, bool fCloseAllowed,
+                                lmTupletBracket** pTuplet, int* pActual, int* pNormal)
+{
+    // sParent: name of parent element
+    // Returns true if errors. The elemenent is ignored.
+    // If no errors, updates pTuplet, pActual and pNormal with the result of parsing:
+    //      - start of tuplet: pTuple points to new lmTupletBracket
+    //      - end of tuplet: pTuplet is NULL
+
+
+    // <Tuplet> = (t {- | + ActualNotes [NormalNotes] } )
+    // Abbreviations:
+    //      (t -)     --> t-
+    //      (t + n)   --> tn
+    //      (t + n m) --> tn/m
+
+    bool fEndTuplet = false;
+    int nActualNum, nNormalNum;
+    wxString sData = pNode->GetName();
+
+    if (pNode->IsSimple()) {
+        //start/end of tuplet. Simple parameter (t- | tn | tn/m )
+        wxASSERT(sData.Left(1) == _T("t"));       
+        if (sData == _T("t-")) {
+            //end of tuplet
+            fEndTuplet = true;
+        }
+        else {
+            //start of tuplet
+            wxString sNumTuplet = sData.Mid(1);
+            int nColon = sNumTuplet.Find(_T(":"));
+            if (nColon == 0) {
+                //error: invalid element 't:num'
+                AnalysisError(_("[%s] Found unknown tag '%s'. Ignored."),
+                    sParent, sData);
+                return true;
+            }
+            else if (nColon == -1) {
+                //abbreviated tuplet: 'tn'
+                if (!sNumTuplet.IsNumber()) {
+                    AnalysisError(_("[%s] Found unknown tag '%s'. Ignored."),
+                        sParent, sData);
+                    return true;
+                }
+                else {
+                    long nNum;
+                    sNumTuplet.ToLong(&nNum);
+                    nActualNum = (int)nNum;
+                    //implicit value for denominator
+                    if (nActualNum == 2)
+                        nNormalNum = 3;   //duplet
+                    else if (nActualNum == 3)
+                        nNormalNum = 2;   //triplet
+                    else if (nActualNum == 4)
+                        nNormalNum = 6;
+                    else if (nActualNum == 5)
+                        nNormalNum = 6;
+                    else {
+                        AnalysisError(_("[%s] Found tag '%s' but no defaul value exists for NormalNotes. Ignored."),
+                            sParent, sData);
+                        return true;
+                    }
+                }
+            }
+            else {
+                //abbreviated tuplet: 'tn:m'. Split the two numbers
+                wxString sActualNum = sNumTuplet.Left(nColon);
+                wxString sNormalNum = sNumTuplet.Mid(nColon+1);
+
+                if (!sActualNum.IsNumber() || !sNormalNum.IsNumber() ) {
+                    AnalysisError(_("[%s] Found unknown tag '%s'. Ignored."),
+                        sParent, sData);
+                    return true;
+                }
+                else {
+                    long nNum;
+                    sActualNum.ToLong(&nNum);
+                    nActualNum = (int)nNum;
+                    sNormalNum.ToLong(&nNum);
+                    nNormalNum = (int)nNum;
+                    if (nNormalNum < 1 || nActualNum < 1) {
+                        AnalysisError(_("[%s] Tag '%s'. Numbers must be greater than 0. Tag ignored."),
+                            sParent, sData);
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+
+    else {
+        //compound element
+
+        //check that at least one parameters (+, - sign) is specified
+        if(pNode->GetNumParms() < 2) {
+            AnalysisError(
+                _("Element '%s' has less parameters that the minimum required. Element ignored."),
+                m_pTags->TagName(_T("title")) );
+            return true;
+        }
+        //! @todo compound tuplet element
+        AnalysisError(_T("TODO. LDPParser: compound tuplet element not yet supported"));
+        return true;    //error
+    }
+
+    //All information parsed. Prepare return info
+    if (fEndTuplet) {
+        if (!fCloseAllowed) {
+            // there isn't an open tuplet
+            AnalysisError(_("[%s] Requesting to end a tuplet but there is not an open tuplet or it is not possible to cle it here. Tag '%s' ignored."),
+                sParent, sData);
+            return true;
+        }
+        *pTuplet = (lmTupletBracket*) NULL;
+    }
+    else {
+        if (!fOpenAllowed) {
+            //there is already a tuplet open and not closed
+            AnalysisError(_("[%s] Requesting to start a tuplet but there is already a tuplet open. Tag '%s' ignored."),
+                sParent, sData);
+            return true;
+        }
+
+        // create tuplet braket
+        //! @todo user options for default values
+        bool fShowTupletBracket = true;
+        bool fShowNumber = true;
+        bool fTupletAbove = true;
+        *pTuplet = new lmTupletBracket(fShowNumber, nActualNum, fShowTupletBracket,
+                            fTupletAbove, nActualNum, nNormalNum);
+        *pActual = nActualNum;
+        *pNormal = nNormalNum;
+    }
+
+    return false;
+
+}
+
+
 
 ////Devuelve las variables nMIDIChannel y nInstr actualizadas con los valores leidos. Si alguno
 ////de los valores no viene se ponen los valores por defecto
@@ -1949,7 +2120,7 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
         pX = pNode->GetParameter(iP);
         wxString sStaffNum = pX->GetName();
         if (sStaffNum.Left(1) == _T("p")) {
-            nStaff = AnayzeNumStaff(sStaffNum);
+            nStaff = AnalyzeNumStaff(sStaffNum);
             iP++;
         }
     }
@@ -2678,7 +2849,7 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
 //    
 //}
 
-int lmLDPParser::AnayzeNumStaff(wxString sNotation)
+int lmLDPParser::AnalyzeNumStaff(wxString sNotation)
 {
     //analyzes a notation Pxx.  xx must be lower or equal than m_nNumStaves
 
@@ -2707,23 +2878,13 @@ int lmLDPParser::AnayzeNumStaff(wxString sNotation)
 }
 
 float lmLDPParser::GetDefaultDuration(ENoteType nNoteType, bool fDotted, bool fDoubleDotted,
-                      int nTupletNumber)
+                      int nActualNotes, int nNormalNotes)
 {
     //compute duration without modifiers
     float rDuration = NoteTypeToDuration(nNoteType, fDotted, fDoubleDotted);
     
-    //alter by modifiers (i.e. tupla)
-    switch (nTupletNumber) {
-        case 0:     //no tuplet
-            break;
-        case 3:     // triplet
-            rDuration = (rDuration * 2) / 3;
-            break;
-        default:
-            wxLogMessage(_T("[lmLDPParser::GetDefaultDuration] TODO: other tuplets different from triplet"));
-            //! @todo other tuplets different from triplet
-            ;
-    }
+    //alter by tuplet modifiers
+    if (nActualNotes != 0) rDuration = (rDuration * (float)nNormalNotes) / (float)nActualNotes;
     
     return rDuration;
 }

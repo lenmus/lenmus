@@ -44,13 +44,16 @@
 //   lmTupletBracket implementation
 //---------------------------------------------------------
 
-lmTupletBracket::lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket, bool fAbove)
+lmTupletBracket::lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket, bool fAbove,
+                                 int nActualNotes, int nNormalNotes)
     : lmSimpleObj(eTPO_TupletBracket)
 {
     m_fShowNumber = fShowNumber;
     m_nTupletNumber = nNumber;
     m_fBracket = fBracket;
     m_fAbove = fAbove;
+    m_nActualNotes = nActualNotes;
+    m_nNormalNotes = nNormalNotes;
 
     //! @todo Allow user to change this values
     m_sFontName = _T("Arial");

@@ -71,11 +71,17 @@ lmInstrument::lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel,
     }
 
     //create the instrument
-    lmInstrument(pScore, nNumStaves, nMIDIChannel, nMIDIInstr, pName, pAbbreviation);
+    Create(pScore, nNumStaves, nMIDIChannel, nMIDIInstr, pName, pAbbreviation);
 
 }
 
 lmInstrument::lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel, int nMIDIInstr,
+                 lmScoreText* pName, lmScoreText* pAbbrev)
+{
+    Create(pScore, nNumStaves, nMIDIChannel, nMIDIInstr, pName, pAbbrev);
+}
+
+void lmInstrument::Create(lmScore* pScore, int nNumStaves, int nMIDIChannel, int nMIDIInstr,
                  lmScoreText* pName, lmScoreText* pAbbrev)
 {
     m_pScore = pScore;

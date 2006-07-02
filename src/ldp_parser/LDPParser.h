@@ -87,7 +87,7 @@ public:
 
     // auxiliary methods
     float   GetDefaultDuration(ENoteType nNoteType, bool fDotted, bool fDoubleDotted,
-                      int nTupletNumber);
+                      int nActualNotes, int nNormalNotes);
     int     GetBeamingLevel(ENoteType nNoteType);
     bool    ParenthesisMatch(const wxString& sSource);
 
@@ -104,12 +104,15 @@ private:
     };
 
     lmLDPNode*  LexicalAnalysis();
-    int         AnayzeNumStaff(wxString sNotation);
+    int         AnalyzeNumStaff(wxString sNotation);
     lmScore*    AnalyzeScoreV102(lmLDPNode* pNode);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
     bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, 
                                   lmEAlignment* pAlign, lmLocation* pPos,
                                   lmFontInfo* pFont, bool* pHasWidth);
+    bool        AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent, bool fOpenAllowed,
+                              bool fCloseAllowed,
+                              lmTupletBracket** pTuplet, int* pActual, int* pNormal);
     void        AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff);
 
     void Clear();

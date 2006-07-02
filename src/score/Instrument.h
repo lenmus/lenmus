@@ -73,6 +73,8 @@ public:
     const wxString XML_GetId() { return m_xmlId; }
 
 private:
+    void Create(lmScore* pScore, int nNumStaves, int nMIDIChannel, int nMIDIInstr,
+                lmScoreText* pName, lmScoreText* pAbbrev);
     void SetIndent(lmLUnits* pIndent, lmLocation* pPos);
 
     lmScore*        m_pScore;           //score to whith this instrument belongs

@@ -60,7 +60,8 @@
 class lmTupletBracket : public lmSimpleObj
 {
 public:
-    lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket, bool fAbove);
+    lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket, bool fAbove,
+                    int nActualNotes, int nNormalNotes);
     ~lmTupletBracket();
 
     //overrides of virtual methods defined in base classes
@@ -73,7 +74,7 @@ public:
     wxString SourceLDP();
     wxString SourceXML();
 
-    //specific method of this object
+    //specific methods of this object
     void Include(lmNoteRest* pNR);
     void Remove(lmNoteRest* pNR);
     int NumNotes();
@@ -81,10 +82,12 @@ public:
     lmNoteRest* GetEndNote();
     void AutoPosition();
     int GetTupletNumber() { return m_nTupletNumber; }
+    int GetActualNotes() { return m_nActualNotes; }
+    int GetNormalNotes() { return m_nNormalNotes; }
 
 
 
-protected:
+private:
     void ComputePosition();
 
 
@@ -93,6 +96,11 @@ protected:
                                 // is included in this list
     lmLUnits    m_xPaperLeft;
     lmLUnits    m_xPaperRight;
+
+    //time modifiers
+    int     m_nActualNotes;     //number of notes to play in the tiem ...
+    int     m_nNormalNotes;     //... allotted for this number of normal notes
+
 
     // graphical attributes
     bool    m_fShowNumber;      // display tuplet number
