@@ -13,11 +13,11 @@
       (voice
          (clef Sol)
          
-         (n -e4 n)
-         (n =e4 n)
-         (n +e4 n)
+         (n -e4 q)
+         (n =e4 q)
+         (n +e4 q)
          
-         (barline Final)
+         (barline end)
       )
    )
 )

@@ -111,7 +111,8 @@ public:
     void OnZoom75(wxCommandEvent& event) { OnZoom(event, 75); }
     void OnZoom100(wxCommandEvent& event) { OnZoom(event, 100); }
     void OnZoom150(wxCommandEvent& event) { OnZoom(event, 150); }
-    void OnZoom200(wxCommandEvent& event); // { OnZoom(event, 200); }
+    void OnZoom200(wxCommandEvent& event) { OnZoom(event, 200); }
+    void OnZoomOther(wxCommandEvent& event);
 
     void OnViewTools(wxCommandEvent& WXUNUSED(event));
     void OnViewRulers(wxCommandEvent& event);
@@ -130,6 +131,7 @@ public:
     void OnPlayStart(wxCommandEvent& WXUNUSED(event));
     void OnPlayStop(wxCommandEvent& WXUNUSED(event));
     void OnPlayPause(wxCommandEvent& WXUNUSED(event));
+    void OnPlayUI(wxUpdateUIEvent &event);
 
     void OnOptions(wxCommandEvent& WXUNUSED(event));
 
@@ -159,6 +161,9 @@ public:
     void UpdateMenuAndToolbar();
     void UpdateToolbarsLayout();
     void SilentlyCheckForUpdates(bool fSilent);
+
+    //options
+    bool ShowRulers();
 
 
     //eBooks controller

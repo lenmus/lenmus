@@ -16,10 +16,10 @@
         (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
         (barline)
 
-        (n g3 c g+ p2)(n b3 c)(n d4 c p1)(n g4 c g-)   // grupo a caballo entre ambos pentagramas
+        (n g3 e g+ p2)(n b3 e)(n d4 e p1)(n g4 e g-)   // grupo a caballo entre ambos pentagramas
         (barline)
 
-        (n f4 n)(n c5 n)   //todo en p1
+        (n f4 q)(n c5 q)   //todo en p1
         (barline)
 
         (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // la 1ª nota está en pentagrama 1. Sigue ahí mientras no cambie
@@ -28,11 +28,11 @@
         (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
         (barline)
 
-        (n g3 c g+ p2)(n b3 c)(n d4 c p1)(n g4 c g-)   // grupo a caballo entre ambos pentagramas
+        (n g3 e g+ p2)(n b3 e)(n d4 e p1)(n g4 e g-)   // grupo a caballo entre ambos pentagramas
         (barline)
 
-        (n f4 n)(n c5 n)   //todo en p1
-        (barline Final)
+        (n f4 q)(n c5 q)   //todo en p1
+        (barline end)
      )
    )
 )

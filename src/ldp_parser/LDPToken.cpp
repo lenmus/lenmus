@@ -418,7 +418,7 @@ void lmLDPTokenBuilder::ParseNewToken()
                 if (IsLetter(m_curChar) || IsNumber(m_curChar) ||
                     m_curChar == chUnderscore || m_curChar == chDot ||
                     m_curChar == chPlusSign || m_curChar == chMinusSign ||
-                    m_curChar == chSharp)
+                    m_curChar == chSharp || m_curChar == chSlash )
                 {
                     nState = FT_ETQ01;
                 }

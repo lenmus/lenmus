@@ -152,11 +152,9 @@ enum
 #ifdef _DEBUG           //to disable New/Open items in Release version
     // Menu File
     MENU_File_New = wxID_NEW,
-    MENU_File_Open = wxID_OPEN,
 #else
     // Menu File
     MENU_File_New = 1000,
-    MENU_File_Open,
 #endif
     MENU_File_Import = MENU_Last_Public_ID,
     MENU_OpenBook,
@@ -183,6 +181,7 @@ enum
     MENU_Zoom_100,
     MENU_Zoom_150,
     MENU_Zoom_200,
+    MENU_Zoom_Other,
 
     //Menu Sound
     MENU_Sound_MidiWizard,
@@ -274,14 +273,18 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_MENU (MENU_Zoom_100, lmMainFrame::OnZoom100)
     EVT_MENU (MENU_Zoom_150, lmMainFrame::OnZoom150)
     EVT_MENU (MENU_Zoom_200, lmMainFrame::OnZoom200)
+    EVT_MENU (MENU_Zoom_Other, lmMainFrame::OnZoomOther)
 
     EVT_MENU (MENU_Sound_MidiWizard, lmMainFrame::OnRunMidiWizard)
     EVT_MENU (MENU_Sound_test, lmMainFrame::OnSoundTest)
     EVT_MENU (MENU_Sound_AllSoundsOff, lmMainFrame::OnAllSoundsOff)
 
-    EVT_MENU (MENU_Play_Start, lmMainFrame::OnPlayStart)
-    EVT_MENU (MENU_Play_Stop, lmMainFrame::OnPlayStop)
-    EVT_MENU (MENU_Play_Pause, lmMainFrame::OnPlayPause)
+    EVT_MENU      (MENU_Play_Start, lmMainFrame::OnPlayStart)
+    EVT_UPDATE_UI (MENU_Play_Start, lmMainFrame::OnPlayUI)
+    EVT_MENU      (MENU_Play_Stop, lmMainFrame::OnPlayStop)
+    EVT_UPDATE_UI (MENU_Play_Stop, lmMainFrame::OnPlayUI)
+    EVT_MENU      (MENU_Play_Pause, lmMainFrame::OnPlayPause)
+    EVT_UPDATE_UI (MENU_Play_Pause, lmMainFrame::OnPlayUI)
 
     EVT_MENU (MENU_Preferences, lmMainFrame::OnOptions)
 
@@ -435,7 +438,7 @@ void lmMainFrame::CreateMyToolBar()
 
     //Load the tools
     m_pToolbar->AddTool(MENU_File_New, _("New"), wxArtProvider::GetIcon(_T("tool_new"), wxART_TOOLBAR, nSize), _("New score"));
-    m_pToolbar->AddTool(MENU_File_Open, _("Open"), wxArtProvider::GetIcon(_T("tool_open"), wxART_TOOLBAR, nSize), _("Open score"));
+    m_pToolbar->AddTool(wxID_OPEN, _("Open"), wxArtProvider::GetIcon(_T("tool_open"), wxART_TOOLBAR, nSize), _("Open score"));
 
 //    //! @todo How to do it in these platforms?
 //    // the generic toolbar doesn't really support this
@@ -456,6 +459,14 @@ void lmMainFrame::CreateMyToolBar()
     m_pToolbar->AddTool(wxID_PASTE, _("Paste"), wxArtProvider::GetIcon(_T("tool_paste"), wxART_TOOLBAR, nSize), _("Paste"));
     m_pToolbar->AddTool(MENU_Print, _("Print"), wxArtProvider::GetIcon(_T("tool_print"), wxART_TOOLBAR, nSize), _("Print document"));
     m_pToolbar->AddSeparator();
+
+    //play tools
+    m_pToolbar->AddTool(MENU_Play_Start, _("Play"), wxArtProvider::GetIcon(_T("tool_play"), wxART_TOOLBAR, nSize), _("Start/resume play back of the score"));
+    m_pToolbar->AddTool(MENU_Play_Stop, _("Stop"), wxArtProvider::GetIcon(_T("tool_stop"), wxART_TOOLBAR, nSize), _("Stop playing back"));
+    m_pToolbar->AddTool(MENU_Play_Pause, _("Pause"), wxArtProvider::GetIcon(_T("tool_pause"), wxART_TOOLBAR, nSize), _("Pause playing back"));
+    m_pToolbar->AddSeparator();
+
+    //other tools
     m_pToolbar->AddTool(MENU_Preferences, _("Preferences"), wxArtProvider::GetIcon(_T("tool_options"), wxART_TOOLBAR, nSize), _("Set user preferences"));
     m_pToolbar->AddTool(MENU_OpenHelp, _("Help"), wxArtProvider::GetIcon(_T("tool_help"), wxART_TOOLBAR, nSize), _("Help button"), wxITEM_CHECK);
     m_pToolbar->AddTool(MENU_OpenBook, _("Books"), wxArtProvider::GetIcon(_T("tool_open_ebook"), wxART_TOOLBAR, nSize), _("Show the music books"), wxITEM_CHECK);
@@ -473,7 +484,7 @@ void lmMainFrame::CreateMyToolBar()
     // the changes
     m_pToolbar->Realize();
 
-    m_pToolbar->SetRows(1);
+    m_pToolbar->SetRows(2);
 }
 
 void lmMainFrame::DeleteToolbar()
@@ -608,7 +619,7 @@ void lmMainFrame::DeleteStatusBar()
 }
 
 
-wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* view, 
+wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView, 
                                 bool fEdit, bool fDebug)
 {
     /*
@@ -630,7 +641,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* view,
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_new"), wxART_TOOLBAR, nIconSize) ); 
     file_menu->Append(pItem); 
 
-    pItem = new wxMenuItem(file_menu, MENU_File_Open, _("&Open ...\tCtrl+O"), _("Open a score"), wxITEM_NORMAL );
+    pItem = new wxMenuItem(file_menu, wxID_OPEN, _("&Open ...\tCtrl+O"), _("Open a score"), wxITEM_NORMAL );
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_open"), wxART_TOOLBAR, nIconSize) ); 
     file_menu->Append(pItem); 
 
@@ -661,7 +672,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* view,
 
 #else
     file_menu->Append(MENU_File_New, _("&New\tCtrl+N"), _("Open new blank score"), wxITEM_NORMAL);
-    file_menu->Append(MENU_File_Open, _("&Open ...\tCtrl+O"), _("Open a score"), wxITEM_NORMAL );
+    file_menu->Append(wxID_OPEN, _("&Open ...\tCtrl+O"), _("Open a score"), wxITEM_NORMAL );
     file_menu->Append(MENU_OpenBook, _("Open &books"), _("Hide/show eMusicBooks"), wxITEM_CHECK);
     file_menu->Append(MENU_File_Import, _("&Import..."));
     file_menu->Append(wxID_SAVE, _("&Save\tCtrl+S"));
@@ -725,6 +736,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* view,
     zoom_menu->Append(MENU_Zoom_100, _T("100%"));
     zoom_menu->Append(MENU_Zoom_150, _T("150%"));
     zoom_menu->Append(MENU_Zoom_200, _T("200%"));
+    zoom_menu->Append(MENU_Zoom_Other, _("Other"));
 
     //Sound menu
     wxMenu *sound_menu = new wxMenu;
@@ -834,10 +846,13 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* view,
     g_pPrefs->Read(_T("/MainFrame/ViewStatusBar"), &fStatusBar);
     menu_bar->Check(MENU_View_StatusBar, fStatusBar);
 
-   if (view) {
+   if (pView) {
         // view rulers
-        menu_bar->Check(MENU_View_Rulers, true);
-        ((lmScoreView*)view)->SetRulersVisible(true);
+        //menu_bar->Check(MENU_View_Rulers, true);
+        //((lmScoreView*)pView)->SetRulersVisible(true);
+
+        //disable rulers
+        menu_bar->Enable(MENU_View_Rulers, false);
 
     }
 
@@ -892,9 +907,9 @@ void lmMainFrame::UpdateMenuAndToolbar()
     //                    (fZoom ? _T("yes") : _T("no")) );
 
     // menu Sound
-    //pToolBar->EnableTool(MENU_Play_Start, fPlay);
-    //pToolBar->EnableTool(MENU_Play_Stop, fPlay);
-    //pToolBar->EnableTool(MENU_Play_Pause, fPlay);
+    pToolBar->EnableTool(MENU_Play_Start, fPlay);
+    pToolBar->EnableTool(MENU_Play_Stop, fPlay);
+    pToolBar->EnableTool(MENU_Play_Pause, fPlay);
     pMenuBar->Enable(MENU_Play_Start, fPlay);
     pMenuBar->Enable(MENU_Play_Stop, fPlay);
     pMenuBar->Enable(MENU_Play_Pause, fPlay);
@@ -924,26 +939,23 @@ void lmMainFrame::UpdateMenuAndToolbar()
     //This code does not work to disable wxID_NEW and wxID_OPEN menu items
     //So have replaced identifiers:
     //          wxID_NEW -> MENU_File_New
-    //          wxID_OPEN -> MENU_File_Open
     //The problem with this is that now this items don't work, as wxDOcManager
     //has no knowledge about them.
-    //WHEN REMOVING THIS CODE RESTORE wxID_NEW and wxID_OPEN identifiers
+    //WHEN REMOVING THIS CODE RESTORE wxID_NEW identifiers
     //
    if (g_fReleaseVersion || g_fReleaseBehaviour) {
         pMenuBar->Enable(MENU_File_New, false);
-        pMenuBar->Enable(MENU_File_Open, false);
         pMenuBar->Enable(MENU_File_Import, false);
         pMenuBar->Enable(wxID_SAVE, false);
         pMenuBar->Enable(wxID_SAVEAS, false);
-        pMenuBar->Enable(wxID_CLOSE, false);
 
         pToolBar->EnableTool(MENU_File_New, false);
-        pToolBar->EnableTool(MENU_File_Open, false);
         pToolBar->EnableTool(wxID_COPY, false);
         pToolBar->EnableTool(wxID_CUT, false);
         pToolBar->EnableTool(wxID_PASTE, false);
-        pToolBar->EnableTool(MENU_Print, false);
 
+        //Force to disable Rulers, until they are finished
+        pMenuBar->Enable(MENU_View_Rulers, false);
     }
 
 }
@@ -1367,9 +1379,9 @@ void lmMainFrame::OnZoom(wxCommandEvent& event, int nZoom)
 
 }
 
-void lmMainFrame::OnZoom200(wxCommandEvent& event)
+void lmMainFrame::OnZoomOther(wxCommandEvent& event)
 {
-    int nZoom = (int) ::wxGetNumberFromUser(_T(""), _T("Scale?"), _T(""), 200, 0, 1000);  
+    int nZoom = (int) ::wxGetNumberFromUser(_T(""), _("Scale? (in %)"), _T(""), 200, 0, 1000);  
     OnZoom(event, nZoom);
 }
 
@@ -1405,6 +1417,11 @@ void lmMainFrame::OnViewRulers(wxCommandEvent& event)
     lmScoreView* pView = g_pTheApp->GetActiveView();
     pView->SetRulersVisible(event.IsChecked());
 
+}
+
+bool lmMainFrame::ShowRulers()
+{
+    return GetMenuBar()->IsChecked(MENU_View_Rulers);
 }
 
 void lmMainFrame::OnViewToolBar(wxCommandEvent& WXUNUSED(event))
@@ -1585,6 +1602,11 @@ void lmMainFrame::OnPlayPause(wxCommandEvent& WXUNUSED(event))
     pView->PausePlaying();
 }
 
+void lmMainFrame::OnPlayUI(wxUpdateUIEvent &event)
+{
+    wxMDIChildFrame* pChild = GetActiveChild();
+    event.Enable( pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) );
+}
 
 void lmMainFrame::OnMetronomeTimer(wxTimerEvent& event)
 {

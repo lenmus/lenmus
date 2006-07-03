@@ -6,40 +6,40 @@
          (key Do)
          
          //two notes. stems down (a4,d5) (f4,f5) (a4,g5)
-         (chord (n a4 n)(n d5 n))
-         (chord (n f4 n)(n f5 n))
-         (chord (n a4 n)(n g5 n))
+         (chord (n a4 q)(n d5 q))
+         (chord (n f4 q)(n f5 q))
+         (chord (n a4 q)(n g5 q))
          (barline)
 
          //two notes. stems up (e4,c5)(g4,c5)(d4,e5)
-         (chord (n e4 n)(n c5 n))
-         (chord (n g4 n)(n c5 n))
-         (chord (n d4 n)(n e5 n))
+         (chord (n e4 q)(n c5 q))
+         (chord (n g4 q)(n c5 q))
+         (chord (n d4 q)(n e5 q))
          (barline)
          
          //two notes. stems at your preference. Default down. (g4.d5)(a4,c5)
-         (chord (n g4 n)(n d5 n))
-         (chord (n a4 n)(n c5 n))
+         (chord (n g4 q)(n d5 q))
+         (chord (n a4 q)(n c5 q))
          (barline)
          
          //more than two notes. stems down
-         (chord (n f4 n)(n c5 n)(n g5 n))
-         (chord (n a4 n)(n c5 n)(n f5 n))
+         (chord (n f4 q)(n c5 q)(n g5 q))
+         (chord (n a4 q)(n c5 q)(n f5 q))
          (barline)
 
          //more than two notes. stems up
-         (chord (n d4 n)(n a4 n)(n c5 n))
-         (chord (n e4 n)(n g4 n)(n e5 n))
+         (chord (n d4 q)(n a4 q)(n c5 q))
+         (chord (n e4 q)(n g4 q)(n e5 q))
          (barline)
 
          //more than two notes. majority rule. stems down
-         (chord (n d4 n)(n b4 n)(n d5 n)(n g5 n))
-         (chord (n f4 n)(n c5 n)(n e5 n))
+         (chord (n d4 q)(n b4 q)(n d5 q)(n g5 q))
+         (chord (n f4 q)(n c5 q)(n e5 q))
          (barline)
 
          //more than two notes. majority rule. stems up
-         (chord (n d4 n)(n f4 n)(n a4 n)(n g5 n))
-         (chord (n e4 n)(n f4 n)(n a4 n)(n f5 n))
+         (chord (n d4 q)(n f4 q)(n a4 q)(n g5 q))
+         (chord (n e4 q)(n f4 q)(n a4 q)(n f5 q))
          (barline)
 
       )

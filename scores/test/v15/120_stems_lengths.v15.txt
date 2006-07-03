@@ -5,21 +5,21 @@
          (clef Sol)
          
          // rule a1: 3.5 spaces
-         (n b3 n)(n c4 n)(n d4 n)(n e4 n)(n f4 n)(n g4 n)(n a4 n)
-         (n b5 n)(n a5 n)(n g5 n)(n f5 n)(n e5 n)(n d5 n)(n c5 n)(n b4 n)
+         (n b3 q)(n c4 q)(n d4 q)(n e4 q)(n f4 q)(n g4 q)(n a4 q)
+         (n b5 q)(n a5 q)(n g5 q)(n f5 q)(n e5 q)(n d5 q)(n c5 q)(n b4 q)
          (newSystem)
-         (barline Doble)
+         (barline double)
          
          // rule a2: 2.5 spaces
-         (n c5 n (stem up))(n d5 n (stem up))(n d5 n (stem up))(n e5 n (stem up))
-         (n g4 n (stem down))(n f4 n (stem down))(n e4 n (stem down))(n d4 n (stem down))
+         (n c5 q (stem up))(n d5 q (stem up))(n d5 q (stem up))(n e5 q (stem up))
+         (n g4 q (stem down))(n f4 q (stem down))(n e4 q (stem down))(n d4 q (stem down))
          (newSystem)
-         (barline Doble)
+         (barline double)
          
          // rule a3: to touch middle line
-         (n c6 n)(n d6 n)(n e6 n)(n f6 n)
-         (n g3 n)(n f3 n)(n e3 n)(n d3 n)
-         (barline Final)
+         (n c6 q)(n d6 q)(n e6 q)(n f6 q)
+         (n g3 q)(n f3 q)(n e3 q)(n d3 q)
+         (barline end)
       )
    )
 )

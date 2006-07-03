@@ -31,47 +31,14 @@
 
 #include "wx/hashmap.h"
 
-enum lmELdpTags {
-	LDP_TAG_SCORE = 0,
-	LDP_TAG_LANGUAGE,
-	LDP_TAG_PART,
-	LDP_TAG_NUMINSTR,
-	LDP_TAG_INSTRUMENT,
-	LDP_TAG_MEASURE,
-	LDP_TAG_BARLINE,
-    // barline types
-	LDP_TAG_BARLINE_SIMPLE,
-	LDP_TAG_BARLINE_DOUBLE,
-	LDP_TAG_BARLINE_START,
-	LDP_TAG_BARLINE_END,
-	LDP_TAG_BARLINE_START_REPETITION,
-	LDP_TAG_BARLINE_END_REPETITION,
-	LDP_TAG_BARLINE_DOUBLE_REPETITION,
 
-	LDP_TAG_CLEF,
-	LDP_TAG_KEY,
-	LDP_TAG_TIME,
-	LDP_TAG_NOTE,
-	LDP_TAG_REST,
-	// note/rests types
-    LDP_TAG_DOUBLE_WHOLE,
-    LDP_TAG_WHOLE,
-    LDP_TAG_HALF,
-    LDP_TAG_QUARTER,
-    LDP_TAG_EIGHTH,
-    LDP_TAG_16TH,
-    LDP_TAG_32ND,
-    LDP_TAG_64TH,
-    LDP_TAG_128TH,
-    LDP_TAG_256TH,
-
-    // the last item, to know the number of tags in tags set
-    LDP_TAGS_TABLE_SIZE
-};
-
-
-// declare a hash map with string keys and string values
+// declare a hash map for tags, with string keys and string values
 WX_DECLARE_STRING_HASH_MAP( wxString, lmTagsTable );
+
+// declare a hash map for contexts, with string keys and int values
+WX_DECLARE_STRING_HASH_MAP( int, lmContextsTable );
+
+#define lmMAX_TAG_CONTEXTS     2
 
 class lmLdpTagsTable
 {
@@ -83,18 +50,15 @@ public:
 
 	void LoadTags(wxString sLanguage, wxString sCharset);
 
-	const wxString& TagName(lmELdpTags nTag) { return m_sTags2[nTag]; }
-	const wxString& TagName(wxString sTag) { return m_Tags[sTag]; }
+    const wxString& TagName(wxString sTag, wxString sContext=_T(""));
 
 private:
 	lmLdpTagsTable() {}
-	void Initialize();
 
 	static lmLdpTagsTable*	m_pInstance;	//the only instance of this class
 
-	wxString m_sTags2[LDP_TAGS_TABLE_SIZE];
-	lmTagsTable m_Tags;
-
+	lmTagsTable         m_Tags[lmMAX_TAG_CONTEXTS+1];
+    lmContextsTable     m_Contexts;
 
 };
 

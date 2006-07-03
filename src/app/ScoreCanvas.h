@@ -1,4 +1,3 @@
-// RCS-ID: $Id: ScoreCanvas.h,v 1.3 2006/02/23 19:17:49 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -50,7 +49,8 @@ class lmScoreCanvas : public wxWindow
 public:
 
     // constructors and destructor    
-    lmScoreCanvas(lmScoreView *v, wxWindow *parent, const wxPoint& pos, const wxSize& size, long style);
+    lmScoreCanvas(lmScoreView *v, wxWindow *parent, const wxPoint& pos,
+                  const wxSize& size, long style, wxColor colorBg);
     ~lmScoreCanvas();
 
     // event handlers
@@ -68,8 +68,9 @@ private:
 
 
 private:
-    lmScoreView*    m_pView;    // owner view
-    wxWindow*    m_pOwner;    // parent window
+    lmScoreView*    m_pView;        // owner view
+    wxWindow*       m_pOwner;       // parent window
+    wxColour        m_colorBg;      // colour for background
 
     DECLARE_EVENT_TABLE()
 };

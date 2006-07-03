@@ -66,6 +66,7 @@ public:
     void        AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmNote*     AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);
+    lmNoteRest* AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);
     lmRest*     AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmScore*    AnalyzeScore(lmLDPNode* pNode);
     void        AnalyzeSplit(lmLDPNode* pNode, lmVStaff* pVStaff);
@@ -104,6 +105,8 @@ private:
     };
 
     lmLDPNode*  LexicalAnalysis();
+    bool        AnalyzeNoteType(wxString sNoteType, ENoteType* pnNoteType, 
+                                bool* pfDotted, bool* pfDoubleDotted);
     int         AnalyzeNumStaff(wxString sNotation);
     lmScore*    AnalyzeScoreV102(lmLDPNode* pNode);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
@@ -125,6 +128,8 @@ private:
     void Do_ProcessingParameter();
 
     void ParseError(EParsingStates nState, lmLDPToken* pTk);
+
+
 
     //LDP tags table
     lmLdpTagsTable*     m_pTags;

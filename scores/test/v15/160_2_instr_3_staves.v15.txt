@@ -8,17 +8,17 @@
             (clef Sol)
             (key La)
             (time 2 4)
-            (n e4 c g+)(n g4 c g-)(n d4 c g+)(n g4 c g-)
+            (n e4 e g+)(n g4 e g-)(n d4 e g+)(n g4 e g-)
             (barline)
 
-            (n f4 c)(n a4 c)(n e5 c g+)(n g4 s)(n e4 s g-)
+            (n f4 e)(n a4 e)(n e5 e g+)(n g4 s)(n e4 s g-)
             (barline)
 
-            (n e4 c g+)(n g4 c g-)(n d4 c g+)(n g4 c g-)
+            (n e4 e g+)(n g4 e g-)(n d4 e g+)(n g4 e g-)
             (barline)
 
-            (n f4 c)(n a4 c)(n e5 c g+)(n g4 s)(n e4 s g-)
-            (barline Final)
+            (n f4 e)(n a4 e)(n e5 e g+)(n g4 s)(n e4 s g-)
+            (barline end)
       )
    )
    
@@ -42,7 +42,7 @@
 
             (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 1
             (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
-            (barline Final)
+            (barline end)
       )
    )
    
@@ -51,21 +51,21 @@
 //            (clef Sol p1)
 //            (key Do)
 //            (time 2 4)
-//            (n c4 n)(n b3 n)
+//            (n c4 q)(n b3 q)
 //            (barline)
 //
-//            (n c4 n)(n c5 n)
-//            (barline Final)
+//            (n c4 q)(n c5 q)
+//            (barline end)
 //      )
 //      (voice 
 //            (clef Fa4 p2)
 //            (key Do)
 //            (time 2 4)
-//            (n g3 n)(n g3 n)
+//            (n g3 q)(n g3 q)
 //            (barline)
 //
-//            (n f3 n)(n g3 n)
-//            (barline Final)
+//            (n f3 q)(n g3 q)
+//            (barline end)
 //      )
 //   )
 )

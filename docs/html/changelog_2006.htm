@@ -32,6 +32,26 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
     <td class="ListaImpar">Changes<p>
     </td></tr>
 
+
+<tr valign="top">
+    <td class="ListaPar">3-jul-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Starting to review LDP parser to finish internationalization. 
+          Created context table 
+          for tags. Reviewed note names and barlines names. Global method NoteTypeToData()
+          removed from AuxMusic.cpp and moved to LDPParser::AnalyzeNoteType().</li>
+        <li>Tuplets: fixed bug for tn/m syntax. Need to change LDP token parser to accept
+          labels containing slashes.</li>
+		    <li>LDPParser: unified treatment of notes and rests. Method AnalyzeNoteRest()
+		      created.</li>
+        <li>Playback buttons included in main toolbar. Automatically enabled/disabled
+          when appropiate</li>
+	      <li>Zoom menu: Add item 'other'</li>
+        <li>View rulers disabled in release version, until rulers finished.</li>
+        <li>Scoreview window: changed background for score and removed the page frame.</li>
+      </ul>
+    </td></tr>
 <tr valign="top">
     <td class="ListaPar">2-jul-06</td>
     <td class="ListaPar">
@@ -67,7 +87,8 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
     <td class="ListaPar">29,30-jun-06</td>
     <td class="ListaPar">
           Fixed problems related to changes in 'instrument' element. Modifying code
-          to render instrument abbreviated name when it exits.
+          to render instrument abbreviated name when it exits. LDP source code
+          genetration methods: starting two review and complete.
     </td></tr>
 <tr valign="top">
     <td class="ListaPar">27,28-jun-06</td>

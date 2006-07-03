@@ -3,11 +3,11 @@
    (instrument
       (voice
          (clef Sol)
-         (n c4 n)
+         (n c4 q)
          (newSystem)
          (barline Simple NoVisible)
-         (n e4 n)
-         (barline Final)
+         (n e4 q)
+         (barline end)
       )
    )
 )

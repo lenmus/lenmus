@@ -4,17 +4,17 @@
       (voice
          (clef Sol)
          
-         (chord (n c4 n)(n d4 n)(n g4 n))
-         (chord (n c5 n)(n d5 n)(n a5 n))
+         (chord (n c4 q)(n d4 q)(n g4 q))
+         (chord (n c5 q)(n d5 q)(n a5 q))
          (barline)
          
-         (chord (n +c4 n)(n d4 n)(n g4 n))
-         (chord (n c5 n)(n -d5 n)(n a5 n))
+         (chord (n +c4 q)(n d4 q)(n g4 q))
+         (chord (n c5 q)(n -d5 q)(n a5 q))
          (barline)
 
-         (chord (n +c4 n)(n +d4 n)(n =g4 n))
-         (chord (n c5 n)(n -d5 n)(n a5 n))
-         (barline Final)
+         (chord (n +c4 q)(n +d4 q)(n =g4 q))
+         (chord (n c5 q)(n -d5 q)(n a5 q))
+         (barline end)
       )
    )
 )

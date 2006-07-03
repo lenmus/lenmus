@@ -7,18 +7,18 @@
          (time 2 4)
          
          //stems down
-         (chord (n c5 c)(n e5 c)(n g5 c))
+         (chord (n c5 e)(n e5 e)(n g5 e))
          (chord (n c5 s)(n f5 s)(n a5 s))
-         (chord (n d5 f)(n g5 f)(n b5 f))
+         (chord (n d5 t)(n g5 t)(n b5 t))
          (chord (n c5 m)(n e5 m)(n g5 m))
          (chord (n d4 g)(n b4 g)(n d5 g)(n g5 g))
          (chord (n f4 p)(n c5 p)(n e5 p))
          (barline)
          
          //two notes. stems up
-         (chord (n c4 c)(n e4 c)(n c5 c))
+         (chord (n c4 e)(n e4 e)(n c5 e))
          (chord (n d4 s)(n g4 s)(n b4 s))
-         (chord (n b3 f)(n d4 f)(n e5 f))
+         (chord (n b3 t)(n d4 t)(n e5 t))
          (chord (n d4 m)(n f4 m)(n a4 m)(n g5 m))
          (chord (n e4 g)(n f4 s)(n a4 s)(n f5 s))
          (chord (n c4 p)(n e4 p)(n c5 p))

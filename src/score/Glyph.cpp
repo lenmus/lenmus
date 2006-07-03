@@ -40,6 +40,15 @@
 
 #include "Glyph.h"
 
+////Juego de caracteres
+//const wxString CHAR_RESPIRACION = _T(":");
+//const wxString CHAR_DACAPO = _T("+");
+//const wxString CHAR_DALSEGNO = _T("*");
+//const wxString CHAR_CODA = _T("-");
+//const wxString CHAR_SEGNO = _T(",");
+//const wxString CHAR_OCTAVA = _T(">");
+
+
 // offset:  the y-axis offset from bitmap rectangle to the selection rectangle origin
 //          (units: tenths of inter-line space)
 // shift:   the y-axis offset from paper cursor position so that shape get correctly

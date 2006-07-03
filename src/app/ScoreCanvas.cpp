@@ -1,4 +1,3 @@
-// RCS-ID: $Id: ScoreCanvas.cpp,v 1.3 2006/02/23 19:17:49 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -56,32 +55,6 @@
 #include "global.h"
 
 
-
-//Juego de caracteres
-const wxString CHAR_CORCHEA = _T("V");
-const wxString CHAR_SEMICORCHEA = _T("W");
-const wxString CHAR_FUSA = _T("X");
-const wxString CHAR_SEMIFUSA = _T("Y");
-const wxString CHAR_RESPIRACION = _T(":");
-const wxString CHAR_CORCHETE_ENCIMA_1 = _T("f");
-const wxString CHAR_CORCHETE_ENCIMA_2 = _T("e");
-const wxString CHAR_CORCHETE_ENCIMA_3 = _T("d");
-const wxString CHAR_CORCHETE_ENCIMA_4 = _T("c");
-const wxString CHAR_CORCHETE_ENCIMA_5 = _T("b");
-const wxString CHAR_CORCHETE_ENCIMA_6 = _T("a");
-const wxString CHAR_CORCHETE_DEBAJO_1 = _T("o");
-const wxString CHAR_CORCHETE_DEBAJO_2 = _T("n");
-const wxString CHAR_CORCHETE_DEBAJO_3 = _T("m");
-const wxString CHAR_CORCHETE_DEBAJO_4 = _T("l");
-const wxString CHAR_CORCHETE_DEBAJO_5 = _T("k");
-const wxString CHAR_CORCHETE_DEBAJO_6 = _T("j");
-const wxString CHAR_DACAPO = _T("+");
-const wxString CHAR_DALSEGNO = _T("*");
-const wxString CHAR_CODA = _T("-");
-const wxString CHAR_SEGNO = _T(",");
-const wxString CHAR_OCTAVA = _T(">");
-
-
 BEGIN_EVENT_TABLE(lmScoreCanvas, wxWindow)
     EVT_ERASE_BACKGROUND(lmScoreCanvas::OnEraseBackground)
     EVT_MOUSE_EVENTS(lmScoreCanvas::OnMouseEvent)
@@ -91,12 +64,13 @@ END_EVENT_TABLE()
 
 // Define a constructor for my canvas
 lmScoreCanvas::lmScoreCanvas(lmScoreView *v, wxWindow *parent, const wxPoint& pos, 
-        const wxSize& size, long style):
-    wxWindow(parent, -1, pos, size, style)    //wxScrolledWindow(parent, -1, pos, size, style)
+        const wxSize& size, long style, wxColor colorBg) :
+    wxWindow(parent, -1, pos, size, style)
 {
     m_pView = v;
     wxASSERT(parent);
     m_pOwner = parent;
+    m_colorBg = colorBg;
 
 }
 
@@ -146,9 +120,7 @@ void lmScoreCanvas::OnEraseBackground(wxEraseEvent& event)
 #if 1
     // Code for flooding the background with a color
     wxDC* pDC = event.GetDC();
-    //wxColor color(10,36,106);        //deep blue
-    wxColor color(200, 200, 200);        // light grey
-    wxBrush brush(color, wxSOLID);
+    wxBrush brush(m_colorBg, wxSOLID);
     pDC->SetBackground(brush);
     pDC->Clear();
 
@@ -195,19 +167,6 @@ bool lmScoreCanvas::TileBitmap(const wxRect& rect, wxDC& dc, wxBitmap& bitmap)
     }
     return true;
 }
-
-//wxRect lmScoreCanvas::DrawGlyphs(bool fMeasuring, wxString sGlifos,
-//    int nxLeft, int nyTop, wxColour colorC)
-//{
-//    if (! fMeasuring) {
-//        m_pDC->SetTextForeground(colorC);
-//        m_pDC->DrawText(sGlifos, nxLeft, nyTop);
-//    }
-//    int nWidth, nHeight;
-//    m_pDC->GetTextExtent(sGlifos, &nWidth, &nHeight);
-//    return wxRect(nxLeft - m_pageOrg.x, nyTop - m_pageOrg.y, nWidth, nHeight);
-//
-//}
 
 void lmScoreCanvas::OnVisualHighlight(lmScoreHighlightEvent& event)
 {

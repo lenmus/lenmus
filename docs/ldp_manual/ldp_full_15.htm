@@ -678,6 +678,56 @@ a normal barline (simple line).</p>
 (clef Fa4)
 </pre>
 
+<table class="grid">
+<tr>
+<td  class="grid"><b>Clef</b></td>
+<td  class="grid"><b>Same as</b></td>
+</tr>
+<tr>
+<td  class="grid">frenchviolin</td>
+<td  class="grid">5</td>
+</tr>
+<tr>
+<td  class="grid">treble+8</td>
+<td  class="grid">Sol+8</td>
+</tr>
+<tr>
+<td  class="grid">treble</td>
+<td  class="grid">Sol</td>
+</tr>
+<tr>
+<td  class="grid">soprano</td>
+<td  class="grid">4</td>
+</tr>
+<tr>
+<td  class="grid">mezzosoprano</td>
+<td  class="grid">4</td>
+</tr>
+<tr>
+<td  class="grid">alto</td>
+<td  class="grid">4</td>
+</tr>
+<tr>
+<td  class="grid">treble-8</td>
+<td  class="grid">Sol-8</td>
+</tr>
+<tr>
+<td  class="grid">tenor</td>
+<td  class="grid">3</td>
+</tr>
+<tr>
+<td  class="grid">baritone</td>
+<td  class="grid">3</td>
+</tr>
+<tr>
+<td  class="grid">bass</td>
+<td  class="grid">Fa4</td>
+</tr>
+<tr>
+<td  class="grid">percussion</td>
+<td  class="grid">3</td>
+</tr>
+</table>
 
 
 
@@ -757,7 +807,7 @@ of a more general concept: <i>noterests</i>. A noterest is either a note or a re
 <p>For rests only its duration is needed.</p>
 <blockquote class="grammar">
 <span class="nt">Rest</span> :=
-  <span class="t">(s</span> <span class="nt">duration</span>
+  <span class="t">(r</span> <span class="nt">duration</span>
   <span class="t">)</span>
 </blockquote>
 
@@ -809,10 +859,10 @@ the key signature or that are not implied by a previous accidental in the same m
 <p>
 Then, in the following example:</p>
 <pre class="example">
-  (c1 (key Fa) (n b4 n))
+  (key Fa)(n b4 q)(barline)
 </pre>
 
-<p>the eighth b4 note will be a flat b4, as it is in F major key.</p>
+<p>the quarter b4 note will be a flat b4, as it is in F major key.</p>
 
 <!--
 <p>En aquellos
@@ -824,19 +874,19 @@ mediante la marca ABS colocada inmediatamente tras el dato de altura.</p>
 <!--
 <p>Si se quisiera
 codificar toda la partitura con alturas absolutas (tal como se hace en
- style='display:none;background:yellow'>MusicXML style='display:
-none;background:yellow'>), evitando asi tener que incluir el parámtro ABS en
+MusicXML), evitando asi tener que incluir el parámtro ABS en
 cada nota, esta circunstancia hay que especificarla como un parámetro global
-del elemento &lt;Musicitura&gt;</p>
+del elemento &lt;score&gt;</p>
 -->
 
+<!--
 <p>It is also possible to specify pitch as a number, and this will be interpreted as the
 absolute MIDI pitch. For example, 43 will be the central c note (c4).
 This way of encoding pitch is discouraged as some musical information is lost.
 This facility has been included to facilitate importing MIDI files and scores written by other
 programs. <b>Possibly this feature will removed from the language in future versions</b>.</p>
 
-
+-->
 
 <h3><a name="description_Duration">Duration</a></h3>
 <a href="#TOC">TOC</a>
@@ -961,10 +1011,10 @@ same voice, staff and pitch than the one on which this notation is included. No 
 needed.
 Example:</p>
 <code class="example">
-(n c4 n l)(n c4 c)(n e4 c)
+(n c4 q l)(n c4 e)(n e4 e)
 </code>
 
-<p>A quarter C4 note tied to an eighth one, followed by an eighth E4 note.</p>
+<p>A quarter c4 note tied to an eighth one, followed by an eighth E4 note.</p>
 
 
 
@@ -988,7 +1038,7 @@ When the only parameters specified are the start/end sign, the
 the starting note and a notation <b>g-</b> in the ending one.
 Example:</p>
 <code class="example">
-(n c4 n g+)(n d4 c)(n e4 c g-)
+(n c4 q g+)(n d4 e)(n e4 e g-)
 </code>
 
 <p>A group of beamed notes, formed by a quarter C4 note, an eighth D4 note and an eighth E4 note.</p>
@@ -1041,7 +1091,7 @@ to indicate the tuplet type.</p>
 
 
 <pre class="example">
-(n c4 c (t + 3)) (n d4 c) (n e4 c (t -))
+(n c4 e (t + 3)) (n d4 e) (n e4 e (t -))
 </pre>
 
 <p>This example is a triplet of eighth notes, that is, the three notes must be played
@@ -1060,7 +1110,7 @@ abbreviated syntax: </p>
 <p>So, the previous example can be written as:</p>
 
 <pre class="example">
-(n c4 c t3)(n d4 c)(n e4 c t-)
+(n c4 e t3)(n d4 e)(n e4 e t-)
 </pre>
 
 
@@ -1068,7 +1118,7 @@ abbreviated syntax: </p>
 must be combined as needed. Examples:</p>
 
 <pre class="example">
-(n c4 c g+) (n d4 s t3) (n c4 s) (n b3 s t- g-)
+(n c4 e g+) (n d4 s t3) (n c4 s) (n b3 s t- g-)
 </pre>
 
 <pre class="example">
@@ -1232,7 +1282,7 @@ be fully specified by using the Stem element. It forces stem direction.</p>
 <p>Example:</p>
 
 <pre class="example">
-(n e4 n (stem down))
+(n e4 q (stem down))
 </pre>
 
 
@@ -1912,15 +1962,15 @@ the list of tag names.
 </p>
 <table class="Lista">
 <tr><td class="ListaImpar">Element</td><td class="ListaImpar">English tag</td><td class="ListaImpar">Spanish tag</td></tr>
-<tr><td class="ListaPar">barline</td><td class="ListaPar">Barline</td><td class="ListaPar">Barra</td></tr>
+<tr><td class="ListaPar">Barline</td><td class="ListaPar">barline</td><td class="ListaPar">Barra</td></tr>
 <tr><td class="ListaPar" colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;Barline types</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">Simple</td><td class="ListaPar">Simple</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">Double</td><td class="ListaPar">Doble</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">Start</td><td class="ListaPar">Inicio</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">End</td><td class="ListaPar">Fin</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">StartRepetition</td><td class="ListaPar">InicioRepeticion</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">EndRepetition</td><td class="ListaPar">FinRepeticion</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">DoubleRepetition</td><td class="ListaPar">DobleRepeticion</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">simple</td><td class="ListaPar">Simple</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">double</td><td class="ListaPar">Doble</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">start</td><td class="ListaPar">Inicio</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">end</td><td class="ListaPar">Fin</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">startRepetition</td><td class="ListaPar">InicioRepeticion</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">endRepetition</td><td class="ListaPar">FinRepeticion</td></tr>
+<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">doubleRepetition</td><td class="ListaPar">DobleRepeticion</td></tr>
 <tr><td class="ListaPar" colspan="3">&nbsp;</td></tr>
 <tr><td class="ListaPar">Clef</td><td class="ListaPar">clef</td><td class="ListaPar">Clave</td></tr>
 <tr><td class="ListaPar">Instrument</td><td class="ListaPar">instrument</td><td class="ListaPar">Instrumento</td></tr>

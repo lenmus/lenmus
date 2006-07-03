@@ -1,4 +1,3 @@
-// RCS-ID: $Id: AuxString.h,v 1.8 2006/02/28 17:39:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -33,8 +32,6 @@
 #include "../score/Score.h"
 
 extern bool PitchNameToData(wxString sPitch, int* pPitch, EAccidentals* pAccidentals);
-extern bool NoteTypeToData(wxString sNoteType, ENoteType* pnNoteType, 
-                           bool* pfDotted, bool* pfDoubleDotted);
 extern bool StringToPitch(wxString sStep, wxString sOctave, int* pPitch);
 extern int LetterToStep(wxString sStep);
 extern void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, lmPitch nSelNote);

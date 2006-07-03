@@ -79,19 +79,28 @@ LenMus project philosophy (to remind me to always stay on this):
   Tasks for release 3.1
   ------------------------
     - LDP internationalization: review current tags, specially note names:
-		- introduce context for tags?
-    - Duplets and other tuplets:
-		+ change LDP syntax to specify occupied time.
-		+ LDPParser
-		- Treatment of tuplets in rests
-		- Treatment of ActualNotes and NormalNotes in XLMParser
+		- (?) english note names: use numbers (8, 16, 32, 128, ...)
+		- review clef names
+		- review key signature names
+		- review notation names
     - Slurs
-    - include playback buttons in main toolbar
+    - include playback buttons in main toolbar:
+		- fix icon for pause
+		- medium size /24x24) icons for play and pause
+		- split toolbar if not enough space
     - prepare score samples
     - re-structure LDP manual: more didactical
-    - disable rulers
-    - change background for score: no page frame but all window for the score
+    - Font: glyph for 128th and 256th notes
+    - Prepare UpdateData.xml file
+   
     
+    Bugs:
+		- staff lines in some cases are drawn towards the left (i.e. 120_stems_lengths.v15.txt)
+		
+    Other(?):
+		- XML import:
+    		- Treatment of ActualNotes and NormalNotes in XLMParser
+
     
  Spanish translation errors:
  ---------------------------
@@ -103,6 +112,8 @@ LenMus project philosophy (to remind me to always stay on this):
             
     - La notación '' es desconocida o no está todavía soportada.
                    |--- falta %s
+                   
+    - Botón Pause -> Pausa (ahora pone Pause)
     
 
 

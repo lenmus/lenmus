@@ -6,9 +6,9 @@
          (clef Sol)
          (key Do)
          (time 2 4)
-         (chord (n c5 n)(n e5 n)(n g5 n))
-         (chord (n c5 c g+)(n f5 c)(n a5 c))
-         (chord (n d5 c g-)(n g5 c)(n b5 c))
+         (chord (n c5 q)(n e5 q)(n g5 q))
+         (chord (n c5 e g+)(n f5 e)(n a5 e))
+         (chord (n d5 e g-)(n g5 e)(n b5 e))
          (barline)
 
          //measure 2
@@ -18,36 +18,36 @@
          (chord (n g4 s g-)(n e5 s)(n g5 s))
          (chord (n c5 s g+)(n e5 s)(n g5 s))
          (chord (n c5 s)(n f5 s)(n a5 s))
-         (chord (n d5 c g-)(n g5 c)(n b5 c))
+         (chord (n d5 e g-)(n g5 e)(n b5 e))
          (barline)
 
          //measure 3
-         (chord (n c5 c g+)(n e5 c)(n g5 c))
+         (chord (n c5 e g+)(n e5 e)(n g5 e))
          (chord (n c5 s)(n f5 s)(n a5 s))
          (chord (n d5 s g-)(n g5 s)(n b5 s))
          (chord (n c5 s g+)(n e5 s)(n g5 s))
-         (chord (n c5 c)(n f5 c)(n a5 c))
+         (chord (n c5 e)(n f5 e)(n a5 e))
          (chord (n d5 s g-)(n g5 s)(n b5 s))
          (barline)
 
          //measure 4
-         (chord (n c5 c. g+)(n e5 c.)(n g5 c.))
+         (chord (n c5 e. g+)(n e5 e.)(n g5 e.))
          (chord (n c5 s g-)(n f5 s)(n a5 s))
          (chord (n c5 s g+)(n e5 s)(n g5 s))
-         (chord (n c5 c. g-)(n f5 c.)(n a5 c.))
+         (chord (n c5 e. g-)(n f5 e.)(n a5 e.))
          (barline)
 
          //measure 5
-         (chord (n c5 c. g+)(n e5 c.)(n g5 c.))
+         (chord (n c5 e. g+)(n e5 e.)(n g5 e.))
          (chord (n c5 s)(n f5 s)(n a5 s))
-         (chord (n c5 c.)(n f5 c.)(n a5 c.))
+         (chord (n c5 e.)(n f5 e.)(n a5 e.))
          (chord (n c5 s g-)(n e5 s)(n g5 s))
          (barline)
 
          //measure 6
-         (chord (n c4 n)(n e4 n)(n g4 n))
-         (chord (n c4 c g+)(n f4 c)(n a4 c))
-         (chord (n d4 c g-)(n g4 c)(n b4 c))
+         (chord (n c4 q)(n e4 q)(n g4 q))
+         (chord (n c4 e g+)(n f4 e)(n a4 e))
+         (chord (n d4 e g-)(n g4 e)(n b4 e))
          (barline)
 
          //measure 7
@@ -57,46 +57,46 @@
          (chord (n g3 s g-)(n e4 s)(n g4 s))
          (chord (n c4 s g+)(n e4 s)(n g4 s))
          (chord (n c4 s)(n f4 s)(n a4 s))
-         (chord (n d4 c g-)(n g4 c)(n b4 c))
+         (chord (n d4 e g-)(n g4 e)(n b4 e))
          (barline)
 
          //measure 8
-         (chord (n c4 c g+)(n e4 c)(n g4 c))
+         (chord (n c4 e g+)(n e4 e)(n g4 e))
          (chord (n c4 s)(n f4 s)(n a4 s))
          (chord (n d4 s g-)(n g4 s)(n b4 s))
          (chord (n c4 s g+)(n e4 s)(n g4 s))
-         (chord (n c4 c)(n f4 c)(n a4 c))
+         (chord (n c4 e)(n f4 e)(n a4 e))
          (chord (n d4 s g-)(n g4 s)(n b4 s))
          (barline)
 
          //measure 9
-         (chord (n c4 c. g+)(n e4 c.)(n g4 c.))
+         (chord (n c4 e. g+)(n e4 e.)(n g4 e.))
          (chord (n c4 s g-)(n f4 s)(n a4 s))
          (chord (n c4 s g+)(n e4 s)(n g4 s))
-         (chord (n c4 c. g-)(n f4 c.)(n a4 c.))
+         (chord (n c4 e. g-)(n f4 e.)(n a4 e.))
          (barline)
 
          //measure 10
-         (chord (n c4 c. g+)(n e4 c.)(n g4 c.))
+         (chord (n c4 e. g+)(n e4 e.)(n g4 e.))
          (chord (n c4 s)(n f4 s)(n a4 s))
-         (chord (n c4 c.)(n f4 c.)(n a4 c.))
+         (chord (n c4 e.)(n f4 e.)(n a4 e.))
          (chord (n c4 s g-)(n e4 s)(n g4 s))
          (barline)
 
          //measure 11
-         (chord (n c4 n)(n e4 n)(n g4 n))
-         (chord (n c4 c)(n f4 c)(n a4 c))
-         (chord (n d5 c)(n g5 c)(n b5 c))
+         (chord (n c4 q)(n e4 q)(n g4 q))
+         (chord (n c4 e)(n f4 e)(n a4 e))
+         (chord (n d5 e)(n g5 e)(n b5 e))
          (barline)
 
          //measure 12
-         (chord (n c4 c g+ t3)(n f4 c)(n a4 c))
-         (chord (n d4 c)(n g4 c)(n b4 c))
-         (chord (n d4 c g-)(n g4 c)(n b4 c t-))
-         (chord (n c5 c g+ t3)(n f5 c)(n a5 c))
-         (chord (n d5 c)(n g5 c)(n b5 c))
-         (chord (n d5 c g-)(n g5 c)(n b5 c t-))
-         (barline Final)
+         (chord (n c4 e g+ t3)(n f4 e)(n a4 e))
+         (chord (n d4 e)(n g4 e)(n b4 e))
+         (chord (n d4 e g-)(n g4 e)(n b4 e t-))
+         (chord (n c5 e g+ t3)(n f5 e)(n a5 e))
+         (chord (n d5 e)(n g5 e)(n b5 e))
+         (chord (n d5 e g-)(n g5 e)(n b5 e t-))
+         (barline end)
       )
    )
 )

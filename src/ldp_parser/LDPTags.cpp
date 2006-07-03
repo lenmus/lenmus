@@ -72,7 +72,6 @@ lmLdpTagsTable* lmLdpTagsTable::GetInstance()
 {
 	if (!m_pInstance) {
 		m_pInstance = new lmLdpTagsTable();
-		m_pInstance->Initialize();
 	}
 	return m_pInstance;
 }
@@ -85,48 +84,15 @@ void lmLdpTagsTable::DeleteInstance()
 	}
 }
 
-//initialization
-void lmLdpTagsTable::Initialize()
+const wxString& lmLdpTagsTable::TagName(wxString sTag, wxString sContext)
 {
-
-    // initialize table with default Spanish values
-    m_sTags2[LDP_TAG_SCORE] = _T("score");
-    m_sTags2[LDP_TAG_LANGUAGE] = _T("language");
-	m_sTags2[LDP_TAG_PART] = _T("Parte");
-	m_sTags2[LDP_TAG_NUMINSTR] = _T("NumInstr");
-	m_sTags2[LDP_TAG_INSTRUMENT] = _T("Instrumento");
-	m_sTags2[LDP_TAG_MEASURE] = _T("c");
-	m_sTags2[LDP_TAG_BARLINE] = _T("Barra");
-	m_sTags2[LDP_TAG_BARLINE_SIMPLE] = _T("Simple");
-	m_sTags2[LDP_TAG_BARLINE_DOUBLE] = _T("Doble");
-	m_sTags2[LDP_TAG_BARLINE_START] = _T("Inicio");
-	m_sTags2[LDP_TAG_BARLINE_END] = _T("Fin");
-	m_sTags2[LDP_TAG_BARLINE_START_REPETITION] = _T("InicioRepeticion");
-	m_sTags2[LDP_TAG_BARLINE_END_REPETITION] = _T("FinRepeticion");
-	m_sTags2[LDP_TAG_BARLINE_DOUBLE_REPETITION] = _T("DobleRepeticion");
-
-	m_sTags2[LDP_TAG_CLEF] = _T("Clave");
-	m_sTags2[LDP_TAG_KEY] = _T("Tonalidad");
-	m_sTags2[LDP_TAG_TIME] = _T("Metrica");
-	m_sTags2[LDP_TAG_NOTE] = _T("n");
-	m_sTags2[LDP_TAG_REST] = _T("r");
-
-	// note/rests types
-    m_sTags2[LDP_TAG_DOUBLE_WHOLE] = _T("l");
-    m_sTags2[LDP_TAG_WHOLE] = _T("r");
-    m_sTags2[LDP_TAG_HALF] = _T("b");
-    m_sTags2[LDP_TAG_QUARTER] = _T("n");
-    m_sTags2[LDP_TAG_EIGHTH] = _T("c");
-    m_sTags2[LDP_TAG_16TH] = _T("s");
-    m_sTags2[LDP_TAG_32ND] = _T("f");
-    m_sTags2[LDP_TAG_64TH] = _T("m");
-    m_sTags2[LDP_TAG_128TH] = _T("g");
-    m_sTags2[LDP_TAG_256TH] = _T("p");
-
-
-    m_Tags[_T("Instrument")] = _T("Instrumento");
-
-
+    if (sContext == _T(""))
+        return m_Tags[0][sTag];
+    else {
+        int iT = m_Contexts[sContext];
+        wxASSERT( iT <= lmMAX_TAG_CONTEXTS );
+        return m_Tags[iT][sTag];
+    }
 }
 
 //load tags set for given language
@@ -134,8 +100,12 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
 {
     //! @todo For now charset is ignored
 
-    //clear table
-    m_Tags.clear();
+    //clear tables
+    m_Contexts.clear();
+    int i;
+    for (i=0; i <= lmMAX_TAG_CONTEXTS; i++) {
+        m_Tags[i].clear();
+    }
 
 
     //! @todo   For now I will load tags from program. This must be changed to load them
@@ -144,75 +114,121 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
     //! @todo   For now I will load Spanish tags as default. This must not be changed
     //!         while program generated tags are in Spanish.
     if (sLanguage == _T("en")) {
-        m_Tags[_T("abbrev")] = _T("abbrev");
-        m_Tags[_T("barline")] = _T("barline");
-        m_Tags[_T("bold")] = _T("bold");
-        m_Tags[_T("bold_italic")] = _T("bold-italic");
-        m_Tags[_T("center")] = _T("center");
-        m_Tags[_T("chord")] = _T("chord");
-        m_Tags[_T("clef")] = _T("clef");
-        m_Tags[_T("down")] = _T("down");
-        m_Tags[_T("dx")] = _T("dx");
-        m_Tags[_T("dy")] = _T("dy");
-        m_Tags[_T("font")] = _T("font");
-        m_Tags[_T("hasWidth")] = _T("hasWidth");
-        m_Tags[_T("infoMIDI")] = _T("infoMIDI");
-        m_Tags[_T("instrName")] = _T("instrName");
-        m_Tags[_T("instrument")] = _T("instrument");
-        m_Tags[_T("italic")] = _T("italic");
-        m_Tags[_T("key")] = _T("key");
-        m_Tags[_T("left")] = _T("left");
-        m_Tags[_T("name")] = _T("name");
-        m_Tags[_T("newSystem")] = _T("newSystem");
-        m_Tags[_T("normal")] = _T("normal");
-        m_Tags[_T("right")] = _T("right");
-        m_Tags[_T("split")] = _T("split");
-        m_Tags[_T("staves")] = _T("staves");
-        m_Tags[_T("stem")] = _T("stem");
-        m_Tags[_T("text")] = _T("text");
-        m_Tags[_T("time")] = _T("time");
-        m_Tags[_T("title")] = _T("title");
-        m_Tags[_T("up")] = _T("up");
-        m_Tags[_T("voice")] = _T("voice");
-        m_Tags[_T("x")] = _T("x");
-        m_Tags[_T("y")] = _T("y");
+        m_Tags[0][_T("abbrev")] = _T("abbrev");
+        m_Tags[0][_T("barline")] = _T("barline");
+        m_Tags[0][_T("bold")] = _T("bold");
+        m_Tags[0][_T("bold_italic")] = _T("bold-italic");
+        m_Tags[0][_T("center")] = _T("center");
+        m_Tags[0][_T("chord")] = _T("chord");
+        m_Tags[0][_T("clef")] = _T("clef");
+        m_Tags[0][_T("down")] = _T("down");
+        m_Tags[0][_T("dx")] = _T("dx");
+        m_Tags[0][_T("dy")] = _T("dy");
+        m_Tags[0][_T("font")] = _T("font");
+        m_Tags[0][_T("hasWidth")] = _T("hasWidth");
+        m_Tags[0][_T("infoMIDI")] = _T("infoMIDI");
+        m_Tags[0][_T("instrName")] = _T("instrName");
+        m_Tags[0][_T("instrument")] = _T("instrument");
+        m_Tags[0][_T("italic")] = _T("italic");
+        m_Tags[0][_T("key")] = _T("key");
+        m_Tags[0][_T("left")] = _T("left");
+        m_Tags[0][_T("name")] = _T("name");
+        m_Tags[0][_T("newSystem")] = _T("newSystem");
+        m_Tags[0][_T("normal")] = _T("normal");
+        m_Tags[0][_T("right")] = _T("right");
+        m_Tags[0][_T("split")] = _T("split");
+        m_Tags[0][_T("staves")] = _T("staves");
+        m_Tags[0][_T("stem")] = _T("stem");
+        m_Tags[0][_T("text")] = _T("text");
+        m_Tags[0][_T("time")] = _T("time");
+        m_Tags[0][_T("title")] = _T("title");
+        m_Tags[0][_T("up")] = _T("up");
+        m_Tags[0][_T("voice")] = _T("voice");
+        m_Tags[0][_T("x")] = _T("x");
+        m_Tags[0][_T("y")] = _T("y");
+
+        //special contexts
+        m_Contexts[_T("NoteType")] = 1;
+        m_Tags[1][_T("d")] = _T("d");
+        m_Tags[1][_T("r")] = _T("w");
+        m_Tags[1][_T("b")] = _T("h");
+        m_Tags[1][_T("n")] = _T("q");
+        m_Tags[1][_T("c")] = _T("e");
+        m_Tags[1][_T("s")] = _T("s");
+        m_Tags[1][_T("f")] = _T("t");
+        m_Tags[1][_T("m")] = _T("x");
+        m_Tags[1][_T("g")] = _T("o");
+        m_Tags[1][_T("p")] = _T("f");
+
+        m_Contexts[_T("Barlines")] = 2;
+        m_Tags[2][_T("simple")] = _T("simple");
+        m_Tags[2][_T("double")] = _T("double");
+        m_Tags[2][_T("end")] = _T("end");
+        m_Tags[2][_T("start")] = _T("start");
+        m_Tags[2][_T("startRepetition")] = _T("startRepetition");
+        m_Tags[2][_T("endRepetition")] = _T("endRepetition");
+        m_Tags[2][_T("doubleRepetition")] = _T("doubleRepetition");
+
     }
     else {
         // initialize table with default Spanish values
-        m_Tags[_T("abbrev")] = _T("abrev");
-        m_Tags[_T("barline")] = _T("Barra");            //! @todo change for 1.4
-        m_Tags[_T("bold")] = _T("negrita");
-        m_Tags[_T("bold_italic")] = _T("negrita-cursiva");
-        m_Tags[_T("center")] = _T("centrado");
-        m_Tags[_T("chord")] = _T("acorde");
-        m_Tags[_T("clef")] = _T("Clave");            //! @todo change for 1.4
-        m_Tags[_T("down")] = _T("abajo");
-        m_Tags[_T("dx")] = _T("dx");
-        m_Tags[_T("dy")] = _T("dy");
-        m_Tags[_T("font")] = _T("font");
-        m_Tags[_T("hasWidth")] = _T("tieneAnchura");
-        m_Tags[_T("infoMIDI")] = _T("infoMIDI");
-        m_Tags[_T("instrName")] = _T("nombreInstrumento");
-        m_Tags[_T("instrument")] = _T("instrumento");
-        m_Tags[_T("italic")] = _T("cursiva");
-        m_Tags[_T("key")] = _T("Tonalidad");          //! @todo change for 1.4
-        m_Tags[_T("left")] = _T("izqda");
-        m_Tags[_T("name")] = _T("nombre");
-        m_Tags[_T("newSystem")] = _T("nuevoSistema");
-        m_Tags[_T("normal")] = _T("normal");
-        m_Tags[_T("right")] = _T("dcha");
-        m_Tags[_T("split")] = _T("partes");
-        m_Tags[_T("staves")] = _T("numPentagramas");
-        m_Tags[_T("stem")] = _T("plica");
-        m_Tags[_T("text")] = _T("texto");
-        m_Tags[_T("time")] = _T("Metrica");        //! @todo change for 1.4
-        m_Tags[_T("title")] = _T("titulo");
-        m_Tags[_T("up")] = _T("arriba");
-        m_Tags[_T("voice")] = _T("voz");
-        m_Tags[_T("x")] = _T("x");
-        m_Tags[_T("y")] = _T("y");
-    }
 
+        //no context
+        m_Tags[0][_T("abbrev")] = _T("abrev");
+        m_Tags[0][_T("barline")] = _T("Barra");            //! @todo change for 1.4
+        m_Tags[0][_T("bold")] = _T("negrita");
+        m_Tags[0][_T("bold_italic")] = _T("negrita-cursiva");
+        m_Tags[0][_T("center")] = _T("centrado");
+        m_Tags[0][_T("chord")] = _T("acorde");
+        m_Tags[0][_T("clef")] = _T("Clave");            //! @todo change for 1.4
+        m_Tags[0][_T("down")] = _T("abajo");
+        m_Tags[0][_T("dx")] = _T("dx");
+        m_Tags[0][_T("dy")] = _T("dy");
+        m_Tags[0][_T("font")] = _T("font");
+        m_Tags[0][_T("hasWidth")] = _T("tieneAnchura");
+        m_Tags[0][_T("infoMIDI")] = _T("infoMIDI");
+        m_Tags[0][_T("instrName")] = _T("nombreInstrumento");
+        m_Tags[0][_T("instrument")] = _T("instrumento");
+        m_Tags[0][_T("italic")] = _T("cursiva");
+        m_Tags[0][_T("key")] = _T("Tonalidad");          //! @todo change for 1.4
+        m_Tags[0][_T("left")] = _T("izqda");
+        m_Tags[0][_T("name")] = _T("nombre");
+        m_Tags[0][_T("newSystem")] = _T("nuevoSistema");
+        m_Tags[0][_T("normal")] = _T("normal");
+        m_Tags[0][_T("right")] = _T("dcha");
+        m_Tags[0][_T("split")] = _T("partes");
+        m_Tags[0][_T("staves")] = _T("numPentagramas");
+        m_Tags[0][_T("stem")] = _T("plica");
+        m_Tags[0][_T("text")] = _T("texto");
+        m_Tags[0][_T("time")] = _T("Metrica");        //! @todo change for 1.4
+        m_Tags[0][_T("title")] = _T("titulo");
+        m_Tags[0][_T("up")] = _T("arriba");
+        m_Tags[0][_T("voice")] = _T("voz");
+        m_Tags[0][_T("x")] = _T("x");
+        m_Tags[0][_T("y")] = _T("y");
+
+        //special contexts
+        m_Contexts[_T("NoteType")] = 1;
+        m_Tags[1][_T("d")] = _T("d");
+        m_Tags[1][_T("r")] = _T("r");
+        m_Tags[1][_T("b")] = _T("b");
+        m_Tags[1][_T("n")] = _T("n");
+        m_Tags[1][_T("c")] = _T("c");
+        m_Tags[1][_T("s")] = _T("s");
+        m_Tags[1][_T("f")] = _T("f");
+        m_Tags[1][_T("m")] = _T("m");
+        m_Tags[1][_T("g")] = _T("g");
+        m_Tags[1][_T("p")] = _T("p");
+
+        m_Contexts[_T("Barlines")] = 2;
+        m_Tags[2][_T("simple")] = _T("Simple");
+        m_Tags[2][_T("double")] = _T("Doble");
+        m_Tags[2][_T("end")] = _T("Final");
+        m_Tags[2][_T("start")] = _T("Inicial");
+        m_Tags[2][_T("startRepetition")] = _T("InicioRepeticion");
+        m_Tags[2][_T("endRepetition")] = _T("FinRepeticion");
+        m_Tags[2][_T("doubleRepetition")] = _T("DobleRepeticion");
+    }
 
 }
 

@@ -246,6 +246,9 @@ Virtual paper layout
 #include "FontManager.h"
 #include "global.h"
 
+// access to main frame
+extern lmMainFrame *GetMainFrame();
+
 // IDs windows and others
 enum
 {
@@ -282,7 +285,7 @@ lmScoreView::lmScoreView() {
     m_pDragImage = (wxDragImage*) NULL;
 
     //options
-    m_fRulers = true;
+    m_fRulers = false;
 
     // view layout
     m_xBorder = 13;
@@ -317,7 +320,15 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
 {
     m_pFrame = wxGetApp().CreateProjectFrame(doc, this);
     m_pFrame->SetTitle(_T("lmScoreView"));
-    m_pFrame->SetBackgroundColour( wxColour(98,98,124) );
+    //wxColour colorBg(10,36,106);        //deep blue
+    //wxColour colorBg(200, 200, 200);    // light grey
+    wxColour colorBg(127, 127, 127);    // dark grey
+
+    m_pFrame->SetBackgroundColour(colorBg);
+
+    //rulers
+    m_fRulers = GetMainFrame()->ShowRulers();
+
 
 
 #ifdef __X__
@@ -332,17 +343,18 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
     // create the two rulers, and hide them if user has not selected rulers
     m_pHRuler = new lmRuler(m_pFrame, this, -1, wxHORIZONTAL, wxPoint(0,0), 300);
     m_pVRuler = new lmRuler(m_pFrame, this, -1, wxVERTICAL, wxPoint(0,0), 300);
-    //if (!m_fRulers) {
-    //    m_pHRuler->Hide();
-    //    m_pVRuler->Hide();
-    //}
+    if (!m_fRulers) {
+        m_pHRuler->Hide();
+        m_pVRuler->Hide();
+    }
 
     // add an offset of 2 pixels to the rulers to take into account the canvas border
     m_pHRuler->SetOffset(2 - m_xBorder);
     m_pVRuler->SetOffset(2);
 
     // create the canvas for the score to edit
-    m_pCanvas = new lmScoreCanvas(this, m_pFrame, wxPoint(0, 0), m_pFrame->GetSize(), wxSUNKEN_BORDER );
+    m_pCanvas = new lmScoreCanvas(this, m_pFrame, wxPoint(0, 0), m_pFrame->GetSize(),
+                        wxNO_BORDER, colorBg );
 
     // create the scrollbars
     m_pHScroll = new wxScrollBar(m_pFrame, CTROL_HScroll, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
