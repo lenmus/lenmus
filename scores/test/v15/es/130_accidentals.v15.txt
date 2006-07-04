@@ -1,0 +1,24 @@
+(score
+   (vers 1.5)(language es iso-8859-1)
+   (instrumento
+      (datosMusica
+         (clave Sol)
+         
+         (n -e4 n)
+         (n =e4 n)
+         (n +e4 n)
+         (barra)
+         
+         (n --e4 n)
+         (n =-e4 n)
+         (n -e4 n)
+         (barra)
+         
+         (n ++e4 n)
+         (n =+e4 n)
+         (n xe4 n)
+         (barra Final)
+      )
+   )
+)
+

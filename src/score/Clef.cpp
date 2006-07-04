@@ -91,7 +91,7 @@ lmTenths lmClef::GetGlyphOffset()
         case eclvDo2: yOffset = -30;    break;
         case eclvDo3: yOffset = -40;    break;
         case eclvDo4: yOffset = -50;    break;
-        case eclvPercusion: yOffset =-19; break;
+        case eclvPercussion: yOffset =-19; break;
         default:
             yOffset = 0;
             wxASSERT_MSG( false, _T("Invalid value for attribute m_nClefType"));
@@ -115,7 +115,7 @@ lmTenths lmClef::GetSelRectShift()
         case eclvDo2: yOffset = 40;    break;
         case eclvDo3: yOffset = 40;    break;
         case eclvDo4: yOffset = 40;    break;
-        case eclvPercusion: yOffset = 20; break;
+        case eclvPercussion: yOffset = 20; break;
         default:
             yOffset = 0;
             wxASSERT_MSG( false, _T("Invalid value for attribute m_nClefType"));
@@ -139,7 +139,7 @@ lmTenths lmClef::GetSelRectHeight()
         case eclvDo2: nHeight = 40;    break;
         case eclvDo3: nHeight = 40;    break;
         case eclvDo4: nHeight = 40;    break;
-        case eclvPercusion: nHeight = 35; break;
+        case eclvPercussion: nHeight = 35; break;
         default:
             nHeight = 100;
             wxASSERT_MSG( false, _T("Invalid value for attribute m_nClefType"));
@@ -163,7 +163,7 @@ wxString lmClef::GetLenMusChar()
         case eclvDo2: sGlyph = CHAR_C_CLEF; break;
         case eclvDo3: sGlyph = CHAR_C_CLEF; break;
         case eclvDo4: sGlyph = CHAR_C_CLEF; break;
-        case eclvPercusion: sGlyph = CHAR_NO_CLEF; break;
+        case eclvPercussion: sGlyph = CHAR_NO_CLEF; break;
         default:
             wxASSERT_MSG( false, _T("Invalid value for attribute m_nClefType"));
     }

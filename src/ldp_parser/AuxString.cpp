@@ -457,7 +457,7 @@ EClefType LDPNameToClef(wxString sClefName)
     } else if (sClefName == _T("Fa4")) {
         return eclvFa4;
     } else if (sClefName == _T("SinClave")) {
-        return eclvPercusion;
+        return eclvPercussion;
     } else {
         return (EClefType)-1;
     }
@@ -535,7 +535,7 @@ bool XmlDataToClef(wxString sClefLine, EClefType* pClef)
     } else if (sClefLine == _T("F4")) {
         *pClef = eclvFa4;
     } else if (sClefLine == _T("SINCLAVE")) {
-        *pClef = eclvPercusion;
+        *pClef = eclvPercussion;
     } else {
         return true;    //error
     }

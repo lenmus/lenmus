@@ -1,0 +1,17 @@
+(score
+   (vers 1.5)(language es iso-8859-1)
+   (instrumento  
+      (datosMusica 
+        (clave Sol)
+        (tonalidad La)
+        (metrica 2 4)
+        (n c4 c g+ t3)(n e4 c)(n g4 c g- t-)
+        (n g4 n)
+        (barra)
+
+        (n c4 c t3)(n e4 c)(n g4 c t-)
+        (n g4 n)
+        (barra Final)
+      )
+   )
+)

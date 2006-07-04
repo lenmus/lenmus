@@ -74,7 +74,7 @@ public:
     bool        AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore);
     bool        AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode);
-    void        AnalyzeVoice(lmLDPNode* pNode, lmVStaff* pVStaff);
+    void        AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff);
 
 

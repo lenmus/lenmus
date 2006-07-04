@@ -1,0 +1,21 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument
+      (musicData
+         (clef treble)
+         
+         (chord (n c4 q)(n d4 q)(n g4 q))
+         (chord (n c5 q)(n d5 q)(n a5 q))
+         (barline)
+         
+         (chord (n +c4 q)(n d4 q)(n g4 q))
+         (chord (n c5 q)(n -d5 q)(n a5 q))
+         (barline)
+
+         (chord (n +c4 q)(n +d4 q)(n =g4 q))
+         (chord (n c5 q)(n -d5 q)(n a5 q))
+         (barline end)
+      )
+   )
+)
+

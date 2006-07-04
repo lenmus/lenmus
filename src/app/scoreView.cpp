@@ -1095,7 +1095,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     //First page at (xLeftMargin, yTopMargin), size (xPageSize, yPageSize)
     //Second page at (xLeftMargin, yTopMargin+yPageSize+yInterpageGap)
     //...
-    //lmPage n at (xLeftMargin, yTopMargin + n * (yPageSize+yInterpageGap))
+    //Page n+1 at (xLeftMargin, yTopMargin + n * (yPageSize+yInterpageGap))
     // all this coordinates are referred to view origin (0,0), a virtual infinite
     // paper on which all pages are rendered one after the other.
 
@@ -1105,6 +1105,10 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     GetScrollPixelsPerUnit(&xScrollUnits, &yScrollUnits);
     xOrg *= xScrollUnits;
     yOrg *= yScrollUnits;
+
+    // To draw a cast shadow for each page we need the shadow sizes
+    lmPixels nRightShadowWidth = 5;      //pixels
+    lmPixels nBottomShadowHeight = 5;      //pixels
 
     //// We also need to know the size of the canvas window to see which
     //// pages are completely hidden and must not get redrawn
@@ -1146,7 +1150,10 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
         //    pageRect.x, pageRect.y, pageRect.width, pageRect.height);
 
         // Lets intersect pageRect with drawRect to verify if this page is affected
-        wxRect interRect = pageRect;
+        wxRect interRect(pageRect.x,
+                         pageRect.y,
+                         pageRect.width + nRightShadowWidth,
+                         pageRect.height + nBottomShadowHeight);
         interRect.Intersect(drawRect);
 
         // if intersection is not null this page needs repainting.
@@ -1176,6 +1183,20 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
             //pDC->SetBrush(*wxTRANSPARENT_BRUSH);
             //pDC->SetPen(*wxRED_PEN);
             //pDC->DrawRectangle(xCanvas, yCanvas, interRect.width, interRect.height);
+
+            //draw page cast shadow
+            // to refer page rectangle to canvas window coordinates we need to 
+            // substract scroll origin
+            int xRight = pageRect.x + pageRect.width - xOrg,
+                yTop = pageRect.y - yOrg,
+                xLeft = pageRect.x - xOrg,
+                yBottom = pageRect.y + pageRect.height - yOrg;
+            pDC->SetBrush(*wxBLACK_BRUSH);
+            pDC->SetPen(*wxBLACK_PEN);
+            pDC->DrawRectangle(xRight, yTop + nBottomShadowHeight,
+                               nRightShadowWidth, pageRect.height);
+            pDC->DrawRectangle(xLeft + nRightShadowWidth, yBottom,
+                               pageRect.width, nBottomShadowHeight);
         }
 
         //verify if we should finish the loop

@@ -1,0 +1,47 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument
+      (musicData
+         (clef treble)
+         
+         //sharps. Major keys
+         (key Do)(barline double)
+         (key treble)(barline double)
+         (key Re)(barline double)
+         (key La)(barline double)
+         (key Mi)(barline double)
+         (key Si)(barline double)
+         (key Fa#)(barline double)
+         (key Do#)(barline double)
+         
+         // flats. Major keys
+         (key Fa)(barline double)
+         (key Sib)(barline double)
+         (key Mib)(barline double)
+         (key Lab)(barline double)
+         (key Reb)(barline double)
+         (key trebleb)(barline double)
+         (key Dob)(barline double)
+         
+         //sharps. Minor keys
+         (key Lam)(barline double)
+         (key Mim)(barline double)
+         (key Sim)(barline double)
+         (key Fa#m)(barline double)
+         (key Do#m)(barline double)
+         (key treble#m)(barline double)
+         (key Re#m)(barline double)
+         (key La#m)(barline double)
+         
+         // flats. Minor keys
+         (key Rem)(barline double)
+         (key treblem)(barline double)
+         (key Dom)(barline double)
+         (key Fam)(barline double)
+         (key Sibm)(barline double)
+         (key Mibm)(barline double)
+         (key Labm)(barline end)
+      )
+   )
+)
+

@@ -656,79 +656,102 @@ a normal barline (simple line).</p>
 <h3><a name="description_Clef">The Clef element</a></h3>
 <a href="#TOC">TOC</a>
 
-<a name="rule_clef" />
 <p>
 <span class="nt">Clef</span> :=
     <span class="t">(clef</span>
-    {<span class="t">Sol</span> |
-      <span class="t">Fa4</span> |
-      <span class="t">Fa3</span> |
-      <span class="t">Do1</span> |
-      <span class="t">Do2</span> |
-      <span class="t">Do3</span> |
-      <span class="t">Do4</span> |
-      <span class="t">Percussion</span> }
+      <span class="nt">ClefName</span>
+      [ <span class="nt">Tessitura</span> ]
       [ <span class="nt">Visible</span> ]
     <span class="t">)</span>
+
+<br />
+<span class="nt">Tessitura</span> :=
+    { <span class="t">+8</span> |
+      <span class="t">-8</span> |
+      <span class="t">+15</span> }
 </p>
+
+<p>The tessitura implied by a clef can be modified by including a tessitura notation,
+that will draw a 8va or 15ma symbol above (+8, +15) or below (-8) the clef,
+and force the corresponding
+octave shift. The tessitura option is only usable with G and F clefs.
+<span style="color:#ff0000;">Tessitura option is not yet supported.</span></p>
+
 
 <p>Examples:</p>
 <pre class="example">
-(clef Sol)
-(clef Fa4)
+(clef G)            // G clef
+(clef bass)         // F clef
+(clef treble +8)    // G clef with 8va symbol above
 </pre>
 
+
+<p>Valid clef names are described in the following table:</p>
+<center>
 <table class="grid">
 <tr>
-<td  class="grid"><b>Clef</b></td>
+<td  class="grid"><b>ClefName</b></td>
 <td  class="grid"><b>Same as</b></td>
-</tr>
-<tr>
-<td  class="grid">frenchviolin</td>
-<td  class="grid">5</td>
-</tr>
-<tr>
-<td  class="grid">treble+8</td>
-<td  class="grid">Sol+8</td>
+<td  class="grid"><b>Meaning</b></td>
 </tr>
 <tr>
 <td  class="grid">treble</td>
-<td  class="grid">Sol</td>
-</tr>
-<tr>
-<td  class="grid">soprano</td>
-<td  class="grid">4</td>
-</tr>
-<tr>
-<td  class="grid">mezzosoprano</td>
-<td  class="grid">4</td>
-</tr>
-<tr>
-<td  class="grid">alto</td>
-<td  class="grid">4</td>
-</tr>
-<tr>
-<td  class="grid">treble-8</td>
-<td  class="grid">Sol-8</td>
-</tr>
-<tr>
-<td  class="grid">tenor</td>
-<td  class="grid">3</td>
-</tr>
-<tr>
-<td  class="grid">baritone</td>
-<td  class="grid">3</td>
+<td  class="grid">G</td>
+<td  class="grid">G clef on second line</td>
 </tr>
 <tr>
 <td  class="grid">bass</td>
-<td  class="grid">Fa4</td>
+<td  class="grid">F</td>
+<td  class="grid">F clef on fourth line</td>
+</tr>
+<tr>
+<td  class="grid">baritone</td>
+<td  class="grid">F3</td>
+<td  class="grid">F clef on third line</td>
+</tr>
+<tr>
+<td  class="grid">soprano</td>
+<td  class="grid">C1</td>
+<td  class="grid">C clef on first line</td>
+</tr>
+<tr>
+<td  class="grid">mezzosoprano</td>
+<td  class="grid">C2</td>
+<td  class="grid">C clef on second line</td>
+</tr>
+<tr>
+<td  class="grid">alto</td>
+<td  class="grid">C3</td>
+<td  class="grid">C clef on third line</td>
+</tr>
+<tr>
+<td  class="grid">tenor</td>
+<td  class="grid">C4</td>
+<td  class="grid">C clef on fourth line</td>
 </tr>
 <tr>
 <td  class="grid">percussion</td>
-<td  class="grid">3</td>
+<td  class="grid">&nbsp;</td>
+<td  class="grid">Percussion key</td>
+<tr>
+<!--
+<td  class="grid">baritoneC</td>
+<td  class="grid">C5</td>
+<td  class="grid">C clef on fifth line</td>
+</tr>
+<tr>
+<td  class="grid">subbass</td>
+<td  class="grid">F5</td>
+<td  class="grid">F clef on fifth line</td>
+</tr>
+<td  class="grid">french</td>
+<td  class="grid">G1</td>
+<td  class="grid">G clef on first line</td>
+</tr>
+-->
 </tr>
 </table>
-
+</center>
 
 
 <!-- ==================================================================================================== -->

@@ -450,7 +450,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOpt
 
         //Store information about this system
         pBoxSystem->SetNumMeasures(m_nMeasuresInSystem);
-        if (nAbsMeasure + m_nMeasuresInSystem == nTotalMeasures && 
+        if (nAbsMeasure + m_nMeasuresInSystem -1 == nTotalMeasures && 
             pOptions->m_fStopStaffLinesAtFinalBarline)
         {
             //this is the last system and it has been requested to stop staff lines

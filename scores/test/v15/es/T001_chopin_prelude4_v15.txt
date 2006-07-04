@@ -1,0 +1,39 @@
+(score
+   (vers 1.5)(language es iso-8859-1)
+   
+   (titulo center "Prelude 4" (font bold 14))
+   (titulo right "F. Chopin" dy=10mm (font normal 12))
+
+   (instrumento (name "4.") (staves 2)
+      (datosMusica 
+        (clave Sol p1)   //sol clef in staff 1
+        (clave Fa4 p2)   //fa4 clef in staff 2
+        (tonalidad Lab)
+        (metrica 4 4)
+        (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // la 1ª nota está en pentagrama 1. Sigue ahí mientras no cambie
+        (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
+        (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 1
+        (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
+        (barra)
+
+        (n g3 c g+ p2)(n b3 c)(n d4 c p1)(n g4 c g-)   // grupo a caballo entre ambos pentagramas
+        (barra)
+
+        (n f4 n)(n c5 n)   //todo en p1
+        (barra)
+
+        (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // la 1ª nota está en pentagrama 1. Sigue ahí mientras no cambie
+        (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
+        (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 1
+        (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
+        (barra)
+
+        (n g3 c g+ p2)(n b3 c)(n d4 c p1)(n g4 c g-)   // grupo a caballo entre ambos pentagramas
+        (barra)
+
+        (n f4 n)(n c5 n)   //todo en p1
+        (barra Final)
+     )
+   )
+)
+

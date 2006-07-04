@@ -338,7 +338,7 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos,
         case eclvDo4:
             wxASSERT(false);        //! @todo Clef Do4
             break;
-        case eclvPercusion:
+        case eclvPercussion:
             nKeySignature = earmDo;    //force not to draw any accidentals
             break;
         default:

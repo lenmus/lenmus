@@ -61,12 +61,21 @@ enum EClefType
     eclvDo2,
     eclvDo3,
     eclvDo4,
-    eclvPercusion        //For percusion scores
+    eclvPercussion,
+    // other clefs not available for exercises
+    eclvDo5,
+    eclvFa5,
+    eclvSol1,
+    eclv8Sol,       //8 above
+    eclvSol8,       //8 below
+    eclv8Fa,        //8 above
+    eclvFa8,        //8 below
+
 };
 // @attention enum constats EClefType are going to be ramdomly generated in object
-// Generators. The next constant defines de range.
+// Generators. The next constants defines de range.
 #define lmMIN_CLEF        eclvSol
-#define lmMAX_CLEF        eclvPercusion
+#define lmMAX_CLEF        eclvPercussion
 // @attention enum constats EClefType are going to be used as indexes in ClefConstrains
 
 

@@ -1,0 +1,21 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument
+      (musicData
+         
+         //measure 1
+         (clef treble)
+         (key treble)
+         (newSystem)
+         (clef bass)
+         (key Fa)
+         (barline double)
+         
+         //measure 2 (in new system)
+         (clef bass)
+         (key Fa)
+         (barline end)
+      )
+   )
+)
+

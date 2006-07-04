@@ -720,7 +720,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     //<InstrName> = (instrName name-string [abbreviation-string])
     //<InfoMIDI> = (infoMIDI num-instr [num-device])
     //<Staves> = (staves {num | overlayered} )
-    //<Voice> = (voice <music>+ )
+    //<Voice> = (MusicData <music>+ )
     
     lmLDPNode* pX;
     wxString sData;
@@ -735,7 +735,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
 
     //default values
     int nMIDIChannel=0, nMIDIInstr=0;       //default MIDI values: channel 0, instr=Piano
-    bool fMusicFound = false;               // <voice> tag found
+    bool fMusicFound = false;               // <MusicData> tag found
     wxString sNumStaves = _T("1");          //one staff
 
     //default values for name
@@ -754,13 +754,13 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     lmFontInfo tAbbrevFont = g_tInstrumentDefaultFont;
     lmLocation tAbbrevPos = g_tDefaultPos;
 
-    // parse optional elements until <voice> tag found
+    // parse optional elements until <MusicData> tag found
     for (; iP <= pNode->GetNumParms(); iP++) {
         pX = pNode->GetParameter(iP);
 
-        if (pX->GetName() == m_pTags->TagName(_T("voice")) ) {
+        if (pX->GetName() == m_pTags->TagName(_T("musicData")) ) {
             fMusicFound = true;
-            break;      //start of voice. Exit this loop
+            break;      //start of MusicData. Exit this loop
         }
         else if (pX->GetName() == m_pTags->TagName(_T("name")) ) {
             AnalyzeTextString(pX, &sInstrName, &nNameAlign, &tNamePos,
@@ -807,7 +807,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     //process firts voice
     if (!fMusicFound) {
         AnalysisError( _("Expected '%s' but found element %s. Analysis stopped."),
-            m_pTags->TagName(_T("voice")), pX->GetName() );
+            m_pTags->TagName(_T("musicData")), pX->GetName() );
         return;
     }
 
@@ -823,34 +823,34 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
                                         pName, pAbbrev);
     lmVStaff* pVStaff = pInstr->GetVStaff(1);      //get the VStaff created
 
-    // analyce first voice
-    AnalyzeVoice(pX, pVStaff);
+    // analyce first MusicData
+    AnalyzeMusicData(pX, pVStaff);
     iP++;
 
-    //analyze other voice elements
+    //analyze other MusicData elements
     for(; iP <= pNode->GetNumParms(); iP++) {
         pX = pNode->GetParameter(iP);
-        if (pX->GetName() = m_pTags->TagName(_T("voice")) ) {
+        if (pX->GetName() = m_pTags->TagName(_T("musicData")) ) {
             pVStaff = pInstr->AddVStaff(true);      //true -> overlayered
-            AnalyzeVoice(pX, pVStaff);
+            AnalyzeMusicData(pX, pVStaff);
         }
         else {
             AnalysisError( _("Expected '%s' but found element %s. Element ignored."),
-                m_pTags->TagName(_T("voice")), pX->GetName() );
+                m_pTags->TagName(_T("musicData")), pX->GetName() );
         }
     }
 
 }
 
-void lmLDPParser::AnalyzeVoice(lmLDPNode* pNode, lmVStaff* pVStaff)
+void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
-    // <voice> = (voice <music>+ )
+    // <MusicData> = (MusicData <music>+ )
     // <music> ::= {<Figure> | <Attribute> | <Indicacion> |
     //              <Barra> | <desplazamiento> | <opciones>}
     // <Atributo> ::= (<Clave> | <Tonalidad> | <Metrica>)
     // <Indicacion> ::= (<Metronomo>)
 
-    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("voice")));
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("musicData")));
 
     long iP = 1;
     wxString sName;
@@ -888,7 +888,7 @@ void lmLDPParser::AnalyzeVoice(lmLDPNode* pNode, lmVStaff* pVStaff)
         } else if (sName == m_pTags->TagName(_T("newSystem")) ) {
             AnalyzeNewSystem(pX, pVStaff);
         } else {
-            AnalysisError( _("[AnalyzeVoice]: Unknown or not allowed element '%s' found. Element ignored."),
+            AnalysisError( _("[AnalyzeMusicData]: Unknown or not allowed element '%s' found. Element ignored."),
                 sName );
         }
     }
@@ -1918,7 +1918,9 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
     // <Barline> = (barline <BarType> [<Visible>])
     // <BarType> = {"InicioRepeticion" | "FinRepeticion" | "Final" | "Doble" | "Simple" }
 
-    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("barline")) );
+    wxString sElmName = pNode->GetName();
+    wxASSERT(sElmName == _T("Barra") || sElmName == m_pTags->TagName(_T("barline")) );
+    //       ----------------------- compatibility eBooks v1.3 
 
     //check that bar type is specified
     if(pNode->GetNumParms() < 1) {
@@ -1967,7 +1969,9 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
 //  <Clave> = ("Clave" {"Sol" | "Fa4" | "Fa3" | "Do1" | "Do2" | "Do3" | "Do4" | "SinClave" }
 //                [<numStaff>] [<Visible>] )
     
-    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("clef")) );
+    wxString sElmName = pNode->GetName();
+    wxASSERT(sElmName == _T("Clave") || sElmName == m_pTags->TagName(_T("clef")) );
+    //       ----------------------- compatibility eBooks v1.3 
 
     //check that clef type is specified
     if(pNode->GetNumParms() < 1) {
@@ -1980,32 +1984,92 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
     
     long iP = 1;
     wxString sName = (pNode->GetParameter(iP))->GetName();
-    EClefType nClef = LDPNameToClef(sName);
-    if (nClef == (EClefType)-1) {
-        AnalysisError( _("Unknown clef '%s'. Assumed 'Sol'."), sName );
+    EClefType nClef;
+    if (sName == m_pTags->TagName(_T("treble"), _T("Clefs")) ||
+        sName == m_pTags->TagName(_T("G"), _T("Clefs")) )
+    {
+        nClef = eclvSol;
+    }
+    else if (sName == m_pTags->TagName(_T("bass"), _T("Clefs")) ||
+        sName == m_pTags->TagName(_T("F"), _T("Clefs")) )
+    {
+        nClef = eclvFa4;
+    }
+    else if (sName == m_pTags->TagName(_T("baritone"), _T("Clefs")) ||
+        sName == m_pTags->TagName(_T("F3"), _T("Clefs")) )
+    {
+        nClef = eclvFa3;
+    }
+    else if (sName == m_pTags->TagName(_T("soprano"), _T("Clefs")) ||
+        sName == m_pTags->TagName(_T("C1"), _T("Clefs")) )
+    {
+        nClef = eclvDo1;
+    }
+    else if (sName == m_pTags->TagName(_T("mezzosoprano"), _T("Clefs")) ||
+        sName == m_pTags->TagName(_T("C2"), _T("Clefs")) )
+    {
+        nClef = eclvDo2;
+    }
+    else if (sName == m_pTags->TagName(_T("alto"), _T("Clefs")) ||
+        sName == m_pTags->TagName(_T("C3"), _T("Clefs")) )
+    {
+        nClef = eclvDo3;
+    }
+    else if (sName == m_pTags->TagName(_T("tenor"), _T("Clefs")) ||
+        sName == m_pTags->TagName(_T("C4"), _T("Clefs")) )
+    {
+        nClef = eclvDo4;
+    }
+    else if (sName == m_pTags->TagName(_T("percussion"), _T("Clefs")) )
+    {
+        nClef = eclvPercussion;
+    }
+    //else if (sName == m_pTags->TagName(_T("baritoneC"), _T("Clefs")) ||
+    //    sName == m_pTags->TagName(_T("C5"), _T("Clefs")) )
+    //{
+    //    nClef = eclvDo5;
+    //}
+    //else if (sName == m_pTags->TagName(_T("subbass"), _T("Clefs")) ||
+    //    sName == m_pTags->TagName(_T("F5"), _T("Clefs")) )
+    //{
+    //    nClef = eclvFa5;
+    //}
+    //else if (sName == m_pTags->TagName(_T("french"), _T("Clefs")) ||
+    //    sName == m_pTags->TagName(_T("G1"), _T("Clefs")) )
+    //{
+    //    nClef = eclvSol1;
+    //}
+    else {
+        AnalysisError( _("Unknown clef '%s'. Assumed '%s'."),
+            sName, m_pTags->TagName(_T("G")) );
         nClef = eclvSol;
     }
     iP++;
     
-    //analyze second parameter (optional): number of staff on which this clef is located
+    //analyze optional parameters
     lmLDPNode* pX;
     long nStaff = 1;
-    if (pNode->GetNumParms() >= iP) {
+    bool fVisible = true;
+    for(; iP <= pNode->GetNumParms(); iP++) {
         pX = pNode->GetParameter(iP);
-        wxString sStaffNum = pX->GetName();
-        if (sStaffNum.Left(1) == _T("p")) {
-            nStaff = AnalyzeNumStaff(sStaffNum);
+        sName = pX->GetName();
+        if (sName.Left(1) == _T("p"))   //number of staff on which this clef is located
+        {
+            nStaff = AnalyzeNumStaff(sName);
             iP++;
         }
+        else if (sName == _T("NoVisible")) {     //visible or not
+            fVisible = false;
+        }
+        else if (sName == _T("-8") || sName == _T("+8") || sName == _T("+15")) {
+            //! @todo tessiture option in clef
+        }
+        else {
+            AnalysisError( _("[AnalyzeMusicData]: Unknown or not allowed element '%s' found. Element ignored."),
+                sName );
+        }
     }
-    
-    //analyze third parameter (optional): visible or not
-    bool fVisible = true;
-    if (pNode->GetNumParms() >= iP) {
-        pX = pNode->GetParameter(iP);
-        if (pX->GetName() == _T("NoVisible")) fVisible = false;
-    }
-    
+
     pVStaff->AddClef(nClef, nStaff, fVisible);
     return false;
     
@@ -2287,7 +2351,9 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
     //  <KeySignature> ::= (key {"Do" | "Sol" | "Re" | "La" | "Mi" | "Si" | "Fa+" |
     //                        | "Sol-" | "Re-" | "La-" | "Mi-" | "Si-" | "Fa" } [<Visible>])
 
-    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("key")) );
+    wxString sElmName = pNode->GetName();
+    wxASSERT(sElmName == _T("Tonalidad") || sElmName == m_pTags->TagName(_T("key")) );
+    //       --------------------------- compatibility eBooks v1.3 
 
     //check that key value is specified
     if(pNode->GetNumParms() < 1) {
@@ -2325,7 +2391,9 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
 {
 //  <Métrica> ::= ("Metrica" <num> <num> [<Visible>])
     
-    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("time")) );
+    wxString sElmName = pNode->GetName();
+    wxASSERT(sElmName == _T("Metrica") || sElmName == m_pTags->TagName(_T("time")) );
+    //       ------------------------- compatibility eBooks v1.3 
 
     //check that the two numbers are specified
     if(pNode->GetNumParms() < 2) {

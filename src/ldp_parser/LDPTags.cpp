@@ -143,7 +143,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("time")] = _T("time");
         m_Tags[0][_T("title")] = _T("title");
         m_Tags[0][_T("up")] = _T("up");
-        m_Tags[0][_T("voice")] = _T("voice");
+        m_Tags[0][_T("musicData")] = _T("musicData");
         m_Tags[0][_T("x")] = _T("x");
         m_Tags[0][_T("y")] = _T("y");
 
@@ -169,18 +169,41 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[2][_T("endRepetition")] = _T("endRepetition");
         m_Tags[2][_T("doubleRepetition")] = _T("doubleRepetition");
 
+
+        m_Contexts[_T("Clefs")] = 3;
+        m_Tags[3][_T("G")] = _T("G");
+        m_Tags[3][_T("F")] = _T("F");
+        m_Tags[3][_T("F3")] = _T("F3");
+        m_Tags[3][_T("C1")] = _T("C1");
+        m_Tags[3][_T("C2")] = _T("C2");
+        m_Tags[3][_T("C3")] = _T("C3");
+        m_Tags[3][_T("C4")] = _T("C4");
+        m_Tags[3][_T("C5")] = _T("C5");
+        m_Tags[3][_T("F5")] = _T("F5");
+        m_Tags[3][_T("G1")] = _T("G1");
+        m_Tags[3][_T("percussion")] = _T("percussion");
+        m_Tags[3][_T("bass")] = _T("bass");
+        m_Tags[3][_T("treble")] = _T("treble");
+        m_Tags[3][_T("baritone")] = _T("baritone");
+        m_Tags[3][_T("soprano")] = _T("soprano");
+        m_Tags[3][_T("mezzosoprano")] = _T("mezzosoprano");
+        m_Tags[3][_T("alto")] = _T("alto");
+        m_Tags[3][_T("tenor")] = _T("tenor");
+        m_Tags[3][_T("baritoneC")] = _T("baritoneC");
+        m_Tags[3][_T("subbass")] = _T("subbass");
+        m_Tags[3][_T("french")] = _T("french");
     }
     else {
         // initialize table with default Spanish values
 
         //no context
         m_Tags[0][_T("abbrev")] = _T("abrev");
-        m_Tags[0][_T("barline")] = _T("Barra");            //! @todo change for 1.4
+        m_Tags[0][_T("barline")] = _T("barra");
         m_Tags[0][_T("bold")] = _T("negrita");
         m_Tags[0][_T("bold_italic")] = _T("negrita-cursiva");
         m_Tags[0][_T("center")] = _T("centrado");
         m_Tags[0][_T("chord")] = _T("acorde");
-        m_Tags[0][_T("clef")] = _T("Clave");            //! @todo change for 1.4
+        m_Tags[0][_T("clef")] = _T("clave");            
         m_Tags[0][_T("down")] = _T("abajo");
         m_Tags[0][_T("dx")] = _T("dx");
         m_Tags[0][_T("dy")] = _T("dy");
@@ -190,7 +213,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("instrName")] = _T("nombreInstrumento");
         m_Tags[0][_T("instrument")] = _T("instrumento");
         m_Tags[0][_T("italic")] = _T("cursiva");
-        m_Tags[0][_T("key")] = _T("Tonalidad");          //! @todo change for 1.4
+        m_Tags[0][_T("key")] = _T("tonalidad");
         m_Tags[0][_T("left")] = _T("izqda");
         m_Tags[0][_T("name")] = _T("nombre");
         m_Tags[0][_T("newSystem")] = _T("nuevoSistema");
@@ -200,10 +223,10 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("staves")] = _T("numPentagramas");
         m_Tags[0][_T("stem")] = _T("plica");
         m_Tags[0][_T("text")] = _T("texto");
-        m_Tags[0][_T("time")] = _T("Metrica");        //! @todo change for 1.4
+        m_Tags[0][_T("time")] = _T("metrica");
         m_Tags[0][_T("title")] = _T("titulo");
         m_Tags[0][_T("up")] = _T("arriba");
-        m_Tags[0][_T("voice")] = _T("voz");
+        m_Tags[0][_T("musicData")] = _T("datosMusica");
         m_Tags[0][_T("x")] = _T("x");
         m_Tags[0][_T("y")] = _T("y");
 
@@ -228,6 +251,30 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[2][_T("startRepetition")] = _T("InicioRepeticion");
         m_Tags[2][_T("endRepetition")] = _T("FinRepeticion");
         m_Tags[2][_T("doubleRepetition")] = _T("DobleRepeticion");
+
+        m_Contexts[_T("Clefs")] = 3;
+        m_Tags[3][_T("G")] = _T("Sol");
+        m_Tags[3][_T("F")] = _T("Fa4");
+        m_Tags[3][_T("F3")] = _T("Fa3");
+        m_Tags[3][_T("C1")] = _T("Do1");
+        m_Tags[3][_T("C2")] = _T("Do2");
+        m_Tags[3][_T("C3")] = _T("Do3");
+        m_Tags[3][_T("C4")] = _T("Do4");
+        m_Tags[3][_T("C5")] = _T("Do5");
+        m_Tags[3][_T("F5")] = _T("Fa5");
+        m_Tags[3][_T("G1")] = _T("Sol1");
+        m_Tags[3][_T("percussion")] = _T("percusion");
+        m_Tags[3][_T("bass")] = _T("Fa4");
+        m_Tags[3][_T("treble")] = _T("Sol");
+        m_Tags[3][_T("baritone")] = _T("Fa3");
+        m_Tags[3][_T("soprano")] = _T("Do1");
+        m_Tags[3][_T("mezzosoprano")] = _T("Do2");
+        m_Tags[3][_T("alto")] = _T("Do3");
+        m_Tags[3][_T("tenor")] = _T("Do4");
+        m_Tags[3][_T("baritoneC")] = _T("Do5");
+        m_Tags[3][_T("subbass")] = _T("Fa5");
+        m_Tags[3][_T("french")] = _T("Sol1");
+
     }
 
 }

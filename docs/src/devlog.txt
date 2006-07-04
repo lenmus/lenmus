@@ -80,9 +80,12 @@ LenMus project philosophy (to remind me to always stay on this):
   ------------------------
     - LDP internationalization: review current tags, specially note names:
 		- (?) english note names: use numbers (8, 16, 32, 128, ...)
-		- review clef names
+		- (?) include compact notation for notes
 		- review key signature names
-		- review notation names
+		- review notation names (l-tied, g-beamed, t-tuplet,...)
+		- review staff number in notes, rests and clefs (px)
+		- review "NoVisible"
+		
     - Slurs
     - include playback buttons in main toolbar:
 		- fix icon for pause
@@ -90,17 +93,15 @@ LenMus project philosophy (to remind me to always stay on this):
 		- split toolbar if not enough space
     - prepare score samples
     - re-structure LDP manual: more didactical
-    - Font: glyph for 128th and 256th notes
+    - Font glyphs: for 128th and 256th notes. Clefs 8va.
     - Prepare UpdateData.xml file
-   
     
     Bugs:
-		- staff lines in some cases are drawn towards the left (i.e. 120_stems_lengths.v15.txt)
-		
-    Other(?):
-		- XML import:
-    		- Treatment of ActualNotes and NormalNotes in XLMParser
-
+		- staff lines size in reading exercises lessons 4 and 18
+		- staff lines in scales exercise
+		- memory leaks (chords?)
+		- remove wxLogMessages from Intervals exercises
+   
     
  Spanish translation errors:
  ---------------------------
@@ -121,12 +122,23 @@ LenMus project philosophy (to remind me to always stay on this):
   -------------------------
     - Remove changelog page
     - Add Acknowledgments page
-    + Re-build home page
-    - Add news:
-		- Next release preview
 
 
-
+  Tasks for future releases:
+  ----------------------------
+	- Clefs: french (Sol1), baritoneC (Do5) and subbass (Fa5)
+	- Clefs: octave altered.
+	- Include XML import:
+    	- Treatment of ActualNotes and NormalNotes in XLMParser for tuplets
+    - Different paths for Open and Import
+    
+    - Include theory reference book taken from Wikipedia?
+	
+	
+	
+	
+	
+	
 
     - move logs to temp directory
     

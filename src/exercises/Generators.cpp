@@ -145,7 +145,7 @@ lmPitch lmRandomGenerator::GenerateRandomPitch(int nMinLine, int nRange, bool fR
         case eclvDo2:        nPitch += 25;    break;
         case eclvDo3:        nPitch += 23;    break;
         case eclvDo4:        nPitch += 21;    break;
-        case eclvPercusion:    nPitch = 34;    break;
+        case eclvPercussion:    nPitch = 34;    break;
     }
     
     return nPitch;
