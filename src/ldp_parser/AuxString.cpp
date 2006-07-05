@@ -463,8 +463,9 @@ EClefType LDPNameToClef(wxString sClefName)
     }
 }
 
-EKeySignatures LDPNameToKey(wxString sKeyName)
+EKeySignatures LDPInternalNameToKey(wxString sKeyName)
 {
+    //Internal names are the original Spanish tags
     static wxString m_sLDPKeyNames[lmMAX_KEY - lmMIN_KEY + 1];
     static bool m_fLDPNamesLoaded = false;
 
@@ -476,27 +477,27 @@ EKeySignatures LDPNameToKey(wxString sKeyName)
         m_sLDPKeyNames[earmLa] = _T("La");
         m_sLDPKeyNames[earmMi] = _T("Mi");
         m_sLDPKeyNames[earmSi] = _T("Si");
-        m_sLDPKeyNames[earmFas] = _T("Fa#");
-        m_sLDPKeyNames[earmDos] = _T("Do#");
-        m_sLDPKeyNames[earmDob] = _T("Dob");
-        m_sLDPKeyNames[earmSolb] = _T("Solb");
-        m_sLDPKeyNames[earmReb] = _T("Reb");
-        m_sLDPKeyNames[earmLab] = _T("Lab");
-        m_sLDPKeyNames[earmMib] = _T("Mib");
-        m_sLDPKeyNames[earmSib] = _T("Sib");
+        m_sLDPKeyNames[earmFas] = _T("Fa+");
+        m_sLDPKeyNames[earmDos] = _T("Do+");
+        m_sLDPKeyNames[earmDob] = _T("Do-");
+        m_sLDPKeyNames[earmSolb] = _T("Sol-");
+        m_sLDPKeyNames[earmReb] = _T("Re-");
+        m_sLDPKeyNames[earmLab] = _T("La-");
+        m_sLDPKeyNames[earmMib] = _T("Mi-");
+        m_sLDPKeyNames[earmSib] = _T("Si-");
         m_sLDPKeyNames[earmFa] = _T("Fa");
         // minor key signatures
         m_sLDPKeyNames[earmLam] = _T("Lam");
         m_sLDPKeyNames[earmMim] = _T("Mim");
         m_sLDPKeyNames[earmSim] = _T("Sim");
-        m_sLDPKeyNames[earmFasm] = _T("Fa#m");
-        m_sLDPKeyNames[earmDosm] = _T("Do#m");
-        m_sLDPKeyNames[earmSolsm] = _T("Sol#m");
-        m_sLDPKeyNames[earmResm] = _T("Re#m");
-        m_sLDPKeyNames[earmLasm] = _T("La#m");
-        m_sLDPKeyNames[earmLabm] = _T("Labm");
-        m_sLDPKeyNames[earmMibm] = _T("Mibm");
-        m_sLDPKeyNames[earmSibm] = _T("Sibm");
+        m_sLDPKeyNames[earmFasm] = _T("Fa+m");
+        m_sLDPKeyNames[earmDosm] = _T("Do+m");
+        m_sLDPKeyNames[earmSolsm] = _T("Sol+m");
+        m_sLDPKeyNames[earmResm] = _T("Re+m");
+        m_sLDPKeyNames[earmLasm] = _T("La+m");
+        m_sLDPKeyNames[earmLabm] = _T("La-m");
+        m_sLDPKeyNames[earmMibm] = _T("Mi-m");
+        m_sLDPKeyNames[earmSibm] = _T("Si-m");
         m_sLDPKeyNames[earmFam] = _T("Fam");
         m_sLDPKeyNames[earmDom] = _T("Dom");
         m_sLDPKeyNames[earmSolm] = _T("Solm");

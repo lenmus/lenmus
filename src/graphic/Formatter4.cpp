@@ -180,20 +180,13 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOpt
     //   esm_PropVariableNumBars
     */
 
-//    m_rFactorAjuste = rFactorAjuste
-//    m_nSpacingMethod = nTipoEspaciado
 
     //---------------------------------------------------------------------------------------
     //Render a score justifying measures so that they fit exactly in the width of the staff
     //---------------------------------------------------------------------------------------
 
-//    Dim nC As Long, i As Long,
     int nTotalMeasures;
     int iIni;
-    //, nAvailable As Long
-//
-//    Dim j As Long
-//    Dim nDesplz As Long
     lmLUnits xStartOfMeasure;
 
     //verify that there is a score

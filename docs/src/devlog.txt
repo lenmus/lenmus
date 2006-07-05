@@ -78,13 +78,11 @@ LenMus project philosophy (to remind me to always stay on this):
     
   Tasks for release 3.1
   ------------------------
-    - LDP internationalization: review current tags, specially note names:
+    - LDP internationalization. Review current tags:
 		- (?) english note names: use numbers (8, 16, 32, 128, ...)
 		- (?) include compact notation for notes
-		- review key signature names
 		- review notation names (l-tied, g-beamed, t-tuplet,...)
 		- review staff number in notes, rests and clefs (px)
-		- review "NoVisible"
 		
     - Slurs
     - include playback buttons in main toolbar:

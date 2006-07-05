@@ -425,7 +425,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeKeys(wxString sLine)
                 sKey = sLine;
                 sLine = _T("");
             }
-            nKey = LDPNameToKey(sKey);
+            nKey = LDPInternalNameToKey(sKey);
             if (nKey == (EKeySignatures)-1) return true;
             pKeys->SetValid(nKey, true);
         }

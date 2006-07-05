@@ -1,8 +1,8 @@
 (score
    (vers 1.5)(language es iso-8859-1)
    
-   (titulo center "Prelude 4" (font bold 14))
-   (titulo right "F. Chopin" dy=10mm (font normal 12))
+   (titulo centrado "Prelude 4" (font bold 14))
+   (titulo derecha "F. Chopin" dy=10mm (font normal 12))
 
    (instrumento (name "4.") (staves 2)
       (datosMusica 

@@ -78,8 +78,6 @@ I have to write more and currently it only documents the minimum to start with t
         <dt><a href="#rule_time_signature">Time signature</a></dt>
         </dl></dt>
 
-    <dt><br /><br />Annex II: <a href="#SpanishTags">Equivalence between Spanish and English tags</a></dt>
-
 </dl>
 
 
@@ -169,7 +167,7 @@ In LDP this score is described as follows:</p>
   (score
      (vers 1.5)
      (instrument
-        (voice
+        (musicData
             (clef Sol)
             (key Do)
             (time 4 4)
@@ -195,14 +193,14 @@ for humans to improve readability, and you can use them at your desire or not us
 at all. For example, the previous score can be written in a single line as:</p>
 
 <pre class="example">
-(score (vers 1.5)(instrument 1 (voice ( ... ))
+(score (vers 1.5)(instrument 1 (musicData ( ... ))
 </pre>
 
 <p>Or in two lines, for example as:</p>
 
 <pre class="example">
 (score (vers 1.5)(instrument
-(voice ( ... ))
+(musicData ( ... ))
 </pre>
 
 <p>The only rule is that you can not break keywords or simple data values. So you can not
@@ -222,7 +220,7 @@ all text until the end of the line will be ignored. For example:</p>
 (score
     (vers 1.5)              // version 1.5 of LDP is used
     (instrument             // Start of music for the first voice
-        (voice              // start this voice
+        (musicData              // start this voice
             (clef Sol)      // Clef: Sol (G on line 2)
             (key Do)        // Key signature: Do (C major)
             (time 4 4)      // Time signature: 4 4
@@ -517,13 +515,13 @@ LilyPond sequence constructor '{ ... }'</p>
 
 <pre class="example">
 Single note:
-    (voice (n c4 n))
+    (musicData (n c4 n))
 
 C major scale:
-    (voice (n c4 n)(n d4 n)(n e4 n)(n f4 n)(n g4 n)(n a4 n)(n b4 n)(n c5 n))
+    (musicData (n c4 n)(n d4 n)(n e4 n)(n f4 n)(n g4 n)(n a4 n)(n b4 n)(n c5 n))
 
 Short fragment with a measure:
-    (voice (clef sol)(key do)(time 2 4)(n c4 q)(n e4 q)(n g4 q)(n c5 q)(barline))
+    (musicData (clef sol)(key do)(time 2 4)(n c4 q)(n e4 q)(n g4 q)(n c5 q)(barline))
 
 </pre>
 
@@ -569,7 +567,7 @@ LilyPond constructor '&lt;&lt; ... &gt;&gt;'
 </p>
 </div>
 
-<p>Note that constructors (split &lt;voices&gt;) and (voice &lt;music&gt;)
+<p>Note that constructors (split &lt;voices&gt;) and (musicData &lt;music&gt;)
 are orthogonal, that is,
 they describe music either as series of temporally consecutive
 musical objects, or as  a number of simultaneous musical objects.
@@ -580,25 +578,25 @@ descriptions (i.e.: splits containing splits) are allowed.</p>
 
 <pre class="example">
 Score with just a staff:
-    (instrument (voice &lt;music&gt;))
+    (instrument (musicData &lt;music&gt;))
 
 Score with two voices in single staff
-    (instrument (split (voice &lt;music&gt;)
-                       (voice &lt;music&gt;)))
+    (instrument (split (musicData &lt;music&gt;)
+                       (musicData &lt;music&gt;)))
 
 
 Score with three voices in single instrument, but across two staves (i.e.: left hand,
 right hand, third voice:
     (instrument (staves 2)
                 (instrName "Piano")
-                (split (voice &lt;music&gt;)
-                       (voice &lt;music&gt;)
-                       (voice &lt;music&gt;))
+                (split (musicData &lt;music&gt;)
+                       (musicData &lt;music&gt;)
+                       (musicData &lt;music&gt;))
     )
 
 Score with two instruments, each one on its staff:
-    (instrument (instrName "Flute") (voice &lt;music&gt;))              //one staff
-    (instrument (staves 2)(instrName "Piano") (voice &lt;music&gt;))    //Two staves
+    (instrument (instrName "Flute") (musicData &lt;music&gt;))              //one staff
+    (instrument (staves 2)(instrName "Piano") (musicData &lt;music&gt;))    //Two staves
 
 
 </pre>
@@ -656,6 +654,7 @@ a normal barline (simple line).</p>
 <h3><a name="description_Clef">The Clef element</a></h3>
 <a href="#TOC">TOC</a>
 
+<p>Setting or changing the clef is done with the clef element:</p>
 <p>
 <span class="nt">Clef</span> :=
     <span class="t">(clef</span>
@@ -666,13 +665,14 @@ a normal barline (simple line).</p>
 
 <br />
 <span class="nt">Tessitura</span> :=
-    { <span class="t">+8</span> |
-      <span class="t">-8</span> |
-      <span class="t">+15</span> }
+    { <span class="t">+8va</span> |
+      <span class="t">-8va</span> |
+      <span class="t">+15ma</span> |
+      <span class="t">-15ma</span> }
 </p>
 
-<p>The tessitura implied by a clef can be modified by including a tessitura notation,
-that will draw a 8va or 15ma symbol above (+8, +15) or below (-8) the clef,
+<p>The tessitura implied by a clef can be modified by including a tessitura option,
+that will draw a 8va or 15ma symbol above (+8va, +15va) or below (-8va, -15ma) the clef,
 and force the corresponding
 octave shift. The tessitura option is only usable with G and F clefs.
 <span style="color:#ff0000;">Tessitura option is not yet supported.</span></p>
@@ -682,7 +682,7 @@ octave shift. The tessitura option is only usable with G and F clefs.
 <pre class="example">
 (clef G)            // G clef
 (clef bass)         // F clef
-(clef treble +8)    // G clef with 8va symbol above
+(clef treble +8va)    // G clef with 8va symbol above
 </pre>
 
 
@@ -691,61 +691,49 @@ octave shift. The tessitura option is only usable with G and F clefs.
 <table class="grid">
 <tr>
 <td  class="grid"><b>ClefName</b></td>
-<td  class="grid"><b>Same as</b></td>
 <td  class="grid"><b>Meaning</b></td>
 </tr>
 <tr>
-<td  class="grid">treble</td>
-<td  class="grid">G</td>
-<td  class="grid">G clef on second line</td>
+<td  class="grid">treble, G, G2, violin</td>
+<td  class="grid">G clef on 2nd line</td>
 </tr>
 <tr>
-<td  class="grid">bass</td>
-<td  class="grid">F</td>
-<td  class="grid">F clef on fourth line</td>
+<td  class="grid">bass, F, F4</td>
+<td  class="grid">F clef on 4th line</td>
 </tr>
 <tr>
-<td  class="grid">baritone</td>
-<td  class="grid">F3</td>
-<td  class="grid">F clef on third line</td>
+<td  class="grid">baritone, F3</td>
+<td  class="grid">F clef on 3rd line</td>
 </tr>
 <tr>
-<td  class="grid">soprano</td>
-<td  class="grid">C1</td>
-<td  class="grid">C clef on first line</td>
+<td  class="grid">soprano, C1</td>
+<td  class="grid">C clef on 1st line</td>
 </tr>
 <tr>
-<td  class="grid">mezzosoprano</td>
-<td  class="grid">C2</td>
-<td  class="grid">C clef on second line</td>
+<td  class="grid">mezzosoprano, C2</td>
+<td  class="grid">C clef on 2nd line</td>
 </tr>
 <tr>
-<td  class="grid">alto</td>
-<td  class="grid">C3</td>
-<td  class="grid">C clef on third line</td>
+<td  class="grid">alto, C3</td>
+<td  class="grid">C clef on 3rd line</td>
 </tr>
 <tr>
-<td  class="grid">tenor</td>
-<td  class="grid">C4</td>
-<td  class="grid">C clef on fourth line</td>
+<td  class="grid">tenor, C4</td>
+<td  class="grid">C clef on 4th line</td>
 </tr>
 <tr>
 <td  class="grid">percussion</td>
-<td  class="grid">&nbsp;</td>
-<td  class="grid">Percussion key</td>
+<td  class="grid">Percussion clef</td>
 <tr>
 <!--
-<td  class="grid">baritoneC</td>
-<td  class="grid">C5</td>
+<td  class="grid">baritoneC, C5</td>
 <td  class="grid">C clef on fifth line</td>
 </tr>
 <tr>
-<td  class="grid">subbass</td>
-<td  class="grid">F5</td>
+<td  class="grid">subbass, F5</td>
 <td  class="grid">F clef on fifth line</td>
 </tr>
-<td  class="grid">french</td>
-<td  class="grid">G1</td>
+<td  class="grid">french, G1</td>
 <td  class="grid">G clef on first line</td>
 </tr>
 -->
@@ -759,37 +747,45 @@ octave shift. The tessitura option is only usable with G and F clefs.
 <h3><a name="description_Key">The Key element</a></h3>
 <a href="#TOC">TOC</a>
 
-<a name="rule_key">&nbsp;</a>
+<p>Setting or changing the key signature is done with the key element:</p>
 <p>
 <span class="nt">Key</span> :=
-    <span class="t">(Key</span>
-    <span class="nt">Key_name</span>
+    <span class="t">(key</span>
+     <span class="nt">KeyName</span>
     [<span class="nt">Visible</span>]
     <span class="t">)</span>
-</p>
-<p>
-<span class="nt">Key_name</span> := A tag from the following table:
+
 </p>
 
+<p>Examples:</p>
+<pre class="example">
+(key F+)           // F sharp major key
+(key f+)           // F sharp minor key
+(key d-)           // D flat minor key
+(key C)            // C major key
+</pre>
+
+
+<p>Valid values for tag KeyName are described in the following table:</p>
 <p>
 <center>
 <table class="grid">
-    <tr><td class="grid">Key_name</td><td class="grid">Key signature</td><td class="grid">Key_name</td><td class="grid">Key signature</td></tr>
-    <tr><td class="grid">Do</td><td class="grid">C major</td>         <td class="grid">Lam</td><td class="grid">A minor</td></tr>
-    <tr><td class="grid">Sol</td><td class="grid">G major</td>        <td class="grid">Mim</td><td class="grid">E minor</td></tr>
-    <tr><td class="grid">Re</td><td class="grid">D major</td>         <td class="grid">Sim</td><td class="grid">B minor</td></tr>
-    <tr><td class="grid">La</td><td class="grid">A major</td>         <td class="grid">Fa+m</td><td class="grid">F sharp minor</td></tr>
-    <tr><td class="grid">Mi</td><td class="grid">E major</td>         <td class="grid">Do+m</td><td class="grid">C sharp minor</td></tr>
-    <tr><td class="grid">Si</td><td class="grid">B major</td>         <td class="grid">Sol+m</td><td class="grid">G sharp minor</td></tr>
-    <tr><td class="grid">Fa+</td><td class="grid">F sharp major</td>  <td class="grid">Re+m</td><td class="grid">D sharp minor</tr>
-    <tr><td class="grid">Do+</td><td class="grid">C sharp major</td>  <td class="grid">La+m</td><td class="grid">A sharp minor</td></tr>
-    <tr><td class="grid">Do-</td><td class="grid">C flat major</td>   <td class="grid">La-m</td><td class="grid">A flat minor</td></tr>
-    <tr><td class="grid">Sol-</td><td class="grid">G flat major</td>  <td class="grid">Mi-m</td><td class="grid">E flat minor</td></tr>
-    <tr><td class="grid">Re-</td><td class="grid">D flat major</td>   <td class="grid">Si-m</td><td class="grid">B flat minor</td></tr>
-    <tr><td class="grid">La-</td><td class="grid">A flat major</td>   <td class="grid">Fa-m</td><td class="grid">F flat minor</td></tr>
-    <tr><td class="grid">Mi-</td><td class="grid">E flat major</td>   <td class="grid">Do-m</td><td class="grid">C flat minor</td></tr>
-    <tr><td class="grid">Si-</td><td class="grid">B flat major</td>   <td class="grid">Sol-m</td><td class="grid">G flat minor</td></tr>
-    <tr><td class="grid">Fa</td><td class="grid">F major</td>         <td class="grid">Re-m</td><td class="grid">D flat minor</td></tr>
+    <tr><td class="grid">KeyName</td><td class="grid">Key signature</td><td class="grid">KeyName</td><td class="grid">Key signature</td></tr>
+    <tr><td class="grid">C</td><td class="grid">C major</td>         <td class="grid">a</td><td class="grid">A minor</td></tr>
+    <tr><td class="grid">G</td><td class="grid">G major</td>        <td class="grid">e</td><td class="grid">E minor</td></tr>
+    <tr><td class="grid">D</td><td class="grid">D major</td>         <td class="grid">b</td><td class="grid">B minor</td></tr>
+    <tr><td class="grid">A</td><td class="grid">A major</td>         <td class="grid">f+</td><td class="grid">F sharp minor</td></tr>
+    <tr><td class="grid">E</td><td class="grid">E major</td>         <td class="grid">c+</td><td class="grid">C sharp minor</td></tr>
+    <tr><td class="grid">B</td><td class="grid">B major</td>         <td class="grid">g+</td><td class="grid">G sharp minor</td></tr>
+    <tr><td class="grid">F+</td><td class="grid">F sharp major</td>  <td class="grid">d+</td><td class="grid">D sharp minor</tr>
+    <tr><td class="grid">C+</td><td class="grid">C sharp major</td>  <td class="grid">a+</td><td class="grid">A sharp minor</td></tr>
+    <tr><td class="grid">C-</td><td class="grid">C flat major</td>   <td class="grid">a-</td><td class="grid">A flat minor</td></tr>
+    <tr><td class="grid">G-</td><td class="grid">G flat major</td>  <td class="grid">e-</td><td class="grid">E flat minor</td></tr>
+    <tr><td class="grid">D-</td><td class="grid">D flat major</td>   <td class="grid">b-</td><td class="grid">B flat minor</td></tr>
+    <tr><td class="grid">A-</td><td class="grid">A flat major</td>   <td class="grid">f-</td><td class="grid">F flat minor</td></tr>
+    <tr><td class="grid">E-</td><td class="grid">E flat major</td>   <td class="grid">c-</td><td class="grid">C flat minor</td></tr>
+    <tr><td class="grid">B-</td><td class="grid">B flat major</td>   <td class="grid">g-</td><td class="grid">G flat minor</td></tr>
+    <tr><td class="grid">F</td><td class="grid">F major</td>         <td class="grid">d-</td><td class="grid">D flat minor</td></tr>
     </table>
 </center>
 </p>
@@ -950,100 +946,65 @@ a double dotted eighth note</p>
 <a href="#TOC">TOC</a>
 
 <p>A <em>notation</em> is the way to describe any additional characteristic affecting the element
-being described, for example, a note. Notations are classified into three categories:</p>
+being described. Notations are classified into three categories:</p>
 <ol>
-<li>Traditional notations. These are the usual notations used in traditional notation language
-and, therefore, they have a graphic symbol in the score.</li>
-<li>Rendering notations. They are additional information to control the renderization process. For
-example, the exact coordinates to position an object in the score</li>
-<li>Interpretation notations. These are clues and tips for playing back the score. For example,
-the MIDI instrument no use.</li>
+<li>Traditional music notation symbols, such as ties, slurs, or marks for caesura,
+tuplets, or articulations.</li>
+<li>Rendering notations: additional information to control the renderization process. For
+example, the exact coordinates to position an object in the score, the length
+of a stem or the symbol to use for a note head.</li>
+<li>Play back notations: clues and tips for playing back the score. For example,
+the MIDI channel to use.</li>
 </ol>
 
-<a name="rule_notation">&nbsp;</a>
-<div class="example">
-<span class="nt">Notation</span> :=
-    { <span class="nt">Traditional_notation</span> |
-      <span class="nt">Rendering_notation</span> |
-      <span class="nt">Playback_notation</span> }
-    <br /><br />
+<p>The most common notations for notes and rests accept the abbreviated syntax,
+that is, just a string of one or more characters without
+blank spaces. The first character determines the type of notation and
+the remaining characters, when exist,
+indicates additional characteristics.</p>
 
-<span class="nt">Traditional_notation</span> :=
-    { <span class="nt">Tie</span> |
-      <span class="nt">Caesura</span> |
-      <span class="nt">Articulation</span> |
-      <span class="nt">Beamed</span> |
-      <span class="nt">Tuplet</span> }
-    <br /><br />
 
-<span class="nt">Rendering_notation</span> :=
-    { <span class="nt">note_head</span> |
-      <span class="nt">stem</span> |
-      <span class="nt">displayed_accidentals</span> |
-      <span class="nt">location</span> |
-      <span class="nt">text</span> }
-    <br /><br />
-
-<span class="nt">Playback_notation</span> :=
-    { <span class="nt">Instrument</span> |
-      <span class="nt">duration</span> }
-</div>
-<br /><br />
-
-<a name="description_Traditional_Notations" />
-<h3>Traditional notations</h3>
-<a href="#TOC">TOC</a>
-
-<p>
-<span class="nt">Traditional_notation</span> :=
-    { <span class="nt">Tie</span> |
-      <span class="nt">Caesura</span> |
-      <span class="nt">Articulation</span> |
-      <span class="nt">Beamed</span> |
-      <span class="nt">Tuplet</span> }
-</p>
-
-<p>Notations are encoded in abbreviated syntax, that is, a notation is just a string of one or more characters without
-blank spaces. The first character determines the type of notation and the remaining characters, when exist,
-indicates additional characteristics. The following table shows the currently implemented notations:</p>
-
-<p>
-<center>
-<table class="grid">
-    <tr><td class="grid">l</td><td class="grid">Tied to next note</td>        <td class="grid">c</td><td class="grid">Caesura</td></tr>
-    <tr><td class="grid">a</td><td class="grid">Articulations</td>            <td class="grid">g</td><td class="grid">Beamed group</td></tr>
-    <tr><td class="grid">t</td><td class="grid">Tuplet</td>                   <td class="grid">&nbsp;</td><td class="grid">&nbsp;</td></tr>
 <!--
-    <tr><td class="grid">t</td><td class="grid">Tupla</td>                    <td class="grid">x</td><td class="grid">Ligadura de expresion</td></tr>
-    <tr><td class="grid">s</td><td class="grid">Glissando</td>                <td class="grid">n</td><td class="grid">Dinámica</td></tr>
-    <tr><td class="grid">r</td><td class="grid">Arpegiato</td>                <td class="grid">np</td><td class="grid">No arpegiado</td></tr>
-    <tr><td class="grid">g</td><td class="grid">Beamed group</td>             <td class="grid">p</td><td class="grid">Pentagrama</td></tr>
-    <tr><td class="grid">l</td><td class="grid">Deslizando</td>               <td class="grid">z</td><td class="grid">Caesura</td></tr>
-    <tr><td class="grid">c</td><td class="grid">Caesura</td>                  <td class="grid">o</td><td class="grid">Ornamento</td></tr>
-    <tr><td class="grid">a</td><td class="grid">Articulations</td>            <td class="grid">t</td><td class="grid">Anotacion técnica</td></tr>
+    sp  en
+    ===========================================
+    t   t   Tupla / Tuplet
+    l   l   Ligado / Tie
+    g   g   Grupo / Beamed group
+    p   -   Pentagrama / Staff
+
+    a   -   Articulations
+    x   -   Ligadura de expresion / Slur
+    c   -   Caesura
+
+    s   -   Glissando
+    d   -   Dinámica
+    r   -   Arpegiato
+    np  -   No arpegiado
+    -   -   Deslizando
+    o   -   Ornamento
+    -   -   Anotacion técnica
 -->
-    </table>
-</center>
-</p>
-
-
 
 <h4><a name="tie_notation">Ties</a></h4>
-<p>A character &quot;L&quot; indicates the start of a tie that will end in the next coming note of the
-same voice, staff and pitch than the one on which this notation is included. No additional parameters are
-needed.
-Example:</p>
-<code class="example">
+<p>A character <b>l</b> (lower case letter L) indicates the start of a tie
+that will end in the next coming note of the
+same voice, staff and pitch than the one on which this notation is included.
+No additional parameters are needed.</p>
+
+<p>Example: A quarter C4 note tied to an eighth one, followed by an eighth E4 note:</p>
+<pre class="example">
 (n c4 q l)(n c4 e)(n e4 e)
-</code>
-
-<p>A quarter c4 note tied to an eighth one, followed by an eighth E4 note.</p>
+</pre>
 
 
+<!--
 
 <h4><a name="caesura_notation">Caesura</a></h4>
 <p>A character &quot;C&quot; indicates that the rest or note has a caesura. No additional parameters are
 needed.
+
+- Quizá un caracter detrás de la c para indicar el tipo de marca
+
 Example:</p>
 <code class="example">
 (n c4 n c)
@@ -1051,6 +1012,7 @@ Example:</p>
 
 <p>Is a quarter C4 note with caesura.</p>
 
+-->
 
 <h4><a name="beamed_group_notation">Beamed groups</a></h4>
 <p>When several consecutive notes have their stems beamed together this is coded by a notation
@@ -1150,47 +1112,34 @@ must be combined as needed. Examples:</p>
 
 
 
-<!--
+<h4><a name="staff_notation">Selecting the staff</a></h4>
+<p>When an instrument has several staves (e.g. the upper and lower staves in a grand-staff)
+it is necessary a mechanism to specify in which staff a note, rest, clef, or other must
+be placed. For this purpose, a notation <b>p</b> is used.</p>
+
+<p>The <b>p</b> must be follwed by the staff number (1..n). The staff value is inherited
+by all coming elements until a new p notation is found.</p>
+
+
+<p>Example: a scale across two staves:</p>
+<pre class="example">
+(instrument (staves 2)
+    (musicData
+        (clef G p1)(clef F p2)(key C)
+        (n g3 w p2)(n a3 w)(n b3 w)(n c4 w)(n d4 w p1)(n e4 w)(n f4 w)(n g4 w)
+        (barline double)
+    )
+)
+</pre>
+
+<p>Clef G is placed in first staff (p1) and clef F in second staff (p2). The
+key is common to all staves of one instrument so no staff is specified. First note
+(G3) is placed on second staff and consecutive notes inherits this, until
+note D4 for which location on first staff is specified (p1). Remaining notes
+inherits this.</p>
 
 
 
-
-<h1><a name="_Toc86206006">
-Instrumentos polifónicos y partituras multipentagrama</a></h1>
-
-<p>En instrumentos que requieren más de un pentagrama,
-como el piano, o en obras para varios instrumentos la complejidad para
-describirlas aumenta. Aparecen distintos problemas relacionados, en general,
-con el hecho de tener que describir secuencialmente distintos fenómenos
-musicales que se producen simultánmeamente en el tiempo. Por ejemplo:</p>
-
-<ul>
- <li>Si coinciden dos o más voces en un mismo
-     pentagrama, ¿cómo especificar a que voz corresponde cada nota?</li>
- <li>Si coinciden dos o más voces en un mismo
-     pentagrama, ¿cómo especificar aspectos de dibujo? (por ejemplo, una nota
-     negra de la melodía que coincide con una semicorchea de un arpegio del acomañamiento:
-     nota con dos plicas, una del grupo y otra de la nota suelta).</li>
- <li>En instrumentos que requieren más de un
-     pentagrama, como el piano, ¿cómo especificar en qué pentagrama se dibuja
-     el figsil ? ¿cómo indicar que una melodía que empezó a dibujarse en el
-     pentagrama inferior continue en el superior?</li>
-</ul>
-
-<p>Se describen en esta sección aquellos elementos orientados a
-satisfacer las necesidades de representación de música polifonica. En LDP existen
-dos elementos para facilitar la descripción de pasajes polifónicos: el elemento
-&lt;pentagrama&gt; y el elemento &lt;voz&gt;. El primero está orientado a la
-representación gráfica mientras que el segundo lo está hacia la interpretación.
-Además, existen elementos, tal cmo &lt;desplazamiento&gt;, orientados a
-sincronizar partes que, necesariamente, por la naturaleza secuencial del
-lenguaje de descripción, coincidadn en el tiempo. </p>
-
-<p>&nbsp;</p>
-
-
-
--->
 
 <!--
 
@@ -1241,30 +1190,7 @@ avance hasta el final del compás. </p>
 
 -->
 
-<!--
-
-
-
-
-
-<h1><a name="_Toc86206008">Anotaciones
-para representación gráfica</a></h1>
-
-<p>Un aspecto fundamental del lenguaje LDP es la distinction
-entre elementos orientados a representar el sonido de la música y aquellos
-otros orientados a representar el aspecto visual de la partitura. Se describen
-en este capítulo aquellos elementos cuya finalidad principal es especificar los
-aspectos gráficos de la representación de partituras.</p>
-
-
-
--->
-
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-
-<h2><a name="FormattingTags">Tags to control format</a></h2>
+<h3><a name="FormattingTags">Notations to control format</a></h3>
 <a href="#TOC">TOC</a>
 
 
@@ -1306,6 +1232,7 @@ be fully specified by using the Stem element. It forces stem direction.</p>
 
 <pre class="example">
 (n e4 q (stem down))
+(n e4 q stem=down)
 </pre>
 
 
@@ -1332,13 +1259,16 @@ text-align:left;text-autospace:none'> style='font-size:10.0pt;font-family:
 
 <p style='margin-left:63.8pt;text-indent:-63.8pt'>&nbsp;</p>
 
-<h2 style='background:#FFFF99'> style='display:none'>Directivas
-style='display:none;font-weight:normal'>&lt;direction&gt;</h2>
+-->
 
-<p style='background:#FFFF99'> style='display:none'>Las
+<!--
+
+<h2>Directivas</h2>
+
+<p>Las
 directivas son indicaciones no ligadas a una nota en particular.</p>
 
-<p style='background:#FFFF99'> style='display:none'>Pueden
+<p>Pueden
 ser de varios tipos: textos, reguladores, signos de repetición (segno, coda,
 fine,.), rehearsal, dashes, pedal, metronomo, y desplazamientos de octava (signos
 de 8ª y demás)</p>
@@ -1355,12 +1285,6 @@ de 8ª y demás)</p>
 damp-all | </p>
 
 <p>      other-direction&gt;</p>
-
-<p>&nbsp;</p>
-
-<p style='background:#FFFF99'> style='display:none'>&nbsp;</p>
-
-<p style='background:#FFFF99'> style='display:none'>&nbsp;</p>
 
 
 
@@ -1966,50 +1890,7 @@ style='font-size:10.0pt;font-family:"Courier New";display:none;background:yellow
 background:yellow'><br clear=all >
 </b>
 
-
-
 -->
-
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-
-<h2><a name="SpanishTags">Spanish and English tags</a></h2>
-<a href="#TOC">TOC</a>
-
-<p>As LenMus aims at facilitating the user to use his/her own language
-it was decided to introduce support to use tags in any language. Currently English and
-Spanish tags are supported. Any other language can be is easily added without
-program recompilation. It is just an issue of creating an external file with
-the list of tag names.
-</p>
-<table class="Lista">
-<tr><td class="ListaImpar">Element</td><td class="ListaImpar">English tag</td><td class="ListaImpar">Spanish tag</td></tr>
-<tr><td class="ListaPar">Barline</td><td class="ListaPar">barline</td><td class="ListaPar">Barra</td></tr>
-<tr><td class="ListaPar" colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;Barline types</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">simple</td><td class="ListaPar">Simple</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">double</td><td class="ListaPar">Doble</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">start</td><td class="ListaPar">Inicio</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">end</td><td class="ListaPar">Fin</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">startRepetition</td><td class="ListaPar">InicioRepeticion</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">endRepetition</td><td class="ListaPar">FinRepeticion</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">doubleRepetition</td><td class="ListaPar">DobleRepeticion</td></tr>
-<tr><td class="ListaPar" colspan="3">&nbsp;</td></tr>
-<tr><td class="ListaPar">Clef</td><td class="ListaPar">clef</td><td class="ListaPar">Clave</td></tr>
-<tr><td class="ListaPar">Instrument</td><td class="ListaPar">instrument</td><td class="ListaPar">Instrumento</td></tr>
-<tr><td class="ListaPar">Key signature</td><td class="ListaPar">key</td><td class="ListaPar">Tonalidad</td></tr>
-<tr><td class="ListaPar">Note</td><td class="ListaPar">n (note)</td><td class="ListaPar">n (nota)</td></tr>
-<tr><td class="ListaPar">Num.Instruments</td><td class="ListaPar">numInstr</td><td class="ListaPar">NumInstr</td></tr>
-<tr><td class="ListaPar">Music</td><td class="ListaPar">Music</td><td class="ListaPar">Musice</td></tr>
-<tr><td class="ListaPar">Rest</td><td class="ListaPar">r (rest)</td><td class="ListaPar">s (silencio)</td></tr>
-<tr><td class="ListaPar">Time signature</td><td class="ListaPar">time</td><td class="ListaPar">Metrica</td></tr>
-
-<tr><td class="ListaPar" colspan="3">&nbsp;&nbsp;&nbsp;&nbsp;Other tags</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">split</td><td class="ListaPar">Partes</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">staves</td><td class="ListaPar">numPentagramas</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">chord</td><td class="ListaPar">acorde</td></tr>
-<tr><td class="ListaPar">&nbsp;&nbsp;&nbsp;</td><td class="ListaPar">newSystem</td><td class="ListaPar">nuevoSistema</td></tr>
-</table>
 
 </body>
 </html>

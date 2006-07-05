@@ -49,7 +49,7 @@ extern bool SrcIsRest(wxString sElement);
 
 
 extern EClefType LDPNameToClef(wxString sClefName);
-extern EKeySignatures LDPNameToKey(wxString sKeyName);
+extern EKeySignatures LDPInternalNameToKey(wxString sKeyName);
 
 
 

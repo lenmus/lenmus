@@ -86,6 +86,7 @@ void lmLdpTagsTable::DeleteInstance()
 
 const wxString& lmLdpTagsTable::TagName(wxString sTag, wxString sContext)
 {
+    //returns the language dependent tag for the given internal tag sTag
     if (sContext == _T(""))
         return m_Tags[0][sTag];
     else {
@@ -93,6 +94,28 @@ const wxString& lmLdpTagsTable::TagName(wxString sTag, wxString sContext)
         wxASSERT( iT <= lmMAX_TAG_CONTEXTS );
         return m_Tags[iT][sTag];
     }
+}
+
+wxString lmLdpTagsTable::GetInternalTag(wxString sTag, wxString sContext)
+{
+    //returns the internal tag for the language dependent tag sTag.
+    //If tag sTag does not exits returns _T("")
+    //This method is just the opposite of method TagName()
+
+    int iT = 0;
+    if (sContext != _T("")) {
+        iT = m_Contexts[sContext];
+        wxASSERT( iT <= lmMAX_TAG_CONTEXTS );
+    }
+
+    // iterate over all the key signature tags to search for the given one
+    lmTagsTable::iterator iter;
+    for(iter = m_Tags[iT].begin(); iter != m_Tags[iT].end(); ++iter)
+    {
+        if (sTag == iter->second) return iter->first;
+    }
+    return wxEmptyString;
+
 }
 
 //load tags set for given language
@@ -135,6 +158,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("name")] = _T("name");
         m_Tags[0][_T("newSystem")] = _T("newSystem");
         m_Tags[0][_T("normal")] = _T("normal");
+        m_Tags[0][_T("noVisible")] = _T("noVisible");
         m_Tags[0][_T("right")] = _T("right");
         m_Tags[0][_T("split")] = _T("split");
         m_Tags[0][_T("staves")] = _T("staves");
@@ -192,6 +216,39 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[3][_T("baritoneC")] = _T("baritoneC");
         m_Tags[3][_T("subbass")] = _T("subbass");
         m_Tags[3][_T("french")] = _T("french");
+
+        m_Contexts[_T("Keys")] = 4;
+        m_Tags[4][_T("Do")] = _T("C");
+        m_Tags[4][_T("Sol")] = _T("G");
+        m_Tags[4][_T("Re")] = _T("D");
+        m_Tags[4][_T("La")] = _T("A");
+        m_Tags[4][_T("Mi")] = _T("E");
+        m_Tags[4][_T("Si")] = _T("B");
+        m_Tags[4][_T("Fa+")] = _T("F+");
+        m_Tags[4][_T("Do+")] = _T("C+");
+        m_Tags[4][_T("Do-")] = _T("C-");
+        m_Tags[4][_T("Sol-")] = _T("G-");
+        m_Tags[4][_T("Re-")] = _T("D-");
+        m_Tags[4][_T("La-")] = _T("A-");
+        m_Tags[4][_T("Mi-")] = _T("E-");
+        m_Tags[4][_T("Si-")] = _T("B-");
+        m_Tags[4][_T("Fa")] = _T("F");
+        m_Tags[4][_T("Lam")] = _T("a");
+        m_Tags[4][_T("Mim")] = _T("e");
+        m_Tags[4][_T("Sim")] = _T("b");
+        m_Tags[4][_T("Fa+m")] = _T("f+");
+        m_Tags[4][_T("Do+m")] = _T("c+");
+        m_Tags[4][_T("Sol+m")] = _T("g+");
+        m_Tags[4][_T("Re+m")] = _T("d+");
+        m_Tags[4][_T("La+m")] = _T("a+");
+        m_Tags[4][_T("La-m")] = _T("a-");
+        m_Tags[4][_T("Mi-m")] = _T("e-");
+        m_Tags[4][_T("Si-m")] = _T("b-");
+        m_Tags[4][_T("Fam")] = _T("f");
+        m_Tags[4][_T("Dom")] = _T("c");
+        m_Tags[4][_T("Solm")] = _T("g");
+        m_Tags[4][_T("Rem")] = _T("d");
+
     }
     else {
         // initialize table with default Spanish values
@@ -214,11 +271,12 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("instrument")] = _T("instrumento");
         m_Tags[0][_T("italic")] = _T("cursiva");
         m_Tags[0][_T("key")] = _T("tonalidad");
-        m_Tags[0][_T("left")] = _T("izqda");
+        m_Tags[0][_T("left")] = _T("izquierda");
         m_Tags[0][_T("name")] = _T("nombre");
         m_Tags[0][_T("newSystem")] = _T("nuevoSistema");
         m_Tags[0][_T("normal")] = _T("normal");
-        m_Tags[0][_T("right")] = _T("dcha");
+        m_Tags[0][_T("noVisible")] = _T("noVisible");
+        m_Tags[0][_T("right")] = _T("derecha");
         m_Tags[0][_T("split")] = _T("partes");
         m_Tags[0][_T("staves")] = _T("numPentagramas");
         m_Tags[0][_T("stem")] = _T("plica");
@@ -274,6 +332,38 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[3][_T("baritoneC")] = _T("Do5");
         m_Tags[3][_T("subbass")] = _T("Fa5");
         m_Tags[3][_T("french")] = _T("Sol1");
+
+        m_Contexts[_T("Keys")] = 4;
+        m_Tags[4][_T("Do")] = _T("Do");
+        m_Tags[4][_T("Sol")] = _T("Sol");
+        m_Tags[4][_T("Re")] = _T("Re");
+        m_Tags[4][_T("La")] = _T("La");
+        m_Tags[4][_T("Mi")] = _T("Mi");
+        m_Tags[4][_T("Si")] = _T("Si");
+        m_Tags[4][_T("Fa+")] = _T("Fa+");
+        m_Tags[4][_T("Do+")] = _T("Do+");
+        m_Tags[4][_T("Do-")] = _T("Do-");
+        m_Tags[4][_T("Sol-")] = _T("Sol-");
+        m_Tags[4][_T("Re-")] = _T("Re-");
+        m_Tags[4][_T("La-")] = _T("La-");
+        m_Tags[4][_T("Mi-")] = _T("Mi-");
+        m_Tags[4][_T("Si-")] = _T("Si-");
+        m_Tags[4][_T("Fa")] = _T("Fa");
+        m_Tags[4][_T("Lam")] = _T("Lam");
+        m_Tags[4][_T("Mim")] = _T("Mim");
+        m_Tags[4][_T("Sim")] = _T("Sim");
+        m_Tags[4][_T("Fa+m")] = _T("Fa+m");
+        m_Tags[4][_T("Do+m")] = _T("Do+m");
+        m_Tags[4][_T("Sol+m")] = _T("Sol+m");
+        m_Tags[4][_T("Re+m")] = _T("Re+m");
+        m_Tags[4][_T("La+m")] = _T("La+m");
+        m_Tags[4][_T("La-m")] = _T("La-m");
+        m_Tags[4][_T("Mi-m")] = _T("Mi-m");
+        m_Tags[4][_T("Si-m")] = _T("Si-m");
+        m_Tags[4][_T("Fam")] = _T("Fam");
+        m_Tags[4][_T("Dom")] = _T("Dom");
+        m_Tags[4][_T("Solm")] = _T("Solm");
+        m_Tags[4][_T("Rem")] = _T("Rem");
 
     }
 

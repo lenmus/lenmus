@@ -1,8 +1,8 @@
 (score
    (vers 1.5)(language es iso-8859-1)
 
-   (titulo center "One instrument, two staves" (font bold 14))
-   (titulo center "Single voice across both staves" (font italic 12))
+   (titulo centrado "One instrument, two staves" (font bold 14))
+   (titulo centrado "Single voice across both staves" (font italic 12))
 
    (instrumento (staves 2)
       (datosMusica 

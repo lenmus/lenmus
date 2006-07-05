@@ -1953,7 +1953,7 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 
     if (pNode->GetNumParms() == 2) {
-        if ((pNode->GetParameter(2))->GetName() == _T("NoVisible")) {
+        if ((pNode->GetParameter(2))->GetName() == m_pTags->TagName(_T("noVisible"))) {
             fVisible = false;
         }
     }
@@ -2058,10 +2058,12 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
             nStaff = AnalyzeNumStaff(sName);
             iP++;
         }
-        else if (sName == _T("NoVisible")) {     //visible or not
+        else if (sName == m_pTags->TagName(_T("noVisible"))) {     //visible or not
             fVisible = false;
         }
-        else if (sName == _T("-8") || sName == _T("+8") || sName == _T("+15")) {
+        else if (sName == _T("-8va") || sName == _T("+8va")
+                    || sName == _T("+15ma") || sName == _T("-15ma") )
+        {
             //! @todo tessiture option in clef
         }
         else {
@@ -2358,18 +2360,25 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
     //check that key value is specified
     if(pNode->GetNumParms() < 1) {
         AnalysisError(
-            _("Element '%s' has less parameters that the minimum required. Assumed '(%s Do)'."),
-            m_pTags->TagName(_T("key")), m_pTags->TagName(_T("key")) );
+            _("Element '%s' has less parameters that the minimum required. Assumed '(%s %s)'."),
+            sElmName, sElmName, m_pTags->TagName(_T("Do"), _T("Keys")) );
         pVStaff->AddKeySignature(earmDo);
         return false;
     }
     
     long iP = 1;
     wxString sName = (pNode->GetParameter(iP))->GetName();
-    EKeySignatures nKey = LDPNameToKey(sName);
-    if (nKey == (EKeySignatures)-1) {
-        AnalysisError( _("Unknown key '%s'. Assumed 'Do'."), sName );
+    EKeySignatures nKey;
+    wxString sKey = m_pTags->GetInternalTag(sName, _T("Keys"));
+    if (sKey == _T("")) {
+        //not found.
+        AnalysisError( _("Unknown key '%s'. Assumed '%s'."),
+            sName, m_pTags->TagName(_T("Do"), _T("Keys")) );
         nKey = earmDo;
+    }
+    else {
+        //found.
+        nKey = LDPInternalNameToKey( sKey );
     }
     iP++;
     
@@ -2378,7 +2387,7 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
     bool fVisible = true;
     if (pNode->GetNumParms() >= iP) {
         pX = pNode->GetParameter(iP);
-        if (pX->GetName() == _T("NoVisible")) fVisible = false;
+        if (pX->GetName() == m_pTags->TagName(_T("noVisible")) ) fVisible = false;
     }
     
     pVStaff->AddKeySignature(nKey, fVisible);
@@ -2421,7 +2430,7 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
     bool fVisible = true;
     if (pNode->GetNumParms() > 2) {
         lmLDPNode* pX = pNode->GetParameter(3);
-        if (pX->GetName() == _T("NoVisible")) fVisible = false;
+        if (pX->GetName() == m_pTags->TagName(_T("noVisible")) ) fVisible = false;
     }
     
     pVStaff->AddTimeSignature((int)nBeats, (int)nBeatType, fVisible);

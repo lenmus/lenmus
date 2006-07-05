@@ -1,7 +1,7 @@
 (score
    (vers 1.5)(language es iso-8859-1)
 
-   (titulo center "Two instruments, three staves" (font bold 14))
+   (titulo centrado "Two instruments, three staves" (font bold 14))
 
    (instrumento (name "Flute")(abbrev "F") 
       (datosMusica 

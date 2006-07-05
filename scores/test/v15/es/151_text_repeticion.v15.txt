@@ -1,7 +1,7 @@
 (score
    (vers 1.5)(language es iso-8859-1)
 
-   (titulo center "Test of text in a measure" (font bold 14))
+   (titulo centrado "Test of text in a measure" (font bold 14))
 
    (instrumento
       (datosMusica
