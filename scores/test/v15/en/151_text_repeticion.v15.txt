@@ -14,8 +14,8 @@
          (barline FinRepeticion)
          
          (n e4 q)(n g4 e g+)(n a4 e g-)
-         (text "repetir" dy=10) 
-         (text "esto" dy=25)
+         (text "repetir" dy:10) 
+         (text "esto" dy:25)
          (barline end)
       )
    )

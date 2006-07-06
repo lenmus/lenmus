@@ -11,13 +11,13 @@
          (key La)(barline double)
          (key Mi)(barline double)
          (key Si)(barline double)
-         (key Fa#)(barline double)
-         (key Do#)(newSystem)(barline double)
+         (key Fa+)(barline double)
+         (key Do+)(newSystem)(barline double)
          
          
          // flats. Major keys
          (key Fa)(barline double)
-         (key Sib)(barline double)
+         (key Si-)(barline double)
          (key Mib)(barline double)
          (key Lab)(barline double)
          (key Reb)(barline double)

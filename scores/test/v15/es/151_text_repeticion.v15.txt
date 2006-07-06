@@ -14,8 +14,8 @@
          (barra FinRepeticion)
          
          (n e4 n)(n g4 c g+)(n a4 c g-)
-         (text "repetir" dy=10) 
-         (text "esto" dy=25)
+         (text "repetir" dy:10) 
+         (text "esto" dy:25)
          (barra Final)
       )
    )

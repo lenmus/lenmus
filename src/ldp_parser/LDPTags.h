@@ -38,7 +38,7 @@ WX_DECLARE_STRING_HASH_MAP( wxString, lmTagsTable );
 // declare a hash map for contexts, with string keys and int values
 WX_DECLARE_STRING_HASH_MAP( int, lmContextsTable );
 
-#define lmMAX_TAG_CONTEXTS     4
+#define lmMAX_TAG_CONTEXTS     5
 
 class lmLdpTagsTable
 {

@@ -64,6 +64,7 @@ const wxChar chLowerSign = _T('<');
 const wxChar chGreaterSign = _T('>');
 const wxChar chDollar = _T('$');
 const wxChar chSharp = _T('#');
+const wxChar chColon = _T(':');
 
 
 const wxChar nEOF = _T('\x03');        //ETX
@@ -141,7 +142,7 @@ lmLDPToken* lmLDPTokenBuilder::ReadToken()
         return &m_token;
     }
 
-    // To deal with compact notation [ name=value --> (name value) ]
+    // To deal with compact notation [ name:value --> (name value) ]
     if (m_fEndOfElementPending) {
         // when flag 'm_fEndOfElementPending' is set it implies that the 'value' part was
         // the last returned token. Therefore, the next token to return is an implicit ')'
@@ -418,13 +419,14 @@ void lmLDPTokenBuilder::ParseNewToken()
                 if (IsLetter(m_curChar) || IsNumber(m_curChar) ||
                     m_curChar == chUnderscore || m_curChar == chDot ||
                     m_curChar == chPlusSign || m_curChar == chMinusSign ||
-                    m_curChar == chSharp || m_curChar == chSlash )
+                    m_curChar == chSharp || m_curChar == chSlash ||
+                    m_curChar == chEqualSign )
                 {
                     nState = FT_ETQ01;
                 }
-                else if (m_curChar == chEqualSign) {
-                    // compact notation [ name=vale --> (name value) ]
-                    // 'name' part is parsed and we've found the '=' sign
+                else if (m_curChar == chColon) {
+                    // compact notation [ name:value --> (name value) ]
+                    // 'name' part is parsed and we've found the ':' sign
                     m_fNamePartPending = true;
                     m_tokenNamePart.Set(tkLabel, Extract(iStart, m_lastPos-1));
                     m_token.Set(tkStartOfElement, chOpenParenthesis);

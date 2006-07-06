@@ -95,7 +95,7 @@ private:
     long        m_maxPos;       // buffer size - 1 = maximum value for m_lastPos
     wxChar      m_curChar;      // character being processed. It is read by GNC()
 
-    //to deal with compact notation [  name=value  -->  (name value)  ]
+    //to deal with compact notation [  name:value  -->  (name value)  ]
     bool        m_fEndOfElementPending;
     bool        m_fValuePartPending;
     bool        m_fNamePartPending;

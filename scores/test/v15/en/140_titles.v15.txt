@@ -2,11 +2,11 @@
    (vers 1.5)(language en iso-8859-1)
 
    (title center "Ave Maria (Ellen's Gesang III), D. 839" (font bold 14))
-   (title left "This song is dedicated to" (font italic 10pt) x=12cm dy=10mm)
-   (title left "the memory of Contesse" x=12cm)
-   (title left "Lady A. Borwooth" x=12cm)
-   (title left "Words by Walter Scott" (font normal 12pt) dy=10mm)
-   (title right "Franz Schubert" y=3in)
+   (title left "This song is dedicated to" (font italic 10pt) x:12cm dy:10mm)
+   (title left "the memory of Contesse" x:12cm)
+   (title left "Lady A. Borwooth" x:12cm)
+   (title left "Words by Walter Scott" (font normal 12pt) dy:10mm)
+   (title right "Franz Schubert" y:3in)
    (title left "Translation by F.Green" (font italic 10))
 
    (instrument

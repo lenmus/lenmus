@@ -80,7 +80,7 @@ LenMus project philosophy (to remind me to always stay on this):
   ------------------------
     - LDP internationalization. Review current tags:
 		- (?) english note names: use numbers (8, 16, 32, 128, ...)
-		- (?) include compact notation for notes
+		- (?) include abbreviated notation for notes and rests
 		- review notation names (l-tied, g-beamed, t-tuplet,...)
 		- review staff number in notes, rests and clefs (px)
 		

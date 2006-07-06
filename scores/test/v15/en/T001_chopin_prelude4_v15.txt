@@ -2,7 +2,7 @@
    (vers 1.5)(language en iso-8859-1)
    
    (title center "Prelude 4" (font bold 14))
-   (title right "F. Chopin" dy=10mm (font normal 12))
+   (title right "F. Chopin" (dy 10mm) (font normal 12))
 
    (instrument (name "4.") (staves 2)
       (musicData 

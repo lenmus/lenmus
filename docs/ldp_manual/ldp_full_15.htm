@@ -28,7 +28,7 @@ I have to write more and currently it only documents the minimum to start with t
     <dt><br /><br />Part II: detailed description</dt>
     <dt>3. <a href="#description_score">The Score element</a></dt>
     <dt>4. <a href="#description_Instrument">The Instrument element</a></dt>
-    <dt>5. <a href="#description_Voice">The Voice element</a></dt>
+    <dt>5. <a href="#description_MusicData">The MusicData element</a></dt>
     <dt>6. <a href="#description_Split">The Split element</a></dt>
     <dd><dl>
         <dt>6.1. <a href="#description_Clef">The Clef element</a></dt>
@@ -36,7 +36,7 @@ I have to write more and currently it only documents the minimum to start with t
         <dt>6.3. <a href="#description_TimeSign">The Time element</a></dt>
         <dt>6.4. <a href="#description_Barline">The Barline element</a></dt>
         </dl></dd></dt>
-    <dt>8. <a href="#Notes_Rests_Chords">Notes, rests and chords</a>
+    <dt>8. <a href="#description_Notes_Rests">Notes, rests and chords</a>
     <dd><dl>
         <dt>8.1. <a href="#Pitch">Pitch</a></dt>
         <dt>8.2. <a href="#description_Duration">Duration</a></dt>
@@ -92,7 +92,10 @@ music scores in a platform independent, plain-text and human-readable way.
 This language is named LDP because I started this project in Spanish and I named this
 language after the
 Spanish acronym for 'Lenguaje de Descripción de Partituras, that is 'Language
-to Describe Scores'. Why to define a new language instead of using a existing
+to Describe Scores'.</p>
+
+<!--
+<p>Why to define a new language instead of using a existing
 one such as MIDI,  MusicXML, abc, Guido or others?</p>
 
 <ul>
@@ -133,6 +136,8 @@ one such as MIDI,  MusicXML, abc, Guido or others?</p>
     not fully satisfy the LenMus project needs.</li>
 </ul>
 
+-->
+
 <p>LDP is a pragmatic
 approach and its development has the direct benefit of forcing me to study in
 depth the problems of representing music in textual form. Although the internal
@@ -168,10 +173,10 @@ In LDP this score is described as follows:</p>
      (vers 1.5)
      (instrument
         (musicData
-            (clef Sol)
-            (key Do)
+            (clef G)
+            (key C)
             (time 4 4)
-            (n c4 r)
+            (n c4 w)
             (barline)
         )
      )
@@ -183,17 +188,21 @@ In LDP this score is described as follows:</p>
 
 <p>Let's analyse this code. First note that in LDP all the information is structured
 as <i>elements</i>. An <i>element</i> is a list of keywords and data values enclosed in parenthesis.
-An element always starts with a keyword (i.e. NumInstruments) and it is followed by data items.
+An element always starts with a keyword (i.e. vers) and it is followed by data items.
 These data items can be just
-simple data (single word values, such as '1' or 'Sol') or complex data: other elements --
+simple data (single word values, such as '1.5' or 'G') or complex data: other elements --
 those of you with an
 information science background will note that this is a LISP like syntax  --</p>
+<p>In the example, we can note that all the score is a list starting with the keyword 'score'.
+The first data item of this element is also a list, '(vers 1.5)': it starts with the
+keyword 'Vers' and has only a simple  data item, the number 1.5.</p>
+
 <p>Blank space, indentation, tabs and line breaks have no meaning: they are just a visual help
 for humans to improve readability, and you can use them at your desire or not use them
 at all. For example, the previous score can be written in a single line as:</p>
 
 <pre class="example">
-(score (vers 1.5)(instrument 1 (musicData ( ... ))
+(score (vers 1.5)(instrument (musicData ( ... ))
 </pre>
 
 <p>Or in two lines, for example as:</p>
@@ -209,20 +218,58 @@ write, for example,</p>
 ( s c o r e ( ...))
 </pre>
 
-<p>In the example, we can note that all the score is a list starting with the keyword 'score'.
-The first data item of this element is also a list, '(vers 1.5)': it starts with the
-keyword 'Vers' and has only a simple  data item, the number 1.5.</p>
+<p>LDP language is case sensitive, so for example, &quot;score&quot;,
+&quot;Score&quot; and &quot;SCORE&quot; will not be taken as the same token.</p>
 
+
+<p>To reduce the work for typing a score or to improve legibility in some cases
+ an <i>abbreviated</i> syntax is allowed.
+This abbreviation consists on either:</p>
+
+<ul>
+
+<li>For elements with just one parameter, the syntax "(name param)"
+can be also written as "name:param". For example,
+the following element
+    <pre class="example">
+    (title right "Franz Schubert" (x 40mm)(y 30mm))
+    </pre>
+can also be written as:
+    <pre class="example">
+    (title right "Franz Schubert" x:40mm y:30mm)
+    </pre>
+
+</li>
+
+<li>For elements with more than one parameter or often used, in certain
+cases it is allowed
+an abbreviated syntax, consisting, usually, in suppressing the parenthesis and
+reducing the element to a string.
+
+For example, in case of element <b>g</b>, beamed group,
+writting <q class="example">(g +)</q> is equivalent to writing just
+<q class="example">g+</q>, or
+in case of element <b>t</b>, tuplet,
+writting <q class="example">(t + 5 6)</q> is equivalent to writing just
+<q class="example">t5/6</q>.
+</li>
+
+</ul>
+
+
+<h2>Comments</h2>
+<a href="#TOC">TOC</a>
 <p>To improve human legibility and understanding it is allowed to include comments.
 Two consecutive slash characters (//) will be interpreted as the start of a comment and
 all text until the end of the line will be ignored. For example:</p>
 <pre class="example">
+// This is a score with comments
 (score
     (vers 1.5)              // version 1.5 of LDP is used
     (instrument             // Start of music for the first voice
-        (musicData              // start this voice
-            (clef Sol)      // Clef: Sol (G on line 2)
-            (key Do)        // Key signature: Do (C major)
+        (musicData          // start this voice
+            (clef G)        // Clef: G on 2nd line
+            (key C)         // Key signature: C major
             (time 4 4)      // Time signature: 4 4
             (n c4 w)        // Note. Pitch: C4, duration: w (whole note)
             (barline)       // a simple barline
@@ -231,6 +278,8 @@ all text until the end of the line will be ignored. For example:</p>
 )
 </pre>
 
+<h2>Language</h2>
+<a href="#TOC">TOC</a>
 <p>LDP supports to use a customized set of tags for each language, so if, for example,
 you would prefer to
 encode the scores using tags in Spanish instead of tags in English, you would write:</p>
@@ -306,44 +355,6 @@ more repetitions.<br /><br /></dd>
 
 </dl>
 
-<p>LDP language is case sensitive, so for example, &quot;score&quot;,
-&quot;Score&quot; and &quot;SCORE&quot; will not be taken as the same token.</p>
-
-
-<p>To reduce the work for typing a score or to improve legibility in some cases
- an <i>abbreviated</i> syntax is allowed.
-This abbreviation consists on either:</p>
-
-<ul>
-
-<li>For elements with just one parameter, the syntax "(name param)"
-can be also written as "name=param". This improves legibility. For example,
-the following element
-    <pre class="example">
-    (title right "Franz Schubert" (x 40mm)(y 30mm))
-    </pre>
-can also be written as:
-    <pre class="example">
-    (title right "Franz Schubert" x=40mm y=30mm)
-    </pre>
-
-</li>
-
-<li>For elements with more than one parameter, in certain cases it is allowed
-to suppress the parenthesis and any blank space, so the element
-is reduced to a string. This abbreviated form will be named "collapsing". For example,
-if element &lt;algo&gt; allows collapsing, then
-writing <q class="example">(algo 3 nx)</q> would be equivalent to writing
-<q class="example">algo3nx</q>,
-writing <q class="example">(algo +)</q> would be equivalent to witting
-<q class="example">algo+</q> , or
-witting <q class="example">(algo -)</q> would be equivalent to witting
-<q class="example">algo-</q> .
-Collapsing is only allowed for those elements in which it is explicitly stated.
-</li>
-
-</ul>
-
 
 
 <h1>Part II. Detailed description</h1>
@@ -413,7 +424,7 @@ characteristics.</p>
     [<span class="nt">InstrName</span>]
     [<span class="nt">MIDI_Info</span>]
     [<span class="nt">Staves</span>]
-    {<span class="nt">Voice</span> |
+    {<span class="nt">MusicData</span> |
      <span class="nt">Split</span> }
     <span class="t">)</span>
 <br />
@@ -425,7 +436,7 @@ characteristics.</p>
 <p>Instruments can have a name
 </p>
 
-<p>The 'music' is described by just Voice element or a Split element. What are they?
+<p>The 'music' is described by just MusicData element or a Split element. What are they?
 Any plain-text music representation has to describe music in sequence. But a music
 score is not just a sequence of musical objects; the vertical organization of simultaneous
 voices is equally important. So, when trying to describe music as a sequence of
@@ -477,37 +488,22 @@ two by-passes are provided:</p>
 <!-- ==================================================================================================== -->
 
 
-<h2><a name="description_Voice">The Voice element</a></h2>
+<h2><a name="description_MusicData">The MusicData element</a></h2>
 <a href="#TOC">TOC</a>
 
-<p>In music a <i>voice</i> is a sequence of sounds. Voices are, usually,
-monophonic sequences but
-polyphony is also possible (see 'Chords and polyphony'). In LDP a
-Voice is a collection of different objects, mainly Notes and Rests, but also other
-elements, such as Clefs or KeySignatures, are possible.</p>
-
-<div class="comparison">
-<p>The voice element is equivalent to GUIDO sequence constructor '[ ... ]' and to
-LilyPond sequence constructor '{ ... }'</p>
-</div>
+<p>The MusicData element is just a collection of different objects, mainly Notes
+and Rests, but also other elements, such as Clefs or KeySignatures, are possible.</p>
 
 <p>
-<a name="rule_voice">&nbsp;</a>
-<span class="nt">Voice</span> :=
+<span class="nt">MusicData</span> :=
     { <span class="nt">Note</span> |
       <span class="nt">Rest</span> |
-      <span class="nt">Attribute</span> |
-      <span class="nt">Notation</span> |
+      <span class="nt">Chord</span> |
+      <span class="nt">Clef</span> |
+      <span class="nt">KeySignature</span> |
+      <span class="nt">TimeSignature</span> |
       <span class="nt">Barline</span> |
-      <span class="nt">Shift</span> |
-      <span class="nt">Option</span> }*
-<br />
-
-<a name="rule_attribute">&nbsp;</a>
-<span class="nt">Attribute</span> :=
-    { <span class="nt">Clef</span> |
-    <span class="nt">KeySignature</span> |
-    <span class="nt">TimeSignature</span> }
+      <span class="nt">Other</span> }*
 </p>
 
 
@@ -515,138 +511,14 @@ LilyPond sequence constructor '{ ... }'</p>
 
 <pre class="example">
 Single note:
-    (musicData (n c4 n))
+    (musicData (n c4 q))
 
 C major scale:
-    (musicData (n c4 n)(n d4 n)(n e4 n)(n f4 n)(n g4 n)(n a4 n)(n b4 n)(n c5 n))
+    (musicData (n c4 q)(n d4 q)(n e4 q)(n f4 q)(n g4 q)(n a4 q)(n b4 q)(n c5 q))
 
 Short fragment with a measure:
-    (musicData (clef sol)(key do)(time 2 4)(n c4 q)(n e4 q)(n g4 q)(n c5 q)(barline))
+    (musicData (clef treble)(key C)(time 2 4)(n c4 q)(n e4 q)(n g4 q)(n c5 q)(barline))
 
-</pre>
-
-
-<!-- ==================================================================================================== -->
-<h2><a name="description_Chord">Chords, polyphony and the Split element</a></h2>
-<a href="#TOC">TOC</a>
-
-<p>A chord is just a list of notes played at the same time:</p>
-<p>
-<a name="rule_chord">&nbsp;</a>
-<span class="nt">Chord</span> :=
-    <span class="t">(chord</span>
-    { <span class="nt">Note</span> }*
-    <span class="t">)</span>
-</p>
-
-
-<p>Example:</p>
-
-<pre class="example">
-(chord (n c4 n)(n e4 n)(n g4 n))    // C major chord
-</pre>
-
-<p>Polyphony can be seen as a generalization of chords, where instead of using a list
-of notes they are replaced by a list of voices:</p>
-
-<p>(chord &lt;voices&gt;*)</p>
-
-<p>Formally, the 'chord' element requires a list of notes as argument, not a list
-of voices. So we are going to introduce a new tag, the Split tag, equivalent to
-the chord tag but whose argument is a list of voices:</p>
-
-<p>(split &lt;voices&gt;*)</p>
-
-<p>This improves legibility and, conceptually, both tags, chord and split, are
-totally equivalent;</p>
-
-
-<div class="comparison">
-<p><i>split</i> constructor is equivalent to GUIDO segments '{ ... }' and to
-LilyPond constructor '&lt;&lt; ... &gt;&gt;'
-</p>
-</div>
-
-<p>Note that constructors (split &lt;voices&gt;) and (musicData &lt;music&gt;)
-are orthogonal, that is,
-they describe music either as series of temporally consecutive
-musical objects, or as  a number of simultaneous musical objects.
-Also note that mixed descriptions (i.e.: voices containing splits) and recursive
-descriptions (i.e.: splits containing splits) are allowed.</p>
-
-<p>Examples:</p>
-
-<pre class="example">
-Score with just a staff:
-    (instrument (musicData &lt;music&gt;))
-
-Score with two voices in single staff
-    (instrument (split (musicData &lt;music&gt;)
-                       (musicData &lt;music&gt;)))
-
-
-Score with three voices in single instrument, but across two staves (i.e.: left hand,
-right hand, third voice:
-    (instrument (staves 2)
-                (instrName "Piano")
-                (split (musicData &lt;music&gt;)
-                       (musicData &lt;music&gt;)
-                       (musicData &lt;music&gt;))
-    )
-
-Score with two instruments, each one on its staff:
-    (instrument (instrName "Flute") (musicData &lt;music&gt;))              //one staff
-    (instrument (staves 2)(instrName "Piano") (musicData &lt;music&gt;))    //Two staves
-
-
-</pre>
-
-<!-- ==================================================================================================== -->
-
-<h3><a name="description_Barline">The Barline element</a></h3>
-<a href="#TOC">TOC</a>
-
-<p>Element 'barline' is used to specify a barline at the end of a measure.
-You can specify a barline to be 'invisible' (that is, it will not be rendered).
-If the type of barline is not specified it is assumed to be
-a normal barline (simple line).</p>
-
-<p>
-<a name="rule_barline">&nbsp;</a>
-<span class="nt">Barline</span> :=
-    (<span class="t">barline</span>
-    [<span class="nt">Barline_type</span>]
-    [<span class="nt">Visible</span>]
-    <span class="t">)</span>
-
-<br />
-&nbsp;<span class="nt">Barline_type</span> :=
-    { <span class="t"><u>simple</u></span> |
-      <span class="t">double</span> |
-      <span class="t">end</span> |
-      <span class="t">start</span> |
-      <span class="t">startRepetition</span> |
-      <span class="t">endRepetition</span> |
-      <span class="t">doubleRepetition</span> }
-</p>
-
-<!--
-<p>The <em>Barline_type</em> can be either a tag or a graphical sign (as in abc language):</p>
-<p>
-<span class="nt">Barline_type</span> :=
-    { <span class="t">|</span> |
-      <span class="t">||</span> |
-      <span class="t">|]</span> |
-      <span class="t">[|</span> |
-      <span class="t">:|</span> |
-      <span class="t">|:</span> |
-      <span class="t">::</span> }
-</p>
--->
-
-<p>Example:</p>
-<pre class="example">
-(n c4 e)(n e4 e)(barline end)
 </pre>
 
 <!-- ==================================================================================================== -->
@@ -797,7 +669,7 @@ octave shift. The tessitura option is only usable with G and F clefs.
 <h3><a name="description_TimeSign">The Time Signature element</a></h3>
 <a href="#TOC">TOC</a>
 
-<a name="rule_time_signature" />
+<p>Setting or changing the time signature is done with the TimeSignature element:</p>
 <p>
 <span class="nt">TimeSignature</span> :=
     <span class="t">(time</span>
@@ -807,32 +679,92 @@ octave shift. The tessitura option is only usable with G and F clefs.
     <span class="t">)</span>
 </p>
 
+<p>Examples:</p>
+<pre class="example">
+(time 2 4)
+(time 3 8)
+(time 5 8)
+</pre>
 
 <!-- ==================================================================================================== -->
 
-<h2><a name="Notes_Rests_Chords">Notes, rests and chords</a></h2>
+<h3><a name="description_Barline">The Barline element</a></h3>
+<a href="#TOC">TOC</a>
+
+<p>Element 'barline' is used to specify a barline at the end of a measure.
+You can specify a barline to be 'invisible' (that is, it will not be rendered).
+If the type of barline is not specified it is assumed to be
+a normal barline (simple line).</p>
+
+<p>
+<a name="rule_barline">&nbsp;</a>
+<span class="nt">Barline</span> :=
+    (<span class="t">barline</span>
+    [<span class="nt">Barline_type</span>]
+    [<span class="nt">Visible</span>]
+    <span class="t">)</span>
+
+<br />
+&nbsp;<span class="nt">Barline_type</span> :=
+    { <span class="t"><u>simple</u></span> |
+      <span class="t">double</span> |
+      <span class="t">end</span> |
+      <span class="t">start</span> |
+      <span class="t">startRepetition</span> |
+      <span class="t">endRepetition</span> |
+      <span class="t">doubleRepetition</span> }
+</p>
+
+<!--
+<p>The <em>Barline_type</em> can be either a tag or a graphical sign (as in abc language):</p>
+<p>
+<span class="nt">Barline_type</span> :=
+    { <span class="t">|</span> |
+      <span class="t">||</span> |
+      <span class="t">|]</span> |
+      <span class="t">[|</span> |
+      <span class="t">:|</span> |
+      <span class="t">|:</span> |
+      <span class="t">::</span> }
+</p>
+-->
+
+<p>Example:</p>
+<pre class="example">
+(n c4 e)(n e4 e)(barline end)
+</pre>
+
+
+<!-- ==================================================================================================== -->
+
+<h2><a name="description_Notes_Rests">Notes and rests</a></h2>
 <a href="#TOC">TOC</a>
 
 <p>Rests can be considered as notes with no pitch, so in LDP notes and rests are instances
 of a more general concept: <i>noterests</i>. A noterest is either a note or a rest.</p>
 
-<p>The minimum information required to represent notes is its pitch and its duration.</p>
-<blockquote class="grammar">
-<span class="nt">Note</span> := <span class="t">(n</span>
-  <span class="nt">pitch</span> <span class="nt">duration</span>
-  <span class="t">)</span>
-</blockquote>
+<p>The minimum information required to represent notes is its pitch and its duration.
+For rests only its duration is needed.</p>
 
-<p>For rests only its duration is needed.</p>
-<blockquote class="grammar">
+<p>
+<span class="nt">Note</span> :=
+  <span class="t">(n</span>
+  <span class="nt">Pitch</span>
+  <span class="nt">Duration</span>
+  [<span class="nt">Other</span>]*
+  <span class="t">)</span>
+
+<br />
 <span class="nt">Rest</span> :=
-  <span class="t">(r</span> <span class="nt">duration</span>
+  <span class="t">(r</span>
+  <span class="nt">Duration</span>
+  [<span class="nt">Other</span>]*
   <span class="t">)</span>
-</blockquote>
+</p>
 
 
-<h3><a name="Pitch">Pitch</a></h3>
-<a href="#TOC">TOC</a>
+<h4>Pitch</h4>
+
 
 <p>The pitch is represented by combining the note name, the octave and the accidentals.</p>
 <p>The <i>note name</i> is a letter that represents the diatonic step:
@@ -868,9 +800,8 @@ arriba) para microtonos.</p>
 <div class="note">
 <p>
 <b>Important: </b>
-In LDP accidentals are not absolute (as in MusicXML) but relative to the context. That is, you must
-write or not an accidental following the same rules than when you write music by hand
-in music paper. You have to write only those accidentals that are not implied by
+Accidentals are relative to the context. That is, you have to write only those
+accidentals that are not implied by
 the key signature or that are not implied by a previous accidental in the same measure.
 </p>
 </div>
@@ -878,7 +809,7 @@ the key signature or that are not implied by a previous accidental in the same m
 <p>
 Then, in the following example:</p>
 <pre class="example">
-  (key Fa)(n b4 q)(barline)
+(key F)(n b4 q)(barline)
 </pre>
 
 <p>the quarter b4 note will be a flat b4, as it is in F major key.</p>
@@ -907,14 +838,55 @@ programs. <b>Possibly this feature will removed from the language in future vers
 
 -->
 
-<h3><a name="description_Duration">Duration</a></h3>
-<a href="#TOC">TOC</a>
+<h4>Duration</h4>
 
-<p>A character to specify the note or rest type (whole, quarter, eighth, ...) followed by dots in case the
-note or rest is dotted</p>
+<p>There are two possibilities two designate durations:</p>
+<ol>
+<li>By numbers and dots: Durations are written as an apostrophe followed by
+the reciprocal value of the duration. For example, a quarter note is written as
+<q class="example">'4</q>
+(since it is a
+1/4 note), while a 16th note is entered as <q class="example">'16</q>
+(since it is a 1/16 note).
+The number is followed by dots in case the
+note or rest is dotted. This method using numbers is language independent and
+can be always mixed with next method.</li>
+<li>By a letter and dots: Each note duration is designated by a character from following table, and is
+followed by optional dots. This method is language dependent as a different set of characters
+can be defined for each supported language.</p>
+</li>
+</ol>
+<!--
+<p>Designating notes by numbers is only allowed for notes shorter or equal than
+a whole. For notes longer than
+a whole you must use the variables \longa and \breve</p>
+-->
 
-<p>
+<p>Examples:</p>
+<pre class="example">
+'8..    //double dotted eighth note
+e..     //also double dotted eighth note
+'128    //128th note
+o       //also 128th note
+</pre>
+
+
+<p>Letters to designate durations are as follows:</p>
 <center>
+<table class="grid">
+    <tr><td class="grid">English US (English UK)</td></tr>
+    <tr><td class="grid">d - <b>d</b>ouble whole, long (breve)</td></tr>
+    <tr><td class="grid">w - <b>w</b>hole (semibreve)</td></tr>
+    <tr><td class="grid">h - <b>h</b>alf (minim)</td></tr>
+    <tr><td class="grid">q - <b>q</b>uarter (crochet)</td></tr>
+    <tr><td class="grid">e - <b>e</b>ighth, 8th (quaver)</td></tr>
+    <tr><td class="grid">s - <b>s</b>ixteenth, 16th (semiquaver)</td></tr>
+    <tr><td class="grid">t - <b>3</b>2th (demisemiquaver)</td></tr>
+    <tr><td class="grid">x - <b>6</b>4th (hemidemisemiquaver)</td></tr>
+    <tr><td class="grid">o - <b>1</b>28th (?)</td></tr>
+    <tr><td class="grid">f - 2<b>5</b>6th (?)</td></tr>
+    </table>
+<!--
 <table class="grid">
     <tr><td class="grid">English US (English UK)</td><td class="grid">Spanish</td></tr>
     <tr><td class="grid">d - <b>d</b>ouble whole, long (breve)</td><td class="grid">d - cua<b>d</b>rada</td></tr>
@@ -928,6 +900,7 @@ note or rest is dotted</p>
     <tr><td class="grid">o - <b>1</b>28th (?)</td><td class="grid">g - <b>g</b>arrapatea</td></tr>
     <tr><td class="grid">f - 2<b>5</b>6th (?)</td><td class="grid">p - semigarra<b>p</b>atea</td></tr>
     </table>
+-->
 </center>
 </p>
 
@@ -935,65 +908,176 @@ note or rest is dotted</p>
 a double dotted eighth note</p>
 
 
+<h4>Abbreviated notation for notes and rests</h4>
 
-
-
-
-
-
-
-<h2><a name="description_Notation">Notations</a></h2>
-<a href="#TOC">TOC</a>
-
-<p>A <em>notation</em> is the way to describe any additional characteristic affecting the element
-being described. Notations are classified into three categories:</p>
+<p>The abbreviated syntax is formmed as follows:</p>
 <ol>
-<li>Traditional music notation symbols, such as ties, slurs, or marks for caesura,
-tuplets, or articulations.</li>
-<li>Rendering notations: additional information to control the renderization process. For
-example, the exact coordinates to position an object in the score, the length
-of a stem or the symbol to use for a note head.</li>
-<li>Play back notations: clues and tips for playing back the score. For example,
-the MIDI channel to use.</li>
+<li>For pitch, the octave number can be omitted; if so, it is inherited from the preceeding note.</li>
+<li>Duration can be omitted; if so, it is inherited from the preceeding note
+or rest.</li>
+<li>Eliminate parenthesis and spaces preceeding pitch and duration. Separate
+any other element using a comma (,).</li>
 </ol>
 
-<p>The most common notations for notes and rests accept the abbreviated syntax,
-that is, just a string of one or more characters without
-blank spaces. The first character determines the type of notation and
-the remaining characters, when exist,
-indicates additional characteristics.</p>
+<p>Abbreviated and full notation can be mixed. Octave number and duration can only be
+omitted in abbreviated notation, not inside a full notation element.</p>
+
+
+<p>Example 1:</p>
+<pre class="example">
+Full notation:
+    (n +c4 q)(n e4 q)(r e)(n g4 e)(n =c5 q)
+
+Abbreviated notation:
+    n+c4q  ne  re  ng  n=c5q
+</pre>
+
+<p>Example 2:</p>
+<pre class="example">
+Full notation:
+    (n +c4 e g+ t+)(n e4 e)(n f4 e g- t-)(r s)(n g4 s)(n =c5 e)
+    (n +c4 '8 g+ t+)(n e4 '8)(n f4 '8 g- t-)(r '16)(n g4 '16)(n =c5 '8)
+
+Abbreviated notation:
+    n+c4e,g+,t+  ne  nf,g-,t-  rs  ng  n=c5e
+    n+c4'8,g+,t+  ne  nf,g-,t-  r'16  ng  n=c5'8
+
+Mixed notation:
+    n+c4e,g+,t+  ne (n f4 e g- t-)  rs  ng (n =c5 e)
+    n+c4'8,g+,t+  ne (n f4 '8 g- t-)  r'16  ng (n =c5 '8)
+    n+c4e,g+,t+  ne (n f4 '8 g- t-)  r'16  ng (n =c5 e)
+</pre>
+
+
+<!-- ==================================================================================================== -->
+<h2><a name="description_Chord">Chords</a></h2>
+<a href="#TOC">TOC</a>
+
+<p>A chord is just the list of notes that form the chord:</p>
+<p>
+<span class="nt">Chord</span> :=
+    <span class="t">(chord</span>
+    { <span class="nt">Note</span> }*
+    <span class="t">)</span>
+</p>
+
+
+<p>Example:</p>
+
+<pre class="example">
+(chord (n c4 q)(n e4 q)(n g4 q))    // C major chord
+(chord nc4q ne ng)                  //abbreviated
+</pre>
 
 
 <!--
+<p>Polyphony can be seen as a generalization of chords, where instead of using a list
+of notes they are replaced by a list of voices:</p>
+
+<p>(chord &lt;voices&gt;*)</p>
+
+<p>Formally, the 'chord' element requires a list of notes as argument, not a list
+of voices. So we are going to introduce a new tag, the Split tag, equivalent to
+the chord tag but whose argument is a list of voices:</p>
+
+<p>(split &lt;voices&gt;*)</p>
+
+<p>This improves legibility and, conceptually, both tags, chord and split, are
+totally equivalent;</p>
+
+
+<div class="comparison">
+<p><i>split</i> constructor is equivalent to GUIDO segments '{ ... }' and to
+LilyPond constructor '&lt;&lt; ... &gt;&gt;'
+</p>
+</div>
+
+<p>Note that constructors (split &lt;voices&gt;) and (musicData &lt;music&gt;)
+are orthogonal, that is,
+they describe music either as series of temporally consecutive
+musical objects, or as  a number of simultaneous musical objects.
+Also note that mixed descriptions (i.e.: voices containing splits) and recursive
+descriptions (i.e.: splits containing splits) are allowed.</p>
+
+<p>Examples:</p>
+
+<pre class="example">
+Score with just a staff:
+    (instrument (musicData &lt;music&gt;))
+
+Score with two voices in single staff
+    (instrument (split (musicData &lt;music&gt;)
+                       (musicData &lt;music&gt;)))
+
+
+Score with three voices in single instrument, but across two staves (i.e.: left hand,
+right hand, third voice:
+    (instrument (staves 2)
+                (instrName "Piano")
+                (split (musicData &lt;music&gt;)
+                       (musicData &lt;music&gt;)
+                       (musicData &lt;music&gt;))
+    )
+
+Score with two instruments, each one on its staff:
+    (instrument (instrName "Flute") (musicData &lt;music&gt;))              //one staff
+    (instrument (staves 2)(instrName "Piano") (musicData &lt;music&gt;))    //Two staves
+
+
+</pre>
+
+-->
+
+<!-- ==================================================================================================== -->
+
+
+
+<!--
+Group 1: Very common, only for notes and rests.
+
     sp  en
     ===========================================
     t   t   Tupla / Tuplet
     l   l   Ligado / Tie
     g   g   Grupo / Beamed group
-    p   -   Pentagrama / Staff
-
     a   -   Articulations
     x   -   Ligadura de expresion / Slur
     c   -   Caesura
 
+Group 2: Very common, for notes, rests and clefs
+
+    sp  en
+    ===========================================
+    p   -   Pentagrama / Staff
+    -   -   Anotacion técnica
+
+
+Group 3: Less used. Long tags can be used
+    sp  en
+    ===========================================
     s   -   Glissando
     d   -   Dinámica
     r   -   Arpegiato
     np  -   No arpegiado
     -   -   Deslizando
     o   -   Ornamento
-    -   -   Anotacion técnica
+
+    newSystem
+    stem
+
 -->
 
-<h4><a name="tie_notation">Ties</a></h4>
+<!-- ==================================================================================================== -->
+<h2><a name="description_Tie">Ties</a></h2>
 <p>A character <b>l</b> (lower case letter L) indicates the start of a tie
 that will end in the next coming note of the
 same voice, staff and pitch than the one on which this notation is included.
 No additional parameters are needed.</p>
 
-<p>Example: A quarter C4 note tied to an eighth one, followed by an eighth E4 note:</p>
+<p>Example: A quarter C4 note tied to an eighth one:</p>
 <pre class="example">
-(n c4 q l)(n c4 e)(n e4 e)
+(n c4 q l)(n c4 e)
+nc4q,l nc
 </pre>
 
 
@@ -1014,7 +1098,8 @@ Example:</p>
 
 -->
 
-<h4><a name="beamed_group_notation">Beamed groups</a></h4>
+<!-- ==================================================================================================== -->
+<h2><a name="description_Beamed_group">Beamed groups</a></h2>
 <p>When several consecutive notes have their stems beamed together this is coded by a notation
 <b>g</b> (group).  The first parameter is a plus sign (+) or a minus sign (-) to mean, respectively,
 that it is the start or the end of a group. After this sign other parameters are possible.
@@ -1022,16 +1107,18 @@ When the only parameters specified are the start/end sign, the
 <b>g</b> element admits a abbreviated syntax <b>g+</b> in
 the starting note and a notation <b>g-</b> in the ending one.
 Example:</p>
-<code class="example">
+<pre class="example">
 (n c4 q g+)(n d4 e)(n e4 e g-)
-</code>
+nc4q,g+ nde ne,g-
+</pre>
 
 <p>A group of beamed notes, formed by a quarter C4 note, an eighth D4 note and an eighth E4 note.</p>
 
 
 
 
-<h4><a name="tuplet_notation">Tuplets</a></h4>
+<!-- ==================================================================================================== -->
+<h2><a name="description_Tuplet">Tuplets</a></h2>
 
 <p>A tuplet is a group of notes whose duration is modified; normally a graphic element
 (a tuplet bracket and/or a number) marks this group of notes. The notes in a tuplet are
@@ -1041,7 +1128,6 @@ usually beamed together but this is not always the case.</p>
 in the first and the last notes of the tuplet.</p>
 
 <p>
-<a name="rule_tuplet">&nbsp;</a>
 <span class="nt">Tuplet</span> :=
     (<span class="t">t</span>
     {<span class="t">-</span> |
@@ -1077,6 +1163,7 @@ to indicate the tuplet type.</p>
 
 <pre class="example">
 (n c4 e (t + 3)) (n d4 e) (n e4 e (t -))
+nc4e,(t + 3) nd ne,(t -)
 </pre>
 
 <p>This example is a triplet of eighth notes, that is, the three notes must be played
@@ -1096,28 +1183,47 @@ abbreviated syntax: </p>
 
 <pre class="example">
 (n c4 e t3)(n d4 e)(n e4 e t-)
+nc4e,t3 nd ne,t-
 </pre>
 
 
-<p>Notation <b>t</b> does not implies beaming. Therefore notations <b>t</b> and <b>g</b>
+<p>Element <b>t</b> does not implies beaming. Therefore elements <b>t</b> and <b>g</b>
 must be combined as needed. Examples:</p>
 
 <pre class="example">
 (n c4 e g+) (n d4 s t3) (n c4 s) (n b3 s t- g-)
+nc4e,g+  nds,t3  nc  nb3,t-,g-
 </pre>
 
 <pre class="example">
-(n c4 s g+ t3) (n d4 s t) (n e3 s t-) (n f4 s t3) (n g4 s) (n a4 s t- g-)
+(n c4 s g+ t3) (n d4 s) (n e3 s t-) (n f4 s t3) (n g4 s) (n a4 s t- g-)
+nc4s,g+,t3  nd  ne3,t-  nf4,t3  ng  na4,t-,g-
 </pre>
 
 
 
-<h4><a name="staff_notation">Selecting the staff</a></h4>
+<!-- ==================================================================================================== -->
+<h2><a name="description_staff_number">Selecting the staff</a></h2>
 <p>When an instrument has several staves (e.g. the upper and lower staves in a grand-staff)
 it is necessary a mechanism to specify in which staff a note, rest, clef, or other must
-be placed. For this purpose, a notation <b>p</b> is used.</p>
+be placed. For this purpose, an element <b>p</b> is used.</p>
 
-<p>The <b>p</b> must be follwed by the staff number (1..n). The staff value is inherited
+<p>
+<span class="nt">StaffNumber</span> :=
+    (<span class="t">p</span>
+    <span class="nt">num</span>
+    <span class="t">)</span>
+</p>
+
+<p>It can be abbreviated by omitting the parenthesis and joining
+the <b>p</b> and the number. Example:
+</p>
+<pre class="example">
+'(p 2)' is equivalent to 'p2'
+</pre>
+
+<p>Staffs are numbered from top to bottom, starting at staff 1. The staff number
+is inherited
 by all coming elements until a new p notation is found.</p>
 
 
@@ -1126,7 +1232,7 @@ by all coming elements until a new p notation is found.</p>
 (instrument (staves 2)
     (musicData
         (clef G p1)(clef F p2)(key C)
-        (n g3 w p2)(n a3 w)(n b3 w)(n c4 w)(n d4 w p1)(n e4 w)(n f4 w)(n g4 w)
+        ng3w,p2 na nb nc4 nd,p2 ne nf ng
         (barline double)
     )
 )
@@ -1190,7 +1296,7 @@ avance hasta el final del compás. </p>
 
 -->
 
-<h3><a name="FormattingTags">Notations to control format</a></h3>
+<h3><a name="FormattingTags">Elements to control format</a></h3>
 <a href="#TOC">TOC</a>
 
 
@@ -1232,7 +1338,7 @@ be fully specified by using the Stem element. It forces stem direction.</p>
 
 <pre class="example">
 (n e4 q (stem down))
-(n e4 q stem=down)
+(n e4 q stem:down)
 </pre>
 
 

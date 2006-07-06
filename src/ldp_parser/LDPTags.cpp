@@ -249,6 +249,10 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[4][_T("Solm")] = _T("g");
         m_Tags[4][_T("Rem")] = _T("d");
 
+        m_Contexts[_T("SingleChar")] = 5;
+        m_Tags[5][_T("n")] = _T("n");   //note
+        m_Tags[5][_T("r")] = _T("r");   //rest 
+
     }
     else {
         // initialize table with default Spanish values
@@ -364,6 +368,10 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[4][_T("Dom")] = _T("Dom");
         m_Tags[4][_T("Solm")] = _T("Solm");
         m_Tags[4][_T("Rem")] = _T("Rem");
+
+        m_Contexts[_T("SingleChar")] = 5;
+        m_Tags[5][_T("n")] = _T("n");   //note
+        m_Tags[5][_T("r")] = _T("s");   //rest 
 
     }
 

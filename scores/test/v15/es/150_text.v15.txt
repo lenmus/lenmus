@@ -6,25 +6,25 @@
    (instrumento
       (datosMusica
          (clave Sol)
-         (text "Allegor" dy=0)
+         (text "Allegor" dy:0)
          (n -e4 n)
          (n =e4 n)
          (n +e4 n)
          (barra)
          
-         (text "Second" dy=0 hasWidth)
+         (text "Second" dy:0 hasWidth)
          (n f4 c g+)
          (n g4 c g-)
          (n +e4 n)
          (barra)
 
-         (text "Center" dy=40 centrado (font bold 14))
+         (text "Center" dy:40 centrado (font bold 14))
          (n f4 c g+)
          (n g4 c g-)
          (n +e4 n)
          (barra)
          
-         (text "Right" dy=40 derecha (font normal 24))
+         (text "Right" dy:40 derecha (font normal 24))
          (n f4 c g+)
          (n g4 c g-)
          (n +e4 n)

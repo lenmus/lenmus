@@ -869,9 +869,9 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
     for(; iP <= pNode->GetNumParms(); iP++) {
         pX = pNode->GetParameter(iP);
         sName = pX->GetName();
-        if (sName == _T("n")) {             // note
+        if (sName == m_pTags->TagName(_T("n"), _T("SingleChar")) ) {        // note
             AnalyzeNote(pX, pVStaff);
-        } else if (sName == _T("s")) {      // rest
+        } else if (sName == m_pTags->TagName(_T("r"), _T("SingleChar")) ) { // rest
             AnalyzeRest(pX, pVStaff);
         } else if (sName == m_pTags->TagName(_T("clef")) ) {
             AnalyzeClef(pVStaff, pX);
@@ -887,7 +887,19 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
             AnalyzeText(pX, pVStaff);
         } else if (sName == m_pTags->TagName(_T("newSystem")) ) {
             AnalyzeNewSystem(pX, pVStaff);
-        } else {
+        }
+        //abbreviated syntax for notes and rests
+        else if (pX->IsSimple()) {
+            if (sName.Left(1) == m_pTags->TagName(_T("n"), _T("SingleChar")) )
+                AnalyzeNote(pX, pVStaff);
+            else if (sName.Left(1) == m_pTags->TagName(_T("r"), _T("SingleChar")) )
+                AnalyzeRest(pX, pVStaff);
+            else 
+                AnalysisError( _("[AnalyzeMusicData]: Unknown or not allowed element '%s' found. Element ignored."),
+                    sName );
+        }
+        //error or non-supported elements
+        else {
             AnalysisError( _("[AnalyzeMusicData]: Unknown or not allowed element '%s' found. Element ignored."),
                 sName );
         }
@@ -1392,9 +1404,12 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
 
     wxString sElmName = pNode->GetName();       //for error messages
-    wxASSERT(sElmName == _T("n") || sElmName == _T("na") || sElmName == _T("s") );
+    wxASSERT(sElmName == m_pTags->TagName(_T("n"), _T("SingleChar")) ||
+             sElmName == m_pTags->TagName(_T("r"), _T("SingleChar")) ||
+             sElmName == _T("na") );
+             //          --------  compatibility 1.3
 
-    bool fIsRest = (sElmName == _T("s"));   //analysing a rest
+    bool fIsRest = (sElmName == m_pTags->TagName(_T("r"), _T("SingleChar")) );   //analysing a rest
     
     EStemType nStem = eDefaultStem;
     bool fBeamed = false;
@@ -1429,16 +1444,16 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     long nParms = pNode->GetNumParms();
     if (fIsRest) {
         if (nParms < 1) {
-            AnalysisError( _("Missing parameters in rest '%s'. Replaced by '(s n)'."),
-                pNode->ToString() );
+            AnalysisError( _("Missing parameters in rest '%s'. Replaced by '(%s %s)'."),
+                pNode->ToString(), sElmName, m_pTags->TagName(_T("n"), _T("NoteType")) );
             return pVStaff->AddRest(nNoteType, rDuration, fDotted, fDoubleDotted,
                                     m_nCurStaff);
         }
     }
     else {
         if (nParms < 2) {
-            AnalysisError( _("Missing parameters in note '%s'. Assumed (n c4 n)."),
-                pNode->ToString() );
+            AnalysisError( _("Missing parameters in note '%s'. Assumed (%s c4 %s)."),
+                pNode->ToString(), sElmName, m_pTags->TagName(_T("n"), _T("NoteType")) );
             return pVStaff->AddNote(false,    //relative pitch
                                     _T("c"), _T("4"), _T("0"), nAccidentals,
                                     nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff,
