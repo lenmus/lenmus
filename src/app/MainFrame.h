@@ -50,6 +50,9 @@
 
 #include "wx/numdlg.h"
 
+//wxAUI
+#include "manager.h"
+
 //IDs for menu events that must be public (i.e. to generate them by program)
 enum
 {
@@ -133,6 +136,9 @@ public:
     void OnPlayPause(wxCommandEvent& WXUNUSED(event));
     void OnPlayUI(wxUpdateUIEvent &event);
 
+    void OnEditUpdateUI(wxUpdateUIEvent &event);
+
+
     void OnOptions(wxCommandEvent& WXUNUSED(event));
 
     void OnSoundTest(wxCommandEvent& WXUNUSED(event));
@@ -183,6 +189,8 @@ protected:
     void ScanForBooks(wxString sPath, wxString sPattern);
 
 
+    wxFrameManager          m_mgrAUI;       // wxAUI manager
+
     lmToolsDlg*             m_pToolsDlg;
     lmTextBookController*   m_pBookController;
     lmHtmlWindow*           m_pHtmlWin;
@@ -196,10 +204,16 @@ protected:
     bool m_fBookOpened;
     bool m_fHelpOpened;
 
-    // tool abr, status bar
-    wxToolBar*      m_pToolbar;
-    wxStatusBar*    m_pStatusbar;
+    // tool bars
+    wxToolBar*      m_pTbFile;          // file toolbar
+    wxToolBar*      m_pTbEdit;          // edit toolbar
+    wxToolBar*      m_pTbPlay;          // play toolbar
+    wxToolBar*      m_pTbMtr;           // metronome toolbar
+    wxToolBar*      m_pToolbar;         // main toolbar
     wxToolBar*      m_pNavigationToolbar;
+
+    // status bar
+    wxStatusBar*    m_pStatusbar;
 
     bool    m_fSilentCheck;
 

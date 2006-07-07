@@ -78,6 +78,7 @@ extern lmLogger* g_pLogger;
 
 
 
+
 //========================================================================================
 //AWARE
 //            Platform configuration defines. Change values as appropiate
@@ -210,7 +211,6 @@ enum
     MENU_Metronome,
 
   // controls IDs
-    ID_TOOLBAR,
     ID_COMBO_ZOOM,
     ID_SPIN_METRONOME,
 
@@ -261,6 +261,8 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_MENU      (wxID_PRINT_SETUP, lmMainFrame::OnPrintSetup)
     EVT_MENU      (MENU_Print, lmMainFrame::OnPrint)
     EVT_UPDATE_UI (MENU_Print, lmMainFrame::OnPrintUI)
+
+    EVT_UPDATE_UI (wxID_COPY, lmMainFrame::OnEditUpdateUI)
 
     EVT_MENU      (MENU_View_Tools, lmMainFrame::OnViewTools)
     EVT_MENU      (MENU_View_Rulers, lmMainFrame::OnViewRulers)
@@ -332,7 +334,10 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     m_pBookController = (lmTextBookController*) NULL;
 	m_pNavigationToolbar = (wxToolBar*) NULL;
 
-	// set the app icon
+    // notify wxAUI which frame to use
+    m_mgrAUI.SetFrame(this);
+    
+    // set the app icon
 	// All non-MSW platforms use a bitmap. MSW uses an .ico file
 	#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__)
 		SetIcon(wxArtProvider::GetIcon(_T("app_icon"), wxART_OTHER));
@@ -353,11 +358,16 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
 
     // initialize tool bars
     m_pToolbar = (wxToolBar*) NULL;
+    m_pTbPlay = (wxToolBar*)NULL;
+    m_pTbMtr = (wxToolBar*)NULL;
+    m_pTbFile = (wxToolBar*)NULL;
+    m_pTbEdit = (wxToolBar*)NULL;
     bool fToolBar = true;
     g_pPrefs->Read(_T("/MainFrame/ViewToolBar"), &fToolBar);
     if (!m_pToolbar && fToolBar) {
         CreateMyToolBar();
     }
+
 
     // initialize status bar
     m_pStatusbar = (wxStatusBar*) NULL;
@@ -422,27 +432,22 @@ void lmMainFrame::CreateMyToolBar()
     // return if exists
     if (m_pToolbar) return;
 
-    long style = wxTB_FLAT | wxTB_DOCKABLE | wxTB_HORIZONTAL;
+    //prepare style
+    long style = wxTB_FLAT | wxTB_NODIVIDER;
     long nLabelsIndex = g_pPrefs->Read(_T("/Toolbars/Labels"), 1L);
     if (nLabelsIndex == 1) 
         style |= wxTB_TEXT;
     else if (nLabelsIndex == 2) 
         style |= wxTB_HORZ_TEXT;
 
-    m_pToolbar = CreateToolBar(style, ID_TOOLBAR);
-
-    // set the icons size
+    //prepare icons size
     long nIconSize = g_pPrefs->Read(_T("/Toolbars/IconSize"), 16);
     wxSize nSize(nIconSize, nIconSize);
+
+
+    //create main tool bar
+    m_pToolbar = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pToolbar->SetToolBitmapSize(nSize);
-
-    //Load the tools
-    m_pToolbar->AddTool(MENU_File_New, _("New"), wxArtProvider::GetIcon(_T("tool_new"), wxART_TOOLBAR, nSize), _("New score"));
-    m_pToolbar->AddTool(wxID_OPEN, _("Open"), wxArtProvider::GetIcon(_T("tool_open"), wxART_TOOLBAR, nSize), _("Open score"));
-
-//    //! @todo How to do it in these platforms?
-//    // the generic toolbar doesn't really support this
-//#if (wxUSE_TOOLBAR_NATIVE && !USE_GENERIC_TBAR) && !defined(__WXX11__) || defined(__WXUNIVERSAL__)
 //        wxComboBox *combo = new wxComboBox(m_pToolbar, ID_COMBO_ZOOM, _T(""), wxDefaultPosition, wxSize(120, -1) );
 //        combo->Append(_T("100%"));
 //        combo->Append(_T("200%"));
@@ -450,51 +455,116 @@ void lmMainFrame::CreateMyToolBar()
 //        combo->Append(_T("Print size"));
 //        combo->Append(_T("Adjust to page"));
 //        m_pToolbar->AddControl(combo);
-//
-//#endif // toolbars which don't support controls
-
-    m_pToolbar->AddTool(wxID_SAVE, _("Save"), wxArtProvider::GetIcon(_T("tool_save"), wxART_TOOLBAR, nSize), _("Save current score to disk"));
-    m_pToolbar->AddTool(wxID_COPY, _("Copy"), wxArtProvider::GetIcon(_T("tool_copy"), wxART_TOOLBAR, nSize), _("Copy"));
-    m_pToolbar->AddTool(wxID_CUT, _("Cut"), wxArtProvider::GetIcon(_T("tool_cut"), wxART_TOOLBAR, nSize), _("Cut"));
-    m_pToolbar->AddTool(wxID_PASTE, _("Paste"), wxArtProvider::GetIcon(_T("tool_paste"), wxART_TOOLBAR, nSize), _("Paste"));
-    m_pToolbar->AddTool(MENU_Print, _("Print"), wxArtProvider::GetIcon(_T("tool_print"), wxART_TOOLBAR, nSize), _("Print document"));
-    m_pToolbar->AddSeparator();
-
-    //play tools
-    m_pToolbar->AddTool(MENU_Play_Start, _("Play"), wxArtProvider::GetIcon(_T("tool_play"), wxART_TOOLBAR, nSize), _("Start/resume play back of the score"));
-    m_pToolbar->AddTool(MENU_Play_Stop, _("Stop"), wxArtProvider::GetIcon(_T("tool_stop"), wxART_TOOLBAR, nSize), _("Stop playing back"));
-    m_pToolbar->AddTool(MENU_Play_Pause, _("Pause"), wxArtProvider::GetIcon(_T("tool_pause"), wxART_TOOLBAR, nSize), _("Pause playing back"));
-    m_pToolbar->AddSeparator();
-
-    //other tools
     m_pToolbar->AddTool(MENU_Preferences, _("Preferences"), wxArtProvider::GetIcon(_T("tool_options"), wxART_TOOLBAR, nSize), _("Set user preferences"));
     m_pToolbar->AddTool(MENU_OpenHelp, _("Help"), wxArtProvider::GetIcon(_T("tool_help"), wxART_TOOLBAR, nSize), _("Help button"), wxITEM_CHECK);
     m_pToolbar->AddTool(MENU_OpenBook, _("Books"), wxArtProvider::GetIcon(_T("tool_open_ebook"), wxART_TOOLBAR, nSize), _("Show the music books"), wxITEM_CHECK);
+    m_pToolbar->Realize();
 
-    //metronome section
-    m_pToolbar->AddSeparator();
-    m_pToolbar->AddTool(MENU_Metronome, _("Metronome"), wxArtProvider::GetIcon(_T("tool_metronome"), wxART_TOOLBAR, nSize), _("Turn metronome on/off"), wxITEM_CHECK);
-    m_pSpinMetronome = new wxSpinCtrl(m_pToolbar, ID_SPIN_METRONOME, _T(""), wxDefaultPosition, 
+    //File toolbar
+    m_pTbFile = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
+    m_pTbFile->SetToolBitmapSize(nSize);
+    m_pTbFile->AddTool(MENU_File_New, _("New"), wxArtProvider::GetIcon(_T("tool_new"), wxART_TOOLBAR, nSize), _("New score"));
+    m_pTbFile->AddTool(wxID_OPEN, _("Open"), wxArtProvider::GetIcon(_T("tool_open"), wxART_TOOLBAR, nSize), _("Open score"));
+    m_pTbFile->AddTool(wxID_SAVE, _("Save"), wxArtProvider::GetIcon(_T("tool_save"), wxART_TOOLBAR, nSize), _("Save current score to disk"));
+    m_pTbFile->AddTool(MENU_Print, _("Print"), wxArtProvider::GetIcon(_T("tool_print"), wxART_TOOLBAR, nSize), _("Print document"));
+    m_pTbFile->Realize();
+
+    //Edit toolbar
+    m_pTbEdit = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
+    m_pTbEdit->SetToolBitmapSize(nSize);
+    m_pTbEdit->AddTool(wxID_COPY, _("Copy"), wxArtProvider::GetIcon(_T("tool_copy"), wxART_TOOLBAR, nSize), _("Copy"));
+    m_pTbEdit->AddTool(wxID_CUT, _("Cut"), wxArtProvider::GetIcon(_T("tool_cut"), wxART_TOOLBAR, nSize), _("Cut"));
+    m_pTbEdit->AddTool(wxID_PASTE, _("Paste"), wxArtProvider::GetIcon(_T("tool_paste"), wxART_TOOLBAR, nSize), _("Paste"));
+    m_pTbEdit->Realize();
+
+    //Play toolbar
+    m_pTbPlay = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
+    m_pTbPlay->SetToolBitmapSize(nSize);
+    m_pTbPlay->AddTool(MENU_Play_Start, _("Play"), wxArtProvider::GetIcon(_T("tool_play"), wxART_TOOLBAR, nSize), _("Start/resume play back of the score"));
+    m_pTbPlay->AddTool(MENU_Play_Stop, _("Stop"), wxArtProvider::GetIcon(_T("tool_stop"), wxART_TOOLBAR, nSize), _("Stop playing back"));
+    m_pTbPlay->AddTool(MENU_Play_Pause, _("Pause"), wxArtProvider::GetIcon(_T("tool_pause"), wxART_TOOLBAR, nSize), _("Pause playing back"));
+    m_pTbPlay->Realize();
+
+    //Metronome toolbar
+    m_pTbMtr = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
+    m_pTbMtr->SetToolBitmapSize(nSize);
+    m_pTbMtr->AddTool(MENU_Metronome, _("Metronome"), wxArtProvider::GetIcon(_T("tool_metronome"), wxART_TOOLBAR, nSize), _("Turn metronome on/off"), wxITEM_CHECK);
+    m_pSpinMetronome = new wxSpinCtrl(m_pTbMtr, ID_SPIN_METRONOME, _T(""), wxDefaultPosition, 
         wxSize(60, -1), wxSP_ARROW_KEYS | wxSP_WRAP);    // , 20, 300, 60);
     m_pSpinMetronome->SetRange(20,300);
     m_pSpinMetronome->SetValue( m_pMtr->GetMM() );
-    m_pToolbar->AddControl(m_pSpinMetronome);
+    m_pTbMtr->AddControl(m_pSpinMetronome);
+    m_pTbMtr->Realize();
 
-    // after adding the buttons to the toolbar, must call Realize() to reflect
-    // the changes
-    m_pToolbar->Realize();
+    //compute best size for metronome bar
+    wxSize sizeSpin = m_pSpinMetronome->GetSize();
+    wxSize sizeButton = m_pTbMtr->GetToolSize();
+    wxSize sizeBest(sizeButton.GetWidth() + sizeSpin.GetWidth() + 
+                        m_pTbMtr->GetToolSeparation() + 10,
+                    wxMax(sizeSpin.GetHeight(), sizeButton.GetHeight()));
 
-    m_pToolbar->SetRows(2);
+    // add the toolbars to the manager
+    m_mgrAUI.AddPane(m_pTbFile, wxPaneInfo().
+                Name(wxT("File tools")).Caption(_("File tools")).
+                ToolbarPane().Top().
+                LeftDockable(false).RightDockable(false));
+    m_mgrAUI.AddPane(m_pTbEdit, wxPaneInfo().
+                Name(wxT("Edit tools")).Caption(_("Edit tools")).
+                ToolbarPane().Top().
+                LeftDockable(false).RightDockable(false));
+    m_mgrAUI.AddPane(m_pToolbar, wxPaneInfo().
+                Name(wxT("toolbar")).Caption(_("Main tools")).
+                ToolbarPane().Top().
+                LeftDockable(false).RightDockable(false));
+    m_mgrAUI.AddPane(m_pTbPlay, wxPaneInfo().
+                Name(wxT("Play")).Caption(_("Play tools")).
+                ToolbarPane().Top().Row(1).
+                LeftDockable(false).RightDockable(false));
+    m_mgrAUI.AddPane(m_pTbMtr, wxPaneInfo().
+                Name(wxT("Metronome")).Caption(_("Metronome tools")).
+                ToolbarPane().Top().Row(1).BestSize( sizeBest ).
+                LeftDockable(false).RightDockable(false));
+
+    // tell the manager to "commit" all the changes just made
+    m_mgrAUI.Update();
 }
 
 void lmMainFrame::DeleteToolbar()
 {
-    if (!m_pToolbar) return;
+    // main toolbar
+    if (m_pToolbar) {
+        m_mgrAUI.DetachPane(m_pToolbar);
+        delete m_pToolbar;
+        m_pToolbar = (wxToolBar*)NULL;
+    }
 
-    // delete toolbar
-    delete m_pToolbar;
-    SetToolBar(NULL);
-    m_pToolbar = (wxToolBar*)NULL;
+    // file toolbar
+    if (m_pTbFile) {
+        m_mgrAUI.DetachPane(m_pTbFile);
+        delete m_pTbFile;
+        m_pTbFile = (wxToolBar*)NULL;
+    }
+
+    // edit toolbar
+    if (m_pTbEdit) {
+        m_mgrAUI.DetachPane(m_pTbEdit);
+        delete m_pTbEdit;
+        m_pTbEdit = (wxToolBar*)NULL;
+    }
+
+    // play toolbar
+    if (m_pTbPlay) {
+        m_mgrAUI.DetachPane(m_pTbPlay);
+        delete m_pTbPlay;
+        m_pTbPlay = (wxToolBar*)NULL;
+    }
+
+    // metronome toolbar
+    if (m_pTbMtr) {
+        m_mgrAUI.DetachPane(m_pTbMtr);
+        delete m_pTbMtr;
+        m_pTbMtr = (wxToolBar*)NULL;
+    }
 }
 
 void lmMainFrame::CreateNavigationToolBar()
@@ -869,6 +939,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 */
 void lmMainFrame::UpdateMenuAndToolbar()
 {
+    return;
     //default settings: everything disabled
     bool fPlay = false;         // menu Play
     bool fZoom = false;         // menu zoom, combo zoom
@@ -962,6 +1033,10 @@ void lmMainFrame::UpdateMenuAndToolbar()
 
 lmMainFrame::~lmMainFrame()
 {
+    // deinitialize the frame manager
+    m_mgrAUI.UnInit();
+
+
     if (m_pHelp) delete m_pHelp;
     if (m_pBookController) delete m_pBookController;
 
@@ -1561,6 +1636,19 @@ void lmMainFrame::OnPrintUI(wxUpdateUIEvent &event)
 {
     lmScoreView* pView = g_pTheApp->GetActiveView();
     event.Enable( (pView != (lmScoreView*)NULL) );
+}
+
+void lmMainFrame::OnEditUpdateUI(wxUpdateUIEvent &event)
+{
+    lmScoreView* pView = g_pTheApp->GetActiveView();
+    bool fEnable = (pView != (lmScoreView*)NULL);
+
+    // edit toolbar: copy, cut, paste
+    if (m_pTbEdit) {
+        m_pTbEdit->EnableTool(wxID_COPY, fEnable);
+        m_pTbEdit->EnableTool(wxID_CUT, fEnable);
+        m_pTbEdit->EnableTool(wxID_PASTE, fEnable);
+    }
 }
 
 

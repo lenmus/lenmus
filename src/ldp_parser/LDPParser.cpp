@@ -1404,12 +1404,12 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
 
     wxString sElmName = pNode->GetName();       //for error messages
-    wxASSERT(sElmName == m_pTags->TagName(_T("n"), _T("SingleChar")) ||
-             sElmName == m_pTags->TagName(_T("r"), _T("SingleChar")) ||
+    wxASSERT(sElmName.Left(1) == m_pTags->TagName(_T("n"), _T("SingleChar")) ||
+             sElmName.Left(1) == m_pTags->TagName(_T("r"), _T("SingleChar")) ||
              sElmName == _T("na") );
              //          --------  compatibility 1.3
 
-    bool fIsRest = (sElmName == m_pTags->TagName(_T("r"), _T("SingleChar")) );   //analysing a rest
+    bool fIsRest = (sElmName.Left(1) == m_pTags->TagName(_T("r"), _T("SingleChar")) );   //analysing a rest
     
     EStemType nStem = eDefaultStem;
     bool fBeamed = false;
@@ -1438,35 +1438,84 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     wxString sOctave = _T("4");
     EAccidentals nAccidentals = eNoAccidentals;
 
-
-    //get parameters
-    bool fInChord = !fIsRest && ( (pNode->GetName() == _T("na")) || fChord );
+    bool fInChord = !fIsRest && ( (m_nVersion < 105 && sElmName == _T("na")) || fChord );
     long nParms = pNode->GetNumParms();
-    if (fIsRest) {
-        if (nParms < 1) {
-            AnalysisError( _("Missing parameters in rest '%s'. Replaced by '(%s %s)'."),
-                pNode->ToString(), sElmName, m_pTags->TagName(_T("n"), _T("NoteType")) );
-            return pVStaff->AddRest(nNoteType, rDuration, fDotted, fDoubleDotted,
-                                    m_nCurStaff);
+
+    //get parameters for pitch and duration
+    int iP = 1;
+    wxString sPitch = _T("");
+    wxString sDuration = _T("");
+    if (m_nVersion >= 105 && sElmName.Length() > 1) {
+        //abbreviated notation. Split node name
+        int i;
+        wxChar sChar; 
+        for (i=1; i < (int)sElmName.Length(); i++)
+        {
+            sChar = sElmName.GetChar(i);
+            if (sChar == _T('-') ||
+                sChar == _T('+') ||
+                sChar == _T('=') ||
+                sChar == _T('x') )
+            {
+                //accidental
+                sPitch += sChar;
+            }
+            else if ( (sElmName.Mid(i, 1)).IsNumber()) {
+                //octave
+                sPitch += sChar;
+                i++;
+                break;
+            }
+            else {
+                //note name
+                sPitch += sChar;
+            }
         }
+
+        //remaining string is Duration
+        sDuration = sElmName.Mid(i);
+
+        iP = 1;
     }
     else {
-        if (nParms < 2) {
-            AnalysisError( _("Missing parameters in note '%s'. Assumed (%s c4 %s)."),
-                pNode->ToString(), sElmName, m_pTags->TagName(_T("n"), _T("NoteType")) );
-            return pVStaff->AddNote(false,    //relative pitch
-                                    _T("c"), _T("4"), _T("0"), nAccidentals,
-                                    nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff,
-                                    fBeamed, BeamInfo, fInChord, fTie, nStem);
+        //full notation. Get parameters
+        if (fIsRest) {
+            if (nParms < 1) {
+                AnalysisError( _("Missing parameters in rest '%s'. Replaced by '(%s %s)'."),
+                    pNode->ToString(), sElmName, m_pTags->TagName(_T("n"), _T("NoteType")) );
+                return pVStaff->AddRest(nNoteType, rDuration, fDotted, fDoubleDotted,
+                                        m_nCurStaff);
+            }
+        }
+        else {
+            if (nParms < 2) {
+                AnalysisError( _("Missing parameters in note '%s'. Assumed (%s c4 %s)."),
+                    pNode->ToString(), sElmName, m_pTags->TagName(_T("n"), _T("NoteType")) );
+                return pVStaff->AddNote(false,    //relative pitch
+                                        _T("c"), _T("4"), _T("0"), nAccidentals,
+                                        nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff,
+                                        fBeamed, BeamInfo, fInChord, fTie, nStem);
+            }
+        }
+
+        //get pitch and duration parameters
+        if (fIsRest) {
+           // for rests, first parameter is duration
+            sDuration = (pNode->GetParameter(1))->GetName();
+            sPitch = wxEmptyString;
+            iP = 2;
+        }
+        else {
+             //for notes: first one is pitch and accidentals, second one duration
+            sPitch = (pNode->GetParameter(1))->GetName();
+            sDuration = (pNode->GetParameter(2))->GetName();
+            iP = 3;
         }
     }
 
-    int iP = 1;     //index to parameter to process
    
-    //for notes: analyse first parameter (pitch and accidentals)
-    wxString sPitch;
+    //for notes: analyse pitch and accidentals
     if (!fIsRest) {
-        sPitch = (pNode->GetParameter(iP))->GetName();
         if (sPitch.IsNumber()) {
             //if sPitch is a number it represents a MIDI pitch in C major key signature.
             lmConverter oConverter;
@@ -1475,19 +1524,16 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             sPitch = oConverter.MidiPitchToLDPName((lmPitch)nMidi);
         }
         if (LDPDataToPitch(sPitch, &nAccidentals, &sStep, &sOctave)) {
-            AnalysisError( _("Unknown note pitch in '%s'. Assumed 'c4'."),
-                pNode->ToString() );
+            AnalysisError( _("Unknown note pitch '%s'. Assumed 'c4'."),
+                sPitch );
         }
-        iP++;
     }
 
     //analyze duration and dots
-    wxString sDuration = (pNode->GetParameter(iP))->GetName();
     if (AnalyzeNoteType(sDuration, &nNoteType, &fDotted, &fDoubleDotted)) {
-        AnalysisError( _("Note type unknown in '%s'. A quarter note assumed."),
-            pNode->ToString() );
+        AnalysisError( _("Unknown note/rest duration '%s'. A quarter note assumed."),
+            sDuration );
     }
-    iP++;
     
     //analyze remaining parameters: annotations
 //    Dim nCalderon As ECalderon

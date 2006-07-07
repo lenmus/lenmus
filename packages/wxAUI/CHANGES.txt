@@ -1,0 +1,13 @@
+
+wxAUI 0.9.1 - Changes since 0.9.0
+---------------------------------
+
+  * Support added for MDI frames
+  * Screen artifacts/paint problems fixed
+  * Gradient Captions Option
+  * Active/Inactive Panes Option
+  * Bug fixed with hiding/showing floated windows
+  * Floating Pane sizing fixes
+  * Drop position fixes when dragging around center pane margins
+  * Switched to LF-only text file format for source code
+  * 64-bit fixes

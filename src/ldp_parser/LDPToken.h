@@ -64,11 +64,15 @@ private:
 
 };
 
+#include "wx/dynarray.h"
+WX_DEFINE_ARRAY(lmLDPToken*, ArrayTokenPtrs);
+
+
 class lmLDPTokenBuilder
 {
 public:
     lmLDPTokenBuilder(lmLDPParser* pParser);
-    ~lmLDPTokenBuilder() {}
+    ~lmLDPTokenBuilder();
 
     void RepeatToken() { m_fRepeatToken = true; }
     lmLDPToken* ReadToken();
@@ -81,6 +85,9 @@ private:
     bool        IsLetter(wxChar ch);
     bool        IsNumber(wxChar ch);
     void        ParseNewToken();
+    void        PushToken(ETokenType nType, wxString sValue);
+    bool        PopToken();
+
 
 
     lmLDPParser*    m_pParser;        //parser using this token builder
@@ -95,13 +102,18 @@ private:
     long        m_maxPos;       // buffer size - 1 = maximum value for m_lastPos
     wxChar      m_curChar;      // character being processed. It is read by GNC()
 
+    //stack of parsed tokens
+    ArrayTokenPtrs      m_cPending;
+
+
     //to deal with compact notation [  name:value  -->  (name value)  ]
     bool        m_fEndOfElementPending;
     bool        m_fValuePartPending;
     bool        m_fNamePartPending;
     lmLDPToken  m_tokenNamePart;
 
-
+    //to deal with abbreviated notation [ (n c4 q t3) --> nc4q,t3 ]
+    bool        m_fAbbreviated;     
 
 };
     

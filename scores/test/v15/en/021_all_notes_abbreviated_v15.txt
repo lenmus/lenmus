@@ -1,0 +1,17 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument
+      (musicData
+         (clef treble)
+         (key C)
+         (time 4 4)
+         na3e nb3s nc4t nd4x ne4o nf4e ng4s na4s
+         nb4e nc5s nd5t ne5x nf5x ng5e na5s nb5s
+         (barline)
+         
+         na5w (barline)
+         nc5h nc4q nc5q (barline end)
+      )
+   )
+)
+

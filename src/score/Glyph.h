@@ -78,8 +78,10 @@ enum lmEGlyphIndex {
     GLYPH_32ND_NOTE_UP,
     GLYPH_64TH_NOTE_DOWN,   //64th, semifusa 
     GLYPH_64TH_NOTE_UP,
-    ////! @todo,    //128th garrapatea
-    ////! @todo,    //256th semigarrapatea
+    GLYPH_128TH_NOTE_DOWN,  //128th garrapatea
+    GLYPH_128TH_NOTE_UP,
+    GLYPH_256TH_NOTE_DOWN,  //256th semigarrapatea 
+    GLYPH_256TH_NOTE_UP,
 
     // rests
     ////! @todo    //larga

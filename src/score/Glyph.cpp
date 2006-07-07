@@ -76,6 +76,10 @@ const lmGlyph aGlyphsInfo[] =
     lmGlyph(_T('S'), -10,     20,     45,    _T("32nd note, flag top")) ,
     lmGlyph(_T('Y'),  30,     15,     60,    _T("64th note, flag bottom")) , 
     lmGlyph(_T('T'), -10,     20,     45,    _T("64th note, flag top")),
+    lmGlyph(_T('Y'),  30,     15,     60,    _T("128th note, flag bottom")) ,   //! @todo: glyph and rectangle
+    lmGlyph(_T('T'), -10,     20,     45,    _T("128th note, flag top")),       //! @todo: glyph and rectangle
+    lmGlyph(_T('Y'),  30,     15,     60,    _T("256th note, flag bottom")) ,   //! @todo: glyph and rectangle 
+    lmGlyph(_T('T'), -10,     20,     45,    _T("256th note, flag top")),       //! @todo: glyph and rectangle
 
 // rests (LeMus font)
     //                       sel rectangle

@@ -79,8 +79,8 @@ LenMus project philosophy (to remind me to always stay on this):
   Tasks for release 3.1
   ------------------------
     - LDP internationalization. Review current tags:
-		- (?) english note names: use numbers (8, 16, 32, 128, ...)
-		- (?) include abbreviated notation for notes and rests
+		- note/rest duration: use numbers ('8, '16, '32, '128, ...)
+		- AnalyzeNoteRest: inherit octave, duration
 		- review notation names (l-tied, g-beamed, t-tuplet,...)
 		- review staff number in notes, rests and clefs (px)
 		
@@ -92,6 +92,7 @@ LenMus project philosophy (to remind me to always stay on this):
     - prepare score samples
     - re-structure LDP manual: more didactical
     - Font glyphs: for 128th and 256th notes. Clefs 8va.
+    - Glyphs: complete all notes and rests
     - Prepare UpdateData.xml file
     
     Bugs:

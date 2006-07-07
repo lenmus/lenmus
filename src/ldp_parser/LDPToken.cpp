@@ -47,24 +47,25 @@
 
 
 
-//constants for comparation
-const wxChar chTab = _T('\t');
-const wxChar chSpace = _T(' ');
+//constants for comparations
 const wxChar chApostrophe = _T('\'');
-const wxChar chOpenParenthesis = _T('(');
 const wxChar chCloseParenthesis = _T(')');
-const wxChar chSlash = _T('/');
-const wxChar chUnderscore = _T('_');
-const wxChar chDot = _T('.');
-const wxChar chPlusSign = _T('+');
-const wxChar chMinusSign = _T('-');
-const wxChar chEqualSign = _T('=');
-const wxChar chQuotes = _T('"');
-const wxChar chLowerSign = _T('<');
-const wxChar chGreaterSign = _T('>');
-const wxChar chDollar = _T('$');
-const wxChar chSharp = _T('#');
 const wxChar chColon = _T(':');
+const wxChar chComma = _T(',');
+const wxChar chDollar = _T('$');
+const wxChar chDot = _T('.');
+const wxChar chEqualSign = _T('=');
+const wxChar chGreaterSign = _T('>');
+const wxChar chLowerSign = _T('<');
+const wxChar chMinusSign = _T('-');
+const wxChar chOpenParenthesis = _T('(');
+const wxChar chPlusSign = _T('+');
+const wxChar chQuotes = _T('"');
+const wxChar chSharp = _T('#');
+const wxChar chSlash = _T('/');
+const wxChar chSpace = _T(' ');
+const wxChar chTab = _T('\t');
+const wxChar chUnderscore = _T('_');
 
 
 const wxChar nEOF = _T('\x03');        //ETX
@@ -87,25 +88,25 @@ wxString lmLDPToken::GetDescription()
 {
     switch (m_Type) {
         case tkLabel:
-            return _T("Etiqueta");
+            return _T("Label");
         case tkEndOfElement:
-            return _T("Fin de Elemento");
+            return _T("End of Element");
         case tkStartOfElement:
-            return _T("Inicio de Elemento");
+            return _T("Start of Element");
         case tkSpaces:
-            return _T("Espacio");
+            return _T("Space");
         case tkIntegerNumber:
-            return _T("Número entero");
+            return _T("Integer Number");
         case tkRealNumber:
-            return _T("Número punto fijo");
+            return _T("Real Number");
         case tkComment:
-            return _T("Comentario");
+            return _T("Comment");
         case tkString:
             return _T("String");
         case tkEndOfFile:
             return _T("EOF");
         default:
-            return wxString::Format(_T("TipoErroneo<%d>"), m_Type);
+            return wxString::Format(_T("Bad type <%d>"), m_Type);
             //wxASSERT(false);
     }
 
@@ -127,12 +128,46 @@ lmLDPTokenBuilder::lmLDPTokenBuilder(lmLDPParser* pParser)
     m_fRepeatToken = false;
     m_sInBuf = _T("");            // no buffer read
 
-    //to deal with compact notation
+    //to deal with compact notation [ name:value --> (name value) ]
     m_fEndOfElementPending = false;
     m_fNamePartPending = false;
     m_fValuePartPending = false;
+
+    //to deal with abbreviated notation [ (n c4 q t3) --> nc4q,t3 ]
+    m_fAbbreviated = false;
 }
 
+lmLDPTokenBuilder::~lmLDPTokenBuilder()
+{
+    //delete tokens in pending array
+    int i = m_cPending.GetCount();
+    for(; i > 0; i--) {
+        delete m_cPending.Item(i-1);
+        m_cPending.RemoveAt(i-1);
+    }
+}
+
+void lmLDPTokenBuilder::PushToken(ETokenType nType, wxString sValue)
+{
+    //create a token and add it to the pending array
+    lmLDPToken* pT = new lmLDPToken;
+    pT->Set(nType, sValue);
+    m_cPending.Add(pT);
+}
+
+bool lmLDPTokenBuilder::PopToken()
+{
+    //returns true if a token is returned
+    int i = m_cPending.GetCount();
+    if (i > 0) {
+        m_token = *(m_cPending.Item(i-1));
+        delete m_cPending.Item(i-1);
+        m_cPending.RemoveAt(i-1);
+        return true;
+    }
+    else
+        return false;
+}
 
 lmLDPToken* lmLDPTokenBuilder::ReadToken()
 {
@@ -141,6 +176,9 @@ lmLDPToken* lmLDPTokenBuilder::ReadToken()
         m_fRepeatToken = false;
         return &m_token;
     }
+
+    //return any pending token
+    if (PopToken()) return &m_token;
 
     // To deal with compact notation [ name:value --> (name value) ]
     if (m_fEndOfElementPending) {
@@ -280,6 +318,11 @@ void lmLDPTokenBuilder::ParseNewToken()
                             m_token.Set(tkEndOfElement, chCloseParenthesis);
                             return;
                         case chSpace:
+                            if (m_fAbbreviated) {
+                                m_fAbbreviated = false;
+                                m_token.Set(tkEndOfElement, chCloseParenthesis);
+                                return;
+                            }
                             nState = FT_SPC01;
                             break;
                         case chSlash:
@@ -304,6 +347,13 @@ void lmLDPTokenBuilder::ParseNewToken()
                             return;
                         case chLowerSign:
                             nState = FT_EOF01;
+                            break;
+                        case chComma:
+                            if (m_fAbbreviated) {
+                                m_token.Set(tkSpaces, chSpace);
+                                return;
+                            }
+                            nState = FT_Error;
                             break;
                         default:
                             nState = FT_Error;
@@ -430,6 +480,14 @@ void lmLDPTokenBuilder::ParseNewToken()
                     m_fNamePartPending = true;
                     m_tokenNamePart.Set(tkLabel, Extract(iStart, m_lastPos-1));
                     m_token.Set(tkStartOfElement, chOpenParenthesis);
+                    return;
+                }
+                else if (m_curChar == chComma) {
+                    //abbreviated notation [ (n c4 q t3) --> nc4q,t3 ]
+                    //found the first comma. Token is the previous string
+                    m_fAbbreviated = true;
+                    m_token.Set(tkStartOfElement, chOpenParenthesis);
+                    PushToken(tkLabel, Extract(iStart, m_lastPos-1));
                     return;
                 }
                 else {
