@@ -47,6 +47,8 @@
 //const wxString CHAR_CODA = _T("-");
 //const wxString CHAR_SEGNO = _T(",");
 //const wxString CHAR_OCTAVA = _T(">");
+//const wxString CHAR_FERMATA_OVER = _T(";");
+//const wxString CHAR_FERMATA_UNDER = _T("<");
 
 
 // offset:  the y-axis offset from bitmap rectangle to the selection rectangle origin
@@ -64,6 +66,8 @@ const lmGlyph aGlyphsInfo[] =
 // notes and notheads (LeMus font)
     //                       sel rectangle
     //       Glyph   offset  shift   height 
+    lmGlyph(_T('?'), -20,     30,     5,     _T("Longa note")) ,
+    lmGlyph(_T('?'), -20,     30,     5,     _T("Breve note")) ,
     lmGlyph(_T('N'),  10,     55,     10,    _T("Whole note")) , 
     lmGlyph(_T('O'),  10,     55,     10,    _T("Half note")) , 
     lmGlyph(_T('P'),  10,     55,     10,    _T("Quarter note notehead")) , 
@@ -76,16 +80,16 @@ const lmGlyph aGlyphsInfo[] =
     lmGlyph(_T('S'), -10,     20,     45,    _T("32nd note, flag top")) ,
     lmGlyph(_T('Y'),  30,     15,     60,    _T("64th note, flag bottom")) , 
     lmGlyph(_T('T'), -10,     20,     45,    _T("64th note, flag top")),
-    lmGlyph(_T('Y'),  30,     15,     60,    _T("128th note, flag bottom")) ,   //! @todo: glyph and rectangle
-    lmGlyph(_T('T'), -10,     20,     45,    _T("128th note, flag top")),       //! @todo: glyph and rectangle
-    lmGlyph(_T('Y'),  30,     15,     60,    _T("256th note, flag bottom")) ,   //! @todo: glyph and rectangle 
-    lmGlyph(_T('T'), -10,     20,     45,    _T("256th note, flag top")),       //! @todo: glyph and rectangle
+    lmGlyph(_T('?'),  30,     15,     60,    _T("128th note, flag bottom")) ,
+    lmGlyph(_T('?'), -10,     20,     45,    _T("128th note, flag top")),    
+    lmGlyph(_T('?'),  30,     15,     60,    _T("256th note, flag bottom")) ,
+    lmGlyph(_T('?'), -10,     20,     45,    _T("256th note, flag top")),    
 
 // rests (LeMus font)
     //                       sel rectangle
     //       Glyph   offset  shift   height 
-//  lmGlyph(_T('?'), -20,     30,     5,     _T("Long rest")) ,     //larga
-//  lmGlyph(_T('?'), -20,     30,     5,     _T("Breve rest")) ,    //breve, cuadrada
+    lmGlyph(_T('?'), -20,     30,     5,     _T("Longa rest")) ,     //larga
+    lmGlyph(_T('?'), -20,     30,     5,     _T("Breve rest")) ,    //breve, cuadrada
     lmGlyph(_T('{'), -20,     30,     5,     _T("Whole rest")) ,    //whole redonda
     lmGlyph(_T('z'), -20,     35,     5,     _T("Half rest")) ,     //half blanca
     lmGlyph(_T('y'), -15,     20,     30,    _T("Quarter rest")) ,  //quarter negra
@@ -93,8 +97,8 @@ const lmGlyph aGlyphsInfo[] =
     lmGlyph(_T('w'),  -7,     18,     30,    _T("16th rest")) ,     //16th semicorchea
     lmGlyph(_T('v'),  -7,     10,     40,    _T("32nd rest")) ,     //32nd fusa
     lmGlyph(_T('u'), -25,     25,     40,    _T("64th rest")) ,     //64th semifusa
-//  lmGlyph(_T('?'), -20,     30,     5,     _T("128th rest")) ,    //128th garrapatea
-//  lmGlyph(_T('?'), -20,     30,     5,     _T("256th rest")) ,    //256th semigarrapatea
+    lmGlyph(_T('?'), -20,     30,     5,     _T("128th rest")) ,    //128th garrapatea
+    lmGlyph(_T('?'), -20,     30,     5,     _T("256th rest")) ,    //256th semigarrapatea
 
 //flags for notes.
     //  shift and height info is no needed
@@ -123,6 +127,15 @@ const lmGlyph aGlyphsInfo[] =
     lmGlyph(_T('%'),  10,     40,     27,    _T("Flat accidental")) ,
     lmGlyph(_T('$'),  10,     54,     11,    _T("Double sharp accidental")) ,
     lmGlyph(_T('&'),  10,     40,     27,    _T("Double flat accidental")) ,
+
+
+//clefs
+    //                       sel rectangle
+    //       Glyph   offset  shift   height 
+    lmGlyph(_T('A'), -20,      5,     73,    _T("G clef")) ,
+    lmGlyph(_T('B'), -20,     20,     35,    _T("F clef")) ,
+    lmGlyph(_T('C'), -20,     40,     40,    _T("C clef")) ,
+    lmGlyph(_T('G'), -19,     20,     35,    _T("No clef")) ,
 
 
 };

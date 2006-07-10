@@ -104,18 +104,19 @@ enum EBeamType {
 /*!
 This definition of note type has the following properties:
 @verbatim
-   a)  2 ^ (NoteType - 1)   is the number used as divider in the American English name
+   a)  2 ^ (NoteType - 2)   is the number used as divider in the American English name
                             of the note. Examples:
-                                crochet (quarter) = 2^(3-1) = 4
-                                quaver (eighth) = 2^(4-1) = 8
-   b)  2 ^ (9 - NoteType)   is the note's duration, relative to the shortest note (256th).
-                            So the longest one (long, breve, cuadrada) last 512 units and
+                                crochet (quarter) = 2^(4-2) = 4
+                                quaver (eighth) = 2^(5-2) = 8
+   b)  2 ^ (10 - NoteType)  is the note's duration, relative to the shortest note (256th).
+                            So the longest one (longa) last 1024 units and
                             the shortest one (256th, semigarrapatea) last 1 unit.
 @endverbatim
 */
 enum ENoteType
 {
-    eLong = 0,      // es: cuadrada,        en-UK: breve                    en-USA: double whole
+    eLonga = 0,     // es: longa            en-UK: longa                    en-USA: long
+    eBreve,         // es: breve, cuadrada  en-UK: breve                    en-USA: double whole
     eWhole,         // es: redonda,         en-UK: semibreve                en_USA: whole
     eHalf,          // es: blanca,          en-UK: minim                    en_USA: half
     eQuarter,       // es: negra,           en-UK: crochet                  en_USA: quarter
@@ -130,8 +131,9 @@ enum ENoteType
 // to facilitate access to standard notes' duration. 
 enum ENoteDuration
 {
-    eLongDottedDuration = 768,
-    eLongDuration = 512,
+    eLongaDuration = 1024,
+    eBreveDottedDuration = 768,
+    eBreveDuration = 512,
     eWholeDottedDuration = 384,
     eWholeDuration = 256,
     eHalfDottedDuration = 192,

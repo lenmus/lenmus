@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Interval.cpp,v 1.4 2006/03/03 14:59:45 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -38,6 +37,10 @@
 #include "Conversion.h"
 #include "../exercises/Generators.h"
 
+//access to error's logger
+#include "../app/Logger.h"
+extern lmLogger* g_pLogger;
+
 
 
 static wxString sIntervalName[16];
@@ -69,11 +72,11 @@ lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax,
 
     bool fAscending = ((nDir == edi_Ascending || nDir == edi_Both) && (rand() & 0x01));
     //dbg------------------------------------------------------
-    wxLogMessage(wxString::Format(_T("Posibles (nDir) = %s, %s, %s\n"), 
+    g_pLogger->LogTrace(_T("lmInterval"), _T("Posibles (nDir) = %s, %s, %s\n"), 
                     (nDir == edi_Ascending ? _T("Ascendentes") : 
                         (nDir==edi_Both ? _T("Ambos") : _T("Descendentes"))),
                     (fAscending ? _T("Ascendente") : _T("Descendente")),
-                    (fDiatonic ? _T("Diatónico") : _T("Cromático") ) ));
+                    (fDiatonic ? _T("Diatónico") : _T("Cromático") ) );
     //end dbg------------------------------------------------
     
     m_nKey = nKey;
@@ -83,8 +86,8 @@ lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax,
     int ntMidiMax = lmConverter::PitchToMidiPitch(ntDiatMax);
     int nRange = ntMidiMax - ntMidiMin;
     wxArrayInt nValidNotes;       //to store the midi notes that can be used
-    wxLogMessage(wxString::Format(_T("MidiMin=%d, MidiMax=%d\n"), 
-            ntMidiMin, ntMidiMax) );
+    g_pLogger->LogTrace(_T("lmInterval"), _T("MidiMin=%d, MidiMax=%d\n"), 
+                        ntMidiMin, ntMidiMax);
     
     //compute allowed intervals for that range of notes
     int nMaxIntv = nRange;
@@ -100,7 +103,7 @@ lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax,
         }
     }
     sDbgMsg += _T("\n");
-    wxLogMessage(sDbgMsg);
+    g_pLogger->LogTrace(_T("lmInterval"), sDbgMsg);
     if (nNumIntv == 0) {
         wxMessageBox( _T("No puede generarse ningún intervalo. El ámbito es menor que el primer intervalo permitido") );
         m_ntMidi1 = 60;
@@ -125,7 +128,7 @@ lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax,
         for (int kk = 0; kk < nNumIntv; kk++) {
             sDbgMsg += wxString::Format(_T(" %d,"), nAllowedIntv[kk] );
         }
-        wxLogMessage(sDbgMsg);
+        g_pLogger->LogTrace(_T("lmInterval"), sDbgMsg);
         //end dbg --------------------------------------------
         
         //Select a random interval. This is the first thing to do in order that all intervals
@@ -134,7 +137,8 @@ lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax,
         //
         iSel = oGen.RandomNumber(0, nNumIntv - 1);
         nSelIntv = nAllowedIntv[iSel];
-        wxLogMessage(wxString::Format(_T("Intv iSel: isel= %d, Intv= %d\n"), iSel, nSelIntv));
+        g_pLogger->LogTrace(_T("lmInterval"), _T("Intv iSel: isel= %d, Intv= %d\n"),
+                            iSel, nSelIntv);
 
         //Now determine valid notes to start the choosen interval
         nNumValidNotes = 0;
@@ -162,7 +166,7 @@ lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax,
                 sDbgMsg += _T("+");
             }
         }
-        wxLogMessage(sDbgMsg);
+        g_pLogger->LogTrace(_T("lmInterval"), sDbgMsg);
     
         if (nNumValidNotes > 0) {
             //There is at least one note starting note.
@@ -204,7 +208,7 @@ lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax,
     for (int kk = 0; kk < nNumValidNotes; kk++) {
         sDbgMsg += wxString::Format(_T(" %d,"), nValidNotes[kk] );
     }
-    wxLogMessage(sDbgMsg);
+    g_pLogger->LogTrace(_T("lmInterval"), sDbgMsg);
     //end dbg --------------------------------------------
         
     i = oGen.RandomNumber(0, nNumValidNotes - 1);
@@ -215,8 +219,8 @@ lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax,
     } else {
         m_ntMidi2 = m_ntMidi1 - nSelIntv;
     }
-    wxLogMessage(wxString::Format(_T("i=%d, ntMidi1=%d, ntMidi2=%d\n"),
-        i, m_ntMidi1, m_ntMidi2) );
+    g_pLogger->LogTrace(_T("lmInterval"), _T("i=%d, ntMidi1=%d, ntMidi2=%d\n"),
+                        i, m_ntMidi1, m_ntMidi2);
     
     //Interval successfully generated. Prepare interval information
     wxASSERT( m_ntMidi1 > 11 && m_ntMidi2 > 11);

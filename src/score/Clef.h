@@ -31,6 +31,8 @@
 
 #include "wx/dc.h"
 
+#include "Glyph.h"
+
 //------------------------------------------------------------------------------------------------
 // lmClef object
 //------------------------------------------------------------------------------------------------
@@ -68,10 +70,8 @@ public:
 
 private:
     // get fixed measures and values that depend on key type
-    lmTenths GetSelRectHeight();
-    lmTenths GetSelRectShift();
     lmTenths GetGlyphOffset();
-    wxString GetLenMusChar();
+    lmEGlyphIndex GetGlyphIndex();
     lmLUnits DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);
 
         //variables

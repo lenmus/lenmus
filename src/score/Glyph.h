@@ -64,9 +64,9 @@ struct lmGlyph
 //indexes for the table
 enum lmEGlyphIndex {
     // notes and noteheads
-    ////! @todo    //larga
-    ////! @todo    //breve, cuadrada
-    GLYPH_NOTEHEAD_WHOLE = 0, 
+    GLYPH_LONGA_NOTE = 0,   //longa
+    GLYPH_BREVE_NOTE,       //breve, cuadrada
+    GLYPH_WHOLE_NOTE, 
     GLYPH_NOTEHEAD_HALF,    //half, blanca 
     GLYPH_NOTEHEAD_QUARTER, //quarter, negra 
     GLYPH_NOTEHEAD_CROSS,   //cross, aspa
@@ -84,8 +84,8 @@ enum lmEGlyphIndex {
     GLYPH_256TH_NOTE_UP,
 
     // rests
-    ////! @todo    //larga
-    ////! @todo    //breve, cuadrada
+    GLYPH_LONGA_REST,       //longa
+    GLYPH_BREVE_REST,       //breve, cuadrada
     GLYPH_WHOLE_REST,       //whole, redonda
     GLYPH_HALF_REST,        //half, blanca
     GLYPH_QUARTER_REST,     //quarter, negra
@@ -93,8 +93,8 @@ enum lmEGlyphIndex {
     GLYPH_16TH_REST,        //16th, semicorchea
     GLYPH_32ND_REST,        //32nd, fusa
     GLYPH_64TH_REST,        //64th, semifusa
-    ////! @todo,    //128th garrapatea
-    ////! @todo,    //256th semigarrapatea
+    GLYPH_128TH_REST,       //128th, garrapatea
+    GLYPH_256TH_REST,       //256th, semigarrapatea
 
     //note flags
     GLYPH_EIGHTH_FLAG_DOWN,     //eighth, corchea 
@@ -116,6 +116,14 @@ enum lmEGlyphIndex {
     GLYPH_FLAT_ACCIDENTAL,
     GLYPH_DOUBLE_SHARP_ACCIDENTAL,
     GLYPH_DOUBLE_FLAT_ACCIDENTAL,
+
+    //clefs
+    GLYPH_G_CLEF,
+    GLYPH_F_CLEF,
+    GLYPH_C_CLEF,
+    GLYPH_NO_CLEF,
+
+
 
 };
 

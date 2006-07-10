@@ -297,7 +297,9 @@ void lmNoteRest::AddMidiEvents(lmSoundManager* pSM, float rMeasureStartTime, int
 wxString lmNoteRest::GetLDPNoteType()
 {
     switch(m_nNoteType) {
-        case eLong:
+        case eLonga:
+            return _T("l");
+        case eBreve:
             return _T("d");
         case eWhole:
             return _T("r");
@@ -333,8 +335,10 @@ int LDPNoteTypeToEnumNoteType(wxString sNoteType)
 {
     wxChar cNoteType = sNoteType.GetChar(0);
     switch (cNoteType) {
+        case _T('l'):
+            return eLonga;
         case _T('d'):
-            return  eLong;
+            return  eBreve;
         case _T('r'):
             return  eWhole;
         case _T('b'):
@@ -385,7 +389,7 @@ float LDPNoteTypeToDuration(wxString sNoteType)
 float NoteTypeToDuration(ENoteType nNoteType, bool fDotted, bool fDoubleDotted)
 {
     //compute duration without modifiers
-    float rDuration = pow(2, (9 - nNoteType));
+    float rDuration = pow(2, (10 - nNoteType));
     
    //take dots into account
     if (fDotted) { rDuration *= 1.5; }

@@ -40,12 +40,6 @@
 #include "wx/image.h"
 #include "Score.h"
 
-//Font LeMus : characters to draw clefs
-#define CHAR_G_CLEF         _T("A")
-#define CHAR_F_CLEF         _T("B")
-#define CHAR_C_CLEF         _T("C")
-#define CHAR_NO_CLEF        _T("G")
-
 
 //-------------------------------------------------------------------------------------------------
 // lmClef object implementation
@@ -68,7 +62,8 @@ lmClef::lmClef(EClefType nClefType, lmVStaff* pStaff, int nNumStaff, bool fVisib
 // For portability it is necessary to implement dragging by means of bitmaps and wxDragImage
 wxBitmap* lmClef::GetBitmap(double rScale)
 {
-    wxString sGlyph = GetLenMusChar();
+    lmEGlyphIndex nGlyph = GetGlyphIndex();
+    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
     return PrepareBitMap(rScale, sGlyph);
 
 }
@@ -81,95 +76,46 @@ wxBitmap* lmClef::GetBitmap(double rScale)
 // positioned over a five-lines staff (units: tenths of inter-line space)
 lmTenths lmClef::GetGlyphOffset()
 {
-    lmTenths yOffset;
+    lmEGlyphIndex nGlyph = GetGlyphIndex();
+    lmTenths yOffset = aGlyphsInfo[nGlyph].GlyphOffset;
+
+    //add offset to move staff lines up/down
     switch(m_nClefType)
     {
-        case eclvSol: yOffset = -20;    break;
-        case eclvFa4: yOffset = -20;    break;
-        case eclvFa3: yOffset = -10;    break;
-        case eclvDo1: yOffset = -20;    break;
-        case eclvDo2: yOffset = -30;    break;
-        case eclvDo3: yOffset = -40;    break;
-        case eclvDo4: yOffset = -50;    break;
-        case eclvPercussion: yOffset =-19; break;
+        case eclvFa3: yOffset += 10;    break;
+        case eclvDo2: yOffset -= 10;    break;
+        case eclvDo3: yOffset -= 20;    break;
+        case eclvDo4: yOffset -= 30;    break;
+        //case eclvDo5: yOffset -= 20;    break;
         default:
-            yOffset = 0;
-            wxASSERT_MSG( false, _T("Invalid value for attribute m_nClefType"));
+            ;
     }
 
     return yOffset;
 
 }
 
-// returns the y-axis offset from bitmap rectangle to the selection rectangle origin
-// (units: tenths of inter-line space)
-lmTenths lmClef::GetSelRectShift()
+lmEGlyphIndex lmClef::GetGlyphIndex()
 {
-    lmTenths yOffset;
-    switch(m_nClefType)
-    {
-        case eclvSol: yOffset = 5; break;
-        case eclvFa4: yOffset = 20; break;
-        case eclvFa3: yOffset = 20;    break;
-        case eclvDo1: yOffset = 40;    break;
-        case eclvDo2: yOffset = 40;    break;
-        case eclvDo3: yOffset = 40;    break;
-        case eclvDo4: yOffset = 40;    break;
-        case eclvPercussion: yOffset = 20; break;
-        default:
-            yOffset = 0;
-            wxASSERT_MSG( false, _T("Invalid value for attribute m_nClefType"));
-    }
+    // returns the index (over global glyphs table) to the character to use to print 
+    // the clef (LenMus font)
 
-    return yOffset;
+    switch (m_nClefType) {
+        case eclvSol: return GLYPH_G_CLEF;
+        case eclvFa4: return GLYPH_F_CLEF;
+        case eclvFa3: return GLYPH_F_CLEF;
+        case eclvDo1: return GLYPH_C_CLEF;
+        case eclvDo2: return GLYPH_C_CLEF;
+        case eclvDo3: return GLYPH_C_CLEF;
+        case eclvDo4: return GLYPH_C_CLEF;
+        case eclvPercussion: return GLYPH_NO_CLEF;
+        default:
+            wxASSERT_MSG( false, _T("Invalid value for attribute m_nClefType"));
+            return GLYPH_G_CLEF;
+    }
 
 }
 
-// returns the height of the selection rectangle
-// units: tenths (tenths of inter-line space)
-lmTenths lmClef::GetSelRectHeight()
-{
-    lmTenths nHeight;
-    switch(m_nClefType)
-    {
-        case eclvSol: nHeight = 73; break;
-        case eclvFa4: nHeight = 35; break;
-        case eclvFa3: nHeight = 35;    break;
-        case eclvDo1: nHeight = 40;    break;
-        case eclvDo2: nHeight = 40;    break;
-        case eclvDo3: nHeight = 40;    break;
-        case eclvDo4: nHeight = 40;    break;
-        case eclvPercussion: nHeight = 35; break;
-        default:
-            nHeight = 100;
-            wxASSERT_MSG( false, _T("Invalid value for attribute m_nClefType"));
-    }
-
-    return nHeight;
-
-}
-
-wxString lmClef::GetLenMusChar()
-{
-    // returns the character to use to print the clef (LenMus font)
-
-    wxString sGlyph = CHAR_G_CLEF;
-    switch(m_nClefType)
-    {
-        case eclvSol: sGlyph = CHAR_G_CLEF; break;
-        case eclvFa4: sGlyph = CHAR_F_CLEF;    break;
-        case eclvFa3: sGlyph = CHAR_F_CLEF; break;
-        case eclvDo1: sGlyph = CHAR_C_CLEF; break;
-        case eclvDo2: sGlyph = CHAR_C_CLEF; break;
-        case eclvDo3: sGlyph = CHAR_C_CLEF; break;
-        case eclvDo4: sGlyph = CHAR_C_CLEF; break;
-        case eclvPercussion: sGlyph = CHAR_NO_CLEF; break;
-        default:
-            wxASSERT_MSG( false, _T("Invalid value for attribute m_nClefType"));
-    }
-
-    return sGlyph;
-}
 
 
 //-----------------------------------------------------------------------------------------
@@ -193,7 +139,10 @@ void lmClef::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
     if (!fMeasuring && m_fHidden) return;
 
-    if (fMeasuring) {
+    lmEGlyphIndex nGlyph;
+    if (fMeasuring)
+    {
+        nGlyph = GetGlyphIndex();
 
         // get the shift to the staff on which the clef must be drawn
         lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
@@ -209,9 +158,11 @@ void lmClef::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     if (fMeasuring) {
         // store selection rectangle measures and position (relative to m_paperPos)
         m_selRect.width = nWidth;
-        m_selRect.height = m_pVStaff->TenthsToLogical( GetSelRectHeight(), m_nStaffNum );
+        m_selRect.height = m_pVStaff->TenthsToLogical(
+                            aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
         m_selRect.x = m_glyphPos.x;
-        m_selRect.y = m_glyphPos.y + m_pVStaff->TenthsToLogical( GetSelRectShift(), m_nStaffNum );
+        m_selRect.y = m_glyphPos.y + m_pVStaff->TenthsToLogical(
+                            aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum );
 
         // set total width (incremented in one line for after space)
         m_nWidth = nWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
@@ -226,7 +177,8 @@ lmLUnits lmClef::DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     wxASSERT(pDC);
     pDC->SetFont(*m_pFont);
 
-    wxString sGlyph = GetLenMusChar();
+    lmEGlyphIndex nGlyph = GetGlyphIndex();
+    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
     if (fMeasuring) {
         lmLUnits width, height;
         pDC->GetTextExtent(sGlyph, &width, &height);
@@ -249,7 +201,8 @@ lmLUnits lmClef::DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC
 
     if (fMeasuring) return m_nWidth;
 
-    wxString sGlyph = GetLenMusChar();
+    lmEGlyphIndex nGlyph = GetGlyphIndex();
+    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
     pDC->SetFont(*m_pFont);
     pDC->SetTextForeground(colorC);
     pDC->DrawText(sGlyph, pos.x, pos.y + m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum ) );

@@ -305,7 +305,7 @@ void lmLDPTokenBuilder::ParseNewToken()
         switch (nState) {
             case FT_Start:
                 GNC();
-                if (IsLetter(m_curChar)) {
+                if (IsLetter(m_curChar) || m_curChar == chApostrophe) {
                     nState = FT_ETQ01;
                 } else if (IsNumber(m_curChar)) {
                     nState = FT_NUM01;
@@ -470,7 +470,7 @@ void lmLDPTokenBuilder::ParseNewToken()
                     m_curChar == chUnderscore || m_curChar == chDot ||
                     m_curChar == chPlusSign || m_curChar == chMinusSign ||
                     m_curChar == chSharp || m_curChar == chSlash ||
-                    m_curChar == chEqualSign )
+                    m_curChar == chEqualSign || m_curChar == chApostrophe )
                 {
                     nState = FT_ETQ01;
                 }

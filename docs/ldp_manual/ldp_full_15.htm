@@ -21,64 +21,42 @@ I have to write more and currently it only documents the minimum to start with t
 
 <h2><a name="TOC">Table of Contents</a></h2>
 
-<dl><dt>Part I: Introduction</dt>
-    <dt>1. <a href="#The_LDP_language">The LDP language</a></dt>
-    <dt>2. <a href="#a_very_simple_score">A very simple introductory score</a></dt>
-    <dt>3. <a href="#grammar_notation">Notation used</a></dt>
-    <dt><br /><br />Part II: detailed description</dt>
-    <dt>3. <a href="#description_score">The Score element</a></dt>
-    <dt>4. <a href="#description_Instrument">The Instrument element</a></dt>
-    <dt>5. <a href="#description_MusicData">The MusicData element</a></dt>
-    <dt>6. <a href="#description_Split">The Split element</a></dt>
-    <dd><dl>
-        <dt>6.1. <a href="#description_Clef">The Clef element</a></dt>
-        <dt>6.2. <a href="#description_Key">The Key element</a></dt>
-        <dt>6.3. <a href="#description_TimeSign">The Time element</a></dt>
-        <dt>6.4. <a href="#description_Barline">The Barline element</a></dt>
-        </dl></dd></dt>
-    <dt>8. <a href="#description_Notes_Rests">Notes, rests and chords</a>
-    <dd><dl>
-        <dt>8.1. <a href="#Pitch">Pitch</a></dt>
-        <dt>8.2. <a href="#description_Duration">Duration</a></dt>
-        </dl></dd></dt>
-    <dt>9. <a href="#description_Notation">Notations</a>
-    <dd><dl>
-        <dt>9.1. <a href="#description_Traditional_Notations">Traditional notations</a>
-        <dd><dl>
-            <dt>9.1.1. <a href="#beamed_group_notation">Beamed groups</a></dt>
-            <dt>9.1.2. <a href="#tuplet_notation">Tuplets</a></dt>
-            <dt>9.1.3. <a href="#tie_notation">Ties</a></dt>
-            <dt>9.1.4. <a href="#caesura_notation">Caesura</a></dt>
-            </dl></dd></dt>
-    </dl></dd></dt>
-
-    <dt>10. <a href="#FormattingTags">Tags to control format</a>
-        <dd><dl>
-            <dt>10.1. <a href="#newSystem">New system</a></dt>
-            <dt>10.2. <a href="#stem">Stem</a></dt>
-            </dl></dd>
-    </dt>
+<b>Introduction</b>
+<blockquote>
+<a href="#The_LDP_language">The LDP language</a><br />
+<a href="#a_very_simple_score">A very simple introductory score</a><br />
+<a href="#grammar_comments">Comments</a><br />
+<a href="#grammar_language">Language</a><br />
+<a href="#grammar_notation">Notation used</a><br />
+</blockquote>
 
 
-    <dt><br /><br />Annex I: Syntax rules in alphabetical order
-    <dd><dl>
-        <dt><a href="#rule_accidentals">Accidentals</a></dt>
-        <dt><a href="#rule_attribute">Attribute</a></dt>
-        <dt><a href="#rule_barline">Barline</a></dt>
-        <dt><a href="#rule_clef">Clef</a></dt>
-        <dt><a href="#rule_instrument">Instrument</a></dt>
-        <dt><a href="#rule_key">Key</a></dt>
-        <dt><a href="#rule_language">Language</a></dt>
-        <dt><a href="#rule_voice">Measure</a></dt>
-        <dt><a href="#rule_midi_pitch">MIDI_pitch</a></dt>
-        <dt><a href="#rule_note">note</a></dt>
-        <dt><a href="#rule_num_instruments">NumInstruments</a></dt>
-        <dt><a href="#rule_part">Music</a></dt>
-        <dt><a href="#rule_score">Score</a></dt>
-        <dt><a href="#rule_time_signature">Time signature</a></dt>
-        </dl></dt>
+<b>Detailed description</b>
+<blockquote>
+<a href="#description_score">The Score element</a><br />
+<a href="#description_Instrument">The Instrument element</a><br />
+<a href="#description_MusicData">The MusicData element</a><br />
+<a href="#description_Clef">The Clef element</a><br />
+<a href="#description_Key">The Key element</a><br />
+<a href="#description_TimeSign">The Time element</a><br />
+<a href="#description_Barline">The Barline element</a><br />
+<a href="#description_Notes_Rests">Notes, rests and chords</a>
+    <ul>
+    <li><a href="#Pitch">Pitch</a></li>
+    <li><a href="#description_Duration">Duration</a></li>
+    </ul>
+<a href="#description_Beamed_group">Beamed groups</a><br />
+<a href="#description_Tuplet">Tuplets</a><br />
+<a href="#description_Tie">Ties</a><br />
+<a href="#description_staff_number">Selecting the staff</a>
+</blockquote>
 
-</dl>
+<b>Elements to control format</b>
+<blockquote>
+<a href="#newSystem">New system</a><br />
+<a href="#stem">Stem</a><br />
+</blockquote>
+
 
 
 <h1>Part I. Introduction</h1>
@@ -257,7 +235,7 @@ writting <q class="example">(t + 5 6)</q> is equivalent to writing just
 </ul>
 
 
-<h2>Comments</h2>
+<h2><a name="grammar_comments">Comments</a></h2>
 <a href="#TOC">TOC</a>
 <p>To improve human legibility and understanding it is allowed to include comments.
 Two consecutive slash characters (//) will be interpreted as the start of a comment and
@@ -278,7 +256,7 @@ all text until the end of the line will be ignored. For example:</p>
 )
 </pre>
 
-<h2>Language</h2>
+<h2><a name="grammar_language">Language</a></h2>
 <a href="#TOC">TOC</a>
 <p>LDP supports to use a customized set of tags for each language, so if, for example,
 you would prefer to
@@ -763,7 +741,7 @@ For rests only its duration is needed.</p>
 </p>
 
 
-<h4>Pitch</h4>
+<h4><a href="pitch">Pitch</a></h4>
 
 
 <p>The pitch is represented by combining the note name, the octave and the accidentals.</p>
@@ -838,7 +816,7 @@ programs. <b>Possibly this feature will removed from the language in future vers
 
 -->
 
-<h4>Duration</h4>
+<h4><a href="duration">Duration</a></h4>
 
 <p>There are two possibilities two designate durations:</p>
 <ol>
@@ -856,11 +834,11 @@ followed by optional dots. This method is language dependent as a different set 
 can be defined for each supported language.</p>
 </li>
 </ol>
-<!--
+
 <p>Designating notes by numbers is only allowed for notes shorter or equal than
 a whole. For notes longer than
-a whole you must use the variables \longa and \breve</p>
--->
+a whole you must use the letter notation.</p>
+
 
 <p>Examples:</p>
 <pre class="example">
@@ -875,7 +853,8 @@ o       //also 128th note
 <center>
 <table class="grid">
     <tr><td class="grid">English US (English UK)</td></tr>
-    <tr><td class="grid">d - <b>d</b>ouble whole, long (breve)</td></tr>
+    <tr><td class="grid">l - <b>l</b>ong (longa)</td></tr>
+    <tr><td class="grid">d - <b>d</b>ouble whole (breve)</td></tr>
     <tr><td class="grid">w - <b>w</b>hole (semibreve)</td></tr>
     <tr><td class="grid">h - <b>h</b>alf (minim)</td></tr>
     <tr><td class="grid">q - <b>q</b>uarter (crochet)</td></tr>
@@ -883,7 +862,7 @@ o       //also 128th note
     <tr><td class="grid">s - <b>s</b>ixteenth, 16th (semiquaver)</td></tr>
     <tr><td class="grid">t - <b>3</b>2th (demisemiquaver)</td></tr>
     <tr><td class="grid">x - <b>6</b>4th (hemidemisemiquaver)</td></tr>
-    <tr><td class="grid">o - <b>1</b>28th (?)</td></tr>
+    <tr><td class="grid">o - <b>1</b>28th (semihemidemisemiquaver)</td></tr>
     <tr><td class="grid">f - 2<b>5</b>6th (?)</td></tr>
     </table>
 <!--
@@ -1033,10 +1012,15 @@ Score with two instruments, each one on its staff:
 
 
 <!--
+Single letter elements:
+
 Group 1: Very common, only for notes and rests.
 
     sp  en
     ===========================================
+    n   n   Note
+    s   r   Rest
+
     t   t   Tupla / Tuplet
     l   l   Ligado / Tie
     g   g   Grupo / Beamed group
@@ -1048,14 +1032,14 @@ Group 2: Very common, for notes, rests and clefs
 
     sp  en
     ===========================================
-    p   -   Pentagrama / Staff
+    p   p   Pentagrama / Staff
     -   -   Anotacion técnica
 
 
 Group 3: Less used. Long tags can be used
     sp  en
     ===========================================
-    s   -   Glissando
+    -   -   Glissando
     d   -   Dinámica
     r   -   Arpegiato
     np  -   No arpegiado
@@ -1069,6 +1053,8 @@ Group 3: Less used. Long tags can be used
 
 <!-- ==================================================================================================== -->
 <h2><a name="description_Tie">Ties</a></h2>
+<a href="#TOC">TOC</a>
+
 <p>A character <b>l</b> (lower case letter L) indicates the start of a tie
 that will end in the next coming note of the
 same voice, staff and pitch than the one on which this notation is included.
@@ -1100,6 +1086,8 @@ Example:</p>
 
 <!-- ==================================================================================================== -->
 <h2><a name="description_Beamed_group">Beamed groups</a></h2>
+<a href="#TOC">TOC</a>
+
 <p>When several consecutive notes have their stems beamed together this is coded by a notation
 <b>g</b> (group).  The first parameter is a plus sign (+) or a minus sign (-) to mean, respectively,
 that it is the start or the end of a group. After this sign other parameters are possible.
@@ -1119,6 +1107,7 @@ nc4q,g+ nde ne,g-
 
 <!-- ==================================================================================================== -->
 <h2><a name="description_Tuplet">Tuplets</a></h2>
+<a href="#TOC">TOC</a>
 
 <p>A tuplet is a group of notes whose duration is modified; normally a graphic element
 (a tuplet bracket and/or a number) marks this group of notes. The notes in a tuplet are
@@ -1204,6 +1193,8 @@ nc4s,g+,t3  nd  ne3,t-  nf4,t3  ng  na4,t-,g-
 
 <!-- ==================================================================================================== -->
 <h2><a name="description_staff_number">Selecting the staff</a></h2>
+<a href="#TOC">TOC</a>
+
 <p>When an instrument has several staves (e.g. the upper and lower staves in a grand-staff)
 it is necessary a mechanism to specify in which staff a note, rest, clef, or other must
 be placed. For this purpose, an element <b>p</b> is used.</p>

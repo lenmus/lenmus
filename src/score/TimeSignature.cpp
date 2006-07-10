@@ -372,18 +372,18 @@ float GetBeatDuration(int nBeatType)
 {
     switch(nBeatType) {
         case 1:    
-            return pow(2, (9 - eWhole));
+            return pow(2, (10 - eWhole));
         case 2:    
-            return pow(2, (9 - eHalf));
+            return pow(2, (10 - eHalf));
         case 4:    
-            return pow(2, (9 - eQuarter));
+            return pow(2, (10 - eQuarter));
         case 8:    
-            return (1.5 * pow(2, (9 - eQuarter)) );
+            return (1.5 * pow(2, (10 - eQuarter)) );
         case 16:    
-            return pow(2, (9 - eEighth));
+            return pow(2, (10 - eEighth));
         default:
             wxASSERT(false);
-            return pow(2, (9 - eQuarter));     //compiler happy and release version
+            return 0;     //compiler happy
     }    
 }
 

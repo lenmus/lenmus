@@ -54,7 +54,6 @@ extern lmMainFrame* g_pMainFrame;
 
 BEGIN_EVENT_TABLE(lmEditFrame, wxDocMDIChildFrame)
   EVT_SIZE(lmEditFrame::OnSize)
-  EVT_ACTIVATE(lmEditFrame::OnActivate)
 END_EVENT_TABLE()
 
 
@@ -74,14 +73,5 @@ void lmEditFrame::OnSize(wxSizeEvent& WXUNUSED(event))
 {
     //inform the view
     m_pView->ResizeControls();
-}
-
-void lmEditFrame::OnActivate(wxActivateEvent& event)
-{
-    //this window is being activated/deactivated
-    //Inform the parent frame to update menu and toolbar
-    //wxLogMessage(_T("[lmEditFrame::OnActivate] event.GetActive = %s"), (event.GetActive() ? _T("True") : _T("false")));
-    g_pMainFrame->UpdateMenuAndToolbar();
-
 }
 

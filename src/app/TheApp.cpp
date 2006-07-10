@@ -196,7 +196,7 @@ bool lmTheApp::OnInit(void)
     g_pLogger->DefineTraceMask(_T("lmComposer5"));
     g_pLogger->DefineTraceMask(_T("lmXMLParser"));
     g_pLogger->DefineTraceMask(_T("lmUpdater"));
-
+    g_pLogger->DefineTraceMask(_T("lmInterval"));
 
 
     // set information about this application
@@ -444,9 +444,6 @@ bool lmTheApp::OnInit(void)
 
     //program sound for metronome
     g_pMidiOut->ProgramChange(g_pMidi->MtrChannel(), g_pMidi->MtrInstr());
-
-    //enable/disable menu items
-    g_pMainFrame->UpdateMenuAndToolbar();
 
     // all initialization finished.
 	// check if the splash window display time is ellapsed and wait if not

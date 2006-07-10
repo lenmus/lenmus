@@ -45,7 +45,6 @@ public:
 
     // event handlers
     void OnSize(wxSizeEvent& WXUNUSED(event));
-    void OnActivate(wxActivateEvent& event);
 
 private:
     lmScoreView*        m_pView;    //the owner view of this frame

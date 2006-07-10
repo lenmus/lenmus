@@ -168,34 +168,6 @@ bool lmConverter::IsNaturalNote(lmPitch ntMidi, EKeySignatures nKey)
 
 
 
-//void GetTipoNotaFromLetra(ByVal sLetra As String) As ENoteType
-//    switch (UCase$(sLetra)
-//        case "D"
-//            GetTipoNotaFromLetra = eLong
-//        case "R"
-//            GetTipoNotaFromLetra = eWhole
-//        case "B"
-//            GetTipoNotaFromLetra = eHalf
-//        case "N"
-//            GetTipoNotaFromLetra = eQuarter
-//        case "C"
-//            GetTipoNotaFromLetra = eEighth
-//        case "S"
-//            GetTipoNotaFromLetra = e16th
-//        case "F"
-//            GetTipoNotaFromLetra = e32th
-//        case "M"
-//            GetTipoNotaFromLetra = e64th
-//        case "G"
-//            GetTipoNotaFromLetra = e128th
-//        case "P"
-//            GetTipoNotaFromLetra = e256th
-//        default:
-//            wxLogMessage(_T("[GetTipoNotaFromLetra]: Letra (" & sLetra & ") desconocida. Se devuelve negra"
-//            GetTipoNotaFromLetra = eQuarter
-//    }
-//            
-//}
 //void MetricaQueDura(nDur As Long) As ETimeSignature
 //    switch (nDur
 //        //métricas binarias
@@ -517,63 +489,6 @@ bool lmConverter::IsNaturalNote(lmPitch ntMidi, EKeySignatures nKey)
 //    
 //End Sub
 //
-////devuelve cero si letra desconocida. Puede venir con puntillos
-//void GetDuracionFromLetra(ByRef sLetra As String) As ENoteDuration
-//
-//    Dim nDur As Long
-//    
-//    switch (UCase$(Mid$(sLetra, 1, 1))
-//        case "D"
-//            nDur = eLongDuration
-//        case "R"
-//            nDur = eWholeDuration
-//        case "B"
-//            nDur = eHalfDuration
-//        case "N"
-//            nDur = eQuarterDuration
-//        case "C"
-//            nDur = eEighthDuration
-//        case "S"
-//            nDur = e16thDuration
-//        case "F"
-//            nDur = e32thDuration
-//        case "M"
-//            nDur = e64thDuration
-//        case "G"
-//            nDur = e128thDuration
-//        case "P"
-//            nDur = e256thDuration
-//        default:
-//            GetDuracionFromLetra = 0
-//            Exit Function
-//    }
-//    
-//    Dim i As Long
-//    i = Len(sLetra)
-//    if (i > 1 Then
-//        if (i = 2 Then
-//            if (Mid$(sLetra, 2, 1) = "." Then
-//                nDur = (nDur * 3) / 2       // x1.5
-//            Else
-//                GetDuracionFromLetra = 0
-//                Exit Function
-//            }
-//        ElseIf i = 3 Then
-//            if (Mid$(sLetra, 2, 2) = ".." Then
-//                nDur = (nDur * 7) / 4       // x1.75
-//            Else
-//                GetDuracionFromLetra = 0
-//                Exit Function
-//            }
-//        Else
-//            GetDuracionFromLetra = 0
-//            Exit Function
-//        }
-//    }
-//            
-//    GetDuracionFromLetra = nDur
-//
-//}
 
 /*! Returns the diatonic pitch that corresponds to the received MIDI pitch. It is assumed
     C major key signature.

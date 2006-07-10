@@ -988,9 +988,9 @@ bool lmXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
             else if (sType == _T("whole"))
                 nNoteType = eWhole;
             else if (sType == _T("breve"))
-                nNoteType = eLong;
-            //else if (sType == _T("long"))
-            //    nNoteType = etn???????;        //! @todo falta esta nota 
+                nNoteType = eBreve;
+            else if (sType == _T("long"))
+                nNoteType = eLonga;
             else
                 ParseError(
                     _("Parsing <%s>: unknown note type %s"),

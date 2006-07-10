@@ -89,6 +89,9 @@ lmLDPParser::lmLDPParser()
     m_nTextFontSize = 10; 
     m_nTextStyle = lmTEXT_NORMAL;
 
+    // default values for notes/rests octave and duration
+    m_sLastOctave = _T("4");                                        // octave 4
+    m_sLastDuration = m_pTags->TagName(_T("n"), _T("NoteType"));    // quarter note
 
 }
 
@@ -1447,6 +1450,8 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     wxString sDuration = _T("");
     if (m_nVersion >= 105 && sElmName.Length() > 1) {
         //abbreviated notation. Split node name
+        bool fPitchFound = false;
+        bool fOctaveFound = false;
         int i;
         wxChar sChar; 
         for (i=1; i < (int)sElmName.Length(); i++)
@@ -1462,18 +1467,34 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             }
             else if ( (sElmName.Mid(i, 1)).IsNumber()) {
                 //octave
+                fOctaveFound = true;
                 sPitch += sChar;
                 i++;
                 break;
             }
             else {
-                //note name
-                sPitch += sChar;
+                if (fPitchFound) {
+                    //octave not present. This is Duration 
+                    break;
+                }
+                else {
+                    //note step name
+                    sPitch += sChar;
+                    fPitchFound = true;
+                }
             }
         }
 
         //remaining string is Duration
-        sDuration = sElmName.Mid(i);
+        if (i >= (int)sElmName.Length()) {
+            //Duration not included. Inherit it
+            sDuration = m_sLastDuration;
+        }
+        else
+            sDuration = sElmName.Mid(i);
+
+        // inherit octave if not found
+        if (!fOctaveFound) sPitch += m_sLastOctave;
 
         iP = 1;
     }
@@ -1534,6 +1555,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         AnalysisError( _("Unknown note/rest duration '%s'. A quarter note assumed."),
             sDuration );
     }
+    m_sLastDuration = sDuration;
     
     //analyze remaining parameters: annotations
 //    Dim nCalderon As ECalderon
@@ -1558,27 +1580,113 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     //            case "C"        //Calderón
     //                nCalderon = eC_ConCalderon
     //                
-            if (sData == _T("l") && !fIsRest) {       //Tied to the next one
+            if (sData == m_pTags->TagName(_T("l"), _T("SingleChar")) && !fIsRest) {       //Tied to the next one
                 fTie = true;
             }
-            else if (sData == _T("g+")) {       //Start of beamed group. Simple parameter
-                //compute beaming level dependig on note type
-                nLevel = GetBeamingLevel(nNoteType);
-                if (nLevel == -1) {
-                    AnalysisError(
-                        _("Requesting beaming a note longer than eight. Beaming ignored."));
-                }
-                else {
-                    fBeamed = true;
-                    for (iLevel=0; iLevel <= nLevel; iLevel++) {
-                        BeamInfo[iLevel].Type = eBeamBegin;
-                        //wxLogMessage(wxString::Format(
-                        //    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamBegin"), iLevel));
+            else if (sData.Left(1) == m_pTags->TagName(_T("g"), _T("SingleChar")))
+            {
+                if (sData.Mid(1,1) == _T("+")) {       //Start of beamed group. Simple parameter
+                    //compute beaming level dependig on note type
+                    nLevel = GetBeamingLevel(nNoteType);
+                    if (nLevel == -1) {
+                        AnalysisError(
+                            _("Requesting beaming a note longer than eight. Beaming ignored."));
+                    }
+                    else {
+                        fBeamed = true;
+                        for (iLevel=0; iLevel <= nLevel; iLevel++) {
+                            BeamInfo[iLevel].Type = eBeamBegin;
+                            //wxLogMessage(wxString::Format(
+                            //    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamBegin"), iLevel));
+                        }
                     }
                 }
+
+                else if (sData.Mid(1,1) == _T("-")) {       //End of beamed group
+                    //allow to close the beamed group
+                    bool fCloseBeam = true;
+
+                    //! @todo   Beaming information only allowed in base note of chords
+                    //!         This program should move this information to base note
+                    //!         as this restriction is un-coherent with forcing the t- flag
+                    //!         to be in the last note of the chord.
+                    if (fInChord) {
+                        AnalysisError(
+                            _("Requesting ending a beaming a group in a note that is note the first one of a chord. Beaming ignored."));
+                        fCloseBeam = false;
+                    }
+
+                    //There must exist a previous note/rest
+                    if (!g_pLastNoteRest) {
+                        AnalysisError(
+                            _("Requesting ending a beaming a group but there is not a  previous note. Beaming ignored."));
+                        fCloseBeam = false;
+                    }
+                    else {
+                        // and the previous note must be beamed
+                        if (!g_pLastNoteRest->IsBeamed() || 
+                            g_pLastNoteRest->GetBeamType(0) == eBeamEnd) {
+                            AnalysisError(
+                                _("Requesting ending a beaming a group but previous note is not beamed. Beaming ignored."));
+                            fCloseBeam = false;
+                        }
+                    }
+
+                    //proceed to close all previous open levels
+                    if (fCloseBeam) {
+                        fBeamed = true;
+                        int nCurLevel = GetBeamingLevel(nNoteType);
+                        int nPrevLevel = GetBeamingLevel(g_pLastNoteRest->GetNoteType());
+
+                        // close commom levels (as this must be done in each if/else branch it has
+                        // been moved here to optimize. A commnet has been included there instead to
+                        // facilitate the understanding of the algorithm)
+                        for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++) {
+                            BeamInfo[iLevel].Type = eBeamEnd;
+                            g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                                _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamEnd"), iLevel);
+                        }
+
+                        // deal with differences between current note level and previous note level
+                        if (nCurLevel > nPrevLevel) {
+                            // current level is grater than previous one ==> 
+                            // close common levels (done) and put backward in current deeper levels
+                            for (; iLevel <= nCurLevel; iLevel++) {
+                                BeamInfo[iLevel].Type = eBeamBackward;
+                                g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                                    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamBackward"), iLevel);
+                            }
+                        }
+                        else if  (nCurLevel < nPrevLevel) {
+                            // current level is lower than previous one:
+                            // close common levels (done) and close deeper levels in previous note
+                            for (; iLevel <= nPrevLevel; iLevel++) {
+                                if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
+                                    g_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
+                                    g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                                        _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel);
+                                }
+                                else if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
+                                    g_pLastNoteRest->SetBeamType(iLevel, eBeamForward);
+                                    g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                                        _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamForward"), iLevel);
+                                }
+                            }
+                        }
+                        else {
+                            // current level is equal than previous one:
+                            // close common levels (done)
+                        }
+                    }
+                }
+
+                else {
+                    AnalysisError(_("Error: notation '%s' unknown. It will be ignored."), sData );
+                }
+
             }
 
-            else if (sData.Left(1) == _T("t")) {       //start/end of tuplet. Simple parameter (tn / t-)
+            else if (sData.Left(1) == m_pTags->TagName(_T("t"), _T("SingleChar"))) {       //start/end of tuplet. Simple parameter (tn / t-)
                 lmTupletBracket* pTuplet;
                 bool fOpenTuplet = (m_pTupletBracket ? false : true);
                 if (!AnalyzeTuplet(pX, sElmName, fOpenTuplet, !fOpenTuplet,
@@ -1596,84 +1704,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
             }
 
-            else if (sData == _T("g-")) {       //End of beamed group
-                //allow to close the beamed group
-                bool fCloseBeam = true;
-
-                //! @todo   Beaming information only allowed in base note of chords
-                //!         This program should move this information to base note
-                //!         as this restriction is un-coherent with forcing the t- flag
-                //!         to be in the last note of the chord.
-                if (fInChord) {
-                    AnalysisError(
-                        _("Requesting ending a beaming a group in a note that is note the first one of a chord. Beaming ignored."));
-                    fCloseBeam = false;
-                }
-
-                //There must exist a previous note/rest
-                if (!g_pLastNoteRest) {
-                    AnalysisError(
-                        _("Requesting ending a beaming a group but there is not a  previous note. Beaming ignored."));
-                    fCloseBeam = false;
-                }
-                else {
-                    // and the previous note must be beamed
-                    if (!g_pLastNoteRest->IsBeamed() || 
-                        g_pLastNoteRest->GetBeamType(0) == eBeamEnd) {
-                        AnalysisError(
-                            _("Requesting ending a beaming a group but previous note is not beamed. Beaming ignored."));
-                        fCloseBeam = false;
-                    }
-                }
-
-                //proceed to close all previous open levels
-                if (fCloseBeam) {
-                    fBeamed = true;
-                    int nCurLevel = GetBeamingLevel(nNoteType);
-                    int nPrevLevel = GetBeamingLevel(g_pLastNoteRest->GetNoteType());
-
-                    // close commom levels (as this must be done in each if/else branch it has
-                    // been moved here to optimize. A commnet has been included there instead to
-                    // facilitate the understanding of the algorithm)
-                    for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++) {
-                        BeamInfo[iLevel].Type = eBeamEnd;
-                        g_pLogger->LogTrace(_T("LDPParser_beams"), 
-                            _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamEnd"), iLevel);
-                    }
-
-                    // deal with differences between current note level and previous note level
-                    if (nCurLevel > nPrevLevel) {
-                        // current level is grater than previous one ==> 
-                        // close common levels (done) and put backward in current deeper levels
-                        for (; iLevel <= nCurLevel; iLevel++) {
-                            BeamInfo[iLevel].Type = eBeamBackward;
-                            g_pLogger->LogTrace(_T("LDPParser_beams"), 
-                                _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamBackward"), iLevel);
-                        }
-                    }
-                    else if  (nCurLevel < nPrevLevel) {
-                        // current level is lower than previous one:
-                        // close common levels (done) and close deeper levels in previous note
-                        for (; iLevel <= nPrevLevel; iLevel++) {
-                            if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
-                                g_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
-                                g_pLogger->LogTrace(_T("LDPParser_beams"), 
-                                    _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel);
-                            }
-                            else if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
-                                g_pLastNoteRest->SetBeamType(iLevel, eBeamForward);
-                                g_pLogger->LogTrace(_T("LDPParser_beams"), 
-                                    _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamForward"), iLevel);
-                            }
-                        }
-                    }
-                    else {
-                        // current level is equal than previous one:
-                        // close common levels (done)
-                    }
-                }
-            }
-            else if (sData.Left(1) == _T("p")) {       //staff number
+            else if (sData.Left(1) == m_pTags->TagName(_T("p"), _T("SingleChar"))) {       //staff number
                 m_nCurStaff = AnalyzeNumStaff(sData);
             }
             else {
@@ -1687,7 +1718,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             // Analysis of compound notations
             //
             sData = pX->GetName();
-            if (sData == _T("g")) {       //Start of group element
+            if (sData == m_pTags->TagName(_T("g"), _T("SingleChar")) ) {       //Start of group element
                 AnalysisError(_("Notation '%s' unknown or not implemented. Old (g + t3) syntax?"), sData);
             }
             else if (sData == m_pTags->TagName(_T("stem")) ) {       //stem attributes
@@ -1776,6 +1807,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                                sStep, sOctave, _T("0"), nAccidentals,
                                nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff, 
                                fBeamed, BeamInfo, fInChord, fTie, nStem);
+        m_sLastOctave = sOctave;
     }
 
     // Add notations
@@ -1815,7 +1847,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
 
     if (pNode->IsSimple()) {
         //start/end of tuplet. Simple parameter (t- | tn | tn/m )
-        wxASSERT(sData.Left(1) == _T("t"));       
+        wxASSERT(sData.Left(1) == m_pTags->TagName(_T("t"), _T("SingleChar")) );       
         if (sData == _T("t-")) {
             //end of tuplet
             fEndTuplet = true;
@@ -2114,7 +2146,7 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
     for(; iP <= pNode->GetNumParms(); iP++) {
         pX = pNode->GetParameter(iP);
         sName = pX->GetName();
-        if (sName.Left(1) == _T("p"))   //number of staff on which this clef is located
+        if (sName.Left(1) == m_pTags->TagName(_T("p"), _T("SingleChar")))   //number of staff on which this clef is located
         {
             nStaff = AnalyzeNumStaff(sName);
             iP++;
@@ -2865,24 +2897,24 @@ int lmLDPParser::AnalyzeNumStaff(wxString sNotation)
 {
     //analyzes a notation Pxx.  xx must be lower or equal than m_nNumStaves
 
-    if (sNotation.Left(1) != _T("p")) {
-        AnalysisError( _("Notation P expected but found '%s'. Replaced by 'p1'"),
-            sNotation );
+    if (sNotation.Left(1) != m_pTags->TagName(_T("p"), _T("SingleChar")) ) {
+        AnalysisError( _("Staff number expected but found '%s'. Replaced by '%s1'"),
+            sNotation, m_pTags->TagName(_T("p"), _T("SingleChar")) );
         return 1;
     }
     
-    wxString sData = sNotation.Mid(1);         //remove char 'P'
+    wxString sData = sNotation.Mid(1);         //remove char 'p'
     if (!sData.IsNumber()) {
-        AnalysisError( _("Notation P not followed by number (%s). Replaced by 'p1'"),
-            sNotation );
+        AnalysisError( _("Staff number not followed by number (%s). Replaced by '%s1'"),
+            sNotation, m_pTags->TagName(_T("p"), _T("SingleChar")) );
         return 1;
     }
     
     long nValue;
     sData.ToLong(&nValue);
     if (nValue > m_nNumStaves) {
-        AnalysisError( _("Notation '%s': number is greater than number of staves defined (%d). Replaced by 'P1'."),
-            sNotation, m_nNumStaves );
+        AnalysisError( _("Notation '%s': number is greater than number of staves defined (%d). Replaced by '%s1'."),
+            sNotation, m_nNumStaves, m_pTags->TagName(_T("p"), _T("SingleChar")) );
         return 1;
     }
     return (int)nValue;
@@ -2928,18 +2960,19 @@ bool lmLDPParser::AnalyzeNoteType(wxString sNoteType, ENoteType* pnNoteType,
     // dots "."
     // Set up variables nNoteType and flags fDotted and fDoubleDotted.
     //
-    //  USA          UK                     ESP              LDP     NoteType
-    //  -----------  --------------------   -------------    ---     ---------
-    //  Long         Breve                  cuadrada         d       eLong = 0
-    //  Whole        Semibreve              redonda          r       eWhole = 1
-    //  half         minim                  blanca           b       eHalf = 2
-    //  quarter      crochet                negra            n       eQuarter = 3
-    //  eighth       quaver                 corchea          c       eEighth = 4
-    //  sixteenth    semiquaver             semicorchea      s       e16th = 5
-    //  32nd         demisemiquaver         fusa             f       e32th = 6
-    //  64th         hemidemisemiquaver     semifusa         m       e64th = 7
-    //  128th                               garrapatea       g       e128th = 8
-    //  256th                               semigarrapatea   p       e256th = 9
+    //  USA           UK                      ESP               LDP     NoteType
+    //  -----------   --------------------    -------------     ---     ---------
+    //  long          longa                   longa             l       eLonga = 0
+    //  double whole  breve                   cuadrada, breve   d       eBreve = 1
+    //  whole         semibreve               redonda           r       eWhole = 2
+    //  half          minim                   blanca            b       eHalf = 3
+    //  quarter       crochet                 negra             n       eQuarter = 4
+    //  eighth        quaver                  corchea           c       eEighth = 5
+    //  sixteenth     semiquaver              semicorchea       s       e16th = 6
+    //  32nd          demisemiquaver          fusa              f       e32th = 7
+    //  64th          hemidemisemiquaver      semifusa          m       e64th = 8
+    //  128th         semihemidemisemiquaver  garrapatea        g       e128th = 9
+    //  256th         ???                     semigarrapatea    p       e256th = 10
     //
     // Returns true if error in parsing
 
@@ -2961,8 +2994,31 @@ bool lmLDPParser::AnalyzeNoteType(wxString sNoteType, ENoteType* pnNoteType,
     }
 
     //identify note type
-    if (sType == m_pTags->TagName(_T("d"), _T("NoteType")))
-        *pnNoteType = eLong;
+    if (sType.Left(1) == _T("'")) {
+        // numeric duration: '1, '2, '4, '8, '16, '32, ..., '256
+        sType = sType.Mid(1);
+        if (!sType.IsNumber()) return true;     //error
+        long nType;
+        sType.ToLong(&nType);
+        switch(nType) {
+            case 1:     *pnNoteType = eWhole;       break;
+            case 2:     *pnNoteType = eHalf;        break;
+            case 4:     *pnNoteType = eQuarter;     break;
+            case 8:     *pnNoteType = eEighth;      break;
+            case 16:    *pnNoteType = e16th;        break;
+            case 32:    *pnNoteType = e32th;        break;
+            case 64:    *pnNoteType = e64th;        break;
+            case 128:   *pnNoteType = e128th;       break;
+            case 256:   *pnNoteType = e256th;       break;
+            default:
+                return true;    //error
+        }
+    }
+    // duration as a letter
+    else if (sType == m_pTags->TagName(_T("l"), _T("NoteType")))
+        *pnNoteType = eLonga;
+    else if (sType == m_pTags->TagName(_T("d"), _T("NoteType")))
+        *pnNoteType = eBreve;
     else if (sType == m_pTags->TagName(_T("r"), _T("NoteType")))
         *pnNoteType = eWhole;
     else if (sType == m_pTags->TagName(_T("b"), _T("NoteType")))

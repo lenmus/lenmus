@@ -255,15 +255,25 @@ enum
  
 IMPLEMENT_CLASS(lmMainFrame, wxDocMDIParentFrame)
 BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
-    EVT_MENU (MENU_File_Import, lmMainFrame::OnImportFile)
+
+    //File menu/toolbar
+    EVT_MENU      (MENU_File_Import, lmMainFrame::OnImportFile)
+    EVT_UPDATE_UI (MENU_File_Import, lmMainFrame::OnFileUpdateUI)
     EVT_MENU      (MENU_Print_Preview, lmMainFrame::OnPrintPreview)
-    EVT_UPDATE_UI (MENU_Print_Preview, lmMainFrame::OnPrintPreviewUI)
+    EVT_UPDATE_UI (MENU_Print_Preview, lmMainFrame::OnFileUpdateUI)
     EVT_MENU      (wxID_PRINT_SETUP, lmMainFrame::OnPrintSetup)
+    EVT_UPDATE_UI (wxID_PRINT_SETUP, lmMainFrame::OnFileUpdateUI)
     EVT_MENU      (MENU_Print, lmMainFrame::OnPrint)
-    EVT_UPDATE_UI (MENU_Print, lmMainFrame::OnPrintUI)
+    EVT_UPDATE_UI (MENU_Print, lmMainFrame::OnFileUpdateUI)
+    EVT_UPDATE_UI (wxID_SAVE, lmMainFrame::OnFileUpdateUI)
+    EVT_UPDATE_UI (wxID_SAVEAS, lmMainFrame::OnFileUpdateUI)
 
+    //Edit menu/toolbar
     EVT_UPDATE_UI (wxID_COPY, lmMainFrame::OnEditUpdateUI)
+    EVT_UPDATE_UI (wxID_PASTE, lmMainFrame::OnEditUpdateUI)
+    EVT_UPDATE_UI (wxID_CUT, lmMainFrame::OnEditUpdateUI)
 
+    //View menu/toolbar
     EVT_MENU      (MENU_View_Tools, lmMainFrame::OnViewTools)
     EVT_MENU      (MENU_View_Rulers, lmMainFrame::OnViewRulers)
     EVT_MENU      (MENU_View_ToolBar, lmMainFrame::OnViewToolBar)
@@ -271,22 +281,24 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_MENU      (MENU_View_StatusBar, lmMainFrame::OnViewStatusBar)
     EVT_UPDATE_UI (MENU_View_StatusBar, lmMainFrame::OnStatusbarUI)
 
+    //Zoom menu/toolbar
     EVT_MENU (MENU_Zoom_75, lmMainFrame::OnZoom75)
     EVT_MENU (MENU_Zoom_100, lmMainFrame::OnZoom100)
     EVT_MENU (MENU_Zoom_150, lmMainFrame::OnZoom150)
     EVT_MENU (MENU_Zoom_200, lmMainFrame::OnZoom200)
     EVT_MENU (MENU_Zoom_Other, lmMainFrame::OnZoomOther)
+    EVT_COMBOBOX (ID_COMBO_ZOOM, lmMainFrame::OnComboZoom)
 
-    EVT_MENU (MENU_Sound_MidiWizard, lmMainFrame::OnRunMidiWizard)
-    EVT_MENU (MENU_Sound_test, lmMainFrame::OnSoundTest)
-    EVT_MENU (MENU_Sound_AllSoundsOff, lmMainFrame::OnAllSoundsOff)
-
+    //Sound menu/toolbar
+    EVT_MENU      (MENU_Sound_MidiWizard, lmMainFrame::OnRunMidiWizard)
+    EVT_MENU      (MENU_Sound_test, lmMainFrame::OnSoundTest)
+    EVT_MENU      (MENU_Sound_AllSoundsOff, lmMainFrame::OnAllSoundsOff)
     EVT_MENU      (MENU_Play_Start, lmMainFrame::OnPlayStart)
-    EVT_UPDATE_UI (MENU_Play_Start, lmMainFrame::OnPlayUI)
+    EVT_UPDATE_UI (MENU_Play_Start, lmMainFrame::OnSoundUpdateUI)
     EVT_MENU      (MENU_Play_Stop, lmMainFrame::OnPlayStop)
-    EVT_UPDATE_UI (MENU_Play_Stop, lmMainFrame::OnPlayUI)
+    EVT_UPDATE_UI (MENU_Play_Stop, lmMainFrame::OnSoundUpdateUI)
     EVT_MENU      (MENU_Play_Pause, lmMainFrame::OnPlayPause)
-    EVT_UPDATE_UI (MENU_Play_Pause, lmMainFrame::OnPlayUI)
+    EVT_UPDATE_UI (MENU_Play_Pause, lmMainFrame::OnSoundUpdateUI)
 
     EVT_MENU (MENU_Preferences, lmMainFrame::OnOptions)
 
@@ -314,7 +326,6 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_MENU      (MENU_Debug_SeeMIDIEvents, lmMainFrame::OnDebugSeeMidiEvents)
     EVT_UPDATE_UI (MENU_Debug_SeeMIDIEvents, lmMainFrame::OnDebugSeeMidiEventsUI)
 
-    EVT_COMBOBOX (ID_COMBO_ZOOM, lmMainFrame::OnComboZoom)
 
     //metronome
     EVT_SPINCTRL    (ID_SPIN_METRONOME, lmMainFrame::OnMetronomeUpdate) 
@@ -930,7 +941,9 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
 }
 
-/*! Enable/disable menu items and toolbar buttons depending on active window.
+/*! Obsolete: replaced by UpdateUI events
+
+    Enable/disable menu items and toolbar buttons depending on active window.
 
     To always have synchronized the menu and toolbar items and its status (enable/disabled)
     with the allowed menu items /tools for a child frame, all MDI Child windows must implement
@@ -950,20 +963,15 @@ void lmMainFrame::UpdateMenuAndToolbar()
     wxMDIChildFrame* pChild = GetActiveChild();
     if (!pChild) {
         // no window displayed
-        //wxLogMessage(_T("[lmMainFrame::UpdateMenuAndToolbar] No window active"));
     }
     else if (pChild->IsKindOf(CLASSINFO(lmTextBookFrame))) {
-        //wxLogMessage(_T("[lmMainFrame::UpdateMenuAndToolbar] It is a book frame"));
+        //It is a book frame"));
     }
     else if (pChild->IsKindOf(CLASSINFO(lmEditFrame))) {
-        //wxLogMessage(_T("[lmMainFrame::UpdateMenuAndToolbar] It is a score canvas"));
-        fPlay = true;
         fZoom = true;
-        fEdit = true;         // edit: copy, cut, paste
-        fView = true;         // view rulers
    }
     else {
-        //wxLogMessage(_T("[lmMainFrame::UpdateMenuAndToolbar] Unknown frame type"));
+        //Unknown frame type"));
     }
 
 
@@ -973,17 +981,6 @@ void lmMainFrame::UpdateMenuAndToolbar()
 
     wxToolBarBase* pToolBar = GetToolBar();
     wxMenuBar* pMenuBar = GetMenuBar();
-    //wxLogMessage(_T("[lmMainFrame::UpdateMenuAndToolbar] Play=%s, Zoom=%s"),
-    //                    (fPlay ? _T("yes") : _T("no")),
-    //                    (fZoom ? _T("yes") : _T("no")) );
-
-    // menu Sound
-    pToolBar->EnableTool(MENU_Play_Start, fPlay);
-    pToolBar->EnableTool(MENU_Play_Stop, fPlay);
-    pToolBar->EnableTool(MENU_Play_Pause, fPlay);
-    pMenuBar->Enable(MENU_Play_Start, fPlay);
-    pMenuBar->Enable(MENU_Play_Stop, fPlay);
-    pMenuBar->Enable(MENU_Play_Pause, fPlay);
 
     // menu Zoom, combo Zoom
     int i = pMenuBar->FindMenu(_("&Zoom"));
@@ -991,43 +988,11 @@ void lmMainFrame::UpdateMenuAndToolbar()
     pMenuBar->EnableTop(i, fZoom);
     //pToolBar->ToggleTool(ID_COMBO_ZOOM, fZoom);
 
-    // edit: copy, cut, paste
-    //pToolBar->EnableTool(wxID_SAVE, fEdit);
-    //pToolBar->EnableTool(wxID_COPY, fEdit);
-    //pToolBar->EnableTool(wxID_CUT, fEdit);
-    //pToolBar->EnableTool(wxID_PASTE, fEdit);
-    //pToolBar->EnableTool(MENU_Print, fEdit);
-
     // view rulers
     pMenuBar->Enable(MENU_View_Rulers, fView);
 
-
-    //in spite of program logic, here I force to disable any unfinished feature
-    //if this is a release version
-    //   ----------------------------------------------------
-    //   VERY IMPORTANT: READ THIS BEFORE REMOVE THIS CODE
-    //   ----------------------------------------------------
-    //This code does not work to disable wxID_NEW and wxID_OPEN menu items
-    //So have replaced identifiers:
-    //          wxID_NEW -> MENU_File_New
-    //The problem with this is that now this items don't work, as wxDOcManager
-    //has no knowledge about them.
-    //WHEN REMOVING THIS CODE RESTORE wxID_NEW identifiers
-    //
-   if (g_fReleaseVersion || g_fReleaseBehaviour) {
-        pMenuBar->Enable(MENU_File_New, false);
-        pMenuBar->Enable(MENU_File_Import, false);
-        pMenuBar->Enable(wxID_SAVE, false);
-        pMenuBar->Enable(wxID_SAVEAS, false);
-
-        pToolBar->EnableTool(MENU_File_New, false);
-        pToolBar->EnableTool(wxID_COPY, false);
-        pToolBar->EnableTool(wxID_CUT, false);
-        pToolBar->EnableTool(wxID_PASTE, false);
-
-        //Force to disable Rulers, until they are finished
-        pMenuBar->Enable(MENU_View_Rulers, false);
-    }
+    //Force to disable Rulers, until they are finished
+    pMenuBar->Enable(MENU_View_Rulers, false);
 
 }
 
@@ -1581,13 +1546,6 @@ void lmMainFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event))
     frame->Show(true);
 }
 
-void lmMainFrame::OnPrintPreviewUI(wxUpdateUIEvent &event)
-{
-    lmScoreView* pView = g_pTheApp->GetActiveView();
-    event.Enable( (pView != (lmScoreView*)NULL) );
-}
-
-
 //void lmMainFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))
 //{
 //    (*g_pPaperSetupData) = *g_pPrintData;
@@ -1632,25 +1590,82 @@ void lmMainFrame::OnPrint(wxCommandEvent& WXUNUSED(event))
     }
 }
 
-void lmMainFrame::OnPrintUI(wxUpdateUIEvent &event)
-{
-    lmScoreView* pView = g_pTheApp->GetActiveView();
-    event.Enable( (pView != (lmScoreView*)NULL) );
-}
-
 void lmMainFrame::OnEditUpdateUI(wxUpdateUIEvent &event)
 {
-    lmScoreView* pView = g_pTheApp->GetActiveView();
-    bool fEnable = (pView != (lmScoreView*)NULL);
+    wxMDIChildFrame* pChild = GetActiveChild();
+    event.Enable(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
 
-    // edit toolbar: copy, cut, paste
-    if (m_pTbEdit) {
-        m_pTbEdit->EnableTool(wxID_COPY, fEnable);
-        m_pTbEdit->EnableTool(wxID_CUT, fEnable);
-        m_pTbEdit->EnableTool(wxID_PASTE, fEnable);
-    }
 }
 
+void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
+{
+    wxMDIChildFrame* pChild = GetActiveChild();
+    bool fEditFrame = pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame));
+
+    switch (event.GetId())
+    {
+        // Print related commands: enabled if EditFrame
+        case MENU_Print_Preview:
+            event.Enable(fEditFrame);
+            break;
+        case wxID_PRINT_SETUP:
+            event.Enable(fEditFrame);
+            break;
+        case MENU_Print:
+            event.Enable(fEditFrame);
+            break;
+
+        // Save related commands: enabled if EditFrame
+        case wxID_SAVE:
+            event.Enable(fEditFrame);
+            break;
+        case wxID_SAVEAS:
+            event.Enable(fEditFrame);
+            break;
+
+        // Other commnads: always enabled
+        default:
+            event.Enable(true);
+    }
+
+    //in spite of program logic, here I force to disable any unfinished feature
+    //if this is a release version
+    //   ----------------------------------------------------
+    //   VERY IMPORTANT: READ THIS BEFORE REMOVE THIS CODE
+    //   ----------------------------------------------------
+    //This code does not work to disable wxID_NEW menu item
+    //So have replaced identifier:
+    //          wxID_NEW -> MENU_File_New
+    //The problem with this is that now this item doesn't work, as wxDocManager
+    //has no knowledge about them.
+    //WHEN REMOVING THIS CODE RESTORE wxID_NEW identifier
+    //
+    if (g_fReleaseVersion || g_fReleaseBehaviour) {
+        switch (event.GetId())
+        {
+            case MENU_File_New:
+                event.Enable(false);
+                break;
+            case MENU_File_Import:
+                event.Enable(false);
+                break;
+            case wxID_SAVE:
+                event.Enable(false);
+                break;
+            case wxID_SAVEAS:
+                event.Enable(false);
+                break;
+        }
+    }
+
+}
+
+void lmMainFrame::OnSoundUpdateUI(wxUpdateUIEvent &event)
+{
+    wxMDIChildFrame* pChild = GetActiveChild();
+    event.Enable( pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) );
+
+}
 
 //---------------------------------
 
@@ -1688,12 +1703,6 @@ void lmMainFrame::OnPlayPause(wxCommandEvent& WXUNUSED(event))
 {
     lmScoreView* pView = g_pTheApp->GetActiveView();
     pView->PausePlaying();
-}
-
-void lmMainFrame::OnPlayUI(wxUpdateUIEvent &event)
-{
-    wxMDIChildFrame* pChild = GetActiveChild();
-    event.Enable( pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) );
 }
 
 void lmMainFrame::OnMetronomeTimer(wxTimerEvent& event)

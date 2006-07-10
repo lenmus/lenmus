@@ -167,6 +167,10 @@ private:
     //variables to keep settings that propagate
     //
 
+    // octave and duration for notes/rests
+    wxString        m_sLastOctave;
+    wxString        m_sLastDuration;
+
     // font and aligment for <title> elements
     lmEAlignment    m_nTitleAlignment;
     wxString        m_sTitleFontName;

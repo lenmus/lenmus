@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Rest.cpp,v 1.6 2006/02/23 19:23:54 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -81,6 +80,8 @@ lmEGlyphIndex lmRest::GetGlyphIndex()
     // the rest (LenMus font)
 
     switch (m_nNoteType) {
+        case eLonga:        return GLYPH_LONGA_REST;
+        case eBreve:        return GLYPH_BREVE_REST;        
         case eWhole:        return GLYPH_WHOLE_REST;
         case eHalf:         return GLYPH_HALF_REST;        
         case eQuarter:      return GLYPH_QUARTER_REST;     
@@ -88,6 +89,8 @@ lmEGlyphIndex lmRest::GetGlyphIndex()
         case e16th:         return GLYPH_16TH_REST;        
         case e32th:         return GLYPH_32ND_REST;        
         case e64th:         return GLYPH_64TH_REST;        
+        case e128th:        return GLYPH_128TH_REST;
+        case e256th:        return GLYPH_256TH_REST;
         default:
             wxASSERT(false);
             return GLYPH_QUARTER_REST;

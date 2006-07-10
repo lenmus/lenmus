@@ -89,11 +89,18 @@ public:
     void SetMetronome(lmMetronome* pMtr);
     lmMetronome* GetMetronome() { return m_pMtr; }
 
-    // to process menu events
+    // File menu events
     void OnImportFile(wxCommandEvent& WXUNUSED(event));
-    void OnOpenBook(wxCommandEvent& event);
-    void OnOpenBookUI(wxUpdateUIEvent &event);
+    void OnPrintPreview(wxCommandEvent& WXUNUSED(event));
+    //void OnPageSetup(wxCommandEvent& WXUNUSED(event));
+    void OnPrintSetup(wxCommandEvent& WXUNUSED(event));
+    void OnPrint(wxCommandEvent& WXUNUSED(event));
+    void OnFileUpdateUI(wxUpdateUIEvent &event);
 
+    // Edit menu events
+    void OnEditUpdateUI(wxUpdateUIEvent &event);
+
+    // Debug menu events
     void OnDebugForceReleaseBehaviour(wxCommandEvent& event);
     void OnDebugShowDebugLinks(wxCommandEvent& event);
     void OnDebugRecSelec(wxCommandEvent& event);
@@ -109,6 +116,7 @@ public:
     void OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event));
     void OnDebugSeeMidiEventsUI(wxUpdateUIEvent& event);
 
+    // Zoom events
     void OnComboZoom(wxCommandEvent& event);
     void OnZoom(wxCommandEvent& event, int nZoom);
     void OnZoom75(wxCommandEvent& event) { OnZoom(event, 75); }
@@ -117,6 +125,7 @@ public:
     void OnZoom200(wxCommandEvent& event) { OnZoom(event, 200); }
     void OnZoomOther(wxCommandEvent& event);
 
+    // View menu events
     void OnViewTools(wxCommandEvent& WXUNUSED(event));
     void OnViewRulers(wxCommandEvent& event);
     void OnViewToolBar(wxCommandEvent& WXUNUSED(event));
@@ -124,30 +133,23 @@ public:
     void OnToolbarsUI(wxUpdateUIEvent &event);
     void OnStatusbarUI(wxUpdateUIEvent &event);
 
-    void OnPrintPreview(wxCommandEvent& WXUNUSED(event));
-    void OnPrintPreviewUI(wxUpdateUIEvent &event);
-    //void OnPageSetup(wxCommandEvent& WXUNUSED(event));
-    void OnPrintSetup(wxCommandEvent& WXUNUSED(event));
-    void OnPrint(wxCommandEvent& WXUNUSED(event));
-    void OnPrintUI(wxUpdateUIEvent &event);
-
-    void OnPlayStart(wxCommandEvent& WXUNUSED(event));
-    void OnPlayStop(wxCommandEvent& WXUNUSED(event));
-    void OnPlayPause(wxCommandEvent& WXUNUSED(event));
-    void OnPlayUI(wxUpdateUIEvent &event);
-
-    void OnEditUpdateUI(wxUpdateUIEvent &event);
-
-
-    void OnOptions(wxCommandEvent& WXUNUSED(event));
-
+    // Sound menu events
+    void OnSoundUpdateUI(wxUpdateUIEvent &event);
     void OnSoundTest(wxCommandEvent& WXUNUSED(event));
     void OnAllSoundsOff(wxCommandEvent& WXUNUSED(event));
     void OnRunMidiWizard(wxCommandEvent& WXUNUSED(event));
     //void OnMidiWizardCancel(wxWizardEvent& event);
     //void OnMidiWizardFinished(wxWizardEvent& event);
     void DoRunMidiWizard();
+    void OnPlayStart(wxCommandEvent& WXUNUSED(event));
+    void OnPlayStop(wxCommandEvent& WXUNUSED(event));
+    void OnPlayPause(wxCommandEvent& WXUNUSED(event));
+    void OnPlayUI(wxUpdateUIEvent &event);
 
+    // Other menu items events
+    void OnOptions(wxCommandEvent& WXUNUSED(event));
+    void OnOpenBook(wxCommandEvent& event);
+    void OnOpenBookUI(wxUpdateUIEvent &event);
     void OnAbout(wxCommandEvent& WXUNUSED(event));
     void OnOpenHelp(wxCommandEvent& event);
     void OnOpenHelpUI(wxUpdateUIEvent& event);

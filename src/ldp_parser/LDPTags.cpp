@@ -173,6 +173,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
 
         //special contexts
         m_Contexts[_T("NoteType")] = 1;
+        m_Tags[1][_T("l")] = _T("l");
         m_Tags[1][_T("d")] = _T("d");
         m_Tags[1][_T("r")] = _T("w");
         m_Tags[1][_T("b")] = _T("h");
@@ -250,8 +251,12 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[4][_T("Rem")] = _T("d");
 
         m_Contexts[_T("SingleChar")] = 5;
+        m_Tags[5][_T("g")] = _T("g");   //beamed group 
+        m_Tags[5][_T("l")] = _T("l");   //tie 
         m_Tags[5][_T("n")] = _T("n");   //note
+        m_Tags[5][_T("p")] = _T("p");   //staff number  
         m_Tags[5][_T("r")] = _T("r");   //rest 
+        m_Tags[5][_T("t")] = _T("t");   //tuplet 
 
     }
     else {
@@ -294,6 +299,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
 
         //special contexts
         m_Contexts[_T("NoteType")] = 1;
+        m_Tags[1][_T("l")] = _T("l");
         m_Tags[1][_T("d")] = _T("d");
         m_Tags[1][_T("r")] = _T("r");
         m_Tags[1][_T("b")] = _T("b");
@@ -370,8 +376,12 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[4][_T("Rem")] = _T("Rem");
 
         m_Contexts[_T("SingleChar")] = 5;
+        m_Tags[5][_T("g")] = _T("g");   //beamed group 
+        m_Tags[5][_T("l")] = _T("l");   //tie 
         m_Tags[5][_T("n")] = _T("n");   //note
+        m_Tags[5][_T("p")] = _T("p");   //staff number  
         m_Tags[5][_T("r")] = _T("s");   //rest 
+        m_Tags[5][_T("t")] = _T("t");   //tuplet 
 
     }
 

@@ -101,10 +101,6 @@ two MIDI child windows can be opened:
     - lmEditFrame: MDI Child windows that contains the lmScoreCanvas
     - lmTextBookFrame: MDI Child window that contains the eMusicBook controller
     
-To always have synchronized the menu and toolbar items and its status (enable/disabled) with
-the allowd menu items /ttols for a child frame, all MDI Child windows must implement
-an OnActivate() handler and, from there, invoke parent frame (the main frame) method
-UpdateMenuAndToolbar().
     
 
 @section Paper_class lmPaper, lmPage and lmScore classes
