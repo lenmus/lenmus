@@ -318,8 +318,8 @@ void lmBeam::TrimStems()
     // The loop is also used to look for the shortest stem
 
     lmLUnits Ay = yTop[nNumNotes] - yTop[1];
-    lmLUnits x1 = m_pFirstNote->GetXStem();
-    lmLUnits Ax = m_pLastNote->GetXStem() - x1;
+    lmLUnits x1 = m_pFirstNote->GetXStemLeft();
+    lmLUnits Ax = m_pLastNote->GetXStemLeft() - x1;
     lmNoteRest* pNR;
     int nMinStem;
     for(i=1, pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++) 
@@ -327,7 +327,7 @@ void lmBeam::TrimStems()
         pNR = (lmNoteRest*)pNode->GetData();
         if (!pNR->IsRest()) {
             pNote = (lmNote*)pNR;
-            yTop[i] = yTop[1] + (Ay * (pNote->GetXStem() - x1)) / Ax;
+            yTop[i] = yTop[1] + (Ay * (pNote->GetXStemLeft() - x1)) / Ax;
             //save the shortest stem
             if (i==1)
                 nMinStem = abs(yBase[1] - yTop[1]);
@@ -424,7 +424,7 @@ void lmBeam::DrawBeamLines(wxDC* pDC, lmLUnits nThickness, lmLUnits nBeamSpacing
             fStemDown = pNote->StemGoesDown();
 
             //compute current position to optimize
-            xCur = pNote->GetXStem();
+            xCur = pNote->GetXStemLeft();
             yCur = ComputeYPosOfSegment(pNote, fStemDown, yShift);
 
             //Let's check if we have to finish a forward hook in prev. note
@@ -487,7 +487,8 @@ void lmBeam::DrawBeamLines(wxDC* pDC, lmLUnits nThickness, lmLUnits nBeamSpacing
 
             // if we have data to draw a segment, draw it
             if (fStart && fEnd) {
-                DrawBeamSegment(pDC, fStemDown, xStart, yStart, xEnd, yEnd, nThickness,
+                DrawBeamSegment(pDC, fStemDown,
+                    xStart, yStart, xEnd+pEndNote->GetStemThickness(), yEnd, nThickness,
                     pStartNote, pEndNote);
                 fStart = false;
                 fEnd = false;

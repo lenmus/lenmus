@@ -1,4 +1,3 @@
-// RCS-ID: $Id: TimeSignature.h,v 1.6 2006/02/23 19:24:42 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -102,8 +101,10 @@ private:
         //eTS_Composite,        // composite fraction, i.e.: 3+2/8
         //eTS_SenzaMisura        // no time signature is present
 
-    int        m_nBeats;
-    int        m_nBeatType;
+    int         m_nBeats;
+    int         m_nBeatType;
+    lmLUnits    m_xPosTop;      //x position for Beats or single char (i.e. common time)
+    lmLUnits    m_xPosBottom;   //x position for BeatsType
 
 };
 

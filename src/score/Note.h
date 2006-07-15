@@ -81,10 +81,12 @@ public:
     //methos related to stems
     EStemType   GetStemType() { return m_nStemType; }
     lmLUnits    GetDefaultStemLength();
-    lmEUnits     GetStandardStemLenght();
+    lmLUnits    GetStandardStemLenght();
     void        SetStemLength(lmLUnits length) { m_nStemLength = length; };
     void        SetStemDirection(bool fStemDown);
-    lmLUnits    GetXStem() {return m_xStem + m_paperPos.x; }
+    lmLUnits    GetXStemLeft() {return m_xStem + m_paperPos.x; }
+    lmLUnits    GetXStemRight() {return m_xStem + m_nStemThickness + m_paperPos.x; }
+    lmLUnits    GetStemThickness() {return m_nStemThickness; }
     lmLUnits    GetYStem() {return m_yStem + m_paperPos.y; }
     lmLUnits    GetStemLength() { return m_nStemLength; }
     lmLUnits    GetFinalYStem() {
@@ -149,6 +151,9 @@ private:
                         lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC);
     void DrawLegerLines(wxDC* pDC, int nPosOnStaff, lmLUnits yTopLine, lmLUnits xPos,
                         lmLUnits width, int nROP = wxCOPY);
+    lmEGlyphIndex DrawFlag(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC);
+    lmLUnits DrawDot(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUnits yPos, 
+                     wxColour colorC, bool fUseFont);
 
     //auxiliary
     int PosOnStaffToPitch(int nSteps);
@@ -205,9 +210,13 @@ private:
     lmLUnits        m_xAnchor;          // x position of anchor line (relative to m_paperPos.x)
     wxRect          m_noteheadRect;     // notehead bounding rectangle (relative to paper)
 
+    // flag information
+    lmLUnits        m_yFlag;            //y pos for flag
+
     // stem information
     lmLUnits        m_xStem;           //pos and length of stem (relative to m_paperPos)
     lmLUnits        m_yStem;           //yStem refers to the notehead nearest position
+    lmLUnits        m_nStemThickness;
     lmLUnits        m_nStemLength;     //length of stem;
     bool            m_fStemDown;       //stem direccion. true if down
     EStemType       m_nStemType;       //type of stem

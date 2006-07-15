@@ -131,4 +131,102 @@ wxFont* lmFontManager::GetFont(int nPointSize, wxString sFontName,
 
 }
 
+/*
+// Load font data from the .ini file. All files are expected to be found in path /bin,
+//    that is, in the same folder than this exe.
+//
+void lmFontManager::LoadFile(wxString sFileName)
+{
+    wxTextFile oFile;       //the file to process
+    wxString sPath = g_pPaths->GetDataPath();
+    wxFileName oFileName(sPath, sFileName, _T("ini"), wxPATH_NATIVE);
 
+    //loop to read and analyze lines
+    if (!oFile.Open(oFileName.GetFullPath()) ) {
+        wxLogError(wxString::Format( _("Error opening file <%s>"), oFileName.GetFullPath() ));
+        return;
+    }
+
+    wxString sLine;
+    int nPreviousLesson = 0, nCurLesson;
+    int nNumLine = 1;
+    for (sLine = oFile.GetFirstLine(); !oFile.Eof(); sLine = oFile.GetNextLine() ) {
+        //process current line
+        if (sLine.Trim() != _T("") && sLine.Mid(0, 2) != _T("//")) {
+            nCurLesson = AnalyzeGlyphLine(nNumLine, sLine);
+            if (nPreviousLesson > nCurLesson) {
+                wxMessageBox(wxString::Format(
+                    _("File '%s' is not ordered. File ignored."),
+                    oFileName.GetFullPath() ));
+            }
+            nPreviousLesson = nCurLesson;
+            nNumLine++;
+        }
+    }
+    //process the last line
+    if (sLine.Trim(false) != _T("") && sLine.Mid(0, 2) != _T("//")) {
+        AnalyzeLine(iFile, nNumLine, sLine);
+    }
+
+    //close the file
+    oFile.Close();
+           
+}
+
+// Analyzes a line and loads it in the corresponding table.
+//    
+//    @returns The level and lesson numbers combined (100*level+lesson) for controlling
+//             that the files are ordered
+//
+int lmFontManager::AnalyzeGlyphLine(int nLine, wxString sLine)
+{
+    wxASSERT(nLine > 0);
+
+    long nLevelLesson = 0;
+
+    int iSemicolon;
+    wxString sData;
+    bool fOK;
+
+    //i.e.: <1;04;Sol;c4;c5;0>
+
+    //get level
+    iSemicolon = sLine.Find(_T(";"));
+    sData = sLine.Left(iSemicolon);
+    long nLevel;
+    fOK = sData.ToLong(&nLevel);
+    wxASSERT(fOK);
+    sLine = sLine.Mid(iSemicolon + 1);      //skip the semicolon
+    
+    //get lesson
+    iSemicolon = sLine.Find(_T(";"));
+    sData = sLine.Left(iSemicolon);
+    long nLesson;
+    fOK = sData.ToLong(&nLesson);
+    wxASSERT(fOK);
+    sLine = sLine.Mid(iSemicolon + 1);      //skip the semicolon
+    
+    //get clef
+    iSemicolon = sLine.Find(_T(";"));
+    wxString sClef = sLine.Left(iSemicolon);
+    EClefType nClef = LDPNameToClef(sClef);
+    wxASSERT(nClef != (EClefType)-1);
+
+    //get lower scope
+    iSemicolon = sLine.Find(_T(";"));
+    wxString sLowerScope = sLine.Left(iSemicolon);
+
+    //get upper scope
+    iSemicolon = sLine.Find(_T(";"));
+    wxString sUpperScope = sLine.Left(iSemicolon);
+
+    //get flag
+    bool fOnlyThisLesson = (sLine.Mid(iSemicolon + 1, 1) == _T("1"));
+
+    // build the entry
+    m_pLessonsClefs->AddEntry((int)nLevel, (int)nLesson, fOnlyThisLesson, nClef,
+                                sLowerScope, sUpperScope);
+
+}
+
+*/

@@ -171,7 +171,8 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("x")] = _T("x");
         m_Tags[0][_T("y")] = _T("y");
 
-        //special contexts
+        //special context: note durations
+        //letter 'x' can not be used as it is double sharp accidental
         m_Contexts[_T("NoteType")] = 1;
         m_Tags[1][_T("l")] = _T("l");
         m_Tags[1][_T("d")] = _T("d");
@@ -181,10 +182,11 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[1][_T("c")] = _T("e");
         m_Tags[1][_T("s")] = _T("s");
         m_Tags[1][_T("f")] = _T("t");
-        m_Tags[1][_T("m")] = _T("x");
+        m_Tags[1][_T("m")] = _T("i");
         m_Tags[1][_T("g")] = _T("o");
         m_Tags[1][_T("p")] = _T("f");
 
+        //special context: barlines
         m_Contexts[_T("Barlines")] = 2;
         m_Tags[2][_T("simple")] = _T("simple");
         m_Tags[2][_T("double")] = _T("double");
@@ -194,7 +196,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[2][_T("endRepetition")] = _T("endRepetition");
         m_Tags[2][_T("doubleRepetition")] = _T("doubleRepetition");
 
-
+        //special context: clefs
         m_Contexts[_T("Clefs")] = 3;
         m_Tags[3][_T("G")] = _T("G");
         m_Tags[3][_T("F")] = _T("F");
@@ -218,6 +220,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[3][_T("subbass")] = _T("subbass");
         m_Tags[3][_T("french")] = _T("french");
 
+        //special context: key signatures
         m_Contexts[_T("Keys")] = 4;
         m_Tags[4][_T("Do")] = _T("C");
         m_Tags[4][_T("Sol")] = _T("G");
@@ -250,6 +253,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[4][_T("Solm")] = _T("g");
         m_Tags[4][_T("Rem")] = _T("d");
 
+        //special context: single char very frequent elements
         m_Contexts[_T("SingleChar")] = 5;
         m_Tags[5][_T("g")] = _T("g");   //beamed group 
         m_Tags[5][_T("l")] = _T("l");   //tie 
@@ -297,7 +301,8 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("x")] = _T("x");
         m_Tags[0][_T("y")] = _T("y");
 
-        //special contexts
+        //special context: note durations
+        //letter 'x' can not be used as it is double sharp accidental
         m_Contexts[_T("NoteType")] = 1;
         m_Tags[1][_T("l")] = _T("l");
         m_Tags[1][_T("d")] = _T("d");
@@ -311,6 +316,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[1][_T("g")] = _T("g");
         m_Tags[1][_T("p")] = _T("p");
 
+        //special context: barlines
         m_Contexts[_T("Barlines")] = 2;
         m_Tags[2][_T("simple")] = _T("Simple");
         m_Tags[2][_T("double")] = _T("Doble");
@@ -320,6 +326,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[2][_T("endRepetition")] = _T("FinRepeticion");
         m_Tags[2][_T("doubleRepetition")] = _T("DobleRepeticion");
 
+        //special context: clefs
         m_Contexts[_T("Clefs")] = 3;
         m_Tags[3][_T("G")] = _T("Sol");
         m_Tags[3][_T("F")] = _T("Fa4");
@@ -343,6 +350,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[3][_T("subbass")] = _T("Fa5");
         m_Tags[3][_T("french")] = _T("Sol1");
 
+        //special context: key signatures
         m_Contexts[_T("Keys")] = 4;
         m_Tags[4][_T("Do")] = _T("Do");
         m_Tags[4][_T("Sol")] = _T("Sol");
@@ -375,6 +383,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[4][_T("Solm")] = _T("Solm");
         m_Tags[4][_T("Rem")] = _T("Rem");
 
+        //special context: single char very frequent elements
         m_Contexts[_T("SingleChar")] = 5;
         m_Tags[5][_T("g")] = _T("g");   //beamed group 
         m_Tags[5][_T("l")] = _T("l");   //tie 

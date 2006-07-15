@@ -136,7 +136,8 @@ public:
 
     //renderization related methods
     lmLUnits GetXPosFinalBarline();
-
+    void SetSpaceBeforeClef(lmLUnits nSpace) { m_nSpaceBeforeClef = nSpace; }
+    lmLUnits GetSpaceBeforeClef() { return m_nSpaceBeforeClef; }
 
 
 private:
@@ -172,6 +173,9 @@ private:
     lmLUnits    m_rightMargin;
     lmLUnits    m_bottomMargin;
     lmLUnits    m_nHeight;          //TopMargin + Staves height + BottomMargin
+
+    //for drawing prolog
+    lmLUnits    m_nSpaceBeforeClef;
 
 };
 

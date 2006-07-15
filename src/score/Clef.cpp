@@ -79,14 +79,15 @@ lmTenths lmClef::GetGlyphOffset()
     lmEGlyphIndex nGlyph = GetGlyphIndex();
     lmTenths yOffset = aGlyphsInfo[nGlyph].GlyphOffset;
 
-    //add offset to move staff lines up/down
+    //add offset to move the clef up/down the required lines
     switch(m_nClefType)
     {
         case eclvFa3: yOffset += 10;    break;
-        case eclvDo2: yOffset -= 10;    break;
-        case eclvDo3: yOffset -= 20;    break;
-        case eclvDo4: yOffset -= 30;    break;
-        //case eclvDo5: yOffset -= 20;    break;
+        case eclvFa5: yOffset -= 10;    break;
+        case eclvDo1: yOffset += 20;    break;
+        case eclvDo2: yOffset += 10;    break;
+        case eclvDo4: yOffset -= 10;    break;
+        case eclvDo5: yOffset -= 20;    break;
         default:
             ;
     }
@@ -108,7 +109,7 @@ lmEGlyphIndex lmClef::GetGlyphIndex()
         case eclvDo2: return GLYPH_C_CLEF;
         case eclvDo3: return GLYPH_C_CLEF;
         case eclvDo4: return GLYPH_C_CLEF;
-        case eclvPercussion: return GLYPH_NO_CLEF;
+        case eclvPercussion: return GLYPH_PERCUSSION_CLEF_BLOCK;
         default:
             wxASSERT_MSG( false, _T("Invalid value for attribute m_nClefType"));
             return GLYPH_G_CLEF;

@@ -52,10 +52,13 @@ struct lmGlyph
     int         GlyphOffset;
     int         SelRectShift;
     int         SelRectHeight;
+    int         Top;
+    int         Bottom;
     wxString    sName;
 
-    lmGlyph(const wxChar g, int yo, int ys, int h, const wxString n)
-        : GlyphChar(g), GlyphOffset(yo), SelRectShift(ys), SelRectHeight(h), sName(n)
+    lmGlyph(const wxChar g, int yo, int ys, int h, int t, int b, const wxString n)
+        : GlyphChar(g), GlyphOffset(yo), SelRectShift(ys), SelRectHeight(h), 
+          Top(t), Bottom(b), sName(n)
         {
         }
 
@@ -98,16 +101,16 @@ enum lmEGlyphIndex {
 
     //note flags
     GLYPH_EIGHTH_FLAG_DOWN,     //eighth, corchea 
-    GLYPH_EIGHTH_FLAG_UP, 
     GLYPH_16TH_FLAG_DOWN,       //16th, semicorchea
-    GLYPH_16TH_FLAG_UP, 
     GLYPH_32ND_FLAG_DOWN,       //32nd, fusa 
-    GLYPH_32ND_FLAG_UP,
     GLYPH_64TH_FLAG_DOWN,       //64th, semifusa 
-    GLYPH_64TH_FLAG_UP,
     GLYPH_128TH_FLAG_DOWN,      //128th, garrapatea
-    GLYPH_128TH_FLAG_UP,
     GLYPH_256TH_FLAG_DOWN,      //256th, semigarrapatea
+    GLYPH_EIGHTH_FLAG_UP, 
+    GLYPH_16TH_FLAG_UP, 
+    GLYPH_32ND_FLAG_UP,
+    GLYPH_64TH_FLAG_UP,
+    GLYPH_128TH_FLAG_UP,
     GLYPH_256TH_FLAG_UP,
 
     //accidentals
@@ -120,8 +123,26 @@ enum lmEGlyphIndex {
     //clefs
     GLYPH_G_CLEF,
     GLYPH_F_CLEF,
+    GLYPH_F_CLEF_OTTAVA_ALTA, 
+    GLYPH_F_CLEF_OTTAVA_BASSA,
     GLYPH_C_CLEF,
-    GLYPH_NO_CLEF,
+    GLYPH_PERCUSSION_CLEF_BLOCK,
+
+    //numbers for time signatures
+    GLYPH_NUMBER_0,
+    GLYPH_NUMBER_1,
+    GLYPH_NUMBER_2,
+    GLYPH_NUMBER_3,
+    GLYPH_NUMBER_4,
+    GLYPH_NUMBER_5,
+    GLYPH_NUMBER_6,
+    GLYPH_NUMBER_7,
+    GLYPH_NUMBER_8,
+    GLYPH_NUMBER_9,
+
+    //signs
+    GLYPH_DOT,      //for dotted notes
+
 
 
 

@@ -360,7 +360,7 @@ the author.</p>
 <p>The <em>Version</em> element is just a number to indicate the LDP language version used
 to encode the score. For example:</p>
 <pre class="example">
-(vers 1.5)      the score is encoded using LDP version 1.4
+(vers 1.5)      the score is encoded using LDP version 1.5
 </pre>
 
 <p>In case you would like to use a different set of tags than the English set or to use
@@ -393,74 +393,138 @@ characteristics.</p>
 <h2><a name="description_Instrument">The Instrument element</a></h2>
 <a href="#TOC">TOC</a>
 
-<p>An Instrument is a collection of elements, describing the music for that instrument.</p>
+<p>An Instrument is a collection of one or more
+staves (i.e., grand-staff) describing the music.
+</p>
+
 
 <p>
-<a name="rule_instrument">&nbsp;</a>
 <span class="nt">Instrument</span> :=
     (<span class="t">instrument</span>
-    [<span class="nt">InstrName</span>]
+    [<span class="nt">Name</span>
+    [<span class="nt">Abbreviation</span>]]
+    [<span class="nt">FirstSystemIndent</span>]
     [<span class="nt">MIDI_Info</span>]
     [<span class="nt">Staves</span>]
-    {<span class="nt">MusicData</span> |
-     <span class="nt">Split</span> }
+    <span class="nt">MusicData</span>+
     <span class="t">)</span>
+
 <br />
+<span class="nt">Name</span> :=
+    (<span class="t">name</span>
+    <span class="nt">Text-string</span>
+    [<span class="nt">Font</span>]
+    [<span class="nt">Location</span>]
+    <span class="t">)</span>
+
+<br />
+<span class="nt">Abbreviation</span> :=
+    (<span class="t">abbrev</span>
+    <span class="nt">Text-string</span>
+    [<span class="nt">Font</span>]
+    [<span class="nt">Location</span>]
+    <span class="t">)</span>
+
+<br />
+<span class="nt">FirstSystemIndent</span> :=
+     <span class="nt">x relative location</span>
+</p>
+
+
+<p>Instruments have usually a name. Optionally, also an abbreviated name; in these cases
+the name will be used at the start of the first system, and the abbreviation for
+succeeding systems.</p>
+
+<p>The musical content is described by MusicData elements. Polyphony is possible, as
+notes, rests and other elements can be assigned to different voices. Any voice can
+move across all staves of the instrument.</p>
+
+<p>Examples:
+Two instruments, first one on single staff and second with two staves (grand-staff):</p>
+
+<pre class="example">
+(instrument (name "Flute") (musicData ...))
+(instrument (staves 2)(name "Piano") (musicData ...))
+</pre>
+
+
+<p>By default, the instrument will use a 5-line staff. This can be
+modified using the Staves element, which describes the type and layout of
+the staves to use for the instrument:</p>
+
+<p>
 &nbsp;<span class="nt">Staves</span> :=
     (<span class="t">staves</span>
-     <span class="nt">num</span>)
+     { <span class="nt">num</span> |
+       <span class="t">overlayered</span> } )
 </p>
 
-<p>Instruments can have a name
+<p>For now the Staves element is just
+the number of five lines staves to use. One is the default value if no 'Staves'
+element is specified. For Grand-staff 2 must be coded. In
+future versions additional options will be included to allow for a full description
+of any type of desired staff layout.
+
+<span style="color: #ff0000">Not yet implemented:</span>
+Instead of a number the keyword 'overlayered' can be used. This is useful
+for those cases in which it is required than multiple instruments share the same staff.
+Percussion parts or piano reduction scores are examples of these cases.
 </p>
 
-<p>The 'music' is described by just MusicData element or a Split element. What are they?
-Any plain-text music representation has to describe music in sequence. But a music
-score is not just a sequence of musical objects; the vertical organization of simultaneous
-voices is equally important. So, when trying to describe music as a sequence of
-elements we are confronted to a dilemma: To describe a polyphonic composition, should
-each voice be described in sequence? or should it be described as a sequence of chords?
-Should the horizontal
-organization of musical parts be primary, or should the vertical organization of musical
-measures? The answer is different for every music application.
+<!--
+<p>This is represented in LDP by defining overlayered instruments for the
+other instruments
+sharing the staff. In these cases overlayered instruments must have the 'overlayered'
+attribute, meaning that the are overlayered on the previously defined instrument. They
+will heritage the Staves element from the instrument on which they are overlayered.</p>
+-->
 
-But the representation language have to be flexible to allow for representing music both
-ways, and be able to switch between them easily.</p>
+<p>If the instrument name is specified, the first system is automatically indented
+to print it. If no name specified or
+if you desire a different indentation space, it is possible to specify the desired
+indentation by using an x displacement
+element.
+If relative units are specified (tenths) it will be always assumed than they refer
+to first staff.</p>
 
-<div class="comparison">
-<p><b>Guido</b> and <b>LilyPond</b> offer two orthogonal constructors to allow for describing music
-either horizontally, as a sequence of in time consecutive musical objects,
-or vertically (in parallel), as a series of simultaneous - in time - musical objects.
-The most simple form of parallelism
-is a chord where the voices consist of single notes.</p>
+<p>Examples:</p>
 
-<p>Sequence:<br />
-- GUIDO: '[ ... ]'<br />
-- LilyPond: '{ ... }'</p>
+<pre class="example">
+First system indentation: 20mm and name 'Flute' in this space:
+    (instrument name="Flute" (dx 20mm)(musicData ...))
 
-<p>Parallelism:<br />
-- GUIDO: '{ ... }'<br />
-- LilyPond: '&lt;&lt; ... &gt;&gt;'</p>
-
-<p>Both constructors can be mixed and recursively used, giving a lot of flexibility to
-the user to describe music in whatever way it is more suitable.</p>
+First system indentation: 20mm and no name
+    (instrument (dx 20mm)(musicData ...))
+</pre>
 
 
-<p><b>MusicXML</b> is less flexible. It offers both approaches (score-partwise DTD or
-score_timewise DTD) but only for the whole score. The two approaches can not be
-combined or applied recursively. This creates some problems and, from a user point of
-view, is quite inflexible. To give some more flexibility and provide a solution to
-allow certain parallelism in sequential descriptions,
-two by-passes are provided:</p>
 
-<ul>
-    <li>An explicit chord constructor to describe chords.</li>
-    <li>A non-declarative but procedural approach to allow
-        parallelism inside a sequential description: tags 'backup' and 'forward' are
-        used to reposition an 'internal time counter' and create parallel descriptions.
-        This parallelism is only allowed inside a measure.</li>
-</ul>
-</div>
+
+
+<p>It is also possible to include multiple MusicData elements in an instrument. In these
+cases, each MusicData element is layered over all the other MusicData elements of the
+instrument. These can be useful for describing many voices in a single instrument. The
+only limitation of this approach is that music elements (notes, rests, etc.) in each
+MusicData collection can not relate (ties, slurs, ...) to
+elements in any other MusicData element.</p>
+
+
+<p>Example:</p>
+
+<pre class="example">
+
+Three voices in one instrument with two staves:
+  - Any voice can go across the two staves.
+  - Implemented as three parts (musicData), second and third overlayered
+
+    (instrument (staves 2)(voices 3)
+                (name "Piano")
+                (musicData ...)
+                (musicData ...)
+                (musicData ...)
+    )
+
+</pre>
 
 
 <!-- ==================================================================================================== -->
@@ -861,7 +925,7 @@ o       //also 128th note
     <tr><td class="grid">e - <b>e</b>ighth, 8th (quaver)</td></tr>
     <tr><td class="grid">s - <b>s</b>ixteenth, 16th (semiquaver)</td></tr>
     <tr><td class="grid">t - <b>3</b>2th (demisemiquaver)</td></tr>
-    <tr><td class="grid">x - <b>6</b>4th (hemidemisemiquaver)</td></tr>
+    <tr><td class="grid">i - 64th (hemidemisemiquaver)</td></tr>
     <tr><td class="grid">o - <b>1</b>28th (semihemidemisemiquaver)</td></tr>
     <tr><td class="grid">f - 2<b>5</b>6th (?)</td></tr>
     </table>
@@ -875,7 +939,7 @@ o       //also 128th note
     <tr><td class="grid">e - <b>e</b>ighth, 8th (quaver)</td><td class="grid">c - <b>c</b>orchea</td></tr>
     <tr><td class="grid">s - <b>s</b>ixteenth, 16th (semiquaver)</td><td class="grid">s - <b>s</b>emicorchea</td></tr>
     <tr><td class="grid">t - <b>3</b>2th (demisemiquaver)</td><td class="grid">f - <b>f</b>usa</td></tr>
-    <tr><td class="grid">x - <b>6</b>4th (hemidemisemiquaver)</td><td class="grid">m - se<b>m</b>ifusa</td></tr>
+    <tr><td class="grid">i - <b>6</b>4th (hemidemisemiquaver)</td><td class="grid">m - se<b>m</b>ifusa</td></tr>
     <tr><td class="grid">o - <b>1</b>28th (?)</td><td class="grid">g - <b>g</b>arrapatea</td></tr>
     <tr><td class="grid">f - 2<b>5</b>6th (?)</td><td class="grid">p - semigarra<b>p</b>atea</td></tr>
     </table>
@@ -1332,6 +1396,272 @@ be fully specified by using the Stem element. It forces stem direction.</p>
 (n e4 q stem:down)
 </pre>
 
+
+<h2><a name="description_location">The Location element</a></h2>
+
+<h4><a name="description_units">Units</a></h4>
+
+<p>Two type of units:</p>
+
+<dl>
+<dt>relative: tenths.</dt>
+    <dd>one tenth of staff interline space. These units are relative, as a score
+    can have staves of different sizes. So 'tenths' units can only be used to
+    specify location points for objects referred to a staff.</dd>
+
+<dt>absolute: millimeters, inches, centimeters.</dt>
+
+    <dd>When no relative units are posible (for example, to specify page size or page
+    margins) absolute units must be used.</dd>
+</dl>
+
+<p>The unit name is always mandatory for absolute units:</p>
+
+<ul>
+<li>mm - millimeters</li>
+<li>cm - centimeters</li>
+<li>in - inches</li>
+</ul>
+
+<p>if no unit name is specified it will be considered as tenths.</p>
+
+
+<h4><a name="description_location">Location specification</a></h4>
+
+<p>The location element is used to specify the coordinates of the point at which
+an object must be rendered.</p>
+
+<p>Tag 'x' refers to the horizontal direction
+and tag 'y' then a vertical position tag. For example:</p>
+
+<pre class="example">
+(x:40mm y:30mm)
+</pre>
+
+<p>Means that the vertical location must be 30 millimeters
+from the top of the page and the horizontal location must be 40 millimeters
+from the left edge of the page.</p>
+
+<p>The origin of the page (point x=0, y=0) is always at the top lef corner
+of the page, more exactly the intersection point of left and top page margin lines.</p>
+
+<p>The x coordinate increments always to right and y coordinate to bottom.
+Coordinates can always be negative.</p>
+
+<p>Sometimes it is usefull to specify a location not in absolute coordinates but
+relative to another object position. For example, to put a text above a specific
+note or a barline.</p>
+
+<p>In these cases tags 'dx' and 'dy' should be used instead of 'x' and 'y', respectively,
+where the 'd' means 'displacement'. The displacement is computed normally from parent
+object position, from its achor point. This point is normally the lower left corner
+of its boundling rectangle, that is, the smallest rectangle that will completely enclose
+the object. In case of notes, the anchor point is the ower left corner of the
+rectangle enclosing the notehead.</p>
+
+<div class="aknowledgment">
+The idea of allowing location tags relative to another object
+is borrowed from Mup.
+</div>
+
+
+
+<h2><a name="description_font">The Font element</a></h2>
+
+<p>
+<a name="rule_font">&nbsp;</a>
+<span class="nt">Font</span> :=
+    <span class="t">(font</span>
+    [ <span class="nt">FontName</span> ]
+    [ <span class="nt">FontSize</span> ]
+    [ <span class="nt">FontStyle</span> ]
+    <span class="t">)</span>
+
+<br />
+&nbsp;<span class="nt">FontStyle</span> :=
+    { <span class="t">normal</span> |
+    <span class="t">bold</span> |
+    <span class="t">italic</span> |
+    <span class="t">italic-bold</span> }
+</p>
+
+
+
+
+<p>Examples:</p>
+
+<pre class="example">
+(font bold 14pt)
+(font "Arial" 12pt)
+(font 10pt)
+(fond italic)
+</pre>
+
+
+
+
+
+<h2><a name="description_title">The Title element</a></h2>
+
+<p>
+<a name="rule_title">&nbsp;</a>
+<span class="nt">Title</span> :=
+    <span class="t">(title</span>
+    <span class="nt">Alignment</span>
+    <span class="nt">Text-string</span>
+    [<span class="nt">Font</span>]
+    [<span class="nt">Location</span>]
+    <span class="t">)</span>
+
+<br />
+&nbsp;<span class="nt">Alignment</span> :=
+    { <span class="t">left</span> |
+    <span class="t">center</span> |
+    <span class="t">right</span> }
+</p>
+
+
+
+
+<p>Examples:</p>
+
+<pre class="example">
+(title center &quot;Ave Maria (Ellen's Gesang III), D. 839&quot; (font bold 14pt))
+(title left &quot;Words by Walter Scott&quot; (font italic 12pt))
+(title right &quot;Franz Schubert&quot;)
+(title left &quot;Translation by F.Green&quot;)
+</pre>
+
+<p>'center' alignment forces to center the string in current line, without taking into
+account the space consumed by any posible existing left title. That is, 'center' always
+means 'centered in the line'.</p>
+
+<p>The strings can have markup tags (/b /i /font ...) to allow for typographical
+changes (color, size, etc.) in certain words and letters of the string.</p>
+<div class="aknowledgment">
+The idea of allowing markup tags in strings is borrowed from LilyPond.
+</div>
+
+
+<p>The font settings are stored as new default settings for
+comming 'title' tags</p>
+
+<p>The title text string will be printed at current location; therefore, the
+location tag is not normally required. A new line is
+forced only if not enough space in current line for the text-string.</p>
+
+<p>If a location is specified, the text will be positioned so that the lower
+edge of the
+text is located at the specified y location. And alignment
+takes place relative to the given x location. For example:</p>
+
+<pre class="example">
+(title right &quot;Franz Schubert&quot; x:40mm y:30mm)
+</pre>
+
+<p>The y location given is 30mm. Since this is an absolute location
+the lower edge of the text will be at 30 millimeters
+from the top margin of the page. As the x location given is 40mm and, again, this is an
+absolute location, the current horizontal position will be 40 millimeters
+from the left edge of the page. Since right justification is indicated,
+the string &quot;Franz Schubert&quot; will be placed such that the right edge of the
+final &quot;t&quot; will be 40 millimeters from the left margin of the page.
+If &quot;center&quot; had been specified, the middle of the string &quot;Franz Schubert&quot; would
+be at 40 millimeters from the left margin of the page.</p>
+
+<p>If a relative location is specified (dx or dy) they will refer always to
+current location. It, normally, will be the right bottom corner of rectangle
+boundling the previous title.</p>
+
+<p>As titles are not positioned on staves, relative location units (tenths) are
+not posible as no staff is involved. You must always use absolute units, such as
+inches or millimeters.</p>
+
+
+
+<h2><a name="description_text">The Text element</a></h2>
+
+<p>Elements of type &quot;text&quot; are used for placing arbitrary
+strings of text on the score.
+They must not be
+used to place neither the lyrics under the notes nor the score titles as for both
+of them there are specific elements.</p>
+
+
+<p>
+<a name="rule_text">&nbsp;</a>
+<span class="nt">Text</span> :=
+    (<span class="t">text</span>
+    <span class="nt">Text-string</span>
+    <span class="nt">Location</span>
+    [<span class="nt">Font</span>]
+    [<span class="nt">Alignment</span>]
+    [<span class="nt">Origin</span>]
+    [<span class="t">hasWidth</span>]
+    <span class="t">)</span>
+
+<br />
+&nbsp;<span class="nt">Alignment</span> :=
+    { <span class="t"><u>left</u></span> |
+    <span class="t">center</span> |
+    <span class="t">right</span> }
+<br />
+&nbsp;<span class="nt">Origin</span> :=
+    { <span class="t"><u>bottom</u></span> |
+    <span class="t">top</span> }
+
+<p>Examples:</p>
+
+<pre class="example">
+(text &quot;Angelus dicit:&quot; (dx -5)(dy 60))
+(text &quot;Allegro&quot; dy:-30)
+(text &quot;A&quot; dy:0 hasWidth)
+(text &quot;Right&quot; dy:40 right (font normal 24))
+(text &quot;Example 1&quot; dx:center dy:20 center)
+</pre>
+
+
+<p>Parameter 'Origin' specifies the line used as reference in the
+'location' parameter: either the top line of the text or its bottom line.
+By default, location parameter refers to the bottom line of the text.</p>
+
+<p>Parameter 'Alignment' refers to how the text will be positioned, relative to
+the specified location point and origin:</p>
+<ul>
+<li>left - text will be placed such that the right edge of the
+last character will be at the specified point. Depending on the specified or
+implied default origin, it will be the right top corner if
+origin is 'top', or the right bottom corner if origin is 'bottom'.</li>
+<li>right - text will be placed such that the left edge of the
+first character and the origin line will be at the specified point.</li>
+<li>center - text will be placed such that the the middle of the string
+will be at the specified point.</li>
+</ul>
+
+<p>'Location' should be normally relative to the parent's anchor point. But in case
+of 'text' elements defined in a measure, they are relative to current x position and
+fifth line of staff.</p>
+
+
+<p>The font settings are stored as new default settings for
+comming 'text' elements</p>
+
+<!-- MusicXML: directions are StaffObjs associated to a measure
+        A direction is a musical indication that is not attached
+        to a specific note. Two or more may be combined to
+        indicate starts and stops of wedges, dashes, etc. -->
+
+
+<p>By default, 'text' elements do not influence the
+note spacing. To take text width into account, parameter 'hasWidth' must be
+included.</p>
+
+<p>The location admits an special keyword, 'dx:center', which means 'center of
+current measure'.
+This moves the current x location to the center of the space occupied by
+current measure. Using
+this keyword in conjunction with alignment 'center' simplifies placing texts
+centered in a measure.</p>
 
 
 

@@ -694,25 +694,26 @@ lmMainFrame* GetMainFrame(void)
 
 int lmToLogicalUnits(int nValue, lmEUnits nUnits)
 {
-    switch(nUnits) {
-        case lmMICRONS:         return (nValue / 100);      break;
-        case lmMILLIMETERS:     return (nValue * 10);       break;
-        case lmCENTIMETERS:     return (nValue * 100);      break;
-        case lmINCHES:          return (nValue * 254);      break;
-        default:
-            wxASSERT(false);
-            return 10;
-    }
+    return lmToLogicalUnits((double)nValue, nUnits);
+    //switch(nUnits) {
+    //    case lmMICRONS:         return ((int)(lmSCALE * nValue) / 100);      break;
+    //    case lmMILLIMETERS:     return ((int)(lmSCALE * nValue) * 10);       break;
+    //    case lmCENTIMETERS:     return ((int)(lmSCALE * nValue) * 100);      break;
+    //    case lmINCHES:          return ((int)(lmSCALE * nValue) * 254);      break;
+    //    default:
+    //        wxASSERT(false);
+    //        return 10;
+    //}
 
 }
 
 int lmToLogicalUnits(double rValue, lmEUnits nUnits)
 {
     switch(nUnits) {
-        case lmMICRONS:         return (int)(rValue / 100);      break;
-        case lmMILLIMETERS:     return (int)(rValue * 10);       break;
-        case lmCENTIMETERS:     return (int)(rValue * 100);      break;
-        case lmINCHES:          return (int)(rValue * 254);      break;
+        case lmMICRONS:         return (int)(rValue / (lmSCALE * 100.));      break;
+        case lmMILLIMETERS:     return (int)((rValue * 10.) / lmSCALE);       break;
+        case lmCENTIMETERS:     return (int)((rValue * 100.) / lmSCALE);      break;
+        case lmINCHES:          return (int)((rValue * 254.) / lmSCALE);      break;
         default:
             wxASSERT(false);
             return 10;

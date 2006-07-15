@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Logger.cpp,v 1.4 2006/02/23 19:16:31 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -187,10 +186,6 @@ void lmLogger::FlushDataErrorLog()
 void lmLogger::ShowDataErrors(wxString sTitle)
 {
     if (!m_pDataError) return;
-
-    m_pDataError->Close();
-    delete m_pDataError;
-    m_pDataError = (wxFile*) NULL;
 
     wxTextFile oFile(m_sDataErrorPath);
     oFile.Open();

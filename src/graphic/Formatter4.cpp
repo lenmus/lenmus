@@ -159,6 +159,8 @@ lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
             delete pIT;
 
             pBoxSystem->SetNumMeasures(--nAbsMeasure);
+            pBoxSystem->SetFinalX( pPaper->GetCursorX() + nSpaceAfterBarline );
+            pBoxSystem->SetIndent(0);
 
         }
     }
@@ -442,8 +444,9 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOpt
         //dbg ------------------------------------------------------------------------------
 
         //Store information about this system
+        //Here nAbsMeasure is the number of the NEXT measure
         pBoxSystem->SetNumMeasures(m_nMeasuresInSystem);
-        if (nAbsMeasure + m_nMeasuresInSystem -1 == nTotalMeasures && 
+        if ((nAbsMeasure-1) + m_nMeasuresInSystem -1 == nTotalMeasures && 
             pOptions->m_fStopStaffLinesAtFinalBarline)
         {
             //this is the last system and it has been requested to stop staff lines
@@ -541,8 +544,9 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             //   rendering process and the available space for measures is all the paper width.
             //2. but for the other systems we must force the rendering of the prolog because there
             //   are no StaffObjs representing the prolog.
-            if (nSystem != 1 && nRelMeasure == 1)
+            if (nSystem != 1 && nRelMeasure == 1) {
                 pVStaff->DrawProlog(DO_MEASURE, nAbsMeasure, (nSystem == 1), pPaper);
+            }
 
             fNewSystem |= SizeMeasure(pVStaff, nAbsMeasure, nRelMeasure, pPaper);
 
@@ -688,7 +692,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     //between the previous barline (or the prolog, if first measure in system) and the first note
     if (nAbsMeasure != 1) {
         //! @todo review this fixed barline after space
-        lmLUnits nSpaceAfterBarline = lmToLogicalUnits(2, lmMILLIMETERS);    // 2mm
+        lmLUnits nSpaceAfterBarline = pVStaff->TenthsToLogical(10, 1);    // one line
         pPaper->IncrementCursorX(nSpaceAfterBarline);       //space after barline
     }
 
@@ -770,7 +774,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
             } else {
                 //it is not a lmNoteRest.
 
-                //if it is a clef or a key hide(unhide it in prologs
+                //if it is a clef or a key hide/unhide it in prologs
                 bool fHide = (nAbsMeasure != 1 && nRelMeasure == 1 && !fNoteRestFound);
                 if (nType == eTPO_Clef) {
                     ((lmClef*)pSO)->Hide(fHide);
@@ -778,7 +782,12 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
                 if (nType == eTPO_KeySignature) {
                     ((lmKeySignature*)pSO)->Hide(fHide);
                 }
-                
+
+                //if this is a key on the first measure of a system, add space before clef
+                if (nType == eTPO_Clef && nRelMeasure == 1) {
+                    pPaper->IncrementCursorX( pVStaff->GetSpaceBeforeClef() );
+                }
+
                 //Store current x position for this lmStaffObj.
                 if (pSO->GetType() == eTPO_Clef) {
                     //if previous lmStaffObj was also a cleft and this new is in a

@@ -120,6 +120,10 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
     lmStaff* pStaff = new lmStaff(pScore);
     m_cStaves.Append(pStaff);
     
+    //default value
+    //! @todo review this fixed space before the clef
+    m_nSpaceBeforeClef = TenthsToLogical(10, 1);    // one line of first staff
+
     g_pLastNoteRest = (lmNoteRest*)NULL;
 
 }
@@ -525,7 +529,7 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
     lmLUnits dyLinesL = pStaff->GetLineSpacing();
 
     // the font for drawing is scaled by the DC.
-    pStaff->SetFontDraw( pPaper->GetFont(3 * dyLinesL) );        //logical points
+    pStaff->SetFontDraw( pPaper->GetFont(3 * dyLinesL, _T("LenMus Basic") ) );        //logical points
 
     //wxLogMessage(_T("[lmVStaff::SetFont] dyLinesL=%d"), dyLinesL); 
 
@@ -946,7 +950,7 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
 
     //@attention when this method is invoked the paper position must be at the left marging,
     //at the start of a new system.
-    lmLUnits xStartPos = pPaper->GetCursorX();         //Save x to align all clefs
+    lmLUnits xStartPos = pPaper->GetCursorX() + m_nSpaceBeforeClef;         //Save x to align all clefs
     lmLUnits yStartPos = pPaper->GetCursorY();
     
     //iterate over the collection of lmStaff objects to draw current cleft and key signature

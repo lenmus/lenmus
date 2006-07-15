@@ -1,4 +1,3 @@
-// RCS-ID: $Id: TimeSignature.cpp,v 1.7 2006/02/23 19:24:42 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -146,7 +145,7 @@ void lmTimeSignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
 
         // store glyph position
         m_glyphPos.x = 0;
-        m_glyphPos.y = yShift - m_pVStaff->TenthsToLogical( 50, m_nStaffNum );
+        m_glyphPos.y = yShift - m_pVStaff->TenthsToLogical( 40, m_nStaffNum );
     }
 
     DrawTimeSignature(fMeasuring, pPaper, (m_fSelected ? g_pColors->ScoreSelected() : *wxBLACK) );
@@ -171,7 +170,19 @@ lmLUnits lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wx
         m_selRect.width = wxMax(nWidth1, nWidth2);
         m_selRect.height = m_pVStaff->TenthsToLogical( 40, m_nStaffNum );
         m_selRect.x = m_glyphPos.x;
-        m_selRect.y = m_glyphPos.y + m_pVStaff->TenthsToLogical( 50, m_nStaffNum );
+        m_selRect.y = m_glyphPos.y + m_pVStaff->TenthsToLogical( 40, m_nStaffNum );
+
+        //compute Beats and BeatsType positions so that one is centered on the other
+        if (nWidth2 > nWidth1) {
+            //bottom number wider
+            m_xPosTop = (nWidth2 - nWidth1) / 2;
+            m_xPosBottom = 0;
+        }
+        else {
+            //bottom number wider
+            m_xPosTop = 0;
+            m_xPosBottom = (nWidth1 - nWidth2) / 2;
+        }
 
         // set total width (incremented in one line for after space)
         m_nWidth = m_selRect.width + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
@@ -187,8 +198,8 @@ lmLUnits lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wx
         for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++) {
             // Draw the time signature
             wxPoint pos = GetGlyphPosition();
-            pDC->DrawText(sTopGlyphs, pos.x, pos.y + yOffset );
-            pDC->DrawText(sBottomGlyphs, pos.x,
+            pDC->DrawText(sTopGlyphs, pos.x + m_xPosTop, pos.y + yOffset );
+            pDC->DrawText(sBottomGlyphs, pos.x + m_xPosBottom,
                             pos.y + yOffset + m_pVStaff->TenthsToLogical( 20, nStaff ) );
 
             //compute vertical displacement for next staff

@@ -4,7 +4,7 @@
       (musicData
          //measure 1
          (clef treble)
-         (key Do)
+         (key C)
          (time 2 4)
          (chord (n c5 q)(n e5 q)(n g5 q))
          (chord (n c5 e g+)(n f5 e)(n a5 e))

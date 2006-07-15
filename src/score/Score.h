@@ -267,7 +267,9 @@ enum ECalderon
 //noteheads
 enum ENoteHeads
 {
-    enh_Whole = 1,          //Whole note (redonda)
+    enh_Longa = 1,
+    enh_Breve,
+    enh_Whole,              //Whole note (redonda)
     enh_Half,               //Half note (blanca)
     enh_Quarter,            //Quarter note (negra)
     enh_Cross               //Cross (for percussion) (aspa)

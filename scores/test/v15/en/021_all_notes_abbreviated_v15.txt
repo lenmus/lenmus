@@ -5,12 +5,10 @@
          (clef treble)
          (key C)
          (time 4 4)
-         na3e nb3s nc4t nd4x ne4o nf4e ng4s na
-         nb4e nc5s nd5'32 ne5x nf ng5e nas nb
+         na3q nbe nc4s nd4t nei nfo ngf nal nbd nc5w ndh
          (barline)
-         
-         na5w (barline)
-         nc5h nc4q nc5'4 (barline end)
+         na5'256 ng'128 nf'64 ne5'32 nd'16 nc'8 nb4'4
+         (barline end)
       )
    )
 )

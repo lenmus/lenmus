@@ -56,8 +56,14 @@
 
 
 // DC user mode
-#define lmDC_MODE    wxMM_LOMETRIC    // mode for DC (logical unit: one tenth of mm)
-#define lmSCALE        1.0            // scaling factor so that logical units become microns
+#define lmDC_MODE    wxMM_LOMETRIC    // mode for DC (DC unit: one tenth of mm)
+
+// factor to multiply the program internal unit (logical units) so that
+// they became DC units: one tenth of mm
+
+#define lmSCALE      1.0              // logical units: one tenth of millimiter
+//#define lmSCALE      0.1              // logical units: one cent of millimiter
+//#define lmSCALE      0.01             // logical units: one micron
 
 enum lmEUnits {
     lmMICRONS = 0,

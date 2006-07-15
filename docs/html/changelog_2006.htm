@@ -32,7 +32,47 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
     <td class="ListaImpar">Changes<p>
     </td></tr>
 
-
+<tr valign="top">
+    <td class="ListaPar">15-jul-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Bug fixed: Top and bottom time signature numbers not centered one respect
+          the other one. Now solved.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">14-jul-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>lmNote: DrawDot method created. Test to draw it using the music font.
+          Adjusting stem line and thickness. Changes in Beam to take thickness
+          into account.</li>
+        <li>Bug fixed in Formatter4::RenderMinimal(). Set finalX and Indent.
+          AS nothing was assigned this caused that the staff lines were not
+          drawn in scales exercise.</li>
+        <li>Bug fixed in LDPParser::AnaylzeNoteType(): dots were ignored.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">13-jul-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Use of new font lmbasic.ttf. lmGlyph: Modifications include new gyphs and more
+          info for glyphs. lmNote modified to not draw notes in block but always draw
+          flags and stems. Other minor modifications.</li>
+        <li>Bug fixed in lmLoger::ShowDataErrors(). The pointer to the file was deleted
+          causing that subsequent attempts to use the log failed (but no crash). For
+          the user, the effect was than when openning a second score no error log 
+          was shown.</li>
+        <li>Bug fixed: English tag name for 64th note conflicted with double sharp
+          notation.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">11,12-jul-06</td>
+    <td class="ListaPar">
+      Preparing new font with more symbols.
+    </td></tr>
 <tr valign="top">
     <td class="ListaPar">10-jul-06</td>
     <td class="ListaPar">

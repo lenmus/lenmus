@@ -194,7 +194,7 @@ void lmChord::DrawStem(bool fMeasuring, wxDC* pDC, wxColour colorC, wxFont* pFon
     wxASSERT(pDC);
 
     lmNote* pBaseNote = GetBaseNote();
-    lmLUnits xStem = pBaseNote->GetXStem();
+    lmLUnits xStem = pBaseNote->GetXStemLeft();
     lmLUnits yStemStart=0, yStemEnd=0;
 
     if (!pBaseNote->IsBeamed()) {
@@ -273,8 +273,9 @@ lmLUnits lmChord::DrawFlag(bool fMeasuring, wxDC* pDC, lmNote* pBaseNote,
             nGlyph = (fStemDown ? GLYPH_256TH_FLAG_DOWN : GLYPH_256TH_FLAG_UP);
             break;
         default:
-            wxLogMessage(_T("[lmChord::DrawFlag] Error: invalid note type %d."),
-                        nNoteType);
+            //wxLogMessage(_T("[lmChord::DrawFlag] Error: invalid note type %d."),
+            //            nNoteType);
+            wxASSERT(false);
         }
 
     wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
@@ -430,7 +431,7 @@ void lmChord::ComputeLayout(lmPaper* pPaper, wxPoint paperPos, wxColour colorC)
     lmNote* pNote;
     //first loop to process notes not shitfted to right
     wxNotesListNode* pNode = m_cNotes.GetFirst();
-    wxLogMessage(_T("[lmChord::ComputeLayout] First loop to process notes not shitfted to right"));
+    //wxLogMessage(_T("[lmChord::ComputeLayout] First loop to process notes not shitfted to right"));
     for(iN=1; pNode; pNode=pNode->GetNext(), iN++ ) {
         pNote = (lmNote*)pNode->GetData();
         ///@aware The font to render the note and its accidentals is set in method
@@ -443,7 +444,7 @@ void lmChord::ComputeLayout(lmPaper* pPaper, wxPoint paperPos, wxColour colorC)
             ComputeAccidentalLayout(true, pNote, iN, pPaper, paperPos, colorC);
     }
     //second loop to process notes  shitfted to right
-    wxLogMessage(_T("[lmChord::ComputeLayout] Second loop to process notes  shitfted to right"));
+    //wxLogMessage(_T("[lmChord::ComputeLayout] Second loop to process notes  shitfted to right"));
     pNode = m_cNotes.GetFirst();
     for(iN=1; pNode; pNode=pNode->GetNext(), iN++ ) {
         pNote = (lmNote*)pNode->GetData();

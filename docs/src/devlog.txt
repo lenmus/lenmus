@@ -79,16 +79,18 @@ LenMus project philosophy (to remind me to always stay on this):
   Tasks for release 3.1
   ------------------------
     - prepare score samples
-    - re-structure LDP manual: more didactical
-    - Font glyphs: for 128th and 256th notes. Clefs 8va.
-    - Glyphs: complete all notes and rests
+    - finish LDP manual for v1.5
+    - Font:
+		- adjust glyphs for flags
+		- adjust dot
+	+ Time Signature: numbers spacing i.e. 12/8
     - Prepare UpdateData.xml file
+    - Dotted notes: decide if glyph or direct draw
     
     Bugs:
         - staff lines size in reading exercises lessons 4 and 18
-        - staff lines in scales exercise
+        + staff lines in scales exercise
         - memory leaks (chords?)
-        - when openning a second score no error log shown
    
     
  Spanish translation errors:
@@ -120,7 +122,7 @@ LenMus project philosophy (to remind me to always stay on this):
     - Include XML import:
         - Treatment of ActualNotes and NormalNotes in XLMParser for tuplets
     - Different paths for Open and Import
-    - Font for texts including somo music symbols (accidentals)
+    - (? ->no. i18n problem)Font for texts including some music symbols (accidentals)
     - Include theory reference book taken from Wikipedia?
     - zoom toolbar:
 		- icons
@@ -161,6 +163,7 @@ Area 0: Bugs to solve
     - If Midi Wizard is cancelled some non-relevant error messages are displayed when
         there is no soundcard on the computer (tested with VMWare)
     - MusicXML import: note pitch.
+    - crash if click with right button on list of eBooks
 
         
 Area 1: New features to add in short term to working release

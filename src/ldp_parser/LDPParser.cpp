@@ -141,6 +141,7 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename)
     m_fFromString = false;        //a file is going to be parsed, not a string
     m_nErrors = 0;
     m_nWarnings = 0;
+    g_pLogger->FlushDataErrorLog();
     lmLDPNode* pRoot = LexicalAnalysis();
     lmScore* pScore = (lmScore*) NULL;
     if (pRoot) 
@@ -3043,7 +3044,7 @@ bool lmLDPParser::AnalyzeNoteType(wxString sNoteType, ENoteType* pnNoteType,
     //analyze dots
     *pfDotted = false;
     *pfDoubleDotted = false;
-    if (sDots.Len() > 1) {
+    if (sDots.Len() > 0) {
         if (sDots.StartsWith( _T("..") )) {
             *pfDoubleDotted = true;
         } else if (sDots.StartsWith( _T(".") )) {

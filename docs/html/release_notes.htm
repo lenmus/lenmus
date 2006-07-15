@@ -15,6 +15,7 @@
   <li>Toolbars are now draggable and dockable.</li>
   <li>Play back toolbar added.</li>
   <li>LDP language improvements to support more features.</li>
+<!--
   <li>Overlayered voices and cross-staff voices.</li>
   <li>Score titles and text on the score.</li>
   <li>Better renderization of chords.</li>
@@ -23,6 +24,8 @@
   <li>Instrument name for first system.</li>
   <li>Instrument abbreviation for other systems.</li>
   <li>All types of tuples supported.</li>
+-->
+  <li>Stem lengths now ajusted to follow usual music engraving rules.</li>
   <li>Several bug fixes (<a href="#details">see details</a>).</li>
 </ul>
 
@@ -38,9 +41,15 @@
 
 <tr valign="top">
     <td class="ListaPar">
+      <b>Top and bottom time signature numbers not centered one respect the other one.</b><br />
+      Now solved.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">
       <b>Frequency to check for program updates changes if language is changed.</b><br />
       The problem was caused by saving setting in a language dependent way. Now solved.
     </td></tr>
+<tr valign="top">
     <td class="ListaPar">
       <b>When playing back a score, accidentals not always propagated along the measure.</b><br />
       The problem is now solved.
