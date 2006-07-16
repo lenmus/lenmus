@@ -124,6 +124,8 @@ public:
     void OnZoom150(wxCommandEvent& event) { OnZoom(event, 150); }
     void OnZoom200(wxCommandEvent& event) { OnZoom(event, 200); }
     void OnZoomOther(wxCommandEvent& event);
+    void OnZoomUpdateUI(wxUpdateUIEvent &event);
+
 
     // View menu events
     void OnViewTools(wxCommandEvent& WXUNUSED(event));
@@ -166,7 +168,6 @@ public:
     // other methods
     void SetOpenBookButton(bool fButtonPressed);
     void SetOpenHelpButton(bool fButtonPressed);
-    void UpdateMenuAndToolbar();
     void UpdateToolbarsLayout();
     void SilentlyCheckForUpdates(bool fSilent);
 

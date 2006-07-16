@@ -54,6 +54,10 @@
 
 #include "global.h"
 
+// access to global external variables (to disable mouse interaction with the score)
+extern bool g_fReleaseVersion;            // in TheApp.cpp
+extern bool g_fReleaseBehaviour;        // in TheApp.cpp
+
 
 BEGIN_EVENT_TABLE(lmScoreCanvas, wxWindow)
     EVT_ERASE_BACKGROUND(lmScoreCanvas::OnEraseBackground)
@@ -111,7 +115,16 @@ void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
 {
     if (!m_pView) return;
     wxClientDC dc(this);
-    m_pView->OnMouseEvent(event, &dc);
+
+    //Disable interaction with the score. Only mouse wheel allowed
+    //Only for release version
+    if (g_fReleaseVersion || g_fReleaseBehaviour) {
+        if (event.GetEventType() == wxEVT_MOUSEWHEEL) {
+            m_pView->OnMouseEvent(event, &dc);
+        }
+    }
+    else
+        m_pView->OnMouseEvent(event, &dc);
 
 }
 

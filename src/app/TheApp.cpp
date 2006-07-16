@@ -54,10 +54,10 @@
 
 
 
-#if !_DEBUG
-extern void __cdecl wxAssert(int n, char const * s,int m,char const *s2,char const *s3);
-void __cdecl wxAssert(int n, char const * s,int m,char const *s2,char const *s3) {}
-#endif
+//#if !_DEBUG
+//extern void __cdecl wxAssert(int n, char const * s,int m,char const *s2,char const *s3);
+//void __cdecl wxAssert(int n, char const * s,int m,char const *s2,char const *s3) {}
+//#endif
 
 // verify wxWidgets setup
 #if !wxUSE_DOC_VIEW_ARCHITECTURE
@@ -184,7 +184,11 @@ bool lmTheApp::OnInit(void)
 #ifdef _DEBUG
 	// For debugging: send log messages to a file
     FILE* pFile;
-    pFile = fopen(_T("LenMus_error_log.txt"), _T("w"));
+    #ifdef _UNICODE
+        pFile = _wfopen(_T("LenMus_error_log.txt"), _T("w"));
+    #else
+        pFile = fopen(_T("LenMus_error_log.txt"), _T("w"));
+    #endif
 	wxLog *logger = new wxLogStderr(pFile);
     wxLogChain *logChain = new wxLogChain(logger);
 	//delete wxLog::SetActiveTarget(logger);

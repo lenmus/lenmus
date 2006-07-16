@@ -6,11 +6,14 @@ EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
+		Debug Unicode = Debug Unicode
 		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
 		{93AB5FBE-4891-4EC6-86B8-FEA27FADF6F9}.Debug.ActiveCfg = Debug|Win32
 		{93AB5FBE-4891-4EC6-86B8-FEA27FADF6F9}.Debug.Build.0 = Debug|Win32
+		{93AB5FBE-4891-4EC6-86B8-FEA27FADF6F9}.Debug Unicode.ActiveCfg = Debug Unicode|Win32
+		{93AB5FBE-4891-4EC6-86B8-FEA27FADF6F9}.Debug Unicode.Build.0 = Debug Unicode|Win32
 		{93AB5FBE-4891-4EC6-86B8-FEA27FADF6F9}.Release.ActiveCfg = Release|Win32
 		{93AB5FBE-4891-4EC6-86B8-FEA27FADF6F9}.Release.Build.0 = Release|Win32
 	EndGlobalSection

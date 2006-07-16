@@ -517,7 +517,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
             nxLeft += DrawDot(fMeasuring, pDC, nxLeft, yPos, colorC, true);
         if (m_fDoubleDotted) {
             nxLeft += nSpaceBeforeDot;
-            nxLeft += DrawDot(fMeasuring, pDC, nxLeft, yPos, colorC, false);
+            nxLeft += DrawDot(fMeasuring, pDC, nxLeft, yPos, colorC, true);
         }
     }
 

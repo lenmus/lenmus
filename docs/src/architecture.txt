@@ -402,6 +402,10 @@ Conclusions:
     
 From 1 & 2 ==> All parameters for renderization are part of the document.
 
+    + Dotted notes: decide if glyph or direct draw: for screen, at small zooming, I get
+		better results using the font. For high zooming fators, the quality is equivalent.
+		This result must be caused by anti-alising feaures of font renderization.
+
 
 @section spacing_margins Page, systems and staves spacing and margins
 <!-- ========================================================================= -->

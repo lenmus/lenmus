@@ -267,6 +267,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_UPDATE_UI (MENU_Print, lmMainFrame::OnFileUpdateUI)
     EVT_UPDATE_UI (wxID_SAVE, lmMainFrame::OnFileUpdateUI)
     EVT_UPDATE_UI (wxID_SAVEAS, lmMainFrame::OnFileUpdateUI)
+    EVT_UPDATE_UI (MENU_File_New, lmMainFrame::OnFileUpdateUI)
 
     //Edit menu/toolbar
     EVT_UPDATE_UI (wxID_COPY, lmMainFrame::OnEditUpdateUI)
@@ -288,6 +289,8 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_MENU (MENU_Zoom_200, lmMainFrame::OnZoom200)
     EVT_MENU (MENU_Zoom_Other, lmMainFrame::OnZoomOther)
     EVT_COMBOBOX (ID_COMBO_ZOOM, lmMainFrame::OnComboZoom)
+    EVT_UPDATE_UI_RANGE (MENU_Zoom_75, MENU_Zoom_Other, lmMainFrame::OnZoomUpdateUI)
+
 
     //Sound menu/toolbar
     EVT_MENU      (MENU_Sound_MidiWizard, lmMainFrame::OnRunMidiWizard)
@@ -941,61 +944,6 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
 }
 
-/*! Obsolete: replaced by UpdateUI events
-
-    Enable/disable menu items and toolbar buttons depending on active window.
-
-    To always have synchronized the menu and toolbar items and its status (enable/disabled)
-    with the allowed menu items /tools for a child frame, all MDI Child windows must implement
-    an OnActivate() handler and, from there, invoke parent frame (the main frame) method
-    UpdateMenuAndToolbar().
-*/
-void lmMainFrame::UpdateMenuAndToolbar()
-{
-    return;
-    //default settings: everything disabled
-    bool fPlay = false;         // menu Play
-    bool fZoom = false;         // menu zoom, combo zoom
-    bool fEdit = false;         // edit: copy, cut, paste
-    bool fView = false;         // view rulers
-
-    // check the type of active window and set flags in accordance
-    wxMDIChildFrame* pChild = GetActiveChild();
-    if (!pChild) {
-        // no window displayed
-    }
-    else if (pChild->IsKindOf(CLASSINFO(lmTextBookFrame))) {
-        //It is a book frame"));
-    }
-    else if (pChild->IsKindOf(CLASSINFO(lmEditFrame))) {
-        fZoom = true;
-   }
-    else {
-        //Unknown frame type"));
-    }
-
-
-    //
-    // enable/disable menu items according to flag settings
-    //
-
-    wxToolBarBase* pToolBar = GetToolBar();
-    wxMenuBar* pMenuBar = GetMenuBar();
-
-    // menu Zoom, combo Zoom
-    int i = pMenuBar->FindMenu(_("&Zoom"));
-    wxASSERT(i != wxNOT_FOUND);
-    pMenuBar->EnableTop(i, fZoom);
-    //pToolBar->ToggleTool(ID_COMBO_ZOOM, fZoom);
-
-    // view rulers
-    pMenuBar->Enable(MENU_View_Rulers, fView);
-
-    //Force to disable Rulers, until they are finished
-    pMenuBar->Enable(MENU_View_Rulers, false);
-
-}
-
 lmMainFrame::~lmMainFrame()
 {
     // deinitialize the frame manager
@@ -1419,6 +1367,13 @@ void lmMainFrame::OnZoom(wxCommandEvent& event, int nZoom)
 
 }
 
+void lmMainFrame::OnZoomUpdateUI(wxUpdateUIEvent &event)
+{
+    wxMDIChildFrame* pChild = GetActiveChild();
+    event.Enable( pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) );
+
+}
+
 void lmMainFrame::OnZoomOther(wxCommandEvent& event)
 {
     int nZoom = (int) ::wxGetNumberFromUser(_T(""), _("Scale? (in %)"), _T(""), 200, 0, 1000);  
@@ -1593,8 +1548,8 @@ void lmMainFrame::OnPrint(wxCommandEvent& WXUNUSED(event))
 void lmMainFrame::OnEditUpdateUI(wxUpdateUIEvent &event)
 {
     wxMDIChildFrame* pChild = GetActiveChild();
-    event.Enable(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
-
+    event.Enable(false);    //pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
+    //always disabled in current version
 }
 
 void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
@@ -1621,6 +1576,11 @@ void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
             break;
         case wxID_SAVEAS:
             event.Enable(fEditFrame);
+            break;
+
+        //comands disbaled in current version
+        case MENU_File_New:
+            event.Enable(false);
             break;
 
         // Other commnads: always enabled

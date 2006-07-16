@@ -359,7 +359,10 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOpt
 
         }    //end of loop to process a measure column
 
-
+        //helper flag to signal if current system is the last one.
+        bool fThisIsLastSystem = 
+                (iIni + m_nMeasuresInSystem > nTotalMeasures);
+        
         //-------------------------------------------------------------------------------
         //Step 2: Justify measures (distribute remainnig space across all measures)
         //-------------------------------------------------------------------------------
@@ -398,7 +401,13 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOpt
         }
         //dbg ---------------
 
-        if (fJustified) RedistributeFreeSpace(m_nFreeSpace);
+        if (fJustified) {
+            //if requested to justify systems, divide up the remaining space
+            //between all bars, except if this is the last bar and options flag
+            //"StopStaffLinesAtFinalBar" is set.
+            if (!(fThisIsLastSystem && pOptions->m_fStopStaffLinesAtFinalBarline))
+                RedistributeFreeSpace(m_nFreeSpace);
+        }
 
         //dbg --------------
         if (m_fDebugMode) {
@@ -444,11 +453,8 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOpt
         //dbg ------------------------------------------------------------------------------
 
         //Store information about this system
-        //Here nAbsMeasure is the number of the NEXT measure
         pBoxSystem->SetNumMeasures(m_nMeasuresInSystem);
-        if ((nAbsMeasure-1) + m_nMeasuresInSystem -1 == nTotalMeasures && 
-            pOptions->m_fStopStaffLinesAtFinalBarline)
-        {
+        if (fThisIsLastSystem && pOptions->m_fStopStaffLinesAtFinalBarline) {
             //this is the last system and it has been requested to stop staff lines
             //in last measure. So, set final x so staff lines go to final bar line
             pBoxSystem->SetFinalX( pVStaff->GetXPosFinalBarline() - 1 );
@@ -641,7 +647,7 @@ void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable)
         nAverage /= m_nMeasuresInSystem;
     }
 
-    //divide up the remaining space
+    //divide up the remaining space between all bars
     if (nAvailable > 0) {
         nDifTotal = nAvailable / m_nMeasuresInSystem;
         for (int i = 1; i <= m_nMeasuresInSystem; i++) {

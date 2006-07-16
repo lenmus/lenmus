@@ -1634,7 +1634,7 @@ void lmXMLParser::ParseWork(wxXmlNode* pNode, lmScore* pScore)
             pScore->AddTitle(sNum, lmALIGN_CENTER, tPos, _T("Times New Roman"), 14, lmTEXT_BOLD);
     }
     else if (sNum != _T("")) {
-        sTitle += ", ";
+        sTitle += _T(", ");
         sTitle += sNum;
         pScore->AddTitle(sTitle, lmALIGN_CENTER, tPos, _T("Times New Roman"), 14, lmTEXT_BOLD);
     }

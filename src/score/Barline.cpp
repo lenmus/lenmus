@@ -202,10 +202,10 @@ void lmBarline::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 lmLUnits lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUnits yTop,
                                lmLUnits yBottom, wxColour colorC)
 {
-    lmLUnits THIN_LINE_WIDTH = lmToLogicalUnits(0.2, lmMILLIMETERS);    // thin line width will be 0.2 mm
-    lmLUnits THICK_LINE_WIDTH = lmToLogicalUnits(1, lmMILLIMETERS);    // thick line width will be 1.0 mm
+    lmLUnits THIN_LINE_WIDTH = m_pVStaff->TenthsToLogical(1.5, 1);    // thin line width
+    lmLUnits THICK_LINE_WIDTH = m_pVStaff->TenthsToLogical(6, 1);    // thick line width
+    lmLUnits nSpacing = m_pVStaff->TenthsToLogical(4, 1);    //space between lines: 4 tenths
 
-    int nSpacing = m_pVStaff->TenthsToLogical(4, 1);    //space between lines: 4 tenths
     if (!fMeasuring) {
         wxPen pen(colorC, THIN_LINE_WIDTH, wxSOLID);
         wxBrush brush(colorC, wxSOLID);

@@ -66,31 +66,17 @@ LenMus project philosophy (to remind me to always stay on this):
   
   ---------------------------------------------------------------------------------------
   Now:
-    + document several VStaffs in one Instrument
-    + flag overlayered in VStaff.
-    + use flag in Formatter4 and BoxSystem
-    + move num-staves to instrument tag
-    - ( allow for num_staves in voice tag only for non-overlayered voices ) ?
-    - How to deal for example with four voices piano reductions:
-        - flag overlayered in Instruments.
-    + name and abbreviation
     
     
   Tasks for release 3.1
   ------------------------
     - prepare score samples
     - finish LDP manual for v1.5
-    - Font:
-		- adjust glyphs for flags
-		- adjust dot
-	+ Time Signature: numbers spacing i.e. 12/8
     - Prepare UpdateData.xml file
-    - Dotted notes: decide if glyph or direct draw
+    - modify installer to remove old font
+    - pack eBook MusicReading
     
     Bugs:
-        - staff lines size in reading exercises lessons 4 and 18
-        + staff lines in scales exercise
-        - memory leaks (chords?)
    
     
  Spanish translation errors:
@@ -130,8 +116,21 @@ LenMus project philosophy (to remind me to always stay on this):
 		- combo box options
 	- view toolbar menu: several toolbars
     - re-locate toolbars if not enough space
+    - Channge MDI child windows by notebook
+    - Spanish .po translated file for wxMidi
+    - ( LDP: allow for num_staves in voice tag only for non-overlayered voices ) ?
+    - LDP: How to deal for example with four voices piano reductions:
+        - flag overlayered in Instruments.
+    - eBookManager: when user changes font size, modify scores scale accordingly.
+
     
-    
+    Bugs to wait to next release:
+    -----------------------------
+    - If score horizontally scrolled and zooming factor is changed, new display is
+		incorrectly shifted.
+	- in some cases (6/8?) metronome is not syncronized when playing a score (i.e. E29)
+	- memory leaks (chords?)
+
     
     
     
@@ -205,6 +204,7 @@ Other:
     be coded inside the program instead of being external html files. All other books
     will be written in Spanish and not translated by me.
     - Allow for simultaneous access to books in different languages
+    - Debug links for TheoMusicReading exercises or use main menu options
 
 
 ******************************************************************************************

@@ -48,11 +48,11 @@ extern lmLogger* g_pLogger;
 
 static wxString m_sKeySignatureName[30];
 static wxString m_sLDPKeyName[30] = {
-        "Do", "Sol", "Re", "La", "Mi", "Si",
-        "Fas", "Dos", "Dob", "Solb", "Reb", "Lab",
-        "Mib", "Sib", "Fa", "Lam", "Mim", "Sim",
-        "Fasm", "Dosm", "Solsm", "Resm", "Lasm", "Labm",
-        "Mibm", "Sibm", "Fam", "Dom", "Solm", "Rem"
+        _T("Do"), _T("Sol"), _T("Re"), _T("La"), _T("Mi"), _T("Si"),
+        _T("Fas"), _T("Dos"), _T("Dob"), _T("Solb"), _T("Reb"), _T("Lab"),
+        _T("Mib"), _T("Sib"), _T("Fa"), _T("Lam"), _T("Mim"), _T("Sim"),
+        _T("Fasm"), _T("Dosm"), _T("Solsm"), _T("Resm"), _T("Lasm"), _T("Labm"),
+        _T("Mibm"), _T("Sibm"), _T("Fam"), _T("Dom"), _T("Solm"), _T("Rem")
 };
 
 //-------------------------------------------------------------------------------------------------

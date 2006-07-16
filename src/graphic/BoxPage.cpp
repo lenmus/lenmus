@@ -69,6 +69,8 @@ lmBoxSystem* lmBoxPage::AddSystem(int nSystem)
 
 void lmBoxPage::Render(lmScore* pScore, lmPaper* pPaper)
 {
+    if (m_nLastSystem == 0) return;
+
     int iSystem;                //number of system in process
     int i;
     lmBoxSystem* pBoxSystem;
