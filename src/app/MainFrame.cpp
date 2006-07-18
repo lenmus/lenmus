@@ -277,6 +277,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     //View menu/toolbar
     EVT_MENU      (MENU_View_Tools, lmMainFrame::OnViewTools)
     EVT_MENU      (MENU_View_Rulers, lmMainFrame::OnViewRulers)
+    EVT_UPDATE_UI (MENU_View_Rulers, lmMainFrame::OnViewRulersUI)
     EVT_MENU      (MENU_View_ToolBar, lmMainFrame::OnViewToolBar)
     EVT_UPDATE_UI (MENU_View_ToolBar, lmMainFrame::OnToolbarsUI)
     EVT_MENU      (MENU_View_StatusBar, lmMainFrame::OnViewStatusBar)
@@ -930,16 +931,6 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     g_pPrefs->Read(_T("/MainFrame/ViewStatusBar"), &fStatusBar);
     menu_bar->Check(MENU_View_StatusBar, fStatusBar);
 
-   if (pView) {
-        // view rulers
-        //menu_bar->Check(MENU_View_Rulers, true);
-        //((lmScoreView*)pView)->SetRulersVisible(true);
-
-        //disable rulers
-        menu_bar->Enable(MENU_View_Rulers, false);
-
-    }
-
     return menu_bar;
 
 }
@@ -1412,6 +1403,18 @@ void lmMainFrame::OnViewRulers(wxCommandEvent& event)
     lmScoreView* pView = g_pTheApp->GetActiveView();
     pView->SetRulersVisible(event.IsChecked());
 
+}
+
+void lmMainFrame::OnViewRulersUI(wxUpdateUIEvent &event)
+{
+    //For now, always disabled in release versions
+    if (g_fReleaseVersion || g_fReleaseBehaviour) {
+        event.Enable(false);
+    }
+    else {
+        wxMDIChildFrame* pChild = GetActiveChild();
+        event.Enable( pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) );
+    }
 }
 
 bool lmMainFrame::ShowRulers()

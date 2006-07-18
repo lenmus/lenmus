@@ -520,6 +520,9 @@ void lmScoreView::GetPageInfo(int* pMinPage, int* pMaxPage, int* pSelPageFrom, i
 
 void lmScoreView::DrawPage(wxDC* pDC, int nPage)
 {
+    // This method is only invoked for print and print-preview.
+    // It is responsible of drawing the requested page.
+
     // Calculate a suitable scaling factor for drawing the page
     int dxDC, dyDC;
     pDC->GetSize(&dxDC, &dyDC);        // size of the DC in pixels
@@ -555,12 +558,6 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage)
     if (dyBitmap != dyDC)
         pDC->SetUserScale((float)dxDC / (float)dxBitmap, (float)dyDC / (float)dyBitmap);
     pDC->Blit(0, 0, dxDC, dyDC, &memoryDC, 0, 0);
-
-    //DEBUG: Write page number
-    wxChar buf[200];
-    wxSprintf(buf, wxT("Pagina %d"), nPage);
-    pDC->DrawText(buf, 10, 10);
-    //----------------------------------
 
     // deselect the las bitmap
     memoryDC.SelectObject(wxNullBitmap);
@@ -1091,6 +1088,10 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
             xLeftMargin = m_xBorder,
             yTopMargin = m_yBorder;
 
+    // To draw a cast shadow for each page we need the shadow sizes
+    lmPixels nRightShadowWidth = 3;      //pixels
+    lmPixels nBottomShadowHeight = 3;      //pixels
+
 
     //First page at (xLeftMargin, yTopMargin), size (xPageSize, yPageSize)
     //Second page at (xLeftMargin, yTopMargin+yPageSize+yInterpageGap)
@@ -1105,10 +1106,6 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     GetScrollPixelsPerUnit(&xScrollUnits, &yScrollUnits);
     xOrg *= xScrollUnits;
     yOrg *= yScrollUnits;
-
-    // To draw a cast shadow for each page we need the shadow sizes
-    lmPixels nRightShadowWidth = 5;      //pixels
-    lmPixels nBottomShadowHeight = 5;      //pixels
 
     //// We also need to know the size of the canvas window to see which
     //// pages are completely hidden and must not get redrawn

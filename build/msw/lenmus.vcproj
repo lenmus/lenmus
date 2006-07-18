@@ -263,7 +263,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexu.lib wxpng.lib wxjpeg.lib wxtiff.lib wxmsw26u_adv.lib wxmsw26u_core.lib wxmsw26u_dbgrid.lib wxmsw26u_gl.lib wxmsw26u_html.lib wxmsw26u_media.lib wxmsw26u_qa.lib wxmsw26u_xrc.lib wxbase26u.lib wxbase26u_net.lib wxbase26u_odbc.lib wxbase26ud_xml.lib wxmidi11u.lib wxauiu.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexu.lib wxpng.lib wxjpeg.lib wxtiff.lib wxmsw26u_adv.lib wxmsw26u_core.lib wxmsw26u_dbgrid.lib wxmsw26u_gl.lib wxmsw26u_html.lib wxmsw26u_media.lib wxmsw26u_qa.lib wxmsw26u_xrc.lib wxbase26u.lib wxbase26u_net.lib wxbase26u_odbc.lib wxbase26u_xml.lib wxmidi11u.lib wxauiu.lib"
 				ShowProgress="0"
 				OutputFile="..\..\z_bin\lenmus_u.exe"
 				LinkIncremental="2"

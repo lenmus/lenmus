@@ -54,10 +54,20 @@
 
 
 
-//#if !_DEBUG
-//extern void __cdecl wxAssert(int n, char const * s,int m,char const *s2,char const *s3);
-//void __cdecl wxAssert(int n, char const * s,int m,char const *s2,char const *s3) {}
-//#endif
+#ifndef _DEBUG
+//For release versions (ANSI and Unicode) there is a compilation/linking error somewhere
+//either in wxWidgets or in wxMidi as these two errors are generated:
+//  wxmidi11.lib(wxMidi.obj) : error LNK2019: símbolo externo "void __cdecl wxAssert(int,char const *,int,char const *,char const *)" (?wxAssert@@YAXHPBDH00@Z) sin resolver al que se hace referencia en la función "void __cdecl wxPostEvent(class wxEvtHandler *,class wxEvent &)" (?wxPostEvent@@YAXPAVwxEvtHandler@@AAVwxEvent@@@Z)
+//  wxmidi11.lib(wxMidiDatabase.obj) : error LNK2001: símbolo externo "void __cdecl wxAssert(int,char const *,int,char const *,char const *)" (?wxAssert@@YAXHPBDH00@Z) sin resolver
+//As I can not avoid the error, these next definitions are a bypass:
+    #if _UNICODE
+        extern void __cdecl wxAssert(int n, unsigned short const* s, int m, unsigned short const* s2, unsigned short const* s3);
+        void __cdecl wxAssert(int n, unsigned short const* s, int m, unsigned short const* s2, unsigned short const* s3) {}
+    #else
+        extern void __cdecl wxAssert(int n, char const* s, int m, char const* s2, char const* s3);
+        void __cdecl wxAssert(int n, char const * s, int m, char const* s2, char const* s3) {}
+    #endif
+#endif
 
 // verify wxWidgets setup
 #if !wxUSE_DOC_VIEW_ARCHITECTURE
@@ -663,23 +673,16 @@ lmEditFrame* lmTheApp::CreateProjectFrame(wxDocument* doc, wxView* view)
     GetMainFrame()->GetClientSize(&nWidth, &nHeight);
 
     // Create a child frame
-    wxSize size(nWidth-20, nHeight-20);
+    int nToolbarHeight = 100;       //! @todo get toolbar height to discount it
+    wxSize size(nWidth-20, nHeight-nToolbarHeight-20);
     wxPoint pos(10, 10);
-    lmEditFrame* subframe = new lmEditFrame(doc, view, GetMainFrame(), pos, size);
+    lmEditFrame* pEditFrame = new lmEditFrame(doc, view, GetMainFrame(), pos, size);
 
-//#ifdef __WXMSW__
-//  subframe->SetIcon(wxString(_T("chart")));
-//#endif
-//#ifdef __X__
-//  subframe->SetIcon(wxIcon(_T("doc.xbm")));
-//#endif
+    //set icon
+    //! @todo Find a better icon
+    pEditFrame->SetIcon( wxArtProvider::GetIcon(_T("tool_new"), wxART_TOOLBAR, wxSize(16,16)) );
 
-    //Removed: children frames will not have its own menu
-    //Make a menubar
-    //wxMenuBar* menu_bar = g_pMainFrame->CreateMenuBar(doc, view, true, !g_fReleaseVersion);        //fEdit, fDebug
-    //subframe->SetMenuBar(menu_bar);   // Associate it with the frame
-
-    return subframe;
+    return pEditFrame;
 }
 
 

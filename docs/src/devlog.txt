@@ -75,8 +75,16 @@ LenMus project philosophy (to remind me to always stay on this):
     - Prepare UpdateData.xml file
     - modify installer to remove old font
     - pack eBook MusicReading
+    - update help documentation
+    
+    - Print peview:
+		- zoom 200
+		- remove page number
     
     Bugs:
+    
+    - Release Unicode:
+		- MidiWizard fails
    
     
  Spanish translation errors:

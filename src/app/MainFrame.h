@@ -130,6 +130,7 @@ public:
     // View menu events
     void OnViewTools(wxCommandEvent& WXUNUSED(event));
     void OnViewRulers(wxCommandEvent& event);
+    void OnViewRulersUI(wxUpdateUIEvent &event);
     void OnViewToolBar(wxCommandEvent& WXUNUSED(event));
     void OnViewStatusBar(wxCommandEvent& WXUNUSED(event));
     void OnToolbarsUI(wxUpdateUIEvent &event);

@@ -27,8 +27,8 @@
     @brief The generic canvas on which the score is rendered.
     
     A 'lmPaper' is the generic canvas on which the score is rendered. It might be a display
-    device,    a printer, etc. Basically it is a DC on wich to write and draw and some methods
-    to deal with unit conversion.
+    device, a printer, etc. Basically it is a DC on wich to write and draw and some methods
+    to deal with unit conversion and cursor positioning.
     
     The lmPaper responsibilities are:
     - it manages the offscreen bitmaps that receives all drawing operations
@@ -46,6 +46,45 @@
     4. Then Prepare must call EndDoc() 
 
     ==> StartDoc() and EndDoc() are not public
+
+--------------------
+New behaviour:
+
+    lmPaper will be divided into two objects:
+    - One to represent just the canvas surface. It will be responsible for:
+        - it is a container for the DC object on which to write.
+        - it is responsible for all scale and unit conversion methods
+        - it is responsible for informing the staff objects about page margins, spacings, 
+            layout, etc.
+
+    - The other new object will be responsible just for:
+        - it manages the offscreen bitmaps that receives all drawing operations
+
+      Instead of creating this second object, its methods will be moved to
+      the GraphicManager.
+      
+
+
+Offscreen bitmaps management
+------------------------------
+
+    As the score is now divided into pages (BoxPage) there is no need to have all
+    bitmaps generated, just only the ones needed for the pages being displayed.
+
+    So, let's start with one bitmap for the first page. As the score is scrolled
+    we reach a second page, and a second bitmap is added.
+    * Q-> When to delete first page bitmap?
+
+    * A1 -> Lets assign a maximum amount memory for bitmaps. Bitmaps pages will be deleted
+    when no more memory available for bitmaps. The last recently used bitmaps are
+    the deleted and space reused for new bitmaps.
+
+    * A2 -> The view have information about pages currently visible. When scroll takes
+    place the view will inform about pages now visible. All other bitmaps will be deleted;
+    as an exception those for previous page and next page will be kept (if enough
+    memory) for smooth scrolling to these most probable pages.
+
+
 
 */
 #ifdef __GNUG__
@@ -114,14 +153,66 @@ wxSize& lmPaper::GetPaperSize()
 }
 
 
+void lmPaper::RestartPageCursors()
+{
+    m_xCursor = GetPageLeftMargin();
+    m_yCursor = GetPageTopMargin();
+
+}
+
+void lmPaper::NewLine(lmLUnits nSpace)
+{
+    m_yCursor += nSpace;
+    m_xCursor = GetPageLeftMargin();
+    
+}
+
+
+
+lmLUnits lmPaper::GetRightMarginXPos()
+{ 
+    return GetPaperSize().GetWidth() - GetPageRightMargin();
+}
+
+lmLUnits lmPaper::GetLeftMarginXPos()
+{
+    return GetPageLeftMargin();
+}
+
+wxFont* lmPaper::GetFont(int nPointSize, wxString sFontName, 
+                       int nFamily, int nStyle, int nWeight, bool fUnderline)
+{
+    return m_fontManager.GetFont(nPointSize, sFontName, nFamily, nStyle, nWeight, fUnderline);
+}
+
+
+void lmPaper::DeleteBitmaps()
+{
+    wxBitmapListNode* pNode = m_cBitmaps.GetFirst();
+    while (pNode) {
+        wxBitmap* pBitmap = pNode->GetData();
+        delete pBitmap;
+        delete pNode;
+        pNode = m_cBitmaps.GetFirst();
+    }
+
+}
+
+
+#define USE_OLD_CODE
+
+#ifdef USE_OLD_CODE   
+
+//--- Old code ---------------------------------------------------------------------
+
 void lmPaper::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight, double rScale)
 {
     // If the score has changed or the scale has changed or paper size has changed 
     // we need to recreate the bitmaps
     bool fDrawScore = m_fRedraw;
     m_fRedraw = false;
-    if (!m_pScore || m_nLastScoreID != pScore->GetID() || m_rScale != rScale || fDrawScore) {
-
+    if (!m_pScore || m_nLastScoreID != pScore->GetID() || m_rScale != rScale || fDrawScore)
+    {
         fDrawScore = true;
 
         //store new values
@@ -177,22 +268,6 @@ void lmPaper::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight
 
 }
 
-void lmPaper::RestartPageCursors()
-{
-    m_xCursor = GetPageLeftMargin();
-    m_yCursor = GetPageTopMargin();
-
-}
-
-void lmPaper::NewLine(lmLUnits nSpace)
-{
-    m_yCursor += nSpace;
-    m_xCursor = GetPageLeftMargin();
-    
-}
-
-
-
 void lmPaper::NewPage()
 {
     wxASSERT(m_pDC);
@@ -226,16 +301,6 @@ void lmPaper::NewPage()
     //}
     ////End DEBUG --------------------------------------------
 
-}
-
-lmLUnits lmPaper::GetRightMarginXPos()
-{ 
-    return GetPaperSize().GetWidth() - GetPageRightMargin();
-}
-
-lmLUnits lmPaper::GetLeftMarginXPos()
-{
-    return GetPageLeftMargin();
 }
 
 // Get the bitmap for page nPage. If no bitmap is allocated, do it.
@@ -278,13 +343,6 @@ wxBitmap* lmPaper::GetPageBitmap(int nPage)
     return pBitmap;
 }
 
-wxFont* lmPaper::GetFont(int nPointSize, wxString sFontName, 
-                       int nFamily, int nStyle, int nWeight, bool fUnderline)
-{
-    return m_fontManager.GetFont(nPointSize, sFontName, nFamily, nStyle, nWeight, fUnderline);
-}
-
-
 // nPage = 0 ... n-1
 wxBitmap* lmPaper::GetOffscreenBitmap(int nPage)
 {
@@ -298,15 +356,139 @@ wxBitmap* lmPaper::GetOffscreenBitmap(int nPage)
     
 }
 
-void lmPaper::DeleteBitmaps()
+
+
+#else
+
+//--- Use new code -------------------------------------------------------------------
+
+
+//New proposed name: will be part of the Layout method 
+void lmPaper::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight, double rScale)
 {
-    wxBitmapListNode* pNode = m_cBitmaps.GetFirst();
-    while (pNode) {
-        wxBitmap* pBitmap = pNode->GetData();
-        delete pBitmap;
-        delete pNode;
-        pNode = m_cBitmaps.GetFirst();
+    //This method forces a re-layout of the score when: 
+    // - the score has changed or,
+    // - the scale has changed or,
+    // - paper size has changed 
+
+    bool fDrawScore = m_fRedraw;
+    m_fRedraw = false;
+    if (!m_pScore || m_nLastScoreID != pScore->GetID() || m_rScale != rScale || fDrawScore) {
+
+        fDrawScore = true;
+
+        //store new values
+        m_pScore = pScore;
+        m_nLastScoreID = m_pScore->GetID();
+        m_rScale = rScale;
+        m_xPageSize = paperWidth;
+        m_yPageSize = paperHeight;
+
+        //delete the allocated bitmaps
+        if (paperWidth != m_xBitmapSize || paperHeight != m_yBitmapSize) {
+            DeleteBitmaps();
+        }
     }
+
+    //repaint score if necesary
+    if (fDrawScore)
+    {
+        // ask the graphics manager to re-layout the score on this paper
+        lmGraphicManager oGraphicMngr(m_pScore, this);
+        oGraphicMngr.Layout();      //This is the measure phase, so no need for a bitmap!!
+    }
+
+    //update total number of pages occupied by this score
+    m_numPages = oGraphicMngr.GetNumPages();
 
 }
 
+void lmPaper::NewPage()
+{
+    //This method is only invoked during renderization phase.
+    //We need a counter for current page, to replace m_numPages, as
+    //this last one contains the total number of pages and was
+    //updated at layout time
+
+    //For printing, the method is OK.
+    //But for display, the method is never invoked
+
+
+    wxASSERT(m_pDC);
+    RestartPageCursors();
+
+    if (m_pDC->IsKindOf(CLASSINFO(wxMemoryDC))) {
+        // get the bitmap for this page
+        wxBitmap* pBitmap = GetPageBitmap(m_numPages);
+        wxASSERT(pBitmap);
+        wxASSERT(pBitmap->Ok());
+        m_numPages++;
+
+        ((wxMemoryDC *)m_pDC)->SelectObject(*pBitmap);
+    }
+
+    m_pDC->Clear();
+    m_pDC->SetMapMode(lmDC_MODE);
+    m_pDC->SetUserScale( m_rScale, m_rScale );
+
+}
+
+// Get the bitmap for page nPage. If no bitmap is allocated, do it.
+// nPage = 0 .. n-1
+wxBitmap* lmPaper::GetPageBitmap(int nPage)
+{
+    wxASSERT(nPage >= 0);
+    wxASSERT(nPage <= m_numPages);    // m_numPages could be not yet incremented
+
+    wxBitmap* pBitmap;
+    int nNumBitmaps = m_cBitmaps.GetCount();
+    if (nNumBitmaps > 0 && nNumBitmaps > nPage ) {
+        // bitmap already exits. Get it.
+        wxBitmapListNode* pNode = m_cBitmaps.Item(nPage);
+        wxASSERT(pNode);
+        pBitmap = pNode->GetData();
+
+    } else {
+        //No bitmap allocated. Create one
+        pBitmap = new wxBitmap(m_xPageSize, m_yPageSize);
+        //wxLogMessage(_T("[lmPaper::GetPageBitmap] Allocated bitmap (%d, %d) pixels, %d bits/pixel. Size= %.02f MB"),
+        //    m_xPageSize, m_yPageSize, pBitmap->GetDepth(), (double)((m_xPageSize * m_yPageSize * pBitmap->GetDepth())/8000000.) );
+        if (!pBitmap || !pBitmap->Ok()) {
+            if (pBitmap) {
+                delete pBitmap;
+                pBitmap = (wxBitmap *) NULL;
+            }
+            wxLogMessage(_T("lmPaper::GetPageBitmap: Bitmap size (%d, %d) pixels."), m_xPageSize, m_yPageSize);
+            wxMessageBox(_("Sorry, not enough memory to create a pBitmap to display the page."),
+                _T("lmPaper.GetPageBitmap"), wxOK);
+            ::wxExit();
+        }
+        // add the new bitmap to the list and store its size
+        m_cBitmaps.Append(pBitmap);
+        m_xBitmapSize = m_xPageSize;
+        m_yBitmapSize = m_yPageSize;
+
+    }
+
+    return pBitmap;
+}
+
+//New logic:
+//New name: RenderPage
+// if bitmap for this page exists then return it.
+// Else, allocate a new bitmap and ask Graphic Manager to draw page nPage
+wxBitmap* lmPaper::GetOffscreenBitmap(int nPage)
+{
+    // nPage = 0 ... n-1
+    wxASSERT(nPage >=0 && nPage < m_numPages);
+    wxASSERT(m_cBitmaps.GetCount());
+    wxASSERT(m_cBitmaps.GetCount() > (size_t)nPage );
+
+    wxBitmapListNode* pNode = m_cBitmaps.Item(nPage);
+    wxASSERT(pNode);
+    return pNode->GetData();
+    
+}
+
+
+#endif

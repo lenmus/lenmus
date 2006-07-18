@@ -41,6 +41,10 @@ The lmScoreDocument contains the score and
 represents the unit of data that the user typically opens with the Open command on the 
 File menu and saves with the Save command on the File menu.
 
+I don't like the MDI approach. It is also deprecated by Microsoft. 
+My choice is a master application window with a ToolBar for tools and a wxNotebook
+containing the documents.
+
 @section ScoreView_class The lmScoreView class
 <!-- ======================================= -->
 
