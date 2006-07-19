@@ -1116,8 +1116,15 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     // pages needed to draw the score
     lmScore *pScore = ((lmScoreDocument *)GetDocument())->GetScore();
     if (!pScore) return;
+
+#if 1     //old 
     m_Paper.Prepare(pScore, xPageSize, yPageSize, m_rScale);
     int nTotalPages = m_Paper.GetNumPages();
+#else
+    m_graphMngr.Prepare(pScore, xPageSize, yPageSize, m_rScale, m_Paper);
+    int nTotalPages = m_graphMngr.GetNumPages();
+#endif
+
     if (nTotalPages != m_numPages) {
         // number of pages has changed. Adjust scrollbars
         m_numPages = nTotalPages;

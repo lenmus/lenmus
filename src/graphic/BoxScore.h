@@ -60,6 +60,7 @@ public:
     void Render(lmPaper* pPaper);      // do the drawing phase
 
     lmBoxPage* GetCurrentPage() { return m_aPages.Item( m_aPages.GetCount() - 1); }
+    int GetNumPages();
 
 
 private:

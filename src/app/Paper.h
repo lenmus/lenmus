@@ -123,7 +123,7 @@ private:
     BitmapList  m_cBitmaps;            // list of bitmaps for offscreen painting
     lmPixels    m_xBitmapSize, m_yBitmapSize;    // size of bitmaps in pixels
     lmPixels    m_xPageSize, m_yPageSize;        // size of page in pixels
-    int     m_numPages;            // num pages that current score has
+    int         m_numPages;            // num pages that current score has
     bool        m_fRedraw;             // force to redraw the score
 
     lmScore*    m_pScore;              // the score to draw in this paper

@@ -61,19 +61,38 @@ class lmGraphicManager
 {
 public:
     lmGraphicManager(lmScore* pScore, lmPaper* pPaper);
+    lmGraphicManager();
     ~lmGraphicManager();
 
-    void Layout();      // measure phase
-    void Render(lmPaper* pPaper);      // drawing phase
+    void Create(lmScore* pScore, lmPaper* pPaper);
+    void Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight, 
+                 double rScale, lmPaper* pPaper);
+
+    void Layout();                          //measure phase
+    void Render();                          //drawing phase
+    wxBitmap* Render(wxDC* pDC, int nPage);      //render page 1..n
+    int GetNumPages();
 
 
 private:
-    lmScore*        m_pScore;       //score to be rendered
-    lmPaper*        m_pPaper;       //paper to use
+    void DeleteBitmaps();
+    wxBitmap* GetPageBitmap(int nPage);
 
-    lmBoxScore*     m_pBoxScore;    //the main container
+    lmScore*        m_pScore;           //score to be rendered
+    lmPaper*        m_pPaper;           //paper to use
+    long            m_nLastScoreID;     // the ID of the last rendered score
+    double          m_rScale;           // drawing scale
+    lmPixels        m_xPageSize, m_yPageSize;        // size of page in pixels
 
-    lmRenderOptions m_options;      //renderization options
+    lmBoxScore*     m_pBoxScore;        //the main container
+
+    lmRenderOptions m_options;          //renderization options
+    bool            m_fReLayout;        //force to re-layout the score
+
+    //offscreen bitmaps management
+    BitmapList      m_cBitmaps;            // offsceen bitmaps 
+    lmPixels        m_xBitmapSize, m_yBitmapSize;    // size of bitmaps in pixels
+
 
 
 };

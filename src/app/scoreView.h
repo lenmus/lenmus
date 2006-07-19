@@ -1,4 +1,3 @@
-// RCS-ID: $Id: scoreView.h,v 1.3 2006/02/23 19:17:49 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -45,6 +44,7 @@
 #include "../widgets/Ruler.h"
 #include "FontManager.h"
 #include "../sound/SoundEvents.h"
+#include "../graphic/GraphicManager.h"
 
 class lmScoreObj;
 
@@ -104,8 +104,8 @@ private:
 
         ////-- variables ---
 
-    lmEditFrame*            m_pFrame;    // the frame for the view
-    lmScoreCanvas*        m_pCanvas;    // the window for rendering the view
+    lmEditFrame*        m_pFrame;       // the frame for the view
+    lmScoreCanvas*      m_pCanvas;      // the window for rendering the view
 
     // controls on the window
     lmRuler*        m_pHRuler;    //rulers
@@ -120,19 +120,19 @@ private:
     int        m_xScrollStepsPerPage, m_yScrollStepsPerPage;    // scroll units to scroll a page
     int        m_thumbX, m_thumbY;                        // scrollbars thumbs size
 
-    double        m_rScale;        // presentation scale
-    lmPaper        m_Paper;        // the lmPaper object to use
+    double          m_rScale;       // presentation scale
+    lmPaper         m_Paper;        // the lmPaper object to use
 
     // visual options
-    bool        m_fRulers;        // draw rulers
+    bool            m_fRulers;      // draw rulers
 
     // positioning of page images (in pixels) onto the view space. This is 
     // a virtual infinite paper on which all pages are rendered one after the other.
     lmPixels    m_xPageSizeD, m_yPageSizeD;    // pages size in pixels
-    lmPixels    m_xBorder;                // margin on both sides, left and rigth, of the page
-    lmPixels    m_yBorder;                // top margin before the first page
+    lmPixels    m_xBorder;              // margin on both sides, left and rigth, of the page
+    lmPixels    m_yBorder;              // top margin before the first page
     lmPixels    m_yInterpageGap;        // gap between pages
-    int        m_numPages;                // the current number of pages contained in the view space
+    int         m_numPages;             // the current number of pages contained in the view space
 
     // scaling factors between display pixels and logical units
     double        m_xDisplayPixelsPerLU;
@@ -141,12 +141,14 @@ private:
     // dragging control variables
     int             m_dragState;
     wxPoint         m_dragStartPosL;
-    wxPoint            m_dragHotSpot;        // pixels
+    wxPoint         m_dragHotSpot;        // pixels
     wxDragImage*    m_pDragImage;
-    lmScoreObj*        m_pSoDrag;            // lmScoreObj being dragged
+    lmScoreObj*     m_pSoDrag;            // lmScoreObj being dragged
 
-    // font management
-    lmFontManager    m_fontManager;
+    // managers
+    lmFontManager       m_fontManager;      //font management
+    lmGraphicManager    m_graphMngr;        //rederization manager
+
 
     DECLARE_DYNAMIC_CLASS(lmScoreView)
     DECLARE_EVENT_TABLE()

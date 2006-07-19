@@ -245,7 +245,7 @@ void lmPaper::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight
         // ask the graphics manager to render the score on this paper
         lmGraphicManager oGraphicMngr(m_pScore, this);
         oGraphicMngr.Layout();
-        oGraphicMngr.Render(this);
+        oGraphicMngr.Render();
 
 
         // @attention method lmScore.Draw() will call NewPage() when need a new page. This will

@@ -76,3 +76,9 @@ lmBoxPage* lmBoxScore::AddPage()
     return pPage;
 
 }
+
+int lmBoxScore::GetNumPages()
+{
+    return (int)m_aPages.GetCount();
+}
+
