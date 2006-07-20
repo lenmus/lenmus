@@ -457,7 +457,11 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOpt
         if (fThisIsLastSystem && pOptions->m_fStopStaffLinesAtFinalBarline) {
             //this is the last system and it has been requested to stop staff lines
             //in last measure. So, set final x so staff lines go to final bar line
-            pBoxSystem->SetFinalX( pVStaff->GetXPosFinalBarline() - 1 );
+            lmLUnits xPos;
+            if (pVStaff->GetXPosFinalBarline(&xPos))
+                pBoxSystem->SetFinalX( xPos - 1 );
+            else
+                pBoxSystem->SetFinalX( pPaper->GetRightMarginXPos() );
         }
         else {
             //staff lines go to the rigth margin

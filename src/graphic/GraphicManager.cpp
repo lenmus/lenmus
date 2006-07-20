@@ -33,6 +33,8 @@
 #pragma hdrstop
 #endif
 
+#include "wx/image.h"
+
 #include "GraphicManager.h"
 #include "Formatter4.h"
 
@@ -120,31 +122,39 @@ wxBitmap* lmGraphicManager::Render(wxDC* pDC, int nPage)
     if (pDC) {
         //DC received. Render page directly on the DC
         m_pPaper->SetDC(pDC);
+        //pDC->SetMapMode(lmDC_MODE);
+        //pDC->SetUserScale( m_rScale, m_rScale );
         m_pBoxScore->RenderPage(nPage, m_pPaper);
+        return (wxBitmap*)NULL;
     }
     else {
         //No DC received. Return the offscreen bitmap for the requested page
         wxBitmap* pBitmap = GetPageBitmap(nPage);
-        if (pBitmap)
-            return pBitmap;
-        else {
+        if (!pBitmap) {
             pBitmap = NewBitmap(nPage);
             wxMemoryDC memDC;   // Allocate a DC in memory for the offscreen bitmap
             memDC.SelectObject(*pBitmap);
             m_pPaper->SetDC(&memDC);
+            memDC.Clear();
+            memDC.SetMapMode(lmDC_MODE);
+            memDC.SetUserScale( m_rScale, m_rScale );
             m_pBoxScore->RenderPage(nPage, m_pPaper);
+            memDC.SelectObject(wxNullBitmap);
         }
+        return pBitmap;
     }
 }
 
 void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight,
                                double rScale, lmPaper* pPaper)
 {
-    //This method forces a re-layout of the score when: 
-    // - the score has changed or,
-    // - the scale has changed or,
-    // - paper size has changed 
+    //This method forces a re-layout of the score when needed: 
+    // - the first time a score is going to be rendered
+    // - if the score has changed
+    // - if the scale has changed (? is this needed? --> No, as bitmaps are not affected)
+    // - if paper size has changed 
 
+    m_pPaper = pPaper;
     bool fLayoutScore = m_fReLayout;
     m_fReLayout = false;
     if (!m_pScore || m_nLastScoreID != pScore->GetID() || m_rScale != rScale || fLayoutScore)
@@ -188,9 +198,9 @@ wxBitmap* lmGraphicManager::GetPageBitmap(int nPage)
     // nPage = 1 .. n
     // Get the bitmap for requested page, or NULL if no bitmap exits for that page.
 
-    wxASSERT(nPage > 0)
+    wxASSERT(nPage > 0);
         
-    if (nPage > m_cBitmaps.GetCount())
+    if (nPage > (int)m_cBitmaps.GetCount())
         return (wxBitmap*)NULL;
     else {
         wxBitmapListNode* pNode = m_cBitmaps.Item(nPage-1);
@@ -205,11 +215,13 @@ wxBitmap* lmGraphicManager::NewBitmap(int nPage)
     // Makes room for a new bitmap, for page nPage
     // and returns it (empty bitmap)
 
+    wxLogMessage(_T("[lmGraphicManager::NewBitmap] Page = %d"), nPage);
+    //wxMessageBox(wxString::Format(_T("NewPage %d"), nPage));
 
     //Make room for the new bitmap
 
     //Allocate the new bit map
-    pBitmap = new wxBitmap(m_xPageSize, m_yPageSize);
+    wxBitmap* pBitmap = new wxBitmap(m_xPageSize, m_yPageSize);
     //wxLogMessage(_T("[lmGraphicManager::NewBitmap] Allocated bitmap (%d, %d) pixels, %d bits/pixel. Size= %.02f MB"),
     //    m_xPageSize, m_yPageSize, pBitmap->GetDepth(), (double)((m_xPageSize * m_yPageSize * pBitmap->GetDepth())/8000000.) );
     if (!pBitmap || !pBitmap->Ok()) {
@@ -228,6 +240,21 @@ wxBitmap* lmGraphicManager::NewBitmap(int nPage)
     m_xBitmapSize = m_xPageSize;
     m_yBitmapSize = m_yPageSize;
     return pBitmap;
+}
+
+void lmGraphicManager::BitmapsToFile()
+{
+    wxBitmapListNode* pNode = m_cBitmaps.GetFirst();
+    int i = 1;
+    while (pNode) {
+        wxBitmap* pBitmap = pNode->GetData();
+        wxImage oImg = pBitmap->ConvertToImage();
+        wxString sName = wxString::Format(_T("LenMus_Offscreen_%d.bmp"), i);
+        oImg.SaveFile(sName, wxBITMAP_TYPE_BMP);
+        pNode = pNode->GetNext();
+        i++;
+    }
+
 }
 
 

@@ -892,9 +892,10 @@ void lmVStaff::ResetContexts()
 //    NumParte = m_nStaff
 //}
 
-lmLUnits lmVStaff::GetXPosFinalBarline()
+bool lmVStaff::GetXPosFinalBarline(lmLUnits* pPos)
 {
-    // returns the right x position of last barline
+    // returns true if a barline is found and in this case updates content
+    // of variable pointed by pPos with the right x position of last barline
     // This method is only used by Formatter, in order to not justify the last system
     lmStaffObj* pSO = (lmStaffObj*) NULL;
     lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_AsStored);
@@ -907,10 +908,13 @@ lmLUnits lmVStaff::GetXPosFinalBarline()
     }
     delete pIter;
 
-    //check that a barline is found. Otherwise no barlines in the score!!
-    wxASSERT(pSO->GetType() == eTPO_Barline);
-
-    return pSO->GetOrigin().x + pSO->GetSelRect().GetWidth();
+    //check that a barline is found. Otherwise no barlines in the score
+    if (pSO->GetType() == eTPO_Barline) {
+        *pPos = pSO->GetOrigin().x + pSO->GetSelRect().GetWidth();
+        return true;
+    }
+    else
+        return false;
 
 }
 

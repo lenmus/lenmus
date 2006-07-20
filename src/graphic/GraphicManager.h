@@ -73,10 +73,14 @@ public:
     wxBitmap* Render(wxDC* pDC, int nPage);      //render page 1..n
     int GetNumPages();
 
+    void BitmapsToFile();
+
 
 private:
     void DeleteBitmaps();
     wxBitmap* GetPageBitmap(int nPage);
+    wxBitmap* NewBitmap(int nPage);
+
 
     lmScore*        m_pScore;           //score to be rendered
     lmPaper*        m_pPaper;           //paper to use

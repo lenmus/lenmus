@@ -77,6 +77,8 @@ LenMus project philosophy (to remind me to always stay on this):
     - pack eBook MusicReading
     - update help documentation
     
+    - change extension to score files (txt -> lms)
+    
     - Print peview:
 		- zoom 200
 		- remove page number

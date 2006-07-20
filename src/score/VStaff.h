@@ -135,7 +135,7 @@ public:
     lmSoundManager* ComputeMidiEvents(int nChannel);
 
     //renderization related methods
-    lmLUnits GetXPosFinalBarline();
+    bool GetXPosFinalBarline(lmLUnits* pPos);
     void SetSpaceBeforeClef(lmLUnits nSpace) { m_nSpaceBeforeClef = nSpace; }
     lmLUnits GetSpaceBeforeClef() { return m_nSpaceBeforeClef; }
 

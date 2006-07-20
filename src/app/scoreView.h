@@ -45,6 +45,7 @@
 #include "FontManager.h"
 #include "../sound/SoundEvents.h"
 #include "../graphic/GraphicManager.h"
+#include "Printout.h"
 
 class lmScoreObj;
 
@@ -83,7 +84,7 @@ public:
 
     // print/preview
     void GetPageInfo(int* pMinPage, int* pMaxPage, int* pSelPageFrom, int* pSelPageTo);
-    void DrawPage(wxDC* pDC, int nPage);
+    void DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout);
 
     // sound related methods
     void PlayScore();

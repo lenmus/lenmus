@@ -518,11 +518,15 @@ void lmScoreView::GetPageInfo(int* pMinPage, int* pMaxPage, int* pSelPageFrom, i
     *pSelPageTo = nTotalPages;
 }
 
-void lmScoreView::DrawPage(wxDC* pDC, int nPage)
+void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
 {
-    // This method is only invoked for print and print-preview.
+    // This method is only invoked for print and print-preview. It is invoked from
+    // lmPrintout
     // It is responsible of drawing the requested page.
+    // Receives the page size in pixels
 
+#if 0 
+            //old 
     // Calculate a suitable scaling factor for drawing the page
     int dxDC, dyDC;
     pDC->GetSize(&dxDC, &dyDC);        // size of the DC in pixels
@@ -531,10 +535,11 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage)
     
     // Use x or y scaling factor, whichever fits on the DC
     float actualScale = wxMin(scaleX, scaleY) * m_rScale;
-    
+
+    int dxBitmap = dxDC, dyBitmap = dyDC;
+
     // for printing lets use a x2 scale. Otherwise if printer resolution is high there
     // will be no enough memory for preparing bitmaps of the needed size
-    int dxBitmap = dxDC, dyBitmap = dyDC;
     if (actualScale > 2.5) {
         //let's asume it is for printing, as print preview only admits 200%
         actualScale = 2.0;
@@ -561,6 +566,48 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage)
 
     // deselect the las bitmap
     memoryDC.SelectObject(wxNullBitmap);
+
+#else
+    //new
+    wxSize paperSize = m_Paper.GetPaperSize();     // in lmLUnits
+    int printerWidthMM, printerHeightMM;
+    pPrintout->GetPageSizeMM(&printerWidthMM, &printerHeightMM);
+    lmLUnits printerSizeX = lmToLogicalUnits(printerWidthMM, lmMILLIMETERS);
+    lmLUnits printerSizeY = lmToLogicalUnits(printerHeightMM, lmMILLIMETERS);
+
+    // Calculate a suitable scaling factor for drawing the page
+    float scaleX = (float)printerSizeX / (float)paperSize.GetWidth();
+    float scaleY = (float)printerSizeY / (float)paperSize.GetHeight();
+    float scale = wxMin(scaleX, scaleY);
+
+    // Now we have to check in case our real page size is reduced
+    // (e.g. because we're drawing to a print preview memory DC)
+    int nWithDC, nHeighDC;
+    pDC->GetSize(&nWithDC, &nHeighDC);
+    int printerWidthPixels, printerHeightPixels;
+    pPrintout->GetPageSizePixels(&printerWidthPixels, &printerHeightPixels);
+
+    // If printer pageWidth == current DC width, then this doesn't
+    // change. But w might be the preview bitmap width, so scale down.
+    float actualScale = scale * 10. * (float)(nWithDC/(float)printerWidthPixels);
+    pDC->SetUserScale(actualScale, actualScale);
+    pDC->SetMapMode(lmDC_MODE);
+
+    wxLogMessage(_T("[lmScoreView::DrawPage] LU: paper=(%d,%d), printer=(%d, %d). Pixels: DC=(%d, %d), printer=(%d, %d),  scale %f, actual scale %f"), 
+        paperSize.GetWidth(), paperSize.GetHeight(), 
+        printerSizeX, printerSizeY,
+        nWithDC, nHeighDC,
+        printerWidthPixels, printerHeightPixels,
+        scale, actualScale);
+
+    //Direct renderization on printer DC
+    m_Paper.SetDC(pDC);           //the layout phase requires a DC
+    lmScore *pScore = ((lmScoreDocument *)GetDocument())->GetScore();
+    m_graphMngr.Prepare(pScore, nWithDC, nHeighDC, (double)actualScale, &m_Paper);
+    m_graphMngr.Render(pDC, nPage);
+
+#endif
+
 
 }
 
@@ -1112,16 +1159,21 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     //int dxCanvas = 0, dyCanvas = 0;
     //m_pCanvas->GetClientSize(&dxCanvas, &dyCanvas);
 
+    // allocate a DC in memory for using the offscreen bitmaps
+    wxMemoryDC memoryDC;
+
     // inform the paper that we are going to use it, and get the number of
     // pages needed to draw the score
     lmScore *pScore = ((lmScoreDocument *)GetDocument())->GetScore();
     if (!pScore) return;
 
-#if 1     //old 
+#if 0 
+    //old 
     m_Paper.Prepare(pScore, xPageSize, yPageSize, m_rScale);
     int nTotalPages = m_Paper.GetNumPages();
 #else
-    m_graphMngr.Prepare(pScore, xPageSize, yPageSize, m_rScale, m_Paper);
+    m_Paper.SetDC(&memoryDC);           //the layout phase requires a DC
+    m_graphMngr.Prepare(pScore, xPageSize, yPageSize, m_rScale, &m_Paper);
     int nTotalPages = m_graphMngr.GetNumPages();
 #endif
 
@@ -1130,9 +1182,6 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
         m_numPages = nTotalPages;
         AdjustScrollbars();
     }
-
-    // allocate a DC in memory for using the offscreen bitmaps
-    wxMemoryDC memoryDC;
 
     // the repaintRect is referred to canvas window origin and is unscrolled.
     // To refer it to view origin it is necessary to add scrolling origin
@@ -1164,11 +1213,15 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
         if (interRect.width > 0 && interRect.height > 0) {
 
             // ask paper for the offscreen bitmap of this page
+#if 0 
+            //old 
             wxBitmap* pPageBitmap = m_Paper.GetOffscreenBitmap(nPag);
+#else
+            wxBitmap* pPageBitmap = m_graphMngr.Render((wxDC*)NULL, nPag+1);
+            //m_graphMngr.BitmapsToFile();
+#endif
             wxASSERT(pPageBitmap && pPageBitmap->Ok());
             memoryDC.SelectObject(*pPageBitmap);
-            //wxLogStatus(wxT("bitmap size (%d,%d)"), 
-            //    pPageBitmap->GetWidth(), pPageBitmap->GetHeight());
 
             // Intersection rectangle is referred to view origin. To refer it
             // to bitmap coordinates we need to substract page origin
@@ -1179,9 +1232,16 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
             int xCanvas = interRect.x - xOrg,
                     yCanvas = interRect.y - yOrg;
 
+            //wxLogStatus(wxT("bitmap size (%d,%d), interRec (%d, %d)"), 
+            //    pPageBitmap->GetWidth(), pPageBitmap->GetHeight(),
+            //    interRect.width, interRect.height);
+
             // Copy the damaged rectangle onto the device DC
             pDC->Blit(xCanvas, yCanvas, interRect.width, interRect.height,
                         &memoryDC, xBitmap, yBitmap);
+
+            // deselect the bitmap
+            memoryDC.SelectObject(wxNullBitmap);
 
             ////DEBUG: draw red rectangle to show updated rectangle
             //pDC->SetBrush(*wxTRANSPARENT_BRUSH);
@@ -1201,6 +1261,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
                                nRightShadowWidth, pageRect.height);
             pDC->DrawRectangle(xLeft + nRightShadowWidth, yBottom,
                                pageRect.width, nBottomShadowHeight);
+
         }
 
         //verify if we should finish the loop
@@ -1212,8 +1273,6 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     //pDC->SetPen(*wxCYAN_PEN);
     //pDC->DrawRectangle(repaintRect);
 
-    // deselect the bitmap
-    memoryDC.SelectObject(wxNullBitmap);
 
 }
 

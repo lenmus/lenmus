@@ -69,6 +69,24 @@ void lmBoxScore::Render(lmPaper* pPaper)
 
 }
 
+void lmBoxScore::RenderPage(int nPage, lmPaper* pPaper)
+{
+    // Render page nPage (1..n)
+    
+    wxASSERT(nPage > 0 && nPage <= (int)m_aPages.GetCount());
+
+    if (nPage == 1) {
+        // write score titles
+        m_pScore->WriteTitles(DO_DRAW, pPaper);
+        pPaper->RestartPageCursors();                //restore page cursors are at top-left corner
+    }
+
+    //render the requested page
+    lmBoxPage* pBoxPage = m_aPages.Item(nPage-1);
+    pBoxPage->Render(m_pScore, pPaper);
+
+}
+
 lmBoxPage* lmBoxScore::AddPage()
 {
     lmBoxPage* pPage = new lmBoxPage();

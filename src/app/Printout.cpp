@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Printout.cpp,v 1.4 2006/02/23 19:17:12 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -52,17 +51,7 @@ bool lmPrintout::OnPrintPage(int nPage)
 {
     wxDC *pDC = GetDC();
     if (pDC) {
-        m_pView->DrawPage(pDC, nPage);
-
-        ////DEBUG: -----------------------------------
-        //int pageWidthMM, pageEighthMM;
-        //GetPageSizeMM(&pageWidthMM, &pageEighthMM);
-        //wxLogStatus(wxT("PageSizeMM (%d, %d)"), pageWidthMM, pageEighthMM);
-        ////--------------------------------------------
-        
-        pDC->SetDeviceOrigin(0, 0);
-        pDC->SetUserScale(1.0, 1.0);
-        
+        m_pView->DrawPage(pDC, nPage, this);
         return true;
     }
     else
