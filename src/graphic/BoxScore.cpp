@@ -63,7 +63,7 @@ void lmBoxScore::Render(lmPaper* pPaper)
     lmBoxPage* pBoxPage;
     for(iPage=0; iPage < (int)m_aPages.GetCount(); iPage++) {
         pBoxPage = m_aPages.Item(iPage);
-        if (iPage != 0) pPaper->NewPage();
+        //if (iPage != 0) pPaper->NewPage();
         pBoxPage->Render(m_pScore, pPaper);
     }
 

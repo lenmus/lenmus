@@ -146,38 +146,47 @@ wxBitmap* lmGraphicManager::Render(wxDC* pDC, int nPage)
 }
 
 void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight,
-                               double rScale, lmPaper* pPaper)
+                               double rScale, lmPaper* pPaper, int nOptions)
 {
-    //This method forces a re-layout of the score when needed: 
+    //This method informs GraphicManager about the common parameters (the score,
+    //the paper, the scale, etc..) for a series of to subsequent Render()
+    //invocations.
+    //The GraphicManager must verify if all stored values are stil valid and, if not,
+    //do whatever is necessary, i.e. delete invalid offscreen bitmaps.
+    //Also, it must prepare anything that could be necessary, i.e. force a re-layout
+    //of the score.
+
+
+
+    //Is it necessary to force a re-layout? 
+    // Yes in following cases:
     // - the first time a score is going to be rendered
-    // - if the score has changed
-    // - if the scale has changed (? is this needed? --> No, as bitmaps are not affected)
-    // - if paper size has changed 
+    // - if paper size has changed and so requested (option lmRELAYOUT_ON_PAPER_SIZE_CHANGE)
+    // - if explicitly requested (option lmFORCE_RELAYOUT)
+    bool fLayoutScore = !m_pScore || m_nLastScoreID != pScore->GetID()
+                || (nOptions & lmFORCE_RELAYOUT)
+                || ( (nOptions & lmRELAYOUT_ON_PAPER_SIZE_CHANGE)  && 
+                     (m_xPageSize != paperWidth || m_yPageSize != paperHeight) );
 
+    //Is it necessary to delete stored offscreen bitmaps?
+    //Yes in following cases:
+    // - When the scale (zooming factor) has changed
+    // - When a re-layout takes place
+    bool fDeleteBitmaps = (m_rScale != rScale) || fLayoutScore;
+
+    //store received values
     m_pPaper = pPaper;
-    bool fLayoutScore = m_fReLayout;
-    m_fReLayout = false;
-    if (!m_pScore || m_nLastScoreID != pScore->GetID() || m_rScale != rScale || fLayoutScore)
-    {
-        fLayoutScore = true;
-
-        //store new values
-        m_pScore = pScore;
-        m_nLastScoreID = m_pScore->GetID();
-        m_rScale = rScale;
-        m_xPageSize = paperWidth;
-        m_yPageSize = paperHeight;
-
-        //delete the allocated bitmaps
-        if (paperWidth != m_xBitmapSize || paperHeight != m_yBitmapSize) {
-            DeleteBitmaps();
-        }
-    }
+    m_rScale = rScale;
+    m_xPageSize = paperWidth;
+    m_yPageSize = paperHeight;
+    m_pScore = pScore;
+    m_nLastScoreID = m_pScore->GetID();
 
     //re-layout the score if necesary
-    if (fLayoutScore) {
-        Layout();
-    }
+    if (fLayoutScore) Layout();
+
+    //delete existing offscreen bitmaps if necessary
+    if (fDeleteBitmaps) DeleteBitmaps();
 
 }
 
@@ -242,19 +251,41 @@ wxBitmap* lmGraphicManager::NewBitmap(int nPage)
     return pBitmap;
 }
 
-void lmGraphicManager::BitmapsToFile()
+void lmGraphicManager::BitmapsToFile(wxString& sFilename, wxString& sExt, int nImgType)
 {
+    wxASSERT(nImgType == wxBITMAP_TYPE_BMP || nImgType == wxBITMAP_TYPE_JPEG
+             || nImgType == wxBITMAP_TYPE_PNG || nImgType == wxBITMAP_TYPE_PCX
+             || nImgType == wxBITMAP_TYPE_PNM);
+
     wxBitmapListNode* pNode = m_cBitmaps.GetFirst();
     int i = 1;
     while (pNode) {
         wxBitmap* pBitmap = pNode->GetData();
         wxImage oImg = pBitmap->ConvertToImage();
-        wxString sName = wxString::Format(_T("LenMus_Offscreen_%d.bmp"), i);
-        oImg.SaveFile(sName, wxBITMAP_TYPE_BMP);
+        wxString sName = wxString::Format(_T("%s_%d.%s"), sFilename, i, sExt);
+        oImg.SaveFile(sName, nImgType);
         pNode = pNode->GetNext();
         i++;
     }
 
 }
 
+void lmGraphicManager::ExportAsImage(wxString& sFilename, wxString& sExt, int nImgType)
+{
+    //Before invoking this method, Prepare() must be invoked
+
+    wxASSERT(nImgType == wxBITMAP_TYPE_BMP || nImgType == wxBITMAP_TYPE_JPEG
+             || nImgType == wxBITMAP_TYPE_PNG || nImgType == wxBITMAP_TYPE_PCX
+             || nImgType == wxBITMAP_TYPE_PNM);
+
+
+    int i;
+    for(i=1; i <= GetNumPages(); i++) {
+        wxBitmap* pBitmap = Render((wxDC*)NULL, i);
+        wxImage oImg = pBitmap->ConvertToImage();
+        wxString sName = wxString::Format(_T("%s_%d.%s"), sFilename, i, sExt);
+        oImg.SaveFile(sName, nImgType);
+    }
+
+}
 

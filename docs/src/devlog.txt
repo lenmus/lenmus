@@ -77,17 +77,18 @@ LenMus project philosophy (to remind me to always stay on this):
     - pack eBook MusicReading
     - update help documentation
     
-    - change extension to score files (txt -> lms)
+    - change extension to score files (txt -> lmd) (LenMus Document)
     
-    - Print peview:
-		- zoom 200
-		- remove page number
+    - Print peview anything to do?:
+		- test print
     
     Bugs:
+    - Crash when closing an score being played back
+    - Parser error when parsing t3 in abbreviated syntax
     
-    - Release Unicode:
-		- MidiWizard fails
-   
+    Bugs in Unicode version:
+		- Release Unicode:
+			- MidiWizard fails
     
  Spanish translation errors:
  ---------------------------
@@ -132,6 +133,10 @@ LenMus project philosophy (to remind me to always stay on this):
     - LDP: How to deal for example with four voices piano reductions:
         - flag overlayered in Instruments.
     - eBookManager: when user changes font size, modify scores scale accordingly.
+	- Play toolbox: from/to measure number; instruments list; tempo; volume for each
+		instrument; start/pause/stop buttons. Use this toolbox to experiment to
+		design a common architecture for all future toolboxes
+	- (?) default option for toolbars: no labels 
 
     
     Bugs to wait to next release:
@@ -140,6 +145,7 @@ LenMus project philosophy (to remind me to always stay on this):
 		incorrectly shifted.
 	- in some cases (6/8?) metronome is not syncronized when playing a score (i.e. E29)
 	- memory leaks (chords?)
+    - toolbars: problem with wxAUI no resize when change from label to no lables
 
     
     

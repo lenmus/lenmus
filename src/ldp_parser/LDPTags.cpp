@@ -147,7 +147,10 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("down")] = _T("down");
         m_Tags[0][_T("dx")] = _T("dx");
         m_Tags[0][_T("dy")] = _T("dy");
+        m_Tags[0][_T("end")] = _T("end");
         m_Tags[0][_T("font")] = _T("font");
+        m_Tags[0][_T("goBack")] = _T("goBack");
+        m_Tags[0][_T("goFwd")] = _T("goFwd");
         m_Tags[0][_T("hasWidth")] = _T("hasWidth");
         m_Tags[0][_T("infoMIDI")] = _T("infoMIDI");
         m_Tags[0][_T("instrName")] = _T("instrName");
@@ -161,6 +164,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("noVisible")] = _T("noVisible");
         m_Tags[0][_T("right")] = _T("right");
         m_Tags[0][_T("split")] = _T("split");
+        m_Tags[0][_T("start")] = _T("start");
         m_Tags[0][_T("staves")] = _T("staves");
         m_Tags[0][_T("stem")] = _T("stem");
         m_Tags[0][_T("text")] = _T("text");
@@ -277,7 +281,10 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("down")] = _T("abajo");
         m_Tags[0][_T("dx")] = _T("dx");
         m_Tags[0][_T("dy")] = _T("dy");
+        m_Tags[0][_T("end")] = _T("final");
         m_Tags[0][_T("font")] = _T("font");
+        m_Tags[0][_T("goBack")] = _T("retroceder");
+        m_Tags[0][_T("goFwd")] = _T("avanzar");
         m_Tags[0][_T("hasWidth")] = _T("tieneAnchura");
         m_Tags[0][_T("infoMIDI")] = _T("infoMIDI");
         m_Tags[0][_T("instrName")] = _T("nombreInstrumento");
@@ -291,6 +298,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("noVisible")] = _T("noVisible");
         m_Tags[0][_T("right")] = _T("derecha");
         m_Tags[0][_T("split")] = _T("partes");
+        m_Tags[0][_T("start")] = _T("inicio");
         m_Tags[0][_T("staves")] = _T("numPentagramas");
         m_Tags[0][_T("stem")] = _T("plica");
         m_Tags[0][_T("text")] = _T("texto");

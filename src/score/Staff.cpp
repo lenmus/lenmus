@@ -113,19 +113,16 @@ lmContext* lmStaff::NewContext(lmKeySignature* pNewKey)
     //get current context
     wxContextListNode* pNode = m_cContext.GetLast();
     lmClef* pClef = (lmClef*)NULL;
-    lmKeySignature* pKey = (lmKeySignature*)NULL;
     lmTimeSignature* pTime = (lmTimeSignature*)NULL;
     lmContext* pLastContext;
     if (pNode) {
         pLastContext = pNode->GetData();
         pClef = pLastContext->GetClef();
-        pKey = pLastContext->GeyKey();
         pTime = pLastContext->GetTime();
     }
 
     //create a new context and store it
     lmContext* pNewContext = new lmContext(pClef, pNewKey, pTime);
-    if (pNode) pNewContext->CopyAccidentals(pLastContext);
 
     m_cContext.Append(pNewContext);
     return pNewContext;

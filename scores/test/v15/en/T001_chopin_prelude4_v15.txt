@@ -6,34 +6,45 @@
 
    (instrument (name "4.") (staves 2)
       (musicData 
-        (clef treble p1)   //sol clef in staff 1
-        (clef bass p2)     //fa4 clef in staff 2
-        (key Lab)
+        (clef treble p1)
+        (clef bass p2)
+        (key e-)
         (time 4 4)
-        (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // la 1ª nota está en pentagrama 1. Sigue ahí mientras no cambie
-        (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
-        (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 1
-        (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
-        (barline)
+        (chord (n g3 q p1)(n c4 q)(n e4 q)(n g4 q))
+        (chord (n a3 q)(n c4 q)(n e4 q)(n a4 q))
+        (chord (n g3 q)(n =b3 q))
+        (chord (n e3 q)(n g3 q)(n c4 q)(n e4 q))
+        
+        //second voice
+        (goBack 128)
+        (chord (n e4 e. (stem up) g+)(n g4 e.))(chord (n d4 s g-)(n f4 s))
+        (goFwd 64)     //to end of measure
 
-        (n g3 e g+ p2)(n b3 e)(n d4 e p1)(n g4 e g-)   // grupo a caballo entre ambos pentagramas
+        (goBack 256)    //left hand
+        (chord (n c2 q p2)(n c3 q))
+        (chord (n f1 q)(n f2 q (stem down)))
+        (chord (n g1 q)(n g2 q ))
+        (chord (n c2 q)(n g2 q)(n c3 q))
         (barline)
+        
+        //2
+        (chord (n e3 q p1)(n a3 q)(n c4 q)(n e4 q))
+        (chord (n a3 q)(n c4 q)(n e4 q)(n a4 q))
+        (chord (n g3 q)(n =b3 q))
+        (chord (n e3 q)(n g3 q)(n c4 q)(n e4 q))
 
-        (n f4 q)(n c5 q)   //todo en p1
-        (barline)
-
-        (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // la 1ª nota está en pentagrama 1. Sigue ahí mientras no cambie
-        (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
-        (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 1
-        (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
-        (barline)
-
-        (n g3 e g+ p2)(n b3 e)(n d4 e p1)(n g4 e g-)   // grupo a caballo entre ambos pentagramas
-        (barline)
-
-        (n f4 q)(n c5 q)   //todo en p1
+        (goBack 128)    //second voice
+        (chord (n e4 e. (stem up) g+)(n g4 e.))(chord (n d4 s g-)(n f4 s))
+        (goFwd 64)     //go to barline
+        
+        // left hand
+        (goBack 256)
+        (chord (n a2 q p2)(n a3 q))
+        (chord (n f1 q)(n f2 q (stem down)))
+        (chord (n g1 q)(n g2 q ))
+        (chord (n c2 q)(n g2 q)(n c3 q))
         (barline end)
-     )
+      )
    )
 )
 

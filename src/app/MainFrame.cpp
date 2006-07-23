@@ -158,6 +158,9 @@ enum
     MENU_File_New = 1000,
 #endif
     MENU_File_Import = MENU_Last_Public_ID,
+    MENU_File_Export,
+    MENU_File_Export_bmp,
+    MENU_File_Export_jpg,
     MENU_OpenBook,
 
      // Menu View
@@ -176,13 +179,14 @@ enum
     MENU_Debug_SeeMIDIEvents,
     MENU_Debug_SetTraceLevel,
     MENU_Debug_PatternEditor,
+    MENU_Debug_DumpBitmaps,
 
     // Menu Zoom
-    MENU_Zoom_75,
     MENU_Zoom_100,
-    MENU_Zoom_150,
-    MENU_Zoom_200,
     MENU_Zoom_Other,
+    MENU_Zoom_Fit_Full,
+    MENU_Zoom_Fit_Width,
+
 
     //Menu Sound
     MENU_Sound_MidiWizard,
@@ -259,6 +263,9 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     //File menu/toolbar
     EVT_MENU      (MENU_File_Import, lmMainFrame::OnImportFile)
     EVT_UPDATE_UI (MENU_File_Import, lmMainFrame::OnFileUpdateUI)
+    EVT_MENU      (MENU_File_Export_bmp, lmMainFrame::OnExportBMP)
+    EVT_MENU      (MENU_File_Export_jpg, lmMainFrame::OnExportJPG)
+    EVT_UPDATE_UI (MENU_File_Export, lmMainFrame::OnFileUpdateUI)
     EVT_MENU      (MENU_Print_Preview, lmMainFrame::OnPrintPreview)
     EVT_UPDATE_UI (MENU_Print_Preview, lmMainFrame::OnFileUpdateUI)
     EVT_MENU      (wxID_PRINT_SETUP, lmMainFrame::OnPrintSetup)
@@ -284,13 +291,14 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_UPDATE_UI (MENU_View_StatusBar, lmMainFrame::OnStatusbarUI)
 
     //Zoom menu/toolbar
-    EVT_MENU (MENU_Zoom_75, lmMainFrame::OnZoom75)
     EVT_MENU (MENU_Zoom_100, lmMainFrame::OnZoom100)
-    EVT_MENU (MENU_Zoom_150, lmMainFrame::OnZoom150)
-    EVT_MENU (MENU_Zoom_200, lmMainFrame::OnZoom200)
     EVT_MENU (MENU_Zoom_Other, lmMainFrame::OnZoomOther)
-    EVT_COMBOBOX (ID_COMBO_ZOOM, lmMainFrame::OnComboZoom)
-    EVT_UPDATE_UI_RANGE (MENU_Zoom_75, MENU_Zoom_Other, lmMainFrame::OnZoomUpdateUI)
+    EVT_MENU (MENU_Zoom_Fit_Full, lmMainFrame::OnZoomFitFull)
+    EVT_MENU (MENU_Zoom_Fit_Width, lmMainFrame::OnZoomFitWidth)
+    EVT_UPDATE_UI_RANGE (MENU_Zoom_100, MENU_Zoom_Fit_Width, lmMainFrame::OnZoomUpdateUI)
+    EVT_COMBOBOX  (ID_COMBO_ZOOM, lmMainFrame::OnComboZoom )
+    EVT_TEXT_ENTER(ID_COMBO_ZOOM, lmMainFrame::OnComboZoom )
+    EVT_UPDATE_UI (ID_COMBO_ZOOM, lmMainFrame::OnZoomUpdateUI)
 
 
     //Sound menu/toolbar
@@ -316,19 +324,24 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_MENU      (MENU_CheckForUpdates, lmMainFrame::OnCheckForUpdates)
     EVT_MENU      (MENU_VisitWebsite, lmMainFrame::OnVisitWebsite)
  
+        //general debug options. Always enabled
     EVT_MENU (MENU_Debug_ForceReleaseBehaviour, lmMainFrame::OnDebugForceReleaseBehaviour)
     EVT_MENU (MENU_Debug_ShowDebugLinks, lmMainFrame::OnDebugShowDebugLinks)
-    EVT_MENU (MENU_Debug_recSelec, lmMainFrame::OnDebugRecSelec)
     EVT_MENU (MENU_Debug_SetTraceLevel, lmMainFrame::OnDebugSetTraceLevel)
     EVT_MENU (MENU_Debug_PatternEditor, lmMainFrame::OnDebugPatternEditor)
+    EVT_MENU (MENU_Debug_recSelec, lmMainFrame::OnDebugRecSelec)
+        //debug events requiring a score to be enabled
     EVT_MENU      (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugDumpStaffObjs)
-    EVT_UPDATE_UI (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugDumpStaffObjsUI)
+    EVT_UPDATE_UI (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugScoreUI)
     EVT_MENU      (MENU_Debug_SeeSource, lmMainFrame::OnDebugSeeSource)
-    EVT_UPDATE_UI (MENU_Debug_SeeSource, lmMainFrame::OnDebugSeeSourceUI)
+    EVT_UPDATE_UI (MENU_Debug_SeeSource, lmMainFrame::OnDebugScoreUI)
     EVT_MENU      (MENU_Debug_SeeXML, lmMainFrame::OnDebugSeeXML)
-    EVT_UPDATE_UI (MENU_Debug_SeeXML, lmMainFrame::OnDebugSeeXMLUI)
+    EVT_UPDATE_UI (MENU_Debug_SeeXML, lmMainFrame::OnDebugScoreUI)
     EVT_MENU      (MENU_Debug_SeeMIDIEvents, lmMainFrame::OnDebugSeeMidiEvents)
-    EVT_UPDATE_UI (MENU_Debug_SeeMIDIEvents, lmMainFrame::OnDebugSeeMidiEventsUI)
+    EVT_UPDATE_UI (MENU_Debug_SeeMIDIEvents, lmMainFrame::OnDebugScoreUI)
+    EVT_MENU      (MENU_Debug_DumpBitmaps, lmMainFrame::OnDebugDumpBitmaps)
+    EVT_UPDATE_UI (MENU_Debug_DumpBitmaps, lmMainFrame::OnDebugScoreUI)
+    
 
 
     //metronome
@@ -377,6 +390,7 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     m_pTbMtr = (wxToolBar*)NULL;
     m_pTbFile = (wxToolBar*)NULL;
     m_pTbEdit = (wxToolBar*)NULL;
+    m_pTbZoom = (wxToolBar*)NULL;
     bool fToolBar = true;
     g_pPrefs->Read(_T("/MainFrame/ViewToolBar"), &fToolBar);
     if (!m_pToolbar && fToolBar) {
@@ -463,13 +477,6 @@ void lmMainFrame::CreateMyToolBar()
     //create main tool bar
     m_pToolbar = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pToolbar->SetToolBitmapSize(nSize);
-//        wxComboBox *combo = new wxComboBox(m_pToolbar, ID_COMBO_ZOOM, _T(""), wxDefaultPosition, wxSize(120, -1) );
-//        combo->Append(_T("100%"));
-//        combo->Append(_T("200%"));
-//        combo->Append(_T("combobox"));
-//        combo->Append(_T("Print size"));
-//        combo->Append(_T("Adjust to page"));
-//        m_pToolbar->AddControl(combo);
     m_pToolbar->AddTool(MENU_Preferences, _("Preferences"), wxArtProvider::GetIcon(_T("tool_options"), wxART_TOOLBAR, nSize), _("Set user preferences"));
     m_pToolbar->AddTool(MENU_OpenHelp, _("Help"), wxArtProvider::GetIcon(_T("tool_help"), wxART_TOOLBAR, nSize), _("Help button"), wxITEM_CHECK);
     m_pToolbar->AddTool(MENU_OpenBook, _("Books"), wxArtProvider::GetIcon(_T("tool_open_ebook"), wxART_TOOLBAR, nSize), _("Show the music books"), wxITEM_CHECK);
@@ -492,6 +499,29 @@ void lmMainFrame::CreateMyToolBar()
     m_pTbEdit->AddTool(wxID_PASTE, _("Paste"), wxArtProvider::GetIcon(_T("tool_paste"), wxART_TOOLBAR, nSize), _("Paste"));
     m_pTbEdit->Realize();
 
+    //Zoom toolbar
+    m_pTbZoom = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
+    m_pTbZoom->SetToolBitmapSize(nSize);
+    m_pTbZoom->AddTool(MENU_Zoom_Fit_Full, _("Fit full"), wxArtProvider::GetIcon(_T("tool_zoom_fit_full"), wxART_TOOLBAR, nSize), _("Zoom so that the full page is displayed"));
+    m_pTbZoom->AddTool(MENU_Zoom_Fit_Width, _("Fit width"), wxArtProvider::GetIcon(_T("tool_zoom_fit_width"), wxART_TOOLBAR, nSize), _("Zoom so that page width equals window width"));
+    m_pComboZoom = new wxComboBox(m_pTbZoom, ID_COMBO_ZOOM, _T(""),
+                                  wxDefaultPosition, wxSize(70, -1) );
+    m_pComboZoom->Append(_T("25%"));
+    m_pComboZoom->Append(_T("50%"));
+    m_pComboZoom->Append(_T("75%"));
+    m_pComboZoom->Append(_T("100%"));
+    m_pComboZoom->Append(_T("150%"));
+    m_pComboZoom->Append(_T("200%"));
+    m_pComboZoom->Append(_T("300%"));
+    m_pComboZoom->Append(_T("400%"));
+    m_pComboZoom->Append(_T("800%"));
+    m_pComboZoom->Append(_("Actual size"));         // tamaño real
+    m_pComboZoom->Append(_("Fit page full"));       // toda la página
+    m_pComboZoom->Append(_("Fit page width"));      // ancho de página
+    m_pComboZoom->SetSelection(3);
+    m_pTbZoom->AddControl(m_pComboZoom);
+    m_pTbZoom->Realize();
+
     //Play toolbar
     m_pTbPlay = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pTbPlay->SetToolBitmapSize(nSize);
@@ -511,12 +541,20 @@ void lmMainFrame::CreateMyToolBar()
     m_pTbMtr->AddControl(m_pSpinMetronome);
     m_pTbMtr->Realize();
 
-    //compute best size for metronome bar
+    //compute best size for metronome toolbar
     wxSize sizeSpin = m_pSpinMetronome->GetSize();
     wxSize sizeButton = m_pTbMtr->GetToolSize();
     wxSize sizeBest(sizeButton.GetWidth() + sizeSpin.GetWidth() + 
                         m_pTbMtr->GetToolSeparation() + 10,
                     wxMax(sizeSpin.GetHeight(), sizeButton.GetHeight()));
+
+    //compute best size for zoom toolbar
+    wxSize sizeCombo = m_pComboZoom->GetSize();
+    sizeButton = m_pTbZoom->GetToolSize();
+    wxSize sizeZoomTb(2 * (sizeButton.GetWidth() + m_pTbZoom->GetToolSeparation()) +
+                      sizeCombo.GetWidth() + 
+                      m_pTbZoom->GetToolSeparation() + 10,
+                      wxMax(sizeCombo.GetHeight(), sizeButton.GetHeight()));
 
     // add the toolbars to the manager
     m_mgrAUI.AddPane(m_pTbFile, wxPaneInfo().
@@ -526,6 +564,10 @@ void lmMainFrame::CreateMyToolBar()
     m_mgrAUI.AddPane(m_pTbEdit, wxPaneInfo().
                 Name(wxT("Edit tools")).Caption(_("Edit tools")).
                 ToolbarPane().Top().
+                LeftDockable(false).RightDockable(false));
+    m_mgrAUI.AddPane(m_pTbZoom, wxPaneInfo().
+                Name(wxT("Zooming tools")).Caption(_("Zooming tools")).
+                ToolbarPane().Top().BestSize( sizeZoomTb ).
                 LeftDockable(false).RightDockable(false));
     m_mgrAUI.AddPane(m_pToolbar, wxPaneInfo().
                 Name(wxT("toolbar")).Caption(_("Main tools")).
@@ -580,6 +622,14 @@ void lmMainFrame::DeleteToolbar()
         delete m_pTbMtr;
         m_pTbMtr = (wxToolBar*)NULL;
     }
+
+    // zoom toolbar
+    if (m_pTbZoom) {
+        m_mgrAUI.DetachPane(m_pTbZoom);
+        delete m_pTbZoom;
+        m_pTbZoom = (wxToolBar*)NULL;
+    }
+
 }
 
 void lmMainFrame::CreateNavigationToolBar()
@@ -715,7 +765,8 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     */
 
     // file menu
-    wxMenu *file_menu = new wxMenu;
+    wxMenu* file_menu = new wxMenu;
+    wxMenu* pExportMenu = new wxMenu; 
 
 #if defined(__WXMSW__) || defined(__WXGTK__)
     //bitmaps on menus are supported only on Windoows and GTK+ 
@@ -736,6 +787,21 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     file_menu->Append(pItem); 
 
     file_menu->Append(MENU_File_Import, _("&Import..."));
+
+    //export submenu -----------------------------------------------
+    pItem = new wxMenuItem(pExportMenu, MENU_File_Export_bmp, _("As &bmp image"), _("Save score as BMP images"));
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_save_as_bmp"), wxART_TOOLBAR, nIconSize) );
+    pExportMenu->Append(pItem);
+
+    pItem = new wxMenuItem(pExportMenu, MENU_File_Export_jpg, _("As &jpg image"), _("Save score as JPG images"));
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_save_as_jpg"), wxART_TOOLBAR, nIconSize) );
+    pExportMenu->Append(pItem);
+
+    //end of export submenu ----------------------------------------
+
+
+    file_menu->Append(MENU_File_Export, _("&Export ..."), pExportMenu,
+                           _("Save score in other formats") );
 
     pItem = new wxMenuItem(file_menu, wxID_SAVE, _("&Save\tCtrl+S"));
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_save"), wxART_TOOLBAR, nIconSize) );
@@ -760,6 +826,14 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     file_menu->Append(wxID_OPEN, _("&Open ...\tCtrl+O"), _("Open a score"), wxITEM_NORMAL );
     file_menu->Append(MENU_OpenBook, _("Open &books"), _("Hide/show eMusicBooks"), wxITEM_CHECK);
     file_menu->Append(MENU_File_Import, _("&Import..."));
+    //export submenu -----------------------------------------------
+    pExportMenu->Append(MENU_File_Export_bmp, _("As &bmp image"), _("Save score as BMP images"));
+    pExportMenu->Append(MENU_File_Export_jpg, _("As &jpg image"), _("Save score as JPG images"));
+    pExportMenu->Append(pItem);
+    //end of export submenu ----------------------------------------
+    file_menu->Append(MENU_File_Export, _("&Export ..."), pExportMenu,
+                           _("Save score in other formats") );
+
     file_menu->Append(wxID_SAVE, _("&Save\tCtrl+S"));
     file_menu->Append(wxID_SAVEAS, _("Save &as ...\tCtrl+Shift+S"));
     file_menu->Append(wxID_CLOSE, _("&Close\tCtrl+W"));
@@ -812,16 +886,16 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
         debug_menu->Append(MENU_Debug_SeeSource, _T("See &LDP source") ); 
         debug_menu->Append(MENU_Debug_SeeXML, _T("See &XML") );
         debug_menu->Append(MENU_Debug_SeeMIDIEvents, _T("See &MIDI events") );
+        debug_menu->Append(MENU_Debug_DumpBitmaps, _T("Save offscreen bitmaps") );
     }
 
 
     // Zoom menu
     wxMenu *zoom_menu = new wxMenu;
-    zoom_menu->Append(MENU_Zoom_75, _T("75%"));
-    zoom_menu->Append(MENU_Zoom_100, _T("100%"));
-    zoom_menu->Append(MENU_Zoom_150, _T("150%"));
-    zoom_menu->Append(MENU_Zoom_200, _T("200%"));
-    zoom_menu->Append(MENU_Zoom_Other, _("Other"));
+    zoom_menu->Append(MENU_Zoom_100, _T("Actual size"));
+    zoom_menu->Append(MENU_Zoom_Fit_Full, _T("Fit page full"));
+    zoom_menu->Append(MENU_Zoom_Fit_Width, _T("Fit page width"));
+    zoom_menu->Append(MENU_Zoom_Other, _("Zoom to ..."));
 
     //Sound menu
     wxMenu *sound_menu = new wxMenu;
@@ -1146,6 +1220,59 @@ void lmMainFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
    dlg.ShowModal();
 }
 
+void lmMainFrame::OnExportBMP(wxCommandEvent& WXUNUSED(event))
+{
+    ExportAsImage(wxBITMAP_TYPE_BMP);
+}
+
+void lmMainFrame::OnExportJPG(wxCommandEvent& WXUNUSED(event))
+{
+    ExportAsImage(wxBITMAP_TYPE_JPEG);
+}
+
+void lmMainFrame::ExportAsImage(int nImgType)
+{
+    wxString sExt;
+    wxString sFilter = _T("*.");
+
+    if (nImgType == wxBITMAP_TYPE_BMP) {
+        sExt = _T("bmp");
+    }
+    else if (nImgType == wxBITMAP_TYPE_JPEG) {
+        sExt = _T("jpg");
+    }
+    else if (nImgType == wxBITMAP_TYPE_PNG) {
+        sExt = _T("png");
+    }
+    else if (nImgType == wxBITMAP_TYPE_PCX) {
+        sExt = _T("pcx");
+    }
+    else if (nImgType == wxBITMAP_TYPE_PNM) {
+        sExt = _T("pnm");
+    }
+    else
+        wxASSERT(false);
+
+    sFilter += sExt;
+
+    // ask for the name to give to the exported file
+    wxString sFilename = ::wxFileSelector(_("Name for the exported file"),
+                                        _T(""),    //default path
+                                        _T(""),    //default filename
+                                        sExt,
+                                        sFilter,
+                                        wxOPEN,        //flags
+                                        this);
+    if ( !sFilename.IsEmpty() )
+    {
+        //remove extension including dot 
+        wxString sName = sFilename.Left( sFilename.Length() - sExt.Length() - 1 );
+        lmScoreView* pView = g_pTheApp->GetActiveView();
+        pView->SaveAsImage(sName, sExt, nImgType);
+    }
+
+}
+
 void lmMainFrame::OnOpenHelp(wxCommandEvent& event)
 {
     if (m_fHelpOpened) {
@@ -1255,6 +1382,13 @@ void lmMainFrame::OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event))
 
 }
 
+void lmMainFrame::OnDebugDumpBitmaps(wxCommandEvent& event)
+{
+    // get the view
+    lmScoreView* pView = g_pTheApp->GetActiveView();
+    pView->DumpBitmaps();
+}
+
 void lmMainFrame::OnDebugDumpStaffObjs(wxCommandEvent& event)
 {
     // get the score
@@ -1267,7 +1401,7 @@ void lmMainFrame::OnDebugDumpStaffObjs(wxCommandEvent& event)
 
 }
 
-void lmMainFrame::OnDebugDumpStaffObjsUI(wxUpdateUIEvent& event)
+void lmMainFrame::OnDebugScoreUI(wxUpdateUIEvent& event)
 {
     lmScoreView* pView = g_pTheApp->GetActiveView();
     event.Enable( (pView != (lmScoreView*)NULL) );
@@ -1285,12 +1419,6 @@ void lmMainFrame::OnDebugSeeSource(wxCommandEvent& event)
 
 }
 
-void lmMainFrame::OnDebugSeeSourceUI(wxUpdateUIEvent& event)
-{
-    lmScoreView* pView = g_pTheApp->GetActiveView();
-    event.Enable( (pView != (lmScoreView*)NULL) );
-}
-
 void lmMainFrame::OnDebugSeeXML(wxCommandEvent& event)
 {
     // get the score
@@ -1303,12 +1431,6 @@ void lmMainFrame::OnDebugSeeXML(wxCommandEvent& event)
 
 }
 
-void lmMainFrame::OnDebugSeeXMLUI(wxUpdateUIEvent& event)
-{
-    lmScoreView* pView = g_pTheApp->GetActiveView();
-    event.Enable( (pView != (lmScoreView*)NULL) );
-}
-
 void lmMainFrame::OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event))
 {
     // get the score
@@ -1319,12 +1441,6 @@ void lmMainFrame::OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event))
     lmDlgDebug dlg(this, _T("MIDI events table"), pScore->DumpMidiEvents() );
     dlg.ShowModal();
 
-}
-
-void lmMainFrame::OnDebugSeeMidiEventsUI(wxUpdateUIEvent& event)
-{
-    lmScoreView* pView = g_pTheApp->GetActiveView();
-    event.Enable( (pView != (lmScoreView*)NULL) );
 }
 
 void lmMainFrame::OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event))
@@ -1348,13 +1464,9 @@ void lmMainFrame::OnSoundTest(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnZoom(wxCommandEvent& event, int nZoom)
 {
- //   wxString msg = wxString::Format(wxT("Menu command %d"), event.GetId());
- //   msg += wxString::Format(wxT(" (Zoom = %d)"), nZoom);
-    //wxLogMessage(msg);
-
     lmScoreView* pView = g_pTheApp->GetActiveView();
     pView->SetScale((double)nZoom / 100.0 );
-    //g_pTheApp->UpdateCurrentDocViews();
+    m_pComboZoom->SetValue(wxString::Format(_T("%d%%"), nZoom));
 
 }
 
@@ -1367,21 +1479,60 @@ void lmMainFrame::OnZoomUpdateUI(wxUpdateUIEvent &event)
 
 void lmMainFrame::OnZoomOther(wxCommandEvent& event)
 {
-    int nZoom = (int) ::wxGetNumberFromUser(_T(""), _("Scale? (in %)"), _T(""), 200, 0, 1000);  
-    OnZoom(event, nZoom);
+    lmScoreView* pView = g_pTheApp->GetActiveView();
+    double rScale = pView->GetScale() * 100;
+    int nZoom = (int) ::wxGetNumberFromUser(_T(""),
+        _("Zooming? (10 to 800)"), _T(""), (int)rScale, 10, 800);
+    if (nZoom != -1)    // -1 means invalid input or user canceled
+        OnZoom(event, nZoom);
 }
 
+void lmMainFrame::OnZoomFitWidth(wxCommandEvent& event)
+{
+    lmScoreView* pView = g_pTheApp->GetActiveView();
+    pView->SetScaleFitWidth();
+    double rScale = pView->GetScale() * 100;
+    m_pComboZoom->SetValue(wxString::Format(_T("%.2f%%"), rScale));
+}
+
+void lmMainFrame::OnZoomFitFull(wxCommandEvent& event)
+{
+    lmScoreView* pView = g_pTheApp->GetActiveView();
+    pView->SetScaleFitFull();
+    double rScale = pView->GetScale() * 100;
+    m_pComboZoom->SetValue(wxString::Format(_T("%.2f%%"), rScale));
+}
 
 void lmMainFrame::OnComboZoom(wxCommandEvent& event)
 {
     wxString sValue = event.GetString();
-    if (sValue.Cmp(_("Adjust to page")) == 0) {
-        //wxLogStatus(_T("Ajustar a página"));
-    } else if (sValue.Find(_T('%')) != -1) {
-        //wxLogStatus(_T("Zoom '%s'"), sValue.c_str());
-    } else {
-        //wxLogStatus(_T("Combobox string '%s' selected"), event.GetString().c_str());
+    if (sValue == _("Fit page full")) {
+        OnZoomFitFull(event);
     }
+    else if (sValue == _("Fit page width")) {
+        OnZoomFitWidth(event);
+    }
+    else if (sValue == _("Actual size")) {
+        OnZoom(event, 100);
+    }
+    else {
+        //sValue.Replace(_T(","), _T("."));
+        sValue.Replace(_T("%"), _T(""));
+        sValue.Trim();
+        double rZoom;
+        if (!sValue.ToDouble(&rZoom)) {
+            wxMessageBox(wxString::Format(_("Invalid zooming factor '%s'"), sValue),
+                         _("Error message"), wxOK || wxICON_HAND );
+            return;
+        }
+        if (rZoom < 9.9 || rZoom > 801.0) {
+            wxMessageBox(_("Zooming factor must be greater that 10% and lower than 800%"),
+                         _("Error message"), wxOK || wxICON_HAND );
+            return;
+        }
+        OnZoom(event, (int)rZoom);
+    }
+
 }
 
 // View menu event handlers

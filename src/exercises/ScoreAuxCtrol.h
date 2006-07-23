@@ -32,6 +32,7 @@
 #include "../app/Paper.h"
 #include "../app/global.h"
 #include "../sound/SoundEvents.h"
+#include "../graphic/GraphicManager.h"
 
 // ----------------------------------------------------------------------------
 // lmScoreAuxCtrol: a control which shows a music score
@@ -109,6 +110,9 @@ private:
     lmLUnits        m_nTopMargin;
     lmLUnits        m_nLeftMargin;
     lmLUnits        m_nRightMargin;
+
+    // managers
+    lmGraphicManager    m_graphMngr;        //rederization manager
 
     DECLARE_EVENT_TABLE()
 };

@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Preferences.cpp,v 1.3 2006/02/23 19:17:12 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -23,50 +22,6 @@
     @brief Implementation file for class lmPreferences
     @ingroup app_gui
 */
-//--------------------------------------------------------------------------------
-/*! @class lmPreferences
-    @ingroup app_gui
-    @brief management of global preferences
-
-    All global variables related to user preferences that will be saved for next
-    time, are defined in this module, as well as initialization and updating
-    functions.
-
-    LenMus uses the wxConfig class to handle preferences.
-    On all platforms, preferences are stored in a file (lenmus.ini) in
-    the /lenmus directory.
-
-  lmPreferences:
-      /
-    [Version]
-        Version                    - LenMus version that created these prefs
-
-    [MainFrame] = Main window startup size and position
-        Width                    
-        Height
-        Left
-        Top
-        Maximized                - 0 | 1
-        
-    [MIDI] = MIDI configuration
-        IsSet                    - 0 | 1 (the user has set Midi preferences)
-        InDevice                - device to use for input (-1 if none)
-        OutDevice                - device to use for output (-1 if none)
-        VoiceChannel
-        VoiceInstr
-        MtrChannel
-        MtrInstr
-        MtrTone1
-        MtrTone2
-
-    //[Locale]
-    //    Language                - two-letter language code for translations
-
-    In addition to these keys, certain wxWidgets classes will store values
-
-
-*/
-//------------------------------------------------------------------------------------------
 #ifdef __GNUG__
 #pragma implementation "TheApp.h"
 #endif
@@ -101,74 +56,3 @@ void InitPreferences()
 }
 
 
-//   wxString vendorName = "LenMus";
-//   wxString appName = "LenMus";
-//
-//   wxTheApp->SetVendorName(vendorName);
-//   wxTheApp->SetAppName(appName);
-//
-//   g_pPrefs = new wxConfig(appName);
-//   wxConfigBase::Set(g_pPrefs);
-//
-//#ifdef __WXMAC__
-//#ifndef __UNIX__
-//   // This fixes changes in Mac filenames under wxWindows between versions
-//   // 0.95 and 0.96 of LenMus.
-//   wxString path;
-//   bool fix = false;   
-//   path = g_pPrefs->Read("/DefaultOpenPath", "");
-//   if (path.Length() > 0 && path.Left(1)=="/")
-//      fix = true;
-//   path = g_pPrefs->Read("/DefaultExportPath", "");
-//   if (path.Length() > 0 && path.Left(1)=="/")
-//      fix = true;
-//   path = g_pPrefs->Read("/Directories/TempDir", "");
-//   if (path.Length() > 0 && path.Left(1)=="/")
-//      fix = true;
-//   if (fix) {
-//      g_pPrefs->Write("/DefaultOpenPath", FROMFILENAME(::wxGetCwd()));
-//      g_pPrefs->Write("/DefaultExportPath", FROMFILENAME(::wxGetCwd()));
-//      g_pPrefs->Write("/Directories/TempDir", "");
-//      wxMessageBox(_("Some of your preferences were from an earlier version "
-//                     "of LenMus and have been reset."));
-//   }
-//#endif
-//#endif
-//
-//   g_pPrefs->Write("/Version", (wxString)AUDACITY_VERSION_STRING);
-//
-//   // BG: Make sure the users prefs are up to date
-//   // BG: Otherwise reset some of them to their defaults
-//   wxString prefsversion;
-//   prefsversion = g_pPrefs->Read("/PrefsVersion", "");
-//
-//   if(prefsversion.CmpNoCase((wxString)AUDACITY_PREFS_VERSION_STRING))
-//   {
-//      // BG: Reset the prefs by removing them
-//      if(g_pPrefs->Exists("/Keyboard"))
-//         g_pPrefs->DeleteGroup("/Keyboard");
-//      if(g_pPrefs->Exists("/Locale"))
-//         g_pPrefs->DeleteGroup("/Locale");
-//      g_pPrefs->Write("/PrefsVersion", (wxString)AUDACITY_PREFS_VERSION_STRING);
-//   }
-//}
-//
-//void FinishPreferences()
-//{
-//   if (g_pPrefs) {
-//      wxConfigBase::Set(NULL);
-//      delete g_pPrefs;
-//      g_pPrefs = NULL;
-//   }
-//}
-//
-//int ReadExportFormatPref()
-//{
-//   return g_pPrefs->Read("/FileFormats/ExportFormat_SF1",
-//                       (long int)(SF_FORMAT_WAV | SF_FORMAT_PCM_16));
-//}
-//
-//void WriteExportFormatPref(int format)
-//{
-//   g_pPrefs->Write("/FileFormats/ExportFormat_SF1", (long int)format);
-//}

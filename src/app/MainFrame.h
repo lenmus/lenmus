@@ -91,38 +91,42 @@ public:
 
     // File menu events
     void OnImportFile(wxCommandEvent& WXUNUSED(event));
+    void OnExportBMP(wxCommandEvent& WXUNUSED(event));
+    void OnExportJPG(wxCommandEvent& WXUNUSED(event));
     void OnPrintPreview(wxCommandEvent& WXUNUSED(event));
     //void OnPageSetup(wxCommandEvent& WXUNUSED(event));
     void OnPrintSetup(wxCommandEvent& WXUNUSED(event));
     void OnPrint(wxCommandEvent& WXUNUSED(event));
     void OnFileUpdateUI(wxUpdateUIEvent &event);
 
+    void ExportAsImage(int nImgType);
+
+
     // Edit menu events
     void OnEditUpdateUI(wxUpdateUIEvent &event);
 
     // Debug menu events
+        // general options, always enabled
     void OnDebugForceReleaseBehaviour(wxCommandEvent& event);
     void OnDebugShowDebugLinks(wxCommandEvent& event);
     void OnDebugRecSelec(wxCommandEvent& event);
     void OnDebugTestMidi(wxCommandEvent& event);
     void OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event));
     void OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event));
+        // methods requiring a score
+    void OnDebugDumpBitmaps(wxCommandEvent& event);
     void OnDebugDumpStaffObjs(wxCommandEvent& event);
-    void OnDebugDumpStaffObjsUI(wxUpdateUIEvent& event);
     void OnDebugSeeSource(wxCommandEvent& event);
-    void OnDebugSeeSourceUI(wxUpdateUIEvent& event);
     void OnDebugSeeXML(wxCommandEvent& event);
-    void OnDebugSeeXMLUI(wxUpdateUIEvent& event);
     void OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event));
-    void OnDebugSeeMidiEventsUI(wxUpdateUIEvent& event);
+    void OnDebugScoreUI(wxUpdateUIEvent& event);
 
     // Zoom events
     void OnComboZoom(wxCommandEvent& event);
     void OnZoom(wxCommandEvent& event, int nZoom);
-    void OnZoom75(wxCommandEvent& event) { OnZoom(event, 75); }
     void OnZoom100(wxCommandEvent& event) { OnZoom(event, 100); }
-    void OnZoom150(wxCommandEvent& event) { OnZoom(event, 150); }
-    void OnZoom200(wxCommandEvent& event) { OnZoom(event, 200); }
+    void OnZoomFitWidth(wxCommandEvent& event);
+    void OnZoomFitFull(wxCommandEvent& event);
     void OnZoomOther(wxCommandEvent& event);
     void OnZoomUpdateUI(wxUpdateUIEvent &event);
 
@@ -200,6 +204,7 @@ protected:
     lmHtmlWindow*           m_pHtmlWin;
     lmHelpController*       m_pHelp;
     wxSpinCtrl*             m_pSpinMetronome;
+    wxComboBox*             m_pComboZoom;
 
     lmMetronome*        m_pMainMtr;        //independent metronome
     lmMetronome*        m_pMtr;            //metronome currently associated to frame metronome controls
@@ -211,6 +216,7 @@ protected:
     // tool bars
     wxToolBar*      m_pTbFile;          // file toolbar
     wxToolBar*      m_pTbEdit;          // edit toolbar
+    wxToolBar*      m_pTbZoom;          // zoom toolbar
     wxToolBar*      m_pTbPlay;          // play toolbar
     wxToolBar*      m_pTbMtr;           // metronome toolbar
     wxToolBar*      m_pToolbar;         // main toolbar

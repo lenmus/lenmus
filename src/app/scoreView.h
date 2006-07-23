@@ -66,10 +66,13 @@ public:
     // options
 
     void SetScale(double rScale);
+    void SetScaleFitWidth();
+    void SetScaleFitFull();
     double GetScale() { return m_rScale; }
     void SetRulersVisible(bool fVisible);
 
     // debug options
+    void DumpBitmaps();
 
     //methods for dealing with user interaction
     void OnMouseEvent(wxMouseEvent& event, wxDC* pDC);
@@ -82,9 +85,11 @@ public:
     void GetViewStart (int *x, int *y) const;
     void GetScrollPixelsPerUnit (int *x_unit, int *y_unit) const;
 
-    // print/preview
+    // print/preview/export as image
     void GetPageInfo(int* pMinPage, int* pMaxPage, int* pSelPageFrom, int* pSelPageTo);
     void DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout);
+    void SaveAsImage(wxString& sFilename, wxString& sExt, int nImgType);
+
 
     // sound related methods
     void PlayScore();

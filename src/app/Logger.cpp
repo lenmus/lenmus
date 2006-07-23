@@ -129,7 +129,9 @@ void lmLogger::SetDataErrorTarget(wxString sPath)
     if (!m_pDataError->IsOpened()) {
         /* //TODO */
         m_pDataError = (wxFile*)NULL;
+        return;
     }
+
 }
 
 void lmLogger::SetTraceTarget(wxString sPath)
@@ -143,7 +145,7 @@ void lmLogger::ReportProblem(const wxChar* szFormat, ...)
     wxString sMsg = wxString::FormatV(szFormat, argptr);
     if (m_pTrace) {
         sMsg += _T("\n");
-        m_pTrace->Write(sMsg.c_str(), sMsg.Length() );
+        m_pTrace->Write(sMsg);
     }
     else {
         wxLogTrace(_T("Errors"), sMsg, _T(""));
@@ -160,7 +162,7 @@ void lmLogger::ReportBug(const wxChar* szFormat, ...)
     va_start(argptr, szFormat);
     wxString sMsg = wxString::FormatV(szFormat, argptr) + _T("\n");
     if (m_pDataError) {
-        m_pDataError->Write(sMsg.c_str(), sMsg.Length() );
+        m_pDataError->Write(sMsg);
     }
     else {
         wxLogMessage(sMsg);
@@ -196,7 +198,7 @@ void lmLogger::ShowDataErrors(wxString sTitle)
         sContent += _T("\n");
     }
     oFile.Close();
-     lmDlgDebug dlg(g_pMainFrame, _T("Errors"), sContent);
+    lmDlgDebug dlg(g_pMainFrame, _T("Errors"), sContent);
     dlg.SetTitle(sTitle);
     dlg.ShowModal();
 
@@ -209,7 +211,7 @@ void lmLogger::LogDataError(const wxChar* szFormat, ...)
     wxString sMsg = wxString::FormatV(szFormat, argptr);
     if (m_pDataError) {
         sMsg += _T("\n");
-        m_pDataError->Write(sMsg.c_str(), sMsg.Length() );
+        m_pDataError->Write(sMsg);
     }
     else {
         wxLogMessage(sMsg);

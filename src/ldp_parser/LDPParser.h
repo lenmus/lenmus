@@ -113,6 +113,8 @@ private:
     bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, 
                                   lmEAlignment* pAlign, lmLocation* pPos,
                                   lmFontInfo* pFont, bool* pHasWidth);
+    bool        AnalyzeTimeExpression(wxString sData, float* pValue);
+    void        AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pStaff);
     bool        AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent, bool fOpenAllowed,
                               bool fCloseAllowed,
                               lmTupletBracket** pTuplet, int* pActual, int* pNormal);

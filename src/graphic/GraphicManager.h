@@ -55,6 +55,13 @@ public:
 
 };
 
+//Options for method Prepare
+enum lmGraphMngrOptions
+{
+    lmFORCE_RELAYOUT                    = 0x0010,
+    lmRELAYOUT_ON_PAPER_SIZE_CHANGE     = 0x0020,
+};
+
 
 //Class lmGraphicManager stores and manages all score renderization issues
 class lmGraphicManager
@@ -66,14 +73,15 @@ public:
 
     void Create(lmScore* pScore, lmPaper* pPaper);
     void Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight, 
-                 double rScale, lmPaper* pPaper);
+                 double rScale, lmPaper* pPaper, int nOptions=0);
 
     void Layout();                          //measure phase
     void Render();                          //drawing phase
     wxBitmap* Render(wxDC* pDC, int nPage);      //render page 1..n
     int GetNumPages();
 
-    void BitmapsToFile();
+    void ExportAsImage(wxString& sFilename, wxString& sExt, int nImgType);
+    void BitmapsToFile(wxString& sFilename, wxString& sExt, int nImgType);
 
 
 private:

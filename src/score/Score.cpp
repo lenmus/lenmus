@@ -257,6 +257,8 @@ lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle)
 
         //measure the text so that it can be properly positioned 
         pTitle->Draw(DO_MEASURE, pPaper);
+        pPaper->SetCursorX(xPaperPos);      //restore value altered by previous sentence
+        pPaper->SetCursorY(yPaperPos);
         nWidth = pTitle->GetSelRect().width;
         nHeight = pTitle->GetSelRect().height;
 
@@ -275,6 +277,9 @@ lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle)
 
             if (tPos.xType == lmLOCATION_DEFAULT) {
                 xPos = (pPaper->GetRightMarginXPos() - pPaper->GetLeftMarginXPos() - nWidth)/2;
+                //force new line if not enough space
+                if (pPaper->GetCursorX() > xPos)
+                    pPaper->SetCursorY(pPaper->GetCursorY() + nHeight);
                 pPaper->SetCursorX(pPaper->GetLeftMarginXPos() + xPos);
             }
             else {

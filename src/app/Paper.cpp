@@ -201,6 +201,8 @@ void lmPaper::DeleteBitmaps()
 
 //--- Old code ---------------------------------------------------------------------
 
+#if 0
+
 void lmPaper::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight, double rScale)
 {
     // If the score has changed or the scale has changed or paper size has changed 
@@ -353,4 +355,4 @@ wxBitmap* lmPaper::GetOffscreenBitmap(int nPage)
 }
 
 
-
+#endif

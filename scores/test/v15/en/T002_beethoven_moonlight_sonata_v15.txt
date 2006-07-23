@@ -1,0 +1,69 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   
+   (title center "Claro de Luna" (font "Times New Roman" bold 21))
+   (title center "Sonata casi Fantasia" (font bold 12))
+   (title left "Dedicada a la Condesa JULIA GUICCIARDI" (dy 10mm) (font normal 10))
+   (title right "L. van BEETHOVEN, Op. 27, No 2")
+
+    
+   (instrument (name "   I.   ") (staves 2)
+      (musicData 
+        (clef treble p1)
+        (clef bass p2)  
+        (key E)
+        (time 4 4)
+        (text "Adagio sostenuto" (font bold)(dx -20)(dy -15))
+        //ng3e,t3,g+ nc4 ne,g-
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (barline)
+
+        //2
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (barline)
+
+        //3
+        (n a3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n a3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n a3 e t3  g+)(n =d4 e)(n f4 e t- g-)
+        (n a3 e t3  g+)(n d4 e)(n f4 e t- g-)
+        (barline)
+
+        //4
+        (n g3 e t3  g+)(n +d4 e)(n f4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n d4 e t- g-)
+        (n f3 e t3  g+)(n +b3 e)(n d4 e t- g-)
+        (barline)
+
+        //5
+        (n e3 e t3  g+ p2)(n g3 e)(n c4 e t- g-)
+        (n g3 e t3  g+ p1)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (barline)
+
+        //6
+        (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   
+        (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   
+        (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   
+        (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   
+        (barline)
+
+        //7
+        (n g3 e g+ p2)(n b3 e)(n d4 e p1)(n g4 e g-)
+        (barline)
+
+        (n f4 q)(n c5 q)   //todo en p1
+        (barline end)
+     )
+     
+   )
+)
+

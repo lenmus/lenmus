@@ -848,11 +848,6 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
 
 void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
-    // <MusicData> = (MusicData <music>+ )
-    // <music> ::= {<Figure> | <Attribute> | <Indicacion> |
-    //              <Barra> | <desplazamiento> | <opciones>}
-    // <Atributo> ::= (<Clave> | <Tonalidad> | <Metrica>)
-    // <Indicacion> ::= (<Metronomo>)
 
     wxASSERT(pNode->GetName() == m_pTags->TagName(_T("musicData")));
 
@@ -892,15 +887,17 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
         } else if (sName == m_pTags->TagName(_T("newSystem")) ) {
             AnalyzeNewSystem(pX, pVStaff);
         }
+        // go forward and backward
+        else if (sName == m_pTags->TagName(_T("goFwd")) 
+                 || sName == m_pTags->TagName(_T("goBack")) )
+        {
+            AnalyzeTimeShift(pX, pVStaff);
+        }
         //abbreviated syntax for notes and rests
-        else if (pX->IsSimple()) {
-            if (sName.Left(1) == m_pTags->TagName(_T("n"), _T("SingleChar")) )
-                AnalyzeNote(pX, pVStaff);
-            else if (sName.Left(1) == m_pTags->TagName(_T("r"), _T("SingleChar")) )
-                AnalyzeRest(pX, pVStaff);
-            else 
-                AnalysisError( _("[AnalyzeMusicData]: Unknown or not allowed element '%s' found. Element ignored."),
-                    sName );
+        else if (sName.Left(1) == m_pTags->TagName(_T("n"), _T("SingleChar")) ) {
+            AnalyzeNote(pX, pVStaff);
+        } else if (sName.Left(1) == m_pTags->TagName(_T("r"), _T("SingleChar")) ) {
+            AnalyzeRest(pX, pVStaff);
         }
         //error or non-supported elements
         else {
@@ -1210,133 +1207,137 @@ void lmLDPParser::AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 }
 
-////devuelve el desplazamiento temporal con signo.
-////Si es un desplazamiento a inicio o fin devuelve unos números fuera de rango para que
-////al truncarlos lleve al inicio o al fin
-//Function AnalizarDesplazamiento(lmLDPNode* pNode) As Single
-////<desplazamiento> = { ("retroceso" partes) | ("avance" partes) }
-////
-////donde partes es:
-////a) una expresión algebráica, formada por sumas de notas, que indica lo que
-////   se avanza o retrocede. Por ejemplo:  3n+s  indica que se avance/retroceda tres notas
-////   negras y una semicorchea.
-////b) el número de semigarrapateas que se avanza o retrocede (1 negra = 64 semigarrapateas)
-////   (ES TAMBIEN UNA EXPRESION)
-//
-//    //analiza primer parámetro: desplazamiento
-//    Dim wxString sData, rDesplz As Single
-//    sData = UCase$((pNode->GetParameter(1))->GetName();)
-//    if (IsNumeric(sData)) {
-//        rDesplz = CSng(sData)
-//    } else if { sData = "INICIO") {
-//        if (pNode->GetName() != "RETROCESO") {
-//            AnalysisError(wxString::Format(_T("<desplazamiento>: Se pide avance a //inicio//. Se ignora"
-//            rDesplz = 0#
-//        } else {
-//            rDesplz = 9999999#
-//        }
-//    } else if { sData = "Fin") {
-//        if (pNode->GetName() != "AVANCE") {
-//            AnalysisError(wxString::Format(_T("<desplazamiento>: Se pide retroceso a //fin//. Se ignora"
-//            rDesplz = 0#
-//        } else {
-//            rDesplz = 9999999#
-//        }
-//    } else {
-//        //expresión algebraica. analizar
-//        rDesplz = AnalizarExpresion(sData)
-//    }
-//    
-//    //determina el signo
-//    if (pNode->GetName() = "RETROCESO") { rDesplz = -rDesplz
-//    
-//    AnalizarDesplazamiento = rDesplz
-//    
-//}
-//
-////Recibe una expresión algebráica, formada por sumas de notas, que indica lo que
-////se avanza o retrocede. Por ejemplo:  3n+s  indica que se avance/retroceda tres notas
-////negras y una semicorchea.
-////Devuelve el valor numérico equivalente a esa expresión
-//Function AnalizarExpresion(wxString sData) As Single
-//    
-//    Dim nTotal As Long
-//    Dim fSumar As Boolean
-//    Dim long i               //posición sobre sData
-//    Dim nNum As Long            //token numérico que está siendo leido
-//    Dim sLetra As String        //token caracter
-//    Dim nValor As Long          //valor de la letra
-//    Dim fNumPendiente As Boolean    //hay un token numérico pendiente de procesar
-//    
-//    //inicializar
-//    nTotal = 0
-//    fSumar = true
-//    nNum = 0
-//    
-//    //bucle. Se toma un token, se analiza y se opera
-//    i = 1
-//    fNumPendiente = false
-//    Do While i <= Len(sData)
-//        sLetra = Mid$(sData, i, 1)
-//        
-//        if (IsNumeric(sLetra)) {
-//            //Numero: guardar en nNum
-//            nNum = 10 * nNum + CLng(sLetra)
-//            fNumPendiente = true
-//            
-//        } else if { sLetra = "+" Or sLetra = "-") {
-//            //operador + o -. Guardar en fSigno
-//            if (fNumPendiente) {
-//                //el numero es un sumando. Añadirlo
-//                if (fSumar) {
-//                    nTotal = nTotal + nNum
-//                } else {
-//                    nTotal = nTotal - nNum
-//                }
-//                fNumPendiente = false
-//            }
-//            
-//            //guardar el nuevo signo
-//            fSumar = (sLetra = "+")
-//            
-//        } else {
-//            //letra: calcular su valor. Multiplicar por nNum y sumar a total, según fSigno
-//            nValor = GetDuracionFromLetra(sLetra)
-//            if (nValor = 0) {
-//                AnalysisError(wxString::Format(_T("<desplazamiento>: Letra (" & sLetra & ") desconocida. Se supone negra"
-//                nValor = eQuarter
-//            }
-//            
-//            if (Not fNumPendiente) { nNum = 1       //no había multiplicador
-//            if (fSumar) {
-//                nTotal = nTotal + (nValor * nNum)
-//            } else {
-//                nTotal = nTotal - (nValor * nNum)
-//            }
-//            fNumPendiente = false
-//            
-//            //limpiar datos usados
-//            nNum = 0
-//            fSumar = true
-//            
-//        }
-//        i = i + 1
-//    Loop
-//    
-//    if (fNumPendiente) {
-//        //el numero es un sumando. Añadirlo
-//        if (fSumar) {
-//            nTotal = nTotal + nNum
-//        } else {
-//            nTotal = nTotal - nNum
-//        }
-//        fNumPendiente = false
-//    }
-//    
-//    AnalizarExpresion = CSng(nTotal)
-//    
-//}
-//
+void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+    //If no error updates the VStaff with the time shift (with sign).
+    //As in this method we ignore the time occupied by a measure, if it
+    //is a move to start or end of measure, the returned value will be a very high one
+    //so that when checking measure limits, it gets truncated to those limits and
+    //so achieve the desired result.
+
+    // the time shift can be:
+    // a) one of the tags 'start' and 'end' 
+    // b) a number: the amount of 256th notes to go forward or backwards
+    // c) an algebraic expression formed by note names, i.e. "3*q+e" meaning three quarter
+    //      notes plus an eighth one.
+
+    wxString sElmName = pNode->GetName();
+    wxASSERT(sElmName == m_pTags->TagName(_T("goFwd")) 
+             || sElmName == m_pTags->TagName(_T("goBack")) );
+
+    bool fForward = (sElmName == m_pTags->TagName(_T("goFwd")));
+
+    //check that there are parameters
+    if(pNode->GetNumParms() < 1) {
+        AnalysisError( _("Element '%s' has less parameters that the minimum required. Element ignored."),
+            sElmName);
+        return;
+    }
+    
+    //get first parameter: time shift amount
+    float rShift;
+    wxString sValue = (pNode->GetParameter(1))->GetName();
+    if (sValue == m_pTags->TagName(_T("start")) ) {
+        if (!fForward)
+            rShift = 1000000.0;
+        else {
+            AnalysisError( _("Element '%s' has an incoherent value: go forward to start?. Element ignored"),
+                sElmName);
+            return;
+        }
+    }
+    else if (sValue == m_pTags->TagName(_T("end")) ) {
+        if (fForward)
+            rShift = 1000000.0;
+        else {
+            AnalysisError( _("Element '%s' has an incoherent value: go backwards to end?. Element ignored"),
+                sElmName);
+            return;
+        }
+    }
+    else {
+        //algebraic expression. Analyze it
+        if (AnalyzeTimeExpression(sValue, &rShift)) return;      //error
+    }
+    
+    //change sign for backwad movement
+    if (!fForward) rShift = - rShift;
+    
+    //procced to do the time shift
+    pVStaff->ShiftTime(rShift);
+    
+}
+
+bool lmLDPParser::AnalyzeTimeExpression(wxString sData, float* pValue)
+{
+    // receives an algebraic expression, formed by aditions and substractions of
+    // notes and numbers; parenthesis are not allowed. i.e: 3q+e+256 (three quarter
+    // notes + one eighth note + one 256th note = 3*(256/4)+(256/8)+256 = 
+    // Analyzes this expresion and returns its numeric value
+
+    float rTotal = 0.0;
+    float rNum = 0.0;       //token (number) being formed
+    wxString sChar;         //token (char) in process
+    float rValue;           //value of the letter
+    bool fAddUp = true;
+
+    //loop. take a token, analyze it and if operator, perform operation
+    int i = 1;
+    bool fNumberReady = false;              //number ready to be processed
+    for (i=0; i < (int)sData.Length(); i++)
+    {
+        sChar = sData.GetChar(i);
+
+        if (sChar.IsNumber()) {
+            //Number: store in rNum until all digits read
+            long nNumber;
+            sChar.ToLong(&nNumber);
+            rNum = 10.0 * rNum + (float)nNumber;
+            fNumberReady = true;
+        }
+        else if (sChar == _T("+") || sChar == _T("-"))
+        {
+            //operator + or -. Do stored (fAddUp) operation and save this new one
+            if (fNumberReady) {
+                rTotal += (fAddUp ? rNum : - rNum);
+                fNumberReady = false;
+            }
+            //save new operation
+            fAddUp = (sChar == _T("+"));
+        }
+        else {
+            //letter: compute its value. Multiply by rNum and do addition or substraction
+            bool fDotted, fDoubleDotted;
+            ENoteType nNoteType;
+            if (AnalyzeNoteType(sChar, &nNoteType, &fDotted, &fDoubleDotted)) {
+                AnalysisError(_("Time shift: Letter %s is not a valid note duration. Replaced by a quarter note"), sChar);
+                rValue = (float)eQuarter;
+            }
+            else {
+                rValue = NoteTypeToDuration(nNoteType, fDotted, fDoubleDotted);
+            }
+            
+            if (!fNumberReady) rNum = 1;       //no había multiplicador
+            rTotal += (fAddUp ? (rValue * rNum) : - (rValue * rNum));
+            fNumberReady = false;
+            
+            //clear used data
+            rNum = 0.0;
+            fAddUp = true;
+        }
+    }
+    
+    if (fNumberReady) {
+        rTotal += (fAddUp ? rNum : - rNum);
+        fNumberReady = false;
+    }
+
+    *pValue = rTotal;
+
+    return false;       //no error
+    
+}
+
 //void lmLDPParser::AnalizarGrupo(lmLDPNode* pNode, lmVStaff* pVStaff)
 ////  <Grupo> ::= ("G" <Nota> [<Figura>*] <Nota> [<Flags_grupo>])
 //    
@@ -2591,7 +2592,7 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
     wxASSERT(pNode->GetName() == m_pTags->TagName(_T("font")) );
 
     //check that there are parameters
-    if (!(pNode->GetNumParms()== 2 || pNode->GetNumParms() == 3)) {
+    if (!(pNode->GetNumParms() > 0)) {
         AnalysisError( _("Element '%s' has less parameters than the minimum required. Tag ignored."),
             pNode->GetName());
     }
@@ -2606,12 +2607,16 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
     int iP;
     wxString sParm;
 
-    for(iP=1; iP <= pNode->GetNumParms(); iP++) {
+    bool fProcessed;
+    for(iP=1; iP <= pNode->GetNumParms(); iP++)
+    {
         sParm = (pNode->GetParameter(iP))->GetName();
+        fProcessed = false;
 
         if (!fStyle) {
             //try style
             fStyle = true;
+            fProcessed = true;
             if (sParm == m_pTags->TagName(_T("bold")) )
                 tFont.nStyle = lmTEXT_BOLD;
             else if (sParm == m_pTags->TagName(_T("normal")) )
@@ -2622,10 +2627,11 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
                 tFont.nStyle = lmTEXT_ITALIC_BOLD;
             else {
                 fStyle = false;
+                fProcessed = false;
             }
         }
 
-        else if (!fSize) {
+        if (!fSize && !fProcessed) {
             wxString sSize = sParm;
             if (sParm.Length() > 2 && sParm.Right(2) == _T("pt")) {
                 sSize = sParm.Left(sParm.Length() - 2);
@@ -2635,16 +2641,18 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
                 sSize.ToLong(&nSize);
                 tFont.nFontSize = (int)nSize;
                 fSize = true;
+                fProcessed = true;
             }
         }
 
-        else if (!fName) {
+        if (!fName && !fProcessed) {
             //assume it is the name
             fName = true;
             tFont.sFontName = (pNode->GetParameter(iP))->GetName();
+            fProcessed = true;
         }
 
-        else {
+        if (!fProcessed) {
             AnalysisError( _("Element '%s': invalid parameter '%s'. It is ignored."),
                 m_pTags->TagName(_T("font")), sParm );
         }
@@ -2666,29 +2674,29 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, int* pValue, lmEUnits* pUnit
     if (pNode->GetNumParms()!= 1) {
         AnalysisError( _("Element '%s' has less or more parameters than required. Tag ignored."),
             pNode->GetName() );
+        return;
     }
 
     //get value
     wxString sParm = (pNode->GetParameter(1))->GetName();
     long nValue;
     wxString sValue = sParm;
-    if (sParm.Length() > 2) {
+    if (!sValue.IsNumber()) {
         wxString sUnits = sParm.Right(2);
+        sValue = sParm.Left(sParm.Length() - 2);
         if (sUnits == _T("mm")) {
-            sValue = sParm.Left(sParm.Length() - 2);
             *pUnits = lmMILLIMETERS;
         }
         else if (sUnits == _T("cm")) {
-            sValue = sParm.Left(sParm.Length() - 2);
             *pUnits = lmCENTIMETERS;
         }
         else if (sUnits == _T("in")) {
-            sValue = sParm.Left(sParm.Length() - 2);
             *pUnits = lmINCHES;
         }
         else {
             AnalysisError( _("Element '%s': Invalid units '%s'. Ignored"),
                 pNode->GetName(), sUnits );
+            return;
         }
     }
     if (sValue.IsNumber()) {

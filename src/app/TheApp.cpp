@@ -291,8 +291,12 @@ bool lmTheApp::OnInit(void)
     g_pLogger->SetDataErrorTarget(oFilename.GetFullPath());
 
 
+    // Define handlers for the image types managed by the application
+    // BMP handler is by default always defined
+    wxImage::AddHandler( new wxPNGHandler );
+    wxImage::AddHandler( new wxJPEGHandler );
+
     // Set the art provider and get current user selected background bitmap
-    wxImage::AddHandler( new wxPNGHandler );    //wxJPEGHandler );
     wxArtProvider::PushProvider(new lmArtProvider());
     //m_background = wxArtProvider::GetBitmap(_T("backgrnd"));
 
