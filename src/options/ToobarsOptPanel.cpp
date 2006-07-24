@@ -88,7 +88,7 @@ lmToolbarsOptPanel::lmToolbarsOptPanel(wxWindow* parent)
 
 
     // labels
-    m_nLabelsIndex = (int) g_pPrefs->Read(_T("/Toolbars/Labels"), 1L);
+    m_nLabelsIndex = (int) g_pPrefs->Read(_T("/Toolbars/Labels"), 0L);
     wxRadioBox* pOptLabels = XRCCTRL(*this, "optLabels", wxRadioBox);
     pOptLabels->SetSelection(m_nLabelsIndex);
 }

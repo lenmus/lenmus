@@ -484,12 +484,19 @@ void lmLDPTokenBuilder::ParseNewToken()
                 }
                 else if (m_curChar == chComma) {
                     //abbreviated notation [ (n c4 q t3) --> nc4q,t3 ]
-                    //found the first comma. Token is the previous string
-                    m_fAbbreviated = true;
-                    m_token.Set(tkStartOfElement, chOpenParenthesis);
-                    PushToken(tkLabel, Extract(iStart, m_lastPos-1));
-                    return;
-                }
+                    if (!m_fAbbreviated) {
+                        //found the first comma. Token is the previous string
+                        m_fAbbreviated = true;
+                        m_token.Set(tkStartOfElement, chOpenParenthesis);
+                        PushToken(tkLabel, Extract(iStart, m_lastPos-1));
+                        return;
+                    }
+                    else {
+                        //it is not the first parameter, just return it
+                        m_token.Set(tkLabel, Extract(iStart, m_lastPos-1) );
+                        return;
+                    }
+               }
                 else {
                     m_lastPos = m_lastPos - 1;     //repeat last char
                     m_token.Set(tkLabel, Extract(iStart, m_lastPos) );

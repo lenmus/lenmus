@@ -71,24 +71,20 @@ LenMus project philosophy (to remind me to always stay on this):
   Tasks for release 3.1
   ------------------------
     - prepare score samples
-    - finish LDP manual for v1.5
     - Prepare UpdateData.xml file
     - modify installer to remove old font
     - pack eBook MusicReading
-    - update help documentation
-    
-    - change extension to score files (txt -> lmd) (LenMus Document)
-    
-    - Print peview anything to do?:
-		- test print
-    
+    - update help documentation  
+
     Bugs:
-    - Crash when closing an score being played back
-    - Parser error when parsing t3 in abbreviated syntax
-    
+
     Bugs in Unicode version:
 		- Release Unicode:
 			- MidiWizard fails
+			
+	Known problems:
+		- wxDC::GetTextExtend() method returns not accurate measurements. This causes
+			problems to right justify texts.
     
  Spanish translation errors:
  ---------------------------
@@ -136,7 +132,6 @@ LenMus project philosophy (to remind me to always stay on this):
 	- Play toolbox: from/to measure number; instruments list; tempo; volume for each
 		instrument; start/pause/stop buttons. Use this toolbox to experiment to
 		design a common architecture for all future toolboxes
-	- (?) default option for toolbars: no labels 
 
     
     Bugs to wait to next release:

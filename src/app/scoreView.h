@@ -58,7 +58,7 @@ public:
     bool OnCreate(wxDocument* doc, long WXUNUSED(flags));
     void OnDraw(wxDC *dc);
     void RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect);
-    void OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint) = (wxObject *) NULL);
+    void OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint));
     bool OnClose(bool deleteWindow = TRUE);
 
     void OnCut(wxCommandEvent& event);
@@ -93,7 +93,7 @@ public:
 
     // sound related methods
     void PlayScore();
-    void StopPlaying();
+    void StopPlaying(bool fWait=false);
     void PausePlaying();
     void OnVisualHighlight(lmScoreHighlightEvent& event);
 

@@ -1,4 +1,3 @@
-// RCS-ID: $Id: EditFrame.cpp,v 1.4 2006/02/23 19:16:31 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -53,7 +52,8 @@ extern lmMainFrame* g_pMainFrame;
 
 
 BEGIN_EVENT_TABLE(lmEditFrame, wxDocMDIChildFrame)
-  EVT_SIZE(lmEditFrame::OnSize)
+  EVT_SIZE      (lmEditFrame::OnSize)
+  EVT_CLOSE     (lmEditFrame::OnClose)
 END_EVENT_TABLE()
 
 
@@ -73,5 +73,13 @@ void lmEditFrame::OnSize(wxSizeEvent& WXUNUSED(event))
 {
     //inform the view
     m_pView->ResizeControls();
+}
+
+void lmEditFrame::OnClose(wxCloseEvent& event)
+{
+    //just in case the score is being played back, to avoid a crash
+    m_pView->StopPlaying(true); //true -> wait for termination
+    event.Skip();               //continue normal processing of the OnClose event
+
 }
 

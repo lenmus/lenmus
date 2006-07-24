@@ -1,4 +1,3 @@
-// RCS-ID: $Id: EditFrame.h,v 1.4 2006/02/23 19:16:31 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -45,6 +44,7 @@ public:
 
     // event handlers
     void OnSize(wxSizeEvent& WXUNUSED(event));
+    void OnClose(wxCloseEvent& event);
 
 private:
     lmScoreView*        m_pView;    //the owner view of this frame

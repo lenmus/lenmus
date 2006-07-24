@@ -195,11 +195,12 @@ void lmScore::WriteTitles(bool fMeasuring, lmPaper *pPaper)
     if (fMeasuring) yPaperPos = pPaper->GetCursorY();
 
     lmScoreText* pTitle;
+    lmLUnits nPrevTitleHeight = 0;
     wxStaffObjsListNode* pNode;
     for(pNode = m_cTitles.GetFirst(); pNode; pNode = pNode->GetNext()) {
         pTitle = (lmScoreText*)pNode->GetData();
         if (fMeasuring)
-            MeasureTitle(pPaper, pTitle);
+            nPrevTitleHeight = MeasureTitle(pPaper, pTitle, nPrevTitleHeight);
         else
             pTitle->Draw(DO_DRAW, pPaper);
     }
@@ -209,7 +210,7 @@ void lmScore::WriteTitles(bool fMeasuring, lmPaper *pPaper)
 
 }
 
-lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle)
+lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle, lmLUnits nPrevTitleHeight)
 {
     // returns height of title
 
@@ -219,7 +220,8 @@ lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle)
     if (!pTitle->IsFixed())
     {
         lmEAlignment nAlign = pTitle->GetAlignment();
-        lmLUnits xPaperPos = pPaper->GetCursorX();
+        lmLUnits xInitPaperPos = pPaper->GetCursorX();
+        lmLUnits xPaperPos = xInitPaperPos;
         lmLUnits yPaperPos = pPaper->GetCursorY();
 
         //if need to reposition paper, convert units to tenths
@@ -257,16 +259,16 @@ lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle)
 
         //measure the text so that it can be properly positioned 
         pTitle->Draw(DO_MEASURE, pPaper);
-        pPaper->SetCursorX(xPaperPos);      //restore value altered by previous sentence
+        pPaper->SetCursorX(xInitPaperPos);      //restore value altered by Draw sentence
         pPaper->SetCursorY(yPaperPos);
         nWidth = pTitle->GetSelRect().width;
         nHeight = pTitle->GetSelRect().height;
 
         //Force new line if no space in current line
-        lmLUnits xSpace = pPaper->GetRightMarginXPos() - pPaper->GetCursorX();
+        lmLUnits xSpace = pPaper->GetRightMarginXPos() - xInitPaperPos;
         if (xSpace < nWidth) {
             pPaper->SetCursorX(pPaper->GetLeftMarginXPos());
-            pPaper->SetCursorY(pPaper->GetCursorY() + nHeight);
+            pPaper->SetCursorY(pPaper->GetCursorY() + nPrevTitleHeight);
         }
 
         if (nAlign == lmALIGN_CENTER)
@@ -279,7 +281,7 @@ lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle)
                 xPos = (pPaper->GetRightMarginXPos() - pPaper->GetLeftMarginXPos() - nWidth)/2;
                 //force new line if not enough space
                 if (pPaper->GetCursorX() > xPos)
-                    pPaper->SetCursorY(pPaper->GetCursorY() + nHeight);
+                    pPaper->SetCursorY(pPaper->GetCursorY() + nPrevTitleHeight);
                 pPaper->SetCursorX(pPaper->GetLeftMarginXPos() + xPos);
             }
             else {
@@ -310,6 +312,13 @@ lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle)
     pTitle->SetFixed(true);
     nWidth = pTitle->GetSelRect().width;
     nHeight = pTitle->GetSelRect().height;
+
+    //if rigth aligned, advance new line
+    if (pTitle->GetAlignment() == lmALIGN_RIGHT) {   
+        pPaper->SetCursorX(pPaper->GetLeftMarginXPos());
+        pPaper->IncrementCursorY( nHeight );
+    }
+
 
     return nHeight;
 

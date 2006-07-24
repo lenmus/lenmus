@@ -670,7 +670,7 @@ void lmTextBookFrame::CreateMyToolBar(int style, bool fNavPanelVisible)
     if (m_pToolbar) return;
 
     long styleTB = wxTB_FLAT | wxTB_DOCKABLE | wxTB_HORIZONTAL;
-    long nLabelsIndex = g_pPrefs->Read(_T("/Toolbars/Labels"), 1L);
+    long nLabelsIndex = g_pPrefs->Read(_T("/Toolbars/Labels"), 0L);
     if (nLabelsIndex == 1) 
         styleTB |= wxTB_TEXT;
     else if (nLabelsIndex == 2) 

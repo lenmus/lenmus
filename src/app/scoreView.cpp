@@ -589,16 +589,23 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
     pPrintout->GetPageSizeMM(&printerWidthMM, &printerHeightMM);
     lmLUnits printerSizeX = lmToLogicalUnits(printerWidthMM, lmMILLIMETERS);
     lmLUnits printerSizeY = lmToLogicalUnits(printerHeightMM, lmMILLIMETERS);
-    float scaleX = 1.0; //(float)printerSizeX / (float)paperSize.GetWidth();
-    float scaleY = 1.0; //(float)printerSizeY / (float)paperSize.GetHeight();
+    float scaleX = (float)printerSizeX / (float)paperSize.GetWidth();
+    float scaleY = (float)printerSizeY / (float)paperSize.GetHeight();
 
-    // Now we have to compute the scaling factor between the DC size and
-    // the view size
+    float actualScale;
     int nWithDC, nHeighDC;
     pDC->GetSize(&nWithDC, &nHeighDC);
-    float xScale = scaleX * (float)(nWithDC/(float)m_xPageSizeD) * m_rScale;
-    float yScale = scaleY * (float)(nHeighDC/(float)m_yPageSizeD) * m_rScale;
-    float actualScale = wxMin(xScale, yScale);
+    if (pPrintout->IsPreview()) {
+        // Now we have to compute the scaling factor between the DC size and
+        // the view size
+        float xScale = scaleX * (float)(nWithDC/(float)m_xPageSizeD) * m_rScale;
+        float yScale = scaleY * (float)(nHeighDC/(float)m_yPageSizeD) * m_rScale;
+        actualScale = wxMin(xScale, yScale);
+    }
+    else {
+        //for printing escale is 100%
+        actualScale = wxMin(scaleX, scaleY);
+    }
     pDC->SetUserScale(actualScale, actualScale);
     pDC->SetMapMode(lmDC_MODE);
 
@@ -695,8 +702,8 @@ void lmScoreView::SetScaleFitWidth()
 
     double xScale = m_rScale * (double)(xScreen-50) / (double)m_xPageSizeD;
 
-    wxLogMessage(_T("[] xScreen=%d, xPageSizeD=%d, rScale=%f, scale=%f"),
-            xScreen, m_xPageSizeD, m_rScale, xScale );
+    //wxLogMessage(_T("[] xScreen=%d, xPageSizeD=%d, rScale=%f, scale=%f"),
+    //        xScreen, m_xPageSizeD, m_rScale, xScale );
 
     SetScale(xScale);
 
@@ -728,7 +735,7 @@ void lmScoreView::PlayScore()
 
 }
 
-void lmScoreView::StopPlaying()
+void lmScoreView::StopPlaying(bool fWait)
 {
     //get the score
     lmScoreDocument* pDoc = (lmScoreDocument*) GetDocument();
@@ -736,6 +743,7 @@ void lmScoreView::StopPlaying()
 
     //request it to stop playing
     pScore->Stop();
+    if (fWait) pScore->WaitForTermination();
 
 }
 

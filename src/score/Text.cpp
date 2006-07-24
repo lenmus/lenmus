@@ -115,6 +115,7 @@ void lmScoreText::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     if (fMeasuring) {
         lmLUnits nWidth, nHeight;
         pDC->GetTextExtent(m_sText, &nWidth, &nHeight);
+        wxLogMessage(_T("[lmScoreText::DrawObject] text='%s'. width=%d"), m_sText, nWidth);
 
          // store selection rectangle (relative to m_paperPos)
         m_selRect.width = nWidth;

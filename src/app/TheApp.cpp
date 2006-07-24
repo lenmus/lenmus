@@ -371,7 +371,7 @@ bool lmTheApp::OnInit(void)
     m_pDocManager = new wxDocManager;
 
     // Create a template relating score documents to their views
-    (void) new wxDocTemplate(m_pDocManager, _T("lmScore"), _T("*.txt"), _T(""), _T("txt"), _T("Music lmScore"), _T("lmScore View"),
+    (void) new wxDocTemplate(m_pDocManager, _T("LenMus score"), _T("*.lms"), _T(""), _T("lms"), _T("Music lmScore"), _T("lmScore View"),
           CLASSINFO(lmScoreDocument), CLASSINFO(lmScoreView));
 
         //

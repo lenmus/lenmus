@@ -463,7 +463,7 @@ void lmMainFrame::CreateMyToolBar()
 
     //prepare style
     long style = wxTB_FLAT | wxTB_NODIVIDER;
-    long nLabelsIndex = g_pPrefs->Read(_T("/Toolbars/Labels"), 1L);
+    long nLabelsIndex = g_pPrefs->Read(_T("/Toolbars/Labels"), 0L);
     if (nLabelsIndex == 1) 
         style |= wxTB_TEXT;
     else if (nLabelsIndex == 2) 

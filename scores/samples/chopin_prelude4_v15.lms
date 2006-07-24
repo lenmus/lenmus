@@ -6,9 +6,9 @@
 
    (instrument (name "4.") (staves 2)
       (musicData 
-        (clef treble p1)
+        (clef bass p1)
         (clef bass p2)
-        (key e-)
+        (key c)
         (time 4 4)
         (chord (n g3 q p1)(n c4 q)(n e4 q)(n g4 q))
         (chord (n a3 q)(n c4 q)(n e4 q)(n a4 q))

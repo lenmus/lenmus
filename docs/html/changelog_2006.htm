@@ -33,6 +33,22 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">24-jul-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Changed score files extension from .txt to .lms (LenMus Score). TheApp::OnInit
+          modified to change wxDocTemplate.</li>
+        <li>Default options for toolbars chaged to no labels, small icons.</li>
+        <li>LDP manual: Documenting alternatives for polyphony, and elements
+		      goFwd, goBack.</li>
+		    <li>Bug fixed: Crash when closing an score being played back. Method OnClose()
+		      added to lmEditFrame. Parameter fWait added to lmScoreView::StopPlaying().</li>
+		    <li>Bug fixed: Parser error when parsing t3 in abbreviated syntax. Fixed in
+		      lmLDPTokenBuilder::ParseNewToken()</li>
+		    <li>Bug fixed: print score printed blank pages due to incorrect scale computation.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">22-jul-06</td>
     <td class="ListaPar">
       <ul>

@@ -1,10 +1,10 @@
 (score
    (vers 1.5)(language en iso-8859-1)
    
-   (title center "Claro de Luna" (font "Times New Roman" bold 21))
-   (title center "Sonata casi Fantasia" (font bold 12))
-   (title left "Dedicada a la Condesa JULIA GUICCIARDI" (dy 10mm) (font normal 10))
-   (title right "L. van BEETHOVEN, Op. 27, No 2")
+   (title center "Moonlight Sonata" (font "Trebuchet MS" bold 21))
+   (title center "Op. 27, No. 2" (font bold 12))
+   (title left "To the Countess JULIA GUICCIARDI" (dy 10mm) (font normal 10))
+   (title right "L. van BEETHOVEN")
 
     
    (instrument (name "   I.   ") (staves 2)
@@ -14,39 +14,56 @@
         (key E)
         (time 4 4)
         (text "Adagio sostenuto" (font bold)(dx -20)(dy -15))
-        //ng3e,t3,g+ nc4 ne,g-
+        //ng3e,t3,g+ nc4 ne,g-,t-
         (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
         (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
         (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
         (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        
+        (goBack 4q)     //for left hand
+        (chord (n c3 w p2)(n c2 w))
         (barline)
 
         //2
-        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
-        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
-        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
-        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
-        (barline)
-
-        //3
-        (n a3 e t3  g+)(n c4 e)(n e4 e t- g-)
-        (n a3 e t3  g+)(n c4 e)(n e4 e t- g-)
-        (n a3 e t3  g+)(n =d4 e)(n f4 e t- g-)
-        (n a3 e t3  g+)(n d4 e)(n f4 e t- g-)
-        (barline)
-
-        //4
-        (n g3 e t3  g+)(n +d4 e)(n f4 e t- g-)
-        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
-        (n g3 e t3  g+)(n c4 e)(n d4 e t- g-)
-        (n f3 e t3  g+)(n +b3 e)(n d4 e t- g-)
-        (barline)
-
-        //5
-        (n e3 e t3  g+ p2)(n g3 e)(n c4 e t- g-)
         (n g3 e t3  g+ p1)(n c4 e)(n e4 e t- g-)
         (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
         (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+
+        (goBack 4q)     //for left hand
+        (chord (n b2 w p2)(n b1 w))
+        (barline)
+
+        //3
+        (n a3 e t3  g+ p1)(n c4 e)(n e4 e t- g-)
+        (n a3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n a3 e t3  g+)(n =d4 e)(n f4 e t- g-)
+        (n a3 e t3  g+)(n d4 e)(n f4 e t- g-)
+
+        (goBack 4q)     //for left hand
+        (chord (n a2 h p2)(n a1 h))
+        (chord (n f2 h p2)(n f1 h))
+        (barline)
+
+        //4
+        (n g3 e t3  g+ p1)(n +d4 e)(n f4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n d4 e t- g-)
+        (n f3 e t3  g+)(n +b3 e)(n d4 e t- g-)
+
+        (goBack 4q)     //for left hand
+        (chord (n g2 h p2)(n g1 h))
+        (chord (n g2 h p2)(n g1 h))
+        (barline)
+
+        //5
+        (n e3 e t3  g+ p2 (stem up))(n g3 e (stem up))(n c4 e t- g- (stem up))
+        (n g3 e t3  g+ p1)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+        (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
+
+        (goBack 4q)     //for left hand
+        (chord (n c2 w p2)(n g2 w)(n c3 w))
         (barline)
 
         //6

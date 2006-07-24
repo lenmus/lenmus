@@ -563,7 +563,7 @@ private:
     void WriteToFile(wxString sFilename, wxString sContent);
     void ComputeMidiEvents();
     void RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper);
-    lmLUnits MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle);
+    lmLUnits MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle, lmLUnits nPrevTitleHeight);
 
 
         //
