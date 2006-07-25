@@ -2,11 +2,11 @@
 <UpdateData>
 
 <platform name="Win32">
-    <version>3.0</version>
-    <package>LenMus Phonascus 3.0 stable (1,73 MB)</package>
+    <version>3.1</version>
+    <package>LenMus Phonascus 3.1 (1,73 MB)</package>
     <description>
-        Release 3.0 include new features and improvements and some bug fixes.
-        It replace version 2.0.
+        Release 3.1 includes new functions for music score preparation, play back
+        and printing. Also improvements and some bug fixes.
     </description>
     <download_url>http://www.lenmus.org/sw/page.php?pid=paginas&amp;name=downloads</download_url>
 </platform>

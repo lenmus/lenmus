@@ -34,11 +34,11 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "3.0"
+  !define APP_VERSION "3.1"
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v3.0"     ;product name displayed by the installer
+  Name "lenmus v3.1"     ;product name displayed by the installer
 
 
 ;support for Modern UI
@@ -290,7 +290,7 @@ Section  "-" "MainSection"
 
      SetOutPath "$INSTDIR\bin"
      File "..\..\z_bin\lenmus.exe"
-     File "..\..\fonts\LeMusNot.ttf"
+     File "..\..\fonts\lmbasic.ttf"
      File "msvcr71.dll"
      ;File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
 
@@ -328,7 +328,7 @@ Section  "-" "MainSection"
   InstallFonts:
      ClearErrors
      StrCpy $FONT_DIR $FONTS
-     !insertmacro InstallTTF '..\..\fonts\LeMusNot.ttf'
+     !insertmacro InstallTTF '..\..\fonts\lmbasic.ttf'
      SendMessage ${HWND_BROADCAST} ${WM_FONTCHANGE} 0 0 /TIMEOUT=5000
      IfErrors +1 EndInstallFonts
         StrCmp $STEP "ErrorInstallingFonts" "Error_InstallFonts"
@@ -378,7 +378,7 @@ Section $(TITLE_CreateIcon) CreateIcon
 SectionEnd
 
 ;-----------------------------------------------------------------------------------------------
-; example scores 
+; sample scores 
 ;-----------------------------------------------------------------------------------------------
 Section $(TITLE_Scores) Scores
 
@@ -387,8 +387,8 @@ Section $(TITLE_Scores) Scores
      SetOverwrite on
      SetOutPath "$INSTDIR\scores\MusicXML"
      File "..\..\scores\MusicXML\*.*"
-     SetOutPath "$INSTDIR\scores\test"
-     File "..\..\scores\test\*.*"
+     SetOutPath "$INSTDIR\scores\samples"
+     File "..\..\scores\samples\*.*"
      IfErrors +1 EndCopyScores
         StrCmp $STEP "ErrorCopyingScores" "Error_CopyScores"
         StrCpy "$STEP" "ErrorCopyingScores" 
@@ -473,7 +473,7 @@ Section un.Install
   ;Delete "$INSTDIR\xrc\*.*"
   ;Delete "$INSTDIR\temp\*.*"
   ;Delete "$INSTDIR\scores\MusicXML\*.*"
-  ;Delete "$INSTDIR\scores\test\*.*"
+  ;Delete "$INSTDIR\scores\samples\*.*"
 
   ;delete folders
   ;RMDir "$INSTDIR\bin"
@@ -487,7 +487,7 @@ Section un.Install
   ;RMDir "$INSTDIR\xrc"
   ;RMDir "$INSTDIR\temp"
   ;RMDir "$INSTDIR\scores\MusicXML"
-  ;RMDir "$INSTDIR\scores\test"
+  ;RMDir "$INSTDIR\scores\samples"
   ;RMDir "$INSTDIR\scores"
   RMDir "$LENMUS_DIR"
 

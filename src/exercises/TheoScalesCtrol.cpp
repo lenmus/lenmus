@@ -166,10 +166,10 @@ lmTheoScalesCtrol::lmTheoScalesCtrol(wxWindow* parent, wxWindowID id,
     wxBoxSizer* pScoreSizer = new wxBoxSizer( wxVERTICAL );
     pTopSizer->Add(
         pScoreSizer,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10).Expand() );
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 0).Expand() );
 
     // create score ctrl 
-    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, wxSize(320,150), eSIMPLE_BORDER);
+    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, wxSize(360,150), eSIMPLE_BORDER);
     m_pScoreCtrol->SetMargins(lmToLogicalUnits(5, lmMILLIMETERS),      //left=5mm
                               lmToLogicalUnits(5, lmMILLIMETERS),      //right=5mm
                               lmToLogicalUnits(15, lmMILLIMETERS));    //top=15mm

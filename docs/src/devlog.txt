@@ -71,20 +71,24 @@ LenMus project philosophy (to remind me to always stay on this):
   Tasks for release 3.1
   ------------------------
     - prepare score samples
-    - Prepare UpdateData.xml file
-    - modify installer to remove old font
-    - pack eBook MusicReading
-    - update help documentation  
-
+    
+    + modify AboutDlg.h to change version number
+    + Prepare UpdateData.xml file
+    - update help documentation 
+    + Modify and pack eBook introduction
+    - Review .po Spanish translation file
+    + Prepare release notes for website
+    + Prepare news for web site and Sourceforge 
+    - Generate the installer
+    + installation.htm page
+    - LDP manual, html page
+    
     Bugs:
 
     Bugs in Unicode version:
 		- Release Unicode:
 			- MidiWizard fails
 			
-	Known problems:
-		- wxDC::GetTextExtend() method returns not accurate measurements. This causes
-			problems to right justify texts.
     
  Spanish translation errors:
  ---------------------------
@@ -142,7 +146,12 @@ LenMus project philosophy (to remind me to always stay on this):
 	- memory leaks (chords?)
     - toolbars: problem with wxAUI no resize when change from label to no lables
 
-    
+
+ 	Known problems:
+ 	---------------
+	- wxDC::GetTextExtend() method returns not accurate measurements. This causes
+		problems to right justify texts.
+   
     
     
     

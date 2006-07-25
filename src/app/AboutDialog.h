@@ -37,7 +37,7 @@
 
 
 // Increment this every time you release a new version
-#define LM_VERSION_STR _T("3.0")
+#define LM_VERSION_STR _T("3.1")
 
 
 class lmAboutDialog : public wxDialog
