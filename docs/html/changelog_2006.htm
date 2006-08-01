@@ -33,6 +33,33 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">1-ago-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Bug fixed: Visual highlight fails if more than one page. The problem was
+          due to uncompleted code. Need to modify lmScoreObject and lmBoxSystem to keep
+          page number. Modified lmBoxSystem::RenderMeasure to store page number.</li>
+        <li>LDPParser: completed AnalyzeTuplet to deal with full notation. Added code to deal
+          with options (optional tuplet bracket and tuplet number).</li>
+        <li>Bug fixed: some literals in Zoom menu and toolbar where not prepared for
+          internationalization, using _T() instead of _().</li>
+        <li>Bug fixed: problem with offscreen bitmaps ordering if scale changed in 
+          a page different from first one. It was caused by assuming that bitmap creation
+          order was page order. Now page number associated to bitmap.</li>
+        <li>Bug fixed: in occations, notes at the same time were not rendered aligned. The
+          problem was caused by precision of floating numbers in comparisons.
+          An error tolerance has been introduced.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">25 to 31 jul-06</td>
+    <td class="ListaPar">
+      Preparing new version of LDP manual. Using DocBook. Tests to generate chunked
+      pages including website layout code. Redesign of website layout (maintaining
+      visual aspect) to accomodate paginated LDP manual. Preparing score sample (Beethoven
+      moonlight sonata).
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">24-jul-06</td>
     <td class="ListaPar">
       <ul>

@@ -128,6 +128,8 @@ public:
     virtual void SetLeft(lmLUnits nLeft) { m_paperPos.x = nLeft; }
     bool IsFixed() const { return m_fFixedPos; }
     void SetFixed(bool fFixed) { m_fFixedPos = fFixed; }
+    void SetPageNumber(int nNum) { m_nNumPage = nNum; }
+    int GetPageNumber() { return m_nNumPage; }
 
     // methods related to selection
     inline bool IsSelected() { return m_fSelected; }
@@ -187,6 +189,7 @@ protected:
     wxPoint     m_paperPos;         // paper xPos, yBase position to render this object
     bool        m_fFixedPos;        // its position is fixed. Do not recalculate it
     wxCoord     m_nWidth;           // total width of the image, including after space
+    int         m_nNumPage;         // page on which this SO is rendered (1..n). Set Up in BoxSystem::RenderMeasure().
 
     // selection related variables
     bool        m_fSelected;        // this obj is selected

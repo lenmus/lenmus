@@ -102,7 +102,9 @@ private:
     bool            m_fReLayout;        //force to re-layout the score
 
     //offscreen bitmaps management
-    BitmapList      m_cBitmaps;            // offsceen bitmaps 
+    BitmapList      m_cBitmaps;         //offsceen bitmaps
+    wxArrayInt      m_aBitmapPage;      //num page for this bitmap
+
     lmPixels        m_xBitmapSize, m_yBitmapSize;    // size of bitmaps in pixels
 
 

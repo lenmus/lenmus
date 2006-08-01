@@ -70,6 +70,7 @@ lmScoreObj::lmScoreObj(EScoreObjType nType, bool fIsDraggable)
     m_paperPos.y = 0;
     m_paperPos.x = 0;
     m_fFixedPos = false;
+    m_nNumPage = 1;
 
     // initializations: selection related info
     m_fSelected = false;

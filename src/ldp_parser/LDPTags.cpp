@@ -266,6 +266,15 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[5][_T("r")] = _T("r");   //rest 
         m_Tags[5][_T("t")] = _T("t");   //tuplet 
 
+        //context: tuplet options
+        m_Contexts[_T("Tuplets")] = 6;
+        m_Tags[6][_T("noBracket")] = _T("noBracket");
+        m_Tags[6][_T("squaredBracket")] = _T("squaredBracket");
+        m_Tags[6][_T("curvedBracket")] = _T("curvedBracket");
+        m_Tags[6][_T("numNone")] = _T("numNone");
+        m_Tags[6][_T("numActual")] = _T("numActual");
+        m_Tags[6][_T("numBoth")] = _T("numBoth");
+
     }
     else {
         // initialize table with default Spanish values
@@ -399,6 +408,15 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[5][_T("p")] = _T("p");   //staff number  
         m_Tags[5][_T("r")] = _T("s");   //rest 
         m_Tags[5][_T("t")] = _T("t");   //tuplet 
+
+        //context: tuplet options
+        m_Contexts[_T("Tuplets")] = 6;
+        m_Tags[6][_T("noBracket")] = _T("noBracket");
+        m_Tags[6][_T("squaredBracket")] = _T("squaredBracket");
+        m_Tags[6][_T("curvedBracket")] = _T("curvedBracket");
+        m_Tags[6][_T("numNone")] = _T("numNone");
+        m_Tags[6][_T("numActual")] = _T("numActual");
+        m_Tags[6][_T("numBoth")] = _T("numBoth");
 
     }
 

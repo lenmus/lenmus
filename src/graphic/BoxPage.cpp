@@ -41,8 +41,9 @@ extern lmColors* g_pColors;
 
 //-----------------------------------------------------------------------------------------
 
-lmBoxPage::lmBoxPage()
+lmBoxPage::lmBoxPage(int nNumPage)
 {
+    m_nNumPage = nNumPage;
     m_nFirstSystem = 0;
     m_nLastSystem = 0;
 
@@ -61,7 +62,7 @@ lmBoxSystem* lmBoxPage::AddSystem(int nSystem)
     m_nLastSystem = nSystem;
 
     //create the system
-    lmBoxSystem* pSystem = new lmBoxSystem();
+    lmBoxSystem* pSystem = new lmBoxSystem(m_nNumPage);
     m_aSystems.Add(pSystem);
     return pSystem;
 

@@ -770,16 +770,37 @@ void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
     dc.SetUserScale( m_rScale, m_rScale );
     m_Paper.SetDC(&dc);
 
-    //! @todo this will fail when more than one page
-    //position DC origing according to current scrolling and page position
-    int dx = m_xBorder - m_xScrollPosition* m_pixelsPerStepX;
-    int dy = m_yBorder - m_yScrollPosition* m_pixelsPerStepY;
-    dc.SetDeviceOrigin(dx, dy);
+    //Obtain the StaffObject
+    //For events of type eRemoveAllHighlight the pSO is NULL
+    lmStaffObj* pSO = event.GetStaffObj();
+    if (pSO) {
+        int nNumPage = pSO->GetPageNumber();        // nNumPage = 1..n
+
+        // Pages measure (m_xPageSizeD, m_yPageSizeD) pixels.
+        // There is a gap between pages of  m_yInterpageGap  pixels.
+        // There is a left margin:  m_xBorder  pixels
+        // And there is a top margin before the first page:  m_yBorder  pixels
+
+        //First page at (m_xBorder, m_yBorder), size (m_xPageSizeD, m_yPageSizeD)
+        //Second page at (m_xBorder, m_yBorder+m_yPageSizeD+m_yInterpageGap)
+        //...
+        //Page n (1..n) at (m_xBorder, m_yBorder + (n-1) * (m_yPageSizeD+m_yInterpageGap))
+        // all this coordinates are referred to view origin (0,0), a virtual infinite
+        // paper on which all pages are rendered one after the other.
+
+        lmPixels xPage = m_xBorder;
+        lmPixels yPage = m_yBorder + (nNumPage-1) * (m_yPageSizeD + m_yInterpageGap);
+
+        //position DC origing according to current scrolling and page position
+        int dx = xPage - m_xScrollPosition* m_pixelsPerStepX;
+        int dy = yPage - m_yScrollPosition* m_pixelsPerStepY;
+        dc.SetDeviceOrigin(dx, dy);
+    }
 
     //do the highlight / unhighlight
-    lmStaffObj* pSO = event.GetStaffObj();
     EHighlightType nHighlightType = event.GetHighlightType();
     pScore->ScoreHighlight(pSO, &m_Paper, nHighlightType);
+
 }
 
 void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
@@ -1165,6 +1186,9 @@ int lmScoreView::CalcScrollInc(wxScrollEvent& event)
 // The rectangle to redraw is in pixels and unscrolled
 void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
 {
+    // To draw a cast shadow for each page we need the shadow sizes
+    lmPixels nRightShadowWidth = 3;      //pixels
+    lmPixels nBottomShadowHeight = 3;      //pixels
 
     // Here in OnPaint we want to know which page
     // to redraw so that we prevent redrawing pages that don't
@@ -1181,11 +1205,6 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
             yInterpageGap = m_yInterpageGap,
             xLeftMargin = m_xBorder,
             yTopMargin = m_yBorder;
-
-    // To draw a cast shadow for each page we need the shadow sizes
-    lmPixels nRightShadowWidth = 3;      //pixels
-    lmPixels nBottomShadowHeight = 3;      //pixels
-
 
     //First page at (xLeftMargin, yTopMargin), size (xPageSize, yPageSize)
     //Second page at (xLeftMargin, yTopMargin+yPageSize+yInterpageGap)

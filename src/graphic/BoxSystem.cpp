@@ -41,10 +41,10 @@ extern lmColors* g_pColors;
 
 //-----------------------------------------------------------------------------------------
 
-lmBoxSystem::lmBoxSystem()
+lmBoxSystem::lmBoxSystem(int nNumPage)
 {
     m_nNumMeasures = 0;
-
+    m_nNumPage = nNumPage;
 }
 
 
@@ -212,6 +212,11 @@ void lmBoxSystem::RenderMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper
             pSO->Draw(DO_DRAW, pPaper);
 
         }
+
+        //for visual highlight we need to know the page in wich the StaffObj to highlight
+        //is located. To this end we are going to store the page number in each
+        //StaffObj
+        pSO->SetPageNumber(m_nNumPage);
 
         // if barline, exit loop: end of measure reached
         if (pSO->GetType() == eTPO_Barline) break;

@@ -93,6 +93,11 @@ lmLDPParser::lmLDPParser()
     m_sLastOctave = _T("4");                                        // octave 4
     m_sLastDuration = m_pTags->TagName(_T("n"), _T("NoteType"));    // quarter note
 
+    // default values for tuplet options
+    m_fShowTupletBracket = true;
+    m_fShowNumber = true;
+    m_fTupletAbove = true;
+
 }
 
 lmLDPParser::~lmLDPParser()
@@ -1726,6 +1731,20 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             else if (sData == m_pTags->TagName(_T("stem")) ) {       //stem attributes
                 nStem = AnalyzeStem(pX, pVStaff);
             }
+            else if (sData == m_pTags->TagName(_T("t"), _T("SingleChar"))) {       //start/end of tuplet. Simple parameter (tn / t-)
+                lmTupletBracket* pTuplet;
+                bool fOpenTuplet = (m_pTupletBracket ? false : true);
+                if (!AnalyzeTuplet(pX, sElmName, fOpenTuplet, !fOpenTuplet,
+                     &pTuplet, &nActualNotes, &nNormalNotes))
+                {
+                    if (pTuplet) {   // start of tuplet
+                        m_pTupletBracket = pTuplet;
+                    }
+                    else {          //end of tuplet
+                        fEndTuplet = true;
+                    }
+                }
+            }
             else {
                 AnalysisError(_("Notation '%s' unknown or not implemented."), sData);
             }
@@ -1837,7 +1856,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
     //      - end of tuplet: pTuplet is NULL
 
 
-    // <Tuplet> = (t {- | + ActualNotes [NormalNotes] } )
+    // <Tuplet> = (t {- | + ActualNotes [NormalNotes][options] } )
     // Abbreviations:
     //      (t -)     --> t-
     //      (t + n)   --> tn
@@ -1845,6 +1864,11 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
 
     bool fEndTuplet = false;
     int nActualNum, nNormalNum;
+
+    bool fShowTupletBracket = m_fShowTupletBracket;
+    bool fShowNumber = m_fShowNumber;
+    bool fTupletAbove = m_fTupletAbove;
+
     wxString sData = pNode->GetName();
 
     if (pNode->IsSimple()) {
@@ -1920,16 +1944,100 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
     else {
         //compound element
 
+        wxString sElmName = pNode->GetName();
+
         //check that at least one parameters (+, - sign) is specified
         if(pNode->GetNumParms() < 2) {
             AnalysisError(
                 _("Element '%s' has less parameters that the minimum required. Element ignored."),
-                m_pTags->TagName(_T("title")) );
+                sElmName );
             return true;
         }
-        //! @todo compound tuplet element
-        AnalysisError(_T("TODO. LDPParser: compound tuplet element not yet supported"));
-        return true;    //error
+        
+        // get type: + or -
+        wxString sType = (pNode->GetParameter(1))->GetName();
+        if (sType ==_T("+") ) {             //start of tuplet
+            fEndTuplet = false;
+        } else if (sType ==_T("-") ) {      //end of tuplet
+            fEndTuplet = true;
+        } else {
+            AnalysisError(_T("Element '%s': invalid type '%s'. It is neither '+' nor '-'. Tuplet ignored."),
+                sElmName, sType );
+            return true;    //error
+        }
+
+        // get actual notes number
+        wxString sNumTuplet = (pNode->GetParameter(2))->GetName();
+        if (!sNumTuplet.IsNumber()) {
+            AnalysisError(_("Element '%s': Expected number but found '%s'. Tuplet ignored."),
+                sElmName, sData);
+            return true;
+        }
+        else {
+            long nNum;
+            sNumTuplet.ToLong(&nNum);
+            nActualNum = (int)nNum;
+            //implicit value for denominator
+            if (nActualNum == 2)
+                nNormalNum = 3;   //duplet
+            else if (nActualNum == 3)
+                nNormalNum = 2;   //triplet
+            else if (nActualNum == 4)
+                nNormalNum = 6;
+            else if (nActualNum == 5)
+                nNormalNum = 6;
+            else
+                nNormalNum = 0;  //required
+        }
+
+        // loop to parse remaining parameters: NormalNum and Options
+        long iP = 3;
+        wxString sData;
+        for(; iP <= pNode->GetNumParms(); iP++) {
+            sData = (pNode->GetParameter(iP))->GetName();
+            if (fEndTuplet) {
+                AnalysisError(_("Element '%s': Found unknown data '%s'. Data ignored."),
+                    sElmName, sData);
+            }
+            else {
+                //check if Normal notes number
+                if (sData.IsNumber()) {
+                    long nNum;
+                    sData.ToLong(&nNum);
+                    nNormalNum = (int)nNum;
+                    if (nNormalNum < 1) {
+                        AnalysisError(_("Element '%s': Number for 'normal notes' must be greater than 0. Number ignored."),
+                            sElmName, sData);
+                        return true;
+                    }
+                }
+                else if (sData == m_pTags->TagName(_T("noBracket"), _T("Tuplets")) ) {
+                    fShowTupletBracket = false;
+                }
+                else if (sData == m_pTags->TagName(_T("squaredBracket"), _T("Tuplets")) ) {
+                    //! @todo implement different kinds of brackets
+                    fShowTupletBracket = true;
+                }
+                else if (sData == m_pTags->TagName(_T("curvedBracket"), _T("Tuplets")) ) {
+                    fShowTupletBracket = true;
+                }
+                else if (sData == m_pTags->TagName(_T("numNone"), _T("Tuplets")) ) {
+                    fShowNumber = false;
+                }
+                else if (sData == m_pTags->TagName(_T("numActual"), _T("Tuplets")) ) {
+                    //! @todo implement different options to display numbers
+                    fShowNumber = true;
+                }
+                else if (sData == m_pTags->TagName(_T("numBoth"), _T("Tuplets")) ) {
+                    fShowNumber = true;
+                }
+                else {
+                    AnalysisError(_("Element '%s': Found unknown data '%s'. Data ignored."),
+                        sElmName, sData);
+                }
+           }
+        }
+
     }
 
     //All information parsed. Prepare return info
@@ -1950,11 +2058,12 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
             return true;
         }
 
+        //save new options
+        m_fShowTupletBracket = fShowTupletBracket;
+        m_fShowNumber = fShowNumber;
+        m_fTupletAbove = fTupletAbove;
+
         // create tuplet braket
-        //! @todo user options for default values
-        bool fShowTupletBracket = true;
-        bool fShowNumber = true;
-        bool fTupletAbove = true;
         *pTuplet = new lmTupletBracket(fShowNumber, nActualNum, fShowTupletBracket,
                             fTupletAbove, nActualNum, nNormalNum);
         *pActual = nActualNum;

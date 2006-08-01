@@ -199,6 +199,7 @@ void lmGraphicManager::DeleteBitmaps()
         delete pNode;
         pNode = m_cBitmaps.GetFirst();
     }
+    m_aBitmapPage.Clear();
 
 }
 
@@ -209,12 +210,14 @@ wxBitmap* lmGraphicManager::GetPageBitmap(int nPage)
 
     wxASSERT(nPage > 0);
         
-    if (nPage > (int)m_cBitmaps.GetCount())
-        return (wxBitmap*)NULL;
-    else {
-        wxBitmapListNode* pNode = m_cBitmaps.Item(nPage-1);
-        return (wxBitmap*)pNode->GetData();
+    int i;
+    for (i=0; i < (int)m_cBitmaps.GetCount(); i++) {
+        if (m_aBitmapPage.Item(i) == nPage) {
+            wxBitmapListNode* pNode = m_cBitmaps.Item(i);
+            return (wxBitmap*)pNode->GetData();
+        }
     }
+    return (wxBitmap*)NULL;
 
 }
 
@@ -224,8 +227,7 @@ wxBitmap* lmGraphicManager::NewBitmap(int nPage)
     // Makes room for a new bitmap, for page nPage
     // and returns it (empty bitmap)
 
-    wxLogMessage(_T("[lmGraphicManager::NewBitmap] Page = %d"), nPage);
-    //wxMessageBox(wxString::Format(_T("NewPage %d"), nPage));
+    //wxLogMessage(_T("[lmGraphicManager::NewBitmap] Page = %d"), nPage);
 
     //Make room for the new bitmap
 
@@ -246,8 +248,11 @@ wxBitmap* lmGraphicManager::NewBitmap(int nPage)
 
     // add the new bitmap to the list and store its size
     m_cBitmaps.Append(pBitmap);
+    m_aBitmapPage.Add(nPage);
+
     m_xBitmapSize = m_xPageSize;
     m_yBitmapSize = m_yPageSize;
+
     return pBitmap;
 }
 
@@ -262,7 +267,7 @@ void lmGraphicManager::BitmapsToFile(wxString& sFilename, wxString& sExt, int nI
     while (pNode) {
         wxBitmap* pBitmap = pNode->GetData();
         wxImage oImg = pBitmap->ConvertToImage();
-        wxString sName = wxString::Format(_T("%s_%d.%s"), sFilename, i, sExt);
+        wxString sName = wxString::Format(_T("%s_%d.%s"), sFilename, m_aBitmapPage.Item(i-1), sExt);
         oImg.SaveFile(sName, nImgType);
         pNode = pNode->GetNext();
         i++;
@@ -283,7 +288,7 @@ void lmGraphicManager::ExportAsImage(wxString& sFilename, wxString& sExt, int nI
     for(i=1; i <= GetNumPages(); i++) {
         wxBitmap* pBitmap = Render((wxDC*)NULL, i);
         wxImage oImg = pBitmap->ConvertToImage();
-        wxString sName = wxString::Format(_T("%s_%d.%s"), sFilename, i, sExt);
+        wxString sName = wxString::Format(_T("%s_%d.%s"), sFilename, m_aBitmapPage.Item(i-1), sExt);
         oImg.SaveFile(sName, nImgType);
     }
 

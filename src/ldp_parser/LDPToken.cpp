@@ -564,7 +564,7 @@ void lmLDPTokenBuilder::ParseNewToken()
                 } else if (m_curChar == chPlusSign || m_curChar == chMinusSign) {
                     nState = FT_S03;
                 } else if (m_curChar == chSpace || m_curChar == chTab) {
-                    m_token.Set(tkLabel, Extract(iStart, m_lastPos) );
+                    m_token.Set(tkLabel, Extract(iStart, m_lastPos-1) );
                     return;
                 } else {
                     nState = FT_Error;

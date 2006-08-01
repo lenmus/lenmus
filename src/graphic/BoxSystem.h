@@ -46,7 +46,7 @@
 class lmBoxSystem
 {
 public:
-    lmBoxSystem();
+    lmBoxSystem(int nNumPage);
     ~lmBoxSystem();
 
     void SetNumMeasures(int nMeasures) { m_nNumMeasures = nMeasures; }
@@ -70,6 +70,7 @@ private:
     lmLUnits    m_yPos;             // y pos to render first staff
     lmLUnits    m_xFinal;           // x pos for end of staff lines
     lmLUnits    m_nIndent;          // indentation
+    int         m_nNumPage;         // page number (1..n) on which this system is included
 
 };
 

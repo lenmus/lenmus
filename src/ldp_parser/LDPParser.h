@@ -184,6 +184,12 @@ private:
     int             m_nTextFontSize; 
     lmETextStyle    m_nTextStyle;
 
+    // tuplet options
+    bool            m_fShowTupletBracket;
+    bool            m_fShowNumber;
+    bool            m_fTupletAbove;
+
+
 
 };
     

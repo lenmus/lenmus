@@ -89,7 +89,7 @@ void lmBoxScore::RenderPage(int nPage, lmPaper* pPaper)
 
 lmBoxPage* lmBoxScore::AddPage()
 {
-    lmBoxPage* pPage = new lmBoxPage();
+    lmBoxPage* pPage = new lmBoxPage((int)m_aPages.GetCount()+1);
     m_aPages.Add(pPage);
     return pPage;
 

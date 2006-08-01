@@ -83,25 +83,19 @@ LenMus project philosophy (to remind me to always stay on this):
     + installation.htm page
     - LDP manual, html page
     
+    Minor issues:
+    - spacing in tuples when a whole /half note in other staff
+    - tuplet bracket line discontinuities
+    - LDP parser: no error is issued if previous group (g+) is not closed.
+    
     Bugs:
+    - Occasional first system indentation on second page
 
     Bugs in Unicode version:
-		- Release Unicode:
-			- MidiWizard fails
-			
-    
- Spanish translation errors:
- ---------------------------
-    - AboutBox:
-        Falta espacio al final de:
-            - LenMus Phonascus
-            - conf. regional del sistema
-            - conf. reg. (cononica):
+        - Release Unicode:
+            - MidiWizard fails
             
-    - La notación '' es desconocida o no está todavía soportada.
-                   |--- falta %s
-                   
-    - Botón Pause -> Pausa (ahora pone Pause)
+	Spanish translation errors:
     
 
 
@@ -109,6 +103,7 @@ LenMus project philosophy (to remind me to always stay on this):
   -------------------------
     - Remove changelog page
     - Add Acknowledgments page
+    - Add LDP manual as paginated html
 
 
   Tasks for future releases:
@@ -122,10 +117,10 @@ LenMus project philosophy (to remind me to always stay on this):
     - (? ->no. i18n problem)Font for texts including some music symbols (accidentals)
     - Include theory reference book taken from Wikipedia?
     - zoom toolbar:
-		- icons
-		- buttons
-		- combo box options
-	- view toolbar menu: several toolbars
+        - icons
+        - buttons
+        - combo box options
+    - view toolbar menu: several toolbars
     - re-locate toolbars if not enough space
     - Channge MDI child windows by notebook
     - Spanish .po translated file for wxMidi
@@ -133,24 +128,24 @@ LenMus project philosophy (to remind me to always stay on this):
     - LDP: How to deal for example with four voices piano reductions:
         - flag overlayered in Instruments.
     - eBookManager: when user changes font size, modify scores scale accordingly.
-	- Play toolbox: from/to measure number; instruments list; tempo; volume for each
-		instrument; start/pause/stop buttons. Use this toolbox to experiment to
-		design a common architecture for all future toolboxes
+    - Play toolbox: from/to measure number; instruments list; tempo; volume for each
+        instrument; start/pause/stop buttons. Use this toolbox to experiment to
+        design a common architecture for all future toolboxes
 
     
     Bugs to wait to next release:
     -----------------------------
     - If score horizontally scrolled and zooming factor is changed, new display is
-		incorrectly shifted.
-	- in some cases (6/8?) metronome is not syncronized when playing a score (i.e. E29)
-	- memory leaks (chords?)
+        incorrectly shifted.
+    - in some cases (6/8?) metronome is not syncronized when playing a score (i.e. E29)
+    - memory leaks (chords?)
     - toolbars: problem with wxAUI no resize when change from label to no lables
 
 
- 	Known problems:
- 	---------------
-	- wxDC::GetTextExtend() method returns not accurate measurements. This causes
-		problems to right justify texts.
+    Known problems:
+    ---------------
+    - wxDC::GetTextExtend() method returns not accurate measurements. This causes
+        problems to right justify texts.
    
     
     

@@ -48,6 +48,11 @@
 #include "wx/debug.h"
 #include "TimeposTable.h"
 
+//helper functions to compare two floating point numbers
+bool IsEqualTime(float t1, float t2)
+{
+    return (fabs(t1 - t2) < 0.1);
+}
 
 //=====================================================================================
 //public methods
@@ -264,7 +269,7 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
         while (i < (int)m_aTimeAux.GetCount())
         {
             pTAE = m_aTimeAux[i];
-            if (pTAE->rTimePos != rTime) break;
+            if (!IsEqualTime(pTAE->rTimePos, rTime)) break;
             iItem = pTAE->nItem;
             pTPE = m_aTimePos[iItem];
             nMinStartPos = wxMax(nMinStartPos, pTPE->m_xLeft);
@@ -282,7 +287,7 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
         while (i < (int)m_aTimeAux.GetCount())
         {
             pTAE = m_aTimeAux[i];
-            if (pTAE->rTimePos != rTime) break;
+            if (!IsEqualTime(pTAE->rTimePos, rTime)) break;
             iItem = pTAE->nItem;
             pTPE = m_aTimePos[iItem];
             pTAE->nShift = nMinStartPos - pTPE->m_xLeft;
@@ -298,7 +303,7 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
         while (i < (int)m_aTimeAux.GetCount())
         {
             pTAE = m_aTimeAux[i];
-            if (pTAE->rTimePos != rTime) break;
+            if (!IsEqualTime(pTAE->rTimePos, rTime)) break;
             iItem = pTAE->nItem;
             pTPE = m_aTimePos[iItem];
             pTAE->nShift = nMaxAnchorCur - pTPE->m_xAnchor;
@@ -314,7 +319,7 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
         {
             //process one entry of Time table
             pTAE = m_aTimeAux[i];
-            if (pTAE->rTimePos != rTime) break;
+            if (!IsEqualTime(pTAE->rTimePos, rTime)) break;
             iItem = pTAE->nItem;
             nShift = pTAE->nShift;
 
@@ -574,12 +579,12 @@ wxString lmTimeposTable::DumpTimeauxTable()
     for (int i = 0; i < (int)m_aTimeAux.GetCount(); i++)
     {
         pTAE = m_aTimeAux[i];
-        if (rTimePrev != pTAE->rTimePos)
+        if (!IsEqualTime(rTimePrev, pTAE->rTimePos))
         {
             rTimePrev = pTAE->rTimePos;
             sMsg += _T("----------------------------------------------------------------------------\n");
         }
-        sMsg += wxString::Format( _T("%4d:\t%d\t%d\t%.2f\t"), 
+        sMsg += wxString::Format( _T("%4d:\t%d\t%d\t%.10f\t"), 
             i, pTAE->nThread, pTAE->nItem, pTAE->rTimePos);
         iItem = pTAE->nItem;
         
@@ -625,7 +630,7 @@ void lmTimeposTable::AddTimeAuxEntry(int nItem)
     {
         int i = m_aTimeAux.GetCount() - 1;    //index to last entry
         lmTimeauxEntry* pTAE = m_aTimeAux[i];
-        if (pTAE->rTimePos <= pTPE->m_rTimePos)
+        if (pTAE->rTimePos < pTPE->m_rTimePos || IsEqualTime(pTAE->rTimePos, pTPE->m_rTimePos))
         {
             //all existing entries in Timeaux table have timepos lower or equal than the
             //new one. Add it at the end.
@@ -638,7 +643,7 @@ void lmTimeposTable::AddTimeAuxEntry(int nItem)
             //locate insertion point
             for (i=0; i < (int)m_aTimeAux.GetCount(); i++) {
                 pTAE = m_aTimeAux[i];
-                if (pTAE->rTimePos > pTPE->m_rTimePos) break;
+                if (pTAE->rTimePos > pTPE->m_rTimePos && !IsEqualTime(pTAE->rTimePos, pTPE->m_rTimePos)) break;
             }
             wxASSERT(i > 0);    
             m_aTimeAux.Insert(pNew, (size_t)i);    //insert before entry number i
@@ -650,14 +655,14 @@ void lmTimeposTable::AddTimeAuxEntry(int nItem)
 int lmTimeposTable::FindItem(float rTimePos)
 {
     wxASSERT(m_aTimePos.GetCount() > 0);     //table empty !!
-    wxASSERT(rTimePos <= (m_aTimePos[m_aTimePos.GetCount() - 1])->m_rTimePos );  //not in table !!
+    //wxASSERT(rTimePos <= (m_aTimePos[m_aTimePos.GetCount() - 1])->m_rTimePos );  //not in table !!
     
     //look up in table
     lmTimeposEntry* pEntry;
     for (int i = 0; i < (int)m_aTimePos.GetCount(); i++)
     {
         pEntry = m_aTimePos[i];
-        if (rTimePos == pEntry->m_rTimePos)
+        if (IsEqualTime(rTimePos, pEntry->m_rTimePos))
         {
             //found. return this index
             return i;

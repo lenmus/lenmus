@@ -892,9 +892,9 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
     // Zoom menu
     wxMenu *zoom_menu = new wxMenu;
-    zoom_menu->Append(MENU_Zoom_100, _T("Actual size"));
-    zoom_menu->Append(MENU_Zoom_Fit_Full, _T("Fit page full"));
-    zoom_menu->Append(MENU_Zoom_Fit_Width, _T("Fit page width"));
+    zoom_menu->Append(MENU_Zoom_100, _("Actual size"));
+    zoom_menu->Append(MENU_Zoom_Fit_Full, _("Fit page full"));
+    zoom_menu->Append(MENU_Zoom_Fit_Width, _("Fit page width"));
     zoom_menu->Append(MENU_Zoom_Other, _("Zoom to ..."));
 
     //Sound menu
@@ -934,7 +934,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     wxMenu* options_menu = new wxMenu;
 #if defined(__WXMSW__) || defined(__WXGTK__)
     pItem = new wxMenuItem(options_menu, MENU_Preferences,  _("&Preferences"),
-                            _T("Open help book"), wxITEM_CHECK);
+                            _("Open help book"), wxITEM_CHECK);
     pItem->SetBitmaps( wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nIconSize),
                        wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nIconSize) ); 
     options_menu->Append(pItem); 
@@ -950,13 +950,13 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     help_menu->AppendSeparator();
 #if defined(__WXMSW__) || defined(__WXGTK__)
     pItem = new wxMenuItem(help_menu, MENU_OpenHelp,  _("&Content\tCtrl+Alt+F1"),
-                            _T("Open help book"), wxITEM_CHECK);
+                            _("Open help book"), wxITEM_CHECK);
     pItem->SetBitmaps( wxArtProvider::GetBitmap(_T("tool_help"), wxART_TOOLBAR, nIconSize),
                        wxArtProvider::GetBitmap(_T("tool_help"), wxART_TOOLBAR, nIconSize) ); 
     help_menu->Append(pItem); 
 #else
     help_menu->Append(MENU_OpenHelp, _("&Content\tCtrl+Alt+F1"),
-        _T("Open help book"), wxITEM_CHECK);
+        _("Open help book"), wxITEM_CHECK);
 #endif
     help_menu->AppendSeparator();
     help_menu->Append(MENU_CheckForUpdates, _("Check now for &updates"), 
@@ -964,7 +964,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
 #if defined(__WXMSW__) || defined(__WXGTK__)
     pItem = new wxMenuItem(help_menu, MENU_VisitWebsite,  _("&Visit LenMus website"),
-                            _T("Open the Internet browser and go to LenMus website") );
+                            _("Open the Internet browser and go to LenMus website") );
     pItem->SetBitmaps( wxArtProvider::GetBitmap(_T("tool_website"), wxART_TOOLBAR, nIconSize),
                        wxArtProvider::GetBitmap(_T("tool_website"), wxART_TOOLBAR, nIconSize) ); 
     help_menu->Append(pItem); 

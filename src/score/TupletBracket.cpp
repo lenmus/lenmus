@@ -180,6 +180,9 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
     }
 
 
+    // Draw bracket
+    if (!m_fBracket) return;
+
     //compute bracket position
     //------------------------------------------------
     lmLUnits BORDER_LENGHT = lmToLogicalUnits(1, lmMILLIMETERS);  // 1 mm

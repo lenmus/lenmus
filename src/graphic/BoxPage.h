@@ -54,7 +54,7 @@ WX_DEFINE_ARRAY(lmBoxSystem*, ArrayBoxSystems);
 class lmBoxPage
 {
 public:
-    lmBoxPage();
+    lmBoxPage(int nNumPage);
     ~lmBoxPage();
     int GetFirstSystem() { return m_nFirstSystem; }
     int GetLastSystem() { return m_nLastSystem; }
@@ -63,6 +63,7 @@ public:
     void Render(lmScore* pScore, lmPaper* pPaper);
 
 private:
+    int     m_nNumPage;         //this page number (1..n)
     int     m_nFirstSystem;
     int     m_nLastSystem;
 
