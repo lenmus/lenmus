@@ -1600,6 +1600,12 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                             _("Requesting beaming a note longer than eight. Beaming ignored."));
                     }
                     else {
+                        // and the previous note must be beamed
+                        if (g_pLastNoteRest && g_pLastNoteRest->IsBeamed() && 
+                            g_pLastNoteRest->GetBeamType(0) != eBeamEnd) {
+                            AnalysisError(
+                                _("Requesting to start a beamed group but there is already an open group. Beaming ignored."));
+                        }
                         fBeamed = true;
                         for (iLevel=0; iLevel <= nLevel; iLevel++) {
                             BeamInfo[iLevel].Type = eBeamBegin;

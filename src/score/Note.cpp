@@ -1289,6 +1289,8 @@ lmLUnits lmNote::GetStandardStemLenght()
 void lmNote::SetStemDirection(bool fStemDown)
 {
     m_fStemDown = fStemDown;
+    m_nStemLength = GetStandardStemLenght();
+
     if (IsBaseOfChord()) {
         //propagate change to max and min notes of chord
         m_pChord->SetStemDirection(fStemDown);

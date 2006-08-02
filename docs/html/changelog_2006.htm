@@ -33,6 +33,19 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">2-ago-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Bug fixed: no error is issued by LDP parser if previous group (g+) is not
+          closed. Fixed by adding code to control this in LDPParser::AnalyzeNoteRest().</li>
+        <li>Bug fixed: forcing stem does not work in chords. Fixed by adding m_nStemType
+          variable to lmChord. Modified lmNote::SetStemDirection() to recompute
+          stem length when stem direction changed.</li>
+      </ul>
+      Program frozen to proceed to launch release 3.1. Meanwhile starting with EarMode 
+      exercises. Added lmEarModeCtrol. Added lmChordManager.
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">1-ago-06</td>
     <td class="ListaPar">
       <ul>

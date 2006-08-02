@@ -752,6 +752,12 @@
 				RelativePath="..\..\src\exercises\EarIntvalConstrains.h">
 			</File>
 			<File
+				RelativePath="..\..\src\exercises\EarModeCtrol.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\EarModeCtrol.h">
+			</File>
+			<File
 				RelativePath="..\..\src\exercises\Generators.cpp">
 			</File>
 			<File
@@ -815,6 +821,12 @@
 		<Filter
 			Name="auxmusic"
 			Filter="">
+			<File
+				RelativePath="..\..\src\auxmusic\ChordManager.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\auxmusic\ChordManager.h">
+			</File>
 			<File
 				RelativePath="..\..\src\auxmusic\Composer.cpp">
 			</File>

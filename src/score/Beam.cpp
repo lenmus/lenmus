@@ -488,7 +488,7 @@ void lmBeam::DrawBeamLines(wxDC* pDC, lmLUnits nThickness, lmLUnits nBeamSpacing
             // if we have data to draw a segment, draw it
             if (fStart && fEnd) {
                 DrawBeamSegment(pDC, fStemDown,
-                    xStart, yStart, xEnd+pEndNote->GetStemThickness(), yEnd, nThickness,
+                    xStart, yStart, xEnd+pEndNote->GetStemThickness()/2, yEnd, nThickness,
                     pStartNote, pEndNote);
                 fStart = false;
                 fEnd = false;

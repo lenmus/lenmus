@@ -86,7 +86,6 @@ LenMus project philosophy (to remind me to always stay on this):
     Minor issues:
     - spacing in tuples when a whole /half note in other staff
     - tuplet bracket line discontinuities
-    - LDP parser: no error is issued if previous group (g+) is not closed.
     
     Bugs:
     - Occasional first system indentation on second page

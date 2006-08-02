@@ -73,6 +73,8 @@ lmChord::lmChord(lmNote* pBaseNote)
     m_pBaseNote = pBaseNote;
     m_pMinNote = pBaseNote;
     m_pMaxNote = pBaseNote;
+
+    m_nStemType = pBaseNote->GetStemType();
 }
 
 /*! Destructor. When invoked, only from lmNote destructor, there must be only one 
@@ -331,28 +333,37 @@ void lmChord::ComputeStemDirection()
     lmNote* pBaseNote = GetBaseNote();
 
     #define TWO_NOTES_DEFAULT true          //! @todo move to layout user options
-
-    m_fStemDown = pBaseNote->StemGoesDown();     //defaul value
-
-    //Rules
-    int nWeight = m_pMinNote->GetPosOnStaff() + m_pMaxNote->GetPosOnStaff();
-    if (nWeight > 12)
-        m_fStemDown = true;
-    else if (nWeight < 12)
+    
+    if (m_nStemType == eStemUp) {          //force stem up
         m_fStemDown = false;
-    else {
-        //majority rule if more than two notes. Else default for two notes case
-        m_fStemDown = TWO_NOTES_DEFAULT;
-        if (m_cNotes.GetCount() > 2) {
-            int iN;
-            nWeight = 0;
-            lmNote* pNote;
-            wxNotesListNode *pNode = m_cNotes.GetFirst();
-            for(iN=0; pNode; pNode=pNode->GetNext(), iN++) {
-                pNote = (lmNote*)pNode->GetData();
-                nWeight += pNote->GetPosOnStaff();
+    }
+    else if (m_nStemType == eStemDown) {   //force stem down
+        m_fStemDown = true;
+    }
+    else if (m_nStemType == eStemNone) {   //force no stem
+        m_fStemDown = false;
+    }
+    else if (m_nStemType == eDefaultStem) {    //as decided by program
+        //Rules
+        int nWeight = m_pMinNote->GetPosOnStaff() + m_pMaxNote->GetPosOnStaff();
+        if (nWeight > 12)
+            m_fStemDown = true;
+        else if (nWeight < 12)
+            m_fStemDown = false;
+        else {
+            //majority rule if more than two notes. Else default for two notes case
+            m_fStemDown = TWO_NOTES_DEFAULT;
+            if (m_cNotes.GetCount() > 2) {
+                int iN;
+                nWeight = 0;
+                lmNote* pNote;
+                wxNotesListNode *pNode = m_cNotes.GetFirst();
+                for(iN=0; pNode; pNode=pNode->GetNext(), iN++) {
+                    pNote = (lmNote*)pNode->GetData();
+                    nWeight += pNote->GetPosOnStaff();
+                }
+                m_fStemDown = (nWeight >= 6*iN);
             }
-            m_fStemDown = (nWeight >= 6*iN);
         }
     }
 

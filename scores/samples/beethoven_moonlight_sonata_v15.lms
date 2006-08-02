@@ -25,6 +25,7 @@
         (barline)
 
         //2
+        (text "simile" (font italic)(dy -5))
         (n g3 e (t + 3 numNone noBracket)  g+ p1)(n c4 e)(n e4 e t- g-)
         (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
         (n g3 e t3  g+)(n c4 e)(n e4 e t- g-)
@@ -40,9 +41,9 @@
         (n a3 e t3  g+)(n =d4 e)(n f4 e t- g-)
         (n a3 e t3  g+)(n d4 e)(n f4 e t- g-)
 
-        (goBack 4q)     //for left hand
-        (chord (n a2 h p2)(n a1 h))
-        (chord (n f2 h p2)(n f1 h))
+        (goBack start)     //for left hand
+        (chord (n a2 h p2 (stem down))(n a1 h))
+        (chord (n f2 h p2 (stem down))(n f1 h))
         (barline)
 
         //4
@@ -52,8 +53,8 @@
         (n f3 e t3  g+)(n +b3 e)(n d4 e t- g-)
 
         (goBack 4q)     //for left hand
-        (chord (n g2 h p2)(n g1 h))
-        (chord (n g2 h p2)(n g1 h))
+        (chord (n g2 h p2 (stem down))(n g1 h))
+        (chord (n g2 h p2 (stem down))(n g1 h))
         (barline)
 
         //5
@@ -89,28 +90,28 @@
         (n a3 e t3 g+ p1 (stem down))(n c4 e (stem down))(n f4 e t- g- (stem down))
 
         (goBack 4q)     //for left hand
-        (chord (n c2 h p2)(n c3 h))
-        (chord (n f1 h p2)(n f2 h))
+        (chord (n c2 h p2 (stem down))(n c3 h))
+        (chord (n f1 h p2 (stem down))(n f2 h))
 
         (goBack w)     //for main voice
         (n g4 h p1)(n a4 h)
         (barline)
 
-        //7
+        //8
         (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
         (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
         (n a3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n d4 e t- g- (stem down))
         (n a3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n d4 e t- g- (stem down))
 
         (goBack 4q)     //for left hand
-        (chord (n b1 h p2)(n b2 h))
-        (chord (n b1 h p2)(n b2 h))
+        (chord (n b1 h p2 (stem down))(n b2 h))
+        (chord (n b1 h p2 (stem down))(n b2 h))
 
         (goBack w)     //for main voice
         (n g4 h p1)(n f4 q)(n b4 q (stem up))
         (barline)
         
-        //8
+        //9
         (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
         (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
         (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
@@ -123,7 +124,7 @@
         (n e4 q p1)(r q)(r h)
         (barline)
         
-        //9
+        //10
         (n =g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
         (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
         (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
@@ -136,7 +137,7 @@
         (r h p1)(r q)(n =g4 e. g+)(n g4 s g-)
         (barline)
 
-        //10
+        //11
         (n =g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n =f4 e t- g- (stem down))
         (n =g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n =f4 e t- g- (stem down))
         (n =g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n =f4 e t- g- (stem down))
@@ -149,22 +150,22 @@
         (n =g4 h. p1)(n g4 e. g+)(n g4 s g-)
         (barline)
         
-        //11
+        //12
         (n =g3 e t3 g+ p1 (stem down))(n =c4 e (stem down))(n e4 e t- g- (stem down))
         (n g3 e t3 g+ p1 (stem down))(n b3 e (stem down))(n e4 e t- g- (stem down))
         (n =g3 e t3 g+ p1 (stem down))(n +c4 e (stem down))(n e4 e t- g- (stem down))
         (n +f3 e t3 g+ p2 (stem up))(n +c4 e (stem up))(n e4 e t- g- (stem up))
 
         (goBack 4q)     //for left hand
-        (chord (n =c2 q p2)(n c3 q))
-        (chord (n b1 q p2)(n b2 q))
-        (chord (n +a1 q p2)(n a2 q))
+        (chord (n =c2 q p2 (stem down))(n c3 q))
+        (chord (n b1 q p2 (stem down))(n b2 q))
+        (chord (n +a1 h p2 (stem down))(n a2 h))
 
         (goBack w)     //for main voice
         (n =g4 h. p1)(n +f4 q)
         (barline)
         
-        //12
+        //13
         
         (n f3 e t3 g+ p2 (stem up))(n b3 e (stem up))(n =d4 e t- g- (stem up))
         (n f3 e t3 g+ p2 (stem up))(n b3 e (stem up))(n d4 e t- g- (stem up))
@@ -172,7 +173,7 @@
         (n e3 e t3 g+ p2 (stem up))(n b3 e (stem up))(n c4 e t- g- (stem up))
 
         (goBack 4q)     //for left hand
-        (chord (n b1 h p2 (stem down))(n b2 h (stem down)))
+        (chord (n b1 h p2 (stem down))(n b2 h))
         (n e2 q (stem down))
         (n =g2 q (stem down))
 
