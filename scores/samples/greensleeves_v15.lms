@@ -1,0 +1,34 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   
+   (title center "Greenslevees" (font bold 14))
+   (title center "(Melodía popular inglesa)" (font normal 10))
+
+   (instrument
+      (musicData 
+        (clef treble)
+        (key C)
+        (time 6 8)
+        nd4e
+        (barline)
+        
+        nfq nge nae.,g+ nbs, nae,g- (barline)       //1
+        ng4q nee nce.,g+ nds nee,g- (barline)       //2
+        nfq nde nd,g+ nc nd,g- (barline)            //3
+        neq nce na3q nd4e (barline)                 //4
+        nfq nge nae.,g+ nbs, nae,g- (barline)       //5
+        ng4q nee nce.,g+ nds nee,g- (barline)       //6
+        nfe.,g+ nes nde,g- n+c,g+ nb3 nc4,g- (barline)  //7
+        ndq nde ndq. (barline)                          //8
+        nc5q. nc5e.,g+ nb4s nae,g- (barline)    //9
+        ngq nee nce.,g+ nds nee,g- (barline)    //10
+        nfq nde nde.,g+ ncs nde,g- (barline)    //11
+        neq nce na3q. (barline)                 //12
+        nc5q. nc5e.,g+ nb4s nae,g- (barline)    //13
+        ngq nee nce.,g+ nds nee,g- (barline)    //14
+        nfe.,g+ nes nde,g- n+ce.,g+ nb3s nc4e,g- (barline)  //15
+        ndq. ndq re (barline end)                     //16
+      )
+   )
+)
+

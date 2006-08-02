@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.0\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-07-25 18:35+0100\n"
+"PO-Revision-Date: 2006-08-02 17:17+0100\n"
 "Last-Translator: cs <cs>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -29,7 +29,7 @@ msgstr ""
 #: score/Direction.cpp:175
 #: score/NoteRestObj.cpp:146
 #: score/Text.cpp:193
-#: score/TupletBracket.cpp:283
+#: score/TupletBracket.cpp:286
 #: app/FontManager.cpp:120
 msgid "Sorry, an error has occurred while allocating the font."
 msgstr "Ha ocurrido un error al cargar el tipo de letra."
@@ -176,40 +176,116 @@ msgstr "Sol menor"
 msgid "D minor"
 msgstr "Re menor"
 
-#: score/Note.cpp:1783
+#: score/Note.cpp:1785
 #, c-format
 msgid "c%d"
 msgstr "c%d"
 
-#: score/Note.cpp:1783
+#: score/Note.cpp:1785
 #, c-format
 msgid "d%d"
 msgstr "d%d"
 
-#: score/Note.cpp:1783
+#: score/Note.cpp:1785
 #, c-format
 msgid "e%d"
 msgstr "e%d"
 
-#: score/Note.cpp:1783
+#: score/Note.cpp:1785
 #, c-format
 msgid "f%d"
 msgstr "f%d"
 
-#: score/Note.cpp:1783
+#: score/Note.cpp:1785
 #, c-format
 msgid "g%d"
 msgstr "g%d"
 
-#: score/Note.cpp:1783
+#: score/Note.cpp:1785
 #, c-format
 msgid "a%d"
 msgstr "a%d"
 
-#: score/Note.cpp:1783
+#: score/Note.cpp:1785
 #, c-format
 msgid "b%d"
 msgstr "b%d"
+
+#: auxmusic/ChordManager.cpp:183
+#: exercises/TheoScalesCtrol.cpp:122
+msgid "minor"
+msgstr "menor"
+
+#: auxmusic/ChordManager.cpp:184
+msgid "augmented"
+msgstr " aumentada"
+
+#: auxmusic/ChordManager.cpp:185
+msgid "diminished"
+msgstr " disminuida"
+
+#: auxmusic/ChordManager.cpp:186
+msgid "major seventh"
+msgstr "7ª Mayor"
+
+#: auxmusic/ChordManager.cpp:187
+#: auxmusic/Interval.cpp:346
+#: exercises/TheoIntervalsCtrol.cpp:150
+msgid "5th"
+msgstr "5ª"
+
+#: auxmusic/ChordManager.cpp:188
+#: auxmusic/Interval.cpp:347
+#: exercises/TheoIntervalsCtrol.cpp:151
+msgid "6th"
+msgstr "6ª"
+
+#: auxmusic/ChordManager.cpp:189
+#: auxmusic/Interval.cpp:348
+#: exercises/TheoIntervalsCtrol.cpp:152
+msgid "7th"
+msgstr "7ª"
+
+#: auxmusic/ChordManager.cpp:190
+#: auxmusic/Interval.cpp:349
+msgid "octave"
+msgstr "octava"
+
+#: auxmusic/ChordManager.cpp:191
+#: auxmusic/Interval.cpp:350
+msgid "9th"
+msgstr "9ª"
+
+#: auxmusic/ChordManager.cpp:192
+#: auxmusic/Interval.cpp:351
+msgid "10th"
+msgstr "10ª"
+
+#: auxmusic/ChordManager.cpp:193
+#: auxmusic/Interval.cpp:352
+msgid "11th"
+msgstr "11ª"
+
+#: auxmusic/ChordManager.cpp:194
+#: auxmusic/Interval.cpp:353
+msgid "12th"
+msgstr "12ª"
+
+#: auxmusic/ChordManager.cpp:195
+#: auxmusic/Interval.cpp:354
+msgid "13th"
+msgstr "13ª"
+
+#: auxmusic/ChordManager.cpp:196
+#: auxmusic/Interval.cpp:355
+msgid "14th"
+msgstr "14ª"
+
+#: auxmusic/ChordManager.cpp:197
+#: auxmusic/Interval.cpp:356
+#: ../xrc/xrc_strings.cpp:28
+msgid "Two octaves"
+msgstr "dos octavas"
 
 #: auxmusic/ComposerV5.cpp:220
 msgid "[lmComposer5::GenerateScore] No usable fragments!"
@@ -298,357 +374,328 @@ msgstr "3ª"
 msgid "4th"
 msgstr "4ª"
 
-#: auxmusic/Interval.cpp:346
-#: exercises/TheoIntervalsCtrol.cpp:150
-msgid "5th"
-msgstr "5ª"
-
-#: auxmusic/Interval.cpp:347
-#: exercises/TheoIntervalsCtrol.cpp:151
-msgid "6th"
-msgstr "6ª"
-
-#: auxmusic/Interval.cpp:348
-#: exercises/TheoIntervalsCtrol.cpp:152
-msgid "7th"
-msgstr "7ª"
-
-#: auxmusic/Interval.cpp:349
-msgid "octave"
-msgstr "octava"
-
-#: auxmusic/Interval.cpp:350
-msgid "9th"
-msgstr "9ª"
-
-#: auxmusic/Interval.cpp:351
-msgid "10th"
-msgstr "10ª"
-
-#: auxmusic/Interval.cpp:352
-msgid "11th"
-msgstr "11ª"
-
-#: auxmusic/Interval.cpp:353
-msgid "12th"
-msgstr "12ª"
-
-#: auxmusic/Interval.cpp:354
-msgid "13th"
-msgstr "13ª"
-
-#: auxmusic/Interval.cpp:355
-msgid "14th"
-msgstr "14ª"
-
-#: auxmusic/Interval.cpp:356
-#: ../xrc/xrc_strings.cpp:28
-msgid "Two octaves"
-msgstr "dos octavas"
-
-#: ldp_parser/LDPParser.cpp:153
+#: ldp_parser/LDPParser.cpp:158
 msgid "Warnings/errores while reading LenMus score."
 msgstr "Avisos o errores al leer una partitura LenMus."
 
-#: ldp_parser/LDPParser.cpp:413
+#: ldp_parser/LDPParser.cpp:418
 #, c-format
 msgid "Element RAIZ expected but found element %s. Analysis stopped."
 msgstr "Se esperaba elemento 'RAIZ' pero viene un elemento '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:544
+#: ldp_parser/LDPParser.cpp:549
 msgid "Syntax error: more closing parenthesis than parenthesis opened. Analysis stopped."
 msgstr "Error de sintaxis: hay más paréntesis de cierre que de apertura. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:569
+#: ldp_parser/LDPParser.cpp:574
 #, c-format
 msgid "Element 'score' expected but found element %s. Analysis stopped."
 msgstr "Se esperaba elemento 'Partitura' pero viene un elemento '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:583
+#: ldp_parser/LDPParser.cpp:588
 #, c-format
 msgid "Element 'vers' expected but found element %s. Analysis stopped."
 msgstr "Se esperaba elemento 'Vers' pero viene un elemento '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:610
+#: ldp_parser/LDPParser.cpp:615
 #, c-format
 msgid "Error analysing LDP score: LDP version (%d) not supported. Analysis stopped."
 msgstr "Error analizando una partitura LDP: La versión de LDP (%d) no está soportada. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:644
+#: ldp_parser/LDPParser.cpp:649
 #, c-format
 msgid "Element 'NumInstrumentos' expected but found element %s. Analysis stopped."
 msgstr "Se esperaba elemento 'NumInstrumentos' pero viene un elemento '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:735
-#: ldp_parser/LDPParser.cpp:964
+#: ldp_parser/LDPParser.cpp:740
+#: ldp_parser/LDPParser.cpp:969
 #, c-format
 msgid "Element '%s' expected but found element %s. Analysis stopped."
 msgstr "Se esperaba elemento '%s' pero viene un elemento '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:792
+#: ldp_parser/LDPParser.cpp:797
 #, c-format
 msgid "Number of staves expected but found '%s'. Element '%s' ignored."
 msgstr "Se esperaba el número de pentagramas pero viene '%s'. Se ignora el elemento '%s' ."
 
-#: ldp_parser/LDPParser.cpp:798
+#: ldp_parser/LDPParser.cpp:803
 #, c-format
 msgid "Expected value for %s but found element '%s'. Ignored."
 msgstr "Se esperaba un valor para '%s' pero viene un elemento '%s'. Se ignora"
 
-#: ldp_parser/LDPParser.cpp:803
+#: ldp_parser/LDPParser.cpp:808
 #, c-format
 msgid "[%s]: unknown element '%s' found. Element ignored."
 msgstr "[%s]: encontrado elemento desconocido '%s'. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:813
+#: ldp_parser/LDPParser.cpp:818
 #, c-format
 msgid "Expected '%s' but found element %s. Analysis stopped."
 msgstr "Se esperaba elemento '%s' pero viene un elemento '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:842
+#: ldp_parser/LDPParser.cpp:847
 #, c-format
 msgid "Expected '%s' but found element %s. Element ignored."
 msgstr "Se esperaba '%s' pero viene un elemento '%s'. Se ignora el elemento."
 
-#: ldp_parser/LDPParser.cpp:904
-#: ldp_parser/LDPParser.cpp:2165
+#: ldp_parser/LDPParser.cpp:909
+#: ldp_parser/LDPParser.cpp:2280
 #, c-format
 msgid "[AnalyzeMusicData]: Unknown or not allowed element '%s' found. Element ignored."
-msgstr ""
+msgstr "[AnalyzeMusicData]: Elemento '%s' desconocido o no permitido en este punto. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:935
+#: ldp_parser/LDPParser.cpp:940
 #, c-format
 msgid "[AnalyzeChord]: Expecting notes found element '%s'. Element ignored."
-msgstr ""
+msgstr "[AnalyzeChord]: Se esperaba un elemento Nota pero viene '%s'. Elemento ignorado."
 
-#: ldp_parser/LDPParser.cpp:984
+#: ldp_parser/LDPParser.cpp:989
 #, c-format
 msgid "Element %s expected but found element %s. Analysis stopped."
 msgstr "Se esperaba elemento '%s' pero viene un elemento '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:1038
+#: ldp_parser/LDPParser.cpp:1043
 #, c-format
 msgid "Expected node '%s' but found node '%s'. Analysis ended."
 msgstr "Se esperaba un nodo '%s' pero viene un nodo '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:1057
+#: ldp_parser/LDPParser.cpp:1062
 #, c-format
 msgid "Expected 'número de parte' but found '%s'. Analysis stopped."
 msgstr "Se esperaba un 'número de parte' pero viene '%s'. Análisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:1069
+#: ldp_parser/LDPParser.cpp:1074
 #, c-format
 msgid "Number of staves expected but found '%s'. Analysis stopped."
 msgstr "Se esperaba el número de pentagramas pero viene '%s'. Analisis cancelado."
 
-#: ldp_parser/LDPParser.cpp:1199
+#: ldp_parser/LDPParser.cpp:1204
 #, c-format
 msgid "[AnalyzeMeasure]: Expected node 'Figura', 'Grupo', 'Atributo' or 'Desplazamiento' but found node '%s'. Node ignored."
 msgstr "[AnalyzeMeasure]: Se esperaba nodo 'Figura', 'Grupo', 'Atributo' o 'Desplazamiento' pero vieneun nodo '%s'. Nodo ignorado."
 
-#: ldp_parser/LDPParser.cpp:1232
-#: ldp_parser/LDPParser.cpp:1926
-#: ldp_parser/LDPParser.cpp:2262
-#: ldp_parser/LDPParser.cpp:2344
-#: ldp_parser/LDPParser.cpp:2415
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:1237
+#: ldp_parser/LDPParser.cpp:1958
+#: ldp_parser/LDPParser.cpp:2377
+#: ldp_parser/LDPParser.cpp:2459
+#: ldp_parser/LDPParser.cpp:2530
+#, c-format
 msgid "Element '%s' has less parameters that the minimum required. Element ignored."
-msgstr "Elemento 'Clave' tiene menos parámetros de los necesarios. Se utilizará '(Clave Sol)'."
+msgstr "Elemento '%s' tiene menos parámetros de los necesarios. Se ignora el elemento."
 
-#: ldp_parser/LDPParser.cpp:1244
+#: ldp_parser/LDPParser.cpp:1249
 #, c-format
 msgid "Element '%s' has an incoherent value: go forward to start?. Element ignored"
-msgstr ""
+msgstr "Elemento '%s' tiene un valor incoherente: ¿ir adelante al principio?. Se ignora el elemento."
 
-#: ldp_parser/LDPParser.cpp:1253
+#: ldp_parser/LDPParser.cpp:1258
 #, c-format
 msgid "Element '%s' has an incoherent value: go backwards to end?. Element ignored"
-msgstr ""
+msgstr "Elemento '%s' tiene un valor incoherente: ¿ir atras al final?. Se ignora el elemento."
 
-#: ldp_parser/LDPParser.cpp:1313
+#: ldp_parser/LDPParser.cpp:1318
 #, c-format
 msgid "Time shift: Letter %s is not a valid note duration. Replaced by a quarter note"
-msgstr ""
+msgstr "Desplazamiento temporal: letra %s no es una duración válida. Se sustituye por una negra."
 
-#: ldp_parser/LDPParser.cpp:1507
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:1512
+#, c-format
 msgid "Missing parameters in rest '%s'. Replaced by '(%s %s)'."
-msgstr "Faltan parámetros en nodo silencio '%s'. Nodo reemplazado por '(s n)'."
+msgstr "Faltan parámetros en silencio '%s'. SE sustituye por '(%s %s)'."
 
-#: ldp_parser/LDPParser.cpp:1515
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:1520
+#, c-format
 msgid "Missing parameters in note '%s'. Assumed (%s c4 %s)."
-msgstr "Falta parámetro en nodo nota '%s'. Se utilizará (n c4 n)."
+msgstr "Faltan parámetros en nota '%s'. Se utilizará (%s c4 %s)."
 
-#: ldp_parser/LDPParser.cpp:1550
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:1555
+#, c-format
 msgid "Unknown note pitch '%s'. Assumed 'c4'."
 msgstr "Altura de nota desconocida en '%s'. Se usará 'c4'."
 
-#: ldp_parser/LDPParser.cpp:1557
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:1562
+#, c-format
 msgid "Unknown note/rest duration '%s'. A quarter note assumed."
 msgstr "Tipo de nota desconocido en '%s'. Se supone negra."
 
-#: ldp_parser/LDPParser.cpp:1595
+#: ldp_parser/LDPParser.cpp:1600
 msgid "Requesting beaming a note longer than eight. Beaming ignored."
 msgstr "Sa solicita agrupar una nota mayor que la corchea. Agrupación ignorada. "
 
-#: ldp_parser/LDPParser.cpp:1617
-#, fuzzy
-msgid "Requesting ending a beaming a group in a note that is note the first one of a chord. Beaming ignored."
-msgstr "Se solicita finalizar grupo pero la nota previa no está en un grupo. Se ignora."
+#: ldp_parser/LDPParser.cpp:1607
+msgid "Requesting to start a beamed group but there is already an open group. Beaming ignored."
+msgstr "(%s) Se solicita iniciar una tupla pero ya hay una abierta. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:1624
+#: ldp_parser/LDPParser.cpp:1628
+msgid "Requesting ending a beaming a group in a note that is note the first one of a chord. Beaming ignored."
+msgstr "Se solicita finalizar grupo en una nota que no es la primera del acorde. Se ignora."
+
+#: ldp_parser/LDPParser.cpp:1635
 msgid "Requesting ending a beaming a group but there is not a  previous note. Beaming ignored."
 msgstr "Se solicita finalizar grupo pero no hay ninguno iniciado. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:1632
+#: ldp_parser/LDPParser.cpp:1643
 msgid "Requesting ending a beaming a group but previous note is not beamed. Beaming ignored."
 msgstr "Se solicita finalizar grupo pero la nota previa no está en un grupo. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:1686
-#: ldp_parser/LDPParser.cpp:1713
+#: ldp_parser/LDPParser.cpp:1697
+#: ldp_parser/LDPParser.cpp:1724
 #, c-format
 msgid "Error: notation '%s' unknown. It will be ignored."
 msgstr "Error: la notación '%s' es desconocida. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:1724
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:1735
+#, c-format
 msgid "Notation '%s' unknown or not implemented. Old (g + t3) syntax?"
-msgstr "La notación '%s' es desconida o no está todavía soportada."
+msgstr "La notación '%s' es desconida o no está todavía soportada. ¿Sintaxis antigua (g + t3)?"
 
-#: ldp_parser/LDPParser.cpp:1730
+#: ldp_parser/LDPParser.cpp:1755
 #, c-format
 msgid "Notation '%s' unknown or not implemented."
 msgstr "La notación '%s' es desconida o no está todavía soportada."
 
-#: ldp_parser/LDPParser.cpp:1863
-#: ldp_parser/LDPParser.cpp:1870
+#: ldp_parser/LDPParser.cpp:1893
 #: ldp_parser/LDPParser.cpp:1900
+#: ldp_parser/LDPParser.cpp:1930
 #, c-format
 msgid "[%s] Found unknown tag '%s'. Ignored."
-msgstr ""
+msgstr "[%s] Encontrada etiqueta desconocida '%s'. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:1888
+#: ldp_parser/LDPParser.cpp:1918
 #, c-format
 msgid "[%s] Found tag '%s' but no defaul value exists for NormalNotes. Ignored."
-msgstr ""
+msgstr "[%s] Encontrada etiqueta '%s' pero no existe valor por defecto para NormalNotes. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:1911
+#: ldp_parser/LDPParser.cpp:1941
 #, c-format
 msgid "[%s] Tag '%s'. Numbers must be greater than 0. Tag ignored."
-msgstr ""
+msgstr "[%s] Etiqueta '%s'. El número debe ser mayor que cero. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:1939
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:1978
+#, c-format
+msgid "Element '%s': Expected number but found '%s'. Tuplet ignored."
+msgstr "Elemento '%s': Se esperaba un número pero viene  '%s'. Tupla ignorada.."
+
+#: ldp_parser/LDPParser.cpp:2005
+#: ldp_parser/LDPParser.cpp:2041
+#, c-format
+msgid "Element '%s': Found unknown data '%s'. Data ignored."
+msgstr "Elemento '%s]': Encontrada dato desconocida '%s'. Se ignora."
+
+#: ldp_parser/LDPParser.cpp:2015
+#, c-format
+msgid "Element '%s': Number for 'normal notes' must be greater than 0. Number ignored."
+msgstr "Elemento '%s': Número para 'normal notes' debe ser mayor que cero. Se ignora."
+
+#: ldp_parser/LDPParser.cpp:2053
+#, c-format
 msgid "[%s] Requesting to end a tuplet but there is not an open tuplet or it is not possible to cle it here. Tag '%s' ignored."
-msgstr "Se solicita finalizar una tupla pero no hay ninguna iniciada. Se ignora etiqueta 't-'."
+msgstr "(%s) Se solicita finalizar una tupla pero no hay ninguna iniciada o no es posible finalizarla en este punto. Se ignora etiqueta '%s'."
 
-#: ldp_parser/LDPParser.cpp:1948
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2062
+#, c-format
 msgid "[%s] Requesting to start a tuplet but there is already a tuplet open. Tag '%s' ignored."
-msgstr "Se solicita iniciar una tupla pero ya hay una abierta. Se ignora etiqueta 't3'."
+msgstr "(%s) Se solicita iniciar una tupla pero ya hay una abierta. Se ignora etiqueta '%s'."
 
-#: ldp_parser/LDPParser.cpp:2046
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2161
+#, c-format
 msgid "Unknown barline type '%s'. '%s' barline assumed."
-msgstr "Tipo de barra '%s' desconocido. Se usará 'Simple'."
+msgstr "Tipo de barra '%s' desconocido. Se usará '%s'"
 
-#: ldp_parser/LDPParser.cpp:2074
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2189
+#, c-format
 msgid "Element '%s' has less parameters that the minimum required. Assumed '(%s Sol)'."
-msgstr "Elemento 'Clave' tiene menos parámetros de los necesarios. Se utilizará '(Clave Sol)'."
+msgstr "Elemento '%s' tiene menos parámetros de los necesarios. Se utilizará '(%s Sol)'."
 
-#: ldp_parser/LDPParser.cpp:2138
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2253
+#, c-format
 msgid "Unknown clef '%s'. Assumed '%s'."
-msgstr "Clave '%s' desconocida. Se utilizará 'Sol'."
+msgstr "Clave '%s' desconocida. Se utilizará '%s'."
 
-#: ldp_parser/LDPParser.cpp:2286
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2401
+#, c-format
 msgid "Invalid alignment value '%s'. Assumed '%s'."
-msgstr "Clave '%s' desconocida. Se utilizará 'Sol'."
+msgstr "Valor para alineación no válido '%s' . Se utilizará '%s'."
 
-#: ldp_parser/LDPParser.cpp:2317
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2432
+#, c-format
 msgid "Unknown parameter '%s'. Ignored."
-msgstr "param desconocido: <param %s >\n"
+msgstr "Parámetro desconocido '%s'. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:2390
+#: ldp_parser/LDPParser.cpp:2505
 #, c-format
 msgid "[Element '%s'. Invalid parameter '%s'. Ignored."
-msgstr ""
+msgstr "Elemento '%s'. Parámetro '%s' no válido. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:2458
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2573
+#, c-format
 msgid "Element '%s' has less parameters that the minimum required. Assumed '(%s %s)'."
-msgstr "Elemento 'Clave' tiene menos parámetros de los necesarios. Se utilizará '(Clave Sol)'."
+msgstr "Elemento '%s' tiene menos parámetros de los necesarios. Se utilizará '(%s %s)'."
 
-#: ldp_parser/LDPParser.cpp:2470
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2585
+#, c-format
 msgid "Unknown key '%s'. Assumed '%s'."
-msgstr "Clave '%s' desconocida. Se utilizará 'Sol'."
+msgstr "Clave '%s' desconocida. Se utilizará '%s'."
 
-#: ldp_parser/LDPParser.cpp:2504
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2619
+#, c-format
 msgid "Element '%s' has less parameters that the minimum required. Assumed '(Metrica 4 4)'."
-msgstr "Elemento 'Metrica' tiene menos parámetros de los necesarios. Se utilizará '(Metrica 4 4)'."
+msgstr "Elemento '%s' tiene menos parámetros de los necesarios. Se utilizará '(Metrica 4 4)'."
 
-#: ldp_parser/LDPParser.cpp:2514
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2629
+#, c-format
 msgid "Element '%s': Two numbers expected but found '%s' and '%s'. Assumed '(%s 4 4)'."
-msgstr "Elemento 'Metrica': Se esperaban dos números pero viene '%s' y '%s'. Se usará '(Metrica 4 4)'."
+msgstr "Elemento '%s': Se esperaban dos números pero viene '%s' y '%s'. Se usará '(%s 4 4)'."
 
-#: ldp_parser/LDPParser.cpp:2565
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2680
+#, c-format
 msgid "Element '%s' has less parameters that the minimum required. Tag ignored. Assumed default stem."
-msgstr "Elemento 'Clave' tiene menos parámetros de los necesarios. Se utilizará '(Clave Sol)'."
+msgstr "Elemento '%s' tiene menos parámetros de los necesarios. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:2577
+#: ldp_parser/LDPParser.cpp:2692
 #, c-format
 msgid "Invalid stem direction '%s'. Default direction taken."
 msgstr "Dirección de plica '%s' incorrecta. Se pondrá la dirección por defecto."
 
-#: ldp_parser/LDPParser.cpp:2596
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2711
+#, c-format
 msgid "Element '%s' has less parameters than the minimum required. Tag ignored."
-msgstr "Elemento 'Barra' tiene menos parámetros de los necesarios. Se utilizará '(Barra Simple)'."
+msgstr "Elemento '%s' tiene menos parámetros de los necesarios. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:2656
+#: ldp_parser/LDPParser.cpp:2771
 #, c-format
 msgid "Element '%s': invalid parameter '%s'. It is ignored."
-msgstr ""
+msgstr "Elemento '%s'. Parámetro '%s' no válido. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:2675
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2790
+#, c-format
 msgid "Element '%s' has less or more parameters than required. Tag ignored."
-msgstr "Elemento 'Barra' tiene menos parámetros de los necesarios. Se utilizará '(Barra Simple)'."
+msgstr "Elemento '%s' tiene más o menos parámetros de los necesarios. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:2697
+#: ldp_parser/LDPParser.cpp:2812
 #, c-format
 msgid "Element '%s': Invalid units '%s'. Ignored"
-msgstr ""
+msgstr "Elemento '%s'. Unidades '%s' no válidas. Se ignora."
 
-#: ldp_parser/LDPParser.cpp:2707
+#: ldp_parser/LDPParser.cpp:2822
 #, c-format
 msgid "Element '%s': Invalid value '%s'. It must be a number with optional units. Zero assumed."
-msgstr ""
+msgstr "Elemento '%s'. Valor '%s' no válido. Debe ser un número seguido, opcionalmente, de unidades. Se asume cero."
 
-#: ldp_parser/LDPParser.cpp:2910
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:3025
+#, c-format
 msgid "Staff number expected but found '%s'. Replaced by '%s1'"
-msgstr "Se esperaba el número de pentagramas pero viene '%s'. Analisis cancelado."
+msgstr "Se esperaba el número de pentagramas pero viene '%s'. SE sustituye por '%s1'."
 
-#: ldp_parser/LDPParser.cpp:2917
+#: ldp_parser/LDPParser.cpp:3032
 #, c-format
 msgid "Staff number not followed by number (%s). Replaced by '%s1'"
-msgstr ""
+msgstr "Etiqueta 'Número de pentagrama' no va seguida de número (%s). Se sustituye por '%s1'"
 
-#: ldp_parser/LDPParser.cpp:2925
+#: ldp_parser/LDPParser.cpp:3040
 #, c-format
 msgid "Notation '%s': number is greater than number of staves defined (%d). Replaced by '%s1'."
-msgstr ""
+msgstr "Elemento '%s: el número es mayor que el número de pentagramas definidos (%d). Se sustituye por '%s1'"
 
 #: exercises/CountersCtrol.cpp:75
 msgid "Right"
@@ -667,19 +714,23 @@ msgid "Reset counters"
 msgstr "Poner contadores a cero"
 
 #: exercises/EarCompareIntvCtrol.cpp:116
+#: exercises/EarModeCtrol.cpp:116
 msgid "First one greater"
 msgstr "El primero es mayor"
 
 #: exercises/EarCompareIntvCtrol.cpp:117
+#: exercises/EarModeCtrol.cpp:117
 msgid "Second one greater"
 msgstr "El segundo es mayor"
 
 #: exercises/EarCompareIntvCtrol.cpp:118
+#: exercises/EarModeCtrol.cpp:118
 msgid "Both are equal"
 msgstr "Ambos son iguales"
 
 #: exercises/EarCompareIntvCtrol.cpp:131
 #: exercises/EarIntervalsCtrol.cpp:154
+#: exercises/EarModeCtrol.cpp:131
 #: exercises/ScoreCtrol.cpp:188
 #: exercises/TheoIntervalsCtrol.cpp:270
 #: exercises/TheoKeySignCtrol.cpp:154
@@ -691,6 +742,7 @@ msgstr "Ver partitura fuente"
 
 #: exercises/EarCompareIntvCtrol.cpp:136
 #: exercises/EarIntervalsCtrol.cpp:159
+#: exercises/EarModeCtrol.cpp:136
 #: exercises/ScoreCtrol.cpp:192
 #: exercises/TheoIntervalsCtrol.cpp:274
 #: exercises/TheoKeySignCtrol.cpp:158
@@ -702,6 +754,7 @@ msgstr "Volcado de partitura"
 
 #: exercises/EarCompareIntvCtrol.cpp:141
 #: exercises/EarIntervalsCtrol.cpp:164
+#: exercises/EarModeCtrol.cpp:141
 #: exercises/ScoreCtrol.cpp:196
 #: exercises/TheoIntervalsCtrol.cpp:278
 #: exercises/TheoMusicReadingCtrol.cpp:160
@@ -712,6 +765,7 @@ msgstr "Ver eventos MIDI"
 
 #: exercises/EarCompareIntvCtrol.cpp:179
 #: exercises/EarIntervalsCtrol.cpp:202
+#: exercises/EarModeCtrol.cpp:179
 #: exercises/TheoIntervalsCtrol.cpp:316
 #: exercises/TheoMusicReadingCtrol.cpp:169
 #: exercises/TheoScalesCtrol.cpp:210
@@ -721,6 +775,7 @@ msgstr "Preferencias"
 
 #: exercises/EarCompareIntvCtrol.cpp:196
 #: exercises/EarIntervalsCtrol.cpp:219
+#: exercises/EarModeCtrol.cpp:196
 #: exercises/TheoIntervalsCtrol.cpp:334
 #: exercises/TheoKeySignCtrol.cpp:193
 #: exercises/TheoMusicReadingCtrol.cpp:131
@@ -731,6 +786,7 @@ msgstr "Nuevo problema"
 
 #: exercises/EarCompareIntvCtrol.cpp:200
 #: exercises/EarIntervalsCtrol.cpp:223
+#: exercises/EarModeCtrol.cpp:200
 #: exercises/TheoIntervalsCtrol.cpp:338
 #: exercises/TheoScalesCtrol.cpp:232
 #: exercises/TheoScalesCtrol.cpp:690
@@ -742,6 +798,7 @@ msgstr "Tocar"
 
 #: exercises/EarCompareIntvCtrol.cpp:206
 #: exercises/EarIntervalsCtrol.cpp:229
+#: exercises/EarModeCtrol.cpp:206
 #: exercises/TheoIntervalsCtrol.cpp:345
 #: exercises/TheoKeySignCtrol.cpp:198
 #: exercises/TheoScalesCtrol.cpp:238
@@ -750,6 +807,7 @@ msgstr "Ver solución"
 
 #: exercises/EarCompareIntvCtrol.cpp:233
 #: exercises/EarIntervalsCtrol.cpp:266
+#: exercises/EarModeCtrol.cpp:233
 msgid "Click on 'New problem' to start"
 msgstr "Pulsa en 'Nuevo problema' para empezar"
 
@@ -1447,10 +1505,6 @@ msgstr "Volver a la teoría"
 msgid "Major"
 msgstr "Mayor"
 
-#: exercises/TheoScalesCtrol.cpp:122
-msgid "minor"
-msgstr "menor"
-
 #: exercises/TheoScalesCtrol.cpp:126
 msgid "Type II"
 msgstr "Tipo II"
@@ -1519,7 +1573,7 @@ msgstr "Detener"
 msgid "Default <object> window: you MUST implement this virtual method!"
 msgstr "Default <object> window: you MUST implement this virtual method!"
 
-#: html/Tags.cpp:254
+#: html/Tags.cpp:259
 #, c-format
 msgid ""
 "Invalid param value in:\n"
@@ -1532,7 +1586,7 @@ msgstr ""
 "Valor = %s \n"
 "Valores aceptables: número, 0..7"
 
-#: html/Tags.cpp:276
+#: html/Tags.cpp:281
 #, c-format
 msgid ""
 "Invalid param value in:\n"
@@ -1545,9 +1599,9 @@ msgstr ""
 "Valor = %s \n"
 "Valores aceptables: DeduceKey | WriteKey | Both"
 
-#: html/Tags.cpp:302
-#: html/Tags.cpp:479
-#: html/Tags.cpp:846
+#: html/Tags.cpp:307
+#: html/Tags.cpp:484
+#: html/Tags.cpp:851
 #, c-format
 msgid ""
 "Invalid param value in:\n"
@@ -1560,7 +1614,7 @@ msgstr ""
 "Valor = %s \n"
 "Valores aceptables: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"
 
-#: html/Tags.cpp:320
+#: html/Tags.cpp:325
 #, c-format
 msgid ""
 "Invalid param value in:\n"
@@ -1573,13 +1627,13 @@ msgstr ""
 "Valor = %s \n"
 "Valores aceptables: Major | Minor | Both"
 
-#: html/Tags.cpp:329
-#: html/Tags.cpp:488
+#: html/Tags.cpp:334
+#: html/Tags.cpp:493
 #, c-format
 msgid "lmTheoIntervalsCtrol. Unknown param: <param %s >\n"
 msgstr "lmTheoIntervalsCtrol. Parámetro: <param %s > desconocido\n"
 
-#: html/Tags.cpp:435
+#: html/Tags.cpp:440
 #, c-format
 msgid ""
 "Invalid param value in:\n"
@@ -1592,7 +1646,7 @@ msgstr ""
 "Valor = %s \n"
 "Valores aceptables: none | simple | double"
 
-#: html/Tags.cpp:453
+#: html/Tags.cpp:458
 #, c-format
 msgid ""
 "Invalid param value in:\n"
@@ -1605,13 +1659,13 @@ msgstr ""
 "Valor = %s \n"
 "Valores aceptables: DeduceInterval | BuildInterval | Both"
 
-#: html/Tags.cpp:594
-#: html/Tags.cpp:700
+#: html/Tags.cpp:599
+#: html/Tags.cpp:705
 #, c-format
 msgid "lmEarIntervalsCtrol. Unknown param: <param %s >\n"
 msgstr "lmEarIntervalsCtrol. Parámetro: <param %s > desconocido\n"
 
-#: html/Tags.cpp:802
+#: html/Tags.cpp:807
 #, c-format
 msgid ""
 "Invalid param value in:\n"
@@ -1624,7 +1678,7 @@ msgstr ""
 "Valor = %s \n"
 "Valores aceptables: major | minor"
 
-#: html/Tags.cpp:820
+#: html/Tags.cpp:825
 #, c-format
 msgid ""
 "Invalid param value in:\n"
@@ -1637,7 +1691,7 @@ msgstr ""
 "Valor = %s \n"
 "Valores aceptables: DeduceScale | BuildScale | Both"
 
-#: html/Tags.cpp:859
+#: html/Tags.cpp:864
 #, c-format
 msgid ""
 "Invalid param value in:\n"
@@ -1650,7 +1704,7 @@ msgstr ""
 "Valor = %s \n"
 "Valores aceptables: chkKeySignature"
 
-#: html/Tags.cpp:868
+#: html/Tags.cpp:873
 #, c-format
 msgid "lmTheoScalesCtrol. Unknown param: <param %s >\n"
 msgstr "lmTheoScalesCtrol. Parámetro: <param %s > desconocido\n"
@@ -2353,16 +2407,19 @@ msgid "Zoom so that page width equals window width"
 msgstr "Ajustar escala para el ancho de la página"
 
 #: app/MainFrame.cpp:518
+#: app/MainFrame.cpp:895
 #: app/MainFrame.cpp:1515
 msgid "Actual size"
 msgstr "Tamaño real"
 
 #: app/MainFrame.cpp:519
+#: app/MainFrame.cpp:896
 #: app/MainFrame.cpp:1509
 msgid "Fit page full"
 msgstr "Ajustar a página completa"
 
 #: app/MainFrame.cpp:520
+#: app/MainFrame.cpp:897
 #: app/MainFrame.cpp:1512
 msgid "Fit page width"
 msgstr "Ajustar al ancho de página"
@@ -2621,6 +2678,12 @@ msgstr "&Denere inmediatamente todos los sonidos"
 msgid "&Preferences"
 msgstr "&Preferencias"
 
+#: app/MainFrame.cpp:937
+#: app/MainFrame.cpp:953
+#: app/MainFrame.cpp:959
+msgid "Open help book"
+msgstr "Abrir ayuda"
+
 #: app/MainFrame.cpp:948
 msgid "&About\tF1"
 msgstr "&Acerca de\tF1"
@@ -2647,6 +2710,7 @@ msgstr "Conectar a internet y comprobar si hay actualizaciones"
 msgid "&Visit LenMus website"
 msgstr "&Ver la web de LenMus"
 
+#: app/MainFrame.cpp:967
 #: app/MainFrame.cpp:973
 msgid "Open the Internet browser and go to LenMus website"
 msgstr "Abrir el navegador de internet y visitar la web de LenMus"
@@ -2839,7 +2903,7 @@ msgid "Sound for other beats of each measure:"
 msgstr "Sonido para los restantes tiempos:"
 
 #: app/Paper.cpp:330
-#: graphic/GraphicManager.cpp:242
+#: graphic/GraphicManager.cpp:244
 msgid "Sorry, not enough memory to create a pBitmap to display the page."
 msgstr "Lo siento, no hay suficiente memoria para crear un bitmap para mostrar la página."
 
