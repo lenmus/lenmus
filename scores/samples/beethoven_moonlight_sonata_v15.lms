@@ -166,7 +166,6 @@
         (barline)
         
         //13
-        
         (n f3 e t3 g+ p2 (stem up))(n b3 e (stem up))(n =d4 e t- g- (stem up))
         (n f3 e t3 g+ p2 (stem up))(n b3 e (stem up))(n d4 e t- g- (stem up))
         (n =g3 e t3 g+ p2 (stem up))(n b3 e (stem up))(n c4 e t- g- (stem up))
@@ -180,6 +179,30 @@
         (goBack w)     //for main voice
         (n f4 h p1)(n =g4 q)(n e4 q)
         (barline)
+        
+        //14
+        (n f3 e t3 g+ p2 (stem up))(n b3 e (stem up))(n =d4 e t- g- (stem up))
+        (n f3 e t3 g+ p2 (stem up))(n b3 e (stem up))(n d4 e t- g- (stem up))
+        (n f3 e t3 g+ p2 (stem up))(n +a3 e (stem up))(n c4 e t- g- (stem up))
+        (n f3 e t3 g+ p2 (stem up))(n a3 e (stem up))(n c4 e t- g- (stem up))
+
+        (goBack 4q)     //for left hand
+        (n f2 h p2 (stem down))
+        (chord (n f2 h p2 (stem down))(n f1 h))
+
+        (goBack start)     //for main voice
+        (n f4 h p1)
+        (n f4 h)
+        (barline)
+        
+        //15
+        (n b3 e t3 g+ p1 (stem down))(n =d4 e (stem down))(n f4 e t- g- (stem down))
+        (n b3 e t3 g+ p1 (stem down))(n =d4 e (stem down))(n f4 e t- g- (stem down))
+        (r h)
+
+        (goBack start)     //for left hand
+        (chord (n b1 w p2)(n b2 w))
+        (barline end)
         
      )
      
