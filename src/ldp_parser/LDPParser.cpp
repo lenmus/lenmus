@@ -892,6 +892,28 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
         } else if (sName == m_pTags->TagName(_T("newSystem")) ) {
             AnalyzeNewSystem(pX, pVStaff);
         }
+        // abbreviated barlines
+        else if (sName == _T("|") ) {
+            pVStaff->AddBarline(etb_SimpleBarline, true);
+        }
+        else if (sName == _T("||") ) {
+            pVStaff->AddBarline(etb_DoubleBarline, true);
+        }
+        else if (sName == _T("|]") ) {
+            pVStaff->AddBarline(etb_EndBarline, true);
+        }
+        else if (sName == _T("[|") ) {
+            pVStaff->AddBarline(etb_StartBarline, true);
+        }
+        else if (sName == _T(":|") ) {
+            pVStaff->AddBarline(etb_EndRepetitionBarline, true);
+        }
+        else if (sName == _T("|:") ) {
+            pVStaff->AddBarline(etb_StartRepetitionBarline, true);
+        }
+        else if (sName == _T("::") ) {
+            pVStaff->AddBarline(etb_DoubleRepetitionBarline, true);
+        }
         // go forward and backward
         else if (sName == m_pTags->TagName(_T("goFwd")) 
                  || sName == m_pTags->TagName(_T("goBack")) )

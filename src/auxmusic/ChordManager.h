@@ -40,6 +40,20 @@
 #include "../score/score.h"
 #include "Interval.h"
 
+typedef struct lmNoteBitsStruct {
+    int nStep;              // 'c'=0, 'd'=1, 'e'=2, 'f'=3, 'g'=4, 'a'=5, 'b'=6
+    int nOctave;            // 0..9
+    int nAccidentals;       // '--'=-1, '-'=-1, ''=0, '+'=+1, '++'=+2
+    int nStepSemitones;     // 'c'=0, 'd'=2, 'e'=4, 'f'=5, 'g'=7, 'a'=9, 'b'=11
+} lmNoteBits;
+
+typedef struct lmIntvBitsStruct {
+    int nNum;              
+    int nSemitones;
+} lmIntvBits;
+
+
+
 
 enum EChordType
 {
@@ -82,13 +96,23 @@ public:
     EChordType GetType() { return m_nType; }
     int GetNumNotes();
     int GetMidiNote(int i);
+#ifdef _DEBUG
+    void UnitTests();
+#endif
 
 private:
     void InitializeStrings();
     int GetNote(int nMidiRoot, wxString sInterval);
+    wxString ComputeInterval(wxString sRootNote, wxString sInterval);
+    bool NoteToBits(wxString sNote, lmNoteBits* pBits);
+    int StepToSemitones(int nStep);
+    int AccidentalsToInt(wxString sAccidentals);
+    int StepToInt(wxString sStep);
+    bool IntervalNameToBits(wxString sInterval, lmIntvBits* pBits);
+    wxString NoteBitsToName(lmNoteBits& tBits);
 
 
-        //member variables
+//member variables
 
     EChordType      m_nType;
     EKeySignatures  m_nKey;

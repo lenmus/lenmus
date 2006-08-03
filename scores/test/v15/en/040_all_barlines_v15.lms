@@ -1,0 +1,25 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument
+      (musicData
+         (clef treble)
+         (key C)
+         (n e5 w)
+         (barline start)
+         (n e4 w) (barline startRepetition)
+         (n e4 w) (barline doubleRepetition)
+         (n e4 w) (barline endRepetition)
+         (n e4 w) (barline double)
+         (n e4 w) (barline simple)
+         (n e4 w) (barline end)
+         (n g4 w) |
+         (n g4 w) ||
+         (n g4 w) |]
+         (n g4 w) [|
+         (n g4 w) :|
+         (n g4 w) |:
+         (n g4 w) ::
+      )
+   )
+)
+

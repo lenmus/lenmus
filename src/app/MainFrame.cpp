@@ -76,6 +76,8 @@ extern lmLogger* g_pLogger;
 // to test DlgPatternEditor dialog
 #include "DlgPatternEditor.h"
 
+//for Unit Tests
+#include "../auxmusic/ChordManager.h"
 
 
 
@@ -180,6 +182,7 @@ enum
     MENU_Debug_SetTraceLevel,
     MENU_Debug_PatternEditor,
     MENU_Debug_DumpBitmaps,
+    MENU_Debug_UnitTests,
 
     // Menu Zoom
     MENU_Zoom_100,
@@ -330,6 +333,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_MENU (MENU_Debug_SetTraceLevel, lmMainFrame::OnDebugSetTraceLevel)
     EVT_MENU (MENU_Debug_PatternEditor, lmMainFrame::OnDebugPatternEditor)
     EVT_MENU (MENU_Debug_recSelec, lmMainFrame::OnDebugRecSelec)
+    EVT_MENU (MENU_Debug_UnitTests, lmMainFrame::OnDebugUnitTests)
         //debug events requiring a score to be enabled
     EVT_MENU      (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugDumpStaffObjs)
     EVT_UPDATE_UI (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugScoreUI)
@@ -887,6 +891,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
         debug_menu->Append(MENU_Debug_SeeXML, _T("See &XML") );
         debug_menu->Append(MENU_Debug_SeeMIDIEvents, _T("See &MIDI events") );
         debug_menu->Append(MENU_Debug_DumpBitmaps, _T("Save offscreen bitmaps") );
+        debug_menu->Append(MENU_Debug_UnitTests, _T("Unit Tests") );
     }
 
 
@@ -1431,6 +1436,14 @@ void lmMainFrame::OnDebugSeeXML(wxCommandEvent& event)
 
 }
 
+void lmMainFrame::OnDebugUnitTests(wxCommandEvent& event)
+{
+#ifdef _DEBUG
+    lmChordManager oChord(_T("c4"), ect_MajorTriad);
+    oChord.UnitTests();
+#endif
+}
+
 void lmMainFrame::OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event))
 {
     // get the score
@@ -1729,6 +1742,9 @@ void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
             event.Enable(fEditFrame);
             break;
         case wxID_SAVEAS:
+            event.Enable(fEditFrame);
+            break;
+        case MENU_File_Export:
             event.Enable(fEditFrame);
             break;
 

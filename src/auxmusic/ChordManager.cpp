@@ -73,33 +73,6 @@ static lmChordData tData[ect_Max] = {
     { _T("AugSixth"),           3, _T("3M"), _T("6a"), _T("") },        //M3 + a6
 };
 
-/*
-EIntervalType
-    eti_Diminished = 0,     d
-    eti_Minor,              m
-    eti_Major,              M
-    eti_Augmented,          a
-    eti_Perfect,            p
-    eti_DoubleAugmented,    da -
-    eti_DoubleDiminished    dd +
-
-An interval is characterized by its number and its type
-
-intval  semitones
-2m      1
-2M      2
-3m      3
-3M      4
-3a/4p   5
-4a/5d   6 
-5p      7
-5a/6m   8      
-6M      9
-6a/7m   10
-7M      11
-8p      12
-
-*/
 
 //-------------------------------------------------------------------------------------
 // Implementation of lmChordManager class
@@ -135,28 +108,6 @@ lmChordManager::lmChordManager(wxString sRootNote, EChordType nChordType, EKeySi
     for (i=1; i < tData[m_nType].nNumNotes; i++) {
         m_ntMidi[i] = GetNote(m_ntMidi[0], tData[m_nType].sIntervals[i]);
     }
-
-/*
-    //create the score with the chord
-    lmNote* pNote[lmNOTES_IN_CHORD];
-    lmLDPParser parserLDP;
-    lmLDPNode* pNode;
-    lmVStaff* pVStaff;
-
-    m_pChordScore = new lmScore();
-    m_pChordScore->AddInstrument(1,0,0,_T(""));         //one vstaff, MIDI channel 0, MIDI instr 0
-    pVStaff = m_pChordScore->GetVStaff(1, 1);           //get first vstaff of instr.1
-    pVStaff->AddClef( eclvSol );
-    pVStaff->AddKeySignature(nKey);
-    pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
-    //pVStaff->AddEspacio 24
-    for (i=1; i < tData[m_nType].nNumNotes; i++) {
-        m_ntMidi[i] = GetNote(m_ntMidi[0], tData[m_nType].sIntervals[i]);
-        pNode = parserLDP.ParseText( sPattern[i] );
-        pNote[i] = parserLDP.AnalyzeNote(pNode, pVStaff);
-    }
-    pVStaff->AddBarline(etb_EndBarline);
-*/
 
 }
 
@@ -246,20 +197,240 @@ int lmChordManager::GetNote(int nMidiRoot, wxString sInterval)
 
 }
 
-wxString lmChordManager::GetName(wxString sRootNote, wxString sInterval)
+wxString lmChordManager::ComputeInterval(wxString sRootNote, wxString sInterval)
 {
-    //Root note elements. i.e.: 'd4+' -> (d, 4, 1)
-    wxString sStep;
-    int nOctave;
-    int nAccidentals;  // '--'=-1, '-'=-1, ''=0, '+'=+1, '++'=+2
+    //Root note elements. i.e.: '+d4' -> (1, 4, 1)
+    lmNoteBits tRoot;
+    if (NoteToBits(sRootNote, &tRoot)) 
+        wxASSERT(false);
 
     //interval elements. i.e.: '5a' -> (5, 8)
-    int nInterval;
-    int nSemitones;
+    lmIntvBits tIntval;
+    if (IntervalNameToBits(sInterval, &tIntval))
+        wxASSERT(false);
 
-    wxString sNewStep = (sStep + nInterval - 1) mod 8
-    nNewOctave = (nNewStep > 8 ? ...
-    int nStepIndex =        //c=0, d=2, e=4, f=5, g=7, a=9, b=11
-    int nNewStepIndex =     //idem
-    nNewAcc = (nStepIndex + nAccidentals + nSemitones - nNewStepIndex) mod 12;
+    lmNoteBits tNew;
+
+    // compute new step
+    int nNewStepFull = tRoot.nStep + tIntval.nNum - 1;
+    tNew.nStep = nNewStepFull % 7;
+
+    //compute octave increment
+    int nIncrOctave = (tNew.nStep == nNewStepFull ? 0 : (nNewStepFull - tNew.nStep)/7 );
+    tNew.nOctave = tRoot.nOctave + nIncrOctave;
+
+    //compute new step semitones
+    tNew.nStepSemitones = StepToSemitones(tNew.nStep);
+
+    //compute new accidentals
+    tNew.nAccidentals = (tRoot.nStepSemitones + tRoot.nAccidentals + tIntval.nSemitones - 
+                         tNew.nStepSemitones) % 12;
+
+    return NoteBitsToName(tNew);
+
 }
+
+bool lmChordManager::NoteToBits(wxString sNote, lmNoteBits* pBits)
+{
+    //Returns true if error
+    //- sNote must be letter followed by a number (i.e.: "c4" ) optionally precedeed by
+    //  accidentals (i.e.: "++c4")
+    //- It is assumed that sNote is trimmed (no spaces before or after data)
+    //  and lower case.
+    
+    //split the string: accidentals and name
+    wxString sAccidentals;
+    switch (sNote.Len()) {
+        case 2: 
+            sAccidentals = _T("");
+            break;
+        case 3:
+            sAccidentals = sNote.Mid(0, 1);
+            sNote = sNote.Mid(1, 2);
+            break;
+        case 4:
+            sAccidentals = sNote.Mid(0, 2);
+            sNote = sNote.Mid(2, 2);
+            break;
+        default:
+            return true;   //error
+    }
+
+    //compute step
+    int nStep = StepToInt( sNote.Left(1) );
+    if (nStep == -1) return true;   //error
+    pBits->nStep = nStep;
+
+    //compute octave
+    wxString sOctave = sNote.Mid(1, 1);
+    long nOctave;
+    if (!sOctave.ToLong(&nOctave)) return true;    //error
+    pBits->nOctave = (int)nOctave;
+    
+    //compute accidentals
+    int nAccidentals = AccidentalsToInt(sAccidentals);
+    if (nAccidentals == -999) return true;  //error
+    pBits->nAccidentals = nAccidentals;
+    
+    //compute step semitones
+    pBits->nStepSemitones = StepToSemitones( pBits->nStep );
+
+    return false;  //no error
+
+}
+
+int lmChordManager::StepToSemitones(int nStep)
+{
+    //Returns -1 if error
+    // 'c'=0, 'd'=2, 'e'=4, 'f'=5, 'g'=7, 'a'=9, 'b'=11
+    if (nStep == 0)  return 0;
+    if (nStep == 1)  return 2;
+    if (nStep == 2)  return 4;
+    if (nStep == 3)  return 5;
+    if (nStep == 4)  return 7;
+    if (nStep == 5)  return 9;
+    if (nStep == 6)  return 11;
+    return -1;  //error
+}
+
+int lmChordManager::AccidentalsToInt(wxString sAccidentals)
+{
+    //Returns -999 if error
+    // '--'=-1, '-'=-1, ''=0, '+'=+1, '++'=+2 'x'=2
+    if (sAccidentals == _T(""))     return 0;
+    if (sAccidentals == _T("-"))    return -1;
+    if (sAccidentals == _T("--"))   return -2;
+    if (sAccidentals == _T("+"))    return 1;
+    if (sAccidentals == _T("++"))   return 2;
+    if (sAccidentals == _T("x"))    return 2;
+    return -999;
+}
+
+int lmChordManager::StepToInt(wxString sStep)
+{
+    //Returns -1 if error
+    // 'c'=0, 'd'=1, 'e'=2, 'f'=3, 'g'=4, 'a'=5, 'b'=6
+    if (sStep == _T("c")) return 0;
+    if (sStep == _T("d")) return 1;
+    if (sStep == _T("e")) return 2;
+    if (sStep == _T("f")) return 3;
+    if (sStep == _T("g")) return 4;
+    if (sStep == _T("a")) return 5;
+    if (sStep == _T("b")) return 6;
+    return -1;
+}
+
+bool lmChordManager::IntervalNameToBits(wxString sInterval, lmIntvBits* pBits)
+{
+    if (sInterval.Length() != 2) return true;   //error
+
+    // compute interval number
+    wxString sNum = sInterval.Left(1);
+    long nNum;
+    if (!sNum.ToLong(&nNum)) return true;    //error
+    pBits->nNum = (int)nNum;
+    
+    //compute semitones
+    //  intval  semitones
+    //  2m      1
+    //  2M/3d   2
+    //  3m/2a   3
+    //  3M/4d   4
+    //  4p/3a   5
+    //  4a/5d   6 
+    //  5p/6d   7
+    //  6m/5a   8      
+    //  6M/7d   9
+    //  7m/6a   10
+    //  7M/8d   11
+    //  8p/7a   12
+
+    if      (sInterval == _T("2m")) pBits->nSemitones = 1;
+    else if (sInterval == _T("2M")) pBits->nSemitones = 2;
+    else if (sInterval == _T("2a")) pBits->nSemitones = 3;
+    else if (sInterval == _T("3d")) pBits->nSemitones = 2;
+    else if (sInterval == _T("3m")) pBits->nSemitones = 3;
+    else if (sInterval == _T("3M")) pBits->nSemitones = 4;
+    else if (sInterval == _T("3a")) pBits->nSemitones = 5;
+    else if (sInterval == _T("4d")) pBits->nSemitones = 4;
+    else if (sInterval == _T("4p")) pBits->nSemitones = 5;
+    else if (sInterval == _T("4a")) pBits->nSemitones = 6;
+    else if (sInterval == _T("5d")) pBits->nSemitones = 6;
+    else if (sInterval == _T("5p")) pBits->nSemitones = 7;
+    else if (sInterval == _T("5a")) pBits->nSemitones = 8;
+    else if (sInterval == _T("6d")) pBits->nSemitones = 7;
+    else if (sInterval == _T("6m")) pBits->nSemitones = 8;
+    else if (sInterval == _T("6M")) pBits->nSemitones = 9;
+    else if (sInterval == _T("6a")) pBits->nSemitones = 10;
+    else if (sInterval == _T("7d")) pBits->nSemitones = 9;
+    else if (sInterval == _T("7m")) pBits->nSemitones = 10;
+    else if (sInterval == _T("7M")) pBits->nSemitones = 11;
+    else if (sInterval == _T("7a")) pBits->nSemitones = 12;
+    else if (sInterval == _T("8d")) pBits->nSemitones = 11;
+    else if (sInterval == _T("8p")) pBits->nSemitones = 12;
+    else return true; //error
+
+    return false;
+
+}
+
+wxString lmChordManager::NoteBitsToName(lmNoteBits& tBits)
+{
+    wxString sResult;
+    static wxString m_sSteps = _T("cdefgab");
+
+    //compute accidentals
+    if (tBits.nAccidentals == 1)
+        sResult = _T("+");
+    else if (tBits.nAccidentals == 2)
+        sResult = _T("++");
+    else if (tBits.nAccidentals == -1)
+        sResult = _T("-");
+    else if (tBits.nAccidentals == -2)
+        sResult = _T("--");
+
+    // compute step letter
+    sResult += m_sSteps.Mid(tBits.nStep, 1);
+
+    // compute octave
+    sResult += wxString::Format(_T("%d"), tBits.nOctave);
+
+    return sResult;
+
+}
+
+#ifdef _DEBUG
+
+void lmChordManager::UnitTests()
+{
+    int i, j;
+
+    //NoteToBits and NoteBitsToName
+    wxLogMessage(_T("[lmChordManager::UnitTests] Test of NoteToBits() method:"));
+    wxString sNote[8] = { _T("c4"), _T("+a5"), _T("--b2"), _T("-a4"),
+        _T("+e4"), _T("++f6"), _T("b1"), _T("xc4") };
+    lmNoteBits tNote;
+    for(i=0; i < 8; i++) {
+        if (NoteToBits(sNote[i], &tNote)) 
+            wxLogMessage(_T("Unexpected error in NoteToBits()"));
+        else {
+            wxLogMessage(_T("Note: '%s'. Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d --> '%s'"),
+                sNote[i], tNote.nStep, tNote.nOctave, tNote.nAccidentals, tNote.nStepSemitones,
+                NoteBitsToName(tNote) );
+        }
+    }
+
+    //ComputeInterval(): interval computation
+    wxString sIntv[8] = { _T("3M"), _T("3m"), _T("8p"), _T("5p"),
+        _T("5a"), _T("7d"), _T("6M"), _T("2M") };
+    for(i=0; i < 8; i++) {
+        for (j=0; j < 8; j++) {
+            wxString sNewNote = ComputeInterval(sNote[i], sIntv[j]);
+            wxLogMessage(_T("Note='%s' + Intv='%s' --> '%s'"),
+                         sNote[i], sIntv[j], sNewNote );
+        }
+    }
+
+}
+
+#endif

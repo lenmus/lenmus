@@ -49,6 +49,8 @@
 
 //constants for comparations
 const wxChar chApostrophe = _T('\'');
+const wxChar chBar = _T('|');
+const wxChar chCloseBracket = _T(']');
 const wxChar chCloseParenthesis = _T(')');
 const wxChar chColon = _T(':');
 const wxChar chComma = _T(',');
@@ -58,6 +60,7 @@ const wxChar chEqualSign = _T('=');
 const wxChar chGreaterSign = _T('>');
 const wxChar chLowerSign = _T('<');
 const wxChar chMinusSign = _T('-');
+const wxChar chOpenBracket = _T('[');
 const wxChar chOpenParenthesis = _T('(');
 const wxChar chPlusSign = _T('+');
 const wxChar chQuotes = _T('"');
@@ -305,7 +308,10 @@ void lmLDPTokenBuilder::ParseNewToken()
         switch (nState) {
             case FT_Start:
                 GNC();
-                if (IsLetter(m_curChar) || m_curChar == chApostrophe) {
+                if (IsLetter(m_curChar) || m_curChar == chApostrophe ||
+                    m_curChar == chOpenBracket || m_curChar == chBar ||
+                    m_curChar == chColon )
+                {
                     nState = FT_ETQ01;
                 } else if (IsNumber(m_curChar)) {
                     nState = FT_NUM01;
@@ -470,7 +476,9 @@ void lmLDPTokenBuilder::ParseNewToken()
                     m_curChar == chUnderscore || m_curChar == chDot ||
                     m_curChar == chPlusSign || m_curChar == chMinusSign ||
                     m_curChar == chSharp || m_curChar == chSlash ||
-                    m_curChar == chEqualSign || m_curChar == chApostrophe )
+                    m_curChar == chEqualSign || m_curChar == chApostrophe ||
+                    m_curChar == chCloseBracket || m_curChar == chBar ||
+                    m_curChar == chColon )
                 {
                     nState = FT_ETQ01;
                 }

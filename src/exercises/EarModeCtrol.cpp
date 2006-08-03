@@ -42,6 +42,7 @@
 #include "../ldp_parser/LDPParser.h"
 #include "../auxmusic/Interval.h"
 #include "../app/DlgCfgEarIntervals.h"
+#include "../auxmusic/ChordManager.h"
 
 
 #include "../globals/Colors.h"
@@ -346,6 +347,7 @@ void lmEarModeCtrol::NewProblem()
 {
 
     ResetExercise();
+
 
     // select a random key signature
     lmRandomGenerator oGenerator;

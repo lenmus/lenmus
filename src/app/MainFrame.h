@@ -113,6 +113,7 @@ public:
     void OnDebugTestMidi(wxCommandEvent& event);
     void OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event));
     void OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event));
+    void OnDebugUnitTests(wxCommandEvent& event);
         // methods requiring a score
     void OnDebugDumpBitmaps(wxCommandEvent& event);
     void OnDebugDumpStaffObjs(wxCommandEvent& event);

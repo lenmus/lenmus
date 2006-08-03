@@ -86,15 +86,17 @@ LenMus project philosophy (to remind me to always stay on this):
     Minor issues:
     - spacing in tuples when a whole /half note in other staff
     - tuplet bracket line discontinuities
+    - beam: wrong direction in Greensleeves
     
     Bugs:
-    - Occasional first system indentation on second page
+    - Occasional first system indentation on second page (Moonlight sonata)
 
     Bugs in Unicode version:
         - Release Unicode:
             - MidiWizard fails
             
-	Spanish translation errors:
+    Spanish translation errors:
+    - none
     
 
 
@@ -107,6 +109,7 @@ LenMus project philosophy (to remind me to always stay on this):
 
   Tasks for future releases:
   ----------------------------
+    - TheoIntervals: need to add answer button for 2dim (i.e.: b3 / -c4)
     - Slurs
     - Clefs: french (Sol1), baritoneC (Do5) and subbass (Fa5)
     - Clefs: octave altered.
@@ -115,10 +118,6 @@ LenMus project philosophy (to remind me to always stay on this):
     - Different paths for Open and Import
     - (? ->no. i18n problem)Font for texts including some music symbols (accidentals)
     - Include theory reference book taken from Wikipedia?
-    - zoom toolbar:
-        - icons
-        - buttons
-        - combo box options
     - view toolbar menu: several toolbars
     - re-locate toolbars if not enough space
     - Channge MDI child windows by notebook
@@ -154,13 +153,7 @@ LenMus project philosophy (to remind me to always stay on this):
     - move logs to temp directory
     
     - width of chord = max width of its notes
-    - render accidentals in notes order
-    
-    - Required for theory book:
-        - text above/below a measure. Parameter centered
-        - Render options: stop staff lines at final barline
-
-    
+    - render accidentals in notes order   
     - need to devise a renderization method based on plugins so that different
         algorithms, user selectable, can be used to compute layout
     

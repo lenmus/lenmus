@@ -9,25 +9,23 @@
         (clef treble)
         (key C)
         (time 6 8)
-        nd4e
-        (barline)
-        
-        nfq nge nae.,g+ nbs, nae,g- (barline)       //1
-        ng4q nee nce.,g+ nds nee,g- (barline)       //2
-        nfq nde nd,g+ nc nd,g- (barline)            //3
-        neq nce na3q nd4e (barline)                 //4
-        nfq nge nae.,g+ nbs, nae,g- (barline)       //5
-        ng4q nee nce.,g+ nds nee,g- (barline)       //6
-        nfe.,g+ nes nde,g- n+c,g+ nb3 nc4,g- (barline)  //7
-        ndq nde ndq. (barline)                          //8
-        nc5q. nc5e.,g+ nb4s nae,g- (barline)    //9
-        ngq nee nce.,g+ nds nee,g- (barline)    //10
-        nfq nde nde.,g+ ncs nde,g- (barline)    //11
-        neq nce na3q. (barline)                 //12
-        nc5q. nc5e.,g+ nb4s nae,g- (barline)    //13
-        ngq nee nce.,g+ nds nee,g- (barline)    //14
-        nfe.,g+ nes nde,g- n+ce.,g+ nb3s nc4e,g- (barline)  //15
-        ndq. ndq re (barline end)                     //16
+        nd4e |
+        nfq nge nae.,g+ nbs, nae,g- |   //1
+        ng4q nee nce.,g+ nds nee,g- |   //2
+        nfq nde nd,g+ nc nd,g- |        //3
+        neq nce na3q nd4e |             //4
+        nfq nge nae.,g+ nbs, nae,g- |   //5
+        ng4q nee nce.,g+ nds nee,g- |   //6
+        nfe.,g+ nes nde,g- n+c,g+ nb3 nc4,g- |  //7
+        ndq nde ndq. |                  //8
+        nc5q. nc5e.,g+ nb4s nae,g- |    //9
+        ngq nee nce.,g+ nds nee,g- |    //10
+        nfq nde nde.,g+ ncs nde,g- |    //11
+        neq nce na3q. |                 //12
+        nc5q. nc5e.,g+ nb4s nae,g- |    //13
+        ngq nee nce.,g+ nds nee,g- |    //14
+        nfe.,g+ nes nde,g- n+ce.,g+ nb3s nc4e,g- |  //15
+        ndq. ndq re (barline end)
       )
    )
 )
