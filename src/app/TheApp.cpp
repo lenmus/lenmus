@@ -370,6 +370,9 @@ bool lmTheApp::OnInit(void)
     // Create a document manager
     m_pDocManager = new wxDocManager;
 
+    // Sets the directory to be displayed to the user when opening a score. 
+    m_pDocManager->SetLastDirectory(g_pPaths->GetScoresPath());
+
     // Create a template relating score documents to their views
     (void) new wxDocTemplate(m_pDocManager, _T("LenMus score"), _T("*.lms"), _T(""), _T("lms"), _T("Music lmScore"), _T("lmScore View"),
           CLASSINFO(lmScoreDocument), CLASSINFO(lmScoreView));
@@ -536,6 +539,10 @@ int lmTheApp::OnExit(void)
         //
         //Save any other user preferences and values, not saved yet
         //
+
+    // Save the last selected directories
+    g_pPaths->SetScoresPath( m_pDocManager->GetLastDirectory() );
+    g_pPaths->SaveUserPreferences();
 
 
         //

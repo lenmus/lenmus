@@ -68,23 +68,22 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
 
     //for each lmInstrument
     lmLUnits xPaperPos, yPaperPos;
-    lmLUnits xStartPos = pPaper->GetCursorX();
+    lmLUnits xStartPos = m_xPos;
     lmLUnits xFrom;
     for (pInstr = pScore->GetFirstInstrument(); pInstr; pInstr=pScore->GetNextInstrument())
     {
         pPaper->SetCursorX( xStartPos );    //align staves in system
 
         //draw instrument name or abbreviation
-        if (nSystem == 1) {
+        if (m_nNumPage == 1 && nSystem == 1) {
             pInstr->DrawName(pPaper);
         }
         else {
             pInstr->DrawAbbreviation(pPaper);
         }
-        pPaper->IncrementCursorX( m_nIndent );
 
         //for each lmVStaff
-        xFrom = pPaper->GetCursorX();
+        xFrom = m_xPos + m_nIndent;
         for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
         {
             pVStaff = pInstr->GetVStaff(iVStaff);

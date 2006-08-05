@@ -133,7 +133,7 @@ lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
 
             pBoxSystem = pBoxPage->AddSystem(iVStaff);
             int ySystemPos = pPaper->GetCursorY();      //save the start of system position
-            pBoxSystem->SetPositionY(ySystemPos);
+            pBoxSystem->SetPosition(pPaper->GetCursorX(), ySystemPos);
             nAbsMeasure = 1;
             pBoxSystem->SetFirstMeasure(nAbsMeasure);
 
@@ -297,7 +297,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOpt
         //create the system container
         pBoxSystem = pBoxPage->AddSystem(nSystem);
         ySystemPos = pPaper->GetCursorY();  //save the start of system position
-        pBoxSystem->SetPositionY(ySystemPos);
+        pBoxSystem->SetPosition(pPaper->GetCursorX(), ySystemPos);
         pBoxSystem->SetFirstMeasure(nAbsMeasure);
         pBoxSystem->SetIndent(((nSystem == 1) ? nFirstSystemIndent : nOtherSystemIndent ));
 

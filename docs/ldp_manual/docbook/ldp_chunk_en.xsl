@@ -223,44 +223,51 @@
             <!-- main navigation menu on the left -->
             <div id="lm-left-menu">
                 <ul id="lm-side-nav">
-                  <li><a title="Portada" href="../../page.php?pid=noticias&amp;lang=Spa">Portada</a></li>
+                  <li><a title="Home" href="page.php?pid=noticias&amp;lang=Eng">Home</a></li>
+
                   <li><span class="lm-side-nav">General</span>
                   <ul>
-                    <li><a title="LenMus en SourceForge" href="http://sourceforge.net/projects/lenmus" target="_blank&amp;lang=Spa">LenMus en SourceForge</a></li>
-                    <li><a title="Boletin de noticias" href="../../page.php?pid=newsletter&amp;lang=Spa">Boletin de noticias</a></li>
-                    <li><a title="Contactar" href="../../page.php?pid=paginas&amp;name=contact&amp;lang=Spa">Contactar</a></li>
-                    <li><a title="Politica de privacidad" href="../../page.php?pid=paginas&amp;name=privacy&amp;lang=Spa">Politica de privacidad</a></li>
-                    <li><a title="Licencia" href="../../page.php?pid=paginas&amp;name=license&amp;lang=Spa">Licencia</a></li>
+                    <li><a title="LenMus at SourceForge" href="http://sourceforge.net/projects/lenmus" target="_blank&amp;lang=Eng">LenMus at SourceForge</a></li>
+                    <li><a title="Contact me" href="page.php?pid=paginas&amp;name=contact&amp;lang=Eng">Contact me</a></li>
+                    <li><a title="License" href="page.php?pid=paginas&amp;name=license&amp;lang=Eng">License</a></li>
                   </ul></li>
 
-                  <li><span class="lm-side-nav">El programa LenMus</span>
+                  <li><span class="lm-side-nav">LenMus Program</span>
                   <ul>
-                    <li><a title="Descargas" href="../../page.php?pid=paginas&amp;name=downloads&amp;lang=Spa">Descargas</a></li>
-                    <li><a title="Objetivos" href="../../page.php?pid=paginas&amp;name=roadmap&amp;lang=Spa">Objetivos</a></li>
-                    <li><a title="Imagenes de pantallas" href="../../page.php?pid=paginas&amp;name=screenshots&amp;lang=Spa">Imagenes de pantallas</a></li>
-                    <li><a title="Funcionalidades" href="../../page.php?pid=paginas&amp;name=features&amp;lang=Spa">Funcionalidades</a></li>
-                    <li><a title="Novedades" href="../../page.php?pid=paginas&amp;name=new_in_version&amp;lang=Spa">Novedades</a></li>
-                    <li><a title="Instalacion" href="../../page.php?pid=paginas&amp;name=installation&amp;lang=Spa">Instalacion</a></li>
+                    <li><a title="Downloads" href="page.php?pid=paginas&amp;name=downloads&amp;lang=Eng">Downloads</a></li>
+                    <li><a title="Roadmap" href="page.php?pid=paginas&amp;name=roadmap&amp;lang=Eng">Roadmap</a></li>
+                    <li><a title="Objectives" href="page.php?pid=paginas&amp;name=objectives&amp;lang=Eng">Objectives</a></li>
+                    <li><a title="Screenshots" href="page.php?pid=paginas&amp;name=screenshots&amp;lang=Eng">Screenshots</a></li>
+
+                    <li><a title="Features" href="page.php?pid=paginas&amp;name=features&amp;lang=Eng">Features</a></li>
+                    <li><a title="New in this version" href="page.php?pid=paginas&amp;name=new_in_version&amp;lang=Eng">New in this version</a></li>
+                    <li><a title="Releases notification" href="page.php?pid=paginas&amp;name=release_notification&amp;lang=Eng">Releases notification</a></li>
+                    <li><a title="Installation" href="page.php?pid=paginas&amp;name=installation&amp;lang=Eng">Installation</a></li>
+                    <li><a title="Scores publication" href="page.php?pid=paginas&amp;name=score_publication&amp;lang=Eng">Scores publication</a></li>
                   </ul></li>
 
-                  <li><span class="lm-side-nav">Ayuda</span>
+                  <li><span class="lm-side-nav">Help</span>
                   <ul>
-                    <li><a title="Documentacion" href="../../page.php?pid=paginas&amp;name=docs_index&amp;lang=Spa">Documentacion</a></li>
-                    <li><a title="Comunicar un error" href="../../page.php?pid=paginas&amp;name=send_bugs&amp;lang=Spa">Comunicar un error</a></li>
+                    <li><a title="Documents" href="page.php?pid=paginas&amp;name=docs_index&amp;lang=Eng">Documents</a></li>
+                    <li><a title="Report a bug" href="page.php?pid=paginas&amp;name=send_bugs&amp;lang=Eng">Report a bug</a></li>
                   </ul></li>
 
-                  <li><a title="Involucrate" href="../../page.php?pid=paginas&amp;name=get_involved&amp;lang=Spa">Involucrate</a>
+                  <li><a title="Get involved" href="page.php?pid=paginas&amp;name=get_involved&amp;lang=Eng">Get involved</a>
+
                   <ul>
-                    <li><a title="Programadores" href="../../page.php?pid=paginas&amp;name=join_developers&amp;lang=Spa">Programadores</a></li>
+                    <li><a title="Developers" href="page.php?pid=paginas&amp;name=join_developers&amp;lang=Eng">Developers</a></li>
                   </ul></li>
 
                   <li><span class="lm-side-nav">Developers</span>
                   <ul>
-                    <li><a title="Log of changes" href="../../page.php?pid=paginas&amp;name=changelog&amp;lang=Spa">Log of changes</a></li>
-                    <li><a title="wxMidi" href="../../page.php?pid=paginas&amp;name=wxmidi&amp;lang=Spa">wxMidi</a></li>
+                    <li><a title="Log of changes" href="page.php?pid=paginas&amp;name=changelog_2006&amp;lang=Eng">Log of changes</a></li>
+                    <li><a title="wxMidi" href="page.php?pid=paginas&amp;name=wxmidi&amp;lang=Eng">wxMidi</a></li>
+
                   </ul></li>
-                </ul>
-            </div>
+
+                  </ul>  <!-- lm-side-nav -->
+                  
+            </div> <!--lm-left-menu-->
 
             <!-- left side blocks -->
             <div id="lm-left-side-block">

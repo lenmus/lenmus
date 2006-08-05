@@ -70,26 +70,16 @@ LenMus project philosophy (to remind me to always stay on this):
     
   Tasks for release 3.1
   ------------------------
-    - prepare score samples
-    
-    + modify AboutDlg.h to change version number
-    + Prepare UpdateData.xml file
     - update help documentation 
-    + Modify and pack eBook introduction
-    - Review .po Spanish translation file
-    + Prepare release notes for website
-    + Prepare news for web site and Sourceforge 
     - Generate the installer
-    + installation.htm page
-    - LDP manual, html page
     
     Minor issues:
     - spacing in tuples when a whole /half note in other staff
     - tuplet bracket line discontinuities
-    - beam: wrong direction in Greensleeves
+    - abbreviated notation for notes/rests in chords
+    - stem up/down abbreviated notation
     
     Bugs:
-    - Occasional first system indentation on second page (Moonlight sonata)
 
     Bugs in Unicode version:
         - Release Unicode:
@@ -103,6 +93,7 @@ LenMus project philosophy (to remind me to always stay on this):
   Web site
   -------------------------
     - Remove changelog page
+    - Remove privacy policy and other non-useful pages
     - Add Acknowledgments page
     - Add LDP manual as paginated html
 
@@ -138,6 +129,9 @@ LenMus project philosophy (to remind me to always stay on this):
     - in some cases (6/8?) metronome is not syncronized when playing a score (i.e. E29)
     - memory leaks (chords?)
     - toolbars: problem with wxAUI no resize when change from label to no lables
+    - in a chord, if a note has an accidental and the chord has the same note but
+      in a different octave, the accidental is not drawn in this note unless explicitly
+      encoded.
 
 
     Known problems:
@@ -196,7 +190,6 @@ Area 3: Analysis and algorithms
 Area 4: Documentation
     - Re-structure LDP manual: more didactical
     - Set up DocBook edition environment
-    - Move LDP manual to DocBook
     - Move all docs (algorithms, architecture, etc. to DocBook)
 
 Area 5: Prepare a new book
@@ -219,14 +212,6 @@ Planning: comming releases
 ******************************************************************************************
 
     
-15/ago/2006 - 3.1 release
----------------------------------------------------
-
-    Features and changes:
-        - Support for LDP tags internationalization.
-        - Scores publication and edition 
- 
-
 15/sep/2006 - 3.2 release
 ----------------------------------------------
 
@@ -342,15 +327,12 @@ Known bugs:
   - Fromatter3::RenderJustified(). Things to review next:
     - lmVStaff::GetVStaffHeight
     
-  + Windows: accept scrolling from mouse wheel
-  
   - Metronome: implement LED. LED events created in two places: metronome, lmSoundManager.
     
 
 TODO:
 -------------------
    - Why Notes can not be moved?
-   - Note LONG (> cuadrada) --> Consultar Enciclopedia Britanica online?
      
 
      

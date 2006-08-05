@@ -218,12 +218,15 @@ void lmAboutDialog::OnSoftwareCredits(wxCommandEvent& WXUNUSED(event))
         _("LenMus Phonascus uses <b>PortMidi</b> the Portable Real-Time MIDI Library \
 (http://www.cs.cmu.edu/~music/portmusic/). PortMidi is copyright (c) 1999-2000 Ross \
 Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg. Its licence permits \
-free use. Thank you PortMidi team.") +
+free use.") +
         _T("</p><p>") +
         _("LenMus Phonascus is build using the <b>wxWidgets</b> application framework \
 (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is \
 ease to learn and extend, it has a helpful community, and also has the possibility \
-to use it in commercial products without licencing. Thank you wxWidgets team.") +
+to use it in commercial products without licencing.") +
+        _T("</p><p>") +
+        _("Most of 'lmbasic.ttf' font glyphs are taken from <b>LilyPond</b> GNU GPL project \
+(http://lilypond.org), Feta font.") +
         _T("</p></body></html>");
 
         m_pHtmlWindow->SetPage(sContent);

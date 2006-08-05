@@ -46,6 +46,7 @@ public:
     wxString GetImagePath() { return m_sImages; }
     wxString GetSoundsPath() { return m_sSounds; }
     wxString GetLocaleRootPath() { return m_sLocaleRoot; }
+    wxString GetScoresPath() { return m_sScores; }
 
     // paths that depend on the language name
     wxString GetLocalePath() { return m_sLocale; }
@@ -53,6 +54,9 @@ public:
     wxString GetBooksPath() { return m_sBooks; }
 
     void SetLanguageCode(wxString sLangCode);
+
+    // Set paths selecteble by user
+    void SetScoresPath(wxString sPath) { m_sScores = sPath; }
 
 private:
 

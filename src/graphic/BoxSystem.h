@@ -54,7 +54,8 @@ public:
 
     void SetFirstMeasure(int nMeasure) { m_nFirstMeasure = nMeasure; }
 
-    void SetPositionY(lmLUnits nLUnits) { m_yPos = nLUnits; }
+    void SetPosition(lmLUnits xPos, lmLUnits yPos) { m_xPos = xPos; m_yPos = yPos; }
+    lmLUnits GetPositionX() { return m_xPos; }
     lmLUnits GetPositionY() { return m_yPos; }
 
     void SetFinalX(lmLUnits nLUnits) { m_xFinal = nLUnits; }
@@ -67,7 +68,7 @@ private:
 
     int         m_nNumMeasures;     //number of measures that fit in this system
     int         m_nFirstMeasure;    //number of first measure
-    lmLUnits    m_yPos;             // y pos to render first staff
+    lmLUnits    m_xPos, m_yPos;     // pos to render first staff
     lmLUnits    m_xFinal;           // x pos for end of staff lines
     lmLUnits    m_nIndent;          // indentation
     int         m_nNumPage;         // page number (1..n) on which this system is included

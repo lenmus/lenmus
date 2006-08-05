@@ -110,7 +110,10 @@ void lmPaths::LoadUserPreferences()
 
     path = m_root;
     path.AppendDir(_T("scores"));
+    path.AppendDir(_T("samples"));
     m_sScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    g_pPrefs->Read(_T("/Paths/Scores"), &m_sScores);   
+
 
     path = m_root;
     path.AppendDir(_T("temp"));

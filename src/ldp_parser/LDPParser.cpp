@@ -158,7 +158,7 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename)
         g_pLogger->ShowDataErrors(_("Warnings/errores while reading LenMus score."));
     }
 
-    if (pScore) pScore->Dump(_T("lenmus_score_dump.txt"));      //dbg
+    //if (pScore) pScore->Dump(_T("lenmus_score_dump.txt"));      //dbg
     return pScore;
 
 }
