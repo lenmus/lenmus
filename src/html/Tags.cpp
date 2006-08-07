@@ -51,7 +51,7 @@
     lmTheoKeySignCtrol : public wxWindow
     lmEarIntervalsCtrol : public wxWindow
     lmEarCompareIntvCtrol : public wxWindow
-    lmEarModeCtrol : public wxWindow
+    lmEarChordCtrol : public wxWindow
     lmTheoMusicReadingCtrol : public wxWindow
 
 
@@ -64,7 +64,7 @@
     type="Application/LenMusTheoKeySignatures"      lmTheoKeySignCtrolParms : public lmObjectParams
     type="Application/LenMusEarIntervals"           lmEarIntervalsCtrolParms : public lmObjectParams
     type="Application/LenMusEarCompareIntervals"    lmEarCompareIntvCtrolParms : public lmObjectParams
-    type="Application/LenMusEarMode"                lmEarModeParms : public lmObjectParams
+    type="Application/LenMusEarChord"               lmEarChordCtrolParms : public lmObjectParams
 
     @endverbatim
 
@@ -109,7 +109,7 @@
 #include "../exercises/EarIntervalsCtrol.h"
 #include "../exercises/EarCompareIntvCtrol.h"
 #include "../exercises/EarIntvalConstrains.h"
-#include "../exercises/EarModeCtrol.h"
+#include "../exercises/EarChordCtrol.h"
 
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
@@ -125,6 +125,7 @@ extern lmMainFrame* g_pMainFrame;
 #include "ObjectParams.h"
 #include "TheoMusicReadingCtrolParms.h"
 #include "ScoreCtrolParams.h"
+#include "EarChordCtrolParms.h"
 
 
 //OBSOLETE:
@@ -917,7 +918,7 @@ enum EHtmlObjectTypes {
     eHO_Exercise_EarIntervals,
     eHO_Exercise_EarCompareIntervals,
     eHO_Exercise_TheoMusicReading,
-    eHO_Exercise_EarMode,
+    eHO_Exercise_EarChord,
     eHO_Control
 };
 
@@ -971,8 +972,8 @@ TAG_HANDLER_PROC(tag)
                 nType = eHO_Exercise_EarCompareIntervals;
             else if (sType.Upper() == _T("APPLICATION/LENMUSTHEOMUSICREADING"))
                 nType = eHO_Exercise_TheoMusicReading;
-            else if (sType.Upper() == _T("APPLICATION/LENMUSEARMODE"))
-                nType = eHO_Exercise_EarMode;
+            else if (sType.Upper() == _T("APPLICATION/LENMUSEARCHORD"))
+                nType = eHO_Exercise_EarChord;
         }
         if (nType == eHO_Unknown) return true;        // type non processable by LenMus
 
@@ -1042,9 +1043,8 @@ TAG_HANDLER_PROC(tag)
                     nPercent, nStyle);
                 break;
 
-            case eHO_Exercise_EarMode:
-                //! @todo
-                m_pObjectParams = new lmEarCompareIntvCtrolParms(tag, nWidth, nHeight, 
+            case eHO_Exercise_EarChord:
+                m_pObjectParams = new lmEarChordCtrolParms(tag, nWidth, nHeight, 
                     nPercent, nStyle);
                 break;
 

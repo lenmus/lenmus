@@ -39,6 +39,7 @@
 
 #include "../score/score.h"
 #include "Interval.h"
+#include "../exercises/Constrains.h"
 
 typedef struct lmNoteBitsStruct {
     int nStep;              // 'c'=0, 'd'=1, 'e'=2, 'f'=3, 'g'=4, 'a'=5, 'b'=6
@@ -55,32 +56,9 @@ typedef struct lmIntvBitsStruct {
 
 
 
-enum EChordType
-{
-    // Triads
-    ect_MajorTriad = 0,
-    ect_MinorTriad,
-    ect_AugTriad,
-    ect_DimTriad,
+//declare global functions defined in this module
+extern wxString ChordTypeToName(EChordType nChordType);
 
-    // Seventh chords
-    ect_MajorSeventh,
-    ect_DominantSeventh,
-    ect_MinorSeventh,
-    ect_DimSeventh,
-    ect_HalfDimSeventh,
-    ect_AugMajorSeventh,
-    ect_AugSeventh,
-    ect_MinorMajorSeventh,
-
-    // Sixth chords
-    ect_MajorSixth,
-    ect_MinorSixth,
-    ect_AugSixth,
-
-    //last element, to signal End Of Table
-    ect_Max
-};
 
 //a chord is a sequence of up 4 notes. Change this for more notes in chord
 #define lmNOTES_IN_CHORD  4
@@ -94,8 +72,11 @@ public:
     ~lmChordManager();
 
     EChordType GetType() { return m_nType; }
+    wxString GetName() { return ChordTypeToName( m_nType ); }
     int GetNumNotes();
     int GetMidiNote(int i);
+    wxString GetPattern(int i);
+
 #ifdef _DEBUG
     void UnitTests();
 #endif
@@ -104,6 +85,8 @@ private:
     void InitializeStrings();
     int GetNote(int nMidiRoot, wxString sInterval);
     wxString ComputeInterval(wxString sRootNote, wxString sInterval);
+    void ComputeInterval(lmNoteBits* pRoot, wxString sInterval, lmNoteBits* pNewNote);
+
     bool NoteToBits(wxString sNote, lmNoteBits* pBits);
     int StepToSemitones(int nStep);
     int AccidentalsToInt(wxString sAccidentals);
@@ -117,6 +100,7 @@ private:
     EChordType      m_nType;
     EKeySignatures  m_nKey;
     int             m_ntMidi[lmNOTES_IN_CHORD];
+    lmNoteBits      m_tBits[lmNOTES_IN_CHORD];
 
 };
 

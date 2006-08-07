@@ -66,12 +66,27 @@ LenMus project philosophy (to remind me to always stay on this):
   
   ---------------------------------------------------------------------------------------
   Now:
+  
+  Coding Ear Chord exercises:
+  - Allow to play any interval once the answer is shown
+  - Root note: choose
+  - Key signature: choose
+  - Allow inversions
+  - Remove accidentals in the key signature
+  - Settings dialog
+  - melodic option (ascending and descending)
     
     
-  Tasks for release 3.1
-  ------------------------
+  Release 3.2, planned: 30/aug/2006
+  ----------------------------------
+
+    Features and changes:
+    - Ear training: identify chord type
+    - Theory: identify chord
+	- Modify UrlAuxCtrol to optionally include an icon at the left.
+
+    Tasks:
     - update help documentation 
-    - Generate the installer
     
     Minor issues:
     - spacing in tuples when a whole /half note in other staff
@@ -80,6 +95,7 @@ LenMus project philosophy (to remind me to always stay on this):
     - stem up/down abbreviated notation
     
     Bugs:
+    - none
 
     Bugs in Unicode version:
         - Release Unicode:
@@ -93,9 +109,7 @@ LenMus project philosophy (to remind me to always stay on this):
   Web site
   -------------------------
     - Remove changelog page
-    - Remove privacy policy and other non-useful pages
     - Add Acknowledgments page
-    - Add LDP manual as paginated html
 
 
   Tasks for future releases:
@@ -212,16 +226,20 @@ Planning: comming releases
 ******************************************************************************************
 
     
-15/sep/2006 - 3.2 release
+30/oct/2006 - 3.3 release
 ----------------------------------------------
 
     Features and changes:
+        - Continue extending support to include more musical signs in scores and texts.
+        - Music patterns editor, to customize music reading exercises.
+        - Add anti-aliassing
+        - Answer buttons for Scales exercises.
+        - Exercises on chords.
         - Ear training: identify key signature
         - Ear training: identify scale
-        - Exercises on chords: triads
+        - Theory: identify a chord progression
 
-
-??/s???/2006 - 3.3 release
+??/???/2006 - 3.4 release
 ----------------------------------------------
 
     Features and changes:
@@ -231,6 +249,7 @@ Planning: comming releases
         - Exercises on chords.
         - Ear training: identify key signature
         - Ear training: identify scale
+
 
 
 Upcomig releases features 
@@ -245,7 +264,6 @@ Upcomig releases features
     2 - Add checkbox buttons to choose direct and inverse problems
 
 
- - Tuples: t2
  - Beamed groups in LDP: automatic identification of typical groups
  - Slurs
  - Bug: hook beam after rest in group. Drawn wrong
@@ -275,7 +293,6 @@ Known bugs:
     This link will be enabled only after displaying a solution and will be disabled 
     when 'new problem' clicked.
 
-- Modify UrlAuxCtrol to optionally include an icon at the left.
 
 - Composer5:
     Barline alignment constrains

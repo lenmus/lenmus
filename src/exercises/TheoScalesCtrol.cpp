@@ -662,15 +662,15 @@ void lmTheoScalesCtrol::DisplaySolution()
 */
 void lmTheoScalesCtrol::Play()
 {
-    
     if (!m_fPlaying) {
         // Play button pressed
 
         //change link from "Play" to "Stop playing"
         m_pPlayButton->SetLabel(_("Stop playing"));
 
-        //As scale is built using whole notes, we will play scale at MM=320 so
-        //that real note rate will be 80.
+        //As chord is built using whole notes, we will play scale at MM=320 so
+        //that real note rate will be 80 (it is not important, anyway, as it is
+        //just one chord! )
         m_pScoreCtrol->PlayScore(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
                                 ePM_NormalInstrument, 320);
         m_fPlaying = true;

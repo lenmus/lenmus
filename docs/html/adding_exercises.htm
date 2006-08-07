@@ -15,39 +15,29 @@ be programmed. These are the steps to follow:</p>
 
 <ol>
 <li>In /src/exercises/ create the exercises control NewExerciseCtrol<br /><br /></li>
-
+<li>In /src/exercises/ create the constrains class NewExerciseConstrains<br /><br /></li>
 <li>In /src/html/ create the exercises params object NewExerciseCtrolParms.h<br /><br /></li>
 
 <li>Include the new control in /scr/html/Tags.cpp
-	<ol>
-	<li>Add <tt>#include "../exercises/NewExerciseCtrol.h"</tt></li>
-	<li>Add <tt>#include "NewExerciseCtrolParms.h"</tt></li>
-	<li>Modify enum EHtmlObjectTypes (located just before TAG_HANDLER_PROC(tag) )
-		to add a new item eHO_Exercise_NewExercise</li>
-	<li>Modify TAG_HANDLER_PROC(tag) to take into account the new exercise (in two points)</li>
-	<li>Review documentation comments</li>
-	</ol><br /></li>
-</ol>
+    <ol>
+    <li>Add <tt>#include "../exercises/NewExerciseCtrol.h"</tt></li>
+    <li>Add <tt>#include "NewExerciseCtrolParms.h"</tt></li>
+    <li>Modify enum EHtmlObjectTypes (located just before TAG_HANDLER_PROC(tag) )
+        to add a new item eHO_Exercise_NewExercise</li>
+    <li>Modify TAG_HANDLER_PROC(tag) to take into account the new exercise (in two points)</li>
+    <li>Review documentation comments</li>
+    </ol><br /></li>
 
-<p>Optionally, you might have to use helper classes, such as constrains to configure
-the exercises or generators to generate the exercise values.
-	Typically, you should:</p>
-<ol>
-<li>In /src/exercises/ create the exercise constrains object NewExerciseConstrains.cpp,.h<br /><br /></li>
-<li>Modify /src/exercises/Generators.cpp,.h to add new random/constrained generator methods</li>
-</ol>
+<li>To test the new control you have to add a test page to a book (i.e. v3_TestBook):
+    <ol>
+    <li>Create file for new page (i.e. v3_TestBook_NewExercise.htm)</li>
+    <li>Add this page to TOC file v3_testBook.hhc</li>
+    <li>Add this page to index file v3_testBook.hhk</li>
+    <li>Do not forget to empty directory /temp to force the program to load a
+        fresh updated version of the test book.</li>
+    </ol><br /></li>
 
-<p>Finally, to test the new control you have to:</p>
-<ol>
-<li>Add a test page to a book (i.e. v3_TestBook):
-	<ol>
-	<li>Create file for new page (i.e. v3_TestBook_NewExercise.htm)</li>
-	<li>Add this page to TOC file v3_testBook.hhc</li>
-	<li>Add this page to index file v3_testBook.hhk</li>
-	<li>Do not forget to empty directory /temp to force the program to load a
-		fresh updated version of the test book.</li>
-	</ol><br /></li>
-
+<li>If necessary, design the GUI for the Ctrol using DlgBlocks in z_xrc.</li>
 </ol>
 
 </body>

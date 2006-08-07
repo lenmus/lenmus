@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Generators.cpp,v 1.6 2006/02/23 19:19:15 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -151,4 +150,11 @@ lmPitch lmRandomGenerator::GenerateRandomPitch(int nMinLine, int nRange, bool fR
     return nPitch;
     
 }
-
+wxString lmRandomGenerator::GenerateRandomRootNote(EClefType nClef,
+                                                   EKeySignatures nKey,
+                                                   bool fAllowAccidentals)
+{
+    //! @todo all code for GenerateRandomRootNote()
+    wxString sRootNote = _T("c4");
+    return sRootNote;
+}

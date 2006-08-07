@@ -18,16 +18,16 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Generators.h
-    @brief Header file for generator classes
+/*! @file EarChordConstrains.h
+    @brief Header file for EarChord exercises
     @ingroup generators
 */
 #ifdef __GNUG__
 // #pragma interface
 #endif
 
-#ifndef __GENERATORS_H__        //to avoid nested includes
-#define __GENERATORS_H__
+#ifndef __EARCHORDCONSTRAINS_H__        //to avoid nested includes
+#define __EARCHORDCONSTRAINS_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -40,34 +40,32 @@
 #include "wx/wx.h"
 #endif
 
+#include "../auxmusic/ChordManager.h"
+#include "Generators.h"
 #include "Constrains.h"
 
-class lmRandomGenerator
+
+class lmEarChordConstrains
 {
 public:
-    lmRandomGenerator();
-    ~lmRandomGenerator() {}
+    lmEarChordConstrains(wxString sSection);
+    ~lmEarChordConstrains() {}
 
-    //random numbers
-    int RandomNumber(int nMin, int nMax);
-    bool FlipCoin();
+    EChordType GetRandomChordType();
 
-    // clefs
-    EClefType GenerateClef(lmClefConstrain* pValidClefs);
+    void SaveSettings();
 
-    // key signature
-    EKeySignatures GenerateKey(lmKeyConstrains* pValidKeys);
-    EKeySignatures RandomKeySignature();
 
-    //time signature
-    ETimeSignature GenerateTimeSign(lmTimeSignConstrains* pValidTimeSignatures);
-    ETimeSignature RandomTimeSignature();
+private:
+    void LoadSettings();
 
-    //notes
-    lmPitch GenerateRandomPitch(int nMinLine, int nRange, bool fRests, EClefType nClef);
-    wxString GenerateRandomRootNote(EClefType nClef, EKeySignatures nKey, bool fAllowAccidentals);
+    wxString            m_sSection;
+    lmChordConstrains   m_oChordTypes;  
+    bool                m_fAllowedModes[3];     // 0-harmonic
+                                                // 1-melodic ascending
+                                                // 2-melodic descending
 
 };
 
+#endif  // __EARCHORDCONSTRAINS_H__
 
-#endif  // __GENERATORS_H__

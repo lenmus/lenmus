@@ -679,6 +679,9 @@
 			Name="html"
 			Filter="">
 			<File
+				RelativePath="..\..\src\html\EarChordCtrolParms.h">
+			</File>
+			<File
 				RelativePath="..\..\src\html\HelpController.cpp">
 			</File>
 			<File
@@ -734,6 +737,18 @@
 				RelativePath="..\..\src\exercises\CountersCtrol.h">
 			</File>
 			<File
+				RelativePath="..\..\src\exercises\EarChordConstrains.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\EarChordConstrains.h">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\EarChordCtrol.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\EarChordCtrol.h">
+			</File>
+			<File
 				RelativePath="..\..\src\exercises\EarCompareIntvCtrol.cpp">
 			</File>
 			<File
@@ -750,12 +765,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\EarIntvalConstrains.h">
-			</File>
-			<File
-				RelativePath="..\..\src\exercises\EarModeCtrol.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\exercises\EarModeCtrol.h">
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\Generators.cpp">

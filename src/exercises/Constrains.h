@@ -43,6 +43,36 @@
 
 #include "../score/score.h"
 
+enum EChordType
+{
+    // Triads
+    ect_MajorTriad = 0,
+    ect_MinorTriad,
+    ect_AugTriad,
+    ect_DimTriad,
+    ect_Suspended_4th,
+    ect_Suspended_2nd,
+
+    // Seventh chords
+    ect_MajorSeventh,
+    ect_DominantSeventh,
+    ect_MinorSeventh,
+    ect_DimSeventh,
+    ect_HalfDimSeventh,
+    ect_AugMajorSeventh,
+    ect_AugSeventh,
+    ect_MinorMajorSeventh,
+
+    // Sixth chords
+    ect_MajorSixth,
+    ect_MinorSixth,
+    ect_AugSixth,
+
+    //last element, to signal End Of Table
+    ect_Max
+};
+
+
 enum EIntervalName              // name of the intervals considered in exercises
 {
     ein_1 = 0,      // unison       // must start with 0. Used as index for arrays
@@ -114,6 +144,20 @@ public:
 
 private:
     bool m_fValidKeys[lmMAX_KEY - lmMIN_KEY + 1];
+};
+
+//----------------------------------------------------------------------------------------
+
+class lmChordConstrains
+{
+public:
+    lmChordConstrains() {}
+    ~lmChordConstrains() {}
+    bool IsValid(EChordType nType) { return m_fValidTypes[nType]; }
+    void SetValid(EChordType nType, bool fValid) { m_fValidTypes[nType] = fValid; }
+
+private:
+    bool m_fValidTypes[ect_Max-1];
 };
 
 //----------------------------------------------------------------------------------------
