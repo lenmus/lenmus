@@ -37,6 +37,7 @@
 #include "Conversion.h"
 #include "../ldp_parser/AuxString.h"
 #include "../exercises/Generators.h"
+#include "../score/KeySignature.h"
 
 //access to error's logger
 #include "../app/Logger.h"
@@ -44,35 +45,34 @@ extern lmLogger* g_pLogger;
 
 
 typedef struct lmChordDataStruct {
-    wxString sName;
     int nNumNotes;
     wxString sIntervals[3];
 } lmChordData;
 
-static wxString sChordName[16];
-static fStringsInitialized = false;
+static wxString m_sChordName[ect_Max];
+static m_fStringsInitialized = false;
 
 //! @aware Array indexes are in correspondence with enum EChordType
 // - intervals are from root note
 //      number + type:   m=minor, M=major, p=perfect, a=augmented, d=diminished
 static lmChordData tData[ect_Max] = { 
-    { _T("MajorTriad"),         3, _T("3M"), _T("5p"), _T("") },        //MT
-    { _T("MinorTriad"),         3, _T("3m"), _T("5p"), _T("") },        //mT
-    { _T("AugTriad"),           3, _T("3M"), _T("5a"), _T("") },        //aT
-    { _T("DimTriad"),           3, _T("3m"), _T("5d"), _T("") },        //dT
-    { _T("Suspended_4th"),      3, _T("4p"), _T("5p"), _T("") },        //I,IV,V
-    { _T("Suspended_2nd"),      3, _T("2M"), _T("5p"), _T("") },        //I,II,V
-    { _T("MajorSeventh"),       4, _T("3M"), _T("5p"), _T("7M") },      //MT + M7
-    { _T("DominantSeventh"),    4, _T("3M"), _T("5p"), _T("7m") },      //MT + m7
-    { _T("MinorSeventh"),       4, _T("3m"), _T("5p"), _T("7m") },      //mT + m7
-    { _T("DimSeventh"),         4, _T("3m"), _T("5d"), _T("7d") },      //dT + d7
-    { _T("HalfDimSeventh"),     4, _T("3m"), _T("5d"), _T("7m") },      //dT + m7
-    { _T("AugMajorSeventh"),    4, _T("3M"), _T("5a"), _T("7M") },      //aT + M7
-    { _T("AugSeventh"),         4, _T("3M"), _T("5a"), _T("7m") },      //aT + m7
-    { _T("MinorMajorSeventh"),  4, _T("3m"), _T("5p"), _T("7M") },      //mT + M7
-    { _T("MajorSixth"),         4, _T("3M"), _T("5p"), _T("6M") },      //MT + M6
-    { _T("MinorSixth"),         4, _T("3m"), _T("5p"), _T("6M") },      //mT + M6
-    { _T("AugSixth"),           3, _T("3M"), _T("6a"), _T("") },        //M3 + a6
+    { 3, _T("M3"), _T("p5"), _T("") },        //MT        - MajorTriad
+    { 3, _T("m3"), _T("p5"), _T("") },        //mT        - MinorTriad
+    { 3, _T("M3"), _T("a5"), _T("") },        //aT        - AugTriad
+    { 3, _T("m3"), _T("d5"), _T("") },        //dT        - DimTriad
+    { 3, _T("p4"), _T("p5"), _T("") },        //I,IV,V    - Suspended_4th
+    { 3, _T("M2"), _T("p5"), _T("") },        //I,II,V    - Suspended_2nd
+    { 4, _T("M3"), _T("p5"), _T("M7") },      //MT + M7   - MajorSeventh
+    { 4, _T("M3"), _T("p5"), _T("m7") },      //MT + m7   - DominantSeventh
+    { 4, _T("m3"), _T("p5"), _T("m7") },      //mT + m7   - MinorSeventh
+    { 4, _T("m3"), _T("d5"), _T("d7") },      //dT + d7   - HalfDimSeventh
+    { 4, _T("m3"), _T("d5"), _T("m7") },      //dT + m7   - HalfDimSeventh
+    { 4, _T("M3"), _T("a5"), _T("M7") },      //aT + M7   - AugMajorSeventh
+    { 4, _T("M3"), _T("a5"), _T("m7") },      //aT + m7   - AugSeventh
+    { 4, _T("m3"), _T("p5"), _T("M7") },      //mT + M7   - MinorMajorSeventh
+    { 4, _T("M3"), _T("p5"), _T("M6") },      //MT + M6   - MajorSixth
+    { 4, _T("m3"), _T("p5"), _T("M6") },      //mT + M6   - MinorSixth
+    { 3, _T("M3"), _T("a5"), _T("") },        //M3 + a6   - AugSixth
 };
 
 
@@ -80,24 +80,78 @@ static lmChordData tData[ect_Max] = {
 // Implementation of lmChordManager class
 
 
-lmChordManager::lmChordManager(wxString sRootNote, EChordType nChordType, EKeySignatures nKey)
+lmChordManager::lmChordManager(wxString sRootNote, EChordType nChordType, 
+                               int nInversion, EKeySignatures nKey)
 {
-    if (!fStringsInitialized) InitializeStrings();
+    //parameter 'nInversion' is encoded as follows:
+    //  0 - root position
+    //  1 - 1st inversion
+    //  2 - 2nd inversion
+    //  and so on
 
     //save parameters
     m_nType = nChordType;
+    m_nKey = nKey;
+    m_nInversion = nInversion;
 
     if (NoteToBits(sRootNote, &m_tBits[0])) 
         wxASSERT(false);
 
-    //get notes that form the interval
+    //get the intervals that form the chord
     int i;
-    wxLogMessage(_T("[lmChordManager] Root note = %s, interval type=%s"),
-                  NoteBitsToName(m_tBits[0]), GetName() );
-    for (i=1; i < tData[m_nType].nNumNotes; i++) {
-        ComputeInterval(&m_tBits[0], tData[m_nType].sIntervals[i-1], &m_tBits[i]);
-        wxLogMessage(_T("[lmChordManager] Note %d = %s"), i, NoteBitsToName(m_tBits[i]) );
+    wxString sIntval[3], sNewIntv[3];
+    sIntval[0] = tData[m_nType].sIntervals[0];
+    sIntval[1] = tData[m_nType].sIntervals[1];
+    sIntval[2] = tData[m_nType].sIntervals[2];
+
+    //correction for inversions
+    if (m_nInversion == 1)
+    {
+        sNewIntv[0] = SubstractIntervals( sIntval[1], sIntval[0] );
+
+        if (sIntval[2] == _T("")) {
+            sNewIntv[1] = InvertInterval( sIntval[0] );
+            sNewIntv[2] = _T("");
+        }
+        else {
+            sNewIntv[1] = SubstractIntervals( sIntval[2], sIntval[0] );
+            sNewIntv[2] = InvertInterval( sIntval[0] );
+        }
     }
+    else if (m_nInversion == 2)
+    {
+        if (sIntval[2] == _T("")) {
+            sNewIntv[0] = InvertInterval( sIntval[1] );
+            sNewIntv[1] = InvertInterval( sIntval[0] );
+            sNewIntv[2] = _T("");
+        }
+        else {
+            sNewIntv[0] = SubstractIntervals( sIntval[2], sIntval[1] );
+            sNewIntv[1] = InvertInterval( sIntval[1] );
+            sNewIntv[2] = InvertInterval( sIntval[0] );
+        }
+    } 
+    else if (m_nInversion == 3)
+    {
+        sNewIntv[0] = SubstractIntervals( _T("p8"), sIntval[2] );
+        sNewIntv[1] = AddIntervals( sNewIntv[0], sIntval[0] );
+        sNewIntv[2] = AddIntervals( sNewIntv[0], sIntval[1] );
+    } 
+    if (m_nInversion != 0) {
+        sIntval[0] = sNewIntv[0];
+        sIntval[1] = sNewIntv[1];
+        sIntval[2] = sNewIntv[2];
+    }
+
+    //get notes that form the interval
+    wxLogMessage(_T("[lmChordManager] Root note = %s, interval type=%s, inversion=%d"),
+                  NoteBitsToName(m_tBits[0], m_nKey), GetName(), m_nInversion );
+    for (i=1; i < tData[m_nType].nNumNotes; i++) {
+        ComputeInterval(&m_tBits[0], sIntval[i-1], &m_tBits[i]);
+        wxLogMessage(_T("[lmChordManager] Note %d = %s"),
+                     i, NoteBitsToName(m_tBits[i], m_nKey) );
+    }
+
 
 
 /*
@@ -142,31 +196,7 @@ int lmChordManager::GetMidiNote(int i)
     return m_ntMidi[i];
 }
 
-void lmChordManager::InitializeStrings()
-{
-    //language dependent strings. Can not be statically initiallized because
-    //then they do not get translated
-    sChordName[0] = _T("major");
-    sChordName[1] = _("minor");
-    sChordName[2] = _("augmented");
-    sChordName[3] = _("diminished");
-    sChordName[4] = _("major seventh");
-    sChordName[5] = _("5th");
-    sChordName[6] = _("6th");
-    sChordName[7] = _("7th");
-    sChordName[8] = _("octave");
-    sChordName[9] = _("9th");
-    sChordName[10] = _("10th");
-    sChordName[11] = _("11th");
-    sChordName[12] = _("12th");
-    sChordName[13] = _("13th");
-    sChordName[14] = _("14th");
-    sChordName[15] = _("Two octaves");
-
-    fStringsInitialized = true;
-}
-
-int lmChordManager::GetNote(int nMidiRoot, wxString sInterval)
+int lmChordManager::GetMidiNote(int nMidiRoot, wxString sInterval)
 {
     // Receives a Midi pitch and a string encoding the interval as follows:
     // - intval = number + type: 
@@ -192,24 +222,65 @@ int lmChordManager::GetNote(int nMidiRoot, wxString sInterval)
     //  7M      11
     //  8p      12
 
-    if (sInterval == _T("2m"))  return nMidiRoot + 1;
-    if (sInterval == _T("2M"))  return nMidiRoot + 2;
-    if (sInterval == _T("3m"))  return nMidiRoot + 3;
-    if (sInterval == _T("3M"))  return nMidiRoot + 4;
-    if (sInterval == _T("3a"))  return nMidiRoot + 5;
-    if (sInterval == _T("4p"))  return nMidiRoot + 5;
-    if (sInterval == _T("4a"))  return nMidiRoot + 6;
-    if (sInterval == _T("5d"))  return nMidiRoot + 6;
-    if (sInterval == _T("5p"))  return nMidiRoot + 7;
-    if (sInterval == _T("5a"))  return nMidiRoot + 8;
-    if (sInterval == _T("6m"))  return nMidiRoot + 8;
-    if (sInterval == _T("6M"))  return nMidiRoot + 9;
-    if (sInterval == _T("6a"))  return nMidiRoot + 10;
-    if (sInterval == _T("7m"))  return nMidiRoot + 10;
-    if (sInterval == _T("7M"))  return nMidiRoot + 11;
-    if (sInterval == _T("8p"))  return nMidiRoot + 12;
+    if (sInterval == _T("m2"))  return nMidiRoot + 1;
+    if (sInterval == _T("M2"))  return nMidiRoot + 2;
+    if (sInterval == _T("m3"))  return nMidiRoot + 3;
+    if (sInterval == _T("M3"))  return nMidiRoot + 4;
+    if (sInterval == _T("a3"))  return nMidiRoot + 5;
+    if (sInterval == _T("p4"))  return nMidiRoot + 5;
+    if (sInterval == _T("a4"))  return nMidiRoot + 6;
+    if (sInterval == _T("d5"))  return nMidiRoot + 6;
+    if (sInterval == _T("p5"))  return nMidiRoot + 7;
+    if (sInterval == _T("a5"))  return nMidiRoot + 8;
+    if (sInterval == _T("m6"))  return nMidiRoot + 8;
+    if (sInterval == _T("M6"))  return nMidiRoot + 9;
+    if (sInterval == _T("a6"))  return nMidiRoot + 10;
+    if (sInterval == _T("m7"))  return nMidiRoot + 10;
+    if (sInterval == _T("M7"))  return nMidiRoot + 11;
+    if (sInterval == _T("p8"))  return nMidiRoot + 12;
 
     return 0;
+
+}
+
+wxString lmChordManager::NoteBitsToName(lmNoteBits& tBits, EKeySignatures nKey)
+{
+    static wxString m_sSteps = _T("cdefgab");
+
+    // Get the accidentals implied by the key signature. 
+    // Each element of the array refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
+    // and its value can be one of: 0=no accidental, -1 = a flat, 1 = a sharp
+    int nAccidentals[7];
+    ComputeAccidentals(nKey, nAccidentals);
+
+    //compute accidentals note accidentals
+    wxString sResult = _T("");
+    if (tBits.nAccidentals == 1)
+        sResult = _T("+");
+    else if (tBits.nAccidentals == 2)
+        sResult = _T("++");
+    else if (tBits.nAccidentals == -1)
+        sResult = _T("-");
+    else if (tBits.nAccidentals == -2)
+        sResult = _T("--");
+
+    //change note accidentals to take key into account
+    if (nAccidentals[tBits.nStep] != 0) {
+        if (tBits.nAccidentals == nAccidentals[tBits.nStep])
+            sResult = _T("");   //replace note accidental by key accidental
+        else if (tBits.nAccidentals == 0)
+            sResult = _T("=");  //force a natural
+        else
+            ;   //leave note accidentals
+    }
+
+    // compute step letter
+    sResult += m_sSteps.Mid(tBits.nStep, 1);
+
+    // compute octave
+    sResult += wxString::Format(_T("%d"), tBits.nOctave);
+
+    return sResult;
 
 }
 
@@ -223,7 +294,7 @@ wxString lmChordManager::ComputeInterval(wxString sRootNote, wxString sInterval)
     lmNoteBits tNew;
     ComputeInterval(&tRoot, sInterval, &tNew);
 
-    return NoteBitsToName(tNew);
+    return NoteBitsToName(tNew, m_nKey);
 
 }
 
@@ -345,16 +416,56 @@ int lmChordManager::StepToInt(wxString sStep)
 
 bool lmChordManager::IntervalNameToBits(wxString sInterval, lmIntvBits* pBits)
 {
-    if (sInterval.Length() != 2) return true;   //error
+    //Restrictions: any interval , including greater that one octave, but limited to
+    // d, m , p , M and a. That is, it is not allowed double augmented, double diminished, etc.
 
-    // compute interval number
-    wxString sNum = sInterval.Left(1);
+    //split interval number and type
+    int i = 0;
+    while (!(sInterval.Mid(i, 1)).IsNumber() ) {
+        i++;
+    }
+    wxString sChar = sInterval.Mid(0, i);
+    wxString sNum = sInterval.Mid(i);
+
     long nNum;
-    if (!sNum.ToLong(&nNum)) return true;    //error
+    sNum.ToLong(&nNum);
     pBits->nNum = (int)nNum;
-    
+
+    //reduce the interval
+    int nOctaves = (nNum - 1) / 7;
+    nNum = 1 + (nNum - 1) % 7;
+
+    // compute semitones implied by interval type
+    int nSemi;
+    if (nNum == 1)      nSemi = -1; 
+    else if (nNum == 2) nSemi = 0;
+    else if (nNum == 3) nSemi = 2; 
+    else if (nNum == 4) nSemi = 4;
+    else if (nNum == 5) nSemi = 6;
+    else if (nNum == 6) nSemi = 7;
+    else if (nNum == 7) nSemi = 9;
+    else
+        wxASSERT(false);    //impossible
+
+    if ( nNum == 1 || nNum == 4 || nNum == 5) {
+        if (sChar == _T("d"))       nSemi += 0;
+        else if (sChar == _T("p"))  nSemi += 1;
+        else if (sChar == _T("a"))  nSemi += 2;
+        else wxASSERT(false);
+    }
+    else {  // 2, 3, 6, 7
+        if (sChar == _T("d"))       nSemi += 0;
+        else if (sChar == _T("m"))  nSemi += 1;
+        else if (sChar == _T("M"))  nSemi += 2;
+        else if (sChar == _T("a"))  nSemi += 3;
+        else wxASSERT(false);
+    }
+    pBits->nSemitones = nSemi + 12 * nOctaves;
+
+
     //compute semitones
     //  intval  semitones
+    //  2d      0
     //  2m      1
     //  2M/3d   2
     //  3m/2a   3
@@ -368,35 +479,145 @@ bool lmChordManager::IntervalNameToBits(wxString sInterval, lmIntvBits* pBits)
     //  7M/8d   11
     //  8p/7a   12
 
-    if      (sInterval == _T("2m")) pBits->nSemitones = 1;
-    else if (sInterval == _T("2M")) pBits->nSemitones = 2;
-    else if (sInterval == _T("2a")) pBits->nSemitones = 3;
-    else if (sInterval == _T("3d")) pBits->nSemitones = 2;
-    else if (sInterval == _T("3m")) pBits->nSemitones = 3;
-    else if (sInterval == _T("3M")) pBits->nSemitones = 4;
-    else if (sInterval == _T("3a")) pBits->nSemitones = 5;
-    else if (sInterval == _T("4d")) pBits->nSemitones = 4;
-    else if (sInterval == _T("4p")) pBits->nSemitones = 5;
-    else if (sInterval == _T("4a")) pBits->nSemitones = 6;
-    else if (sInterval == _T("5d")) pBits->nSemitones = 6;
-    else if (sInterval == _T("5p")) pBits->nSemitones = 7;
-    else if (sInterval == _T("5a")) pBits->nSemitones = 8;
-    else if (sInterval == _T("6d")) pBits->nSemitones = 7;
-    else if (sInterval == _T("6m")) pBits->nSemitones = 8;
-    else if (sInterval == _T("6M")) pBits->nSemitones = 9;
-    else if (sInterval == _T("6a")) pBits->nSemitones = 10;
-    else if (sInterval == _T("7d")) pBits->nSemitones = 9;
-    else if (sInterval == _T("7m")) pBits->nSemitones = 10;
-    else if (sInterval == _T("7M")) pBits->nSemitones = 11;
-    else if (sInterval == _T("7a")) pBits->nSemitones = 12;
-    else if (sInterval == _T("8d")) pBits->nSemitones = 11;
-    else if (sInterval == _T("8p")) pBits->nSemitones = 12;
-    else return true; //error
+    //if      (sInterval == _T("d2")) pBits->nSemitones = 0;
+    //else if (sInterval == _T("m2")) pBits->nSemitones = 1;
+    //else if (sInterval == _T("M2")) pBits->nSemitones = 2;
+    //else if (sInterval == _T("a2")) pBits->nSemitones = 3;
+    //else if (sInterval == _T("d3")) pBits->nSemitones = 2;
+    //else if (sInterval == _T("m3")) pBits->nSemitones = 3;
+    //else if (sInterval == _T("M3")) pBits->nSemitones = 4;
+    //else if (sInterval == _T("a3")) pBits->nSemitones = 5;
+    //else if (sInterval == _T("d4")) pBits->nSemitones = 4;
+    //else if (sInterval == _T("p4")) pBits->nSemitones = 5;
+    //else if (sInterval == _T("a4")) pBits->nSemitones = 6;
+    //else if (sInterval == _T("d5")) pBits->nSemitones = 6;
+    //else if (sInterval == _T("p5")) pBits->nSemitones = 7;
+    //else if (sInterval == _T("a5")) pBits->nSemitones = 8;
+    //else if (sInterval == _T("d6")) pBits->nSemitones = 7;
+    //else if (sInterval == _T("m6")) pBits->nSemitones = 8;
+    //else if (sInterval == _T("M6")) pBits->nSemitones = 9;
+    //else if (sInterval == _T("a6")) pBits->nSemitones = 10;
+    //else if (sInterval == _T("d7")) pBits->nSemitones = 9;
+    //else if (sInterval == _T("m7")) pBits->nSemitones = 10;
+    //else if (sInterval == _T("M7")) pBits->nSemitones = 11;
+    //else if (sInterval == _T("a7")) pBits->nSemitones = 12;
+    //else if (sInterval == _T("d8")) pBits->nSemitones = 11;
+    //else if (sInterval == _T("p8")) pBits->nSemitones = 12;
+    //else return true; //error
 
     return false;
 
 }
 
+wxString lmChordManager::InvertInterval(wxString sInterval)
+{
+    wxASSERT(sInterval.Length() == 2);
+
+    if      (sInterval == _T("d2")) return _T("a7");
+    else if (sInterval == _T("m2")) return _T("M7");
+    else if (sInterval == _T("M2")) return _T("m7");
+    else if (sInterval == _T("a2")) return _T("d7");
+    else if (sInterval == _T("d3")) return _T("a6");
+    else if (sInterval == _T("m3")) return _T("M6");
+    else if (sInterval == _T("M3")) return _T("m6");
+    else if (sInterval == _T("a3")) return _T("d6");
+    else if (sInterval == _T("d4")) return _T("a4");
+    else if (sInterval == _T("p4")) return _T("p4");
+    else if (sInterval == _T("a4")) return _T("d4");
+    else if (sInterval == _T("d5")) return _T("a5");
+    else if (sInterval == _T("p5")) return _T("p5");
+    else if (sInterval == _T("a5")) return _T("d5");
+    else if (sInterval == _T("d6")) return _T("a3");
+    else if (sInterval == _T("m6")) return _T("M3");
+    else if (sInterval == _T("M6")) return _T("m3");
+    else if (sInterval == _T("a6")) return _T("d3");
+    else if (sInterval == _T("d7")) return _T("a2");
+    else if (sInterval == _T("m7")) return _T("M2");
+    else if (sInterval == _T("M7")) return _T("m2");
+    else if (sInterval == _T("a7")) return _T("d2");
+
+    wxASSERT(false);
+    return sInterval; //error
+
+}
+
+wxString lmChordManager::AddIntervals(wxString sInterval1, wxString sInterval2)
+{
+    wxASSERT(sInterval1.Length() == 2 && sInterval2.Length() == 2);
+
+    // get interval elements
+    lmIntvBits tIntv1, tIntv2;
+    if (IntervalNameToBits(sInterval1, &tIntv1))
+        wxASSERT(false);
+    if (IntervalNameToBits(sInterval2, &tIntv2))
+        wxASSERT(false);
+    
+    //compute addition
+    lmIntvBits tSum;
+    tSum.nNum = tIntv1.nNum + tIntv2.nNum - 1;
+    tSum.nSemitones = tIntv1.nSemitones + tIntv2.nSemitones;
+
+    //rebuild interval name
+    return IntervalBitsToName(tSum);
+    
+}
+
+wxString lmChordManager::SubstractIntervals(wxString sInterval1, wxString sInterval2)
+{
+    wxASSERT(sInterval1.Length() == 2 && sInterval2.Length() == 2);
+
+    //It is assumed that intv1 > int2
+
+    // get interval elements
+    lmIntvBits tIntv1, tIntv2;
+    if (IntervalNameToBits(sInterval1, &tIntv1))
+        wxASSERT(false);
+    if (IntervalNameToBits(sInterval2, &tIntv2))
+        wxASSERT(false);
+    
+    //compute difference
+    lmIntvBits tDif;
+    tDif.nNum = tIntv1.nNum - tIntv2.nNum + 1;
+    tDif.nSemitones = tIntv1.nSemitones - tIntv2.nSemitones;
+
+    //rebuild interval name
+    return IntervalBitsToName(tDif);
+    
+}
+
+wxString lmChordManager::IntervalBitsToName(lmIntvBits& tIntv)
+{
+    wxString sNormal = _T("dmMa");
+    wxString sPerfect = _T("dpa");
+    int nSemitones = tIntv.nSemitones % 12;
+    int nNum = 1 + (tIntv.nNum - 1) % 7;
+    wxString sResp;
+    if (nNum == 1) 
+        sResp = sPerfect.Mid(nSemitones + 1, 1);
+    else if (nNum == 2) 
+        sResp = sNormal.Mid(nSemitones, 1);
+    else if (nNum == 3) 
+        sResp = sNormal.Mid(nSemitones - 2, 1);
+    else if (nNum == 4) 
+        sResp = sPerfect.Mid(nSemitones - 4, 1);
+    else if (nNum == 5) 
+        sResp = sPerfect.Mid(nSemitones - 6, 1);
+    else if (nNum == 6) 
+        sResp = sNormal.Mid(nSemitones - 7, 1);
+    else if (nNum == 7) 
+        sResp = sNormal.Mid(nSemitones - 9, 1);
+    else
+        wxASSERT(false);    //impossible
+
+
+    sResp += wxString::Format(_T("%d"), tIntv.nNum);
+    return sResp;
+
+}
+
+
+
+/*
 wxString lmChordManager::NoteBitsToName(lmNoteBits& tBits)
 {
     wxString sResult;
@@ -421,12 +642,32 @@ wxString lmChordManager::NoteBitsToName(lmNoteBits& tBits)
     return sResult;
 
 }
+*/
 
 wxString lmChordManager::GetPattern(int i)
 {
     // Returns LDP pattern for note i (0 .. m_nNumNotes-1)
     wxASSERT( i < GetNumNotes());
-    return NoteBitsToName(m_tBits[i]);
+    return NoteBitsToName(m_tBits[i], m_nKey);
+
+}
+
+wxString lmChordManager::GetNameFull()
+{ 
+    wxString sName = ChordTypeToName( m_nType );
+    sName += ", ";
+    if (m_nInversion == 0)
+        sName += _("root position");
+    else if (m_nInversion == 1)
+        sName += _("1st inversion");
+    else if (m_nInversion == 2)
+        sName += _("2nd inversion");
+    else if (m_nInversion == 3)
+        sName += _("3rd inversion");
+    else
+        wxASSERT(false);    //impossible
+
+    return sName;
 
 }
 
@@ -447,19 +688,50 @@ void lmChordManager::UnitTests()
         else {
             wxLogMessage(_T("Note: '%s'. Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d --> '%s'"),
                 sNote[i], tNote.nStep, tNote.nOctave, tNote.nAccidentals, tNote.nStepSemitones,
-                NoteBitsToName(tNote) );
+                NoteBitsToName(tNote, m_nKey) );
         }
     }
 
     //ComputeInterval(): interval computation
-    wxString sIntv[8] = { _T("3M"), _T("3m"), _T("8p"), _T("5p"),
-        _T("5a"), _T("7d"), _T("6M"), _T("2M") };
+    wxString sIntv[8] = { _T("M3"), _T("m3"), _T("p8"), _T("p5"),
+        _T("a5"), _T("d7"), _T("M6"), _T("M2") };
     for(i=0; i < 8; i++) {
         for (j=0; j < 8; j++) {
             wxString sNewNote = ComputeInterval(sNote[i], sIntv[j]);
             wxLogMessage(_T("Note='%s' + Intv='%s' --> '%s'"),
                          sNote[i], sIntv[j], sNewNote );
         }
+    }
+
+    //IntervalNameToBits and IntervalBitsToName
+    wxLogMessage(_T("[lmChordManager::UnitTests] Test of IntervalNameToBits() method:"));
+    lmIntvBits tIntv;
+    for(i=0; i < 8; i++) {
+        if (IntervalNameToBits(sIntv[i], &tIntv)) 
+            wxLogMessage(_T("Unexpected error in IntervalNameToBits()"));
+        else {
+            wxLogMessage(_T("Intv: '%s'. Bits: num=%d, Semitones=%d --> '%s'"),
+                sIntv[i], tIntv.nNum,tIntv.nSemitones,
+                IntervalBitsToName(tIntv) );
+        }
+    }
+
+    ////SubstractIntervals
+    //wxLogMessage(_T("[lmChordManager::UnitTests] Test of SubstractIntervals() method:"));
+    //wxString sIntv1[8] = { _T("p5"), _T("p5"), _T("M7"), _T("M6"), _T("m6"), _T("M7"), _T("M6"), _T("p4") };
+    //wxString sIntv2[8] = { _T("M3"), _T("m3"), _T("p5"), _T("p5"), _T("a5"), _T("M3"), _T("m3"), _T("M2") };
+    //for(i=0; i < 8; i++) {
+    //    wxLogMessage(_T("Intv1='%s', intv2='%s' --> dif='%s'"),
+    //        sIntv1[i], sIntv2[i], SubstractIntervals(sIntv1[i], sIntv2[i]) );
+    //}
+
+    //AddIntervals
+    wxLogMessage(_T("[lmChordManager::UnitTests] Test of AddIntervals() method:"));
+    wxString sIntv1[8] = { _T("p5"), _T("p5"), _T("M6"), _T("M3"), _T("M3"), _T("M6"), _T("d4"), _T("p8") };
+    wxString sIntv2[8] = { _T("M3"), _T("m3"), _T("m2"), _T("m3"), _T("M3"), _T("M3"), _T("m7"), _T("p8") };
+    for(i=0; i < 8; i++) {
+        wxLogMessage(_T("Intv1='%s', intv2='%s' --> sum='%s'"),
+            sIntv1[i], sIntv2[i], AddIntervals(sIntv1[i], sIntv2[i]) );
     }
 
 }
@@ -473,36 +745,42 @@ wxString ChordTypeToName(EChordType nType)
 {
     wxASSERT(nType < ect_Max);
 
-    static bool fNamesLoaded = false;
-    static wxString sName[ect_Max];
-    
-    if (!fNamesLoaded) {
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    if (!m_fStringsInitialized) {
         // Triads
-        sName[0] = _("Major triad");
-        sName[1] = _("Minor triad");
-        sName[2] = _("Augmented triad");
-        sName[3] = _("Diminished triad");
-        sName[4] = _("Suspended triad (4th)");
-        sName[5] = _("Suspended triad (2nd)");
+        m_sChordName[ect_MajorTriad] = _("Major triad");
+        m_sChordName[ect_MinorTriad] = _("Minor triad");
+        m_sChordName[ect_AugTriad] = _("Augmented triad");
+        m_sChordName[ect_DimTriad] = _("Diminished triad");
+        m_sChordName[ect_Suspended_4th] = _("Suspended triad (4th)");
+        m_sChordName[ect_Suspended_2nd] = _("Suspended triad (2nd)");
 
         // Seventh chords
-        sName[6] = _("Major 7th");
-        sName[7] = _("Dominant 7th");
-        sName[8] = _("Minor 7th");
-        sName[9] = _("Diminished 7th");
-        sName[10] = _("Half diminished 7th");
-        sName[11] = _("Augmented major 7th");
-        sName[12] = _("Augmented 7th");
-        sName[13] = _("Minor major 7th");
+        m_sChordName[ect_MajorSeventh] = _("Major 7th");
+        m_sChordName[ect_DominantSeventh] = _("Dominant 7th");
+        m_sChordName[ect_MinorSeventh] = _("Minor 7th");
+        m_sChordName[ect_DimSeventh] = _("Diminished 7th");
+        m_sChordName[ect_HalfDimSeventh] = _("Half diminished 7th");
+        m_sChordName[ect_AugMajorSeventh] = _("Augmented major 7th");
+        m_sChordName[ect_AugSeventh] = _("Augmented 7th");
+        m_sChordName[ect_MinorMajorSeventh] = _("Minor major 7th");
 
         // Sixth chords
-        sName[14] = _("Major 6th");
-        sName[15] = _("Minor 6th");
-        sName[16] = _("Augmented 6th");
+        m_sChordName[ect_MajorSixth] = _("Major 6th");
+        m_sChordName[ect_MinorSixth] = _("Minor 6th");
+        m_sChordName[ect_AugSixth] = _("Augmented 6th");
 
-        fNamesLoaded = true;
+        m_fStringsInitialized = true;
     }
     
-    return sName[nType];
+    return m_sChordName[nType];
     
+}
+
+int NumNotesInChord(EChordType nChordType)
+{
+    wxASSERT(nChordType < ect_Max);
+    return tData[nChordType].nNumNotes;
+
 }

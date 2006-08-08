@@ -34,6 +34,7 @@
 #endif
 
 #include "Generators.h"
+#include "../score/KeySignature.h"
 
 /*! @class lmRandomGenerator
     Random generators for various elementes: clefs, notes, keys, tiem signatures, etc.
@@ -154,7 +155,11 @@ wxString lmRandomGenerator::GenerateRandomRootNote(EClefType nClef,
                                                    EKeySignatures nKey,
                                                    bool fAllowAccidentals)
 {
-    //! @todo all code for GenerateRandomRootNote()
-    wxString sRootNote = _T("c4");
+    // Get the index (0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si) to the root note for
+    // the Key signature. For example, if nKeySignature is La sharp minor it returns
+    // index = 5 (La)
+    int nRoot = GetRootNoteIndex(nKey);
+    wxString sNotes = _T("cdefgab");
+    wxString sRootNote = sNotes.Mid(nRoot, 1) + (nRoot > 4 ? _T("3") : _T("4"));
     return sRootNote;
 }

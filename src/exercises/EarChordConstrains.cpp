@@ -45,7 +45,12 @@ lmEarChordConstrains::lmEarChordConstrains(wxString sSection)
     m_sSection = sSection;
     LoadSettings();
 
-    //initializations: default values for valid chords
+    //default values for constrains
+    m_fAllowInversions = false;
+    m_sLowerRoot = _T("a3");    //valid range for root notes
+    m_sUpperRoot = _T("a4");
+
+    //default values for valid chords
         // Triads
     m_oChordTypes.SetValid( ect_MajorTriad, true);
     m_oChordTypes.SetValid( ect_MinorTriad, true);

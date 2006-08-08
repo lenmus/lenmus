@@ -69,12 +69,16 @@ LenMus project philosophy (to remind me to always stay on this):
   
   Coding Ear Chord exercises:
   - Allow to play any interval once the answer is shown
+  - Before creating and playing a new chord stop any previous one.
+  - On exit, stop any chord being played
+  - Remove EnableButtons. Aware: dynamic reconfiguration depending on chords allowed
   - Root note: choose
-  - Key signature: choose
-  - Allow inversions
-  - Remove accidentals in the key signature
+  + Key signature: choose
+  + Allow inversions
+  + Remove accidentals in the key signature
   - Settings dialog
   - melodic option (ascending and descending)
+  - draw chord cipher
     
     
   Release 3.2, planned: 30/aug/2006

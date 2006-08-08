@@ -107,9 +107,9 @@ lmEarChordCtrol::lmEarChordCtrol(wxWindow* parent, wxWindowID id,
     //initializations
     int i;
     for (i=0; i < NUM_BUTTONS; i++) { m_pAnswerButton[i] = (wxButton*)NULL; }
-    m_fProblemCreated = false;
-    m_fPlayEnabled = false;
+    m_fQuestionAsked = false;
     m_pChordScore = (lmScore*)NULL;
+    m_pAuxScore = (lmScore*)NULL;
     m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
     m_pConstrains = pConstrains;
 
@@ -263,7 +263,13 @@ lmEarChordCtrol::lmEarChordCtrol(wxWindow* parent, wxWindowID id,
 
     m_pPlayButton->Enable(false);
     m_pShowSolution->Enable(false);
-    EnableButtons(false);
+
+    //allow to play chords
+    m_nKey = earmDo;
+    m_sRootNote = _T("c4");
+    m_nInversion = 0;
+
+    EnableButtons(true);
 
 }
 
@@ -283,6 +289,10 @@ lmEarChordCtrol::~lmEarChordCtrol()
         delete m_pChordScore;
         m_pChordScore = (lmScore*)NULL;
     }
+    if (m_pAuxScore) {
+        delete m_pAuxScore;
+        m_pAuxScore = (lmScore*)NULL;
+    }
 }
 
 void lmEarChordCtrol::EnableButtons(bool fEnable)
@@ -291,7 +301,6 @@ void lmEarChordCtrol::EnableButtons(bool fEnable)
         if (m_pAnswerButton[i])
             m_pAnswerButton[i]->Enable(fEnable);
     }
-    m_fButtonsEnabled = fEnable;
 
 }
 
@@ -329,35 +338,46 @@ void lmEarChordCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
     m_pCounters->IncrementWrong();
     DisplaySolution();
-    EnableButtons(false);
+    EnableButtons(true);
 }
 
 void lmEarChordCtrol::OnRespButton(wxCommandEvent& event)
 {
     int nIndex = event.GetId() - ID_BUTTON;
 
-    //verify if success or failure
-    bool fSuccess = (nIndex == m_nRespIndex);
-    
-    //produce feedback sound, and update counters
-    if (fSuccess) {
-        m_pCounters->IncrementRight();
-    } else {
-        m_pCounters->IncrementWrong();
-    }
+    if (m_fQuestionAsked)
+    {
+        // There is a question asked. The user press the button to give the answer
+
+        //verify if success or failure
+        bool fSuccess = (nIndex == m_nRespIndex);
         
-    //if failure, display the solution. If succsess, generate a new problem
-    if (!fSuccess) {
-        //failure: mark wrong button in red and right one in green
-        m_pAnswerButton[m_nRespIndex]->SetBackgroundColour(g_pColors->Success());
-        m_pAnswerButton[nIndex]->SetBackgroundColour(g_pColors->Failure());
+        //produce feedback sound, and update counters
+        if (fSuccess) {
+            m_pCounters->IncrementRight();
+        } else {
+            m_pCounters->IncrementWrong();
+        }
+            
+        //if failure, display the solution. If succsess, generate a new problem
+        if (!fSuccess) {
+            //failure: mark wrong button in red and right one in green
+            m_pAnswerButton[m_nRespIndex]->SetBackgroundColour(g_pColors->Success());
+            m_pAnswerButton[nIndex]->SetBackgroundColour(g_pColors->Failure());
 
-        //show the solucion
-        DisplaySolution();
-        EnableButtons(false);
+            //show the solucion
+            DisplaySolution();
+            EnableButtons(true);
 
-    } else {
-        NewProblem();
+        } else {
+            NewProblem();
+        }
+    }
+    else {
+        // No problem presented. The user press the button to play a chord
+        PrepareChord(eclvSol, ect_MajorTriad, &m_pAuxScore);
+        m_pAuxScore->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
+                            ePM_NormalInstrument, 320, (wxWindow*) NULL);
     }
     
 }
@@ -368,51 +388,22 @@ void lmEarChordCtrol::NewProblem()
 
     // select a random key signature
     lmRandomGenerator oGenerator;
-    EKeySignatures nKey = earmDo;   //oGenerator.RandomKeySignature();
+    m_nKey = oGenerator.RandomKeySignature();
     
     //Generate a random root note 
     EClefType nClef = eclvSol;
     bool fAllowAccidentals = false;
-    wxString sRootNote = oGenerator.GenerateRandomRootNote(nClef, nKey, fAllowAccidentals);
+    m_sRootNote = oGenerator.GenerateRandomRootNote(nClef, m_nKey, fAllowAccidentals);
 
     // generate a random chord
     EChordType nChordType = m_pConstrains->GetRandomChordType();
-    lmChordManager oChordMngr(sRootNote, nChordType, nKey);
+    m_nInversion = 0;
+    if (m_pConstrains->InversionsAllowed())
+        m_nInversion = oGenerator.RandomNumber(0, NumNotesInChord(nChordType) - 1);
 
-    //
-    //create a score with the chord, for displaying the solution
-    //
+    m_sAnswer = PrepareChord(nClef, nChordType, &m_pChordScore);
 
-    wxString sPattern;
-    lmNote* pNote;
-    lmLDPParser parserLDP;
-    lmLDPNode* pNode;
-    lmVStaff* pVStaff;
-
-    int nNumNotes = oChordMngr.GetNumNotes();
-    m_pChordScore = new lmScore();
-    m_pChordScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
-    m_pChordScore->AddInstrument(1,0,0,_T(""));                     //one vstaff, MIDI channel 0, MIDI instr 0
-    pVStaff = m_pChordScore->GetVStaff(1, 1);      //get first vstaff of instr.1
-    pVStaff->AddClef( nClef );
-    pVStaff->AddKeySignature( nKey );
-    pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
-
-//    pVStaff->AddEspacio 24
-    sPattern = _T("(n ") + oChordMngr.GetPattern(0) + _T(" r)");
-    pNode = parserLDP.ParseText( sPattern );
-    pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-    int i;
-    for (i=1; i < nNumNotes; i++) {
-        sPattern = _T("(na ") + oChordMngr.GetPattern(i) +  _T(" r)");
-        pNode = parserLDP.ParseText( sPattern );
-        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-    }
-    pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
-
-    //compute the right answer
-    m_sAnswer = oChordMngr.GetName();
-    m_nRespIndex = 0; //todo
+    // compute right answer button
     switch (nChordType)
     {
         // Triads
@@ -447,14 +438,60 @@ void lmEarChordCtrol::NewProblem()
     m_pScoreCtrol->SetScore(m_pChordScore, true);   //true: the score must be hidden
     m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
 
-    m_fPlayEnabled = true;
-    m_fProblemCreated = true;
+    m_fQuestionAsked = true;
     EnableButtons(true);
     m_pPlayButton->Enable(true);
     m_pShowSolution->Enable(true);
 
     //play the chord
     Play();
+
+}
+
+wxString lmEarChordCtrol::PrepareChord(EClefType nClef, EChordType nType, lmScore** pScore)
+{
+    //create the chord
+    lmChordManager oChordMngr(m_sRootNote, nType, m_nInversion, m_nKey);
+
+    //delete the previous score
+    if (*pScore) {
+        delete *pScore;
+        *pScore = (lmScore*)NULL;
+    }
+
+    //create a score with the chord
+    wxString sPattern;
+    lmNote* pNote;
+    lmLDPParser parserLDP;
+    lmLDPNode* pNode;
+    lmVStaff* pVStaff;
+
+    int nNumNotes = oChordMngr.GetNumNotes();
+    *pScore = new lmScore();
+    (*pScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
+    (*pScore)->AddInstrument(1,0,0,_T(""));                     //one vstaff, MIDI channel 0, MIDI instr 0
+    pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
+    pVStaff->AddClef( eclvSol );
+    pVStaff->AddKeySignature( m_nKey );
+    pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
+
+//    pVStaff->AddEspacio 24
+    sPattern = _T("(n ") + oChordMngr.GetPattern(0) + _T(" r)");
+    pNode = parserLDP.ParseText( sPattern );
+    pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+    int i;
+    for (i=1; i < nNumNotes; i++) {
+        sPattern = _T("(na ") + oChordMngr.GetPattern(i) +  _T(" r)");
+        pNode = parserLDP.ParseText( sPattern );
+        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+    }
+    pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
+
+    //return the chord name
+    if (m_pConstrains->InversionsAllowed())
+        return oChordMngr.GetNameFull();       //name including inversion
+    else 
+        return oChordMngr.GetName();           //only name
 
 }
 
@@ -469,7 +506,6 @@ void lmEarChordCtrol::Play()
 
 void lmEarChordCtrol::DisplaySolution()
 {
-    wxString sAnswer = m_sAnswer;
     m_pScoreCtrol->HideScore(false);
     m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
 
@@ -477,8 +513,7 @@ void lmEarChordCtrol::DisplaySolution()
     m_pAnswerButton[m_nRespIndex]->SetBackgroundColour(g_pColors->Success());
     
     m_pPlayButton->Enable(true);
-    m_fPlayEnabled = true;
-    m_fProblemCreated = false;
+    m_fQuestionAsked = false;
 }
 
 void lmEarChordCtrol::OnDebugShowSourceScore(wxCommandEvent& event)
@@ -508,9 +543,9 @@ void lmEarChordCtrol::ResetExercise()
             m_pAnswerButton[iB]->SetBackgroundColour( g_pColors->Normal() );
         }
     }
-    EnableButtons(false);
+    EnableButtons(true);
 
-    //delete the previous scores
+    //delete the previous score
     if (m_pChordScore) {
         delete m_pChordScore;
         m_pChordScore = (lmScore*)NULL;

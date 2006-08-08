@@ -53,17 +53,22 @@ public:
 
     EChordType GetRandomChordType();
 
+    bool InversionsAllowed() { return m_fAllowInversions; }
+
     void SaveSettings();
 
 
 private:
     void LoadSettings();
 
-    wxString            m_sSection;
+    wxString            m_sSection;             //to save settings
+    bool                m_fAllowInversions;
     lmChordConstrains   m_oChordTypes;  
     bool                m_fAllowedModes[3];     // 0-harmonic
                                                 // 1-melodic ascending
                                                 // 2-melodic descending
+    wxString            m_sLowerRoot;    //valid range for root notes
+    wxString            m_sUpperRoot;
 
 };
 

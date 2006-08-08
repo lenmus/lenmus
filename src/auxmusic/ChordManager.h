@@ -58,6 +58,7 @@ typedef struct lmIntvBitsStruct {
 
 //declare global functions defined in this module
 extern wxString ChordTypeToName(EChordType nChordType);
+extern int NumNotesInChord(EChordType nChordType);
 
 
 //a chord is a sequence of up 4 notes. Change this for more notes in chord
@@ -67,11 +68,13 @@ class lmChordManager
 {
 public:
     //build a chord from root note and type
-    lmChordManager(wxString sRootNote, EChordType nChordType, EKeySignatures nKey = earmDo);
+    lmChordManager(wxString sRootNote, EChordType nChordType, int nInversion = 0,
+                   EKeySignatures nKey = earmDo);
     //destructor
     ~lmChordManager();
 
     EChordType GetType() { return m_nType; }
+    wxString GetNameFull();
     wxString GetName() { return ChordTypeToName( m_nType ); }
     int GetNumNotes();
     int GetMidiNote(int i);
@@ -82,8 +85,7 @@ public:
 #endif
 
 private:
-    void InitializeStrings();
-    int GetNote(int nMidiRoot, wxString sInterval);
+    int GetMidiNote(int nMidiRoot, wxString sInterval);
     wxString ComputeInterval(wxString sRootNote, wxString sInterval);
     void ComputeInterval(lmNoteBits* pRoot, wxString sInterval, lmNoteBits* pNewNote);
 
@@ -91,8 +93,12 @@ private:
     int StepToSemitones(int nStep);
     int AccidentalsToInt(wxString sAccidentals);
     int StepToInt(wxString sStep);
+    wxString NoteBitsToName(lmNoteBits& tBits, EKeySignatures nKey);
+    wxString IntervalBitsToName(lmIntvBits& tIntv);
     bool IntervalNameToBits(wxString sInterval, lmIntvBits* pBits);
-    wxString NoteBitsToName(lmNoteBits& tBits);
+    wxString InvertInterval(wxString sInterval);
+    wxString AddIntervals(wxString sInterval1, wxString sInterval2);
+    wxString SubstractIntervals(wxString sInterval1, wxString sInterval2);
 
 
 //member variables
@@ -101,6 +107,7 @@ private:
     EKeySignatures  m_nKey;
     int             m_ntMidi[lmNOTES_IN_CHORD];
     lmNoteBits      m_tBits[lmNOTES_IN_CHORD];
+    int             m_nInversion;
 
 };
 

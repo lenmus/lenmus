@@ -79,19 +79,22 @@ private:
     void DisplaySolution();
     void ResetExercise();
     void ResetCounters();
+    wxString PrepareChord(EClefType nClef, EChordType nType, lmScore** pScore);
 
         // member variables
 
     lmScore*            m_pChordScore;      //solution score with the chord
+    lmScore*            m_pAuxScore;        //score to play user selected chords
     lmScoreAuxCtrol*    m_pScoreCtrol;
     lmCountersCtrol*    m_pCounters;
 
     lmEarChordConstrains* m_pConstrains;    //constrains for the exercise
-    bool            m_fProblemCreated;      //there is a problem prepared
-    lmPitch         m_ntMidi[2];            //the midi pitch of the two notes
-    lmPitch         m_ntPitch[2];           //the pitch of the two notes
-    bool            m_fPlayEnabled;         //Play enabled
-    bool            m_fButtonsEnabled;      //buttons enabled
+    bool            m_fQuestionAsked;       //question asked but not yet answered
+
+    //problem asked
+    EKeySignatures  m_nKey;
+    wxString        m_sRootNote;
+    int             m_nInversion;
 
     //answer
     wxButton*       m_pAnswerButton[10];    //10 buttons for the answers
