@@ -18,13 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file EarChordCtrol.h
-    @brief Header file for class lmEarChordCtrol
+/*! @file IdfyChordCtrol.h
+    @brief Header file for class lmIdfyChordCtrol
     @ingroup html_controls
 */
 
-#ifndef __EARCHORDCTROL_H__        //to avoid nested includes
-#define __EARCHORDCTROL_H__
+#ifndef __IDFYCHORDCTROL_H__        //to avoid nested includes
+#define __IDFYCHORDCTROL_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -37,26 +37,27 @@
 #include "wx/wx.h"
 #endif
 
-#include "EarChordConstrains.h"
+#include "ChordConstrains.h"
 #include "../score/score.h"
 #include "ScoreAuxCtrol.h"
 #include "UrlAuxCtrol.h"
 #include "CountersCtrol.h"
 
 
-class lmEarChordCtrol : public wxWindow    
+
+class lmIdfyChordCtrol : public wxWindow    
 {
-   DECLARE_DYNAMIC_CLASS(lmEarChordCtrol)
+   DECLARE_DYNAMIC_CLASS(lmIdfyChordCtrol)
 
 public:
 
     // constructor and destructor    
-    lmEarChordCtrol(wxWindow* parent, wxWindowID id,
-               lmEarChordConstrains* pConstrains, 
+    lmIdfyChordCtrol(wxWindow* parent, wxWindowID id,
+               lmChordConstrains* pConstrains, 
                const wxPoint& pos = wxDefaultPosition, 
                const wxSize& size = wxDefaultSize, int style = 0);
 
-    ~lmEarChordCtrol();
+    ~lmIdfyChordCtrol();
 
     // event handlers
     void OnSize(wxSizeEvent& event);
@@ -73,6 +74,7 @@ public:
     void OnDebugShowMidiEvents(wxCommandEvent& event);
 
 private:
+    void SetUpButtons();
     void EnableButtons(bool fEnable);
     void Play();
     void NewProblem();
@@ -88,25 +90,33 @@ private:
     lmScoreAuxCtrol*    m_pScoreCtrol;
     lmCountersCtrol*    m_pCounters;
 
-    lmEarChordConstrains* m_pConstrains;    //constrains for the exercise
+    lmChordConstrains* m_pConstrains;       //constrains for the exercise
     bool            m_fQuestionAsked;       //question asked but not yet answered
 
     //problem asked
     EKeySignatures  m_nKey;
     wxString        m_sRootNote;
     int             m_nInversion;
+    int             m_nMode;
 
     //answer
-    wxButton*       m_pAnswerButton[10];    //10 buttons for the answers
+    wxStaticText*   m_pRowLabel[5];
+    wxButton*       m_pAnswerButton[ect_Max];   //buttons for the answers
+    int             m_nRealChord[ect_Max];      // chord that corresponds
+                                                // to each valid button
     int             m_nRespIndex;           //index to the button with the right answer
     wxString        m_sAnswer;              //The names of each interval
 
     lmUrlAuxCtrol*  m_pPlayButton;       // "play" button
     lmUrlAuxCtrol*  m_pShowSolution;     // "show solution" button
 
+    //lmIdfyChordCtrol is used both for ear training exercises and for theory exercises.
+    //Following variables are used for configuration
+    bool        m_fTheoryMode;
+
     DECLARE_EVENT_TABLE()
 };
 
 
 
-#endif  // __EARCHORDCTROL_H__
+#endif  // __IDFYCHORDCTROL_H__

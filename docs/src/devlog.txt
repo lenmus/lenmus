@@ -67,27 +67,32 @@ LenMus project philosophy (to remind me to always stay on this):
   ---------------------------------------------------------------------------------------
   Now:
   
-  Coding Ear Chord exercises:
-  - Allow to play any interval once the answer is shown
-  - Before creating and playing a new chord stop any previous one.
-  - On exit, stop any chord being played
-  - Remove EnableButtons. Aware: dynamic reconfiguration depending on chords allowed
-  - Root note: choose
-  + Key signature: choose
-  + Allow inversions
-  + Remove accidentals in the key signature
+* Coding Ear & Theo Identify Chord exercises (IdfyChordCtrol):
   - Settings dialog
-  - melodic option (ascending and descending)
-  - draw chord cipher
+  - Root note: now is the root of the key. Allow others?
+  - Key signature: options to choose the allowed ones
+  - Option: Draw chord cipher
+  - Params	object for html embedding
+
+*  eBooks new architecture: design evolution
+  - Move toolbar to mainframe:
+	- Define events in MainFrame 
+	
+  - Print problem: analyze code for ImageCell
+
+
     
-    
-  Release 3.2, planned: 30/aug/2006
+  Release 3.2, planned: 30/aug/2006 (to be released by 15/sep)
   ----------------------------------
 
     Features and changes:
     - Ear training: identify chord type
     - Theory: identify chord
 	- Modify UrlAuxCtrol to optionally include an icon at the left.
+    - To facilitate internationalization, eBooks Introduction and Single Exercises 
+		should be coded inside the program instead of being external html files. 
+		All other books will be written in Spanish and not translated by me.
+    - Allow for simultaneous access to books in different languages.
 
     Tasks:
     - update help documentation 
@@ -97,6 +102,7 @@ LenMus project philosophy (to remind me to always stay on this):
     - tuplet bracket line discontinuities
     - abbreviated notation for notes/rests in chords
     - stem up/down abbreviated notation
+    - LDP 1.5: allow (na ..) for chords.
     
     Bugs:
     - none
@@ -218,10 +224,6 @@ Area 6: Design new exercises
             
 Other:
     - Lyrics: compute maximum y and position lyric at a greater y
-    - To facilitate internationalization, eBooks Introduction and Single Exercises should
-    be coded inside the program instead of being external html files. All other books
-    will be written in Spanish and not translated by me.
-    - Allow for simultaneous access to books in different languages
     - Debug links for TheoMusicReading exercises or use main menu options
 
 

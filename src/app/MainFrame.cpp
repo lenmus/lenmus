@@ -228,8 +228,7 @@ enum
 
 enum
 {
-    //wxID_HTML_HELPFRAME = wxID_HIGHEST + 1,
-    wxID_HTML_PANEL = wxID_HIGHEST + 2,
+    wxID_HTML_PANEL = 2000,     //wxID_HIGHEST + 2,
     wxID_HTML_BACK,
     wxID_HTML_FORWARD,
     wxID_HTML_UPNODE,
@@ -353,6 +352,9 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_TEXT        (ID_SPIN_METRONOME,    lmMainFrame::OnMetronomeUpdateText)
     EVT_TIMER       (ID_TIMER_MTR,        lmMainFrame::OnMetronomeTimer)
 
+    //TextBookFrame
+    EVT_TOOL_RANGE(wxID_HTML_PANEL, wxID_HTML_COUNTINFO, lmMainFrame::OnBookFrame)
+
 END_EVENT_TABLE()
 
 lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& title,
@@ -364,7 +366,7 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     m_pToolsDlg = (lmToolsDlg *) NULL;
     m_pHelp = (lmHelpController*) NULL;
     m_pBookController = (lmTextBookController*) NULL;
-	m_pNavigationToolbar = (wxToolBar*) NULL;
+	m_pTbTextBooks = (wxToolBar*) NULL;
 
     // notify wxAUI which frame to use
     m_mgrAUI.SetFrame(this);
@@ -395,6 +397,7 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     m_pTbFile = (wxToolBar*)NULL;
     m_pTbEdit = (wxToolBar*)NULL;
     m_pTbZoom = (wxToolBar*)NULL;
+    m_pTbTextBooks = (wxToolBar*)NULL;
     bool fToolBar = true;
     g_pPrefs->Read(_T("/MainFrame/ViewToolBar"), &fToolBar);
     if (!m_pToolbar && fToolBar) {
@@ -411,7 +414,6 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
         CreateMyStatusBar();
         SetStatusText(_("Welcome to LenMus!"));
     }
-	//CreateNavigationToolBar();
 
     // initialize flags for toggle buttons status
     m_fBookOpened = false;
@@ -586,6 +588,8 @@ void lmMainFrame::CreateMyToolBar()
                 ToolbarPane().Top().Row(1).BestSize( sizeBest ).
                 LeftDockable(false).RightDockable(false));
 
+    CreateTextBooksToolBar(style, nSize);
+
     // tell the manager to "commit" all the changes just made
     m_mgrAUI.Update();
 }
@@ -634,44 +638,39 @@ void lmMainFrame::DeleteToolbar()
         m_pTbZoom = (wxToolBar*)NULL;
     }
 
+    // Text books navigation toolbar
+    if (m_pTbTextBooks) {
+        m_mgrAUI.DetachPane(m_pTbTextBooks);
+        delete m_pTbTextBooks;
+        m_pTbTextBooks = (wxToolBar*)NULL;
+    }
+
 }
 
-void lmMainFrame::CreateNavigationToolBar()
+void lmMainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize)
 {
-    long style = wxSIMPLE_BORDER | wxTB_FLAT | wxTB_DOCKABLE | wxTB_TEXT | wxTB_HORIZONTAL;
-	wxPoint nPos = m_pToolbar->GetPosition();
-	wxSize nToolbarSize = m_pToolbar->GetSize();
-	nPos.y += nToolbarSize.GetHeight();
-    m_pNavigationToolbar = new wxToolBar(this, wxID_ANY, nPos,
-										wxDefaultSize, style);
+    m_pTbTextBooks = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style);
+    m_pTbTextBooks->SetToolBitmapSize(nIconSize);
 
-
-    // set the icons size
-    long nIconSize = g_pPrefs->Read(_T("/Toolbars/IconSize"), 16);
-    wxSize nSize(nIconSize, nIconSize);
-    m_pNavigationToolbar->SetToolBitmapSize(nSize);
-
-    m_pNavigationToolbar->SetMargins( 2, 2 );
-
-	// add tool buttons
+	// get icons
     wxBitmap wpanelBitmap =
-        wxArtProvider::GetBitmap(wxART_HELP_SIDE_PANEL, wxART_TOOLBAR, nSize);
+        wxArtProvider::GetBitmap(wxART_HELP_SIDE_PANEL, wxART_TOOLBAR, nIconSize);
     wxBitmap wbackBitmap =
-        wxArtProvider::GetBitmap(wxART_GO_BACK, wxART_TOOLBAR, nSize);
+        wxArtProvider::GetBitmap(wxART_GO_BACK, wxART_TOOLBAR, nIconSize);
     wxBitmap wforwardBitmap =
-        wxArtProvider::GetBitmap(wxART_GO_FORWARD, wxART_TOOLBAR, nSize);
+        wxArtProvider::GetBitmap(wxART_GO_FORWARD, wxART_TOOLBAR, nIconSize);
     wxBitmap wupnodeBitmap =
-        wxArtProvider::GetBitmap(wxART_GO_TO_PARENT, wxART_TOOLBAR, nSize);
+        wxArtProvider::GetBitmap(wxART_GO_TO_PARENT, wxART_TOOLBAR, nIconSize);
     wxBitmap wupBitmap =
-        wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR, nSize);
+        wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR, nIconSize);
     wxBitmap wdownBitmap =
-        wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR, nSize);
+        wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR, nIconSize);
     wxBitmap wopenBitmap =
-        wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, nSize);
+        wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, nIconSize);
     wxBitmap wprintBitmap =
-        wxArtProvider::GetBitmap(wxART_PRINT, wxART_TOOLBAR, nSize);
+        wxArtProvider::GetBitmap(wxART_PRINT, wxART_TOOLBAR, nIconSize);
     wxBitmap woptionsBitmap =
-        wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, wxART_TOOLBAR, nSize);
+        wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, wxART_TOOLBAR, nIconSize);
 
     wxASSERT_MSG( (wpanelBitmap.Ok() && wbackBitmap.Ok() &&
                    wforwardBitmap.Ok() && wupnodeBitmap.Ok() &&
@@ -680,58 +679,52 @@ void lmMainFrame::CreateNavigationToolBar()
                    woptionsBitmap.Ok()),
                   wxT("One or more HTML help frame toolbar bitmap could not be loaded.")) ;
 
-    //CSG Modif----------------------------------------
-    // test to try to customize layout and behaviour
-    m_pNavigationToolbar->AddTool(wxID_HTML_PANEL, _("Index"), wpanelBitmap, 
+
+    //add tools
+    m_pTbTextBooks->AddTool(wxID_HTML_PANEL, _("Index"), wpanelBitmap, 
             _("Show/hide navigation panel"), wxITEM_CHECK );
-    m_pNavigationToolbar->ToggleTool(wxID_HTML_PANEL, false);
-
-
-    //m_pNavigationToolbar->AddTool(wxID_HTML_PANEL, wpanelBitmap, wxNullBitmap,
-    //                   false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-    //                   _("Show/hide navigation panel"));
-    //End CSG modif -------------------------------------
-
-    m_pNavigationToolbar->AddSeparator();
-    m_pNavigationToolbar->AddTool(wxID_HTML_BACK, wbackBitmap, wxNullBitmap,
+    m_pTbTextBooks->ToggleTool(wxID_HTML_PANEL, false);
+    m_pTbTextBooks->AddSeparator();
+    m_pTbTextBooks->AddTool(wxID_HTML_BACK, wbackBitmap, wxNullBitmap,
                        false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
                        _("Go back"));
-    m_pNavigationToolbar->AddTool(wxID_HTML_FORWARD, wforwardBitmap, wxNullBitmap,
+    m_pTbTextBooks->AddTool(wxID_HTML_FORWARD, wforwardBitmap, wxNullBitmap,
                        false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
                        _("Go forward"));
-    m_pNavigationToolbar->AddSeparator();
+    m_pTbTextBooks->AddSeparator();
 
-    m_pNavigationToolbar->AddTool(wxID_HTML_UPNODE, wupnodeBitmap, wxNullBitmap,
+    m_pTbTextBooks->AddTool(wxID_HTML_UPNODE, wupnodeBitmap, wxNullBitmap,
                        false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
                        _("Go one level up in document hierarchy"));
-    m_pNavigationToolbar->AddTool(wxID_HTML_UP, wupBitmap, wxNullBitmap,
+    m_pTbTextBooks->AddTool(wxID_HTML_UP, wupBitmap, wxNullBitmap,
                        false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
                        _("Previous page"));
-    m_pNavigationToolbar->AddTool(wxID_HTML_DOWN, wdownBitmap, wxNullBitmap,
+    m_pTbTextBooks->AddTool(wxID_HTML_DOWN, wdownBitmap, wxNullBitmap,
                        false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
                        _("Next page"));
 
     if ((style & wxHF_PRINT) || (style & wxHF_OPEN_FILES))
-        m_pNavigationToolbar->AddSeparator();
+        m_pTbTextBooks->AddSeparator();
 
     if (style & wxHF_OPEN_FILES)
-        m_pNavigationToolbar->AddTool(wxID_HTML_OPENFILE, wopenBitmap, wxNullBitmap,
+        m_pTbTextBooks->AddTool(wxID_HTML_OPENFILE, wopenBitmap, wxNullBitmap,
                            false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
                            _("Open HTML document"));
-
-#if wxUSE_PRINTING_ARCHITECTURE
     if (style & wxHF_PRINT)
-        m_pNavigationToolbar->AddTool(wxID_HTML_PRINT, wprintBitmap, wxNullBitmap,
+        m_pTbTextBooks->AddTool(wxID_HTML_PRINT, wprintBitmap, wxNullBitmap,
                            false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
                            _("Print this page"));
-#endif
-
-    m_pNavigationToolbar->AddSeparator();
-    m_pNavigationToolbar->AddTool(wxID_HTML_OPTIONS, woptionsBitmap, wxNullBitmap,
+    m_pTbTextBooks->AddSeparator();
+    m_pTbTextBooks->AddTool(wxID_HTML_OPTIONS, woptionsBitmap, wxNullBitmap,
                        false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
                        _("Display options dialog"));
 
-    m_pNavigationToolbar->Realize();
+    m_pTbTextBooks->Realize();
+
+    m_mgrAUI.AddPane(m_pTbTextBooks, wxPaneInfo().
+                Name(wxT("Navigation")).Caption(_("eBooks navigation tools")).
+                ToolbarPane().Top().Row(1).
+                LeftDockable(false).RightDockable(false));
 
 }
 
@@ -1196,6 +1189,11 @@ void lmMainFrame::SilentlyCheckForUpdates(bool fSilent)
 // ----------------------------------------------------------------------------
 // menu callbacks
 // ----------------------------------------------------------------------------
+void lmMainFrame::OnBookFrame(wxCommandEvent& event)
+{
+    event.Skip(true);
+    wxMessageBox(_T("event in TextBook"));
+}
 
 void lmMainFrame::OnVisitWebsite(wxCommandEvent& WXUNUSED(event))
 {

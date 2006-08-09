@@ -18,16 +18,16 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file EarChordConstrains.h
-    @brief Header file for EarChord exercises
+/*! @file ChordConstrains.h
+    @brief Header file for Chord exercises
     @ingroup generators
 */
 #ifdef __GNUG__
 // #pragma interface
 #endif
 
-#ifndef __EARCHORDCONSTRAINS_H__        //to avoid nested includes
-#define __EARCHORDCONSTRAINS_H__
+#ifndef __CHORDCONSTRAINS_H__        //to avoid nested includes
+#define __CHORDCONSTRAINS_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -40,22 +40,76 @@
 #include "wx/wx.h"
 #endif
 
-#include "../auxmusic/ChordManager.h"
 #include "Generators.h"
-#include "Constrains.h"
+
+enum EChordType
+{
+    // Triads
+    ect_MajorTriad = 0,
+    ect_MinorTriad,
+    ect_AugTriad,
+    ect_DimTriad,
+    ect_Suspended_4th,
+    ect_Suspended_2nd,
+    ect_LastTriad = ect_Suspended_2nd, 
+
+    // Seventh chords
+    ect_MajorSeventh,
+    ect_DominantSeventh,
+    ect_MinorSeventh,
+    ect_DimSeventh,
+    ect_HalfDimSeventh,
+    ect_AugMajorSeventh,
+    ect_AugSeventh,
+    ect_MinorMajorSeventh,
+    ect_LastSeventh = ect_MinorMajorSeventh,
+
+    // Sixth chords
+    ect_MajorSixth,
+    ect_MinorSixth,
+    ect_AugSixth,
+    ect_LastSixth = ect_AugSixth,
+
+    //last element, to signal End Of Table
+    ect_Max
+};
+
+enum EChordGroup
+{
+    ecg_Triads = 0,
+    ecg_Sevenths,
+    ecg_Sixths,
+    //last element, to signal End Of Table
+    ecg_Max
+};
 
 
-class lmEarChordConstrains
+class lmChordConstrains
 {
 public:
-    lmEarChordConstrains(wxString sSection);
-    ~lmEarChordConstrains() {}
+    lmChordConstrains(wxString sSection);
+    ~lmChordConstrains() {}
 
     EChordType GetRandomChordType();
+    int GetRandomMode();
 
     bool InversionsAllowed() { return m_fAllowInversions; }
+    bool IsValid(EChordType nType) { return m_fValidTypes[nType]; }
+    void SetValid(EChordType nType, bool fValid) { m_fValidTypes[nType] = fValid; }
+    bool IsValidGroup(EChordGroup nGroup);
+
+    bool IsModeAllowed(int nMode) { return m_fAllowedModes[nMode]; }
+    void SetModeAllowed(int nMode, bool fValue) {
+            m_fAllowedModes[nMode] = fValue;
+        }
+
+    void SetDisplayKey(bool fValue) { m_fDisplayKey = fValue; }
+    bool DisplayKey() { return m_fDisplayKey; }
 
     void SaveSettings();
+    
+    void SetTheoryMode(bool fValue) { m_fTheoryMode = fValue; }
+    bool IsTheoryMode() { return m_fTheoryMode; }
 
 
 private:
@@ -63,14 +117,20 @@ private:
 
     wxString            m_sSection;             //to save settings
     bool                m_fAllowInversions;
-    lmChordConstrains   m_oChordTypes;  
+    bool                m_fValidTypes[ect_Max];
+    bool                m_fDisplayKey;
     bool                m_fAllowedModes[3];     // 0-harmonic
                                                 // 1-melodic ascending
                                                 // 2-melodic descending
     wxString            m_sLowerRoot;    //valid range for root notes
     wxString            m_sUpperRoot;
 
+    //lmIdfyChordCtrol is used both for ear training exercises and for theory exercises.
+    //Following variables are used for configuration
+    bool                m_fTheoryMode;
+
+
+
 };
 
-#endif  // __EARCHORDCONSTRAINS_H__
-
+#endif  // __CHORDCONSTRAINS_H__

@@ -160,6 +160,17 @@ wxString lmRandomGenerator::GenerateRandomRootNote(EClefType nClef,
     // index = 5 (La)
     int nRoot = GetRootNoteIndex(nKey);
     wxString sNotes = _T("cdefgab");
-    wxString sRootNote = sNotes.Mid(nRoot, 1) + (nRoot > 4 ? _T("3") : _T("4"));
+
+    // Get the accidentals implied by the key signature. 
+    // Each element of the array refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
+    // and its value can be one of: 0=no accidental, -1 = a flat, 1 = a sharp
+    int nAccidentals[7];
+    ComputeAccidentals(nKey, nAccidentals);
+
+    wxString sAcc[5] = { _T("--"), _T("-"), _T(""), _T("+"), _T("++") };
+    wxString sRootNote = sAcc[nAccidentals[nRoot]+ 2] +
+                         sNotes.Mid(nRoot, 1) +
+                         (nRoot > 4 ? _T("3") : _T("4"));
+
     return sRootNote;
 }

@@ -76,7 +76,7 @@ public:
     // tool bars
     void CreateMyToolBar();
     void DeleteToolbar();
-    void CreateNavigationToolBar();
+    void CreateTextBooksToolBar(long style, wxSize nIconSize);
 
     //status bar
     void CreateMyStatusBar ();
@@ -170,6 +170,9 @@ public:
     void OnMetronomeUpdate(wxSpinEvent& WXUNUSED(event));
     void OnMetronomeUpdateText(wxCommandEvent& WXUNUSED(event));
 
+    //textbook events
+    void OnBookFrame(wxCommandEvent& event);
+
 
     // other methods
     void SetOpenBookButton(bool fButtonPressed);
@@ -221,7 +224,7 @@ protected:
     wxToolBar*      m_pTbPlay;          // play toolbar
     wxToolBar*      m_pTbMtr;           // metronome toolbar
     wxToolBar*      m_pToolbar;         // main toolbar
-    wxToolBar*      m_pNavigationToolbar;
+    wxToolBar*      m_pTbTextBooks;     // text books navigation toolbar
 
     // status bar
     wxStatusBar*    m_pStatusbar;

@@ -18,16 +18,16 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file EarChordCtrolParms.h
-    @brief Header file for class lmEarChordCtrolParms
+/*! @file IdfyChordCtrolParms.h
+    @brief Header file for class lmIdfyChordCtrolParms
     @ingroup html_controls
 */
 #ifdef __GNUG__
 // #pragma interface
 #endif
 
-#ifndef __EARCHORDCTROLPARMS_H__        //to avoid nested includes
-#define __EARCHORDCTROLPARMS_H__
+#ifndef __IDFYCHORDCTROLPARMS_H__        //to avoid nested includes
+#define __IDFYCHORDCTROLPARMS_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -41,20 +41,19 @@
 #endif
 
 #include "ObjectParams.h"
-//#include "../exercises/ScoreConstrains.h"
 #include "../ldp_parser/AuxString.h"
 
 /*! This class pack all parameters to set up a Side Reading exercise.
     The contained lmScoreConstrains object has the constrains for the 'ByProgram'
     settings mode (default mode). For other modes ('UserSettings' and 'ReadingNotes')
-    the settings must be read/setup by the EarChordCtrol object.
+    the settings must be read/setup by the IdfyChordCtrol object.
 */
-class lmEarChordCtrolParms : public lmObjectParams
+class lmIdfyChordCtrolParms : public lmObjectParams
 {
 public:
-    lmEarChordCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
+    lmIdfyChordCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
                               int nPercent, long nStyle);
-    ~lmEarChordCtrolParms();
+    ~lmIdfyChordCtrolParms();
 
     void AddParam(const wxHtmlTag& tag);
     void CreateHtmlCell(wxHtmlWinParser *pHtmlParser);
@@ -64,16 +63,16 @@ protected:
         // Member variables:
 
     // html object window attributes
-    long                        m_nWindowStyle;
-    wxString                    m_sParamErrors;
-    lmEarChordConstrains*       m_pConstrains;
+    long                    m_nWindowStyle;
+    wxString                m_sParamErrors;
+    lmChordConstrains*      m_pConstrains;
 
-    DECLARE_NO_COPY_CLASS(lmEarChordCtrolParms)
+    DECLARE_NO_COPY_CLASS(lmIdfyChordCtrolParms)
 };
 
 
 
-lmEarChordCtrolParms::lmEarChordCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
+lmIdfyChordCtrolParms::lmIdfyChordCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
                                    int nPercent, long nStyle)
     : lmObjectParams(tag, nWidth, nHeight, nPercent)
 {
@@ -82,7 +81,7 @@ lmEarChordCtrolParms::lmEarChordCtrolParms(const wxHtmlTag& tag, int nWidth, int
     m_nWindowStyle = nStyle;
 
     // construct constrains object
-    m_pConstrains = new lmEarChordConstrains(_T("EarChord"));
+    m_pConstrains = new lmChordConstrains(_T("EarChord"));
 
     // initializations
     m_sParamErrors = _T("");    //no errors
@@ -90,7 +89,7 @@ lmEarChordCtrolParms::lmEarChordCtrolParms(const wxHtmlTag& tag, int nWidth, int
 }
 
 
-lmEarChordCtrolParms::~lmEarChordCtrolParms()
+lmIdfyChordCtrolParms::~lmIdfyChordCtrolParms()
 {
     //Constrains and options will be deleted by the Ctrol. DO NOT DELETE THEM HERE
     //IF THE CONTROL HAS BEEN CREATED
@@ -101,12 +100,12 @@ lmEarChordCtrolParms::~lmEarChordCtrolParms()
 
 }
 
-void lmEarChordCtrolParms::AddParam(const wxHtmlTag& tag)
+void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
 {
     /*! @page EarChordCtrolParams
         @verbatim    
 
-        Params for lmEarChordCtrol - html object type="Application/LenMusEarChord"
+        Params for lmIdfyChordCtrol - html object type="Application/LenMusEarChord"
 
 
         @endverbatim
@@ -221,13 +220,13 @@ void lmEarChordCtrolParms::AddParam(const wxHtmlTag& tag)
     // Unknown param
     else
         m_sParamErrors += wxString::Format( 
-            _("lmEarChordCtrol. Unknown param: <param %s >\n"),
+            _("lmIdfyChordCtrol. Unknown param: <param %s >\n"),
             tag.GetAllParams() );
 
     */
 }
 
-void lmEarChordCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
+void lmIdfyChordCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 {
     //verify that all necessary html params has been specified
     wxWindow* pWnd;
@@ -238,8 +237,8 @@ void lmEarChordCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
             wxPoint(0,0), wxSize(300, 100), wxTE_MULTILINE);
     }
     else {
-        // create the EarChordCtrol
-        pWnd = new lmEarChordCtrol((wxWindow*)pHtmlParser->GetWindow(), -1, 
+        // create the IdfyChordCtrol
+        pWnd = new lmIdfyChordCtrol((wxWindow*)pHtmlParser->GetWindow(), -1, 
             m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     }
     pWnd->Show(true);
@@ -247,4 +246,4 @@ void lmEarChordCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 
 }
 
-#endif  // __EARCHORDCTROLPARMS_H__
+#endif  // __IDFYCHORDCTROLPARMS_H__

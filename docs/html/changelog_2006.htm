@@ -34,10 +34,35 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">8 & 9-ago-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Finished exercise for Chord recognition (ear and theory). lmEarChordCtrol
+          related classes renamed as IdfyChordCtrol, as the control is now 
+          parameterized to be usable both for ear trainig and for theory.
+          All identified options added and all detected issues fixed: 
+          <ul>
+            <li>Allow to play any chord once the answer is shown</li>
+            <li>Before creating and playing a new chord, stop any previous one to
+              avoid crashes.</li>
+            <li>On exit, stop any chord being played</li>
+            <li>Dynamic reconfiguration of buttons depending on chords allowed</li>
+            <li>Option: Allow inversions</li>
+            <li>Remove accidentals in the key signature</li>
+            <li>Option: play melodic (ascending and descending)</li>
+            <li>crash if ShowSolution link clicked while still playing</li>
+            <li>Option: Do not display key signature</li>
+          </ul>
+        </li>
+        <li>Pending: to code the settings dialog for this control and the params
+          object for html embedding.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">7-ago-06</td>
     <td class="ListaPar">
       <ul>
-        <li>Added classes lmEarChordConstrains and lmEarChordCtrolParams. More changes in
+        <li>Added classes lmChordConstrains and lmEarChordCtrolParams. More changes in
           ChordManager. Constrains.h: added lmChordConstrains. EarChord exercises now works, but
           need to add options.</li>
       </ul>
@@ -79,7 +104,7 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
           stem length when stem direction changed.</li>
       </ul>
       Program frozen to proceed to launch release 3.1. Meanwhile starting with EarChord 
-      exercises. Added lmEarChordCtrol. Added lmChordManager.
+      exercises. Added lmIdfyChordCtrol. Added lmChordManager.
     </td></tr>
 <tr valign="top">
     <td class="ListaPar">1-ago-06</td>

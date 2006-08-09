@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Constrains.h,v 1.15 2006/03/03 14:59:44 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -42,35 +41,6 @@
 #endif
 
 #include "../score/score.h"
-
-enum EChordType
-{
-    // Triads
-    ect_MajorTriad = 0,
-    ect_MinorTriad,
-    ect_AugTriad,
-    ect_DimTriad,
-    ect_Suspended_4th,
-    ect_Suspended_2nd,
-
-    // Seventh chords
-    ect_MajorSeventh,
-    ect_DominantSeventh,
-    ect_MinorSeventh,
-    ect_DimSeventh,
-    ect_HalfDimSeventh,
-    ect_AugMajorSeventh,
-    ect_AugSeventh,
-    ect_MinorMajorSeventh,
-
-    // Sixth chords
-    ect_MajorSixth,
-    ect_MinorSixth,
-    ect_AugSixth,
-
-    //last element, to signal End Of Table
-    ect_Max
-};
 
 
 enum EIntervalName              // name of the intervals considered in exercises
@@ -144,20 +114,6 @@ public:
 
 private:
     bool m_fValidKeys[lmMAX_KEY - lmMIN_KEY + 1];
-};
-
-//----------------------------------------------------------------------------------------
-
-class lmChordConstrains
-{
-public:
-    lmChordConstrains() {}
-    ~lmChordConstrains() {}
-    bool IsValid(EChordType nType) { return m_fValidTypes[nType]; }
-    void SetValid(EChordType nType, bool fValid) { m_fValidTypes[nType] = fValid; }
-
-private:
-    bool m_fValidTypes[ect_Max-1];
 };
 
 //----------------------------------------------------------------------------------------
@@ -395,39 +351,6 @@ private:
     EProblemTheoScales  m_nProblemType;
 
 };
-
-
-
-//FTeoArmaduras
-/*
-Public Enum EProblemTheoKeySig
-    eIdentifyKeySignature = 0
-    eWriteKeySignature
-    etp_Ambos
-End Enum
-
-Public Enum EScaleMode
-    eMajorMode = 0
-    eMinorMode
-    eMayorAndMinorModes
-End Enum
-
-Public nTipoProblema As EProblemTheoKeySig
-Public nMaxAlteraciones As Long
-Private m_afClaves(1 To MAX_CLAVES) As Boolean
-Public nModos As EScaleMode
-
-Public Property Get fClave(iClave As Long) As Boolean
-    Debug.Assert iClave > 0 And iClave <= MAX_CLAVES
-    fClave = m_afClaves(iClave)
-End Property
-
-Public Property Let fClave(iClave As Long, fValor As Boolean)
-    Debug.Assert iClave > 0 And iClave <= MAX_CLAVES
-    m_afClaves(iClave) = fValor
-End Property
-*/
-
 
 #endif  // __CONSTRAINS_H__
 

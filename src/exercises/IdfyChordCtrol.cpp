@@ -18,12 +18,12 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file EarChordCtrol.cpp
-    @brief Implementation file for class lmEarChordCtrol
+/*! @file IdfyChordCtrol.cpp
+    @brief Implementation file for class lmIdfyChordCtrol
     @ingroup html_controls
 */
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "EarChordCtrol.h"
+#pragma implementation "IdfyChordCtrol.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
@@ -33,7 +33,7 @@
 #pragma hdrstop
 #endif
 
-#include "EarChordCtrol.h"
+#include "IdfyChordCtrol.h"
 #include "UrlAuxCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
@@ -54,19 +54,18 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 extern bool g_fShowDebugLinks;            // in TheApp.cpp
 
 //------------------------------------------------------------------------------------
-// Implementation of lmEarChordCtrol
+// Implementation of lmIdfyChordCtrol
 
 
 
 
 //Layout definitions
 const int BUTTONS_DISTANCE = 5;        //pixels
-const int NUM_BUTTONS = 10;
-const int NUM_ROWS = 2;
-const int NUM_COLS = 5;
+const int NUM_BUTTONS = ect_Max;
+const int NUM_COLS = 4;
+const int NUM_ROWS = 5;
 
-static wxString m_sButtonLabel[NUM_BUTTONS];
-static wxString m_sRowLabel[NUM_ROWS];
+static wxString m_sButtonLabel[ect_Max];
 
 //IDs for controls
 enum {
@@ -83,24 +82,24 @@ enum {
 };
 
 
-BEGIN_EVENT_TABLE(lmEarChordCtrol, wxWindow)
-    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmEarChordCtrol::OnRespButton)
-    EVT_SIZE            (lmEarChordCtrol::OnSize)
+BEGIN_EVENT_TABLE(lmIdfyChordCtrol, wxWindow)
+    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmIdfyChordCtrol::OnRespButton)
+    EVT_SIZE            (lmIdfyChordCtrol::OnSize)
 
-    LM_EVT_URL_CLICK    (ID_LINK_SEE_SOURCE, lmEarChordCtrol::OnDebugShowSourceScore)
-    LM_EVT_URL_CLICK    (ID_LINK_DUMP, lmEarChordCtrol::OnDebugDumpScore)
-    LM_EVT_URL_CLICK    (ID_LINK_MIDI_EVENTS, lmEarChordCtrol::OnDebugShowMidiEvents)
+    LM_EVT_URL_CLICK    (ID_LINK_SEE_SOURCE, lmIdfyChordCtrol::OnDebugShowSourceScore)
+    LM_EVT_URL_CLICK    (ID_LINK_DUMP, lmIdfyChordCtrol::OnDebugDumpScore)
+    LM_EVT_URL_CLICK    (ID_LINK_MIDI_EVENTS, lmIdfyChordCtrol::OnDebugShowMidiEvents)
 
-    LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, lmEarChordCtrol::OnNewProblem)
-    LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmEarChordCtrol::OnPlay)
-    LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, lmEarChordCtrol::OnDisplaySolution)
-    LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmEarChordCtrol::OnSettingsButton)
+    LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, lmIdfyChordCtrol::OnNewProblem)
+    LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmIdfyChordCtrol::OnPlay)
+    LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, lmIdfyChordCtrol::OnDisplaySolution)
+    LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmIdfyChordCtrol::OnSettingsButton)
 END_EVENT_TABLE()
 
-IMPLEMENT_CLASS(lmEarChordCtrol, wxWindow)
+IMPLEMENT_CLASS(lmIdfyChordCtrol, wxWindow)
 
-lmEarChordCtrol::lmEarChordCtrol(wxWindow* parent, wxWindowID id, 
-                           lmEarChordConstrains* pConstrains,
+lmIdfyChordCtrol::lmIdfyChordCtrol(wxWindow* parent, wxWindowID id, 
+                           lmChordConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
     : wxWindow(parent, id, pos, size, style )
 {
@@ -112,27 +111,35 @@ lmEarChordCtrol::lmEarChordCtrol(wxWindow* parent, wxWindowID id,
     m_pAuxScore = (lmScore*)NULL;
     m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
     m_pConstrains = pConstrains;
+    m_fTheoryMode = m_pConstrains->IsTheoryMode();
 
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
 
-        // button row labels
-    m_sRowLabel[0] = _("Triads:");
-    m_sRowLabel[1] = _("Seventh chords:");
-
         //button labels.
-    m_sButtonLabel[0] = _("Major");
-    m_sButtonLabel[1] = _("Minor");
-    m_sButtonLabel[2] = _("Augmented");
-    m_sButtonLabel[3] = _("Diminished");
-    m_sButtonLabel[4] = _("Suspended");
 
-    m_sButtonLabel[5] = _("Dominant 7th");
-    m_sButtonLabel[6] = _("Major 7th");
-    m_sButtonLabel[7] = _("Minor 7th");
-    m_sButtonLabel[8] = _("Diminished 7th");
-    m_sButtonLabel[9] = _("Half dim. 7th");
+    // Triads
+    m_sButtonLabel[ect_MajorTriad] = _("Major ");
+    m_sButtonLabel[ect_MinorTriad] = _("Minor ");
+    m_sButtonLabel[ect_AugTriad] = _("Augmented ");
+    m_sButtonLabel[ect_DimTriad] = _("Diminished ");
+    m_sButtonLabel[ect_Suspended_4th] = _("Suspended (4th)");
+    m_sButtonLabel[ect_Suspended_2nd] = _("Suspended (2nd)");
 
+    // Seventh chords
+    m_sButtonLabel[ect_MajorSeventh] = _("Major 7th");
+    m_sButtonLabel[ect_DominantSeventh] = _("Dominant 7th");
+    m_sButtonLabel[ect_MinorSeventh] = _("Minor 7th");
+    m_sButtonLabel[ect_DimSeventh] = _("Diminished 7th");
+    m_sButtonLabel[ect_HalfDimSeventh] = _("Half dim. 7th");
+    m_sButtonLabel[ect_AugMajorSeventh] = _("Aug. major 7th");
+    m_sButtonLabel[ect_AugSeventh] = _("Augmented 7th");
+    m_sButtonLabel[ect_MinorMajorSeventh] = _("Minor-major 7th");
+
+    // Sixth chords
+    m_sButtonLabel[ect_MajorSixth] = _("Major 6th");
+    m_sButtonLabel[ect_MinorSixth] = _("Minor 6th");
+    m_sButtonLabel[ect_AugSixth] = _("Augmented 6th");
 
     //the window is divided into two regions: top, for score on left and counters and links
     //on the right, and bottom region, for answer buttons 
@@ -236,14 +243,15 @@ lmEarChordCtrol::lmEarChordCtrol(wxWindow* parent, wxWindowID id,
 
     for (int iRow=0; iRow < NUM_ROWS; iRow++) {
         pKeyboardSizer->Add(
-            new wxStaticText(this, -1, m_sRowLabel[iRow]),
+            m_pRowLabel[iRow] = new wxStaticText(this, -1, _T("")),
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
 
         // the buttons for this row
         for (int iCol=0; iCol < NUM_COLS; iCol++) {
-            iB = iCol + iRow * NUM_COLS;    // button index: 0 .. 9            
-            m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, m_sButtonLabel[iB],
-                wxDefaultPosition, wxSize(80, 20));
+            iB = iCol + iRow * NUM_COLS;    // button index
+            if (iB >= NUM_BUTTONS) break;
+            m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, _T("Undefined"),
+                wxDefaultPosition, wxSize(120, 20));
             pKeyboardSizer->Add(
                 m_pAnswerButton[iB],
                 wxSizerFlags(0).Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
@@ -264,17 +272,26 @@ lmEarChordCtrol::lmEarChordCtrol(wxWindow* parent, wxWindowID id,
     m_pPlayButton->Enable(false);
     m_pShowSolution->Enable(false);
 
+    SetUpButtons();     //reconfigure buttons in accordance with constrains
+
     //allow to play chords
     m_nKey = earmDo;
     m_sRootNote = _T("c4");
     m_nInversion = 0;
+    m_nMode = m_pConstrains->GetRandomMode();
 
-    EnableButtons(true);
+    if (m_fTheoryMode) NewProblem();
 
 }
 
-lmEarChordCtrol::~lmEarChordCtrol()
+lmIdfyChordCtrol::~lmIdfyChordCtrol()
 {
+    //stop any possible chord being played
+    if (m_pAuxScore) m_pAuxScore->Stop();
+    if (m_pChordScore) m_pChordScore->Stop();
+
+    //delete objects
+
     if (m_pScoreCtrol) {
         delete m_pScoreCtrol;
         m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
@@ -282,7 +299,7 @@ lmEarChordCtrol::~lmEarChordCtrol()
 
     if (m_pConstrains) {
         delete m_pConstrains;
-        m_pConstrains = (lmEarChordConstrains*) NULL;
+        m_pConstrains = (lmChordConstrains*) NULL;
     }
 
     if (m_pChordScore) {
@@ -295,11 +312,78 @@ lmEarChordCtrol::~lmEarChordCtrol()
     }
 }
 
-void lmEarChordCtrol::EnableButtons(bool fEnable)
+void lmIdfyChordCtrol::SetUpButtons()
 {
-    for (int i=0; i < NUM_BUTTONS; i++) {
-        if (m_pAnswerButton[i])
-            m_pAnswerButton[i]->Enable(fEnable);
+    //Reconfigure buttons keyboard depending on the chords allowed
+
+    int iC;     // real chord. Correspondence to EChordTypes
+    int iB;     // button index: 0 .. NUM_BUTTONS-1
+    int iR;     // row index: 0 .. NUM_ROWS-1
+    
+    //hide all rows and buttons so that later we only have to enable the valid ones
+    for (iB=0; iB < NUM_BUTTONS; iB++) {
+        m_pAnswerButton[iB]->Show(false);
+        m_pAnswerButton[iB]->Enable(false);
+    }
+
+    //triads
+    iB = 0;
+    if (m_pConstrains->IsValidGroup(ecg_Triads)) {
+        iR = 0;
+        m_pRowLabel[iR]->SetLabel(_("Triads:"));
+        for (iC=0; iC <= ect_LastTriad; iC++) {
+            if (m_pConstrains->IsValid((EChordType)iC)) {
+                m_nRealChord[iB] = iC;
+                m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
+                m_pAnswerButton[iB]->Show(true);
+                m_pAnswerButton[iB]->Enable(true);
+                iB++;
+                if (iB % NUM_COLS == 0) {
+                    iR++;
+                    m_pRowLabel[iR]->SetLabel(_(""));
+                }
+           }
+        }
+    }
+    if (iB % NUM_COLS != 0) iB += (NUM_COLS - (iB % NUM_COLS));
+
+    //sevenths
+    if (m_pConstrains->IsValidGroup(ecg_Sevenths)) {
+        iR = iB / NUM_COLS;
+        m_pRowLabel[iR]->SetLabel(_("Seventh chords:"));
+        for (iC=ect_LastTriad+1; iC <= ect_LastSeventh; iC++) {
+            if (m_pConstrains->IsValid((EChordType)iC)) {
+                m_nRealChord[iB] = iC;
+                m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
+                m_pAnswerButton[iB]->Show(true);
+                m_pAnswerButton[iB]->Enable(true);
+                iB++;
+                if (iB % NUM_COLS == 0) {
+                    iR++;
+                    m_pRowLabel[iR]->SetLabel(_(""));
+                }
+           }
+        }
+    }
+    if (iB % NUM_COLS != 0) iB += (NUM_COLS - (iB % NUM_COLS));
+
+    //Other
+    if (m_pConstrains->IsValidGroup(ecg_Sixths)) {
+        iR = iB / NUM_COLS;
+        m_pRowLabel[iR]->SetLabel(_("Other chords:"));
+        for (iC=ect_LastSeventh+1; iC <= ect_Max; iC++) {
+            if (m_pConstrains->IsValid((EChordType)iC)) {
+                m_nRealChord[iB] = iC;
+                m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
+                m_pAnswerButton[iB]->Show(true);
+                m_pAnswerButton[iB]->Enable(true);
+                iB++;
+                if (iB % NUM_COLS == 0) {
+                    iR++;
+                    m_pRowLabel[iR]->SetLabel(_(""));
+                }
+           }
+        }
     }
 
 }
@@ -307,7 +391,7 @@ void lmEarChordCtrol::EnableButtons(bool fEnable)
 //----------------------------------------------------------------------------------------
 // Event handlers
 
-void lmEarChordCtrol::OnSettingsButton(wxCommandEvent& event)
+void lmIdfyChordCtrol::OnSettingsButton(wxCommandEvent& event)
 {
     /*
     lmDlgCfgEarIntervals dlg(this, m_pConstrains, true);    // true -> enable First note equal checkbox
@@ -317,32 +401,41 @@ void lmEarChordCtrol::OnSettingsButton(wxCommandEvent& event)
 
 }
 
-void lmEarChordCtrol::OnSize(wxSizeEvent& event)
+void lmIdfyChordCtrol::OnSize(wxSizeEvent& event)
 {
-    //wxLogMessage(_T("OnSize at lmEarChordCtrol"));
+    //wxLogMessage(_T("OnSize at lmIdfyChordCtrol"));
     Layout();
 
 }
 
-void lmEarChordCtrol::OnPlay(wxCommandEvent& event)
+void lmIdfyChordCtrol::OnPlay(wxCommandEvent& event)
 {
     Play();
 }
 
-void lmEarChordCtrol::OnNewProblem(wxCommandEvent& event)
+void lmIdfyChordCtrol::OnNewProblem(wxCommandEvent& event)
 {
     NewProblem();
 }
 
-void lmEarChordCtrol::OnDisplaySolution(wxCommandEvent& event)
+void lmIdfyChordCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
+    //First, stop any possible chord being played to avoid crashes
+    if (m_pAuxScore) m_pAuxScore->Stop();
+    if (m_pChordScore) m_pChordScore->Stop();
+
+    //now proceed
     m_pCounters->IncrementWrong();
     DisplaySolution();
-    EnableButtons(true);
 }
 
-void lmEarChordCtrol::OnRespButton(wxCommandEvent& event)
+void lmIdfyChordCtrol::OnRespButton(wxCommandEvent& event)
 {
+    //First, stop any possible chord being played to avoid crashes
+    if (m_pAuxScore) m_pAuxScore->Stop();
+    if (m_pChordScore) m_pChordScore->Stop();
+
+    //identify button pressed
     int nIndex = event.GetId() - ID_BUTTON;
 
     if (m_fQuestionAsked)
@@ -367,24 +460,29 @@ void lmEarChordCtrol::OnRespButton(wxCommandEvent& event)
 
             //show the solucion
             DisplaySolution();
-            EnableButtons(true);
-
-        } else {
+            if (m_fTheoryMode) EnableButtons(false);
+       }
+        else {
             NewProblem();
         }
     }
     else {
         // No problem presented. The user press the button to play a chord
-        PrepareChord(eclvSol, ect_MajorTriad, &m_pAuxScore);
+
+        //prepare the new chord and play it
+        PrepareChord(eclvSol, (EChordType)m_nRealChord[nIndex], &m_pAuxScore);
         m_pAuxScore->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
                             ePM_NormalInstrument, 320, (wxWindow*) NULL);
     }
-    
+
 }
 
-void lmEarChordCtrol::NewProblem()
+void lmIdfyChordCtrol::NewProblem()
 {
     ResetExercise();
+
+    //select a random mode
+    m_nMode = m_pConstrains->GetRandomMode();
 
     // select a random key signature
     lmRandomGenerator oGenerator;
@@ -401,54 +499,42 @@ void lmEarChordCtrol::NewProblem()
     if (m_pConstrains->InversionsAllowed())
         m_nInversion = oGenerator.RandomNumber(0, NumNotesInChord(nChordType) - 1);
 
+    if (!m_pConstrains->DisplayKey()) m_nKey = earmDo;
     m_sAnswer = PrepareChord(nClef, nChordType, &m_pChordScore);
-
-    // compute right answer button
-    switch (nChordType)
-    {
-        // Triads
-        case ect_MajorTriad:        m_nRespIndex = 0;   break;
-        case ect_MinorTriad:        m_nRespIndex = 1;   break;
-        case ect_AugTriad:          m_nRespIndex = 2;   break;
-        case ect_DimTriad:          m_nRespIndex = 3;   break;
-        case ect_Suspended_4th:     m_nRespIndex = 4;   break;
-        case ect_Suspended_2nd:     m_nRespIndex = 4;   break;
-
-        // Seventh chords
-        case ect_MajorSeventh:      m_nRespIndex = 6;   break;
-        case ect_DominantSeventh:   m_nRespIndex = 5;   break;
-        case ect_MinorSeventh:      m_nRespIndex = 7;   break;
-        case ect_DimSeventh:        m_nRespIndex = 8;   break;
-        case ect_HalfDimSeventh:    m_nRespIndex = 9;   break;
-        //case ect_AugMajorSeventh:   m_nRespIndex = -1;  break;
-        //case ect_AugSeventh:        m_nRespIndex = -1;  break;
-        //case ect_MinorMajorSeventh: m_nRespIndex = -1;  break;
-
-        //// Sixth chords
-        //case ect_MajorSixth:        m_nRespIndex = -1;  break;
-        //case ect_MinorSixth:        m_nRespIndex = -1;  break;
-        //case ect_AugSixth:          m_nRespIndex = -1;  break;
-
-        default:
-            wxASSERT(false);
+    
+    //compute the index for the button that corresponds to the right answer
+    int i;
+    for (i = 0; i < NUM_BUTTONS; i++) {
+        if (m_nRealChord[i] == nChordType) break;
     }
-
+    m_nRespIndex = i;
+    
     
     //load total score into the control
     m_pScoreCtrol->SetScore(m_pChordScore, true);   //true: the score must be hidden
     m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
 
+    //display the problem
+    if (m_fTheoryMode) {
+        //theory
+        m_pScoreCtrol->DisplayScore(m_pChordScore);
+        m_pScoreCtrol->DisplayMessage(_("Identify the next chord:"), lmToLogicalUnits(5, lmMILLIMETERS), false);
+        EnableButtons(true);
+    } else {
+        //ear training
+        Play();
+        wxString sProblem = _("Press 'Play' to lesson it again");
+        m_pScoreCtrol->DisplayMessage(sProblem, lmToLogicalUnits(5, lmMILLIMETERS), false);
+    }
+
     m_fQuestionAsked = true;
-    EnableButtons(true);
     m_pPlayButton->Enable(true);
     m_pShowSolution->Enable(true);
 
-    //play the chord
-    Play();
 
 }
 
-wxString lmEarChordCtrol::PrepareChord(EClefType nClef, EChordType nType, lmScore** pScore)
+wxString lmIdfyChordCtrol::PrepareChord(EClefType nClef, EChordType nType, lmScore** pScore)
 {
     //create the chord
     lmChordManager oChordMngr(m_sRootNote, nType, m_nInversion, m_nKey);
@@ -476,12 +562,14 @@ wxString lmEarChordCtrol::PrepareChord(EClefType nClef, EChordType nType, lmScor
     pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
 
 //    pVStaff->AddEspacio 24
-    sPattern = _T("(n ") + oChordMngr.GetPattern(0) + _T(" r)");
+    int i = (m_nMode == 2 ? nNumNotes-1 : 0);   // 2= melodic descending
+    sPattern = _T("(n ") + oChordMngr.GetPattern(i) + _T(" r)");
     pNode = parserLDP.ParseText( sPattern );
     pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-    int i;
     for (i=1; i < nNumNotes; i++) {
-        sPattern = _T("(na ") + oChordMngr.GetPattern(i) +  _T(" r)");
+        sPattern = (m_nMode == 0 ? _T("(na ") : _T("(n "));     // mode=0 -> harmonic
+        sPattern += oChordMngr.GetPattern((m_nMode == 2 ? nNumNotes-1-i : i));
+        sPattern +=  _T(" r)");
         pNode = parserLDP.ParseText( sPattern );
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     }
@@ -495,7 +583,15 @@ wxString lmEarChordCtrol::PrepareChord(EClefType nClef, EChordType nType, lmScor
 
 }
 
-void lmEarChordCtrol::Play()
+void lmIdfyChordCtrol::EnableButtons(bool fEnable)
+{
+    for (int iB=0; iB < NUM_BUTTONS; iB++) {
+        m_pAnswerButton[iB]->Enable(fEnable);
+    }
+}
+
+
+void lmIdfyChordCtrol::Play()
 {
     //As scale is built using whole notes, we will play scale at MM=320 so
     //that real note rate will be 80.
@@ -504,7 +600,7 @@ void lmEarChordCtrol::Play()
 
 }
 
-void lmEarChordCtrol::DisplaySolution()
+void lmIdfyChordCtrol::DisplaySolution()
 {
     m_pScoreCtrol->HideScore(false);
     m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
@@ -513,25 +609,28 @@ void lmEarChordCtrol::DisplaySolution()
     m_pAnswerButton[m_nRespIndex]->SetBackgroundColour(g_pColors->Success());
     
     m_pPlayButton->Enable(true);
+    m_pShowSolution->Enable(false);
     m_fQuestionAsked = false;
+    if (m_fTheoryMode) EnableButtons(false);
+
 }
 
-void lmEarChordCtrol::OnDebugShowSourceScore(wxCommandEvent& event)
+void lmIdfyChordCtrol::OnDebugShowSourceScore(wxCommandEvent& event)
 {
     m_pScoreCtrol->SourceLDP();
 }
 
-void lmEarChordCtrol::OnDebugDumpScore(wxCommandEvent& event)
+void lmIdfyChordCtrol::OnDebugDumpScore(wxCommandEvent& event)
 {
     m_pScoreCtrol->Dump();
 }
 
-void lmEarChordCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
+void lmIdfyChordCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
 {
     m_pScoreCtrol->DumpMidiEvents();
 }
 
-void lmEarChordCtrol::ResetExercise()
+void lmIdfyChordCtrol::ResetExercise()
 {
     //clear the canvas
     m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
@@ -543,7 +642,6 @@ void lmEarChordCtrol::ResetExercise()
             m_pAnswerButton[iB]->SetBackgroundColour( g_pColors->Normal() );
         }
     }
-    EnableButtons(true);
 
     //delete the previous score
     if (m_pChordScore) {

@@ -18,12 +18,12 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file EarChordConstrains.cpp
-    @brief Implementation file for lmEarIntervalConstrains class
+/*! @file ChordConstrains.cpp
+    @brief Implementation file for lmChordConstrains class
     @ingroup generators
 */
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "EarChordConstrains.h"
+#pragma implementation "ChordConstrains.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
@@ -33,14 +33,14 @@
 #pragma hdrstop
 #endif
 
-#include "EarChordConstrains.h"
+#include "ChordConstrains.h"
 #include "Generators.h"
 
 // the config object
 extern wxConfigBase *g_pPrefs;
 
 
-lmEarChordConstrains::lmEarChordConstrains(wxString sSection)
+lmChordConstrains::lmChordConstrains(wxString sSection)
 {
     m_sSection = sSection;
     LoadSettings();
@@ -52,32 +52,75 @@ lmEarChordConstrains::lmEarChordConstrains(wxString sSection)
 
     //default values for valid chords
         // Triads
-    m_oChordTypes.SetValid( ect_MajorTriad, true);
-    m_oChordTypes.SetValid( ect_MinorTriad, true);
-    m_oChordTypes.SetValid( ect_AugTriad, true);
-    m_oChordTypes.SetValid( ect_DimTriad, true);
-    m_oChordTypes.SetValid( ect_Suspended_4th, true);
-    m_oChordTypes.SetValid( ect_Suspended_2nd, true);
+    SetValid( ect_MajorTriad, true);
+    SetValid( ect_MinorTriad, true);
+    SetValid( ect_AugTriad, false);
+    SetValid( ect_DimTriad, false);
+    SetValid( ect_Suspended_4th, true);
+    SetValid( ect_Suspended_2nd, true);
 
         // Seventh chords
-    m_oChordTypes.SetValid( ect_MajorSeventh, true);
-    m_oChordTypes.SetValid( ect_DominantSeventh, true);
-    m_oChordTypes.SetValid( ect_MinorSeventh, true);
-    m_oChordTypes.SetValid( ect_DimSeventh, true);
-    m_oChordTypes.SetValid( ect_HalfDimSeventh, true);
-    m_oChordTypes.SetValid( ect_AugMajorSeventh, false);
-    m_oChordTypes.SetValid( ect_AugSeventh, false);
-    m_oChordTypes.SetValid( ect_MinorMajorSeventh, false);
+    SetValid( ect_MajorSeventh, true);
+    SetValid( ect_DominantSeventh, true);
+    SetValid( ect_MinorSeventh, true);
+    SetValid( ect_DimSeventh, true);
+    SetValid( ect_HalfDimSeventh, true);
+    SetValid( ect_AugMajorSeventh, false);
+    SetValid( ect_AugSeventh, false);
+    SetValid( ect_MinorMajorSeventh, false);
 
         //// Sixth chords
-    m_oChordTypes.SetValid( ect_MajorSixth, false);
-    m_oChordTypes.SetValid( ect_MinorSixth, false);
-    m_oChordTypes.SetValid( ect_AugSixth, false);
+    SetValid( ect_MajorSixth, true);
+    SetValid( ect_MinorSixth, true);
+    SetValid( ect_AugSixth, true);
 
+    //default values for allowed modes
+    SetModeAllowed(0, true);       // 0-harmonic
+    SetModeAllowed(1, false);       // 1-melodic ascending
+    SetModeAllowed(2, false);       // 2-melodic descending
+
+    //Other options' default values
+    m_fDisplayKey = false;          //do not display key signatures
+    m_fTheoryMode = true;           //theory configuration
 
 }
 
-void lmEarChordConstrains::SaveSettings()
+bool lmChordConstrains::IsValidGroup(EChordGroup nGroup)
+{
+    if (nGroup == ecg_Triads)
+    {
+        return (IsValid( ect_MajorTriad ) ||
+                IsValid( ect_MinorTriad ) ||
+                IsValid( ect_AugTriad ) ||
+                IsValid( ect_DimTriad ) ||
+                IsValid( ect_Suspended_4th ) ||
+                IsValid( ect_Suspended_2nd ) );
+    }
+    else if(nGroup == ecg_Sevenths)
+    {
+        return (IsValid( ect_MajorSeventh ) ||
+                IsValid( ect_DominantSeventh ) ||
+                IsValid( ect_MinorSeventh ) ||
+                IsValid( ect_DimSeventh ) ||
+                IsValid( ect_HalfDimSeventh ) ||
+                IsValid( ect_AugMajorSeventh ) ||
+                IsValid( ect_AugSeventh ) ||
+                IsValid( ect_MinorMajorSeventh ) );
+    }
+    else if(nGroup == ecg_Sixths)
+    {
+        return (IsValid( ect_MajorSixth ) ||
+                IsValid( ect_MinorSixth ) ||
+                IsValid( ect_AugSixth ) );
+    }
+    else {
+        wxASSERT(false);    //impossible
+        return false;
+    }
+
+}
+
+void lmChordConstrains::SaveSettings()
 {
     /*
     save settings in user configuration data file
@@ -124,7 +167,7 @@ void lmEarChordConstrains::SaveSettings()
 
 }
 
-void lmEarChordConstrains::LoadSettings()
+void lmChordConstrains::LoadSettings()
 {
     /*
     load settings form user configuration data or default values
@@ -171,15 +214,15 @@ void lmEarChordConstrains::LoadSettings()
 
 }
 
-EChordType lmEarChordConstrains::GetRandomChordType()
+EChordType lmChordConstrains::GetRandomChordType()
 {
     lmRandomGenerator oGenerator;
     int nWatchDog = 0;
     int nType = oGenerator.RandomNumber(0, ect_Max-1);
-    while (!m_oChordTypes.IsValid((EChordType)nType)) {
+    while (!IsValid((EChordType)nType)) {
         nType = oGenerator.RandomNumber(0, ect_Max-1);
         if (nWatchDog++ == 1000) {
-            wxMessageBox(_("Program error: Loop detected in lmEarChordConstrains::GetRandomChordType."));
+            wxMessageBox(_("Program error: Loop detected in lmChordConstrains::GetRandomChordType."));
             return (EChordType)0;
         }
     }
@@ -187,4 +230,18 @@ EChordType lmEarChordConstrains::GetRandomChordType()
 
 }
 
+int lmChordConstrains::GetRandomMode()
+{
+    lmRandomGenerator oGenerator;
+    int nWatchDog = 0;
+    int nMode = oGenerator.RandomNumber(0, 2);
+    while (!IsModeAllowed(nMode)) {
+        nMode = oGenerator.RandomNumber(0, 2);
+        if (nWatchDog++ == 1000) {
+            return 0;   //harmonic
+        }
+    }
+    return nMode;
+
+}
 

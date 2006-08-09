@@ -51,7 +51,7 @@
     lmTheoKeySignCtrol : public wxWindow
     lmEarIntervalsCtrol : public wxWindow
     lmEarCompareIntvCtrol : public wxWindow
-    lmEarChordCtrol : public wxWindow
+    lmIdfyChordCtrol : public wxWindow
     lmTheoMusicReadingCtrol : public wxWindow
 
 
@@ -64,7 +64,7 @@
     type="Application/LenMusTheoKeySignatures"      lmTheoKeySignCtrolParms : public lmObjectParams
     type="Application/LenMusEarIntervals"           lmEarIntervalsCtrolParms : public lmObjectParams
     type="Application/LenMusEarCompareIntervals"    lmEarCompareIntvCtrolParms : public lmObjectParams
-    type="Application/LenMusEarChord"               lmEarChordCtrolParms : public lmObjectParams
+    type="Application/LenMusEarChord"               lmIdfyChordCtrolParms : public lmObjectParams
 
     @endverbatim
 
@@ -109,7 +109,7 @@
 #include "../exercises/EarIntervalsCtrol.h"
 #include "../exercises/EarCompareIntvCtrol.h"
 #include "../exercises/EarIntvalConstrains.h"
-#include "../exercises/EarChordCtrol.h"
+#include "../exercises/IdfyChordCtrol.h"
 
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
@@ -125,7 +125,7 @@ extern lmMainFrame* g_pMainFrame;
 #include "ObjectParams.h"
 #include "TheoMusicReadingCtrolParms.h"
 #include "ScoreCtrolParams.h"
-#include "EarChordCtrolParms.h"
+#include "IdfyChordCtrolParms.h"
 
 
 //OBSOLETE:
@@ -1044,7 +1044,7 @@ TAG_HANDLER_PROC(tag)
                 break;
 
             case eHO_Exercise_EarChord:
-                m_pObjectParams = new lmEarChordCtrolParms(tag, nWidth, nHeight, 
+                m_pObjectParams = new lmIdfyChordCtrolParms(tag, nWidth, nHeight, 
                     nPercent, nStyle);
                 break;
 
