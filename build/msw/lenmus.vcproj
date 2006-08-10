@@ -533,6 +533,12 @@
 				RelativePath="..\..\src\app\DlgCfgEarIntervals.h">
 			</File>
 			<File
+				RelativePath="..\..\src\app\DlgCfgIdfyChord.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\app\DlgCfgIdfyChord.h">
+			</File>
+			<File
 				RelativePath="..\..\src\app\DlgCfgScoreReading.cpp">
 			</File>
 			<File

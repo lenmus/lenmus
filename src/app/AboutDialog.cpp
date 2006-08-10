@@ -94,8 +94,11 @@ lmAboutDialog::lmAboutDialog(wxWindow* pParent)
       _T("<body bgcolor=\"#ffffff\">")
       _T("<font size=1>");
 
+    //version
+    m_sVersionNumber = wxGetApp().GetVersionNumber();
+
     //title and subtitle
-    m_pTxtTitle->SetLabel(m_pTxtTitle->GetLabel() + LM_VERSION_STR);
+    m_pTxtTitle->SetLabel(m_pTxtTitle->GetLabel() + m_sVersionNumber);
     m_pTxtSubtitle->SetLabel(_("A free program for music language learning"));
 
     CentreOnScreen();
@@ -148,7 +151,7 @@ void lmAboutDialog::OnLicense(wxCommandEvent& WXUNUSED(event))
     wxString sContent = m_sHeader +
         _T("<center>")
         _T("<h3>") + _("License") + _T("</h3></center><p>")
-        _T("LenMus ") + LM_VERSION_STR +
+        _T("LenMus ") + m_sVersionNumber +
         _(" Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n.") +
         _T("</p><p>") +
         _("This program is free software; you can redistribute it and/or modify it \

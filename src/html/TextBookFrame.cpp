@@ -1,4 +1,3 @@
-// RCS-ID: $Id: TextBookFrame.cpp,v 1.9 2006/02/25 15:15:59 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -376,18 +375,11 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
     if (m_Config)
         ReadCustomization(m_Config, m_ConfigRoot);
 
-    //CSG Modif----------------------------------------
-    //wxFrame::Create(parent, id, _("Help"),
-    //                wxPoint(m_Cfg.x, m_Cfg.y), wxSize(m_Cfg.w, m_Cfg.h),
-    //                wxDEFAULT_FRAME_STYLE, wxT("TextBookHelp"));
-
     wxMDIChildFrame::Create((wxMDIParentFrame*)parent, id, _("Help"),
                     wxPoint(m_Cfg.x, m_Cfg.y), wxSize(m_Cfg.w, m_Cfg.h),
                     wxDEFAULT_FRAME_STYLE, wxT("TextBookHelp") );
 
     wxMDIChildFrame::Maximize(true);
-
-    //End CSG modif -------------------------------------
 
     GetPosition(&m_Cfg.x, &m_Cfg.y);
 
@@ -416,11 +408,6 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
 
     int notebook_page = 0;
 
-//CSG removed
-//#if wxUSE_STATUSBAR
-//    CreateStatusBar();
-//#endif // wxUSE_STATUSBAR
-
     wxSizer *navigSizer = NULL;
 
     if (style & (wxHF_CONTENTS | wxHF_INDEX | wxHF_SEARCH))
@@ -432,7 +419,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
         m_HtmlWin = new TextBookHelpHtmlWindow(this, m_Splitter);
         m_NavigPan = new wxPanel(m_Splitter, wxID_ANY); //, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
         m_NavigNotebook = new wxNotebook(m_NavigPan, wxID_HTML_NOTEBOOK,
-                                         wxDefaultPosition, wxDefaultSize);
+                                         wxDefaultPosition, wxDefaultSize); 
 
         navigSizer = new wxBoxSizer(wxVERTICAL);
         navigSizer->Add(m_NavigNotebook, 1, wxEXPAND);
@@ -445,14 +432,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
     }
 
     m_HtmlWin->SetRelatedFrame(this, m_TitleFormat);
-//CSG Added
     g_pMainFrame->SetHtmlWindow(m_HtmlWin);
-//End CSG Added
-
-//CSG removed
-//#if wxUSE_STATUSBAR
-//    m_HtmlWin->SetRelatedStatusBar(0);
-//#endif // wxUSE_STATUSBAR
 
     if ( m_Config )
         m_HtmlWin->ReadCustomization(m_Config, m_ConfigRoot);
@@ -485,10 +465,8 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
             bmpbt2 = new wxBitmapButton(dummy, wxID_HTML_BOOKMARKSREMOVE,
                                  wxArtProvider::GetBitmap(wxART_DEL_BOOKMARK,
                                                           wxART_BUTTON));
-#if wxUSE_TOOLTIPS
             bmpbt1->SetToolTip(_("Add current page to bookmarks"));
             bmpbt2->SetToolTip(_("Remove current page from bookmarks"));
-#endif // wxUSE_TOOLTIPS
 
             wxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
 
@@ -541,13 +519,11 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
                                             wxDefaultSize,
                                             wxALIGN_RIGHT | wxST_NO_AUTORESIZE);
         m_IndexList = new wxListBox(dummy, wxID_HTML_INDEXLIST,
-                                    wxDefaultPosition, wxDefaultSize,
+                                    wxDefaultPosition, wxSize(125,-1),
                                     0, NULL, wxLB_SINGLE);
 
-#if wxUSE_TOOLTIPS
         m_IndexButton->SetToolTip(_("Display all index items that contain given substring. Search is case insensitive."));
         m_IndexButtonAll->SetToolTip(_("Show all items in index"));
-#endif //wxUSE_TOOLTIPS
 
         topsizer->Add(m_IndexText, 0, wxEXPAND | wxALL, 10);
         wxSizer *btsizer = new wxBoxSizer(wxHORIZONTAL);
@@ -579,11 +555,9 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
         m_SearchCaseSensitive = new wxCheckBox(dummy, wxID_ANY, _("Case sensitive"));
         m_SearchWholeWords = new wxCheckBox(dummy, wxID_ANY, _("Whole words only"));
         m_SearchButton = new wxButton(dummy, wxID_HTML_SEARCHBUTTON, _("Search"));
-#if wxUSE_TOOLTIPS
         m_SearchButton->SetToolTip(_("Search contents of help book(s) for all occurences of the text you typed above"));
-#endif //wxUSE_TOOLTIPS
         m_SearchList = new wxListBox(dummy, wxID_HTML_SEARCHLIST,
-                                     wxDefaultPosition, wxDefaultSize,
+                                     wxDefaultPosition, wxSize(125,-1),
                                      0, NULL, wxLB_SINGLE);
 
         sizer->Add(m_SearchText, 0, wxEXPAND | wxALL, 10);
@@ -607,19 +581,10 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
         m_NavigPan->Layout();
     }
 
-    //Toolbar creation moved here to have information about Navigation panel visibility status
-#if wxUSE_TOOLBAR
-    // toolbar?
-    if (style & (wxHF_TOOLBAR | wxHF_FLAT_TOOLBAR)) {
-        bool fNavPanelVisible = m_Cfg.navig_on;
-		CreateMyToolBar(style, fNavPanelVisible);
-    }
-#endif //wxUSE_TOOLBAR
-
     // showtime
     if ( m_NavigPan && m_Splitter )
     {
-        m_Splitter->SetMinimumPaneSize(20);
+        m_Splitter->SetMinimumPaneSize(5);  //minimum size: 5%
         if ( m_Cfg.navig_on )
             m_Splitter->SplitVertically(m_NavigPan, m_HtmlWin, m_Cfg.sashpos);
 
@@ -663,150 +628,6 @@ lmTextBookFrame::~lmTextBookFrame()
     if (m_Printer) delete m_Printer;
 #endif
 }
-
-void lmTextBookFrame::CreateMyToolBar(int style, bool fNavPanelVisible)
-{
-    // return if exists
-    if (m_pToolbar) return;
-
-    long styleTB = wxTB_FLAT | wxTB_DOCKABLE | wxTB_HORIZONTAL;
-    long nLabelsIndex = g_pPrefs->Read(_T("/Toolbars/Labels"), 0L);
-    if (nLabelsIndex == 1) 
-        styleTB |= wxTB_TEXT;
-    else if (nLabelsIndex == 2) 
-        styleTB |= wxTB_HORZ_TEXT;
-    m_pToolbar = CreateToolBar(styleTB);
-
-    // set the icons size
-    long nIconSize = g_pPrefs->Read(_T("/Toolbars/IconSize"), 16);
-    wxSize nSize(nIconSize, nIconSize);
-    m_pToolbar->SetToolBitmapSize(nSize);
-
-    m_pToolbar->SetMargins( 2, 2 );
-    AddToolbarButtons(m_pToolbar, wxHF_PRINT, nSize, fNavPanelVisible);    // enable 'print' but not 'open html files' button
-
-    m_pToolbar->Realize();
-
-}
-
-//CSG Added: Recreate toolbar to take into account a change in user settings
-void lmTextBookFrame::UpdateToolbarsLayout()
-{
-	if (m_pToolbar) {
-        // delete toolbar
-        delete m_pToolbar;
-        SetToolBar(NULL);
-        m_pToolbar = (wxToolBar*)NULL;
-        bool fNavPanelVisible = (m_Splitter ? m_Splitter->IsSplit() : false);
-		CreateMyToolBar(wxHF_PRINT, fNavPanelVisible);     // enable 'print' but not 'open html files' buttons
-	}
-}
-
-#if wxUSE_TOOLBAR
-//CSG Modified: Added parameter nSize
-void lmTextBookFrame::AddToolbarButtons(wxToolBar *toolBar, int style, 
-                                        const wxSize& nSize, bool fNavPanelVisible)
-{
-    wxBitmap wpanelBitmap =
-        wxArtProvider::GetBitmap(wxART_HELP_SIDE_PANEL, wxART_TOOLBAR, nSize);
-    wxBitmap wbackBitmap =
-        wxArtProvider::GetBitmap(wxART_GO_BACK, wxART_TOOLBAR, nSize);
-    wxBitmap wforwardBitmap =
-        wxArtProvider::GetBitmap(wxART_GO_FORWARD, wxART_TOOLBAR, nSize);
-    wxBitmap wupnodeBitmap =
-        wxArtProvider::GetBitmap(wxART_GO_TO_PARENT, wxART_TOOLBAR, nSize);
-    wxBitmap wupBitmap =
-        wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR, nSize);
-    wxBitmap wdownBitmap =
-        wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR, nSize);
-    wxBitmap wopenBitmap =
-        wxArtProvider::GetBitmap(wxART_FILE_OPEN, wxART_TOOLBAR, nSize);
-    wxBitmap wprintBitmap =
-        wxArtProvider::GetBitmap(wxART_PRINT, wxART_TOOLBAR, nSize);
-    wxBitmap woptionsBitmap =
-        wxArtProvider::GetBitmap(wxART_HELP_SETTINGS, wxART_TOOLBAR, nSize);
-
-    wxASSERT_MSG( (wpanelBitmap.Ok() && wbackBitmap.Ok() &&
-                   wforwardBitmap.Ok() && wupnodeBitmap.Ok() &&
-                   wupBitmap.Ok() && wdownBitmap.Ok() &&
-                   wopenBitmap.Ok() && wprintBitmap.Ok() &&
-                   woptionsBitmap.Ok()),
-                  wxT("One or more HTML help frame toolbar bitmap could not be loaded.")) ;
-
-    //CSG Modif----------------------------------------
-    toolBar->AddTool(wxID_HTML_PANEL, _("Index"), wpanelBitmap, 
-            _("Show/hide navigation panel"), wxITEM_CHECK );
-    toolBar->ToggleTool(wxID_HTML_PANEL, fNavPanelVisible);
-
-
-    //toolBar->AddTool(wxID_HTML_PANEL, wpanelBitmap, wxNullBitmap,
-    //                   false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-    //                   _("Show/hide navigation panel"));
-
-    toolBar->AddSeparator();
-    //toolBar->AddTool(wxID_HTML_BACK, wbackBitmap, wxNullBitmap,
-    //                   false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-    //                   _("Go back"));
-    toolBar->AddTool(wxID_HTML_BACK, _("Go back"), wbackBitmap, 
-            _("Go to previous page in navigation log"), wxITEM_NORMAL );
-
-    //toolBar->AddTool(wxID_HTML_FORWARD, wforwardBitmap, wxNullBitmap,
-    //                   false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-    //                   _("Go forward"));
-    toolBar->AddTool(wxID_HTML_FORWARD, _("Go forward"), wforwardBitmap, 
-            _("Go to next page in navigation log"), wxITEM_NORMAL );
-
-    toolBar->AddSeparator();
-
-    //toolBar->AddTool(wxID_HTML_UPNODE, wupnodeBitmap, wxNullBitmap,
-    //                   false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-    //                   _("Go one level up in document hierarchy"));
-    toolBar->AddTool(wxID_HTML_UPNODE, _("Parent"), wupnodeBitmap, 
-            _("Go one level up in document hierarchy"), wxITEM_NORMAL );
-
-    //toolBar->AddTool(wxID_HTML_UP, wupBitmap, wxNullBitmap,
-    //                   false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-    //                   _("Previous page"));
-    toolBar->AddTool(wxID_HTML_UP, _("Back Page"), wupBitmap, 
-            _("Previous page of current document"), wxITEM_NORMAL );
-
-    //toolBar->AddTool(wxID_HTML_DOWN, wdownBitmap, wxNullBitmap,
-    //                   false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-    //                   _("Next page"));
-    toolBar->AddTool(wxID_HTML_DOWN, _("next Page"), wdownBitmap, 
-            _("Next page of current document"), wxITEM_NORMAL );
-
-    if ((style & wxHF_PRINT) || (style & wxHF_OPEN_FILES))
-        toolBar->AddSeparator();
-
-    if (style & wxHF_OPEN_FILES) {
-        //toolBar->AddTool(wxID_HTML_OPENFILE, wopenBitmap, wxNullBitmap,
-        //                   false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-        //                   _("Open HTML document"));
-        toolBar->AddTool(wxID_HTML_OPENFILE, _("Open doc"), wopenBitmap, 
-                _("Open HTML document"), wxITEM_NORMAL );
-    }
-
-#if wxUSE_PRINTING_ARCHITECTURE
-    if (style & wxHF_PRINT) {
-        //toolBar->AddTool(wxID_HTML_PRINT, wprintBitmap, wxNullBitmap,
-        //                   false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-        //                   _("Print this page"));
-        toolBar->AddTool(wxID_HTML_PRINT, _("Print"), wprintBitmap, 
-                _("Print this page"), wxITEM_NORMAL );
-    }
-#endif
-
-    toolBar->AddSeparator();
-    //toolBar->AddTool(wxID_HTML_OPTIONS, woptionsBitmap, wxNullBitmap,
-    //                   false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-    //                   _("Display options dialog"));
-    toolBar->AddTool(wxID_HTML_OPTIONS, _("Fonts"), woptionsBitmap, 
-            _("Change font settings"), wxITEM_NORMAL );
-}
-    //End CSG modif -------------------------------------
-
-#endif //wxUSE_TOOLBAR
 
 
 void lmTextBookFrame::SetTitleFormat(const wxString& format)

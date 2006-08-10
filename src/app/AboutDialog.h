@@ -36,10 +36,6 @@
 #include <wx/html/htmlwin.h>
 
 
-// Increment this every time you release a new version
-#define LM_VERSION_STR _T("3.1")
-
-
 class lmAboutDialog : public wxDialog
 {
 
@@ -64,7 +60,8 @@ private:
     wxStaticText*   m_pTxtSubtitle;
 
     //other variables
-    wxString        m_sHeader;      //html code to start a page
+    wxString        m_sHeader;          //html code to start a page
+    wxString        m_sVersionNumber;   //version number in format "x.x"
 
     DECLARE_EVENT_TABLE()
 };

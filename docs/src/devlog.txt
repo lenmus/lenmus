@@ -75,8 +75,9 @@ LenMus project philosophy (to remind me to always stay on this):
   - Params	object for html embedding
 
 *  eBooks new architecture: design evolution
-  - Move toolbar to mainframe:
-	- Define events in MainFrame 
+  + Move toolbar to mainframe
+  + Integrate Print button
+  - Hardcode LenMus Introduction page in program
 	
   - Print problem: analyze code for ImageCell
 
@@ -92,7 +93,9 @@ LenMus project philosophy (to remind me to always stay on this):
     - To facilitate internationalization, eBooks Introduction and Single Exercises 
 		should be coded inside the program instead of being external html files. 
 		All other books will be written in Spanish and not translated by me.
-    - Allow for simultaneous access to books in different languages.
+    - Allow for simultaneous access to books in different languages --> It is just a
+		question of moving books to the same folder; prefix book names with the 
+		language tag
 
     Tasks:
     - update help documentation 

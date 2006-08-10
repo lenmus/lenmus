@@ -1,4 +1,3 @@
-// RCS-ID: $Id: TextBookController.h,v 1.4 2006/02/23 19:21:06 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -61,10 +60,6 @@ public:
 
     lmTextBookFrame* GetFrame() { return m_helpFrame; }
     void UseConfig(wxConfigBase *config, const wxString& rootpath = wxEmptyString);
-
-    //CSG Added
-    void UpdateToolbarsLayout() { m_helpFrame->UpdateToolbarsLayout(); }
-
 
     // Assigns config object to the Ctrl. This config is then
     // used in subsequent calls to Read/WriteCustomization of both help

@@ -172,7 +172,8 @@ public:
     void RefreshLists();
 
     //CSG Added
-    void UpdateToolbarsLayout();
+    void OnToolbar(wxCommandEvent& event);
+    bool IsNavPanelVisible() { return m_Cfg.navig_on; }
 
 
 protected:
@@ -191,19 +192,9 @@ protected:
     // into better searchable structure
     void UpdateMergedIndex();
 
-    // Add custom buttons to toolbar
-    //CSG Modified: added parameters nSize and fNavPanelVisible
-    virtual void AddToolbarButtons(wxToolBar *toolBar, int style, 
-        const wxSize& nSize, bool fNavPanelVisible);
-
     // Displays options dialog (fonts etc.)
     virtual void OptionsDialog();
 
-    // CSG Added
-    void CreateMyToolBar(int style, bool fNavPanelVisible);
-
-
-    void OnToolbar(wxCommandEvent& event);
     void OnContentsSel(wxTreeEvent& event);
     void OnIndexSel(wxCommandEvent& event);
     void OnIndexFind(wxCommandEvent& event);

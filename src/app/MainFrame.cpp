@@ -353,7 +353,8 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_TIMER       (ID_TIMER_MTR,        lmMainFrame::OnMetronomeTimer)
 
     //TextBookFrame
-    EVT_TOOL_RANGE(wxID_HTML_PANEL, wxID_HTML_COUNTINFO, lmMainFrame::OnBookFrame)
+    EVT_TOOL_RANGE(wxID_HTML_PANEL, wxID_HTML_OPTIONS, lmMainFrame::OnBookFrame)
+    EVT_UPDATE_UI_RANGE (wxID_HTML_PANEL, wxID_HTML_OPTIONS, lmMainFrame::OnBookFrameUpdateUI)
 
 END_EVENT_TABLE()
 
@@ -453,13 +454,6 @@ void lmMainFrame::UpdateToolbarsLayout()
 		DeleteToolbar();
 		CreateMyToolBar();
 	}
-    if (m_fBookOpened) {
-        //The book controller is open. Update the toolbar
-        wxASSERT(m_pBookController);
-        m_pBookController->UpdateToolbarsLayout();
-    }
-
-
 }
 
 void lmMainFrame::CreateMyToolBar()
@@ -679,45 +673,25 @@ void lmMainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize)
                    woptionsBitmap.Ok()),
                   wxT("One or more HTML help frame toolbar bitmap could not be loaded.")) ;
 
-
     //add tools
     m_pTbTextBooks->AddTool(wxID_HTML_PANEL, _("Index"), wpanelBitmap, 
             _("Show/hide navigation panel"), wxITEM_CHECK );
     m_pTbTextBooks->ToggleTool(wxID_HTML_PANEL, false);
     m_pTbTextBooks->AddSeparator();
-    m_pTbTextBooks->AddTool(wxID_HTML_BACK, wbackBitmap, wxNullBitmap,
-                       false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-                       _("Go back"));
-    m_pTbTextBooks->AddTool(wxID_HTML_FORWARD, wforwardBitmap, wxNullBitmap,
-                       false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-                       _("Go forward"));
+    m_pTbTextBooks->AddTool(wxID_HTML_BACK, _("Go back"), wbackBitmap, 
+            _("Go to previous page in navigation log"), wxITEM_NORMAL );
+    m_pTbTextBooks->AddTool(wxID_HTML_FORWARD, _("Go forward"), wforwardBitmap, 
+            _("Go to next page in navigation log"), wxITEM_NORMAL );
     m_pTbTextBooks->AddSeparator();
-
-    m_pTbTextBooks->AddTool(wxID_HTML_UPNODE, wupnodeBitmap, wxNullBitmap,
-                       false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-                       _("Go one level up in document hierarchy"));
-    m_pTbTextBooks->AddTool(wxID_HTML_UP, wupBitmap, wxNullBitmap,
-                       false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-                       _("Previous page"));
-    m_pTbTextBooks->AddTool(wxID_HTML_DOWN, wdownBitmap, wxNullBitmap,
-                       false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-                       _("Next page"));
-
-    if ((style & wxHF_PRINT) || (style & wxHF_OPEN_FILES))
-        m_pTbTextBooks->AddSeparator();
-
-    if (style & wxHF_OPEN_FILES)
-        m_pTbTextBooks->AddTool(wxID_HTML_OPENFILE, wopenBitmap, wxNullBitmap,
-                           false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-                           _("Open HTML document"));
-    if (style & wxHF_PRINT)
-        m_pTbTextBooks->AddTool(wxID_HTML_PRINT, wprintBitmap, wxNullBitmap,
-                           false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-                           _("Print this page"));
+    m_pTbTextBooks->AddTool(wxID_HTML_UPNODE, _("Parent"), wupnodeBitmap, 
+            _("Go one level up in document hierarchy"), wxITEM_NORMAL );
+    m_pTbTextBooks->AddTool(wxID_HTML_UP, _("Back Page"), wupBitmap, 
+            _("Previous page of current document"), wxITEM_NORMAL );
+    m_pTbTextBooks->AddTool(wxID_HTML_DOWN, _("next Page"), wdownBitmap, 
+            _("Next page of current document"), wxITEM_NORMAL );
     m_pTbTextBooks->AddSeparator();
-    m_pTbTextBooks->AddTool(wxID_HTML_OPTIONS, woptionsBitmap, wxNullBitmap,
-                       false, wxDefaultCoord, wxDefaultCoord, (wxObject *) NULL,
-                       _("Display options dialog"));
+    m_pTbTextBooks->AddTool(wxID_HTML_OPTIONS, _("Fonts"), woptionsBitmap, 
+            _("Change font settings"), wxITEM_NORMAL );
 
     m_pTbTextBooks->Realize();
 
@@ -1092,15 +1066,8 @@ void lmMainFrame::InitializeHelp()
 
 void lmMainFrame::InitializeBooks()
 {
-    // create the help window 
-    if (g_fReleaseVersion || g_fReleaseBehaviour) {
-        m_pBookController = new
-            lmTextBookController(wxHF_DEFAULT_STYLE | wxHF_FLAT_TOOLBAR );
-    }
-    else {
-        m_pBookController = new
-            lmTextBookController(wxHF_DEFAULT_STYLE | wxHF_OPEN_FILES | wxHF_FLAT_TOOLBAR );
-    }
+    // create the books window 
+    m_pBookController = new lmTextBookController(wxHF_DEFAULT_STYLE);
 
     // set the config object
     m_pBookController->UseConfig(wxConfig::Get(), _T("TextBooksController"));        
@@ -1191,8 +1158,22 @@ void lmMainFrame::SilentlyCheckForUpdates(bool fSilent)
 // ----------------------------------------------------------------------------
 void lmMainFrame::OnBookFrame(wxCommandEvent& event)
 {
-    event.Skip(true);
-    wxMessageBox(_T("event in TextBook"));
+    lmTextBookFrame* pBookFrame = m_pBookController->GetFrame();
+    pBookFrame->OnToolbar(event);
+    event.Skip(false);
+}
+
+void lmMainFrame::OnBookFrameUpdateUI(wxUpdateUIEvent& event)
+{
+    //enable only if current active view is TextBookFrame class
+    wxMDIChildFrame* pChild = GetActiveChild();
+    bool fEnabled = pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame)) &&
+                    m_pBookController;
+    event.Enable(fEnabled);
+    if (fEnabled) {
+        lmTextBookFrame* pBookFrame = m_pBookController->GetFrame();
+        m_pTbTextBooks->ToggleTool(wxID_HTML_PANEL, pBookFrame->IsNavPanelVisible());
+    }
 }
 
 void lmMainFrame::OnVisitWebsite(wxCommandEvent& WXUNUSED(event))
@@ -1344,9 +1325,79 @@ void lmMainFrame::OnOpenBook(wxCommandEvent& event)
 
         // open it and display book "intro"
         m_pBookController->Display(_T("intro_welcome.htm"));     //By page name
+        DisplayIntroPage();
     }
 
 }
+
+void lmMainFrame::DisplayIntroPage()
+{
+    wxString sVersionNumber = wxGetApp().GetVersionNumber();
+    wxString sNil = _T("");
+
+    wxString sBookRef = sNil +
+        _T("<a href='#LenMusPage/Introduction to single exercises'>") +
+        _("Single exercises") + _T("</a>");
+
+    wxString sBook1 = wxString::Format( _("Book %s contains \
+some basic exercises for ear training and to practise theoretical concepts, such as \
+intervals and scales. Unlike exercises included in the other books, you can customize all \
+single exercises included in this book. This will allow you meet \
+your specific needs at each moment and to practise specific points."), sBookRef );
+
+    wxString sIntroPage = sNil +
+      _T("<html><body><table width='100%'><tr><td align='left'>") 
+      _T("<img src='Phonascus-277x63.gif' width='277' height='63' /></td>") 
+      _T("<td align='right'><img src='LenMus-170x44.gif' width='170' height='44' /></td>") 
+      _T("</tr></table><p>&nbsp;</p><h1>") +
+      _("Welcome to LenMus Phonascus version ") + sVersionNumber +
+      _T("</h1><p>") +
+      _("Phonascus, from Latin 'the teacher of music', is a music education software that you can \
+use to practice your music reading skills, improve your ear training abilities, or just learn the \
+fundamental principles of music theory and language. \
+From version 3.1 it includes new functions that, I hope, \
+will end up with full support for the creation, display, \
+printing, play back and interactive edition of music scores. Visit the \
+LenMus web site for more information about the current status of the score editor.") +
+      _T("</p><p>") +
+      _("LenMus Phonascus allows you to focus on specific skills and exercises, on \
+both theory and ear training. The different activities can be customized to meet \
+your specific needs at each moment and it allows you to work at your own pace.") +
+      _T("</p><p>") +
+      _("LenMus is structured as a collection of fully interactive textbooks (eBooks), \
+including theory and exercises. All exercises are fully \
+integrated into the text. Music scores are not just \
+images or pictures but fully interactive operational music scores that you can hear, \
+in whole or just the measures you choose. This enables you \
+to put concepts into practice with immediate feedback and makes the subject matter both \
+more accessible and more rewarding, as you can hear, test and put in practise \
+immediately any new concept introduced.") +
+      _T("</p><ul><li>") +
+      _("Building and spelling intervals, scales and tonal keys.") +
+      _T("</li><li>") +
+      _("Ear training: identification of intervals and scales.") +
+      _T("</li><li>") +
+      _("Rhythm and music reading exercises.") +
+      _T("</li></ul><p>") +
+      _("Teaching material is organized into levels, and each level into lessons. In this \
+version the following books are is included:") +
+      _T("</p>") + sBook1 + 
+      _T("</body></html>");
+//<ul><li>") +
+
+//</li>
+//<li>Book <a href="#LenMusPage/Music Reading. Level 2">Music Reading. Level 2</a>
+//    is a set of music reading lessons, in difficulty progression, covering the syllabus
+//    of a second course at elemental level.</a></li>
+//<li>Finally, book <a href="#">LenMus. Introduction</a>
+//    is just this text.</a></li>
+//</ul>
+//
+
+    m_pHtmlWin->SetPage(sIntroPage);
+
+}
+
 void lmMainFrame::OnOpenBookUI(wxUpdateUIEvent &event)
 {
     event.Check (m_fBookOpened);
@@ -1648,22 +1699,30 @@ void lmMainFrame::OnImportFile(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event))
 {
-    // Get the active view
-    lmScoreView* pView = g_pTheApp->GetActiveView();
+    wxMDIChildFrame* pChild = GetActiveChild();
+    bool fEditFrame = pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame));
+    bool fTextBookFrame = pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame));
 
-    // Pass two printout objects: for preview, and possible printing.
-    wxPrintDialogData printDialogData(*g_pPrintData);
-    wxPrintPreview *preview = new wxPrintPreview(new lmPrintout(pView), new lmPrintout(pView), &printDialogData);
-    if (!preview->Ok()) {
-        delete preview;
-        wxMessageBox(_("There is a problem previewing.\nPerhaps your current printer is not set correctly?"), _("Previewing"), wxOK);
-        return;
+    if (fEditFrame) {
+        // Get the active view
+        lmScoreView* pView = g_pTheApp->GetActiveView();
+
+        // Pass two printout objects: for preview, and possible printing.
+        wxPrintDialogData printDialogData(*g_pPrintData);
+        wxPrintPreview *preview = new wxPrintPreview(new lmPrintout(pView), new lmPrintout(pView), &printDialogData);
+        if (!preview->Ok()) {
+            delete preview;
+            wxMessageBox(_("There is a problem previewing.\nPerhaps your current printer is not set correctly?"), _("Previewing"), wxOK);
+            return;
+        }
+        
+        wxPreviewFrame *frame = new wxPreviewFrame(preview, this, _("Preview"), wxPoint(100, 100), wxSize(600, 650));
+        frame->Centre(wxBOTH);
+        frame->Initialize();
+        frame->Show(true);
     }
-    
-    wxPreviewFrame *frame = new wxPreviewFrame(preview, this, _("Preview"), wxPoint(100, 100), wxSize(600, 650));
-    frame->Centre(wxBOTH);
-    frame->Initialize();
-    frame->Show(true);
+    else if (fTextBookFrame) {
+    }
 }
 
 //void lmMainFrame::OnPageSetup(wxCommandEvent& WXUNUSED(event))
@@ -1690,24 +1749,37 @@ void lmMainFrame::OnPrintSetup(wxCommandEvent& WXUNUSED(event))
 
 }
 
-void lmMainFrame::OnPrint(wxCommandEvent& WXUNUSED(event))
+void lmMainFrame::OnPrint(wxCommandEvent& event)
 {
-    wxPrintDialogData printDialogData(* g_pPrintData);
-    wxPrinter printer(& printDialogData);
+    wxMDIChildFrame* pChild = GetActiveChild();
+    bool fEditFrame = pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame));
+    bool fTextBookFrame = pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame));
 
-    // Get the active view and create the printout object
-    lmScoreView* pView = g_pTheApp->GetActiveView();
-    lmPrintout printout(pView);
+    if (fEditFrame) {
+        wxPrintDialogData printDialogData(* g_pPrintData);
+        wxPrinter printer(& printDialogData);
 
-    if (!printer.Print(this, &printout, true)) {
-        if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
-            wxMessageBox(_("There is a problem for printing.\nPerhaps your current printer is not set correctly?"), _T("Printing"), wxOK);
-        else
-            wxMessageBox(_("Printing canceled"), _T("Printing"), wxOK);
+        // Get the active view and create the printout object
+        lmScoreView* pView = g_pTheApp->GetActiveView();
+        lmPrintout printout(pView);
 
-    } else {
-        (*g_pPrintData) = printer.GetPrintDialogData().GetPrintData();
+        if (!printer.Print(this, &printout, true)) {
+            if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
+                wxMessageBox(_("There is a problem for printing.\nPerhaps your current printer is not set correctly?"), _T("Printing"), wxOK);
+            else
+                wxMessageBox(_("Printing canceled"), _T("Printing"), wxOK);
+
+        } else {
+            (*g_pPrintData) = printer.GetPrintDialogData().GetPrintData();
+        }
     }
+    else if (fTextBookFrame) {
+        event.SetId(wxID_HTML_PRINT);
+        lmTextBookFrame* pBookFrame = m_pBookController->GetFrame();
+        pBookFrame->OnToolbar(event);
+        event.Skip(false);
+    }
+
 }
 
 void lmMainFrame::OnEditUpdateUI(wxUpdateUIEvent &event)
@@ -1721,18 +1793,20 @@ void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
 {
     wxMDIChildFrame* pChild = GetActiveChild();
     bool fEditFrame = pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame));
+    bool fTextBookFrame = pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame));
 
     switch (event.GetId())
     {
-        // Print related commands: enabled if EditFrame
+        // Print related commands: enabled if EditFrame or TextBookFrame
         case MENU_Print_Preview:
             event.Enable(fEditFrame);
+            //! @todo Add print preview capabilities to TextBookFrame
             break;
         case wxID_PRINT_SETUP:
-            event.Enable(fEditFrame);
+            event.Enable(fEditFrame || fTextBookFrame);
             break;
         case MENU_Print:
-            event.Enable(fEditFrame);
+            event.Enable(fEditFrame || fTextBookFrame);
             break;
 
         // Save related commands: enabled if EditFrame

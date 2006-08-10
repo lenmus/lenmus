@@ -44,8 +44,8 @@
 
 
 #include "Updater.h"
-#include "../app/AboutDialog.h"       // to get this version string
 #include "../app/ErrorDlg.h"
+#include "../app/TheApp.h"         //to get access to version info.
 
 //access to error's logger
 #include "../app/Logger.h"
@@ -176,7 +176,8 @@ may be down. Please, try again later."));
     //analyze document and extract information for this platform
     ParseDocument(pRoot);
 
-    m_fNeedsUpdate = (m_sVersion != _T("") && m_sVersion != LM_VERSION_STR);
+    m_fNeedsUpdate = (m_sVersion != _T("") && 
+                      m_sVersion != wxGetApp().GetVersionNumber());
 
     return false;       //no errors
 

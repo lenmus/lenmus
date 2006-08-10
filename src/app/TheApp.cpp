@@ -343,6 +343,10 @@ bool lmTheApp::OnInit(void)
     oXrcFile = wxFileName(sPath, _T("DlgCfgTheoIntervals"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
+    // Chord identification exercises: configuration dialog
+    oXrcFile = wxFileName(sPath, _T("DlgCfgIdfyChord"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
     // Pattern Editor dialog
     oXrcFile = wxFileName(sPath, _T("DlgPatternEditor"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
@@ -694,6 +698,13 @@ lmEditFrame* lmTheApp::CreateProjectFrame(wxDocument* doc, wxView* view)
     pEditFrame->SetIcon( wxArtProvider::GetIcon(_T("tool_new"), wxART_TOOLBAR, wxSize(16,16)) );
 
     return pEditFrame;
+}
+
+wxString lmTheApp::GetVersionNumber()
+{
+    // Increment this every time you release a new version
+    wxString sVersion = _T("3.2");
+    return sVersion;
 }
 
 

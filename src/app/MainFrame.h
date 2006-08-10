@@ -96,7 +96,7 @@ public:
     void OnPrintPreview(wxCommandEvent& WXUNUSED(event));
     //void OnPageSetup(wxCommandEvent& WXUNUSED(event));
     void OnPrintSetup(wxCommandEvent& WXUNUSED(event));
-    void OnPrint(wxCommandEvent& WXUNUSED(event));
+    void OnPrint(wxCommandEvent& event);
     void OnFileUpdateUI(wxUpdateUIEvent &event);
 
     void ExportAsImage(int nImgType);
@@ -172,7 +172,7 @@ public:
 
     //textbook events
     void OnBookFrame(wxCommandEvent& event);
-
+    void OnBookFrameUpdateUI(wxUpdateUIEvent& event);
 
     // other methods
     void SetOpenBookButton(bool fButtonPressed);
@@ -199,6 +199,8 @@ protected:
     void InitializeHelp();
     void InitializeBooks();
     void ScanForBooks(wxString sPath, wxString sPattern);
+    void DisplayIntroPage();
+
 
 
     wxFrameManager          m_mgrAUI;       // wxAUI manager

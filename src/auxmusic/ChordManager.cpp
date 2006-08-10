@@ -72,7 +72,7 @@ static lmChordData tData[ect_Max] = {
     { 4, _T("m3"), _T("p5"), _T("M7") },      //mT + M7   - MinorMajorSeventh
     { 4, _T("M3"), _T("p5"), _T("M6") },      //MT + M6   - MajorSixth
     { 4, _T("m3"), _T("p5"), _T("M6") },      //mT + M6   - MinorSixth
-    { 3, _T("M3"), _T("a5"), _T("") },        //M3 + a6   - AugSixth
+    { 3, _T("M3"), _T("a4"), _T("a6") },      //          - AugSixth
 };
 
 
@@ -318,8 +318,8 @@ void lmChordManager::ComputeInterval(lmNoteBits* pRoot, wxString sInterval,
     pNewNote->nStepSemitones = StepToSemitones(pNewNote->nStep);
 
     //compute new accidentals
-    pNewNote->nAccidentals = (pRoot->nStepSemitones + pRoot->nAccidentals + tIntval.nSemitones - 
-                         pNewNote->nStepSemitones) % 12;
+    pNewNote->nAccidentals = (pRoot->nStepSemitones + tIntval.nSemitones - 
+                         pNewNote->nStepSemitones) % 12 + pRoot->nAccidentals;
 
 }
 

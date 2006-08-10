@@ -41,7 +41,7 @@
 
 #include "../ldp_parser/LDPParser.h"
 #include "../auxmusic/Interval.h"
-#include "../app/DlgCfgEarIntervals.h"
+#include "../app/DlgCfgIdfyChord.h"
 #include "../auxmusic/ChordManager.h"
 
 
@@ -393,11 +393,9 @@ void lmIdfyChordCtrol::SetUpButtons()
 
 void lmIdfyChordCtrol::OnSettingsButton(wxCommandEvent& event)
 {
-    /*
-    lmDlgCfgEarIntervals dlg(this, m_pConstrains, true);    // true -> enable First note equal checkbox
+    lmDlgCfgIdfyChord dlg(this, m_pConstrains, m_fTheoryMode);   
     int retcode = dlg.ShowModal();
     if (retcode == wxID_OK) m_pConstrains->SaveSettings();
-    */
 
 }
 

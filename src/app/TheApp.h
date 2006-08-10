@@ -60,6 +60,7 @@ class lmTheApp: public wxApp
     wxString GetLanguageCanonicalName() { return m_locale.GetCanonicalName(); }
     wxString GetLocaleName() { return m_locale.GetLocale(); }
     wxString GetLocaleSysName() { return m_locale.GetSysName(); }
+    wxString GetVersionNumber();
 
 protected:
     wxDocManager*	m_pDocManager;
