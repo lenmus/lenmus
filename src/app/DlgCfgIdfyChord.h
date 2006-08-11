@@ -47,19 +47,14 @@ public:
     // event handlers
     void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
     void OnCancelClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_CANCEL); }
-    void OnPageChanging(wxNotebookEvent& event);
-    void OnChkKeyClicked(wxCommandEvent& WXUNUSED(event));
-    void OnChkChordClicked(wxCommandEvent& WXUNUSED(event));
-    void OnChkModeClicked(wxCommandEvent& WXUNUSED(event));
-
-    void EnableKeySignCheckBoxes(bool fEnable);
+    void OnDataChanged(wxCommandEvent& WXUNUSED(event));
 
 
 private:
     bool VerifyData();
 
-    lmChordConstrains*   m_pConstrains;      // the constrains to set up
-    bool            m_fTheoryMode;
+    lmChordConstrains*  m_pConstrains;          // the constrains to set up
+    bool                m_fTheoryMode;
 
     //controls
     wxCheckBox*     m_pChkAllowInversions;
@@ -67,9 +62,9 @@ private:
     wxCheckBox*     m_pChkPlayMode[3];          // allowed play modes
     wxCheckBox*     m_pChkChord[ect_Max];       // Allowed chords check boxes
     wxCheckBox*     m_pChkKeySign[earmFa+1];    // Allowed key signatures check boxes
+    wxStaticBox*    m_pBoxPlayModes;            // box with play mode check boxes
 
-
-    wxStaticBitmap* m_pBmpPlayModeError;            // error icons and messages
+    wxStaticBitmap* m_pBmpPlayModeError;        // error icons and messages      
     wxStaticText*   m_pLblPlayModeError;
     wxStaticBitmap* m_pBmpKeySignError;
     wxStaticText*   m_pLblKeySignError;

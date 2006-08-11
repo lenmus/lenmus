@@ -1172,7 +1172,8 @@ void lmMainFrame::OnBookFrameUpdateUI(wxUpdateUIEvent& event)
     event.Enable(fEnabled);
     if (fEnabled) {
         lmTextBookFrame* pBookFrame = m_pBookController->GetFrame();
-        m_pTbTextBooks->ToggleTool(wxID_HTML_PANEL, pBookFrame->IsNavPanelVisible());
+        if (pBookFrame)
+            m_pTbTextBooks->ToggleTool(wxID_HTML_PANEL, pBookFrame->IsNavPanelVisible());
     }
 }
 

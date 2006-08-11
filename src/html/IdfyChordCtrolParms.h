@@ -42,12 +42,13 @@
 
 #include "ObjectParams.h"
 #include "../ldp_parser/AuxString.h"
+#include "ParamsParser.h"
 
-/*! This class pack all parameters to set up a Side Reading exercise.
-    The contained lmScoreConstrains object has the constrains for the 'ByProgram'
-    settings mode (default mode). For other modes ('UserSettings' and 'ReadingNotes')
-    the settings must be read/setup by the IdfyChordCtrol object.
-*/
+
+//! This class pack all parameters to set up a Chord Identification exercise,
+//! either for ear training or for theory.
+//! The settings must be read/setup by the IdfyChordCtrol object.
+
 class lmIdfyChordCtrolParms : public lmObjectParams
 {
 public:
@@ -95,24 +96,50 @@ lmIdfyChordCtrolParms::~lmIdfyChordCtrolParms()
     //IF THE CONTROL HAS BEEN CREATED
     if (m_sParamErrors != _T("")) {
         if (m_pConstrains) delete m_pConstrains;
-        //if (m_pOptions) delete m_pOptions;
     }
 
 }
 
 void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
 {
-    /*! @page EarChordCtrolParams
+    /*! @page IdfyChordCtrolParams
         @verbatim    
 
-        Params for lmIdfyChordCtrol - html object type="Application/LenMusEarChord"
+        Params for lmIdfyChordCtrol - html object type="Application/LenMusIdfyChord"
 
+        keys        Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
+                    Default: all
+
+        chords      Keyword "all" or a list of allowed chords:
+                        m-minor, M-major, a-augmented, d-diminished, s-suspended
+                        T-triad, dom-dominant, hd-half diminished
+
+                        triads: mT, MT, aT, dT, s4, s2
+                        sevenths: m7, M7, a7, d7, mM7, aM7 dom7, hd7
+                        sixths: m6, M6, a6
+
+                    Default: "mT,MT,aT,dT,m7,M7"
+
+        mode        'theory' | 'earTraining'  Keyword indicating type of exercise
+        
+        playMode*   'chord | ascending | descending' allowed play modes. Default: chord
+
+        showKey     '0 | 1' Default: 0 (do not display key signature)
+
+        inversions  '0 | 1' Default: 0 (do not allow inversions)
+
+        Example:
+        ------------------------------------
+        <object type="Application/LenMusIdfyChord" width="100%" height="300" border="0">
+            <param name="mode" value="earTraining">
+            <param name="chords" value="mT,MT,aT,dT,m7,M7,dom7">
+            <param name="keys" value="all">
+        </object>
 
         @endverbatim
 
     */
 
-    /*
     wxString sName = wxEmptyString;
     wxString sValue = wxEmptyString;
 
@@ -123,98 +150,75 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
     
-    // control_play
-    if ( sName == _T("CONTROL_PLAY") ) {
-        m_pOptions->SetControlPlay(true, tag.GetParam(_T("VALUE")) );
+    // allow inversions
+    if ( sName == _T("INVERSIONS") ) {
+        int nValue;
+        bool fOK = tag.GetParamAsInt(_T("VALUE"), &nValue);
+        if (!fOK) 
+            m_sParamErrors += wxString::Format(
+                _("Invalid param value in:\n<param %s >\nAcceptable values: 1 | 0 \n"),
+                tag.GetAllParams() );
+        else
+            m_pConstrains->SetInversionsAllowed( nValue != 0 );
     }
 
-    // control_solfa
-    else if ( sName == _T("CONTROL_SOLFA") ) {
-        m_pOptions->SetControlSolfa(true, tag.GetParam(_T("VALUE")) );
+    // show Key signature
+    else if ( sName == _T("SHOWKEY") ) {
+        int nValue;
+        bool fOK = tag.GetParamAsInt(_T("VALUE"), &nValue);
+        if (!fOK) 
+            m_sParamErrors += wxString::Format(
+                _("Invalid param value in:\n<param %s >\nAcceptable values: 1 | 0 \n"),
+                tag.GetAllParams() );
+        else
+            m_pConstrains->SetDisplayKey( nValue != 0 );
     }
 
-    // "Go back to theory" link
-    else if ( sName == _T("CONTROL_GO_BACK") ) {
-        m_pOptions->SetGoBackURL( tag.GetParam(_T("VALUE") ));
-    }
-
-    // control_settings
-    else if ( sName == _T("CONTROL_SETTINGS") ) {
-        m_pOptions->SetControlSettings(true, tag.GetParam(_T("VALUE")) );
-        m_pConstrains->SetSection( tag.GetParam(_T("VALUE") ));
-    }
-
-    //fragments   the list of fragmens to use
-    //  <param name="fragment" value="68,98;(n * n)(n * c +l)(g (n * c)(n * c)(n * c))">
-	//  <param name="fragment" value="68,98;(n * c)(n * n +l)(g (n * c)(n * c)(n * c))">
-	//  <param name="fragment" value="68,98;(n * n)(n * c)">
-	//  <param name="fragment" value="68,98;(g (n * c)(n * c)(n * c))">
-
-    else if ( sName == _T("FRAGMENT") ) {
-        wxString sFragments = tag.GetParam(_T("VALUE"));
-        AnalyzeFragments(sFragments);
-    }
-
-    //clef*        one param for each allowed clef. It includes the pitch scope.
-    //  <param name="clef" value="Sol;a3;a5" />
-    //  <param name="clef" value="Fa4;a2;e4" />
-
-    else if ( sName == _T("CLEF") ) {
-        wxString sClef = tag.GetParam(_T("VALUE"));
-        if (AnalyzeClef(sClef)) {
-            m_sParamErrors += wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:\n<param %s >\n")
-                _T("Invalid value = %s \n")
-                _T("Acceptable format: <Clef,LowerNote,UpperNote> \n")
-                _T("Acceptable clef values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1 \n")
-                _T("Acceptable note pitch: c0 - c9")),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
-        }
-    }
-
-    //time        a list of allowed time signatures, i.e.: "68,98,128"
-    //    <param name="time" value="68,98,128">
-
-    else if ( sName == _T("TIME") ) {
-        wxString sTime = tag.GetParam(_T("VALUE"));
-        if (AnalyzeTime(sTime)) {
-            m_sParamErrors += wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:\n<param %s >\n")
-                _T("Invalid value = %s \n")
-                _T("Acceptable format: list of time signatures \n")),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
-        }
-    }
-
-    //key         keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
-    //    <param name="key" value="all">
-
-    else if ( sName == _T("KEY") ) {
-        wxString sKeys = tag.GetParam(_T("VALUE"));
-        if (AnalyzeKeys(sKeys)) {
-            m_sParamErrors += wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:\n<param %s >\n")
-                _T("Invalid value = %s \n")
-                _T("Acceptable format: list of key signatures or keyword 'all' \n")),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
-        }
-    }
-
-    //maxGroupInterval    a number
-    else if ( sName == _T("MAXINTERVAL") ) {
-        wxString sMaxInterval = tag.GetParam(_T("VALUE"));
-        long nMaxInterval;
-        bool fOK = sMaxInterval.ToLong(&nMaxInterval);
-        if (!fOK || nMaxInterval < 0 ) {
-            m_sParamErrors += wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:/n<param %s >/n")
-                _T("Invalid value = %s /n")
-                _T("Acceptable values: numeric, greater than 0\n") ),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
-        }
+    // play mode
+    else if ( sName == _T("PLAYMODE") ) {
+        wxString sMode = tag.GetParam(_T("VALUE"));
+        if (sMode == _T("chord")) 
+            m_pConstrains->SetModeAllowed(0, true);
+        else if (sMode == _T("ascending")) 
+            m_pConstrains->SetModeAllowed(1, true);
+        else if (sMode == _T("descending")) 
+            m_pConstrains->SetModeAllowed(2, true);
         else {
-            m_pConstrains->SetMaxInterval((int)nMaxInterval);
+            m_sParamErrors += wxString::Format( wxGetTranslation(
+                _T("Invalid param value in:\n<param %s >\n")
+                _T("Invalid value = %s \n")
+                _T("Acceptable values: 'chord | ascending | descending'\n")),
+                tag.GetAllParams(), sMode );
         }
+    }
+
+    // chords      Keyword "all" or a list of allowed chords:
+    else if ( sName == _T("CHORDS") ) {
+        wxString sClef = tag.GetParam(_T("VALUE"));
+        m_sParamErrors += ParseChords(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
+                                    m_pConstrains->GetValidChords());
+    }
+
+    // mode        'theory | earTraining'  Keyword indicating type of exercise
+    else if ( sName == _T("MODE") ) {
+        wxString sMode = tag.GetParam(_T("VALUE"));
+        if (sMode == _T("theory")) 
+            m_pConstrains->SetTheoryMode(true);
+        else if (sMode == _T("earTraining")) 
+            m_pConstrains->SetTheoryMode(false);
+        else {
+            m_sParamErrors += wxString::Format( wxGetTranslation(
+                _T("Invalid param value in:\n<param %s >\n")
+                _T("Invalid value = %s \n")
+                _T("Acceptable values:  'theory | earTraining'\n")),
+                tag.GetAllParams(), sMode );
+        }
+    }
+
+    //keys        keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
+    else if ( sName == _T("KEYS") ) {
+        m_sParamErrors += ParseKeys(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
+                                    m_pConstrains->GetKeyConstrains());
     }
 
     // Unknown param
@@ -223,14 +227,22 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
             _("lmIdfyChordCtrol. Unknown param: <param %s >\n"),
             tag.GetAllParams() );
 
-    */
 }
 
 void lmIdfyChordCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 {
-    //verify that all necessary html params has been specified
+    // ensure that at least a play mode is selected
+    bool fModeSpecified = false;
+    for (int i=0; i < 3; i++) {
+        fModeSpecified = fModeSpecified || m_pConstrains->IsModeAllowed(i);
+        if (fModeSpecified) break;
+    }
+    if (!fModeSpecified) {
+        m_pConstrains->SetModeAllowed(0, true);     //harmonic
+    }
+
+    //inform about param errors or create the control
     wxWindow* pWnd;
-    //m_sParamErrors += m_pConstrains->Verify();
     if (m_sParamErrors != _T("")) {
         // there are errors: display a text box with the error message
         pWnd = new wxTextCtrl((wxWindow*)pHtmlParser->GetWindow(), -1, m_sParamErrors,

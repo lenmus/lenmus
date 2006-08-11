@@ -59,6 +59,7 @@ typedef struct lmIntvBitsStruct {
 //declare global functions defined in this module
 extern wxString ChordTypeToName(EChordType nChordType);
 extern int NumNotesInChord(EChordType nChordType);
+extern EChordType ChordShortNameToType(wxString sName);
 
 
 //a chord is a sequence of up 4 notes. Change this for more notes in chord

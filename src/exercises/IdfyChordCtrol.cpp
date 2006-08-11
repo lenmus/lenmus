@@ -332,7 +332,7 @@ void lmIdfyChordCtrol::SetUpButtons()
         iR = 0;
         m_pRowLabel[iR]->SetLabel(_("Triads:"));
         for (iC=0; iC <= ect_LastTriad; iC++) {
-            if (m_pConstrains->IsValid((EChordType)iC)) {
+            if (m_pConstrains->IsChordValid((EChordType)iC)) {
                 m_nRealChord[iB] = iC;
                 m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
                 m_pAnswerButton[iB]->Show(true);
@@ -352,7 +352,7 @@ void lmIdfyChordCtrol::SetUpButtons()
         iR = iB / NUM_COLS;
         m_pRowLabel[iR]->SetLabel(_("Seventh chords:"));
         for (iC=ect_LastTriad+1; iC <= ect_LastSeventh; iC++) {
-            if (m_pConstrains->IsValid((EChordType)iC)) {
+            if (m_pConstrains->IsChordValid((EChordType)iC)) {
                 m_nRealChord[iB] = iC;
                 m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
                 m_pAnswerButton[iB]->Show(true);
@@ -372,7 +372,7 @@ void lmIdfyChordCtrol::SetUpButtons()
         iR = iB / NUM_COLS;
         m_pRowLabel[iR]->SetLabel(_("Other chords:"));
         for (iC=ect_LastSeventh+1; iC <= ect_Max; iC++) {
-            if (m_pConstrains->IsValid((EChordType)iC)) {
+            if (m_pConstrains->IsChordValid((EChordType)iC)) {
                 m_nRealChord[iB] = iC;
                 m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
                 m_pAnswerButton[iB]->Show(true);
@@ -458,7 +458,6 @@ void lmIdfyChordCtrol::OnRespButton(wxCommandEvent& event)
 
             //show the solucion
             DisplaySolution();
-            if (m_fTheoryMode) EnableButtons(false);
        }
         else {
             NewProblem();
@@ -494,7 +493,7 @@ void lmIdfyChordCtrol::NewProblem()
     // generate a random chord
     EChordType nChordType = m_pConstrains->GetRandomChordType();
     m_nInversion = 0;
-    if (m_pConstrains->InversionsAllowed())
+    if (m_pConstrains->AreInversionsAllowed())
         m_nInversion = oGenerator.RandomNumber(0, NumNotesInChord(nChordType) - 1);
 
     if (!m_pConstrains->DisplayKey()) m_nKey = earmDo;
@@ -568,13 +567,16 @@ wxString lmIdfyChordCtrol::PrepareChord(EClefType nClef, EChordType nType, lmSco
         sPattern = (m_nMode == 0 ? _T("(na ") : _T("(n "));     // mode=0 -> harmonic
         sPattern += oChordMngr.GetPattern((m_nMode == 2 ? nNumNotes-1-i : i));
         sPattern +=  _T(" r)");
+ /*dbg*/ wxLogMessage(_T("[lmIdfyChordCtrol::PrepareChord] pattern = '%s'"), sPattern);
         pNode = parserLDP.ParseText( sPattern );
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     }
     pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
 
+    (*pScore)->Dump();  //dbg
+
     //return the chord name
-    if (m_pConstrains->InversionsAllowed())
+    if (m_pConstrains->AreInversionsAllowed())
         return oChordMngr.GetNameFull();       //name including inversion
     else 
         return oChordMngr.GetName();           //only name

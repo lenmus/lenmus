@@ -148,36 +148,11 @@ lmChordManager::lmChordManager(wxString sRootNote, EChordType nChordType,
                   NoteBitsToName(m_tBits[0], m_nKey), GetName(), m_nInversion );
     for (i=1; i < tData[m_nType].nNumNotes; i++) {
         ComputeInterval(&m_tBits[0], sIntval[i-1], &m_tBits[i]);
-        wxLogMessage(_T("[lmChordManager] Note %d = %s"),
-                     i, NoteBitsToName(m_tBits[i], m_nKey) );
+        wxLogMessage(_T("[lmChordManager] Note %d = %s, (Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d), key=%d"),
+                     i, NoteBitsToName(m_tBits[i],m_nKey),
+                     m_tBits[i].nStep, m_tBits[i].nOctave, m_tBits[i].nAccidentals, m_tBits[i].nStepSemitones,
+                     m_nKey );
     }
-
-
-
-/*
-    //convert root note name to midi pitch
-    lmPitch nPitch;
-    EAccidentals nAccidentals;
-    if (PitchNameToData(sRootNote, &nPitch, &nAccidentals)) 
-        wxASSERT(false);
-    lmConverter oConv;
-    m_ntMidi[0] = oConv.PitchToMidiPitch(nPitch);
-    switch (nAccidentals) {
-        case eNoAccidentals:                        break;
-        case eFlat:             m_ntMidi[0]--;      break;
-        case eSharp:            m_ntMidi[0]++;      break;
-        case eFlatFlat:         m_ntMidi[0]-=2;     break;
-        case eSharpSharp:       m_ntMidi[0]+=2;     break; 
-        case eDoubleSharp:      m_ntMidi[0]+=2;     break;
-        default:
-            ;
-    }
-
-    //generate midi pitch for chord notes
-    for (i=1; i < tData[m_nType].nNumNotes; i++) {
-        m_ntMidi[i] = GetNote(m_ntMidi[0], tData[m_nType].sIntervals[i]);
-    }
-*/
 
 }
 
@@ -258,7 +233,7 @@ wxString lmChordManager::NoteBitsToName(lmNoteBits& tBits, EKeySignatures nKey)
     if (tBits.nAccidentals == 1)
         sResult = _T("+");
     else if (tBits.nAccidentals == 2)
-        sResult = _T("++");
+        sResult = _T("x");
     else if (tBits.nAccidentals == -1)
         sResult = _T("-");
     else if (tBits.nAccidentals == -2)
@@ -782,5 +757,43 @@ int NumNotesInChord(EChordType nChordType)
 {
     wxASSERT(nChordType < ect_Max);
     return tData[nChordType].nNumNotes;
+
+}
+
+EChordType ChordShortNameToType(wxString sName)
+{
+    // returns -1 if error
+    //
+    // m-minor, M-major, a-augmented, d-diminished, s-suspended
+    // T-triad, dom-dominant, hd-half diminished
+    //
+    // triads: mT, MT, aT, dT, s4, s2
+    // sevenths: m7, M7, a7, d7, mM7, aM7 dom7, hd7
+    // sixths: m6, M6, a6
+
+            // Triads
+    if      (sName == _T("MT")) return ect_MajorTriad;
+    else if (sName == _T("mT")) return ect_MinorTriad;
+    else if (sName == _T("aT")) return ect_AugTriad;
+    else if (sName == _T("dT")) return ect_DimTriad;
+    else if (sName == _T("s4")) return ect_Suspended_4th;
+    else if (sName == _T("s2")) return ect_Suspended_2nd;
+
+        // Seventh chords
+    else if (sName == _T("M7")) return ect_MajorSeventh;
+    else if (sName == _T("dom7")) return ect_DominantSeventh;
+    else if (sName == _T("m7")) return ect_MinorSeventh;
+    else if (sName == _T("d7")) return ect_DimSeventh;
+    else if (sName == _T("hd7")) return ect_HalfDimSeventh;
+    else if (sName == _T("aM7")) return ect_AugMajorSeventh;
+    else if (sName == _T("a7")) return ect_AugSeventh;
+    else if (sName == _T("mM7")) return ect_MinorMajorSeventh;
+
+        // Sixth chords
+    else if (sName == _T("M6")) return ect_MajorSixth;
+    else if (sName == _T("m6")) return ect_MinorSixth;
+    else if (sName == _T("a6")) return ect_AugSixth;
+
+    return (EChordType)-1;  //error
 
 }

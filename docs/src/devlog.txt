@@ -65,39 +65,34 @@ LenMus project philosophy (to remind me to always stay on this):
       Lippman's book is the cure.
   
   ---------------------------------------------------------------------------------------
-  Now:
-  
-* Coding Ear & Theo Identify Chord exercises (IdfyChordCtrol):
-  - Settings dialog
-  - Root note: now is the root of the key. Allow others?
-  - Key signature: options to choose the allowed ones
-  - Option: Draw chord cipher
-  - Params	object for html embedding
-
-*  eBooks new architecture: design evolution
-  + Move toolbar to mainframe
-  + Integrate Print button
-  - Hardcode LenMus Introduction page in program
-	
-  - Print problem: analyze code for ImageCell
-
-
+  Notes:
+  - For hard coded books try memory file system: write book to file memory and instruct
+	TextBookManager to load from there.
     
   Release 3.2, planned: 30/aug/2006 (to be released by 15/sep)
   ----------------------------------
 
     Features and changes:
-    - Ear training: identify chord type
-    - Theory: identify chord
+    + Ear training: identify chord type
+    + Theory: identify chord
 	- Modify UrlAuxCtrol to optionally include an icon at the left.
     - To facilitate internationalization, eBooks Introduction and Single Exercises 
 		should be coded inside the program instead of being external html files. 
 		All other books will be written in Spanish and not translated by me.
-    - Allow for simultaneous access to books in different languages --> It is just a
+    + Allow for simultaneous access to books in different languages --> It is just a
 		question of moving books to the same folder; prefix book names with the 
 		language tag
 
     Tasks:
+	* Coding Ear & Theo Identify Chord exercises (IdfyChordCtrol):
+	- Root note: now is the root of the key. Allow others?
+	- Option: Draw chord cipher
+
+	*  eBooks new architecture: design evolution
+	- Hardcode LenMus Introduction page in program
+	- Print problem: analyze code for ImageCell
+	  
+	- Icons for disabled tools
     - update help documentation 
     
     Minor issues:
@@ -108,7 +103,7 @@ LenMus project philosophy (to remind me to always stay on this):
     - LDP 1.5: allow (na ..) for chords.
     
     Bugs:
-    - none
+    - Chord: loop when double sharp accidental (##)
 
     Bugs in Unicode version:
         - Release Unicode:
@@ -166,7 +161,12 @@ LenMus project philosophy (to remind me to always stay on this):
     - wxDC::GetTextExtend() method returns not accurate measurements. This causes
         problems to right justify texts.
    
-    
+   
+    Ideas for new/improved features
+    ----------------------------------
+    - Post-it notes, so user can add commens to eBook pages
+    - Program always opens in last page/line of last seen eBook
+    - bookmarked page icons for bookmarked pages
     
     
     

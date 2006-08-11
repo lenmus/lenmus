@@ -44,74 +44,35 @@ lmChordConstrains::lmChordConstrains(wxString sSection)
 {
     m_sSection = sSection;
     LoadSettings();
-
-    //default values for constrains
-    m_fAllowInversions = false;
-    m_sLowerRoot = _T("a3");    //valid range for root notes
-    m_sUpperRoot = _T("a4");
-
-    //default values for valid chords
-        // Triads
-    SetValid( ect_MajorTriad, true);
-    SetValid( ect_MinorTriad, true);
-    SetValid( ect_AugTriad, false);
-    SetValid( ect_DimTriad, false);
-    SetValid( ect_Suspended_4th, true);
-    SetValid( ect_Suspended_2nd, true);
-
-        // Seventh chords
-    SetValid( ect_MajorSeventh, true);
-    SetValid( ect_DominantSeventh, true);
-    SetValid( ect_MinorSeventh, true);
-    SetValid( ect_DimSeventh, true);
-    SetValid( ect_HalfDimSeventh, true);
-    SetValid( ect_AugMajorSeventh, false);
-    SetValid( ect_AugSeventh, false);
-    SetValid( ect_MinorMajorSeventh, false);
-
-        //// Sixth chords
-    SetValid( ect_MajorSixth, true);
-    SetValid( ect_MinorSixth, true);
-    SetValid( ect_AugSixth, true);
-
-    //default values for allowed modes
-    SetModeAllowed(0, true);       // 0-harmonic
-    SetModeAllowed(1, false);       // 1-melodic ascending
-    SetModeAllowed(2, false);       // 2-melodic descending
-
-    //Other options' default values
-    m_fDisplayKey = false;          //do not display key signatures
-    m_fTheoryMode = true;           //theory configuration
-
 }
 
 bool lmChordConstrains::IsValidGroup(EChordGroup nGroup)
 {
     if (nGroup == ecg_Triads)
     {
-        return (IsValid( ect_MajorTriad ) ||
-                IsValid( ect_MinorTriad ) ||
-                IsValid( ect_AugTriad ) ||
-                IsValid( ect_DimTriad ) ||
-                IsValid( ect_Suspended_4th ) ||
-                IsValid( ect_Suspended_2nd ) );
+        return (IsChordValid( ect_MajorTriad ) ||
+                IsChordValid( ect_MinorTriad ) ||
+                IsChordValid( ect_AugTriad ) ||
+                IsChordValid( ect_DimTriad ) ||
+                IsChordValid( ect_Suspended_4th ) ||
+                IsChordValid( ect_Suspended_2nd ) );
     }
     else if(nGroup == ecg_Sevenths)
     {
-        return (IsValid( ect_MajorSeventh ) ||
-                IsValid( ect_DominantSeventh ) ||
-                IsValid( ect_MinorSeventh ) ||
-                IsValid( ect_DimSeventh ) ||
-                IsValid( ect_HalfDimSeventh ) ||
-                IsValid( ect_AugMajorSeventh ) ||
-                IsValid( ect_AugSeventh ) ||
-                IsValid( ect_MinorMajorSeventh ) );
+        return (IsChordValid( ect_MajorSeventh ) ||
+                IsChordValid( ect_DominantSeventh ) ||
+                IsChordValid( ect_MinorSeventh ) ||
+                IsChordValid( ect_DimSeventh ) ||
+                IsChordValid( ect_HalfDimSeventh ) ||
+                IsChordValid( ect_AugMajorSeventh ) ||
+                IsChordValid( ect_AugSeventh ) ||
+                IsChordValid( ect_MinorMajorSeventh ) );
     }
     else if(nGroup == ecg_Sixths)
     {
-        return (IsValid( ect_MajorSixth ) ||
-                IsValid( ect_MinorSixth ) ||
-                IsValid( ect_AugSixth ) );
+        return (IsChordValid( ect_MajorSixth ) ||
+                IsChordValid( ect_MinorSixth ) ||
+                IsChordValid( ect_AugSixth ) );
     }
     else {
         wxASSERT(false);    //impossible
@@ -122,95 +83,82 @@ bool lmChordConstrains::IsValidGroup(EChordGroup nGroup)
 
 void lmChordConstrains::SaveSettings()
 {
-    /*
-    save settings in user configuration data file
-    */
+    //
+    // save settings in user configuration data file
+    //
 
-    /*
-    // allowed intervals
+    // allowed chords
     int i;
     wxString sKey;
-    for (i=0; i < lmNUM_INTVALS; i++) {
-        sKey = wxString::Format(_T("/Constrains/EarIntval/%s/Interval%dAllowed"), 
+    for (i=0; i < ect_Max; i++) {
+        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/Chord%dAllowed"), 
             m_sSection, i );
-        g_pPrefs->Write(sKey, m_fIntervalAllowed[i]);
+        g_pPrefs->Write(sKey, m_fValidChords[i]);
     }
 
-    // notes range
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/MinPitch"), m_sSection);
-    g_pPrefs->Write(sKey, (long)m_nMinPitch);
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/MaxPitch"), m_sSection);
-    g_pPrefs->Write(sKey, (long)m_nMaxPitch);
-
-    // intervals types
+    // play modes
     for (i=0; i < 3; i++) {
-        sKey = wxString::Format(_T("/Constrains/EarIntval/%s/IntervalType%d"), 
+        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/PlayMode%d"), 
             m_sSection, i );
-        g_pPrefs->Write(sKey, m_fTypeAllowed[i]);
+        g_pPrefs->Write(sKey, m_fAllowedModes[i]);
     }
 
-    // accidentals and key signatures
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/OnlyNatural"), m_sSection);
-    g_pPrefs->Write(sKey, m_fOnlyNatural);
+    // key signatures
     bool fValid;
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
-        sKey = wxString::Format(_T("/Constrains/EarIntval/%s/KeySignature%d"), 
+        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/KeySignature%d"), 
             m_sSection, i );
         fValid = m_oValidKeys.IsValid((EKeySignatures)i);
         g_pPrefs->Write(sKey, fValid);
     }
 
-    // for interval comparison exercises
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/FirstEqual"), m_sSection);
-    g_pPrefs->Write(sKey, m_fFirstEqual);
-    */
+    // other settings
+    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/AllowInversions"), m_sSection);
+    g_pPrefs->Write(sKey, m_fAllowInversions);
+    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/DisplayKey"), m_sSection);
+    g_pPrefs->Write(sKey, m_fDisplayKey);
 
 }
 
 void lmChordConstrains::LoadSettings()
 {
-    /*
-    load settings form user configuration data or default values
-    */
+    //
+    // load settings form user configuration data or default values
+    //
 
-    /*
-    // allowed intervals. Default: all in one octave range
+    // allowed chords. Default: four main triads
     int i;
     wxString sKey;
-    for (i=0; i < lmNUM_INTVALS; i++) {
-        sKey = wxString::Format(_T("/Constrains/EarIntval/%s/Interval%dAllowed"), 
+    for (i=0; i < ect_Max; i++) {
+        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/Chord%dAllowed"), 
             m_sSection, i );
-        g_pPrefs->Read(sKey, &m_fIntervalAllowed[i], (bool)(i < 13) );
+        g_pPrefs->Read(sKey, &m_fValidChords[i], (bool)(i < 4) );
     }
 
-    // notes range. Default A3 to A5
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/MinPitch"), m_sSection);
-    m_nMinPitch = (int) g_pPrefs->Read(sKey, 27L);      // 27 = A3
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/MaxPitch"), m_sSection);
-    m_nMaxPitch = (int) g_pPrefs->Read(sKey, 41L);      // 41 = A5
-
-    // intervals types. Default: all types allowed
+    // play modes. Default: only harmonic, but is set in IdfyChrdCtrolParms when the
+    // control is created. This is necesary to simplify param settings
     for (i=0; i < 3; i++) {
-        sKey = wxString::Format(_T("/Constrains/EarIntval/%s/IntervalType%d"), 
+        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/PlayMode%d"), 
             m_sSection, i );
-        g_pPrefs->Read(sKey, &m_fTypeAllowed[i], true);
+        g_pPrefs->Read(sKey, &m_fAllowedModes[i], false);
     }
 
-    // accidentals and key signatures. Default use only natual intervals from C major scale
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/OnlyNatural"), m_sSection);
-    g_pPrefs->Read(sKey, &m_fOnlyNatural, true);    //use only natural intervals
+    // key signatures. Default use C major
     bool fValid;
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
-        sKey = wxString::Format(_T("/Constrains/EarIntval/%s/KeySignature%d"), 
+        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/KeySignature%d"), 
             m_sSection, i );
         g_pPrefs->Read(sKey, &fValid, (bool)((EKeySignatures)i == earmDo) );
         m_oValidKeys.SetValid((EKeySignatures)i, fValid);
     }
 
-    // for interval comparison exercises
-    sKey = wxString::Format(_T("/Constrains/EarIntval/%s/FirstEqual"), m_sSection);
-    g_pPrefs->Read(sKey, &m_fFirstEqual, true);    // first note equal in both intervals
-    */
+    // other settings:
+    //      Inversions - default: not allowed
+    //      Display key - default: not allowed
+    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/AllowInversions"), m_sSection);
+    g_pPrefs->Read(sKey, &m_fAllowInversions, false);
+    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/DisplayKey"), m_sSection);
+    g_pPrefs->Read(sKey, &m_fDisplayKey, false);
 
 }
 
@@ -219,7 +167,7 @@ EChordType lmChordConstrains::GetRandomChordType()
     lmRandomGenerator oGenerator;
     int nWatchDog = 0;
     int nType = oGenerator.RandomNumber(0, ect_Max-1);
-    while (!IsValid((EChordType)nType)) {
+    while (!IsChordValid((EChordType)nType)) {
         nType = oGenerator.RandomNumber(0, ect_Max-1);
         if (nWatchDog++ == 1000) {
             wxMessageBox(_("Program error: Loop detected in lmChordConstrains::GetRandomChordType."));

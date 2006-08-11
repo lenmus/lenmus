@@ -619,6 +619,7 @@ void lmChord::ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, int iN
 
     //check if collision with any previous note accidentals
     lmNote* pCrashNote = CheckIfCollisionWithAccidentals(fOnlyLeftNotes, iN, pAccShape);
+    int nWatchDog = 0;
     while (pCrashNote) {
         //try to render at right of colliding accidental
 
@@ -626,6 +627,11 @@ void lmChord::ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, int iN
         pNote->DrawAccidentals(pPaper, DO_MEASURE, xPos, yPos, colorC);
         //check again for collision
         pCrashNote = CheckIfCollisionWithAccidentals(fOnlyLeftNotes, iN, pAccShape);
+        nWatchDog++;
+        if (nWatchDog > 1000) {
+            wxLogMessage(_T("[lmChord::ComputeAccidentalLayout] Loop detected"));
+            break;
+        }
     }
 
 }

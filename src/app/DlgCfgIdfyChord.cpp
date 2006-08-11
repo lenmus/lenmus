@@ -63,48 +63,47 @@ extern lmPaths* g_pPaths;
 BEGIN_EVENT_TABLE(lmDlgCfgIdfyChord, wxDialog)
     EVT_BUTTON( XRCID( "buttonAccept" ), lmDlgCfgIdfyChord::OnAcceptClicked )
     EVT_BUTTON( XRCID( "buttonCancel" ), lmDlgCfgIdfyChord::OnCancelClicked )
-    EVT_NOTEBOOK_PAGE_CHANGING( XRCID( "noteBook" ), lmDlgCfgIdfyChord::OnPageChanging ) 
 
     // Type of interval check boxes
-    EVT_CHECKBOX( XRCID( "chkModeHarmonic" ), lmDlgCfgIdfyChord::OnChkModeClicked )
-    EVT_CHECKBOX( XRCID( "chkModeMelodicAsc" ), lmDlgCfgIdfyChord::OnChkModeClicked )
-    EVT_CHECKBOX( XRCID( "chkModeMelodicDesc" ), lmDlgCfgIdfyChord::OnChkModeClicked )
+    EVT_CHECKBOX( XRCID( "chkModeHarmonic" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkModeMelodicAsc" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkModeMelodicDesc" ), lmDlgCfgIdfyChord::OnDataChanged )
 
     // Key signature check boxes
-    EVT_CHECKBOX( XRCID( "chkKeyC" ), lmDlgCfgIdfyChord::OnChkKeyClicked )
-    EVT_CHECKBOX( XRCID( "chkKeyG" ), lmDlgCfgIdfyChord::OnChkKeyClicked )
-    EVT_CHECKBOX( XRCID( "chkKeyD" ), lmDlgCfgIdfyChord::OnChkKeyClicked )
-    EVT_CHECKBOX( XRCID( "chkKeyA" ), lmDlgCfgIdfyChord::OnChkKeyClicked )
-    EVT_CHECKBOX( XRCID( "chkKeyE" ), lmDlgCfgIdfyChord::OnChkKeyClicked )
-    EVT_CHECKBOX( XRCID( "chkKeyB" ), lmDlgCfgIdfyChord::OnChkKeyClicked )
-    EVT_CHECKBOX( XRCID( "chkKeyFSharp" ), lmDlgCfgIdfyChord::OnChkKeyClicked )
-    EVT_CHECKBOX( XRCID( "chkKeyCSharp" ), lmDlgCfgIdfyChord::OnChkKeyClicked )
-    EVT_CHECKBOX( XRCID( "chkKeyCFlat" ), lmDlgCfgIdfyChord::OnChkKeyClicked )
-    EVT_CHECKBOX( XRCID( "chkKeyGFlat" ), lmDlgCfgIdfyChord::OnChkKeyClicked )
-    EVT_CHECKBOX( XRCID( "chkKeyDFlat" ), lmDlgCfgIdfyChord::OnChkKeyClicked )
-    EVT_CHECKBOX( XRCID( "chkKeyAFlat" ), lmDlgCfgIdfyChord::OnChkKeyClicked )
-    EVT_CHECKBOX( XRCID( "chkKeyEFlat" ), lmDlgCfgIdfyChord::OnChkKeyClicked )
-    EVT_CHECKBOX( XRCID( "chkKeyBFlat" ), lmDlgCfgIdfyChord::OnChkKeyClicked )
-    EVT_CHECKBOX( XRCID( "chkKeyF" ), lmDlgCfgIdfyChord::OnChkKeyClicked )
+    EVT_CHECKBOX( XRCID( "chkKeyC" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyG" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyD" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyA" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyE" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyB" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyFSharp" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyCSharp" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyCFlat" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyGFlat" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyDFlat" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyAFlat" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyEFlat" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyBFlat" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyF" ), lmDlgCfgIdfyChord::OnDataChanged )
 
     // Allowed chords check boxes
-    EVT_CHECKBOX( XRCID( "chkChordMajorTriad" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordMinorTriad" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordAugTriad" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordDimTriad" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordSus4th" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordSus2nd" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordMajor7" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordDominant7" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordMinor7" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordDim7" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordHalfDim7" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordAugMajor7" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordAug7" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordMinorMajor7" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordMajor6" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordMinor6" ), lmDlgCfgIdfyChord::OnChkChordClicked )
-    EVT_CHECKBOX( XRCID( "chkChordAug6" ), lmDlgCfgIdfyChord::OnChkChordClicked )
+    EVT_CHECKBOX( XRCID( "chkChordMajorTriad" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordMinorTriad" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordAugTriad" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordDimTriad" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordSus4th" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordSus2nd" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordMajor7" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordDominant7" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordMinor7" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordDim7" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordHalfDim7" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordAugMajor7" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordAug7" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordMinorMajor7" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordMajor6" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordMinor6" ), lmDlgCfgIdfyChord::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkChordAug6" ), lmDlgCfgIdfyChord::OnDataChanged )
 
 END_EVENT_TABLE()
 
@@ -178,6 +177,7 @@ lmDlgCfgIdfyChord::lmDlgCfgIdfyChord(wxWindow * parent,
     //other controls
     m_pChkAllowInversions = XRCCTRL(*this, "chkAllowInversions", wxCheckBox);
     m_pChkDisplayKey = XRCCTRL(*this, "chkDisplayKey", wxCheckBox);
+    m_pBoxPlayModes = XRCCTRL(*this, "boxPlayModes", wxStaticBox);
 
     //set error icons
     wxBitmap bmpError =
@@ -201,7 +201,7 @@ lmDlgCfgIdfyChord::lmDlgCfgIdfyChord(wxWindow * parent,
     //initialize check boxes for allowed chords with current settings
     int i;
     for (i=0; i < ect_Max; i++) {
-        m_pChkChord[i]->SetValue( m_pConstrains->IsValid((EChordType)i) );
+        m_pChkChord[i]->SetValue( m_pConstrains->IsChordValid((EChordType)i) );
     }
     
     //play modes
@@ -209,31 +209,25 @@ lmDlgCfgIdfyChord::lmDlgCfgIdfyChord(wxWindow * parent,
         m_pChkPlayMode[i]->SetValue( m_pConstrains->IsModeAllowed(i) );
     }
 
-    //// selected key signatures
-    //lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
-    //for (i=0; i < earmFa+1; i++) {
-    //    m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((EKeySignatures)i) );
-    //}
+    // allowed key signatures
+    lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
+    for (i=0; i < earmFa+1; i++) {
+        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((EKeySignatures)i) );
+    }
 
     // other
-    m_pChkAllowInversions->SetValue( m_pConstrains->InversionsAllowed() );
+    m_pChkAllowInversions->SetValue( m_pConstrains->AreInversionsAllowed() );
     m_pChkDisplayKey->SetValue( m_pConstrains->DisplayKey() );
 
-    //// As this dialog is shared by EarTraining and Theory. 
-    //// Fflag m_fTheoryMode controls whether to show/hide
-    //// specific controls used only in one of the exercises
-    //if (m_fTheoryMode) {
-    //    // This dialog is being used for Theory
-    //    m_pChkAllowInversions->SetValue( m_pConstrains->IsTheoryMode() );
-    //}
-    //else {
-    //    // This dialog is being used by Ear Training
-    //    // So, hide play modes
-    //    m_pChkAllowInversions->Show(false);
-    //}
+    // As this dialog is shared by EarTraining and Theory. 
+    // Flag m_fTheoryMode controls whether to show/hide
+    // specific controls used only in one of the exercises
+    if (m_fTheoryMode) {
+        // This dialog is being used for Theory so, hide play modes
+        m_pBoxPlayModes->Show(false);
+    }
 
 
-    
     //center dialog on screen
     CentreOnScreen();
 
@@ -243,50 +237,40 @@ lmDlgCfgIdfyChord::~lmDlgCfgIdfyChord()
 {
 }
 
+void lmDlgCfgIdfyChord::OnDataChanged(wxCommandEvent& WXUNUSED(event))
+{
+    VerifyData();
+}
+
 void lmDlgCfgIdfyChord::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 {
     // Accept button will be enabled only if all data have been validated and is Ok. So
     // when accept button is clicked we can proceed to save data.
-/*
-    //save allowed intervals
+
+    //save allowed chords
     int i;
     for (i=0; i < ect_Max; i++) {
-        m_pConstrains->SetIntervalAllowed(i, m_pChkChord[i]->GetValue());
+        m_pConstrains->SetChordValid((EChordType)i, m_pChkChord[i]->GetValue());
     }
     
-    //save notes range
-    wxString sPitch = m_pCboFromNote->GetValue();
-    lmPitch nPitch;
-    EAccidentals nAccidentals;
-    PitchNameToData(sPitch, &nPitch, &nAccidentals);
-    m_pConstrains->SetMinNote(nPitch);
-
-    sPitch = m_pCboToNote->GetValue();
-    PitchNameToData(sPitch, &nPitch, &nAccidentals);
-    m_pConstrains->SetMaxNote(nPitch);
-
-    // save intervals' type
-    for (i=0; i < 3; i++) {
-        m_pConstrains->SetTypeAllowed(i, m_pChkPlayMode[i]->GetValue());
+    // save selected key signatures
+    lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
+    for (i=0; i < earmFa+1; i++) {
+        pKeyConstrains->SetValid((EKeySignatures)i, m_pChkKeySign[i]->GetValue());
     }
+
+    //save other options
+    m_pConstrains->SetDisplayKey( m_pChkDisplayKey->GetValue() );
+    m_pConstrains->SetInversionsAllowed( m_pChkAllowInversions->GetValue() );
     
-    // save accidentals option and selected key signatures
-    wxRadioBox* pAccidentals = XRCCTRL(*this, "radAccidentals", wxRadioBox);
-    bool fOnlyNatural = (pAccidentals->GetSelection() == 0);
-    m_pConstrains->SetOnlyNatural( fOnlyNatural );
-    if (fOnlyNatural) {
-        // store selected key signatures
-        lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
-        for (i=0; i < earmFa+1; i++) {
-            pKeyConstrains->SetValid((EKeySignatures)i, m_pChkKeySign[i]->GetValue());
+    // save options depending on mode: theory/ear training
+    if (!m_fTheoryMode) {
+        //ear training. Save play modes
+        for (i=0; i < 3; i++) {
+            m_pConstrains->SetModeAllowed(i, m_pChkPlayMode[i]->GetValue());
         }
     }
-    
-    // If this dialog is being used by EarCompareIntvCtrol, save first note equal value
-    if (m_fTheoryMode) {
-        m_pConstrains->SetFirstNoteEqual( m_pChkAllowInversions->GetValue() );
-    }
-*/
+
     //terminate the dialog 
     EndModal(wxID_OK);      
 }
@@ -332,18 +316,38 @@ bool lmDlgCfgIdfyChord::VerifyData()
     }
     fLocalError |= fError;
     
-    //check that at least one play mode is choosen
+    // check that at least one key signature has been choosen
     fAtLeastOne = false;
-    for (i=0; i < 3; i++) {
-        fAtLeastOne |= m_pChkPlayMode[i]->GetValue();
+    for (i=0; i < earmFa+1; i++) {
+        fAtLeastOne |= m_pChkKeySign[i]->GetValue();
     }
     fError = !fAtLeastOne;
     if (fError) {
-        m_pLblPlayModeError->Show(true);
-        m_pBmpPlayModeError->Show(true);
+        m_pLblKeySignError->Show(true);
+        m_pBmpKeySignError->Show(true);
     }
     fLocalError |= fError;
+
+    //check that at least one play mode is choosen
+    if (m_fTheoryMode) {
+        fAtLeastOne = false;
+        for (i=0; i < 3; i++) {
+            fAtLeastOne |= m_pChkPlayMode[i]->GetValue();
+        }
+        fError = !fAtLeastOne;
+        if (fError) {
+            m_pLblPlayModeError->Show(true);
+            m_pBmpPlayModeError->Show(true);
+        }
+        fLocalError |= fError;
+    }
      
+        //
+        // Check for global errors
+        //
+    
+    fGlobalError = false;   //no global checkings in this dlg
+
   
     //enable / disable accept button
     wxButton* pButtonAccept = XRCCTRL(*this, "buttonAccept", wxButton);
@@ -352,45 +356,3 @@ bool lmDlgCfgIdfyChord::VerifyData()
     return fLocalError;
     
 }
-
-/*! This event handler receives control when the selected tab is about to be changed.
-    We must proceed to verify current tab data and veto the change if there are
-    errors.
-*/
-void lmDlgCfgIdfyChord::OnPageChanging(wxNotebookEvent& event)
-{
-    //Do nothing when the notebook is being displayed, at dialog construction
-    if ( event.GetOldSelection() == wxNOT_FOUND) return;
-
-    //If execution reaches this point it is a real tab change. Verify data
-    bool fError = VerifyData();
-    if (fError) {
-        event.Veto();
-        wxMessageBox( _T("Correct errors before leaving this page."));
-    }                
-
-}
-
-void lmDlgCfgIdfyChord::OnChkKeyClicked(wxCommandEvent& WXUNUSED(event))
-{
-    VerifyData();
-}
-
-void lmDlgCfgIdfyChord::OnChkModeClicked(wxCommandEvent& WXUNUSED(event))
-{
-    VerifyData();
-}
-
-void lmDlgCfgIdfyChord::EnableKeySignCheckBoxes(bool fEnable)
-{
-    int i;
-    for (i=0; i < earmFa+1; i++) {
-        m_pChkKeySign[i]->Enable(fEnable);
-    }
-}
-
-void lmDlgCfgIdfyChord::OnChkChordClicked(wxCommandEvent& WXUNUSED(event))
-{
-    VerifyData();
-}
-

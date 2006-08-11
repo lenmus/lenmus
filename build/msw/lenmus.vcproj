@@ -706,6 +706,12 @@
 				RelativePath="..\..\src\html\ObjectParams.h">
 			</File>
 			<File
+				RelativePath="..\..\src\html\ParamsParser.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\html\ParamsParser.h">
+			</File>
+			<File
 				RelativePath="..\..\src\html\ScoreCtrolParams.h">
 			</File>
 			<File

@@ -64,7 +64,7 @@
     type="Application/LenMusTheoKeySignatures"      lmTheoKeySignCtrolParms : public lmObjectParams
     type="Application/LenMusEarIntervals"           lmEarIntervalsCtrolParms : public lmObjectParams
     type="Application/LenMusEarCompareIntervals"    lmEarCompareIntvCtrolParms : public lmObjectParams
-    type="Application/LenMusEarChord"               lmIdfyChordCtrolParms : public lmObjectParams
+    type="Application/LenMusIdfyChord"              lmIdfyChordCtrolParms : public lmObjectParams
 
     @endverbatim
 
@@ -918,7 +918,7 @@ enum EHtmlObjectTypes {
     eHO_Exercise_EarIntervals,
     eHO_Exercise_EarCompareIntervals,
     eHO_Exercise_TheoMusicReading,
-    eHO_Exercise_EarChord,
+    eHO_Exercise_IdfyChord,
     eHO_Control
 };
 
@@ -940,15 +940,13 @@ TAG_HANDLER_CONSTR(OBJECT)
 
 TAG_HANDLER_PROC(tag)
 {
-    /*
-    This handler deals with the \<object\> and the <param> tags.
-    object tags types:
-        type="image/LenMusScore"            - music score
-        type="application/LenMusControl"    - a control (i.e. exercises)
+    // This handler deals with the <object> and the <param> tags.
+    // object tags types:
+    //    type="image/LenMusScore"            - music score
+    //    type="application/LenMusControl"    - a control (i.e. exercises)
+    //
+    // No nested <object> tags are allowed
 
-    No nested \<object\> tags are allowed
-
-   */
 
     if (tag.GetName() == wxT("OBJECT"))
     {
@@ -972,8 +970,8 @@ TAG_HANDLER_PROC(tag)
                 nType = eHO_Exercise_EarCompareIntervals;
             else if (sType.Upper() == _T("APPLICATION/LENMUSTHEOMUSICREADING"))
                 nType = eHO_Exercise_TheoMusicReading;
-            else if (sType.Upper() == _T("APPLICATION/LENMUSEARCHORD"))
-                nType = eHO_Exercise_EarChord;
+            else if (sType.Upper() == _T("APPLICATION/LENMUSIDFYCHORD"))
+                nType = eHO_Exercise_IdfyChord;
         }
         if (nType == eHO_Unknown) return true;        // type non processable by LenMus
 
@@ -1043,7 +1041,7 @@ TAG_HANDLER_PROC(tag)
                     nPercent, nStyle);
                 break;
 
-            case eHO_Exercise_EarChord:
+            case eHO_Exercise_IdfyChord:
                 m_pObjectParams = new lmIdfyChordCtrolParms(tag, nWidth, nHeight, 
                     nPercent, nStyle);
                 break;

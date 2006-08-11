@@ -41,6 +41,7 @@
 #endif
 
 #include "Generators.h"
+#include "Constrains.h"
 
 enum EChordType
 {
@@ -93,9 +94,13 @@ public:
     EChordType GetRandomChordType();
     int GetRandomMode();
 
-    bool InversionsAllowed() { return m_fAllowInversions; }
-    bool IsValid(EChordType nType) { return m_fValidTypes[nType]; }
-    void SetValid(EChordType nType, bool fValid) { m_fValidTypes[nType] = fValid; }
+    bool AreInversionsAllowed() { return m_fAllowInversions; }
+    void SetInversionsAllowed(bool fValue) { m_fAllowInversions = fValue; }
+
+    bool IsChordValid(EChordType nType) { return m_fValidChords[nType]; }
+    void SetChordValid(EChordType nType, bool fValid) { m_fValidChords[nType] = fValid; }
+    bool* GetValidChords() { return m_fValidChords; }
+
     bool IsValidGroup(EChordGroup nGroup);
 
     bool IsModeAllowed(int nMode) { return m_fAllowedModes[nMode]; }
@@ -111,13 +116,16 @@ public:
     void SetTheoryMode(bool fValue) { m_fTheoryMode = fValue; }
     bool IsTheoryMode() { return m_fTheoryMode; }
 
+    lmKeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
+
 
 private:
     void LoadSettings();
 
     wxString            m_sSection;             //to save settings
     bool                m_fAllowInversions;
-    bool                m_fValidTypes[ect_Max];
+    bool                m_fValidChords[ect_Max];
+    lmKeyConstrains     m_oValidKeys;           //allowed key signatures
     bool                m_fDisplayKey;
     bool                m_fAllowedModes[3];     // 0-harmonic
                                                 // 1-melodic ascending

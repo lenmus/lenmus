@@ -486,7 +486,7 @@
                                 <object class="sizeritem">
                                     <flag>wxGROW|wxALL</flag>
                                     <border>5</border>
-                                    <object class="wxStaticBoxSizer" name="wxID_ANY">
+                                    <object class="wxStaticBoxSizer" name="boxPlayModes">
                                         <orient>wxVERTICAL</orient>
                                         <label>Play modes</label>
                                         <enabled>0</enabled>
