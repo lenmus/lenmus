@@ -200,8 +200,10 @@ lmIdfyChordCtrol::lmIdfyChordCtrol(wxWindow* parent, wxWindowID id,
     pCountersSizer->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
     // settings link
-    lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
-    pCountersSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+    if (m_pConstrains->IncludeSettingsLink()) {
+        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
+        pCountersSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+    }
 
     // spacer to move the settings link a little up
     pCountersSizer->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
@@ -483,7 +485,7 @@ void lmIdfyChordCtrol::NewProblem()
 
     // select a random key signature
     lmRandomGenerator oGenerator;
-    m_nKey = oGenerator.RandomKeySignature();
+    m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
     
     //Generate a random root note 
     EClefType nClef = eclvSol;

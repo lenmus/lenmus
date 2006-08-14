@@ -43,6 +43,7 @@ extern wxConfigBase *g_pPrefs;
 lmChordConstrains::lmChordConstrains(wxString sSection)
 {
     m_sSection = sSection;
+    m_fSettingsLink = false;
     LoadSettings();
 }
 

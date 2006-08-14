@@ -199,7 +199,6 @@ protected:
     void InitializeHelp();
     void InitializeBooks();
     void ScanForBooks(wxString sPath, wxString sPattern);
-    void DisplayIntroPage();
 
 
 

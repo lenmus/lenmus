@@ -137,6 +137,11 @@ void lmPaths::LoadUserPreferences()
     path.AppendDir(_T("sounds"));
     m_sSounds = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
+    path = m_root;
+    path.AppendDir(_T("res"));
+    path.AppendDir(_T("vbooks"));
+    m_sVBookImages = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
 	//create temp folder if it does not exist. Otherwise the program will
     //fail when the user tries to open an eMusicBook
     if (!::wxDirExists(m_sTemp)) {
@@ -176,6 +181,7 @@ void lmPaths::SaveUserPreferences()
     g_pPrefs->Write(_T("/Paths/Xrc"), m_sXrc);   
     g_pPrefs->Write(_T("/Paths/Images"), m_sImages);
     g_pPrefs->Write(_T("/Paths/Sounds"), m_sSounds);
+    g_pPrefs->Write(_T("/Paths/VBookImages"), m_sVBookImages);
 
     // bin path is nor user configurable
     //g_pPrefs->Write(_T("/Paths/Bin"), m_sBin);   

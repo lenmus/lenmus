@@ -55,16 +55,16 @@
     lmTheoMusicReadingCtrol : public wxWindow
 
 
-    <object> directives and param classes
+    <object type="Application/LenMus"> directives and param classes
     -------------------------------------------------------------------------------------
-                                                    lmObjectParams
-    type="Application/LenMusScore"                  lmScoreCtrolParams : public lmObjectParams
-    type="Application/LenMusTheoIntervals"          lmTheoIntervalsCtrolParms : public lmObjectParams
-    type="Application/LenMusTheoScales"             lmTheoScalesCtrolParms : public lmObjectParams
-    type="Application/LenMusTheoKeySignatures"      lmTheoKeySignCtrolParms : public lmObjectParams
-    type="Application/LenMusEarIntervals"           lmEarIntervalsCtrolParms : public lmObjectParams
-    type="Application/LenMusEarCompareIntervals"    lmEarCompareIntvCtrolParms : public lmObjectParams
-    type="Application/LenMusIdfyChord"              lmIdfyChordCtrolParms : public lmObjectParams
+                                     lmObjectParams
+    classid="Score"                  lmScoreCtrolParams : public lmObjectParams
+    classid="TheoIntervals"          lmTheoIntervalsCtrolParms : public lmObjectParams
+    classid="TheoScales"             lmTheoScalesCtrolParms : public lmObjectParams
+    classid="TheoKeySignatures"      lmTheoKeySignCtrolParms : public lmObjectParams
+    classid="EarIntervals"           lmEarIntervalsCtrolParms : public lmObjectParams
+    classid="EarCompareIntervals"    lmEarCompareIntvCtrolParms : public lmObjectParams
+    classid="IdfyChord"              lmIdfyChordCtrolParms : public lmObjectParams
 
     @endverbatim
 
@@ -940,13 +940,8 @@ TAG_HANDLER_CONSTR(OBJECT)
 
 TAG_HANDLER_PROC(tag)
 {
-    // This handler deals with the <object> and the <param> tags.
-    // object tags types:
-    //    type="image/LenMusScore"            - music score
-    //    type="application/LenMusControl"    - a control (i.e. exercises)
-    //
+    // This handler deals with the <object type="application/LenMus"> 
     // No nested <object> tags are allowed
-
 
     if (tag.GetName() == wxT("OBJECT"))
     {
@@ -954,24 +949,31 @@ TAG_HANDLER_PROC(tag)
         EHtmlObjectTypes nType = eHO_Unknown;
         if (tag.HasParam(wxT("TYPE")) ) {
             wxString sType = tag.GetParam(wxT("TYPE"));
-            if (sType.Upper() == _T("APPLICATION/LENMUSSCORE"))
-                nType = eHO_MusicScore;
-            else if (sType.Upper() == _T("APPLICATION/LENMUSTHEOINTERVALS"))
-                nType = eHO_Exercise_TheoIntervals;
-            else if (sType.Upper() == _T("APPLICATION/LENMUSTHEOSCALES"))
-                nType = eHO_Exercise_TheoScales;
-            else if (sType.Upper() == _T("APPLICATION/LENMUSTHEOKEYSIGNATURES"))
-                nType = eHO_Exercise_TheoKeySignatures;
-            else if (sType.Upper() == _T("APPLICATION/LENMUSCONTROL"))
-                nType = eHO_Control;
-            else if (sType.Upper() == _T("APPLICATION/LENMUSEARINTERVALS"))
-                nType = eHO_Exercise_EarIntervals;
-            else if (sType.Upper() == _T("APPLICATION/LENMUSEARCOMPAREINTERVALS"))
-                nType = eHO_Exercise_EarCompareIntervals;
-            else if (sType.Upper() == _T("APPLICATION/LENMUSTHEOMUSICREADING"))
-                nType = eHO_Exercise_TheoMusicReading;
-            else if (sType.Upper() == _T("APPLICATION/LENMUSIDFYCHORD"))
-                nType = eHO_Exercise_IdfyChord;
+            if (sType.Upper() == _T("APPLICATION/LENMUS"))
+            {
+                //look for classid
+                if (tag.HasParam(_T("CLASSID"))) {
+                    wxString sClassid = tag.GetParam(wxT("CLASSID"));
+                    if (sClassid.Upper() == _T("SCORE"))
+                        nType = eHO_MusicScore;
+                    else if (sClassid.Upper() == _T("THEOINTERVALS"))
+                        nType = eHO_Exercise_TheoIntervals;
+                    else if (sClassid.Upper() == _T("THEOSCALES"))
+                        nType = eHO_Exercise_TheoScales;
+                    else if (sClassid.Upper() == _T("THEOKEYSIGNATURES"))
+                        nType = eHO_Exercise_TheoKeySignatures;
+                    else if (sClassid.Upper() == _T("CONTROL"))
+                        nType = eHO_Control;
+                    else if (sClassid.Upper() == _T("EARINTERVALS"))
+                        nType = eHO_Exercise_EarIntervals;
+                    else if (sClassid.Upper() == _T("EARCOMPAREINTERVALS"))
+                        nType = eHO_Exercise_EarCompareIntervals;
+                    else if (sClassid.Upper() == _T("THEOMUSICREADING"))
+                        nType = eHO_Exercise_TheoMusicReading;
+                    else if (sClassid.Upper() == _T("IDFYCHORD"))
+                        nType = eHO_Exercise_IdfyChord;
+                }
+            }
         }
         if (nType == eHO_Unknown) return true;        // type non processable by LenMus
 

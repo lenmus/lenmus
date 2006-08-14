@@ -167,7 +167,7 @@ wxString lmRandomGenerator::GenerateRandomRootNote(EClefType nClef,
     int nAccidentals[7];
     ComputeAccidentals(nKey, nAccidentals);
 
-    wxString sAcc[5] = { _T("--"), _T("-"), _T(""), _T("+"), _T("++") };
+    wxString sAcc[5] = { _T("--"), _T("-"), _T(""), _T("+"), _T("x") };
     wxString sRootNote = sAcc[nAccidentals[nRoot]+ 2] +
                          sNotes.Mid(nRoot, 1) +
                          (nRoot > 4 ? _T("3") : _T("4"));

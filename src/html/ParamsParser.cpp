@@ -20,7 +20,7 @@
 //-------------------------------------------------------------------------------------
 /*! @file ParamsParser.cpp
     @brief Implementation file for auxiliary global functions to parse objects' params
-    @ingroup ldp_parser
+    @ingroup html_management
 */
 #ifdef __GNUG__
 // #pragma implementation

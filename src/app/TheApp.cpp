@@ -107,27 +107,18 @@
 #include "wx/confbase.h"
 #include "wx/fileconf.h"
 #include "wx/filename.h"
-// needed to use the zip file system
-#include "wx/fs_zip.h"
 
-//access to user preferences
-#include "Preferences.h"
-
-//access to Midi configuration
-#include "../sound/MidiManager.h"
-
-//access to Wave sound manager
-#include "../sound/WaveManager.h"
+#include "wx/fs_zip.h"                  //to use the zip file system
+#include "../html/VirtualBooks.h"       //for virtual eBooks file system
+#include "Preferences.h"                //access to user preferences
+#include "../sound/MidiManager.h"       //access to Midi configuration
+#include "../sound/WaveManager.h"       //access to Wave sound manager
+#include "Logger.h"                     //access to error's logger
+#include "../ldp_parser/LDPTags.h"      //to delete the LDP tags table
 
 //access to global objects
 #include "../globals/Paths.h"
 #include "../globals/Colors.h"
-
-//access to error's logger
-#include "Logger.h"
-
-//to delete the LDP tags table
-#include "../ldp_parser/LDPTags.h"
 
 
 //-------------------------------------------------------------------------------------------
@@ -470,7 +461,10 @@ bool lmTheApp::OnInit(void)
     //program sound for metronome
     g_pMidiOut->ProgramChange(g_pMidi->MtrChannel(), g_pMidi->MtrInstr());
 
-    // all initialization finished.
+    //Add handler for virtual books file system
+    wxFileSystem::AddHandler(new lmVirtualBooks);
+
+      // all initialization finished.
 	// check if the splash window display time is ellapsed and wait if not
 	nMilliseconds -= ((long)time( NULL ) - nSplashTime);
 	if (nMilliseconds > 0) ::wxMilliSleep( nMilliseconds );

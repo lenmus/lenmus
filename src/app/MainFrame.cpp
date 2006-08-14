@@ -68,6 +68,7 @@
 #include "../sound/MidiManager.h"           //access to Midi configuration
 #include "Preferences.h"                    //access to user preferences
 #include "../updater/Updater.h" 
+#include "../html/VirtualBooks.h"           //to load virtual books
 
 //access to error's logger
 #include "../app/Logger.h"
@@ -1092,12 +1093,17 @@ void lmMainFrame::InitializeBooks()
         sPath = g_pPaths->GetLocalePath();
         sPattern = _T("*.htb");
         m_pBookController->SetTitleFormat(_("Available books"));
+
+        LoadVirtualBooks(m_pBookController);
         ScanForBooks(sPath, sPattern);
     }
     else {
         //Test behaviour. Use native .hhp, .hhc, .hhk and .htm files in subfolders
         sPath = g_pPaths->GetBooksPath();
         m_pBookController->SetTitleFormat(_T("Test mode: available books"));
+
+        //load the virtual books
+        LoadVirtualBooks(m_pBookController);
 
         // loop to look for subdirectories
         wxDir dir(sPath);
@@ -1326,76 +1332,7 @@ void lmMainFrame::OnOpenBook(wxCommandEvent& event)
 
         // open it and display book "intro"
         m_pBookController->Display(_T("intro_welcome.htm"));     //By page name
-        DisplayIntroPage();
     }
-
-}
-
-void lmMainFrame::DisplayIntroPage()
-{
-    wxString sVersionNumber = wxGetApp().GetVersionNumber();
-    wxString sNil = _T("");
-
-    wxString sBookRef = sNil +
-        _T("<a href='#LenMusPage/Introduction to single exercises'>") +
-        _("Single exercises") + _T("</a>");
-
-    wxString sBook1 = wxString::Format( _("Book %s contains \
-some basic exercises for ear training and to practise theoretical concepts, such as \
-intervals and scales. Unlike exercises included in the other books, you can customize all \
-single exercises included in this book. This will allow you meet \
-your specific needs at each moment and to practise specific points."), sBookRef );
-
-    wxString sIntroPage = sNil +
-      _T("<html><body><table width='100%'><tr><td align='left'>") 
-      _T("<img src='Phonascus-277x63.gif' width='277' height='63' /></td>") 
-      _T("<td align='right'><img src='LenMus-170x44.gif' width='170' height='44' /></td>") 
-      _T("</tr></table><p>&nbsp;</p><h1>") +
-      _("Welcome to LenMus Phonascus version ") + sVersionNumber +
-      _T("</h1><p>") +
-      _("Phonascus, from Latin 'the teacher of music', is a music education software that you can \
-use to practice your music reading skills, improve your ear training abilities, or just learn the \
-fundamental principles of music theory and language. \
-From version 3.1 it includes new functions that, I hope, \
-will end up with full support for the creation, display, \
-printing, play back and interactive edition of music scores. Visit the \
-LenMus web site for more information about the current status of the score editor.") +
-      _T("</p><p>") +
-      _("LenMus Phonascus allows you to focus on specific skills and exercises, on \
-both theory and ear training. The different activities can be customized to meet \
-your specific needs at each moment and it allows you to work at your own pace.") +
-      _T("</p><p>") +
-      _("LenMus is structured as a collection of fully interactive textbooks (eBooks), \
-including theory and exercises. All exercises are fully \
-integrated into the text. Music scores are not just \
-images or pictures but fully interactive operational music scores that you can hear, \
-in whole or just the measures you choose. This enables you \
-to put concepts into practice with immediate feedback and makes the subject matter both \
-more accessible and more rewarding, as you can hear, test and put in practise \
-immediately any new concept introduced.") +
-      _T("</p><ul><li>") +
-      _("Building and spelling intervals, scales and tonal keys.") +
-      _T("</li><li>") +
-      _("Ear training: identification of intervals and scales.") +
-      _T("</li><li>") +
-      _("Rhythm and music reading exercises.") +
-      _T("</li></ul><p>") +
-      _("Teaching material is organized into levels, and each level into lessons. In this \
-version the following books are is included:") +
-      _T("</p>") + sBook1 + 
-      _T("</body></html>");
-//<ul><li>") +
-
-//</li>
-//<li>Book <a href="#LenMusPage/Music Reading. Level 2">Music Reading. Level 2</a>
-//    is a set of music reading lessons, in difficulty progression, covering the syllabus
-//    of a second course at elemental level.</a></li>
-//<li>Finally, book <a href="#">LenMus. Introduction</a>
-//    is just this text.</a></li>
-//</ul>
-//
-
-    m_pHtmlWin->SetPage(sIntroPage);
 
 }
 

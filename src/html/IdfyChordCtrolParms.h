@@ -128,6 +128,11 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
 
         inversions  '0 | 1' Default: 0 (do not allow inversions)
 
+        control_settings    Value="[key for storing the settings]"  
+                            By coding this param it is forced the inclusion of
+                            the 'settings' link. Its value will be used 
+                            as the key for saving the user settings.
+
         Example:
         ------------------------------------
         <object type="Application/LenMusIdfyChord" width="100%" height="300" border="0">
@@ -219,6 +224,12 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
     else if ( sName == _T("KEYS") ) {
         m_sParamErrors += ParseKeys(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
                                     m_pConstrains->GetKeyConstrains());
+    }
+
+    // control_settings
+    else if ( sName == _T("CONTROL_SETTINGS") ) {
+        m_pConstrains->SetSettingsLink(true);
+        m_pConstrains->SetSection( tag.GetParam(_T("VALUE") ));
     }
 
     // Unknown param

@@ -111,6 +111,10 @@ public:
     void SetDisplayKey(bool fValue) { m_fDisplayKey = fValue; }
     bool DisplayKey() { return m_fDisplayKey; }
 
+    void SetSettingsLink(bool fValue) { m_fSettingsLink = fValue; }
+    bool IncludeSettingsLink() { return m_fSettingsLink; }
+    void SetSection(wxString sSection) { m_sSection = sSection; }
+
     void SaveSettings();
     
     void SetTheoryMode(bool fValue) { m_fTheoryMode = fValue; }
@@ -123,6 +127,7 @@ private:
     void LoadSettings();
 
     wxString            m_sSection;             //to save settings
+    bool                m_fSettingsLink;        //include settings link
     bool                m_fAllowInversions;
     bool                m_fValidChords[ect_Max];
     lmKeyConstrains     m_oValidKeys;           //allowed key signatures

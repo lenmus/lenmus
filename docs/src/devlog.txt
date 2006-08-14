@@ -64,10 +64,15 @@ LenMus project philosophy (to remind me to always stay on this):
      as why everything in C++ is as it is. If you are confused by anything in C++,
       Lippman's book is the cure.
   
+  
+  
   ---------------------------------------------------------------------------------------
+  
+  
   Notes:
   - For hard coded books try memory file system: write book to file memory and instruct
 	TextBookManager to load from there.
+    
     
   Release 3.2, planned: 30/aug/2006 (to be released by 15/sep)
   ----------------------------------
@@ -76,24 +81,18 @@ LenMus project philosophy (to remind me to always stay on this):
     + Ear training: identify chord type
     + Theory: identify chord
 	- Modify UrlAuxCtrol to optionally include an icon at the left.
-    - To facilitate internationalization, eBooks Introduction and Single Exercises 
-		should be coded inside the program instead of being external html files. 
-		All other books will be written in Spanish and not translated by me.
-    + Allow for simultaneous access to books in different languages --> It is just a
-		question of moving books to the same folder; prefix book names with the 
-		language tag
 
     Tasks:
-	* Coding Ear & Theo Identify Chord exercises (IdfyChordCtrol):
-	- Root note: now is the root of the key. Allow others?
-	- Option: Draw chord cipher
-
-	*  eBooks new architecture: design evolution
-	- Hardcode LenMus Introduction page in program
-	- Print problem: analyze code for ImageCell
+	- eBooks new architecture: design evolution
+		- Hardcode 'Single Exercises' page in program
+		- Print problem: analyze code for ImageCell
 	  
 	- Icons for disabled tools
     - update help documentation 
+    - Add Ear chords and Theo Chords to Single Exercises book
+    
+    package:
+    - add res/vbooks to install.htm and to installer
     
     Minor issues:
     - spacing in tuples when a whole /half note in other staff
@@ -101,6 +100,10 @@ LenMus project philosophy (to remind me to always stay on this):
     - abbreviated notation for notes/rests in chords
     - stem up/down abbreviated notation
     - LDP 1.5: allow (na ..) for chords.
+	- Ear & Theo Identify Chord exercises (IdfyChordCtrol):
+		- Root note: now is the root of the key. Allow others?
+		- Option: Draw chord cipher
+
     
     Bugs:
     - Chord: loop when double sharp accidental (##)

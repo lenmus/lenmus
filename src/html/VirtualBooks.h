@@ -18,23 +18,39 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ParamsParser.h
-    @brief Header file for auxiliary global functions to parse objects' params
+/*! @file VirtualBooks.h
+    @brief Header file for for virtual books object
     @ingroup html_management
 */
 #ifdef __GNUG__
 // #pragma interface
 #endif
 
-#ifndef __PARAMSPARSER_H__        //to avoid nested includes
-#define __PARAMSPARSER_H__
+#ifndef __VIRTUALBOOKS_H__        //to avoid nested includes
+#define __VIRTUALBOOKS_H__
 
-#include "../exercises/Constrains.h"    //KeyConstrains
+#include "wx/wfstream.h"
+#include "wx/mstream.h"
 
-extern wxString ParseKeys(wxString sParamValue, wxString sFullParam,
-                          lmKeyConstrains* pKeys);
-extern wxString ParseChords(wxString sParamValue, wxString sFullParam,
-                            bool* m_fValidChords);
+#include "TextBookController.h"
+
+extern void LoadVirtualBooks(lmTextBookController* pBookController);
 
 
-#endif    // __PARAMSPARSER_H__
+class lmVirtualBooks : public wxFileSystemHandler
+{
+public:
+    lmVirtualBooks();
+    ~lmVirtualBooks();
+
+    wxFSFile* OpenFile(wxFileSystem& fs, const wxString& location);
+    bool CanOpen(const wxString& location);
+
+private:
+    void LoadIntroBook();
+
+
+};
+
+
+#endif    // __VIRTUALBOOKS_H__
