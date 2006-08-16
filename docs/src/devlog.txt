@@ -68,11 +68,6 @@ LenMus project philosophy (to remind me to always stay on this):
   
   ---------------------------------------------------------------------------------------
   
-  
-  Notes:
-  - For hard coded books try memory file system: write book to file memory and instruct
-	TextBookManager to load from there.
-    
     
   Release 3.2, planned: 30/aug/2006 (to be released by 15/sep)
   ----------------------------------
@@ -84,12 +79,12 @@ LenMus project philosophy (to remind me to always stay on this):
 
     Tasks:
 	- eBooks new architecture: design evolution
-		- Hardcode 'Single Exercises' page in program
+		+ Hardcode 'Single Exercises' page in program
 		- Print problem: analyze code for ImageCell
 	  
 	- Icons for disabled tools
     - update help documentation 
-    - Add Ear chords and Theo Chords to Single Exercises book
+    + Add Ear chords and Theo Chords to Single Exercises book
     
     package:
     - add res/vbooks to install.htm and to installer
