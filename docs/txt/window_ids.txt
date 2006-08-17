@@ -1,0 +1,22 @@
+==============================================================================================
+Window identifiers 
+==============================================================================================
+
+Identifiers do not need to be unique across the entire application just so long as
+they are unique within a particular context, such as a frame and its children.
+
+To avoid problems I will define ranges for dialogs that can be visible at the
+same time. According wxWidgets documentation you can use wxID_HIGHEST to determine
+the number above which it is safe to define your own identifiers. Or, you can
+use identifiers below wxID_LOWEST.
+
+MainFrame: 1000 - 1299
+
+TextBookFrame: 2000-2099
+
+Dialogs: 2100-2199
+
+Html: Main Controls: 3000-3499
+      Aux controls:
+            ScoreCtrol: 35xx
+            CountersCtrol: 36xx

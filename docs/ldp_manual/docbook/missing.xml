@@ -1,0 +1,656 @@
+
+
+<!--
+
+<para><b> Lugar</b>
+ &lt;<emphasis>placement</emphasis>&gt;.
+Indica si se sitúa encima o debajo; la interpretación de lo que es
+&quot;encima&quot; o &quot;debajo&quot; depende del elemento a que se refieran<a
+href="#_ftn10" name="_ftnref10" title=""> class=MsoFootnoteReference>
+class=MsoFootnoteReference> lang=ES style='font-size:11.0pt;font-family:
+Arial;display:none'>[10]</a>.</para>
+
+<p 
+ style='font-size:10.0pt;font-family:
+"Courier New" &lt;lugar&gt; =
+(&quot;encima&quot; | &quot;debajo&quot; )</para>
+
+<p 
+ style='font-size:10.0pt;font-family:
+"Courier New" </para>
+
+<p style='margin-left:63.8pt;text-indent:-63.8pt'>&nbsp;</para>
+
+-->
+
+<!--
+
+<h2>Directivas</h2>
+
+<para>Las
+directivas son indicaciones no ligadas a una nota en particular.</para>
+
+<para>Pueden
+ser de varios tipos: textos, reguladores, signos de repetición (segno, coda,
+fine,.), rehearsal, dashes, pedal, metronomo, y desplazamientos de octava (signos
+de 8ª y demás)</para>
+
+<para>&lt;directiva&gt; = (<b>directiva </b>&lt;lugar&gt;
+&lt;tipo&gt; [&lt;offset&gt; %editorial-voice;, staff?, sound?]) </para>
+
+<para>&lt;tipo&gt; = &lt;texto&gt; | &lt;repeticion&gt; |
+&lt;regulador&gt; | </para>
+
+<para>      dynamics+ | dashes | bracket | pedal | </para>
+
+<para>      metronome | octave-shift | damp |
+damp-all | </para>
+
+<para>      other-direction&gt;</para>
+
+
+
+-->
+
+<!--
+
+
+
+
+
+<sect1 id="s1__Toc86206011">Directiva de tipo texto </title>
+
+<para>Las directivas de tipo &quot;texto&quot; se utilizan para
+escribir texto en la partitura.</para>
+
+<para>&lt;texto&gt; = (<b>texto </b>string &lt;posicion&gt;[&lt;font&gt;
+&lt;alineacion&gt;&lt;idioma&gt;])</para>
+
+<para>&lt;posicion&gt; </para>
+
+<para>&lt;font&gt; = (<b>font &lt;</b>nombre&gt;
+&lt;size&gt; [&lt;estilo&gt;])</para>
+
+<para>&lt;estilo&gt; = &quot;normal&quot; |
+&quot;negrita&quot; | &quot;cursiva&quot; | &quot;negrita,cursiva&quot;</para>
+
+<para>&quot;bold&quot; |
+&quot;italic&quot; | &quot;bold,italic&quot;</para>
+
+<para>&lt;size&gt; = <emphasis>num</emphasis></para>
+
+<para>Se asume &quot;Arial&quot; 10pt
+normal</para>
+
+<para>&lt;alineacion&gt; =
+&quot;izqda&quot; | &quot;centrado&quot; | &quot;dcha&quot;</para>
+
+<para>La alineación se refiere a la forma en que se escibe el
+texto y a la posición del punto de anclaje del mismo. Si está alineado a
+izquierda, el punto de anclaje es la posición izquierda y el texto se coloca a
+la derecha del punto de anclaje, comenzando en él. Si está alineado a derecha,
+el punto de anclaje es el final del texto y el texto se distribuye hacia su
+izquierda. Si está &quot;centrado&quot; el punto de anclaje se encuentra en el
+centro del texto. Si no se especifica se asume alineado a izquierda.</para>
+
+<para>&lt;idioma&gt; = string </para>
+
+<para>Se asume idioma=italiano</para>
+
+
+
+<para>Ejemplo:</para>
+
+<para>      a) en MusicXML</para>
+
+<para>      &lt;direction placement=&quot;above&quot;&gt;</para>
+
+<para>        &lt;direction-type&gt;</para>
+
+<para>          &lt;words
+xml:lang=&quot;la&quot; relative-y=&quot;5&quot;
+relative-x=&quot;-5&quot;&gt;Angelus</para>
+
+<para>
+ dicit:&lt;/words&gt;</para>
+
+<para>        &lt;/direction-type&gt;</para>
+
+<para>      &lt;/direction&gt;</para>
+
+
+
+<para>b) en <acronym>LDP</acronym>:</para>
+
+<para>      (texto &quot;Angelus dicit:&quot; (xy xr-5 yr60))</para>
+
+
+
+
+
+
+
+-->
+
+<!--
+
+
+
+
+
+<sect1 id="s1__Toc86206012"> lang=FR>Reguladores </a> lang=FR
+style='font-weight:normal'>&lt;wedges&gt;</h2>
+
+<para> lang=FR>Las directivas de tipo &quot;regulador&quot;
+sirven para dibujar reguladores (signo de dinámica). En un regulador hay
+que especificar tres parámetros:</para>
+
+<para>            -
+el punto de inicio y el tipo de regulador (crescedo o diminuendo)</para>
+
+<para>            -
+el punto de final (tipo=stop)</para>
+
+<para>            - la anchura del regulador en la zona ancha &lt;spread&gt;</para>
+
+<para>            La anchura se mide en décimas de línea y debe
+especificarse donde corresponda (en tipo=stop para crescendo o en punto de
+inicio (tipo=diminuendo) para diminuendos.</para>
+
+
+
+<para>&lt;regulador&gt; = (<b>regulador </b>&lt;tipo&gt;
+</para>
+
+<para>    &lt;tipo&gt; = &quot;crescendo&quot;
+| &quot;diminuendo&quot; | &quot;stop&quot;</para>
+
+<para>    number %beam-level; #IMPLIED</para>
+
+<para>    &lt;anchura&gt; = num</para>
+
+<para>    &lt;posición&gt; </para>
+
+
+
+<para>Ejemplo:</para>
+
+<para>a) En MusicXML:</para>
+
+<para>&lt;direction
+placement=&quot;above&quot;&gt; </para>
+
+<para>            &lt;direction-type&gt; </para>
+
+<para>                  &lt;wedge
+type=&quot;crescendo&quot; spread=&quot;0&quot; relative-y=&quot;5&quot;/&gt; </para>
+
+<para>             &lt;/direction-type&gt; </para>
+
+<para>             &lt;offset&gt;-4&lt;/offset&gt;
+</para>
+
+<para>&lt;/direction&gt;</para>
+
+<para> </para>
+
+<para>b) En <acronym>LDP</acronym>:</para>
+
+<para>      (regulador crescendo encima (xy
+yr-5))</para>
+
+<para>      El parámetro offset no se
+implementa</para>
+
+
+
+<para>The offset element measures horizontal
+direction in terms of divisions, just like the duration element. </para>
+
+<para>If two directions go together, they can
+be linked by having multiple direction-type elements within a single direction.
+</para>
+
+<p style='margin-left:63.8pt;text-indent:-63.8pt'>
+lang=EN-GB>&nbsp;</para>
+
+
+
+-->
+
+<!--
+
+
+
+
+
+<sect1 id="s1__Toc86206013">Signos de repetición</title>
+
+<para><b>&nbsp;</b></para>
+
+<para>Los signos de repetición asociados a barras de compás se
+definen en el elemento &lt;barra&gt;. Los restantes se definen aquí.</para>
+
+<para>&lt;repeticion&gt; = (<b>repeticion</b> &lt;valor&gt;
+&lt;posicion&gt; [&lt;font&gt;])</para>
+
+<para>&lt;valor&gt; =</para>
+
+<para>            &quot;DaCapo&quot; |</para>
+
+<para>            &quot;Segno&quot; | (&quot;Segno&quot; <emphasis>num</emphasis>)
+|</para>
+
+<para>            &quot;DalSegno&quot; | (&quot;DalSegno&quot; <emphasis>num</emphasis>)
+|</para>
+
+<para>            &quot;Coda&quot; | (&quot;Coda&quot;
+<emphasis>num</emphasis>) |</para>
+
+<para>            &quot;AlCoda&quot; | (&quot;AlCoda&quot;
+<emphasis>num</emphasis>) |</para>
+
+<para>            &quot;Fine&quot; |</para>
+
+<para>            &quot;AlFine&quot; |</para>
+
+<para>            (&quot;repeticion&quot;
+<emphasis>num</emphasis>)</para>
+
+
+
+<para>El parámetro <emphasis>num</emphasis>  sirve para distinguirlos cuando hay
+varios. El valor &quot;repetición&quot; &lt;rehearsal&gt; se refiere a las
+indicaciones de 1ª y 2ª vez</para>
+
+
+
+-->
+
+
+
+<!--
+
+
+
+<para><b> Cabeza</b>
+ &lt;<emphasis>notehead</emphasis>&gt; Para
+forzar un glifo distinto del de por defecto:</para>
+
+<p 
+
+(<b>cabeza</b>
+{&quot;barra&quot;, &quot;triangulo&quot;, &quot;rombo&quot;,
+&quot;cuadrado&quot;, &quot;cruz&quot;, &quot;x&quot;, &quot;circulo-x&quot;,
+&quot;sin-cabeza&quot; })</para>
+
+<p 
+
+ </para>
+
+<para> &nbsp;</para>
+
+
+
+<para><b> Orientación</b>
+ &lt;<emphasis>orientation</emphasis>&gt;.
+Indica si los ligados van encima o debajo (¿no vale con &lt;lugar&gt;)?</para>
+
+<para><b> Aspecto</b>
+ &lt;<emphasis>printout</emphasis>&gt;. Son
+indicaciones para controlar que no se dibujen cosas. Por ejemplo notas,
+puntillos o silencios en casos de solapamientos de voces.</para>
+
+<p 
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=EN-GB
+style='font-size:10.0pt;&lt;!ENTITY
+% printout</para>
+
+<p 
+
+ &quot;print-object
+%yes-no;  #IMPLIED</para>
+
+<p 
+
+  print-dot
+%yes-no;  #IMPLIED</para>
+
+<p 
+
+  print-spacing
+%yes-no;  #IMPLIED&quot;&gt;</para>
+
+<p 
+
+&nbsp;</para>
+
+<para> &nbsp;</para>
+
+<p 
+
+'>&nbsp;</para>
+
+<para><b> style='display:none;background:yellow'>Alteraciones-d</b>
+style='display:none;background:yellow'> &lt;<emphasis>accidentals</emphasis>&gt;.
+Son indicaciones para el dibujo
+no para la interpretación. Para interpretación el sonido está fijado por el
+tono &lt;<emphasis>pitch</emphasis>&gt;</para>
+
+<p 
+
+                                                                                              &lt;alteraciones-d&gt;
+= ( [&quot;c&quot;] &lt;tipo&gt; [&quot;t&quot;&lt;num&gt;] )</para>
+
+<p 
+
+&nbsp;</para>
+
+<table class=MsoTableGrid border=1 cellspacing=0 cellpadding=0
+ style='margin-left:4.0cm;border-collapse:collapse;display:none;border:none'>
+ <tr style='display:none'>
+  <td width=36 valign=top
+
+  <para>
+  style='display:none;background:yellow'>- </para>
+  </entry>
+  <td width=168 valign=top
+  border-left:none;
+  <para>
+  style='display:none;background:yellow'>bemol</para>
+  </entry>
+  <td width=36 valign=top
+  border-left:none;
+  <para>
+  style='display:none;background:yellow'>=</para>
+  </entry>
+  <td width=180 valign=top
+  border-left:none;
+  <para>
+  style='display:none;background:yellow'>becuadro</para>
+  </entry>
+ </row>
+ <tr style='display:none'>
+  <td width=36 valign=top
+  border-top:none;
+  <para>
+  style='display:none;background:yellow'>+ </para>
+  </entry>
+  <td width=168 125.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <para>
+  style='display:none;background:yellow'>sostenido</para>
+  </entry>
+  <td width=36 27.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <para>
+  style='display:none;background:yellow'>=-</para>
+  </entry>
+  <td width=180 134.9pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <para>
+  style='display:none;background:yellow'>becuadro bemol</para>
+  </entry>
+ </row>
+ <tr style='display:none'>
+  <td width=36 valign=top
+  border-top:none;
+  <para>
+  style='display:none;background:yellow'> </para>
+  </entry>
+  <td width=168 125.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <para>
+  style='display:none;background:yellow'>doble bemol</para>
+  </entry>
+  <td width=36 27.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <para>
+  style='display:none;background:yellow'>=+</para>
+  </entry>
+  <td width=180 134.9pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <para>
+  style='display:none;background:yellow'>becuadro sostenido</para>
+  </entry>
+ </row>
+ <tr style='display:none'>
+  <td width=36 valign=top
+  border-top:none;
+  <para>
+  style='display:none;background:yellow'>++ </para>
+  </entry>
+  <td width=168 125.85pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <para>
+  style='display:none;background:yellow'>dos sostenidos</para>
+  </entry>
+  <td width=36 27.25pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <para>
+  style='display:none;background:yellow'>x</para>
+  </entry>
+  <td width=180 134.9pt;border-top:none;border-left:
+  none;border-bottom:solid windowtext 1.0pt;border-right:solid windowtext 1.0pt;
+
+  <para>
+  style='display:none;background:yellow'>doble sostenido</para>
+  </entry>
+ </row>
+</tgroup></informaltable>
+
+<p 
+
+&nbsp;</para>
+
+<para> La
+letra &quot;c&quot; que, opcionalmente, precede al tipo de alteración indica
+que es una alteración de cortesía (debe dibujarse entre paréntesis).</para>
+
+<para> Al
+final puede venir una &quot;t&quot; seguida de un número para indicar que se
+dibuje de un tamaño distinto al que por defecto le correspondería. El número
+indica el factor de escala (1,0=100%) (ej. En notas de apoyatura).</para>
+
+<para> &nbsp;</para>
+
+<title><a name="_Toc86206015">Control del formato, espaciados y
+opciones &lt;print&gt;</a></title>
+
+<para>MusicXML lang=ES> no se ha metido
+ha estudiar el problema del dibujo, sólo el de cómo representar el sonido o los
+signos musicales. Por ello, prácticamente no hay directivas para controlar en
+detalle los aspectos de dibujo. El único elemento que hay es el elemento &lt;print&gt;
+y apenas tiene un par de atributos. En <acronym>LDP</acronym> se va a tratar de que todos los
+elementos tengan subelementos que permitan controlar todos las aspectos de
+dibujo. </para>
+
+<para>En <acronym>LDP</acronym> se va a definir un elemento &lt;opcion&gt;
+que sirva para definir los parámetros de dibujo de cualquier elemento. </para>
+
+<p style='margin-top:0cm;margin-right:0cm;margin-bottom:6.0pt;
+margin-left:18.0pt'> style='font-size:10.0pt;'>&lt;opcion&gt;
+= (opcion &lt;valor&gt;+)</para>
+
+<p 
+
+10.0pt;&nbsp;</para>
+
+<para>Los valores y atributos de este elemento
+dependerán del elemento al que estén asociados. A continuación se
+definen los valores disponibles para cada tipo de elemento:</para>
+
+<p style='margin-left:14.2pt;text-indent:-14.2pt'>a)
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp; <b>Control de saltos
+de página, sección y sistema.</b> Son posibles en cualquier compás:</para>
+
+<p 
+
+10.0pt;'>(saltoPagina <emphasis>si-no</emphasis>)</para>
+
+<p 
+
+10.0pt;'>(saltoSistema <emphasis>si-no</emphasis>)</para>
+
+<p 
+
+10.0pt;'>(saltoSeccion)</para>
+
+<p style='margin-bottom:6.0pt'>&nbsp;</para>
+
+<p style='margin-bottom:6.0pt'>Si el valor es &quot;no&quot;
+obliga a que el compas siga en la misma página/sistema; por ejemplo, para
+forzar a que una página no cambie en un compás. <u> lang=EN-GB
+style='color:red'>If used in multi-part music, they should be placed in the
+same positions within each part, or the results are undefined</u>
+lang=EN-GB>.</para>
+
+<p 
+
+&nbsp;</para>
+
+<p style='margin-left:14.2pt;text-indent:-14.2pt'>b)
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp; <b>Especificación del
+tamaño del papel y los márgenes de página</b>. Sólo son posibles cuando cambia
+a nueva página  >à en el primer compás
+de una partitura o en el compás siguiente a un elemento &lt;SaltoSeccion&gt; y
+&lt;SaltoPagina&gt;</para>
+
+<p 
+
+10.0pt;'>(AltoPagina mm)</para>
+
+<p 
+
+10.0pt;'>(AnchoPagina mm)</para>
+
+<p 
+
+10.0pt;'>&nbsp;</para>
+
+<p 
+
+10.0pt;'>(PaginaMargenSup <emphasis>mm</emphasis>)</para>
+
+<p 
+
+10.0pt;'>(PaginaMargenDcho <emphasis>mm</emphasis>)</para>
+
+<p 
+
+10.0pt;'>(PaginaMargenIzqdo <emphasis>mm</emphasis>)</para>
+
+<p 
+
+10.0pt;'>&nbsp;</para>
+
+<p style='margin-left:14.2pt;text-indent:-14.2pt'>c)
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp; <b>Márgenes de
+sistema. </b>Cada sistema puede tener unos márgenes distintos. La
+especificación de márgenes debe hacerse en el primer compás del sistema</para>
+
+<p 
+
+10.0pt;'>(sistemaMargenDcho <emphasis>decimas</emphasis>)</para>
+
+<p 
+
+10.0pt;'>(sistemaMargenIzqdo <emphasis>decimas</emphasis>)</para>
+
+<p 
+
+10.0pt;'>&nbsp;</para>
+
+<p style='margin-left:14.2pt;text-indent:-14.2pt'>d)
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp; <b>Espaciados.</b>
+Sólo son posibles cuanto se inicia un nuevo pentagrama de un instrumento
+>à En el primer compás o en el compás que
+sigue a un elemento &lt;SaltoPagina&gt;, &lt;SaltoSeccion&gt; y &lt;SaltoSistema&gt;</para>
+
+<p 
+
+10.0pt;'>(EspaciadoLineas { (<b>pantalla</b>  <emphasis>pixels</emphasis>)
+| (<b>papel</b> <emphasis>mm</emphasis>) } </para>
+
+<p 
+
+10.0pt;'>&nbsp;</para>
+
+<p 
+
+10.0pt;'>(EspacioNotas <emphasis>decimas</emphasis>)
+lang=PT-BR style='font-size:10.0pt;font-family:Wingdings'>ß
+style='font-size:10.0pt;'> separación mínima entre
+notas</para>
+
+<p 
+
+10.0pt;'>(EspacioAntesMusice <emphasis>decimas</emphasis>)</para>
+
+<p 
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=PT-BR
+style='font-size:10.0pt;'>(EspacioPentagramas <emphasis>decimas</emphasis>)
+font-family:Wingdings'>ß
+lang=PT-BR style='font-size:10.0pt;'> para instr.
+multipentagramas (piano)</para>
+
+<p 
+
+10.0pt;'>(EspacioTrasMusice <emphasis>decimas</emphasis>)</para>
+
+<p 
+
+10.0pt;'>(EspacioSistemas <emphasis>decimas</emphasis>)</para>
+
+<p 
+
+10.0pt;'>(EspacioNegra <emphasis>decimas</emphasis>)
+lang=PT-BR style='font-size:10.0pt;font-family:Wingdings'>ß
+style='font-size:10.0pt;'> factor conversión
+tiempo/espacio </para>
+
+<p 
+
+10.0pt;'>&nbsp;</para>
+
+<para><b>d) Opciones de dibujo. </b>Son posibles en cualquier compas</para>
+
+<p 
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=PT-BR
+style='font-size:10.0pt;'>&lt;PosicionTuplas
+&quot;defecto&quot; | &quot;encima&quot; | &quot;debajo&quot;&gt;</para>
+
+<p 
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=PT-BR
+style='font-size:10.0pt;'>
+lang=EN-GB style='font-size:10.0pt;'>&lt;tuplet-placement
+(default | near-note-heads |</para>
+
+<p 
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=EN-GB
+style='font-size:10.0pt;'>            near-note-stems
+| above | below)</para>
+
+<p style='margin-bottom:6.0pt'>Tuplet-placement
+provides a global control  for where tuplet notations should go.</para>
+
+<p 
+text-align:left;text-indent:35.4pt;text-autospace:none'> lang=EN-GB
+style='font-size:10.0pt;&nbsp;</para>
+
+
+
+<b> lang=EN-GB style='font-size:12.0pt;font-family:Arial;display:none;
+background:yellow'><br clear=all >
+</b>
+
+-->
+
