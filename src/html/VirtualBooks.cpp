@@ -94,8 +94,8 @@ wxFSFile* lmVirtualBooks::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& l
     int iColon = location.Find(_T(':'));
     wxString sBookName = location.Mid(iColon+1, location.Length()-iColon-5);
     wxString sExt(location.Right(4).Lower());
-    //wxLogMessage(_T("[lmVirtualBooks::OpenFile] Request to open virtual file '%s'. Book='%s', ext='%s'"),
-    //    location, sBookName, sExt);
+    wxLogMessage(_T("[lmVirtualBooks::OpenFile] Request to open virtual file '%s'. Book='%s', ext='%s'"),
+        location, sBookName, sExt);
 
     if (sExt == _T("ched"))
         return (wxFSFile*) NULL;    //cached file
@@ -127,6 +127,7 @@ wxFSFile* lmVirtualBooks::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& l
         }
         else if (location == _T("lmVirtualBooks:intro.hhk")) {
             pBook = &m_sIntroHHK;
+            wxLogMessage(m_sIntroHHK);
         }
         else if (location == _T("lmVirtualBooks:intro_welcome.htm")) {
             pBook = &m_sIntroHTM;
@@ -160,6 +161,13 @@ wxFSFile* lmVirtualBooks::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& l
         return (wxFSFile*) NULL;    //error
 
     str = new wxMemoryInputStream(pBook->c_str(), pBook->Length());
+    //by pass for Unicode build
+    //wxString sUtf = wxString::Format(_T("%s"), pBook->mb_str(wxConvISO8859_1) );
+    //str = new wxMemoryInputStream(sUtf.c_str(), sUtf.Length());
+    //wxWX2MBbuf tmp_buf = wxConvUTF8.cWX2MB(pBook->c_str());
+    //const char *tmp_str = (const char*) tmp_buf;
+    //str = new wxMemoryInputStream(tmp_str, strlen(tmp_str));
+
     f = new wxFSFile(str, location, wxT("text/html"), wxEmptyString, wxDateTime::Today());
     
     return f;
@@ -174,7 +182,7 @@ void lmVirtualBooks::LoadIntroBook()
     m_sIntroHHP = sNil +
         _T("[OPTIONS]\n")
         _T("Contents file=intro.hhc\n")
-        _T("Charset=ISO-8859-1\n")
+        _T("Charset=utf-8\n")       //ISO-8859-1
         _T("Index file=intro.hhk\n")
         _T("Title=") + _("LenMus. Introduction") + _T("\n")
         _T("Default topic=intro_welcome.htm\n");
@@ -183,8 +191,9 @@ void lmVirtualBooks::LoadIntroBook()
     //Book content
     //-----------------------------------------------------------------------------
     m_sIntroHHC = sNil +
-        _T("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML//EN\">")
-        _T("<html><head></head><body><ul>")
+        _T("<html><head>")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">")
+        _T("</head><body><ul>")
         _T("<li><object type=\"text/sitemap\">")
         _T("<param name=\"Name\" value=\"") + _("Welcome") + _T("\">")
         _T("<param name=\"Local\" value=\"intro_welcome.htm\"></object></li>")
@@ -194,7 +203,9 @@ void lmVirtualBooks::LoadIntroBook()
     //-----------------------------------------------------------------------------
     m_sIntroHHK = sNil +
         _T("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML//EN\">")
-        _T("<html><head></head><body><ul>")
+        _T("<html><head>")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">")
+        _T("</head><body><ul>")
         _T("<li><object type=\"text/sitemap\">")
         _T("<param name=\"Name\" value=\"") + _("Welcome") + _T("\">")
         _T("<param name=\"Local\" value=\"intro_welcome.htm\"></object></li>")
@@ -216,8 +227,10 @@ single exercises included in this book. This will allow you meet \
 your specific needs at each moment and to practise specific points."), sBookRef );
 
     m_sIntroHTM = sNil +
-      _T("<html><body><table width='100%'><tr><td align='left'>") 
-      _T("<img src='Phonascus-277x63.gif' width='277' height='63' /></td>") 
+      _T("<html><head>")
+      _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">")
+      _T("</head><body><table width='100%'><tr><td align='left'>") 
+_T("<img src='Phonascus-277x63.gif' width='277' height='63' /></td>") 
       _T("<td align='right'><img src='LenMus-170x44.gif' width='170' height='44' /></td>") 
       _T("</tr></table><p>&nbsp;</p><h1>") +
       _("Welcome to LenMus Phonascus version ") + sVersionNumber +

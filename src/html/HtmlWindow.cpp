@@ -216,6 +216,7 @@ void lmHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link)
 
         // show the embedded page
         SetPage(sContent);
+        wxLogMessage(sContent);
         return;
     }
 

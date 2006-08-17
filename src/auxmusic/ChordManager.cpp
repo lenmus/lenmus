@@ -630,7 +630,7 @@ wxString lmChordManager::GetPattern(int i)
 wxString lmChordManager::GetNameFull()
 { 
     wxString sName = ChordTypeToName( m_nType );
-    sName += ", ";
+    sName += _T(", ");
     if (m_nInversion == 0)
         sName += _("root position");
     else if (m_nInversion == 1)
