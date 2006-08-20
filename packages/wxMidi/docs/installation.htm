@@ -22,7 +22,7 @@ support for other compilers/platforms. Any help with this will be appreciated.</
 <thead class="ListaImpar">
     <td class="ListaImpar">Directory</td>
     <td class="ListaImpar">Contents</td>
-	</thead>
+    </thead>
 <tr class="ListaPar">
     <td class="ListaPar">build/msw</td>
     <td class="ListaPar">makefiles and project files for compiling the project.
@@ -42,6 +42,10 @@ support for other compilers/platforms. Any help with this will be appreciated.</
 <tr class="ListaPar">
     <td class="ListaPar">lib</td>
     <td class="ListaPar">library files for using wxMidi</td></tr>
+<tr class="ListaPar">
+    <td class="ListaPar">locale</td>
+    <td class="ListaPar">wxmidi_xx.po and wxmidi_xx.mo language files, where xx
+                        is the language code</td></tr>
 <tr class="ListaPar">
     <td class="ListaPar">lib/pm</td>
     <td class="ListaPar">portmidi release libraries</td></tr>
@@ -69,7 +73,7 @@ support for other compilers/platforms. Any help with this will be appreciated.</
    a memory leak.</b> The problem is not serious as the memory leak refers to some small
    fixed blocks of memory (about 20-40 bytes, one block per MIDI device in your machine)
    allocated on initialization that are not released at termination of the portmidi package.
-   <b>The problem IS FIXED in the PortMidi package included with wxMidi</b> and the patch
+   <b>THE PROBLEM IS FIXED in the PortMidi package included with wxMidi</b> and the patch
    has been reported to PortMidi maintainers.
    But take this into account if you decide to download the PortMidi package and install
    it instead of using the precompiled package included with wxMidi.<br /><br /></li>
@@ -86,16 +90,16 @@ support for other compilers/platforms. Any help with this will be appreciated.</
 
 <li>After successful compilation, copy the libraries to the appropiate folder (\pm folder
     for release version, \pmd folder for debug version) in wxMidi\lib:<br />
-		<br />
+        <br />
         wxMidi\src\portmidi\pm_win\Release\pm_dll.dll    -->  wxMidi\lib\pm\pm_dll.dll<br />
         wxMidi\src\portmidi\pm_win\Release\portmidi.lib  -->  wxMidi\lib\pm\portmidi.lib<br />
         wxMidi\src\portmidi\pm_win\Release\porttime.lib  -->  wxMidi\lib\pm\porttime.lib<br />
-		<br />
+        <br />
         wxMidi\src\portmidi\pm_win\Debug\pm_dll.dll    -->  wxMidi\lib\pmd\pm_dll.dll<br />
         wxMidi\src\portmidi\pm_win\Debug\portmidi.lib  -->  wxMidi\lib\pmd\portmidi.lib<br />
         wxMidi\src\portmidi\pm_win\Debug\porttime.lib  -->  wxMidi\lib\pmd\porttime.lib<br />
         <br /><br />
-	</li>
+    </li>
 
 <li>Copy include file  portmidi\pm_common\portmidi.h  to  wxMidi\include</li>
 </ol>
@@ -106,17 +110,17 @@ support for other compilers/platforms. Any help with this will be appreciated.</
 
 <ol>
 <li>Compile wxMidi. All makefiles and project are located in build\msw directory.
-	After successful compilation you'll find the library in the subdirectory wxMidi\lib.
-	Name of the compiled library follow this scheme: name begin with "wxmidi" followed by
-	version number and letters indicating if the library is compiled as Unicode ('u')
-	and/or debug build ('d'). Here are some examples:<br />
-		<br />
-		  lib\wxmidi10.lib	release library<br />
-		  lib\wxmidi10u.lib	release Unicode library<br />
-		  lib\wxmidi10d.lib	Debug library<br />
-		  lib\wxmidi10ud.lib	Debug Unicode library<br />
+    After successful compilation you'll find the library in the subdirectory wxMidi\lib.
+    Name of the compiled library follow this scheme: name begin with "wxmidi" followed by
+    version number and letters indicating if the library is compiled as Unicode ('u')
+    and/or debug build ('d'). Here are some examples:<br />
+        <br />
+          lib\wxmidi10.lib      release library<br />
+          lib\wxmidi10u.lib     release Unicode library<br />
+          lib\wxmidi10d.lib     Debug library<br />
+          lib\wxmidi10ud.lib    Debug Unicode library<br />
 
-	<br /><br /></li>
+    <br /><br /></li>
 
 <li>IMPORTANT! In Windows, portmidi needs the pm_dll.dll, but there is no simple way
     to set up projects to use this dll. Therefore, YOU MUST COPY this dll to your

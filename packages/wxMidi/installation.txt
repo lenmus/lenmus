@@ -4,8 +4,8 @@
  ======================
  
  Component:  wxMidi
- Release:    1.1
- Date:       03-Jan-2006
+ Release:    1.2
+ Date:       18-Ago-2006
  wxWidgets:  2.4.x, 2.5.x, 2.6.x
  Maintainer: Cecilio Salmeron  /  s.cecilio@gmail.com
    
@@ -56,13 +56,17 @@
 
  Directory              Contents
  -------------------    --------------------------------------------------------
- build/msw              makefiles and project files for compiling the project. Version MS VC++
+ build/msw              makefiles and project files for compiling the project. 
+                        Version MS VC++
 
  samples/midisound      source files the sample application
 
  src/wxMidi             source files for wxMidi
 
  src/portmidi           portmidi package
+
+ locale                 wxmidi_xx.po and wxmidi_xx.mo language files, where xx
+                        is the language code
  
  include                include files for using wxMidi
 
@@ -90,7 +94,7 @@ support for other compilers/platforms. Any help with this will be appreciated.
    a memory leak. The problem is not serious as the memory leak refers to some small
    fixed blocks of memory (about 20-40 bytes, one block per MIDI device in your machine)
    allocated on initialization that are not released at termination of the portmidi package.
-   The problem IS FIXED in the PortMidi package included with wxMidi and the patch
+   THE PROBLEM IS FIXED in the PortMidi package included with wxMidi and the patch
    has been reported to PortMidi maintainers.
    But take this into account if you decide to download the PortMidi package and install
    it instead of using the precompiled package included with wxMidi.
@@ -135,10 +139,10 @@ support for other compilers/platforms. Any help with this will be appreciated.
     version number and letters indicating if the library is compiled as Unicode ('u') 
     and/or debug build ('d'). Here are some examples:
 
-          lib\wxmidi10.lib  release library
-          lib\wxmidi10u.lib release Unicode library
-          lib\wxmidi10d.lib Debug library
-          lib\wxmidi10ud.lib    Debug Unicode library
+          lib\wxmidi10.lib      release library
+          lib\wxmidi10u.lib     release Unicode library
+          lib\wxmidi10d.lib     debug library
+          lib\wxmidi10ud.lib    debug Unicode library
 
 
 2)  IMPORTANT! In Windows, portmidi needs the pm_dll.dll, but there is no simple way

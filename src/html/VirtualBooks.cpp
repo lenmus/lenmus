@@ -162,11 +162,17 @@ wxFSFile* lmVirtualBooks::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& l
 
     str = new wxMemoryInputStream(pBook->c_str(), pBook->Length());
     //by pass for Unicode build
-    //wxString sUtf = wxString::Format(_T("%s"), pBook->mb_str(wxConvISO8859_1) );
+    //wxString sUtf = wxString::Format(_T("%s"), pBook->mb_str(wxConvUTF-8) );
     //str = new wxMemoryInputStream(sUtf.c_str(), sUtf.Length());
-    //wxWX2MBbuf tmp_buf = wxConvUTF8.cWX2MB(pBook->c_str());
+
+    //wxWX2MBbuf tmp_buf = wxCSConv.cWX2MB(pBook->c_str());
     //const char *tmp_str = (const char*) tmp_buf;
     //str = new wxMemoryInputStream(tmp_str, strlen(tmp_str));
+
+    //wxChar* tmp_str = new wxChar[10000];
+    //wxMBConvUTF8 oConv;
+    //size_t nSize = oConv.WC2MB((char *)pBook->c_str(), tmp_str, pBook->Length());
+    //str = new wxMemoryInputStream(tmp_str, nSize);
 
     f = new wxFSFile(str, location, wxT("text/html"), wxEmptyString, wxDateTime::Today());
     

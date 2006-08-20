@@ -4,8 +4,12 @@
 //
 // Author:      Cecilio Salmeron
 // RCS-ID:      $Id: wxMidiDatabase.cpp,v 1.1.1.1 2005/09/03 16:16:32 cecilios Exp $
-// Copyright:   (c) 2005 Cecilio Salmeron
+// Copyright:   (c) 2005-2006 Cecilio Salmeron
 // Licence:     wxWidgets licence
+//
+// Changes:
+// 1.2  2006/Aug/18 For internationalization, strings can not be statically initialized.
+//                  Initialization of strings added to wxMidiDatabaseGM constructor.
 //=====================================================================================
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 //#pragma implementation "wxMidiDatabaseGM.h"
@@ -67,137 +71,8 @@ which use different synthesis techniques may sound quite different.
 */
 
 //instruments table
-static wxString m_sInstrName[128] =
-{	//instrument names
-	_("Acoustic Grand Piano"),
-	_("Bright Acoustic Piano"),
-	_("Electric Grand Piano"),
-	_("Honky-tonk Piano"),
-	_("Electric Piano 1"),
-	_("Electric Piano 2"),
-	_("Harpsichord"),
-	_("Clavinet"),          
-	_("Celesta"),
-	_("Glockenspiel"),
-	_("Music Box"),
-	_("Vibraphone"),
-	_("Marimba"),
-	_("Xylophone"),
-	_("Tubular Bells"),
-	_("Dulcimer"),
-    _("Drawbar Organ"),
-    _("Percussive Organ"),
-    _("Rock Organ"),
-    _("Church Organ"),
-    _("Reed Organ"),
-    _("Accordion"),
-    _("Harmonica"),
-    _("Tango Accordion"),
-    _("Acoustic Guitar (nylon)"),
-	_("Acoustic Guitar (steel)"),
-    _("Electric Guitar (jazz)"),
-    _("Electric Guitar (clean)"),
-    _("Electric Guitar (muted)"),
-    _("Overdriven Guitar"),
-    _("Distortion Guitar"),
-    _("Guitar harmonics"),
-    _("Acoustic Bass"),
-    _("Electric Bass (finger)"),
-    _("Electric Bass (pick)"),
-    _("Fretless Bass"),
-    _("Slap Bass 1"),
-    _("Slap Bass 2"),
-    _("Synth Bass 1"),
-    _("Synth Bass 2"),
-    _("Violin"),
-    _("Viola"),
-    _("Cello"),
-    _("Contrabass"),
-    _("Tremolo Strings"),
-    _("Pizzicato Strings"),
-    _("Orchestral Harp"),
-    _("Timpani"),
-    _("String Ensemble 1"),
-    _("String Ensemble 2"),
-    _("SynthStrings 1"),
-    _("SynthStrings 2"),
-    _("Choir Aahs"),
-    _("Voice Oohs"),
-    _("Synth Voice"),
-    _("Orchestra Hit"),
-    _("Trumpet"),
-    _("Trombone"),
-    _("Tuba"),
-    _("Muted Trumpet"),
-    _("French Horn"),
-    _("Brass Section"),
-    _("SynthBrass 1"),
-    _("SynthBrass 2"),
-    _("Soprano Sax"),
-    _("Alto Sax"),
-    _("Tenor Sax"),
-    _("Baritone Sax"),
-    _("Oboe"),
-    _("English Horn"),
-    _("Bassoon"),
-    _("Clarinet"),
-    _("Piccolo"),
-    _("Flute"),
-    _("Recorder"),
-    _("Pan Flute"),
-    _("Blown Bottle"),
-    _("Shakuhachi"),
-    _("Whistle"),
-    _("Ocarina"),
-    _("Lead 1 (square)"),
-    _("Lead 2 (sawtooth)"),
-    _("Lead 3 (calliope)"),
-    _("Lead 4 (chiff)"),
-    _("Lead 5 (charang)"),
-    _("Lead 6 (voice)"),
-    _("Lead 7 (fifths)"),
-    _("Lead 8 (bass + lead)"),
-    _("Pad 1 (new age)"),
-    _("Pad 2 (warm)"),
-    _("Pad 3 (polysynth)"),
-    _("Pad 4 (choir)"),
-    _("Pad 5 (bowed)"),
-    _("Pad 6 (metallic)"),
-    _("Pad 7 (halo)"),
-    _("Pad 8 (sweep)"),
-    _("FX 1 (rain)"),
-    _("FX 2 (soundtrack)"),
-    _("FX 3 (crystal)"),
-    _("FX 4 (atmosphere)"),
-    _("FX 5 (brightness)"),
-    _("FX 6 (goblins)"),
-    _("FX 7 (echoes)"),
-    _("FX 8 (sci-fi)"),
-    _("Sitar"),
-    _("Banjo"),
-    _("Shamisen"),
-    _("Koto"),
-    _("Kalimba"),
-    _("Bag pipe"),
-    _("Fiddle"),
-    _("Shanai"),
-    _("Tinkle Bell"),
-    _("Agogo"),
-    _("Steel Drums"),
-    _("Woodblock"),
-    _("Taiko Drum"),
-    _("Melodic Tom"),
-    _("Synth Drum"),
-    _("Reverse Cymbal"),
-    _("Guitar Fret Noise"),
-    _("Breath Noise"),
-    _("Seashore"),
-    _("Bird Tweet"),
-    _("Telephone Ring"),
-    _("Helicopter"),
-    _("Applause"),
-    _("Gunshot")
-};
+static bool m_fStringsInitialized = false;
+static wxString m_sInstrName[128];
 
 //initialize the only instance
 wxMidiDatabaseGM* wxMidiDatabaseGM::m_pInstance = (wxMidiDatabaseGM*)NULL;
@@ -205,6 +80,146 @@ wxMidiDatabaseGM* wxMidiDatabaseGM::m_pInstance = (wxMidiDatabaseGM*)NULL;
 // ----------------------------------------------------------------------------
 // wxMidiDatabaseGM ctor/dtor
 // ----------------------------------------------------------------------------
+
+wxMidiDatabaseGM::wxMidiDatabaseGM()
+{
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    if (!m_fStringsInitialized) {
+	    //instrument names
+	    m_sInstrName[0] = _("Acoustic Grand Piano");
+	    m_sInstrName[1] = _("Bright Acoustic Piano");
+	    m_sInstrName[2] = _("Electric Grand Piano");
+	    m_sInstrName[3] = _("Honky-tonk Piano");
+	    m_sInstrName[4] = _("Electric Piano 1");
+	    m_sInstrName[5] = _("Electric Piano 2");
+	    m_sInstrName[6] = _("Harpsichord");
+	    m_sInstrName[7] = _("Clavinet");          
+	    m_sInstrName[8] = _("Celesta");
+	    m_sInstrName[9] = _("Glockenspiel");
+	    m_sInstrName[10] = _("Music Box");
+	    m_sInstrName[11] = _("Vibraphone");
+	    m_sInstrName[12] = _("Marimba");
+	    m_sInstrName[13] = _("Xylophone");
+	    m_sInstrName[14] = _("Tubular Bells");
+	    m_sInstrName[15] = _("Dulcimer");
+	    m_sInstrName[16] = _("Drawbar Organ");
+	    m_sInstrName[17] = _("Percussive Organ");
+	    m_sInstrName[18] = _("Rock Organ");
+	    m_sInstrName[19] = _("Church Organ");
+	    m_sInstrName[20] = _("Reed Organ");
+	    m_sInstrName[21] = _("Accordion");
+	    m_sInstrName[22] = _("Harmonica");
+	    m_sInstrName[23] = _("Tango Accordion");
+	    m_sInstrName[24] = _("Acoustic Guitar (nylon)");
+	    m_sInstrName[25] = _("Acoustic Guitar (steel)");
+	    m_sInstrName[26] = _("Electric Guitar (jazz)");
+	    m_sInstrName[27] = _("Electric Guitar (clean)");
+	    m_sInstrName[28] = _("Electric Guitar (muted)");
+	    m_sInstrName[29] = _("Overdriven Guitar");
+	    m_sInstrName[30] = _("Distortion Guitar");
+	    m_sInstrName[31] = _("Guitar harmonics");
+	    m_sInstrName[32] = _("Acoustic Bass");
+	    m_sInstrName[33] = _("Electric Bass (finger)");
+	    m_sInstrName[34] = _("Electric Bass (pick)");
+	    m_sInstrName[35] = _("Fretless Bass");
+	    m_sInstrName[36] = _("Slap Bass 1");
+	    m_sInstrName[37] = _("Slap Bass 2");
+	    m_sInstrName[38] = _("Synth Bass 1");
+	    m_sInstrName[39] = _("Synth Bass 2");
+	    m_sInstrName[40] = _("Violin");
+	    m_sInstrName[41] = _("Viola");
+	    m_sInstrName[42] = _("Cello");
+	    m_sInstrName[43] = _("Contrabass");
+	    m_sInstrName[44] = _("Tremolo Strings");
+	    m_sInstrName[45] = _("Pizzicato Strings");
+	    m_sInstrName[46] = _("Orchestral Harp");
+	    m_sInstrName[47] = _("Timpani");
+	    m_sInstrName[48] = _("String Ensemble 1");
+	    m_sInstrName[49] = _("String Ensemble 2");
+	    m_sInstrName[50] = _("SynthStrings 1");
+	    m_sInstrName[51] = _("SynthStrings 2");
+	    m_sInstrName[52] = _("Choir Aahs");
+	    m_sInstrName[53] = _("Voice Oohs");
+	    m_sInstrName[54] = _("Synth Voice");
+	    m_sInstrName[55] = _("Orchestra Hit");
+	    m_sInstrName[56] = _("Trumpet");
+	    m_sInstrName[57] = _("Trombone");
+	    m_sInstrName[58] = _("Tuba");
+	    m_sInstrName[59] = _("Muted Trumpet");
+	    m_sInstrName[60] = _("French Horn");
+	    m_sInstrName[61] = _("Brass Section");
+	    m_sInstrName[62] = _("SynthBrass 1");
+	    m_sInstrName[63] = _("SynthBrass 2");
+	    m_sInstrName[64] = _("Soprano Sax");
+	    m_sInstrName[65] = _("Alto Sax");
+	    m_sInstrName[66] = _("Tenor Sax");
+	    m_sInstrName[67] = _("Baritone Sax");
+	    m_sInstrName[68] = _("Oboe");
+	    m_sInstrName[69] = _("English Horn");
+	    m_sInstrName[70] = _("Bassoon");
+	    m_sInstrName[71] = _("Clarinet");
+	    m_sInstrName[72] = _("Piccolo");
+	    m_sInstrName[73] = _("Flute");
+	    m_sInstrName[74] = _("Recorder");
+	    m_sInstrName[75] = _("Pan Flute");
+	    m_sInstrName[76] = _("Blown Bottle");
+	    m_sInstrName[77] = _("Shakuhachi");
+	    m_sInstrName[78] = _("Whistle");
+	    m_sInstrName[79] = _("Ocarina");
+	    m_sInstrName[80] = _("Lead 1 (square)");
+	    m_sInstrName[81] = _("Lead 2 (sawtooth)");
+	    m_sInstrName[82] = _("Lead 3 (calliope)");
+	    m_sInstrName[83] = _("Lead 4 (chiff)");
+	    m_sInstrName[84] = _("Lead 5 (charang)");
+	    m_sInstrName[85] = _("Lead 6 (voice)");
+	    m_sInstrName[86] = _("Lead 7 (fifths)");
+	    m_sInstrName[87] = _("Lead 8 (bass + lead)");
+	    m_sInstrName[88] = _("Pad 1 (new age)");
+	    m_sInstrName[89] = _("Pad 2 (warm)");
+	    m_sInstrName[90] = _("Pad 3 (polysynth)");
+	    m_sInstrName[91] = _("Pad 4 (choir)");
+	    m_sInstrName[92] = _("Pad 5 (bowed)");
+	    m_sInstrName[93] = _("Pad 6 (metallic)");
+	    m_sInstrName[94] = _("Pad 7 (halo)");
+	    m_sInstrName[95] = _("Pad 8 (sweep)");
+	    m_sInstrName[96] = _("FX 1 (rain)");
+	    m_sInstrName[97] = _("FX 2 (soundtrack)");
+	    m_sInstrName[98] = _("FX 3 (crystal)");
+	    m_sInstrName[99] = _("FX 4 (atmosphere)");
+	    m_sInstrName[100] = _("FX 5 (brightness)");
+	    m_sInstrName[101] = _("FX 6 (goblins)");
+	    m_sInstrName[102] = _("FX 7 (echoes)");
+	    m_sInstrName[103] = _("FX 8 (sci-fi)");
+	    m_sInstrName[104] = _("Sitar");
+	    m_sInstrName[105] = _("Banjo");
+	    m_sInstrName[106] = _("Shamisen");
+	    m_sInstrName[107] = _("Koto");
+	    m_sInstrName[108] = _("Kalimba");
+	    m_sInstrName[109] = _("Bag pipe");
+	    m_sInstrName[110] = _("Fiddle");
+	    m_sInstrName[111] = _("Shanai");
+	    m_sInstrName[112] = _("Tinkle Bell");
+	    m_sInstrName[113] = _("Agogo");
+	    m_sInstrName[114] = _("Steel Drums");
+	    m_sInstrName[115] = _("Woodblock");
+	    m_sInstrName[116] = _("Taiko Drum");
+	    m_sInstrName[117] = _("Melodic Tom");
+	    m_sInstrName[118] = _("Synth Drum");
+	    m_sInstrName[119] = _("Reverse Cymbal");
+	    m_sInstrName[120] = _("Guitar Fret Noise");
+	    m_sInstrName[121] = _("Breath Noise");
+	    m_sInstrName[122] = _("Seashore");
+	    m_sInstrName[123] = _("Bird Tweet");
+	    m_sInstrName[124] = _("Telephone Ring");
+	    m_sInstrName[125] = _("Helicopter");
+	    m_sInstrName[126] = _("Applause");
+	    m_sInstrName[127] = _("Gunshot");
+
+        m_fStringsInitialized = true;
+    }
+
+}
 
 wxMidiDatabaseGM::~wxMidiDatabaseGM()
 {

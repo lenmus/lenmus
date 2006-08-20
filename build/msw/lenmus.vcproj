@@ -263,7 +263,7 @@
             <Tool
                 Name="VCLinkerTool"
                 AdditionalOptions="/MACHINE:I386"
-                AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexu.lib wxpng.lib wxjpeg.lib wxtiff.lib wxmsw26u_adv.lib wxmsw26u_core.lib wxmsw26u_dbgrid.lib wxmsw26u_gl.lib wxmsw26u_html.lib wxmsw26u_media.lib wxmsw26u_qa.lib wxmsw26u_xrc.lib wxbase26u.lib wxbase26u_net.lib wxbase26u_odbc.lib wxbase26u_xml.lib wxmidi11u.lib wxauiu.lib"
+                AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexu.lib wxpng.lib wxjpeg.lib wxtiff.lib wxmsw26u_adv.lib wxmsw26u_core.lib wxmsw26u_dbgrid.lib wxmsw26u_gl.lib wxmsw26u_html.lib wxmsw26u_media.lib wxmsw26u_qa.lib wxmsw26u_xrc.lib wxbase26u.lib wxbase26u_net.lib wxbase26u_odbc.lib wxbase26u_xml.lib wxauiu.lib wxmidi11u.lib"
                 ShowProgress="0"
                 OutputFile="..\..\z_bin\lenmus_u.exe"
                 LinkIncremental="2"
@@ -474,18 +474,18 @@
             Name="docs"
             Filter="">
             <File
-                RelativePath="..\..\doc\html\changelog_2006.htm"
+                RelativePath="..\..\docs\html\changelog_2006.htm"
                 DeploymentContent="TRUE">
             </File>
             <File
-                RelativePath="..\..\doc\txt\devlog.txt">
+                RelativePath="..\..\docs\txt\devlog.txt">
             </File>
             <File
-                RelativePath="..\..\doc\html\release_notes.htm"
+                RelativePath="..\..\docs\html\release_notes.htm"
                 DeploymentContent="TRUE">
             </File>
             <File
-                RelativePath="..\..\doc\txt\window_ids.txt">
+                RelativePath="..\..\docs\txt\window_ids.txt">
             </File>
         </Filter>
         <Filter

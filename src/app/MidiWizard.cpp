@@ -560,7 +560,7 @@ void WizardInstrumentsPage::CreateControls()
     m_pSectCombo = new wxComboBox( itemWizardPageSimple16, ID_COMBO_SECTION, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pSectComboStrings, wxCB_DROPDOWN );
     itemBoxSizer25->Add(m_pSectCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
-    wxStaticText* itemStaticText31 = new wxStaticText( itemWizardPageSimple16, wxID_STATIC, _("lmInstrument:"), wxDefaultPosition, wxDefaultSize, 0 );
+    wxStaticText* itemStaticText31 = new wxStaticText( itemWizardPageSimple16, wxID_STATIC, _("Instrument:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer25->Add(itemStaticText31, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pInstrComboStrings = NULL;

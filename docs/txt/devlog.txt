@@ -102,11 +102,7 @@ LenMus project philosophy (to remind me to always stay on this):
     
     Bugs:
     - Chord: loop when double sharp accidental (##)
-
-    Bugs in Unicode version:
-        - Release Unicode:
-            - MidiWizard fails
-            
+           
     Spanish translation errors:
     - none
     
