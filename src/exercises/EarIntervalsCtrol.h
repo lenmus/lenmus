@@ -45,6 +45,7 @@
 #include "ScoreAuxCtrol.h"
 #include "UrlAuxCtrol.h"
 #include "CountersCtrol.h"
+#include "../auxmusic/Interval.h"
 
 
 const int lmEAR_INVAL_NUM_BUTTONS = 25;               //buttons for answers
@@ -82,26 +83,30 @@ public:
     void SetUpButtons();
 
 private:
-    void EnableButtons(bool fEnable);
     void Play();
     void NewProblem();
     void DisplaySolution();
     void ResetExercise();
+    void PrepareScore(wxString& sIntvCode, lmScore** pScore);
 
         // member variables
 
     lmScore*        m_pScore;               // the score with the interval
+    lmScore*        m_pAuxScore;            //score to play user selected interval
     lmEarIntervalsConstrains* m_pConstrains;
     bool            m_fProblemCreated;      //there is a problem prepared
-    lmPitch         m_ntMidi[2];            //the midi pitch of the two notes
-    lmPitch         m_ntPitch[2];           //the pitch of the two notes
-    bool            m_fPlayEnabled;         //Play enabled
     int             m_nRespIndex;           //index to the button with the right answer
-    bool            m_fButtonsEnabled;      //buttons enabled
     int             m_nRealIntval[lmEAR_INVAL_NUM_BUTTONS]; // intval. that corresponds
                                                             // to each valid button
     int             m_nValidIntervals;      // num of enabled buttons 
     wxString        m_sAnswer;              //name of the interval
+    bool            m_fQuestionAsked;       //question asked but not yet answered
+
+    //problem asked
+    wxString            m_sIntvCode;
+    EIntervalDirection  m_nDir;
+    EKeySignatures      m_nKey;
+    lmNoteBits          m_tNote[2];
 
     // controls on the window
     wxButton*           m_pAnswerButton[lmEAR_INVAL_NUM_BUTTONS];

@@ -43,6 +43,7 @@ extern lmLogger* g_pLogger;
 
 
 
+
 static wxString sIntervalName[16];
 static fStringsInitialized = false;
 
@@ -240,33 +241,33 @@ lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax,
 void lmInterval::Analyze()
 {
     m_nSemi = abs(m_ntMidi1 - m_ntMidi2);
-    m_nIntv = abs(m_ntDiat1 - m_ntDiat2) + 1;
+    m_nNumIntv = abs(m_ntDiat1 - m_ntDiat2) + 1;
     
     //trim to reduce intervals greater than one octave
-    bool fMajor = (m_nIntv > 8);
+    bool fMajor = (m_nNumIntv > 8);
     if (fMajor) {
         m_nSemi -= 12;
-        m_nIntv -= 7;
+        m_nNumIntv -= 7;
     }
     
     //compute the number of semitones required to be perfect or major (p.84 Atlas)
-    int nPerfect = 2 * (m_nIntv - 1);
-    if (m_nIntv > 3) nPerfect--;            //intervals greater than 3rd loose a semitone 
-    if (m_nIntv == 8) nPerfect = 12;        //the octave has 12 semitones
+    int nPerfect = 2 * (m_nNumIntv - 1);
+    if (m_nNumIntv > 3) nPerfect--;            //intervals greater than 3rd loose a semitone 
+    if (m_nNumIntv == 8) nPerfect = 12;        //the octave has 12 semitones
     
     //at this point:
     //   m_nSemi = num. of semitones in the interval
-    //   m_nIntv = number of the interval
+    //   m_nNumIntv = number of the interval
     //   nPerfect = num. of semitones that should have to be perfect or major
 
     //wxLogMessage( wxString::Format(
     //    _T("[lmInterval::Analyze]: Diat1=%d, Diat2=%d, MIDI1=%d, MIDI2=%d, ")
-    //    _T("m_nIntv=%d, m_nSemi=%d, nPerfect=%d"),
-    //    m_ntDiat1, m_ntDiat2, m_ntMidi1, m_ntMidi2, m_nIntv, m_nSemi, nPerfect) );
+    //    _T("m_nNumIntv=%d, m_nSemi=%d, nPerfect=%d"),
+    //    m_ntDiat1, m_ntDiat2, m_ntMidi1, m_ntMidi2, m_nNumIntv, m_nSemi, nPerfect) );
     
     //compute interval type
     int i;
-    if (m_nIntv == 1 || m_nIntv == 4 || m_nIntv == 5 || m_nIntv == 8) {
+    if (m_nNumIntv == 1 || m_nNumIntv == 4 || m_nNumIntv == 5 || m_nNumIntv == 8) {
         //perfect intervals
         i = abs(m_nSemi - nPerfect);
         if (m_nSemi < nPerfect) {
@@ -307,30 +308,24 @@ void lmInterval::Analyze()
     }
 
     //prepare interval name
-    m_sName = sIntervalName[(fMajor ? m_nIntv + 7 : m_nIntv)];
+    m_sName = sIntervalName[(fMajor ? m_nNumIntv + 7 : m_nNumIntv)];
     switch (m_nType) {
-        case eti_Diminished:        m_sName += _(" diminished");        break;    
-        case eti_Minor:                m_sName += _(" minor");                break;    
-        case eti_Major:                m_sName += _(" mayor");                break;    
-        case eti_Augmented:            m_sName += _(" augmented");            break;    
-        case eti_Perfect:            m_sName += _(" perfect");            break;    
-        case eti_DoubleAugmented:    m_sName += _(" double augmented");    break;    
-        case eti_DoubleDiminished:    m_sName += _(" double diminished");    break;    
+        case eti_Diminished:        m_sName += _(" diminished");          break;    
+        case eti_Minor:             m_sName += _(" minor");               break;    
+        case eti_Major:             m_sName += _(" mayor");               break;    
+        case eti_Augmented:         m_sName += _(" augmented");           break;    
+        case eti_Perfect:           m_sName += _(" perfect");             break;    
+        case eti_DoubleAugmented:   m_sName += _(" double augmented");    break;    
+        case eti_DoubleDiminished:  m_sName += _(" double diminished");   break;    
         default:
             wxASSERT(false);
     }
     
-    //reduce intervals graater than a octave
+    //reduce intervals greater than a octave
     if (fMajor) {
         m_nSemi += 12;
-        m_nIntv += 7;
+        m_nNumIntv += 7;
     }
-    
-    //patterns with note names and accidentals (but no key signature accidentals)
-    //! @todo
-//    m_sPattern[0] = NotaMidiToPatron(m_ntMidi1, m_nKey, m_ntDiat1);
-//    m_sPattern[1] = NotaMidiToPatron(m_ntMidi2, m_nKey, m_ntDiat2);
-       
     
 }
 
@@ -358,3 +353,368 @@ void lmInterval::InitializeStrings()
     fStringsInitialized = true;
 }
 
+wxString lmInterval::GetIntervalCode()
+{
+    lmIntvBits tIntv;
+    tIntv.nNum = m_nNumIntv;
+    tIntv.nSemitones = m_nSemi;
+    return IntervalBitsToCode(tIntv);
+}
+
+void lmInterval::GetNoteBits(int i, lmNoteBits* pBits)
+{
+    wxASSERT(i==0 || i==1);
+
+    lmConverter::NoteToBits(m_sPattern[i], pBits);
+
+    //now, add the accidentas implied by key signature
+    int nAccidentals[7];
+    ComputeAccidentals(m_nKey, nAccidentals);
+    pBits->nAccidentals = nAccidentals[pBits->nStep];
+
+}
+
+
+//-------------------------------------------------------------------------------------
+// Global methods
+//-------------------------------------------------------------------------------------
+
+wxString ComputeInterval(wxString sRootNote, wxString sIntvCode,
+                         EIntervalDirection nDirection, EKeySignatures nKey)
+{
+    //Root note elements. i.e.: '+d4' -> (1, 4, 1)
+    lmNoteBits tRoot;
+    if (lmConverter::NoteToBits(sRootNote, &tRoot)) {
+        wxLogMessage(_T("[ComputeInterval] Unexpected error in lmConverter::NoteToBits coversion. Note: '%s'"),
+                sRootNote );
+        wxASSERT(false);
+    }
+
+    lmNoteBits tNew;
+    ComputeInterval(&tRoot, sIntvCode, nDirection, &tNew);
+
+    return lmConverter::NoteBitsToName(tNew, nKey);
+
+}
+
+void ComputeInterval(lmNoteBits* pRoot, wxString sIntvCode,
+                     EIntervalDirection nDirection,
+                     lmNoteBits* pNewNote)
+{
+    //interval elements. i.e.: '5a' -> (5, 8)
+    lmIntvBits tIntval;
+    if (IntervalCodeToBits(sIntvCode, &tIntval)) {
+        wxLogMessage(_T("[ComputeInterval] Unexpected error in IntervalCodeToBits coversion. Interval: '%s'"),
+                sIntvCode );
+        wxASSERT(false);
+    }
+
+    if (nDirection == edi_Ascending) {
+        // Compute ascending interval
+
+        // compute new step
+        int nNewStepFull = pRoot->nStep + tIntval.nNum - 1;
+        pNewNote->nStep = nNewStepFull % 7;
+
+        //compute octave increment
+        int nIncrOctave = (pNewNote->nStep == nNewStepFull ? 0 : (nNewStepFull - pNewNote->nStep)/7 );
+        pNewNote->nOctave = pRoot->nOctave + nIncrOctave;
+
+        //compute new step semitones
+        pNewNote->nStepSemitones = lmConverter::StepToSemitones(pNewNote->nStep);
+
+        //compute new accidentals
+        pNewNote->nAccidentals = (pRoot->nStepSemitones + tIntval.nSemitones - 
+                            pNewNote->nStepSemitones) % 12 + pRoot->nAccidentals;
+        if (pNewNote->nAccidentals > 5) pNewNote->nAccidentals -= 12;
+    }
+    else {
+        //compute descending interval
+
+        // compute new step and octave decrement
+        int nNewStepFull = pRoot->nStep - (tIntval.nNum - 1);
+        pNewNote->nStep = nNewStepFull % 7;
+        int nIncrOctave = 0;    //assume no octave change
+        if (nNewStepFull < 0) {
+            if (pNewNote->nStep < 0) pNewNote->nStep += 7;
+            nIncrOctave = (nNewStepFull - pNewNote->nStep)/7 ;
+        }
+        pNewNote->nOctave = pRoot->nOctave + nIncrOctave;
+
+        //compute new step semitones
+        pNewNote->nStepSemitones = lmConverter::StepToSemitones(pNewNote->nStep);
+
+        //compute new accidentals
+        pNewNote->nAccidentals = (pRoot->nStepSemitones - tIntval.nSemitones - 
+                            pNewNote->nStepSemitones) % 12 + pRoot->nAccidentals;
+        if (pNewNote->nAccidentals < -5) pNewNote->nAccidentals += 12;
+    }
+
+
+}
+
+
+bool IntervalCodeToBits(wxString sIntvCode, lmIntvBits* pBits)
+{
+    //Restrictions: any interval , including greater that one octave, but limited to
+    // d, m , p , M and a. That is, it is not allowed double augmented, double diminished, etc.
+
+    //split interval number and type
+    int i = 0;
+    while (!(sIntvCode.Mid(i, 1)).IsNumber() ) {
+        i++;
+    }
+    wxString sChar = sIntvCode.Mid(0, i);
+    wxString sNum = sIntvCode.Mid(i);
+
+    long nNum;
+    sNum.ToLong(&nNum);
+    pBits->nNum = (int)nNum;
+
+    //reduce the interval
+    int nOctaves = (nNum - 1) / 7;
+    nNum = 1 + (nNum - 1) % 7;
+
+    // compute semitones implied by interval type
+    int nSemi;
+    if (nNum == 1)      nSemi = -1; 
+    else if (nNum == 2) nSemi = 0;
+    else if (nNum == 3) nSemi = 2; 
+    else if (nNum == 4) nSemi = 4;
+    else if (nNum == 5) nSemi = 6;
+    else if (nNum == 6) nSemi = 7;
+    else if (nNum == 7) nSemi = 9;
+    else
+        wxASSERT(false);    //impossible
+
+    if ( nNum == 1 || nNum == 4 || nNum == 5) {
+        if (sChar == _T("d"))       nSemi += 0;
+        else if (sChar == _T("p"))  nSemi += 1;
+        else if (sChar == _T("a"))  nSemi += 2;
+        else wxASSERT(false);
+    }
+    else {  // 2, 3, 6, 7
+        if (sChar == _T("d"))       nSemi += 0;
+        else if (sChar == _T("m"))  nSemi += 1;
+        else if (sChar == _T("M"))  nSemi += 2;
+        else if (sChar == _T("a"))  nSemi += 3;
+        else wxASSERT(false);
+    }
+    pBits->nSemitones = nSemi + 12 * nOctaves;
+
+    return false;
+
+}
+
+wxString InvertInterval(wxString sIntvCode)
+{
+    wxASSERT(sIntvCode.Length() == 2);
+
+    if      (sIntvCode == _T("d2")) return _T("a7");
+    else if (sIntvCode == _T("m2")) return _T("M7");
+    else if (sIntvCode == _T("M2")) return _T("m7");
+    else if (sIntvCode == _T("a2")) return _T("d7");
+    else if (sIntvCode == _T("d3")) return _T("a6");
+    else if (sIntvCode == _T("m3")) return _T("M6");
+    else if (sIntvCode == _T("M3")) return _T("m6");
+    else if (sIntvCode == _T("a3")) return _T("d6");
+    else if (sIntvCode == _T("d4")) return _T("a4");
+    else if (sIntvCode == _T("p4")) return _T("p4");
+    else if (sIntvCode == _T("a4")) return _T("d4");
+    else if (sIntvCode == _T("d5")) return _T("a5");
+    else if (sIntvCode == _T("p5")) return _T("p5");
+    else if (sIntvCode == _T("a5")) return _T("d5");
+    else if (sIntvCode == _T("d6")) return _T("a3");
+    else if (sIntvCode == _T("m6")) return _T("M3");
+    else if (sIntvCode == _T("M6")) return _T("m3");
+    else if (sIntvCode == _T("a6")) return _T("d3");
+    else if (sIntvCode == _T("d7")) return _T("a2");
+    else if (sIntvCode == _T("m7")) return _T("M2");
+    else if (sIntvCode == _T("M7")) return _T("m2");
+    else if (sIntvCode == _T("a7")) return _T("d2");
+
+    wxASSERT(false);
+    return sIntvCode; //error
+
+}
+
+wxString AddIntervals(wxString sIntvCode1, wxString sIntvCode2)
+{
+    wxASSERT(sIntvCode1.Length() == 2 && sIntvCode2.Length() == 2);
+
+    // get interval elements
+    lmIntvBits tIntv1, tIntv2;
+    if (IntervalCodeToBits(sIntvCode1, &tIntv1)) {
+        wxLogMessage(_T("[AddIntervals] Unexpected error in IntervalCodeToBits coversion. Interval: '%s'"),
+                sIntvCode1 );
+        wxASSERT(false);
+    }
+
+    if (IntervalCodeToBits(sIntvCode2, &tIntv2)) {
+        wxLogMessage(_T("[AddIntervals] Unexpected error in IntervalCodeToBits coversion. Interval: '%s'"),
+                sIntvCode1 );
+        wxASSERT(false);
+    }
+    
+    //compute addition
+    lmIntvBits tSum;
+    tSum.nNum = tIntv1.nNum + tIntv2.nNum - 1;
+    tSum.nSemitones = tIntv1.nSemitones + tIntv2.nSemitones;
+
+    //rebuild interval name
+    return IntervalBitsToCode(tSum);
+    
+}
+
+wxString SubstractIntervals(wxString sIntvCode1, wxString sIntvCode2)
+{
+    wxASSERT(sIntvCode1.Length() == 2 && sIntvCode2.Length() == 2);
+
+    //It is assumed that intv1 > int2
+
+    // get interval elements
+    lmIntvBits tIntv1, tIntv2;
+    if (IntervalCodeToBits(sIntvCode1, &tIntv1)) {
+        wxLogMessage(_T("[SubstractIntervals] Unexpected error in IntervalCodeToBits coversion. Interval: '%s'"),
+                sIntvCode1 );
+        wxASSERT(false);
+    }
+
+    if (IntervalCodeToBits(sIntvCode2, &tIntv2)) {
+        wxLogMessage(_T("[SubstractIntervals] Unexpected error in IntervalCodeToBits coversion. Interval: '%s'"),
+                sIntvCode2 );
+        wxASSERT(false);
+    }
+   
+    //compute difference
+    lmIntvBits tDif;
+    tDif.nNum = tIntv1.nNum - tIntv2.nNum + 1;
+    tDif.nSemitones = tIntv1.nSemitones - tIntv2.nSemitones;
+
+    //rebuild interval name
+    return IntervalBitsToCode(tDif);
+    
+}
+
+wxString IntervalBitsToCode(lmIntvBits& tIntv)
+{
+    wxString sNormal = _T("dmMa");
+    wxString sPerfect = _T("dpa");
+    int nSemitones = tIntv.nSemitones % 12;
+    int nNum = 1 + (tIntv.nNum - 1) % 7;
+    wxString sResp;
+    if (nNum == 1) 
+        sResp = sPerfect.Mid(nSemitones + 1, 1);
+    else if (nNum == 2) 
+        sResp = sNormal.Mid(nSemitones, 1);
+    else if (nNum == 3) 
+        sResp = sNormal.Mid(nSemitones - 2, 1);
+    else if (nNum == 4) 
+        sResp = sPerfect.Mid(nSemitones - 4, 1);
+    else if (nNum == 5) 
+        sResp = sPerfect.Mid(nSemitones - 6, 1);
+    else if (nNum == 6) 
+        sResp = sNormal.Mid(nSemitones - 7, 1);
+    else if (nNum == 7) 
+        sResp = sNormal.Mid(nSemitones - 9, 1);
+    else
+        wxASSERT(false);    //impossible
+
+
+    sResp += wxString::Format(_T("%d"), tIntv.nNum);
+    return sResp;
+
+}
+
+#if 0
+//analize the interval and compute its name
+wxString GetIntvName(lmIntvBits* pBits)
+{
+    int nSemitones = pBits->nSemitones;
+    int nNum = pBits->nNum;
+    EIntervalType nType;
+    
+    //trim to reduce intervals greater than one octave
+    bool fMajor = (nNum > 8);
+    if (fMajor) {
+        nSemitones -= 12;
+        nNum -= 7;
+    }
+    
+    //compute the number of semitones required to be perfect or major (p.84 Atlas)
+    int nPerfect = 2 * (nNum - 1);
+    if (nNum > 3) nPerfect--;            //intervals greater than 3rd loose a semitone 
+    if (nNum == 8) nPerfect = 12;        //the octave has 12 semitones
+    
+    //at this point:
+    //   nSemitones = num. of semitones in the interval
+    //   nNum = number of the interval
+    //   nPerfect = num. of semitones that should have to be perfect or major
+
+    //compute interval type
+    int i;
+    if (nNum == 1 || nNum == 4 || nNum == 5 || nNum == 8) {
+        //perfect intervals
+        i = abs(nSemitones - nPerfect);
+        if (nSemitones < nPerfect) {
+            if (i == 1) {
+                nType = eti_Diminished;
+            } else {
+                nType = eti_DoubleDiminished;
+            }
+        } else if (nSemitones > nPerfect) {
+            if (i == 1) {
+                nType = eti_Augmented;
+            } else {
+                nType = eti_DoubleAugmented;
+            }
+        } else {
+            nType = eti_Perfect;
+        }
+    } else {
+        if (nSemitones < nPerfect) {
+            i = nPerfect - nSemitones;
+            if (i == 1) {
+                nType = eti_Minor;
+            } else if (i == 2) {
+                nType = eti_Diminished;
+            } else {
+                nType = eti_DoubleDiminished;
+            }
+        } else {
+            i = nSemitones - nPerfect;
+            if (i == 0) {
+                nType = eti_Major;
+            } else if (i == 1) {
+                nType = eti_Augmented;
+            } else {
+                nType = eti_DoubleAugmented;
+            }
+        }
+    }
+
+    //prepare interval name
+    wxString sName = sIntervalName[(fMajor ? nNum + 7 : nNum)];
+    switch (nType) {
+        case eti_Diminished:        sName += _(" diminished");          break;    
+        case eti_Minor:             sName += _(" minor");               break;    
+        case eti_Major:             sName += _(" mayor");               break;    
+        case eti_Augmented:         sName += _(" augmented");           break;    
+        case eti_Perfect:           sName += _(" perfect");             break;    
+        case eti_DoubleAugmented:   sName += _(" double augmented");    break;    
+        case eti_DoubleDiminished:  sName += _(" double diminished");   break;    
+        default:
+            wxASSERT(false);
+    }
+    
+    //rebuild intervals greater than a octave
+    if (fMajor) {
+        nSemitones += 12;
+        nNum += 7;
+    }
+
+    return sName;
+    
+}
+
+#endif

@@ -87,14 +87,14 @@ LenMus project philosophy (to remind me to always stay on this):
     + Add Ear chords and Theo Chords to Single Exercises book
     
     package:
-    - add res/vbooks to install.htm and to installer
+    + add res/vbooks to install.htm and to installer
     
     Minor issues:
     - spacing in tuples when a whole /half note in other staff
     - tuplet bracket line discontinuities
     - abbreviated notation for notes/rests in chords
     - stem up/down abbreviated notation
-    - LDP 1.5: allow (na ..) for chords.
+    - LDP 1.5 documentation: (na ..) for chords is allowed.
 	- Ear & Theo Identify Chord exercises (IdfyChordCtrol):
 		- Root note: now is the root of the key. Allow others?
 		- Option: Draw chord cipher
@@ -102,6 +102,7 @@ LenMus project philosophy (to remind me to always stay on this):
     
     Bugs:
     - Chord: loop when double sharp accidental (##)
+    - Incorrect charset in VirtualBooks
            
     Spanish translation errors:
     - none
@@ -136,7 +137,12 @@ LenMus project philosophy (to remind me to always stay on this):
     - Play toolbox: from/to measure number; instruments list; tempo; volume for each
         instrument; start/pause/stop buttons. Use this toolbox to experiment to
         design a common architecture for all future toolboxes
-
+	- TimerCtrol for exercises, so that user answering time is computed, mean time is
+	  displayed and time limits constrains can be established. Also allow for drill series
+	  without having to press 'new problem' when a failure.
+	- Need to review EarIntervalsCtrol and lmIntervals to simplify: lmIntervals too complex.
+	  
+	  
     
     Bugs to wait to next release:
     -----------------------------
@@ -184,7 +190,7 @@ Area 0: Bugs to solve
     - If Midi Wizard is cancelled some non-relevant error messages are displayed when
         there is no soundcard on the computer (tested with VMWare)
     - MusicXML import: note pitch.
-    - crash if click with right button on list of eBooks
+    - crash if click with right button on list of eBooks (reported to wxWidgets)
 
         
 Area 1: New features to add in short term to working release
@@ -210,14 +216,14 @@ Area 3: Analysis and algorithms
     
 Area 4: Documentation
     - Re-structure LDP manual: more didactical
-    - Set up DocBook edition environment
+    + Set up DocBook edition environment
     - Move all docs (algorithms, architecture, etc. to DocBook)
 
 Area 5: Prepare a new book
     - theory; level 1
     
 Area 6: Design new exercises
-    - chords
+    + chords identification
             
 Other:
     - Lyrics: compute maximum y and position lyric at a greater y

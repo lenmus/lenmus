@@ -34,6 +34,60 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
     </td></tr>
 
 <tr valign="top">
+    <td class="ListaPar">24-ago-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>lmEarIntervalsCtrol::PrepareScore() re-coded so that intervals can be played on
+	        demand.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">23-ago-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Translating wxMidi into Spanish, and preparing release 1.2 of wxMidi.</li>
+        <li>Translating program into Spanish. Problem detected with charset in VirtualBooks.
+          Solved by including meta tag to say that charset is utf-8.</li>
+        <li>Cleaning lmChordManager: general methos moved to lmConverter. Interval related
+          methods moved to lmInterval.</li>
+        <li>Reviewing interval generation algorithms to include descending intervals.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">22-ago-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Bug fixed: in ear intervals exercises the keyboard is enabled at wrong places so,
+          for example, you can press answer button again after a failure and it is now
+          computed as a success. Modified EarIntervalsCtrol keyboard enabling logic to 
+          allow playing intervals when not expecting an answer. Playing intervals
+          not yet implemented.</li>
+        <li>TheApp: modified to change lenmus.mo and wxmidi.mo file names to include
+          language short name, to allow to avoid maintenance errors.</li>
+        <li>Installer modified to include the Unicode build.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">19 to 21-ago-06</td>
+    <td class="ListaPar">
+      Doing tests to integrate AGG with wxWidgets in order to draw text using FreeType
+      and to be able to do anti-aliased drawings.
+    </td></tr>
+<tr valign="top">
+    <td class="ListaPar">16 to 18-ago-06</td>
+    <td class="ListaPar">
+      Solving problems with Unicode build:
+      <ul>
+        <li>Crash when running Midi wizard: The problem was caused by bad wxMidi library build.
+          Changes in wxMidi build script. Changes in
+          wxMidi so that all static text initialization is now initialized in constructor
+          to allow for internationalization.</li>
+        <li>VirtualBooks do not work in Unicode. There is a bug in wxHtmlController 
+          (I reported it to wxWidgets project). Changes in VirtualBooks to by pass the bug,
+          by converting book content to ANSI utf-8. Now working.</li>
+      </ul>
+    </td></tr>
+<tr valign="top">
     <td class="ListaPar">14-ago-06</td>
     <td class="ListaPar">
       <ul>

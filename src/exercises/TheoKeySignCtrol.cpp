@@ -606,8 +606,8 @@ void lmTheoKeySignCtrol::NewProblem()
     pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
 
     //wxLogMessage(wxString::Format(
-    //    _T("[lmTheoKeySignCtrol::NewProblem] m_nIndexKeyName=%d, oIntv.GetInterval()=%d"),
-    //    m_nIndexKeyName, oIntv.GetInterval() ));
+    //    _T("[lmTheoKeySignCtrol::NewProblem] m_nIndexKeyName=%d, oIntv.GetIntervalNum()=%d"),
+    //    m_nIndexKeyName, oIntv.GetIntervalNum() ));
     
     //display the problem
     if (m_fIdentifyKey) {

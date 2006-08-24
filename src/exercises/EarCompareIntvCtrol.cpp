@@ -447,8 +447,8 @@ void lmEarCompareIntvCtrol::NewProblem()
     pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
 
     //compute the right answer
-    m_sAnswer[0] = oIntv0.GetName();
-    m_sAnswer[1] = oIntv1.GetName();
+    m_sAnswer[0] = oIntv0.GetIntervalName();
+    m_sAnswer[1] = oIntv1.GetIntervalName();
     m_fFirstGreater = (oIntv0.GetNumSemitones() > oIntv1.GetNumSemitones());
     m_fBothEqual = (oIntv0.GetNumSemitones() == oIntv1.GetNumSemitones());
     

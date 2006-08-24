@@ -342,7 +342,7 @@ void lmIdfyChordCtrol::SetUpButtons()
                 iB++;
                 if (iB % NUM_COLS == 0) {
                     iR++;
-                    m_pRowLabel[iR]->SetLabel(_(""));
+                    m_pRowLabel[iR]->SetLabel(_T(""));
                 }
            }
         }
@@ -362,7 +362,7 @@ void lmIdfyChordCtrol::SetUpButtons()
                 iB++;
                 if (iB % NUM_COLS == 0) {
                     iR++;
-                    m_pRowLabel[iR]->SetLabel(_(""));
+                    m_pRowLabel[iR]->SetLabel(_T(""));
                 }
            }
         }
@@ -382,7 +382,7 @@ void lmIdfyChordCtrol::SetUpButtons()
                 iB++;
                 if (iB % NUM_COLS == 0) {
                     iR++;
-                    m_pRowLabel[iR]->SetLabel(_(""));
+                    m_pRowLabel[iR]->SetLabel(_T(""));
                 }
            }
         }
@@ -469,7 +469,7 @@ void lmIdfyChordCtrol::OnRespButton(wxCommandEvent& event)
         // No problem presented. The user press the button to play a chord
 
         //prepare the new chord and play it
-        PrepareChord(eclvSol, (EChordType)m_nRealChord[nIndex], &m_pAuxScore);
+        PrepareScore(eclvSol, (EChordType)m_nRealChord[nIndex], &m_pAuxScore);
         m_pAuxScore->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
                             ePM_NormalInstrument, 320, (wxWindow*) NULL);
     }
@@ -499,7 +499,7 @@ void lmIdfyChordCtrol::NewProblem()
         m_nInversion = oGenerator.RandomNumber(0, NumNotesInChord(nChordType) - 1);
 
     if (!m_pConstrains->DisplayKey()) m_nKey = earmDo;
-    m_sAnswer = PrepareChord(nClef, nChordType, &m_pChordScore);
+    m_sAnswer = PrepareScore(nClef, nChordType, &m_pChordScore);
     
     //compute the index for the button that corresponds to the right answer
     int i;
@@ -533,7 +533,7 @@ void lmIdfyChordCtrol::NewProblem()
 
 }
 
-wxString lmIdfyChordCtrol::PrepareChord(EClefType nClef, EChordType nType, lmScore** pScore)
+wxString lmIdfyChordCtrol::PrepareScore(EClefType nClef, EChordType nType, lmScore** pScore)
 {
     //create the chord
     lmChordManager oChordMngr(m_sRootNote, nType, m_nInversion, m_nKey);
@@ -569,7 +569,7 @@ wxString lmIdfyChordCtrol::PrepareChord(EClefType nClef, EChordType nType, lmSco
         sPattern = (m_nMode == 0 ? _T("(na ") : _T("(n "));     // mode=0 -> harmonic
         sPattern += oChordMngr.GetPattern((m_nMode == 2 ? nNumNotes-1-i : i));
         sPattern +=  _T(" r)");
- /*dbg*/ wxLogMessage(_T("[lmIdfyChordCtrol::PrepareChord] pattern = '%s'"), sPattern);
+ /*dbg*/ wxLogMessage(_T("[lmIdfyChordCtrol::PrepareScore] pattern = '%s'"), sPattern);
         pNode = parserLDP.ParseText( sPattern );
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     }

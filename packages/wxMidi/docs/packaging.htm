@@ -1,7 +1,6 @@
 <html>
 <head>
 <title>wxMidi package preparation check list</title>
-<!-- RCS-ID: $Id: packaging.htm,v 1.1 2006/01/03 12:53:16 cecilios Exp $ -->
 <link rel="stylesheet" media="all" href="singledoc.css" type="text/css" />
 </head>
 <body>
@@ -11,51 +10,50 @@
 
 <ol>
 <li>Prepare binaries
-	<ol>
-	<li>Create the PortMidi libraries: Debug and Release</li>
-	<li>Create the wxMid libraries: Debug (Unicode and Multibyte) and Release (Unicode and Multibyte)</li>
-	<li>Create and pack the help file</li>
-	</ol><br /></li>
+    <ol>
+    <li>Create the PortMidi libraries: Debug and Release</li>
+    <li>Create the wxMid libraries: Debug (Unicode and Multibyte) and Release (Unicode and Multibyte)</li>
+    <li>Create and pack the help file</li>
+    </ol><br /></li>
 
 <li>Create package
-	<ol>
-	<li>Create a folder to prepare the package: i.e. wxmidi_1.1</li>
-	<li>Create the wxMidi package folder structure tree</li>
-	<li>Copy the files</li>
-	<li>zip all</li>
-	</ol><br /></li>
+    <ol>
+    <li>Create a folder to prepare the package: i.e. wxmidi_1.1</li>
+    <li>Copy all except folders: website</li>
+    <li>zip all</li>
+    </ol><br /></li>
 
 <li>Test package
-	<ol>
-	<li>Install package in another machine</li>
-	<li>Test it</li>
-	</ol><br /></li>
+    <ol>
+    <li>Install package in another machine</li>
+    <li>Test it</li>
+    </ol><br /></li>
 
 <li>Prepare release
-	<ol>
-	<li>CVS: tag release as 'release_x_x_x_x'</li>
-	<li>Prepare release description for SourceForge</li>
-	<li>Prepare news item for web lenmus.org and for SourceForge</li>
-	<li>If needed, prepare changes in 'downloads' page</li>
-	</ol><br /></li>
+    <ol>
+    <li>CVS: tag release as 'release_x_x_x_x'</li>
+    <li>Prepare release description for SourceForge</li>
+    <li>Prepare news item for web lenmus.org and for SourceForge</li>
+    <li>If needed, prepare changes in 'downloads' page</li>
+    </ol><br /></li>
 
 <li>Upload package
-	<ol>
-	<li>FTP (in clear, no SSH secured): upload to "upload.sourceforge.net" into the
+    <ol>
+    <li>FTP (in clear, no SSH secured): upload to "upload.sourceforge.net" into the
         "/incoming" directory</li>
-	<li>Logon to Sourceforge website</li>
-	<li>Go to the "wxCode file release" page (Admin / File Releases)</li>
-	<li>At the botton, click on "Add release"</li>
-	<li>Fill in information about the release. You should see a list of all the files
-	uploaded today. Tick the checkbox for the lenmus package file and click "Add files" button.</li>
-	<li>Go to the downloads page and check that you can download the new release.</li>
-	</ol><br /></li>
+    <li>Logon to Sourceforge website</li>
+    <li>Go to the "wxCode file release" page (Admin / File Releases)</li>
+    <li>At the botton, click on "Add release"</li>
+    <li>Fill in information about the release. You should see a list of all the files
+    uploaded today. Tick the checkbox for the lenmus package file and click "Add files" button.</li>
+    <li>Go to the downloads page and check that you can download the new release.</li>
+    </ol><br /></li>
 
 <li>Send news
-	<ol>
-	<li>News in web lenmus.org</li>
-	<li>News in sourceforge</li>
-	</ol><br /></li>
+    <ol>
+    <li>News in web lenmus.org</li>
+    <li>News in sourceforge</li>
+    </ol><br /></li>
 
 </ol>
 

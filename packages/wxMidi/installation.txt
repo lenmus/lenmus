@@ -1,5 +1,3 @@
- RCS-ID:   $Id: installation.txt,v 1.2 2006/01/03 12:52:15 cecilios Exp $
-
  wxMidi component info
  ======================
  
@@ -136,13 +134,13 @@ support for other compilers/platforms. Any help with this will be appreciated.
 1)  Compile wxMidi. All makefiles and project are located in build\msw directory.
     After successful compilation you'll find the library in the subdirectory wxMidi\lib. 
     Name of the compiled library follow this scheme: name begin with "wxmidi" followed by
-    version number and letters indicating if the library is compiled as Unicode ('u') 
+    letters indicating if the library is compiled as Unicode ('u') 
     and/or debug build ('d'). Here are some examples:
 
-          lib\wxmidi10.lib      release library
-          lib\wxmidi10u.lib     release Unicode library
-          lib\wxmidi10d.lib     debug library
-          lib\wxmidi10ud.lib    debug Unicode library
+          lib\wxmidi.lib        release library. ANSI build
+          lib\wxmidiu.lib       release library. Unicode build
+          lib\wxmidid.lib       debug ANSI library
+          lib\wxmidiud.lib      debug Unicode library
 
 
 2)  IMPORTANT! In Windows, portmidi needs the pm_dll.dll, but there is no simple way

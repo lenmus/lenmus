@@ -625,7 +625,7 @@ void lmTheoIntervalsCtrol::NewProblem()
 
     //compute the interval name
     lmInterval oIntv(pNote[0], pNote[1], earmDo);
-    m_sAnswer = oIntv.GetName() + (oIntv.IsAscending() ? _(", ascending") : _(", descending") ); 
+    m_sAnswer = oIntv.GetIntervalName() + (oIntv.IsAscending() ? _(", ascending") : _(", descending") ); 
 
     //amendments for unisons
     if (m_ntPitch[0] == m_ntPitch[1]) {
@@ -661,8 +661,8 @@ void lmTheoIntervalsCtrol::NewProblem()
         
         //compute the index for the button that corresponds to the right answer
         int iRow, iCol;
-        iCol = oIntv.GetInterval() - 2;
-        switch (oIntv.GetType()) {
+        iCol = oIntv.GetIntervalNum() - 2;
+        switch (oIntv.GetIntervalType()) {
             case eti_DoubleDiminished:      iRow = 0;   break;
             case eti_Diminished:            iRow = 1;   break;
             case eti_Minor:                 iRow = 2;   break;
@@ -676,8 +676,8 @@ void lmTheoIntervalsCtrol::NewProblem()
         m_nRespIndex = iCol + iRow * NUM_COLS;
 
         //special cases: unison and related
-        if (oIntv.GetInterval() == 1) {
-            switch (oIntv.GetType()) {
+        if (oIntv.GetIntervalNum() == 1) {
+            switch (oIntv.GetIntervalType()) {
                 case eti_Perfect:
                     m_nRespIndex = 42;       //unison
                     break;                
@@ -686,14 +686,14 @@ void lmTheoIntervalsCtrol::NewProblem()
                     break;                
                 default:
                     wxLogMessage(_T("[lmTheoIntervalsCtrol::NewProblem] nInterval=%d, nType=%d"),
-                                oIntv.GetInterval(), oIntv.GetType() );
+                                oIntv.GetIntervalNum(), oIntv.GetIntervalType() );
                     wxASSERT(false);
             }
         }
 
         //wxLogMessage(wxString::Format(
-        //    _T("[lmTheoIntervalsCtrol::NewProblem] m_nRespIndex=%d, oIntv.GetInterval()=%d"),
-        //    m_nRespIndex, oIntv.GetInterval() ));
+        //    _T("[lmTheoIntervalsCtrol::NewProblem] m_nRespIndex=%d, oIntv.GetIntervalNum()=%d"),
+        //    m_nRespIndex, oIntv.GetIntervalNum() ));
     }
     else {
         // Solution for 'build interval' problems

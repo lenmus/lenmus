@@ -94,8 +94,8 @@ wxFSFile* lmVirtualBooks::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& l
     int iColon = location.Find(_T(':'));
     wxString sBookName = location.Mid(iColon+1, location.Length()-iColon-5);
     wxString sExt(location.Right(4).Lower());
-    wxLogMessage(_T("[lmVirtualBooks::OpenFile] Request to open virtual file '%s'. Book='%s', ext='%s'"),
-        location, sBookName, sExt);
+    //wxLogMessage(_T("[lmVirtualBooks::OpenFile] Request to open virtual file '%s'. Book='%s', ext='%s'"),
+    //    location, sBookName, sExt);
 
     if (sExt == _T("ched"))
         return (wxFSFile*) NULL;    //cached file
@@ -119,15 +119,12 @@ wxFSFile* lmVirtualBooks::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& l
     if (sBookName == _T("intro") || sBookName.StartsWith(_T("intro_")) ) {
         if (location == _T("lmVirtualBooks:intro.hhp")) {
             pBook = &m_sIntroHHP;
-            wxLogMessage(m_sIntroHHP);
         }
         else if (location == _T("lmVirtualBooks:intro.hhc")) {
             pBook = &m_sIntroHHC;
-            wxLogMessage(m_sIntroHHC);
         }
         else if (location == _T("lmVirtualBooks:intro.hhk")) {
             pBook = &m_sIntroHHK;
-            wxLogMessage(m_sIntroHHK);
         }
         else if (location == _T("lmVirtualBooks:intro_welcome.htm")) {
             pBook = &m_sIntroHTM;
@@ -160,17 +157,22 @@ wxFSFile* lmVirtualBooks::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& l
     else
         return (wxFSFile*) NULL;    //error
 
+    //wxLogMessage(*pBook);
+
 #ifndef _UNICODE
     str = new wxMemoryInputStream(pBook->c_str(), pBook->Length());
 #else
     //by pass for bug in wxHtmlHelpController in Unicode build:
-    //wxHtmlFilter::ReadFile() expect an ansi string. So here I must
-    //translate from unicode to ansi.
+    //wxHtmlFilter::ReadFile() expects an ANSI string. So here I must
+    //translate from unicode to ANSI.
     size_t nLong = pBook->Length();
-    char* sBookMB = new char[2*nLong];  //just in case...
+    char* sBookMB = new char[4*nLong];  //just in case...
     wxMBConvUTF8 oConv;
     size_t nSize = oConv.WC2MB(sBookMB, pBook->c_str(), nLong);
     str = new wxMemoryInputStream(sBookMB, nSize);
+    //wxMBConvUTF8 oConv;
+    //wxCharBuffer sBookMB = pBook->mb_str(oConv);
+    //str = new wxMemoryInputStream(sBookMB.data(), strlen(sBookMB.data()) );
 #endif
     f = new wxFSFile(str, location, wxT("text/html"), wxEmptyString, wxDateTime::Today());
     
@@ -186,7 +188,7 @@ void lmVirtualBooks::LoadIntroBook()
     m_sIntroHHP = sNil +
         _T("[OPTIONS]\n")
         _T("Contents file=intro.hhc\n")
-        _T("Charset=utf-8\n")       //ISO-8859-1
+        _T("Charset=utf-8\n")
         _T("Index file=intro.hhk\n")
         _T("Title=") + _("LenMus. Introduction") + _T("\n")
         _T("Default topic=intro_welcome.htm\n");
@@ -221,7 +223,7 @@ void lmVirtualBooks::LoadIntroBook()
     wxString sVersionNumber = wxGetApp().GetVersionNumber();
 
     wxString sBookRef = sNil +
-        _T("<a href='#LenMusPage/Introduction to single exercises'>") +
+        _T("<a href='#LenMusPage/SingleExercises_0.htm'>") +
         _("Single exercises") + _T("</a>");
 
     wxString sBook1 = wxString::Format( _("Book %s contains \
@@ -234,7 +236,7 @@ your specific needs at each moment and to practise specific points."), sBookRef 
       _T("<html><head>")
       _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">")
       _T("</head><body><table width='100%'><tr><td align='left'>") 
-_T("<img src='Phonascus-277x63.gif' width='277' height='63' /></td>") 
+      _T("<img src='Phonascus-277x63.gif' width='277' height='63' /></td>") 
       _T("<td align='right'><img src='LenMus-170x44.gif' width='170' height='44' /></td>") 
       _T("</tr></table><p>&nbsp;</p><h1>") +
       _("Welcome to LenMus Phonascus version ") + sVersionNumber +
@@ -259,27 +261,15 @@ in whole or just the measures you choose. This enables you \
 to put concepts into practice with immediate feedback and makes the subject matter both \
 more accessible and more rewarding, as you can hear, test and put in practise \
 immediately any new concept introduced.") +
-      _T("</p><ul><li>") +
-      _("Building and spelling intervals, scales and tonal keys.") +
-      _T("</li><li>") +
-      _("Aural training: identification of intervals and scales.") +
-      _T("</li><li>") +
-      _("Rhythm and music reading exercises.") +
-      _T("</li></ul><p>") +
-      _("Teaching material is organized into levels, and each level into lessons. In this \
-version the following books are is included:") +
-      _T("</p>") + sBook1 + 
+      _T("</p><p>") +
+      _("Teaching material is organized into levels, and each level into lessons.") +
+      sBook1 + 
+      _T("</p><p>") +
+      _("We hope that LenMus become a useful tool in your studies.") +
+      _T("</p><p>") +
+      _("The LenMus team.") +
+      _T("</p><p>&nbsp;&nbsp;</p>")
       _T("</body></html>");
-//<ul><li>") +
-
-//</li>
-//<li>Book <a href="#LenMusPage/Music Reading. Level 2">Music Reading. Level 2</a>
-//    is a set of music reading lessons, in difficulty progression, covering the syllabus
-//    of a second course at elemental level.</a></li>
-//<li>Finally, book <a href="#">LenMus. Introduction</a>
-//    is just this text.</a></li>
-//</ul>
-//
 
 }
 
@@ -292,7 +282,7 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     m_sSingleHHP = sNil +
         _T("[OPTIONS]\n")
         _T("Contents file=SingleExercises.hhc\n")
-        _T("Charset=ISO-8859-1\n")
+        _T("Charset=utf-8\n")
         _T("Index file=SingleExercises.hhk\n")
         _T("Title=") + _("Single exercises") + _T("\n")
         _T("Default topic=SingleExercises_0.htm\n");
@@ -440,12 +430,14 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     //-----------------------------------------------------------------------------
     m_sSingleHHC = sNil +
         _T("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML//EN\">")
-        _T("<html><head></head><body><ul>");
+        _T("<html><head>")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">")
+        _T("</head><body><ul>");
 
     for (i=0; i < lmNUM_SINGLE_PAGES; i++) {
         m_sSingleHHC +=
             _T("<li><object type=\"text/sitemap\">")
-            _T("<param name=\"Name\" value=\"") +
+            _T("<param name=\"Name\" value=\"") +           //this is the name for links
             sIndexTitle[i]  + _T("\">")
             _T("<param name=\"Local\" value=\"SingleExercises_") +
             wxString::Format(_T("%d.htm"), i) +
@@ -460,14 +452,18 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     //-----------------------------------------------------------------------------
     for (i=1; i < lmNUM_SINGLE_PAGES; i++) {
         m_sSingleHTM[i] = sNil +
-            _T("<html><head><title>") + sPageTitle[i] + 
+            _T("<html><head>")
+            _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">")
+            _T("<title>") + sPageTitle[i] + 
             _T("</title></head><body><h1>") + sPageTitle[i] +
             _T("</h1>") + sContent[i] + _T("</body></html>");
     }
 
     //Now the intro page
     m_sSingleHTM[0] = sNil +
-        _T("<html><head><title>") + sPageTitle[0] + 
+        _T("<html><head>")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">")
+        _T("<title>") + sPageTitle[0] + 
         _T("</title></head><body><h1>") + sPageTitle[0] +
         _T("</h1><p>") +
         _("Appart of exercises included in the eBooks, the following general exercises \
@@ -476,18 +472,27 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     int iItem;
     m_sSingleHTM[0] += _T("<h2>") + sSectionTitle[0] + _T("</h2><ul>");
     for (iItem=iSecStart[0]; iItem < iSecStart[1]; iItem++) {
-        m_sSingleHTM[0] += _T("<li><a href=\"#LenMusPage/") +
-            sIndexTitle[iItem] + _T("\">") + sIndexTitle[iItem] + _T("</a></li>");
+        //m_sSingleHTM[0] += _T("<li><a href=\"#LenMusPage/") +
+        //    sIndexTitle[iItem] + _T("\">") + sIndexTitle[iItem] + _T("</a></li>");
+        m_sSingleHTM[0] += _T("<li><a href=\"#LenMusPage/SingleExercises_") +
+            wxString::Format(_T("%d.htm"), iItem) +
+            _T("\">") + sIndexTitle[iItem] + _T("</a></li>");
     }
     m_sSingleHTM[0] += _T("</ul><h2>") + sSectionTitle[1] + _T("</h2><ul>");
     for (iItem=iSecStart[1]; iItem < iSecStart[2]; iItem++) {
-        m_sSingleHTM[0] += _T("<li><a href=\"#LenMusPage/") +
-            sIndexTitle[iItem] + _T("\">") + sIndexTitle[iItem] + _T("</a></li>");
+        //m_sSingleHTM[0] += _T("<li><a href=\"#LenMusPage/") +
+        //    sIndexTitle[iItem] + _T("\">") + sIndexTitle[iItem] + _T("</a></li>");
+        m_sSingleHTM[0] += _T("<li><a href=\"#LenMusPage/SingleExercises_") +
+            wxString::Format(_T("%d.htm"), iItem) +
+            _T("\">") + sIndexTitle[iItem] + _T("</a></li>");
     }
     m_sSingleHTM[0] += _T("</ul><h2>") + sSectionTitle[2] + _T("</h2><ul>");
     for (iItem=iSecStart[2]; iItem < lmNUM_SINGLE_PAGES; iItem++) {
-        m_sSingleHTM[0] += _T("<li><a href=\"#LenMusPage/") +
-            sIndexTitle[iItem] + _T("\">") + sIndexTitle[iItem] + _T("</a></li>");
+        //m_sSingleHTM[0] += _T("<li><a href=\"#LenMusPage/") +
+        //    sIndexTitle[iItem] + _T("\">") + sIndexTitle[iItem] + _T("</a></li>");
+        m_sSingleHTM[0] += _T("<li><a href=\"#LenMusPage/SingleExercises_") +
+            wxString::Format(_T("%d.htm"), iItem) +
+            _T("\">") + sIndexTitle[iItem] + _T("</a></li>");
     }
     m_sSingleHTM[0] += _T("</ul></body></html>");
 

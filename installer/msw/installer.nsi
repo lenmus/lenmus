@@ -34,11 +34,11 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "3.1"
+  !define APP_VERSION "3.2"
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v3.1"     ;product name displayed by the installer
+  Name "lenmus v3.2"     ;product name displayed by the installer
 
 
 ;support for Modern UI
@@ -102,7 +102,7 @@
     !insertmacro MUI_PAGE_INSTFILES
 
   ;finish page: run installed program?
-    !define MUI_FINISHPAGE_RUN "$INSTDIR\bin\lenmus.exe"
+    !define MUI_FINISHPAGE_RUN "$INSTDIR\bin\lenmus_u.exe"
     !insertmacro MUI_PAGE_FINISH
 
 
@@ -134,7 +134,7 @@
 
 ;define filename of installer and uninstaller
   !define INSTALLER_NAME "lenmus_${APP_VERSION}_setup.exe"
-  !define UNINSTALLER_NAME "uninstall_lenmus.exe"
+  !define UNINSTALLER_NAME "uninstall_lenmus_${APP_VERSION}.exe"
 
 ;variable to retry installation when error found
   var "STEP"
@@ -144,7 +144,7 @@
   OutFile "${INSTALLER_NAME}"
 
 ;define the default installation directory
-  InstallDir "$PROGRAMFILES\LenMus"
+  InstallDir "$PROGRAMFILES\LenMus${APP_VERSION}"
 
 ;instruct installer and uninstaller to show install/uninstall log to the user
   ShowInstDetails show                   ;show install log 
@@ -289,7 +289,7 @@ Section  "-" "MainSection"
      File "license_spanish.txt"
 
      SetOutPath "$INSTDIR\bin"
-     File "..\..\z_bin\lenmus.exe"
+     File "..\..\z_bin\lenmus_u.exe"
      File "..\..\fonts\lmbasic.ttf"
      File "msvcr71.dll"
      ;File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
@@ -305,6 +305,8 @@ Section  "-" "MainSection"
      File "..\..\res\icons\*.*"
      SetOutPath "$INSTDIR\res\sounds"
      File "..\..\res\sounds\*.*"
+     SetOutPath "$INSTDIR\res\vbooks"
+     File "..\..\res\vbooks\*.*"
 
      SetOutPath "$INSTDIR\xrc"
      File "..\..\xrc\*.xrc"
@@ -344,7 +346,7 @@ Section  "-" "MainSection"
   ;-----------------------------------------------------------------------------------
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_EXEC).lnk" "$INSTDIR\bin\lenmus.exe"
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_EXEC).lnk" "$INSTDIR\bin\lenmus_u.exe"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_UNINSTALL).lnk" "$INSTDIR\bin\${UNINSTALLER_NAME}"
   !insertmacro MUI_STARTMENU_WRITE_END
 
@@ -364,7 +366,7 @@ Section $(TITLE_CreateIcon) CreateIcon
 
   CreateIcon:
      ClearErrors
-     CreateShortCut "$DESKTOP\lenmus ${APP_VERSION}.lnk" "$INSTDIR\bin\lenmus.exe"
+     CreateShortCut "$DESKTOP\lenmus ${APP_VERSION}.lnk" "$INSTDIR\bin\lenmus_u.exe"
      IfErrors +1 EndCreateIcon
         StrCmp $STEP "ErrorCreatingIcon" "Error_CreateIcon"
         StrCpy "$STEP" "ErrorCreatingIcon" 
@@ -470,6 +472,7 @@ Section un.Install
   ;Delete "$INSTDIR\res\bitmaps\*.*"
   ;Delete "$INSTDIR\res\icons\*.*"
   ;Delete "$INSTDIR\res\sounds\*.*"
+  ;Delete "$INSTDIR\res\vbooks\*.*"
   ;Delete "$INSTDIR\xrc\*.*"
   ;Delete "$INSTDIR\temp\*.*"
   ;Delete "$INSTDIR\scores\MusicXML\*.*"
@@ -483,6 +486,7 @@ Section un.Install
   ;RMDir "$INSTDIR\res\bitmaps"
   ;RMDir "$INSTDIR\res\icons"
   ;RMDir "$INSTDIR\res\sounds"
+  ;RMDir "$INSTDIR\res\vbooks"
   ;RMDir "$INSTDIR\res"
   ;RMDir "$INSTDIR\xrc"
   ;RMDir "$INSTDIR\temp"

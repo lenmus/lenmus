@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Interval.h,v 1.3 2006/02/23 19:18:28 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -43,6 +42,13 @@
 
 #include "../score/score.h"
 #include "../exercises/EarIntvalConstrains.h"
+#include "Conversion.h"
+
+
+typedef struct lmIntvBitsStruct {
+    int nNum;              
+    int nSemitones;
+} lmIntvBits;
 
 
 enum EIntervalType
@@ -63,6 +69,21 @@ enum EIntervalDirection
     edi_Both
 };
 
+//global methods defined in this module 
+extern wxString ComputeInterval(wxString sRootNote, wxString sIntvCode, 
+                                EIntervalDirection nDirection,
+                                EKeySignatures nKey = earmDo);
+extern void ComputeInterval(lmNoteBits* pRoot, wxString sIntvCode,
+                            EIntervalDirection nDirection,
+                            lmNoteBits* pNewNote);
+
+extern wxString IntervalBitsToCode(lmIntvBits& tIntv);
+extern bool IntervalCodeToBits(wxString sIntvCode, lmIntvBits* pBits);
+extern wxString InvertInterval(wxString sIntvCode);
+extern wxString AddIntervals(wxString sIntvCode1, wxString sIntvCode2);
+extern wxString SubstractIntervals(wxString sIntvCode1, wxString sIntvCode2);
+
+
 
 class lmInterval
 {
@@ -75,6 +96,21 @@ public:
     //destructor
     ~lmInterval() {};
 
+    int GetNumSemitones() { return m_nSemi; }
+    bool IsAscending() { return (m_ntMidi1 < m_ntMidi2); }
+
+    // access to interval name and type:
+    //      Name - a string with the interval full name, i.e.: "Major 3rd"
+    //      Code - a string with interval code, i.e.: "M3"
+    //      Type - enumeration: just type, no number, i.e.: eti_Major
+    //      Num  - the number, i.e.: 3
+
+    wxString GetIntervalName() { return m_sName; }
+    int GetIntervalNum() { return m_nNumIntv; }
+    EIntervalType GetIntervalType() { return m_nType; }
+    wxString GetIntervalCode();
+
+    //accsess to notes
     wxString GetPattern(int i)
         {
             wxASSERT(i == 0 || i == 1);
@@ -82,11 +118,8 @@ public:
         }
     int GetMidiNote1() { return m_ntMidi1; }
     int GetMidiNote2() { return m_ntMidi2; }
-    int GetNumSemitones() { return m_nSemi; }
-    bool IsAscending() { return (m_ntMidi1 < m_ntMidi2); }
-    wxString GetName() { return m_sName; }
-    int GetInterval() { return m_nIntv; }
-    EIntervalType GetType() { return m_nType; }
+    void GetNoteBits(int i, lmNoteBits* pNote);
+
 
 private:
     void Analyze();
@@ -96,7 +129,7 @@ private:
         //member variables
 
     //data variables
-    int    m_nSemi;
+    int               m_nSemi;
     EKeySignatures    m_nKey;            //key signature 
     int               m_ntMidi1;
     int               m_ntMidi2;
@@ -105,7 +138,7 @@ private:
 
     // results of the analysis
     EIntervalType    m_nType;
-    int              m_nIntv;
+    int              m_nNumIntv;
     wxString         m_sName;
     wxString         m_sPattern[2];  //without key accidentals, but with own accidentals
 

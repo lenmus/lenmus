@@ -81,7 +81,7 @@ private:
     void DisplaySolution();
     void ResetExercise();
     void ResetCounters();
-    wxString PrepareChord(EClefType nClef, EChordType nType, lmScore** pScore);
+    wxString PrepareScore(EClefType nClef, EChordType nType, lmScore** pScore);
 
         // member variables
 

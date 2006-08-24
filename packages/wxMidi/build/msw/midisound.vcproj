@@ -34,7 +34,7 @@
             <Tool
                 Name="VCLinkerTool"
                 RegisterOutput="FALSE"
-                AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib wxmsw26d_core.lib wxbase26d.lib porttime.lib portmidi.lib pm_dll.lib wxmidi11d.lib"
+                AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib wxmsw26d_core.lib wxbase26d.lib porttime.lib portmidi.lib pm_dll.lib wxmidid.lib"
                 ShowProgress="0"
                 OutputFile="$(OutDir)/midisound.exe"
                 LinkIncremental="2"
@@ -95,7 +95,7 @@
                 Name="VCCustomBuildTool"/>
             <Tool
                 Name="VCLinkerTool"
-                AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib wxmsw26d_core.lib wxbase26d.lib porttime.lib portmidi.lib pm_dll.lib wxmidi11.lib"
+                AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib wxmsw26d_core.lib wxbase26d.lib porttime.lib portmidi.lib pm_dll.lib wxmidi.lib"
                 OutputFile="$(OutDir)/midisound.exe"
                 LinkIncremental="1"
                 AdditionalLibraryDirectories="$(WXWIN)\lib\vc_lib;..\..\lib\pmd;..\..\lib"
@@ -152,7 +152,7 @@
             <Tool
                 Name="VCLinkerTool"
                 RegisterOutput="FALSE"
-                AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib wxmsw26ud_core.lib wxbase26ud.lib porttime.lib portmidi.lib pm_dll.lib wxmidi11ud.lib"
+                AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib wxmsw26ud_core.lib wxbase26ud.lib porttime.lib portmidi.lib pm_dll.lib wxmidiud.lib"
                 ShowProgress="0"
                 OutputFile="$(OutDir)/midisound.exe"
                 LinkIncremental="2"
@@ -213,7 +213,7 @@
             <Tool
                 Name="VCLinkerTool"
                 RegisterOutput="FALSE"
-                AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib wxmsw26u_core.lib wxbase26u.lib porttime.lib portmidi.lib pm_dll.lib wxmidi11u.lib"
+                AdditionalDependencies="kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib wxmsw26u_core.lib wxbase26u.lib porttime.lib portmidi.lib pm_dll.lib wxmidiu.lib"
                 ShowProgress="0"
                 OutputFile="$(OutDir)/midisound.exe"
                 LinkIncremental="2"

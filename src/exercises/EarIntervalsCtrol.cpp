@@ -39,7 +39,6 @@
 #include "../auxmusic/Conversion.h"
 
 #include "../ldp_parser/LDPParser.h"
-#include "../auxmusic/Interval.h"
 #include "../app/DlgCfgEarIntervals.h"
 
 
@@ -103,9 +102,9 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
     int i;
     for (i=0; i < lmEAR_INVAL_NUM_BUTTONS; i++) { m_pAnswerButton[i] = (wxButton*)NULL; }
     m_nRespIndex = 0;
-    m_fProblemCreated = false;
-    m_fPlayEnabled = false;
+    m_fQuestionAsked = false;
     m_pScore = (lmScore*)NULL;
+    m_pAuxScore = (lmScore*)NULL;
     m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
     m_pConstrains = pConstrains;
 
@@ -137,6 +136,13 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
     sBtLabel[23] = _("major 14th");
     sBtLabel[24] = _("two octaves");
 
+    //to allow for interval playing
+    m_nDir = edi_Ascending;
+    m_nKey = earmDo;
+    m_tNote[0].nAccidentals = 0;    //c4
+    m_tNote[0].nOctave = 4;
+    m_tNote[0].nStep = 0;
+    m_tNote[0].nStepSemitones = 0;
 
         // create the controls
 
@@ -271,6 +277,10 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
 
 lmEarIntervalsCtrol::~lmEarIntervalsCtrol()
 {
+    //stop any possible chord being played
+    if (m_pAuxScore) m_pAuxScore->Stop();
+    if (m_pScore) m_pScore->Stop();
+
     if (m_pScoreCtrol) {
         delete m_pScoreCtrol;
         m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
@@ -284,6 +294,10 @@ lmEarIntervalsCtrol::~lmEarIntervalsCtrol()
     if (m_pScore) {
         delete m_pScore;
         m_pScore = (lmScore*)NULL;
+    }
+    if (m_pAuxScore) {
+        delete m_pAuxScore;
+        m_pAuxScore = (lmScore*)NULL;
     }
 }
 
@@ -322,19 +336,6 @@ void lmEarIntervalsCtrol::SetUpButtons()
 
 }
 
-void lmEarIntervalsCtrol::EnableButtons(bool fEnable)
-{
-    for (int i=0; i < lmEAR_INVAL_NUM_BUTTONS; i++) {
-        if (m_pAnswerButton[i])
-            m_pAnswerButton[i]->Enable(fEnable);
-    }
-    m_fButtonsEnabled = fEnable;
-
-    m_pPlayButton->Enable(fEnable);
-    m_pShowSolution->Enable(fEnable);
-
-}
-
 //----------------------------------------------------------------------------------------
 // Event handlers
 
@@ -370,44 +371,95 @@ void lmEarIntervalsCtrol::OnNewProblem(wxCommandEvent& event)
 
 void lmEarIntervalsCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
+    //First, stop any possible interval being played to avoid crashes
+    if (m_pAuxScore) m_pAuxScore->Stop();
+    if (m_pScore) m_pScore->Stop();
+
+    //now proceed
     m_pCounters->IncrementWrong();
     DisplaySolution();
-    EnableButtons(false);
 }
 
 void lmEarIntervalsCtrol::OnRespButton(wxCommandEvent& event)
 {
+    //First, stop any possible interval being played to avoid crashes
+    if (m_pAuxScore) m_pAuxScore->Stop();
+    if (m_pScore) m_pScore->Stop();
+
+    //identify button pressed
     int nIndex = event.GetId() - ID_BUTTON;
 
     bool fSuccess;
     wxColour* pColor;
     
-    //verify if success or failure
-    fSuccess = (nIndex == m_nRespIndex);
-    
-    //prepare sound and color, and update counters
-    if (fSuccess) {
-        pColor = &(g_pColors->Success());
-        m_pCounters->IncrementRight();
-    } else {
-        pColor = &(g_pColors->Failure());
-        m_pCounters->IncrementWrong();
-    }
+    if (m_fQuestionAsked)
+    {
+        // There is a question asked. The user press the button to give the answer
+
+        //verify if success or failure
+        fSuccess = (nIndex == m_nRespIndex);
         
-    //if failure, display the solution. If succsess, generate a new problem
-    if (!fSuccess) {
-        //failure: mark wrong button in red and right one in green
-        m_pAnswerButton[m_nRespIndex]->SetBackgroundColour(g_pColors->Success());
-        m_pAnswerButton[nIndex]->SetBackgroundColour(g_pColors->Failure());
+        //prepare sound and color, and update counters
+        if (fSuccess) {
+            pColor = &(g_pColors->Success());
+            m_pCounters->IncrementRight();
+        } else {
+            pColor = &(g_pColors->Failure());
+            m_pCounters->IncrementWrong();
+        }
+            
+        //if failure, display the solution. If succsess, generate a new problem
+        if (!fSuccess) {
+            //failure: mark wrong button in red and right one in green
+            m_pAnswerButton[m_nRespIndex]->SetBackgroundColour(g_pColors->Success());
+            m_pAnswerButton[nIndex]->SetBackgroundColour(g_pColors->Failure());
 
-        //show the solucion
-        DisplaySolution();
-        EnableButtons(true);
+            //show the solucion
+            DisplaySolution();
 
-    } else {
-        NewProblem();
+        } else {
+            NewProblem();
+        }
     }
-    
+    else {
+        // No problem presented. The user press the button to play an interval
+
+        // Get the interval associated to the pressed button
+        wxString sCode;
+        switch (m_nRealIntval[nIndex]) {
+            case ein_1:         sCode = _T("p1");    break;
+            case ein_2min:      sCode = _T("m2");    break;
+            case ein_2maj:      sCode = _T("M2");    break;
+            case ein_3min:      sCode = _T("m3");    break;
+            case ein_3maj:      sCode = _T("M3");    break;
+            case ein_4:         sCode = _T("p4");    break;
+            case ein_4aug:      sCode = _T("a4");    break;
+            case ein_5:         sCode = _T("p5");    break;
+            case ein_6min:      sCode = _T("m6");    break;
+            case ein_6maj:      sCode = _T("M6");    break;
+            case ein_7min:      sCode = _T("m7");    break;
+            case ein_7maj:      sCode = _T("M7");    break;
+            case ein_8:         sCode = _T("p8");    break;
+            case ein_9min:      sCode = _T("m9");    break;
+            case ein_9maj:      sCode = _T("M9");    break;
+            case ein_10min:     sCode = _T("m10");   break;
+            case ein_10maj:     sCode = _T("M10");   break;
+            case ein_11:        sCode = _T("p11");   break;
+            case ein_11aug:     sCode = _T("a11");   break;
+            case ein_12:        sCode = _T("p12");   break;
+            case ein_13min:     sCode = _T("m13");   break;
+            case ein_13maj:     sCode = _T("M13");   break;
+            case ein_14min:     sCode = _T("m14");   break;
+            case ein_14maj:     sCode = _T("M14");   break;
+            case ein_2oct:      sCode = _T("p15");   break;
+        }
+
+        //prepare the requested interval and play it
+        PrepareScore(sCode, &m_pAuxScore);
+        m_pAuxScore->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
+                            ePM_NormalInstrument, 320, (wxWindow*) NULL);
+    }
+
 }
 
 void lmEarIntervalsCtrol::NewProblem()
@@ -419,70 +471,47 @@ void lmEarIntervalsCtrol::NewProblem()
     //generate the problem interval
     //
 
-    EClefType nClef = eclvSol;
     // select interval type: ascending, descending or both
-    EIntervalDirection nDir;
     if (m_pConstrains->IsTypeAllowed(0) || 
         (m_pConstrains->IsTypeAllowed(1) && m_pConstrains->IsTypeAllowed(2)))
     {
         // if harmonic scale or melodic ascending and descending, allow for 
         // both types of intervals: ascending and descending
-        nDir = edi_Both;
+        m_nDir = edi_Both;
     }
     else if (m_pConstrains->IsTypeAllowed(1)) {
         // if melodic ascendig, allow only ascending intervals
-        nDir = edi_Ascending;
+        m_nDir = edi_Ascending;
     }
     else {
         // allow only descending intervals
-        nDir = edi_Descending;
+        m_nDir = edi_Descending;
     }
     // select a random key signature satisfying the constrains
     lmRandomGenerator oGenerator;
-    EKeySignatures nKey;
     if (m_pConstrains->OnlyNatural()) {
-        nKey = oGenerator.GenerateKey(m_pConstrains->GetKeyConstrains());
+        m_nKey = oGenerator.GenerateKey(m_pConstrains->GetKeyConstrains());
     }
     else {
-        nKey = earmDo;
+        m_nKey = earmDo;
     }
     // generate interval
     lmInterval oIntv(m_pConstrains->OnlyNatural(), m_pConstrains->MinNote(),
-        m_pConstrains->MaxNote(), m_pConstrains->AllowedIntervals(), nDir, nKey);
+        m_pConstrains->MaxNote(), m_pConstrains->AllowedIntervals(), m_nDir, m_nKey);
 
-    //Convert problem to LDP pattern
-    wxString sPattern[2];
-    int i;
-    for (i=0; i < 2; i++) {
-        sPattern[i] = _T("(n ") + oIntv.GetPattern(i) + _T(" r)");
-    }
-    
-    //create the score
-    lmNote* pNote[2];
-    lmLDPParser parserLDP;
-    lmLDPNode* pNode;
-    m_pScore = new lmScore();
-    m_pScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
-    m_pScore->AddInstrument(1,0,0,_T(""));                     //one vstaff, MIDI channel 0, MIDI instr 0
-    lmVStaff *pVStaff = m_pScore->GetVStaff(1, 1);      //get first vstaff of instr.1
-    pVStaff->AddClef( nClef );
-    pVStaff->AddKeySignature(nKey);
-    pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
-//    pVStaff->AddEspacio 24
-    pNode = parserLDP.ParseText( sPattern[0] );
-    pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etb_SimpleBarline, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
-    pNode = parserLDP.ParseText( sPattern[1] );
-    pNote[1] = parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
+    //save the interval data
+    m_sIntvCode = oIntv.GetIntervalCode();
+    oIntv.GetNoteBits(0, &m_tNote[0]);
+    oIntv.GetNoteBits(1, &m_tNote[1]);
+
+    // all data ready to prepare the score: proceed
+    PrepareScore(m_sIntvCode, &m_pScore);
 
     //compute the right answer
-    m_sAnswer = oIntv.GetName();
+    m_sAnswer = oIntv.GetIntervalName();
 
-    m_ntMidi[0] = oIntv.GetMidiNote1();
-    m_ntMidi[1] = oIntv.GetMidiNote2();
-    
     //compute the index for the button that corresponds to the right answer
+    int i;
     for (i = 0; i <= m_nValidIntervals; i++) {
         if (m_nRealIntval[i] == oIntv.GetNumSemitones()) break;
     }
@@ -493,10 +522,50 @@ void lmEarIntervalsCtrol::NewProblem()
     m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
     Play();
 
-    m_fPlayEnabled = true;
-    m_fProblemCreated = true;
-    EnableButtons(true);
+    m_fQuestionAsked = true;
+    m_pPlayButton->Enable(true);
+    m_pShowSolution->Enable(true);
     
+}
+
+void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
+{
+    //Generates the interval sIntvCode, ascending or descending depending on m_nDir.
+    //Start note will be m_tNote[0] if ascending or m_tNote[1] if descending.
+    //After generating the interval, prepares a score with it.
+
+    //create the interval
+    lmNoteBits tBits[2];
+    tBits[0] = (m_nDir == edi_Ascending ? m_tNote[0] : m_tNote[1]);
+    ComputeInterval( &tBits[0], sIntvCode, m_nDir, &tBits[1] );
+
+    //delete the previous score
+    if (*pScore) {
+        delete *pScore;
+        *pScore = (lmScore*)NULL;
+    }
+
+    //create a score with the interval
+    wxString sPattern;
+    lmNote* pNote;
+    lmLDPParser parserLDP;
+    lmLDPNode* pNode;
+    *pScore = new lmScore();
+    (*pScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
+    (*pScore)->AddInstrument(1,0,0,_T(""));                     //one vstaff, MIDI channel 0, MIDI instr 0
+    lmVStaff *pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
+    pVStaff->AddClef( eclvSol );
+    pVStaff->AddKeySignature(m_nKey);
+    pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
+//    pVStaff->AddEspacio 24
+    int i;
+    for (i=0; i<2; i++) {
+        sPattern = _T("(n ") + lmConverter::NoteBitsToName(tBits[i], m_nKey) + _T(" r)");
+        pNode = parserLDP.ParseText( sPattern );
+        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+        pVStaff->AddBarline(etb_SimpleBarline, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    }
+
 }
 
 void lmEarIntervalsCtrol::Play()
@@ -511,8 +580,10 @@ void lmEarIntervalsCtrol::DisplaySolution()
 {
     m_pScoreCtrol->HideScore(false);
     m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
-    m_fPlayEnabled = true;
-    m_fProblemCreated = false;
+
+    m_pPlayButton->Enable(true);
+    m_pShowSolution->Enable(false);
+    m_fQuestionAsked = false;
     
 }
 
@@ -538,7 +609,6 @@ void lmEarIntervalsCtrol::ResetExercise()
             m_pAnswerButton[i]->SetBackgroundColour( g_pColors->Normal() );
         }
     }
-    EnableButtons(false);
 
     if (m_pScore) {
         delete m_pScore;

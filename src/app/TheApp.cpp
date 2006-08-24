@@ -273,9 +273,9 @@ bool lmTheApp::OnInit(void)
     // Set up locale object
     m_locale.Init(_T(""), lang, _T(""), true, true);
     m_locale.AddCatalogLookupPathPrefix( g_pPaths->GetLocalePath() );
-    m_locale.AddCatalog(_T("lenmus"));
+    m_locale.AddCatalog(_T("lenmus_") + m_locale.GetName());
     m_locale.AddCatalog(_T("wxwidgets"));
-    m_locale.AddCatalog(_T("wxmidi"));
+    m_locale.AddCatalog(_T("wxmidi_") + m_locale.GetName());
 
     // open log file and redirec all loging there
     wxFileName oFilename(g_pPaths->GetTempPath(), _T("DataError"), _T("log"), wxPATH_NATIVE);
