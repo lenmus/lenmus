@@ -340,8 +340,6 @@ void lmVirtualBooks::LoadSingleExercisesBook()
         _T("<object type=\"Application/LenMus\" classid=\"IdfyChord\" width=\"100%\" height=\"300\" border=\"0\">")
         _T("<param name=\"control_settings\" value=\"EarIdfyChord\">")
         _T("<param name=\"mode\" value=\"earTraining\">")
-        _T("<param name=\"chords\" value=\"mT,MT,aT,dT,m7,M7,dom7\">")
-        _T("<param name=\"keys\" value=\"all\">")
         _T("</object>");
     i++;
 
@@ -395,8 +393,6 @@ void lmVirtualBooks::LoadSingleExercisesBook()
         _T("<object type=\"Application/LenMus\" classid=\"IdfyChord\" width=\"100%\" height=\"300\" border=\"0\">")
         _T("<param name=\"control_settings\" value=\"TheoIdfyChord\">")
         _T("<param name=\"mode\" value=\"theory\">")
-        _T("<param name=\"chords\" value=\"mT,MT,aT,dT,m7,M7,dom7\">")
-        _T("<param name=\"keys\" value=\"all\">")
         _T("</object>");
     i++;
 

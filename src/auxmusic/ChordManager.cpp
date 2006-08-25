@@ -147,14 +147,14 @@ lmChordManager::lmChordManager(wxString sRootNote, EChordType nChordType,
     }
 
     //get notes that form the interval
-    wxLogMessage(_T("[lmChordManager] Root note = %s, interval type=%s, inversion=%d"),
-                  lmConverter::NoteBitsToName(m_tBits[0], m_nKey), GetName(), m_nInversion );
+    //wxLogMessage(_T("[lmChordManager] Root note = %s, interval type=%s, inversion=%d"),
+    //              lmConverter::NoteBitsToName(m_tBits[0], m_nKey), GetName(), m_nInversion );
     for (i=1; i < tData[m_nType].nNumNotes; i++) {
         ComputeInterval(&m_tBits[0], sIntval[i-1], edi_Ascending, &m_tBits[i]);
-        wxLogMessage(_T("[lmChordManager] Note %d = %s, (Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d), key=%d"),
-                     i, lmConverter::NoteBitsToName(m_tBits[i],m_nKey),
-                     m_tBits[i].nStep, m_tBits[i].nOctave, m_tBits[i].nAccidentals, m_tBits[i].nStepSemitones,
-                     m_nKey );
+        //wxLogMessage(_T("[lmChordManager] Note %d = %s, (Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d), key=%d"),
+        //             i, lmConverter::NoteBitsToName(m_tBits[i],m_nKey),
+        //             m_tBits[i].nStep, m_tBits[i].nOctave, m_tBits[i].nAccidentals, m_tBits[i].nStepSemitones,
+        //             m_nKey );
     }
 
 }

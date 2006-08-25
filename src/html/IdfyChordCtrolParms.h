@@ -82,7 +82,7 @@ lmIdfyChordCtrolParms::lmIdfyChordCtrolParms(const wxHtmlTag& tag, int nWidth, i
     m_nWindowStyle = nStyle;
 
     // construct constrains object
-    m_pConstrains = new lmChordConstrains(_T("EarChord"));
+    m_pConstrains = new lmChordConstrains(_T("IdfyChord"));
 
     // initializations
     m_sParamErrors = _T("");    //no errors

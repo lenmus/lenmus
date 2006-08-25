@@ -2,6 +2,14 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
 //
+//    This file is a modified copy of file helpctrl.h from wxWidgets 2.6.2 project.
+//    wxWidgets licence is compatible with GNU GPL.
+//    Author:      Harm van der Heijden and Vaclav Slavik
+//    Copyright (c) Harm van der Heijden and Vaclav Slavik
+// 
+//    Modified by:
+//        Cecilio Salmeron
+//
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.

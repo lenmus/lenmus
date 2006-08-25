@@ -238,13 +238,13 @@ lmIdfyChordCtrol::lmIdfyChordCtrol(wxWindow* parent, wxWindowID id,
     //create buttons for the answers, two rows
     int iB = 0;
 
-    wxFlexGridSizer* pKeyboardSizer = new wxFlexGridSizer(NUM_ROWS+1, NUM_COLS+1, 10, 0);
+    m_pKeyboardSizer = new wxFlexGridSizer(NUM_ROWS+1, NUM_COLS+1, 10, 0);
     pMainSizer->Add(
-        pKeyboardSizer,
+        m_pKeyboardSizer,
         wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 10) );
 
     for (int iRow=0; iRow < NUM_ROWS; iRow++) {
-        pKeyboardSizer->Add(
+        m_pKeyboardSizer->Add(
             m_pRowLabel[iRow] = new wxStaticText(this, -1, _T("")),
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
 
@@ -254,7 +254,7 @@ lmIdfyChordCtrol::lmIdfyChordCtrol(wxWindow* parent, wxWindowID id,
             if (iB >= NUM_BUTTONS) break;
             m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, _T("Undefined"),
                 wxDefaultPosition, wxSize(120, 20));
-            pKeyboardSizer->Add(
+            m_pKeyboardSizer->Add(
                 m_pAnswerButton[iB],
                 wxSizerFlags(0).Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
             if (m_sButtonLabel[iB].IsEmpty()) {
@@ -327,6 +327,9 @@ void lmIdfyChordCtrol::SetUpButtons()
         m_pAnswerButton[iB]->Show(false);
         m_pAnswerButton[iB]->Enable(false);
     }
+    for (int iRow=0; iRow < NUM_ROWS; iRow++) {
+        m_pRowLabel[iRow]->SetLabel(_T(""));
+    }
 
     //triads
     iB = 0;
@@ -373,7 +376,7 @@ void lmIdfyChordCtrol::SetUpButtons()
     if (m_pConstrains->IsValidGroup(ecg_Sixths)) {
         iR = iB / NUM_COLS;
         m_pRowLabel[iR]->SetLabel(_("Other chords:"));
-        for (iC=ect_LastSeventh+1; iC <= ect_Max; iC++) {
+        for (iC=ect_LastSeventh+1; iC < ect_Max; iC++) {
             if (m_pConstrains->IsChordValid((EChordType)iC)) {
                 m_nRealChord[iB] = iC;
                 m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
@@ -388,6 +391,7 @@ void lmIdfyChordCtrol::SetUpButtons()
         }
     }
 
+    m_pKeyboardSizer->Layout();
 }
 
 //----------------------------------------------------------------------------------------
@@ -397,7 +401,12 @@ void lmIdfyChordCtrol::OnSettingsButton(wxCommandEvent& event)
 {
     lmDlgCfgIdfyChord dlg(this, m_pConstrains, m_fTheoryMode);   
     int retcode = dlg.ShowModal();
-    if (retcode == wxID_OK) m_pConstrains->SaveSettings();
+    if (retcode == wxID_OK) {
+        m_pConstrains->SaveSettings();
+        // When changing interval settings it is necessary review the buttons
+        // as number of buttons and/or its name could have changed.
+        SetUpButtons();
+    }
 
 }
 
@@ -569,7 +578,6 @@ wxString lmIdfyChordCtrol::PrepareScore(EClefType nClef, EChordType nType, lmSco
         sPattern = (m_nMode == 0 ? _T("(na ") : _T("(n "));     // mode=0 -> harmonic
         sPattern += oChordMngr.GetPattern((m_nMode == 2 ? nNumNotes-1-i : i));
         sPattern +=  _T(" r)");
- /*dbg*/ wxLogMessage(_T("[lmIdfyChordCtrol::PrepareScore] pattern = '%s'"), sPattern);
         pNode = parserLDP.ParseText( sPattern );
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     }

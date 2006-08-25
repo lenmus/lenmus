@@ -113,7 +113,10 @@ public:
 
     void SetSettingsLink(bool fValue) { m_fSettingsLink = fValue; }
     bool IncludeSettingsLink() { return m_fSettingsLink; }
-    void SetSection(wxString sSection) { m_sSection = sSection; }
+    void SetSection(wxString sSection) {
+                m_sSection = sSection;
+                LoadSettings();
+            }
 
     void SaveSettings();
     
