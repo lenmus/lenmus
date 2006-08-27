@@ -94,8 +94,8 @@ wxFSFile* lmVirtualBooks::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& l
     int iColon = location.Find(_T(':'));
     wxString sBookName = location.Mid(iColon+1, location.Length()-iColon-5);
     wxString sExt(location.Right(4).Lower());
-    //wxLogMessage(_T("[lmVirtualBooks::OpenFile] Request to open virtual file '%s'. Book='%s', ext='%s'"),
-    //    location, sBookName, sExt);
+    wxLogMessage(_T("[lmVirtualBooks::OpenFile] Request to open virtual file '%s'. Book='%s', ext='%s'"),
+        location, sBookName, sExt);
 
     if (sExt == _T("ched"))
         return (wxFSFile*) NULL;    //cached file
@@ -165,11 +165,13 @@ wxFSFile* lmVirtualBooks::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& l
     //by pass for bug in wxHtmlHelpController in Unicode build:
     //wxHtmlFilter::ReadFile() expects an ANSI string. So here I must
     //translate from unicode to ANSI.
-    size_t nLong = pBook->Length();
-    char* sBookMB = new char[4*nLong];  //just in case...
-    wxMBConvUTF8 oConv;
-    size_t nSize = oConv.WC2MB(sBookMB, pBook->c_str(), nLong);
-    str = new wxMemoryInputStream(sBookMB, nSize);
+        size_t nLong = pBook->Length();
+        char* pBookAnsi = new char[4*nLong];  //just in case...
+        //wxMBConvUTF8 oConv;
+        //size_t nSize = oConv.WC2MB(pBookAnsi, pBook->c_str(), nLong);
+        size_t nSize = wxConvUTF8.WC2MB(pBookAnsi, pBook->c_str(), nLong);
+        str = new wxMemoryInputStream(pBookAnsi, nSize);
+    //
     //wxMBConvUTF8 oConv;
     //wxCharBuffer sBookMB = pBook->mb_str(oConv);
     //str = new wxMemoryInputStream(sBookMB.data(), strlen(sBookMB.data()) );
@@ -182,13 +184,18 @@ wxFSFile* lmVirtualBooks::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& l
 void lmVirtualBooks::LoadIntroBook()
 {
     wxString sNil = _T("");
+#ifdef _UNICODE
+    wxString sCharset = _T("utf-8");
+#else
+    wxString sCharset = wxLocale::GetSystemEncodingName();
+#endif
 
     //book description
     //-----------------------------------------------------------------------------
     m_sIntroHHP = sNil +
         _T("[OPTIONS]\n")
         _T("Contents file=intro.hhc\n")
-        _T("Charset=utf-8\n")
+        _T("Charset=") + sCharset + _T("\n")
         _T("Index file=intro.hhk\n")
         _T("Title=") + _("LenMus. Introduction") + _T("\n")
         _T("Default topic=intro_welcome.htm\n");
@@ -198,7 +205,8 @@ void lmVirtualBooks::LoadIntroBook()
     //-----------------------------------------------------------------------------
     m_sIntroHHC = sNil +
         _T("<html><head>")
-        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + sCharset +
+        _T("\">")
         _T("</head><body><ul>")
         _T("<li><object type=\"text/sitemap\">")
         _T("<param name=\"Name\" value=\"") + _("Welcome") + _T("\">")
@@ -210,7 +218,8 @@ void lmVirtualBooks::LoadIntroBook()
     m_sIntroHHK = sNil +
         _T("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML//EN\">")
         _T("<html><head>")
-        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + sCharset +
+        _T("\">")
         _T("</head><body><ul>")
         _T("<li><object type=\"text/sitemap\">")
         _T("<param name=\"Name\" value=\"") + _("Welcome") + _T("\">")
@@ -234,7 +243,8 @@ your specific needs at each moment and to practise specific points."), sBookRef 
 
     m_sIntroHTM = sNil +
       _T("<html><head>")
-      _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">")
+      _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + sCharset +
+      _T("\">")
       _T("</head><body><table width='100%'><tr><td align='left'>") 
       _T("<img src='Phonascus-277x63.gif' width='277' height='63' /></td>") 
       _T("<td align='right'><img src='LenMus-170x44.gif' width='170' height='44' /></td>") 
@@ -276,13 +286,18 @@ immediately any new concept introduced.") +
 void lmVirtualBooks::LoadSingleExercisesBook()
 {
     wxString sNil = _T("");
+#ifdef _UNICODE
+    wxString sCharset = _T("utf-8");
+#else
+    wxString sCharset = wxLocale::GetSystemEncodingName();
+#endif
 
     //book description
     //-----------------------------------------------------------------------------
     m_sSingleHHP = sNil +
         _T("[OPTIONS]\n")
         _T("Contents file=SingleExercises.hhc\n")
-        _T("Charset=utf-8\n")
+        _T("Charset=") + sCharset + _T("\n")
         _T("Index file=SingleExercises.hhk\n")
         _T("Title=") + _("Single exercises") + _T("\n")
         _T("Default topic=SingleExercises_0.htm\n");
@@ -427,7 +442,8 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     m_sSingleHHC = sNil +
         _T("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML//EN\">")
         _T("<html><head>")
-        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + 
+        sCharset + _T("\">")
         _T("</head><body><ul>");
 
     for (i=0; i < lmNUM_SINGLE_PAGES; i++) {
@@ -449,7 +465,8 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     for (i=1; i < lmNUM_SINGLE_PAGES; i++) {
         m_sSingleHTM[i] = sNil +
             _T("<html><head>")
-            _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">")
+            _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + 
+            sCharset + _T("\">")
             _T("<title>") + sPageTitle[i] + 
             _T("</title></head><body><h1>") + sPageTitle[i] +
             _T("</h1>") + sContent[i] + _T("</body></html>");
@@ -458,7 +475,8 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     //Now the intro page
     m_sSingleHTM[0] = sNil +
         _T("<html><head>")
-        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + 
+        sCharset + _T("\">")
         _T("<title>") + sPageTitle[0] + 
         _T("</title></head><body><h1>") + sPageTitle[0] +
         _T("</h1><p>") +

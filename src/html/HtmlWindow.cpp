@@ -195,7 +195,7 @@ void lmHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link)
     // lenMus internal link processing
     //
 
-    //wxLogMessage(_T("[lmHtmlWindow::OnLinkClicked] Internal link. url <%s>"), sLocation);
+    wxLogMessage(_T("[lmHtmlWindow::OnLinkClicked] Internal link. url '%s'"), sLocation);
 
     //
     // analyze command type and process it
@@ -216,7 +216,7 @@ void lmHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link)
 
         // show the embedded page
         SetPage(sContent);
-        wxLogMessage(sContent);
+        wxLogMessage(_T("[lmHtmlWindow::OnLinkClicked] \n") + sContent);
         return;
     }
 

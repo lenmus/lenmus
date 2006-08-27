@@ -1,5 +1,6 @@
 ;==============================================================================================
-; Windows installer for LenMus
+; Windows installer for LenMus. Unicode version
+;
 ; NSIS v2.15 script for generating the exe installer and uninstaller
 ;
 ;--------------------------------------------------------------------------------------
@@ -102,7 +103,7 @@
     !insertmacro MUI_PAGE_INSTFILES
 
   ;finish page: run installed program?
-    !define MUI_FINISHPAGE_RUN "$INSTDIR\bin\lenmus.exe"
+    !define MUI_FINISHPAGE_RUN "$INSTDIR\bin\lenmus_u.exe"
     !insertmacro MUI_PAGE_FINISH
 
 
@@ -133,7 +134,7 @@
 
 
 ;define filename of installer and uninstaller
-  !define INSTALLER_NAME "lenmus_${APP_VERSION}_setup.exe"
+  !define INSTALLER_NAME "lenmus_${APP_VERSION}u_setup.exe"
   !define UNINSTALLER_NAME "uninstall_lenmus_${APP_VERSION}.exe"
 
 ;variable to retry installation when error found
@@ -289,7 +290,7 @@ Section  "-" "MainSection"
      File "license_spanish.txt"
 
      SetOutPath "$INSTDIR\bin"
-     File "..\..\z_bin\lenmus.exe"
+     File "..\..\z_bin\lenmus_u.exe"
      File "..\..\fonts\lmbasic.ttf"
      File "msvcr71.dll"
      ;File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
@@ -346,7 +347,7 @@ Section  "-" "MainSection"
   ;-----------------------------------------------------------------------------------
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_EXEC).lnk" "$INSTDIR\bin\lenmus.exe"
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_EXEC).lnk" "$INSTDIR\bin\lenmus_u.exe"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_UNINSTALL).lnk" "$INSTDIR\bin\${UNINSTALLER_NAME}"
   !insertmacro MUI_STARTMENU_WRITE_END
 
@@ -366,7 +367,7 @@ Section $(TITLE_CreateIcon) CreateIcon
 
   CreateIcon:
      ClearErrors
-     CreateShortCut "$DESKTOP\lenmus ${APP_VERSION}.lnk" "$INSTDIR\bin\lenmus.exe"
+     CreateShortCut "$DESKTOP\lenmus ${APP_VERSION}.lnk" "$INSTDIR\bin\lenmus_u.exe"
      IfErrors +1 EndCreateIcon
         StrCmp $STEP "ErrorCreatingIcon" "Error_CreateIcon"
         StrCpy "$STEP" "ErrorCreatingIcon" 

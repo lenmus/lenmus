@@ -947,6 +947,7 @@ TAG_HANDLER_PROC(tag)
     {
         //verify type -----------------------------------------------------
         EHtmlObjectTypes nType = eHO_Unknown;
+        wxString sType;
         if (tag.HasParam(wxT("TYPE")) ) {
             wxString sType = tag.GetParam(wxT("TYPE"));
             if (sType.Upper() == _T("APPLICATION/LENMUS"))
@@ -975,7 +976,11 @@ TAG_HANDLER_PROC(tag)
                 }
             }
         }
-        if (nType == eHO_Unknown) return true;        // type non processable by LenMus
+        if (nType == eHO_Unknown) {
+            wxLogMessage(_T("[TAG_HANDLER_PROC] Object type '%s' is not processable by LenMus."),
+                sType);
+            return true;        // type non processable by LenMus
+        }
 
         // parse common attributes for all object types
         // attributes "width" and "height": height is always in pixels
