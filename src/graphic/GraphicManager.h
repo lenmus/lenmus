@@ -39,7 +39,15 @@
 #include "BoxScore.h"
 #include "../score/score.h"
 
+// offscreen bitmaps will be maintained in a list structure. Let's declare it
+WX_DECLARE_LIST(wxBitmap, BitmapList);
 
+// to use offscreen bitmaps or not
+#define lmUSE_BITMAPS       true        //create a compatible bitmap and return it
+#define lmNO_BITMAPS        false       //direct drawing on the DC
+
+// Rendering options description:
+//
 // fStopStaffLinesAtFinalBarline:
 //      Staff lines must finish at final barline instead of continuing to right margin
 //      of paper
@@ -77,7 +85,7 @@ public:
 
     void Layout();                          //measure phase
     void Render();                          //drawing phase
-    wxBitmap* Render(wxDC* pDC, int nPage);      //render page 1..n
+    wxBitmap* Render(bool fUseBitmaps, int nPage);      //render page 1..n
     int GetNumPages();
 
     void ExportAsImage(wxString& sFilename, wxString& sExt, int nImgType);

@@ -77,11 +77,11 @@ void lmArch::SetCtrolPoint2(lmLUnits xPos, lmLUnits yPos)
     m_yCtrol2 = yPos;
 }
 
-void lmArch::Draw(wxDC* pDC, wxColour colorC)
+void lmArch::Draw(lmPaper* pPaper, wxColour colorC)
 {
-    wxPen oldPen = pDC->GetPen();
+    wxPen oldPen = pPaper->GetPen();
     wxPen pen(colorC, lmToLogicalUnits(0.2, lmMILLIMETERS), wxSOLID);    // width = 0.2 mm
-    pDC->SetPen(pen);
+    pPaper->SetPen(pen);
 
     //lmArch is rendered as a cubic bezier curve. The number of points to draw is
     // variable, to suit a minimun resolution of 5 points / mm. 
@@ -113,14 +113,14 @@ void lmArch::Draw(wxDC* pDC, wxColour colorC)
         y2 = a * m_yStart + b * m_yCtrol1 + c * m_yCtrol2 + d * m_yEnd;
 
         // draw segment line
-        pDC->DrawLine(x1, y1, x2, y2);
+        pPaper->DrawLine(x1, y1, x2, y2);
 
         // prepare for next point
         x1 = x2;
         y1 = y2;
     }
 
-    pDC->SetPen(oldPen);
+    pPaper->SetPen(oldPen);
 
 }
 
@@ -301,8 +301,7 @@ void lmTie::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
     if (fMeasuring) return;
 
-    wxDC* pDC = pPaper->GetDC();
-    m_mainArc.Draw(pDC, (m_fSelected ? g_pColors->ScoreSelected() : colorC));
-    if (m_pExtraArc) m_pExtraArc->Draw(pDC, (m_fSelected ? g_pColors->ScoreSelected() : colorC));
+    m_mainArc.Draw(pPaper, (m_fSelected ? g_pColors->ScoreSelected() : colorC));
+    if (m_pExtraArc) m_pExtraArc->Draw(pPaper, (m_fSelected ? g_pColors->ScoreSelected() : colorC));
 
 }

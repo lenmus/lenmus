@@ -63,13 +63,11 @@ wxBitmap* lmWordsDirection::GetBitmap(double rScale)
 
 void lmWordsDirection::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {
-    wxDC* pDC = pPaper->GetDC();
-    wxASSERT(pDC);
-    pDC->SetFont(*m_pFont);
+    pPaper->SetFont(*m_pFont);
 
     if (fMeasuring) {
         lmLUnits nWidth, nHeight;
-        pDC->GetTextExtent(m_sText, &nWidth, &nHeight);
+        pPaper->GetTextExtent(m_sText, &nWidth, &nHeight);
 
         // set total width
         m_nWidth = nWidth;
@@ -115,8 +113,8 @@ void lmWordsDirection::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour col
     }
     else {
         wxPoint pos = GetGlyphPosition();
-        pDC->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-        pDC->DrawText(m_sText, pos.x, pos.y );
+        pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
+        pPaper->DrawText(m_sText, pos.x, pos.y );
     }
 
 }

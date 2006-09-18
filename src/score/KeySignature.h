@@ -60,7 +60,7 @@ public:
     wxString SourceXML();
 
     //rendering related methods
-    lmLUnits DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, EClefType nClef, 
+    lmLUnits DrawAt(bool fMeasuring, lmPaper* pPaper, wxPoint pos, EClefType nClef, 
                      int nStaff, wxColour colorC = *wxBLACK);
 
     //methods for hiding the key in prologs
@@ -70,7 +70,7 @@ public:
 
 private:
     void SetKeySignatureType();
-    lmLUnits DrawAccidental(bool fMeasuring, wxDC* pDC, EAccidentals nAlter,
+    lmLUnits DrawAccidental(bool fMeasuring, lmPaper* pPaper, EAccidentals nAlter,
                     lmLUnits nxLeft, lmLUnits nyTop, int nStaff);
 
     // get fixed measures and values that depend on lmKeySignature type

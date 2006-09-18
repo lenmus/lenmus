@@ -145,14 +145,14 @@ public:
 private:
     // rendering
     void MakeUpPhase(lmPaper* pPaper);
-    void DrawSingleNote(wxDC* pDC, bool fMeasuring, ENoteType nTipoNota,
+    void DrawSingleNote(lmPaper* pPaper, bool fMeasuring, ENoteType nTipoNota,
                         bool fStemAbajo, lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC);
-    void DrawNoteHead(wxDC* pDC, bool fMeasuring, ENoteHeads nNoteheadType,
+    void DrawNoteHead(lmPaper* pPaper, bool fMeasuring, ENoteHeads nNoteheadType,
                         lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC);
-    void DrawLegerLines(wxDC* pDC, int nPosOnStaff, lmLUnits yTopLine, lmLUnits xPos,
+    void DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits yTopLine, lmLUnits xPos,
                         lmLUnits width, int nROP = wxCOPY);
-    lmEGlyphIndex DrawFlag(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC);
-    lmLUnits DrawDot(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUnits yPos, 
+    lmEGlyphIndex DrawFlag(bool fMeasuring, lmPaper* pPaper, wxPoint pos, wxColour colorC);
+    lmLUnits DrawDot(bool fMeasuring, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos, 
                      wxColour colorC, bool fUseFont);
 
     //auxiliary

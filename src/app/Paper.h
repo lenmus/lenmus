@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Paper.h,v 1.3 2006/02/23 19:17:12 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -36,11 +35,6 @@
 #include "Page.h"
 #include "FontManager.h"
 
-class lmScore;
-
-// offscreen bitmaps will be maintained in a list structure. Let's declare it
-WX_DECLARE_LIST(wxBitmap, BitmapList);
-
 
 class lmPaper
 {
@@ -52,14 +46,9 @@ public:
     wxDC* GetDC() const { return m_pDC; }
     void SetDC(wxDC* pDC) { m_pDC = pDC; }
 
-    void Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight, double rScale);
-    void NewPage();
     void NewLine(lmLUnits nSpace);
 
-    void ForceRedraw() { m_fRedraw = true; }
     void RestartPageCursors();
-
-    int GetNumPages() { return m_numPages; }
 
     // page cursor position
     lmLUnits GetCursorX() { return m_xCursor; }
@@ -79,14 +68,7 @@ public:
     void SetPageTopMargin(lmLUnits nValue) { m_Page.SetTopMargin(nValue); }
     void SetPageLeftMargin(lmLUnits nValue) { m_Page.SetLeftMargin(nValue); }
     void SetPageRightMargin(lmLUnits nValue) { m_Page.SetRightMargin(nValue); }
-    void SetPageSize(lmLUnits nWidth, lmLUnits nHeight)
-            {
-                m_Page.SetPageSize(nWidth, nHeight);
-                m_fRedraw = true;       //force to redraw the score
-            }
-
-    //public access to the offscreen bitmap of page nPage
-    wxBitmap* GetOffscreenBitmap(int nPage = 0);
+    void SetPageSize(lmLUnits nWidth, lmLUnits nHeight) { m_Page.SetPageSize(nWidth, nHeight); }
 
     // unit conversion
     lmLUnits DeviceToLogicalX(lmPixels x) { return m_pDC->DeviceToLogicalXRel(x); }
@@ -94,14 +76,9 @@ public:
 
     lmPixels LogicalToDeviceX(lmLUnits x) { return m_pDC->LogicalToDeviceXRel(x); }
     lmPixels LogicalToDeviceY(lmLUnits y) { return m_pDC->LogicalToDeviceYRel(y); }
-    //wxPoint LogicalToDevice(wxPoint pt) {
-    //        return wxPoint(m_pDC->LogicalToDeviceX(pt.x), m_pDC->LogicalToDeviceY(pt.y) );
-    //    }
 
     lmLUnits GetRightMarginXPos();
     lmLUnits GetLeftMarginXPos();
-
-    double GetScale() { return m_rScale; }
 
     wxFont* GetFont(int nPointSize,
                     wxString sFontName = _T("LeMus Notas"),
@@ -111,24 +88,38 @@ public:
                     bool fUnderline = false);
 
 
+        //methods to encapsulate the DC
+
+    //draw shapes
+    void DrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2)
+            { m_pDC->DrawLine(x1, y1, x2, y2); }
+    void DrawRectangle(wxPoint point, wxSize size) { m_pDC->DrawRectangle(point, size); }
+    void DrawRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height)
+            { m_pDC->DrawRectangle(left, top, width, height); }
+    void DrawCircle(wxCoord x, wxCoord y, wxCoord radius) { m_pDC->DrawCircle(x, y, radius); }
+    void DrawCircle(const wxPoint& pt, wxCoord radius) { m_pDC->DrawCircle(pt, radius); }
+    void DrawPolygon(int n, wxPoint points[]) { m_pDC->DrawPolygon(n, points); }
+
+    //brushes, colors, fonts, ...
+    void SetBrush(wxBrush brush) { m_pDC->SetBrush(brush); }
+    void SetFont(wxFont& font) {m_pDC->SetFont(font); }
+    void SetPen(wxPen& pen) { m_pDC->SetPen(pen); }
+    const wxPen& GetPen() const { return m_pDC->GetPen(); }
+    void SetLogicalFunction(int function) { m_pDC->SetLogicalFunction(function); }
+
+    //text
+    void DrawText(const wxString& text, wxCoord x, wxCoord y) {m_pDC->DrawText(text, x, y); }
+    void SetTextForeground(const wxColour& colour) {m_pDC->SetTextForeground(colour); }
+    void SetTextBackground(const wxColour& colour) {m_pDC->SetTextBackground(colour); }
+    void GetTextExtent(const wxString& string, wxCoord* w, wxCoord* h) 
+            { m_pDC->GetTextExtent(string, w, h); }
+
+
+
+
 private:
-    void DeleteBitmaps();
-    wxBitmap* GetPageBitmap(int nPage);
-
-
     wxDC*       m_pDC;              // the DC to use
     lmPage      m_Page;             // page layout settings
-
-    // offscreen bitmaps management
-    BitmapList  m_cBitmaps;            // list of bitmaps for offscreen painting
-    lmPixels    m_xBitmapSize, m_yBitmapSize;    // size of bitmaps in pixels
-    lmPixels    m_xPageSize, m_yPageSize;        // size of page in pixels
-    int         m_numPages;            // num pages that current score has
-    bool        m_fRedraw;             // force to redraw the score
-
-    lmScore*    m_pScore;              // the score to draw in this paper
-    long        m_nLastScoreID;        // the ID of the last rendered score
-    double      m_rScale;              // drawing scale
 
     // page cursors
     lmLUnits   m_xCursor, m_yCursor;       // current default drawing position. Logical units

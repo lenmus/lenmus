@@ -174,39 +174,35 @@ void lmClef::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 // returns the width of the draw (logical units)
 lmLUnits lmClef::DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {    
-    wxDC* pDC = pPaper->GetDC();
-    wxASSERT(pDC);
-    pDC->SetFont(*m_pFont);
+    pPaper->SetFont(*m_pFont);
 
     lmEGlyphIndex nGlyph = GetGlyphIndex();
     wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
     if (fMeasuring) {
         lmLUnits width, height;
-        pDC->GetTextExtent(sGlyph, &width, &height);
+        pPaper->GetTextExtent(sGlyph, &width, &height);
         return width;
     } else {
         wxPoint pos = GetGlyphPosition();
-        pDC->SetTextForeground(colorC);
-        pDC->DrawText(sGlyph, pos.x, pos.y );
+        pPaper->SetTextForeground(colorC);
+        pPaper->DrawText(sGlyph, pos.x, pos.y );
         return 0;
     }
 
 }
 
-lmLUnits lmClef::DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC)
+lmLUnits lmClef::DrawAt(bool fMeasuring, lmPaper* pPaper, wxPoint pos, wxColour colorC)
 {
-    /*
-    This method is, primarely, to be used when rendering the prolog
-    Returns the width of the draw
-    */
+    // This method is, primarely, to be used when rendering the prolog
+    // Returns the width of the draw
 
     if (fMeasuring) return m_nWidth;
 
     lmEGlyphIndex nGlyph = GetGlyphIndex();
     wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
-    pDC->SetFont(*m_pFont);
-    pDC->SetTextForeground(colorC);
-    pDC->DrawText(sGlyph, pos.x, pos.y + m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum ) );
+    pPaper->SetFont(*m_pFont);
+    pPaper->SetTextForeground(colorC);
+    pPaper->DrawText(sGlyph, pos.x, pos.y + m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum ) );
 
     return m_nWidth;
 }

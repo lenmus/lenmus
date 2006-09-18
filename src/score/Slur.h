@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Slur.h,v 1.3 2006/02/23 19:24:42 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -54,7 +53,7 @@ public:
     inline lmLUnits GetCtrol2PosX() { return m_xCtrol2; }
     inline lmLUnits GetCtrol2PosY() { return m_yCtrol2; }
 
-    void Draw(wxDC* pDC, wxColour colorC);
+    void Draw(lmPaper* pPaper, wxColour colorC);
 
 protected:
     void CubicBezier(double* x, double* y, int nNumPoints);

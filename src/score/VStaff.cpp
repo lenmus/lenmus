@@ -445,16 +445,14 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
 
     if (fMeasuring) { return; }
 
-    wxDC* pDC = pPaper->GetDC();
-
     lmLUnits xRight, yCur;
 
     ////DEBUG: draw top border of lmVStaff region
     //m_xLeft = pPaper->GetLeftMarginXPos();
     //xRight = pPaper->GetRightMarginXPos();
     //yCur = pPaper->GetCursorY();
-    //pDC->SetPen(*wxRED_PEN);
-    //pDC->DrawLine(m_xLeft, yCur-1, xRight, yCur-1);
+    //pPaper->SetPen(*wxRED_PEN);
+    //pPaper->DrawLine(m_xLeft, yCur-1, xRight, yCur-1);
     ////-----------------------------------------
 
 
@@ -469,12 +467,12 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
     m_yLinTop = yCur;              //save y coord. for first line start point
 
     ////DEBUG: draw top border of first lmStaff region
-    //pDC->SetPen(*wxCYAN_PEN);
-    //pDC->DrawLine(m_xLeft, yCur-1, xRight, yCur-1);
+    //pPaper->SetPen(*wxCYAN_PEN);
+    //pPaper->DrawLine(m_xLeft, yCur-1, xRight, yCur-1);
     ////-----------------------------------------
 
-    //??    pDC->DrawWidth = m_nGrosorLineas;
-    pDC->SetPen(*wxBLACK_PEN);
+    //??    pPaper->DrawWidth = m_nGrosorLineas;
+    pPaper->SetPen(*wxBLACK_PEN);
 
     //iterate over the collection of Staves (lmStaff Objects)
     StaffList::Node* pNode = m_cStaves.GetFirst();
@@ -482,7 +480,7 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
     for ( ; pStaff; ) {
         //draw one staff
         for (int iL = 1; iL <= pStaff->GetNumLines(); iL++ ) {
-            pDC->DrawLine (m_xLeft, yCur, xRight, yCur);
+            pPaper->DrawLine (m_xLeft, yCur, xRight, yCur);
             m_yLinBottom = yCur;                        //save line position
             yCur = yCur + pStaff->GetLineSpacing();     //+ m_nGrosorLineas - 1
         }
@@ -492,7 +490,7 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
         pNode = pNode->GetNext();
         pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
     }
-//??    pDC->DrawWidth = 1;
+//??    pPaper->DrawWidth = 1;
 
 }
 
@@ -928,26 +926,20 @@ void lmVStaff::NewLine(lmPaper* pPaper)
 
 void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPaper* pPaper)
 {
-    /*
-    The prolog (clef and key signature) must be rendered on each system,
-    but the matching StaffObjs only exist in the first system. Therefore, in the 
-    normal staffobj rendering process, the prolog would be rendered only in 
-    the first system.
-    So, for the other systems it is necessary to force the rendering
-    of the prolog because there are no StaffObjs representing it.
-    This method does it.
+    // The prolog (clef and key signature) must be rendered on each system,
+    // but the matching StaffObjs only exist in the first system. Therefore, in the 
+    // normal staffobj rendering process, the prolog would be rendered only in 
+    // the first system.
+    // So, for the other systems it is necessary to force the rendering
+    // of the prolog because there are no StaffObjs representing it.
+    // This method does it.
+    //
+    // To know what clef, key and time signature to draw we take this information from the
+    // context associated to first note of the measure on each sttaf. If there are no notes,
+    // the context is taken from the barline. If, finally, no context is found, no prolog
+    // is drawn.
 
-    To know what clef, key and time signature to draw we take this information from the
-    context associated to first note of the measure on each sttaf. If there are no notes,
-    the context is taken from the barline. If, finally, no context is found, no prolog
-    is drawn.
-
-    */
-
-    wxDC* pDC = pPaper->GetDC();
     lmLUnits nPrologWidth = 0;
-
-    wxASSERT(pDC);
     lmClef* pClef = (lmClef*)NULL;
     EClefType nClef = eclvUndefined;
     lmKeySignature* pKey = (lmKeySignature*)NULL;
@@ -1008,7 +1000,7 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
             if (pClef) {
                 nClef = pClef->GetType();
                 wxPoint pos = wxPoint(xPos, yStartPos+yOffset);        //absolute position
-                nWidth = pClef->DrawAt(fMeasuring, pDC, pos);
+                nWidth = pClef->DrawAt(fMeasuring, pPaper, pos);
                 xPos += nWidth;
             }
             
@@ -1016,7 +1008,7 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
             if (pKey) {
                 wxASSERT(nClef != eclvUndefined);
                 wxPoint pos = wxPoint(xPos, yStartPos+yOffset);        //absolute position
-                nWidth = pKey->DrawAt(fMeasuring, pDC, pos, nClef, nStaff);
+                nWidth = pKey->DrawAt(fMeasuring, pPaper, pos, nClef, nStaff);
                 xPos += nWidth;
             }
 

@@ -159,10 +159,8 @@ void lmKeySignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour color
 // returns the width of the draw (logical units)
 lmLUnits lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {    
-    wxDC* pDC = pPaper->GetDC();
-    wxASSERT(pDC);
-    pDC->SetFont(*m_pFont);
-    pDC->SetTextForeground(colorC);
+    pPaper->SetFont(*m_pFont);
+    pPaper->SetTextForeground(colorC);
 
     //Key signature is common to all lmVStaff staves, but it is only present, as lmStaffObj, in
     //the first staff. Therefore, for renderization, it is necessary to repeat for
@@ -176,7 +174,7 @@ lmLUnits lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxCo
 
         // Draw the key signature
         wxPoint pos = wxPoint(m_paperPos.x, m_paperPos.y + yOffset);
-        DrawAt(fMeasuring, pDC, pos, nClef, nStaff);
+        DrawAt(fMeasuring, pPaper, pos, nClef, nStaff);
 
         if (nStaff==1 && fMeasuring) {
             //@attention DrawAt() has updated m_nWidth and the after space is included
@@ -197,14 +195,14 @@ lmLUnits lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxCo
         
 }
 
-lmLUnits lmKeySignature::DrawAccidental(bool fMeasuring, wxDC* pDC, EAccidentals nAlter,
+lmLUnits lmKeySignature::DrawAccidental(bool fMeasuring, lmPaper* pPaper, EAccidentals nAlter,
         lmLUnits nxLeft, lmLUnits nyTop, int nStaff)
 {
     //render the accidental nAlter at position nxLeft, nyTop. Returns its width
 
     wxString sGlyph;
     lmLUnits nTotalWidth = 0;
-    long nWidth, nHeight;
+    lmLUnits nWidth, nHeight;
 
     lmLUnits yPos = nyTop - m_pVStaff->TenthsToLogical( 10, nStaff );
     
@@ -226,15 +224,15 @@ lmLUnits lmKeySignature::DrawAccidental(bool fMeasuring, wxDC* pDC, EAccidentals
             break;
         case eNaturalFlat:
             sGlyph = _T("//");
-            if (!fMeasuring) pDC->DrawText(sGlyph, nxLeft, yPos);
-            pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
+            if (!fMeasuring) pPaper->DrawText(sGlyph, nxLeft, yPos);
+            pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
             nTotalWidth = nWidth;
             sGlyph = _T("%");
             break;
         case eNaturalSharp:
             sGlyph = _T("//");
-            if (!fMeasuring) pDC->DrawText(sGlyph, nxLeft, yPos);
-            pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
+            if (!fMeasuring) pPaper->DrawText(sGlyph, nxLeft, yPos);
+            pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
             nTotalWidth = nWidth;
             sGlyph = _T("#");
             break;
@@ -243,16 +241,16 @@ lmLUnits lmKeySignature::DrawAccidental(bool fMeasuring, wxDC* pDC, EAccidentals
     }
 
     if (!fMeasuring) {
-        pDC->DrawText(sGlyph, nxLeft, yPos);
+        pPaper->DrawText(sGlyph, nxLeft, yPos);
     }
-    pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
+    pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
     nTotalWidth += nWidth;
 
     return nTotalWidth;
 
 }
 
-lmLUnits lmKeySignature::DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos,
+lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, wxPoint pos,
                                EClefType nClef, int nStaff, wxColour colorC)
 {
     /*
@@ -361,13 +359,13 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos,
     if (fDrawFlats) {
         for (int i=1; i <= nNumAccidentals; i++) {
             nWidth += 
-                DrawAccidental(fMeasuring, pDC, eFlat, pos.x+nWidth, nFlatPos[i], nStaff);
+                DrawAccidental(fMeasuring, pPaper, eFlat, pos.x+nWidth, nFlatPos[i], nStaff);
         }
     }
     else {
         for (int i=1; i <= nNumAccidentals; i++) {
             nWidth += 
-                DrawAccidental(fMeasuring, pDC, eSharp, pos.x+nWidth, nSharpPos[i], nStaff);
+                DrawAccidental(fMeasuring, pPaper, eSharp, pos.x+nWidth, nSharpPos[i], nStaff);
         }
     }
 

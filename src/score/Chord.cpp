@@ -190,11 +190,9 @@ int lmChord::GetNumNotes()
     The stem position is stored in the base note.
 
 */
-void lmChord::DrawStem(bool fMeasuring, wxDC* pDC, wxColour colorC, wxFont* pFont,
+void lmChord::DrawStem(bool fMeasuring, lmPaper* pPaper, wxColour colorC, wxFont* pFont,
                        lmVStaff* pVStaff, int nStaff)
 {
-    wxASSERT(pDC);
-
     lmNote* pBaseNote = GetBaseNote();
     lmLUnits xStem = pBaseNote->GetXStemLeft();
     lmLUnits yStemStart=0, yStemEnd=0;
@@ -225,11 +223,11 @@ void lmChord::DrawStem(bool fMeasuring, wxDC* pDC, wxColour colorC, wxFont* pFon
         }
     }
 
-    if (!fMeasuring) pDC->DrawLine(xStem, yStemStart, xStem, yStemEnd);
+    if (!fMeasuring) pPaper->DrawLine(xStem, yStemStart, xStem, yStemEnd);
 
     //draw the flag for chords not beamed
     if (!pBaseNote->IsBeamed() && pBaseNote->GetNoteType() > eQuarter) {
-        DrawFlag(fMeasuring, pDC, pBaseNote, wxPoint(xStem, yStemEnd), colorC, pFont,
+        DrawFlag(fMeasuring, pPaper, pBaseNote, wxPoint(xStem, yStemEnd), colorC, pFont,
                  pVStaff, nStaff);
     }
     
@@ -243,7 +241,7 @@ bool lmChord::IsLastNoteOfChord(lmNote* pNote)
     
 }
 
-lmLUnits lmChord::DrawFlag(bool fMeasuring, wxDC* pDC, lmNote* pBaseNote,
+lmLUnits lmChord::DrawFlag(bool fMeasuring, lmPaper* pPaper, lmNote* pBaseNote,
                                  wxPoint pos, wxColour colorC, wxFont* pFont,
                                  lmVStaff* pVStaff, int nStaff)
 {
@@ -282,16 +280,16 @@ lmLUnits lmChord::DrawFlag(bool fMeasuring, wxDC* pDC, lmNote* pBaseNote,
 
     wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
   
-    pDC->SetFont(*pFont);
+    pPaper->SetFont(*pFont);
     if (!fMeasuring) {
         // drawing phase: do the draw
-        pDC->SetTextForeground(colorC);
-        pDC->DrawText(sGlyph, pos.x, 
+        pPaper->SetTextForeground(colorC);
+        pPaper->DrawText(sGlyph, pos.x, 
             pos.y + pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, nStaff ) );
     }
 
     lmLUnits width, height;
-    pDC->GetTextExtent(sGlyph, &width, &height);
+    pPaper->GetTextExtent(sGlyph, &width, &height);
     return width;
         
 }

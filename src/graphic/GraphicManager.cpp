@@ -42,6 +42,11 @@
 #include "../globals/Colors.h"
 extern lmColors* g_pColors;
 
+// Definition of the BitmapList class
+#include <wx/listimpl.cpp>
+WX_DEFINE_LIST(BitmapList);
+
+
 //-----------------------------------------------------------------------------------------
 
 lmGraphicManager::lmGraphicManager()
@@ -112,23 +117,18 @@ void lmGraphicManager::Render()
 
 }
 
-wxBitmap* lmGraphicManager::Render(wxDC* pDC, int nPage)
+wxBitmap* lmGraphicManager::Render(bool fUseBitmaps, int nPage)
 {
     //Renders page 1..n.
-    //If pDC==NULL returns the offscreen bitmap with the rendered page.
-    //Otherwise, renders the page directly on the received DC
     if (!m_pBoxScore) return (wxBitmap*)NULL;
 
-    if (pDC) {
-        //DC received. Render page directly on the DC
-        m_pPaper->SetDC(pDC);
-        //pDC->SetMapMode(lmDC_MODE);
-        //pDC->SetUserScale( m_rScale, m_rScale );
+    if (!fUseBitmaps) {
+        //Render page directly on the DC
         m_pBoxScore->RenderPage(nPage, m_pPaper);
         return (wxBitmap*)NULL;
     }
     else {
-        //No DC received. Return the offscreen bitmap for the requested page
+        //Return the offscreen bitmap for the requested page
         wxBitmap* pBitmap = GetPageBitmap(nPage);
         if (!pBitmap) {
             pBitmap = NewBitmap(nPage);
@@ -286,7 +286,7 @@ void lmGraphicManager::ExportAsImage(wxString& sFilename, wxString& sExt, int nI
 
     int i;
     for(i=1; i <= GetNumPages(); i++) {
-        wxBitmap* pBitmap = Render((wxDC*)NULL, i);
+        wxBitmap* pBitmap = Render(lmUSE_BITMAPS, i);
         wxImage oImg = pBitmap->ConvertToImage();
         wxString sName = wxString::Format(_T("%s_%d.%s"), sFilename, m_aBitmapPage.Item(i-1), sExt);
         oImg.SaveFile(sName, nImgType);

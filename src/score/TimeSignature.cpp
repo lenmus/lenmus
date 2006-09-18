@@ -154,17 +154,15 @@ void lmTimeSignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
 // returns the width of the draw (logical units)
 lmLUnits lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {    
-    wxDC* pDC = pPaper->GetDC();
-    wxASSERT(pDC);
-    pDC->SetFont(*m_pFont);
+    pPaper->SetFont(*m_pFont);
 
     wxString sTopGlyphs = wxString::Format(_T("%d"), m_nBeats );
     wxString sBottomGlyphs = wxString::Format(_T("%d"), m_nBeatType );
 
     if (fMeasuring) {
         lmLUnits nWidth1, nHeight1, nWidth2, nHeight2;
-        pDC->GetTextExtent(sTopGlyphs, &nWidth1, &nHeight1);
-        pDC->GetTextExtent(sBottomGlyphs, &nWidth2, &nHeight2);
+        pPaper->GetTextExtent(sTopGlyphs, &nWidth1, &nHeight1);
+        pPaper->GetTextExtent(sBottomGlyphs, &nWidth2, &nHeight2);
 
         // store selection rectangle measures and position (relative to m_paperPos)
         m_selRect.width = wxMax(nWidth1, nWidth2);
@@ -192,14 +190,14 @@ lmLUnits lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wx
         //Time signature is common to all lmVStaff staves, but it is only present, as lmStaffObj, in
         //the first staff. Therefore, for renderization, it is necessary to repeat it for
         //each staff
-        pDC->SetTextForeground(colorC);
+        pPaper->SetTextForeground(colorC);
         lmLUnits yOffset = 0;
         lmStaff* pStaff = m_pVStaff->GetFirstStaff();
         for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++) {
             // Draw the time signature
             wxPoint pos = GetGlyphPosition();
-            pDC->DrawText(sTopGlyphs, pos.x + m_xPosTop, pos.y + yOffset );
-            pDC->DrawText(sBottomGlyphs, pos.x + m_xPosBottom,
+            pPaper->DrawText(sTopGlyphs, pos.x + m_xPosTop, pos.y + yOffset );
+            pPaper->DrawText(sBottomGlyphs, pos.x + m_xPosBottom,
                             pos.y + yOffset + m_pVStaff->TenthsToLogical( 20, nStaff ) );
 
             //compute vertical displacement for next staff
@@ -244,6 +242,7 @@ void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime,
 
 wxBitmap* lmTimeSignature::GetBitmap(double rScale)
 {
+    //! @todo
     return (wxBitmap*)NULL;
 }
 
@@ -254,31 +253,37 @@ void lmTimeSignature::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wx
 
 wxPoint lmTimeSignature::EndDrag(const wxPoint& pos)
 {
+    //! @todo
     return wxPoint(0,0);
 }
 
-lmLUnits lmTimeSignature::DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC)
+lmLUnits lmTimeSignature::DrawAt(bool fMeasuring, lmPaper* pPaper, wxPoint pos, wxColour colorC)
 {
+    //! @todo
     return 0;
 }
 
 lmTenths lmTimeSignature::GetSelRectHeight()
 {
+    //! @todo
     return 0;
 }
 
 lmTenths lmTimeSignature::GetSelRectShift()
 {
+    //! @todo
     return 0;
 }
 
 lmTenths lmTimeSignature::GetGlyphOffset()
 {
+    //! @todo
     return 0;
 }
 
 wxString lmTimeSignature::GetLenMusChar()
 {
+    //! @todo
     return _T("4/4");
 }
 

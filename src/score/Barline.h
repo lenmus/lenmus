@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Barline.h,v 1.3 2006/02/23 19:22:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -67,11 +66,11 @@ public:
 
 
 private:
-    lmLUnits DrawBarline(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUnits yTop,
-                          lmLUnits yBottom, wxColour colorC = *wxBLACK);
-    void DrawThinLine(wxDC* pDC, lmLUnits xPos, lmLUnits yTop, lmLUnits yBottom);
-    void DrawThickLine(wxDC* pDC, lmLUnits xLeft, lmLUnits yTop, lmLUnits nWidth, lmLUnits nHeight);
-    void DrawTwoDots(wxDC* pDC, lmLUnits xPos, lmLUnits yPos);
+    lmLUnits DrawBarline(bool fMeasuring, lmPaper* pPaper, lmLUnits xPos, lmLUnits yTop,
+                         lmLUnits yBottom, wxColour colorC = *wxBLACK);
+    void DrawThinLine(lmPaper* pPaper, lmLUnits xPos, lmLUnits yTop, lmLUnits yBottom);
+    void DrawThickLine(lmPaper* pPaper, lmLUnits xLeft, lmLUnits yTop, lmLUnits nWidth, lmLUnits nHeight);
+    void DrawTwoDots(lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos);
 
 private:
     EBarline            m_nBarlineType;     //type of barline

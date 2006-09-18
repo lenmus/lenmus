@@ -133,9 +133,7 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     lmLUnits nxLeft = m_paperPos.x;
 
     // prepare DC
-    wxDC* pDC = pPaper->GetDC();
-    wxASSERT(pDC);
-    pDC->SetFont(*m_pFont);
+    pPaper->SetFont(*m_pFont);
 
     //if measurement phase and this is the first note/rest of a beam, measure beam
     if (fMeasuring && m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
@@ -158,7 +156,7 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
         // store selection rectangle position and size
         lmLUnits nWidth, nHeight;
-        pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
+        pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
         m_selRect.width = nWidth;
         m_selRect.height = m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
         m_selRect.x = m_glyphPos.x;
@@ -171,8 +169,8 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     } else {
         // drawing phase: do the draw
         wxPoint pos = GetGlyphPosition();
-        pDC->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-        pDC->DrawText(sGlyph, pos.x, pos.y );
+        pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
+        pPaper->DrawText(sGlyph, pos.x, pos.y );
     }
     nxLeft += m_selRect.width;
 
@@ -184,14 +182,14 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         if (!fMeasuring) {
             lmLUnits nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
             lmLUnits yPos = m_glyphPos.y + m_paperPos.y + m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);
-            pDC->DrawCircle(nxLeft, yPos, nDotRadius);
+            pPaper->DrawCircle(nxLeft, yPos, nDotRadius);
         }
         if (m_fDoubleDotted) {
             nxLeft += m_pVStaff->TenthsToLogical(5, m_nStaffNum);
             if (!fMeasuring) {
                 lmLUnits nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
                 lmLUnits yPos = m_glyphPos.y + m_paperPos.y + m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);
-                pDC->DrawCircle(nxLeft, yPos, nDotRadius);
+                pPaper->DrawCircle(nxLeft, yPos, nDotRadius);
             }
         }
     }

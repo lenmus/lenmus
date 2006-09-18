@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Beam.h,v 1.5 2006/02/23 19:22:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -49,11 +48,11 @@ public:
     int     NumNotes();
     void    ComputeStemsDirection();
     void    TrimStems();
-    void    DrawBeamLines(wxDC* pDC, lmLUnits nThickness, lmLUnits nBeamSpacing);
+    void    DrawBeamLines(lmPaper* pPaper, lmLUnits nThickness, lmLUnits nBeamSpacing);
 
 
 private:
-    void DrawBeamSegment(wxDC* pDC, bool fStemDown, int xStart, int yStart,
+    void DrawBeamSegment(lmPaper* pPaper, bool fStemDown, int xStart, int yStart,
                          int xEnd, int yEnd, lmLUnits nThickness,
                          lmNote* pStartNote, lmNote* pEndNote);
     int ComputeYPosOfSegment(lmNote* pNote, bool fStemDown, int yShift);

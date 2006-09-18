@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+               "http://www.oasis-open.org/docbook/xml/5.0b.5/docbook.dtd">
+
+<book id="book">
+<bookinfo>
+<title>LenMus program. Architecture and internal design</title>
+<para>Version 0.1. Revision: September 2006</para>
+
+<author>
+<surname>LenMus project</surname>
+</author>
+
+<legalnotice id="legal_notice">
+
+<title>Legal Notice</title>
+<para>Permission is granted to copy, distribute, and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or any later
+version published by the Free Software Foundation; with no Invariant Sections, 
+no Front-Cover Texts, and no Back-Cover Texts. A copy of the license
+is available at 
+<ulink url="http://www.gnu.org/licenses/fdl.html">http://www.gnu.org/licenses/fdl.html</ulink>.
+</para>
+
+<para>This document may be copied and distributed in any medium, either
+commercially or noncommercially, provided that the GNU Free Documentation
+License (FDL), the copyright notices, and the license notice saying
+the GNU FDL applies to the document are reproduced in all copies, 
+and that you add no other conditions whatsoever to those of the GNU FDL. 
+</para>
+
+</legalnotice>
+
+<copyright>
+<year>2002-2006</year>
+<holder>Cecilio Salmeron</holder>
+</copyright>
+</bookinfo>
+
+<preface id="preface">
+<title>Preface</title>
+
+<para>
+To be written.
+</para>
+</preface>
+
+<chapter id="chIntro">
+<title>LenMus architecture</title>
+
+<sect1>
+<title>Source code organization</title>
+<para>LenMus has four main parts:</para>
+<simplelist>
+    <listitem>The application management:
+      <simplelist>
+          <listitem>Classes to support the GUI (all in 'app' folder). The main application
+            modules are TheApp, and MainFrame. When the program runs, execution starts
+            in TheApp:OnInit().
+            There, the main frame is created and all initializations take place.</listitem>
+
+          <listitem>Dialogs are, normally,
+          build using XRC mechanism; the xrc files that define the dialog layout are
+          in folder 'xrc'. For each dialog there is a class in 'app' folder</listitem>
+
+    </simplelist></listitem>
+
+    <listitem>The score representation and management mechanism:
+      <simplelist>
+          <listitem>Classes to support the internal representation of scores
+          (in 'score' folder).</listitem>
+
+          <listitem>Clases to deal with sound: wave files reproduction, MIDI interface, and
+          scores playback (SoundManager module).</listitem>
+
+          <listitem>Currently I am splitting the renderization process. So all score
+          renderization is being redesigned and moved to folder 'graphics'</listitem>
+
+    </simplelist></listitem>
+
+    <listitem>The eBooks mechanism and the exercises. eBooks are external files in html
+    format. Appart of the normal html tags, the eBooks pages have tags
+    &lt;object type="application/lenmus"&gt; to include LenMus controls.
+    These controls serve to render scores and to implement exercises.
+      <simplelist>
+          <listitem>Controls for eBooks are in folder 'exercises'. They are like
+          dialogs, but all its customization is defined by Constrains' objects.</listitem>
+
+          <listitem>The controller to display eBooks and the parser for tag
+          &lt;object&gt; are in folder 'html'</listitem>
+
+          <listitem>Folder 'auxmusic' contains classes nedeed in exercises to deal with music
+          in source code, compute intervals, chords, etc.</listitem>
+
+    </simplelist></listitem>
+
+    <listitem>Other auxiliary modules:
+      <simplelist>
+          <listitem>Folder 'xml_parser' contains classes to support MusicXML import.</listitem>
+
+          <listitem>Folder 'ldp_parser' contains classes to support LDP language.</listitem>
+
+          <listitem>Folder 'updater' contains classes to manage the web updater.</listitem>
+
+          <listitem>Folder 'options' contains classes to manage the user options settings.</listitem>
+
+          <listitem>Folder 'globals' contains classes to access to global issues such as colors,
+          paths, etc..</listitem>
+
+          <listitem>Folder 'widgets' only contains the ruler object (not finished) to be
+          used with the score editor</listitem>
+
+    </simplelist></listitem>
+
+
+</simplelist>
+</sect1>
+
+
+
+<sect1>
+<title>Architecture</title>
+
+<para>
+LenMus architecture is based on the document/view architecture as this makes it easy to 
+support multiple views, multiple document types, splitter windows, and other valuable 
+user-interface features. the document/view functionality is provided by wxWidgets classes.
+</para>
+
+</para>
+The document/view implementation separates the data itself from its display and from user 
+operations on the data. All changes to the data are managed through the document class. 
+The view calls this interface to access and update the data.
+</para>
+
+</para>
+A document manager has a list of documents. Each document represents a music score and
+is modelled by class lmScoreDoc.
+</para>
+
+<para>
+Documents, their associated views, and the frame windows that frame the views are created by 
+a document template. The document template is responsible for creating and managing all 
+documents of one document type.
+</para>
+
+<para>
+Data management is separated into two main classes:
+</para>
+
+<para>
+The lmScoreDocument contains the score and  
+represents the unit of data that the user typically opens with the Open command on the 
+File menu and saves with the Save command on the File menu.
+</para>
+
+<para>
+I don't like the MDI approach. It is also deprecated by Microsoft. 
+My choice is a master application window with a ToolBar for tools and a wxNotebook
+containing the documents.
+</para>
+
+</sect1>
+
+
+
+<sect1>
+<title>The lmScoreView class</title>
+
+<para>
+The lmScoreView class provides the functionality for viewing and editing a lmScoreDocument.
+A lmScoreView is attached to a lmScoreDocument and acts as an intermediary 
+between the document and the user: the view renders an image of the document on the screen 
+and interprets user input as operations upon the document. The view also renders the image 
+for both printing and print preview.
+</para>
+
+<para>
+The view deals with two objects: the frame and the canvas.
+</para>
+
+<para>
+When a view is created (via main menu 'file > new'  or 'file > open') class wxDocTemplate
+invokes ::CreateDocument and ::CreateView. This last one creates the lmScoreView object and 
+invokes lmScoreView::OnCreate.
+In this method the lmScoreView object request from the App to create a new child frame-window
+(method CreateProjectFrame). The App object then creates the child MDI frame (method CreateCanvas) and
+show it (method Show). The Show operation request the view to display itself (method OnDraw). Also, when the frame must be redrawn it invokes the view OnDraw.
+</para>
+
+<para>
+More than one view can share a frame window, as in the
+case of a splitter window.
+</para>
+
+<para>
+All drawing operations are made through a device-context (DC) object, which encapsulates the operating
+system APIs for drawing lines, shapes, and text, and allow device-independent drawing. 
+</para>
+
+</sect1>
+
+
+
+<sect1>
+<title>Frame windows</title>
+
+<para>
+In addition, it is needed a frame or window class to contain the view.
+</para>
+
+<para>
+A frame is a container window that can be moved and resized, can have a border and can have
+additional features, such as a menu. For edition the lmScoreCanvas will be contained
+in a frame: lmEditFrame, an wxDocMDIChildFrame.
+It contains the "canvas" (DC) on which all drawing and interaction takes place, as well as
+additional user interface items such as the window frame, menus, scroll bars, etc.
+The frame-window class manages the frame, and a view class manages the contents. 
+</para>
+
+<para>
+frame windows are responsible for numerous tasks involved in coordinating the frame with its 
+view and with the application.
+The frame window also forwards commands to its views and can respond to notification 
+messages from control windows. 
+a frame window keeps track of a currently active view. If the frame window contains more 
+than one view, as for example in a splitter window, the current view is the most recent 
+view in use. The active view is independent of the active window in Windows or the current 
+input focus.
+</para>
+
+<para>
+There is a main frame window in LenMus (class lmMainFrame). Inside this frame
+two MIDI child windows can be opened:
+</para>
+
+<para>
+    - lmEditFrame: MDI Child windows that contains the lmScoreCanvas
+    - lmTextBookFrame: MDI Child window that contains the eMusicBook controller
+</para>
+
+</sect1>
+
+
+
+<sect1>
+<title>Score renderization</title>
+
+<para>
+There are two classes to render a score. Class lmScoreView, in app folder, is to support
+score edition and class lmScoreAuxCtrol, in folder 'exercises', is a control to
+display a score to be used in other controls for exercises.
+</para>
+
+
+</sect1>
+
+<sect1>
+<title>GraphicManager, Paper, Drawer and DC</title>
+
+<sect2>
+<title>The GraphicManager: renderization of scores</title>
+
+<para>
+Class lmGraphicManager stores and manages all score renderization issues.
+
+Needs:
+
+- To control and manage the renderization process:
+    - derive the graphical representation
+    - compute the position of all objects
+    - render the graphic model into the canvas
+    
+    
+It receives three parameters: 
+    1. the lmScore to render, 
+    2. the lmPaper on which the score has to be rendered
+    3. Renderization options
+
+Renderization takes place in two phases:
+    1. method Layout() is responsible for building the graphic model and doing the measure phase.
+    2. method Render() does the drawing phase
+    
+
+The lmGraphicManager responsibilities are:
+- it manages the offscreen bitmaps that receives all drawing operations
+- it is a container for the lmPaper object on which to write.
+- it is responsible for all scale and unit conversion methods
+- other graphic management methods, such as exporting the score as images.
+    
+
+</para>
+
+<para>
+Renderization options, should be in the score? in the view?
+
+If we consider a notation editor all renderization issues are part of the file describing 
+the score
+
+If we consider only the score as its musical contents then renderization parameters are
+part of the view: depending on the type of view the renderization parameters could vary.
+
+Conclusions:
+
+1. The external score file must include all renderization parameters related to renderizating
+    the score in the different posible views (i.e. paper, sound, ...) so that the document
+    is always rendered/printed/interpreted as the author set it (i.e. as a 'PDF document').
+    Nevertheless the user, by using the edition options, would be able to alter anything.
+    
+2. In the doc/view model there could be different views of the same score, if they share
+    the renderization parameters the views will be the equal. (Well, if the type of view
+    is the same - paper score - this is logical and coherent, so no problem) 
+    
+From 1 & 2 ==> All parameters for renderization are part of the document.
+
+</para>
+
+</sect2>
+
+
+
+<sect2>
+<title>lmPaper class</title>
+
+<para>
+A 'lmPaper' is the generic canvas on which the score is rendered. It might be a display
+device, a printer, etc. It can be consitered as a high-level DC. Basically it is a DC 
+on which to write and draw, some methods
+for basic drawing, and methods to deal with unit conversion and virtual paper cursor positioning.
+
+By encapsulating the DC in lmPaper it is posible to use different strategies for
+renderization (anti-aliased, direct DC, offscreen bitmaps, double buffering, etc.) 
+without having to change application code.
+
+The lmPaper responsibilities are:
+- it is a container for the DC object on which to write and hides it.
+- it is responsible for all scale and unit conversion methods
+- it is responsible for informing the staff objects about page margins, spacings, 
+    layout, etc.
+        
+</para>
+                
+
+<para>
+Everything drawn to a view is drawn with a lmPaper object, which draws to
+a bitmap buffer. When drawing is ready, lmScoreView blits the buffer to the display window.
+This garanties flicker free drawing, and makes it possible to optimize redrawing in many ways. 
+The steps to follow are:
+1. The view creates an lmPaper object and sets up the DC
+    m_graphMngr.Prepare(pScore, xPageSize, yPageSize, m_rScale, &m_Paper);
+2. The view creates an lmGraphicManager object and calls lmGraphicManager.Prepare().
+    Prepare is responsible for doing the measurement phase.
+3. The view asks lmGraphicManager to render the necessary score pages, by invoking
+    method lmGraphicManager.Render(). This method will perform all 
+    renderization on a memory bitmap or directly, on the paper DC, depending on
+    a flag received as parameter. This facility is intended for printing.
+
+
+For print and print-preview the lmPrintout object invokes lmScoreView::DrawPage(). This
+method is responsible of drawing the requested page and receives the page size in pixels
+Currently, it does a direct renderization on printer DC. The steps followed are:
+
+    m_Paper.SetDC(pDC);           //the layout phase requires a DC
+    m_graphMngr.Prepare(pScore, nWithDC, nHeighDC, (double)actualScale, &m_Paper);
+    m_graphMngr.Render(lmNO_BITMAPS, nPage);        //direct renderization on DC
+
+
+</para>
+                
+</sect2>                
+
+
+<sect2>
+<title>Offscreen bitmaps management</title>
+
+
+As the score is now divided into pages (BoxPage) there is no need to have all
+bitmaps generated, just only the ones needed for the pages being displayed.
+
+So, let's start with one bitmap for the first page. As the score is scrolled
+we reach a second page, and a second bitmap is added.
+* Q-> When to delete first page bitmap?
+
+* A1 -> Lets assign a maximum amount memory for bitmaps. Bitmaps pages will be deleted
+when no more memory available for bitmaps. The last recently used bitmaps are
+the deleted and space reused for new bitmaps.
+
+* A2 -> The view have information about pages currently visible. When scroll takes
+place the view will inform about pages now visible. All other bitmaps will be deleted;
+as an exception those for previous page and next page will be kept (if enough
+memory) for smooth scrolling to these most probable pages.
+
+</sect2>
+
+
+</sect1>
+
+</chapter>
+
+
+<!-- =============================================================== -->
+<!-- ======================    The end     ========================= -->
+<!-- =============================================================== -->
+
+
+</book>
+

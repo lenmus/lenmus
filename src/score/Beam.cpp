@@ -394,7 +394,7 @@ void lmBeam::TrimStems()
 
 }
 
-void lmBeam::DrawBeamLines(wxDC* pDC, lmLUnits nThickness, lmLUnits nBeamSpacing)
+void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits nThickness, lmLUnits nBeamSpacing)
 {
     //
     // This method is only called from lmNote::DrawObject(), in particular from the last note
@@ -432,7 +432,7 @@ void lmBeam::DrawBeamLines(wxDC* pDC, lmLUnits nThickness, lmLUnits nBeamSpacing
                 //! @todo set forward hook equal to notehead width and allow for customization.
                 xEnd = xPrev + (xCur-xPrev)/3;
                 yEnd = yPrev + (yCur-yPrev)/3;
-                DrawBeamSegment(pDC, fStemDown, xStart, yStart, xEnd, yEnd, nThickness,
+                DrawBeamSegment(pPaper, fStemDown, xStart, yStart, xEnd, yEnd, nThickness,
                         pStartNote, pEndNote);
                 fForwardPending = false;
             }
@@ -487,7 +487,7 @@ void lmBeam::DrawBeamLines(wxDC* pDC, lmLUnits nThickness, lmLUnits nBeamSpacing
 
             // if we have data to draw a segment, draw it
             if (fStart && fEnd) {
-                DrawBeamSegment(pDC, fStemDown,
+                DrawBeamSegment(pPaper, fStemDown,
                     xStart, yStart, xEnd+pEndNote->GetStemThickness()/2, yEnd, nThickness,
                     pStartNote, pEndNote);
                 fStart = false;
@@ -529,7 +529,7 @@ int lmBeam::ComputeYPosOfSegment(lmNote* pNote, bool fStemDown, int yShift)
 
 }
 
-void lmBeam::DrawBeamSegment(wxDC* pDC, bool fStemDown, int xStart, int yStart,
+void lmBeam::DrawBeamSegment(lmPaper* pPaper, bool fStemDown, int xStart, int yStart,
                              int xEnd, int yEnd, lmLUnits nThickness,
                              lmNote* pStartNote, lmNote* pEndNote)
 {
@@ -541,10 +541,10 @@ void lmBeam::DrawBeamSegment(wxDC* pDC, bool fStemDown, int xStart, int yStart,
             //if start note paperPos Y is not the same than end note paperPos Y the notes are
             //in different systems. Therefore, the beam must be splitted. Let's do it
             wxLogMessage(_T("***** BEAM SPLIT ***"));
-            return; //to avoid rendering bad lines across the score. It is less noticeable
-            // pPaper must be a parameter of this method. It is necessary to replace pDC
+            //TODO
             //lmLUnits xLeft = pPaper->GetLeftMarginXPos();
             //lmLUnits xRight = pPaper->GetRightMarginXPos();
+            return; //to avoid rendering bad lines across the score. It is less noticeable
         }
     }
 
@@ -565,7 +565,7 @@ void lmBeam::DrawBeamSegment(wxDC* pDC, bool fStemDown, int xStart, int yStart,
         wxPoint(xEnd, yEndIncr),
         wxPoint(xEnd, yEnd)
     };
-    pDC->DrawPolygon(4, points);
+    pPaper->DrawPolygon(4, points);
 
     //wxLogMessage(_T("[lmBeam::DrawBeamSegment] xStart=%d, yStart=%d, xEnd=%d, yEnd=%d, nThickness=%d, yStartIncr=%d, yEndIncr=%d, fStemDown=%s"),
     //    xStart, yStart, xEnd, yEnd, nThickness, yStartIncr, yEndIncr, (fStemDown ? _T("down") : _T("up")) );

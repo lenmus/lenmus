@@ -166,28 +166,15 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
 
         // allocate a DC in memory for using the offscreen bitmaps
         wxMemoryDC memoryDC;
-
-#if 0
-        //old
-
-        // inform the paper that we are going to use it
-        m_Paper.Prepare(m_pScore, dxBitmap, dyBitmap, m_rScale);
-
-        // ask paper for the offscreen bitmap for first page
-        int nPage = 1;
-        wxBitmap* pPageBitmap = m_Paper.GetOffscreenBitmap(nPage-1);
-#else
-        //new
         m_Paper.SetDC(&memoryDC);           //the layout phase requires a DC
         m_graphMngr.Prepare(m_pScore, dxBitmap, dyBitmap, m_rScale, &m_Paper,
                             lmRELAYOUT_ON_PAPER_SIZE_CHANGE);
-        wxBitmap* pPageBitmap = m_graphMngr.Render((wxDC*)NULL, 1);
-#endif
+        wxBitmap* pPageBitmap = m_graphMngr.Render(lmUSE_BITMAPS, 1);
 
         wxASSERT(pPageBitmap && pPageBitmap->Ok());
         memoryDC.SelectObject(*pPageBitmap);
 
-        // Copy the page onto the device DC
+        // Copy the offscreen bitmap onto the DC
         dc.Blit(0, 0, dxBitmap, dyBitmap, &memoryDC, 0, 0);
 
         // deselect the las bitmap

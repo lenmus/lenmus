@@ -78,12 +78,16 @@ lmContext* lmBarline::GetContext(int nStaff)
 // For portability it is necessary to implement dragging by means of bitmaps and wxDragImage
 wxBitmap* lmBarline::GetBitmap(double rScale)
 {
+    //create a lmPaper associated to the screen DC for creting the drag bitmap
+    lmPaper oPaper;
+
     // Get size of barline, in logical units
     wxScreenDC dc;
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale(rScale, rScale);
     lmLUnits hL = m_pVStaff->GetYBottom() - m_pVStaff->GetYTop();
-    lmLUnits wL = DrawBarline(DO_MEASURE, &dc, 0, 0, hL, g_pColors->ScoreSelected());
+    oPaper.SetDC(&dc);
+    lmLUnits wL = DrawBarline(DO_MEASURE, &oPaper, 0, 0, hL, g_pColors->ScoreSelected());
 
     // allocate a memory DC for drawing into a bitmap
     wxMemoryDC dc2;
@@ -102,7 +106,8 @@ wxBitmap* lmBarline::GetBitmap(double rScale)
     dc2.SetBackground(* wxWHITE_BRUSH);
     dc2.Clear();
     dc2.SetBackgroundMode(wxTRANSPARENT);
-    DrawBarline(DO_DRAW, &dc2, 0, 0, hL, g_pColors->ScoreSelected());
+    oPaper.SetDC(&dc2);
+    DrawBarline(DO_DRAW, &oPaper, 0, 0, hL, g_pColors->ScoreSelected());
 
     dc2.SelectObject(wxNullBitmap);
 
@@ -134,11 +139,6 @@ wxPoint lmBarline::EndDrag(const wxPoint& pos)
     return wxPoint(oldPos);
 }
 
-
-//Property Get IPentObj_PositioningType() As EPositioningType
-//    IPentObj_PositioningType = ePos_Serial
-//End Property
-
 wxString lmBarline::Dump()
 {
     wxString sDump = wxString::Format(
@@ -163,23 +163,12 @@ wxString lmBarline::SourceXML()
     return sSource;
 }
 
-//Property Let IPentObj_Left(nLeft As Long)
-//    Dim nAncho As Long
-//    nAncho = m_rRight - m_rLeft
-//    m_rLeft = nLeft
-//    m_rRight = nLeft + nAncho
-//    
-//End Property
-
 void lmBarline::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {
     lmLUnits yTop = m_pVStaff->GetYTop();
     lmLUnits yBottom = m_pVStaff->GetYBottom();
-    
-    wxDC* pDC = pPaper->GetDC();
-    wxASSERT(pDC);
     lmLUnits xPos = pPaper->GetCursorX();
-    lmLUnits nWidth = DrawBarline(fMeasuring, pDC, xPos, yTop, yBottom, colorC);
+    lmLUnits nWidth = DrawBarline(fMeasuring, pPaper, xPos, yTop, yBottom, colorC);
 
     if (fMeasuring) {
         // store selection rectangle measures and position
@@ -199,8 +188,9 @@ void lmBarline::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 }
 
 // returns the width of the barline (in microns)
-lmLUnits lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUnits yTop,
-                               lmLUnits yBottom, wxColour colorC)
+lmLUnits lmBarline::DrawBarline(bool fMeasuring, lmPaper* pPaper,
+                                lmLUnits xPos, lmLUnits yTop,
+                                lmLUnits yBottom, wxColour colorC)
 {
     lmLUnits THIN_LINE_WIDTH = m_pVStaff->TenthsToLogical(1.5, 1);    // thin line width
     lmLUnits THICK_LINE_WIDTH = m_pVStaff->TenthsToLogical(6, 1);    // thick line width
@@ -209,77 +199,77 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUn
     if (!fMeasuring) {
         wxPen pen(colorC, THIN_LINE_WIDTH, wxSOLID);
         wxBrush brush(colorC, wxSOLID);
-        pDC->SetPen(pen);
-        pDC->SetBrush(brush);
+        pPaper->SetPen(pen);
+        pPaper->SetBrush(brush);
     }
 
     switch(m_nBarlineType)
     {
         case etb_DoubleBarline:
             if (!fMeasuring) {
-                DrawThinLine(pDC, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom);
                 xPos += THIN_LINE_WIDTH + nSpacing;
-                DrawThinLine(pDC, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom);
             }
             return (lmLUnits)(nSpacing + THIN_LINE_WIDTH + THIN_LINE_WIDTH);
             break;
             
         case etb_EndRepetitionBarline:
             if (!fMeasuring) {
-                DrawTwoDots(pDC, xPos, yTop);
+                DrawTwoDots(pPaper, xPos, yTop);
                 xPos += nSpacing;
-                DrawThinLine(pDC, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom);
                 xPos += THIN_LINE_WIDTH + nSpacing;
-                DrawThickLine(pDC, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
+                DrawThickLine(pPaper, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
             }
             return (lmLUnits)(nSpacing + nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
             break;
 
         case etb_StartRepetitionBarline:
             if (!fMeasuring) {
-                DrawThickLine(pDC, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
+                DrawThickLine(pPaper, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
                 xPos += THICK_LINE_WIDTH + nSpacing;
-                DrawThinLine(pDC, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom);
                 xPos += nSpacing/2;
-                DrawTwoDots(pDC, xPos, yTop);
+                DrawTwoDots(pPaper, xPos, yTop);
             }
             return (lmLUnits)(nSpacing + nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
             break;
             
         case etb_DoubleRepetitionBarline:
             if (!fMeasuring) {
-                DrawTwoDots(pDC, xPos, yTop);
+                DrawTwoDots(pPaper, xPos, yTop);
                 xPos += nSpacing;
-                DrawThinLine(pDC, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom);
                 xPos += THIN_LINE_WIDTH + nSpacing;
-                DrawThinLine(pDC, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom);
                 xPos += THIN_LINE_WIDTH + nSpacing/2;
-                DrawTwoDots(pDC, xPos, yTop);
+                DrawTwoDots(pPaper, xPos, yTop);
             }
             return (lmLUnits)(nSpacing + nSpacing + THIN_LINE_WIDTH + THIN_LINE_WIDTH);
             break;
         
         case etb_StartBarline:
             if (!fMeasuring) {
-                DrawThickLine(pDC, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
+                DrawThickLine(pPaper, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
                 xPos += THICK_LINE_WIDTH + nSpacing;
-                DrawThinLine(pDC, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom);
             }
             return (lmLUnits)(nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
             break;
             
         case etb_EndBarline:
             if (!fMeasuring) {
-                DrawThinLine(pDC, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom);
                 xPos += THIN_LINE_WIDTH + nSpacing;
-                DrawThickLine(pDC, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
+                DrawThickLine(pPaper, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
             }
             return (lmLUnits)(nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
             break;
 
         case etb_SimpleBarline:
             if (!fMeasuring) {
-                DrawThinLine(pDC, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom);
             }
             return THIN_LINE_WIDTH;
             break;
@@ -291,18 +281,18 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUn
     }
 }
 
-void lmBarline::DrawThinLine(wxDC* pDC, lmLUnits xPos, lmLUnits yTop, lmLUnits yBottom)
+void lmBarline::DrawThinLine(lmPaper* pPaper, lmLUnits xPos, lmLUnits yTop, lmLUnits yBottom)
 {
     /*
     The DC must have pen and brush properly set
     */
-    pDC->DrawLine((wxCoord)xPos, (wxCoord)yTop, (wxCoord)xPos, (wxCoord)yBottom);
+    pPaper->DrawLine((wxCoord)xPos, (wxCoord)yTop, (wxCoord)xPos, (wxCoord)yBottom);
 
 }
 
 
-void lmBarline::DrawThickLine(wxDC* pDC, lmLUnits xLeft, lmLUnits yTop, lmLUnits nWidth,
-                            lmLUnits nHeight)
+void lmBarline::DrawThickLine(lmPaper* pPaper, lmLUnits xLeft, lmLUnits yTop, lmLUnits nWidth,
+                              lmLUnits nHeight)
 {
     /*
     We can not use DrawLine because with DrawLine function we get end of lines rounded
@@ -310,17 +300,17 @@ void lmBarline::DrawThickLine(wxDC* pDC, lmLUnits xLeft, lmLUnits yTop, lmLUnits
 
     The DC must have pen and brush properly set
     */
-    pDC->DrawRectangle((wxCoord)xLeft, (wxCoord)yTop, (wxCoord)nWidth, (wxCoord)nHeight);
+    pPaper->DrawRectangle((wxCoord)xLeft, (wxCoord)yTop, (wxCoord)nWidth, (wxCoord)nHeight);
 
 }
 
-void lmBarline::DrawTwoDots(wxDC* pDC, lmLUnits xPos, lmLUnits yPos)
+void lmBarline::DrawTwoDots(lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos)
 {            
     lmLUnits radius = m_pVStaff->TenthsToLogical(2, 1);    // 2 tenths
     lmLUnits shift1 = m_pVStaff->TenthsToLogical(15, 1) + radius;    // 1.5 lines
     lmLUnits shift2 = m_pVStaff->TenthsToLogical(25, 1) + radius;    // 2.5 lines
-    pDC->DrawCircle((wxCoord)xPos, (wxCoord)(yPos + shift1), (wxCoord)radius);
-    pDC->DrawCircle((wxCoord)xPos, (wxCoord)(yPos + shift2), (wxCoord)radius);
+    pPaper->DrawCircle((wxCoord)xPos, (wxCoord)(yPos + shift1), (wxCoord)radius);
+    pPaper->DrawCircle((wxCoord)xPos, (wxCoord)(yPos + shift2), (wxCoord)radius);
     
 }
 

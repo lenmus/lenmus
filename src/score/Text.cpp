@@ -108,13 +108,11 @@ wxBitmap* lmScoreText::GetBitmap(double rScale)
 
 void lmScoreText::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {
-    wxDC* pDC = pPaper->GetDC();
-    wxASSERT(pDC);
-    pDC->SetFont(*m_pFont);
+    pPaper->SetFont(*m_pFont);
 
     if (fMeasuring) {
         lmLUnits nWidth, nHeight;
-        pDC->GetTextExtent(m_sText, &nWidth, &nHeight);
+        pPaper->GetTextExtent(m_sText, &nWidth, &nHeight);
         wxLogMessage(_T("[lmScoreText::DrawObject] text='%s'. width=%d"), m_sText, nWidth);
 
          // store selection rectangle (relative to m_paperPos)
@@ -133,8 +131,8 @@ void lmScoreText::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     }
     else {
         wxPoint pos = GetGlyphPosition();
-        pDC->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-        pDC->DrawText(m_sText, pos.x, pos.y );
+        pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
+        pPaper->DrawText(m_sText, pos.x, pos.y );
     }
 
 }

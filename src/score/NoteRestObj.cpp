@@ -1,4 +1,3 @@
-// RCS-ID: $Id: NoteRestObj.cpp,v 1.3 2006/02/23 19:23:54 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -77,13 +76,12 @@ void lmFermata::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNu
     m_paperPos = m_pOwner->GetOrigin();
 
     // prepare DC
-    wxDC* pDC = pPaper->GetDC();
-    pDC->SetFont( *(m_pOwner->GetFont()) );
+    pPaper->SetFont( *(m_pOwner->GetFont()) );
 
     // prepare glyph and measure it
     wxString sGlyph = (m_fOverNote ? CHAR_FERMATA_OVER : CHAR_FERMATA_UNDER );
     lmLUnits nWidth, nHeight;
-    pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
+    pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
 
     // store glyph position
     m_glyphPos.x = xPos - nWidth/2;
@@ -106,14 +104,12 @@ void lmFermata::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //nxLeft es la coordenada x del centro del calderon
     
     // prepare DC
-    wxDC* pDC = pPaper->GetDC();
-    wxASSERT(pDC);
-    pDC->SetFont( *(m_pOwner->GetFont()) );
+    pPaper->SetFont( *(m_pOwner->GetFont()) );
 
     wxString sGlyph = (m_fOverNote ? CHAR_FERMATA_OVER : CHAR_FERMATA_UNDER );
     wxPoint pos = GetGlyphPosition();
-    pDC->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-    pDC->DrawText(sGlyph, pos.x, pos.y );
+    pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
+    pPaper->DrawText(sGlyph, pos.x, pos.y );
 
 }
 
@@ -153,13 +149,11 @@ void lmLyric::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {
     wxASSERT(fMeasuring == DO_DRAW);    //measuring pahse is done in SetSizePosition()
 
-    wxDC* pDC = pPaper->GetDC();
-    wxASSERT(pDC);
-    pDC->SetFont(*m_pFont);
+    pPaper->SetFont(*m_pFont);
 
     wxPoint pos = GetGlyphPosition();
-    pDC->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-    pDC->DrawText(m_sText, pos.x, pos.y );
+    pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
+    pPaper->DrawText(m_sText, pos.x, pos.y );
 
 }
 
@@ -183,12 +177,11 @@ void lmLyric::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
     SetFont(pPaper);
 
     // prepare DC
-    wxDC* pDC = pPaper->GetDC();
-    pDC->SetFont(*m_pFont);
+    pPaper->SetFont(*m_pFont);
 
     // prepare the text and measure it
     lmLUnits nWidth, nHeight;
-    pDC->GetTextExtent(m_sText, &nWidth, &nHeight);
+    pPaper->GetTextExtent(m_sText, &nWidth, &nHeight);
     m_nWidth = nWidth;
 
     // store glyph position (relative to paper pos).

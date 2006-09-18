@@ -429,15 +429,12 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     bool fInChord = IsInChord();
 
     //prepare DC
-    wxDC* pDC = pPaper->GetDC();
-    wxASSERT(pDC);
-    wxASSERT(pDC->Ok());
     int nPenWidth = m_pVStaff->TenthsToLogical(1, m_nStaffNum);
     wxPen pen(colorC, nPenWidth, wxSOLID);
     wxBrush brush(colorC, wxSOLID);
-    pDC->SetPen(pen);
-    pDC->SetBrush(brush);
-    pDC->SetFont(*m_pFont);
+    pPaper->SetPen(pen);
+    pPaper->SetBrush(brush);
+    pPaper->SetFont(*m_pFont);
 
     // move to right staff
     lmLUnits yStaffTopLine = m_paperPos.y + GetStaffOffset();   // staff y position (top line)
@@ -514,10 +511,10 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
             // notehead is over a line. Shift up the dots by half line
             yPos -= m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         }
-            nxLeft += DrawDot(fMeasuring, pDC, nxLeft, yPos, colorC, true);
+            nxLeft += DrawDot(fMeasuring, pPaper, nxLeft, yPos, colorC, true);
         if (m_fDoubleDotted) {
             nxLeft += nSpaceBeforeDot;
-            nxLeft += DrawDot(fMeasuring, pDC, nxLeft, yPos, colorC, true);
+            nxLeft += DrawDot(fMeasuring, pPaper, nxLeft, yPos, colorC, true);
         }
     }
 
@@ -552,7 +549,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
             }
             //adjust stem size if flag to be drawn
             if (!m_fDrawSmallNotesInBlock && !m_fBeamed && m_nNoteType > eQuarter) {
-                int nGlyph = DrawFlag(fMeasuring, pDC, wxPoint(0, 0), colorC);
+                int nGlyph = DrawFlag(fMeasuring, pPaper, wxPoint(0, 0), colorC);
                 lmLUnits nStem = GetStandardStemLenght();
                 lmLUnits nFlag, nMinStem;
                 if (m_fStemDown) {
@@ -574,14 +571,11 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
             // not measuring. Do draw stem unless it is a note in chord. In this case
             // the stem will be drawn later, when drawing the last note of the chord
             if (fDrawStem && ! fInChord) {
-                wxDC* pDC = pPaper->GetDC();
-                wxASSERT(pDC);
-                
                 if (true) {     //Draw stem using a line
                     wxPen pen(colorC, m_nStemThickness, wxSOLID);
                     pen.SetCap(wxCAP_BUTT);
                     int xPos = GetXStemLeft() + m_nStemThickness/2;     //DrawLine centers line width on given coordinates
-                    pDC->DrawLine(xPos, GetYStem(), xPos, GetFinalYStem()+1);
+                    pPaper->DrawLine(xPos, GetYStem(), xPos, GetFinalYStem()+1);
                 }    
                 
                 else if (false) {   //draw stem using a rectangle
@@ -593,7 +587,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
                         wxPoint(xEnd, yEnd),
                         wxPoint(xEnd, yStart)
                     };
-                    pDC->DrawPolygon(4, points);
+                    pPaper->DrawPolygon(4, points);
                 }
 
                 else {      //draw stem using the font
@@ -605,13 +599,13 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
                         lmLUnits xPos = GetXStemLeft();
                         lmLUnits yPos = nyTop + m_pVStaff->TenthsToLogical(25, m_nStaffNum);
                         while(nLength > nHeight) {
-                            pDC->DrawText(sGlyph, xPos, yPos);
+                            pPaper->DrawText(sGlyph, xPos, yPos);
                             nLength -= nHeight - nFalta;
                             yPos += nHeight - nFalta;
                         }
                         if (nLength > 1) {
                             yPos -= nHeight - nLength;
-                            pDC->DrawText(sGlyph, xPos, yPos);
+                            pPaper->DrawText(sGlyph, xPos, yPos);
                         }
                     }
                     else {
@@ -621,13 +615,13 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
                         lmLUnits nLength = GetStemLength();
                         lmLUnits yPos = nyTop - m_pVStaff->TenthsToLogical(10, m_nStaffNum);
                         while(nLength > nHeight) {
-                            pDC->DrawText(sGlyph, xNote, yPos);
+                            pPaper->DrawText(sGlyph, xNote, yPos);
                             nLength -= nHeight - nFalta;
                             yPos -= nHeight - nFalta;
                         }
                         if (nLength > 1) {
                             yPos += nHeight - nLength;
-                            pDC->DrawText(sGlyph, xNote, yPos);
+                            pPaper->DrawText(sGlyph, xNote, yPos);
                         }
                     }
                 }
@@ -640,7 +634,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     if (!m_fDrawSmallNotesInBlock && !fMeasuring) {
         if (!m_fBeamed && m_nNoteType > eQuarter && !IsInChord()) {
             int xPos = (m_fStemDown ? GetXStemLeft() : GetXStemRight());
-            DrawFlag(fMeasuring, pDC, wxPoint(xPos, m_yFlag), colorC);
+            DrawFlag(fMeasuring, pPaper, wxPoint(xPos, m_yFlag), colorC);
         }
     }
 
@@ -658,7 +652,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
                              m_pVStaff->TenthsToLogical(8, m_nStaffNum);
         //lmLUnits widthLine = m_pNoteheadShape->GetBoundsRectangle().width + 
         //                     m_pVStaff->TenthsToLogical(8, m_nStaffNum);
-        DrawLegerLines(pDC, nPosOnStaff, yStaffTopLine, xLine, widthLine);
+        DrawLegerLines(pPaper, nPosOnStaff, yStaffTopLine, xLine, widthLine);
     }
     
     // render associated notations ------------------------------------------------------
@@ -710,7 +704,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     if (!fMeasuring && IsInChord() && m_pChord->IsLastNoteOfChord(this) 
         && m_nNoteType >= eHalf)
     {
-        m_pChord->DrawStem(fMeasuring, pDC, colorC, m_pFont, m_pVStaff, m_nStaffNum);
+        m_pChord->DrawStem(fMeasuring, pPaper, colorC, m_pFont, m_pVStaff, m_nStaffNum);
     }
 
     //if this is the last note of a beamed group draw the beam lines
@@ -727,7 +721,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         //So the number to put in next statement is 9:
         //  4 for beam thikness + 5 for beams spacing
         lmLUnits nBeamSpacing = m_pVStaff->TenthsToLogical(9, m_nStaffNum);
-        m_pBeam->DrawBeamLines(pDC, nThickness, nBeamSpacing);
+        m_pBeam->DrawBeamLines(pPaper, nThickness, nBeamSpacing);
     }
 
     //if this is the last note of a tuplet draw the tuplet bracket
@@ -744,13 +738,12 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 lmLUnits lmNote::DrawAccidentals(lmPaper* pPaper, bool fMeasuring,
                         lmLUnits xOffset, lmLUnits yOffset, wxColour colorC)
 {
-    wxDC* pDC = pPaper->GetDC();
     if (fMeasuring) {
-        m_pAccidentals->Measure(pDC, m_pVStaff->GetStaff(m_nStaffNum),
+        m_pAccidentals->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum),
                                 wxPoint(xOffset, yOffset));
     }
     else {
-        m_pAccidentals->Render(pDC, m_paperPos, colorC);
+        m_pAccidentals->Render(pPaper, m_paperPos, colorC);
         m_pAccidentals->Draw(DO_DRAW, pPaper, colorC);  //compatibility: to draw selrect
     }
 
@@ -758,7 +751,7 @@ lmLUnits lmNote::DrawAccidentals(lmPaper* pPaper, bool fMeasuring,
 
 }
 
-lmLUnits lmNote::DrawDot(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUnits yPos,
+lmLUnits lmNote::DrawDot(bool fMeasuring, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos,
                          wxColour colorC, bool fUseFont)
 {
     lmLUnits halfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
@@ -769,17 +762,17 @@ lmLUnits lmNote::DrawDot(bool fMeasuring, wxDC* pDC, lmLUnits xPos, lmLUnits yPo
         wxString sGlyph( aGlyphsInfo[GLYPH_DOT].GlyphChar );
         yPos += m_pVStaff->TenthsToLogical(aGlyphsInfo[GLYPH_DOT].GlyphOffset, m_nStaffNum); 
         if (!fMeasuring) {
-            pDC->SetTextForeground(colorC);
-            pDC->DrawText(sGlyph, xPos, yPos);
+            pPaper->SetTextForeground(colorC);
+            pPaper->DrawText(sGlyph, xPos, yPos);
         }
         lmLUnits nWidth, nHeight;
-        pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
+        pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
         return nWidth;
     }
     else {
         //Direct draw
         lmLUnits nDotRadius = m_pVStaff->TenthsToLogical(22, m_nStaffNum) / 10;
-        if (!fMeasuring) pDC->DrawCircle(xPos, yPos, nDotRadius);
+        if (!fMeasuring) pPaper->DrawCircle(xPos, yPos, nDotRadius);
         return 2*nDotRadius;
     }
 
@@ -791,7 +784,6 @@ bool lmNote::DrawNote(lmPaper* pPaper, bool fMeasuring,
     // draws the notehead (or the full note if single glyph) and returns flag to 
     // draw or not the stem
 
-    wxDC* pDC = pPaper->GetDC();
     lmLUnits nxLeft = xOffset + m_paperPos.x;
     lmLUnits nyTop = yOffset + m_paperPos.y;
     bool fDrawStem = true;
@@ -801,7 +793,7 @@ bool lmNote::DrawNote(lmPaper* pPaper, bool fMeasuring,
 
     if (m_fDrawSmallNotesInBlock && !m_fBeamed && m_nNoteType > eQuarter && !IsInChord()) {
         // It is a single note with flag: draw it in one step with a glyph
-        DrawSingleNote(pDC, fMeasuring, m_nNoteType, m_fStemDown, 
+        DrawSingleNote(pPaper, fMeasuring, m_nNoteType, m_fStemDown, 
                        nxLeft, nyTop, (m_fSelected ? g_pColors->ScoreSelected() : colorC) );
         fDrawStem = false;
 
@@ -832,7 +824,7 @@ bool lmNote::DrawNote(lmPaper* pPaper, bool fMeasuring,
         //    nNotehead = enh_Cross;
         //}
         
-        DrawNoteHead(pDC, fMeasuring, nNotehead, nxLeft, nyTop, 
+        DrawNoteHead(pPaper, fMeasuring, nNotehead, nxLeft, nyTop, 
                      (m_fSelected ? g_pColors->ScoreSelected() : colorC) );
     }
 
@@ -861,7 +853,7 @@ bool lmNote::DrawNote(lmPaper* pPaper, bool fMeasuring,
 
 }
 
-lmEGlyphIndex lmNote::DrawFlag(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC)
+lmEGlyphIndex lmNote::DrawFlag(bool fMeasuring, lmPaper* pPaper, wxPoint pos, wxColour colorC)
 {
     //
     //Draws the flag using a glyph. Returns the glyph index
@@ -896,8 +888,8 @@ lmEGlyphIndex lmNote::DrawFlag(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour
   
     if (!fMeasuring) {
         // drawing phase: do the draw
-        pDC->SetTextForeground(colorC);
-        pDC->DrawText(sGlyph, pos.x, pos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum ) );
+        pPaper->SetTextForeground(colorC);
+        pPaper->DrawText(sGlyph, pos.x, pos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum ) );
     }
 
     return nGlyph;
@@ -950,11 +942,11 @@ void lmNote::MakeUpPhase(lmPaper* pPaper)
 
 }
 
-void lmNote::DrawLegerLines(wxDC* pDC, int nPosOnStaff, lmLUnits yStaffTopLine, lmLUnits xPos, lmLUnits width, int nROP)
+void lmNote::DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits yStaffTopLine, lmLUnits xPos, lmLUnits width, int nROP)
 {
     if (nPosOnStaff > 0 && nPosOnStaff < 12) return;
 
-    if (nROP != wxCOPY) pDC->SetLogicalFunction(nROP);
+    if (nROP != wxCOPY) pPaper->SetLogicalFunction(nROP);
 
     xPos += m_paperPos.x;        // make it absolute
 
@@ -966,7 +958,7 @@ void lmNote::DrawLegerLines(wxDC* pDC, int nPosOnStaff, lmLUnits yStaffTopLine, 
             if (i % 2 == 0) {
                 nTenths = 5 * (i - 10);
                 yPos = yStaffTopLine - m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                pDC->DrawLine(xPos, yPos, xPos + width, yPos);
+                pPaper->DrawLine(xPos, yPos, xPos + width, yPos);
             }
         }
 
@@ -976,16 +968,16 @@ void lmNote::DrawLegerLines(wxDC* pDC, int nPosOnStaff, lmLUnits yStaffTopLine, 
             if (i % 2 == 0) {
                 nTenths = 5 * (10 - i);
                 yPos = yStaffTopLine + m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                pDC->DrawLine(xPos, yPos, xPos + width, yPos);
+                pPaper->DrawLine(xPos, yPos, xPos + width, yPos);
             }
         }
     }
 
-    if (nROP != wxCOPY) pDC->SetLogicalFunction(wxCOPY);    // restore DC logical function
+    if (nROP != wxCOPY) pPaper->SetLogicalFunction(wxCOPY);    // restore DC logical function
 
 }
 
-void lmNote::DrawSingleNote(wxDC* pDC, bool fMeasuring, ENoteType nNoteType,
+void lmNote::DrawSingleNote(lmPaper* pPaper, bool fMeasuring, ENoteType nNoteType,
         bool fStemAbajo, lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC)
 {
     /*
@@ -1028,7 +1020,7 @@ void lmNote::DrawSingleNote(wxDC* pDC, bool fMeasuring, ENoteType nNoteType,
 
         // define selection rectangle (relative to m_paperPos)
         lmLUnits nWidth, nHeight;
-        pDC->GetTextExtent(sGlyph, &nWidth, &nHeight);
+        pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
         m_selRect.width = nWidth;
         m_selRect.height = m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
         m_selRect.x = m_glyphPos.x;
@@ -1040,13 +1032,13 @@ void lmNote::DrawSingleNote(wxDC* pDC, bool fMeasuring, ENoteType nNoteType,
     } else {
         // else (drawing phase) do the draw
         wxPoint pos = GetGlyphPosition();
-        pDC->SetTextForeground(colorC);
-        pDC->DrawText(sGlyph, pos.x, pos.y );
+        pPaper->SetTextForeground(colorC);
+        pPaper->DrawText(sGlyph, pos.x, pos.y );
     }
 
 }
 
-void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ENoteHeads nNoteheadType,
+void lmNote::DrawNoteHead(lmPaper* pPaper, bool fMeasuring, ENoteHeads nNoteheadType,
     lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC)
 {
     // draws a notehead of type nNoteheadType on position (nxLeft, nyTop) with color colorC.
@@ -1081,7 +1073,7 @@ void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ENoteHeads nNoteheadType,
     if (fMeasuring) {
         wxPoint offset(nxLeft - m_paperPos.x, nyTop - m_paperPos.y);
         if (!m_pNoteheadShape) m_pNoteheadShape = new lmShapeGlyph(this, nGlyph, m_pFont);
-        m_pNoteheadShape->Measure(pDC, m_pVStaff->GetStaff(m_nStaffNum), offset);
+        m_pNoteheadShape->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum), offset);
 
         //COMPATIBILITY
 
@@ -1100,7 +1092,7 @@ void lmNote::DrawNoteHead(wxDC* pDC, bool fMeasuring, ENoteHeads nNoteheadType,
 
 
     } else {
-        m_pNoteheadShape->Render(pDC, m_paperPos, colorC);
+        m_pNoteheadShape->Render(pPaper, m_paperPos, colorC);
     }
 
 }

@@ -71,7 +71,7 @@ public:
     wxString SourceXML();
 
     //rendering related methods
-    lmLUnits DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC = *wxBLACK);
+    lmLUnits DrawAt(bool fMeasuring, lmPaper* pPaper, wxPoint pos, wxColour colorC = *wxBLACK);
 
     //sound related methods
     void AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime, int nMeasure);

@@ -61,7 +61,7 @@ public:
     wxString SourceXML();
 
     //rendering related methods
-    lmLUnits DrawAt(bool fMeasuring, wxDC* pDC, wxPoint pos, wxColour colorC = *wxBLACK);
+    lmLUnits DrawAt(bool fMeasuring, lmPaper* pPaper, wxPoint pos, wxColour colorC = *wxBLACK);
 
     //methods for hiding the clef in prologs
     void Hide(bool fHide) { m_fHidden = fHide; }

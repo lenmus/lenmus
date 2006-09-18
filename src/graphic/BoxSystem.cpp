@@ -133,12 +133,11 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     lmLUnits yBottom = pVStaff->GetYBottom();
 
     lmLUnits THIN_LINE_WIDTH = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
-    wxDC* pDC = pPaper->GetDC();
     wxPen pen(*wxBLACK, THIN_LINE_WIDTH, wxSOLID);
     wxBrush brush(*wxBLACK, wxSOLID);
-    pDC->SetPen(pen);
-    pDC->SetBrush(brush);
-    pDC->DrawLine((wxCoord)xPos, (wxCoord)yTop, (wxCoord)xPos, (wxCoord)yBottom);
+    pPaper->SetPen(pen);
+    pPaper->SetBrush(brush);
+    pPaper->DrawLine((wxCoord)xPos, (wxCoord)yTop, (wxCoord)xPos, (wxCoord)yBottom);
 
 }
 

@@ -16,16 +16,20 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
 <li>This page is updated in the website usually only at the end of each week.</li>
 </ul>
 <br /><br />
-  <a href="#Jun06">Jul 06</a>
+  <a href="#Sep06">Sep 06</a>
+| <a href="#Aug06">Aug 06</a>
+| <a href="#Jul06">Jul 06</a>
 | <a href="#Jun06">Jun 06</a>
 | <a href="#May06">May 06</a>
-| <a href="#Abr06">Abr 06</a> | <a href="#Mar06">Mar 06</a>
+| <a href="#Abr06">Abr 06</a>
+| <a href="#Mar06">Mar 06</a>
 | <a href="#Feb06">Feb 06</a>
 | <a href="#Jan06">Jan 06</a><br /><br />
 <a href="###changelog_2005###">Year 2005</a>
 <p>&nbsp;</p>
 
-<h2><a name="Ago06">Ago 2006</a></h2>
+
+<h2><a name="Sep06">Sep 2006</a></h2>
 <a href="#top">Go to top of document</a>
 <table class="Lista">
 <tr valign="top">
@@ -34,15 +38,40 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
     </td></tr>
 
 <tr valign="top">
-    <td class="ListaPar">24-ago-06</td>
+    <td class="ListaPar">18-sep-06</td>
+    <td class="ListaPar">
+      <ul>
+        <li>Reviewing strategy to add anti-aliased drawing. Starting to
+            document all this</li>
+        <li>lmPaper: clean up old code.</li>
+        <li>Starting to encapsulate calls to DC in lmPaper. Direct access to DC
+            removed from: lmClef, lmBarline, lmBeam, lmKeySignature, lmTimeSignature,
+            lmTupletBracket, lmVStaff, Text.cpp, Slur.cpp, lmRest, lmNoteRestObj,
+            lmBoxSystem, direction.cpp, lmChord, lmNote</li>
+      </ul>
+    </td></tr>
+
+</table>
+
+
+<h2><a name="Aug06">Aug 2006</a></h2>
+<a href="#top">Go to top of document</a>
+<table class="Lista">
+<tr valign="top">
+    <td class="ListaImpar">Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td class="ListaImpar">Changes<p>
+    </td></tr>
+
+<tr valign="top">
+    <td class="ListaPar">24-aug-06</td>
     <td class="ListaPar">
       <ul>
         <li>lmEarIntervalsCtrol::PrepareScore() re-coded so that intervals can be played on
-	        demand.</li>
+            demand.</li>
       </ul>
     </td></tr>
 <tr valign="top">
-    <td class="ListaPar">23-ago-06</td>
+    <td class="ListaPar">23-aug-06</td>
     <td class="ListaPar">
       <ul>
         <li>Translating wxMidi into Spanish, and preparing release 1.2 of wxMidi.</li>
@@ -54,12 +83,12 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
       </ul>
     </td></tr>
 <tr valign="top">
-    <td class="ListaPar">22-ago-06</td>
+    <td class="ListaPar">22-aug-06</td>
     <td class="ListaPar">
       <ul>
         <li>Bug fixed: in ear intervals exercises the keyboard is enabled at wrong places so,
           for example, you can press answer button again after a failure and it is now
-          computed as a success. Modified EarIntervalsCtrol keyboard enabling logic to 
+          computed as a success. Modified EarIntervalsCtrol keyboard enabling logic to
           allow playing intervals when not expecting an answer. Playing intervals
           not yet implemented.</li>
         <li>TheApp: modified to change lenmus.mo and wxmidi.mo file names to include
@@ -68,13 +97,13 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
       </ul>
     </td></tr>
 <tr valign="top">
-    <td class="ListaPar">19 to 21-ago-06</td>
+    <td class="ListaPar">19 to 21-aug-06</td>
     <td class="ListaPar">
       Doing tests to integrate AGG with wxWidgets in order to draw text using FreeType
       and to be able to do anti-aliased drawings.
     </td></tr>
 <tr valign="top">
-    <td class="ListaPar">16 to 18-ago-06</td>
+    <td class="ListaPar">16 to 18-aug-06</td>
     <td class="ListaPar">
       Solving problems with Unicode build:
       <ul>
@@ -82,29 +111,29 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
           Changes in wxMidi build script. Changes in
           wxMidi so that all static text initialization is now initialized in constructor
           to allow for internationalization.</li>
-        <li>VirtualBooks do not work in Unicode. There is a bug in wxHtmlController 
+        <li>VirtualBooks do not work in Unicode. There is a bug in wxHtmlController
           (I reported it to wxWidgets project). Changes in VirtualBooks to by pass the bug,
           by converting book content to ANSI utf-8. Now working.</li>
       </ul>
     </td></tr>
 <tr valign="top">
-    <td class="ListaPar">14-ago-06</td>
+    <td class="ListaPar">14-aug-06</td>
     <td class="ListaPar">
       <ul>
         <li>IdfyChord: added control_setting param to define the key to save settings.
-          Bug fixed: key constrains not taken into account. lmTags: added 'classid' 
+          Bug fixed: key constrains not taken into account. lmTags: added 'classid'
           parameter to the 'object' tag; now always type='Application/LenMus' for
           all LenMus objects.</li>
-        <li>To facilitate internationalization, eBooks Introduction and Single Exercises 
-		        will be coded inside the program instead of being external html files. 
-		        In this way, just by using the .po file these two required files will get
-		        translated. Book translation is another issue and will require other
-		        tools and knowledge.
-		        Object lmVirtualBooks created and tested. Book 'introduction' moved.</li>
+        <li>To facilitate internationalization, eBooks Introduction and Single Exercises
+                will be coded inside the program instead of being external html files.
+                In this way, just by using the .po file these two required files will get
+                translated. Book translation is another issue and will require other
+                tools and knowledge.
+                Object lmVirtualBooks created and tested. Book 'introduction' moved.</li>
       </ul>
     </td></tr>
 <tr valign="top">
-    <td class="ListaPar">11-ago-06</td>
+    <td class="ListaPar">11-aug-06</td>
     <td class="ListaPar">
       <ul>
         <li>Settings dialog for Chord recognition (ear and theory) finished. Coded
@@ -113,7 +142,7 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
       </ul>
     </td></tr>
 <tr valign="top">
-    <td class="ListaPar">10-ago-06</td>
+    <td class="ListaPar">10-aug-06</td>
     <td class="ListaPar">
       <ul>
         <li>Toolbar removed from TextBookFrame and integrated into main toolbar
@@ -123,13 +152,13 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
       </ul>
     </td></tr>
 <tr valign="top">
-    <td class="ListaPar">8 & 9-ago-06</td>
+    <td class="ListaPar">8 & 9-aug-06</td>
     <td class="ListaPar">
       <ul>
         <li>Finished exercise for Chord recognition (ear and theory). lmEarChordCtrol
-          related classes renamed as IdfyChordCtrol, as the control is now 
+          related classes renamed as IdfyChordCtrol, as the control is now
           parameterized to be usable both for ear trainig and for theory.
-          All identified options added and all detected issues fixed: 
+          All identified options added and all detected issues fixed:
           <ul>
             <li>Allow to play any chord once the answer is shown</li>
             <li>Before creating and playing a new chord, stop any previous one to
@@ -148,7 +177,7 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
       </ul>
     </td></tr>
 <tr valign="top">
-    <td class="ListaPar">7-ago-06</td>
+    <td class="ListaPar">7-aug-06</td>
     <td class="ListaPar">
       <ul>
         <li>Added classes lmChordConstrains and lmEarChordCtrolParams. More changes in
@@ -157,7 +186,7 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
       </ul>
     </td></tr>
 <tr valign="top">
-    <td class="ListaPar">4-ago-06</td>
+    <td class="ListaPar">4-aug-06</td>
     <td class="ListaPar">
       <ul>
         <li>Added logic to load/save last used path to open scores. Initialized at
@@ -171,7 +200,7 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
       </ul>
     </td></tr>
 <tr valign="top">
-    <td class="ListaPar">3-ago-06</td>
+    <td class="ListaPar">3-aug-06</td>
     <td class="ListaPar">
       <ul>
         <li>Added abbreviated syntax for barlines. Modified LDPToken::ParseNewToken() and
@@ -183,7 +212,7 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
       </ul>
     </td></tr>
 <tr valign="top">
-    <td class="ListaPar">2-ago-06</td>
+    <td class="ListaPar">2-aug-06</td>
     <td class="ListaPar">
       <ul>
         <li>Bug fixed: no error is issued by LDP parser if previous group (g+) is not
@@ -192,11 +221,11 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
           variable to lmChord. Modified lmNote::SetStemDirection() to recompute
           stem length when stem direction changed.</li>
       </ul>
-      Program frozen to proceed to launch release 3.1. Meanwhile starting with EarChord 
+      Program frozen to proceed to launch release 3.1. Meanwhile starting with EarChord
       exercises. Added lmIdfyChordCtrol. Added lmChordManager.
     </td></tr>
 <tr valign="top">
-    <td class="ListaPar">1-ago-06</td>
+    <td class="ListaPar">1-aug-06</td>
     <td class="ListaPar">
       <ul>
         <li>Bug fixed: Visual highlight fails if more than one page. The problem was
@@ -206,7 +235,7 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
           with options (optional tuplet bracket and tuplet number).</li>
         <li>Bug fixed: some literals in Zoom menu and toolbar where not prepared for
           internationalization, using _T() instead of _().</li>
-        <li>Bug fixed: problem with offscreen bitmaps ordering if scale changed in 
+        <li>Bug fixed: problem with offscreen bitmaps ordering if scale changed in
           a page different from first one. It was caused by assuming that bitmap creation
           order was page order. Now page number associated to bitmap.</li>
         <li>Bug fixed: in occations, notes at the same time were not rendered aligned. The
@@ -242,12 +271,12 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
           modified to change wxDocTemplate.</li>
         <li>Default options for toolbars chaged to no labels, small icons.</li>
         <li>LDP manual: Documenting alternatives for polyphony, and elements
-		      goFwd, goBack.</li>
-		    <li>Bug fixed: Crash when closing an score being played back. Method OnClose()
-		      added to lmEditFrame. Parameter fWait added to lmScoreView::StopPlaying().</li>
-		    <li>Bug fixed: Parser error when parsing t3 in abbreviated syntax. Fixed in
-		      lmLDPTokenBuilder::ParseNewToken()</li>
-		    <li>Bug fixed: print score printed blank pages due to incorrect scale computation.</li>
+              goFwd, goBack.</li>
+            <li>Bug fixed: Crash when closing an score being played back. Method OnClose()
+              added to lmEditFrame. Parameter fWait added to lmScoreView::StopPlaying().</li>
+            <li>Bug fixed: Parser error when parsing t3 in abbreviated syntax. Fixed in
+              lmLDPTokenBuilder::ParseNewToken()</li>
+            <li>Bug fixed: print score printed blank pages due to incorrect scale computation.</li>
       </ul>
     </td></tr>
 <tr valign="top">
@@ -303,10 +332,10 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
         <li>Preparing things for 3.1 release:
           <ul>
             <li>Disabled menus that will not be operational in 3.1 version. </li>
-            <li>Dotted notes finally rendered by using a glyph; for screen, 
+            <li>Dotted notes finally rendered by using a glyph; for screen,
               at small zooming, I get better results using the font than by direc drawing;
               for high zooming fators, the quality is equivalent. I presume that this
-		          must be due to anti-alising features of font renderization.</li>
+                  must be due to anti-alising features of font renderization.</li>
           </ul></li>
       </ul>
     </td></tr>
@@ -332,7 +361,7 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
           flags and stems. Other minor modifications.</li>
         <li>Bug fixed in lmLoger::ShowDataErrors(). The pointer to the file was deleted
           causing that subsequent attempts to use the log failed (but no crash). For
-          the user, the effect was than when openning a second score no error log 
+          the user, the effect was than when openning a second score no error log
           was shown.</li>
         <li>Bug fixed: English tag name for 64th note conflicted with double sharp
           notation.</li>
@@ -397,17 +426,17 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
     <td class="ListaPar">3-jul-06</td>
     <td class="ListaPar">
       <ul>
-        <li>Starting to review LDP parser to finish internationalization. 
-          Created context table 
+        <li>Starting to review LDP parser to finish internationalization.
+          Created context table
           for tags. Reviewed note names and barlines names. Global method NoteTypeToData()
           removed from AuxMusic.cpp and moved to LDPParser::AnalyzeNoteType().</li>
         <li>Tuplets: fixed bug for tn/m syntax. Need to change LDP token parser to accept
           labels containing slashes.</li>
-		    <li>LDPParser: unified treatment of notes and rests. Method AnalyzeNoteRest()
-		      created.</li>
+            <li>LDPParser: unified treatment of notes and rests. Method AnalyzeNoteRest()
+              created.</li>
         <li>Playback buttons included in main toolbar. Automatically enabled/disabled
           when appropiate</li>
-	      <li>Zoom menu: Add item 'other'</li>
+          <li>Zoom menu: Add item 'other'</li>
         <li>View rulers disabled in release version, until rulers finished.</li>
         <li>Scoreview window: changed background for score and removed the page frame.</li>
       </ul>
@@ -416,7 +445,7 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
     <td class="ListaPar">2-jul-06</td>
     <td class="ListaPar">
       Implemented changes to allow for all types of tuplets. Modifications
-      in lmTupletBracket constructor, LDPParser::AnalyzeNote, added 
+      in lmTupletBracket constructor, LDPParser::AnalyzeNote, added
       LDPParser::AnalyzeTuplet.
     </td></tr>
 <tr valign="top">
@@ -454,9 +483,9 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
     <td class="ListaPar">27,28-jun-06</td>
     <td class="ListaPar">
       Review of 'instrument' element to define a more flexible syntax for
-        polyphony. Implementation of changes: overlayered voices, 
+        polyphony. Implementation of changes: overlayered voices,
         indentation of first system, printing instrument name before first
-        system, single voice across several staves. It afected mainly to classes 
+        system, single voice across several staves. It afected mainly to classes
         lmLDPParser, lmInstrument and renderization (lmFormatter4 and lmBoxSystem).
         First tests succesful.
     </td></tr>
@@ -489,12 +518,12 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
     <td class="ListaPar">
     <ul>
       <li>LDP Parser modified to introduce compact notation [ name=value --> (name value) ].
-        Changes only in lmLDPTokenBuilder::ReadToken() and 
+        Changes only in lmLDPTokenBuilder::ReadToken() and
         lmLDPTokenBuilder::ParseNewToken().</li>
       <li>LDP Parser: added method AnalyzeLocation(). AnalizeTitle() modified to accept
         location parameter.</li>
       <li>LDP Parser modified to accept numbers followed by letters, so numbers with
-        units (i.e.: 12pt, 10mm) can be processed. Requiered a modification in 
+        units (i.e.: 12pt, 10mm) can be processed. Requiered a modification in
         lmLDPTokenBuilder::ParseNewToken().</li>
     </ul>
     </td></tr>
@@ -502,7 +531,7 @@ mondays to question 'what was I doing last friday?', or to find when I changed s
     <td class="ListaPar">21-jun-06</td>
     <td class="ListaPar">
     <ul>
-      <li>Implementation of 'title' elements. Added methods lmScore::AddTitle(), 
+      <li>Implementation of 'title' elements. Added methods lmScore::AddTitle(),
         lmScore::MeasureTitle(), lmLDPParser::AnalyzeTitle(), lmLDPParserAnalyzeFont().
         Modified methods lmScore::WriteTitles(), lmLDPParser::AnalyzeScoreV105().
         Modified object lmScoreText. Other minor modifications related to this.</li>

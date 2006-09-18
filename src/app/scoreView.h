@@ -101,9 +101,6 @@ public:
 private:
         ////-- methods ---
 
-    // Auxiliary for rendering the view
-    void InvalidateBitmap();
-
     // Auxiliary for scrolling
     int CalcScrollInc(wxScrollEvent& event);
     void DoScroll(int orientation, int nScrollSteps);

@@ -162,21 +162,20 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
     lmNote* pStartNote = (lmNote*)pStartNR;
     lmNote* pEndNote = (lmNote*)pEndNR;
 
-    //Prepare DC
-    wxDC* pDC = pPaper->GetDC();
-    wxPen oldPen = pDC->GetPen();
+    //Prepare pen
+    wxPen oldPen = pPaper->GetPen();
     wxPen pen((m_fSelected ? g_pColors->ScoreSelected() : colorC),
               lmToLogicalUnits(0.2, lmMILLIMETERS),         // width = 0.2 mm
               wxSOLID);
-    pDC->SetPen(pen);
+    pPaper->SetPen(pen);
 
     //Mesure number
     lmLUnits nNumberWidth=0, nNumberHeight=0;
     wxString sNumber = _T("");
     if (m_fShowNumber) {
         sNumber = wxString::Format(_T("%d"), m_nTupletNumber);
-        pDC->SetFont(*m_pFont);
-        pDC->GetTextExtent(sNumber, &nNumberWidth, &nNumberHeight);
+        pPaper->SetFont(*m_pFont);
+        pPaper->GetTextExtent(sNumber, &nNumberWidth, &nNumberHeight);
     }
 
 
@@ -196,18 +195,18 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
     lmLUnits yLineStart, yLineEnd, yStartBorder, yEndBorder, yNumber;
 
     ////DEBUG: Draw the boundling rectangle of start and end notes ------------------
-    //pDC->SetPen( wxPen(*wxRED, 1, wxSOLID) );
-    //pDC->SetBrush( *wxTRANSPARENT_BRUSH );
+    //pPaper->SetPen( wxPen(*wxRED, 1, wxSOLID) );
+    //pPaper->SetBrush( *wxTRANSPARENT_BRUSH );
     //lmLUnits xLeft = pStartNote->GetBoundsLeft();
     //lmLUnits xRight = pStartNote->GetBoundsRight();
     //lmLUnits yTop = pStartNote->GetBoundsTop();
     //lmLUnits yBottom = pStartNote->GetBoundsBottom();
-    //pDC->DrawRectangle(xLeft, yTop, xRight-xLeft, yBottom-yTop);
+    //pPaper->DrawRectangle(xLeft, yTop, xRight-xLeft, yBottom-yTop);
     //xLeft = pEndNote->GetBoundsLeft();
     //xRight = pEndNote->GetBoundsRight();
     //yTop = pEndNote->GetBoundsTop();
     //yBottom = pEndNote->GetBoundsBottom();
-    //pDC->DrawRectangle(xLeft, yTop, xRight-xLeft, yBottom-yTop);
+    //pPaper->DrawRectangle(xLeft, yTop, xRight-xLeft, yBottom-yTop);
     ////DEBUG END -------------------------------------------------------------------
 
     if (m_fAbove) {
@@ -229,18 +228,18 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
     //draw bracket
     //---------------------------------------------
     //horizontal line
-    pDC->DrawLine(xStart, yLineStart, xEnd, yLineEnd);
+    pPaper->DrawLine(xStart, yLineStart, xEnd, yLineEnd);
     
     //vertical borders
-    pDC->DrawLine(xStart, yLineStart, xStart, yStartBorder);
-    pDC->DrawLine(xEnd, yLineEnd, xEnd, yEndBorder);
+    pPaper->DrawLine(xStart, yLineStart, xStart, yStartBorder);
+    pPaper->DrawLine(xEnd, yLineEnd, xEnd, yEndBorder);
     
     //write the number
     if (m_fShowNumber) {
-        pDC->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-        pDC->DrawText(sNumber, xNumber, yNumber);
+        pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
+        pPaper->DrawText(sNumber, xNumber, yNumber);
     }
-    pDC->SetPen(oldPen);
+    pPaper->SetPen(oldPen);
 
     
 }
