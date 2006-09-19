@@ -95,14 +95,12 @@ bool lmScoreObj::IsAtPoint(wxPoint& pt)
 void lmScoreObj::DrawSelRectangle(lmPaper* pPaper, wxColour colorC)
 {
     if (IsShapeRendered()) {
-        wxDC* pDC = pPaper->GetDC();
-        m_pShape->DrawSelRectangle(pDC, m_paperPos, colorC);
+        m_pShape->DrawSelRectangle(pPaper, m_paperPos, colorC);
     }
     else {
-        wxDC* pDC = pPaper->GetDC();
-        pDC->SetPen( wxPen(*wxRED, 1, wxSOLID) );
-        pDC->SetBrush( *wxTRANSPARENT_BRUSH );
-        pDC->DrawRectangle(GetSelRect().GetPosition(), GetSelRect().GetSize());
+        pPaper->SetPen( wxPen(*wxRED, 1, wxSOLID) );
+        pPaper->SetBrush( *wxTRANSPARENT_BRUSH );
+        pPaper->DrawRectangle(GetSelRect().GetPosition(), GetSelRect().GetSize());
     }
 }
 
@@ -278,8 +276,7 @@ void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
             DrawObject(fMeasuring, pPaper, colorC);
         }
         else {
-            wxDC* pDC = pPaper->GetDC();
-            m_pShape->Render(pDC, m_paperPos, colorC);
+            m_pShape->Render(pPaper, m_paperPos, colorC);
         }
     }
     else {

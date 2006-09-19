@@ -86,7 +86,8 @@ wxBitmap* lmBarline::GetBitmap(double rScale)
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale(rScale, rScale);
     lmLUnits hL = m_pVStaff->GetYBottom() - m_pVStaff->GetYTop();
-    oPaper.SetDC(&dc);
+    //oPaper.SetDC(&dc);
+    oPaper.SetDrawer(new lmDirectDrawer(&dc));
     lmLUnits wL = DrawBarline(DO_MEASURE, &oPaper, 0, 0, hL, g_pColors->ScoreSelected());
 
     // allocate a memory DC for drawing into a bitmap
@@ -106,7 +107,8 @@ wxBitmap* lmBarline::GetBitmap(double rScale)
     dc2.SetBackground(* wxWHITE_BRUSH);
     dc2.Clear();
     dc2.SetBackgroundMode(wxTRANSPARENT);
-    oPaper.SetDC(&dc2);
+    //oPaper.SetDC(&dc2);
+    oPaper.SetDrawer(new lmDirectDrawer(&dc2));
     DrawBarline(DO_DRAW, &oPaper, 0, 0, hL, g_pColors->ScoreSelected());
 
     dc2.SelectObject(wxNullBitmap);

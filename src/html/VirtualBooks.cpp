@@ -94,8 +94,8 @@ wxFSFile* lmVirtualBooks::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& l
     int iColon = location.Find(_T(':'));
     wxString sBookName = location.Mid(iColon+1, location.Length()-iColon-5);
     wxString sExt(location.Right(4).Lower());
-    wxLogMessage(_T("[lmVirtualBooks::OpenFile] Request to open virtual file '%s'. Book='%s', ext='%s'"),
-        location, sBookName, sExt);
+    //wxLogMessage(_T("[lmVirtualBooks::OpenFile] Request to open virtual file '%s'. Book='%s', ext='%s'"),
+    //    location, sBookName, sExt);
 
     if (sExt == _T("ched"))
         return (wxFSFile*) NULL;    //cached file

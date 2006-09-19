@@ -18,10 +18,6 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Paper.h
-    @brief Header file for class lmPaper
-    @ingroup app_gui
-*/
 #ifdef __GNUG__
 // #pragma interface
 #endif
@@ -34,6 +30,7 @@
 #include "../score/defs.h"
 #include "Page.h"
 #include "FontManager.h"
+#include "../graphic/Drawer.h"
 
 
 class lmPaper
@@ -42,15 +39,12 @@ public:
     lmPaper();
     ~lmPaper();
 
-    // drawing control
-    wxDC* GetDC() const { return m_pDC; }
-    void SetDC(wxDC* pDC) { m_pDC = pDC; }
+    //Drawer to use
+    void SetDrawer(lmDrawer* pDrawer);
 
+    // page cursors positioning
     void NewLine(lmLUnits nSpace);
-
     void RestartPageCursors();
-
-    // page cursor position
     lmLUnits GetCursorX() { return m_xCursor; }
     lmLUnits GetCursorY() { return m_yCursor; }
     void SetCursorX(lmLUnits rValor) { m_xCursor = rValor; }
@@ -70,16 +64,17 @@ public:
     void SetPageRightMargin(lmLUnits nValue) { m_Page.SetRightMargin(nValue); }
     void SetPageSize(lmLUnits nWidth, lmLUnits nHeight) { m_Page.SetPageSize(nWidth, nHeight); }
 
-    // unit conversion
-    lmLUnits DeviceToLogicalX(lmPixels x) { return m_pDC->DeviceToLogicalXRel(x); }
-    lmLUnits DeviceToLogicalY(lmPixels y) { return m_pDC->DeviceToLogicalYRel(y); }
-
-    lmPixels LogicalToDeviceX(lmLUnits x) { return m_pDC->LogicalToDeviceXRel(x); }
-    lmPixels LogicalToDeviceY(lmLUnits y) { return m_pDC->LogicalToDeviceYRel(y); }
-
     lmLUnits GetRightMarginXPos();
     lmLUnits GetLeftMarginXPos();
 
+    // unit conversion
+    lmLUnits DeviceToLogicalX(lmPixels x) { return m_pDrawer->DeviceToLogicalX(x); }
+    lmLUnits DeviceToLogicalY(lmPixels y) { return m_pDrawer->DeviceToLogicalY(y); }
+
+    lmPixels LogicalToDeviceX(lmLUnits x) { return m_pDrawer->LogicalToDeviceX(x); }
+    lmPixels LogicalToDeviceY(lmLUnits y) { return m_pDrawer->LogicalToDeviceY(y); }
+
+    // fonts
     wxFont* GetFont(int nPointSize,
                     wxString sFontName = _T("LeMus Notas"),
                     int nFamily = wxDEFAULT,    //wxDEFAULT, wxDECORATIVE, wxROMAN, wxSCRIPT, wxSWISS, wxMODERN
@@ -92,33 +87,33 @@ public:
 
     //draw shapes
     void DrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2)
-            { m_pDC->DrawLine(x1, y1, x2, y2); }
-    void DrawRectangle(wxPoint point, wxSize size) { m_pDC->DrawRectangle(point, size); }
+            { m_pDrawer->DrawLine(x1, y1, x2, y2); }
+    void DrawRectangle(wxPoint point, wxSize size) { m_pDrawer->DrawRectangle(point, size); }
     void DrawRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height)
-            { m_pDC->DrawRectangle(left, top, width, height); }
-    void DrawCircle(wxCoord x, wxCoord y, wxCoord radius) { m_pDC->DrawCircle(x, y, radius); }
-    void DrawCircle(const wxPoint& pt, wxCoord radius) { m_pDC->DrawCircle(pt, radius); }
-    void DrawPolygon(int n, wxPoint points[]) { m_pDC->DrawPolygon(n, points); }
+            { m_pDrawer->DrawRectangle(left, top, width, height); }
+    void DrawCircle(wxCoord x, wxCoord y, wxCoord radius) { m_pDrawer->DrawCircle(x, y, radius); }
+    void DrawCircle(const wxPoint& pt, wxCoord radius) { m_pDrawer->DrawCircle(pt, radius); }
+    void DrawPolygon(int n, wxPoint points[]) { m_pDrawer->DrawPolygon(n, points); }
 
     //brushes, colors, fonts, ...
-    void SetBrush(wxBrush brush) { m_pDC->SetBrush(brush); }
-    void SetFont(wxFont& font) {m_pDC->SetFont(font); }
-    void SetPen(wxPen& pen) { m_pDC->SetPen(pen); }
-    const wxPen& GetPen() const { return m_pDC->GetPen(); }
-    void SetLogicalFunction(int function) { m_pDC->SetLogicalFunction(function); }
+    void SetBrush(wxBrush brush) { m_pDrawer->SetBrush(brush); }
+    void SetFont(wxFont& font) {m_pDrawer->SetFont(font); }
+    void SetPen(wxPen& pen) { m_pDrawer->SetPen(pen); }
+    const wxPen& GetPen() const { return m_pDrawer->GetPen(); }
+    void SetLogicalFunction(int function) { m_pDrawer->SetLogicalFunction(function); }
 
     //text
-    void DrawText(const wxString& text, wxCoord x, wxCoord y) {m_pDC->DrawText(text, x, y); }
-    void SetTextForeground(const wxColour& colour) {m_pDC->SetTextForeground(colour); }
-    void SetTextBackground(const wxColour& colour) {m_pDC->SetTextBackground(colour); }
+    void DrawText(const wxString& text, wxCoord x, wxCoord y) {m_pDrawer->DrawText(text, x, y); }
+    void SetTextForeground(const wxColour& colour) {m_pDrawer->SetTextForeground(colour); }
+    void SetTextBackground(const wxColour& colour) {m_pDrawer->SetTextBackground(colour); }
     void GetTextExtent(const wxString& string, wxCoord* w, wxCoord* h) 
-            { m_pDC->GetTextExtent(string, w, h); }
+            { m_pDrawer->GetTextExtent(string, w, h); }
 
 
 
 
 private:
-    wxDC*       m_pDC;              // the DC to use
+    lmDrawer*   m_pDrawer;
     lmPage      m_Page;             // page layout settings
 
     // page cursors

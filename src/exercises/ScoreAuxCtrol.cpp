@@ -166,7 +166,8 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
 
         // allocate a DC in memory for using the offscreen bitmaps
         wxMemoryDC memoryDC;
-        m_Paper.SetDC(&memoryDC);           //the layout phase requires a DC
+        //m_Paper.SetDC(&memoryDC);           //the layout phase requires a DC
+        m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
         m_graphMngr.Prepare(m_pScore, dxBitmap, dyBitmap, m_rScale, &m_Paper,
                             lmRELAYOUT_ON_PAPER_SIZE_CHANGE);
         wxBitmap* pPageBitmap = m_graphMngr.Render(lmUSE_BITMAPS, 1);
@@ -264,7 +265,8 @@ void lmScoreAuxCtrol::OnVisualHighlight(lmScoreHighlightEvent& event)
     wxClientDC dc(this);
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale( m_rScale, m_rScale );
-    m_Paper.SetDC(&dc);
+    //m_Paper.SetDC(&dc);
+    m_Paper.SetDrawer(new lmDirectDrawer(&dc));
 
     /*! @todo
         Position DC origing according to current scrolling and page position

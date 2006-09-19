@@ -471,7 +471,7 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
     //pPaper->DrawLine(m_xLeft, yCur-1, xRight, yCur-1);
     ////-----------------------------------------
 
-    //??    pPaper->DrawWidth = m_nGrosorLineas;
+    lmLUnits nStaffLineWidth = lmToLogicalUnits(0.2, lmMILLIMETERS);     //! @todo user option
     pPaper->SetPen(*wxBLACK_PEN);
 
     //iterate over the collection of Staves (lmStaff Objects)
@@ -480,7 +480,8 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
     for ( ; pStaff; ) {
         //draw one staff
         for (int iL = 1; iL <= pStaff->GetNumLines(); iL++ ) {
-            pPaper->DrawLine (m_xLeft, yCur, xRight, yCur);
+            //pPaper->DrawLine(m_xLeft, yCur, xRight, yCur);
+            pPaper->DrawRectangle(m_xLeft, yCur, m_dxLin, nStaffLineWidth);
             m_yLinBottom = yCur;                        //save line position
             yCur = yCur + pStaff->GetLineSpacing();     //+ m_nGrosorLineas - 1
         }
@@ -490,7 +491,6 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
         pNode = pNode->GetNext();
         pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
     }
-//??    pPaper->DrawWidth = 1;
 
 }
 

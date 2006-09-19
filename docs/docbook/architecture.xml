@@ -256,7 +256,7 @@ display a score to be used in other controls for exercises.
 </sect1>
 
 <sect1>
-<title>GraphicManager, Paper, Drawer and DC</title>
+<title>GraphicManager, Paper, and DC</title>
 
 <sect2>
 <title>The GraphicManager: renderization of scores</title>
@@ -275,7 +275,7 @@ Needs:
 It receives three parameters: 
     1. the lmScore to render, 
     2. the lmPaper on which the score has to be rendered
-    3. Renderization options
+    3. the Renderization options
 
 Renderization takes place in two phases:
     1. method Layout() is responsible for building the graphic model and doing the measure phase.
@@ -323,7 +323,8 @@ From 1 & 2 ==> All parameters for renderization are part of the document.
 <title>lmPaper class</title>
 
 <para>
-A 'lmPaper' is the generic canvas on which the score is rendered. It might be a display
+A 'lmPaper' is the generic canvas on which the score is rendered plus a set of methods to do
+basic drawing. It might be a display
 device, a printer, etc. It can be consitered as a high-level DC. Basically it is a DC 
 on which to write and draw, some methods
 for basic drawing, and methods to deal with unit conversion and virtual paper cursor positioning.
@@ -340,7 +341,6 @@ The lmPaper responsibilities are:
         
 </para>
                 
-
 <para>
 Everything drawn to a view is drawn with a lmPaper object, which draws to
 a bitmap buffer. When drawing is ready, lmScoreView blits the buffer to the display window.

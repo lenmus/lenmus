@@ -1,4 +1,3 @@
-// RCS-ID: $Id: HtmlWindow.cpp,v 1.6 2006/02/25 15:15:59 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -195,7 +194,7 @@ void lmHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link)
     // lenMus internal link processing
     //
 
-    wxLogMessage(_T("[lmHtmlWindow::OnLinkClicked] Internal link. url '%s'"), sLocation);
+    //wxLogMessage(_T("[lmHtmlWindow::OnLinkClicked] Internal link. url '%s'"), sLocation);
 
     //
     // analyze command type and process it
@@ -216,7 +215,7 @@ void lmHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link)
 
         // show the embedded page
         SetPage(sContent);
-        wxLogMessage(_T("[lmHtmlWindow::OnLinkClicked] \n") + sContent);
+        //wxLogMessage(_T("[lmHtmlWindow::OnLinkClicked] \n") + sContent);
         return;
     }
 
@@ -239,7 +238,7 @@ void lmHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link)
 
     else {
         wxString sMsg = wxString::Format(_T("Bad syntax in link href <%s>"), sLocation);
-        wxLogMessage(_T("[lmHtmlWindow::OnLinkClicked] %s"), sMsg);
+        //wxLogMessage(_T("[lmHtmlWindow::OnLinkClicked] %s"), sMsg);
         return;     // ignore the link
     }
     

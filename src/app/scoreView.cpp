@@ -510,7 +510,8 @@ void lmScoreView::GetPageInfo(int* pMinPage, int* pMaxPage, int* pSelPageFrom, i
     // lmPrintout to get the number of pages needed to print the score
 
     wxMemoryDC mDC;
-    m_Paper.SetDC(&mDC);           //the layout phase requires a DC
+    //m_Paper.SetDC(&mDC);           //the layout phase requires a DC
+    m_Paper.SetDrawer(new lmDirectDrawer(&mDC));
     lmScore *pScore = ((lmScoreDocument *)GetDocument())->GetScore();
     m_graphMngr.Prepare(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper);
     int nTotalPages = m_graphMngr.GetNumPages();
@@ -562,7 +563,8 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
         scaleX, actualScale);
 
     //Direct renderization on printer DC
-    m_Paper.SetDC(pDC);           //the layout phase requires a DC
+    //m_Paper.SetDC(pDC);           //the layout phase requires a DC
+    m_Paper.SetDrawer(new lmDirectDrawer(pDC));
     lmScore *pScore = ((lmScoreDocument *)GetDocument())->GetScore();
     m_graphMngr.Prepare(pScore, nWithDC, nHeighDC, (double)actualScale, &m_Paper);
     m_graphMngr.Render(lmNO_BITMAPS, nPage);        //direct renderization on DC
@@ -700,7 +702,8 @@ void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
     wxClientDC dc(m_pCanvas);
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale( m_rScale, m_rScale );
-    m_Paper.SetDC(&dc);
+    //m_Paper.SetDC(&dc);
+    m_Paper.SetDrawer(new lmDirectDrawer(&dc));
 
     //Obtain the StaffObject
     //For events of type eRemoveAllHighlight the pSO is NULL
@@ -869,7 +872,8 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
             //drag image started OK. Move image to current cursor position
             //and show it (was hidden until now)
             wxPoint offset(offsetD.x + m_dragHotSpot.x, offsetD.y + m_dragHotSpot.y);
-            m_Paper.SetDC(pDC);
+            //m_Paper.SetDC(pDC);
+            m_Paper.SetDrawer(new lmDirectDrawer(pDC));
             m_pSoDrag->MoveDragImage(&m_Paper, m_pDragImage, offset, pagePosL, m_dragStartPosL, canvasPosD);
             m_pDragImage->Show();
         }
@@ -926,7 +930,8 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         } else {
             // just move the image
             wxPoint offset(offsetD.x + m_dragHotSpot.x, offsetD.y + m_dragHotSpot.y);
-            m_Paper.SetDC(pDC);
+            //m_Paper.SetDC(pDC);
+            m_Paper.SetDrawer(new lmDirectDrawer(pDC));
             m_pSoDrag->MoveDragImage(&m_Paper, m_pDragImage, offset, pagePosL, m_dragStartPosL, canvasPosD);
         }
 
@@ -1165,7 +1170,8 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     lmScore *pScore = ((lmScoreDocument *)GetDocument())->GetScore();
     if (!pScore) return;
 
-    m_Paper.SetDC(&memoryDC);           //the layout phase requires a DC
+    //m_Paper.SetDC(&memoryDC);           //the layout phase requires a DC
+    m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
     m_graphMngr.Prepare(pScore, xPageSize, yPageSize, m_rScale, &m_Paper);
     int nTotalPages = m_graphMngr.GetNumPages();
 
@@ -1273,7 +1279,8 @@ void lmScoreView::SaveAsImage(wxString& sFilename, wxString& sExt, int nImgType)
     int paperHeight = dc.LogicalToDeviceYRel(pageSize.GetHeight());
 
     //Prepare the GraphicManager
-    m_Paper.SetDC(&dc);           //the layout phase requires a DC
+    //m_Paper.SetDC(&dc);           //the layout phase requires a DC
+    m_Paper.SetDrawer(new lmDirectDrawer(&dc));
     lmScore *pScore = ((lmScoreDocument *)GetDocument())->GetScore();
     m_graphMngr.Prepare(pScore, paperWidth, paperHeight, 1.0, &m_Paper);
 

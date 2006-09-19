@@ -55,11 +55,18 @@ lmPaper::lmPaper()
 {
     m_xCursor = 0;
     m_yCursor = 0;
-    m_pDC = (wxDC *) NULL;
+    m_pDrawer = (lmDrawer*) NULL;
 }
 
 lmPaper::~lmPaper()
 {
+    if (m_pDrawer) delete m_pDrawer;
+}
+
+void lmPaper::SetDrawer(lmDrawer* pDrawer)
+{
+    if (m_pDrawer) delete m_pDrawer;
+    m_pDrawer = pDrawer;
 }
 
 // returns paper size in logical units

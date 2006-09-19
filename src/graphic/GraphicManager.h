@@ -96,6 +96,7 @@ private:
     void DeleteBitmaps();
     wxBitmap* GetPageBitmap(int nPage);
     wxBitmap* NewBitmap(int nPage);
+    void AddBitmap(int nPage, wxBitmap* pBitmap);
 
 
     lmScore*        m_pScore;           //score to be rendered

@@ -41,6 +41,7 @@
 #endif
 
 #include "../score/defs.h"      // lmLUnits
+#include "../app/Paper.h"
 class lmScoreObj;
 class lmStaffObj;
 class lmStaff;
@@ -57,13 +58,13 @@ class lmStaff;
 class lmShapeObj
 {
 public:
-    ~lmShapeObj() {}
+    virtual ~lmShapeObj() {}
 
-    virtual void Render(wxDC* pDC, wxPoint pos, wxColour color = *wxBLACK) {};
+    virtual void Render(lmPaper* pPaper, wxPoint pos, wxColour color = *wxBLACK) {};
 
     // methods related to selection rectangle
     void SetSelRectangle(int x, int y, int nWidth, int nHeight);
-    void DrawSelRectangle(wxDC* pDC, wxPoint pos, wxColour colorC = *wxBLUE);
+    void DrawSelRectangle(lmPaper* pPaper, wxPoint pos, wxColour colorC = *wxBLUE);
     wxRect GetSelRectangle() const { return m_SelRect; }
 
     // methods related to bounds
@@ -118,7 +119,7 @@ public:
     virtual ~lmShapeComposite();
 
     //implementation of virtual methods from base class
-    void Render(wxDC* pDC, wxPoint pos, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, wxPoint pos, wxColour color = *wxBLACK);
     virtual wxString Dump() { return _T("ShapeComposite"); }
     virtual void Shift(lmLUnits xIncr);
 
@@ -140,7 +141,7 @@ public:
     ~lmShapeLine() {}
 
     //implementation of virtual methods from base class
-    void Render(wxDC* pDC, wxPoint pos, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, wxPoint pos, wxColour color = *wxBLACK);
     wxString Dump();
     void Shift(lmLUnits xIncr);
 
@@ -158,12 +159,12 @@ public:
     ~lmShapeGlyph() {}
 
     //implementation of virtual methods from base class
-    void Render(wxDC* pDC, wxPoint pos, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, wxPoint pos, wxColour color = *wxBLACK);
     wxString Dump();
     void Shift(lmLUnits xIncr);
 
     //specific methods
-    void Measure(wxDC* pDC, lmStaff* pStaff, wxPoint shift);
+    void Measure(lmPaper* pPaper, lmStaff* pStaff, wxPoint shift);
     void SetFont(wxFont *pFont);
 
 
