@@ -1,4 +1,3 @@
-// RCS-ID: $Id: defs.h,v 1.3 2006/02/23 19:22:56 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -34,7 +33,7 @@
 //// Types used for portability
 
 //units
-#define lmLUnits    int        // lmPaper logical units. 32 bits int
+#define lmLUnits    double     // lmPaper logical units.
 #define lmTenths    int        // Staff relative units.  32 bits int
 #define lmPixels    int        // Device units (usually pixels).  32 bits int
 

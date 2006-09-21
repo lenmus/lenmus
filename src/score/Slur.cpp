@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Slur.cpp,v 1.3 2006/02/23 19:24:42 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -79,6 +78,7 @@ void lmArch::SetCtrolPoint2(lmLUnits xPos, lmLUnits yPos)
 
 void lmArch::Draw(lmPaper* pPaper, wxColour colorC)
 {
+    //wxLogMessage(_T("[lmArch::Draw]"));
     wxPen oldPen = pPaper->GetPen();
     wxPen pen(colorC, lmToLogicalUnits(0.2, lmMILLIMETERS), wxSOLID);    // width = 0.2 mm
     pPaper->SetPen(pen);

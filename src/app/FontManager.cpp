@@ -116,6 +116,7 @@ wxFont* lmFontManager::GetFont(int nPointSize, wxString sFontName,
 
     pFont = new wxFont(nPointSize, nFamily, nStyle, nWeight, fUnderline, 
                         sFontName, wxFONTENCODING_DEFAULT);
+
     if (!pFont) {
         wxMessageBox(_("Sorry, an error has occurred while allocating the font."),
             _T("lmFontManager.GetFont"), wxOK);

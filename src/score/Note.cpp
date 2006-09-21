@@ -574,8 +574,9 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
                 if (true) {     //Draw stem using a line
                     wxPen pen(colorC, m_nStemThickness, wxSOLID);
                     pen.SetCap(wxCAP_BUTT);
-                    int xPos = GetXStemLeft() + m_nStemThickness/2;     //DrawLine centers line width on given coordinates
-                    pPaper->DrawLine(xPos, GetYStem(), xPos, GetFinalYStem()+1);
+                    lmLUnits xPos = GetXStemLeft() + m_nStemThickness/2;     //DrawLine centers line width on given coordinates
+                    //pPaper->DrawLine(xPos, GetYStem(), xPos, GetFinalYStem()+1);
+                    pPaper->DrawLine(xPos, GetYStem(), xPos, GetFinalYStem()+1, m_nStemThickness);
                 }    
                 
                 else if (false) {   //draw stem using a rectangle
@@ -889,6 +890,7 @@ lmEGlyphIndex lmNote::DrawFlag(bool fMeasuring, lmPaper* pPaper, wxPoint pos, wx
     if (!fMeasuring) {
         // drawing phase: do the draw
         pPaper->SetTextForeground(colorC);
+        //wxLogMessage(_T("[lmNote::DrawFlag] x=%d, y=%d"), pos.x, pos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum ));
         pPaper->DrawText(sGlyph, pos.x, pos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum ) );
     }
 
@@ -1092,6 +1094,7 @@ void lmNote::DrawNoteHead(lmPaper* pPaper, bool fMeasuring, ENoteHeads nNotehead
 
 
     } else {
+        //wxLogMessage(_T("[lmNote::DrawNoteHead]"));
         m_pNoteheadShape->Render(pPaper, m_paperPos, colorC);
     }
 
@@ -1107,7 +1110,7 @@ void lmNote::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& of
 
     lmLUnits dyHalfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum );
     wxPoint nShiftVector = pagePosL - dragStartPosL;    // the displacement
-    int nSteps = (nShiftVector.y % dyHalfLine);        // trim the displacement to half line steps
+    int nSteps = (nShiftVector.y / dyHalfLine);        // trim the displacement to half line steps
     nShiftVector.y -= nSteps;
     wxPoint newPaperPos = m_paperPos + nShiftVector;
     // then the shape must be drawn at:
@@ -1138,8 +1141,8 @@ wxPoint lmNote::EndDrag(const wxPoint& pos)
     int nNewPitch = PosOnStaffToPitch(nSteps);
     SetUpPitchRelatedVariables(nNewPitch);
 
-    wxLogMessage( wxString::Format(wxT("EndDrag: nShift=%d, nSteps=%d, nNewPitch=%d"), 
-        nShift, nSteps, nNewPitch ) );
+    //wxLogMessage( wxString::Format(wxT("EndDrag: nShift=%d, nSteps=%d, nNewPitch=%d"), 
+    //    nShift, nSteps, nNewPitch ) );
 
     //ojo: estas dos líneas son el comportamiento de la clase base. Hay que dejarlas
     //de momento porque el flag m_fFixedPos impide que se actualice la posición

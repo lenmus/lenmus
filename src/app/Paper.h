@@ -95,6 +95,9 @@ public:
     void DrawCircle(const wxPoint& pt, wxCoord radius) { m_pDrawer->DrawCircle(pt, radius); }
     void DrawPolygon(int n, wxPoint points[]) { m_pDrawer->DrawPolygon(n, points); }
 
+    void DrawLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, lmLUnits width)
+        { m_pDrawer->DrawLine(x1, y1, x2, y2, width); }
+
     //brushes, colors, fonts, ...
     void SetBrush(wxBrush brush) { m_pDrawer->SetBrush(brush); }
     void SetFont(wxFont& font) {m_pDrawer->SetFont(font); }
@@ -106,7 +109,7 @@ public:
     void DrawText(const wxString& text, wxCoord x, wxCoord y) {m_pDrawer->DrawText(text, x, y); }
     void SetTextForeground(const wxColour& colour) {m_pDrawer->SetTextForeground(colour); }
     void SetTextBackground(const wxColour& colour) {m_pDrawer->SetTextBackground(colour); }
-    void GetTextExtent(const wxString& string, wxCoord* w, wxCoord* h) 
+    void GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h) 
             { m_pDrawer->GetTextExtent(string, w, h); }
 
 

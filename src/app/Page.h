@@ -67,8 +67,9 @@ private:
     lmLUnits        m_nTopMargin;
     lmLUnits        m_nBottomMargin;
     lmLUnits        m_nBindingMargin;
-    wxSize            m_pageSize;            // paper size
-    lmLUnits        m_nPageNum;            // absolute num of page
+
+    wxSize          m_pageSize;            // paper size
+    int             m_nPageNum;            // absolute num of page
 
 
 };

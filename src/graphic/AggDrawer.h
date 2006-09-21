@@ -71,6 +71,7 @@ public:
     void DrawCircle(const wxPoint& pt, wxCoord radius);
     void DrawPolygon(int n, wxPoint points[]);
 
+
     //brushes, colors, fonts, ...
     void SetBrush(wxBrush brush);
     void SetFont(wxFont& font);
@@ -82,7 +83,7 @@ public:
     void DrawText(const wxString& text, wxCoord x, wxCoord y);
     void SetTextForeground(const wxColour& colour);
     void SetTextBackground(const wxColour& colour);
-    void GetTextExtent(const wxString& string, wxCoord* w, wxCoord* h); 
+    void GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h); 
 
     // units conversion
     lmLUnits DeviceToLogicalX(lmPixels x);
@@ -102,7 +103,7 @@ private:
     //the rendering buffer as bytes
     wxImage                     m_buffer;               //the image to serve as buffer
     unsigned char*              m_pdata;                //ptr to the real bytes buffer
-    agg::rendering_buffer       m_oRenderingBufeer;     //the agg rendering buffer
+    agg::rendering_buffer       m_oRenderingBuffer;     //the agg rendering buffer
     int                         m_nBufWidth, m_nBufHeight;      //size of the bitmap
     int                         m_nStride;               //the row step
 
@@ -135,6 +136,7 @@ private:
     lmColor_rgba8   m_colorF;   //foreground;
     lmColor_rgba8   m_colorB;   //background;
 
+    wxBitmap* m_pDummyBitmap;
 
 };
 

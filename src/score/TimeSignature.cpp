@@ -190,6 +190,7 @@ lmLUnits lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wx
         //Time signature is common to all lmVStaff staves, but it is only present, as lmStaffObj, in
         //the first staff. Therefore, for renderization, it is necessary to repeat it for
         //each staff
+        //wxLogMessage(_T("[lmTimeSignature::DrawTimeSignature]"));
         pPaper->SetTextForeground(colorC);
         lmLUnits yOffset = 0;
         lmStaff* pStaff = m_pVStaff->GetFirstStaff();

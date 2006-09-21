@@ -166,12 +166,12 @@ wxPoint lmScoreObj::EndDrag(const wxPoint& pos)
 wxBitmap* lmScoreObj::PrepareBitMap(double rScale, const wxString sGlyph)
 {
     // Get size of glyph, in logical units
-    lmLUnits wL, hL;
+    wxCoord wText, hText;
     wxScreenDC dc;
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale(rScale, rScale);
     dc.SetFont(*m_pFont);
-    dc.GetTextExtent(sGlyph, &wL, &hL);
+    dc.GetTextExtent(sGlyph, &wText, &hText);
     dc.SetFont(wxNullFont);
 
     // allocate a memory DC for drawing into a bitmap
@@ -182,8 +182,8 @@ wxBitmap* lmScoreObj::PrepareBitMap(double rScale, const wxString sGlyph)
 
     // allocate the bitmap
     // convert size to pixels
-    wxCoord wD = dc2.LogicalToDeviceXRel(wL),
-            hD = dc2.LogicalToDeviceYRel(hL);
+    wxCoord wD = dc2.LogicalToDeviceXRel(wText),
+            hD = dc2.LogicalToDeviceYRel(hText);
     // GetTextExtent has not enough precision. Add a couple of pixels for security
     wxBitmap bitmap((int)(wD+2), (int)(hD+2));
     dc2.SelectObject(bitmap);

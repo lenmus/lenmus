@@ -444,6 +444,7 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
     */
 
     if (fMeasuring) { return; }
+    //wxLogMessage(_T("[lmVStaff::DrawStaffLines]"));
 
     lmLUnits xRight, yCur;
 
@@ -457,11 +458,9 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
 
 
     //Set left position and lenght of lines, and save them
-    //m_xLeft = ((xFrom==0) ? pPaper->GetLeftMarginXPos() + m_leftMargin : xFrom);
-    //xRight = ((xTo == 0) ? pPaper->GetRightMarginXPos() - m_rightMargin : xTo);
     m_xLeft = xFrom;
     xRight = xTo;
-    m_dxLin = xRight - m_xLeft;            //largo de las líneas
+    m_dxLin = xRight - m_xLeft;            //lenght of staff lines
    
     yCur = pPaper->GetCursorY() + m_topMargin;
     m_yLinTop = yCur;              //save y coord. for first line start point
@@ -481,7 +480,8 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
         //draw one staff
         for (int iL = 1; iL <= pStaff->GetNumLines(); iL++ ) {
             //pPaper->DrawLine(m_xLeft, yCur, xRight, yCur);
-            pPaper->DrawRectangle(m_xLeft, yCur, m_dxLin, nStaffLineWidth);
+            //pPaper->DrawRectangle(m_xLeft, yCur, m_dxLin, nStaffLineWidth);
+            pPaper->DrawLine(m_xLeft, yCur, xRight, yCur, nStaffLineWidth);
             m_yLinBottom = yCur;                        //save line position
             yCur = yCur + pStaff->GetLineSpacing();     //+ m_nGrosorLineas - 1
         }

@@ -40,9 +40,13 @@
 //    So lmAggDrawer methods must do the units conversion.
 //
 
-
-//! bytes per pixel. Is this platform dependent?
-#define BYTES_PP 3
+// I use an wxImage as buffer. wxImage is platform independent
+// and its buffer is an array of characters
+// in RGBRGBRGB... format in the top-to-bottom, left-to-right order, that 
+// is the first RGB triplet corresponds to the pixel first pixel of the first
+// row, the second one --- to the second pixel of the first row and so on until 
+// the end of the first row, with second row following after it and so on.
+#define BYTES_PP 3      // Bytes per pixel
 
 
 lmAggDrawer::lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, int stride) :
@@ -50,6 +54,7 @@ lmAggDrawer::lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, int strid
     //, m_feng()
     //, m_fman(m_feng)
 {
+    //wxLogMessage(_T("[lmAggDrawer::lmAggDrawer]"));
     wxASSERT(widthPixels != 0 && heightPixels != 0);
     Initialize();
 
@@ -63,16 +68,16 @@ lmAggDrawer::lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, int strid
     m_nBufHeight = heightPixels;
     m_buffer = wxImage(widthPixels, heightPixels);
     m_pdata = m_buffer.GetData();
-    m_oRenderingBufeer.attach(m_pdata, m_nBufWidth, m_nBufHeight, m_nStride);
+    m_oRenderingBuffer.attach(m_pdata, m_nBufWidth, m_nBufHeight, m_nStride);
 
     //To treat rendering buffer as pixels
-    m_pPixelsBuffer = new lmPixelsBuffer( m_oRenderingBufeer );
+    m_pPixelsBuffer = new lmPixelsBuffer( m_oRenderingBuffer );
 
     //the base renderer
     m_pRenBase = new base_ren_type( *m_pPixelsBuffer );
 
     m_pRenSolid = new lmRendererSolidType(*m_pRenBase);
-    m_pRenBase->clear(agg::rgba(1,1,1));
+    m_pRenBase->clear(agg::rgba8(255,255,255));
 
     ////font settings
     //m_feng.gamma(agg::gamma_none());
@@ -89,6 +94,8 @@ lmAggDrawer::lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, int strid
 
 lmAggDrawer::~lmAggDrawer()
 {
+    //wxLogMessage(_T("[lmAggDrawer::~lmAggDrawer]"));
+    delete m_pDummyBitmap;
     delete m_pRenMarker;
     delete m_pRenSolid;
     delete m_pPixelsBuffer;
@@ -107,21 +114,34 @@ void lmAggDrawer::Initialize()
     //m_fHinting = true;
     //m_fKerning = true;
 
+    //allocate something to paint on it
+    m_pDummyBitmap = new wxBitmap(1, 1);
+    ((wxMemoryDC*)m_pDC)->SelectObject(*m_pDummyBitmap);
+
+
     //compute world to device conversion factors
     m_xDevicePixelsPerLU = (double)m_pDC->LogicalToDeviceXRel(100000) / 100000.0;
     m_yDevicePixelsPerLU = (double)m_pDC->LogicalToDeviceYRel(100000) / 100000.0;
 
-    wxLogMessage(_T("[lmAggDrawer::Initialize] m_xDevicePixelsPerLU=%f, m_yDevicePixelsPerLU=%f"),
-        m_xDevicePixelsPerLU, m_yDevicePixelsPerLU);
+    //wxLogMessage(_T("[lmAggDrawer::Initialize] m_xDevicePixelsPerLU=%f, m_yDevicePixelsPerLU=%f"),
+    //    m_xDevicePixelsPerLU, m_yDevicePixelsPerLU);
 
     // set default colours
     m_colorF = agg::rgba8(0,0,0);
-    m_colorB = agg::rgba8(256, 256, 256);
+    m_colorB = agg::rgba8(255, 255, 255);
+
+    wxBrush brush(wxColour(0,0,0), wxSOLID);
+    SetBrush(brush);
+    m_pDC->SetBackgroundMode(wxTRANSPARENT);
+    m_pDC->SetBackground(*wxWHITE_BRUSH);
+    m_pDC->SetTextBackground(wxColour(0,0,0));
+
 }
 
 //draw shapes
 void lmAggDrawer::DrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2)
 { 
+    //wxLogMessage(_T("[lmAggDrawer::DrawLine]"));
     // renderer_marker expects no decimals, so values must be multiplied by 256.
     m_pRenMarker->line(WorldToDeviceX(x1)*256, WorldToDeviceY(y1)*256,
             WorldToDeviceX(x2)*256, WorldToDeviceY(y2)*256, true);
@@ -130,11 +150,12 @@ void lmAggDrawer::DrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2)
 
 void lmAggDrawer::DrawRectangle(wxPoint point, wxSize size)
 { 
-    m_pDC->DrawRectangle(point, size);
+    DrawRectangle(point.x, point.y, size.GetWidth(), size.GetHeight());
 }
 
 void lmAggDrawer::DrawRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height)
 { 
+    //wxLogMessage(_T("[lmAggDrawer::DrawRectangle]"));
     double x = WorldToDeviceX(left);
     double y = WorldToDeviceY(top);
     double w = WorldToDeviceX(width);
@@ -148,21 +169,26 @@ void lmAggDrawer::DrawRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoor
     m_ras.line_to_d(x, y);
     agg::render_scanlines_aa_solid(m_ras, m_sl, *m_pRenBase, m_colorF);
 
-    wxLogMessage(_T("[lmAggDrawer::DrawRectangle] DrawRectangle(%.2f, %.2f, %.2f, %.2f)"), x, y, w, h);
+    //wxLogMessage(_T("[lmAggDrawer::DrawRectangle] DrawRectangle(%.2f, %.2f, %.2f, %.2f)"), x, y, w, h);
 }
 
 void lmAggDrawer::DrawCircle(wxCoord x, wxCoord y, wxCoord radius)
 { 
+    //! @todo
+    //wxLogMessage(_T("[lmAggDrawer::DrawCircle]"));
     m_pDC->DrawCircle(x, y, radius); 
 }
 
 void lmAggDrawer::DrawCircle(const wxPoint& pt, wxCoord radius) 
 { 
+    //! @todo
+    //wxLogMessage(_T("[lmAggDrawer::DrawCircle]"));
     m_pDC->DrawCircle(pt, radius); 
 }
 
 void lmAggDrawer::DrawPolygon(int n, wxPoint points[]) 
 { 
+    //wxLogMessage(_T("[lmAggDrawer::DrawPolygon]"));
     m_ras.reset(); 
     m_ras.move_to_d( WorldToDeviceX(points[0].x), WorldToDeviceY(points[0].y) );
     int i;
@@ -176,26 +202,35 @@ void lmAggDrawer::DrawPolygon(int n, wxPoint points[])
 //brushes, colors, fonts, ...
 void lmAggDrawer::SetBrush(wxBrush brush) 
 { 
+    //! @todo
+    //wxLogMessage(_T("[lmAggDrawer::SetBrush]"));
     m_pDC->SetBrush(brush); 
 }
 
 void lmAggDrawer::SetFont(wxFont& font) 
 {
+    //! @todo
+    //wxLogMessage(_T("[lmAggDrawer::SetFont]"));
     m_pDC->SetFont(font); 
 }
 
 void lmAggDrawer::SetPen(wxPen& pen) 
 { 
+    //wxLogMessage(_T("[lmAggDrawer::SetPen]"));
     m_pDC->SetPen(pen); 
 }
 
 const wxPen& lmAggDrawer::GetPen() const 
 { 
+    //! @todo
+    //wxLogMessage(_T("[lmAggDrawer::GetPen]"));
     return m_pDC->GetPen(); 
 }
 
 void lmAggDrawer::SetLogicalFunction(int function) 
 { 
+    //! @todo
+    //wxLogMessage(_T("[lmAggDrawer::SetLogicalFunction]"));
     m_pDC->SetLogicalFunction(function); 
 }
 
@@ -203,22 +238,169 @@ void lmAggDrawer::SetLogicalFunction(int function)
 //text
 void lmAggDrawer::DrawText(const wxString& text, wxCoord x, wxCoord y) 
 {
-    m_pDC->DrawText(text, x, y); 
+    //wxLogMessage(_T("[lmAggDrawer::DrawText]"));
+#if 0
+        //
+        // Experimental code to use native text renderization
+        // Version 1. Render on a new bitmap and blend it with main bitmap
+        //
+
+    // Get size of text, in logical units
+    lmLUnits wL, hL;
+    m_pDC->GetTextExtent(text, &wL, &hL);
+
+    // convert size to pixels. As GetTextExtent has not enough precision
+    // I will add a couple of pixels for security
+    wxCoord wD = m_pDC->LogicalToDeviceXRel(wL) + 2,
+            hD = m_pDC->LogicalToDeviceYRel(hL) + 2;
+
+    // allocate the bitmap
+    wxBitmap bitmap((int)wD, (int)hD);
+    wxMemoryDC* pDC = (wxMemoryDC*)m_pDC;
+    pDC->SelectObject(bitmap);
+
+    // draw onto the bitmap
+    //m_pDC->SetBackground(*wxWHITE_BRUSH);
+    //m_pDC->SetBackgroundMode(wxTRANSPARENT);
+    //m_pDC->SetTextForeground(*wxBLACK);
+    m_pDC->Clear();
+    m_pDC->DrawText(text, 0, 0);
+    pDC->SelectObject(wxNullBitmap);
+
+    // Convert to image and make it masked
+    wxImage image = bitmap.ConvertToImage();
+    static int hh=0;
+    if (hh++==50) {
+        image.SaveFile(_T("C:\\usr\\agg_image.bmp"), wxBITMAP_TYPE_BMP);
+        int iX, iY;
+        for (iX=0; iX < wD; iX++) {
+            for(iY=0; iY < hD; iY++) {
+                unsigned char red = image.GetRed(iX, iY);
+                unsigned char green = image.GetGreen(iX,iY);
+                unsigned char blue = image.GetBlue(iX,iY);
+                //wxLogMessage(_T("color r=%d, g=%d, b=%d"), red, green, blue);
+            }
+            //wxLogMessage(_T("New row"));
+        }
+    }
+    //image.SetMaskColour(255, 255, 255);
+
+    // get the image buffer and blend it with this Drawer main buffer
+    agg::rendering_buffer oBuffer;     //the agg buffer to be blended
+    unsigned char* pData = image.GetData();
+    oBuffer.attach(pData, wD, hD, 0);
+    lmPixelsBuffer* pPixels = new lmPixelsBuffer( oBuffer );    //the bitmap buffer as pixels
+
+    lmColor_rgba8 colorWhite = agg::rgba8(255, 255, 255);
+    lmColor_rgba8 color;
+    int xD = (int)floor(WorldToDeviceX(x) + 0.5);
+    int yD = (int)floor(WorldToDeviceY(y) + 0.5);
+    int iX, iY;
+    for (iX=0; iX < wD; iX++) {
+        for(iY=0; iY < hD; iY++) {
+            unsigned char red = image.GetRed(iX, iY);
+            unsigned char green = image.GetGreen(iX,iY);
+            unsigned char blue = image.GetBlue(iX,iY);
+            color = agg::rgba8((unsigned int)red, (unsigned int)blue, (unsigned int)green);  //pPixels->pixel(iX, iY);
+            if (!(red == 255 && blue == 255 && green == 255)) {
+                m_pPixelsBuffer->copy_pixel(iX+xD, iY+yD, color);
+            }
+        }
+    }
+
+    delete pPixels;
+#endif
+
+
+
+#if 1
+        //
+        // Experimental code to use native text renderization. 
+        // Version 2. Render on a copy of main bitmap
+        //
+
+    // Get size of text, in logical units
+    lmLUnits wL, hL;
+    GetTextExtent(text, &wL, &hL);
+
+    // convert size to pixels. As GetTextExtent has not enough precision
+    // I will add a couple of pixels for security
+    wxCoord wD = m_pDC->LogicalToDeviceXRel(wL) + 2,
+            hD = m_pDC->LogicalToDeviceYRel(hL) + 2;
+
+    // get a bitmap initialized with main bitmap
+    int xD = (int)floor(WorldToDeviceX(x) + 0.5);
+    int yD = (int)floor(WorldToDeviceY(y) + 0.5);
+
+    //if clipped
+    wxImage subimage;
+    int xC = (xD > 0 ? xD : 0);
+    int yC = (yD > 0 ? yD : 0);
+    int wC = (xD > 0 ? wD : xD+wD);
+    int hC = (yD > 0 ? hD : yD+hD);
+    int yS = (yD > 0 ? 0 : -yD);
+    int xS = (xD > 0 ? 0 : -xD);
+
+    if (xD < 1 || yD < 1) {
+        subimage.Create(wD, hD);
+        unsigned char* pData = subimage.GetData();
+        int iY;
+        int nLength = wC * BYTES_PP;       // line length
+        for (iY=0; iY < hC; iY++) {
+            memcpy(pData+(iY+yS)*nLength, 
+                   m_pdata + m_nBufWidth*(yC+iY)*BYTES_PP + xC*BYTES_PP,
+                   nLength);
+        }
+    }
+    else {
+        subimage = m_buffer.GetSubImage(wxRect(xC, yC, wC, hC));
+    }
+    wxBitmap bitmap(subimage);
+    wxMemoryDC* pDC = (wxMemoryDC*)m_pDC;
+    pDC->SelectObject(bitmap);
+
+    // draw onto the bitmap
+    m_pDC->DrawText(text, 0, 0);
+    pDC->SelectObject(*m_pDummyBitmap);
+
+    // Convert bitmap to image and copy it on main buffer
+    wxImage image = bitmap.ConvertToImage();
+    unsigned char* pData = image.GetData();
+    int iY;
+    int nLength = wC * BYTES_PP;       // line length
+    for (iY=0; iY < hC; iY++) {
+        memcpy(m_pdata + m_nBufWidth*(yC+iY)*BYTES_PP + xC*BYTES_PP,
+               pData+(iY+yS)*nLength,
+               nLength);
+    }
+
+#endif
+
+
 }
 
 void lmAggDrawer::SetTextForeground(const wxColour& colour) 
 {
+    //! @todo
+    //wxLogMessage(_T("[lmAggDrawer::SetTextForeground]"));
     m_pDC->SetTextForeground(colour); 
 }
 
 void lmAggDrawer::SetTextBackground(const wxColour& colour) 
 {
+    //! @todo
+    //wxLogMessage(_T("[lmAggDrawer::SetTextBackground]"));
     m_pDC->SetTextBackground(colour); 
 }
 
-void lmAggDrawer::GetTextExtent(const wxString& string, wxCoord* w, wxCoord* h) 
+void lmAggDrawer::GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h) 
 { 
-    m_pDC->GetTextExtent(string, w, h); 
+    //! @todo
+    //wxLogMessage(_T("[lmAggDrawer::GetTextExtent]"));
+    wxCoord width, height;
+    m_pDC->GetTextExtent(string, &width, &height);
+    *w = (lmLUnits)width;
+    *h = (lmLUnits)height;
 }
 
 
@@ -244,7 +426,6 @@ lmPixels lmAggDrawer::LogicalToDeviceY(lmLUnits y)
 }
 
 
-
 /*
 
 void lmAggDrawer::Clear()
@@ -255,6 +436,7 @@ void lmAggDrawer::Clear()
 unsigned int lmAggDrawer::DrawText(wxString& sText)
 {
     //render text (FreeType) at current position, using current settings for font
+    //returns the number of glyphs rendered
 
     if (!m_fValidFont) return 0;
 
@@ -298,6 +480,8 @@ bool lmAggDrawer::LoadFont(wxString sFontName)
 
 unsigned int lmAggDrawer::DrawText(unsigned int* pText, size_t nLength)
 {
+    //returns the number of glyphs rendered
+
     if (!m_fValidFont) return 0;
 
     unsigned num_glyphs = 0;

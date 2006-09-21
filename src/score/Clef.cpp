@@ -183,6 +183,7 @@ lmLUnits lmClef::DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         pPaper->GetTextExtent(sGlyph, &width, &height);
         return width;
     } else {
+        //wxLogMessage(_T("[lmClef::DrawClef]"));
         wxPoint pos = GetGlyphPosition();
         pPaper->SetTextForeground(colorC);
         pPaper->DrawText(sGlyph, pos.x, pos.y );

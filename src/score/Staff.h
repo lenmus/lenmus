@@ -52,7 +52,7 @@ public:
     }
 
     // sizes
-    int GetHeight();
+    lmLUnits GetHeight();
 
     lmLUnits GetLineSpacing() { return m_spacing; }
     lmLUnits GetLineThick() { return m_lineThick; }

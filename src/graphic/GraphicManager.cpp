@@ -132,7 +132,7 @@ wxBitmap* lmGraphicManager::Render(bool fUseBitmaps, int nPage)
         //Return the offscreen bitmap for the requested page
         wxBitmap* pBitmap = GetPageBitmap(nPage);
         if (!pBitmap) {
-#if 0   //0 = Anti-aliased drawing, 1 = normal aliased drawing
+#if 0   // 0 = Anti-aliased drawing, 1 = normal aliased drawing
             pBitmap = NewBitmap(nPage);
             wxMemoryDC memDC;   // Allocate a DC in memory for the offscreen bitmap
             memDC.SelectObject(*pBitmap);
@@ -144,11 +144,16 @@ wxBitmap* lmGraphicManager::Render(bool fUseBitmaps, int nPage)
             memDC.SelectObject(wxNullBitmap);
 #else
             wxMemoryDC memDC;
+            pBitmap = new wxBitmap(1, 1);     //allocate something to paint on it
+            memDC.SelectObject(*pBitmap);
             memDC.SetMapMode(lmDC_MODE);
             memDC.SetUserScale( m_rScale, m_rScale );
             lmAggDrawer* pDrawer = new lmAggDrawer(&memDC, m_xPageSize, m_yPageSize);
             m_pPaper->SetDrawer(pDrawer);
             m_pBoxScore->RenderPage(nPage, m_pPaper);
+
+            memDC.SelectObject(wxNullBitmap);
+            delete pBitmap;
 
             //Make room for the new bitmap
             //! @todo

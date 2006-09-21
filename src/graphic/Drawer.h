@@ -49,6 +49,8 @@ public:
     virtual void DrawCircle(const wxPoint& pt, wxCoord radius) = 0;
     virtual void DrawPolygon(int n, wxPoint points[]) = 0;
 
+    virtual void DrawLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, lmLUnits width);
+
     //brushes, colors, fonts, ...
     virtual void SetBrush(wxBrush brush) = 0;
     virtual void SetFont(wxFont& font) = 0;
@@ -60,7 +62,7 @@ public:
     virtual void DrawText(const wxString& text, wxCoord x, wxCoord y) = 0;
     virtual void SetTextForeground(const wxColour& colour) = 0;
     virtual void SetTextBackground(const wxColour& colour) = 0;
-    virtual void GetTextExtent(const wxString& string, wxCoord* w, wxCoord* h) = 0; 
+    virtual void GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h) = 0; 
 
     // units conversion
     virtual lmLUnits DeviceToLogicalX(lmPixels x) = 0;
@@ -91,6 +93,7 @@ public:
     void DrawCircle(const wxPoint& pt, wxCoord radius) { m_pDC->DrawCircle(pt, radius); }
     void DrawPolygon(int n, wxPoint points[]) { m_pDC->DrawPolygon(n, points); }
 
+
     //brushes, colors, fonts, ...
     void SetBrush(wxBrush brush) { m_pDC->SetBrush(brush); }
     void SetFont(wxFont& font) {m_pDC->SetFont(font); }
@@ -102,8 +105,7 @@ public:
     void DrawText(const wxString& text, wxCoord x, wxCoord y) {m_pDC->DrawText(text, x, y); }
     void SetTextForeground(const wxColour& colour) {m_pDC->SetTextForeground(colour); }
     void SetTextBackground(const wxColour& colour) {m_pDC->SetTextBackground(colour); }
-    void GetTextExtent(const wxString& string, wxCoord* w, wxCoord* h) 
-            { m_pDC->GetTextExtent(string, w, h); }
+    void GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h); 
 
     // units conversion
     lmLUnits DeviceToLogicalX(lmPixels x) { return m_pDC->DeviceToLogicalXRel(x); }

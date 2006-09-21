@@ -38,3 +38,39 @@ lmDrawer::lmDrawer(wxDC* pDC)
 
 }
 
+void lmDrawer::DrawLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
+                           lmLUnits width)
+{
+    double alpha = atan((y2 - y1) / (x2 - x1));
+    double incrX = (width * sin(alpha)) / 2.0;
+    double incrY = (width * cos(alpha)) / 2.0;
+
+    wxPoint points[] = {
+        wxPoint(x1+incrX, y1-incrY),
+        wxPoint(x1-incrX, y1+incrY),
+        wxPoint(x2-incrX, y2+incrY),
+        wxPoint(x2+incrX, y2-incrY)
+    };
+    DrawPolygon(4, points);
+
+}
+
+
+
+//------------------------------------------------------------------------------------
+// lmDirectDrawer
+//------------------------------------------------------------------------------------
+
+void lmDirectDrawer::GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h) 
+{
+    wxCoord width, height;
+    m_pDC->GetTextExtent(string, &width, &height);
+    *w = (lmLUnits)width;
+    *h = (lmLUnits)height;
+}
+
+//void lmDirectDrawer::DrawRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height)
+//{
+//    //is height is 0 
+//    m_pDC->DrawRectangle(left, top, width, height);
+//}
