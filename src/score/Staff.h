@@ -58,7 +58,9 @@ public:
     lmLUnits GetLineThick() { return m_lineThick; }
     int GetNumLines() { return m_numLines; }
 
-    lmLUnits TenthsToLogical(int nTenths) { return (m_spacing * nTenths)/10; }
+    lmLUnits TenthsToLogical(int nTenths) { return (m_spacing * (lmLUnits)nTenths)/10.0; }
+    lmLUnits TenthsToLogical(double rTenths) { return (m_spacing * rTenths)/10.0; }
+
     wxFont* GetFontDraw() { return m_pFontDraw; }
     void SetFontDraw(wxFont* pFont) { m_pFontDraw = pFont; }
 
@@ -78,7 +80,7 @@ public:
 
 private:
     lmLUnits    m_lineThick;        // in logical units
-    int     m_numLines;
+    int         m_numLines;
     lmLUnits    m_spacing;          // in logical units (thousandths of a mm.,microns)
     wxFont*     m_pFontDraw;        // font to use for drawing on this staff
 
@@ -87,7 +89,7 @@ private:
     lmLUnits    m_afterSpace;
 
     // List of contexts
-    ContextList        m_cContext;
+    ContextList     m_cContext;
 
 };
 

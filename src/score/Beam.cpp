@@ -394,7 +394,7 @@ void lmBeam::TrimStems()
 
 }
 
-void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits nThickness, lmLUnits nBeamSpacing)
+void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits nBeamSpacing)
 {
     //
     // This method is only called from lmNote::DrawObject(), in particular from the last note
@@ -432,7 +432,7 @@ void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits nThickness, lmLUnits nBeamS
                 //! @todo set forward hook equal to notehead width and allow for customization.
                 xEnd = xPrev + (xCur-xPrev)/3;
                 yEnd = yPrev + (yCur-yPrev)/3;
-                DrawBeamSegment(pPaper, fStemDown, xStart, yStart, xEnd, yEnd, nThickness,
+                DrawBeamSegment(pPaper, fStemDown, xStart, yStart, xEnd, yEnd, uThickness,
                         pStartNote, pEndNote);
                 fForwardPending = false;
             }
@@ -487,8 +487,9 @@ void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits nThickness, lmLUnits nBeamS
 
             // if we have data to draw a segment, draw it
             if (fStart && fEnd) {
+                lmLUnits uStemWidth = pEndNote->GetStemThickness();
                 DrawBeamSegment(pPaper, fStemDown,
-                    xStart, yStart, xEnd+pEndNote->GetStemThickness()/2, yEnd, nThickness,
+                    xStart, yStart, xEnd + uStemWidth, yEnd, uThickness,
                     pStartNote, pEndNote);
                 fStart = false;
                 fEnd = false;
@@ -529,8 +530,9 @@ int lmBeam::ComputeYPosOfSegment(lmNote* pNote, bool fStemDown, int yShift)
 
 }
 
-void lmBeam::DrawBeamSegment(lmPaper* pPaper, bool fStemDown, int xStart, int yStart,
-                             int xEnd, int yEnd, lmLUnits nThickness,
+void lmBeam::DrawBeamSegment(lmPaper* pPaper, bool fStemDown,
+                             lmLUnits xStart, lmLUnits yStart,
+                             lmLUnits xEnd, lmLUnits yEnd, lmLUnits nThickness,
                              lmNote* pStartNote, lmNote* pEndNote)
 {
     //check to see if the beam segment has to be splitted in two systems
@@ -548,24 +550,8 @@ void lmBeam::DrawBeamSegment(lmPaper* pPaper, bool fStemDown, int xStart, int yS
         }
     }
 
-    int yStartIncr=0, yEndIncr=0;
-
-    //take thickness into account
-    if (fStemDown) {
-        yStartIncr = yStart + nThickness;
-        yEndIncr = yEnd + nThickness;
-    } else {
-        yStartIncr = yStart - nThickness;
-        yEndIncr = yEnd - nThickness;
-    }
     //draw the segment
-    wxPoint points[] = {
-        wxPoint(xStart, yStart),
-        wxPoint(xStart, yStartIncr),
-        wxPoint(xEnd, yEndIncr),
-        wxPoint(xEnd, yEnd)
-    };
-    pPaper->DrawPolygon(4, points);
+    pPaper->DrawLine(xStart, yStart, xEnd, yEnd, nThickness, eEdgeVertical);
 
     //wxLogMessage(_T("[lmBeam::DrawBeamSegment] xStart=%d, yStart=%d, xEnd=%d, yEnd=%d, nThickness=%d, yStartIncr=%d, yEndIncr=%d, fStemDown=%s"),
     //    xStart, yStart, xEnd, yEnd, nThickness, yStartIncr, yEndIncr, (fStemDown ? _T("down") : _T("up")) );

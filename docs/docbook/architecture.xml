@@ -399,6 +399,173 @@ memory) for smooth scrolling to these most probable pages.
 
 
 <!-- =============================================================== -->
+<!-- ======================    Units       ========================= -->
+<!-- =============================================================== -->
+
+<chapter id="chUnits">
+<title>Logical and device units</title>
+
+<sect1>
+<title>Unit types</title>
+
+<para>
+
+    Logical units
+        The "logical coordinates space", also named "world space" represents the virtual paper on which real music
+        sheets are arranged according to the layout chossen by the user.
+
+    Device units
+        The "device coordinates space" representes the physical redering device (display,
+        printer, ...) on which the score is rendered. The pixel is the usual unit in this
+        space. 
+    
+    Program will operate on the logical coordinates space. Operation in device coordinates
+    and transformation to/from device coordinates will be restricted to low program
+    layers.
+
+</para>
+
+
+<sect1>
+<title>Considerations for the choice of logical units and data types</title>
+
+<sect2>
+<title>Precision</title>
+
+<para>
+    Los atributos de posición, en MusicXML (common.dtd), utilizan unidades relativas: 
+    décimas del espacio entre líneas de pentagrama . Ahora bien, espaciado entre líneas y, 
+    en consecuencia, todos los demas valores relativos a esta medida de un pentagrama, debe 
+    poder establecerse para cada pentagrama, ya que en una misma pieza pueden coexistir 
+    pentagramas de distinto tamaño; por ejemplo, en partituras de piano en obras para varios 
+    instrumentos, el piano va en grande mientras que la línea para el otro instrumento va en 
+    pequeñito. En consecuencia, no parece una unidad adecuada para una página en la que se 
+    mezclen pentagramas de distinto tamaño y habrá que utilizar una unidad que no varíe 
+    entre pentagramas, al menos para  parámetros no asociados a un solo pentagrama, 
+    tales como espaciados entre pentagramas o márgenes de página. Para estos parámetros 
+    se decide utilizar como unidad  una décima de milímetro .  
+
+    En PDF el posicionamiento en el user space se mide por defecto en 1/72 de pulgada, 
+    ya que esa unidad es ampliamente utilizada en la industria tipográfica y equivale, 
+    aproximadamente, a un punto tipográfico. Su valor es de 0,35 mm. (parece poco precisa). 
+    Para fonts utiliza una resolución 1000 veces mayor (¿sería 0,001 mm?). Además, las unidades en el user 
+    space pueden definirse con otra precisión distinta, según necesidades. 
+
+    In MusicXML, units are fixed and relative
+    las unidades son fijas y relativas, y utiliza como unidad una décima del espacio entre 
+    líneas de pentagrama. Suponiendo un espaciado entre líneas de 3mm tendríamos una 
+    precisión de 0,3 mm, del estilo de la estándar en PDF. Como cuesta lo mismo, me decanto 
+    por permitir más precisión y que pueda variarse según necesidades, según hace PDF.
+
+    One tenth of a millimeter seems to be enough precision for positioning objects but
+    cumulative truncation errors are inaceptable. Therefore, at least a couple of decimal 
+    figures should be taken into account during computations.
+    Another posibilitry is to the use of one thousandth of a mm (one micron) as the choice
+    for logical units and operate always with integers.
+</para>
+
+</sect2>
+
+
+<sect2>
+<title>2. Paper size</title>
+
+<para>
+    Paper size: let's consider at maximum a DIN A2 paper. This is:
+        42.0 x 59.4 cm
+        420 x 590 in mm
+        4200 x 5900 in tenths of a mm
+        42,000 x 59,400 in hundredths of a mm
+        420,000 x 594,000 in thousandths of a mm (one micron)
+    so a variable of type int32 (-2,146,483,648 to +2,147,483,647) has enough precision 
+    and no overflow problems (maximum paper size would be  2.1 Km using the micron
+    as logical unit !).
+    Another posibility is to use float, as 6 significative digits is enough to deal with the
+    greatest numbers expresed either in tenths of a mm or in microns.
+</para>
+
+</sect2>
+
+
+<sect2>
+<title>Device units: wxWidgets data types</title>
+
+<para>
+    Device units are always pixels (or dots, for printers).
+</para>
+
+<para>
+    wxCoord is the basic type used by wxWidgets for all screen and DC coordinates. It is
+    allways an int32 to allow for big virtual canvases. Other types extensively used in
+    DC and screen methods are wxPoint, wxRect and wxSize. They use internally type int to
+    store coordinates.
+</para>
+<para>
+    To implement anti-aliasing it is necessary to use subpixel accuracy, that is, to consider
+    fractions of a pixel. Therefore, for anti-aliasing, device units must be fractional.
+    For example, AGG uses either doubles or int(24,8).
+</para>
+<para>
+    As a limit case, let's consider at maximum a DIN A2 paper (42.0 x 59.4 cm) and printer
+    with a resolution of 3048 dpi (1200 dots per centimeter). This will give an space of
+    50,400 x 71,280 dots. Therefore
+    a variable of type int32 (-2,146,483,648 to +2,147,483,647) has enough precision.
+    And for anti-aliasing int24,8 also has enough precision as it allows for 16M.
+</para>
+
+</sect2>
+
+
+<sect2>
+<title>4. Device Context mapping mode</title>
+
+<para>
+    Maximum resolution wxWidgets mapping mode is MM_LOMETRIC, whose units are tenths of a mm.
+    But greater precision can be easily achieved just by using MM_LOMETRIC and using a
+    scaling factor. For example, to use the micron as logical unit the scaling factor 
+    would be 0.01. This scaling factor must multiply the scaling factor used for zooming
+    the the view.
+</para>
+
+</sect2>
+
+
+<sect2>
+<title>Final conclusions</title>
+
+<para>
+    We are going to use two world units:
+      - Logical units: to use in those cases in which it is necessary to refer to real world, 
+        such as when specifying the physical size of the paper to use. The choosen unit will
+        be the micron (one thousand of a millimeter) and will be called "Micron" in the
+        program.
+
+      - Relative units (tenths of distance between staff lines) for all other cases. For 
+      example to specify a note position. This unit will be called "Tenth" in the program.
+
+    For future portability and to improve program legibility we are going to use our own
+    types:
+        lmLUnits - for logical units. Mapped to int32
+        lmPixels - for device units. Mapped to int32
+        lmTenths - for staff relative units. Mapped to int32
+
+    For calculations, all methods will operate (unless strictly necessary) in logical units.
+    As the precision is one micron, cumulative truncation errors are neglectable. We can 
+    safely operate with integers.
+</para>
+
+</sect2>
+
+
+
+
+</sect1>
+
+</chapter>
+
+
+
+<!-- =============================================================== -->
 <!-- ======================    The end     ========================= -->
 <!-- =============================================================== -->
 

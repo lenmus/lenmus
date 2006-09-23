@@ -52,8 +52,9 @@ public:
 
 
 private:
-    void DrawBeamSegment(lmPaper* pPaper, bool fStemDown, int xStart, int yStart,
-                         int xEnd, int yEnd, lmLUnits nThickness,
+    void DrawBeamSegment(lmPaper* pPaper, bool fStemDown,
+                         lmLUnits xStart, lmLUnits yStart,
+                         lmLUnits xEnd, lmLUnits yEnd, lmLUnits nThickness,
                          lmNote* pStartNote, lmNote* pEndNote);
     int ComputeYPosOfSegment(lmNote* pNote, bool fStemDown, int yShift);
 

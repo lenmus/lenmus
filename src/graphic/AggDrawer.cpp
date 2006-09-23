@@ -54,7 +54,7 @@ lmAggDrawer::lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, int strid
     //, m_feng()
     //, m_fman(m_feng)
 {
-    //wxLogMessage(_T("[lmAggDrawer::lmAggDrawer]"));
+    wxLogMessage(_T("[lmAggDrawer::lmAggDrawer] pixels=(%d, %d)"), widthPixels, heightPixels);
     wxASSERT(widthPixels != 0 && heightPixels != 0);
     Initialize();
 

@@ -43,6 +43,9 @@
 //-------------------------------------------------------------------------------------------------
 // lmBarline object implementation
 //-------------------------------------------------------------------------------------------------
+static lmLUnits m_uThinLineWidth;
+static lmLUnits m_uThickLineWidth;
+static lmLUnits m_uSpacing;
 
 //
 //constructors and destructor
@@ -52,12 +55,10 @@ lmBarline::lmBarline(EBarline nBarlineType, lmVStaff* pVStaff, bool fVisible) :
     lmSimpleObj(eTPO_Barline, pVStaff, 1, fVisible, sbDRAGGABLE)
 {
     m_nBarlineType = nBarlineType;
-        //DBG
-    if (GetID() == 95) {
-        // break here
-        int nDbg = 0;
-    }
 
+    m_uThinLineWidth = m_pVStaff->TenthsToLogical(1.5, 1);    // thin line width
+    m_uThickLineWidth = m_pVStaff->TenthsToLogical(6, 1);    // thick line width
+    m_uSpacing = m_pVStaff->TenthsToLogical(4, 1);    //space between lines: 4 tenths
 }
 
 void lmBarline::AddContext(lmContext* pContext, int nStaff)
@@ -189,17 +190,13 @@ void lmBarline::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
 }
 
-// returns the width of the barline (in microns)
+// returns the width of the barline (in logical units)
 lmLUnits lmBarline::DrawBarline(bool fMeasuring, lmPaper* pPaper,
                                 lmLUnits xPos, lmLUnits yTop,
                                 lmLUnits yBottom, wxColour colorC)
 {
-    lmLUnits THIN_LINE_WIDTH = m_pVStaff->TenthsToLogical(1.5, 1);    // thin line width
-    lmLUnits THICK_LINE_WIDTH = m_pVStaff->TenthsToLogical(6, 1);    // thick line width
-    lmLUnits nSpacing = m_pVStaff->TenthsToLogical(4, 1);    //space between lines: 4 tenths
-
     if (!fMeasuring) {
-        wxPen pen(colorC, THIN_LINE_WIDTH, wxSOLID);
+        wxPen pen(colorC, m_uThinLineWidth, wxSOLID);
         wxBrush brush(colorC, wxSOLID);
         pPaper->SetPen(pen);
         pPaper->SetBrush(brush);
@@ -210,70 +207,70 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, lmPaper* pPaper,
         case etb_DoubleBarline:
             if (!fMeasuring) {
                 DrawThinLine(pPaper, xPos, yTop, yBottom);
-                xPos += THIN_LINE_WIDTH + nSpacing;
+                xPos += m_uThinLineWidth + m_uSpacing;
                 DrawThinLine(pPaper, xPos, yTop, yBottom);
             }
-            return (lmLUnits)(nSpacing + THIN_LINE_WIDTH + THIN_LINE_WIDTH);
+            return (lmLUnits)(m_uSpacing + m_uThinLineWidth + m_uThinLineWidth);
             break;
             
         case etb_EndRepetitionBarline:
             if (!fMeasuring) {
                 DrawTwoDots(pPaper, xPos, yTop);
-                xPos += nSpacing;
+                xPos += m_uSpacing;
                 DrawThinLine(pPaper, xPos, yTop, yBottom);
-                xPos += THIN_LINE_WIDTH + nSpacing;
-                DrawThickLine(pPaper, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
+                xPos += m_uThinLineWidth + m_uSpacing;
+                DrawThickLine(pPaper, xPos, yTop, m_uThickLineWidth, yBottom-yTop);
             }
-            return (lmLUnits)(nSpacing + nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
+            return (lmLUnits)(m_uSpacing + m_uSpacing + m_uThinLineWidth + m_uThickLineWidth);
             break;
 
         case etb_StartRepetitionBarline:
             if (!fMeasuring) {
-                DrawThickLine(pPaper, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
-                xPos += THICK_LINE_WIDTH + nSpacing;
+                DrawThickLine(pPaper, xPos, yTop, m_uThickLineWidth, yBottom-yTop);
+                xPos += m_uThickLineWidth + m_uSpacing;
                 DrawThinLine(pPaper, xPos, yTop, yBottom);
-                xPos += nSpacing/2;
+                xPos += m_uSpacing/2;
                 DrawTwoDots(pPaper, xPos, yTop);
             }
-            return (lmLUnits)(nSpacing + nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
+            return (lmLUnits)(m_uSpacing + m_uSpacing + m_uThinLineWidth + m_uThickLineWidth);
             break;
             
         case etb_DoubleRepetitionBarline:
             if (!fMeasuring) {
                 DrawTwoDots(pPaper, xPos, yTop);
-                xPos += nSpacing;
+                xPos += m_uSpacing;
                 DrawThinLine(pPaper, xPos, yTop, yBottom);
-                xPos += THIN_LINE_WIDTH + nSpacing;
+                xPos += m_uThinLineWidth + m_uSpacing;
                 DrawThinLine(pPaper, xPos, yTop, yBottom);
-                xPos += THIN_LINE_WIDTH + nSpacing/2;
+                xPos += m_uThinLineWidth + m_uSpacing/2;
                 DrawTwoDots(pPaper, xPos, yTop);
             }
-            return (lmLUnits)(nSpacing + nSpacing + THIN_LINE_WIDTH + THIN_LINE_WIDTH);
+            return (lmLUnits)(m_uSpacing + m_uSpacing + m_uThinLineWidth + m_uThinLineWidth);
             break;
         
         case etb_StartBarline:
             if (!fMeasuring) {
-                DrawThickLine(pPaper, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
-                xPos += THICK_LINE_WIDTH + nSpacing;
+                DrawThickLine(pPaper, xPos, yTop, m_uThickLineWidth, yBottom-yTop);
+                xPos += m_uThickLineWidth + m_uSpacing;
                 DrawThinLine(pPaper, xPos, yTop, yBottom);
             }
-            return (lmLUnits)(nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
+            return (lmLUnits)(m_uSpacing + m_uThinLineWidth + m_uThickLineWidth);
             break;
             
         case etb_EndBarline:
             if (!fMeasuring) {
                 DrawThinLine(pPaper, xPos, yTop, yBottom);
-                xPos += THIN_LINE_WIDTH + nSpacing;
-                DrawThickLine(pPaper, xPos, yTop, THICK_LINE_WIDTH, yBottom-yTop);
+                xPos += m_uThinLineWidth + m_uSpacing;
+                DrawThickLine(pPaper, xPos, yTop, m_uThickLineWidth, yBottom-yTop);
             }
-            return (lmLUnits)(nSpacing + THIN_LINE_WIDTH + THICK_LINE_WIDTH);
+            return (lmLUnits)(m_uSpacing + m_uThinLineWidth + m_uThickLineWidth);
             break;
 
         case etb_SimpleBarline:
             if (!fMeasuring) {
                 DrawThinLine(pPaper, xPos, yTop, yBottom);
             }
-            return THIN_LINE_WIDTH;
+            return m_uThinLineWidth;
             break;
 
         default:
@@ -288,13 +285,13 @@ void lmBarline::DrawThinLine(lmPaper* pPaper, lmLUnits xPos, lmLUnits yTop, lmLU
     /*
     The DC must have pen and brush properly set
     */
-    pPaper->DrawLine((wxCoord)xPos, (wxCoord)yTop, (wxCoord)xPos, (wxCoord)yBottom);
+    pPaper->DrawLine(xPos, yTop, xPos, yBottom, m_uThinLineWidth);
 
 }
 
 
-void lmBarline::DrawThickLine(lmPaper* pPaper, lmLUnits xLeft, lmLUnits yTop, lmLUnits nWidth,
-                              lmLUnits nHeight)
+void lmBarline::DrawThickLine(lmPaper* pPaper, lmLUnits xLeft, lmLUnits yTop, lmLUnits uWidth,
+                              lmLUnits uHeight)
 {
     /*
     We can not use DrawLine because with DrawLine function we get end of lines rounded
@@ -302,7 +299,9 @@ void lmBarline::DrawThickLine(lmPaper* pPaper, lmLUnits xLeft, lmLUnits yTop, lm
 
     The DC must have pen and brush properly set
     */
-    pPaper->DrawRectangle((wxCoord)xLeft, (wxCoord)yTop, (wxCoord)nWidth, (wxCoord)nHeight);
+    pPaper->DrawLine(xLeft + uWidth/2, yTop,
+                     xLeft + uWidth/2, yTop + uHeight,
+                     uWidth);
 
 }
 

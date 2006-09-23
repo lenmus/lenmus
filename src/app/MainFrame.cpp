@@ -145,9 +145,10 @@ extern wxPageSetupData* g_pPaperSetupData;
 extern lmPaths* g_pPaths;
 
 // access to global external variables
-extern bool g_fReleaseVersion;            // in TheApp.cpp
+extern bool g_fReleaseVersion;          // in TheApp.cpp
 extern bool g_fReleaseBehaviour;        // in TheApp.cpp
-extern bool g_fShowDebugLinks;            // in TheApp.cpp
+extern bool g_fShowDebugLinks;          // in TheApp.cpp
+extern bool g_fUseAntiAliasing;         // in TheApp.cpp 
 
 
 // IDs for menus and controls
@@ -184,6 +185,7 @@ enum
     MENU_Debug_PatternEditor,
     MENU_Debug_DumpBitmaps,
     MENU_Debug_UnitTests,
+    MENU_Debug_UseAntiAliasing,
 
     // Menu Zoom
     MENU_Zoom_100,
@@ -334,6 +336,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_MENU (MENU_Debug_PatternEditor, lmMainFrame::OnDebugPatternEditor)
     EVT_MENU (MENU_Debug_recSelec, lmMainFrame::OnDebugRecSelec)
     EVT_MENU (MENU_Debug_UnitTests, lmMainFrame::OnDebugUnitTests)
+    EVT_MENU (MENU_Debug_UseAntiAliasing, lmMainFrame::OnDebugUseAntiAliasing)
         //debug events requiring a score to be enabled
     EVT_MENU      (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugDumpStaffObjs)
     EVT_UPDATE_UI (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugScoreUI)
@@ -852,6 +855,8 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
             _T("Include debug controls in exercises"), wxITEM_CHECK);
         debug_menu->Append(MENU_Debug_recSelec, _T("&Draw recSelec"), 
             _T("Force to draw selection rectangles around staff objects"), wxITEM_CHECK);
+        debug_menu->Append(MENU_Debug_UseAntiAliasing, _T("&Use anti-aliasing"), 
+            _T("Use anti-aliasing for screen renderization"), wxITEM_CHECK);
         debug_menu->Append(MENU_Debug_SetTraceLevel, _T("Set trace level ...") );
         debug_menu->Append(MENU_Debug_PatternEditor, _T("Test Pattern Editor") );
         debug_menu->Append(MENU_Debug_DumpStaffObjs, _T("&Dump of score") ); 
@@ -965,8 +970,15 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
         // items initially checked
         //
 
-    //if (fDebug) menu_bar->Check(MENU_Debug_recSelec, true);
     gfDrawSelRec = false;    //true;
+
+    //debug toolbar
+    if (fDebug) {
+        menu_bar->Check(MENU_Debug_ForceReleaseBehaviour, g_fReleaseBehaviour);
+        menu_bar->Check(MENU_Debug_ShowDebugLinks, g_fShowDebugLinks);
+        menu_bar->Check(MENU_Debug_recSelec, gfDrawSelRec);
+        menu_bar->Check(MENU_Debug_UseAntiAliasing, g_fUseAntiAliasing);
+    }
 
     // view toolbar
     bool fToolBar = true;
@@ -1354,6 +1366,11 @@ void lmMainFrame::OnDebugForceReleaseBehaviour(wxCommandEvent& event)
 void lmMainFrame::OnDebugShowDebugLinks(wxCommandEvent& event)
 {
     g_fShowDebugLinks = event.IsChecked();
+}
+
+void lmMainFrame::OnDebugUseAntiAliasing(wxCommandEvent& event)
+{
+    g_fUseAntiAliasing = event.IsChecked();
 }
 
 void lmMainFrame::OnDebugRecSelec(wxCommandEvent& event)

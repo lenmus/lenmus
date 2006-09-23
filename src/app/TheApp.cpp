@@ -137,7 +137,9 @@ bool g_fReleaseBehaviour = false;    // This flag is only used to force release 
                                     // in debug mode, and only for some functions (the ones using this flag)
 bool g_fShowDebugLinks = false;        // force to add aditional debug ctrols in exercises.
                                     // only operative in debug mode,
-
+bool g_fUseAntiAliasing = true;     // for testing and comparison purposes. Changing the
+                                    // value of this flags forces to use standar aliased
+                                    // renderization in screen
 
 // Global print data, to remember settings during the session
 wxPrintData* g_pPrintData = (wxPrintData*) NULL;
@@ -715,25 +717,16 @@ lmMainFrame* GetMainFrame(void)
     return g_pMainFrame;
 }
 
-int lmToLogicalUnits(int nValue, lmEUnits nUnits)
+lmLUnits lmToLogicalUnits(int nValue, lmEUnits nUnits)
 {
     return lmToLogicalUnits((double)nValue, nUnits);
-    //switch(nUnits) {
-    //    case lmMICRONS:         return ((int)(lmSCALE * nValue) / 100);      break;
-    //    case lmMILLIMETERS:     return ((int)(lmSCALE * nValue) * 10);       break;
-    //    case lmCENTIMETERS:     return ((int)(lmSCALE * nValue) * 100);      break;
-    //    case lmINCHES:          return ((int)(lmSCALE * nValue) * 254);      break;
-    //    default:
-    //        wxASSERT(false);
-    //        return 10;
-    //}
-
 }
 
-int lmToLogicalUnits(double rValue, lmEUnits nUnits)
+lmLUnits lmToLogicalUnits(double rValue, lmEUnits nUnits)
 {
+    // first convert to tenths of millimeter (mode MM_LOMETRIC), then divide by SCALE factor
     switch(nUnits) {
-        case lmMICRONS:         return (int)(rValue / (lmSCALE * 100.));      break;
+        case lmMICRONS:         return (int)((rValue / 100.) / lmSCALE);      break;
         case lmMILLIMETERS:     return (int)((rValue * 10.) / lmSCALE);       break;
         case lmCENTIMETERS:     return (int)((rValue * 100.) / lmSCALE);      break;
         case lmINCHES:          return (int)((rValue * 254.) / lmSCALE);      break;

@@ -39,19 +39,54 @@ lmDrawer::lmDrawer(wxDC* pDC)
 }
 
 void lmDrawer::DrawLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
-                           lmLUnits width)
+                           lmLUnits width, lmELineEdges nEdge)
 {
     double alpha = atan((y2 - y1) / (x2 - x1));
-    double incrX = (width * sin(alpha)) / 2.0;
-    double incrY = (width * cos(alpha)) / 2.0;
 
-    wxPoint points[] = {
-        wxPoint(x1+incrX, y1-incrY),
-        wxPoint(x1-incrX, y1+incrY),
-        wxPoint(x2-incrX, y2+incrY),
-        wxPoint(x2+incrX, y2-incrY)
-    };
-    DrawPolygon(4, points);
+    switch(nEdge) {
+        case eEdgeNormal:
+            // edge line is perpendicular to line
+            {
+            lmLUnits incrX = (lmLUnits)( (width * sin(alpha)) / 2.0 );
+            lmLUnits incrY = (lmLUnits)( (width * cos(alpha)) / 2.0 );
+            wxPoint points[] = {
+                wxPoint(x1+incrX, y1-incrY),
+                wxPoint(x1-incrX, y1+incrY),
+                wxPoint(x2-incrX, y2+incrY),
+                wxPoint(x2+incrX, y2-incrY)
+            };
+            DrawPolygon(4, points);
+            break;
+            }
+
+        case eEdgeVertical:
+            // edge is always a vertical line
+            {
+            lmLUnits incrY = (lmLUnits)( (width / cos(alpha)) / 2.0 );
+            wxPoint points[] = {
+                wxPoint(x1, y1-incrY),
+                wxPoint(x1, y1+incrY),
+                wxPoint(x2, y2+incrY),
+                wxPoint(x2, y2-incrY)
+            };
+            DrawPolygon(4, points);
+            break;
+            }
+
+        case eEdgeHorizontal:
+            // edge is always a horizontal line
+            {
+            lmLUnits incrX = (lmLUnits)( (width / sin(alpha)) / 2.0 );
+            wxPoint points[] = {
+                wxPoint(x1+incrX, y1),
+                wxPoint(x1-incrX, y1),
+                wxPoint(x2-incrX, y2),
+                wxPoint(x2+incrX, y2)
+            };
+            DrawPolygon(4, points);
+            break;
+            }
+    }
 
 }
 

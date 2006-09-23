@@ -223,7 +223,11 @@ void lmChord::DrawStem(bool fMeasuring, lmPaper* pPaper, wxColour colorC, wxFont
         }
     }
 
-    if (!fMeasuring) pPaper->DrawLine(xStem, yStemStart, xStem, yStemEnd);
+    if (!fMeasuring) {
+        #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
+        lmLUnits uStemThickness = pVStaff->TenthsToLogical(STEM_WIDTH, nStaff) / 10;
+        pPaper->DrawLine(xStem, yStemStart, xStem, yStemEnd, uStemThickness);
+    }
 
     //draw the flag for chords not beamed
     if (!pBaseNote->IsBeamed() && pBaseNote->GetNoteType() > eQuarter) {

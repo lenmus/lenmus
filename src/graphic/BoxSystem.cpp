@@ -132,12 +132,12 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     pVStaff = pInstr->GetVStaff(pInstr->GetNumStaves());    //last staff of this system
     lmLUnits yBottom = pVStaff->GetYBottom();
 
-    lmLUnits THIN_LINE_WIDTH = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
-    wxPen pen(*wxBLACK, THIN_LINE_WIDTH, wxSOLID);
+    lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
+    wxPen pen(*wxBLACK, uLineThickness, wxSOLID);
     wxBrush brush(*wxBLACK, wxSOLID);
     pPaper->SetPen(pen);
     pPaper->SetBrush(brush);
-    pPaper->DrawLine((wxCoord)xPos, (wxCoord)yTop, (wxCoord)xPos, (wxCoord)yBottom);
+    pPaper->DrawLine(xPos, yTop, xPos, yBottom, uLineThickness);
 
 }
 

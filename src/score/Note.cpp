@@ -653,7 +653,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
                              m_pVStaff->TenthsToLogical(8, m_nStaffNum);
         //lmLUnits widthLine = m_pNoteheadShape->GetBoundsRectangle().width + 
         //                     m_pVStaff->TenthsToLogical(8, m_nStaffNum);
-        DrawLegerLines(pPaper, nPosOnStaff, yStaffTopLine, xLine, widthLine);
+        DrawLegerLines(pPaper, nPosOnStaff, yStaffTopLine, xLine, widthLine, m_nStaffNum);
     }
     
     // render associated notations ------------------------------------------------------
@@ -711,7 +711,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //if this is the last note of a beamed group draw the beam lines
     //--------------------------------------------------------------------------------------
     if (!fMeasuring && m_fBeamed && m_BeamInfo[0].Type == eBeamEnd) {
-        lmLUnits nThickness = m_pVStaff->TenthsToLogical(4, m_nStaffNum);
+        lmLUnits nThickness = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         //DOC: Beam spacing
         // ----------------
         //according to http://www2.coloradocollege.edu/dept/mu/Musicpress/engraving.html
@@ -944,13 +944,15 @@ void lmNote::MakeUpPhase(lmPaper* pPaper)
 
 }
 
-void lmNote::DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits yStaffTopLine, lmLUnits xPos, lmLUnits width, int nROP)
+void lmNote::DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits yStaffTopLine,
+                            lmLUnits xPos, lmLUnits width, int nStaff, int nROP)
 {
     if (nPosOnStaff > 0 && nPosOnStaff < 12) return;
 
     if (nROP != wxCOPY) pPaper->SetLogicalFunction(nROP);
 
     xPos += m_paperPos.x;        // make it absolute
+    lmLUnits nThick = m_pVStaff->GetStaffLineThick(nStaff);
 
     int i;
     lmLUnits yPos, nTenths;
@@ -960,7 +962,7 @@ void lmNote::DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits yStaffTop
             if (i % 2 == 0) {
                 nTenths = 5 * (i - 10);
                 yPos = yStaffTopLine - m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                pPaper->DrawLine(xPos, yPos, xPos + width, yPos);
+                pPaper->DrawLine(xPos, yPos, xPos + width, yPos, nThick);
             }
         }
 
@@ -970,7 +972,7 @@ void lmNote::DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits yStaffTop
             if (i % 2 == 0) {
                 nTenths = 5 * (10 - i);
                 yPos = yStaffTopLine + m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                pPaper->DrawLine(xPos, yPos, xPos + width, yPos);
+                pPaper->DrawLine(xPos, yPos, xPos + width, yPos, nThick);
             }
         }
     }

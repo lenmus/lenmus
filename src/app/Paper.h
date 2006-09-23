@@ -95,8 +95,9 @@ public:
     void DrawCircle(const wxPoint& pt, wxCoord radius) { m_pDrawer->DrawCircle(pt, radius); }
     void DrawPolygon(int n, wxPoint points[]) { m_pDrawer->DrawPolygon(n, points); }
 
-    void DrawLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, lmLUnits width)
-        { m_pDrawer->DrawLine(x1, y1, x2, y2, width); }
+    void DrawLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
+                  lmLUnits width, lmELineEdges nEdge = eEdgeNormal)
+        { m_pDrawer->DrawLine(x1, y1, x2, y2, width, nEdge); }
 
     //brushes, colors, fonts, ...
     void SetBrush(wxBrush brush) { m_pDrawer->SetBrush(brush); }

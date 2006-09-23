@@ -60,8 +60,8 @@
 // factor to multiply the program internal unit (logical units) so that
 // they became DC units: one tenth of mm
 
-#define lmSCALE      1.0              // logical units: one tenth of millimiter
-//#define lmSCALE      0.1              // logical units: one cent of millimiter
+//#define lmSCALE      1.0              // logical units: one tenth of millimiter
+#define lmSCALE      0.1              // logical units: one cent of millimiter
 //#define lmSCALE      0.01             // logical units: one micron
 
 enum lmEUnits {
@@ -73,8 +73,8 @@ enum lmEUnits {
 };
 
 // defined in TheApp.cpp
-extern int lmToLogicalUnits(int nValue, lmEUnits nUnits);
-extern int lmToLogicalUnits(double rValue, lmEUnits nUnits);
+extern lmLUnits lmToLogicalUnits(int nValue, lmEUnits nUnits);
+extern lmLUnits lmToLogicalUnits(double rValue, lmEUnits nUnits);
 
 
 #endif    // __DEFS_H__ 

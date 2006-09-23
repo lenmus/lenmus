@@ -216,9 +216,10 @@ Virtual paper layout
 
 */
 
-#ifdef __GNUG__
-// #pragma implementation
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma implementation "scoreView.h"
 #endif
+
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -525,49 +526,73 @@ void lmScoreView::GetPageInfo(int* pMinPage, int* pMaxPage, int* pSelPageFrom, i
 void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
 {
     // This method is only invoked for print and print-preview. It is invoked from
-    // lmPrintout
-    // It is responsible of drawing the requested page.
-    // Receives the page size in pixels
+    // lmPrintout. It is responsible of drawing the requested page.
+    // In some displays, the preview at 100% scale does not have the real size.
+    // After several attempts and research I discovered that this is due to the
+    // fact that changing display resolution doesn't change reported ppi
+    // resolution. The effect also affects to other programs (i.e. Adobe Acrobat
+    // Reader) that presents the same behaviour that LenMus.
+
+
+    // Get paper size and real usable size of printer paper (in world units)
+    wxSize uPaperSize = m_Paper.GetPaperSize();     // in lmLUnits
+    int printerWidthMM, printerHeightMM;            // in millimeters
+    pPrintout->GetPageSizeMM(&printerWidthMM, &printerHeightMM);
+    lmLUnits uPrinterSizeX = lmToLogicalUnits(printerWidthMM, lmMILLIMETERS);
+    lmLUnits uPrinterSizeY = lmToLogicalUnits(printerHeightMM, lmMILLIMETERS);
+
+    // Get DC size in pixels
+    int nDCPixelsW, nDCPixelsH;
+    pDC->GetSize(&nDCPixelsW, &nDCPixelsH);
 
     // Calculate the scaling factor to fit score page in printer paper
-    wxSize paperSize = m_Paper.GetPaperSize();     // in lmLUnits
-    int printerWidthMM, printerHeightMM;
-    pPrintout->GetPageSizeMM(&printerWidthMM, &printerHeightMM);
-    lmLUnits printerSizeX = lmToLogicalUnits(printerWidthMM, lmMILLIMETERS);
-    lmLUnits printerSizeY = lmToLogicalUnits(printerHeightMM, lmMILLIMETERS);
-    float scaleX = (float)printerSizeX / (float)paperSize.GetWidth();
-    float scaleY = (float)printerSizeY / (float)paperSize.GetHeight();
+    // It should be 1.00 if printer paper is the same size than the
+    // intended score paper, but in practise it will be a litle less
+    // than 1.00 as wxPrintout reports paper size discounting printer
+    // margings
+    double marginScaleX = (double)uPrinterSizeX / (double)uPaperSize.GetWidth();
+    double marginScaleY = (double)uPrinterSizeY / (double)uPaperSize.GetHeight();
 
-    float actualScale;
-    int nWithDC, nHeighDC;
-    pDC->GetSize(&nWithDC, &nHeighDC);
-    if (pPrintout->IsPreview()) {
-        // Now we have to compute the scaling factor between the DC size and
-        // the view size
-        float xScale = scaleX * (float)(nWithDC/(float)m_xPageSizeD) * m_rScale;
-        float yScale = scaleY * (float)(nHeighDC/(float)m_yPageSizeD) * m_rScale;
-        actualScale = wxMin(xScale, yScale);
+
+    bool fPreview = pPrintout->IsPreview();
+    double overallScale;
+
+    if (fPreview) {
+        // We have to compute the scaling factor between the preview DC size and
+        // the current view size
+        double xScale = (double)(nDCPixelsW/(double)m_xPageSizeD) * m_rScale / marginScaleX;
+        double yScale = (double)(nDCPixelsH/(double)m_yPageSizeD) * m_rScale / marginScaleY;
+        overallScale = wxMin(xScale, yScale);
     }
     else {
-        //for printing escale is 100%
-        actualScale = wxMin(scaleX, scaleY);
+        // For printing, as the DC is set in LOMETRIC mode, all scaling
+        // is autoatically handled by the DC
+        overallScale = lmSCALE;
     }
-    pDC->SetUserScale(actualScale, actualScale);
+
+    pDC->SetUserScale(overallScale, overallScale);
     pDC->SetMapMode(lmDC_MODE);
 
-    wxLogMessage(_T("[lmScoreView::DrawPage] LU: paper=(%d,%d), printer=(%d, %d). Pixels: DC=(%d, %d), view=(%d, %d),  scale %f, actual scale %f"), 
-        paperSize.GetWidth(), paperSize.GetHeight(), 
-        printerSizeX, printerSizeY,
-        nWithDC, nHeighDC,
-        m_xPageSizeD, m_yPageSizeD,
-        scaleX, actualScale);
-
-    //Direct renderization on printer DC
-    //m_Paper.SetDC(pDC);           //the layout phase requires a DC
-    m_Paper.SetDrawer(new lmDirectDrawer(pDC));
     lmScore *pScore = ((lmScoreDocument *)GetDocument())->GetScore();
-    m_graphMngr.Prepare(pScore, nWithDC, nHeighDC, (double)actualScale, &m_Paper);
-    m_graphMngr.Render(lmNO_BITMAPS, nPage);        //direct renderization on DC
+    if (fPreview) {
+        // use anti-aliasing
+        wxMemoryDC memoryDC;
+        m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
+        m_graphMngr.Prepare(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
+        wxBitmap* pPageBitmap = m_graphMngr.Render(lmUSE_BITMAPS, nPage);
+        wxASSERT(pPageBitmap && pPageBitmap->Ok());
+        memoryDC.SelectObject(*pPageBitmap);
+        pDC->SetUserScale(1.0, 1.0);
+        pDC->SetMapMode(wxMM_TEXT);
+        pDC->Blit(0, 0, nDCPixelsW, nDCPixelsH, &memoryDC, 0, 0);
+        memoryDC.SelectObject(wxNullBitmap);
+    }
+    else {
+        //Direct renderization on printer DC
+        m_Paper.SetDrawer(new lmDirectDrawer(pDC));
+        m_graphMngr.Prepare(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
+        m_graphMngr.Render(lmNO_BITMAPS, nPage);        
+    }
 
 }
 
@@ -608,9 +633,27 @@ void lmScoreView::SetScale(double rScale)
         wxClientDC dc(m_pCanvas);
         dc.SetMapMode(lmDC_MODE);
         dc.SetUserScale( m_rScale, m_rScale );
-        wxSize pageSize = m_Paper.GetPaperSize();
-        m_xPageSizeD = dc.LogicalToDeviceXRel(pageSize.GetWidth());
-        m_yPageSizeD = dc.LogicalToDeviceYRel(pageSize.GetHeight());
+        wxSize uPageSize = m_Paper.GetPaperSize();
+        m_xPageSizeD = dc.LogicalToDeviceXRel(uPageSize.GetWidth());
+        m_yPageSizeD = dc.LogicalToDeviceYRel(uPageSize.GetHeight());
+
+        // ----------------------------------------------------------------------------
+        // This commented out code produces the same results than the
+        // following code. The problem for not geting real size (1 : 1) on
+        // screen is due to ppi resolution doesn't change when pixels
+        // resolution is changed.
+
+        //// Get the logical pixels per inch of screen
+        //wxSize ppiScreen = dc.GetPPI();
+
+        //// There are approx. 25.4 mm to the inch. There are ppi
+        //// device units to the inch. Therefore 1 mm corresponds to
+        //// ppi/25.4 device units.
+        //lmLUnits oneMM = lmToLogicalUnits(1, lmMILLIMETERS);
+        //m_xDisplayPixelsPerLU = (double)ppiScreen.x / (25.4 * (double)oneMM);
+        //m_yDisplayPixelsPerLU = (double)ppiScreen.y / (25.4 * (double)oneMM);
+
+        //-----------------------------------------------------------------------------
 
         // store new conversion factors
         m_xDisplayPixelsPerLU = (double)dc.LogicalToDeviceXRel(100000) / 100000.0;
@@ -619,8 +662,10 @@ void lmScoreView::SetScale(double rScale)
         //reposition controls
         ResizeControls();    
 
-        //wxLogMessage(_T("[lmScoreView::SetScale] scale=%f, m_rScale=%f, DisplayPixelsPerLU=(%f, %f)"),
-        //    rScale, m_rScale, m_xDisplayPixelsPerLU, m_yDisplayPixelsPerLU);
+        //wxLogMessage(_T("[lmScoreView::SetScale] scale=%f, m_rScale=%f, DisplayPixelsPerLU=(%f, %f), pageSize LU(%d, %d), pageSize pixels(%d, %d)"),
+        //    rScale, m_rScale, m_xDisplayPixelsPerLU, m_yDisplayPixelsPerLU,
+        //    uPageSize.GetWidth(), uPageSize.GetHeight(),
+        //    m_xPageSizeD, m_yPageSizeD);
     }
 
     m_pCanvas->Refresh(true);    //erase background

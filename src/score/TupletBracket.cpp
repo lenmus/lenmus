@@ -163,10 +163,9 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
     lmNote* pEndNote = (lmNote*)pEndNR;
 
     //Prepare pen
+    lmLUnits uThick = lmToLogicalUnits(0.2, lmMILLIMETERS);    //! @todo user options
     wxPen oldPen = pPaper->GetPen();
-    wxPen pen((m_fSelected ? g_pColors->ScoreSelected() : colorC),
-              lmToLogicalUnits(0.2, lmMILLIMETERS),         // width = 0.2 mm
-              wxSOLID);
+    wxPen pen((m_fSelected ? g_pColors->ScoreSelected() : colorC), uThick, wxSOLID);
     pPaper->SetPen(pen);
 
     //Mesure number
@@ -228,18 +227,21 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
     //draw bracket
     //---------------------------------------------
     //horizontal line
-    pPaper->DrawLine(xStart, yLineStart, xEnd, yLineEnd);
+    pPaper->DrawLine(xStart, yLineStart, xEnd, yLineEnd, uThick, eEdgeVertical);
     
     //vertical borders
-    pPaper->DrawLine(xStart, yLineStart, xStart, yStartBorder);
-    pPaper->DrawLine(xEnd, yLineEnd, xEnd, yEndBorder);
-    
+    lmLUnits x1 = xStart + uThick / 2;
+    lmLUnits x2 = xEnd - uThick / 2;
+    pPaper->DrawLine(x1, yLineStart, x1, yStartBorder, uThick);
+    pPaper->DrawLine(x2, yLineEnd, x2, yEndBorder, uThick);
+
+    pPaper->SetPen(oldPen);
+
     //write the number
     if (m_fShowNumber) {
         pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
         pPaper->DrawText(sNumber, xNumber, yNumber);
     }
-    pPaper->SetPen(oldPen);
 
     
 }

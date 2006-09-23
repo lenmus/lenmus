@@ -100,7 +100,7 @@ public:
     lmLUnits GetVStaffHeight();
     void SetUpFonts(lmPaper* pPaper);
     bool IsOverlayered() { return m_fOverlayered; }
-
+    lmLUnits GetStaffLineThick(int nStaff);
 
     lmScoreObj* FindSelectableObject(wxPoint& pt);
     lmNote* FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep);

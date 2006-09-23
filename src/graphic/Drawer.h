@@ -34,6 +34,12 @@
 
 #include "../score/defs.h"      // lmLUnits, lmPixels
 
+enum lmELineEdges
+{
+    eEdgeNormal = 0,        // edge line is perpendicular to line
+    eEdgeVertical,          // edge is always a vertical line
+    eEdgeHorizontal         // edge is always a horizontal line
+};
 
 class lmDrawer
 {
@@ -49,7 +55,8 @@ public:
     virtual void DrawCircle(const wxPoint& pt, wxCoord radius) = 0;
     virtual void DrawPolygon(int n, wxPoint points[]) = 0;
 
-    virtual void DrawLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, lmLUnits width);
+    virtual void DrawLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
+                          lmLUnits width, lmELineEdges nEdge = eEdgeNormal);
 
     //brushes, colors, fonts, ...
     virtual void SetBrush(wxBrush brush) = 0;
