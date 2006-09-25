@@ -51,16 +51,16 @@ public:
         // lmStaffObj
     wxBitmap*    GetBitmap(double rScale);
     void        DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
-    void        MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& ptOffset, 
-                            const wxPoint& ptLog, const wxPoint& dragStartPosL, const wxPoint& ptPixels);
-    wxPoint        EndDrag(const wxPoint& pos);
+    void        MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
+                            const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels);
+    lmUPoint        EndDrag(const lmUPoint& pos);
 
     wxString    Dump();
     wxString    SourceLDP();
     wxString    SourceXML();
 
         //lmCompositeObj
-    lmScoreObj* FindSelectableObject(wxPoint& pt);
+    lmScoreObj* FindSelectableObject(lmUPoint& pt);
 
         //lmNoteRest
     bool IsInChord() { return false; }        

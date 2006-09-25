@@ -86,7 +86,7 @@ lmScoreObj::~lmScoreObj()
     if (m_pShape) delete m_pShape;
 }
 
-bool lmScoreObj::IsAtPoint(wxPoint& pt)
+bool lmScoreObj::IsAtPoint(lmUPoint& pt)
 {
     wxRect rect(GetSelRect());
     return rect.Inside(pt.x, pt.y);
@@ -110,14 +110,14 @@ void lmScoreObj::DrawSelRectangle(lmPaper* pPaper, wxColour colorC)
 // methods only for daggable objects
 //======================================================================================
 
-void lmScoreObj::MoveTo(wxPoint& pt)
+void lmScoreObj::MoveTo(lmUPoint& pt)
 {
     m_paperPos.y = pt.y;
     m_paperPos.x = pt.x;
 }
 
-void lmScoreObj::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& offsetD, 
-                const wxPoint& pagePosL, const wxPoint& dragStartPosL, const wxPoint& canvasPosD)
+void lmScoreObj::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD, 
+                const lmUPoint& pagePosL, const lmUPoint& dragStartPosL, const lmDPoint& canvasPosD)
 {
     /*
      DragImage->Move() requires device units referred to canvas window. To compute the
@@ -141,20 +141,20 @@ void lmScoreObj::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint
 
     // and it is equivalent to work from logical units and doing all this:
 
-//    wxPoint nShiftVector = pagePosL - dragStartPosL;        // the displacement
+//    lmUPoint nShiftVector = pagePosL - dragStartPosL;        // the displacement
 //    // as m_glyphPos is fixed, the displacement must be translated to paperPos
-//    wxPoint newPaperPos = m_paperPos + nShiftVector;
+//    lmUPoint newPaperPos = m_paperPos + nShiftVector;
 //    // then the shape must be drawn at:
-//    wxPoint ptNewD;
+//    lmDPoint ptNewD;
 //    ptNewD.x = pPaper->LogicalToDeviceX(newPaperPos.x + m_glyphPos.x) + offsetD.x;
 //    ptNewD.y = pPaper->LogicalToDeviceY(newPaperPos.y + m_glyphPos.y) + offsetD.y;
 //    pDragImage->Move(ptNewD);
 
 }
 
-wxPoint lmScoreObj::EndDrag(const wxPoint& pos)
+lmUPoint lmScoreObj::EndDrag(const lmUPoint& pos)
 {
-    wxPoint oldPos(m_paperPos + m_glyphPos);        // save current position for Undo command
+    lmUPoint oldPos(m_paperPos + m_glyphPos);        // save current position for Undo command
 
     // move object to new position
     m_paperPos.x = pos.x - m_glyphPos.x;

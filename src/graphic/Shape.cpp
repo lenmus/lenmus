@@ -63,13 +63,14 @@ void lmShapeObj::SetSelRectangle(int x, int y, int nWidth, int nHeight)
     m_SelRect.y = y;
 }
 
-void lmShapeObj::DrawSelRectangle(lmPaper* pPaper, wxPoint pos, wxColour colorC)
+void lmShapeObj::DrawSelRectangle(lmPaper* pPaper, lmUPoint pos, wxColour colorC)
 {
     wxPen oldPen = pPaper->GetPen();
     wxPen pen(colorC, 1, wxSOLID);      //width = 1px
     pPaper->SetPen(pen);
     pPaper->SetBrush( *wxTRANSPARENT_BRUSH );
-    pPaper->DrawRectangle(m_SelRect.GetPosition()+pos, m_SelRect.GetSize());
+    wxPoint point = lmUPointToPoint(pos);
+    pPaper->DrawRectangle(m_SelRect.GetPosition()+point, m_SelRect.GetSize());
     pPaper->SetPen(oldPen);
 
 }
@@ -121,7 +122,7 @@ void lmShapeComposite::Add(lmShapeObj* pShape)
 
 }
 
-void lmShapeComposite::Render(lmPaper* pPaper, wxPoint pos, wxColour color)
+void lmShapeComposite::Render(lmPaper* pPaper, lmUPoint pos, wxColour color)
 {
     lmShapeObj* pShape;
     ShapesList::Node* pNode = m_Components.GetFirst();
@@ -155,7 +156,7 @@ lmShapeLine::lmShapeLine(lmScoreObj* pOwner, lmLUnits nLength, lmLUnits nWidth)
     m_nWidth = nWidth;
 }
 
-void lmShapeLine::Render(lmPaper* pPaper, wxPoint pos, wxColour color)
+void lmShapeLine::Render(lmPaper* pPaper, lmUPoint pos, wxColour color)
 {
     wxPen oldPen = pPaper->GetPen();
     wxPen pen(color, m_nWidth, wxSOLID);
@@ -201,7 +202,7 @@ lmShapeGlyph::lmShapeGlyph(lmScoreObj* pOwner, int nGlyph, wxFont* pFont)
 
 }
 
-void lmShapeGlyph::Measure(lmPaper* pPaper, lmStaff* pStaff, wxPoint offset)
+void lmShapeGlyph::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
 {
     // compute and store position
     m_shift.x = offset.x;
@@ -222,7 +223,7 @@ void lmShapeGlyph::Measure(lmPaper* pPaper, lmStaff* pStaff, wxPoint offset)
 }
 
 
-void lmShapeGlyph::Render(lmPaper* pPaper, wxPoint pos, wxColour color)
+void lmShapeGlyph::Render(lmPaper* pPaper, lmUPoint pos, wxColour color)
 {
     wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
 

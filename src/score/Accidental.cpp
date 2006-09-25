@@ -76,7 +76,7 @@ void lmAccidental::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaf
 //    m_selRect.y = m_glyphPos.y + nShift;
 }
 
-void lmAccidental::Measure(lmPaper* pPaper, lmStaff* pStaff, wxPoint offset)
+void lmAccidental::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
 {
     //set again the font, just in case the scale has changed
     wxFont* pFont = m_pOwner->GetFont();
@@ -87,7 +87,7 @@ void lmAccidental::Measure(lmPaper* pPaper, lmStaff* pStaff, wxPoint offset)
     m_pShape[0]->Measure(pPaper, pStaff, offset);
     if (m_pShape[1]) {
         int width = (m_pShape[0]->GetSelRectangle()).width;
-        m_pShape[1]->Measure(pPaper, pStaff, wxPoint(offset.x+width, offset.y));
+        m_pShape[1]->Measure(pPaper, pStaff, lmUPoint(offset.x+width, offset.y));
     }
 
     //set the ScoreObj shape
@@ -113,7 +113,7 @@ void lmAccidental::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {
 }
 
-void lmAccidental::Render(lmPaper* pPaper, wxPoint pos, wxColour color)
+void lmAccidental::Render(lmPaper* pPaper, lmUPoint pos, wxColour color)
 {
     GetShape()->Render(pPaper, pos, color);
 }

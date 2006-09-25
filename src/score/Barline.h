@@ -48,9 +48,9 @@ public:
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
     wxBitmap* GetBitmap(double rScale);
-    void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& ptOffset, 
-                         const wxPoint& ptLog, const wxPoint& dragStartPosL, const wxPoint& ptPixels);
-    wxPoint EndDrag(const wxPoint& pos);
+    void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
+                         const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels);
+    lmUPoint EndDrag(const lmUPoint& pos);
 
         //specific methods for barline
 
@@ -68,8 +68,10 @@ public:
 private:
     lmLUnits DrawBarline(bool fMeasuring, lmPaper* pPaper, lmLUnits xPos, lmLUnits yTop,
                          lmLUnits yBottom, wxColour colorC = *wxBLACK);
-    void DrawThinLine(lmPaper* pPaper, lmLUnits xPos, lmLUnits yTop, lmLUnits yBottom);
-    void DrawThickLine(lmPaper* pPaper, lmLUnits xLeft, lmLUnits yTop, lmLUnits nWidth, lmLUnits nHeight);
+    void DrawThinLine(lmPaper* pPaper, lmLUnits xPos, lmLUnits yTop, lmLUnits yBottom,
+                      wxColour color);
+    void DrawThickLine(lmPaper* pPaper, lmLUnits xLeft, lmLUnits yTop, lmLUnits nWidth,
+                       lmLUnits nHeight, wxColour color);
     void DrawTwoDots(lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos);
 
 private:

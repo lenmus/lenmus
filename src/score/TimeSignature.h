@@ -60,9 +60,9 @@ public:
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
     wxBitmap* GetBitmap(double rScale);
-    void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& ptOffset, 
-                         const wxPoint& ptLog, const wxPoint& dragStartPosL, const wxPoint& ptPixels);
-    wxPoint EndDrag(const wxPoint& pos);
+    void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
+                         const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels);
+    lmUPoint EndDrag(const lmUPoint& pos);
 
 
     //    debugging
@@ -71,7 +71,7 @@ public:
     wxString SourceXML();
 
     //rendering related methods
-    lmLUnits DrawAt(bool fMeasuring, lmPaper* pPaper, wxPoint pos, wxColour colorC = *wxBLACK);
+    lmLUnits DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos, wxColour colorC = *wxBLACK);
 
     //sound related methods
     void AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime, int nMeasure);

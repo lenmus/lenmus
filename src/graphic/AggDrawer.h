@@ -68,9 +68,11 @@ public:
     void DrawRectangle(wxPoint point, wxSize size);
     void DrawRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height);
     void DrawCircle(wxCoord x, wxCoord y, wxCoord radius);
-    void DrawCircle(const wxPoint& pt, wxCoord radius);
-    void DrawPolygon(int n, wxPoint points[]);
+    void DrawCircle(const lmUPoint& pt, wxCoord radius);
 
+    void DrawRectangle(lmUPoint uPoint, wxSize size);
+    void RenderPolygon(int n, lmUPoint points[]);
+    void RenderCircle(const lmUPoint& pt, lmLUnits radius);
 
     //brushes, colors, fonts, ...
     void SetBrush(wxBrush brush);
@@ -95,6 +97,7 @@ private:
     void Initialize();
     inline double WorldToDeviceX(lmLUnits x) const { return m_xDevicePixelsPerLU * (double)x; }
     inline double WorldToDeviceY(lmLUnits y) const { return m_yDevicePixelsPerLU * (double)y; }
+    lmColor_rgba8 lmToRGBA8(wxColour color);
 
 
 
@@ -132,9 +135,13 @@ private:
     double        m_xDevicePixelsPerLU;
     double        m_yDevicePixelsPerLU;
 
-    // colors
-    lmColor_rgba8   m_colorF;   //foreground;
-    lmColor_rgba8   m_colorB;   //background;
+
+    //current settings
+    lmColor_rgba8   m_colorF;   //foreground color;
+    lmColor_rgba8   m_colorB;   //background color;
+    lmColor_rgba8   m_penColor;
+    int             m_penWidth;
+
 
     wxBitmap* m_pDummyBitmap;
 

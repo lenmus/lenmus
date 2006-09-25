@@ -737,7 +737,3 @@ lmLUnits lmToLogicalUnits(double rValue, lmEUnits nUnits)
 
 }
 
-
-
-
-

@@ -113,7 +113,7 @@ public:
     virtual bool IsInChord() = 0;    
 
     //implementation of virtual methods of base class lmCompositeObj
-    virtual lmScoreObj* FindSelectableObject(wxPoint& pt)=0;
+    virtual lmScoreObj* FindSelectableObject(lmUPoint& pt)=0;
 
     // methods related to note/rest positioning information
     lmLUnits GetStaffOffset() { return m_pVStaff->GetStaffOffset(m_nStaffNum); }

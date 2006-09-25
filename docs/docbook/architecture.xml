@@ -481,7 +481,9 @@ memory) for smooth scrolling to these most probable pages.
     and no overflow problems (maximum paper size would be  2.1 Km using the micron
     as logical unit !).
     Another posibility is to use float, as 6 significative digits is enough to deal with the
-    greatest numbers expresed either in tenths of a mm or in microns.
+    greatest numbers expresed either in tenths of a mm or in microns. Also, a float
+    has two advantages: 1) avoiding truncation errors during computations; and 2)
+    a trivial upgrade to double if more precision is required in future.
 </para>
 
 </sect2>
@@ -511,6 +513,9 @@ memory) for smooth scrolling to these most probable pages.
     50,400 x 71,280 dots. Therefore
     a variable of type int32 (-2,146,483,648 to +2,147,483,647) has enough precision.
     And for anti-aliasing int24,8 also has enough precision as it allows for 16M.
+    Also a float (6-digit precision) will be enough, and has the advantage of avoiding
+    truncation errors during computations and a trivial upgrade to double if more
+    precision where required.
 </para>
 
 </sect2>
@@ -545,13 +550,12 @@ memory) for smooth scrolling to these most probable pages.
 
     For future portability and to improve program legibility we are going to use our own
     types:
-        lmLUnits - for logical units. Mapped to int32
+        lmLUnits - for logical units. Mapped to float
+        lmTenths - for staff relative units. Mapped to float
         lmPixels - for device units. Mapped to int32
-        lmTenths - for staff relative units. Mapped to int32
 
     For calculations, all methods will operate (unless strictly necessary) in logical units.
-    As the precision is one micron, cumulative truncation errors are neglectable. We can 
-    safely operate with integers.
+    As the precision is one micron, cumulative truncation errors are neglectable.
 </para>
 
 </sect2>

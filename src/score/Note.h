@@ -54,16 +54,16 @@ public:
         // lmStaffObj
     wxBitmap*   GetBitmap(double rScale);
     void        DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
-    void        MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& ptOffset, 
-                            const wxPoint& ptLog, const wxPoint& dragStartPosL, const wxPoint& ptPixels);
-    wxPoint     EndDrag(const wxPoint& pos);
+    void        MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
+                            const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels);
+    lmUPoint    EndDrag(const lmUPoint& pos);
 
     wxString    Dump();
     wxString    SourceLDP();
     wxString    SourceXML();
 
         //lmCompositeObj
-    lmScoreObj* FindSelectableObject(wxPoint& pt);
+    lmScoreObj* FindSelectableObject(lmUPoint& pt);
 
 
     // methods related to note positioning information
@@ -151,7 +151,7 @@ private:
                         lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC);
     void DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits yTopLine, lmLUnits xPos,
                         lmLUnits width, int nStaff, int nROP = wxCOPY);
-    lmEGlyphIndex DrawFlag(bool fMeasuring, lmPaper* pPaper, wxPoint pos, wxColour colorC);
+    lmEGlyphIndex DrawFlag(bool fMeasuring, lmPaper* pPaper, lmUPoint pos, wxColour colorC);
     lmLUnits DrawDot(bool fMeasuring, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos, 
                      wxColour colorC, bool fUseFont);
 

@@ -89,12 +89,7 @@ public:
     int GetNumMeasures();
 
     // rendering methods
-    void DrawStaffLines(bool fMeasuring,
-                        lmPaper* pPaper,
-                        lmLUnits dyInicial,
-                        lmLUnits dyEntrePentagramas,
-                        lmLUnits xFrom = 0,
-                        lmLUnits xTo = 0);
+    void DrawStaffLines(bool fMeasuring, lmPaper* pPaper, lmLUnits xFrom, lmLUnits xTo);
     void DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPaper* pPaper);
     void NewLine(lmPaper* pPaper);
     lmLUnits GetVStaffHeight();
@@ -102,7 +97,7 @@ public:
     bool IsOverlayered() { return m_fOverlayered; }
     lmLUnits GetStaffLineThick(int nStaff);
 
-    lmScoreObj* FindSelectableObject(wxPoint& pt);
+    lmScoreObj* FindSelectableObject(lmUPoint& pt);
     lmNote* FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep);
 
     lmLUnits TenthsToLogical(lmTenths nTenths, int nStaff);

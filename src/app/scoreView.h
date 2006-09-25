@@ -143,8 +143,8 @@ private:
 
     // dragging control variables
     int             m_dragState;
-    wxPoint         m_dragStartPosL;
-    wxPoint         m_dragHotSpot;        // pixels
+    lmUPoint         m_dragStartPosL;
+    lmDPoint         m_dragHotSpot;        // pixels
     wxDragImage*    m_pDragImage;
     lmScoreObj*     m_pSoDrag;            // lmScoreObj being dragged
 

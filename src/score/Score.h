@@ -514,7 +514,7 @@ public:
     // serving highlight events
     void ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, EHighlightType nHighlightType);
 
-    lmScoreObj* FindSelectableObject(wxPoint& pt);
+    lmScoreObj* FindSelectableObject(lmUPoint& pt);
 
     // Debug methods. If filename provided writes also to file
     wxString Dump(wxString sFilename = _T(""));

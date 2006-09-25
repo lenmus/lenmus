@@ -107,7 +107,7 @@ void lmFermata::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     pPaper->SetFont( *(m_pOwner->GetFont()) );
 
     wxString sGlyph = (m_fOverNote ? CHAR_FERMATA_OVER : CHAR_FERMATA_UNDER );
-    wxPoint pos = GetGlyphPosition();
+    lmUPoint pos = GetGlyphPosition();
     pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
     pPaper->DrawText(sGlyph, pos.x, pos.y );
 
@@ -151,7 +151,7 @@ void lmLyric::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
     pPaper->SetFont(*m_pFont);
 
-    wxPoint pos = GetGlyphPosition();
+    lmUPoint pos = GetGlyphPosition();
     pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
     pPaper->DrawText(m_sText, pos.x, pos.y );
 

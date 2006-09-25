@@ -173,7 +173,7 @@ lmLUnits lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxCo
         EClefType nClef = pClef->GetType();
 
         // Draw the key signature
-        wxPoint pos = wxPoint(m_paperPos.x, m_paperPos.y + yOffset);
+        lmUPoint pos = lmUPoint(m_paperPos.x, m_paperPos.y + yOffset);
         DrawAt(fMeasuring, pPaper, pos, nClef, nStaff);
 
         if (nStaff==1 && fMeasuring) {
@@ -250,7 +250,7 @@ lmLUnits lmKeySignature::DrawAccidental(bool fMeasuring, lmPaper* pPaper, EAccid
 
 }
 
-lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, wxPoint pos,
+lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos,
                                EClefType nClef, int nStaff, wxColour colorC)
 {
     /*
@@ -383,14 +383,14 @@ wxBitmap* lmKeySignature::GetBitmap(double rScale)
     return (wxBitmap*)NULL;
 }
 
-void lmKeySignature::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& ptOffset, 
-                        const wxPoint& ptLog, const wxPoint& dragStartPosL, const wxPoint& ptPixels)
+void lmKeySignature::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
+                        const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels)
 {
 }
 
-wxPoint lmKeySignature::EndDrag(const wxPoint& pos)
+lmUPoint lmKeySignature::EndDrag(const lmUPoint& pos)
 {
-    return wxPoint(0,0);
+    return lmUPoint(0,0);
 }
 
 

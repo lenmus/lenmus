@@ -394,7 +394,8 @@ void lmBeam::TrimStems()
 
 }
 
-void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits nBeamSpacing)
+void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits nBeamSpacing,
+                           wxColour color)
 {
     //
     // This method is only called from lmNote::DrawObject(), in particular from the last note
@@ -433,7 +434,7 @@ void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits nBeamS
                 xEnd = xPrev + (xCur-xPrev)/3;
                 yEnd = yPrev + (yCur-yPrev)/3;
                 DrawBeamSegment(pPaper, fStemDown, xStart, yStart, xEnd, yEnd, uThickness,
-                        pStartNote, pEndNote);
+                        pStartNote, pEndNote, color);
                 fForwardPending = false;
             }
 
@@ -490,7 +491,7 @@ void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits nBeamS
                 lmLUnits uStemWidth = pEndNote->GetStemThickness();
                 DrawBeamSegment(pPaper, fStemDown,
                     xStart, yStart, xEnd + uStemWidth, yEnd, uThickness,
-                    pStartNote, pEndNote);
+                    pStartNote, pEndNote, color);
                 fStart = false;
                 fEnd = false;
                 pStartNote = (lmNote*)NULL;
@@ -533,12 +534,13 @@ int lmBeam::ComputeYPosOfSegment(lmNote* pNote, bool fStemDown, int yShift)
 void lmBeam::DrawBeamSegment(lmPaper* pPaper, bool fStemDown,
                              lmLUnits xStart, lmLUnits yStart,
                              lmLUnits xEnd, lmLUnits yEnd, lmLUnits nThickness,
-                             lmNote* pStartNote, lmNote* pEndNote)
+                             lmNote* pStartNote, lmNote* pEndNote,
+                             wxColour color)
 {
     //check to see if the beam segment has to be splitted in two systems
     if (pStartNote && pEndNote) {
-        wxPoint paperPosStart = pStartNote->GetOrigin();
-        wxPoint paperPosEnd = pEndNote->GetOrigin();
+        lmUPoint paperPosStart = pStartNote->GetOrigin();
+        lmUPoint paperPosEnd = pEndNote->GetOrigin();
         if (paperPosEnd.y != paperPosStart.y) {
             //if start note paperPos Y is not the same than end note paperPos Y the notes are
             //in different systems. Therefore, the beam must be splitted. Let's do it
@@ -551,7 +553,7 @@ void lmBeam::DrawBeamSegment(lmPaper* pPaper, bool fStemDown,
     }
 
     //draw the segment
-    pPaper->DrawLine(xStart, yStart, xEnd, yEnd, nThickness, eEdgeVertical);
+    pPaper->RenderLine(xStart, yStart, xEnd, yEnd, nThickness, eEdgeVertical, color);
 
     //wxLogMessage(_T("[lmBeam::DrawBeamSegment] xStart=%d, yStart=%d, xEnd=%d, yEnd=%d, nThickness=%d, yStartIncr=%d, yEndIncr=%d, fStemDown=%s"),
     //    xStart, yStart, xEnd, yEnd, nThickness, yStartIncr, yEndIncr, (fStemDown ? _T("down") : _T("up")) );

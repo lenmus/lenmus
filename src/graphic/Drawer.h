@@ -52,11 +52,14 @@ public:
     virtual void DrawRectangle(wxPoint point, wxSize size) = 0;
     virtual void DrawRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height) = 0;
     virtual void DrawCircle(wxCoord x, wxCoord y, wxCoord radius) = 0;
-    virtual void DrawCircle(const wxPoint& pt, wxCoord radius) = 0;
-    virtual void DrawPolygon(int n, wxPoint points[]) = 0;
+    virtual void DrawCircle(const lmUPoint& pt, wxCoord radius) = 0;
 
-    virtual void DrawLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
-                          lmLUnits width, lmELineEdges nEdge = eEdgeNormal);
+
+    virtual void DrawRectangle(lmUPoint uPoint, wxSize size) = 0;
+    virtual void RenderLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
+                          lmLUnits width, lmELineEdges nEdge, wxColour color);
+    virtual void RenderPolygon(int n, lmUPoint points[]) = 0;
+    virtual void RenderCircle(const lmUPoint& pt, lmLUnits radius) = 0;
 
     //brushes, colors, fonts, ...
     virtual void SetBrush(wxBrush brush) = 0;
@@ -97,8 +100,11 @@ public:
     void DrawRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height)
             { m_pDC->DrawRectangle(left, top, width, height); }
     void DrawCircle(wxCoord x, wxCoord y, wxCoord radius) { m_pDC->DrawCircle(x, y, radius); }
-    void DrawCircle(const wxPoint& pt, wxCoord radius) { m_pDC->DrawCircle(pt, radius); }
-    void DrawPolygon(int n, wxPoint points[]) { m_pDC->DrawPolygon(n, points); }
+    void DrawCircle(const lmUPoint& pt, wxCoord radius);
+
+    void DrawRectangle(lmUPoint uPoint, wxSize size);
+    void RenderPolygon(int n, lmUPoint points[]);
+    void RenderCircle(const lmUPoint& pt, lmLUnits radius);
 
 
     //brushes, colors, fonts, ...

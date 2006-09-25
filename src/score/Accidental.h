@@ -58,8 +58,8 @@ public:
     lmLUnits GetWidth();
     void SetAfterspace(lmLUnits nSpace) { m_nAfterSpace = nSpace; }
 
-    void Measure(lmPaper* pPaper, lmStaff* pStaff, wxPoint shift);
-    void Render(lmPaper* pPaper, wxPoint pos, wxColour color = *wxBLACK);
+    void Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint shift);
+    void Render(lmPaper* pPaper, lmUPoint pos, wxColour color = *wxBLACK);
 
 
 private:

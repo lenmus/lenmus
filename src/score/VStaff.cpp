@@ -428,31 +428,11 @@ int lmVStaff::GetNumMeasures()
     return m_cStaffObjs.GetNumMeasures();
 }
 
-void lmVStaff::DrawStaffLines(bool fMeasuring,
-                            lmPaper* pPaper,
-                            lmLUnits dyInicial,
-                            lmLUnits dyEntrePentagramas,
-                            lmLUnits xFrom,
-                            lmLUnits xTo)
+void lmVStaff::DrawStaffLines(bool fMeasuring, lmPaper* pPaper, lmLUnits xFrom, lmLUnits xTo)
 {
-    /*
-        Draw all staff lines of this lmVStaff and store their sizes and positions
-     parameters:
-       pCanvas                pointer to Project to use
-       fMeasuring            Draw in meassuring mode            
-       dyInicial               espaciado antes del 1er pentagrama
-       dyEntrePentagramas      espacio entre pentagramas
-    
-     results:
-         if DO_DRAW mode (fMeasuring == false) store values in following variables:
-            m_xLeft: posición X de comienzo de las líneas
-            m_yLinTop: posición Y de comienzo de la primera línea que se dibuja
-            m_yLinBottom: posición Y de comienzo de la última línea que se dibuja
-            m_dxLin: largo de las líneas
-    */
+    // Draw all staff lines of this lmVStaff and store their sizes and positions
 
     if (fMeasuring) { return; }
-    //wxLogMessage(_T("[lmVStaff::DrawStaffLines]"));
 
     lmLUnits xRight, yCur;
 
@@ -465,7 +445,7 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
     ////-----------------------------------------
 
 
-    //Set left position and lenght of lines, and save them
+    //Set left position and lenght of lines, and save these values
     m_xLeft = xFrom;
     xRight = xTo;
     m_dxLin = xRight - m_xLeft;            //lenght of staff lines
@@ -478,8 +458,6 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
     //pPaper->DrawLine(m_xLeft, yCur-1, xRight, yCur-1);
     ////-----------------------------------------
 
-    pPaper->SetPen(*wxBLACK_PEN);
-
     //iterate over the collection of Staves (lmStaff Objects)
     StaffList::Node* pNode = m_cStaves.GetFirst();
     lmStaff* pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
@@ -487,11 +465,10 @@ void lmVStaff::DrawStaffLines(bool fMeasuring,
         //draw one staff
         for (int iL = 1; iL <= pStaff->GetNumLines(); iL++ ) {
             lmLUnits nStaffLineWidth = pStaff->GetLineThick();
-            //pPaper->DrawLine(m_xLeft, yCur, xRight, yCur);
-            //pPaper->DrawRectangle(m_xLeft, yCur, m_dxLin, nStaffLineWidth);
-            pPaper->DrawLine(m_xLeft, yCur, xRight, yCur, nStaffLineWidth);
+            pPaper->RenderLine(m_xLeft, yCur, xRight, yCur,
+                               nStaffLineWidth, eEdgeNormal, *wxBLACK);
             m_yLinBottom = yCur;                        //save line position
-            yCur = yCur + pStaff->GetLineSpacing();     //+ m_nGrosorLineas - 1
+            yCur = yCur + pStaff->GetLineSpacing();
         }
         yCur = yCur - pStaff->GetLineSpacing() + pStaff->GetAfterSpace();
 
@@ -559,7 +536,7 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
 // Methods for finding StaffObjs
 //=========================================================================================
 
-lmScoreObj* lmVStaff::FindSelectableObject(wxPoint& pt)
+lmScoreObj* lmVStaff::FindSelectableObject(lmUPoint& pt)
 {
     lmStaffObj* pSO;
     lmScoreObj* pChildSO;
@@ -1007,7 +984,7 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
             //render clef
             if (pClef) {
                 nClef = pClef->GetType();
-                wxPoint pos = wxPoint(xPos, yStartPos+yOffset);        //absolute position
+                lmUPoint pos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
                 nWidth = pClef->DrawAt(fMeasuring, pPaper, pos);
                 xPos += nWidth;
             }
@@ -1015,7 +992,7 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
             //render key signature
             if (pKey) {
                 wxASSERT(nClef != eclvUndefined);
-                wxPoint pos = wxPoint(xPos, yStartPos+yOffset);        //absolute position
+                lmUPoint pos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
                 nWidth = pKey->DrawAt(fMeasuring, pPaper, pos, nClef, nStaff);
                 xPos += nWidth;
             }

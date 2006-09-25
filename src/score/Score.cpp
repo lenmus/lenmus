@@ -338,7 +338,7 @@ void lmScore::RemoveFromGlobalList(lmStaffObj* pSO)
 // Methods for finding StaffObjs
 //=========================================================================================
 
-lmScoreObj* lmScore::FindSelectableObject(wxPoint& pt)
+lmScoreObj* lmScore::FindSelectableObject(lmUPoint& pt)
 {
     int iVStaff;
     lmInstrument *pInstr;

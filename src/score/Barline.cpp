@@ -122,24 +122,24 @@ wxBitmap* lmBarline::GetBitmap(double rScale)
 
 }
 
-void lmBarline::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& offsetD, 
-        const wxPoint& pagePosL, const wxPoint& dragStartPosL, const wxPoint& canvasPosD)
+void lmBarline::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD, 
+        const lmUPoint& pagePosL, const lmUPoint& dragStartPosL, const lmDPoint& canvasPosD)
 {
     // A barline only can be moved horizonatlly
-    wxPoint ptNew = canvasPosD;
+    lmDPoint ptNew = canvasPosD;
     ptNew.y = pPaper->LogicalToDeviceY(m_paperPos.y + m_glyphPos.y) + offsetD.y;
     pDragImage->Move(ptNew);
 
 }
     
-wxPoint lmBarline::EndDrag(const wxPoint& pos)
+lmUPoint lmBarline::EndDrag(const lmUPoint& pos)
 {
-    wxPoint oldPos(m_paperPos + m_glyphPos);
+    lmUPoint oldPos(m_paperPos + m_glyphPos);
 
     //Only X pos. can be changed
     m_paperPos.x = pos.x - m_glyphPos.x;
 
-    return wxPoint(oldPos);
+    return lmUPoint(oldPos);
 }
 
 wxString lmBarline::Dump()
@@ -206,9 +206,9 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, lmPaper* pPaper,
     {
         case etb_DoubleBarline:
             if (!fMeasuring) {
-                DrawThinLine(pPaper, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom, colorC);
                 xPos += m_uThinLineWidth + m_uSpacing;
-                DrawThinLine(pPaper, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom, colorC);
             }
             return (lmLUnits)(m_uSpacing + m_uThinLineWidth + m_uThinLineWidth);
             break;
@@ -217,18 +217,18 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, lmPaper* pPaper,
             if (!fMeasuring) {
                 DrawTwoDots(pPaper, xPos, yTop);
                 xPos += m_uSpacing;
-                DrawThinLine(pPaper, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom, colorC);
                 xPos += m_uThinLineWidth + m_uSpacing;
-                DrawThickLine(pPaper, xPos, yTop, m_uThickLineWidth, yBottom-yTop);
+                DrawThickLine(pPaper, xPos, yTop, m_uThickLineWidth, yBottom-yTop, colorC);
             }
             return (lmLUnits)(m_uSpacing + m_uSpacing + m_uThinLineWidth + m_uThickLineWidth);
             break;
 
         case etb_StartRepetitionBarline:
             if (!fMeasuring) {
-                DrawThickLine(pPaper, xPos, yTop, m_uThickLineWidth, yBottom-yTop);
+                DrawThickLine(pPaper, xPos, yTop, m_uThickLineWidth, yBottom-yTop, colorC);
                 xPos += m_uThickLineWidth + m_uSpacing;
-                DrawThinLine(pPaper, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom, colorC);
                 xPos += m_uSpacing/2;
                 DrawTwoDots(pPaper, xPos, yTop);
             }
@@ -239,9 +239,9 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, lmPaper* pPaper,
             if (!fMeasuring) {
                 DrawTwoDots(pPaper, xPos, yTop);
                 xPos += m_uSpacing;
-                DrawThinLine(pPaper, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom, colorC);
                 xPos += m_uThinLineWidth + m_uSpacing;
-                DrawThinLine(pPaper, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom, colorC);
                 xPos += m_uThinLineWidth + m_uSpacing/2;
                 DrawTwoDots(pPaper, xPos, yTop);
             }
@@ -250,25 +250,25 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, lmPaper* pPaper,
         
         case etb_StartBarline:
             if (!fMeasuring) {
-                DrawThickLine(pPaper, xPos, yTop, m_uThickLineWidth, yBottom-yTop);
+                DrawThickLine(pPaper, xPos, yTop, m_uThickLineWidth, yBottom-yTop, colorC);
                 xPos += m_uThickLineWidth + m_uSpacing;
-                DrawThinLine(pPaper, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom, colorC);
             }
             return (lmLUnits)(m_uSpacing + m_uThinLineWidth + m_uThickLineWidth);
             break;
             
         case etb_EndBarline:
             if (!fMeasuring) {
-                DrawThinLine(pPaper, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom, colorC);
                 xPos += m_uThinLineWidth + m_uSpacing;
-                DrawThickLine(pPaper, xPos, yTop, m_uThickLineWidth, yBottom-yTop);
+                DrawThickLine(pPaper, xPos, yTop, m_uThickLineWidth, yBottom-yTop, colorC);
             }
             return (lmLUnits)(m_uSpacing + m_uThinLineWidth + m_uThickLineWidth);
             break;
 
         case etb_SimpleBarline:
             if (!fMeasuring) {
-                DrawThinLine(pPaper, xPos, yTop, yBottom);
+                DrawThinLine(pPaper, xPos, yTop, yBottom, colorC);
             }
             return m_uThinLineWidth;
             break;
@@ -280,39 +280,29 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, lmPaper* pPaper,
     }
 }
 
-void lmBarline::DrawThinLine(lmPaper* pPaper, lmLUnits xPos, lmLUnits yTop, lmLUnits yBottom)
+void lmBarline::DrawThinLine(lmPaper* pPaper, lmLUnits xPos, lmLUnits yTop, lmLUnits yBottom,
+                             wxColour color)
 {
-    /*
-    The DC must have pen and brush properly set
-    */
-    pPaper->DrawLine(xPos, yTop, xPos, yBottom, m_uThinLineWidth);
+    pPaper->RenderLine(xPos, yTop, xPos, yBottom, m_uThinLineWidth, eEdgeNormal, color);
 
 }
 
 
 void lmBarline::DrawThickLine(lmPaper* pPaper, lmLUnits xLeft, lmLUnits yTop, lmLUnits uWidth,
-                              lmLUnits uHeight)
+                              lmLUnits uHeight, wxColour color)
 {
-    /*
-    We can not use DrawLine because with DrawLine function we get end of lines rounded
-    instead of flat ends. Therefore, we are going to draw thick lines as rectangles.
-
-    The DC must have pen and brush properly set
-    */
-    pPaper->DrawLine(xLeft + uWidth/2, yTop,
-                     xLeft + uWidth/2, yTop + uHeight,
-                     uWidth);
-
+    pPaper->RenderLine(xLeft + uWidth/2, yTop,
+                       xLeft + uWidth/2, yTop + uHeight,
+                       uWidth, eEdgeNormal, color);
 }
 
 void lmBarline::DrawTwoDots(lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos)
 {            
-    lmLUnits radius = m_pVStaff->TenthsToLogical(2, 1);    // 2 tenths
-    lmLUnits shift1 = m_pVStaff->TenthsToLogical(15, 1) + radius;    // 1.5 lines
-    lmLUnits shift2 = m_pVStaff->TenthsToLogical(25, 1) + radius;    // 2.5 lines
-    pPaper->DrawCircle((wxCoord)xPos, (wxCoord)(yPos + shift1), (wxCoord)radius);
-    pPaper->DrawCircle((wxCoord)xPos, (wxCoord)(yPos + shift2), (wxCoord)radius);
-    
+    lmLUnits uRadius = m_pVStaff->TenthsToLogical(2, 1);    // 2 tenths
+    lmLUnits shift1 = m_pVStaff->TenthsToLogical(15, 1) + uRadius;    // 1.5 lines
+    lmLUnits shift2 = m_pVStaff->TenthsToLogical(25, 1) + uRadius;    // 2.5 lines
+    pPaper->RenderCircle(lmUPoint(xPos, yPos + shift1), uRadius);
+    pPaper->RenderCircle(lmUPoint(xPos, yPos + shift2), uRadius);
 }
 
 //-------------------------------------------------------------------------------------------------

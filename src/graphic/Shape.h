@@ -60,11 +60,11 @@ class lmShapeObj
 public:
     virtual ~lmShapeObj() {}
 
-    virtual void Render(lmPaper* pPaper, wxPoint pos, wxColour color = *wxBLACK) {};
+    virtual void Render(lmPaper* pPaper, lmUPoint pos, wxColour color = *wxBLACK) {};
 
     // methods related to selection rectangle
     void SetSelRectangle(int x, int y, int nWidth, int nHeight);
-    void DrawSelRectangle(lmPaper* pPaper, wxPoint pos, wxColour colorC = *wxBLUE);
+    void DrawSelRectangle(lmPaper* pPaper, lmUPoint pos, wxColour colorC = *wxBLUE);
     wxRect GetSelRectangle() const { return m_SelRect; }
 
     // methods related to bounds
@@ -119,7 +119,7 @@ public:
     virtual ~lmShapeComposite();
 
     //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, wxPoint pos, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, lmUPoint pos, wxColour color = *wxBLACK);
     virtual wxString Dump() { return _T("ShapeComposite"); }
     virtual void Shift(lmLUnits xIncr);
 
@@ -141,7 +141,7 @@ public:
     ~lmShapeLine() {}
 
     //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, wxPoint pos, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, lmUPoint pos, wxColour color = *wxBLACK);
     wxString Dump();
     void Shift(lmLUnits xIncr);
 
@@ -159,19 +159,19 @@ public:
     ~lmShapeGlyph() {}
 
     //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, wxPoint pos, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, lmUPoint pos, wxColour color = *wxBLACK);
     wxString Dump();
     void Shift(lmLUnits xIncr);
 
     //specific methods
-    void Measure(lmPaper* pPaper, lmStaff* pStaff, wxPoint shift);
+    void Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint shift);
     void SetFont(wxFont *pFont);
 
 
 private:
     int         m_nGlyph;
     wxFont*     m_pFont;
-    wxPoint     m_shift;         // to correctly position the glyph (relative to shape offset point)
+    lmUPoint     m_shift;         // to correctly position the glyph (relative to shape offset point)
 
 };
 

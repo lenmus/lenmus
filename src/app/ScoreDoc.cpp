@@ -70,7 +70,7 @@ lmScoreDocument::~lmScoreDocument()
 
 }
 
-lmScoreObj* lmScoreDocument::FindSelectableObject(wxPoint& pt)
+lmScoreObj* lmScoreDocument::FindSelectableObject(lmUPoint& pt)
 {
     return m_pScore->FindSelectableObject(pt);
 }

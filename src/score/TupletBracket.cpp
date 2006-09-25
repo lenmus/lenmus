@@ -94,8 +94,8 @@ lmTupletBracket::~lmTupletBracket()
 //    /*
 //    the position of one of the owner notes has changed. Update bracket position and size
 //    */
-//    wxPoint startOffset = (GetStartNote())->GetOrigin();
-//    wxPoint endOffset = (GetEndNote())->GetOrigin();
+//    lmUPoint startOffset = (GetStartNote())->GetOrigin();
+//    lmUPoint endOffset = (GetEndNote())->GetOrigin();
 //
 //    m_paperPos = startOffset;
 //    SetSelRectangle(m_xStart, m_yStart,
@@ -165,7 +165,8 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
     //Prepare pen
     lmLUnits uThick = lmToLogicalUnits(0.2, lmMILLIMETERS);    //! @todo user options
     wxPen oldPen = pPaper->GetPen();
-    wxPen pen((m_fSelected ? g_pColors->ScoreSelected() : colorC), uThick, wxSOLID);
+    wxColour color = (m_fSelected ? g_pColors->ScoreSelected() : colorC);
+    wxPen pen(color, uThick, wxSOLID);
     pPaper->SetPen(pen);
 
     //Mesure number
@@ -227,19 +228,19 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
     //draw bracket
     //---------------------------------------------
     //horizontal line
-    pPaper->DrawLine(xStart, yLineStart, xEnd, yLineEnd, uThick, eEdgeVertical);
+    pPaper->RenderLine(xStart, yLineStart, xEnd, yLineEnd, uThick, eEdgeVertical, color);
     
     //vertical borders
     lmLUnits x1 = xStart + uThick / 2;
     lmLUnits x2 = xEnd - uThick / 2;
-    pPaper->DrawLine(x1, yLineStart, x1, yStartBorder, uThick);
-    pPaper->DrawLine(x2, yLineEnd, x2, yEndBorder, uThick);
+    pPaper->RenderLine(x1, yLineStart, x1, yStartBorder, uThick, eEdgeNormal, color);
+    pPaper->RenderLine(x2, yLineEnd, x2, yEndBorder, uThick, eEdgeNormal, color);
 
     pPaper->SetPen(oldPen);
 
     //write the number
     if (m_fShowNumber) {
-        pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
+        pPaper->SetTextForeground(color);
         pPaper->DrawText(sNumber, xNumber, yNumber);
     }
 

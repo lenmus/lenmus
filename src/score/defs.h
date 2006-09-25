@@ -30,12 +30,28 @@
 #ifndef __DEFS_H__        //to avoid nested includes
 #define __DEFS_H__
 
-//// Types used for portability
+//// Types used for portability and legibility
 
 //units
-#define lmLUnits    double     // lmPaper logical units.
-#define lmTenths    int        // Staff relative units.  32 bits int
-#define lmPixels    int        // Device units (usually pixels).  32 bits int
+#define lmLUnits    float           // lmPaper logical units.
+#define lmTenths    float           // Staff relative units.
+#define lmPixels    int             // Device units (usually pixels).  32 bits int
+
+#define lmUPoint    wxRealPoint     // a point in logical units
+#define lmDPoint    wxPoint         // a point in device units
+
+// conversions
+#define lmUPointToPoint(uPoint) \
+        wxPoint((int)floor(uPoint.x + 0.5), (int)floor(uPoint.y + 0.5))
+#define lmDPointToPoint(dPoint) \
+        dPoint
+
+
+// valiables of type lmLUnits will be prefixed with 'u'
+// valiables of type lmPixels will be prefixed with 'd'
+
+
+
 
 //pitch
 #define lmPitch        int        // Midi pitch or diatonic pitch
@@ -75,6 +91,7 @@ enum lmEUnits {
 // defined in TheApp.cpp
 extern lmLUnits lmToLogicalUnits(int nValue, lmEUnits nUnits);
 extern lmLUnits lmToLogicalUnits(double rValue, lmEUnits nUnits);
+
 
 
 #endif    // __DEFS_H__ 

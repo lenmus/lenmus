@@ -184,7 +184,7 @@ lmLUnits lmClef::DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         return width;
     } else {
         //wxLogMessage(_T("[lmClef::DrawClef]"));
-        wxPoint pos = GetGlyphPosition();
+        lmUPoint pos = GetGlyphPosition();
         pPaper->SetTextForeground(colorC);
         pPaper->DrawText(sGlyph, pos.x, pos.y );
         return 0;
@@ -192,7 +192,7 @@ lmLUnits lmClef::DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
 }
 
-lmLUnits lmClef::DrawAt(bool fMeasuring, lmPaper* pPaper, wxPoint pos, wxColour colorC)
+lmLUnits lmClef::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos, wxColour colorC)
 {
     // This method is, primarely, to be used when rendering the prolog
     // Returns the width of the draw
@@ -208,8 +208,8 @@ lmLUnits lmClef::DrawAt(bool fMeasuring, lmPaper* pPaper, wxPoint pos, wxColour 
     return m_nWidth;
 }
 
-void lmClef::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& offsetD, 
-                         const wxPoint& pagePosL, const wxPoint& dragStartPosL, const wxPoint& canvasPosD)
+void lmClef::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD, 
+                         const lmUPoint& pagePosL, const lmUPoint& dragStartPosL, const lmDPoint& canvasPosD)
 {
     // DragImage->Move() requires device units referred to canvas window. To compute the
     // desired position the following coordinates are received:
@@ -224,20 +224,20 @@ void lmClef::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& of
     //pDragImage->Move(canvasPosD);
 
     // A clef only can be moved horizonatlly
-    wxPoint ptNew = canvasPosD;
+    lmDPoint ptNew = canvasPosD;
     ptNew.y = pPaper->LogicalToDeviceY(m_paperPos.y + m_glyphPos.y) + offsetD.y;
     pDragImage->Move(ptNew);
 
 }
 
-wxPoint lmClef::EndDrag(const wxPoint& pos)
+lmUPoint lmClef::EndDrag(const lmUPoint& pos)
 {
-    wxPoint oldPos(m_paperPos + m_glyphPos);
+    lmUPoint oldPos(m_paperPos + m_glyphPos);
 
     //Only X pos. can be changed
     m_paperPos.x = pos.x - m_glyphPos.x;
 
-    return wxPoint(oldPos);
+    return lmUPoint(oldPos);
 }
 
 wxString lmClef::Dump()

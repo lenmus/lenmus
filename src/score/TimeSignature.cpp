@@ -196,7 +196,7 @@ lmLUnits lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wx
         lmStaff* pStaff = m_pVStaff->GetFirstStaff();
         for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++) {
             // Draw the time signature
-            wxPoint pos = GetGlyphPosition();
+            lmUPoint pos = GetGlyphPosition();
             pPaper->DrawText(sTopGlyphs, pos.x + m_xPosTop, pos.y + yOffset );
             pPaper->DrawText(sBottomGlyphs, pos.x + m_xPosBottom,
                             pos.y + yOffset + m_pVStaff->TenthsToLogical( 20, nStaff ) );
@@ -247,18 +247,18 @@ wxBitmap* lmTimeSignature::GetBitmap(double rScale)
     return (wxBitmap*)NULL;
 }
 
-void lmTimeSignature::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& ptOffset, 
-                        const wxPoint& ptLog, const wxPoint& dragStartPosL, const wxPoint& ptPixels)
+void lmTimeSignature::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
+                        const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels)
 {
 }
 
-wxPoint lmTimeSignature::EndDrag(const wxPoint& pos)
+lmUPoint lmTimeSignature::EndDrag(const lmUPoint& pos)
 {
     //! @todo
-    return wxPoint(0,0);
+    return lmUPoint(0,0);
 }
 
-lmLUnits lmTimeSignature::DrawAt(bool fMeasuring, lmPaper* pPaper, wxPoint pos, wxColour colorC)
+lmLUnits lmTimeSignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos, wxColour colorC)
 {
     //! @todo
     return 0;

@@ -49,9 +49,9 @@ public:
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
     wxBitmap* GetBitmap(double rScale);
-    void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& ptOffset, 
-                         const wxPoint& ptLog, const wxPoint& dragStartPosL, const wxPoint& ptPixels);
-    wxPoint EndDrag(const wxPoint& pos);
+    void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
+                         const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels);
+    lmUPoint EndDrag(const lmUPoint& pos);
 
 
     //    debugging
@@ -60,7 +60,7 @@ public:
     wxString SourceXML();
 
     //rendering related methods
-    lmLUnits DrawAt(bool fMeasuring, lmPaper* pPaper, wxPoint pos, EClefType nClef, 
+    lmLUnits DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos, EClefType nClef, 
                      int nStaff, wxColour colorC = *wxBLACK);
 
     //methods for hiding the key in prologs

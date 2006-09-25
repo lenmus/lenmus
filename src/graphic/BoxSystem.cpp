@@ -103,7 +103,7 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
 
             //to properly draw barlines it is necessary that staff lines are already drawn.
             //so, start the drawing by the staff lines
-            pVStaff->DrawStaffLines(DO_DRAW, pPaper, 0, 50, xFrom, m_xFinal);
+            pVStaff->DrawStaffLines(DO_DRAW, pPaper, xFrom, m_xFinal);
 
             //now draw the prolog, except if this is the first system
             if (nSystem != 1)
@@ -133,11 +133,7 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     lmLUnits yBottom = pVStaff->GetYBottom();
 
     lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
-    wxPen pen(*wxBLACK, uLineThickness, wxSOLID);
-    wxBrush brush(*wxBLACK, wxSOLID);
-    pPaper->SetPen(pen);
-    pPaper->SetBrush(brush);
-    pPaper->DrawLine(xPos, yTop, xPos, yBottom, uLineThickness);
+    pPaper->RenderLine(xPos, yTop, xPos, yBottom, uLineThickness, eEdgeNormal, *wxBLACK);
 
 }
 

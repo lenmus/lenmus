@@ -549,7 +549,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
             }
             //adjust stem size if flag to be drawn
             if (!m_fDrawSmallNotesInBlock && !m_fBeamed && m_nNoteType > eQuarter) {
-                int nGlyph = DrawFlag(fMeasuring, pPaper, wxPoint(0, 0), colorC);
+                int nGlyph = DrawFlag(fMeasuring, pPaper, lmUPoint(0, 0), colorC);
                 lmLUnits nStem = GetStandardStemLenght();
                 lmLUnits nFlag, nMinStem;
                 if (m_fStemDown) {
@@ -571,61 +571,9 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
             // not measuring. Do draw stem unless it is a note in chord. In this case
             // the stem will be drawn later, when drawing the last note of the chord
             if (fDrawStem && ! fInChord) {
-                if (true) {     //Draw stem using a line
-                    wxPen pen(colorC, m_nStemThickness, wxSOLID);
-                    pen.SetCap(wxCAP_BUTT);
-                    lmLUnits xPos = GetXStemLeft() + m_nStemThickness/2;     //DrawLine centers line width on given coordinates
-                    //pPaper->DrawLine(xPos, GetYStem(), xPos, GetFinalYStem()+1);
-                    pPaper->DrawLine(xPos, GetYStem(), xPos, GetFinalYStem()+1, m_nStemThickness);
-                }    
-                
-                else if (false) {   //draw stem using a rectangle
-                    int xStart=GetXStemLeft(), xEnd=xStart+m_nStemThickness,
-                        yStart=GetYStem(), yEnd=GetFinalYStem();
-                    wxPoint points[] = {
-                        wxPoint(xStart, yStart),
-                        wxPoint(xStart, yEnd),
-                        wxPoint(xEnd, yEnd),
-                        wxPoint(xEnd, yStart)
-                    };
-                    pPaper->DrawPolygon(4, points);
-                }
-
-                else {      //draw stem using the font
-                    if (m_fStemDown) {
-                        wxString sGlyph = _T("r");
-                        lmLUnits nFalta = m_pVStaff->TenthsToLogical(3, m_nStaffNum);
-                        lmLUnits nHeight = m_pVStaff->TenthsToLogical(35, m_nStaffNum);
-                        lmLUnits nLength = GetStemLength();
-                        lmLUnits xPos = GetXStemLeft();
-                        lmLUnits yPos = nyTop + m_pVStaff->TenthsToLogical(25, m_nStaffNum);
-                        while(nLength > nHeight) {
-                            pPaper->DrawText(sGlyph, xPos, yPos);
-                            nLength -= nHeight - nFalta;
-                            yPos += nHeight - nFalta;
-                        }
-                        if (nLength > 1) {
-                            yPos -= nHeight - nLength;
-                            pPaper->DrawText(sGlyph, xPos, yPos);
-                        }
-                    }
-                    else {
-                        wxString sGlyph = _T("q");
-                        lmLUnits nFalta = m_pVStaff->TenthsToLogical(3, m_nStaffNum);
-                        lmLUnits nHeight = m_pVStaff->TenthsToLogical(35, m_nStaffNum);
-                        lmLUnits nLength = GetStemLength();
-                        lmLUnits yPos = nyTop - m_pVStaff->TenthsToLogical(10, m_nStaffNum);
-                        while(nLength > nHeight) {
-                            pPaper->DrawText(sGlyph, xNote, yPos);
-                            nLength -= nHeight - nFalta;
-                            yPos -= nHeight - nFalta;
-                        }
-                        if (nLength > 1) {
-                            yPos += nHeight - nLength;
-                            pPaper->DrawText(sGlyph, xNote, yPos);
-                        }
-                    }
-                }
+                lmLUnits xPos = GetXStemLeft() + m_nStemThickness/2;     //RenderLine centers line width on given coordinates
+                pPaper->RenderLine(xPos, GetYStem(), xPos, GetFinalYStem()+1,
+                                    m_nStemThickness, eEdgeNormal, colorC);
             }
         }
     }
@@ -635,7 +583,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     if (!m_fDrawSmallNotesInBlock && !fMeasuring) {
         if (!m_fBeamed && m_nNoteType > eQuarter && !IsInChord()) {
             int xPos = (m_fStemDown ? GetXStemLeft() : GetXStemRight());
-            DrawFlag(fMeasuring, pPaper, wxPoint(xPos, m_yFlag), colorC);
+            DrawFlag(fMeasuring, pPaper, lmUPoint(xPos, m_yFlag), colorC);
         }
     }
 
@@ -722,7 +670,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         //So the number to put in next statement is 9:
         //  4 for beam thikness + 5 for beams spacing
         lmLUnits nBeamSpacing = m_pVStaff->TenthsToLogical(9, m_nStaffNum);
-        m_pBeam->DrawBeamLines(pPaper, nThickness, nBeamSpacing);
+        m_pBeam->DrawBeamLines(pPaper, nThickness, nBeamSpacing, colorC);
     }
 
     //if this is the last note of a tuplet draw the tuplet bracket
@@ -741,7 +689,7 @@ lmLUnits lmNote::DrawAccidentals(lmPaper* pPaper, bool fMeasuring,
 {
     if (fMeasuring) {
         m_pAccidentals->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum),
-                                wxPoint(xOffset, yOffset));
+                                lmUPoint(xOffset, yOffset));
     }
     else {
         m_pAccidentals->Render(pPaper, m_paperPos, colorC);
@@ -854,7 +802,7 @@ bool lmNote::DrawNote(lmPaper* pPaper, bool fMeasuring,
 
 }
 
-lmEGlyphIndex lmNote::DrawFlag(bool fMeasuring, lmPaper* pPaper, wxPoint pos, wxColour colorC)
+lmEGlyphIndex lmNote::DrawFlag(bool fMeasuring, lmPaper* pPaper, lmUPoint pos, wxColour colorC)
 {
     //
     //Draws the flag using a glyph. Returns the glyph index
@@ -962,7 +910,8 @@ void lmNote::DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits yStaffTop
             if (i % 2 == 0) {
                 nTenths = 5 * (i - 10);
                 yPos = yStaffTopLine - m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                pPaper->DrawLine(xPos, yPos, xPos + width, yPos, nThick);
+                pPaper->RenderLine(xPos, yPos, xPos + width, yPos, nThick,
+                                   eEdgeNormal, *wxBLACK);
             }
         }
 
@@ -972,7 +921,8 @@ void lmNote::DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits yStaffTop
             if (i % 2 == 0) {
                 nTenths = 5 * (10 - i);
                 yPos = yStaffTopLine + m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                pPaper->DrawLine(xPos, yPos, xPos + width, yPos, nThick);
+                pPaper->RenderLine(xPos, yPos, xPos + width, yPos, nThick,
+                                   eEdgeNormal, *wxBLACK);
             }
         }
     }
@@ -1035,7 +985,7 @@ void lmNote::DrawSingleNote(lmPaper* pPaper, bool fMeasuring, ENoteType nNoteTyp
 
     } else {
         // else (drawing phase) do the draw
-        wxPoint pos = GetGlyphPosition();
+        lmUPoint pos = GetGlyphPosition();
         pPaper->SetTextForeground(colorC);
         pPaper->DrawText(sGlyph, pos.x, pos.y );
     }
@@ -1075,7 +1025,7 @@ void lmNote::DrawNoteHead(lmPaper* pPaper, bool fMeasuring, ENoteHeads nNotehead
     wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
 
     if (fMeasuring) {
-        wxPoint offset(nxLeft - m_paperPos.x, nyTop - m_paperPos.y);
+        lmUPoint offset(nxLeft - m_paperPos.x, nyTop - m_paperPos.y);
         if (!m_pNoteheadShape) m_pNoteheadShape = new lmShapeGlyph(this, nGlyph, m_pFont);
         m_pNoteheadShape->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum), offset);
 
@@ -1102,8 +1052,8 @@ void lmNote::DrawNoteHead(lmPaper* pPaper, bool fMeasuring, ENoteHeads nNotehead
 
 }
 
-void lmNote::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& offsetD, 
-                         const wxPoint& pagePosL, const wxPoint& dragStartPosL, const wxPoint& canvasPosD)
+void lmNote::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD, 
+                         const lmUPoint& pagePosL, const lmUPoint& dragStartPosL, const lmDPoint& canvasPosD)
 {
 
     /*
@@ -1111,12 +1061,12 @@ void lmNote::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& of
     */
 
     lmLUnits dyHalfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum );
-    wxPoint nShiftVector = pagePosL - dragStartPosL;    // the displacement
+    lmUPoint nShiftVector = pagePosL - dragStartPosL;    // the displacement
     int nSteps = (nShiftVector.y / dyHalfLine);        // trim the displacement to half line steps
     nShiftVector.y -= nSteps;
-    wxPoint newPaperPos = m_paperPos + nShiftVector;
+    lmUPoint newPaperPos = m_paperPos + nShiftVector;
     // then the shape must be drawn at:
-    wxPoint ptNewD;
+    lmDPoint ptNewD;
     ptNewD.x = pPaper->LogicalToDeviceX(newPaperPos.x + m_glyphPos.x) + offsetD.x;
     ptNewD.y = pPaper->LogicalToDeviceY(newPaperPos.y + m_glyphPos.y) + offsetD.y;
     pDragImage->Move(ptNewD);
@@ -1128,9 +1078,9 @@ void lmNote::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& of
     */
 }
 
-wxPoint lmNote::EndDrag(const wxPoint& pos)
+lmUPoint lmNote::EndDrag(const lmUPoint& pos)
 {
-    wxPoint oldPos(m_paperPos + m_glyphPos);
+    lmUPoint oldPos(m_paperPos + m_glyphPos);
 
     /*
     Notes can not freely moved. They must stay on staff lines or spaces
@@ -1154,7 +1104,7 @@ wxPoint lmNote::EndDrag(const wxPoint& pos)
 
     //SetFixed(false);
 
-    return wxPoint(oldPos);
+    return lmUPoint(oldPos);
 
 }
 
@@ -1541,7 +1491,7 @@ bool lmNote::CanBeTied(lmPitch nMidiPitch, int nStep)
 // lmCompositeObj virtual functions implementation
 //======================================================================================
 
-lmScoreObj* lmNote::FindSelectableObject(wxPoint& pt)
+lmScoreObj* lmNote::FindSelectableObject(lmUPoint& pt)
 {
     if (IsAtPoint(pt)) return this;
 

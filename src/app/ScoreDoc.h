@@ -49,7 +49,7 @@ public:
     inline lmScore* GetScore() {return m_pScore; };
 
     // to manage selected objects
-    lmScoreObj* FindSelectableObject(wxPoint& pt);
+    lmScoreObj* FindSelectableObject(lmUPoint& pt);
 
 private:
     // data to store

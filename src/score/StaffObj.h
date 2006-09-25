@@ -123,8 +123,8 @@ public:
     inline bool IsDraggable() { return m_fIsDraggable; }
 
     // methods related to positioning
-    inline wxPoint& GetOrigin() { return m_paperPos; }
-    bool IsAtPoint(wxPoint& pt);
+    inline lmUPoint& GetOrigin() { return m_paperPos; }
+    bool IsAtPoint(lmUPoint& pt);
     virtual void SetLeft(lmLUnits nLeft) { m_paperPos.x = nLeft; }
     bool IsFixed() const { return m_fFixedPos; }
     void SetFixed(bool fFixed) { m_fFixedPos = fFixed; }
@@ -151,17 +151,17 @@ public:
 
     // methods for draggable objects
     virtual wxBitmap* GetBitmap(double rScale) = 0;
-    virtual void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& offsetD, 
-                         const wxPoint& pagePosL, const wxPoint& dragStartPosL,
-                         const wxPoint& canvasPosD);
-    virtual wxPoint EndDrag(const wxPoint& pos);
-    virtual void MoveTo(wxPoint& pt);
+    virtual void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD, 
+                         const lmUPoint& pagePosL, const lmUPoint& dragStartPosL,
+                         const lmDPoint& canvasPosD);
+    virtual lmUPoint EndDrag(const lmUPoint& pos);
+    virtual void MoveTo(lmUPoint& pt);
 
     // methods related to font rendered objects
     virtual void SetFont(lmPaper* pPaper) {}
     wxFont* GetFont() { return m_pFont; }
-    wxPoint GetGlyphPosition() const {
-            return wxPoint(m_paperPos.x + m_glyphPos.x, m_paperPos.y + m_glyphPos.y);
+    lmUPoint GetGlyphPosition() const {
+            return lmUPoint(m_paperPos.x + m_glyphPos.x, m_paperPos.y + m_glyphPos.y);
         }
 
     //transitional methods to shapes renderization
@@ -186,7 +186,7 @@ protected:
 
     //positioning. Coordinates relative to origin of page (in logical units); updated each
     // time this object is drawn
-    wxPoint     m_paperPos;         // paper xPos, yBase position to render this object
+    lmUPoint     m_paperPos;         // paper xPos, yBase position to render this object
     bool        m_fFixedPos;        // its position is fixed. Do not recalculate it
     wxCoord     m_nWidth;           // total width of the image, including after space
     int         m_nNumPage;         // page on which this SO is rendered (1..n). Set Up in BoxSystem::RenderMeasure().
@@ -200,7 +200,7 @@ protected:
 
     // variables related to font rendered objects
     wxFont*     m_pFont;            // font to use for drawing this object
-    wxPoint     m_glyphPos;         // origing to position the glyph (relative to m_paperPos)
+    lmUPoint     m_glyphPos;         // origing to position the glyph (relative to m_paperPos)
 
     //transitional variables: renderization based on shapes
     bool            m_fShapeRendered;
@@ -342,7 +342,7 @@ public:
     virtual ~lmCompositeObj() {}
     inline bool IsComposite() { return true; }
 
-    virtual lmScoreObj* FindSelectableObject(wxPoint& pt)=0;
+    virtual lmScoreObj* FindSelectableObject(lmUPoint& pt)=0;
 
 protected:
     lmCompositeObj(EScoreObjType nType, 
@@ -369,14 +369,14 @@ protected:
 //    inline bool IsFontRederized() { return true; }
 //
 //    // methods related to font rendered objects
-//    wxPoint GetGlyphPosition() const {
-//            return wxPoint(m_paperPos.x + m_glyphPos.x, m_paperPos.y + m_glyphPos.y);
+//    lmUPoint GetGlyphPosition() const {
+//            return lmUPoint(m_paperPos.x + m_glyphPos.x, m_paperPos.y + m_glyphPos.y);
 //        }
 //
 //protected:
 //    // variables related to font rendered objects
 //    wxFont*        m_pFont;        // font to use for drawing this object
-//    wxPoint        m_glyphPos;        // origing to position the glyphs (relative to m_paperPos)
+//    lmUPoint        m_glyphPos;        // origing to position the glyphs (relative to m_paperPos)
 //
 //};
 //
@@ -398,11 +398,11 @@ protected:
 //
 //    // methods related to draggable objects
 //    virtual wxBitmap* GetBitmap(double rScale) = 0;
-//    virtual void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& offsetD, 
-//                         const wxPoint& pagePosL, const wxPoint& dragStartPosL,
-//                         const wxPoint& canvasPosD);
-//    virtual wxPoint EndDrag(const wxPoint& pos);
-//    void MoveTo(wxPoint& pt);
+//    virtual void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD, 
+//                         const lmUPoint& pagePosL, const lmUPoint& dragStartPosL,
+//                         const lmDPoint& canvasPosD);
+//    virtual lmUPoint EndDrag(const lmUPoint& pos);
+//    void MoveTo(lmUPoint& pt);
 //
 //protected:
 //    wxBitmap* PrepareBitMap(double rScale, const wxString sGlyph);

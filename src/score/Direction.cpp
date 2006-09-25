@@ -112,7 +112,7 @@ void lmWordsDirection::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour col
 
     }
     else {
-        wxPoint pos = GetGlyphPosition();
+        lmUPoint pos = GetGlyphPosition();
         pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
         pPaper->DrawText(m_sText, pos.x, pos.y );
     }

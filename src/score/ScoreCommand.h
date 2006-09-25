@@ -68,7 +68,7 @@ class lmScoreCommandMove: public lmScoreCommand
 {
 public:
     lmScoreCommandMove(const wxString& name, lmScoreDocument *pDoc, lmScoreObj* pScO, 
-            const wxPoint& pos) : 
+            const lmUPoint& pos) : 
         lmScoreCommand(name, CMD_MoveStaffObj, pDoc, pScO)
         {
             m_pos = pos;
@@ -80,8 +80,8 @@ public:
 
 
 protected:
-    wxPoint        m_pos;
-    wxPoint        m_oldPos;        // for Undo
+    lmUPoint        m_pos;
+    lmUPoint        m_oldPos;        // for Undo
 };
 
 #endif    // __SCORE_COMMAND_H__        //to avoid nested includes

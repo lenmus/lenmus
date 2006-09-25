@@ -168,7 +168,7 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
     } else {
         // drawing phase: do the draw
-        wxPoint pos = GetGlyphPosition();
+        lmUPoint pos = GetGlyphPosition();
         pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
         pPaper->DrawText(sGlyph, pos.x, pos.y );
     }
@@ -282,7 +282,7 @@ wxString lmRest::SourceXML()
 // implementation of virtual methods defined in base class lmCompositeObj
 //====================================================================================================
 
-lmScoreObj* lmRest::FindSelectableObject(wxPoint& pt)
+lmScoreObj* lmRest::FindSelectableObject(lmUPoint& pt)
 {
     //THINK: Rests aren't really composite obj
     if (IsAtPoint(pt)) return this;
@@ -306,13 +306,13 @@ lmScoreObj* lmRest::FindSelectableObject(wxPoint& pt)
 // implementation of virtual methods defined in base class lmStaffObj
 //====================================================================================================
 
-void lmRest::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, wxPoint& ptOffset, 
-            const wxPoint& ptLog, const wxPoint& dragStartPosL, const wxPoint& ptPixels)
+void lmRest::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
+            const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels)
 {
     lmScoreObj::MoveDragImage(pPaper, pDragImage, ptOffset, ptLog, dragStartPosL, ptPixels);
 }
 
-wxPoint lmRest::EndDrag(const wxPoint& pos)
+lmUPoint lmRest::EndDrag(const lmUPoint& pos)
 {
     return lmScoreObj::EndDrag(pos);
 }

@@ -38,9 +38,14 @@ lmDrawer::lmDrawer(wxDC* pDC)
 
 }
 
-void lmDrawer::DrawLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
-                           lmLUnits width, lmELineEdges nEdge)
+void lmDrawer::RenderLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
+                           lmLUnits width, lmELineEdges nEdge, wxColor color)
 {
+    wxPen pen(color, width, wxSOLID);
+    wxBrush brush(color, wxSOLID);
+    SetPen(pen);
+    SetBrush(brush);
+
     double alpha = atan((y2 - y1) / (x2 - x1));
 
     switch(nEdge) {
@@ -49,13 +54,13 @@ void lmDrawer::DrawLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
             {
             lmLUnits incrX = (lmLUnits)( (width * sin(alpha)) / 2.0 );
             lmLUnits incrY = (lmLUnits)( (width * cos(alpha)) / 2.0 );
-            wxPoint points[] = {
-                wxPoint(x1+incrX, y1-incrY),
-                wxPoint(x1-incrX, y1+incrY),
-                wxPoint(x2-incrX, y2+incrY),
-                wxPoint(x2+incrX, y2-incrY)
+            lmUPoint points[] = {
+                lmUPoint(x1+incrX, y1-incrY),
+                lmUPoint(x1-incrX, y1+incrY),
+                lmUPoint(x2-incrX, y2+incrY),
+                lmUPoint(x2+incrX, y2-incrY)
             };
-            DrawPolygon(4, points);
+            RenderPolygon(4, points);
             break;
             }
 
@@ -63,13 +68,13 @@ void lmDrawer::DrawLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
             // edge is always a vertical line
             {
             lmLUnits incrY = (lmLUnits)( (width / cos(alpha)) / 2.0 );
-            wxPoint points[] = {
-                wxPoint(x1, y1-incrY),
-                wxPoint(x1, y1+incrY),
-                wxPoint(x2, y2+incrY),
-                wxPoint(x2, y2-incrY)
+            lmUPoint points[] = {
+                lmUPoint(x1, y1-incrY),
+                lmUPoint(x1, y1+incrY),
+                lmUPoint(x2, y2+incrY),
+                lmUPoint(x2, y2-incrY)
             };
-            DrawPolygon(4, points);
+            RenderPolygon(4, points);
             break;
             }
 
@@ -77,13 +82,13 @@ void lmDrawer::DrawLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
             // edge is always a horizontal line
             {
             lmLUnits incrX = (lmLUnits)( (width / sin(alpha)) / 2.0 );
-            wxPoint points[] = {
-                wxPoint(x1+incrX, y1),
-                wxPoint(x1-incrX, y1),
-                wxPoint(x2-incrX, y2),
-                wxPoint(x2+incrX, y2)
+            lmUPoint points[] = {
+                lmUPoint(x1+incrX, y1),
+                lmUPoint(x1-incrX, y1),
+                lmUPoint(x2-incrX, y2),
+                lmUPoint(x2+incrX, y2)
             };
-            DrawPolygon(4, points);
+            RenderPolygon(4, points);
             break;
             }
     }
@@ -102,6 +107,33 @@ void lmDirectDrawer::GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits
     m_pDC->GetTextExtent(string, &width, &height);
     *w = (lmLUnits)width;
     *h = (lmLUnits)height;
+}
+
+void lmDirectDrawer::DrawRectangle(lmUPoint uPoint, wxSize size)
+{
+    wxPoint point = lmUPointToPoint(uPoint);
+    m_pDC->DrawRectangle(point, size);
+}
+
+void lmDirectDrawer::DrawCircle(const lmUPoint& pt, wxCoord radius)
+{ 
+    wxPoint point = lmUPointToPoint(pt);
+    m_pDC->DrawCircle(point, radius); 
+}
+
+void lmDirectDrawer::RenderCircle(const lmUPoint& pt, lmLUnits radius)
+{
+    wxPoint point = lmUPointToPoint(pt);
+    m_pDC->DrawCircle(point, (wxCoord)radius); 
+}
+
+void lmDirectDrawer::RenderPolygon(int n, lmUPoint points[])
+{ 
+    wxPoint* pts = new wxPoint[n];
+    int i;
+    for (i= 0; i < n; i++)  pts[i] = lmUPointToPoint(points[i]);
+    m_pDC->DrawPolygon(n, pts);
+    delete[] pts;
 }
 
 //void lmDirectDrawer::DrawRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height)

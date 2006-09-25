@@ -790,7 +790,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 
     // as wxDragImage works with unscrolled device coordinates we need current position
     // in device units. All device coordinates are referred to the lmScoreCanvas window
-    wxPoint canvasPosD(event.GetPosition());
+    lmDPoint canvasPosD(event.GetPosition());
 
     // Leave DC in logical units and scaled, so that
     // transformations logical/device and viceversa can be computed
@@ -803,27 +803,27 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
     GetScrollPixelsPerUnit(&xScrollUnits, &yScrollUnits);
     xOrg *= xScrollUnits;
     yOrg *= yScrollUnits;
-    wxPoint canvasOrgD(xOrg, yOrg);
+    lmDPoint canvasOrgD(xOrg, yOrg);
 
     // the origin of current page is 
-    wxPoint pageOrgD(m_xBorder, m_yBorder);
+    lmDPoint pageOrgD(m_xBorder, m_yBorder);
     //! @todo pageOrgD is valid only for the first page.
 
     // let's compute the position (pixels and logical) referred to the page origin
-    wxPoint pagePosD(canvasPosD.x + canvasOrgD.x - pageOrgD.x,
+    lmDPoint pagePosD(canvasPosD.x + canvasOrgD.x - pageOrgD.x,
                      canvasPosD.y + canvasOrgD.y - pageOrgD.y);
-    wxPoint pagePosL(pDC->DeviceToLogicalXRel(pagePosD.x),
+    lmUPoint pagePosL(pDC->DeviceToLogicalXRel(pagePosD.x),
                      pDC->DeviceToLogicalYRel(pagePosD.y));
 
     // For transformations from page to canvas and viceversa we need to combine both origins
-    wxPoint offsetD(pageOrgD.x - canvasOrgD.x, pageOrgD.y - canvasOrgD.y);
+    lmDPoint offsetD(pageOrgD.x - canvasOrgD.x, pageOrgD.y - canvasOrgD.y);
 
     //wxLogStatus(_T("canvasPosD=(%d, %d), pagePosD=(%d, %d), pagePosL=(%d, %d)"),
     //    canvasPosD.x, canvasPosD.y, pagePosD.x, pagePosD.y, pagePosL.x, pagePosL.y);
 
     // draw markers on the rulers
     if (m_fRulers) {
-        //wxPoint ptR(pDC->LogicalToDeviceX(pt.x), pDC->LogicalToDeviceY(pt.y));
+        //lmDPoint ptR(pDC->LogicalToDeviceX(pt.x), pDC->LogicalToDeviceY(pt.y));
         if (m_pHRuler) m_pHRuler->ShowPosition(pagePosD);
         if (m_pVRuler) m_pVRuler->ShowPosition(pagePosD);
     }
@@ -858,7 +858,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
             m_dragStartPosL = pagePosL;        // save mouse position (page logical coordinates)
             // compute the location of the drag position relative to the upper-left 
             // corner of the image (pixels)
-            wxPoint hotSpot = pagePosL - pScO->GetGlyphPosition();
+            lmUPoint hotSpot = pagePosL - pScO->GetGlyphPosition();
             m_dragHotSpot.x = pDC->LogicalToDeviceXRel(hotSpot.x);
             m_dragHotSpot.y = pDC->LogicalToDeviceYRel(hotSpot.y);
        }
@@ -881,7 +881,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         // Generate move command to move lmStaffObj and update document
         lmScoreDocument *doc = (lmScoreDocument *)GetDocument();
         wxCommandProcessor* pCP = doc->GetCommandProcessor();
-        wxPoint finalPos = m_pSoDrag->GetGlyphPosition() + pagePosL - m_dragStartPosL;
+        lmUPoint finalPos = m_pSoDrag->GetGlyphPosition() + pagePosL - m_dragStartPosL;
         pCP->Submit(new lmScoreCommandMove(_T("Move object"), doc, m_pSoDrag, finalPos));
 
         ////update document to draw final image and clean up pointers
@@ -916,7 +916,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         } else {
             //drag image started OK. Move image to current cursor position
             //and show it (was hidden until now)
-            wxPoint offset(offsetD.x + m_dragHotSpot.x, offsetD.y + m_dragHotSpot.y);
+            lmDPoint offset(offsetD.x + m_dragHotSpot.x, offsetD.y + m_dragHotSpot.y);
             //m_Paper.SetDC(pDC);
             m_Paper.SetDrawer(new lmDirectDrawer(pDC));
             m_pSoDrag->MoveDragImage(&m_Paper, m_pDragImage, offset, pagePosL, m_dragStartPosL, canvasPosD);
@@ -974,7 +974,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 
         } else {
             // just move the image
-            wxPoint offset(offsetD.x + m_dragHotSpot.x, offsetD.y + m_dragHotSpot.y);
+            lmDPoint offset(offsetD.x + m_dragHotSpot.x, offsetD.y + m_dragHotSpot.y);
             //m_Paper.SetDC(pDC);
             m_Paper.SetDrawer(new lmDirectDrawer(pDC));
             m_pSoDrag->MoveDragImage(&m_Paper, m_pDragImage, offset, pagePosL, m_dragStartPosL, canvasPosD);

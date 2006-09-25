@@ -226,12 +226,13 @@ void lmChord::DrawStem(bool fMeasuring, lmPaper* pPaper, wxColour colorC, wxFont
     if (!fMeasuring) {
         #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
         lmLUnits uStemThickness = pVStaff->TenthsToLogical(STEM_WIDTH, nStaff) / 10;
-        pPaper->DrawLine(xStem, yStemStart, xStem, yStemEnd, uStemThickness);
+        pPaper->RenderLine(xStem, yStemStart, xStem, yStemEnd, uStemThickness,
+                           eEdgeNormal, colorC);
     }
 
     //draw the flag for chords not beamed
     if (!pBaseNote->IsBeamed() && pBaseNote->GetNoteType() > eQuarter) {
-        DrawFlag(fMeasuring, pPaper, pBaseNote, wxPoint(xStem, yStemEnd), colorC, pFont,
+        DrawFlag(fMeasuring, pPaper, pBaseNote, lmUPoint(xStem, yStemEnd), colorC, pFont,
                  pVStaff, nStaff);
     }
     
@@ -246,7 +247,7 @@ bool lmChord::IsLastNoteOfChord(lmNote* pNote)
 }
 
 lmLUnits lmChord::DrawFlag(bool fMeasuring, lmPaper* pPaper, lmNote* pBaseNote,
-                                 wxPoint pos, wxColour colorC, wxFont* pFont,
+                                 lmUPoint pos, wxColour colorC, wxFont* pFont,
                                  lmVStaff* pVStaff, int nStaff)
 {
     //
@@ -423,7 +424,7 @@ void lmChord::ArrangeNoteheads()
 
 }
 
-void lmChord::ComputeLayout(lmPaper* pPaper, wxPoint paperPos, wxColour colorC)
+void lmChord::ComputeLayout(lmPaper* pPaper, lmUPoint paperPos, wxColour colorC)
 {
     //arrange noteheads at left/right of stem to avoid collisions
     ArrangeNoteheads();
@@ -605,7 +606,7 @@ lmNote* lmChord::CheckIfNoteCollision(lmShapeObj* pShape)
 
 }
 
-void lmChord::ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, int iN, lmPaper* pPaper, wxPoint paperPos, wxColour colorC)
+void lmChord::ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, int iN, lmPaper* pPaper, lmUPoint paperPos, wxColour colorC)
 {
     wxASSERT(pNote->HasAccidentals());
 

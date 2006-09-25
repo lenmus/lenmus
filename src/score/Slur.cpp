@@ -188,7 +188,7 @@ void lmTie::SetStartPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperRight, bo
 {
     m_fTieUnderNote = fUnderNote;
 
-    wxPoint paperPos = m_pStartNote->GetOrigin();
+    lmUPoint paperPos = m_pStartNote->GetOrigin();
     m_mainArc.SetStartPoint(xPos + paperPos.x, yPos + paperPos.y);
     m_xPaperRight = xPaperRight;
 
@@ -196,7 +196,7 @@ void lmTie::SetStartPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperRight, bo
 
 void lmTie::SetEndPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperLeft)
 {
-    wxPoint paperPosEnd = m_pEndNote->GetOrigin();
+    lmUPoint paperPosEnd = m_pEndNote->GetOrigin();
     lmLUnits xEnd = xPos + paperPosEnd.x;
     lmLUnits yEnd = yPos + paperPosEnd.y;
     m_mainArc.SetEndPoint(xEnd, yEnd);
@@ -204,7 +204,7 @@ void lmTie::SetEndPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperLeft)
 
     // check if the tie have to be splitted
     lmLUnits xStart, yStart;
-    wxPoint paperPosStart = m_pStartNote->GetOrigin();
+    lmUPoint paperPosStart = m_pStartNote->GetOrigin();
     if (paperPosEnd.y != paperPosStart.y) {
         //if start note paperPos Y is not the same than end note paperPos Y the notes are
         //in different systems. Therefore, the tie must be splitted. Let's do it
@@ -269,7 +269,7 @@ void lmTie::UpdateMeasurements()
     /*
     the position of one of the owner notes has changed. Update tie position and size
     */
-    wxPoint startOffset = m_pStartNote->GetOrigin();
+    lmUPoint startOffset = m_pStartNote->GetOrigin();
 
     //! @todo Adjust selRect to sourround control points
     m_paperPos = startOffset;

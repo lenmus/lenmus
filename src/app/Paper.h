@@ -92,12 +92,14 @@ public:
     void DrawRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height)
             { m_pDrawer->DrawRectangle(left, top, width, height); }
     void DrawCircle(wxCoord x, wxCoord y, wxCoord radius) { m_pDrawer->DrawCircle(x, y, radius); }
-    void DrawCircle(const wxPoint& pt, wxCoord radius) { m_pDrawer->DrawCircle(pt, radius); }
-    void DrawPolygon(int n, wxPoint points[]) { m_pDrawer->DrawPolygon(n, points); }
+    void DrawCircle(const lmUPoint& pt, wxCoord radius) { m_pDrawer->DrawCircle(pt, radius); }
 
-    void DrawLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
-                  lmLUnits width, lmELineEdges nEdge = eEdgeNormal)
-        { m_pDrawer->DrawLine(x1, y1, x2, y2, width, nEdge); }
+    void DrawRectangle(lmUPoint point, wxSize size) { m_pDrawer->DrawRectangle(point, size); }
+    void RenderCircle(const lmUPoint& pt, lmLUnits radius) { m_pDrawer->RenderCircle(pt, radius); }
+    void RenderPolygon(int n, lmUPoint points[]) { m_pDrawer->RenderPolygon(n, points); }
+    void RenderLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
+                  lmLUnits width, lmELineEdges nEdge, wxColour color)
+        { m_pDrawer->RenderLine(x1, y1, x2, y2, width, nEdge, color); }
 
     //brushes, colors, fonts, ...
     void SetBrush(wxBrush brush) { m_pDrawer->SetBrush(brush); }

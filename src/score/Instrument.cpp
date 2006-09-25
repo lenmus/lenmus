@@ -291,7 +291,7 @@ void lmInstrument::DrawName(lmPaper* pPaper, wxColour colorC)
         //It also performs other non necessary thigs.
         //So, I will invoke directly DarwObject and, previouly, set the text
         //position at current paper position
-        m_pName->MoveTo(wxPoint(pPaper->GetCursorX(), pPaper->GetCursorY()));
+        m_pName->MoveTo(lmUPoint(pPaper->GetCursorX(), pPaper->GetCursorY()));
         m_pName->DrawObject(DO_DRAW, pPaper, colorC);
     }
 }
@@ -310,7 +310,7 @@ void lmInstrument::DrawAbbreviation(lmPaper* pPaper, wxColour colorC)
         //draw it at the same position.
         //So, I will invoke directly DarwObject and, previouly, set the text
         //position at current paper position.
-        m_pAbbreviation->MoveTo(wxPoint(pPaper->GetCursorX(), pPaper->GetCursorY()));
+        m_pAbbreviation->MoveTo(lmUPoint(pPaper->GetCursorX(), pPaper->GetCursorY()));
         m_pAbbreviation->DrawObject(DO_DRAW, pPaper, colorC);
     }
 }
