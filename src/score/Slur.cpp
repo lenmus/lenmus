@@ -79,9 +79,7 @@ void lmArch::SetCtrolPoint2(lmLUnits xPos, lmLUnits yPos)
 void lmArch::Draw(lmPaper* pPaper, wxColour colorC)
 {
     //wxLogMessage(_T("[lmArch::Draw]"));
-    wxPen oldPen = pPaper->GetPen();
-    wxPen pen(colorC, lmToLogicalUnits(0.2, lmMILLIMETERS), wxSOLID);    // width = 0.2 mm
-    pPaper->SetPen(pen);
+    lmLUnits uWidth = lmToLogicalUnits(0.2, lmMILLIMETERS);         // width = 0.2 mm
 
     //lmArch is rendered as a cubic bezier curve. The number of points to draw is
     // variable, to suit a minimun resolution of 5 points / mm. 
@@ -113,14 +111,12 @@ void lmArch::Draw(lmPaper* pPaper, wxColour colorC)
         y2 = a * m_yStart + b * m_yCtrol1 + c * m_yCtrol2 + d * m_yEnd;
 
         // draw segment line
-        pPaper->DrawLine(x1, y1, x2, y2);
+        pPaper->SolidLine(x1, y1, x2, y2, uWidth, eEdgeNormal, colorC);
 
         // prepare for next point
         x1 = x2;
         y1 = y2;
     }
-
-    pPaper->SetPen(oldPen);
 
 }
 

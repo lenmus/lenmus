@@ -98,9 +98,11 @@ void lmScoreObj::DrawSelRectangle(lmPaper* pPaper, wxColour colorC)
         m_pShape->DrawSelRectangle(pPaper, m_paperPos, colorC);
     }
     else {
-        pPaper->SetPen( wxPen(*wxRED, 1, wxSOLID) );
-        pPaper->SetBrush( *wxTRANSPARENT_BRUSH );
-        pPaper->DrawRectangle(GetSelRect().GetPosition(), GetSelRect().GetSize());
+        wxPoint pt = GetSelRect().GetPosition();
+        lmUPoint uPoint((lmLUnits)pt.x, (lmLUnits)pt.y);
+        pPaper->SketchRectangle(uPoint, GetSelRect().GetSize(), *wxRED);
+        //! @todo change *wxRED by colorC when no longer necesary to distinguise
+        //!       between shape rendered and drawing rendered objects
     }
 }
 
@@ -288,7 +290,8 @@ void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     pPaper->SetCursorX(m_paperPos.x + m_nWidth);
     
     // draw selection rectangle
-    if (gfDrawSelRec && !fMeasuring) DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
+    if (gfDrawSelRec && !fMeasuring)
+        DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
             
 }
 

@@ -176,21 +176,19 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 
     //draw dots
     //------------------------------------------------------------
-    if (m_fDotted || m_fDoubleDotted) {
-        nxLeft += m_pVStaff->TenthsToLogical(5, m_nStaffNum);
+    if (m_fDotted || m_fDoubleDotted)
+    {
+        lmLUnits nSpaceBeforeDot = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
+        nxLeft += nSpaceBeforeDot;      //! @todo user selectable
+
         lmLUnits nShift = aGlyphsInfo[nGlyph].SelRectShift + (aGlyphsInfo[nGlyph].SelRectHeight / 2);
-        if (!fMeasuring) {
-            lmLUnits nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
-            lmLUnits yPos = m_glyphPos.y + m_paperPos.y + m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);
-            pPaper->DrawCircle(nxLeft, yPos, nDotRadius);
-        }
+        nShift = m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);
+        lmLUnits yPos = m_glyphPos.y + m_paperPos.y; // + nShift;
+
+        nxLeft += DrawDot(fMeasuring, pPaper, nxLeft, yPos, colorC, true);
         if (m_fDoubleDotted) {
-            nxLeft += m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-            if (!fMeasuring) {
-                lmLUnits nDotRadius = m_pVStaff->TenthsToLogical(2, m_nStaffNum);
-                lmLUnits yPos = m_glyphPos.y + m_paperPos.y + m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);
-                pPaper->DrawCircle(nxLeft, yPos, nDotRadius);
-            }
+            nxLeft += nSpaceBeforeDot;
+            nxLeft += DrawDot(fMeasuring, pPaper, nxLeft, yPos, colorC, true);
         }
     }
 

@@ -33,8 +33,9 @@
 #include "agg_ellipse.h"
 
 
-// lmAggDrawer must be compatible with wxDC methods as all printing will be
-// done without anti-aliasing, by direct usage of printer wxDC. Also dragging 
+// lmDrawer interface must be designed so that all methods can be easily implemented
+// with wxDC methods as all printing will be done without anti-aliasing, by direct usage
+// of printer wxDC (through lmDirecDrawer object). Also dragging 
 // and play highlight is done with wxDC methods
 //
 // In wxWidgets:
@@ -43,6 +44,14 @@
 // - text appearance is controlled neither by pen nor by brush but by methods
 //      SetTextForeground() and SetTextBackground() 
 //
+// Drawing methods
+// - SolidX : Solid renderization, anti-aliased
+// - OutlinedX: Outline renderization, anti-aliased
+// - SketchX: Aliased renderization. Will use current settings for outline and 
+//      fill colors.
+//
+// Two versions: with pen/brush parameters and without these parameters. Versions
+// with pen/brush parameters don't change pen/brush settings
 //
 // Coordinates
 //
@@ -102,7 +111,7 @@ lmAggDrawer::lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, int strid
     m_pRenMarker = new lmRendererMarkerType(*m_pRenBase);
 
     // initialize colours
-    m_pRenMarker->line_color( m_colorF );
+    m_pRenMarker->line_color( m_textColorF );
 
 }
 
@@ -141,11 +150,11 @@ void lmAggDrawer::Initialize()
     //    m_xDevicePixelsPerLU, m_yDevicePixelsPerLU);
 
     // set default colours
-    m_colorF = agg::rgba8(0,0,0);
-    m_colorB = agg::rgba8(255, 255, 255);
+    m_textColorF = agg::rgba8(0,0,0);
+    m_textColorB = agg::rgba8(255, 255, 255);
+    m_lineColor = agg::rgba8(0,0,0);
+    m_fillColor = agg::rgba8(0,0,0);
 
-    wxBrush brush(wxColour(0,0,0), wxSOLID);
-    SetBrush(brush);
     m_pDC->SetBackgroundMode(wxTRANSPARENT);
     m_pDC->SetBackground(*wxWHITE_BRUSH);
     m_pDC->SetTextBackground(wxColour(0,0,0));
@@ -153,123 +162,115 @@ void lmAggDrawer::Initialize()
 }
 
 //draw shapes
-void lmAggDrawer::DrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2)
+void lmAggDrawer::SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
+                             wxColour color)
 { 
-    //wxLogMessage(_T("[lmAggDrawer::DrawLine]"));
+    m_pRenMarker->line_color( lmToRGBA8(color) );
     // renderer_marker expects no decimals, so values must be multiplied by 256.
     m_pRenMarker->line(WorldToDeviceX(x1)*256, WorldToDeviceY(y1)*256,
-            WorldToDeviceX(x2)*256, WorldToDeviceY(y2)*256, true);
+            WorldToDeviceX(x2)*256, WorldToDeviceY(y2)*256, true);  //true means 'include last point'
 
 }
 
-void lmAggDrawer::DrawRectangle(wxPoint point, wxSize size)
+void lmAggDrawer::SketchRectangle(lmUPoint point, wxSize size, wxColour color)
 { 
-    DrawRectangle(point.x, point.y, size.GetWidth(), size.GetHeight());
+    // renderer_marker expects no decimals, so values must be multiplied by 256.
+    double x = WorldToDeviceX(point.x) * 256.0;
+    double y = WorldToDeviceY(point.y) * 256.0;
+    double w = WorldToDeviceX(size.GetWidth()) * 256.0;
+    double h = WorldToDeviceY(size.GetHeight()) * 256.0;
+
+    m_pRenMarker->line_color( lmToRGBA8(color) );
+    // in last parameter, true means 'include last point'
+    m_pRenMarker->line(x, y, x+w, y, false);
+    m_pRenMarker->line(x+w, y, x+w, y+h, false);
+    m_pRenMarker->line(x+w, y+h, x, y+h, false);
+    m_pRenMarker->line(x, y+h, x, y, false);
+
 }
 
-void lmAggDrawer::DrawRectangle(lmUPoint point, wxSize size)
+//void lmAggDrawer::SolidRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height)
+//{ 
+//    double x = WorldToDeviceX(left);
+//    double y = WorldToDeviceY(top);
+//    double w = WorldToDeviceX(width);
+//    double h = WorldToDeviceY(height);
+//
+//    m_ras.reset(); 
+//    m_ras.move_to_d(x, y);
+//    m_ras.line_to_d(x, y + h);
+//    m_ras.line_to_d(x + w, y + h);
+//    m_ras.line_to_d(x + w, y);
+//    m_ras.line_to_d(x, y);
+//    agg::render_scanlines_aa_solid(m_ras, m_sl, *m_pRenBase, m_textColorF);
+//
+//}
+
+void lmAggDrawer::SolidCircle(lmLUnits xCenter, lmLUnits yCenter, lmLUnits radius)
 { 
-    DrawRectangle(point.x, point.y, size.GetWidth(), size.GetHeight());
-}
-
-void lmAggDrawer::DrawRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height)
-{ 
-    //wxLogMessage(_T("[lmAggDrawer::DrawRectangle]"));
-    double x = WorldToDeviceX(left);
-    double y = WorldToDeviceY(top);
-    double w = WorldToDeviceX(width);
-    double h = WorldToDeviceY(height);
-
-    m_ras.reset(); 
-    m_ras.move_to_d(x, y);
-    m_ras.line_to_d(x, y + h);
-    m_ras.line_to_d(x + w, y + h);
-    m_ras.line_to_d(x + w, y);
-    m_ras.line_to_d(x, y);
-    agg::render_scanlines_aa_solid(m_ras, m_sl, *m_pRenBase, m_colorF);
-
-    //wxLogMessage(_T("[lmAggDrawer::DrawRectangle] DrawRectangle(%.2f, %.2f, %.2f, %.2f)"), x, y, w, h);
-}
-
-void lmAggDrawer::DrawCircle(wxCoord x, wxCoord y, wxCoord radius)
-{ 
-    //! @todo
-    //wxLogMessage(_T("[lmAggDrawer::DrawCircle]"));
-    m_pDC->DrawCircle(x, y, radius); 
-}
-
-void lmAggDrawer::DrawCircle(const lmUPoint& pt, wxCoord radius) 
-{ 
-    //! @todo
-    //wxLogMessage(_T("[lmAggDrawer::DrawCircle]"));
-    wxPoint point = lmUPointToPoint(pt);
-    m_pDC->DrawCircle(point, radius); 
-}
-
-void lmAggDrawer::RenderCircle(const lmUPoint& pt, lmLUnits radius)
-{ 
-    double x = WorldToDeviceX(pt.x);
-    double y = WorldToDeviceY(pt.y);
+    double x = WorldToDeviceX(xCenter);
+    double y = WorldToDeviceY(yCenter);
     double r = WorldToDeviceX(radius);
 
-    wxLogMessage(_T("[lmAggDrawer::RenderCircle]"));
     agg::ellipse e1;
     m_ras.reset(); 
     e1.init(x, y, r, r, 0);
     m_ras.add_path(e1);
-    agg::render_scanlines_aa_solid(m_ras, m_sl, *m_pRenBase, agg::rgba8(250,0,0)); //m_colorF);
+    agg::render_scanlines_aa_solid(m_ras, m_sl, *m_pRenBase, m_fillColor);
 }
 
-void lmAggDrawer::RenderPolygon(int n, lmUPoint points[]) 
+void lmAggDrawer::SolidPolygon(int n, lmUPoint points[], wxColor color) 
 { 
-    //wxLogMessage(_T("[lmAggDrawer::RenderPolygon]"));
+    //wxLogMessage(_T("[lmAggDrawer::SolidPolygon]"));
     m_ras.reset(); 
     m_ras.move_to_d( WorldToDeviceX(points[0].x), WorldToDeviceY(points[0].y) );
     int i;
     for (i=1; i < n; i++) {
         m_ras.line_to_d( WorldToDeviceX(points[i].x), WorldToDeviceY(points[i].y) );
     }
-    agg::render_scanlines_aa_solid(m_ras, m_sl, *m_pRenBase, m_colorF);
+    agg::render_scanlines_aa_solid(m_ras, m_sl, *m_pRenBase, lmToRGBA8(color));
 
 }
 
-//brushes, colors, fonts, ...
-void lmAggDrawer::SetBrush(wxBrush brush) 
-{ 
-    // In wxWidgets a brush is a drawing tool for filling in areas. It is used 
-    // for painting the background of rectangles, ellipses, etc. It has a colour 
-    // and a style.
 
-    //! @todo
-    //wxLogMessage(_T("[lmAggDrawer::SetBrush]"));
-    m_pDC->SetBrush(brush); 
+//brushes, colors, fonts, ...
+
+
+wxColour lmAggDrawer::GetFillColor()
+{
+    return lmToWxColor(m_fillColor);
+}
+
+void lmAggDrawer::SetFillColor(wxColour color)
+{
+    m_fillColor = lmToRGBA8(color);
+}
+
+wxColour lmAggDrawer::GetLineColor()
+{
+    return lmToWxColor(m_lineColor);
+}
+
+void lmAggDrawer::SetLineColor(wxColour color)
+{
+    m_lineColor = lmToRGBA8(color);
+}
+
+void lmAggDrawer::SetLineWidth(lmLUnits uWidth)
+{
+    m_uLineWidth = uWidth;
+}
+
+void lmAggDrawer::SetPen(wxColour color, lmLUnits uWidth)
+{
+    m_lineColor = lmToRGBA8(color);
+    m_uLineWidth = uWidth;
 }
 
 void lmAggDrawer::SetFont(wxFont& font) 
 {
     //wxLogMessage(_T("[lmAggDrawer::SetFont]"));
     m_pDC->SetFont(font); 
-}
-
-void lmAggDrawer::SetPen(wxPen& pen) 
-{ 
-    // In wxWidgets a pen is a drawing tool for drawing outlines. It is used 
-    // for drawing lines and painting the outline of rectangles, ellipses, etc.
-    // It has a colour, a width and a style.
-
-    //wxLogMessage(_T("[lmAggDrawer::SetPen]"));
-    m_pDC->SetPen(pen);
-    
-    wxColour color = pen.GetColour();
-    m_penColor = lmToRGBA8(color);
-    m_penWidth = pen.GetWidth();
-}
-
-const wxPen& lmAggDrawer::GetPen() const 
-{ 
-    //! @todo
-    //wxLogMessage(_T("[lmAggDrawer::GetPen]"));
-    return m_pDC->GetPen(); 
 }
 
 void lmAggDrawer::SetLogicalFunction(int function) 
@@ -476,6 +477,11 @@ lmColor_rgba8 lmAggDrawer::lmToRGBA8(wxColour color)
     return agg::rgba8(color.Red(), color.Green(), color.Blue());
 }
 
+wxColour lmAggDrawer::lmToWxColor(lmColor_rgba8 color)
+{
+    return wxColor(color.r, color.g, color.b);
+}
+
 /*
 
 void lmAggDrawer::Clear()
@@ -621,19 +627,6 @@ const lmColor_rgba8& lmAggDrawer::GetLineColor()
 void lmAggDrawer::DrawEllipse(int x, int y, int rx, int ry)
 {
     m_pRenMarker->ellipse(x, y, rx, ry);
-}
-
-//-----------------------------------------------------------------------------------
-// render anti-aliased
-//-----------------------------------------------------------------------------------
-
-void lmAggDrawer::DrawLine_AA(double x1, double y1, double x2, double y2, double rWidth)
-{
-    m_ras.move_to_d(x1, y1);
-    m_ras.line_to_d(x2, y2);
-    m_ras.line_to_d(x2+rWidth, y2+rWidth);
-    m_ras.line_to_d(x1+rWidth, y1+rWidth);
-    m_ras.line_to_d(x1, y1);
 }
 
 */

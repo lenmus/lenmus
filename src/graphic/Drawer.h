@@ -47,26 +47,28 @@ public:
     lmDrawer(wxDC* pDC);
     virtual ~lmDrawer() {}
 
-    //draw shapes
-    virtual void DrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2) = 0;
-    virtual void DrawRectangle(wxPoint point, wxSize size) = 0;
-    virtual void DrawRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height) = 0;
-    virtual void DrawCircle(wxCoord x, wxCoord y, wxCoord radius) = 0;
-    virtual void DrawCircle(const lmUPoint& pt, wxCoord radius) = 0;
+    // Aliased shapes, even when anti-alising is supported.
+    virtual void SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, wxColour color) = 0;
+    virtual void SketchRectangle(lmUPoint uPoint, wxSize size, wxColour color) = 0;
 
-
-    virtual void DrawRectangle(lmUPoint uPoint, wxSize size) = 0;
-    virtual void RenderLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
+    //solid shapes, anti-aliased when supported.
+    virtual void SolidLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
                           lmLUnits width, lmELineEdges nEdge, wxColour color);
-    virtual void RenderPolygon(int n, lmUPoint points[]) = 0;
-    virtual void RenderCircle(const lmUPoint& pt, lmLUnits radius) = 0;
+    virtual void SolidPolygon(int n, lmUPoint points[], wxColour color) = 0;
+    virtual void SolidCircle(lmLUnits x, lmLUnits y, lmLUnits radius) = 0;
 
-    //brushes, colors, fonts, ...
-    virtual void SetBrush(wxBrush brush) = 0;
+    //settings: line width, colors, fonts, ...
     virtual void SetFont(wxFont& font) = 0;
-    virtual void SetPen(wxPen& pen) = 0;
-    virtual const wxPen& GetPen() const = 0;
     virtual void SetLogicalFunction(int function) = 0;
+
+    virtual wxColour GetFillColor() = 0;
+    virtual void SetFillColor(wxColour color) = 0;
+    virtual wxColour GetLineColor() = 0;
+    virtual void SetLineColor(wxColour color) = 0;
+    virtual lmLUnits GetLineWidth() { return m_uLineWidth; }
+    virtual void SetLineWidth(lmLUnits uWidth) = 0;
+    virtual void SetPen(wxColour color, lmLUnits uWidth) = 0;
+
 
     //text
     virtual void DrawText(const wxString& text, wxCoord x, wxCoord y) = 0;
@@ -82,6 +84,7 @@ public:
 
 protected:
     wxDC*       m_pDC;              // the DC to use
+    lmLUnits    m_uLineWidth;       // pen width
 
 };
 
@@ -93,26 +96,25 @@ public:
     lmDirectDrawer(wxDC* pDC) : lmDrawer(pDC) {};
     ~lmDirectDrawer() {};
 
-    //draw shapes
-    void DrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2)
-            { m_pDC->DrawLine(x1, y1, x2, y2); }
-    void DrawRectangle(wxPoint point, wxSize size) { m_pDC->DrawRectangle(point, size); }
-    void DrawRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height)
-            { m_pDC->DrawRectangle(left, top, width, height); }
-    void DrawCircle(wxCoord x, wxCoord y, wxCoord radius) { m_pDC->DrawCircle(x, y, radius); }
-    void DrawCircle(const lmUPoint& pt, wxCoord radius);
+    // Aliased shapes, even when anti-alising is supported.
+    void SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, wxColour color);
+    void SketchRectangle(lmUPoint uPoint, wxSize size, wxColour color);
 
-    void DrawRectangle(lmUPoint uPoint, wxSize size);
-    void RenderPolygon(int n, lmUPoint points[]);
-    void RenderCircle(const lmUPoint& pt, lmLUnits radius);
+    //solid shapes, anti-aliased when supported.
+    void SolidPolygon(int n, lmUPoint points[], wxColour color);
+    void SolidCircle(lmLUnits x, lmLUnits y, lmLUnits radius);
 
 
-    //brushes, colors, fonts, ...
-    void SetBrush(wxBrush brush) { m_pDC->SetBrush(brush); }
+    //settings: line width, colors, fonts, ...
     void SetFont(wxFont& font) {m_pDC->SetFont(font); }
-    void SetPen(wxPen& pen) { m_pDC->SetPen(pen); }
-    const wxPen& GetPen() const { return m_pDC->GetPen(); }
     void SetLogicalFunction(int function) { m_pDC->SetLogicalFunction(function); }
+
+    wxColour GetFillColor();
+    void SetFillColor(wxColour color);
+    wxColour GetLineColor();
+    void SetLineColor(wxColour color);
+    void SetLineWidth(lmLUnits uWidth);
+    void SetPen(wxColour color, lmLUnits uWidth);
 
     //text
     void DrawText(const wxString& text, wxCoord x, wxCoord y) {m_pDC->DrawText(text, x, y); }
@@ -127,6 +129,11 @@ public:
     lmPixels LogicalToDeviceY(lmLUnits y) { return m_pDC->LogicalToDeviceYRel(y); }
 
 private:
+    //current brush/pen/color settings
+    wxColour        m_textColorF;       //text foreground color;
+    wxColour        m_textColorB;       //text background color;
+    wxColour        m_lineColor;        //pen color
+    wxColour        m_fillColor;        //brush color
 
 };
 

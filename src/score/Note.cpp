@@ -429,11 +429,6 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     bool fInChord = IsInChord();
 
     //prepare DC
-    int nPenWidth = m_pVStaff->TenthsToLogical(1, m_nStaffNum);
-    wxPen pen(colorC, nPenWidth, wxSOLID);
-    wxBrush brush(colorC, wxSOLID);
-    pPaper->SetPen(pen);
-    pPaper->SetBrush(brush);
     pPaper->SetFont(*m_pFont);
 
     // move to right staff
@@ -511,7 +506,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
             // notehead is over a line. Shift up the dots by half line
             yPos -= m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         }
-            nxLeft += DrawDot(fMeasuring, pPaper, nxLeft, yPos, colorC, true);
+        nxLeft += DrawDot(fMeasuring, pPaper, nxLeft, yPos, colorC, true);
         if (m_fDoubleDotted) {
             nxLeft += nSpaceBeforeDot;
             nxLeft += DrawDot(fMeasuring, pPaper, nxLeft, yPos, colorC, true);
@@ -571,8 +566,8 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
             // not measuring. Do draw stem unless it is a note in chord. In this case
             // the stem will be drawn later, when drawing the last note of the chord
             if (fDrawStem && ! fInChord) {
-                lmLUnits xPos = GetXStemLeft() + m_nStemThickness/2;     //RenderLine centers line width on given coordinates
-                pPaper->RenderLine(xPos, GetYStem(), xPos, GetFinalYStem()+1,
+                lmLUnits xPos = GetXStemLeft() + m_nStemThickness/2;     //SolidLine centers line width on given coordinates
+                pPaper->SolidLine(xPos, GetYStem(), xPos, GetFinalYStem()+1,
                                     m_nStemThickness, eEdgeNormal, colorC);
             }
         }
@@ -697,33 +692,6 @@ lmLUnits lmNote::DrawAccidentals(lmPaper* pPaper, bool fMeasuring,
     }
 
     return m_pAccidentals->GetWidth();
-
-}
-
-lmLUnits lmNote::DrawDot(bool fMeasuring, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos,
-                         wxColour colorC, bool fUseFont)
-{
-    lmLUnits halfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-    yPos += m_pVStaff->TenthsToLogical(50, m_nStaffNum);
-
-    if (fUseFont) {
-        //Draw dot by using the font glyph
-        wxString sGlyph( aGlyphsInfo[GLYPH_DOT].GlyphChar );
-        yPos += m_pVStaff->TenthsToLogical(aGlyphsInfo[GLYPH_DOT].GlyphOffset, m_nStaffNum); 
-        if (!fMeasuring) {
-            pPaper->SetTextForeground(colorC);
-            pPaper->DrawText(sGlyph, xPos, yPos);
-        }
-        lmLUnits nWidth, nHeight;
-        pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
-        return nWidth;
-    }
-    else {
-        //Direct draw
-        lmLUnits nDotRadius = m_pVStaff->TenthsToLogical(22, m_nStaffNum) / 10;
-        if (!fMeasuring) pPaper->DrawCircle(xPos, yPos, nDotRadius);
-        return 2*nDotRadius;
-    }
 
 }
 
@@ -910,7 +878,7 @@ void lmNote::DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits yStaffTop
             if (i % 2 == 0) {
                 nTenths = 5 * (i - 10);
                 yPos = yStaffTopLine - m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                pPaper->RenderLine(xPos, yPos, xPos + width, yPos, nThick,
+                pPaper->SolidLine(xPos, yPos, xPos + width, yPos, nThick,
                                    eEdgeNormal, *wxBLACK);
             }
         }
@@ -921,7 +889,7 @@ void lmNote::DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits yStaffTop
             if (i % 2 == 0) {
                 nTenths = 5 * (10 - i);
                 yPos = yStaffTopLine + m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                pPaper->RenderLine(xPos, yPos, xPos + width, yPos, nThick,
+                pPaper->SolidLine(xPos, yPos, xPos + width, yPos, nThick,
                                    eEdgeNormal, *wxBLACK);
             }
         }

@@ -166,6 +166,35 @@ void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
     }
 }
 
+lmLUnits lmNoteRest::DrawDot(bool fMeasuring, lmPaper* pPaper,
+                             lmLUnits xPos, lmLUnits yPos,
+                             wxColour colorC, bool fUseFont)
+{
+    lmLUnits halfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
+    yPos += m_pVStaff->TenthsToLogical(50, m_nStaffNum);
+
+    if (fUseFont) {
+        //Draw dot by using the font glyph
+        wxString sGlyph( aGlyphsInfo[GLYPH_DOT].GlyphChar );
+        yPos += m_pVStaff->TenthsToLogical(aGlyphsInfo[GLYPH_DOT].GlyphOffset, m_nStaffNum); 
+        if (!fMeasuring) {
+            pPaper->SetTextForeground(colorC);
+            pPaper->DrawText(sGlyph, xPos, yPos);
+        }
+        lmLUnits nWidth, nHeight;
+        pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
+        return nWidth;
+    }
+    else {
+        //Direct draw
+        lmLUnits uDotRadius = m_pVStaff->TenthsToLogical(22, m_nStaffNum) / 10;
+        if (!fMeasuring) pPaper->SolidCircle(xPos, yPos, uDotRadius);
+        return 2*uDotRadius;
+    }
+
+}
+
+
 //====================================================================================================
 // methods related to associated AuxObjs management
 //====================================================================================================
@@ -186,59 +215,6 @@ void lmNoteRest::AddLyric(lmLyric* pLyric)
     m_pLyrics->Append(pLyric);
 
 }
-//====================================================================================================
-// lmNote values parsing methods
-//====================================================================================================
-
-
-bool lmNoteRest::ParseTipoNota(wxString& sDato)
-{
-    // Receives a string (sDato) with the letter for the type of note and, optionally, 
-    // dots "."
-    // Set up variables m_nNoteType and flags m_fDotted and m_fDoubleDotted.
-    // Returns true if error in parsing
-
-    //normalize
-    sDato.Trim(false);        //remove spaces from left
-    sDato.Trim(true);        //and from the right
-    sDato.MakeLower();        
-    
-    int nNoteType = LDPNoteTypeToEnumNoteType(sDato);
-    if (nNoteType == -1) return true;    //error
-    m_nNoteType = (ENoteType)nNoteType;
-
-    //analyze dots
-    if (sDato.Len() > 1) {
-        sDato = sDato.Mid(1);
-        if (sDato.StartsWith( _T("..") )) {
-            m_fDoubleDotted = true;
-        } else if (sDato.StartsWith( _T(".") )) {
-            m_fDotted = true;
-        } else {
-            return true;    //error
-        }
-    }
-            
-    return false;   //no error
-    
-}
-
-////=========================================================================================
-////Uso exclusivo por CBeam para transferencia de datos y dibujo de barras de corchete
-////=========================================================================================
-//
-//Friend void lmNoteRest::Let PosSilencio(nPos As Long)
-//    //Llamada sólo desde CBeam para alinear los silencios dentro de un grupo
-//    m_yPosSilencio = nPos
-//}
-//
-//void lmNoteRest::Get Duracion() As Long
-//    //Esta función no tiene en cuenta el efecto de agrupación en tupla
-//    Duracion = 2 ^ (9 - m_nNoteType)
-//    if (m_fDotted) { Duracion = (Duracion * 3) \ 2       //x 1.5
-//    if (m_fDoubleDotted) { Duracion = (Duracion * 7) \ 4  //x 1.75
-//
-//}
 
 void lmNoteRest::AddMidiEvents(lmSoundManager* pSM, float rMeasureStartTime, int nChannel,
                              int nMeasure)

@@ -133,7 +133,7 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     lmLUnits yBottom = pVStaff->GetYBottom();
 
     lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
-    pPaper->RenderLine(xPos, yTop, xPos, yBottom, uLineThickness, eEdgeNormal, *wxBLACK);
+    pPaper->SolidLine(xPos, yTop, xPos, yBottom, uLineThickness, eEdgeNormal, *wxBLACK);
 
 }
 

@@ -440,8 +440,7 @@ void lmVStaff::DrawStaffLines(bool fMeasuring, lmPaper* pPaper, lmLUnits xFrom, 
     //m_xLeft = pPaper->GetLeftMarginXPos();
     //xRight = pPaper->GetRightMarginXPos();
     //yCur = pPaper->GetCursorY();
-    //pPaper->SetPen(*wxRED_PEN);
-    //pPaper->DrawLine(m_xLeft, yCur-1, xRight, yCur-1);
+    //pPaper->SketchLine(m_xLeft, yCur-1, xRight, yCur-1, *wxRED);
     ////-----------------------------------------
 
 
@@ -454,8 +453,7 @@ void lmVStaff::DrawStaffLines(bool fMeasuring, lmPaper* pPaper, lmLUnits xFrom, 
     m_yLinTop = yCur;              //save y coord. for first line start point
 
     ////DEBUG: draw top border of first lmStaff region
-    //pPaper->SetPen(*wxCYAN_PEN);
-    //pPaper->DrawLine(m_xLeft, yCur-1, xRight, yCur-1);
+    //pPaper->SketchLine(m_xLeft, yCur-1, xRight, yCur-1, *wxCYAN);
     ////-----------------------------------------
 
     //iterate over the collection of Staves (lmStaff Objects)
@@ -465,7 +463,7 @@ void lmVStaff::DrawStaffLines(bool fMeasuring, lmPaper* pPaper, lmLUnits xFrom, 
         //draw one staff
         for (int iL = 1; iL <= pStaff->GetNumLines(); iL++ ) {
             lmLUnits nStaffLineWidth = pStaff->GetLineThick();
-            pPaper->RenderLine(m_xLeft, yCur, xRight, yCur,
+            pPaper->SolidLine(m_xLeft, yCur, xRight, yCur,
                                nStaffLineWidth, eEdgeNormal, *wxBLACK);
             m_yLinBottom = yCur;                        //save line position
             yCur = yCur + pStaff->GetLineSpacing();

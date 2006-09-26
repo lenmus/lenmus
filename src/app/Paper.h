@@ -85,28 +85,32 @@ public:
 
         //methods to encapsulate the DC
 
-    //draw shapes
-    void DrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2)
-            { m_pDrawer->DrawLine(x1, y1, x2, y2); }
-    void DrawRectangle(wxPoint point, wxSize size) { m_pDrawer->DrawRectangle(point, size); }
-    void DrawRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height)
-            { m_pDrawer->DrawRectangle(left, top, width, height); }
-    void DrawCircle(wxCoord x, wxCoord y, wxCoord radius) { m_pDrawer->DrawCircle(x, y, radius); }
-    void DrawCircle(const lmUPoint& pt, wxCoord radius) { m_pDrawer->DrawCircle(pt, radius); }
+    //solid shapes, anti-aliased when supported.
+    void SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, wxColour color)
+            { m_pDrawer->SketchLine(x1, y1, x2, y2, color); }
+    void SketchRectangle(lmUPoint point, wxSize size, wxColour color)
+            { m_pDrawer->SketchRectangle(point, size, color); }
 
-    void DrawRectangle(lmUPoint point, wxSize size) { m_pDrawer->DrawRectangle(point, size); }
-    void RenderCircle(const lmUPoint& pt, lmLUnits radius) { m_pDrawer->RenderCircle(pt, radius); }
-    void RenderPolygon(int n, lmUPoint points[]) { m_pDrawer->RenderPolygon(n, points); }
-    void RenderLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
+    // Aliased shapes, even when anti-alising is supported.
+    void SolidCircle(lmLUnits x, lmLUnits y, lmLUnits radius)
+            { m_pDrawer->SolidCircle(x, y, radius); }
+    void SolidPolygon(int n, lmUPoint points[], wxColor color)
+            { m_pDrawer->SolidPolygon(n, points, color); }
+    void SolidLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
                   lmLUnits width, lmELineEdges nEdge, wxColour color)
-        { m_pDrawer->RenderLine(x1, y1, x2, y2, width, nEdge, color); }
+            { m_pDrawer->SolidLine(x1, y1, x2, y2, width, nEdge, color); }
 
-    //brushes, colors, fonts, ...
-    void SetBrush(wxBrush brush) { m_pDrawer->SetBrush(brush); }
+    //settings: line width, colors, fonts, ...
     void SetFont(wxFont& font) {m_pDrawer->SetFont(font); }
-    void SetPen(wxPen& pen) { m_pDrawer->SetPen(pen); }
-    const wxPen& GetPen() const { return m_pDrawer->GetPen(); }
     void SetLogicalFunction(int function) { m_pDrawer->SetLogicalFunction(function); }
+
+    wxColour GetFillColor() {return m_pDrawer->GetFillColor(); };
+    void SetFillColor(wxColour color) {m_pDrawer->SetFillColor(color); };
+    wxColour GetLineColor() {return m_pDrawer->GetLineColor(); };
+    void SetLineColor(wxColour color) {m_pDrawer->SetLineColor(color); };
+    lmLUnits GetLineWidth() {return m_pDrawer->GetLineWidth(); };
+    void SetLineWidth(lmLUnits uWidth) {m_pDrawer->SetLineWidth(uWidth); };
+    void SetPen(wxColour color, lmLUnits uWidth) {m_pDrawer->SetPen(color, uWidth); };
 
     //text
     void DrawText(const wxString& text, wxCoord x, wxCoord y) {m_pDrawer->DrawText(text, x, y); }

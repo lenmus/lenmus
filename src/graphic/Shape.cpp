@@ -65,14 +65,9 @@ void lmShapeObj::SetSelRectangle(int x, int y, int nWidth, int nHeight)
 
 void lmShapeObj::DrawSelRectangle(lmPaper* pPaper, lmUPoint pos, wxColour colorC)
 {
-    wxPen oldPen = pPaper->GetPen();
-    wxPen pen(colorC, 1, wxSOLID);      //width = 1px
-    pPaper->SetPen(pen);
-    pPaper->SetBrush( *wxTRANSPARENT_BRUSH );
-    wxPoint point = lmUPointToPoint(pos);
-    pPaper->DrawRectangle(m_SelRect.GetPosition()+point, m_SelRect.GetSize());
-    pPaper->SetPen(oldPen);
-
+    wxPoint pt = m_SelRect.GetPosition();
+    lmUPoint uPoint((lmLUnits)pt.x, (lmLUnits)pt.y);
+    pPaper->SketchRectangle(uPoint + pos, m_SelRect.GetSize(), colorC);
 }
 
 bool lmShapeObj::Collision(lmShapeObj* pShape)
@@ -149,28 +144,22 @@ void lmShapeComposite::Shift(lmLUnits xIncr)
 // lmShapeLine object implementation
 //========================================================================================
 
-lmShapeLine::lmShapeLine(lmScoreObj* pOwner, lmLUnits nLength, lmLUnits nWidth)
+lmShapeLine::lmShapeLine(lmScoreObj* pOwner, lmLUnits uLength, lmLUnits uWidth)
     : lmShapeSimple(pOwner)
 {
-    m_nLength = nLength;
-    m_nWidth = nWidth;
+    m_uLength = uLength;
+    m_uWidth = uWidth;
 }
 
 void lmShapeLine::Render(lmPaper* pPaper, lmUPoint pos, wxColour color)
 {
-    wxPen oldPen = pPaper->GetPen();
-    wxPen pen(color, m_nWidth, wxSOLID);
-    pPaper->SetPen(pen);
-
     // start and end points
-    double x1 = pos.x;
-    double y1 = pos.y;
-    double x2 = x1 + (double)m_nLength;
-    double y2 = y1 + (double)m_nLength;
+    lmLUnits x1 = pos.x;
+    lmLUnits y1 = pos.y;
+    lmLUnits x2 = x1 + m_uLength;
+    lmLUnits y2 = y1 + m_uLength;
 
-    pPaper->DrawLine(x1, y1, x2, y2);
-
-    pPaper->SetPen(oldPen);
+    pPaper->SolidLine(x1, y1, x2, y2, m_uWidth, eEdgeNormal, color);
 
 }
 

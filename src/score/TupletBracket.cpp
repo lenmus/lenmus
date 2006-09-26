@@ -163,11 +163,11 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
     lmNote* pEndNote = (lmNote*)pEndNR;
 
     //Prepare pen
+    lmLUnits uOldThick = pPaper->GetLineWidth();
+    wxColour oldColor = pPaper->GetLineColor();
     lmLUnits uThick = lmToLogicalUnits(0.2, lmMILLIMETERS);    //! @todo user options
-    wxPen oldPen = pPaper->GetPen();
     wxColour color = (m_fSelected ? g_pColors->ScoreSelected() : colorC);
-    wxPen pen(color, uThick, wxSOLID);
-    pPaper->SetPen(pen);
+    pPaper->SetPen(color, uThick);
 
     //Mesure number
     lmLUnits nNumberWidth=0, nNumberHeight=0;
@@ -195,18 +195,16 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
     lmLUnits yLineStart, yLineEnd, yStartBorder, yEndBorder, yNumber;
 
     ////DEBUG: Draw the boundling rectangle of start and end notes ------------------
-    //pPaper->SetPen( wxPen(*wxRED, 1, wxSOLID) );
-    //pPaper->SetBrush( *wxTRANSPARENT_BRUSH );
     //lmLUnits xLeft = pStartNote->GetBoundsLeft();
     //lmLUnits xRight = pStartNote->GetBoundsRight();
     //lmLUnits yTop = pStartNote->GetBoundsTop();
     //lmLUnits yBottom = pStartNote->GetBoundsBottom();
-    //pPaper->DrawRectangle(xLeft, yTop, xRight-xLeft, yBottom-yTop);
+    //pPaper->SketchRectangle(xLeft, yTop, xRight-xLeft, yBottom-yTop, *wxRED);
     //xLeft = pEndNote->GetBoundsLeft();
     //xRight = pEndNote->GetBoundsRight();
     //yTop = pEndNote->GetBoundsTop();
     //yBottom = pEndNote->GetBoundsBottom();
-    //pPaper->DrawRectangle(xLeft, yTop, xRight-xLeft, yBottom-yTop);
+    //pPaper->SketchRectangle(xLeft, yTop, xRight-xLeft, yBottom-yTop, *wxRED);
     ////DEBUG END -------------------------------------------------------------------
 
     if (m_fAbove) {
@@ -228,15 +226,15 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
     //draw bracket
     //---------------------------------------------
     //horizontal line
-    pPaper->RenderLine(xStart, yLineStart, xEnd, yLineEnd, uThick, eEdgeVertical, color);
+    pPaper->SolidLine(xStart, yLineStart, xEnd, yLineEnd, uThick, eEdgeVertical, color);
     
     //vertical borders
     lmLUnits x1 = xStart + uThick / 2;
     lmLUnits x2 = xEnd - uThick / 2;
-    pPaper->RenderLine(x1, yLineStart, x1, yStartBorder, uThick, eEdgeNormal, color);
-    pPaper->RenderLine(x2, yLineEnd, x2, yEndBorder, uThick, eEdgeNormal, color);
+    pPaper->SolidLine(x1, yLineStart, x1, yStartBorder, uThick, eEdgeNormal, color);
+    pPaper->SolidLine(x2, yLineEnd, x2, yEndBorder, uThick, eEdgeNormal, color);
 
-    pPaper->SetPen(oldPen);
+    pPaper->SetPen(oldColor, uOldThick);
 
     //write the number
     if (m_fShowNumber) {

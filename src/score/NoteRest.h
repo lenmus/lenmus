@@ -143,8 +143,9 @@ public:
 
 
 protected:
-    bool ParseTipoNota(wxString& sData);
     wxString GetLDPNoteType();
+    lmLUnits DrawDot(bool fMeasuring, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos, 
+                     wxColour colorC, bool fUseFont);
         
         //
         // member variables

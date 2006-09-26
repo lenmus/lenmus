@@ -152,8 +152,6 @@ private:
     void DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits yTopLine, lmLUnits xPos,
                         lmLUnits width, int nStaff, int nROP = wxCOPY);
     lmEGlyphIndex DrawFlag(bool fMeasuring, lmPaper* pPaper, lmUPoint pos, wxColour colorC);
-    lmLUnits DrawDot(bool fMeasuring, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos, 
-                     wxColour colorC, bool fUseFont);
 
     //auxiliary
     int PosOnStaffToPitch(int nSteps);

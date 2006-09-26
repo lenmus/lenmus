@@ -63,23 +63,24 @@ public:
     //access to image
     wxImage& GetImageBuffer() { return m_buffer; }
 
-    //draw shapes
-    void DrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2);
-    void DrawRectangle(wxPoint point, wxSize size);
-    void DrawRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height);
-    void DrawCircle(wxCoord x, wxCoord y, wxCoord radius);
-    void DrawCircle(const lmUPoint& pt, wxCoord radius);
+    // Aliased shapes, even when anti-alising is supported.
+    void SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, wxColour color);
+    void SketchRectangle(lmUPoint uPoint, wxSize size, wxColour color);
 
-    void DrawRectangle(lmUPoint uPoint, wxSize size);
-    void RenderPolygon(int n, lmUPoint points[]);
-    void RenderCircle(const lmUPoint& pt, lmLUnits radius);
+    //solid shapes, anti-aliased when supported.
+    void SolidPolygon(int n, lmUPoint points[], wxColor color);
+    void SolidCircle(lmLUnits x, lmLUnits y, lmLUnits radius);
 
     //brushes, colors, fonts, ...
-    void SetBrush(wxBrush brush);
     void SetFont(wxFont& font);
-    void SetPen(wxPen& pen);
-    const wxPen& GetPen() const;
     void SetLogicalFunction(int function);
+
+    wxColour GetFillColor();
+    void SetFillColor(wxColour color);
+    wxColour GetLineColor();
+    void SetLineColor(wxColour color);
+    void SetLineWidth(lmLUnits uWidth);
+    void SetPen(wxColour color, lmLUnits uWidth);
 
     //text
     void DrawText(const wxString& text, wxCoord x, wxCoord y);
@@ -98,7 +99,7 @@ private:
     inline double WorldToDeviceX(lmLUnits x) const { return m_xDevicePixelsPerLU * (double)x; }
     inline double WorldToDeviceY(lmLUnits y) const { return m_yDevicePixelsPerLU * (double)y; }
     lmColor_rgba8 lmToRGBA8(wxColour color);
-
+    wxColour lmAggDrawer::lmToWxColor(lmColor_rgba8 color);
 
 
         // member variables
@@ -136,11 +137,11 @@ private:
     double        m_yDevicePixelsPerLU;
 
 
-    //current settings
-    lmColor_rgba8   m_colorF;   //foreground color;
-    lmColor_rgba8   m_colorB;   //background color;
-    lmColor_rgba8   m_penColor;
-    int             m_penWidth;
+    //current brush/pen/color settings
+    lmColor_rgba8   m_textColorF;       //text foreground color;
+    lmColor_rgba8   m_textColorB;       //text background color;
+    lmColor_rgba8   m_lineColor;        //pen color
+    lmColor_rgba8   m_fillColor;        //brush color
 
 
     wxBitmap* m_pDummyBitmap;

@@ -553,7 +553,7 @@ void lmBeam::DrawBeamSegment(lmPaper* pPaper, bool fStemDown,
     }
 
     //draw the segment
-    pPaper->RenderLine(xStart, yStart, xEnd, yEnd, nThickness, eEdgeVertical, color);
+    pPaper->SolidLine(xStart, yStart, xEnd, yEnd, nThickness, eEdgeVertical, color);
 
     //wxLogMessage(_T("[lmBeam::DrawBeamSegment] xStart=%d, yStart=%d, xEnd=%d, yEnd=%d, nThickness=%d, yStartIncr=%d, yEndIncr=%d, fStemDown=%s"),
     //    xStart, yStart, xEnd, yEnd, nThickness, yStartIncr, yEndIncr, (fStemDown ? _T("down") : _T("up")) );

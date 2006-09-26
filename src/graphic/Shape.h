@@ -137,7 +137,7 @@ protected:
 class lmShapeLine : public lmShapeSimple
 {
 public:
-    lmShapeLine(lmScoreObj* pOwner, lmLUnits nLength, lmLUnits nWidth);
+    lmShapeLine(lmScoreObj* pOwner, lmLUnits uLength, lmLUnits uWidth);
     ~lmShapeLine() {}
 
     //implementation of virtual methods from base class
@@ -146,8 +146,8 @@ public:
     void Shift(lmLUnits xIncr);
 
 private:
-    lmLUnits    m_nLength;
-    lmLUnits    m_nWidth;
+    lmLUnits    m_uLength;
+    lmLUnits    m_uWidth;
 
 };
 

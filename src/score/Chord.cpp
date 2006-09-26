@@ -226,7 +226,7 @@ void lmChord::DrawStem(bool fMeasuring, lmPaper* pPaper, wxColour colorC, wxFont
     if (!fMeasuring) {
         #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
         lmLUnits uStemThickness = pVStaff->TenthsToLogical(STEM_WIDTH, nStaff) / 10;
-        pPaper->RenderLine(xStem, yStemStart, xStem, yStemEnd, uStemThickness,
+        pPaper->SolidLine(xStem, yStemStart, xStem, yStemEnd, uStemThickness,
                            eEdgeNormal, colorC);
     }
 
