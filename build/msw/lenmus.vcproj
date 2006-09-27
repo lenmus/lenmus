@@ -655,6 +655,9 @@
 			Name="html"
 			Filter="">
 			<File
+				RelativePath="..\..\src\html\EarScalesCtrolParms.h">
+			</File>
+			<File
 				RelativePath="..\..\src\html\HelpController.cpp">
 			</File>
 			<File
@@ -737,6 +740,12 @@
 				RelativePath="..\..\src\exercises\EarCompareIntvCtrol.h">
 			</File>
 			<File
+				RelativePath="..\..\src\exercises\EarExerciseCtrol.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\EarExerciseCtrol.h">
+			</File>
+			<File
 				RelativePath="..\..\src\exercises\EarIntervalsCtrol.cpp">
 			</File>
 			<File
@@ -749,6 +758,12 @@
 				RelativePath="..\..\src\exercises\EarIntvalConstrains.h">
 			</File>
 			<File
+				RelativePath="..\..\src\exercises\EarScalesCtrol.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\EarScalesCtrol.h">
+			</File>
+			<File
 				RelativePath="..\..\src\exercises\Generators.cpp">
 			</File>
 			<File
@@ -759,6 +774,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\IdfyChordCtrol.h">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\ScalesConstrains.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\ScalesConstrains.h">
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\ScoreAuxCtrol.cpp">

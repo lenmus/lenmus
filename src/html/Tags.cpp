@@ -53,6 +53,7 @@
     lmEarCompareIntvCtrol : public wxWindow
     lmIdfyChordCtrol : public wxWindow
     lmTheoMusicReadingCtrol : public wxWindow
+    lmEarScalesCtrol : public wxWindow
 
 
     <object type="Application/LenMus"> directives and param classes
@@ -65,6 +66,7 @@
     classid="EarIntervals"           lmEarIntervalsCtrolParms : public lmObjectParams
     classid="EarCompareIntervals"    lmEarCompareIntvCtrolParms : public lmObjectParams
     classid="IdfyChord"              lmIdfyChordCtrolParms : public lmObjectParams
+    classid="EarScales"              lmEarScalesCtrolParms : public lmObjectParams
 
     @endverbatim
 
@@ -105,11 +107,19 @@
 #include "../exercises/TheoKeySignConstrains.h"
 #include "../exercises/TheoKeySignCtrol.h"
 #include "../exercises/TheoMusicReadingCtrol.h"
+#include "../exercises/ScalesConstrains.h"
 
 #include "../exercises/EarIntervalsCtrol.h"
 #include "../exercises/EarCompareIntvCtrol.h"
 #include "../exercises/EarIntvalConstrains.h"
 #include "../exercises/IdfyChordCtrol.h"
+#include "../exercises/EarScalesCtrol.h"
+
+#include "ObjectParams.h"
+#include "TheoMusicReadingCtrolParms.h"
+#include "ScoreCtrolParams.h"
+#include "IdfyChordCtrolParms.h"
+#include "EarScalesCtrolParms.h"
 
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
@@ -121,12 +131,6 @@ extern lmMainFrame* g_pMainFrame;
     border            0 | 1                    default: 1 (with border)
 
 */
-
-#include "ObjectParams.h"
-#include "TheoMusicReadingCtrolParms.h"
-#include "ScoreCtrolParams.h"
-#include "IdfyChordCtrolParms.h"
-
 
 //OBSOLETE:
 /*
@@ -919,6 +923,7 @@ enum EHtmlObjectTypes {
     eHO_Exercise_EarCompareIntervals,
     eHO_Exercise_TheoMusicReading,
     eHO_Exercise_IdfyChord,
+    eHO_Exercise_EarScales,
     eHO_Control
 };
 
@@ -973,6 +978,8 @@ TAG_HANDLER_PROC(tag)
                         nType = eHO_Exercise_TheoMusicReading;
                     else if (sClassid.Upper() == _T("IDFYCHORD"))
                         nType = eHO_Exercise_IdfyChord;
+                    else if (sClassid.Upper() == _T("EARSCALES"))
+                        nType = eHO_Exercise_EarScales;
                 }
             }
         }
@@ -1050,6 +1057,11 @@ TAG_HANDLER_PROC(tag)
 
             case eHO_Exercise_IdfyChord:
                 m_pObjectParams = new lmIdfyChordCtrolParms(tag, nWidth, nHeight, 
+                    nPercent, nStyle);
+                break;
+
+            case eHO_Exercise_EarScales:
+                m_pObjectParams = new lmEarScalesCtrolParms(tag, nWidth, nHeight, 
                     nPercent, nStyle);
                 break;
 
