@@ -62,20 +62,12 @@ public:
     //implementation of virtual methods
     void InitializeStrings();
     void CreateAnswerButtons();
-    void SetButtonColor(int i, wxColour& color)
-            { m_pAnswerButton[i]->SetBackgroundColour(color); }
-
-    // event handlers
-    void OnRespButton(wxCommandEvent& event);
-    void OnResetCounters(wxCommandEvent& event);
-    void OnSettingsButton(wxCommandEvent& event);
+    void PrepareAuxScore(int nButton);
+    wxString SetNewProblem();    
+    wxDialog* GetSettingsDlg();
+    void ReconfigureButtons();
 
 private:
-    void SetUpButtons();
-    void EnableButtons(bool fEnable);
-    void NewProblem();
-    void ResetExercise();
-    void ResetCounters();
     wxString PrepareScore(EClefType nClef, EScaleType nType, lmScore** pScore);
 
         // member variables
@@ -91,7 +83,7 @@ private:
     //answer
     wxStaticText*   m_pRowLabel[5];
     wxButton*       m_pAnswerButton[est_Max];   //buttons for the answers
-    int             m_nRealChord[est_Max];      // chord that corresponds
+    int             m_nRealScale[est_Max];      // chord that corresponds
                                                 // to each valid button
 
     DECLARE_EVENT_TABLE()

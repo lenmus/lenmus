@@ -34,6 +34,7 @@
 #endif
 
 #include "EarScalesCtrol.h"
+
 #include "UrlAuxCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
@@ -47,11 +48,6 @@
 
 #include "../globals/Colors.h"
 extern lmColors* g_pColors;
-
-// access to global external variables
-extern bool g_fReleaseVersion;          // in TheApp.cpp
-extern bool g_fReleaseBehaviour;        // in TheApp.cpp
-extern bool g_fShowDebugLinks;          // in TheApp.cpp
 
 //------------------------------------------------------------------------------------
 // Implementation of lmEarScalesCtrol
@@ -82,7 +78,7 @@ END_EVENT_TABLE()
 lmEarScalesCtrol::lmEarScalesCtrol(wxWindow* parent, wxWindowID id, 
                            lmScalesConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
-    : lmEarExerciseCtrol(parent, id, pConstrains, NUM_BUTTONS, pos, size, style )
+    : lmEarExerciseCtrol(parent, id, pConstrains, pos, size, style )
 {
     //initializations
     m_pConstrains = pConstrains;
@@ -90,7 +86,7 @@ lmEarScalesCtrol::lmEarScalesCtrol(wxWindow* parent, wxWindowID id,
     //create buttons for the answers
     Create();
 
-    //allow to play scales
+    //initializatios to allow to play scales
     m_nKey = earmDo;
     m_sRootNote = _T("c4");
     m_nInversion = 0;
@@ -137,7 +133,11 @@ void lmEarScalesCtrol::CreateAnswerButtons()
         }
     }
 
+    //inform base class about the settings
+    SetButtons(m_pAnswerButton, NUM_BUTTONS, ID_BUTTON);
+
 }
+
 void lmEarScalesCtrol::InitializeStrings()
 {
 
@@ -159,14 +159,18 @@ void lmEarScalesCtrol::InitializeStrings()
     m_sButtonLabel[est_GreekDorian] = _("Dorian");
     m_sButtonLabel[est_GreekPhrygian] = _("Phrygian");
     m_sButtonLabel[est_GreekLydian] = _("Lydian");
+    m_sButtonLabel[est_GreekMixolydian] = _("Mixolydian");
+    m_sButtonLabel[est_GreekAeolian] = _("Aeolian");
+    m_sButtonLabel[est_GreekIonian] = _("Ionian");
+    m_sButtonLabel[est_GreekLocrian] = _("Locrian");
 
 }
 
-void lmEarScalesCtrol::SetUpButtons()
+void lmEarScalesCtrol::ReconfigureButtons()
 {
-    //Reconfigure buttons keyboard depending on the chords allowed
+    //Reconfigure buttons keyboard depending on the scales allowed
 
-    int iC;     // real chord. Correspondence to EChordTypes
+    int iC;     // real scale. Correspondence to EScaleTypes
     int iB;     // button index: 0 .. NUM_BUTTONS-1
     int iR;     // row index: 0 .. NUM_ROWS-1
     
@@ -186,7 +190,7 @@ void lmEarScalesCtrol::SetUpButtons()
         m_pRowLabel[iR]->SetLabel(_("Triads:"));
         for (iC=0; iC <= est_LastMajor; iC++) {
             if (m_pConstrains->IsScaleValid((EScaleType)iC)) {
-                m_nRealChord[iB] = iC;
+                m_nRealScale[iB] = iC;
                 m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
                 m_pAnswerButton[iB]->Show(true);
                 m_pAnswerButton[iB]->Enable(true);
@@ -206,7 +210,7 @@ void lmEarScalesCtrol::SetUpButtons()
         m_pRowLabel[iR]->SetLabel(_("Seventh chords:"));
         for (iC=est_LastMajor+1; iC <= est_LastMinor; iC++) {
             if (m_pConstrains->IsScaleValid((EScaleType)iC)) {
-                m_nRealChord[iB] = iC;
+                m_nRealScale[iB] = iC;
                 m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
                 m_pAnswerButton[iB]->Show(true);
                 m_pAnswerButton[iB]->Enable(true);
@@ -226,7 +230,7 @@ void lmEarScalesCtrol::SetUpButtons()
         m_pRowLabel[iR]->SetLabel(_("Other scales:"));
         for (iC=est_LastMinor+1; iC < est_Max; iC++) {
             if (m_pConstrains->IsScaleValid((EScaleType)iC)) {
-                m_nRealChord[iB] = iC;
+                m_nRealScale[iB] = iC;
                 m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
                 m_pAnswerButton[iB]->Show(true);
                 m_pAnswerButton[iB]->Enable(true);
@@ -242,73 +246,20 @@ void lmEarScalesCtrol::SetUpButtons()
     m_pKeyboardSizer->Layout();
 }
 
-//----------------------------------------------------------------------------------------
-// Event handlers
-
-void lmEarScalesCtrol::OnSettingsButton(wxCommandEvent& event)
+wxDialog* lmEarScalesCtrol::GetSettingsDlg()
 {
-    //lmScalesCtrol dlg(this, m_pConstrains, m_fTheoryMode);   
-    //int retcode = dlg.ShowModal();
-    //if (retcode == wxID_OK) {
-    //    m_pConstrains->SaveSettings();
-    //    // When changing interval settings it is necessary review the buttons
-    //    // as number of buttons and/or its name could have changed.
-    //    SetUpButtons();
-    //}
-
+    //wxDialog* pDlg = new lmScalesCtrol(this, m_pConstrains, m_fTheoryMode);
+    //return pDlg;
+    return (wxDialog*)NULL;
 }
 
-void lmEarScalesCtrol::OnRespButton(wxCommandEvent& event)
+void lmEarScalesCtrol::PrepareAuxScore(int nButton)
 {
-    //First, stop any possible chord being played to avoid crashes
-    if (m_pAuxScore) m_pAuxScore->Stop();
-    if (m_pProblemScore) m_pProblemScore->Stop();
-
-    //identify button pressed
-    int nIndex = event.GetId() - ID_BUTTON;
-
-    if (m_fQuestionAsked)
-    {
-        // There is a question asked. The user press the button to give the answer
-
-        //verify if success or failure
-        bool fSuccess = (nIndex == m_nRespIndex);
-        
-        //produce feedback sound, and update counters
-        if (fSuccess) {
-            m_pCounters->IncrementRight();
-        } else {
-            m_pCounters->IncrementWrong();
-        }
-            
-        //if failure, display the solution. If succsess, generate a new problem
-        if (!fSuccess) {
-            //failure: mark wrong button in red and right one in green
-            m_pAnswerButton[m_nRespIndex]->SetBackgroundColour(g_pColors->Success());
-            m_pAnswerButton[nIndex]->SetBackgroundColour(g_pColors->Failure());
-
-            //show the solucion
-            DisplaySolution();
-       }
-        else {
-            NewProblem();
-        }
-    }
-    else {
-        // No problem presented. The user press the button to play a chord
-
-        //prepare the new chord and play it
-        PrepareScore(eclvSol, (EScaleType)m_nRealChord[nIndex], &m_pAuxScore);
-        m_pAuxScore->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
-                            ePM_NormalInstrument, 320, (wxWindow*) NULL);
-    }
-
+    PrepareScore(eclvSol, (EScaleType)m_nRealScale[nButton], &m_pAuxScore);
 }
 
-void lmEarScalesCtrol::NewProblem()
+wxString lmEarScalesCtrol::SetNewProblem()
 {
-    ResetExercise();
-
     //select a random mode
     m_nMode = m_pConstrains->GetRandomMode();
 
@@ -321,7 +272,7 @@ void lmEarScalesCtrol::NewProblem()
     bool fAllowAccidentals = false;
     m_sRootNote = oGenerator.GenerateRandomRootNote(nClef, m_nKey, fAllowAccidentals);
 
-    // generate a random chord
+    // generate a random scale
     EScaleType nScaleType = (EScaleType)1; //m_pConstrains->GetRandomChordType();
     m_nInversion = 0;
     //if (m_pConstrains->AreInversionsAllowed())
@@ -333,46 +284,31 @@ void lmEarScalesCtrol::NewProblem()
     //compute the index for the button that corresponds to the right answer
     int i;
     for (i = 0; i < NUM_BUTTONS; i++) {
-        if (m_nRealChord[i] == nScaleType) break;
+        if (m_nRealScale[i] == nScaleType) break;
     }
     m_nRespIndex = i;
     
-    
-    //load total score into the control
-    m_pScoreCtrol->SetScore(m_pProblemScore, true);   //true: the score must be hidden
-    m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
-
-    //display the problem
+    //return string to introduce the problem
     if (m_fTheoryMode) {
-        //theory
-        m_pScoreCtrol->DisplayScore(m_pProblemScore);
-        m_pScoreCtrol->DisplayMessage(_("Identify the next scale:"), lmToLogicalUnits(5, lmMILLIMETERS), false);
-        EnableButtons(true);
+        return _("Identify the next scale:");
     } else {
         //ear training
-        Play();
-        wxString sProblem = _("Press 'Play' to lesson it again");
-        m_pScoreCtrol->DisplayMessage(sProblem, lmToLogicalUnits(5, lmMILLIMETERS), false);
+        return _("Press 'Play' to lesson it again");
     }
-
-    m_fQuestionAsked = true;
-    m_pPlayButton->Enable(true);
-    m_pShowSolution->Enable(true);
-
 
 }
 
 wxString lmEarScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmScore** pScore)
 {
-//    //create the chord
+//    //create the scale object
 //    lmChordManager oChordMngr(m_sRootNote, nType, m_nInversion, m_nKey);
-//
-//    //delete the previous score
-//    if (*pScore) {
-//        delete *pScore;
-//        *pScore = (lmScore*)NULL;
-//    }
-//
+
+    //delete the previous score
+    if (*pScore) {
+        delete *pScore;
+        *pScore = (lmScore*)NULL;
+    }
+
 //    //create a score with the chord
 //    wxString sPattern;
 //    lmNote* pNote;
@@ -405,39 +341,12 @@ wxString lmEarScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmSco
 //
 //    (*pScore)->Dump();  //dbg
 //
-//    //return the chord name
+//    //return the scale name
 //    if (m_pConstrains->AreInversionsAllowed())
 //        return oChordMngr.GetNameFull();       //name including inversion
 //    else 
 //        return oChordMngr.GetName();           //only name
 //
+    *pScore = (lmScore*)NULL;
     return _T("TODO");
-}
-
-void lmEarScalesCtrol::EnableButtons(bool fEnable)
-{
-    for (int iB=0; iB < NUM_BUTTONS; iB++) {
-        m_pAnswerButton[iB]->Enable(fEnable);
-    }
-}
-
-void lmEarScalesCtrol::ResetExercise()
-{
-    //clear the canvas
-    m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
-    m_pScoreCtrol->Update();    //to force to clear it now
-
-    // restore buttons' normal color
-    for (int iB=0; iB < NUM_BUTTONS; iB++) {
-        if (!m_sButtonLabel[iB].IsEmpty()) {
-            m_pAnswerButton[iB]->SetBackgroundColour( g_pColors->Normal() );
-        }
-    }
-
-    //delete the previous score
-    if (m_pProblemScore) {
-        delete m_pProblemScore;
-        m_pProblemScore = (lmScore*)NULL;
-    }
-
 }

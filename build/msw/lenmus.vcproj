@@ -869,6 +869,12 @@
 			<File
 				RelativePath="..\..\src\auxmusic\Interval.h">
 			</File>
+			<File
+				RelativePath="..\..\src\auxmusic\ScalesManager.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\auxmusic\ScalesManager.h">
+			</File>
 		</Filter>
 		<Filter
 			Name="sound"

@@ -66,12 +66,11 @@ protected:
     virtual void LoadSettings() {};
 
     wxString    m_sSection;         // section name to save the constrains
-
-    bool                m_fSettingsLink;        //include settings link
+    bool        m_fSettingsLink;    //include settings link
 
     //The Ctrol could be used both for ear training exercises and for theory exercises.
     //Following variables are used for configuration
-    bool                m_fTheoryMode;
+    bool        m_fTheoryMode;
 
 
 };
@@ -91,27 +90,18 @@ public:
     // constructor and destructor    
     lmEarExerciseCtrol(wxWindow* parent, wxWindowID id,
                lmEarConstrains* pConstrains, 
-               int nNumButtons,
                const wxPoint& pos = wxDefaultPosition, 
                const wxSize& size = wxDefaultSize, int style = 0);
 
     virtual ~lmEarExerciseCtrol();
 
-        //mandatory virtual methods
-
-    //construction methods
-    void Create();
-    virtual void InitializeStrings() {};   
-    virtual void CreateAnswerButtons()=0;
-    virtual void SetButtonColor(int i, wxColour& color)=0;
-
     // event handlers
     virtual void OnSize(wxSizeEvent& event);
-    virtual void OnRespButton(wxCommandEvent& event)=0;
+    virtual void OnRespButton(wxCommandEvent& event);
     virtual void OnPlay(wxCommandEvent& event);
     virtual void OnNewProblem(wxCommandEvent& event);
     virtual void OnDisplaySolution(wxCommandEvent& event);
-    virtual void OnSettingsButton(wxCommandEvent& event)=0;
+    virtual void OnSettingsButton(wxCommandEvent& event);
 
     // event handlers related to debugging
     virtual void OnDebugShowSourceScore(wxCommandEvent& event);
@@ -120,18 +110,29 @@ public:
 
 
 protected:
-    virtual void SetUpButtons()=0;
-    virtual void EnableButtons(bool fEnable)=0;
+    //virtual pure methods
+    virtual void InitializeStrings() {};   
+    virtual void CreateAnswerButtons()=0;
+    virtual void ReconfigureButtons()=0;
+    virtual wxString SetNewProblem()=0;    
+    virtual wxDialog* GetSettingsDlg()=0;
+    virtual void PrepareAuxScore(int nButton)=0;
+
+    //methods that, normally, it is not necessary to implement
+    virtual void SetButtonColor(int i, wxColour& color);
+    virtual void EnableButtons(bool fEnable);
     virtual void Play();
-    virtual void NewProblem()=0;
+    virtual void NewProblem();
     virtual void DisplaySolution();
-    virtual void ResetExercise()=0;
-//    wxString PrepareScore(EClefType nClef, EChordType nType, lmScore** pScore);
+    virtual void ResetExercise();
+    virtual void StopSounds() {};
+
+    void Create();
+    void SetButtons(wxButton* pButton[], int nNumButtons, int nIdFirstButton);
 
         // member variables
 
     int                 m_nNumButtons;      //num answer buttons
-
     lmScore*            m_pProblemScore;    //score with the problem (= solution)
     lmScore*            m_pAuxScore;        //score to play user selected buttons 
     lmScoreAuxCtrol*    m_pScoreCtrol;
@@ -139,29 +140,23 @@ protected:
     wxBoxSizer*         m_pMainSizer;
     wxFlexGridSizer*    m_pKeyboardSizer;
 
-    lmEarConstrains* m_pConstrains;       //constrains for the exercise
-    bool            m_fQuestionAsked;       //question asked but not yet answered
+    lmEarConstrains*    m_pConstrains;      //constrains for the exercise
+    bool                m_fQuestionAsked;   //question asked but not yet answered
+    int                 m_nRespIndex;       //index to the button with the right answer
+    wxString            m_sAnswer;          //string with the right answer
 
-//    //problem asked
-//    EKeySignatures  m_nKey;
-//    wxString        m_sRootNote;
-//    int             m_nInversion;
-//    int             m_nMode;
-//
-//    //answer
-//    wxStaticText*   m_pRowLabel[5];
-//    wxButton*       m_pAnswerButton[ect_Max];   //buttons for the answers
-//    int             m_nRealChord[ect_Max];      // chord that corresponds
-//                                                // to each valid button
-    int             m_nRespIndex;           //index to the button with the right answer
-    wxString        m_sAnswer;              //The names of each interval
+    lmUrlAuxCtrol*      m_pPlayButton;      // "play" button
+    lmUrlAuxCtrol*      m_pShowSolution;    // "show solution" button
 
-    lmUrlAuxCtrol*  m_pPlayButton;       // "play" button
-    lmUrlAuxCtrol*  m_pShowSolution;     // "show solution" button
+    //lmEarExerciseCtrol can used both for ear training exercises and for theory exercises.
+    //Following variable is used for configuration
+    bool                m_fTheoryMode;
 
-    //lmEarExerciseCtrol is used both for ear training exercises and for theory exercises.
-    //Following variables are used for configuration
-    bool        m_fTheoryMode;
+private:
+    void DoStopSounds();
+
+    wxButton**      m_pAnswerButtons;   //buttons for the answers
+    int             m_nIdFirstButton;   //ID of first button; the others in sequence
 
     DECLARE_EVENT_TABLE()
 };

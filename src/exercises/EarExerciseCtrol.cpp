@@ -70,22 +70,11 @@ lmEarConstrains::lmEarConstrains(wxString sSection)
 //------------------------------------------------------------------------------------
 
 
-
-////Layout definitions
-//const int BUTTONS_DISTANCE = 5;        //pixels
-//const int NUM_BUTTONS = ect_Max;
-//const int NUM_COLS = 4;
-//const int NUM_ROWS = 5;
-//
-//static wxString m_sButtonLabel[ect_Max];
-//
 //IDs for controls
 enum {
     ID_LINK_SEE_SOURCE = 3000,
     ID_LINK_DUMP,
     ID_LINK_MIDI_EVENTS,
-//    ID_BUTTON,
-//    ID_LINK = ID_BUTTON + NUM_BUTTONS,
     ID_LINK_NEW_PROBLEM,
     ID_LINK_PLAY,
     ID_LINK_SOLUTION,
@@ -95,7 +84,6 @@ enum {
 
 
 BEGIN_EVENT_TABLE(lmEarExerciseCtrol, wxWindow)
-//    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmEarExerciseCtrol::OnRespButton)
     EVT_SIZE            (lmEarExerciseCtrol::OnSize)
 
     LM_EVT_URL_CLICK    (ID_LINK_SEE_SOURCE, lmEarExerciseCtrol::OnDebugShowSourceScore)
@@ -111,16 +99,12 @@ END_EVENT_TABLE()
 IMPLEMENT_CLASS(lmEarExerciseCtrol, wxWindow)
 
 lmEarExerciseCtrol::lmEarExerciseCtrol(wxWindow* parent, wxWindowID id, 
-                           lmEarConstrains* pConstrains, int nNumButtons,
+                           lmEarConstrains* pConstrains, 
                            const wxPoint& pos, const wxSize& size, int style)
     : wxWindow(parent, id, pos, size, style )
 {
     //initializations
-    wxASSERT(nNumButtons > 0);
-    m_nNumButtons = nNumButtons;
-
-//    int i;
-//    for (i=0; i < m_nNumButtons; i++) { m_pAnswerButton[i] = (wxButton*)NULL; }
+    m_nNumButtons = 0;
     m_fQuestionAsked = false;
     m_pProblemScore = (lmScore*)NULL;
     m_pAuxScore = (lmScore*)NULL;
@@ -243,15 +227,14 @@ void lmEarExerciseCtrol::Create()
     m_pPlayButton->Enable(false);
     m_pShowSolution->Enable(false);
 
-    SetUpButtons();     //reconfigure buttons in accordance with constrains
+    ReconfigureButtons();     //reconfigure buttons in accordance with constrains
 
 }
 
 lmEarExerciseCtrol::~lmEarExerciseCtrol()
 {
     //stop any possible chord being played
-    if (m_pAuxScore) m_pAuxScore->Stop();
-    if (m_pProblemScore) m_pProblemScore->Stop();
+    DoStopSounds();
 
     //delete objects
 
@@ -275,101 +258,21 @@ lmEarExerciseCtrol::~lmEarExerciseCtrol()
     }
 }
 
-//void lmEarExerciseCtrol::SetUpButtons()
-//{
-//    //Reconfigure buttons keyboard depending on the chords allowed
-//
-//    int iC;     // real chord. Correspondence to EChordTypes
-//    int iB;     // button index: 0 .. m_nNumButtons-1
-//    int iR;     // row index: 0 .. NUM_ROWS-1
-//    
-//    //hide all rows and buttons so that later we only have to enable the valid ones
-//    for (iB=0; iB < m_nNumButtons; iB++) {
-//        m_pAnswerButton[iB]->Show(false);
-//        m_pAnswerButton[iB]->Enable(false);
-//    }
-//    for (int iRow=0; iRow < NUM_ROWS; iRow++) {
-//        m_pRowLabel[iRow]->SetLabel(_T(""));
-//    }
-//
-//    //triads
-//    iB = 0;
-//    if (m_pConstrains->IsValidGroup(ecg_Triads)) {
-//        iR = 0;
-//        m_pRowLabel[iR]->SetLabel(_("Triads:"));
-//        for (iC=0; iC <= ect_LastTriad; iC++) {
-//            if (m_pConstrains->IsChordValid((EChordType)iC)) {
-//                m_nRealChord[iB] = iC;
-//                m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
-//                m_pAnswerButton[iB]->Show(true);
-//                m_pAnswerButton[iB]->Enable(true);
-//                iB++;
-//                if (iB % NUM_COLS == 0) {
-//                    iR++;
-//                    m_pRowLabel[iR]->SetLabel(_T(""));
-//                }
-//           }
-//        }
-//    }
-//    if (iB % NUM_COLS != 0) iB += (NUM_COLS - (iB % NUM_COLS));
-//
-//    //sevenths
-//    if (m_pConstrains->IsValidGroup(ecg_Sevenths)) {
-//        iR = iB / NUM_COLS;
-//        m_pRowLabel[iR]->SetLabel(_("Seventh chords:"));
-//        for (iC=ect_LastTriad+1; iC <= ect_LastSeventh; iC++) {
-//            if (m_pConstrains->IsChordValid((EChordType)iC)) {
-//                m_nRealChord[iB] = iC;
-//                m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
-//                m_pAnswerButton[iB]->Show(true);
-//                m_pAnswerButton[iB]->Enable(true);
-//                iB++;
-//                if (iB % NUM_COLS == 0) {
-//                    iR++;
-//                    m_pRowLabel[iR]->SetLabel(_T(""));
-//                }
-//           }
-//        }
-//    }
-//    if (iB % NUM_COLS != 0) iB += (NUM_COLS - (iB % NUM_COLS));
-//
-//    //Other
-//    if (m_pConstrains->IsValidGroup(ecg_Sixths)) {
-//        iR = iB / NUM_COLS;
-//        m_pRowLabel[iR]->SetLabel(_("Other chords:"));
-//        for (iC=ect_LastSeventh+1; iC < ect_Max; iC++) {
-//            if (m_pConstrains->IsChordValid((EChordType)iC)) {
-//                m_nRealChord[iB] = iC;
-//                m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
-//                m_pAnswerButton[iB]->Show(true);
-//                m_pAnswerButton[iB]->Enable(true);
-//                iB++;
-//                if (iB % NUM_COLS == 0) {
-//                    iR++;
-//                    m_pRowLabel[iR]->SetLabel(_T(""));
-//                }
-//           }
-//        }
-//    }
-//
-//    m_pKeyboardSizer->Layout();
-//}
+void lmEarExerciseCtrol::OnSettingsButton(wxCommandEvent& event)
+{
+    wxDialog* pDlg = GetSettingsDlg(); 
+    if (pDlg) {
+        int retcode = pDlg->ShowModal();
+        if (retcode == wxID_OK) {
+            m_pConstrains->SaveSettings();
+            // When changing interval settings it is necessary review the buttons
+            // as number of buttons and/or its name could have changed.
+            ReconfigureButtons();
+        }
+        delete pDlg;
+    }
 
-//----------------------------------------------------------------------------------------
-// Event handlers
-
-//void lmEarExerciseCtrol::OnSettingsButton(wxCommandEvent& event)
-//{
-//    lmDlgCfgIdfyChord dlg(this, m_pConstrains, m_fTheoryMode);   
-//    int retcode = dlg.ShowModal();
-//    if (retcode == wxID_OK) {
-//        m_pConstrains->SaveSettings();
-//        // When changing interval settings it is necessary review the buttons
-//        // as number of buttons and/or its name could have changed.
-//        SetUpButtons();
-//    }
-//
-//}
+}
 
 void lmEarExerciseCtrol::OnSize(wxSizeEvent& event)
 {
@@ -390,180 +293,95 @@ void lmEarExerciseCtrol::OnNewProblem(wxCommandEvent& event)
 void lmEarExerciseCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
     //First, stop any possible chord being played to avoid crashes
-    if (m_pAuxScore) m_pAuxScore->Stop();
-    if (m_pProblemScore) m_pProblemScore->Stop();
+    DoStopSounds();
 
     //now proceed
     m_pCounters->IncrementWrong();
     DisplaySolution();
 }
 
-//void lmEarExerciseCtrol::OnRespButton(wxCommandEvent& event)
-//{
-//    //First, stop any possible chord being played to avoid crashes
-//    if (m_pAuxScore) m_pAuxScore->Stop();
-//    if (m_pProblemScore) m_pProblemScore->Stop();
-//
-//    //identify button pressed
-//    int nIndex = event.GetId() - ID_BUTTON;
-//
-//    if (m_fQuestionAsked)
-//    {
-//        // There is a question asked. The user press the button to give the answer
-//
-//        //verify if success or failure
-//        bool fSuccess = (nIndex == m_nRespIndex);
-//        
-//        //produce feedback sound, and update counters
-//        if (fSuccess) {
-//            m_pCounters->IncrementRight();
-//        } else {
-//            m_pCounters->IncrementWrong();
-//        }
-//            
-//        //if failure, display the solution. If succsess, generate a new problem
-//        if (!fSuccess) {
-//            //failure: mark wrong button in red and right one in green
-//            m_pAnswerButton[m_nRespIndex]->SetBackgroundColour(g_pColors->Success());
-//            m_pAnswerButton[nIndex]->SetBackgroundColour(g_pColors->Failure());
-//
-//            //show the solucion
-//            DisplaySolution();
-//       }
-//        else {
-//            NewProblem();
-//        }
-//    }
-//    else {
-//        // No problem presented. The user press the button to play a chord
-//
-//        //prepare the new chord and play it
-//        PrepareScore(eclvSol, (EChordType)m_nRealChord[nIndex], &m_pAuxScore);
-//        m_pAuxScore->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
-//                            ePM_NormalInstrument, 320, (wxWindow*) NULL);
-//    }
-//
-//}
-//
-//void lmEarExerciseCtrol::NewProblem()
-//{
-//    ResetExercise();
-//
-//    //select a random mode
-//    m_nMode = m_pConstrains->GetRandomMode();
-//
-//    // select a random key signature
-//    lmRandomGenerator oGenerator;
-//    m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
-//    
-//    //Generate a random root note 
-//    EClefType nClef = eclvSol;
-//    bool fAllowAccidentals = false;
-//    m_sRootNote = oGenerator.GenerateRandomRootNote(nClef, m_nKey, fAllowAccidentals);
-//
-//    // generate a random chord
-//    EChordType nChordType = m_pConstrains->GetRandomChordType();
-//    m_nInversion = 0;
-//    if (m_pConstrains->AreInversionsAllowed())
-//        m_nInversion = oGenerator.RandomNumber(0, NumNotesInChord(nChordType) - 1);
-//
-//    if (!m_pConstrains->DisplayKey()) m_nKey = earmDo;
-//    m_sAnswer = PrepareScore(nClef, nChordType, &m_pProblemScore);
-//    
-//    //compute the index for the button that corresponds to the right answer
-//    int i;
-//    for (i = 0; i < m_nNumButtons; i++) {
-//        if (m_nRealChord[i] == nChordType) break;
-//    }
-//    m_nRespIndex = i;
-//    
-//    
-//    //load total score into the control
-//    m_pScoreCtrol->SetScore(m_pProblemScore, true);   //true: the score must be hidden
-//    m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
-//
-//    //display the problem
-//    if (m_fTheoryMode) {
-//        //theory
-//        m_pScoreCtrol->DisplayScore(m_pProblemScore);
-//        m_pScoreCtrol->DisplayMessage(_("Identify the next chord:"), lmToLogicalUnits(5, lmMILLIMETERS), false);
-//        EnableButtons(true);
-//    } else {
-//        //ear training
-//        Play();
-//        wxString sProblem = _("Press 'Play' to lesson it again");
-//        m_pScoreCtrol->DisplayMessage(sProblem, lmToLogicalUnits(5, lmMILLIMETERS), false);
-//    }
-//
-//    m_fQuestionAsked = true;
-//    m_pPlayButton->Enable(true);
-//    m_pShowSolution->Enable(true);
-//
-//
-//}
-//
-//wxString lmEarExerciseCtrol::PrepareScore(EClefType nClef, EChordType nType, lmScore** pScore)
-//{
-//    //create the chord
-//    lmChordManager oChordMngr(m_sRootNote, nType, m_nInversion, m_nKey);
-//
-//    //delete the previous score
-//    if (*pScore) {
-//        delete *pScore;
-//        *pScore = (lmScore*)NULL;
-//    }
-//
-//    //create a score with the chord
-//    wxString sPattern;
-//    lmNote* pNote;
-//    lmLDPParser parserLDP;
-//    lmLDPNode* pNode;
-//    lmVStaff* pVStaff;
-//
-//    int nNumNotes = oChordMngr.GetNumNotes();
-//    *pScore = new lmScore();
-//    (*pScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
-//    (*pScore)->AddInstrument(1,0,0,_T(""));                     //one vstaff, MIDI channel 0, MIDI instr 0
-//    pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
-//    pVStaff->AddClef( eclvSol );
-//    pVStaff->AddKeySignature( m_nKey );
-//    pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
-//
-////    pVStaff->AddEspacio 24
-//    int i = (m_nMode == 2 ? nNumNotes-1 : 0);   // 2= melodic descending
-//    sPattern = _T("(n ") + oChordMngr.GetPattern(i) + _T(" r)");
-//    pNode = parserLDP.ParseText( sPattern );
-//    pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-//    for (i=1; i < nNumNotes; i++) {
-//        sPattern = (m_nMode == 0 ? _T("(na ") : _T("(n "));     // mode=0 -> harmonic
-//        sPattern += oChordMngr.GetPattern((m_nMode == 2 ? nNumNotes-1-i : i));
-//        sPattern +=  _T(" r)");
-//        pNode = parserLDP.ParseText( sPattern );
-//        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-//    }
-//    pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
-//
-//    (*pScore)->Dump();  //dbg
-//
-//    //return the chord name
-//    if (m_pConstrains->AreInversionsAllowed())
-//        return oChordMngr.GetNameFull();       //name including inversion
-//    else 
-//        return oChordMngr.GetName();           //only name
-//
-//}
-//
-//void lmEarExerciseCtrol::EnableButtons(bool fEnable)
-//{
-//    for (int iB=0; iB < m_nNumButtons; iB++) {
-//        m_pAnswerButton[iB]->Enable(fEnable);
-//    }
-//}
+void lmEarExerciseCtrol::OnRespButton(wxCommandEvent& event)
+{
+    //First, stop any possible chord being played to avoid crashes
+    DoStopSounds();
 
+    //identify button pressed
+    int nIndex = event.GetId() - m_nIdFirstButton;
+
+    if (m_fQuestionAsked)
+    {
+        // There is a question asked. The user press the button to give the answer
+
+        //verify if success or failure
+        bool fSuccess = (nIndex == m_nRespIndex);
+        
+        //produce feedback sound, and update counters
+        if (fSuccess) {
+            m_pCounters->IncrementRight();
+        } else {
+            m_pCounters->IncrementWrong();
+        }
+            
+        //if failure, display the solution. If succsess, generate a new problem
+        if (!fSuccess) {
+            //failure: mark wrong button in red and right one in green
+            SetButtonColor(m_nRespIndex, g_pColors->Success() );
+            SetButtonColor(nIndex, g_pColors->Failure() );
+
+            //show the solucion
+            DisplaySolution();
+       }
+        else {
+            NewProblem();
+        }
+    }
+    else {
+        // No problem presented. The user press the button to play a specific 
+        // sound (chord, interval, scale, etc.)
+
+        //prepare the score with the requested sound and play it
+        PrepareAuxScore(nIndex);
+        if (m_pAuxScore) {
+            m_pAuxScore->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
+                                ePM_NormalInstrument, 320, (wxWindow*) NULL);
+        }
+    }
+
+}
+
+void lmEarExerciseCtrol::NewProblem()
+{
+    ResetExercise();
+
+    //set m_pProblemScore, m_sAnswer, m_nRespIndex
+    wxString sProblemMessage = SetNewProblem();    
+
+    //load total score into the control
+    m_pScoreCtrol->SetScore(m_pProblemScore, true);   //true: the score must be hidden
+    m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
+
+    //display the problem
+    if (m_fTheoryMode) {
+        //theory
+        m_pScoreCtrol->DisplayScore(m_pProblemScore);
+        m_pScoreCtrol->DisplayMessage(sProblemMessage, lmToLogicalUnits(5, lmMILLIMETERS), false);
+        EnableButtons(true);
+    } else {
+        //ear training
+        Play();
+        m_pScoreCtrol->DisplayMessage(sProblemMessage, lmToLogicalUnits(5, lmMILLIMETERS), false);
+    }
+
+    m_fQuestionAsked = true;
+    m_pPlayButton->Enable(true);
+    m_pShowSolution->Enable(true);
+
+
+}
 
 void lmEarExerciseCtrol::Play()
 {
-    //As scale is built using whole notes, we will play scale at MM=320 so
+    //The problem score is built using whole notes, we will play scale at MM=320 so
     //that real note rate will be 80.
     m_pScoreCtrol->PlayScore(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
                             ePM_NormalInstrument, 320);
@@ -600,23 +418,54 @@ void lmEarExerciseCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
     m_pScoreCtrol->DumpMidiEvents();
 }
 
-//void lmEarExerciseCtrol::ResetExercise()
-//{
-//    //clear the canvas
-//    m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
-//    m_pScoreCtrol->Update();    //to force to clear it now
-//
-//    // restore buttons' normal color
-//    for (int iB=0; iB < m_nNumButtons; iB++) {
-//        if (!m_sButtonLabel[iB].IsEmpty()) {
-//            m_pAnswerButton[iB]->SetBackgroundColour( g_pColors->Normal() );
-//        }
-//    }
-//
-//    //delete the previous score
-//    if (m_pProblemScore) {
-//        delete m_pProblemScore;
-//        m_pProblemScore = (lmScore*)NULL;
-//    }
-//
-//}
+void lmEarExerciseCtrol::ResetExercise()
+{
+    //clear the canvas
+    m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
+    m_pScoreCtrol->Update();    //to force to clear it now
+
+    // restore buttons' normal color
+    for (int iB=0; iB < m_nNumButtons; iB++) {
+        SetButtonColor(iB, g_pColors->Normal() );
+    }
+
+    //delete the previous score
+    if (m_pProblemScore) {
+        delete m_pProblemScore;
+        m_pProblemScore = (lmScore*)NULL;
+    }
+
+}
+
+void lmEarExerciseCtrol::EnableButtons(bool fEnable)
+{
+    wxButton* pButton;
+    for (int iB=0; iB < m_nNumButtons; iB++) {
+        pButton = *(m_pAnswerButtons + iB);
+        if (pButton) pButton->Enable(fEnable);
+    }
+}
+
+void lmEarExerciseCtrol::SetButtons(wxButton* pButtons[], int nNumButtons, int nIdFirstButton)
+{
+    m_pAnswerButtons = pButtons;
+    m_nIdFirstButton = nIdFirstButton;
+    m_nNumButtons = nNumButtons;
+}
+
+void lmEarExerciseCtrol::SetButtonColor(int i, wxColour& color)
+{
+    wxButton* pButton = *(m_pAnswerButtons + i);
+    if (pButton) pButton->SetBackgroundColour(color);
+}
+
+void lmEarExerciseCtrol::DoStopSounds()
+{
+    //Stop any possible chord being played to avoid crashes
+    if (m_pAuxScore) m_pAuxScore->Stop();
+    if (m_pProblemScore) m_pProblemScore->Stop();
+
+    //Require to do it for other scores in the derived class
+    StopSounds();       
+
+}
