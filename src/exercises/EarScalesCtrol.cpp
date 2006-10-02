@@ -43,7 +43,7 @@
 #include "../ldp_parser/LDPParser.h"
 #include "../auxmusic/Interval.h"
 #include "../app/DlgCfgIdfyChord.h"
-#include "../auxmusic/ChordManager.h"
+#include "../auxmusic/ScalesManager.h"
 
 
 #include "../globals/Colors.h"
@@ -57,21 +57,19 @@ extern lmColors* g_pColors;
 
 //Layout definitions
 const int BUTTONS_DISTANCE = 5;        //pixels
-const int NUM_BUTTONS = est_Max;
-const int NUM_COLS = 4;
-const int NUM_ROWS = 5;
+//const int NUM_BUTTONS = 24;
 
 static wxString m_sButtonLabel[est_Max];
 
 //IDs for controls
 enum {
     ID_BUTTON = 3010,
-    ID_LINK = ID_BUTTON + NUM_BUTTONS,
+//    ID_LINK = ID_BUTTON + NUM_BUTTONS,
 };
 
 
 BEGIN_EVENT_TABLE(lmEarScalesCtrol, lmEarExerciseCtrol)
-    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmEarScalesCtrol::OnRespButton)
+    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmEarScalesCtrol::OnRespButton)
 END_EVENT_TABLE()
 
 
@@ -89,8 +87,7 @@ lmEarScalesCtrol::lmEarScalesCtrol(wxWindow* parent, wxWindowID id,
     //initializatios to allow to play scales
     m_nKey = earmDo;
     m_sRootNote = _T("c4");
-    m_nInversion = 0;
-    m_nMode = m_pConstrains->GetRandomMode();
+    m_fAscending = m_pConstrains->GetRandomPlayMode();
 
     if (m_fTheoryMode) NewProblem();
 
@@ -104,37 +101,33 @@ void lmEarScalesCtrol::CreateAnswerButtons()
 {
     //create buttons for the answers, two rows
     int iB = 0;
-    for (iB=0; iB < NUM_BUTTONS; iB++)
+    for (iB=0; iB < m_NUM_BUTTONS; iB++)
         m_pAnswerButton[iB] = (wxButton*)NULL;
 
-    m_pKeyboardSizer = new wxFlexGridSizer(NUM_ROWS+1, NUM_COLS+1, 10, 0);
+    m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS+1, m_NUM_COLS+1, 10, 0);
     m_pMainSizer->Add(
         m_pKeyboardSizer,
         wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 10) );
 
-    for (int iRow=0; iRow < NUM_ROWS; iRow++) {
+    for (int iRow=0; iRow < m_NUM_ROWS; iRow++) {
         m_pKeyboardSizer->Add(
             m_pRowLabel[iRow] = new wxStaticText(this, -1, _T("")),
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
 
         // the buttons for this row
-        for (int iCol=0; iCol < NUM_COLS; iCol++) {
-            iB = iCol + iRow * NUM_COLS;    // button index
-            if (iB >= NUM_BUTTONS) break;
+        for (int iCol=0; iCol < m_NUM_COLS; iCol++) {
+            iB = iCol + iRow * m_NUM_COLS;    // button index
+            if (iB >= m_NUM_BUTTONS) break;
             m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, _T("Undefined"),
                 wxDefaultPosition, wxSize(120, 20));
             m_pKeyboardSizer->Add(
                 m_pAnswerButton[iB],
                 wxSizerFlags(0).Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
-            if (m_sButtonLabel[iB].IsEmpty()) {
-                m_pAnswerButton[iB]->Show(false);
-                m_pAnswerButton[iB]->Enable(false);
-            }
         }
     }
 
     //inform base class about the settings
-    SetButtons(m_pAnswerButton, NUM_BUTTONS, ID_BUTTON);
+    SetButtons(m_pAnswerButton, m_NUM_BUTTONS, ID_BUTTON);
 
 }
 
@@ -144,7 +137,7 @@ void lmEarScalesCtrol::InitializeStrings()
         //button labels.
 
     // Major scales
-    m_sButtonLabel[est_MajorTriad] = _("Natural");
+    m_sButtonLabel[est_MajorNatural] = _("Natural");
     m_sButtonLabel[est_MajorTypeII] = _("Type II");
     m_sButtonLabel[est_MajorTypeIII] = _("Type III");
     m_sButtonLabel[est_MajorTypeIV] = _("Type IV");
@@ -156,13 +149,21 @@ void lmEarScalesCtrol::InitializeStrings()
     m_sButtonLabel[est_MinorMelodic] = _("Melodic");
 
     // Greek scales
+    m_sButtonLabel[est_GreekIonian] = _("Ionian");
     m_sButtonLabel[est_GreekDorian] = _("Dorian");
     m_sButtonLabel[est_GreekPhrygian] = _("Phrygian");
     m_sButtonLabel[est_GreekLydian] = _("Lydian");
     m_sButtonLabel[est_GreekMixolydian] = _("Mixolydian");
     m_sButtonLabel[est_GreekAeolian] = _("Aeolian");
-    m_sButtonLabel[est_GreekIonian] = _("Ionian");
     m_sButtonLabel[est_GreekLocrian] = _("Locrian");
+
+    // Other scales
+    m_sButtonLabel[est_PentatonicMinor] = _("Pentatonic minor");
+    m_sButtonLabel[est_PentatonicMajor] = _("Pentatonic major");
+    m_sButtonLabel[est_Hexatonic] = _("Hexatonic");
+    m_sButtonLabel[est_Heptatonic] = _("Heptatonic");
+    m_sButtonLabel[est_WholeTones] = _("Whole tones");
+    m_sButtonLabel[est_Chromatic] = _("Chromatic");
 
 }
 
@@ -170,80 +171,67 @@ void lmEarScalesCtrol::ReconfigureButtons()
 {
     //Reconfigure buttons keyboard depending on the scales allowed
 
-    int iC;     // real scale. Correspondence to EScaleTypes
-    int iB;     // button index: 0 .. NUM_BUTTONS-1
-    int iR;     // row index: 0 .. NUM_ROWS-1
+    int iB;     // button index: 0 .. m_NUM_BUTTONS-1
     
     //hide all rows and buttons so that later we only have to enable the valid ones
-    for (iB=0; iB < NUM_BUTTONS; iB++) {
+    for (iB=0; iB < m_NUM_BUTTONS; iB++) {
         m_pAnswerButton[iB]->Show(false);
         m_pAnswerButton[iB]->Enable(false);
     }
-    for (int iRow=0; iRow < NUM_ROWS; iRow++) {
+    for (int iRow=0; iRow < m_NUM_ROWS; iRow++) {
         m_pRowLabel[iRow]->SetLabel(_T(""));
     }
 
-    //triads
+    //major scales
     iB = 0;
     if (m_pConstrains->IsValidGroup(esg_Major)) {
-        iR = 0;
-        m_pRowLabel[iR]->SetLabel(_("Triads:"));
-        for (iC=0; iC <= est_LastMajor; iC++) {
-            if (m_pConstrains->IsScaleValid((EScaleType)iC)) {
-                m_nRealScale[iB] = iC;
-                m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
-                m_pAnswerButton[iB]->Show(true);
-                m_pAnswerButton[iB]->Enable(true);
-                iB++;
-                if (iB % NUM_COLS == 0) {
-                    iR++;
-                    m_pRowLabel[iR]->SetLabel(_T(""));
-                }
-           }
-        }
+        iB = ReconfigureGroup(iB, 0, est_LastMajor, _("Major:"));
     }
-    if (iB % NUM_COLS != 0) iB += (NUM_COLS - (iB % NUM_COLS));
-
-    //sevenths
+    //minor scales
     if (m_pConstrains->IsValidGroup(esg_Minor)) {
-        iR = iB / NUM_COLS;
-        m_pRowLabel[iR]->SetLabel(_("Seventh chords:"));
-        for (iC=est_LastMajor+1; iC <= est_LastMinor; iC++) {
-            if (m_pConstrains->IsScaleValid((EScaleType)iC)) {
-                m_nRealScale[iB] = iC;
-                m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
-                m_pAnswerButton[iB]->Show(true);
-                m_pAnswerButton[iB]->Enable(true);
-                iB++;
-                if (iB % NUM_COLS == 0) {
-                    iR++;
-                    m_pRowLabel[iR]->SetLabel(_T(""));
-                }
-           }
-        }
+         iB = ReconfigureGroup(iB, est_LastMajor+1, est_LastMinor, _("Minor:"));
     }
-    if (iB % NUM_COLS != 0) iB += (NUM_COLS - (iB % NUM_COLS));
-
-    //Other
+    //Greek scales
+    if (m_pConstrains->IsValidGroup(esg_Greek)) {
+         iB = ReconfigureGroup(iB, est_LastMinor+1, est_LastGreek, _("Greek scales:"));
+    }
+    //Other scales
     if (m_pConstrains->IsValidGroup(esg_Other)) {
-        iR = iB / NUM_COLS;
-        m_pRowLabel[iR]->SetLabel(_("Other scales:"));
-        for (iC=est_LastMinor+1; iC < est_Max; iC++) {
-            if (m_pConstrains->IsScaleValid((EScaleType)iC)) {
-                m_nRealScale[iB] = iC;
-                m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
-                m_pAnswerButton[iB]->Show(true);
-                m_pAnswerButton[iB]->Enable(true);
-                iB++;
-                if (iB % NUM_COLS == 0) {
-                    iR++;
-                    m_pRowLabel[iR]->SetLabel(_T(""));
-                }
-           }
-        }
+         iB = ReconfigureGroup(iB, est_LastGreek+1, est_Max-1, _("Other scales:"));
     }
 
     m_pKeyboardSizer->Layout();
+}
+
+int lmEarScalesCtrol::ReconfigureGroup(int iBt, int iStartC, int iEndC, wxString sRowLabel)
+{
+    //Reconfigure a group of buttons
+
+
+    int iC;     // real scale. Correspondence to EScaleTypes
+    int iB;     // button index: 0 .. m_NUM_BUTTONS-1
+    int iR;     // row index: 0 .. m_NUM_ROWS-1
+    
+    iB = iBt;
+    iR = iB / m_NUM_COLS;
+    m_pRowLabel[iR]->SetLabel(sRowLabel);
+    for (iC=iStartC; iC <= iEndC; iC++) {
+        if (m_pConstrains->IsScaleValid((EScaleType)iC)) {
+            m_nRealScale[iB] = iC;
+            m_pAnswerButton[iB]->SetLabel( m_sButtonLabel[iC] );
+            m_pAnswerButton[iB]->Show(true);
+            m_pAnswerButton[iB]->Enable(true);
+            iB++;
+            if (iB % m_NUM_COLS == 0) {
+                iR++;
+                m_pRowLabel[iR]->SetLabel(_T(""));
+            }
+        }
+    }
+
+    if (iB % m_NUM_COLS != 0) iB += (m_NUM_COLS - (iB % m_NUM_COLS));
+    return iB;
+
 }
 
 wxDialog* lmEarScalesCtrol::GetSettingsDlg()
@@ -261,7 +249,7 @@ void lmEarScalesCtrol::PrepareAuxScore(int nButton)
 wxString lmEarScalesCtrol::SetNewProblem()
 {
     //select a random mode
-    m_nMode = m_pConstrains->GetRandomMode();
+    m_fAscending = m_pConstrains->GetRandomPlayMode();
 
     // select a random key signature
     lmRandomGenerator oGenerator;
@@ -274,16 +262,13 @@ wxString lmEarScalesCtrol::SetNewProblem()
 
     // generate a random scale
     EScaleType nScaleType = (EScaleType)1; //m_pConstrains->GetRandomChordType();
-    m_nInversion = 0;
-    //if (m_pConstrains->AreInversionsAllowed())
-    //    m_nInversion = oGenerator.RandomNumber(0, NumNotesInChord(nScaleType) - 1);
 
     if (!m_pConstrains->DisplayKey()) m_nKey = earmDo;
     m_sAnswer = PrepareScore(nClef, nScaleType, &m_pProblemScore);
     
     //compute the index for the button that corresponds to the right answer
     int i;
-    for (i = 0; i < NUM_BUTTONS; i++) {
+    for (i = 0; i < m_NUM_BUTTONS; i++) {
         if (m_nRealScale[i] == nScaleType) break;
     }
     m_nRespIndex = i;
@@ -301,7 +286,7 @@ wxString lmEarScalesCtrol::SetNewProblem()
 wxString lmEarScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmScore** pScore)
 {
 //    //create the scale object
-//    lmChordManager oChordMngr(m_sRootNote, nType, m_nInversion, m_nKey);
+    lmScalesManager oScaleMngr(m_sRootNote, nType, m_nKey);
 
     //delete the previous score
     if (*pScore) {
@@ -309,44 +294,39 @@ wxString lmEarScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmSco
         *pScore = (lmScore*)NULL;
     }
 
-//    //create a score with the chord
-//    wxString sPattern;
-//    lmNote* pNote;
-//    lmLDPParser parserLDP;
-//    lmLDPNode* pNode;
-//    lmVStaff* pVStaff;
-//
-//    int nNumNotes = oChordMngr.GetNumNotes();
-//    *pScore = new lmScore();
-//    (*pScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
-//    (*pScore)->AddInstrument(1,0,0,_T(""));                     //one vstaff, MIDI channel 0, MIDI instr 0
-//    pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
-//    pVStaff->AddClef( eclvSol );
-//    pVStaff->AddKeySignature( m_nKey );
-//    pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
-//
-////    pVStaff->AddEspacio 24
-//    int i = (m_nMode == 2 ? nNumNotes-1 : 0);   // 2= melodic descending
-//    sPattern = _T("(n ") + oChordMngr.GetPattern(i) + _T(" r)");
-//    pNode = parserLDP.ParseText( sPattern );
-//    pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-//    for (i=1; i < nNumNotes; i++) {
-//        sPattern = (m_nMode == 0 ? _T("(na ") : _T("(n "));     // mode=0 -> harmonic
-//        sPattern += oChordMngr.GetPattern((m_nMode == 2 ? nNumNotes-1-i : i));
-//        sPattern +=  _T(" r)");
-//        pNode = parserLDP.ParseText( sPattern );
-//        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-//    }
-//    pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
-//
-//    (*pScore)->Dump();  //dbg
-//
-//    //return the scale name
-//    if (m_pConstrains->AreInversionsAllowed())
-//        return oChordMngr.GetNameFull();       //name including inversion
-//    else 
-//        return oChordMngr.GetName();           //only name
-//
-    *pScore = (lmScore*)NULL;
-    return _T("TODO");
+    //create a score with the scale
+    wxString sPattern;
+    lmNote* pNote;
+    lmLDPParser parserLDP;
+    lmLDPNode* pNode;
+    lmVStaff* pVStaff;
+
+    int nNumNotes = oScaleMngr.GetNumNotes();
+    *pScore = new lmScore();
+    (*pScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
+    (*pScore)->AddInstrument(1,0,0,_T(""));     //one vstaff, MIDI channel 0, MIDI instr 0
+    pVStaff = (*pScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
+    pVStaff->AddClef( eclvSol );
+    pVStaff->AddKeySignature( m_nKey );
+    pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
+
+//    pVStaff->AddEspacio 24
+    int i = (m_fAscending ? 0 : nNumNotes-1);
+    sPattern = _T("(n ") + oScaleMngr.GetPattern(i) + _T(" r)");
+    pNode = parserLDP.ParseText( sPattern );
+    pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+    for (i=1; i < nNumNotes; i++) {
+        sPattern = _T("(n ");
+        sPattern += oScaleMngr.GetPattern((m_fAscending ? i : nNumNotes-1-i));
+        sPattern +=  _T(" r)");
+        pNode = parserLDP.ParseText( sPattern );
+        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+    }
+    pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
+
+    (*pScore)->Dump(_T("ScoreDump.txt"));  //dbg
+
+    //return the scale name
+    return oScaleMngr.GetName();
+
 }

@@ -69,22 +69,28 @@ public:
 
 private:
     wxString PrepareScore(EClefType nClef, EScaleType nType, lmScore** pScore);
+    int ReconfigureGroup(int iBt, int iStartC, int iEndC, wxString sRowLabel);
 
         // member variables
+
+    enum {
+        m_NUM_COLS = 4,
+        m_NUM_ROWS = 6,
+        m_NUM_BUTTONS = 24,     // NUM_COLS * NUM_ROWS;
+    };
 
     lmScalesConstrains* m_pConstrains;       //constrains for the exercise
 
     //problem asked
     EKeySignatures  m_nKey;
     wxString        m_sRootNote;
-    int             m_nInversion;
-    int             m_nMode;
+    bool            m_fAscending;
 
     //answer
-    wxStaticText*   m_pRowLabel[5];
-    wxButton*       m_pAnswerButton[est_Max];   //buttons for the answers
-    int             m_nRealScale[est_Max];      // chord that corresponds
-                                                // to each valid button
+    wxStaticText*   m_pRowLabel[m_NUM_ROWS];
+    wxButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers
+    int             m_nRealScale[m_NUM_BUTTONS];        //scale that corresponds
+                                                        //   to each valid button
 
     DECLARE_EVENT_TABLE()
 };

@@ -49,7 +49,7 @@ bool lmScalesConstrains::IsValidGroup(EScaleGroup nGroup)
 {
     if (nGroup == esg_Major)
     {
-        return (IsScaleValid( est_MajorTriad ) ||
+        return (IsScaleValid( est_MajorNatural ) ||
                 IsScaleValid( est_MajorTypeII ) ||
                 IsScaleValid( est_MajorTypeIII ) ||
                 IsScaleValid( est_MajorTypeIV ) );
@@ -90,31 +90,27 @@ void lmScalesConstrains::SaveSettings()
     int i;
     wxString sKey;
     for (i=0; i < est_Max; i++) {
-        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/Chord%dAllowed"), 
+        sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/Scale%dAllowed"), 
             m_sSection, i );
         g_pPrefs->Write(sKey, m_fValidScales[i]);
     }
 
     // play modes
-    for (i=0; i < 3; i++) {
-        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/PlayMode%d"), 
-            m_sSection, i );
-        g_pPrefs->Write(sKey, m_fAllowedModes[i]);
-    }
+    g_pPrefs->Write(_T("/Constrains/IdfyScale/%s/PlayMode"), m_nPlayMode);
 
     // key signatures
     bool fValid;
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
-        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/KeySignature%d"), 
+        sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/KeySignature%d"), 
             m_sSection, i );
         fValid = m_oValidKeys.IsValid((EKeySignatures)i);
         g_pPrefs->Write(sKey, fValid);
     }
 
     // other settings
-    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/AllowInversions"), m_sSection);
+    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/AllowInversions"), m_sSection);
     g_pPrefs->Write(sKey, m_fAllowInversions);
-    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/DisplayKey"), m_sSection);
+    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection);
     g_pPrefs->Write(sKey, m_fDisplayKey);
 
 }
@@ -125,27 +121,22 @@ void lmScalesConstrains::LoadSettings()
     // load settings form user configuration data or default values
     //
 
-    // allowed chords. Default: four main triads
+    // allowed chords. Default: major and minor scales
     int i;
     wxString sKey;
     for (i=0; i < est_Max; i++) {
-        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/Chord%dAllowed"), 
+        sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/Scale%dAllowed"), 
             m_sSection, i );
-        g_pPrefs->Read(sKey, &m_fValidScales[i], (bool)(i < 4) );
+        g_pPrefs->Read(sKey, &m_fValidScales[i], (bool)(i < 8) );
     }
 
-    // play modes. Default: only harmonic, but is set in IdfyChrdCtrolParms when the
-    // control is created. This is necesary to simplify param settings
-    for (i=0; i < 3; i++) {
-        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/PlayMode%d"), 
-            m_sSection, i );
-        g_pPrefs->Read(sKey, &m_fAllowedModes[i], false);
-    }
+    // play modes. Default: ascending
+    g_pPrefs->Read(_T("/Constrains/IdfyScale/%s/PlayMode"), &m_nPlayMode, 0);
 
     // key signatures. Default use C major
     bool fValid;
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
-        sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/KeySignature%d"), 
+        sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/KeySignature%d"), 
             m_sSection, i );
         g_pPrefs->Read(sKey, &fValid, (bool)((EKeySignatures)i == earmDo) );
         m_oValidKeys.SetValid((EKeySignatures)i, fValid);
@@ -154,9 +145,9 @@ void lmScalesConstrains::LoadSettings()
     // other settings:
     //      Inversions - default: not allowed
     //      Display key - default: not allowed
-    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/AllowInversions"), m_sSection);
+    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/AllowInversions"), m_sSection);
     g_pPrefs->Read(sKey, &m_fAllowInversions, false);
-    sKey = wxString::Format(_T("/Constrains/IdfyChord/%s/DisplayKey"), m_sSection);
+    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection);
     g_pPrefs->Read(sKey, &m_fDisplayKey, false);
 
 }
@@ -177,18 +168,17 @@ EScaleType lmScalesConstrains::GetRandomChordType()
 
 }
 
-int lmScalesConstrains::GetRandomMode()
+bool lmScalesConstrains::GetRandomPlayMode()
 {
-    lmRandomGenerator oGenerator;
-    int nWatchDog = 0;
-    int nMode = oGenerator.RandomNumber(0, 2);
-    while (!IsModeAllowed(nMode)) {
-        nMode = oGenerator.RandomNumber(0, 2);
-        if (nWatchDog++ == 1000) {
-            return 0;   //harmonic
-        }
-    }
-    return nMode;
+    //return 'true' for ascending and 'false' for descending
 
+    if (m_nPlayMode == 0) //ascending
+        return true;
+    else if (m_nPlayMode == 1) //descending
+        return false;
+    else {  // both modes allowed. Choose one at random
+        lmRandomGenerator oGenerator;
+        return oGenerator.FlipCoin();
+   }
 }
 

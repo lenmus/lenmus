@@ -83,7 +83,7 @@
 enum EScaleType
 {
     // Major scales
-    est_MajorTriad = 0,
+    est_MajorNatural = 0,
     est_MajorTypeII,
     est_MajorTypeIII,
     est_MajorTypeIV,
@@ -97,14 +97,23 @@ enum EScaleType
     est_LastMinor = est_MinorMelodic,
 
     // Greek modes
+    est_GreekIonian,
     est_GreekDorian,
     est_GreekPhrygian,
     est_GreekLydian,
     est_GreekMixolydian,
     est_GreekAeolian,
-    est_GreekIonian,
     est_GreekLocrian,
-    est_LastSixth = est_GreekLocrian,
+    est_LastGreek = est_GreekLocrian,
+
+    // Other scales
+    est_PentatonicMinor,
+    est_PentatonicMajor,
+    est_Hexatonic,
+    est_Heptatonic,
+    est_WholeTones,
+    est_Chromatic,
+    est_LastOther = est_Chromatic,
 
     //last element, to signal End Of Table
     est_Max
@@ -128,7 +137,7 @@ public:
     ~lmScalesConstrains() {}
 
     EScaleType GetRandomChordType();
-    int GetRandomMode();
+    bool GetRandomPlayMode();
 
     bool AreInversionsAllowed() { return m_fAllowInversions; }
     void SetInversionsAllowed(bool fValue) { m_fAllowInversions = fValue; }
@@ -139,10 +148,8 @@ public:
 
     bool IsValidGroup(EScaleGroup nGroup);
 
-    bool IsModeAllowed(int nMode) { return m_fAllowedModes[nMode]; }
-    void SetModeAllowed(int nMode, bool fValue) {
-            m_fAllowedModes[nMode] = fValue;
-        }
+    int GetPlayMode() { return m_nPlayMode; }
+    void SetPlayMode(int nPlayMode) { m_nPlayMode = nPlayMode; }
 
     void SetDisplayKey(bool fValue) { m_fDisplayKey = fValue; }
     bool DisplayKey() { return m_fDisplayKey; }
@@ -164,9 +171,9 @@ private:
     bool                m_fValidScales[est_Max];
     lmKeyConstrains     m_oValidKeys;           //allowed key signatures
     bool                m_fDisplayKey;
-    bool                m_fAllowedModes[3];     // 0-harmonic
-                                                // 1-melodic ascending
-                                                // 2-melodic descending
+    int                 m_nPlayMode;            // 0-ascending
+                                                // 1-descending
+                                                // 2-both
     wxString            m_sLowerRoot;    //valid range for root notes
     wxString            m_sUpperRoot;
 

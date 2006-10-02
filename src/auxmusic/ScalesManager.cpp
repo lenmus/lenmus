@@ -43,109 +43,94 @@
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
-//static wxString m_sScaleName[ect_Max];
-//static m_fStringsInitialized = false;
+typedef struct lmScaleDataStruct {
+    bool fFromRootNote;
+    wxString sIntervals;
+} lmScaleData;
+
+static wxString m_sScaleName[est_Max];
+static m_fStringsInitialized = false;
+
+//! @aware Array indexes are in correspondence with enum EScaleType
+// - intervals are from root note if flag is 'true'. Otherwise, 
+//   if flag is 'false', intervals are from previous note
 //
-////! @aware Array indexes are in correspondence with enum EChordType
-//// - intervals are from root note
-////      number + type:   m=minor, M=major, p=perfect, a=augmented, d=diminished
-//static wxString tData[ect_Max] = { 
-//    _T("tthttth"),        // Major natural
-//};
-//
-//
+static const lmScaleData tData[est_Max] = { 
+        //Major scales
+    { false, _T("M2,M2,m2,M2,M2,M2,m2,") },     //Major natural 
+    { false, _T("M2,M2,m2,M2,m2,a2,m2,") },     //Major TypeII
+    { false, _T("M2,M2,m2,M2,m2,M2,M2,") },     //Major TypeIII
+    { false, _T("M2,M2,m2,M2,M2,m2,M2,") },     //Major TypeIV
+        // Minor scales
+    { false, _T("M2,m2,M2,M2,m2,M2,M2,") },     //Minor Natural,
+    { false, _T("M2,m2,M2,M2,M2,m2,M2,") },     //Minor Dorian,
+    { false, _T("M2,m2,M2,M2,m2,a2,m2,") },     //Minor Harmonic,
+    { false, _T("M2,m2,M2,M2,M2,M2,m2,") },     //Minor Melodic,
+        // Greek modes
+    { false, _T("M2,M2,m2,M2,M2,M2,m2,") },     //Greek Ionian (major natural),
+    { false, _T("M2,m2,M2,M2,M2,m2,M2,") },     //Greek Dorian,
+    { false, _T("m2,M2,M2,M2,m2,M2,M2,") },     //Greek Phrygian,
+    { false, _T("M2,M2,M2,m2,M2,M2,m2,") },     //Greek Lydian,
+    { false, _T("M2,M2,m2,M2,M2,m2,M2,") },     //Greek Mixolydian,
+    { false, _T("M2,m2,M2,M2,m2,M2,M2,") },     //Greek Aeolian (minor natural),
+    { false, _T("m2,M2,M2,m2,M2,M2,M2,") },     //Greek Locrian,
+        // Other scales
+    { false, _T("a2,M2,M2,a2,") },              //Pentatonic Minor,
+    { false, _T("M2,M2,a2,M2,") },              //Pentatonic Major,
+    { false, _T("M2,M2,m2,M2,M2,M2,m2,") },     //Hexatonic,        x
+    { false, _T("M2,M2,m2,M2,M2,M2,m2,") },     //Heptatonic,       x
+    { false, _T("M2,M2,M2,M2,M2,") },           //WholeTones,
+    { false, _T("m2,m2,m2,m2,m2,m2,m2,m2,m2,m2,m2,m2,") },   //Chromatic,
+};
+
+
 //-------------------------------------------------------------------------------------
 // Implementation of lmScalesManager class
 
 
 lmScalesManager::lmScalesManager(wxString sRootNote, EScaleType nScaleType, 
-                               int nInversion, EKeySignatures nKey)
+                                 EKeySignatures nKey)
 {
-//    //parameter 'nInversion' is encoded as follows:
-//    //  0 - root position
-//    //  1 - 1st inversion
-//    //  2 - 2nd inversion
-//    //  and so on
-//
 //    //save parameters
-//    m_nType = nScaleType;
-//    m_nKey = nKey;
-//    m_nInversion = nInversion;
-//
-//    if (lmConverter::NoteToBits(sRootNote, &m_tBits[0])) {
-//        wxLogMessage(_T("[lmScalesManager::lmScalesManager] Unexpected error in lmConverter::NoteToBits coversion. Note: '%s'"),
-//                sRootNote );
-//        wxASSERT(false);
-//    }
-//
-//    //get the intervals that form the scale
-//    int i;
-//    wxString sIntval[3], sNewIntv[3];
-//    sIntval[0] = tData[m_nType].sIntervals[0];
-//    sIntval[1] = tData[m_nType].sIntervals[1];
-//    sIntval[2] = tData[m_nType].sIntervals[2];
-//
-//    //correction for inversions
-//    if (m_nInversion == 1)
-//    {
-//        sNewIntv[0] = SubstractIntervals( sIntval[1], sIntval[0] );
-//
-//        if (sIntval[2] == _T("")) {
-//            sNewIntv[1] = InvertInterval( sIntval[0] );
-//            sNewIntv[2] = _T("");
-//        }
-//        else {
-//            sNewIntv[1] = SubstractIntervals( sIntval[2], sIntval[0] );
-//            sNewIntv[2] = InvertInterval( sIntval[0] );
-//        }
-//    }
-//    else if (m_nInversion == 2)
-//    {
-//        if (sIntval[2] == _T("")) {
-//            sNewIntv[0] = InvertInterval( sIntval[1] );
-//            sNewIntv[1] = InvertInterval( sIntval[0] );
-//            sNewIntv[2] = _T("");
-//        }
-//        else {
-//            sNewIntv[0] = SubstractIntervals( sIntval[2], sIntval[1] );
-//            sNewIntv[1] = InvertInterval( sIntval[1] );
-//            sNewIntv[2] = InvertInterval( sIntval[0] );
-//        }
-//    } 
-//    else if (m_nInversion == 3)
-//    {
-//        sNewIntv[0] = SubstractIntervals( _T("p8"), sIntval[2] );
-//        sNewIntv[1] = AddIntervals( sNewIntv[0], sIntval[0] );
-//        sNewIntv[2] = AddIntervals( sNewIntv[0], sIntval[1] );
-//    } 
-//    if (m_nInversion != 0) {
-//        sIntval[0] = sNewIntv[0];
-//        sIntval[1] = sNewIntv[1];
-//        sIntval[2] = sNewIntv[2];
-//    }
-//
-//    //get notes that form the interval
-//    //wxLogMessage(_T("[lmScalesManager] Root note = %s, interval type=%s, inversion=%d"),
-//    //              lmConverter::NoteBitsToName(m_tBits[0], m_nKey), GetName(), m_nInversion );
-//    for (i=1; i < tData[m_nType].nNumNotes; i++) {
-//        ComputeInterval(&m_tBits[0], sIntval[i-1], edi_Ascending, &m_tBits[i]);
-//        //wxLogMessage(_T("[lmScalesManager] Note %d = %s, (Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d), key=%d"),
-//        //             i, lmConverter::NoteBitsToName(m_tBits[i],m_nKey),
-//        //             m_tBits[i].nStep, m_tBits[i].nOctave, m_tBits[i].nAccidentals, m_tBits[i].nStepSemitones,
-//        //             m_nKey );
-//    }
-//
+    m_nType = nScaleType;
+    m_nKey = nKey;
+
+    if (lmConverter::NoteToBits(sRootNote, &m_tBits[0])) {
+        wxLogMessage(_T("[lmScalesManager::lmScalesManager] Unexpected error in lmConverter::NoteToBits coversion. Note: '%s'"),
+                sRootNote );
+        wxASSERT(false);
+    }
+
+    //get notes that form the scale
+    int i;
+    int nNumNotes = GetNumNotes();
+    for (i=1; i < nNumNotes; i++) {
+        //get the next interval
+        wxString sIntval = (tData[m_nType].sIntervals).Mid((i-1)*3, 2);
+        //compute next note
+        if (tData[m_nType].fFromRootNote) {
+            ComputeInterval(&m_tBits[0], sIntval, edi_Ascending, &m_tBits[i]);
+        }
+        else {
+            ComputeInterval(&m_tBits[i-1], sIntval, edi_Ascending, &m_tBits[i]);
+        }
+        wxLogMessage(_T("[lmScalesManager] Intval='%s', Note %d = %s, (Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d), key=%d"),
+                     sIntval, i, lmConverter::NoteBitsToName(m_tBits[i],m_nKey),
+                     m_tBits[i].nStep, m_tBits[i].nOctave, m_tBits[i].nAccidentals, m_tBits[i].nStepSemitones,
+                     m_nKey );
+    }
+
 }
 
 lmScalesManager::~lmScalesManager()
 {
 }
 
-//int lmScalesManager::GetNumNotes()
-//{ 
-//    return tData[m_nType].nNumNotes;
-//}
-//
+int lmScalesManager::GetNumNotes()
+{
+    return 1 + ((tData[m_nType].sIntervals).Length() / 3);
+}
+
 //int lmScalesManager::GetMidiNote(int i)
 //{ 
 //    wxASSERT(i < GetNumNotes());
@@ -198,185 +183,65 @@ lmScalesManager::~lmScalesManager()
 //    return 0;
 //
 //}
-//
-//wxString lmScalesManager::GetPattern(int i)
-//{
-//    // Returns LDP pattern for note i (0 .. m_nNumNotes-1)
-//    wxASSERT( i < GetNumNotes());
-//    return lmConverter::NoteBitsToName(m_tBits[i], m_nKey);
-//
-//}
-//
-//wxString lmScalesManager::GetNameFull()
-//{ 
-//    wxString sName = ScaleTypeToName( m_nType );
-//    sName += _T(", ");
-//    if (m_nInversion == 0)
-//        sName += _("root position");
-//    else if (m_nInversion == 1)
-//        sName += _("1st inversion");
-//    else if (m_nInversion == 2)
-//        sName += _("2nd inversion");
-//    else if (m_nInversion == 3)
-//        sName += _("3rd inversion");
-//    else
-//        wxASSERT(false);    //impossible
-//
-//    return sName;
-//
-//}
-//
-//
-//#ifdef _DEBUG
-//void lmScalesManager::UnitTests()
-//{
-//    int i, j;
-//
-//    //lmConverter::NoteToBits and lmConverter::NoteBitsToName
-//    wxLogMessage(_T("[lmScalesManager::UnitTests] Test of lmConverter::NoteToBits() method:"));
-//    wxString sNote[8] = { _T("a4"), _T("+a5"), _T("--b2"), _T("-a4"),
-//        _T("+e4"), _T("++f6"), _T("b1"), _T("xc4") };
-//    lmNoteBits tNote;
-//    for(i=0; i < 8; i++) {
-//        if (lmConverter::NoteToBits(sNote[i], &tNote)) 
-//            wxLogMessage(_T("Unexpected error in lmConverter::NoteToBits()"));
-//        else {
-//            wxLogMessage(_T("Note: '%s'. Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d --> '%s'"),
-//                sNote[i], tNote.nStep, tNote.nOctave, tNote.nAccidentals, tNote.nStepSemitones,
-//                lmConverter::NoteBitsToName(tNote, m_nKey) );
-//        }
-//    }
-//
-//    //ComputeInterval(): interval computation
-//    wxString sIntv[8] = { _T("M3"), _T("m3"), _T("p8"), _T("p5"),
-//        _T("a5"), _T("d7"), _T("M6"), _T("M2") };
-//    for(i=0; i < 8; i++) {
-//        for (j=0; j < 8; j++) {
-//            wxString sNewNote = ComputeInterval(sNote[i], sIntv[j], edi_Ascending, m_nKey);
-//            wxLogMessage(_T("Note='%s' + Intv='%s' --> '%s'"),
-//                         sNote[i], sIntv[j], sNewNote );
-//            wxString sStartNote = ComputeInterval(sNewNote, sIntv[j], edi_Descending, m_nKey);
-//            wxLogMessage(_T("Note='%s' - Intv='%s' --> '%s'"),
-//                         sNewNote, sIntv[j], sStartNote );
-//        }
-//    }
-//
-//    //IntervalCodeToBits and IntervalBitsToCode
-//    wxLogMessage(_T("[lmScalesManager::UnitTests] Test of IntervalCodeToBits() method:"));
-//    lmIntvBits tIntv;
-//    for(i=0; i < 8; i++) {
-//        if (IntervalCodeToBits(sIntv[i], &tIntv)) 
-//            wxLogMessage(_T("Unexpected error in IntervalCodeToBits()"));
-//        else {
-//            wxLogMessage(_T("Intv: '%s'. Bits: num=%d, Semitones=%d --> '%s'"),
-//                sIntv[i], tIntv.nNum,tIntv.nSemitones,
-//                IntervalBitsToCode(tIntv) );
-//        }
-//    }
-//
-//    ////SubstractIntervals
-//    //wxLogMessage(_T("[lmScalesManager::UnitTests] Test of SubstractIntervals() method:"));
-//    //wxString sIntv1[8] = { _T("p5"), _T("p5"), _T("M7"), _T("M6"), _T("m6"), _T("M7"), _T("M6"), _T("p4") };
-//    //wxString sIntv2[8] = { _T("M3"), _T("m3"), _T("p5"), _T("p5"), _T("a5"), _T("M3"), _T("m3"), _T("M2") };
-//    //for(i=0; i < 8; i++) {
-//    //    wxLogMessage(_T("Intv1='%s', intv2='%s' --> dif='%s'"),
-//    //        sIntv1[i], sIntv2[i], SubstractIntervals(sIntv1[i], sIntv2[i]) );
-//    //}
-//
-//    //AddIntervals
-//    wxLogMessage(_T("[lmScalesManager::UnitTests] Test of AddIntervals() method:"));
-//    wxString sIntv1[8] = { _T("p5"), _T("p5"), _T("M6"), _T("M3"), _T("M3"), _T("M6"), _T("d4"), _T("p8") };
-//    wxString sIntv2[8] = { _T("M3"), _T("m3"), _T("m2"), _T("m3"), _T("M3"), _T("M3"), _T("m7"), _T("p8") };
-//    for(i=0; i < 8; i++) {
-//        wxLogMessage(_T("Intv1='%s', intv2='%s' --> sum='%s'"),
-//            sIntv1[i], sIntv2[i], AddIntervals(sIntv1[i], sIntv2[i]) );
-//    }
-//
-//}
-//#endif  // _DEBUG
-//
-////----------------------------------------------------------------------------------------
-////global functions
-////----------------------------------------------------------------------------------------
-//
-//wxString ScaleTypeToName(EScaleType nType)
-//{
-//    wxASSERT(nType < ect_Max);
-//
-//    //language dependent strings. Can not be statically initiallized because
-//    //then they do not get translated
-//    if (!m_fStringsInitialized) {
-//        // Triads
-//        m_sScaleName[ect_MajorTriad] = _("Major triad");
-//        m_sScaleName[ect_MinorTriad] = _("Minor triad");
-//        m_sScaleName[ect_AugTriad] = _("Augmented triad");
-//        m_sScaleName[ect_DimTriad] = _("Diminished triad");
-//        m_sScaleName[ect_Suspended_4th] = _("Suspended triad (4th)");
-//        m_sScaleName[ect_Suspended_2nd] = _("Suspended triad (2nd)");
-//
-//        // Seventh chords
-//        m_sScaleName[ect_MajorSeventh] = _("Major 7th");
-//        m_sScaleName[ect_DominantSeventh] = _("Dominant 7th");
-//        m_sScaleName[ect_MinorSeventh] = _("Minor 7th");
-//        m_sScaleName[ect_DimSeventh] = _("Diminished 7th");
-//        m_sScaleName[ect_HalfDimSeventh] = _("Half diminished 7th");
-//        m_sScaleName[ect_AugMajorSeventh] = _("Augmented major 7th");
-//        m_sScaleName[ect_AugSeventh] = _("Augmented 7th");
-//        m_sScaleName[ect_MinorMajorSeventh] = _("Minor major 7th");
-//
-//        // Sixth chords
-//        m_sScaleName[ect_MajorSixth] = _("Major 6th");
-//        m_sScaleName[ect_MinorSixth] = _("Minor 6th");
-//        m_sScaleName[ect_AugSixth] = _("Augmented 6th");
-//
-//        m_fStringsInitialized = true;
-//    }
-//    
-//    return m_sScaleName[nType];
-//    
-//}
-//
-//int NumNotesInChord(EChordType nChordType)
-//{
-//    wxASSERT(nChordType < ect_Max);
-//    return tData[nChordType].nNumNotes;
-//
-//}
-//
-//EChordType ChordShortNameToType(wxString sName)
-//{
-//    // returns -1 if error
-//    //
-//    // m-minor, M-major, a-augmented, d-diminished, s-suspended
-//    // T-triad, dom-dominant, hd-half diminished
-//    //
-//    // triads: mT, MT, aT, dT, s4, s2
-//    // sevenths: m7, M7, a7, d7, mM7, aM7 dom7, hd7
-//    // sixths: m6, M6, a6
-//
-//            // Triads
-//    if      (sName == _T("MT")) return ect_MajorTriad;
-//    else if (sName == _T("mT")) return ect_MinorTriad;
-//    else if (sName == _T("aT")) return ect_AugTriad;
-//    else if (sName == _T("dT")) return ect_DimTriad;
-//    else if (sName == _T("s4")) return ect_Suspended_4th;
-//    else if (sName == _T("s2")) return ect_Suspended_2nd;
-//
-//        // Seventh chords
-//    else if (sName == _T("M7")) return ect_MajorSeventh;
-//    else if (sName == _T("dom7")) return ect_DominantSeventh;
-//    else if (sName == _T("m7")) return ect_MinorSeventh;
-//    else if (sName == _T("d7")) return ect_DimSeventh;
-//    else if (sName == _T("hd7")) return ect_HalfDimSeventh;
-//    else if (sName == _T("aM7")) return ect_AugMajorSeventh;
-//    else if (sName == _T("a7")) return ect_AugSeventh;
-//    else if (sName == _T("mM7")) return ect_MinorMajorSeventh;
-//
-//        // Sixth chords
-//    else if (sName == _T("M6")) return ect_MajorSixth;
-//    else if (sName == _T("m6")) return ect_MinorSixth;
-//    else if (sName == _T("a6")) return ect_AugSixth;
-//
-//    return (EChordType)-1;  //error
-//
-//}
+
+wxString lmScalesManager::GetPattern(int i)
+{
+    // Returns LDP pattern for note i (0 .. m_nNumNotes-1)
+    wxASSERT( i < GetNumNotes());
+    return lmConverter::NoteBitsToName(m_tBits[i], m_nKey);
+
+}
+
+//----------------------------------------------------------------------------------------
+//global functions
+//----------------------------------------------------------------------------------------
+
+wxString ScaleTypeToName(EScaleType nType)
+{
+    wxASSERT(nType < est_Max);
+
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    if (!m_fStringsInitialized)
+    {
+        // Major scales
+        m_sScaleName[est_MajorNatural] = _("Major natural");
+        m_sScaleName[est_MajorTypeII] = _("Major type II");
+        m_sScaleName[est_MajorTypeIII] = _("Major type III");
+        m_sScaleName[est_MajorTypeIV] = _("Major type IV");
+
+        // Minor scales
+        m_sScaleName[est_MinorNatural] = _("Minor natural");
+        m_sScaleName[est_MinorDorian] = _("Minor Dorian");
+        m_sScaleName[est_MinorHarmonic] = _("Minor Harmonic");
+        m_sScaleName[est_MinorMelodic] = _("Minor Melodic");
+
+        // Greek scales
+        m_sScaleName[est_GreekIonian] = _("Greek Ionian");
+        m_sScaleName[est_GreekDorian] = _("Greek Dorian");
+        m_sScaleName[est_GreekPhrygian] = _("Greek Phrygian");
+        m_sScaleName[est_GreekLydian] = _("Greek Lydian");
+        m_sScaleName[est_GreekMixolydian] = _("Greek Mixolydian");
+        m_sScaleName[est_GreekAeolian] = _("Greek Aeolian");
+        m_sScaleName[est_GreekLocrian] = _("Greek Locrian");
+
+        // Other scales
+        m_sScaleName[est_PentatonicMinor] = _("Pentatonic minor");
+        m_sScaleName[est_PentatonicMajor] = _("Pentatonic major");
+        m_sScaleName[est_Hexatonic] = _("Hexatonic");
+        m_sScaleName[est_Heptatonic] = _("Heptatonic");
+        m_sScaleName[est_WholeTones] = _("Whole tones");
+        m_sScaleName[est_Chromatic] = _("Chromatic");
+
+        m_fStringsInitialized = true;
+    }
+    
+    return m_sScaleName[nType];
+    
+}
+
+int NumNotesInScale(EScaleType nType)
+{
+    wxASSERT(nType < est_Max);
+    return 1 + ((tData[nType].sIntervals).Length() / 3);
+}

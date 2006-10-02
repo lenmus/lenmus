@@ -43,47 +43,40 @@
 #include "Conversion.h"
 
 
-////declare global functions defined in this module
-//extern wxString ScaleTypeToName(EScaleType nChordType);
-//extern int NumNotesInChord(EScaleType nChordType);
-//extern EScaleType ChordShortNameToType(wxString sName);
+//declare global functions defined in this module
+extern wxString ScaleTypeToName(EScaleType nType);
+extern int NumNotesInScale(EScaleType nType);
 
-//a chord is a sequence of up 4 notes. Change this for more notes in chord
-#define lmNOTES_IN_SCALE  7
+//a scale is a sequence of up 13 notes (12 chromatic notes plus repetition of first one).
+//Change this for more notes in a scale
+#define lmNOTES_IN_SCALE  13
 
 class lmScalesManager
 {
 public:
     //build a scale from root note and type
-    lmScalesManager(wxString sRootNote, EScaleType nScaleType, int nInversion = 0,
+    lmScalesManager(wxString sRootNote, EScaleType nScaleType,
                    EKeySignatures nKey = earmDo);
     //destructor
     ~lmScalesManager();
 
-//    EScaleType GetType() { return m_nType; }
-//    wxString GetNameFull();
-//    wxString GetName() { return ScaleTypeToName( m_nType ); }
-//    int GetNumNotes();
+    EScaleType GetType() { return m_nType; }
+    wxString GetName() { return ScaleTypeToName( m_nType ); }
+    int GetNumNotes();
 //    int GetMidiNote(int i);
-//    wxString GetPattern(int i);
-//
-//#ifdef _DEBUG
-//    void UnitTests();
-//#endif
-//
-//private:
+    wxString GetPattern(int i);
+
+
+private:
 //    int GetMidiNote(int nMidiRoot, wxString sInterval);
-//
-//
-//
-////member variables
-//
-//    EScaleType      m_nType;
-//    EKeySignatures  m_nKey;
+
+    //member variables
+
+    EScaleType      m_nType;
+    EKeySignatures  m_nKey;
 //    int             m_ntMidi[lmNOTES_IN_SCALE];
-//    lmNoteBits      m_tBits[lmNOTES_IN_SCALE];
-//    int             m_nInversion;
-//
+    lmNoteBits      m_tBits[lmNOTES_IN_SCALE];
+
 };
 
 #endif  // __SCALESMANAGER_H__

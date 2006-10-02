@@ -66,7 +66,7 @@ protected:
     // html object window attributes
     long                    m_nWindowStyle;
     wxString                m_sParamErrors;
-    lmScalesConstrains*      m_pConstrains;
+    lmScalesConstrains*     m_pConstrains;
 
     DECLARE_NO_COPY_CLASS(lmEarScalesCtrolParms)
 };
@@ -82,7 +82,7 @@ lmEarScalesCtrolParms::lmEarScalesCtrolParms(const wxHtmlTag& tag, int nWidth, i
     m_nWindowStyle = nStyle;
 
     // construct constrains object
-    m_pConstrains = new lmScalesConstrains(_T("IdfyChord"));
+    m_pConstrains = new lmScalesConstrains(_T("IdfyScale"));
 
     // initializations
     m_sParamErrors = _T("");    //no errors
@@ -110,7 +110,7 @@ void lmEarScalesCtrolParms::AddParam(const wxHtmlTag& tag)
         keys        Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
                     Default: all
 
-        chords      Keyword "all" or a list of allowed chords:
+        scales      Keyword "all" or a list of allowed scales:
                         m-minor, M-major, a-augmented, d-diminished, s-suspended
                         T-triad, dom-dominant, hd-half diminished
 
@@ -122,11 +122,9 @@ void lmEarScalesCtrolParms::AddParam(const wxHtmlTag& tag)
 
         mode        'theory' | 'earTraining'  Keyword indicating type of exercise
         
-        playMode*   'chord | ascending | descending' allowed play modes. Default: chord
+        playMode*   'ascending | descending | both' allowed play modes. Default: ascending
 
         showKey     '0 | 1' Default: 0 (do not display key signature)
-
-        inversions  '0 | 1' Default: 0 (do not allow inversions)
 
         control_settings    Value="[key for storing the settings]"  
                             By coding this param it is forced the inclusion of
@@ -135,9 +133,9 @@ void lmEarScalesCtrolParms::AddParam(const wxHtmlTag& tag)
 
         Example:
         ------------------------------------
-        <object type="Application/LenMusIdfyChord" width="100%" height="300" border="0">
+        <object type="Application/LenMus" class="IdfyScale" width="100%" height="300" border="0">
             <param name="mode" value="earTraining">
-            <param name="chords" value="mT,MT,aT,dT,m7,M7,dom7">
+            <param name="scales" value="mT,MT,aT,dT,m7,M7,dom7">
             <param name="keys" value="all">
         </object>
 
@@ -155,18 +153,6 @@ void lmEarScalesCtrolParms::AddParam(const wxHtmlTag& tag)
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
     
-    // allow inversions
-    if ( sName == _T("INVERSIONS") ) {
-        int nValue;
-        bool fOK = tag.GetParamAsInt(_T("VALUE"), &nValue);
-        if (!fOK) 
-            m_sParamErrors += wxString::Format(
-                _("Invalid param value in:\n<param %s >\nAcceptable values: 1 | 0 \n"),
-                tag.GetAllParams() );
-        else
-            m_pConstrains->SetInversionsAllowed( nValue != 0 );
-    }
-
     // show Key signature
     else if ( sName == _T("SHOWKEY") ) {
         int nValue;
@@ -182,23 +168,23 @@ void lmEarScalesCtrolParms::AddParam(const wxHtmlTag& tag)
     // play mode
     else if ( sName == _T("PLAYMODE") ) {
         wxString sMode = tag.GetParam(_T("VALUE"));
-        if (sMode == _T("chord")) 
-            m_pConstrains->SetModeAllowed(0, true);
-        else if (sMode == _T("ascending")) 
-            m_pConstrains->SetModeAllowed(1, true);
+        if (sMode == _T("ascending")) 
+            m_pConstrains->SetPlayMode(0);
         else if (sMode == _T("descending")) 
-            m_pConstrains->SetModeAllowed(2, true);
+            m_pConstrains->SetPlayMode(1);
+        else if (sMode == _T("both")) 
+            m_pConstrains->SetPlayMode(2);
         else {
             m_sParamErrors += wxString::Format( wxGetTranslation(
                 _T("Invalid param value in:\n<param %s >\n")
                 _T("Invalid value = %s \n")
-                _T("Acceptable values: 'chord | ascending | descending'\n")),
+                _T("Acceptable values: 'ascending | descending | both'\n")),
                 tag.GetAllParams(), sMode );
         }
     }
 
     // chords      Keyword "all" or a list of allowed chords:
-    else if ( sName == _T("CHORDS") ) {
+    else if ( sName == _T("SCALES") ) {
         wxString sClef = tag.GetParam(_T("VALUE"));
         m_sParamErrors += ParseChords(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
                                     m_pConstrains->GetValidScales());
@@ -242,16 +228,6 @@ void lmEarScalesCtrolParms::AddParam(const wxHtmlTag& tag)
 
 void lmEarScalesCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 {
-    // ensure that at least a play mode is selected
-    bool fModeSpecified = false;
-    for (int i=0; i < 3; i++) {
-        fModeSpecified = fModeSpecified || m_pConstrains->IsModeAllowed(i);
-        if (fModeSpecified) break;
-    }
-    if (!fModeSpecified) {
-        m_pConstrains->SetModeAllowed(0, true);     //harmonic
-    }
-
     //inform about param errors or create the control
     wxWindow* pWnd;
     if (m_sParamErrors != _T("")) {
