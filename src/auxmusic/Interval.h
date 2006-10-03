@@ -76,7 +76,10 @@ extern wxString ComputeInterval(wxString sRootNote, wxString sIntvCode,
 extern void ComputeInterval(lmNoteBits* pRoot, wxString sIntvCode,
                             EIntervalDirection nDirection,
                             lmNoteBits* pNewNote);
-
+extern void AddSemitonesToNote(lmNoteBits* pRoot, wxString sIntvCode,
+                               EKeySignatures nKey,
+                               EIntervalDirection nDirection,
+                               lmNoteBits* pNewNote);
 extern wxString IntervalBitsToCode(lmIntvBits& tIntv);
 extern bool IntervalCodeToBits(wxString sIntvCode, lmIntvBits* pBits);
 extern wxString InvertInterval(wxString sIntvCode);

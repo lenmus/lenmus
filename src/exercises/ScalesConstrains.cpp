@@ -152,7 +152,7 @@ void lmScalesConstrains::LoadSettings()
 
 }
 
-EScaleType lmScalesConstrains::GetRandomChordType()
+EScaleType lmScalesConstrains::GetRandomScaleType()
 {
     lmRandomGenerator oGenerator;
     int nWatchDog = 0;

@@ -285,81 +285,6 @@ void lmAggDrawer::SetLogicalFunction(int function)
 void lmAggDrawer::DrawText(const wxString& text, wxCoord x, wxCoord y) 
 {
     //wxLogMessage(_T("[lmAggDrawer::DrawText]"));
-#if 0
-        //
-        // Experimental code to use native text renderization
-        // Version 1. Render on a new bitmap and blend it with main bitmap
-        //
-
-    // Get size of text, in logical units
-    lmLUnits wL, hL;
-    m_pDC->GetTextExtent(text, &wL, &hL);
-
-    // convert size to pixels. As GetTextExtent has not enough precision
-    // I will add a couple of pixels for security
-    wxCoord wD = m_pDC->LogicalToDeviceXRel(wL) + 2,
-            hD = m_pDC->LogicalToDeviceYRel(hL) + 2;
-
-    // allocate the bitmap
-    wxBitmap bitmap((int)wD, (int)hD);
-    wxMemoryDC* pDC = (wxMemoryDC*)m_pDC;
-    pDC->SelectObject(bitmap);
-
-    // draw onto the bitmap
-    //m_pDC->SetBackground(*wxWHITE_BRUSH);
-    //m_pDC->SetBackgroundMode(wxTRANSPARENT);
-    //m_pDC->SetTextForeground(*wxBLACK);
-    m_pDC->Clear();
-    m_pDC->DrawText(text, 0, 0);
-    pDC->SelectObject(wxNullBitmap);
-
-    // Convert to image and make it masked
-    wxImage image = bitmap.ConvertToImage();
-    static int hh=0;
-    if (hh++==50) {
-        image.SaveFile(_T("C:\\usr\\agg_image.bmp"), wxBITMAP_TYPE_BMP);
-        int iX, iY;
-        for (iX=0; iX < wD; iX++) {
-            for(iY=0; iY < hD; iY++) {
-                unsigned char red = image.GetRed(iX, iY);
-                unsigned char green = image.GetGreen(iX,iY);
-                unsigned char blue = image.GetBlue(iX,iY);
-                //wxLogMessage(_T("color r=%d, g=%d, b=%d"), red, green, blue);
-            }
-            //wxLogMessage(_T("New row"));
-        }
-    }
-    //image.SetMaskColour(255, 255, 255);
-
-    // get the image buffer and blend it with this Drawer main buffer
-    agg::rendering_buffer oBuffer;     //the agg buffer to be blended
-    unsigned char* pData = image.GetData();
-    oBuffer.attach(pData, wD, hD, 0);
-    lmPixelsBuffer* pPixels = new lmPixelsBuffer( oBuffer );    //the bitmap buffer as pixels
-
-    lmColor_rgba8 colorWhite = agg::rgba8(255, 255, 255);
-    lmColor_rgba8 color;
-    int xD = (int)floor(WorldToDeviceX(x) + 0.5);
-    int yD = (int)floor(WorldToDeviceY(y) + 0.5);
-    int iX, iY;
-    for (iX=0; iX < wD; iX++) {
-        for(iY=0; iY < hD; iY++) {
-            unsigned char red = image.GetRed(iX, iY);
-            unsigned char green = image.GetGreen(iX,iY);
-            unsigned char blue = image.GetBlue(iX,iY);
-            color = agg::rgba8((unsigned int)red, (unsigned int)blue, (unsigned int)green);  //pPixels->pixel(iX, iY);
-            if (!(red == 255 && blue == 255 && green == 255)) {
-                m_pPixelsBuffer->copy_pixel(iX+xD, iY+yD, color);
-            }
-        }
-    }
-
-    delete pPixels;
-#endif
-
-
-
-#if 1
         //
         // Experimental code to use native text renderization. 
         // Version 2. Render on a copy of main bitmap
@@ -378,16 +303,32 @@ void lmAggDrawer::DrawText(const wxString& text, wxCoord x, wxCoord y)
     int xD = (int)floor(WorldToDeviceX(x) + 0.5);
     int yD = (int)floor(WorldToDeviceY(y) + 0.5);
 
-    //if clipped
-    wxImage subimage;
-    int xC = (xD > 0 ? xD : 0);
-    int yC = (yD > 0 ? yD : 0);
-    int wC = (xD > 0 ? wD : xD+wD);
-    int hC = (yD > 0 ? hD : yD+hD);
-    int yS = (yD > 0 ? 0 : -yD);
-    int xS = (xD > 0 ? 0 : -xD);
+    // intersect bitmap rectangle with main bitmap rectangle
+    int xC = wxMax(xD, 0);
+    int yC = wxMax(yD, 0);
+    int xBotC = wxMax( wxMin(xD + wD, m_nBufWidth), 0);
+    int yBotC = wxMax( wxMin(yD + hD, m_nBufHeight), 0);
+    int wC = xBotC - xC;
+    int hC = yBotC - yC;
 
-    if (xD < 1 || yD < 1) {
+    //if intersection is null, terminate. Text is clipped
+    if (wC <= 0 || hC <= 0) return;
+
+    int xS = (xD > 0 ? 0 : -xD);
+    int yS = (yD > 0 ? 0 : -yD);
+
+    //if text bitmap is fully over main bitmap, just get subimage
+    //else get intersection subimage and copy it to greater text bitmap
+
+    wxImage subimage;
+    if (xD >= 0 && yD >=0 && wD <= m_nBufWidth && hD <= m_nBufHeight)
+    {
+        //bitmap is fully over main bitmap, just get subimage
+        subimage = m_buffer.GetSubImage(wxRect(xC, yC, wC, hC));
+    }
+    else
+    {
+        //get intersection subimage and copy it to greater text bitmap
         subimage.Create(wD, hD);
         unsigned char* pData = subimage.GetData();
         int iY;
@@ -398,18 +339,17 @@ void lmAggDrawer::DrawText(const wxString& text, wxCoord x, wxCoord y)
                    nLength);
         }
     }
-    else {
-        subimage = m_buffer.GetSubImage(wxRect(xC, yC, wC, hC));
-    }
+
+    //create the bitmap from the initialized subimage
     wxBitmap bitmap(subimage);
     wxMemoryDC* pDC = (wxMemoryDC*)m_pDC;
     pDC->SelectObject(bitmap);
 
-    // draw onto the bitmap
+    // draw text onto this bitmap
     m_pDC->DrawText(text, 0, 0);
     pDC->SelectObject(*m_pDummyBitmap);
 
-    // Convert bitmap to image and copy it on main buffer
+    // Convert bitmap to image and copy it back on main buffer
     wxImage image = bitmap.ConvertToImage();
     unsigned char* pData = image.GetData();
     int iY;
@@ -419,9 +359,6 @@ void lmAggDrawer::DrawText(const wxString& text, wxCoord x, wxCoord y)
                pData+(iY+yS)*nLength,
                nLength);
     }
-
-#endif
-
 
 }
 

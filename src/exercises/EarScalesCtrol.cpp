@@ -81,8 +81,8 @@ lmEarScalesCtrol::lmEarScalesCtrol(wxWindow* parent, wxWindowID id,
     //initializations
     m_pConstrains = pConstrains;
 
-    //create buttons for the answers
-    Create();
+    //create the controls and buttons for the answers
+    Create(400, 150);       //score ctrol size = 400x150 pixels
 
     //initializatios to allow to play scales
     m_nKey = earmDo;
@@ -248,21 +248,29 @@ void lmEarScalesCtrol::PrepareAuxScore(int nButton)
 
 wxString lmEarScalesCtrol::SetNewProblem()
 {
+    //This method must prepare the problem score and set variables:
+    //  m_pProblemScore, m_sAnswer, m_nRespIndex and m_nPlayMM
+
     //select a random mode
     m_fAscending = m_pConstrains->GetRandomPlayMode();
 
-    // select a random key signature
+    // generate a random scale
+    EScaleType nScaleType = m_pConstrains->GetRandomScaleType();
+
+    // select a key signature
     lmRandomGenerator oGenerator;
-    m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
-    
+    if (nScaleType > est_EndOfModalScales) {
+        m_nKey = earmDo;
+    }
+    else {
+        m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
+    }
+
     //Generate a random root note 
     EClefType nClef = eclvSol;
-    bool fAllowAccidentals = false;
-    m_sRootNote = oGenerator.GenerateRandomRootNote(nClef, m_nKey, fAllowAccidentals);
+    m_sRootNote = oGenerator.GenerateRandomRootNote(nClef, m_nKey, false);  //false = do not allow accidentals. Only those in the key signature
 
-    // generate a random scale
-    EScaleType nScaleType = (EScaleType)1; //m_pConstrains->GetRandomChordType();
-
+    //create the score
     if (!m_pConstrains->DisplayKey()) m_nKey = earmDo;
     m_sAnswer = PrepareScore(nClef, nScaleType, &m_pProblemScore);
     
@@ -321,10 +329,18 @@ wxString lmEarScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmSco
         sPattern +=  _T(" r)");
         pNode = parserLDP.ParseText( sPattern );
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+        pVStaff->AddBarline(etb_SimpleBarline, sbNO_VISIBLE);   //so accidentals doesn't affect a 2nd note
     }
     pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
 
-    (*pScore)->Dump(_T("ScoreDump.txt"));  //dbg
+    //use simple renderer; otherwise chromatic scale does not fit in available space
+    (*pScore)->SetRenderizationType(eRenderSimple);
+    
+    //(*pScore)->Dump(_T("lmEarScalesCtrol.PrepareScore.ScoreDump.txt"));  //dbg
+
+    //set metronome. As the problem score is built using whole notes, we will 
+    //set metronome at MM=400 so the resulting note rate will be 100.
+    m_nPlayMM = 400;
 
     //return the scale name
     return oScaleMngr.GetName();

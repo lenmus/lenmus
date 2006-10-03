@@ -96,6 +96,9 @@ enum EScaleType
     est_MinorMelodic,
     est_LastMinor = est_MinorMelodic,
 
+    // From here, scales without mode
+    est_EndOfModalScales = est_LastMinor,
+
     // Greek modes
     est_GreekIonian,
     est_GreekDorian,
@@ -136,7 +139,7 @@ public:
     lmScalesConstrains(wxString sSection);
     ~lmScalesConstrains() {}
 
-    EScaleType GetRandomChordType();
+    EScaleType GetRandomScaleType();
     bool GetRandomPlayMode();
 
     bool AreInversionsAllowed() { return m_fAllowInversions; }

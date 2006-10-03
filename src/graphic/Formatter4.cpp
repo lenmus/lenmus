@@ -382,12 +382,12 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOpt
         if (m_nMeasuresInSystem == 0) {
             //The line width is not enough for drawing just one bar!!!
             pPaper->RestartPageCursors();    //as cursors has been modified by measurements
-            RenderMinimal(pPaper);
             /*! @todo
                 this is too simple as RenderMinimal only produces good rendering
                 in simple short scores (no multi-line or multi-instrument)
             */
-            return (lmBoxScore*) NULL;
+            wxLogMessage(_T("[lmFormatter4::RenderJustified] The line width is not enough for drawing just one bar!!!. RenderMinimal() used."));
+            return RenderMinimal(pPaper);
         }
 
         //dbg --------------

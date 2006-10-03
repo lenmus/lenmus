@@ -36,6 +36,7 @@
 #include "Interval.h"
 #include "Conversion.h"
 #include "../exercises/Generators.h"
+#include "../score/KeySignature.h"
 
 //access to error's logger
 #include "../app/Logger.h"
@@ -453,6 +454,126 @@ void ComputeInterval(lmNoteBits* pRoot, wxString sIntvCode,
 
 }
 
+void AddSemitonesToNote(lmNoteBits* pRoot, wxString sIntvCode, EKeySignatures nKey,
+                               EIntervalDirection nDirection, lmNoteBits* pNewNote)
+{
+    // This function adds the requested semitones to note *pRoot and returns the resulting
+    // note in *pNewNote.
+    // Step and accidentals of new note are adjusted to fit 'naturally' in the key
+    // signature received: one accidental at maximum, of the same type than the
+    // accidentals in the key signature.
+    // sIntvCode is one of '1s', '2s', ..., '9s' meaning '1 semitone', '2 semitones' , etc.
+    
+
+    //Determine what type of accidentals to use for semitones: flats or sharps
+    bool fUseSharps = (KeySignatureToNumFifths(nKey) >= 0);
+
+    //Get the number of semitones to add/substract
+    wxString sSemitones = sIntvCode.Left(1);
+    long nSemitones;
+    sSemitones.ToLong(&nSemitones);
+    if (nDirection == edi_Descending) nSemitones = -nSemitones;
+
+    // compute new note total semitones and octave
+    nSemitones += pRoot->nStepSemitones + pRoot->nAccidentals;
+    pNewNote->nOctave = pRoot->nOctave;
+    while (nSemitones > 11) {
+        nSemitones -= 12;
+        pNewNote->nOctave ++;
+    }
+    while (nSemitones < 0) {
+        nSemitones += 12;
+        pNewNote->nOctave --;
+    }
+    //here octave is adjusted and step semitones is >=0 and < 12.
+    //compute step and accidentals
+    switch (nSemitones) {
+        case 0:
+            pNewNote->nStep = 0;            // c
+            pNewNote->nAccidentals = 0;
+            break;
+        case 1:
+            if (fUseSharps) {
+                pNewNote->nStep = 0;        // +c
+                pNewNote->nAccidentals = 1;
+            }
+            else {
+                pNewNote->nStep = 1;        // -d
+                pNewNote->nAccidentals = -1;
+            }
+            break;
+        case 2:
+            pNewNote->nStep = 1;            // d
+            pNewNote->nAccidentals = 0;
+            break;
+        case 3:
+            if (fUseSharps) {
+                pNewNote->nStep = 1;        // +d
+                pNewNote->nAccidentals = 1;
+            }
+            else {
+                pNewNote->nStep = 2;        // -e
+                pNewNote->nAccidentals = -1;
+            }
+            break;
+        case 4:
+            pNewNote->nStep = 2;            // e
+            pNewNote->nAccidentals = 0;
+            break;
+        case 5:
+            pNewNote->nStep = 3;            // f
+            pNewNote->nAccidentals = 0;
+            break;
+        case 6:
+            if (fUseSharps) {
+                pNewNote->nStep = 3;        // +f
+                pNewNote->nAccidentals = 1;
+            }
+            else {
+                pNewNote->nStep = 4;        // -g
+                pNewNote->nAccidentals = -1;
+            }
+            break;
+        case 7:
+            pNewNote->nStep = 4;            // g
+            pNewNote->nAccidentals = 0;
+            break;
+        case 8:
+            if (fUseSharps) {
+                pNewNote->nStep = 4;        // +g
+                pNewNote->nAccidentals = 1;
+            }
+            else {
+                pNewNote->nStep = 5;        // -a
+                pNewNote->nAccidentals = -1;
+            }
+            break;
+        case 9:
+            pNewNote->nStep = 5;            // a
+            pNewNote->nAccidentals = 0;
+            break;
+        case 10:
+            if (fUseSharps) {
+                pNewNote->nStep = 5;        // +a
+                pNewNote->nAccidentals = 1;
+            }
+            else {
+                pNewNote->nStep = 6;        // -b
+                pNewNote->nAccidentals = -1;
+            }
+            break;
+        case 11:
+            pNewNote->nStep = 6;            // b
+            pNewNote->nAccidentals = 0;
+            break;
+    }
+
+    //compute step semitones
+    pNewNote->nStepSemitones = lmConverter::StepToSemitones(pNewNote->nStep);
+
+    //done
+
+}
 
 bool IntervalCodeToBits(wxString sIntvCode, lmIntvBits* pBits)
 {

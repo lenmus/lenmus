@@ -94,6 +94,9 @@ BEGIN_EVENT_TABLE(lmEarExerciseCtrol, wxWindow)
     LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmEarExerciseCtrol::OnPlay)
     LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, lmEarExerciseCtrol::OnDisplaySolution)
     LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmEarExerciseCtrol::OnSettingsButton)
+
+    LM_EVT_END_OF_PLAY  (lmEarExerciseCtrol::OnEndOfPlay)
+
 END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmEarExerciseCtrol, wxWindow)
@@ -111,9 +114,11 @@ lmEarExerciseCtrol::lmEarExerciseCtrol(wxWindow* parent, wxWindowID id,
     m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
     m_pConstrains = pConstrains;
     m_fTheoryMode = m_pConstrains->IsTheoryMode();
+    m_nPlayMM = 320;    //it is assumed whole notes
+    m_fPlaying = false;
 }
 
-void lmEarExerciseCtrol::Create()
+void lmEarExerciseCtrol::Create(int nCtrolWidth, int nCtrolHeight)
 {
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
@@ -151,7 +156,8 @@ void lmEarExerciseCtrol::Create()
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
 
     // create score ctrl 
-    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, (lmScore*)NULL, wxDefaultPosition, wxSize(320,150), eSIMPLE_BORDER);
+    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, (lmScore*)NULL, wxDefaultPosition,
+                                        wxSize(nCtrolWidth, nCtrolHeight), eSIMPLE_BORDER);
     m_pScoreCtrol->SetMargins(lmToLogicalUnits(5, lmMILLIMETERS),      //left=1cm
                               lmToLogicalUnits(5, lmMILLIMETERS),      //right=1cm
                               lmToLogicalUnits(10, lmMILLIMETERS));     //top=1cm
@@ -285,6 +291,12 @@ void lmEarExerciseCtrol::OnPlay(wxCommandEvent& event)
     Play();
 }
 
+void lmEarExerciseCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
+{
+    m_pPlayButton->SetLabel(_("Play"));
+    m_fPlaying = false;
+}
+
 void lmEarExerciseCtrol::OnNewProblem(wxCommandEvent& event)
 {
     NewProblem();
@@ -353,7 +365,7 @@ void lmEarExerciseCtrol::NewProblem()
 {
     ResetExercise();
 
-    //set m_pProblemScore, m_sAnswer, m_nRespIndex
+    //set m_pProblemScore, m_sAnswer, m_nRespIndex, m_nPlayMM
     wxString sProblemMessage = SetNewProblem();    
 
     //load total score into the control
@@ -381,15 +393,32 @@ void lmEarExerciseCtrol::NewProblem()
 
 void lmEarExerciseCtrol::Play()
 {
-    //The problem score is built using whole notes, we will play scale at MM=320 so
-    //that real note rate will be 80.
-    m_pScoreCtrol->PlayScore(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
-                            ePM_NormalInstrument, 320);
+    if (!m_fPlaying) {
+        // Play button pressed
+        //m_pProblemScore->Dump(_T("lmEarExerciseCtrol.Play.ScoreDump.txt"));  //dbg
 
+        //change link from "Play" to "Stop"
+        m_pPlayButton->SetLabel(_("Stop"));
+
+        //play the score
+        m_pScoreCtrol->PlayScore(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
+                                ePM_NormalInstrument, m_nPlayMM);
+        m_fPlaying = true;
+
+        //! @attention The link label is restored to "Play" when the EndOfPlay event is
+        //! received. Flag m_fPlaying is also reset there
+    }
+    else {
+        // "Stop" button pressed
+        m_pScoreCtrol->Stop();
+    }
 }
 
 void lmEarExerciseCtrol::DisplaySolution()
 {
+    DoStopSounds();
+
+    //show the score
     m_pScoreCtrol->HideScore(false);
     m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
 
@@ -420,6 +449,8 @@ void lmEarExerciseCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
 
 void lmEarExerciseCtrol::ResetExercise()
 {
+    DoStopSounds();
+
     //clear the canvas
     m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
     m_pScoreCtrol->Update();    //to force to clear it now

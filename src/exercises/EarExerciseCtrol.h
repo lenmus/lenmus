@@ -37,11 +37,11 @@
 #include "wx/wx.h"
 #endif
 
-#include "ChordConstrains.h"
 #include "../score/score.h"
 #include "ScoreAuxCtrol.h"
 #include "UrlAuxCtrol.h"
 #include "CountersCtrol.h"
+#include "../sound/SoundEvents.h"
 
 
 //--------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ public:
 protected:
     virtual void LoadSettings() {};
 
-    wxString    m_sSection;         // section name to save the constrains
+    wxString    m_sSection;         //section name to save the constrains
     bool        m_fSettingsLink;    //include settings link
 
     //The Ctrol could be used both for ear training exercises and for theory exercises.
@@ -108,6 +108,9 @@ public:
     virtual void OnDebugDumpScore(wxCommandEvent& event);
     virtual void OnDebugShowMidiEvents(wxCommandEvent& event);
 
+    // event handlers related with playing a score
+    void OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event));
+
 
 protected:
     //virtual pure methods
@@ -127,7 +130,7 @@ protected:
     virtual void ResetExercise();
     virtual void StopSounds() {};
 
-    void Create();
+    void Create(int nCtrolWidth, int nCtrolHeight);
     void SetButtons(wxButton* pButton[], int nNumButtons, int nIdFirstButton);
 
         // member variables
@@ -147,6 +150,8 @@ protected:
 
     lmUrlAuxCtrol*      m_pPlayButton;      // "play" button
     lmUrlAuxCtrol*      m_pShowSolution;    // "show solution" button
+    int                 m_nPlayMM;          //metronome setting to play scores
+
 
     //lmEarExerciseCtrol can used both for ear training exercises and for theory exercises.
     //Following variable is used for configuration
@@ -157,6 +162,7 @@ private:
 
     wxButton**      m_pAnswerButtons;   //buttons for the answers
     int             m_nIdFirstButton;   //ID of first button; the others in sequence
+    bool            m_fPlaying;         //currently playing the score
 
     DECLARE_EVENT_TABLE()
 };

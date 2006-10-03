@@ -110,6 +110,7 @@ void lmGraphicManager::Layout()
     }
     lmFormatter4 oFormatter;   //the formatter object
     m_pBoxScore = oFormatter.Layout(m_pScore, m_pPaper, &m_options);
+    wxASSERT(m_pBoxScore);
 
 }
 
@@ -123,11 +124,10 @@ void lmGraphicManager::Render()
 wxBitmap* lmGraphicManager::Render(bool fUseBitmaps, int nPage)
 {
     //Renders page 1..n.
-    if (!m_pBoxScore) return (wxBitmap*)NULL;
 
     if (!fUseBitmaps) {
         //Render page directly on the DC
-        m_pBoxScore->RenderPage(nPage, m_pPaper);
+        if (m_pBoxScore) m_pBoxScore->RenderPage(nPage, m_pPaper);
         return (wxBitmap*)NULL;
     }
     else {
@@ -155,6 +155,7 @@ wxBitmap* lmGraphicManager::Render(bool fUseBitmaps, int nPage)
                 memDC.SetUserScale( m_rScale, m_rScale );
                 lmAggDrawer* pDrawer = new lmAggDrawer(&memDC, m_xPageSize, m_yPageSize);
                 m_pPaper->SetDrawer(pDrawer);
+                wxASSERT(m_pBoxScore);  //Layout phase omitted?
                 m_pBoxScore->RenderPage(nPage, m_pPaper);
 
                 memDC.SelectObject(wxNullBitmap);
@@ -214,6 +215,11 @@ void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits pa
 
     //delete existing offscreen bitmaps if necessary
     if (fDeleteBitmaps) DeleteBitmaps();
+
+    //wxLogMessage(_T("[lmGraphicManager::Prepare] fLayoutScore=%s, fDeleteBitmaps=%s, Hay BoxScore=%s"), 
+    //    (fLayoutScore ? _T("Yes") : _T("No")), 
+    //    (fDeleteBitmaps ? _T("Yes") : _T("No")), 
+    //    (m_pBoxScore ? _T("Yes") : _T("No")) );
 
 }
 
