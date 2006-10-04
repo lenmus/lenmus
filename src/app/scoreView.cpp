@@ -739,6 +739,31 @@ void lmScoreView::PausePlaying()
 
 void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
 {
+    EHighlightType nHighlightType = event.GetHighlightType();
+    switch (nHighlightType) {
+        case ePrepareForHighlight:
+        {
+            m_graphMngr.PrepareForHighlight();
+        }
+        break;
+
+        case eRemoveAllHighlight:
+        {
+            //If anti-aliased is not used there is nothing to do in this method
+            if (!g_fUseAntiAliasing) return;
+        }
+        break;
+
+        case eVisualOff:
+        case eVisualOn:
+        {
+        }
+        break;
+
+        default:
+            wxASSERT(false);
+    }
+
     //get the score
     lmScoreDocument* pDoc = (lmScoreDocument*) GetDocument();
     lmScore* pScore = pDoc->GetScore();
@@ -777,8 +802,7 @@ void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
         dc.SetDeviceOrigin(dx, dy);
     }
 
-    //do the highlight / unhighlight
-    EHighlightType nHighlightType = event.GetHighlightType();
+    //do the requested action:  highlight / unhighlight / remove_all_highlight
     pScore->ScoreHighlight(pSO, &m_Paper, nHighlightType);
 
 }

@@ -41,9 +41,14 @@ public:
     void Apply();
 
 private:
+    
     // controls
+        // Web updates
     wxStaticText*   m_pTxtLastCheck;
     wxComboBox*     m_pCboCheckFreq;
+        // Exercises
+    wxCheckBox*     m_pChkAnswerSounds;       // Enable right/wrong answer sounds
+
 
     // other member variables
     bool            m_fCheckForUpdates;

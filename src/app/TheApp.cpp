@@ -141,6 +141,7 @@ bool g_fUseAntiAliasing = true;     // for testing and comparison purposes. Chan
                                     // value of this flags forces to use standar aliased
                                     // renderization in screen
 
+
 // Global print data, to remember settings during the session
 wxPrintData* g_pPrintData = (wxPrintData*) NULL;
 
@@ -338,6 +339,10 @@ bool lmTheApp::OnInit(void)
 
     // Chord identification exercises: configuration dialog
     oXrcFile = wxFileName(sPath, _T("DlgCfgIdfyChord"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
+    // Scales identification exercises: configuration dialog
+    oXrcFile = wxFileName(sPath, _T("DlgCfgIdfyScale"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
     // Pattern Editor dialog

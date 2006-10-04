@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Preferences.h,v 1.3 2006/02/23 19:17:12 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -27,10 +26,6 @@
 #define __PREFERENCES_H__
 
 #include <wx/config.h>
-
-//to use wxMidi
-#include "wxMidi.h"
-
 
 // the config object
 extern wxConfigBase *g_pPrefs;

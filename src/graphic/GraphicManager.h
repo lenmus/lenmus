@@ -91,6 +91,9 @@ public:
     void ExportAsImage(wxString& sFilename, wxString& sExt, int nImgType);
     void BitmapsToFile(wxString& sFilename, wxString& sExt, int nImgType);
 
+    // highlighting
+    void PrepareForHighlight();
+
 
 private:
     void DeleteBitmaps();
@@ -116,7 +119,10 @@ private:
 
     lmPixels        m_xBitmapSize, m_yBitmapSize;    // size of bitmaps in pixels
 
-
+    // double buffering for score higlight
+    int             m_nHighlightedPage;     // displayed page number (0 = none)
+    wxBitmap*       m_pAuxBitmap;           // saved bitmap for displayed page
+    bool            m_fHighlight;           // highlight in process
 
 };
 

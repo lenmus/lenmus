@@ -109,7 +109,7 @@ END_EVENT_TABLE()
 
 
 
-lmDlgCfgIdfyChord::lmDlgCfgIdfyChord(wxWindow * parent,
+lmDlgCfgIdfyChord::lmDlgCfgIdfyChord(wxWindow* parent,
                            lmChordConstrains* pConstrains,
                            bool fTheoryMode)
 {
@@ -132,7 +132,7 @@ lmDlgCfgIdfyChord::lmDlgCfgIdfyChord(wxWindow * parent,
     m_pBmpAllowedChordsError = XRCCTRL(*this, "bmpAllowedChordsError", wxStaticBitmap);
     m_pLblAllowedChordsError = XRCCTRL(*this, "lblAllowedChordsError", wxStaticText);
 
-    // allowed intervals checkboxes
+    // allowed chords checkboxes
     // correspondence with EChordTypes
     m_pChkChord[ect_MajorTriad] = XRCCTRL(*this, "chkChordMajorTriad", wxCheckBox);
     m_pChkChord[ect_MinorTriad] = XRCCTRL(*this, "chkChordMinorTriad", wxCheckBox);

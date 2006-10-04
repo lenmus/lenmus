@@ -75,11 +75,10 @@ static const lmScaleData tData[est_Max] = {
     { false, _T("2s,1s,2s,2s,1s,2s,2s,") },     //Greek Aeolian (minor natural),
     { false, _T("1s,2s,2s,1s,2s,2s,2s,") },     //Greek Locrian,
         // Other scales
-    { false, _T("3s,2s,2s,3s,") },              //Pentatonic Minor,
-    { false, _T("2s,2s,3s,2s,") },              //Pentatonic Major,
-    { false, _T("2s,2s,1s,2s,2s,2s,1s,") },     //Hexatonic,        x
-    { false, _T("2s,2s,1s,2s,2s,2s,1s,") },     //Heptatonic,       x
-    { false, _T("2s,2s,2s,2s,2s,") },           //WholeTones,
+    { false, _T("3s,2s,2s,3s,2s,") },           //Pentatonic Minor,
+    { false, _T("2s,2s,3s,2s,3s,") },           //Pentatonic Major,
+    { false, _T("3s,2s,1s,3s,3s,2s,") },        //Blues,
+    { false, _T("2s,2s,2s,2s,2s,2s,") },        //WholeTones,
     { false, _T("1s,1s,1s,1s,1s,1s,1s,1s,1s,1s,1s,1s,") },   //Chromatic,
 };
 
@@ -122,10 +121,10 @@ lmScalesManager::lmScalesManager(wxString sRootNote, EScaleType nScaleType,
             else
                 ComputeInterval(&m_tBits[i-1], sIntval, edi_Ascending, &m_tBits[i]);
         }
-        wxLogMessage(_T("[lmScalesManager] Intval='%s', Note %d = %s, (Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d), key=%d"),
-                     sIntval, i, lmConverter::NoteBitsToName(m_tBits[i],m_nKey),
-                     m_tBits[i].nStep, m_tBits[i].nOctave, m_tBits[i].nAccidentals, m_tBits[i].nStepSemitones,
-                     m_nKey );
+        //wxLogMessage(_T("[lmScalesManager] Intval='%s', Note %d = %s, (Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d), key=%d"),
+        //             sIntval, i, lmConverter::NoteBitsToName(m_tBits[i],m_nKey),
+        //             m_tBits[i].nStep, m_tBits[i].nOctave, m_tBits[i].nAccidentals, m_tBits[i].nStepSemitones,
+        //             m_nKey );
     }
 
 }
@@ -138,59 +137,6 @@ int lmScalesManager::GetNumNotes()
 {
     return 1 + ((tData[m_nType].sIntervals).Length() / 3);
 }
-
-//int lmScalesManager::GetMidiNote(int i)
-//{ 
-//    wxASSERT(i < GetNumNotes());
-//    return m_ntMidi[i];
-//}
-//
-//int lmScalesManager::GetMidiNote(int nMidiRoot, wxString sInterval)
-//{
-//    // Receives a Midi pitch and a string encoding the interval as follows:
-//    // - intval = number + type: 
-//    //      m=minor, M=major, p=perfect, a=augmented, 
-//    //      d=diminished, += double aug. -=double dim.
-//    //   examples:
-//    //      3M - major 3th
-//    //      +7 - double augmented 7th
-//    //
-//    // Returns the top midi pitch of the requested interval
-//
-//    //  intval  semitones
-//    //  2m      1
-//    //  2M      2
-//    //  3m      3
-//    //  3M      4
-//    //  3a/4p   5
-//    //  4a/5d   6 
-//    //  5p      7
-//    //  5a/6m   8      
-//    //  6M      9
-//    //  6a/7m   10
-//    //  7M      11
-//    //  8p      12
-//
-//    if (sInterval == _T("m2"))  return nMidiRoot + 1;
-//    if (sInterval == _T("M2"))  return nMidiRoot + 2;
-//    if (sInterval == _T("m3"))  return nMidiRoot + 3;
-//    if (sInterval == _T("M3"))  return nMidiRoot + 4;
-//    if (sInterval == _T("a3"))  return nMidiRoot + 5;
-//    if (sInterval == _T("p4"))  return nMidiRoot + 5;
-//    if (sInterval == _T("a4"))  return nMidiRoot + 6;
-//    if (sInterval == _T("d5"))  return nMidiRoot + 6;
-//    if (sInterval == _T("p5"))  return nMidiRoot + 7;
-//    if (sInterval == _T("a5"))  return nMidiRoot + 8;
-//    if (sInterval == _T("m6"))  return nMidiRoot + 8;
-//    if (sInterval == _T("M6"))  return nMidiRoot + 9;
-//    if (sInterval == _T("a6"))  return nMidiRoot + 10;
-//    if (sInterval == _T("m7"))  return nMidiRoot + 10;
-//    if (sInterval == _T("M7"))  return nMidiRoot + 11;
-//    if (sInterval == _T("p8"))  return nMidiRoot + 12;
-//
-//    return 0;
-//
-//}
 
 wxString lmScalesManager::GetPattern(int i)
 {
@@ -236,8 +182,7 @@ wxString ScaleTypeToName(EScaleType nType)
         // Other scales
         m_sScaleName[est_PentatonicMinor] = _("Pentatonic minor");
         m_sScaleName[est_PentatonicMajor] = _("Pentatonic major");
-        m_sScaleName[est_Hexatonic] = _("Hexatonic");
-        m_sScaleName[est_Heptatonic] = _("Heptatonic");
+        m_sScaleName[est_Blues] = _("Blues");
         m_sScaleName[est_WholeTones] = _("Whole tones");
         m_sScaleName[est_Chromatic] = _("Chromatic");
 

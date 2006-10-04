@@ -30,3 +30,7 @@ wxrc AboutDialog.xrc -g >> xrc_strings.cpp
 
 echo //DlgCfgIdfyChord.xrc >> xrc_strings.cpp
 wxrc DlgCfgIdfyChord.xrc -g >> xrc_strings.cpp
+
+echo //DlgCfgIdfyScale.xrc >> xrc_strings.cpp
+wxrc DlgCfgIdfyScale.xrc -g >> xrc_strings.cpp
+

@@ -311,7 +311,8 @@ enum EHighlightType
 {
     eVisualOff = 0,
     eVisualOn,
-    eRemoveAllHighlight
+    eRemoveAllHighlight,
+    ePrepareForHighlight,
 };
 
 /*  Renderization options

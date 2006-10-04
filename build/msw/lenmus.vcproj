@@ -509,6 +509,12 @@
 				RelativePath="..\..\src\app\DlgCfgIdfyChord.h">
 			</File>
 			<File
+				RelativePath="..\..\src\app\DlgCfgIdfyScale.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\app\DlgCfgIdfyScale.h">
+			</File>
+			<File
 				RelativePath="..\..\src\app\DlgCfgScoreReading.cpp">
 			</File>
 			<File

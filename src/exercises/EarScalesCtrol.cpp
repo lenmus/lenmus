@@ -42,7 +42,7 @@
 
 #include "../ldp_parser/LDPParser.h"
 #include "../auxmusic/Interval.h"
-#include "../app/DlgCfgIdfyChord.h"
+#include "../app/DlgCfgIdfyScale.h"
 #include "../auxmusic/ScalesManager.h"
 
 
@@ -160,8 +160,7 @@ void lmEarScalesCtrol::InitializeStrings()
     // Other scales
     m_sButtonLabel[est_PentatonicMinor] = _("Pentatonic minor");
     m_sButtonLabel[est_PentatonicMajor] = _("Pentatonic major");
-    m_sButtonLabel[est_Hexatonic] = _("Hexatonic");
-    m_sButtonLabel[est_Heptatonic] = _("Heptatonic");
+    m_sButtonLabel[est_Blues] = _("Blues");
     m_sButtonLabel[est_WholeTones] = _("Whole tones");
     m_sButtonLabel[est_Chromatic] = _("Chromatic");
 
@@ -236,9 +235,9 @@ int lmEarScalesCtrol::ReconfigureGroup(int iBt, int iStartC, int iEndC, wxString
 
 wxDialog* lmEarScalesCtrol::GetSettingsDlg()
 {
-    //wxDialog* pDlg = new lmScalesCtrol(this, m_pConstrains, m_fTheoryMode);
-    //return pDlg;
-    return (wxDialog*)NULL;
+    wxDialog* pDlg = new lmDlgCfgIdfyScale(this, m_pConstrains, m_fTheoryMode);
+    return pDlg;
+    //return (wxDialog*)NULL;
 }
 
 void lmEarScalesCtrol::PrepareAuxScore(int nButton)

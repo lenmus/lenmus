@@ -18,31 +18,30 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file DlgCfgIdfyChord.h
-    @brief Header file for class lmDlgCfgIdfyChord
+/*! @file DlgCfgIdfyScale.h
+    @brief Header file for class lmDlgCfgIdfyScale
     @ingroup app_gui
 */
-#ifndef __DLGCFGIDFYCHORD_H__        //to avoid nested includes
-#define __DLGCFGIDFYCHORD_H__
+#ifndef __DLGCFGIDFYSCALE_H__        //to avoid nested includes
+#define __DLGCFGIDFYSCALE_H__
 
 // GCC interface
 #if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "DlgCfgIdfyChord.h"
+    #pragma interface "DlgCfgIdfyScale.h"
 #endif
 
 // headers
 #include "wx/dialog.h"
-#include "wx/spinctrl.h"        //to use wxSpinCtrl
 
-#include "../exercises/ChordConstrains.h"
+#include "../exercises/ScalesConstrains.h"
 
 // class definition
-class lmDlgCfgIdfyChord : public wxDialog {
+class lmDlgCfgIdfyScale : public wxDialog {
 
 public:
-    lmDlgCfgIdfyChord(wxWindow* parent, lmChordConstrains* pConstrains,
+    lmDlgCfgIdfyScale(wxWindow* parent, lmScalesConstrains* pConstrains,
                       bool fTheoryMode);
-    virtual ~lmDlgCfgIdfyChord();
+    virtual ~lmDlgCfgIdfyScale();
 
     // event handlers
     void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
@@ -53,26 +52,22 @@ public:
 private:
     bool VerifyData();
 
-    lmChordConstrains*  m_pConstrains;          // the constrains to set up
+    lmScalesConstrains*  m_pConstrains;          // the constrains to set up
     bool                m_fTheoryMode;
 
     //controls
-    wxCheckBox*     m_pChkAllowInversions;
-    wxCheckBox*     m_pChkDisplayKey;
-    wxCheckBox*     m_pChkPlayMode[3];          // allowed play modes
-    wxCheckBox*     m_pChkChord[ect_Max];       // Allowed chords check boxes
+    wxCheckBox*     m_pChkScale[est_Max];       // Allowed chords check boxes
     wxCheckBox*     m_pChkKeySign[earmFa+1];    // Allowed key signatures check boxes
-    wxStaticBox*    m_pBoxPlayModes;            // box with play mode check boxes
+    wxRadioBox*     m_pBoxPlayModes;            // box with play mode radio buttons
+    wxCheckBox*     m_pChkDisplayKey;           // Display key signature check box
 
-    wxStaticBitmap* m_pBmpPlayModeError;        // error icons and messages      
-    wxStaticText*   m_pLblPlayModeError;
     wxStaticBitmap* m_pBmpKeySignError;
     wxStaticText*   m_pLblKeySignError;
-    wxStaticBitmap* m_pBmpAllowedChordsError;
-    wxStaticText*   m_pLblAllowedChordsError;
+    wxStaticBitmap* m_pBmpAllowedScalesError;
+    wxStaticText*   m_pLblAllowedScalesError;
 
 
     DECLARE_EVENT_TABLE()
 };
 
-#endif    // __DLGCFGIDFYCHORD_H__
+#endif    // __DLGCFGIDFYSCALE_H__

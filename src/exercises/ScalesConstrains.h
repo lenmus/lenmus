@@ -53,31 +53,32 @@
 //
 //    Minor scales            Type
 //    ---------------------   ----
+//    Natural                   
 //    Melodic
 //    Dorian
 //    Harmonic
 //
 //    Medievals modes         Mode    Greek modes
 //    ---------------------   ----    --------------------------
-//    Protus      auténtico   I       Dorico          dorian
+//    Protus      auténtico   I       Dorico          Dorian (Re)
 //                plagal      II      Hipodórico
-//    Deuterus    auténtico   III     Frigio          phrygian
+//    Deuterus    auténtico   III     Frigio          Phrygian (Mi)
 //                plagal      IV      Hipofrigio
-//    Tritus      auténtico   V       Lidio           lydian
+//    Tritus      auténtico   V       Lidio           Lydian (Fa)
 //                plagal      VI      Hipolidio
-//    Tetrardus   auténtico   VII     Mixolidio       mixolydian
+//    Tetrardus   auténtico   VII     Mixolidio       Mixolydian (Sol)
 //                plagal      VIII    Hipomixolidio
 //
 //    Modes introduced in 1547:
 //
-//                auténtico   IX      Eolio           aeolian
+//                auténtico   IX      Eolio           Aeolian (La = minor natural)
 //                plagal      X       Hipoeolio
-//                auténtico   XI      Jónico          ionian
+//                auténtico   XI      Jónico          Ionian (Do = major natural)
 //                plagal      XII     Hipojónico
 //
 //    Later introduced modes (rarely used):
 //
-//                            XIII    Locrio          locrian
+//                            XIII    Locrio          Locrian (Si)
 //                            XIV     Hipolocrio
 //
 enum EScaleType
@@ -112,8 +113,7 @@ enum EScaleType
     // Other scales
     est_PentatonicMinor,
     est_PentatonicMajor,
-    est_Hexatonic,
-    est_Heptatonic,
+    est_Blues,
     est_WholeTones,
     est_Chromatic,
     est_LastOther = est_Chromatic,
@@ -142,9 +142,6 @@ public:
     EScaleType GetRandomScaleType();
     bool GetRandomPlayMode();
 
-    bool AreInversionsAllowed() { return m_fAllowInversions; }
-    void SetInversionsAllowed(bool fValue) { m_fAllowInversions = fValue; }
-
     bool IsScaleValid(EScaleType nType) { return m_fValidScales[nType]; }
     void SetScaleValid(EScaleType nType, bool fValid) { m_fValidScales[nType] = fValid; }
     bool* GetValidScales() { return m_fValidScales; }
@@ -170,17 +167,12 @@ public:
 private:
     void LoadSettings();
 
-    bool                m_fAllowInversions;
     bool                m_fValidScales[est_Max];
     lmKeyConstrains     m_oValidKeys;           //allowed key signatures
     bool                m_fDisplayKey;
     int                 m_nPlayMode;            // 0-ascending
                                                 // 1-descending
                                                 // 2-both
-    wxString            m_sLowerRoot;    //valid range for root notes
-    wxString            m_sUpperRoot;
-
-
 
 };
 

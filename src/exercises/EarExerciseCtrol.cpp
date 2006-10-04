@@ -53,6 +53,7 @@ extern bool g_fReleaseVersion;            // in TheApp.cpp
 extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 extern bool g_fShowDebugLinks;            // in TheApp.cpp
 
+
 //--------------------------------------------------------------------------------
 // Implementation of abstract class for ear exercises constrains
 //--------------------------------------------------------------------------------

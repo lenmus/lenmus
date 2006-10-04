@@ -45,6 +45,10 @@
 #include "wx/config.h"
 extern wxConfigBase* g_pPrefs;
 
+//access to global flag
+#include "../app/Preferences.h"
+extern bool g_fAnswerSoundsEnabled; 
+
 
 lmOtherOptionsPanel::lmOtherOptionsPanel(wxWindow* parent)
 {
@@ -55,9 +59,10 @@ lmOtherOptionsPanel::lmOtherOptionsPanel(wxWindow* parent)
     wxStaticBitmap* pBmpIcon = XRCCTRL(*this, "bmpIconTitle", wxStaticBitmap);
     pBmpIcon->SetBitmap( wxArtProvider::GetIcon(_T("opt_other"), wxART_TOOLBAR, wxSize(24,24)) );
 
-    //store pointer to wxChoice control
+    //store pointers to controls
     m_pCboCheckFreq = XRCCTRL(*this, "cboCheckFreq", wxComboBox);
     m_pTxtLastCheck = XRCCTRL(*this, "txtLastCheckDate", wxStaticText);
+    m_pChkAnswerSounds = XRCCTRL(*this, "chkAnswerSounds", wxCheckBox);   
 
     // populate combo box
     m_pCboCheckFreq->Append( _("Never") );
@@ -65,7 +70,9 @@ lmOtherOptionsPanel::lmOtherOptionsPanel(wxWindow* parent)
     m_pCboCheckFreq->Append( _("Weekly") );
     m_pCboCheckFreq->Append( _("Monthly") );
 
-    //Select current setting
+        //Select current settings
+
+    // web update frequency
     wxString sCheckFreq = g_pPrefs->Read(_T("/Options/CheckForUpdates/Frequency"), _T("Weekly") );
     if (sCheckFreq == _T("Never"))
         m_pCboCheckFreq->SetSelection(0);
@@ -81,13 +88,15 @@ lmOtherOptionsPanel::lmOtherOptionsPanel(wxWindow* parent)
             sCheckFreq );
     }
 
-    //display last check date
+    // display web update last check date
     wxString sLastCheckDate = g_pPrefs->Read(_T("/Options/CheckForUpdates/LastCheck"), _T(""));
     if (sLastCheckDate == _T("")) {
         sLastCheckDate = _("Never");
     }
     m_pTxtLastCheck->SetLabel(sLastCheckDate);
 
+    // Exercises options 
+    m_pChkAnswerSounds->SetValue(g_fAnswerSoundsEnabled);
 
 }
 
@@ -102,6 +111,7 @@ bool lmOtherOptionsPanel::Verify()
 
 void lmOtherOptionsPanel::Apply()
 {
+    // Web updates options
     wxString sCheckFreq = m_pCboCheckFreq->GetValue();
     wxString sValue;
     //prefs. value is stored iun English
@@ -119,4 +129,8 @@ void lmOtherOptionsPanel::Apply()
             sCheckFreq );
     }
     g_pPrefs->Write(_T("/Options/CheckForUpdates/Frequency"), sValue);
+
+    // Exercises options
+    g_fAnswerSoundsEnabled = m_pChkAnswerSounds->GetValue();
+    g_pPrefs->Write(_T("/Options/EnableAnswerSounds"), g_fAnswerSoundsEnabled);
 }

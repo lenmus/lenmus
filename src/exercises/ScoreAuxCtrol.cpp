@@ -260,6 +260,12 @@ void lmScoreAuxCtrol::OnVisualHighlight(lmScoreHighlightEvent& event)
 {
     if (!m_pScore) return;
 
+    EHighlightType nHighlightType = event.GetHighlightType();
+    if (nHighlightType == ePrepareForHighlight) {
+        m_graphMngr.PrepareForHighlight();
+        return;
+    }
+
     //prepare paper DC
     wxClientDC dc(this);
     dc.SetMapMode(lmDC_MODE);
@@ -274,7 +280,6 @@ void lmScoreAuxCtrol::OnVisualHighlight(lmScoreHighlightEvent& event)
 
     //do the highlight / unhighlight
     lmStaffObj* pSO = event.GetStaffObj();
-    EHighlightType nHighlightType = event.GetHighlightType();
     m_pScore->ScoreHighlight(pSO, &m_Paper, nHighlightType);
 
 }

@@ -47,11 +47,17 @@
 
 wxConfigBase* g_pPrefs = (wxConfigBase*) NULL;
 
+// global values
+bool g_fAnswerSoundsEnabled;    // Feedback right/wrong answer sounds are enabled
+
 
 
 void InitPreferences()
 {
     g_pPrefs = wxConfigBase::Get();
+
+    g_pPrefs->Read(_T("/Options/EnableAnswerSounds"), &g_fAnswerSoundsEnabled, true);
+
 
 }
 

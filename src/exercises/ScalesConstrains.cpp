@@ -63,15 +63,21 @@ bool lmScalesConstrains::IsValidGroup(EScaleGroup nGroup)
     }
     else if(nGroup == esg_Greek)
     {
-        return (IsScaleValid( est_GreekDorian ) ||
+        return (IsScaleValid( est_GreekIonian ) ||
+                IsScaleValid( est_GreekDorian ) ||
                 IsScaleValid( est_GreekPhrygian ) ||
-                IsScaleValid( est_GreekLydian ) );
+                IsScaleValid( est_GreekLydian ) ||
+                IsScaleValid( est_GreekMixolydian ) ||
+                IsScaleValid( est_GreekAeolian ) ||
+                IsScaleValid( est_GreekLocrian ) );
     }
     else if(nGroup == esg_Other)
     {
-        return (IsScaleValid( est_GreekDorian ) ||
-                IsScaleValid( est_GreekPhrygian ) ||
-                IsScaleValid( est_GreekLydian ) );
+        return (IsScaleValid( est_PentatonicMinor ) ||
+                IsScaleValid( est_PentatonicMajor ) ||
+                IsScaleValid( est_Blues ) ||
+                IsScaleValid( est_WholeTones ) ||
+                IsScaleValid( est_Chromatic ) );
     }
     else {
         wxASSERT(false);    //impossible
@@ -86,7 +92,7 @@ void lmScalesConstrains::SaveSettings()
     // save settings in user configuration data file
     //
 
-    // allowed chords
+    // allowed scales
     int i;
     wxString sKey;
     for (i=0; i < est_Max; i++) {
@@ -94,9 +100,6 @@ void lmScalesConstrains::SaveSettings()
             m_sSection, i );
         g_pPrefs->Write(sKey, m_fValidScales[i]);
     }
-
-    // play modes
-    g_pPrefs->Write(_T("/Constrains/IdfyScale/%s/PlayMode"), m_nPlayMode);
 
     // key signatures
     bool fValid;
@@ -108,10 +111,9 @@ void lmScalesConstrains::SaveSettings()
     }
 
     // other settings
-    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/AllowInversions"), m_sSection);
-    g_pPrefs->Write(sKey, m_fAllowInversions);
     sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection);
     g_pPrefs->Write(sKey, m_fDisplayKey);
+    g_pPrefs->Write(_T("/Constrains/IdfyScale/%s/PlayMode"), m_nPlayMode);
 
 }
 
@@ -130,9 +132,6 @@ void lmScalesConstrains::LoadSettings()
         g_pPrefs->Read(sKey, &m_fValidScales[i], (bool)(i < 8) );
     }
 
-    // play modes. Default: ascending
-    g_pPrefs->Read(_T("/Constrains/IdfyScale/%s/PlayMode"), &m_nPlayMode, 0);
-
     // key signatures. Default use C major
     bool fValid;
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
@@ -143,12 +142,11 @@ void lmScalesConstrains::LoadSettings()
     }
 
     // other settings:
-    //      Inversions - default: not allowed
     //      Display key - default: not allowed
-    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/AllowInversions"), m_sSection);
-    g_pPrefs->Read(sKey, &m_fAllowInversions, false);
     sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection);
     g_pPrefs->Read(sKey, &m_fDisplayKey, false);
+    // play modes. Default: ascending
+    g_pPrefs->Read(_T("/Constrains/IdfyScale/%s/PlayMode"), &m_nPlayMode, 0);   //0-ascending
 
 }
 

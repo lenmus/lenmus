@@ -99,6 +99,23 @@
                             </object>
                         </object>
                     </object>
+                    <object class="sizeritem">
+                        <flag>wxGROW|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxStaticBoxSizer" name="wxID_ANY">
+                            <orient>wxVERTICAL</orient>
+                            <label>Exercises</label>
+                            <object class="sizeritem">
+                                <flag>wxGROW|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxCheckBox" name="chkAnswerSounds">
+                                    <style>wxCHK_2STATE</style>
+                                    <label>Enable right/wrong sound when clicking an answer button</label>
+                                    <checked>0</checked>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
                 </object>
             </object>
         </object>

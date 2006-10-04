@@ -37,6 +37,10 @@
 #include "UrlAuxCtrol.h"
 #include "../sound/WaveManager.h"
 
+//access to global flag
+#include "../app/Preferences.h"
+extern bool g_fAnswerSoundsEnabled; 
+
 
 /*! @class lmCountersCtrol
     @ingroup html_controls
@@ -146,16 +150,20 @@ void lmCountersCtrol::IncrementWrong()
 {
     m_nWrong++;
     UpdateDisplays();
-    lmWaveManager* pWave = lmWaveManager::GetInstance();
-    pWave->WrongAnswerSound();
+    if (g_fAnswerSoundsEnabled) {
+        lmWaveManager* pWave = lmWaveManager::GetInstance();
+        pWave->WrongAnswerSound();
+    }
 }
 
 void lmCountersCtrol::IncrementRight()
 {
     m_nRight++;
     UpdateDisplays();
-    lmWaveManager* pWave = lmWaveManager::GetInstance();
-    pWave->RightAnswerSound();
+    if (g_fAnswerSoundsEnabled) {
+        lmWaveManager* pWave = lmWaveManager::GetInstance();
+        pWave->RightAnswerSound();
+    }
 }
 
 void lmCountersCtrol::UpdateDisplays()

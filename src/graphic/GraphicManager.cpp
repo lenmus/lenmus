@@ -75,6 +75,10 @@ void lmGraphicManager::Create(lmScore* pScore, lmPaper* pPaper)
     m_xPageSize = 0;
     m_yPageSize = 0;
 
+    m_nHighlightedPage = 0;
+    m_pAuxBitmap = (wxBitmap*)NULL;
+    m_fHighlight = false;
+
 }
 
 
@@ -87,6 +91,11 @@ lmGraphicManager::~lmGraphicManager()
     }
 
     DeleteBitmaps();
+
+    if (m_pAuxBitmap) {
+        delete m_pAuxBitmap;
+        m_pAuxBitmap = (wxBitmap*)NULL;
+    }
 
 }
 
@@ -171,6 +180,37 @@ wxBitmap* lmGraphicManager::Render(bool fUseBitmaps, int nPage)
         }
         return pBitmap;
     }
+}
+
+void lmGraphicManager::PrepareForHighlight()
+{
+    // The score is going to be highlighted while played back. This method
+    // saves de AGGDrawer bitmap buffers, to achive fast un-highlight by just
+    // restoring the original bitmap.
+    wxLogMessage(_T("[lmGraphicManager::PrepareForHighlight]"));
+
+    //If this method is invoked, a score must be currently displayed. This implies
+    //that Layout() has benn invoked and, therefore, a BoxScore object exists. 
+    wxASSERT(m_pBoxScore);  //Layout phase omitted?
+
+    //If anti-aliased is not used there is nothing to do in this method
+    if (!g_fUseAntiAliasing) return;
+
+    //If anti-aliased is used, bitmaps must exist, at least for currently displayed page.
+    wxASSERT(m_cBitmaps.GetCount() > 0);
+
+    //As we do not know which bitmap to save ("Play" normally starts at page 1 but
+    //not always: i.e. when starting at a certain measure number) this method
+    //just deletes all auxiliary bitmap data.
+    m_nHighlightedPage = 0;
+    if (m_pAuxBitmap) {
+        delete m_pAuxBitmap;
+        m_pAuxBitmap = (wxBitmap*)NULL;
+    }
+
+    //Finally, signal that all upcoming drawing is for highlight
+    m_fHighlight = true;
+
 }
 
 void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight,

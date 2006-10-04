@@ -571,10 +571,14 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     bool fMetronomeEnabled = pMtr->IsEnabled();
     pMtr->Enable(false);    //mute sound
     
-    // visual highlight?
+    // Ask score window to get ready for visual highlight
     bool fVisualHighlight = fVisualTracking && pWindow;
+    if (fVisualHighlight && pWindow) {
+        lmScoreHighlightEvent event((lmStaffObj*)NULL, ePrepareForHighlight);
+        ::wxPostEvent( pWindow, event );
+    }
 
-    //! @todo    si viene de FRitmos inserta evento de control (?)
+     //! @todo    si viene de FRitmos inserta evento de control (?)
 //    if (fEvMIDIInsertarCtrol) { InsertarEventoDeControl
 //    fEvMIDIInsertarCtrol = false;
     
