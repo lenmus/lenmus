@@ -51,7 +51,7 @@ public:
     ~lmAccidental();
 
     // overrides for pure virtual methods of base class lmNoteRestObj
-    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
+    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
     void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
                          lmLUnits xPos, lmLUnits yPos);
 

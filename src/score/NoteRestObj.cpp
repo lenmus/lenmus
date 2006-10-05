@@ -99,7 +99,7 @@ void lmFermata::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNu
 
 }
 
-void lmFermata::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmFermata::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
     //nxLeft es la coordenada x del centro del calderon
     
@@ -145,7 +145,7 @@ void lmLyric::SetFont(lmPaper* pPaper)
     }
 }
 
-void lmLyric::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmLyric::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
     wxASSERT(fMeasuring == DO_DRAW);    //measuring pahse is done in SetSizePosition()
 

@@ -57,7 +57,8 @@ public:
     // overrides for pure virtual methods of base classes
         // lmScoreObj
     virtual void SetFont(lmPaper* pPaper) {}
-    virtual void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)=0;
+    virtual void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
+                            bool fHighlight)=0;
     virtual wxBitmap* GetBitmap(double rScale) { return (wxBitmap*)NULL; }
     virtual wxString Dump() { return _T(""); }
 
@@ -85,7 +86,7 @@ public:
     ~lmFermata() {}
 
     // overrides for pure virtual methods of base class lmNoteRestObj
-    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
+    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
     void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
                          lmLUnits xPos, lmLUnits yPos);
 
@@ -105,7 +106,7 @@ public:
     ~lmLyric() {}
 
     // definitions for pure virtual methods of base class lmNoteRestObj
-    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
+    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
     void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
                          lmLUnits xPos, lmLUnits yPos);
 

@@ -109,7 +109,8 @@ void lmAccidental::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
 
 }
 
-void lmAccidental::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmAccidental::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
+                              bool fHighlight)
 {
 }
 

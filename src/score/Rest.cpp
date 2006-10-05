@@ -111,7 +111,7 @@ wxBitmap* lmRest::GetBitmap(double rScale)
 
 }
 
-void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
     /*
     This method is invoked by the base class (lmStaffObj). When reaching this point 

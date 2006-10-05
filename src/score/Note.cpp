@@ -409,7 +409,7 @@ wxBitmap* lmNote::GetBitmap(double rScale)
 
 }
 
-void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
     /*
     This method is invoked by the base class (lmStaffObj). When reaching this point 
@@ -476,7 +476,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     //  On the other hand, the note and its accidentals are not taken into account by the
     //  system justification process, as they are considered part of the note
     if (m_pAccidentals) {
-        if (!fMeasuring || !fMeasured && fMeasuring) {
+        if ((!fMeasuring && !fHighlight) || !fMeasured && fMeasuring) {
             DrawAccidentals(pPaper, fMeasuring, nxLeft - m_paperPos.x, nyTop - m_paperPos.y, colorC);
         }
         nxLeft += m_pAccidentals->GetWidth();
@@ -491,6 +491,8 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     }
     nxLeft += m_noteheadRect.width;
     lmLUnits xNote = nxLeft;
+
+    if (!fMeasuring && fHighlight) return;  //highlight done. Finish
 
 
  //   nxCalderon = nxLeft + m_noteheadRect.width / 2 ;

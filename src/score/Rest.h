@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Rest.h,v 1.3 2006/02/23 19:23:54 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -49,11 +48,11 @@ public:
         // lmScoreObj
     void SetLeft(lmLUnits nLeft);
         // lmStaffObj
-    wxBitmap*    GetBitmap(double rScale);
-    void        DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
+    wxBitmap*   GetBitmap(double rScale);
+    void        DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
     void        MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
                             const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels);
-    lmUPoint        EndDrag(const lmUPoint& pos);
+    lmUPoint    EndDrag(const lmUPoint& pos);
 
     wxString    Dump();
     wxString    SourceLDP();

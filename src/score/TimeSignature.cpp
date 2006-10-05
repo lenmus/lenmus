@@ -137,7 +137,8 @@ wxString lmTimeSignature::SourceXML()
     return _T("");
 }
 
-void lmTimeSignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmTimeSignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
+                                 bool fHighlight)
 {    
     if (fMeasuring) {
         // get the shift to the staff on which the time key must be drawn

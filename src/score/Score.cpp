@@ -573,7 +573,7 @@ void lmScore::ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, EHighlightType nH
     switch (nHighlightType) {
         case eVisualOn:
             m_cHighlighted.Append(pSO);
-            pSO->Draw(DO_DRAW, pPaper, g_pColors->ScoreHighlight() );
+            pSO->Draw(DO_DRAW, pPaper, g_pColors->ScoreHighlight(), HIGHLIGHT);
             break;
 
         case eVisualOff:
@@ -608,8 +608,8 @@ void lmScore::RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper)
         to signal that XOR draw mode in RED followed by a normal
         draw in BLACK must be done.
     */
-    pSO->Draw(DO_DRAW, pPaper, *wxWHITE);
-    pSO->Draw(DO_DRAW, pPaper, g_pColors->ScoreNormal() );
+    pSO->Draw(DO_DRAW, pPaper, *wxWHITE, HIGHLIGHT);
+    pSO->Draw(DO_DRAW, pPaper, g_pColors->ScoreNormal(), HIGHLIGHT);
 }
 
 void lmScore::ComputeMidiEvents()

@@ -42,6 +42,8 @@ extern bool gfDrawSelRec;        //draw selection rectangles around staff object
 //some definitions for canvas->draw methods
 #define DO_MEASURE true
 #define DO_DRAW false
+#define HIGHLIGHT true
+#define NO_HIGHLIGHT true
 
 // useful macros and definitions
 #define Min(x, y)  ((x < y) ? x : y)

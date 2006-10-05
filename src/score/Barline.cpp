@@ -169,7 +169,7 @@ wxString lmBarline::SourceXML()
     return sSource;
 }
 
-void lmBarline::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmBarline::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
     lmLUnits yTop = m_pVStaff->GetYTop();
     lmLUnits yBottom = m_pVStaff->GetYBottom();

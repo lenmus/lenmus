@@ -147,7 +147,9 @@ public:
                                               m_selRect.height); }
 
     // drawing related methods
-    virtual void Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK)=0;
+    virtual void Draw(bool fMeasuring, lmPaper* pPaper, 
+                      wxColour colorC = *wxBLACK,
+                      bool fHighlight = false)=0;
 
     // methods for draggable objects
     virtual wxBitmap* GetBitmap(double rScale) = 0;
@@ -174,7 +176,8 @@ public:
 
 protected:
     lmScoreObj(EScoreObjType nType, bool fIsDraggable = false);
-    virtual void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)=0;
+    virtual void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
+                            bool fHighlight)=0;
 
     // virtual methods related to draggable objects
     wxBitmap* PrepareBitMap(double rScale, const wxString sGlyph);
@@ -218,7 +221,8 @@ public:
     virtual ~lmAuxObj() {}
 
     // implementation of virtual methods of base class lmScoreObj
-    void Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);
+    void Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK,
+              bool fHighlight = false);
     virtual void SetFont(lmPaper* pPaper) {}
 
     // debug methods
@@ -274,7 +278,8 @@ public:
     virtual lmLUnits GetAnchorPos() {return 0; }
 
     // implementation of pure virtual methods of base class
-    virtual void Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);
+    virtual void Draw(bool fMeasuring, lmPaper* pPaper,
+                      wxColour colorC = *wxBLACK, bool fHighlight = false);
     virtual void SetFont(lmPaper* pPaper);
 
     // methods related to staff ownership

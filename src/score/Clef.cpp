@@ -123,7 +123,7 @@ lmEGlyphIndex lmClef::GetGlyphIndex()
 // implementation of virtual methods defined in base abstract class lmStaffObj
 //-----------------------------------------------------------------------------------------
 
-void lmClef::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmClef::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
     /*
     This method is invoked by the base class (lmStaffObj). When reaching this point 

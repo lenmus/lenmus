@@ -138,7 +138,8 @@ wxString lmKeySignature::SourceXML()
     return _T("");
 }
 
-void lmKeySignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmKeySignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
+                                bool fHighlight)
 {    
     if (m_fHidden) return;
 

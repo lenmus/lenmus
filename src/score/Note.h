@@ -53,7 +53,7 @@ public:
     void SetLeft(lmLUnits nLeft);
         // lmStaffObj
     wxBitmap*   GetBitmap(double rScale);
-    void        DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
+    void        DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
     void        MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
                             const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels);
     lmUPoint    EndDrag(const lmUPoint& pos);

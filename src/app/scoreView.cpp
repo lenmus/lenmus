@@ -744,13 +744,14 @@ void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
         case ePrepareForHighlight:
         {
             m_graphMngr.PrepareForHighlight();
+            return;
         }
         break;
 
         case eRemoveAllHighlight:
         {
             //If anti-aliased is not used there is nothing to do in this method
-            if (!g_fUseAntiAliasing) return;
+            //if (!g_fUseAntiAliasing) return;
         }
         break;
 

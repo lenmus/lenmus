@@ -46,20 +46,20 @@ extern lmPaths* g_pPaths;
 
 //array sizes
 enum { lmNUM_SECTIONS = 3 };
-enum { lmNUM_SINGLE_PAGES = 9 };
+enum { lmNUM_SINGLE_PAGES = 10 };
 
 
 static bool  m_fBooksLoaded = false;
 
 //introduction/welcome book
 static wxString m_sIntroHHP;        //book description
-static wxString m_sIntroHHC;        //book conten
+static wxString m_sIntroHHC;        //book content
 static wxString m_sIntroHHK;        //book index
 static wxString m_sIntroHTM;        //book pages
 
 //single exercises book
 static wxString m_sSingleHHP;        //book description
-static wxString m_sSingleHHC;        //book conten
+static wxString m_sSingleHHC;        //book content
 static wxString m_sSingleHHK;        //book index
 static wxString m_sSingleHTM[lmNUM_SINGLE_PAGES];        //book pages
 
@@ -314,7 +314,7 @@ void lmVirtualBooks::LoadSingleExercisesBook()
 
     //Page 0: Introduction
     int i=0;
-    sIndexTitle[0] = _("Introduction to single exercises");
+    sIndexTitle[0] = _("0. Introduction to single exercises");
     sPageTitle[0] = _("Single exercises");
     sContent[0] = sNil;   //content will be created at the end
 
@@ -322,10 +322,10 @@ void lmVirtualBooks::LoadSingleExercisesBook()
 
     i=1;        
     iSecStart[0] = i;   
-    sSectionTitle[0] = _("Exercises for aural training");
+    sSectionTitle[0] = _("1. Exercises for aural training");
 
     //EarCompareIntervals
-    sIndexTitle[i] = _("Aural training. Intervals' comparison");
+    sIndexTitle[i] = _("1.1. Aural training. Intervals' comparison");
     sPageTitle[i] = _("Aural training. Intervals' comparison");
     sContent[i] = sNil + _T("<p>") +
         _("Exercise: Lesson two intervals and identify which one is greater") +
@@ -336,7 +336,7 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     i++;
 
     //EarIntervals
-    sIndexTitle[i] = _("Aural training. Intervals' identification");
+    sIndexTitle[i] = _("1.2. Aural training. Intervals' identification");
     sPageTitle[i] = _("Aural training. Intervals' identification");
     sContent[i] = sNil + _T("<p>") +
         _("Exercise: Lesson an interval and identify it") +
@@ -347,7 +347,7 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     i++;
 
     //Ear: Identify a chord
-    sIndexTitle[i] = _("Aural training. Chords' identification");
+    sIndexTitle[i] = _("1.3. Aural training. Chords' identification");
     sPageTitle[i] = _("Aural training. Chords' identification");
     sContent[i] = sNil + _T("<p>") +
         _("Exercise: Lesson a chord and identify its type") +
@@ -358,13 +358,25 @@ void lmVirtualBooks::LoadSingleExercisesBook()
         _T("</object>");
     i++;
 
+    //Ear: Identify a scale
+    sIndexTitle[i] = _("1.4. Aural training. Scales' identification");
+    sPageTitle[i] = _("Aural training. Scales' identification");
+    sContent[i] = sNil + _T("<p>") +
+        _("Exercise: Lesson a scale and identify its type") +
+        _T("</p><p>&nbsp;</p>")
+        _T("<object type=\"Application/LenMus\" classid=\"EarScales\" width=\"100%\" height=\"300\" border=\"0\">")
+        _T("<param name=\"control_settings\" value=\"EarIdfyScale\">")
+        _T("<param name=\"mode\" value=\"earTraining\">")
+        _T("</object>");
+    i++;
+
         //Section 1: Theory
 
     iSecStart[1] = i;   
-    sSectionTitle[1] = _("Exercises to practise theory");
+    sSectionTitle[1] = _("2. Exercises to practise theory");
 
     //TheoKeySignatures
-    sIndexTitle[i] = _("Key signatures' identification (in score)");
+    sIndexTitle[i] = _("2.1. Key signatures' identification (in score)");
     sPageTitle[i] = _("Key signatures' identification");
     sContent[i] = sNil + _T("<p>") +
         _("Exercise: Identify a key signature or indicate the number of accidentals it has") +
@@ -378,7 +390,7 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     i++;
 
     //TheoIntervals
-    sIndexTitle[i] = _("Interval's identification (in score) and construction");
+    sIndexTitle[i] = _("2.2. Interval's identification (in score) and construction");
     sPageTitle[i] = _("Interval's identification and construction");
     sContent[i] = sNil +
         _T("<object type=\"Application/LenMus\" classid=\"TheoIntervals\" width=\"100%\" height=\"300\" border=\"0\">")
@@ -387,7 +399,7 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     i++;
 
     //TheoScales
-    sIndexTitle[i] = _("Scales' identification (in score)");
+    sIndexTitle[i] = _("2.3. Scales' identification (in score)");
     sPageTitle[i] = _("Scales' identification");
     sContent[i] = sNil + _T("<p>") +
         _("Exercise: Identify the scale shown") +
@@ -400,7 +412,7 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     i++;
 
     //Theo: Chords' identification
-    sIndexTitle[i] = _("Chords' identification (in score)");
+    sIndexTitle[i] = _("2.4. Chords' identification (in score)");
     sPageTitle[i] = _("Chords' identification");
     sContent[i] = sNil + _T("<p>") +
         _("Exercise: Identify the type of the shown chord") +
@@ -414,10 +426,10 @@ void lmVirtualBooks::LoadSingleExercisesBook()
 
         //Section 2: Other exercises
     iSecStart[2] = i;   
-    sSectionTitle[2] = _("Other exercises");
+    sSectionTitle[2] = _("3. Other exercises");
 
     //ClefsReading
-    sIndexTitle[i] = _("Clefs Reading");
+    sIndexTitle[i] = _("3.1. Clefs Reading");
     sPageTitle[i] = _("Clefs Reading");
     sContent[i] = sNil + 
         _T("<object type=\"Application/LenMus\" classid=\"TheoMusicReading\" width=\"100%\" height=\"300\" border=\"0\">")

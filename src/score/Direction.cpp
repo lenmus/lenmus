@@ -61,7 +61,8 @@ wxBitmap* lmWordsDirection::GetBitmap(double rScale)
     return PrepareBitMap(rScale, m_sText);
 }
 
-void lmWordsDirection::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmWordsDirection::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
+                                  bool fHighlight)
 {
     pPaper->SetFont(*m_pFont);
 

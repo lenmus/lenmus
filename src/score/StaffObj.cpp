@@ -216,7 +216,7 @@ lmAuxObj::lmAuxObj(EScoreObjType nType, bool fIsDraggable) :
     lmScoreObj(nType, fIsDraggable)
 {
 }
-void lmAuxObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmAuxObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
     wxASSERT(fMeasuring == DO_DRAW);    //For AuxObjs measuring phase is done by specific methods
 
@@ -225,7 +225,7 @@ void lmAuxObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     pPaper->SetCursorY(m_paperPos.y);
 
     // ask derived object to draw itself
-    DrawObject(fMeasuring, pPaper, colorC);
+    DrawObject(fMeasuring, pPaper, colorC, fHighlight);
 
     // draw selection rectangle
     if (gfDrawSelRec) DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
@@ -257,7 +257,7 @@ lmStaffObj::~lmStaffObj()
 {
 }
 
-void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
     if (!m_fVisible) return;
     
@@ -275,7 +275,7 @@ void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     if (IsShapeRendered()) {
         if (fMeasuring) {
             // ask derived object to measure itself
-            DrawObject(fMeasuring, pPaper, colorC);
+            DrawObject(fMeasuring, pPaper, colorC, fHighlight);
         }
         else {
             m_pShape->Render(pPaper, m_paperPos, colorC);
@@ -283,7 +283,7 @@ void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
     }
     else {
         // ask derived object to draw itself
-        DrawObject(fMeasuring, pPaper, colorC);
+        DrawObject(fMeasuring, pPaper, colorC, fHighlight);
     }
 
     // update paper cursor position

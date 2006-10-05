@@ -77,7 +77,7 @@ static const lmScaleData tData[est_Max] = {
         // Other scales
     { false, _T("3s,2s,2s,3s,2s,") },           //Pentatonic Minor,
     { false, _T("2s,2s,3s,2s,3s,") },           //Pentatonic Major,
-    { false, _T("3s,2s,1s,3s,3s,2s,") },        //Blues,
+    { false, _T("3s,2s,1s,1s,3s,2s,") },        //Blues,
     { false, _T("2s,2s,2s,2s,2s,2s,") },        //WholeTones,
     { false, _T("1s,1s,1s,1s,1s,1s,1s,1s,1s,1s,1s,1s,") },   //Chromatic,
 };

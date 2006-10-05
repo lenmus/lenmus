@@ -58,7 +58,7 @@ public:
     //ETimeSignature GetType() {return m_nTimeSignature;}
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
-    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
+    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
     wxBitmap* GetBitmap(double rScale);
     void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
                          const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels);

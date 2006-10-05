@@ -276,7 +276,7 @@ void lmTie::UpdateMeasurements()
 
 }
 
-void lmTie::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmTie::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
     /*
     Ties never appear in a lmVStaff. They are always part

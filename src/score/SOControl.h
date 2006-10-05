@@ -44,7 +44,7 @@ public:
     ~lmSOControl() {}
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
-    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC) {};
+    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight) {};
     wxBitmap* GetBitmap(double rScale) { return (wxBitmap*)NULL; };
 
     //SOControl specfic methods

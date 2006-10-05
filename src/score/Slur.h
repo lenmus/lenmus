@@ -88,7 +88,7 @@ public:
     void UpdateMeasurements();
 
     // overrides for pure virtual methods of base classes
-    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
+    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
 
     wxBitmap* GetBitmap(double rScale) { return (wxBitmap*)NULL; }
 

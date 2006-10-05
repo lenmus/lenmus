@@ -106,7 +106,7 @@ wxBitmap* lmScoreText::GetBitmap(double rScale)
     return PrepareBitMap(rScale, m_sText);
 }
 
-void lmScoreText::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmScoreText::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
     pPaper->SetFont(*m_pFont);
 

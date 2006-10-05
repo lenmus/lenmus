@@ -66,7 +66,7 @@ public:
 
     //overrides of virtual methods defined in base classes
         //lmScoreObj
-    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
+    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
     wxBitmap* GetBitmap(double rScale) { return (wxBitmap*)NULL; }
     void SetFont(lmPaper* pPaper);
         //lmStaffObj

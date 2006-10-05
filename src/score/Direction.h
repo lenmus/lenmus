@@ -40,7 +40,7 @@ public:
     float GetTimePosIncrement() { return 0; }
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
-    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC);
+    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
     wxBitmap* GetBitmap(double rScale);
     void SetFont(lmPaper* pPaper);
 

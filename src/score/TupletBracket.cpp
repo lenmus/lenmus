@@ -134,7 +134,8 @@ wxString lmTupletBracket::SourceXML()
     return sSource;
 }
 
-void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
+void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
+                                 bool fHighlight)
 {
     /*
     TupletBrackets never appear in a lmVStaff. They are always part
