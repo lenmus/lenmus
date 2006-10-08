@@ -110,7 +110,7 @@
                                 <border>5</border>
                                 <object class="wxCheckBox" name="chkAnswerSounds">
                                     <style>wxCHK_2STATE</style>
-                                    <label>Enable right/wrong sound when clicking an answer button</label>
+                                    <label>Generate right/wrong sounds when clicking an answer button</label>
                                     <checked>0</checked>
                                 </object>
                             </object>
