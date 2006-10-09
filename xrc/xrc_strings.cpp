@@ -189,14 +189,25 @@ _("Labels");
 _("&No labels");
 _("&Labels bottom");
 _("&Labels right");
-//OtherOptionsPanel.xrc 
-_("Other options");
+//InternetOptPanel.xrc 
+_("Internet connection options");
 _("Software updates");
 _("Check for updates");
 _("Last successful check:");
 _("dd/mm/aaaa");
+_("Use a proxy server to connect to Internet");
+_("Proxy settings");
+_("Server settings");
+_("Host:");
+_("Port number:");
+_("Proxy server requires authentication");
+_("Authentication");
+_("Username:");
+_("Password:");
+//OtherOptionsPanel.xrc 
+_("Other options");
 _("Exercises");
-_("Enable right/wrong sound when clicking an answer button");
+_("Generate right/wrong sounds when clicking an answer button");
 //UpdaterDlgInfo.xrc 
 _("LenMus Phonascus updater");
 _("Available updates");

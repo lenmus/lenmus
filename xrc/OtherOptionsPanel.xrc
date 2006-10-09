@@ -54,56 +54,6 @@
                         <border>5</border>
                         <object class="wxStaticBoxSizer" name="wxID_ANY">
                             <orient>wxVERTICAL</orient>
-                            <label>Software updates</label>
-                            <object class="sizeritem">
-                                <flag>wxALIGN_LEFT|wxALL</flag>
-                                <border>5</border>
-                                <object class="wxBoxSizer">
-                                    <orient>wxHORIZONTAL</orient>
-                                    <object class="sizeritem">
-                                        <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
-                                        <border>5</border>
-                                        <object class="wxStaticText" name="wxID_STATIC">
-                                            <label>Check for updates</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-                                        <border>5</border>
-                                        <object class="wxComboBox" name="cboCheckFreq">
-                                            <style>wxCB_DROPDOWN</style>
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                            <object class="sizeritem">
-                                <flag>wxALIGN_LEFT|wxALL</flag>
-                                <border>5</border>
-                                <object class="wxBoxSizer">
-                                    <orient>wxHORIZONTAL</orient>
-                                    <object class="sizeritem">
-                                        <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
-                                        <border>5</border>
-                                        <object class="wxStaticText" name="wxID_STATIC">
-                                            <label>Last successful check:</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
-                                        <border>5</border>
-                                        <object class="wxStaticText" name="txtLastCheckDate">
-                                            <label>dd/mm/aaaa</label>
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
-                    <object class="sizeritem">
-                        <flag>wxGROW|wxALL</flag>
-                        <border>5</border>
-                        <object class="wxStaticBoxSizer" name="wxID_ANY">
-                            <orient>wxVERTICAL</orient>
                             <label>Exercises</label>
                             <object class="sizeritem">
                                 <flag>wxGROW|wxALL</flag>

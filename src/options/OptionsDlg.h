@@ -26,7 +26,7 @@
 #define _OPTIONSDLG_H_
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "lmOptionsDlg.cpp"
+#pragma interface "OptionsDlg.cpp"
 #endif
 
 #include "wx/splitter.h"
@@ -65,6 +65,7 @@ enum EOptionsPanels {
     eOptLanguage = 0,
     eOptColors,
     eOptToolbars,
+    eOptInternet,
     eOptOther,
     //TO_ADD: Add, before this line, a new eOptXXXXXX code for the new options panel
     eOptMaxValue    // end of table 
@@ -92,7 +93,7 @@ public:
     lmOptionsDlg(wxWindow* parent, wxWindowID id = ID_DIALOG,
         const wxString& caption = _("Configuration options"),
         const wxPoint& pos = wxDefaultPosition,
-        const wxSize& size = wxSize(600, 400),
+        const wxSize& size = wxSize(640, 480),
         long style = wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxDIALOG_MODAL );
     ~lmOptionsDlg();
 
@@ -108,14 +109,14 @@ private:
 
     // dialog controls
     wxSplitterWindow*    m_pSplitWindow;
-    wxTreeCtrl*            m_pTreeCtrl;
-    lmOptionsPanel*        m_pPanel;        // current displayed panel
+    wxTreeCtrl*          m_pTreeCtrl;
+    lmOptionsPanel*      m_pPanel;        // current displayed panel
     wxButton*            m_pBtnOK;
     wxButton*            m_pBtnCancel;
     wxButton*            m_pBtnHelp;
 
     //other member variables
-    ArrayOfPanels    m_cPanels;        // options' panels collection
+    ArrayOfPanels   m_cPanels;        // options' panels collection
     long            m_nCurPanel;    // index to current displayed panel
 
 };

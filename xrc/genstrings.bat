@@ -16,6 +16,9 @@ wxrc LangOptionsPanel.xrc -g >> xrc_strings.cpp
 echo //ToolbarsOptPanel.xrc >> xrc_strings.cpp
 wxrc ToolbarsOptPanel.xrc -g >> xrc_strings.cpp
 
+echo //InternetOptPanel.xrc >> xrc_strings.cpp
+wxrc InternetOptPanel.xrc -g >> xrc_strings.cpp
+
 echo //OtherOptionsPanel.xrc >> xrc_strings.cpp
 wxrc OtherOptionsPanel.xrc -g >> xrc_strings.cpp
 

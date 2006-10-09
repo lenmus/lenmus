@@ -280,17 +280,17 @@
                                             </object>
                                         </object>
                                         <object class="sizeritem">
+                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                            <border>5</border>
+                                            <object class="wxStaticText" name="wxID_STATIC">
+                                            </object>
+                                        </object>
+                                        <object class="sizeritem">
                                             <flag>wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE</flag>
                                             <border>5</border>
                                             <object class="wxStaticText" name="lblAllowedIntvalError">
                                                 <bg>#FFD7D7</bg>
                                                 <label>You must choose one at least! </label>
-                                            </object>
-                                        </object>
-                                        <object class="sizeritem">
-                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
-                                            <border>5</border>
-                                            <object class="wxStaticText" name="wxID_STATIC">
                                             </object>
                                         </object>
                                     </object>
@@ -493,17 +493,17 @@
                                                     </object>
                                                 </object>
                                                 <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
                                                     <flag>wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE</flag>
                                                     <border>5</border>
                                                     <object class="wxStaticText" name="lblKeySignError">
                                                         <bg>#FFD7D7</bg>
                                                         <label>You must choose one key signature at least! </label>
-                                                    </object>
-                                                </object>
-                                                <object class="sizeritem">
-                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
-                                                    <border>5</border>
-                                                    <object class="wxStaticText" name="wxID_STATIC">
                                                     </object>
                                                 </object>
                                             </object>
@@ -593,17 +593,17 @@
                                                             </object>
                                                         </object>
                                                         <object class="sizeritem">
+                                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                                            <border>5</border>
+                                                            <object class="wxStaticText" name="wxID_STATIC">
+                                                            </object>
+                                                        </object>
+                                                        <object class="sizeritem">
                                                             <flag>wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE</flag>
                                                             <border>5</border>
                                                             <object class="wxStaticText" name="lblRangeError">
                                                                 <bg>#FFD7D7</bg>
                                                                 <label>Minimum pitch must be lower than maximum one </label>
-                                                            </object>
-                                                        </object>
-                                                        <object class="sizeritem">
-                                                            <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
-                                                            <border>5</border>
-                                                            <object class="wxStaticText" name="wxID_STATIC">
                                                             </object>
                                                         </object>
                                                     </object>
@@ -657,17 +657,17 @@
                                                     </object>
                                                 </object>
                                                 <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
+                                                    <border>5</border>
+                                                    <object class="wxStaticText" name="wxID_STATIC">
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
                                                     <flag>wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE</flag>
                                                     <border>5</border>
                                                     <object class="wxStaticText" name="lblIntvalTypeError">
                                                         <bg>#FFD7D7</bg>
                                                         <label>You must choose one at least! </label>
-                                                    </object>
-                                                </object>
-                                                <object class="sizeritem">
-                                                    <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
-                                                    <border>5</border>
-                                                    <object class="wxStaticText" name="wxID_STATIC">
                                                     </object>
                                                 </object>
                                             </object>

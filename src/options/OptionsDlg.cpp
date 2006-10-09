@@ -24,13 +24,13 @@
 */
 //-----------------------------------------------------------------------------------
 //AWARE
-/*
-    Things to do to add a new options panel to the Options Dialog:
-     1. Create a new panel class derived from lmOptionsPanel
-     2. Look for "//TO_ADD:" tags in OptionsDlg.h and follow instructions there
-     3. Look for "//TO_ADD:" tags in this file and follow instructions there
-
-*/
+//
+//    Things to do to add a new options panel to the Options Dialog:
+//     1. Create a new panel class derived from lmOptionsPanel
+//     2. Add the XRC panel to TheApp.cpp
+//     3. Look for "//TO_ADD:" tags in OptionsDlg.h and follow instructions there
+//     4. Look for "//TO_ADD:" tags in this file and follow instructions there
+//
 //-----------------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(__APPLE__)
@@ -62,6 +62,7 @@
 #include "LangOptionsPanel.h"
 #include "ColorsOptPanel.h"
 #include "ToolbarsOptPanel.h"
+#include "InternetOptPanel.h"
 #include "OtherOptionsPanel.h"
 //TO_ADD: add here the new panel include file
 
@@ -76,6 +77,7 @@ enum
     eIconLanguages,
     eIconColors,
     eIconToolbars,
+    eIconInternet,
     eIconOther,
     //TO_ADD: add the new element
     TreeCtrlIcon_EOF        //AWARE: Must be the last one. Just to know how many items
@@ -87,6 +89,7 @@ static wxString sImageID[] = {
     _T("opt_language"),
     _T("opt_colors"),
     _T("opt_tools"),
+    _T("opt_internet"),
     _T("opt_other")
 //TO_ADD: Add image identifier here
 };
@@ -190,6 +193,11 @@ lmOptionsDlg::lmOptionsDlg( wxWindow* parent, wxWindowID id, const wxString& cap
                     eIconToolbars, eIconToolbars,
                     new lmTreeItemData((long)eOptToolbars) );
 
+    // Internet options
+    wxTreeItemId InternetId = m_pTreeCtrl->AppendItem(rootId, _("Internet"),
+                    eIconInternet, eIconInternet,
+                    new lmTreeItemData((long)eOptInternet) );
+
     // Other options
     wxTreeItemId otherId = m_pTreeCtrl->AppendItem(rootId, _("Other"),
                     eIconOther, eIconOther,
@@ -208,6 +216,9 @@ lmOptionsDlg::lmOptionsDlg( wxWindow* parent, wxWindowID id, const wxString& cap
         //    break;
         case eOptToolbars:
             itemId = ToolbarsId;
+            break;
+        case eOptInternet:
+            itemId = InternetId;
             break;
         case eOptOther:
             itemId = otherId;
@@ -314,6 +325,8 @@ lmOptionsPanel* lmOptionsDlg::CreatePanel(EOptionsPanels nPanel)
             return new lmColorsOptPanel( m_pSplitWindow );
         case eOptToolbars:
             return new lmToolbarsOptPanel( m_pSplitWindow );
+        case eOptInternet:
+            return new lmInternetOptPanel( m_pSplitWindow );
         case eOptOther:
             return new lmOtherOptionsPanel( m_pSplitWindow );
         //TO_ADD: Add a new case block for creating the panel
@@ -349,12 +362,6 @@ void lmOptionsDlg::OnButtonAcceptClick(wxCommandEvent& event)
     for(i=0; i < eOptMaxValue; i++) {
         m_cPanels[i]->Apply();
     }
-
-   //! @todo Send all opened windows a notification to update things that depend on user preferences
-    //for(j = 0; j < gAudacityProjects.GetCount(); j++)
- //  {
- //     gAudacityProjects[j]->UpdatePrefs();
- //  }
 
    EndModal(0);
 }

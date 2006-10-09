@@ -926,6 +926,12 @@
 				RelativePath="..\..\src\options\ColorsOptPanel.h">
 			</File>
 			<File
+				RelativePath="..\..\src\options\InternetOptPanel.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\options\InternetOptPanel.h">
+			</File>
+			<File
 				RelativePath="..\..\src\options\LangOptionsPanel.cpp">
 			</File>
 			<File

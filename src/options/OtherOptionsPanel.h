@@ -26,7 +26,7 @@
 #define __OTHEROPTIONSPANEL_H__
 
 #if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "lmOtherOptionsPanel.cpp"
+#pragma interface "OtherOptionsPanel.cpp"
 #endif
 
 #include "OptionsPanel.h"
@@ -43,15 +43,9 @@ public:
 private:
     
     // controls
-        // Web updates
-    wxStaticText*   m_pTxtLastCheck;
-    wxComboBox*     m_pCboCheckFreq;
         // Exercises
     wxCheckBox*     m_pChkAnswerSounds;       // Enable right/wrong answer sounds
 
-
-    // other member variables
-    bool            m_fCheckForUpdates;
 
 };
 
