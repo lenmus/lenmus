@@ -45,6 +45,10 @@
 #include "wx/config.h"
 extern wxConfigBase* g_pPrefs;
 
+//access to user preferences
+#include "../app/Preferences.h"
+
+
 
 BEGIN_EVENT_TABLE(lmInternetOptPanel, wxPanel)
     EVT_CHECKBOX( XRCID( "chkUseProxy" ), lmInternetOptPanel::OnChkUseProxyClicked )
@@ -58,6 +62,11 @@ END_EVENT_TABLE()
 
 lmInternetOptPanel::lmInternetOptPanel(wxWindow* parent)
 {
+    // initializations
+    m_pParent = (wxSplitterWindow*)parent;
+    m_fFirstTimeServerSettingsError = true;   
+    m_fFirstTimeAuthenticationError = true;
+
     // create the panel
     wxXmlResource::Get()->LoadPanel(this, parent, _T("InternetOptPanel"));
    
@@ -134,18 +143,14 @@ lmInternetOptPanel::lmInternetOptPanel(wxWindow* parent)
     m_pTxtLastCheck->SetLabel(sLastCheckDate);
 
     //proxy settings
-    bool fUseProxy;
-    g_pPrefs->Read(_T("/Internet/UseProxy"), &fUseProxy, false);
-    m_pChkUseProxy->SetValue(fUseProxy);
-    EnableProxySettings(fUseProxy);
-
-    m_pTxtHostname->SetValue( g_pPrefs->Read(_T("/Internet/Hostname"), _T("")) );
-    m_TxtPortNumber->SetValue( g_pPrefs->Read(_T("/Internet/PortNumber"), _T("")) );
-    bool fAuthentication;
-    g_pPrefs->Read(_T("/Internet/ProxyAuthentication"), &fAuthentication, false);
-    m_pChkProxyAuthentication->SetValue( fAuthentication );
-    m_pTxtUsername->SetValue( g_pPrefs->Read(_T("/Internet/Username"), _T("")) );
-    m_pTxtPassword->SetValue( g_pPrefs->Read(_T("/Internet/Password"), _T("")) );
+    wxProxySettings* pSettings = GetProxySettings();
+    m_pChkUseProxy->SetValue( pSettings->m_bUseProxy );
+    EnableProxySettings( pSettings->m_bUseProxy );
+    m_pTxtHostname->SetValue( pSettings->m_strProxyHostname );
+    m_TxtPortNumber->SetValue( wxString::Format(_T("%d"), pSettings->m_nProxyPort) );
+    m_pChkProxyAuthentication->SetValue( pSettings->m_bRequiresAuth );
+    m_pTxtUsername->SetValue( pSettings->m_strProxyUsername );
+    m_pTxtPassword->SetValue( pSettings->m_strProxyPassword );
 
 }
 
@@ -158,6 +163,7 @@ bool lmInternetOptPanel::Verify()
     //assume no errors
     bool fError = false;
     bool fLocalError = false;
+    bool fRelayout = false;
 
     m_pLblServerSettingsError->Show(false);
     m_pBmpServerSettingsError->Show(false);
@@ -169,10 +175,18 @@ bool lmInternetOptPanel::Verify()
     if (fUseProxy)
     {
         // verify host name & port number
-        if (m_pTxtHostname->GetValue() == _T("") || m_TxtPortNumber->GetValue() == _T("")) {
+        if (m_pTxtHostname->GetValue() == _T("") || 
+            m_TxtPortNumber->GetValue() == _T("0") ||
+            m_TxtPortNumber->GetValue() == _T("") ||
+            !(m_TxtPortNumber->GetValue()).IsNumber() )
+        {
             m_pLblServerSettingsError->Show(true);
             m_pBmpServerSettingsError->Show(true);
             fError = true;
+            if (m_fFirstTimeServerSettingsError) {
+                fRelayout = true;
+                m_fFirstTimeServerSettingsError = false;
+            }
         }
         fLocalError |= fError;
 
@@ -185,13 +199,30 @@ bool lmInternetOptPanel::Verify()
                 m_pLblAuthenticationError->Show(true);
                 m_pBmpAuthenticationError->Show(true);
                 fError = true;
+                if (m_fFirstTimeAuthenticationError) {
+                    fRelayout = true;
+                    m_fFirstTimeAuthenticationError = false;
+                }
             }
             fLocalError |= fError;
         }
     }
 
-    //force a relayout
-    m_pBoxServerSettings->Layout();
+    if (fRelayout) {
+        // Force a relayout. This code is to by pass a bad behaviour.
+        // When we change the visibility status (hide/show) of error messages
+        // they are not properly drawn in their right positions. So we have to force a
+        // relayout
+        GetSizer()->CalcMin();
+        GetSizer()->Layout();
+        GetSizer()->Fit(this);
+        GetSizer()->SetSizeHints(this);
+        //Now the panel is properly drawn but its width changes and the splitter windows 
+        //doesn't get aware. It is necessary to force a redraw of the splitter window
+        m_pParent->SetSashPosition(m_pParent->GetSashPosition(), true);
+        //OK. Now it works.
+    }
+
     return fLocalError;
 }
 

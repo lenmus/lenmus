@@ -27,12 +27,15 @@
 
 #include <wx/config.h>
 
+#include "wx/httpbuilder.h"    // wxHttpEngine package
+
 // the config object
 extern wxConfigBase *g_pPrefs;
 
 
 //Global functions
 extern void InitPreferences();
+extern wxProxySettings* GetProxySettings();
 
 
 #endif    // __PREFERENCES_H__

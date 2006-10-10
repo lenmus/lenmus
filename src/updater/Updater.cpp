@@ -37,7 +37,6 @@
 #include "wx/wfstream.h"
 #include "wx/protocol/http.h"
 #include "wx/mstream.h"         //to use files in memory
-#include <wx/mimetype.h>        // mimetype support
 #include <wx/url.h>
 #include <wx/datetime.h>        //to get and save the date of last successful check
 
@@ -68,21 +67,10 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 
 lmUpdater::lmUpdater()
 {
-    //initializations
-    //m_pThread = (lmDownloadThread*)NULL;
-
-
 }
 
 lmUpdater::~lmUpdater()
 {
-    //if (m_pThread) {
-    //    m_pThread->Delete();
-    //    m_pThread->Wait();
-    //    delete m_pThread;
-    //    m_pThread = (lmDownloadThread*)NULL;
-    //}
-
 }
 
 void lmUpdater::LoadUserPreferences()
@@ -125,19 +113,46 @@ Please, connect to internet and then retry."));
             return true;
         }
 
-        // ensure we can build a wxURL from the given URL
         wxString sUrl = _T("http://www.lenmus.org/sw/UpdateData.xml");
-        wxURL oURL(sUrl);
-        wxASSERT( oURL.GetError() == wxURL_NOERR);
+
+//-----------------------------------
+    // Old code using wxHTTP
+
+        //// ensure we can build a wxURL object from the given URL
+        //wxURL oURL(sUrl);
+        //wxASSERT( oURL.GetError() == wxURL_NOERR);
+        //
+        ////Setup user-agent string to be identified not as a bot but as a browser
+        //wxProtocol& oProt = oURL.GetProtocol();
+        //wxHTTP* pHTTP = (wxHTTP*)&oProt;
+        //pHTTP->SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
+        //oProt.SetTimeout(10);              // 90 sec
+
+//-----------------------------------
+    // New code using wxHttpEngine
+
+        wxHTTPBuilder oHttp;
+        oHttp.InitContentTypes(); // Initialise the content types on the page
+
+        //get proxy options
+        wxProxySettings* pSettings = GetProxySettings();
+
+        if (pSettings->m_bUseProxy) {
+            oHttp.HttpProxy(pSettings->m_strProxyHostname, pSettings->m_nProxyPort );
+            if (pSettings->m_bRequiresAuth)
+                oHttp.HttpProxyAuth( pSettings->m_strProxyUsername, pSettings->m_strProxyPassword);
+        }
 
         //Setup user-agent string to be identified not as a bot but as a browser
-        wxProtocol& oProt = oURL.GetProtocol();
-        wxHTTP* pHTTP = (wxHTTP*)&oProt;
-        pHTTP->SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
-        oProt.SetTimeout(10);              // 90 sec
+        oHttp.SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
+        oHttp.SetTimeout(10);              // 10 sec
 
-        //create the input stream by establishing http connection
-        wxInputStream* pInput = oURL.GetInputStream();
+        wxInputStream* pInput = oHttp.GetInputStream( sUrl );
+
+//-----------------------------------
+
+        ////create the input stream by establishing http connection
+        //wxInputStream* pInput = oURL.GetInputStream();
         if (!pInput || !pInput->IsOk()) {
             if (pInput) delete pInput;
             lmErrorDlg dlg(m_pParent, _("Error checking for updates"),
@@ -313,34 +328,6 @@ bool lmUpdater::DownloadFiles()
 */
     LaunchDefaultBrowser( m_sUrl );
 
-    // In order to allow for download cancellation, it is going to be implemented
-    // in a thread. Communication with the thread takes place by events
-    // generated in the thread.
-    //
-    //
-
-//    //create downloader thread
-//    m_pThread = new lmDownloadThread((wxEvtHandler*)NULL);
-//    if (m_pThread->Create() != wxTHREAD_NO_ERROR ||
-//        m_pThread->Run() != wxTHREAD_NO_ERROR) {
-//        lmErrorDlg dlg(m_pParent, _("Error"),
-//            _("Low resources; cannot run the thread for downloading files.\n\n \
-//Close some applications and then retry."));
-//        dlg.ShowModal();
-//        wxLogMessage(wxT("[lmUpdater::DoCheck] Can not run the download thread."));
-//        return true;
-//    }
-//
-//    //According to wxWidgets documentation if you want to use sockets or derived 
-//    //classes such as wxFTP in a secondary thread, call wxSocketBase::Initialize()
-//    //(undocumented) from the main thread before creating any sockets 
-//    wxSocketBase::Initialize();
-//
-//
-//    //start download of file
-//    m_pThread->SetURL( m_sUrl );
-//    m_pThread->StartDownload();
-//
     return false;
 
 }

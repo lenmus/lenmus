@@ -91,9 +91,6 @@ private:
     wxString    m_sUrl;                 //url for download
     bool        m_fNeedsUpdate;
 
-    //lmDownloadThread*   m_pThread;      //download thread
-
-
 };
 
 //global function

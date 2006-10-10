@@ -45,10 +45,16 @@
 #include "wx/filename.h"
 
 
+
 wxConfigBase* g_pPrefs = (wxConfigBase*) NULL;
 
 // global values
 bool g_fAnswerSoundsEnabled;    // Feedback right/wrong answer sounds are enabled
+
+
+
+// proxy settings
+wxProxySettings m_oProxySettings;
 
 
 
@@ -59,6 +65,28 @@ void InitPreferences()
     g_pPrefs->Read(_T("/Options/EnableAnswerSounds"), &g_fAnswerSoundsEnabled, true);
 
 
+}
+
+wxProxySettings* GetProxySettings()
+{
+    bool fUseProxy;
+    g_pPrefs->Read(_T("/Internet/UseProxy"), &fUseProxy, false);
+    m_oProxySettings.m_bUseProxy = fUseProxy;
+
+    m_oProxySettings.m_strProxyHostname = g_pPrefs->Read(_T("/Internet/Hostname"), _T(""));
+    long nPort = 0;
+    wxString sPort = g_pPrefs->Read(_T("/Internet/PortNumber"), _T(""));
+    if (sPort.IsNumber())
+        sPort.ToLong(&nPort);
+    m_oProxySettings.m_nProxyPort = nPort;
+
+    bool fAuthentication;
+    g_pPrefs->Read(_T("/Internet/ProxyAuthentication"), &fAuthentication, false);
+    m_oProxySettings.m_bRequiresAuth = fAuthentication;
+    m_oProxySettings.m_strProxyUsername = g_pPrefs->Read(_T("/Internet/Username"), _T(""));
+    m_oProxySettings.m_strProxyPassword = g_pPrefs->Read(_T("/Internet/Password"), _T(""));
+
+    return &m_oProxySettings;
 }
 
 

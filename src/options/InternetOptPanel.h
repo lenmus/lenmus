@@ -30,6 +30,7 @@
 #endif
 
 #include "OptionsPanel.h"
+#include "wx/splitter.h"
 
 
 class lmInternetOptPanel: public lmOptionsPanel
@@ -76,9 +77,14 @@ private:
     wxStaticText*   m_pLblAuthenticationError;
     wxStaticBitmap* m_pBmpAuthenticationError;
 
+    //to detect that it is the first time we display an error message
+    bool            m_fFirstTimeServerSettingsError;   
+    bool            m_fFirstTimeAuthenticationError;   
+
 
     // other member variables
-    bool            m_fCheckForUpdates;
+    bool                m_fCheckForUpdates;
+    wxSplitterWindow*   m_pParent;
 
     DECLARE_EVENT_TABLE()
 
