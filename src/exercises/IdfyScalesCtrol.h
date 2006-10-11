@@ -18,13 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file EarScalesCtrol.h
-    @brief Header file for class lmEarScalesCtrol
+/*! @file IdfyScalesCtrol.h
+    @brief Header file for class lmIdfyScalesCtrol
     @ingroup html_controls
 */
 
-#ifndef __EARSCALESCTROL_H__        //to avoid nested includes
-#define __EARSCALESCTROL_H__
+#ifndef __IDFYSCALESCTROL_H__        //to avoid nested includes
+#define __IDFYSCALESCTROL_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -37,8 +37,6 @@
 #include "wx/wx.h"
 #endif
 
-//#include "EarExerciseCtrol.h"
-
 #include "ScalesConstrains.h"
 #include "../score/score.h"
 #include "ScoreAuxCtrol.h"
@@ -47,17 +45,17 @@
 
 
 
-class lmEarScalesCtrol :    public lmEarExerciseCtrol    
+class lmIdfyScalesCtrol :    public lmIdfyExerciseCtrol    
 {
 public:
 
     // constructor and destructor    
-    lmEarScalesCtrol(wxWindow* parent, wxWindowID id,
+    lmIdfyScalesCtrol(wxWindow* parent, wxWindowID id,
                lmScalesConstrains* pConstrains, 
                const wxPoint& pos = wxDefaultPosition, 
                const wxSize& size = wxDefaultSize, int style = 0);
 
-    ~lmEarScalesCtrol();
+    ~lmIdfyScalesCtrol();
 
     //implementation of virtual methods
     void InitializeStrings();
@@ -97,4 +95,4 @@ private:
 
 
 
-#endif  // __EARSCALESCTROL_H__
+#endif  // __IDFYSCALESCTROL_H__

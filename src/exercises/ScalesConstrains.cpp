@@ -41,7 +41,7 @@ extern wxConfigBase *g_pPrefs;
 
 
 lmScalesConstrains::lmScalesConstrains(wxString sSection)
-    : lmEarConstrains(sSection)
+    : lmIdfyConstrains(sSection)
 {
 }
 
@@ -113,7 +113,8 @@ void lmScalesConstrains::SaveSettings()
     // other settings
     sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection);
     g_pPrefs->Write(sKey, m_fDisplayKey);
-    g_pPrefs->Write(_T("/Constrains/IdfyScale/%s/PlayMode"), m_nPlayMode);
+    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/PlayMode"), m_sSection);
+    g_pPrefs->Write(sKey, m_nPlayMode);
 
 }
 
@@ -146,7 +147,8 @@ void lmScalesConstrains::LoadSettings()
     sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection);
     g_pPrefs->Read(sKey, &m_fDisplayKey, false);
     // play modes. Default: ascending
-    g_pPrefs->Read(_T("/Constrains/IdfyScale/%s/PlayMode"), &m_nPlayMode, 0);   //0-ascending
+    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/PlayMode"), m_sSection);
+    g_pPrefs->Read(sKey, &m_nPlayMode, 0);   //0-ascending
 
 }
 

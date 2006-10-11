@@ -18,13 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file EarExerciseCtrol.h
-    @brief Header file for class lmEarExerciseCtrol
+/*! @file IdfyExerciseCtrol.h
+    @brief Header file for class lmIdfyExerciseCtrol
     @ingroup html_controls
 */
 
-#ifndef __EAREXERCISECTROL_H__        //to avoid nested includes
-#define __EAREXERCISECTROL_H__
+#ifndef __IDFYEXERCISECTROL_H__        //to avoid nested includes
+#define __IDFYEXERCISECTROL_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -47,11 +47,11 @@
 //--------------------------------------------------------------------------------
 // Abstract class for ear exercises constrains
 //--------------------------------------------------------------------------------
-class lmEarConstrains
+class lmIdfyConstrains
 {
 public:
-    lmEarConstrains(wxString sSection);
-    virtual ~lmEarConstrains() {}
+    lmIdfyConstrains(wxString sSection);
+    virtual ~lmIdfyConstrains() {}
 
     virtual void SaveSettings() {};
 
@@ -81,19 +81,19 @@ protected:
 //--------------------------------------------------------------------------------
 
 
-class lmEarExerciseCtrol : public wxWindow    
+class lmIdfyExerciseCtrol : public wxWindow    
 {
-   DECLARE_DYNAMIC_CLASS(lmEarExerciseCtrol)
+   DECLARE_DYNAMIC_CLASS(lmIdfyExerciseCtrol)
 
 public:
 
     // constructor and destructor    
-    lmEarExerciseCtrol(wxWindow* parent, wxWindowID id,
-               lmEarConstrains* pConstrains, 
+    lmIdfyExerciseCtrol(wxWindow* parent, wxWindowID id,
+               lmIdfyConstrains* pConstrains, 
                const wxPoint& pos = wxDefaultPosition, 
                const wxSize& size = wxDefaultSize, int style = 0);
 
-    virtual ~lmEarExerciseCtrol();
+    virtual ~lmIdfyExerciseCtrol();
 
     // event handlers
     virtual void OnSize(wxSizeEvent& event);
@@ -143,7 +143,7 @@ protected:
     wxBoxSizer*         m_pMainSizer;
     wxFlexGridSizer*    m_pKeyboardSizer;
 
-    lmEarConstrains*    m_pConstrains;      //constrains for the exercise
+    lmIdfyConstrains*    m_pConstrains;      //constrains for the exercise
     bool                m_fQuestionAsked;   //question asked but not yet answered
     int                 m_nRespIndex;       //index to the button with the right answer
     wxString            m_sAnswer;          //string with the right answer
@@ -153,7 +153,7 @@ protected:
     int                 m_nPlayMM;          //metronome setting to play scores
 
 
-    //lmEarExerciseCtrol can used both for ear training exercises and for theory exercises.
+    //lmIdfyExerciseCtrol can used both for ear training exercises and for theory exercises.
     //Following variable is used for configuration
     bool                m_fTheoryMode;
 
@@ -169,4 +169,4 @@ private:
 
 
 
-#endif  // __EAREXERCISECTROL_H__
+#endif  // __IDFYEXERCISECTROL_H__

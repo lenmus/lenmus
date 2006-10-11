@@ -18,12 +18,12 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file EarScalesCtrol.cpp
-    @brief Implementation file for class lmEarScalesCtrol
+/*! @file IdfyScalesCtrol.cpp
+    @brief Implementation file for class lmIdfyScalesCtrol
     @ingroup html_controls
 */
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "EarScalesCtrol.h"
+#pragma implementation "IdfyScalesCtrol.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
@@ -33,7 +33,7 @@
 #pragma hdrstop
 #endif
 
-#include "EarScalesCtrol.h"
+#include "IdfyScalesCtrol.h"
 
 #include "UrlAuxCtrol.h"
 #include "Constrains.h"
@@ -50,7 +50,7 @@
 extern lmColors* g_pColors;
 
 //------------------------------------------------------------------------------------
-// Implementation of lmEarScalesCtrol
+// Implementation of lmIdfyScalesCtrol
 
 
 
@@ -68,15 +68,15 @@ enum {
 };
 
 
-BEGIN_EVENT_TABLE(lmEarScalesCtrol, lmEarExerciseCtrol)
-    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmEarScalesCtrol::OnRespButton)
+BEGIN_EVENT_TABLE(lmIdfyScalesCtrol, lmIdfyExerciseCtrol)
+    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmIdfyScalesCtrol::OnRespButton)
 END_EVENT_TABLE()
 
 
-lmEarScalesCtrol::lmEarScalesCtrol(wxWindow* parent, wxWindowID id, 
+lmIdfyScalesCtrol::lmIdfyScalesCtrol(wxWindow* parent, wxWindowID id, 
                            lmScalesConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
-    : lmEarExerciseCtrol(parent, id, pConstrains, pos, size, style )
+    : lmIdfyExerciseCtrol(parent, id, pConstrains, pos, size, style )
 {
     //initializations
     m_pConstrains = pConstrains;
@@ -93,11 +93,11 @@ lmEarScalesCtrol::lmEarScalesCtrol(wxWindow* parent, wxWindowID id,
 
 }
 
-lmEarScalesCtrol::~lmEarScalesCtrol()
+lmIdfyScalesCtrol::~lmIdfyScalesCtrol()
 {
 }
 
-void lmEarScalesCtrol::CreateAnswerButtons()
+void lmIdfyScalesCtrol::CreateAnswerButtons()
 {
     //create buttons for the answers, two rows
     int iB = 0;
@@ -131,7 +131,7 @@ void lmEarScalesCtrol::CreateAnswerButtons()
 
 }
 
-void lmEarScalesCtrol::InitializeStrings()
+void lmIdfyScalesCtrol::InitializeStrings()
 {
 
         //button labels.
@@ -166,7 +166,7 @@ void lmEarScalesCtrol::InitializeStrings()
 
 }
 
-void lmEarScalesCtrol::ReconfigureButtons()
+void lmIdfyScalesCtrol::ReconfigureButtons()
 {
     //Reconfigure buttons keyboard depending on the scales allowed
 
@@ -202,7 +202,7 @@ void lmEarScalesCtrol::ReconfigureButtons()
     m_pKeyboardSizer->Layout();
 }
 
-int lmEarScalesCtrol::ReconfigureGroup(int iBt, int iStartC, int iEndC, wxString sRowLabel)
+int lmIdfyScalesCtrol::ReconfigureGroup(int iBt, int iStartC, int iEndC, wxString sRowLabel)
 {
     //Reconfigure a group of buttons
 
@@ -233,19 +233,19 @@ int lmEarScalesCtrol::ReconfigureGroup(int iBt, int iStartC, int iEndC, wxString
 
 }
 
-wxDialog* lmEarScalesCtrol::GetSettingsDlg()
+wxDialog* lmIdfyScalesCtrol::GetSettingsDlg()
 {
     wxDialog* pDlg = new lmDlgCfgIdfyScale(this, m_pConstrains, m_fTheoryMode);
     return pDlg;
     //return (wxDialog*)NULL;
 }
 
-void lmEarScalesCtrol::PrepareAuxScore(int nButton)
+void lmIdfyScalesCtrol::PrepareAuxScore(int nButton)
 {
     PrepareScore(eclvSol, (EScaleType)m_nRealScale[nButton], &m_pAuxScore);
 }
 
-wxString lmEarScalesCtrol::SetNewProblem()
+wxString lmIdfyScalesCtrol::SetNewProblem()
 {
     //This method must prepare the problem score and set variables:
     //  m_pProblemScore, m_sAnswer, m_nRespIndex and m_nPlayMM
@@ -290,7 +290,7 @@ wxString lmEarScalesCtrol::SetNewProblem()
 
 }
 
-wxString lmEarScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmScore** pScore)
+wxString lmIdfyScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmScore** pScore)
 {
 //    //create the scale object
     lmScalesManager oScaleMngr(m_sRootNote, nType, m_nKey);
@@ -335,7 +335,7 @@ wxString lmEarScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmSco
     //use simple renderer; otherwise chromatic scale does not fit in available space
     (*pScore)->SetRenderizationType(eRenderSimple);
     
-    //(*pScore)->Dump(_T("lmEarScalesCtrol.PrepareScore.ScoreDump.txt"));  //dbg
+    //(*pScore)->Dump(_T("lmIdfyScalesCtrol.PrepareScore.ScoreDump.txt"));  //dbg
 
     //set metronome. As the problem score is built using whole notes, we will 
     //set metronome at MM=400 so the resulting note rate will be 100.

@@ -18,12 +18,12 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file EarExerciseCtrol.cpp
-    @brief Implementation file for class lmEarExerciseCtrol
+/*! @file IdfyExerciseCtrol.cpp
+    @brief Implementation file for class lmIdfyExerciseCtrol
     @ingroup html_controls
 */
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "EarExerciseCtrol.h"
+#pragma implementation "IdfyExerciseCtrol.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
@@ -33,7 +33,7 @@
 #pragma hdrstop
 #endif
 
-#include "EarExerciseCtrol.h"
+#include "IdfyExerciseCtrol.h"
 #include "UrlAuxCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
@@ -57,7 +57,7 @@ extern bool g_fShowDebugLinks;            // in TheApp.cpp
 //--------------------------------------------------------------------------------
 // Implementation of abstract class for ear exercises constrains
 //--------------------------------------------------------------------------------
-lmEarConstrains::lmEarConstrains(wxString sSection)
+lmIdfyConstrains::lmIdfyConstrains(wxString sSection)
 {
     m_sSection = sSection;
     m_fSettingsLink = false;
@@ -84,26 +84,26 @@ enum {
 };
 
 
-BEGIN_EVENT_TABLE(lmEarExerciseCtrol, wxWindow)
-    EVT_SIZE            (lmEarExerciseCtrol::OnSize)
+BEGIN_EVENT_TABLE(lmIdfyExerciseCtrol, wxWindow)
+    EVT_SIZE            (lmIdfyExerciseCtrol::OnSize)
 
-    LM_EVT_URL_CLICK    (ID_LINK_SEE_SOURCE, lmEarExerciseCtrol::OnDebugShowSourceScore)
-    LM_EVT_URL_CLICK    (ID_LINK_DUMP, lmEarExerciseCtrol::OnDebugDumpScore)
-    LM_EVT_URL_CLICK    (ID_LINK_MIDI_EVENTS, lmEarExerciseCtrol::OnDebugShowMidiEvents)
+    LM_EVT_URL_CLICK    (ID_LINK_SEE_SOURCE, lmIdfyExerciseCtrol::OnDebugShowSourceScore)
+    LM_EVT_URL_CLICK    (ID_LINK_DUMP, lmIdfyExerciseCtrol::OnDebugDumpScore)
+    LM_EVT_URL_CLICK    (ID_LINK_MIDI_EVENTS, lmIdfyExerciseCtrol::OnDebugShowMidiEvents)
 
-    LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, lmEarExerciseCtrol::OnNewProblem)
-    LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmEarExerciseCtrol::OnPlay)
-    LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, lmEarExerciseCtrol::OnDisplaySolution)
-    LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmEarExerciseCtrol::OnSettingsButton)
+    LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, lmIdfyExerciseCtrol::OnNewProblem)
+    LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmIdfyExerciseCtrol::OnPlay)
+    LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, lmIdfyExerciseCtrol::OnDisplaySolution)
+    LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmIdfyExerciseCtrol::OnSettingsButton)
 
-    LM_EVT_END_OF_PLAY  (lmEarExerciseCtrol::OnEndOfPlay)
+    LM_EVT_END_OF_PLAY  (lmIdfyExerciseCtrol::OnEndOfPlay)
 
 END_EVENT_TABLE()
 
-IMPLEMENT_CLASS(lmEarExerciseCtrol, wxWindow)
+IMPLEMENT_CLASS(lmIdfyExerciseCtrol, wxWindow)
 
-lmEarExerciseCtrol::lmEarExerciseCtrol(wxWindow* parent, wxWindowID id, 
-                           lmEarConstrains* pConstrains, 
+lmIdfyExerciseCtrol::lmIdfyExerciseCtrol(wxWindow* parent, wxWindowID id, 
+                           lmIdfyConstrains* pConstrains, 
                            const wxPoint& pos, const wxSize& size, int style)
     : wxWindow(parent, id, pos, size, style )
 {
@@ -119,7 +119,7 @@ lmEarExerciseCtrol::lmEarExerciseCtrol(wxWindow* parent, wxWindowID id,
     m_fPlaying = false;
 }
 
-void lmEarExerciseCtrol::Create(int nCtrolWidth, int nCtrolHeight)
+void lmIdfyExerciseCtrol::Create(int nCtrolWidth, int nCtrolHeight)
 {
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
@@ -238,7 +238,7 @@ void lmEarExerciseCtrol::Create(int nCtrolWidth, int nCtrolHeight)
 
 }
 
-lmEarExerciseCtrol::~lmEarExerciseCtrol()
+lmIdfyExerciseCtrol::~lmIdfyExerciseCtrol()
 {
     //stop any possible chord being played
     DoStopSounds();
@@ -252,7 +252,7 @@ lmEarExerciseCtrol::~lmEarExerciseCtrol()
 
     if (m_pConstrains) {
         delete m_pConstrains;
-        m_pConstrains = (lmEarConstrains*) NULL;
+        m_pConstrains = (lmIdfyConstrains*) NULL;
     }
 
     if (m_pProblemScore) {
@@ -265,7 +265,7 @@ lmEarExerciseCtrol::~lmEarExerciseCtrol()
     }
 }
 
-void lmEarExerciseCtrol::OnSettingsButton(wxCommandEvent& event)
+void lmIdfyExerciseCtrol::OnSettingsButton(wxCommandEvent& event)
 {
     wxDialog* pDlg = GetSettingsDlg(); 
     if (pDlg) {
@@ -281,29 +281,29 @@ void lmEarExerciseCtrol::OnSettingsButton(wxCommandEvent& event)
 
 }
 
-void lmEarExerciseCtrol::OnSize(wxSizeEvent& event)
+void lmIdfyExerciseCtrol::OnSize(wxSizeEvent& event)
 {
-    //wxLogMessage(_T("OnSize at lmEarExerciseCtrol"));
+    //wxLogMessage(_T("OnSize at lmIdfyExerciseCtrol"));
     Layout();
 }
 
-void lmEarExerciseCtrol::OnPlay(wxCommandEvent& event)
+void lmIdfyExerciseCtrol::OnPlay(wxCommandEvent& event)
 {
     Play();
 }
 
-void lmEarExerciseCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
+void lmIdfyExerciseCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
 {
     m_pPlayButton->SetLabel(_("Play"));
     m_fPlaying = false;
 }
 
-void lmEarExerciseCtrol::OnNewProblem(wxCommandEvent& event)
+void lmIdfyExerciseCtrol::OnNewProblem(wxCommandEvent& event)
 {
     NewProblem();
 }
 
-void lmEarExerciseCtrol::OnDisplaySolution(wxCommandEvent& event)
+void lmIdfyExerciseCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
     //First, stop any possible chord being played to avoid crashes
     DoStopSounds();
@@ -313,7 +313,7 @@ void lmEarExerciseCtrol::OnDisplaySolution(wxCommandEvent& event)
     DisplaySolution();
 }
 
-void lmEarExerciseCtrol::OnRespButton(wxCommandEvent& event)
+void lmIdfyExerciseCtrol::OnRespButton(wxCommandEvent& event)
 {
     //First, stop any possible chord being played to avoid crashes
     DoStopSounds();
@@ -362,7 +362,7 @@ void lmEarExerciseCtrol::OnRespButton(wxCommandEvent& event)
 
 }
 
-void lmEarExerciseCtrol::NewProblem()
+void lmIdfyExerciseCtrol::NewProblem()
 {
     ResetExercise();
 
@@ -392,11 +392,11 @@ void lmEarExerciseCtrol::NewProblem()
 
 }
 
-void lmEarExerciseCtrol::Play()
+void lmIdfyExerciseCtrol::Play()
 {
     if (!m_fPlaying) {
         // Play button pressed
-        //m_pProblemScore->Dump(_T("lmEarExerciseCtrol.Play.ScoreDump.txt"));  //dbg
+        //m_pProblemScore->Dump(_T("lmIdfyExerciseCtrol.Play.ScoreDump.txt"));  //dbg
 
         //change link from "Play" to "Stop"
         m_pPlayButton->SetLabel(_("Stop"));
@@ -415,7 +415,7 @@ void lmEarExerciseCtrol::Play()
     }
 }
 
-void lmEarExerciseCtrol::DisplaySolution()
+void lmIdfyExerciseCtrol::DisplaySolution()
 {
     DoStopSounds();
 
@@ -433,22 +433,22 @@ void lmEarExerciseCtrol::DisplaySolution()
 
 }
 
-void lmEarExerciseCtrol::OnDebugShowSourceScore(wxCommandEvent& event)
+void lmIdfyExerciseCtrol::OnDebugShowSourceScore(wxCommandEvent& event)
 {
     m_pScoreCtrol->SourceLDP();
 }
 
-void lmEarExerciseCtrol::OnDebugDumpScore(wxCommandEvent& event)
+void lmIdfyExerciseCtrol::OnDebugDumpScore(wxCommandEvent& event)
 {
     m_pScoreCtrol->Dump();
 }
 
-void lmEarExerciseCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
+void lmIdfyExerciseCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
 {
     m_pScoreCtrol->DumpMidiEvents();
 }
 
-void lmEarExerciseCtrol::ResetExercise()
+void lmIdfyExerciseCtrol::ResetExercise()
 {
     DoStopSounds();
 
@@ -469,7 +469,7 @@ void lmEarExerciseCtrol::ResetExercise()
 
 }
 
-void lmEarExerciseCtrol::EnableButtons(bool fEnable)
+void lmIdfyExerciseCtrol::EnableButtons(bool fEnable)
 {
     wxButton* pButton;
     for (int iB=0; iB < m_nNumButtons; iB++) {
@@ -478,20 +478,20 @@ void lmEarExerciseCtrol::EnableButtons(bool fEnable)
     }
 }
 
-void lmEarExerciseCtrol::SetButtons(wxButton* pButtons[], int nNumButtons, int nIdFirstButton)
+void lmIdfyExerciseCtrol::SetButtons(wxButton* pButtons[], int nNumButtons, int nIdFirstButton)
 {
     m_pAnswerButtons = pButtons;
     m_nIdFirstButton = nIdFirstButton;
     m_nNumButtons = nNumButtons;
 }
 
-void lmEarExerciseCtrol::SetButtonColor(int i, wxColour& color)
+void lmIdfyExerciseCtrol::SetButtonColor(int i, wxColour& color)
 {
     wxButton* pButton = *(m_pAnswerButtons + i);
     if (pButton) pButton->SetBackgroundColour(color);
 }
 
-void lmEarExerciseCtrol::DoStopSounds()
+void lmIdfyExerciseCtrol::DoStopSounds()
 {
     //Stop any possible chord being played to avoid crashes
     if (m_pAuxScore) m_pAuxScore->Stop();

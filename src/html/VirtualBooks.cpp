@@ -364,7 +364,7 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     sContent[i] = sNil + _T("<p>") +
         _("Exercise: Lesson a scale and identify its type") +
         _T("</p><p>&nbsp;</p>")
-        _T("<object type=\"Application/LenMus\" classid=\"EarScales\" width=\"100%\" height=\"300\" border=\"0\">")
+        _T("<object type=\"Application/LenMus\" classid=\"IdfyScales\" width=\"100%\" height=\"300\" border=\"0\">")
         _T("<param name=\"control_settings\" value=\"EarIdfyScale\">")
         _T("<param name=\"mode\" value=\"earTraining\">")
         _T("</object>");
@@ -404,10 +404,9 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     sContent[i] = sNil + _T("<p>") +
         _("Exercise: Identify the scale shown") +
         _T("</p><p>&nbsp;</p>")
-        _T("<object type=\"Application/LenMus\" classid=\"TheoScales\" width=\"100%\" height=\"300\" border=\"0\">")
-        _T("<param  name=\"problem_type\" value=\"DeduceScale\">")
-        _T("<param  name=\"control\" value=\"chkKeySignature\">")
-        _T("<param  name=\"clef\" value=\"sol\">")
+        _T("<object type=\"Application/LenMus\" classid=\"IdfyScales\" width=\"100%\" height=\"300\" border=\"0\">")
+        _T("<param name=\"control_settings\" value=\"TheoIdfyScale\">")
+        _T("<param name=\"mode\" value=\"theory\">")
         _T("</object>");
     i++;
 

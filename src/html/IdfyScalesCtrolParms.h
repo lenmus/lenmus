@@ -18,8 +18,8 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file EarScalesCtrolParms.h
-    @brief Header file for class lmEarScalesCtrolParms
+/*! @file IdfyScalesCtrolParms.h
+    @brief Header file for class lmIdfyScalesCtrolParms
     @ingroup html_controls
 */
 #ifdef __GNUG__
@@ -47,14 +47,14 @@
 
 
 //! This class pack all parameters to set up a Scale Identification exercise,
-//! The settings must be read/setup by the EarScalesCtrol object.
+//! The settings must be read/setup by the IdfyScalesCtrol object.
 
-class lmEarScalesCtrolParms : public lmObjectParams
+class lmIdfyScalesCtrolParms : public lmObjectParams
 {
 public:
-    lmEarScalesCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
+    lmIdfyScalesCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
                               int nPercent, long nStyle);
-    ~lmEarScalesCtrolParms();
+    ~lmIdfyScalesCtrolParms();
 
     void AddParam(const wxHtmlTag& tag);
     void CreateHtmlCell(wxHtmlWinParser *pHtmlParser);
@@ -68,12 +68,12 @@ protected:
     wxString                m_sParamErrors;
     lmScalesConstrains*     m_pConstrains;
 
-    DECLARE_NO_COPY_CLASS(lmEarScalesCtrolParms)
+    DECLARE_NO_COPY_CLASS(lmIdfyScalesCtrolParms)
 };
 
 
 
-lmEarScalesCtrolParms::lmEarScalesCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
+lmIdfyScalesCtrolParms::lmIdfyScalesCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
                                    int nPercent, long nStyle)
     : lmObjectParams(tag, nWidth, nHeight, nPercent)
 {
@@ -90,7 +90,7 @@ lmEarScalesCtrolParms::lmEarScalesCtrolParms(const wxHtmlTag& tag, int nWidth, i
 }
 
 
-lmEarScalesCtrolParms::~lmEarScalesCtrolParms()
+lmIdfyScalesCtrolParms::~lmIdfyScalesCtrolParms()
 {
     //Constrains and options will be deleted by the Ctrol. DO NOT DELETE THEM HERE
     //IF THE CONTROL HAS BEEN CREATED
@@ -100,7 +100,7 @@ lmEarScalesCtrolParms::~lmEarScalesCtrolParms()
 
 }
 
-void lmEarScalesCtrolParms::AddParam(const wxHtmlTag& tag)
+void lmIdfyScalesCtrolParms::AddParam(const wxHtmlTag& tag)
 {
     /*! @page IdfyChordCtrolParams
         @verbatim    
@@ -221,12 +221,12 @@ void lmEarScalesCtrolParms::AddParam(const wxHtmlTag& tag)
     // Unknown param
     else
         m_sParamErrors += wxString::Format( 
-            _("lmEarScalesCtrol. Unknown param: <param %s >\n"),
+            _("lmIdfyScalesCtrol. Unknown param: <param %s >\n"),
             tag.GetAllParams() );
 
 }
 
-void lmEarScalesCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
+void lmIdfyScalesCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 {
     //inform about param errors or create the control
     wxWindow* pWnd;
@@ -236,8 +236,8 @@ void lmEarScalesCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
             wxPoint(0,0), wxSize(300, 100), wxTE_MULTILINE);
     }
     else {
-        // create the EarScalesCtrol
-        pWnd = new lmEarScalesCtrol((wxWindow*)pHtmlParser->GetWindow(), -1, 
+        // create the IdfyScalesCtrol
+        pWnd = new lmIdfyScalesCtrol((wxWindow*)pHtmlParser->GetWindow(), -1, 
             m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     }
     pWnd->Show(true);

@@ -42,7 +42,7 @@
 
 #include "Generators.h"
 #include "Constrains.h"
-#include "EarExerciseCtrol.h"
+#include "IdfyExerciseCtrol.h"
 
 //    Major scales            Type
 //    ---------------------   ----
@@ -133,7 +133,7 @@ enum EScaleGroup
 };
 
 
-class lmScalesConstrains : public lmEarConstrains
+class lmScalesConstrains : public lmIdfyConstrains
 {
 public:
     lmScalesConstrains(wxString sSection);

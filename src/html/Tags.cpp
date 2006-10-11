@@ -47,13 +47,12 @@
     ---------------------------------------         -------------------------------------
     lmScoreCtrol : public wxWindow                  lmScoreAuxCtrol : public wxWindow
     lmTheoIntervalsCtrol : public wxWindow          lmUrlAuxCtrol : public wxStaticText
-    lmTheoScalesCtrol : public wxWindow             lmCountersCtrol : public wxWindow
-    lmTheoKeySignCtrol : public wxWindow
+    lmTheoKeySignCtrol : public wxWindow            lmCountersCtrol : public wxWindow
     lmEarIntervalsCtrol : public wxWindow
     lmEarCompareIntvCtrol : public wxWindow
     lmIdfyChordCtrol : public wxWindow
     lmTheoMusicReadingCtrol : public wxWindow
-    lmEarScalesCtrol : public wxWindow
+    lmIdfyScalesCtrol : public wxWindow
 
 
     <object type="Application/LenMus"> directives and param classes
@@ -66,7 +65,7 @@
     classid="EarIntervals"           lmEarIntervalsCtrolParms : public lmObjectParams
     classid="EarCompareIntervals"    lmEarCompareIntvCtrolParms : public lmObjectParams
     classid="IdfyChord"              lmIdfyChordCtrolParms : public lmObjectParams
-    classid="EarScales"              lmEarScalesCtrolParms : public lmObjectParams
+    classid="IdfyScales"             lmIdfyScalesCtrolParms : public lmObjectParams
 
     @endverbatim
 
@@ -113,13 +112,13 @@
 #include "../exercises/EarCompareIntvCtrol.h"
 #include "../exercises/EarIntvalConstrains.h"
 #include "../exercises/IdfyChordCtrol.h"
-#include "../exercises/EarScalesCtrol.h"
+#include "../exercises/IdfyScalesCtrol.h"
 
 #include "ObjectParams.h"
 #include "TheoMusicReadingCtrolParms.h"
 #include "ScoreCtrolParams.h"
 #include "IdfyChordCtrolParms.h"
-#include "EarScalesCtrolParms.h"
+#include "IdfyScalesCtrolParms.h"
 
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
@@ -733,181 +732,6 @@ void lmEarCompareIntvCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 }
 
 
-//===============================================================================================
-class lmTheoScalesCtrolParms : public lmObjectParams
-{
-public:
-    lmTheoScalesCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
-                              int nPercent, long nStyle);
-    ~lmTheoScalesCtrolParms();
-
-    void AddParam(const wxHtmlTag& tag);
-    void CreateHtmlCell(wxHtmlWinParser *pHtmlParser);
-
-protected:
-
-
-        // Member variables:
-
-    // html object window attributes
-    long                    m_nWindowStyle;
-    lmTheoScalesConstrains*    m_pConstrains;
-
-    DECLARE_NO_COPY_CLASS(lmTheoScalesCtrolParms)
-};
-
-
-
-lmTheoScalesCtrolParms::lmTheoScalesCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
-                                   int nPercent, long nStyle)
-    : lmObjectParams(tag, nWidth, nHeight, nPercent)
-{
-
-    // html object window attributes
-    m_nWindowStyle = nStyle;
-
-    // construct constrains object
-    m_pConstrains = new lmTheoScalesConstrains();
-
-}
-
-
-lmTheoScalesCtrolParms::~lmTheoScalesCtrolParms()
-{
-    //Constrains will be deleted by the Ctrol. DO NOT DELETE IT HERE
-    //if (m_pConstrains) delete m_pConstrains;
-
-}
-
-void lmTheoScalesCtrolParms::AddParam(const wxHtmlTag& tag)
-{
-    /*
-        scale_type*        major | minor                                [both]
-        problem_type    DeduceScale | BuildScale | Both                [both]
-        clef*            Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1        [Sol]
-        control            chkKeySignature                                [none]
-    */
-
-    wxString sName = wxEmptyString;
-    wxString sValue = wxEmptyString;
-
-    // scan name and value
-    if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
-    sName = tag.GetParam(_T("NAME"));
-    sName.UpperCase();        //convert to upper case
-
-    if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
-    
-    // scale_type*        major | minor
-    if ( sName == _T("SCALE_TYPE") ) {
-        wxString sScaleType = tag.GetParam(_T("VALUE"));
-        sScaleType.UpperCase();
-        if (sScaleType == _T("MAJOR")) {
-            m_pConstrains->SetMajorType(true);
-        }
-        else if (sScaleType == _T("MINOR"))
-            m_pConstrains->SetMinorType(true);
-        else
-            LogError(wxString::Format( 
-_("Invalid param value in:\n<param %s >\n \
-Invalid value = %s \n \
-Acceptable values: major | minor"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
-    }
-
-    //problem_type        DeduceScale | BuildScale | Both
-    else if ( sName == _T("PROBLEM_TYPE") ) {
-        wxString sProblem = tag.GetParam(_T("VALUE"));
-        sProblem.UpperCase();
-        if (sProblem == _T("DEDUCESCALE"))
-            m_pConstrains->SetProblemType( ePTS_DeduceScale );
-        else if (sProblem == _T("BUILDSCALE"))
-            m_pConstrains->SetProblemType( ePTS_BuildScale );
-        else if (sProblem == _T("BOTH"))
-            m_pConstrains->SetProblemType( ePTS_Both );
-        else
-            LogError(wxString::Format( 
-_("Invalid param value in:\n<param %s >\n \
-Invalid value = %s \n \
-Acceptable values: DeduceScale | BuildScale | Both"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
-    }
-
-    // clef*        Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1 
-    else if ( sName == _T("CLEF") ) {
-        wxString sClef = tag.GetParam(_T("VALUE"));
-        sClef.UpperCase();
-        if (sClef == _T("SOL"))
-            m_pConstrains->SetClef(eclvSol, true);
-        else if (sClef == _T("FA4"))
-            m_pConstrains->SetClef(eclvFa4, true);
-        else if (sClef == _T("FA3"))
-            m_pConstrains->SetClef(eclvFa3, true);
-        else if (sClef == _T("DO4"))
-            m_pConstrains->SetClef(eclvDo4, true);
-        else if (sClef == _T("DO3"))
-            m_pConstrains->SetClef(eclvDo3, true);
-        else if (sClef == _T("DO2"))
-            m_pConstrains->SetClef(eclvDo2, true);
-        else if (sClef == _T("DO1"))
-            m_pConstrains->SetClef(eclvDo1, true);
-        else
-            LogError(wxString::Format( 
-_("Invalid param value in:\n<param %s >\n \
-Invalid value = %s \n \
-Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
-    }
-    // control            chkKeySignature
-    else if ( sName == _T("CONTROL") ) {
-        wxString sProblem = tag.GetParam(_T("VALUE"));
-        sProblem.UpperCase();
-        if (sProblem == _T("CHKKEYSIGNATURE"))
-            m_pConstrains->SetCtrolKeySignature(true);
-        else
-            LogError(wxString::Format( 
-_("Invalid param value in:\n<param %s >\n \
-Invalid value = %s \n \
-Acceptable values: chkKeySignature"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
-    }
-
-    // Unknown param
-    else
-        LogError(wxString::Format( 
-            _("lmTheoScalesCtrol. Unknown param: <param %s >\n"),
-            tag.GetAllParams() ));
-
-}
-
-void lmTheoScalesCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
-{
-    // ensure that at least a Clef is selected
-    bool fClefSpecified = false;
-    for (int i=lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
-        fClefSpecified = fClefSpecified || m_pConstrains->IsValidClef((EClefType)i);
-        if (fClefSpecified) break;
-    }
-    if (!fClefSpecified) {
-        m_pConstrains->SetClef(eclvSol, true);
-    }
-
-    // if no scale type selected, select major and minor
-    bool fScaleTypeSpecified = false;
-    fScaleTypeSpecified = m_pConstrains->MajorType() || m_pConstrains->MinorType();
-    if (!fScaleTypeSpecified) {
-        m_pConstrains->SetMajorType(true);
-        m_pConstrains->SetMinorType(true);
-    }
-
-    // create the window
-    wxWindow* wnd = new lmTheoScalesCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, 
-        m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
-    wnd->Show(true);
-    pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
-
-}
-
 
 //===============================================================================================
 //    Tag handlers for html extensions
@@ -917,13 +741,12 @@ enum EHtmlObjectTypes {
     eHO_Unknown = 0,
     eHO_MusicScore,
     eHO_Exercise_TheoIntervals,
-    eHO_Exercise_TheoScales,
     eHO_Exercise_TheoKeySignatures,
     eHO_Exercise_EarIntervals,
     eHO_Exercise_EarCompareIntervals,
     eHO_Exercise_TheoMusicReading,
     eHO_Exercise_IdfyChord,
-    eHO_Exercise_EarScales,
+    eHO_Exercise_IdfyScales,
     eHO_Control
 };
 
@@ -964,8 +787,6 @@ TAG_HANDLER_PROC(tag)
                         nType = eHO_MusicScore;
                     else if (sClassid.Upper() == _T("THEOINTERVALS"))
                         nType = eHO_Exercise_TheoIntervals;
-                    else if (sClassid.Upper() == _T("THEOSCALES"))
-                        nType = eHO_Exercise_TheoScales;
                     else if (sClassid.Upper() == _T("THEOKEYSIGNATURES"))
                         nType = eHO_Exercise_TheoKeySignatures;
                     else if (sClassid.Upper() == _T("CONTROL"))
@@ -978,8 +799,8 @@ TAG_HANDLER_PROC(tag)
                         nType = eHO_Exercise_TheoMusicReading;
                     else if (sClassid.Upper() == _T("IDFYCHORD"))
                         nType = eHO_Exercise_IdfyChord;
-                    else if (sClassid.Upper() == _T("EARSCALES"))
-                        nType = eHO_Exercise_EarScales;
+                    else if (sClassid.Upper() == _T("IDFYSCALES"))
+                        nType = eHO_Exercise_IdfyScales;
                 }
             }
         }
@@ -1035,11 +856,6 @@ TAG_HANDLER_PROC(tag)
                     nPercent, nStyle);
                 break;
 
-            case eHO_Exercise_TheoScales:
-                m_pObjectParams = new lmTheoScalesCtrolParms(tag, nWidth, nHeight, 
-                    nPercent, nStyle);
-                break;
-
             case eHO_Exercise_TheoKeySignatures:
                 m_pObjectParams = new lmTheoKeySignParms(tag, nWidth, nHeight, 
                     nPercent, nStyle);
@@ -1060,8 +876,8 @@ TAG_HANDLER_PROC(tag)
                     nPercent, nStyle);
                 break;
 
-            case eHO_Exercise_EarScales:
-                m_pObjectParams = new lmEarScalesCtrolParms(tag, nWidth, nHeight, 
+            case eHO_Exercise_IdfyScales:
+                m_pObjectParams = new lmIdfyScalesCtrolParms(tag, nWidth, nHeight, 
                     nPercent, nStyle);
                 break;
 
