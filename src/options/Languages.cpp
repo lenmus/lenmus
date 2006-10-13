@@ -171,7 +171,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     localLanguageName[_T("sl")] = _T("Slovenscina");
     localLanguageName[_T("sv")] = _T("Svenska");
     localLanguageName[_T("uk")] = _T("Ukrainska");
-    localLanguageName[_T("zh")] = _T("Chinese(Simplified)");
+    localLanguageName[_T("zh_CN")] = _T("Chinese(Simplified)");
 
     wxArrayString pathList;
     wxString sLocalePath = g_pPaths->GetLocaleRootPath();

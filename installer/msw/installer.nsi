@@ -154,100 +154,15 @@
 
 
 ;---------------------------------------------------------------------------------------------------
+;languaje files to support different languages during installation
 ;---------------------------------------------------------------------------------------------------
-; Language files. 
-; If this grows too much, move to language files, and uncomment the three next senteces
-;---------------------------------------------------------------------------------------------------
-;---------------------------------------------------------------------------------------------------
-;languaje files to support different languages <---- Commented for now
-  ;!addincludedir "."
-  ;!include "lenmus_spanish.nsh"
-  ;!include "lenmus_english.nsh"
+  !addincludedir ".\locale"
+  !include "spanish.nsh"
+  !include "english.nsh"
 
 
 
-; File "lenmus_spanish.nsh"
-;========================================================================================
 
-;Spanish language file for lenmus installer/uninstaller
-;---------------------------------------------------------------------------------------------------------
-
-LicenseLangString license ${LANG_Spanish} "license_spanish.txt"
-
-;strings to customize MUI pages
-LangString MSG_OptionalComponents   ${LANG_Spanish} "Por favor, seleccione los componentes opcionales que desee instalar"
-
-
-;section titles, what user sees to select components for installation
-LangString TITLE_CreateIcon     ${LANG_Spanish} "Acceso directo en escritorio"
-LangString TITLE_Scores         ${LANG_Spanish} "Partituras de ejemplo"
-LangString TITLE_RegKeys        ${LANG_Spanish} "Incluir en panel de control ('Agregar/quitar software')"
-
-;descriptions for the sections. Displayed to user when mouse hovers over a section
-LangString DESC_CreateIcon      ${LANG_Spanish} "Crear un icono de acceso directo en el escritorio"
-LangString DESC_Scores          ${LANG_Spanish} "Crear una carpeta con algunas partituras de ejemplo"
-LangString DESC_RegKeys         ${LANG_Spanish} "Crea claves en el Registro de Windows para que LenMus aparezca en 'Agregar/quitar programas'"
-
-
-;error messages and other texts
-LangString ERROR_CopyFiles          ${LANG_Spanish} "Error copiando archivos de programa"
-LangString ERROR_InstallFonts       ${LANG_Spanish} "Error instalando el font"
-LangString ERROR_CreateIcon         ${LANG_Spanish} "Error creando acceso directo en el escritorio"
-LangString ERROR_CopyScores         ${LANG_Spanish} "Error copiando partituras de ejemplo"
-LangString MSG_CONTINUE             ${LANG_Spanish} "¿Quiere continuar instalando?"
-LangString MSG_ABORT                ${LANG_Spanish} "Instalación cancelada"
-
-
-;start menu & desktop descriptions
-LangString SM_PRODUCT_GROUP             ${LANG_Spanish} "${APP_NAME}"
-LangString SHORTCUT_NAME_EXEC           ${LANG_Spanish} "Ejecutar ${APP_NAME}"
-LangString SHORTCUT_NAME_UNINSTALL      ${LANG_Spanish} "Desinstalar ${APP_NAME}"
-
-;End Spanish language file
-;=========================================================================================
-
-
-
-; File "lenmus_english.nsh"
-;========================================================================================
-;English language file for lenmus installer/uninstaller
-;---------------------------------------------------------------------------------------------------------
-
-LicenseLangString license ${LANG_English} "license_english.txt"
-
-;strings to customize MUI pages
-LangString MSG_OptionalComponents   ${LANG_English} "Please, choose the optional components you would like to install"
-
-
-;section titles, what user sees to select components for installation
-LangString TITLE_CreateIcon     ${LANG_English} "Shorcut on desktop"
-LangString TITLE_Scores         ${LANG_English} "Examples of music scores"
-LangString TITLE_RegKeys        ${LANG_English} "Add to Control Panel (to 'Add/Remove Programs')"
-
-;descriptions for the sections. Displayed to user when mouse hovers over a section
-LangString DESC_CreateIcon      ${LANG_English} "Create a shorcut icon on the desktop"
-LangString DESC_Scores          ${LANG_English} "Create a folder containing some examples of music scores"
-LangString DESC_RegKeys         ${LANG_English} "Create keys in Windows Registry to add LenMus to 'Add/Remove Programs' in the Control Panel."
-
-
-;error messages and other texts
-LangString ERROR_CopyFiles          ${LANG_English} "Error copying program files"
-LangString ERROR_InstallFonts       ${LANG_English} "Error installing font"
-LangString ERROR_CreateIcon         ${LANG_English} "Error creating shortcut on desktop"
-LangString ERROR_CopyScores         ${LANG_English} "Error copying examples of music scores"
-LangString MSG_CONTINUE             ${LANG_English} "Would you like to continue the installation?"
-LangString MSG_ABORT                ${LANG_English} "Installation canceled"
-
-
-;start menu & desktop descriptions
-LangString SM_PRODUCT_GROUP             ${LANG_English} "${APP_NAME}"
-LangString SHORTCUT_NAME_EXEC           ${LANG_English} "Run ${APP_NAME}"
-LangString SHORTCUT_NAME_UNINSTALL      ${LANG_English} "Uninstall ${APP_NAME}"
-
-;End English language file
-;=========================================================================================
-
- 
 
 
 ; *********************************************************************
@@ -447,7 +362,7 @@ FunctionEnd
 Function un.onInit
   FindWindow $R0 "THMNISEdit2_MainWindowClass"
   IsWindow $R0 0 +3
-  MessageBox MB_ICONEXCLAMATION|MB_OK "lenmus está ejecutándose. Antes de desinstalar lenmus debe cerrarlo."
+  MessageBox MB_ICONEXCLAMATION|MB_OK "lenmus estÃ¡ ejecutÃ¡ndose. Antes de desinstalar lenmus debe cerrarlo."
   Abort
 
   UserInfo::GetAccountType
