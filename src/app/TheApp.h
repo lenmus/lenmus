@@ -52,19 +52,21 @@ class lmTheApp: public wxApp
     lmEditFrame* CreateProjectFrame(wxDocument* doc, wxView* view);
     void UpdateCurrentDocViews();
 
+    // operations
+    void ChangeLanguage(wxString lang);
 
     // Accessors
     wxBitmap& GetBackgroundBitmap() const { return (wxBitmap&) m_background; }
     lmScoreView* GetActiveView() { return (lmScoreView *)m_pDocManager->GetCurrentView(); }
     wxDocManager* GetDocManager() { return m_pDocManager; }
-    wxString GetLanguageCanonicalName() { return m_locale.GetCanonicalName(); }
-    wxString GetLocaleName() { return m_locale.GetLocale(); }
-    wxString GetLocaleSysName() { return m_locale.GetSysName(); }
+    wxString GetLanguageCanonicalName() { return m_pLocale->GetCanonicalName(); }
+    wxString GetLocaleName() { return m_pLocale->GetLocale(); }
+    wxString GetLocaleSysName() { return m_pLocale->GetSysName(); }
     wxString GetVersionNumber();
 
 protected:
     wxDocManager*	m_pDocManager;
-    wxLocale        m_locale;           //locale we'll be using (user config)
+    wxLocale*       m_pLocale;          //locale we'll be using (user config)
     wxBitmap        m_background;       //background bitmap (user config)
 
 private:

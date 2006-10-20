@@ -208,7 +208,6 @@ enum
     MENU_Preferences,
 
     // Menu Help
-    MENU_Help_About,
     MENU_OpenHelp,
     MENU_VisitWebsite,
 
@@ -226,6 +225,14 @@ enum
 
   // other IDs
     ID_TIMER_MTR
+
+  // special IDs
+
+    // it is important for the id corresponding to the "About" command to have
+    // this standard value as otherwise it won't be handled properly under Mac
+    // (where it is special and put into the "Apple" menu)
+    MENU_Help_About  = wxID_ABOUT,
+
 
 };
 
@@ -363,10 +370,9 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
 END_EVENT_TABLE()
 
 lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& title,
-    const wxPoint& pos, const wxSize& size, long type, wxLocale& l)
+    const wxPoint& pos, const wxSize& size, long type)
 :
-  wxDocMDIParentFrame(manager, frame, -1, title, pos, size, type, _T("myFrame")),
-  m_locale(l)
+  wxDocMDIParentFrame(manager, frame, -1, title, pos, size, type, _T("myFrame"))
 {
     m_pToolsDlg = (lmToolsDlg *) NULL;
     m_pHelp = (lmHelpController*) NULL;
@@ -1211,14 +1217,6 @@ void lmMainFrame::OnCheckForUpdates(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
-    wxString localeInfo;
-    wxString locale = m_locale.GetLocale();
-    wxString sysname = m_locale.GetSysName();
-    wxString canname = m_locale.GetCanonicalName();
-
-    localeInfo.Printf( _("Language: %s\nSystem locale name: %s\nCanonical locale name: %s\n"),
-        locale.c_str(), sysname.c_str(), canname.c_str() );
-
    lmAboutDialog dlg(this);
    dlg.ShowModal();
 }

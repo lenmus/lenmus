@@ -50,6 +50,7 @@ public:
     void OnDevelopers(wxCommandEvent& WXUNUSED(event));
     void OnArtCredits(wxCommandEvent& WXUNUSED(event));
     void OnSoftwareCredits(wxCommandEvent& WXUNUSED(event));
+    void OnTranslators(wxCommandEvent& WXUNUSED(event));
     void OnBuildInfo(wxCommandEvent& WXUNUSED(event));
 
 

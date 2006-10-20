@@ -200,10 +200,12 @@ _("Proxy settings");
 _("Server settings");
 _("Host:");
 _("Port number:");
+_("Please enter data for both, host name and port number");
 _("Proxy server requires authentication");
 _("Authentication");
 _("Username:");
 _("Password:");
+_("Please enter data for both, user name and password");
 //OtherOptionsPanel.xrc 
 _("Other options");
 _("Exercises");
@@ -229,6 +231,7 @@ _("Licence");
 _("Developers");
 _("Art design credits");
 _("Software credits");
+_("Translators");
 _("Build info.");
 _("Accept");
 //DlgCfgIdfyChord.xrc 

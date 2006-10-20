@@ -62,6 +62,7 @@ BEGIN_EVENT_TABLE(lmAboutDialog, wxDialog)
     EVT_BUTTON( XRCID( "btnDevelopers" ), lmAboutDialog::OnDevelopers )
     EVT_BUTTON( XRCID( "btnArtCredits" ), lmAboutDialog::OnArtCredits )
     EVT_BUTTON( XRCID( "btnSoftwareCredits" ), lmAboutDialog::OnSoftwareCredits )
+    EVT_BUTTON( XRCID( "btnTranslators" ), lmAboutDialog::OnTranslators )
     EVT_BUTTON( XRCID( "btnBuildInfo" ), lmAboutDialog::OnBuildInfo )
 
 END_EVENT_TABLE()
@@ -231,6 +232,19 @@ to use it in commercial products without licencing.") +
         _("Most of 'lmbasic.ttf' font glyphs are taken from <b>LilyPond</b> GNU GPL project \
 (http://lilypond.org), Feta font.") +
         _T("</p></body></html>");
+
+        m_pHtmlWindow->SetPage(sContent);
+
+}
+
+void lmAboutDialog::OnTranslators(wxCommandEvent& WXUNUSED(event))
+{
+    wxString sContent = m_sHeader +
+        _T("<center>")
+        _T("<h3>") + _("Translation credits") + _T("</h3></center><table>")
+        _T("<tr><td>") + _("French") + _T("</td><td>Carlos Alarcia</td></tr>")
+        _T("<tr><td>") + _("Spanish") + _T("</td><td>Cecilio Salmerón</td></tr>")
+        _T("</table></body></html>");
 
         m_pHtmlWindow->SetPage(sContent);
 

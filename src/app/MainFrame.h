@@ -66,11 +66,11 @@ class lmMainFrame: public wxDocMDIParentFrame
 {
     DECLARE_CLASS(lmMainFrame)
 public:
-    wxLocale& m_locale;            // locale for internationalization
+    wxLocale*   m_pLocale;            // locale for internationalization
   
     //constructors and destructor
     lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& title, 
-            const wxPoint& pos, const wxSize& size, long type, wxLocale& m_locale);
+            const wxPoint& pos, const wxSize& size, long type);
     ~lmMainFrame();
 
     // tool bars

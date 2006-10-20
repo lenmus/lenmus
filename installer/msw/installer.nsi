@@ -157,8 +157,9 @@
 ;languaje files to support different languages during installation
 ;---------------------------------------------------------------------------------------------------
   !addincludedir ".\locale"
-  !include "spanish.nsh"
-  !include "english.nsh"
+  !include "es.nsh"
+  !include "en.nsh"
+  !include "fr.nsh"
 
 
 

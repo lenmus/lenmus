@@ -102,7 +102,6 @@
 #include "../exercises/Constrains.h"
 
 #include "../exercises/TheoIntervalsCtrol.h"
-#include "../exercises/TheoScalesCtrol.h"
 #include "../exercises/TheoKeySignConstrains.h"
 #include "../exercises/TheoKeySignCtrol.h"
 #include "../exercises/TheoMusicReadingCtrol.h"

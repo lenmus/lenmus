@@ -178,6 +178,7 @@ lmTheApp::lmTheApp(void)
 {
     m_pDocManager = (wxDocManager *) NULL;
     g_pTheApp = this;
+    m_pLocale = new wxLocale();
 }
 
 bool lmTheApp::OnInit(void)
@@ -274,11 +275,11 @@ bool lmTheApp::OnInit(void)
     g_pPaths->SetLanguageCode(lang);
 
     // Set up locale object
-    m_locale.Init(_T(""), lang, _T(""), true, true);
-    m_locale.AddCatalogLookupPathPrefix( g_pPaths->GetLocalePath() );
-    m_locale.AddCatalog(_T("lenmus_") + m_locale.GetName());
-    m_locale.AddCatalog(_T("wxwidgets_") + m_locale.GetName());
-    m_locale.AddCatalog(_T("wxmidi_") + m_locale.GetName());
+    m_pLocale->Init(_T(""), lang, _T(""), true, true);
+    m_pLocale->AddCatalogLookupPathPrefix( g_pPaths->GetLocalePath() );
+    m_pLocale->AddCatalog(_T("lenmus_") + m_pLocale->GetName());
+    m_pLocale->AddCatalog(_T("wxwidgets_") + m_pLocale->GetName());
+    m_pLocale->AddCatalog(_T("wxmidi_") + m_pLocale->GetName());
 
     // open log file and redirec all loging there
     wxFileName oFilename(g_pPaths->GetTempPath(), _T("DataError"), _T("log"), wxPATH_NATIVE);
@@ -395,7 +396,7 @@ bool lmTheApp::OnInit(void)
                       _T("LenMus"),                             // title
                       wxPoint(wndRect.x, wndRect.y),            // origin
                       wxSize(wndRect.width, wndRect.height),    // size
-                      wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE, m_locale);
+                      wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE);
 
     if (fMaximized)  g_pMainFrame->Maximize(true);
 
@@ -543,6 +544,31 @@ bool lmTheApp::OnInit(void)
     return true;
 }
 
+void lmTheApp::ChangeLanguage(wxString lang)
+{
+    // lmPaths re-initialization
+    g_pPaths->SetLanguageCode(lang);
+
+    // locale object re-initialization
+    delete m_pLocale;
+    m_pLocale = new wxLocale();
+    m_pLocale->Init(_T(""), lang, _T(""), true, true);
+    m_pLocale->AddCatalogLookupPathPrefix( g_pPaths->GetLocalePath() );
+    m_pLocale->AddCatalog(_T("lenmus_") + m_pLocale->GetName());
+    m_pLocale->AddCatalog(_T("wxwidgets_") + m_pLocale->GetName());
+    m_pLocale->AddCatalog(_T("wxmidi_") + m_pLocale->GetName());
+
+    // When changing language a flag must be stored so that at next run the program must
+    // clean the temp folder. Otherwise, as books have the same names in English and
+    // in Spanish, the new language .hcc and hhk files will not be properly loaded.
+    // if books_open close books
+    // delete temp folder content
+
+    //Re-pain all open windows
+    //re-create menu bars
+
+}
+
 int lmTheApp::OnExit(void)
 {
         //
@@ -585,6 +611,9 @@ int lmTheApp::OnExit(void)
 
     // the LDP tags table
     lmLdpTagsTable::DeleteInstance();
+
+    //locale object
+    delete m_pLocale;
 
     return 0;
 }
@@ -708,7 +737,7 @@ lmEditFrame* lmTheApp::CreateProjectFrame(wxDocument* doc, wxView* view)
 wxString lmTheApp::GetVersionNumber()
 {
     // Increment this every time you release a new version
-    wxString sVersion = _T("3.3b");
+    wxString sVersion = _T("3.3");
     return sVersion;
 }
 

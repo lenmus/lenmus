@@ -117,6 +117,13 @@
                             <object class="sizeritem">
                                 <flag>wxGROW|wxLEFT|wxRIGHT|wxBOTTOM</flag>
                                 <border>5</border>
+                                <object class="wxButton" name="btnTranslators">
+                                    <label>Translators</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxGROW|wxLEFT|wxRIGHT|wxBOTTOM</flag>
+                                <border>5</border>
                                 <object class="wxButton" name="btnBuildInfo">
                                     <label>Build info.</label>
                                 </object>

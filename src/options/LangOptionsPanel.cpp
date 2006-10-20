@@ -47,6 +47,9 @@
 #include "wx/config.h"
 extern wxConfigBase* g_pPrefs;
 
+#include "../app/TheApp.h"
+extern lmTheApp* g_pTheApp;
+
 
 lmLangOptionsPanel::lmLangOptionsPanel(wxWindow* parent)
 {
@@ -103,5 +106,6 @@ void lmLangOptionsPanel::Apply()
         wxMessageBox(wxString::Format(
             _("Language '%s' will be used the next time you run LenMus."),
             sLangName )); 
+        //g_pTheApp->ChangeLanguage(sLang);
     }
 }
