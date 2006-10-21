@@ -72,9 +72,12 @@ lmPaths::~lmPaths()
 
 void lmPaths::SetLanguageCode(wxString sLangCode)
 {
-    /*
-    Lang code has changed. It is necessary to rebuild paths depending on language
-    */
+    //
+    // Lang code has changed. It is necessary to rebuild paths depending on language
+    //
+    // IMPORTANT: When this method is invoked wxLocale object is not
+    //            yet initialized. DO NOT USE LANGUAGE DEPENDENT STRINGS HERE
+    //
     m_sLangCode = sLangCode;
     wxFileName oLocalePath(m_sLocaleRoot, _T(""), wxPATH_NATIVE);
     oLocalePath.AppendDir(m_sLangCode);
@@ -87,6 +90,25 @@ void lmPaths::SetLanguageCode(wxString sLangCode)
     wxFileName oHelpPath = oLocalePath;
     oHelpPath.AppendDir(_T("help"));
     m_sHelp = oHelpPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+    // When changing language a flag was stored so that at next run the program must
+    // clean the temp folder. Otherwise, as books have the same names in English and
+    // in Spanish, the new language .hcc and hhk files will not be properly loaded.
+    // Here I test this flag and if true, remove all files in temp folder
+    bool fClearTemp;
+    g_pPrefs->Read(_T("/Locale/LanguageChanged"), &fClearTemp, false );
+    if (fClearTemp) {
+        wxString sFile = wxFindFirstFile(m_sTemp);
+        while ( !sFile.empty() ) {
+            if (!::wxRemoveFile(sFile)) {
+                wxLogMessage(_T("[lmPaths::LoadUserPreferences] Error deleting %s"), sFile );
+            }
+            sFile = wxFindNextFile();
+        }
+        //reset flag
+        fClearTemp = false;
+        g_pPrefs->Write(_T("/Locale/LanguageChanged"), fClearTemp);
+    }
 
 }
 

@@ -1,4 +1,3 @@
-// RCS-ID: $Id: LangOptionsPanel.cpp,v 1.5 2006/02/23 19:22:19 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -103,9 +102,9 @@ void lmLangOptionsPanel::Apply()
         g_pPrefs->Write(_T("/Locale/LanguageChanged"), f);
 
         //inform user
-        wxMessageBox(wxString::Format(
-            _("Language '%s' will be used the next time you run LenMus."),
-            sLangName )); 
-        //g_pTheApp->ChangeLanguage(sLang);
+        //wxMessageBox(wxString::Format(
+        //    _("Language '%s' will be used the next time you run LenMus."),
+        //    sLangName )); 
+        g_pTheApp->ChangeLanguage(sLang);
     }
 }

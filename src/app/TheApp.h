@@ -33,6 +33,9 @@
 #include "wx/docview.h"
 #include "wx/docmdi.h"
 
+#include "SplashFrame.h"
+#include "../html/VirtualBooks.h"       //for virtual eBooks file system
+
 class wxDocManager;
 class lmMainFrame;
 class lmEditFrame;
@@ -64,15 +67,18 @@ class lmTheApp: public wxApp
     wxString GetLocaleSysName() { return m_pLocale->GetSysName(); }
     wxString GetVersionNumber();
 
-protected:
-    wxDocManager*	m_pDocManager;
-    wxLocale*       m_pLocale;          //locale we'll be using (user config)
-    wxBitmap        m_background;       //background bitmap (user config)
-
 private:
     void GetMainWindowPlacement(wxRect *frameRect, bool *fMaximized);
     void GetDefaultMainWindowRect(wxRect *defRect);
     wxString ChooseLanguage(wxWindow *parent);
+    lmSplashFrame* RecreateGUI(int nMilliseconds);
+
+
+    wxDocManager*	m_pDocManager;
+    wxLocale*       m_pLocale;          //locale we'll be using (user config)
+    wxBitmap        m_background;       //background bitmap (user config)
+    lmVirtualBooks* m_pVBooks;          //ptr to virtual books object
+
 
 };
 

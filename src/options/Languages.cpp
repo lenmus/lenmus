@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Languages.cpp,v 1.3 2006/02/23 19:22:19 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -72,8 +71,8 @@ bool TranslationExists(wxArrayString& pathList, wxString code)
         if (!oDir.IsOpened()) continue;    //directory does not exists!
         fFound = oDir.GetFirst(&sFileName, sPattern, wxDIR_FILES | wxDIR_DIRS);
         while(fFound) {
-            wxLogMessage(wxString::Format(_T("[Languages::TranslationExists] code=%s, sFileName=%s"),
-                code, sFileName));
+            //wxLogMessage(wxString::Format(_T("[Languages::TranslationExists] code=%s, sFileName=%s"),
+            //    code, sFileName));
             results.Add(sFileName);
             fFound = oDir.GetNext(&sFileName);
         }

@@ -100,7 +100,6 @@
 #include "scoreView.h"
 #include "AboutDialog.h"
 #include "LangChoiceDlg.h"
-#include "SplashFrame.h"
 #include "ArtProvider.h"
 
 // to save config information into a file
@@ -109,7 +108,6 @@
 #include "wx/filename.h"
 
 #include "wx/fs_zip.h"                  //to use the zip file system
-#include "../html/VirtualBooks.h"       //for virtual eBooks file system
 #include "Preferences.h"                //access to user preferences
 #include "../sound/MidiManager.h"       //access to Midi configuration
 #include "../sound/WaveManager.h"       //access to Wave sound manager
@@ -176,13 +174,14 @@ IMPLEMENT_APP(lmTheApp)
 
 lmTheApp::lmTheApp(void)
 {
-    m_pDocManager = (wxDocManager *) NULL;
     g_pTheApp = this;
-    m_pLocale = new wxLocale();
 }
 
 bool lmTheApp::OnInit(void)
 {
+    m_pDocManager = (wxDocManager *) NULL;
+    m_pLocale = new wxLocale();
+
     // Error reporting and trace
     g_pLogger = new lmLogger();
 
@@ -388,61 +387,18 @@ bool lmTheApp::OnInit(void)
         // Create the main frame window
         //
 
-    bool fMaximized;
-    wxRect wndRect;
-    GetMainWindowPlacement(&wndRect, &fMaximized);
-
-    g_pMainFrame = new lmMainFrame((wxDocManager *) m_pDocManager, (wxFrame *) NULL,
-                      _T("LenMus"),                             // title
-                      wxPoint(wndRect.x, wndRect.y),            // origin
-                      wxSize(wndRect.width, wndRect.height),    // size
-                      wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE);
-
-    if (fMaximized)  g_pMainFrame->Maximize(true);
-
-        //
-        // Create and show the splash window. The splash can have a non-rectangular
-        // shape. The color specified as second parameter of lmSplashFrame creation will
-        // be used as the mask color to set the shape
-        //
-
-    wxBitmap bitmap = wxArtProvider::GetBitmap(_T("app_splash"), wxART_OTHER);
     int nMilliseconds = 3000;   // at least visible for 3 seconds
 	long nSplashTime = (long) time( NULL );
-    lmSplashFrame* pSplash = (lmSplashFrame*) NULL;
-    if (bitmap.Ok() && bitmap.GetHeight() > 100)
-	{
-		//the bitmap exists and it is not the error bitmap (height > 100 pixels). Show it
-        wxColour colorTransparent(255, 0, 255);   //cyan mask
-        pSplash = new lmSplashFrame(bitmap, colorTransparent,
-            lmSPLASH_CENTRE_ON_PARENT | lmSPLASH_TIMEOUT,
-            nMilliseconds, g_pMainFrame, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-            wxSIMPLE_BORDER|wxSTAY_ON_TOP);
-    }
-    wxSafeYield();
-
-    //// Give the main frame an icon (this is ignored in MDI mode: uses resources)
-    //g_pMainFrame->SetIcon(wxArtProvider::GetIcon(_T("app_icon"), wxART_OTHER));
-
-    // create global data structures for printer settings
-    g_pPrintData = new wxPrintData;
-    g_pPaperSetupData = new wxPageSetupDialogData;
-
-    ////Make a menubar and associate it with the frame
-    //wxMenuBar* menu_bar = g_pMainFrame->CreateMenuBar(NULL, NULL, false, !g_fReleaseVersion);        //fEdit, fDebug
-    //g_pMainFrame->SetMenuBar(menu_bar);
-
-    g_pMainFrame->Show(true);
-
-    SetTopWindow(g_pMainFrame);
-
-    //cursor busy
+    lmSplashFrame* pSplash = RecreateGUI(nMilliseconds);
     ::wxBeginBusyCursor();
 
         //
         //Main frame created and visible. Proceed with initializations
         //
 
+    // create global data structures for printer settings
+    g_pPrintData = new wxPrintData;
+    g_pPaperSetupData = new wxPageSetupDialogData;
 
     //Seed the random-number generator with current time so that
     //the numbers will be different every time we run.
@@ -474,14 +430,17 @@ bool lmTheApp::OnInit(void)
     g_pMidiOut->ProgramChange(g_pMidi->MtrChannel(), g_pMidi->MtrInstr());
 
     //Add handler for virtual books file system
-    wxFileSystem::AddHandler(new lmVirtualBooks);
+    m_pVBooks = new lmVirtualBooks(lang);
+    wxFileSystem::AddHandler(m_pVBooks);
 
-      // all initialization finished.
+        // all initialization finished.
+
 	// check if the splash window display time is ellapsed and wait if not
-	nMilliseconds -= ((long)time( NULL ) - nSplashTime);
-	if (nMilliseconds > 0) ::wxMilliSleep( nMilliseconds );
-	// allow for splash destruction
-    if (pSplash) pSplash->AllowDestroy();
+    if (pSplash) {
+	    nMilliseconds -= ((long)time( NULL ) - nSplashTime);
+	    if (nMilliseconds > 0) ::wxMilliSleep( nMilliseconds );
+        pSplash->AllowDestroy();    // allow to destroy the splash
+    }
 
 //remove this in debug version to start with nothing displayed
 #if !_DEBUG
@@ -492,6 +451,7 @@ bool lmTheApp::OnInit(void)
 
     //cursor normal and terminate
     ::wxEndBusyCursor();
+
 
     //check for updates if this option is set up. Default: do check
     wxString sCheckFreq = g_pPrefs->Read(_T("/Options/CheckForUpdates/Frequency"), _T("Weekly") );
@@ -558,14 +518,11 @@ void lmTheApp::ChangeLanguage(wxString lang)
     m_pLocale->AddCatalog(_T("wxwidgets_") + m_pLocale->GetName());
     m_pLocale->AddCatalog(_T("wxmidi_") + m_pLocale->GetName());
 
-    // When changing language a flag must be stored so that at next run the program must
-    // clean the temp folder. Otherwise, as books have the same names in English and
-    // in Spanish, the new language .hcc and hhk files will not be properly loaded.
-    // if books_open close books
-    // delete temp folder content
+    // Virtual books re-initialization
+    m_pVBooks->ReloadBooks(lang);
 
-    //Re-pain all open windows
-    //re-create menu bars
+    //Re-create main frame
+    RecreateGUI(0);   //recreate all. No splash
 
 }
 
@@ -741,7 +698,62 @@ wxString lmTheApp::GetVersionNumber()
     return sVersion;
 }
 
+lmSplashFrame* lmTheApp::RecreateGUI(int nMilliseconds)
+{
+    bool fRestarting = false;
+	wxWindow* pTopwindow = GetTopWindow();
+	if(pTopwindow) {
+		SetTopWindow(NULL);
+		pTopwindow->Destroy();
+        fRestarting = true;
+	}
 
+    bool fMaximized;
+    wxRect wndRect;
+    GetMainWindowPlacement(&wndRect, &fMaximized);
+
+    g_pMainFrame = new lmMainFrame((wxDocManager *) m_pDocManager, (wxFrame *) NULL,
+                      _T("LenMus"),                             // title
+                      wxPoint(wndRect.x, wndRect.y),            // origin
+                      wxSize(wndRect.width, wndRect.height),    // size
+                      wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE);
+
+    if (fMaximized)  g_pMainFrame->Maximize(true);
+
+        //
+        // Create and show the splash window. The splash can have a non-rectangular
+        // shape. The color specified as second parameter of lmSplashFrame creation will
+        // be used as the mask color to set the shape
+        //
+
+    lmSplashFrame* pSplash = (lmSplashFrame*) NULL;
+    if (!fRestarting)
+    {
+        wxBitmap bitmap = wxArtProvider::GetBitmap(_T("app_splash"), wxART_OTHER);
+        if (bitmap.Ok() && bitmap.GetHeight() > 100)
+	    {
+		    //the bitmap exists and it is not the error bitmap (height > 100 pixels). Show it
+            wxColour colorTransparent(255, 0, 255);   //cyan mask
+            pSplash = new lmSplashFrame(bitmap, colorTransparent,
+                lmSPLASH_CENTRE_ON_PARENT | lmSPLASH_TIMEOUT,
+                nMilliseconds, g_pMainFrame, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                wxSIMPLE_BORDER|wxSTAY_ON_TOP);
+        }
+        wxSafeYield();
+    }
+    
+    g_pMainFrame->Show(true);
+
+    SetTopWindow(g_pMainFrame);
+
+    //force to show book frame
+    if (fRestarting) {
+        wxCommandEvent event;       //it is not used, so not need to initialize it
+        g_pMainFrame->OnOpenBook(event);
+    }
+
+    return pSplash;
+}
 
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------

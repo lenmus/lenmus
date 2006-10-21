@@ -34,25 +34,44 @@
 
 #include "TextBookController.h"
 
-extern void LoadVirtualBooks(lmTextBookController* pBookController);
 
 
 class lmVirtualBooks : public wxFileSystemHandler
 {
 public:
-    lmVirtualBooks();
+    lmVirtualBooks(wxString sLang);
     ~lmVirtualBooks();
 
     wxFSFile* OpenFile(wxFileSystem& fs, const wxString& location);
     bool CanOpen(const wxString& location);
+    void ReloadBooks(wxString sLang);
+    static void LoadVirtualBooks(lmTextBookController* pBookController);
 
 private:
     void LoadIntroBook();
     void LoadSingleExercisesBook();
 
 
+    //array sizes
+    enum {
+        lmNUM_SECTIONS = 3,
+        lmNUM_SINGLE_PAGES = 10
+    };
 
 
+    wxString    m_sPrevLang;
+
+    //introduction/welcome book
+    wxString m_sIntroHHP;        //book description
+    wxString m_sIntroHHC;        //book content
+    wxString m_sIntroHHK;        //book index
+    wxString m_sIntroHTM;        //book pages
+
+    //single exercises book
+    wxString m_sSingleHHP;        //book description
+    wxString m_sSingleHHC;        //book content
+    wxString m_sSingleHHK;        //book index
+    wxString m_sSingleHTM[lmNUM_SINGLE_PAGES];        //book pages
 
 
 };

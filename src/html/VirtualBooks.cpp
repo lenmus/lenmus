@@ -39,44 +39,33 @@
 
 #include "VirtualBooks.h"
 #include "..\app\TheApp.h"             //access to get version
+extern lmTheApp* g_pTheApp;
 
 // access to paths
 #include "../globals/Paths.h"
 extern lmPaths* g_pPaths;
 
-//array sizes
-enum { lmNUM_SECTIONS = 3 };
-enum { lmNUM_SINGLE_PAGES = 10 };
 
 
-static bool  m_fBooksLoaded = false;
-
-//introduction/welcome book
-static wxString m_sIntroHHP;        //book description
-static wxString m_sIntroHHC;        //book content
-static wxString m_sIntroHHK;        //book index
-static wxString m_sIntroHTM;        //book pages
-
-//single exercises book
-static wxString m_sSingleHHP;        //book description
-static wxString m_sSingleHHC;        //book content
-static wxString m_sSingleHHK;        //book index
-static wxString m_sSingleHTM[lmNUM_SINGLE_PAGES];        //book pages
-
-
-lmVirtualBooks::lmVirtualBooks() : wxFileSystemHandler()
+lmVirtualBooks::lmVirtualBooks(wxString sLang) : wxFileSystemHandler()
 {
-    //initialize book content. It can not be static because then _() macro doesn't
-    //work
-    if (!m_fBooksLoaded) {
-        LoadIntroBook();
-        LoadSingleExercisesBook();
-        m_fBooksLoaded = true;
-    }
+    //initialize book content for requested language
+    m_sPrevLang = _T("");
+    ReloadBooks(sLang);
 }
 
 lmVirtualBooks::~lmVirtualBooks()
 {
+}
+
+void lmVirtualBooks::ReloadBooks(wxString sLang)
+{
+    //initialize book content if language changes
+    if ((sLang != m_sPrevLang)) {
+        LoadIntroBook();
+        LoadSingleExercisesBook();
+        m_sPrevLang = sLang;
+    }
 }
 
 bool lmVirtualBooks::CanOpen(const wxString& location)
@@ -528,7 +517,7 @@ void lmVirtualBooks::LoadSingleExercisesBook()
 //-------------------------------------------------------------------------------------
 // global functions
 //-------------------------------------------------------------------------------------
-void LoadVirtualBooks(lmTextBookController* pBookController)
+void lmVirtualBooks::LoadVirtualBooks(lmTextBookController* pBookController)
 {
     wxString sFilename;
 

@@ -224,14 +224,14 @@ enum
     ID_SPIN_METRONOME,
 
   // other IDs
-    ID_TIMER_MTR
+    ID_TIMER_MTR,
 
   // special IDs
 
     // it is important for the id corresponding to the "About" command to have
     // this standard value as otherwise it won't be handled properly under Mac
     // (where it is special and put into the "Apple" menu)
-    MENU_Help_About  = wxID_ABOUT,
+    MENU_Help_About = wxID_ABOUT,
 
 
 };
@@ -1112,7 +1112,7 @@ void lmMainFrame::InitializeBooks()
         sPattern = _T("*.htb");
         m_pBookController->SetTitleFormat(_("Available books"));
 
-        LoadVirtualBooks(m_pBookController);
+        lmVirtualBooks::LoadVirtualBooks(m_pBookController);
         ScanForBooks(sPath, sPattern);
     }
     else {
@@ -1121,7 +1121,7 @@ void lmMainFrame::InitializeBooks()
         m_pBookController->SetTitleFormat(_T("Test mode: available books"));
 
         //load the virtual books
-        LoadVirtualBooks(m_pBookController);
+        lmVirtualBooks::LoadVirtualBooks(m_pBookController);
 
         // loop to look for subdirectories
         wxDir dir(sPath);

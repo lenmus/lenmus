@@ -113,48 +113,85 @@ Please, connect to internet and then retry."));
             return true;
         }
 
+        //wxString sUrl = _T("http://localhost/sw/UpdateData.xml");
         wxString sUrl = _T("http://www.lenmus.org/sw/UpdateData.xml");
 
 //-----------------------------------
-    // Old code using wxHTTP
+     //Old code using wxHTTP
 
-        //// ensure we can build a wxURL object from the given URL
-        //wxURL oURL(sUrl);
-        //wxASSERT( oURL.GetError() == wxURL_NOERR);
-        //
-        ////Setup user-agent string to be identified not as a bot but as a browser
-        //wxProtocol& oProt = oURL.GetProtocol();
-        //wxHTTP* pHTTP = (wxHTTP*)&oProt;
-        //pHTTP->SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
-        //oProt.SetTimeout(10);              // 90 sec
-
-//-----------------------------------
-    // New code using wxHttpEngine
-
-        wxHTTPBuilder oHttp;
-        oHttp.InitContentTypes(); // Initialise the content types on the page
-
-        //get proxy options
-        wxProxySettings* pSettings = GetProxySettings();
-
-        if (pSettings->m_bUseProxy) {
-            oHttp.HttpProxy(pSettings->m_strProxyHostname, pSettings->m_nProxyPort );
-            if (pSettings->m_bRequiresAuth)
-                oHttp.HttpProxyAuth( pSettings->m_strProxyUsername, pSettings->m_strProxyPassword);
-        }
-
+        // ensure we can build a wxURL object from the given URL
+        wxURL oURL(sUrl);
+        wxASSERT( oURL.GetError() == wxURL_NOERR);
+        
         //Setup user-agent string to be identified not as a bot but as a browser
-        oHttp.SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
-        oHttp.SetTimeout(10);              // 10 sec
+        wxProtocol& oProt = oURL.GetProtocol();
+        wxHTTP* pHTTP = (wxHTTP*)&oProt;
+        pHTTP->SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
+        oProt.SetTimeout(10);              // 90 sec
 
-        wxInputStream* pInput = oHttp.GetInputStream( sUrl );
+        //create the input stream by establishing http connection
+        wxInputStream* pInput = oURL.GetInputStream();
 
 //-----------------------------------
+    //// New code using wxHttpEngine
 
-        ////create the input stream by establishing http connection
-        //wxInputStream* pInput = oURL.GetInputStream();
+    //    wxHTTPBuilder oHttp;
+    //    oHttp.InitContentTypes(); // Initialise the content types on the page
+
+    //    //get proxy options
+    //    wxProxySettings* pSettings = GetProxySettings();
+
+    //    if (pSettings->m_bUseProxy) {
+    //        oHttp.HttpProxy(pSettings->m_strProxyHostname, pSettings->m_nProxyPort );
+    //        if (pSettings->m_bRequiresAuth)
+    //            oHttp.HttpProxyAuth( pSettings->m_strProxyUsername, pSettings->m_strProxyPassword);
+    //    }
+
+    //    //Setup user-agent string to be identified not as a bot but as a browser
+    //    oHttp.SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
+    //    oHttp.SetTimeout(10);              // 10 sec
+
+    //    wxInputStream* pInput = oHttp.GetInputStream( sUrl );
+
+//-----------------------------------
+    //// New code using wxHTTP
+
+    //    // ensure we can build a wxURL object from the given URL
+    //    wxURL oURL(sUrl);
+    //    wxASSERT( oURL.GetError() == wxURL_NOERR);
+    //    
+    //    //Setup user-agent string to be identified not as a bot but as a browser
+    //    wxProtocol& oProt = oURL.GetProtocol();
+    //    wxHTTP* pHTTP = (wxHTTP*)&oProt;
+    //    pHTTP->SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
+    //    oProt.SetTimeout(10);              // 90 sec
+
+    //    ////get proxy options
+    //    //wxProxySettings* pSettings = GetProxySettings();
+
+    //    //// We set m_connected back to false so wxSocketBase will know what to do.
+    //    //if (pSettings->m_bUseProxy) {
+    //    //    if( !oProt.Connect(pSettings->m_strProxyHostname, pSettings->m_nProxyPort) ) {
+    //    //        wxLogMessage(_T("Error resolving proxy host name"));
+    //    //        return true;
+    //    //    }
+    //    //    SetHeader(wxT("Host"), pSettings->m_strProxyHostname);
+    //    //}
+    //    //else {
+    //    //    if( !oProt.Connect(pSettings->m_strProxyHostname, pSettings->m_nProxyPort) ) {
+    //    //        wxLogMessage(_T(" Error resolving host name"));
+    //    //        return true;
+    //    //    }
+    //    //}
+
+    //    //create the input stream by establishing http connection
+    //    wxInputStream* pInput = oURL.GetInputStream();
+
+
+//-----------------------------------
         if (!pInput || !pInput->IsOk()) {
             if (pInput) delete pInput;
+            //wxLogMessage( oHttp.GetLastError() );
             lmErrorDlg dlg(m_pParent, _("Error checking for updates"),
 _("Connection with the server could not be established. \
 Check that you are connected to the internet and that no firewalls are blocking \
