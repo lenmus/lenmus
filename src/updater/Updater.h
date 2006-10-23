@@ -68,7 +68,6 @@ private:
 
     bool CheckInternetConnection();     //true if internet connection operative
 
-
     void ParseDocument(wxXmlNode* pNode);
     wxString GetText(wxXmlNode* pElement);
     wxString GetAttribute(wxXmlNode* pNode, wxString sName, wxString sDefault);

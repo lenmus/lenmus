@@ -610,6 +610,7 @@ void lmTheoKeySignCtrol::NewProblem()
     //    m_nIndexKeyName, oIntv.GetIntervalNum() ));
     
     //display the problem
+    m_pCounters->NextTeam();
     if (m_fIdentifyKey) {
         //direct problem
         m_sAnswer = sMajor[nAnswer] + _T(", ") + sMinor[nAnswer];

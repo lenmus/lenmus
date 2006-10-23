@@ -22,8 +22,11 @@
     scores.</li>
   <li>Software updater improved: now it takes proxies into account (user request.
     Task ID 130256).</li>
-  <li>Options dialog modified to include Internet settings. Updates settings
+  <li>Options dialog modified to include Internet settings. Updater settings
       moved from 'Other settings' to 'Internet settings'.</li>
+  <li>French and Turkish translations now included.</li>
+  <li>Changing to another language now is immediate. In previous versions it
+    was delayed to the next run of the program.</li>
   <li>Several bug fixes (<a href="#details">see details</a>) and other technical
     improvements.</li>
 </ul>
@@ -37,6 +40,14 @@
 <tr valign="top">
   <td class="ListaImpar"><strong>Description</strong></td>
 </tr>
+
+<tr valign="top">
+    <td class="ListaPar">
+      <b>Metronome not synchronized with the score in compound times
+      (user reported bug #1581743)</b><br />
+      The problem was caused by an error in the generation of MIDI events. The information
+      related to a time signature was misinterpreted. Now solved.
+    </td></tr>
 
 <tr valign="top">
     <td class="ListaPar">

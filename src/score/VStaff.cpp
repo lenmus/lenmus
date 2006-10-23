@@ -1065,10 +1065,9 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
             rMeasureStartTime += pSO->GetTimePos();        //add measure duration
             nMeasure++;
             pSM->StoreMeasureStartTime(nMeasure, rMeasureStartTime);
-            //! @todo If time signature changes add a RithmChange event
         }
         else if (pSO->GetType() == eTPO_TimeSignature) {
-            //add a RithmChange event to set up tempo (num beats, duration of a beat)
+            //add a RhythmChange event to set up tempo (num beats, duration of a beat)
             pTS = (lmTimeSignature*)pSO;
             pTS->AddMidiEvent(pSM, rMeasureStartTime, nMeasure);
         }

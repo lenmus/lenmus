@@ -227,7 +227,7 @@ void lmTimeSignature::PrepareGlyphs()
 
 void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime, int nMeasure)
 {
-    //  Add a MIDI event of type RithmChange
+    //  Add a MIDI event of type RhythmChange
     //! @todo Deal with non-standard time signatures
 
     float rTime = m_rTimePos + rMeasureStartTime;
@@ -235,8 +235,8 @@ void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime,
     //transform beat type into duration in LDP notes duration units
     int nBeatDuration = GetBeatDuration(m_nBeatType);
 
-    //add the RithmChange event
-    pSM->StoreEvent( rTime, eSET_RithmChange, 0, m_nBeats, nBeatDuration, this, nMeasure);
+    //add the RhythmChange event
+    pSM->StoreEvent( rTime, eSET_RhythmChange, 0, m_nBeats, nBeatDuration, this, nMeasure);
     
 }
 

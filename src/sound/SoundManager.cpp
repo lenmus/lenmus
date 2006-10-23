@@ -1,4 +1,3 @@
-// RCS-ID: $Id: SoundManager.cpp,v 1.5 2006/03/03 15:01:10 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -50,10 +49,10 @@ extern lmColors* g_pColors;
 #include "../app/MainFrame.h"
 extern lmMainFrame *g_pMainFrame;
 
+
 //-----------------------------------------------------------------------------------------
-/*! @class lmSoundEvent
-    @brief Auxiliary class to represent an event of the events table
-*/
+//! @class lmSoundEvent
+//! @brief Auxiliary class to represent an event of the events table
 //-----------------------------------------------------------------------------------------
 
 lmSoundEvent::lmSoundEvent(float rTime, ESoundEventType nEventType, int nChannel,
@@ -74,35 +73,35 @@ lmSoundEvent::lmSoundEvent(float rTime, ESoundEventType nEventType, int nChannel
 
 
 //-----------------------------------------------------------------------------------------
-/*! @class lmSoundManager
-    @brief Manager for the events table
-
-    There are three tables to maintain:
-    - m_aEvents: contains the MIDI events.
-    - m_aMeasures (wxArrayInt): 
-        It contains the index over m_aEvents for the first event of each measure.
-    - m_aStartTime (wxArrayLong): Also, each item corresponds to a measure and
-        contains the start time for that measure.
-
-    @attention
-    Measures are numbered 1..n (musicians usual way) not 0..n-1. But tables
-    go 0..n+1 :
-      - Item 0 corresponds to control events before the start of the first
-        measure.
-      - Item n+1 corresponds to control events after the final bar, normally only
-        the EndOfTable control event.
-      - Items 1..n corresponds to the real measures 1..n.
-    In the events table m_aEvents, all events not in a real measure (measures 1..n) are
-    market as belonging to measure 0.
-
-    The three tables must be synchronized but are populated at different times and by
-    different methods:
-    - First, StoreMeasureStartTime() is invoked at the start of each measure.
-    - Then, StoreEvent() is invoked many times to store the events of that measure.
-    This process is repeated for every lmVStaff and lmInstrument and all tables are merged.
-    Finally, table m_aMeasures is computed.
-
-*/
+//!   @class lmSoundManager
+//    @brief Manager for the events table
+//
+//    There are three tables to maintain:
+//    - m_aEvents: contains the MIDI events.
+//    - m_aMeasures (wxArrayInt): 
+//        It contains the index over m_aEvents for the first event of each measure.
+//    - m_aStartTime (wxArrayLong): Also, each item corresponds to a measure and
+//        contains the start time for that measure.
+//
+//    @attention
+//    Measures are numbered 1..n (musicians usual way) not 0..n-1. But tables
+//    go 0..n+1 :
+//      - Item 0 corresponds to control events before the start of the first
+//        measure.
+//      - Item n+1 corresponds to control events after the final bar, normally only
+//        the EndOfTable control event.
+//      - Items 1..n corresponds to the real measures 1..n.
+//    In the events table m_aEvents, all events not in a real measure (measures 1..n) are
+//    market as belonging to measure 0.
+//
+//    The three tables must be synchronized but are populated at different times and by
+//    different methods:
+//    - First, StoreMeasureStartTime() is invoked at the start of each measure.
+//    - Then, StoreEvent() is invoked many times to store the events of that measure.
+//    This process is repeated for every lmVStaff and lmInstrument and all tables are merged.
+//    Finally, table m_aMeasures is computed.
+//
+//
 //-----------------------------------------------------------------------------------------
 
 lmSoundManager::lmSoundManager()
@@ -113,10 +112,10 @@ lmSoundManager::lmSoundManager()
 
 void lmSoundManager::Initialize(int nPartes, int nTiempoIni, int nDurCompas, int nNumCompases)
 {
-    /*
-    This method MUST BE invoked before using the table. Can be invoked later, at any time,
-    to reuse the object
-    */
+    //
+    // This method MUST BE invoked before using the table. Can be invoked later, at any time,
+    // to reuse the object
+    //
     
     //delete events in table
     for (int i = m_aEvents.GetCount(); i > 0; i--) {
@@ -187,13 +186,13 @@ void lmSoundManager::StoreMeasureStartTime(int nMeasure, float rTime)
 
 void lmSoundManager::Append(lmSoundManager* pSndMgr)
 {
-    /*
-    Add to this object tables the entries from the tables received
-    */
+    //
+    // Add to this object tables the entries from the tables received
+    //
 
-    //
-    // Merge m_aEvents table
-    //
+        //
+        // Merge m_aEvents table
+        //
 
     //THINK: Next commented code doesn't work. Alloc doesn't reallocate existing items; it
     //just allocates empty space; existing items are just destroyed!
@@ -206,10 +205,10 @@ void lmSoundManager::Append(lmSoundManager* pSndMgr)
         m_aEvents.Add( pSndMgr->GetEvent(i) );
     }
 
-    //
-    // Merge m_aStartTime table. All measures should be equal in the different instruments
-    // and VSTaffs, so the merge process is just to verify tables
-    //
+        //
+        // Merge m_aStartTime table. All measures should be equal in the different 
+        // instruments and VSTaffs, so the merge process is just to verify tables
+        //
 
     //tables must have equal sizes unless one of them is empty
     int nNewTableSize = pSndMgr->GetNumMeasures();
@@ -248,7 +247,6 @@ lmSoundEvent* lmSoundManager::GetEvent(int i)
 
 void lmSoundManager::CloseTable()
 {
-
     //sort table by time
     SortByTime();
     
@@ -257,7 +255,6 @@ void lmSoundManager::CloseTable()
             0, 0, 0, (lmStaffObj*)NULL, 0);
     
     //Create the table of measures
-
     int nM = -1;
     for (int i=0; i < (int)m_aEvents.GetCount(); i++) {
         if (m_aEvents.Item(i)->Measure != nM) {
@@ -268,49 +265,6 @@ void lmSoundManager::CloseTable()
     }
                 
 }
-
-//void lmSoundManager::InsertarEventoDeControl()
-//    //inserta un evento de control antes de que finalice la partitura.
-//    //Esta función sólo es llamada desde "Ejecutar" cuando se va a interpretar una
-//    //partitura procedente de FRitmos.
-//    //Al llegar aquí, el último evento de la tabla es un eTEM_NotaOff de la última nota
-//    //de la partitura
-//    Dim i As Long
-//    Dim nDeltaTime As Long
-//    Dim nWait As ENoteDuration   //duración relativa de las notas
-//    
-//    //calcula el DeltaTime del evento a insertar: el de fin menos una corchea
-//    i = m_iEV - 1    //apunta al último evento
-//    if (nAntelacion = 0) {
-//        nWait = eEighthDottedDuration
-//    } else {
-//        nWait = nAntelacion
-//    }
-//    nDeltaTime = m_aEvents[i]->DeltaTime - nWait
-//    
-//    //duplicar el último evento para hacer hueco en la tabla
-//    With m_aEvents(i)
-//        StoreEvent CSng(.DeltaTime), .EventType, .Channel, .NotePitch, .NoteStep, .oPo, CLng(.Measure)
-//    End With
-//    
-//    //desplaza eventos hacia abajo hasta llegar al punto de inserción
-//    i = i - 1
-//    Do While i >= 0
-//        if (m_aEvents[i]->DeltaTime <= nDeltaTime) {
-//            i = i + 1
-//            Exit Do
-//        }
-//        
-//        //copiar evento
-//        m_aEvents(i + 1) = m_aEvents(i)
-//        i = i - 1
-//    Loop
-//        
-//    //Al salir del bucle i apunta al evento que hay que sustituir.
-//    //Por ahora nos limitamos a modificar su tipo para indicar que es de control
-//    m_aEvents[i]->EventType = eSET_MarcaEnFRitmos
-//
-//}
 
 wxString lmSoundManager::DumpMidiEvents()
 {
@@ -354,7 +308,7 @@ wxString lmSoundManager::DumpMidiEvents()
                 case eSET_MarcaEnFRitmos:
                     sMsg += _T("CTROL     ");
                     break;
-                case eSET_RithmChange:
+                case eSET_RhythmChange:
                     sMsg += _T("RITHM CHG ");
                     break;
                 case eSET_ProgInstr:
@@ -388,9 +342,9 @@ wxString lmSoundManager::DumpMidiEvents()
 
 void lmSoundManager::SortByTime()
 {
-    /*
-    Sort events by time, measure and event type. Uses the bubble sort algorithm
-    */
+    //
+    // Sort events by time, measure and event type. Uses the bubble sort algorithm
+    //
 
     int j, k;
     bool fChanges;
@@ -429,15 +383,18 @@ void lmSoundManager::SortByTime()
 void lmSoundManager::Play(bool fVisualTracking, bool fMarcarCompasPrevio,
                         EPlayMode nPlayMode, long nMM, wxWindow* pWindow)
 {
-    PlaySegment(0, m_aEvents.GetCount() - 1, nPlayMode, fVisualTracking,
+    int nEvStart = m_aMeasures.Item(1);     //get first event for firts measure
+    PlaySegment(nEvStart, m_aEvents.GetCount() - 1, nPlayMode, fVisualTracking,
                 fMarcarCompasPrevio, nMM, pWindow);
 }
 
-/*! Play back measure n (n = 1 ... num_measures)
-*/
 void lmSoundManager::PlayMeasure(int nMeasure, bool fVisualTracking,
                         EPlayMode nPlayMode, long nMM, wxWindow* pWindow)
 {
+    //
+    // Play back measure n (n = 1 ... num_measures)
+    //
+
     int nEvStart, nEvEnd;
     
     //remember:
@@ -460,9 +417,9 @@ void lmSoundManager::PlaySegment(int nEvStart, int nEvEnd,
                                long nMM,
                                wxWindow* pWindow )
 {
-    /*
-    Replay all events in table, from nEvStart to nEvEnd, both included.
-    */
+    //
+    // Replay all events in table, from nEvStart to nEvEnd, both included.
+    //
 
     if (m_pThread) {
         // A thread exits. If it is paused resume it
@@ -528,9 +485,12 @@ void lmSoundManager::Pause()
 
 }
 
-//! Waits until the end of the score playback
 void lmSoundManager::WaitForTermination()
 {
+    //
+    // Waits until the end of the score playback
+    //
+
     if (!m_pThread) return;
     
     m_pThread->Wait();
@@ -551,9 +511,9 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                                long nMM,
                                wxWindow* pWindow )
 {
-    /*
-    This is the real method doing the work. It will execute in the lmSoundManagerThread
-    */
+    //
+    // This is the real method doing the work. It will execute in the lmSoundManagerThread
+    //
 
     //! @todo All issues related to sol-fa voice
 
@@ -578,10 +538,6 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
         ::wxPostEvent( pWindow, event );
     }
 
-     //! @todo    si viene de FRitmos inserta evento de control (?)
-//    if (fEvMIDIInsertarCtrol) { InsertarEventoDeControl
-//    fEvMIDIInsertarCtrol = false;
-    
     //Prepare instrument for metronome. Instruments for music voices the instruments
     //are prepared by events ProgInstr
     g_pMidiOut->ProgramChange(g_pMidi->MtrChannel(), g_pMidi->MtrInstr());
@@ -589,23 +545,24 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     //declaration of some time related variables.
     //DeltaTime variables refer to relative time (LDP time)
     //Time variables refer to absolute time, that is, DeltaTime converted to real time
-    long nEvTime;            // time for next event
-    long nMtrEvDeltaTime;   // time for next metronome click
+    long nEvTime;           //time for next event
+    long nMtrEvDeltaTime;   //time for next metronome click
 
-    //default beat and metronome information
-    long nMtrBeatDuration = EIGHT_DURATION;                            //a beat duration
+    //default beat and metronome information. It is going to be properly set
+    //when a eSET_RhythmChange event is found (a time signature object). So these
+    //default settings will be used when no time signature in the score.
+    long nMtrBeatDuration = EIGHT_DURATION;                         //a beat duration
     long nMtrIntvalOff = wxMin(7, nMtrBeatDuration / 4);            //click duration (interval to click off)
     long nMtrIntvalNextClick = nMtrBeatDuration - nMtrIntvalOff;    //interval from click off to next click
-    long nMeasureDuration = nMtrBeatDuration * 4;                    //assume 4/4 time signature
+    long nMeasureDuration = nMtrBeatDuration * 4;                   //assume 4/4 time signature
 
     //Execute control events that take place before the segment to play, so that
-    //instruments and tempo are properly programmed
-    int i;
-    for (i=0; i < nEvStart; i++) {
-         if (nMM==0)
-            nEvTime = (pMtr->GetInterval() * m_aEvents[i]->DeltaTime) / EIGHT_DURATION;
-        else
-            nEvTime = (nMtrClickIntval * m_aEvents[i]->DeltaTime) / EIGHT_DURATION;
+    //instruments and tempo are properly programmed. Continue in the loop while
+    //we find control events in segment to play.
+    int i = 0;
+    bool fContinue = true;
+    while (fContinue)
+    {
         if (m_aEvents[i]->EventType == eSET_ProgInstr)
         {
             //change program
@@ -626,7 +583,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                     wxASSERT(false);
             }
         }
-        else if (m_aEvents[i]->EventType == eSET_RithmChange)
+        else if (m_aEvents[i]->EventType == eSET_RhythmChange)
         {
             //set up new beat and metronome information
             nMtrBeatDuration = m_aEvents[i]->BeatDuration;            //a beat duration
@@ -634,16 +591,18 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
             nMtrIntvalOff = wxMin(7, nMtrBeatDuration / 4);            //click duration (interval to click off)
             nMtrIntvalNextClick = nMtrBeatDuration - nMtrIntvalOff;    //interval from click off to next click
         }
+        else {
+            // it is not a control event. Continue in the loop only
+            // if we have not reached the start of the segment to play
+            fContinue = (i < nEvStart);
+        }
+        if (fContinue) i++;
     }
+    //Here i points to the first event of desired measure that is not a control event.
 
-    //Set time counter at the start of the measure in which current event is located.
-    i = nEvStart;
-    int nMeasure = m_aEvents[i]->Measure;
-    long nTime = m_aStartTime[nMeasure];
-    if (nMM==0)
-        nTime = (pMtr->GetInterval() * nTime) / EIGHT_DURATION;
-    else
-        nTime = (nMtrClickIntval * nTime) / EIGHT_DURATION;
+    //Define and initialize time counter
+    long nTime = 0;
+
 
     //first note could be a sincopa o a contratiempo. In these cases metronome will
     //start before the first note
@@ -685,9 +644,9 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
         {
             //Next event shoul be a metronome click or the click off event for the previous metronome click
              if (nMM==0)
-                nEvTime = (pMtr->GetInterval() * nMtrEvDeltaTime) / EIGHT_DURATION;
+                nEvTime = (pMtr->GetInterval() * nMtrEvDeltaTime) / nMtrBeatDuration;   //EIGHT_DURATION;
             else
-                nEvTime = (nMtrClickIntval * nMtrEvDeltaTime) / EIGHT_DURATION;
+                nEvTime = (nMtrClickIntval * nMtrEvDeltaTime) / nMtrBeatDuration; //EIGHT_DURATION;
             if (nTime < nEvTime) {
                 //::wxMilliSleep(nEvTime - nTime);
                 wxThread::Sleep((unsigned long)(nEvTime - nTime));
@@ -728,9 +687,9 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
         {
             //next even comes from the table. Usually it will be a note on/off
              if (nMM==0)
-                nEvTime = (pMtr->GetInterval() * m_aEvents[i]->DeltaTime) / EIGHT_DURATION;
+                nEvTime = (pMtr->GetInterval() * m_aEvents[i]->DeltaTime) / nMtrBeatDuration; //EIGHT_DURATION;
             else
-                nEvTime = (nMtrClickIntval * m_aEvents[i]->DeltaTime) / EIGHT_DURATION;
+                nEvTime = (nMtrClickIntval * m_aEvents[i]->DeltaTime) / nMtrBeatDuration;   //EIGHT_DURATION;
             if (nTime < nEvTime) {
                 //::wxMilliSleep((unsigned long)(nEvTime - nTime));
                 wxThread::Sleep((unsigned long)(nEvTime - nTime));
@@ -814,9 +773,13 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
             {
                 //end of table. Do nothing
             }
-            else if (m_aEvents[i]->EventType == eSET_RithmChange)
+            else if (m_aEvents[i]->EventType == eSET_RhythmChange)
             {
-                //TODO
+                //set up new beat and metronome information
+                nMtrBeatDuration = m_aEvents[i]->BeatDuration;            //a beat duration
+                nMeasureDuration = nMtrBeatDuration * m_aEvents[i]->NumBeats;
+                nMtrIntvalOff = wxMin(7, nMtrBeatDuration / 4);            //click duration (interval to click off)
+                nMtrIntvalNextClick = nMtrBeatDuration - nMtrIntvalOff;    //interval from click off to next click
             }
             else if (m_aEvents[i]->EventType == eSET_ProgInstr)
             {

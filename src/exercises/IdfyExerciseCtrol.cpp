@@ -374,6 +374,7 @@ void lmIdfyExerciseCtrol::NewProblem()
     m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
 
     //display the problem
+    m_pCounters->NextTeam();
     if (m_fTheoryMode) {
         //theory
         m_pScoreCtrol->DisplayScore(m_pProblemScore);
@@ -388,7 +389,6 @@ void lmIdfyExerciseCtrol::NewProblem()
     m_fQuestionAsked = true;
     m_pPlayButton->Enable(true);
     m_pShowSolution->Enable(true);
-
 
 }
 

@@ -721,6 +721,7 @@ void lmTheoIntervalsCtrol::NewProblem()
     }
     
     //display the problem
+    m_pCounters->NextTeam();
     if (m_fIntervalKnown) {
         //direct problem: identify interval
         //wxLogMessage(_T("[lmTheoIntervalsCtrol::NewProblem] IntervalScoreID=%d"), m_pIntervalScore->GetID() );

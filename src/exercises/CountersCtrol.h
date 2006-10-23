@@ -58,19 +58,28 @@ public:
     void IncrementWrong();
     void IncrementRight();
     void ResetCounters();
+    void NextTeam();
 
 private:
-    void UpdateDisplays();
+    void UpdateDisplays(int nTeam);
+    void CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer);
 
     //counters for right and wrong answers
-    int         m_nRight;
-    int         m_nWrong;
+    int         m_nRight[2];
+    int         m_nWrong[2];
 
     //displays
-    wxStaticText*   m_pRightCounter;
-    wxStaticText*   m_pWrongCounter;
-    wxStaticText*   m_pTotalCounter;
+    wxStaticText*   m_pRightCounter[2];
+    wxStaticText*   m_pWrongCounter[2];
+    wxStaticText*   m_pTotalCounter[2];
 
+    //labels
+    wxStaticText*   m_pTeamTxt;
+    
+    //teams
+    int         m_nMaxTeam;             //num of teams (1..2)
+    int         m_nCurrentTeam;         //team currently playing (0..1)
+    bool        fStart;                 //to ensure that first time we start with first team
 
     DECLARE_EVENT_TABLE()
 };

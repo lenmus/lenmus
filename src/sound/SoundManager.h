@@ -47,7 +47,7 @@ enum ESoundEventType
     eSET_ProgInstr = 1,        //program a new instrument
     eSET_NoteOFF,              //sound off
     eSET_VisualOFF,            //remove visual highlight. No effect on sound
-    eSET_RithmChange,          //change in rithm (time signature)
+    eSET_RhythmChange,          //change in rithm (time signature)
     eSET_NoteON,               //sound on
     eSET_VisualON,             //add visual highlight. No effect on sound
     eSET_MarcaEnFRitmos,
@@ -70,13 +70,13 @@ public:
     union {
         int             NotePitch;          //MIDI pitch
         int             lmInstrument;       //MIDI instrument for eSET_ProgInstr events
-        int             NumBeats;          //for RithmChange events
+        int             NumBeats;          //for RhythmChange events
     };
+    int                 Volume;
     union {
-        int             Volume;
-        int             BeatDuration;   //for RithmChange events. In LDP duration units
+        int             NoteStep;       //lmNote step 0..6 : 0-Do, 1-Re, ... 6-Si
+        int             BeatDuration;   //for RhythmChange events. In LDP duration units
     };
-    int                 NoteStep;       //lmNote step 0..6 : 0-Do, 1-Re, ... 6-Si
     lmStaffObj*         pSO;            //staffobj who originated the event (for visual highlight)
     int                 Measure;        //measure number containing this staffobj
 

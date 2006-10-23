@@ -113,24 +113,24 @@ Please, connect to internet and then retry."));
             return true;
         }
 
-        //wxString sUrl = _T("http://localhost/sw/UpdateData.xml");
-        wxString sUrl = _T("http://www.lenmus.org/sw/UpdateData.xml");
+        wxString sUrl = _T("http://localhost/sw/UpdateData.xml");
+        //wxString sUrl = _T("http://www.lenmus.org/sw/UpdateData.xml");
 
 //-----------------------------------
-     //Old code using wxHTTP
+     ////Old code using wxHTTP
 
-        // ensure we can build a wxURL object from the given URL
-        wxURL oURL(sUrl);
-        wxASSERT( oURL.GetError() == wxURL_NOERR);
-        
-        //Setup user-agent string to be identified not as a bot but as a browser
-        wxProtocol& oProt = oURL.GetProtocol();
-        wxHTTP* pHTTP = (wxHTTP*)&oProt;
-        pHTTP->SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
-        oProt.SetTimeout(10);              // 90 sec
+     //   // ensure we can build a wxURL object from the given URL
+     //   wxURL oURL(sUrl);
+     //   wxASSERT( oURL.GetError() == wxURL_NOERR);
+     //   
+     //   //Setup user-agent string to be identified not as a bot but as a browser
+     //   wxProtocol& oProt = oURL.GetProtocol();
+     //   wxHTTP* pHTTP = (wxHTTP*)&oProt;
+     //   pHTTP->SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
+     //   oProt.SetTimeout(10);              // 90 sec
 
-        //create the input stream by establishing http connection
-        wxInputStream* pInput = oURL.GetInputStream();
+     //   //create the input stream by establishing http connection
+     //   wxInputStream* pInput = oURL.GetInputStream();
 
 //-----------------------------------
     //// New code using wxHttpEngine
@@ -154,38 +154,37 @@ Please, connect to internet and then retry."));
     //    wxInputStream* pInput = oHttp.GetInputStream( sUrl );
 
 //-----------------------------------
-    //// New code using wxHTTP
+    // New code using wxHTTP
 
-    //    // ensure we can build a wxURL object from the given URL
-    //    wxURL oURL(sUrl);
-    //    wxASSERT( oURL.GetError() == wxURL_NOERR);
-    //    
-    //    //Setup user-agent string to be identified not as a bot but as a browser
-    //    wxProtocol& oProt = oURL.GetProtocol();
-    //    wxHTTP* pHTTP = (wxHTTP*)&oProt;
-    //    pHTTP->SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
-    //    oProt.SetTimeout(10);              // 90 sec
+        // ensure we can build a wxURL object from the given URL
+        wxURL oURL(sUrl);
+        wxASSERT( oURL.GetError() == wxURL_NOERR);
+        
+        //Setup user-agent string to be identified not as a bot but as a browser
+        wxProtocol& oProt = oURL.GetProtocol();
+        wxHTTP* pHTTP = (wxHTTP*)&oProt;
+        pHTTP->SetHeader(_T("User-Agent"), _T("LenMus Phonascus updater"));
+        oProt.SetTimeout(10);              // 90 sec
 
-    //    ////get proxy options
-    //    //wxProxySettings* pSettings = GetProxySettings();
+        //get proxy options
+        wxProxySettings* pSettings = GetProxySettings();
 
-    //    //// We set m_connected back to false so wxSocketBase will know what to do.
-    //    //if (pSettings->m_bUseProxy) {
-    //    //    if( !oProt.Connect(pSettings->m_strProxyHostname, pSettings->m_nProxyPort) ) {
-    //    //        wxLogMessage(_T("Error resolving proxy host name"));
-    //    //        return true;
-    //    //    }
-    //    //    SetHeader(wxT("Host"), pSettings->m_strProxyHostname);
-    //    //}
-    //    //else {
-    //    //    if( !oProt.Connect(pSettings->m_strProxyHostname, pSettings->m_nProxyPort) ) {
-    //    //        wxLogMessage(_T(" Error resolving host name"));
-    //    //        return true;
-    //    //    }
-    //    //}
+        // If a proxy is used, set it
+        if (pSettings->m_bUseProxy) {
+            pHTTP->SetProxyMode(true);
+            // user:pass@host:port
+            wxString sProxyUrl = _T("http://");
+            if (pSettings->m_bRequiresAuth) {
+                sProxyUrl += pSettings->m_strProxyUsername + _T(":") +
+                             pSettings->m_strProxyPassword + _T("@");
+            }
+            sProxyUrl += pSettings->m_strProxyHostname  + 
+                wxString::Format( _T(":%d"), pSettings->m_nProxyPort );
+            oURL.SetProxy( sProxyUrl );
+        }
 
-    //    //create the input stream by establishing http connection
-    //    wxInputStream* pInput = oURL.GetInputStream();
+        //create the input stream by establishing http connection
+        wxInputStream* pInput = oURL.GetInputStream();
 
 
 //-----------------------------------
@@ -425,13 +424,13 @@ wxXmlNode* lmUpdater::GetFirstChild(wxXmlNode* pNode)
 }
 
 
-/* ----------------------------------------------------------------------------
-    Launch default browser
-*/
-/*! @todo   This is the latest (18/may/2006) code for ::wxLaunchDefaultBrowser() 
-    function taken from wxWidgets CVS. Remove this code at next wxWidgets release,
-    once checked that wxLaunchDefaultBrowser() works ok.
-----------------------------------------------------------------------------*/
+// ----------------------------------------------------------------------------
+//    Launch default browser
+//
+//! @todo   This is the latest (18/may/2006) code for ::wxLaunchDefaultBrowser() 
+//!    function taken from wxWidgets CVS. Remove this code at next wxWidgets release,
+//!    once checked that wxLaunchDefaultBrowser() works ok.
+//-----------------------------------------------------------------------------
 
 bool LaunchDefaultBrowser(const wxString& urlOrig)
 {

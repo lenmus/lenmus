@@ -516,6 +516,9 @@ void lmEarIntervalsCtrol::NewProblem()
         if (m_nRealIntval[i] == oIntv.GetNumSemitones()) break;
     }
     m_nRespIndex = i;
+
+    m_pCounters->NextTeam();
+
     
     //play the interval
     m_pScoreCtrol->SetScore(m_pScore, true);            //true: the score must be hidden

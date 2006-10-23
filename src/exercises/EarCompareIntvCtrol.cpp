@@ -462,6 +462,9 @@ void lmEarCompareIntvCtrol::NewProblem()
     m_pPlayButton->Enable(true);
     m_pShowSolution->Enable(true);
 
+    m_pCounters->NextTeam();
+
+
     //play the interval
     Play();
 

@@ -523,6 +523,7 @@ void lmIdfyChordCtrol::NewProblem()
     m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
 
     //display the problem
+    m_pCounters->NextTeam();
     if (m_fTheoryMode) {
         //theory
         m_pScoreCtrol->DisplayScore(m_pChordScore);
