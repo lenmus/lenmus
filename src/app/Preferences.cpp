@@ -50,8 +50,8 @@ wxConfigBase* g_pPrefs = (wxConfigBase*) NULL;
 
 // global values
 bool g_fAnswerSoundsEnabled;    // Feedback right/wrong answer sounds are enabled
-bool g_fTwoCounters;            // Exercises will have two counters to play in teams
-
+bool g_fTeamCounters;           // Exercises will have two counters to play in teams
+bool g_fAutoNewProblem;         // If right answer, don't show solution and generate a new problem
 
 
 // proxy settings
@@ -64,10 +64,8 @@ void InitPreferences()
     g_pPrefs = wxConfigBase::Get();
 
     g_pPrefs->Read(_T("/Options/EnableAnswerSounds"), &g_fAnswerSoundsEnabled, true);
-    g_pPrefs->Read(_T("/Options/TwoCounters"), &g_fTwoCounters, false);
-#ifdef _DEBUG
-    g_fTwoCounters = true;
-#endif
+    g_pPrefs->Read(_T("/Options/TeamCounters"), &g_fTeamCounters, false);
+    g_pPrefs->Read(_T("/Options/AutoNewProblem"), &g_fAutoNewProblem, true);
 
 }
 

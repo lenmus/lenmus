@@ -64,6 +64,24 @@
                                     <checked>0</checked>
                                 </object>
                             </object>
+                            <object class="sizeritem">
+                                <flag>wxGROW|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxCheckBox" name="chkTeamCounters">
+                                    <style>wxCHK_2STATE</style>
+                                    <label>Show two counters (for teams competition)</label>
+                                    <checked>0</checked>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxGROW|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxCheckBox" name="chkAutoNewProblem">
+                                    <style>wxCHK_2STATE</style>
+                                    <label>If right answer, do not show solution and generate a new problem</label>
+                                    <checked>0</checked>
+                                </object>
+                            </object>
                         </object>
                     </object>
                 </object>

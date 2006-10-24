@@ -46,6 +46,7 @@ extern lmColors* g_pColors;
 extern bool g_fReleaseVersion;            // in TheApp.cpp
 extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 extern bool g_fShowDebugLinks;            // in TheApp.cpp
+extern bool g_fAutoNewProblem;          // in Preferences.cpp
 
 //access to error's logger
 #include "../app/Logger.h"
@@ -293,12 +294,14 @@ void lmTheoKeySignCtrol::OnRespButton(wxCommandEvent& event)
         m_pCounters->IncrementWrong();
     }
         
-    //if failure, display the solution. if succsess, generate a new problem
-    if (!fSuccess) {
-        //failure: mark wrong button in red and right one in green
-        m_pAnswerButton[m_nIndexKeyName]->SetBackgroundColour(g_pColors->Success());
-        m_pAnswerButton[nIndex]->SetBackgroundColour(g_pColors->Failure());
-
+    //if failure or not auto-new problem, display the solution.
+    //Else, if success and auto-new problem, generate a new problem
+    if (!fSuccess || !g_fAutoNewProblem) {
+        if (!fSuccess) {
+            //failure: mark wrong button in red and right one in green
+            m_pAnswerButton[m_nIndexKeyName]->SetBackgroundColour(g_pColors->Success());
+            m_pAnswerButton[nIndex]->SetBackgroundColour(g_pColors->Failure());
+        }
         //show the solucion
         DisplaySolution();
         EnableButtons(false);

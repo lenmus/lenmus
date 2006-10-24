@@ -48,6 +48,9 @@ extern wxConfigBase* g_pPrefs;
 //access to global flag
 #include "../app/Preferences.h"
 extern bool g_fAnswerSoundsEnabled; 
+extern bool g_fTeamCounters; 
+extern bool g_fAutoNewProblem;
+
 
 
 lmOtherOptionsPanel::lmOtherOptionsPanel(wxWindow* parent)
@@ -60,12 +63,16 @@ lmOtherOptionsPanel::lmOtherOptionsPanel(wxWindow* parent)
     pBmpIcon->SetBitmap( wxArtProvider::GetIcon(_T("opt_other"), wxART_TOOLBAR, wxSize(24,24)) );
 
     //store pointers to controls
-    m_pChkAnswerSounds = XRCCTRL(*this, "chkAnswerSounds", wxCheckBox);   
+    m_pChkAnswerSounds = XRCCTRL(*this, "chkAnswerSounds", wxCheckBox); 
+    m_pChkTeamCounters = XRCCTRL(*this, "chkTeamCounters", wxCheckBox); 
+    m_pChkAutoNewProblem = XRCCTRL(*this, "chkAutoNewProblem", wxCheckBox); 
 
         //Select current settings
 
     // Exercises options 
     m_pChkAnswerSounds->SetValue(g_fAnswerSoundsEnabled);
+    m_pChkTeamCounters->SetValue(g_fTeamCounters);
+    m_pChkAutoNewProblem->SetValue(g_fAutoNewProblem);
 
 }
 
@@ -83,4 +90,11 @@ void lmOtherOptionsPanel::Apply()
     // Exercises options
     g_fAnswerSoundsEnabled = m_pChkAnswerSounds->GetValue();
     g_pPrefs->Write(_T("/Options/EnableAnswerSounds"), g_fAnswerSoundsEnabled);
+
+    g_fTeamCounters = m_pChkTeamCounters->GetValue();
+    g_pPrefs->Write(_T("/Options/TeamCounters"), g_fTeamCounters);
+
+    g_fAutoNewProblem = m_pChkAutoNewProblem->GetValue();
+    g_pPrefs->Write(_T("/Options/AutoNewProblem"), g_fAutoNewProblem);
+
 }

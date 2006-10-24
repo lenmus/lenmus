@@ -40,7 +40,7 @@
 //access to global flag
 #include "../app/Preferences.h"
 extern bool g_fAnswerSoundsEnabled; 
-extern bool g_fTwoCounters; 
+extern bool g_fTeamCounters; 
 
 
 
@@ -70,20 +70,20 @@ lmCountersCtrol::lmCountersCtrol(wxWindow* parent, wxWindowID id, const wxPoint&
 
     // Create the controls
     wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
-    if (g_fTwoCounters)
+    if (g_fTeamCounters)
     {
-        m_pTeamTxt = new wxStaticText( this, wxID_STATIC, _T(""), wxDefaultPosition,
-                            wxSize(200, -1),
+        m_pTeamTxt = new wxStaticText( this, wxID_STATIC, _("Two teams competition"), wxDefaultPosition,
+                            wxSize(-1, -1),
                             wxALIGN_CENTRE|wxNO_BORDER|wxST_NO_AUTORESIZE );
         m_pTeamTxt->SetFont(wxFont(14, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
         pMainSizer->Add(m_pTeamTxt, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 0);
-        CreateCountersGroup(0, pMainSizer);
-        CreateCountersGroup(1, pMainSizer);
+        CreateCountersGroup(0, pMainSizer, true);
+        CreateCountersGroup(1, pMainSizer, true);
     }
     else
     {
         m_pTeamTxt = (wxStaticText*)NULL;
-        CreateCountersGroup(0, pMainSizer);
+        CreateCountersGroup(0, pMainSizer, false);
     }
 
     //'reset counters' link
@@ -104,7 +104,7 @@ lmCountersCtrol::~lmCountersCtrol()
 {
 }
 
-void lmCountersCtrol::CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer)
+void lmCountersCtrol::CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer, bool fTeam)
 {
     //
     // Create the controls for counter group nTeam (0...n)
@@ -114,6 +114,24 @@ void lmCountersCtrol::CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer)
 
     wxBoxSizer* pCountersSizer = new wxBoxSizer(wxHORIZONTAL);
     pMainSizer->Add(pCountersSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
+
+    // Team label
+    if (fTeam) {
+        wxBoxSizer* pTeamSizer = new wxBoxSizer(wxVERTICAL);
+        pCountersSizer->Add(pTeamSizer, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5);
+
+        if (nTeam == 0) {
+            wxStaticText* pTxtRight = new wxStaticText( this, wxID_STATIC, _("Team"), wxDefaultPosition, wxDefaultSize, 0 );
+            pTxtRight->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
+            pTeamSizer->Add(pTxtRight, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxADJUST_MINSIZE, 5);
+        }
+        wxStaticText* pTeamLabel = new wxStaticText( this, wxID_STATIC, 
+                wxString::Format(_T("%d"), nTeam+1), wxDefaultPosition,
+                wxSize(50, -1), wxALIGN_CENTRE|wxNO_BORDER|wxST_NO_AUTORESIZE );
+        pTeamLabel->SetBackgroundColour(wxColour(255, 255, 255));
+        pTeamLabel->SetFont(wxFont(18, wxSWISS, wxNORMAL, wxNORMAL, false, _T("")));
+        pTeamSizer->Add(pTeamLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 0);
+    }
 
     //display for right answers
     wxBoxSizer* pRightSizer = new wxBoxSizer(wxVERTICAL);
@@ -230,7 +248,7 @@ void lmCountersCtrol::NextTeam()
 
     //update label
     if (m_pTeamTxt) {
-        m_pTeamTxt->SetLabel( wxString::Format(_("Turno del equipo %d"), m_nCurrentTeam+1) );
+        m_pTeamTxt->SetLabel( wxString::Format(_("Team's %d turn"), m_nCurrentTeam+1) );
     }
 
 }

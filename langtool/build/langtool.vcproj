@@ -289,9 +289,6 @@
 			Name="Source Files"
 			Filter="">
 			<File
-				RelativePath="..\src\docbook2html.cpp">
-			</File>
-			<File
 				RelativePath="..\src\ebook_processor.cpp">
 			</File>
 			<File

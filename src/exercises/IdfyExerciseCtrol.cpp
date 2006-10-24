@@ -49,9 +49,11 @@
 extern lmColors* g_pColors;
 
 // access to global external variables
-extern bool g_fReleaseVersion;            // in TheApp.cpp
+extern bool g_fReleaseVersion;          // in TheApp.cpp
 extern bool g_fReleaseBehaviour;        // in TheApp.cpp
-extern bool g_fShowDebugLinks;            // in TheApp.cpp
+extern bool g_fShowDebugLinks;          // in TheApp.cpp
+extern bool g_fAutoNewProblem;          // in Preferences.cpp
+
 
 
 //--------------------------------------------------------------------------------
@@ -129,26 +131,37 @@ void lmIdfyExerciseCtrol::Create(int nCtrolWidth, int nCtrolHeight)
     //on the right, and bottom region, for answer buttons 
     m_pMainSizer = new wxBoxSizer( wxVERTICAL );
 
-    // debug buttons
-    if (g_fShowDebugLinks && !g_fReleaseVersion) {
-        wxBoxSizer* pDbgSizer = new wxBoxSizer( wxHORIZONTAL );
-        m_pMainSizer->Add(pDbgSizer, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
+        //
+        // settings and debug options
+        //
+    wxBoxSizer* pTopLineSizer = new wxBoxSizer( wxHORIZONTAL );
+    m_pMainSizer->Add(pTopLineSizer, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
 
+    // settings link
+    if (m_pConstrains->IncludeSettingsLink()) {
+        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
+        pTopLineSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+    }
+
+    // debug links
+    if (g_fShowDebugLinks && !g_fReleaseVersion)
+    {
         // "See source score"
-        pDbgSizer->Add(
+        pTopLineSizer->Add(
             new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, _("See source score") ),
             wxSizerFlags(0).Left().Border(wxALL, 10) );
 
         // "Dump score"
-        pDbgSizer->Add(
+        pTopLineSizer->Add(
             new lmUrlAuxCtrol(this, ID_LINK_DUMP, _("Dump score") ),
             wxSizerFlags(0).Left().Border(wxALL, 10) );
 
         // "See MIDI events"
-        pDbgSizer->Add(
+        pTopLineSizer->Add(
             new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, _("See MIDI events") ),
             wxSizerFlags(0).Left().Border(wxALL, 10) );
     }
+
 
     // sizer for the scoreCtrol and the CountersCtrol
     wxBoxSizer* pTopSizer = new wxBoxSizer( wxHORIZONTAL );
@@ -181,17 +194,6 @@ void lmIdfyExerciseCtrol::Create(int nCtrolWidth, int nCtrolHeight)
         m_pCounters,
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
 
-    // spacer to move the settings link to bottom
-    pCountersSizer->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-    // settings link
-    if (m_pConstrains->IncludeSettingsLink()) {
-        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
-        pCountersSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
-    }
-
-    // spacer to move the settings link a little up
-    pCountersSizer->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
         //
         //links 
@@ -335,11 +337,14 @@ void lmIdfyExerciseCtrol::OnRespButton(wxCommandEvent& event)
             m_pCounters->IncrementWrong();
         }
             
-        //if failure, display the solution. If succsess, generate a new problem
-        if (!fSuccess) {
-            //failure: mark wrong button in red and right one in green
-            SetButtonColor(m_nRespIndex, g_pColors->Success() );
-            SetButtonColor(nIndex, g_pColors->Failure() );
+        //if failure or not auto-new problem, display the solution.
+        //Else, if success and auto-new problem, generate a new problem
+        if (!fSuccess || !g_fAutoNewProblem) {
+            if (!fSuccess) {
+                //failure: mark wrong button in red and right one in green
+                SetButtonColor(m_nRespIndex, g_pColors->Success() );
+                SetButtonColor(nIndex, g_pColors->Failure() );
+            }
 
             //show the solucion
             DisplaySolution();

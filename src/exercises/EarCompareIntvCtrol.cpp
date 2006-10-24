@@ -48,9 +48,10 @@
 extern lmColors* g_pColors;
 
 // access to global external variables
-extern bool g_fReleaseVersion;            // in TheApp.cpp
+extern bool g_fReleaseVersion;          // in TheApp.cpp
 extern bool g_fReleaseBehaviour;        // in TheApp.cpp
-extern bool g_fShowDebugLinks;            // in TheApp.cpp
+extern bool g_fShowDebugLinks;          // in TheApp.cpp
+extern bool g_fAutoNewProblem;          // in Preferences.cpp
 
 //------------------------------------------------------------------------------------
 // Implementation of lmEarCompareIntvCtrol

@@ -45,7 +45,8 @@ private:
     // controls
         // Exercises
     wxCheckBox*     m_pChkAnswerSounds;       // Enable right/wrong answer sounds
-
+    wxCheckBox*     m_pChkTeamCounters;       // Show two counters (for teams competition)
+    wxCheckBox*     m_pChkAutoNewProblem;     // Show two counters (for teams competition)
 
 };
 

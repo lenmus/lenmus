@@ -210,6 +210,8 @@ _("Please enter data for both, user name and password");
 _("Other options");
 _("Exercises");
 _("Generate right/wrong sounds when clicking an answer button");
+_("Show two counters (for teams competition)");
+_("If right answer, do not show solution and generate a new problem");
 //UpdaterDlgInfo.xrc 
 _("LenMus Phonascus updater");
 _("Available updates");

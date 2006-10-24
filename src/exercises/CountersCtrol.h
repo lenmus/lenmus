@@ -62,7 +62,7 @@ public:
 
 private:
     void UpdateDisplays(int nTeam);
-    void CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer);
+    void CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer, bool fTeam);
 
     //counters for right and wrong answers
     int         m_nRight[2];
