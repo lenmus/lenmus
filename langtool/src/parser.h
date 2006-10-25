@@ -38,6 +38,8 @@ public:
 
     void ParseFile(const wxString& filename); 
     void ParseBook(const wxString& sPath);
+    void GenerateHtml(wxString sFilename, bool fIncludeObjects);
+
 
 
 private:

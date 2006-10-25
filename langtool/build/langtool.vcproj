@@ -289,10 +289,10 @@
 			Name="Source Files"
 			Filter="">
 			<File
-				RelativePath="..\src\ebook_processor.cpp">
+				RelativePath="..\src\html_converter.cpp">
 			</File>
 			<File
-				RelativePath="..\src\ebook_processor.h">
+				RelativePath="..\src\html_converter.h">
 			</File>
 			<File
 				RelativePath="..\src\installer.cpp">

@@ -224,6 +224,36 @@ void lmXmlParser::ParseBook(const wxString& sPath)
 
 }
 
+void lmXmlParser::GenerateHtml(wxString sFilename, bool fIncludeObjects)
+{
+    wxLogMessage(_T("Converting eBook file to HTML. File %s\n\n"), filename);
+
+    // load the XML file as tree of nodes
+    wxXmlDocument xdoc;
+    if (!xdoc.Load(filename))
+    {
+        wxLogMessage(_T("Error parsing DocBook file ") + filename);
+        return;
+    }
+
+    //Verify type of document. Must be <book>
+    wxXmlNode *pRoot = xdoc.GetRoot();
+    if (pRoot->GetName() != _T("book")) {
+        wxLogMessage(
+            _T("Error. First tag is not <book> but <%s>"),
+            pRoot->GetName() );
+        return;
+    }
+    
+    m_nErrors = 0;
+    
+    // create the file
+    wxFileName oFN( filename );
+    oFN.SetExt(_T("htm"));
+    ConvertToHtml(pRoot, oFN.GetFullName(), fIncludeObjects);
+
+}
+
 void lmXmlParser::ParseFile(const wxString& filename) 
 {
     wxLogMessage(_T("Processing DocBook file %s\n\n"), filename);

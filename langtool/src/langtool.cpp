@@ -35,7 +35,7 @@
 #include "wx/wfstream.h"
 
 #include "installer.h"
-#include "ebook_processor.h"
+#include "html_coverter.h"
 #include "parser.h"
 
 // ----------------------------------------------------------------------------
