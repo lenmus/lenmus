@@ -112,11 +112,12 @@ typedef struct lmLangDataStruct {
     wxString sLangName;
 } lmLangData;
 
-#define lmNUM_LANGUAGES 3
+#define lmNUM_LANGUAGES 4
 static const lmLangData tLanguages[lmNUM_LANGUAGES] = { 
     { _T("en"), _T("English") }, 
     { _T("es"), _T("Spanish") }, 
     { _T("fr"), _T("French") }, 
+    { _T("tr"), _T("Turkish") }, 
 };
 
 // ----------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 ; Spanish language file for lenmus installer/uninstaller
 ;---------------------------------------------------------------------------------------------------------
 
-LicenseLangString license ${LANG_Spanish} "license_es.txt"
+LicenseLangString license ${LANG_Spanish} ".\locale\license_es.txt"
 
 ;strings to customize MUI pages
 LangString MSG_OptionalComponents   ${LANG_Spanish} "Por favor, elija los componentes adicionales a instalar"
@@ -25,8 +25,8 @@ LangString ERROR_CopyFiles          ${LANG_Spanish} "Error durante la copia de l
 LangString ERROR_InstallFonts       ${LANG_Spanish} "Error instalando el font"
 LangString ERROR_CreateIcon         ${LANG_Spanish} "Error creando acceso directo en el escritorio"
 LangString ERROR_CopyScores         ${LANG_Spanish} "Error al copiar las partituras de ejemplo "
-LangString MSG_CONTINUE             ${LANG_Spanish} "¿Quiere continuar instalando?"
-LangString MSG_ABORT                ${LANG_Spanish} "Instalación cancelada"
+LangString MSG_CONTINUE             ${LANG_Spanish} "Â¿Quiere continuar instalando?"
+LangString MSG_ABORT                ${LANG_Spanish} "InstalaciÃ³n cancelada"
 
 
 ;start menu & desktop descriptions
@@ -35,8 +35,7 @@ LangString SHORTCUT_NAME_EXEC           ${LANG_Spanish} "Ejecutar ${APP_NAME}"
 LangString SHORTCUT_NAME_UNINSTALL      ${LANG_Spanish} "Desinstalar ${APP_NAME}"
 
 ;other strings
-LangString OTHER_LangName               ${LANG_Spanish} "es"
-
+LangString OTHER_LangName             ${LANG_Spanish} "es"
 
 ;End Spanish language file
 ;=========================================================================================

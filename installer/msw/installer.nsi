@@ -2,6 +2,9 @@
 ; Windows installer for LenMus
 ; NSIS v2.15 script for generating the exe installer and uninstaller
 ;
+; To add a new language:
+;   Search for ADD_LANG and modify inthese points
+;
 ;--------------------------------------------------------------------------------------
 ;    LenMus Phonascus: The teacher of music
 ;    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -122,10 +125,11 @@
   !define MUI_LANGDLL_REGISTRY_VALUENAME "Installer Language"
 
   ;available languages
+  ; ADD_LANG
   !insertmacro MUI_LANGUAGE "English"
   !insertmacro MUI_LANGUAGE "Spanish"
-  ;!insertmacro MUI_LANGUAGE "French"
-  ;!insertmacro MUI_LANGUAGE "Turkish"
+  !insertmacro MUI_LANGUAGE "French"
+  !insertmacro MUI_LANGUAGE "Turkish"
 
   ;reserve files for languages
     ;These files should be inserted before other files in the data block
@@ -156,13 +160,14 @@
 
 
 ;---------------------------------------------------------------------------------------------------
+; ADD_LANG
 ;languaje files to support different languages during installation
 ;---------------------------------------------------------------------------------------------------
   !addincludedir ".\locale"
   !include "en.nsh"
   !include "es.nsh"
-  ;!include "fr.nsh"
-  ;!include "tr.nsh"
+  !include "fr.nsh"
+  !include "tr.nsh"
 
 
 
@@ -223,8 +228,11 @@ Section  "-" "MainSection"
      File "..\..\docs\html\licence.htm"
      File "..\..\docs\html\installation.htm"
      File "..\..\docs\html\singledoc.css"
-     File "license_en.txt"
-     File "license_es.txt"
+    ; ADD_LANG
+     File ".\locale\license_en.txt"
+     File ".\locale\license_es.txt"
+     File ".\locale\license_fr.txt"
+     File ".\locale\license_tr.txt"
 
      SetOutPath "$INSTDIR\bin"
      File "..\..\z_bin\lenmus.exe"
@@ -232,10 +240,15 @@ Section  "-" "MainSection"
      File "msvcr71.dll"
      ;File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
 
+    ; ADD_LANG
      SetOutPath "$INSTDIR\locale\en"
      File "..\..\locale\en\*.*"
      SetOutPath "$INSTDIR\locale\es"
      File "..\..\locale\es\*.*"
+     SetOutPath "$INSTDIR\locale\fr"
+     File "..\..\locale\fr\*.*"
+     SetOutPath "$INSTDIR\locale\tr"
+     File "..\..\locale\tr\*.*"
 
      SetOutPath "$INSTDIR\res\bitmaps"
      File "..\..\res\bitmaps\*.*"
@@ -413,8 +426,12 @@ Section un.Install
   ;delete files
   ;Delete "$INSTDIR\*.*"
   ;Delete "$INSTDIR\bin\*.*"
+  ; ADD_LANG
   ;Delete "$INSTDIR\locale\en\*.*"
   ;Delete "$INSTDIR\locale\es\*.*"
+  ;Delete "$INSTDIR\locale\fr\*.*"
+  ;Delete "$INSTDIR\locale\tr\*.*"
+  
   ;Delete "$INSTDIR\res\bitmaps\*.*"
   ;Delete "$INSTDIR\res\icons\*.*"
   ;Delete "$INSTDIR\res\sounds\*.*"
@@ -426,8 +443,12 @@ Section un.Install
 
   ;delete folders
   ;RMDir "$INSTDIR\bin"
+  ; ADD_LANG
   ;RMDir "$INSTDIR\locale\en"
   ;RMDir "$INSTDIR\locale\es"
+  ;RMDir "$INSTDIR\locale\fr"
+  ;RMDir "$INSTDIR\locale\tr"
+  
   ;RMDir "$INSTDIR\locale"
   ;RMDir "$INSTDIR\res\bitmaps"
   ;RMDir "$INSTDIR\res\icons"

@@ -3,7 +3,7 @@
 ; English language file for lenmus installer/uninstaller
 ;---------------------------------------------------------------------------------------------------------
 
-LicenseLangString license ${LANG_English} "license_en.txt"
+LicenseLangString license ${LANG_English} ".\locale\license_en.txt"
 
 ;strings to customize MUI pages
 LangString MSG_OptionalComponents   ${LANG_English} "Please, choose the optional components you would like to install"
@@ -35,7 +35,7 @@ LangString SHORTCUT_NAME_EXEC           ${LANG_English} "Run ${APP_NAME}"
 LangString SHORTCUT_NAME_UNINSTALL      ${LANG_English} "Uninstall ${APP_NAME}"
 
 ;other strings
-LangString OTHER_LangName               ${LANG_English} "en"
+LangString OTHER_LangName             ${LANG_English} "en"
 
 ;End English language file
 ;=========================================================================================

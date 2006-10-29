@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ wxString lmInstaller::GetInstallerStrings(wxString sLangCode, wxString sLangName
     _T("; ") + sLangName + _T(" language file for lenmus installer/uninstaller\n")
     _T(";---------------------------------------------------------------------------------------------------------\n")
     _T("\n")
-    _T("LicenseLangString license ") + sLang + _T("license_") + sLangCode + _T(".txt\"\n")
+    _T("LicenseLangString license ") + sLang + _T(".\\locale\\license_") + sLangCode + _T(".txt\"\n")
     _T("\n")
     _T(";strings to customize MUI pages\n")
     _T("LangString MSG_OptionalComponents   ") + sLang + _("Please, choose the optional components you would like to install") + _T("\"\n")
@@ -84,6 +84,9 @@ wxString lmInstaller::GetInstallerStrings(wxString sLangCode, wxString sLangName
     _T("LangString SM_PRODUCT_GROUP             ") + sLang + _T("${APP_NAME}\"\n")
     _T("LangString SHORTCUT_NAME_EXEC           ") + sLang + _("Run") + _T(" ${APP_NAME}") + _T("\"\n")
     _T("LangString SHORTCUT_NAME_UNINSTALL      ") + sLang + _("Uninstall") + _T(" ${APP_NAME}") + _T("\"\n")
+    _T("\n")
+    _T(";other strings\n")
+    _T("LangString OTHER_LangName             ") + sLang + sLangCode + _T("\"\n")
     _T("\n")
     _T(";End ") + sLangName + _T(" language file\n")
     _T(";=========================================================================================\n");
