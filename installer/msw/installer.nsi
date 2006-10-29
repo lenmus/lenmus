@@ -38,7 +38,7 @@
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v3.2"     ;product name displayed by the installer
+  Name "lenmus v3.3"     ;product name displayed by the installer
 
 
 ;support for Modern UI
@@ -122,8 +122,10 @@
   !define MUI_LANGDLL_REGISTRY_VALUENAME "Installer Language"
 
   ;available languages
-  !insertmacro MUI_LANGUAGE "Spanish"
   !insertmacro MUI_LANGUAGE "English"
+  !insertmacro MUI_LANGUAGE "Spanish"
+  ;!insertmacro MUI_LANGUAGE "French"
+  ;!insertmacro MUI_LANGUAGE "Turkish"
 
   ;reserve files for languages
     ;These files should be inserted before other files in the data block
@@ -157,9 +159,10 @@
 ;languaje files to support different languages during installation
 ;---------------------------------------------------------------------------------------------------
   !addincludedir ".\locale"
-  !include "es.nsh"
   !include "en.nsh"
-  !include "fr.nsh"
+  !include "es.nsh"
+  ;!include "fr.nsh"
+  ;!include "tr.nsh"
 
 
 
@@ -175,6 +178,26 @@ Function .onInit
   !insertmacro MUI_LANGDLL_DISPLAY
 FunctionEnd
 
+;------------
+;function to write an string into a file
+; Usage:
+;   Push "hello$\r$\n" ;text to write to file 
+;   Push "$INSTDIR\log.txt" ;file to write to 
+;   Call WriteToFile
+;------------
+Function WriteToFile
+ Exch $0 ;file to write to
+ Exch
+ Exch $1 ;text to write
+ 
+  FileOpen $0 $0 a #open file
+   FileSeek $0 0 END #go to end
+   FileWrite $0 $1 #write to file
+  FileClose $0
+ 
+ Pop $1
+ Pop $0
+FunctionEnd
 
 ;Install all the mandatory components
 Section  "-" "MainSection"
@@ -200,9 +223,8 @@ Section  "-" "MainSection"
      File "..\..\docs\html\licence.htm"
      File "..\..\docs\html\installation.htm"
      File "..\..\docs\html\singledoc.css"
-     File "..\..\docs\release\licence.txt"
-     File "license_english.txt"
-     File "license_spanish.txt"
+     File "license_en.txt"
+     File "license_es.txt"
 
      SetOutPath "$INSTDIR\bin"
      File "..\..\z_bin\lenmus.exe"
@@ -239,6 +261,14 @@ Section  "-" "MainSection"
           MessageBox MB_YESNO|MB_ICONQUESTION $(MSG_CONTINUE) IDYES +2
       Abort "$(MSG_ABORT)"
      EndCopyFiles:
+     
+  ; Save install options
+  ;-----------------------------------------------------------------------------------
+     SetOutPath "$INSTDIR\bin"
+     Push "$(OTHER_LangName)"                               ;text to write to file 
+     Push "$INSTDIR\\bin\config_ini.txt"        ;file to write to 
+     Call WriteToFile
+
 
 
   ;install font

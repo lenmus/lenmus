@@ -172,6 +172,12 @@ wxFSFile* lmVirtualBooks::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& l
 
 void lmVirtualBooks::LoadIntroBook()
 {
+    // there must be a bug in wxWidgets and index doesn't work if hhc and hhk goes with
+    // UTF-8. So, afetr a lot of testing, the foolowing combination works:
+    //      htm         -> utf-8
+    //      hhk, hhc    -> iso-8859-1 (but the file is utf-8)
+    //      hhp         -> utf-8
+
     wxString sNil = _T("");
 #ifdef _UNICODE
     wxString sCharset = _T("utf-8");
@@ -194,8 +200,7 @@ void lmVirtualBooks::LoadIntroBook()
     //-----------------------------------------------------------------------------
     m_sIntroHHC = sNil +
         _T("<html><head>")
-        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + sCharset +
-        _T("\">")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">")
         _T("</head><body><ul>")
         _T("<li><object type=\"text/sitemap\">")
         _T("<param name=\"Name\" value=\"") + _("Welcome") + _T("\">")
@@ -205,10 +210,8 @@ void lmVirtualBooks::LoadIntroBook()
     //book index
     //-----------------------------------------------------------------------------
     m_sIntroHHK = sNil +
-        _T("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML//EN\">")
         _T("<html><head>")
-        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + sCharset +
-        _T("\">")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">")
         _T("</head><body><ul>")
         _T("<li><object type=\"text/sitemap\">")
         _T("<param name=\"Name\" value=\"") + _("Welcome") + _T("\">")
@@ -440,10 +443,8 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     //Book content and index
     //-----------------------------------------------------------------------------
     m_sSingleHHC = sNil +
-        _T("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML//EN\">")
         _T("<html><head>")
-        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + 
-        sCharset + _T("\">")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">")
         _T("</head><body><ul>");
 
     for (i=0; i < lmNUM_SINGLE_PAGES; i++) {
@@ -515,7 +516,7 @@ void lmVirtualBooks::LoadSingleExercisesBook()
 
 
 //-------------------------------------------------------------------------------------
-// global functions
+// static methods
 //-------------------------------------------------------------------------------------
 void lmVirtualBooks::LoadVirtualBooks(lmTextBookController* pBookController)
 {
@@ -536,5 +537,39 @@ void lmVirtualBooks::LoadVirtualBooks(lmTextBookController* pBookController)
     }
 
 }
+
+void lmVirtualBooks::GenerateEBooks()
+{
+    // intro eBook
+    WriteEBook(_T("intro.hhp"), m_sIntroHHP);
+    WriteEBook(_T("intro.hhc"), m_sIntroHHC);
+    WriteEBook(_T("intro.hhk"), m_sIntroHHK);
+    WriteEBook(_T("intro_welcome.htm"), m_sIntroHTM);
+
+    //SingleExercises eBook
+    for (int i=0; i < lmNUM_SINGLE_PAGES; i++) {
+        WriteEBook( wxString::Format(_T("SingleExercises_%d.htm"), i), m_sSingleHTM[i] );
+    }
+    WriteEBook(_T("SingleExercises.hhp"), m_sSingleHHP);
+    WriteEBook(_T("SingleExercises.hhc"), m_sSingleHHC);
+    WriteEBook(_T("SingleExercises.hhk"), m_sSingleHHK);
+
+}
+
+void lmVirtualBooks::WriteEBook(wxString sBookName, wxString sContent)
+{
+    wxFile* pFile = new wxFile(sBookName, wxFile::write);
+    if (!pFile->IsOpened()) {
+        //todo
+        pFile = (wxFile*)NULL;
+        return;
+    }
+    pFile->Write(sContent);
+    pFile->Close();
+    delete pFile;
+
+}
+
+
 
 

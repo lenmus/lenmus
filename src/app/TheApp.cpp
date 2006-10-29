@@ -51,6 +51,7 @@
 #include "wx/xrc/xmlres.h"          // use the xrc resource system
 #include "wx/splash.h"
 #include <wx/datetime.h>
+#include "wx/txtstrm.h"
 
 
 
@@ -113,6 +114,7 @@
 #include "../sound/WaveManager.h"       //access to Wave sound manager
 #include "Logger.h"                     //access to error's logger
 #include "../ldp_parser/LDPTags.h"      //to delete the LDP tags table
+#include "../options/Languages.h"       //to check config_ini.txt stored language
 
 //access to global objects
 #include "../globals/Paths.h"
@@ -264,10 +266,17 @@ bool lmTheApp::OnInit(void)
 
     wxString lang = g_pPrefs->Read(_T("/Locale/Language"), _T(""));
     if (lang == _T("")) {
-        // If language is not set, pop up a dialog to choose language.
+        // The language is not set
         // This will only happen the first time the program is run or if
         // lenmus.ini file is deleted
-        lang = ChooseLanguage(NULL);
+
+        // try to get installer choosen language and use it if found
+        lang = GetInstallerLanguage();
+
+        if (lang == _T("")) {
+            // Not found. Pop up a dialog to choose language.
+            lang = ChooseLanguage(NULL);
+        }
         g_pPrefs->Write(_T("/Locale/Language"), lang);
     }
     // Now that language code is know we can finish lmPaths initialization
@@ -753,6 +762,32 @@ lmSplashFrame* lmTheApp::RecreateGUI(int nMilliseconds)
     }
 
     return pSplash;
+}
+
+wxString lmTheApp::GetInstallerLanguage()
+{
+    wxString sLang = _T("");
+    wxString sPath = g_pPaths->GetBinPath();
+    wxFileName oFilename(sPath, _T("config_ini"), _T("txt"), wxPATH_NATIVE);
+    wxFileInputStream inFile( oFilename.GetFullPath() );
+    if (!inFile.Ok()) return sLang;
+    wxTextInputStream inTextFile(inFile);
+    sLang = inTextFile.ReadWord();
+
+    //verify that the read string is one of the supported languages
+    int              nNumLangs;
+    wxArrayString    cLangCodes;
+    wxArrayString    cLangNames;
+    GetLanguages(cLangCodes, cLangNames);
+    nNumLangs = cLangNames.GetCount();
+
+    int i;
+    for(i=0; i < nNumLangs; i++)
+        if(cLangCodes[i] == sLang) return sLang;
+
+    // not found. Return empty string
+    sLang = _T("");
+    return sLang;
 }
 
 //---------------------------------------------------------------------------------------

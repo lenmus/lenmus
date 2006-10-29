@@ -34,5 +34,8 @@ LangString SM_PRODUCT_GROUP             ${LANG_English} "${APP_NAME}"
 LangString SHORTCUT_NAME_EXEC           ${LANG_English} "Run ${APP_NAME}"
 LangString SHORTCUT_NAME_UNINSTALL      ${LANG_English} "Uninstall ${APP_NAME}"
 
+;other strings
+LangString OTHER_LangName               ${LANG_English} "en"
+
 ;End English language file
 ;=========================================================================================

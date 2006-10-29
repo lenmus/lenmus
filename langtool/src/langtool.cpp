@@ -35,8 +35,8 @@
 #include "wx/wfstream.h"
 
 #include "installer.h"
-#include "html_coverter.h"
 #include "parser.h"
+#include "html_converter.h"
 
 // ----------------------------------------------------------------------------
 // resources
@@ -77,6 +77,7 @@ public:
     void OnAbout(wxCommandEvent& event);
     void OnInstaller(wxCommandEvent& event);
     void OnSplitFile(wxCommandEvent& WXUNUSED(event));
+    void OnConvertToHtml(wxCommandEvent& WXUNUSED(event));
 
 private:
     void PutContentIntoFile(wxString sPath, wxString sContent);
@@ -102,6 +103,7 @@ enum
 
     MENU_INSTALLER = wxID_HIGHEST + 100,
     MENU_SPLIT_FILE,
+    MENU_CONVERT_TO_HTML,
 };
 
 // supported languages table
@@ -126,6 +128,7 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(MENU_ABOUT, MyFrame::OnAbout)
     EVT_MENU(MENU_INSTALLER, MyFrame::OnInstaller)
     EVT_MENU(MENU_SPLIT_FILE, MyFrame::OnSplitFile)
+    EVT_MENU(MENU_CONVERT_TO_HTML, MyFrame::OnConvertToHtml)
 END_EVENT_TABLE()
 
 // Create a new application object: this macro will allow wxWidgets to create
@@ -188,12 +191,18 @@ MyFrame::MyFrame(const wxString& title)
     wxMenu* pSplitMenu = new wxMenu;
     pSplitMenu->Append(MENU_SPLIT_FILE, _T("&Split"), _T("Split HTML ebook file"));
 
+    // the Convert File menu
+    wxMenu* pConvertMenu = new wxMenu;
+    pConvertMenu->Append(MENU_CONVERT_TO_HTML, _T("&Convert"), _T("Convert XML file to HTML"));
+
+
 
     // now append the freshly created menus to the menu bar...
     wxMenuBar *menuBar = new wxMenuBar();
     menuBar->Append(pFileMenu, _T("&File"));
     menuBar->Append(pGenMenu, _T("&Generate"));
     menuBar->Append(pSplitMenu, _T("&Split"));
+    menuBar->Append(pConvertMenu, _T("&Convert"));
     menuBar->Append(pHelpMenu, _T("&Help"));
 
     // ... and attach this menu bar to the frame
@@ -244,6 +253,24 @@ void MyFrame::OnSplitFile(wxCommandEvent& WXUNUSED(event))
     lmXmlParser* pParser = new lmXmlParser();
     pParser->ParseBook(sPath);
     delete pParser;
+
+}
+
+void MyFrame::OnConvertToHtml(wxCommandEvent& WXUNUSED(event))
+{
+    // ask for the file to covert
+    wxString sFilter = wxT("*.*");
+    wxString sPath = ::wxFileSelector(_T("Choose the file to convert"),
+                                        wxT(""),    //default path
+                                        wxT(""),    //default filename
+                                        wxT("xml"),    //default_extension
+                                        sFilter,
+                                        wxOPEN,        //flags
+                                        this);
+    if ( sPath.IsEmpty() ) return;
+
+    lmHtmlConverter oConv;
+    oConv.ConvertToHtml(sPath, false, true);
 
 }
 

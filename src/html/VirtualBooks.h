@@ -46,10 +46,13 @@ public:
     bool CanOpen(const wxString& location);
     void ReloadBooks(wxString sLang);
     static void LoadVirtualBooks(lmTextBookController* pBookController);
+    void GenerateEBooks();
+
 
 private:
     void LoadIntroBook();
     void LoadSingleExercisesBook();
+    void WriteEBook(wxString sBookName, wxString sContent);
 
 
     //array sizes

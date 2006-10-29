@@ -66,10 +66,12 @@ class lmTheApp: public wxApp
     wxString GetLocaleName() { return m_pLocale->GetLocale(); }
     wxString GetLocaleSysName() { return m_pLocale->GetSysName(); }
     wxString GetVersionNumber();
+    lmVirtualBooks* GetVBooks() { return m_pVBooks; }
 
 private:
     void GetMainWindowPlacement(wxRect *frameRect, bool *fMaximized);
     void GetDefaultMainWindowRect(wxRect *defRect);
+    wxString GetInstallerLanguage();
     wxString ChooseLanguage(wxWindow *parent);
     lmSplashFrame* RecreateGUI(int nMilliseconds);
 

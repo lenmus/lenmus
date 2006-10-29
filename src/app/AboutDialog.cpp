@@ -230,13 +230,13 @@ ease to learn and extend, it has a helpful community, and also has the possibili
 to use it in commercial products without licencing.") +
         _T("</p><p>") +
         _("This program uses the <b>Anti-Grain Geometry</b> (http://www.antigrain.com) \
-          software developed by Maxim Shemanarev. AGG is an excellent open source, \
-          free graphic library, in source code. \
-          It produces pixel images \
-          in memory from vectorial data and it supports anti-aliasing, \
-          has very high performance, it is platform independent, very \
-          flexible and extensible, with a lightweight design, and very good \
-          reliability and stability.") +
+software developed by Maxim Shemanarev. AGG is an excellent open source, \
+free graphic library, in source code. \
+It produces pixel images \
+in memory from vectorial data and it supports anti-aliasing, \
+has very high performance, it is platform independent, very \
+flexible and extensible, with a lightweight design, and very good \
+reliability and stability.") +
         _T("</p><p>") +
         _("Most of 'lmbasic.ttf' font glyphs are taken from <b>LilyPond</b> GNU GPL project \
 (http://lilypond.org), Feta font.") +
@@ -250,11 +250,11 @@ void lmAboutDialog::OnTranslators(wxCommandEvent& WXUNUSED(event))
 {
     wxString sContent = m_sHeader +
         _T("<center>")
-        _T("<h3>") + _("Translation credits") + 
+        _T("<h3>") + _("Translation credits") +
         _T("</h3></center><table border='1' width='100%' cellpadding='5' cellspacing='0'>")
         _T("<tr><td bgcolor='#7f8adc'><font color='#ffffff'><b>") +
-            _("Language") + _T("</b></font></td><td bgcolor='#7f8adc'><font color='#ffffff'><b>") + 
-            _("Name") + _T("</b></font></td><td bgcolor='#7f8adc'><font color='#ffffff'><b>") + 
+            _("Language") + _T("</b></font></td><td bgcolor='#7f8adc'><font color='#ffffff'><b>") +
+            _("Name") + _T("</b></font></td><td bgcolor='#7f8adc'><font color='#ffffff'><b>") +
             _("e-mail") + _T("</b></font></td></tr>")
         _T("<tr><td>") + _("French") + _T("</td><td>Carlos Alarcia</td>") +
             _T("<td>calarcia@cyltel.com</td></tr>") +

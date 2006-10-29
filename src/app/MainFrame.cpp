@@ -186,6 +186,7 @@ enum
     MENU_Debug_DumpBitmaps,
     MENU_Debug_UnitTests,
     MENU_Debug_UseAntiAliasing,
+    MENU_Debug_GenerateEBooks,
 
     // Menu Zoom
     MENU_Zoom_100,
@@ -344,6 +345,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_MENU (MENU_Debug_recSelec, lmMainFrame::OnDebugRecSelec)
     EVT_MENU (MENU_Debug_UnitTests, lmMainFrame::OnDebugUnitTests)
     EVT_MENU (MENU_Debug_UseAntiAliasing, lmMainFrame::OnDebugUseAntiAliasing)
+    EVT_MENU (MENU_Debug_GenerateEBooks, lmMainFrame::OnDebugGenerateEBooks)
         //debug events requiring a score to be enabled
     EVT_MENU      (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugDumpStaffObjs)
     EVT_UPDATE_UI (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugScoreUI)
@@ -871,6 +873,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
         debug_menu->Append(MENU_Debug_SeeMIDIEvents, _T("See &MIDI events") );
         debug_menu->Append(MENU_Debug_DumpBitmaps, _T("Save offscreen bitmaps") );
         debug_menu->Append(MENU_Debug_UnitTests, _T("Unit Tests") );
+        debug_menu->Append(MENU_Debug_GenerateEBooks, _T("Generate eBooks") );
     }
 
 
@@ -967,7 +970,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     if (fEdit) menu_bar->Append(edit_menu, _("&Edit"));
     menu_bar->Append(view_menu, _("&View"));
     menu_bar->Append(sound_menu, _("&Sound"));
-    if (fDebug) menu_bar->Append(debug_menu, _("&Debug"));
+    if (fDebug) menu_bar->Append(debug_menu, _T("&Debug"));     //DO NOT TRANSLATE
     menu_bar->Append(zoom_menu, _("&Zoom"));
     menu_bar->Append(options_menu, _("&Options"));
     menu_bar->Append(help_menu, _("&Help"));
@@ -1112,7 +1115,7 @@ void lmMainFrame::InitializeBooks()
         sPattern = _T("*.htb");
         m_pBookController->SetTitleFormat(_("Available books"));
 
-        lmVirtualBooks::LoadVirtualBooks(m_pBookController);
+        //lmVirtualBooks::LoadVirtualBooks(m_pBookController);
         ScanForBooks(sPath, sPattern);
     }
     else {
@@ -1121,7 +1124,7 @@ void lmMainFrame::InitializeBooks()
         m_pBookController->SetTitleFormat(_T("Test mode: available books"));
 
         //load the virtual books
-        lmVirtualBooks::LoadVirtualBooks(m_pBookController);
+        //lmVirtualBooks::LoadVirtualBooks(m_pBookController);
 
         // loop to look for subdirectories
         wxDir dir(sPath);
@@ -1462,6 +1465,12 @@ void lmMainFrame::OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event))
 {
     wxString sData = ::wxGetTextFromUser(_("Mask to add"));
     if (!sData.IsEmpty()) g_pLogger->AddTraceMask(sData);
+}
+
+void lmMainFrame::OnDebugGenerateEBooks(wxCommandEvent& event)
+{
+    lmVirtualBooks* pVBooks = g_pTheApp->GetVBooks();
+    pVBooks->GenerateEBooks();
 }
 
 void lmMainFrame::OnAllSoundsOff(wxCommandEvent& WXUNUSED(event))

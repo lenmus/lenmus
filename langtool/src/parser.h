@@ -38,11 +38,7 @@ public:
 
     void ParseFile(const wxString& filename); 
     void ParseBook(const wxString& sPath);
-    void GenerateHtml(wxString sFilename, bool fIncludeObjects);
 
-
-
-private:
     // auxiliary XML methods
     wxXmlNode* GetFirstChild(wxXmlNode* pNode);
     wxXmlNode* GetNextSibling(wxXmlNode* pNode);
@@ -54,6 +50,9 @@ private:
     void ParseError(const wxChar* szFormat, ...);
     void TagError(const wxString sElement, const wxString sTagName, wxXmlNode* pElement = NULL);
 
+
+
+private:
     // processing methods
     bool CreateBookIndex(wxXmlNode* pNode, const wxString& filename);
     wxString GetTitle(wxXmlNode* pNode);
