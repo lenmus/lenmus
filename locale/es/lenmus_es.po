@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.0\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-10-24 14:14+0100\n"
+"PO-Revision-Date: 2006-10-31 15:53+0100\n"
 "Last-Translator: \n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -991,7 +991,7 @@ msgstr "Nuevo problema"
 #: exercises/IdfyExerciseCtrol.cpp:213
 #: exercises/IdfyExerciseCtrol.cpp:299
 #: exercises/TheoIntervalsCtrol.cpp:339
-#: app/MainFrame.cpp:538
+#: app/MainFrame.cpp:540
 #: exercises/Constrains.h:193
 #: exercises/Constrains.h:257
 msgid "Play"
@@ -1193,7 +1193,7 @@ msgid "Press 'Play' to lesson it again"
 msgstr "Pulsa 'Tocar' para escucharlo de nuevo"
 
 #: exercises/IdfyExerciseCtrol.cpp:407
-#: app/MainFrame.cpp:539
+#: app/MainFrame.cpp:541
 #: exercises/Constrains.h:194
 #: exercises/Constrains.h:196
 #: exercises/Constrains.h:258
@@ -1965,7 +1965,7 @@ msgid "Adding book %s"
 msgstr "Añadiendo el libro %s"
 
 #: html/TextBookFrame.cpp:386
-#: app/MainFrame.cpp:491
+#: app/MainFrame.cpp:493
 msgid "Help"
 msgstr "Ayuda"
 
@@ -1983,12 +1983,12 @@ msgid "&About..."
 msgstr "&Acerca de..."
 
 #: html/TextBookFrame.cpp:412
-#: app/MainFrame.cpp:966
+#: app/MainFrame.cpp:969
 msgid "&File"
 msgstr "&Archivo"
 
 #: html/TextBookFrame.cpp:413
-#: app/MainFrame.cpp:973
+#: app/MainFrame.cpp:976
 #: options/OptionsDlg.cpp:267
 msgid "&Help"
 msgstr "&Ayuda"
@@ -2028,7 +2028,7 @@ msgid "Show all items in index"
 msgstr "Muestra todos los items del índice"
 
 #: html/TextBookFrame.cpp:545
-#: app/MainFrame.cpp:687
+#: app/MainFrame.cpp:689
 msgid "Index"
 msgstr "Indice"
 
@@ -2166,176 +2166,176 @@ msgstr "Todos los archivos (*.*)|*"
 msgid "Open HTML document"
 msgstr "Abrir documento HTML"
 
-#: html/VirtualBooks.cpp:189
+#: html/VirtualBooks.cpp:195
 msgid "LenMus. Introduction"
 msgstr "LenMus. Introducción"
 
-#: html/VirtualBooks.cpp:201
-#: html/VirtualBooks.cpp:214
+#: html/VirtualBooks.cpp:206
+#: html/VirtualBooks.cpp:217
 msgid "Welcome"
 msgstr "Bienvenida"
 
-#: html/VirtualBooks.cpp:225
-#: html/VirtualBooks.cpp:291
-#: html/VirtualBooks.cpp:307
+#: html/VirtualBooks.cpp:228
+#: html/VirtualBooks.cpp:294
+#: html/VirtualBooks.cpp:310
 msgid "Single exercises"
 msgstr "Ejercicios sueltos"
 
-#: html/VirtualBooks.cpp:227
+#: html/VirtualBooks.cpp:230
 #, c-format
 msgid "Book %s contains some basic exercises for aural training and to practise theoretical concepts, such as intervals and scales. Unlike exercises included in the other books, you can customize all single exercises included in this book. This will allow you meet your specific needs at each moment and to practise specific points."
 msgstr "El libro %s contiene ejercicios básicos para educación del oido y para practicar algunos conceptos teóricos, tales como intervalos, escalas y armaduras. A diferencia de los ejercicios incluidos en los restantes libros, los de este son personalizables, de forma que puedes adaptarlos para practicar los aspectos concretos que desees o con el nivel de dificultad que quieras."
 
-#: html/VirtualBooks.cpp:241
+#: html/VirtualBooks.cpp:244
 msgid "Welcome to LenMus Phonascus version "
 msgstr "Bienvenido a LenMus Phonascus versión "
 
-#: html/VirtualBooks.cpp:243
+#: html/VirtualBooks.cpp:246
 msgid "Phonascus, from Latin 'the teacher of music', is a music education software that you can use to practice your music reading skills, improve your aural recognition abilities, or just learn the fundamental principles of music theory and language. From version 3.1 it includes new functions that, I hope, will end up with full support for the creation, display, printing, play back and interactive edition of music scores. Visit the LenMus web site for more information about the current status of the score editor."
 msgstr "Phonascus, en latín 'el profesor de música', es un software para el aprendizaje del lenguaje musical que te permitirá mejorar tus habilidades para la lectura de partituras, mejorar tu oido musical o, simplemente, aprender los principios fundamentales del lenguaje musical.Desde la versión 3.1 incluye nuevas funciones orientadas a la creación, visualización,impresión, reproducción (ejecución) y edición interactiva de partituras, que irán completándose en sucesivas versiones. Consulta la web de LenMus para más información sobre la situación del editor de partituras."
 
-#: html/VirtualBooks.cpp:251
+#: html/VirtualBooks.cpp:254
 msgid "LenMus Phonascus allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your specific needs at each moment and it allows you to work at your own pace."
 msgstr "LenMus te permite concentrarte en los temas y ejercicios específicos que desees,tanto de teoría como de educación auditiva. Puedes personalizar los distintos ejerciciospara adaptarlos a tus necesidades específicas en cada momento. Y te permite trabajar atu propio ritmo."
 
-#: html/VirtualBooks.cpp:255
+#: html/VirtualBooks.cpp:258
 msgid "LenMus is structured as a collection of fully interactive textbooks (eBooks), including theory and exercises. All exercises are fully integrated into the text. Music scores are not just images or pictures but fully interactive operational music scores that you can hear, in whole or just the measures you choose. This enables you to put concepts into practice with immediate feedback and makes the subject matter both more accessible and more rewarding, as you can hear, test and put in practise immediately any new concept introduced."
 msgstr "LenMus está estructurado como una colección de libros interactivos sobre el lenguaje musical, tanto en los aspectos teóricos como de educación del oido. El material didáctico es totalmente interactivo y los textos, partituras y ejercicios están totalmente integrados. Las partituras no son imágenes pegadas sino que son generadas dinámicamente por el programa, de forma que puedes escucharlas, completas o los compases seleccionados, e interactuar con ellas. Esto permite una mejor comprensión de los conceptos expuestos y facilita y hace más agradable el aprendizaje, ya que puedes escuchar, probar y poner en práctica inmediatamente cada nuevo concepto introducido."
 
-#: html/VirtualBooks.cpp:264
+#: html/VirtualBooks.cpp:267
 msgid "Teaching material is organized into levels, and each level into lessons."
 msgstr "El material didáctico esá organizado por niveles y, cada nivel, por lecciones."
 
-#: html/VirtualBooks.cpp:267
+#: html/VirtualBooks.cpp:270
 msgid "We hope that LenMus become a useful tool in your studies."
 msgstr "Esperamos que LenMus te resulte útil en tus estudios"
 
-#: html/VirtualBooks.cpp:269
+#: html/VirtualBooks.cpp:272
 msgid "The LenMus team."
 msgstr "El equipo de LenMus"
 
-#: html/VirtualBooks.cpp:306
+#: html/VirtualBooks.cpp:309
 msgid "0. Introduction to single exercises"
 msgstr "0. Intruducción a los ejercicios libres"
 
-#: html/VirtualBooks.cpp:314
+#: html/VirtualBooks.cpp:317
 msgid "1. Exercises for aural training"
 msgstr "1. Ejercicios para educar el oido"
 
-#: html/VirtualBooks.cpp:317
+#: html/VirtualBooks.cpp:320
 msgid "1.1. Aural training. Intervals' comparison"
 msgstr "1.1 Educación del oido: comparar intervalos"
 
-#: html/VirtualBooks.cpp:318
+#: html/VirtualBooks.cpp:321
 msgid "Aural training. Intervals' comparison"
 msgstr "Educación del oido: comparar intervalos"
 
-#: html/VirtualBooks.cpp:320
+#: html/VirtualBooks.cpp:323
 msgid "Exercise: Lesson two intervals and identify which one is greater"
 msgstr "Ejercicio: Escucha dos intervalos e identifica cuál es mayor"
 
-#: html/VirtualBooks.cpp:328
+#: html/VirtualBooks.cpp:331
 msgid "1.2. Aural training. Intervals' identification"
 msgstr "1.2. Educación del oido: Identificación de intervalos"
 
-#: html/VirtualBooks.cpp:329
+#: html/VirtualBooks.cpp:332
 msgid "Aural training. Intervals' identification"
 msgstr "Educación del oido: Identificación de intervalos"
 
-#: html/VirtualBooks.cpp:331
+#: html/VirtualBooks.cpp:334
 msgid "Exercise: Lesson an interval and identify it"
 msgstr "Ejercicio: Escucha un intervalo e identifícalo"
 
-#: html/VirtualBooks.cpp:339
+#: html/VirtualBooks.cpp:342
 msgid "1.3. Aural training. Chords' identification"
 msgstr "1.3. Educación del oido: Identificar acordes"
 
-#: html/VirtualBooks.cpp:340
+#: html/VirtualBooks.cpp:343
 msgid "Aural training. Chords' identification"
 msgstr "Educación del oido: Identificar acordes"
 
-#: html/VirtualBooks.cpp:342
+#: html/VirtualBooks.cpp:345
 msgid "Exercise: Lesson a chord and identify its type"
 msgstr "Ejercicio: Escucha un acorde e identifica su tipo."
 
-#: html/VirtualBooks.cpp:351
+#: html/VirtualBooks.cpp:354
 msgid "1.4. Aural training. Scales' identification"
 msgstr "1.4. Educación del oido: Identificación de escalas"
 
-#: html/VirtualBooks.cpp:352
+#: html/VirtualBooks.cpp:355
 msgid "Aural training. Scales' identification"
 msgstr "Educación del oido: Identificación de intervalos"
 
-#: html/VirtualBooks.cpp:354
+#: html/VirtualBooks.cpp:357
 msgid "Exercise: Lesson a scale and identify its type"
 msgstr "Ejercicio: Escucha una escala e identifica su tipo."
 
-#: html/VirtualBooks.cpp:365
+#: html/VirtualBooks.cpp:368
 msgid "2. Exercises to practise theory"
 msgstr "2. Ejercicios para practicar teoría"
 
-#: html/VirtualBooks.cpp:368
+#: html/VirtualBooks.cpp:371
 msgid "2.1. Key signatures' identification (in score)"
 msgstr "2.1. Identificación de armaduras (en una partitura)"
 
-#: html/VirtualBooks.cpp:369
+#: html/VirtualBooks.cpp:372
 msgid "Key signatures' identification"
 msgstr "Identificación de armaduras"
 
-#: html/VirtualBooks.cpp:371
+#: html/VirtualBooks.cpp:374
 msgid "Exercise: Identify a key signature or indicate the number of accidentals it has"
 msgstr "Ejercicio: Identifica la armadura o indica cuantas alteraciones tiene"
 
-#: html/VirtualBooks.cpp:382
+#: html/VirtualBooks.cpp:385
 msgid "2.2. Interval's identification (in score) and construction"
 msgstr "2.2. Identificación y construcción de intervalos (sobre pentagrama)"
 
-#: html/VirtualBooks.cpp:383
+#: html/VirtualBooks.cpp:386
 msgid "Interval's identification and construction"
 msgstr "Identificación y construcción de intervalos"
 
-#: html/VirtualBooks.cpp:391
+#: html/VirtualBooks.cpp:394
 msgid "2.3. Scales' identification (in score)"
 msgstr "2.3. Identificación de escalas (sobre partitura)"
 
-#: html/VirtualBooks.cpp:392
+#: html/VirtualBooks.cpp:395
 msgid "Scales' identification"
 msgstr "Identificación de escalas"
 
-#: html/VirtualBooks.cpp:394
+#: html/VirtualBooks.cpp:397
 msgid "Exercise: Identify the scale shown"
 msgstr "Ejercicio: identificar la escala mostrada"
 
-#: html/VirtualBooks.cpp:403
+#: html/VirtualBooks.cpp:406
 msgid "2.4. Chords' identification (in score)"
 msgstr "2.4. Identificación de acordes (en partitura)"
 
-#: html/VirtualBooks.cpp:404
+#: html/VirtualBooks.cpp:407
 msgid "Chords' identification"
 msgstr "Identificación de acordes"
 
-#: html/VirtualBooks.cpp:406
+#: html/VirtualBooks.cpp:409
 msgid "Exercise: Identify the type of the shown chord"
 msgstr "Ejercicio: Identifica el tipo del acorde mostrado"
 
-#: html/VirtualBooks.cpp:417
+#: html/VirtualBooks.cpp:420
 msgid "3. Other exercises"
 msgstr "3. Otros ejercicios"
 
-#: html/VirtualBooks.cpp:420
+#: html/VirtualBooks.cpp:423
 msgid "3.1. Clefs Reading"
 msgstr "3.1. Lectura de claves"
 
-#: html/VirtualBooks.cpp:421
+#: html/VirtualBooks.cpp:424
 msgid "Clefs Reading"
 msgstr "Lectura de claves"
 
-#: html/VirtualBooks.cpp:483
+#: html/VirtualBooks.cpp:484
 msgid "Appart of exercises included in the eBooks, the following general exercises (customizable to suit your needs at any moment) are available:"
 msgstr "Además de los ejercicios incluidos en cada libro, se incluyen aquí distintos ejercicios que puedes configurar para adaptar su dificultad o sus parámetros a tus necesidades específicas en cada momento:"
 
-#: html/VirtualBooks.cpp:528
-#: html/VirtualBooks.cpp:535
+#: html/VirtualBooks.cpp:529
+#: html/VirtualBooks.cpp:536
 #, c-format
 msgid "Failed adding virtual book %s"
 msgstr "Problemas al añadir el libro virtual %s"
@@ -2615,51 +2615,72 @@ msgid "LenMus Phonascus is build using the <b>wxWidgets</b> application framewor
 msgstr "LenMus Phonascus está construido utilizando <b>wxWidgets</b>, un conjunto de clases C++ para desarrollo de aplicaciones multiplataforma (http://www.wxwidgets.org). wxWidgets es 'Open Source', es fácil de aprender, tiene una generosa comunidad de usuarios y puede usarse tambien en productos comerciales sin necesidad de licencia."
 
 #: app/AboutDialog.cpp:232
+msgid "This program uses the <b>Anti-Grain Geometry</b> (http://www.antigrain.com) software developed by Maxim Shemanarev. AGG is an excellent open source, free graphic library, in source code. It produces pixel images in memory from vectorial data and it supports anti-aliasing, has very high performance, it is platform independent, very flexible and extensible, with a lightweight design, and very good reliability and stability."
+msgstr "Este programa usa el software <b>Anti-Grain Geometry</b> (http://www.antigrain.com) , desarrollado por Maxim Shemanarev. AGG es una excelente librería gráfica y es  open source. Produce imágenes en memoria a partir de datos vectoriales y soporta anti-aliasing; tiene un alto rendimiento, es independiente de plataforma, extensible y muy flexible, con un peso ligero y muy buena fiabilidad y estabilidad."
+
+#: app/AboutDialog.cpp:241
 msgid "Most of 'lmbasic.ttf' font glyphs are taken from <b>LilyPond</b> GNU GPL project (http://lilypond.org), Feta font."
 msgstr "Muchos de los glifos del font 'lmbasic.ttf' han sito tomados del projecto <b>LilyPond</b> (http://lilypond.org), del font Feta. Este proyecto tiene licencia GNU GPL."
 
-#: app/AboutDialog.cpp:244
+#: app/AboutDialog.cpp:253
 msgid "Translation credits"
 msgstr "Traductores."
 
-#: app/AboutDialog.cpp:245
+#: app/AboutDialog.cpp:256
+#: options/OptionsDlg.cpp:182
+msgid "Language"
+msgstr "Idioma"
+
+#: app/AboutDialog.cpp:257
+msgid "Name"
+msgstr "Nombre"
+
+#: app/AboutDialog.cpp:258
+msgid "e-mail"
+msgstr "e-mail"
+
+#: app/AboutDialog.cpp:259
 msgid "French"
 msgstr "Francés"
 
-#: app/AboutDialog.cpp:246
+#: app/AboutDialog.cpp:261
 msgid "Spanish"
 msgstr "Español"
 
-#: app/AboutDialog.cpp:257
+#: app/AboutDialog.cpp:263
+msgid "Turkish"
+msgstr "Turco"
+
+#: app/AboutDialog.cpp:275
 msgid "Build information"
 msgstr "Información de versión"
 
-#: app/AboutDialog.cpp:258
+#: app/AboutDialog.cpp:276
 msgid "Program build date:"
 msgstr "Fecha de construcción del programa:"
 
-#: app/AboutDialog.cpp:261
+#: app/AboutDialog.cpp:279
 msgid "wxMidi Version "
 msgstr "Versión de wxMidi "
 
-#: app/AboutDialog.cpp:262
+#: app/AboutDialog.cpp:280
 msgid "Charset encoding: "
 msgstr "Código de caracteres:"
 
-#: app/AboutDialog.cpp:263
+#: app/AboutDialog.cpp:281
 msgid "System locale name: "
 msgstr "Configuración regional del sistema:"
 
-#: app/AboutDialog.cpp:264
+#: app/AboutDialog.cpp:282
 msgid "Canonical locale name: "
 msgstr "Configuración regional (canónica):"
 
-#: app/AboutDialog.cpp:275
+#: app/AboutDialog.cpp:293
 #: ../xrc/xrc_strings.cpp:233
 msgid "Developers"
 msgstr "Desarrolladores"
 
-#: app/AboutDialog.cpp:277
+#: app/AboutDialog.cpp:295
 msgid "This program has been designed and developed by Cecilio Salmer&oacute;n. If you would like to help developing this program or join the project to help in any other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and leave a message in the 'contact' page. Thank you and welcome."
 msgstr "Este programa ha sido diseñado y construido por Cecilio Salmerón. Si quieres unirte al proyecto y ayudar en la programación o de cualquier otra manera, eres calurosamente bienvenido/a. Por favor, visita la web de LenMus en www.lenmus.org y déjame un mesaje en la página de 'contactar'. Muchas gracias y bienvenido/a."
 
@@ -2682,510 +2703,506 @@ msgid "Choose language to use:"
 msgstr "Elija el idima a utilizar:"
 
 #: app/Logger.cpp:155
-#: app/MainFrame.cpp:1540
-#: app/MainFrame.cpp:1545
+#: app/MainFrame.cpp:1549
+#: app/MainFrame.cpp:1554
 msgid "Error message"
 msgstr "Mensaje de error"
 
-#: app/MainFrame.cpp:426
+#: app/MainFrame.cpp:428
 msgid "Welcome to LenMus!"
 msgstr "LenMus te da la bienvenida"
 
-#: app/MainFrame.cpp:490
+#: app/MainFrame.cpp:492
 #: options/OptionsDlg.cpp:177
 msgid "Preferences"
 msgstr "Preferencias"
 
-#: app/MainFrame.cpp:490
+#: app/MainFrame.cpp:492
 msgid "Set user preferences"
 msgstr "Cambiar preferencias de usuario"
 
-#: app/MainFrame.cpp:491
+#: app/MainFrame.cpp:493
 msgid "Help button"
 msgstr "Botón de ayuda"
 
-#: app/MainFrame.cpp:492
+#: app/MainFrame.cpp:494
 msgid "Books"
 msgstr "Libros"
 
-#: app/MainFrame.cpp:492
+#: app/MainFrame.cpp:494
 msgid "Show the music books"
 msgstr "Mostrar los libros de música"
 
-#: app/MainFrame.cpp:498
+#: app/MainFrame.cpp:500
 msgid "New"
 msgstr "Nueva"
 
-#: app/MainFrame.cpp:498
+#: app/MainFrame.cpp:500
 msgid "New score"
 msgstr "Nueva partitura"
 
-#: app/MainFrame.cpp:499
+#: app/MainFrame.cpp:501
 msgid "Open"
 msgstr "Abrir"
 
-#: app/MainFrame.cpp:499
+#: app/MainFrame.cpp:501
 msgid "Open score"
 msgstr "Abrir partitura"
 
-#: app/MainFrame.cpp:500
+#: app/MainFrame.cpp:502
 msgid "Save"
 msgstr "Guardar"
 
-#: app/MainFrame.cpp:500
+#: app/MainFrame.cpp:502
 msgid "Save current score to disk"
 msgstr "Guardar la partitura en el disco"
 
-#: app/MainFrame.cpp:501
+#: app/MainFrame.cpp:503
 msgid "Print"
 msgstr "Imprimir"
 
-#: app/MainFrame.cpp:501
+#: app/MainFrame.cpp:503
 msgid "Print document"
 msgstr "Imprimir documento"
 
-#: app/MainFrame.cpp:507
+#: app/MainFrame.cpp:509
 msgid "Copy"
 msgstr "Copiar"
 
-#: app/MainFrame.cpp:508
+#: app/MainFrame.cpp:510
 msgid "Cut"
 msgstr "Cortar"
 
-#: app/MainFrame.cpp:509
+#: app/MainFrame.cpp:511
 msgid "Paste"
 msgstr "Pegar"
 
-#: app/MainFrame.cpp:515
+#: app/MainFrame.cpp:517
 msgid "Fit full"
 msgstr "Ajustar a página"
 
-#: app/MainFrame.cpp:515
+#: app/MainFrame.cpp:517
 msgid "Zoom so that the full page is displayed"
 msgstr "Ajustar escala para mostrar una página completa"
 
-#: app/MainFrame.cpp:516
+#: app/MainFrame.cpp:518
 msgid "Fit width"
 msgstr "Ajustar a ancho"
 
-#: app/MainFrame.cpp:516
+#: app/MainFrame.cpp:518
 msgid "Zoom so that page width equals window width"
 msgstr "Ajustar escala para el ancho de la página"
 
-#: app/MainFrame.cpp:528
-#: app/MainFrame.cpp:879
-#: app/MainFrame.cpp:1530
+#: app/MainFrame.cpp:530
+#: app/MainFrame.cpp:882
+#: app/MainFrame.cpp:1539
 msgid "Actual size"
 msgstr "Tamaño real"
 
-#: app/MainFrame.cpp:529
-#: app/MainFrame.cpp:880
-#: app/MainFrame.cpp:1524
+#: app/MainFrame.cpp:531
+#: app/MainFrame.cpp:883
+#: app/MainFrame.cpp:1533
 msgid "Fit page full"
 msgstr "Ajustar a página completa"
 
-#: app/MainFrame.cpp:530
-#: app/MainFrame.cpp:881
-#: app/MainFrame.cpp:1527
+#: app/MainFrame.cpp:532
+#: app/MainFrame.cpp:884
+#: app/MainFrame.cpp:1536
 msgid "Fit page width"
 msgstr "Ajustar al ancho de página"
 
-#: app/MainFrame.cpp:538
+#: app/MainFrame.cpp:540
 msgid "Start/resume play back of the score"
 msgstr "Iniciar/continuar la ejecución de la partitura"
 
-#: app/MainFrame.cpp:539
+#: app/MainFrame.cpp:541
 msgid "Stop playing back"
 msgstr "Detener la ejecución"
 
-#: app/MainFrame.cpp:540
+#: app/MainFrame.cpp:542
 msgid "Pause"
 msgstr "Pausa"
 
-#: app/MainFrame.cpp:540
+#: app/MainFrame.cpp:542
 msgid "Pause playing back"
 msgstr "Pausa en la ejecución de la partitura"
 
-#: app/MainFrame.cpp:546
+#: app/MainFrame.cpp:548
 msgid "Metronome"
 msgstr "Metrónomo"
 
-#: app/MainFrame.cpp:546
+#: app/MainFrame.cpp:548
 msgid "Turn metronome on/off"
 msgstr "Enceder / apagar el metrónomo"
 
-#: app/MainFrame.cpp:571
+#: app/MainFrame.cpp:573
 msgid "File tools"
 msgstr "Herramientas de archivo"
 
-#: app/MainFrame.cpp:575
+#: app/MainFrame.cpp:577
 msgid "Edit tools"
 msgstr "Herramientas de edición"
 
-#: app/MainFrame.cpp:579
+#: app/MainFrame.cpp:581
 msgid "Zooming tools"
 msgstr "Herramientas de escala"
 
-#: app/MainFrame.cpp:583
+#: app/MainFrame.cpp:585
 msgid "Main tools"
 msgstr "Herramientas principales"
 
-#: app/MainFrame.cpp:587
+#: app/MainFrame.cpp:589
 msgid "Play tools"
 msgstr "Herramientas de ejecución"
 
-#: app/MainFrame.cpp:591
+#: app/MainFrame.cpp:593
 msgid "Metronome tools"
 msgstr "Herramientas de metrónomo"
 
-#: app/MainFrame.cpp:688
+#: app/MainFrame.cpp:690
 msgid "Show/hide navigation panel"
 msgstr "Mostrar/ocultar el panel de navegación"
 
-#: app/MainFrame.cpp:691
+#: app/MainFrame.cpp:693
 msgid "Go back"
 msgstr "Atrás"
 
-#: app/MainFrame.cpp:692
+#: app/MainFrame.cpp:694
 msgid "Go to previous page in navigation log"
 msgstr "Ir a la página anterior del historial de navegación"
 
-#: app/MainFrame.cpp:693
+#: app/MainFrame.cpp:695
 msgid "Go forward"
 msgstr "Siguiente"
 
-#: app/MainFrame.cpp:694
+#: app/MainFrame.cpp:696
 msgid "Go to next page in navigation log"
 msgstr "Ir a la siguiente página del historial de navegación"
 
-#: app/MainFrame.cpp:696
+#: app/MainFrame.cpp:698
 msgid "Parent"
 msgstr "Padre"
 
-#: app/MainFrame.cpp:697
+#: app/MainFrame.cpp:699
 msgid "Go one level up in document hierarchy"
 msgstr "Subir un nivel en la jerarquía de documentos"
 
-#: app/MainFrame.cpp:698
+#: app/MainFrame.cpp:700
 msgid "Back Page"
 msgstr "Retroceder"
 
-#: app/MainFrame.cpp:699
+#: app/MainFrame.cpp:701
 msgid "Previous page of current document"
 msgstr "Muestra la siguiente página de este documento"
 
-#: app/MainFrame.cpp:700
+#: app/MainFrame.cpp:702
 msgid "next Page"
 msgstr "Avanzar"
 
-#: app/MainFrame.cpp:701
+#: app/MainFrame.cpp:703
 msgid "Next page of current document"
 msgstr "Muestra la página anterior de este documento"
 
-#: app/MainFrame.cpp:703
+#: app/MainFrame.cpp:705
 msgid "Fonts"
 msgstr "Fuentes"
 
-#: app/MainFrame.cpp:704
+#: app/MainFrame.cpp:706
 msgid "Change font settings"
 msgstr "Cambiar el tipo de letra"
 
-#: app/MainFrame.cpp:709
+#: app/MainFrame.cpp:711
 msgid "eBooks navigation tools"
 msgstr "Herramientas de navegación"
 
-#: app/MainFrame.cpp:757
-#: app/MainFrame.cpp:806
+#: app/MainFrame.cpp:759
+#: app/MainFrame.cpp:808
 msgid "&New\tCtrl+N"
 msgstr "&Nueva\tCtrl+N"
 
-#: app/MainFrame.cpp:757
-#: app/MainFrame.cpp:806
+#: app/MainFrame.cpp:759
+#: app/MainFrame.cpp:808
 msgid "Open new blank score"
 msgstr "Abrir una partitura en blanco"
 
-#: app/MainFrame.cpp:761
-#: app/MainFrame.cpp:807
+#: app/MainFrame.cpp:763
+#: app/MainFrame.cpp:809
 msgid "&Open ...\tCtrl+O"
 msgstr "&Abrir ...\tCtrl+O"
 
-#: app/MainFrame.cpp:761
-#: app/MainFrame.cpp:807
+#: app/MainFrame.cpp:763
+#: app/MainFrame.cpp:809
 msgid "Open a score"
 msgstr "Abrir una partitura"
 
-#: app/MainFrame.cpp:765
-#: app/MainFrame.cpp:808
+#: app/MainFrame.cpp:767
+#: app/MainFrame.cpp:810
 msgid "Open &books"
 msgstr "Abrir li&bros"
 
-#: app/MainFrame.cpp:765
-#: app/MainFrame.cpp:808
+#: app/MainFrame.cpp:767
+#: app/MainFrame.cpp:810
 msgid "Hide/show eMusicBooks"
 msgstr "Mostrar/ocultar libros"
 
-#: app/MainFrame.cpp:770
-#: app/MainFrame.cpp:809
+#: app/MainFrame.cpp:772
+#: app/MainFrame.cpp:811
 msgid "&Import..."
 msgstr "&Importar..."
 
-#: app/MainFrame.cpp:773
-#: app/MainFrame.cpp:811
+#: app/MainFrame.cpp:775
+#: app/MainFrame.cpp:813
 msgid "As &bmp image"
 msgstr "Como imagen &bmp"
 
-#: app/MainFrame.cpp:773
-#: app/MainFrame.cpp:811
+#: app/MainFrame.cpp:775
+#: app/MainFrame.cpp:813
 msgid "Save score as BMP images"
 msgstr "Guardar la partitura como imagenes BMP"
 
-#: app/MainFrame.cpp:777
-#: app/MainFrame.cpp:812
+#: app/MainFrame.cpp:779
+#: app/MainFrame.cpp:814
 msgid "As &jpg image"
 msgstr "Como imagen &jpg"
 
-#: app/MainFrame.cpp:777
-#: app/MainFrame.cpp:812
+#: app/MainFrame.cpp:779
+#: app/MainFrame.cpp:814
 msgid "Save score as JPG images"
 msgstr "Guardar la partitura como imágenes JPG"
 
-#: app/MainFrame.cpp:784
-#: app/MainFrame.cpp:815
+#: app/MainFrame.cpp:786
+#: app/MainFrame.cpp:817
 msgid "&Export ..."
 msgstr "&Exportar..."
 
-#: app/MainFrame.cpp:785
-#: app/MainFrame.cpp:816
+#: app/MainFrame.cpp:787
+#: app/MainFrame.cpp:818
 msgid "Save score in other formats"
 msgstr "Guardar la partitura en otros formatos"
 
-#: app/MainFrame.cpp:787
-#: app/MainFrame.cpp:818
+#: app/MainFrame.cpp:789
+#: app/MainFrame.cpp:820
 msgid "&Save\tCtrl+S"
 msgstr "&Guardar\tCtrl+S"
 
-#: app/MainFrame.cpp:791
+#: app/MainFrame.cpp:793
 msgid "Save &as ..."
 msgstr "&Guardar como..."
 
-#: app/MainFrame.cpp:793
-#: app/MainFrame.cpp:820
+#: app/MainFrame.cpp:795
+#: app/MainFrame.cpp:822
 msgid "&Close\tCtrl+W"
 msgstr "&Cerrar\tCtrl+W"
 
-#: app/MainFrame.cpp:796
-#: app/MainFrame.cpp:822
+#: app/MainFrame.cpp:798
+#: app/MainFrame.cpp:824
 msgid "&Print ...\tCtrl+P"
 msgstr "&Imprimir ...\tCtrl+P"
 
-#: app/MainFrame.cpp:800
-#: app/MainFrame.cpp:823
+#: app/MainFrame.cpp:802
+#: app/MainFrame.cpp:825
 msgid "Print &Setup..."
 msgstr "Configurar impresora..."
 
-#: app/MainFrame.cpp:801
+#: app/MainFrame.cpp:803
 msgid "Print Pre&view"
 msgstr "Imprimir: pre&visualizar"
 
-#: app/MainFrame.cpp:803
-#: app/MainFrame.cpp:826
+#: app/MainFrame.cpp:805
+#: app/MainFrame.cpp:828
 msgid "&Quit\tCtrl+Q"
 msgstr "&Salir\tCtrl+Q"
 
-#: app/MainFrame.cpp:819
+#: app/MainFrame.cpp:821
 msgid "Save &as ...\tCtrl+Shift+S"
 msgstr "&Guardar como...\tCtrl+May+S"
 
-#: app/MainFrame.cpp:824
+#: app/MainFrame.cpp:826
 msgid "Print Pre&view\tCtrl+Shift+P"
 msgstr "Previsualizar\tCtrl+May+P"
 
-#: app/MainFrame.cpp:838
+#: app/MainFrame.cpp:840
 msgid "&Undo"
 msgstr "&Deshacer"
 
-#: app/MainFrame.cpp:839
+#: app/MainFrame.cpp:841
 msgid "&Redo"
 msgstr "Rehacer"
 
-#: app/MainFrame.cpp:846
+#: app/MainFrame.cpp:848
 msgid "Tool &bar"
 msgstr "&Barra de herramientas"
 
-#: app/MainFrame.cpp:846
+#: app/MainFrame.cpp:848
 msgid "Hide/show the tools bar"
 msgstr "Mostrar/ocultar la barra de herramientas"
 
-#: app/MainFrame.cpp:847
+#: app/MainFrame.cpp:849
 msgid "&Status bar"
 msgstr "&Barra de estado"
 
-#: app/MainFrame.cpp:847
+#: app/MainFrame.cpp:849
 msgid "Hide/show the status bar"
 msgstr "Mostrar/ocultar barra de estado"
 
-#: app/MainFrame.cpp:850
+#: app/MainFrame.cpp:852
 msgid "&Rulers"
 msgstr "&Reglas"
 
-#: app/MainFrame.cpp:850
+#: app/MainFrame.cpp:852
 msgid "Hide/show rulers"
 msgstr "Mostrar/ocultar reglas"
 
-#: app/MainFrame.cpp:882
+#: app/MainFrame.cpp:885
 msgid "Zoom to ..."
 msgstr "Ampliar/reducir ..."
 
-#: app/MainFrame.cpp:888
-#: app/MainFrame.cpp:902
+#: app/MainFrame.cpp:891
+#: app/MainFrame.cpp:905
 msgid "&Play"
 msgstr "Tocar"
 
-#: app/MainFrame.cpp:892
-#: app/MainFrame.cpp:903
+#: app/MainFrame.cpp:895
+#: app/MainFrame.cpp:906
 msgid "S&top"
 msgstr "Parar"
 
-#: app/MainFrame.cpp:896
-#: app/MainFrame.cpp:904
+#: app/MainFrame.cpp:899
+#: app/MainFrame.cpp:907
 msgid "P&ause"
 msgstr "P&ausa"
 
-#: app/MainFrame.cpp:909
+#: app/MainFrame.cpp:912
 msgid "&Run Midi wizard"
 msgstr "&Asistente MIDI"
 
-#: app/MainFrame.cpp:910
+#: app/MainFrame.cpp:913
 msgid "Midi configuration wizard"
 msgstr "Asistente para configurar MIDI"
 
-#: app/MainFrame.cpp:912
+#: app/MainFrame.cpp:915
 msgid "&Test sound"
 msgstr "&Comprobar el sonido"
 
-#: app/MainFrame.cpp:912
+#: app/MainFrame.cpp:915
 msgid "Play an scale to test sound"
 msgstr "Tocar una escala para comprobar el sonido"
 
-#: app/MainFrame.cpp:913
+#: app/MainFrame.cpp:916
 msgid "&All sounds off"
 msgstr "&Detener sonidos"
 
-#: app/MainFrame.cpp:914
+#: app/MainFrame.cpp:917
 msgid "Stop inmediatly all sounds"
 msgstr "&Denere inmediatamente todos los sonidos"
 
-#: app/MainFrame.cpp:920
-#: app/MainFrame.cpp:926
+#: app/MainFrame.cpp:923
+#: app/MainFrame.cpp:929
 msgid "&Preferences"
 msgstr "&Preferencias"
 
-#: app/MainFrame.cpp:921
-#: app/MainFrame.cpp:937
-#: app/MainFrame.cpp:943
+#: app/MainFrame.cpp:924
+#: app/MainFrame.cpp:940
+#: app/MainFrame.cpp:946
 msgid "Open help book"
 msgstr "Abrir ayuda"
 
-#: app/MainFrame.cpp:932
+#: app/MainFrame.cpp:935
 msgid "&About\tF1"
 msgstr "&Acerca de\tF1"
 
-#: app/MainFrame.cpp:933
+#: app/MainFrame.cpp:936
 msgid "Display information about program version and credits"
 msgstr "Mostrar información sobre versión y créditos"
 
-#: app/MainFrame.cpp:936
-#: app/MainFrame.cpp:942
+#: app/MainFrame.cpp:939
+#: app/MainFrame.cpp:945
 msgid "&Content\tCtrl+Alt+F1"
 msgstr "&Contenido\tCtrl+Alt+F1"
 
-#: app/MainFrame.cpp:946
+#: app/MainFrame.cpp:949
 msgid "Check now for &updates"
 msgstr "Buscar &actualizaciones"
 
-#: app/MainFrame.cpp:947
+#: app/MainFrame.cpp:950
 msgid "Connect to Internet and check for program updates"
 msgstr "Conectar a internet y comprobar si hay actualizaciones"
 
-#: app/MainFrame.cpp:950
-#: app/MainFrame.cpp:956
+#: app/MainFrame.cpp:953
+#: app/MainFrame.cpp:959
 msgid "&Visit LenMus website"
 msgstr "&Ver la web de LenMus"
 
-#: app/MainFrame.cpp:951
-#: app/MainFrame.cpp:957
+#: app/MainFrame.cpp:954
+#: app/MainFrame.cpp:960
 msgid "Open the Internet browser and go to LenMus website"
 msgstr "Abrir el navegador de internet y visitar la web de LenMus"
 
-#: app/MainFrame.cpp:967
+#: app/MainFrame.cpp:970
 msgid "&Edit"
 msgstr "&Editar"
 
-#: app/MainFrame.cpp:968
+#: app/MainFrame.cpp:971
 msgid "&View"
 msgstr "&Ver"
 
-#: app/MainFrame.cpp:969
+#: app/MainFrame.cpp:972
 msgid "&Sound"
 msgstr "&Sonido"
 
-#: app/MainFrame.cpp:970
-msgid "&Debug"
-msgstr "&Depurar"
-
-#: app/MainFrame.cpp:971
+#: app/MainFrame.cpp:974
 msgid "&Zoom"
 msgstr "&Zoom"
 
-#: app/MainFrame.cpp:972
+#: app/MainFrame.cpp:975
 msgid "&Options"
 msgstr "&Opciones"
 
-#: app/MainFrame.cpp:1069
+#: app/MainFrame.cpp:1072
 msgid "LenMus help"
 msgstr "Ayuda de LenMus"
 
-#: app/MainFrame.cpp:1075
+#: app/MainFrame.cpp:1078
 msgid "Test mode: using .hhp help file"
 msgstr "Modo test: se usa el archivo de ayuda .hhp"
 
-#: app/MainFrame.cpp:1082
-#: app/MainFrame.cpp:1166
+#: app/MainFrame.cpp:1085
+#: app/MainFrame.cpp:1169
 #, c-format
 msgid "Failed adding book %s"
 msgstr "Problemas al añadir el libro %s"
 
-#: app/MainFrame.cpp:1113
+#: app/MainFrame.cpp:1116
 msgid "Available books"
 msgstr "Libros disponibles"
 
-#: app/MainFrame.cpp:1150
+#: app/MainFrame.cpp:1153
 #, c-format
 msgid "Error when trying to move to folder %s"
 msgstr "Error al tratar de cambiar a la carpeta %s"
 
-#: app/MainFrame.cpp:1260
+#: app/MainFrame.cpp:1263
 msgid "Name for the exported file"
 msgstr "Nombre para el archivo exportado"
 
-#: app/MainFrame.cpp:1463
+#: app/MainFrame.cpp:1466
 msgid "Mask to add"
 msgstr "Máscara a añadir"
 
-#: app/MainFrame.cpp:1500
+#: app/MainFrame.cpp:1509
 msgid "Zooming? (10 to 800)"
 msgstr "¿Escala? (10 a 800)"
 
-#: app/MainFrame.cpp:1539
+#: app/MainFrame.cpp:1548
 #, c-format
 msgid "Invalid zooming factor '%s'"
 msgstr "Factor de escala no válido '%s'"
 
-#: app/MainFrame.cpp:1544
+#: app/MainFrame.cpp:1553
 msgid "Zooming factor must be greater that 10% and lower than 800%"
 msgstr "El factor de escala debe ser mayor que 10% y menor que 800%"
 
-#: app/MainFrame.cpp:1668
+#: app/MainFrame.cpp:1677
 msgid ""
 "There is a problem previewing.\n"
 "Perhaps your current printer is not set correctly?"
@@ -3193,15 +3210,15 @@ msgstr ""
 "Hay un problema para generar la vista previa.\n"
 "Compruebe que la impresora está configurada correctamente."
 
-#: app/MainFrame.cpp:1668
+#: app/MainFrame.cpp:1677
 msgid "Previewing"
 msgstr "Previsualizando"
 
-#: app/MainFrame.cpp:1672
+#: app/MainFrame.cpp:1681
 msgid "Preview"
 msgstr "Previsualizar"
 
-#: app/MainFrame.cpp:1721
+#: app/MainFrame.cpp:1730
 msgid ""
 "There is a problem for printing.\n"
 "Perhaps your current printer is not set correctly?"
@@ -3209,7 +3226,7 @@ msgstr ""
 "Hay algún problema para imprimir.\n"
 "Compruebe que la impresora está configurada correctamente."
 
-#: app/MainFrame.cpp:1723
+#: app/MainFrame.cpp:1732
 msgid "Printing canceled"
 msgstr "Impresión cancelada"
 
@@ -3293,7 +3310,7 @@ msgstr "Sonido para el primer tiempo de cada compás:"
 msgid "Sound for other beats of each measure:"
 msgstr "Sonido para los restantes tiempos:"
 
-#: app/TheApp.cpp:652
+#: app/TheApp.cpp:661
 msgid "LenMus First Run"
 msgstr "Primera ejecución de LenMus"
 
@@ -3316,28 +3333,20 @@ msgstr "Elija los colores a utilizar:"
 
 #: options/InternetOptPanel.cpp:115
 #: options/InternetOptPanel.cpp:141
-#: options/InternetOptPanel.cpp:235
 msgid "Never"
 msgstr "Nunca"
 
 #: options/InternetOptPanel.cpp:116
-#: options/InternetOptPanel.cpp:237
 msgid "Daily"
 msgstr "Diariamente"
 
 #: options/InternetOptPanel.cpp:117
-#: options/InternetOptPanel.cpp:239
 msgid "Weekly"
 msgstr "Semanalmente"
 
 #: options/InternetOptPanel.cpp:118
-#: options/InternetOptPanel.cpp:241
 msgid "Monthly"
 msgstr "Mensualmente"
-
-#: options/OptionsDlg.cpp:182
-msgid "Language"
-msgstr "Idioma"
 
 #: options/OptionsDlg.cpp:192
 msgid "Toolbars"

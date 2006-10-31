@@ -229,21 +229,24 @@ bool lmInternetOptPanel::Verify()
 void lmInternetOptPanel::Apply()
 {
     // Web updates options
-    wxString sCheckFreq = m_pCboCheckFreq->GetValue();
+    // AWARE: here it is not safe to use translation macro _() , as language could
+    // have been changed and displayed strings in m_pCboCheckFreq are in a different
+    // laguage. SO DO NOT USE m_pCboCheckFreq->GetValue()
+    int nCheckFreq = m_pCboCheckFreq->GetSelection();
     wxString sValue;
     //prefs. value is always stored in English
-    if (sCheckFreq == _("Never"))
+    if (nCheckFreq == 0)    //Never
         sValue = _T("Never");
-    else if (sCheckFreq == _("Daily"))
+    else if (nCheckFreq == 1)   //Daily
         sValue = _T("Daily");
-    else if (sCheckFreq == _("Weekly"))
+    else if (nCheckFreq == 2)   //Weekly
         sValue = _T("Weekly");
-    else if (sCheckFreq == _("Monthly"))
+    else if (nCheckFreq == 3)   //Monthly
         sValue = _T("Monthly");
     else {
         sValue = _T("Weekly");      //assume weekly
-        wxLogMessage(_T("[lmInternetOptPanel] Invalid value for ini file. Key '/Options/CheckForUpdates/Frequency', value='%s'"),
-            sCheckFreq );
+        wxLogMessage(_T("[lmInternetOptPanel::Apply()] Invalid selection in CboCheckFreq (%d)"),
+            nCheckFreq );
     }
     g_pPrefs->Write(_T("/Options/CheckForUpdates/Frequency"), sValue);
 

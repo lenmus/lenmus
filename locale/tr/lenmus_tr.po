@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.3\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-10-27 23:06+0200\n"
-"Last-Translator: elif <elif_ozturk23@hotmail.com>\n"
+"PO-Revision-Date: 2006-10-29 16:37+0100\n"
+"Last-Translator: cs <cs>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -1323,7 +1323,7 @@ msgstr "m - minör"
 
 #: exercises/TheoIntervalsCtrol.cpp:136
 msgid "M, P - Major, Perfect"
-msgstr "M,M - Majör, Mükemmel"
+msgstr "M - Majör, Mükemmel"
 
 #: exercises/TheoIntervalsCtrol.cpp:137
 msgid "aug - augmented"
@@ -1459,11 +1459,11 @@ msgstr "M3"
 
 #: exercises/TheoIntervalsCtrol.cpp:191
 msgid "P4"
-msgstr "4Mükemmel"
+msgstr "4M"
 
 #: exercises/TheoIntervalsCtrol.cpp:192
 msgid "P5"
-msgstr "5Mükemmel"
+msgstr "5M"
 
 #: exercises/TheoIntervalsCtrol.cpp:193
 msgid "M6"
@@ -1475,7 +1475,7 @@ msgstr "M7"
 
 #: exercises/TheoIntervalsCtrol.cpp:195
 msgid "P8"
-msgstr "8Mükemmel"
+msgstr "8M"
 
 #: exercises/TheoIntervalsCtrol.cpp:197
 msgid "aug2"

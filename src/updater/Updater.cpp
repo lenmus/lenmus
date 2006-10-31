@@ -113,8 +113,8 @@ Please, connect to internet and then retry."));
             return true;
         }
 
-        wxString sUrl = _T("http://localhost/sw/UpdateData.xml");
-        //wxString sUrl = _T("http://www.lenmus.org/sw/UpdateData.xml");
+        //wxString sUrl = _T("http://localhost/sw/UpdateData.xml");
+        wxString sUrl = _T("http://www.lenmus.org/sw/UpdateData.xml");
 
 //-----------------------------------
      ////Old code using wxHTTP

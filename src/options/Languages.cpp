@@ -169,6 +169,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     localLanguageName[_T("ru")] = _T("Russky");
     localLanguageName[_T("sl")] = _T("Slovenscina");
     localLanguageName[_T("sv")] = _T("Svenska");
+    localLanguageName[_T("tr")] = _T("Türkçe");
     localLanguageName[_T("uk")] = _T("Ukrainska");
     localLanguageName[_T("zh_CN")] = _T("Chinese(Simplified)");
 
