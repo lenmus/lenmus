@@ -51,7 +51,7 @@
 #include "wx/numdlg.h"
 
 //wxAUI
-#include "manager.h"
+#include "wx/aui/aui.h"     //"manager.h"
 
 //IDs for menu events that must be public (i.e. to generate them by program)
 enum

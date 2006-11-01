@@ -139,12 +139,12 @@ Please, connect to internet and then retry."));
     //    oHttp.InitContentTypes(); // Initialise the content types on the page
 
     //    //get proxy options
-    //    wxProxySettings* pSettings = GetProxySettings();
+    //    lmProxySettings* pSettings = GetProxySettings();
 
-    //    if (pSettings->m_bUseProxy) {
-    //        oHttp.HttpProxy(pSettings->m_strProxyHostname, pSettings->m_nProxyPort );
-    //        if (pSettings->m_bRequiresAuth)
-    //            oHttp.HttpProxyAuth( pSettings->m_strProxyUsername, pSettings->m_strProxyPassword);
+    //    if (pSettings->fUseProxy) {
+    //        oHttp.HttpProxy(pSettings->sProxyHostname, pSettings->nProxyPort );
+    //        if (pSettings->fRequiresAuth)
+    //            oHttp.HttpProxyAuth( pSettings->sProxyUsername, pSettings->sProxyPassword);
     //    }
 
     //    //Setup user-agent string to be identified not as a bot but as a browser
@@ -167,19 +167,19 @@ Please, connect to internet and then retry."));
         oProt.SetTimeout(10);              // 90 sec
 
         //get proxy options
-        wxProxySettings* pSettings = GetProxySettings();
+        lmProxySettings* pSettings = GetProxySettings();
 
         // If a proxy is used, set it
-        if (pSettings->m_bUseProxy) {
+        if (pSettings->fUseProxy) {
             pHTTP->SetProxyMode(true);
             // user:pass@host:port
             wxString sProxyUrl = _T("http://");
-            if (pSettings->m_bRequiresAuth) {
-                sProxyUrl += pSettings->m_strProxyUsername + _T(":") +
-                             pSettings->m_strProxyPassword + _T("@");
+            if (pSettings->fRequiresAuth) {
+                sProxyUrl += pSettings->sProxyUsername + _T(":") +
+                             pSettings->sProxyPassword + _T("@");
             }
-            sProxyUrl += pSettings->m_strProxyHostname  + 
-                wxString::Format( _T(":%d"), pSettings->m_nProxyPort );
+            sProxyUrl += pSettings->sProxyHostname  + 
+                wxString::Format( _T(":%d"), pSettings->nProxyPort );
             oURL.SetProxy( sProxyUrl );
         }
 

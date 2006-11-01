@@ -27,15 +27,25 @@
 
 #include <wx/config.h>
 
-#include "wx/httpbuilder.h"    // wxHttpEngine package
 
 // the config object
 extern wxConfigBase *g_pPrefs;
 
+typedef struct lmProxySettingsStruct {
+	wxString sProxyHostname;
+	wxString sProxyUsername;
+	wxString sProxyPassword;
+	bool fUseProxy;
+    bool fRequiresAuth;
+	int nProxyPort;
+} lmProxySettings;
 
 //Global functions
 extern void InitPreferences();
-extern wxProxySettings* GetProxySettings();
+extern lmProxySettings* GetProxySettings();
+
+
+
 
 
 #endif    // __PREFERENCES_H__

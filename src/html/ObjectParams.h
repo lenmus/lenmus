@@ -42,9 +42,9 @@
 #endif
 
 #include "wx/html/htmltag.h"
-#include "wx/html/winpars.h"
+//#include "wx/html/winpars.h"
 
-
+class wxHtmlWinParser;
 
 class lmObjectParams
 {

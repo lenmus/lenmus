@@ -126,6 +126,14 @@ extern lmLogger* g_pLogger;
 #if !wxUSE_MENUS
 #error "You must set wxUSE_MENUS to 1 in setup.h!"
 #endif
+
+//#if !wxUSE_UNICODE
+//#error "You must set wxUSE_UNICODE to 1 in setup.h!"
+//#endif
+//
+//#if !wxUSE_UNICODE_MSLU
+//#error "You must set wxUSE_UNICODE_MSLU to 1 in setup.h!"
+//#endif
 //-----------------------------------------------------------------------------------------
 
 
@@ -237,34 +245,34 @@ enum
 
 };
 
-enum
-{
-    wxID_HTML_PANEL = 2000,     //wxID_HIGHEST + 2,
-    wxID_HTML_BACK,
-    wxID_HTML_FORWARD,
-    wxID_HTML_UPNODE,
-    wxID_HTML_UP,
-    wxID_HTML_DOWN,
-    wxID_HTML_PRINT,
-    wxID_HTML_OPENFILE,
-    wxID_HTML_OPTIONS,
-    wxID_HTML_BOOKMARKSLIST,
-    wxID_HTML_BOOKMARKSADD,
-    wxID_HTML_BOOKMARKSREMOVE,
-    wxID_HTML_TREECTRL,
-    wxID_HTML_INDEXPAGE,
-    wxID_HTML_INDEXLIST,
-    wxID_HTML_INDEXTEXT,
-    wxID_HTML_INDEXBUTTON,
-    wxID_HTML_INDEXBUTTONALL,
-    wxID_HTML_NOTEBOOK,
-    wxID_HTML_SEARCHPAGE,
-    wxID_HTML_SEARCHTEXT,
-    wxID_HTML_SEARCHLIST,
-    wxID_HTML_SEARCHBUTTON,
-    wxID_HTML_SEARCHCHOICE,
-    wxID_HTML_COUNTINFO
-};
+//enum
+//{
+//    wxID_HTML_PANEL = 2000,     //wxID_HIGHEST + 2,
+//    wxID_HTML_BACK,
+//    wxID_HTML_FORWARD,
+//    wxID_HTML_UPNODE,
+//    wxID_HTML_UP,
+//    wxID_HTML_DOWN,
+//    wxID_HTML_PRINT,
+//    wxID_HTML_OPENFILE,
+//    wxID_HTML_OPTIONS,
+//    wxID_HTML_BOOKMARKSLIST,
+//    wxID_HTML_BOOKMARKSADD,
+//    wxID_HTML_BOOKMARKSREMOVE,
+//    wxID_HTML_TREECTRL,
+//    wxID_HTML_INDEXPAGE,
+//    wxID_HTML_INDEXLIST,
+//    wxID_HTML_INDEXTEXT,
+//    wxID_HTML_INDEXBUTTON,
+//    wxID_HTML_INDEXBUTTONALL,
+//    wxID_HTML_NOTEBOOK,
+//    wxID_HTML_SEARCHPAGE,
+//    wxID_HTML_SEARCHTEXT,
+//    wxID_HTML_SEARCHLIST,
+//    wxID_HTML_SEARCHBUTTON,
+//    wxID_HTML_SEARCHCHOICE,
+//    wxID_HTML_COUNTINFO
+//};
 
 /*
  lmMainFrame is the top-level window of the application.
@@ -1701,13 +1709,13 @@ void lmMainFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnPrintSetup(wxCommandEvent& WXUNUSED(event))
 {
-    wxPrintDialogData printDialogData(* g_pPrintData);
-    wxPrintDialog printerDialog(this, &printDialogData);
-    
-    printerDialog.GetPrintDialogData().SetSetupDialog(TRUE);
-    printerDialog.ShowModal();
+    //wxPrintDialogData printDialogData(* g_pPrintData);
+    //wxPrintDialog printerDialog(this, &printDialogData);
+    //
+    //printerDialog.GetPrintDialogData().SetSetupDialog(TRUE);
+    //printerDialog.ShowModal();
 
-    (*g_pPrintData) = printerDialog.GetPrintDialogData().GetPrintData();
+    //(*g_pPrintData) = printerDialog.GetPrintDialogData().GetPrintData();
 
 }
 

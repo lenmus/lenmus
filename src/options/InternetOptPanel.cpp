@@ -143,14 +143,14 @@ lmInternetOptPanel::lmInternetOptPanel(wxWindow* parent)
     m_pTxtLastCheck->SetLabel(sLastCheckDate);
 
     //proxy settings
-    wxProxySettings* pSettings = GetProxySettings();
-    m_pChkUseProxy->SetValue( pSettings->m_bUseProxy );
-    EnableProxySettings( pSettings->m_bUseProxy );
-    m_pTxtHostname->SetValue( pSettings->m_strProxyHostname );
-    m_TxtPortNumber->SetValue( wxString::Format(_T("%d"), pSettings->m_nProxyPort) );
-    m_pChkProxyAuthentication->SetValue( pSettings->m_bRequiresAuth );
-    m_pTxtUsername->SetValue( pSettings->m_strProxyUsername );
-    m_pTxtPassword->SetValue( pSettings->m_strProxyPassword );
+    lmProxySettings* pSettings = GetProxySettings();
+    m_pChkUseProxy->SetValue( pSettings->fUseProxy );
+    EnableProxySettings( pSettings->fUseProxy );
+    m_pTxtHostname->SetValue( pSettings->sProxyHostname );
+    m_TxtPortNumber->SetValue( wxString::Format(_T("%d"), pSettings->nProxyPort) );
+    m_pChkProxyAuthentication->SetValue( pSettings->fRequiresAuth );
+    m_pTxtUsername->SetValue( pSettings->sProxyUsername );
+    m_pTxtPassword->SetValue( pSettings->sProxyPassword );
 
 }
 

@@ -55,7 +55,7 @@ bool g_fAutoNewProblem;         // If right answer, don't show solution and gene
 
 
 // proxy settings
-wxProxySettings m_oProxySettings;
+lmProxySettings m_rProxySettings;
 
 
 
@@ -69,26 +69,26 @@ void InitPreferences()
 
 }
 
-wxProxySettings* GetProxySettings()
+lmProxySettings* GetProxySettings()
 {
     bool fUseProxy;
     g_pPrefs->Read(_T("/Internet/UseProxy"), &fUseProxy, false);
-    m_oProxySettings.m_bUseProxy = fUseProxy;
+    m_rProxySettings.fUseProxy = fUseProxy;
 
-    m_oProxySettings.m_strProxyHostname = g_pPrefs->Read(_T("/Internet/Hostname"), _T(""));
+    m_rProxySettings.sProxyHostname = g_pPrefs->Read(_T("/Internet/Hostname"), _T(""));
     long nPort = 0;
     wxString sPort = g_pPrefs->Read(_T("/Internet/PortNumber"), _T(""));
     if (sPort.IsNumber())
         sPort.ToLong(&nPort);
-    m_oProxySettings.m_nProxyPort = nPort;
+    m_rProxySettings.nProxyPort = nPort;
 
     bool fAuthentication;
     g_pPrefs->Read(_T("/Internet/ProxyAuthentication"), &fAuthentication, false);
-    m_oProxySettings.m_bRequiresAuth = fAuthentication;
-    m_oProxySettings.m_strProxyUsername = g_pPrefs->Read(_T("/Internet/Username"), _T(""));
-    m_oProxySettings.m_strProxyPassword = g_pPrefs->Read(_T("/Internet/Password"), _T(""));
+    m_rProxySettings.fRequiresAuth = fAuthentication;
+    m_rProxySettings.sProxyUsername = g_pPrefs->Read(_T("/Internet/Username"), _T(""));
+    m_rProxySettings.sProxyPassword = g_pPrefs->Read(_T("/Internet/Password"), _T(""));
 
-    return &m_oProxySettings;
+    return &m_rProxySettings;
 }
 
 

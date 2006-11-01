@@ -57,40 +57,40 @@ lmToolsDlg::lmToolsDlg(wxFrame *frame, wxChar *title, int x, int y )
             : wxFrame(frame, -1, title, wxPoint(x, y), wxSize(-1, -1), 
                 wxCAPTION | wxFRAME_FLOAT_ON_PARENT | wxSIMPLE_BORDER | wxFRAME_NO_TASKBAR )
 {
-    wxBoxSizer *topsizer = new wxBoxSizer( wxVERTICAL );
+  //  wxBoxSizer *topsizer = new wxBoxSizer( wxVERTICAL );
 
-    wxNotebook *notebook = new wxNotebook( this, -1 );
-    wxNotebookSizer *nbs = new wxNotebookSizer( notebook );
-    topsizer->Add( nbs, 1, wxGROW );
+  //  wxNotebook *notebook = new wxNotebook( this, -1 );
+  //  wxNotebookSizer *nbs = new wxNotebookSizer( notebook );
+  //  topsizer->Add( nbs, 1, wxGROW );
 
-    wxButton *button = new wxButton( this, wxID_OK, _T("OK") );
-    topsizer->Add( button, 0, wxALIGN_RIGHT | wxALL, 10 );
+  //  wxButton *button = new wxButton( this, wxID_OK, _T("OK") );
+  //  topsizer->Add( button, 0, wxALIGN_RIGHT | wxALL, 10 );
 
-    // First page: one big text ctrl
-    wxTextCtrl *multi = new wxTextCtrl( notebook, -1, _T("TextCtrl."), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
-    notebook->AddPage( multi, _("Notes") );
+  //  // First page: one big text ctrl
+  //  wxTextCtrl *multi = new wxTextCtrl( notebook, -1, _T("TextCtrl."), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE );
+  //  notebook->AddPage( multi, _("Notes") );
 
-    // Second page: a text ctrl and a button
-    wxPanel *panel = new wxPanel( notebook, -1 );
-    notebook->AddPage( panel, _("Clefs") );
+  //  // Second page: a text ctrl and a button
+  //  wxPanel *panel = new wxPanel( notebook, -1 );
+  //  notebook->AddPage( panel, _("Clefs") );
 
-    wxSizer *panelsizer = new wxBoxSizer( wxVERTICAL );
+  //  wxSizer *panelsizer = new wxBoxSizer( wxVERTICAL );
 
-    wxTextCtrl *text = new wxTextCtrl( panel, -1, _T("TextLine 1."), wxDefaultPosition, wxSize(250,-1) );
-    panelsizer->Add( text, 0, wxGROW|wxALL, 30 );
-    text = new wxTextCtrl( panel, -1, _T("TextLine 2."), wxDefaultPosition, wxSize(250,-1) );
-    panelsizer->Add( text, 0, wxGROW|wxALL, 30 );
-    wxButton *button2 = new wxButton( panel, -1, _T("Hallo") );
-    panelsizer->Add( button2, 0, wxALIGN_RIGHT | wxLEFT|wxRIGHT|wxBOTTOM, 30 );
+  //  wxTextCtrl *text = new wxTextCtrl( panel, -1, _T("TextLine 1."), wxDefaultPosition, wxSize(250,-1) );
+  //  panelsizer->Add( text, 0, wxGROW|wxALL, 30 );
+  //  text = new wxTextCtrl( panel, -1, _T("TextLine 2."), wxDefaultPosition, wxSize(250,-1) );
+  //  panelsizer->Add( text, 0, wxGROW|wxALL, 30 );
+  //  wxButton *button2 = new wxButton( panel, -1, _T("Hallo") );
+  //  panelsizer->Add( button2, 0, wxALIGN_RIGHT | wxLEFT|wxRIGHT|wxBOTTOM, 30 );
 
-    panel->SetAutoLayout( TRUE );
-    panel->SetSizer( panelsizer );
+  //  panel->SetAutoLayout( TRUE );
+  //  panel->SetSizer( panelsizer );
 
 
-  // don't allow frame to get smaller than what the sizers tell it and also set
-  // the initial size as calculated by the sizers
-  topsizer->SetSizeHints( this );
+  //// don't allow frame to get smaller than what the sizers tell it and also set
+  //// the initial size as calculated by the sizers
+  //topsizer->SetSizeHints( this );
 
-  SetSizer( topsizer );
+  //SetSizer( topsizer );
 }
 

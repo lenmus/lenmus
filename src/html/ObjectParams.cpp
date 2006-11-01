@@ -35,6 +35,8 @@
 #endif
 
 #include "ObjectParams.h"
+#include "wx/html/winpars.h"
+
 
 
 lmObjectParams::lmObjectParams(const wxHtmlTag& tag, int nWidth, int nHeight, int nPercent)
