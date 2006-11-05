@@ -53,6 +53,9 @@
 //wxAUI
 #include "wx/aui/aui.h"     //"manager.h"
 
+#include "../mdi/DocViewMDI.h"
+
+
 //IDs for menu events that must be public (i.e. to generate them by program)
 enum
 {
@@ -62,7 +65,7 @@ enum
 
 
 // Class lmMainFrame defines the main MDI frame for the application
-class lmMainFrame: public wxDocMDIParentFrame
+class lmMainFrame: public lmDocMDIParentFrame
 {
     DECLARE_CLASS(lmMainFrame)
 public:
@@ -72,6 +75,8 @@ public:
     lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& title, 
             const wxPoint& pos, const wxSize& size, long type);
     ~lmMainFrame();
+
+    void CreateControls();
 
     // tool bars
     void CreateMyToolBar();
@@ -156,6 +161,12 @@ public:
     void OnPlayPause(wxCommandEvent& WXUNUSED(event));
     void OnPlayUI(wxUpdateUIEvent &event);
 
+    //Window menu events
+    void OnWindowClose(wxCommandEvent& WXUNUSED(event));
+    void OnWindowCloseAll(wxCommandEvent& WXUNUSED(event));
+    void OnWindowNext(wxCommandEvent& WXUNUSED(event));
+    void OnWindowPrev(wxCommandEvent& WXUNUSED(event));
+
     // Other menu items events
     void OnOptions(wxCommandEvent& WXUNUSED(event));
     void OnOpenBook(wxCommandEvent& event);
@@ -204,7 +215,7 @@ protected:
 
 
 
-    wxFrameManager          m_mgrAUI;       // wxAUI manager
+    wxAuiManager          m_mgrAUI;       // wxAUI manager
 
     lmToolsDlg*             m_pToolsDlg;
     lmTextBookController*   m_pBookController;

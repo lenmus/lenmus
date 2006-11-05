@@ -73,6 +73,7 @@ private:
     void GetDefaultMainWindowRect(wxRect *defRect);
     wxString GetInstallerLanguage();
     wxString ChooseLanguage(wxWindow *parent);
+    void SetUpLocale(wxString lang);
     lmSplashFrame* RecreateGUI(int nMilliseconds);
 
 

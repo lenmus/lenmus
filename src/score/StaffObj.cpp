@@ -89,7 +89,7 @@ lmScoreObj::~lmScoreObj()
 bool lmScoreObj::IsAtPoint(lmUPoint& pt)
 {
     wxRect rect(GetSelRect());
-    return rect.Inside(pt.x, pt.y);
+    return rect.Contains(pt.x, pt.y);
 }
 
 void lmScoreObj::DrawSelRectangle(lmPaper* pPaper, wxColour colorC)

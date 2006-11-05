@@ -44,7 +44,7 @@
       -    TextBookHelpFrame changed to lmTextBookFrame
 
       - config data names changed from hc... to tbc... to avoid collision with wxHtmlHelpFrame
-      - ::Create() : changed from wxFrame to wxMDIChildFrame,as well as class from which
+      - ::Create() : changed from wxFrame to lmMDIChildFrame,as well as class from which
         this one derivates
       - Window maximized on start
       - Status bar removed. Is redundant
@@ -52,7 +52,7 @@
 //===============================================================================
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "helpfrm.h"
+#pragma implementation "TextBookFrame.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h"
@@ -123,11 +123,6 @@ extern lmMainFrame* g_pMainFrame;       //CSG_ADDED
 class TextBookHelpTreeItemData : public wxTreeItemData
 {
     public:
-#if defined(__VISAGECPP__)
-//  VA needs a default ctor for some reason....
-        TextBookHelpTreeItemData() : wxTreeItemData()
-            { m_Id = 0; }
-#endif
         TextBookHelpTreeItemData(int id) : wxTreeItemData()
             { m_Id = id;}
 
@@ -283,7 +278,7 @@ void lmTextBookFrame::UpdateMergedIndex()
 //};
 
 
-IMPLEMENT_DYNAMIC_CLASS(lmTextBookFrame, wxFrame)
+IMPLEMENT_DYNAMIC_CLASS(lmTextBookFrame, lmMDIChildFrame)
 
 lmTextBookFrame::lmTextBookFrame(wxWindow* parent, wxWindowID id, const wxString& title,
                                  int style, wxHtmlHelpData* data)
@@ -383,36 +378,16 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
     if (m_Config)
         ReadCustomization(m_Config, m_ConfigRoot);
 
-    wxMDIChildFrame::Create((wxMDIParentFrame*)parent, id, _("Help"),
+    lmMDIChildFrame::Create((lmMDIParentFrame*)parent, id, _("Help"),
                     wxPoint(m_Cfg.x, m_Cfg.y), wxSize(m_Cfg.w, m_Cfg.h),
                     wxDEFAULT_FRAME_STYLE, wxT("TextBookHelp") );
 
-    wxMDIChildFrame::Maximize(true);
+    //lmMDIChildFrame::Maximize(true);  //Notebook: always maximized
 
     GetPosition(&m_Cfg.x, &m_Cfg.y);
 
     SetIcon(wxArtProvider::GetIcon(wxART_HELP, wxART_HELP_BROWSER));
 
-    // On the Mac, each modeless frame must have a menubar.
-    // TODO: add more menu items, and perhaps add a style to show
-    // the menubar: compulsory on the Mac, optional elsewhere.
-#ifdef __WXMAC__
-    wxMenuBar* menuBar = new wxMenuBar;
-
-    wxMenu* fileMenu = new wxMenu;
-    fileMenu->Append(wxID_HTML_OPENFILE, _("&Open..."));
-    fileMenu->AppendSeparator();
-    fileMenu->Append(wxID_CLOSE, _("&Close"));
-
-    wxMenu* helpMenu = new wxMenu;
-    helpMenu->Append(wxID_ABOUT, _("&About..."));
-    // Ensures we don't get an empty help menu
-    helpMenu->Append(wxID_HELP_CONTENTS, _("&About..."));
-
-    menuBar->Append(fileMenu,_("&File"));
-    menuBar->Append(helpMenu,_("&Help"));
-    SetMenuBar(menuBar);
-#endif
 
     int notebook_page = 0;
 
@@ -439,7 +414,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
         m_HtmlWin = new lmHtmlWindow(this); //, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
     }
 
-    m_HtmlWin->SetRelatedFrame(this, m_TitleFormat);
+    m_HtmlWin->SetRelatedFrame((wxFrame*)this, m_TitleFormat);
     g_pMainFrame->SetHtmlWindow(m_HtmlWin);
 
     if ( m_Config )
@@ -641,7 +616,7 @@ lmTextBookFrame::~lmTextBookFrame()
 void lmTextBookFrame::SetTitleFormat(const wxString& format)
 {
     if (m_HtmlWin)
-        m_HtmlWin->SetRelatedFrame(this, format);
+        m_HtmlWin->SetRelatedFrame((wxFrame*)this, format);
     m_TitleFormat = format;
 }
 
@@ -1098,15 +1073,15 @@ void lmTextBookFrame::WriteCustomization(wxConfigBase *cfg, const wxString& path
 
     cfg->Write(wxT("tbcNavigPanel"), m_Cfg.navig_on);
     cfg->Write(wxT("tbcSashPos"), (long)m_Cfg.sashpos);
-    if ( !IsIconized() )
-    {
+    //if ( !IsIconized() )
+    //{
         //  Don't write if iconized as this would make the window
         //  disappear next time it is shown!
         cfg->Write(wxT("tbcX"), (long)m_Cfg.x);
         cfg->Write(wxT("tbcY"), (long)m_Cfg.y);
         cfg->Write(wxT("tbcW"), (long)m_Cfg.w);
         cfg->Write(wxT("tbcH"), (long)m_Cfg.h);
-    }
+    //}
     cfg->Write(wxT("tbcFixedFace"), m_FixedFace);
     cfg->Write(wxT("tbcNormalFace"), m_NormalFace);
     cfg->Write(wxT("tbcBaseFontSize"), (long)m_FontSize);
@@ -1756,7 +1731,7 @@ void lmTextBookFrame::OnAbout(wxCommandEvent& event)
 }
 #endif
 
-BEGIN_EVENT_TABLE(lmTextBookFrame, wxFrame)
+BEGIN_EVENT_TABLE(lmTextBookFrame, lmMDIChildFrame)
     EVT_ACTIVATE(lmTextBookFrame::OnActivate)
     EVT_TOOL_RANGE(wxID_HTML_PANEL, wxID_HTML_OPTIONS, lmTextBookFrame::OnToolbar)
     EVT_BUTTON(wxID_HTML_BOOKMARKSREMOVE, lmTextBookFrame::OnToolbar)

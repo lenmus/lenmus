@@ -50,6 +50,9 @@ public:
     // deal with user commands
     void OnLinkClicked(const wxHtmlLinkInfo& link);
 
+    //AQUI_FALLA
+    void OnSetTitle(const wxString& title) {}
+
 };
 
 

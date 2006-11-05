@@ -289,7 +289,7 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     if (!m_pScore || m_sParamErrors != _T("")) {
         m_sParamErrors += wxString::Format(
             _("Errors in score: it can not be created. Score:\n%s\n"), m_sMusic);
-        wnd = new wxTextCtrl((wxWindow*)pHtmlParser->GetWindow(), -1, m_sParamErrors,
+        wnd = new wxTextCtrl((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1, m_sParamErrors,
             wxPoint(0,0), wxSize(300, 100), wxTE_MULTILINE);
         wnd->Show(true);
         pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));

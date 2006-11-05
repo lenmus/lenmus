@@ -195,7 +195,7 @@ bool lmLDPParser::ParenthesisMatch(const wxString& sSource)
 
 void lmLDPParser::FileParsingError(const wxString sMsg)
 {
-    wxMessageBox(sMsg, _T("Error"), wxOK, GetMainFrame() );
+    wxMessageBox(sMsg, _T("Error"));
 }
 
 //void lmLDPParser::InformarIncidencias()

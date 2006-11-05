@@ -289,30 +289,6 @@ bool lmTextBookController::DisplayTextPopup(const wxString& text, const wxPoint&
     return false;
 }
 
-void lmTextBookController::SetFrameParameters(const wxString& title,
-                                   const wxSize& size,
-                                   const wxPoint& pos,
-                                   bool WXUNUSED(newFrameEachTime))
-{
-    SetTitleFormat(title);
-    if (m_helpFrame)
-    {
-        m_helpFrame->SetSize(pos.x, pos.y, size.x, size.y);
-    }
-}
-
-wxFrame* lmTextBookController::GetFrameParameters(wxSize *size,
-                                   wxPoint *pos,
-                                   bool *newFrameEachTime)
-{
-    if (newFrameEachTime)
-        (* newFrameEachTime) = false;
-    if (size && m_helpFrame)
-        (* size) = m_helpFrame->GetSize();
-    if (pos && m_helpFrame)
-        (* pos) = m_helpFrame->GetPosition();
-    return m_helpFrame;
-}
 
 bool lmTextBookController::Quit()
 {

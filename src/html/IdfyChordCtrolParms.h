@@ -256,12 +256,12 @@ void lmIdfyChordCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     wxWindow* pWnd;
     if (m_sParamErrors != _T("")) {
         // there are errors: display a text box with the error message
-        pWnd = new wxTextCtrl((wxWindow*)pHtmlParser->GetWindow(), -1, m_sParamErrors,
+        pWnd = new wxTextCtrl((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1, m_sParamErrors,
             wxPoint(0,0), wxSize(300, 100), wxTE_MULTILINE);
     }
     else {
         // create the IdfyChordCtrol
-        pWnd = new lmIdfyChordCtrol((wxWindow*)pHtmlParser->GetWindow(), -1, 
+        pWnd = new lmIdfyChordCtrol((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1, 
             m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     }
     pWnd->Show(true);

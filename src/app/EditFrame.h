@@ -29,14 +29,17 @@
 #ifndef _EDITFRAME_H        //to avoid nested includes
 #define _EDITFRAME_H
 
-#include "wx/docmdi.h"
+#include "../mdi/DocViewMDI.h"
+
+//#include "wx/docmdi.h"
 #include "wx/docview.h"
+
 
 class lmMainFrame;
 class lmScoreDocument;
 class lmScoreView;
 
-class lmEditFrame: public wxDocMDIChildFrame
+class lmEditFrame: public lmDocMDIChildFrame
 {
     DECLARE_DYNAMIC_CLASS(lmEditFrame)
 public:

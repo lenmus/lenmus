@@ -51,18 +51,18 @@ extern lmMainFrame* g_pMainFrame;
 
 
 
-BEGIN_EVENT_TABLE(lmEditFrame, wxDocMDIChildFrame)
+BEGIN_EVENT_TABLE(lmEditFrame, lmDocMDIChildFrame)
   EVT_SIZE      (lmEditFrame::OnSize)
   EVT_CLOSE     (lmEditFrame::OnClose)
 END_EVENT_TABLE()
 
 
-IMPLEMENT_CLASS(lmEditFrame, wxDocMDIChildFrame)
+IMPLEMENT_CLASS(lmEditFrame, lmDocMDIChildFrame)
 
 
 lmEditFrame::lmEditFrame(wxDocument* doc, wxView* view, lmMainFrame *mainFrame,
                      wxPoint& pos, wxSize& size) :
-    wxDocMDIChildFrame(doc, view, mainFrame, wxID_ANY, _T("Child Frame"), pos, size, 
+    lmDocMDIChildFrame(doc, view, mainFrame, wxID_ANY, _T("Child Frame"), pos, size, 
                         wxDEFAULT_FRAME_STYLE ) //| wxNO_FULL_REPAINT_ON_RESIZE)
 {
     m_pView = (lmScoreView *) view;

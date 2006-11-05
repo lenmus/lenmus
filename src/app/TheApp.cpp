@@ -75,9 +75,9 @@
 #error "You must set wxUSE_DOC_VIEW_ARCHITECTURE to 1 in setup.h!"
 #endif
 
-#if !wxUSE_MDI_ARCHITECTURE
-#error "You must set wxUSE_MDI_ARCHITECTURE to 1 in setup.h!"
-#endif
+//#if !wxUSE_MDI_ARCHITECTURE
+//#error "You must set wxUSE_MDI_ARCHITECTURE to 1 in setup.h!"
+//#endif
 
 #if !wxUSE_MENUS
 #error "You must set wxUSE_MENUS to 1 in setup.h!"
@@ -280,14 +280,8 @@ bool lmTheApp::OnInit(void)
         g_pPrefs->Write(_T("/Locale/Language"), lang);
     }
     // Now that language code is know we can finish lmPaths initialization
-    g_pPaths->SetLanguageCode(lang);
-
-    // Set up locale object
-    m_pLocale->Init(_T(""), lang, _T(""), true, true);
-    m_pLocale->AddCatalogLookupPathPrefix( g_pPaths->GetLocalePath() );
-    m_pLocale->AddCatalog(_T("lenmus_") + m_pLocale->GetName());
-    m_pLocale->AddCatalog(_T("wxwidgets_") + m_pLocale->GetName());
-    m_pLocale->AddCatalog(_T("wxmidi_") + m_pLocale->GetName());
+    // and load locale catalogs
+    SetUpLocale(lang);
 
     // open log file and redirec all loging there
     wxFileName oFilename(g_pPaths->GetTempPath(), _T("DataError"), _T("log"), wxPATH_NATIVE);
@@ -300,7 +294,7 @@ bool lmTheApp::OnInit(void)
     wxImage::AddHandler( new wxJPEGHandler );
 
     // Set the art provider and get current user selected background bitmap
-    wxArtProvider::PushProvider(new lmArtProvider());
+    wxArtProvider::Push(new lmArtProvider());
     //m_background = wxArtProvider::GetBitmap(_T("backgrnd"));
 
     //Include support for zip files
@@ -515,17 +509,7 @@ bool lmTheApp::OnInit(void)
 
 void lmTheApp::ChangeLanguage(wxString lang)
 {
-    // lmPaths re-initialization
-    g_pPaths->SetLanguageCode(lang);
-
-    // locale object re-initialization
-    delete m_pLocale;
-    m_pLocale = new wxLocale();
-    m_pLocale->Init(_T(""), lang, _T(""), true, true);
-    m_pLocale->AddCatalogLookupPathPrefix( g_pPaths->GetLocalePath() );
-    m_pLocale->AddCatalog(_T("lenmus_") + m_pLocale->GetName());
-    m_pLocale->AddCatalog(_T("wxwidgets_") + m_pLocale->GetName());
-    m_pLocale->AddCatalog(_T("wxmidi_") + m_pLocale->GetName());
+    SetUpLocale(lang);
 
     // Virtual books re-initialization
     m_pVBooks->ReloadBooks(lang);
@@ -534,6 +518,34 @@ void lmTheApp::ChangeLanguage(wxString lang)
     RecreateGUI(0);   //recreate all. No splash
 
 }
+
+void lmTheApp::SetUpLocale(wxString lang)
+{
+    // lmPaths re-initialization
+    g_pPaths->SetLanguageCode(lang);
+
+    // locale object re-initialization
+    delete m_pLocale;
+    m_pLocale = new wxLocale();
+    m_pLocale->Init(_T(""), lang, _T(""), true, true);
+    wxString sPath = g_pPaths->GetLocaleRootPath();
+    m_pLocale->AddCatalogLookupPathPrefix( sPath );
+    wxString sCtlg;
+    wxString sNil = _T("");
+
+    sCtlg = sNil + _T("lenmus_") + m_pLocale->GetName();
+    if (!m_pLocale->AddCatalog(sCtlg))
+        wxLogMessage(_T("[lmTheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"), sCtlg, sPath);
+    sCtlg = sNil + _T("wxwidgets_") + m_pLocale->GetName();
+    if (!m_pLocale->AddCatalog(sCtlg))
+        wxLogMessage(_T("[lmTheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"), sCtlg, sPath);
+    sCtlg = sNil + _T("wxmidi_") + m_pLocale->GetName();
+    if (!m_pLocale->AddCatalog(sCtlg))
+        wxLogMessage(_T("[lmTheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"), sCtlg, sPath);
+
+}
+
+
 
 int lmTheApp::OnExit(void)
 {
@@ -726,6 +738,8 @@ lmSplashFrame* lmTheApp::RecreateGUI(int nMilliseconds)
                       wxPoint(wndRect.x, wndRect.y),            // origin
                       wxSize(wndRect.width, wndRect.height),    // size
                       wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE);
+
+    g_pMainFrame->CreateControls();
 
     if (fMaximized)  g_pMainFrame->Maximize(true);
 

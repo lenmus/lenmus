@@ -86,15 +86,6 @@ public:
     virtual bool DisplayBlock(long blockNo) { return DisplaySection(blockNo); }
     virtual bool DisplayTextPopup(const wxString& text, const wxPoint& pos);
 
-    virtual void SetFrameParameters(const wxString& title,
-                               const wxSize& size,
-                               const wxPoint& pos = wxDefaultPosition,
-                               bool newFrameEachTime = false);
-    /// Obtains the latest settings used by the help frame and the help
-    /// frame.
-    virtual wxFrame *GetFrameParameters(wxSize *size = NULL,
-                               wxPoint *pos = NULL,
-                               bool *newFrameEachTime = NULL);
 
     // Get direct access to help data:
     wxHtmlHelpData *GetHelpData() { return &m_helpData; }

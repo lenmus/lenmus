@@ -327,12 +327,12 @@ void lmTheoMusicReadingCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     m_sParamErrors += m_pConstrains->Verify();
     if (m_sParamErrors != _T("")) {
         // there are errors: display a text box with the error message
-        pWnd = new wxTextCtrl((wxWindow*)pHtmlParser->GetWindow(), -1, m_sParamErrors,
+        pWnd = new wxTextCtrl((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1, m_sParamErrors,
             wxPoint(0,0), wxSize(300, 100), wxTE_MULTILINE);
     }
     else {
         // create the TheoMusicReadingCtrol
-        pWnd = new lmTheoMusicReadingCtrol((wxWindow*)pHtmlParser->GetWindow(), -1, 
+        pWnd = new lmTheoMusicReadingCtrol((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1, 
             m_pOptions, m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     }
     pWnd->Show(true);

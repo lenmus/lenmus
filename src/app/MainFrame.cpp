@@ -216,6 +216,12 @@ enum
     //Menu Options
     MENU_Preferences,
 
+    //Menu Window
+    MENU_WindowClose,
+    MENU_WindowCloseAll,
+    MENU_WindowNext,
+    MENU_WindowPrev,
+
     // Menu Help
     MENU_OpenHelp,
     MENU_VisitWebsite,
@@ -278,8 +284,8 @@ enum
  lmMainFrame is the top-level window of the application.
 */
  
-IMPLEMENT_CLASS(lmMainFrame, wxDocMDIParentFrame)
-BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
+IMPLEMENT_CLASS(lmMainFrame, lmDocMDIParentFrame)
+BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
 
     //File menu/toolbar
     EVT_MENU      (MENU_File_Import, lmMainFrame::OnImportFile)
@@ -339,6 +345,13 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
     EVT_UPDATE_UI (MENU_OpenBook, lmMainFrame::OnOpenBookUI)
     EVT_MENU      (MENU_Metronome, lmMainFrame::OnMetronomeOnOff)
 
+    // Window menu
+    EVT_MENU (MENU_WindowClose, lmMainFrame::OnWindowClose)
+    EVT_MENU (MENU_WindowCloseAll, lmMainFrame::OnWindowCloseAll)
+    EVT_MENU (MENU_WindowNext, lmMainFrame::OnWindowNext)
+    EVT_MENU (MENU_WindowPrev, lmMainFrame::OnWindowPrev)
+
+    // Help menu
     EVT_MENU (MENU_Help_About, lmMainFrame::OnAbout)
     EVT_MENU      (MENU_OpenHelp, lmMainFrame::OnOpenHelp)
     EVT_UPDATE_UI (MENU_OpenHelp, lmMainFrame::OnOpenHelpUI)
@@ -380,18 +393,16 @@ BEGIN_EVENT_TABLE(lmMainFrame, wxDocMDIParentFrame)
 END_EVENT_TABLE()
 
 lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& title,
-    const wxPoint& pos, const wxSize& size, long type)
+    const wxPoint& pos, const wxSize& size, long style)
 :
-  wxDocMDIParentFrame(manager, frame, -1, title, pos, size, type, _T("myFrame"))
+  lmDocMDIParentFrame(manager, frame, -1, title, pos, size, style, _T("myFrame"))
 {
     m_pToolsDlg = (lmToolsDlg *) NULL;
     m_pHelp = (lmHelpController*) NULL;
     m_pBookController = (lmTextBookController*) NULL;
 	m_pTbTextBooks = (wxToolBar*) NULL;
 
-    // notify wxAUI which frame to use
-    m_mgrAUI.SetFrame(this);
-    
+
     // set the app icon
 	// All non-MSW platforms use a bitmap. MSW uses an .ico file
 	#if defined(__WXGTK__) || defined(__WXX11__) || defined(__WXMOTIF__) || defined(__WXMAC__) || defined(__WXMGL__)
@@ -419,12 +430,6 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     m_pTbEdit = (wxToolBar*)NULL;
     m_pTbZoom = (wxToolBar*)NULL;
     m_pTbTextBooks = (wxToolBar*)NULL;
-    bool fToolBar = true;
-    g_pPrefs->Read(_T("/MainFrame/ViewToolBar"), &fToolBar);
-    if (!m_pToolbar && fToolBar) {
-        CreateMyToolBar();
-    }
-
 
     // initialize status bar
     m_pStatusbar = (wxStatusBar*) NULL;
@@ -451,6 +456,21 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     //Me.picMtrLEDRojoOn.Visible = False
     //picMtrLEDRojoOn.Top = Me.picMtrLEDOff.Top
     //picMtrLEDRojoOn.Left = Me.picMtrLEDOff.Left
+
+}
+
+void lmMainFrame::CreateControls()
+{
+    // notify wxAUI which frame to use
+    m_mgrAUI.SetManagedWindow(this);
+
+    //menu bars and other aui panes creation
+    bool fToolBar = true;
+    g_pPrefs->Read(_T("/MainFrame/ViewToolBar"), &fToolBar);
+    if (!m_pToolbar && fToolBar) {
+        CreateMyToolBar();
+        //UpdateToolbarsLayout();     //to solve bug in wxAUI
+    }
 
 }
 
@@ -577,27 +597,27 @@ void lmMainFrame::CreateMyToolBar()
                       wxMax(sizeCombo.GetHeight(), sizeButton.GetHeight()));
 
     // add the toolbars to the manager
-    m_mgrAUI.AddPane(m_pTbFile, wxPaneInfo().
+    m_mgrAUI.AddPane(m_pTbFile, wxAuiPaneInfo().
                 Name(wxT("File tools")).Caption(_("File tools")).
                 ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
-    m_mgrAUI.AddPane(m_pTbEdit, wxPaneInfo().
+    m_mgrAUI.AddPane(m_pTbEdit, wxAuiPaneInfo().
                 Name(wxT("Edit tools")).Caption(_("Edit tools")).
                 ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
-    m_mgrAUI.AddPane(m_pTbZoom, wxPaneInfo().
+    m_mgrAUI.AddPane(m_pTbZoom, wxAuiPaneInfo().
                 Name(wxT("Zooming tools")).Caption(_("Zooming tools")).
                 ToolbarPane().Top().BestSize( sizeZoomTb ).
                 LeftDockable(false).RightDockable(false));
-    m_mgrAUI.AddPane(m_pToolbar, wxPaneInfo().
+    m_mgrAUI.AddPane(m_pToolbar, wxAuiPaneInfo().
                 Name(wxT("toolbar")).Caption(_("Main tools")).
                 ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
-    m_mgrAUI.AddPane(m_pTbPlay, wxPaneInfo().
+    m_mgrAUI.AddPane(m_pTbPlay, wxAuiPaneInfo().
                 Name(wxT("Play")).Caption(_("Play tools")).
                 ToolbarPane().Top().Row(1).
                 LeftDockable(false).RightDockable(false));
-    m_mgrAUI.AddPane(m_pTbMtr, wxPaneInfo().
+    m_mgrAUI.AddPane(m_pTbMtr, wxAuiPaneInfo().
                 Name(wxT("Metronome")).Caption(_("Metronome tools")).
                 ToolbarPane().Top().Row(1).BestSize( sizeBest ).
                 LeftDockable(false).RightDockable(false));
@@ -659,6 +679,8 @@ void lmMainFrame::DeleteToolbar()
         m_pTbTextBooks = (wxToolBar*)NULL;
     }
 
+    // tell the manager to "commit" all the changes just made
+    m_mgrAUI.Update();
 }
 
 void lmMainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize)
@@ -715,7 +737,7 @@ void lmMainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize)
 
     m_pTbTextBooks->Realize();
 
-    m_mgrAUI.AddPane(m_pTbTextBooks, wxPaneInfo().
+    m_mgrAUI.AddPane(m_pTbTextBooks, wxAuiPaneInfo().
                 Name(wxT("Navigation")).Caption(_("eBooks navigation tools")).
                 ToolbarPane().Top().Row(1).
                 LeftDockable(false).RightDockable(false));
@@ -937,6 +959,13 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     options_menu->Append(MENU_Preferences, _("&Preferences"));
 #endif
 
+    // Window menu
+    wxMenu* m_pWindowMenu = new wxMenu;
+    m_pWindowMenu->Append(MENU_WindowClose,    _("Cl&ose"));
+    m_pWindowMenu->Append(MENU_WindowCloseAll, _("Close All"));
+    m_pWindowMenu->AppendSeparator();
+    m_pWindowMenu->Append(MENU_WindowNext,     _("&Next"));
+    m_pWindowMenu->Append(MENU_WindowPrev,     _("&Previous"));
 
     // help menu
     wxMenu *help_menu = new wxMenu;
@@ -969,7 +998,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 #endif
 
     // set up the menubar.
-    // AWARE: As lmMainFrame is derived from wxMDIParentFrame, in MSWindows build the menu 
+    // AWARE: As lmMainFrame is derived from lmMDIParentFrame, in MSWindows build the menu 
     // bar automatically inherits a "Window" menu inserted in the second last position.
     // To suppress it (under MSWindows) it is necessary to add style wxFRAME_NO_WINDOW_MENU  
     // in frame creation.
@@ -981,6 +1010,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     if (fDebug) menu_bar->Append(debug_menu, _T("&Debug"));     //DO NOT TRANSLATE
     menu_bar->Append(zoom_menu, _("&Zoom"));
     menu_bar->Append(options_menu, _("&Options"));
+    menu_bar->Append(m_pWindowMenu, _("&Window"));
     menu_bar->Append(help_menu, _("&Help"));
 
         //
@@ -1201,7 +1231,7 @@ void lmMainFrame::OnBookFrame(wxCommandEvent& event)
 void lmMainFrame::OnBookFrameUpdateUI(wxUpdateUIEvent& event)
 {
     //enable only if current active view is TextBookFrame class
-    wxMDIChildFrame* pChild = GetActiveChild();
+    lmMDIChildFrame* pChild = GetActiveChild();
     bool fEnabled = pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame)) &&
                     m_pBookController;
     event.Enable(fEnabled);
@@ -1367,6 +1397,39 @@ void lmMainFrame::SetOpenBookButton(bool fPressed)
     m_fBookOpened = fPressed;
 }
 
+void lmMainFrame::OnWindowClose(wxCommandEvent& WXUNUSED(event))
+{
+    lmMDIChildFrame* pChild = GetActiveChild();
+    if (pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame)) && m_pBookController)
+    {
+        // is the eBook manager. Close it
+        wxCommandEvent event(MENU_OpenBook);
+        OnOpenBook(event);
+    }
+    else
+    {
+        // it is a score. Close is managed by doc/view manager
+        wxCommandEvent event(wxID_CLOSE);
+        g_pTheApp->GetDocManager()->OnFileClose(event);
+    }
+}
+
+void lmMainFrame::OnWindowCloseAll(wxCommandEvent& WXUNUSED(event))
+{
+    CloseAll();
+}
+
+void lmMainFrame::OnWindowNext(wxCommandEvent& WXUNUSED(event))
+{
+    ActivateNext();
+}
+
+void lmMainFrame::OnWindowPrev(wxCommandEvent& WXUNUSED(event))
+{
+    ActivatePrevious();
+}
+
+
 void lmMainFrame::OnDebugForceReleaseBehaviour(wxCommandEvent& event)
 {
     g_fReleaseBehaviour = event.IsChecked();
@@ -1504,7 +1567,7 @@ void lmMainFrame::OnZoom(wxCommandEvent& event, int nZoom)
 
 void lmMainFrame::OnZoomUpdateUI(wxUpdateUIEvent &event)
 {
-    wxMDIChildFrame* pChild = GetActiveChild();
+    lmMDIChildFrame* pChild = GetActiveChild();
     event.Enable( pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) );
 
 }
@@ -1595,7 +1658,7 @@ void lmMainFrame::OnViewRulersUI(wxUpdateUIEvent &event)
         event.Enable(false);
     }
     else {
-        wxMDIChildFrame* pChild = GetActiveChild();
+        lmMDIChildFrame* pChild = GetActiveChild();
         event.Enable( pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) );
     }
 }
@@ -1669,7 +1732,7 @@ void lmMainFrame::OnImportFile(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event))
 {
-    wxMDIChildFrame* pChild = GetActiveChild();
+    lmMDIChildFrame* pChild = GetActiveChild();
     bool fEditFrame = pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame));
     bool fTextBookFrame = pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame));
 
@@ -1721,7 +1784,7 @@ void lmMainFrame::OnPrintSetup(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnPrint(wxCommandEvent& event)
 {
-    wxMDIChildFrame* pChild = GetActiveChild();
+    lmMDIChildFrame* pChild = GetActiveChild();
     bool fEditFrame = pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame));
     bool fTextBookFrame = pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame));
 
@@ -1754,14 +1817,14 @@ void lmMainFrame::OnPrint(wxCommandEvent& event)
 
 void lmMainFrame::OnEditUpdateUI(wxUpdateUIEvent &event)
 {
-    wxMDIChildFrame* pChild = GetActiveChild();
+    lmMDIChildFrame* pChild = GetActiveChild();
     event.Enable(false);    //pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
     //always disabled in current version
 }
 
 void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
 {
-    wxMDIChildFrame* pChild = GetActiveChild();
+    lmMDIChildFrame* pChild = GetActiveChild();
     bool fEditFrame = pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame));
     bool fTextBookFrame = pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame));
 
@@ -1834,7 +1897,7 @@ void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
 
 void lmMainFrame::OnSoundUpdateUI(wxUpdateUIEvent &event)
 {
-    wxMDIChildFrame* pChild = GetActiveChild();
+    lmMDIChildFrame* pChild = GetActiveChild();
     event.Enable( pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) );
 
 }

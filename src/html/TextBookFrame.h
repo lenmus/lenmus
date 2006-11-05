@@ -68,6 +68,8 @@
 
 #include "HtmlWindow.h"
 
+#include "../mdi/NotebookMDI.h"
+
 class WXDLLIMPEXP_CORE wxButton;
 class WXDLLIMPEXP_CORE wxTextCtrl;
 class WXDLLIMPEXP_CORE wxTreeEvent;
@@ -108,7 +110,7 @@ class TextBookHelpMergedIndex;
 
 class WXDLLIMPEXP_CORE wxHelpControllerBase;
 
-class WXDLLIMPEXP_HTML lmTextBookFrame : public wxMDIChildFrame
+class WXDLLIMPEXP_HTML lmTextBookFrame : public lmMDIChildFrame
 {
     DECLARE_DYNAMIC_CLASS(lmTextBookFrame)
 
@@ -128,6 +130,7 @@ public:
     // Sets format of title of the frame. Must contain exactly one "%s"
     // (for title of displayed HTML page)
     void SetTitleFormat(const wxString& format);
+    void SetTitle(const wxString& title) {}         //CSG AQUI_FALLA
 
     // Displays page x. If not found it will offect the user a choice of
     // searching books.
