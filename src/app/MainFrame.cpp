@@ -469,7 +469,6 @@ void lmMainFrame::CreateControls()
     g_pPrefs->Read(_T("/MainFrame/ViewToolBar"), &fToolBar);
     if (!m_pToolbar && fToolBar) {
         CreateMyToolBar();
-        //UpdateToolbarsLayout();     //to solve bug in wxAUI
     }
 
 }
@@ -959,13 +958,17 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     options_menu->Append(MENU_Preferences, _("&Preferences"));
 #endif
 
+
+#if lmUSE_NOTEBOOK_MDI
     // Window menu
-    wxMenu* m_pWindowMenu = new wxMenu;
-    m_pWindowMenu->Append(MENU_WindowClose,    _("Cl&ose"));
-    m_pWindowMenu->Append(MENU_WindowCloseAll, _("Close All"));
-    m_pWindowMenu->AppendSeparator();
-    m_pWindowMenu->Append(MENU_WindowNext,     _("&Next"));
-    m_pWindowMenu->Append(MENU_WindowPrev,     _("&Previous"));
+    wxMenu* pWindowMenu = new wxMenu;
+    pWindowMenu->Append(MENU_WindowClose,    _("Cl&ose"));
+    pWindowMenu->Append(MENU_WindowCloseAll, _("Close All"));
+    pWindowMenu->AppendSeparator();
+    pWindowMenu->Append(MENU_WindowNext,     _("&Next"));
+    pWindowMenu->Append(MENU_WindowPrev,     _("&Previous"));
+#endif  // lmUSE_NOTEBOOK_MDI
+
 
     // help menu
     wxMenu *help_menu = new wxMenu;
@@ -1010,7 +1013,9 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     if (fDebug) menu_bar->Append(debug_menu, _T("&Debug"));     //DO NOT TRANSLATE
     menu_bar->Append(zoom_menu, _("&Zoom"));
     menu_bar->Append(options_menu, _("&Options"));
-    menu_bar->Append(m_pWindowMenu, _("&Window"));
+#if lmUSE_NOTEBOOK_MDI
+    menu_bar->Append(pWindowMenu, _("&Window"));
+#endif  // lmUSE_NOTEBOOK_MDI
     menu_bar->Append(help_menu, _("&Help"));
 
         //
@@ -1062,16 +1067,6 @@ lmMainFrame::~lmMainFrame()
         g_pPrefs->Write(_T("/MainFrame/Left"), wndPos.x );
         g_pPrefs->Write(_T("/MainFrame/Top"), wndPos.y );
         g_pPrefs->Write(_T("/MainFrame/Maximized"), fMaximized);
-
-        //save main frame options
-        wxMenuBar* pMenuBar = GetMenuBar();
-        bool fToolBar = false;
-        if (pMenuBar) fToolBar = pMenuBar->IsChecked(MENU_View_ToolBar);
-        g_pPrefs->Write(_T("/MainFrame/ViewToolBar"), fToolBar);
-
-        bool fStatusBar = false;
-        if (pMenuBar) fStatusBar = pMenuBar->IsChecked(MENU_View_StatusBar);
-        g_pPrefs->Write(_T("/MainFrame/ViewStatusBar"), fStatusBar);
     }
 
     //save metronome settings and delete main metronome
@@ -1416,7 +1411,9 @@ void lmMainFrame::OnWindowClose(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnWindowCloseAll(wxCommandEvent& WXUNUSED(event))
 {
+#if lmUSE_NOTEBOOK_MDI
     CloseAll();
+#endif  // lmUSE_NOTEBOOK_MDI
 }
 
 void lmMainFrame::OnWindowNext(wxCommandEvent& WXUNUSED(event))
@@ -1670,11 +1667,16 @@ bool lmMainFrame::ShowRulers()
 
 void lmMainFrame::OnViewToolBar(wxCommandEvent& WXUNUSED(event))
 {
+    bool fToolBar;
     if (!m_pToolbar) {
         CreateMyToolBar ();
+        fToolBar = true;
     } else{
         DeleteToolbar ();
+        fToolBar = false;
     }
+    g_pPrefs->Write(_T("/MainFrame/ViewToolBar"), fToolBar);
+
 }
 
 void lmMainFrame::OnToolbarsUI (wxUpdateUIEvent &event) {
@@ -1684,11 +1686,16 @@ void lmMainFrame::OnToolbarsUI (wxUpdateUIEvent &event) {
 
 void lmMainFrame::OnViewStatusBar(wxCommandEvent& WXUNUSED(event))
 {
+    bool fStatusBar;
     if (!m_pStatusbar) {
         CreateMyStatusBar ();
+        fStatusBar = true;
     }else{
         DeleteStatusBar ();
+        fStatusBar = false;
     }
+    g_pPrefs->Write(_T("/MainFrame/ViewStatusBar"), fStatusBar);
+
 }
 
 void lmMainFrame::OnStatusbarUI (wxUpdateUIEvent &event) {
@@ -1836,7 +1843,8 @@ void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
             //! @todo Add print preview capabilities to TextBookFrame
             break;
         case wxID_PRINT_SETUP:
-            event.Enable(fEditFrame || fTextBookFrame);
+            //! @todo: disabled in 3.3. Incompatibilities with wx2.7.1
+            event.Enable(false);    //fEditFrame || fTextBookFrame);
             break;
         case MENU_Print:
             event.Enable(fEditFrame || fTextBookFrame);

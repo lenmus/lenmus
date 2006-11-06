@@ -26,6 +26,12 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
+
+
+#include "../app/global.h"
+
+#if lmUSE_NOTEBOOK_MDI
+
 //----------------------------------------------------------------------------
 // The main menu is fixed. Child window dosen't change it
 
@@ -287,3 +293,4 @@ void lmMDIParentFrame::RemoveChildFrame(lmMDIChildFrame* pChild)
 
 }
 
+#endif  //lmUSE_NOTEBOOK_MDI

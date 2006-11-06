@@ -12,6 +12,12 @@
 #ifndef __LM_DOCVIEWMDI_H__
 #define __LM_DOCVIEWMDI_H__
 
+
+#include "../app/global.h"
+
+#if lmUSE_NOTEBOOK_MDI
+
+
 #include "wx/defs.h"
 
 #include "wx/docview.h"
@@ -96,4 +102,16 @@ private:
 };
 
 
+#else   // do not lmUSE_NOTEBOOK_MDI
+
+//use standard wxWidgets classes
+#define lmDocMDIParentFrame wxDocMDIParentFrame
+#define lmDocMDIChildFrame wxDocMDIChildFrame
+
+
+#endif  //lmUSE_NOTEBOOK_MDI
+
+
 #endif      // __LM_DOCVIEWMDI_H__
+
+

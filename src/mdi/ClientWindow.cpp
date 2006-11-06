@@ -19,6 +19,11 @@
 //
 //-------------------------------------------------------------------------------------
 
+#include "../app/global.h"
+
+#if lmUSE_NOTEBOOK_MDI
+
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -152,3 +157,4 @@ void lmMDIClientWindow::OnSize(wxSizeEvent& event)
 }
 
 
+#endif  //lmUSE_NOTEBOOK_MDI

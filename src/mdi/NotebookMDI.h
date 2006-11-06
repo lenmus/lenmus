@@ -12,6 +12,10 @@
 #ifndef __LM_NOTEBOOKMDI_H__
 #define __LM_NOTEBOOKMDI_H__
 
+#include "../app/global.h"
+
+#if lmUSE_NOTEBOOK_MDI
+
 // ----------------------------------------------------------------------------
 // headers
 // ----------------------------------------------------------------------------
@@ -187,6 +191,16 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
+
+#else   // do not lmUSE_NOTEBOOK_MDI
+
+//use standard wxWidgets classes
+#define lmMDIParentFrame wxMDIParentFrame
+#define lmMDIClientWindow wxMDIClientWindow
+#define lmMDIChildFrame wxMDIChildFrame
+
+
+#endif  //lmUSE_NOTEBOOK_MDI
 
 
 #endif      // __LM_NOTEBOOKMDI_H__

@@ -9,6 +9,11 @@
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////
 
+#include "../app/global.h"
+
+#if lmUSE_NOTEBOOK_MDI
+
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -196,3 +201,4 @@ void lmDocMDIChildFrame::OnCloseWindow(wxCloseEvent& event)
     event.Veto();
 }
 
+#endif  //lmUSE_NOTEBOOK_MDI

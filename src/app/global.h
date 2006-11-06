@@ -49,4 +49,13 @@ extern bool gfDrawSelRec;        //draw selection rectangles around staff object
 #define Min(x, y)  ((x < y) ? x : y)
 #define Max(x, y)  ((x > y) ? x : y)
 
+
+//------------------------------------------
+//Conditional compilation options
+//------------------------------------------
+
+// 0 for Windows MDI style, 1 for Notebook MDI style
+#define lmUSE_NOTEBOOK_MDI   0
+
+
 #endif    // __GLOBAL_H__

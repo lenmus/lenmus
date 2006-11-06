@@ -104,7 +104,6 @@ wxBitmap lmArtProvider::CreateBitmap(const wxArtID& id,
     wxString sPath = g_pPaths->GetImagePath();
     wxString sFile;
 
-
     //set size. 16x16 is the default
     wxString sSize = _T("_16.png");
     if (size.GetHeight() == 24) {

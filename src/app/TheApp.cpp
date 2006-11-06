@@ -75,9 +75,9 @@
 #error "You must set wxUSE_DOC_VIEW_ARCHITECTURE to 1 in setup.h!"
 #endif
 
-//#if !wxUSE_MDI_ARCHITECTURE
-//#error "You must set wxUSE_MDI_ARCHITECTURE to 1 in setup.h!"
-//#endif
+#if !wxUSE_MDI_ARCHITECTURE
+#error "You must set wxUSE_MDI_ARCHITECTURE to 1 in setup.h!"
+#endif
 
 #if !wxUSE_MENUS
 #error "You must set wxUSE_MENUS to 1 in setup.h!"
@@ -92,6 +92,17 @@
 
 // CONFIG: Under Windows, change this to 1 to use wxGenericDragImage
 #define wxUSE_GENERIC_DRAGIMAGE 1
+
+
+#ifdef _DEBUG
+    #if !wxUSE_UNICODE
+        #error "You must set wxUSE_UNICODE to 1 in setup.h!"
+    #endif
+    #if !wxUSE_UNICODE_MSLU
+        #error "You must set wxUSE_UNICODE_MSLU to 1 in setup.h!"
+    #endif
+#endif
+
 
 
 
@@ -182,7 +193,7 @@ lmTheApp::lmTheApp(void)
 bool lmTheApp::OnInit(void)
 {
     m_pDocManager = (wxDocManager *) NULL;
-    m_pLocale = new wxLocale();
+    m_pLocale = (wxLocale*) NULL;
 
     // Error reporting and trace
     g_pLogger = new lmLogger();
@@ -283,7 +294,7 @@ bool lmTheApp::OnInit(void)
     // and load locale catalogs
     SetUpLocale(lang);
 
-    // open log file and redirec all loging there
+    // open log file and re-direct all loging there
     wxFileName oFilename(g_pPaths->GetTempPath(), _T("DataError"), _T("log"), wxPATH_NATIVE);
     g_pLogger->SetDataErrorTarget(oFilename.GetFullPath());
 
@@ -524,25 +535,45 @@ void lmTheApp::SetUpLocale(wxString lang)
     // lmPaths re-initialization
     g_pPaths->SetLanguageCode(lang);
 
+    //get wxLanguage code and name
+    const wxLanguageInfo* pInfo = wxLocale::FindLanguageInfo(lang);
+    int nLang;
+    wxString sLangName;
+    if (pInfo) {
+        nLang = pInfo->Language;
+        sLangName = pInfo->Description;
+    }
+    else {
+        nLang = wxLANGUAGE_ENGLISH;
+        sLangName = _T("English");
+        wxLogMessage(_T("[lmTheApp::SetUpLocale] Language '%s' not found. Update lmApp.cpp?"), lang);
+    }
+
+
     // locale object re-initialization
-    delete m_pLocale;
+    if (m_pLocale) delete m_pLocale;
     m_pLocale = new wxLocale();
-    m_pLocale->Init(_T(""), lang, _T(""), true, true);
-    wxString sPath = g_pPaths->GetLocaleRootPath();
-    m_pLocale->AddCatalogLookupPathPrefix( sPath );
-    wxString sCtlg;
-    wxString sNil = _T("");
-
-    sCtlg = sNil + _T("lenmus_") + m_pLocale->GetName();
-    if (!m_pLocale->AddCatalog(sCtlg))
-        wxLogMessage(_T("[lmTheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"), sCtlg, sPath);
-    sCtlg = sNil + _T("wxwidgets_") + m_pLocale->GetName();
-    if (!m_pLocale->AddCatalog(sCtlg))
-        wxLogMessage(_T("[lmTheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"), sCtlg, sPath);
-    sCtlg = sNil + _T("wxmidi_") + m_pLocale->GetName();
-    if (!m_pLocale->AddCatalog(sCtlg))
-        wxLogMessage(_T("[lmTheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"), sCtlg, sPath);
-
+    if (!m_pLocale->Init(_T(""), lang, _T(""), false, true)) {
+    //if (!m_pLocale->Init( nLang, wxLOCALE_CONV_ENCODING )) {
+        wxMessageBox( wxString::Format(_T("Language %s can not be set. ")
+            _T("Please, verify that any required language codepages are installed in your system."),
+            sLangName));
+    }
+    else {
+        wxString sPath = g_pPaths->GetLocaleRootPath();
+        m_pLocale->AddCatalogLookupPathPrefix( sPath );
+        wxString sCtlg;
+        wxString sNil = _T("");
+        sCtlg = sNil + _T("lenmus_") + lang;    //m_pLocale->GetName();
+        if (!m_pLocale->AddCatalog(sCtlg))
+            wxLogMessage(_T("[lmTheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"), sCtlg, sPath);
+        sCtlg = sNil + _T("wxwidgets_") + lang;
+        if (!m_pLocale->AddCatalog(sCtlg))
+            wxLogMessage(_T("[lmTheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"), sCtlg, sPath);
+        sCtlg = sNil + _T("wxmidi_") + lang;
+        if (!m_pLocale->AddCatalog(sCtlg))
+            wxLogMessage(_T("[lmTheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"), sCtlg, sPath);
+    }
 }
 
 
@@ -764,7 +795,6 @@ lmSplashFrame* lmTheApp::RecreateGUI(int nMilliseconds)
         }
         wxSafeYield();
     }
-    
     g_pMainFrame->Show(true);
 
     SetTopWindow(g_pMainFrame);

@@ -103,6 +103,8 @@
 #include "wx/choicdlg.h"
 #include "wx/settings.h"
 
+
+#include "../app/global.h"              //CSG_ADDED
 #include "../app/MainFrame.h"           //CSG_ADDED
 extern lmMainFrame* g_pMainFrame;       //CSG_ADDED
 
@@ -382,7 +384,11 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
                     wxPoint(m_Cfg.x, m_Cfg.y), wxSize(m_Cfg.w, m_Cfg.h),
                     wxDEFAULT_FRAME_STYLE, wxT("TextBookHelp") );
 
-    //lmMDIChildFrame::Maximize(true);  //Notebook: always maximized
+#if lmUSE_NOTEBOOK_MDI
+    ////Notebook: is always maximized
+#else
+    lmMDIChildFrame::Maximize(true);
+#endif  // lmUSE_NOTEBOOK_MDI
 
     GetPosition(&m_Cfg.x, &m_Cfg.y);
 
@@ -1073,15 +1079,15 @@ void lmTextBookFrame::WriteCustomization(wxConfigBase *cfg, const wxString& path
 
     cfg->Write(wxT("tbcNavigPanel"), m_Cfg.navig_on);
     cfg->Write(wxT("tbcSashPos"), (long)m_Cfg.sashpos);
-    //if ( !IsIconized() )
-    //{
+    if ( !IsIconized() )
+    {
         //  Don't write if iconized as this would make the window
         //  disappear next time it is shown!
         cfg->Write(wxT("tbcX"), (long)m_Cfg.x);
         cfg->Write(wxT("tbcY"), (long)m_Cfg.y);
         cfg->Write(wxT("tbcW"), (long)m_Cfg.w);
         cfg->Write(wxT("tbcH"), (long)m_Cfg.h);
-    //}
+    }
     cfg->Write(wxT("tbcFixedFace"), m_FixedFace);
     cfg->Write(wxT("tbcNormalFace"), m_NormalFace);
     cfg->Write(wxT("tbcBaseFontSize"), (long)m_FontSize);

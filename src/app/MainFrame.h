@@ -41,6 +41,7 @@
 #include "wx/spinctrl.h"        //to use spin control
 #include "wx/html/htmlwin.h"    //to use html
 
+#include "global.h"
 #include "../sound/Metronome.h"
 
 // to use html help controller

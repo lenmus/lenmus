@@ -42,6 +42,11 @@
 
 //----------------------------------------------------------------------------
 
+#include "../app/global.h"
+
+#if lmUSE_NOTEBOOK_MDI
+
+
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -256,3 +261,4 @@ void lmMDIChildFrame::ApplyMDIChildFrameRect()
     wxPanel::DoMoveWindow(m_MDIRect.x, m_MDIRect.y, m_MDIRect.width, m_MDIRect.height);
 }
 
+#endif  //lmUSE_NOTEBOOK_MDI
