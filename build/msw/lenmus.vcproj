@@ -661,6 +661,12 @@
 			Name="html"
 			Filter="">
 			<File
+				RelativePath="..\..\src\html\BookData.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\html\BookData.h">
+			</File>
+			<File
 				RelativePath="..\..\src\html\HelpController.cpp">
 			</File>
 			<File
