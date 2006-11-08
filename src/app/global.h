@@ -54,8 +54,12 @@ extern bool gfDrawSelRec;        //draw selection rectangles around staff object
 //Conditional compilation options
 //------------------------------------------
 
+// MDI style: Windows or Notebook
 // 0 for Windows MDI style, 1 for Notebook MDI style
-#define lmUSE_NOTEBOOK_MDI   0
+#define lmUSE_NOTEBOOK_MDI          0
+
+// eBooks format: MS Windows Help format (htb) or LenMus format (lmb)
+#define lmUSE_LENMUS_EBOOK_FORMAT   0
 
 
 #endif    // __GLOBAL_H__

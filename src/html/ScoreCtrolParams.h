@@ -229,7 +229,7 @@ void lmScoreCtrolParams::PrepareScore()
     if (m_pScore) return;
 
     //create the score
-    lmXMLParser parserXML;
+    lmMusicXMLParser parserXML;
     lmLDPParser parserLDP;
 
     switch(m_nScoreType) {

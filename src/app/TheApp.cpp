@@ -58,12 +58,12 @@
 #ifndef _DEBUG
 //For release versions (ANSI and Unicode) there is a compilation/linking error somewhere
 //either in wxWidgets or in wxMidi as these two errors are generated:
-//  wxmidi11.lib(wxMidi.obj) : error LNK2019: símbolo externo "void __cdecl wxAssert(int,char const *,int,char const *,char const *)" (?wxAssert@@YAXHPBDH00@Z) sin resolver al que se hace referencia en la función "void __cdecl wxPostEvent(class wxEvtHandler *,class wxEvent &)" (?wxPostEvent@@YAXPAVwxEvtHandler@@AAVwxEvent@@@Z)
-//  wxmidi11.lib(wxMidiDatabase.obj) : error LNK2001: símbolo externo "void __cdecl wxAssert(int,char const *,int,char const *,char const *)" (?wxAssert@@YAXHPBDH00@Z) sin resolver
+//  wxmidiu.lib(wxMidi.obj) : error LNK2019: símbolo externo "void __cdecl wxOnAssert(unsigned short const *,int,char const *,unsigned short const *,unsigned short const *)" (?wxOnAssert@@YAXPBGHPBD00@Z) sin resolver al que se hace referencia en la función "void __cdecl wxPostEvent(class wxEvtHandler *,class wxEvent &)" (?wxPostEvent@@YAXPAVwxEvtHandler@@AAVwxEvent@@@Z)
+//  wxmidiu.lib(wxMidiDatabase.obj) : error LNK2001: símbolo externo "void __cdecl wxOnAssert(unsigned short const *,int,char const *,unsigned short const *,unsigned short const *)" (?wxOnAssert@@YAXPBGHPBD00@Z) sin resolver
 //As I can not avoid the error, these next definitions are a bypass:
     #if _UNICODE
-        extern void __cdecl wxAssert(int n, unsigned short const* s, int m, unsigned short const* s2, unsigned short const* s3);
-        void __cdecl wxAssert(int n, unsigned short const* s, int m, unsigned short const* s2, unsigned short const* s3) {}
+        extern void __cdecl wxOnAssert(unsigned short const *n1,int n2,char const *n3,unsigned short const *n4,unsigned short const *n5);
+        void __cdecl wxOnAssert(unsigned short const *n1,int n2,char const *n3,unsigned short const *n4,unsigned short const *n5) {}
     #else
         extern void __cdecl wxAssert(int n, char const* s, int m, char const* s2, char const* s3);
         void __cdecl wxAssert(int n, char const * s, int m, char const* s2, char const* s3) {}
@@ -215,7 +215,7 @@ bool lmTheApp::OnInit(void)
     g_pLogger->DefineTraceMask(_T("lmKeySignature"));    
     g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
     g_pLogger->DefineTraceMask(_T("lmComposer5"));
-    g_pLogger->DefineTraceMask(_T("lmXMLParser"));
+    g_pLogger->DefineTraceMask(_T("lmMusicXMLParser"));
     g_pLogger->DefineTraceMask(_T("lmUpdater"));
     g_pLogger->DefineTraceMask(_T("lmInterval"));
 

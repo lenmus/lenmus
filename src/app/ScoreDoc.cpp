@@ -132,7 +132,7 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
 
 bool lmScoreDocument::OnImportDocument(const wxString& filename)
 {
-    lmXMLParser parser;
+    lmMusicXMLParser parser;
     m_pScore = parser.ParseMusicXMLFile(filename);
     if (!m_pScore) return false;
 

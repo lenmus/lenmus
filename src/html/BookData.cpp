@@ -1,13 +1,31 @@
-/////////////////////////////////////////////////////////////////////////////
-// Name:        helpdata.cpp
-// Purpose:     lmBookData
-// Notes:       Based on htmlhelp.cpp, implementing a monolithic
-//              HTML Help controller class,  by Vaclav Slavik
-// Author:      Harm van der Heijden and Vaclav Slavik
-// RCS-ID:      $Id: helpdata.cpp,v 1.79 2005/01/06 11:52:05 RR Exp $
-// Copyright:   (c) Harm van der Heijden and Vaclav Slavik
-// Licence:     wxWindows licence
-/////////////////////////////////////////////////////////////////////////////
+//--------------------------------------------------------------------------------------
+//    LenMus Phonascus: The teacher of music
+//    Copyright (c) 2002-2006 Cecilio Salmeron
+//
+//    This file is based on file helpdata.cpp from wxWidgets 2.6.3 project.
+//    wxWidgets licence is compatible with GNU GPL.
+//    Author:      Harm van der Heijden and Vaclav Slavik
+//    Copyright (c) Harm van der Heijden and Vaclav Slavik
+// 
+//    Modified by:
+//        Cecilio Salmeron
+//
+//    This program is free software; you can redistribute it and/or modify it under the 
+//    terms of the GNU General Public License as published by the Free Software Foundation;
+//    either version 2 of the License, or (at your option) any later version.
+//
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+//
+//    You should have received a copy of the GNU General Public License along with this 
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    Fifth Floor, Boston, MA  02110-1301, USA.
+//
+//    For any comment, suggestion or feature request, please contact the manager of 
+//    the project at cecilios@users.sourceforge.net
+//
+//-------------------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "BookData.h"
@@ -20,9 +38,9 @@
 #pragma hdrstop
 #endif
 
-#include "wx/defs.h"
+#if lmUSE_LENMUS_EBOOK_FORMAT
 
-#if wxUSE_HTML && wxUSE_STREAMS
+#include "wx/defs.h"
 
 #ifndef WXPRECOMP
     #include "wx/intl.h"
@@ -47,11 +65,11 @@
 WX_DEFINE_OBJARRAY(wxHtmlBookRecArray)
 WX_DEFINE_OBJARRAY(wxHtmlHelpDataItems)
 
+#include "../xml_parser/parser.h"       // to use XML parser
+
 // BookData object stores and manages all book indexes.
 // Html pages are not processed. When a page display is requested, the page is
 // directtly loaded by the wxHtmlWindowd, LoadPage() method.
-
-
 
 //-----------------------------------------------------------------------------
 // static helper functions
@@ -78,8 +96,7 @@ static const wxChar* ReadLine(const wxChar *line, wxChar *buf, size_t bufsize)
 
 
 
-static int
-wxHtmlHelpIndexCompareFunc(lmBookIndexItem **a, lmBookIndexItem **b)
+static int wxHtmlHelpIndexCompareFunc(lmBookIndexItem **a, lmBookIndexItem **b)
 {
     lmBookIndexItem *ia = *a;
     lmBookIndexItem *ib = *b;
@@ -633,17 +650,17 @@ bool lmBookData::AddBookParam(const wxFSFile& bookfile,
 bool lmBookData::AddBook(const wxString& book)
 {
     //Reads a book (either a .zip, .htb ot .hhp file) and loads its content
+    //Returns true if success.
 
-    //In this loop we deal with htb files, reading its hhp sub-file
+    //In this loop we deal with compressed .lmb files, reading its .idx sub-file
     wxString extension(book.Right(4).Lower());
-    if (extension == wxT(".zip") ||
-        extension == wxT(".htb") /*html book*/)
+    if (extension == wxT(".lmb"))  //lenmus compressed book  (zip file)
     {
         wxFileSystem fsys;
         wxString s;
         bool rt = false;
 
-        s = fsys.FindFirst(book + wxT("#zip:*.hhp"), wxFILE);
+        s = fsys.FindFirst(book + wxT("#zip:*.idx"), wxFILE);
 
         while (!s.IsEmpty())
         {
@@ -654,10 +671,66 @@ bool lmBookData::AddBook(const wxString& book)
         return rt;
     }
 
-    //In this part we deal with only with the hhp file, to get its information
+    //In this part we deal with only with the index file (.idx), to get its information
     //The book info is added by calling AddBookParam()
-    wxFSFile *fi;
-    wxFileSystem fsys;
+    return ProcessIndexFile(book);
+
+//    const wxChar *lineptr;
+//    wxChar linebuf[300];
+//    wxString tmp;
+//    wxHtmlFilterPlainText filter;
+//    tmp = filter.ReadFile(*fi);
+//    lineptr = tmp.c_str();
+//
+//    do
+//    {
+//        lineptr = ReadLine(lineptr, linebuf, 300);
+//
+//        for (wxChar *ch = linebuf; *ch != wxT('\0') && *ch != wxT('='); ch++)
+//           *ch = (wxChar)wxTolower(*ch);
+//
+//        if (wxStrstr(linebuf, _T("title=")) == linebuf)
+//            title = linebuf + wxStrlen(_T("title="));
+//        if (wxStrstr(linebuf, _T("default topic=")) == linebuf)
+//            start = linebuf + wxStrlen(_T("default topic="));
+//        if (wxStrstr(linebuf, _T("index file=")) == linebuf)
+//            index = linebuf + wxStrlen(_T("index file="));
+//        if (wxStrstr(linebuf, _T("contents file=")) == linebuf)
+//            contents = linebuf + wxStrlen(_T("contents file="));
+//        if (wxStrstr(linebuf, _T("charset=")) == linebuf)
+//            charset = linebuf + wxStrlen(_T("charset="));
+//    } while (lineptr != NULL);
+//
+//    wxFontEncoding enc = wxFONTENCODING_SYSTEM;
+//#if wxUSE_FONTMAP
+//    if (charset != wxEmptyString)
+//        enc = wxFontMapper::Get()->CharsetToEncoding(charset);
+//#endif
+//
+//    bool rtval = AddBookParam(*fi, enc,
+//                              title, contents, index, start, fsys.GetPath());
+
+    //return rtval;
+}
+
+bool lmBookData::ProcessIndexFile(wxString sFilename)
+{
+    // Returns true if success.
+
+    //  <?xml version="1.0" encoding="utf-8"?>
+    //  <lmBookIndex>
+    //      <title>title of the book</title>
+    //      <defaul_page>default page to be displayed.htm</defaulPage>
+    //      <index>
+    //          <entry id="id" page="filename.htm">text for this index entry</entry>
+    //          <entry id="id" page="filename.htm">text for this index entry</entry>
+    //          <entry id="id" page="filename.htm">text for this index entry</entry>
+    //          <entry id="id" page="filename.htm">text for this index entry</entry>
+    //      </index>
+    //  </lmBookIndex>
+
+
+    wxLogMessage(_T("[lmBookData::ProcessIndexFile] Processing file %s"), file);
 
     wxString title = _("noname"),
              safetitle,
@@ -666,51 +739,83 @@ bool lmBookData::AddBook(const wxString& book)
              index = wxEmptyString,
              charset = wxEmptyString;
 
-    fi = fsys.OpenFile(book);
-    if (fi == NULL)
+    // load the XML file as tree of nodes
+    wxXmlDocument xdoc;
+    if (!xdoc.Load(sFilename))
     {
-        wxLogError(_("Cannot open HTML help book: %s"), book.c_str());
-        return false;
+        wxLogMessage(_T("Loading eBook. Error parsing index file ") + sFilename);
+        return false;   //error
     }
-    fsys.ChangePathTo(book);
 
-    const wxChar *lineptr;
-    wxChar linebuf[300];
-    wxString tmp;
-    wxHtmlFilterPlainText filter;
-    tmp = filter.ReadFile(*fi);
-    lineptr = tmp.c_str();
+    //Verify type of document. Must be <lmBookIndex>
+    wxXmlNode *pNode = xdoc.GetRoot();
+    wxString sTag = _T("lmBookIndex");
+    wxString sElement = pNode->GetName();
 
-    do
-    {
-        lineptr = ReadLine(lineptr, linebuf, 300);
+    if (sElement != sTag) {
+        wxLogMessage(_T("Loading eBook. Error: First tag is not <%s> but <%s>"),
+            sTag, sElement);
+        return false;   //error
+    }
+    
+    //process children nodes
+    pNode = GetFirstChild(pNode);
+    wxXmlNode* pElement = pNode;
+    while (pElement) {
+        sElement = pElement->GetName();
 
-        for (wxChar *ch = linebuf; *ch != wxT('\0') && *ch != wxT('='); ch++)
-           *ch = (wxChar)wxTolower(*ch);
+        if (sElement == _T("title")) {
+            //get book title
 
-        if (wxStrstr(linebuf, _T("title=")) == linebuf)
-            title = linebuf + wxStrlen(_T("title="));
-        if (wxStrstr(linebuf, _T("default topic=")) == linebuf)
-            start = linebuf + wxStrlen(_T("default topic="));
-        if (wxStrstr(linebuf, _T("index file=")) == linebuf)
-            index = linebuf + wxStrlen(_T("index file="));
-        if (wxStrstr(linebuf, _T("contents file=")) == linebuf)
-            contents = linebuf + wxStrlen(_T("contents file="));
-        if (wxStrstr(linebuf, _T("charset=")) == linebuf)
-            charset = linebuf + wxStrlen(_T("charset="));
-    } while (lineptr != NULL);
+        }
+        else if (sElement == _T("defaul_page")) {
+            //get default page
 
-    wxFontEncoding enc = wxFONTENCODING_SYSTEM;
-#if wxUSE_FONTMAP
-    if (charset != wxEmptyString)
-        enc = wxFontMapper::Get()->CharsetToEncoding(charset);
-#endif
+        }
+        else if (sElement == _T("index")) {
+            //process index entries
+
+        }
+        else {
+            wxLogMessage(_T("Error: Expected <%s> but found <%s>"), sTag, sElement);
+            return false;
+        }
+
+        // Find next sibling
+        pNode = GetNextSibling(pNode);
+        pElement = pNode;
+    }
+
+    return true;   //no error
 
     bool rtval = AddBookParam(*fi, enc,
                               title, contents, index, start, fsys.GetPath());
-    delete fi;
 
-    return rtval;
+}
+
+wxString lmBookData::ProcessIndexEntry(wxXmlNode* pNode)
+{
+    wxString sElement = pNode->GetName();
+    wxLogMessage(_T("XML Parser: Entering GetTitle() for %s"), sElement);
+
+    //locate <title> child
+    pNode = GetFirstChild(pNode);
+    wxXmlNode* pElement = pNode;
+    wxString sTag = _T("title");
+    while (pElement)
+    {
+        sElement = pElement->GetName();
+        if (sElement == sTag) {
+            return GetText(pElement);
+        }
+
+        // Find next sibling
+        pNode = GetNextSibling(pNode);
+        pElement = pNode;
+    }
+
+    return _T("");
+
 }
 
 wxString lmBookData::FindPageByName(const wxString& x)
@@ -933,5 +1038,4 @@ bool lmBookSearchEngine::Scan(const wxFSFile& file)
 }
 
 
-
-#endif
+#endif      // lmUSE_LENMUS_EBOOK_FORMAT

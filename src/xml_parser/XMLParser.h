@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 /*! @file XMLParser.h
-    @brief Header file for class lmXMLParser
+    @brief Header file for class lmMusicXMLParser
     @ingroup xml_parser
 */
 #ifdef __GNUG__
@@ -40,11 +40,11 @@
 #define sbDO_NOT_START_NEW_LOG    false
 #define sbDO_NOT_SHOW_LOG_TO_USER    false
 
-class lmXMLParser
+class lmMusicXMLParser
 {
 public:
-    lmXMLParser();
-    ~lmXMLParser();
+    lmMusicXMLParser();
+    ~lmMusicXMLParser();
 
     lmScore* ParseMusicXMLFile(const wxString& filename, 
                              bool fNewLog = true,        //start a new data error log
