@@ -1,0 +1,48 @@
+(score
+   (vers 1.5)(language es iso-8859-1)
+   (instrumento
+      (datosMusica
+         (clave Sol)
+         (tonalidad Do)
+         
+         //two notes. stems down (a4,d5) (f4,f5) (a4,g5)
+         (acorde (n a4 n)(n d5 n))
+         (acorde (n f4 n)(n f5 n))
+         (acorde (n a4 n)(n g5 n))
+         (barra)
+
+         //two notes. stems up (e4,c5)(g4,c5)(d4,e5)
+         (acorde (n e4 n)(n c5 n))
+         (acorde (n g4 n)(n c5 n))
+         (acorde (n d4 n)(n e5 n))
+         (barra)
+         
+         //two notes. stems at your preference. Default down. (g4.d5)(a4,c5)
+         (acorde (n g4 n)(n d5 n))
+         (acorde (n a4 n)(n c5 n))
+         (barra)
+         
+         //more than two notes. stems down
+         (acorde (n f4 n)(n c5 n)(n g5 n))
+         (acorde (n a4 n)(n c5 n)(n f5 n))
+         (barra)
+
+         //more than two notes. stems up
+         (acorde (n d4 n)(n a4 n)(n c5 n))
+         (acorde (n e4 n)(n g4 n)(n e5 n))
+         (barra)
+
+         //more than two notes. majority rule. stems down
+         (acorde (n d4 n)(n b4 n)(n d5 n)(n g5 n))
+         (acorde (n f4 n)(n c5 n)(n e5 n))
+         (barra)
+
+         //more than two notes. majority rule. stems up
+         (acorde (n d4 n)(n f4 n)(n a4 n)(n g5 n))
+         (acorde (n e4 n)(n f4 n)(n a4 n)(n f5 n))
+         (barra)
+
+      )
+   )
+)
+

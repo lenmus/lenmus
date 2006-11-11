@@ -1,0 +1,16 @@
+(Score
+   (Vers 1.3)
+   (NumInstrumentos 1)
+   (Instrumento 1
+      (NumPartes 1)
+      (Parte 1
+        (c 1
+            (Clave Sol)
+            (Tonalidad Do)
+            (Metrica 2 4)
+            (s r)(s b)(s n)(s c)(s s)(s f)(s m)
+        )
+      )
+   )
+)
+

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
+    <object class="wxDialog" name="DlgPatternEditor" subclass="DlgPatternEditor">
+        <style>wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX</style>
+        <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
+        <title>Pattern's editor</title>
+        <centered>1</centered>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                <border>5</border>
+                <object class="wxStaticBoxSizer" name="wxID_ANY">
+                    <orient>wxVERTICAL</orient>
+                    <label></label>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_LEFT|wxALL|wxADJUST_MINSIZE</flag>
+                        <border>5</border>
+                        <object class="wxStaticText" name="wxID_STATIC">
+                            <label>Step 1. Choose attributes for next note/rest to enter:</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxRIGHT|wxTOP|wxBOTTOM</flag>
+                                <border>5</border>
+                                <object class="wxBitmapButton" name="btnDotted">
+                                    <size>-1,32</size>
+                                    <tooltip>Dotted</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxBitmapButton" name="btnTiedNext">
+                                    <tooltip>Tied next</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxLEFT|wxTOP|wxBOTTOM</flag>
+                                <border>5</border>
+                                <object class="wxBitmapButton" name="btnNotBeamed">
+                                    <tooltip>Not beamed</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnStartBeam">
+                                    <tooltip>Start of a beamed group</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnContinueBeam">
+                                    <tooltip>Continue in beamed group</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnEndBeam">
+                                    <tooltip>End of beamed group</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_LEFT|wxALL|wxADJUST_MINSIZE</flag>
+                        <border>5</border>
+                        <object class="wxStaticText" name="wxID_STATIC">
+                            <label>Step 2. Enter the the desired note/rest:</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_HORIZONTAL</flag>
+                        <border>5</border>
+                        <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnNote1">
+                                    <size>-1,32</size>
+                                    <tooltip>Whole note</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnNote2">
+                                    <tooltip>Half note</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnNote4">
+                                    <tooltip>Quarter note</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnNote8">
+                                    <tooltip>8th note</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnNote16">
+                                    <tooltip>16th note</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnNote32">
+                                    <tooltip>32th note</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnNote64">
+                                    <tooltip>64th note</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_HORIZONTAL</flag>
+                        <border>5</border>
+                        <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnRest1">
+                                    <size>-1,32</size>
+                                    <tooltip>Whole rest</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT|wxWANTS_CHARS</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnRest2">
+                                    <tooltip>Half rest</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnRest4">
+                                    <tooltip>Quarter rest</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnRest8">
+                                    <tooltip>8th rest</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnRest16">
+                                    <tooltip>16th rest</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnRest32">
+                                    <tooltip>32th rest</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL</flag>
+                                <border>3</border>
+                                <object class="wxBitmapButton" name="btnRest64">
+                                    <tooltip>64th rest</tooltip>
+                                    <style>wxBU_AUTODRAW|wxBU_EXACTFIT</style>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxGROW|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxButton" name="btnBarline">
+                                    <label>Barline</label>
+                                </object>
+                            </object>
+                            <object class="spacer">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                <border>5</border>
+                                <option>1</option>
+                                <size>5,5</size>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxButton" name="btnClearAll">
+                                    <label>Clear all</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxButton" name="btnUndo">
+                                    <label>Undo</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxButton" name="btnRedo">
+                                    <label>Redo</label>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <object class="wxTextCtrl" name="txtPattern">
+                    <style>wxTE_MULTILINE</style>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                <border>5</border>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="btnAccept">
+                            <label>Accept</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="btnCancel">
+                            <label>Cancel</label>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

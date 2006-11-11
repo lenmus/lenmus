@@ -1,0 +1,63 @@
+<HTML>
+<HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</HEAD><BODY>
+<UL>
+    <li> <object type="text/sitemap">
+        <param name="Name" value="Lo más básico">
+        <param name="Local" value="basics.htm">
+        </object>
+    <li> <object type="text/sitemap">
+        <param name="Name" value="La interfaz de usuario">
+        <param name="Local" value="ui.htm">
+        </object>
+        <ul>
+        <li> <object type="text/sitemap">
+            <param name="Name" value="El menú y la barra de herramientas">
+            <param name="Local" value="menu.htm">
+            </object>
+            <ul>
+            <li> <object type="text/sitemap">
+                <param name="Name" value="El menú 'Archivo'">
+                <param name="Local" value="menu_file.htm">
+                </object>
+            <li> <object type="text/sitemap">
+                <param name="Name" value="El menú 'Ver'">
+                <param name="Local" value="menu_view.htm">
+                </object>
+            <li> <object type="text/sitemap">
+                <param name="Name" value="El menú 'Sonido'">
+                <param name="Local" value="menu_sound.htm">
+                </object>
+            <li> <object type="text/sitemap">
+                <param name="Name" value="El menú 'Opciones'">
+                <param name="Local" value="menu_options.htm">
+                </object>
+            <li> <object type="text/sitemap">
+                <param name="Name" value="El menú 'Ventanas'">
+                <param name="Local" value="menu_window.htm">
+                </object>
+            <li> <object type="text/sitemap">
+                <param name="Name" value="El menú 'Ayuda'">
+                <param name="Local" value="menu_help.htm">
+                </object>
+            </ul>
+        <li> <object type="text/sitemap">
+            <param name="Name" value="Preferencias y configuración del sonido">
+            <param name="Local" value="settings.htm">
+            </object>
+        <li> <object type="text/sitemap">
+            <param name="Name" value="El gestor de libros (eBooks)">
+            <param name="Local" value="manager.htm">
+            </object>
+            </ul>
+    <li> <object type="text/sitemap">
+        <param name="Name" value="Problemas conocidos">
+        <param name="Local" value="known_problems.htm">
+        </object>
+    <li> <object type="text/sitemap">
+        <param name="Name" value="Licencia">
+        <param name="Local" value="license.htm">
+        </object>
+</UL>
+</BODY></HTML>

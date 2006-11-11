@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
+    <object class="wxDialog" name="OptionsDlg" subclass="OptionsDlg">
+        <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX|wxDIALOG_MODAL</style>
+        <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
+        <size>600,400</size>
+        <title>Configuration options</title>
+        <centered>1</centered>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <option>1</option>
+                <object class="wxSplitterWindow" name="idSplitterWindow">
+                    <size>100,100</size>
+                    <style>wxSP_3DBORDER|wxSP_3DSASH|wxNO_BORDER</style>
+                    <orientation>vertical</orientation>
+                    <sashpos>50</sashpos>
+                    <object class="wxTreeCtrl" name="idTreeCtrl">
+                        <size>100,100</size>
+                        <style>wxTR_SINGLE|wxSUNKEN_BORDER</style>
+                    </object>
+                    <object class="wxPanel" name="idPanel">
+                        <style>wxSUNKEN_BORDER|wxTAB_TRAVERSAL</style>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxALIGN_RIGHT|wxALL</flag>
+                <border>5</border>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="idBtnOK">
+                            <label>OK</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="idBtnCancel">
+                            <label>&amp;Cancel</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="idBtnHelp">
+                            <label>&amp;Help</label>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

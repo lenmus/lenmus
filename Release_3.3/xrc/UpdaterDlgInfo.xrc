@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="windows-1252"?>
+<resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
+    <object class="wxDialog" name="UpdaterDlgInfo" subclass="lmUdaterDlgInfo">
+        <style>wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX</style>
+        <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
+        <size>500,370</size>
+        <title>LenMus Phonascus updater</title>
+        <centered>1</centered>
+        <object class="wxBoxSizer">
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <flag>wxGROW|wxALL</flag>
+                <border>5</border>
+                <option>1</option>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_TOP|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxStaticBitmap" name="bmpUpdaterLogo">
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxGROW|wxALL</flag>
+                        <border>5</border>
+                        <option>1</option>
+                        <object class="wxBoxSizer">
+                            <orient>wxVERTICAL</orient>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_LEFT|wxALL|wxADJUST_MINSIZE</flag>
+                                <border>5</border>
+                                <object class="wxStaticText" name="ID_STATICTEXT">
+                                    <size>300,-1</size>
+                                    <font>
+                                        <size>8</size>
+                                        <family>swiss</family>
+                                        <style>normal</style>
+                                        <weight>bold</weight>
+                                        <underlined>0</underlined>
+                                        <face>Tahoma</face>
+                                    </font>
+                                    <label>Available updates</label>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxGROW|wxALL</flag>
+                                <border>5</border>
+                                <option>1</option>
+                                <object class="wxCheckListBox" name="lstUpdates">
+                                    <style>wxLB_SINGLE</style>
+                                </object>
+                            </object>
+                            <object class="sizeritem">
+                                <flag>wxGROW|wxALL</flag>
+                                <border>5</border>
+                                <option>1</option>
+                                <object class="wxStaticBoxSizer" name="wxID_ANY">
+                                    <orient>wxHORIZONTAL</orient>
+                                    <label>Item description</label>
+                                    <object class="sizeritem">
+                                        <flag>wxGROW|wxALL|wxADJUST_MINSIZE</flag>
+                                        <border>5</border>
+                                        <option>1</option>
+                                        <object class="wxStaticText" name="txtDescription">
+                                            <style>wxST_NO_AUTORESIZE</style>
+                                        </object>
+                                    </object>
+                                </object>
+                            </object>
+                        </object>
+                    </object>
+                </object>
+            </object>
+            <object class="sizeritem">
+                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                <border>5</border>
+                <object class="wxBoxSizer">
+                    <orient>wxHORIZONTAL</orient>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="btnDownload">
+                            <label>Download selected items</label>
+                        </object>
+                    </object>
+                    <object class="sizeritem">
+                        <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
+                        <border>5</border>
+                        <object class="wxButton" name="btnCancel">
+                            <label>&amp;Cancel</label>
+                        </object>
+                    </object>
+                </object>
+            </object>
+        </object>
+    </object>
+</resource>

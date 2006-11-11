@@ -1,0 +1,51 @@
+(score
+   (vers 1.5)(language es iso-8859-1)
+   (instrumento
+      (datosMusica
+         (clave Sol)
+         
+         //sharps. Major keys
+         (tonalidad Do)(barra Doble)
+         (tonalidad Sol)(barra Doble)
+         (tonalidad Re)(barra Doble)
+         (tonalidad La)(barra Doble)
+         (tonalidad Mi)(barra Doble)
+         (tonalidad Si)(barra Doble)
+         (tonalidad Fa#)(barra Doble)
+         (tonalidad Do#)(barra Doble)
+         (nuevoSistema)
+         
+         // flats. Major keys
+         (tonalidad Fa)(barra Doble)
+         (tonalidad Sib)(barra Doble)
+         (tonalidad Mib)(barra Doble)
+         (tonalidad Lab)(barra Doble)
+         (tonalidad Reb)(barra Doble)
+         (tonalidad Solb)(barra Doble)
+         (tonalidad Dob)(barra Doble)
+         (nuevoSistema)
+
+         
+         //sharps. Minor keys
+         (tonalidad Lam)(barra Doble)
+         (tonalidad Mim)(barra Doble)
+         (tonalidad Sim)(barra Doble)
+         (tonalidad Fa#m)(barra Doble)
+         (tonalidad Do#m)(barra Doble)
+         (tonalidad Sol#m)(barra Doble)
+         (tonalidad Re#m)(barra Doble)
+         (tonalidad La#m)(barra Doble)
+         (nuevoSistema)
+         
+         // flats. Minor keys
+         (tonalidad Rem)(barra Doble)
+         (tonalidad Solm)(barra Doble)
+         (tonalidad Dom)(barra Doble)
+         (tonalidad Fam)(barra Doble)
+         (tonalidad Sibm)(barra Doble)
+         (tonalidad Mibm)(barra Doble)
+         (tonalidad Labm)(barra Final)
+      )
+   )
+)
+

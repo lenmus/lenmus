@@ -1,0 +1,21 @@
+(score
+   (vers 1.5)(language es iso-8859-1)
+   (instrumento
+      (datosMusica
+         (clave Sol)
+         
+         (acorde (n c4 n)(n d4 n)(n g4 n))
+         (acorde (n c5 n)(n d5 n)(n a5 n))
+         (barra)
+         
+         (acorde (n +c4 n)(n d4 n)(n g4 n))
+         (acorde (n c5 n)(n -d5 n)(n a5 n))
+         (barra)
+
+         (acorde (n +c4 n)(n +d4 n)(n =g4 n))
+         (acorde (n c5 n)(n -d5 n)(n a5 n))
+         (barra Final)
+      )
+   )
+)
+

@@ -1,0 +1,121 @@
+<html>
+<!-- $Updated: 2006/11/10 -->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>LenMus. Procedimiento de instalaci&oacute;n</title>
+<link rel="stylesheet" media="all" href="singledoc.css" type="text/css" />
+</head>
+<body>
+
+<h1>LenMus. Procedimiento de instalaci&oacute;n</h1>
+
+<p><b>Versi&oacute;n:</b> 3.3</p>
+
+
+<h2>Instalaci&oacute;n en Microsoft Windows</h2>
+
+<h3>Instalaci&oacute;n autom&aacute;tica</h3>
+
+<p>Simplemente ejecuta el instalador:</p>
+<ul>
+  <li>En Widows 98:&nbsp;&nbsp;&nbsp; lenmus_3.3_setup.exe</li>
+  <li>En Windows NT / 2000 / XP:&nbsp;&nbsp;&nbsp; lenmus_3.3u_setup.exe</li>
+</ul>
+<p>Te pedir&aacute; el directorio de instalaci&oacute;n y las opciones que deseas instalar.
+Y eso es todo</p>
+
+<p><b style="color:red">Importante:</b> Todav&iacute;a no he averiguado el motivo pero, a veces,
+justo despues de instalar LenMus, el tipo de letra con los signos musicales que se instala
+no es reconocido por Windows inmediatamente. Por ello, al ejecutar LenMus, en las partituras
+en vez de notas y signos musicales aparecen letras y signos extra&ntilde;os. Si esto te sucede,
+basta con utilizar MSExplorer (el explorador de carpetas de Windows) y abrir la
+carpeta 'windows/fonts'. Con ello, Windows 'se entera' de la existencia del nuevo fuente.
+Cierra el explorador y vuelve a arrancar LenMus.</p>
+
+
+<h3>Instalaci&oacute;n manual</h3>
+
+<p>LenMus no necesita ning&uacute;n proceso especial de instalaci&oacute;n. Simplemente copia los archivos al directorio que
+quieras (NO ALTERAR los nombre y estructura de subdirectorios) y ya est&aacute;. A continuaci&oacute;n instala
+el fuente con los signos musicales, en la carpeta 'Windows/fonts'. Eso es todo. No es
+necesario incluir claves en el Registry de Windows ni ninguna otra cosa. Los pasos a
+seguir son:</p>
+
+<ol>
+<li>Crea el directorio donde instalar LenMus y copia all&iacute; los archivos.</li>
+
+<li>Instala el fuente <em>lmbasic.ttf</em> que est&aacute; en el subdirectorio <em>/bin</em>.
+Para ello, por ejemplo:
+    <ol>
+        <li>Abre el 'Panel de Control' de Windows</li>
+        <li>Abre 'Fuentes'</li>
+        <li>Elige "Archivo/instalar fuente" y sigue las instrucciones que aparezcan</li>
+    </ol>
+    </li>
+
+<li>Opcionalmente, puedes crear accesos directos en el escritorio y en el men&uacute; de inicio.</li>
+</ol>
+
+<p>&nbsp;</p>
+
+<h3>Estructura de directorios de LenMus 3.3</h3>
+<p>Tras la instalaci&oacute;n, en la carpeta ra&iacute;z en la que se ha instalado LenMus encontratr&aacute;s
+alguna documentaci&oacute;n, tal como la licencia, y las siguientes carpetas:</p>
+
+<table class="Lista">
+<thead class="ListaImpar">
+    <td class="ListaImpar">Directorio</td>
+    <td class="ListaImpar">Archivos</td>
+    <td class="ListaImpar">Contenido</td></thead>
+<tr class="ListaPar">
+    <td rowspan="2" class="ListaPar">bin</td>
+    <td class="ListaPar">lenmus.exe o lenmus_u.exe</td><td class="ListaPar">El ejecutable</td></tr>
+<tr>
+    <td class="ListaPar">lmbasic.ttf&nbsp;</td>
+    <td class="ListaPar">Fuente True Type con los s&iacute;mbolos de m&uacute;sica<b>.
+      Si instalas LenMus sin utilizar el instalador recuerda que DEBES INSTALAR ESTE ARCHIVO
+      en el directorio
+        'Windows/fonts'.</b></td></tr>
+<tr>
+    <td class="ListaPar">res</td>
+    <td class="ListaPar">&nbsp;</td>
+    <td class="ListaPar">Iconos, bitmaps y otros recursos. Hay cuatro subdirectorios.</td></tr>
+<tr>
+    <td class="ListaPar">xrc</td>
+    <td class="ListaPar">*.xrc</td>
+    <td class="ListaPar">Recursos XRC utilizados por el programa.</td></tr>
+<tr>
+    <td class="ListaPar">scores</td>
+    <td class="ListaPar">&nbsp;</td>
+    <td class="ListaPar">Partituras de ejemplo. Hay dos subdirectorios. Uno
+      llamado 'MusicXML' para partituras escritas en MusicXML. Y otro, llamado
+      'samples', para partituras escritas con LDP (Lenguaje de Partituras de LenMus);
+      se pueden cargar usando el men&uacute; 'Archivo/Abrir'.</td></tr>
+<tr>
+    <td class="ListaPar">temp</td>
+    <td class="ListaPar">vac&iacute;o</td>
+    <td class="ListaPar">Es un subdirectorio vac&iacute;o que ser&aacute; utilizado por el
+    programa LenMus durante la ejecuci&oacute;n.</td></tr>
+<tr class="ListaPar">
+    <td class="ListaPar">locale</td>
+    <td class="ListaPar">&nbsp;</td>
+    <td class="ListaPar">Contiene archivos con las traducciones a los idiomas soportados.
+      Hay un subdirectorio por cada idioma. Los subdirectorios se designan, seg&uacute;n el
+      estandar RFC 1766, con dos letras que identifican el idioma (por ejemplo,
+      'en' para Ingl&eacute;s, 'es' para Espa&ntilde;ol, etc.) o con cinco caracteres en el caso de
+      que haya variaciones culturales; por ejemplo, 'es-ES' el Espa&ntilde;ol moderno.).
+        </td></tr>
+<tr>
+    <td rowspan="3" class="ListaPar">locale/xx</td>
+    <td class="ListaPar">*.mo</td><td class="ListaPar">Los cat&aacute;logos binarios .mo
+    con las traducciones de los mensages.</td></tr>
+<tr>
+    <td class="ListaPar">help.htb</td>
+    <td class="ListaPar">El archivo de ayuda del programa.</td></tr>
+<tr>
+    <td class="ListaPar">*.htb</td>
+    <td class="ListaPar">Los archivos .htb son los eBooks de m&uacute;sica.</td></tr>
+</table>
+
+</body>
+</html>

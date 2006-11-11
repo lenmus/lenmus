@@ -1,0 +1,25 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+
+   (title center "Test of text in a measure" (font bold 14))
+
+   (instrument
+      (musicData
+         (clef treble)
+         (n c4 q)(n e4 q)
+         (barline InicioRepeticion)
+         
+         (n f4 q)(n g4 q)
+         (n a4 q)(s q)
+         (barline FinRepeticion)
+         
+         (n e4 q)(n g4 e g+)(n a4 e g-)
+         (text "repetir" dy:10) 
+         (text "esto" dy:25)
+         (barline end)
+      )
+   )
+)
+
+//  (c (repeticion (repeticion 1) (xy xr0 yr-80))(n a4 q)(s q)(barra FinRepeticion))
+//  (c (repeticion (repeticion 2) (xy xr0 yr-80))(n e4 q)(n f4 e)(n g4 e) )

@@ -1,0 +1,4451 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: LenMus 3.3\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-10-29 16:37+0100\n"
+"Last-Translator: cs <cs>\n"
+"Language-Team:  <cecilios@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: c:/usr/desarrollo_wx/lenmus/src\n"
+"X-Poedit-SearchPath-0: score\n"
+"X-Poedit-SearchPath-1: auxmusic\n"
+"X-Poedit-SearchPath-2: ldp_parser\n"
+"X-Poedit-SearchPath-3: exercises\n"
+"X-Poedit-SearchPath-4: html\n"
+"X-Poedit-SearchPath-5: xml_parser\n"
+"X-Poedit-SearchPath-6: app\n"
+"X-Poedit-SearchPath-7: options\n"
+"X-Poedit-SearchPath-8: sound\n"
+"X-Poedit-SearchPath-9: widgets\n"
+"X-Poedit-SearchPath-10: globals\n"
+"X-Poedit-SearchPath-11: ../xrc\n"
+"X-Poedit-SearchPath-12: updater\n"
+"X-Poedit-SearchPath-13: graphic\n"
+"X-Poedit-SearchPath-14: ../langtool/src\n"
+
+#: score/Direction.cpp:174
+#: score/NoteRestObj.cpp:142
+#: score/Text.cpp:191
+#: score/TupletBracket.cpp:287
+#: app/FontManager.cpp:121
+msgid "Sorry, an error has occurred while allocating the font."
+msgstr "Üzgünüm yazı tipini ayırırken hata oluştu. "
+
+#: score/KeySignature.cpp:73
+msgid "C Major"
+msgstr "C Majör"
+
+#: score/KeySignature.cpp:74
+msgid "G Major"
+msgstr "G Majör"
+
+#: score/KeySignature.cpp:75
+msgid "D Major"
+msgstr "D Majör"
+
+#: score/KeySignature.cpp:76
+msgid "A Major"
+msgstr "A Majör"
+
+#: score/KeySignature.cpp:77
+msgid "E Major"
+msgstr "E Majör"
+
+#: score/KeySignature.cpp:78
+msgid "B Major"
+msgstr "B Majör"
+
+#: score/KeySignature.cpp:79
+msgid "F # Major"
+msgstr "F # Majör"
+
+#: score/KeySignature.cpp:80
+msgid "C # Major"
+msgstr "C # Majör"
+
+#: score/KeySignature.cpp:81
+msgid "C b Major"
+msgstr "C b Majör"
+
+#: score/KeySignature.cpp:82
+msgid "G b Major"
+msgstr "G b Majör"
+
+#: score/KeySignature.cpp:83
+msgid "D b Major"
+msgstr "D b Majör"
+
+#: score/KeySignature.cpp:84
+msgid "A b Major"
+msgstr "A b Majör"
+
+#: score/KeySignature.cpp:85
+msgid "E b Major"
+msgstr "E b Majör"
+
+#: score/KeySignature.cpp:86
+msgid "B b Major"
+msgstr "B b Majör"
+
+#: score/KeySignature.cpp:87
+msgid "F Major"
+msgstr "F Majör"
+
+#: score/KeySignature.cpp:88
+#: exercises/TheoKeySignCtrol.cpp:128
+#: exercises/TheoKeySignCtrol.cpp:577
+msgid "A minor"
+msgstr "A minör"
+
+#: score/KeySignature.cpp:89
+#: exercises/TheoKeySignCtrol.cpp:129
+#: exercises/TheoKeySignCtrol.cpp:571
+msgid "E minor"
+msgstr "E minör"
+
+#: score/KeySignature.cpp:90
+#: exercises/TheoKeySignCtrol.cpp:130
+#: exercises/TheoKeySignCtrol.cpp:580
+msgid "B minor"
+msgstr "B minör"
+
+#: score/KeySignature.cpp:91
+#: exercises/TheoKeySignCtrol.cpp:131
+msgid "F # minor"
+msgstr "F # minör"
+
+#: score/KeySignature.cpp:92
+#: exercises/TheoKeySignCtrol.cpp:132
+msgid "C # minor"
+msgstr "C # minör"
+
+#: score/KeySignature.cpp:93
+#: exercises/TheoKeySignCtrol.cpp:133
+msgid "G # minor"
+msgstr "G # minör"
+
+#: score/KeySignature.cpp:94
+#: exercises/TheoKeySignCtrol.cpp:134
+msgid "D # minor"
+msgstr "D # minör"
+
+#: score/KeySignature.cpp:95
+#: exercises/TheoKeySignCtrol.cpp:135
+msgid "A # minor"
+msgstr "A # minör"
+
+#: score/KeySignature.cpp:96
+#: exercises/TheoKeySignCtrol.cpp:136
+msgid "A b minor"
+msgstr "A b minör"
+
+#: score/KeySignature.cpp:97
+#: exercises/TheoKeySignCtrol.cpp:137
+msgid "E b minor"
+msgstr "E b minör"
+
+#: score/KeySignature.cpp:98
+#: exercises/TheoKeySignCtrol.cpp:138
+msgid "B b minor"
+msgstr "B b minör"
+
+#: score/KeySignature.cpp:99
+#: exercises/TheoKeySignCtrol.cpp:139
+#: exercises/TheoKeySignCtrol.cpp:572
+msgid "F minor"
+msgstr "F minör"
+
+#: score/KeySignature.cpp:100
+#: exercises/TheoKeySignCtrol.cpp:140
+#: exercises/TheoKeySignCtrol.cpp:566
+msgid "C minor"
+msgstr "C minör"
+
+#: score/KeySignature.cpp:101
+#: exercises/TheoKeySignCtrol.cpp:141
+#: exercises/TheoKeySignCtrol.cpp:574
+msgid "G minor"
+msgstr "G minör"
+
+#: score/KeySignature.cpp:102
+#: exercises/TheoKeySignCtrol.cpp:142
+#: exercises/TheoKeySignCtrol.cpp:568
+msgid "D minor"
+msgstr "D minör"
+
+#: score/Note.cpp:1702
+#, c-format
+msgid "c%d"
+msgstr "c%d"
+
+#: score/Note.cpp:1702
+#, c-format
+msgid "d%d"
+msgstr "d%d"
+
+#: score/Note.cpp:1702
+#, c-format
+msgid "e%d"
+msgstr "e%d"
+
+#: score/Note.cpp:1702
+#, c-format
+msgid "f%d"
+msgstr "f%d"
+
+#: score/Note.cpp:1702
+#, c-format
+msgid "g%d"
+msgstr "g%d"
+
+#: score/Note.cpp:1702
+#, c-format
+msgid "a%d"
+msgstr "a%d"
+
+#: score/Note.cpp:1702
+#, c-format
+msgid "b%d"
+msgstr "b%d"
+
+#: auxmusic/ChordManager.cpp:237
+msgid "root position"
+msgstr "Kök pozisyonu"
+
+#: auxmusic/ChordManager.cpp:239
+msgid "1st inversion"
+msgstr "1. ters dönme"
+
+#: auxmusic/ChordManager.cpp:241
+msgid "2nd inversion"
+msgstr "2. ters dönme"
+
+#: auxmusic/ChordManager.cpp:243
+msgid "3rd inversion"
+msgstr "3. ters dönme"
+
+#: auxmusic/ChordManager.cpp:332
+#: ../xrc/xrc_strings.cpp:243
+msgid "Major triad"
+msgstr "Majör üçlü takım"
+
+#: auxmusic/ChordManager.cpp:333
+#: ../xrc/xrc_strings.cpp:244
+msgid "Minor triad"
+msgstr "Minör üçlü takım"
+
+#: auxmusic/ChordManager.cpp:334
+#: ../xrc/xrc_strings.cpp:245
+msgid "Augmented triad"
+msgstr "Artırılmış üçlü takım"
+
+#: auxmusic/ChordManager.cpp:335
+#: ../xrc/xrc_strings.cpp:246
+msgid "Diminished triad"
+msgstr "Azaltılmış üçlü takım"
+
+#: auxmusic/ChordManager.cpp:336
+msgid "Suspended triad (4th)"
+msgstr "Ertelenmiş üçlü takım (4.)"
+
+#: auxmusic/ChordManager.cpp:337
+msgid "Suspended triad (2nd)"
+msgstr "Ertelenmiş üçlü takım (2.)"
+
+#: auxmusic/ChordManager.cpp:340
+#: exercises/IdfyChordCtrol.cpp:131
+#: ../xrc/xrc_strings.cpp:15
+#: ../xrc/xrc_strings.cpp:250
+msgid "Major 7th"
+msgstr "7. Majör"
+
+#: auxmusic/ChordManager.cpp:341
+#: exercises/IdfyChordCtrol.cpp:132
+#: ../xrc/xrc_strings.cpp:254
+msgid "Dominant 7th"
+msgstr "7. Baskın"
+
+#: auxmusic/ChordManager.cpp:342
+#: exercises/IdfyChordCtrol.cpp:133
+#: ../xrc/xrc_strings.cpp:251
+msgid "Minor 7th"
+msgstr "7. Minör"
+
+#: auxmusic/ChordManager.cpp:343
+#: exercises/IdfyChordCtrol.cpp:134
+#: ../xrc/xrc_strings.cpp:253
+msgid "Diminished 7th"
+msgstr "7. Azaltılmış"
+
+#: auxmusic/ChordManager.cpp:344
+#: ../xrc/xrc_strings.cpp:255
+msgid "Half diminished 7th"
+msgstr "7. Yarım azaltılmış"
+
+#: auxmusic/ChordManager.cpp:345
+#: ../xrc/xrc_strings.cpp:256
+msgid "Augmented major 7th"
+msgstr "7. Artırılmış majör"
+
+#: auxmusic/ChordManager.cpp:346
+#: exercises/IdfyChordCtrol.cpp:137
+#: ../xrc/xrc_strings.cpp:252
+msgid "Augmented 7th"
+msgstr "7. Artırılmış"
+
+#: auxmusic/ChordManager.cpp:347
+#: ../xrc/xrc_strings.cpp:257
+msgid "Minor major 7th"
+msgstr "7. Minör majör"
+
+#: auxmusic/ChordManager.cpp:350
+#: exercises/IdfyChordCtrol.cpp:141
+#: ../xrc/xrc_strings.cpp:13
+#: ../xrc/xrc_strings.cpp:259
+msgid "Major 6th"
+msgstr "6. Majör"
+
+#: auxmusic/ChordManager.cpp:351
+#: exercises/IdfyChordCtrol.cpp:142
+#: ../xrc/xrc_strings.cpp:261
+msgid "Minor 6th"
+msgstr "6. Minör"
+
+#: auxmusic/ChordManager.cpp:352
+#: exercises/IdfyChordCtrol.cpp:143
+#: ../xrc/xrc_strings.cpp:260
+msgid "Augmented 6th"
+msgstr "6. Artırılmış"
+
+#: auxmusic/ComposerV5.cpp:220
+msgid "[lmComposer5::GenerateScore] No usable fragments!"
+msgstr "[Besteci5::SayıÜret] Elverişsiz parçalar!"
+
+#: auxmusic/Conversion.cpp:49
+msgid "c"
+msgstr "c"
+
+#: auxmusic/Conversion.cpp:50
+msgid "d"
+msgstr "d"
+
+#: auxmusic/Conversion.cpp:51
+msgid "e"
+msgstr "e"
+
+#: auxmusic/Conversion.cpp:52
+msgid "f"
+msgstr "f"
+
+#: auxmusic/Conversion.cpp:53
+msgid "g"
+msgstr "g"
+
+#: auxmusic/Conversion.cpp:54
+msgid "a"
+msgstr "a"
+
+#: auxmusic/Conversion.cpp:55
+msgid "b"
+msgstr "b"
+
+#: auxmusic/Interval.cpp:196
+msgid "It is not possible to generate an interval satisfying the constrains imposed by the choosen settings."
+msgstr "Aralık tatmin edici  için mümkün değil, seçimi kurgu yoluyla uygun olana yaptı."
+
+#: auxmusic/Interval.cpp:314
+#: auxmusic/Interval.cpp:820
+msgid " diminished"
+msgstr " azalt"
+
+#: auxmusic/Interval.cpp:315
+#: auxmusic/Interval.cpp:821
+msgid " minor"
+msgstr " minör"
+
+#: auxmusic/Interval.cpp:316
+#: auxmusic/Interval.cpp:822
+msgid " mayor"
+msgstr " mayor"
+
+#: auxmusic/Interval.cpp:317
+#: auxmusic/Interval.cpp:823
+msgid " augmented"
+msgstr " artır"
+
+#: auxmusic/Interval.cpp:318
+#: auxmusic/Interval.cpp:824
+msgid " perfect"
+msgstr " mükemmel"
+
+#: auxmusic/Interval.cpp:319
+#: auxmusic/Interval.cpp:825
+msgid " double augmented"
+msgstr " iki kat artır"
+
+#: auxmusic/Interval.cpp:320
+#: auxmusic/Interval.cpp:826
+msgid " double diminished"
+msgstr " iki kat azalt"
+
+#: auxmusic/Interval.cpp:338
+#: exercises/EarIntervalsCtrol.cpp:114
+#: exercises/TheoIntervalsCtrol.cpp:213
+#: exercises/TheoIntervalsCtrol.cpp:636
+#: ../xrc/xrc_strings.cpp:4
+msgid "Unison"
+msgstr "Birlik"
+
+#: auxmusic/Interval.cpp:339
+#: exercises/TheoIntervalsCtrol.cpp:148
+msgid "2nd"
+msgstr "2."
+
+#: auxmusic/Interval.cpp:340
+#: exercises/TheoIntervalsCtrol.cpp:149
+msgid "3rd"
+msgstr "3."
+
+#: auxmusic/Interval.cpp:341
+#: exercises/TheoIntervalsCtrol.cpp:150
+msgid "4th"
+msgstr "4."
+
+#: auxmusic/Interval.cpp:342
+#: exercises/TheoIntervalsCtrol.cpp:151
+msgid "5th"
+msgstr "5."
+
+#: auxmusic/Interval.cpp:343
+#: exercises/TheoIntervalsCtrol.cpp:152
+msgid "6th"
+msgstr "6."
+
+#: auxmusic/Interval.cpp:344
+#: exercises/TheoIntervalsCtrol.cpp:153
+msgid "7th"
+msgstr "7."
+
+#: auxmusic/Interval.cpp:345
+msgid "octave"
+msgstr "oktav"
+
+#: auxmusic/Interval.cpp:346
+msgid "9th"
+msgstr "9."
+
+#: auxmusic/Interval.cpp:347
+msgid "10th"
+msgstr "10."
+
+#: auxmusic/Interval.cpp:348
+msgid "11th"
+msgstr "11."
+
+#: auxmusic/Interval.cpp:349
+msgid "12th"
+msgstr "12."
+
+#: auxmusic/Interval.cpp:350
+msgid "13th"
+msgstr "13."
+
+#: auxmusic/Interval.cpp:351
+msgid "14th"
+msgstr "14."
+
+#: auxmusic/Interval.cpp:352
+#: ../xrc/xrc_strings.cpp:28
+msgid "Two octaves"
+msgstr "İki oktav"
+
+#: auxmusic/ScalesManager.cpp:162
+msgid "Major natural"
+msgstr "Doğal majör"
+
+#: auxmusic/ScalesManager.cpp:163
+msgid "Major type II"
+msgstr "Majör tip II"
+
+#: auxmusic/ScalesManager.cpp:164
+msgid "Major type III"
+msgstr "Majör tip III"
+
+#: auxmusic/ScalesManager.cpp:165
+msgid "Major type IV"
+msgstr "Majör tip IV"
+
+#: auxmusic/ScalesManager.cpp:168
+msgid "Minor natural"
+msgstr "Doğal minör"
+
+#: auxmusic/ScalesManager.cpp:169
+msgid "Minor Dorian"
+msgstr "Minör Dorian"
+
+#: auxmusic/ScalesManager.cpp:170
+msgid "Minor Harmonic"
+msgstr "Harmonik minör"
+
+#: auxmusic/ScalesManager.cpp:171
+msgid "Minor Melodic"
+msgstr "Minör melodik"
+
+#: auxmusic/ScalesManager.cpp:174
+msgid "Greek Ionian"
+msgstr "Greek Ionian"
+
+#: auxmusic/ScalesManager.cpp:175
+msgid "Greek Dorian"
+msgstr "Greek Dorian"
+
+#: auxmusic/ScalesManager.cpp:176
+msgid "Greek Phrygian"
+msgstr "Greek Phrygian"
+
+#: auxmusic/ScalesManager.cpp:177
+msgid "Greek Lydian"
+msgstr "Greek Lydian"
+
+#: auxmusic/ScalesManager.cpp:178
+msgid "Greek Mixolydian"
+msgstr "Greek Mixolydian"
+
+#: auxmusic/ScalesManager.cpp:179
+msgid "Greek Aeolian"
+msgstr "Greek Aeolian"
+
+#: auxmusic/ScalesManager.cpp:180
+msgid "Greek Locrian"
+msgstr "Greek Locrian"
+
+#: auxmusic/ScalesManager.cpp:183
+#: exercises/IdfyScalesCtrol.cpp:161
+#: ../xrc/xrc_strings.cpp:314
+msgid "Pentatonic minor"
+msgstr "Tonbeş minor"
+
+#: auxmusic/ScalesManager.cpp:184
+#: exercises/IdfyScalesCtrol.cpp:162
+#: ../xrc/xrc_strings.cpp:313
+msgid "Pentatonic major"
+msgstr "Tonbeş majör"
+
+#: auxmusic/ScalesManager.cpp:185
+#: exercises/IdfyScalesCtrol.cpp:163
+#: ../xrc/xrc_strings.cpp:316
+msgid "Blues"
+msgstr "Hüzün"
+
+#: auxmusic/ScalesManager.cpp:186
+#: exercises/IdfyScalesCtrol.cpp:164
+#: ../xrc/xrc_strings.cpp:315
+msgid "Whole tones"
+msgstr "Müzik duraklamaları"
+
+#: auxmusic/ScalesManager.cpp:187
+#: exercises/IdfyScalesCtrol.cpp:165
+#: ../xrc/xrc_strings.cpp:317
+msgid "Chromatic"
+msgstr "Renklere ait"
+
+#: ldp_parser/LDPParser.cpp:158
+msgid "Warnings/errores while reading LenMus score."
+msgstr "LenMus'u okurken oluşan uyarıların ve hataların sayısı."
+
+#: ldp_parser/LDPParser.cpp:418
+#, c-format
+msgid "Element RAIZ expected but found element %s. Analysis stopped."
+msgstr "Beklenen RAIZ elementi ama element %s bulundu. Analizi durdur."
+
+#: ldp_parser/LDPParser.cpp:549
+msgid "Syntax error: more closing parenthesis than parenthesis opened. Analysis stopped."
+msgstr "Kural hatası:Parantezden daha çok kapayan parantez açdı.Analizi durdur.  "
+
+#: ldp_parser/LDPParser.cpp:574
+#, c-format
+msgid "Element 'score' expected but found element %s. Analysis stopped."
+msgstr "Beklenen 'kıta' elementi ama element %s bulundu.Analizi durdur."
+
+#: ldp_parser/LDPParser.cpp:588
+#, c-format
+msgid "Element 'vers' expected but found element %s. Analysis stopped."
+msgstr "Beklenen 'sayı' elementi  ama element %s bulundu.Analizi durdur."
+
+#: ldp_parser/LDPParser.cpp:615
+#, c-format
+msgid "Error analysing LDP score: LDP version (%d) not supported. Analysis stopped."
+msgstr "Hata analizi LDP sayısı: LDP versiyon (%d) desteklenmemiş.Analiz durdu."
+
+#: ldp_parser/LDPParser.cpp:649
+#, c-format
+msgid "Element 'NumInstrumentos' expected but found element %s. Analysis stopped."
+msgstr "Beklenen 'NumInstrumentos' elementi  ama element %s bulundu.Analizi durdur."
+
+#: ldp_parser/LDPParser.cpp:740
+#: ldp_parser/LDPParser.cpp:991
+#, c-format
+msgid "Element '%s' expected but found element %s. Analysis stopped."
+msgstr "Beklenen '%s'' elementi ama element %s bulundu. Analizi durdur."
+
+#: ldp_parser/LDPParser.cpp:797
+#, c-format
+msgid "Number of staves expected but found '%s'. Element '%s' ignored."
+msgstr "Beklenen değneklerin sayısı '%s' bulundu. Element '%s' ihmal edildi."
+
+#: ldp_parser/LDPParser.cpp:803
+#, c-format
+msgid "Expected value for %s but found element '%s'. Ignored."
+msgstr "Beklenen değer için %s ama element bulundu '%s'.İhmal edildi."
+
+#: ldp_parser/LDPParser.cpp:808
+#, c-format
+msgid "[%s]: unknown element '%s' found. Element ignored."
+msgstr "[%s]: bilinmeyen element '%s' bulunmuş. Element ihmal edildi."
+
+#: ldp_parser/LDPParser.cpp:818
+#, c-format
+msgid "Expected '%s' but found element %s. Analysis stopped."
+msgstr "Beklenen element '%s' ama '%s' bulundu. Analizi durdur."
+
+#: ldp_parser/LDPParser.cpp:847
+#, c-format
+msgid "Expected '%s' but found element %s. Element ignored."
+msgstr "Beklenen element '%s' ama %s bulundu. Element ihmal edildi."
+
+#: ldp_parser/LDPParser.cpp:931
+#: ldp_parser/LDPParser.cpp:2302
+#, c-format
+msgid "[AnalyzeMusicData]: Unknown or not allowed element '%s' found. Element ignored."
+msgstr "[MüzikVeriAnalizi]: Bilinmeyen veya izin verilmemiş element '%s' bulundu. Element ihmal edildi."
+
+#: ldp_parser/LDPParser.cpp:962
+#, c-format
+msgid "[AnalyzeChord]: Expecting notes found element '%s'. Element ignored."
+msgstr "[AkortAnalizi]: Beklenen elementin notaları '%s' bulundu. Element ihmal edildi."
+
+#: ldp_parser/LDPParser.cpp:1011
+#, c-format
+msgid "Element %s expected but found element %s. Analysis stopped."
+msgstr "Beklenen element %s ama element %s bulundu. Analizi durdur."
+
+#: ldp_parser/LDPParser.cpp:1065
+#, c-format
+msgid "Expected node '%s' but found node '%s'. Analysis ended."
+msgstr "Beklenen düğüm '%s' ama düğüm '%s' bulundu. Analiz bitti."
+
+#: ldp_parser/LDPParser.cpp:1084
+#, c-format
+msgid "Expected 'nmero de parte' but found '%s'. Analysis stopped."
+msgstr "Beklene 'nmero de parte' ama '%s' bulundu. Analizi durdur."
+
+#: ldp_parser/LDPParser.cpp:1096
+#, c-format
+msgid "Number of staves expected but found '%s'. Analysis stopped."
+msgstr "Beklenen değnekler ama '%s' bulunmuşun sayısı. Analizi durdur."
+
+#: ldp_parser/LDPParser.cpp:1226
+#, c-format
+msgid "[AnalyzeMeasure]: Expected node 'Figura', 'Grupo', 'Atributo' or 'Desplazamiento' but found node '%s'. Node ignored."
+msgstr "[ÖlçüyüÇözümle]: Beklenen düğüm 'Figura, 'Grupo', 'Atributo' veya 'Desplazamiento' ama figür bul'%s'. Düğüm ihmal edildi."
+
+#: ldp_parser/LDPParser.cpp:1259
+#: ldp_parser/LDPParser.cpp:1980
+#: ldp_parser/LDPParser.cpp:2399
+#: ldp_parser/LDPParser.cpp:2481
+#: ldp_parser/LDPParser.cpp:2552
+#, c-format
+msgid "Element '%s' has less parameters that the minimum required. Element ignored."
+msgstr "Element '%s' minumum gerekli bu  parametrelere daha az sahip olmalı. Element ihmal edildi."
+
+#: ldp_parser/LDPParser.cpp:1271
+#, c-format
+msgid "Element '%s' has an incoherent value: go forward to start?. Element ignored"
+msgstr "Element '%s' bağıntısız değere sahip oldu: başlamak için ileriye git. Element ihmal edildi"
+
+#: ldp_parser/LDPParser.cpp:1280
+#, c-format
+msgid "Element '%s' has an incoherent value: go backwards to end?. Element ignored"
+msgstr "Element '%s' bağıntısız değere sahip oldu: bitmek için geri git. Element ihmal edildi"
+
+#: ldp_parser/LDPParser.cpp:1340
+#, c-format
+msgid "Time shift: Letter %s is not a valid note duration. Replaced by a quarter note"
+msgstr "Zaman değiştirme: %s notaları basmak için uygun süre değil . Dörtlük yoluyla yerine koy."
+
+#: ldp_parser/LDPParser.cpp:1534
+#, c-format
+msgid "Missing parameters in rest '%s'. Replaced by '(%s %s)'."
+msgstr "Kayıp parametrelerde dinleme '%s'.  '(%s %s)' yoluyla yerine koy."
+
+#: ldp_parser/LDPParser.cpp:1542
+#, c-format
+msgid "Missing parameters in note '%s'. Assumed (%s c4 %s)."
+msgstr "Kayıp parametrelerde nota '%s'. Varsayılan (%s c4 %s)."
+
+#: ldp_parser/LDPParser.cpp:1577
+#, c-format
+msgid "Unknown note pitch '%s'. Assumed 'c4'."
+msgstr "Bilinmeyen nota akortu '%s'. Varsayılan 'c4'."
+
+#: ldp_parser/LDPParser.cpp:1584
+#, c-format
+msgid "Unknown note/rest duration '%s'. A quarter note assumed."
+msgstr "Bilinmeyen nota/dinlenme süresi '%s'. Varsayılan dörtlük."
+
+#: ldp_parser/LDPParser.cpp:1622
+msgid "Requesting beaming a note longer than eight. Beaming ignored."
+msgstr "Nota sekizden daha uzun parlaklık iste. Parlaklık ihmal edildi."
+
+#: ldp_parser/LDPParser.cpp:1629
+msgid "Requesting to start a beamed group but there is already an open group. Beaming ignored."
+msgstr "Işın grupa başlamak için talep ama orada şimdiden açık grup vardır. Parlaklık ihmal edildi. "
+
+#: ldp_parser/LDPParser.cpp:1650
+msgid "Requesting ending a beaming a group in a note that is note the first one of a chord. Beaming ignored."
+msgstr "Gruptaki notada parlaklık bitmek istiyor, bu nota akorun birincisi olan notadır.  Parlaklık ihmal edildi. "
+
+#: ldp_parser/LDPParser.cpp:1657
+msgid "Requesting ending a beaming a group but there is not a  previous note. Beaming ignored."
+msgstr "Grupta parlaklık bitmek istiyor ama önceki nota yoktur. Parlaklık ihmal edildi."
+
+#: ldp_parser/LDPParser.cpp:1665
+msgid "Requesting ending a beaming a group but previous note is not beamed. Beaming ignored."
+msgstr "Grupta parlaklık bitmek istiyor ama önceki nota ışınılmaz. Parlaklık ihmal edildi.\" "
+
+#: ldp_parser/LDPParser.cpp:1719
+#: ldp_parser/LDPParser.cpp:1746
+#, c-format
+msgid "Error: notation '%s' unknown. It will be ignored."
+msgstr "Hata: notasyon '%s' bilinmeyen. İhmal edilecek."
+
+#: ldp_parser/LDPParser.cpp:1757
+#, c-format
+msgid "Notation '%s' unknown or not implemented. Old (g + t3) syntax?"
+msgstr "Notasyon '%s' bilinmeyen veya uygulamaz. Sözdizim kuralları  (g + t3) eski?"
+
+#: ldp_parser/LDPParser.cpp:1777
+#, c-format
+msgid "Notation '%s' unknown or not implemented."
+msgstr "Notasyon '%s' bilinmeyen veya uygulamaz"
+
+#: ldp_parser/LDPParser.cpp:1915
+#: ldp_parser/LDPParser.cpp:1922
+#: ldp_parser/LDPParser.cpp:1952
+#, c-format
+msgid "[%s] Found unknown tag '%s'. Ignored."
+msgstr "[%s] Bulunmuş bilinmeyen etiket '%s'. İhmal edilen."
+
+#: ldp_parser/LDPParser.cpp:1940
+#, c-format
+msgid "[%s] Found tag '%s' but no defaul value exists for NormalNotes. Ignored."
+msgstr "[%s] Bulunan etiket  '%s' ama hiçbir varsayılan değer için normalnotalar bulunaz. İhmal edilen."
+
+#: ldp_parser/LDPParser.cpp:1963
+#, c-format
+msgid "[%s] Tag '%s'. Numbers must be greater than 0. Tag ignored."
+msgstr "[%s] Etiket '%s'. Sayılar, 0'dan daha büyük  olmalılar. Etiket ihmal edildi."
+
+#: ldp_parser/LDPParser.cpp:2000
+#, c-format
+msgid "Element '%s': Expected number but found '%s'. Tuplet ignored."
+msgstr "Element '%s': Beklenen sayı ama bulunan '%s'. İhmal edilen tuplet."
+
+#: ldp_parser/LDPParser.cpp:2027
+#: ldp_parser/LDPParser.cpp:2063
+#, c-format
+msgid "Element '%s': Found unknown data '%s'. Data ignored."
+msgstr "Element '%s': Bulunmuş bilinmeyen veri '%s'. Veri ihmal edildi."
+
+#: ldp_parser/LDPParser.cpp:2037
+#, c-format
+msgid "Element '%s': Number for 'normal notes' must be greater than 0. Number ignored."
+msgstr "Element '%s':'normal notaların' sayıları 0'dan büyük olmalı. Sayı ihmal edildi."
+
+#: ldp_parser/LDPParser.cpp:2075
+#, c-format
+msgid "[%s] Requesting to end a tuplet but there is not an open tuplet or it is not possible to cle it here. Tag '%s' ignored."
+msgstr "[%s] Tuplet bitmek için talep ediyor ama açık tuplet yoktur,  mümkün  değil . Cley e burada . . Etiket '%s' ihmal edildi."
+
+#: ldp_parser/LDPParser.cpp:2084
+#, c-format
+msgid "[%s] Requesting to start a tuplet but there is already a tuplet open. Tag '%s' ignored."
+msgstr "[%s] Talep tuplet'a başlamak için orda ol ve şimdiden tuplet'ı aç. Etiket '%s' ihmal edildi."
+
+#: ldp_parser/LDPParser.cpp:2183
+#, c-format
+msgid "Unknown barline type '%s'. '%s' barline assumed."
+msgstr "Bilinmeyen ölçü çizgisi tipi '%s'. '%s' varsayılan ölçü çizgisi."
+
+#: ldp_parser/LDPParser.cpp:2211
+#, c-format
+msgid "Element '%s' has less parameters that the minimum required. Assumed '(%s Sol)'."
+msgstr "Element '%s' daha az parametreye sahip ol minumum iste. Varsayılan '(%s Sol)'."
+
+#: ldp_parser/LDPParser.cpp:2275
+#, c-format
+msgid "Unknown clef '%s'. Assumed '%s'."
+msgstr "Bilinmeyen nota anahtarı '%s'. Varsayılan '%s'."
+
+#: ldp_parser/LDPParser.cpp:2423
+#, c-format
+msgid "Invalid alignment value '%s'. Assumed '%s'."
+msgstr "Geçersiz sıralama değeri '%s'. Varsayılan '%s'."
+
+#: ldp_parser/LDPParser.cpp:2454
+#, c-format
+msgid "Unknown parameter '%s'. Ignored."
+msgstr "Geçersiz parametre '%s'. İhmal edilen."
+
+#: ldp_parser/LDPParser.cpp:2527
+#, c-format
+msgid "[Element '%s'. Invalid parameter '%s'. Ignored."
+msgstr "[Element '%s'. Geçersiz parametre '%s'. İhmal edilen."
+
+#: ldp_parser/LDPParser.cpp:2595
+#, c-format
+msgid "Element '%s' has less parameters that the minimum required. Assumed '(%s %s)'."
+msgstr "Element '%s' daha az parametreye sahip ol minumum iste. Varsayılan '(%s %s)'."
+
+#: ldp_parser/LDPParser.cpp:2607
+#, c-format
+msgid "Unknown key '%s'. Assumed '%s'."
+msgstr "Bilinmeyen anahtar '%s'. Varsayılan '%s'."
+
+#: ldp_parser/LDPParser.cpp:2641
+#, c-format
+msgid "Element '%s' has less parameters that the minimum required. Assumed '(Metrica 4 4)'."
+msgstr "Element '%s' daha az parametreye sahip ol minumum iste. Varsayılan '(Metrica 4 4)'."
+
+#: ldp_parser/LDPParser.cpp:2651
+#, c-format
+msgid "Element '%s': Two numbers expected but found '%s' and '%s'. Assumed '(%s 4 4)'."
+msgstr "Element '%s': Beklenen iki sayı bulunan '%s' ve '%s'. Varsayılan '(%s 4 4)'."
+
+#: ldp_parser/LDPParser.cpp:2702
+#, c-format
+msgid "Element '%s' has less parameters that the minimum required. Tag ignored. Assumed default stem."
+msgstr "Element '%s' daha az parametreye sahip ol minumum iste. Etiket ihmal edildi. Varsayılan gövde değer."
+
+#: ldp_parser/LDPParser.cpp:2714
+#, c-format
+msgid "Invalid stem direction '%s'. Default direction taken."
+msgstr "Geçersiz yön kesmek '%s'. Geçerli tutulmuş yön."
+
+#: ldp_parser/LDPParser.cpp:2733
+#, c-format
+msgid "Element '%s' has less parameters than the minimum required. Tag ignored."
+msgstr "Element '%s' daha az parametreye sahip ol minumum iste. Etiket ihmal edildi. "
+
+#: ldp_parser/LDPParser.cpp:2793
+#, c-format
+msgid "Element '%s': invalid parameter '%s'. It is ignored."
+msgstr "Element '%s': geçersiz parametre '%s'. İhmal edilir."
+
+#: ldp_parser/LDPParser.cpp:2812
+#, c-format
+msgid "Element '%s' has less or more parameters than required. Tag ignored."
+msgstr "Element '%s' daha az veya gerekliden daha çok parametrelere sahip olur. Etiket ihmal edildi."
+
+#: ldp_parser/LDPParser.cpp:2834
+#, c-format
+msgid "Element '%s': Invalid units '%s'. Ignored"
+msgstr "Element '%s': Geçersiz birimler '%s'. İhmal edilen"
+
+#: ldp_parser/LDPParser.cpp:2844
+#, c-format
+msgid "Element '%s': Invalid value '%s'. It must be a number with optional units. Zero assumed."
+msgstr "Element '%s': Geçersiz değer '%s'. İsteğe bağlı birimler sayı olmalı.Sıfır varsaydı."
+
+#: ldp_parser/LDPParser.cpp:3047
+#, c-format
+msgid "Staff number expected but found '%s'. Replaced by '%s1'"
+msgstr "Beklenen nota çizgisi sayısı ama bulunan '%s'. Yerine koy '%s1 "
+
+#: ldp_parser/LDPParser.cpp:3054
+#, c-format
+msgid "Staff number not followed by number (%s). Replaced by '%s1'"
+msgstr "Nota çizgisi sayısı, sayı yoluyla takp etmez (%s). Yerine koy '%s1'"
+
+#: ldp_parser/LDPParser.cpp:3062
+#, c-format
+msgid "Notation '%s': number is greater than number of staves defined (%d). Replaced by '%s1'."
+msgstr "Notasyon '%s': sayı, nota çizgileri sayısından daha büyük tanımlıdır (%d). Yerine koy '%s1'."
+
+#: exercises/ChordConstrains.cpp:174
+msgid "Program error: Loop detected in lmChordConstrains::GetRandomChordType."
+msgstr "Program hata: Çevrim akorun sorlandığını saptadı::Rastgele akor tipini al."
+
+#: exercises/CountersCtrol.cpp:75
+msgid "Two teams competition"
+msgstr "İki ekip rekabeti"
+
+#: exercises/CountersCtrol.cpp:91
+msgid "Reset counters"
+msgstr "Sayaçları yeniden yerleştir"
+
+#: exercises/CountersCtrol.cpp:124
+msgid "Team"
+msgstr "Ekip"
+
+#: exercises/CountersCtrol.cpp:141
+msgid "Right"
+msgstr "Doğru"
+
+#: exercises/CountersCtrol.cpp:155
+msgid "Wrong"
+msgstr "Yalnış"
+
+#: exercises/CountersCtrol.cpp:169
+msgid "Mark"
+msgstr "İşaretle"
+
+#: exercises/CountersCtrol.cpp:251
+#, c-format
+msgid "Team's %d turn"
+msgstr "Ekibin %d döngüsü"
+
+#: exercises/EarCompareIntvCtrol.cpp:117
+#: exercises/EarModeCtrol.cpp:117
+msgid "First one greater"
+msgstr "Birincisi daha büyük"
+
+#: exercises/EarCompareIntvCtrol.cpp:118
+#: exercises/EarModeCtrol.cpp:118
+msgid "Second one greater"
+msgstr "İkincisi daha büyük"
+
+#: exercises/EarCompareIntvCtrol.cpp:119
+#: exercises/EarModeCtrol.cpp:119
+msgid "Both are equal"
+msgstr "Her ikisi eşit olur"
+
+#: exercises/EarCompareIntvCtrol.cpp:132
+#: exercises/EarIntervalsCtrol.cpp:161
+#: exercises/EarModeCtrol.cpp:132
+#: exercises/IdfyChordCtrol.cpp:156
+#: exercises/IdfyExerciseCtrol.cpp:151
+#: exercises/ScoreCtrol.cpp:188
+#: exercises/TheoIntervalsCtrol.cpp:271
+#: exercises/TheoKeySignCtrol.cpp:155
+#: exercises/TheoMusicReadingCtrol.cpp:152
+#: exercises/TheoSideReadingCtrol.cpp:153
+msgid "See source score"
+msgstr "Kaynak sayısını gör"
+
+#: exercises/EarCompareIntvCtrol.cpp:137
+#: exercises/EarIntervalsCtrol.cpp:166
+#: exercises/EarModeCtrol.cpp:137
+#: exercises/IdfyChordCtrol.cpp:161
+#: exercises/IdfyExerciseCtrol.cpp:156
+#: exercises/ScoreCtrol.cpp:192
+#: exercises/TheoIntervalsCtrol.cpp:275
+#: exercises/TheoKeySignCtrol.cpp:159
+#: exercises/TheoMusicReadingCtrol.cpp:156
+#: exercises/TheoSideReadingCtrol.cpp:157
+msgid "Dump score"
+msgstr "Çöp yığını sayıları"
+
+#: exercises/EarCompareIntvCtrol.cpp:142
+#: exercises/EarIntervalsCtrol.cpp:171
+#: exercises/EarModeCtrol.cpp:142
+#: exercises/IdfyChordCtrol.cpp:166
+#: exercises/IdfyExerciseCtrol.cpp:161
+#: exercises/ScoreCtrol.cpp:196
+#: exercises/TheoIntervalsCtrol.cpp:279
+#: exercises/TheoMusicReadingCtrol.cpp:160
+#: exercises/TheoSideReadingCtrol.cpp:161
+msgid "See MIDI events"
+msgstr "MIDI olaylarını göster"
+
+#: exercises/EarCompareIntvCtrol.cpp:180
+#: exercises/EarIntervalsCtrol.cpp:209
+#: exercises/EarModeCtrol.cpp:180
+#: exercises/IdfyChordCtrol.cpp:205
+#: exercises/IdfyExerciseCtrol.cpp:142
+#: exercises/TheoIntervalsCtrol.cpp:317
+#: exercises/TheoMusicReadingCtrol.cpp:169
+#: exercises/TheoSideReadingCtrol.cpp:170
+msgid "Settings"
+msgstr "Kurgu"
+
+#: exercises/EarCompareIntvCtrol.cpp:197
+#: exercises/EarIntervalsCtrol.cpp:226
+#: exercises/EarModeCtrol.cpp:197
+#: exercises/IdfyChordCtrol.cpp:223
+#: exercises/IdfyExerciseCtrol.cpp:209
+#: exercises/TheoIntervalsCtrol.cpp:335
+#: exercises/TheoKeySignCtrol.cpp:194
+#: exercises/TheoMusicReadingCtrol.cpp:131
+#: exercises/TheoSideReadingCtrol.cpp:132
+msgid "New problem"
+msgstr "Yeni problem"
+
+#: exercises/EarCompareIntvCtrol.cpp:201
+#: exercises/EarIntervalsCtrol.cpp:230
+#: exercises/EarModeCtrol.cpp:201
+#: exercises/IdfyChordCtrol.cpp:227
+#: exercises/IdfyExerciseCtrol.cpp:213
+#: exercises/IdfyExerciseCtrol.cpp:299
+#: exercises/TheoIntervalsCtrol.cpp:339
+#: app/MainFrame.cpp:538
+#: exercises/Constrains.h:193
+#: exercises/Constrains.h:257
+msgid "Play"
+msgstr "Oyna"
+
+#: exercises/EarCompareIntvCtrol.cpp:207
+#: exercises/EarIntervalsCtrol.cpp:236
+#: exercises/EarModeCtrol.cpp:207
+#: exercises/IdfyChordCtrol.cpp:233
+#: exercises/IdfyExerciseCtrol.cpp:219
+#: exercises/TheoIntervalsCtrol.cpp:346
+#: exercises/TheoKeySignCtrol.cpp:199
+msgid "Show solution"
+msgstr "Çözüm göster"
+
+#: exercises/EarCompareIntvCtrol.cpp:234
+#: exercises/EarIntervalsCtrol.cpp:273
+#: exercises/EarModeCtrol.cpp:234
+#: exercises/IdfyChordCtrol.cpp:271
+#: exercises/IdfyExerciseCtrol.cpp:232
+msgid "Click on 'New problem' to start"
+msgstr "Tıkla ve yeni problemi başlat"
+
+#: exercises/EarIntervalsCtrol.cpp:115
+#: ../xrc/xrc_strings.cpp:5
+msgid "minor 2nd"
+msgstr "2. minör"
+
+#: exercises/EarIntervalsCtrol.cpp:116
+msgid "major 2nd"
+msgstr "2. majör"
+
+#: exercises/EarIntervalsCtrol.cpp:117
+#: ../xrc/xrc_strings.cpp:7
+msgid "minor 3rd"
+msgstr "3. minör"
+
+#: exercises/EarIntervalsCtrol.cpp:118
+msgid "major 3rd"
+msgstr "3. majör"
+
+#: exercises/EarIntervalsCtrol.cpp:119
+msgid "4th perfect"
+msgstr "4. mükemmel"
+
+#: exercises/EarIntervalsCtrol.cpp:120
+msgid "aug.4th/dim.5th"
+msgstr "4.art/5.az"
+
+#: exercises/EarIntervalsCtrol.cpp:121
+#: ../xrc/xrc_strings.cpp:11
+msgid "perfect 5th"
+msgstr "5. mükemmel"
+
+#: exercises/EarIntervalsCtrol.cpp:122
+#: ../xrc/xrc_strings.cpp:12
+msgid "minor 6th"
+msgstr "6. minör"
+
+#: exercises/EarIntervalsCtrol.cpp:123
+msgid "major 6th"
+msgstr "6. majör"
+
+#: exercises/EarIntervalsCtrol.cpp:124
+#: ../xrc/xrc_strings.cpp:14
+msgid "minor 7th"
+msgstr "7. minör"
+
+#: exercises/EarIntervalsCtrol.cpp:125
+msgid "major 7th"
+msgstr "7. majör"
+
+#: exercises/EarIntervalsCtrol.cpp:126
+#: ../xrc/xrc_strings.cpp:16
+msgid "perfect 8th"
+msgstr "8. mükemmel"
+
+#: exercises/EarIntervalsCtrol.cpp:127
+#: ../xrc/xrc_strings.cpp:17
+msgid "minor 9th"
+msgstr "9. minör"
+
+#: exercises/EarIntervalsCtrol.cpp:128
+msgid "major 9th"
+msgstr "9. majör"
+
+#: exercises/EarIntervalsCtrol.cpp:129
+#: ../xrc/xrc_strings.cpp:19
+msgid "minor 10th"
+msgstr "10. minör"
+
+#: exercises/EarIntervalsCtrol.cpp:130
+msgid "major 10th"
+msgstr "10. majör"
+
+#: exercises/EarIntervalsCtrol.cpp:131
+#: ../xrc/xrc_strings.cpp:21
+msgid "perfect 11th"
+msgstr "11. mükemmel"
+
+#: exercises/EarIntervalsCtrol.cpp:132
+msgid "aug.11th / dim.12th"
+msgstr "11.art/12.az"
+
+#: exercises/EarIntervalsCtrol.cpp:133
+#: ../xrc/xrc_strings.cpp:23
+msgid "perfect 12th"
+msgstr "12.mükemmel "
+
+#: exercises/EarIntervalsCtrol.cpp:134
+#: ../xrc/xrc_strings.cpp:24
+msgid "minor 13th"
+msgstr "13.minör"
+
+#: exercises/EarIntervalsCtrol.cpp:135
+msgid "major 13th"
+msgstr "13.majör"
+
+#: exercises/EarIntervalsCtrol.cpp:136
+#: ../xrc/xrc_strings.cpp:26
+msgid "minor 14th"
+msgstr "14.minör"
+
+#: exercises/EarIntervalsCtrol.cpp:137
+msgid "major 14th"
+msgstr "14.majör"
+
+#: exercises/EarIntervalsCtrol.cpp:138
+msgid "two octaves"
+msgstr "iki oktav"
+
+#: exercises/Generators.cpp:71
+msgid "Program error: Loop detected in lmRandomGenerator::GenerateClef."
+msgstr "Program hata: Çevrim, rastgele  jeneratörde önemli birşey saptadı::AnahtarıÜret."
+
+#: exercises/Generators.cpp:86
+msgid "Program error: Loop detected in lmRandomGenerator::GenerateKey."
+msgstr "Program hata: Çevrim, rastgele  jeneratörde önemli birşey saptadı::AnahtarıÜret."
+
+#: exercises/Generators.cpp:106
+msgid "Program error: Loop detected in lmRandomGenerator::GenerateTime."
+msgstr "Program hata: Çevrim, rastgele  jeneratörde önemli birşey saptadı::ZamanıÜret."
+
+#: exercises/IdfyChordCtrol.cpp:123
+msgid "Major "
+msgstr "Majör "
+
+#: exercises/IdfyChordCtrol.cpp:124
+msgid "Minor "
+msgstr "Minör "
+
+#: exercises/IdfyChordCtrol.cpp:125
+msgid "Augmented "
+msgstr "Artır"
+
+#: exercises/IdfyChordCtrol.cpp:126
+msgid "Diminished "
+msgstr "Azalt"
+
+#: exercises/IdfyChordCtrol.cpp:127
+#: ../xrc/xrc_strings.cpp:247
+msgid "Suspended (4th)"
+msgstr "Erteleme (4.)"
+
+#: exercises/IdfyChordCtrol.cpp:128
+#: ../xrc/xrc_strings.cpp:248
+msgid "Suspended (2nd)"
+msgstr "Erteleme (2.)"
+
+#: exercises/IdfyChordCtrol.cpp:135
+msgid "Half dim. 7th"
+msgstr "7. Yarım art."
+
+#: exercises/IdfyChordCtrol.cpp:136
+msgid "Aug. major 7th"
+msgstr "7. Majör art."
+
+#: exercises/IdfyChordCtrol.cpp:138
+msgid "Minor-major 7th"
+msgstr "7. Minör-majör"
+
+#: exercises/IdfyChordCtrol.cpp:339
+msgid "Triads:"
+msgstr "Üçlü takımlar:"
+
+#: exercises/IdfyChordCtrol.cpp:359
+msgid "Seventh chords:"
+msgstr "Yedinci akorlar:"
+
+#: exercises/IdfyChordCtrol.cpp:379
+msgid "Other chords:"
+msgstr "Diğer akorlar:"
+
+#: exercises/IdfyChordCtrol.cpp:533
+msgid "Identify the next chord:"
+msgstr "Sonraki akoru tanımla:"
+
+#: exercises/IdfyChordCtrol.cpp:538
+#: exercises/IdfyScalesCtrol.cpp:288
+msgid "Press 'Play' to lesson it again"
+msgstr "Dersi tekrar etmek için play'a bas"
+
+#: exercises/IdfyExerciseCtrol.cpp:407
+#: app/MainFrame.cpp:539
+#: exercises/Constrains.h:194
+#: exercises/Constrains.h:196
+#: exercises/Constrains.h:258
+#: exercises/Constrains.h:260
+msgid "Stop"
+msgstr "Dur"
+
+#: exercises/IdfyScalesCtrol.cpp:140
+#: exercises/IdfyScalesCtrol.cpp:146
+#: exercises/TheoIntervalsCtrol.cpp:142
+#: ../xrc/xrc_strings.cpp:295
+#: ../xrc/xrc_strings.cpp:300
+msgid "Natural"
+msgstr "Doğal"
+
+#: exercises/IdfyScalesCtrol.cpp:141
+#: ../xrc/xrc_strings.cpp:296
+msgid "Type II"
+msgstr "Tip II"
+
+#: exercises/IdfyScalesCtrol.cpp:142
+#: ../xrc/xrc_strings.cpp:297
+msgid "Type III"
+msgstr "Tip III"
+
+#: exercises/IdfyScalesCtrol.cpp:143
+#: ../xrc/xrc_strings.cpp:298
+msgid "Type IV"
+msgstr "Tip IV"
+
+#: exercises/IdfyScalesCtrol.cpp:147
+#: exercises/IdfyScalesCtrol.cpp:153
+#: ../xrc/xrc_strings.cpp:301
+#: ../xrc/xrc_strings.cpp:307
+msgid "Dorian"
+msgstr "Dorian"
+
+#: exercises/IdfyScalesCtrol.cpp:148
+#: ../xrc/xrc_strings.cpp:302
+msgid "Harmonic"
+msgstr "Ahenkli"
+
+#: exercises/IdfyScalesCtrol.cpp:149
+#: ../xrc/xrc_strings.cpp:303
+msgid "Melodic"
+msgstr "Melodik"
+
+#: exercises/IdfyScalesCtrol.cpp:152
+#: ../xrc/xrc_strings.cpp:305
+msgid "Ionian"
+msgstr "Ionian"
+
+#: exercises/IdfyScalesCtrol.cpp:154
+#: ../xrc/xrc_strings.cpp:309
+msgid "Phrygian"
+msgstr "Phrygian"
+
+#: exercises/IdfyScalesCtrol.cpp:155
+#: ../xrc/xrc_strings.cpp:311
+msgid "Lydian"
+msgstr "Lidyalı"
+
+#: exercises/IdfyScalesCtrol.cpp:156
+#: ../xrc/xrc_strings.cpp:306
+msgid "Mixolydian"
+msgstr "Mixolydian"
+
+#: exercises/IdfyScalesCtrol.cpp:157
+#: ../xrc/xrc_strings.cpp:308
+msgid "Aeolian"
+msgstr "Aeolian"
+
+#: exercises/IdfyScalesCtrol.cpp:158
+#: ../xrc/xrc_strings.cpp:310
+msgid "Locrian"
+msgstr "Locrian"
+
+#: exercises/IdfyScalesCtrol.cpp:187
+msgid "Major:"
+msgstr "Majör:"
+
+#: exercises/IdfyScalesCtrol.cpp:191
+msgid "Minor:"
+msgstr "Minör:"
+
+#: exercises/IdfyScalesCtrol.cpp:195
+msgid "Greek scales:"
+msgstr "Yunanlı ölçekler"
+
+#: exercises/IdfyScalesCtrol.cpp:199
+msgid "Other scales:"
+msgstr "Diğer ölçekler"
+
+#: exercises/IdfyScalesCtrol.cpp:285
+msgid "Identify the next scale:"
+msgstr "Sonraki ölçeği tanımla:"
+
+#: exercises/ScalesConstrains.cpp:163
+msgid "Program error: Loop detected in lmScalesConstrains::GetRandomChordType."
+msgstr "Program hata:Çevrim, saptanan ölçüyü zorla::Rasgele akor tipini al."
+
+#: exercises/ScoreConstrains.cpp:201
+msgid "Global error: No clef constrains specified\n"
+msgstr "Evrensel hata: Hiçbir nota anahtarı, belirlenmişi  zorlamaz \n"
+
+#: exercises/ScoreConstrains.cpp:211
+msgid "Global error: No time signature constrains specified\n"
+msgstr "Evrensel hata: Hiç bir imza zamanı belirlenmişleri zorlamaz\n"
+
+#: exercises/ScoreConstrains.cpp:221
+msgid "Global error: No key signature constrains specified\n"
+msgstr "Evrensel hata: Hiç bir imza anahtarı belirlenmişleri zorlamaz\n"
+
+#: exercises/TheoIntervalsCtrol.cpp:133
+msgid "dd - double diminished"
+msgstr "ikaz - iki kat azalt"
+
+#: exercises/TheoIntervalsCtrol.cpp:134
+msgid "dim - diminished"
+msgstr "az - azalt"
+
+#: exercises/TheoIntervalsCtrol.cpp:135
+msgid "m - minor"
+msgstr "m - minör"
+
+#: exercises/TheoIntervalsCtrol.cpp:136
+msgid "M, P - Major, Perfect"
+msgstr "M - Majör, Mükemmel"
+
+#: exercises/TheoIntervalsCtrol.cpp:137
+msgid "aug - augmented"
+msgstr "art - artır"
+
+#: exercises/TheoIntervalsCtrol.cpp:138
+msgid "da - double augmented"
+msgstr "ikar - iki kat artır"
+
+#: exercises/TheoIntervalsCtrol.cpp:140
+msgid "Double flat"
+msgstr "Tamamıyla iki katına çıkar"
+
+#: exercises/TheoIntervalsCtrol.cpp:141
+msgid "Flat"
+msgstr "Düz"
+
+#: exercises/TheoIntervalsCtrol.cpp:143
+msgid "Sharp"
+msgstr "Keskin"
+
+#: exercises/TheoIntervalsCtrol.cpp:144
+msgid "Double sharp"
+msgstr "Keskinliği iki katına çıkar."
+
+#: exercises/TheoIntervalsCtrol.cpp:154
+msgid "8th"
+msgstr "8."
+
+#: exercises/TheoIntervalsCtrol.cpp:156
+#: exercises/TheoIntervalsCtrol.cpp:234
+msgid "C"
+msgstr "C"
+
+#: exercises/TheoIntervalsCtrol.cpp:157
+#: exercises/TheoIntervalsCtrol.cpp:235
+msgid "D"
+msgstr "D"
+
+#: exercises/TheoIntervalsCtrol.cpp:158
+#: exercises/TheoIntervalsCtrol.cpp:236
+msgid "E"
+msgstr "E"
+
+#: exercises/TheoIntervalsCtrol.cpp:159
+#: exercises/TheoIntervalsCtrol.cpp:237
+msgid "F"
+msgstr "F"
+
+#: exercises/TheoIntervalsCtrol.cpp:160
+#: exercises/TheoIntervalsCtrol.cpp:238
+msgid "G"
+msgstr "G"
+
+#: exercises/TheoIntervalsCtrol.cpp:161
+#: exercises/TheoIntervalsCtrol.cpp:239
+msgid "A"
+msgstr "A"
+
+#: exercises/TheoIntervalsCtrol.cpp:162
+#: exercises/TheoIntervalsCtrol.cpp:240
+msgid "B"
+msgstr "B"
+
+#: exercises/TheoIntervalsCtrol.cpp:166
+msgid "dd3"
+msgstr "3ikaz"
+
+#: exercises/TheoIntervalsCtrol.cpp:167
+msgid "dd4"
+msgstr "4ikaz"
+
+#: exercises/TheoIntervalsCtrol.cpp:168
+#: exercises/TheoIntervalsCtrol.cpp:169
+msgid "dd5"
+msgstr "5ikaz"
+
+#: exercises/TheoIntervalsCtrol.cpp:170
+msgid "dd7"
+msgstr "7ikaz"
+
+#: exercises/TheoIntervalsCtrol.cpp:171
+msgid "dd8"
+msgstr "8ikaz"
+
+#: exercises/TheoIntervalsCtrol.cpp:174
+msgid "dim3"
+msgstr "3az."
+
+#: exercises/TheoIntervalsCtrol.cpp:175
+msgid "dim4"
+msgstr "4az."
+
+#: exercises/TheoIntervalsCtrol.cpp:176
+msgid "dim5"
+msgstr "5az."
+
+#: exercises/TheoIntervalsCtrol.cpp:177
+msgid "dim6"
+msgstr "6az."
+
+#: exercises/TheoIntervalsCtrol.cpp:178
+msgid "dim7"
+msgstr "7az."
+
+#: exercises/TheoIntervalsCtrol.cpp:179
+msgid "dim8"
+msgstr "8az."
+
+#: exercises/TheoIntervalsCtrol.cpp:181
+msgid "m2"
+msgstr "m2"
+
+#: exercises/TheoIntervalsCtrol.cpp:182
+msgid "m3"
+msgstr "m3"
+
+#: exercises/TheoIntervalsCtrol.cpp:185
+msgid "m6"
+msgstr "m6"
+
+#: exercises/TheoIntervalsCtrol.cpp:186
+msgid "m7"
+msgstr "m7"
+
+#: exercises/TheoIntervalsCtrol.cpp:189
+msgid "M2"
+msgstr "M2"
+
+#: exercises/TheoIntervalsCtrol.cpp:190
+msgid "M3"
+msgstr "M3"
+
+#: exercises/TheoIntervalsCtrol.cpp:191
+msgid "P4"
+msgstr "4M"
+
+#: exercises/TheoIntervalsCtrol.cpp:192
+msgid "P5"
+msgstr "5M"
+
+#: exercises/TheoIntervalsCtrol.cpp:193
+msgid "M6"
+msgstr "M6"
+
+#: exercises/TheoIntervalsCtrol.cpp:194
+msgid "M7"
+msgstr "M7"
+
+#: exercises/TheoIntervalsCtrol.cpp:195
+msgid "P8"
+msgstr "8M"
+
+#: exercises/TheoIntervalsCtrol.cpp:197
+msgid "aug2"
+msgstr "2art."
+
+#: exercises/TheoIntervalsCtrol.cpp:198
+msgid "aug3"
+msgstr "3art."
+
+#: exercises/TheoIntervalsCtrol.cpp:199
+msgid "aug4"
+msgstr "4art."
+
+#: exercises/TheoIntervalsCtrol.cpp:200
+msgid "aug5"
+msgstr "5art."
+
+#: exercises/TheoIntervalsCtrol.cpp:201
+msgid "aug6"
+msgstr "6art."
+
+#: exercises/TheoIntervalsCtrol.cpp:202
+msgid "aug7"
+msgstr "7art."
+
+#: exercises/TheoIntervalsCtrol.cpp:203
+msgid "aug8"
+msgstr "8art."
+
+#: exercises/TheoIntervalsCtrol.cpp:205
+msgid "da2"
+msgstr "2ikart."
+
+#: exercises/TheoIntervalsCtrol.cpp:206
+msgid "da3"
+msgstr "3ikart."
+
+#: exercises/TheoIntervalsCtrol.cpp:207
+msgid "da4"
+msgstr "4ikart."
+
+#: exercises/TheoIntervalsCtrol.cpp:208
+msgid "da5"
+msgstr "5ikart."
+
+#: exercises/TheoIntervalsCtrol.cpp:209
+msgid "da6"
+msgstr "6ikart."
+
+#: exercises/TheoIntervalsCtrol.cpp:210
+#: exercises/TheoIntervalsCtrol.cpp:211
+msgid "da7"
+msgstr "7ikart."
+
+#: exercises/TheoIntervalsCtrol.cpp:214
+#: exercises/TheoIntervalsCtrol.cpp:638
+msgid "Chromatic semitone"
+msgstr "Kromatik yarım nota"
+
+#: exercises/TheoIntervalsCtrol.cpp:218
+msgid "bb C"
+msgstr "bb C"
+
+#: exercises/TheoIntervalsCtrol.cpp:219
+msgid "bb D"
+msgstr "bb D"
+
+#: exercises/TheoIntervalsCtrol.cpp:220
+msgid "bb E"
+msgstr "bb E"
+
+#: exercises/TheoIntervalsCtrol.cpp:221
+msgid "bb F"
+msgstr "bb F"
+
+#: exercises/TheoIntervalsCtrol.cpp:222
+msgid "bb G"
+msgstr "bb G"
+
+#: exercises/TheoIntervalsCtrol.cpp:223
+msgid "bb A"
+msgstr "bb A"
+
+#: exercises/TheoIntervalsCtrol.cpp:224
+msgid "bb B"
+msgstr "bb B"
+
+#: exercises/TheoIntervalsCtrol.cpp:226
+msgid "b C"
+msgstr "b C"
+
+#: exercises/TheoIntervalsCtrol.cpp:227
+msgid "b D"
+msgstr "b D"
+
+#: exercises/TheoIntervalsCtrol.cpp:228
+msgid "b E"
+msgstr "b E"
+
+#: exercises/TheoIntervalsCtrol.cpp:229
+msgid "b F"
+msgstr "b F"
+
+#: exercises/TheoIntervalsCtrol.cpp:230
+msgid "b G"
+msgstr "b G"
+
+#: exercises/TheoIntervalsCtrol.cpp:231
+msgid "b A"
+msgstr "b A"
+
+#: exercises/TheoIntervalsCtrol.cpp:232
+msgid "b B"
+msgstr "b B"
+
+#: exercises/TheoIntervalsCtrol.cpp:242
+msgid "# C"
+msgstr "# C"
+
+#: exercises/TheoIntervalsCtrol.cpp:243
+msgid "# D"
+msgstr "# D"
+
+#: exercises/TheoIntervalsCtrol.cpp:244
+msgid "# E"
+msgstr "# E"
+
+#: exercises/TheoIntervalsCtrol.cpp:245
+msgid "# F"
+msgstr "# F"
+
+#: exercises/TheoIntervalsCtrol.cpp:246
+msgid "# G"
+msgstr "# G"
+
+#: exercises/TheoIntervalsCtrol.cpp:247
+msgid "# A"
+msgstr "# A"
+
+#: exercises/TheoIntervalsCtrol.cpp:248
+msgid "# B"
+msgstr "# B"
+
+#: exercises/TheoIntervalsCtrol.cpp:250
+msgid "x C"
+msgstr "x C"
+
+#: exercises/TheoIntervalsCtrol.cpp:251
+msgid "x D"
+msgstr "x D"
+
+#: exercises/TheoIntervalsCtrol.cpp:252
+msgid "x E"
+msgstr "x E"
+
+#: exercises/TheoIntervalsCtrol.cpp:253
+msgid "x F"
+msgstr "x F"
+
+#: exercises/TheoIntervalsCtrol.cpp:254
+msgid "x G"
+msgstr "x G"
+
+#: exercises/TheoIntervalsCtrol.cpp:255
+msgid "x A"
+msgstr "x A"
+
+#: exercises/TheoIntervalsCtrol.cpp:256
+msgid "x B"
+msgstr "x B"
+
+#: exercises/TheoIntervalsCtrol.cpp:631
+#: exercises/TheoIntervalsCtrol.cpp:639
+msgid ", ascending"
+msgstr ", yukarı çıkma"
+
+#: exercises/TheoIntervalsCtrol.cpp:631
+#: exercises/TheoIntervalsCtrol.cpp:639
+msgid ", descending"
+msgstr ", aşağı inme"
+
+#: exercises/TheoIntervalsCtrol.cpp:732
+msgid "Identify the next interval:"
+msgstr "Sonraki aralığı tanımla"
+
+#: exercises/TheoIntervalsCtrol.cpp:739
+msgid "Build a "
+msgstr "İnşa et"
+
+#: exercises/TheoKeySignCtrol.cpp:112
+#: exercises/TheoKeySignCtrol.cpp:549
+msgid "C major"
+msgstr "C majör"
+
+#: exercises/TheoKeySignCtrol.cpp:113
+#: exercises/TheoKeySignCtrol.cpp:558
+msgid "G major"
+msgstr "G majör"
+
+#: exercises/TheoKeySignCtrol.cpp:114
+#: exercises/TheoKeySignCtrol.cpp:552
+msgid "D major"
+msgstr "D majör"
+
+#: exercises/TheoKeySignCtrol.cpp:115
+#: exercises/TheoKeySignCtrol.cpp:560
+msgid "A major"
+msgstr "A majör"
+
+#: exercises/TheoKeySignCtrol.cpp:116
+#: exercises/TheoKeySignCtrol.cpp:554
+msgid "E major"
+msgstr "E majör"
+
+#: exercises/TheoKeySignCtrol.cpp:117
+#: exercises/TheoKeySignCtrol.cpp:562
+msgid "B major"
+msgstr "B majör"
+
+#: exercises/TheoKeySignCtrol.cpp:118
+msgid "F # major"
+msgstr "F # majör"
+
+#: exercises/TheoKeySignCtrol.cpp:119
+msgid "C # major"
+msgstr "C # majör"
+
+#: exercises/TheoKeySignCtrol.cpp:120
+msgid "C b major"
+msgstr "C b majör"
+
+#: exercises/TheoKeySignCtrol.cpp:121
+msgid "G b major"
+msgstr "G b majör"
+
+#: exercises/TheoKeySignCtrol.cpp:122
+msgid "D b major"
+msgstr "D b majör"
+
+#: exercises/TheoKeySignCtrol.cpp:123
+msgid "A b major"
+msgstr "A b majör"
+
+#: exercises/TheoKeySignCtrol.cpp:124
+msgid "E b major"
+msgstr "E b majör"
+
+#: exercises/TheoKeySignCtrol.cpp:125
+msgid "B b major"
+msgstr "B b majör"
+
+#: exercises/TheoKeySignCtrol.cpp:126
+#: exercises/TheoKeySignCtrol.cpp:555
+msgid "F major"
+msgstr "F majör"
+
+#: exercises/TheoKeySignCtrol.cpp:548
+msgid "C flat major"
+msgstr "C tam olarak majör"
+
+#: exercises/TheoKeySignCtrol.cpp:550
+msgid "C sharp major"
+msgstr "keskin C majör"
+
+#: exercises/TheoKeySignCtrol.cpp:551
+msgid "D flat major"
+msgstr "D tam olarak majör"
+
+#: exercises/TheoKeySignCtrol.cpp:553
+msgid "E flat major"
+msgstr "tamamıyla E  majör"
+
+#: exercises/TheoKeySignCtrol.cpp:556
+msgid "F sharp major"
+msgstr "keskin F majör"
+
+#: exercises/TheoKeySignCtrol.cpp:557
+msgid "G flat major"
+msgstr "tamamıyla G majör"
+
+#: exercises/TheoKeySignCtrol.cpp:559
+msgid "A flat major"
+msgstr "tamamıyla A majör"
+
+#: exercises/TheoKeySignCtrol.cpp:561
+msgid "B flat major"
+msgstr "tamamıyla B majör"
+
+#: exercises/TheoKeySignCtrol.cpp:567
+msgid "C sharp minor"
+msgstr "keskin C minör"
+
+#: exercises/TheoKeySignCtrol.cpp:569
+msgid "D sharp minor"
+msgstr "keskin D minör"
+
+#: exercises/TheoKeySignCtrol.cpp:570
+msgid "E flat minor"
+msgstr "tamamıyla E minör"
+
+#: exercises/TheoKeySignCtrol.cpp:573
+msgid "F sharp minor"
+msgstr "keskin F minör"
+
+#: exercises/TheoKeySignCtrol.cpp:575
+msgid "G sharp minor"
+msgstr "keskin G minör"
+
+#: exercises/TheoKeySignCtrol.cpp:576
+msgid "A flat minor"
+msgstr "tamamıyla A minör"
+
+#: exercises/TheoKeySignCtrol.cpp:578
+msgid "A sharp minor"
+msgstr "keskinA minör"
+
+#: exercises/TheoKeySignCtrol.cpp:579
+msgid "B flat minor"
+msgstr "tamamıyla B minör"
+
+#: exercises/TheoKeySignCtrol.cpp:585
+msgid "No accidentals"
+msgstr "Kaza eseri"
+
+#: exercises/TheoKeySignCtrol.cpp:586
+msgid "1 #"
+msgstr "1 #"
+
+#: exercises/TheoKeySignCtrol.cpp:587
+msgid "2 #"
+msgstr "2 #"
+
+#: exercises/TheoKeySignCtrol.cpp:588
+msgid "3 #"
+msgstr "3 #"
+
+#: exercises/TheoKeySignCtrol.cpp:589
+msgid "4 #"
+msgstr "4 #"
+
+#: exercises/TheoKeySignCtrol.cpp:590
+msgid "5 #"
+msgstr "5 #"
+
+#: exercises/TheoKeySignCtrol.cpp:591
+msgid "6 #"
+msgstr "6 #"
+
+#: exercises/TheoKeySignCtrol.cpp:592
+msgid "7 #"
+msgstr "7 #"
+
+#: exercises/TheoKeySignCtrol.cpp:593
+msgid "1 b"
+msgstr "1 b"
+
+#: exercises/TheoKeySignCtrol.cpp:594
+msgid "2 b"
+msgstr "2 b"
+
+#: exercises/TheoKeySignCtrol.cpp:595
+msgid "3 b"
+msgstr "3 b"
+
+#: exercises/TheoKeySignCtrol.cpp:596
+msgid "4 b"
+msgstr "4 b"
+
+#: exercises/TheoKeySignCtrol.cpp:597
+msgid "5 b"
+msgstr "5 b"
+
+#: exercises/TheoKeySignCtrol.cpp:598
+msgid "6 b"
+msgstr "6 b"
+
+#: exercises/TheoKeySignCtrol.cpp:599
+msgid "7 b"
+msgstr "7 b"
+
+#: exercises/TheoMusicReadingCtrol.cpp:125
+#: exercises/TheoSideReadingCtrol.cpp:126
+msgid "Go back to theory"
+msgstr "Teoriye geri git"
+
+#: html/ObjectParams.cpp:58
+msgid "Default <object> window: you MUST implement this virtual method!"
+msgstr "Ön değer <nesne> pencere: Bu sanal metodu  uygulamalısınız!"
+
+#: html/Tags.cpp:262
+#, c-format
+msgid ""
+"Invalid param value in:\n"
+"<param %s >\n"
+" Invalid value = %s \n"
+" Acceptable values: numeric, 0..7"
+msgstr ""
+"Hükümsüz parametre değerinde in:\n"
+"<parametre %s >\n"
+" Hükümsüz değer = %s \n"
+" Kabul edilebilir değerler:nümerik, 0..7"
+
+#: html/Tags.cpp:284
+#, c-format
+msgid ""
+"Invalid param value in:\n"
+"<param %s >\n"
+" Invalid value = %s \n"
+" Acceptable values: DeduceKey | WriteKey | Both"
+msgstr ""
+"Hükümsüz parametre değerinde in:\n"
+"<parametre %s >\n"
+" Hükümsüz değer = %s \n"
+" Kabul edilebilir değerler: SonuçAnahtarı | YazıAnahtarı | Herikiside"
+
+#: html/Tags.cpp:310
+#: html/Tags.cpp:487
+#, c-format
+msgid ""
+"Invalid param value in:\n"
+"<param %s >\n"
+" Invalid value = %s \n"
+" Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"
+msgstr ""
+"Hükümsüz parametre değerinde in:\n"
+"<parametre %s >\n"
+" Hükümsüz değer = %s \n"
+" Kabul edilebilir değerler: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"
+
+#: html/Tags.cpp:328
+#, c-format
+msgid ""
+"Invalid param value in:\n"
+"<param %s >\n"
+" Invalid value = %s \n"
+" Acceptable values: Major | Minor | Both"
+msgstr ""
+"Hükümsüz parametre değerinde in:\n"
+"<parametre %s >\n"
+" Hükümsüz değer = %s \n"
+" Kabul edilebilir değerler: Majör | Minör | Herikiside"
+
+#: html/Tags.cpp:337
+#: html/Tags.cpp:496
+#, c-format
+msgid "lmTheoIntervalsCtrol. Unknown param: <param %s >\n"
+msgstr "lmTheoIntervalsCtrol. Bilinmeyen param: <parametre %s >\n"
+
+#: html/Tags.cpp:443
+#, c-format
+msgid ""
+"Invalid param value in:\n"
+"<param %s >\n"
+" Invalid value = %s \n"
+" Acceptable values: none | simple | double"
+msgstr ""
+"Hükümsüz parametre değerinde in:\n"
+"<parametre %s >\n"
+" Hükümsüz değer = %s \n"
+" Kabul edilebilir değerler: hiç | basit | ikikat"
+
+#: html/Tags.cpp:461
+#, c-format
+msgid ""
+"Invalid param value in:\n"
+"<param %s >\n"
+" Invalid value = %s \n"
+" Acceptable values: DeduceInterval | BuildInterval | Both"
+msgstr ""
+"Hükümsüz parametre değerinde in:\n"
+"<parametre %s >\n"
+" Hükümsüz değer = %s \n"
+" Kabul edilebilir değerler:SonuçAralığı | YapıAralığı | Herikisi"
+
+#: html/Tags.cpp:602
+#: html/Tags.cpp:708
+#, c-format
+msgid "lmEarIntervalsCtrol. Unknown param: <param %s >\n"
+msgstr "lmEarIntervalsCtrol. Bilinmeyen parametre: <parametre %s >\n"
+
+#: html/TextBookController.cpp:95
+#, c-format
+msgid "Help: %s"
+msgstr "Yardım: %s"
+
+#: html/TextBookController.cpp:146
+#, c-format
+msgid "Adding book %s"
+msgstr "Kitap eklemek %s"
+
+#: html/TextBookFrame.cpp:386
+#: app/MainFrame.cpp:491
+msgid "Help"
+msgstr "Yardım"
+
+#: html/TextBookFrame.cpp:403
+msgid "&Open..."
+msgstr "&Aç..."
+
+#: html/TextBookFrame.cpp:405
+msgid "&Close"
+msgstr "&Kapat"
+
+#: html/TextBookFrame.cpp:408
+#: html/TextBookFrame.cpp:410
+msgid "&About..."
+msgstr "&Hakkında..."
+
+#: html/TextBookFrame.cpp:412
+#: app/MainFrame.cpp:966
+msgid "&File"
+msgstr "&Dosya"
+
+#: html/TextBookFrame.cpp:413
+#: app/MainFrame.cpp:973
+#: options/OptionsDlg.cpp:267
+msgid "&Help"
+msgstr "&Yardım"
+
+#: html/TextBookFrame.cpp:464
+#: html/TextBookFrame.cpp:1065
+#: html/TextBookFrame.cpp:1714
+msgid "(bookmarks)"
+msgstr "(işaretler)"
+
+#: html/TextBookFrame.cpp:476
+msgid "Add current page to bookmarks"
+msgstr "Geçerli sayfa işaretlerini  ekle"
+
+#: html/TextBookFrame.cpp:477
+msgid "Remove current page from bookmarks"
+msgstr "Geçerli sayfa işaretlerini  kaldır"
+
+#: html/TextBookFrame.cpp:507
+msgid "Contents"
+msgstr "İçindekiler"
+
+#: html/TextBookFrame.cpp:522
+msgid "Find"
+msgstr "Bul"
+
+#: html/TextBookFrame.cpp:524
+msgid "Show all"
+msgstr "Bütünü göster"
+
+#: html/TextBookFrame.cpp:533
+msgid "Display all index items that contain given substring. Search is case insensitive."
+msgstr "bütün dizin öğerelrini göster kapsa.Arama, durum  duygusuzudur"
+
+#: html/TextBookFrame.cpp:534
+msgid "Show all items in index"
+msgstr "İndekste bütün maddeleri göster"
+
+#: html/TextBookFrame.cpp:545
+#: app/MainFrame.cpp:687
+msgid "Index"
+msgstr "İndeks"
+
+#: html/TextBookFrame.cpp:563
+msgid "Case sensitive"
+msgstr "Büyük ve küçük harf duyarlı"
+
+#: html/TextBookFrame.cpp:564
+msgid "Whole words only"
+msgstr "Tüm Kelimeler"
+
+#: html/TextBookFrame.cpp:565
+#: html/TextBookFrame.cpp:578
+msgid "Search"
+msgstr "Araştır"
+
+#: html/TextBookFrame.cpp:566
+msgid "Search contents of help book(s) for all occurences of the text you typed above"
+msgstr "Üstte  daktiloyla yazdığınız metin oluşmasına rağmen yardım kitabının içeriği ( ni )  ara .  "
+
+#: html/TextBookFrame.cpp:764
+msgid "Please choose the page to display:"
+msgstr "Lütfen, göstermek için sayfa seç:"
+
+#: html/TextBookFrame.cpp:765
+msgid "Help Topics"
+msgstr "Yardım Konuları"
+
+#: html/TextBookFrame.cpp:819
+msgid "Searching..."
+msgstr "Arama..."
+
+#: html/TextBookFrame.cpp:820
+msgid "No matching page found yet"
+msgstr "Sayfayı  eşleyen, henüz  bulmadı"
+
+#: html/TextBookFrame.cpp:837
+#, c-format
+msgid "Found %i matches"
+msgstr "Eşleştirmeleri %i bul"
+
+#: html/TextBookFrame.cpp:927
+msgid "(Help)"
+msgstr "(Yardım)"
+
+#: html/TextBookFrame.cpp:993
+#: html/TextBookFrame.cpp:995
+#: html/TextBookFrame.cpp:1653
+#: html/TextBookFrame.cpp:1686
+#, c-format
+msgid "%i of %i"
+msgstr "%i of %i"
+
+#: html/TextBookFrame.cpp:1011
+msgid "Search in all books"
+msgstr "Bütün kitaplarda araştır"
+
+#: html/TextBookFrame.cpp:1163
+msgid "Help Browser Options"
+msgstr "Gösterici Seçeneklerine Yardım Et"
+
+#: html/TextBookFrame.cpp:1168
+msgid "Normal font:"
+msgstr "Normal yazıtipi:"
+
+#: html/TextBookFrame.cpp:1169
+msgid "Fixed font:"
+msgstr "Sabit yazı tipi:"
+
+#: html/TextBookFrame.cpp:1170
+msgid "Font size:"
+msgstr "Yazı tipi büyüklüğü"
+
+#: html/TextBookFrame.cpp:1185
+msgid "Preview:"
+msgstr "Baskı önizleme:"
+
+#: html/TextBookFrame.cpp:1212
+msgid "font size"
+msgstr "Sabit font:"
+
+#: html/TextBookFrame.cpp:1223
+msgid "Normal face<br>and <u>underlined</u>. "
+msgstr "Normal yüz<br>ve <u>altı çizili</u>. "
+
+#: html/TextBookFrame.cpp:1224
+msgid "<i>Italic face.</i> "
+msgstr "<i>İtalik görünüş.</i>"
+
+#: html/TextBookFrame.cpp:1225
+msgid "<b>Bold face.</b> "
+msgstr "<b>Kalın görünüş..</b> "
+
+#: html/TextBookFrame.cpp:1226
+msgid "<b><i>Bold italic face.</i></b><br>"
+msgstr "<b><i>Kalın italik görünüş.</i></b><br>"
+
+#: html/TextBookFrame.cpp:1229
+msgid "Fixed size face.<br> <b>bold</b> <i>italic</i> "
+msgstr "Sabit boyut.<br> <b>bold</b> <i>italic</i> "
+
+#: html/TextBookFrame.cpp:1230
+msgid "<b><i>bold italic <u>underlined</u></i></b><br>"
+msgstr "<b><i>kalın italik <u>altıçizili</u></i></b><br>"
+
+#: html/TextBookFrame.cpp:1510
+msgid "Help Printing"
+msgstr "Basıma Yardım Et"
+
+#: html/TextBookFrame.cpp:1512
+msgid "Cannot print empty page."
+msgstr "Boş sayfayı basamayabilir."
+
+#: html/TextBookFrame.cpp:1522
+msgid "HTML files (*.html;*.htm)|*.html;*.htm|"
+msgstr "HTML dosyalar (*.html;*.htm)|*.html;*.htm|"
+
+#: html/TextBookFrame.cpp:1523
+msgid "Help books (*.htb)|*.htb|Help books (*.zip)|*.zip|"
+msgstr "Kitaplara yardım et(*.htb)|*.htb|Kitaplara yardım et (*.zip)|*.zip|"
+
+#: html/TextBookFrame.cpp:1524
+msgid "HTML Help Project (*.hhp)|*.hhp|"
+msgstr "HTML Yardım Projesi (*.hhp)|*.hhp|"
+
+#: html/TextBookFrame.cpp:1526
+msgid "Compressed HTML Help file (*.chm)|*.chm|"
+msgstr "Sıkıştırılmış  HTML Yardım dosyası (*.chm)|*.chm|"
+
+#: html/TextBookFrame.cpp:1528
+msgid "All files (*.*)|*"
+msgstr "Bütün dosyalar (*.*)|*"
+
+#: html/TextBookFrame.cpp:1529
+msgid "Open HTML document"
+msgstr "HTML belge aç"
+
+#: html/VirtualBooks.cpp:189
+msgid "LenMus. Introduction"
+msgstr "LenMus. Giriş"
+
+#: html/VirtualBooks.cpp:201
+#: html/VirtualBooks.cpp:214
+msgid "Welcome"
+msgstr "Hoş geldiniz"
+
+#: html/VirtualBooks.cpp:225
+#: html/VirtualBooks.cpp:291
+#: html/VirtualBooks.cpp:307
+msgid "Single exercises"
+msgstr "Tek alıştırmalar"
+
+#: html/VirtualBooks.cpp:227
+#, c-format
+msgid "Book %s contains some basic exercises for aural training and to practise theoretical concepts, such as intervals and scales. Unlike exercises included in the other books, you can customize all single exercises included in this book. This will allow you meet your specific needs at each moment and to practise specific points."
+msgstr "Kitap %s, işitsel eğitim için bazı temel alıştırmaları kapsar, teorik kavramları pratik yapmak için aralıklar ve ölçekler gibi.Alıştırmalardan farklı , diğer kitaplarda  içerir, bu kitapda  içerilen bütün tek alıştırmaları  ihtiyaca göre düzenleyebilirsiniz.Bu, özel noktaları pratik yapmanıza ve her an özel ihtiyaçlarınızı  karşılamanıza  izin verecek .      "
+
+#: html/VirtualBooks.cpp:241
+msgid "Welcome to LenMus Phonascus version "
+msgstr "LenMus Phonascus versiyonuna hoşgeldiniz "
+
+#: html/VirtualBooks.cpp:243
+msgid "Phonascus, from Latin 'the teacher of music', is a music education software that you can use to practice your music reading skills, improve your aural recognition abilities, or just learn the fundamental principles of music theory and language. From version 3.1 it includes new functions that, I hope, will end up with full support for the creation, display, printing, play back and interactive edition of music scores. Visit the LenMus web site for more information about the current status of the score editor."
+msgstr "Phonascus, Latin 'müziğin öğretmeni', müzik okuma becerilerinizi pratik yapmak için  kullanabildiğiniz müzik eğitim yazılımı, işitsel tanıma yeteneklerinizi geliştirir veya sadece müziğin temel prensiplerini ve teorilerini öğrenebilmek için kullanabilirsiniz. Versiyon 3.1 yeni fonksiyonlar içeriyor,umarım, yaratma destek ile biter, gösterim, basım, tekrarla ve müziğin etkileşimli baskısı, sayı yapar.Sayı editörünün güncel konumu hakkında daha çok bilgi için lenmus ağ adresini  ziyaret et."
+
+#: html/VirtualBooks.cpp:251
+msgid "LenMus Phonascus allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your specific needs at each moment and it allows you to work at your own pace."
+msgstr "LenMus Phonascus programı  spesifik özelliklere ve  çalışmalara, teorik ve sesli olarak odaklanmaya imkan verir.Farklı faaliyetlerin herbiride özel ihtiyaçlarınızı karşılamak için  ihtiyaca göre düzenlenilebilirler ve kendi adımınızda çalışmak için size  izin verir."
+
+#: html/VirtualBooks.cpp:255
+msgid "LenMus is structured as a collection of fully interactive textbooks (eBooks), including theory and exercises. All exercises are fully integrated into the text. Music scores are not just images or pictures but fully interactive operational music scores that you can hear, in whole or just the measures you choose. This enables you to put concepts into practice with immediate feedback and makes the subject matter both more accessible and more rewarding, as you can hear, test and put in practise immediately any new concept introduced."
+msgstr "Lenmus, tamamen etkileşimli ders kitaplarını kapsayan teori ve alıştırmaların koleksiyonu olarak biçimlendirilir.Bütün alıştırmalar, tamamen metin içinde  birleştirilirler.Müzik sayıları tamamen sadece görüntüler veya resimler değiller ama tamamen etkileşimli işlevsel müzik yapar işitmemiz için.Bu, acil geribildirim pratik içine kavramları koymak için size sağlanır ve her iki konuda daha çok ulaşılabilir konu yapar ve daha çok değerli olarak işitebilirsiniz, Hemen herhangi bir yeni tanıtılan kavramı pratikten  test et ve geçir."
+
+#: html/VirtualBooks.cpp:264
+msgid "Teaching material is organized into levels, and each level into lessons."
+msgstr "Öğretim materyalleri bölümler içinde düzenlenir ve diğer bölümler derslerin içinde"
+
+#: html/VirtualBooks.cpp:267
+msgid "We hope that LenMus become a useful tool in your studies."
+msgstr "Çalışmalarınızda LenMus araçlarının yararlı  olduğunu  umarız.\"  "
+
+#: html/VirtualBooks.cpp:269
+msgid "The LenMus team."
+msgstr "LenMus ekibi"
+
+#: html/VirtualBooks.cpp:306
+msgid "0. Introduction to single exercises"
+msgstr "0. Tek alıştırmalara giriş"
+
+#: html/VirtualBooks.cpp:314
+msgid "1. Exercises for aural training"
+msgstr "1. İşitsel eğitim için alıştırmalar"
+
+#: html/VirtualBooks.cpp:317
+msgid "1.1. Aural training. Intervals' comparison"
+msgstr "1.1. İşitsel eğitim. Aralıkların karşılaştırması"
+
+#: html/VirtualBooks.cpp:318
+msgid "Aural training. Intervals' comparison"
+msgstr " İşitsel eğitim. Aralıkların karşılaştırması"
+
+#: html/VirtualBooks.cpp:320
+msgid "Exercise: Lesson two intervals and identify which one is greater"
+msgstr "Alıştırma:"
+
+#: html/VirtualBooks.cpp:328
+msgid "1.2. Aural training. Intervals' identification"
+msgstr "1.2. İşitsel eğitim. Aralıkların tanınması"
+
+#: html/VirtualBooks.cpp:329
+msgid "Aural training. Intervals' identification"
+msgstr "İşitsel eğitim. Aralıkların tanınması"
+
+#: html/VirtualBooks.cpp:331
+msgid "Exercise: Lesson an interval and identify it"
+msgstr "Alıştırma: Ders bir aralık ve onu tanımla"
+
+#: html/VirtualBooks.cpp:339
+msgid "1.3. Aural training. Chords' identification"
+msgstr "1.3. İşitsel eğitim. Akorların tanınması"
+
+#: html/VirtualBooks.cpp:340
+msgid "Aural training. Chords' identification"
+msgstr "İşitsel eğitim. Akorların tanınması"
+
+#: html/VirtualBooks.cpp:342
+msgid "Exercise: Lesson a chord and identify its type"
+msgstr "Alıştırma: Ders akor ve tip tanımlama"
+
+#: html/VirtualBooks.cpp:351
+msgid "1.4. Aural training. Scales' identification"
+msgstr "1.4. İşitsel eğitim.Ölçümlerin tanınması"
+
+#: html/VirtualBooks.cpp:352
+msgid "Aural training. Scales' identification"
+msgstr "İşitsel eğitim.Ölçümlerin tanınması"
+
+#: html/VirtualBooks.cpp:354
+msgid "Exercise: Lesson a scale and identify its type"
+msgstr "Alıştırma: Ders ölçü ve tip tanımlama"
+
+#: html/VirtualBooks.cpp:365
+msgid "2. Exercises to practise theory"
+msgstr "2. Teoriyi pratik yapmak için alıştırmalar"
+
+#: html/VirtualBooks.cpp:368
+msgid "2.1. Key signatures' identification (in score)"
+msgstr "2.1. Anahtarların tanınması (sayıda)"
+
+#: html/VirtualBooks.cpp:369
+msgid "Key signatures' identification"
+msgstr "Anahtarların tanınması"
+
+#: html/VirtualBooks.cpp:371
+msgid "Exercise: Identify a key signature or indicate the number of accidentals it has"
+msgstr "Alıştırma: Anahtarı tanımla veya sahip olduğu çizgi sayısını belirt"
+
+#: html/VirtualBooks.cpp:382
+msgid "2.2. Interval's identification (in score) and construction"
+msgstr "2.2. Aralığın tanınması (sayıda) ve inşa edilmesi"
+
+#: html/VirtualBooks.cpp:383
+msgid "Interval's identification and construction"
+msgstr "Aralığın tanınması ve inşa edilmesi"
+
+#: html/VirtualBooks.cpp:391
+msgid "2.3. Scales' identification (in score)"
+msgstr "2.3. Ölçekelriı tanıma (sayıda)"
+
+#: html/VirtualBooks.cpp:392
+msgid "Scales' identification"
+msgstr "Ölçeklerin tanınması"
+
+#: html/VirtualBooks.cpp:394
+msgid "Exercise: Identify the scale shown"
+msgstr "Alıştırma: Gösterilen ölçeği tanımla"
+
+#: html/VirtualBooks.cpp:403
+msgid "2.4. Chords' identification (in score)"
+msgstr "2.4. Akorların tanınması (sayıda)"
+
+#: html/VirtualBooks.cpp:404
+msgid "Chords' identification"
+msgstr "Akorların tanınması"
+
+#: html/VirtualBooks.cpp:406
+msgid "Exercise: Identify the type of the shown chord"
+msgstr "Alıştırımalar: Akorun gösterilen tipimi tanımla"
+
+#: html/VirtualBooks.cpp:417
+msgid "3. Other exercises"
+msgstr "3. Diğer alıştırmalar"
+
+#: html/VirtualBooks.cpp:420
+msgid "3.1. Clefs Reading"
+msgstr "3.1. Nota anahtarlarının okunması"
+
+#: html/VirtualBooks.cpp:421
+msgid "Clefs Reading"
+msgstr "Nota anahtarları okuması"
+
+#: html/VirtualBooks.cpp:483
+msgid "Appart of exercises included in the eBooks, the following general exercises (customizable to suit your needs at any moment) are available:"
+msgstr "Alıştırmalarım sonucu zayıf not içerdi,aşağıdaki genel alıştırmalar (herhangi bir ihtiyacınıza uymak için özelleştirilebilir) mevcuttur.  "
+
+#: html/VirtualBooks.cpp:528
+#: html/VirtualBooks.cpp:535
+#, c-format
+msgid "Failed adding virtual book %s"
+msgstr "Başarısız ekleyen sanal kitap %s"
+
+#: xml_parser/XMLParser.cpp:67
+#, c-format
+msgid ""
+"Importing XML file %s\n"
+"\n"
+msgstr ""
+"XML dosyalarını çağır %s\n"
+"\n"
+
+#: xml_parser/XMLParser.cpp:73
+msgid "Error parsing XML file "
+msgstr "Gramer olarak incelenmen XML dosyalarında hata"
+
+#: xml_parser/XMLParser.cpp:81
+#: app/Updater.cpp:105
+#: updater/Updater.cpp:223
+#, c-format
+msgid "Error. <%s> files are not supported"
+msgstr "Hata. <%s> dosyalar desteklenilmezler"
+
+#: xml_parser/XMLParser.cpp:92
+#, c-format
+msgid ""
+"\n"
+"MusicXML file imported OK. There are %d warnings."
+msgstr ""
+"\n"
+"MusicXML file imported OK. There are %d warnings."
+
+#: xml_parser/XMLParser.cpp:94
+msgid "Warnings while importing a MusicXML score."
+msgstr "Uyararak MusicXML sayısını çağır."
+
+#: xml_parser/XMLParser.cpp:148
+#, c-format
+msgid "Parsing <%s>: tag <%s> not supported."
+msgstr "Gramer açısından inceleme <%s>: tag <%s> destekleme."
+
+#: xml_parser/XMLParser.cpp:236
+#, c-format
+msgid "Part id = %s not defined in <part-list>"
+msgstr "Kimlik bilgisini ayır = %s tanımlama <bölüm-listesi>"
+
+#: xml_parser/XMLParser.cpp:370
+#, c-format
+msgid "Parsing <%s>: duration=%d, timeShift=%f"
+msgstr "Gramer açısından inceleme <%s>: süre=%d, yüklemezamanı=%f"
+
+#: xml_parser/XMLParser.cpp:453
+#, c-format
+msgid "Parsing <clef>: staff_number=%s, clef=%s, line=%s"
+msgstr "Gramer açısından inceleme <nota anahtarı>:nota çizgisi numarsı=%s, nota  anahtarı=%s, çizgi=%s"
+
+#: xml_parser/XMLParser.cpp:471
+#, c-format
+msgid "Parsing <staves>: num_staves=%s"
+msgstr "Gramer açısından inceleme <nota çizgileri>: num_nota çizgileri=%s"
+
+#: xml_parser/XMLParser.cpp:541
+#, c-format
+msgid "Parsing <key>: fifths=%s, mode=%s"
+msgstr "Gramer açısından incleme <anahtar>: beşinci=%s, mod=%s"
+
+#: xml_parser/XMLParser.cpp:606
+#, c-format
+msgid "Parsing <time>: beats=%s, beat-type=%s"
+msgstr "Gramer açısından incleme <zaman>: vurular=%s, vuru tipi=%s"
+
+#: xml_parser/XMLParser.cpp:688
+#, c-format
+msgid "Parsing <bar-style>: bar_style=%s"
+msgstr "Gramer açısından incleme <sitil-çubuğu>: sitil-çubuğu=%s"
+
+#: xml_parser/XMLParser.cpp:831
+#, c-format
+msgid "Parsing <offset>: offset=%s"
+msgstr "Gramer açısından incleme <uzantı>: uzantı=%s"
+
+#: xml_parser/XMLParser.cpp:996
+#, c-format
+msgid "Parsing <%s>: unknown note type %s"
+msgstr "Gramer açısından incleme <%s>: bilinmeyen nota tipi %s"
+
+#: xml_parser/XMLParser.cpp:1015
+#, c-format
+msgid "Parsing <beam>: value=%s, beam-level=%s"
+msgstr "Gramer açısından incleme <darbe>: değer=%s, darbe-bölüm=%s"
+
+#: xml_parser/XMLParser.cpp:1039
+#, c-format
+msgid "Parsing <note.<beam>: unknown beam type %s"
+msgstr "Gramer açısından incleme <nota.<darbe>: bilinmeyen darbe tipi %s"
+
+#: xml_parser/XMLParser.cpp:1071
+#, c-format
+msgid "Parsing <note>.<stem>: unknown type %s"
+msgstr "Gramer açısından incleme <nota>.<gövde>: bilinmeyen tip %s"
+
+#: xml_parser/XMLParser.cpp:1076
+#, c-format
+msgid "Parsing <stem>: stem type=%s, enum=%d"
+msgstr "Gramer açısından incleme <gövde>: gövde tipi=%s, enum=%d"
+
+#: xml_parser/XMLParser.cpp:1091
+#, c-format
+msgid "Parsing <staff>: num.Staff=%s"
+msgstr "Gramer açısından incleme <nota çizgisi>: num.Nota çizgisi=%s"
+
+#: xml_parser/XMLParser.cpp:1113
+msgid "Parsing <chord>"
+msgstr "Gramer açısından inceleme<akort>"
+
+#: xml_parser/XMLParser.cpp:1128
+msgid "Parsing <rest>"
+msgstr "Gramer açısından inceleme<sonuç>"
+
+#: xml_parser/XMLParser.cpp:1154
+msgid "Parsing <grace>"
+msgstr "Gramer açısından inceleme<zerafet>"
+
+#: xml_parser/XMLParser.cpp:1160
+msgid "Parsing <cue>"
+msgstr "Gramer açısından inceleme<iste>"
+
+#: xml_parser/XMLParser.cpp:1180
+#, c-format
+msgid "Parsing <tie>. Type=%s"
+msgstr "Gramer açısından inceleme<bağ>. Tip=%s\""
+
+#: xml_parser/XMLParser.cpp:1206
+msgid "Parsing <notations>"
+msgstr "Gramer açısından inceleme<rakamlar>"
+
+#: xml_parser/XMLParser.cpp:1218
+msgid "Parsing <fermata>"
+msgstr "Gramer açısından inceleme<durak ve uzatma işareti>"
+
+#: xml_parser/XMLParser.cpp:1271
+#, c-format
+msgid "Parsing <tuplet>. Type=%s, bracket=%s, above=%s, showNumber=%s, number=%d"
+msgstr "Gramer açısından incleme <tuplet>. Tip=%s, köşeli ayraç=%s, yukarıda=%s, Numara göster=%s, numarar=%d"
+
+#: xml_parser/XMLParser.cpp:1374
+#, c-format
+msgid "Parsing <note>.<lyric>: unknown syllabic value %s"
+msgstr "Gramer açısından inceleme <nota>.<lirik>: bilinmeyen hecesel değer %s"
+
+#: xml_parser/XMLParser.cpp:1409
+msgid "Parsing <lyric>"
+msgstr "Gramer açısından inceleme<lirik>"
+
+#: xml_parser/XMLParser.cpp:1459
+#, c-format
+msgid "Parsing <note>.<accidental>: unknown type %s"
+msgstr "Gramer açısından inceleme<nota>.<kaza eseri>: bilinmeyen tip %s"
+
+#: xml_parser/XMLParser.cpp:1462
+#, c-format
+msgid "Parsing <accidental>. Type=%s"
+msgstr "Gramer açısından inceleme <kaza eseri>. Tip=%s"
+
+#: xml_parser/XMLParser.cpp:1720
+#, c-format
+msgid "Attribute \"%s\" not found in tag <%s>."
+msgstr "Özellik  \"%s\" etikette bulunmaz <%s>."
+
+#: xml_parser/XMLParser.cpp:1738
+#, c-format
+msgid "Yes-no attribute \"%s\" has an invalid value \"%s\"."
+msgstr "Evet-hayır özalliği \"%s\" geçersiz değere sahip olur \"%s\"."
+
+#: xml_parser/XMLParser.cpp:1982
+#, c-format
+msgid "Parsing <duration>: duration=%s"
+msgstr "Gramer açısından inceleme<süre>:süre=%s"
+
+#: xml_parser/XMLParser.cpp:2007
+#, c-format
+msgid "Parsing <divisions>: divisions=%s"
+msgstr "Gramer açısından inceleme<bölmeler>:bölmeler=%s"
+
+#: xml_parser/XMLParser.cpp:2032
+#, c-format
+msgid "Parsing <placement>: placement='%s'>"
+msgstr "Gramer açısından inceleme<yerleşim>:yerleşim=%s"
+
+#: xml_parser/XMLParser.cpp:2039
+#, c-format
+msgid "<placement> element has an invalid value \"%s\". Asumed 'above'"
+msgstr "<yerleşim> element geçersiz değere sahip olur \"%s\". Asumed 'üstte'"
+
+#: app/AboutDialog.cpp:103
+#: ../xrc/xrc_strings.cpp:230
+msgid "A free program for music language learning"
+msgstr "Müzik dili  öğrenimi için serbest program"
+
+#: app/AboutDialog.cpp:126
+#: ../xrc/xrc_strings.cpp:231
+msgid "Purpose"
+msgstr "Amaç"
+
+#: app/AboutDialog.cpp:128
+msgid "LenMus is a free program to help you in the study of music theory and ear training. It is available for Windows but soon it will be also available for Mac OS X, Linux, and other Unix-like operating systems."
+msgstr "Lenmus, müzik teorisi ve kulak eğitimi çalışmasında size yardım etmek için serbest  programdır.Windows için  mevcutdur ama yakında ,Mac, Linux ve diğer Unıx-lıke işletim sistemilerİ için aynı zamanda mevcut  olacak ."
+
+#: app/AboutDialog.cpp:132
+msgid "The LenMus Project is an open project, committed to the principles of Open Source, free education, and free access to information. It has no comercial purpose. It is an open workbench for working on all areas related to teaching music, and music representation and management with computers. It aims at developping public knowledge, methods and algorithms related to all these areas and at the same time provides free quality software for music students, amateurs, and teachers."
+msgstr "Lenmus projesş açık projedir, açık kaynağın ilkelerine  üstlenir,serbest eğitim, ve bilgiye serbest ulaşım.Müziği öğretmek ile ilgili bütün alanlarda çalışmak için açık  çalışma tezgahıdır, bilgisayarlar ile ve müzik temsili ve yönetimi.Genel bilgi geliştirmeyi hedef alır, bütün bu alanlar ile ilgili metodlar ve algoritmalar ve aynı anda, amatör, öğrencilere ve öğretmenlere serbest kaliteli müzik yazılımı sağlar."
+
+#: app/AboutDialog.cpp:140
+msgid "If you find a bug or have a suggestion, please contact us. We depend on your feedback in order to continue to improve LenMus. So please visit our website and give us your bug reports  and feature requests. Thank you very much."
+msgstr "Eğer can sıkıcı birşeyler bulursanız önerilerinizi bekliyoruz, lütfen bizimle bağlantı kurun.Lenmusu geliştirmeyi için devam etmek amacıyla geribildiriminize ihtiyacımız var.Bu yüzden websitemizi ziyaret edin ve şikayetlerinizi bize bildirin.Çok teşekkürler. "
+
+#: app/AboutDialog.cpp:154
+msgid "License"
+msgstr "lisans"
+
+#: app/AboutDialog.cpp:156
+msgid "Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n."
+msgstr "TelifHakkı &kopya; 2002-2006 Cecilio Salmer&oacute;n."
+
+#: app/AboutDialog.cpp:158
+msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
+msgstr "Bu ptogram serbest yazılımdır; onu yenşden dağıtabilirsiniz ve/veya serbest yazılım altyapısı yoluyla yayınlanmış olarak GNU genel kamu  lisansının terimleri altında değiştirebilirsiniz; Lisansın herhangi bir versiyon ikisi, veya (seçeneğinizde) herhangi bir sonraki versiyon."
+
+#: app/AboutDialog.cpp:163
+msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General Public License at http://www.gnu.org/licenses/licenses.html"
+msgstr "Bu program yararlı olması ümidiyle dağıtılmıştır, ama yetki dışında; kastedilen satılabilirliğin yetkisi ya da özel maksatlara uygunluk dışında.Daha çok ayrıntı için, GNU Genel Kamu Lisansını gör http://www.gnu.org/licenses/licenses.html"
+
+#: app/AboutDialog.cpp:177
+msgid "Art desing credits"
+msgstr "sanat dizayn kredileri"
+
+#: app/AboutDialog.cpp:178
+msgid "Some icons are original artwork for LenMus project; all these original icons are released under GNU GPL licence and under Creative Commons Attribution-ShareAlike license, you can choose the one you prefer for the intended usage. The other icons are taken from different sources:"
+msgstr "LenMus projesi için  bazı ikonlar  orjinal sanat eserleridir; tüm bu orjinal ikonlar GNU GPL ve  Creative Commons Attribution-ShareAlike lisansı altında serbest bırakılır.İstenilen kullanım için birini seçebilirsiniz. Diğer ikonlar farklı kaynaklardan alınır:"
+
+#: app/AboutDialog.cpp:183
+msgid "Taken or derived from those available in the Ximian collection (http://www.novell.com/coolsolutions/feature/1637.html). Novell, who retains the copyright, has released these icons under the LGPL license. This means that you can use the icons in your programs free of charge. If you want to fork the icons into your own icon collection, you need to retain the license and the original copyrights, but from there you're free to do what you want."
+msgstr "Ximian collection da alınan veya bu elde edilenlerden kaynaklanan(http://www.novell.com/coolsolutions/feature/1637.html)dır.Telif hakkını alıkoyan Novell  bu ikonları LGPL lisansı altında kullanmaya izin verdi.Bu senin bu ikonları ücret ödeyerek veya parasız olarak kendi programında kullabileceğin anlamına geliyor.Eğer bu ikonları kendi ikon kolleksiyonuna dahil etmek istiyorsan lısansa ve orjınal telıf haklarına ihtiyaç duyacaksın.Bundan başka ne istiyorsan yapmakta serbestsin."
+
+#: app/AboutDialog.cpp:191
+msgid "Taken or derived from the GNOME project (http://art.gnome.org/themes/icon/1150), Tango theme. These icons are released under the Creative Commons Attribution-ShareAlike license."
+msgstr "Atasözü projes üretilmiş veya tutulmuş (http://art.gnome.org/themes/icon/1150), Tango konusu. Bu ikonlar, yaratıcı attrıbutıon-sharealıke lisansı altında  serbest bırakılırlar "
+
+#: app/AboutDialog.cpp:195
+msgid "These icons are taken or derived from KDE project (http://kde.openoffice.org/servlets/ProjectDocumentList?folderID=314&amp;expandFolder=314). These icons are released under the GNU GPL license."
+msgstr "Bu ikonlar KDE projesinden alında vey aüretildi. (http://kde.openoffice.org/servlets/ProjectDocumentList?folderID=314&amp;expandFolder=314). Bu ikonla, GNU GPL  lisansı altında  serbest bırakılırlar."
+
+#: app/AboutDialog.cpp:199
+msgid "Taken or derived from eMule project (http://sourceforge.net/projects/emule) icons. eMule is a GNU GPL project so I assume that its icons are also available under GNU GPL."
+msgstr "eMULE projesinin ikonları (http://sourceforge.net/projects/emule) buradan alınmış. Emule, GNU GPL projesidir bu yüzden, ikonları GNU GPLl altında aynı zamanda mevcut  olduğu farzedilir."
+
+#: app/AboutDialog.cpp:202
+msgid "Taken or derived from John Zaitseff's icons (http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). According to what is said there, these icons are released under the terms of the GNU General Public License."
+msgstr "John Zaitseff's ikonları alınmış (http://www.zap.org.au/documents/icons/dirtree-icons/sample.html). Burada söylenmiş olduğuna göre, buu ikonlar Genel Kamu Lisansının  terimleri altında  serbest bırakılırlar."
+
+#: app/AboutDialog.cpp:206
+msgid "To LenMus developers knowledge, all used icons are freely usable either under GNU GPL, LGPL licence, or Creative Commons. If this were not the case, please, let us know to stop using them. See file \"icons.htm\" in folder \"res/icons\" for more details."
+msgstr "LenMus geliştiriciler bilgisine,  bütün kullanılan ikonlar GNU GPL altında serbestçe elverişli  herhangi biridirler,  LGPL lisansı veya yaratıcı adı. Bunları kullanmak olumsuzdur, çünkü bunları kullanmayı durmak için bilelim. Dosya gör \"icons.htm\" dosyada \"res/icons\" daha çok ayrınrı için."
+
+#: app/AboutDialog.cpp:221
+#: ../xrc/xrc_strings.cpp:235
+msgid "Software credits"
+msgstr "Yazılım güvenlidir"
+
+#: app/AboutDialog.cpp:222
+msgid "LenMus Phonascus uses <b>PortMidi</b> the Portable Real-Time MIDI Library (http://www.cs.cmu.edu/~music/portmusic/). PortMidi is copyright (c) 1999-2000 Ross Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg. Its licence permits free use."
+msgstr "LenMus Phonascus <b>PortMidi</b> kullanır, taşınabilir gerçek zamanlı midi kütüphanesi  (http://www.cs.cmu.edu/~music/portmusic/). PortMidi telifhakkı(c) 1999-2000 Ross Bencina ve Phil Burk ve telifhakkı (c) 2001 Roger B. Dannenberg. Lisansı serbest kullanıma izin verir."
+
+#: app/AboutDialog.cpp:227
+msgid "LenMus Phonascus is build using the <b>wxWidgets</b> application framework (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is ease to learn and extend, it has a helpful community, and also has the possibility to use it in commercial products without licencing."
+msgstr "LenMus Phonascus kullanan iyi bir <b>wxWidgets</b> uygulama çatısı (http://www.wxwidgets.org). Kaynağı aç ve multi-platformu desteklettir, kolaylaştırmak,öğretmek ve geliştirmek içindir, faydalı topluluğa sahip olur, ve aynı zamanda ticeri ürünleri kullanmak için lisansa sahip olmalısın."
+
+#: app/AboutDialog.cpp:232
+msgid "This program uses the <b>Anti-Grain Geometry</b> (http://www.antigrain.com) software developed by Maxim Shemanarev. AGG is an excellent open source, free graphic library, in source code. It produces pixel images in memory from vectorial data and it supports anti-aliasing, has very high performance, it is platform independent, very flexible and extensible, with a lightweight design, and very good reliability and stability."
+msgstr "Bu programı iyi kullanır <b>Anti-Grain Geometry</b> (http://www.antigrain.com) yazılımı Maxim Shemanarev geliştirdi. Agg , mükemmel açık  kaynakdır, kodta serbest grafik kütüphane.Vektörel veriden bellekde pıxel görüntülerini  üret and anti-aliasing destekelr, çok yüksek performansa  sahip, platform  bağımsızıdır, çok kolay bükülür ve uzatılabilir, hafif tasarım ile, ve çok iyi güvenilirlik ve tutarlılık ."
+
+#: app/AboutDialog.cpp:241
+msgid "Most of 'lmbasic.ttf' font glyphs are taken from <b>LilyPond</b> GNU GPL project (http://lilypond.org), Feta font."
+msgstr "'lmbasic.ttf'nin yazı tipinin çoğu oymalı kabartmalı tutulmuş<b>LillyPond</b> GNU GPL proje(http://lilypond.org), Feta font."
+
+#: app/AboutDialog.cpp:253
+msgid "Translation credits"
+msgstr "Çeviri kredileri"
+
+#: app/AboutDialog.cpp:256
+#: options/OptionsDlg.cpp:182
+msgid "Language"
+msgstr "Dil"
+
+#: app/AboutDialog.cpp:257
+msgid "Name"
+msgstr "Elif Öztürk"
+
+#: app/AboutDialog.cpp:258
+msgid "e-mail"
+msgstr "elif_ozturk23@hotmail.com"
+
+#: app/AboutDialog.cpp:259
+msgid "French"
+msgstr "Fransa"
+
+#: app/AboutDialog.cpp:261
+msgid "Spanish"
+msgstr "İspanya"
+
+#: app/AboutDialog.cpp:263
+msgid "Turkish"
+msgstr "Türkçe"
+
+#: app/AboutDialog.cpp:275
+msgid "Build information"
+msgstr "Bilgi inşa etmek"
+
+#: app/AboutDialog.cpp:276
+msgid "Program build date:"
+msgstr "Programın yapılma tarihi"
+
+#: app/AboutDialog.cpp:279
+msgid "wxMidi Version "
+msgstr "wxMidi Versiyonu "
+
+#: app/AboutDialog.cpp:280
+msgid "Charset encoding: "
+msgstr "Charset şifrelenmesi: "
+
+#: app/AboutDialog.cpp:281
+msgid "System locale name: "
+msgstr "Sistem yer adı: "
+
+#: app/AboutDialog.cpp:282
+msgid "Canonical locale name: "
+msgstr "Kanuni yer adı: "
+
+#: app/AboutDialog.cpp:293
+#: ../xrc/xrc_strings.cpp:233
+msgid "Developers"
+msgstr "Geliştiriciler"
+
+#: app/AboutDialog.cpp:295
+msgid "This program has been designed and developed by Cecilio Salmer&oacute;n. If you would like to help developing this program or join the project to help in any other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and leave a message in the 'contact' page. Thank you and welcome."
+msgstr " Bu program, Cecilio Salmer&oacutenin tarafından  tasarlanıldı ve  geliştirildi;n.Yardım etmek için projeye katılmak veya başka bir yolla projeye katılmak istermisinn, gerçekten aramıza hoşgeldin;lütfen, LenMus'un www.lenmus.org websitesini ziyaret et ve bir mesaj bırak.Teşekkürler ve Hoşgeldiniz. "
+
+#: app/DlgCfgEarIntervals.cpp:456
+msgid "It is nor possible to generate any interval. Selected notes range interval (tab 'Other settings') is lower than minimum allowed interval (tab 'Intervals')"
+msgstr "Herhangi bir ara üretmek için mümkündür.Seçilmiş nota aralığı (diğer kurgu askı), minimundan daha aşağı izin verilen aralıkdr (askı aralığı)"
+
+#: app/DlgCfgEarIntervals.cpp:467
+msgid "It is nor possible to generate all the selected intervals. Selected notes range interval (tab 'Other settings') is lower than maximum allowed interval (tab 'Intervals')"
+msgstr "Geliştiriciler"
+
+#: app/DlgDebug.cpp:77
+#: app/LangChoiceDlg.cpp:100
+msgid "OK"
+msgstr "Tamam"
+
+#: app/LangChoiceDlg.cpp:78
+#: ../xrc/xrc_strings.cpp:181
+msgid "Choose language to use:"
+msgstr "Kullanmak için dil seç:"
+
+#: app/Logger.cpp:155
+#: app/MainFrame.cpp:1540
+#: app/MainFrame.cpp:1545
+msgid "Error message"
+msgstr "Hata mesajı"
+
+#: app/MainFrame.cpp:426
+msgid "Welcome to LenMus!"
+msgstr "Lenmus'a Hoşgeldiniz"
+
+#: app/MainFrame.cpp:490
+#: options/OptionsDlg.cpp:177
+msgid "Preferences"
+msgstr "Tercihler"
+
+#: app/MainFrame.cpp:490
+msgid "Set user preferences"
+msgstr "Kul"
+
+#: app/MainFrame.cpp:491
+msgid "Help button"
+msgstr "Yardım butonu"
+
+#: app/MainFrame.cpp:492
+msgid "Books"
+msgstr "Kitaplar"
+
+#: app/MainFrame.cpp:492
+msgid "Show the music books"
+msgstr "Müzik kitaplarını göster"
+
+#: app/MainFrame.cpp:498
+msgid "New"
+msgstr "Yeni"
+
+#: app/MainFrame.cpp:498
+msgid "New score"
+msgstr "Yeni sayı"
+
+#: app/MainFrame.cpp:499
+msgid "Open"
+msgstr "Aç"
+
+#: app/MainFrame.cpp:499
+msgid "Open score"
+msgstr "Sayı aç"
+
+#: app/MainFrame.cpp:500
+msgid "Save"
+msgstr "Kaydet"
+
+#: app/MainFrame.cpp:500
+msgid "Save current score to disk"
+msgstr "Diske güncel sayıyı koru"
+
+#: app/MainFrame.cpp:501
+msgid "Print"
+msgstr "Yazdır"
+
+#: app/MainFrame.cpp:501
+msgid "Print document"
+msgstr "Dökümanı yazdır"
+
+#: app/MainFrame.cpp:507
+msgid "Copy"
+msgstr "Kopyala"
+
+#: app/MainFrame.cpp:508
+msgid "Cut"
+msgstr "Kes"
+
+#: app/MainFrame.cpp:509
+msgid "Paste"
+msgstr "Yapıştır"
+
+#: app/MainFrame.cpp:515
+msgid "Fit full"
+msgstr "Doğrudan uy"
+
+#: app/MainFrame.cpp:515
+msgid "Zoom so that the full page is displayed"
+msgstr "Bütün sayfayı göstermek için zoom yap"
+
+#: app/MainFrame.cpp:516
+msgid "Fit width"
+msgstr "Genişliğe uy"
+
+#: app/MainFrame.cpp:516
+msgid "Zoom so that page width equals window width"
+msgstr "Sayfayla pencere genişliğini eşitlemek için zoom yap"
+
+#: app/MainFrame.cpp:528
+#: app/MainFrame.cpp:879
+#: app/MainFrame.cpp:1530
+msgid "Actual size"
+msgstr "Gerçek boyut"
+
+#: app/MainFrame.cpp:529
+#: app/MainFrame.cpp:880
+#: app/MainFrame.cpp:1524
+msgid "Fit page full"
+msgstr "Sayfaya tam uyl"
+
+#: app/MainFrame.cpp:530
+#: app/MainFrame.cpp:881
+#: app/MainFrame.cpp:1527
+msgid "Fit page width"
+msgstr "Sayfada genişliğe uy"
+
+#: app/MainFrame.cpp:538
+msgid "Start/resume play back of the score"
+msgstr "Notaya geçirmeyi tekrarla başlat/yeniden başlat"
+
+#: app/MainFrame.cpp:539
+msgid "Stop playing back"
+msgstr "Tekrarlattırmayı durdur"
+
+#: app/MainFrame.cpp:540
+msgid "Pause"
+msgstr "Durdur"
+
+#: app/MainFrame.cpp:540
+msgid "Pause playing back"
+msgstr "Tekrarlamayı durdur"
+
+#: app/MainFrame.cpp:546
+msgid "Metronome"
+msgstr "Tempo ölçer"
+
+#: app/MainFrame.cpp:546
+msgid "Turn metronome on/off"
+msgstr "Tempo ölçeri döndürmek açık/kapalı"
+
+#: app/MainFrame.cpp:571
+msgid "File tools"
+msgstr "Araçları dosyaları"
+
+#: app/MainFrame.cpp:575
+msgid "Edit tools"
+msgstr "Araçları yayına hazırla"
+
+#: app/MainFrame.cpp:579
+msgid "Zooming tools"
+msgstr "Zoom araçları"
+
+#: app/MainFrame.cpp:583
+msgid "Main tools"
+msgstr "Esas araçlar"
+
+#: app/MainFrame.cpp:587
+msgid "Play tools"
+msgstr "Oyun araçları"
+
+#: app/MainFrame.cpp:591
+msgid "Metronome tools"
+msgstr "Önceki sayfa"
+
+#: app/MainFrame.cpp:688
+msgid "Show/hide navigation panel"
+msgstr "Gezinti panelini göster/gizle"
+
+#: app/MainFrame.cpp:691
+msgid "Go back"
+msgstr "Geri"
+
+#: app/MainFrame.cpp:692
+msgid "Go to previous page in navigation log"
+msgstr "Bir önceki sayfaya git"
+
+#: app/MainFrame.cpp:693
+msgid "Go forward"
+msgstr "İleri"
+
+#: app/MainFrame.cpp:694
+msgid "Go to next page in navigation log"
+msgstr "Bir sonraki sayfaya git"
+
+#: app/MainFrame.cpp:696
+msgid "Parent"
+msgstr "Kaynak"
+
+#: app/MainFrame.cpp:697
+msgid "Go one level up in document hierarchy"
+msgstr "Dökümanda bir seviye yukarı git"
+
+#: app/MainFrame.cpp:698
+msgid "Back Page"
+msgstr "Önceki sayfa"
+
+#: app/MainFrame.cpp:699
+msgid "Previous page of current document"
+msgstr "Yürürlükteki belgenin önceki sayfası"
+
+#: app/MainFrame.cpp:700
+msgid "next Page"
+msgstr "İleriki sayfa"
+
+#: app/MainFrame.cpp:701
+msgid "Next page of current document"
+msgstr "Güncel dökümanın sonraki sayfası"
+
+#: app/MainFrame.cpp:703
+msgid "Fonts"
+msgstr "Yazı tipleri"
+
+#: app/MainFrame.cpp:704
+msgid "Change font settings"
+msgstr "Yazı ayarlarını değiştir"
+
+#: app/MainFrame.cpp:709
+msgid "eBooks navigation tools"
+msgstr "Kitap araçlarında gezin"
+
+#: app/MainFrame.cpp:757
+#: app/MainFrame.cpp:806
+msgid "&New\tCtrl+N"
+msgstr "&Yeni\tCtrl+N"
+
+#: app/MainFrame.cpp:757
+#: app/MainFrame.cpp:806
+msgid "Open new blank score"
+msgstr "Yeni boşluk sayısını aç"
+
+#: app/MainFrame.cpp:761
+#: app/MainFrame.cpp:807
+msgid "&Open ...\tCtrl+O"
+msgstr "&Aç ...\tCtrl+O"
+
+#: app/MainFrame.cpp:761
+#: app/MainFrame.cpp:807
+msgid "Open a score"
+msgstr "Bir sayı aç"
+
+#: app/MainFrame.cpp:765
+#: app/MainFrame.cpp:808
+msgid "Open &books"
+msgstr "&Kitapları aç"
+
+#: app/MainFrame.cpp:765
+#: app/MainFrame.cpp:808
+msgid "Hide/show eMusicBooks"
+msgstr "Müzik kitaplarını göster/gizle"
+
+#: app/MainFrame.cpp:770
+#: app/MainFrame.cpp:809
+msgid "&Import..."
+msgstr "&Dışarıdan al..."
+
+#: app/MainFrame.cpp:773
+#: app/MainFrame.cpp:811
+msgid "As &bmp image"
+msgstr "&bmp resim gbi"
+
+#: app/MainFrame.cpp:773
+#: app/MainFrame.cpp:811
+msgid "Save score as BMP images"
+msgstr "BMP resim sayılarını kaydet"
+
+#: app/MainFrame.cpp:777
+#: app/MainFrame.cpp:812
+msgid "As &jpg image"
+msgstr "&jpg resim gibi"
+
+#: app/MainFrame.cpp:777
+#: app/MainFrame.cpp:812
+msgid "Save score as JPG images"
+msgstr "JPG resim sayılarını kaydet"
+
+#: app/MainFrame.cpp:784
+#: app/MainFrame.cpp:815
+msgid "&Export ..."
+msgstr "&Dış ortama taşı ..."
+
+#: app/MainFrame.cpp:785
+#: app/MainFrame.cpp:816
+msgid "Save score in other formats"
+msgstr "Diğer formatlarda sayı kaydet"
+
+#: app/MainFrame.cpp:787
+#: app/MainFrame.cpp:818
+msgid "&Save\tCtrl+S"
+msgstr "&Kaydet\tCtrl+S"
+
+#: app/MainFrame.cpp:791
+msgid "Save &as ..."
+msgstr "Farklı &kaydet ..."
+
+#: app/MainFrame.cpp:793
+#: app/MainFrame.cpp:820
+msgid "&Close\tCtrl+W"
+msgstr "&Kapat\tCtrl+W"
+
+#: app/MainFrame.cpp:796
+#: app/MainFrame.cpp:822
+msgid "&Print ...\tCtrl+P"
+msgstr "&Yazdır ...\tCtrl+P"
+
+#: app/MainFrame.cpp:800
+#: app/MainFrame.cpp:823
+msgid "Print &Setup..."
+msgstr "Baskıyı &Kur"
+
+#: app/MainFrame.cpp:801
+msgid "Print Pre&view"
+msgstr "Baskı Ö&nizleme"
+
+#: app/MainFrame.cpp:803
+#: app/MainFrame.cpp:826
+msgid "&Quit\tCtrl+Q"
+msgstr "&Çıkış\tCtrl+Q"
+
+#: app/MainFrame.cpp:819
+msgid "Save &as ...\tCtrl+Shift+S"
+msgstr "Farklı  &kaydet ...\tCtrl+Shift+S"
+
+#: app/MainFrame.cpp:824
+msgid "Print Pre&view\tCtrl+Shift+P"
+msgstr "Baskı Ö&nizleme\tCtrl+Shift+P"
+
+#: app/MainFrame.cpp:838
+msgid "&Undo"
+msgstr "&Çöz"
+
+#: app/MainFrame.cpp:839
+msgid "&Redo"
+msgstr "&Yeniden yap"
+
+#: app/MainFrame.cpp:846
+msgid "Tool &bar"
+msgstr "Araç &çubuğu"
+
+#: app/MainFrame.cpp:846
+msgid "Hide/show the tools bar"
+msgstr "Araç çubuğunu göster/gizle"
+
+#: app/MainFrame.cpp:847
+msgid "&Status bar"
+msgstr "&Konum çubuğu"
+
+#: app/MainFrame.cpp:847
+msgid "Hide/show the status bar"
+msgstr "Konu çubuğunu göster/gizle"
+
+#: app/MainFrame.cpp:850
+msgid "&Rulers"
+msgstr "&Cetveller"
+
+#: app/MainFrame.cpp:850
+msgid "Hide/show rulers"
+msgstr "Cetvelleri göster/gizle"
+
+#: app/MainFrame.cpp:882
+msgid "Zoom to ..."
+msgstr "Yakınlaştır..."
+
+#: app/MainFrame.cpp:888
+#: app/MainFrame.cpp:902
+msgid "&Play"
+msgstr "&Oyna"
+
+#: app/MainFrame.cpp:892
+#: app/MainFrame.cpp:903
+msgid "S&top"
+msgstr "&Dur"
+
+#: app/MainFrame.cpp:896
+#: app/MainFrame.cpp:904
+msgid "P&ause"
+msgstr "&Duraklat"
+
+#: app/MainFrame.cpp:909
+msgid "&Run Midi wizard"
+msgstr "Midi sihirbazını &Çalıştır"
+
+#: app/MainFrame.cpp:910
+msgid "Midi configuration wizard"
+msgstr "Midi sihirbaz konfigürasyonları"
+
+#: app/MainFrame.cpp:912
+msgid "&Test sound"
+msgstr "&Ses testi"
+
+#: app/MainFrame.cpp:912
+msgid "Play an scale to test sound"
+msgstr "Sesi test etmek için ölçeği oynat"
+
+#: app/MainFrame.cpp:913
+msgid "&All sounds off"
+msgstr "&Bütün sesleri kapat"
+
+#: app/MainFrame.cpp:914
+msgid "Stop inmediatly all sounds"
+msgstr "Bütün sesleri tamamen durdur"
+
+#: app/MainFrame.cpp:920
+#: app/MainFrame.cpp:926
+msgid "&Preferences"
+msgstr "&Seçenekler"
+
+#: app/MainFrame.cpp:921
+#: app/MainFrame.cpp:937
+#: app/MainFrame.cpp:943
+msgid "Open help book"
+msgstr "Yardım kitabını aç"
+
+#: app/MainFrame.cpp:932
+msgid "&About\tF1"
+msgstr "&Hakkında\tF1"
+
+#: app/MainFrame.cpp:933
+msgid "Display information about program version and credits"
+msgstr "Program versiyonu ve kredileri hakkında bilgileri görüntüle"
+
+#: app/MainFrame.cpp:936
+#: app/MainFrame.cpp:942
+msgid "&Content\tCtrl+Alt+F1"
+msgstr "&İçerik\tCtrl+Alt+F1"
+
+#: app/MainFrame.cpp:946
+msgid "Check now for &updates"
+msgstr "&Güncelleştirmeler için şimdi tıkla "
+
+#: app/MainFrame.cpp:947
+msgid "Connect to Internet and check for program updates"
+msgstr "Program güncelleştirmeleri için internete  bağlan "
+
+#: app/MainFrame.cpp:950
+#: app/MainFrame.cpp:956
+msgid "&Visit LenMus website"
+msgstr "Lenmus websitesini &ziyaret et"
+
+#: app/MainFrame.cpp:951
+#: app/MainFrame.cpp:957
+msgid "Open the Internet browser and go to LenMus website"
+msgstr "İnternet tarayıcısını aç ve LenMus websitesine git"
+
+#: app/MainFrame.cpp:967
+msgid "&Edit"
+msgstr "&Düzen"
+
+#: app/MainFrame.cpp:968
+msgid "&View"
+msgstr "&Görünüm"
+
+#: app/MainFrame.cpp:969
+msgid "&Sound"
+msgstr "&Ses"
+
+#: app/MainFrame.cpp:970
+msgid "&Debug"
+msgstr "&Hata giderme"
+
+#: app/MainFrame.cpp:971
+msgid "&Zoom"
+msgstr "Yakınlaştır"
+
+#: app/MainFrame.cpp:972
+msgid "&Options"
+msgstr "&Seçenekler"
+
+#: app/MainFrame.cpp:1069
+msgid "LenMus help"
+msgstr "LenMus yardım"
+
+#: app/MainFrame.cpp:1075
+msgid "Test mode: using .hhp help file"
+msgstr "Test modu:.hhp yardım dosyası kullan"
+
+#: app/MainFrame.cpp:1082
+#: app/MainFrame.cpp:1166
+#, c-format
+msgid "Failed adding book %s"
+msgstr "Başarısız ekleyen kitap %s"
+
+#: app/MainFrame.cpp:1113
+msgid "Available books"
+msgstr "Mevcut kitaplar"
+
+#: app/MainFrame.cpp:1150
+#, c-format
+msgid "Error when trying to move to folder %s"
+msgstr "Dosyayı taşımayı denediğin zamanki hata %s"
+
+#: app/MainFrame.cpp:1260
+msgid "Name for the exported file"
+msgstr "Çıkış dosyasının ismi"
+
+#: app/MainFrame.cpp:1463
+msgid "Mask to add"
+msgstr "Maske ekle"
+
+#: app/MainFrame.cpp:1500
+msgid "Zooming? (10 to 800)"
+msgstr "Zoom yapılsınmı? (10 to 800)"
+
+#: app/MainFrame.cpp:1539
+#, c-format
+msgid "Invalid zooming factor '%s'"
+msgstr "Geçersiz zoom yapma faktörü '%s"
+
+#: app/MainFrame.cpp:1544
+msgid "Zooming factor must be greater that 10% and lower than 800%"
+msgstr "%10 ve %800 arasında olan alt sınırı büyük etkili zoom yap"
+
+#: app/MainFrame.cpp:1668
+msgid ""
+"There is a problem previewing.\n"
+"Perhaps your current printer is not set correctly?"
+msgstr ""
+"Baskı önizlemede problem var.\n"
+" Belki güncel yazıcınız, doğru olarak  kurulmaz?"
+
+#: app/MainFrame.cpp:1668
+msgid "Previewing"
+msgstr "Baskı önizleme"
+
+#: app/MainFrame.cpp:1672
+msgid "Preview"
+msgstr "Baskı önizleme"
+
+#: app/MainFrame.cpp:1721
+msgid ""
+"There is a problem for printing.\n"
+"Perhaps your current printer is not set correctly?"
+msgstr ""
+"Baskıda problem var.\n"
+"Belki güncel yazıcınız, doğru olarak  kurulmaz?"
+
+#: app/MainFrame.cpp:1723
+msgid "Printing canceled"
+msgstr "Baımı iptal et"
+
+#: app/MidiWizard.cpp:101
+msgid "MIDI configuration wizard"
+msgstr "MIDI konfigürasyon sihirlisi"
+
+#: app/MidiWizard.cpp:306
+#: app/MidiWizard.cpp:310
+#: app/MidiWizard.cpp:424
+msgid "None"
+msgstr "Hiç biri"
+
+#: app/MidiWizard.cpp:334
+msgid "Midi devices to use"
+msgstr "Midi araçlarını kullan"
+
+#: app/MidiWizard.cpp:344
+msgid "To generate sounds the program needs a MIDI synthesizer device. Normally, one of these devices is included in the sound board of the PC, but your PC might have more than one."
+msgstr "Sesleri üretmek için program MIDI sentezör cihazına  ihtiyaç duyar.Normal olarak, bu araçlardan biri PC'nin ses tahtasını içerir, fakat senin bilgisayarın daha fazlasını yapabilir."
+
+#: app/MidiWizard.cpp:347
+msgid "If your PC has more than one device, choose one of them. You can test all of them and choose the one whose sound you prefer."
+msgstr "PC de birden fazla araca sahipsen, bunlardan birini seç.Onların hepsini test edebilirsin ve tercih ettiğin birini seç."
+
+#: app/MidiWizard.cpp:356
+msgid "Output device:"
+msgstr "Çıkış araçları:"
+
+#: app/MidiWizard.cpp:363
+msgid "Input device:"
+msgstr "Giriş araçları:"
+
+#: app/MidiWizard.cpp:524
+msgid "Voice channel and instrument"
+msgstr "Kanal ve aleti  ifade et."
+
+#: app/MidiWizard.cpp:534
+msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose any other channel (it doesn't matter wich one)."
+msgstr "Kanallar 10 ve 16 vurma seslerinde uzmanlaştırırlar.Bu yüzden başka bir kanalı seçmeye ihtiyaç duyar"
+
+#: app/MidiWizard.cpp:537
+msgid "To facilitate access to the instruments they are grouped into sections. First choose a section and then choose the desired instrument."
+msgstr "Aletlere erişmeyi kolaylaştırırler ve kısımların içine gruplanırlar.Önce, bölümü  seç ve sonra istenen aleti  seç"
+
+#: app/MidiWizard.cpp:546
+#: app/MidiWizard.cpp:783
+msgid "Channel:"
+msgstr "Kanal:"
+
+#: app/MidiWizard.cpp:556
+msgid "Section:"
+msgstr "Bölüm:"
+
+#: app/MidiWizard.cpp:563
+msgid "Instrument:"
+msgstr "Enstrüman:"
+
+#: app/MidiWizard.cpp:570
+#: app/MidiWizard.cpp:807
+msgid "Test sound"
+msgstr "Ses testi"
+
+#: app/MidiWizard.cpp:761
+msgid "lmMetronome channel and sounds"
+msgstr "lmMetronome kanal ve sesleri"
+
+#: app/MidiWizard.cpp:771
+msgid "Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one)."
+msgstr "Kanallar 10 ve 16 vurma seslerinde uzmanlaştırırlar.Bu yüzden başka bir kanalı seçmeye ihtiyaç duyar"
+
+#: app/MidiWizard.cpp:774
+msgid "To better identify the first beat of each measure it is possible to assign a different sound to it. But also you can choose the same sound for both, the first beat and the others."
+msgstr "Daha iyiye, ona farklı sesi tahsis etmek için mümkün  olduğu herbir ölçüsünün ilk darbesini  tanımla.Bundan başka, her ikisi için aynı sesi  seçebilirsin, ilk darbe ve diğerleri. "
+
+#: app/MidiWizard.cpp:793
+msgid "Sound for first beat of each measure:"
+msgstr "Herbirinin ilk darbe ölçülerinin seslerini gör"
+
+#: app/MidiWizard.cpp:800
+msgid "Sound for other beats of each measure:"
+msgstr "Herbirinin diğer darbe ölçülerinin seslerini gör:"
+
+#: app/TheApp.cpp:652
+msgid "LenMus First Run"
+msgstr "LenMus ilk işletimi"
+
+#: app/ToolsDlg.cpp:71
+msgid "Notes"
+msgstr "Notlar"
+
+#: app/ToolsDlg.cpp:75
+msgid "Clefs"
+msgstr "Nota anahtarları"
+
+#: app/Updater.cpp:97
+#: updater/Updater.cpp:205
+msgid "Error loading XML file "
+msgstr "XML dosyasındaki hataları takip et"
+
+#: options/ColorsOptPanel.cpp:65
+msgid "Choose colors to use:"
+msgstr "Kullnıcı renklerini seç"
+
+#: options/InternetOptPanel.cpp:115
+#: options/InternetOptPanel.cpp:141
+#: options/InternetOptPanel.cpp:235
+msgid "Never"
+msgstr "Asla"
+
+#: options/InternetOptPanel.cpp:116
+#: options/InternetOptPanel.cpp:237
+msgid "Daily"
+msgstr "Günlük olarak"
+
+#: options/InternetOptPanel.cpp:117
+#: options/InternetOptPanel.cpp:239
+msgid "Weekly"
+msgstr "Haftalık"
+
+#: options/InternetOptPanel.cpp:118
+#: options/InternetOptPanel.cpp:241
+msgid "Monthly"
+msgstr "Aylık"
+
+#: options/OptionsDlg.cpp:192
+msgid "Toolbars"
+msgstr "Araç çubukları"
+
+#: options/OptionsDlg.cpp:197
+msgid "Internet"
+msgstr "İnternet"
+
+#: options/OptionsDlg.cpp:202
+msgid "Other"
+msgstr "Diğer"
+
+#: options/OptionsDlg.cpp:261
+msgid "&Accept"
+msgstr "&Kabul et"
+
+#: options/OptionsDlg.cpp:264
+#: ../xrc/xrc_strings.cpp:128
+#: ../xrc/xrc_strings.cpp:220
+#: ../xrc/xrc_strings.cpp:226
+msgid "&Cancel"
+msgstr "&İptal"
+
+#: sound/SoundManager.cpp:446
+msgid "Can't create a thread!"
+msgstr "Kontrol akışını yaratma"
+
+#: sound/SoundManager.cpp:459
+msgid "Can't start the thread!"
+msgstr "Kontrol akışını başlatma"
+
+#: ../xrc/xrc_strings.cpp:1
+msgid "Configuration: Intervals - identification by ear"
+msgstr "Konfigürasyon: Kulak yoluyla tanınan aralıklar"
+
+#: ../xrc/xrc_strings.cpp:2
+msgid "Intervals"
+msgstr "Aralar"
+
+#: ../xrc/xrc_strings.cpp:3
+msgid "Intervals to practise"
+msgstr "Pratik yapmak için aralıklar"
+
+#: ../xrc/xrc_strings.cpp:6
+msgid "Major 2nd"
+msgstr "2. Majör"
+
+#: ../xrc/xrc_strings.cpp:8
+msgid "Major 3rd"
+msgstr "3. Majör"
+
+#: ../xrc/xrc_strings.cpp:9
+msgid "Perfect 4th"
+msgstr "4. Mükemmel "
+
+#: ../xrc/xrc_strings.cpp:10
+msgid "augm.4th / dim. 5th"
+msgstr "4.art / 5.az"
+
+#: ../xrc/xrc_strings.cpp:18
+msgid "Major 9th"
+msgstr "9.Majör"
+
+#: ../xrc/xrc_strings.cpp:20
+msgid "Major 10th"
+msgstr "10. Majör"
+
+#: ../xrc/xrc_strings.cpp:22
+msgid "augm. 11th / dim. 12th"
+msgstr "11.art./ 12.az"
+
+#: ../xrc/xrc_strings.cpp:25
+msgid "Major 13th"
+msgstr "13. Majör"
+
+#: ../xrc/xrc_strings.cpp:27
+msgid "Major 14th"
+msgstr "14. Majör"
+
+#: ../xrc/xrc_strings.cpp:29
+#: ../xrc/xrc_strings.cpp:60
+#: ../xrc/xrc_strings.cpp:139
+#: ../xrc/xrc_strings.cpp:262
+#: ../xrc/xrc_strings.cpp:286
+#: ../xrc/xrc_strings.cpp:318
+msgid "You must choose one at least! "
+msgstr "En azından birini  seçmelisiniz"
+
+#: ../xrc/xrc_strings.cpp:30
+#: ../xrc/xrc_strings.cpp:31
+#: ../xrc/xrc_strings.cpp:140
+msgid "Accidentals"
+msgstr "Kaza eseri"
+
+#: ../xrc/xrc_strings.cpp:32
+msgid "&Use only notes from key signature"
+msgstr "&İmza anahtarından sadece notaları kullan"
+
+#: ../xrc/xrc_strings.cpp:33
+msgid "&Allow chromatic accidentals"
+msgstr "&Yarım tonlardan oluşan kazaya izin ver."
+
+#: ../xrc/xrc_strings.cpp:34
+#: ../xrc/xrc_strings.cpp:107
+#: ../xrc/xrc_strings.cpp:263
+#: ../xrc/xrc_strings.cpp:264
+#: ../xrc/xrc_strings.cpp:319
+#: ../xrc/xrc_strings.cpp:320
+msgid "Key signatures"
+msgstr "İmzaların anahtarı"
+
+#: ../xrc/xrc_strings.cpp:35
+#: ../xrc/xrc_strings.cpp:108
+#: ../xrc/xrc_strings.cpp:265
+#: ../xrc/xrc_strings.cpp:321
+msgid "C Major / A minor"
+msgstr "C Majör / A minör"
+
+#: ../xrc/xrc_strings.cpp:36
+#: ../xrc/xrc_strings.cpp:109
+#: ../xrc/xrc_strings.cpp:266
+#: ../xrc/xrc_strings.cpp:322
+msgid "G Major / E minor"
+msgstr "G Majör / E minör"
+
+#: ../xrc/xrc_strings.cpp:37
+#: ../xrc/xrc_strings.cpp:45
+#: ../xrc/xrc_strings.cpp:110
+#: ../xrc/xrc_strings.cpp:118
+#: ../xrc/xrc_strings.cpp:267
+#: ../xrc/xrc_strings.cpp:275
+#: ../xrc/xrc_strings.cpp:323
+#: ../xrc/xrc_strings.cpp:331
+msgid "D Major / B minor"
+msgstr "D Majör / B minör"
+
+#: ../xrc/xrc_strings.cpp:38
+#: ../xrc/xrc_strings.cpp:111
+#: ../xrc/xrc_strings.cpp:268
+#: ../xrc/xrc_strings.cpp:324
+msgid "A Major / F# minor"
+msgstr "A Majör / F# minör"
+
+#: ../xrc/xrc_strings.cpp:39
+#: ../xrc/xrc_strings.cpp:112
+#: ../xrc/xrc_strings.cpp:269
+#: ../xrc/xrc_strings.cpp:325
+msgid "E Major / C# minor"
+msgstr "E Majör / C# minör"
+
+#: ../xrc/xrc_strings.cpp:40
+#: ../xrc/xrc_strings.cpp:113
+#: ../xrc/xrc_strings.cpp:270
+#: ../xrc/xrc_strings.cpp:326
+msgid "B Major / G# minor"
+msgstr "B Majör / G# minör"
+
+#: ../xrc/xrc_strings.cpp:41
+#: ../xrc/xrc_strings.cpp:114
+#: ../xrc/xrc_strings.cpp:271
+#: ../xrc/xrc_strings.cpp:327
+msgid "F# Major / D# minor"
+msgstr "F# Majör / D# minör"
+
+#: ../xrc/xrc_strings.cpp:42
+#: ../xrc/xrc_strings.cpp:115
+#: ../xrc/xrc_strings.cpp:272
+#: ../xrc/xrc_strings.cpp:328
+msgid "C# Major / A# minor"
+msgstr "C# Majör / A# minör"
+
+#: ../xrc/xrc_strings.cpp:43
+#: ../xrc/xrc_strings.cpp:116
+#: ../xrc/xrc_strings.cpp:273
+#: ../xrc/xrc_strings.cpp:329
+msgid "Cb Major / Ab minor"
+msgstr "Cb Majör / Ab minör"
+
+#: ../xrc/xrc_strings.cpp:44
+#: ../xrc/xrc_strings.cpp:117
+#: ../xrc/xrc_strings.cpp:274
+#: ../xrc/xrc_strings.cpp:330
+msgid "Gb Major / Eb minor"
+msgstr "Gb Majör / Eb minör"
+
+#: ../xrc/xrc_strings.cpp:46
+#: ../xrc/xrc_strings.cpp:119
+#: ../xrc/xrc_strings.cpp:276
+#: ../xrc/xrc_strings.cpp:332
+msgid "Ab Major / F minor"
+msgstr "Ab Majör / F minör"
+
+#: ../xrc/xrc_strings.cpp:47
+#: ../xrc/xrc_strings.cpp:120
+#: ../xrc/xrc_strings.cpp:277
+#: ../xrc/xrc_strings.cpp:333
+msgid "Eb Major / C minor"
+msgstr "Eb Majör / C minör"
+
+#: ../xrc/xrc_strings.cpp:48
+#: ../xrc/xrc_strings.cpp:121
+#: ../xrc/xrc_strings.cpp:278
+#: ../xrc/xrc_strings.cpp:334
+msgid "Bb Major / G minor"
+msgstr "Bb Majör / G minör"
+
+#: ../xrc/xrc_strings.cpp:49
+#: ../xrc/xrc_strings.cpp:122
+#: ../xrc/xrc_strings.cpp:279
+#: ../xrc/xrc_strings.cpp:335
+msgid "F Major / D minor"
+msgstr "F Majör / D minör"
+
+#: ../xrc/xrc_strings.cpp:50
+#: ../xrc/xrc_strings.cpp:280
+#: ../xrc/xrc_strings.cpp:336
+msgid "You must choose one key signature at least! "
+msgstr "En azından bir armatürü  seçmelisiniz"
+
+#: ../xrc/xrc_strings.cpp:51
+#: ../xrc/xrc_strings.cpp:281
+#: ../xrc/xrc_strings.cpp:337
+msgid "Other settings"
+msgstr "Diğer ayarlar"
+
+#: ../xrc/xrc_strings.cpp:52
+msgid "Notes' range"
+msgstr "Notaların değeri"
+
+#: ../xrc/xrc_strings.cpp:53
+#: ../xrc/xrc_strings.cpp:70
+#: ../xrc/xrc_strings.cpp:73
+#: ../xrc/xrc_strings.cpp:76
+#: ../xrc/xrc_strings.cpp:79
+#: ../xrc/xrc_strings.cpp:82
+#: ../xrc/xrc_strings.cpp:85
+#: ../xrc/xrc_strings.cpp:88
+msgid "Min. note"
+msgstr "Min. nota"
+
+#: ../xrc/xrc_strings.cpp:54
+#: ../xrc/xrc_strings.cpp:71
+#: ../xrc/xrc_strings.cpp:74
+#: ../xrc/xrc_strings.cpp:77
+#: ../xrc/xrc_strings.cpp:80
+#: ../xrc/xrc_strings.cpp:83
+#: ../xrc/xrc_strings.cpp:86
+#: ../xrc/xrc_strings.cpp:89
+msgid "Max. note"
+msgstr "Max. nota"
+
+#: ../xrc/xrc_strings.cpp:55
+#: ../xrc/xrc_strings.cpp:91
+msgid "Minimum pitch must be lower than maximum one "
+msgstr "Minimum alçalma yükselme açısı , maksimum olandan daha aşağı  olmalı"
+
+#: ../xrc/xrc_strings.cpp:56
+msgid "Intervals' types"
+msgstr "Aralıkların tipleri"
+
+#: ../xrc/xrc_strings.cpp:57
+msgid "Harmonic (simultaneous notes)"
+msgstr "Harmonik (aynı anda olan notalar)"
+
+#: ../xrc/xrc_strings.cpp:58
+msgid "Melodic (ascending)"
+msgstr "Melodik (çıkma)"
+
+#: ../xrc/xrc_strings.cpp:59
+msgid "Melodic (descending)"
+msgstr "Melodik (inme)"
+
+#: ../xrc/xrc_strings.cpp:61
+msgid "Start both intervals with the same note"
+msgstr "Aynı notayla her iki aralığa başla"
+
+#: ../xrc/xrc_strings.cpp:62
+#: ../xrc/xrc_strings.cpp:127
+#: ../xrc/xrc_strings.cpp:147
+#: ../xrc/xrc_strings.cpp:177
+#: ../xrc/xrc_strings.cpp:238
+#: ../xrc/xrc_strings.cpp:289
+#: ../xrc/xrc_strings.cpp:343
+msgid "Accept"
+msgstr "Kabul et"
+
+#: ../xrc/xrc_strings.cpp:63
+#: ../xrc/xrc_strings.cpp:148
+#: ../xrc/xrc_strings.cpp:178
+#: ../xrc/xrc_strings.cpp:290
+#: ../xrc/xrc_strings.cpp:344
+msgid "Cancel"
+msgstr "İptal"
+
+#: ../xrc/xrc_strings.cpp:64
+msgid "It is nor possible to generate any interval. Selected notes range interval (see tab 'Other settings') is lower than minimun allowed interval (see tab 'Intervals')"
+msgstr "Herhangi bir ara üretmek için mümkündür.Seçilmiş nota aralığı (diğer kurguyu gör), minimundan daha aşağı izin verilen aralıkdr (askı aralıkları gör)"
+
+#: ../xrc/xrc_strings.cpp:66
+msgid "Score generation settings"
+msgstr "Üretim ayarlarının sayısı"
+
+#: ../xrc/xrc_strings.cpp:67
+msgid "Clefs and Notes"
+msgstr "Nota anahtarı ve notalar"
+
+#: ../xrc/xrc_strings.cpp:68
+msgid ""
+"Mark the clefts to use and set up the minimun and\n"
+"maximum pitches for the notes to use with each selected clef."
+msgstr ""
+"Kullanmak için yarığı işaretle ve minumumu kur ve\n"
+" Herbirisi ile notalardan kullanıma maksimum alçalma yükselme açıları, nota anahtarını  seçdiler."
+
+#: ../xrc/xrc_strings.cpp:69
+#: ../xrc/xrc_strings.cpp:132
+msgid "G clef (violin)"
+msgstr "G nota anahtarı (keman)"
+
+#: ../xrc/xrc_strings.cpp:72
+#: ../xrc/xrc_strings.cpp:133
+msgid "F clef on 4th line (bass)"
+msgstr "F nota anahtarı 4. çizgi (bas)"
+
+#: ../xrc/xrc_strings.cpp:75
+#: ../xrc/xrc_strings.cpp:134
+msgid "F clef on 3rd line"
+msgstr "F nota anahtarı 3. çizgi"
+
+#: ../xrc/xrc_strings.cpp:78
+#: ../xrc/xrc_strings.cpp:135
+msgid "C clef on 1st line (soprano)"
+msgstr "C nota anahtarı 1. çicgi (soprano)"
+
+#: ../xrc/xrc_strings.cpp:81
+#: ../xrc/xrc_strings.cpp:136
+msgid "C clef on 2nd line (mezzo soprano)"
+msgstr "C nota anahtarı 2. çizgi (mezzo soprano)"
+
+#: ../xrc/xrc_strings.cpp:84
+#: ../xrc/xrc_strings.cpp:137
+msgid "C clef on 3rd line (contralto)"
+msgstr "C ota anahtarın 3. çizgi (kontralto)"
+
+#: ../xrc/xrc_strings.cpp:87
+#: ../xrc/xrc_strings.cpp:138
+msgid "C clef on 4th line (tenor)"
+msgstr "C nota anahtarı 4. çizgi (tenor)"
+
+#: ../xrc/xrc_strings.cpp:90
+msgid "You must choose at least one clef! "
+msgstr "En azından bir nota anahtarını  seçmelisiniz"
+
+#: ../xrc/xrc_strings.cpp:92
+msgid "Maximum interval between two consecutive notes"
+msgstr "İki ardışık nota arasında maksimum aralık"
+
+#: ../xrc/xrc_strings.cpp:93
+msgid "Time signatures"
+msgstr "İmzaların zamanı"
+
+#: ../xrc/xrc_strings.cpp:94
+msgid "Binary subdivision"
+msgstr "İkilik bölüm"
+
+#: ../xrc/xrc_strings.cpp:95
+msgid "2 4 time signature"
+msgstr "2 4 imza zamanı"
+
+#: ../xrc/xrc_strings.cpp:96
+msgid "3 4"
+msgstr "3 4"
+
+#: ../xrc/xrc_strings.cpp:97
+msgid "4 4"
+msgstr "4 4"
+
+#: ../xrc/xrc_strings.cpp:98
+msgid "2 8"
+msgstr "2 8"
+
+#: ../xrc/xrc_strings.cpp:99
+msgid "2 2"
+msgstr "2 2"
+
+#: ../xrc/xrc_strings.cpp:100
+msgid "3 2"
+msgstr "3 2"
+
+#: ../xrc/xrc_strings.cpp:101
+msgid "Ternary subdivision"
+msgstr "Üçlü bölüm"
+
+#: ../xrc/xrc_strings.cpp:102
+msgid "6 8 time signature"
+msgstr "6 8 imza zamanı"
+
+#: ../xrc/xrc_strings.cpp:103
+msgid "9 8"
+msgstr "9 8"
+
+#: ../xrc/xrc_strings.cpp:104
+msgid "12 8"
+msgstr "12 8"
+
+#: ../xrc/xrc_strings.cpp:105
+msgid "3 8"
+msgstr "3 8"
+
+#: ../xrc/xrc_strings.cpp:106
+msgid "You must choose at least one time signature! "
+msgstr "Bir defa en azından imzayı  seçmelisiniz!"
+
+#: ../xrc/xrc_strings.cpp:123
+msgid "You must choose at least one key signature! "
+msgstr "En azından bir armatürü  seçmelisiniz."
+
+#: ../xrc/xrc_strings.cpp:124
+msgid "Rhymths"
+msgstr "Rhymths"
+
+#: ../xrc/xrc_strings.cpp:125
+msgid "Add rhythm"
+msgstr "rhythm ekle"
+
+#: ../xrc/xrc_strings.cpp:126
+msgid "Delete rhythm"
+msgstr "rhythm sil"
+
+#: ../xrc/xrc_strings.cpp:130
+msgid "Configuration: Theory exercises on intervals"
+msgstr "Konfigürasyon: Teori, aralıklarda alıştırma yapar"
+
+#: ../xrc/xrc_strings.cpp:131
+msgid "Clefs to use"
+msgstr "Kullanmak için anahtarlar"
+
+#: ../xrc/xrc_strings.cpp:141
+msgid "Allow accidentals"
+msgstr "Kazaya müsade et"
+
+#: ../xrc/xrc_strings.cpp:142
+msgid "Allow double accidentals"
+msgstr "Kazaya iki kat müsade et"
+
+#: ../xrc/xrc_strings.cpp:143
+msgid "Problem type"
+msgstr "Problem tipi"
+
+#: ../xrc/xrc_strings.cpp:144
+msgid "&Show an interval and ask student for its name"
+msgstr "&Aralığı  göster ve isimini öğrenciye sor"
+
+#: ../xrc/xrc_strings.cpp:145
+msgid "&Name an interval and ask student to build it"
+msgstr "&Bir aralık ismi sor ve onu öğrenciye inşa et"
+
+#: ../xrc/xrc_strings.cpp:146
+msgid "&Both problem types"
+msgstr "Heriki problem tipleri"
+
+#: ../xrc/xrc_strings.cpp:150
+msgid "Pattern's editor"
+msgstr "Kalıbın editörü"
+
+#: ../xrc/xrc_strings.cpp:151
+msgid "Step 1. Choose attributes for next note/rest to enter:"
+msgstr "Adım 1. Nota ve duraklama girişleri için diğer özellikleri seç:"
+
+#: ../xrc/xrc_strings.cpp:152
+msgid "Dotted"
+msgstr "Noktalı"
+
+#: ../xrc/xrc_strings.cpp:153
+msgid "Tied next"
+msgstr "Sonra bağla"
+
+#: ../xrc/xrc_strings.cpp:154
+msgid "Not beamed"
+msgstr "Işınlanmadı"
+
+#: ../xrc/xrc_strings.cpp:155
+msgid "Start of a beamed group"
+msgstr "Bir ışın grubu başladı"
+
+#: ../xrc/xrc_strings.cpp:156
+msgid "Continue in beamed group"
+msgstr "Işın grubu devam ediyor"
+
+#: ../xrc/xrc_strings.cpp:157
+msgid "End of beamed group"
+msgstr "Işın grubu bitti"
+
+#: ../xrc/xrc_strings.cpp:158
+msgid "Step 2. Enter the the desired note/rest:"
+msgstr "Adım 2. Nota ve duraklamada isteneni yap"
+
+#: ../xrc/xrc_strings.cpp:159
+msgid "Whole note"
+msgstr "Müzik notası"
+
+#: ../xrc/xrc_strings.cpp:160
+msgid "Half note"
+msgstr "Yarım nota"
+
+#: ../xrc/xrc_strings.cpp:161
+msgid "Quarter note"
+msgstr "Çeyrek nota"
+
+#: ../xrc/xrc_strings.cpp:162
+msgid "8th note"
+msgstr "8. nota"
+
+#: ../xrc/xrc_strings.cpp:163
+msgid "16th note"
+msgstr "16. nota"
+
+#: ../xrc/xrc_strings.cpp:164
+msgid "32th note"
+msgstr "32. nota"
+
+#: ../xrc/xrc_strings.cpp:165
+msgid "64th note"
+msgstr "64. nota"
+
+#: ../xrc/xrc_strings.cpp:166
+msgid "Whole rest"
+msgstr "Müzik duraklaması"
+
+#: ../xrc/xrc_strings.cpp:167
+msgid "Half rest"
+msgstr "Yarım duraklaması"
+
+#: ../xrc/xrc_strings.cpp:168
+msgid "Quarter rest"
+msgstr "Çeyrek duraklama"
+
+#: ../xrc/xrc_strings.cpp:169
+msgid "8th rest"
+msgstr "8. duraklama"
+
+#: ../xrc/xrc_strings.cpp:170
+msgid "16th rest"
+msgstr "16. duraklama"
+
+#: ../xrc/xrc_strings.cpp:171
+msgid "32th rest"
+msgstr "32. duraklama"
+
+#: ../xrc/xrc_strings.cpp:172
+msgid "64th rest"
+msgstr "64. duraklama"
+
+#: ../xrc/xrc_strings.cpp:173
+msgid "Barline"
+msgstr "Ölçü çizgisi"
+
+#: ../xrc/xrc_strings.cpp:174
+msgid "Clear all"
+msgstr "Bütünü temizle"
+
+#: ../xrc/xrc_strings.cpp:175
+msgid "Undo"
+msgstr "Çöz"
+
+#: ../xrc/xrc_strings.cpp:176
+msgid "Redo"
+msgstr "Yeniden yap"
+
+#: ../xrc/xrc_strings.cpp:180
+msgid "Language preferences"
+msgstr "Dil tercihleri"
+
+#: ../xrc/xrc_strings.cpp:183
+msgid "Preferences for toolbars"
+msgstr "Araç çubukları için tercihler"
+
+#: ../xrc/xrc_strings.cpp:184
+msgid "Icons' size"
+msgstr "İkonların boyutu"
+
+#: ../xrc/xrc_strings.cpp:185
+msgid "&Small"
+msgstr "&Küçük"
+
+#: ../xrc/xrc_strings.cpp:186
+msgid "&Medium"
+msgstr "&Orta"
+
+#: ../xrc/xrc_strings.cpp:187
+msgid "&Large"
+msgstr "&Büyük"
+
+#: ../xrc/xrc_strings.cpp:188
+msgid "Labels"
+msgstr "Etiketler"
+
+#: ../xrc/xrc_strings.cpp:189
+msgid "&No labels"
+msgstr "&Etiketleme"
+
+#: ../xrc/xrc_strings.cpp:190
+msgid "&Labels bottom"
+msgstr "&"
+
+#: ../xrc/xrc_strings.cpp:191
+msgid "&Labels right"
+msgstr "&Sağdaki etiketler"
+
+#: ../xrc/xrc_strings.cpp:193
+msgid "Internet connection options"
+msgstr "İnternet bağlantı seçenekleri"
+
+#: ../xrc/xrc_strings.cpp:194
+msgid "Software updates"
+msgstr "Yazılımı güncelleştir"
+
+#: ../xrc/xrc_strings.cpp:195
+msgid "Check for updates"
+msgstr "Güncelleştirmeler için kontrol et"
+
+#: ../xrc/xrc_strings.cpp:196
+msgid "Last successful check:"
+msgstr "Kontrolü başarılı sürdür"
+
+#: ../xrc/xrc_strings.cpp:197
+msgid "dd/mm/aaaa"
+msgstr "gg/aa/yyyy"
+
+#: ../xrc/xrc_strings.cpp:198
+msgid "Use a proxy server to connect to Internet"
+msgstr " İnternete girmek için proxy hizmetçisini kullan. "
+
+#: ../xrc/xrc_strings.cpp:199
+msgid "Proxy settings"
+msgstr "Proxy ayarları"
+
+#: ../xrc/xrc_strings.cpp:200
+msgid "Server settings"
+msgstr "Server ayarları"
+
+#: ../xrc/xrc_strings.cpp:201
+msgid "Host:"
+msgstr "Kullanıcı"
+
+#: ../xrc/xrc_strings.cpp:202
+msgid "Port number:"
+msgstr "Port numarası:"
+
+#: ../xrc/xrc_strings.cpp:203
+msgid "Please enter data for both, host name and port number"
+msgstr "Her ikisi için giriş yap lütfen, kullanıcı adı ve port numarası"
+
+#: ../xrc/xrc_strings.cpp:204
+msgid "Proxy server requires authentication"
+msgstr "Proxy server doruluğunu ispat etmeyi gerektirir"
+
+#: ../xrc/xrc_strings.cpp:205
+msgid "Authentication"
+msgstr "Doğruluğunu ispat et"
+
+#: ../xrc/xrc_strings.cpp:206
+msgid "Username:"
+msgstr "Kullanıcı adı"
+
+#: ../xrc/xrc_strings.cpp:207
+msgid "Password:"
+msgstr "Parola"
+
+#: ../xrc/xrc_strings.cpp:208
+msgid "Please enter data for both, user name and password"
+msgstr "Kullanıcı adı ve parola için bilgi girişi yap"
+
+#: ../xrc/xrc_strings.cpp:210
+msgid "Other options"
+msgstr "Diğer seçenekler"
+
+#: ../xrc/xrc_strings.cpp:211
+msgid "Exercises"
+msgstr "Alıştırmalar"
+
+#: ../xrc/xrc_strings.cpp:212
+msgid "Generate right/wrong sounds when clicking an answer button"
+msgstr "Cevap düğmesini  tıkladığında doğru ve yanlış sesleri  üret "
+
+#: ../xrc/xrc_strings.cpp:213
+msgid "Show two counters (for teams competition)"
+msgstr "İki sayacı göster (ekipler rekabeti için)"
+
+#: ../xrc/xrc_strings.cpp:214
+msgid "If right answer, do not show solution and generate a new problem"
+msgstr "Doğru cevap ise, çözümü gösterme ve yeni sorunu üret"
+
+#: ../xrc/xrc_strings.cpp:216
+#: ../xrc/xrc_strings.cpp:222
+msgid "LenMus Phonascus updater"
+msgstr "Lenmus Phonascus'u  güncelleştirir"
+
+#: ../xrc/xrc_strings.cpp:217
+msgid "Available updates"
+msgstr "Mevcut güncelleştirmeler"
+
+#: ../xrc/xrc_strings.cpp:218
+msgid "Item description"
+msgstr "Madde açıklaması"
+
+#: ../xrc/xrc_strings.cpp:219
+msgid "Download selected items"
+msgstr "Seçilmiş maddeleri indir"
+
+#: ../xrc/xrc_strings.cpp:223
+msgid "Checking for available updates"
+msgstr "Mevcut güncelleştirmeleri kontrol et"
+
+#: ../xrc/xrc_strings.cpp:224
+msgid ""
+"This program will connect to LenMus website and look for \n"
+"available updates.\n"
+"\n"
+"Press 'Proceed' to start."
+msgstr ""
+"Bu program LenMus web sitesine bağlanacak ve arayacak \n"
+"Mevcut güncelleştirmeler.\n"
+"\n"
+"Baskıya başla ve ilerle."
+
+#: ../xrc/xrc_strings.cpp:225
+msgid "Proceed"
+msgstr "İlerle"
+
+#: ../xrc/xrc_strings.cpp:228
+msgid "About LenMus Phonascus"
+msgstr "LenMus Phonascus Hakkında"
+
+#: ../xrc/xrc_strings.cpp:229
+msgid "LenMus Phonascus "
+msgstr "LenMus Phonascus "
+
+#: ../xrc/xrc_strings.cpp:232
+msgid "Licence"
+msgstr "Lisans"
+
+#: ../xrc/xrc_strings.cpp:234
+msgid "Art design credits"
+msgstr "Sanat dizayn kredileri"
+
+#: ../xrc/xrc_strings.cpp:236
+msgid "Translators"
+msgstr "Tercüman"
+
+#: ../xrc/xrc_strings.cpp:237
+msgid "Build info."
+msgstr "Bilgi inşa et"
+
+#: ../xrc/xrc_strings.cpp:240
+msgid "Configuration: Chords' identification"
+msgstr "Konfigürasyon: Akorları tanıtma"
+
+#: ../xrc/xrc_strings.cpp:241
+msgid "Chords"
+msgstr "Akorlar"
+
+#: ../xrc/xrc_strings.cpp:242
+msgid "Triads"
+msgstr "Üçlü takımlar"
+
+#: ../xrc/xrc_strings.cpp:249
+msgid "Sevenths"
+msgstr "Yedinci"
+
+#: ../xrc/xrc_strings.cpp:258
+msgid "Other chords"
+msgstr "Diğer akortlar"
+
+#: ../xrc/xrc_strings.cpp:282
+msgid "Play modes"
+msgstr "Oyun modları"
+
+#: ../xrc/xrc_strings.cpp:283
+msgid "Chord (simultaneous notes)"
+msgstr "Akor (aynı anda olan notalar)"
+
+#: ../xrc/xrc_strings.cpp:284
+msgid "Arpegiated (ascending)"
+msgstr "Arpegiated (çıkma)"
+
+#: ../xrc/xrc_strings.cpp:285
+msgid "Arpegiated (descending)"
+msgstr "Arpegiated (inme)"
+
+#: ../xrc/xrc_strings.cpp:287
+msgid "Allow inversions"
+msgstr "Ters dönmelere izin ver"
+
+#: ../xrc/xrc_strings.cpp:288
+#: ../xrc/xrc_strings.cpp:342
+msgid "Display key signature"
+msgstr "Armatürü göster"
+
+#: ../xrc/xrc_strings.cpp:292
+msgid "Configuration: Scales' identification"
+msgstr "Konfigürasyon:Kimlik ölçümleri"
+
+#: ../xrc/xrc_strings.cpp:293
+msgid "Scales"
+msgstr "Ölçümler"
+
+#: ../xrc/xrc_strings.cpp:294
+msgid "Major scales"
+msgstr "Majör ölçümleri"
+
+#: ../xrc/xrc_strings.cpp:299
+msgid "Minor scales"
+msgstr "Minör ölçümleri"
+
+#: ../xrc/xrc_strings.cpp:304
+msgid "Greek scales"
+msgstr "Yunan ölçümleri"
+
+#: ../xrc/xrc_strings.cpp:312
+msgid "Other scales"
+msgstr "Diğer ölçümler"
+
+#: ../xrc/xrc_strings.cpp:338
+msgid "Play mode"
+msgstr "Oynama modu"
+
+#: ../xrc/xrc_strings.cpp:339
+msgid "&Ascending"
+msgstr "&Çıkma"
+
+#: ../xrc/xrc_strings.cpp:340
+msgid "&Descending"
+msgstr "&İnme"
+
+#: ../xrc/xrc_strings.cpp:341
+msgid "&Both"
+msgstr "&Herikiside"
+
+#: updater/Updater.cpp:108
+msgid "Error"
+msgstr "Hata"
+
+#: updater/Updater.cpp:108
+msgid ""
+"You are not connected to internet!\n"
+"\n"
+" To check for updates LenMus needs internet connection. \n"
+" Please, connect to internet and then retry."
+msgstr ""
+"İnternete bağlanamadın!\n"
+" \n"
+" İnternet bağlantını kontrol et, LenMus güncellştirmelerinde ihtiyacın olacak \n"
+" Lütfen, internete bağla ve sonra tekrar dene."
+
+#: updater/Updater.cpp:194
+msgid "Error checking for updates"
+msgstr "Güncelleştirmeler için hata kontrolu"
+
+#: updater/Updater.cpp:195
+msgid "Connection with the server could not be established. Check that you are connected to the internet and that no firewalls are blocking this program; then try again. If problems continue, the server may be down. Please, try again later."
+msgstr "Server ile bağlantı kurulamaz.İnternete bağlandığınızı ve hiçbir güvenlik duvarının bu programı  engellemediğini kontrol et;daha sonra tekrar dene.Problemler devam ediyorsa, server kesilmiş olabilir.Lütfen,daha sonra tekrar deneyin."
+
+#: graphic/Formatter4.cpp:526
+msgid "[lmFormatter4::RenderJustified]: Program limitation: Maximum number of staves per system has been exceeded."
+msgstr "[ÖnemliFormatlar4::HaklıyıVer]: Limiti programla: Nota çizgisinde her sistemin maximum sayısı geçildi."
+
+#: graphic/GraphicManager.cpp:318
+msgid "Sorry, not enough memory to create a pBitmap to display the page."
+msgstr "Üzgünüm,görüntü sayfasında pBitmap bir dosyayı yaratmaya hafıza yeterli değil"
+
+#: ../langtool/src/installer.cpp:60
+msgid "Please, choose the optional components you would like to install"
+msgstr "Lütfen, kurmak istediğiniz isteğe bağlı parçaları seç"
+
+#: ../langtool/src/installer.cpp:64
+msgid "Shorcut on desktop"
+msgstr "Masaüstünde kısa kesinti"
+
+#: ../langtool/src/installer.cpp:65
+msgid "Examples of music scores"
+msgstr "Müzik sayılarınının örnekleri"
+
+#: ../langtool/src/installer.cpp:66
+msgid "Add to Control Panel (to 'Add/Remove Programs')"
+msgstr "Kontrol paneli ekle(programlara ekle/sil"
+
+#: ../langtool/src/installer.cpp:69
+msgid "Create a shorcut icon on the desktop"
+msgstr "Masaüstünde kısayol ikonları yarat"
+
+#: ../langtool/src/installer.cpp:70
+msgid "Create a folder containing some examples of music scores"
+msgstr "Müzik sayılarının bazı örneklerini  kapsayan dosyayı  yarat"
+
+#: ../langtool/src/installer.cpp:71
+msgid "Create keys in Windows Registry to add LenMus to 'Add/Remove Programs' in the Control Panel."
+msgstr "LenMus'u eklemek için windows kayıtında ana resimlerleri yarat, kontrol panelinde  'programa ekle/sil' "
+
+#: ../langtool/src/installer.cpp:75
+msgid "Error copying program files"
+msgstr "Program dosyaları kopyalama hatası"
+
+#: ../langtool/src/installer.cpp:76
+msgid "Error installing font"
+msgstr "Yazıtipi kurma hatası"
+
+#: ../langtool/src/installer.cpp:77
+msgid "Error creating shortcut on desktop"
+msgstr "Masaüstünde kısa kesintili hatalar yaratır"
+
+#: ../langtool/src/installer.cpp:78
+msgid "Error copying examples of music scores"
+msgstr "Müzik sayılarının kopyalanmasındaki hataları örnekler"
+
+#: ../langtool/src/installer.cpp:79
+msgid "Would you like to continue the installation?"
+msgstr "Kurmaya devam etmek istiyormusun?"
+
+#: ../langtool/src/installer.cpp:80
+msgid "Installation canceled"
+msgstr "Kanalı kur"
+
+#: ../langtool/src/installer.cpp:85
+msgid "Run"
+msgstr "Çalıştır"
+
+#: ../langtool/src/installer.cpp:86
+msgid "Uninstall"
+msgstr "Kaldır"
+
+#: exercises/Constrains.h:195
+#: exercises/Constrains.h:259
+msgid "Read"
+msgstr "Oku"
+
+#: exercises/Constrains.h:197
+#, c-format
+msgid "Measure %d"
+msgstr "Ölçüm %d"
+
+#: exercises/Constrains.h:198
+#, c-format
+msgid "Stop %d"
+msgstr "Dur %d"
+
+#: html/IdfyChordCtrolParms.h:164
+#: html/IdfyChordCtrolParms.h:176
+#: html/IdfyScalesCtrolParms.h:162
+#: html/ScoreCtrolParams.h:213
+#, c-format
+msgid ""
+"Invalid param value in:\n"
+"<param %s >\n"
+"Acceptable values: 1 | 0 \n"
+msgstr ""
+"Hükümsüz parametre değeri:\n"
+"<parametre %s >\n"
+"Kabul edilebilir değerler: 1 | 0 \n"
+
+#: html/IdfyChordCtrolParms.h:238
+#, c-format
+msgid "lmIdfyChordCtrol. Unknown param: <param %s >\n"
+msgstr "lmIdfyChordCtrol. Bilinmeyen parametre: <param %s >\n"
+
+#: html/IdfyScalesCtrolParms.h:224
+#, c-format
+msgid "lmIdfyScalesCtrol. Unknown param: <param %s >\n"
+msgstr "lmIdfyScalesCtrol. Bilinmeyen parametre: <parametre %s >\n"
+
+#: html/ScoreCtrolParams.h:173
+msgid "Invalid score: old G syntax.\n"
+msgstr "Hükümsüz sayı: eski G sözdizimi.\n"
+
+#: html/ScoreCtrolParams.h:192
+#, c-format
+msgid ""
+"Invalid param value in:\n"
+"<param %s >\n"
+"Acceptable values: short | full | pattern\n"
+msgstr ""
+"Hükümsüz parametre değerinde:\n"
+"<parametre %s >\n"
+"Kabul edilebilir değerler: kısa | tamamen | kalıp\n"
+
+#: html/ScoreCtrolParams.h:222
+#, c-format
+msgid "Unknown param: <param %s >\n"
+msgstr "Bilinmez parametre: <parametre%s >\n"
+
+#: html/ScoreCtrolParams.h:250
+msgid "Invalid score: unmatched parenthesis.\n"
+msgstr "Hükümsüz sayı: eşsiz parantezler.\n"
+
+#: html/ScoreCtrolParams.h:291
+#, c-format
+msgid ""
+"Errors in score: it can not be created. Score:\n"
+"%s\n"
+msgstr ""
+"Hataların sayısı: yaratılamaz. Sayı:\n"
+"%s\n"
+
+#: html/TheoMusicReadingCtrolParms.h:257
+#, c-format
+msgid ""
+"Invalid param value in:\n"
+"<param %s >\n"
+" Invalid value = %s \n"
+" Acceptable format: <Clef,LowerNote,UpperNote> \n"
+" Acceptable clef values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1 \n"
+" Acceptable note pitch: c0 - c9"
+msgstr ""
+"Hükümsüz parametre değerinde:\n"
+"<parametre%s >\n"
+" Hükümsüz değer = %s \n"
+" Kabul edilebilir format: <Anahtarf,DüşükNota,YüksekNota> \n"
+" Kabul edilebilir anahtar değerler: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1 \n"
+" Kabul edilebilir nota sesleri: c0 - c9"
+
+#: html/TheoMusicReadingCtrolParms.h:273
+#, c-format
+msgid ""
+"Invalid param value in:\n"
+"<param %s >\n"
+" Invalid value = %s \n"
+" Acceptable format: list of time signatures \n"
+msgstr ""
+"Hükümsüz parametre değerinde in:\n"
+"<parametre %s >\n"
+" Hükümsüz değer = %s \n"
+" Kabul edilebilir format: imzalar zamanının listesi \n"
+
+#: html/TheoMusicReadingCtrolParms.h:287
+#, c-format
+msgid ""
+"Invalid param value in:\n"
+"<param %s >\n"
+" Invalid value = %s \n"
+" Acceptable format: list of key signatures or keyword 'all' \n"
+msgstr ""
+"Hükümsüz parametre değerinde:\n"
+"<parametre %s >\n"
+" Hükümsüz değer = %s \n"
+" Kabul edilebilir format: anahtar kelimenin hepsini veya imzaların anahtarlarını  listele \n"
+
+#: html/TheoMusicReadingCtrolParms.h:301
+#, c-format
+msgid ""
+"Invalid param value in:\n"
+"<param %s >\n"
+" Invalid value = %s \n"
+" Acceptable values: numeric, greater than 0\n"
+msgstr ""
+"hükümsüz parametre değerinde:\n"
+"<parametre %s >\n"
+" Hükümsüz değer = %s \n"
+" Kabul edilebilir değerler: sayısal, daha büyükden 0\n"
+
+#: html/TheoMusicReadingCtrolParms.h:314
+#, c-format
+msgid "lmTheoMusicReadingCtrol. Unknown param: <param %s >\n"
+msgstr "ÖnemliMüzik Okuma Kontrolül. Bilinmeyen parametre: <parametre %s >\n"
+
+#: html/TheoMusicReadingCtrolParms.h:453
+#, c-format
+msgid ""
+"Error in fragment. Invalid time signature list '%s'\n"
+"In fragment: '%s'\n"
+msgstr ""
+"Parçada hata. İmza listesinin zamanı hükümsüz '%s'\n"
+"Parçada: '%s'\n"
+
+#: html/TheoMusicReadingCtrolParms.h:463
+#, c-format
+msgid "Invalid fragment. Unmatched parenthesis: '%s'\n"
+msgstr "Hükümsü parça. Eşsiz parantezler: '%s'\n"
+
+#: html/TheoMusicReadingCtrolParms.h:467
+#, c-format
+msgid "Invalid fragment. Old G syntax: '%s'\n"
+msgstr "Hükümsüz parça. Eski G sözdizimi: '%s'\n"
+
+#: app/Logger.h:116
+msgid "Errors"
+msgstr "Hatalar"
+
+#: options/OptionsDlg.h:94
+msgid "Configuration options"
+msgstr "Konfigürasyon seçenekleri"
+

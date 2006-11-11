@@ -1,0 +1,19 @@
+(Score
+   (Vers 1.3)
+   (NumInstrumentos 1)
+   (Instrumento 1
+      (NumPartes 1)
+      (Parte 1 1
+         (c 1 (Clave Sol)
+              (Clave Fa4)
+              (Clave Fa3)
+              (Clave Do1)
+              (Clave Do2)
+              (Clave Do3)
+              (Clave Do4)
+              (Clave SinClave)
+         )
+      )
+   )
+)
+

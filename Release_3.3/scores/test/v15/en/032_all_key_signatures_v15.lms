@@ -1,0 +1,47 @@
+(score
+   (vers 1.5)(language en iso-8859-1)
+   (instrument
+      (musicData
+         (clef treble)
+         
+         //sharps. Major keys
+         (key C)(barline double)
+         (key G)(barline double)
+         (key D)(barline double)
+         (key A)(barline double)
+         (key E)(barline double)
+         (key B)(barline double)
+         (key F+)(barline double)
+         (key C+)(barline double)
+         
+         // flats. Major keys
+         (key F)(barline double)
+         (key B-)(barline double)
+         (key E-)(barline double)
+         (key A-)(barline double)
+         (key D-)(barline double)
+         (key G-)(barline double)
+         (key C-)(barline double)
+         
+         //sharps. Minor keys
+         (key a)(barline double)
+         (key e)(barline double)
+         (key b)(barline double)
+         (key f+)(barline double)
+         (key c+)(barline double)
+         (key g+)(barline double)
+         (key d+)(barline double)
+         (key a+)(barline double)
+         
+         // flats. Minor keys
+         (key d)(barline double)
+         (key g)(barline double)
+         (key c)(barline double)
+         (key f)(barline double)
+         (key b-)(barline double)
+         (key e-)(barline double)
+         (key a-)(barline end)
+      )
+   )
+)
+

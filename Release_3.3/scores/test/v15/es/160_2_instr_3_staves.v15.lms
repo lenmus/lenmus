@@ -1,0 +1,72 @@
+(score
+   (vers 1.5)(language es iso-8859-1)
+
+   (titulo centrado "Two instruments, three staves" (font bold 14))
+
+   (instrumento (name "Flute")(abbrev "F") 
+      (datosMusica 
+            (clave Sol)
+            (tonalidad La)
+            (metrica 2 4)
+            (n e4 c g+)(n g4 c g-)(n d4 c g+)(n g4 c g-)
+            (barra)
+
+            (n f4 c)(n a4 c)(n e5 c g+)(n g4 s)(n e4 s g-)
+            (barra)
+
+            (n e4 c g+)(n g4 c g-)(n d4 c g+)(n g4 c g-)
+            (barra)
+
+            (n f4 c)(n a4 c)(n e5 c g+)(n g4 s)(n e4 s g-)
+            (barra Final)
+      )
+   )
+   
+   (instrumento (name "Piano")(abbrev "P")(staves 2)
+      (datosMusica 
+            (clave Sol p1)   //sol clef in staff 1
+            (clave Fa4 p2)   //fa4 clef in staff 2
+            (tonalidad La)
+            (metrica 2 4)
+            (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // la 1ª nota está en pentagrama 1. Sigue ahí mientras no cambie
+            (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
+            (barra)
+
+            (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 1
+            (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
+            (barra)
+
+            (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // la 1ª nota está en pentagrama 1. Sigue ahí mientras no cambie
+            (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
+            (barra)
+
+            (n g2 s g+ p2)(n d3 s)(n g3 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 1
+            (n d4 s g+ p1)(n g4 s)(n d4 s)(n b3 s g-)   // en la 1ª se cambia a pentagrama 2
+            (barra Final)
+      )
+   )
+   
+//   (instrumento (instrName "Piano") (staves 2)
+//      (datosMusica 
+//            (clave Sol p1)
+//            (tonalidad Do)
+//            (metrica 2 4)
+//            (n c4 n)(n b3 n)
+//            (barra)
+//
+//            (n c4 n)(n c5 n)
+//            (barra Final)
+//      )
+//      (datosMusica 
+//            (clave Fa4 p2)
+//            (tonalidad Do)
+//            (metrica 2 4)
+//            (n g3 n)(n g3 n)
+//            (barra)
+//
+//            (n f3 n)(n g3 n)
+//            (barra Final)
+//      )
+//   )
+)
+

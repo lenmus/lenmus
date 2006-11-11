@@ -1,0 +1,30 @@
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+<title>LenMus: Sujets connus et problèmes</title>
+</head>
+<body>
+
+<h1><a name="top">Sujets connus et problèmes</a></h1>
+
+<table border="0">
+
+<tr valign="top">
+    <td colspan="2"><b>Deux 'imprimer' bouttons dans la barre d'outils</b></td></tr>
+<tr valign="top">
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>C'est un problème téchnique à resoudre dans une version d'avenir . C'est causé par l'outilisation d'un module de pre-paquet (wxHtmlHelpController) pour accelerer la distribution de la version 3.0 Je prevoie de re-écrire la fonctionnalité pourvue par ce module et, alors, unifier tous les deux bouttons 'imprimer'.<br /><br />
+    </td></tr>
+
+<tr valign="top">
+    <td colspan="2"><b>Partitions et exercices pas imprimés quand-t- on imprime une leçon</b></td></tr>
+<tr valign="top">
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td>C'est un problème téchnique envoyé à wxWidgets entreteneurs. Si vous êtes curieux sur l'essence du problème, la cause a été envoyée à wxHtmlHelpController. wxHtmlWidgetCell n'est pas prêt pour imprimer et ignorer le DC, interpretation toujours dans la fenêtre parent. Donc les contenus de la leçon ont été correctement imprimés mais pas les objets de LenMus embedded (i.e. partitions) qui ont été ignorés.<br /><br />
+    </td></tr>
+
+</table>
+
+
+</body>
+</html>
