@@ -37,7 +37,7 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "3.2"
+  !define APP_VERSION "3.3"
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 

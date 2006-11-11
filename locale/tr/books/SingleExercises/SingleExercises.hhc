@@ -1,0 +1,61 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-9">
+</head>
+<body>
+
+<ul>
+  <li><object type="text/sitemap">
+         <param name="Name" value="0. Tek alıştırmalara giriş">
+         <param name="Local" value="SingleExercises_0.htm">
+  </object></li>
+
+  <li><object type="text/sitemap">
+         <param name="Name" value="1.1. İşitsel eğitim. Aralıkların karşılaştırması">
+         <param name="Local" value="SingleExercises_1.htm">
+  </object></li>
+
+  <li><object type="text/sitemap">
+         <param name="Name" value="1.2. İşitsel eğitim. Aralıkların tanınması">
+         <param name="Local" value="SingleExercises_2.htm">
+  </object></li>
+
+  <li><object type="text/sitemap">
+         <param name="Name" value="1.3. İşitsel eğitim. Akorların tanınması">
+         <param name="Local" value="SingleExercises_3.htm">
+  </object></li>
+
+  <li><object type="text/sitemap">
+         <param name="Name" value="1.4. İşitsel eğitim.Ölçümlerin tanınması">
+         <param name="Local" value="SingleExercises_4.htm">
+  </object></li>
+
+  <li><object type="text/sitemap">
+         <param name="Name" value="2.1. Anahtarların tanınması (sayıda)">
+         <param name="Local" value="SingleExercises_5.htm">
+  </object></li>
+
+  <li><object type="text/sitemap">
+         <param name="Name" value="2.2. Aralığın tanınması (sayıda) ve inşa edilmesi">
+         <param name="Local" value="SingleExercises_6.htm">
+  </object></li>
+
+  <li><object type="text/sitemap">
+         <param name="Name" value="2.3. Ölçekelriı tanıma (sayıda)">
+         <param name="Local" value="SingleExercises_7.htm">
+  </object></li>
+
+  <li><object type="text/sitemap">
+         <param name="Name" value="2.4. Akorların tanınması (sayıda)">
+         <param name="Local" value="SingleExercises_8.htm">
+  </object></li>
+
+  <li><object type="text/sitemap">
+         <param name="Name" value="3.1. Nota anahtarlarının okunması">
+         <param name="Local" value="SingleExercises_9.htm">
+  </object></li>
+
+</ul>
+
+</body>
+</html>

@@ -323,28 +323,34 @@ void lmUpdater::CheckForUpdates(wxFrame* pParent, bool fSilent)
     //initializations
     m_pParent = pParent;
     m_fNeedsUpdate = false;
+    ::wxBeginBusyCursor();
     
     //Inform user and ask permision to proceed
     if (!fSilent) {
         lmUpdaterDlgStart dlgStart(m_pParent);
-        if (dlgStart.ShowModal() == wxID_CANCEL) return;  //updater canceled
+        if (dlgStart.ShowModal() == wxID_CANCEL) {
+            ::wxEndBusyCursor();
+            return;  //updater canceled
+        }
     }
 
     //conect to server and get information about updates
     if (DoCheck(_T("Win32"), fSilent)) {
-        //Error. Not posible to do check
-        return;
+        ::wxEndBusyCursor();
+        return;  //Error. Not posible to do check
     }
 
-    //inform about results
+    //inform about results and remove busy cursor
     if (!m_fNeedsUpdate) {
         //no updates available
+        ::wxEndBusyCursor();
         if (!fSilent) wxMessageBox(_T("No updates available."));
-    }
+   }
     else {
         //update available. Create and show informative dialog
         lmUpdaterDlgInfo dlg(m_pParent, this);
         dlg.AddPackage(GetPackage(), GetDescription());
+        ::wxEndBusyCursor();
         dlg.ShowModal();
     }
 

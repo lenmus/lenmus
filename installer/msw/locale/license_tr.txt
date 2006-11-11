@@ -1,267 +1,99 @@
-ï»¿LenMus Program LisansÄ±
+LenMus Program Lisansı
 
-LenMus programÄ±nÄ±n telif hakkÄ± Â© 2002-2006 Cecilio SalmerÃ³n. Serbest bir 
-yazÄ±lÄ±mdÄ±r: Onu  yeniden daÄŸÄ±tabilirsiniz veya serbest yazÄ±lÄ±m altyapÄ±sÄ±
-yoluyla yayÄ±nlanmÄ±ÅŸ olarak GNU Genel Kamu LisansÄ± terimleri altÄ±nda onu  
-deÄŸiÅŸtirebilirsiniz; LisansÄ±n herhangi bir versiyon 2â€™si, veya  (seÃ§eneÄŸinizde) 
-herhangi bir sonraki versiyonu. 
+LenMus programının telif hakkı © 2002-2006 Cecilio Salmerón. Serbest bir yazılımdır: Onu  yeniden dağıtabilirsiniz veya serbest yazılım altyapısı yoluyla yayınlanmış olarak GNU Genel Kamu Lisansı terimleri altında onu değiştirebilirsiniz; Lisansın herhangi bir versiyon 2’si, veya  (seçeneğinizde) herhangi bir sonraki versiyonu. 
 
-Bu program yararlÄ± olmasÄ± Ã¼midiyle daÄŸÄ±tÄ±lmÄ±ÅŸtÄ±r, ama yetki dÄ±ÅŸÄ±nda; kastedilen 
-satÄ±labilirliÄŸin yetkisi ya da Ã¶zel maksatlara uygunluk dÄ±ÅŸÄ±nda.Daha Ã§ok ayrÄ±ntÄ± 
-iÃ§in GNU Genel Kamu LisansÄ±nÄ± gÃ¶r.
+Bu program yararlı olması ümidiyle dağıtılmıştır, ama yetki dışında; kastedilen satılabilirliğin yetkisi ya da özel maksatlara uygunluk dışında.Daha çok ayrıntı için GNU Genel Kamu Lisansını gör.
 
-AÃ§Ä±k kaynak ve GNU lisanslarÄ± hakkÄ±nda daha Ã§ok bilgi iÃ§in www.fsf.orgta serbest 
-yazÄ±lÄ±m altyapÄ±sÄ±nÄ±  ziyaret et . 
- 
-AÅŸaÄŸÄ±dakiler GNU Genel Kamu LisansÄ± versiyonu 2â€™nin metnidir.
+Açık kaynak ve GNU lisansları hakkında daha çok bilgi için www.fsf.orgta serbest yazılım altyapısını  ziyaret et . 
 
-This is an unofficial translation of the GNU General Public License into Turkish. It 
-was not published by the Free Software Foundation, and does not legally state the 
-distribution terms for software that uses the GNU GPL--only the original English text 
-of the GNU GPL does that. However, we hope that this translation will help Turkish 
-speakers understand the GNU GPL better. 
+Aşağıdakiler GNU Genel Kamu Lisansı versiyonu 2’nin metnidir.
 
-Bu, GNU Genel Kamu LisansÄ±nÄ±n (GPL) TÃ¼rkÃ§e'ye gayrÄ±resmi Ã§evirisidir. Bu Ã§eviri 
-Free Software Foundation tarafÄ±ndan yayÄ±nlanmamÄ±ÅŸ olup GNU GPL kullanan 
-yazÄ±lÄ±mlarÄ±n daÄŸÄ±tÄ±m ÅŸartlarÄ±nÄ± belirleme aÃ§Ä±sÄ±ndan hukuki baÄŸlayÄ±cÄ±lÄ±ÄŸÄ± yoktur -- 
-Hukuki aÃ§Ä±dan yalnÄ±zca GNU GPL'in Ä°ngilizce metni baÄŸlayÄ±cÄ±dÄ±r. Bu Ã§eviri, TÃ¼rkÃ§e 
-kullanÄ±cÄ±larÄ±nÄ±n GNU GPL'i daha iyi anlayabilmeleri iÃ§in hazÄ±rlanmÄ±ÅŸtÄ±r. 
+This is an unofficial translation of the GNU General Public License into Turkish. It was not published by the Free Software Foundation, and does not legally state the distribution terms for software that uses the GNU GPL--only the original English text of the GNU GPL does that. However, we hope that this translation will help Turkish speakers understand the GNU GPL better.
 
-	GNU Genel Kamu LisansÄ± (GPL) 
-	SÃ¼rÃ¼m 2, Haziran 1991
- 
-Telif HakkÄ± Â© 1989, 1991 Free Software Foundation, Inc. 59 Temple Place - Suite 330, 
-Boston, MA 02111-1307, USA 
+Bu, GNU Genel Kamu Lisansının (GPL) Türkçe'ye gayrıresmi çevirisidir. Bu çeviri Free Software Foundation tarafından yayınlanmamış olup GNU GPL kullanan yazılımların dağıtım şartlarını belirleme açısından hukuki bağlayıcılığı yoktur -- Hukuki açıdan yalnızca GNU GPL'in İngilizce metni bağlayıcıdır. Bu çeviri, Türkçe kullanıcılarının GNU GPL'i daha iyi anlayabilmeleri için hazırlanmıştır.
 
-Bu lisans dÃ¶kÃ¼manÄ±nÄ±n birebir kopyalarÄ±nÄ± yapma ve daÄŸÄ±tma izni herkese verilmiÅŸtir, fakat 
-metinde deÄŸiÅŸiklik yapma izni yoktur. 
+GNU Genel Kamu Lisansı (GPL) 
+Sürüm 2, Haziran 1991
 
-	GÄ°RÄ°Å 
+Telif Hakkı © 1989, 1991 Free Software Foundation, Inc. 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA
 
-YazÄ±lÄ±m lisanslarÄ±nÄ±n Ã§oÄŸu sizin yazÄ±lÄ±mÄ± paylaÅŸma ve deÄŸiÅŸtirme hakkÄ±nÄ±zÄ±n elinizden alÄ±nmasÄ± iÃ§in 
-hazÄ±rlanmÄ±ÅŸtÄ±r. Buna karÅŸÄ±lÄ±k, GNU Genel Kamu LisansÄ± sizin serbest yazÄ±lÄ±mlarÄ± deÄŸiÅŸtirme ve 
-paylaÅŸma hakkÄ±nÄ±zÄ±n mahfuz tutulmasÄ± ve yazÄ±lÄ±mÄ±n bÃ¼tÃ¼n kullanÄ±cÄ±larÄ± iÃ§in serbest olmasÄ± amacÄ± 
-ile yazÄ±lmÄ±ÅŸtÄ±r. Bu Genel Kamu LisansÄ±, Free Software Foundation'un Ã§oÄŸu yazÄ±lÄ±mÄ± ve bu lisansÄ± 
-kullanmayÄ± dÃ¼stur edinen diÄŸer yazÄ±lÄ±mcÄ±larÄ±n yazÄ±lÄ±mlarÄ± iÃ§in kullanÄ±lmaktadÄ±r. (Free Software 
-Foundation'un bazÄ± yazÄ±lÄ±mlarÄ± GNU KitaplÄ±k Genel Kamu LisansÄ± -- GNU LGPL -- altÄ±nda 
-daÄŸÄ±tÄ±lmaktadÄ±r.) Siz de bu lisansÄ± yazÄ±lÄ±mlarÄ±nÄ±za uygulayabilirsiniz. 
+Bu lisans dökümanının birebir kopyalarını yapma ve dağıtma izni herkese verilmiştir, fakat metinde değişiklik yapma izni yoktur.
 
-Serbest yazÄ±lÄ±mdan bahsettiÄŸimiz zaman fiyattan deÄŸil, Ã¶zgÃ¼rlÃ¼kten bahsediyoruz. Bizim Genel 
-Kamu LisanslarÄ±mÄ±z, sizin serbest yazÄ±lÄ±mlarÄ±n kopyalarÄ±nÄ± daÄŸÄ±tma Ã¶zgÃ¼rlÃ¼ÄŸÃ¼nÃ¼zÃ¼ (ve isterseniz 
-bu hizmet iÃ§in para almanÄ±zÄ±), yazÄ±lÄ±m kaynak kodlarÄ±nÄ±n size daÄŸÄ±tÄ±m esnasÄ±nda veya eÄŸer 
-isterseniz verilmesini, yazÄ±lÄ±mÄ± deÄŸiÅŸtirebilmenizi, yazÄ±lÄ±mÄ±n parÃ§alarÄ±nÄ± yeni yazÄ±lÄ±mlar iÃ§erisinde 
-kullanabilmenizi ve bunlarÄ± yapabileceÄŸinizi bilmenizi saÄŸlamaktadÄ±r. 
+GİRİŞ 
 
-HaklarÄ±nÄ±zÄ± koruyabilmemiz iÃ§in sizin haklarÄ±nÄ±zÄ± kÄ±sÄ±tlama veya sizin bu haklarÄ±nÄ±zdan feragat 
-etmenizi isteme yollarÄ±nÄ± yasaklayÄ±cÄ± bazÄ± kÄ±sÄ±tlamalar getirmemiz gerekmektedir. Bu kÄ±sÄ±tlamalar 
-eÄŸer serbest yazÄ±lÄ±m daÄŸÄ±tÄ±yor veya deÄŸiÅŸtiriyorsanÄ±z size bazÄ± yÃ¼kÃ¼mlÃ¼lÃ¼kler getirmektedir. 
+Yazılım lisanslarının çoğu sizin yazılımı paylaşma ve değiştirme hakkınızın elinizden alınması için hazırlanmıştır. Buna karşılık, GNU Genel Kamu Lisansı sizin serbest yazılımları değiştirme ve paylaşma hakkınızın mahfuz tutulması ve yazılımın bütün kullanıcıları için serbest olması amacı ile yazılmıştır. Bu Genel Kamu Lisansı, Free Software Foundation'un çoğu yazılımı ve bu lisansı kullanmayı düstur edinen diğer yazılımcıların yazılımları için kullanılmaktadır. (Free Software Foundation'un bazı yazılımları GNU Kitaplık Genel Kamu Lisansı -- GNU LGPL -- altında dağıtılmaktadır.) Siz de bu lisansı yazılımlarınıza uygulayabilirsiniz.
 
-Ã–rneÄŸin bÃ¶yle bir programÄ±n kopyalarÄ±nÄ±, bedava veya Ã¼cret karÅŸÄ±lÄ±ÄŸÄ± daÄŸÄ±tÄ±yorsanÄ±z alÄ±cÄ±lara 
-sizin sahip olduÄŸunuz bÃ¼tÃ¼n haklarÄ± saÄŸlamalÄ±sÄ±nÄ±z. OnlarÄ±n da kaynak kodlarÄ±na sahip olmalarÄ±nÄ± 
-veya ulaÅŸabilmelerini saÄŸlamalÄ±sÄ±nÄ±z. Onlara da haklarÄ±nÄ± bilebilmeleri iÃ§in bu ÅŸartlarÄ± 
-gÃ¶stermelisiniz. 
+Serbest yazılımdan bahsettiğimiz zaman fiyattan değil, özgürlükten bahsediyoruz. Bizim Genel Kamu Lisanslarımız, sizin serbest yazılımların kopyalarını dağıtma özgürlüğünüzü (ve isterseniz bu hizmet için para almanızı), yazılım kaynak kodlarının size dağıtım esnasında veya eğer isterseniz verilmesini, yazılımı değiştirebilmenizi, yazılımın parçalarını yeni yazılımlar içerisinde kullanabilmenizi ve bunları yapabileceğinizi bilmenizi sağlamaktadır.
 
-HaklarÄ±nÄ±zÄ± iki koruma iki aÅŸamada gerÃ§ekleÅŸmektedir:
- 
-	1.	YazÄ±lÄ±ma telif hakkÄ± alÄ±nmaktadÄ±r. 
-	2.	YazÄ±lÄ±m lisansÄ± olarak size, hukuki olarak, yazÄ±lÄ±mÄ± kopyalama, daÄŸÄ±tma ve/veya 
-		deÄŸiÅŸtirme hakkÄ± tanÄ±yan bu lisans sunulmaktadÄ±r. 
+Haklarınızı koruyabilmemiz için sizin haklarınızı kısıtlama veya sizin bu haklarınızdan feragat etmenizi isteme yollarını yasaklayıcı bazı kısıtlamalar getirmemiz gerekmektedir. Bu kısıtlamalar eğer serbest yazılım dağıtıyor veya değiştiriyorsanız size bazı yükümlülükler getirmektedir.
 
-AyrÄ±ca, yazarlarÄ±n ve bizim korunmamÄ±z iÃ§in bu serbest yazÄ±lÄ±mÄ±n herhangi bir garantisi 
-olmadÄ±ÄŸÄ±nÄ± herkesin anlamasÄ±nÄ± istiyoruz. EÄŸer yazÄ±lÄ±m baÅŸkasÄ± tarafÄ±ndan deÄŸiÅŸtirilmiÅŸ ve 
-deÄŸiÅŸtirilmiÅŸ hali ile tarafÄ±nÄ±za ulaÅŸtÄ±rÄ±lmÄ±ÅŸ ise alÄ±cÄ±larÄ±n, ellerinde olan yazÄ±lÄ±mÄ±n orjinal olmadÄ±ÄŸÄ±nÄ±, 
-dolayÄ±sÄ±yla baÅŸkalarÄ± tarafÄ±ndan eklenen problemlerin ilk yazarlarÄ±n ÅŸÃ¶hretlerine olumsuz etkide 
-bulunmamasÄ± gerektiÄŸini bilmelerini istiyoruz. 
+Örneğin böyle bir programın kopyalarını, bedava veya ücret karşılığı dağıtıyorsanız alıcılara sizin sahip olduğunuz bütün hakları sağlamalısınız. Onların da kaynak kodlarına sahip olmalarını veya ulaşabilmelerini sağlamalısınız. Onlara da haklarını bilebilmeleri için bu şartları göstermelisiniz.
 
-Son olarak, bÃ¼tÃ¼n serbest yazÄ±lÄ±mlar yazÄ±lÄ±m patentleri tarafÄ±ndan sÃ¼rekli tehdit altÄ±nda 
-bulunmaktadÄ±r. Serbest bir yazÄ±lÄ±mÄ±n daÄŸÄ±tÄ±cÄ±larÄ±nÄ±n bireysel olarak patent lisansÄ± almalarÄ±nÄ± ve bu 
-yol ile yazÄ±lÄ±mÄ± mÃ¼seccel hale getirmelerine imkan vermemek istiyoruz. Bunu engellemek iÃ§in, 
-yazÄ±lÄ±m iÃ§in alÄ±nacak her patentin herkesin serbest kullanÄ±mÄ±na izin vermesi veya 
-patentlenmemesi gerektiÄŸini aÃ§Ä±k olarak ortaya koyuyoruz. 
+Haklarınızı iki koruma iki aşamada gerçekleşmektedir:
 
-Kopyalama, daÄŸÄ±tÄ±m ve deÄŸiÅŸtirme ile ilgili kesin ÅŸart ve kayÄ±tlar aÅŸaÄŸÄ±da yer almaktadÄ±r.
- 
-	KOPYALAMA, DAÄITIM VE DEÄÄ°ÅTÄ°RME Ä°LE Ä°LGÄ°LÄ° ÅART VE KAYITLAR
- 
-	0.  Bu Lisans, telif hakkÄ± sahibi tarafÄ±ndan iÃ§erisine bu Genel Kamu LisansÄ± altÄ±nda daÄŸÄ±tÄ±ldÄ±ÄŸÄ±na 
-dair ibare konmuÅŸ olan herhangi bir yazÄ±lÄ±m veya baÅŸka eseri kapsamaktadÄ±r. AÅŸaÄŸÄ±da 
-"YazÄ±lÄ±m", bu kapsamdaki herhangi bir yazÄ±lÄ±m veya eser, "YazÄ±lÄ±mÄ± baz alan Ã¼rÃ¼n", ise YazÄ±lÄ±m 
-veya telif kanunu altÄ±nda YazÄ±lÄ±m'dan iÅŸtikak etmiÅŸ, yani YazÄ±lÄ±m'Ä±n tamamÄ±nÄ± veya bir parÃ§asÄ±nÄ±, 
-deÄŸiÅŸtirmeden veya deÄŸiÅŸiklikler ile, veya baÅŸka bir dile tercÃ¼me edilmiÅŸ hali ile iÃ§eren herhangi 
-bir Ã¼rÃ¼n, manasÄ±nda kullanÄ±lmaktadÄ±r. (Bundan sonra tercÃ¼me "deÄŸiÅŸtirme" kapsamÄ±nda sÄ±nÄ±rsÄ±z 
-olarak iÃ§erilecektir.) Her ruhsat sahibine "siz" olarak hitap edilmektedir.
- 
-Kopyalama, daÄŸÄ±tÄ±m ve deÄŸiÅŸtirme haricinde kalan faaliyetler bu Lisans'Ä±n kapsamÄ± 
-dÄ±ÅŸÄ±ndadÄ±rlar. YazÄ±lÄ±m'Ä± Ã§alÄ±ÅŸtÄ±rma eylemi sÄ±nÄ±rlandÄ±rÄ±lmamÄ±ÅŸtÄ±r ve YazÄ±lÄ±m'Ä±n Ã§Ä±ktÄ±sÄ± yalnÄ±zca Ã§Ä±ktÄ±nÄ±n 
-iÃ§eriÄŸi (YazÄ±lÄ±m'Ä± Ã§alÄ±ÅŸtÄ±rmak yolu ile elde edilmesinden baÄŸÄ±msÄ±z olarak) YazÄ±lÄ±m'Ä± baz alan Ã¼rÃ¼n 
-kapsamÄ±na girer ise bu Lisans kapsamÄ±ndadÄ±r. Bu koÅŸulun saÄŸlanÄ±p saÄŸlanmadÄ±ÄŸÄ± YazÄ±lÄ±m'Ä±n ne 
-yaptÄ±ÄŸÄ± ile ilgilidir. 
+1.  Yazılıma telif hakkı alınmaktadır. 
+2.  Yazılım lisansı olarak size, hukuki olarak, yazılımı kopyalama, dağıtma ve/veya değiştirme hakkı tanıyan bu lisans sunulmaktadır.
 
-	1.  YazÄ±lÄ±m'Ä±n kaynak kodlarÄ±nÄ± birebir, aldÄ±ÄŸÄ±nÄ±z ÅŸekilde, herhangi bir ortamda ve vasÄ±ta ile, 
-uygun ve gÃ¶rÃ¼nÃ¼r bir ÅŸekilde telif hakkÄ± bildirimi ve garantisiz olduÄŸuna dair bildirim koymak, 
-bu Lisans'dan bahseden herhangi bir bildirimi aynen muhafaza etmek ve bÃ¼tÃ¼n diÄŸer alÄ±cÄ±lara 
-YazÄ±lÄ±m ile birlikte bu Lisans'Ä±n bir kopyasÄ±nÄ± vermek ÅŸartÄ± ile kopyalayabilir ve daÄŸÄ±tabilirsiniz.
- 
-Kopyalamak fiili iÅŸlemi iÃ§in bir Ã¼cret talep edebilir ve sizin seÃ§iminize baÄŸlÄ± olarak Ã¼cret karÅŸÄ±lÄ±ÄŸÄ± 
-garanti verebilirsiniz. 
+Ayrıca, yazarların ve bizim korunmamız için bu serbest yazılımın herhangi bir garantisi olmadığını herkesin anlamasını istiyoruz. Eğer yazılım başkası tarafından değiştirilmiş ve değiştirilmiş hali ile tarafınıza ulaştırılmış ise alıcıların, ellerinde olan yazılımın orjinal olmadığını, dolayısıyla başkaları tarafından eklenen problemlerin ilk yazarların şöhretlerine olumsuz etkide bulunmaması gerektiğini bilmelerini istiyoruz.
 
-	2.  YazÄ±lÄ±m'Ä±n kopyasÄ±nÄ± veya kopyalarÄ±nÄ± veya herhangi bir parÃ§asÄ±nÄ± deÄŸiÅŸtirerek YazÄ±lÄ±m'Ä± baz 
-alan Ã¼rÃ¼n elde edebilir, bu deÄŸiÅŸiklikleri veya Ã¼rÃ¼nÃ¼n kendisini yukarÄ±da 1. bÃ¶lÃ¼mdeki ÅŸartlar 
-dahilinde ve aÅŸaÄŸÄ±da sÄ±ralanan ÅŸartlarÄ±n yerine getirilmesi koÅŸulu ile kopyalayabilir ve 
-daÄŸÄ±tabilirsiniz. 
+Son olarak, bütün serbest yazılımlar yazılım patentleri tarafından sürekli tehdit altında bulunmaktadır. Serbest bir yazılımın dağıtıcılarının bireysel olarak patent lisansı almalarını ve bu yol ile yazılımı müseccel hale getirmelerine imkan vermemek istiyoruz. Bunu engellemek için, yazılım için alınacak her patentin herkesin serbest kullanımına izin vermesi veya patentlenmemesi gerektiğini açık olarak ortaya koyuyoruz.
 
-		a) DeÄŸiÅŸtirilen dosyalarÄ±n gÃ¶rÃ¼nÃ¼r bir ÅŸekilde dosyalarÄ±n sizin tarafÄ±nÄ±zdan 
-	deÄŸiÅŸtirildiÄŸine dair, tarihli bir bildirim iÃ§ermesini saÄŸlamalÄ±sÄ±nÄ±z. 
+Kopyalama, dağıtım ve değiştirme ile ilgili kesin şart ve kayıtlar aşağıda yer almaktadır.
 
-		b) YazÄ±lÄ±m'dan veya YazÄ±lÄ±m'Ä±n bir parÃ§asÄ±ndan tamamen veya kÄ±smen iÅŸtikak etmiÅŸ ve sizin 
-	tarafÄ±nÄ±zdan daÄŸÄ±tÄ±lan veya yayÄ±nlanan herhangi bir Ã¼rÃ¼nÃ¼n bÃ¼tÃ¼n Ã¼Ã§Ã¼ncÃ¼ ÅŸahÄ±slara bu Lisans 
-	ÅŸartlarÄ± altÄ±nda Ã¼cretsiz olarak ruhsatlanmasÄ±nÄ± saÄŸlamalÄ±sÄ±nÄ±z. 
-	
-		c) EÄŸer deÄŸiÅŸtirilen yazÄ±lÄ±m olaÄŸan kullanÄ±m altÄ±nda komutlarÄ± interaktif olarak alÄ±yor ise, yazÄ±lÄ±m, 
-	en olaÄŸan kullanÄ±m iÃ§in interaktif olarak Ã§alÄ±ÅŸtÄ±rÄ±ldÄ±ÄŸÄ± zaman uygun bir telif hakkÄ± bildirimi, 
-	garantisi olmadÄ±ÄŸÄ±na (veya sizin tarafÄ±nÄ±zdan garanti verildiÄŸine), kullanÄ±cÄ±larÄ±n bu yazÄ±lÄ±mÄ± bu 
-	ÅŸartlar altÄ±nda tekrar daÄŸÄ±tabileceklerine, ve kullanÄ±cÄ±nÄ±n bu LisansÄ±n bir kopyasÄ±nÄ± nasÄ±l 
-	gÃ¶rebileceÄŸine dair bir bildirim yazdÄ±rmalÄ± veya gÃ¶stermelidir. (Ä°stisna: EÄŸer YazÄ±lÄ±m'Ä±n kendisi 
-	interaktif ise fakat bÃ¶yle bir bildirimi olaÄŸan kullanÄ±m esnasÄ±nda yazdÄ±rmÄ±yor ise, sizin YazÄ±lÄ±m'Ä± 
-	baz alan Ã¼rÃ¼nÃ¼nÃ¼z bÃ¶yle bir bildirimde bulunmak zorunda deÄŸildir.) 
+KOPYALAMA, DAĞITIM VE DEĞİŞTİRME İLE İLGİLİ ŞART VE KAYITLAR
 
-Bu ÅŸartlar deÄŸiÅŸtirilmiÅŸ eserin tamamÄ±nÄ± kapsamaktadÄ±r. EÄŸer eserin tespit edilebilir kÄ±sÄ±mlarÄ± 
-YazÄ±lÄ±m'dan iÅŸtikak etmemiÅŸ ise ve makul surette kendi baÅŸlarÄ±na baÄŸÄ±msÄ±z ve ayrÄ± eserler olarak 
-kabul edilebilir ise, o zaman bu Lisans ve ÅŸartlarÄ±, bu parÃ§alarÄ± ayrÄ± eser olarak daÄŸÄ±ttÄ±ÄŸÄ±nÄ±z 
-zaman baÄŸlayÄ±cÄ± deÄŸildir. Fakat, aynÄ± parÃ§alarÄ± YazÄ±lÄ±m'Ä± baz alan bir Ã¼rÃ¼n bÃ¼tÃ¼nÃ¼nÃ¼n bir parÃ§asÄ± 
-olarak daÄŸÄ±ttÄ±ÄŸÄ±nÄ±z zaman bÃ¼tÃ¼nÃ¼n daÄŸÄ±tÄ±mÄ±, diÄŸer ruhsat sahiplerine verilen izinlerin bÃ¼tÃ¼ne ait 
-olduÄŸu ve parÃ§alarÄ±na, yazarÄ±nÄ±n kim olduÄŸuna bakÄ±lmaksÄ±zÄ±n bÃ¼tÃ¼n parÃ§alarÄ±na tek tek ve 
-mÃ¼ÅŸterek olarak uygulandÄ±ÄŸÄ± bu Lisans ÅŸartlarÄ±na uygun olmalÄ±dÄ±r. 
-Bu bÃ¶lÃ¼mÃ¼n hedefi tamamen sizin tarafÄ±nÄ±zdan yazÄ±lan bir eser Ã¼zerinde hak iddia etmek veya 
-sizin bÃ¶yle bir eser Ã¼zerindeki haklarÄ±nÄ±za muhalefet etmek deÄŸil, YazÄ±lÄ±m'Ä± baz alan, YazÄ±lÄ±m'dan 
-iÅŸtikak etmiÅŸ veya mÃ¼ÅŸterek olarak ortaya Ã§Ä±karÄ±lmÄ±ÅŸ eserlerin daÄŸÄ±tÄ±mÄ±nÄ± kontrol etme haklarÄ±nÄ± 
-dÃ¼zenlemektir. 
-Buna ek olarak, YazÄ±lÄ±m'Ä± baz almayan herhangi bir Ã¼rÃ¼nÃ¼n YazÄ±lÄ±m ile (veya YazÄ±lÄ±m'Ä± baz alan 
-bir Ã¼rÃ¼n ile) bir bilgi saklama ortamÄ±nda veya bir daÄŸÄ±tÄ±m ortamÄ±nda beraber tutulmasÄ± diÄŸer 
-eseri bu Lisans kapsamÄ±na sokmaz. 
+0.  Bu Lisans, telif hakkı sahibi tarafından içerisine bu Genel Kamu Lisansı altında dağıtıldığına dair ibare konmuş olan herhangi bir yazılım veya başka eseri kapsamaktadır. Aşağıda "Yazılım", bu kapsamdaki herhangi bir yazılım veya eser, "Yazılımı baz alan ürün", ise Yazılım veya telif kanunu altında Yazılım'dan iştikak etmiş, yani Yazılım'ın tamamını veya bir parçasını, değiştirmeden veya değişiklikler ile, veya başka bir dile tercüme edilmiş hali ile içeren herhangi bir ürün, manasında kullanılmaktadır. (Bundan sonra tercüme "değiştirme" kapsamında sınırsız olarak içerilecektir.) Her ruhsat sahibine "siz" olarak hitap edilmektedir.
 
-	3.  YazÄ±lÄ±m'Ä± ( veya 2. bÃ¶lÃ¼mde tanÄ±mlandÄ±ÄŸÄ± hali ile onu baz alan bir Ã¼rÃ¼nÃ¼) ara derlenmiÅŸ veya 
-uygulama hali ile 1. ve 2. BÃ¶lÃ¼m'deki ÅŸartlar dahilinde ve aÅŸaÄŸÄ±da sÄ±ralanan yÃ¶ntemlerden 
-birisine uygun olarak kopyalayabilir ve daÄŸÄ±tabilirsiniz. 
+Kopyalama, dağıtım ve değiştirme haricinde kalan faaliyetler bu Lisans'ın kapsamı dışındadırlar. Yazılım'ı çalıştırma eylemi sınırlandırılmamıştır ve Yazılım'ın çıktısı yalnızca çıktının içeriği (Yazılım'ı çalıştırmak yolu ile elde edilmesinden bağımsız olarak) Yazılım'ı baz alan ürün kapsamına girer ise bu Lisans kapsamındadır. Bu koşulun sağlanıp sağlanmadığı Yazılım'ın ne yaptığı ile ilgilidir.
 
-	a) YaygÄ±n olarak yazÄ±lÄ±m daÄŸÄ±tÄ±mÄ±nda kullanÄ±lan bir ortam Ã¼zerinde, yukarÄ±da 1. ve 2. BÃ¶lÃ¼m'de 
-bulunan ÅŸartlar dahilinde, bilgisayar tarafÄ±ndan okunabilir kaynak kodlarÄ±nÄ±n tamamÄ± ile birlikte 
-daÄŸÄ±tmak.
- 
-	b)Herhangi bir Ã¼Ã§Ã¼ncÃ¼ ÅŸahsa, fiziksel olarak daÄŸÄ±tÄ±mÄ± gerÃ§ekleÅŸtirme masrafÄ±nÄ±zdan daha fazla 
-Ã¼cret almayarak, yaygÄ±n olarak yazÄ±lÄ±m daÄŸÄ±tÄ±mÄ±nda kullanÄ±lan bir ortam Ã¼zerinde, yukarÄ±da 1. ve 2.
-BÃ¶lÃ¼m'de bulunan ÅŸartlar dahilinde, bilgisayar tarafÄ±ndan okunabilir kaynak kodlarÄ±nÄ±n 
-tamamÄ±nÄ± daÄŸÄ±tacaÄŸÄ±nÄ±za dair en az Ã¼Ã§ yÄ±l geÃ§erli olacak yazÄ±lÄ± bir taahhÃ¼tname ile birlikte 
-daÄŸÄ±tmak.
- 
-	c)Size verilmiÅŸ olan ilgili kaynak kodunu daÄŸÄ±tma taahhÃ¼tnamesi ile birlikte daÄŸÄ±tmak. (Bu 
-alternatif yalnÄ±zca ticari olmayan daÄŸÄ±tÄ±mlar iÃ§in ve yalnÄ±zca siz de yazÄ±lÄ±mÄ± ara derlenmiÅŸ veya 
-uygulama biÃ§eminde ve yukarÄ±da b) bÃ¶lÃ¼mÃ¼nde anlatÄ±lan ÅŸekli ile bir taahhÃ¼tname ile birlikte 
-almÄ±ÅŸ iseniz geÃ§erlidir.) 
+1.  Yazılım'ın kaynak kodlarını birebir, aldığınız şekilde, herhangi bir ortamda ve vasıta ile, uygun ve görünür bir şekilde telif hakkı bildirimi ve garantisiz olduğuna dair bildirim koymak, bu Lisans'dan bahseden herhangi bir bildirimi aynen muhafaza etmek ve bütün diğer alıcılara Yazılım ile birlikte bu Lisans'ın bir kopyasını vermek şartı ile kopyalayabilir ve dağıtabilirsiniz.
 
-Bir eserin kaynak kodu, esere deÄŸiÅŸtirme yapmak iÃ§in en uygun yÃ¶ntem ve imkan anlamÄ±nda 
-kullanÄ±lmaktadÄ±r. Uygulama biÃ§eminde bir eser iÃ§in, kaynak kodu, iÃ§erdiÄŸi bÃ¼tÃ¼n parÃ§alar iÃ§in 
-ilgili kaynak kodlarÄ±, ilgili arayÃ¼z tanÄ±m dosyalarÄ± ve derleme ve yÃ¼kleme iÅŸlemlerinde kullanÄ±lan 
-bÃ¼tÃ¼n betikler anlamÄ±nda kullanÄ±lmaktadÄ±r. Bir istisna olarak, daÄŸÄ±tÄ±lan kaynak kodu, genelde 
-uygulamanÄ±n Ã¼zerinde Ã§alÄ±ÅŸacaÄŸÄ± iÅŸletim sisteminin ana parÃ§alarÄ± (derleyici, Ã§ekirdek v.b.) ile 
-birlikte daÄŸÄ±tÄ±lan herhangi bir bileÅŸeni,eÄŸer ilgili bileÅŸen, uygulama ile birlikte daÄŸÄ±tÄ±lmÄ±yorsa, 
-iÃ§ermek zorunda deÄŸildir.
- 
-EÄŸer uygulama veya ara derlenmiÅŸ biÃ§emde yazÄ±lÄ±mÄ±n daÄŸÄ±tÄ±mÄ± belli bir yere eriÅŸim ve oradan 
-kopyalama imkanÄ± olarak yapÄ±lÄ±yorsa, aynÄ± yerden, aynÄ± koÅŸullar altÄ±nda kaynak koduna eriÅŸim 
-imkanÄ± saÄŸlamak, Ã¼Ã§Ã¼ncÃ¼ ÅŸahÄ±slarÄ±n ara derlenmiÅŸ ve uygulama biÃ§emleri ile birlikte kaynak 
-kodunu kopyalama zorunluluklarÄ± olmasa bile kaynak kodunu daÄŸÄ±tmak olarak kabul 
-edilmektedir. 
+Kopyalamak fiili işlemi için bir ücret talep edebilir ve sizin seçiminize bağlı olarak ücret karşılığı garanti verebilirsiniz.
 
-	4.  YazÄ±lÄ±m'Ä± bu Lisans'ta sarih olarak belirtilen ÅŸartlar haricinde kopyalayamaz, deÄŸiÅŸtiremez, 
-ruhsat hakkÄ±nÄ± veremez ve daÄŸÄ±tamazsÄ±nÄ±z. Buna aykÄ±rÄ± herhangi bir kopyalama, deÄŸiÅŸtirme, 
-ruhsat hakkÄ± verme, veya daÄŸÄ±tÄ±mda bulunma hÃ¼kÃ¼msÃ¼zdÃ¼r ve bÃ¶yle bir teÅŸebbÃ¼s halinde bu 
-Lisans altÄ±ndaki bÃ¼tÃ¼n haklarÄ±nÄ±z iptal edilir. Sizden, bu Lisans kapsamÄ±nda kopya veya hak 
-almÄ±ÅŸ olan Ã¼Ã§Ã¼ncÃ¼ ÅŸahÄ±slar, Lisans ÅŸartlarÄ±na uygunluklarÄ±nÄ± devam ettirdikleri sÃ¼rece, ruhsat 
-haklarÄ±nÄ± muhafaza edeceklerdir. 
+2.  Yazılım'ın kopyasını veya kopyalarını veya herhangi bir parçasını değiştirerek Yazılım'ı baz alan ürün elde edebilir, bu değişiklikleri veya ürünün kendisini yukarıda 1. bölümdeki şartlar dahilinde ve aşağıda sıralanan şartların yerine getirilmesi koşulu ile kopyalayabilir ve dağıtabilirsiniz.
 
-	5.  Bu Lisans sizin tarafÄ±nÄ±zdan imzalanmadÄ±ÄŸÄ± iÃ§in bu Lisans'Ä± kabul etmek zorunda deÄŸilsiniz. 
-Fakat, size YazÄ±lÄ±m'Ä± veya onu baz alan Ã¼rÃ¼nleri deÄŸiÅŸtirmek veya daÄŸÄ±tmak iÃ§in izin veren baÅŸka 
-bir belge yoktur. EÄŸer bu Lisans'Ä± kabul etmiyorsanÄ±z bu eylemler kanun tarafÄ±ndan sizin iÃ§in 
-yasaklanmÄ±ÅŸtÄ±r. DolayÄ±sÄ±yla, YazÄ±lÄ±m'Ä± (veya onu baz alan bir Ã¼rÃ¼nÃ¼) deÄŸiÅŸtirmeniz veya 
-daÄŸÄ±tmanÄ±z bu Lisans'Ä± ve Lisans'Ä±n YazÄ±lÄ±m'Ä± veya ondan iÅŸtikak etmiÅŸ bÃ¼tÃ¼n eserleri 
-kopyalamak, deÄŸiÅŸtirmek ve daÄŸÄ±tmak iÃ§in getirdiÄŸi ÅŸart ve kayÄ±tlarÄ± kabul ettiÄŸiniz manasÄ±na 
-gelmektedir. 
+    a) Değiştirilen dosyaların görünür bir şekilde dosyaların sizin tarafınızdan değiştirildiğine dair, tarihli bir bildirim içermesini sağlamalısınız.
 
-	6.  YazÄ±lÄ±m'Ä± (veya onu baz alan herhangi bir Ã¼rÃ¼nÃ¼) yeniden daÄŸÄ±ttÄ±ÄŸÄ±nÄ±z her defada alÄ±cÄ±, ilk 
-ruhsat sahibinden otomatik olarak YazÄ±lÄ±m'Ä± bu ÅŸartlar ve kayÄ±tlar dahilinde kopyalamak, 
-deÄŸiÅŸtirmek ve daÄŸÄ±tmak iÃ§in ruhsat almaktadÄ±r. AlÄ±cÄ±nÄ±n burada verilen haklarÄ± kullanmasÄ±na ek 
-bir takÄ±m kÄ±sÄ±tlamalar getiremezsiniz. ÃœÃ§Ã¼ncÃ¼ ÅŸahÄ±slarÄ± bu Lisans mucibince hareket etmeÄŸe 
-mecbur etmek sizin sorumluluk ve yÃ¼kÃ¼mlÃ¼lÃ¼ÄŸÃ¼nÃ¼z altÄ±nda deÄŸildir. 
+    b) Yazılım'dan veya Yazılım'ın bir parçasından tamamen veya kısmen iştikak etmiş ve sizin tarafınızdan dağıtılan veya yayınlanan herhangi bir ürünün bütün üçüncü şahıslara bu Lisans şartları altında ücretsiz olarak ruhsatlanmasını sağlamalısınız.
 
-	7.  EÄŸer bir mahkeme kararÄ± veya patent ihlal iddiasÄ± veya herhangi baÅŸka bir (patent meseleleri 
-ile sÄ±nÄ±rlÄ± olmayan) sebep sonucunda size, bu Lisans'Ä±n ÅŸart ve kayÄ±tlarÄ±na aykÄ±rÄ± olan bir takÄ±m 
-(mahkeme kararÄ±, Ã¶zel anlaÅŸma veya baÅŸka bir ÅŸekilde) kÄ±sÄ±tlamalar getirilirse, bu sizi bu Lisans 
-ÅŸart ve kayÄ±tlarÄ±na uyma mecburiyetinden serbest bÄ±rakmaz. EÄŸer aynÄ± anda hem bu Lisans'Ä±n 
-ÅŸartlarÄ±nÄ± yerine getiren hem de diÄŸer kÄ±sÄ±tlamalara uygun olan bir ÅŸekilde YazÄ±lÄ±m'Ä± 
-daÄŸÄ±tamÄ±yorsanÄ±z, o zaman YazÄ±lÄ±m'Ä± daÄŸÄ±tamazsÄ±nÄ±z. Ã–rneÄŸin, eÄŸer bir patent lisansÄ± direkt veya 
-endirekt olarak sizden kopya alacak olan Ã¼Ã§Ã¼ncÃ¼ ÅŸahÄ±slarÄ±n bedel Ã¶demeksizin YazÄ±lÄ±m'Ä± 
-daÄŸÄ±tmalarÄ±na hak tanÄ±mÄ±yorsa o zaman sizin hem bu koÅŸulu hem Lisans koÅŸullarÄ±nÄ± yerine 
-getirmenizin tek yolu YazÄ±lÄ±m'Ä± daÄŸÄ±tmamak olacaktÄ±r.
- 
-EÄŸer bu bÃ¶lÃ¼mÃ¼n herhangi bir parÃ§asÄ± herhangi bir ÅŸart altÄ±nda uygulanamaz veya hatalÄ± bulunur 
-ise o ÅŸartlar dahilinde bÃ¶lÃ¼mÃ¼n geri kalan kÄ±smÄ±, bÃ¼tÃ¼n diÄŸer ÅŸartlar altÄ±nda da bÃ¶lÃ¼mÃ¼n tamamÄ± 
-geÃ§erlidir. 
+    c) Eğer değiştirilen yazılım olağan kullanım altında komutları interaktif olarak alıyor ise, yazılım, en olağan kullanım için interaktif olarak çalıştırıldığı zaman uygun bir telif hakkı bildirimi, garantisi olmadığına (veya sizin tarafınızdan garanti verildiğine), kullanıcıların bu yazılımı bu şartlar altında tekrar dağıtabileceklerine, ve kullanıcının bu Lisansın bir kopyasını nasıl görebileceğine dair bir bildirim yazdırmalı veya göstermelidir. (İstisna: Eğer Yazılım'ın kendisi interaktif ise fakat böyle bir bildirimi olağan kullanım esnasında yazdırmıyor ise, sizin Yazılım'ı baz alan ürününüz böyle bir bildirimde bulunmak zorunda değildir.)
 
-Bu bÃ¶lÃ¼mÃ¼n amacÄ± sizin patent haklarÄ±nÄ±, herhangi bir mÃ¼lkiyet hakkÄ±nÄ± ihlal etmenize yol aÃ§mak 
-veya bu haklarÄ±n geÃ§erliliÄŸine muhalefet etmenizi saÄŸlamak deÄŸildir; bu bÃ¶lÃ¼mÃ¼n bÃ¼tÃ¼n amacÄ± 
-kamu lisans uygulamalarÄ± ile oluÅŸturulan serbest yazÄ±lÄ±m daÄŸÄ±tÄ±m sisteminin bÃ¼tÃ¼nlÃ¼ÄŸÃ¼nÃ¼ ve 
-iÅŸlerliÄŸini korumaktÄ±r. Bu sistemin tutarlÄ± uygulanmasÄ±na dayanarak pek Ã§ok kiÅŸi bu sistemle 
-daÄŸÄ±tÄ±lan geniÅŸ yelpazedeki yazÄ±lÄ±mlara katkÄ±da bulunmuÅŸtur; yazÄ±lÄ±mÄ±nÄ± bu veya baÅŸka bir 
-sistemle daÄŸÄ±tmak kararÄ± yazara aittir, herhangi bir kullanÄ±cÄ± bu kararÄ± veremez. 
-Bu bÃ¶lÃ¼m Lisans'Ä±n geri kalanÄ±nÄ±n doÄŸurduÄŸu sonuÃ§larÄ±n ne olduÄŸunu aÃ§Ä±klÄ±ÄŸa kavuÅŸturmak 
-amacÄ±nÄ± gÃ¼tmektedir. 
+Bu şartlar değiştirilmiş eserin tamamını kapsamaktadır. Eğer eserin tespit edilebilir kısımları Yazılım'dan iştikak etmemiş ise ve makul surette kendi başlarına bağımsız ve ayrı eserler olarak kabul edilebilir ise, o zaman bu Lisans ve şartları, bu parçaları ayrı eser olarak dağıttığınız zaman bağlayıcı değildir. Fakat, aynı parçaları Yazılım'ı baz alan bir ürün bütününün bir parçası olarak dağıttığınız zaman bütünün dağıtımı, diğer ruhsat sahiplerine verilen izinlerin bütüne ait olduğu ve parçalarına, yazarının kim olduğuna bakılmaksızın bütün parçalarına tek tek ve müşterek olarak uygulandığı bu Lisans şartlarına uygun olmalıdır. Bu bölümün hedefi tamamen sizin tarafınızdan yazılan bir eser üzerinde hak iddia etmek veya sizin böyle bir eser üzerindeki haklarınıza muhalefet etmek değil, Yazılım'ı baz alan, Yazılım'dan iştikak etmiş veya müşterek olarak ortaya çıkarılmış eserlerin dağıtımını kontrol etme haklarını düzenlemektir. Buna ek olarak, Yazılım'ı baz almayan herhangi bir ürünün Yazılım ile (veya Yazılım'ı baz alan bir ürün ile) bir bilgi saklama ortamında veya bir dağıtım ortamında beraber tutulması diğer eseri bu Lisans kapsamına sokmaz.
 
-	8.  EÄŸer YazÄ±lÄ±m'Ä±n kullanÄ±mÄ± ve/veya daÄŸÄ±tÄ±mÄ± bazÄ± Ã¼lkelerde telif hakkÄ± taÅŸÄ±yan arayÃ¼zler veya 
-patentler yÃ¼zÃ¼nden kÄ±sÄ±tlanÄ±rsa, YazÄ±lÄ±m'Ä± bu Lisans kapsamÄ±na ilk koyan telif hakkÄ± sahibi, 
-YazÄ±lÄ±m'Ä±n yalnÄ±zca bu Ã¼lkeler haricinde daÄŸÄ±tÄ±labileceÄŸine dair aÃ§Ä±k bir coÄŸrafi daÄŸÄ±tÄ±m kÄ±sÄ±tlamasÄ± 
-koyabilir. BÃ¶yle bir durumda bu Lisans bu kÄ±sÄ±tlamayÄ± sanki Lisans'Ä±n iÃ§erisine yazÄ±lmÄ±ÅŸ gibi 
-kapsar. 
+3.  Yazılım'ı ( veya 2. bölümde tanımlandığı hali ile onu baz alan bir ürünü) ara derlenmiş veya uygulama hali ile 1. ve 2. Bölüm'deki şartlar dahilinde ve aşağıda sıralanan yöntemlerden birisine uygun olarak kopyalayabilir ve dağıtabilirsiniz.
 
-	9.  Free Software Foundation zaman zaman Genel Kamu LisansÄ±'nÄ±n yeni ve/veya deÄŸiÅŸtirilmiÅŸ 
-biÃ§imlerini yayÄ±nlayabilir. BÃ¶yle yeni sÃ¼rÃ¼mler mana olarak ÅŸimdiki haline benzer olacaktÄ±r, fakat 
-doÄŸacak yeni problemler veya kaygÄ±lara cevap verecek ÅŸekilde detayda farklÄ±lÄ±k arzedebilir. 
-Her yeni biÃ§ime ayÄ±rdedici bir sÃ¼rÃ¼m numarasÄ± verilmektedir. EÄŸer YazÄ±lÄ±m bir sÃ¼rÃ¼m numarasÄ± 
-belirtiyor ve "bu ve bundan sonraki sÃ¼rÃ¼mler" altÄ±nda daÄŸÄ±tÄ±lÄ±yorsa, belirtilen sÃ¼rÃ¼m veya Free 
-Software Foundation tarafÄ±ndan yayÄ±nlanan herhangi sonraki bir sÃ¼rÃ¼mÃ¼n ÅŸart ve kayÄ±tlarÄ±na 
-uymakta serbestsiniz. EÄŸer YazÄ±lÄ±m Lisans iÃ§in bir sÃ¼rÃ¼m numarasÄ± belirtmiyor ise, Free 
-Software Foundation tarafÄ±ndan yayÄ±nlanmÄ±ÅŸ olan herhangi bir sÃ¼rÃ¼mÃ¼n ÅŸart ve kayÄ±tlarÄ±na 
-uymakta serbestsiniz. 
+a) Yaygın olarak yazılım dağıtımında kullanılan bir ortam üzerinde, yukarıda 1. ve 2. Bölüm'de bulunan şartlar dahilinde, bilgisayar tarafından okunabilir kaynak kodlarının tamamı ile birlikte dağıtmak.
 
-	10.  EÄŸer bu YazÄ±lÄ±m'Ä±n parÃ§alarÄ±nÄ± daÄŸÄ±tÄ±m koÅŸullarÄ± farklÄ± olan baÅŸka serbest yazÄ±lÄ±mlarÄ±n 
-iÃ§erisinde kullanmak isterseniz, yazara sorarak izin isteyin. Telif hakkÄ± Free Software 
-Foundation'a ait olan yazÄ±lÄ±mlar iÃ§in Free Software Foundation'a yazÄ±n, bazen istisnalar kabul 
-edilmektedir. KararÄ±mÄ±z, serbest yazÄ±lÄ±mlarÄ±mÄ±zdan iÅŸtikak etmiÅŸ yazÄ±lÄ±mlarÄ±n serbest statÃ¼lerini 
-korumak ve genel olarak yazÄ±lÄ±mlarÄ±n yeniden kullanÄ±labilirliÄŸini ve paylaÅŸÄ±mÄ±nÄ± saÄŸlamak 
-amaÃ§larÄ± doÄŸrultusunda ÅŸekillenecektir.
- 
-	GARANTÄ° YOKTUR
+b)Herhangi bir üçüncü şahsa, fiziksel olarak dağıtımı gerçekleştirme masrafınızdan daha fazla ücret almayarak, yaygın olarak yazılım dağıtımında kullanılan bir ortam üzerinde, yukarıda 1. ve 2. Bölüm'de bulunan şartlar dahilinde, bilgisayar tarafından okunabilir kaynak kodlarının tamamını dağıtacağınıza dair en az üç yıl geçerli olacak yazılı bir taahhütname ile birlikte dağıtmak.
 
-	11.  BU YAZILIM ÃœCRETSÄ°Z OLARAK RUHSATLANDIÄI Ä°Ã‡Ä°N, YAZILIM Ä°Ã‡Ä°N 
-Ä°LGÄ°LÄ° KANUNLARIN Ä°ZÄ°N VERDÄ°ÄÄ° Ã–LÃ‡ÃœDE HERHANGÄ° BÄ°R GARANTÄ° 
-VERÄ°LMEMEKTEDÄ°R. AKSÄ° YAZILI OLARAK BELÄ°RTÄ°LMEDÄ°ÄÄ° MÃœDDETÃ‡E 
-TELÄ°F HAKKI SAHÄ°PLERÄ° VE/VEYA BAÅKA ÅAHISLAR YAZILIMI "OLDUÄU 
-GÄ°BÄ°", AÅÄ°KAR VEYA ZIMNEN, SATILABÄ°LÄ°RLÄ°ÄÄ° VEYA HERHANGÄ° BÄ°R AMACA 
-UYGUNLUÄU DA DAHÄ°L OLMAK ÃœZERE HÄ°Ã‡BÄ°R GARANTÄ° VERMEKSÄ°ZÄ°N 
-DAÄITMAKTADIRLAR. YAZILIMIN KALÄ°TESÄ° VEYA PERFORMANSI Ä°LE Ä°LGÄ°LÄ° 
-TÃœM SORUNLAR SÄ°ZE AÄ°TTÄ°R. YAZILIMDA HERHANGÄ° BÄ°R BOZUKLUKTAN 
-DOLAYI DOÄABÄ°LECEK OLAN BÃœTÃœN SERVÄ°S, TAMÄ°R VEYA DÃœZELTME 
-MASRAFLARI SÄ°ZE AÄ°TTÄ°R. 
+c)Size verilmiş olan ilgili kaynak kodunu dağıtma taahhütnamesi ile birlikte dağıtmak. (Bu alternatif yalnızca ticari olmayan dağıtımlar için ve yalnızca siz de yazılımı ara derlenmiş veya uygulama biçeminde ve yukarıda b) bölümünde anlatılan şekli ile bir taahhütname ile birlikte almış iseniz geçerlidir.)
 
-	12.  Ä°LGÄ°LÄ° KANUNUN Ä°CBAR ETTÄ°ÄÄ° DURUMLAR VEYA YAZILI ANLAÅMA 
-HARÄ°CÄ°NDE HERHANGÄ° BÄ°R ÅEKÄ°LDE TELÄ°F HAKKI SAHÄ°BÄ° VEYA YUKARIDA 
-Ä°ZÄ°N VERÄ°LDÄ°ÄÄ° ÅEKÄ°LDE YAZILIMI DEÄÄ°ÅTÄ°REN VEYA YENÄ°DEN DAÄITAN 
-HERHANGÄ° BÄ°R KÄ°ÅÄ°, YAZILIMIN KULLANIMI VEYA KULLANILAMAMASI 
-(VEYA VERÄ° KAYBI OLUÅMASI, VERÄ°NÄ°N YANLIÅ HALE GELMESÄ°, SÄ°ZÄ°N VEYA 
-ÃœÃ‡ÃœNCÃœ ÅAHISLARIN ZARARA UÄRAMASI VEYA YAZILIMIN BAÅKA 
-YAZILIMLARLA BERABER Ã‡ALIÅAMAMASI) YÃœZÃœNDEN OLUÅAN GENEL, 
-Ã–ZEL, DOÄRUDAN YA DA DOLAYLI HERHANGÄ° BÄ°R ZARARDAN, BÃ–YLE BÄ°R 
-TAZMÄ°NAT TALEBÄ° TELÄ°F HAKKI SAHÄ°BÄ° VEYA Ä°LGÄ°LÄ° KÄ°ÅÄ°YE BÄ°LDÄ°RÄ°LMÄ°Å 
-OLSA DAHÄ°, SORUMLU DEÄÄ°LDÄ°R.
- 
-	ÅART VE KAYITLARIN SONU
+Bir eserin kaynak kodu, esere değiştirme yapmak için en uygun yöntem ve imkan anlamında kullanılmaktadır. Uygulama biçeminde bir eser için, kaynak kodu, içerdiği bütün parçalar için ilgili kaynak kodları, ilgili arayüz tanım dosyaları ve derleme ve yükleme işlemlerinde kullanılan bütün betikler anlamında kullanılmaktadır. Bir istisna olarak, dağıtılan kaynak kodu, genelde uygulamanın üzerinde çalışacağı işletim sisteminin ana parçaları (derleyici, çekirdek v.b.) ile birlikte dağıtılan herhangi bir bileşeni,eğer ilgili bileşen, uygulama ile birlikte dağıtılmıyorsa, içermek zorunda değildir.
+
+Eğer uygulama veya ara derlenmiş biçemde yazılımın dağıtımı belli bir yere erişim ve oradan kopyalama imkanı olarak yapılıyorsa, aynı yerden, aynı koşullar altında kaynak koduna erişim imkanı sağlamak, üçüncü şahısların ara derlenmiş ve uygulama biçemleri ile birlikte kaynak kodunu kopyalama zorunlulukları olmasa bile kaynak kodunu dağıtmak olarak kabul edilmektedir.
+
+4.  Yazılım'ı bu Lisans'ta sarih olarak belirtilen şartlar haricinde kopyalayamaz, değiştiremez, ruhsat hakkını veremez ve dağıtamazsınız. Buna aykırı herhangi bir kopyalama, değiştirme, ruhsat hakkı verme, veya dağıtımda bulunma hükümsüzdür ve böyle bir teşebbüs halinde bu Lisans altındaki bütün haklarınız iptal edilir. Sizden, bu Lisans kapsamında kopya veya hak almış olan üçüncü şahıslar, Lisans şartlarına uygunluklarını devam ettirdikleri sürece, ruhsat haklarını muhafaza edeceklerdir.
+
+5.  Bu Lisans sizin tarafınızdan imzalanmadığı için bu Lisans'ı kabul etmek zorunda değilsiniz. Fakat, size Yazılım'ı veya onu baz alan ürünleri değiştirmek veya dağıtmak için izin veren başka bir belge yoktur. Eğer bu Lisans'ı kabul etmiyorsanız bu eylemler kanun tarafından sizin için yasaklanmıştır. Dolayısıyla, Yazılım'ı (veya onu baz alan bir ürünü) değiştirmeniz veya dağıtmanız bu Lisans'ı ve Lisans'ın Yazılım'ı veya ondan iştikak etmiş bütün eserleri kopyalamak, değiştirmek ve dağıtmak için getirdiği şart ve kayıtları kabul ettiğiniz manasına gelmektedir.
+
+6.  Yazılım'ı (veya onu baz alan herhangi bir ürünü) yeniden dağıttığınız her defada alıcı, ilk ruhsat sahibinden otomatik olarak Yazılım'ı bu şartlar ve kayıtlar dahilinde kopyalamak, değiştirmek ve dağıtmak için ruhsat almaktadır. Alıcının burada verilen hakları kullanmasına ek bir takım kısıtlamalar getiremezsiniz. Üçüncü şahısları bu Lisans mucibince hareket etmeğe mecbur etmek sizin sorumluluk ve yükümlülüğünüz altında değildir.
+
+7.  Eğer bir mahkeme kararı veya patent ihlal iddiası veya herhangi başka bir (patent meseleleri ile sınırlı olmayan) sebep sonucunda size, bu Lisans'ın şart ve kayıtlarına aykırı olan bir takım (mahkeme kararı, özel anlaşma veya başka bir şekilde) kısıtlamalar getirilirse, bu sizi bu Lisans şart ve kayıtlarına uyma mecburiyetinden serbest bırakmaz. Eğer aynı anda hem bu Lisans'ın şartlarını yerine getiren hem de diğer kısıtlamalara uygun olan bir şekilde Yazılım'ı dağıtamıyorsanız, o zaman Yazılım'ı dağıtamazsınız. Örneğin, eğer bir patent lisansı direkt veya endirekt olarak sizden kopya alacak olan üçüncü şahısların bedel ödemeksizin Yazılım'ı dağıtmalarına hak tanımıyorsa o zaman sizin hem bu koşulu hem Lisans koşullarını yerine getirmenizin tek yolu Yazılım'ı dağıtmamak olacaktır.
+
+Eğer bu bölümün herhangi bir parçası herhangi bir şart altında uygulanamaz veya hatalı bulunur ise o şartlar dahilinde bölümün geri kalan kısmı, bütün diğer şartlar altında da bölümün tamamı geçerlidir.
+
+Bu bölümün amacı sizin patent haklarını, herhangi bir mülkiyet hakkını ihlal etmenize yol açmak veya bu hakların geçerliliğine muhalefet etmenizi sağlamak değildir; bu bölümün bütün amacı kamu lisans uygulamaları ile oluşturulan serbest yazılım dağıtım sisteminin bütünlüğünü ve işlerliğini korumaktır. Bu sistemin tutarlı uygulanmasına dayanarak pek çok kişi bu sistemle dağıtılan geniş yelpazedeki yazılımlara katkıda bulunmuştur; yazılımını bu veya başka bir sistemle dağıtmak kararı yazara aittir, herhangi bir kullanıcı bu kararı veremez. Bu bölüm Lisans'ın geri kalanının doğurduğu sonuçların ne olduğunu açıklığa kavuşturmak amacını gütmektedir.
+
+8.  Eğer Yazılım'ın kullanımı ve/veya dağıtımı bazı ülkelerde telif hakkı taşıyan arayüzler veya patentler yüzünden kısıtlanırsa, Yazılım'ı bu Lisans kapsamına ilk koyan telif hakkı sahibi, Yazılım'ın yalnızca bu ülkeler haricinde dağıtılabileceğine dair açık bir coğrafi dağıtım kısıtlaması koyabilir. Böyle bir durumda bu Lisans bu kısıtlamayı sanki Lisans'ın içerisine yazılmış gibi kapsar.
+
+9.  Free Software Foundation zaman zaman Genel Kamu Lisansı'nın yeni ve/veya değiştirilmiş biçimlerini yayınlayabilir. Böyle yeni sürümler mana olarak şimdiki haline benzer olacaktır, fakat doğacak yeni problemler veya kaygılara cevap verecek şekilde detayda farklılık arzedebilir. Her yeni biçime ayırdedici bir sürüm numarası verilmektedir. Eğer Yazılım bir sürüm numarası belirtiyor ve "bu ve bundan sonraki sürümler" altında dağıtılıyorsa, belirtilen sürüm veya Free Software Foundation tarafından yayınlanan herhangi sonraki bir sürümün şart ve kayıtlarına uymakta serbestsiniz. Eğer Yazılım Lisans için bir sürüm numarası belirtmiyor ise, Free Software Foundation tarafından yayınlanmış olan herhangi bir sürümün şart ve kayıtlarına uymakta serbestsiniz.
+
+10.  Eğer bu Yazılım'ın parçalarını dağıtım koşulları farklı olan başka serbest yazılımların içerisinde kullanmak isterseniz, yazara sorarak izin isteyin. Telif hakkı Free Software Foundation'a ait olan yazılımlar için Free Software Foundation'a yazın, bazen istisnalar kabul edilmektedir. Kararımız, serbest yazılımlarımızdan iştikak etmiş yazılımların serbest statülerini korumak ve genel olarak yazılımların yeniden kullanılabilirliğini ve paylaşımını sağlamak amaçları doğrultusunda şekillenecektir.
+
+GARANTİ YOKTUR
+
+11.  BU YAZILIM ÜCRETSİZ OLARAK RUHSATLANDIĞI İÇİN, YAZILIM İÇİN İLGİLİ KANUNLARIN İZİN VERDİĞİ ÖLÇÜDE HERHANGİ BİR GARANTİ VERİLMEMEKTEDİR. AKSİ YAZILI OLARAK BELİRTİLMEDİĞİ MÜDDETÇE TELİF HAKKI SAHİPLERİ VE/VEYA BAŞKA ŞAHISLAR YAZILIMI "OLDUĞU GİBİ", AŞİKAR VEYA ZIMNEN, SATILABİLİRLİĞİ VEYA HERHANGİ BİR AMACA UYGUNLUĞU DA DAHİL OLMAK ÜZERE HİÇBİR GARANTİ VERMEKSİZİN DAĞITMAKTADIRLAR. YAZILIMIN KALİTESİ VEYA PERFORMANSI İLE İLGİLİ TÜM SORUNLAR SİZE AİTTİR. YAZILIMDA HERHANGİ BİR BOZUKLUKTAN DOLAYI DOĞABİLECEK OLAN BÜTÜN SERVİS, TAMİR VEYA DÜZELTME MASRAFLARI SİZE AİTTİR.
+
+12.  İLGİLİ KANUNUN İCBAR ETTİĞİ DURUMLAR VEYA YAZILI ANLAŞMA HARİCİNDE HERHANGİ BİR ŞEKİLDE TELİF HAKKI SAHİBİ VEYA YUKARIDA İZİN VERİLDİĞİ ŞEKİLDE YAZILIMI DEĞİŞTİREN VEYA YENİDEN DAĞITAN HERHANGİ BİR KİŞİ, YAZILIMIN KULLANIMI VEYA KULLANILAMAMASI (VEYA VERİ KAYBI OLUŞMASI, VERİNİN YANLIŞ HALE GELMESİ, SİZİN VEYA ÜÇÜNCÜ ŞAHISLARIN ZARARA UĞRAMASI VEYA YAZILIMIN BAŞKA YAZILIMLARLA BERABER ÇALIŞAMAMASI) YÜZÜNDEN OLUŞAN GENEL, ÖZEL, DOĞRUDAN YA DA DOLAYLI HERHANGİ BİR ZARARDAN, BÖYLE BİR TAZMİNAT TALEBİ TELİF HAKKI SAHİBİ VEYA İLGİLİ KİŞİYE BİLDİRİLMİŞ OLSA DAHİ, SORUMLU DEĞİLDİR.
+
+ŞART VE KAYITLARIN SONU

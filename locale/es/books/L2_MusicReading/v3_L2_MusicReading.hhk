@@ -1,12 +1,12 @@
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 <body>
 
 <ul>
   <li><object type="text/sitemap">
-    <param name="Name" value="Lectura r�tmica. Nivel 2. Presentaci�n">
+    <param name="Name" value="Lectura rÃ­tmica. Nivel 2. PresentaciÃ³n">
     <param name="Local" value="v3_L2_MusicReading_Intro.htm">
     </object>
   </li>
@@ -18,7 +18,7 @@
   </li>
 
   <li><object type="text/sitemap">
-    <param name="Name" value=" 2. Comp�s ternario de 9/8. Negra con puntillo">
+    <param name="Name" value=" 2. CompÃ¡s ternario de 9/8. Negra con puntillo">
     <param name="Local" value="v3_L2_MusicReading_206.htm">
     </object>
   </li>
@@ -30,7 +30,7 @@
   </li>
 
   <li><object type="text/sitemap">
-    <param name="Name" value=" 4. Comp�s ternario de 12/8. Corchea ligada a corcheas">
+    <param name="Name" value=" 4. CompÃ¡s ternario de 12/8. Corchea ligada a corcheas">
     <param name="Local" value="v3_L2_MusicReading_208.htm">
     </object>
   </li>
@@ -42,7 +42,7 @@
   </li>
 
   <li><object type="text/sitemap">
-    <param name="Name" value=" 6. Comp�s ternario. Tres corcheas ligadas a siguiente parte">
+    <param name="Name" value=" 6. CompÃ¡s ternario. Tres corcheas ligadas a siguiente parte">
     <param name="Local" value="v3_L2_MusicReading_210.htm">
     </object>
   </li>
@@ -54,13 +54,13 @@
   </li>
 
   <li><object type="text/sitemap">
-    <param name="Name" value=" 8. Comp�s ternario. Corchea, silencio y corchea">
+    <param name="Name" value=" 8. CompÃ¡s ternario. Corchea, silencio y corchea">
     <param name="Local" value="v3_L2_MusicReading_212.htm">
     </object>
   </li>
 
   <li><object type="text/sitemap">
-    <param name="Name" value=" 9. Comp�s binario. El tresillo">
+    <param name="Name" value=" 9. CompÃ¡s binario. El tresillo">
     <param name="Local" value="v3_L2_MusicReading_214.htm">
     </object>
   </li>
@@ -72,7 +72,7 @@
   </li>
 
   <li><object type="text/sitemap">
-    <param name="Name" value="11. Comp�s ternario. Tres negras.">
+    <param name="Name" value="11. CompÃ¡s ternario. Tres negras.">
     <param name="Local" value="v3_L2_MusicReading_216.htm">
     </object>
   </li>
@@ -90,7 +90,7 @@
   </li>
 
   <li><object type="text/sitemap">
-    <param name="Name" value="14. Comp�s ternario. Corchea ligada a siguiente parte">
+    <param name="Name" value="14. CompÃ¡s ternario. Corchea ligada a siguiente parte">
     <param name="Local" value="v3_L2_MusicReading_220.htm">
     </object>
   </li>
@@ -108,7 +108,7 @@
   </li>
 
   <li><object type="text/sitemap">
-    <param name="Name" value="17. Comp�s ternario. Corchea ligada a siguiente parte (2)">
+    <param name="Name" value="17. CompÃ¡s ternario. Corchea ligada a siguiente parte (2)">
     <param name="Local" value="v3_L2_MusicReading_223.htm">
     </object>
   </li>

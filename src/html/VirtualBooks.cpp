@@ -62,9 +62,9 @@ void lmVirtualBooks::ReloadBooks(wxString sLang)
 {
     //initialize book content if language changes
     if ((sLang != m_sPrevLang)) {
+        m_sPrevLang = sLang;
         LoadIntroBook();
         LoadSingleExercisesBook();
-        m_sPrevLang = sLang;
     }
 }
 
@@ -173,24 +173,29 @@ wxFSFile* lmVirtualBooks::OpenFile(wxFileSystem& WXUNUSED(fs), const wxString& l
 void lmVirtualBooks::LoadIntroBook()
 {
     // there must be a bug in wxWidgets and index doesn't work if hhc and hhk goes with
-    // UTF-8. So, afetr a lot of testing, the foolowing combination works:
-    //      htm         -> utf-8
-    //      hhk, hhc    -> iso-8859-1 (but the file is utf-8)
-    //      hhp         -> utf-8
+    // UTF-8. So, after a lot of testing, the following combination works
+    // 
+    // a) for Unicode build:
+    //      hhp         -> charset=utf-8, saved as utf-8
+    //      hhk, hhc    -> charset=iso-8859-1, saved as utf-8
+    //      html        -> charset=any, saved as specified charset
+    // 
+    // b) for Win98 build:
+    //      hhp         -> charset=utf-8, saved as utf-8
+    //      hhk, hhc    -> charset=iso-8859-1, saved as utf-8
+    //      html        -> charset=any, saved as specified charset
+
 
     wxString sNil = _T("");
-#ifdef _UNICODE
-    wxString sCharset = _T("utf-8");
-#else
-    wxString sCharset = wxLocale::GetSystemEncodingName();
-#endif
+    wxString sCharset1 = _T("utf-8");
+    wxString sCharset2 = GetCharset();
 
     //book description
     //-----------------------------------------------------------------------------
     m_sIntroHHP = sNil +
         _T("[OPTIONS]\n")
         _T("Contents file=intro.hhc\n")
-        _T("Charset=") + sCharset + _T("\n")
+        _T("Charset=") + sCharset1 + _T("\n")
         _T("Index file=intro.hhk\n")
         _T("Title=") + _("LenMus. Introduction") + _T("\n")
         _T("Default topic=intro_welcome.htm\n");
@@ -199,24 +204,18 @@ void lmVirtualBooks::LoadIntroBook()
     //Book content
     //-----------------------------------------------------------------------------
     m_sIntroHHC = sNil +
-        _T("<html><head>")
-        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">")
-        _T("</head><body><ul>")
-        _T("<li><object type=\"text/sitemap\">")
-        _T("<param name=\"Name\" value=\"") + _("Welcome") + _T("\">")
-        _T("<param name=\"Local\" value=\"intro_welcome.htm\"></object></li>")
-        _T("</ul></body></html>");
+        _T("<html>\n<head>\n")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + 
+            sCharset2 + _T("\">\n")
+        _T("</head>\n<body>\n\n<ul>\n")
+        _T("  <li><object type=\"text/sitemap\">\n")
+        _T("          <param name=\"Name\" value=\"") + _("Welcome") + _T("\">\n")
+        _T("          <param name=\"Local\" value=\"intro_welcome.htm\">\n</object></li>\n")
+        _T("</ul>\n\n</body>\n</html>\n");
     
     //book index
     //-----------------------------------------------------------------------------
-    m_sIntroHHK = sNil +
-        _T("<html><head>")
-        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">")
-        _T("</head><body><ul>")
-        _T("<li><object type=\"text/sitemap\">")
-        _T("<param name=\"Name\" value=\"") + _("Welcome") + _T("\">")
-        _T("<param name=\"Local\" value=\"intro_welcome.htm\"></object></li>")
-        _T("</ul></body></html>");
+    m_sIntroHHK = m_sIntroHHC;
     
 
     //book page
@@ -235,7 +234,7 @@ your specific needs at each moment and to practise specific points."), sBookRef 
 
     m_sIntroHTM = sNil +
       _T("<html><head>")
-      _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + sCharset +
+      _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + sCharset2 +
       _T("\">")
       _T("</head><body><table width='100%'><tr><td align='left'>") 
       _T("<img src='Phonascus-277x63.gif' width='277' height='63' /></td>") 
@@ -278,18 +277,15 @@ immediately any new concept introduced.") +
 void lmVirtualBooks::LoadSingleExercisesBook()
 {
     wxString sNil = _T("");
-#ifdef _UNICODE
-    wxString sCharset = _T("utf-8");
-#else
-    wxString sCharset = wxLocale::GetSystemEncodingName();
-#endif
+    wxString sCharset1 = _T("utf-8");
+    wxString sCharset2 = GetCharset();
 
     //book description
     //-----------------------------------------------------------------------------
     m_sSingleHHP = sNil +
         _T("[OPTIONS]\n")
         _T("Contents file=SingleExercises.hhc\n")
-        _T("Charset=") + sCharset + _T("\n")
+        _T("Charset=") + sCharset1 + _T("\n")
         _T("Index file=SingleExercises.hhk\n")
         _T("Title=") + _("Single exercises") + _T("\n")
         _T("Default topic=SingleExercises_0.htm\n");
@@ -443,20 +439,21 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     //Book content and index
     //-----------------------------------------------------------------------------
     m_sSingleHHC = sNil +
-        _T("<html><head>")
-        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">")
-        _T("</head><body><ul>");
+        _T("<html>\n<head>\n")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + 
+            sCharset2 + _T("\">\n")
+        _T("</head>\n<body>\n\n<ul>\n");
 
     for (i=0; i < lmNUM_SINGLE_PAGES; i++) {
         m_sSingleHHC +=
-            _T("<li><object type=\"text/sitemap\">")
-            _T("<param name=\"Name\" value=\"") +           //this is the name for links
-            sIndexTitle[i]  + _T("\">")
-            _T("<param name=\"Local\" value=\"SingleExercises_") +
-            wxString::Format(_T("%d.htm"), i) +
-            _T("\"></object></li>");
+            _T("  <li><object type=\"text/sitemap\">\n")
+            _T("         <param name=\"Name\" value=\"") +      //this is the name for links
+                sIndexTitle[i]  + _T("\">\n")
+            _T("         <param name=\"Local\" value=\"SingleExercises_") +
+                wxString::Format(_T("%d.htm"), i) +
+            _T("\">\n  </object></li>\n\n");
     }
-    m_sSingleHHC += _T("</ul></body></html>");
+    m_sSingleHHC += _T("</ul>\n\n</body>\n</html>\n");
 
     m_sSingleHHK = m_sSingleHHC;
     
@@ -465,51 +462,51 @@ void lmVirtualBooks::LoadSingleExercisesBook()
     //-----------------------------------------------------------------------------
     for (i=1; i < lmNUM_SINGLE_PAGES; i++) {
         m_sSingleHTM[i] = sNil +
-            _T("<html><head>")
+            _T("<html>\n<head>\n")
             _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + 
-            sCharset + _T("\">")
+            sCharset2 + _T("\">\n")
             _T("<title>") + sPageTitle[i] + 
-            _T("</title></head><body><h1>") + sPageTitle[i] +
-            _T("</h1>") + sContent[i] + _T("</body></html>");
+            _T("</title>\n</head>\n<body>\n\n<h1>") + sPageTitle[i] +
+            _T("</h1>") + sContent[i] + _T("\n</body>\n</html>\n");
     }
 
     //Now the intro page
     m_sSingleHTM[0] = sNil +
-        _T("<html><head>")
+        _T("<html>\n<head>\n")
         _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + 
-        sCharset + _T("\">")
+        sCharset2 + _T("\">\n")
         _T("<title>") + sPageTitle[0] + 
-        _T("</title></head><body><h1>") + sPageTitle[0] +
-        _T("</h1><p>") +
+        _T("</title>\n</head>\n<body>\n\n<h1>") + sPageTitle[0] +
+        _T("</h1>\n<p>") +
         _("Appart of exercises included in the eBooks, the following general exercises \
-(customizable to suit your needs at any moment) are available:") + _T("</p>");
+(customizable to suit your needs at any moment) are available:") + _T("</p>\n");
     
     int iItem;
-    m_sSingleHTM[0] += _T("<h2>") + sSectionTitle[0] + _T("</h2><ul>");
+    m_sSingleHTM[0] += _T("<h2>") + sSectionTitle[0] + _T("</h2>\n<ul>\n");
     for (iItem=iSecStart[0]; iItem < iSecStart[1]; iItem++) {
         //m_sSingleHTM[0] += _T("<li><a href=\"#LenMusPage/") +
         //    sIndexTitle[iItem] + _T("\">") + sIndexTitle[iItem] + _T("</a></li>");
-        m_sSingleHTM[0] += _T("<li><a href=\"#LenMusPage/SingleExercises_") +
+        m_sSingleHTM[0] += _T("  <li><a href=\"#LenMusPage/SingleExercises_") +
             wxString::Format(_T("%d.htm"), iItem) +
-            _T("\">") + sIndexTitle[iItem] + _T("</a></li>");
+            _T("\">") + sIndexTitle[iItem] + _T("</a></li>\n\n");
     }
-    m_sSingleHTM[0] += _T("</ul><h2>") + sSectionTitle[1] + _T("</h2><ul>");
+    m_sSingleHTM[0] += _T("</ul>\n\n<h2>") + sSectionTitle[1] + _T("</h2>\n<ul>\n");
     for (iItem=iSecStart[1]; iItem < iSecStart[2]; iItem++) {
         //m_sSingleHTM[0] += _T("<li><a href=\"#LenMusPage/") +
         //    sIndexTitle[iItem] + _T("\">") + sIndexTitle[iItem] + _T("</a></li>");
-        m_sSingleHTM[0] += _T("<li><a href=\"#LenMusPage/SingleExercises_") +
+        m_sSingleHTM[0] += _T("  <li><a href=\"#LenMusPage/SingleExercises_") +
             wxString::Format(_T("%d.htm"), iItem) +
-            _T("\">") + sIndexTitle[iItem] + _T("</a></li>");
+            _T("\">") + sIndexTitle[iItem] + _T("</a></li>\n\n");
     }
-    m_sSingleHTM[0] += _T("</ul><h2>") + sSectionTitle[2] + _T("</h2><ul>");
+    m_sSingleHTM[0] += _T("</ul>\n\n<h2>") + sSectionTitle[2] + _T("</h2><ul>");
     for (iItem=iSecStart[2]; iItem < lmNUM_SINGLE_PAGES; iItem++) {
         //m_sSingleHTM[0] += _T("<li><a href=\"#LenMusPage/") +
         //    sIndexTitle[iItem] + _T("\">") + sIndexTitle[iItem] + _T("</a></li>");
-        m_sSingleHTM[0] += _T("<li><a href=\"#LenMusPage/SingleExercises_") +
+        m_sSingleHTM[0] += _T("  <li><a href=\"#LenMusPage/SingleExercises_") +
             wxString::Format(_T("%d.htm"), iItem) +
-            _T("\">") + sIndexTitle[iItem] + _T("</a></li>");
+            _T("\">") + sIndexTitle[iItem] + _T("</a></li>\n\n");
     }
-    m_sSingleHTM[0] += _T("</ul></body></html>");
+    m_sSingleHTM[0] += _T("</ul>\n\n</body>\n</html>\n");
 
 }
 
@@ -541,22 +538,22 @@ void lmVirtualBooks::LoadVirtualBooks(lmTextBookController* pBookController)
 void lmVirtualBooks::GenerateEBooks()
 {
     // intro eBook
-    WriteEBook(_T("intro.hhp"), m_sIntroHHP);
-    WriteEBook(_T("intro.hhc"), m_sIntroHHC);
-    WriteEBook(_T("intro.hhk"), m_sIntroHHK);
-    WriteEBook(_T("intro_welcome.htm"), m_sIntroHTM);
+    WriteEBook(_T("intro.hhp"), m_sIntroHHP, wxConvUTF8);
+    WriteEBook(_T("intro.hhc"), m_sIntroHHC, wxConvUTF8);
+    WriteEBook(_T("intro.hhk"), m_sIntroHHK, wxConvUTF8);
+    WriteEBook(_T("intro_welcome.htm"), m_sIntroHTM, wxConvUTF8);
 
     //SingleExercises eBook
     for (int i=0; i < lmNUM_SINGLE_PAGES; i++) {
-        WriteEBook( wxString::Format(_T("SingleExercises_%d.htm"), i), m_sSingleHTM[i] );
+        WriteEBook( wxString::Format(_T("SingleExercises_%d.htm"), i), m_sSingleHTM[i], wxConvUTF8);
     }
-    WriteEBook(_T("SingleExercises.hhp"), m_sSingleHHP);
-    WriteEBook(_T("SingleExercises.hhc"), m_sSingleHHC);
-    WriteEBook(_T("SingleExercises.hhk"), m_sSingleHHK);
+    WriteEBook(_T("SingleExercises.hhp"), m_sSingleHHP, wxConvUTF8);
+    WriteEBook(_T("SingleExercises.hhc"), m_sSingleHHC, wxConvUTF8);
+    WriteEBook(_T("SingleExercises.hhk"), m_sSingleHHK, wxConvUTF8);
 
 }
 
-void lmVirtualBooks::WriteEBook(wxString sBookName, wxString sContent)
+void lmVirtualBooks::WriteEBook(wxString sBookName, wxString sContent, wxMBConv& conv)
 {
     wxFile* pFile = new wxFile(sBookName, wxFile::write);
     if (!pFile->IsOpened()) {
@@ -564,12 +561,32 @@ void lmVirtualBooks::WriteEBook(wxString sBookName, wxString sContent)
         pFile = (wxFile*)NULL;
         return;
     }
-    pFile->Write(sContent);
+    pFile->Write(sContent, conv);
     pFile->Close();
     delete pFile;
 
 }
 
+wxString lmVirtualBooks::GetCharset()
+{
+    wxString sCharset;
+    if (m_sPrevLang == _T("en")) {
+        sCharset = _T("iso-8859-1");
+    }
+    else if (m_sPrevLang == _T("es")) {
+        sCharset = _T("iso-8859-1");
+    }
+    else if (m_sPrevLang == _T("fr")) {
+        sCharset = _T("iso-8859-1");
+    }
+    else if (m_sPrevLang == _T("tr")) {
+        sCharset = _T("iso-8859-9");        //cp-1254
+    }
+    else {
+        wxASSERT(false);
+    }
+    return sCharset;
+}
 
 
 

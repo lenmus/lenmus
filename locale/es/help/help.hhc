@@ -1,10 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <HTML>
 <HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </HEAD><BODY>
 <UL>
     <li> <object type="text/sitemap">
-        <param name="Name" value="Lo más básico">
+        <param name="Name" value="Lo mÃ¡s bÃ¡sico">
         <param name="Local" value="basics.htm">
         </object>
     <li> <object type="text/sitemap">
@@ -13,37 +13,37 @@
         </object>
         <ul>
         <li> <object type="text/sitemap">
-            <param name="Name" value="El menú y la barra de herramientas">
+            <param name="Name" value="El menÃº y la barra de herramientas">
             <param name="Local" value="menu.htm">
             </object>
             <ul>
             <li> <object type="text/sitemap">
-                <param name="Name" value="El menú 'Archivo'">
+                <param name="Name" value="El menÃº 'Archivo'">
                 <param name="Local" value="menu_file.htm">
                 </object>
             <li> <object type="text/sitemap">
-                <param name="Name" value="El menú 'Ver'">
+                <param name="Name" value="El menÃº 'Ver'">
                 <param name="Local" value="menu_view.htm">
                 </object>
             <li> <object type="text/sitemap">
-                <param name="Name" value="El menú 'Sonido'">
+                <param name="Name" value="El menÃº 'Sonido'">
                 <param name="Local" value="menu_sound.htm">
                 </object>
             <li> <object type="text/sitemap">
-                <param name="Name" value="El menú 'Opciones'">
+                <param name="Name" value="El menÃº 'Opciones'">
                 <param name="Local" value="menu_options.htm">
                 </object>
             <li> <object type="text/sitemap">
-                <param name="Name" value="El menú 'Ventanas'">
+                <param name="Name" value="El menÃº 'Ventanas'">
                 <param name="Local" value="menu_window.htm">
                 </object>
             <li> <object type="text/sitemap">
-                <param name="Name" value="El menú 'Ayuda'">
+                <param name="Name" value="El menÃº 'Ayuda'">
                 <param name="Local" value="menu_help.htm">
                 </object>
             </ul>
         <li> <object type="text/sitemap">
-            <param name="Name" value="Preferencias y configuración del sonido">
+            <param name="Name" value="Preferencias y configuraciÃ³n del sonido">
             <param name="Local" value="settings.htm">
             </object>
         <li> <object type="text/sitemap">

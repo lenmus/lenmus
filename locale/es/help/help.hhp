@@ -1,5 +1,1 @@
-[OPTIONS]
-Contents file=help.hhc
-Title=Guía del usuario
-Default topic=index.htm
-
+[OPTIONS]Contents file=help.hhcCharset=utf-8Title=GuÃ­a del usuarioDefault topic=index.htm

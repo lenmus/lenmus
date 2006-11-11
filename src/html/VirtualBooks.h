@@ -52,7 +52,8 @@ public:
 private:
     void LoadIntroBook();
     void LoadSingleExercisesBook();
-    void WriteEBook(wxString sBookName, wxString sContent);
+    void WriteEBook(wxString sBookName, wxString sContent, wxMBConv& conv);
+    wxString GetCharset();
 
 
     //array sizes

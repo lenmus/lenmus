@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.0\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-10-26 22:53+0100\n"
-"Last-Translator: Carlos Alarcia <calarcia@cyltel.com>\n"
+"PO-Revision-Date: 2006-11-10 13:02+0100\n"
+"Last-Translator: \n"
 "Language-Team:  <calarcia@cyltel.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -2239,7 +2239,7 @@ msgstr "Exercice: Ecouter un accord et identifier son type"
 
 #: html/VirtualBooks.cpp:351
 msgid "1.4. Aural training. Scales' identification"
-msgstr "1.4. Oral entrainement. Identification d'intervalles"
+msgstr "1.4. Oral entrainement. Identification d'échelles"
 
 #: html/VirtualBooks.cpp:352
 msgid "Aural training. Scales' identification"
@@ -2311,7 +2311,7 @@ msgstr "Lisant clefs"
 
 #: html/VirtualBooks.cpp:483
 msgid "Appart of exercises included in the eBooks, the following general exercises (customizable to suit your needs at any moment) are available:"
-msgstr "Apart des exercices inclus dans les eBooks, les suivant exercices générals (personnalisables pour s'adapter à vos besoins)  n'importequel moment) sont valides:"
+msgstr "Apart des exercices inclus dans les eBooks, les suivant exercices générals (personnalisables pour s'adapter à vos besoins,  n'importequel moment) sont valides:"
 
 #: html/VirtualBooks.cpp:528
 #: html/VirtualBooks.cpp:535

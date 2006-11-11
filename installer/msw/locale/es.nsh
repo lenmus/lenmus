@@ -25,8 +25,8 @@ LangString ERROR_CopyFiles          ${LANG_Spanish} "Error durante la copia de l
 LangString ERROR_InstallFonts       ${LANG_Spanish} "Error instalando el font"
 LangString ERROR_CreateIcon         ${LANG_Spanish} "Error creando acceso directo en el escritorio"
 LangString ERROR_CopyScores         ${LANG_Spanish} "Error al copiar las partituras de ejemplo "
-LangString MSG_CONTINUE             ${LANG_Spanish} "¿Quiere continuar instalando?"
-LangString MSG_ABORT                ${LANG_Spanish} "Instalación cancelada"
+LangString MSG_CONTINUE             ${LANG_Spanish} "?uiere continuar instalando?"
+LangString MSG_ABORT                ${LANG_Spanish} "Instalaci?cancelada"
 
 
 ;start menu & desktop descriptions

@@ -8,7 +8,7 @@
         <param name="Local" value="basics.htm">
         </object>
     <li> <object type="text/sitemap">
-        <param name="Name" value="Coup d'oeil à l'interface d'utilisateur">
+        <param name="Name" value="Coup d'oeil Ã  l'interface d'utilisateur">
         <param name="Local" value="ui.htm">
         </object>
         <ul>
@@ -43,16 +43,16 @@
                 </object>
             </ul>
         <li> <object type="text/sitemap">
-            <param name="Name" value="Préférences et configuration de sons">
+            <param name="Name" value="PrÃ©fÃ©rences et configuration de sons">
             <param name="Local" value="settings.htm">
             </object>
         <li> <object type="text/sitemap">
-            <param name="Name" value="Gérant eBooks">
+            <param name="Name" value="GÃ©rant eBooks">
             <param name="Local" value="manager.htm">
             </object>
             </ul>
     <li> <object type="text/sitemap">
-        <param name="Name" value="Problèmes connus">
+        <param name="Name" value="ProblÃ¨mes connus">
         <param name="Local" value="known_problems.htm">
         </object>
     <li> <object type="text/sitemap">

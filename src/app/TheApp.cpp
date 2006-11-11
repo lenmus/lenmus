@@ -65,8 +65,8 @@
         extern void __cdecl wxOnAssert(unsigned short const *n1,int n2,char const *n3,unsigned short const *n4,unsigned short const *n5);
         void __cdecl wxOnAssert(unsigned short const *n1,int n2,char const *n3,unsigned short const *n4,unsigned short const *n5) {}
     #else
-        extern void __cdecl wxAssert(int n, char const* s, int m, char const* s2, char const* s3);
-        void __cdecl wxAssert(int n, char const * s, int m, char const* s2, char const* s3) {}
+        extern void __cdecl wxOnAssert(char const * n1,int n2,char const * m3,char const * n4,char const * n5);
+        void __cdecl wxOnAssert(char const * n1,int n2,char const * m3,char const * n4,char const * n5) {}
     #endif
 #endif
 
@@ -463,9 +463,8 @@ bool lmTheApp::OnInit(void)
     g_pMainFrame->OnOpenBook(event);
 #endif
 
-    //cursor normal and terminate
+    //cursor normal
     ::wxEndBusyCursor();
-
 
     //check for updates if this option is set up. Default: do check
     wxString sCheckFreq = g_pPrefs->Read(_T("/Options/CheckForUpdates/Frequency"), _T("Weekly") );
