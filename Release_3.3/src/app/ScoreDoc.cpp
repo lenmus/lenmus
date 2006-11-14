@@ -48,7 +48,7 @@
 //#include "textView.h"
 #include "scoreView.h"
 #include "../ldp_parser/LDPParser.h"
-#include "../xml_parser/XMLParser.h"
+#include "../xml_parser/MusicXMLParser.h"
 
 
 

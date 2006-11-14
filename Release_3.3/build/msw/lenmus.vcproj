@@ -1019,10 +1019,10 @@
 			Name="xml_parser"
 			Filter="">
 			<File
-				RelativePath="..\..\src\xml_parser\parser.cpp">
+				RelativePath="..\..\src\xml_parser\MusicXMLParser.cpp">
 			</File>
 			<File
-				RelativePath="..\..\src\xml_parser\parser.h">
+				RelativePath="..\..\src\xml_parser\MusicXMLParser.h">
 			</File>
 			<File
 				RelativePath="..\..\src\xml_parser\XMLParser.cpp">

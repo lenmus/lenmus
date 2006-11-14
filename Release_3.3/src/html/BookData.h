@@ -2,7 +2,8 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
 //
-//    This file is based on file helpdata.h from wxWidgets 2.6.3 project.
+//    This file was initially is based on file helpdata.h from wxWidgets 2.6.3 project
+//    although now it must be something totally different!!
 //    wxWidgets licence is compatible with GNU GPL.
 //    Author:      Harm van der Heijden and Vaclav Slavik
 //    Copyright (c) Harm van der Heijden and Vaclav Slavik
@@ -33,7 +34,17 @@
 #pragma interface "helpdata.h"
 #endif
 
-#if lmUSE_LENMUS_EBOOK_FORMAT
+#include "../app/global.h"
+
+#if !lmUSE_LENMUS_EBOOK_FORMAT
+
+#define lmBookData          wxHtmlHelpData
+#define lmBookRecord        wxHtmlBookRecord
+#define lmBookIndexArray    wxHtmlHelpDataItems
+#define lmBookIndexItem     wxHtmlHelpDataItem
+#define lmBookRecArray      wxHtmlBookRecArray
+
+#else
 
 #include "wx/defs.h"
 
@@ -42,6 +53,11 @@
 #include "wx/filesys.h"
 #include "wx/dynarray.h"
 #include "wx/font.h"
+
+#include "wx/filename.h"
+
+
+#include "../xml_parser/XMLParser.h"       // to use XML parser
 
 class lmBookData;
 
@@ -56,19 +72,12 @@ class lmBookRecord
 {
 public:
     lmBookRecord(const wxString& bookfile, const wxString& basepath,
-                     const wxString& title, const wxString& start)
-    {
-        m_BookFile = bookfile;
-        m_BasePath = basepath;
-        m_Title = title;
-        m_Start = start;
-        // for debugging, give the contents index obvious default values
-        m_ContentsStart = m_ContentsEnd = -1;
-    }
-    wxString GetBookFile() const { return m_BookFile; }
-    wxString GetTitle() const { return m_Title; }
-    wxString GetStart() const { return m_Start; }
-    wxString GetBasePath() const { return m_BasePath; }
+                     const wxString& title, const wxString& start);
+
+    wxString GetBookFile() const { return m_sBookFile; }
+    wxString GetTitle() const { return m_sTitle; }
+    wxString GetStart() const { return m_sPageFile; }
+    wxString GetBasePath() const { return m_sBasePath; }
     /* SetContentsRange: store in the bookrecord where in the index/contents lists the
      * book's records are stored. This to facilitate searching in a specific book.
      * This code will have to be revised when loading/removing books becomes dynamic.
@@ -78,9 +87,9 @@ public:
     int GetContentsStart() const { return m_ContentsStart; }
     int GetContentsEnd() const { return m_ContentsEnd; }
 
-    void SetTitle(const wxString& title) { m_Title = title; }
-    void SetBasePath(const wxString& path) { m_BasePath = path; }
-    void SetStart(const wxString& start) { m_Start = start; }
+    void SetTitle(const wxString& title) { m_sTitle = title; }
+    void SetBasePath(const wxString& path) { m_sBasePath = path; }
+    void SetStart(const wxString& start) { m_sPageFile = start; }
 
     // returns full filename of page (which is part of the book),
     // i.e. with book's basePath prepended. If page is already absolute
@@ -88,38 +97,42 @@ public:
     wxString GetFullPath(const wxString &page) const;
 
 protected:
-    wxString m_BookFile;
-    wxString m_BasePath;
-    wxString m_Title;
-    wxString m_Start;
-    int m_ContentsStart;
-    int m_ContentsEnd;
+    wxString    m_sBookFile;
+    wxString    m_sBasePath;
+    wxString    m_sTitle;
+    wxString    m_sPageFile;
+    int         m_ContentsStart;    //index to content table for the first entry of this book
+    int         m_ContentsEnd;      //index to content table for the last entry of this book
 };
 
 
-WX_DECLARE_USER_EXPORTED_OBJARRAY(lmBookRecord, wxHtmlBookRecArray,
+WX_DECLARE_USER_EXPORTED_OBJARRAY(lmBookRecord, lmBookRecArray,
                                   WXDLLIMPEXP_HTML);
+//WX_DEFINE_ARRAY(lmLDPNode*, ArrayNodePtrs);
+
 
 // lmBookIndexItem: an entry of the index and contents tables
+// The only difference between content entries and glossary entries is that the glossary
+// don't have image.
 struct lmBookIndexItem
 {
-    lmBookIndexItem() : level(0), parent(NULL), id(wxID_ANY), book(NULL) {}
+    lmBookIndexItem() : level(0), parent(NULL), id(wxEmptyString), pBookRecord(NULL) {}
 
-    int level;
-    lmBookIndexItem *parent;
-    int id;
-    wxString name;
-    wxString page;
-    lmBookRecord *book;
+    int                 level;          // level of this entry. 0: book, 1-n: pages
+    lmBookIndexItem*    parent;         // parent entry if this is a sub-entry
+    wxString            id;             // prefix for title (number/letter)
+    wxString            name;           // text for this entry
+    wxString            page;           // html page to display
+    lmBookRecord*       pBookRecord;    // ptr to book record
 
-    // returns full filename of m_Page, i.e. with book's basePath prepended
-    wxString GetFullPath() const { return book->GetFullPath(page); }
+    // returns full filename of page, i.e. with book's basePath prepended
+    wxString GetFullPath() const { return pBookRecord->GetFullPath(page); }
 
-    // returns item indented with spaces if it has level>1:
+    // returns item indented with spaces if it has level > 1
     wxString GetIndentedName() const;
 };
 
-WX_DECLARE_USER_EXPORTED_OBJARRAY(lmBookIndexItem, wxHtmlHelpDataItems,
+WX_DECLARE_USER_EXPORTED_OBJARRAY(lmBookIndexItem, lmBookIndexArray,
                                   WXDLLIMPEXP_HTML);
 
 
@@ -156,12 +169,12 @@ private:
 // nested class inside lmBookData, but that's against coding standards :-(
 // Never construct this class yourself, obtain a copy from
 // lmBookData::PrepareKeywordSearch(const wxString& key)
-class wxHtmlSearchStatus
+class lmSearchStatus
 {
 public:
     // constructor; supply lmBookData ptr, the keyword and (optionally) the
     // title of the book to search. By default, all books are searched.
-    wxHtmlSearchStatus(lmBookData* base, const wxString& keyword,
+    lmSearchStatus(lmBookData* base, const wxString& keyword,
                        bool case_sensitive, bool whole_words_only,
                        const wxString& book = wxEmptyString);
     bool Search();  // do the next iteration
@@ -183,65 +196,46 @@ private:
     int m_MaxIndex;  // number of files we search
     // For progress bar: 100*curindex/maxindex = % complete
 
-    DECLARE_NO_COPY_CLASS(wxHtmlSearchStatus)
+    DECLARE_NO_COPY_CLASS(lmSearchStatus)
 };
 
+
+// Class lmBookData contains the information about all loaded books
 class lmBookData : public wxObject
 {
     DECLARE_DYNAMIC_CLASS(lmBookData)
-    friend class wxHtmlSearchStatus;
+    friend class lmSearchStatus;
 
 public:
     lmBookData();
     ~lmBookData();
 
-    // Sets directory where temporary files are stored.
-    // These temp files are index & contents file in binary (much faster to read)
-    // form. These files are NOT deleted on program's exit.
     void SetTempDir(const wxString& path);
 
-    // Adds new book. 'book' is location of .htb file (stands for "html book").
-    // See documentation for details on its format.
-    // Returns true if success.
-    bool AddBook(const wxString& book);
-    bool AddBookParam(const wxFSFile& bookfile,
-                      wxFontEncoding encoding,
-                      const wxString& title, const wxString& contfile,
-                      const wxString& indexfile = wxEmptyString,
-                      const wxString& deftopic = wxEmptyString,
-                      const wxString& path = wxEmptyString);
+    // Adds new book. 
+    bool AddBook(const wxFileName& book);
 
-    // Some accessing stuff:
-
-    // returns URL of page on basis of (file)name
+    // Page search methods
     wxString FindPageByName(const wxString& page);
-    // returns URL of page on basis of MS id
     wxString FindPageById(int id);
 
-    const wxHtmlBookRecArray& GetBookRecArray() const { return m_bookRecords; }
-
-    const wxHtmlHelpDataItems& GetContentsArray() const { return m_contents; }
-    const wxHtmlHelpDataItems& GetIndexArray() const { return m_index; }
-
-
-protected:
-    wxString m_tempPath;
-
-    // each book has one record in this array:
-    wxHtmlBookRecArray m_bookRecords;
-
-    wxHtmlHelpDataItems m_contents; // list of all available books and pages
-    wxHtmlHelpDataItems m_index; // list of index itesm
+    // accessors to the tables
+    const lmBookRecArray& GetBookRecArray() const { return m_bookRecords; }
+    const lmBookIndexArray& GetContentsArray() const { return m_contents; }
+    const lmBookIndexArray& GetIndexArray() const { return m_glossary; }
 
 
-protected:
-    // Imports .hhp files (MS HTML Help Workshop)
-    bool LoadMSProject(lmBookRecord *book, wxFileSystem& fsys,
-                       const wxString& indexfile, const wxString& contentsfile);
-    // Reads binary book
-    bool LoadCachedBook(lmBookRecord *book, wxInputStream *f);
-    // Writes binary book
-    bool SaveCachedBook(lmBookRecord *book, wxOutputStream *f);
+private:
+    bool ProcessIndexFile(const wxFileName& oFilename, lmBookRecord* pBookr);
+    void ProcessGlossaryEntries(wxXmlNode* pNode, lmBookRecord *pBookr);
+    lmBookRecord* ProcessTOCFile(const wxFileName& oFilename);
+    bool ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLevel);
+
+    wxString            m_tempPath;
+    lmXmlParser*        m_pParser;
+    lmBookRecArray      m_bookRecords;  // each book has one record in this array
+    lmBookIndexArray    m_contents;     // list of all available books and their TOCs
+    lmBookIndexArray    m_glossary;     // list of all glossary items
 
     DECLARE_NO_COPY_CLASS(lmBookData)
 };

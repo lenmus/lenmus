@@ -42,6 +42,7 @@
 #if wxUSE_WXHTML_HELP
 
 #include "wx/helpbase.h"
+#include "BookData.h"
 #include "TextBookFrame.h"        //CSG_MODIFIED    wx/html/helpfrm.h"
 
 #define wxID_HTML_HELPFRAME   (wxID_HIGHEST + 1)
@@ -88,7 +89,7 @@ public:
 
 
     // Get direct access to help data:
-    wxHtmlHelpData *GetHelpData() { return &m_helpData; }
+    lmBookData *GetHelpData() { return &m_helpData; }
 
     virtual bool Quit() ;
     virtual void OnQuit();                      //CSG_MODIFIED: implemented
@@ -100,12 +101,12 @@ public:
     void AddGrabIfNeeded();
 
 protected:
-    virtual lmTextBookFrame* CreateHelpFrame(wxHtmlHelpData *data);
+    virtual lmTextBookFrame* CreateHelpFrame(lmBookData *data);
 
     virtual void CreateHelpWindow();
     virtual void DestroyHelpWindow();
 
-    wxHtmlHelpData      m_helpData;
+    lmBookData      m_helpData;
     lmTextBookFrame*    m_helpFrame;
     wxConfigBase *      m_Config;
     wxString            m_ConfigRoot;

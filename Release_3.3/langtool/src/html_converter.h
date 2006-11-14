@@ -30,6 +30,17 @@
 
 #include "parser.h"
 
+enum lmHtmlFlags
+{
+    lmHTML_NOGENERATE = 0,    // don't generate html files
+    lmHTML_GENERATE = 1       // generate html files
+};
+enum lmPoFlags
+{
+    lmPO_NOGENERATE = 0,    // don't generate PO file
+    lmPO_GENERATE = 1       // generate PO file
+};
+
 class lmHtmlConverter
 {
 public:

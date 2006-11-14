@@ -59,7 +59,7 @@ extern bool gfDrawSelRec;        //draw selection rectangles around staff object
 #define lmUSE_NOTEBOOK_MDI          0
 
 // eBooks format: MS Windows Help format (htb) or LenMus format (lmb)
-#define lmUSE_LENMUS_EBOOK_FORMAT   0
+#define lmUSE_LENMUS_EBOOK_FORMAT   1
 
 
 #endif    // __GLOBAL_H__

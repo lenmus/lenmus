@@ -196,7 +196,7 @@ class TextBookHelpHtmlWindow : public lmHtmlWindow
 // lmTextBookFrame::m_mergedIndex
 //---------------------------------------------------------------------------
 
-WX_DEFINE_ARRAY_PTR(const wxHtmlHelpDataItem*, wxHtmlHelpDataItemPtrArray);
+WX_DEFINE_ARRAY_PTR(const lmBookIndexItem*, wxHtmlHelpDataItemPtrArray);
 
 struct TextBookHelpMergedIndexItem
 {
@@ -215,14 +215,14 @@ void lmTextBookFrame::UpdateMergedIndex()
     m_mergedIndex = new TextBookHelpMergedIndex;
     TextBookHelpMergedIndex& merged = *m_mergedIndex;
 
-    const wxHtmlHelpDataItems& items = m_Data->GetIndexArray();
+    const lmBookIndexArray& items = m_Data->GetIndexArray();
     size_t len = items.size();
 
     TextBookHelpMergedIndexItem *history[128] = {NULL};
 
     for (size_t i = 0; i < len; i++)
     {
-        const wxHtmlHelpDataItem& item = items[i];
+        const lmBookIndexItem& item = items[i];
         wxASSERT_MSG( item.level < 128, _T("nested index entries too deep") );
 
         if (history[item.level] &&
@@ -283,13 +283,13 @@ void lmTextBookFrame::UpdateMergedIndex()
 IMPLEMENT_DYNAMIC_CLASS(lmTextBookFrame, lmMDIChildFrame)
 
 lmTextBookFrame::lmTextBookFrame(wxWindow* parent, wxWindowID id, const wxString& title,
-                                 int style, wxHtmlHelpData* data)
+                                 int style, lmBookData* data)
 {
     Init(data);
     Create(parent, id, title, style);
 }
 
-void lmTextBookFrame::Init(wxHtmlHelpData* data)
+void lmTextBookFrame::Init(lmBookData* data)
 {
     if (data)
     {
@@ -297,7 +297,7 @@ void lmTextBookFrame::Init(wxHtmlHelpData* data)
         m_DataCreated = false;
     } else
     {
-        m_Data = new wxHtmlHelpData();
+        m_Data = new lmBookData();
         m_DataCreated = true;
     }
 
@@ -672,7 +672,7 @@ bool lmTextBookFrame::DisplayContents()
 
     if (m_Data->GetBookRecArray().GetCount() > 0)
     {
-        wxHtmlBookRecord& book = m_Data->GetBookRecArray()[0];
+        lmBookRecord& book = m_Data->GetBookRecArray()[0];
         if (!book.GetStart().empty())
             m_HtmlWin->LoadPage(book.GetFullPath(book.GetStart()));
     }
@@ -698,7 +698,7 @@ bool lmTextBookFrame::DisplayIndex()
 
     if (m_Data->GetBookRecArray().GetCount() > 0)
     {
-        wxHtmlBookRecord& book = m_Data->GetBookRecArray()[0];
+        lmBookRecord& book = m_Data->GetBookRecArray()[0];
         if (!book.GetStart().empty())
             m_HtmlWin->LoadPage(book.GetFullPath(book.GetStart()));
     }
@@ -728,7 +728,7 @@ void lmTextBookFrame::DisplayIndexItem(const TextBookHelpMergedIndexItem *it)
         {
             wxString page = it->items[i]->page;
             // try to find page's title in contents:
-            const wxHtmlHelpDataItems& contents = m_Data->GetContentsArray();
+            const lmBookIndexArray& contents = m_Data->GetContentsArray();
             size_t clen = contents.size();
             for (size_t j = 0; j < clen; j++)
             {
@@ -757,124 +757,125 @@ void lmTextBookFrame::DisplayIndexItem(const TextBookHelpMergedIndexItem *it)
 bool lmTextBookFrame::KeywordSearch(const wxString& keyword,
                                     wxHelpSearchMode mode)
 {
-    if (mode == wxHELP_SEARCH_ALL)
-    {
-        if ( !(m_SearchList &&
-               m_SearchButton && m_SearchText && m_SearchChoice) )
-            return false;
-    }
-    else if (mode == wxHELP_SEARCH_INDEX)
-    {
-        if ( !(m_IndexList &&
-               m_IndexButton && m_IndexButtonAll && m_IndexText) )
-            return false;
-    }
-
-    int foundcnt = 0;
-    wxString foundstr;
-    wxString book = wxEmptyString;
-
-    if (!m_Splitter->IsSplit())
-    {
-        m_NavigPan->Show();
-        m_HtmlWin->Show();
-        m_Splitter->SplitVertically(m_NavigPan, m_HtmlWin, m_Cfg.sashpos);
-    }
-
-    if (mode == wxHELP_SEARCH_ALL)
-    {
-        m_NavigNotebook->SetSelection(m_SearchPage);
-        m_SearchList->Clear();
-        m_SearchText->SetValue(keyword);
-        m_SearchButton->Disable();
-
-        if (m_SearchChoice->GetSelection() != 0)
-            book = m_SearchChoice->GetStringSelection();
-
-        wxHtmlSearchStatus status(m_Data, keyword,
-                                  m_SearchCaseSensitive->GetValue(),
-                                  m_SearchWholeWords->GetValue(),
-                                  book);
-
-#if wxUSE_PROGRESSDLG
-        wxProgressDialog progress(_("Searching..."),
-                                  _("No matching page found yet"),
-                                  status.GetMaxIndex(), this,
-                                  wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
-#endif
-
-        int curi;
-        while (status.IsActive())
-        {
-            curi = status.GetCurIndex();
-            if (curi % 32 == 0
-#if wxUSE_PROGRESSDLG
-                && !progress.Update(curi)
-#endif
-               )
-                break;
-            if (status.Search())
-            {
-                foundstr.Printf(_("Found %i matches"), ++foundcnt);
-#if wxUSE_PROGRESSDLG
-                progress.Update(status.GetCurIndex(), foundstr);
-#endif
-                m_SearchList->Append(status.GetName(), (void*)status.GetCurItem());
-            }
-        }
-
-        m_SearchButton->Enable();
-        m_SearchText->SetSelection(0, keyword.Length());
-        m_SearchText->SetFocus();
-    }
-    else if (mode == wxHELP_SEARCH_INDEX)
-    {
-        m_NavigNotebook->SetSelection(m_IndexPage);
-        m_IndexList->Clear();
-        m_IndexButton->Disable();
-        m_IndexButtonAll->Disable();
-        m_IndexText->SetValue(keyword);
-
-        wxCommandEvent dummy;
-        OnIndexFind(dummy); // what a hack...
-        m_IndexButton->Enable();
-        m_IndexButtonAll->Enable();
-        foundcnt = m_IndexList->GetCount();
-    }
-
-    if (foundcnt)
-    {
-        switch ( mode )
-        {
-            default:
-                wxFAIL_MSG( _T("unknown help search mode") );
-                // fall back
-
-            case wxHELP_SEARCH_ALL:
-            {
-                wxHtmlHelpDataItem *it =
-                    (wxHtmlHelpDataItem*) m_SearchList->GetClientData(0);
-                if (it)
-                {
-                    m_HtmlWin->LoadPage(it->GetFullPath());
-                    NotifyPageChanged();
-                }
-                break;
-            }
-
-            case wxHELP_SEARCH_INDEX:
-            {
-                TextBookHelpMergedIndexItem* it =
-                    (TextBookHelpMergedIndexItem*) m_IndexList->GetClientData(0);
-                if (it)
-                    DisplayIndexItem(it);
-                break;
-            }
-        }
-
-    }
-
-    return foundcnt > 0;
+//    if (mode == wxHELP_SEARCH_ALL)
+//    {
+//        if ( !(m_SearchList &&
+//               m_SearchButton && m_SearchText && m_SearchChoice) )
+//            return false;
+//    }
+//    else if (mode == wxHELP_SEARCH_INDEX)
+//    {
+//        if ( !(m_IndexList &&
+//               m_IndexButton && m_IndexButtonAll && m_IndexText) )
+//            return false;
+//    }
+//
+//    int foundcnt = 0;
+//    wxString foundstr;
+//    wxString book = wxEmptyString;
+//
+//    if (!m_Splitter->IsSplit())
+//    {
+//        m_NavigPan->Show();
+//        m_HtmlWin->Show();
+//        m_Splitter->SplitVertically(m_NavigPan, m_HtmlWin, m_Cfg.sashpos);
+//    }
+//
+//    if (mode == wxHELP_SEARCH_ALL)
+//    {
+//        m_NavigNotebook->SetSelection(m_SearchPage);
+//        m_SearchList->Clear();
+//        m_SearchText->SetValue(keyword);
+//        m_SearchButton->Disable();
+//
+//        if (m_SearchChoice->GetSelection() != 0)
+//            book = m_SearchChoice->GetStringSelection();
+//
+//        wxHtmlSearchStatus status(m_Data, keyword,
+//                                  m_SearchCaseSensitive->GetValue(),
+//                                  m_SearchWholeWords->GetValue(),
+//                                  book);
+//
+//#if wxUSE_PROGRESSDLG
+//        wxProgressDialog progress(_("Searching..."),
+//                                  _("No matching page found yet"),
+//                                  status.GetMaxIndex(), this,
+//                                  wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+//#endif
+//
+//        int curi;
+//        while (status.IsActive())
+//        {
+//            curi = status.GetCurIndex();
+//            if (curi % 32 == 0
+//#if wxUSE_PROGRESSDLG
+//                && !progress.Update(curi)
+//#endif
+//               )
+//                break;
+//            if (status.Search())
+//            {
+//                foundstr.Printf(_("Found %i matches"), ++foundcnt);
+//#if wxUSE_PROGRESSDLG
+//                progress.Update(status.GetCurIndex(), foundstr);
+//#endif
+//                m_SearchList->Append(status.GetName(), (void*)status.GetCurItem());
+//            }
+//        }
+//
+//        m_SearchButton->Enable();
+//        m_SearchText->SetSelection(0, keyword.Length());
+//        m_SearchText->SetFocus();
+//    }
+//    else if (mode == wxHELP_SEARCH_INDEX)
+//    {
+//        m_NavigNotebook->SetSelection(m_IndexPage);
+//        m_IndexList->Clear();
+//        m_IndexButton->Disable();
+//        m_IndexButtonAll->Disable();
+//        m_IndexText->SetValue(keyword);
+//
+//        wxCommandEvent dummy;
+//        OnIndexFind(dummy); // what a hack...
+//        m_IndexButton->Enable();
+//        m_IndexButtonAll->Enable();
+//        foundcnt = m_IndexList->GetCount();
+//    }
+//
+//    if (foundcnt)
+//    {
+//        switch ( mode )
+//        {
+//            default:
+//                wxFAIL_MSG( _T("unknown help search mode") );
+//                // fall back
+//
+//            case wxHELP_SEARCH_ALL:
+//            {
+//                lmBookIndexItem *it =
+//                    (lmBookIndexItem*) m_SearchList->GetClientData(0);
+//                if (it)
+//                {
+//                    m_HtmlWin->LoadPage(it->GetFullPath());
+//                    NotifyPageChanged();
+//                }
+//                break;
+//            }
+//
+//            case wxHELP_SEARCH_INDEX:
+//            {
+//                TextBookHelpMergedIndexItem* it =
+//                    (TextBookHelpMergedIndexItem*) m_IndexList->GetClientData(0);
+//                if (it)
+//                    DisplayIndexItem(it);
+//                break;
+//            }
+//        }
+//
+//    }
+//
+//    return foundcnt > 0;
+    return false;
 }
 
 void lmTextBookFrame::CreateContents()
@@ -888,7 +889,7 @@ void lmTextBookFrame::CreateContents()
         delete m_PagesHash;
     }
 
-    const wxHtmlHelpDataItems& contents = m_Data->GetContentsArray();
+    const lmBookIndexArray& contents = m_Data->GetContentsArray();
 
     size_t cnt = contents.size();
 
@@ -910,7 +911,7 @@ void lmTextBookFrame::CreateContents()
 
     for (size_t i = 0; i < cnt; i++)
     {
-        wxHtmlHelpDataItem *it = &contents[i];
+        lmBookIndexItem *it = &contents[i];
         // Handle books:
         if (it->level == 0)
         {
@@ -990,7 +991,7 @@ void lmTextBookFrame::CreateSearch()
     m_SearchList->Clear();
     m_SearchChoice->Clear();
     m_SearchChoice->Append(_("Search in all books"));
-    const wxHtmlBookRecArray& bookrec = m_Data->GetBookRecArray();
+    const lmBookRecArray& bookrec = m_Data->GetBookRecArray();
     int i, cnt = bookrec.GetCount();
     for (i = 0; i < cnt; i++)
         m_SearchChoice->Append(bookrec[i].GetTitle());
@@ -1360,7 +1361,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
                     ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
                 if (ha && ha->m_Index > 0)
                 {
-                    const wxHtmlHelpDataItem& it = m_Data->GetContentsArray()[ha->m_Index - 1];
+                    const lmBookIndexItem& it = m_Data->GetContentsArray()[ha->m_Index - 1];
                     if (!it.page.empty())
                     {
                         m_HtmlWin->LoadPage(it.GetFullPath());
@@ -1383,7 +1384,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
                         m_Data->GetContentsArray()[ha->m_Index].level - 1;
                     int ind = ha->m_Index - 1;
 
-                    const wxHtmlHelpDataItem *it =
+                    const lmBookIndexItem *it =
                         &m_Data->GetContentsArray()[ind];
                     while (ind >= 0 && it->level != level)
                     {
@@ -1410,7 +1411,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
                 if (!page.empty())
                     ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
 
-                const wxHtmlHelpDataItems& contents = m_Data->GetContentsArray();
+                const lmBookIndexArray& contents = m_Data->GetContentsArray();
                 if (ha && ha->m_Index < (int)contents.size() - 1)
                 {
                     size_t idx = ha->m_Index + 1;
@@ -1545,7 +1546,7 @@ void lmTextBookFrame::OnContentsSel(wxTreeEvent& event)
 
     if (pg && m_UpdateContents)
     {
-        const wxHtmlHelpDataItems& contents = m_Data->GetContentsArray();
+        const lmBookIndexArray& contents = m_Data->GetContentsArray();
         m_UpdateContents = false;
         if (!contents[pg->m_Id].page.empty())
             m_HtmlWin->LoadPage(contents[pg->m_Id].GetFullPath());
@@ -1671,7 +1672,7 @@ void lmTextBookFrame::OnIndexAll(wxCommandEvent& WXUNUSED(event))
 
 void lmTextBookFrame::OnSearchSel(wxCommandEvent& WXUNUSED(event))
 {
-    wxHtmlHelpDataItem *it = (wxHtmlHelpDataItem*) m_SearchList->GetClientData(m_SearchList->GetSelection());
+    lmBookIndexItem *it = (lmBookIndexItem*) m_SearchList->GetClientData(m_SearchList->GetSelection());
     if (it)
     {
         if (!it->page.empty())

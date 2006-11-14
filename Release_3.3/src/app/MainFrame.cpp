@@ -59,10 +59,8 @@
 #include "ToolsDlg.h"
 #include "DlgDebug.h"
 #include "Printout.h"
-#include "MidiWizard.h"                    //Use lmMidiWizard
-#include "wx/helpbase.h"		//for wxHELP constants
-
-
+#include "MidiWizard.h"             //Use lmMidiWizard
+#include "wx/helpbase.h"		    //for wxHELP constants
 
 #include "../../wxMidi/include/wxMidi.h"    //MIDI support throgh Portmidi lib
 #include "../sound/MidiManager.h"           //access to Midi configuration
@@ -74,11 +72,9 @@
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
-// to test DlgPatternEditor dialog
-#include "DlgPatternEditor.h"
-
-//for Unit Tests
-#include "../auxmusic/ChordManager.h"
+#include "DlgPatternEditor.h"               // to test DlgPatternEditor dialog
+#include "../auxmusic/ChordManager.h"       //for Unit Tests
+#include "global.h"                         //config. flag lmUSE_LENMUS_EBOOK_FORMAT
 
 
 
@@ -1145,7 +1141,11 @@ void lmMainFrame::InitializeBooks()
         //Release behaviour. Use precompiled cached .htb files and don't show title
         //! @todo books name. One or many books?
         sPath = g_pPaths->GetLocalePath();
-        sPattern = _T("*.htb");
+#if lmUSE_LENMUS_EBOOK_FORMAT
+            sPattern = _T("*.lmb");
+#else
+            sPattern = _T("*.htb");
+#endif
         m_pBookController->SetTitleFormat(_("Available books"));
 
         //lmVirtualBooks::LoadVirtualBooks(m_pBookController);
@@ -1168,7 +1168,11 @@ void lmMainFrame::InitializeBooks()
             //wxLogMessage(wxString::Format(_T("Subdirectory found: %s"), sSubfolder));
             oPath.Assign(sPath, wxPATH_NATIVE);
             oPath.AppendDir(sSubfolder);
+#if lmUSE_LENMUS_EBOOK_FORMAT
+            ScanForBooks(oPath.GetPath(), _T("*.toc"));
+#else
             ScanForBooks(oPath.GetPath(), _T("*.hhp"));
+#endif
             fFound = dir.GetNext(&sSubfolder);
         }
     }

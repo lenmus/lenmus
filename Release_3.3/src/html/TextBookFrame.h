@@ -69,6 +69,8 @@
 #include "HtmlWindow.h"
 
 #include "../mdi/NotebookMDI.h"
+#include "BookData.h"
+
 
 class WXDLLIMPEXP_CORE wxButton;
 class WXDLLIMPEXP_CORE wxTextCtrl;
@@ -115,15 +117,15 @@ class WXDLLIMPEXP_HTML lmTextBookFrame : public lmMDIChildFrame
     DECLARE_DYNAMIC_CLASS(lmTextBookFrame)
 
 public:
-    lmTextBookFrame(wxHtmlHelpData* data = NULL) { Init(data); }
+    lmTextBookFrame(lmBookData* data = NULL) { Init(data); }
     lmTextBookFrame(wxWindow* parent, wxWindowID wxWindowID,
                     const wxString& title = wxEmptyString,
-                    int style = wxHF_DEFAULT_STYLE, wxHtmlHelpData* data = NULL);
+                    int style = wxHF_DEFAULT_STYLE, lmBookData* data = NULL);
     bool Create(wxWindow* parent, wxWindowID id, const wxString& title = wxEmptyString,
                 int style = wxHF_DEFAULT_STYLE);
     ~lmTextBookFrame();
 
-    wxHtmlHelpData* GetData() { return m_Data; }
+    lmBookData* GetData() { return m_Data; }
     wxHelpControllerBase* GetController() const { return m_helpController; }
     void SetController(wxHelpControllerBase* controller) { m_helpController = controller; }
 
@@ -187,7 +189,7 @@ public:
 
 
 protected:
-    void Init(wxHtmlHelpData* data = NULL);
+    void Init(lmBookData* data = NULL);
 
     // Adds items to m_Contents tree control
     void CreateContents();
@@ -228,7 +230,7 @@ protected:
     };
 
 protected:
-    wxHtmlHelpData* m_Data;
+    lmBookData* m_Data;
     bool m_DataCreated;  // m_Data created by frame, or supplied?
     wxString m_TitleFormat;  // title of the help frame
     // below are various pointers to GUI components

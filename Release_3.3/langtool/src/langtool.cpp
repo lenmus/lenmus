@@ -78,6 +78,7 @@ public:
     void OnInstaller(wxCommandEvent& event);
     void OnSplitFile(wxCommandEvent& WXUNUSED(event));
     void OnConvertToHtml(wxCommandEvent& WXUNUSED(event));
+    void OnGeneratePO(wxCommandEvent& WXUNUSED(event));
 
 private:
     void PutContentIntoFile(wxString sPath, wxString sContent);
@@ -104,6 +105,7 @@ enum
     MENU_INSTALLER = wxID_HIGHEST + 100,
     MENU_SPLIT_FILE,
     MENU_CONVERT_TO_HTML,
+    MENU_GENERATE_PO,
 };
 
 // supported languages table
@@ -130,6 +132,7 @@ BEGIN_EVENT_TABLE(MyFrame, wxFrame)
     EVT_MENU(MENU_INSTALLER, MyFrame::OnInstaller)
     EVT_MENU(MENU_SPLIT_FILE, MyFrame::OnSplitFile)
     EVT_MENU(MENU_CONVERT_TO_HTML, MyFrame::OnConvertToHtml)
+    EVT_MENU(MENU_GENERATE_PO, MyFrame::OnGeneratePO)
 END_EVENT_TABLE()
 
 // Create a new application object: this macro will allow wxWidgets to create
@@ -166,6 +169,8 @@ bool MyApp::OnInit()
 // ----------------------------------------------------------------------------
 // main frame
 // ----------------------------------------------------------------------------
+#include "wx/filename.h"
+#include "wx/dir.h"
 
 // frame constructor
 MyFrame::MyFrame(const wxString& title)
@@ -195,7 +200,7 @@ MyFrame::MyFrame(const wxString& title)
     // the Convert File menu
     wxMenu* pConvertMenu = new wxMenu;
     pConvertMenu->Append(MENU_CONVERT_TO_HTML, _T("&Convert"), _T("Convert XML file to HTML"));
-
+    pConvertMenu->Append(MENU_GENERATE_PO, _T("&Generate .po file"), _T("XML eBook to PO file"));
 
 
     // now append the freshly created menus to the menu bar...
@@ -275,6 +280,34 @@ void MyFrame::OnConvertToHtml(wxCommandEvent& WXUNUSED(event))
 
 }
 
+void MyFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
+{
+    // ask for the directory to covert
+    wxString sFilter = wxT("*.*");
+    wxString sPath = ::wxDirSelector(_T("Choose the directory with the files to convert"),
+                                        wxT(""),            //default path
+                                        0,                  //style
+                                        wxDefaultPosition,  //position
+                                        this);
+    if ( sPath.IsEmpty() ) return;
+
+    wxDir dir(sPath);
+    if ( !dir.IsOpened() ) {
+        wxMessageBox(wxString::Format(_("Error when trying to move to folder %s"),
+            sPath ));
+        return;
+    }
+
+    lmHtmlConverter oConv;
+    wxString sFilename;
+    bool fFound = dir.GetFirst(&sFilename, _T("*.xml"), wxDIR_FILES);
+    while (fFound) {
+        wxFileName oFilename(sPath, sFilename, wxPATH_NATIVE);
+        oConv.ConvertToHtml(sFilename, false, true);
+        fFound = dir.GetNext(&sFilename);
+    }
+
+}
 
 void MyFrame::GenerateLanguage(int i)
 {

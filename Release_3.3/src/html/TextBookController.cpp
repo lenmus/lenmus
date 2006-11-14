@@ -161,7 +161,7 @@ bool lmTextBookController::AddBook(const wxString& book, bool show_wait_msg)
 
 
 
-lmTextBookFrame *lmTextBookController::CreateHelpFrame(wxHtmlHelpData *data)
+lmTextBookFrame *lmTextBookController::CreateHelpFrame(lmBookData *data)
 {
     return new lmTextBookFrame(data);
 }
@@ -324,7 +324,7 @@ void lmTextBookController::AddGrabIfNeeded()
 
 bool lmTextBookController::Display(const wxString& x)
 {
-    //wxHtmlBookRecArray m_bookRecords = m_helpData.GetBookRecArray();
+    //lmBookRecArray m_bookRecords = m_helpData.GetBookRecArray();
     //int i, cnt = m_bookRecords.GetCount();
     //for (i = 0; i < cnt; i++)
     //{
