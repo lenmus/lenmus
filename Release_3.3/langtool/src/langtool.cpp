@@ -276,7 +276,7 @@ void MyFrame::OnConvertToHtml(wxCommandEvent& WXUNUSED(event))
     if ( sPath.IsEmpty() ) return;
 
     lmHtmlConverter oConv;
-    oConv.ConvertToHtml(sPath, false, true);
+    oConv.ConvertToHtml(sPath, false, (wxFile*)NULL);
 
 }
 
@@ -301,10 +301,21 @@ void MyFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
     lmHtmlConverter oConv;
     wxString sFilename;
     bool fFound = dir.GetFirst(&sFilename, _T("*.xml"), wxDIR_FILES);
+
+    wxFile* pPoFile = (wxFile*) NULL;
+    if (fFound) {
+        pPoFile = oConv.StartPoFile(sFilename);
+    }
+
     while (fFound) {
         wxFileName oFilename(sPath, sFilename, wxPATH_NATIVE);
-        oConv.ConvertToHtml(sFilename, false, true);
+        oConv.ConvertToHtml(sFilename, false, pPoFile);
         fFound = dir.GetNext(&sFilename);
+    }
+
+    if (pPoFile) {
+        pPoFile->Close();
+        delete pPoFile;
     }
 
 }

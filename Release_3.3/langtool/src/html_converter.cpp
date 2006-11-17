@@ -42,7 +42,6 @@ lmHtmlConverter::lmHtmlConverter()
 {
     m_pParser = new lmXmlParser();
     m_fIncludeObjects = false;
-    m_fGeneratePO = false;
 
     m_pPoFile = (wxFile*)NULL;
 
@@ -51,14 +50,13 @@ lmHtmlConverter::lmHtmlConverter()
 lmHtmlConverter::~lmHtmlConverter()
 {
     delete m_pParser;
-    if (m_pPoFile) delete m_pPoFile;
 }
 
 bool lmHtmlConverter::ConvertToHtml(const wxString& sFilename, bool fIncludeObjects,
-                                    bool fGeneratePO)
+                                    wxFile* pPoFile)
 {
     m_fIncludeObjects = fIncludeObjects;
-    m_fGeneratePO = fGeneratePO;
+    m_pPoFile = pPoFile;
 
     // load the XML file as tree of nodes
     wxXmlDocument xdoc;
@@ -81,18 +79,6 @@ bool lmHtmlConverter::ConvertToHtml(const wxString& sFilename, bool fIncludeObje
         wxFileName oFNO( sFilename + _T("_obj") );
         oFNO.SetExt(_T("xml"));
         LoadObjectsFile( oFNO.GetFullName() );
-    }
-
-    // Prepare for PO file generation
-    if (m_fGeneratePO) {
-        wxFileName oFNP( sFilename );
-        oFNP.SetExt(_T("po"));
-        m_pPoFile = new wxFile(oFNP.GetFullName(), wxFile::write);
-        if (!m_pPoFile->IsOpened()) {
-            wxLogMessage(_T("Error: File %s can not be created"), oFNP.GetFullName());
-            return true;        //error
-        }
-        GeneratePoHeader();
     }
 
     // Process the XML file
@@ -186,8 +172,18 @@ bool lmHtmlConverter::ProcessTag(wxXmlNode* pElement, wxFile* pFile)
     }
 
 }
-void lmHtmlConverter::GeneratePoHeader()
+
+wxFile* lmHtmlConverter::StartPoFile(wxString sFilename)
 {
+    wxFileName oFNP( sFilename );
+    oFNP.SetExt(_T("po"));
+    wxFile* pPoFile = new wxFile(oFNP.GetFullName(), wxFile::write);
+    if (!pPoFile->IsOpened()) {
+        wxLogMessage(_T("Error: File %s can not be created"), oFNP.GetFullName());
+        return (wxFile*)NULL;        //error
+    }
+
+    //Generate Po header
     wxString sNil = _T("");
     wxString sHeader = sNil +
         _T("msgid \"\"\n") 
@@ -203,7 +199,9 @@ void lmHtmlConverter::GeneratePoHeader()
         _T("\"X-Poedit-Language: English\\n\"\n")
         _T("\"X-Poedit-SourceCharset: iso-8859-1\\n\"\n\n");
 
-    m_pPoFile->Write(sHeader);
+    pPoFile->Write(sHeader);
+
+    return pPoFile;
 
 }
 
@@ -245,7 +243,8 @@ bool lmHtmlConverter::LoadObjectsFile(const wxString& sFilename)
     }
 
     //Create array of objects
-    
+    //TODO
+    return false;
 
 }
 
@@ -341,7 +340,7 @@ bool lmHtmlConverter::ParaToHtml(wxXmlNode* pNode, wxFile* pFile)
     // tag processing implications
     wxString sText = m_pParser->GetText(pNode);
     pFile->Write(sText);                        //write text in paragraph
-    if (m_fGeneratePO) AddToPoFile(sText);      //add text to PO file
+    if (m_pPoFile) AddToPoFile(sText);      //add text to PO file
 
     //process tag's children
     bool fError = ProcessChildren(pNode, pFile);

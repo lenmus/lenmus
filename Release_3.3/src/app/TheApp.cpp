@@ -94,14 +94,14 @@
 #define wxUSE_GENERIC_DRAGIMAGE 1
 
 
-#ifdef _DEBUG
-    #if !wxUSE_UNICODE
-        #error "You must set wxUSE_UNICODE to 1 in setup.h!"
-    #endif
-    #if !wxUSE_UNICODE_MSLU
-        #error "You must set wxUSE_UNICODE_MSLU to 1 in setup.h!"
-    #endif
-#endif
+//#ifdef _DEBUG
+//    #if !wxUSE_UNICODE
+//        #error "You must set wxUSE_UNICODE to 1 in setup.h!"
+//    #endif
+//    #if !wxUSE_UNICODE_MSLU
+//        #error "You must set wxUSE_UNICODE_MSLU to 1 in setup.h!"
+//    #endif
+//#endif
 
 
 

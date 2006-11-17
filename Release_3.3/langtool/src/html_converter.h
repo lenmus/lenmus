@@ -35,11 +35,6 @@ enum lmHtmlFlags
     lmHTML_NOGENERATE = 0,    // don't generate html files
     lmHTML_GENERATE = 1       // generate html files
 };
-enum lmPoFlags
-{
-    lmPO_NOGENERATE = 0,    // don't generate PO file
-    lmPO_GENERATE = 1       // generate PO file
-};
 
 class lmHtmlConverter
 {
@@ -47,7 +42,9 @@ public:
     lmHtmlConverter();
     ~lmHtmlConverter();
 
-    bool ConvertToHtml(const wxString& sFilename, bool fIncludeObjects, bool fGeneratePO);
+    bool ConvertToHtml(const wxString& sFilename, bool fIncludeObjects, 
+                       wxFile* pPoFile);
+    wxFile* StartPoFile(wxString sFilename);
 
 
 private:
@@ -69,7 +66,6 @@ private:
     bool LoadObjectsFile(const wxString& sFilename);
 
     //PO file processing
-    void GeneratePoHeader();
     void AddToPoFile(wxString& sText);
 
 
@@ -77,7 +73,6 @@ private:
     int             m_nHeaderLevel;
     int             m_nIndentLevel;         // to indent html output
     bool            m_fIncludeObjects;
-    bool            m_fGeneratePO;
     wxFile*         m_pPoFile;
 
 };

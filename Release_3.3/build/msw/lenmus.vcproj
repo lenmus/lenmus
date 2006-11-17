@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="unicows.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib portmidi.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexd.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxmsw27d_adv.lib wxmsw27d_core.lib wxmsw27d_dbgrid.lib wxmsw27d_gl.lib wxmsw27d_html.lib wxmsw27d_media.lib wxmsw27d_qa.lib wxmsw27d_xrc.lib wxbase27d.lib wxbase27d_net.lib wxbase27d_odbc.lib wxbase27d_xml.lib wxmidid.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexd.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxmsw28d_adv.lib wxmsw28d_core.lib wxmsw28d_dbgrid.lib wxmsw28d_gl.lib wxmsw28d_html.lib wxmsw28d_media.lib wxmsw28d_qa.lib wxmsw28d_xrc.lib wxbase28d.lib wxbase28d_net.lib wxbase28d_odbc.lib wxbase28d_xml.lib wxmidid.lib"
 				ShowProgress="0"
 				OutputFile="..\..\z_bin\lenmus_d.exe"
 				LinkIncremental="2"
@@ -117,7 +117,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="unicows.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib portmidi.lib porttime.lib pm_dll.lib wxzlib.lib wxregex.lib wxpng.lib wxjpeg.lib wxtiff.lib wxmsw27_adv.lib wxmsw27_core.lib wxmsw27_dbgrid.lib wxmsw27_gl.lib wxmsw27_html.lib wxmsw27_media.lib wxmsw27_qa.lib wxmsw27_xrc.lib wxbase27.lib wxbase27_net.lib wxbase27_odbc.lib wxbase27_xml.lib wxmidi.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlib.lib wxregex.lib wxpng.lib wxjpeg.lib wxtiff.lib wxmsw28_adv.lib wxmsw28_core.lib wxmsw28_dbgrid.lib wxmsw28_gl.lib wxmsw28_html.lib wxmsw28_media.lib wxmsw28_qa.lib wxmsw28_xrc.lib wxbase28.lib wxbase28_net.lib wxbase28_odbc.lib wxbase28_xml.lib wxmidi.lib"
 				OutputFile="..\..\z_bin/lenmus.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
@@ -188,13 +188,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="unicows.lib kernel32.lib advapi32.lib user32.lib gdi32.lib shell32.lib comdlg32.lib version.lib mpr.lib rasapi32.lib winmm.lib winspool.lib vfw32.lib secur32.lib oleacc.lib oledlg.lib sensapi.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib ole32.lib oleaut32.lib uuid.lib portmidi.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexud.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxmsw27ud_adv.lib wxmsw27ud_core.lib wxmsw27ud_dbgrid.lib wxmsw27ud_gl.lib wxmsw27ud_html.lib wxmsw27ud_media.lib wxmsw27ud_qa.lib wxmsw27ud_xrc.lib wxbase27ud.lib wxbase27ud_net.lib wxbase27ud_odbc.lib wxbase27ud_xml.lib wxmidiud.lib wxexpatd.lib wxmsw27ud_aui.lib wxmsw27ud_richtext.lib MSVCRTD.lib OLDNAMES.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexud.lib wxpngd.lib wxjpegd.lib wxtiffd.lib wxmsw28ud_adv.lib wxmsw28ud_core.lib wxmsw28ud_dbgrid.lib wxmsw28ud_gl.lib wxmsw28ud_html.lib wxmsw28ud_media.lib wxmsw28ud_qa.lib wxmsw28ud_xrc.lib wxbase28ud.lib wxbase28ud_net.lib wxbase28ud_odbc.lib wxbase28ud_xml.lib wxmidiud.lib wxexpatd.lib wxmsw28ud_aui.lib wxmsw28ud_richtext.lib"
 				ShowProgress="0"
 				OutputFile="..\..\z_bin\lenmus_ud.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib\vc_lib&quot;;&quot;$(WXWIN)\contrib\lib&quot;;..\..\packages\wxMidi\lib;..\..\packages\wxMidi\lib\pm;"
-				IgnoreAllDefaultLibraries="TRUE"
+				IgnoreAllDefaultLibraries="FALSE"
 				IgnoreDefaultLibraryNames="libcd.lib;libc.lib;libcmt.lib"
 				GenerateDebugInformation="TRUE"
 				AssemblyDebug="0"
@@ -263,13 +263,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="unicows.lib odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib winmm.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib oleacc.lib portmidi.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexu.lib wxpng.lib wxjpeg.lib wxtiff.lib wxmsw27u_adv.lib wxmsw27u_core.lib wxmsw27u_dbgrid.lib wxmsw27u_gl.lib wxmsw27u_html.lib wxmsw27u_media.lib wxmsw27u_qa.lib wxmsw27u_xrc.lib wxbase27u.lib wxbase27u_net.lib wxbase27u_odbc.lib wxbase27u_xml.lib wxmidiu.lib wxexpat.lib wxzlib.lib wxmsw27u_aui.lib wxmsw27u_richtext.lib MSVCRT.lib OLDNAMES.lib"
+				AdditionalDependencies="odbc32.lib odbccp32.lib comctl32.lib rpcrt4.lib wsock32.lib portmidi.lib winmm.lib porttime.lib pm_dll.lib wxzlibd.lib wxregexu.lib wxpng.lib wxjpeg.lib wxtiff.lib wxmsw28u_adv.lib wxmsw28u_core.lib wxmsw28u_dbgrid.lib wxmsw28u_gl.lib wxmsw28u_html.lib wxmsw28u_media.lib wxmsw28u_qa.lib wxmsw28u_xrc.lib wxbase28u.lib wxbase28u_net.lib wxbase28u_odbc.lib wxbase28u_xml.lib wxmidiu.lib wxexpat.lib wxzlib.lib wxmsw28u_aui.lib wxmsw28u_richtext.lib"
 				ShowProgress="2"
 				OutputFile="..\..\z_bin\lenmus_u.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				AdditionalLibraryDirectories="$(WXWIN)\lib\vc_lib;$(WXWIN)\contrib\lib;..\..\packages\wxMidi\lib;..\..\packages\wxMidi\lib\pm;"
-				IgnoreAllDefaultLibraries="TRUE"
+				IgnoreAllDefaultLibraries="FALSE"
 				IgnoreDefaultLibraryNames="libcd.lib;libc.lib;libcmt.lib;msvcrtd.lib"
 				GenerateDebugInformation="FALSE"
 				AssemblyDebug="0"
@@ -660,6 +660,12 @@
 		<Filter
 			Name="html"
 			Filter="">
+			<File
+				RelativePath="..\..\src\html\BookContentsBox.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\html\BookContentsBox.h">
+			</File>
 			<File
 				RelativePath="..\..\src\html\BookData.cpp">
 			</File>

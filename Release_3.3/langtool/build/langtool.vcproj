@@ -40,7 +40,7 @@
                 Name="VCCustomBuildTool"/>
             <Tool
                 Name="VCLinkerTool"
-                AdditionalDependencies="wxmsw27ud_core.lib wxbase27ud.lib wxbase27ud_xml.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+                AdditionalDependencies="wxmsw28ud_core.lib wxbase28ud.lib wxbase28ud_xml.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
                 OutputFile="langtool.exe"
                 LinkIncremental="1"
                 SuppressStartupBanner="TRUE"
@@ -109,7 +109,7 @@
                 Name="VCCustomBuildTool"/>
             <Tool
                 Name="VCLinkerTool"
-                AdditionalDependencies="wxmsw27u_core.lib wxbase27u.lib wxbase27u_xml.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+                AdditionalDependencies="wxmsw28u_core.lib wxbase28u.lib wxbase28u_xml.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
                 OutputFile="langtool.exe"
                 LinkIncremental="1"
                 SuppressStartupBanner="TRUE"
@@ -175,7 +175,7 @@
                 Name="VCCustomBuildTool"/>
             <Tool
                 Name="VCLinkerTool"
-                AdditionalDependencies="wxmsw27d_core.lib wxbase27d.lib wxbase27d_xml.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+                AdditionalDependencies="wxmsw28d_core.lib wxbase28d.lib wxbase28d_xml.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
                 OutputFile="langtool.exe"
                 LinkIncremental="1"
                 SuppressStartupBanner="TRUE"
@@ -243,7 +243,7 @@
                 Name="VCCustomBuildTool"/>
             <Tool
                 Name="VCLinkerTool"
-                AdditionalDependencies="wxmsw27_core.lib wxbase27.lib wxbase27_xml.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+                AdditionalDependencies="wxmsw28_core.lib wxbase28.lib wxbase28_xml.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
                 OutputFile="langtool.exe"
                 LinkIncremental="1"
                 SuppressStartupBanner="TRUE"

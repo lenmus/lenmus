@@ -44,7 +44,7 @@
 #define lmBookIndexItem     wxHtmlHelpDataItem
 #define lmBookRecArray      wxHtmlBookRecArray
 
-#else
+#else   // if lmUSE_LENMUS_EBOOK_FORMAT
 
 #include "wx/defs.h"
 
@@ -75,26 +75,23 @@ public:
                      const wxString& title, const wxString& start);
 
     wxString GetBookFile() const { return m_sBookFile; }
+
     wxString GetTitle() const { return m_sTitle; }
+    void SetTitle(const wxString& title) { m_sTitle = title; }
+
     wxString GetStart() const { return m_sPageFile; }
+    void SetStart(const wxString& start) { m_sPageFile = start; }
+
     wxString GetBasePath() const { return m_sBasePath; }
-    /* SetContentsRange: store in the bookrecord where in the index/contents lists the
-     * book's records are stored. This to facilitate searching in a specific book.
-     * This code will have to be revised when loading/removing books becomes dynamic.
-     * (as opposed to appending only)
-     * Note that storing index range is pointless, because the index is alphab. sorted. */
+    void SetBasePath(const wxString& path) { m_sBasePath = path; }
+    wxString GetFullPath(const wxString &page) const;
+
+    // Contents related methods
     void SetContentsRange(int start, int end) { m_ContentsStart = start; m_ContentsEnd = end; }
     int GetContentsStart() const { return m_ContentsStart; }
     int GetContentsEnd() const { return m_ContentsEnd; }
 
-    void SetTitle(const wxString& title) { m_sTitle = title; }
-    void SetBasePath(const wxString& path) { m_sBasePath = path; }
-    void SetStart(const wxString& start) { m_sPageFile = start; }
 
-    // returns full filename of page (which is part of the book),
-    // i.e. with book's basePath prepended. If page is already absolute
-    // path, basePath is _not_ prepended.
-    wxString GetFullPath(const wxString &page) const;
 
 protected:
     wxString    m_sBookFile;
@@ -112,17 +109,18 @@ WX_DECLARE_USER_EXPORTED_OBJARRAY(lmBookRecord, lmBookRecArray,
 
 
 // lmBookIndexItem: an entry of the index and contents tables
-// The only difference between content entries and glossary entries is that the glossary
-// don't have image.
+// The only difference between content entries and index entries is that the index
+// entries don't have an image.
 struct lmBookIndexItem
 {
     lmBookIndexItem() : level(0), parent(NULL), id(wxEmptyString), pBookRecord(NULL) {}
 
     int                 level;          // level of this entry. 0: book, 1-n: pages
-    lmBookIndexItem*    parent;         // parent entry if this is a sub-entry
+    lmBookIndexItem*    parent;         // parent entry if this is a sub-entry (level > 0)
     wxString            id;             // prefix for title (number/letter)
     wxString            name;           // text for this entry
     wxString            page;           // html page to display
+    wxString            image;          // image to display
     lmBookRecord*       pBookRecord;    // ptr to book record
 
     // returns full filename of page, i.e. with book's basePath prepended
@@ -222,12 +220,12 @@ public:
     // accessors to the tables
     const lmBookRecArray& GetBookRecArray() const { return m_bookRecords; }
     const lmBookIndexArray& GetContentsArray() const { return m_contents; }
-    const lmBookIndexArray& GetIndexArray() const { return m_glossary; }
+    const lmBookIndexArray& GetIndexArray() const { return m_index; }
 
 
 private:
     bool ProcessIndexFile(const wxFileName& oFilename, lmBookRecord* pBookr);
-    void ProcessGlossaryEntries(wxXmlNode* pNode, lmBookRecord *pBookr);
+    void ProcessIndexEntries(wxXmlNode* pNode, lmBookRecord *pBookr);
     lmBookRecord* ProcessTOCFile(const wxFileName& oFilename);
     bool ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLevel);
 
@@ -235,7 +233,7 @@ private:
     lmXmlParser*        m_pParser;
     lmBookRecArray      m_bookRecords;  // each book has one record in this array
     lmBookIndexArray    m_contents;     // list of all available books and their TOCs
-    lmBookIndexArray    m_glossary;     // list of all glossary items
+    lmBookIndexArray    m_index;     // list of all index items
 
     DECLARE_NO_COPY_CLASS(lmBookData)
 };

@@ -113,10 +113,6 @@ lmBookRecord::lmBookRecord(const wxString& bookfile, const wxString& basepath,
 {
     m_sBookFile = bookfile;
     m_sBasePath = basepath;
-        //-- bypass bug in wxFileStream
-    m_sBasePath.Replace(_T("%3A"), _T(":"));
-    m_sBasePath.Replace(_T("\\\\file\\"), _T(""));
-        //-- End bypass
     m_sTitle = title;
     m_sPageFile = start;
     // for debugging, give the contents index obvious default values
@@ -125,6 +121,10 @@ lmBookRecord::lmBookRecord(const wxString& bookfile, const wxString& basepath,
 
 wxString lmBookRecord::GetFullPath(const wxString &page) const
 {
+    // returns full filename of page (which is part of the book),
+    // i.e. with book's basePath prepended. If page is already absolute
+    // path, basePath is _not_ prepended.
+
     if (wxIsAbsolutePath(page))
         return page;
     else
@@ -175,19 +175,6 @@ void lmBookData::SetTempDir(const wxString& path)
     }
 }
 
-
-
-static wxString SafeFileName(const wxString& s)
-{
-    wxString res(s);
-    res.Replace(wxT("#"), wxT("_"));
-    res.Replace(wxT(":"), wxT("_"));
-    res.Replace(wxT("\\"), wxT("_"));
-    res.Replace(wxT("/"), wxT("_"));
-    return res;
-}
-
-
 bool lmBookData::AddBook(const wxFileName& oFilename)
 {
     //Reads a book (either a .lmb or .toc file) and loads its content
@@ -211,8 +198,8 @@ bool lmBookData::AddBook(const wxFileName& oFilename)
         return false;       //error
     }
 
-    // process an optional glossary file
-    pFN->SetExt(_T("gls"));
+    // process an optional index file
+    pFN->SetExt(_T("idx"));
     bool fSuccess = true;
     if (pFN->FileExists())
         fSuccess = ProcessIndexFile(*pFN, pBookr);
@@ -237,12 +224,7 @@ bool lmBookData::ProcessIndexFile(const wxFileName& oFilename, lmBookRecord* pBo
 
     // load the XML file as tree of nodes
     wxXmlDocument xdoc;
-        //-- bypass bug in wxFileStream
-    wxString sPath = oFilename.GetFullPath();
-    sPath.Replace(_T("%3A"), _T(":"));
-    sPath.Replace(_T("\\\\file\\"), _T(""));
-        //-- End bypass
-    if (!xdoc.Load(sPath) ) {
+    if (!xdoc.Load(oFilename.GetFullPath()) ) {
         wxLogMessage(_T("Loading eBook. Error parsing index file %s"),
             oFilename.GetFullPath() );
         return false;   //error
@@ -250,7 +232,7 @@ bool lmBookData::ProcessIndexFile(const wxFileName& oFilename, lmBookRecord* pBo
 
     //Verify type of document. Must be <lmBookIndex>
     wxXmlNode *pNode = xdoc.GetRoot();
-    wxString sTag = _T("lmBookGlossary");
+    wxString sTag = _T("lmBookIndex");
     wxString sElement = pNode->GetName();
     if (sElement != sTag) {
         wxLogMessage(_T("Loading eBook. Error: First tag is not <%s> but <%s>"),
@@ -268,23 +250,23 @@ bool lmBookData::ProcessIndexFile(const wxFileName& oFilename, lmBookRecord* pBo
             sTag, sElement);
         return false;   //error
     }
-    ProcessGlossaryEntries(pElement, pBookr);
+    ProcessIndexEntries(pElement, pBookr);
 
-    // Sort glossary table
-    if (!m_glossary.empty()) {
-        m_glossary.Sort(wxHtmlHelpIndexCompareFunc);
+    // Sort index table
+    if (!m_index.empty()) {
+        m_index.Sort(wxHtmlHelpIndexCompareFunc);
     }
 
     return true;
 }
 
 
-void lmBookData::ProcessGlossaryEntries(wxXmlNode* pNode, lmBookRecord *pBookr)
+void lmBookData::ProcessIndexEntries(wxXmlNode* pNode, lmBookRecord *pBookr)
 {
-    // Parse the glossary entries and adds its data to the m_glossary array
+    // Parse the index entries and adds its data to the m_index array
     // pNode points to <entry> node
 
-    //get first glossary entry
+    //get first index entry
     wxXmlNode* pElement = pNode;
     wxString sTag = _T("entry");
     while (pElement) {
@@ -295,8 +277,9 @@ void lmBookData::ProcessGlossaryEntries(wxXmlNode* pNode, lmBookRecord *pBookr)
             pItem->id = m_pParser->GetAttribute(pElement, _T("id"));
             pItem->page = m_pParser->GetAttribute(pElement, _T("page"));
             pItem->name = m_pParser->GetText(pElement);
+            pItem->image = wxEmptyString;
             pItem->pBookRecord = pBookr;
-            m_glossary.Add(pItem);
+            m_index.Add(pItem);
         }
 
         // Find next entry
@@ -320,13 +303,8 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
              sCharset = wxEmptyString;
 
     // load the XML file as tree of nodes
-        //-- bypass bug in wxFileStream
-    wxString sPath = oFilename.GetFullPath();
-    sPath.Replace(_T("%3A"), _T(":"));
-    sPath.Replace(_T("\\\\file\\"), _T(""));
-        //-- End bypass
     wxXmlDocument xdoc;
-    if (!xdoc.Load(sPath))
+    if (!xdoc.Load(oFilename.GetFullPath()))
     {
         wxLogMessage(_T("Loading eBook. Error parsing TOC file ") + oFilename.GetFullPath());
         return (lmBookRecord*) NULL;   //error
@@ -379,6 +357,7 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
     bookitem->id = wxEmptyString;
     bookitem->page = sPage;
     bookitem->name = sTitle;
+    bookitem->image = wxEmptyString;
     bookitem->pBookRecord = pBookr;
     m_contents.Add(bookitem);
 
@@ -471,6 +450,7 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
     bookitem->id = sId;
     bookitem->page = sPage;
     bookitem->name = sTitle;
+    bookitem->image = sImage;
     bookitem->pBookRecord = pBookr;
     m_contents.Add(bookitem);
 
@@ -499,29 +479,29 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
 
 wxString lmBookData::FindPageByName(const wxString& x)
 {
-    //int cnt;
-    //int i;
-    //wxFileSystem fsys;
-    //wxFSFile *f;
+    int nNumBooks;
+    int i;
+    wxFileSystem fsys;
+    wxFSFile *f;
 
-    ///* 1. try to open given file: */
+    // 1. try to open given file:
 
-    //cnt = m_bookRecords.GetCount();
-    //for (i = 0; i < cnt; i++)
-    //{
-    //    f = fsys.OpenFile(m_bookRecords[i].GetFullPath(x));
-    //    if (f)
-    //    {
-    //        wxString url = m_bookRecords[i].GetFullPath(x);
-    //        delete f;
-    //        return url;
-    //    }
-    //}
+    nNumBooks = m_bookRecords.GetCount();
+    for (i = 0; i < nNumBooks; i++)
+    {
+        f = fsys.OpenFile(m_bookRecords[i].GetFullPath(x));
+        if (f)
+        {
+            wxString url = m_bookRecords[i].GetFullPath(x);
+            delete f;
+            return url;
+        }
+    }
 
 
     ///* 2. try to find a book: */
 
-    //for (i = 0; i < cnt; i++)
+    //for (i = 0; i < nNumBooks; i++)
     //{
     //    if (m_bookRecords[i].GetTitle() == x)
     //        return m_bookRecords[i].GetFullPath(m_bookRecords[i].GetStart());
@@ -529,8 +509,8 @@ wxString lmBookData::FindPageByName(const wxString& x)
 
     ///* 3. try to find in contents: */
 
-    //cnt = m_contents.size();
-    //for (i = 0; i < cnt; i++)
+    //nNumBooks = m_contents.size();
+    //for (i = 0; i < nNumBooks; i++)
     //{
     //    if (m_contents[i].name == x)
     //        return m_contents[i].GetFullPath();
@@ -539,11 +519,11 @@ wxString lmBookData::FindPageByName(const wxString& x)
 
     ///* 4. try to find in index: */
 
-    //cnt = m_glossary.size();
-    //for (i = 0; i < cnt; i++)
+    //nNumBooks = m_index.size();
+    //for (i = 0; i < nNumBooks; i++)
     //{
-    //    if (m_glossary[i].name == x)
-    //        return m_glossary[i].GetFullPath();
+    //    if (m_index[i].name == x)
+    //        return m_index[i].GetFullPath();
     //}
 
     return wxEmptyString;

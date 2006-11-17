@@ -61,6 +61,18 @@
 enum
 {
     MENU_CheckForUpdates = 1100,
+
+    // eBook controller events, to be known by lmTextBookController
+    MENU_eBookPanel,
+    MENU_eBook_GoBack,
+    MENU_eBook_GoForward,
+    MENU_eBook_UpNode,
+    MENU_eBook_Up,
+    MENU_eBook_Down,
+    MENU_eBook_Print,
+    MENU_eBook_OpenFile,
+    MENU_eBook_Options,
+
     MENU_Last_Public_ID
 };
 

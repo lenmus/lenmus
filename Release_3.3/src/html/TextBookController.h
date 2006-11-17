@@ -39,24 +39,22 @@
 #pragma interface "TextBookController.h"
 #endif
 
-#if wxUSE_WXHTML_HELP
-
-#include "wx/helpbase.h"
+//#include "wx/helpbase.h"
 #include "BookData.h"
-#include "TextBookFrame.h"        //CSG_MODIFIED    wx/html/helpfrm.h"
+#include "TextBookFrame.h"
 
 #define wxID_HTML_HELPFRAME   (wxID_HIGHEST + 1)
 
-class WXDLLIMPEXP_HTML lmTextBookController : public wxHelpControllerBase // wxEvtHandler
+class lmTextBookController : public wxObject
 {
     DECLARE_DYNAMIC_CLASS(lmTextBookController)
 
 public:
-    lmTextBookController(int style = wxHF_DEFAULT_STYLE);
+    lmTextBookController();
     virtual ~lmTextBookController();
 
     void SetTitleFormat(const wxString& format);
-    void SetTempDir(const wxString& path) { m_helpData.SetTempDir(path); }
+    void SetTempDir(const wxString& path) { m_oBookData.SetTempDir(path); }
     bool AddBook(const wxString& book_url, bool show_wait_msg = false);
     bool AddBook(const wxFileName& book_file, bool show_wait_msg = false);
 
@@ -67,7 +65,7 @@ public:
     bool KeywordSearch(const wxString& keyword,
                        wxHelpSearchMode mode = wxHELP_SEARCH_ALL);
 
-    lmTextBookFrame* GetFrame() { return m_helpFrame; }
+    lmTextBookFrame* GetFrame() { return m_pBookFrame; }
     void UseConfig(wxConfigBase *config, const wxString& rootpath = wxEmptyString);
 
     // Assigns config object to the Ctrl. This config is then
@@ -76,48 +74,29 @@ public:
     virtual void ReadCustomization(wxConfigBase *cfg, const wxString& path = wxEmptyString);
     virtual void WriteCustomization(wxConfigBase *cfg, const wxString& path = wxEmptyString);
 
-    //// Backward compatibility with wxHelpController API
-
-    virtual bool Initialize(const wxString& file, int WXUNUSED(server) ) { return Initialize(file); }
-    virtual bool Initialize(const wxString& file);
-    virtual void SetViewer(const wxString& WXUNUSED(viewer), long WXUNUSED(flags) = 0) {}
-    virtual bool LoadFile(const wxString& file = wxT(""));
-    virtual bool DisplaySection(int sectionNo);
-    virtual bool DisplaySection(const wxString& section) { return Display(section); }
-    virtual bool DisplayBlock(long blockNo) { return DisplaySection(blockNo); }
-    virtual bool DisplayTextPopup(const wxString& text, const wxPoint& pos);
-
-
     // Get direct access to help data:
-    lmBookData *GetHelpData() { return &m_helpData; }
+    lmBookData *GetHelpData() { return &m_oBookData; }
 
-    virtual bool Quit() ;
-    virtual void OnQuit();                      //CSG_MODIFIED: implemented
-
+    bool Quit() ;
+    void OnQuit();                      //CSG_MODIFIED: implemented
     void OnCloseFrame(wxCloseEvent& evt);
 
-    // Make the help controller's frame 'modal' if
-    // needed
+
+    // Make the help controller's frame 'modal' if needed
     void AddGrabIfNeeded();
 
 protected:
-    virtual lmTextBookFrame* CreateHelpFrame(lmBookData *data);
-
     virtual void CreateHelpWindow();
     virtual void DestroyHelpWindow();
 
-    lmBookData      m_helpData;
-    lmTextBookFrame*    m_helpFrame;
+    lmBookData          m_oBookData;
+    lmTextBookFrame*    m_pBookFrame;
     wxConfigBase *      m_Config;
     wxString            m_ConfigRoot;
     wxString            m_titleFormat;
     int                 m_FrameStyle;
     
-    //DECLARE_EVENT_TABLE()
-
     DECLARE_NO_COPY_CLASS(lmTextBookController)
 };
-
-#endif // wxUSE_WXHTML_HELP
 
 #endif // __TEXTBOOKCONTROLLER_H__
