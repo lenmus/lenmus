@@ -878,31 +878,36 @@ void lmTextBookFrame::CreateContents()
     imaged[0] = true;
 
     wxString sImagePath = wxEmptyString;
-    const wxString sNBSP = _T("&nbsp;&nbsp;&nbsp;&nbsp;");
     wxString sLine;
+    wxString sImgPlus = _T("<table><tr><td nowrap><img src='");
+        sImgPlus += g_pPaths->GetImagePath() + _T("nav_plus_16.png'>");
+
+    wxString sImgMinus = _T("<table><tr><td nowrap><img src='");
+        sImgMinus += g_pPaths->GetImagePath() + _T("nav_minus_16.png'>");
+
+    const wxString sEndLine = _T("</td></tr></table>");
+
+    wxString sItemImg = _T("<table><tr><td nowrap><img src='");
+        sItemImg += g_pPaths->GetImagePath() + _T("nav_space_36.png' height='36' width='");
+
+    wxString sItemNoImg = _T("<table><tr><td nowrap><img src='");
+        sItemNoImg += g_pPaths->GetImagePath() + _T("nav_space_36.png' height='16' width='");
+
+    wxString sNavPageImg = _T("<img border='0' src='");
+        sNavPageImg += g_pPaths->GetImagePath() + _T("nav_page_36.png'>");
+
+    wxString sNavPageNoImg = _T("<img border='0' src='");
+        sNavPageNoImg += g_pPaths->GetImagePath() + _T("nav_page_16.png'>");
+
     for (size_t i = 0; i < cnt; i++)
     {
         lmBookIndexItem *it = &contents[i];
         if (it->level == 0) {
             // It is a book node
-            if (i==0) {
-                //first item. Create the table
-                sLine = _T("<table cellpadding=0 cellspacing=0 style=\"font-family: ")
-                        _T("Arial; font-size: 80%;\"><tr><td width=\"30px\">&nbsp;</td>")
-                        _T("<td width=\"30px\">&nbsp;</td><td width=\"30px\">&nbsp;</td>")
-                        _T("<td width=\"30px\">&nbsp;</td><td width=\"30px\">&nbsp;</td>")
-                        _T("<td width=\"30px\">&nbsp;</td></tr>");
-            }
-
-            sLine += _T("<tr><td colspan=6 nowrap><img align=\"center\" src=\"");
+            sLine = sImgMinus + _T("<img src=\"");
             sLine += g_pPaths->GetImagePath();
-            sLine += _T("tool_open_ebook_16.png\">") +  sNBSP + 
-                _T("<b>") +it->name + _T("</b></td></tr>");
-
-            if (i==cnt-1) {
-                //first last item, close the table
-                sLine += _T("</table>");
-            }
+            sLine += _T("nav_book_open_16.png\"><b>") +
+                it->name + _T("</b>") + sEndLine;
 
             roots[1] = m_pContentsBox->AppendItem(roots[0],
                                         sLine, sImagePath, IMG_Book, -1,
@@ -919,23 +924,22 @@ void lmTextBookFrame::CreateContents()
         }
         else {
             // it is a content node
-            sLine = _T("<tr><td>&nbsp;</td><td colspan=5 nowrap><img align=\"center\" src=\"");
-            sLine += g_pPaths->GetImagePath();
-            sLine += _T("tool_new_16.png\">&nbsp;&nbsp;");
+            sLine = ((it->image).IsEmpty() ? sItemNoImg : sItemImg);
+            sLine += wxString::Format(_T("%d'>"), it->level * 16);   //16 pixels per level
+            sLine += ((it->image).IsEmpty() ? sNavPageNoImg : sNavPageImg);
             sLine += wxString::Format(_T("<a href=\"item%d\">"), i);
+
             if (!(it->image).IsEmpty()) {
-                sLine += _T("<img align=\"center\" src=\"");
+                sLine += _T("<img border='0' src='");
                 sLine += sImagePath;
                 sLine += it->image;
-                sLine += _T("\"><br />");
+                sLine += _T("'></a><br /><img src='");
+                sLine += g_pPaths->GetImagePath();
+                sLine += _T("nav_space_36.png' height='16' width='");
+                sLine += wxString::Format(_T("%d'>"), 40+16*it->level);
+                sLine += wxString::Format(_T("<a href=\"item%d\">"), i);
             }
-            sLine += it->name;
-            sLine += _T("</a></td></tr>");
-
-            if (i==cnt-1) {
-                //first last item, close the table
-                sLine += _T("</table>");
-            }
+            sLine += it->name + _T("</a>") + sEndLine;
 
             roots[it->level + 1] = m_pContentsBox->AppendItem(
                                      roots[it->level], sLine, sImagePath, IMG_Page,
