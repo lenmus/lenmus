@@ -36,12 +36,12 @@
 */
 
 // MIDI support throgh Portmidi lib
-#include "../src/portmidi/pm_common/portmidi.h"
-#include "../src/portmidi/porttime/porttime.h"
+#include "portmidi.h"
+#include "porttime.h"
 
 
 //Constants
-#define wxMIDI_VERSION		_T("1.2")
+#define wxMIDI_VERSION		_T("1.3")
 #define wxMidiDeviceID		PmDeviceID
 #define wxMidiTimestamp		PmTimestamp
 #define wxMidiPmMessage		PmMessage

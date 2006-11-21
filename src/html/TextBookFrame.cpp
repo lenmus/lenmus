@@ -2,9 +2,10 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
 //
-//    This file is a modified copy of file helpfrm.cpp from wxWidgets 2.6.2 project.
+//    This file was initially is based on file helpfrm.cpp from wxWidgets 2.6.2 project
+//    although now it must be something quite different
 //    wxWidgets licence is compatible with GNU GPL.
-//    Author:       Harm van der Heijden and Vaclav Slavik
+//    Author:      Harm van der Heijden and Vaclav Slavik
 //    Copyright (c) Harm van der Heijden and Vaclav Slavik
 // 
 //    Modified by:
@@ -26,31 +27,6 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file TextBookFrame.cpp
-    @brief Implementation file for class lmTextBookFrame
-    @ingroup html_management
-*/
-
-//===============================================================================
-/*
-    Code copied from wxWidgets, file helpfrm.cpp
-
-    Things deleted are commented with //CSG_DELETED and, if applicable, a comment with
-    additional explanation
-
-    Things modified are marked as //CSG_MODIFIED and an explanation
-
-    Global changes:
-      -    TextBookHelpFrame changed to lmTextBookFrame
-
-      - config data names changed from hc... to tbc... to avoid collision with wxHtmlHelpFrame
-      - ::Create() : changed from wxFrame to lmMDIChildFrame,as well as class from which
-        this one derivates
-      - Window maximized on start
-      - Status bar removed. Is redundant
-*/
-//===============================================================================
-
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "TextBookFrame.h"
 #endif
@@ -62,8 +38,6 @@
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
-
-#if wxUSE_WXHTML_HELP
 
 #ifndef WXPRECOMP
     #include "wx/intl.h"
@@ -82,8 +56,8 @@
     #include "wx/msgdlg.h"
 #endif
 
-#include "TextBookFrame.h"            //CSG_MODIFIED    wx/html/helpfrm.h"
-#include "TextBookController.h"        //CSG_MODIFIED    wx/html/helpctrl.h"
+#include "TextBookFrame.h"
+#include "TextBookController.h"
 #include "wx/textctrl.h"
 #include "wx/notebook.h"
 #include "wx/imaglist.h"
@@ -104,16 +78,21 @@
 #include "wx/settings.h"
 
 
-#include "../app/global.h"              //CSG_ADDED
-#include "../app/MainFrame.h"           //CSG_ADDED
-extern lmMainFrame* g_pMainFrame;       //CSG_ADDED
+#include "../app/global.h"
+#include "../app/MainFrame.h"
+extern lmMainFrame* g_pMainFrame;
 
-#include "../app/Preferences.h"         //CSG_ADDED: access to user preferences
+// access to paths
+#include "../globals/Paths.h"
+extern lmPaths* g_pPaths;
+
+
+#include "../app/Preferences.h"         // access to user preferences
 
 // what is considered "small index"?
 #define INDEX_IS_SMALL 100
 
-/* Motif defines this as a macro */
+// Motif defines this as a macro 
 #ifdef Below
 #undef Below
 #endif
@@ -139,12 +118,12 @@ class TextBookHelpTreeItemData : public wxTreeItemData
 class TextBookHelpHashData : public wxObject
 {
     public:
-        TextBookHelpHashData(int index, wxTreeItemId id) : wxObject()
+        TextBookHelpHashData(int index, long id) : wxObject()
             { m_Index = index; m_Id = id;}
         ~TextBookHelpHashData() {}
 
         int m_Index;
-        wxTreeItemId m_Id;
+        long m_Id;
 };
 
 
@@ -196,7 +175,7 @@ class TextBookHelpHtmlWindow : public lmHtmlWindow
 // lmTextBookFrame::m_mergedIndex
 //---------------------------------------------------------------------------
 
-WX_DEFINE_ARRAY_PTR(const wxHtmlHelpDataItem*, wxHtmlHelpDataItemPtrArray);
+WX_DEFINE_ARRAY_PTR(const lmBookIndexItem*, wxHtmlHelpDataItemPtrArray);
 
 struct TextBookHelpMergedIndexItem
 {
@@ -215,14 +194,14 @@ void lmTextBookFrame::UpdateMergedIndex()
     m_mergedIndex = new TextBookHelpMergedIndex;
     TextBookHelpMergedIndex& merged = *m_mergedIndex;
 
-    const wxHtmlHelpDataItems& items = m_Data->GetIndexArray();
+    const lmBookIndexArray& items = m_pBookData->GetIndexArray();
     size_t len = items.size();
 
     TextBookHelpMergedIndexItem *history[128] = {NULL};
 
     for (size_t i = 0; i < len; i++)
     {
-        const wxHtmlHelpDataItem& item = items[i];
+        const lmBookIndexItem& item = items[i];
         wxASSERT_MSG( item.level < 128, _T("nested index entries too deep") );
 
         if (history[item.level] &&
@@ -249,59 +228,66 @@ void lmTextBookFrame::UpdateMergedIndex()
 // lmTextBookFrame
 //---------------------------------------------------------------------------
 
-// Command IDs :
-//enum
-//{
-//    wxID_HTML_PANEL = 2000,
-//    wxID_HTML_BACK,
-//    wxID_HTML_FORWARD,
-//    wxID_HTML_UPNODE,
-//    wxID_HTML_UP,
-//    wxID_HTML_DOWN,
-//    wxID_HTML_PRINT,
-//    wxID_HTML_OPENFILE,
-//    wxID_HTML_OPTIONS,
-//    wxID_HTML_BOOKMARKSLIST,
-//    wxID_HTML_BOOKMARKSADD,
-//    wxID_HTML_BOOKMARKSREMOVE,
-//    wxID_HTML_TREECTRL,
-//    wxID_HTML_INDEXPAGE,
-//    wxID_HTML_INDEXLIST,
-//    wxID_HTML_INDEXTEXT,
-//    wxID_HTML_INDEXBUTTON,
-//    wxID_HTML_INDEXBUTTONALL,
-//    wxID_HTML_NOTEBOOK,
-//    wxID_HTML_SEARCHPAGE,
-//    wxID_HTML_SEARCHTEXT,
-//    wxID_HTML_SEARCHLIST,
-//    wxID_HTML_SEARCHBUTTON,
-//    wxID_HTML_SEARCHCHOICE,
-//    wxID_HTML_COUNTINFO
-//};
+// windows' IDs :
+enum
+{
+    ID_BOOKMARKS_LIST = 2000,
+    ID_BOOKMARKS_ADD,
+    ID_BOOKMARKS_REMOVE,
+    ID_TREECTRL,
+    ID_INDEXPAGE,
+    ID_INDEXLIST,
+    ID_INDEXTEXT,
+    ID_INDEXBUTTON,
+    ID_INDEXBUTTONALL,
+    ID_NOTEBOOK,
+    ID_SEARCHPAGE,
+    ID_SEARCHTEXT,
+    ID_SEARCHLIST,
+    ID_SEARCHBUTTON,
+    ID_SEARCHCHOICE,
+    ID_COUNTINFO
+};
 
 
 IMPLEMENT_DYNAMIC_CLASS(lmTextBookFrame, lmMDIChildFrame)
 
+
+BEGIN_EVENT_TABLE(lmTextBookFrame, lmMDIChildFrame)
+    EVT_ACTIVATE(lmTextBookFrame::OnActivate)
+    EVT_TOOL_RANGE(MENU_eBookPanel, MENU_eBook_Options, lmTextBookFrame::OnToolbar)
+
+    EVT_BUTTON      (ID_BOOKMARKS_REMOVE, lmTextBookFrame::OnToolbar)
+    EVT_BUTTON      (ID_BOOKMARKS_ADD, lmTextBookFrame::OnToolbar)
+    //EVT_TREE_SEL_CHANGED(ID_TREECTRL, lmTextBookFrame::OnContentsSel)
+    EVT_LISTBOX     (ID_INDEXLIST, lmTextBookFrame::OnIndexSel)
+    EVT_LISTBOX     (ID_SEARCHLIST, lmTextBookFrame::OnSearchSel)
+    EVT_BUTTON      (ID_SEARCHBUTTON, lmTextBookFrame::OnSearch)
+    EVT_TEXT_ENTER  (ID_SEARCHTEXT, lmTextBookFrame::OnSearch)
+    EVT_BUTTON      (ID_INDEXBUTTON, lmTextBookFrame::OnIndexFind)
+    EVT_TEXT_ENTER  (ID_INDEXTEXT, lmTextBookFrame::OnIndexFind)
+    EVT_BUTTON      (ID_INDEXBUTTONALL, lmTextBookFrame::OnIndexAll)
+    EVT_COMBOBOX    (ID_BOOKMARKS_LIST, lmTextBookFrame::OnBookmarksSel)
+    EVT_CLOSE       (lmTextBookFrame::OnCloseWindow)
+    EVT_HTML_LINK_CLICKED(ID_TREECTRL, lmTextBookFrame::OnContentsLinkClicked)
+
+END_EVENT_TABLE()
+
+
 lmTextBookFrame::lmTextBookFrame(wxWindow* parent, wxWindowID id, const wxString& title,
-                                 int style, wxHtmlHelpData* data)
+                                 int style, lmBookData* data)
 {
     Init(data);
     Create(parent, id, title, style);
 }
 
-void lmTextBookFrame::Init(wxHtmlHelpData* data)
+void lmTextBookFrame::Init(lmBookData* data)
 {
-    if (data)
-    {
-        m_Data = data;
-        m_DataCreated = false;
-    } else
-    {
-        m_Data = new wxHtmlHelpData();
-        m_DataCreated = true;
-    }
+    wxASSERT(data);
+    m_pBookData = data;
+    m_DataCreated = false;
 
-    m_ContentsBox = NULL;
+    m_pContentsBox = NULL;
     m_IndexList = NULL;
     m_IndexButton = NULL;
     m_IndexButtonAll = NULL;
@@ -344,24 +330,22 @@ void lmTextBookFrame::Init(wxHtmlHelpData* data)
 
     m_PagesHash = NULL;
     m_UpdateContents = true;
-    m_helpController = (wxHelpControllerBase*) NULL;
+    m_pBookController = (lmTextBookController*) NULL;
 
     //CSG Added
     m_pToolbar = (wxToolBar*) NULL;
 }
 
-// Create: builds the GUI components.
-// with the style flag it's possible to toggle the toolbar, contents, index and search
-// controls.
-// m_HtmlWin will *always* be created, but it's important to realize that
-// m_ContentsBox, m_IndexList, m_SearchList, m_SearchButton, m_SearchText and
-// m_SearchButton may be NULL.
-// moreover, if no contents, index or searchpage is needed, m_Splitter and
-// m_NavigPan will be NULL too (with m_HtmlWin directly connected to the frame)
 
 bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
                              const wxString& WXUNUSED(title), int style)
 {
+    // Create: builds the GUI components.
+    // m_HtmlWin will *always* be created, but it's important to realize that
+    // m_pContentsBox, m_IndexList, m_SearchList, m_SearchButton, m_SearchText and
+    // m_SearchButton may be NULL.
+    // moreover, if no contents, index or searchpage is needed, m_Splitter and
+    // m_NavigPan will be NULL too (with m_HtmlWin directly connected to the frame)
     m_hfStyle = style;
 
     wxImageList *ContentsImageList = new wxImageList(16, 16);
@@ -407,7 +391,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
 
         m_HtmlWin = new TextBookHelpHtmlWindow(this, m_Splitter);
         m_NavigPan = new wxPanel(m_Splitter, wxID_ANY); //, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
-        m_NavigNotebook = new wxNotebook(m_NavigPan, wxID_HTML_NOTEBOOK,
+        m_NavigNotebook = new wxNotebook(m_NavigPan, ID_NOTEBOOK,
                                          wxDefaultPosition, wxDefaultSize); 
 
         navigSizer = new wxBoxSizer(wxVERTICAL);
@@ -417,7 +401,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
     }
     else
     { // only html window, no notebook with index,contents etc
-        m_HtmlWin = new lmHtmlWindow(this); //, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
+        m_HtmlWin = new lmHtmlWindow(this);
     }
 
     m_HtmlWin->SetRelatedFrame((wxFrame*)this, m_TitleFormat);
@@ -429,16 +413,16 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
     // contents tree panel?
     if ( style & wxHF_CONTENTS )
     {
-        wxWindow *dummy = new wxPanel(m_NavigNotebook, wxID_HTML_INDEXPAGE);
+        wxWindow *pPanel = new wxPanel(m_NavigNotebook, ID_INDEXPAGE);
         wxSizer *topsizer = new wxBoxSizer(wxVERTICAL);
 
         topsizer->Add(0, 10);
 
-        dummy->SetSizer(topsizer);
+        pPanel->SetSizer(topsizer);
 
         if ( style & wxHF_BOOKMARKS )
         {
-            m_Bookmarks = new wxComboBox(dummy, wxID_HTML_BOOKMARKSLIST,
+            m_Bookmarks = new wxComboBox(pPanel, ID_BOOKMARKS_LIST,
                                          wxEmptyString,
                                          wxDefaultPosition, wxDefaultSize,
                                          0, NULL, wxCB_READONLY | wxCB_SORT);
@@ -448,10 +432,10 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
             m_Bookmarks->SetSelection(0);
 
             wxBitmapButton *bmpbt1, *bmpbt2;
-            bmpbt1 = new wxBitmapButton(dummy, wxID_HTML_BOOKMARKSADD,
+            bmpbt1 = new wxBitmapButton(pPanel, ID_BOOKMARKS_ADD,
                                  wxArtProvider::GetBitmap(wxART_ADD_BOOKMARK,
                                                           wxART_BUTTON));
-            bmpbt2 = new wxBitmapButton(dummy, wxID_HTML_BOOKMARKSREMOVE,
+            bmpbt2 = new wxBitmapButton(pPanel, ID_BOOKMARKS_REMOVE,
                                  wxArtProvider::GetBitmap(wxART_DEL_BOOKMARK,
                                                           wxART_BUTTON));
             bmpbt1->SetToolTip(_("Add current page to bookmarks"));
@@ -466,48 +450,35 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
             topsizer->Add(sizer, 0, wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT, 10);
         }
 
-        m_ContentsBox = new wxTreeCtrl(dummy, wxID_HTML_TREECTRL,
-                                       wxDefaultPosition, wxDefaultSize,
-#ifdef __WXGTK20__
-                                       wxSUNKEN_BORDER |
-                                       wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT |
-                                       wxTR_NO_LINES
-#else
-                                       wxSUNKEN_BORDER |
-                                       wxTR_HAS_BUTTONS | wxTR_HIDE_ROOT |
-                                       wxTR_LINES_AT_ROOT
-#endif
-                                       );
-
-        m_ContentsBox->AssignImageList(ContentsImageList);
-
-        topsizer->Add(m_ContentsBox, 1,
+        m_pContentsBox = new lmBookContentsBox(pPanel, ID_TREECTRL);
+        m_pContentsBox->AssignImageList(ContentsImageList);
+        topsizer->Add(m_pContentsBox, 1,
                       wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT,
                       2);
 
-        m_NavigNotebook->AddPage(dummy, _("Contents"));
+        m_NavigNotebook->AddPage(pPanel, _("Contents"));
         m_ContentsPage = notebook_page++;
     }
 
     // index listbox panel?
     if ( style & wxHF_INDEX )
     {
-        wxWindow *dummy = new wxPanel(m_NavigNotebook, wxID_HTML_INDEXPAGE);
+        wxWindow *pPanel = new wxPanel(m_NavigNotebook, ID_INDEXPAGE);
         wxSizer *topsizer = new wxBoxSizer(wxVERTICAL);
 
-        dummy->SetSizer(topsizer);
+        pPanel->SetSizer(topsizer);
 
-        m_IndexText = new wxTextCtrl(dummy, wxID_HTML_INDEXTEXT, wxEmptyString,
+        m_IndexText = new wxTextCtrl(pPanel, ID_INDEXTEXT, wxEmptyString,
                                      wxDefaultPosition, wxDefaultSize,
                                      wxTE_PROCESS_ENTER);
-        m_IndexButton = new wxButton(dummy, wxID_HTML_INDEXBUTTON, _("Find"));
-        m_IndexButtonAll = new wxButton(dummy, wxID_HTML_INDEXBUTTONALL,
+        m_IndexButton = new wxButton(pPanel, ID_INDEXBUTTON, _("Find"));
+        m_IndexButtonAll = new wxButton(pPanel, ID_INDEXBUTTONALL,
                                         _("Show all"));
-        m_IndexCountInfo = new wxStaticText(dummy, wxID_HTML_COUNTINFO,
+        m_IndexCountInfo = new wxStaticText(pPanel, ID_COUNTINFO,
                                             wxEmptyString, wxDefaultPosition,
                                             wxDefaultSize,
                                             wxALIGN_RIGHT | wxST_NO_AUTORESIZE);
-        m_IndexList = new wxListBox(dummy, wxID_HTML_INDEXLIST,
+        m_IndexList = new wxListBox(pPanel, ID_INDEXLIST,
                                     wxDefaultPosition, wxSize(125,-1),
                                     0, NULL, wxLB_SINGLE);
 
@@ -523,29 +494,29 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
         topsizer->Add(m_IndexCountInfo, 0, wxEXPAND | wxLEFT | wxRIGHT, 2);
         topsizer->Add(m_IndexList, 1, wxEXPAND | wxALL, 2);
 
-        m_NavigNotebook->AddPage(dummy, _("Index"));
+        m_NavigNotebook->AddPage(pPanel, _("Index"));
         m_IndexPage = notebook_page++;
     }
 
     // search list panel?
     if ( style & wxHF_SEARCH )
     {
-        wxWindow *dummy = new wxPanel(m_NavigNotebook, wxID_HTML_INDEXPAGE);
+        wxWindow *pPanel = new wxPanel(m_NavigNotebook, ID_INDEXPAGE);
         wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 
-        dummy->SetSizer(sizer);
+        pPanel->SetSizer(sizer);
 
-        m_SearchText = new wxTextCtrl(dummy, wxID_HTML_SEARCHTEXT,
+        m_SearchText = new wxTextCtrl(pPanel, ID_SEARCHTEXT,
                                       wxEmptyString,
                                       wxDefaultPosition, wxDefaultSize,
                                       wxTE_PROCESS_ENTER);
-        m_SearchChoice = new wxChoice(dummy, wxID_HTML_SEARCHCHOICE,
+        m_SearchChoice = new wxChoice(pPanel, ID_SEARCHCHOICE,
                                       wxDefaultPosition, wxSize(125,-1));
-        m_SearchCaseSensitive = new wxCheckBox(dummy, wxID_ANY, _("Case sensitive"));
-        m_SearchWholeWords = new wxCheckBox(dummy, wxID_ANY, _("Whole words only"));
-        m_SearchButton = new wxButton(dummy, wxID_HTML_SEARCHBUTTON, _("Search"));
+        m_SearchCaseSensitive = new wxCheckBox(pPanel, wxID_ANY, _("Case sensitive"));
+        m_SearchWholeWords = new wxCheckBox(pPanel, wxID_ANY, _("Whole words only"));
+        m_SearchButton = new wxButton(pPanel, ID_SEARCHBUTTON, _("Search"));
         m_SearchButton->SetToolTip(_("Search contents of help book(s) for all occurences of the text you typed above"));
-        m_SearchList = new wxListBox(dummy, wxID_HTML_SEARCHLIST,
+        m_SearchList = new wxListBox(pPanel, ID_SEARCHLIST,
                                      wxDefaultPosition, wxSize(125,-1),
                                      0, NULL, wxLB_SINGLE);
 
@@ -556,7 +527,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
         sizer->Add(m_SearchButton, 0, wxALL | wxALIGN_RIGHT, 8);
         sizer->Add(m_SearchList, 1, wxALL | wxEXPAND, 2);
 
-        m_NavigNotebook->AddPage(dummy, _("Search"));
+        m_NavigNotebook->AddPage(pPanel, _("Search"));
         m_SearchPage = notebook_page;
     }
 
@@ -605,7 +576,7 @@ lmTextBookFrame::~lmTextBookFrame()
 
     // PopEventHandler(); // wxhtmlhelpcontroller (not any more!)
     if (m_DataCreated)
-        delete m_Data;
+        delete m_pBookData;
     if (m_NormalFonts) delete m_NormalFonts;
     if (m_FixedFonts) delete m_FixedFonts;
     if (m_PagesHash)
@@ -629,7 +600,7 @@ void lmTextBookFrame::SetTitleFormat(const wxString& format)
 
 bool lmTextBookFrame::Display(const wxString& x)
 {
-    wxString url = m_Data->FindPageByName(x);
+    wxString url = m_pBookData->FindPageByName(x);
     if (!url.empty())
     {
         m_HtmlWin->LoadPage(url);
@@ -642,7 +613,7 @@ bool lmTextBookFrame::Display(const wxString& x)
 
 bool lmTextBookFrame::Display(const int id)
 {
-    wxString url = m_Data->FindPageById(id);
+    wxString url = m_pBookData->FindPageById(id);
     if (!url.empty())
     {
         m_HtmlWin->LoadPage(url);
@@ -657,11 +628,9 @@ bool lmTextBookFrame::Display(const int id)
 
 bool lmTextBookFrame::DisplayContents()
 {
-    if (! m_ContentsBox)
-        return false;
+    if (!m_pContentsBox) return false;
 
-    if (!m_Splitter->IsSplit())
-    {
+    if (!m_Splitter->IsSplit()) {
         m_NavigPan->Show();
         m_HtmlWin->Show();
         m_Splitter->SplitVertically(m_NavigPan, m_HtmlWin, m_Cfg.sashpos);
@@ -670,9 +639,9 @@ bool lmTextBookFrame::DisplayContents()
 
     m_NavigNotebook->SetSelection(0);
 
-    if (m_Data->GetBookRecArray().GetCount() > 0)
+    if (m_pBookData->GetBookRecArray().GetCount() > 0)
     {
-        wxHtmlBookRecord& book = m_Data->GetBookRecArray()[0];
+        lmBookRecord& book = m_pBookData->GetBookRecArray()[0];
         if (!book.GetStart().empty())
             m_HtmlWin->LoadPage(book.GetFullPath(book.GetStart()));
     }
@@ -696,9 +665,9 @@ bool lmTextBookFrame::DisplayIndex()
 
     m_NavigNotebook->SetSelection(1);
 
-    if (m_Data->GetBookRecArray().GetCount() > 0)
+    if (m_pBookData->GetBookRecArray().GetCount() > 0)
     {
-        wxHtmlBookRecord& book = m_Data->GetBookRecArray()[0];
+        lmBookRecord& book = m_pBookData->GetBookRecArray()[0];
         if (!book.GetStart().empty())
             m_HtmlWin->LoadPage(book.GetFullPath(book.GetStart()));
     }
@@ -728,7 +697,7 @@ void lmTextBookFrame::DisplayIndexItem(const TextBookHelpMergedIndexItem *it)
         {
             wxString page = it->items[i]->page;
             // try to find page's title in contents:
-            const wxHtmlHelpDataItems& contents = m_Data->GetContentsArray();
+            const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
             size_t clen = contents.size();
             for (size_t j = 0; j < clen; j++)
             {
@@ -757,130 +726,130 @@ void lmTextBookFrame::DisplayIndexItem(const TextBookHelpMergedIndexItem *it)
 bool lmTextBookFrame::KeywordSearch(const wxString& keyword,
                                     wxHelpSearchMode mode)
 {
-    if (mode == wxHELP_SEARCH_ALL)
-    {
-        if ( !(m_SearchList &&
-               m_SearchButton && m_SearchText && m_SearchChoice) )
-            return false;
-    }
-    else if (mode == wxHELP_SEARCH_INDEX)
-    {
-        if ( !(m_IndexList &&
-               m_IndexButton && m_IndexButtonAll && m_IndexText) )
-            return false;
-    }
-
-    int foundcnt = 0;
-    wxString foundstr;
-    wxString book = wxEmptyString;
-
-    if (!m_Splitter->IsSplit())
-    {
-        m_NavigPan->Show();
-        m_HtmlWin->Show();
-        m_Splitter->SplitVertically(m_NavigPan, m_HtmlWin, m_Cfg.sashpos);
-    }
-
-    if (mode == wxHELP_SEARCH_ALL)
-    {
-        m_NavigNotebook->SetSelection(m_SearchPage);
-        m_SearchList->Clear();
-        m_SearchText->SetValue(keyword);
-        m_SearchButton->Disable();
-
-        if (m_SearchChoice->GetSelection() != 0)
-            book = m_SearchChoice->GetStringSelection();
-
-        wxHtmlSearchStatus status(m_Data, keyword,
-                                  m_SearchCaseSensitive->GetValue(),
-                                  m_SearchWholeWords->GetValue(),
-                                  book);
-
-#if wxUSE_PROGRESSDLG
-        wxProgressDialog progress(_("Searching..."),
-                                  _("No matching page found yet"),
-                                  status.GetMaxIndex(), this,
-                                  wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
-#endif
-
-        int curi;
-        while (status.IsActive())
-        {
-            curi = status.GetCurIndex();
-            if (curi % 32 == 0
-#if wxUSE_PROGRESSDLG
-                && !progress.Update(curi)
-#endif
-               )
-                break;
-            if (status.Search())
-            {
-                foundstr.Printf(_("Found %i matches"), ++foundcnt);
-#if wxUSE_PROGRESSDLG
-                progress.Update(status.GetCurIndex(), foundstr);
-#endif
-                m_SearchList->Append(status.GetName(), (void*)status.GetCurItem());
-            }
-        }
-
-        m_SearchButton->Enable();
-        m_SearchText->SetSelection(0, keyword.Length());
-        m_SearchText->SetFocus();
-    }
-    else if (mode == wxHELP_SEARCH_INDEX)
-    {
-        m_NavigNotebook->SetSelection(m_IndexPage);
-        m_IndexList->Clear();
-        m_IndexButton->Disable();
-        m_IndexButtonAll->Disable();
-        m_IndexText->SetValue(keyword);
-
-        wxCommandEvent dummy;
-        OnIndexFind(dummy); // what a hack...
-        m_IndexButton->Enable();
-        m_IndexButtonAll->Enable();
-        foundcnt = m_IndexList->GetCount();
-    }
-
-    if (foundcnt)
-    {
-        switch ( mode )
-        {
-            default:
-                wxFAIL_MSG( _T("unknown help search mode") );
-                // fall back
-
-            case wxHELP_SEARCH_ALL:
-            {
-                wxHtmlHelpDataItem *it =
-                    (wxHtmlHelpDataItem*) m_SearchList->GetClientData(0);
-                if (it)
-                {
-                    m_HtmlWin->LoadPage(it->GetFullPath());
-                    NotifyPageChanged();
-                }
-                break;
-            }
-
-            case wxHELP_SEARCH_INDEX:
-            {
-                TextBookHelpMergedIndexItem* it =
-                    (TextBookHelpMergedIndexItem*) m_IndexList->GetClientData(0);
-                if (it)
-                    DisplayIndexItem(it);
-                break;
-            }
-        }
-
-    }
-
-    return foundcnt > 0;
+//    if (mode == wxHELP_SEARCH_ALL)
+//    {
+//        if ( !(m_SearchList &&
+//               m_SearchButton && m_SearchText && m_SearchChoice) )
+//            return false;
+//    }
+//    else if (mode == wxHELP_SEARCH_INDEX)
+//    {
+//        if ( !(m_IndexList &&
+//               m_IndexButton && m_IndexButtonAll && m_IndexText) )
+//            return false;
+//    }
+//
+//    int foundcnt = 0;
+//    wxString foundstr;
+//    wxString book = wxEmptyString;
+//
+//    if (!m_Splitter->IsSplit())
+//    {
+//        m_NavigPan->Show();
+//        m_HtmlWin->Show();
+//        m_Splitter->SplitVertically(m_NavigPan, m_HtmlWin, m_Cfg.sashpos);
+//    }
+//
+//    if (mode == wxHELP_SEARCH_ALL)
+//    {
+//        m_NavigNotebook->SetSelection(m_SearchPage);
+//        m_SearchList->Clear();
+//        m_SearchText->SetValue(keyword);
+//        m_SearchButton->Disable();
+//
+//        if (m_SearchChoice->GetSelection() != 0)
+//            book = m_SearchChoice->GetStringSelection();
+//
+//        wxHtmlSearchStatus status(m_pBookData, keyword,
+//                                  m_SearchCaseSensitive->GetValue(),
+//                                  m_SearchWholeWords->GetValue(),
+//                                  book);
+//
+//#if wxUSE_PROGRESSDLG
+//        wxProgressDialog progress(_("Searching..."),
+//                                  _("No matching page found yet"),
+//                                  status.GetMaxIndex(), this,
+//                                  wxPD_APP_MODAL | wxPD_CAN_ABORT | wxPD_AUTO_HIDE);
+//#endif
+//
+//        int curi;
+//        while (status.IsActive())
+//        {
+//            curi = status.GetCurIndex();
+//            if (curi % 32 == 0
+//#if wxUSE_PROGRESSDLG
+//                && !progress.Update(curi)
+//#endif
+//               )
+//                break;
+//            if (status.Search())
+//            {
+//                foundstr.Printf(_("Found %i matches"), ++foundcnt);
+//#if wxUSE_PROGRESSDLG
+//                progress.Update(status.GetCurIndex(), foundstr);
+//#endif
+//                m_SearchList->Append(status.GetName(), (void*)status.GetCurItem());
+//            }
+//        }
+//
+//        m_SearchButton->Enable();
+//        m_SearchText->SetSelection(0, keyword.Length());
+//        m_SearchText->SetFocus();
+//    }
+//    else if (mode == wxHELP_SEARCH_INDEX)
+//    {
+//        m_NavigNotebook->SetSelection(m_IndexPage);
+//        m_IndexList->Clear();
+//        m_IndexButton->Disable();
+//        m_IndexButtonAll->Disable();
+//        m_IndexText->SetValue(keyword);
+//
+//        wxCommandEvent pPanel;
+//        OnIndexFind(pPanel); // what a hack...
+//        m_IndexButton->Enable();
+//        m_IndexButtonAll->Enable();
+//        foundcnt = m_IndexList->GetCount();
+//    }
+//
+//    if (foundcnt)
+//    {
+//        switch ( mode )
+//        {
+//            default:
+//                wxFAIL_MSG( _T("unknown help search mode") );
+//                // fall back
+//
+//            case wxHELP_SEARCH_ALL:
+//            {
+//                lmBookIndexItem *it =
+//                    (lmBookIndexItem*) m_SearchList->GetClientData(0);
+//                if (it)
+//                {
+//                    m_HtmlWin->LoadPage(it->GetFullPath());
+//                    NotifyPageChanged();
+//                }
+//                break;
+//            }
+//
+//            case wxHELP_SEARCH_INDEX:
+//            {
+//                TextBookHelpMergedIndexItem* it =
+//                    (TextBookHelpMergedIndexItem*) m_IndexList->GetClientData(0);
+//                if (it)
+//                    DisplayIndexItem(it);
+//                break;
+//            }
+//        }
+//
+//    }
+//
+//    return foundcnt > 0;
+    return false;
 }
 
 void lmTextBookFrame::CreateContents()
 {
-    if (! m_ContentsBox)
-        return ;
+    if (!m_pContentsBox) return ;
 
     if (m_PagesHash)
     {
@@ -888,53 +857,92 @@ void lmTextBookFrame::CreateContents()
         delete m_PagesHash;
     }
 
-    const wxHtmlHelpDataItems& contents = m_Data->GetContentsArray();
+    const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
 
     size_t cnt = contents.size();
 
     m_PagesHash = new wxHashTable(wxKEY_STRING, 2 * cnt);
 
     const int MAX_ROOTS = 64;
-    wxTreeItemId roots[MAX_ROOTS];
+    long roots[MAX_ROOTS];
     // VS: this array holds information about whether we've set item icon at
-    //     given level. This is neccessary because m_Data has flat structure
+    //     given level. This is neccessary because m_pBookData has flat structure
     //     and there's no way of recognizing if some item has subitems or not.
     //     We set the icon later: when we find an item with level=n, we know
     //     that the last item with level=n-1 was folder with subitems, so we
     //     set its icon accordingly
     bool imaged[MAX_ROOTS];
-    m_ContentsBox->DeleteAllItems();
+    m_pContentsBox->DeleteAllItems();
 
-    roots[0] = m_ContentsBox->AddRoot(_("(Help)"));
+    roots[0] = m_pContentsBox->AddRoot(_("(Help)"));
     imaged[0] = true;
+
+    wxString sImagePath = wxEmptyString;
+    wxString sLine;
+    wxString sImgPlus = _T("<table><tr><td nowrap><img src='");
+        sImgPlus += g_pPaths->GetImagePath() + _T("nav_plus_16.png'>");
+
+    wxString sImgMinus = _T("<table><tr><td nowrap><img src='");
+        sImgMinus += g_pPaths->GetImagePath() + _T("nav_minus_16.png'>");
+
+    const wxString sEndLine = _T("</td></tr></table>");
+
+    wxString sItemImg = _T("<table><tr><td nowrap><img src='");
+        sItemImg += g_pPaths->GetImagePath() + _T("nav_space_36.png' height='36' width='");
+
+    wxString sItemNoImg = _T("<table><tr><td nowrap><img src='");
+        sItemNoImg += g_pPaths->GetImagePath() + _T("nav_space_36.png' height='16' width='");
+
+    wxString sNavPageImg = _T("<img border='0' src='");
+        sNavPageImg += g_pPaths->GetImagePath() + _T("nav_page_36.png'>");
+
+    wxString sNavPageNoImg = _T("<img border='0' src='");
+        sNavPageNoImg += g_pPaths->GetImagePath() + _T("nav_page_16.png'>");
 
     for (size_t i = 0; i < cnt; i++)
     {
-        wxHtmlHelpDataItem *it = &contents[i];
-        // Handle books:
-        if (it->level == 0)
-        {
-            if (m_hfStyle & wxHF_MERGE_BOOKS)
-                // VS: we don't want book nodes, books' content should
-                //    appear under tree's root. This line will create "fake"
-                //    record about book node so that the rest of this look
-                //    will believe there really _is_ book node and will
-                //    behave correctly.
-                roots[1] = roots[0];
-            else
-            {
-                roots[1] = m_ContentsBox->AppendItem(roots[0],
-                                         it->name, IMG_Book, -1,
-                                         new TextBookHelpTreeItemData(i));
-                m_ContentsBox->SetItemBold(roots[1], true);
-            }
+        lmBookIndexItem *it = &contents[i];
+        if (it->level == 0) {
+            // It is a book node
+            sLine = sImgMinus + _T("<img src=\"");
+            sLine += g_pPaths->GetImagePath();
+            sLine += _T("nav_book_open_16.png\"><b>") +
+                it->name + _T("</b>") + sEndLine;
+
+            roots[1] = m_pContentsBox->AppendItem(roots[0],
+                                        sLine, sImagePath, IMG_Book, -1,
+                                        new TextBookHelpTreeItemData(i));
+            m_pContentsBox->SetItemBold(roots[1], true);
             imaged[1] = true;
+
+            // set path for images
+            wxFileSystem& oFS = m_pContentsBox->GetFileSystem();
+            lmBookRecord* pBookr = it->pBookRecord; 
+            wxFileName oFN( pBookr->GetBasePath() );
+            oFN.AppendDir( _T("img") );
+            sImagePath = oFN.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
         }
-        // ...and their contents:
-        else
-        {
-            roots[it->level + 1] = m_ContentsBox->AppendItem(
-                                     roots[it->level], it->name, IMG_Page,
+        else {
+            // it is a content node
+            sLine = ((it->image).IsEmpty() ? sItemNoImg : sItemImg);
+            sLine += wxString::Format(_T("%d'>"), it->level * 16);   //16 pixels per level
+            sLine += ((it->image).IsEmpty() ? sNavPageNoImg : sNavPageImg);
+            sLine += wxString::Format(_T("<a href=\"item%d\">"), i);
+
+            if (!(it->image).IsEmpty()) {
+                sLine += _T("<img border='0' src='");
+                sLine += sImagePath;
+                sLine += it->image;
+                sLine += _T("'></a><br /><img src='");
+                sLine += g_pPaths->GetImagePath();
+                sLine += _T("nav_space_36.png' height='16' width='");
+                sLine += wxString::Format(_T("%d'>"), 40+16*it->level);
+                sLine += wxString::Format(_T("<a href=\"item%d\">"), i);
+            }
+            sLine += it->name + _T("</a>") + sEndLine;
+
+            roots[it->level + 1] = m_pContentsBox->AppendItem(
+                                     roots[it->level], sLine, sImagePath, IMG_Page,
                                      -1, new TextBookHelpTreeItemData(i));
             imaged[it->level + 1] = false;
         }
@@ -951,8 +959,8 @@ void lmTextBookFrame::CreateContents()
                 image = IMG_Book;
             else if (m_hfStyle & wxHF_ICONS_BOOK_CHAPTER)
                 image = (it->level == 1) ? IMG_Book : IMG_Folder;
-            m_ContentsBox->SetItemImage(roots[it->level], image);
-            m_ContentsBox->SetItemImage(roots[it->level], image,
+            m_pContentsBox->SetItemImage(roots[it->level], image);
+            m_pContentsBox->SetItemImage(roots[it->level], image,
                                         wxTreeItemIcon_Selected);
             imaged[it->level] = true;
         }
@@ -990,7 +998,7 @@ void lmTextBookFrame::CreateSearch()
     m_SearchList->Clear();
     m_SearchChoice->Clear();
     m_SearchChoice->Append(_("Search in all books"));
-    const wxHtmlBookRecArray& bookrec = m_Data->GetBookRecArray();
+    const lmBookRecArray& bookrec = m_pBookData->GetBookRecArray();
     int i, cnt = bookrec.GetCount();
     for (i = 0; i < cnt; i++)
         m_SearchChoice->Append(bookrec[i].GetTitle());
@@ -1309,8 +1317,8 @@ void lmTextBookFrame::NotifyPageChanged()
         {
             bool olduc = m_UpdateContents;
             m_UpdateContents = false;
-            m_ContentsBox->SelectItem(ha->m_Id);
-            m_ContentsBox->EnsureVisible(ha->m_Id);
+            m_pContentsBox->SelectItem(ha->m_Id);
+            m_pContentsBox->EnsureVisible(ha->m_Id);
             m_UpdateContents = olduc;
         }
     }
@@ -1341,17 +1349,17 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
 {
     switch (event.GetId())
     {
-        case wxID_HTML_BACK :
+        case MENU_eBook_GoBack :
             m_HtmlWin->HistoryBack();
             NotifyPageChanged();
             break;
 
-        case wxID_HTML_FORWARD :
+        case MENU_eBook_GoForward :
             m_HtmlWin->HistoryForward();
             NotifyPageChanged();
             break;
 
-        case wxID_HTML_UP :
+        case MENU_eBook_Up :
             if (m_PagesHash)
             {
                 wxString page = TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
@@ -1360,7 +1368,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
                     ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
                 if (ha && ha->m_Index > 0)
                 {
-                    const wxHtmlHelpDataItem& it = m_Data->GetContentsArray()[ha->m_Index - 1];
+                    const lmBookIndexItem& it = m_pBookData->GetContentsArray()[ha->m_Index - 1];
                     if (!it.page.empty())
                     {
                         m_HtmlWin->LoadPage(it.GetFullPath());
@@ -1370,7 +1378,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             }
             break;
 
-        case wxID_HTML_UPNODE :
+        case MENU_eBook_UpNode :
             if (m_PagesHash)
             {
                 wxString page = TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
@@ -1380,15 +1388,15 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
                 if (ha && ha->m_Index > 0)
                 {
                     int level =
-                        m_Data->GetContentsArray()[ha->m_Index].level - 1;
+                        m_pBookData->GetContentsArray()[ha->m_Index].level - 1;
                     int ind = ha->m_Index - 1;
 
-                    const wxHtmlHelpDataItem *it =
-                        &m_Data->GetContentsArray()[ind];
+                    const lmBookIndexItem *it =
+                        &m_pBookData->GetContentsArray()[ind];
                     while (ind >= 0 && it->level != level)
                     {
                         ind--;
-                        it = &m_Data->GetContentsArray()[ind];
+                        it = &m_pBookData->GetContentsArray()[ind];
                     }
                     if (ind >= 0)
                     {
@@ -1402,7 +1410,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             }
             break;
 
-        case wxID_HTML_DOWN :
+        case MENU_eBook_Down :
             if (m_PagesHash)
             {
                 wxString page = TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
@@ -1410,7 +1418,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
                 if (!page.empty())
                     ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
 
-                const wxHtmlHelpDataItems& contents = m_Data->GetContentsArray();
+                const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
                 if (ha && ha->m_Index < (int)contents.size() - 1)
                 {
                     size_t idx = ha->m_Index + 1;
@@ -1426,7 +1434,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             }
             break;
 
-        case wxID_HTML_PANEL :
+        case MENU_eBookPanel :
             {
                 if (! (m_Splitter && m_NavigPan))
                     return ;
@@ -1446,11 +1454,11 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             }
             break;
 
-        case wxID_HTML_OPTIONS :
+        case MENU_eBook_Options :
             OptionsDialog();
             break;
 
-        case wxID_HTML_BOOKMARKSADD :
+        case ID_BOOKMARKS_ADD :
             {
                 wxString item;
                 wxString url;
@@ -1468,7 +1476,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             }
             break;
 
-        case wxID_HTML_BOOKMARKSREMOVE :
+        case ID_BOOKMARKS_REMOVE :
             {
                 wxString item;
                 int pos;
@@ -1485,7 +1493,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             break;
 
 #if wxUSE_PRINTING_ARCHITECTURE
-        case wxID_HTML_PRINT :
+        case MENU_eBook_Print :
             {
                 if (m_Printer == NULL)
                     m_Printer = new wxHtmlEasyPrinting(_("Help Printing"), this);
@@ -1497,7 +1505,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             break;
 #endif
 
-        case wxID_HTML_OPENFILE :
+        case MENU_eBook_OpenFile :
             {
                 wxString filemask = wxString(
                     _("HTML files (*.html;*.htm)|*.html;*.htm|")) +
@@ -1524,7 +1532,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
                         ext == _T(".hhp"))
                     {
                         wxBusyCursor bcur;
-                        m_Data->AddBook(s);
+                        m_pBookData->AddBook(s);
                         RefreshLists();
                     }
                     else
@@ -1537,18 +1545,35 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
 
 
 
-void lmTextBookFrame::OnContentsSel(wxTreeEvent& event)
+void lmTextBookFrame::OnContentsLinkClicked(wxHtmlLinkEvent& event)
 {
-    TextBookHelpTreeItemData *pg;
+    //TextBookHelpTreeItemData *pg;
 
-    pg = (TextBookHelpTreeItemData*) m_ContentsBox->GetItemData(event.GetItem());
+    //size_t nItem = m_pContentsBox->GetItemForCell( event.GetCell() );
+    //pg = (TextBookHelpTreeItemData*) m_pContentsBox->GetItemData(nItem);
 
-    if (pg && m_UpdateContents)
-    {
-        const wxHtmlHelpDataItems& contents = m_Data->GetContentsArray();
+    //if (pg && m_UpdateContents)
+    //{
+    //    const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
+    //    m_UpdateContents = false;
+    //    if (!contents[pg->m_Id].page.empty())
+    //        m_HtmlWin->LoadPage(contents[pg->m_Id].GetFullPath());
+    //    m_UpdateContents = true;
+    //}
+
+
+    //extract type and item
+    wxString sLink = event.GetLinkInfo().GetHref();
+    int i = sLink.Find(_T("item"));
+    long nItem;
+    wxString sItem = sLink.Mid(i+4);
+    sItem.ToLong(&nItem);
+
+    if (m_UpdateContents) {
+        const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
         m_UpdateContents = false;
-        if (!contents[pg->m_Id].page.empty())
-            m_HtmlWin->LoadPage(contents[pg->m_Id].GetFullPath());
+        if (!contents[nItem].page.empty())
+            m_HtmlWin->LoadPage(contents[nItem].GetFullPath());
         m_UpdateContents = true;
     }
 }
@@ -1671,7 +1696,7 @@ void lmTextBookFrame::OnIndexAll(wxCommandEvent& WXUNUSED(event))
 
 void lmTextBookFrame::OnSearchSel(wxCommandEvent& WXUNUSED(event))
 {
-    wxHtmlHelpDataItem *it = (wxHtmlHelpDataItem*) m_SearchList->GetClientData(m_SearchList->GetSelection());
+    lmBookIndexItem *it = (lmBookIndexItem*) m_SearchList->GetClientData(m_SearchList->GetSelection());
     if (it)
     {
         if (!it->page.empty())
@@ -1716,49 +1741,12 @@ void lmTextBookFrame::OnCloseWindow(wxCloseEvent& evt)
     if (m_Config)
         WriteCustomization(m_Config, m_ConfigRoot);
 
-    if (m_helpController && m_helpController->IsKindOf(CLASSINFO(lmTextBookController)))
+    if (m_pBookController && m_pBookController->IsKindOf(CLASSINFO(lmTextBookController)))
     {
-        ((lmTextBookController*) m_helpController)->OnCloseFrame(evt);
+        ((lmTextBookController*) m_pBookController)->OnCloseFrame(evt);
     }
 
     evt.Skip();
 }
 
-#ifdef __WXMAC__
-void lmTextBookFrame::OnClose(wxCommandEvent& event)
-{
-    Close(true);
-}
-
-void lmTextBookFrame::OnAbout(wxCommandEvent& event)
-{
-    wxMessageBox(wxT("wxWidgets HTML Help Viewer (c) 1998-2004, Vaclav Slavik et al"), wxT("HelpView"),
-        wxICON_INFORMATION|wxOK, this);
-}
-#endif
-
-BEGIN_EVENT_TABLE(lmTextBookFrame, lmMDIChildFrame)
-    EVT_ACTIVATE(lmTextBookFrame::OnActivate)
-    EVT_TOOL_RANGE(wxID_HTML_PANEL, wxID_HTML_OPTIONS, lmTextBookFrame::OnToolbar)
-    EVT_BUTTON(wxID_HTML_BOOKMARKSREMOVE, lmTextBookFrame::OnToolbar)
-    EVT_BUTTON(wxID_HTML_BOOKMARKSADD, lmTextBookFrame::OnToolbar)
-    EVT_TREE_SEL_CHANGED(wxID_HTML_TREECTRL, lmTextBookFrame::OnContentsSel)
-    EVT_LISTBOX(wxID_HTML_INDEXLIST, lmTextBookFrame::OnIndexSel)
-    EVT_LISTBOX(wxID_HTML_SEARCHLIST, lmTextBookFrame::OnSearchSel)
-    EVT_BUTTON(wxID_HTML_SEARCHBUTTON, lmTextBookFrame::OnSearch)
-    EVT_TEXT_ENTER(wxID_HTML_SEARCHTEXT, lmTextBookFrame::OnSearch)
-    EVT_BUTTON(wxID_HTML_INDEXBUTTON, lmTextBookFrame::OnIndexFind)
-    EVT_TEXT_ENTER(wxID_HTML_INDEXTEXT, lmTextBookFrame::OnIndexFind)
-    EVT_BUTTON(wxID_HTML_INDEXBUTTONALL, lmTextBookFrame::OnIndexAll)
-    EVT_COMBOBOX(wxID_HTML_BOOKMARKSLIST, lmTextBookFrame::OnBookmarksSel)
-    EVT_CLOSE(lmTextBookFrame::OnCloseWindow)
-#ifdef __WXMAC__
-    EVT_MENU(wxID_CLOSE, lmTextBookFrame::OnClose)
-    EVT_MENU(wxID_ABOUT, lmTextBookFrame::OnAbout)
-    EVT_MENU(wxID_HELP_CONTENTS, lmTextBookFrame::OnAbout)
-#endif
-
-END_EVENT_TABLE()
-
-#endif // wxUSE_WXHTML_HELP
 

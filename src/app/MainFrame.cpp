@@ -59,10 +59,8 @@
 #include "ToolsDlg.h"
 #include "DlgDebug.h"
 #include "Printout.h"
-#include "MidiWizard.h"                    //Use lmMidiWizard
-#include "wx/helpbase.h"		//for wxHELP constants
-
-
+#include "MidiWizard.h"             //Use lmMidiWizard
+#include "wx/helpbase.h"		    //for wxHELP constants
 
 #include "../../wxMidi/include/wxMidi.h"    //MIDI support throgh Portmidi lib
 #include "../sound/MidiManager.h"           //access to Midi configuration
@@ -74,11 +72,9 @@
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
-// to test DlgPatternEditor dialog
-#include "DlgPatternEditor.h"
-
-//for Unit Tests
-#include "../auxmusic/ChordManager.h"
+#include "DlgPatternEditor.h"               // to test DlgPatternEditor dialog
+#include "../auxmusic/ChordManager.h"       //for Unit Tests
+#include "global.h"                         //config. flag lmUSE_LENMUS_EBOOK_FORMAT
 
 
 
@@ -160,6 +156,7 @@ extern bool g_fUseAntiAliasing;         // in TheApp.cpp
 
 
 // IDs for menus and controls
+// Appart of these, there are more definitions in MainFrame.h
 enum
 {
 #ifdef _DEBUG           //to disable New/Open items in Release version
@@ -251,34 +248,6 @@ enum
 
 };
 
-//enum
-//{
-//    wxID_HTML_PANEL = 2000,     //wxID_HIGHEST + 2,
-//    wxID_HTML_BACK,
-//    wxID_HTML_FORWARD,
-//    wxID_HTML_UPNODE,
-//    wxID_HTML_UP,
-//    wxID_HTML_DOWN,
-//    wxID_HTML_PRINT,
-//    wxID_HTML_OPENFILE,
-//    wxID_HTML_OPTIONS,
-//    wxID_HTML_BOOKMARKSLIST,
-//    wxID_HTML_BOOKMARKSADD,
-//    wxID_HTML_BOOKMARKSREMOVE,
-//    wxID_HTML_TREECTRL,
-//    wxID_HTML_INDEXPAGE,
-//    wxID_HTML_INDEXLIST,
-//    wxID_HTML_INDEXTEXT,
-//    wxID_HTML_INDEXBUTTON,
-//    wxID_HTML_INDEXBUTTONALL,
-//    wxID_HTML_NOTEBOOK,
-//    wxID_HTML_SEARCHPAGE,
-//    wxID_HTML_SEARCHTEXT,
-//    wxID_HTML_SEARCHLIST,
-//    wxID_HTML_SEARCHBUTTON,
-//    wxID_HTML_SEARCHCHOICE,
-//    wxID_HTML_COUNTINFO
-//};
 
 /*
  lmMainFrame is the top-level window of the application.
@@ -387,8 +356,8 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_TIMER       (ID_TIMER_MTR,        lmMainFrame::OnMetronomeTimer)
 
     //TextBookFrame
-    EVT_TOOL_RANGE(wxID_HTML_PANEL, wxID_HTML_OPTIONS, lmMainFrame::OnBookFrame)
-    EVT_UPDATE_UI_RANGE (wxID_HTML_PANEL, wxID_HTML_OPTIONS, lmMainFrame::OnBookFrameUpdateUI)
+    EVT_TOOL_RANGE(MENU_eBookPanel, MENU_eBook_Options, lmMainFrame::OnBookFrame)
+    EVT_UPDATE_UI_RANGE (MENU_eBookPanel, MENU_eBook_Options, lmMainFrame::OnBookFrameUpdateUI)
 
 END_EVENT_TABLE()
 
@@ -715,23 +684,23 @@ void lmMainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize)
                   wxT("One or more HTML help frame toolbar bitmap could not be loaded.")) ;
 
     //add tools
-    m_pTbTextBooks->AddTool(wxID_HTML_PANEL, _("Index"), wpanelBitmap, 
+    m_pTbTextBooks->AddTool(MENU_eBookPanel, _("Index"), wpanelBitmap, 
             _("Show/hide navigation panel"), wxITEM_CHECK );
-    m_pTbTextBooks->ToggleTool(wxID_HTML_PANEL, false);
+    m_pTbTextBooks->ToggleTool(MENU_eBookPanel, false);
     m_pTbTextBooks->AddSeparator();
-    m_pTbTextBooks->AddTool(wxID_HTML_BACK, _("Go back"), wbackBitmap, 
+    m_pTbTextBooks->AddTool(MENU_eBook_GoBack, _("Go back"), wbackBitmap, 
             _("Go to previous page in navigation log"), wxITEM_NORMAL );
-    m_pTbTextBooks->AddTool(wxID_HTML_FORWARD, _("Go forward"), wforwardBitmap, 
+    m_pTbTextBooks->AddTool(MENU_eBook_GoForward, _("Go forward"), wforwardBitmap, 
             _("Go to next page in navigation log"), wxITEM_NORMAL );
     m_pTbTextBooks->AddSeparator();
-    m_pTbTextBooks->AddTool(wxID_HTML_UPNODE, _("Parent"), wupnodeBitmap, 
+    m_pTbTextBooks->AddTool(MENU_eBook_UpNode, _("Parent"), wupnodeBitmap, 
             _("Go one level up in document hierarchy"), wxITEM_NORMAL );
-    m_pTbTextBooks->AddTool(wxID_HTML_UP, _("Back Page"), wupBitmap, 
+    m_pTbTextBooks->AddTool(MENU_eBook_Up, _("Back Page"), wupBitmap, 
             _("Previous page of current document"), wxITEM_NORMAL );
-    m_pTbTextBooks->AddTool(wxID_HTML_DOWN, _("next Page"), wdownBitmap, 
+    m_pTbTextBooks->AddTool(MENU_eBook_Down, _("next Page"), wdownBitmap, 
             _("Next page of current document"), wxITEM_NORMAL );
     m_pTbTextBooks->AddSeparator();
-    m_pTbTextBooks->AddTool(wxID_HTML_OPTIONS, _("Fonts"), woptionsBitmap, 
+    m_pTbTextBooks->AddTool(MENU_eBook_Options, _("Fonts"), woptionsBitmap, 
             _("Change font settings"), wxITEM_NORMAL );
 
     m_pTbTextBooks->Realize();
@@ -1122,7 +1091,7 @@ void lmMainFrame::InitializeHelp()
 void lmMainFrame::InitializeBooks()
 {
     // create the books window 
-    m_pBookController = new lmTextBookController(wxHF_DEFAULT_STYLE);
+    m_pBookController = new lmTextBookController();
 
     // set the config object
     m_pBookController->UseConfig(wxConfig::Get(), _T("TextBooksController"));        
@@ -1145,7 +1114,11 @@ void lmMainFrame::InitializeBooks()
         //Release behaviour. Use precompiled cached .htb files and don't show title
         //! @todo books name. One or many books?
         sPath = g_pPaths->GetLocalePath();
-        sPattern = _T("*.htb");
+#if lmUSE_LENMUS_EBOOK_FORMAT
+            sPattern = _T("*.lmb");
+#else
+            sPattern = _T("*.htb");
+#endif
         m_pBookController->SetTitleFormat(_("Available books"));
 
         //lmVirtualBooks::LoadVirtualBooks(m_pBookController);
@@ -1168,7 +1141,11 @@ void lmMainFrame::InitializeBooks()
             //wxLogMessage(wxString::Format(_T("Subdirectory found: %s"), sSubfolder));
             oPath.Assign(sPath, wxPATH_NATIVE);
             oPath.AppendDir(sSubfolder);
+#if lmUSE_LENMUS_EBOOK_FORMAT
+            ScanForBooks(oPath.GetPath(), _T("*.toc"));
+#else
             ScanForBooks(oPath.GetPath(), _T("*.hhp"));
+#endif
             fFound = dir.GetNext(&sSubfolder);
         }
     }
@@ -1178,7 +1155,7 @@ void lmMainFrame::InitializeBooks()
 //Scan the received folder for books and load all books found
 void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
 {
-    //wxLogMessage(_T("Scanning path <%s>"), sPath);
+    wxLogMessage(_T("[lmMainFrame::ScanForBooks] Scanning path <%s>"), sPath);
     wxDir dir(sPath);
     if ( !dir.IsOpened() ) {
         // TODO: deal with the error here - wxDir would already log an error message
@@ -1193,9 +1170,8 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
     wxString sFilename;
     bool fFound = dir.GetFirst(&sFilename, sPattern, wxDIR_FILES);
     while (fFound) {
-        //wxLogMessage(wxString::Format(_T("Encontrado %s"), sFilename));
+        wxLogMessage(_T("[lmMainFrame::ScanForBooks] Encontrado %s"), sFilename);
         wxFileName oFilename(sPath, sFilename, wxPATH_NATIVE);
-        //skip help file
         if (oFilename.GetName() != _T("help")) {
             if (!m_pBookController->AddBook(oFilename)) {
                 //! @todo better error handling
@@ -1233,7 +1209,7 @@ void lmMainFrame::OnBookFrameUpdateUI(wxUpdateUIEvent& event)
     if (fEnabled) {
         lmTextBookFrame* pBookFrame = m_pBookController->GetFrame();
         if (pBookFrame)
-            m_pTbTextBooks->ToggleTool(wxID_HTML_PANEL, pBookFrame->IsNavPanelVisible());
+            m_pTbTextBooks->ToggleTool(MENU_eBookPanel, pBookFrame->IsNavPanelVisible());
     }
 }
 
@@ -1814,7 +1790,7 @@ void lmMainFrame::OnPrint(wxCommandEvent& event)
         }
     }
     else if (fTextBookFrame) {
-        event.SetId(wxID_HTML_PRINT);
+        event.SetId(MENU_eBook_Print);
         lmTextBookFrame* pBookFrame = m_pBookController->GetFrame();
         pBookFrame->OnToolbar(event);
         event.Skip(false);

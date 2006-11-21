@@ -23,7 +23,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/EHsc "
 				Optimization="0"
-				AdditionalIncludeDirectories="$(WXWIN)\include,$(WXWIN)\lib\vc_lib\mswud,.,$(WXWIN)\samples"
+				AdditionalIncludeDirectories="&quot;$(WXWIN)\include&quot;;&quot;$(WXWIN)\lib\vc_lib\mswud&quot;;.;&quot;$(WXWIN)\samples&quot;;..\..\packages\wxXml2\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;__WXMSW__;__WXDEBUG__;_WINDOWS;NOPCH"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -40,11 +40,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw26ud_core.lib wxbase26ud.lib wxbase26ud_xml.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+				AdditionalDependencies="wxmsw28ud_core.lib wxbase28ud.lib wxbase28ud_xml.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib libxml2.lib iconv.lib"
 				OutputFile="langtool.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				AdditionalLibraryDirectories="$(WXWIN)\lib\vc_lib"
+				AdditionalLibraryDirectories="&quot;$(WXWIN)\lib\vc_lib&quot;;..\..\packages\wxXml2\lib"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="..\..\z_debug_unicode\langtool.pdb"
 				SubSystem="2"
@@ -109,7 +109,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw26u_core.lib wxbase26u.lib wxbase26u_xml.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+				AdditionalDependencies="wxmsw28u_core.lib wxbase28u.lib wxbase28u_xml.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
 				OutputFile="langtool.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -175,7 +175,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw26d_core.lib wxbase26d.lib wxbase26d_xml.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+				AdditionalDependencies="wxmsw28d_core.lib wxbase28d.lib wxbase28d_xml.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
 				OutputFile="langtool.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -243,7 +243,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw26_core.lib wxbase26.lib wxbase26_xml.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+				AdditionalDependencies="wxmsw28_core.lib wxbase28.lib wxbase28_xml.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
 				OutputFile="langtool.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -312,6 +312,22 @@
 			<File
 				RelativePath="..\src\parser.h">
 			</File>
+			<Filter
+				Name="wxXml2"
+				Filter="">
+				<File
+					RelativePath="..\..\packages\wxXml2\src\dtd.cpp">
+				</File>
+				<File
+					RelativePath="..\..\packages\wxXml2\include\wx\dtd.h">
+				</File>
+				<File
+					RelativePath="..\..\packages\wxXml2\src\xml2.cpp">
+				</File>
+				<File
+					RelativePath="..\..\packages\wxXml2\include\wx\xml2.h">
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

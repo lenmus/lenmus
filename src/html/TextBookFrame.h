@@ -69,11 +69,14 @@
 #include "HtmlWindow.h"
 
 #include "../mdi/NotebookMDI.h"
+#include "BookData.h"
 
-class WXDLLIMPEXP_CORE wxButton;
-class WXDLLIMPEXP_CORE wxTextCtrl;
-class WXDLLIMPEXP_CORE wxTreeEvent;
-class WXDLLIMPEXP_CORE wxTreeCtrl;
+#include "BookContentsBox.h"
+
+class wxButton;
+class wxTextCtrl;
+class wxTreeEvent;
+class wxTreeCtrl;
 
 
 // style flags for the Help Frame
@@ -108,24 +111,25 @@ struct TextBookFrameCfg
 struct TextBookHelpMergedIndexItem;
 class TextBookHelpMergedIndex;
 
-class WXDLLIMPEXP_CORE wxHelpControllerBase;
+class lmTextBookController;
 
-class WXDLLIMPEXP_HTML lmTextBookFrame : public lmMDIChildFrame
+class lmTextBookFrame : public lmMDIChildFrame
 {
     DECLARE_DYNAMIC_CLASS(lmTextBookFrame)
 
 public:
-    lmTextBookFrame(wxHtmlHelpData* data = NULL) { Init(data); }
+    lmTextBookFrame(lmBookData* data = NULL) { Init(data); }
     lmTextBookFrame(wxWindow* parent, wxWindowID wxWindowID,
                     const wxString& title = wxEmptyString,
-                    int style = wxHF_DEFAULT_STYLE, wxHtmlHelpData* data = NULL);
+                    int style = wxHF_DEFAULT_STYLE, lmBookData* data = NULL);
+
     bool Create(wxWindow* parent, wxWindowID id, const wxString& title = wxEmptyString,
                 int style = wxHF_DEFAULT_STYLE);
     ~lmTextBookFrame();
 
-    wxHtmlHelpData* GetData() { return m_Data; }
-    wxHelpControllerBase* GetController() const { return m_helpController; }
-    void SetController(wxHelpControllerBase* controller) { m_helpController = controller; }
+    lmBookData* GetData() { return m_pBookData; }
+    lmTextBookController* GetController() const { return m_pBookController; }
+    void SetController(lmTextBookController* controller) { m_pBookController = controller; }
 
     // Sets format of title of the frame. Must contain exactly one "%s"
     // (for title of displayed HTML page)
@@ -154,15 +158,15 @@ public:
     // Searches for keyword. Returns true and display page if found, return
     // false otherwise
     // Syntax of keyword is Altavista-like:
-    // * words are separated by spaces
+    //*  words are separated by spaces
     //   (but "\"hello world\"" is only one world "hello world")
-    // * word may be pretended by + or -
+    //*  word may be pretended by + or -
     //   (+ : page must contain the word ; - : page can't contain the word)
-    // * if there is no + or - before the word, + is default
+    //*  if there is no + or - before the word, + is default
     bool KeywordSearch(const wxString& keyword,
                        wxHelpSearchMode mode = wxHELP_SEARCH_ALL);
 
-    void UseConfig(wxConfigBase *config, const wxString& rootpath = wxEmptyString)
+    void UseConfig(wxConfigBase* config, const wxString& rootpath = wxEmptyString)
         {
             m_Config = config;
             m_ConfigRoot = rootpath;
@@ -172,8 +176,8 @@ public:
     // Saves custom settings into cfg config. it will use the path 'path'
     // if given, otherwise it will save info into currently selected path.
     // saved values : things set by SetFonts, SetBorders.
-    void ReadCustomization(wxConfigBase *cfg, const wxString& path = wxEmptyString);
-    void WriteCustomization(wxConfigBase *cfg, const wxString& path = wxEmptyString);
+    void ReadCustomization(wxConfigBase* cfg, const wxString& path = wxEmptyString);
+    void WriteCustomization(wxConfigBase* cfg, const wxString& path = wxEmptyString);
 
     // call this to let lmTextBookFrame know page changed
     void NotifyPageChanged();
@@ -187,7 +191,7 @@ public:
 
 
 protected:
-    void Init(wxHtmlHelpData* data = NULL);
+    void Init(lmBookData* data = NULL);
 
     // Adds items to m_Contents tree control
     void CreateContents();
@@ -205,7 +209,7 @@ protected:
     // Displays options dialog (fonts etc.)
     virtual void OptionsDialog();
 
-    void OnContentsSel(wxTreeEvent& event);
+    void OnContentsLinkClicked(wxHtmlLinkEvent& event);
     void OnIndexSel(wxCommandEvent& event);
     void OnIndexFind(wxCommandEvent& event);
     void OnIndexAll(wxCommandEvent& event);
@@ -215,10 +219,6 @@ protected:
     void OnCloseWindow(wxCloseEvent& event);
     void OnActivate(wxActivateEvent& event);
 
-#ifdef __WXMAC__
-    void OnClose(wxCommandEvent& event);
-    void OnAbout(wxCommandEvent& event);
-#endif
 
     // Images:
     enum {
@@ -228,33 +228,40 @@ protected:
     };
 
 protected:
-    wxHtmlHelpData* m_Data;
-    bool m_DataCreated;  // m_Data created by frame, or supplied?
-    wxString m_TitleFormat;  // title of the help frame
-    // below are various pointers to GUI components
-    lmHtmlWindow *m_HtmlWin;
-    wxSplitterWindow *m_Splitter;
-    wxPanel *m_NavigPan;
-    wxNotebook *m_NavigNotebook;
-    wxTreeCtrl *m_ContentsBox;
-    wxTextCtrl *m_IndexText;
-    wxButton *m_IndexButton;
-    wxButton *m_IndexButtonAll;
-    wxListBox *m_IndexList;
-    wxTextCtrl *m_SearchText;
-    wxButton *m_SearchButton;
-    wxListBox *m_SearchList;
-    wxChoice *m_SearchChoice;
-    wxStaticText *m_IndexCountInfo;
-    wxCheckBox *m_SearchCaseSensitive;
-    wxCheckBox *m_SearchWholeWords;
+    lmBookData*         m_pBookData;
+    bool                m_DataCreated;  // m_pBookData created by frame, or supplied?
+    wxString            m_TitleFormat;  // title of the help frame
 
-    wxComboBox *m_Bookmarks;
-    wxArrayString m_BookmarksNames, m_BookmarksPages;
+    // below are various pointers to GUI components
+    lmHtmlWindow*       m_HtmlWin;
+    wxSplitterWindow*   m_Splitter;
+    wxPanel*            m_NavigPan;
+    wxNotebook*         m_NavigNotebook;
+
+    // contents panel
+    lmBookContentsBox*  m_pContentsBox; 
+
+    // index panel
+    wxTextCtrl*         m_IndexText;
+    wxButton*           m_IndexButton;
+    wxButton*           m_IndexButtonAll;
+    wxListBox*          m_IndexList;
+
+    // search panel
+    wxTextCtrl*         m_SearchText;
+    wxButton*           m_SearchButton;
+    wxListBox*          m_SearchList;
+    wxChoice*           m_SearchChoice;
+    wxStaticText*       m_IndexCountInfo;
+    wxCheckBox*         m_SearchCaseSensitive;
+    wxCheckBox*         m_SearchWholeWords;
+
+    wxComboBox*         m_Bookmarks;
+    wxArrayString       m_BookmarksNames, m_BookmarksPages;
 
     TextBookFrameCfg m_Cfg;
 
-    wxConfigBase *m_Config;
+    wxConfigBase* m_Config;
     wxString m_ConfigRoot;
 
     // pagenumbers of controls in notebook (usually 0,1,2)
@@ -263,7 +270,7 @@ protected:
     int m_SearchPage;
 
     // lists of available fonts (used in options dialog)
-    wxArrayString *m_NormalFonts, *m_FixedFonts;
+    wxArrayString* m_NormalFonts,* m_FixedFonts;
     int m_FontSize; // 0,1,2 = small,medium,big
     wxString m_NormalFace, m_FixedFace;
 
@@ -273,16 +280,16 @@ protected:
     wxToolBar*  m_pToolbar;
 
 #if wxUSE_PRINTING_ARCHITECTURE
-    wxHtmlEasyPrinting *m_Printer;
+    wxHtmlEasyPrinting* m_Printer;
 #endif
-    wxHashTable *m_PagesHash;
-    wxHelpControllerBase* m_helpController;
+    wxHashTable* m_PagesHash;
+    lmTextBookController* m_pBookController;
 
     int m_hfStyle;
 
 private:
-    void DisplayIndexItem(const TextBookHelpMergedIndexItem *it);
-    TextBookHelpMergedIndex *m_mergedIndex;
+    void DisplayIndexItem(const TextBookHelpMergedIndexItem* it);
+    TextBookHelpMergedIndex* m_mergedIndex;
 
     DECLARE_EVENT_TABLE()
     DECLARE_NO_COPY_CLASS(lmTextBookFrame)

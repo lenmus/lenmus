@@ -55,8 +55,6 @@
 #pragma hdrstop
 #endif
 
-#if wxUSE_WXHTML_HELP
-
 #ifndef WX_PRECOMP
     #include "wx/app.h"
     #include "wx/intl.h"
@@ -84,32 +82,31 @@ FORCE_LINK(wxhtml_chm_support)
 #endif
 
 
-IMPLEMENT_DYNAMIC_CLASS(lmTextBookController, wxHelpControllerBase)
+IMPLEMENT_DYNAMIC_CLASS(lmTextBookController, wxObject)
 
 
-lmTextBookController::lmTextBookController(int style)
+lmTextBookController::lmTextBookController()
 {
-    m_helpFrame = NULL;
+    m_pBookFrame = NULL;
     m_Config = NULL;
     m_ConfigRoot = wxEmptyString;
     m_titleFormat = _("Help: %s");
-    m_FrameStyle = style;
+    m_FrameStyle = wxHF_DEFAULT_STYLE;
 }
 
 lmTextBookController::~lmTextBookController()
 {
     if (m_Config)
         WriteCustomization(m_Config, m_ConfigRoot);
-    if (m_helpFrame)
+    if (m_pBookFrame)
         DestroyHelpWindow();
 }
 
 
 void lmTextBookController::DestroyHelpWindow()
 {
-    //if (m_Config) WriteCustomization(m_Config, m_ConfigRoot);
-    if (m_helpFrame)
-        m_helpFrame->Destroy();
+    if (m_pBookFrame)
+        m_pBookFrame->Destroy();
 }
 
 void lmTextBookController::OnCloseFrame(wxCloseEvent& evt)
@@ -118,24 +115,25 @@ void lmTextBookController::OnCloseFrame(wxCloseEvent& evt)
 
     OnQuit();
 
-    m_helpFrame->SetController((wxHelpControllerBase*) NULL);
-    m_helpFrame = NULL;
+    m_pBookFrame->SetController((lmTextBookController*) NULL);
+    m_pBookFrame = NULL;
 }
 
 void lmTextBookController::SetTitleFormat(const wxString& title)
 {
     m_titleFormat = title;
-    if (m_helpFrame)
-        m_helpFrame->SetTitleFormat(title);
+    if (m_pBookFrame)
+        m_pBookFrame->SetTitleFormat(title);
 }
 
-
-bool lmTextBookController::AddBook(const wxFileName& book_file, bool show_wait_msg)
-{
-    return AddBook(wxFileSystem::FileNameToURL(book_file), show_wait_msg);
-}
 
 bool lmTextBookController::AddBook(const wxString& book, bool show_wait_msg)
+{
+    wxFileName oFN(book);
+    return AddBook(oFN, show_wait_msg);
+}
+
+bool lmTextBookController::AddBook(const wxFileName& book, bool show_wait_msg)
 {
     wxBusyCursor cur;
 #if wxUSE_BUSYINFO
@@ -143,37 +141,29 @@ bool lmTextBookController::AddBook(const wxString& book, bool show_wait_msg)
     wxString info;
     if (show_wait_msg)
     {
-        info.Printf(_("Adding book %s"), book.c_str());
+        info.Printf(_("Adding book %s"), book.GetFullPath());
         busy = new wxBusyInfo(info);
     }
 #endif
-    bool retval = m_helpData.AddBook(book);
+    bool retval = m_oBookData.AddBook(book);
 #if wxUSE_BUSYINFO
     if (show_wait_msg)
         delete busy;
 #else
     wxUnusedVar(show_wait_msg);
 #endif
-    if (m_helpFrame)
-        m_helpFrame->RefreshLists();
+    if (m_pBookFrame)
+        m_pBookFrame->RefreshLists();
     return retval;
 }
 
 
 
-lmTextBookFrame *lmTextBookController::CreateHelpFrame(wxHtmlHelpData *data)
-{
-    return new lmTextBookFrame(data);
-}
-
-
 void lmTextBookController::CreateHelpWindow()
 {
-    if (m_helpFrame)
-    {
-        m_helpFrame->Raise();
-        return ;
-    }
+    //Creates the  book frame. It is created when a request to display a page
+
+    if (m_pBookFrame) return ;
 
     if (m_Config == NULL)
     {
@@ -182,113 +172,41 @@ void lmTextBookController::CreateHelpWindow()
             m_ConfigRoot = _T("wxWindows/lmTextBookController");
     }
 
-    m_helpFrame = CreateHelpFrame(&m_helpData);
-    m_helpFrame->SetController(this);
+    m_pBookFrame = new lmTextBookFrame(&m_oBookData);
+    m_pBookFrame->SetController(this);
 
     if (m_Config)
-        m_helpFrame->UseConfig(m_Config, m_ConfigRoot);
+        m_pBookFrame->UseConfig(m_Config, m_ConfigRoot);
 
-    //CSG modified to make frame MDIChild
-    //m_helpFrame->Create(NULL, wxID_HTML_HELPFRAME, wxEmptyString, m_FrameStyle);
-    m_helpFrame->Create(g_pMainFrame, wxID_HTML_HELPFRAME, wxEmptyString, m_FrameStyle);
+    m_pBookFrame->Create(g_pMainFrame, wxID_HTML_HELPFRAME, wxEmptyString, m_FrameStyle);
 
-    m_helpFrame->SetTitleFormat(m_titleFormat);
+    m_pBookFrame->SetTitleFormat(m_titleFormat);
 
-    m_helpFrame->Show(true);
+    m_pBookFrame->Show(true);
 }
 
 void lmTextBookController::ReadCustomization(wxConfigBase* cfg, const wxString& path)
 {
     /* should not be called by the user; call UseConfig, and the controller
      * will do the rest */
-    if (m_helpFrame && cfg)
-        m_helpFrame->ReadCustomization(cfg, path);
+    if (m_pBookFrame && cfg)
+        m_pBookFrame->ReadCustomization(cfg, path);
 }
 
 void lmTextBookController::WriteCustomization(wxConfigBase* cfg, const wxString& path)
 {
     /* typically called by the controllers OnCloseFrame handler */
-    if (m_helpFrame && cfg)
-        m_helpFrame->WriteCustomization(cfg, path);
+    if (m_pBookFrame && cfg)
+        m_pBookFrame->WriteCustomization(cfg, path);
 }
 
 void lmTextBookController::UseConfig(wxConfigBase *config, const wxString& rootpath)
 {
     m_Config = config;
     m_ConfigRoot = rootpath;
-    if (m_helpFrame) m_helpFrame->UseConfig(config, rootpath);
+    if (m_pBookFrame) m_pBookFrame->UseConfig(config, rootpath);
     ReadCustomization(config, rootpath);
 }
-
-//// Backward compatibility with wxHelpController API
-
-bool lmTextBookController::Initialize(const wxString& file)
-{
-    wxString dir, filename, ext;
-    wxSplitPath(file, & dir, & filename, & ext);
-
-    if (!dir.empty())
-        dir = dir + wxFILE_SEP_PATH;
-
-    // Try to find a suitable file
-    wxString actualFilename = dir + filename + wxString(wxT(".zip"));
-    if (!wxFileExists(actualFilename))
-    {
-        actualFilename = dir + filename + wxString(wxT(".htb"));
-        if (!wxFileExists(actualFilename))
-        {
-            actualFilename = dir + filename + wxString(wxT(".hhp"));
-            if (!wxFileExists(actualFilename))
-            {
-#if wxUSE_LIBMSPACK
-                actualFilename = dir + filename + wxString(wxT(".chm"));
-                if (!wxFileExists(actualFilename))
-#endif
-                    return false;
-            }
-        }
-    }
-    return AddBook(wxFileName(actualFilename));
-}
-
-bool lmTextBookController::LoadFile(const wxString& WXUNUSED(file))
-{
-    // Don't reload the file or we'll have it appear again, presumably.
-    return true;
-}
-
-bool lmTextBookController::DisplaySection(int sectionNo)
-{
-    return Display(sectionNo);
-}
-
-bool lmTextBookController::DisplayTextPopup(const wxString& text, const wxPoint& WXUNUSED(pos))
-{
-#if wxUSE_TIPWINDOW
-    static wxTipWindow* s_tipWindow = NULL;
-
-    if (s_tipWindow)
-    {
-        // Prevent s_tipWindow being nulled in OnIdle,
-        // thereby removing the chance for the window to be closed by ShowHelp
-        s_tipWindow->SetTipWindowPtr(NULL);
-        s_tipWindow->Close();
-    }
-    s_tipWindow = NULL;
-
-    if ( !text.empty() )
-    {
-        s_tipWindow = new wxTipWindow(wxTheApp->GetTopWindow(), text, 100, & s_tipWindow);
-
-        return true;
-    }
-#else
-    wxUnusedVar(text);
-#endif // wxUSE_TIPWINDOW
-
-    return false;
-}
-
 
 bool lmTextBookController::Quit()
 {
@@ -300,56 +218,51 @@ bool lmTextBookController::Quit()
 // needed
 void lmTextBookController::AddGrabIfNeeded()
 {
-    // So far, wxGTK only
-#ifdef __WXGTK__
-    bool needGrab = false;
-
-    // Check if there are any modal windows present,
-    // in which case we need to add a grab.
-    for ( wxWindowList::compatibility_iterator node = wxTopLevelWindows.GetFirst();
-          node;
-          node = node->GetNext() )
-    {
-        wxWindow *win = node->GetData();
-        wxDialog *dialog = wxDynamicCast(win, wxDialog);
-
-        if (dialog && dialog->IsModal())
-            needGrab = true;
-    }
-
-    if (needGrab && m_helpFrame)
-        m_helpFrame->AddGrab();
-#endif // __WXGTK__
+//    // So far, wxGTK only
+//#ifdef __WXGTK__
+//    bool needGrab = false;
+//
+//    // Check if there are any modal windows present,
+//    // in which case we need to add a grab.
+//    for ( wxWindowList::compatibility_iterator node = wxTopLevelWindows.GetFirst();
+//          node;
+//          node = node->GetNext() )
+//    {
+//        wxWindow *win = node->GetData();
+//        wxDialog *dialog = wxDynamicCast(win, wxDialog);
+//
+//        if (dialog && dialog->IsModal())
+//            needGrab = true;
+//    }
+//
+//    if (needGrab && m_pBookFrame)
+//        m_pBookFrame->AddGrab();
+//#endif // __WXGTK__
 }
 
 bool lmTextBookController::Display(const wxString& x)
 {
-    //wxHtmlBookRecArray m_bookRecords = m_helpData.GetBookRecArray();
-    //int i, cnt = m_bookRecords.GetCount();
-    //for (i = 0; i < cnt; i++)
-    //{
-    //    wxLogMessage(_T("Paginas = %s"), m_bookRecords[i].GetFullPath(x));
-    //    wxLogMessage(_T("Libros = %s"), m_bookRecords[i].GetTitle());
-    //}
+    //Creates the  book frame, if not created yet, and shows the requested file
 
     CreateHelpWindow();
-    bool success = m_helpFrame->Display(x);
+    bool fSuccess = m_pBookFrame->Display(x);
     AddGrabIfNeeded();
-    return success;
+    return fSuccess;
 }
 
 bool lmTextBookController::Display(int id)
 {
+    //Creates the  book frame, if not created yet, and shows the requested file
     CreateHelpWindow();
-    bool success = m_helpFrame->Display(id);
+    bool fSuccess = m_pBookFrame->Display(id);
     AddGrabIfNeeded();
-    return success;
+    return fSuccess;
 }
 
 bool lmTextBookController::DisplayContents()
 {
     CreateHelpWindow();
-    bool success = m_helpFrame->DisplayContents();
+    bool success = m_pBookFrame->DisplayContents();
     AddGrabIfNeeded();
     return success;
 }
@@ -357,7 +270,7 @@ bool lmTextBookController::DisplayContents()
 bool lmTextBookController::DisplayIndex()
 {
     CreateHelpWindow();
-    bool success = m_helpFrame->DisplayIndex();
+    bool success = m_pBookFrame->DisplayIndex();
     AddGrabIfNeeded();
     return success;
 }
@@ -366,7 +279,7 @@ bool lmTextBookController::KeywordSearch(const wxString& keyword,
                                          wxHelpSearchMode mode)
 {
     CreateHelpWindow();
-    bool success = m_helpFrame->KeywordSearch(keyword, mode);
+    bool success = m_pBookFrame->KeywordSearch(keyword, mode);
     AddGrabIfNeeded();
     return success;
 }
@@ -380,7 +293,4 @@ void lmTextBookController::OnQuit()
 {
     g_pMainFrame->SetOpenBookButton(false);
 }
-
-
-#endif // wxUSE_WXHTML_HELP
 

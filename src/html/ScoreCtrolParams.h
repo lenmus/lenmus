@@ -1,4 +1,3 @@
-// RCS-ID: $Id: ScoreCtrolParams.h,v 1.1 2006/03/03 15:02:19 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -44,6 +43,7 @@
 #include "ObjectParams.h"
 #include "../exercises/ScoreConstrains.h"
 #include "../ldp_parser/AuxString.h"
+#include "../xml_parser/MusicXMLParser.h"
 
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;

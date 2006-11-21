@@ -18,10 +18,6 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file XMLParser.h
-    @brief Header file for class lmMusicXMLParser
-    @ingroup xml_parser
-*/
 #ifdef __GNUG__
 // #pragma interface
 #endif
@@ -33,27 +29,12 @@
 #include "wx/wfstream.h"
 #include "wx/xml/xml.h"          // to use wxXmlDocument
 
-#include "../score/score.h"
 
-
-//to give a name to ParseMusicXMLFile optional flags
-#define sbDO_NOT_START_NEW_LOG    false
-#define sbDO_NOT_SHOW_LOG_TO_USER    false
-
-class lmMusicXMLParser
+class lmXmlParser
 {
 public:
-    lmMusicXMLParser();
-    ~lmMusicXMLParser();
-
-    lmScore* ParseMusicXMLFile(const wxString& filename, 
-                             bool fNewLog = true,        //start a new data error log
-                             bool fShowLog = true );    //show the error log after processing
-
-private:
-    void DumpXMLTree(wxXmlNode *pRoot);
-    void ParseError(const wxChar* szFormat, ...);
-    void TagError(const wxString sElement, const wxString sTagName, wxXmlNode* pElement = NULL);
+    lmXmlParser();
+    ~lmXmlParser();
 
     // auxiliary XML methods
     wxXmlNode* GetFirstChild(wxXmlNode* pNode);
@@ -62,43 +43,12 @@ private:
     bool GetYesNoAttribute(wxXmlNode* pNode, wxString sName, bool fDefault=true);
     wxString GetText(wxXmlNode* pElement);
 
-    // methods to parse MusicXML elements
+    void DumpXMLTree(wxXmlNode *pRoot);
+    void ParseError(const wxChar* szFormat, ...);
+    void TagError(const wxString sElement, const wxString sTagName, wxXmlNode* pElement = NULL);
 
-        // score.dtd
-    void ParseScorePartwise(wxXmlNode* pNode, lmScore* pScore);
-    void ParsePart(wxXmlNode* pNode, lmScore* pScore);
-    void ParsePartList(wxXmlNode* pNode, lmScore* pScore);
-    void ParseWork(wxXmlNode* pNode, lmScore* pScore);
-    void ParseIdentification(wxXmlNode* pNode, lmScore* pScore);
-    void ParseScorePart(wxXmlNode* pNode, lmScore* pScore);
-    void ParseMeasure(wxXmlNode* pNode, lmVStaff* pVStaff);
-    bool ParseMusicDataAttributes(wxXmlNode* pNode, lmVStaff* pVStaff);
-    bool ParseMusicDataBarline(wxXmlNode* pNode, lmVStaff* pVStaff);
-    bool ParseMusicDataDirection(wxXmlNode* pNode, lmVStaff* pVStaff);
-    float ParseMusicDataBackupForward(wxXmlNode* pNode, lmVStaff* pVStaff);
+private:
 
-        // note.dtd
-    bool ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff);
-    int ParseDuration(wxXmlNode* pElement);
-
-        // attributes.dtd
-    int ParseDivisions(wxXmlNode* pElement);
-
-        // common.dtd
-    void ParsePosition(wxXmlNode* pElement, lmLocation* pPos);
-    void ParseFont(wxXmlNode* pElement, lmFontInfo* pFontData);
-    bool ParsePlacement(wxXmlNode* pElement, bool fDefault=true);
-
-
-
-    ////////////////////
-    // member variables
-    ////////////////////
-
-    int        m_nCurrentDivisions;
-    lmTupletBracket* m_pTupletBracket;
-
-    //error management
     int        m_nErrors;        // number of parsing errors
 
 

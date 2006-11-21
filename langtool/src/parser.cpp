@@ -355,7 +355,7 @@ void lmXmlParser::WriteHHC(const wxString& sBookname, const wxString& sExt)
         _T("</head>\n<body>\n\n<ul>\n");
     pFile->Write(sHHC);
 
-    for (int i=0; i < m_cChapterTitle.GetCount(); i++) {
+    for (int i=0; i < (int)m_cChapterTitle.GetCount(); i++) {
         sHHC =
             _T("  <li><object type=\"text/sitemap\">\n")
             _T("      <param name=\"Name\" value=\"") +           //this is the name for links
