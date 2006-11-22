@@ -181,6 +181,8 @@ public:
 
     // call this to let lmTextBookFrame know page changed
     void NotifyPageChanged();
+    wxString GetOpenedPageWithAnchor() const;
+
 
     // Refreshes Contents and Index tabs
     void RefreshLists();
@@ -195,6 +197,7 @@ protected:
 
     // Adds items to m_Contents tree control
     void CreateContents();
+
 
     // Adds items to m_IndexList
     void CreateIndex();

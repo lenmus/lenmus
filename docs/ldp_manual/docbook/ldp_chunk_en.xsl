@@ -110,7 +110,6 @@
 
 <!-- parameters -->
 <xsl:param name="chunk.fast" select="1"/> 
-<!--<xsl:param name="html.stylesheet" select="'singledoc.css'"/>-->
 <xsl:param name="admon.graphics" select="1"/>
 <xsl:param name="admon.graphics.path" select="'../figures/'"/>
 <xsl:param name="section.autolabel" select="1"/>
@@ -156,20 +155,20 @@
 
 <!-- ================================================================================ -->
 <head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title>LenMus - Free software for music theory</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<title>LenMus - Software gratuito para lenguaje musical</title>
 <meta http-equiv="expires" content="0" />
 <meta name="resource-type" content="document" />
 <meta name="distribution" content="global" />
 <meta name="author" content="Cecilio Salmeron" />
-<meta name="copyright" content="Copyright (c) 2003-2005 Cecilio Salmeron" />
+<meta name="copyright" content="Copyright (c) 2003-2006 Cecilio Salmeron" />
 <meta name="keywords" lang="en" content="music theory, music language,
     side reading, music, intervals, scales, chords, music exercises, ear training" />
 <meta name="keywords" lang="es" content="teoria de la musica, lenguaje musical, musica,
     intervalos, escalas, acordes, solfeo, lectura de partituras, programas gratuitos de musica,
     software gratis de musica" />
 <meta name="description" lang="en" content="Free music software. Free software for learning
-    and practising music theory and language. Software for ear training." />
+    and practising music theory and language. Software for ear training / aural training." />
 <meta name="description" lang="es" content="Software gratuito para aprendizaje de la
      teoria y el lenguaje musical. Ejercicios de intervalos, solfeo, acordes y escalas.
      Educacion musical del oido." />
@@ -191,12 +190,17 @@
             <!--<div id="lm-header-logo"></div>-->
 
             <div id="lm-header-items">
-            <!--
-              <ul>
-                <li><a title="Ver esta web en Espa&ntilde;ol" href="../es/index.html">Espa&ntilde;ol</a></li>
-                <li><a title="View this site in English" href="#">English</a></li>
-              </ul>
-            -->
+
+          <ul>
+                <li><a title="View this site in Spanish" href="page.php?pid=noticias&amp;lang=es"
+                    onmouseover="changeImage('es', 'layout/images/menu_es_over.png');"
+                    onmouseout="changeImage('es', 'layout/images/menu_es.png');">
+                    <img name="es" src="../../layout/images/menu_es.png" /></a></li>
+                <li><a title="View this site in English" href="page.php?pid=noticias&amp;lang=en"
+                    onmouseover="changeImage('en', 'layout/images/menu_en_over.png');"
+                    onmouseout="changeImage('en', 'layout/images/menu_en.png');">
+                    <img name="en" src="../../layout/images/menu_en.png" /></a></li>
+          </ul>
             </div>
         </div>
 
@@ -206,8 +210,8 @@
 
         <!-- leftside BEGIN -->
         <div id="lm-side-left">
-            <!-- Busqueda Google -->
-            <div class="lm-search-box">
+            <!-- Búsqueda Google -->
+            <div class="lm-search-box">       <!-- this is required for valid XML -->
                 <object>       <!-- this is required for valid XML -->
                     <form method="get" action="http://www.google.com/search">
                         <a href="http://www.google.com/">
@@ -219,73 +223,67 @@
                     </form>
                 </object>
             </div>
-
+    
             <!-- main navigation menu on the left -->
             <div id="lm-left-menu">
                 <ul id="lm-side-nav">
-                  <li><a title="Home" href="page.php?pid=noticias&amp;lang=Eng">Home</a></li>
+              <li><a title="Home" href="page.php?pid=noticias&amp;lang=en">Home</a></li>
+          <li><span class="lm-side-nav">General</span>
+          <ul>
+            <li><a title="LenMus at SourceForge" href="http://sourceforge.net/projects/lenmus" target="_blank&amp;lang=en">LenMus at SourceForge</a></li>
+            <li><a title="Contact us" href="page.php?pid=paginas&amp;name=contact&amp;lang=en">Contact us</a></li>
+            <li><a title="Acknowledgments" href="page.php?pid=paginas&amp;name=credits&amp;lang=en">Acknowledgments</a></li>
+            <li><a title="License" href="page.php?pid=paginas&amp;name=license&amp;lang=en">License</a></li>
+          </ul></li>
 
-                  <li><span class="lm-side-nav">General</span>
-                  <ul>
-                    <li><a title="LenMus at SourceForge" href="http://sourceforge.net/projects/lenmus" target="_blank&amp;lang=Eng">LenMus at SourceForge</a></li>
-                    <li><a title="Contact me" href="page.php?pid=paginas&amp;name=contact&amp;lang=Eng">Contact me</a></li>
-                    <li><a title="License" href="page.php?pid=paginas&amp;name=license&amp;lang=Eng">License</a></li>
-                  </ul></li>
+          <li><span class="lm-side-nav">LenMus Program</span>
+          <ul>
+            <li><a title="Downloads" href="page.php?pid=paginas&amp;name=downloads&amp;lang=en">Downloads</a></li>
+            <li><a title="Roadmap" href="page.php?pid=paginas&amp;name=roadmap&amp;lang=en">Roadmap</a></li>
+            <li><a title="Objectives" href="page.php?pid=paginas&amp;name=objectives&amp;lang=en">Objectives</a></li>
+            <li><a title="Screenshots" href="page.php?pid=paginas&amp;name=screenshots&amp;lang=en">Screenshots</a></li>
+            <li><a title="Features" href="page.php?pid=paginas&amp;name=features&amp;lang=en">Features</a></li>
+            <li><a title="New in this version" href="page.php?pid=paginas&amp;name=new_in_version&amp;lang=en">New in this version</a></li>
+            <li><a title="Releases notification" href="page.php?pid=paginas&amp;name=release_notification&amp;lang=en">Releases notification</a></li>
+            <li><a title="Installation" href="page.php?pid=paginas&amp;name=installation&amp;lang=en">Installation</a></li>
+            <li><a title="Scores publication" href="page.php?pid=paginas&amp;name=score_publication&amp;lang=en">Scores publication</a></li>
+          </ul></li>
 
-                  <li><span class="lm-side-nav">LenMus Program</span>
-                  <ul>
-                    <li><a title="Downloads" href="page.php?pid=paginas&amp;name=downloads&amp;lang=Eng">Downloads</a></li>
-                    <li><a title="Roadmap" href="page.php?pid=paginas&amp;name=roadmap&amp;lang=Eng">Roadmap</a></li>
-                    <li><a title="Objectives" href="page.php?pid=paginas&amp;name=objectives&amp;lang=Eng">Objectives</a></li>
-                    <li><a title="Screenshots" href="page.php?pid=paginas&amp;name=screenshots&amp;lang=Eng">Screenshots</a></li>
+          <li><span class="lm-side-nav">Help</span>
+          <ul>
+            <li><a title="Documents" href="page.php?pid=paginas&amp;name=docs_index&amp;lang=en">Documents</a></li>
+            <li><a title="Report a bug" href="page.php?pid=paginas&amp;name=send_bugs&amp;lang=en">Report a bug</a></li>
+          </ul></li>
 
-                    <li><a title="Features" href="page.php?pid=paginas&amp;name=features&amp;lang=Eng">Features</a></li>
-                    <li><a title="New in this version" href="page.php?pid=paginas&amp;name=new_in_version&amp;lang=Eng">New in this version</a></li>
-                    <li><a title="Releases notification" href="page.php?pid=paginas&amp;name=release_notification&amp;lang=Eng">Releases notification</a></li>
-                    <li><a title="Installation" href="page.php?pid=paginas&amp;name=installation&amp;lang=Eng">Installation</a></li>
-                    <li><a title="Scores publication" href="page.php?pid=paginas&amp;name=score_publication&amp;lang=Eng">Scores publication</a></li>
-                  </ul></li>
+          <li><a title="Get involved" href="page.php?pid=paginas&amp;name=get_involved&amp;lang=en">Get involved</a>
+          <ul>
+            <li><a title="Developers" href="page.php?pid=paginas&amp;name=join_developers&amp;lang=en">Developers</a></li>
+          </ul></li>
 
-                  <li><span class="lm-side-nav">Help</span>
-                  <ul>
-                    <li><a title="Documents" href="page.php?pid=paginas&amp;name=docs_index&amp;lang=Eng">Documents</a></li>
-                    <li><a title="Report a bug" href="page.php?pid=paginas&amp;name=send_bugs&amp;lang=Eng">Report a bug</a></li>
-                  </ul></li>
+          <li><span class="lm-side-nav">Developers</span>
+          <ul>
+            <li><a title="wxMidi" href="page.php?pid=paginas&amp;name=wxmidi&amp;lang=en">wxMidi</a></li>
+          </ul></li>
 
-                  <li><a title="Get involved" href="page.php?pid=paginas&amp;name=get_involved&amp;lang=Eng">Get involved</a>
-
-                  <ul>
-                    <li><a title="Developers" href="page.php?pid=paginas&amp;name=join_developers&amp;lang=Eng">Developers</a></li>
-                  </ul></li>
-
-                  <li><span class="lm-side-nav">Developers</span>
-                  <ul>
-                    <li><a title="Log of changes" href="page.php?pid=paginas&amp;name=changelog_2006&amp;lang=Eng">Log of changes</a></li>
-                    <li><a title="wxMidi" href="page.php?pid=paginas&amp;name=wxmidi&amp;lang=Eng">wxMidi</a></li>
-
-                  </ul></li>
-
-                  </ul>  <!-- lm-side-nav -->
-                  
+                    </ul>  <!-- lm-side-nav -->
             </div> <!--lm-left-menu-->
+                <!-- left side blocks -->
+      <div id="lm-left-side-block">
+        <a id="NoPatents" href="http://swpat.ffii.org" alt="No software patents logo" target="_blank"></a>
+      </div>
+      <div id="lm-left-side-block">
 
-            <!-- left side blocks -->
-            <div id="lm-left-side-block">
-                <a id="NoPatents" href="http://swpat.ffii.org" alt="No software patents logo"></a>
-            </div>
+        <a href="http://sourceforge.net" target="_blank">
+          <img src="http://sourceforge.net/sflogo.php?group_id=149625&amp;type=2"
+            width="125" height="37" border="0" alt="SourceForge.net Logo" /></a>
 
-            <div id="lm-left-side-block">
-                <a href="http://sourceforge.net">
-                  <img src="../../layout/images/sourceforge_logo.png"
-                    width="125" height="37" border="0" alt="SourceForge.net Logo" /></a>
-            </div>
+      </div>
 
-            <div id="lm-left-side-block">
-                <a id="wxWidgets" href="http://www.wxwidgets.org" alt="wxWidgets logo"></a>
-            </div>
+      <div id="lm-left-side-block">
+        <a id="wxWidgets" href="http://www.wxwidgets.org" alt="wxWidgets logo" target="_blank"></a>
+      </div>
 
-        </div>
-
+        </div> <!--lm-side-left-->
         <!-- leftside END -->
 
         <!-- content BEGIN -->
@@ -324,17 +322,15 @@
 
         <!-- footer BEGIN -->
         <div id="lm-footer">
-            Copyright &copy; 2003-2006 Cecilio Salmeron. All rights reserved.
-            <br /><a rel="license" href="../../page.php?pid=paginas&amp;name=license">
+            Copyright &copy; 2003-2006 Cecilio Salmer&oacute;n. All rights reserved.
+            <br /><a href="page.php?pid=paginas&amp;name=license">
             License</a>
         </div>
         <!-- footer END -->
 
-
 </div>  <!-- wrap -->
-
-    </body>
-  </html>
+</body>
+</html>
 </xsl:template>
 
 <!-- ==================================================================== -->

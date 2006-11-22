@@ -328,7 +328,7 @@ void lmTextBookFrame::Init(lmBookData* data)
     m_Printer = NULL;
 #endif
 
-    m_PagesHash = NULL;
+    //m_PagesHash = NULL;
     m_UpdateContents = true;
     m_pBookController = (lmTextBookController*) NULL;
 
@@ -579,11 +579,11 @@ lmTextBookFrame::~lmTextBookFrame()
         delete m_pBookData;
     if (m_NormalFonts) delete m_NormalFonts;
     if (m_FixedFonts) delete m_FixedFonts;
-    if (m_PagesHash)
-    {
-        WX_CLEAR_HASH_TABLE(*m_PagesHash);
-        delete m_PagesHash;
-    }
+    //if (m_PagesHash)
+    //{
+    //    WX_CLEAR_HASH_TABLE(*m_PagesHash);
+    //    delete m_PagesHash;
+    //}
 #if wxUSE_PRINTING_ARCHITECTURE
     if (m_Printer) delete m_Printer;
 #endif
@@ -849,123 +849,129 @@ bool lmTextBookFrame::KeywordSearch(const wxString& keyword,
 
 void lmTextBookFrame::CreateContents()
 {
-    if (!m_pContentsBox) return ;
-
-    if (m_PagesHash)
-    {
-        WX_CLEAR_HASH_TABLE(*m_PagesHash);
-        delete m_PagesHash;
-    }
-
-    const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
-
-    size_t cnt = contents.size();
-
-    m_PagesHash = new wxHashTable(wxKEY_STRING, 2 * cnt);
-
-    const int MAX_ROOTS = 64;
-    long roots[MAX_ROOTS];
-    // VS: this array holds information about whether we've set item icon at
-    //     given level. This is neccessary because m_pBookData has flat structure
-    //     and there's no way of recognizing if some item has subitems or not.
-    //     We set the icon later: when we find an item with level=n, we know
-    //     that the last item with level=n-1 was folder with subitems, so we
-    //     set its icon accordingly
-    bool imaged[MAX_ROOTS];
-    m_pContentsBox->DeleteAllItems();
-
-    roots[0] = m_pContentsBox->AddRoot(_("(Help)"));
-    imaged[0] = true;
-
-    wxString sImagePath = wxEmptyString;
-    wxString sLine;
-    wxString sImgPlus = _T("<table><tr><td nowrap><img src='");
-        sImgPlus += g_pPaths->GetImagePath() + _T("nav_plus_16.png'>");
-
-    wxString sImgMinus = _T("<table><tr><td nowrap><img src='");
-        sImgMinus += g_pPaths->GetImagePath() + _T("nav_minus_16.png'>");
-
-    const wxString sEndLine = _T("</td></tr></table>");
-
-    wxString sItemImg = _T("<table><tr><td nowrap><img src='");
-        sItemImg += g_pPaths->GetImagePath() + _T("nav_space_36.png' height='36' width='");
-
-    wxString sItemNoImg = _T("<table><tr><td nowrap><img src='");
-        sItemNoImg += g_pPaths->GetImagePath() + _T("nav_space_36.png' height='16' width='");
-
-    wxString sNavPageImg = _T("<img border='0' src='");
-        sNavPageImg += g_pPaths->GetImagePath() + _T("nav_page_36.png'>");
-
-    wxString sNavPageNoImg = _T("<img border='0' src='");
-        sNavPageNoImg += g_pPaths->GetImagePath() + _T("nav_page_16.png'>");
-
-    for (size_t i = 0; i < cnt; i++)
-    {
-        lmBookIndexItem *it = &contents[i];
-        if (it->level == 0) {
-            // It is a book node
-            sLine = sImgMinus + _T("<img src=\"");
-            sLine += g_pPaths->GetImagePath();
-            sLine += _T("nav_book_open_16.png\"><b>") +
-                it->name + _T("</b>") + sEndLine;
-
-            roots[1] = m_pContentsBox->AppendItem(roots[0],
-                                        sLine, sImagePath, IMG_Book, -1,
-                                        new TextBookHelpTreeItemData(i));
-            m_pContentsBox->SetItemBold(roots[1], true);
-            imaged[1] = true;
-
-            // set path for images
-            wxFileSystem& oFS = m_pContentsBox->GetFileSystem();
-            lmBookRecord* pBookr = it->pBookRecord; 
-            wxFileName oFN( pBookr->GetBasePath() );
-            oFN.AppendDir( _T("img") );
-            sImagePath = oFN.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-        }
-        else {
-            // it is a content node
-            sLine = ((it->image).IsEmpty() ? sItemNoImg : sItemImg);
-            sLine += wxString::Format(_T("%d'>"), it->level * 16);   //16 pixels per level
-            sLine += ((it->image).IsEmpty() ? sNavPageNoImg : sNavPageImg);
-            sLine += wxString::Format(_T("<a href=\"item%d\">"), i);
-
-            if (!(it->image).IsEmpty()) {
-                sLine += _T("<img border='0' src='");
-                sLine += sImagePath;
-                sLine += it->image;
-                sLine += _T("'></a><br /><img src='");
-                sLine += g_pPaths->GetImagePath();
-                sLine += _T("nav_space_36.png' height='16' width='");
-                sLine += wxString::Format(_T("%d'>"), 40+16*it->level);
-                sLine += wxString::Format(_T("<a href=\"item%d\">"), i);
-            }
-            sLine += it->name + _T("</a>") + sEndLine;
-
-            roots[it->level + 1] = m_pContentsBox->AppendItem(
-                                     roots[it->level], sLine, sImagePath, IMG_Page,
-                                     -1, new TextBookHelpTreeItemData(i));
-            imaged[it->level + 1] = false;
-        }
-
-        m_PagesHash->Put(it->GetFullPath(),
-                         new TextBookHelpHashData(i, roots[it->level + 1]));
-
-        // Set the icon for the node one level up in the hiearachy,
-        // unless already done (see comment above imaged[] declaration)
-        if (!imaged[it->level])
-        {
-            int image = IMG_Folder;
-            if (m_hfStyle & wxHF_ICONS_BOOK)
-                image = IMG_Book;
-            else if (m_hfStyle & wxHF_ICONS_BOOK_CHAPTER)
-                image = (it->level == 1) ? IMG_Book : IMG_Folder;
-            m_pContentsBox->SetItemImage(roots[it->level], image);
-            m_pContentsBox->SetItemImage(roots[it->level], image,
-                                        wxTreeItemIcon_Selected);
-            imaged[it->level] = true;
-        }
+    if (m_pContentsBox) {
+        m_pContentsBox->CreateContents(m_pBookData);
     }
 }
+
+//    if (m_PagesHash)
+//    {
+//        WX_CLEAR_HASH_TABLE(*m_PagesHash);
+//        delete m_PagesHash;
+//    }
+//
+//    const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
+//
+//    size_t cnt = contents.size();
+//
+//    m_PagesHash = new wxHashTable(wxKEY_STRING, 2 * cnt);
+//
+//    const int MAX_ROOTS = 64;
+//    long roots[MAX_ROOTS];
+//    // VS: this array holds information about whether we've set item icon at
+//    //     given level. This is neccessary because m_pBookData has flat structure
+//    //     and there's no way of recognizing if some item has subitems or not.
+//    //     We set the icon later: when we find an item with level=n, we know
+//    //     that the last item with level=n-1 was folder with subitems, so we
+//    //     set its icon accordingly
+//    bool imaged[MAX_ROOTS];
+//    m_pContentsBox->DeleteAllItems();
+//
+//    roots[0] = m_pContentsBox->AddRoot(_("(Help)"));
+//    imaged[0] = true;
+//
+//    wxString sImagePath = wxEmptyString;
+//    wxString sLine;
+//    wxString sImgPlus = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
+//        sImgPlus += g_pPaths->GetImagePath() + _T("nav_plus_16.png'>");
+//
+//    wxString sImgMinus = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
+//        sImgMinus += g_pPaths->GetImagePath() + _T("nav_minus_16.png'>");
+//
+//    const wxString sEndLine = _T("</td></tr></table>");
+//
+//    wxString sItemImg = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
+//        sItemImg += g_pPaths->GetImagePath() + _T("nav_space_36.png' height='36' width='");
+//
+//    wxString sItemNoImg = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
+//        sItemNoImg += g_pPaths->GetImagePath() + _T("nav_space_36.png' height='16' width='");
+//
+//    wxString sNavPageImg = _T("<img border='0' src='");
+//        sNavPageImg += g_pPaths->GetImagePath() + _T("nav_page_36.png'>");
+//
+//    wxString sNavPageNoImg = _T("<img border='0' src='");
+//        sNavPageNoImg += g_pPaths->GetImagePath() + _T("nav_page_16.png'>");
+//
+//    for (size_t i = 0; i < cnt; i++)
+//    {
+//        lmBookIndexItem *it = &contents[i];
+//        if (it->level == 0) {
+//            // It is a book node
+//            sLine = sImgMinus + _T("<img src=\"");
+//            sLine += g_pPaths->GetImagePath();
+//            sLine += _T("nav_book_open_16.png\"><b>") +
+//                it->name + _T("</b>") + sEndLine;
+//
+//            roots[1] = m_pContentsBox->AppendItem(roots[0],
+//                                        sLine, sImagePath, IMG_Book, -1,
+//                                        new TextBookHelpTreeItemData(i));
+//            m_pContentsBox->SetItemBold(roots[1], true);
+//            imaged[1] = true;
+//
+//            // set path for images
+//            wxFileSystem& oFS = m_pContentsBox->GetFileSystem();
+//            lmBookRecord* pBookr = it->pBookRecord; 
+//            wxFileName oFN( pBookr->GetBasePath() );
+//            oFN.AppendDir( _T("img") );
+//            sImagePath = oFN.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+//        }
+//        else {
+//            // it is a content node
+//            sLine = ((it->image).IsEmpty() ? sItemNoImg : sItemImg);
+//            sLine += wxString::Format(_T("%d'>"), (1+it->level)*16);   //16 pixels per level
+//            sLine += ((it->image).IsEmpty() ? sNavPageNoImg : sNavPageImg);
+//
+//            if (!(it->image).IsEmpty()) {
+//                sLine += wxString::Format(_T("<ax href=\"item%d\">"), i);
+//                sLine += _T("<img border='0' src='");
+//                sLine += sImagePath;
+//                sLine += it->image;
+//                sLine += _T("'></ax><br /><img src='");
+//                sLine += g_pPaths->GetImagePath();
+//                sLine += _T("nav_space_36.png' height='16' width='");
+//                sLine += wxString::Format(_T("%d'>"), 40+16*it->level);
+//            }
+//            else {
+//                sLine += _T("&nbsp;&nbsp;");
+//            }
+//            sLine += wxString::Format(_T("<ax href=\"item%d\">"), i);
+//            sLine += it->name + _T("</ax>") + sEndLine;
+//
+//            roots[it->level + 1] = m_pContentsBox->AppendItem(
+//                                     roots[it->level], sLine, sImagePath, IMG_Page,
+//                                     -1, new TextBookHelpTreeItemData(i));
+//            imaged[it->level + 1] = false;
+//        }
+//
+//        m_PagesHash->Put(it->GetFullPath(),
+//                         new TextBookHelpHashData(i, roots[it->level + 1]));
+//
+//        // Set the icon for the node one level up in the hiearachy,
+//        // unless already done (see comment above imaged[] declaration)
+//        if (!imaged[it->level])
+//        {
+//            int image = IMG_Folder;
+//            if (m_hfStyle & wxHF_ICONS_BOOK)
+//                image = IMG_Book;
+//            else if (m_hfStyle & wxHF_ICONS_BOOK_CHAPTER)
+//                image = (it->level == 1) ? IMG_Book : IMG_Folder;
+//            m_pContentsBox->SetItemImage(roots[it->level], image);
+//            m_pContentsBox->SetItemImage(roots[it->level], image,
+//                                        wxTreeItemIcon_Selected);
+//            imaged[it->level] = true;
+//        }
+//    }
+//}
 
 
 void lmTextBookFrame::CreateIndex()
@@ -1306,24 +1312,34 @@ void lmTextBookFrame::OptionsDialog()
 
 void lmTextBookFrame::NotifyPageChanged()
 {
-    if (m_UpdateContents && m_PagesHash)
-    {
-        wxString page = TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
-        TextBookHelpHashData *ha = NULL;
-        if (!page.empty())
-            ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
-
-        if (ha)
-        {
-            bool olduc = m_UpdateContents;
-            m_UpdateContents = false;
-            m_pContentsBox->SelectItem(ha->m_Id);
-            m_pContentsBox->EnsureVisible(ha->m_Id);
-            m_UpdateContents = olduc;
-        }
+    if (m_UpdateContents && m_pContentsBox) {
+        m_UpdateContents = false;   //to reject new updates until this one is done
+        m_pContentsBox->ChangePage();
+        m_UpdateContents = true;
     }
+
+    //if (m_UpdateContents && m_PagesHash)
+    //{
+    //    wxString page = TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
+    //    TextBookHelpHashData *ha = NULL;
+    //    if (!page.empty())
+    //        ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
+
+    //    if (ha)
+    //    {
+    //        bool olduc = m_UpdateContents;
+    //        m_UpdateContents = false;
+    //        m_pContentsBox->SelectItem(ha->m_Id);
+    //        m_pContentsBox->EnsureVisible(ha->m_Id);
+    //        m_UpdateContents = olduc;
+    //    }
+    //}
 }
 
+wxString lmTextBookFrame::GetOpenedPageWithAnchor() const
+{
+    return TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
+}
 
 
 /*
@@ -1360,78 +1376,78 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             break;
 
         case MENU_eBook_Up :
-            if (m_PagesHash)
-            {
-                wxString page = TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
-                TextBookHelpHashData *ha = NULL;
-                if (!page.empty())
-                    ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
-                if (ha && ha->m_Index > 0)
-                {
-                    const lmBookIndexItem& it = m_pBookData->GetContentsArray()[ha->m_Index - 1];
-                    if (!it.page.empty())
-                    {
-                        m_HtmlWin->LoadPage(it.GetFullPath());
-                        NotifyPageChanged();
-                    }
-                }
-            }
+            //if (m_PagesHash)
+            //{
+            //    wxString page = TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
+            //    TextBookHelpHashData *ha = NULL;
+            //    if (!page.empty())
+            //        ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
+            //    if (ha && ha->m_Index > 0)
+            //    {
+            //        const lmBookIndexItem& it = m_pBookData->GetContentsArray()[ha->m_Index - 1];
+            //        if (!it.page.empty())
+            //        {
+            //            m_HtmlWin->LoadPage(it.GetFullPath());
+            //            NotifyPageChanged();
+            //        }
+            //    }
+            //}
             break;
 
         case MENU_eBook_UpNode :
-            if (m_PagesHash)
-            {
-                wxString page = TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
-                TextBookHelpHashData *ha = NULL;
-                if (!page.empty())
-                    ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
-                if (ha && ha->m_Index > 0)
-                {
-                    int level =
-                        m_pBookData->GetContentsArray()[ha->m_Index].level - 1;
-                    int ind = ha->m_Index - 1;
+            //if (m_PagesHash)
+            //{
+            //    wxString page = TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
+            //    TextBookHelpHashData *ha = NULL;
+            //    if (!page.empty())
+            //        ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
+            //    if (ha && ha->m_Index > 0)
+            //    {
+            //        int level =
+            //            m_pBookData->GetContentsArray()[ha->m_Index].level - 1;
+            //        int ind = ha->m_Index - 1;
 
-                    const lmBookIndexItem *it =
-                        &m_pBookData->GetContentsArray()[ind];
-                    while (ind >= 0 && it->level != level)
-                    {
-                        ind--;
-                        it = &m_pBookData->GetContentsArray()[ind];
-                    }
-                    if (ind >= 0)
-                    {
-                        if (!it->page.empty())
-                        {
-                            m_HtmlWin->LoadPage(it->GetFullPath());
-                            NotifyPageChanged();
-                        }
-                    }
-                }
-            }
+            //        const lmBookIndexItem *it =
+            //            &m_pBookData->GetContentsArray()[ind];
+            //        while (ind >= 0 && it->level != level)
+            //        {
+            //            ind--;
+            //            it = &m_pBookData->GetContentsArray()[ind];
+            //        }
+            //        if (ind >= 0)
+            //        {
+            //            if (!it->page.empty())
+            //            {
+            //                m_HtmlWin->LoadPage(it->GetFullPath());
+            //                NotifyPageChanged();
+            //            }
+            //        }
+            //    }
+            //}
             break;
 
         case MENU_eBook_Down :
-            if (m_PagesHash)
-            {
-                wxString page = TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
-                TextBookHelpHashData *ha = NULL;
-                if (!page.empty())
-                    ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
+            //if (m_PagesHash)
+            //{
+            //    wxString page = TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
+            //    TextBookHelpHashData *ha = NULL;
+            //    if (!page.empty())
+            //        ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
 
-                const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
-                if (ha && ha->m_Index < (int)contents.size() - 1)
-                {
-                    size_t idx = ha->m_Index + 1;
+            //    const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
+            //    if (ha && ha->m_Index < (int)contents.size() - 1)
+            //    {
+            //        size_t idx = ha->m_Index + 1;
 
-                    while (contents[idx].GetFullPath() == page) idx++;
+            //        while (contents[idx].GetFullPath() == page) idx++;
 
-                    if (!contents[idx].page.empty())
-                    {
-                        m_HtmlWin->LoadPage(contents[idx].GetFullPath());
-                        NotifyPageChanged();
-                    }
-                }
-            }
+            //        if (!contents[idx].page.empty())
+            //        {
+            //            m_HtmlWin->LoadPage(contents[idx].GetFullPath());
+            //            NotifyPageChanged();
+            //        }
+            //    }
+            //}
             break;
 
         case MENU_eBookPanel :
@@ -1547,35 +1563,63 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
 
 void lmTextBookFrame::OnContentsLinkClicked(wxHtmlLinkEvent& event)
 {
-    //TextBookHelpTreeItemData *pg;
-
-    //size_t nItem = m_pContentsBox->GetItemForCell( event.GetCell() );
-    //pg = (TextBookHelpTreeItemData*) m_pContentsBox->GetItemData(nItem);
-
-    //if (pg && m_UpdateContents)
-    //{
-    //    const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
-    //    m_UpdateContents = false;
-    //    if (!contents[pg->m_Id].page.empty())
-    //        m_HtmlWin->LoadPage(contents[pg->m_Id].GetFullPath());
-    //    m_UpdateContents = true;
-    //}
-
+    enum {
+        eOpen = 0,
+        eClose,
+        eGo,
+    };
 
     //extract type and item
     wxString sLink = event.GetLinkInfo().GetHref();
-    int i = sLink.Find(_T("item"));
-    long nItem;
-    wxString sItem = sLink.Mid(i+4);
-    sItem.ToLong(&nItem);
+    int nAction;
+    wxString sItem;
 
-    if (m_UpdateContents) {
-        const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
-        m_UpdateContents = false;
-        if (!contents[nItem].page.empty())
-            m_HtmlWin->LoadPage(contents[nItem].GetFullPath());
-        m_UpdateContents = true;
+    if (sLink.Find(_T("item")) != wxNOT_FOUND) {
+        nAction = eGo;
+        sItem = sLink.Mid(4);
     }
+    else if (sLink.Find(_T("open")) != wxNOT_FOUND) {
+        nAction = eOpen;
+        sItem = sLink.Mid(4);
+    }
+    else if (sLink.Find(_T("close")) != wxNOT_FOUND) {
+        nAction = eClose;
+        sItem = sLink.Mid(5);
+    }
+    else {
+        wxLogMessage(_T("[lmTextBookFrame::OnContentsLinkClicked]Invalid link type"));
+        return;
+    }
+
+    long nItem;
+    if (!sItem.ToLong(&nItem)) {
+        wxLogMessage(_T("[lmTextBookFrame::OnContentsLinkClicked] Invalid link number"));
+        return;
+    }
+
+    switch (nAction) {
+        case eGo:
+            if (m_UpdateContents) {
+                const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
+                m_UpdateContents = false;
+                if (!contents[nItem].page.empty())
+                    m_HtmlWin->LoadPage(contents[nItem].GetFullPath());
+                m_UpdateContents = true;
+            }
+            break;
+
+        case eOpen:
+            m_pContentsBox->Expand(nItem);
+            break;
+
+        case eClose:
+            m_pContentsBox->Collapse(nItem);
+            break;
+
+        default:
+            wxASSERT(false);
+    }
+
 }
 
 

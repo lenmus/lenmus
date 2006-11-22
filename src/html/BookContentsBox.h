@@ -26,16 +26,31 @@
 #ifndef __LM_BOOKCONTENTSBOX_H__        //to avoid nested includes
 #define __LM_BOOKCONTENTSBOX_H__
 
-#include "wx/htmllbox.h"
 #include "wx/treectrl.h"
+#include "wx/dynarray.h"
 
-class lmBookContentsBox : public wxHtmlListBox
+#include "HtmlListBox.h"
+#include "BookData.h"
+
+typedef struct lmTreeContentRecordStruct {
+    int nLevel;
+    bool fVisible;          // this item is visible
+    bool fHasChildren;      // this item has children nodes     
+    bool fOpen;             // this item is open (its children are shown)
+    wxString sImage;
+    wxString sTitle;
+} lmTreeContentRecord;
+
+WX_DECLARE_OBJARRAY(lmTreeContentRecord, lmTreeArray);
+
+
+class lmBookContentsBox : public lmHtmlListBox
 {
 public:
     lmBookContentsBox() { }
     lmBookContentsBox(wxWindow* parent, wxWindowID id = wxID_ANY,
             const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
-            long style = 0, const wxString& name = wxHtmlListBoxNameStr);
+            long style = 0, const wxString& name = lmHtmlListBoxNameStr);
     ~lmBookContentsBox();
 
     // wxTreeCtrol compatibility methods
@@ -52,12 +67,32 @@ public:
     void SetItemImage(const long& item, int image,
                       wxTreeItemIcon which = wxTreeItemIcon_Normal);
 
+    // Content creation
+    void CreateContents(lmBookData* pBookData);
+    void ChangePage();
+
+    void Expand(int nItem);
+    void Collapse(int nItem);
+
+
+
 
 private:
     wxString OnGetItem(size_t n) const;
+    int LocateItem(int n) const;
+    wxString FormatItem(int nTree) const;
 
 
     wxArrayString   m_cItems;       // items to display
+
+    wxWindow*       m_pParent;
+
+
+    // content data
+    wxHashTable*    m_PagesHash;
+
+    lmTreeArray     m_aTree;        // items to display
+
 
 
     DECLARE_NO_COPY_CLASS(lmBookContentsBox)
