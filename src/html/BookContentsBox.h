@@ -43,12 +43,17 @@ typedef struct lmTreeContentRecordStruct {
 
 WX_DECLARE_OBJARRAY(lmTreeContentRecord, lmTreeArray);
 
+// declare a hash map with string keys and int values
+WX_DECLARE_STRING_HASH_MAP( int, lmPagesHash );
+
+
+class wxWindow;
 
 class lmBookContentsBox : public lmHtmlListBox
 {
 public:
     lmBookContentsBox() { }
-    lmBookContentsBox(wxWindow* parent, wxWindowID id = wxID_ANY,
+    lmBookContentsBox(wxWindow* parent, wxFrame* pFrame, wxWindowID id = wxID_ANY,
             const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
             long style = 0, const wxString& name = lmHtmlListBoxNameStr);
     ~lmBookContentsBox();
@@ -85,12 +90,11 @@ private:
 
     wxArrayString   m_cItems;       // items to display
 
-    wxWindow*       m_pParent;
+    wxFrame*        m_pFrame;
 
 
     // content data
-    wxHashTable*    m_PagesHash;
-
+    lmPagesHash     m_PagesHash;    //to locate pages index from its URL
     lmTreeArray     m_aTree;        // items to display
 
 

@@ -55,13 +55,17 @@ WX_DEFINE_OBJARRAY(lmTreeArray)
 
 IMPLEMENT_DYNAMIC_CLASS(lmBookContentsBox, lmHtmlListBox)
 
-lmBookContentsBox::lmBookContentsBox(wxWindow* parent, wxWindowID id, const wxPoint& pos,
+lmBookContentsBox::lmBookContentsBox(wxWindow* parent,
+                                     wxFrame* pFrame,
+                                     wxWindowID id, 
+                                     const wxPoint& pos,
                                      const wxSize& size, long style,
                                      const wxString& name)
              : lmHtmlListBox(parent, id, pos, size, style, name)
 {
-    m_pParent = parent;
-    m_PagesHash = (wxHashTable*)NULL;
+    m_pFrame = pFrame;
+
+    SetSelectionBackground(*wxWHITE);
 
     SetMargins(5, 5);
     SetItemCount(1);
@@ -132,6 +136,7 @@ void lmBookContentsBox::DeleteAllItems()
 void lmBookContentsBox::EnsureVisible(const long& item)
 {
     //Scrolls and/or expands items to ensure that the given item is visible.
+    //SetSelection(item);
 }
 
 wxTreeItemData* lmBookContentsBox::GetItemData(const long& item) const
@@ -144,7 +149,7 @@ void lmBookContentsBox::SelectItem(const long& item, bool select)
 {
     //Selects the given item. In multiple selection controls, can be also used
     //to deselect a currently selected item if the value of select is false.
-    Select(item, select);
+    SetSelection(item);
 }
 
 void lmBookContentsBox::SetItemBold(const long& item, bool bold)
@@ -224,18 +229,13 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
     }
 
     //re-build page hash table
-    if (m_PagesHash)
-    {
-        WX_CLEAR_HASH_TABLE(*m_PagesHash);
-        delete m_PagesHash;
-    }
-
-    m_PagesHash = new wxHashTable(wxKEY_STRING, 2 * nNumItems);
-
+    m_PagesHash.clear();
     for (long i = 0; i < nNumItems; i++)
     {
         lmBookIndexItem *it = &contents[i];
-        m_PagesHash->Put(it->GetFullPath(), (wxObject*)i);
+        wxFileName oFN(it->GetFullPath());
+        m_PagesHash[oFN.GetFullPath()] = i;
+        //wxLogMessage(_T("Full Path = '%s', item=%d"), it->GetFullPath(), i);
     }
 
     SetItemCount(nNumItems);
@@ -256,6 +256,7 @@ int lmBookContentsBox::LocateItem(int n) const
 
 wxString lmBookContentsBox::FormatItem(int nTree) const
 {
+#if 0
     wxString sLine;
     wxString sImgPlus = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
         sImgPlus += g_pPaths->GetImagePath() + _T("nav_plus_16.png'>");
@@ -323,18 +324,60 @@ wxString lmBookContentsBox::FormatItem(int nTree) const
     }
 
     return sLine;
+#else
+    wxString sLine;
+    sLine = _T("<tocitem expand='");
 
+    //If this node has children add expand/collapse icon
+    if (m_aTree[nTree].fHasChildren) {
+        if (m_aTree[nTree].fOpen) {
+            sLine += _T("-' icon='");
+            sLine += (m_aTree[nTree].nLevel == 0 ? _T("open_book' ") : _T("open_folder' "));
+        }
+        else {
+            sLine += _T("+' icon='");
+            sLine += (m_aTree[nTree].nLevel == 0 ? _T("closed_book' ") : _T("closed_folder' "));
+        }
+    }
+    else {
+        sLine += _T("no' icon='page' ");
+    }
+
+    // add image
+    if (!(m_aTree[nTree].sImage).IsEmpty()) {
+        sLine += _T("img='") + m_aTree[nTree].sImage + _T("' ");
+    }
+
+    // add references
+    sLine += wxString::Format(_T("level='%d' item='%d'>"),
+                    m_aTree[nTree].nLevel, nTree );
+
+    // add the title
+    sLine += m_aTree[nTree].sTitle + _T("</tocitem>");
+
+    return sLine;
+
+#endif
 }
 
 void lmBookContentsBox::ChangePage()
 {
-    if (m_PagesHash)
+    if (m_PagesHash.size() > 0)
     {
 
-        wxString page = ((lmTextBookFrame*)m_pParent)->GetOpenedPageWithAnchor();
-        long nTree = -1;
-        if (!page.empty())
-            nTree = (long)m_PagesHash->Get(page);
+        wxString page = ((lmTextBookFrame*)m_pFrame)->GetOpenedPageWithAnchor();
+        int nTree = -1;
+        if (!page.empty()) {
+            wxFileName oFN(page);
+            nTree = m_PagesHash[oFN.GetFullPath()];
+
+            //// iterate over all the elements in the class
+            //lmPagesHash::iterator it;
+            //for( it = m_PagesHash.begin(); it != m_PagesHash.end(); ++it )
+            //{
+            //    wxLogMessage(_T("key='%s', value=%d"), it->first, it->second);
+            //}
+        }
 
         if (nTree != -1) 
         {
@@ -355,10 +398,24 @@ void lmBookContentsBox::Expand(int nItem)
     for(int i=nIdx+1; i < (int)m_aTree.GetCount(); i++)
     {
         if (m_aTree[i].nLevel == nCurLevel) break;
-        m_aTree[i].fOpen = false;
-        m_aTree[i].fVisible = true;
+        if (m_aTree[i].nLevel == nCurLevel+1) {
+            m_aTree[i].fOpen = false;
+            m_aTree[i].fVisible = true;
+        }
     }
     RefreshAll();
+
+    //wxLogMessage(_T("[lmBookContentsBox::Expand] Table m_aTree:"));
+    //wxLogMessage(_T("i\tlevel    visible\topen\tchildren"));
+    //for (long i = 0; i < (int)m_aTree.GetCount(); i++)
+    //{
+    //    wxLogMessage(_T("%d\t%d\t%s\t%s\t%s"),
+    //        i, m_aTree[i].nLevel, 
+    //        (m_aTree[i].fVisible ? _T("yes") : _T("no")),   
+    //        (m_aTree[i].fOpen ? _T("yes") : _T("no")),
+    //        (m_aTree[i].fHasChildren ? _T("yes") : _T("no")) );
+    //}
+
 }
 
 void lmBookContentsBox::Collapse(int nItem)
@@ -378,126 +435,3 @@ void lmBookContentsBox::Collapse(int nItem)
     RefreshAll();
 
 }
-
-
-
-//    if (m_PagesHash)
-//    {
-//        WX_CLEAR_HASH_TABLE(*m_PagesHash);
-//        delete m_PagesHash;
-//    }
-//
-//    const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
-//
-//    size_t cnt = contents.size();
-//
-//    m_PagesHash = new wxHashTable(wxKEY_STRING, 2 * cnt);
-//
-//    const int MAX_ROOTS = 64;
-//    long roots[MAX_ROOTS];
-//    // VS: this array holds information about whether we've set item icon at
-//    //     given level. This is neccessary because m_pBookData has flat structure
-//    //     and there's no way of recognizing if some item has subitems or not.
-//    //     We set the icon later: when we find an item with level=n, we know
-//    //     that the last item with level=n-1 was folder with subitems, so we
-//    //     set its icon accordingly
-//    bool imaged[MAX_ROOTS];
-//    m_pContentsBox->DeleteAllItems();
-//
-//    roots[0] = m_pContentsBox->AddRoot(_("(Help)"));
-//    imaged[0] = true;
-//
-//    wxString sImagePath = wxEmptyString;
-//    wxString sLine;
-//    wxString sImgPlus = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
-//        sImgPlus += g_pPaths->GetImagePath() + _T("nav_plus_16.png'>");
-//
-//    wxString sImgMinus = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
-//        sImgMinus += g_pPaths->GetImagePath() + _T("nav_minus_16.png'>");
-//
-//    const wxString sEndLine = _T("</td></tr></table>");
-//
-//    wxString sItemImg = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
-//        sItemImg += g_pPaths->GetImagePath() + _T("nav_space_36.png' height='36' width='");
-//
-//    wxString sItemNoImg = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
-//        sItemNoImg += g_pPaths->GetImagePath() + _T("nav_space_36.png' height='16' width='");
-//
-//    wxString sNavPageImg = _T("<img border='0' src='");
-//        sNavPageImg += g_pPaths->GetImagePath() + _T("nav_page_36.png'>");
-//
-//    wxString sNavPageNoImg = _T("<img border='0' src='");
-//        sNavPageNoImg += g_pPaths->GetImagePath() + _T("nav_page_16.png'>");
-//
-//    for (size_t i = 0; i < cnt; i++)
-//    {
-//        lmBookIndexItem *it = &contents[i];
-//
-//        if (it->level == 0) {
-//            // It is a book node
-//            sLine = sImgMinus + _T("<img src=\"");
-//            sLine += g_pPaths->GetImagePath();
-//            sLine += _T("nav_book_open_16.png\"><b>") +
-//                it->name + _T("</b>") + sEndLine;
-//
-//            roots[1] = m_pContentsBox->AppendItem(roots[0],
-//                                        sLine, sImagePath, IMG_Book, -1,
-//                                        new TextBookHelpTreeItemData(i));
-//            m_pContentsBox->SetItemBold(roots[1], true);
-//            imaged[1] = true;
-//
-//            // set path for images
-//            wxFileSystem& oFS = m_pContentsBox->GetFileSystem();
-//            lmBookRecord* pBookr = it->pBookRecord; 
-//            wxFileName oFN( pBookr->GetBasePath() );
-//            oFN.AppendDir( _T("img") );
-//            sImagePath = oFN.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-//        }
-//        else {
-//            // it is a content node
-//            sLine = ((it->image).IsEmpty() ? sItemNoImg : sItemImg);
-//            sLine += wxString::Format(_T("%d'>"), (1+it->level)*16);   //16 pixels per level
-//            sLine += ((it->image).IsEmpty() ? sNavPageNoImg : sNavPageImg);
-//
-//            if (!(it->image).IsEmpty()) {
-//                sLine += wxString::Format(_T("<ax href=\"item%d\">"), i);
-//                sLine += _T("<img border='0' src='");
-//                sLine += sImagePath;
-//                sLine += it->image;
-//                sLine += _T("'></ax><br /><img src='");
-//                sLine += g_pPaths->GetImagePath();
-//                sLine += _T("nav_space_36.png' height='16' width='");
-//                sLine += wxString::Format(_T("%d'>"), 40+16*it->level);
-//            }
-//            else {
-//                sLine += _T("&nbsp;&nbsp;");
-//            }
-//            sLine += wxString::Format(_T("<ax href=\"item%d\">"), i);
-//            sLine += it->name + _T("</ax>") + sEndLine;
-//
-//            roots[it->level + 1] = m_pContentsBox->AppendItem(
-//                                     roots[it->level], sLine, sImagePath, IMG_Page,
-//                                     -1, new TextBookHelpTreeItemData(i));
-//            imaged[it->level + 1] = false;
-//        }
-//
-//        m_PagesHash->Put(it->GetFullPath(),
-//                         new TextBookHelpHashData(i, roots[it->level + 1]));
-//
-//        // Set the icon for the node one level up in the hiearachy,
-//        // unless already done (see comment above imaged[] declaration)
-//        if (!imaged[it->level])
-//        {
-//            int image = IMG_Folder;
-//            if (m_hfStyle & wxHF_ICONS_BOOK)
-//                image = IMG_Book;
-//            else if (m_hfStyle & wxHF_ICONS_BOOK_CHAPTER)
-//                image = (it->level == 1) ? IMG_Book : IMG_Folder;
-//            m_pContentsBox->SetItemImage(roots[it->level], image);
-//            m_pContentsBox->SetItemImage(roots[it->level], image,
-//                                        wxTreeItemIcon_Selected);
-//            imaged[it->level] = true;
-//        }
-//    }
-//}
-//

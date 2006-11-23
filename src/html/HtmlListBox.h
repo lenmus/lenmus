@@ -42,7 +42,7 @@ public:
     lmHtmlListBox();
 
     // normal constructor which calls Create() internally
-    lmHtmlListBox(wxWindow *parent,
+    lmHtmlListBox(wxWindow* parent,
                   wxWindowID id = wxID_ANY,
                   const wxPoint& pos = wxDefaultPosition,
                   const wxSize& size = wxDefaultSize,
@@ -55,7 +55,7 @@ public:
     // the only special style which may be specified here is wxLB_MULTIPLE
     //
     // returns true on success or false if the control couldn't be created
-    bool Create(wxWindow *parent,
+    bool Create(wxWindow* parent,
                 wxWindowID id = wxID_ANY,
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize,
@@ -110,6 +110,9 @@ public:
     // the listbox. By default, clicking links is ignored.
     virtual void OnLinkClicked(size_t n, const wxHtmlLinkInfo& link);
 
+    void OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) const;
+
+
     // event handlers
     void OnSize(wxSizeEvent& event);
     void OnMouseMove(wxMouseEvent& event);
@@ -128,8 +131,8 @@ private:
     virtual void OnHTMLLinkClicked(const wxHtmlLinkInfo& link);
     virtual wxHtmlOpeningStatus OnHTMLOpeningURL(wxHtmlURLType type,
                                                  const wxString& url,
-                                                 wxString *redirect) const;
-    virtual wxPoint HTMLCoordsToWindow(wxHtmlCell *cell,
+                                                 wxString* redirect) const;
+    virtual wxPoint HTMLCoordsToWindow(wxHtmlCell* cell,
                                        const wxPoint& pos) const;
     virtual wxWindow* GetHTMLWindow();
     virtual wxColour GetHTMLBackgroundColour() const;
@@ -139,7 +142,7 @@ private:
     virtual wxCursor GetHTMLCursor(HTMLCursor type) const;
 
     // returns index of item that contains given HTML cell
-    size_t GetItemForCell(const wxHtmlCell *cell) const;
+    size_t GetItemForCell(const wxHtmlCell* cell) const;
 
     // return physical coordinates of root wxHtmlCell of n-th item
     wxPoint GetRootCellCoords(size_t n) const;
@@ -153,20 +156,21 @@ private:
 
     // The opposite of PhysicalCoordsToCell: converts coordinates relative to
     // given cell to physical coordinates in the window
-    wxPoint CellCoordsToPhysical(const wxPoint& pos, wxHtmlCell *cell) const;
+    wxPoint CellCoordsToPhysical(const wxPoint& pos, wxHtmlCell* cell) const;
 
 private:
     // this class caches the pre-parsed HTML to speed up display
-    lmHtmlListBoxCache *m_cache;
+    lmHtmlListBoxCache* m_cache;
 
     // HTML parser we use
-    wxHtmlWinParser *m_htmlParser;
+    wxHtmlWinParser*        m_htmlParser;
+    wxHtmlWinTagHandler*    m_pTagHandler;
 
     // file system used by m_htmlParser
     wxFileSystem m_filesystem;
 
     // rendering style for the parser which allows us to customize our colours
-    lmHtmlListBoxStyle *m_htmlRendStyle;
+    lmHtmlListBoxStyle* m_htmlRendStyle;
 
 
     // it calls our GetSelectedTextColour() and GetSelectedTextBgColour()

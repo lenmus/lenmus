@@ -181,7 +181,7 @@ public:
 
     // call this to let lmTextBookFrame know page changed
     void NotifyPageChanged();
-    wxString GetOpenedPageWithAnchor() const;
+    wxString GetOpenedPageWithAnchor();
 
 
     // Refreshes Contents and Index tabs

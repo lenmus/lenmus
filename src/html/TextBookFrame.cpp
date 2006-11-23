@@ -450,7 +450,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
             topsizer->Add(sizer, 0, wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT, 10);
         }
 
-        m_pContentsBox = new lmBookContentsBox(pPanel, ID_TREECTRL);
+        m_pContentsBox = new lmBookContentsBox(pPanel, this, ID_TREECTRL);
         m_pContentsBox->AssignImageList(ContentsImageList);
         topsizer->Add(m_pContentsBox, 1,
                       wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT,
@@ -1336,7 +1336,7 @@ void lmTextBookFrame::NotifyPageChanged()
     //}
 }
 
-wxString lmTextBookFrame::GetOpenedPageWithAnchor() const
+wxString lmTextBookFrame::GetOpenedPageWithAnchor()
 {
     return TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
 }
@@ -1602,8 +1602,9 @@ void lmTextBookFrame::OnContentsLinkClicked(wxHtmlLinkEvent& event)
             if (m_UpdateContents) {
                 const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
                 m_UpdateContents = false;
-                if (!contents[nItem].page.empty())
+                if (!contents[nItem].page.empty()) {
                     m_HtmlWin->LoadPage(contents[nItem].GetFullPath());
+                }
                 m_UpdateContents = true;
             }
             break;

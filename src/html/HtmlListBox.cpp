@@ -51,6 +51,23 @@ const wxString lmHtmlListBoxNameStr = wxT("htmlListBox");
 // ============================================================================
 
 //-----------------------------------------------------------------------------
+// lmHtmlSpacerCell
+//-----------------------------------------------------------------------------
+
+class lmHtmlSpacerCell : public wxHtmlCell
+{
+    public:
+        lmHtmlSpacerCell(int width) : wxHtmlCell() {m_Width = width; }
+        void Draw(wxDC& dc, int x, int y, int view_y1, int view_y2,
+            wxHtmlRenderingInfo& info) {};
+        void Layout(int w)
+            { wxHtmlCell::Layout(m_Width); }
+
+      DECLARE_NO_COPY_CLASS(lmHtmlSpacerCell)
+};
+
+
+//-----------------------------------------------------------------------------
 // lmHLB_TagHandler
 //-----------------------------------------------------------------------------
 
@@ -60,7 +77,7 @@ public:
         lmHLB_TagHandler() : wxHtmlWinTagHandler()
         {
         }
-        wxString GetSupportedTags() { return wxT("AX"); }
+        wxString GetSupportedTags() { return wxT("AX,TOCITEM"); }
         bool HandleTag(const wxHtmlTag& tag);
 
     DECLARE_NO_COPY_CLASS(lmHLB_TagHandler)
@@ -69,32 +86,155 @@ public:
 
 bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
 {
-    if (tag.HasParam( wxT("HREF") ))
+    if (tag.GetName() == wxT("AX"))
     {
-        wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
-        //wxColour oldclr = m_WParser->GetActualColor();
-        //int oldund = m_WParser->GetFontUnderlined();
-        wxString name(tag.GetParam( wxT("HREF") )), target;
+        if (tag.HasParam( wxT("HREF") ))
+        {
+            wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
+            //wxColour oldclr = m_WParser->GetActualColor();
+            //int oldund = m_WParser->GetFontUnderlined();
+            wxString name(tag.GetParam( wxT("HREF") )), target;
 
-        if (tag.HasParam( wxT("TARGET") )) target = tag.GetParam( wxT("TARGET") );
-        //m_WParser->SetActualColor(m_WParser->GetLinkColor());
-        //m_WParser->GetContainer()->InsertCell(new wxHtmlColourCell(m_WParser->GetLinkColor()));
-        //m_WParser->SetFontUnderlined(true);
-        //m_WParser->GetContainer()->InsertCell(new wxHtmlFontCell(m_WParser->CreateCurrentFont()));
-        m_WParser->SetLink(wxHtmlLinkInfo(name, target));
-        //m_WParser->GetContainer()->SetBackgroundColour(*wxRED);
+            if (tag.HasParam( wxT("TARGET") )) target = tag.GetParam( wxT("TARGET") );
+            //m_WParser->SetActualColor(m_WParser->GetLinkColor());
+            //m_WParser->GetContainer()->InsertCell(new wxHtmlColourCell(m_WParser->GetLinkColor()));
+            //m_WParser->SetFontUnderlined(true);
+            //m_WParser->GetContainer()->InsertCell(new wxHtmlFontCell(m_WParser->CreateCurrentFont()));
+            m_WParser->SetLink(wxHtmlLinkInfo(name, target));
+            //m_WParser->GetContainer()->SetBackgroundColour(*wxRED);
+
+            ParseInner(tag);
+
+            m_WParser->SetLink(oldlnk);
+            //m_WParser->SetFontUnderlined(oldund);
+            //m_WParser->GetContainer()->InsertCell(new wxHtmlFontCell(m_WParser->CreateCurrentFont()));
+            //m_WParser->SetActualColor(oldclr);
+            //m_WParser->GetContainer()->InsertCell(new wxHtmlColourCell(oldclr));
+
+            return true;
+        }
+        else return false;
+    }
+    else if (tag.GetName() == wxT("TOCITEM"))
+    {
+        // Get all parameters
+
+        // item level
+        long nLevel;
+        if (!tag.HasParam( _T("LEVEL") )) wxASSERT(false);
+        wxString sLevel(tag.GetParam( _T("LEVEL") ));
+        if (!sLevel.ToLong(&nLevel)) wxASSERT(false);
+
+        // item number
+        long nItem;
+        if (!tag.HasParam( _T("ITEM") )) wxASSERT(false);
+        wxString sItem(tag.GetParam( _T("ITEM") ));
+        if (!sItem.ToLong(&nItem)) wxASSERT(false);
+
+        // expand icon
+        if (!tag.HasParam( _T("EXPAND") )) wxASSERT(false);
+        wxString sExpand(tag.GetParam( _T("EXPAND") ));
+
+        // item icon
+        if (!tag.HasParam( _T("ICON") )) wxASSERT(false);
+        wxString sIcon(tag.GetParam( _T("ICON") ));
+
+        // image (optional)
+        wxString sImage = wxEmptyString;
+        if (tag.HasParam( _T("IMG") )) {
+            sImage = tag.GetParam( _T("IMG") );
+        }
+
+            //Create the entry
+
+        // indentation
+        int nIndent = nLevel * 24;
+        if (sExpand == _T("no")) nIndent += 16;
+        m_WParser->GetContainer()->SetIndent(nIndent, wxHTML_INDENT_LEFT);
+
+        // aligment
+        m_WParser->GetContainer()->SetAlignVer(wxHTML_ALIGN_CENTER);
+
+        wxString sPath = _T("c:\\usr\\desarrollo_wx\\lenmus\\res\\icons\\");
+        // expand / collapse image
+        if (sExpand == _T("+")) {
+            wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
+            wxString name = wxString::Format(_T("open%d"), nItem);
+            m_WParser->SetLink(wxHtmlLinkInfo(name, wxEmptyString));
+
+            m_WParser->SetSourceAndSaveState(_T("<img src='") + sPath + _T("nav_plus_16.png' width='16' height='16' />"));
+            m_WParser->DoParsing();
+            m_WParser->RestoreState();
+
+            m_WParser->SetLink(oldlnk);
+        }
+        else if (sExpand == _T("-")) {
+            wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
+            wxString name = wxString::Format(_T("close%d"), nItem);
+            m_WParser->SetLink(wxHtmlLinkInfo(name, wxEmptyString));
+
+            m_WParser->SetSourceAndSaveState(_T("<img src='") + sPath + _T("nav_minus_16.png' width='16' height='16' />"));
+            m_WParser->DoParsing();
+            m_WParser->RestoreState();
+
+            m_WParser->SetLink(oldlnk);
+
+        }
+
+        // item icon
+        wxString sIconImg = sPath;
+        if (sIcon == _T("closed_book"))
+            sIconImg += _T("nav_book_closed_16.png");
+        else if (sIcon == _T("open_book"))
+            sIconImg += _T("nav_book_open_16.png");
+        else if (sIcon == _T("closed_folder"))
+            sIconImg += _T("nav_folder_closed_16.png");
+        else if (sIcon == _T("open_folder"))
+            sIconImg += _T("nav_folder_open_16.png");
+        else if (sIcon == _T("page"))
+            sIconImg += _T("nav_page_16.png");
+        else {
+            wxASSERT(false);
+        }
+        m_WParser->SetSourceAndSaveState(_T("<img src='") + sIconImg + _T("' />"));
+        m_WParser->DoParsing();
+        m_WParser->RestoreState();
+        m_WParser->GetContainer()->InsertCell(new lmHtmlSpacerCell(8));
+
+        // item image
+        // Only drawn in final items
+        bool fDrawImage = (sImage != wxEmptyString && sIcon == _T("page"));
+        if (fDrawImage) {
+            wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
+            wxString name = wxString::Format(_T("item%d"), nItem);
+            m_WParser->SetLink(wxHtmlLinkInfo(name, wxEmptyString));
+
+            m_WParser->SetSourceAndSaveState(_T("<img src='") + sImage + _T("' height='36' />"));
+            m_WParser->DoParsing();
+            m_WParser->RestoreState();
+
+            m_WParser->SetLink(oldlnk);
+        }
+
+        // item text
+        if (fDrawImage) {
+            m_WParser->CloseContainer();
+            m_WParser->OpenContainer();
+            m_WParser->GetContainer()->SetIndent(nIndent+25, wxHTML_INDENT_LEFT);
+        }
+        m_WParser->GetContainer()->SetWidthFloat(10000, wxHTML_UNITS_PIXELS);   //force no wrap
+
+        wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
+        wxString name = wxString::Format(_T("item%d"), nItem);
+        m_WParser->SetLink(wxHtmlLinkInfo(name, wxEmptyString));
 
         ParseInner(tag);
-
         m_WParser->SetLink(oldlnk);
-        //m_WParser->SetFontUnderlined(oldund);
-        //m_WParser->GetContainer()->InsertCell(new wxHtmlFontCell(m_WParser->CreateCurrentFont()));
-        //m_WParser->SetActualColor(oldclr);
-        //m_WParser->GetContainer()->InsertCell(new wxHtmlColourCell(oldclr));
 
         return true;
+
     }
-    else return false;
+    return false;   //to get compiler happy
 }
 
 
@@ -271,6 +411,8 @@ void lmHtmlListBox::Init()
     m_htmlParser = NULL;
     m_htmlRendStyle = new lmHtmlListBoxStyle(*this);
     m_cache = new lmHtmlListBoxCache;
+    m_pTagHandler = (wxHtmlWinTagHandler*)NULL;
+
 }
 
 bool lmHtmlListBox::Create(wxWindow *parent,
@@ -292,6 +434,8 @@ lmHtmlListBox::~lmHtmlListBox()
         delete m_htmlParser->GetDC();
         delete m_htmlParser;
     }
+    if (m_pTagHandler)
+        delete m_pTagHandler;
 
     delete m_htmlRendStyle;
 }
@@ -302,14 +446,14 @@ lmHtmlListBox::~lmHtmlListBox()
 
 wxColour lmHtmlListBox::GetSelectedTextColour(const wxColour& colFg) const
 {
-    return m_htmlRendStyle->
-                wxDefaultHtmlRenderingStyle::GetSelectedTextColour(colFg);
+    return *wxWHITE; //m_htmlRendStyle->
+                //wxDefaultHtmlRenderingStyle::GetSelectedTextColour(colFg);
 }
 
 wxColour
 lmHtmlListBox::GetSelectedTextBgColour(const wxColour& WXUNUSED(colBg)) const
 {
-    return GetSelectionBackground();
+    return wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT); //GetSelectionBackground();
 }
 
 // ----------------------------------------------------------------------------
@@ -337,7 +481,8 @@ void lmHtmlListBox::CacheItem(size_t n) const
             lmHtmlListBox *self = wxConstCast(this, lmHtmlListBox);
 
             self->m_htmlParser = new wxHtmlWinParser(self);
-            lmHLB_TagHandler *handler = new lmHLB_TagHandler();
+            lmHLB_TagHandler* handler = new lmHLB_TagHandler();
+            //m_pTagHandler = (wxHtmlWinTagHandler*)handler;
             m_htmlParser->AddTagHandler(handler);
 
             m_htmlParser->SetDC(new wxClientDC(self));
@@ -439,8 +584,32 @@ wxCoord lmHtmlListBox::OnMeasureItem(size_t n) const
     wxHtmlCell *cell = m_cache->Get(n);
     wxCHECK_MSG( cell, 0, _T("this cell should be cached!") );
 
-    return cell->GetHeight() + cell->GetDescent() + 4;
+    return cell->GetHeight() + cell->GetDescent(); // + 4;
 }
+
+void lmHtmlListBox::OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) const
+{
+    // we need to render selected and current items differently
+    const bool isSelected = IsSelected(n),
+               isCurrent = IsCurrent(n);
+    if ( isSelected || isCurrent )
+    {
+        if ( isSelected )
+        {
+            dc.SetBrush( wxBrush(GetSelectionBackground(), wxSOLID) );
+        }
+        else // !selected
+        {
+            dc.SetBrush(*wxTRANSPARENT_BRUSH);
+        }
+
+        dc.SetPen(*(isCurrent ? wxBLACK_PEN : wxTRANSPARENT_PEN));
+
+        //dc.DrawRectangle(rect);
+    }
+    //else: do nothing for the normal items
+}
+
 
 // ----------------------------------------------------------------------------
 // lmHtmlListBox implementation of wxHtmlListBoxWinInterface
