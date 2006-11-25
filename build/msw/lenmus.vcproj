@@ -673,16 +673,16 @@
 				RelativePath="..\..\src\html\BookData.h">
 			</File>
 			<File
+				RelativePath="..\..\src\html\ContentsBoxCtrol.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\html\ContentsBoxCtrol.h">
+			</File>
+			<File
 				RelativePath="..\..\src\html\HelpController.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\html\HelpController.h">
-			</File>
-			<File
-				RelativePath="..\..\src\html\HtmlListBox.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\html\HtmlListBox.h">
 			</File>
 			<File
 				RelativePath="..\..\src\html\HtmlWindow.cpp">

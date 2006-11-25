@@ -406,32 +406,25 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
     // Get entry id
     sId = m_pParser->GetAttribute(pNode, _T("id"));
 
-    // firts node: page
+    // process children
     pNode = m_pParser->GetFirstChild(pNode);
     wxXmlNode* pElement = pNode;
-    wxString sElement = pElement->GetName();
-    wxString sTag = _T("page");
-    if (sElement != sTag) {
-        wxLogMessage(_T("Loading eBook. Error: Expected tag <%s> but found <%s>"),
-            sTag, sElement);
-        return false;   //error
-    }
-    sPage = m_pParser->GetText(pNode);
-
-    // next node: <title> / <image> / or both
-    pNode = m_pParser->GetNextSibling(pNode);
-    pElement = pNode;
     bool fTitleImage = false;        //to control that title or image exists
+    wxString sElement;
     while (pElement)
     {
         sElement = pElement->GetName();
         if (sElement == _T("image")) {
-            sImage = m_pParser->GetText(pNode);
+            sImage = m_pParser->GetText(pElement);
             fTitleImage = true;
         }
         else if (sElement == _T("title")) {
-            sTitle = m_pParser->GetText(pNode);
+            sTitle = m_pParser->GetText(pElement);
             fTitleImage = true;
+        }
+        else if (sElement == _T("page")) {
+            // page node
+            sPage = m_pParser->GetText(pElement);
         }
         else {
             break;
@@ -440,7 +433,7 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
         pElement = pNode;
     }
     if (!fTitleImage) {
-        wxLogMessage(_T("Loading eBook. Error: Expected tag <title>/<Imgage> but none of them found."));
+        wxLogMessage(_T("Loading eBook. Error: Expected tag <title>/<Image> but none of them found."));
         return false;   //error
     }
 
@@ -456,7 +449,7 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
 
     //process sub-entries, if exist
     nLevel++;
-    sTag = _T("entry");
+    wxString sTag = _T("entry");
     while (pElement)
     {
         sElement = pElement->GetName();

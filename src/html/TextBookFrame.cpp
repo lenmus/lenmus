@@ -450,7 +450,8 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
             topsizer->Add(sizer, 0, wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT, 10);
         }
 
-        m_pContentsBox = new lmBookContentsBox(pPanel, this, ID_TREECTRL);
+        m_pContentsBox = new lmBookContentsBox(pPanel, this, ID_TREECTRL, 
+                                wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER );
         m_pContentsBox->AssignImageList(ContentsImageList);
         topsizer->Add(m_pContentsBox, 1,
                       wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT,

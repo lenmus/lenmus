@@ -29,7 +29,8 @@
 #include "wx/treectrl.h"
 #include "wx/dynarray.h"
 
-#include "HtmlListBox.h"
+//#include "HtmlListBox.h"
+#include "ContentsBoxCtrol.h"
 #include "BookData.h"
 
 typedef struct lmTreeContentRecordStruct {
@@ -49,7 +50,7 @@ WX_DECLARE_STRING_HASH_MAP( int, lmPagesHash );
 
 class wxWindow;
 
-class lmBookContentsBox : public lmHtmlListBox
+class lmBookContentsBox : public lmContentsBoxCtrol
 {
 public:
     lmBookContentsBox() { }
@@ -76,7 +77,7 @@ public:
     void CreateContents(lmBookData* pBookData);
     void ChangePage();
 
-    void Expand(int nItem);
+    void Expand(int nItem, bool fRefresh=true);
     void Collapse(int nItem);
 
 

@@ -45,7 +45,7 @@ extern lmPaths* g_pPaths;
 WX_DEFINE_OBJARRAY(lmTreeArray)
 
 
-// to use lmHtmlListBox you must derive a new class from it as you must
+// to use lmContentsBoxCtrol you must derive a new class from it as you must
 // implement pure OnGetItem()
 
 
@@ -53,7 +53,7 @@ WX_DEFINE_OBJARRAY(lmTreeArray)
 // lmBookContentsBox implementation
 // ============================================================================
 
-IMPLEMENT_DYNAMIC_CLASS(lmBookContentsBox, lmHtmlListBox)
+IMPLEMENT_DYNAMIC_CLASS(lmBookContentsBox, lmContentsBoxCtrol)
 
 lmBookContentsBox::lmBookContentsBox(wxWindow* parent,
                                      wxFrame* pFrame,
@@ -61,7 +61,7 @@ lmBookContentsBox::lmBookContentsBox(wxWindow* parent,
                                      const wxPoint& pos,
                                      const wxSize& size, long style,
                                      const wxString& name)
-             : lmHtmlListBox(parent, id, pos, size, style, name)
+             : lmContentsBoxCtrol(parent, id, pos, size, style, name)
 {
     m_pFrame = pFrame;
 
@@ -133,10 +133,24 @@ void lmBookContentsBox::DeleteAllItems()
     m_cItems.Clear();
 }
 
-void lmBookContentsBox::EnsureVisible(const long& item)
+void lmBookContentsBox::EnsureVisible(const long& nItem)
 {
     //Scrolls and/or expands items to ensure that the given item is visible.
-    //SetSelection(item);
+
+    // Locate its parents and open them
+    int nCurLevel = m_aTree[nItem].nLevel;
+
+    for(int i=nItem-1; i >= 0 && nCurLevel > 0; i--)
+    {
+        if (m_aTree[i].nLevel < nCurLevel) {
+           if (!m_aTree[i].fOpen) Expand(i, false);        //false: do not refresh yet
+           nCurLevel = m_aTree[i].nLevel;
+        }
+    }
+
+    RefreshAll();
+    SetSelection(nItem);
+
 }
 
 wxTreeItemData* lmBookContentsBox::GetItemData(const long& item) const
@@ -228,6 +242,20 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
 
     }
 
+    // DBG ------------------------------------------------------------------
+    // Dump m_aTree
+    wxLogMessage(_T("[lmBookContentsBox::CreateContents]:"));
+    wxLogMessage(_T("          level  visible open    children"));
+    for(int i=0; i < (int)m_aTree.size(); i++) {
+        wxLogMessage(_T("entry %d : %d      %s      %s      %s"),
+            i,
+            m_aTree[i].nLevel,
+            (m_aTree[i].fOpen ? _T("yes") : _T("no")),
+            (m_aTree[i].fVisible ? _T("yes") : _T("no")),
+            (m_aTree[i].fHasChildren ? _T("yes") : _T("no")) );
+    }
+    // DBG end --------------------------------------------------------------
+
     //re-build page hash table
     m_PagesHash.clear();
     for (long i = 0; i < nNumItems; i++)
@@ -256,75 +284,6 @@ int lmBookContentsBox::LocateItem(int n) const
 
 wxString lmBookContentsBox::FormatItem(int nTree) const
 {
-#if 0
-    wxString sLine;
-    wxString sImgPlus = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
-        sImgPlus += g_pPaths->GetImagePath() + _T("nav_plus_16.png'>");
-
-    wxString sImgMinus = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
-        sImgMinus += g_pPaths->GetImagePath() + _T("nav_minus_16.png'>");
-
-    const wxString sEndLine = _T("</td></tr></table>");
-
-    wxString sItemImg = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
-        sItemImg += g_pPaths->GetImagePath() + _T("nav_space_36.png' height='36' width='");
-
-    wxString sItemNoImg = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
-        sItemNoImg += g_pPaths->GetImagePath() + _T("nav_space_36.png' height='16' width='");
-
-    wxString sNavPageImg = _T("<img border='0' src='");
-        sNavPageImg += g_pPaths->GetImagePath() + _T("nav_page_36.png'>");
-
-    wxString sNavPageNoImg = _T("<img border='0' src='");
-        sNavPageNoImg += g_pPaths->GetImagePath() + _T("nav_page_16.png'>");
-
-    sLine = wxEmptyString;
-
-    //If this node has children add expand/collapse icon
-    if (m_aTree[nTree].fHasChildren) {
-        if (m_aTree[nTree].fOpen) {
-            sLine += wxString::Format(_T("<ax href=\"close%d\">"), nTree);
-            sLine += sImgMinus + _T("<img src=\"");
-            sLine += g_pPaths->GetImagePath();
-            sLine += _T("nav_book_open_16.png\"></ax><b>");
-        }
-        else {
-            sLine += wxString::Format(_T("<ax href=\"open%d\">"), nTree);
-            sLine += sImgPlus + _T("<img src=\"");
-            sLine += g_pPaths->GetImagePath();
-            sLine += _T("nav_book_closed_16.png\"></ax><b>");
-        }
-    }
-
-    if (m_aTree[nTree].nLevel == 0) {
-        // It is a book node
-        sLine += m_aTree[nTree].sTitle + _T("</b>") + sEndLine;
-
-    }
-    else {
-        // it is a content node
-        sLine += ((m_aTree[nTree].sImage).IsEmpty() ? sItemNoImg : sItemImg);
-        sLine += wxString::Format(_T("%d'>"), (1+m_aTree[nTree].nLevel)*16);   //16 pixels per level
-        sLine += ((m_aTree[nTree].sImage).IsEmpty() ? sNavPageNoImg : sNavPageImg);
-
-        if (!(m_aTree[nTree].sImage).IsEmpty()) {
-            sLine += wxString::Format(_T("<ax href=\"item%d\">"), nTree);
-            sLine += _T("<img border='0' src='");
-            sLine += m_aTree[nTree].sImage;
-            sLine += _T("'></ax><br /><img src='");
-            sLine += g_pPaths->GetImagePath();
-            sLine += _T("nav_space_36.png' height='16' width='");
-            sLine += wxString::Format(_T("%d'>"), 40+16*m_aTree[nTree].nLevel);
-        }
-        else {
-            sLine += _T("&nbsp;&nbsp;");
-        }
-        sLine += wxString::Format(_T("<ax href=\"item%d\">"), nTree);
-        sLine += m_aTree[nTree].sTitle + _T("</ax>") + sEndLine;
-    }
-
-    return sLine;
-#else
     wxString sLine;
     sLine = _T("<tocitem expand='");
 
@@ -353,11 +312,13 @@ wxString lmBookContentsBox::FormatItem(int nTree) const
                     m_aTree[nTree].nLevel, nTree );
 
     // add the title
-    sLine += m_aTree[nTree].sTitle + _T("</tocitem>");
+    if (m_aTree[nTree].nLevel == 0) sLine += _T("<b>");
+    sLine += m_aTree[nTree].sTitle;
+    if (m_aTree[nTree].nLevel == 0) sLine += _T("</b>");
+    sLine += _T("</tocitem>");
 
     return sLine;
 
-#endif
 }
 
 void lmBookContentsBox::ChangePage()
@@ -387,15 +348,13 @@ void lmBookContentsBox::ChangePage()
     }
 }
 
-void lmBookContentsBox::Expand(int nItem)
+void lmBookContentsBox::Expand(int nItem, bool fRefresh)
 {
-    int nIdx = LocateItem(nItem);
-    int nCurLevel = m_aTree[nIdx].nLevel;
-
-    m_aTree[nIdx].fOpen = true;     // mark it as 'open'
+    int nCurLevel = m_aTree[nItem].nLevel;
+    m_aTree[nItem].fOpen = true;     // mark it as 'open'
 
     //mark all its children as closed but visible
-    for(int i=nIdx+1; i < (int)m_aTree.GetCount(); i++)
+    for(int i=nItem+1; i < (int)m_aTree.GetCount(); i++)
     {
         if (m_aTree[i].nLevel == nCurLevel) break;
         if (m_aTree[i].nLevel == nCurLevel+1) {
@@ -403,7 +362,7 @@ void lmBookContentsBox::Expand(int nItem)
             m_aTree[i].fVisible = true;
         }
     }
-    RefreshAll();
+    if (fRefresh) RefreshAll();
 
     //wxLogMessage(_T("[lmBookContentsBox::Expand] Table m_aTree:"));
     //wxLogMessage(_T("i\tlevel    visible\topen\tchildren"));
@@ -420,13 +379,11 @@ void lmBookContentsBox::Expand(int nItem)
 
 void lmBookContentsBox::Collapse(int nItem)
 {
-    int nIdx = LocateItem(nItem);
-    int nCurLevel = m_aTree[nIdx].nLevel;
-
-    m_aTree[nIdx].fOpen = false;     // mark it as 'closed'
+    int nCurLevel = m_aTree[nItem].nLevel;
+    m_aTree[nItem].fOpen = false;     // mark it as 'closed'
 
     //mark all its children as closed and not visible
-    for(int i=nIdx+1; i < (int)m_aTree.GetCount(); i++)
+    for(int i=nItem+1; i < (int)m_aTree.GetCount(); i++)
     {
         if (m_aTree[i].nLevel == nCurLevel) break;
         m_aTree[i].fOpen = false;
