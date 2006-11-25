@@ -67,7 +67,7 @@ lmBookContentsBox::lmBookContentsBox(wxWindow* parent,
 
     SetSelectionBackground(*wxWHITE);
 
-    SetMargins(5, 5);
+    SetMargins(5, 0);       //5px left, 0px items separation
     SetItemCount(1);
     //SetSelection(1);
 }
@@ -82,6 +82,19 @@ wxString lmBookContentsBox::OnGetItem(size_t n) const
     int i = LocateItem(int(n));
     if (i == -1) return wxEmptyString;
     return FormatItem(i);
+
+}
+
+
+// ============================================================================
+// Overrides
+// ============================================================================
+
+void lmBookContentsBox::DoHandleItemClick(int item, int flags)
+{
+    // the item should become the current one only if it is a final node
+    int nItem = LocateItem(item);
+    if (!m_aTree[nItem].fHasChildren) SetSelection(item);
 
 }
 
@@ -148,8 +161,8 @@ void lmBookContentsBox::EnsureVisible(const long& nItem)
         }
     }
 
-    RefreshAll();
     SetSelection(nItem);
+    RefreshAll();
 
 }
 
@@ -207,7 +220,7 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
         lmBookIndexItem *it = &contents[i];
 
         // set path for images
-        if (i == 0)
+        if (it->level == 0)
         {
             wxFileSystem& oFS = GetFileSystem();
             wxFileName oFN( (it->pBookRecord)->GetBasePath() );

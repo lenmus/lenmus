@@ -67,7 +67,7 @@ FORCE_WXHTML_MODULES()
 // ----------------------------------------------------------------------------
 
 // small border always added to the cells:
-static const wxCoord CELL_BORDER = 2;
+static const wxCoord CELL_BORDER = 0;
 
 const wxString lmHtmlListBoxNameStr = wxT("lmContentsBoxCtrol");
 
@@ -150,6 +150,8 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
         m_WParser->GetContainer()->SetAlignVer(wxHTML_ALIGN_CENTER);
 
         wxString sPath = _T("c:\\usr\\desarrollo_wx\\lenmus\\res\\icons\\");
+        wxString sItemLink = wxString::Format(_T("item%d"), nItem);
+
         // expand / collapse image
         if (sExpand == _T("+")) {
             wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
@@ -161,6 +163,7 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
             m_WParser->RestoreState();
 
             m_WParser->SetLink(oldlnk);
+            sItemLink = name;   //collapsable items do not have contents
         }
         else if (sExpand == _T("-")) {
             wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
@@ -172,13 +175,12 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
             m_WParser->RestoreState();
 
             m_WParser->SetLink(oldlnk);
-
+            sItemLink = name;   //collapsable items do not have contents
         }
 
         // start link to item page
         wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
-        wxString name = wxString::Format(_T("item%d"), nItem);
-        m_WParser->SetLink(wxHtmlLinkInfo(name, wxEmptyString));
+        m_WParser->SetLink(wxHtmlLinkInfo(sItemLink, wxEmptyString));
 
         // item icon
         wxString sIconImg = sPath;
@@ -204,6 +206,7 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
         // Only drawn in final items
         bool fDrawImage = (sImage != wxEmptyString && sIcon == _T("page"));
         if (fDrawImage) {
+            m_WParser->GetContainer()->SetWidthFloat(10000, wxHTML_UNITS_PIXELS);   //force no wrap
             m_WParser->SetSourceAndSaveState(_T("<img src='") + sImage + _T("' height='36' />"));
             m_WParser->DoParsing();
             m_WParser->RestoreState();
@@ -329,15 +332,15 @@ private:
 };
 
 // ----------------------------------------------------------------------------
-// lmHtmlListBoxStyle
+// lmContentsBoxStyle
 // ----------------------------------------------------------------------------
 
 // just forward wxDefaultHtmlRenderingStyle callbacks to the main class so that
 // they could be overridden by the user code
-class lmHtmlListBoxStyle : public wxDefaultHtmlRenderingStyle
+class lmContentsBoxStyle : public wxDefaultHtmlRenderingStyle
 {
 public:
-    lmHtmlListBoxStyle(const lmContentsBoxCtrol& hlbox) : m_hlbox(hlbox) { }
+    lmContentsBoxStyle(const lmContentsBoxCtrol& hlbox) : m_hlbox(hlbox) { }
 
     virtual wxColour GetSelectedTextColour(const wxColour& colFg)
     {
@@ -352,7 +355,7 @@ public:
 private:
     const lmContentsBoxCtrol& m_hlbox;
 
-    DECLARE_NO_COPY_CLASS(lmHtmlListBoxStyle)
+    DECLARE_NO_COPY_CLASS(lmContentsBoxStyle)
 };
 
 // ----------------------------------------------------------------------------
@@ -399,7 +402,7 @@ void lmContentsBoxCtrol::Init()
     m_anchor = wxNOT_FOUND;
 
     m_htmlParser = NULL;
-    m_htmlRendStyle = new lmHtmlListBoxStyle(*this);
+    m_htmlRendStyle = new lmContentsBoxStyle(*this);
     m_cache = new lmHtmlListBoxCache;
 
 }
@@ -413,7 +416,7 @@ bool lmContentsBoxCtrol::Create(wxWindow *parent, wxWindowID id, const wxPoint& 
 
     // make sure the native widget has the right colour since we do
     // transparent drawing by default
-    SetBackgroundColour(GetBackgroundColour());
+    SetBackgroundColour( *wxWHITE );    //GetBackgroundColour());
     m_colBgSel = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
 
     // flicker-free drawing requires this
@@ -450,14 +453,6 @@ void lmContentsBoxCtrol::SetItemCount(size_t count)
 bool lmContentsBoxCtrol::IsSelected(size_t line) const
 {
     return (int)line == m_current;
-}
-
-bool lmContentsBoxCtrol::Select(size_t item, bool select)
-{
-    wxCHECK_MSG( m_selStore, false,
-                 _T("Select() may only be used with multiselection listbox") );
-
-    return changed;
 }
 
 bool lmContentsBoxCtrol::DoSetCurrent(int current)
@@ -519,15 +514,6 @@ void lmContentsBoxCtrol::SetSelection(int selection)
                   (selection >= 0 && (size_t)selection < GetItemCount()),
                   _T("lmContentsBoxCtrol::SetSelection(): invalid item index") );
 
-    if ( HasMultipleSelection() )
-    {
-        if (selection != wxNOT_FOUND)
-            Select(selection);
-        else
-            DeselectAll();
-        m_anchor = selection;
-    }
-
     DoSetCurrent(selection);
 }
 
@@ -557,8 +543,7 @@ void lmContentsBoxCtrol::SetSelectionBackground(const wxColour& col)
 
 wxColour lmContentsBoxCtrol::GetSelectedTextColour(const wxColour& colFg) const
 {
-    return *wxWHITE; //m_htmlRendStyle->
-                //wxDefaultHtmlRenderingStyle::GetSelectedTextColour(colFg);
+    return *wxWHITE;
 }
 
 wxColour lmContentsBoxCtrol::GetSelectedTextBgColour(const wxColour& WXUNUSED(colBg)) const
@@ -670,6 +655,9 @@ void lmContentsBoxCtrol::OnDrawItem(wxDC& dc, const wxRect& rect, size_t n) cons
             htmlRendInfo.SetStyle(m_htmlRendStyle);
         htmlRendInfo.GetState().SetSelectionState(wxHTML_SEL_IN);
     }
+    else {
+
+    }
 
     // note that we can't stop drawing exactly at the window boundary as then
     // even the visible cells part could be not drawn, so always draw the
@@ -691,23 +679,15 @@ wxCoord lmContentsBoxCtrol::OnMeasureItem(size_t n) const
 
 void lmContentsBoxCtrol::OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) const
 {
-    //Override of base class to not draw a rectangle around the selected item.
-    //Also, ignore current ite: only change background for selected item
+    if ( IsSelected(n) )
+    {
+        dc.SetBrush( wxBrush(GetSelectionBackground(), wxSOLID) );
+    }
+    else // !selected
+    {
+        dc.SetBrush( wxBrush(*wxWHITE, wxSOLID) );
+    }
 
-    const bool isSelected = IsSelected(n),
-               isCurrent = IsCurrent(n);
-    //if ( isSelected || isCurrent )
-    //{
-        if ( isSelected )
-        {
-            dc.SetBrush( wxBrush(GetSelectionBackground(), wxSOLID) );
-        }
-    //    else // !selected
-    //    {
-    //        dc.SetBrush(*wxTRANSPARENT_BRUSH);
-    //    }
-    //}
-    //else: do nothing for the normal items
 }
 
 
@@ -789,73 +769,8 @@ void lmContentsBoxCtrol::DoHandleItemClick(int item, int flags)
     // has anything worth telling the client code about happened?
     bool notify = false;
 
-    if ( HasMultipleSelection() )
-    {
-        // select the iteem clicked?
-        bool select = true;
-
-        // NB: the keyboard interface we implement here corresponds to
-        //     wxLB_EXTENDED rather than wxLB_MULTIPLE but this one makes more
-        //     sense IMHO
-        if ( flags & ItemClick_Shift )
-        {
-            if ( m_current != wxNOT_FOUND )
-            {
-                if ( m_anchor == wxNOT_FOUND )
-                    m_anchor = m_current;
-
-                select = false;
-
-                // only the range from the selection anchor to new m_current
-                // must be selected
-                if ( DeselectAll() )
-                    notify = true;
-
-                //if ( SelectRange(m_anchor, item) )
-                //    notify = true;
-            }
-            //else: treat it as ordinary click/keypress
-        }
-        else // Shift not pressed
-        {
-            m_anchor = item;
-
-            if ( flags & ItemClick_Ctrl )
-            {
-                select = false;
-
-                if ( !(flags & ItemClick_Kbd) )
-                {
-                    Toggle(item);
-
-                    // the status of the item has definitely changed
-                    notify = true;
-                }
-                //else: Ctrl-arrow pressed, don't change selection
-            }
-            //else: behave as in single selection case
-        }
-
-        if ( select )
-        {
-            // make the clicked item the only selection
-            if ( DeselectAll() )
-                notify = true;
-
-            if ( Select(item) )
-                notify = true;
-        }
-    }
-
-    // in any case the item should become the current one
-    if ( DoSetCurrent(item) )
-    {
-        if ( !HasMultipleSelection() )
-        {
-            // this has also changed the selection for single selection case
-            notify = true;
-        }
-    }
+    // the item should become the current one only if it is a final note
+    DoSetCurrent(item);
 
     if ( notify )
     {
@@ -1152,17 +1067,6 @@ void lmContentsBoxCtrol::OnInternalIdle()
 
         wxHtmlWindowMouseHelper::HandleIdle(cell, pos);
     }
-}
-
-// ----------------------------------------------------------------------------
-// use the same default attributes as wxListBox
-// ----------------------------------------------------------------------------
-
-//static
-wxVisualAttributes
-lmContentsBoxCtrol::GetClassDefaultAttributes(wxWindowVariant variant)
-{
-    return wxListBox::GetClassDefaultAttributes(variant);
 }
 
 #endif

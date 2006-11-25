@@ -131,6 +131,7 @@
 #include "../globals/Paths.h"
 #include "../globals/Colors.h"
 
+#include "../html/VirtualBooks.h"       //for virtual eBooks file system
 
 //-------------------------------------------------------------------------------------------
 // global variables

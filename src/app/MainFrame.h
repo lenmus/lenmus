@@ -44,10 +44,6 @@
 #include "global.h"
 #include "../sound/Metronome.h"
 
-// to use html help controller
-#include "wx/html/helpctrl.h"
-#include "../html/TextBookController.h"
-#include "../html/HelpController.h"
 
 #include "wx/numdlg.h"
 
@@ -55,6 +51,10 @@
 #include "wx/aui/aui.h"     //"manager.h"
 
 #include "../mdi/DocViewMDI.h"
+
+class lmTextBookController;
+class lmHtmlWindow;
+class lmHelpController;
 
 
 //IDs for menu events that must be public (i.e. to generate them by program)

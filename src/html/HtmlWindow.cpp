@@ -40,6 +40,8 @@
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
 
+#include "TextBookController.h"
+
 
 /*! @page InternalLinks
    

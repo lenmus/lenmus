@@ -451,7 +451,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
         }
 
         m_pContentsBox = new lmBookContentsBox(pPanel, this, ID_TREECTRL, 
-                                wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER );
+                                wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
         m_pContentsBox->AssignImageList(ContentsImageList);
         topsizer->Add(m_pContentsBox, 1,
                       wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT,
@@ -855,126 +855,6 @@ void lmTextBookFrame::CreateContents()
     }
 }
 
-//    if (m_PagesHash)
-//    {
-//        WX_CLEAR_HASH_TABLE(*m_PagesHash);
-//        delete m_PagesHash;
-//    }
-//
-//    const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
-//
-//    size_t cnt = contents.size();
-//
-//    m_PagesHash = new wxHashTable(wxKEY_STRING, 2 * cnt);
-//
-//    const int MAX_ROOTS = 64;
-//    long roots[MAX_ROOTS];
-//    // VS: this array holds information about whether we've set item icon at
-//    //     given level. This is neccessary because m_pBookData has flat structure
-//    //     and there's no way of recognizing if some item has subitems or not.
-//    //     We set the icon later: when we find an item with level=n, we know
-//    //     that the last item with level=n-1 was folder with subitems, so we
-//    //     set its icon accordingly
-//    bool imaged[MAX_ROOTS];
-//    m_pContentsBox->DeleteAllItems();
-//
-//    roots[0] = m_pContentsBox->AddRoot(_("(Help)"));
-//    imaged[0] = true;
-//
-//    wxString sImagePath = wxEmptyString;
-//    wxString sLine;
-//    wxString sImgPlus = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
-//        sImgPlus += g_pPaths->GetImagePath() + _T("nav_plus_16.png'>");
-//
-//    wxString sImgMinus = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
-//        sImgMinus += g_pPaths->GetImagePath() + _T("nav_minus_16.png'>");
-//
-//    const wxString sEndLine = _T("</td></tr></table>");
-//
-//    wxString sItemImg = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
-//        sItemImg += g_pPaths->GetImagePath() + _T("nav_space_36.png' height='36' width='");
-//
-//    wxString sItemNoImg = _T("<table cellpadding='0' cellspacing='0'><tr><td nowrap><img src='");
-//        sItemNoImg += g_pPaths->GetImagePath() + _T("nav_space_36.png' height='16' width='");
-//
-//    wxString sNavPageImg = _T("<img border='0' src='");
-//        sNavPageImg += g_pPaths->GetImagePath() + _T("nav_page_36.png'>");
-//
-//    wxString sNavPageNoImg = _T("<img border='0' src='");
-//        sNavPageNoImg += g_pPaths->GetImagePath() + _T("nav_page_16.png'>");
-//
-//    for (size_t i = 0; i < cnt; i++)
-//    {
-//        lmBookIndexItem *it = &contents[i];
-//        if (it->level == 0) {
-//            // It is a book node
-//            sLine = sImgMinus + _T("<img src=\"");
-//            sLine += g_pPaths->GetImagePath();
-//            sLine += _T("nav_book_open_16.png\"><b>") +
-//                it->name + _T("</b>") + sEndLine;
-//
-//            roots[1] = m_pContentsBox->AppendItem(roots[0],
-//                                        sLine, sImagePath, IMG_Book, -1,
-//                                        new TextBookHelpTreeItemData(i));
-//            m_pContentsBox->SetItemBold(roots[1], true);
-//            imaged[1] = true;
-//
-//            // set path for images
-//            wxFileSystem& oFS = m_pContentsBox->GetFileSystem();
-//            lmBookRecord* pBookr = it->pBookRecord; 
-//            wxFileName oFN( pBookr->GetBasePath() );
-//            oFN.AppendDir( _T("img") );
-//            sImagePath = oFN.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-//        }
-//        else {
-//            // it is a content node
-//            sLine = ((it->image).IsEmpty() ? sItemNoImg : sItemImg);
-//            sLine += wxString::Format(_T("%d'>"), (1+it->level)*16);   //16 pixels per level
-//            sLine += ((it->image).IsEmpty() ? sNavPageNoImg : sNavPageImg);
-//
-//            if (!(it->image).IsEmpty()) {
-//                sLine += wxString::Format(_T("<ax href=\"item%d\">"), i);
-//                sLine += _T("<img border='0' src='");
-//                sLine += sImagePath;
-//                sLine += it->image;
-//                sLine += _T("'></ax><br /><img src='");
-//                sLine += g_pPaths->GetImagePath();
-//                sLine += _T("nav_space_36.png' height='16' width='");
-//                sLine += wxString::Format(_T("%d'>"), 40+16*it->level);
-//            }
-//            else {
-//                sLine += _T("&nbsp;&nbsp;");
-//            }
-//            sLine += wxString::Format(_T("<ax href=\"item%d\">"), i);
-//            sLine += it->name + _T("</ax>") + sEndLine;
-//
-//            roots[it->level + 1] = m_pContentsBox->AppendItem(
-//                                     roots[it->level], sLine, sImagePath, IMG_Page,
-//                                     -1, new TextBookHelpTreeItemData(i));
-//            imaged[it->level + 1] = false;
-//        }
-//
-//        m_PagesHash->Put(it->GetFullPath(),
-//                         new TextBookHelpHashData(i, roots[it->level + 1]));
-//
-//        // Set the icon for the node one level up in the hiearachy,
-//        // unless already done (see comment above imaged[] declaration)
-//        if (!imaged[it->level])
-//        {
-//            int image = IMG_Folder;
-//            if (m_hfStyle & wxHF_ICONS_BOOK)
-//                image = IMG_Book;
-//            else if (m_hfStyle & wxHF_ICONS_BOOK_CHAPTER)
-//                image = (it->level == 1) ? IMG_Book : IMG_Folder;
-//            m_pContentsBox->SetItemImage(roots[it->level], image);
-//            m_pContentsBox->SetItemImage(roots[it->level], image,
-//                                        wxTreeItemIcon_Selected);
-//            imaged[it->level] = true;
-//        }
-//    }
-//}
-
-
 void lmTextBookFrame::CreateIndex()
 {
     if (! m_IndexList)
@@ -1129,10 +1009,6 @@ void lmTextBookFrame::WriteCustomization(wxConfigBase *cfg, const wxString& path
     if (path != wxEmptyString)
         cfg->SetPath(oldpath);
 }
-
-
-
-
 
 static void SetFontsToHtmlWin(lmHtmlWindow *win, wxString scalf, wxString fixf, int size)
 {
@@ -1319,22 +1195,6 @@ void lmTextBookFrame::NotifyPageChanged()
         m_UpdateContents = true;
     }
 
-    //if (m_UpdateContents && m_PagesHash)
-    //{
-    //    wxString page = TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
-    //    TextBookHelpHashData *ha = NULL;
-    //    if (!page.empty())
-    //        ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
-
-    //    if (ha)
-    //    {
-    //        bool olduc = m_UpdateContents;
-    //        m_UpdateContents = false;
-    //        m_pContentsBox->SelectItem(ha->m_Id);
-    //        m_pContentsBox->EnsureVisible(ha->m_Id);
-    //        m_UpdateContents = olduc;
-    //    }
-    //}
 }
 
 wxString lmTextBookFrame::GetOpenedPageWithAnchor()
@@ -1611,11 +1471,11 @@ void lmTextBookFrame::OnContentsLinkClicked(wxHtmlLinkEvent& event)
             break;
 
         case eOpen:
-            m_pContentsBox->Expand(nItem);
+            if (m_pContentsBox) m_pContentsBox->Expand(nItem);
             break;
 
         case eClose:
-            m_pContentsBox->Collapse(nItem);
+            if (m_pContentsBox) m_pContentsBox->Collapse(nItem);
             break;
 
         default:

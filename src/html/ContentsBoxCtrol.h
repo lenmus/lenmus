@@ -41,16 +41,6 @@ class wxSelectionStore;
 // lmContentsBoxCtrol
 // ----------------------------------------------------------------------------
 
-/*
-    This class has two main differences from a regular listbox: it can have an
-    arbitrarily huge number of items because it doesn't store them itself but
-    uses OnDrawItem() callback to draw them and its items can have variable
-    height as determined by OnMeasureItem().
-
-    It emits the same events as wxListBox and the same event macros may be used
-    with it.
- */
-
 #include "wx/html/htmlwin.h"
 #include "wx/ctrlsub.h"
 
@@ -59,7 +49,7 @@ class wxSelectionStore;
 class wxHtmlCell;
 class wxHtmlWinParser;
 class lmHtmlListBoxCache;
-class lmHtmlListBoxStyle;
+class lmContentsBoxStyle;
 class lmHLB_TagHandler;
 
 extern const wxString lmHtmlListBoxNameStr;
@@ -89,14 +79,7 @@ public:
 
     // accessors
     size_t GetItemCount() const { return GetLineCount(); }
-    bool HasMultipleSelection() const { false; }
-    int GetSelection() const
-    {
-        wxASSERT_MSG( !HasMultipleSelection(),
-                        _T("GetSelection() can't be used with wxLB_MULTIPLE") );
-
-        return m_current;
-    }
+    int GetSelection() const { return m_current; }
 
     bool IsCurrent(size_t item) const { return item == (size_t)m_current; }
     #ifdef __WXUNIVERSAL__
@@ -116,23 +99,10 @@ public:
     virtual void SetItemCount(size_t count);
     void Clear() { SetItemCount(0); }
     void SetSelection(int selection);
-    bool Select(size_t item, bool select = true);
-    void Toggle(size_t item) { Select(item, !IsSelected(item)); }
-    bool SelectAll() { return false; }
-    bool DeselectAll() { return false; }
 
     void SetMargins(const wxPoint& pt);
     void SetMargins(wxCoord x, wxCoord y) { SetMargins(wxPoint(x, y)); }
     void SetSelectionBackground(const wxColour& col);
-
-
-    virtual wxVisualAttributes GetDefaultAttributes() const
-    {
-        return GetClassDefaultAttributes(GetWindowVariant());
-    }
-
-    static wxVisualAttributes
-    GetClassDefaultAttributes(wxWindowVariant variant = wxWINDOW_VARIANT_NORMAL);
 
 
 
@@ -178,6 +148,17 @@ protected:
     virtual void OnDrawBackground(wxDC& dc, const wxRect& rect, size_t n) const;
     virtual wxCoord OnGetLineHeight(size_t line) const;
 
+    // flags for DoHandleItemClick
+    enum
+    {
+        ItemClick_Shift = 1,        // item shift-clicked
+        ItemClick_Ctrl  = 2,        //       ctrl
+        ItemClick_Kbd   = 4         // item selected from keyboard
+    };
+
+    // common part of keyboard and mouse handling processing code
+    virtual void DoHandleItemClick(int item, int flags);
+
     // event handlers
     void OnPaint(wxPaintEvent& event);
     void OnKeyDown(wxKeyEvent& event);
@@ -197,16 +178,6 @@ protected:
     // return true if the current item changed, false otherwise
     bool DoSetCurrent(int current);
 
-    // flags for DoHandleItemClick
-    enum
-    {
-        ItemClick_Shift = 1,        // item shift-clicked
-        ItemClick_Ctrl  = 2,        //       ctrl
-        ItemClick_Kbd   = 4         // item selected from keyboard
-    };
-
-    // common part of keyboard and mouse handling processing code
-    void DoHandleItemClick(int item, int flags);
 
 private:
     // the current item or wxNOT_FOUND
@@ -238,7 +209,7 @@ private:
     wxFileSystem m_filesystem;
 
     // rendering style for the parser which allows us to customize our colours
-    lmHtmlListBoxStyle* m_htmlRendStyle;
+    lmContentsBoxStyle* m_htmlRendStyle;
 
 
     // it calls our GetSelectedTextColour() and GetSelectedTextBgColour()

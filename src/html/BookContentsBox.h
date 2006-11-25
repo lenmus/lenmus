@@ -88,6 +88,10 @@ private:
     int LocateItem(int n) const;
     wxString FormatItem(int nTree) const;
 
+    // virtual methods overrides
+    void DoHandleItemClick(int item, int flags);
+
+
 
     wxArrayString   m_cItems;       // items to display
 

@@ -41,6 +41,7 @@
 #include "wx/wx.h"
 #endif
 
+#include "wx/html/htmlwin.h"
 #include "ObjectParams.h"
 #include "../exercises/ScoreConstrains.h"
 #include "../ldp_parser/AuxString.h"

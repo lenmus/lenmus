@@ -34,12 +34,12 @@
 #include "wx/docmdi.h"
 
 #include "SplashFrame.h"
-#include "../html/VirtualBooks.h"       //for virtual eBooks file system
 
 class wxDocManager;
 class lmMainFrame;
 class lmEditFrame;
 class lmScoreView;
+class lmVirtualBooks;
 
 // Class lmTheApp defines the lenmus application
 class lmTheApp: public wxApp
