@@ -56,11 +56,6 @@
 #include "LDPTags.h"
 
 
-//the next three lines ar for getting the main frame for wxMessageBox
-#include "../app/TheApp.h"
-#include "../app/MainFrame.h"
-extern lmMainFrame *GetMainFrame();
-
 //access to logger
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;

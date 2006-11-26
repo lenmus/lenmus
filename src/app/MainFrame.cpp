@@ -81,6 +81,8 @@ extern lmLogger* g_pLogger;
 #include "../html/TextBookController.h"
 #include "../html/HelpController.h"
 
+#include "../sound/Metronome.h"
+
 
 //========================================================================================
 //AWARE

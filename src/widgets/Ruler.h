@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Ruler.h,v 1.3 2006/02/23 19:26:12 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -19,13 +18,12 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Ruler.h
-    @brief Header file for class lmRuler
-    @ingroup widgets
-*/
-#ifdef __GNUG__
-// #pragma interface
+
+// GCC interface
+#if defined(__GNUG__) && !defined(__APPLE__)
+    #pragma interface "Ruler.h"
 #endif
+
 
 #ifndef __RULERH__        //to avoid nested includes
 #define __RULERH__
@@ -71,14 +69,14 @@ public:
     void SetOffset(int offset) { m_offset = offset; }
 
 private:
-    int            m_left, m_top, m_width, m_height;
-    double        m_rScale;
-    int            m_Orientation;        // ruler orientation: wxHORIZONTAL || wxVERTICAL
-    wxFont*        m_pFont;            // font for numbers
+    int         m_left, m_top, m_width, m_height;
+    double      m_rScale;
+    int         m_Orientation;      // ruler orientation: wxHORIZONTAL || wxVERTICAL
+    wxFont*     m_pFont;            // font for numbers
     RulerFormat m_format;
-    wxPoint        m_oldPos;            // last known mouse position over score canvas
-    lmScoreView*    m_pView;            // view who controls the scrolling
-    int        m_offset;            // offset to add to the marker line
+    wxPoint     m_oldPos;           // last known mouse position over score canvas
+    lmScoreView* m_pView;           // view who controls the scrolling
+    int         m_offset;           // offset to add to the marker line
 
     DECLARE_EVENT_TABLE()
 };

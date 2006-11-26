@@ -1,0 +1,387 @@
+Lectura rítmica. Nivel 1. Estructura del curso
+-----------------------------------------------
+
+Objetivos:
+------------------
+1.  Las siguientes notas: redonda, blanca, negra, corchea y semicorchea, y sus
+    correspondientes silencios. Notas ligadas. Notas con un puntillo y sus
+    silencios.
+    
+    Note values of semibreve, minim, crotchet, quaver and semiquaver, and their 
+    equivalent rests. Tied notes. Single-dotted notes and rests.
+    
+2.  Compases de subdivisión binaria de 2/4, 3/4 y 4/4 y de subdivisión ternaria de 6/8.
+    Barras de compas y las agrupaciones de las notas estudiadas dentro de estos
+    compases.
+
+    Simple time signatures of 2/4, 3/4 and 4/4 and compound time signature of 6/8.
+    Bar-lines and the grouping of the notes listed above within these times.
+    
+3.  El pentagrama. Ambito en las claves de Sol (violín) y Fa en 4ª (bajo), para cubrir
+    dos lineas adicionales por encima y por debajo.
+    
+    The stave. Treble (G) and bass (F) clefs. Names of notes on the stave. 
+    Extension of the stave to include two ledger lines below and above each stave.
+    
+4.  Armaduras de todas las tonalidades mayores y menores hasta con dos alteraciones.
+
+    Key signatures of all major and minor keys up to and including two sharps and flats.
+
+
+Temario
+---------
+El curso consta de 26 lecciones.
+
+Claves y ámbitos:
+    En las primeras lecciones sólo se usa la clave de Sol (lecciones 1 a 7) con un
+    ámbito muy reducido (e4-g4). Progresivamente el ámbito va aumentando para llegar,
+    en la lección 7 a c4-f5.
+    En la lección 8 se introduce la clave de Fa en 4ª, de nuevo con un ámbito muy
+    reducido (a3;c4) y a partir de ahí en todas las lecciones siguientes
+    (8 a 26) se usa indistintamente la clave de Fa y la de Sol, cada una de ellas
+    con ámbitos progresivos, para finalizar con dos líneas adicionales por arriba
+    y por abajo en ambas claves (Sol: a3-c6 y Fa: a2-e4).
+
+Métricas:
+    En las primeras lecciones (1 a 10) sólo se usa el 2/4. Luego, progresivamente se
+    amplia a 3/4 (lecciones 11 y 12)
+    y a 4/4 (lecciones 13 a 21). Finalmente se introduce la subdivisión ternaria con
+    el compás de 6/8 (lecciones 22 a 26).
+    
+Tonalidades:
+    En las dos primeras lecciones sólo Do mayor/La menor. A partir de ahí se introduce
+    una alteración (lecciones 3-10). Y en el resto del curso se
+    manejan hasta dos alteraciones (lecciones 11-26).
+
+Elementos rítmicos que propone Ana
+------------------------------------
+2/4
+    1. (n * n),(s n),(n * c g+)(n * c g-),(n * s g+)(n * s)(n * s)(n * s g-)
+    2. (n * b),(s b),(n * b.)
+    3. (n * n.)(n c),(n * n +l)(n * c g+)(n * c g-)
+    4. (n * c)(s c),(s c)(n * c)
+    5. (n * c g+)(n * c +l)(n * c)(n * c g-), (n * c)(n * n)(n * c)
+    6. (n * c g+)(n * s)(n * s g-), (n * s g+)(n * s)(n * c g-)
+    7. (n * c g+ +l)(n * s)(n * s g-), (n * c. g+)(n * s g-)
+    8. (n * s g+)(n * s +l)(n * c g-), (n * s g+)(n * c g-)
+    
+6/8
+    1. (n * c g+)(n * c)(n * c g-),(n * n.) | (n * n)(n * c),(n * c)(n * n)
+    2. (n * b.) | (s b.) | (n * n)(s c),(s c)(n * n)
+    3. (n c g+)(s c)(n * c g-),(n c g+)(n * c g-)(s c) | (s c)(n c g+)(n * c g-)
+    4. (n * n+ +l)(n * c g+)(n * c)(n * c g-)
+    5. (n * s g+)(n * s)(n * s)(n * s)(n * s)(n * s g-)
+
+
+Lecciones
+--------------------------------------
+
+0. El pentagrama y la clave
+    No tiene ejercicios.
+    Contar los que es el pentagrama.
+    Introducir la clave de Sol
+
+1. Las figuras: notas y silencios
+    No tiene ejercicios
+    Las partes de la nota: cabeza, plica, corchete
+    Notas agrupadas
+
+2. El compas. Las líneas divisorias. El compás de dos tiempos
+    Acento métrico
+    Líneas divisorias
+    Compases
+    El compás de 2/4
+    Tiene un ejercicio para escuchar el acento: notas negras en 2/4
+    
+
+1. La negra y su silencio               (n * n),(s n)
+"clef" value="Sol;e4;g4
+"key" value="Do"
+"fragment" value="24;(n * n)"
+"fragment" value="24;(s n)"
+
+
+2. Ligaduras. La nota blanca            (n * n +l)(n * n),(n * b) ++
+"clef" value="Sol;e4;a4
+"key" value="Do"
+"time" value="24"
+102"fragment" value="24;(n * b)"
+102"fragment" value="24;(n * n +l)(n * n)"
+
+3. El silencio de blanca                (s b) ++
+"clef" value="Sol;d4;b4
+"key" value="Do"
+"key" value="Sol"
+"time" value="24"
+103"fragment" value="24;(s b)"
+
+4. Líneas adicionales                   ++
+"clef" value="Sol;c4;c5
+"key" value="Do"
+"key" value="Sol"
+"time" value="24"
+103"fragment" value="24;(s b)"
+
+5. La corchea                           (n * c)(n * c)(n * c)(n * c), (n * c g+)(n * c g-)
+"clef" value="Sol;c4;c5
+"key" value="Do"
+"key" value="Sol"
+"time" value="24"
+105"fragment" value="24;(n * c g+)(n * c g-)"
+105"fragment" value="24;(n * c)(n * c)"
+
+6. Signos de alteración                 ++ (aqui empezamos a introducir las armaduras)
+"clef" value="Sol;c4;e5
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"time" value="24"
+105"fragment" value="24;(n * c g+)(n * c g-)"
+105"fragment" value="24;(n * c)(n * c)"
+
+7. Signos de prolongación: ligadura, puntillo y calderón    (n * n +l)(n * c g+)(n * c g-), (n * n.)(n * c)
+"clef" value="Sol;c4;f5
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"time" value="24"
+107"fragment" value="24;(n * n +l)(n * c g+)(n * c g-)"
+107"fragment" value="24;(n * n.)(n * c)"
+
+8. La clave de Fa en cuarta línea           ++
+"clef" value="Fa4;a3;c4
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"time" value="24"
+107"fragment" value="24;(n * n +l)(n * c g+)(n * c g-)"
+107"fragment" value="24;(n * n.)(n * c)"
+
+9 La clave de Fa en cuarta línea. Ampliación del ámbito          ++
+"clef" value="Fa4;f3;c4
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"time" value="24"
+107"fragment" value="24;(n * n +l)(n * c g+)(n * c g-)"
+107"fragment" value="24;(n * n.)(n * c)"
+
+10. El silencio de corchea              (n * c)(s c)
+"clef" value="Sol;c4;g5
+"clef" value="Fa4;d3;c4
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"time" value="24"
+110"fragment" value="24;(n * c)"
+110"fragment" value="24;(s c)"
+
+11. Compás de tres tiempos (3/4)        (n * b.), (s b.)
+"clef" value="Sol;c4;g5
+"clef" value="Fa4;c3;c4
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"time" value="34"
+111"fragment" value="24,34;(n * b.)"
+111"fragment" value="24,34;(s b.)"
+
+12. La anacrusa                         ++
+"clef" value="Sol;c4;g5
+"clef" value="Fa4;b2;c4
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"time" value="24,34"
+111"fragment" value="24,34;(n * b.)"
+111"fragment" value="24,34;(s b.)"
+
+13. Compás de cuatro tiempos (4/4). La redonda y su silencio    (n * b +l)(n * b), (n * r), (s r)
+"clef" value="Sol;c4;g5
+"clef" value="Fa4;b2;d4
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"time" value="24,34,44"
+113"fragment" value="24,34,44;(n * b +l)(n * b)"
+113"fragment" value="24,34,44;(n * r)"
+113"fragment" value="24,34,44;(s r)"
+
+14. Alteraciones rítmicas: La síncopa       (n * n +l)|(n * n), (n * n +l)|(n * c g+)(n * c g-)
+"clef" value="Sol;c4;b5
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"time" value="24,34,44"
+114"fragment" value="24,34,44;(n * n +l)(n * n)"
+114"fragment" value="24,34,44;(n * n +l)(n * c g+)(n * c g-)"
+
+15. Alteraciones rítmicas: La síncopa (2)       (n * c g+)(n * c +l g-)(n * n), (n * c)(n * n.), (n * c g+)(n * c +l g-)|(n * n)
+
+"clef" value="Sol;c4;b5
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"time" value="24,34,44"
+115"fragment" value="24,34,44;(n * c g+)(n * c +l g-)(n * n)"
+115"fragment" value="24,34,44;(n * c)(n * n.)"
+115"fragment" value="24,34,44;(n * c g+)(n * c +l g-)(n * n)"
+
+16. Alteraciones rítmicas: La síncopa (3)   (n * c g+)(n * c +l g-)(n * c g+)(n * c g-), (n * c)(n * n)(n * c)
+"clef" value="Sol;c4;c6
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"time" value="24,34,44"
+116"fragment" value="24,34,44;(n * c g+)(n * c +l g-)(n * c g+)(n * c g-)"
+116"fragment" value="24,34,44;(n * c)(n * n)(n * c)"
+
+17. Alteraciones rítmicas: La síncopa (4)       (n * c g+)(n * c +l g-)(n * c g+)(n * c +l g-)(n * c g+)(n * c g-), (n * c)(n * n)(n * n)(n * c)
+"clef" value="Sol;c4;c6
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"key" value="Sib"
+"time" value="34,44"
+117"fragment" value="34,44;(n * c g+)(n * c +l g-)(n * c g+)(n * c +l g-)(n * c g+)(n * c g-)"
+117"fragment" value="34,44;(n * c)(n * n)(n * n)(n * c)"
+
+18. Alteraciones rítmicas: La síncopa (5)       (s c)(n * c), (n * n +l)(n * c)(s c)
+"clef" value="Sol;c4;c6
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"key" value="Sib"
+"time" value="24,34,44"
+118"fragment" value="24,34,44;(s c)(n * c)"
+118"fragment" value="24,34,44;(n * n +l)(n * c)(s c)"
+
+19. Alteraciones rítmicas: El contratiempo      (s n)(n * n), (s c)(n * c)(s c)(n * c), (s c)(n * c)(n * n)
+"clef" value="Sol;c4;c6
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"key" value="Sib"
+"time" value="24,34,44"
+119"fragment" value="24,34,44;(s n)(n * n)(s n)(n * n)"
+119"fragment" value="24,34,44;(s c)(n * c)(s c)(n * c)"
+
+20. La semicorchea              (n * s g+)(n * s)(n * s)(n * s g-)
+"clef" value="Sol;c4;c6
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"key" value="Sib"
+"time" value="24,34,44"
+120"fragment" value="24,34,44;(n * s g+)(n * s)(n * s)(n * s g-)"
+
+21. La semicorchea (2)          (n * c g+)(n * s)(n * s g-)
+"clef" value="Sol;a3;c6
+"clef" value="Fa4;a2;e4
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"key" value="Sib"
+"time" value="24,34,44"
+121"fragment" value="24,34,44;(n * c g+)(n * s)(n * s g-)"
+
+x. La semicorchea (3)           (n * s g+)(n * s)(n * c g-)
+"clef" value="Sol;a3;c6
+"clef" value="Fa4;a2;e4
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"key" value="Sib"
+"time" value="24,34,44"
+
+x. La semicorchea (4)          (n * c g+ +l)(n * s)(n * s g-), (n * c. g+)(n * s g-)
+"clef" value="Sol;a3;c6
+"clef" value="Fa4;a2;e4
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"key" value="Sib"
+"time" value="24,34,44"
+
+22. Compás de 6/8               (n * c g+)(n * c)(n * c g-), (n * n.), (s n.), (n * b.), (s b.), (n * n. +l)(n * n.)
+"clef" value="Sol;a3;c6
+"clef" value="Fa4;a2;e4
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"key" value="Sib"
+"time" value="68"
+122"fragment" value="68;(n * c g+)(n * c)(n * c g-)"
+122"fragment" value="68;(n * n.)"
+122"fragment" value="68;(s n.)"
+122"fragment" value="68;(n * b.)"
+122"fragment" value="68;(s b.)"
+122"fragment" value="68;(n * n. +l)(n * n.)"
+
+23. Compás de 6/8 (2)           (n * n)(n * c), (n * n. +l)(n * c g+)(n * c)(n * c g-), (n * n. +l)(n * n)(n * c)
+"clef" value="Sol;a3;c6
+"clef" value="Fa4;a2;e4
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"key" value="Sib"
+"time" value="68"
+123"fragment" value="68;(n * n)(n * c)"
+123"fragment" value="68;(n * n. +l)(n * c g+)(n * c)(n * c g-)"
+123"fragment" value="68;(n * n. +l)(n * n)(n * c)"
+
+24. Compás de 6/8 (3)           (n * n +l)(n * c g+)(n * s)(n * s g-), (n * n.)(n * s g+)(n * s g-)
+"clef" value="Sol;a3;c6
+"clef" value="Fa4;a2;e4
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"key" value="Sib"
+"time" value="68"
+124"fragment" value="24,34,44;(n * n +l)(n * c g+)(n * s)(n * s g-)"
+124"fragment" value="24,34,44;(n * n.)(n * s g+)(n * s g-)"
+
+25. Compás de 6/8 (4)           (n * c)(n * n), (n * c)(n * n +l)(n * c g+)(n * c)(n * c g-), (n * c)(n * n +l)(n * n.)
+"clef" value="Sol;a3;c6
+"clef" value="Fa4;a2;e4
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"key" value="Sib"
+"time" value="68"
+125"fragment" value="68;(n * c)(n * n)"
+125"fragment" value="68;(n * c)(n * n +l)(n * c g+)(n * c)(n * c g-)"
+125"fragment" value="68;(n * c)(n * n +l)(n * n.)"
+
+26. Compás de 6/8 (5)           (s c)(n * c g+)(n * c g-), (n * c g+)(n * c g-)(s c), (n * c g+)(s c)(n * c g-), (s n)(n * c)
+"clef" value="Sol;a3;c6
+"clef" value="Fa4;a2;e4
+"key" value="Do"
+"key" value="Sol"
+"key" value="Fa"
+"key" value="Re"
+"key" value="Sib"
+"time" value="68"
+126"fragment" value="68;(s c)(n * c g+)(n * c g-)"
+126"fragment" value="68;(n * c g+)(n * c g-)(s c)"
+126"fragment" value="68;(n * c g+)(s c)(n * c g-)"
+126"fragment" value="68;(s n)(n * c)"
+
+

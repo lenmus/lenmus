@@ -41,10 +41,6 @@
 //access to Midi configuration
 #include "../sound/MidiManager.h"
 
-//access to colors
-#include "../globals/Colors.h"
-extern lmColors* g_pColors;
-
 //access to MainFrame to get metronome settings
 #include "../app/MainFrame.h"
 extern lmMainFrame *g_pMainFrame;

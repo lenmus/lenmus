@@ -1,4 +1,3 @@
-// RCS-ID: $Id: Ruler.cpp,v 1.3 2006/02/23 19:26:12 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
@@ -19,35 +18,29 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Ruler.cpp
-    @brief Implementation file for class lmRuler
-    @ingroup widgets
-*/
 //---------------------------------------------------------------------------------
-/*! @class lmRuler
-    @ingroup widgets
-    @brief A ruler around the score page
-    
-    You can use a lmRuler like any other wxWindow.
-
-    At a minimum, the user must specify the dimensions of the
-    ruler, its orientation (horizontal or vertical), and the
-    values displayed at the two ends of the ruler (min and max).
-    By default, this class will display tick marks at reasonable
-    round numbers and fractions, for example, 100, 50, 10, 5, 1,
-    0.5, 0.1, etc.
-
-    The class is designed to display a small handful of
-    labeled Major ticks, and a few Minor ticks between each of
-    these.  Minor ticks are labeled if there is enough space.
-    Labels will never run into each other.
-
-    lmRuler currently supports three formats for its display:
-        Metrics - shows tick marks for millimeters.
-        English - shows tick marks for thenths of inch.
-        Point   - show tick marks for thents of point
-
-*/
+//    @brief A ruler around the score page
+//    
+//    You can use a lmRuler like any other wxWindow.
+//
+//    At a minimum, the user must specify the dimensions of the
+//    ruler, its orientation (horizontal or vertical), and the
+//    values displayed at the two ends of the ruler (min and max).
+//    By default, this class will display tick marks at reasonable
+//    round numbers and fractions, for example, 100, 50, 10, 5, 1,
+//    0.5, 0.1, etc.
+//
+//    The class is designed to display a small handful of
+//    labeled Major ticks, and a few Minor ticks between each of
+//    these.  Minor ticks are labeled if there is enough space.
+//    Labels will never run into each other.
+//
+//    lmRuler currently supports three formats for its display:
+//        Metrics - shows tick marks for millimeters.
+//        English - shows tick marks for thenths of inch.
+//        Point   - show tick marks for thents of point
+//
+//*/
 //---------------------------------------------------------------------------------
 
 //#include <math.h>
@@ -67,9 +60,6 @@
 #include "wx/wx.h"
 #endif
 
-//#include <wx/dcscreen.h>
-
-//#include "../Internat.h"
 #include "Ruler.h"
 #include "../app/scoreview.h"
 

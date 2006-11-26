@@ -42,7 +42,6 @@
 #include "wx/html/htmlwin.h"    //to use html
 
 #include "global.h"
-#include "../sound/Metronome.h"
 
 
 #include "wx/numdlg.h"
@@ -55,6 +54,7 @@
 class lmTextBookController;
 class lmHtmlWindow;
 class lmHelpController;
+class lmMetronome;
 
 
 //IDs for menu events that must be public (i.e. to generate them by program)
