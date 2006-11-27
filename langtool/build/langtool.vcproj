@@ -289,6 +289,12 @@
 			Name="Source Files"
 			Filter="">
 			<File
+				RelativePath="..\src\ebook_processor.cpp">
+			</File>
+			<File
+				RelativePath="..\src\ebook_processor.h">
+			</File>
+			<File
 				RelativePath="..\src\html_converter.cpp">
 			</File>
 			<File
@@ -307,10 +313,10 @@
 				RelativePath="..\src\langtool.rc">
 			</File>
 			<File
-				RelativePath="..\src\parser.cpp">
+				RelativePath="..\src\MainFrame.cpp">
 			</File>
 			<File
-				RelativePath="..\src\parser.h">
+				RelativePath="..\src\MainFrame.h">
 			</File>
 			<Filter
 				Name="wxXml2"

@@ -28,7 +28,7 @@
 #include "wx/wfstream.h"
 #include "wx/xml/xml.h"          // to use wxXmlDocument
 
-#include "parser.h"
+//#include "parser.h"
 
 enum lmHtmlFlags
 {
@@ -69,7 +69,7 @@ private:
     void AddToPoFile(wxString& sText);
 
 
-    lmXmlParser*    m_pParser;
+    //lmXmlParser*    m_pParser;
     int             m_nHeaderLevel;
     int             m_nIndentLevel;         // to indent html output
     bool            m_fIncludeObjects;

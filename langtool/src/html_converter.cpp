@@ -36,11 +36,11 @@
 #include "wx/filename.h"
 
 #include "html_converter.h"
-#include "parser.h"
+//#include "parser.h"
 
 lmHtmlConverter::lmHtmlConverter()
 {
-    m_pParser = new lmXmlParser();
+    //m_pParser = new lmXmlParser();
     m_fIncludeObjects = false;
 
     m_pPoFile = (wxFile*)NULL;
@@ -49,7 +49,7 @@ lmHtmlConverter::lmHtmlConverter()
 
 lmHtmlConverter::~lmHtmlConverter()
 {
-    delete m_pParser;
+    //delete m_pParser;
 }
 
 bool lmHtmlConverter::ConvertToHtml(const wxString& sFilename, bool fIncludeObjects,
@@ -105,7 +105,7 @@ bool lmHtmlConverter::ProcessChildren(wxXmlNode* pNode, wxFile* pFile)
     m_nIndentLevel++;
 
     //get first child
-    pNode = m_pParser->GetFirstChild(pNode);
+    //pNode = m_pParser->GetFirstChild(pNode);
     wxXmlNode* pElement = pNode;
 
     //loop to process children
@@ -115,7 +115,7 @@ bool lmHtmlConverter::ProcessChildren(wxXmlNode* pNode, wxFile* pFile)
         fError |= ProcessTag(pElement, pFile);
 
         // Get next sibling
-        pNode = m_pParser->GetNextSibling(pNode);
+        //pNode = m_pParser->GetNextSibling(pNode);
         pElement = pNode;
     }
 
@@ -338,7 +338,7 @@ bool lmHtmlConverter::ParaToHtml(wxXmlNode* pNode, wxFile* pFile)
     pFile->Write(_T("<p>"));
 
     // tag processing implications
-    wxString sText = m_pParser->GetText(pNode);
+    wxString sText = wxEmptyString; //m_pParser->GetText(pNode);
     pFile->Write(sText);                        //write text in paragraph
     if (m_pPoFile) AddToPoFile(sText);      //add text to PO file
 
@@ -393,7 +393,7 @@ bool lmHtmlConverter::TitleToHtml(wxXmlNode* pNode, wxFile* pFile)
         pFile->Write(wxString::Format(_T("<h%d>"), m_nHeaderLevel));
 
     // tag processing implications
-    pFile->Write( m_pParser->GetText(pNode) );    //write text in paragraph
+    pFile->Write( _T(""));  //m_pParser->GetText(pNode) );    //write text in paragraph
 
     //process tag's children
     bool fError = ProcessChildren(pNode, pFile);

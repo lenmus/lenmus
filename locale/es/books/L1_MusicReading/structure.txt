@@ -53,8 +53,11 @@ Tonalidades:
     una alteración (lecciones 3-10). Y en el resto del curso se
     manejan hasta dos alteraciones (lecciones 11-26).
 
-Elementos rítmicos que propone Ana
+Elementos rítmicos que propone Ana 
 ------------------------------------
+
+(POR HACER: comparar con lecciones y ver lo que sobra/falta/cambia de orden)
+
 2/4
     1. (n * n),(s n),(n * c g+)(n * c g-),(n * s g+)(n * s)(n * s)(n * s g-)
     2. (n * b),(s b),(n * b.)
