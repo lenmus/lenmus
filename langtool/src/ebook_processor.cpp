@@ -60,13 +60,19 @@ bool ltEbookProcessor::GenerateLMB(wxString sFilename)
 
     // Prepare for a new XML file processing
     m_fProcessingBookinfo = false;
-    m_nNumHtmlPage = 0;
+    m_xx = 0;
 
     // load the XML file as tree of nodes
     wxXml2Document oDoc;
     wxString sError;
     if (!oDoc.Load(sFilename, &sError)) {
-        wxLogMessage(_T("Error parsing file %s\nError:%s"), sFilename, sError.c_str());
+        wxLogMessage(_T("Error parsing file %s\nError:%s"), sFilename, sError);
+        wxFile *  pFile = new wxFile(_T("ErrorXML.txt"), wxFile::write);
+        wxString str(sError, *wxConvCurrent);
+        pFile->Write(sError);
+        pFile->Close();
+        delete pFile;
+
         return false;
     }
     m_sFilename = sFilename;
@@ -81,6 +87,9 @@ bool ltEbookProcessor::GenerateLMB(wxString sFilename)
         oDoc.DestroyIfUnlinked();
         return false;
     }
+
+    //DumpXMLTree(oRoot);   //DBG
+    CreateLinksTable(oRoot);
 
     // Prepare the TOC file
     if (!StartTocFile( sFilename )) {
@@ -103,36 +112,116 @@ bool ltEbookProcessor::GenerateLMB(wxString sFilename)
     return !fError;
 
 }
-bool ltEbookProcessor::ProcessChildren(const wxXml2Node& oNode)
+
+void ltEbookProcessor::CreateLinksTable(wxXml2Node& oRoot)
 {
-    //get first child
+    // explores the tree and creates the cross-reference table relating
+    // themes' ids with theme number
+
+    m_PagesIds.clear();
+    m_nNumHtmlPage = 0;
+
+    wxXml2Node oCurr(oRoot);
+    do {
+        FindThemeNode(oCurr);
+        oCurr = oCurr.GetNext();
+    } while (oCurr != wxXml2EmptyNode);
+}
+
+void ltEbookProcessor::FindThemeNode(const wxXml2Node& oNode)
+{
+    if (oNode == wxXml2EmptyNode) return;
+
+    if (oNode.GetName() == _T("theme")) {
+        // Add to list
+        wxString sId = oNode.GetPropVal(_T("id"), _T(""));
+        if (sId == _T("")) {
+            wxLogMessage(_T("Node <theme> has no id property"));
+        }
+        m_PagesIds[sId] = m_nNumHtmlPage;
+        wxLogMessage(_T("Cross-refs table: id='%s', page=%d"), sId, m_nNumHtmlPage);
+        m_nNumHtmlPage++;
+    }
+        
+    // process its children recursively
     wxXml2Node oChild(oNode.GetFirstChild());
-    //oNode = m_pParser->GetFirstChild(oNode);
-    //const wxXml2Node& oNode = oNode;
-
-    //loop to process children
-    bool fError = false;            //assume no errors
-    //while (pElement)
-    while (oChild != wxXml2EmptyNode)
-    {
-        fError |= ProcessTag(oChild);
-
-        // Get next sibling
+    while (oChild != wxXml2EmptyNode) {
+        FindThemeNode(oChild);
         oChild = oChild.GetNext();
-        //oNode = m_pParser->GetNextSibling(oNode);
-        //pElement = oNode;
     }
 
+}
+
+
+bool ltEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode,
+                                               bool fHtml, bool fToc, bool fIdx)
+{
+    wxXml2Node oCurr(oNode.GetFirstChild());
+    m_xx += 5;
+    wxString spaces(wxT(' '), m_xx);
+
+    bool fError = false;
+    while (oCurr != wxXml2EmptyNode) {
+        if (oCurr.GetName() == _T("text")) {
+            wxLogMessage(spaces + wxT("text [%s]"), oCurr.GetContent() );
+        }
+        else
+            wxLogMessage(spaces + wxT("parsing [%s]"), oCurr.GetName() );
+        fError |= ProcessChildren(oCurr, fHtml, fToc, fIdx);
+        oCurr = oCurr.GetNext();
+    }
+    m_xx -= 5;
     return fError;
+}
+
+
+bool ltEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
+                                       bool fHtml, bool fToc, bool fIdx)
+{
+    bool fError = false;
+
+    if (oNode == wxXml2EmptyNode) return false;
+        
+    if (oNode.GetType() == wxXML_TEXT_NODE)
+    {
+        // it is a text node: write its contents to output
+        wxString sContent = oNode.GetContent();
+        if (sContent.Last() == wxT('\n')) sContent.RemoveLast();
+        if (sContent.GetChar(0) == wxT('\n')) sContent.Remove(0, 1);
+
+        // libxml2 creates text nodes associated to all elements, even 
+        // when no content is present in the xml file. In these cases
+        // the text node contains just a simple '\n'. Next code lines
+        // are for filtering ou these lines
+        wxString tmp = sContent.Trim();
+        if (!tmp.IsEmpty()) {
+            if (fToc) WriteToToc(sContent, ltNO_INDENT);        //text not indented
+            if (fHtml) WriteToHtml(sContent);
+            //if (fIdx) WriteToIdx(sContent);
+        }
+
+    }
+    else if (oNode.GetType() == wxXML_ELEMENT_NODE)
+    {
+        // it is an element. Process it (recursive, as ProcessTags call ProcessChildAndSiblings)
+        fError |= ProcessTag(oNode);
+    }
+    else {
+        // ignore it
+    }
+    
+    return fError;
+
 }
 
 bool ltEbookProcessor::ProcessTag(const wxXml2Node& oNode)
 {
     if (oNode == wxXml2EmptyNode) return false;
-    wxString sElement = oNode.GetName();
-    wxLogDebug(wxT("[ProcessTag] - parsing [%s]"), sElement.c_str());
-
     if (oNode.GetType() != wxXML_ELEMENT_NODE) return false;
+
+    wxString sElement = oNode.GetName();
+    wxString spaces(wxT(' '), m_xx);
+    wxLogMessage(spaces + _T("[ProcessTag] - element [%s]"), sElement.c_str());
 
     if (sElement == _T("bookinfo")) {
         return BookinfoTag(oNode);
@@ -174,6 +263,9 @@ bool ltEbookProcessor::ProcessTag(const wxXml2Node& oNode)
 
 }
 
+
+
+
 //------------------------------------------------------------------------------------
 // Tags' processors
 //------------------------------------------------------------------------------------
@@ -200,7 +292,7 @@ bool ltEbookProcessor::BookTag(const wxXml2Node& oNode)
     //m_nHeaderLevel = -1;        //not initialized
 
     //process tag's children
-    bool fError = ProcessChildren(oNode);
+    bool fError = ProcessChildAndSiblings(oNode);
 
     ////convert tag: output to close html tags
     //WriteToHtml(_T("</html>\n"));
@@ -224,7 +316,7 @@ bool ltEbookProcessor::BookinfoTag(const wxXml2Node& oNode)
     m_fTitleToToc = true;
 
     //process tag's children
-    bool fError = ProcessChildren(oNode);
+    bool fError = ProcessChildAndSiblings(oNode);
 
     //end tag: processing implications
     m_fProcessingBookinfo = false;
@@ -243,7 +335,7 @@ bool ltEbookProcessor::ChapterTag(const wxXml2Node& oNode)
     m_fTitleToToc = true;
 
     //process tag's children
-    bool fError = ProcessChildren(oNode);
+    bool fError = ProcessChildAndSiblings(oNode);
 
     //convert tag: output to close html tags
     m_nTocIndentLevel--;
@@ -261,7 +353,7 @@ bool ltEbookProcessor::ItemizedlistTag(const wxXml2Node& oNode)
     // no
 
     //process tag's children
-    bool fError = ProcessChildren(oNode);
+    bool fError = ProcessChildAndSiblings(oNode);
 
     // closing tag
     WriteToHtml(_T("</ul>\n"));
@@ -272,16 +364,30 @@ bool ltEbookProcessor::ItemizedlistTag(const wxXml2Node& oNode)
 bool ltEbookProcessor::LinkTag(const wxXml2Node& oNode)
 {
     // openning tag
-    WriteToHtml(_T("<a href=\"#LenMusPage/SingleExercises_1.htm\">"));
 
-    // tag processing implications
-    WriteToHtml(oNode.GetContent());     //write text in item
+    // get its 'linkend' property and find the associated page
+    wxString sId = oNode.GetPropVal(_T("linkend"), _T(""));
+    if (sId != _T("")) {
+        if (m_PagesIds.find(sId) != m_PagesIds.end()) {
+            wxFileName oFN( m_sFilename );
+            wxString sName = oFN.GetName();
+            int nFile = m_PagesIds[sId];
+            sName += wxString::Format(_T("_%d"), nFile);
+            oFN.SetName(sName);
+            oFN.SetExt(_T("htm"));
+            wxString sLink = _T("<a href=\"#LenMusPage/") + oFN.GetFullName() + _T("\">");
+            WriteToHtml( sLink );
+        }
+        else {
+            WriteToHtml( _T("<a href=\"#\">") );
+        }
+    }
 
-    //process tag's children
-    bool fError = ProcessChildren(oNode);
+    //process tag's children and write note content to html
+    bool fError = ProcessChildAndSiblings(oNode, true);
 
     // closing tag
-    WriteToHtml(_T("</a>"));
+    if (sId != _T("")) WriteToHtml(_T("</a>"));
 
     return fError;
 }
@@ -292,19 +398,9 @@ bool ltEbookProcessor::ListitemTag(const wxXml2Node& oNode)
     WriteToHtml(_T("<li>"));
 
     // tag processing implications
-    //write text in paragraph
-    bool fError = false;
-    if (oNode.GetType() == wxXML_ELEMENT_NODE) {
-        WriteToHtml( GetText(oNode) );
-    }
-    else {
-        //process tag's children
-        fError = ProcessChildren(oNode);
-    }
-    //WriteToHtml(oNode.GetContent());     //write text in item
 
-    ////process tag's children
-    //bool fError = ProcessChildren(oNode);
+    //process tag's children and write note content to html
+    bool fError = ProcessChildAndSiblings(oNode, true);
 
     // closing tag
     WriteToHtml(_T("</li>\n"));
@@ -321,7 +417,7 @@ bool ltEbookProcessor::ObjectTag(const wxXml2Node& WXUNUSED(oNode))
     //WriteToHtml( oNode.GetContent() );    //write text in paragraph
 
     //process tag's children
-    //bool fError = ProcessChildren(oNode);
+    //bool fError = ProcessChildAndSiblings(oNode);
 
     //convert tag: output to close html tags
     WriteToHtml(_T("</object>\n"));
@@ -334,18 +430,9 @@ bool ltEbookProcessor::ParaTag(const wxXml2Node& oNode)
     // openning tag
     WriteToHtml(_T("<p>"));
 
-    // tag processing implications
-    bool fError = false;
-    //write text in paragraph
-    if (oNode.GetType() == wxXML_ELEMENT_NODE) {
-        WriteToHtml( GetText(oNode) );
-        //if (m_pPoFile) AddToPoFile(sText);      //add text to PO file
-    }
-    else {
-        //process tag's children
-        fError = ProcessChildren(oNode);
-    }
-
+    //process tag's children and write note content to html
+    bool fError = ProcessChildAndSiblings(oNode, true);
+    
     //convert tag: output to close html tags
     WriteToHtml(_T("</p>\n"));
 
@@ -365,7 +452,7 @@ bool ltEbookProcessor::PartTag(const wxXml2Node& oNode)
     m_nHeaderLevel++;
 
     //process tag's children
-    bool fError = ProcessChildren(oNode);
+    bool fError = ProcessChildAndSiblings(oNode);
 
     //closing tag:
     // HTML:
@@ -388,7 +475,7 @@ bool ltEbookProcessor::SectionTag(const wxXml2Node& oNode)
     //m_nHeaderLevel = nLevel+1;
 
     //process tag's children
-    bool fError = ProcessChildren(oNode);
+    bool fError = ProcessChildAndSiblings(oNode);
 
     //convert tag: output to close html tags
     WriteToHtml(_T("</div>\n"));
@@ -398,9 +485,12 @@ bool ltEbookProcessor::SectionTag(const wxXml2Node& oNode)
 
 bool ltEbookProcessor::ThemeTag(const wxXml2Node& oNode)
 {
+    // get its 'id' property
+    wxString sId = oNode.GetPropVal(_T("id"), _T(""));
+
     // openning tag
     // HTML:
-    StartHtmlFile(m_sFilename);
+    StartHtmlFile(m_sFilename, sId);
     // TOC
     WriteToToc(_T("<entry id=\"xxxx\">\n"));
     m_nTocIndentLevel++;
@@ -411,7 +501,7 @@ bool ltEbookProcessor::ThemeTag(const wxXml2Node& oNode)
     m_fTitleToToc = true;
 
     //process tag's children
-    bool fError = ProcessChildren(oNode);
+    bool fError = ProcessChildAndSiblings(oNode);
 
     //closing tag:
     // HTML:
@@ -431,13 +521,8 @@ bool ltEbookProcessor::TitleTag(const wxXml2Node& oNode)
     //HTML
     WriteToHtml( wxString::Format(_T("<h%d>"), m_nHeaderLevel));
 
-    // tag processing implications
-    wxString sTitle = GetText(oNode);
-    WriteToHtml(sTitle);
-    if (m_fProcessingBookinfo || m_fTitleToToc) WriteToToc(sTitle, ltNO_INDENT);
-
-    //process tag's children
-    //bool fError = ProcessChildren(oNode);
+    //process tag's children and write note content to html and toc
+    bool fError = ProcessChildAndSiblings(oNode, true, (m_fProcessingBookinfo || m_fTitleToToc));
 
     // End of tag processing implications
     //TOC:
@@ -445,7 +530,7 @@ bool ltEbookProcessor::TitleTag(const wxXml2Node& oNode)
     //HTML:
     WriteToHtml( wxString::Format(_T("</h%d>\n"), m_nHeaderLevel));
 
-    return true;
+    return fError;
 }
 
 
@@ -496,13 +581,17 @@ void ltEbookProcessor::TerminateTocFile()
 
 }
 
-bool ltEbookProcessor::StartHtmlFile(wxString sFilename)
+bool ltEbookProcessor::StartHtmlFile(wxString sFilename, wxString sId)
 {
     // returns false if error
 
     wxFileName oHTM( sFilename );
     wxString sName = oHTM.GetName();
-    sName += wxString::Format(_T("_%d"), m_nNumHtmlPage++);
+    if (sId == _T("")) return false;
+
+    int nFile = m_PagesIds[sId];
+    sName += wxString::Format(_T("_%d"), nFile);
+
     oHTM.SetName(sName);
     oHTM.SetExt(_T("htm"));
     m_sHtmlPagename = oHTM.GetFullName();
@@ -568,24 +657,154 @@ void ltEbookProcessor::WriteToHtml(wxString sText)
     m_pHtmlFile->Write(sText);
 }
 
-
-
 //------------------------------------------------------------------------------------
-// XML parsing helpers
+// PO file management
 //------------------------------------------------------------------------------------
 
-wxString ltEbookProcessor::GetText(const wxXml2Node& oNode)
+
+wxFile* ltEbookProcessor::StartPoFile(wxString sFilename)
 {
-    if (oNode.GetType() == wxXML_TEXT_NODE) {
-        wxString sText = oNode.GetContent();
-        if (sText.Last() == _T('\n')) sText.RemoveLast();
-        if (sText.GetChar(0) == _T('\n')) sText.Remove(0, 1);
-        return sText;
+    wxFileName oFNP( sFilename );
+    oFNP.SetExt(_T("po"));
+    wxFile* pPoFile = new wxFile(oFNP.GetFullName(), wxFile::write);
+    if (!pPoFile->IsOpened()) {
+        wxLogMessage(_T("Error: File %s can not be created"), oFNP.GetFullName());
+        return (wxFile*)NULL;        //error
     }
-    else if (oNode.GetType() == wxXML_ELEMENT_NODE) {
-        return GetText(oNode.GetFirstChild());
-    }
-    else
-        return wxEmptyString;
+
+    //Generate Po header
+    wxString sNil = _T("");
+    wxString sHeader = sNil +
+        _T("msgid \"\"\n") 
+        _T("msgstr \"\"\n")
+        _T("\"Project-Id-Version: LenMus 3.3\\n\"\n")
+        _T("\"POT-Creation-Date: \\n\"\n")
+        _T("\"PO-Revision-Date: 2006-08-25 12:19+0100\\n\"\n")
+        _T("\"Last-Translator: \\n\"\n")
+        _T("\"Language-Team:  <cecilios@gmail.com>\\n\"\n")
+        _T("\"MIME-Version: 1.0\\n\"\n")
+        _T("\"Content-Type: text/plain; charset=utf-8\\n\"\n")
+        _T("\"Content-Transfer-Encoding: 8bit\\n\"\n")
+        _T("\"X-Poedit-Language: English\\n\"\n")
+        _T("\"X-Poedit-SourceCharset: iso-8859-1\\n\"\n\n");
+
+    pPoFile->Write(sHeader);
+
+    return pPoFile;
+
 }
+
+void ltEbookProcessor::AddToPoFile(wxString& sText)
+{
+    //add text to PO file
+
+    if (!m_pPoFile || sText == _T("")) return;
+
+    m_pPoFile->Write(_T("msgid \""));
+    m_pPoFile->Write(sText + _T("\"\n"));
+    m_pPoFile->Write(_T("msgstr \"\"\n"));
+
+
+}
+
+
+//------------------------------------------------------------------------------------
+// Debug methods
+//------------------------------------------------------------------------------------
+
+
+void ltEbookProcessor::DumpXMLTree(const wxXml2Node& oNode)
+{
+    wxString sTree;
+    sTree.Alloc(1024);
+    int nIndent = 3;
+
+    // get a string with the tree structure...
+    DumpNodeAndSiblings(oNode, sTree, nIndent);
+    wxLogMessage(sTree);
+
+}
+
+void ltEbookProcessor::DumpNodeAndSiblings(const wxXml2Node& oNode, wxString& sTree, int n)
+{
+    wxXml2Node oCurr(oNode);
+
+    do {
+        DumpNode(oCurr, sTree, n);
+        oCurr = oCurr.GetNext();
+    } while (oCurr != wxXml2EmptyNode);
+}
+
+void ltEbookProcessor::DumpNode(const wxXml2Node& oNode, wxString& sTree, int n)
+{
+#define STEP            4
+
+    if (oNode == wxXml2EmptyNode) return;
+    wxString toadd, spaces(wxT(' '), n);
+
+    // concatenate the name of this node
+    toadd = oNode.GetName();
+        
+    // if this is a text node, then add also the contents...
+    if (oNode.GetType() == wxXML_TEXT_NODE ||
+        oNode.GetType() == wxXML_COMMENT_NODE || 
+        oNode.GetType() == wxXML_CDATA_SECTION_NODE) {
+
+        wxString content = oNode.GetContent();
+        if (content.Last() == wxT('\n')) content.RemoveLast();
+        if (content.GetChar(0) == wxT('\n')) content.Remove(0, 1);
+
+        // a little exception: libxml2 when loading a document creates a
+        // lot of text nodes containing just a simple \n;
+        // in this cases, just show "[null]"
+        wxString tmp = content.Trim();
+        if (tmp.IsEmpty())
+            toadd += wxT(" node: [null]");
+        else 
+            toadd += wxT(" node: ") + content;
+
+
+    } else {        // if it's not a text node, then add the properties...
+
+        wxXml2Property prop(oNode.GetProperties());
+        while (prop != wxXml2EmptyProperty) {
+            toadd += wxT(" ") + prop.GetName() + wxT("=");
+            toadd += prop.GetValue();
+            prop = prop.GetNext();
+        }
+    }
+        
+    sTree += spaces;
+
+#define SHOW_ANNOYING_NEWLINES
+#ifdef SHOW_ANNOYING_NEWLINES   
+
+    // text nodes with newlines and/or spaces will be shown as [null]
+    sTree += toadd;
+#else
+
+    // text nodes with newlines won't be shown at all
+    if (toadd != wxT("textnode: [null]")) sTree += toadd;
+#endif
+
+    // go one line down
+    sTree += wxT("\n");
+
+    // do we must add the close tag ?
+    bool bClose = FALSE;
+
+    // and then, a step more indented, its children
+    wxXml2Node child(oNode.GetFirstChild());
+    while (child != wxXml2EmptyNode) {
+
+        DumpNode(child, sTree, n+STEP);
+        child = child.GetNext();
+
+        // add a close tag because at least one child is present...
+        bClose = TRUE;
+    }
+
+    if (bClose) sTree += wxString(wxT(' '), n) + wxT("/") + oNode.GetName() + wxT("\n");
+}
+
 
