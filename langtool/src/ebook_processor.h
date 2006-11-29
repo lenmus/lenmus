@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------------------------
-//    LenMus Phonascus: The teacher of music
+//    LenMus project: free software for music theory and language
 //    Copyright (c) 2002-2006 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
@@ -33,13 +33,19 @@ WX_DECLARE_STRING_HASH_MAP( int, ltPagesTable );
 
 class wxXml2Node;
 
-class ltEbookProcessor
+enum {      //processing options
+    lmPO_FILE = 1,      //generate PO file
+};
+
+class lmEbookProcessor
 {
 public:
-    ltEbookProcessor();
-    ~ltEbookProcessor();
+    lmEbookProcessor();
+    ~lmEbookProcessor();
 
-    bool GenerateLMB(wxString sfilename);
+    bool GenerateLMB(wxString sfilename, int nOptions=0);
+
+    static wxString GetLibxml2Version();
 
 private:
   
@@ -47,22 +53,23 @@ private:
     bool BookTag(const wxXml2Node& oNode);
     bool BookinfoTag(const wxXml2Node& oNode);
     bool ChapterTag(const wxXml2Node& oNode);
+    bool EmphasisTag(const wxXml2Node& oNode);
+    bool ExerciseTag(const wxXml2Node& oNode);
+    bool ExerciseParamTag(const wxXml2Node& oNode, bool fTranslate);
     bool ItemizedlistTag(const wxXml2Node& oNode);
     bool LinkTag(const wxXml2Node& oNode);
     bool ListitemTag(const wxXml2Node& oNode);
-    bool ObjectTag(const wxXml2Node& oNode);
     bool ParaTag(const wxXml2Node& oNode);
     bool PartTag(const wxXml2Node& oNode);
+    bool ScoreTag(const wxXml2Node& oNode);
     bool SectionTag(const wxXml2Node& oNode);
     bool ThemeTag(const wxXml2Node& oNode);
     bool TitleTag(const wxXml2Node& oNode);
 
 
     // Parsing methods
-    bool ProcessChildAndSiblings(const wxXml2Node& oNode,
-                         bool fHtml=false, bool fToc=false, bool fIdx=false);
-    bool ProcessChildren(const wxXml2Node& oNode,
-                         bool fHtml=false, bool fToc=false, bool fIdx=false);
+    bool ProcessChildAndSiblings(const wxXml2Node& oNode, int nWriteOptions=0);
+    bool ProcessChildren(const wxXml2Node& oNode, int nWriteOptions=0);
     bool ProcessTag(const wxXml2Node& oNode);
 
     // File generation methods
@@ -75,8 +82,8 @@ private:
     void TerminateHtmlFile();
     void WriteToHtml(wxString sText);
         // PO
-    wxFile* StartPoFile(wxString sFilename);
-    void AddToPoFile(wxString& sText);
+    bool StartPoFile(wxString sFilename);
+    void WriteToPo(wxString& sText);
 
     // Debug methods
     void DumpXMLTree(const wxXml2Node& oNode);
@@ -107,6 +114,9 @@ private:
 
     // variables for idx processing
 
+    // variables for PO files processing
+    bool            m_fOnlyPoFile;          //only generate the PO file
+
     // bookinfo data
     bool            m_fProcessingBookinfo;
     wxString        m_sBookTitle;
@@ -114,7 +124,6 @@ private:
     // page/id cross-reference table
     ltPagesTable    m_PagesIds;
 
-    int m_xx;
 };
 
 

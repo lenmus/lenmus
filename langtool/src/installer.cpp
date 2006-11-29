@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------------------------
-//    LenMus Phonascus: The teacher of music
+//    LenMus project: free software for music theory and language
 //    Copyright (c) 2002-2006 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the

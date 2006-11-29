@@ -18,25 +18,45 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-#ifdef __GNUG__
-// #pragma interface
+
+#ifndef __LT_MAINFRAME_H__        //to avoid nested includes
+#define __LT_MAINFRAME_H__
+
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wxprec.h"
+
+#ifdef __BORLANDC__
+    #pragma hdrstop
 #endif
 
-#ifndef __INSTALLER_H__        //to avoid nested includes
-#define __INSTALLER_H__
+// for all others, include the necessary headers
+#ifndef WX_PRECOMP
+    #include "wx/wx.h"
+#endif
 
 
-class lmInstaller
+class ltMainFrame : public wxFrame
 {
 public:
-    lmInstaller();
-    ~lmInstaller();
+    // ctor(s)
+    ltMainFrame(const wxString& title);
 
-    static wxString GetInstallerStrings(wxString sLangCode, wxString sLangName);
+    // event handlers (these functions should _not_ be virtual)
+    void OnQuit(wxCommandEvent& event);
+    void OnAbout(wxCommandEvent& event);
+    void OnInstaller(wxCommandEvent& event);
+    void OnSplitFile(wxCommandEvent& WXUNUSED(event));
+    void OnConvertToHtml(wxCommandEvent& WXUNUSED(event));
+    void OnGeneratePO(wxCommandEvent& WXUNUSED(event));
+    void OnCompileBook(wxCommandEvent& WXUNUSED(event));
+    void OnMergePO(wxCommandEvent& WXUNUSED(event));
 
 private:
+    void PutContentIntoFile(wxString sPath, wxString sContent);
+    void GenerateLanguage(int i);
 
+    DECLARE_EVENT_TABLE()
 };
 
-
-#endif    // __INSTALLER_H__
+    
+#endif    // __LT_MAINFRAME_H__

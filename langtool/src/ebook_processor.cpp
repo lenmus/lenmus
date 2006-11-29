@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------------------------
-//    LenMus Phonascus: The teacher of music
+//    LenMus project: free software for music theory and language
 //    Copyright (c) 2002-2006 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
@@ -41,26 +41,35 @@
 
 #define ltNO_INDENT false
 
-ltEbookProcessor::ltEbookProcessor()
+enum {
+    eTOC = 1,
+    eHTML = 2,
+    eIDX = 4,
+    eTRANSLATE = 8
+};
+
+lmEbookProcessor::lmEbookProcessor()
 {
     m_pTocFile = (wxFile*) NULL;
     m_pHtmlFile = (wxFile*) NULL;
+    m_pPoFile = (wxFile*)NULL;
 
 }
 
-ltEbookProcessor::~ltEbookProcessor()
+lmEbookProcessor::~lmEbookProcessor()
 {
     if (m_pTocFile) delete m_pTocFile;
     if (m_pHtmlFile) delete m_pHtmlFile;
+    if (m_pPoFile) delete m_pPoFile;
 }
 
-bool ltEbookProcessor::GenerateLMB(wxString sFilename)
+bool lmEbookProcessor::GenerateLMB(wxString sFilename, int nOptions)
 {
     // returns false if error
 
     // Prepare for a new XML file processing
     m_fProcessingBookinfo = false;
-    m_xx = 0;
+    m_fOnlyPoFile = nOptions & lmPO_FILE;
 
     // load the XML file as tree of nodes
     wxXml2Document oDoc;
@@ -91,6 +100,16 @@ bool ltEbookProcessor::GenerateLMB(wxString sFilename)
     //DumpXMLTree(oRoot);   //DBG
     CreateLinksTable(oRoot);
 
+    // Prepare PO file
+    if (m_fOnlyPoFile) {
+        if (!StartPoFile( sFilename )) {
+            wxLogMessage(_T("Error: PO file can not be created"));
+            oRoot.DestroyIfUnlinked();
+            oDoc.DestroyIfUnlinked();
+            return false;        //error
+        }
+    }
+
     // Prepare the TOC file
     if (!StartTocFile( sFilename )) {
         wxLogMessage(_T("Error: toc file can not be created"));
@@ -113,7 +132,7 @@ bool ltEbookProcessor::GenerateLMB(wxString sFilename)
 
 }
 
-void ltEbookProcessor::CreateLinksTable(wxXml2Node& oRoot)
+void lmEbookProcessor::CreateLinksTable(wxXml2Node& oRoot)
 {
     // explores the tree and creates the cross-reference table relating
     // themes' ids with theme number
@@ -128,7 +147,7 @@ void ltEbookProcessor::CreateLinksTable(wxXml2Node& oRoot)
     } while (oCurr != wxXml2EmptyNode);
 }
 
-void ltEbookProcessor::FindThemeNode(const wxXml2Node& oNode)
+void lmEbookProcessor::FindThemeNode(const wxXml2Node& oNode)
 {
     if (oNode == wxXml2EmptyNode) return;
 
@@ -153,30 +172,27 @@ void ltEbookProcessor::FindThemeNode(const wxXml2Node& oNode)
 }
 
 
-bool ltEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode,
-                                               bool fHtml, bool fToc, bool fIdx)
+bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode, int nWriteOptions)
 {
     wxXml2Node oCurr(oNode.GetFirstChild());
-    m_xx += 5;
-    wxString spaces(wxT(' '), m_xx);
+    //m_xx += 5;
+    //wxString spaces(wxT(' '), m_xx);
 
     bool fError = false;
     while (oCurr != wxXml2EmptyNode) {
-        if (oCurr.GetName() == _T("text")) {
-            wxLogMessage(spaces + wxT("text [%s]"), oCurr.GetContent() );
-        }
-        else
-            wxLogMessage(spaces + wxT("parsing [%s]"), oCurr.GetName() );
-        fError |= ProcessChildren(oCurr, fHtml, fToc, fIdx);
+        //if (oCurr.GetName() == _T("text")) {
+        //    wxLogMessage(spaces + wxT("text [%s]"), oCurr.GetContent() );
+        //}
+        //else
+        //    wxLogMessage(spaces + wxT("parsing [%s]"), oCurr.GetName() );
+        fError |= ProcessChildren(oCurr, nWriteOptions);
         oCurr = oCurr.GetNext();
     }
-    m_xx -= 5;
+    //m_xx -= 5;
     return fError;
 }
 
-
-bool ltEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
-                                       bool fHtml, bool fToc, bool fIdx)
+bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nWriteOptions)
 {
     bool fError = false;
 
@@ -195,8 +211,9 @@ bool ltEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
         // are for filtering ou these lines
         wxString tmp = sContent.Trim();
         if (!tmp.IsEmpty()) {
-            if (fToc) WriteToToc(sContent, ltNO_INDENT);        //text not indented
-            if (fHtml) WriteToHtml(sContent);
+            if (nWriteOptions & eTOC) WriteToToc(sContent, ltNO_INDENT);        //text not indented
+            if (nWriteOptions & eHTML) WriteToHtml(sContent);
+            if (m_fOnlyPoFile && (nWriteOptions & eTRANSLATE)) WriteToPo(sContent);
             //if (fIdx) WriteToIdx(sContent);
         }
 
@@ -214,20 +231,26 @@ bool ltEbookProcessor::ProcessChildren(const wxXml2Node& oNode,
 
 }
 
-bool ltEbookProcessor::ProcessTag(const wxXml2Node& oNode)
+bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode)
 {
     if (oNode == wxXml2EmptyNode) return false;
     if (oNode.GetType() != wxXML_ELEMENT_NODE) return false;
 
     wxString sElement = oNode.GetName();
-    wxString spaces(wxT(' '), m_xx);
-    wxLogMessage(spaces + _T("[ProcessTag] - element [%s]"), sElement.c_str());
+    //wxString spaces(wxT(' '), m_xx);
+    //wxLogMessage(spaces + _T("[ProcessTag] - element [%s]"), sElement.c_str());
 
     if (sElement == _T("bookinfo")) {
         return BookinfoTag(oNode);
     }
     else if (sElement == _T("chapter")) {
         return ChapterTag(oNode);
+    }
+    else if (sElement == _T("emphasis")) {
+        return EmphasisTag(oNode);
+    }
+    else if (sElement == _T("exercise")) {
+        return ExerciseTag(oNode);
     }
     else if (sElement == _T("itemizedlist")) {
         return ItemizedlistTag(oNode);
@@ -238,8 +261,8 @@ bool ltEbookProcessor::ProcessTag(const wxXml2Node& oNode)
     else if (sElement == _T("listitem")) {
         return ListitemTag(oNode);
     }
-    else if (sElement == _T("object")) {
-        return ObjectTag(oNode);
+    else if (sElement == _T("score")) {
+        return SectionTag(oNode);
     }
     else if (sElement == _T("section")) {
         return SectionTag(oNode);
@@ -257,12 +280,54 @@ bool ltEbookProcessor::ProcessTag(const wxXml2Node& oNode)
         return TitleTag(oNode);
     }
     else {
-        wxLogMessage(_T("Error: Found tag <%s>. No treatment defined."), sElement);
-        return true;
+        //check for exercises related param tags
+
+        // a) Non-translatable params
+        if (   (sElement == _T("accidentals"))
+            || (sElement == _T("chords"))
+            || (sElement == _T("clef"))
+            || (sElement == _T("control_go_back"))
+            || (sElement == _T("control_settings"))
+            || (sElement == _T("fragment"))
+            || (sElement == _T("inversions"))
+            || (sElement == _T("key"))          //keys
+            || (sElement == _T("keys"))
+            || (sElement == _T("max_accidentals"))
+            || (sElement == _T("max_interval"))
+            || (sElement == _T("maxInterval"))  //max_interval
+            || (sElement == _T("mode"))
+            || (sElement == _T("music"))
+            || (sElement == _T("music_border"))
+            || (sElement == _T("problem_type"))
+            || (sElement == _T("playMode"))     //play_mode
+            || (sElement == _T("scales"))
+            || (sElement == _T("showKey"))      //show_key
+            || (sElement == _T("time"))
+            || (sElement == _T("type"))         //score_type
+           )
+        {
+            return ExerciseParamTag(oNode, false);
+        }
+        // b) translatable params
+        else if ((sElement == _T("control_measures"))
+              || (sElement == _T("control_play"))
+              || (sElement == _T("control_solfa"))
+           )
+        {
+            return ExerciseParamTag(oNode, true);
+        }
+        else {
+            wxLogMessage(_T("Error: Found tag <%s>. No treatment defined."), sElement);
+            return true;
+        }
     }
 
 }
 
+wxString lmEbookProcessor::GetLibxml2Version() 
+{
+    return wxXml2::GetLibxml2Version(); 
+}
 
 
 
@@ -270,7 +335,7 @@ bool ltEbookProcessor::ProcessTag(const wxXml2Node& oNode)
 // Tags' processors
 //------------------------------------------------------------------------------------
 
-bool ltEbookProcessor::BookTag(const wxXml2Node& oNode)
+bool lmEbookProcessor::BookTag(const wxXml2Node& oNode)
 {
     // receives and processes a <book> node and its children.
     // return true if error
@@ -301,7 +366,7 @@ bool ltEbookProcessor::BookTag(const wxXml2Node& oNode)
 
 }
 
-bool ltEbookProcessor::BookinfoTag(const wxXml2Node& oNode)
+bool lmEbookProcessor::BookinfoTag(const wxXml2Node& oNode)
 {
     // receives and processes a <bookinfo> node and its children.
     // return true if error
@@ -324,7 +389,7 @@ bool ltEbookProcessor::BookinfoTag(const wxXml2Node& oNode)
     return fError;
 }
 
-bool ltEbookProcessor::ChapterTag(const wxXml2Node& oNode)
+bool lmEbookProcessor::ChapterTag(const wxXml2Node& oNode)
 {
     // convert tag: output to open html tags
     WriteToToc(_T("<entry id=\"xxxx\">\n"));
@@ -344,7 +409,58 @@ bool ltEbookProcessor::ChapterTag(const wxXml2Node& oNode)
     return fError;
 }
 
-bool ltEbookProcessor::ItemizedlistTag(const wxXml2Node& oNode)
+bool lmEbookProcessor::EmphasisTag(const wxXml2Node& oNode)
+{
+    // openning tag
+    WriteToHtml(_T("<b>"));
+
+    //process tag's children and write note content to html
+    bool fError = ProcessChildAndSiblings(oNode, eHTML | eTRANSLATE);
+    
+    //convert tag
+    WriteToHtml(_T("</b>"));
+
+    return fError;
+}
+
+bool lmEbookProcessor::ExerciseTag(const wxXml2Node& oNode)
+{
+    // get attributes
+    wxString sType = oNode.GetPropVal(_T("type"), _T(""));
+    wxString sWidth = oNode.GetPropVal(_T("width"), _T(""));
+    wxString sHeight = oNode.GetPropVal(_T("height"), _T(""));
+    wxString sBorder = oNode.GetPropVal(_T("border"), _T(""));
+
+    // convert tag: output to open html tags
+    WriteToHtml(_T("<object type=\"Application/LenMus\" classid=\"") + sType +
+        _T("\" width=\"") + sWidth +
+        _T("\" height=\"") + sHeight +
+        _T("\" border=\"") + sBorder +
+        _T("\">\n") );
+ 
+    //process tag's children
+    bool fError = ProcessChildAndSiblings(oNode, eHTML);
+
+    //convert tag: output to close html tags
+    WriteToHtml(_T("</object>\n"));
+
+    return fError;
+}
+
+bool lmEbookProcessor::ExerciseParamTag(const wxXml2Node& oNode, bool fTranslate)
+{
+    // convert tag
+    WriteToHtml(_T("<param name=\"") + oNode.GetName() + _T("\" value=\"") );
+
+    //params have no more xml content, just the value. Get it
+    bool fError = ProcessChildAndSiblings(oNode, eHTML | (fTranslate ? eTRANSLATE : 0));
+
+    WriteToHtml(_T("\">\n"));
+
+    return fError;
+}
+
+bool lmEbookProcessor::ItemizedlistTag(const wxXml2Node& oNode)
 {
     // openning tag
     WriteToHtml(_T("<ul>\n"));
@@ -361,7 +477,7 @@ bool ltEbookProcessor::ItemizedlistTag(const wxXml2Node& oNode)
     return fError;
 }
 
-bool ltEbookProcessor::LinkTag(const wxXml2Node& oNode)
+bool lmEbookProcessor::LinkTag(const wxXml2Node& oNode)
 {
     // openning tag
 
@@ -384,7 +500,7 @@ bool ltEbookProcessor::LinkTag(const wxXml2Node& oNode)
     }
 
     //process tag's children and write note content to html
-    bool fError = ProcessChildAndSiblings(oNode, true);
+    bool fError = ProcessChildAndSiblings(oNode, eHTML | eTRANSLATE);
 
     // closing tag
     if (sId != _T("")) WriteToHtml(_T("</a>"));
@@ -392,7 +508,7 @@ bool ltEbookProcessor::LinkTag(const wxXml2Node& oNode)
     return fError;
 }
 
-bool ltEbookProcessor::ListitemTag(const wxXml2Node& oNode)
+bool lmEbookProcessor::ListitemTag(const wxXml2Node& oNode)
 {
     // openning tag
     WriteToHtml(_T("<li>"));
@@ -400,7 +516,7 @@ bool ltEbookProcessor::ListitemTag(const wxXml2Node& oNode)
     // tag processing implications
 
     //process tag's children and write note content to html
-    bool fError = ProcessChildAndSiblings(oNode, true);
+    bool fError = ProcessChildAndSiblings(oNode, eHTML | eTRANSLATE);
 
     // closing tag
     WriteToHtml(_T("</li>\n"));
@@ -408,30 +524,13 @@ bool ltEbookProcessor::ListitemTag(const wxXml2Node& oNode)
     return fError;
 }
 
-bool ltEbookProcessor::ObjectTag(const wxXml2Node& WXUNUSED(oNode))
-{
-    // openning tag
-    WriteToHtml(_T("<object>"));
-
-    // tag processing implications
-    //WriteToHtml( oNode.GetContent() );    //write text in paragraph
-
-    //process tag's children
-    //bool fError = ProcessChildAndSiblings(oNode);
-
-    //convert tag: output to close html tags
-    WriteToHtml(_T("</object>\n"));
-
-    return false;
-}
-
-bool ltEbookProcessor::ParaTag(const wxXml2Node& oNode)
+bool lmEbookProcessor::ParaTag(const wxXml2Node& oNode)
 {
     // openning tag
     WriteToHtml(_T("<p>"));
 
     //process tag's children and write note content to html
-    bool fError = ProcessChildAndSiblings(oNode, true);
+    bool fError = ProcessChildAndSiblings(oNode, eHTML | eTRANSLATE);
     
     //convert tag: output to close html tags
     WriteToHtml(_T("</p>\n"));
@@ -439,7 +538,7 @@ bool ltEbookProcessor::ParaTag(const wxXml2Node& oNode)
     return fError;
 }
 
-bool ltEbookProcessor::PartTag(const wxXml2Node& oNode)
+bool lmEbookProcessor::PartTag(const wxXml2Node& oNode)
 {
     // openning tag
     // HTML:
@@ -465,7 +564,30 @@ bool ltEbookProcessor::PartTag(const wxXml2Node& oNode)
     return fError;
 }
 
-bool ltEbookProcessor::SectionTag(const wxXml2Node& oNode)
+bool lmEbookProcessor::ScoreTag(const wxXml2Node& oNode)
+{
+    // get attributes
+    wxString sWidth = oNode.GetPropVal(_T("width"), _T(""));
+    wxString sHeight = oNode.GetPropVal(_T("height"), _T(""));
+    wxString sBorder = oNode.GetPropVal(_T("border"), _T(""));
+
+    // convert tag: output to open html tags
+    WriteToHtml(_T("<object type=\"Application/LenMus\" classid=\"Score")
+        _T("\" width=\"") + sWidth +
+        _T("\" height=\"") + sHeight +
+        _T("\" border=\"") + sBorder +
+        _T("\">\n") );
+ 
+    //process tag's children
+    bool fError = ProcessChildAndSiblings(oNode, eHTML);
+
+    //convert tag: output to close html tags
+    WriteToHtml(_T("</object>\n"));
+
+    return fError;
+}
+
+bool lmEbookProcessor::SectionTag(const wxXml2Node& oNode)
 {
     // openning tag
     WriteToHtml(_T("<div id=\"xxxx\">\n"));
@@ -483,7 +605,7 @@ bool ltEbookProcessor::SectionTag(const wxXml2Node& oNode)
     return fError;
 }
 
-bool ltEbookProcessor::ThemeTag(const wxXml2Node& oNode)
+bool lmEbookProcessor::ThemeTag(const wxXml2Node& oNode)
 {
     // get its 'id' property
     wxString sId = oNode.GetPropVal(_T("id"), _T(""));
@@ -513,7 +635,7 @@ bool ltEbookProcessor::ThemeTag(const wxXml2Node& oNode)
     return fError;
 }
 
-bool ltEbookProcessor::TitleTag(const wxXml2Node& oNode)
+bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode)
 {
     // openning tag
     //TOC
@@ -522,7 +644,9 @@ bool ltEbookProcessor::TitleTag(const wxXml2Node& oNode)
     WriteToHtml( wxString::Format(_T("<h%d>"), m_nHeaderLevel));
 
     //process tag's children and write note content to html and toc
-    bool fError = ProcessChildAndSiblings(oNode, true, (m_fProcessingBookinfo || m_fTitleToToc));
+    int nOptions = eHTML | eTRANSLATE |
+                   ((m_fProcessingBookinfo || m_fTitleToToc) ? eTOC : 0);
+    bool fError = ProcessChildAndSiblings(oNode, nOptions);
 
     // End of tag processing implications
     //TOC:
@@ -538,7 +662,7 @@ bool ltEbookProcessor::TitleTag(const wxXml2Node& oNode)
 // File managing
 //------------------------------------------------------------------------------------
 
-bool ltEbookProcessor::StartTocFile(wxString sFilename)
+bool lmEbookProcessor::StartTocFile(wxString sFilename)
 {
     // returns false if error
 
@@ -565,7 +689,7 @@ bool ltEbookProcessor::StartTocFile(wxString sFilename)
 
 }
 
-void ltEbookProcessor::TerminateTocFile()
+void lmEbookProcessor::TerminateTocFile()
 {
     if (!m_pTocFile) return;
 
@@ -581,7 +705,7 @@ void ltEbookProcessor::TerminateTocFile()
 
 }
 
-bool ltEbookProcessor::StartHtmlFile(wxString sFilename, wxString sId)
+bool lmEbookProcessor::StartHtmlFile(wxString sFilename, wxString sId)
 {
     // returns false if error
 
@@ -619,7 +743,7 @@ bool ltEbookProcessor::StartHtmlFile(wxString sFilename, wxString sId)
 
 }
 
-void ltEbookProcessor::TerminateHtmlFile()
+void lmEbookProcessor::TerminateHtmlFile()
 {
     if (!m_pHtmlFile) return;
 
@@ -631,7 +755,7 @@ void ltEbookProcessor::TerminateHtmlFile()
 
 }
 
-void ltEbookProcessor::WriteToToc(wxString sText, bool fIndent)
+void lmEbookProcessor::WriteToToc(wxString sText, bool fIndent)
 {
     if (!m_pTocFile) return;
 
@@ -646,7 +770,7 @@ void ltEbookProcessor::WriteToToc(wxString sText, bool fIndent)
 
 }
 
-void ltEbookProcessor::WriteToHtml(wxString sText)
+void lmEbookProcessor::WriteToHtml(wxString sText)
 {
     if (!m_pHtmlFile) return;
 
@@ -662,14 +786,17 @@ void ltEbookProcessor::WriteToHtml(wxString sText)
 //------------------------------------------------------------------------------------
 
 
-wxFile* ltEbookProcessor::StartPoFile(wxString sFilename)
+bool lmEbookProcessor::StartPoFile(wxString sFilename)
 {
+    // returns true if success
+
     wxFileName oFNP( sFilename );
     oFNP.SetExt(_T("po"));
-    wxFile* pPoFile = new wxFile(oFNP.GetFullName(), wxFile::write);
-    if (!pPoFile->IsOpened()) {
+    m_pPoFile = new wxFile(oFNP.GetFullName(), wxFile::write);
+    if (!m_pPoFile->IsOpened()) {
         wxLogMessage(_T("Error: File %s can not be created"), oFNP.GetFullName());
-        return (wxFile*)NULL;        //error
+        m_pPoFile = (wxFile*)NULL;
+        return false;        //error
     }
 
     //Generate Po header
@@ -688,22 +815,23 @@ wxFile* ltEbookProcessor::StartPoFile(wxString sFilename)
         _T("\"X-Poedit-Language: English\\n\"\n")
         _T("\"X-Poedit-SourceCharset: iso-8859-1\\n\"\n\n");
 
-    pPoFile->Write(sHeader);
-
-    return pPoFile;
+    m_pPoFile->Write(sHeader);
+    return true;
 
 }
 
-void ltEbookProcessor::AddToPoFile(wxString& sText)
+void lmEbookProcessor::WriteToPo(wxString& sText)
 {
     //add text to PO file
 
     if (!m_pPoFile || sText == _T("")) return;
 
+    //change /n by //n
+    wxString sContent = sText;
+    sContent.Replace(_T("\n"), _T("\\n"));
     m_pPoFile->Write(_T("msgid \""));
-    m_pPoFile->Write(sText + _T("\"\n"));
-    m_pPoFile->Write(_T("msgstr \"\"\n"));
-
+    m_pPoFile->Write(sContent + _T("\"\n"));
+    m_pPoFile->Write(_T("msgstr \"\"\n\n"));
 
 }
 
@@ -713,7 +841,7 @@ void ltEbookProcessor::AddToPoFile(wxString& sText)
 //------------------------------------------------------------------------------------
 
 
-void ltEbookProcessor::DumpXMLTree(const wxXml2Node& oNode)
+void lmEbookProcessor::DumpXMLTree(const wxXml2Node& oNode)
 {
     wxString sTree;
     sTree.Alloc(1024);
@@ -725,7 +853,7 @@ void ltEbookProcessor::DumpXMLTree(const wxXml2Node& oNode)
 
 }
 
-void ltEbookProcessor::DumpNodeAndSiblings(const wxXml2Node& oNode, wxString& sTree, int n)
+void lmEbookProcessor::DumpNodeAndSiblings(const wxXml2Node& oNode, wxString& sTree, int n)
 {
     wxXml2Node oCurr(oNode);
 
@@ -735,7 +863,7 @@ void ltEbookProcessor::DumpNodeAndSiblings(const wxXml2Node& oNode, wxString& sT
     } while (oCurr != wxXml2EmptyNode);
 }
 
-void ltEbookProcessor::DumpNode(const wxXml2Node& oNode, wxString& sTree, int n)
+void lmEbookProcessor::DumpNode(const wxXml2Node& oNode, wxString& sTree, int n)
 {
 #define STEP            4
 
