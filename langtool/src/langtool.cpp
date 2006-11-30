@@ -32,7 +32,7 @@
     #include "wx/wx.h"
 #endif
 
-#include "wx/wfstream.h"
+#include "wx/fs_zip.h"
 
 #include "MainFrame.h"
 
@@ -75,6 +75,9 @@ IMPLEMENT_APP(MyApp)
 // 'Main program' equivalent: the program execution "starts" here
 bool MyApp::OnInit()
 {
+    // Add support for zip files
+    wxFileSystem::AddHandler(new wxZipFSHandler);
+
     // create the main application window
     ltMainFrame *frame = new ltMainFrame(_T("LangTool - eMusicBooks and PO files processor"));
 

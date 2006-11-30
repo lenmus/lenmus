@@ -32,6 +32,9 @@
 WX_DECLARE_STRING_HASH_MAP( int, ltPagesTable );
 
 class wxXml2Node;
+class wxZipOutputStream;
+class wxTextOutputStream;
+class wxFFileOutputStream;
 
 enum {      //processing options
     lmPO_FILE = 1,      //generate PO file
@@ -84,6 +87,9 @@ private:
         // PO
     bool StartPoFile(wxString sFilename);
     void WriteToPo(wxString& sText);
+        // LMB
+    bool StartLmbFile(wxString sFilename);
+
 
     // Debug methods
     void DumpXMLTree(const wxXml2Node& oNode);
@@ -105,6 +111,7 @@ private:
     // variables for toc processing
     int             m_nTocIndentLevel;      // to indent output
     bool            m_fTitleToToc;          // write title to toc
+    wxString        m_sTocFilename;
 
     // variables for html processing
     int             m_nHtmlIndentLevel;     // to indent output
@@ -116,6 +123,13 @@ private:
 
     // variables for PO files processing
     bool            m_fOnlyPoFile;          //only generate the PO file
+
+    // variables for LMB (zip file) generation
+    bool                    m_fGenerateLmb;
+    wxTextOutputStream*     m_pLmbFile;
+    wxZipOutputStream*      m_pZipFile;
+    wxFFileOutputStream*    m_pZipOutFile;
+
 
     // bookinfo data
     bool            m_fProcessingBookinfo;

@@ -34,6 +34,8 @@
 #endif
 
 #include "wx/filename.h"
+#include "wx/txtstrm.h"
+#include "wx/zipstrm.h"
 
 #include "ebook_processor.h"
 #include "wx/xml2.h"
@@ -53,6 +55,11 @@ lmEbookProcessor::lmEbookProcessor()
     m_pTocFile = (wxFile*) NULL;
     m_pHtmlFile = (wxFile*) NULL;
     m_pPoFile = (wxFile*)NULL;
+    m_pLmbFile = (wxTextOutputStream*)NULL;
+    m_pZipFile = (wxZipOutputStream*)NULL;
+
+    //options. TODO: dialog to change options
+    m_fGenerateLmb = true;
 
 }
 
@@ -61,6 +68,8 @@ lmEbookProcessor::~lmEbookProcessor()
     if (m_pTocFile) delete m_pTocFile;
     if (m_pHtmlFile) delete m_pHtmlFile;
     if (m_pPoFile) delete m_pPoFile;
+    if (m_pLmbFile) delete m_pLmbFile;
+
 }
 
 bool lmEbookProcessor::GenerateLMB(wxString sFilename, int nOptions)
@@ -116,6 +125,16 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, int nOptions)
         oRoot.DestroyIfUnlinked();
         oDoc.DestroyIfUnlinked();
         return false;        //error
+    }
+
+    // prepare de LMB file
+    if (m_fGenerateLmb) {
+        if (!StartLmbFile( sFilename )) {
+            wxLogMessage(_T("Error: LMB file can not be created"));
+            oRoot.DestroyIfUnlinked();
+            oDoc.DestroyIfUnlinked();
+            return false;        //error
+        }
     }
 
     bool fError = BookTag(oRoot);
@@ -662,17 +681,25 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode)
 // File managing
 //------------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------------
+// Toc file
+//------------------------------------------------------------------------------------
+
 bool lmEbookProcessor::StartTocFile(wxString sFilename)
 {
     // returns false if error
 
     wxFileName oTOC( sFilename );
     oTOC.SetExt(_T("toc"));
-    m_pTocFile = new wxFile(oTOC.GetFullName(), wxFile::write);
+    m_sTocFilename = oTOC.GetFullName();
+    m_pTocFile = new wxFile(m_sTocFilename, wxFile::write);
     if (!m_pTocFile->IsOpened()) {
         wxLogMessage(_T("Error: File %s can not be created"), oTOC.GetFullName());
         return false;        //error
     }
+
+    //initializations
+    m_nTocIndentLevel = 0;
 
     //Generate header
     wxString sNil = _T("");
@@ -680,10 +707,8 @@ bool lmEbookProcessor::StartTocFile(wxString sFilename)
         _T("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")
         _T("<lmBookTOC>\n");
 
-    m_pTocFile->Write(sHeader);
-
-    //initializations
-    m_nTocIndentLevel = 1;
+    WriteToToc(sHeader);
+    m_nTocIndentLevel++;
 
     return true;
 
@@ -703,55 +728,19 @@ void lmEbookProcessor::TerminateTocFile()
     delete m_pTocFile;
     m_pTocFile = (wxFile*) NULL;
 
-}
+    //// copy to LMB file and delete
+    //if (m_fGenerateLmb) {
+    //    wxFFileInputStream inFile( m_ );
+    //    wxTextInputStream inStream( inFile );
+    //    if (!StartLmbFile( sFilename )) {
+    //        wxLogMessage(_T("Error: LMB file can not be created"));
+    //        oRoot.DestroyIfUnlinked();
+    //        oDoc.DestroyIfUnlinked();
+    //        return false;        //error
+    //    }
+    //}
 
-bool lmEbookProcessor::StartHtmlFile(wxString sFilename, wxString sId)
-{
-    // returns false if error
 
-    wxFileName oHTM( sFilename );
-    wxString sName = oHTM.GetName();
-    if (sId == _T("")) return false;
-
-    int nFile = m_PagesIds[sId];
-    sName += wxString::Format(_T("_%d"), nFile);
-
-    oHTM.SetName(sName);
-    oHTM.SetExt(_T("htm"));
-    m_sHtmlPagename = oHTM.GetFullName();
-    m_pHtmlFile = new wxFile(oHTM.GetFullName(), wxFile::write);
-    if (!m_pHtmlFile->IsOpened()) {
-        wxLogMessage(_T("Error: File %s can not be created"), oHTM.GetFullName());
-        return false;        //error
-    }
-
-    //Generate header
-    wxString sNil = _T("");
-    wxString sCharset = _T("utf-8");
-    wxString sHtml = sNil +
-        _T("<html>\n<head>\n")
-        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + sCharset +
-        _T("\">\n")
-        _T("</head>\n<body>\n\n");
-
-    m_pHtmlFile->Write(sHtml);
-
-    //initializations
-    m_nHtmlIndentLevel = 1;
-
-    return true;
-
-}
-
-void lmEbookProcessor::TerminateHtmlFile()
-{
-    if (!m_pHtmlFile) return;
-
-    m_pHtmlFile->Write(_T("\n</body>\n"));
-    m_pHtmlFile->Close();
-
-    delete m_pHtmlFile;
-    m_pHtmlFile = (wxFile*) NULL;
 
 }
 
@@ -770,15 +759,109 @@ void lmEbookProcessor::WriteToToc(wxString sText, bool fIndent)
 
 }
 
+//------------------------------------------------------------------------------------
+// Html file managing
+//------------------------------------------------------------------------------------
+
+bool lmEbookProcessor::StartHtmlFile(wxString sFilename, wxString sId)
+{
+    // returns false if error
+
+    wxFileName oHTM( sFilename );
+    wxString sName = oHTM.GetName();
+    if (sId == _T("")) return false;
+
+    int nFile = m_PagesIds[sId];
+    sName += wxString::Format(_T("_%d"), nFile);
+
+    oHTM.SetName(sName);
+    oHTM.SetExt(_T("htm"));
+    m_sHtmlPagename = oHTM.GetFullName();
+
+    if (m_fGenerateLmb) {
+        m_pZipFile->PutNextEntry( m_sHtmlPagename );
+    }
+    else {
+        m_pHtmlFile = new wxFile(oHTM.GetFullName(), wxFile::write);
+        if (!m_pHtmlFile->IsOpened()) {
+            wxLogMessage(_T("Error: File %s can not be created"), oHTM.GetFullName());
+            return false;        //error
+        }
+    }
+
+    //Generate header
+    wxString sNil = _T("");
+    wxString sCharset = _T("utf-8");
+    wxString sHtml = sNil +
+        _T("<html>\n<head>\n")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + sCharset +
+        _T("\">\n")
+        _T("</head>\n<body>\n\n");
+
+    WriteToHtml(sHtml);
+
+    //initializations
+    m_nHtmlIndentLevel = 1;
+
+    return true;
+
+}
+
+void lmEbookProcessor::TerminateHtmlFile()
+{
+    if (!((m_fGenerateLmb && m_pLmbFile) || m_pHtmlFile)) return;
+
+    WriteToHtml(_T("\n</body>\n"));
+
+    if (m_pHtmlFile) {
+        m_pHtmlFile->Close();
+        delete m_pHtmlFile;
+        m_pHtmlFile = (wxFile*) NULL;
+    }
+    else {
+        m_pZipFile->Close();
+    }
+
+}
+
 void lmEbookProcessor::WriteToHtml(wxString sText)
 {
-    if (!m_pHtmlFile) return;
+    if (!((m_fGenerateLmb && m_pLmbFile) || m_pHtmlFile)) return;
 
     //wxString sIndent;
     //sIndent.Append(_T(' '), 3 * m_nHtmlIndentLevel);
     //m_pHtmlFile->Write(sIndent + sText);
 
-    m_pHtmlFile->Write(sText);
+    if (m_fGenerateLmb) {
+        m_pLmbFile->WriteString( sText );
+    }
+    else {
+        m_pHtmlFile->Write(sText);
+    }
+}
+
+//------------------------------------------------------------------------------------
+// Lmb file management
+//------------------------------------------------------------------------------------
+
+
+bool lmEbookProcessor::StartLmbFile(wxString sFilename)
+{
+    // returns true if success
+
+    wxFileName oFNP( sFilename );
+    oFNP.SetExt(_T("lmb"));
+    m_pZipOutFile = new wxFFileOutputStream( oFNP.GetFullName() );
+    //wxFFileOutputStream out( oFNP.GetFullName() );
+    //if (!m_pPoFile->IsOpened()) {
+    //    wxLogMessage(_T("Error: File %s can not be created"), oFNP.GetFullName());
+    //    m_pPoFile = (wxFile*)NULL;
+    //    return false;        //error
+    //}
+    m_pZipFile = new wxZipOutputStream(*m_pZipOutFile);
+    m_pLmbFile = new wxTextOutputStream(*m_pZipFile);
+    return true;
+
 }
 
 //------------------------------------------------------------------------------------
