@@ -69,6 +69,7 @@ lmEbookProcessor::~lmEbookProcessor()
     if (m_pHtmlFile) delete m_pHtmlFile;
     if (m_pPoFile) delete m_pPoFile;
     if (m_pLmbFile) delete m_pLmbFile;
+    if (m_pZipFile) delete m_pZipFile;
 
 }
 
@@ -143,6 +144,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, int nOptions)
 
     // Close files
     TerminateTocFile();
+    TerminateLmbFile();
 
     oRoot.DestroyIfUnlinked();
     oDoc.DestroyIfUnlinked();
@@ -722,25 +724,11 @@ void lmEbookProcessor::TerminateTocFile()
     wxString sHeader = sNil +
         _T("</lmBookTOC>\n");
 
-    m_pTocFile->Write(sHeader);
+    WriteToToc(sHeader);
     m_pTocFile->Close();
 
     delete m_pTocFile;
     m_pTocFile = (wxFile*) NULL;
-
-    //// copy to LMB file and delete
-    //if (m_fGenerateLmb) {
-    //    wxFFileInputStream inFile( m_ );
-    //    wxTextInputStream inStream( inFile );
-    //    if (!StartLmbFile( sFilename )) {
-    //        wxLogMessage(_T("Error: LMB file can not be created"));
-    //        oRoot.DestroyIfUnlinked();
-    //        oDoc.DestroyIfUnlinked();
-    //        return false;        //error
-    //    }
-    //}
-
-
 
 }
 
@@ -819,7 +807,7 @@ void lmEbookProcessor::TerminateHtmlFile()
         m_pHtmlFile = (wxFile*) NULL;
     }
     else {
-        m_pZipFile->Close();
+        m_pZipFile->CloseEntry();
     }
 
 }
@@ -863,6 +851,38 @@ bool lmEbookProcessor::StartLmbFile(wxString sFilename)
     return true;
 
 }
+
+void lmEbookProcessor::TerminateLmbFile()
+{
+    if (!(m_fGenerateLmb && m_pLmbFile)) return;
+
+    CopyToLmb( m_sTocFilename );
+
+    // delete temporal toc file
+    if (!::wxRemoveFile(m_sTocFilename)) {
+        wxLogMessage(_T("Error: File %s could not be deleted"), m_sTocFilename);
+    }
+
+    delete m_pZipFile;
+    m_pLmbFile = (wxTextOutputStream*)NULL;
+    m_pZipFile = (wxZipOutputStream*)NULL;
+
+}
+
+void lmEbookProcessor::CopyToLmb(wxString sFilename)
+{
+    wxFFileInputStream inFile( sFilename, _T("r") );
+    if (!inFile.IsOk()) {
+        wxLogMessage(_T("Error: File %s can not be merged into LMB"), sFilename);
+        return;
+    }
+    m_pZipFile->PutNextEntry( sFilename ); 
+    m_pZipFile->Write( inFile );
+    m_pZipFile->CloseEntry(); 
+
+}
+
+
 
 //------------------------------------------------------------------------------------
 // PO file management

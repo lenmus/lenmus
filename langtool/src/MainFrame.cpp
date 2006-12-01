@@ -73,14 +73,15 @@ enum
 typedef struct lmLangDataStruct {
     wxString sLang;
     wxString sLangName;
+    wxString sLangCode;
 } lmLangData;
 
 #define lmNUM_LANGUAGES 4
 static const lmLangData tLanguages[lmNUM_LANGUAGES] = { 
-    { _T("en"), _T("English") }, 
-    { _T("es"), _T("Spanish") }, 
-    { _T("fr"), _T("French") }, 
-    { _T("tr"), _T("Turkish") }, 
+    { _T("en"), _T("English"), _T("iso-8859-1") }, 
+    { _T("es"), _T("Spanish"), _T("iso-8859-1") }, 
+    { _T("fr"), _T("French"), _T("iso-8859-1") }, 
+    { _T("tr"), _T("Turkish"), _T("iso-8859-9") }, 
 };
 
 // ----------------------------------------------------------------------------

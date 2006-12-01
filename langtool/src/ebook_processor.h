@@ -89,6 +89,8 @@ private:
     void WriteToPo(wxString& sText);
         // LMB
     bool StartLmbFile(wxString sFilename);
+    void TerminateLmbFile();
+    void CopyToLmb(wxString sFilename);
 
 
     // Debug methods
