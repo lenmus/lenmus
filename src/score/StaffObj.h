@@ -39,10 +39,10 @@
 #include "wx/dragimag.h"
 #endif
 
-#define sbDRAGGABLE        true
-#define sbNO_DRAGGABLE    false
-#define sbVISIBLE        true
-#define sbNO_VISIBLE    false
+#define lmDRAGGABLE        true
+#define lmNO_DRAGGABLE    false
+#define lmVISIBLE        true
+#define lmNO_VISIBLE    false
 
 //--------------------------------------------------------------------------------------
 // lmStaffObj: Abstract class to model all objects that migth appear on an staff

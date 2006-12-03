@@ -117,9 +117,9 @@ lmScalesManager::lmScalesManager(wxString sRootNote, EScaleType nScaleType,
         else {
             //Modal interval
             if (tData[m_nType].fFromRootNote)
-                ComputeInterval(&m_tBits[0], sIntval, edi_Ascending, &m_tBits[i]);
+                ComputeInterval(&m_tBits[0], sIntval, true, &m_tBits[i]);
             else
-                ComputeInterval(&m_tBits[i-1], sIntval, edi_Ascending, &m_tBits[i]);
+                ComputeInterval(&m_tBits[i-1], sIntval, true, &m_tBits[i]);
         }
         //wxLogMessage(_T("[lmScalesManager] Intval='%s', Note %d = %s, (Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d), key=%d"),
         //             sIntval, i, lmConverter::NoteBitsToName(m_tBits[i],m_nKey),

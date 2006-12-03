@@ -263,6 +263,9 @@ wxString lmIdfyScalesCtrol::SetNewProblem()
     }
     else {
         m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
+        // for minor scales use minor key signature
+        if (nScaleType >= est_MinorNatural && nScaleType <= est_LastMinor)
+            m_nKey = GetRelativeMinorKey(m_nKey);
     }
 
     //Generate a random root note 
@@ -315,7 +318,7 @@ wxString lmIdfyScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmSc
     pVStaff = (*pScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
     pVStaff->AddClef( eclvSol );
     pVStaff->AddKeySignature( m_nKey );
-    pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
+    pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
 
 //    pVStaff->AddEspacio 24
     int i = (m_fAscending ? 0 : nNumNotes-1);
@@ -328,9 +331,9 @@ wxString lmIdfyScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmSc
         sPattern +=  _T(" r)");
         pNode = parserLDP.ParseText( sPattern );
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-        pVStaff->AddBarline(etb_SimpleBarline, sbNO_VISIBLE);   //so accidentals doesn't affect a 2nd note
+        pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);   //so accidentals doesn't affect a 2nd note
     }
-    pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
+    pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);
 
     //use simple renderer; otherwise chromatic scale does not fit in available space
     (*pScore)->SetRenderizationType(eRenderSimple);

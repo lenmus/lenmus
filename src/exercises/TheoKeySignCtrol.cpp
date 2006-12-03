@@ -606,7 +606,7 @@ void lmTheoKeySignCtrol::NewProblem()
     lmVStaff *pVStaff = m_pScore->GetVStaff(1, 1);    //get first vstaff of instr.1
     pVStaff->AddClef( nClef );
     pVStaff->AddKeySignature(nKey);
-    pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
+    pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);
 
     //wxLogMessage(wxString::Format(
     //    _T("[lmTheoKeySignCtrol::NewProblem] m_nIndexKeyName=%d, oIntv.GetIntervalNum()=%d"),

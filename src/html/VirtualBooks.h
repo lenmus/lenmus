@@ -31,10 +31,10 @@
 
 #include "wx/wfstream.h"
 #include "wx/mstream.h"
+#include "wx/filesys.h"
 
-#include "TextBookController.h"
 
-
+class lmTextBookController;
 
 class lmVirtualBooks : public wxFileSystemHandler
 {

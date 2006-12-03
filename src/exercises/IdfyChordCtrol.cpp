@@ -571,7 +571,7 @@ wxString lmIdfyChordCtrol::PrepareScore(EClefType nClef, EChordType nType, lmSco
     pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
     pVStaff->AddClef( eclvSol );
     pVStaff->AddKeySignature( m_nKey );
-    pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
+    pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
 
 //    pVStaff->AddEspacio 24
     int i = (m_nMode == 2 ? nNumNotes-1 : 0);   // 2= melodic descending
@@ -585,7 +585,7 @@ wxString lmIdfyChordCtrol::PrepareScore(EClefType nClef, EChordType nType, lmSco
         pNode = parserLDP.ParseText( sPattern );
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     }
-    pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
+    pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);
 
     (*pScore)->Dump();  //dbg
 

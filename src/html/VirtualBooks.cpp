@@ -38,6 +38,7 @@
 #endif
 
 #include "VirtualBooks.h"
+#include "TextBookController.h"
 #include "..\app\TheApp.h"             //access to get version
 extern lmTheApp* g_pTheApp;
 

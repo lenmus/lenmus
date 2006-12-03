@@ -60,7 +60,8 @@
     #include "wx/intl.h"
 #endif // WX_PRECOMP
 
-#include "TextBookController.h"                //CSG_MODIFIED
+#include "TextBookController.h"
+#include "TextBookFrame.h"
 #include "wx/busyinfo.h"
 
 #ifdef __WXGTK__

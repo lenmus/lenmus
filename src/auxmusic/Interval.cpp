@@ -67,18 +67,15 @@ lmInterval::lmInterval(lmNote* pNote1, lmNote* pNote2, EKeySignatures nKey)
 }
 
 //Generate a random interval satisfying the received constrains.
-lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax,
-        bool AllowedIntervals[], EIntervalDirection nDir, EKeySignatures nKey)
+lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax, bool fAllowedIntervals[],
+             bool fAscending, EKeySignatures nKey)
 {
     if (!fStringsInitialized) InitializeStrings();
 
-    bool fAscending = ((nDir == edi_Ascending || nDir == edi_Both) && (rand() & 0x01));
     //dbg------------------------------------------------------
-    g_pLogger->LogTrace(_T("lmInterval"), _T("Posibles (nDir) = %s, %s, %s\n"), 
-                    (nDir == edi_Ascending ? _T("Ascendentes") : 
-                        (nDir==edi_Both ? _T("Ambos") : _T("Descendentes"))),
-                    (fAscending ? _T("Ascendente") : _T("Descendente")),
-                    (fDiatonic ? _T("Diatónico") : _T("Cromático") ) );
+    g_pLogger->LogTrace(_T("lmInterval"), _T("Direction = %s, type = %s\n"), 
+                    (fAscending ? _T("Ascending") : _T("Descending")),
+                    (fDiatonic ? _T("Diatonic") : _T("Chromatic") ) );
     //end dbg------------------------------------------------
     
     m_nKey = nKey;
@@ -98,7 +95,7 @@ lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax,
     int i;
     int nNumIntv = 0;
     for (i=0; i < wxMin(nRange, 25); i++) {
-        if (AllowedIntervals[i]) {
+        if (fAllowedIntervals[i]) {
             nAllowedIntv[nNumIntv] = i;
             nNumIntv++;
             sDbgMsg += wxString::Format(_T(" %d"), i);
@@ -381,7 +378,7 @@ void lmInterval::GetNoteBits(int i, lmNoteBits* pBits)
 //-------------------------------------------------------------------------------------
 
 wxString ComputeInterval(wxString sRootNote, wxString sIntvCode,
-                         EIntervalDirection nDirection, EKeySignatures nKey)
+                         bool fAscending, EKeySignatures nKey)
 {
     //Root note elements. i.e.: '+d4' -> (1, 4, 1)
     lmNoteBits tRoot;
@@ -392,15 +389,14 @@ wxString ComputeInterval(wxString sRootNote, wxString sIntvCode,
     }
 
     lmNoteBits tNew;
-    ComputeInterval(&tRoot, sIntvCode, nDirection, &tNew);
+    ComputeInterval(&tRoot, sIntvCode, fAscending, &tNew);
 
     return lmConverter::NoteBitsToName(tNew, nKey);
 
 }
 
 void ComputeInterval(lmNoteBits* pRoot, wxString sIntvCode,
-                     EIntervalDirection nDirection,
-                     lmNoteBits* pNewNote)
+                     bool fAscending, lmNoteBits* pNewNote)
 {
     //interval elements. i.e.: '5a' -> (5, 8)
     lmIntvBits tIntval;
@@ -410,7 +406,7 @@ void ComputeInterval(lmNoteBits* pRoot, wxString sIntvCode,
         wxASSERT(false);
     }
 
-    if (nDirection == edi_Ascending) {
+    if (fAscending) {
         // Compute ascending interval
 
         // compute new step

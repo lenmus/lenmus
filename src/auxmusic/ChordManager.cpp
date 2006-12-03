@@ -150,7 +150,7 @@ lmChordManager::lmChordManager(wxString sRootNote, EChordType nChordType,
     //wxLogMessage(_T("[lmChordManager] Root note = %s, interval type=%s, inversion=%d"),
     //              lmConverter::NoteBitsToName(m_tBits[0], m_nKey), GetName(), m_nInversion );
     for (i=1; i < tData[m_nType].nNumNotes; i++) {
-        ComputeInterval(&m_tBits[0], sIntval[i-1], edi_Ascending, &m_tBits[i]);
+        ComputeInterval(&m_tBits[0], sIntval[i-1], true, &m_tBits[i]);
         //wxLogMessage(_T("[lmChordManager] Note %d = %s, (Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d), key=%d"),
         //             i, lmConverter::NoteBitsToName(m_tBits[i],m_nKey),
         //             m_tBits[i].nStep, m_tBits[i].nOctave, m_tBits[i].nAccidentals, m_tBits[i].nStepSemitones,
@@ -274,10 +274,10 @@ void lmChordManager::UnitTests()
         _T("a5"), _T("d7"), _T("M6"), _T("M2") };
     for(i=0; i < 8; i++) {
         for (j=0; j < 8; j++) {
-            wxString sNewNote = ComputeInterval(sNote[i], sIntv[j], edi_Ascending, m_nKey);
+            wxString sNewNote = ComputeInterval(sNote[i], sIntv[j], true, m_nKey);
             wxLogMessage(_T("Note='%s' + Intv='%s' --> '%s'"),
                          sNote[i], sIntv[j], sNewNote );
-            wxString sStartNote = ComputeInterval(sNewNote, sIntv[j], edi_Descending, m_nKey);
+            wxString sStartNote = ComputeInterval(sNewNote, sIntv[j], false, m_nKey);
             wxLogMessage(_T("Note='%s' - Intv='%s' --> '%s'"),
                          sNewNote, sIntv[j], sStartNote );
         }

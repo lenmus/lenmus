@@ -617,14 +617,14 @@ void lmTheoIntervalsCtrol::NewProblem()
     pVStaff = m_pIntervalScore->GetVStaff(1, 1);    //get first vstaff of instr.1
     pVStaff->AddClef( m_nClef );
     pVStaff->AddKeySignature(0, true);                    // 0 fifths, major
-    pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
+    pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
     //pVStaff->AddEspacio 24
     pNode = parserLDP.ParseText( sPattern[0] );
     pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etb_SimpleBarline, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
     pNode = parserLDP.ParseText( sPattern[1] );
     pNote[1] = parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
+    pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);
 
     //compute the interval name
     lmInterval oIntv(pNote[0], pNote[1], earmDo);
@@ -649,12 +649,12 @@ void lmTheoIntervalsCtrol::NewProblem()
         pVStaff = m_pProblemScore->GetVStaff(1, 1);    //get first vstaff of instr.1
         pVStaff->AddClef( m_nClef );
         pVStaff->AddKeySignature(0, true);                    // 0 fifths, major
-        pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
+        pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
         //pVStaff->AddEspacio 24
         pNode = parserLDP.ParseText( sPattern[0] );
         pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
-        pVStaff->AddBarline(etb_SimpleBarline, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
-        pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
+        pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+        pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);
     }
 
     //cumpute right answer button index

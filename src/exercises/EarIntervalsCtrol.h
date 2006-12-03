@@ -104,7 +104,8 @@ private:
 
     //problem asked
     wxString            m_sIntvCode;
-    EIntervalDirection  m_nDir;
+    bool                m_fAscending;
+    bool                m_fHarmonic;
     EKeySignatures      m_nKey;
     lmNoteBits          m_tNote[2];
 

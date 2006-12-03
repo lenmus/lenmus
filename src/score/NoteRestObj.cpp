@@ -44,7 +44,7 @@ const wxString CHAR_FERMATA_OVER = _T(";");
 const wxString CHAR_FERMATA_UNDER = _T("<");
 
 lmNoteRestObj::lmNoteRestObj(ESymbolType nType, lmNoteRest* pOwner)
-    : lmAuxObj(eTPO_Symbol, sbDRAGGABLE)
+    : lmAuxObj(eTPO_Symbol, lmDRAGGABLE)
 {
     m_nSymbolType = nType;
     m_pOwner = pOwner;

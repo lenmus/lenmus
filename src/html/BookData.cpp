@@ -180,25 +180,27 @@ bool lmBookData::AddBook(const wxFileName& oFilename)
     //Reads a book (either a .lmb or .toc file) and loads its content
     //Returns true if success.
 
-    wxFileName* pFN;
+    wxString sFullName, sFileName, sPath;
     if (oFilename.GetExt() == _T("lmb")) {
         //lenmus compressed book  (zip file)
-        wxString sName = oFilename.GetFullName() + _T("#zip:") +
-                         oFilename.GetName() + _T(".toc");
-        pFN = new wxFileName( sName );
+        sFileName = oFilename.GetName();
+        sPath = oFilename.GetFullPath() + _T("#zip:");
+        sFullName = sPath + sFileName + _T(".toc");
     }
     else {
-        pFN = new wxFileName( oFilename.GetFullPath() );
+        sFullName = oFilename.GetFullPath();
+        sFileName = oFilename.GetName();
+        sPath = oFilename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR , wxPATH_NATIVE);
     }
 
     // Process the TOC file (.toc)
-    lmBookRecord* pBookr = ProcessTOCFile(*pFN);
+    lmBookRecord* pBookr = ProcessTOCFile(sFullName, sFileName, sPath);
     if (!pBookr) {
-        delete pFN;
         return false;       //error
     }
 
     // process an optional index file
+    wxFileName* pFN = new wxFileName(oFilename);
     pFN->SetExt(_T("idx"));
     bool fSuccess = true;
     if (pFN->FileExists())
@@ -289,12 +291,12 @@ void lmBookData::ProcessIndexEntries(wxXmlNode* pNode, lmBookRecord *pBookr)
 
 }
 
-lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
+lmBookRecord* lmBookData::ProcessTOCFile(wxString sFullName, wxString sFileName,
+                                         wxString sPath)
 {
     // Returns ptr to created book record if success, NULL if failure
 
-    wxLogMessage(_T("[lmBookData::ProcessTOCFile] Processing file %s"),
-        oFilename.GetFullPath() );
+    wxLogMessage(_T("[lmBookData::ProcessTOCFile] Processing file %s"), sFullName);
 
     wxString sTitle = wxEmptyString,
              sPage = wxEmptyString,
@@ -304,9 +306,9 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
 
     // load the XML file as tree of nodes
     wxXmlDocument xdoc;
-    if (!xdoc.Load(oFilename.GetFullPath()))
+    if (!xdoc.Load(sFullName))
     {
-        wxLogMessage(_T("Loading eBook. Error parsing TOC file ") + oFilename.GetFullPath());
+        wxLogMessage(_T("Loading eBook. Error parsing TOC file ") + sFullName);
         return (lmBookRecord*) NULL;   //error
     }
 
@@ -346,9 +348,7 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
 
     //Create the book record object
     lmBookRecord *pBookr;
-    pBookr = new lmBookRecord(oFilename.GetName(), 
-                              oFilename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR),
-                              sTitle, sPage);
+    pBookr = new lmBookRecord(sFileName, sPath, sTitle, sPage);
 
     // creates the book entry in the contents table
     int nContentStart = m_contents.size();          // save the contents index for later

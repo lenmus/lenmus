@@ -71,11 +71,9 @@ enum EIntervalDirection
 
 //global methods defined in this module 
 extern wxString ComputeInterval(wxString sRootNote, wxString sIntvCode, 
-                                EIntervalDirection nDirection,
-                                EKeySignatures nKey = earmDo);
+                                bool fAscending, EKeySignatures nKey = earmDo);
 extern void ComputeInterval(lmNoteBits* pRoot, wxString sIntvCode,
-                            EIntervalDirection nDirection,
-                            lmNoteBits* pNewNote);
+                            bool fAscending, lmNoteBits* pNewNote);
 extern void AddSemitonesToNote(lmNoteBits* pRoot, wxString sIntvCode,
                                EKeySignatures nKey,
                                EIntervalDirection nDirection,
@@ -94,8 +92,8 @@ public:
     //build from two notes
     lmInterval(lmNote* pNote1, lmNote* pNote2, EKeySignatures nKey = earmDo);
     //buid from constrains
-    lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax, bool sIntvPermitidos[],
-             EIntervalDirection nDir, EKeySignatures nKey = earmDo);
+    lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax, bool fAllowedIntervals[],
+             bool fAscending, EKeySignatures nKey = earmDo);
     //destructor
     ~lmInterval() {};
 

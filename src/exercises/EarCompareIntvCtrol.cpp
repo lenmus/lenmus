@@ -356,21 +356,21 @@ void lmEarCompareIntvCtrol::NewProblem()
 
     // select interval type: ascending, descending or both
     lmRandomGenerator oGenerator;
-    EIntervalDirection nDir;
+    bool fAscending;
     if (m_pConstrains->IsTypeAllowed(0) || 
         (m_pConstrains->IsTypeAllowed(1) && m_pConstrains->IsTypeAllowed(2)))
     {
         // if harmonic scale or melodic ascending and descending,
         // both, ascending and descending, are allowed. Choose one randomly
-        nDir = (oGenerator.FlipCoin() ? edi_Ascending : edi_Descending );
+        fAscending = oGenerator.FlipCoin();
     }
     else if (m_pConstrains->IsTypeAllowed(1)) {
         // if melodic ascendig, allow only ascending intervals
-        nDir = edi_Ascending;
+        fAscending = true;
     }
     else {
         // allow only descending intervals
-        nDir = edi_Descending;
+        fAscending = false;
     }
     // select a random key signature satisfying the constrains
     EKeySignatures nKey;
@@ -382,9 +382,9 @@ void lmEarCompareIntvCtrol::NewProblem()
     }
     // generate the two intervals
     lmInterval oIntv0(m_pConstrains->OnlyNatural(), m_pConstrains->MinNote(),
-        m_pConstrains->MaxNote(), m_pConstrains->AllowedIntervals(), nDir, nKey);
+        m_pConstrains->MaxNote(), m_pConstrains->AllowedIntervals(), fAscending, nKey);
     lmInterval oIntv1(m_pConstrains->OnlyNatural(), m_pConstrains->MinNote(),
-        m_pConstrains->MaxNote(), m_pConstrains->AllowedIntervals(), nDir, nKey);
+        m_pConstrains->MaxNote(), m_pConstrains->AllowedIntervals(), fAscending, nKey);
 
     //Convert problem to LDP pattern
     wxString sPattern[2][2];
@@ -412,14 +412,14 @@ void lmEarCompareIntvCtrol::NewProblem()
         pVStaff = m_pScore[i]->GetVStaff(1, 1);      //get first vstaff of instr.1
         pVStaff->AddClef( nClef );
         pVStaff->AddKeySignature(nKey);
-        pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
+        pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
     //    pVStaff->AddEspacio 24
         pNode = parserLDP.ParseText( sPattern[i][0] );
         pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
-        pVStaff->AddBarline(etb_SimpleBarline, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+        pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
         pNode = parserLDP.ParseText( sPattern[i][1] );
         pNote[1] = parserLDP.AnalyzeNote(pNode, pVStaff);
-        pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);
+        pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);
     }
 
     //create the answer score with both intervals
@@ -429,12 +429,12 @@ void lmEarCompareIntvCtrol::NewProblem()
     pVStaff = m_pTotalScore->GetVStaff(1, 1);      //get first vstaff of instr.1
     pVStaff->AddClef( nClef );
     pVStaff->AddKeySignature(nKey);
-    pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
+    pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
 
 //    pVStaff->AddEspacio 24
     pNode = parserLDP.ParseText( sPattern[0][0] );
     pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etb_SimpleBarline, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
     pNode = parserLDP.ParseText( sPattern[0][1] );
     pNote[1] = parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddBarline(etb_DoubleBarline);
@@ -442,10 +442,10 @@ void lmEarCompareIntvCtrol::NewProblem()
 //    pVStaff->AddEspacio 24
     pNode = parserLDP.ParseText( sPattern[1][0] );
     parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etb_SimpleBarline, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
     pNode = parserLDP.ParseText( sPattern[1][1] );
     parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etb_EndBarline, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
 
     //compute the right answer
     m_sAnswer[0] = oIntv0.GetIntervalName();

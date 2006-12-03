@@ -138,7 +138,7 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
     sBtLabel[24] = _("two octaves");
 
     //to allow for interval playing
-    m_nDir = edi_Ascending;
+    m_fAscending = true;
     m_nKey = earmDo;
     m_tNote[0].nAccidentals = 0;    //c4
     m_tNote[0].nOctave = 4;
@@ -474,24 +474,34 @@ void lmEarIntervalsCtrol::NewProblem()
     //generate the problem interval
     //
 
-    // select interval type: ascending, descending or both
-    if (m_pConstrains->IsTypeAllowed(0) || 
-        (m_pConstrains->IsTypeAllowed(1) && m_pConstrains->IsTypeAllowed(2)))
+    //Determine if harmonic or melodic
+    lmRandomGenerator oGenerator;
+    if (m_pConstrains->IsTypeAllowed(0) && 
+        !(m_pConstrains->IsTypeAllowed(1) || m_pConstrains->IsTypeAllowed(2)))
     {
-        // if harmonic scale or melodic ascending and descending, allow for 
-        // both types of intervals: ascending and descending
-        m_nDir = edi_Both;
-    }
-    else if (m_pConstrains->IsTypeAllowed(1)) {
-        // if melodic ascendig, allow only ascending intervals
-        m_nDir = edi_Ascending;
+        // if only harmonic (harmonic && !(melodic ascending or descending))
+        // force harmonic
+        m_fHarmonic = true;
     }
     else {
-        // allow only descending intervals
-        m_nDir = edi_Descending;
+        m_fHarmonic = m_pConstrains->IsTypeAllowed(0) && oGenerator.FlipCoin();
     }
+
+    // select interval type: ascending or descending
+    if (m_fHarmonic) {
+        // if harmonic it doesn't matter. Choose ascending
+        m_fAscending = true;
+    }
+    else {
+        if (m_pConstrains->IsTypeAllowed(1) && !m_pConstrains->IsTypeAllowed(2))
+            m_fAscending = true;
+        else if (!m_pConstrains->IsTypeAllowed(1) && m_pConstrains->IsTypeAllowed(2))
+            m_fAscending = false;
+        else
+            m_fAscending = oGenerator.FlipCoin();
+    }
+
     // select a random key signature satisfying the constrains
-    lmRandomGenerator oGenerator;
     if (m_pConstrains->OnlyNatural()) {
         m_nKey = oGenerator.GenerateKey(m_pConstrains->GetKeyConstrains());
     }
@@ -500,7 +510,7 @@ void lmEarIntervalsCtrol::NewProblem()
     }
     // generate interval
     lmInterval oIntv(m_pConstrains->OnlyNatural(), m_pConstrains->MinNote(),
-        m_pConstrains->MaxNote(), m_pConstrains->AllowedIntervals(), m_nDir, m_nKey);
+        m_pConstrains->MaxNote(), m_pConstrains->AllowedIntervals(), m_fAscending, m_nKey);
 
     //save the interval data
     m_sIntvCode = oIntv.GetIntervalCode();
@@ -536,14 +546,10 @@ void lmEarIntervalsCtrol::NewProblem()
 
 void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
 {
-    //Generates the interval sIntvCode, ascending or descending depending on m_nDir.
-    //Start note will be m_tNote[0] if ascending or m_tNote[1] if descending.
-    //After generating the interval, prepares a score with it.
-
     //create the interval
     lmNoteBits tBits[2];
-    tBits[0] = (m_nDir == edi_Ascending ? m_tNote[0] : m_tNote[1]);
-    ComputeInterval( &tBits[0], sIntvCode, m_nDir, &tBits[1] );
+    tBits[0] = m_tNote[0];
+    ComputeInterval( &tBits[0], sIntvCode, m_fAscending, &tBits[1] );
 
     //delete the previous score
     if (*pScore) {
@@ -562,15 +568,24 @@ void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
     lmVStaff *pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
     pVStaff->AddClef( eclvSol );
     pVStaff->AddKeySignature(m_nKey);
-    pVStaff->AddTimeSignature(4 ,4, sbNO_VISIBLE );
+    pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
 //    pVStaff->AddEspacio 24
-    int i;
-    for (i=0; i<2; i++) {
-        sPattern = _T("(n ") + lmConverter::NoteBitsToName(tBits[i], m_nKey) + _T(" r)");
-        pNode = parserLDP.ParseText( sPattern );
-        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-        pVStaff->AddBarline(etb_SimpleBarline, sbNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    //First note
+    sPattern = _T("(n ") + lmConverter::NoteBitsToName(tBits[0], m_nKey) + _T(" r)");
+    pNode = parserLDP.ParseText( sPattern );
+    pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+    //second note
+    if (m_fHarmonic)
+        sPattern = _T("(na ");
+        //todo: is it necessary to avoid accidental propagation to the second note
+    else {
+        sPattern = _T("(n ");
+        pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
     }
+    sPattern += lmConverter::NoteBitsToName(tBits[1], m_nKey) + _T(" r)");
+    pNode = parserLDP.ParseText( sPattern );
+    pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+    pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
 
 }
 

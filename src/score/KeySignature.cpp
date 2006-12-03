@@ -65,7 +65,7 @@ static wxString m_sLDPKeyName[30] = {
 
 //constructor for traditional key signatures
 lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool fVisible) :
-    lmSimpleObj(eTPO_KeySignature, pVStaff, 1, fVisible, sbDRAGGABLE)
+    lmSimpleObj(eTPO_KeySignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
 
     //language dependent strings. Can not be statically initiallized because
@@ -580,12 +580,11 @@ void ComputeAccidentals(EKeySignatures nKeySignature, int nAccidentals[])
 
 int GetRootNoteIndex(EKeySignatures nKeySignature)
 {
-    /*
-    returns the index (0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si) to the root note for
-    the Key signature. For example, if nKeySignature is La sharp minor it returns
-    index = 5 (La)
-    */
-    //determina la nota base
+    //returns the index (0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si) to the root note for
+    //the Key signature. For example, if nKeySignature is La sharp minor it returns
+    //index = 5 (La)
+
+    //compute root note
     int nRootNote;
     switch(nKeySignature) {
         case earmDo:
@@ -723,6 +722,46 @@ int KeySignatureToNumFifths(EKeySignatures nKeySignature)
             wxASSERT(false);
     }
     return nFifths;
+
+}
+
+EKeySignatures GetRelativeMinorKey(EKeySignatures nMajorKey)
+{
+    switch(nMajorKey) {
+        case earmDo:
+            return earmLam;
+        case earmSol:
+            return earmMim;
+        case earmRe:
+            return earmSim;
+        case earmLa:
+            return earmFasm;
+        case earmMi:
+            return earmDosm;
+        case earmSi:
+            return earmSolsm;
+        case earmFas:
+            return earmResm;
+        case earmDos:
+            return earmLasm;
+        case earmFa:
+            return earmRem;
+        case earmSib:
+            return earmSolm;
+        case earmMib:
+            return earmDom;
+        case earmLab:
+            return earmFam;
+        case earmReb:
+            return earmSibm;
+        case earmSolb:
+            return earmMibm;
+        case earmDob:
+            return earmLabm;
+        default:
+            wxASSERT(false);
+            return earmDom;
+    }
 
 }
 

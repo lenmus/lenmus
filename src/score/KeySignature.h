@@ -95,7 +95,7 @@ extern int GetRootNoteIndex(EKeySignatures nKeySignature);
 extern bool IsMajor(EKeySignatures nKeySignature);
 extern const wxString& GetKeySignatureName(EKeySignatures nKeySignature);
 extern int KeySignatureToNumFifths(EKeySignatures nKeySignature);
-
+extern EKeySignatures GetRelativeMinorKey(EKeySignatures nMajorKey);
 
 #endif    // __KEYSIGNATURE_H__
 

@@ -115,22 +115,26 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
 
         // item level
         long nLevel;
-        if (!tag.HasParam( _T("LEVEL") )) wxASSERT(false);
+        wxASSERT(tag.HasParam( _T("LEVEL") ));
         wxString sLevel(tag.GetParam( _T("LEVEL") ));
-        if (!sLevel.ToLong(&nLevel)) wxASSERT(false);
+        if (!sLevel.ToLong(&nLevel)) {
+            wxASSERT(false);
+        }
 
         // item number
         long nItem;
-        if (!tag.HasParam( _T("ITEM") )) wxASSERT(false);
+        wxASSERT(tag.HasParam( _T("ITEM") ));
         wxString sItem(tag.GetParam( _T("ITEM") ));
-        if (!sItem.ToLong(&nItem)) wxASSERT(false);
+        if (!sItem.ToLong(&nItem)) {
+            wxASSERT(false);
+        }
 
         // expand icon
-        if (!tag.HasParam( _T("EXPAND") )) wxASSERT(false);
+        wxASSERT(tag.HasParam( _T("EXPAND") ));
         wxString sExpand(tag.GetParam( _T("EXPAND") ));
 
         // item icon
-        if (!tag.HasParam( _T("ICON") )) wxASSERT(false);
+        wxASSERT(tag.HasParam( _T("ICON") ));
         wxString sIcon(tag.GetParam( _T("ICON") ));
 
         // image (optional)
