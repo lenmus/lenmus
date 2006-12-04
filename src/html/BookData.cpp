@@ -44,8 +44,14 @@
 #if lmUSE_LENMUS_EBOOK_FORMAT
 
 #include "wx/defs.h"
+#include "wx/zipstrm.h"
 
 #include "BookData.h"
+
+// access to paths. Needed only for ByPass code
+#include "../globals/Paths.h"
+extern lmPaths* g_pPaths;
+
 
 #include "wx/arrimpl.cpp"
 WX_DEFINE_OBJARRAY(lmBookRecArray)
@@ -180,21 +186,21 @@ bool lmBookData::AddBook(const wxFileName& oFilename)
     //Reads a book (either a .lmb or .toc file) and loads its content
     //Returns true if success.
 
-    wxString sFullName, sFileName, sPath;
-    if (oFilename.GetExt() == _T("lmb")) {
-        //lenmus compressed book  (zip file)
-        sFileName = oFilename.GetName();
-        sPath = oFilename.GetFullPath() + _T("#zip:");
-        sFullName = sPath + sFileName + _T(".toc");
-    }
-    else {
-        sFullName = oFilename.GetFullPath();
-        sFileName = oFilename.GetName();
-        sPath = oFilename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR , wxPATH_NATIVE);
-    }
+    //wxString sFullName, sFileName, sPath;
+    //if (oFilename.GetExt() == _T("lmb")) {
+    //    //lenmus compressed book  (zip file)
+    //    sFileName = oFilename.GetName();
+    //    sPath = oFilename.GetFullPath() + _T("#zip:");
+    //    sFullName = sPath + sFileName + _T(".toc");
+    //}
+    //else {
+    //    sFullName = oFilename.GetFullPath();
+    //    sFileName = oFilename.GetName();
+    //    sPath = oFilename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR , wxPATH_NATIVE);
+    //}
 
     // Process the TOC file (.toc)
-    lmBookRecord* pBookr = ProcessTOCFile(sFullName, sFileName, sPath);
+    lmBookRecord* pBookr = ProcessTOCFile(oFilename);
     if (!pBookr) {
         return false;       //error
     }
@@ -291,12 +297,12 @@ void lmBookData::ProcessIndexEntries(wxXmlNode* pNode, lmBookRecord *pBookr)
 
 }
 
-lmBookRecord* lmBookData::ProcessTOCFile(wxString sFullName, wxString sFileName,
-                                         wxString sPath)
+lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
 {
     // Returns ptr to created book record if success, NULL if failure
 
-    wxLogMessage(_T("[lmBookData::ProcessTOCFile] Processing file %s"), sFullName);
+    wxLogMessage(_T("[lmBookData::ProcessTOCFile] Processing file %s"),
+                 oFilename.GetFullPath());
 
     wxString sTitle = wxEmptyString,
              sPage = wxEmptyString,
@@ -304,9 +310,62 @@ lmBookRecord* lmBookData::ProcessTOCFile(wxString sFullName, wxString sFileName,
              sIndex = wxEmptyString,
              sCharset = wxEmptyString;
 
-    // load the XML file as tree of nodes
+
+    // wxXmlDocument::Load(filename) uses a wxTextStreamFile and it doesn't support
+    // virtual files. So, when using LMB files we have to allocate
+    // a wxZipTextStream and pass it to wxXmlDocument::Load(stream)
     wxXmlDocument xdoc;
-    if (!xdoc.Load(sFullName))
+    bool fOK;
+    wxString sFullName, sFileName, sPath, sNameExt;
+    bool fLmbFile = false;
+    if (oFilename.GetExt() == _T("toc"))
+    {
+        sFullName = oFilename.GetFullPath();
+        sFileName = oFilename.GetName();
+        sPath = oFilename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR , wxPATH_NATIVE);
+        fOK = xdoc.Load(sFullName);
+    }
+    else if (oFilename.GetExt() == _T("lmb"))
+    {
+        //lenmus compressed book (zip file)
+        sFileName = oFilename.GetName();
+        sPath = oFilename.GetFullPath() + _T("#zip:");
+        sNameExt = sFileName + _T(".toc");
+        sFullName = sPath + sNameExt;
+
+        // convert the local name we are looking for into the zip internal format
+        wxString sInternalName = wxZipEntry::GetInternalName( sNameExt );
+
+        // open the zip
+        wxFFileInputStream in( oFilename.GetFullPath() );
+        wxZipInputStream zip(in);
+        if (!zip.IsOk()) {
+            wxLogMessage(_T("Loading eBook. Error: TOC file '%s' not found."), oFilename.GetFullPath());
+            return (lmBookRecord*) NULL;   //error
+        }
+
+        // call GetNextEntry() until the required internal name is found
+        wxZipEntry* pEntry;
+        do {
+            pEntry = zip.GetNextEntry();
+        }
+        while (pEntry && pEntry->GetInternalName() != sInternalName);
+
+        if (!pEntry) {
+            wxLogMessage(_T("Loading eBook. Error: TOC file '%s' not found."), sFullName);
+            return (lmBookRecord*) NULL;   //error
+        }
+        zip.OpenEntry(*pEntry);
+        fLmbFile = true;
+        fOK = xdoc.Load(zip);    //asumes utf-8
+    }
+    else {
+        wxLogMessage(_T("Loading eBook. Error in TOC file '%s'. Extension is neither LMB nor TOC."), oFilename.GetFullPath());
+        return (lmBookRecord*) NULL;   //error
+    }
+
+    // load the XML file as tree of nodes
+    if (!fOK)   
     {
         wxLogMessage(_T("Loading eBook. Error parsing TOC file ") + sFullName);
         return (lmBookRecord*) NULL;   //error

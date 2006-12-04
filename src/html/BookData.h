@@ -226,7 +226,7 @@ public:
 private:
     bool ProcessIndexFile(const wxFileName& oFilename, lmBookRecord* pBookr);
     void ProcessIndexEntries(wxXmlNode* pNode, lmBookRecord *pBookr);
-    lmBookRecord* ProcessTOCFile(wxString sFullName, wxString sFileName, wxString sPath);
+    lmBookRecord* ProcessTOCFile(const wxFileName& oFilename);
     bool ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLevel);
 
     wxString            m_tempPath;

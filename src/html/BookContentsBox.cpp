@@ -226,6 +226,13 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
             wxFileName oFN( (it->pBookRecord)->GetBasePath() );
             oFN.AppendDir( _T("img") );
             sImagePath = oFN.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+            sImagePath = (it->pBookRecord)->GetBasePath() + _T("/img/");
+            //sImagePath = _T("img\\");
+            //if (sImagePath.Find(_T("#zip:")) == wxNOT_FOUND) {
+            //    sImagePath += _T("\\");
+            //}
+            //sImagePath += _T("img\\");
+            
         }
 
         lmTreeContentRecord rItem;
@@ -276,7 +283,7 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
         lmBookIndexItem *it = &contents[i];
         wxFileName oFN(it->GetFullPath());
         m_PagesHash[oFN.GetFullPath()] = i;
-        //wxLogMessage(_T("Full Path = '%s', item=%d"), it->GetFullPath(), i);
+        wxLogMessage(_T("Full Path = '%s', item=%d"), it->GetFullPath(), i);
     }
 
     SetItemCount(nNumItems);
