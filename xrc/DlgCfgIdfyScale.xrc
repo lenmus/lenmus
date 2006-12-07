@@ -366,6 +366,7 @@
                                             <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
                                             <border>5</border>
                                             <object class="wxStaticText" name="wxID_STATIC">
+                                                <label></label>
                                             </object>
                                         </object>
                                         <object class="sizeritem">
@@ -508,7 +509,7 @@
                                                             <border>5</border>
                                                             <object class="wxCheckBox" name="chkKeyDFlat">
                                                                 <style>wxCHK_2STATE</style>
-                                                                <label>D Major / B minor</label>
+                                                                <label>Db Major / Bb minor</label>
                                                                 <checked>0</checked>
                                                             </object>
                                                         </object>
@@ -567,6 +568,7 @@
                                                     <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
                                                     <border>5</border>
                                                     <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label></label>
                                                     </object>
                                                 </object>
                                                 <object class="sizeritem">
@@ -596,6 +598,8 @@
                                     <object class="wxRadioBox" name="radBoxPlayModes">
                                         <style>wxRA_SPECIFY_ROWS</style>
                                         <label>Play mode</label>
+                                        <dimension>1</dimension>
+                                        <selection>0</selection>
                                         <content>
                                             <item>&amp;Ascending</item>
                                             <item>&amp;Descending</item>

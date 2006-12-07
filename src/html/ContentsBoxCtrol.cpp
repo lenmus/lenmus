@@ -212,6 +212,7 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
         if (fDrawImage) {
             m_WParser->GetContainer()->SetWidthFloat(10000, wxHTML_UNITS_PIXELS);   //force no wrap
             m_WParser->SetSourceAndSaveState(_T("<img src='") + sImage + _T("' height='36' />"));
+            //m_WParser->GetFS()->ChangePathTo(_T("c:\\usr\\desarrollo_wx\\lenmus\\locale\\en\\v3_L2_MusicReading.lmb#zip:img"), true);
             m_WParser->DoParsing();
             m_WParser->RestoreState();
         }
@@ -586,6 +587,8 @@ void lmContentsBoxCtrol::CacheItem(size_t n) const
 
             m_htmlParser->SetDC(new wxClientDC(self));
             m_htmlParser->SetFS(&self->m_filesystem);
+            //
+            (self->m_filesystem).ChangePathTo(_T("c:\\usr\\desarrollo_wx\\lenmus\\locale\\en\\v3_L2_MusicReading.lmb#zip:"), true);
 
             // use system's default GUI font by default:
             m_htmlParser->SetFontFace(_T("Tahoma"));

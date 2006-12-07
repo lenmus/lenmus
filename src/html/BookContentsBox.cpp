@@ -222,17 +222,18 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
         // set path for images
         if (it->level == 0)
         {
-            wxFileSystem& oFS = GetFileSystem();
-            wxFileName oFN( (it->pBookRecord)->GetBasePath() );
-            oFN.AppendDir( _T("img") );
-            sImagePath = oFN.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-            sImagePath = (it->pBookRecord)->GetBasePath() + _T("/img/");
-            //sImagePath = _T("img\\");
-            //if (sImagePath.Find(_T("#zip:")) == wxNOT_FOUND) {
-            //    sImagePath += _T("\\");
-            //}
-            //sImagePath += _T("img\\");
-            
+            //wxFileSystem& oFS = GetFileSystem();
+            //wxFileName oFN( (it->pBookRecord)->GetBasePath() );
+            //oFN.AppendDir( _T("img") );
+            //sImagePath = oFN.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+            //sImagePath = (it->pBookRecord)->GetBasePath() + _T("img/");
+            //wxString sep(wxFileName::GetPathSeparator());
+            //sImagePath = (it->pBookRecord)->GetBasePath() + sep + _T("img") + sep;
+            //sImagePath = (it->pBookRecord)->GetBasePath() + _T("img") + sep;
+            //sImagePath = (it->pBookRecord)->GetBasePath() + sep + _T("img/");
+            //sImagePath = (it->pBookRecord)->GetBasePath() + _T("img/");
+            sImagePath = (it->pBookRecord)->GetBasePath();
+            //sImagePath = wxEmptyString;
         }
 
         lmTreeContentRecord rItem;

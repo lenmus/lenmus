@@ -107,6 +107,14 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, int nOptions)
         return false;
     }
 
+    //If you want to do it "by hand" I think the following _may_ work:
+    //1) after loading your doc, you need wxXml2Document::GetDTD
+    //2) inside your wxXml2DTD you'll find the wxXml2EntityDecl nodes
+    //3) for each of those nodes you need to use the GetContent() function and if a
+    //valid filename is returned load it using wxXml2Document
+    //4) parse your original tree and replace the wxXML2_ENTITY_REF_NODE with the root
+    //of the wxXml2Document loaded at step #3
+
     //DumpXMLTree(oRoot);   //DBG
     CreateLinksTable(oRoot);
 

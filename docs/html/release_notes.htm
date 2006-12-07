@@ -13,26 +13,7 @@
 
 <ul>
   <li>eMusicBook index now can display also images.</li>
-  
-  <li>Theory exercise on scales identification improved: now it is user configurable and
-    more scales have been included.</li>
-  <li>Software updater improved: now it takes proxies into account (user request,
-    task #130256).</li>
-  <li>Options dialog modified to include Internet settings. Updater settings
-      moved from 'Other settings' to 'Internet settings'.</li>
-  <li>French and Turkish translations now included.</li>
-  <li>Changing to another language is now immediate. In previous versions it
-    was delayed to the next run of the program.</li>
-  <li>New option to enable/disable right/wrong answer sounds in exercises (user request
-      #1559450).</li>
-  <li>New option to do exercises in teams: two answer counters are displayed and each
-    new problem is assigned to a different team.</li>
-  <li>New option to show the solution also when the answer was right.</li>
-  <li>Now, at first run, the program detects the language chosen for installer interface
-      and configures program to use also this language as default.</li>
-  <li>Screen renderization code modified to deal with fractions of a pixel and
-    add anti-aliasing. This technique greatly improves visual quality of displayed
-    scores.</li>
+
   <li>Several bug fixes (<a href="#details">see details</a>) and other technical
     improvements.</li>
 </ul>
@@ -49,10 +30,26 @@
 
 <tr valign="top">
     <td class="ListaPar">
-      <b>Metronome not synchronized with the score in compound times
-      (user reported bug #1581743)</b><br />
-      The problem was caused by an error in the generation of MIDI events. The information
-      related to a time signature was misinterpreted. Now solved.
+	  <b>[1610190] In the options panel, key signature 'D mayor/B minor' is duplicated
+	  and 'D b Mayor/B b minor' is mising.</b><br />
+	  The label has been corrected
+    </td></tr>
+
+<tr valign="top">
+    <td class="ListaPar">
+	  <b>[1604535 ] Minor scales, in scales exercises, have wrong key signature</b><br />
+		When the option 'draw key signature' is enabled, minor scales are drawn with the major scale key signature and the necessary accidentals added to the notes. The minor scale key signature should be used instead. Now fixed.
+    </td></tr>
+
+<tr valign="top">
+    <td class="ListaPar">
+	  <b>[1601350 ] No ascending intervals in aural training</b><br />
+	In exercise for aural training, intervals identification, whe you select the tree types (ascending descending and harmonic) most of the generated intervals are harmonic and a few descending, but never ascending. Now fixed.
+    </td></tr>
+
+<tr valign="top">
+    <td class="ListaPar">
+	  <b>[1610186] Spanish translation error in aural training exercises.</b><br />Label'identify scales' was translated as 'identify intervals'. Now fixed.
     </td></tr>
 
 </table>

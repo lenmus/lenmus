@@ -328,7 +328,7 @@ _("F# Major / D# minor");
 _("C# Major / A# minor");
 _("Cb Major / Ab minor");
 _("Gb Major / Eb minor");
-_("D Major / B minor");
+_("Db Major / Bb minor");
 _("Ab Major / F minor");
 _("Eb Major / C minor");
 _("Bb Major / G minor");

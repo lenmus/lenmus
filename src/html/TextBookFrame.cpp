@@ -128,13 +128,13 @@ class TextBookHelpHashData : public wxObject
 
 
 //--------------------------------------------------------------------------
-// TextBookHelpHtmlWindow (private)
+// lmTextBookHelpHtmlWindow (private)
 //--------------------------------------------------------------------------
 
-class TextBookHelpHtmlWindow : public lmHtmlWindow
+class lmTextBookHelpHtmlWindow : public lmHtmlWindow
 {
     public:
-        TextBookHelpHtmlWindow(lmTextBookFrame *fr, wxWindow *parent)
+        lmTextBookHelpHtmlWindow(lmTextBookFrame *fr, wxWindow *parent)
             : lmHtmlWindow(parent), m_Frame(fr)
         {
             SetStandardFonts();
@@ -167,7 +167,7 @@ class TextBookHelpHtmlWindow : public lmHtmlWindow
     private:
         lmTextBookFrame *m_Frame;
 
-    DECLARE_NO_COPY_CLASS(TextBookHelpHtmlWindow)
+    DECLARE_NO_COPY_CLASS(lmTextBookHelpHtmlWindow)
 };
 
 
@@ -389,7 +389,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
         // right and a notebook containing various pages on the left
         m_Splitter = new wxSplitterWindow(this);
 
-        m_HtmlWin = new TextBookHelpHtmlWindow(this, m_Splitter);
+        m_HtmlWin = new lmTextBookHelpHtmlWindow(this, m_Splitter);
         m_NavigPan = new wxPanel(m_Splitter, wxID_ANY); //, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
         m_NavigNotebook = new wxNotebook(m_NavigPan, ID_NOTEBOOK,
                                          wxDefaultPosition, wxDefaultSize); 
@@ -1199,7 +1199,7 @@ void lmTextBookFrame::NotifyPageChanged()
 
 wxString lmTextBookFrame::GetOpenedPageWithAnchor()
 {
-    return TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
+    return lmTextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
 }
 
 
@@ -1239,7 +1239,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
         case MENU_eBook_Up :
             //if (m_PagesHash)
             //{
-            //    wxString page = TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
+            //    wxString page = lmTextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
             //    TextBookHelpHashData *ha = NULL;
             //    if (!page.empty())
             //        ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
@@ -1258,7 +1258,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
         case MENU_eBook_UpNode :
             //if (m_PagesHash)
             //{
-            //    wxString page = TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
+            //    wxString page = lmTextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
             //    TextBookHelpHashData *ha = NULL;
             //    if (!page.empty())
             //        ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
@@ -1290,7 +1290,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
         case MENU_eBook_Down :
             //if (m_PagesHash)
             //{
-            //    wxString page = TextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
+            //    wxString page = lmTextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
             //    TextBookHelpHashData *ha = NULL;
             //    if (!page.empty())
             //        ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
