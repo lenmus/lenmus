@@ -32,6 +32,7 @@
 WX_DECLARE_STRING_HASH_MAP( int, ltPagesTable );
 
 class wxXml2Node;
+class wxXml2Document;
 class wxZipOutputStream;
 class wxTextOutputStream;
 class wxFFileOutputStream;
@@ -51,6 +52,15 @@ public:
     static wxString GetLibxml2Version();
 
 private:
+
+    enum ETitleType
+    {
+        lmTITLE_CHAPTER = 0,
+        lmTITLE_BOOK,
+        lmTITLE_SECTION,
+        lmTITLE_THEME,
+        lmTITLE_PART,
+    };
   
     // Tags' processors
     bool BookTag(const wxXml2Node& oNode);
@@ -69,10 +79,16 @@ private:
     bool ThemeTag(const wxXml2Node& oNode);
     bool TitleTag(const wxXml2Node& oNode);
 
+    // auxiliary
+    void IncrementNesting();
+    void DecrementNesting();
+
 
     // Parsing methods
-    bool ProcessChildAndSiblings(const wxXml2Node& oNode, int nWriteOptions=0);
-    bool ProcessChildren(const wxXml2Node& oNode, int nWriteOptions=0);
+    bool ProcessChildAndSiblings(const wxXml2Node& oNode, int nWriteOptions=0,
+                                 wxString* pText = (wxString*)NULL);
+    bool ProcessChildren(const wxXml2Node& oNode, int nWriteOptions=0,
+                         wxString* pText = (wxString*)NULL);
     bool ProcessTag(const wxXml2Node& oNode);
 
     // File generation methods
@@ -100,7 +116,9 @@ private:
 
     // Other methods
     void CreateLinksTable(wxXml2Node& oRoot);
+    void AddToLinksTable(wxXml2Node& oRoot);
     void FindThemeNode(const wxXml2Node& oNode);
+
 
     // member variables
 
@@ -120,6 +138,12 @@ private:
     int             m_nNumHtmlPage;         // to generate html file number
     wxString        m_sHtmlPagename;        
     int             m_nHeaderLevel;
+#define             lmMAX_TITLE_LEVEL  8
+    int             m_nNumTitle[lmMAX_TITLE_LEVEL];     // 8 levels for numbering titles
+    int             m_nTitleLevel;          // current level
+    wxString        m_sChapterTitle;
+    wxString        m_sBookTitle;
+    ETitleType      m_nTitleType;           // to know the owner of the title tag
 
     // variables for idx processing
 
@@ -135,10 +159,13 @@ private:
 
     // bookinfo data
     bool            m_fProcessingBookinfo;
-    wxString        m_sBookTitle;
 
     // page/id cross-reference table
     ltPagesTable    m_PagesIds;
+
+    // variables for processing external entities
+    bool            m_fExtEntity;           //waiting to include an external entity
+    wxString        m_sExtEntityName;       //external entity to include
 
 };
 

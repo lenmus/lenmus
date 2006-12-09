@@ -55,6 +55,8 @@ private:
     void PutContentIntoFile(wxString sPath, wxString sContent);
     void GenerateLanguage(int i);
 
+	wxTextCtrl *m_pText;
+
     DECLARE_EVENT_TABLE()
 };
 

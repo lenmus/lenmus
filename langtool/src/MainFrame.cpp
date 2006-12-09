@@ -120,6 +120,16 @@ ltMainFrame::ltMainFrame(const wxString& title)
     // set the frame icon
     SetIcon(wxICON(LangTool));
 
+	// create the wxTextCtrl 
+	m_pText = new wxTextCtrl(this, -1, 
+		_T("This program will provide some examples about the three main operations ")
+		_T("it provides on XML files:\n\n")
+		_T("\t- Loading: wxXml2 allows you to load any XML file including DTDs.\n")
+		_T("\t- Editing: wxXml2 allows you to create, edit, manipulate any XML file.\n")
+		_T("\t- Saving: wxXml2 can saves XML trees or DTDs to memory buffers or to files."), 
+		wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_MULTILINE);
+	m_pText->SetBackgroundColour(*wxWHITE);
+
     // create a menu bar
 
     // the Help menu

@@ -101,8 +101,8 @@ void wxXml2Wrapper::DestroyIfUnlinked()
 {
 	if (IsNonEmpty() == FALSE) {
 
-		wxLogDebug(wxT("%s::DestroyIfUnlinked - nothing to destroy (empty)"), 
-			GetClassInfo()->GetClassName());
+		//wxLogDebug(wxT("%s::DestroyIfUnlinked - nothing to destroy (empty)"), 
+		//	GetClassInfo()->GetClassName());
 		return;
 	}
 
@@ -123,8 +123,8 @@ void wxXml2Wrapper::DestroyIfUnlinked()
 		// and no wrappers are embedding it, then we can safely
 		// destroy it.
 		Destroy();
-		wxLogDebug(wxT("%s::DestroyIfUnlinked - destroyed"), 
-			GetClassInfo()->GetClassName());
+		//wxLogDebug(wxT("%s::DestroyIfUnlinked - destroyed"), 
+		//	GetClassInfo()->GetClassName());
 
 	} else {
 
@@ -132,10 +132,10 @@ void wxXml2Wrapper::DestroyIfUnlinked()
 		// by the node which owns this object or by another wrapper	
 		SetAsEmpty();
 
-		wxLogDebug(wxT("%s::DestroyIfUnlinked - NOT destroyed (because %s)"), 
-			GetClassInfo()->GetClassName(),
-			(!unlinked ? wxT("linked") : 
-					wxString::Format(wxT("refcount is %d"), refcount).c_str()));
+		//wxLogDebug(wxT("%s::DestroyIfUnlinked - NOT destroyed (because %s)"), 
+		//	GetClassInfo()->GetClassName(),
+		//	(!unlinked ? wxT("linked") : 
+		//			wxString::Format(wxT("refcount is %d"), refcount).c_str()));
 	}
 }
 

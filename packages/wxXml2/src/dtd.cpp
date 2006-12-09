@@ -70,13 +70,13 @@ void wxXml2HelpWrapper::DestroyIfUnlinked()
 	if (!m_bLinked) {
 
 		Destroy();
-		wxLogDebug(wxT("%s::DestroyIfUnlinked - destroyed"), 
-			GetClassInfo()->GetClassName());
+		//wxLogDebug(wxT("%s::DestroyIfUnlinked - destroyed"), 
+		//	GetClassInfo()->GetClassName());
 
 	} else {
 
-		wxLogDebug(wxT("%s::DestroyIfUnlinked - NOT destroyed (because linked)"),
-			GetClassInfo()->GetClassName());
+		//wxLogDebug(wxT("%s::DestroyIfUnlinked - NOT destroyed (because linked)"),
+		//	GetClassInfo()->GetClassName());
 	}
 }
 
