@@ -40,7 +40,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw28ud_core.lib wxbase28ud.lib wxbase28ud_xml.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib libxml2.lib iconv.lib"
+				AdditionalDependencies="wxmsw28ud_core.lib wxbase28ud.lib wxbase28ud_xml.lib wxmsw28ud_xrc.lib wxmsw28ud_adv.lib wxmsw28ud_html.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib libxml2.lib iconv.lib"
 				OutputFile="langtool.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -109,7 +109,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw28u_core.lib wxbase28u.lib wxbase28u_xml.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+				AdditionalDependencies="wxmsw28u_core.lib wxbase28u.lib wxbase28u_xml.lib wxmsw28u_xrc.lib wxmsw28u_adv.lb wxmsw28u_html.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
 				OutputFile="langtool.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -175,7 +175,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw28d_core.lib wxbase28d.lib wxbase28d_xml.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+				AdditionalDependencies="wxmsw28d_core.lib wxbase28d.lib wxbase28d_xml.lib wxmsw28d_xrc.lib wxmsw28d_adv.lb wxmsw28d_html.lib wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
 				OutputFile="langtool.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -243,7 +243,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wxmsw28_core.lib wxbase28.lib wxbase28_xml.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
+				AdditionalDependencies="wxmsw28_core.lib wxbase28.lib wxbase28_xml.lib wxmsw28_xrc.lib wxmsw28_adv.lb wxmsw28_html.lib wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib winmm.lib comctl32.lib rpcrt4.lib wsock32.lib oleacc.lib odbc32.lib"
 				OutputFile="langtool.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
@@ -288,6 +288,12 @@
 		<Filter
 			Name="Source Files"
 			Filter="">
+			<File
+				RelativePath="..\src\DlgCompileBook.cpp">
+			</File>
+			<File
+				RelativePath="..\src\DlgCompileBook.h">
+			</File>
 			<File
 				RelativePath="..\src\ebook_processor.cpp">
 			</File>

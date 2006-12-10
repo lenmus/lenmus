@@ -89,12 +89,6 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, int nOptions)
     wxString sError;
     if (!oDoc.Load(sFilename, &sError)) {
         wxLogMessage(_T("Error parsing file %s\nError:%s"), sFilename, sError);
-        wxFile *  pFile = new wxFile(_T("ErrorXML.txt"), wxFile::write);
-        wxString str(sError, *wxConvCurrent);
-        pFile->Write(sError);
-        pFile->Close();
-        delete pFile;
-
         return false;
     }
     m_sFilename = sFilename;
@@ -531,7 +525,7 @@ bool lmEbookProcessor::BookinfoTag(const wxXml2Node& oNode)
 bool lmEbookProcessor::ChapterTag(const wxXml2Node& oNode)
 {
     // convert tag: output to open html tags
-    IncrementNesting();
+    IncrementTitleCounters();
     WriteToToc(_T("<entry id=\"xxxx\">\n"));
     m_nTocIndentLevel++;
  
@@ -547,7 +541,7 @@ bool lmEbookProcessor::ChapterTag(const wxXml2Node& oNode)
     m_nTocIndentLevel--;
     WriteToToc(_T("</entry>\n"));
 
-    DecrementNesting();
+    DecrementTitleCounters();
     return fError;
 }
 
@@ -683,7 +677,7 @@ bool lmEbookProcessor::ParaTag(const wxXml2Node& oNode)
 bool lmEbookProcessor::PartTag(const wxXml2Node& oNode)
 {
     // openning tag
-    IncrementNesting();
+    IncrementTitleCounters();
     // HTML:
     WriteToHtml(_T("<div id=\"Cxxxx\">\n"));
     // TOC:
@@ -705,7 +699,7 @@ bool lmEbookProcessor::PartTag(const wxXml2Node& oNode)
     // processing implications:
     m_nHeaderLevel--;
 
-    DecrementNesting();
+    DecrementTitleCounters();
     return fError;
 }
 
@@ -735,7 +729,7 @@ bool lmEbookProcessor::ScoreTag(const wxXml2Node& oNode)
 bool lmEbookProcessor::SectionTag(const wxXml2Node& oNode)
 {
     // openning tag
-    IncrementNesting();
+    IncrementTitleCounters();
     WriteToHtml(_T("<div id=\"xxxx\">\n"));
  
     // tag processing implications
@@ -749,7 +743,7 @@ bool lmEbookProcessor::SectionTag(const wxXml2Node& oNode)
     //convert tag: output to close html tags
     WriteToHtml(_T("</div>\n"));
 
-    DecrementNesting();
+    DecrementTitleCounters();
     return fError;
 }
 
@@ -760,7 +754,7 @@ bool lmEbookProcessor::ThemeTag(const wxXml2Node& oNode)
     wxString sHeader = oNode.GetPropVal(_T("header"), _T(""));
 
     // openning tag
-    IncrementNesting();
+    IncrementTitleCounters();
     // HTML:
     StartHtmlFile(m_sFilename, sId);
     // TOC
@@ -783,7 +777,7 @@ bool lmEbookProcessor::ThemeTag(const wxXml2Node& oNode)
     m_nTocIndentLevel--;
     WriteToToc(_T("</entry>\n"));
 
-    DecrementNesting();
+    DecrementTitleCounters();
 
     return fError;
 }
@@ -791,13 +785,7 @@ bool lmEbookProcessor::ThemeTag(const wxXml2Node& oNode)
 bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode)
 {
     // openning tag
-    wxString sTitleNum = wxEmptyString;
-    if (m_nTitleLevel >= 0)
-        sTitleNum += wxString::Format(_T("$d"), m_nNumTitle[0] );
-    for (int i=1; i <= m_nTitleLevel; i++) {
-        sTitleNum += wxString::Format(_T(".$d"), m_nNumTitle[i] );
-    }
-    if (sTitleNum != wxEmptyString) sTitleNum += _T(" ");
+    wxString sTitleNum = GetTitleCounters();
     //TOC
     if (m_fProcessingBookinfo || m_fTitleToToc) WriteToToc(_T("<title>") + sTitleNum);
 
@@ -853,7 +841,21 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode)
 // Auxiliary
 //
 
-void lmEbookProcessor::IncrementNesting()
+wxString lmEbookProcessor::GetTitleCounters()
+{
+    wxString sTitleNum = wxEmptyString;
+    if (m_nTitleLevel >= 0)
+        sTitleNum += wxString::Format(_T("$d"), m_nNumTitle[0] );
+    for (int i=1; i <= m_nTitleLevel; i++) {
+        sTitleNum += wxString::Format(_T(".$d"), m_nNumTitle[i] );
+    }
+    if (sTitleNum != wxEmptyString) sTitleNum += _T(" ");
+    
+    return  sTitleNum;
+
+}
+
+void lmEbookProcessor::IncrementTitleCounters()
 {
     m_nTitleLevel++;
     if ( m_nTitleLevel >= lmMAX_TITLE_LEVEL) {
@@ -863,7 +865,7 @@ void lmEbookProcessor::IncrementNesting()
     m_nNumTitle[m_nTitleLevel]++;
 }
 
-void lmEbookProcessor::DecrementNesting()
+void lmEbookProcessor::DecrementTitleCounters()
 {
     m_nTitleLevel--;
     if (m_nTitleLevel < 0) return;

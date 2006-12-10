@@ -41,6 +41,7 @@
 //#include "parser.h"
 #include "html_converter.h"
 #include "ebook_processor.h"
+#include "DlgCompileBook.h"
 
 
 // IDs for the controls and the menu commands
@@ -304,21 +305,21 @@ void ltMainFrame::PutContentIntoFile(wxString sPath, wxString sContent)
 
 void ltMainFrame::OnCompileBook(wxCommandEvent& WXUNUSED(event))
 {
-    // ask for the file to covert
-    wxString sFilter = wxT("*.xml");
-    wxString sPath = ::wxFileSelector(_T("Choose the file to convert"),
-                                        wxT(""),    //default path
-                                        wxT(""),    //default filename
-                                        wxT("xml"),    //default_extension
-                                        sFilter,
-                                        wxOPEN,        //flags
-                                        this);
-    if ( sPath.IsEmpty() ) return;
+    wxString sSrcPath = wxEmptyString;
+    wxString sDestPath = wxEmptyString;
 
+    lmDlgCompileBook oDlg(this, &sSrcPath, &sDestPath); 
+    int retcode = oDlg.ShowModal();
+    if (retcode != wxID_OK) {
+        return;
+    }
+
+    if ( sSrcPath.IsEmpty() ) return;
     ::wxBeginBusyCursor();
     lmEbookProcessor oEBP;
-    oEBP.GenerateLMB(sPath);
+    oEBP.GenerateLMB(sSrcPath);
     ::wxEndBusyCursor();
+
 }
 
 void ltMainFrame::OnMergePO(wxCommandEvent& WXUNUSED(event))

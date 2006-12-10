@@ -33,6 +33,7 @@
 #endif
 
 #include "wx/fs_zip.h"
+#include "wx/xrc/xmlres.h"          // use the xrc resource system
 
 #include "MainFrame.h"
 
@@ -77,6 +78,35 @@ bool MyApp::OnInit()
 {
     // Add support for zip files
     wxFileSystem::AddHandler(new wxZipFSHandler);
+
+    // Get program directory and set up global paths object
+    #ifdef __WXMSW__
+    // On Windows, the path to the LenMus program is in argv[0]
+    wxString sHomeDir = wxPathOnly(argv[0]);
+    #endif
+    #ifdef __MACOSX__
+    // On Mac OS X, the path to the LenMus program is in argv[0]
+    wxString sHomeDir = wxPathOnly(argv[0]);
+    #endif
+    #ifdef __MACOS9__
+    // On Mac OS 9, the initial working directory is the one that
+    // contains the program.
+    wxString sHomeDir = wxGetCwd();
+    #endif
+    wxFileName oRootPath(sHomeDir);     //sHomeDir is 'build' folder
+    //oRootPath.RemoveLastDir();          //now we are in the langtool root
+
+
+    // Load all of the XRC files that will be used. You can put everything
+    // into one giant XRC file if you wanted, but then they become more
+    // difficult to manage, and harder to reuse in later projects.
+    wxFileName oFN(oRootPath);
+    oFN.AppendDir(_T("xrc"));
+        // Initialize all the XRC handlers.
+    wxXmlResource::Get()->InitAllHandlers();
+        // The score generation settings dialog
+    oFN.SetFullName(_T("DlgCompileBook.xrc"));
+    wxXmlResource::Get()->Load( oFN.GetFullPath() );
 
     // create the main application window
     ltMainFrame *frame = new ltMainFrame(_T("LangTool - eMusicBooks and PO files processor"));

@@ -80,9 +80,9 @@ private:
     bool TitleTag(const wxXml2Node& oNode);
 
     // auxiliary
-    void IncrementNesting();
-    void DecrementNesting();
-
+    void IncrementTitleCounters();
+    void DecrementTitleCounters();
+    wxString GetTitleCounters();
 
     // Parsing methods
     bool ProcessChildAndSiblings(const wxXml2Node& oNode, int nWriteOptions=0,
