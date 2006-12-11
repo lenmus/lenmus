@@ -30,11 +30,29 @@
 #include "wx/dialog.h"
 
 
+//table must be ordered by language name (in English) to ensure
+//correspondence with table in MainFrame.cpp
+enum ELanguages
+{   
+    eLangEnglish = 0,
+    eLangFrench,
+    eLangSpanish,
+    eLangTurkish,
+    eLangLast
+};
+
+typedef struct lmCompileBookOptionsStruct {
+    wxString sSrcPath;
+    wxString sDestPath;
+    bool fLanguage[eLangLast];
+} lmCompileBookOptions;
+
+
 // class definition
 class lmDlgCompileBook : public wxDialog {
 
 public:
-    lmDlgCompileBook(wxWindow* parent, wxString* pSrcPath, wxString* pDestPath);
+    lmDlgCompileBook(wxWindow* parent, lmCompileBookOptions* pOptions);
     virtual ~lmDlgCompileBook();
 
     // event handlers
@@ -49,13 +67,12 @@ private:
     bool VerifyData();
 
     //controls
-    wxCheckBox*     m_pChkScale;
+    wxCheckBox*     m_pChkLang[eLangLast+1];        //the last one is for option 'All languages'
     wxTextCtrl*     m_pTxtSrcPath;
+    wxTextCtrl*     m_pTxtDestPath;
 
     //communication with parent
-    wxString*   m_pSrcPath;
-    wxString*   m_pDestPath;
-
+    lmCompileBookOptions*   m_pOptions;
 
 
     DECLARE_EVENT_TABLE()

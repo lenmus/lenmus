@@ -36,6 +36,7 @@
 #include "wx/xrc/xmlres.h"          // use the xrc resource system
 
 #include "MainFrame.h"
+#include "Paths.h"
 
 // ----------------------------------------------------------------------------
 // resources
@@ -56,6 +57,8 @@ class MyApp : public wxApp
 {
 public:
     virtual bool OnInit();
+    virtual int MyApp::OnExit();
+
 };
 
 // Create a new application object: this macro will allow wxWidgets to create
@@ -95,6 +98,7 @@ bool MyApp::OnInit()
     #endif
     wxFileName oRootPath(sHomeDir);     //sHomeDir is 'build' folder
     //oRootPath.RemoveLastDir();          //now we are in the langtool root
+    g_pPaths = new lmPaths(sHomeDir);
 
 
     // Load all of the XRC files that will be used. You can put everything
@@ -109,7 +113,7 @@ bool MyApp::OnInit()
     wxXmlResource::Get()->Load( oFN.GetFullPath() );
 
     // create the main application window
-    ltMainFrame *frame = new ltMainFrame(_T("LangTool - eMusicBooks and PO files processor"));
+    ltMainFrame *frame = new ltMainFrame(_T("LangTool - eMusicBooks and Lang files processor"), sHomeDir);
 
     // and show it (the frames, unlike simple controls, are not shown when
     // created initially)
@@ -119,5 +123,15 @@ bool MyApp::OnInit()
     // loop and the application will run. If we returned false here, the
     // application would exit immediately.
     return true;
+}
+
+int MyApp::OnExit()
+{
+    // delete all objects used by the App
+
+    // path names
+    delete g_pPaths;
+
+    return 0;
 }
 

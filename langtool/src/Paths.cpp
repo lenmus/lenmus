@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------------------------
-//    LenMus project: free software for music theory and language
+//    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2006 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
@@ -18,50 +18,60 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-
-#ifndef __LT_MAINFRAME_H__        //to avoid nested includes
-#define __LT_MAINFRAME_H__
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma implementation "Paths.h"
+#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
-// for all others, include the necessary headers
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+#include "wx/wx.h"
 #endif
 
+#include "wx/filename.h"
 
-class ltMainFrame : public wxFrame
+#include "Paths.h"
+
+// the only object
+lmPaths* g_pPaths = (lmPaths*) NULL;
+
+//-------------------------------------------------------------------------------------------
+// lmPaths implementation
+//-------------------------------------------------------------------------------------------
+
+lmPaths::lmPaths(wxString sBinPath)
 {
-public:
-    // ctor(s)
-    ltMainFrame(const wxString& title, const wxString& sRootPath);
+    //Receives the full path to the langtool executable folder (/bin) and
+    //extracts the root path
+    m_root.Assign(sBinPath, _T(""), wxPATH_NATIVE);
+    m_root.RemoveLastDir();
+    Init();
 
-    // event handlers (these functions should _not_ be virtual)
-    void OnQuit(wxCommandEvent& event);
-    void OnAbout(wxCommandEvent& event);
-    void OnInstaller(wxCommandEvent& event);
-    void OnSplitFile(wxCommandEvent& WXUNUSED(event));
-    void OnConvertToHtml(wxCommandEvent& WXUNUSED(event));
-    void OnGeneratePO(wxCommandEvent& WXUNUSED(event));
-    void OnCompileBook(wxCommandEvent& WXUNUSED(event));
-    void OnMergePO(wxCommandEvent& WXUNUSED(event));
+}
 
-private:
-    void PutContentIntoFile(wxString sPath, wxString sContent);
-    void GenerateLanguage(int i);
-    void LogMessage(const wxChar* szFormat, ...);
+lmPaths::~lmPaths()
+{
+}
 
-	wxTextCtrl*     m_pText;
-    wxString        m_sRootPath;
-    wxString        m_sLenMusPath;
 
-    DECLARE_EVENT_TABLE()
-};
+void lmPaths::Init()
+{
+    wxFileName path;
 
-    
-#endif    // __LT_MAINFRAME_H__
+    // Paths in LangTool
+    path = m_root;
+    path.AppendDir(_T("locale"));
+    m_sLocale = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+    // Paths in LenMus
+    m_sLenMus = _T("c:\\usr\\desarrollo_wx\\lenmus\\");
+    m_sBooksRoot = _T("c:\\usr\\desarrollo_wx\\lenmus\\books\\");
+    m_sLenMusLocale = _T("c:\\usr\\desarrollo_wx\\lenmus\\locale\\");
+
+}
+

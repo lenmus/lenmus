@@ -43,7 +43,7 @@ lmHtmlConverter::lmHtmlConverter()
     //m_pParser = new lmXmlParser();
     m_fIncludeObjects = false;
 
-    m_pPoFile = (wxFile*)NULL;
+    m_pLangFile = (wxFile*)NULL;
 
 }
 
@@ -56,7 +56,7 @@ bool lmHtmlConverter::ConvertToHtml(const wxString& sFilename, bool fIncludeObje
                                     wxFile* pPoFile)
 {
     m_fIncludeObjects = fIncludeObjects;
-    m_pPoFile = pPoFile;
+    m_pLangFile = pPoFile;
 
     // load the XML file as tree of nodes
     wxXmlDocument xdoc;
@@ -173,7 +173,7 @@ bool lmHtmlConverter::ProcessTag(wxXmlNode* pElement, wxFile* pFile)
 
 }
 
-wxFile* lmHtmlConverter::StartPoFile(wxString sFilename)
+wxFile* lmHtmlConverter::StartLangFile(wxString sFilename)
 {
     wxFileName oFNP( sFilename );
     oFNP.SetExt(_T("po"));
@@ -207,13 +207,13 @@ wxFile* lmHtmlConverter::StartPoFile(wxString sFilename)
 
 void lmHtmlConverter::AddToPoFile(wxString& sText)
 {
-    //add text to PO file
+    //add text to Lang file
 
-    if (!m_pPoFile || sText == _T("")) return;
+    if (!m_pLangFile || sText == _T("")) return;
 
-    m_pPoFile->Write(_T("msgid \""));
-    m_pPoFile->Write(sText + _T("\"\n"));
-    m_pPoFile->Write(_T("msgstr \"\"\n"));
+    m_pLangFile->Write(_T("msgid \""));
+    m_pLangFile->Write(sText + _T("\"\n"));
+    m_pLangFile->Write(_T("msgstr \"\"\n"));
 
 
 }
@@ -340,7 +340,7 @@ bool lmHtmlConverter::ParaToHtml(wxXmlNode* pNode, wxFile* pFile)
     // tag processing implications
     wxString sText = wxEmptyString; //m_pParser->GetText(pNode);
     pFile->Write(sText);                        //write text in paragraph
-    if (m_pPoFile) AddToPoFile(sText);      //add text to PO file
+    if (m_pLangFile) AddToPoFile(sText);      //add text to Lang file
 
     //process tag's children
     bool fError = ProcessChildren(pNode, pFile);

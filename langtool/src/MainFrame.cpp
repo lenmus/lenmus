@@ -42,6 +42,7 @@
 #include "html_converter.h"
 #include "ebook_processor.h"
 #include "DlgCompileBook.h"
+#include "Paths.h"
 
 
 // IDs for the controls and the menu commands
@@ -58,7 +59,7 @@ enum
     // Installer menu
     MENU_INSTALLER = wxID_HIGHEST + 100,
 
-    // PO files menu
+    // Lang (.cpp) files menu
     MENU_MERGE_PO,
 
     // eBooks menu
@@ -78,10 +79,12 @@ typedef struct lmLangDataStruct {
 } lmLangData;
 
 #define lmNUM_LANGUAGES 4
+//table must be ordered by language name (in English) to
+//ensure correspondence with table in DlgCompileBook.h
 static const lmLangData tLanguages[lmNUM_LANGUAGES] = { 
     { _T("en"), _T("English"), _T("iso-8859-1") }, 
-    { _T("es"), _T("Spanish"), _T("iso-8859-1") }, 
     { _T("fr"), _T("French"), _T("iso-8859-1") }, 
+    { _T("es"), _T("Spanish"), _T("iso-8859-1") }, 
     { _T("tr"), _T("Turkish"), _T("iso-8859-9") }, 
 };
 
@@ -99,7 +102,7 @@ BEGIN_EVENT_TABLE(ltMainFrame, wxFrame)
     EVT_MENU(MENU_COMPILE_BOOK, ltMainFrame::OnCompileBook)
     EVT_MENU(MENU_GENERATE_PO, ltMainFrame::OnGeneratePO)
 
-    // PO files menu
+    // Lang (.cpp) files menu
     EVT_MENU(MENU_MERGE_PO, ltMainFrame::OnMergePO)
 
     // Installer menu
@@ -115,20 +118,21 @@ END_EVENT_TABLE()
 // ============================================================================
 
 // frame constructor
-ltMainFrame::ltMainFrame(const wxString& title)
+ltMainFrame::ltMainFrame(const wxString& title, const wxString& sRootPath)
        : wxFrame(NULL, wxID_ANY, title)
 {
+    //save parameters
+    m_sRootPath = sRootPath;
+    m_sLenMusPath = _T("c:\\usr\\desarrollo_wx\\lenmus\\");
+
     // set the frame icon
     SetIcon(wxICON(LangTool));
 
 	// create the wxTextCtrl 
 	m_pText = new wxTextCtrl(this, -1, 
-		_T("This program will provide some examples about the three main operations ")
-		_T("it provides on XML files:\n\n")
-		_T("\t- Loading: wxXml2 allows you to load any XML file including DTDs.\n")
-		_T("\t- Editing: wxXml2 allows you to create, edit, manipulate any XML file.\n")
-		_T("\t- Saving: wxXml2 can saves XML trees or DTDs to memory buffers or to files."), 
-		wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_MULTILINE);
+        _T("This program is an utility to compile eMusicBooks and to\n")
+        _T("create and to manage Lang translation files\n\n"),
+		wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_MULTILINE | wxHSCROLL);
 	m_pText->SetBackgroundColour(*wxWHITE);
 
     // create a menu bar
@@ -149,15 +153,15 @@ ltMainFrame::ltMainFrame(const wxString& title)
     //wxMenu* pSplitMenu = new wxMenu;
     //pSplitMenu->Append(MENU_SPLIT_FILE, _T("&Split"), _T("Split HTML ebook file"));
 
-    // the PO menu
+    // the Lang menu
     wxMenu* pPoMenu = new wxMenu;
-    pPoMenu->Append(MENU_MERGE_PO, _T("&Merge .po files"), _T("XML eBook to PO file"));
+    pPoMenu->Append(MENU_MERGE_PO, _T("&Merge .po files"), _T("XML eBook to Lang file"));
 
 
     // items in the eBooks menu
     wxMenu* pBooksMenu = new wxMenu;
     pBooksMenu->Append(MENU_COMPILE_BOOK, _T("&Compile eBook"), _T("Convert eBook to LMB format"));
-    pBooksMenu->Append(MENU_GENERATE_PO, _T("&Generate .po file"), _T("Generate a PO file for the eBook"));
+    pBooksMenu->Append(MENU_GENERATE_PO, _T("&Generate .po file"), _T("Generate a Lang file for the eBook"));
 
 
 
@@ -263,7 +267,25 @@ void ltMainFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
 
     ::wxBeginBusyCursor();
     lmEbookProcessor oEBP;
-    oEBP.GenerateLMB(sPath, lmPO_FILE);
+    wxFileName oFSrc(sPath);
+    oEBP.GenerateLMB(sPath, _T("en"), lmLANG_FILE);
+
+    //create the PO files if they do not exist
+    for (int i=0; i < lmNUM_LANGUAGES; i++)
+    {
+        wxString sLang =  tLanguages[i].sLang;
+        wxFileName oFDest( g_pPaths->GetLocalePath() );
+        oFDest.AppendDir(sLang);
+        oFDest.SetName( oFSrc.GetName() + _T("_") + sLang );
+        if (!oFDest.FileExists()) {     //if file does not exist
+            wxString sCharset = tLanguages[i].sLangCode;
+            wxString sLangName = tLanguages[i].sLangName;
+            if (!oEBP.CreatePoFile(oFDest.GetFullPath(), sCharset, sLangName, sLang)) {
+                wxLogMessage(_T("Error: PO file can not be created"));
+            }
+        }
+    }
+
     ::wxEndBusyCursor();
 
 }
@@ -276,7 +298,7 @@ void ltMainFrame::GenerateLanguage(int i)
     wxString sLangName = tLanguages[i].sLangName;
 
     pLocale->Init(_T(""), sLang, _T(""), true, true);
-    pLocale->AddCatalogLookupPathPrefix( _T("c:\\usr\\desarrollo_wx\\lenmus\\locale\\") + sLang );
+    pLocale->AddCatalogLookupPathPrefix( g_pPaths->GetLenMusLocalePath() + sLang );
     pLocale->AddCatalog(_T("lenmus_") + pLocale->GetName());
 
     wxString sContent = lmInstaller::GetInstallerStrings(sLang, sLangName);
@@ -305,20 +327,60 @@ void ltMainFrame::PutContentIntoFile(wxString sPath, wxString sContent)
 
 void ltMainFrame::OnCompileBook(wxCommandEvent& WXUNUSED(event))
 {
-    wxString sSrcPath = wxEmptyString;
-    wxString sDestPath = wxEmptyString;
+    lmCompileBookOptions rOptions;
+    rOptions.sSrcPath = wxEmptyString;
+    rOptions.sDestPath = m_sLenMusPath + _T("books\\");
 
-    lmDlgCompileBook oDlg(this, &sSrcPath, &sDestPath); 
+    lmDlgCompileBook oDlg(this, &rOptions); 
     int retcode = oDlg.ShowModal();
     if (retcode != wxID_OK) {
         return;
     }
 
-    if ( sSrcPath.IsEmpty() ) return;
+    if ( rOptions.sSrcPath.IsEmpty() ) return;
+
+    //Get book name
+    wxFileName oFN(rOptions.sSrcPath);
+    const wxString sBookName = oFN.GetName();
+    LogMessage(_T("\nPreparing to process eMusicBook ") + rOptions.sSrcPath );
+
     ::wxBeginBusyCursor();
     lmEbookProcessor oEBP;
-    oEBP.GenerateLMB(sSrcPath);
+    //Loop to use each selected language
+    for(int i=0; i < eLangLast; i++) 
+    {
+        if (rOptions.fLanguage[i]) {
+            wxLocale* pLocale = (wxLocale*)NULL;
+            wxString sLang = tLanguages[i].sLang;
+            if (i != 0) {
+                pLocale = new wxLocale();
+                wxString sNil = _T("");
+                wxString sLangName = tLanguages[i].sLangName;
+
+                pLocale->Init(_T(""), sLang, _T(""), true, true);
+                pLocale->AddCatalogLookupPathPrefix( g_pPaths->GetLocalePath() );
+                wxString sCatalogName = sBookName + _T("_") + pLocale->GetName();
+                pLocale->AddCatalog(sCatalogName);
+                
+                LogMessage(_T("\nLocale changed to %s language (using %s)."),
+                            pLocale->GetName(), sCatalogName + _T(".mo") );
+            }
+            oEBP.GenerateLMB(rOptions.sSrcPath, sLang);
+
+            if (i != 0) delete pLocale;
+        }
+    }
     ::wxEndBusyCursor();
+
+}
+
+void ltMainFrame::LogMessage(const wxChar* szFormat, ...)
+{
+    va_list argptr;
+    va_start(argptr, szFormat);
+    wxString sMsg = wxString::FormatV(szFormat, argptr);
+    m_pText->AppendText(sMsg);
+    va_end(argptr);
 
 }
 

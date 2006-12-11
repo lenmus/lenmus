@@ -51,31 +51,45 @@ BEGIN_EVENT_TABLE(lmDlgCompileBook, wxDialog)
     EVT_BUTTON( XRCID( "btOK" ), lmDlgCompileBook::OnAcceptClicked )
     EVT_BUTTON( XRCID( "btCancel" ), lmDlgCompileBook::OnCancelClicked )
 
-    // Key signature check boxes
-    //EVT_CHECKBOX( XRCID( "chkKeyC" ), lmDlgCompileBook::OnDataChanged )
+    // Language check boxes
+    EVT_CHECKBOX( XRCID( "chkLangEnglish" ), lmDlgCompileBook::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkLangFrench" ), lmDlgCompileBook::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkLangSpanish" ), lmDlgCompileBook::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkLangTurkish" ), lmDlgCompileBook::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkLangAll" ), lmDlgCompileBook::OnDataChanged )
+
     EVT_BUTTON( XRCID( "btBrowseSrc" ), lmDlgCompileBook::OnBrowseSrc )
 
 END_EVENT_TABLE()
 
 
 
-lmDlgCompileBook::lmDlgCompileBook(wxWindow* parent, wxString* pSrcPath, wxString* pDestPath)
+lmDlgCompileBook::lmDlgCompileBook(wxWindow* parent, lmCompileBookOptions* pOptions)
 {
     //save parameters
-    m_pSrcPath = pSrcPath;
-    m_pDestPath = pDestPath;
+    m_pOptions = pOptions;
 
     // create the dialog controls
     wxXmlResource::Get()->LoadDialog(this, parent, _T("DlgCompileBook"));
 
     //get pointers to all controls
-    //m_pChkScale = XRCCTRL(*this, "chkScaleMajorNatural", wxCheckBox);
+    m_pChkLang[eLangEnglish] = XRCCTRL(*this, "chkLangEnglish", wxCheckBox);
+    m_pChkLang[eLangFrench] = XRCCTRL(*this, "chkLangFrench", wxCheckBox);
+    m_pChkLang[eLangSpanish] = XRCCTRL(*this, "chkLangSpanish", wxCheckBox);
+    m_pChkLang[eLangTurkish] = XRCCTRL(*this, "chkLangTurkish", wxCheckBox);
+    m_pChkLang[eLangLast] = XRCCTRL(*this, "chkLangAll", wxCheckBox);
     m_pTxtSrcPath = XRCCTRL(*this, "txtSrcPath", wxTextCtrl);     
+    m_pTxtDestPath = XRCCTRL(*this, "txtDestPath", wxTextCtrl); 
 
-        //
-        // initialize all controls with current constrains data
-        //
+    // initialize all controls with current data
+    for(int i=0; i < eLangLast; i++) {
+        m_pOptions->fLanguage[i] = false;
+        m_pChkLang[i]->SetValue(false);
+    }
+    m_pChkLang[eLangLast]->SetValue(false);
 
+    m_pTxtSrcPath->SetValue( m_pOptions->sSrcPath );
+    m_pTxtDestPath->SetValue( m_pOptions->sDestPath );
 
     //center dialog on screen
     CentreOnScreen();
@@ -96,6 +110,17 @@ void lmDlgCompileBook::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     // Accept button will be enabled only if all data have been validated and is Ok. So
     // when accept button is clicked we can proceed to save data.
 
+    //move language options
+    if (m_pChkLang[eLangLast]->GetValue()) {
+        for(int i=0; i < eLangLast; i++) {
+             m_pOptions->fLanguage[i] = true;
+        }
+    }
+    else {
+        for(int i=0; i < eLangLast; i++) {
+            m_pOptions->fLanguage[i] = m_pChkLang[i]->GetValue();
+        }
+    }
 
     //terminate the dialog 
     EndModal(wxID_OK);      
@@ -133,6 +158,15 @@ bool lmDlgCompileBook::VerifyData()
     //        break;
     //    }
     //}
+
+
+    //m_pChkLang[eLangEnglish] = XRCCTRL(*this, "chkLangEnglish", wxCheckBox);
+    //m_pChkLang[eLangFrench] = XRCCTRL(*this, "chkLangFrench", wxCheckBox);
+    //m_pChkLang[eLangSpanish] = XRCCTRL(*this, "chkLangSpanish", wxCheckBox);
+    //m_pChkLang[eLangTurkish] = XRCCTRL(*this, "chkLangTurkish", wxCheckBox);
+    //m_pChkLang[eLangLast] = XRCCTRL(*this, "chkLangAll", wxCheckBox);
+
+
     //fError = !fAtLeastOne;
     //if (fError) {
     //    m_pLblAllowedScalesError->Show(true);
@@ -181,7 +215,7 @@ void lmDlgCompileBook::OnBrowseSrc(wxCommandEvent& WXUNUSED(event))
                                         wxOPEN,        //flags
                                         this);
     if ( sPath.IsEmpty() ) return;
-    *m_pSrcPath = sPath;
+    m_pOptions->sSrcPath = sPath;
     m_pTxtSrcPath->SetValue(sPath);
 
 }

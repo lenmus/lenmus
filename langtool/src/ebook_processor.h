@@ -38,7 +38,7 @@ class wxTextOutputStream;
 class wxFFileOutputStream;
 
 enum {      //processing options
-    lmPO_FILE = 1,      //generate PO file
+    lmLANG_FILE = 1,      //generate Lang file
 };
 
 class lmEbookProcessor
@@ -47,7 +47,9 @@ public:
     lmEbookProcessor();
     ~lmEbookProcessor();
 
-    bool GenerateLMB(wxString sfilename, int nOptions=0);
+    bool GenerateLMB(wxString sFilename, wxString sLangCode, int nOptions=0);
+    bool CreatePoFile(wxString& sFilename, wxString& sCharSet, wxString& sLangName,
+                      wxString& sLangCode);
 
     static wxString GetLibxml2Version();
 
@@ -100,11 +102,11 @@ private:
     bool StartHtmlFile(wxString sFilename, wxString sId);
     void TerminateHtmlFile();
     void WriteToHtml(wxString sText);
-        // PO
-    bool StartPoFile(wxString sFilename);
-    void WriteToPo(wxString& sText);
+        // Lang (.cpp)
+    bool StartLangFile(wxString sFilename);
+    void WriteToLang(wxString sText);
         // LMB
-    bool StartLmbFile(wxString sFilename);
+    bool StartLmbFile(wxString sFilename, wxString sLangCode);
     void TerminateLmbFile();
     void CopyToLmb(wxString sFilename);
 
@@ -126,7 +128,7 @@ private:
     wxString        m_sFilename;            // full path & name of xml file being processed
     wxFile*         m_pTocFile;
     wxFile*         m_pHtmlFile;
-    wxFile*         m_pPoFile;
+    wxFile*         m_pLangFile;
 
     // variables for toc processing
     int             m_nTocIndentLevel;      // to indent output
@@ -147,8 +149,8 @@ private:
 
     // variables for idx processing
 
-    // variables for PO files processing
-    bool            m_fOnlyPoFile;          //only generate the PO file
+    // variables for Lang files processing
+    bool            m_fOnlyLangFile;          //only generate the Lang file
 
     // variables for LMB (zip file) generation
     bool                    m_fGenerateLmb;

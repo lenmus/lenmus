@@ -42,6 +42,7 @@
 #include "ebook_processor.h"
 #include "wx/xml2.h"            // include libxml2 wrapper definitions
 #include "wx/dtd.h"				// include libxml2 wrapper definitions
+#include "Paths.h"
 
 
 #define ltNO_INDENT false
@@ -53,11 +54,17 @@ enum {
     eTRANSLATE = 8
 };
 
+static const wxString m_sFooter1 = 
+    _T("Send your comments and sugesstions to LenMus team (www.lenmus.org)");
+static const wxString m_sFooter2 = 
+        _T("Licensed under the terms of the GNU Free Documentation License (see copyrights page for details.)");
+
+
 lmEbookProcessor::lmEbookProcessor()
 {
     m_pTocFile = (wxFile*) NULL;
     m_pHtmlFile = (wxFile*) NULL;
-    m_pPoFile = (wxFile*)NULL;
+    m_pLangFile = (wxFile*)NULL;
     m_pLmbFile = (wxTextOutputStream*)NULL;
     m_pZipFile = (wxZipOutputStream*)NULL;
 
@@ -70,19 +77,24 @@ lmEbookProcessor::~lmEbookProcessor()
 {
     if (m_pTocFile) delete m_pTocFile;
     if (m_pHtmlFile) delete m_pHtmlFile;
-    if (m_pPoFile) delete m_pPoFile;
+    if (m_pLangFile) delete m_pLangFile;
     if (m_pLmbFile) delete m_pLmbFile;
     if (m_pZipFile) delete m_pZipFile;
 
 }
 
-bool lmEbookProcessor::GenerateLMB(wxString sFilename, int nOptions)
+bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, int nOptions)
 {
     // returns false if error
+    // PO and lang.cpp are created in sDestName (langtool\locale\)
+    // book.lmb is created in sDestName (lenmus\books\xx\)
+    // book.toc is temporarily created in sDestName (lenmus\books\xx\)
 
     // Prepare for a new XML file processing
     m_fProcessingBookinfo = false;
-    m_fOnlyPoFile = nOptions & lmPO_FILE;
+    m_fOnlyLangFile = nOptions & lmLANG_FILE;
+    m_fGenerateLmb = !m_fOnlyLangFile;
+
 
     // load the XML file as tree of nodes
     wxXml2Document oDoc;
@@ -107,10 +119,10 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, int nOptions)
     //DumpXMLTree(oRoot);   //DBG
     CreateLinksTable(oRoot);
 
-    // Prepare PO file
-    if (m_fOnlyPoFile) {
-        if (!StartPoFile( sFilename )) {
-            wxLogMessage(_T("Error: PO file can not be created"));
+    // Prepare Lang file
+    if (m_fOnlyLangFile) {
+        if (!StartLangFile( sFilename )) {
+            wxLogMessage(_T("Error: Lang file can not be created"));
             oRoot.DestroyIfUnlinked();
             oDoc.DestroyIfUnlinked();
             return false;        //error
@@ -127,7 +139,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, int nOptions)
 
     // prepare de LMB file
     if (m_fGenerateLmb) {
-        if (!StartLmbFile( sFilename )) {
+        if (!StartLmbFile(sFilename, sLangCode)) {
             wxLogMessage(_T("Error: LMB file can not be created"));
             oRoot.DestroyIfUnlinked();
             oDoc.DestroyIfUnlinked();
@@ -292,9 +304,10 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nWriteOption
         // are for filtering ou these lines
         wxString tmp = sContent.Trim();
         if (!tmp.IsEmpty()) {
-            if (nWriteOptions & eTOC) WriteToToc(sContent, ltNO_INDENT);        //text not indented
-            if (nWriteOptions & eHTML) WriteToHtml(sContent);
-            if (m_fOnlyPoFile && (nWriteOptions & eTRANSLATE)) WriteToPo(sContent);
+            wxString sTrans = wxGetTranslation(sContent);
+            if (nWriteOptions & eTOC) WriteToToc(sTrans, ltNO_INDENT);        //text not indented
+            if (nWriteOptions & eHTML) WriteToHtml(sTrans);
+            if (m_fOnlyLangFile && (nWriteOptions & eTRANSLATE)) WriteToLang(sContent);
             //if (fIdx) WriteToIdx(sContent);
             if (pText) *pText += sContent;
         }
@@ -808,7 +821,7 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode)
             _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
             _T("<tr><td bgcolor='#7f8adc' align='left'>\n")
             _T("	<font size='-1' color='#ffffff'>&nbsp;&nbsp;") );
-        WriteToHtml(m_sBookTitle);
+        WriteToHtml( wxGetTranslation(m_sBookTitle) );
         WriteToHtml(
             _T("</font></td>\n")
             _T("<tr><td bgcolor='#7f8adc' align='right'><br />\n")
@@ -818,7 +831,7 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode)
             WriteToHtml( sTitleNum );
         }
         else
-            WriteToHtml(sTitleNum + m_sChapterTitle);
+            WriteToHtml(sTitleNum + wxGetTranslation(m_sChapterTitle) );
         WriteToHtml(
             _T("&nbsp;</font></b><br /></td>\n")
             _T("<tr><td bgcolor='#ff8800'><img src='ebook_line.png'></td></tr>\n")
@@ -845,9 +858,9 @@ wxString lmEbookProcessor::GetTitleCounters()
 {
     wxString sTitleNum = wxEmptyString;
     if (m_nTitleLevel >= 0)
-        sTitleNum += wxString::Format(_T("$d"), m_nNumTitle[0] );
+        sTitleNum += wxString::Format(_T("%d"), m_nNumTitle[0] );
     for (int i=1; i <= m_nTitleLevel; i++) {
-        sTitleNum += wxString::Format(_T(".$d"), m_nNumTitle[i] );
+        sTitleNum += wxString::Format(_T(".%d"), m_nNumTitle[i] );
     }
     if (sTitleNum != wxEmptyString) sTitleNum += _T(" ");
     
@@ -1001,10 +1014,8 @@ void lmEbookProcessor::TerminateHtmlFile()
         _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
         _T("<tr><td bgcolor='#ff8800'><img src='ebook_line.png'></td></tr>\n")
         _T("<tr><td bgcolor='#7f8adc' align='center'>\n")
-	    _T("    <font size='-1' color='ffffff'><br /><br />\n")
-	    _T("Send your comments and sugesstions to LenMus team (www.lenmus.org)")
-	    _T("<br />\n")
-        _T("Licensed under the terms of the GNU Free Documentation License (see copyrights page for details.)")
+	    _T("    <font size='-1' color='ffffff'><br /><br />\n") + m_sFooter1 +
+	    _T("<br />\n") + m_sFooter2 +
         _T("<br />\n")
 	    _T("    </font>\n")
         _T("</td></tr>\n")
@@ -1044,17 +1055,20 @@ void lmEbookProcessor::WriteToHtml(wxString sText)
 //------------------------------------------------------------------------------------
 
 
-bool lmEbookProcessor::StartLmbFile(wxString sFilename)
+bool lmEbookProcessor::StartLmbFile(wxString sFilename, wxString sLangCode)
 {
     // returns true if success
 
     wxFileName oFNP( sFilename );
-    oFNP.SetExt(_T("lmb"));
-    m_pZipOutFile = new wxFFileOutputStream( oFNP.GetFullName() );
+    wxFileName oFDest( g_pPaths->GetBooksRootPath() );
+    oFDest.AppendDir(sLangCode);
+    oFDest.SetName( oFNP.GetName() );
+    oFDest.SetExt(_T("lmb"));
+    m_pZipOutFile = new wxFFileOutputStream( oFDest.GetFullPath() );
     //wxFFileOutputStream out( oFNP.GetFullName() );
-    //if (!m_pPoFile->IsOpened()) {
+    //if (!m_pLangFile->IsOpened()) {
     //    wxLogMessage(_T("Error: File %s can not be created"), oFNP.GetFullName());
-    //    m_pPoFile = (wxFile*)NULL;
+    //    m_pLangFile = (wxFile*)NULL;
     //    return false;        //error
     //}
     m_pZipFile = new wxZipOutputStream(*m_pZipOutFile);
@@ -1096,20 +1110,69 @@ void lmEbookProcessor::CopyToLmb(wxString sFilename)
 
 
 //------------------------------------------------------------------------------------
-// PO file management
+// Lang (.cpp) file management
 //------------------------------------------------------------------------------------
 
 
-bool lmEbookProcessor::StartPoFile(wxString sFilename)
+bool lmEbookProcessor::StartLangFile(wxString sFilename)
 {
     // returns true if success
 
     wxFileName oFNP( sFilename );
-    oFNP.SetExt(_T("po"));
-    m_pPoFile = new wxFile(oFNP.GetFullName(), wxFile::write);
-    if (!m_pPoFile->IsOpened()) {
-        wxLogMessage(_T("Error: File %s can not be created"), oFNP.GetFullName());
-        m_pPoFile = (wxFile*)NULL;
+    wxFileName oFDest( g_pPaths->GetLocalePath() );
+    oFDest.AppendDir(_T("src"));
+    ::wxSetWorkingDirectory(  oFDest.GetPath() );
+    oFDest.AppendDir( oFNP.GetName() );
+    //if dir does not exist, create it
+    bool fError = ::wxMkDir( oFNP.GetName() );
+
+    oFDest.SetName( oFNP.GetName() );
+    oFDest.SetExt(_T("cpp"));
+    m_pLangFile = new wxFile(oFDest.GetFullPath(), wxFile::write);
+    if (!m_pLangFile->IsOpened()) {
+        wxLogMessage(_T("Error: File %s can not be created"), oFDest.GetFullPath());
+        m_pLangFile = (wxFile*)NULL;
+        return false;        //error
+    }
+
+    m_pLangFile->Write(_T("wxString sTxt;\n"));
+
+    // add texts included by Langtool (footers, headers, etc.)
+    WriteToLang( m_sFooter1 );
+    WriteToLang( m_sFooter2 );
+
+    return true;
+
+}
+
+void lmEbookProcessor::WriteToLang(wxString sText)
+{
+    //add text to Lang file
+
+    if (!m_pLangFile || sText == _T("")) return;
+
+    //change /n by //n
+    wxString sContent = sText;
+    sContent.Replace(_T("\n"), _T("\\n"));
+    m_pLangFile->Write(_T("sTxt = _(\""));
+    m_pLangFile->Write(sContent + _T("\");\n"));
+
+}
+
+bool lmEbookProcessor::CreatePoFile(wxString& sFilename, wxString& sCharSet,
+                                    wxString& sLangName, wxString& sLangCode)
+{
+    // returns true if success
+
+    wxFileName oFNP( sFilename );
+    wxFileName oFDest( g_pPaths->GetLocalePath() );
+    oFDest.AppendDir(sLangCode);
+    oFDest.SetName( oFNP.GetName() );
+    oFDest.SetExt(_T("po"));
+    wxFile oFile(oFDest.GetFullPath(), wxFile::write);
+    if (!m_pLangFile->IsOpened()) {
+        wxLogMessage(_T("Error: File %s can not be created"), oFDest.GetFullPath());
+        m_pLangFile = (wxFile*)NULL;
         return false;        //error
     }
 
@@ -1118,34 +1181,23 @@ bool lmEbookProcessor::StartPoFile(wxString sFilename)
     wxString sHeader = sNil +
         _T("msgid \"\"\n") 
         _T("msgstr \"\"\n")
-        _T("\"Project-Id-Version: LenMus 3.3\\n\"\n")
+        _T("\"Project-Id-Version: LenMus 3.4\\n\"\n")
         _T("\"POT-Creation-Date: \\n\"\n")
         _T("\"PO-Revision-Date: 2006-08-25 12:19+0100\\n\"\n")
         _T("\"Last-Translator: \\n\"\n")
         _T("\"Language-Team:  <cecilios@gmail.com>\\n\"\n")
         _T("\"MIME-Version: 1.0\\n\"\n")
-        _T("\"Content-Type: text/plain; charset=utf-8\\n\"\n")
+        _T("\"Content-Type: text/plain; charset=") + sCharSet + _T("\\n\"\n")
         _T("\"Content-Transfer-Encoding: 8bit\\n\"\n")
-        _T("\"X-Poedit-Language: English\\n\"\n")
-        _T("\"X-Poedit-SourceCharset: iso-8859-1\\n\"\n\n");
+        _T("\"X-Poedit-Language: ") + sLangName + _T("\\n\"\n")
+        _T("\"X-Poedit-SourceCharset: iso-8859-1\\n\"\n")
+        _T("\"X-Poedit-Basepath: c:\\usr\\desarrollo_wx\\lenmus\\langtool\\locale\\src\\n\"\n")
+        _T("\"X-Poedit-SearchPath-0: ") + oFNP.GetName() + _T("\\n\"\n\n");
 
-    m_pPoFile->Write(sHeader);
+
+    oFile.Write(sHeader);
+    oFile.Close();
     return true;
-
-}
-
-void lmEbookProcessor::WriteToPo(wxString& sText)
-{
-    //add text to PO file
-
-    if (!m_pPoFile || sText == _T("")) return;
-
-    //change /n by //n
-    wxString sContent = sText;
-    sContent.Replace(_T("\n"), _T("\\n"));
-    m_pPoFile->Write(_T("msgid \""));
-    m_pPoFile->Write(sContent + _T("\"\n"));
-    m_pPoFile->Write(_T("msgstr \"\"\n\n"));
 
 }
 

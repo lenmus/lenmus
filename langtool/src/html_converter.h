@@ -44,7 +44,7 @@ public:
 
     bool ConvertToHtml(const wxString& sFilename, bool fIncludeObjects, 
                        wxFile* pPoFile);
-    wxFile* StartPoFile(wxString sFilename);
+    wxFile* StartLangFile(wxString sFilename);
 
 
 private:
@@ -73,7 +73,7 @@ private:
     int             m_nHeaderLevel;
     int             m_nIndentLevel;         // to indent html output
     bool            m_fIncludeObjects;
-    wxFile*         m_pPoFile;
+    wxFile*         m_pLangFile;
 
 };
 

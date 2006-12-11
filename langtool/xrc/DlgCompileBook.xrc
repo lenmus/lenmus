@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="windows-1252"?>
 <resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
-    <object class="wxDialog" name="DlgCompileBook">
+    <object class="wxDialog" name="DlgCompileBook" subclass="lmDlgCompileBook">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
         <size>400,300</size>
@@ -76,44 +76,49 @@
                         <border>5</border>
                         <object class="wxStaticBoxSizer" name="wxID_ANY">
                             <orient>wxVERTICAL</orient>
-                            <label>Static</label>
+                            <label>Languages</label>
                             <object class="sizeritem">
-                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                <flag>wxALIGN_LEFT|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxCheckBox" name="ID_CHECKBOX1">
-                                    <label>Checkbox</label>
+                                <object class="wxCheckBox" name="chkLangEnglish">
+                                    <label>English</label>
                                     <checked>0</checked>
                                 </object>
                             </object>
                             <object class="sizeritem">
-                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                <flag>wxALIGN_LEFT|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxCheckBox" name="ID_CHECKBOX2">
-                                    <label>Checkbox</label>
+                                <object class="wxCheckBox" name="chkLangFrench">
+                                    <label>French</label>
                                     <checked>0</checked>
                                 </object>
                             </object>
                             <object class="sizeritem">
-                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                <flag>wxALIGN_LEFT|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxCheckBox" name="ID_CHECKBOX3">
-                                    <label>Checkbox</label>
+                                <object class="wxCheckBox" name="chkLangSpanish">
+                                    <label>Spanish</label>
                                     <checked>0</checked>
                                 </object>
                             </object>
                             <object class="sizeritem">
-                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                <flag>wxALIGN_LEFT|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxCheckBox" name="ID_CHECKBOX4">
-                                    <label>Checkbox</label>
+                                <object class="wxCheckBox" name="chkLangTurkish">
+                                    <label>Turkish</label>
                                     <checked>0</checked>
                                 </object>
+                            </object>
+                            <object class="spacer">
+                                <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                <border>5</border>
+                                <size>5,5</size>
                             </object>
                             <object class="sizeritem">
                                 <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
                                 <border>5</border>
-                                <object class="wxCheckBox" name="ID_CHECKBOX5">
-                                    <label>Checkbox</label>
+                                <object class="wxCheckBox" name="chkLangAll">
+                                    <label>All languages</label>
                                     <checked>0</checked>
                                 </object>
                             </object>
