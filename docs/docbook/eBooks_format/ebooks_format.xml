@@ -336,6 +336,10 @@ This paragraph has {emphasis}these words{/emphasis} highlighted
 </tgroup>
 </table>
 
+<para>
+{titleabbrev} holds an abbreviated version of a {title}. It is used for the text
+in running headers or footers, when the proper title is too long to be used conveniently.
+It must be defined before the {title} tag.</para> 
 
 </sect1>
 

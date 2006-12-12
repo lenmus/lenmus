@@ -16,14 +16,15 @@
     <title>Single exercises</title>
 </bookinfo>
 
-<theme id="ch0" header="Table of contents">
+<theme id="ch0">
+<titleabbrev>Contents</titleabbrev>
 <title>Introduction to single exercises</title>
 
 <para>Appart of exercises included in <emphasis>the eBooks</emphasis>, the following general exercises
 (customizable to suit your needs at any moment) are available:</para>
 
 <part>
-<title>1. Exercises for aural training</title>
+<title>Exercises for aural training</title>
 
 <itemizedlist>
 <listitem><link linkend="ch1">1.1. Intervals' comparison</link></listitem>
@@ -35,7 +36,7 @@
 </part>
 
 <part>
-<title>2. Exercises to practise theory</title>
+<title>Exercises to practise theory</title>
 
 <itemizedlist>
 <listitem><link linkend="ch5">2.1. Key signatures' identification</link></listitem>
@@ -47,7 +48,7 @@
 </part>
 
 <part>
-<title>3. Other exercises</title>
+<title>Other exercises</title>
 
 <itemizedlist>
 <listitem><link linkend="ch9">3.1. Clefs Reading</link></listitem>

@@ -393,11 +393,11 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
     }
     sTitle = m_pParser->GetText(pNode);
 
-    // next node: toc_page
+    // next node: coverpage
     pNode = m_pParser->GetNextSibling(pNode);
     pElement = pNode;
     sElement = pElement->GetName();
-    sTag = _T("toc_page");
+    sTag = _T("coverpage");
     if (sElement != sTag) {
         wxLogMessage(_T("Loading eBook. Error: Expected tag <%s> but found <%s>"),
             sTag, sElement);

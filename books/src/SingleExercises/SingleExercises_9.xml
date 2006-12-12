@@ -7,7 +7,8 @@
     <control_solfa>1</control_solfa>
     <control_settings>single_clefs_reading</control_settings>
     <fragment>24;(n * s g+)(n * s)(n * s)(n * s g-)</fragment>
-    <clef>Sol;a3;a5"><clef>Fa4;a2;e4</clef>
+    <clef>Sol;a3;a5</clef>
+    <clef>Fa4;a2;e4</clef>
     <time>24</time>
     <key>all</key>
     <maxInterval>4</maxInterval>

@@ -18,14 +18,6 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Paths.cpp
-    @brief Implementation file for class lmPaths
-    @ingroup configuration
-*/
-/*! @class lmPaths
-    @ingroup configuration
-    @brief Current paths configuration is maintained in this class
-*/
 #if defined(__GNUG__) && !defined(__APPLE__)
 #pragma implementation "Paths.h"
 #endif
@@ -83,8 +75,9 @@ void lmPaths::SetLanguageCode(wxString sLangCode)
     oLocalePath.AppendDir(m_sLangCode);
     m_sLocale = oLocalePath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-    wxFileName oBooksPath = oLocalePath;
+    wxFileName oBooksPath = m_root;
     oBooksPath.AppendDir(_T("books"));
+    oBooksPath.AppendDir(m_sLangCode);
     m_sBooks = oBooksPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
     wxFileName oHelpPath = oLocalePath;

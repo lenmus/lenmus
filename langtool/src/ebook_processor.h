@@ -80,6 +80,7 @@ private:
     bool SectionTag(const wxXml2Node& oNode);
     bool ThemeTag(const wxXml2Node& oNode);
     bool TitleTag(const wxXml2Node& oNode);
+    bool TitleabbrevTag(const wxXml2Node& oNode);
 
     // auxiliary
     void IncrementTitleCounters();
@@ -144,8 +145,12 @@ private:
     int             m_nNumTitle[lmMAX_TITLE_LEVEL];     // 8 levels for numbering titles
     int             m_nTitleLevel;          // current level
     wxString        m_sChapterTitle;
+    wxString        m_sChapterNum;
     wxString        m_sBookTitle;
     ETitleType      m_nTitleType;           // to know the owner of the title tag
+    wxString        m_sChapterTitleAbbrev;
+    wxString        m_sBookTitleAbbrev;
+    wxString        m_sThemeTitleAbbrev;
 
     // variables for idx processing
 

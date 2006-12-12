@@ -1104,57 +1104,13 @@ void lmMainFrame::InitializeBooks()
 
     //set directory for cache files.
     m_pBookController->SetTempDir( g_pPaths->GetTempPath() );
+    m_pBookController->SetTitleFormat(_("Available books"));
 
-    //In release versions each books will be a single .htb file, precompiled in cache format,
-    //all books located in locale folder
-    //In test versions, each book will be in native hhp format, located in /books subfolders.
-    //For testing purposes, it must be possible to switch to "release mode" (use of
-    //cached htb files).
-
-    bool fOK = true;
-
-    wxString sPath;
-    wxString sPattern;
-
-    if (g_fReleaseVersion || g_fReleaseBehaviour) {
-        //Release behaviour. Use precompiled cached .htb files and don't show title
-        //! @todo books name. One or many books?
-        sPath = g_pPaths->GetLocalePath();
-#if lmUSE_LENMUS_EBOOK_FORMAT
-            sPattern = _T("*.lmb");
-#else
-            sPattern = _T("*.htb");
-#endif
-        m_pBookController->SetTitleFormat(_("Available books"));
-
-        //lmVirtualBooks::LoadVirtualBooks(m_pBookController);
-        ScanForBooks(sPath, sPattern);
-    }
-    else {
-        //Test behaviour. Use native .hhp, .hhc, .hhk and .htm files in subfolders
-        sPath = g_pPaths->GetBooksPath();
-        m_pBookController->SetTitleFormat(_T("Test mode: available books"));
-
-        //load the virtual books
-        //lmVirtualBooks::LoadVirtualBooks(m_pBookController);
-
-        // loop to look for subdirectories
-        wxDir dir(sPath);
-        wxString sSubfolder;
-        wxFileName oPath;
-        bool fFound = dir.GetFirst(&sSubfolder, _T("*.*"), wxDIR_DIRS);
-        while (fFound) {
-            //wxLogMessage(wxString::Format(_T("Subdirectory found: %s"), sSubfolder));
-            oPath.Assign(sPath, wxPATH_NATIVE);
-            oPath.AppendDir(sSubfolder);
-#if lmUSE_LENMUS_EBOOK_FORMAT
-            ScanForBooks(oPath.GetPath(), _T("*.toc"));
-#else
-            ScanForBooks(oPath.GetPath(), _T("*.hhp"));
-#endif
-            fFound = dir.GetNext(&sSubfolder);
-        }
-    }
+    // eMusicBooks are a single .lmb (LenMus Book) file
+    // All eMusicBooks are located in 'book' folder
+    wxString sPath = g_pPaths->GetBooksPath();
+    wxString sPattern = _T("*.lmb");
+    ScanForBooks(sPath, sPattern);
 
 }
 

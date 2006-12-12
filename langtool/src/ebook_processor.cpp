@@ -438,6 +438,9 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode)
     else if (sElement == _T("title")) {
         return TitleTag(oNode);
     }
+    else if (sElement == _T("titleabbrev")) {
+        return TitleabbrevTag(oNode);
+    }
     else {
         //check for exercises related param tags
 
@@ -504,6 +507,9 @@ bool lmEbookProcessor::BookTag(const wxXml2Node& oNode)
     for (int i=0; i < lmMAX_TITLE_LEVEL; i++)
         m_nNumTitle[i] = 0;
 
+    m_sBookTitleAbbrev = wxEmptyString;
+    m_sBookTitle = wxEmptyString;
+
     //process tag's children
     bool fError = ProcessChildAndSiblings(oNode);
 
@@ -546,6 +552,8 @@ bool lmEbookProcessor::ChapterTag(const wxXml2Node& oNode)
     //m_nHeaderLevel = 1;
     m_fTitleToToc = true;
     m_nTitleType = lmTITLE_CHAPTER;
+    m_sChapterTitleAbbrev = wxEmptyString;
+    m_sChapterTitle = wxEmptyString;
 
     //process tag's children
     bool fError = ProcessChildAndSiblings(oNode);
@@ -767,6 +775,7 @@ bool lmEbookProcessor::ThemeTag(const wxXml2Node& oNode)
     wxString sHeader = oNode.GetPropVal(_T("header"), _T(""));
 
     // openning tag
+    m_sThemeTitleAbbrev = wxEmptyString;
     IncrementTitleCounters();
     // HTML:
     StartHtmlFile(m_sFilename, sId);
@@ -800,7 +809,9 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode)
     // openning tag
     wxString sTitleNum = GetTitleCounters();
     //TOC
-    if (m_fProcessingBookinfo || m_fTitleToToc) WriteToToc(_T("<title>") + sTitleNum);
+    if (m_fProcessingBookinfo || m_fTitleToToc) {
+        WriteToToc(_T("<title>") + sTitleNum);
+    }
 
     //process tag's children and write title content to toc
     wxString sTitle;
@@ -814,8 +825,20 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode)
     }
     else if (m_nTitleType == lmTITLE_CHAPTER) {
         m_sChapterTitle = sTitle;
+        m_sChapterNum = sTitleNum;
     }
     else if (m_nTitleType == lmTITLE_THEME) {
+        //determine which title to use for page headers
+        wxString sHeaderTitle;
+        if (m_sChapterTitleAbbrev != wxEmptyString)
+            sHeaderTitle = m_sChapterTitleAbbrev;
+        else if (m_sChapterTitle != wxEmptyString)
+            sHeaderTitle = m_sChapterTitle;
+        else if (m_sThemeTitleAbbrev != wxEmptyString)
+            sHeaderTitle = m_sThemeTitleAbbrev;
+        else
+            sHeaderTitle = sTitle;
+
         //create page headers
         WriteToHtml(
             _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
@@ -826,12 +849,7 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode)
             _T("</font></td>\n")
             _T("<tr><td bgcolor='#7f8adc' align='right'><br />\n")
             _T("	<b><font size='+4' color='#ffffff'>") );
-        if (m_sChapterTitle == wxEmptyString) {
-            WriteToHtml(_T("Lesson "));
-            WriteToHtml( sTitleNum );
-        }
-        else
-            WriteToHtml(sTitleNum + wxGetTranslation(m_sChapterTitle) );
+        WriteToHtml(m_sChapterNum + wxGetTranslation(sHeaderTitle) );
         WriteToHtml(
             _T("&nbsp;</font></b><br /></td>\n")
             _T("<tr><td bgcolor='#ff8800'><img src='ebook_line.png'></td></tr>\n")
@@ -845,8 +863,31 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode)
 
     // End of tag processing implications
     //TOC:
-    if (m_fProcessingBookinfo || m_fTitleToToc) WriteToToc(_T("</title>\n"), ltNO_INDENT );
+    if (m_fProcessingBookinfo || m_fTitleToToc) {
+        WriteToToc(_T("</title>\n"), ltNO_INDENT );
+        if (m_nTitleType == lmTITLE_BOOK) 
+            WriteToToc(_T("<coverpage>none</coverpage>\n"));
+    }
 
+    return fError;
+}
+
+bool lmEbookProcessor::TitleabbrevTag(const wxXml2Node& oNode)
+{
+    //process tag's children. Do not write content
+    wxString sTitle;
+    bool fError = ProcessChildAndSiblings(oNode, eTRANSLATE, &sTitle);
+
+    //save the title
+    if (m_nTitleType == lmTITLE_BOOK) {
+        m_sBookTitleAbbrev = sTitle;
+    }
+    else if (m_nTitleType == lmTITLE_CHAPTER) {
+        m_sChapterTitleAbbrev = sTitle;
+    }
+    else if (m_nTitleType == lmTITLE_THEME) {
+        m_sThemeTitleAbbrev = sTitle;
+    }
     return fError;
 }
 
@@ -876,6 +917,10 @@ void lmEbookProcessor::IncrementTitleCounters()
         m_nTitleLevel--;
     }
     m_nNumTitle[m_nTitleLevel]++;
+
+    for (int i=m_nTitleLevel+1; i < lmMAX_TITLE_LEVEL; i++) {
+        m_nNumTitle[i] = 0;
+    }
 }
 
 void lmEbookProcessor::DecrementTitleCounters()
@@ -883,9 +928,6 @@ void lmEbookProcessor::DecrementTitleCounters()
     m_nTitleLevel--;
     if (m_nTitleLevel < 0) return;
 
-    for (int i=m_nTitleLevel; i < lmMAX_TITLE_LEVEL; i++) {
-        m_nNumTitle[i] = 0;
-    }
 }
 
 //------------------------------------------------------------------------------------
@@ -1014,7 +1056,7 @@ void lmEbookProcessor::TerminateHtmlFile()
         _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
         _T("<tr><td bgcolor='#ff8800'><img src='ebook_line.png'></td></tr>\n")
         _T("<tr><td bgcolor='#7f8adc' align='center'>\n")
-	    _T("    <font size='-1' color='ffffff'><br /><br />\n") + m_sFooter1 +
+        _T("    <font size='-1' color='#ffffff'><br /><br />\n") + m_sFooter1 +
 	    _T("<br />\n") + m_sFooter2 +
         _T("<br />\n")
 	    _T("    </font>\n")
@@ -1124,7 +1166,7 @@ bool lmEbookProcessor::StartLangFile(wxString sFilename)
     ::wxSetWorkingDirectory(  oFDest.GetPath() );
     oFDest.AppendDir( oFNP.GetName() );
     //if dir does not exist, create it
-    bool fError = ::wxMkDir( oFNP.GetName() );
+    ::wxMkDir( oFNP.GetName() );
 
     oFDest.SetName( oFNP.GetName() );
     oFDest.SetExt(_T("cpp"));
