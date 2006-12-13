@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE book [
+    <!ENTITY chapter1 SYSTEM "L2_MusicReading_1.xml">
+    <!ENTITY chapter2 SYSTEM "L2_MusicReading_2.xml">
+    <!ENTITY chapter3 SYSTEM "L2_MusicReading_3.xml">
+    <!ENTITY chapter4 SYSTEM "L2_MusicReading_4.xml">
+    <!ENTITY chapter5 SYSTEM "L2_MusicReading_5.xml">
+    <!ENTITY chapter6 SYSTEM "L2_MusicReading_6.xml">
+    <!ENTITY chapter7 SYSTEM "L2_MusicReading_7.xml">
+    <!ENTITY chapter8 SYSTEM "L2_MusicReading_8.xml">
+    <!ENTITY chapter9 SYSTEM "L2_MusicReading_9.xml">
+]>
+
+<book id="L2_MusicReading">
+<bookinfo>
+<title>Music reading. Level 2</title>
+</bookinfo>
+
+<theme id="tmh0">
+<titleabbrev>Presentation</titleabbrev>
+<title>Introduction</title>
+
+<para>In level2 we continue with all concepts introduced in Level 1, and new concepts
+are introduced in a progressive way, alternating simple time signatures and duple 
+time ones.</para>
+
+
+<part>
+<title>Syllabus</title>
+<para>Appart of introducing new rhythmic cells, of increasing complexity, the main concepts
+introduced in Level 2 are:</para>
+
+<simplelist>
+<listitem>Simple time signatures of 2/8 and 3/8.</listitem>
+<listitem>Triplets, and triplet note groups with rests.</listitem>
+<listitem>Extension of the stave in treble (G) and bass (F) clefs to include two ledger
+lines below and above each stave.</listitem>
+<listitem>Compound time signatures of 9/8, 12/8 and the grouping of notes and rests
+within these times.</listitem>
+<listitem>The soprano clef (C on 1st line). Names of notes on the stave.</listitem>
+<listitem>Extension of the stave in C1 clef to include one ledger line above the stave.</listitem>
+<listitem>Key signatures of all major and minor keys up to and including four sharps and flats.</listitem>
+</simplelist>
+</part>
+
+
+<part>
+<title>Lesson's structure</title>
+<para>Each lesson is structured into three sections:</para>
+<simplelist>
+<listitem>In the first one the new concepts and rhythmic patterns introduced in the lesson
+are explained.</listitem>
+
+<listitem>In the second section, optional, the new concepts are compared with known ones, so
+that the student can better relate the new material and learn it.</listitem>
+
+<listitem>Finally, in the third section some exercises are proposed to learn and practise
+the new concepts introduced.</listitem>
+
+</simplelist>
+
+</part>
+
+</theme>
+
+&chapter1;
+&chapter2;
+&chapter3;
+&chapter4;
+
+</book>

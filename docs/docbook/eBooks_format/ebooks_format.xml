@@ -265,16 +265,20 @@ This note is also known in British English as 'crochet'
 <sect1><title>Links</title>
 
 <para>Its is possible to include two types of links: external, to other eMusicBooks, or
-internal, to other themes of the book. The tags to use are different:
+internal, to other themes of the book. The tags to use are different:</para>
 
 
-External links:
+<para>External links:</para>
 
-           {ulink url="http://www.docbook.org/}Docbook page{/ulink}
+<programlisting>
+    {ulink url="http://www.docbook.org/}Docbook page{/ulink}
+</programlisting>
 
-Internal links based on id attributes added to other elements
+<para>Internal links based on id attributes added to other elements</para>
 
-      {link linkend="idname"}Internal link{/link}
+<programlisting>
+    {link linkend="idname"}Internal link{/link}
+</programlisting>
 
 
 Example:

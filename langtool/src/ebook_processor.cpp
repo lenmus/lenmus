@@ -441,6 +441,9 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode)
     else if (sElement == _T("titleabbrev")) {
         return TitleabbrevTag(oNode);
     }
+    else if (sElement == _T("ulink")) {
+        return UlinkTag(oNode);
+    }
     else {
         //check for exercises related param tags
 
@@ -888,6 +891,29 @@ bool lmEbookProcessor::TitleabbrevTag(const wxXml2Node& oNode)
     else if (m_nTitleType == lmTITLE_THEME) {
         m_sThemeTitleAbbrev = sTitle;
     }
+    return fError;
+}
+
+bool lmEbookProcessor::UlinkTag(const wxXml2Node& oNode)
+{
+    // openning tag
+
+    // get its 'url' property and find the associated page
+    wxString sUrl = oNode.GetPropVal(_T("url"), _T(""));
+    if (sUrl != _T("")) {
+        wxString sLink = _T("<a href=\"") + sUrl + _T("\">");
+        WriteToHtml( sLink );
+    }
+    else {
+        WriteToHtml( _T("<a href=\"#\">") );
+    }
+
+    //process tag's children and write note content to html
+    bool fError = ProcessChildAndSiblings(oNode, eHTML | eTRANSLATE);
+
+    // closing tag
+    if (sUrl != _T("")) WriteToHtml(_T("</a>"));
+
     return fError;
 }
 

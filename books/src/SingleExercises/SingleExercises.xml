@@ -11,7 +11,7 @@
     <!ENTITY chapter9 SYSTEM "SingleExercises_9.xml">
 ]>
 
-<book id="book">
+<book id="SingleExercises">
 <bookinfo>
     <title>Single exercises</title>
 </bookinfo>

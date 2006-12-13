@@ -81,6 +81,7 @@ private:
     bool ThemeTag(const wxXml2Node& oNode);
     bool TitleTag(const wxXml2Node& oNode);
     bool TitleabbrevTag(const wxXml2Node& oNode);
+    bool UlinkTag(const wxXml2Node& oNode);
 
     // auxiliary
     void IncrementTitleCounters();
