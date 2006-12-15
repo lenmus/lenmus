@@ -14,6 +14,27 @@
 <book id="SingleExercises">
 <bookinfo>
     <title>Single exercises</title>
+    <abstract>General exercises, customizable to suit your needs at any moment.</abstract>
+    <copyright>
+        <year>2006</year>
+        <holder>Cecilio Salmerón</holder>
+    </copyright>
+    <legalnotice>
+        <para>Permission is granted to copy, distribute and/or modify this document
+        under the terms of the GNU Free Documentation License, Version 1.1 or any
+        later version published by the Free Software Foundation; with no Invariant
+        Sections, with no Front-Cover Texts, and with no Back-Cover Texts. 
+        A copy of the license is included <link linkend="license">here</link>.
+        </para>
+
+        <para>
+        The authors have taken care in the preparation of this documentation,
+        but make no expressed or implied warranty of any kind and assume no responsibility
+        for errors or omissions. No liability is assumed for incidental or consequential
+        damages in connection with or arising out of the use of the information contained
+        herein.
+        </para>
+    </legalnotice>
 </bookinfo>
 
 <theme id="ch0">

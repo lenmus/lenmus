@@ -68,6 +68,10 @@ void lmPaths::Init()
     path.AppendDir(_T("locale"));
     m_sLocale = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
+    path = m_root;
+    path.AppendDir(_T("layout"));
+    m_sLayout = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
     // Paths in LenMus
     m_sLenMus = _T("c:\\usr\\desarrollo_wx\\lenmus\\");
     m_sBooksRoot = _T("c:\\usr\\desarrollo_wx\\lenmus\\books\\");

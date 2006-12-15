@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE book [
-    <!ENTITY chapter1 SYSTEM "L2_MusicReading_1.xml">
-    <!ENTITY chapter2 SYSTEM "L2_MusicReading_2.xml">
-    <!ENTITY chapter3 SYSTEM "L2_MusicReading_3.xml">
-    <!ENTITY chapter4 SYSTEM "L2_MusicReading_4.xml">
-    <!ENTITY chapter5 SYSTEM "L2_MusicReading_5.xml">
-    <!ENTITY chapter6 SYSTEM "L2_MusicReading_6.xml">
-    <!ENTITY chapter7 SYSTEM "L2_MusicReading_7.xml">
-    <!ENTITY chapter8 SYSTEM "L2_MusicReading_8.xml">
-    <!ENTITY chapter9 SYSTEM "L2_MusicReading_9.xml">
+    <!ENTITY chapter205 SYSTEM "L2_MusicReading_205.xml">
+    <!ENTITY chapter206 SYSTEM "L2_MusicReading_206.xml">
+    <!ENTITY chapter207 SYSTEM "L2_MusicReading_207.xml">
+    <!ENTITY chapter208 SYSTEM "L2_MusicReading_208.xml">
+    <!ENTITY chapter209 SYSTEM "L2_MusicReading_209.xml">
+    <!ENTITY chapter210 SYSTEM "L2_MusicReading_210.xml">
+    <!ENTITY chapter211 SYSTEM "L2_MusicReading_211.xml">
+    <!ENTITY chapter212 SYSTEM "L2_MusicReading_212.xml">
+    <!ENTITY chapter214 SYSTEM "L2_MusicReading_214.xml">
+    <!ENTITY chapter215 SYSTEM "L2_MusicReading_215.xml">
+    <!ENTITY chapter216 SYSTEM "L2_MusicReading_216.xml">
+    <!ENTITY chapter217 SYSTEM "L2_MusicReading_217.xml">
+    <!ENTITY chapter219 SYSTEM "L2_MusicReading_219.xml">
+    <!ENTITY chapter220 SYSTEM "L2_MusicReading_220.xml">
+    <!ENTITY chapter221 SYSTEM "L2_MusicReading_221.xml">
+    <!ENTITY chapter222 SYSTEM "L2_MusicReading_222.xml">
+    <!ENTITY chapter223 SYSTEM "L2_MusicReading_223.xml">
+    <!ENTITY chapter224 SYSTEM "L2_MusicReading_224.xml">
 ]>
 
 <book id="L2_MusicReading">
@@ -63,9 +72,23 @@ the new concepts introduced.</listitem>
 
 </theme>
 
-&chapter1;
-&chapter2;
-&chapter3;
-&chapter4;
+&chapter205;
+&chapter206;
+&chapter207;
+&chapter208;
+&chapter209;
+&chapter210;
+&chapter211;
+&chapter212;
+&chapter214;
+&chapter215;
+&chapter216;
+&chapter217;
+&chapter219;
+&chapter220;
+&chapter221;
+&chapter222;
+&chapter223;
+&chapter224;
 
 </book>

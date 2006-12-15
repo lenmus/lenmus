@@ -36,6 +36,7 @@ class wxXml2Document;
 class wxZipOutputStream;
 class wxTextOutputStream;
 class wxFFileOutputStream;
+class wxArrayString;
 
 enum {      //processing options
     lmLANG_FILE = 1,      //generate Lang file
@@ -65,28 +66,37 @@ private:
     };
   
     // Tags' processors
+    bool AbstractTag(const wxXml2Node& oNode);
     bool BookTag(const wxXml2Node& oNode);
     bool BookinfoTag(const wxXml2Node& oNode);
     bool ChapterTag(const wxXml2Node& oNode);
+    bool ContentTag(const wxXml2Node& oNode);
+    bool CopyrightTag(const wxXml2Node& oNode);
     bool EmphasisTag(const wxXml2Node& oNode);
     bool ExerciseTag(const wxXml2Node& oNode);
     bool ExerciseParamTag(const wxXml2Node& oNode, bool fTranslate);
+    bool HolderTag(const wxXml2Node& oNode);
     bool ItemizedlistTag(const wxXml2Node& oNode);
+    bool LegalnoticeTag(const wxXml2Node& oNode);
     bool LinkTag(const wxXml2Node& oNode);
     bool ListitemTag(const wxXml2Node& oNode);
     bool ParaTag(const wxXml2Node& oNode);
     bool PartTag(const wxXml2Node& oNode);
     bool ScoreTag(const wxXml2Node& oNode);
     bool SectionTag(const wxXml2Node& oNode);
+    bool SimplelistTag(const wxXml2Node& oNode);
     bool ThemeTag(const wxXml2Node& oNode);
     bool TitleTag(const wxXml2Node& oNode);
     bool TitleabbrevTag(const wxXml2Node& oNode);
+    bool TocimageTag(const wxXml2Node& oNode);
     bool UlinkTag(const wxXml2Node& oNode);
+    bool YearTag(const wxXml2Node& oNode);
 
     // auxiliary
     void IncrementTitleCounters();
     void DecrementTitleCounters();
     wxString GetTitleCounters();
+    void CreateBookCover();
 
     // Parsing methods
     bool ProcessChildAndSiblings(const wxXml2Node& oNode, int nWriteOptions=0,
@@ -163,10 +173,15 @@ private:
     wxTextOutputStream*     m_pLmbFile;
     wxZipOutputStream*      m_pZipFile;
     wxFFileOutputStream*    m_pZipOutFile;
+    wxArrayString           m_aFilesToPack;
 
 
     // bookinfo data
     bool            m_fProcessingBookinfo;
+    wxString        m_sBookAbstract;
+    wxString        m_sCopyrightYear;
+    wxString        m_sCopyrightHolder;
+    wxString        m_sLegalNotice;
 
     // page/id cross-reference table
     ltPagesTable    m_PagesIds;

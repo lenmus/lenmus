@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<content>
 <theme id="thm205">
 <title>8th note tied to group of one 8th and two 16th notes</title>
 <tocimage>img205.png</tocimage>
@@ -11,7 +12,7 @@ Note that this new pattern can be written in two different ways:</para>
 <score width="600" height="100" border="0">
     <type>short</type>
     <music_border>0</music_border>
-    <control_play>1</control_play>
+    <control_play></control_play>
     <music>
         (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
         (c (n a4 c)(n a4 n)(n a4 s g+)(n a4 s g-)(Barra Final))
@@ -25,8 +26,8 @@ Note that this new pattern can be written in two different ways:</para>
 
 <score width="600" height="100" border="0">
     <type>short</type>
-    <control_play>1</control_play>
-    <control_measures>1</control_measures>
+    <control_play></control_play>
+    <control_measures></control_measures>
     <music>
         (Metrica 2 4)(n a4 n)(n a4 c g+)(n a4 s)(n a4 s g-) )
         (c (n a4 c g+)(n a4 c g-)(n a4 c g+)(n a4 s)(n a4 s g-) )
@@ -63,7 +64,7 @@ this rhythm.</para>
 
 <exercise type="TheoMusicReading" width="100%" height="300" border="0">
     <control_go_back>thm205</control_go_back>
-    <control_play>1</control_play>
+    <control_play></control_play>
     <control_solfa>1</control_solfa>
     <fragment>24;(n * c g+)(n * c l g-),(n * c g+)(n * s)(n * s g-)</fragment>
     <clef>Sol;a3;a5</clef>
@@ -71,8 +72,6 @@ this rhythm.</para>
     <time>24</time>
     <key>Do</key>
 </exercise>
-
-
 </theme>
 
 
@@ -88,7 +87,7 @@ this rhythm.</para>
 
 <exercise type="TheoMusicReading" width="100%" height="300" border="0>
     <control_go_back>thm205</control_go_back>
-    <control_play>1</control_play>
+    <control_play></control_play>
     <control_solfa>1</control_solfa>
     <fragment>24,34,44;(s c)(n * c),(n * c g+)(n * c l g-),(n * c g+)(n * s)(n * s g-),(n * c g+)(n * c g-),(n * n)</fragment>
     <fragment>24,34,44;(n * c g+)(n * c l g-),(n * c g+)(n * s)(n * s g-),(n * n.)(n * c),(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s)(n * s)(n * s g-),(n * c g+)(n * c l g-),(n * n)</fragment>
@@ -101,8 +100,6 @@ this rhythm.</para>
     <time>24,34,44</time>
     <key>Do</key>
 </exercise>
-
 </theme>
 
-</book>
-
+</content>

@@ -4,13 +4,12 @@
 <title>Compound time. 8th note tied to next beat</title>
 <tocimage>img220.png</tocimage>
 
-
 <para>In this lesson the next patterns are introduced:</para>
 
 <score width="600" height="100" border="0">
     <type>short</type>
-    <control_play>1</control_play>
-    <control_measures>1</control_measures>
+    <control_play></control_play>
+    <control_measures></control_measures>
     <music>
         (Metrica 6 8)
            (n * n)(n * c l)(n * n)(n * c)(Barra Doble))
@@ -18,12 +17,13 @@
     </music>
 </score>
 
-<part><title>Lesson and note the differences</title>
+<part>
+<title>Lesson and note the differences</title>
 
 <score width="600" height="100" border="0">
     <type>short</type>
-    <control_play>1</control_play>
-    <control_measures>1</control_measures>
+    <control_play></control_play>
+    <control_measures></control_measures>
     <music>
         (Metrica 6 8)
            (n * n)(n * c)(n * n)(n * c))
@@ -34,15 +34,21 @@
 </score>
 </part>
 
-<part><title>Exercises</title>
+<part>
+<title>Exercises</title>
 
 <para>
-<link linkend="thm220_E1">Exercise 1</link> - Train your ear and practise the
-introduced rhythmic patterns.</para>
+<link linkend="thm220_E1">Exercise 1</link> - Train your ear: 8th note tied to
+next beat.</para>
 
 <para>
-<link linkend="thm220_E2">Exercise 2</link> - Read scores containing the rhythms
+<link linkend="thm220_E2">Exercise 2</link> - Train your ear: Dotted quarter note
+tied to group of 8th note, 8th rest and 8th note.</para>
+<para>
+<link linkend="thm220_E3">Exercise 3</link> - Read scores containing the rhythms
 studied in this lesson.</para>
+
+
 
 </part>
 
@@ -53,19 +59,11 @@ studied in this lesson.</para>
 <!-- ============================================================================ -->
 
 <theme id="thm220_E1" toc="no">
-<title>8th note tied to group of one 8th and two 16th notes</title>
-
-<para><a href="#LenMusEmbedded/
-        {html}
-        {head}
-        {meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1</>
-        {title}Music Reading exercises{/title}{/head}
-        {body}
 <title>Compound time. 8th note tied to next beat</title>
 <para>Press 'Play' and lesson the rhythm. Train your ear and practise reading this rhythm.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0</>
+<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
     <control_go_back>thm220</control_go_back>
-    <control_play>1</control_play>
+    <control_play></control_play>
     <control_solfa>1</control_solfa>
     <fragment>68;(n * n)(n * c l)(n * n)(n * c)</fragment>
     <clef>Sol;a3;a5</clef>
@@ -73,28 +71,18 @@ studied in this lesson.</para>
     <time>68</time>
     <key>Do</key>
 </exercise>
-        {/body}
-        {/html}"
-    >Exercise 1</a> - Train your ear: 8th note tied to next beat.</para>
+</theme>
 
 <!-- ============================================================================ -->
-<!-- Exercise 1                                                                   -->
+<!-- Exercise 2                                                                   -->
 <!-- ============================================================================ -->
 
-<theme id="thm220_E1" toc="no">
-<title>8th note tied to group of one 8th and two 16th notes</title>
-
-<para><a href="#LenMusEmbedded/
-        {html}
-        {head}
-        {meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1</>
-        {title}Music Reading exercises{/title}{/head}
-        {body}
+<theme id="thm220_E2" toc="no">
 <title>Dotted quarter note tied to group of 8th note, 8th rest and 8th note</title>
 <para>Press 'Play' and lesson the rhythm. Train your ear and practise reading this rhythm.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0</>
+<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
     <control_go_back>thm220</control_go_back>
-    <control_play>1</control_play>
+    <control_play></control_play>
     <control_solfa>1</control_solfa>
     <fragment>68;(n * n. l)(n * c g+)(s c)(n * c g-)</fragment>
     <clef>Sol;a3;a5</clef>
@@ -102,29 +90,18 @@ studied in this lesson.</para>
     <time>68</time>
     <key>Do</key>
 </exercise>
-        {/body}
-        {/html}"
-    >Exercise 2</a> - Train your ear: Dotted quarter note tied to group of 8th note,
-        8th rest and 8th note.</para>
+</theme>
 
 <!-- ============================================================================ -->
-<!-- Exercise 1                                                                   -->
+<!-- Exercise 3                                                                   -->
 <!-- ============================================================================ -->
 
-<theme id="thm220_E1" toc="no">
-<title>8th note tied to group of one 8th and two 16th notes</title>
-
-<para><a href="#LenMusEmbedded/
-        {html}
-        {head}
-        {meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1</>
-        {title}Music Reading exercises{/title}{/head}
-        {body}
+<theme id="thm220_E3" toc="no">
 <title>Compound time. 8th note tied to next beat</title>
 <para>Press 'Play' and lesson the rhythm. Train your ear and practise reading this rhythm.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0</>
+<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
     <control_go_back>thm220</control_go_back>
-    <control_play>1</control_play>
+    <control_play></control_play>
     <control_solfa>1</control_solfa>
     <fragment>68,98,128;(s c)(n * c g+)(n * c g-),(n * n)(n * c l),(n * n)(n * c),(n * n.)</fragment>
     <fragment>68,98,128;(n * n)(n * c l),(n * c l)(n * n),(n * n.),(n * n. l),(n * c g+)(s c)(n * c g-),(n * c)(n * n l),(n * c g+)(n * c)(n * c g-),(n * n.)</fragment>
@@ -135,14 +112,4 @@ studied in this lesson.</para>
     <time>68,98,128</time>
     <key>Do</key>
 </exercise>
-        {/body}
-        {/html}"
-    >Exercise 3</a> - Read scores containing the rhythms studied
-    in this lesson.</para>
-
-</part>
-
-
 </theme>
-
-</book>

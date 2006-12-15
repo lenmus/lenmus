@@ -32,6 +32,7 @@ public:
     //Access to paths
     wxString GetLocalePath() { return m_sLocale; }
     wxString GetBooksRootPath() { return m_sBooksRoot; }
+    wxString GetLayoutPath() { return m_sLayout; }
     wxString GetLenMusLocalePath() { return m_sLenMusLocale; }
 
 
@@ -41,6 +42,7 @@ private:
     // LangTool paths
     wxFileName  m_root;             // the root (instalation path) for LangTool
     wxString    m_sLocale;          // eMusicBooks translation files ( .mo catalogs)
+    wxString    m_sLayout;          // layout files: i.e. images
 
     // LenMus paths
     wxString    m_sLenMus;          // the root (instalation path) for LenMus

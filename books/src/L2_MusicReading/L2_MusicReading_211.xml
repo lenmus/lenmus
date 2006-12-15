@@ -4,29 +4,29 @@
 <title>Two 16th notes, one quarter note and two 16th notes</title>
 <tocimage>img211.png</tocimage>
 
-
 <para>In this lesson a new rhythmic pattern is introduced as the result of
 tying a group of two 8th notes and a quarter note to a group of a quarter note and two
 8th notes.
 Note how it can also be written with a quarter note:</para>
 <score width="600" height="100" border="0">
     <type>short</type>
-    <control_play>1</control_play>
-    <control_measures>1</control_measures>
+    <control_play></control_play>
+    <control_measures></control_measures>
     <music>
         (Metrica 2 4 NoVisible)(n * s g+)(n * s)(n * c l g-)(n * c g+)(n * s)(n * s g-))
         (c (n * s g+)(n * s g-)(n * n)(n * s g+)(n * s g-)(Barra Final))
     </music>
 </score>
 
-<part><title>Lesson and note the differences</title>
+<part>
+<title>Lesson and note the differences</title>
 <para>Note the difference between the first and the second measure. Note how
 it is formed when putting a tie.</para>
 
 <score width="600" height="100" border="0">
     <type>short</type>
-    <control_play>1</control_play>
-    <control_measures>1</control_measures>
+    <control_play></control_play>
+    <control_measures></control_measures>
     <music>
         (Metrica 2 4)(n * s g+)(n * s)(n * c g-)(n * c g+)(n * s)(n * s g-))
         (c (n * s g+)(n * s)(n * c l g-)(n * c g+)(n * s)(n * s g-))
@@ -35,7 +35,8 @@ it is formed when putting a tie.</para>
 </score>
 </part>
 
-<part><title>Exercises</title>
+<part>
+<title>Exercises</title>
 
 <para>
 <link linkend="thm211_E1">Exercise 1</link> - Train your ear and practise the
@@ -54,20 +55,11 @@ studied in this lesson.</para>
 <!-- ============================================================================ -->
 
 <theme id="thm211_E1" toc="no">
-<title>8th note tied to group of one 8th and two 16th notes</title>
-
-
-<para><a href="#LenMusEmbedded/
-        {html}
-        {head}
-        {meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1</>
-        {title}Music Reading exercises{/title}{/head}
-        {body}
 <title>Two 16th notes, one quarter note and two 16th notes</title>
 <para>Press 'Play' and lesson the rhythm. Train your ear and practise reading this rhythm.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0</>
+<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
     <control_go_back>thm211</control_go_back>
-    <control_play>1</control_play>
+    <control_play></control_play>
     <control_solfa>1</control_solfa>
     <fragment>24;(n * s g+)(n * s)(n * c l g-),(n * c g+)(n * s)(n * s g-)</fragment>
     <fragment>24;(n * s g+)(n * s g-)(n * n)(n * s g+)(n * s g-)</fragment>
@@ -76,28 +68,18 @@ studied in this lesson.</para>
     <time>24</time>
     <key>Do</key>
 </exercise>
-        {/body}
-        {/html}"
-    >Exercise 1</a> - Train your ear and practise the introduced rhythmic patterns.</para>
+</theme>
 
 <!-- ============================================================================ -->
-<!-- Exercise 1                                                                   -->
+<!-- Exercise 2                                                                   -->
 <!-- ============================================================================ -->
 
-<theme id="thm211_E1" toc="no">
-<title>8th note tied to group of one 8th and two 16th notes</title>
-
-<para><a href="#LenMusEmbedded/
-        {html}
-        {head}
-        {meta http-equiv='Content-Type' content='text/html; charset=ISO-8859-1</>
-        {title}Music Reading exercises{/title}{/head}
-        {body}
+<theme id="thm211_E2" toc="no">
 <title>Two 16th notes, one quarter note and two 16th notes</title>
 <para>Press 'Play' and lesson the rhythm. Train your ear and practise reading this rhythm.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0</>
+<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
     <control_go_back>thm211</control_go_back>
-    <control_play>1</control_play>
+    <control_play></control_play>
     <control_solfa>1</control_solfa>
     <fragment>24,34,44;(n * n),(n * c g+)(n * c g-),(n * s g+)(n * s)(n * c l g-),(n * c g+)(n * s)(n * s g-),(n * c g+)(n * c g-),(n * n)</fragment>
     <fragment>24,34,44;(n * c)(n * n)(n * c),(n * s g+)(n * s)(n * c l g-),(n * c g+)(n * s)(n * s g-),(n * n)</fragment>
@@ -112,15 +94,4 @@ studied in this lesson.</para>
     <time>24,34,44</time>
     <key>Do</key>
 </exercise>
-        {/body}
-        {/html}"
-    >Exercise 2</a> - Read scores containing the rhythms studied
-    in this lesson.</para>
-
-
-</part>
-
-
 </theme>
-
-</book>

@@ -37,7 +37,7 @@
 #include "wx/txtstrm.h"
 #include "wx/zipstrm.h"
 #include "wx/textfile.h"
-#include "wx/regex.h"
+#include "wx/arrstr.h"
 
 #include "ebook_processor.h"
 #include "wx/xml2.h"            // include libxml2 wrapper definitions
@@ -94,6 +94,12 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, int n
     m_fProcessingBookinfo = false;
     m_fOnlyLangFile = nOptions & lmLANG_FILE;
     m_fGenerateLmb = !m_fOnlyLangFile;
+
+    //add layout files
+    m_aFilesToPack.Empty();
+    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_banner_left1.png"));
+    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_banner_right2.png"));
+    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_line_orange.png"));
 
 
     // load the XML file as tree of nodes
@@ -190,6 +196,9 @@ void lmEbookProcessor::AddToLinksTable(wxXml2Node& oRoot)
 void lmEbookProcessor::FindThemeNode(const wxXml2Node& oNode)
 {
     if (oNode == wxXml2EmptyNode) return;
+
+    //wxLogMessage(_T("[FindThemeNode] NodeType=%d. Name='%s'"),
+    //                oNode.GetType(), oNode.GetName() );
 
     if (oNode.GetType() == wxXML_ENTITY_DECL)
     {
@@ -295,8 +304,8 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nWriteOption
     {
         // it is a text node: write its contents to output
         wxString sContent = oNode.GetContent();
-        if (sContent.Last() == wxT('\n')) sContent.RemoveLast();
-        if (sContent.GetChar(0) == wxT('\n')) sContent.Remove(0, 1);
+        if (sContent != wxEmptyString && sContent.Last() == wxT('\n')) sContent.RemoveLast();
+        if (sContent != wxEmptyString && sContent.GetChar(0) == wxT('\n')) sContent.Remove(0, 1);
 
         // libxml2 creates text nodes associated to all elements, even 
         // when no content is present in the xml file. In these cases
@@ -405,6 +414,12 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode)
     else if (sElement == _T("chapter")) {
         return ChapterTag(oNode);
     }
+    else if (sElement == _T("content")) {
+        return ContentTag(oNode);
+    }
+    else if (sElement == _T("copyright")) {
+        return CopyrightTag(oNode);
+    }
     else if (sElement == _T("emphasis")) {
         return EmphasisTag(oNode);
     }
@@ -414,6 +429,12 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode)
     else if (sElement == _T("itemizedlist")) {
         return ItemizedlistTag(oNode);
     }
+    else if (sElement == _T("holder")) {
+        return HolderTag(oNode);
+    }
+    else if (sElement == _T("legalnotice")) {
+        return LegalnoticeTag(oNode);
+    }
     else if (sElement == _T("link")) {
         return LinkTag(oNode);
     }
@@ -421,10 +442,13 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode)
         return ListitemTag(oNode);
     }
     else if (sElement == _T("score")) {
-        return SectionTag(oNode);
+        return ScoreTag(oNode);
     }
     else if (sElement == _T("section")) {
         return SectionTag(oNode);
+    }
+    else if (sElement == _T("simplelist")) {
+        return SimplelistTag(oNode);
     }
     else if (sElement == _T("para")) {
         return ParaTag(oNode);
@@ -441,8 +465,14 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode)
     else if (sElement == _T("titleabbrev")) {
         return TitleabbrevTag(oNode);
     }
+    else if (sElement == _T("tocimage")) {
+        return TocimageTag(oNode);
+    }
     else if (sElement == _T("ulink")) {
         return UlinkTag(oNode);
+    }
+    else if (sElement == _T("year")) {
+        return YearTag(oNode);
     }
     else {
         //check for exercises related param tags
@@ -500,6 +530,14 @@ wxString lmEbookProcessor::GetLibxml2Version()
 // Tags' processors
 //------------------------------------------------------------------------------------
 
+
+bool lmEbookProcessor::AbstractTag(const wxXml2Node& oNode)
+{
+    //get value
+    return ProcessChildAndSiblings(oNode, 0, &m_sBookAbstract);
+}
+
+
 bool lmEbookProcessor::BookTag(const wxXml2Node& oNode)
 {
     // receives and processes a <book> node and its children.
@@ -541,7 +579,11 @@ bool lmEbookProcessor::BookinfoTag(const wxXml2Node& oNode)
     //end tag: processing implications
     m_fProcessingBookinfo = false;
 
+    // create the cover page
+    CreateBookCover();
+
     return fError;
+
 }
 
 bool lmEbookProcessor::ChapterTag(const wxXml2Node& oNode)
@@ -567,6 +609,18 @@ bool lmEbookProcessor::ChapterTag(const wxXml2Node& oNode)
 
     DecrementTitleCounters();
     return fError;
+}
+
+bool lmEbookProcessor::ContentTag(const wxXml2Node& oNode)
+{
+    //process tag's children
+    return ProcessChildAndSiblings(oNode);
+}
+
+bool lmEbookProcessor::CopyrightTag(const wxXml2Node& oNode)
+{
+    //process tag's children
+    return ProcessChildAndSiblings(oNode);
 }
 
 bool lmEbookProcessor::EmphasisTag(const wxXml2Node& oNode)
@@ -620,6 +674,12 @@ bool lmEbookProcessor::ExerciseParamTag(const wxXml2Node& oNode, bool fTranslate
     return fError;
 }
 
+bool lmEbookProcessor::HolderTag(const wxXml2Node& oNode)
+{
+    //get value
+    return ProcessChildAndSiblings(oNode, 0, &m_sCopyrightHolder);
+}
+
 bool lmEbookProcessor::ItemizedlistTag(const wxXml2Node& oNode)
 {
     // openning tag
@@ -635,6 +695,12 @@ bool lmEbookProcessor::ItemizedlistTag(const wxXml2Node& oNode)
     WriteToHtml(_T("</ul>\n"));
 
     return fError;
+}
+
+bool lmEbookProcessor::LegalnoticeTag(const wxXml2Node& oNode)
+{
+    //get value
+    return ProcessChildAndSiblings(oNode, 0, &m_sLegalNotice);
 }
 
 bool lmEbookProcessor::LinkTag(const wxXml2Node& oNode)
@@ -771,6 +837,22 @@ bool lmEbookProcessor::SectionTag(const wxXml2Node& oNode)
     return fError;
 }
 
+bool lmEbookProcessor::SimplelistTag(const wxXml2Node& oNode)
+{
+    // openning tag
+    WriteToHtml(_T("<ul>"));
+
+    // tag processing implications
+
+    //process tag's children and write note content to html
+    bool fError = ProcessChildAndSiblings(oNode);
+
+    // closing tag
+    WriteToHtml(_T("</ul>\n"));
+
+    return fError;
+}
+
 bool lmEbookProcessor::ThemeTag(const wxXml2Node& oNode)
 {
     // get its 'id' and 'header' properties
@@ -855,7 +937,7 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode)
         WriteToHtml(m_sChapterNum + wxGetTranslation(sHeaderTitle) );
         WriteToHtml(
             _T("&nbsp;</font></b><br /></td>\n")
-            _T("<tr><td bgcolor='#ff8800'><img src='ebook_line.png'></td></tr>\n")
+            _T("<tr><td bgcolor='#ff8800'><img src='ebook_line_orange.png'></td></tr>\n")
             _T("</table>\n")
             _T("<br />\n") );
     }
@@ -868,8 +950,8 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode)
     //TOC:
     if (m_fProcessingBookinfo || m_fTitleToToc) {
         WriteToToc(_T("</title>\n"), ltNO_INDENT );
-        if (m_nTitleType == lmTITLE_BOOK) 
-            WriteToToc(_T("<coverpage>none</coverpage>\n"));
+        //if (m_nTitleType == lmTITLE_BOOK) 
+        //    WriteToToc(_T("<coverpage>none</coverpage>\n"));
     }
 
     return fError;
@@ -891,6 +973,23 @@ bool lmEbookProcessor::TitleabbrevTag(const wxXml2Node& oNode)
     else if (m_nTitleType == lmTITLE_THEME) {
         m_sThemeTitleAbbrev = sTitle;
     }
+    return fError;
+}
+
+bool lmEbookProcessor::TocimageTag(const wxXml2Node& oNode)
+{
+    //process tag's children. Do not write content
+    wxString sImageName;
+    bool fError = ProcessChildAndSiblings(oNode, 0, &sImageName);
+
+    //add to list of files to pack in lmb file
+    m_aFilesToPack.Add(sImageName);
+
+    // End of tag processing implications
+    //TOC:
+    wxFileName oFN(sImageName);
+    WriteToToc(_T("<image>") + oFN.GetFullName() + _T("</image>\n"));
+
     return fError;
 }
 
@@ -917,6 +1016,13 @@ bool lmEbookProcessor::UlinkTag(const wxXml2Node& oNode)
     return fError;
 }
 
+bool lmEbookProcessor::YearTag(const wxXml2Node& oNode)
+{
+    //get value
+    return ProcessChildAndSiblings(oNode, 0, &m_sCopyrightYear);
+}
+
+
 //
 // Auxiliary
 //
@@ -924,10 +1030,8 @@ bool lmEbookProcessor::UlinkTag(const wxXml2Node& oNode)
 wxString lmEbookProcessor::GetTitleCounters()
 {
     wxString sTitleNum = wxEmptyString;
-    if (m_nTitleLevel >= 0)
-        sTitleNum += wxString::Format(_T("%d"), m_nNumTitle[0] );
-    for (int i=1; i <= m_nTitleLevel; i++) {
-        sTitleNum += wxString::Format(_T(".%d"), m_nNumTitle[i] );
+    for (int i=0; i <= m_nTitleLevel; i++) {
+        sTitleNum += wxString::Format(_T("%d."), m_nNumTitle[i] );
     }
     if (sTitleNum != wxEmptyString) sTitleNum += _T(" ");
     
@@ -954,6 +1058,21 @@ void lmEbookProcessor::DecrementTitleCounters()
     m_nTitleLevel--;
     if (m_nTitleLevel < 0) return;
 
+}
+
+void lmEbookProcessor::CreateBookCover()
+{
+    WriteToToc(_T("<coverpage>none</coverpage>\n"));
+
+    wxLogMessage(_T("Copyright &copy; ") + m_sCopyrightYear + _T(", ") + 
+        m_sCopyrightHolder );
+    wxLogMessage(_T("Legal notice: ") + m_sLegalNotice );
+    wxLogMessage(_T("Abstract: ") + m_sBookAbstract );
+    //m_sBookTitle
+    //wxString m_sBookAbstract;
+    //wxString m_sCopyrightYear;
+    //wxString m_sCopyrightHolder;
+    //wxString m_sLegalNotice;
 }
 
 //------------------------------------------------------------------------------------
@@ -1080,7 +1199,7 @@ void lmEbookProcessor::TerminateHtmlFile()
     WriteToHtml(
         _T("<br /><br /><br /><br />\n")
         _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
-        _T("<tr><td bgcolor='#ff8800'><img src='ebook_line.png'></td></tr>\n")
+        _T("<tr><td bgcolor='#ff8800'><img src='ebook_line_orange.png'></td></tr>\n")
         _T("<tr><td bgcolor='#7f8adc' align='center'>\n")
         _T("    <font size='-1' color='#ffffff'><br /><br />\n") + m_sFooter1 +
 	    _T("<br />\n") + m_sFooter2 +
@@ -1149,13 +1268,24 @@ void lmEbookProcessor::TerminateLmbFile()
 {
     if (!(m_fGenerateLmb && m_pLmbFile)) return;
 
+    // copy toc file
     CopyToLmb( m_sTocFilename );
-
-    // delete temporal toc file
     if (!::wxRemoveFile(m_sTocFilename)) {
         wxLogMessage(_T("Error: File %s could not be deleted"), m_sTocFilename);
     }
 
+    //copy other files (i.e.: images)
+    wxFileName oRoot(m_sFilename);      //to get the root path
+    for (int i=0; i < (int)m_aFilesToPack.GetCount(); i++)
+    {
+        wxFileName oFN( m_aFilesToPack.Item(i) );
+        if (!oFN.IsAbsolute()) {
+            oFN.SetPath(oRoot.GetPath());
+        }
+        CopyToLmb( oFN.GetFullPath() );
+    }
+
+    //terminate
     delete m_pZipFile;
     m_pLmbFile = (wxTextOutputStream*)NULL;
     m_pZipFile = (wxZipOutputStream*)NULL;
@@ -1164,12 +1294,13 @@ void lmEbookProcessor::TerminateLmbFile()
 
 void lmEbookProcessor::CopyToLmb(wxString sFilename)
 {
-    wxFFileInputStream inFile( sFilename, _T("r") );
+    wxFFileInputStream inFile( sFilename, _T("rb") );
     if (!inFile.IsOk()) {
         wxLogMessage(_T("Error: File %s can not be merged into LMB"), sFilename);
         return;
     }
-    m_pZipFile->PutNextEntry( sFilename ); 
+    wxFileName oFN(sFilename);
+    m_pZipFile->PutNextEntry( oFN.GetFullName() );
     m_pZipFile->Write( inFile );
     m_pZipFile->CloseEntry(); 
 
