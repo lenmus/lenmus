@@ -26,10 +26,6 @@
 #define __EBOOK_PROCESSOR_H__
 
 #include "wx/wfstream.h"
-#include "wx/hashmap.h"
-
-// declare a hash map with string keys and int values
-WX_DECLARE_STRING_HASH_MAP( int, ltPagesTable );
 
 class wxXml2Node;
 class wxXml2Document;
@@ -49,48 +45,48 @@ public:
     ~lmEbookProcessor();
 
     bool GenerateLMB(wxString sFilename, wxString sLangCode, int nOptions=0);
-    bool CreatePoFile(wxString& sFilename, wxString& sCharSet, wxString& sLangName,
+    bool CreatePoFile(wxString sFilename, wxString& sCharSet, wxString& sLangName,
                       wxString& sLangCode);
 
     static wxString GetLibxml2Version();
 
 private:
 
-    enum ETitleType
+    enum EParentType
     {
-        lmTITLE_CHAPTER = 0,
-        lmTITLE_BOOK,
-        lmTITLE_SECTION,
-        lmTITLE_THEME,
-        lmTITLE_PART,
+        lmPARENT_BOOKINFO = 0,
+        lmPARENT_CHAPTER,
+        lmPARENT_SECTION,
+        lmPARENT_THEME,
+        lmPARENT_PART,
     };
   
     // Tags' processors
-    bool AbstractTag(const wxXml2Node& oNode);
-    bool BookTag(const wxXml2Node& oNode);
-    bool BookinfoTag(const wxXml2Node& oNode);
-    bool ChapterTag(const wxXml2Node& oNode);
-    bool ContentTag(const wxXml2Node& oNode);
-    bool CopyrightTag(const wxXml2Node& oNode);
-    bool EmphasisTag(const wxXml2Node& oNode);
-    bool ExerciseTag(const wxXml2Node& oNode);
+    bool AbstractTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool BookTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool BookinfoTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool ChapterTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool ContentTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool CopyrightTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool EmphasisTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool ExerciseTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool ExerciseParamTag(const wxXml2Node& oNode, bool fTranslate);
-    bool HolderTag(const wxXml2Node& oNode);
-    bool ItemizedlistTag(const wxXml2Node& oNode);
-    bool LegalnoticeTag(const wxXml2Node& oNode);
-    bool LinkTag(const wxXml2Node& oNode);
-    bool ListitemTag(const wxXml2Node& oNode);
-    bool ParaTag(const wxXml2Node& oNode);
-    bool PartTag(const wxXml2Node& oNode);
-    bool ScoreTag(const wxXml2Node& oNode);
-    bool SectionTag(const wxXml2Node& oNode);
-    bool SimplelistTag(const wxXml2Node& oNode);
-    bool ThemeTag(const wxXml2Node& oNode);
-    bool TitleTag(const wxXml2Node& oNode);
-    bool TitleabbrevTag(const wxXml2Node& oNode);
-    bool TocimageTag(const wxXml2Node& oNode);
-    bool UlinkTag(const wxXml2Node& oNode);
-    bool YearTag(const wxXml2Node& oNode);
+    bool HolderTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool ItemizedlistTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool LegalnoticeTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool LinkTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool ListitemTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool ParaTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool PartTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool ScoreTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool SectionTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool SimplelistTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool ThemeTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool TitleTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool TitleabbrevTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool TocimageTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool UlinkTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool YearTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
 
     // auxiliary
     void IncrementTitleCounters();
@@ -103,7 +99,7 @@ private:
                                  wxString* pText = (wxString*)NULL);
     bool ProcessChildren(const wxXml2Node& oNode, int nWriteOptions=0,
                          wxString* pText = (wxString*)NULL);
-    bool ProcessTag(const wxXml2Node& oNode);
+    bool ProcessTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
 
     // File generation methods
         // TOC
@@ -114,6 +110,9 @@ private:
     bool StartHtmlFile(wxString sFilename, wxString sId);
     void TerminateHtmlFile();
     void WriteToHtml(wxString sText);
+    void CloseHtmlFile();
+    void CreatePageHeaders(wxString sBookTitle, wxString sHeaderTitle,
+                           wxString sTitleNum);
         // Lang (.cpp)
     bool StartLangFile(wxString sFilename);
     void WriteToLang(wxString sText);
@@ -128,10 +127,6 @@ private:
     void DumpNodeAndSiblings(const wxXml2Node& oNode, wxString& sTree, int n);
     void DumpNode(const wxXml2Node& oNode, wxString& sTree, int n);
 
-    // Other methods
-    void CreateLinksTable(wxXml2Node& oRoot);
-    void AddToLinksTable(wxXml2Node& oRoot);
-    void FindThemeNode(const wxXml2Node& oNode);
 
 
     // member variables
@@ -145,11 +140,11 @@ private:
     // variables for toc processing
     int             m_nTocIndentLevel;      // to indent output
     bool            m_fTitleToToc;          // write title to toc
+    bool            m_fThemeInToc;          // the theme is in TOC
     wxString        m_sTocFilename;
 
     // variables for html processing
     int             m_nHtmlIndentLevel;     // to indent output
-    int             m_nNumHtmlPage;         // to generate html file number
     wxString        m_sHtmlPagename;        
     int             m_nHeaderLevel;
 #define             lmMAX_TITLE_LEVEL  8
@@ -158,7 +153,7 @@ private:
     wxString        m_sChapterTitle;
     wxString        m_sChapterNum;
     wxString        m_sBookTitle;
-    ETitleType      m_nTitleType;           // to know the owner of the title tag
+    EParentType     m_nParentType;           // to know the owner of the title tag
     wxString        m_sChapterTitleAbbrev;
     wxString        m_sBookTitleAbbrev;
     wxString        m_sThemeTitleAbbrev;
@@ -178,13 +173,11 @@ private:
 
     // bookinfo data
     bool            m_fProcessingBookinfo;
+    wxString        m_sBookId;
     wxString        m_sBookAbstract;
     wxString        m_sCopyrightYear;
     wxString        m_sCopyrightHolder;
     wxString        m_sLegalNotice;
-
-    // page/id cross-reference table
-    ltPagesTable    m_PagesIds;
 
     // variables for processing external entities
     bool            m_fExtEntity;           //waiting to include an external entity

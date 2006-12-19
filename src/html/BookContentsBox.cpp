@@ -241,6 +241,7 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
         rItem.fVisible = (it->level == 0);
         rItem.sImage = (it->image != wxEmptyString ? sImagePath + it->image : wxEmptyString);
         rItem.sTitle = it->name;
+        rItem.sTitlenum = it->titlenum;
         rItem.fHasChildren = false;     //it is updated when processing next entry
         rItem.fOpen = false;
 
@@ -266,14 +267,15 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
     // DBG ------------------------------------------------------------------
     // Dump m_aTree
     wxLogMessage(_T("[lmBookContentsBox::CreateContents]:"));
-    wxLogMessage(_T("          level  visible open    children"));
+    wxLogMessage(_T("          level  visible open    children  titlenum"));
     for(int i=0; i < (int)m_aTree.size(); i++) {
-        wxLogMessage(_T("entry %d : %d      %s      %s      %s"),
+        wxLogMessage(_T("entry %d : %d      %s      %s      %s      %s"),
             i,
             m_aTree[i].nLevel,
             (m_aTree[i].fOpen ? _T("yes") : _T("no")),
             (m_aTree[i].fVisible ? _T("yes") : _T("no")),
-            (m_aTree[i].fHasChildren ? _T("yes") : _T("no")) );
+            (m_aTree[i].fHasChildren ? _T("yes") : _T("no")),
+            m_aTree[i].sTitlenum );
     }
     // DBG end --------------------------------------------------------------
 
@@ -329,13 +331,18 @@ wxString lmBookContentsBox::FormatItem(int nTree) const
     }
 
     // add references
-    sLine += wxString::Format(_T("level='%d' item='%d'>"),
+    sLine += wxString::Format(_T("level='%d' item='%d'"),
                     m_aTree[nTree].nLevel, nTree );
+
+    // add title number and close the tag
+    sLine += _T(" titlenum='") + m_aTree[nTree].sTitlenum + _T("'>");
 
     // add the title
     if (m_aTree[nTree].nLevel == 0) sLine += _T("<b>");
     sLine += m_aTree[nTree].sTitle;
     if (m_aTree[nTree].nLevel == 0) sLine += _T("</b>");
+
+    // close item
     sLine += _T("</tocitem>");
 
     return sLine;

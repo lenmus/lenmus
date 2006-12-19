@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<content>
 <theme id="thm223">
 <title>Compound time. 8th note tied to next beat (2)</title>
 <tocimage>img223.png</tocimage>
@@ -111,3 +112,5 @@ studied in this lesson.</para>
     <key>Do</key>
 </exercise>
 </theme>
+
+</content>

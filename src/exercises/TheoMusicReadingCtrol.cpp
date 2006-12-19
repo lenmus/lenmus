@@ -101,6 +101,7 @@ lmTheoMusicReadingCtrol::lmTheoMusicReadingCtrol(wxWindow* parent, wxWindowID id
     : wxWindow(parent, id, pos, size, style )
 {
     //initializations
+    SetBackgroundColour(*wxWHITE);
     m_fProblemCreated = false;
     m_fPlayEnabled = false;
     m_pScore = (lmScore*)NULL;

@@ -40,6 +40,7 @@ typedef struct lmTreeContentRecordStruct {
     bool fOpen;             // this item is open (its children are shown)
     wxString sImage;
     wxString sTitle;
+    wxString sTitlenum;
 } lmTreeContentRecord;
 
 WX_DECLARE_OBJARRAY(lmTreeContentRecord, lmTreeArray);

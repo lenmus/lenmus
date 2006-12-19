@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<content>
 <theme id="thm214">
 <title>Duple meter. The triplet</title>
 <tocimage>img214.png</tocimage>
@@ -125,3 +126,5 @@ introduced rhythmic patterns.</para>
     <key>Do</key>
 </exercise>
 </theme>
+
+</content>

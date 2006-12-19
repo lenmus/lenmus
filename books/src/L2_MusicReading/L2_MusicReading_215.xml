@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<content>
 <theme id="thm215">
 <title>Notes tied to a triplet</title>
 <tocimage>img215.png</tocimage>
@@ -94,3 +95,5 @@ studied in this lesson.</para>
     <key>Do</key>
 </exercise>
 </theme>
+
+</content>

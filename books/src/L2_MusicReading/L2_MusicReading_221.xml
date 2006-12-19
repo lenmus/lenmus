@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<content>
 <theme id="thm221">
 <title>Tied dotted 8th note</title>
 <tocimage>img221.png</tocimage>
@@ -141,3 +142,5 @@ studied in this lesson.</para>
     <key>Do</key>
 </exercise>
 </theme>
+
+</content>

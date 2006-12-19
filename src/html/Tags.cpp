@@ -835,7 +835,10 @@ TAG_HANDLER_PROC(tag)
         int nBorder=1;        //default value: with border
         if (tag.HasParam(wxT("BORDER")) ) {
             fOK = tag.GetParamAsInt(wxT("BORDER"), &nBorder);
-            wxASSERT(fOK);
+            if (!fOK) {
+                wxMessageBox(_T("Object tag: invalid 'border' value"));
+                nBorder = 1;
+            }
         }
         EScoreStyles nStyle = (nBorder == 0 ? eNO_BORDER : eSIMPLE_BORDER);
     

@@ -285,6 +285,7 @@ void lmBookData::ProcessIndexEntries(wxXmlNode* pNode, lmBookRecord *pBookr)
             pItem->id = m_pParser->GetAttribute(pElement, _T("id"));
             pItem->page = m_pParser->GetAttribute(pElement, _T("page"));
             pItem->name = m_pParser->GetText(pElement);
+            pItem->titlenum = wxEmptyString;
             pItem->image = wxEmptyString;
             pItem->pBookRecord = pBookr;
             m_index.Add(pItem);
@@ -416,6 +417,7 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
     bookitem->id = wxEmptyString;
     bookitem->page = sPage;
     bookitem->name = sTitle;
+    bookitem->titlenum = wxEmptyString;
     bookitem->image = wxEmptyString;
     bookitem->pBookRecord = pBookr;
     m_contents.Add(bookitem);
@@ -460,7 +462,8 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
              sPage = wxEmptyString,
              sName = wxEmptyString,
              sImage = wxEmptyString,
-             sId;
+             sTitlenum = wxEmptyString,
+             sId = wxEmptyString;
 
     // Get entry id
     sId = m_pParser->GetAttribute(pNode, _T("id"));
@@ -482,8 +485,10 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
             fTitleImage = true;
         }
         else if (sElement == _T("page")) {
-            // page node
             sPage = m_pParser->GetText(pElement);
+        }
+        else if (sElement == _T("titlenum")) {
+            sTitlenum = m_pParser->GetText(pElement);
         }
         else {
             break;
@@ -502,6 +507,7 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
     bookitem->id = sId;
     bookitem->page = sPage;
     bookitem->name = sTitle;
+    bookitem->titlenum = sTitlenum;
     bookitem->image = sImage;
     bookitem->pBookRecord = pBookr;
     m_contents.Add(bookitem);

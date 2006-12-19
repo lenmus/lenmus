@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<content>
 <theme id="thm216">
 <title>Compound time. Three quarter notes</title>
 <tocimage>img216.png</tocimage>
@@ -97,3 +98,5 @@ studied in this lesson.</para>
     <key>Do</key>
 </exercise>
 </theme>
+
+</content>

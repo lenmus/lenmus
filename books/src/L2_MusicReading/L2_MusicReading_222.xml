@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<content>
 <theme id="thm222">
 <title>Groups of two 16th notes</title>
 <tocimage>img222.png</tocimage>
@@ -117,3 +118,5 @@ studied in this lesson.</para>
     <key>Do</key>
 </exercise>
 </theme>
+
+</content>

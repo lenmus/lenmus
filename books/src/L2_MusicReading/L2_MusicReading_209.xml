@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<content>
 <theme id="thm209">
 <title>Two 16th notes, one quarter note and one 8th note</title>
 <tocimage>img209.png</tocimage>
@@ -88,3 +89,5 @@ studied in this lesson.</para>
     <key>Do</key>
 </exercise>
 </theme>
+
+</content>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<content>
 <theme id="thm207">
 <title>Two 16th notes and one 8th</title>
 <tocimage>img207.png</tocimage>
@@ -67,7 +68,7 @@ studied in this lesson.</para>
     <time>24</time>
     <key>Do</key>
 </exercise>
-</theme>
+<!-- </theme> Doesn't parse with this -->
 
 <!-- ============================================================================ -->
 <!-- Exercise 2                                                                   -->
@@ -92,3 +93,5 @@ studied in this lesson.</para>
     <key>Do</key>
 </exercise>
 </theme>
+
+</content>

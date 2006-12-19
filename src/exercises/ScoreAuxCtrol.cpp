@@ -66,7 +66,7 @@ lmScoreAuxCtrol::lmScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScor
                                  const wxSize& size, EScoreStyles style) :
     wxWindow(parent, id, pos, size, style)
 {
-
+    SetBackgroundColour(*wxWHITE);
     m_pScore = pScore;
     m_sMsg = wxEmptyString;
     m_fDisplayMessage = false;

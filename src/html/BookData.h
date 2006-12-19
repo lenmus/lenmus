@@ -113,11 +113,13 @@ WX_DECLARE_USER_EXPORTED_OBJARRAY(lmBookRecord, lmBookRecArray,
 // entries don't have an image.
 struct lmBookIndexItem
 {
-    lmBookIndexItem() : level(0), parent(NULL), id(wxEmptyString), pBookRecord(NULL) {}
+    lmBookIndexItem() : level(0), parent(NULL), id(wxEmptyString), 
+                        titlenum(wxEmptyString), pBookRecord(NULL) {}
 
     int                 level;          // level of this entry. 0: book, 1-n: pages
     lmBookIndexItem*    parent;         // parent entry if this is a sub-entry (level > 0)
-    wxString            id;             // prefix for title (number/letter)
+    wxString            id;             // page id (to search pages by id)
+    wxString            titlenum;       // prefix for title (number/letter)
     wxString            name;           // text for this entry
     wxString            page;           // html page to display
     wxString            image;          // image to display

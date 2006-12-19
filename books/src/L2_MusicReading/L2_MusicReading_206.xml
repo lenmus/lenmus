@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<content>
 <theme id="thm206">
 <title>Compound time of 9/8. Dotted quarter note</title>
 <tocimage>img206.png</tocimage>
@@ -75,3 +76,5 @@ studied in this lesson.</para>
     <key>Do</key>
 </exercise>
 </theme>
+
+</content>

@@ -100,6 +100,7 @@ lmEarCompareIntvCtrol::lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id,
     : wxWindow(parent, id, pos, size, style )
 {
     //initializations
+    SetBackgroundColour(*wxWHITE);
     int i;
     for (i=0; i < 3; i++) { m_pAnswerButton[i] = (wxButton*)NULL; }
     EnableButtons(false);

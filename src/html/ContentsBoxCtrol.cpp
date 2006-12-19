@@ -109,9 +109,10 @@ public:
 
 bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
 {
-     if (tag.GetName() == wxT("TOCITEM"))
+    if (tag.GetName() == wxT("TOCITEM"))
     {
         // Get all parameters
+        wxLogMessage(tag.GetAllParams());
 
         // item level
         long nLevel;
@@ -143,6 +144,13 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
             sImage = tag.GetParam( _T("IMG") );
         }
 
+        // titlenum
+        wxString sTitlenum = wxEmptyString;
+        if (tag.HasParam( _T("TITLENUM") )) {
+            sTitlenum = tag.GetParam( _T("TITLENUM") );
+        }
+
+
             //Create the entry
 
         // indentation
@@ -159,7 +167,11 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
         // expand / collapse image
         if (sExpand == _T("+")) {
             wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
-            wxString name = wxString::Format(_T("open%d"), nItem);
+            wxString name;
+            if (nLevel == 0)
+                name = wxString::Format(_T("open&go%d"), nItem);
+            else
+                name = wxString::Format(_T("open%d"), nItem);
             m_WParser->SetLink(wxHtmlLinkInfo(name, wxEmptyString));
 
             m_WParser->SetSourceAndSaveState(_T("<img src='") + sPath + _T("nav_plus_16.png' width='16' height='16' />"));
@@ -167,11 +179,15 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
             m_WParser->RestoreState();
 
             m_WParser->SetLink(oldlnk);
-            sItemLink = name;   //collapsable items do not have contents
+            sItemLink = name;
         }
         else if (sExpand == _T("-")) {
             wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
-            wxString name = wxString::Format(_T("close%d"), nItem);
+            wxString name;
+            if (nLevel == 0)
+                name = wxString::Format(_T("close&blank%d"), nItem);
+            else
+                name = wxString::Format(_T("close%d"), nItem);
             m_WParser->SetLink(wxHtmlLinkInfo(name, wxEmptyString));
 
             m_WParser->SetSourceAndSaveState(_T("<img src='") + sPath + _T("nav_minus_16.png' width='16' height='16' />"));
@@ -179,7 +195,7 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
             m_WParser->RestoreState();
 
             m_WParser->SetLink(oldlnk);
-            sItemLink = name;   //collapsable items do not have contents
+            sItemLink = name;
         }
 
         // start link to item page
@@ -205,6 +221,13 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
         m_WParser->DoParsing();
         m_WParser->RestoreState();
         m_WParser->GetContainer()->InsertCell(new lmHtmlSpacerCell(8));
+
+        // title num
+        if (sTitlenum != wxEmptyString) {
+            m_WParser->SetSourceAndSaveState(sTitlenum);
+            m_WParser->DoParsing();
+            m_WParser->RestoreState();
+        }
 
         // item image
         // Only drawn in final items

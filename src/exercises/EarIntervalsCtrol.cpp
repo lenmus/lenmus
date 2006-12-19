@@ -100,6 +100,7 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
     : wxWindow(parent, id, pos, size, style )
 {
     //initializations
+    SetBackgroundColour(*wxWHITE);
     int i;
     for (i=0; i < lmEAR_INVAL_NUM_BUTTONS; i++) { m_pAnswerButton[i] = (wxButton*)NULL; }
     m_nRespIndex = 0;

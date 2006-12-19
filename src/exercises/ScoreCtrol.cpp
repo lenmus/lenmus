@@ -113,6 +113,7 @@ lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
     m_pOptions = pOptions;
 
     //initializations
+    SetBackgroundColour(*wxWHITE);
     m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
     m_fPlaying = false;
     m_pPlayLink = (lmUrlAuxCtrol*) NULL;

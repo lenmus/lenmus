@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<content>
 <theme id="thm208">
 <title>Compound time of 12/8. 8th note tied to 16th notes</title>
 <tocimage>img208.png</tocimage>
@@ -99,3 +100,5 @@ studied in this lesson.</para>
     <key>Do</key>
 </exercise>
 </theme>
+
+</content>

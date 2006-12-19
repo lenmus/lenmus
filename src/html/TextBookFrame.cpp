@@ -1428,6 +1428,9 @@ void lmTextBookFrame::OnContentsLinkClicked(wxHtmlLinkEvent& event)
         eOpen = 0,
         eClose,
         eGo,
+        eOpenGo,
+        eCloseGo,
+        eCloseBlank,
     };
 
     //extract type and item
@@ -1435,17 +1438,23 @@ void lmTextBookFrame::OnContentsLinkClicked(wxHtmlLinkEvent& event)
     int nAction;
     wxString sItem;
 
-    if (sLink.Find(_T("item")) != wxNOT_FOUND) {
+    if (sLink.StartsWith(_T("item"), &sItem)) {
         nAction = eGo;
-        sItem = sLink.Mid(4);
     }
-    else if (sLink.Find(_T("open")) != wxNOT_FOUND) {
+    else if (sLink.StartsWith(_T("open&go"), &sItem)) {
+        nAction = eOpenGo;
+    }
+    else if (sLink.StartsWith(_T("close&go"), &sItem)) {
+        nAction = eCloseGo;
+    }
+    else if (sLink.StartsWith(_T("close&blank"), &sItem)) {
+        nAction = eCloseBlank;
+    }
+    else if (sLink.StartsWith(_T("open"), &sItem)) {
         nAction = eOpen;
-        sItem = sLink.Mid(4);
     }
-    else if (sLink.Find(_T("close")) != wxNOT_FOUND) {
+    else if (sLink.StartsWith(_T("close"), &sItem)) {
         nAction = eClose;
-        sItem = sLink.Mid(5);
     }
     else {
         wxLogMessage(_T("[lmTextBookFrame::OnContentsLinkClicked]Invalid link type"));
@@ -1475,6 +1484,39 @@ void lmTextBookFrame::OnContentsLinkClicked(wxHtmlLinkEvent& event)
             break;
 
         case eClose:
+            if (m_pContentsBox) m_pContentsBox->Collapse(nItem);
+            break;
+
+        case eOpenGo:
+            if (m_UpdateContents) {
+                const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
+                m_UpdateContents = false;
+                if (!contents[nItem].page.empty()) {
+                    m_HtmlWin->LoadPage(contents[nItem].GetFullPath());
+                }
+                m_UpdateContents = true;
+            }
+            if (m_pContentsBox) m_pContentsBox->Expand(nItem);
+            break;
+
+        case eCloseGo:
+            if (m_UpdateContents) {
+                const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
+                m_UpdateContents = false;
+                if (!contents[nItem].page.empty()) {
+                    m_HtmlWin->LoadPage(contents[nItem].GetFullPath());
+                }
+                m_UpdateContents = true;
+            }
+            if (m_pContentsBox) m_pContentsBox->Collapse(nItem);
+            break;
+
+        case eCloseBlank:
+            if (m_UpdateContents) {
+                m_UpdateContents = false;
+                m_HtmlWin->SetPage(_T("<html><body bgcolor='#808080'></body></hmtl>"));
+                m_UpdateContents = true;
+            }
             if (m_pContentsBox) m_pContentsBox->Collapse(nItem);
             break;
 

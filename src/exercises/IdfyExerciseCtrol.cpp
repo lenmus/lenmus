@@ -110,6 +110,7 @@ lmIdfyExerciseCtrol::lmIdfyExerciseCtrol(wxWindow* parent, wxWindowID id,
     : wxWindow(parent, id, pos, size, style )
 {
     //initializations
+    SetBackgroundColour(*wxWHITE);
     m_nNumButtons = 0;
     m_fQuestionAsked = false;
     m_pProblemScore = (lmScore*)NULL;

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<content>
 <theme id="thm219">
 <title>Dotted 8th note</title>
 <tocimage>img219.png</tocimage>
@@ -70,10 +71,6 @@ dotted 8th note.</para>
 <para>
 <link linkend="thm219_E3">Exercise 3</link> - Train your ear: Group of two 8th notes 
 tied to a dotted 8th note.</para>
-
-    >Exercise 4</a> - Read scores containing the rhythms studied
-    in this lesson.</para>
-
 
 </part>
 
@@ -163,3 +160,5 @@ tied to a dotted 8th note.</para>
     <key>Do</key>
 </exercise>
 </theme>
+
+</content>
