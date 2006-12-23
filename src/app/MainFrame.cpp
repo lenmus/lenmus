@@ -701,9 +701,9 @@ void lmMainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize)
     m_pTbTextBooks->AddSeparator();
     m_pTbTextBooks->AddTool(MENU_eBook_UpNode, _("Parent"), wupnodeBitmap, 
             _("Go one level up in document hierarchy"), wxITEM_NORMAL );
-    m_pTbTextBooks->AddTool(MENU_eBook_Up, _("Back Page"), wupBitmap, 
+    m_pTbTextBooks->AddTool(MENU_eBook_PagePrev, _("Back Page"), wupBitmap, 
             _("Previous page of current document"), wxITEM_NORMAL );
-    m_pTbTextBooks->AddTool(MENU_eBook_Down, _("next Page"), wdownBitmap, 
+    m_pTbTextBooks->AddTool(MENU_eBook_PageNext, _("next Page"), wdownBitmap, 
             _("Next page of current document"), wxITEM_NORMAL );
     m_pTbTextBooks->AddSeparator();
     m_pTbTextBooks->AddTool(MENU_eBook_Options, _("Fonts"), woptionsBitmap, 

@@ -42,6 +42,8 @@
 //#include "wx/helpbase.h"
 #include "BookData.h"
 
+//class lmTextBookFrame;
+//class wxHelpSearchMode;
 #include "TextBookFrame.h"
 
 #define wxID_HTML_HELPFRAME   (wxID_HIGHEST + 1)

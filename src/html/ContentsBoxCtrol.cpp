@@ -155,7 +155,7 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
 
         // indentation
         int nIndent = nLevel * 24;
-        if (sExpand == _T("no")) nIndent += 16;
+        if (sExpand == _T("no") && (nLevel > 0)) nIndent += 16;
         m_WParser->GetContainer()->SetIndent(nIndent, wxHTML_INDENT_LEFT);
 
         // aligment
@@ -214,6 +214,8 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
             sIconImg += _T("nav_folder_open_16.png");
         else if (sIcon == _T("page"))
             sIconImg += _T("nav_page_16.png");
+        else if (sIcon == _T("leaflet"))
+            sIconImg += _T("nav_intro_16.png");
         else {
             wxASSERT(false);
         }
@@ -799,7 +801,7 @@ void lmContentsBoxCtrol::DoHandleItemClick(int item, int flags)
     // has anything worth telling the client code about happened?
     bool notify = false;
 
-    // the item should become the current one only if it is a final note
+    // the item should become the current one only if it is a final node
     DoSetCurrent(item);
 
     if ( notify )

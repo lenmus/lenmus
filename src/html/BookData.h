@@ -73,6 +73,7 @@ class lmBookRecord
 public:
     lmBookRecord(const wxString& bookfile, const wxString& basepath,
                      const wxString& title, const wxString& start);
+    ~lmBookRecord();
 
     wxString GetBookFile() const { return m_sBookFile; }
 
@@ -103,11 +104,6 @@ protected:
 };
 
 
-WX_DECLARE_USER_EXPORTED_OBJARRAY(lmBookRecord, lmBookRecArray,
-                                  WXDLLIMPEXP_HTML);
-//WX_DEFINE_ARRAY(lmLDPNode*, ArrayNodePtrs);
-
-
 // lmBookIndexItem: an entry of the index and contents tables
 // The only difference between content entries and index entries is that the index
 // entries don't have an image.
@@ -132,8 +128,13 @@ struct lmBookIndexItem
     wxString GetIndentedName() const;
 };
 
-WX_DECLARE_USER_EXPORTED_OBJARRAY(lmBookIndexItem, lmBookIndexArray,
-                                  WXDLLIMPEXP_HTML);
+
+#include "wx/dynarray.h"
+WX_DEFINE_ARRAY(lmBookRecord*, lmBookRecArray);
+WX_DEFINE_ARRAY(lmBookIndexItem*, lmBookIndexArray);
+//
+//WX_DECLARE_USER_EXPORTED_OBJARRAY(lmBookIndexItem, lmBookIndexArray,
+//                                  WXDLLIMPEXP_HTML);
 
 
 

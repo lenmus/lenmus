@@ -97,6 +97,7 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
     : wxWindow(parent, id, pos, size, style )
 {
     //initializations
+    SetBackgroundColour(*wxWHITE);
     for (int i=0; i < lmTHEO_KEYSIGN_NUM_BUTTONS; i++) {
         m_pAnswerButton[i] = (wxButton*)NULL;
     }

@@ -61,11 +61,6 @@ public:
     ~lmBookContentsBox();
 
     // wxTreeCtrol compatibility methods
-    long AddRoot(const wxString& text, int image = -1, int selImage = -1,
-                    wxTreeItemData* data = NULL);
-    long AppendItem(const long& parent, const wxString& text, wxString& sImgPath,
-                    int image = -1, int selImage = -1, wxTreeItemData* data = NULL);
-    void AssignImageList(wxImageList* imageList);
     void DeleteAllItems();
     void EnsureVisible(const long& item);
     wxTreeItemData* GetItemData(const long& item) const;
@@ -76,7 +71,12 @@ public:
 
     // Content creation
     void CreateContents(lmBookData* pBookData);
+
+    // navigation
     void ChangePage();
+    int PageNext();
+    int PagePrev();
+
 
     void Expand(int nItem, bool fRefresh=true);
     void Collapse(int nItem);
@@ -86,21 +86,19 @@ public:
 
 private:
     wxString OnGetItem(size_t n) const;
-    int LocateItem(int n) const;
+    int LocateTreeItem(int nEntry) const;
+    int LocateEntry(int nTree) const;
     wxString FormatItem(int nTree) const;
 
     // virtual methods overrides
     void DoHandleItemClick(int item, int flags);
 
 
-
-    wxArrayString   m_cItems;       // items to display
-
     wxFrame*        m_pFrame;
 
 
     // content data
-    lmPagesHash     m_PagesHash;    //to locate pages index from its URL
+    lmPagesHash     m_PagesHash;    // to locate pages index from its URL
     lmTreeArray     m_aTree;        // items to display
 
 

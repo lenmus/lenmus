@@ -201,23 +201,23 @@ void lmTextBookFrame::UpdateMergedIndex()
 
     for (size_t i = 0; i < len; i++)
     {
-        const lmBookIndexItem& item = items[i];
-        wxASSERT_MSG( item.level < 128, _T("nested index entries too deep") );
+        const lmBookIndexItem* pItem = items[i];
+        wxASSERT_MSG( pItem->level < 128, _T("nested index entries too deep") );
 
-        if (history[item.level] &&
-            history[item.level]->items[0]->name == item.name)
+        if (history[pItem->level] &&
+            history[pItem->level]->items[0]->name == pItem->name)
         {
             // same index entry as previous one, update list of items
-            history[item.level]->items.Add(&item);
+            history[pItem->level]->items.Add(pItem);
         }
         else
         {
             // new index entry
             TextBookHelpMergedIndexItem *mi = new TextBookHelpMergedIndexItem();
-            mi->name = item.GetIndentedName();
-            mi->items.Add(&item);
-            mi->parent = (item.level == 0) ? NULL : history[item.level - 1];
-            history[item.level] = mi;
+            mi->name = pItem->GetIndentedName();
+            mi->items.Add(pItem);
+            mi->parent = (pItem->level == 0) ? NULL : history[pItem->level - 1];
+            history[pItem->level] = mi;
             merged.Add(mi);
         }
     }
@@ -452,7 +452,6 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
 
         m_pContentsBox = new lmBookContentsBox(pPanel, this, ID_TREECTRL, 
                                 wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
-        m_pContentsBox->AssignImageList(ContentsImageList);
         topsizer->Add(m_pContentsBox, 1,
                       wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT,
                       2);
@@ -642,9 +641,9 @@ bool lmTextBookFrame::DisplayContents()
 
     if (m_pBookData->GetBookRecArray().GetCount() > 0)
     {
-        lmBookRecord& book = m_pBookData->GetBookRecArray()[0];
-        if (!book.GetStart().empty())
-            m_HtmlWin->LoadPage(book.GetFullPath(book.GetStart()));
+        lmBookRecord* pBook = m_pBookData->GetBookRecArray()[0];
+        if (!pBook->GetStart().empty())
+            m_HtmlWin->LoadPage(pBook->GetFullPath(pBook->GetStart()));
     }
 
     return true;
@@ -668,9 +667,9 @@ bool lmTextBookFrame::DisplayIndex()
 
     if (m_pBookData->GetBookRecArray().GetCount() > 0)
     {
-        lmBookRecord& book = m_pBookData->GetBookRecArray()[0];
-        if (!book.GetStart().empty())
-            m_HtmlWin->LoadPage(book.GetFullPath(book.GetStart()));
+        lmBookRecord* pBook = m_pBookData->GetBookRecArray()[0];
+        if (!pBook->GetStart().empty())
+            m_HtmlWin->LoadPage(pBook->GetFullPath(pBook->GetStart()));
     }
 
     return true;
@@ -702,9 +701,9 @@ void lmTextBookFrame::DisplayIndexItem(const TextBookHelpMergedIndexItem *it)
             size_t clen = contents.size();
             for (size_t j = 0; j < clen; j++)
             {
-                if (contents[j].page == page)
+                if (contents[j]->page == page)
                 {
-                    page = contents[j].name;
+                    page = contents[j]->name;
                     break;
                 }
             }
@@ -888,7 +887,7 @@ void lmTextBookFrame::CreateSearch()
     const lmBookRecArray& bookrec = m_pBookData->GetBookRecArray();
     int i, cnt = bookrec.GetCount();
     for (i = 0; i < cnt; i++)
-        m_SearchChoice->Append(bookrec[i].GetTitle());
+        m_SearchChoice->Append(bookrec[i]->GetTitle());
     m_SearchChoice->SetSelection(0);
 }
 
@@ -1236,25 +1235,6 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             NotifyPageChanged();
             break;
 
-        case MENU_eBook_Up :
-            //if (m_PagesHash)
-            //{
-            //    wxString page = lmTextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
-            //    TextBookHelpHashData *ha = NULL;
-            //    if (!page.empty())
-            //        ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
-            //    if (ha && ha->m_Index > 0)
-            //    {
-            //        const lmBookIndexItem& it = m_pBookData->GetContentsArray()[ha->m_Index - 1];
-            //        if (!it.page.empty())
-            //        {
-            //            m_HtmlWin->LoadPage(it.GetFullPath());
-            //            NotifyPageChanged();
-            //        }
-            //    }
-            //}
-            break;
-
         case MENU_eBook_UpNode :
             //if (m_PagesHash)
             //{
@@ -1287,28 +1267,24 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             //}
             break;
 
-        case MENU_eBook_Down :
-            //if (m_PagesHash)
-            //{
-            //    wxString page = lmTextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
-            //    TextBookHelpHashData *ha = NULL;
-            //    if (!page.empty())
-            //        ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
+        case MENU_eBook_PagePrev :
+            {
+                int nItem = m_pContentsBox->PagePrev();
+                const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
+                if (!contents[nItem]->page.empty()) {
+                    m_HtmlWin->LoadPage(contents[nItem]->GetFullPath());
+                }
+            }
+            break;
 
-            //    const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
-            //    if (ha && ha->m_Index < (int)contents.size() - 1)
-            //    {
-            //        size_t idx = ha->m_Index + 1;
-
-            //        while (contents[idx].GetFullPath() == page) idx++;
-
-            //        if (!contents[idx].page.empty())
-            //        {
-            //            m_HtmlWin->LoadPage(contents[idx].GetFullPath());
-            //            NotifyPageChanged();
-            //        }
-            //    }
-            //}
+        case MENU_eBook_PageNext :
+            {
+                int nItem = m_pContentsBox->PageNext();
+                const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
+                if (!contents[nItem]->page.empty()) {
+                    m_HtmlWin->LoadPage(contents[nItem]->GetFullPath());
+                }
+            }
             break;
 
         case MENU_eBookPanel :
@@ -1472,8 +1448,8 @@ void lmTextBookFrame::OnContentsLinkClicked(wxHtmlLinkEvent& event)
             if (m_UpdateContents) {
                 const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
                 m_UpdateContents = false;
-                if (!contents[nItem].page.empty()) {
-                    m_HtmlWin->LoadPage(contents[nItem].GetFullPath());
+                if (!contents[nItem]->page.empty()) {
+                    m_HtmlWin->LoadPage(contents[nItem]->GetFullPath());
                 }
                 m_UpdateContents = true;
             }
@@ -1488,23 +1464,23 @@ void lmTextBookFrame::OnContentsLinkClicked(wxHtmlLinkEvent& event)
             break;
 
         case eOpenGo:
+            if (m_pContentsBox) m_pContentsBox->Expand(nItem);
             if (m_UpdateContents) {
                 const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
                 m_UpdateContents = false;
-                if (!contents[nItem].page.empty()) {
-                    m_HtmlWin->LoadPage(contents[nItem].GetFullPath());
+                if (!contents[nItem]->page.empty()) {
+                    m_HtmlWin->LoadPage(contents[nItem]->GetFullPath());
                 }
                 m_UpdateContents = true;
             }
-            if (m_pContentsBox) m_pContentsBox->Expand(nItem);
             break;
 
         case eCloseGo:
             if (m_UpdateContents) {
                 const lmBookIndexArray& contents = m_pBookData->GetContentsArray();
                 m_UpdateContents = false;
-                if (!contents[nItem].page.empty()) {
-                    m_HtmlWin->LoadPage(contents[nItem].GetFullPath());
+                if (!contents[nItem]->page.empty()) {
+                    m_HtmlWin->LoadPage(contents[nItem]->GetFullPath());
                 }
                 m_UpdateContents = true;
             }

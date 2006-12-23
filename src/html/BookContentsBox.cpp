@@ -74,12 +74,13 @@ lmBookContentsBox::lmBookContentsBox(wxWindow* parent,
 
 lmBookContentsBox::~lmBookContentsBox() 
 {
-    m_cItems.Clear();
+    m_aTree.Clear();
+
 }
 
 wxString lmBookContentsBox::OnGetItem(size_t n) const
 {
-    int i = LocateItem(int(n));
+    int i = LocateTreeItem(int(n));
     if (i == -1) return wxEmptyString;
     return FormatItem(i);
 
@@ -93,8 +94,9 @@ wxString lmBookContentsBox::OnGetItem(size_t n) const
 void lmBookContentsBox::DoHandleItemClick(int item, int flags)
 {
     // the item should become the current one only if it is a final node
-    int nItem = LocateItem(item);
-    if (!m_aTree[nItem].fHasChildren) SetSelection(item);
+    int nItem = LocateTreeItem(item);
+    if (m_aTree[nItem].nLevel==0 || !m_aTree[nItem].fHasChildren)
+        SetSelection(item);
 
 }
 
@@ -103,47 +105,10 @@ void lmBookContentsBox::DoHandleItemClick(int item, int flags)
 // wxTreeCtrol compatibility methods
 // ============================================================================
 
-long lmBookContentsBox::AddRoot(const wxString& text, int image, int selImage,
-                                        wxTreeItemData* data)
-{
-
-    //Adds the root node to the tree, returning the new item.
-    //
-    //The image and selImage parameters are an index within the normal image
-    //list specifying the image to use for unselected and selected items, respectively.
-    //If image > -1 and selImage is -1, the same image is used for both selected and
-    //unselected items.
-
-    return (long)m_cItems.Add(text);
-
-}
-
-long lmBookContentsBox::AppendItem(const long& parent, 
-                                           const wxString& text, wxString& sImgPath, int image,
-                                           int selImage, wxTreeItemData* data)
-{
-    //Appends an item to the end of the branch identified by parent, return a new item id.
-
-    //The image and selImage parameters are an index within the normal image list
-    //specifying the image to use for unselected and selected items, respectively.
-    //If image > -1 and selImage is -1, the same image is used for both selected 
-    //and unselected items.
-    //wxFileSystem& oFS = GetFileSystem();
-    //oFS.ChangePathTo(sImgPath);
-    return (long)m_cItems.Add(text);
-}
-
-void lmBookContentsBox::AssignImageList(wxImageList* imageList)
-{
-    //Sets the normal image list. Image list assigned with this method will be 
-    //automatically deleted by wxTreeCtrl as appropriate (i.e. it takes ownership 
-    //of the list).
-}
-
 void lmBookContentsBox::DeleteAllItems()
 {
     //Deletes all items in the control.
-    m_cItems.Clear();
+    m_aTree.Clear();
 }
 
 void lmBookContentsBox::EnsureVisible(const long& nItem)
@@ -217,7 +182,7 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
 
     for (int i = 0; i < nNumItems; i++)
     {
-        lmBookIndexItem *it = &contents[i];
+        lmBookIndexItem *it = contents[i];
 
         // set path for images
         if (it->level == 0)
@@ -283,7 +248,7 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
     m_PagesHash.clear();
     for (long i = 0; i < nNumItems; i++)
     {
-        lmBookIndexItem *it = &contents[i];
+        lmBookIndexItem *it = contents[i];
         wxFileName oFN(it->GetFullPath());
         m_PagesHash[oFN.GetFullPath()] = i;
         wxLogMessage(_T("Full Path = '%s', item=%d"), it->GetFullPath(), i);
@@ -293,16 +258,30 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
 
 }
 
-int lmBookContentsBox::LocateItem(int n) const
+int lmBookContentsBox::LocateTreeItem(int nEntry) const
 {
-    //returns index to visible item # n
+    //returns index to visible item # nEntry
     int nVisible = -1;
     for (int i = 0; i < (int)m_aTree.size(); i++)
     {
         if (m_aTree[i].fVisible) nVisible++;
-        if (nVisible == n) return i;
+        if (nVisible == nEntry) return i;
     }
     return -1;
+}
+
+int lmBookContentsBox::LocateEntry(int nTree) const
+{
+    // Given the index to m_aTree returns the visible entry number
+    int nEntry = -1;
+    for (int i = 0; i < (int)m_aTree.size(); i++)
+    {
+        if (m_aTree[i].fVisible) nEntry++;
+        if (i == nTree) break;
+    }
+    return nEntry;
+
+    
 }
 
 wxString lmBookContentsBox::FormatItem(int nTree) const
@@ -322,7 +301,10 @@ wxString lmBookContentsBox::FormatItem(int nTree) const
         }
     }
     else {
-        sLine += _T("no' icon='page' ");
+        if (m_aTree[nTree].nLevel == 0)
+            sLine += _T("no' icon='leaflet' ");
+        else
+            sLine += _T("no' icon='page' ");
     }
 
     // add image
@@ -338,9 +320,10 @@ wxString lmBookContentsBox::FormatItem(int nTree) const
     sLine += _T(" titlenum='") + m_aTree[nTree].sTitlenum + _T("'>");
 
     // add the title
-    if (m_aTree[nTree].nLevel == 0) sLine += _T("<b>");
+    bool fTitleBold = (m_aTree[nTree].nLevel == 0) && m_aTree[nTree].fHasChildren;
+    if (fTitleBold) sLine += _T("<b>");
     sLine += m_aTree[nTree].sTitle;
-    if (m_aTree[nTree].nLevel == 0) sLine += _T("</b>");
+    if (fTitleBold) sLine += _T("</b>");
 
     // close item
     sLine += _T("</tocitem>");
@@ -359,21 +342,56 @@ void lmBookContentsBox::ChangePage()
         if (!page.empty()) {
             wxFileName oFN(page);
             nTree = m_PagesHash[oFN.GetFullPath()];
-
-            //// iterate over all the elements in the class
-            //lmPagesHash::iterator it;
-            //for( it = m_PagesHash.begin(); it != m_PagesHash.end(); ++it )
-            //{
-            //    wxLogMessage(_T("key='%s', value=%d"), it->first, it->second);
-            //}
         }
 
-        if (nTree != -1) 
-        {
-            SelectItem(nTree);
+        if (nTree != -1) {
             EnsureVisible(nTree);
+            SelectItem(nTree);
         }
     }
+}
+
+int lmBookContentsBox::PageNext()
+{
+    //locate current item
+    int nTree = LocateTreeItem( GetSelection() );
+
+    if (nTree != -1) {
+        //find the next page
+        nTree++;
+        if (m_aTree[nTree].nLevel > 0) {
+            while (m_aTree[nTree].fHasChildren && m_aTree[nTree].nLevel > 0)
+                nTree++;
+
+            //select the item if in current book
+            if (m_aTree[nTree].nLevel > 0) {
+                EnsureVisible(nTree);
+                SelectItem( LocateEntry(nTree) );
+            }
+        }
+    }
+    return nTree;
+}
+
+int lmBookContentsBox::PagePrev()
+{
+    //locate current item
+    int nTree = LocateTreeItem( GetSelection() );
+
+    if (nTree != -1) {
+        //if not the cover page
+        if (m_aTree[nTree].nLevel > 0) {
+            //find the previous page
+            nTree--;
+            while (m_aTree[nTree].fHasChildren && m_aTree[nTree].nLevel > 0)
+                nTree--;
+
+            //select the item
+            EnsureVisible(nTree);
+            SelectItem( LocateEntry(nTree) );
+        }
+    }
+    return nTree;
 }
 
 void lmBookContentsBox::Expand(int nItem, bool fRefresh)

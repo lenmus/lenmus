@@ -204,7 +204,6 @@ private:
 
     // HTML parser we use
     wxHtmlWinParser*        m_htmlParser;
-
     // file system used by m_htmlParser
     wxFileSystem m_filesystem;
 

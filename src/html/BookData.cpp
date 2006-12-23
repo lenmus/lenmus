@@ -53,11 +53,6 @@
 extern lmPaths* g_pPaths;
 
 
-#include "wx/arrimpl.cpp"
-WX_DEFINE_OBJARRAY(lmBookRecArray)
-WX_DEFINE_OBJARRAY(lmBookIndexArray)
-
-
 // BookData object stores and manages all book indexes.
 // Html pages are not processed. When a page display is requested, the page is
 // directtly loaded by the wxHtmlWindowd, LoadPage() method.
@@ -125,6 +120,10 @@ lmBookRecord::lmBookRecord(const wxString& bookfile, const wxString& basepath,
     m_ContentsStart = m_ContentsEnd = -1;
 }
 
+lmBookRecord::~lmBookRecord()
+{
+}
+
 wxString lmBookRecord::GetFullPath(const wxString &page) const
 {
     // returns full filename of page (which is part of the book),
@@ -165,6 +164,20 @@ lmBookData::lmBookData()
 lmBookData::~lmBookData()
 {
     delete m_pParser;
+    int i;
+    for(i = m_bookRecords.GetCount(); i > 0; i--) {
+        delete m_bookRecords[i-1];
+        m_bookRecords.RemoveAt(i-1);
+    }
+    for (i = m_index.GetCount(); i > 0; i--) {
+        delete m_index[i-1];
+        m_index.RemoveAt(i-1);
+    }
+    for(i = m_contents.GetCount(); i > 0; i--) {
+        delete m_contents[i-1];
+        m_contents.RemoveAt(i-1);
+    }
+
 }
 
 void lmBookData::SetTempDir(const wxString& path)
@@ -547,10 +560,10 @@ wxString lmBookData::FindPageByName(const wxString& x)
     nNumBooks = m_bookRecords.GetCount();
     for (i = 0; i < nNumBooks; i++)
     {
-        f = fsys.OpenFile(m_bookRecords[i].GetFullPath(x));
+        f = fsys.OpenFile(m_bookRecords[i]->GetFullPath(x));
         if (f)
         {
-            wxString url = m_bookRecords[i].GetFullPath(x);
+            wxString url = m_bookRecords[i]->GetFullPath(x);
             delete f;
             return url;
         }
@@ -618,9 +631,9 @@ lmSearchStatus::lmSearchStatus(lmBookData* data, const wxString& keyword,
         // we have to search in a specific book. Find it first
         int i, cnt = data->m_bookRecords.GetCount();
         for (i = 0; i < cnt; i++)
-            if (data->m_bookRecords[i].GetTitle() == book)
+            if (data->m_bookRecords[i]->GetTitle() == book)
             {
-                bookr = &(data->m_bookRecords[i]);
+                bookr = data->m_bookRecords[i];
                 m_CurIndex = bookr->GetContentsStart();
                 m_MaxIndex = bookr->GetContentsEnd();
                 break;
