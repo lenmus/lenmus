@@ -1,0 +1,127 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Chord computation algorithm</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.70.1">
+<meta name="description" content="This XML document is marked up according the the DocBook schema It shows a few elements of the DocBook vocabulary, as well as a couple of examples of mathematical expressions where we used MathML markup.">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="article" lang="en">
+<div class="titlepage">
+<div>
+<div><h1 class="title">
+<a name="article"></a>Chord computation algorithm</h1></div>
+<div><div class="author"><h3 class="author">
+<span class="firstname">Cecilio</span> <span class="surname">Salmeron</span>
+</h3></div></div>
+<div><p class="copyright">Copyright &copy; 2002-2006 Cecilio Salmeron</p></div>
+<div><div class="legalnotice">
+<a name="legal_notice"></a><p class="legalnotice-title"><b>Legal Notice</b></p>
+<p>Permission is granted to copy, distribute, and/or modify this document
+        under the terms of the GNU Free Documentation License, Version 1.2 or any later
+        version published by the Free Software Foundation; with no Invariant Sections, 
+        no Front-Cover Texts, and no Back-Cover Texts. A copy of the license
+        is available at 
+        <a href="http://www.gnu.org/licenses/fdl.html" target="_top">http://www.gnu.org/licenses/fdl.html</a>.
+        </p>
+<p>This document may be copied and distributed in any medium, either
+        commercially or noncommercially, provided that the GNU Free Documentation
+        License (FDL), the copyright notices, and the license notice saying
+        the GNU FDL applies to the document are reproduced in all copies, 
+        and that you add no other conditions whatsoever to those of the GNU FDL. 
+        </p>
+</div></div>
+<div><div class="abstract">
+<p class="title"><b>Abstract</b></p>
+<p>
+        This XML document is marked up according the the DocBook schema It
+        shows a few elements of the DocBook vocabulary, as well as a couple of
+        examples of mathematical expressions where we used MathML markup.
+        </p>
+</div></div>
+</div>
+<hr>
+</div>
+<div class="toc">
+<p><b>Table of Contents</b></p>
+<dl><dt><span class="sect1"><a href="#id2512518">Chord computation algorithm</a></span></dt></dl>
+</div>
+<div class="sect1" lang="en">
+<div class="titlepage"><div><div><h2 class="title" style="clear: both">
+<a name="id2512518"></a>Chord computation algorithm</h2></div></div></div>
+<p>
+Problem to solve: Given a root note (i.e. '+c4') and an interval name (i.e. 'M3') compute the
+note to form the desired interval.</p>
+<p>
+1. Observe the sequence of notes:
+        semitones
+intval  0    1    2    3    4    5    6    7    8    9   10   11   12   13
+1       c   +c  ++c
+2          --d   -d    d   +d  ++d
+3               --e   -e    e   +e  ++e
+4                    --f   -f    f   +f  ++f
+5                              --g   -g    g   +g  ++g
+6                                        --a   -a    a   +a  ++a
+7                                                  --b   -b    b   +b  ++b
+8                                                       --c   -c    c   +c
+
+
+And the semitones implied by each interval type:
+
+      intval  semitones
+      2m      1
+      2M      2
+      3m      3
+      3M      4
+      3a/4p   5
+      4a/5d   6 
+      5p      7
+      5a/6m   8      
+      6M      9
+      6a/7m   10
+      7M      11
+      8p      12
+
+
+2. Decompose input data:
+RootStep: 'c' (0)
+RootAcc:  '+'  (+1)
+RootOctave: '4'  (4)
+RootSemitones: c -&gt; 0
+
+IntvNum: '3'  (3)
+IntvSemitones: 'M3' -&gt; (5)
+
+3. Compute desired interval:
+
+NewStep = RootStep + (IntvNum-1) :  'c' + (3-1) = 'c' + 2 = 'e'
+NewStepSemitones: e -&gt; 5
+NewAcc = (RootSemitones + RootAcc + IntvSemitones - NewStepSemitones) mod 12 : 0+1+5-5 = 1
+
+Result '+e4'
+
+
+4. Example involving octave change: '-a3' + 'aug 5th'
+
+RootStep: 'a' (5)
+RootAcc:  '-'  (-1)
+RootOctave: '3'  (3)
+RootSemitones: -a -&gt; 8
+
+IntvNum: '5'  (5)
+IntvSemitones: 'a5' -&gt; (8)
+
+Desired interval:
+
+NewStep = [RootStep + (IntvNum-1)] mod 7 :  5 + (5-1) = 9 mod 7 = 2 -&gt; 'e'
+NewOctave = +1
+NewStepSemitones: d -&gt; 3 
+NewAcc = (RootSemitones + RootAcc + IntvSemitones - NewStepSemitones) mod 12: 8-1+8-3 mod 12 = 0
+
+Result 'e4'
+
+                     
+</p>
+</div>
+</div></body>
+</html>
+

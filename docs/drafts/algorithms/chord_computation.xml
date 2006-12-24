@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+               "http://www.oasis-open.org/docbook/xml/5.0b.5/docbook.dtd">
+
+<article id="article">
+
+<articleinfo>
+    <title>Interval computation algorithm</title>
+    <author>
+        <firstname>Cecilio</firstname> <surname>Salmeron</surname>
+    </author>
+
+    <legalnotice id="legal_notice">
+        <title>Legal Notice</title>
+        <para>Permission is granted to copy, distribute, and/or modify this document
+        under the terms of the GNU Free Documentation License, Version 1.2 or any later
+        version published by the Free Software Foundation; with no Invariant Sections, 
+        no Front-Cover Texts, and no Back-Cover Texts. A copy of the license
+        is available at 
+        <ulink url="http://www.gnu.org/licenses/fdl.html">http://www.gnu.org/licenses/fdl.html</ulink>.
+        </para>
+
+        <para>This document may be copied and distributed in any medium, either
+        commercially or noncommercially, provided that the GNU Free Documentation
+        License (FDL), the copyright notices, and the license notice saying
+        the GNU FDL applies to the document are reproduced in all copies, 
+        and that you add no other conditions whatsoever to those of the GNU FDL. 
+        </para>
+    </legalnotice>
+
+    <copyright>
+        <year>2002-2006</year>
+        <holder>Cecilio Salmeron</holder>
+    </copyright>
+    
+    <abstract>
+        <para>
+        This XML document is marked up according the the DocBook schema It
+        shows a few elements of the DocBook vocabulary, as well as a couple of
+        examples of mathematical expressions where we used MathML markup.
+        </para>
+    </abstract>
+</articleinfo>
+
+<sect1>
+<title>Interval computation algorithm</title>
+
+<para>
+Problem to solve: Given a root note (i.e. '+c4') and an interval name (i.e. 'M3') compute the
+note to form the desired interval.</para>
+
+<para>The algorithm has been designed by observing the following table, relating semitones
+notes and intervals:</para>
+
+<table>
+        semitones
+intval  0    1    2    3    4    5    6    7    8    9   10   11   12   13
+1       c   +c  ++c
+2     --d   -d    d   +d  ++d
+3               --e   -e    e   +e  ++e
+4                    --f   -f    f   +f  ++f
+5                              --g   -g    g   +g  ++g
+6                                        --a   -a    a   +a  ++a
+7                                                  --b   -b    b   +b  ++b
+8                                                       --c   -c    c   +c
+</table>
+
+
+<para>Also, it is necessary to compute the semitones in each interval type:</para>
+
+<table>
+      intval  semitones
+      m2      1
+      M2      2
+      m3      3
+      M3      4
+      a3/p4   5
+      a4/d5   6 
+      p5      7
+      a5/m6   8      
+      M6/d7   9
+      a6/m7   10
+      M7      11
+      p8      12
+</table>
+
+
+<para>From table 1 we can compute the semitones implied by each root note, counted
+from note c. Let's call this the 'RootSemitones':</para>
+
+<table>
+RootSemitones:
+note:       c   d   e   f   g   a   b   
+semitones:  0   2   4   5   7   9  11
+</table>
+
+To compute an ascending interval:
+-----------------------------------------------------------------------------
+
+1. Decompose input data:
+RootStep: 'c' (0)
+RootAcc:  '+'  (+1)
+RootOctave: '4'  (4)
+RootSemitones: c -&gt; 0 
+
+IntvNum: '3'  (3)
+IntvSemitones: 'M3' -&gt; (4)
+
+2. Compute desired interval:
+
+NewStep = RootStep + (IntvNum-1) % 7 =  'c' + (3-1) = 'c' + 2 = 'e'
+NewStepSemitones: e -&gt; 4
+NewAcc = ((RootSemitones + IntvSemitones - NewStepSemitones) mod 12 ) + RootAcc : (0+4-4)+1 = 1
+
+Result '+e4'
+
+
+- Example involving octave change: '-a3' + 'aug 5th'
+
+RootStep: 'a' (5)
+RootAcc:  '-'  (-1)
+RootOctave: '3'  (3)
+RootSemitones: -a -&gt; 9
+
+IntvNum: '5'  (5)
+IntvSemitones: 'a5' -&gt; (8)
+
+Desired interval:
+
+NewStep = [RootStep + (IntvNum-1)] mod 7 :  5 + (5-1) = 9 mod 7 = 2 -&gt; 'e'
+NewOctave = +1
+NewStepSemitones: e -&gt; 4 
+NewAcc = ((RootSemitones + IntvSemitones - NewStepSemitones) mod 12 ) + RootAcc =
+         (9+8-4)mod 12 - 1  = 1 - 1 = 0
+
+Result 'e4'
+
+                     
+- Example involving octave change: '-a3' + 'p5'
+
+RootStep: 'a' (5)
+RootAcc:  '-'  (-1)
+RootOctave: '3'  (3)
+RootSemitones: -a -&gt; 9
+
+IntvNum: '5'  (5)
+IntvSemitones: 'p5' -&gt; (7)
+
+Desired interval:
+
+NewStep = [RootStep + (IntvNum-1)] mod 7 :  5 + (5-1) = 9 mod 7 = 2 -&gt; 'e'
+NewOctave = +1
+NewStepSemitones: e -&gt; 4 
+NewAcc = ((RootSemitones + IntvSemitones - NewStepSemitones) mod 12 ) + RootAcc =
+            (9+7-4)mod 12 - 1  = 0 - 1 = -1
+
+Result '-e4'
+
+
+To compute a descending interval: i.e +e4  M3 descending
+-----------------------------------------------------------------------------
+
+1. Decompose input data:
+RootStep: 'e' (2)
+RootAcc:  '+'  (+1)
+RootOctave: '4'  (4)
+RootSemitones: e -&gt; 4 
+
+IntvNum: '3'  (3)
+IntvSemitones: 'M3' -&gt; (4)
+
+2. Compute desired interval:
+
+NewStep = RootStep - (IntvNum-1) :  'e' - (3-1) = 'e' - 2 = 'c'
+NewStepSemitones: c -&gt; 0
+NewAcc = ((RootSemitones - IntvSemitones - NewStepSemitones) mod 12 ) + RootAcc =
+    (4-4-0)+1 = 1
+
+Result '+c4'
+
+
+- Example involving octave change: 'e4' - 'aug 5th'
+
+RootStep: 'e' (2)
+RootAcc:  ''  (0)
+RootOctave: '4'  (4)
+RootSemitones: e -&gt; 4
+
+IntvNum: '5'  (5)
+IntvSemitones: 'a5' -&gt; (8)
+
+Desired interval:
+
+NewStep = [RootStep - (IntvNum-1)] mod 7 =  2 - (5-1) = -2 mod 7 = 5 -&gt; 'a'
+NewOctave = -1  (because NewStep was negative)
+NewStepSemitones: a -&gt; 9 
+NewAcc = ((RootSemitones - IntvSemitones - NewStepSemitones) mod 12 ) + RootAcc =
+         (4-8-9)mod 12 + 0  = -13 mod 12 = -1
+
+Result '-a3'
+
+                     
+- Example involving octave change: 'c4' - 'p5'
+
+RootStep: 'c' (0)
+RootAcc:  ''  (0)
+RootOctave: '4'  (4)
+RootSemitones: c -&gt; 0
+
+IntvNum: '5'  (5)
+IntvSemitones: 'p5' -&gt; (7)
+
+Desired interval:
+
+NewStep = [RootStep - (IntvNum-1)] mod 7 :  0 - (5-1) = -4 mod 7 = 4 -&gt; 'f'
+NewOctave = -1 (because NewStep was negative)
+NewStepSemitones: f -&gt; 5 
+NewAcc = ((RootSemitones - IntvSemitones - NewStepSemitones) mod 12 ) + RootAcc =
+            (0-7-5)mod 12 + 0  = -12 mod 12 = 0
+
+Result 'f3'
+
+
+                     
+</para>
+</sect1>
+
+</article>
+

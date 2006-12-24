@@ -34,18 +34,6 @@
 #pragma interface "helpdata.h"
 #endif
 
-#include "../app/global.h"
-
-#if !lmUSE_LENMUS_EBOOK_FORMAT
-
-#define lmBookData          wxHtmlHelpData
-#define lmBookRecord        wxHtmlBookRecord
-#define lmBookIndexArray    wxHtmlHelpDataItems
-#define lmBookIndexItem     wxHtmlHelpDataItem
-#define lmBookRecArray      wxHtmlBookRecArray
-
-#else   // if lmUSE_LENMUS_EBOOK_FORMAT
-
 #include "wx/defs.h"
 
 #include "wx/object.h"
@@ -66,7 +54,7 @@ class lmBookData;
 //--------------------------------------------------------------------------------
 
 
-// lmBookRecord: a record per book, to contain the info from the hhb file
+// lmBookRecord: a record per book, to contain the info from the lmb file
 
 class lmBookRecord
 {
@@ -132,10 +120,6 @@ struct lmBookIndexItem
 #include "wx/dynarray.h"
 WX_DEFINE_ARRAY(lmBookRecord*, lmBookRecArray);
 WX_DEFINE_ARRAY(lmBookIndexItem*, lmBookIndexArray);
-//
-//WX_DECLARE_USER_EXPORTED_OBJARRAY(lmBookIndexItem, lmBookIndexArray,
-//                                  WXDLLIMPEXP_HTML);
-
 
 
 //------------------------------------------------------------------------------
@@ -240,7 +224,5 @@ private:
 
     DECLARE_NO_COPY_CLASS(lmBookData)
 };
-
-#endif      // lmUSE_LENMUS_EBOOK_FORMAT
 
 #endif      // __LM_BOOKDATA_H__

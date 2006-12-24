@@ -74,7 +74,6 @@ extern lmLogger* g_pLogger;
 
 #include "DlgPatternEditor.h"               // to test DlgPatternEditor dialog
 #include "../auxmusic/ChordManager.h"       //for Unit Tests
-#include "global.h"                         //config. flag lmUSE_LENMUS_EBOOK_FORMAT
 
 // to use html help controller
 #include "wx/html/helpctrl.h"

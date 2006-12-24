@@ -26,26 +26,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file TextBookController.cpp
-    @brief Implementation file for class lmTextBookController
-    @ingroup html_management
-*/
-//===============================================================================
-/*
-    Code copied from wxWidgets, file helpctrl.cpp
-
-    Things deleted are commented with //CSG_DELETED and, if applicable, a comment with
-    additional explanation
-
-    Things modified are marked as //CSG_MODIFIED and an explanation
-
-    Global changes:
-      -    TextBookHelpFrame changed to lmTextBookFrame
-*/
-//===============================================================================
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "TextBookController.h"        //CSG_MODIFIED
+#pragma implementation "TextBookController.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
@@ -73,8 +56,8 @@
     #include "wx/tipwin.h"
 #endif
 
-#include "../app/MainFrame.h"           //CSG_ADDED
-extern lmMainFrame* g_pMainFrame;       //CSG_ADDED
+#include "../app/MainFrame.h"
+extern lmMainFrame* g_pMainFrame;
 
 
 #if wxUSE_LIBMSPACK

@@ -1,0 +1,22 @@
+Renderization process
+--------------------------
+
+
+Two behaviours:
+
+- ScoreView: Score size is fixed and determined by paper size. Re-layout is only
+    needed when requested by the user.
+    
+- ScoreAuxCtrol: A ctrol for display. Size varies if the user resizes the parent
+    window and, then, re-layout is needed. Limited to one page.
+    
+    
+    
+    
+Methods:
+
+Layout -> the graphical model is built. All measurements in logical units (tenths).
+    No problem with bitmaps sizes as no bitmpas are involved.
+    
+Render -> the graphical model is interpreted and a bitmap for the requested page
+    is created. Logical units translated to device units.

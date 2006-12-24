@@ -1,0 +1,109 @@
+ContentsBoxCtrol
+----------------
+    App independent control: html list control with image/description for items, and
+    the items simulate a tree control, but tree control functionality (expand, contract, etc)
+    is not in this control
+
+BookContentBox
+--------------
+    A tree control with images. It is derived from ContentsBoxCtrol and it is like an
+    abstraction layer to isolate the logical methods from the specific implementation
+    so that, in future, the treeCtrol can be implemented in a different way, instead of
+    deriving from ContentsBoxCtrol.
+    
+    - Display and internal management of the control
+    - Load control data
+
+    Used in:
+    
+BookData
+---------
+    Isolate books' index and toc format from internal tables structure
+    - Read source books
+    - Build internal data structures
+
+    Used in:
+    
+TextBookController
+------------------
+    High level API to deal with eMusicBooks
+    
+    - Add books
+    - Request to display a page
+    - Request to search for a word
+        lmBookData *GetHelpData() { return &m_oBookData; }
+
+    - Deal with book contents (BookData)
+
+    Used in:
+    
+        lmMainFrame
+        lmHtmlWindow ?  Display() when click on a link
+        lmTheoMusicReadingCtrol ? when click on "Go Back" link
+
+TextBookFrame
+-------------
+    Frame to display eMusicBooks. Internal use by TextBookController
+    
+    - Manage the controls and keep their info synchronized
+
+    Used in:
+    
+        lmMainFrame -> To pass toolbar events
+        lmBookContentsBox::ChangePage() -> when clicking on an item it must request
+            to display that page and to synchronize the index (?)
+        lmTextBookController
+
+
+
+
+
+
+App <--> TextBookController
+               |
+               +--> TextBookFrame
+               |             |
+               |             +--> BookContentBox --> ContentsBoxCtrol
+               |             +--> Index
+               |             +--> HtmlWindow
+               |
+               +--> BookData
+               
+         
+         
+         
+               
+Processing details
+-------------------------
+
+lmBookData processes the TOC file (method ProcessTOCFile) and creates an array
+of lmBookIndexItem with all the book's content, and a lmBookRecord to represent
+the book. This representation is flat.
+
+This array is then processed by lmBookContentsBox (method CreateContents) and 
+creates the array m_aTree[] with all the tree structure.
+
+Method lmBookContentsBox::FormatItem() creates the html content for ContentsBoxCtrol.
+The content is a collection of <tocitem> tags:
+
+<tocitem 
+    expand= + | - | no
+    icon= open_book | open_folder | closed_book | closed_folder | page
+    [img=img_filename.png]
+    level='%d'     //tree level 0..n
+    item='%d'      //num itemin table
+    titlenum = string       //prefix (letter/number) for index title
+> 
+title
+</tocitem>
+
+
+At the begining of file ContentsBoxCtrol.cpp there is an html tag handler to process
+the <tocitem> tag and cretae the html content.
+
+
+Single page books
+-------------------
+It is possible to include single pages at first level. These 'single page' books 
+will be called 'leaflets'
+

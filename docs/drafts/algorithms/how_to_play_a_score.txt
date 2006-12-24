@@ -1,0 +1,104 @@
+Design rationale: how to play a score
+=====================================
+
+Use MIDI commands.
+
+Requirements:
+1. support for Play, Pause, and Stops commands
+2. Metronome on/off while playing
+3. Metronome setting changed while playing
+
+Metronome requirement 3 implies that timestamps for noteOn/NoteOff commands can not be
+precomputed as they will vary if metronome speed is changed.
+
+To satisfy real time requirements, it was decided not to generate MIDI commands from the objects
+model, but to preprocess the score and to represent it as a table of sound events (lmSoundManager
+object).
+
+For playing, in Phonascus (Visual Basic) the table was explored in a loop an each sound command
+was emited at appropiate time. To wait for the right time, sentence DoWaitEvents():
+
+        Public Sub DoWaitEvents(msWait As Long)
+            Dim msEnd As Long
+            msEnd = GetTickCount + msWait
+            Do
+                DoEvents
+            Loop While GetTickCount < msEnd
+        End Sub
+
+This worked OK, and sentence DoEvents allows for time to process GUI events.
+
+When migrating this code to C++ and wxWidgets, DoWaitEvents was replaced by ::wxMilliSleep().
+This retain execution flow and prevents that GUI events be served; this "frezzes" the GUI and
+it is not possible to serve user commands, such as stopping the music or changing metronome
+settings.
+
+To solve this problem I moved the Play() method to execute in a different thread. This is
+the solution implemented in backup 2005-08-15. This solution works but it has another problem:
+the GUI can not be updated from the tread (see  wxWidgets documentation, topic:
+Topic overview: Multithreading overview). Therefore other alternatives must be explored.
+
+1. Use wxMidi facilities to accept timestamped commands and take care of executing them
+    at right time. 
+    
+2. Replace DoWaitEvents() for Cx  code.
+
+3. Create GUI_UPDATE events from the thread. GUI_UPDATE events will take care of VisualOn/Off
+    commands.
+
+4. Replace DoWaitEvents() by creating a new SOUND_EVENT; control is returned to main event loop
+    and SOUND_EVENT is processed by lmSoundManager
+
+
+Alternative 1 is not acceptable as it will not be possible to emit all music commands, due
+to metronome requirements (mainly, req.3)
+    
+Alternatives 2 and 4, are very similar. They probably will work OK as this worked in Visual Basic
+but timing is not very acurate: priority is on the main loop not on the sound event.
+
+Alternative 3 is the most acurate but is perhaps the most complex as a thread must be maintained
+and a GUI_UPDATE event must be implemented. For timing accuracy, the thread must have high
+execution priority, so it prevails over GUI user commands and VisualOn / VisualOff GUI_UPDATE
+events.
+
+Alternative 3 was finally implemented. (2005-08-16).
+
+
+How the events table is built
+=============================
+
+When any of the methods:
+
+    - lmScore::Play()
+    - lmScore::PlayMeasure()
+
+is invoked the events table is computed ( ComputeMidiEvents() )and executed.
+
+Method lmScore::ComputeMidiEvents() does the following:
+
+1. It creates the main sound manager object (m_pSoundMngr new lmSoundManager() )
+    
+2. The enters a loop to generate Midi events for each instrument. For each VStaff
+   an event table
+   is generated (pSM = pVStaff->ComputeMidiEvents() ) and is appended to main table
+   (m_pSoundMngr->Append(pSM) )
+   Finally, aa program event to program sound for this instrument is added to
+   the main table ( m_pSoundMngr->StoreEvent() )
+    
+3. Once all instruments are processed the main table is closed and sorted by time
+   ( m_pSoundMngr->CloseTable() )
+   
+   
+   
+How tempo is maintained
+=======================
+    
+Tempo is controlled by time signature objects. During events table construction, 
+whenever a time signature is found, a 'RhythmChange' event is generated. The
+event includes information about the new time signature (num beats, duration 
+of a beat).
+
+
+This event is later used to set up metronome and tempo information.
+
+

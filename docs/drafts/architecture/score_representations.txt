@@ -1,0 +1,186 @@
+Score representations
+
+
+
+External representations
+------------------------
+LDP. Human readable. Easy to enter with a QWERTY keyboard.
+
+Others:
+Supported: MusicXML
+Not yet supported: abc, Guido, ...
+
+Internal Independent Representation
+-----------------------------------
+The Internal Independent Representation (IIR) or just inner representation is an abstract representation of the score, containing all necessary information to derive any other representation when needed, but not oriented to any particular use. It should not favor any particular use (renderization, play back, ...) but try to serve all them equally (note 1).
+
+It contains all information present in a LDP score but in a flexible and powerful format more suitable for processing.
+
+When a particular use is intended, the corresponding optimized representaion is derived from the IIR. The required format for an application generally differs depending on the application itself, as the requirements vary: a music notation application has different needs than a musical analysis tool.
+
+The IIR helps to enforce the document-view processing model that describes how an application can encapsulate its data from the actual display and manipulation of the data. Within the document-view model, the document contains the data (IIR reperesentation), which is displayed and manipulated by different views. Retrieval and change of the data by its views is done by using only strictly defined interface functions; this ensures that an alteration of the data in one view is reflecected immediately in all other views of the same data. The concept of view is a generic one: a view can either be a print out of a conventional music score, or it can be a textual representation in LDP or MusicXML, or play back representation (such a table of MIDI events), or some other interpretation of the musical information contained in the IIR score.
+
+Next figure shows the IIR in the context of the document view model:
+
+
+IIR (lmScore) ---+---- Interchange (MusicXML, LDP, Guido)
+                 |
+                 +---- Renderization (lmBoxScore, classes lmRdXxxxxx )
+                 |
+                 +---- PlayBack (SoundEvents Table, classes lmPyXxxxxx )
+                 |
+                 ....
+       
+
+Application dependent representations
+-------------------------------------
+
+Renderization
+-------------
+The score as it has to be renderized. Similar to IIR but including additional container classes to organize ScoreObjs into pages and systems.
+
+
+Play back
+---------
+The score as in has to be played back. It is represented by a lmSoundEvents table.
+
+
+
+NOTES
+
+1. This is not totally true. Currently, the internal representation favor (is optimized for) renderization as this is the more frequent use (at least in LenMus Phonascus program) and it is very costing. Currently the Formatter object updates information but do not inserts new ScoreObjs.
+
+
+
+
+lmScore
+
+    void Draw(lmPaper* pPaper);
+    void Play(bool fVisualTracking,  ...)
+    wxString SourceLDP()
+    wxString SourceXML()
+
+
+Draw(pPaper): 
+    Formatter->RenderScore(pPaper)
+    
+    
+Play():
+    if not valid SoundEvents table then ComputeMidiEvents()     //generate an updated sound representation
+    SoundMngr->Play()                                           //play it
+
+
+
+Score internal representation
+===============================
+
+A lmScore is, mainly, a collection of Instruments plus some data (composer, title, ...):
+
+    InstrumentsList     m_cInstruments;
+    StaffObjsList       m_cTitles;
+
+A lmInstrunent is a collection of VStaves plus some data (instrument name, MIDI assignement, ...):
+
+    VStavesList    m_cStaves;
+
+
+A lmVStaff is a collection of lmStaffObjs and a list of lmStaff
+
+    lmColStaffObjs    m_cStaffObjs;     //collection of StaffObjs
+    StaffList         m_cStaves;        //list of lmStaff 
+    
+    a lmStaff is a set of consecutive lines and spaces. It is represented by just some data
+    (num lines, spacing information, etc.) about how to render the VStaff. So the only
+    'real' object is the VStaff and all StaffObjs belong to it. 
+
+
+The Collection of StaffObjs (lmColStaffObjs)
+
+Bars are not modelled by objects. They are just the collection of lmStaffObj found between
+two lmStaffObj of type 'barline' (and between the start of the score and the first barline).
+Nevertheless, tha concept of bar is very important at least in two situations:
+    1. In interpretation (playing back the score). For example:  play from bar #7
+    2. When rendering the score, as all the objects in a bar must be rendered together in
+       the same paper line.
+Due to this, althoug the bar is not modelled as an object, there exits methods in the
+VStaff object to deal with bars.
+
+The collection is composed mainly by two variables: a list containing the StaffObjs that
+form the collection and an array containing pointers to the StaffObjsList nodes
+where each measure start:
+
+    StaffObjsList   m_cStaffobjs;       //list of StaffObjs that belongs to this collection
+    wxArrayNodes    m_aStartMeasure;    //Node (lmStaffObj list) in which each measure starts
+
+
+
+
+Containers and auxiliary objects to deal with formatting
+========================================================
+
+Instead of creating special control StaffObjs to signal formatting events (line breaks,
+page breaks, extra space, etc.) I am going to follow the containers approach.
+
+We can divide any score into small fragments. Let's call these fragments 'cells'. Cell
+is for example one word, horizontal line, image or any other part of document. 
+Each cell has width and height (except special "magic" cells with zero
+dimensions - e.g. colour changers or font changers).
+
+A 'container' is kind of cell that may contain sub-cells. Its size depends on number
+and sizes of its sub-cells (and also depends on width of window).
+
+All container classes will be named with prefix 'lmBox'. There are four main containers:
+
+
+
+Class lmBoxScore is the main container for the whole score. Only one instance
+of this class is created for a score. lmBoxScore contains one or more instances of class 
+lmBoxPage, which represent the pages of the score.
+
+Class lmBoxPage contains one or more instances of class lmBoxSystem. An instance
+of class lmBoxPage knows about its height and width and also about the size of
+its margins. Some graphical elements of the score, like for instance the visible
+title and composer of a piece are also controlled by class lmBoxPage. Class lmBoxPage
+contains one or more instances of class lmBoxSystem.
+
+Class lmBoxSystem represents a line of music in the printed score. It is made up from
+one or more instances of class lmBoxSysSlice.
+
+Class lmBoxSysSlice is a part of a single line of music. A
+set of lmBoxSysSlices build a lmBoxSystem. For a simple understanding,
+it is convenient to think of system slices as measures
+of a score. Class lmBoxSysSlice contains one or more
+instances of class lmBoxStaff. Class lmBoxSysSlice is also responsible
+for graphical elements that belong to several staves;
+this might be, for example, a beam that begins and ends in
+different staves, as it is shown on the right.
+
+Class lmBoxStaff represents a part of a single staff of a line of music. The time
+position and duration of the part being represented by an instance of class
+lmBoxStaff is directly determined by the containing lmBoxSysSlice. Class
+lmBoxStaff directly inherits from class GRCompositeNotationElement, which
+is capable of storing an arbitrary number of instances of class GRNotation-
+Element. Using this storage, class lmBoxStaff stores graphical elements being
+placed upon it. This might be musical markup, like for example an instance of
+class GRClef or a musical event like an instance of class GRNote.
+
+
+
+Usually, a score is printed on several pages, containing lines of music (called "systems"),
+which contain one or more staves.
+
+A system can be vertically sliced into so called system slices.
+
+When placing a notational element on a page of a score, it is essential to decide on
+its frame of reference. In most cases, the frame of reference is the staff on which
+a notational element (like for example a note) is placed. Then, the position of the
+notational element is specied with reference to the staff it belongs to. A single staff
+has the containing system as its frame of reference, therefore the position of a staff
+will be specied with respect to the containing system. A system (or line of music)
+will have the page coordinate system as its reference frame on which it will be
+placed. Therefore, moving a staff, or a system just requires one explicit change in
+position, because all underlying elements are then automatically moved. An essential
+requirement for a conventional music notation system is its ability to reect the
+hierarchical order of the relevant notational elements. When dealing with objectoriented
+terminology, this idea is reected in the usage of so called containers, which
+are capable of storing other elements.

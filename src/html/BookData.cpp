@@ -39,10 +39,6 @@
 #pragma hdrstop
 #endif
 
-#include "../app/global.h"
-
-#if lmUSE_LENMUS_EBOOK_FORMAT
-
 #include "wx/defs.h"
 #include "wx/zipstrm.h"
 
@@ -199,19 +195,6 @@ bool lmBookData::AddBook(const wxFileName& oFilename)
     //Reads a book (either a .lmb or .toc file) and loads its content
     //Returns true if success.
 
-    //wxString sFullName, sFileName, sPath;
-    //if (oFilename.GetExt() == _T("lmb")) {
-    //    //lenmus compressed book  (zip file)
-    //    sFileName = oFilename.GetName();
-    //    sPath = oFilename.GetFullPath() + _T("#zip:");
-    //    sFullName = sPath + sFileName + _T(".toc");
-    //}
-    //else {
-    //    sFullName = oFilename.GetFullPath();
-    //    sFileName = oFilename.GetName();
-    //    sPath = oFilename.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR , wxPATH_NATIVE);
-    //}
-
     // Process the TOC file (.toc)
     lmBookRecord* pBookr = ProcessTOCFile(oFilename);
     if (!pBookr) {
@@ -359,9 +342,10 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
         }
 
         // call GetNextEntry() until the required internal name is found
-        wxZipEntry* pEntry;
+        wxZipEntry* pEntry = (wxZipEntry*)NULL;
         do {
-            pEntry = zip.GetNextEntry();
+            if (pEntry) delete pEntry;      //delete previous entry
+            pEntry = zip.GetNextEntry();    //now we have ownership of object *pEntry
         }
         while (pEntry && pEntry->GetInternalName() != sInternalName);
 
@@ -372,6 +356,8 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
         zip.OpenEntry(*pEntry);
         fLmbFile = true;
         fOK = xdoc.Load(zip);    //asumes utf-8
+        zip.CloseEntry();
+        delete pEntry;
     }
     else {
         wxLogMessage(_T("Loading eBook. Error in TOC file '%s'. Extension is neither LMB nor TOC."), oFilename.GetFullPath());
@@ -769,5 +755,3 @@ bool lmBookSearchEngine::Scan(const wxFSFile& file)
     return false;
 }
 
-
-#endif      // lmUSE_LENMUS_EBOOK_FORMAT
