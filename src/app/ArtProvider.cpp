@@ -140,19 +140,19 @@ wxBitmap lmArtProvider::CreateBitmap(const wxArtID& id,
         sFile = _T("tool_index_panel");
     }
     else if ( id == wxART_GO_BACK ) {
-        sFile = _T("tool_page_previous");
+        sFile = _T("tool_previous");
     }
     else if ( id == wxART_GO_FORWARD ) {
-        sFile = _T("tool_page_next");
+        sFile = _T("tool_next");
     }
     else if ( id == wxART_GO_TO_PARENT ) {
         return wxNullBitmap;
     }
     else if ( id == wxART_GO_UP ) {
-        sFile = _T("tool_previous");
+        sFile = _T("tool_page_previous");
     }
     else if ( id == wxART_GO_DOWN ) {
-        sFile = _T("tool_next");
+        sFile = _T("tool_page_next");
     }
     else if ( id == wxART_FILE_OPEN ) {
         return wxNullBitmap;

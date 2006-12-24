@@ -348,17 +348,6 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
     // m_NavigPan will be NULL too (with m_HtmlWin directly connected to the frame)
     m_hfStyle = style;
 
-    wxImageList *ContentsImageList = new wxImageList(16, 16);
-    ContentsImageList->Add(wxArtProvider::GetIcon(wxART_HELP_BOOK,
-                                                  wxART_HELP_BROWSER,
-                                                  wxSize(16, 16)));
-    ContentsImageList->Add(wxArtProvider::GetIcon(wxART_HELP_FOLDER,
-                                                  wxART_HELP_BROWSER,
-                                                  wxSize(16, 16)));
-    ContentsImageList->Add(wxArtProvider::GetIcon(wxART_HELP_PAGE,
-                                                  wxART_HELP_BROWSER,
-                                                  wxSize(16, 16)));
-
     // Do the config in two steps. We read the HtmlWindow customization after we
     // create the window.
     if (m_Config)
@@ -443,7 +432,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
 
             wxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
 
-            sizer->Add(m_Bookmarks, 1, wxALIGN_CENTRE_VERTICAL | wxRIGHT, 5);
+            sizer->Add(m_Bookmarks, 1, wxFIXED_MINSIZE  | wxALIGN_CENTRE_VERTICAL | wxRIGHT, 5);
             sizer->Add(bmpbt1, 0, wxALIGN_CENTRE_VERTICAL | wxRIGHT, 2);
             sizer->Add(bmpbt2, 0, wxALIGN_CENTRE_VERTICAL, 0);
 
@@ -1364,9 +1353,6 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
                     _("HTML files (*.html;*.htm)|*.html;*.htm|")) +
                     _("Help books (*.htb)|*.htb|Help books (*.zip)|*.zip|") +
                     _("HTML Help Project (*.hhp)|*.hhp|") +
-#if wxUSE_LIBMSPACK
-                    _("Compressed HTML Help file (*.chm)|*.chm|") +
-#endif
                     _("All files (*.*)|*");
                 wxString s = wxFileSelector(_("Open HTML document"),
                                             wxEmptyString,
@@ -1379,9 +1365,6 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
                 {
                     wxString ext = s.Right(4).Lower();
                     if (ext == _T(".zip") || ext == _T(".htb") ||
-#if wxUSE_LIBMSPACK
-                        ext == _T(".chm") ||
-#endif
                         ext == _T(".hhp"))
                     {
                         wxBusyCursor bcur;
@@ -1673,4 +1656,30 @@ void lmTextBookFrame::OnCloseWindow(wxCloseEvent& evt)
     evt.Skip();
 }
 
+void lmTextBookFrame::UpdateUIEvent(wxUpdateUIEvent& event, wxToolBar* pToolBar)
+{
+
+    //MENU_eBook_GoBack,
+    //MENU_eBook_GoForward,
+    //MENU_eBook_UpNode,
+    //MENU_eBook_Print,
+    //MENU_eBook_OpenFile,
+    //MENU_eBook_Options,
+
+    bool fEnable = false;
+    switch(event.GetId()) {
+        case MENU_eBook_PageNext:
+            fEnable = !m_pContentsBox->IsLastPage();
+            break;
+
+        case MENU_eBook_PagePrev:
+            fEnable = !m_pContentsBox->IsFirstPage();
+            break;
+
+        default:
+            fEnable = true;
+            pToolBar->ToggleTool(MENU_eBookPanel, IsNavPanelVisible());
+    }
+    event.Enable(fEnable);
+}
 

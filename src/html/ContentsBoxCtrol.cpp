@@ -195,7 +195,7 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
             m_WParser->RestoreState();
 
             m_WParser->SetLink(oldlnk);
-            sItemLink = name;
+            //sItemLink = name;
         }
 
         // start link to item page

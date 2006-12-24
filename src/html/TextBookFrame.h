@@ -190,6 +190,7 @@ public:
     //CSG Added
     void OnToolbar(wxCommandEvent& event);
     bool IsNavPanelVisible() { return m_Cfg.navig_on; }
+    void UpdateUIEvent(wxUpdateUIEvent& event, wxToolBar* pToolBar);
 
 
 protected:

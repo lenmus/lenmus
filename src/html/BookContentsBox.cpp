@@ -111,14 +111,14 @@ void lmBookContentsBox::DeleteAllItems()
     m_aTree.Clear();
 }
 
-void lmBookContentsBox::EnsureVisible(const long& nItem)
+void lmBookContentsBox::EnsureVisible(const long& nTree)
 {
     //Scrolls and/or expands items to ensure that the given item is visible.
 
     // Locate its parents and open them
-    int nCurLevel = m_aTree[nItem].nLevel;
+    int nCurLevel = m_aTree[nTree].nLevel;
 
-    for(int i=nItem-1; i >= 0 && nCurLevel > 0; i--)
+    for(int i=nTree-1; i >= 0 && nCurLevel > 0; i--)
     {
         if (m_aTree[i].nLevel < nCurLevel) {
            if (!m_aTree[i].fOpen) Expand(i, false);        //false: do not refresh yet
@@ -126,7 +126,7 @@ void lmBookContentsBox::EnsureVisible(const long& nItem)
         }
     }
 
-    SetSelection(nItem);
+    SetSelection( LocateEntry(nTree) );
     RefreshAll();
 
 }
@@ -254,8 +254,18 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
         wxLogMessage(_T("Full Path = '%s', item=%d"), it->GetFullPath(), i);
     }
 
-    SetItemCount(nNumItems);
+    UpdateItemCount();
 
+}
+
+void lmBookContentsBox::UpdateItemCount()
+{
+    int nEntries = 0;
+    for (int i = 0; i < (int)m_aTree.size(); i++)
+    {
+        if (m_aTree[i].fVisible) nEntries++;
+    }
+    SetItemCount(nEntries);
 }
 
 int lmBookContentsBox::LocateTreeItem(int nEntry) const
@@ -346,7 +356,7 @@ void lmBookContentsBox::ChangePage()
 
         if (nTree != -1) {
             EnsureVisible(nTree);
-            SelectItem(nTree);
+            SelectItem( LocateEntry(nTree) );
         }
     }
 }
@@ -358,19 +368,66 @@ int lmBookContentsBox::PageNext()
 
     if (nTree != -1) {
         //find the next page
-        nTree++;
-        if (m_aTree[nTree].nLevel > 0) {
-            while (m_aTree[nTree].fHasChildren && m_aTree[nTree].nLevel > 0)
-                nTree++;
-
-            //select the item if in current book
-            if (m_aTree[nTree].nLevel > 0) {
-                EnsureVisible(nTree);
-                SelectItem( LocateEntry(nTree) );
-            }
+        nTree = FindNextPage(nTree);
+        if (nTree != -1) {
+            EnsureVisible(nTree);
+            SelectItem( LocateEntry(nTree) );
         }
     }
     return nTree;
+}
+
+int lmBookContentsBox::FindNextPage(int nTree)
+{
+    if (nTree != -1) {
+        //find the next page
+        nTree++;
+        if (nTree < (int)m_aTree.GetCount() && m_aTree[nTree].nLevel > 0) {
+            while (nTree < (int)m_aTree.GetCount() && 
+                   m_aTree[nTree].fHasChildren && 
+                   m_aTree[nTree].nLevel > 0)
+            {
+                nTree++;
+            }
+
+            //verify that the item is in current book
+            if (m_aTree[nTree].nLevel == 0) nTree = -1;
+        }
+        else {
+            nTree = -1;    //it is the last page of eBook
+        }
+    }
+    return nTree;
+}
+
+bool lmBookContentsBox::IsLastPage()
+{
+    int nTree = LocateTreeItem( GetSelection() );
+    return (FindNextPage(nTree) == -1);
+}
+
+int lmBookContentsBox::FindPagePrev(int nTree)
+{
+    if (nTree != -1) {
+        //if not the cover page
+        if (m_aTree[nTree].nLevel > 0) {
+            //find the previous page
+            nTree--;
+            while (nTree >= 0 && m_aTree[nTree].fHasChildren && m_aTree[nTree].nLevel > 0)
+                nTree--;
+        }
+        else {
+            // it is the first page of a book
+            nTree = -1;
+        }
+    }
+    return nTree;
+}
+
+bool lmBookContentsBox::IsFirstPage()
+{
+    int nTree = LocateTreeItem( GetSelection() );
+    return (FindPagePrev(nTree) == -1);
 }
 
 int lmBookContentsBox::PagePrev()
@@ -379,14 +436,8 @@ int lmBookContentsBox::PagePrev()
     int nTree = LocateTreeItem( GetSelection() );
 
     if (nTree != -1) {
-        //if not the cover page
-        if (m_aTree[nTree].nLevel > 0) {
-            //find the previous page
-            nTree--;
-            while (m_aTree[nTree].fHasChildren && m_aTree[nTree].nLevel > 0)
-                nTree--;
-
-            //select the item
+        nTree = FindPagePrev(nTree);
+        if (nTree != -1) {
             EnsureVisible(nTree);
             SelectItem( LocateEntry(nTree) );
         }
@@ -408,6 +459,7 @@ void lmBookContentsBox::Expand(int nItem, bool fRefresh)
             m_aTree[i].fVisible = true;
         }
     }
+    UpdateItemCount();
     if (fRefresh) RefreshAll();
 
     //wxLogMessage(_T("[lmBookContentsBox::Expand] Table m_aTree:"));
@@ -435,6 +487,7 @@ void lmBookContentsBox::Collapse(int nItem)
         m_aTree[i].fOpen = false;
         m_aTree[i].fVisible = false;
     }
+    UpdateItemCount();
     RefreshAll();
 
 }

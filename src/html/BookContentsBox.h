@@ -76,10 +76,15 @@ public:
     void ChangePage();
     int PageNext();
     int PagePrev();
-
-
     void Expand(int nItem, bool fRefresh=true);
     void Collapse(int nItem);
+
+    // Information
+    int FindNextPage(int nTree);
+    bool IsLastPage();
+    int FindPagePrev(int nTree);
+    bool IsFirstPage();
+
 
 
 
@@ -89,6 +94,7 @@ private:
     int LocateTreeItem(int nEntry) const;
     int LocateEntry(int nTree) const;
     wxString FormatItem(int nTree) const;
+    void UpdateItemCount();
 
     // virtual methods overrides
     void DoHandleItemClick(int item, int flags);
@@ -100,7 +106,6 @@ private:
     // content data
     lmPagesHash     m_PagesHash;    // to locate pages index from its URL
     lmTreeArray     m_aTree;        // items to display
-
 
 
     DECLARE_NO_COPY_CLASS(lmBookContentsBox)

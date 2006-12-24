@@ -673,6 +673,8 @@ void lmMainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize)
         wxArtProvider::GetBitmap(wxART_GO_TO_PARENT, wxART_TOOLBAR, nIconSize);
     wxBitmap wupBitmap =
         wxArtProvider::GetBitmap(wxART_GO_UP, wxART_TOOLBAR, nIconSize);
+    wxBitmap bmpBackDisabled =
+        wxArtProvider::GetIcon(_T("tool_pageprev_dis"), wxART_TOOLBAR, nIconSize);
     wxBitmap wdownBitmap =
         wxArtProvider::GetBitmap(wxART_GO_DOWN, wxART_TOOLBAR, nIconSize);
     wxBitmap wopenBitmap =
@@ -690,29 +692,31 @@ void lmMainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize)
                   wxT("One or more HTML help frame toolbar bitmap could not be loaded.")) ;
 
     //add tools
-    m_pTbTextBooks->AddTool(MENU_eBookPanel, _("Index"), wpanelBitmap, 
+    m_pTbTextBooks->AddTool(MENU_eBookPanel, _T("Index"), wpanelBitmap, 
             _("Show/hide navigation panel"), wxITEM_CHECK );
     m_pTbTextBooks->ToggleTool(MENU_eBookPanel, false);
     m_pTbTextBooks->AddSeparator();
-    m_pTbTextBooks->AddTool(MENU_eBook_GoBack, _("Go back"), wbackBitmap, 
+    m_pTbTextBooks->AddTool(MENU_eBook_PagePrev, _T("Back page"), wupBitmap, 
+            wxArtProvider::GetIcon(_T("tool_page_previous_dis"), wxART_TOOLBAR, nIconSize),
+            wxITEM_NORMAL, _("Previous page of current eMusicBook") );
+    m_pTbTextBooks->AddTool(MENU_eBook_PageNext, _T("Next page"), wdownBitmap, 
+            wxArtProvider::GetIcon(_T("tool_page_next_dis"), wxART_TOOLBAR, nIconSize),
+            wxITEM_NORMAL, _("Next page of current eMusicBook") );
+    m_pTbTextBooks->AddSeparator();
+    m_pTbTextBooks->AddTool(MENU_eBook_UpNode, _T("Parent"), wupnodeBitmap, 
+            _("Go to previous eMusicBook"), wxITEM_NORMAL );
+    m_pTbTextBooks->AddTool(MENU_eBook_GoBack, _T("Go back"), wbackBitmap, 
             _("Go to previous page in navigation log"), wxITEM_NORMAL );
-    m_pTbTextBooks->AddTool(MENU_eBook_GoForward, _("Go forward"), wforwardBitmap, 
+    m_pTbTextBooks->AddTool(MENU_eBook_GoForward, _T("Go forward"), wforwardBitmap, 
             _("Go to next page in navigation log"), wxITEM_NORMAL );
     m_pTbTextBooks->AddSeparator();
-    m_pTbTextBooks->AddTool(MENU_eBook_UpNode, _("Parent"), wupnodeBitmap, 
-            _("Go one level up in document hierarchy"), wxITEM_NORMAL );
-    m_pTbTextBooks->AddTool(MENU_eBook_PagePrev, _("Back Page"), wupBitmap, 
-            _("Previous page of current document"), wxITEM_NORMAL );
-    m_pTbTextBooks->AddTool(MENU_eBook_PageNext, _("next Page"), wdownBitmap, 
-            _("Next page of current document"), wxITEM_NORMAL );
-    m_pTbTextBooks->AddSeparator();
-    m_pTbTextBooks->AddTool(MENU_eBook_Options, _("Fonts"), woptionsBitmap, 
+    m_pTbTextBooks->AddTool(MENU_eBook_Options, _T("Fonts"), woptionsBitmap, 
             _("Change font settings"), wxITEM_NORMAL );
 
     m_pTbTextBooks->Realize();
 
     m_mgrAUI.AddPane(m_pTbTextBooks, wxAuiPaneInfo().
-                Name(wxT("Navigation")).Caption(_("eBooks navigation tools")).
+                Name(_T("Navigation")).Caption(_("eBooks navigation tools")).
                 ToolbarPane().Top().Row(1).
                 LeftDockable(false).RightDockable(false));
 
@@ -1167,12 +1171,15 @@ void lmMainFrame::OnBookFrameUpdateUI(wxUpdateUIEvent& event)
     lmMDIChildFrame* pChild = GetActiveChild();
     bool fEnabled = pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame)) &&
                     m_pBookController;
-    event.Enable(fEnabled);
+
     if (fEnabled) {
+        // TextBookFrame is visible. Enable/disable buttons
         lmTextBookFrame* pBookFrame = m_pBookController->GetFrame();
         if (pBookFrame)
-            m_pTbTextBooks->ToggleTool(MENU_eBookPanel, pBookFrame->IsNavPanelVisible());
+            pBookFrame->UpdateUIEvent(event, m_pTbTextBooks);
     }
+    else
+        event.Enable(false);
 }
 
 void lmMainFrame::OnVisitWebsite(wxCommandEvent& WXUNUSED(event))
@@ -1315,7 +1322,7 @@ void lmMainFrame::OnOpenBook(wxCommandEvent& event)
         wxASSERT(m_pBookController);
 
         // open it and display book "intro"
-        m_pBookController->Display(_T("intro_welcome.htm"));     //By page name
+        m_pBookController->Display(_T("intro_thm0.htm"));     //By page name
     }
 
 }
