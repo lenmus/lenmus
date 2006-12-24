@@ -977,15 +977,18 @@ bool lmEbookProcessor::TitleabbrevTag(const wxXml2Node& oNode, int nOptions, wxS
     wxString sTitle;
     bool fError = ProcessChildAndSiblings(oNode, eTRANSLATE, &sTitle);
 
+    // get theme number
+    int nTheme = m_nNumTitle[0];
+
     //save the title
     if (m_nParentType == lmPARENT_BOOKINFO) {
-        m_sBookTitleAbbrev = sTitle;
+        m_sBookTitleAbbrev = wxString::Format(sTitle, nTheme);
     }
     else if (m_nParentType == lmPARENT_CHAPTER) {
-        m_sChapterTitleAbbrev = sTitle;
+        m_sChapterTitleAbbrev = wxString::Format(sTitle, nTheme);
     }
     else if (m_nParentType == lmPARENT_THEME) {
-        m_sThemeTitleAbbrev = sTitle;
+        m_sThemeTitleAbbrev = wxString::Format(sTitle, nTheme);
     }
     return fError;
 }

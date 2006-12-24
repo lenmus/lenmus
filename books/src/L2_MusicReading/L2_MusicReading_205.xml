@@ -2,6 +2,7 @@
 
 <content>
 <theme id="thm205">
+<titleabbrev>Lesson %d</titleabbrev>
 <title>8th note tied to group of one 8th and two 16th notes</title>
 <tocimage>img205.png</tocimage>
 
@@ -57,6 +58,7 @@ studied in this lesson.</para>
 <!-- ============================================================================ -->
 
 <theme id="thm205_E1" toc="no">
+<titleabbrev>Exercises</titleabbrev>
 <title>8th note tied to group of one 8th and two 16th notes</title>
 
 <para>Press 'Play' and lesson the rhythm. Train your ear and practise reading
@@ -80,6 +82,7 @@ this rhythm.</para>
 <!-- ============================================================================ -->
 
 <theme id="thm205_E2" toc="no">
+<titleabbrev>Exercises</titleabbrev>
 <title>8th note tied to group of one 8th and two 16th notes</title>
 
 <para>Press 'Play' and lesson the rhythm. Train your ear and practise reading
