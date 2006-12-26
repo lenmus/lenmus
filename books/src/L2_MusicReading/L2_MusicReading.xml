@@ -22,7 +22,29 @@
 
 <book id="L2_MusicReading">
 <bookinfo>
-<title>Music reading. Level 2</title>
+    <title>Music reading. Level 2</title>
+    <abstract>This eMusicBook is intended to help one improve one's reading skills, providing sort of practice, exercises, and drills that are required in order to become a good sightreader.
+        music reding exercises.</abstract>
+    <copyright>
+        <year>2002-2006</year>
+        <holder>Cecilio Salmeron</holder>
+    </copyright>
+    <legalnotice>
+        <para>Permission is granted to copy, distribute and/or modify this document
+        under the terms of the GNU Free Documentation License, Version 1.1 or any
+        later version published by the Free Software Foundation; with no Invariant
+        Sections, with no Front-Cover Texts, and with no Back-Cover Texts. 
+        A copy of the license is included <link linkend="license">here</link>.
+        </para>
+
+        <para>
+        The authors have taken care in the preparation of this documentation,
+        but make no expressed or implied warranty of any kind and assume no responsibility
+        for errors or omissions. No liability is assumed for incidental or consequential
+        damages in connection with or arising out of the use of the information contained
+        herein.
+        </para>
+    </legalnotice>
 </bookinfo>
 
 <theme id="tmh0">

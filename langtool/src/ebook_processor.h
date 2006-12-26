@@ -46,7 +46,7 @@ public:
 
     bool GenerateLMB(wxString sFilename, wxString sLangCode, int nOptions=0);
     bool CreatePoFile(wxString sFilename, wxString& sCharSet, wxString& sLangName,
-                      wxString& sLangCode);
+                      wxString& sLangCode, wxString& sFolder);
 
     static wxString GetLibxml2Version();
 
@@ -76,6 +76,7 @@ private:
     bool LegalnoticeTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool LinkTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool ListitemTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool OrderedlistTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool ParaTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool PartTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool ScoreTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);

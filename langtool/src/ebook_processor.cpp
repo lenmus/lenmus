@@ -425,6 +425,15 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, int nOptions, wxStrin
     else if (sElement == _T("listitem")) {
         return ListitemTag(oNode, nOptions, pText);
     }
+    else if (sElement == _T("orderedlist")) {
+        return OrderedlistTag(oNode, nOptions, pText);
+    }
+    else if (sElement == _T("para")) {
+        return ParaTag(oNode, nOptions, pText);
+    }
+    else if (sElement == _T("part")) {
+        return PartTag(oNode, nOptions, pText);
+    }
     else if (sElement == _T("score")) {
         return ScoreTag(oNode, nOptions, pText);
     }
@@ -433,12 +442,6 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, int nOptions, wxStrin
     }
     else if (sElement == _T("simplelist")) {
         return SimplelistTag(oNode, nOptions, pText);
-    }
-    else if (sElement == _T("para")) {
-        return ParaTag(oNode, nOptions, pText);
-    }
-    else if (sElement == _T("part")) {
-        return PartTag(oNode, nOptions, pText);
     }
     else if (sElement == _T("theme")) {
         return ThemeTag(oNode, nOptions, pText);
@@ -753,6 +756,22 @@ bool lmEbookProcessor::ListitemTag(const wxXml2Node& oNode, int nOptions, wxStri
     return fError;
 }
 
+bool lmEbookProcessor::OrderedlistTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
+{
+    // openning tag
+    WriteToHtml(_T("<ol>"));
+
+    // tag processing implications
+
+    //process tag's children and write note content to html
+    bool fError = ProcessChildAndSiblings(oNode, nOptions, pText);
+
+    // closing tag
+    WriteToHtml(_T("</ol>\n"));
+
+    return fError;
+}
+
 bool lmEbookProcessor::ParaTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
 {
     // openning tag
@@ -933,6 +952,8 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode, int nOptions, wxString*
     //process tag's children and write title content to toc
     wxString sTitle;
     bool fError = ProcessChildAndSiblings(oNode, eTRANSLATE, &sTitle);
+    WriteToLang(sTitle);
+    sTitle = wxGetTranslation(sTitle);
 
     //save the title
     if (m_nParentType == lmPARENT_BOOKINFO) {
@@ -976,6 +997,8 @@ bool lmEbookProcessor::TitleabbrevTag(const wxXml2Node& oNode, int nOptions, wxS
     //process tag's children. Do not write content
     wxString sTitle;
     bool fError = ProcessChildAndSiblings(oNode, eTRANSLATE, &sTitle);
+    WriteToLang(sTitle);
+    sTitle = wxGetTranslation(sTitle);
 
     // get theme number
     int nTheme = m_nNumTitle[0];
@@ -1272,9 +1295,11 @@ void lmEbookProcessor::TerminateHtmlFile()
         _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
         _T("<tr><td bgcolor='#ff8800'><img src='ebook_line_orange.png'></td></tr>\n")
         _T("<tr><td bgcolor='#7f8adc' align='center'>\n")
-        _T("    <font size='-1' color='#ffffff'><br /><br />\n") + m_sFooter1 +
-	        _T("<br />\n") + m_sFooter2 +
-            _T("<br />\n")
+        _T("    <font size='-1' color='#ffffff'><br /><br />\n"));
+     WriteToHtml( wxGetTranslation(m_sFooter1) );
+	 WriteToHtml( _T("<br />\n") );
+     WriteToHtml( wxGetTranslation(m_sFooter2) );
+     WriteToHtml( _T("<br />\n")
 	    _T("    </font>\n")
         _T("</td></tr>\n")
         _T("</table>\n")
@@ -1470,6 +1495,7 @@ bool lmEbookProcessor::StartLangFile(wxString sFilename)
 
     oFDest.SetName( oFNP.GetName() );
     oFDest.SetExt(_T("cpp"));
+    wxLogMessage(_T("Creating file '%s'"), oFDest.GetFullPath());
     m_pLangFile = new wxFile(oFDest.GetFullPath(), wxFile::write);
     if (!m_pLangFile->IsOpened()) {
         wxLogMessage(_T("Error: File %s can not be created"), oFDest.GetFullPath());
@@ -1502,18 +1528,20 @@ void lmEbookProcessor::WriteToLang(wxString sText)
 }
 
 bool lmEbookProcessor::CreatePoFile(wxString sFilename, wxString& sCharSet,
-                                    wxString& sLangName, wxString& sLangCode)
+                                    wxString& sLangName, wxString& sLangCode,
+                                    wxString& sFolder)
 {
     // returns true if success
 
-    wxFileName oFNP( sFilename );
-    wxFileName oFDest( g_pPaths->GetLocalePath() );
-    oFDest.AppendDir(sLangCode);
-    oFDest.SetName( oFNP.GetName() );
-    oFDest.SetExt(_T("po"));
-    wxFile oFile(oFDest.GetFullPath(), wxFile::write);
+    //wxFileName oFNP( sFilename );
+    //wxFileName oFDest( g_pPaths->GetLocalePath() );
+    //oFDest.AppendDir(sLangCode);
+    //oFDest.SetName( oFNP.GetName() );
+    //oFDest.SetExt(_T("po"));
+    //wxFile oFile(oFDest.GetFullPath(), wxFile::write);
+    wxFile oFile(sFilename, wxFile::write);
     if (!m_pLangFile->IsOpened()) {
-        wxLogMessage(_T("Error: File %s can not be created"), oFDest.GetFullPath());
+        wxLogMessage(_T("Error: File %s can not be created"), sFilename);
         m_pLangFile = (wxFile*)NULL;
         return false;        //error
     }
@@ -1529,12 +1557,12 @@ bool lmEbookProcessor::CreatePoFile(wxString sFilename, wxString& sCharSet,
         _T("\"Last-Translator: \\n\"\n")
         _T("\"Language-Team:  <cecilios@gmail.com>\\n\"\n")
         _T("\"MIME-Version: 1.0\\n\"\n")
-        _T("\"Content-Type: text/plain; charset=") + sCharSet + _T("\\n\"\n")
+        _T("\"Content-Type: text/plain; charset=utf-8\\n\"\n")
         _T("\"Content-Transfer-Encoding: 8bit\\n\"\n")
         _T("\"X-Poedit-Language: ") + sLangName + _T("\\n\"\n")
-        _T("\"X-Poedit-SourceCharset: iso-8859-1\\n\"\n")
+        _T("\"X-Poedit-SourceCharset: utf-8\\n\"\n")
         _T("\"X-Poedit-Basepath: c:\\usr\\desarrollo_wx\\lenmus\\langtool\\locale\\src\\n\"\n")
-        _T("\"X-Poedit-SearchPath-0: ") + oFNP.GetName() + _T("\\n\"\n\n");
+        _T("\"X-Poedit-SearchPath-0: ") + sFolder + _T("\\n\"\n\n");
 
 
     oFile.Write(sHeader);

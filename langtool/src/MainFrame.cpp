@@ -269,6 +269,7 @@ void ltMainFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
     lmEbookProcessor oEBP;
     wxFileName oFSrc(sPath);
     oEBP.GenerateLMB(sPath, _T("en"), lmLANG_FILE);
+    wxString sFolder = oFSrc.GetName();
 
     //create the PO files if they do not exist
     for (int i=0; i < lmNUM_LANGUAGES; i++)
@@ -277,10 +278,11 @@ void ltMainFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
         wxFileName oFDest( g_pPaths->GetLocalePath() );
         oFDest.AppendDir(sLang);
         oFDest.SetName( oFSrc.GetName() + _T("_") + sLang );
+        oFDest.SetExt(_T("po"));
         if (!oFDest.FileExists()) {     //if file does not exist
             wxString sCharset = tLanguages[i].sLangCode;
             wxString sLangName = tLanguages[i].sLangName;
-            if (!oEBP.CreatePoFile(oFDest.GetFullPath(), sCharset, sLangName, sLang)) {
+            if (!oEBP.CreatePoFile(oFDest.GetFullPath(), sCharset, sLangName, sLang, sFolder)) {
                 wxLogMessage(_T("Error: PO file can not be created"));
             }
         }

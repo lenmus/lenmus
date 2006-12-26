@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+<!DOCTYPE book [
+    <!ENTITY chapter1 SYSTEM "L1_MusicReading_1.xml">
+]>
+-->
+<!--
+  <!ENTITY chapter2 SYSTEM "L1_MusicReading_2.xml>
+  <!ENTITY chapter3 SYSTEM "L1_MusicReading_3.xml>
+  <!ENTITY chapter4 SYSTEM "L1_MusicReading_4.xml>
+  <!ENTITY chapter5 SYSTEM "L1_MusicReading_5.xml>
+  <!ENTITY chapter6 SYSTEM "L1_MusicReading_6.xml>
+  <!ENTITY chapter7 SYSTEM "L1_MusicReading_7.xml>
+  <!ENTITY chapter8 SYSTEM "L1_MusicReading_8.xml>
+  <!ENTITY chapter9 SYSTEM "L1_MusicReading_9.xml>
+]>
+-->
+<book id="L1_MusicReading">
+<bookinfo>
+    <title>Music reading. Level 1.</title>
+    <abstract>This eMusicBook is intended to help one improve one's reading skills, providing sort of practice, exercises, and drills that are required in order to become a good sightreader.
+        music reding exercises.</abstract>
+    <copyright>
+        <year>2006-2007</year>
+        <holder>Cecilio Salmeron</holder>
+    </copyright>
+    <legalnotice>
+        <para>Permission is granted to copy, distribute and/or modify this document
+        under the terms of the GNU Free Documentation License, Version 1.1 or any
+        later version published by the Free Software Foundation; with no Invariant
+        Sections, with no Front-Cover Texts, and with no Back-Cover Texts. 
+        A copy of the license is included <link linkend="license">here</link>.
+        </para>
+
+        <para>
+        The authors have taken care in the preparation of this documentation,
+        but make no expressed or implied warranty of any kind and assume no responsibility
+        for errors or omissions. No liability is assumed for incidental or consequential
+        damages in connection with or arising out of the use of the information contained
+        herein.
+        </para>
+    </legalnotice>
+</bookinfo>
+
+
+<!-- =============================================== -->
+<!-- 0. Introduction                                 -->
+<!-- =============================================== -->
+
+<chapter id="ch0">
+<titleabbrev>Presentation</titleabbrev>
+<title>Presentation</title>
+
+<theme id="ch0_0">
+<title>Syllabus</title>
+
+<para>
+This eMusicBook is intended to help one improve one's reading skills, providing sort of practice, exercises, and drills that are required in order to become a good sightreader.
+</para>
+
+<para>Appart of introducing new rhythmic cells, of increasing complexity, the main concepts
+introduced in Level 1 are:</para>
+
+<orderedlist>
+<listitem>
+    The stave. Treble (G) and bass (F) clefs. Names of notes on the stave. 
+    Extension of the stave to include two ledger lines below and above each stave.
+</listitem>
+
+<listitem>
+    Note values of semibreve, minim, crotchet, quaver and semiquaver, and their 
+    equivalent rests. Tied notes. Single-dotted notes and rests.
+</listitem>
+    
+<listitem>
+    Simple time signatures of 2/4, 3/4 and 4/4 and compound time signature of 6/8.
+    Bar-lines and the grouping of the notes listed above within these times.
+</listitem>
+
+<listitem>
+    Key signatures of all major and minor keys up to and including two sharps and flats.
+</listitem>
+
+</orderedlist>
+
+</theme>
+
+<theme id="ch0_1">
+<title>Book organization</title>
+
+<para>
+This course has 31 lessons covering the following material:</para>
+
+Music notation basics:
+    
+Clefs and  y ámbitos:
+    En las primeras lecciones sólo se usa la clave de Sol (lecciones 1 a 7) con un
+    ámbito muy reducido (e4-g4). Progresivamente el ámbito va aumentando para llegar,
+    en la lección 7 a c4-f5.
+    En la lección 8 se introduce la clave de Fa en 4ª, de nuevo con un ámbito muy
+    reducido (a3;c4) y a partir de ahí en todas las lecciones siguientes
+    (8 a 26) se usa indistintamente la clave de Fa y la de Sol, cada una de ellas
+    con ámbitos progresivos, para finalizar con dos líneas adicionales por arriba
+    y por abajo en ambas claves (Sol: a3-c6 y Fa: a2-e4).
+
+Time signatures:
+    En las primeras lecciones (1 a 10) sólo se usa el 2/4. Luego, progresivamente se
+    amplia a 3/4 (lecciones 11 y 12)
+    y a 4/4 (lecciones 13 a 21). Finalmente se introduce la subdivisión ternaria con
+    el compás de 6/8 (lecciones 22 a 26).
+    
+Key signatures:
+    En las dos primeras lecciones sólo Do mayor/La menor. A partir de ahí se introduce
+    una alteración (lecciones 3-10). Y en el resto del curso se
+    manejan hasta dos alteraciones (lecciones 11-26).
+
+
+</theme>
+
+<theme id="ch0_2">
+<title>Lessons' structure</title>
+
+<para>With exception of the firsts lessons, oriented to introduce the basic concepts of
+the musica notation, the remaining lessons are structured into three sections:</para>
+
+<itemizedlist>
+<listitem>In the first one the new concepts and rhythmic patterns introduced in the lesson
+are explained.</listitem>
+
+<listitem>In the second section, optional, the new concepts are compared with known ones, so
+that the student can better relate the new material and learn it.</listitem>
+
+<listitem>Finally, in the third section some exercises are proposed to learn and practise
+the new concepts introduced.</listitem>
+
+</itemizedlist>
+
+</theme>
+</chapter>
+
+<!--
+    &chapter1;
+    &chapter2;
+    &chapter3;
+    &chapter4;
+-->
+
+</book>
