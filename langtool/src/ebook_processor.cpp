@@ -299,7 +299,10 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nWriteOption
             if (nWriteOptions & eHTML) WriteToHtml(sTrans);
             if (m_fOnlyLangFile && (nWriteOptions & eTRANSLATE)) WriteToLang(sContent);
             //if (fIdx) WriteToIdx(sContent);
-            if (pText) *pText += sContent;
+            if (pText) {
+                if (nWriteOptions & eTRANSLATE) sContent = ::wxGetTranslation(sContent);
+                *pText += sContent;
+            }
         }
 
     }
@@ -525,7 +528,10 @@ wxString lmEbookProcessor::GetLibxml2Version()
 bool lmEbookProcessor::AbstractTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
 {
     //get value
-    return ProcessChildAndSiblings(oNode, 0, &m_sBookAbstract);
+    return ProcessChildAndSiblings(oNode, eTRANSLATE, &m_sBookAbstract);
+    //m_sBookAbstract = ::wxGetTranslation(m_sBookAbstract);
+    //return fError;
+
 }
 
 
@@ -687,7 +693,9 @@ bool lmEbookProcessor::ExerciseParamTag(const wxXml2Node& oNode, bool fTranslate
 bool lmEbookProcessor::HolderTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
 {
     //get value
-    return ProcessChildAndSiblings(oNode, 0, &m_sCopyrightHolder);
+    return ProcessChildAndSiblings(oNode, eTRANSLATE, &m_sCopyrightHolder);
+    //m_sCopyrightHolder = ::wxGetTranslation(m_sCopyrightHolder);
+    //return fError;
 }
 
 bool lmEbookProcessor::ItemizedlistTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
@@ -710,7 +718,9 @@ bool lmEbookProcessor::ItemizedlistTag(const wxXml2Node& oNode, int nOptions, wx
 bool lmEbookProcessor::LegalnoticeTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
 {
     //get value
-    return ProcessChildAndSiblings(oNode, 0, &m_sLegalNotice);
+    return ProcessChildAndSiblings(oNode, eTRANSLATE, &m_sLegalNotice);
+    //m_sLegalNotice = ::wxGetTranslation(m_sLegalNotice);
+    //return fError;
 }
 
 bool lmEbookProcessor::LinkTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
@@ -952,8 +962,8 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode, int nOptions, wxString*
     //process tag's children and write title content to toc
     wxString sTitle;
     bool fError = ProcessChildAndSiblings(oNode, eTRANSLATE, &sTitle);
-    WriteToLang(sTitle);
-    sTitle = wxGetTranslation(sTitle);
+    //WriteToLang(sTitle);
+    //sTitle = ::wxGetTranslation(sTitle);
 
     //save the title
     if (m_nParentType == lmPARENT_BOOKINFO) {
@@ -997,8 +1007,8 @@ bool lmEbookProcessor::TitleabbrevTag(const wxXml2Node& oNode, int nOptions, wxS
     //process tag's children. Do not write content
     wxString sTitle;
     bool fError = ProcessChildAndSiblings(oNode, eTRANSLATE, &sTitle);
-    WriteToLang(sTitle);
-    sTitle = wxGetTranslation(sTitle);
+    //WriteToLang(sTitle);
+    //sTitle = ::wxGetTranslation(sTitle);
 
     // get theme number
     int nTheme = m_nNumTitle[0];
@@ -1296,9 +1306,9 @@ void lmEbookProcessor::TerminateHtmlFile()
         _T("<tr><td bgcolor='#ff8800'><img src='ebook_line_orange.png'></td></tr>\n")
         _T("<tr><td bgcolor='#7f8adc' align='center'>\n")
         _T("    <font size='-1' color='#ffffff'><br /><br />\n"));
-     WriteToHtml( wxGetTranslation(m_sFooter1) );
+     WriteToHtml( ::wxGetTranslation(m_sFooter1) );
 	 WriteToHtml( _T("<br />\n") );
-     WriteToHtml( wxGetTranslation(m_sFooter2) );
+     WriteToHtml( ::wxGetTranslation(m_sFooter2) );
      WriteToHtml( _T("<br />\n")
 	    _T("    </font>\n")
         _T("</td></tr>\n")
@@ -1372,12 +1382,12 @@ void lmEbookProcessor::CreatePageHeaders(wxString sBookTitle, wxString sHeaderTi
         _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
         _T("<tr><td bgcolor='#7f8adc' align='left'>\n")
         _T("	<font size='-1' color='#ffffff'>&nbsp;&nbsp;") );
-    WriteToHtml( wxGetTranslation(sBookTitle) );
+    WriteToHtml( ::wxGetTranslation(sBookTitle) );
     WriteToHtml(
         _T("</font></td></tr>\n")
         _T("<tr><td bgcolor='#7f8adc' align='right'><br />\n")
         _T("	<b><font size='+4' color='#ffffff'>") );
-    WriteToHtml(sTitleNum + wxGetTranslation(sHeaderTitle) );
+    WriteToHtml(sTitleNum + ::wxGetTranslation(sHeaderTitle) );
     WriteToHtml(
         _T("&nbsp;</font></b><br /></td></tr>\n")
         _T("<tr><td bgcolor='#ff8800'><img src='ebook_line_orange.png'></td></tr>\n")
@@ -1392,12 +1402,12 @@ void lmEbookProcessor::CreatePageHeaders(wxString sBookTitle, wxString sHeaderTi
     //    _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
     //    _T("<tr><td bgcolor='#7f8adc' align='left'>\n")
     //    _T("	<font size='-1' color='#ffffff'>&nbsp;&nbsp;") );
-    //WriteToHtml( wxGetTranslation(m_sBookTitle) );
+    //WriteToHtml( ::wxGetTranslation(m_sBookTitle) );
     //WriteToHtml(
     //    _T("</font></td>\n")
     //    _T("<tr><td bgcolor='#7f8adc' align='right'><br />\n")
     //    _T("	<b><font size='+4' color='#ffffff'>") );
-    //WriteToHtml(m_sChapterNum + wxGetTranslation(sHeaderTitle) );
+    //WriteToHtml(m_sChapterNum + ::wxGetTranslation(sHeaderTitle) );
     //WriteToHtml(
     //    _T("&nbsp;</font></b><br /></td>\n")
     //    _T("<tr><td bgcolor='#ff8800'><img src='ebook_line_orange.png'></td></tr>\n")

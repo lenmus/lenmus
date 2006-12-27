@@ -21,10 +21,11 @@
     </copyright>
     <legalnotice>
         <para>Permission is granted to copy, distribute and/or modify this document
-        under the terms of the GNU Free Documentation License, Version 1.1 or any
+        under the terms of the GNU Free Documentation License, Version 1.2 or any
         later version published by the Free Software Foundation; with no Invariant
         Sections, with no Front-Cover Texts, and with no Back-Cover Texts. 
-        A copy of the license is included <link linkend="license">here</link>.
+        A copy of the license is included in the documentation received with
+        this program.
         </para>
 
         <para>
@@ -41,17 +42,17 @@
 <titleabbrev>Contents</titleabbrev>
 <title>Introduction to single exercises</title>
 
-<para>Appart of exercises included in <emphasis>the eBooks</emphasis>, the following general exercises
+<para>Appart of exercises included in the eBooks, the following general exercises
 (customizable to suit your needs at any moment) are available:</para>
 
 <part>
 <title>Exercises for aural training</title>
 
 <itemizedlist>
-<listitem><link linkend="ch1">1.1. Intervals' comparison</link></listitem>
-<listitem><link linkend="ch2">1.2. Intervals' identification</link></listitem>
-<listitem><link linkend="ch3">1.3. Chords' identification</link></listitem>
-<listitem><link linkend="ch4">1.4. Scales' identification</link></listitem>
+<listitem><link linkend="ch1">Intervals' comparison</link></listitem>
+<listitem><link linkend="ch2">Intervals' identification</link></listitem>
+<listitem><link linkend="ch3">Chords' identification</link></listitem>
+<listitem><link linkend="ch4">Scales' identification</link></listitem>
 </itemizedlist>
 
 </part>
@@ -60,10 +61,10 @@
 <title>Exercises to practise theory</title>
 
 <itemizedlist>
-<listitem><link linkend="ch5">2.1. Key signatures' identification</link></listitem>
-<listitem><link linkend="ch6">2.2. Interval's identification and construction</link></listitem>
-<listitem><link linkend="ch7">2.3. Scales' identification</link></listitem>
-<listitem><link linkend="ch8">2.4. Chords' identification</link></listitem>
+<listitem><link linkend="ch5">Key signatures' identification</link></listitem>
+<listitem><link linkend="ch6">Interval's identification and construction</link></listitem>
+<listitem><link linkend="ch7">Scales' identification</link></listitem>
+<listitem><link linkend="ch8">Chords' identification</link></listitem>
 </itemizedlist>
 
 </part>
@@ -72,7 +73,7 @@
 <title>Other exercises</title>
 
 <itemizedlist>
-<listitem><link linkend="ch9">3.1. Clefs Reading</link></listitem>
+<listitem><link linkend="ch9">Clefs Reading</link></listitem>
 </itemizedlist>
 
 </part>
