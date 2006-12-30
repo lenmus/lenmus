@@ -45,6 +45,9 @@ typedef struct lmCompileBookOptionsStruct {
     wxString sSrcPath;
     wxString sDestPath;
     bool fLanguage[eLangLast];
+    //debug options
+    bool fLogTree;
+    bool fDump;
 } lmCompileBookOptions;
 
 
@@ -70,6 +73,10 @@ private:
     wxCheckBox*     m_pChkLang[eLangLast+1];        //the last one is for option 'All languages'
     wxTextCtrl*     m_pTxtSrcPath;
     wxTextCtrl*     m_pTxtDestPath;
+
+    wxCheckBox*     m_pChkDumpTree;
+    wxCheckBox*     m_pChkLogTree;
+
 
     //communication with parent
     lmCompileBookOptions*   m_pOptions;

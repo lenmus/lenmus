@@ -38,10 +38,17 @@ enum {      //processing options
     lmLANG_FILE = 1,      //generate Lang file
 };
 
+enum lmEbookProcessorDebugOptions {
+    eLogTree = 1,
+    eDumpTree = 2,
+};
+
+
+
 class lmEbookProcessor
 {
 public:
-    lmEbookProcessor();
+    lmEbookProcessor(int nDbgOptions=0, wxTextCtrl* pUserLog=(wxTextCtrl*)NULL);
     ~lmEbookProcessor();
 
     bool GenerateLMB(wxString sFilename, wxString sLangCode, int nOptions=0);
@@ -127,6 +134,7 @@ private:
     void DumpXMLTree(const wxXml2Node& oNode);
     void DumpNodeAndSiblings(const wxXml2Node& oNode, wxString& sTree, int n);
     void DumpNode(const wxXml2Node& oNode, wxString& sTree, int n);
+    void LogMessage(const wxChar* szFormat, ...);
 
 
 
@@ -183,6 +191,11 @@ private:
     // variables for processing external entities
     bool            m_fExtEntity;           //waiting to include an external entity
     wxString        m_sExtEntityName;       //external entity to include
+
+    //debugging and trace
+    bool            m_fLogTree;
+    bool            m_fDump;
+    wxTextCtrl*     m_pLog;
 
 };
 

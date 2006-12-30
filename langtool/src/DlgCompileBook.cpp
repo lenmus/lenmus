@@ -57,6 +57,9 @@ BEGIN_EVENT_TABLE(lmDlgCompileBook, wxDialog)
     EVT_CHECKBOX( XRCID( "chkLangSpanish" ), lmDlgCompileBook::OnDataChanged )
     EVT_CHECKBOX( XRCID( "chkLangTurkish" ), lmDlgCompileBook::OnDataChanged )
     EVT_CHECKBOX( XRCID( "chkLangAll" ), lmDlgCompileBook::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkDumpTree" ), lmDlgCompileBook::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkLogTree" ), lmDlgCompileBook::OnDataChanged )
+
 
     EVT_BUTTON( XRCID( "btBrowseSrc" ), lmDlgCompileBook::OnBrowseSrc )
 
@@ -80,6 +83,10 @@ lmDlgCompileBook::lmDlgCompileBook(wxWindow* parent, lmCompileBookOptions* pOpti
     m_pChkLang[eLangLast] = XRCCTRL(*this, "chkLangAll", wxCheckBox);
     m_pTxtSrcPath = XRCCTRL(*this, "txtSrcPath", wxTextCtrl);     
     m_pTxtDestPath = XRCCTRL(*this, "txtDestPath", wxTextCtrl); 
+    //debug options
+    m_pChkDumpTree = XRCCTRL(*this, "chkDumpTree", wxCheckBox);
+    m_pChkLogTree = XRCCTRL(*this, "chkLogTree", wxCheckBox);
+
 
     // initialize all controls with current data
     for(int i=0; i < eLangLast; i++) {
@@ -121,6 +128,10 @@ void lmDlgCompileBook::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
             m_pOptions->fLanguage[i] = m_pChkLang[i]->GetValue();
         }
     }
+
+    //move debug options
+    m_pOptions->fLogTree = m_pChkLogTree->GetValue();
+    m_pOptions->fDump = m_pChkDumpTree->GetValue();
 
     //terminate the dialog 
     EndModal(wxID_OK);      

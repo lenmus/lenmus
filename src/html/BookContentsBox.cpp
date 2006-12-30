@@ -483,7 +483,7 @@ void lmBookContentsBox::Collapse(int nItem)
     //mark all its children as closed and not visible
     for(int i=nItem+1; i < (int)m_aTree.GetCount(); i++)
     {
-        if (m_aTree[i].nLevel == nCurLevel) break;
+        if (m_aTree[i].nLevel <= nCurLevel) break;
         m_aTree[i].fOpen = false;
         m_aTree[i].fVisible = false;
     }

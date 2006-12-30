@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.4\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-12-27 12:52+0100\n"
+"PO-Revision-Date: 2006-12-30 11:58+0100\n"
 "Last-Translator: cs <cs>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr "Envía tus comentarios y sugerencias al equipo de LenMus (www.lenmus.org
 
 #: SingleExercises/SingleExercises.cpp:3
 msgid "Licensed under the terms of the GNU Free Documentation License (see copyrights page for details.)"
-msgstr "Se otorga permiso para copiar, distribuir y/o modificar bajo los términos de la Licencia de Documentación Libre de GNU (ver la páina de copyrights)"
+msgstr "Distribuido bajo los términos de la Licencia GNU de Documentación Libre  (ver la página de copyrights para detalles)"
 
 #: SingleExercises/SingleExercises.cpp:4
 msgid "Single exercises"
@@ -33,31 +33,12 @@ msgid "Cecilio Salmeron"
 msgstr "Cecilio Salmeron"
 
 #: SingleExercises/SingleExercises.cpp:7
-msgid ""
-"Permission is granted to copy, distribute and/or modify this document\n"
-"        under the terms of the GNU Free Documentation License, Version 1.2 or any\n"
-"        later version published by the Free Software Foundation; with no Invariant\n"
-"        Sections, with no Front-Cover Texts, and with no Back-Cover Texts. \n"
-"        A copy of the license is included in the documentation received with\n"
-"        this program."
-msgstr ""
-"Se otorga permiso para copiar, distribuir y/o modificar este documento\n"
-" bajo los términos de la Licencia de Documentación Libre de GNU, Versión 1.2 o cualquier \n"
-"otra versión posterior publicada por la Free Software Foundation; sin Secciones Invariantes \n"
-" ni Textos de Cubierta Delantera ni Textos de Cubierta Trasera. Una copia de la licencia \n"
-"está incluida en la documentación recibida junto con este programa."
+msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program."
+msgstr "Se otorga permiso para copiar, distribuir y/o modificar este documento bajo los términos de la Licencia GNU de Documentación Libre, Versión 1.2 o cualquier otra versión posterior publicada por la Free Software Foundation; sin Secciones Invariantes ni Textos de Cubierta Delantera ni Textos de Cubierta Trasera. Una copia de la licencia está incluida en la documentación recibida junto con este programa."
 
 #: SingleExercises/SingleExercises.cpp:8
-msgid ""
-"        The authors have taken care in the preparation of this documentation,\n"
-"        but make no expressed or implied warranty of any kind and assume no responsibility\n"
-"        for errors or omissions. No liability is assumed for incidental or consequential\n"
-"        damages in connection with or arising out of the use of the information contained\n"
-"        herein."
-msgstr ""
-"Los autores han puesto gran cuidado en la preparación de esta documentación,\n"
-"pero en ningún caso dan ninguna garantía ni expresa ni implícita de ningún tipo, ni asumen\n"
-"ninguna responsabilidad por posibles errores u omisiones. "
+msgid " The authors have taken care in the preparation of this documentation, but make no expressed or implied warranty of any kind and assume no responsibility for errors or omissions. No liability is assumed for incidental or consequential damages in connection with or arising out of the use of the information contained herein."
+msgstr "Los autores han puesto gran cuidado en la preparación de esta documentación, pero en ningún caso dan ninguna garantía ni expresa ni implícita de ningún tipo, ni asumen ninguna responsabilidad por posibles errores u omisiones, ni por los posibles daños, ya sean generales, especiales, incidentales o consecuenciales,  resultado del uso o de la inexactitud de la información aqui contenida."
 
 #: SingleExercises/SingleExercises.cpp:9
 msgid "Contents"
@@ -68,9 +49,8 @@ msgid "Introduction to single exercises"
 msgstr "Introducción a los ejercicios libres"
 
 #: SingleExercises/SingleExercises.cpp:11
-msgid ""
-"Appart of exercises included in the eBooks, the following general exercises\n"
-"(customizable to suit your needs at any moment) are available:"
+#, fuzzy
+msgid "Appart of exercises included in the eBooks, the following general exercises (customizable to suit your needs at any moment) are available:"
 msgstr ""
 "Además de los ejercicios incuidos en los eBooks, están disponibles los\n"
 "siguientes ejercicos generales,\n"

@@ -68,7 +68,7 @@ static const wxString m_sFooter2 =
     _T("Licensed under the terms of the GNU Free Documentation License (see copyrights page for details.)");
 
 
-lmEbookProcessor::lmEbookProcessor()
+lmEbookProcessor::lmEbookProcessor(int nDbgOptions, wxTextCtrl* pUserLog)
 {
     m_pTocFile = (wxFile*) NULL;
     m_pHtmlFile = (wxFile*) NULL;
@@ -76,9 +76,14 @@ lmEbookProcessor::lmEbookProcessor()
     m_pLmbFile = (wxTextOutputStream*)NULL;
     m_pZipFile = (wxZipOutputStream*)NULL;
 
+    m_pLog = pUserLog;
+
     //options. TODO: dialog to change options
     m_fGenerateLmb = true;
 
+    //debug options
+    m_fLogTree = (nDbgOptions & eLogTree) != 0;
+    m_fDump = (nDbgOptions & eDumpTree) != 0;
 }
 
 lmEbookProcessor::~lmEbookProcessor()
@@ -111,10 +116,11 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, int n
 
 
     // load the XML file as tree of nodes
+    LogMessage(_T("Loading file %s"), sFilename);
     wxXml2Document oDoc;
     wxString sError;
     if (!oDoc.Load(sFilename, &sError)) {
-        wxLogMessage(_T("Error parsing file %s\nError:%s"), sFilename, sError);
+        LogMessage(_T("Error parsing file %s\nError:%s"), sFilename, sError);
         return false;
     }
     m_sFilename = sFilename;
@@ -130,14 +136,15 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, int n
         return false;
     }
 
-    //DumpXMLTree(oRoot);   //DBG
+    if (m_fDump) DumpXMLTree(oRoot);        //for debugging
+
     m_fExtEntity = false;                   //not waiting for an external entity
     m_sExtEntityName = wxEmptyString;       //so, no name
 
     // Prepare Lang file
     if (m_fOnlyLangFile) {
         if (!StartLangFile( sFilename )) {
-            wxLogMessage(_T("Error: Lang file can not be created"));
+            LogMessage(_T("Error: Lang file '%s' can not be created."), sFilename);
             oRoot.DestroyIfUnlinked();
             oDoc.DestroyIfUnlinked();
             return false;        //error
@@ -146,7 +153,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, int n
 
     // Prepare the TOC file
     if (!StartTocFile( sFilename )) {
-        wxLogMessage(_T("Error: toc file can not be created"));
+        LogMessage(_T("Error: toc file '%s' can not be created."), sFilename);
         oRoot.DestroyIfUnlinked();
         oDoc.DestroyIfUnlinked();
         return false;        //error
@@ -155,7 +162,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, int n
     // prepare de LMB file
     if (m_fGenerateLmb) {
         if (!StartLmbFile(sFilename, sLangCode)) {
-            wxLogMessage(_T("Error: LMB file can not be created"));
+            LogMessage(_T("Error: LMB file '%s' can not be created."), sFilename);
             oRoot.DestroyIfUnlinked();
             oDoc.DestroyIfUnlinked();
             return false;        //error
@@ -163,8 +170,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, int n
     }
 
     bool fError = BookTag(oRoot);
-    if (fError)
-        wxMessageBox(_T("There are errors in conversion to HTML"));
+
 
     // Close files
     TerminateTocFile();
@@ -173,82 +179,14 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, int n
     oRoot.DestroyIfUnlinked();
     oDoc.DestroyIfUnlinked();
 
+    if (fError)
+        LogMessage(_T("There are errors in compilation."));
+    else
+        LogMessage(_T("Compilation done successfully."));
+
     return !fError;
 
 }
-
-//void lmEbookProcessor::FindThemeNode(const wxXml2Node& oNode)
-//{
-//    if (oNode == wxXml2EmptyNode) return;
-//
-//    //wxLogMessage(_T("[FindThemeNode] NodeType=%d. Name='%s'"),
-//    //                oNode.GetType(), oNode.GetName() );
-//
-//    if (oNode.GetType() == wxXML_ENTITY_DECL)
-//    {
-//	    // A DTD node which declares an entity.
-//	    // This value is used to identify a node as a wxXml2EntityDecl.
-//	    // Looks like:     <!ENTITY myentity "entity's replacement">
-//        wxXml2EntityDecl* pNode = (wxXml2EntityDecl*)&oNode;
-//        //wxLogMessage(_T("[FindThemeNode] Exterbal entity. Name='%s', SystemID='%s'"),
-//        //             oNode.GetName(), pNode->GetSystemID() );
-//
-//        if (m_fExtEntity &&  m_sExtEntityName == oNode.GetName())
-//        {
-//            // Insert here the referenced xml tree
-//
-//            // prepare full URL
-//            // TODO: For now, assume that external entities are in the same folder than
-//            //       main xml file. Need to improve this.
-//            wxFileName oFN(m_sFilename);
-//            oFN.SetFullName(pNode->GetSystemID());
-//            wxString sFilename = oFN.GetFullPath();
-//
-//            wxXml2Document oDoc;
-//            wxString sError;
-//            if (!oDoc.Load(sFilename, &sError)) {
-//                wxLogMessage(_T("Error parsing file %s\nError:%s"), sFilename, sError);
-//                return;
-//            }
-//            //Verify type of document. Must be <book>
-//            wxXml2Node oRoot = oDoc.GetRoot();
-//            AddToLinksTable(oRoot);
-//
-//            //done
-//            m_fExtEntity = false;
-//            m_sExtEntityName = wxEmptyString;
-//        }
-//    }
-//    else if (oNode.GetType() == wxXML_ENTITY_REF_NODE)
-//    {
-//	    // Like a text node, but this node contains only an "entity". Entities
-//	    // are strings like: &amp; or &quot; or &lt; ....
-//
-//        // Save the name of the entity
-//        m_fExtEntity = true;
-//        m_sExtEntityName = oNode.GetName();
-//    }
-//    else if (oNode.GetName() == _T("theme"))
-//    {
-//        // Add to list
-//        wxString sId = oNode.GetPropVal(_T("id"), _T(""));
-//        if (sId == _T("")) {
-//            wxLogMessage(_T("Node <theme> has no id property"));
-//        }
-//    }
-//    else {
-//        // ignore it
-//    }
-//
-//    // process its children recursively
-//    wxXml2Node oChild(oNode.GetFirstChild());
-//    while (oChild != wxXml2EmptyNode) {
-//        FindThemeNode(oChild);
-//        oChild = oChild.GetNext();
-//    }
-//
-//}
-
 
 bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode, int nWriteOptions,
                                                wxString* pText)
@@ -257,20 +195,11 @@ bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode, int nWri
     m_sExtEntityName = wxEmptyString;       //so, no name
 
     wxXml2Node oCurr(oNode.GetFirstChild());
-    //m_xx += 5;
-    //wxString spaces(wxT(' '), m_xx);
-
     bool fError = false;
     while (oCurr != wxXml2EmptyNode) {
-        //if (oCurr.GetName() == _T("text")) {
-        //    wxLogMessage(spaces + wxT("text [%s]"), oCurr.GetContent() );
-        //}
-        //else
-        //    wxLogMessage(spaces + wxT("parsing [%s]"), oCurr.GetName() );
         fError |= ProcessChildren(oCurr, nWriteOptions, pText);
         oCurr = oCurr.GetNext();
     }
-    //m_xx -= 5;
     return fError;
 }
 
@@ -280,6 +209,8 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nWriteOption
     bool fError = false;
 
     if (oNode == wxXml2EmptyNode) return false;
+    if (m_fLogTree) wxLogMessage(_T("[ProcessChildren] nodeType=%d. Name='%s', content='%s'"),
+                                 oNode.GetType(), oNode.GetName(), oNode.GetContent() );
         
     if (oNode.GetType() == wxXML_TEXT_NODE)
     {
@@ -293,6 +224,8 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nWriteOption
         // the text node contains just a simple '\n'. Next code lines
         // are for filtering ou these lines
         wxString tmp = sContent.Trim();
+        sContent.Replace(_T("\n"), _T(" "));
+        while (sContent.Replace(_T("  "), _T(" ")) > 0);    //more than one consecutive space
         if (!tmp.IsEmpty()) {
             wxString sTrans = wxGetTranslation(sContent);
             if (nWriteOptions & eTOC) WriteToToc(sTrans, ltNO_INDENT);        //text not indented
@@ -334,8 +267,9 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nWriteOption
 
             wxXml2Document oDoc;
             wxString sError;
+            LogMessage(_T("Processing %s."), oFN.GetFullName());
             if (!oDoc.Load(oFN.GetFullPath(), &sError)) {
-                wxLogMessage(_T("Error parsing file %s\nError:%s"), oFN.GetFullPath(), sError);
+                LogMessage(_T("Error parsing file %s\nError:%s"), oFN.GetFullPath(), sError);
                 return true;    //error
             }
             //Verify type of document. Must be <book>
@@ -351,12 +285,7 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nWriteOption
     else if (oNode.GetType() == wxXML_ENTITY_REF_NODE) {
 	    //! Like a text node, but this node contains only an "entity". Entities
 	    //! are strings like: &amp; or &quot; or &lt; ....
-	    //! To create them, use
-	    //!    wxXml2Node entityref(wxXML_TEXT_NODE, parentnode, "&amp;");
-	    //!    containernode.AddChild(entityref);
         // It must have an wxXML_ENTITY_DECL child. Process it.
-        wxLogMessage(_T("[ProcessChildren] NodeType=%d, Name='%s'"),
-                        oNode.GetType(), oNode.GetName() );
 
         // Save the name of the node
         m_fExtEntity = true;
@@ -1505,10 +1434,10 @@ bool lmEbookProcessor::StartLangFile(wxString sFilename)
 
     oFDest.SetName( oFNP.GetName() );
     oFDest.SetExt(_T("cpp"));
-    wxLogMessage(_T("Creating file '%s'"), oFDest.GetFullPath());
+    LogMessage(_T("Creating file '%s'"), oFDest.GetFullPath());
     m_pLangFile = new wxFile(oFDest.GetFullPath(), wxFile::write);
     if (!m_pLangFile->IsOpened()) {
-        wxLogMessage(_T("Error: File %s can not be created"), oFDest.GetFullPath());
+        LogMessage(_T("Error: File %s can not be created"), oFDest.GetFullPath());
         m_pLangFile = (wxFile*)NULL;
         return false;        //error
     }
@@ -1625,8 +1554,8 @@ void lmEbookProcessor::DumpNode(const wxXml2Node& oNode, wxString& sTree, int n)
         oNode.GetType() == wxXML_CDATA_SECTION_NODE) {
 
         wxString content = oNode.GetContent();
-        if (content.Last() == wxT('\n')) content.RemoveLast();
-        if (content.GetChar(0) == wxT('\n')) content.Remove(0, 1);
+        if (content != wxEmptyString && content.Last() == wxT('\n')) content.RemoveLast();
+        if (content != wxEmptyString && content.GetChar(0) == wxT('\n')) content.Remove(0, 1);
 
         // a little exception: libxml2 when loading a document creates a
         // lot of text nodes containing just a simple \n;
@@ -1681,4 +1610,16 @@ void lmEbookProcessor::DumpNode(const wxXml2Node& oNode, wxString& sTree, int n)
     if (bClose) sTree += wxString(wxT(' '), n) + wxT("/") + oNode.GetName() + wxT("\n");
 }
 
+
+void lmEbookProcessor::LogMessage(const wxChar* szFormat, ...)
+{
+    if (!m_pLog) return;
+
+    va_list argptr;
+    va_start(argptr, szFormat);
+    wxString sMsg = wxString::FormatV(szFormat, argptr) + _T("\n");
+    m_pLog->AppendText(sMsg);
+    va_end(argptr);
+
+}
 

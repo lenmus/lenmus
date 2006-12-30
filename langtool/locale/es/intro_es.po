@@ -1,0 +1,91 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: LenMus 3.4\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2006-12-28 11:32+0100\n"
+"Last-Translator: cs <cs>\n"
+"Language-Team:  <cecilios@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-Basepath: c:\\usr\\desarrollo_wx\\lenmus\\langtool\\locale\\src\n"
+"X-Poedit-SearchPath-0: intro\n"
+
+#: intro/intro.cpp:2
+msgid "Send your comments and sugesstions to LenMus team (www.lenmus.org)"
+msgstr ""
+
+#: intro/intro.cpp:3
+msgid "Licensed under the terms of the GNU Free Documentation License (see copyrights page for details.)"
+msgstr ""
+
+#: intro/intro.cpp:4
+msgid "LenMus presentation"
+msgstr ""
+
+#: intro/intro.cpp:5
+msgid "Presentation"
+msgstr ""
+
+#: intro/intro.cpp:6
+msgid "Welcome to LenMus Phonascus version 3.4"
+msgstr ""
+
+#: intro/intro.cpp:7
+msgid ""
+"Phonascus, from Latin 'the teacher of music', is a music education software that \n"
+"you can use to practice your music reading skills, improve your aural recognition \n"
+"abilities, or just learn the fundamental principles of music theory and language. \n"
+"From version 3.1 it includes new functions that, I hope, will end up with full support \n"
+"for the creation, display, printing, play back and interactive edition of music scores. \n"
+"Visit the LenMus web site for more information about the current status of \n"
+"the score editor."
+msgstr ""
+
+#: intro/intro.cpp:8
+msgid ""
+"LenMus Phonascus allows you to focus on specific skills and exercises, on both \n"
+"theory and aural training. The different activities can be customized to meet \n"
+"your specific needs at each moment and it allows you to work at your own pace."
+msgstr ""
+
+#: intro/intro.cpp:9
+msgid ""
+"LenMus is structured as a collection of fully interactive textbooks (eMusicBooks), \n"
+"including theory and exercises. All exercises are fully integrated into the text. \n"
+"Music scores are not just images or pictures but fully interactive operational \n"
+"music scores that you can hear, in whole or just the measures you choose. \n"
+"This enables you to put concepts into practice with immediate feedback and \n"
+"makes the subject matter both more accessible and more rewarding, as you can \n"
+"hear, test and put in practise immediately any new concept introduced."
+msgstr ""
+
+#: intro/intro.cpp:10
+msgid ""
+"Teaching material is organized into levels, and each level into lessons.\n"
+"Book"
+msgstr ""
+
+#: intro/intro.cpp:11
+msgid "Single exercises"
+msgstr ""
+
+#: intro/intro.cpp:12
+msgid ""
+" contains \n"
+"some basic exercises for aural training and to practise theoretical concepts, \n"
+"such as intervals and scales. Unlike exercises included in the other books, \n"
+"you can customize all single exercises included in this book. This \n"
+"will allow you meet your specific needs at each moment and to practise \n"
+"specific points."
+msgstr ""
+
+#: intro/intro.cpp:13
+msgid "We hope that LenMus become a useful tool in your studies."
+msgstr ""
+
+#: intro/intro.cpp:14
+msgid "The LenMus team."
+msgstr ""
+

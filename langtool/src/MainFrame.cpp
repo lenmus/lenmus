@@ -59,15 +59,9 @@ enum
     // Installer menu
     MENU_INSTALLER = wxID_HIGHEST + 100,
 
-    // Lang (.cpp) files menu
-    MENU_MERGE_PO,
-
     // eBooks menu
     MENU_COMPILE_BOOK,
     MENU_GENERATE_PO,
-
-    MENU_SPLIT_FILE,
-    MENU_CONVERT_TO_HTML,
 
 };
 
@@ -102,14 +96,8 @@ BEGIN_EVENT_TABLE(ltMainFrame, wxFrame)
     EVT_MENU(MENU_COMPILE_BOOK, ltMainFrame::OnCompileBook)
     EVT_MENU(MENU_GENERATE_PO, ltMainFrame::OnGeneratePO)
 
-    // Lang (.cpp) files menu
-    EVT_MENU(MENU_MERGE_PO, ltMainFrame::OnMergePO)
-
     // Installer menu
     EVT_MENU(MENU_INSTALLER, ltMainFrame::OnInstaller)
-
-    EVT_MENU(MENU_SPLIT_FILE, ltMainFrame::OnSplitFile)
-    EVT_MENU(MENU_CONVERT_TO_HTML, ltMainFrame::OnConvertToHtml)
 
 END_EVENT_TABLE()
 
@@ -119,7 +107,7 @@ END_EVENT_TABLE()
 
 // frame constructor
 ltMainFrame::ltMainFrame(const wxString& title, const wxString& sRootPath)
-       : wxFrame(NULL, wxID_ANY, title)
+       : wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(600,400))
 {
     //save parameters
     m_sRootPath = sRootPath;
@@ -132,7 +120,7 @@ ltMainFrame::ltMainFrame(const wxString& title, const wxString& sRootPath)
 	m_pText = new wxTextCtrl(this, -1, 
         _T("This program is an utility to compile eMusicBooks and to\n")
         _T("create and to manage Lang translation files\n\n"),
-		wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_MULTILINE | wxHSCROLL);
+		wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_MULTILINE | wxHSCROLL | wxTE_DONTWRAP);
 	m_pText->SetBackgroundColour(*wxWHITE);
 
     // create a menu bar
@@ -149,15 +137,6 @@ ltMainFrame::ltMainFrame(const wxString& title, const wxString& sRootPath)
     wxMenu* pInstMenu = new wxMenu;
     pInstMenu->Append(MENU_INSTALLER, _T("&Generate installer"), _T("Generate 'Installer' strings"));
 
-    // the Split menu
-    //wxMenu* pSplitMenu = new wxMenu;
-    //pSplitMenu->Append(MENU_SPLIT_FILE, _T("&Split"), _T("Split HTML ebook file"));
-
-    // the Lang menu
-    wxMenu* pPoMenu = new wxMenu;
-    pPoMenu->Append(MENU_MERGE_PO, _T("&Merge .po files"), _T("XML eBook to Lang file"));
-
-
     // items in the eBooks menu
     wxMenu* pBooksMenu = new wxMenu;
     pBooksMenu->Append(MENU_COMPILE_BOOK, _T("&Compile eBook"), _T("Convert eBook to LMB format"));
@@ -170,7 +149,6 @@ ltMainFrame::ltMainFrame(const wxString& title, const wxString& sRootPath)
     menuBar->Append(pFileMenu, _T("&File"));
     menuBar->Append(pBooksMenu, _T("&eBooks"));
     menuBar->Append(pInstMenu, _T("&Installer"));
-    menuBar->Append(pPoMenu, _T("&PO-Files"));
     menuBar->Append(pHelpMenu, _T("&Help"));
 
     // ... and attach this menu bar to the frame
@@ -214,44 +192,6 @@ void ltMainFrame::OnInstaller(wxCommandEvent& WXUNUSED(event))
     }
 }
 
-void ltMainFrame::OnSplitFile(wxCommandEvent& WXUNUSED(event))
-{
-    // ask for the file to split
-    //wxString sFilter = wxT("*.*");
-    //wxString sPath = ::wxFileSelector(_T("Choose the file to split"),
-    //                                    wxT(""),    //default path
-    //                                    wxT(""),    //default filename
-    //                                    wxT("htm"),    //default_extension
-    //                                    sFilter,
-    //                                    wxOPEN,        //flags
-    //                                    this);
-    wxString sPath = ::wxDirSelector(_T("Choose a folder"));
-    if ( sPath.IsEmpty() ) return;
-
-    //lmXmlParser* pParser = new lmXmlParser();
-    //pParser->ParseBook(sPath);
-    //delete pParser;
-
-}
-
-void ltMainFrame::OnConvertToHtml(wxCommandEvent& WXUNUSED(event))
-{
-    // ask for the file to covert
-    wxString sFilter = wxT("*.*");
-    wxString sPath = ::wxFileSelector(_T("Choose the file to convert"),
-                                        wxT(""),    //default path
-                                        wxT(""),    //default filename
-                                        wxT("xml"),    //default_extension
-                                        sFilter,
-                                        wxOPEN,        //flags
-                                        this);
-    if ( sPath.IsEmpty() ) return;
-
-    lmHtmlConverter oConv;
-    oConv.ConvertToHtml(sPath, false, (wxFile*)NULL);
-
-}
-
 void ltMainFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
 {
     // ask for the file to covert
@@ -266,12 +206,13 @@ void ltMainFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
     if ( sPath.IsEmpty() ) return;
 
     ::wxBeginBusyCursor();
-    lmEbookProcessor oEBP;
+    lmEbookProcessor oEBP(0, m_pText);
     wxFileName oFSrc(sPath);
     oEBP.GenerateLMB(sPath, _T("en"), lmLANG_FILE);
     wxString sFolder = oFSrc.GetName();
 
     //create the PO files if they do not exist
+    LogMessage(_T("Creating PO files:\n"));
     for (int i=0; i < lmNUM_LANGUAGES; i++)
     {
         wxString sLang =  tLanguages[i].sLang;
@@ -280,13 +221,17 @@ void ltMainFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
         oFDest.SetName( oFSrc.GetName() + _T("_") + sLang );
         oFDest.SetExt(_T("po"));
         if (!oFDest.FileExists()) {     //if file does not exist
+            LogMessage(_T("Creating PO file %s\n"), oFDest.GetFullName());
             wxString sCharset = tLanguages[i].sLangCode;
             wxString sLangName = tLanguages[i].sLangName;
             if (!oEBP.CreatePoFile(oFDest.GetFullPath(), sCharset, sLangName, sLang, sFolder)) {
-                wxLogMessage(_T("Error: PO file can not be created"));
+                LogMessage(_T("Error: PO file can not be created\n"));
             }
         }
+        else
+            LogMessage(_T("Omitting: PO file %s already exists.\n"), oFDest.GetFullName());
     }
+    LogMessage(_T("PO files created.\n\n"));
 
     ::wxEndBusyCursor();
 
@@ -344,10 +289,13 @@ void ltMainFrame::OnCompileBook(wxCommandEvent& WXUNUSED(event))
     //Get book name
     wxFileName oFN(rOptions.sSrcPath);
     const wxString sBookName = oFN.GetName();
-    LogMessage(_T("\nPreparing to process eMusicBook ") + rOptions.sSrcPath );
+    LogMessage(_T("Preparing to process eMusicBook %s\n"), rOptions.sSrcPath );
 
     ::wxBeginBusyCursor();
-    lmEbookProcessor oEBP;
+    int nDbgOpt = 0;
+    if (rOptions.fDump) nDbgOpt |= eDumpTree;
+    if (rOptions.fLogTree) nDbgOpt |= eLogTree;
+    lmEbookProcessor oEBP(nDbgOpt, m_pText);
     //Loop to use each selected language
     for(int i=0; i < eLangLast; i++) 
     {
@@ -364,8 +312,8 @@ void ltMainFrame::OnCompileBook(wxCommandEvent& WXUNUSED(event))
                 wxString sCatalogName = sBookName + _T("_") + pLocale->GetName();
                 pLocale->AddCatalog(sCatalogName);
                 
-                LogMessage(_T("\nLocale changed to %s language (using %s)."),
-                            pLocale->GetName(), sCatalogName + _T(".mo") );
+                LogMessage(_T("Locale changed to %s language (using %s)."),
+                            pLocale->GetName(), sCatalogName + _T(".mo\n") );
             }
             oEBP.GenerateLMB(rOptions.sSrcPath, sLang);
 
@@ -386,7 +334,3 @@ void ltMainFrame::LogMessage(const wxChar* szFormat, ...)
 
 }
 
-void ltMainFrame::OnMergePO(wxCommandEvent& WXUNUSED(event))
-{
-    wxMessageBox(_T("Not yet implemented. Sorry!"));
-}

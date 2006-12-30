@@ -47,7 +47,7 @@ studied in this lesson.</para>
 <exercise type='TheoMusicReading' width='100%' height='300' border='0'>
     <control_go_back>thm206</control_go_back>
     <control_play></control_play>
-    <control_solfa>1</control_solfa>
+    <control_solfa></control_solfa>
     <fragment>98;(n * b. l),(n * c g+)(n * c)(n * c g-)</fragment>
     <fragment>98;(n * b. l),(n * n.)</fragment>
     <clef>Sol;a3;a5</clef>
@@ -69,7 +69,7 @@ studied in this lesson.</para>
 <exercise type='TheoMusicReading' width='100%' height='300' border='0'>
     <control_go_back>thm206</control_go_back>
     <control_play></control_play>
-    <control_solfa>1</control_solfa>
+    <control_solfa></control_solfa>
     <fragment>68,98,128;(n * c g+)(n * c)(n * c g-),(n * c g+)(s c)(n * c g-),(n * c)(n * n),(n * b. l),(n * n.)</fragment>
     <fragment>68,98,128;(n * b. l),(n * c g+)(n * c)(n * c g-),(n * n.)</fragment>
     <fragment>68,98,128;(n * b. l),(n * c g+)(n * c)(n * c g-)</fragment>

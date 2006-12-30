@@ -1,0 +1,56 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!--             Lesson 1: The staff                 -->
+<!-- =============================================== -->
+
+<content>
+<theme id="mr1_thm1">
+<title>The staff</title>
+
+<para>
+In the Western musical notation system music is written on specially printed 
+paper called "manuscript paper". [1. imagen de papel pautado] Each group of horizontal
+lines is called a "staff", with "staves" as the plural. Note that althoug in American 
+English "staff" is the right term, in British English the word "staff" is old-fashioned and 
+rarely used; they use the word "stave" instead. 
+</para>
+
+<para>The staff is a set of five horizontal lines, 
+numbered from bottom to top; the bottom line is the first line and the top line 
+is the fifth line:
+</para>
+
+<score width="600" height="100" border="0">
+    <type>short</type>
+    <music_border>0</music_border>
+    <music>
+        (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
+    </music>
+</score>
+
+
+<para>
+The four spaces between the staff lines, are important and are also numbered 
+from bottom to top:</para>
+
+
+<!--[3. pentagrams con etiquetas "space1, ...]-->
+
+<para>
+The musical symbols are placed on the staff. Note symbols are placed either on a 
+line or on a space and musical pitch (low or high) is determined by the position 
+of the note on the staff. Notes on the higher lines/spaces have higer pitch than 
+those on the lower ones. Lesson to the next scale:
+</para>
+
+
+<!--[4. scale to play, notas blancas. sin clave mi barras ni ningun otro simbolo]-->
+
+<para>
+Music on the staff is read from left to right.
+<para>
+
+
+</theme>
+
+</content>

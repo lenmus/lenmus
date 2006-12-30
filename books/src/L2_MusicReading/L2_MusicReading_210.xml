@@ -61,7 +61,7 @@ studied in this lesson.</para>
 <exercise type='TheoMusicReading' width='100%' height='300' border='0'>
     <control_go_back>thm210</control_go_back>
     <control_play></control_play>
-    <control_solfa>1</control_solfa>
+    <control_solfa></control_solfa>
     <fragment>68;(n * c g+)(n * c)(n * c l g-),(n * n)(n * c)</fragment>
     <fragment>68;(n * c g+)(n * c)(n * c l g-),(n * n.)</fragment>
     <clef>Sol;a3;a5</clef>
@@ -82,7 +82,7 @@ studied in this lesson.</para>
 <exercise type='TheoMusicReading' width='100%' height='300' border='0'>
     <control_go_back>thm210</control_go_back>
     <control_play></control_play>
-    <control_solfa>1</control_solfa>
+    <control_solfa></control_solfa>
     <fragment>68,98,128;(s n)(n * c),(n * c g+)(n * c)(n * c l g-),(n * n)(n * c),(n * c g+)(n * c)(n * c g-),(n * n.)</fragment>
     <fragment>68,98,128;(n * c g+)(n * c)(n * c l g-),(n * n.),(n * c g+)(n * c)(n * c g-),(n * n.)</fragment>
     <fragment>68,98,128;(n * n)(n * c),(n * n)(n * c),(n * n. l),(n * c g+)(n * c)(n * c g-),(n * c g+)(n * c)(n * c l g-),(n * n)(n * c),(n * n.)</fragment>

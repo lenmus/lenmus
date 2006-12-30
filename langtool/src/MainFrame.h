@@ -45,11 +45,8 @@ public:
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
     void OnInstaller(wxCommandEvent& event);
-    void OnSplitFile(wxCommandEvent& WXUNUSED(event));
-    void OnConvertToHtml(wxCommandEvent& WXUNUSED(event));
     void OnGeneratePO(wxCommandEvent& WXUNUSED(event));
     void OnCompileBook(wxCommandEvent& WXUNUSED(event));
-    void OnMergePO(wxCommandEvent& WXUNUSED(event));
 
 private:
     void PutContentIntoFile(wxString sPath, wxString sContent);
