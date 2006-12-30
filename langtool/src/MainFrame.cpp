@@ -38,8 +38,6 @@
 
 #include "MainFrame.h"
 #include "installer.h"
-//#include "parser.h"
-#include "html_converter.h"
 #include "ebook_processor.h"
 #include "DlgCompileBook.h"
 #include "Paths.h"

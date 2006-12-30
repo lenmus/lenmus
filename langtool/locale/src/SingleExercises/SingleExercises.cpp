@@ -1,6 +1,7 @@
 wxString sTxt;
 sTxt = _("Send your comments and sugesstions to LenMus team (www.lenmus.org)");
-sTxt = _("Licensed under the terms of the GNU Free Documentation License (see copyrights page for details.)");
+sTxt = _("Licensed under the terms of the GNU Free Documentation License (see 'Help > Copyrights' menu for details)");
+sTxt = _("the teacher of music");
 sTxt = _("Single exercises");
 sTxt = _("General exercises, customizable to suit your needs at any moment.");
 sTxt = _("Cecilio Salmeron");

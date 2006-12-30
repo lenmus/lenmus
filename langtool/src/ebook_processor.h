@@ -80,6 +80,8 @@ private:
     bool ExerciseParamTag(const wxXml2Node& oNode, bool fTranslate);
     bool HolderTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool ItemizedlistTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool LeafletTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool LeafletcontentTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool LegalnoticeTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool LinkTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool ListitemTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
@@ -117,9 +119,12 @@ private:
         // HTML
     bool StartHtmlFile(wxString sFilename, wxString sId);
     void TerminateHtmlFile();
+    void TerminateLeafletFile();
     void WriteToHtml(wxString sText);
     void CloseHtmlFile();
     void CreatePageHeaders(wxString sBookTitle, wxString sHeaderTitle,
+                           wxString sTitleNum);
+    void CreateLeafletHeaders(wxString sBookTitle, wxString sHeaderTitle,
                            wxString sTitleNum);
         // Lang (.cpp)
     bool StartLangFile(wxString sFilename);
@@ -130,11 +135,12 @@ private:
     void CopyToLmb(wxString sFilename);
 
 
-    // Debug methods
+    // Debug and methods to inform user
     void DumpXMLTree(const wxXml2Node& oNode);
     void DumpNodeAndSiblings(const wxXml2Node& oNode, wxString& sTree, int n);
     void DumpNode(const wxXml2Node& oNode, wxString& sTree, int n);
     void LogMessage(const wxChar* szFormat, ...);
+    void LogError(const wxChar* szFormat, ...);
 
 
 
@@ -179,6 +185,8 @@ private:
     wxFFileOutputStream*    m_pZipOutFile;
     wxArrayString           m_aFilesToPack;
 
+    // leaflet
+    bool            m_fIsLeaflet;
 
     // bookinfo data
     bool            m_fProcessingBookinfo;

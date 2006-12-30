@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 
-<book id="intro">
+<leaflet id="intro">
 <bookinfo>
     <title>LenMus presentation</title>
 </bookinfo>
 
-<theme id="thm0">
-<titleabbrev>Presentation</titleabbrev>
-<title>Welcome to LenMus Phonascus version 3.4</title>
+<leafletcontent id="thm0">
+<title>LenMus Phonascus presentation</title>
 
 
 <para>Phonascus, from Latin 'the teacher of music', is a music education software that 
@@ -31,7 +30,7 @@ makes the subject matter both more accessible and more rewarding, as you can
 hear, test and put in practise immediately any new concept introduced.</para>
 
 <para>Teaching material is organized into levels, and each level into lessons.
-Book <ulink url='#LenMusPage/SingleExercises_0.htm'>Single exercises</link> contains 
+Book <ulink url='#LenMusPage/SingleExercises_0.htm'> Single exercises</link> contains 
 some basic exercises for aural training and to practise theoretical concepts, 
 such as intervals and scales. Unlike exercises included in the other books, 
 you can customize all single exercises included in this book. This 
@@ -42,6 +41,6 @@ specific points.</para>
 
 <para>The LenMus team.</para>
 
-</theme>
+</leafletcontent>
 
-</book>
+</leaflet>

@@ -65,7 +65,9 @@ enum {
 static const wxString m_sFooter1 = 
     _T("Send your comments and sugesstions to LenMus team (www.lenmus.org)");
 static const wxString m_sFooter2 = 
-    _T("Licensed under the terms of the GNU Free Documentation License (see copyrights page for details.)");
+    _T("Licensed under the terms of the GNU Free Documentation License (see 'Help > Copyrights' menu for details)");
+static const wxString m_sPhonascus =
+    _T("the teacher of music");
 
 
 lmEbookProcessor::lmEbookProcessor(int nDbgOptions, wxTextCtrl* pUserLog)
@@ -107,12 +109,10 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, int n
     m_fProcessingBookinfo = false;
     m_fOnlyLangFile = nOptions & lmLANG_FILE;
     m_fGenerateLmb = !m_fOnlyLangFile;
+    m_sFilename = sFilename;
 
     //add layout files
     m_aFilesToPack.Empty();
-    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_banner_left1.png"));
-    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_banner_right2.png"));
-    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_line_orange.png"));
 
 
     // load the XML file as tree of nodes
@@ -123,18 +123,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, int n
         LogMessage(_T("Error parsing file %s\nError:%s"), sFilename, sError);
         return false;
     }
-    m_sFilename = sFilename;
-
-    //Verify type of document. Must be <book>
     wxXml2Node oRoot = oDoc.GetRoot();
-    if (oRoot.GetName() != _T("book")) {
-        wxLogMessage(
-            _T("Error. First tag is not <book> but <%s>"),
-            oRoot.GetName() );
-        oRoot.DestroyIfUnlinked();
-        oDoc.DestroyIfUnlinked();
-        return false;
-    }
 
     if (m_fDump) DumpXMLTree(oRoot);        //for debugging
 
@@ -169,8 +158,20 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, int n
         }
     }
 
-    bool fError = BookTag(oRoot);
-
+    //Process the document. Root node must be <book> or <leaflet>
+    bool fError = false;
+    if (oRoot.GetName() == _T("book"))
+        fError = BookTag(oRoot);
+    else if (oRoot.GetName() == _T("leaflet"))
+        fError = LeafletTag(oRoot);
+    else {
+        wxLogMessage(
+            _T("Error. First tag is neither <book> nor <leaflet> but <%s>"),
+            oRoot.GetName() );
+        oRoot.DestroyIfUnlinked();
+        oDoc.DestroyIfUnlinked();
+        return false;
+    }
 
     // Close files
     TerminateTocFile();
@@ -348,6 +349,9 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, int nOptions, wxStrin
     else if (sElement == _T("holder")) {
         return HolderTag(oNode, nOptions, pText);
     }
+    else if (sElement == _T("leafletcontent")) {
+        return LeafletcontentTag(oNode, nOptions, pText);
+    }
     else if (sElement == _T("legalnotice")) {
         return LegalnoticeTag(oNode, nOptions, pText);
     }
@@ -469,6 +473,11 @@ bool lmEbookProcessor::BookTag(const wxXml2Node& oNode, int nOptions, wxString* 
     // receives and processes a <book> node and its children.
     // return true if error
 
+    m_fIsLeaflet = false;
+    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_banner_left1.png"));
+    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_banner_right2.png"));
+    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_line_orange.png"));
+
     //get book id and add it to the pages table. This id will be used for the
     //book cover page
     m_sBookId = oNode.GetPropVal(_T("id"), _T(""));
@@ -512,7 +521,7 @@ bool lmEbookProcessor::BookinfoTag(const wxXml2Node& oNode, int nOptions, wxStri
     m_fProcessingBookinfo = false;
 
     // create the cover page
-    CreateBookCover();
+    if (!m_fIsLeaflet) CreateBookCover();
 
     return fError;
 
@@ -640,6 +649,69 @@ bool lmEbookProcessor::ItemizedlistTag(const wxXml2Node& oNode, int nOptions, wx
 
     // closing tag
     WriteToHtml(_T("</ul>\n"));
+
+    return fError;
+}
+
+bool lmEbookProcessor::LeafletTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
+{
+    // receives and processes a <leaflet> root node and its children.
+    // return true if error
+
+    m_fIsLeaflet = true;
+    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_banner_left1.png"));
+    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("leaflet_banner_right.png"));
+    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_line_orange.png"));
+
+    //get book id and add it to the pages table. This id will be used for the
+    //book cover page
+    m_sBookId = oNode.GetPropVal(_T("id"), _T(""));
+    if (m_sBookId == _T("")) {
+        LogError(_T("Node <leaflet> has no id property"));
+    }
+
+    // reset titles numbering counters
+    m_nTitleLevel = -1;
+    for (int i=0; i < lmMAX_TITLE_LEVEL; i++)
+        m_nNumTitle[i] = 0;
+
+    m_sBookTitleAbbrev = wxEmptyString;
+    m_sBookTitle = wxEmptyString;
+
+    //process tag's children
+    bool fError = ProcessChildAndSiblings(oNode, nOptions, pText);
+
+    return fError;
+
+}
+
+bool lmEbookProcessor::LeafletcontentTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
+{
+    // get its 'id' and 'header' properties
+    wxString sId = oNode.GetPropVal(_T("id"), _T(""));
+    wxString sHeader = oNode.GetPropVal(_T("header"), _T(""));
+    wxString sToToc = oNode.GetPropVal(_T("toc"), _T("yes"));
+    m_fThemeInToc = false;
+
+    // openning tag
+    m_sThemeTitleAbbrev = wxEmptyString;
+    // HTML:
+    StartHtmlFile(m_sFilename, sId);
+    // TOC
+    WriteToToc(_T("<coverpage>") + m_sHtmlPagename + _T("</coverpage>\n"));
+ 
+    // tag processing implications
+    m_nHeaderLevel = 1;
+    m_fTitleToToc = false;
+    m_nParentType = lmPARENT_THEME;
+
+    //process tag's children
+    bool fError = ProcessChildAndSiblings(oNode, nOptions | eHTML, pText);
+
+    //closing tag:
+    // HTML:
+    TerminateLeafletFile();    // Close previous html page
+    // TOC:
 
     return fError;
 }
@@ -915,7 +987,10 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode, int nOptions, wxString*
             sHeaderTitle = sTitle;
 
         //create page headers
-        CreatePageHeaders(m_sBookTitle, sHeaderTitle, m_sChapterNum);
+        if (!m_fIsLeaflet)
+            CreatePageHeaders(m_sBookTitle, sHeaderTitle, m_sChapterNum);
+        else
+            CreateLeafletHeaders(m_sBookTitle, sHeaderTitle, m_sChapterNum);
     }
     //write title to html file
     WriteToHtml( wxString::Format(_T("<h%d>"), m_nHeaderLevel));
@@ -1041,11 +1116,6 @@ void lmEbookProcessor::DecrementTitleCounters()
 
 void lmEbookProcessor::CreateBookCover()
 {
-    //wxLogMessage(_T("Copyright &copy; ") + m_sCopyrightYear + _T(", ") + 
-    //    m_sCopyrightHolder );
-    //wxLogMessage(_T("Legal notice: ") + m_sLegalNotice );
-    //wxLogMessage(_T("Abstract: ") + m_sBookAbstract );
-
     StartHtmlFile(m_sFilename, _T("cover"));
     WriteToHtml(
         _T("<body bgcolor='#808080'>\n")
@@ -1265,6 +1335,53 @@ void lmEbookProcessor::TerminateHtmlFile()
 
 }
 
+void lmEbookProcessor::TerminateLeafletFile()
+{
+    if (!((m_fGenerateLmb && m_pLmbFile) || m_pHtmlFile)) return;
+
+    // Write footer
+    WriteToHtml(
+        _T("</td><td bgcolor='#ffffff' width='10px'></td></tr></table>\n")
+        _T("\n")
+        _T("<br /><br /><br /><br />\n")
+        _T("<br /><br /><br /><br />\n")
+        _T("<br /><br /><br /><br />\n")
+        _T("<br /><br /><br /><br />\n")
+        _T("<br /><br /><br /><br />\n")
+        _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
+        _T("<tr><td bgcolor='#ff8800'><img src='ebook_line_orange.png'></td></tr>\n")
+        _T("<tr><td bgcolor='#7f8adc' align='center'>\n")
+        _T("    <font size='-1' color='#ffffff'><br /><br />\n"));
+     WriteToHtml( ::wxGetTranslation(m_sFooter1) );
+	 WriteToHtml( _T("<br />\n") );
+     WriteToHtml( ::wxGetTranslation(m_sFooter2) );
+     WriteToHtml( _T("<br />\n")
+	    _T("    </font>\n")
+        _T("</td></tr>\n")
+        _T("</table>\n")
+        _T("\n")
+        _T("</td></tr></table></center>\n")
+        _T("\n")
+        _T("</body>\n")
+        _T("</html>\n") );
+
+     //   _T("<br /><br /><br /><br />\n")
+     //   _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
+     //   _T("<tr><td bgcolor='#ff8800'><img src='ebook_line_orange.png'></td></tr>\n")
+     //   _T("<tr><td bgcolor='#7f8adc' align='center'>\n")
+     //   _T("    <font size='-1' color='#ffffff'><br /><br />\n") + m_sFooter1 +
+	    //_T("<br />\n") + m_sFooter2 +
+     //   _T("<br />\n")
+	    //_T("    </font>\n")
+     //   _T("</td></tr>\n")
+     //   _T("</table>\n"));
+
+    //WriteToHtml(_T("\n</body>\n"));
+
+    CloseHtmlFile();
+
+}
+
 void lmEbookProcessor::CloseHtmlFile()
 {
     if (!((m_fGenerateLmb && m_pLmbFile) || m_pHtmlFile)) return;
@@ -1327,21 +1444,41 @@ void lmEbookProcessor::CreatePageHeaders(wxString sBookTitle, wxString sHeaderTi
         _T("<tr><td bgcolor='#ffffff' width='14px'></td>\n")
         _T("<td>\n") );
 
-    //WriteToHtml(
-    //    _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
-    //    _T("<tr><td bgcolor='#7f8adc' align='left'>\n")
-    //    _T("	<font size='-1' color='#ffffff'>&nbsp;&nbsp;") );
-    //WriteToHtml( ::wxGetTranslation(m_sBookTitle) );
-    //WriteToHtml(
-    //    _T("</font></td>\n")
-    //    _T("<tr><td bgcolor='#7f8adc' align='right'><br />\n")
-    //    _T("	<b><font size='+4' color='#ffffff'>") );
-    //WriteToHtml(m_sChapterNum + ::wxGetTranslation(sHeaderTitle) );
-    //WriteToHtml(
-    //    _T("&nbsp;</font></b><br /></td>\n")
-    //    _T("<tr><td bgcolor='#ff8800'><img src='ebook_line_orange.png'></td></tr>\n")
-    //    _T("</table>\n")
-    //    _T("<br />\n") );
+}
+
+void lmEbookProcessor::CreateLeafletHeaders(wxString sBookTitle, wxString sHeaderTitle,
+                                         wxString sTitleNum)
+{
+    if (!((m_fGenerateLmb && m_pLmbFile) || m_pHtmlFile)) return;
+
+    //create page headers
+    WriteToHtml(
+        _T("<body bgcolor='#808080'>\n")
+        _T("\n")
+        _T("<center>\n")
+        _T("<table width='720px' bgcolor='#ffffff' cellpadding='0' cellspacing='0'>\n")
+        _T("<tr><td bgcolor='#ffffff'>\n")
+        _T("\n")
+        _T("<!-- banner -->\n")
+        _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
+        _T("<tr><td width='300' rowspan='2'><img src='ebook_banner_left1.png'></td>\n")
+        _T("<td bgcolor='#7f8adc' rowspan='2'>&nbsp;</td>\n")
+        _T("<td width='200' bgcolor='#7f8adc'><img src='leaflet_banner_right.png'></td>\n")
+        _T("<td bgcolor='#7f8adc' rowspan='2' width='20px'>&nbsp;</td>\n")
+        _T("</tr>\n")
+        _T("<tr height='30'><td bgcolor='#7f8adc' align='right' valign='top'>\n")
+        _T("	<font color='#ffffff' size='5' face='Monotype Corsiva'>") );
+    WriteToHtml( ::wxGetTranslation(m_sPhonascus) );
+    WriteToHtml(
+        _T("</font></td></tr>\n")
+        _T("<tr><td bgcolor='#ff8800' colspan='4'>.</td></tr>\n")
+        _T("</table>\n\n")
+        _T("\n")
+        _T("<br />\n")
+        _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
+        _T("<tr><td bgcolor='#ffffff' width='14px'></td>\n")
+        _T("<td>\n") );
+
 }
 
 //------------------------------------------------------------------------------------
@@ -1447,6 +1584,7 @@ bool lmEbookProcessor::StartLangFile(wxString sFilename)
     // add texts included by Langtool (footers, headers, etc.)
     WriteToLang( m_sFooter1 );
     WriteToLang( m_sFooter2 );
+    WriteToLang( m_sPhonascus );
 
     return true;
 
@@ -1622,4 +1760,18 @@ void lmEbookProcessor::LogMessage(const wxChar* szFormat, ...)
     va_end(argptr);
 
 }
+
+void lmEbookProcessor::LogError(const wxChar* szFormat, ...)
+{
+    if (!m_pLog) return;
+
+    va_list argptr;
+    va_start(argptr, szFormat);
+    wxString sMsg = _T("*** Error ***: ");
+    sMsg += wxString::FormatV(szFormat, argptr) + _T("\n");
+    m_pLog->AppendText(sMsg);
+    va_end(argptr);
+
+}
+
 
