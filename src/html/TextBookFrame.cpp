@@ -205,7 +205,7 @@ void lmTextBookFrame::UpdateMergedIndex()
         wxASSERT_MSG( pItem->level < 128, _T("nested index entries too deep") );
 
         if (history[pItem->level] &&
-            history[pItem->level]->items[0]->name == pItem->name)
+            history[pItem->level]->items[0]->title == pItem->title)
         {
             // same index entry as previous one, update list of items
             history[pItem->level]->items.Add(pItem);
@@ -631,8 +631,8 @@ bool lmTextBookFrame::DisplayContents()
     if (m_pBookData->GetBookRecArray().GetCount() > 0)
     {
         lmBookRecord* pBook = m_pBookData->GetBookRecArray()[0];
-        if (!pBook->GetStart().empty())
-            m_HtmlWin->LoadPage(pBook->GetFullPath(pBook->GetStart()));
+        if (!pBook->GetCoverPage().empty())
+            m_HtmlWin->LoadPage(pBook->GetFullPath(pBook->GetCoverPage()));
     }
 
     return true;
@@ -657,8 +657,8 @@ bool lmTextBookFrame::DisplayIndex()
     if (m_pBookData->GetBookRecArray().GetCount() > 0)
     {
         lmBookRecord* pBook = m_pBookData->GetBookRecArray()[0];
-        if (!pBook->GetStart().empty())
-            m_HtmlWin->LoadPage(pBook->GetFullPath(pBook->GetStart()));
+        if (!pBook->GetCoverPage().empty())
+            m_HtmlWin->LoadPage(pBook->GetFullPath(pBook->GetCoverPage()));
     }
 
     return true;
@@ -692,7 +692,7 @@ void lmTextBookFrame::DisplayIndexItem(const TextBookHelpMergedIndexItem *it)
             {
                 if (contents[j]->page == page)
                 {
-                    page = contents[j]->name;
+                    page = contents[j]->title;
                     break;
                 }
             }

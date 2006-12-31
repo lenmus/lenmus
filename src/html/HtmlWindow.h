@@ -50,8 +50,13 @@ public:
     // deal with user commands
     void OnLinkClicked(const wxHtmlLinkInfo& link);
 
-    //AQUI_FALLA
-    void OnSetTitle(const wxString& title) {}
+    //In tabbed interface this method fails. I suppose it fails as it is not possible
+    // to set up the frame title. So I override it to save the title but not change
+    // the frame title
+    void OnSetTitle(const wxString& title)
+        {
+            m_OpenedPageTitle = title;
+        }
 
 };
 

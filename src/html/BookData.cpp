@@ -68,7 +68,7 @@ static int wxHtmlHelpIndexCompareFunc(lmBookIndexItem **a, lmBookIndexItem **b)
 
     if (ia->parent == ib->parent)
     {
-        return ia->name.CmpNoCase(ib->name);
+        return ia->title.CmpNoCase(ib->title);
     }
     else if (ia->level == ib->level)
     {
@@ -111,7 +111,7 @@ lmBookRecord::lmBookRecord(const wxString& bookfile, const wxString& basepath,
     m_sBookFile = bookfile;
     m_sBasePath = basepath;
     m_sTitle = title;
-    m_sPageFile = start;
+    m_sCoverPage = start;
     // for debugging, give the contents index obvious default values
     m_ContentsStart = m_ContentsEnd = -1;
 }
@@ -141,7 +141,7 @@ wxString lmBookIndexItem::GetIndentedName() const
     wxString s;
     for (int i = 1; i < level; i++)
         s << _T("   ");
-    s << name;
+    s << title;
     return s;
 }
 
@@ -280,7 +280,7 @@ void lmBookData::ProcessIndexEntries(wxXmlNode* pNode, lmBookRecord *pBookr)
             pItem->level = 1;               //todo
             pItem->id = m_pParser->GetAttribute(pElement, _T("id"));
             pItem->page = m_pParser->GetAttribute(pElement, _T("page"));
-            pItem->name = m_pParser->GetText(pElement);
+            pItem->title = m_pParser->GetText(pElement);
             pItem->titlenum = wxEmptyString;
             pItem->image = wxEmptyString;
             pItem->pBookRecord = pBookr;
@@ -415,7 +415,7 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
     bookitem->level = 0;
     bookitem->id = wxEmptyString;
     bookitem->page = sPage;
-    bookitem->name = sTitle;
+    bookitem->title = sTitle;
     bookitem->titlenum = wxEmptyString;
     bookitem->image = wxEmptyString;
     bookitem->pBookRecord = pBookr;
@@ -505,7 +505,7 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
     bookitem->level = nLevel;
     bookitem->id = sId;
     bookitem->page = sPage;
-    bookitem->name = sTitle;
+    bookitem->title = sTitle;
     bookitem->titlenum = sTitlenum;
     bookitem->image = sImage;
     bookitem->pBookRecord = pBookr;
@@ -536,52 +536,65 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
 
 wxString lmBookData::FindPageByName(const wxString& x)
 {
-    int nNumBooks;
+    // Find a page:
+    // - By book filename: i.e. 'SingleExercises.lmb' (returns the cover page)
+    // - By page filename: i.e. 'SingleExercises_ch0.htm'
+    // - By page title: i.e. 'Exercises for aural training'
+    // - By index enty: 
+    //
+    // Returns the url to the page (the full path)
+    //    i.e. 'c:\lenmus\books\en\SingleExercises.lmb#zip:SingleExercises_ch0.htm'
+
     int i;
     wxFileSystem fsys;
-    wxFSFile *f;
+    wxFSFile* pFile;
 
-    // 1. try to open given file:
-
-    nNumBooks = m_bookRecords.GetCount();
-    for (i = 0; i < nNumBooks; i++)
-    {
-        f = fsys.OpenFile(m_bookRecords[i]->GetFullPath(x));
-        if (f)
+    // 1. try to interpret x as a file name (i.e. 'SingleExercises.lmb')
+    if (x.Right(4) == _T(".lmb")) {
+        // Try to open it
+        int nNumBooks = m_bookRecords.GetCount();
+        for (i = 0; i < nNumBooks; i++)
         {
-            wxString url = m_bookRecords[i]->GetFullPath(x);
-            delete f;
-            return url;
+            pFile = fsys.OpenFile(m_bookRecords[i]->GetFullPath(x));
+            if (pFile) {
+                wxString url = m_bookRecords[i]->GetFullPath(m_bookRecords[i]->GetCoverPage());
+                delete pFile;
+                return url;
+            }
         }
     }
 
+    // 2. Try to interpret x as the filename of a book page (i.e. 'SingleExercises_0.htm')
+    if (x.Right(4) == _T(".htm")) {
+        // Try to find the book page
+        int nNumEntries = m_contents.size();
+        for (i = 0; i < nNumEntries; i++)
+        {
+            if (m_contents[i]->page == x)
+                return m_contents[i]->GetFullPath();
+        }
+    }
 
-    ///* 2. try to find a book: */
+    // 3. Try to interpret it as a title, and so try find in toc (i.e. 'Exercises for
+    //    aural training'). This is the less secure method as titles can be repeated
+    //    in different books. In these cases this will retutn the first one found
+    int nNumEntries = m_contents.size();
+    for (i = 0; i < nNumEntries; i++)
+    {
+        if (m_contents[i]->title == x)
+            return m_contents[i]->GetFullPath();
+    }
 
-    //for (i = 0; i < nNumBooks; i++)
-    //{
-    //    if (m_bookRecords[i].GetTitle() == x)
-    //        return m_bookRecords[i].GetFullPath(m_bookRecords[i].GetStart());
-    //}
-
-    ///* 3. try to find in contents: */
-
-    //nNumBooks = m_contents.size();
-    //for (i = 0; i < nNumBooks; i++)
-    //{
-    //    if (m_contents[i].name == x)
-    //        return m_contents[i].GetFullPath();
-    //}
+    // 4. try to find it in index
+    nNumEntries = m_index.size();
+    for (i = 0; i < nNumEntries; i++)
+    {
+        if (m_index[i]->title == x)
+            return m_index[i]->GetFullPath();
+    }
 
 
-    ///* 4. try to find in index: */
 
-    //nNumBooks = m_index.size();
-    //for (i = 0; i < nNumBooks; i++)
-    //{
-    //    if (m_index[i].name == x)
-    //        return m_index[i].GetFullPath();
-    //}
 
     return wxEmptyString;
 }
@@ -676,7 +689,7 @@ bool lmSearchStatus::Search()
     //{
     //    if (m_Engine.Scan(*file))
     //    {
-    //        m_Name = m_Data->m_contents[i].name;
+    //        m_Name = m_Data->m_contents[i].title;
     //        m_CurItem = &m_Data->m_contents[i];
     //        found = true;
     //    }

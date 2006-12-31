@@ -102,8 +102,26 @@ At the begining of file ContentsBoxCtrol.cpp there is an html tag handler to pro
 the <tocitem> tag and cretae the html content.
 
 
-Single page books
--------------------
+Single page books (leaflets)
+-------------------------------
 It is possible to include single pages at first level. These 'single page' books 
-will be called 'leaflets'
+will be called 'leaflets'. Use <leaflet> tag instead of <book>. It will have a single
+theme but use tag <leafletcontent> instead of <theme>.
 
+
+Bookmarks
+--------------------------------
+
+Combobox will display reference to book and page: 'book_name: title_of_page'
+Array m_BookmarksPages contains the url to thge page.
+Array m_BookmarksNames contains the 'book_name: title_of_page' strings
+
+- Method: lmTextBookFrame::OnBookmarksSel() will display the page for the bookmark
+    selected in the combobox
+
+- Bookmarks are added in method lmTextBookFrame::OnToolbar(), case ID_BOOKMARKS_ADD. The
+    name to display in combobox is taken from the html page title.
+
+- Bookmarks are added in method lmTextBookFrame::OnToolbar(), case ID_BOOKMARKS_REMOVE
+
+Bookmarks are saved and restored in methods WriteCustomization and ReadCustomization.

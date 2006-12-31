@@ -68,8 +68,7 @@ public:
     wxString GetTitle() const { return m_sTitle; }
     void SetTitle(const wxString& title) { m_sTitle = title; }
 
-    wxString GetStart() const { return m_sPageFile; }
-    void SetStart(const wxString& start) { m_sPageFile = start; }
+    wxString GetCoverPage() const { return m_sCoverPage; }
 
     wxString GetBasePath() const { return m_sBasePath; }
     void SetBasePath(const wxString& path) { m_sBasePath = path; }
@@ -86,7 +85,7 @@ protected:
     wxString    m_sBookFile;
     wxString    m_sBasePath;
     wxString    m_sTitle;
-    wxString    m_sPageFile;
+    wxString    m_sCoverPage;
     int         m_ContentsStart;    //index to content table for the first entry of this book
     int         m_ContentsEnd;      //index to content table for the last entry of this book
 };
@@ -104,7 +103,7 @@ struct lmBookIndexItem
     lmBookIndexItem*    parent;         // parent entry if this is a sub-entry (level > 0)
     wxString            id;             // page id (to search pages by id)
     wxString            titlenum;       // prefix for title (number/letter)
-    wxString            name;           // text for this entry
+    wxString            title;          // text for this entry
     wxString            page;           // html page to display
     wxString            image;          // image to display
     lmBookRecord*       pBookRecord;    // ptr to book record

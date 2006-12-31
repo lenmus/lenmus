@@ -62,12 +62,15 @@ enum {
 
 };
 
+// Constant strings that need translation
 static const wxString m_sFooter1 = 
     _T("Send your comments and sugesstions to LenMus team (www.lenmus.org)");
 static const wxString m_sFooter2 = 
     _T("Licensed under the terms of the GNU Free Documentation License (see 'Help > Copyrights' menu for details)");
 static const wxString m_sPhonascus =
     _T("the teacher of music");
+static const wxString m_sCoverPage =
+    _T("Cover page");
 
 
 lmEbookProcessor::lmEbookProcessor(int nDbgOptions, wxTextCtrl* pUserLog)
@@ -1117,6 +1120,20 @@ void lmEbookProcessor::DecrementTitleCounters()
 void lmEbookProcessor::CreateBookCover()
 {
     StartHtmlFile(m_sFilename, _T("cover"));
+
+    //Generate header
+    wxString sNil = _T("");
+    wxString sCharset = _T("utf-8");
+    wxString sHtml = sNil +
+        _T("<html>\n<head>\n")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + sCharset +
+        _T("\">\n")
+        _T("</head>\n\n");
+
+    WriteToHtml(sHtml);
+
+    //initializations
+    m_nHtmlIndentLevel = 1;
     WriteToHtml(
         _T("<body bgcolor='#808080'>\n")
         _T("\n")
@@ -1270,19 +1287,6 @@ bool lmEbookProcessor::StartHtmlFile(wxString sFilename, wxString sId)
         }
     }
 
-    //Generate header
-    wxString sNil = _T("");
-    wxString sCharset = _T("utf-8");
-    wxString sHtml = sNil +
-        _T("<html>\n<head>\n")
-        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + sCharset +
-        _T("\">\n")
-        _T("</head>\n\n");
-
-    WriteToHtml(sHtml);
-
-    //initializations
-    m_nHtmlIndentLevel = 1;
 
     return true;
 
@@ -1419,6 +1423,17 @@ void lmEbookProcessor::CreatePageHeaders(wxString sBookTitle, wxString sHeaderTi
 
     //create page headers
     WriteToHtml(
+        _T("<html>\n<head>\n")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n")
+        _T("<title>") );
+    WriteToHtml( ::wxGetTranslation(sBookTitle) );
+    WriteToHtml(_T(": "));
+    WriteToHtml(sTitleNum + ::wxGetTranslation(sHeaderTitle) + _T("</title>\n") );
+    WriteToHtml(_T("</head>\n\n"));
+
+    m_nHtmlIndentLevel = 1;     //indent
+
+    WriteToHtml(
         _T("<body bgcolor='#808080'>\n")
         _T("\n")
         _T("<center>\n")
@@ -1452,6 +1467,17 @@ void lmEbookProcessor::CreateLeafletHeaders(wxString sBookTitle, wxString sHeade
     if (!((m_fGenerateLmb && m_pLmbFile) || m_pHtmlFile)) return;
 
     //create page headers
+    WriteToHtml(
+        _T("<html>\n<head>\n")
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n")
+        _T("<title>") );
+    WriteToHtml( ::wxGetTranslation(sBookTitle) );
+    WriteToHtml(_T(": "));
+    WriteToHtml( ::wxGetTranslation(m_sCoverPage) );
+    WriteToHtml(_T("</title>\n</head>\n\n"));
+
+    m_nHtmlIndentLevel = 1;     //indent
+
     WriteToHtml(
         _T("<body bgcolor='#808080'>\n")
         _T("\n")
@@ -1585,6 +1611,7 @@ bool lmEbookProcessor::StartLangFile(wxString sFilename)
     WriteToLang( m_sFooter1 );
     WriteToLang( m_sFooter2 );
     WriteToLang( m_sPhonascus );
+    WriteToLang( m_sCoverPage );
 
     return true;
 
