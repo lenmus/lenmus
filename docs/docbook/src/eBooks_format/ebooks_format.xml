@@ -1,0 +1,1082 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+               "http://www.oasis-open.org/docbook/xml/5.0b.5/docbook.dtd">
+
+<book id="book">
+<bookinfo>
+<title>LenMus eMusicBooks' file format</title>
+<para>Version 0.1. Revision: November 2006</para>
+
+<author>
+<surname>LenMus project</surname>
+</author>
+
+<legalnotice id="legal_notice">
+
+<title>Legal Notice</title>
+<para>Permission is granted to copy, distribute, and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.2 or any later
+version published by the Free Software Foundation; with no Invariant Sections, 
+no Front-Cover Texts, and no Back-Cover Texts. A copy of the license
+is available at 
+<ulink url="http://www.gnu.org/licenses/fdl.html">http://www.gnu.org/licenses/fdl.html</ulink>.
+</para>
+
+<para>This document may be copied and distributed in any medium, either
+commercially or noncommercially, provided that the GNU Free Documentation
+License (FDL), the copyright notices, and the license notice saying
+the GNU FDL applies to the document are reproduced in all copies, 
+and that you add no other conditions whatsoever to those of the GNU FDL. 
+</para>
+
+</legalnotice>
+
+<copyright>
+<year>2006-2007</year>
+<holder>Cecilio Salmeron</holder>
+</copyright>
+</bookinfo>
+
+<preface id="preface">
+<title>Preface</title>
+
+<para>
+To be written.
+</para>
+</preface>
+
+<chapter id="chIntro">
+<title>LenMus eMusicBooks' file format</title>
+
+<para>LenMus is a reader for books about music. These book are not part of the program
+and anyone can write them. This document is intended to describe the format of the
+eMusicBooks' files.</para>
+
+<para>eMusicBooks are written in XML format. 
+The reason to choose XML as the format for eMusicBooks is due to its advantages. Among them
+I would emphasize:</para>
+<itemizedlist>
+<listitem>The files are also readable by
+    humans, and can be created and edited with any
+    text editor.</listitem>
+<listitem>XML allows to separate content from presentation. The author can concentrate on
+    the content and the presentation can be later changed or chosen to suit different needs.
+    </listitem>
+<listitem>XLM allows for "single-sourcing", that is, it permits to generate multiple 
+    delivery formats, such as HTML, PDF, online help, etc., from the same source file.</listitem>
+</itemizedlist>
+   
+<para>As an eMusicBook is just a book about music, I have decide to take advantage of the widely used
+'DocBook' XML format. The DocBook markup language, maintained by the OASIS consortium. As
+DocBook is specifically suited for software documentation, I have added a few specific tags
+for LenMus purposes and have taken many of the tags from DocBook, so that people 
+having good knowledge of this format will find easy to write eMusicBooks.</para>
+
+<para>The eMusicBook format consists of tags, such as &lt;book&gt;, each with corresponding
+ending tags such as &lt;/book&gt;, and textual content, such as "This is a line of text".
+Here you have a simple example:</para>
+
+<programlisting>
+{book id="first_book}
+  {title}My first eMusicBook{/title}
+
+  {theme id="p1}
+    {title}Page 1{/title}
+    {para}Hello world!{/para}
+    {para}This is my first music eMusicBook!{/para}
+  {/theme}
+
+  {theme id="p2}
+    {title}Page 2{/title}
+    {para}Have a good day!{/para}
+  {/theme}
+
+{/book}
+</programlisting>
+
+
+<para>The complete content of the document (a "book") has been structured into
+two "themes", each with a "title" and consisting of one or more "para(graphs)".</para>
+
+<para>eMusicBooks are structured as conventional printed books, in chapter, sections,
+sub-sections, etc.. But the final structuring chunk is the <command>theme</command>,
+that is, the information that is going to be displayed in a page. This is the main
+difference with books in paper: paper has finite physical dimensions so text flows
+from one page to the next one. But the 'page' in a computer display can have an
+infinite dimension, so you must decide how you would like to chunck the document to
+present it to the reader. Each chunk is named a <command>theme</command>.</para>
+
+<para>Therefore, a <command>book</command> is a collection of <command>themes</command>, organized
+in <command>chapters</command> and <command>sections</command>, and sections can also have sub-sections.
+For example:</para>
+
+<programlisting>
+{book id="first_book}
+  {title}My first eMusicBook{/title}
+
+  {chapter id="ch1}
+  {title}The first chapter{/title}
+
+    {section id="s1}
+    {title}Section one{/title}
+      {theme id="p1}
+        {title}Page 1{/title}
+        {para}Hello world!{/para}
+        {para}This is my first music eMusicBook!{/para}
+      {/theme}
+    {/section}
+
+    {section id="s2}
+    {title}Section two{/title}
+      {theme id="p2}
+        {title}Page 2{/title}
+        {para}Have a good day!{/para}
+      {/theme}
+    {/section}
+
+{/book}
+</programlisting>
+
+<para>Themes can has also internal structure, but sections inside a theme
+will be named <command>parts</command>.</para>
+
+<para>Indenting and all whitespace is ignored except in some verbatim elements.</para>
+
+<para>Notice how the tags indicate the structure and meaning of the content, but not
+its appearance. There is nothing to say "put this paragraph in bold-face type" or
+"center this on the page". This is by design. The same eMusicBook
+file can be processed into many different output formats, each with a completely
+different appearance and even a different arrangement of content elements. So authors
+must put the emphasis on content not on appearance.</para>
+
+<para>Sections and parts can be nested to create sub-sections and sub-parts. For example:</para>
+
+
+<programlisting>
+    {section}
+        {section}
+            {section}...{/section}
+            {section}
+                {section}
+                    {section}...{/section}
+                    {section}...{/section}
+                {/section}
+                {section}...{/section}
+            {/section}
+        {/section}
+        {section}...{/section}
+    {/section}
+    {section}...{/section}
+    {section}...{/section}
+</programlisting>
+
+<para>No theoretical limit on depth of nesting.</para>
+
+<!-- =========================================================================== -->
+<sect1 id="title"><title>Tags to use: the eMusicBook DTD</title>
+
+<para>To write an eMusicBook you need to know the set of tags that can be used.
+The formal way of defining this is by using a <command>Document Type Definition</command> or
+DTD. The DTD is an special file defining the legal XML tags and attributes
+that an author can
+use, and how they relate to each other. For example, a <command>book</command> element can
+contain a <command>title</command> element, any number of <command>para</command> elements for paragraphs,
+and any number of <command>chapter</command> elements. It also serves to automatically checking
+your document against the valid element names and rules, so to verify
+that your XML document is correct. Using the DTD and XML syntax, authors
+mark up their text content with tag names enclosed in angle brackets
+like {chapter}. The markup is similar to HTML, but with more tags and
+tighter rules.</para>
+
+</sect1>
+
+<!-- =========================================================================== -->
+<sect1><title>Starting a document</title>
+
+<para>All eMusicBook documents always start with the xml declaration file type,
+followed by a reference to the eMusicBook DTD. And then the eMusicBook content
+enclosed by a {book} tag:</para>
+
+<programlisting>
+{?xml version="1.0"?}
+{!DOCTYPE book PUBLIC "-//LenMus//DTD eMusicBook 1.0//EN"
+    "http://www.lenmus.org/dtd/eMusicBook.dtd}
+
+{book}
+{bookinfo}
+    {title}Music Reading exercises{/title}
+    {level}2{/level}
+    {subject}Musical language. Theory{/subject}
+{/bookinfo}
+
+   ... here the book content
+
+{/book}
+</programlisting>
+
+<para>The {bookinfo} tag contains all meta-information about the book:
+Its title, its level and its cathegorithation ({subject} tag).</para>
+
+
+</sect1>
+
+<!-- =========================================================================== -->
+<sect1 id="creating_toc"><title>Creating a Table of Content (TOC)</title>
+<para>When processing an eMusicBook, LenMus automatically compiles a table of
+content for the book.
+The TOC is formed by all chapters, sections and themes unless they have the attribute
+'toc="no"'. Default value, if nothing specified, is toc="yes".</para>
+<para>The TOC is
+structured following the structure of the included chapters, sections and themes.
+Notice that parts inside a theme are not included in the TOC.</para>
+
+<para>When displaying the TOC of an eMusicBook in the navigation panel of the LenMus
+program it is possible to include images instead of (or beside of) titles.
+These images must be specified by using tag {tocimage} when defining chapters, sections
+and themes. {tocimage} tag must go before the {title} tag. For example:</para>
+
+<programlisting>
+{theme id="ch205"}
+{tocimage}img205.png{/tocimage}
+{title}8th note tied to group of one 8th and two 16th notes{/title}
+
+{para}In this lesson .....
+</programlisting>
+
+<para>The image must not contain path information as all images for an eMusicBook
+must be stored in the same folder than the book XML files.</para>
+
+
+</sect1>
+
+<!-- =========================================================================== -->
+<sect1><title>Indexes</title>
+<para>When processing an eMusicBook, LenMus automatically compiles an index. To establish
+that a term is placed in the index, we have to to mark it as being indexed.
+Doing so is simple, we just use the {indexterm} tag and give the
+term a name. Example:
+</para>
+
+<programlisting>
+This note is also known in British English as 'crochet'
+{indexterm}crochet{indexterm}, and its usage...
+</programlisting>
+
+
+
+</sect1>
+
+<!-- =========================================================================== -->
+<sect1><title>Lists</title>
+
+<para>
+An 'itemized' list is a list in which each entry is marked with a bullet or other dingbat. Example:</para>
+<informaltable>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Source</entry>
+<entry>Output</entry>
+</row>
+</thead>
+<tbody>
+
+<row>
+<entry>
+<programlisting>
+{para}This is my shopping list:{/para}
+&lt;itemizedlist&gt;
+&lt;listitem&gt;Apples&lt;/listitem&gt;
+&lt;listitem&gt;Tomatos (but red)&lt;/listitem&gt;
+&lt;listitem&gt;Carrots and beans&lt;/listitem&gt;
+&lt;/itemizedlist&gt;
+</programlisting>
+</entry>
+
+<entry>
+<para>This is my shopping list:</para>
+      <itemizedlist>
+        <listitem>Apples</listitem>
+        <listitem>Tomatos (but red)</listitem>
+        <listitem>Carrots and beans</listitem>
+      </itemizedlist>
+</entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+
+
+<para>
+An 'ordered' list is a list in which each entry is marked with a sequentially incremented
+label, ussualy numerical. Example:</para>
+<informaltable>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Source</entry>
+<entry>Output</entry>
+</row>
+</thead>
+<tbody>
+
+<row>
+<entry>
+<programlisting>
+{para}This is my shopping list:{/para}
+&lt;orderedlist&gt;
+&lt;listitem&gt;Apples&lt;/listitem&gt;
+&lt;listitem&gt;Tomatos (but red)&lt;/listitem&gt;
+&lt;listitem&gt;Carrots and beans&lt;/listitem&gt;
+&lt;/orderedlist&gt;
+</programlisting>
+</entry>
+
+<entry>
+    <para>This is my shopping list:</para>
+      <orderedlist>
+        <listitem>Apples</listitem>
+        <listitem>Tomatos (but red)</listitem>
+        <listitem>Carrots and beans</listitem>
+      </orderedlist>
+</entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+
+
+</sect1>
+
+<!-- =========================================================================== -->
+<sect1><title>Links</title>
+
+<para>Its is possible to include two types of links: external, to an URL, or
+internal, to other themes of the eMusicBook or to another eMusicBook.
+The tags to use are different:</para>
+
+
+<para>External links (links to an URL):</para>
+
+<programlisting>
+{ulink url="http://www.lenmus.org/}visit our website{/ulink}
+{ulink url='#LenMusPage/SingleExercises_ch0.htm'} a link to theme 'id=ch0' of book 'SingleExercises'
+{ulink url='#LenMusPage/SingleExercises.lmb'} a link to cover page of book 'SingleExercises'
+{ulink url='#LenMusPage/Exercises for ear training'} a link to a theme whose title is 'Exercises for ear training'
+</programlisting>
+
+<para>Internal links are based on the eMusicBook title and on the id attributes added to
+the themes:</para>
+
+<programlisting>
+{link linkend="idname"}Internal link{/link} a link to theme 'idname' of this book
+</programlisting>
+
+<para>
+Example:
+</para>
+
+<programlisting>
+{section id="introduction}
+...
+{/section}
+
+{section id="another}
+{para}
+    For more info see the {link linkend="introduction"}intro
+    section{/link}.
+{/para}
+</programlisting>
+
+
+
+</sect1>
+
+<!-- =========================================================================== -->
+<sect1><title>Tags for content</title>
+
+<para>Tags for content are taken from DocBook. Tags currently supported
+are restricted to the following:</para>
+
+<table>
+<title>Supported DocBook tags</title>
+<tgroup cols="2">
+<thead>
+<row>
+<entry>Description</entry>
+<entry>Example</entry>
+</row>
+</thead>
+<tbody>
+
+<row>
+<entry valign='top'>Paragraphs</entry>
+<entry><programlisting>
+{para}
+This is a very short paragraph
+{/para}
+</programlisting></entry></row>
+
+<row>
+<entry>Traditional publishing inlines</entry><entry></entry></row>
+
+<row>
+<entry valign='top'>Emphasis</entry>
+<entry><programlisting>
+{para}
+This paragraph has {emphasis}these words{/emphasis} highlighted
+{/para}
+</programlisting></entry></row>
+
+</tbody>
+</tgroup>
+</table>
+
+<para>
+{titleabbrev} </para> 
+
+</sect1>
+
+<!-- =========================================================================== -->
+<sect1><title>Including scores and interactive exercises</title>
+
+<para>Scores and interactive exercises are included by using the {score} and
+{exercise} tags, respectively. These tags and their content is explained in detail
+in chapter 2.</para>
+
+</sect1>
+
+<!-- =========================================================================== -->
+<sect1><title>Splitting a book into several files</title>
+
+<para>Usually, for large eMusicBooks, you may want to break it up into multiple files,
+as a book in a single file may not be the easiest thing to work with.
+
+Luckily this is easy to do. FOr exaple, if you create a two files, part1.xml and part2.xml,
+with the following content:</para>
+
+<programlisting>
+File 'part1.xml':
+
+    {theme}
+    {title}On Foo's{/title}
+        {para}
+        Stuff about Foo's goes here.
+        {/para}
+    {/theme}
+</programlisting>
+
+<programlisting>
+File 'part2.xml':
+
+    {theme}
+    {title}On Bars's{/title}
+          {para}
+          Stuff about Bars's goes here.
+          {/para}
+    {/theme}
+</programlisting>
+
+<para>And creates a main file like:</para>
+
+<programlisting>
+{?xml version="1.0"?}
+{!DOCTYPE book PUBLIC "-//LenMus//DTD eMusicBook 1.0//EN"
+    "http://www.lenmus.org/dtd/eMusicBook.dtd" [
+  {!ENTITY chapter1 SYSTEM "part1.xml}
+  {!ENTITY chapter2 SYSTEM "part2.xml}
+]}
+
+{book}
+  {title}Splitted book{/title}
+
+  {theme}
+  {title}Preface{/title}
+    {para}
+    This is a book splitted into three files
+    {/para}
+  {/theme}
+
+  chapter1;
+  chapter2;
+
+{/book}
+</programlisting>
+
+<para>The use of the {!ENTITY} tags creates entities named 'chapter1' and 'chapter2'.
+Using them automatically includes their contents in to the main.xml
+file, so be careful to not put the {?xml?} preprocessor tags in
+the included files (part1.xml and part2.xml respectively).</para>
+
+</sect1>
+
+<!-- =========================================================================== -->
+<sect1><title>Translation</title>
+<para>Translating an eMusicBook requires the translation of the contents but a lot
+of care have to be put to not translate the tags or the attribute values. So,
+to avoid problmes and to simplify the translators job, all eMusicBooks will be
+processed to create a PO file with all its translatable contents, and
+translators will deal only with .PO files.</para>
+
+</sect1>
+
+</chapter>
+
+
+
+<!-- =============================================================== -->
+<!-- ======================    Chapter 2   ========================= -->
+<!-- =============================================================== -->
+
+<chapter id="ch2">
+<title>Including scores and interactive exercises</title>
+
+<sect1>
+<title>Including scores</title>
+
+<para>Scores can be included by using the {score} tag. The {score} tag admits the
+following parameters:</para>
+
+<variablelist>
+<varlistentry><term>{type}</term>
+<listitem>Defines the type of score being included. Possible values: "short | pattern | 
+    full | XMLFile | LDPFile". If this param is not specified, default 
+    assumed value is: "full"</listitem></varlistentry>
+
+<varlistentry><term>{music}</term>
+<listitem>Mandatory. Defines the score content. Depending on the previous parameter it 
+    will be described using
+    the LDP language or the MusicXML language.</listitem></varlistentry>
+
+<varlistentry><term>{music_border}</term>
+<listitem>Defines the type of score being included. Possible values:
+    "0 | 1".
+    If this param is not specified it is assumed: "0" (no border around score)
+    </listitem></varlistentry>
+
+<varlistentry><term>{control_play}</term>
+<listitem>Include 'play' link. Default: do not include it.
+    Value="play label|stop playing label". i.e.: "Play|Stop" Stop label
+    is optional. Default labels: "Play|Stop"</listitem></varlistentry>
+
+
+<varlistentry><term>{control_solfa}</term>
+<listitem>Include 'solfa' link. Default: do not include it.
+    Value="music read label|stop music reading label". i.e.:
+    "Play|Stop". Stop label is optional.
+    Default labels: "Read|Stop"</listitem></varlistentry>
+
+<varlistentry><term>{control_measures}</term>
+<listitem>Include 'play measure #' links, one per measure.
+    Default: do not include them.
+    Value="play label|stop label". i.e.:
+    "Play|Stop". Stop label is optional.
+    Default labels: "Measure %d|Stop %d"</listitem></varlistentry>
+                        
+</variablelist>
+
+<para>Example:</para>
+<programlisting>
+{score classid="Score" width="600" height="100" border="0}
+    {type}short{/type}
+    {music_border}0{/music_border}
+    {control_play}1{/control_play}
+    {music}
+        (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
+        (c (n a4 c)(n a4 n)(n a4 s g+)(n a4 s g-)(Barra Final))
+    {/music}
+{/score}
+</programlisting>
+
+
+</sect1>
+
+<!-- =========================================================================== -->
+<sect1><title>Including exercises</title>
+
+<para>Interactive exercises can be included by using the {exercise} tag. All exercises
+available in LenMus program can be embedded in an eMusicBook. Attribute 'type' specifies
+the type of exercise:</para>
+
+<itemizedlist>
+    <listitem>type="TheoIntervals"</listitem>
+    <listitem>type="TheoScales"</listitem>
+    <listitem>type="TheoKeySignatures"</listitem>
+    <listitem>type="EarIntervals"</listitem>
+    <listitem>type="EarCompareIntervals"</listitem>
+    <listitem>type="IdfyChord"</listitem>
+    <listitem>type="IdfyScales"</listitem>
+</itemizedlist>
+
+<!-- ................................................................ -->
+<sect2><title>Exercises on key signatures</title>
+
+<variablelist>
+
+<varlistentry><term>{max_accidentals}</term>
+<listitem>Defines the ?. Possible values: "num (0..7). If this param is not specified, default 
+    assumed value is: "5".</listitem></varlistentry>
+    
+<varlistentry><term>{problem_type}</term>
+<listitem>Defines the ?. Possible values: "DeduceKey | WriteKey | Both". If this param is not specified, default 
+    assumed value is: "Both".</listitem></varlistentry>
+    
+<varlistentry><term>{clef}</term>
+<listitem>Defines the ?. Possible values: "Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1". If this param is not specified, default 
+    assumed value is: "Sol".</listitem></varlistentry>
+    
+<varlistentry><term>{mode}</term>
+<listitem>Defines the ?. Possible values: "Major | Minor | Both". If this param is not specified, default 
+    assumed value is: "Both".</listitem></varlistentry>
+    
+</variablelist>
+
+<para>Example</para>
+
+<programlisting>
+{exercise type="TheoKeySignatures" width="100%" height="300" border="0}
+    {max_accidentals}7{/max_accidentals
+    {problem_type}both{/problem_type}
+    {clef}sol{/clef}
+    {mode}both{/mode}
+{/exercise}
+</programlisting>
+
+</sect2>
+
+
+<sect2><title>Exercises on intervals (theory)</title>
+
+<variablelist>
+
+<varlistentry><term>{accidentals}</term>
+<listitem>Defines the ?. Possible values: "none | simple | double". If this param 
+    is not specified, default 
+    assumed value is: "none".</listitem></varlistentry>
+
+<varlistentry><term>{problem_type}</term>
+<listitem>Defines the ?. Possible values: "DeduceInterval | BuildInterval | Both". If 
+    this param is not specified, default 
+    assumed value is: "Both".</listitem></varlistentry>
+
+<varlistentry><term>{clef}</term>
+<listitem>Defines the ?. Possible values: "Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1". If 
+    this param is not specified, default 
+    assumed value is: "Sol".</listitem></varlistentry>
+
+</variablelist>
+
+</sect2>
+
+
+<sect2><title>Exercises on chords (theory and aural training)</title>
+
+<variablelist>
+
+<varlistentry><term>{keys}</term>
+<listitem>Defines the allowed key signatures for the exercise. Possible values: Keyword
+    "all" or a list of allowed key signatures, i.e.: "Do,Fas". If this param 
+    is not specified, default 
+    assumed value is: "all"</listitem></varlistentry>
+
+<varlistentry><term>{chords}</term>
+<listitem><para>Defines the allowed chords for the exercise. Possible values: Keyword
+    "all" or a list of allowed chords:</para><para>
+    m-minor, M-major, a-augmented, d-diminished, s-suspended</para><para>
+    T-triad, dom-dominant, hd-half diminished</para><para>
+    Examples:</para><para>
+    triads: mT, MT, aT, dT, s4, s2</para><para>
+    sevenths: m7, M7, a7, d7, mM7, aM7 dom7, hd7</para><para>
+    sixths: m6, M6, a6</para>
+    If this param is not specified, default 
+    assumed value is: ""mT,MT,aT,dT,m7,M7"</listitem></varlistentry>
+
+<varlistentry><term>{mode}</term>
+<listitem>Defines the ?. Possible values: "'theory' | 'earTraining'  Keyword 
+    indicating type of exercise".</listitem></varlistentry>
+
+
+<varlistentry><term>{playMode}</term>
+<listitem>Defines the ?. Possible values: "'chord | ascending | descending' allowed 
+    play modes. Default: chord".</listitem></varlistentry>
+
+
+<varlistentry><term>{showKey}</term>
+<listitem>Defines the ?. Possible values: "'0 | 1' Default: 0 (do not display 
+    key signature)".</listitem></varlistentry>
+
+
+<varlistentry><term>{inversions}</term>
+<listitem>Defines the ?. Possible values: "'0 | 1' Default: 0 (do not allow 
+    inversions)".</listitem></varlistentry>
+
+
+<varlistentry><term>{control_settings}</term>
+<listitem>Defines the ?. Possible values: "[key for storing the settings]"
+    By coding this param it is forced the inclusion of
+    the 'settings' link. Its value will be used
+    as the key for saving the user settings.".</listitem></varlistentry>
+
+</variablelist>
+
+<para>Example</para>
+
+<programlisting>
+{exercise type="IdfyChord" width="100%" height="300" border="0}
+    {mode}earTraining{/mode}
+    {chords}mT,MT,aT,dT,m7,M7,dom7{/chords}
+    {keys}all{/keys}
+{/exercise}
+</programlisting>
+
+</sect2>
+
+
+<sect2><title>Exercises on scales (theory and aural training)</title>
+
+<programlisting>
+<!-- IdfyScaleCtrolParams -->
+
+tag name            value
+-----------------------------------------------------------------------------
+keys                Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
+                    Default: all
+
+scales              Keyword "all" or a list of allowed scales:
+                    m-minor, M-major, a-augmented, d-diminished, s-suspended
+                    T-triad, dom-dominant, hd-half diminished
+
+                    triads: mT, MT, aT, dT, s4, s2
+                    sevenths: m7, M7, a7, d7, mM7, aM7 dom7, hd7
+                    sixths: m6, M6, a6
+
+                    Default: "mT,MT,aT,dT,m7,M7"
+
+mode                'theory' | 'earTraining'  Keyword indicating type of exercise
+
+playMode*           'ascending | descending | both' allowed play modes. Default: ascending
+
+showKey             '0 | 1' Default: 0 (do not display key signature)
+
+control_settings    Value="[key for storing the settings]"
+                    By coding this param it is forced the inclusion of
+                    the 'settings' link. Its value will be used
+                    as the key for saving the user settings.
+
+Example:
+------------------------------------
+{exercise type="IdfyScale" width="100%" height="300" border="0}
+    {mode}earTraining{/mode}
+    {scales}mT,MT,aT,dT,m7,M7,dom7{/scales}
+    {keys}all{/keys}
+{/exercise}
+</programlisting>
+
+<!-- ................................................................ -->
+</sect2>
+
+<sect2><title>Exercises on music reading</title>
+
+<!--
+//  Clef:
+    Contains the clefs and scope (lower and upper pitch) to use in the lesson
+//  (one line per clef, as many clefs per level-lesson as required).
+//  Format:  <Clef>;<ScopeLower>;<ScopeUpper>
+
+// Key signatures:
+// Contains the key signatures to use in each lesson. Key signatures
+// are cumulative, that is, in a lesson all key signatures defined in
+// previous lessons will also be used.
+// As many lines per lesson as needed.
+
+// TimeSignatures
+//  Contains the list of time signatures to use in each lesson.
+//  It is also possible to use a line for each allowed time signature.
+//  Last data item is a flag meaning to use all the time signatures defined in previous
+//  lessons (flag=0) or only the ones defined for this lesson (flag=1)
+//
+// Format:  <Level>;<Lesson>;<Time signatures>;<Flag: only for this lesson>
+//
+//     <Time signatures> is a comma separated list of values: 24,34,44,68,98,128,28,38,22,32
+
+-->
+
+<programlisting>
+<!-- MusicReadingCtrolParams -->
+
+optional tags to include controls:
+----------------------------------
+
+control_play        Include 'play' link. Default: do not include it.
+                    Value="play label|stop playing label". i.e.: "Play|Stop" Stop label
+                    is optional. Default labels: "Play|Stop"
+
+control_solfa       Include 'solfa' link. Default: do not include it.
+                    Value="music read label|stop music reading label". i.e.:
+                    "Play|Stop". Stop label is optional.
+                    Default labels: "Read|Stop"
+
+control_settings    Value="[key for storing the settings]"
+                    This param forces to include the 'settings' link. The
+                    key will be used both as the key for saving the user settings
+                    and as a tag to select the Setting Dialog options to allow.
+
+control_go_back     id of chapter, section or theme, i.e.: "ch205"
+
+
+tags to set up the score composer:
+------------------------------------
+
+fragment        one tag for each fragment to use
+
+clef            one tag for each allowed clef. It includes the pitch scope.
+
+time            a list of allowed time signatures, i.e.: "68,98,128"
+
+key             keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
+
+maxInterval     a number indicating the maximum allowed interval for two consecutive notes
+                Default: 4
+
+</programlisting>
+
+<programlisting>
+{exercise type="TheoMusicReading" width="100%" height="300" border="0}
+    {control_go_back}ch205{/control_go_back}
+    {control_play}1{/control_play}
+    {control_solfa}1{/control_solfa}
+    {fragment}24;(n * c g+)(n * c l g-),(n * c g+)(n * s)(n * s g-){/fragment}
+    {clef}Sol;a3;a5{/clef}
+    {clef}Fa4;a2;f4{/clef}
+    {time}24{/time}
+    {key}Do{/key}
+{/lmobject}
+</programlisting>
+
+</sect2>
+
+</sect1>
+
+</chapter>
+
+
+<!-- =========================================================================== -->
+<appendix><title>Params cross-reference</title>
+<para>In following table, columns labeled as 1, 2, .. 8 indicate the applicability of
+the described tag to each type of exercise, as listed here:</para>
+<orderedlist>
+    <listitem>exercise type="TheoIntervals"</listitem>
+    <listitem>exercise type="TheoScales"</listitem>
+    <listitem>exercise type="TheoKeySignatures"</listitem>
+    <listitem>exercise type="EarIntervals"</listitem>
+    <listitem>exercise type="EarCompareIntervals"</listitem>
+    <listitem>exercise type="IdfyChord"</listitem>
+    <listitem>exercise type="IdfyScales"</listitem>
+    <listitem>score</listitem>
+
+</orderedlist>
+
+<table>
+<title>Supported params for exercises. Cross-reference table.</title>
+<tgroup cols="10">
+<thead>
+<row><entry>parameter</entry><entry>1</entry><entry>2</entry><entry>3</entry><entry>4</entry><entry>5</entry>
+    <entry>6</entry><entry>7</entry><entry>8</entry><entry>Obs.</entry></row>
+</thead>
+<tbody>
+
+<row><entry>accidentals</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>chords</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>clef</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>control_go_back</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>control_measures</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>control_play</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>control_settings</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>control_solfa</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>fragment</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>inversions</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>key</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry>keys</entry></row>
+<row><entry>keys</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>max_accidentals</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>max_interval</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>maxInterval</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry>max_interval</entry></row>
+<row><entry>mode</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>music</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>music_border</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>problem_type</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>playMode</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry>play_mode</entry></row>
+<row><entry>scales</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>showKey</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry>show_key</entry></row>
+<row><entry>time</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry></entry></row>
+<row><entry>type</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
+    <entry>-</entry><entry>-</entry><entry>-</entry><entry>score_type</entry></row>
+</tbody>
+</tgroup>
+</table>
+
+
+</appendix>
+
+<!-- =========================================================================== -->
+<appendix><title>Tags cross-reference</title>
+
+<para>
+The present appendix list alphabetically all tags that are defined and supported in current
+version of the LangTool processror program, used to compile the eMusicBooks:
+</para>
+
+<itemizedlist>
+
+<listitem>abstract - 
+    Used inside {bookinfo} for the text to include in the cover page after
+    the book title
+</listitem>
+
+<listitem>book - 
+    An eMusicBook. It is the main tag.
+</listitem>
+
+<listitem>bookinfo - 
+    Meta-information for an eMuiscBook
+</listitem>
+
+<listitem>chapter - 
+    A chapter, as of a book
+</listitem>
+
+<listitem>content - 
+    When a book is splitted in two or more files, a restriction of XML syntax
+    is that the file must content just one tag. For your convenience, tag {content}
+    is just wrapper for all the content of an XML splitted file.
+</listitem>
+
+<listitem>copyright - 
+    Copyright information about a document. It is used inside a {bookinfo} tag 
+    for the text to include in the cover page after the abstract
+</listitem>
+
+<listitem>emphasis - 
+    Emphasized text
+</listitem>
+
+<listitem>exercise - 
+    An interactive musica exercise
+</listitem>
+
+<listitem>holder - 
+    The name of the individual or organization that holds a copyright. It is 
+    used inside {copyright} tag.
+</listitem>
+
+<listitem>itemizedlist - 
+    A list in which each entry is marked with a bullet or other dingbat
+</listitem>
+
+<listitem>leaflet - 
+    An eMusicBook leaflet. It is the main tag, used instead of {book} for single
+    page books.
+</listitem>
+
+<listitem>leafletcontent - 
+    Used instaed of {theme} tag for leaflets. A wrapper for the leaflet content.
+</listitem>
+
+<listitem>legalnotice - 
+    A statement of legal obligations or requirements
+</listitem>
+
+<listitem>link - 
+    A hypertext link
+</listitem>
+
+<listitem>listitem - 
+    A wrapper for the elements of a list item
+</listitem>
+
+<listitem>orderedlist - 
+    A list in which each entry is marked with a sequentially incremented label
+</listitem>
+
+<listitem>para - 
+    A paragraph
+</listitem>
+
+<listitem>part - 
+    A section inside a theme
+</listitem>
+
+<listitem>score - 
+    An interactive music score
+</listitem>
+
+<listitem>section - 
+    A section inside a chapter. Can be used recursively, that is, a section can 
+    also have sections.
+</listitem>
+
+<listitem>simplelist - 
+    An undecorated list of single words or short phrases
+</listitem>
+
+<listitem>theme - 
+</listitem>
+
+<listitem>title - 
+    The text of the title of a book, chapter, section, theme or part of a document.
+</listitem>
+
+<listitem>titleabbrev - 
+    Holds an abbreviated version of a {title}. It is used for the text
+    in running headers or footers, when the proper title is too long to be used conveniently.
+    It must be defined before the {title} tag.
+</listitem>
+
+<listitem><link linkend="creating_toc">tocimage</link> - 
+    A reference to an image file (.png, jpg, etc.) to be used in the TOC
+</listitem>
+
+<listitem>ulink - 
+    A link that addresses its target by means of a URL (Uniform Resource Locator)
+</listitem>
+
+<listitem>year - 
+    The year of publication of a document; used as child of {copyright} tag.
+</listitem>
+
+</itemizedlist>
+    
+
+</appendix>
+
+
+<!-- =============================================================== -->
+<!-- ======================    The end     ========================= -->
+<!-- =============================================================== -->
+
+
+</book>
