@@ -11,7 +11,7 @@ tying a group of two 8th notes and a quarter note to a group of a quarter note a
 8th notes.
 Note how it can also be written with a quarter note:</para>
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
@@ -26,7 +26,7 @@ Note how it can also be written with a quarter note:</para>
 it is formed when putting a tie.</para>
 
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>

@@ -11,7 +11,7 @@
     <clef>Fa4;a2;e4</clef>
     <time>24</time>
     <key>all</key>
-    <maxInterval>4</maxInterval>
+    <max_interval>4</max_interval>
 </exercise>
 
 </theme>

@@ -131,7 +131,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
 
         Params for lmScoreCtrol - html object type="Application/LenMusScore"
 
-        type                short | pattern | full | XMLFile | LDPFile        default: full
+        score_type          short | pattern | full | XMLFile | LDPFile        default: full
         music               LDP score | file spec.
         music_border        0 | 1               default: 0 (no border around score)
 
@@ -174,7 +174,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
         }
     }
 
-    else if ( sName == _T("TYPE") ) {
+    else if ( sName == _T("SCORE_TYPE") ) {
         wxString sType = tag.GetParam(_T("VALUE"));
         sType.UpperCase();
         if (sType == _T("SHORT"))

@@ -9,7 +9,7 @@
 <para>In this lesson the dotted 8th note pattern in simple times is introduced:</para>
 
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
@@ -28,7 +28,7 @@ Note how the rhythm of dotted 8th note can be obtained from one 8th note and
 two 16th notes, when tying the 8th note.</para>
 
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
@@ -45,7 +45,7 @@ two 16th notes, when tying the 8th note.</para>
 <para>In a similar way you can get and learn the other patterns of this lesson:</para>
 
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>

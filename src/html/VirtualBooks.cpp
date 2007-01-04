@@ -429,7 +429,7 @@ void lmVirtualBooks::LoadSingleExercisesBook()
         _T("<param name=\"clef\" value=\"Fa4;a2;e4\">")
         _T("<param name=\"time\" value=\"24\">")
         _T("<param name=\"key\" value=\"all\">")
-        _T("<param name=\"maxInterval\" value=\"4\">")
+        _T("<param name=\"max_interval\" value=\"4\">")
         _T("</object>");
     i++;
 

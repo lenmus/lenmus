@@ -122,9 +122,9 @@ void lmIdfyScalesCtrolParms::AddParam(const wxHtmlTag& tag)
 
         mode        'theory' | 'earTraining'  Keyword indicating type of exercise
         
-        playMode*   'ascending | descending | both' allowed play modes. Default: ascending
+        play_mode*   'ascending | descending | both' allowed play modes. Default: ascending
 
-        showKey     '0 | 1' Default: 0 (do not display key signature)
+        show_key     '0 | 1' Default: 0 (do not display key signature)
 
         control_settings    Value="[key for storing the settings]"  
                             By coding this param it is forced the inclusion of
@@ -154,7 +154,7 @@ void lmIdfyScalesCtrolParms::AddParam(const wxHtmlTag& tag)
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
     
     // show Key signature
-    else if ( sName == _T("SHOWKEY") ) {
+    else if ( sName == _T("SHOW_KEY") ) {
         int nValue;
         bool fOK = tag.GetParamAsInt(_T("VALUE"), &nValue);
         if (!fOK) 
@@ -166,7 +166,7 @@ void lmIdfyScalesCtrolParms::AddParam(const wxHtmlTag& tag)
     }
 
     // play mode
-    else if ( sName == _T("PLAYMODE") ) {
+    else if ( sName == _T("PLAY_MODE") ) {
         wxString sMode = tag.GetParam(_T("VALUE"));
         if (sMode == _T("ascending")) 
             m_pConstrains->SetPlayMode(0);

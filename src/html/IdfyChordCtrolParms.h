@@ -122,9 +122,9 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
 
         mode        'theory' | 'earTraining'  Keyword indicating type of exercise
         
-        playMode*   'chord | ascending | descending' allowed play modes. Default: chord
+        play_mode*   'chord | ascending | descending' allowed play modes. Default: chord
 
-        showKey     '0 | 1' Default: 0 (do not display key signature)
+        show_key     '0 | 1' Default: 0 (do not display key signature)
 
         inversions  '0 | 1' Default: 0 (do not allow inversions)
 
@@ -168,7 +168,7 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
     }
 
     // show Key signature
-    else if ( sName == _T("SHOWKEY") ) {
+    else if ( sName == _T("SHOW_KEY") ) {
         int nValue;
         bool fOK = tag.GetParamAsInt(_T("VALUE"), &nValue);
         if (!fOK) 
@@ -180,7 +180,7 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
     }
 
     // play mode
-    else if ( sName == _T("PLAYMODE") ) {
+    else if ( sName == _T("PLAY_MODE") ) {
         wxString sMode = tag.GetParam(_T("VALUE"));
         if (sMode == _T("chord")) 
             m_pConstrains->SetModeAllowed(0, true);

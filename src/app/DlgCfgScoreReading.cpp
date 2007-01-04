@@ -332,7 +332,7 @@ lmDlgCfgScoreReading::lmDlgCfgScoreReading(wxWindow * parent,
         m_pCboMaxNote[i]->Enable(fSelected);
     }
 
-    // maxInterval
+    // max_interval
     m_pSpinMaxInterval->SetValue(m_pConstrains->GetMaxInterval());
 
     // page 1: time signatures
@@ -374,7 +374,7 @@ lmDlgCfgScoreReading::~lmDlgCfgScoreReading()
 void lmDlgCfgScoreReading::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 {
     //
-    // Save data from panel 0: allowed clefs, notes ranges and maxInterval
+    // Save data from panel 0: allowed clefs, notes ranges and max_interval
     //
 
     // save allowed clefs and notes ranges

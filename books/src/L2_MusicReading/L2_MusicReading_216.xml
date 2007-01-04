@@ -11,7 +11,7 @@ the notes, in pairs, of two triplets.
 Note that in can also be written using a quarter note:</para>
 
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
@@ -29,7 +29,7 @@ Note how measures 2 and 4 are similar to measures 1 and 3 and are formed by tyin
 the triplets.</para>
 
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>

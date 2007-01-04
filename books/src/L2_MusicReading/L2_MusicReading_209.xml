@@ -9,7 +9,7 @@
 <para>In this lesson a new rhythmic pattern is introduced. This pattern can be written in two
 different ways:</para>
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
@@ -23,7 +23,7 @@ different ways:</para>
 <para>Note the difference between the first measure and the others and how they are formed when
 putting a tie.</para>
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>

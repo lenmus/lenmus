@@ -177,7 +177,7 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
 
         key         keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
 
-        maxInterval    a number indicating the maximum allowed interval for two consecutive notes
+        max_interval    a number indicating the maximum allowed interval for two consecutive notes
                         Default: 4
 
         @todo: update the example
@@ -198,7 +198,7 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
             <param name="clef" value="Fa4;a2;e4">
             <param name="time" value="68,98,128">
             <param name="key" value="all">
-            <param name="maxInterval" value="4">
+            <param name="max_interval" value="4">
         </object>
 
         @endverbatim
@@ -293,7 +293,7 @@ Acceptable format: list of key signatures or keyword 'all' \n"),
     }
 
     //maxGroupInterval    a number
-    else if ( sName == _T("MAXINTERVAL") ) {
+    else if ( sName == _T("MAX_INTERVAL") ) {
         wxString sMaxInterval = tag.GetParam(_T("VALUE"));
         long nMaxInterval;
         bool fOK = sMaxInterval.ToLong(&nMaxInterval);

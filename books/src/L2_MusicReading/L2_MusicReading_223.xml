@@ -10,7 +10,7 @@
 <para>In this lesson the next patterns are introduced:</para>
 
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
@@ -23,7 +23,7 @@
 <part><title>Lesson and note the differences</title>
 
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>

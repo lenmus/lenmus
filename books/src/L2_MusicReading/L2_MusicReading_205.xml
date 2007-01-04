@@ -1,6 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<content>
 <theme id="thm205">
 <titleabbrev>Lesson %d</titleabbrev>
 <title>8th note tied to group of one 8th and two 16th notes</title>
@@ -11,7 +8,7 @@ One 8th note tied to group of one 8th and two 16th notes.
 Note that this new pattern can be written in two different ways:</para>
 
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
     <music>
@@ -26,7 +23,7 @@ Note that this new pattern can be written in two different ways:</para>
 <para>Lesson each measure and note how the new introduced pattern appears:</para>
 
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
@@ -105,4 +102,3 @@ this rhythm.</para>
 </exercise>
 </theme>
 
-</content>

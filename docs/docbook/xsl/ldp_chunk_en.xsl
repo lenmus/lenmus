@@ -106,7 +106,7 @@
 
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-<xsl:import href="C:/USR/CosasMias/Software/DocBook/docbook-xsl-1.70.1/html/chunk.xsl"/>
+<xsl:import href="C:/USR/DocBook/xsl/html/chunk.xsl"/>
 
 <!-- parameters -->
 <xsl:param name="chunk.fast" select="1"/> 
@@ -115,10 +115,10 @@
 <xsl:param name="section.autolabel" select="1"/>
 <xsl:param name="section.label.includes.component.label" select="1"/>
 <!--<xsl:param name="navig.graphics" select="1"/>-->
-<xsl:param name="generate.legalnotice.link" select="1"/>
+<xsl:param name="generate.legalnotice.link" select="0"/>
 <xsl:param name="chunker.output.doctype-public" select="'-//W3C//DTD HTML 4.01//EN'"/>
 <xsl:param name="chunker.output.doctype-system" select="'http://www.w3.org/TR/html4/strict.dtd'"/>
-<xsl:param name="base.dir" select="'c:/usr/desarrollo_wx/lenmus/docs/ldp_manual/docbook/en/'"/>
+<xsl:param name="base.dir" select="'c:/usr/desarrollo_wx/lenmus/docs/docbook/html/ebooks_format/'"/>
 
 
 <!-- change the word Home with Table of Contents for English output -->
@@ -210,7 +210,7 @@
 
         <!-- leftside BEGIN -->
         <div id="lm-side-left">
-            <!-- Búsqueda Google -->
+            <!-- Busqueda Google -->
             <div class="lm-search-box">       <!-- this is required for valid XML -->
                 <object>       <!-- this is required for valid XML -->
                     <form method="get" action="http://www.google.com/search">

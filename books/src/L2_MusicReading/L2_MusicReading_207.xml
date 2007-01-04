@@ -9,7 +9,7 @@
 
 <para>In this lesson two new rhythmic patterns are introduced:</para>
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
@@ -25,7 +25,7 @@ when we tie notes in the basic four 8th notes pattern.
 Compare this pattern with the one in the last measure. Note
 the different rhythmic accent between measures 3 and 4.</para>
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>

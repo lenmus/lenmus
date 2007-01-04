@@ -415,16 +415,15 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, int nOptions, wxStrin
             || (sElement == _T("keys"))
             || (sElement == _T("max_accidentals"))
             || (sElement == _T("max_interval"))
-            || (sElement == _T("maxInterval"))  //max_interval
             || (sElement == _T("mode"))
             || (sElement == _T("music"))
             || (sElement == _T("music_border"))
             || (sElement == _T("problem_type"))
-            || (sElement == _T("playMode"))     //play_mode
+            || (sElement == _T("play_mode"))
             || (sElement == _T("scales"))
-            || (sElement == _T("showKey"))      //show_key
+            || (sElement == _T("show_key"))
             || (sElement == _T("time"))
-            || (sElement == _T("type"))         //score_type
+            || (sElement == _T("score_type"))
            )
         {
             return ExerciseParamTag(oNode, false);
