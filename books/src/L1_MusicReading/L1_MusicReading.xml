@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE book [
     <!ENTITY theme1 SYSTEM "L1_MusicReading_1.xml">
 ]>
@@ -10,9 +10,10 @@
         providing sort of practice, exercises, and drills that are required in order 
         to become a good sightreader.
         music reding exercises.</abstract>
+    <author>Ana Maria Madorran</author>
     <copyright>
-        <year>2006-2007</year>
-        <holder>Cecilio Salmeron</holder>
+        <year>2007</year>
+        <holder>Ana Maria Madorran y Cecilio Salmeron</holder>
     </copyright>
     <legalnotice>
         <para>Permission is granted to copy, distribute and/or modify this document

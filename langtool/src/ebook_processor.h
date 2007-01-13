@@ -70,6 +70,7 @@ private:
   
     // Tags' processors
     bool AbstractTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool AuthorTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool BookTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool BookinfoTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool ChapterTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
@@ -195,6 +196,7 @@ private:
     wxString        m_sCopyrightYear;
     wxString        m_sCopyrightHolder;
     wxString        m_sLegalNotice;
+    wxString        m_sAuthorName;
 
     // variables for processing external entities
     bool            m_fExtEntity;           //waiting to include an external entity

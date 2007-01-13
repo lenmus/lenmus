@@ -7,21 +7,92 @@
 <theme id="mr1_thm1">
 <title>The staff</title>
 
-<para>
-In the Western musical notation system music is written on specially printed 
-paper called "manuscript paper". [1. imagen de papel pautado] Each group of horizontal
-lines is called a "staff", with "staves" as the plural. Note that althoug in American 
-English "staff" is the right term, in British English the word "staff" is old-fashioned and 
-rarely used; they use the word "stave" instead. 
+<part id="staff">
+<title>The staff</title>
+
+<para>En el sistema occidental de notaci*on musical, la m*usica se escribe en un papel especial,
+denominado "papel pautado".</para>
+
+<!-- Fig 1. imagen de papel pautado -->
+
+<para>Consta de grupos de lineas horizontales,
+denominadas "pentagramas". Un pentagrama es un grupo de cinco l*ineas horizontales, numeradas de
+abajo hacia arriba; la l*inea inferior es la "primera l*inea" y la superior es la "quinta l*inea":
 </para>
 
-<para>The staff is a set of five horizontal lines, 
-numbered from bottom to top; the bottom line is the first line and the top line 
-is the fifth line:
-</para>
-
+<!-- Fig 2. pentagrama con etiquetas "line1, line2... -->
 <score width="600" height="100" border="0">
-    <type>short</type>
+    <score_type>short</score_type>
+    <music_border>0</music_border>
+    <music>
+        (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
+    </music>
+</score>
+
+<para>Los cuatro espacios entre las cinco l&iacute;neas del pentagrama son importantes y tambien se numeran de
+abajo arriba:
+</para>
+
+<!-- Fig 3. pentagrams con etiquetas "space1, ... -->
+<score width="600" height="100" border="0">
+    <score_type>short</score_type>
+    <music_border>0</music_border>
+    <music>
+        (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
+    </music>
+</score>
+
+<para>Sobre el pentagramase colocan los distintos signos musicales, Las notas se colocan sobre las
+l&iacute;neas y los espacios, y el tono (agudo o bajo) viene determinado por la l&iacute;nea o espacio sobre el
+que se situa: cuanto m&aacute;s agudo m&aacute;s arriba se coloca en el pentagrama. Escucha la siguiente
+escala:
+</para>
+
+<!-- Fig 4. scale to play, notas blancas. sin clave mi barras ni ningun otro simbolo -->
+<score width="600" height="100" border="0">
+    <score_type>short</score_type>
+    <music_border>0</music_border>
+    <music>
+        (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
+    </music>
+</score>
+
+<para>La m&uacute;sica se lee de izquierda a derecha.
+</para>
+
+
+</part>
+
+<!-- =============================================== -->
+<!-- Part. The clef                                  -->
+<!-- =============================================== -->
+
+<part id="clef">
+<title>The clef</title>
+
+<!--
+[Wikipedia] Exactly which notes are represented by which staff positions is determined by a clef
+placed at the beginning of the staff; the clef identifies a particular line as a specific note,
+and all other notes are determined relative to that line. For example, the treble clef puts the G
+above middle C on the second line. The interval between adjacent staff positions is one step in
+the diatonic scale. Once fixed by a clef, the notes represented by the positions on the staff can
+be modified by the key signature, or by accidentals on individual notes. A clefless staff may be
+used to represent a set of percussion sounds; each line typically represents a different
+instrument.
+
+A "clef" is used to designate one particular line as a certain pitch, and all other nominals are
+mapped in ascending and descending order to the lines and spaces above and below that reference
+line.
+-->
+
+
+<para>Para determinar qu&eacute; sonido representa cada l&iacute;nea y espacio del pentagrama se utiliza
+la clave. Esta es un s&iacute;mbolo que se coloca al comienzo del pentagrama. 
+En este curso vamos a comenzar con la clave de sol en 2&#170; l&iacute;nea:</para>
+
+<!-- Fig. Pentagrama en blanco con clave de sol -->
+<score width="600" height="100" border="0">
+    <score_type>short</score_type>
     <music_border>0</music_border>
     <music>
         (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
@@ -29,27 +100,81 @@ is the fifth line:
 </score>
 
 
-<para>
-The four spaces between the staff lines, are important and are also numbered 
-from bottom to top:</para>
+<para>Seg&uacute;n esta clave, el sonido sol corresponde a la segunda l&iacute;nea.</para>
 
+</part>
 
-<!--[3. pentagrams con etiquetas "space1, ...]-->
+<!-- =============================================== -->
+<!-- Part. The measure                               -->
+<!-- =============================================== -->
+<part id="measure">
+<title>The measure</title>
 
-<para>
-The musical symbols are placed on the staff. Note symbols are placed either on a 
-line or on a space and musical pitch (low or high) is determined by the position 
-of the note on the staff. Notes on the higher lines/spaces have higer pitch than 
-those on the lower ones. Lesson to the next scale:
-</para>
+<!--
+Bar/Measure
 
+    * A "measure" is now quite often used as the word for a bar of music; in the USA this is
+    standard usage. * "Bar" then sometimes refers to the actual bar line, especially as in
+    "double bar" for "double bar line".
 
-<!--[4. scale to play, notas blancas. sin clave mi barras ni ningun otro simbolo]-->
+Measures and Bar lines
+Composers and performers find it helpful to 'parcel up' groups of notes
+into bars, although this did not become prevalent until the seventeenth century. In the United
+States a bar is called by the old English name, measure. Each bar contains a particular number of
+notes of a specified denomination and, all other things being equal, successive bars each have
+the same temporal duration. The number of notes of a particular denomination that make up one bar
+is indicated by the time signature. We will examine time signatures further in the lesson 4.
 
-<para>
-Music on the staff is read from left to right.
-<para>
+The end of each bar is marked usually with a single vertical line drawn from the top line to the
+bottom line of the staff or stave. This line is called a bar line.
 
+As well as the single bar line, you may also meet two other kinds of bar line.
+
+The thin double bar line (two thin lines) is used to mark sections within a piece of music.
+Sometimes, when the double bar line is used to mark the beginning of a new section in the score,
+a letter or number may be placed above it.
+
+The double bar line (a thin line followed by a thick line), is used to mark the very end of a
+piece of music or of a particular movement within it.
+-->
+
+<para>Resulta muy &uacute;til subdividir la partitura en unidades llamadas 'compases', conjuntos de notasagrupar las notas Comp&aacute;s  de 2/4, o tiempo dividido en dos pulsos o acentos, el 1&#186; m&aacute;s fuerte que el segundo, en
+los que colocaremos las figuras. La lecci&oacute;n estar&aacute; formada por varios compases de 2/4. Los pulsos
+o acentos del comp&aacute;s de 2/4 se marcan con la mano, uno abajo (ej. Un golpe en la mesa) y el otro
+arriba (ej. Un golpe suave en el hombro). Aunque podemos marcar los dos golpes en la mesa si nos
+resulta m&aacute;s sencillo.</para>
+
+<para>L&iacute;nea divisoria: encargada de delimitar los compases. Al final de la lecci&oacute;n ser&aacute; 
+m&aacute;s gruesa. Se llama 'doble barra'. Notas: do mi sol. Do es el sonido m&aacute;s grave de 
+estos 3. Mi es el intermedio, y sol el m&aacute;s agudo. ESCUCHA:</para>
+
+</part>
+
+<!-- =============================================== -->
+<!-- Part. The figures: notes and rests              -->
+<!-- =============================================== -->
+<part id="figures">
+<title>The figures: notes and rests</title>
+
+<!--
+Where the vertical position of a note  on a staff  or stave  determines its pitch, its relative time value  or duration  is denoted by the particular sign chosen to represent it.
+
+Each note sign  is a construct of three distinct parts. The note-head, whose position on the stave actually sets its pitch, can be open (white) or closed (black). For all notes except the breve (double whole note) and semibreve (whole note), each note has a stem  and, for the notes of shorter time-value, a flag, hook  or tail  (one flag  for a quaver (eighth note), two for a semiquaver (sixteenth note), and so on). The stem  can rise from the note-head, in which case it lies on the right-hand side of the note-head, or fall from the note-head, in which case it lies on the left hand side of the note-head  (see the two crotchets (quarter notes)).
+
+In either case, the flag lies on the right-hand side of the stem (see the two quavers (eighth notes)). 
+
+Note/Tone
+    
+        * In Britain, the word note can mean a written symbol as well as a sound. Americans separate these meanings and use the word "note" for a written note, and "tone" for the sound.
+        * We do sometimes use this meaning for the word "tone", for example in the phrases "resultant tone" and "tone deaf".
+        * "Tone" can also mean the quality of a sound, for example, its brightness or its dullness (as in the tone control on a tape player or radio).
+    * In Britain, the word "tone" has an additional different and specific meaning (see Tone/Whole-step below). 
+    
+Beams and Beaming  
+When notes  with flags  lie together in groups they are often linked by one or more lines called beams. The number of beams reflect the number of flags  each would have had when an individual note.
+-->
+
+</part>
 
 </theme>
 

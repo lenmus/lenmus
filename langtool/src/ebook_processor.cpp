@@ -331,6 +331,9 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, int nOptions, wxStrin
     else if (sElement == _T("abstract")) {
         return AbstractTag(oNode, nOptions, pText);
     }
+    else if (sElement == _T("author")) {
+        return AuthorTag(oNode, nOptions, pText);
+    }
     else if (sElement == _T("chapter")) {
         return ChapterTag(oNode, nOptions, pText);
     }
@@ -469,6 +472,10 @@ bool lmEbookProcessor::AbstractTag(const wxXml2Node& oNode, int nOptions, wxStri
 
 }
 
+bool lmEbookProcessor::AuthorTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
+{
+    return ProcessChildAndSiblings(oNode, eTRANSLATE, &m_sAuthorName);
+}
 
 bool lmEbookProcessor::BookTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
 {
@@ -479,6 +486,11 @@ bool lmEbookProcessor::BookTag(const wxXml2Node& oNode, int nOptions, wxString* 
     m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_banner_left1.png"));
     m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_banner_right2.png"));
     m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_line_orange.png"));
+    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("navbg7.jpg"));
+    m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("emusicbook_title.png"));
+
+    //initialize vars
+    m_sAuthorName = wxEmptyString;
 
     //get book id and add it to the pages table. This id will be used for the
     //book cover page
@@ -1133,53 +1145,139 @@ void lmEbookProcessor::CreateBookCover()
 
     //initializations
     m_nHtmlIndentLevel = 1;
+    //WriteToHtml(
+    //    _T("<body bgcolor='#808080'>\n")
+    //    _T("\n")
+    //    _T("<center>\n")
+    //    _T("<table width='720px' bgcolor='#ffffff' cellpadding='0' cellspacing='0'>\n")
+    //    _T("<tr><td bgcolor='#ffffff'>\n")
+    //    _T("\n")
+    //    _T("<!-- banner -->\n")
+    //    _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
+    //    _T("<tr><td width='300'><img src='ebook_banner_left1.png'></td>\n")
+    //    _T("<td bgcolor='#7f8adc'>&nbsp;</td>\n")
+    //    _T("<td width='250'><img src='ebook_banner_right2.png'></td></tr>\n")
+    //    _T("<tr><td bgcolor='#ff8800' colspan='3'>.</td></tr>\n")
+    //    _T("</table>\n\n")
+    //    _T("<br /><br /><br /><br />\n")
+    //    _T("<center>\n")
+    //    _T("<table width='70%'>\n")
+    //    _T("<tr><td>\n")
+	   //     _T("<h1>") + m_sBookTitle + _T("</h1></td></tr>\n")
+    //    _T("<tr><td>\n") + m_sBookAbstract +
+	   //     _T("</td></tr>\n")
+    //    _T("<tr><td></td></tr>\n")
+    //    _T("<tr><td></td></tr>\n")
+    //    _T("</table>\n")
+    //    _T("\n")
+    //    _T("</center>\n")
+    //    _T("</font>\n")
+    //    _T("<br /><br /><br /><br />\n")
+    //    _T("\n")
+    //    _T("<blockquote>\n")
+    //    _T("<font size='-1' face='Arial'>\n")
+	   //     _T("<p><b>Copyright © ") + m_sCopyrightYear + _T(" ") + m_sCopyrightHolder 
+    //        + _T("</b></p>\n")
+    //    _T("\n") + m_sLegalNotice +
+    //    _T("</blockquote>\n")
+    //    _T("\n")
+    //    _T("\n")
+    //    _T("</font>\n")
+    //    _T("\n")
+    //    _T("<br /><br /><br /><br />\n")
+    //    _T("<br /><br /><br /><br />\n")
+    //    _T("<br /><br /><br /><br />\n")
+    //    _T("<br /><br /><br /><br />\n")
+    //    _T("<br /><br /><br /><br />\n")
+    //    _T("</td></tr></table>\n")
+    //    _T("</body>\n")
+    //    _T("</html>\n") );
+
     WriteToHtml(
         _T("<body bgcolor='#808080'>\n")
-        _T("\n")
         _T("<center>\n")
         _T("<table width='720px' bgcolor='#ffffff' cellpadding='0' cellspacing='0'>\n")
         _T("<tr><td bgcolor='#ffffff'>\n")
         _T("\n")
         _T("<!-- banner -->\n")
         _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
-        _T("<tr><td width='300'><img src='ebook_banner_left1.png'></td>\n")
-        _T("<td bgcolor='#7f8adc'>&nbsp;</td>\n")
-        _T("<td width='250'><img src='ebook_banner_right2.png'></td></tr>\n")
-        _T("<tr><td bgcolor='#ff8800' colspan='3'>.</td></tr>\n")
-        _T("</table>\n\n")
-        _T("<br /><br /><br /><br />\n")
-        _T("<center>\n")
-        _T("<table width='70%'>\n")
+        _T("<tr><td bgcolor='#7f8adc' width='165px'><img src='navbg7.jpg'></td>\n")
+	    _T("    <td bgcolor='#ffffff' width='40px'>&nbsp;</td>\n")
+        _T("<td valign='top' bgcolor='#ffffff'>\n")
+        _T("\n")
+        _T("<!-- content -->\n")
+        _T("<table width='100%' cellpadding='0' cellspacing='0' border='0'>\n")
+        _T("<tr><td colspan='2' valign='top' align='right'><img src='emusicbook_title.png'></td></tr>\n")
         _T("<tr><td>\n")
-	        _T("<h1>") + m_sBookTitle + _T("</h1></td></tr>\n")
+	    _T("    <br /><br /><br /><br />\n")
+	    _T("    <br /><br /><br /><br />\n")
+        _T("</td><td width='30px'>&nbsp;</td></tr>\n")
+        _T("<tr><td><h1>") + m_sBookTitle + _T("</h1></td><td>&nbsp;</td></tr>\n")
+        _T("<tr><td><h3>") + m_sAuthorName + _T("</h3></td><td>&nbsp;</td></tr>\n")
         _T("<tr><td>\n") + m_sBookAbstract +
-	        _T("</td></tr>\n")
-        _T("<tr><td></td></tr>\n")
-        _T("<tr><td></td></tr>\n")
-        _T("</table>\n")
+	        _T("</td><td>&nbsp;</td></tr>\n")
         _T("\n")
-        _T("</center>\n")
-        _T("</font>\n")
-        _T("<br /><br /><br /><br />\n")
-        _T("\n")
-        _T("<blockquote>\n")
-        _T("<font size='-1' face='Arial'>\n")
-	        _T("<p><b>Copyright © ") + m_sCopyrightYear + _T(" ") + m_sCopyrightHolder 
-            + _T("</b></p>\n")
+        _T("<tr><td>&nbsp;</td><td>&nbsp;</td></tr>\n")
+        _T("<tr><td>\n")
+        _T("    <font size='-1' face='Arial'>\n")
+	    _T("    <p><b>Copyright © ") + m_sCopyrightYear + _T(" ") + m_sCopyrightHolder +
+            _T("</b></p>\n")
         _T("\n") + m_sLegalNotice +
-        _T("</blockquote>\n")
-        _T("\n")
-        _T("\n")
-        _T("</font>\n")
-        _T("\n")
-        _T("<br /><br /><br /><br />\n")
-        _T("<br /><br /><br /><br />\n")
-        _T("<br /><br /><br /><br />\n")
-        _T("<br /><br /><br /><br />\n")
-        _T("<br /><br /><br /><br />\n")
+        _T("    </font>\n")
+        _T("</td><td>&nbsp;</td></tr>\n")
+        _T("</table>\n")
+        _T("</td></tr>\n")
+        _T("</table>\n")
         _T("</td></tr></table>\n")
         _T("</body>\n")
         _T("</html>\n") );
+
+    //    _T("<body bgcolor='#808080'>\n")
+    //    _T("\n")
+    //    _T("<center>\n")
+    //    _T("<table width='720px' bgcolor='#ffffff' cellpadding='0' cellspacing='0'>\n")
+    //    _T("<tr><td bgcolor='#ffffff'>\n")
+    //    _T("\n")
+    //    _T("<!-- banner -->\n")
+    //    _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
+    //    _T("<tr><td width='300'><img src='ebook_banner_left1.png'></td>\n")
+    //    _T("<td bgcolor='#7f8adc'>&nbsp;</td>\n")
+    //    _T("<td width='250'><img src='ebook_banner_right2.png'></td></tr>\n")
+    //    _T("<tr><td bgcolor='#ff8800' colspan='3'>.</td></tr>\n")
+    //    _T("</table>\n\n")
+    //    _T("<br /><br /><br /><br />\n")
+    //    _T("<center>\n")
+    //    _T("<table width='70%'>\n")
+    //    _T("<tr><td>\n")
+	   //     _T("<h1>") + m_sBookTitle + _T("</h1></td></tr>\n")
+    //    _T("<tr><td>\n") + m_sBookAbstract +
+	   //     _T("</td></tr>\n")
+    //    _T("<tr><td></td></tr>\n")
+    //    _T("<tr><td></td></tr>\n")
+    //    _T("</table>\n")
+    //    _T("\n")
+    //    _T("</center>\n")
+    //    _T("</font>\n")
+    //    _T("<br /><br /><br /><br />\n")
+    //    _T("\n")
+    //    _T("<blockquote>\n")
+    //    _T("<font size='-1' face='Arial'>\n")
+	   //     _T("<p><b>Copyright © ") + m_sCopyrightYear + _T(" ") + m_sCopyrightHolder 
+    //        + _T("</b></p>\n")
+    //    _T("\n") + m_sLegalNotice +
+    //    _T("</blockquote>\n")
+    //    _T("\n")
+    //    _T("\n")
+    //    _T("</font>\n")
+    //    _T("\n")
+    //    _T("<br /><br /><br /><br />\n")
+    //    _T("<br /><br /><br /><br />\n")
+    //    _T("<br /><br /><br /><br />\n")
+    //    _T("<br /><br /><br /><br />\n")
+    //    _T("<br /><br /><br /><br />\n")
+    //    _T("</td></tr></table>\n")
+    //    _T("</body>\n")
+    //    _T("</html>\n") );
 
     CloseHtmlFile();
 

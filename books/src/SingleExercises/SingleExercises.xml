@@ -16,7 +16,7 @@
     <title>Single exercises</title>
     <abstract>General exercises, customizable to suit your needs at any moment.</abstract>
     <copyright>
-        <year>2002-2006</year>
+        <year>2002-2007</year>
         <holder>Cecilio Salmeron</holder>
     </copyright>
     <legalnotice>
@@ -25,15 +25,15 @@
         later version published by the Free Software Foundation; with no Invariant
         Sections, with no Front-Cover Texts, and with no Back-Cover Texts. 
         A copy of the license is included in the documentation received with
-        this program.
+        this program, and is also available at .
+        <ulink url="http://www.gnu.org/licenses/fdl.html">http://www.gnu.org/licenses/fdl.html</ulink>.
         </para>
 
-        <para>
-        The authors have taken care in the preparation of this documentation,
-        but make no expressed or implied warranty of any kind and assume no responsibility
-        for errors or omissions. No liability is assumed for incidental or consequential
-        damages in connection with or arising out of the use of the information contained
-        herein.
+        <para>This document may be copied and distributed in any medium, either
+        commercially or noncommercially, provided that the GNU Free Documentation
+        License (FDL), the copyright notices, and the license notice saying
+        the GNU FDL applies to the document are reproduced in all copies, 
+        and that you add no other conditions whatsoever to those of the GNU FDL. 
         </para>
     </legalnotice>
 </bookinfo>
