@@ -40,6 +40,9 @@
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
 
+extern bool LaunchDefaultBrowser(const wxString& url);      // in Updater.cpp
+
+
 #include "TextBookController.h"
 
 
@@ -187,8 +190,12 @@ void lmHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link)
     //verify if it is a LenMus command link
     int iPos = sLocation.Find(wxT("#LenMus"));
     if (iPos == wxNOT_FOUND) {
-        // normal link. Forward it to controller for normal processing
-        wxHtmlWindow::OnLinkClicked(link);
+        // normal link. 
+        // Open web browser as wxHtml doesn't work
+        LaunchDefaultBrowser(sLocation);
+
+        // Forward it to controller for normal processing
+        //wxHtmlWindow::OnLinkClicked(link);
         return;
     }
 

@@ -192,7 +192,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, int n
 
 }
 
-bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode, int nWriteOptions,
+bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode, int nOptions,
                                                wxString* pText)
 {
     m_fExtEntity = false;                   //not waiting for an external entity
@@ -201,13 +201,13 @@ bool lmEbookProcessor::ProcessChildAndSiblings(const wxXml2Node& oNode, int nWri
     wxXml2Node oCurr(oNode.GetFirstChild());
     bool fError = false;
     while (oCurr != wxXml2EmptyNode) {
-        fError |= ProcessChildren(oCurr, nWriteOptions, pText);
+        fError |= ProcessChildren(oCurr, nOptions, pText);
         oCurr = oCurr.GetNext();
     }
     return fError;
 }
 
-bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nWriteOptions,
+bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nOptions,
                                        wxString* pText)
 {
     bool fError = false;
@@ -232,13 +232,15 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nWriteOption
         while (sContent.Replace(_T("  "), _T(" ")) > 0);    //more than one consecutive space
         if (!tmp.IsEmpty()) {
             wxString sTrans = wxGetTranslation(sContent);
-            if (nWriteOptions & eTOC) WriteToToc(sTrans, ltNO_INDENT);        //text not indented
-            if (nWriteOptions & eHTML) WriteToHtml(sTrans);
-            if (m_fOnlyLangFile && (nWriteOptions & eTRANSLATE)) WriteToLang(sContent);
+            if (nOptions & eTOC) WriteToToc(sTrans, ltNO_INDENT);        //text not indented
+            if (nOptions & eHTML) WriteToHtml(sTrans);
+            if (m_fOnlyLangFile && (nOptions & eTRANSLATE)) WriteToLang(sContent);
             //if (fIdx) WriteToIdx(sContent);
             if (pText) {
-                if (nWriteOptions & eTRANSLATE) sContent = ::wxGetTranslation(sContent);
-                *pText += sContent;
+                if (nOptions & eTRANSLATE)
+                    *pText += sTrans;
+                else
+                    *pText += sContent;
             }
         }
 
@@ -246,7 +248,7 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nWriteOption
     else if (oNode.GetType() == wxXML_ELEMENT_NODE)
     {
         // it is an element. Process it (recursive, as ProcessTags call ProcessChildAndSiblings)
-        fError |= ProcessTag(oNode, nWriteOptions, pText);
+        fError |= ProcessTag(oNode, nOptions, pText);
     }
     else if (oNode.GetType() == wxXML_ENTITY_DECL)
     {
@@ -278,7 +280,7 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nWriteOption
             }
             //Verify type of document. Must be <book>
             wxXml2Node oRoot = oDoc.GetRoot();
-            ProcessChildren(oRoot, nWriteOptions, pText);
+            ProcessChildren(oRoot, nOptions, pText);
             //m_sFilename = sOldFilename;
             
             //done
@@ -299,7 +301,7 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nWriteOption
         // the first one is the desired one. Ignore the remaining.
         wxXml2Node oChild(oNode.GetFirstChild());
         while (oChild != wxXml2EmptyNode) {
-            ProcessChildren(oChild, nWriteOptions, pText);
+            ProcessChildren(oChild, nOptions, pText);
             oChild = oChild.GetNext();
         }
     }
@@ -465,15 +467,13 @@ wxString lmEbookProcessor::GetLibxml2Version()
 
 bool lmEbookProcessor::AbstractTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
 {
-    //get value
+    m_sBookAbstract = wxEmptyString;
     return ProcessChildAndSiblings(oNode, eTRANSLATE, &m_sBookAbstract);
-    //m_sBookAbstract = ::wxGetTranslation(m_sBookAbstract);
-    //return fError;
-
 }
 
 bool lmEbookProcessor::AuthorTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
 {
+    m_sAuthorName = wxEmptyString;
     return ProcessChildAndSiblings(oNode, eTRANSLATE, &m_sAuthorName);
 }
 
@@ -488,9 +488,6 @@ bool lmEbookProcessor::BookTag(const wxXml2Node& oNode, int nOptions, wxString* 
     m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("ebook_line_orange.png"));
     m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("navbg7.jpg"));
     m_aFilesToPack.Add( g_pPaths->GetLayoutPath() + _T("emusicbook_title.png"));
-
-    //initialize vars
-    m_sAuthorName = wxEmptyString;
 
     //get book id and add it to the pages table. This id will be used for the
     //book cover page
@@ -644,10 +641,8 @@ bool lmEbookProcessor::ExerciseParamTag(const wxXml2Node& oNode, bool fTranslate
 
 bool lmEbookProcessor::HolderTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
 {
-    //get value
+    m_sCopyrightHolder = wxEmptyString;
     return ProcessChildAndSiblings(oNode, eTRANSLATE, &m_sCopyrightHolder);
-    //m_sCopyrightHolder = ::wxGetTranslation(m_sCopyrightHolder);
-    //return fError;
 }
 
 bool lmEbookProcessor::ItemizedlistTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
@@ -732,10 +727,8 @@ bool lmEbookProcessor::LeafletcontentTag(const wxXml2Node& oNode, int nOptions, 
 
 bool lmEbookProcessor::LegalnoticeTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
 {
-    //get value
+    m_sLegalNotice = wxEmptyString;
     return ProcessChildAndSiblings(oNode, eTRANSLATE, &m_sLegalNotice);
-    //m_sLegalNotice = ::wxGetTranslation(m_sLegalNotice);
-    //return fError;
 }
 
 bool lmEbookProcessor::LinkTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
@@ -1067,19 +1060,27 @@ bool lmEbookProcessor::UlinkTag(const wxXml2Node& oNode, int nOptions, wxString*
 
     // get its 'url' property and find the associated page
     wxString sUrl = oNode.GetPropVal(_T("url"), _T(""));
+    wxString sLink;
     if (sUrl != _T("")) {
-        wxString sLink = _T("<a href=\"") + sUrl + _T("\">");
-        WriteToHtml( sLink );
+        sLink = _T(" <a href=\"") + sUrl + _T("\">");
     }
     else {
-        WriteToHtml( _T("<a href=\"#\">") );
+        sLink = _T(" <a href=\"#\">");
     }
+    if (pText) 
+        *pText += sLink;
+    else
+        if (nOptions & eHTML) WriteToHtml( sLink );
 
     //process tag's children and write note content to html
-    bool fError = ProcessChildAndSiblings(oNode, eHTML | eTRANSLATE);
+    bool fError = ProcessChildAndSiblings(oNode, nOptions, pText);
 
     // closing tag
-    if (sUrl != _T("")) WriteToHtml(_T("</a>"));
+    sLink = _T("</a>");
+    if (pText) 
+        *pText += sLink;
+    else
+        if (nOptions & eHTML) WriteToHtml( sLink );
 
     return fError;
 }

@@ -185,7 +185,8 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
             wxHtmlLinkInfo oldlnk = m_WParser->GetLink();
             wxString name;
             if (nLevel == 0)
-                name = wxString::Format(_T("close&blank%d"), nItem);
+                //name = wxString::Format(_T("close&blank%d"), nItem);
+                name = wxString::Format(_T("close&go%d"), nItem);
             else
                 name = wxString::Format(_T("close%d"), nItem);
             m_WParser->SetLink(wxHtmlLinkInfo(name, wxEmptyString));

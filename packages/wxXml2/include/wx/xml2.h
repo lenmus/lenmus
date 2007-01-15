@@ -1263,11 +1263,18 @@ public:		// getters
     wxString GetName() const
 		{ if (GetObj()) return XML2WX(GetObj()->name); return wxEmptyString; }
     wxString GetContent() const	
-		{ if (GetObj()) return XML2WX(GetObj()->content); return wxEmptyString; }
+    { if (GetObj()) {
+        xmlChar* p = GetObj()->content;
+            return XML2WX(p);
+         }
+            return wxEmptyString; }
 
 	//! Returns the libxml2 node structure wrapped by this object. Use this function
 	//! only if you know what to do with the returned structure.
-	xmlNode *GetObj() const					{ return (xmlNode *)m_obj; }
+	xmlNode *GetObj() const
+    { 
+        return (xmlNode *)m_obj; 
+    }
 
 	//! Returns TRUE if a property named 'propName' exists in this node and, in this
 	//! case, returns its value in 'value'.

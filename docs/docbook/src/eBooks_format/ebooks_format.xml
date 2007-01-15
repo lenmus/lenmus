@@ -5,7 +5,7 @@
 <book id="book">
 <bookinfo>
 <title>LenMus eMusicBooks' file format</title>
-<subtitle>Version 1.0. Revision: January 2007</subtitle>
+<subtitle>Version 1.1. Revision: January 2007</subtitle>
 
 <author>
 <surname>LenMus team</surname>
@@ -98,6 +98,7 @@ Here you have a simple example:</para>
 <para>The complete content of the document (a "book") has been structured into
 two "themes", each with a "title" and consisting of one or more "para(graphs)".</para>
 
+<anchor id="theme"/>
 <para>eMusicBooks are structured as conventional printed books, in chapter, sections,
 sub-sections, etc.. But the final structuring chunk is the <command>theme</command>,
 that is, the information that is going to be displayed in a page. This is the main
@@ -191,7 +192,7 @@ tighter rules.</para>
 </sect1>
 
 <!-- =========================================================================== -->
-<sect1><title>Starting a document</title>
+<sect1 id="bookinfo"><title>Starting a document</title>
 
 <para>All eMusicBook documents always start with the xml declaration file type,
 followed by a reference to the eMusicBook DTD. And then the eMusicBook content
@@ -205,11 +206,12 @@ enclosed by a &lt;book&gt; tag:</para>
 &lt;book&gt;
 &lt;bookinfo&gt;
     &lt;title&gt;Music Reading exercises&lt;/title&gt;
+    &lt;author&gt;Jim Smith&lt;/author&gt;
     &lt;abstract&gt;General exercises, customizable to suit your needs at any
         moment.&lt;/abstract&gt;
     &lt;copyright&gt;
         &lt;year&gt;2002-2006&lt;/year&gt;
-        &lt;holder&gt;Cecilio Salmeron&lt;/holder&gt;
+        &lt;holder&gt;Jim Smith&lt;/holder&gt;
     &lt;/copyright&gt;
     &lt;legalnotice&gt;
         &lt;para&gt;Permission is granted to copy, distribute and/or modify this document
@@ -277,7 +279,7 @@ must be stored in the same folder than the book XML files.</para>
 </sect1>
 
 <!-- =========================================================================== -->
-<sect1><title>Indexes</title>
+<sect1 id="indexes"><title>Indexes</title>
 <para>When processing an eMusicBook, LenMus automatically compiles an index. To establish
 that a term is placed in the index, we have to mark it as being indexed.
 Doing so is simple, we just use the &lt;indexterm&gt; tag and give the
@@ -294,7 +296,7 @@ This note is also known in British English as 'crochet'
 </sect1>
 
 <!-- =========================================================================== -->
-<sect1><title>Tags for content</title>
+<sect1 id="tags_for_content"><title>Tags for content</title>
 
 <para>Most tags for content are taken from DocBook (see
 appendix <link linkend="ap2">Tags cross-reference</link>). 
@@ -312,7 +314,7 @@ This is a very short paragraph
 </sect1>
 
 <!-- =========================================================================== -->
-<sect1><title>Lists</title>
+<sect1 id="lists"><title>Lists</title>
 
 <para>
 An 'itemized' list is a list in which each entry is marked with a bullet or other dingbat. Example:</para>
@@ -396,7 +398,7 @@ label, usually numerical. Example:</para>
 </sect1>
 
 <!-- =========================================================================== -->
-<sect1><title>Links</title>
+<sect1 id="links"><title>Links</title>
 
 <para>Its is possible to include two types of links: external, to an URL, or
 internal, to other themes of the eMusicBook or to another eMusicBook.
@@ -557,7 +559,7 @@ for configuring the exercise or for defining the score and the controls.
 The possible tags to use to set up an score or an exercise are described in 
 the following sections.</para>
 
-<sect1>
+<sect1 id="scores">
 <title>Including scores</title>
 
 <para>Scores can be included by using the &lt;score&gt; tag. The &lt;score&gt; tag admits the
@@ -618,7 +620,7 @@ following parameters:</para>
 </sect1>
 
 <!-- =========================================================================== -->
-<sect1><title>Including exercises</title>
+<sect1 id="exercises"><title>Including exercises</title>
 
 <para>Interactive exercises can be included by using the &lt;exercise&gt; tag. All exercises
 available in LenMus program can be embedded in an eMusicBook. Attribute 'type' specifies
@@ -1056,17 +1058,21 @@ version of the LangTool processor program, used to compile the eMusicBooks:
 
 <itemizedlist>
 
-<listitem>abstract - 
+<listitem><link linkend="bookinfo">abstract</link> - 
     Used inside &lt;bookinfo&gt; for the text to include in the cover page after
-    the book title
+    the book title.
 </listitem>
 
-<listitem>book - 
+<listitem><link linkend="bookinfo">author</link> - 
+    Used inside &lt;bookinfo&gt; to include the name(s) of the book's author(s).
+</listitem>
+
+<listitem><link linkend="bookinfo">book</link> - 
     An eMusicBook. It is the main tag.
 </listitem>
 
-<listitem>bookinfo - 
-    Meta-information for an eMuiscBook
+<listitem><link linkend="bookinfo">bookinfo</link> - 
+    Meta-information for an eMusicBook
 </listitem>
 
 <listitem>chapter - 
@@ -1083,7 +1089,7 @@ version of the LangTool processor program, used to compile the eMusicBooks:
     to by-pass the XML restriction before mentioned.
 </listitem>
 
-<listitem>copyright - 
+<listitem><link linkend="bookinfo">copyright</link> - 
     Copyright information about a document. It is used inside a &lt;bookinfo&gt; tag 
     for the text to include in the cover page after the abstract
 </listitem>
@@ -1092,17 +1098,17 @@ version of the LangTool processor program, used to compile the eMusicBooks:
     Emphasized text
 </listitem>
 
-<listitem>exercise - 
-    An interactive music exercise
+<listitem><link linkend="exercises">exercise</link> - 
+    To include an interactive music exercise.
 </listitem>
 
-<listitem>holder - 
+<listitem><link linkend="bookinfo">holder</link> - 
     The name of the individual or organization that holds a copyright. It is 
     used inside &lt;copyright&gt; tag.
 </listitem>
 
-<listitem>itemizedlist - 
-    A list in which each entry is marked with a bullet or other dingbat
+<listitem><link linkend="lists">itemizedlist</link> - 
+    A list in which each entry is marked with a bullet or other dingbat.
 </listitem>
 
 <listitem>leaflet - 
@@ -1114,32 +1120,32 @@ version of the LangTool processor program, used to compile the eMusicBooks:
     Used instead of &lt;theme&gt; tag for leaflets. A wrapper for the leaflet content.
 </listitem>
 
-<listitem>legalnotice - 
-    A statement of legal obligations or requirements
+<listitem><link linkend="bookinfo">legalnotice</link> - 
+    A statement of legal obligations or requirements.
 </listitem>
 
-<listitem>link - 
+<listitem><link linkend="links">link</link> - 
     A hypertext link
 </listitem>
 
-<listitem>listitem - 
-    A wrapper for the elements of a list item
+<listitem><link linkend="lists">listitem</link> - 
+    A wrapper for the elements of a list item.
 </listitem>
 
-<listitem>orderedlist - 
-    A list in which each entry is marked with a sequentially incremented label
+<listitem><link linkend="lists">orderedlist</link> - 
+    A list in which each entry is marked with a sequentially incremented label.
 </listitem>
 
 <listitem>para - 
-    A paragraph
+    A paragraph.
 </listitem>
 
 <listitem>part - 
-    A section inside a theme
+    A section inside a theme.
 </listitem>
 
-<listitem>score - 
-    An interactive music score
+<listitem><link linkend="scores">score</link> - 
+    To include an interactive music score.
 </listitem>
 
 <listitem>section - 
@@ -1151,7 +1157,8 @@ version of the LangTool processor program, used to compile the eMusicBooks:
     An undecorated list of single words or short phrases
 </listitem>
 
-<listitem>theme - 
+<listitem><link linkend="theme">theme</link> - 
+    A wrapper for the information to display in a page.
 </listitem>
 
 <listitem>title - 
@@ -1168,11 +1175,11 @@ version of the LangTool processor program, used to compile the eMusicBooks:
     A reference to an image file (.png, jpg, etc.) to be used in the TOC
 </listitem>
 
-<listitem>ulink - 
+<listitem><link linkend="links">ulink</link> - 
     A link that addresses its target by means of a URL (Uniform Resource Locator)
 </listitem>
 
-<listitem>year - 
+<listitem><link linkend="bookinfo">year</link> - 
     The year of publication of a document; used as child of &lt;copyright&gt; tag.
 </listitem>
 

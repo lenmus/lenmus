@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE book [
     <!ENTITY theme1 SYSTEM "L1_MusicReading_1.xml">
+    <!ENTITY theme2 SYSTEM "L1_MusicReading_2.xml">
 ]>
 
 <book id="L1_MusicReading">
 <bookinfo>
     <title>Music reading. Level 1.</title>
     <abstract>This eMusicBook is intended to help one improve one's reading skills, 
-        providing sort of practice, exercises, and drills that are required in order 
-        to become a good sightreader.
-        music reding exercises.</abstract>
+        providing sort of practice and exercises that are required in order 
+        to become a good sightreader.</abstract>
     <author>Ana Maria Madorran</author>
     <copyright>
         <year>2007</year>
@@ -21,15 +21,8 @@
         later version published by the Free Software Foundation; with no Invariant
         Sections, with no Front-Cover Texts, and with no Back-Cover Texts. 
         A copy of the license is included in the documentation received with
-        this program.
-        </para>
-
-        <para>
-        The authors have taken care in the preparation of this documentation,
-        but make no expressed or implied warranty of any kind and assume no responsibility
-        for errors or omissions. No liability is assumed for incidental or consequential
-        damages in connection with or arising out of the use of the information contained
-        herein.
+        this program, and it is also available at
+        <ulink url="http://www.gnu.org/licenses/fdl.html">http://www.gnu.org/licenses/fdl.html</ulink>
         </para>
     </legalnotice>
 </bookinfo>
@@ -47,7 +40,7 @@ This eMusicBook is intended to help one improve one's reading skills, providing 
 of practice, exercises, and drills that are required in order to become a good sightreader.
 </para>
 
-<para>Appart of introducing new rhythmic cells, of increasing complexity, the main concepts
+<para>Appart of introducing different rhythmic cells, of increasing complexity, the main concepts
 introduced in Level 1 are:</para>
 
 <orderedlist>
@@ -57,8 +50,9 @@ introduced in Level 1 are:</para>
 </listitem>
 
 <listitem>
-    Note values of semibreve, minim, crotchet, quaver and semiquaver, and their 
-    equivalent rests. Tied notes. Single-dotted notes and rests.
+    Note values of whole (semibreve), half (minim), quarter (crotchet), eighth (quaver)
+    and 16th (semiquaver), and their equivalent rests. Tied notes. Single-dotted 
+    notes and rests.
 </listitem>
     
 <listitem>
@@ -82,7 +76,8 @@ This course has 31 lessons covering the following material:</para>
 
 <para>
 Music notation basics:
-    
+
+<!--    
 Clefs and  y itos:
     En las primeras lecciones s* se usa la clave de Sol (lecciones 1 a 7) con un
     *ito muy reducido (e4-g4). Progresivamente el *ito va aumentando para llegar,
@@ -103,6 +98,8 @@ Key signatures:
     En las dos primeras lecciones s* Do mayor/La menor. A partir de ah*e introduce
     una alteraci*(lecciones 3-10). Y en el resto del curso se
     manejan hasta dos alteraciones (lecciones 11-26).
+-->
+
 </para>
 
 </theme>
@@ -129,6 +126,6 @@ the new concepts introduced.</listitem>
 </chapter>
 
 &theme1;
-
+&theme2;
 
 </book>
