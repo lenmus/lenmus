@@ -1,5 +1,5 @@
 <!-- =============================================== -->
-<!-- eMusicBook: Music reading. Level 2.             -->
+<!-- eMusicBook: Music reading. Level 1.             -->
 <!--             Lesson 2: The clef                 -->
 <!-- =============================================== -->
 
@@ -27,17 +27,33 @@ following symbol:
 to a specific pitch, and all other pitches are mapped in ascending and descending order to
 the lines and spaces above and below that reference line. In the G clef, the G note of 
 the four octave is assigned
-to the second line and, as a result, the staff lines and spaces get automatically assigned
-to the following notes:
+to the second line:
 </para>
 
 <!-- staff with a G clef and notes on all spaces and lines, with their names -->
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
+<score width="600" height="70" border="0">
+    <score_type>short_15_es</score_type>
     <music_border>0</music_border>
     <music>
-        (Metrica 2 4 noVisible)(texto 'Mi-4' dx:0 dy:20 hasWidth)(n e4 r)(n f4 r)(n g4 r)(n a4 r)(n b4 r)(n c5 r)
-        (n d5 r)(n e5 r)(n f5 r)(Barra Doble noVisible))
+        (metrica 2 4 noVisible)(texto &quot;G note&quot; dx:0 dy:-10)
+        (n g4 r)(barra Doble noVisible)
+    </music>
+</score>
+
+<para>
+As a result, the staff lines and spaces get automatically assigned
+to consecutive notes, as shown in the next score:
+</para>
+
+<!-- staff with a G clef and notes on all spaces and lines, with their names -->
+<score width="600" height="70" border="0">
+    <score_type>short_15_es</score_type>
+    <music_border>0</music_border>
+    <control_play></control_play>
+    <music>
+        (metrica 2 4 noVisible)(texto &quot;E  F  G  A  B  C  D  E  F&quot; dx:0 dy:-10)
+        (n e4 r)(n f4 r)(n g4 r)(n a4 r)(n b4 r)(n c5 r)
+        (n d5 r)(n e5 r)(n f5 r)(barra Doble noVisible)
     </music>
 </score>
 

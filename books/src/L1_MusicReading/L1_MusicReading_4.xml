@@ -1,0 +1,31 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!--             The time signature                  -->
+<!-- =============================================== -->
+
+<theme id="time_signature">
+<title>The time signature</title>
+
+<!--
+<para>
+As the measures in a piece of music have the same number of beats and the same temporal
+duration, the time duration of all notes and rests on a measure 
+
+each measure must contain a particular number of notes of a specified durationtion and,
+all other things being equal, successive bars each have
+the same temporal duration. 
+
+The number of notes of a particular denomination that make up one bar
+is indicated by the 'time signature'.
+
+-->
+
+<para>
+Compás  de 2/4, o tiempo dividido en dos pulsos o acentos, el 1º más fuerte que el segundo, en
+los que colocaremos las figuras. La lección estará formada por varios compases de 2/4. Los pulsos
+o acentos del compás de 2/4 se marcan con la mano, uno abajo (ej. Un golpe en la mesa) y el otro
+arriba (ej. Un golpe suave en el hombro). Aunque podemos marcar los dos golpes en la mesa si nos
+resulta más sencillo.
+</para>
+
+</theme>

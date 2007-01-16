@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE book [
+    <!ENTITY quot   "&#34;" >
+    <!ENTITY aacute "&#225;" >
+    <!ENTITY eacute "&#233;" >
+    <!ENTITY iacute "&#237;" >
+    <!ENTITY oacute "&#243;" >
+    <!ENTITY uacute "&#250;" >
+    <!ENTITY ntilde "&#241;" >
+    <!ENTITY Ntilde "&#209;" >
     <!ENTITY theme1 SYSTEM "L1_MusicReading_1.xml">
     <!ENTITY theme2 SYSTEM "L1_MusicReading_2.xml">
+    <!ENTITY theme3 SYSTEM "L1_MusicReading_3.xml">
+    <!ENTITY theme4 SYSTEM "L1_MusicReading_4.xml">
+    <!ENTITY theme5 SYSTEM "L1_MusicReading_5.xml">
 ]>
 
 <book id="L1_MusicReading">
@@ -10,7 +21,7 @@
     <abstract>This eMusicBook is intended to help one improve one's reading skills, 
         providing sort of practice and exercises that are required in order 
         to become a good sightreader.</abstract>
-    <author>Ana Maria Madorran</author>
+    <author>Ana Maria Madorran y Cecilio Salmeron</author>
     <copyright>
         <year>2007</year>
         <holder>Ana Maria Madorran y Cecilio Salmeron</holder>
@@ -37,7 +48,7 @@
 
 <para>
 This eMusicBook is intended to help one improve one's reading skills, providing sort 
-of practice, exercises, and drills that are required in order to become a good sightreader.
+of practice and exercises that are required in order to become a good sightreader.
 </para>
 
 <para>Appart of introducing different rhythmic cells, of increasing complexity, the main concepts
@@ -127,5 +138,8 @@ the new concepts introduced.</listitem>
 
 &theme1;
 &theme2;
+&theme3;
+&theme4;
+&theme5;
 
 </book>

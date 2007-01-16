@@ -477,8 +477,7 @@ void lmLDPTokenBuilder::ParseNewToken()
                     m_curChar == chPlusSign || m_curChar == chMinusSign ||
                     m_curChar == chSharp || m_curChar == chSlash ||
                     m_curChar == chEqualSign || m_curChar == chApostrophe ||
-                    m_curChar == chCloseBracket || m_curChar == chBar ||
-                    m_curChar == chColon )
+                    m_curChar == chCloseBracket || m_curChar == chBar )
                 {
                     nState = FT_ETQ01;
                 }

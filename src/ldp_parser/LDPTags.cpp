@@ -158,6 +158,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("italic")] = _T("italic");
         m_Tags[0][_T("key")] = _T("key");
         m_Tags[0][_T("left")] = _T("left");
+        m_Tags[0][_T("musicData")] = _T("musicData");
         m_Tags[0][_T("name")] = _T("name");
         m_Tags[0][_T("newSystem")] = _T("newSystem");
         m_Tags[0][_T("normal")] = _T("normal");
@@ -171,7 +172,6 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("time")] = _T("time");
         m_Tags[0][_T("title")] = _T("title");
         m_Tags[0][_T("up")] = _T("up");
-        m_Tags[0][_T("musicData")] = _T("musicData");
         m_Tags[0][_T("x")] = _T("x");
         m_Tags[0][_T("y")] = _T("y");
 
@@ -301,6 +301,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("italic")] = _T("cursiva");
         m_Tags[0][_T("key")] = _T("tonalidad");
         m_Tags[0][_T("left")] = _T("izquierda");
+        m_Tags[0][_T("musicData")] = _T("datosMusica");
         m_Tags[0][_T("name")] = _T("nombre");
         m_Tags[0][_T("newSystem")] = _T("nuevoSistema");
         m_Tags[0][_T("normal")] = _T("normal");
@@ -314,7 +315,6 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("time")] = _T("metrica");
         m_Tags[0][_T("title")] = _T("titulo");
         m_Tags[0][_T("up")] = _T("arriba");
-        m_Tags[0][_T("musicData")] = _T("datosMusica");
         m_Tags[0][_T("x")] = _T("x");
         m_Tags[0][_T("y")] = _T("y");
 

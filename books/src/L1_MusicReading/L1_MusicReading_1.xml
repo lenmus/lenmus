@@ -7,26 +7,29 @@
 <title>The staff</title>
 
 <para>In the Western musical notation system music is written on specially printed 
-paper called 'manuscript paper'.
+paper called 'manuscript paper' (see picture).
 </para>
 
-<!-- Fig 1. imagen de papel pautado -->
+<!-- image: manuscript paper -->
 
 <para>The manuscript paper is organized as sets of horizontal lines, named 'staves'
-(Note: Each group of horizontal
-lines is called a 'staff', with 'staves' as the plural. Note that althoug in American 
-English 'staff' is the right term, in British English the word 'staff' is old-fashioned and 
+(each group of horizontal
+lines is called a 'staff', with 'staves' as the plural; in British English the word 'staff' is old-fashioned and 
 rarely used; they use the word 'stave' instead). A staff is a set of five horizontal lines, 
 numbered from bottom to top; the bottom line is the first line and the top line 
 is the fifth line:
 </para>
 
-<!-- Fig 2. imagen de un pentagrama con etiquetas 'line1, line2... -->
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
+<!-- staff with labeled lines: 1,2,..5 -->
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
-        (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
+        (score (vers 1.5)(language es iso-8859-1)
+         (instrumento
+          (datosMusica (clave Sol noVisible)(tonalidad Do)
+           (metrica 2 4 noVisible)(texto &quot;1&quot; dx:50 dy:55)
+           (barra Doble noVisible) )))
     </music>
 </score>
 
@@ -34,12 +37,13 @@ is the fifth line:
 The four spaces between the staff lines, are important and are also numbered 
 from bottom to top:</para>
 
-<!-- Fig 3. imagen de un pentagrama con etiquetas 'space1, ... -->
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
+<!-- staff with labeled spaces: 1,2,3,4 -->
+<score width="600" height="70" border="0">
+    <score_type>short_15_es</score_type>
     <music_border>0</music_border>
     <music>
-        (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
+        (metrica 2 4 noVisible)(texto &quot;space 1&quot; dx:50 dy:45)
+        (barra Doble noVisible)
     </music>
 </score>
 
@@ -51,12 +55,15 @@ of the note on the staff. Notes on the higher lines/spaces have higer pitch than
 those on the lower ones. Lesson to the next scale:
 </para>
 
-<!-- Fig 4. scale to play, notas blancas. sin clave mi barras ni ningun otro simbolo -->
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
+<!-- scale to play, no key, no time signature, no other symbol, only whole notes -->
+<score width="600" height="70" border="0">
+    <score_type>short_15_es</score_type>
     <music_border>0</music_border>
+    <control_play></control_play>
     <music>
-        (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
+        (metrica 2 4 noVisible)
+        (n e4 r)(n f4 r)(n g4 r)(n a4 r)(n b4 r)(n c5 r)
+        (n d5 r)(n e5 r)(n f5 r)(barra Doble noVisible)
     </music>
 </score>
 

@@ -77,8 +77,6 @@ private:
     bool ContentTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool CopyrightTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool EmphasisTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
-    bool ExerciseTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
-    bool ExerciseParamTag(const wxXml2Node& oNode, bool fTranslate);
     bool HolderTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool ItemizedlistTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool LeafletTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
@@ -99,16 +97,21 @@ private:
     bool UlinkTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool YearTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
 
+    bool ExerciseTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool ExerciseParamTag(const wxXml2Node& oNode, bool fTranslate);
+    bool ExerciseMusicTag(const wxXml2Node& oNode);
+
     // auxiliary
     void IncrementTitleCounters();
     void DecrementTitleCounters();
     wxString GetTitleCounters();
+    wxString GetParentNumber();
     void CreateBookCover();
 
     // Parsing methods
     bool ProcessChildAndSiblings(const wxXml2Node& oNode, int nWriteOptions=0,
                                  wxString* pText = (wxString*)NULL);
-    bool ProcessChildren(const wxXml2Node& oNode, int nWriteOptions=0,
+    bool ProcessChildren(const wxXml2Node& oNode, int nOptions=0,
                          wxString* pText = (wxString*)NULL);
     bool ProcessTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
 

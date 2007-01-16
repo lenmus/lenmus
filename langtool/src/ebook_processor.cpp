@@ -66,7 +66,7 @@ enum {
 static const wxString m_sFooter1 = 
     _T("Send your comments and sugesstions to LenMus team (www.lenmus.org)");
 static const wxString m_sFooter2 = 
-    _T("Licensed under the terms of the GNU Free Documentation License (see 'Help > Copyrights' menu for details)");
+    _T("Licensed under the terms of the GNU Free Documentation License v1.2");
 static const wxString m_sPhonascus =
     _T("the teacher of music");
 static const wxString m_sCoverPage =
@@ -230,6 +230,17 @@ bool lmEbookProcessor::ProcessChildren(const wxXml2Node& oNode, int nOptions,
         wxString tmp = sContent.Trim();
         sContent.Replace(_T("\n"), _T(" "));
         while (sContent.Replace(_T("  "), _T(" ")) > 0);    //more than one consecutive space
+        
+        //replace common entities used in Spanish
+        sContent.Replace(_T("\""), _T("&quot;"), true);
+        //sContent.Replace(_T("á"), _T("&aacute;"), true);
+        //sContent.Replace(_T("é"), _T("&eacute;"), true);
+        //sContent.Replace(_T("í"), _T("&iacute;"), true);
+        //sContent.Replace(_T("ó"), _T("&oacute;"), true);
+        //sContent.Replace(_T("ú"), _T("&uacute;"), true); 
+        //sContent.Replace(_T("ñ"), _T("&ntilde;"), true); 
+        //sContent.Replace(_T("Ñ"), _T("&Ntilde;"), true); 
+
         if (!tmp.IsEmpty()) {
             wxString sTrans = wxGetTranslation(sContent);
             if (nOptions & eTOC) WriteToToc(sTrans, ltNO_INDENT);        //text not indented
@@ -421,7 +432,6 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, int nOptions, wxStrin
             || (sElement == _T("max_accidentals"))
             || (sElement == _T("max_interval"))
             || (sElement == _T("mode"))
-            || (sElement == _T("music"))
             || (sElement == _T("music_border"))
             || (sElement == _T("problem_type"))
             || (sElement == _T("play_mode"))
@@ -440,6 +450,11 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, int nOptions, wxStrin
            )
         {
             return ExerciseParamTag(oNode, true);
+        }
+        // c) special cases for translation
+        else if (sElement == _T("music"))
+        {
+            return ExerciseMusicTag(oNode);
         }
         else {
             wxLogMessage(_T("Error: Found tag <%s>. No treatment defined."), sElement);
@@ -563,6 +578,9 @@ bool lmEbookProcessor::ChapterTag(const wxXml2Node& oNode, int nOptions, wxStrin
     WriteToToc(_T("</entry>\n"));
 
     DecrementTitleCounters();
+    m_sChapterTitleAbbrev = wxEmptyString;
+    m_sChapterTitle = wxEmptyString;
+
     return fError;
 }
 
@@ -635,6 +653,49 @@ bool lmEbookProcessor::ExerciseParamTag(const wxXml2Node& oNode, bool fTranslate
         WriteToHtml(_T(".htm"));
     }
     WriteToHtml(_T("\">\n"));
+
+    return fError;
+}
+
+bool lmEbookProcessor::ExerciseMusicTag(const wxXml2Node& oNode)
+{
+    // convert tag
+    WriteToHtml(_T("<param name=\"") + oNode.GetName() + _T("\" value=\"") );
+
+    //params have no more xml content, just the value. Get it
+    wxString sMusic;
+    bool fError = ProcessChildAndSiblings(oNode, 0, &sMusic);
+
+    //locate all translatable strings
+    wxString sNoTrans, sTrans;
+    int iStart, iEnd;
+    iStart = sMusic.Find(_T("&quot;"));
+    while (sMusic.Length() > 0 && iStart != wxNOT_FOUND)
+    {
+        if (iStart != wxNOT_FOUND) {
+            //start of translatable string
+            sNoTrans = sMusic.Left(iStart);
+            WriteToHtml( sNoTrans );
+
+            sMusic = sMusic.Mid(iStart+6);
+            iEnd = sMusic.Find(_T("&quot;"));
+            //end of translatable string
+            sTrans = sMusic.Left(iEnd);
+            if (m_fOnlyLangFile) {
+                //todo: filter out strings containing only numbers, spaces and symbols but
+                //      no characters
+                WriteToLang(sTrans);
+            }
+            sTrans = ::wxGetTranslation(sTrans);
+            WriteToHtml( _T("&quot;") + sTrans + _T("&quot;") );
+
+            //remaining
+            sMusic = sMusic.Mid(iEnd+6);
+            iStart = sMusic.Find(_T("&quot;"));
+        }
+    }
+
+    WriteToHtml( sMusic + _T("\">\n"));
 
     return fError;
 }
@@ -970,8 +1031,6 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode, int nOptions, wxString*
     //process tag's children and write title content to toc
     wxString sTitle;
     bool fError = ProcessChildAndSiblings(oNode, eTRANSLATE, &sTitle);
-    //WriteToLang(sTitle);
-    //sTitle = ::wxGetTranslation(sTitle);
 
     //save the title
     if (m_nParentType == lmPARENT_BOOKINFO) {
@@ -994,10 +1053,12 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode, int nOptions, wxString*
             sHeaderTitle = sTitle;
 
         //create page headers
+        wxString sParentNum = GetParentNumber();
+        if (sParentNum == wxEmptyString) sParentNum = sTitleNum;
         if (!m_fIsLeaflet)
-            CreatePageHeaders(m_sBookTitle, sHeaderTitle, m_sChapterNum);
+            CreatePageHeaders(m_sBookTitle, sHeaderTitle, sParentNum);
         else
-            CreateLeafletHeaders(m_sBookTitle, sHeaderTitle, m_sChapterNum);
+            CreateLeafletHeaders(m_sBookTitle, sHeaderTitle, sParentNum);
     }
     //write title to html file
     WriteToHtml( wxString::Format(_T("<h%d>"), m_nHeaderLevel));
@@ -1087,7 +1148,7 @@ bool lmEbookProcessor::UlinkTag(const wxXml2Node& oNode, int nOptions, wxString*
 
 bool lmEbookProcessor::YearTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
 {
-    //get value
+    m_sCopyrightYear = wxEmptyString;
     return ProcessChildAndSiblings(oNode, 0, &m_sCopyrightYear);
 }
 
@@ -1098,6 +1159,9 @@ bool lmEbookProcessor::YearTag(const wxXml2Node& oNode, int nOptions, wxString* 
 
 wxString lmEbookProcessor::GetTitleCounters()
 {
+    // Returns current theme number. For example, if current
+    // theme is '2.4.7' this method returns '2.4.7. '
+
     wxString sTitleNum = wxEmptyString;
     for (int i=0; i <= m_nTitleLevel; i++) {
         sTitleNum += wxString::Format(_T("%d."), m_nNumTitle[i] );
@@ -1107,6 +1171,22 @@ wxString lmEbookProcessor::GetTitleCounters()
     return  sTitleNum;
 
 }
+
+wxString lmEbookProcessor::GetParentNumber()
+{
+    // Returns current theme number minus one level. For example, if current
+    // theme is '2.4.7' this method returns '2.4. '
+
+    wxString sTitleNum = wxEmptyString;
+    for (int i=0; i < m_nTitleLevel; i++) {
+        sTitleNum += wxString::Format(_T("%d."), m_nNumTitle[i] );
+    }
+    if (sTitleNum != wxEmptyString) sTitleNum += _T(" ");
+    
+    return  sTitleNum;
+
+}
+
 
 void lmEbookProcessor::IncrementTitleCounters()
 {

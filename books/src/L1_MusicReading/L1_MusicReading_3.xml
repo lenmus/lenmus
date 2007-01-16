@@ -1,0 +1,57 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!--             Measures and Bar lines              -->
+<!-- =============================================== -->
+
+<theme id="measure">
+<title>Measures and Bar lines</title>
+
+<para>
+It is helpful to 'parcel up' the consecutive notes and rests into groups named 'measures'
+(in British English the word 'bar' is used instead of 'measure').
+All measures have the same temporal duration and, as any piece of music
+has always a pulsating rythm, the 'measures' are always composed by a fixed number of
+'beats'.
+</para>
+
+<para>
+On the staff, the end of each measure is marked with a thin vertical line, drawn from the
+top line to the bottom line of the staff. This line is called a bar line. There are different
+types of bar lines, that are used for special purposes. For example, the end of the
+last measure
+of a piece of music is marked with a double bar line, being the fist line thin and the second
+one thick. The thin double bar line (two thin lines) is used to mark sections within a
+piece of music.
+</para>
+
+<!-- bar lines -->
+<score width="600" height="120" border="0">
+    <score_type>short_15_es</score_type>
+    <music_border>0</music_border>
+    <music>
+        (metrica 2 4 noVisible)(texto &quot;simple barlines&quot; dx:0 dy:-10)
+        (n g4 r noVisible)(barra Simple)
+        (n g4 r noVisible)(barra Simple)
+        (n g4 r noVisible)(barra Simple)
+        (texto &quot;duoble barline&quot; dx:0 dy:80)(n g4 r noVisible)(barra Doble)
+        (n g4 r noVisible)(barra Simple)
+        (n g4 r noVisible)(barra Simple)
+        (n g4 r noVisible)(barra Simple)
+        (texto &quot;final barline&quot; dx:0 dy:-10)(n g4 r noVisible)(barra Final)
+    </music>
+</score>
+
+
+<!--
+Resulta muy útil subdividir la partitura en unidades llamadas 'compases', conjuntos 
+de notas agrupar las notas 
+-->
+
+<para>
+Línea divisoria: encargada de delimitar los compases. Al final de la lección será 
+más gruesa. Se llama 'doble barra'. Notas: do mi sol. Do es el sonido más grave de 
+estos 3. Mi es el intermedio, y sol el más agudo.
+</para>
+
+</theme>
+

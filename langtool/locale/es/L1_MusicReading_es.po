@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.4\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-15 12:50+0100\n"
+"PO-Revision-Date: 2007-01-16 16:52+0100\n"
 "Last-Translator: \n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -18,8 +18,8 @@ msgid "Send your comments and sugesstions to LenMus team (www.lenmus.org)"
 msgstr "Envía tus comentarios y sugerencias al equipo de LenMus (www.lenmus.org)"
 
 #: L1_MusicReading/L1_MusicReading.cpp:3
-msgid "Licensed under the terms of the GNU Free Documentation License (see 'Help > Copyrights' menu for details)"
-msgstr "Distribuido bajo los términos de la Licencia GNU de Documentación Libre  (ver menú 'Ayuda > Ccopyrights' para detalles)"
+msgid "Licensed under the terms of the GNU Free Documentation License v1.2"
+msgstr "Distribuido bajo los términos de la Licencia GNU de Documentación Libre  v1.2"
 
 #: L1_MusicReading/L1_MusicReading.cpp:4
 msgid "the teacher of music"
@@ -34,13 +34,11 @@ msgid "Music reading. Level 1."
 msgstr "Lectura rítmica. Nivel 1."
 
 #: L1_MusicReading/L1_MusicReading.cpp:7
+#: L1_MusicReading/L1_MusicReading.cpp:15
 msgid "This eMusicBook is intended to help one improve one's reading skills, providing sort of practice and exercises that are required in order to become a good sightreader."
 msgstr ""
 
 #: L1_MusicReading/L1_MusicReading.cpp:8
-msgid "Ana Maria Madorran"
-msgstr "Ana María Madorrán"
-
 #: L1_MusicReading/L1_MusicReading.cpp:9
 msgid "Ana Maria Madorran y Cecilio Salmeron"
 msgstr "Ana María Madorrán y Cecilio Salmerón"
@@ -62,29 +60,25 @@ msgstr "Presentación"
 msgid "Syllabus"
 msgstr "Temario"
 
-#: L1_MusicReading/L1_MusicReading.cpp:15
-msgid "This eMusicBook is intended to help one improve one's reading skills, providing sort of practice, exercises, and drills that are required in order to become a good sightreader."
-msgstr ""
-
 #: L1_MusicReading/L1_MusicReading.cpp:16
-msgid "Appart of introducing new rhythmic cells, of increasing complexity, the main concepts introduced in Level 1 are:"
+msgid "Appart of introducing different rhythmic cells, of increasing complexity, the main concepts introduced in Level 1 are:"
 msgstr ""
 
 #: L1_MusicReading/L1_MusicReading.cpp:17
 msgid " The stave. Treble (G) and bass (F) clefs. Names of notes on the stave. Extension of the stave to include two ledger lines below and above each stave."
-msgstr ""
+msgstr " El pentagrama. Ambito en las claves de Sol (violín) y Fa en 4ª (bajo), para cubrir dos líneas adicionales por encima y por debajo."
 
 #: L1_MusicReading/L1_MusicReading.cpp:18
-msgid " Note values of semibreve, minim, crotchet, quaver and semiquaver, and their equivalent rests. Tied notes. Single-dotted notes and rests."
-msgstr ""
+msgid " Note values of whole (semibreve), half (minim), quarter (crotchet), eighth (quaver) and 16th (semiquaver), and their equivalent rests. Tied notes. Single-dotted notes and rests."
+msgstr " Las siguientes notas: redonda, blanca, negra, corchea y semicorchea, y sus correspondientes silencios. Notas ligadas. Notas con un puntillo y sus silencios."
 
 #: L1_MusicReading/L1_MusicReading.cpp:19
 msgid " Simple time signatures of 2/4, 3/4 and 4/4 and compound time signature of 6/8. Bar-lines and the grouping of the notes listed above within these times."
-msgstr ""
+msgstr " Compases de subdivisión binaria de 2/4, 3/4 y 4/4 y de subdivisión ternaria de 6/8. Barras de compas y las agrupaciones de las notas estudiadas dentro de estos compases."
 
 #: L1_MusicReading/L1_MusicReading.cpp:20
 msgid " Key signatures of all major and minor keys up to and including two sharps and flats."
-msgstr ""
+msgstr " Armaduras de todas las tonalidades mayores y menores hasta con dos alteraciones."
 
 #: L1_MusicReading/L1_MusicReading.cpp:21
 msgid "Book organization"
@@ -104,53 +98,105 @@ msgstr "Estructura de las lecciones"
 
 #: L1_MusicReading/L1_MusicReading.cpp:25
 msgid "With exception of the firsts lessons, oriented to introduce the basic concepts of the musica notation, the remaining lessons are structured into three sections:"
-msgstr ""
+msgstr "Excepto en las primeras lecciones, de orientación teórica y dedicadas a explicar los conceptos básicos de la notación musical, los restantes temas están estructurados en tres secciones:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:26
 msgid "In the first one the new concepts and rhythmic patterns introduced in the lesson are explained."
-msgstr ""
+msgstr "En la primera se muestran los nuevos patrones rítmicos que se introducen en ese tema."
 
 #: L1_MusicReading/L1_MusicReading.cpp:27
 msgid "In the second section, optional, the new concepts are compared with known ones, so that the student can better relate the new material and learn it."
-msgstr ""
+msgstr "En la segunda, opcional, se muestran diferencias o similaridades con otros patrones y se dan consejos para su mejor asimilación."
 
 #: L1_MusicReading/L1_MusicReading.cpp:28
 msgid "Finally, in the third section some exercises are proposed to learn and practise the new concepts introduced."
-msgstr ""
+msgstr "Finalmente, en la tercera parte se invita al alumno a realizar ejercicios de lectura medida, donde se practican los nuevos patrones introducidos en el tema."
 
 #: L1_MusicReading/L1_MusicReading.cpp:29
 msgid "The staff"
 msgstr "El pentagrama"
 
 #: L1_MusicReading/L1_MusicReading.cpp:30
-msgid "In the Western musical notation system music is written on specially printed paper called 'manuscript paper'."
-msgstr "En el sistema occidental de notación musical, la música se escribe en un papel especial, denominado 'papel pautado'."
+msgid "In the Western musical notation system music is written on specially printed paper called 'manuscript paper' (see picture)."
+msgstr "En el sistema occidental de notación musical, la música se escribe en un papel especial, denominado 'papel pautado' (ver imagen)."
 
 #: L1_MusicReading/L1_MusicReading.cpp:31
-msgid "The manuscript paper is organized as sets of horizontal lines, named 'staves' (Note: Each group of horizontal lines is called a 'staff', with 'staves' as the plural. Note that althoug in American English 'staff' is the right term, in British English the word 'staff' is old-fashioned and rarely used; they use the word 'stave' instead). A staff is a set of five horizontal lines, numbered from bottom to top; the bottom line is the first line and the top line is the fifth line:"
+msgid "The manuscript paper is organized as sets of horizontal lines, named 'staves' (each group of horizontal lines is called a 'staff', with 'staves' as the plural; in British English the word 'staff' is old-fashioned and rarely used; they use the word 'stave' instead). A staff is a set of five horizontal lines, numbered from bottom to top; the bottom line is the first line and the top line is the fifth line:"
 msgstr "El papel pautado consta de conjuntos de líneas horizontales, denominados 'pentagramas'. Un pentagrama es un grupo de cinco líneas horizontales, numeradas de abajo hacia arriba; la línea inferior es la 'primera línea' y la superior es la 'quinta línea':"
 
 #: L1_MusicReading/L1_MusicReading.cpp:32
+msgid "1"
+msgstr ""
+
+#: L1_MusicReading/L1_MusicReading.cpp:33
 msgid "The four spaces between the staff lines, are important and are also numbered from bottom to top:"
 msgstr "Los cuatro espacios entre las cinco líneas del pentagrama son importantes y también se numeran de abajo arriba:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:33
+#: L1_MusicReading/L1_MusicReading.cpp:34
+msgid "space 1"
+msgstr "espacio 1"
+
+#: L1_MusicReading/L1_MusicReading.cpp:35
 msgid "The musical symbols are placed on the staff. The symbols for notes are placed either on a line or on a space and the musical pitch (low or high) represented by the symbol is determined by the position of the note on the staff. Notes on the higher lines/spaces have higer pitch than those on the lower ones. Lesson to the next scale:"
 msgstr "Sobre el pentagrama se colocan los distintos signos musicales, Las notas se colocan sobre las líneas y los espacios, y el tono (agudo o bajo) que el símbolo representa viene determinado por la línea o espacio sobre el que se situa: cuanto más agudo, más arriba se coloca en el pentagrama. Escucha la siguiente escala:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:34
+#: L1_MusicReading/L1_MusicReading.cpp:36
 msgid "Music on the staff is read from left to right."
 msgstr "La música en el pentagrama se lee de izquierda a derecha."
 
-#: L1_MusicReading/L1_MusicReading.cpp:35
+#: L1_MusicReading/L1_MusicReading.cpp:37
 msgid "The clef"
 msgstr "La clave"
 
-#: L1_MusicReading/L1_MusicReading.cpp:36
+#: L1_MusicReading/L1_MusicReading.cpp:38
 msgid "To determine which pitch is represented by each line and space in the staff a symbol, named 'the clef' is placed at the beginning of each staff. In this course we are going to start with the study of the G clef, also named 'treble clef', that is represented by the following symbol:"
 msgstr "Para determinar qué sonido representa cada línea y espacio del pentagrama se utiliza la clave. Esta es un símbolo que se coloca al comienzo del pentagrama. En este curso vamos a comenzar con el estudio de la clave de sol en 2ª línea, que corresponde al siguiente símbolo:"
 
-#: L1_MusicReading/L1_MusicReading.cpp:37
-msgid " The clef assigns a particular line to a specific pitch, and all other pitches are mapped in ascending and descending order to the lines and spaces above and below that reference line. In the G clef, the G note of the four octave is assigned to the second line and, as a result, the staff lines and spaces get automatically assigned to the following notes:"
-msgstr "La clave asigna una determinada línea con una determinada nota y todas las demás, ascendentes y descendentes, quedan entonces asignadas a los espacios y líneas por encima y por debajo de la elegida como referencia. En la clave de sol, el sonido sol de la cuarta octava se asigna a la segunda línea y, como resultado, aparece la siguiente asignación de notas a los espacios y líneas del pentagrama:"
+#: L1_MusicReading/L1_MusicReading.cpp:39
+msgid " The clef assigns a particular line to a specific pitch, and all other pitches are mapped in ascending and descending order to the lines and spaces above and below that reference line. In the G clef, the G note of the four octave is assigned to the second line:"
+msgstr "La clave asigna una determinada línea con una determinada nota y todas las demás, ascendentes y descendentes, quedan entonces asignadas a los espacios y líneas por encima y por debajo de la elegida como referencia. En la clave de sol, el sonido sol de la cuarta octava se asigna a la segunda línea:    "
+
+#: L1_MusicReading/L1_MusicReading.cpp:40
+msgid "G note"
+msgstr "Sol"
+
+#: L1_MusicReading/L1_MusicReading.cpp:41
+msgid "As a result, the staff lines and spaces get automatically assigned to consecutive notes, as shown in the next score:"
+msgstr "Como consecuencia, todas las restabntes lineas y los espacios quedan automáticamente asignados a notas consecutivas, como se muestra en la siguiente partitura:"
+
+#: L1_MusicReading/L1_MusicReading.cpp:42
+msgid "E F G A B C D E F"
+msgstr "Mi Fa Sol La Si Do Re Mi Fa"
+
+#: L1_MusicReading/L1_MusicReading.cpp:43
+msgid "Measures and Bar lines"
+msgstr ""
+
+#: L1_MusicReading/L1_MusicReading.cpp:44
+msgid "It is helpful to 'parcel up' the consecutive notes and rests into groups named 'measures' (in British English the word 'bar' is used instead of 'measure'). All measures have the same temporal duration and, as any piece of music has always a pulsating rythm, the 'measures' are always composed by a fixed number of 'beats'."
+msgstr ""
+
+#: L1_MusicReading/L1_MusicReading.cpp:45
+msgid "On the staff, the end of each measure is marked with a thin vertical line, drawn from the top line to the bottom line of the staff. This line is called a bar line. There are different types of bar lines, that are used for special purposes. For example, the end of the last measure of a piece of music is marked with a double bar line, being the fist line thin and the second one thick. The thin double bar line (two thin lines) is used to mark sections within a piece of music."
+msgstr ""
+
+#: L1_MusicReading/L1_MusicReading.cpp:46
+msgid "simple barlines"
+msgstr "barras simples"
+
+#: L1_MusicReading/L1_MusicReading.cpp:47
+msgid "duoble barline"
+msgstr "doble barra"
+
+#: L1_MusicReading/L1_MusicReading.cpp:48
+msgid "final barline"
+msgstr "barra final"
+
+#: L1_MusicReading/L1_MusicReading.cpp:49
+msgid "The time signature"
+msgstr ""
+
+#: L1_MusicReading/L1_MusicReading.cpp:50
+msgid "The figures: notes and rests"
+msgstr ""
 

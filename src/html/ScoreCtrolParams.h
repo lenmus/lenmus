@@ -84,6 +84,8 @@ protected:
 
     //attributes
     EHtmlScoreTypes         m_nScoreType;
+    long                    m_nVersion;         // for type short: LDP version used
+    wxString                m_sLanguage;        // for type short: language used
     wxString                m_sMusic;           // the score in LDP format
 
     DECLARE_NO_COPY_CLASS(lmScoreCtrolParams)
@@ -131,7 +133,9 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
 
         Params for lmScoreCtrol - html object type="Application/LenMusScore"
 
-        score_type          short | pattern | full | XMLFile | LDPFile        default: full
+        score_type          'short | short_nn_ss | pattern | full | XMLFile | LDPFile' Default: full
+                            In 'short_nn_ss' the meaning of 'nn' is the version number
+                            for the LDP language used, and 'ss' is the language (default: 'en')
         music               LDP score | file spec.
         music_border        0 | 1               default: 0 (no border around score)
 
@@ -177,8 +181,30 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
     else if ( sName == _T("SCORE_TYPE") ) {
         wxString sType = tag.GetParam(_T("VALUE"));
         sType.UpperCase();
-        if (sType == _T("SHORT"))
-            m_nScoreType = eHST_short;
+        if (sType.Left(5) == _T("SHORT")) {
+            if (sType == _T("SHORT")) {
+                m_nScoreType = eHST_short;
+                m_nVersion = 13;    //1.3
+                m_sLanguage = _T("es");
+            }
+            else {
+                if (sType.Left(6) != _T("SHORT_")) {
+                    m_sParamErrors += wxString::Format(
+                        _("Invalid param value in:\n<param %s >\nAcceptable value: 'short_nn'\n"),
+                        tag.GetAllParams() );
+                }
+                else {
+                    wxString sNum = sType.Mid(6, 2);
+                    sNum.ToLong(&m_nVersion);
+                    m_nScoreType = eHST_short;
+                    m_sLanguage = _T("en");
+                    if (sType.Length() > 9) {
+                        sType = tag.GetParam(_T("VALUE"));     //to take the original case, upper, lower or mixed
+                        m_sLanguage = sType.Mid(9);
+                    }
+                }
+            }
+        }
         else if (sType == _T("PATTERN"))
             m_nScoreType = eHST_pattern;
         else if (sType == _T("FULL"))
@@ -257,9 +283,13 @@ void lmScoreCtrolParams::PrepareScore()
             }
 
         case eHST_full:
-            //! @todo
-    //        m_oAjPartitura(m_iPartitura).sMusica = sPatron
-    //        CrearObjetoPartitura m_iPartitura
+            if (!parserLDP.ParenthesisMatch(m_sMusic)) {
+                m_sParamErrors += _("Invalid score: unmatched parenthesis.\n");
+            }
+            else {
+                lmLDPNode* pRoot = parserLDP.ParseText(m_sMusic);
+                if (pRoot) m_pScore = parserLDP.AnalyzeScore(pRoot);
+            }
             break;
 
         case eHST_pattern:
@@ -319,14 +349,41 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 wxString lmScoreCtrolParams::FinishShortScore(wxString sPattern)
 {
     //prepare the score adding the begining and closing it.
-    wxString sPart = _T("(Score (Vers 1.3)(NumInstrumentos 1)") 
-        _T("(Instrumento 1 (NumPartes 1)")
-            _T("(Parte 1 ")
-                _T("(c 1 (Clave Sol)")
-                     _T("(Tonalidad Do)");
-    
-    sPart = sPart + sPattern;
-    sPart = sPart + _T(" )))");
+    wxString sPart;
+    if (m_nVersion == 15)
+    {
+        if (m_sLanguage == _T("es")) {
+            sPart = _T("(score (vers 1.5)(language es iso-8859-1)") 
+                    _T("(instrumento ")
+                    _T("(datosMusica (clave Sol)(tonalidad Do)");
+        }
+        else {
+            sPart = _T("(score (vers 1.5)(language en iso-8859-1)") 
+                    _T("(instrument ")
+                    _T("(musicData (clef treble)(key Do)");
+        }
+        sPart += sPattern;
+        sPart += _T(" )))");
+    }
+    else if (m_nVersion == 13)
+    {
+        sPart = _T("(Score (Vers 1.3)(NumInstrumentos 1)") 
+                _T("(Instrumento 1 (NumPartes 1)")
+                _T("(Parte 1 ")
+                    _T("(c 1 (Clave Sol)")
+                        _T("(Tonalidad Do)");
+        
+        sPart += sPattern;
+        sPart += _T(" )))");
+    }
+    else
+    {
+        wxString sMsg = wxString::Format(
+                _T("lmScoreCtrolParams::FinishShortScore]. Score type 'short': ")
+                _T("Invalid version number (%d)"), m_nVersion );
+        wxMessageBox(sMsg);
+        wxLogMessage(sMsg);
+    }
 
     //replace note pitch '*' by 'a4'
     sPart.Replace(_T("*"), _T("a4"));

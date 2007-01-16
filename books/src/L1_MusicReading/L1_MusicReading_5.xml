@@ -1,0 +1,27 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!--             The figures: notes and rests        -->
+<!-- =============================================== -->
+
+<theme id="figures">
+<title>The figures: notes and rests</title>
+
+<!--
+Where the vertical position of a note  on a staff  or stave  determines its pitch, its relative time value  or duration  is denoted by the particular sign chosen to represent it.
+
+Each note sign  is a construct of three distinct parts. The note-head, whose position on the stave actually sets its pitch, can be open (white) or closed (black). For all notes except the breve (double whole note) and semibreve (whole note), each note has a stem  and, for the notes of shorter time-value, a flag, hook  or tail  (one flag  for a quaver (eighth note), two for a semiquaver (sixteenth note), and so on). The stem  can rise from the note-head, in which case it lies on the right-hand side of the note-head, or fall from the note-head, in which case it lies on the left hand side of the note-head  (see the two crotchets (quarter notes)).
+
+In either case, the flag lies on the right-hand side of the stem (see the two quavers (eighth notes)). 
+
+Note/Tone
+    
+        * In Britain, the word note can mean a written symbol as well as a sound. Americans separate these meanings and use the word "note" for a written note, and "tone" for the sound.
+        * We do sometimes use this meaning for the word "tone", for example in the phrases "resultant tone" and "tone deaf".
+        * "Tone" can also mean the quality of a sound, for example, its brightness or its dullness (as in the tone control on a tape player or radio).
+    * In Britain, the word "tone" has an additional different and specific meaning (see Tone/Whole-step below). 
+    
+Beams and Beaming  
+When notes  with flags  lie together in groups they are often linked by one or more lines called beams. The number of beams reflect the number of flags  each would have had when an individual note.
+-->
+
+</theme>

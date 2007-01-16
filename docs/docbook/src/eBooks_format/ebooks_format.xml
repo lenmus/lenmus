@@ -567,9 +567,11 @@ following parameters:</para>
 
 <variablelist>
 <varlistentry><term>&lt;score_type&gt;</term>
-<listitem>Defines the type of score being included. Possible values: "short | pattern | 
-    full | XMLFile | LDPFile". If this param is not specified, default 
-    assumed value is: "full"</listitem></varlistentry>
+<listitem>Defines the type of score being included. Possible values: "short | short_nn_ss 
+    | pattern | full | XMLFile | LDPFile". If this param is not specified, default 
+    assumed value is: "full". In 'short_nn_ss' the meaning of 'nn' is the version number
+    for the LDP language used, and 'ss' is the language (default: 'en').
+    </listitem></varlistentry>
 
 <varlistentry><term>&lt;music&gt;</term>
 <listitem>Mandatory. Defines the score content. Depending on the previous parameter it 
@@ -1039,7 +1041,7 @@ the described tag to each type of exercise, as listed here:</para>
     <entry>x</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
     <entry>-</entry><entry>-</entry><entry>-</entry>
     <entry>Defines the type of score being included. Possible values: "short | 
-    pattern | full | XMLFile | LDPFile".</entry></row>
+    short_nn_ss | pattern | full | XMLFile | LDPFile".</entry></row>
     
 </tbody>
 </tgroup>
