@@ -1,7 +1,6 @@
-// RCS-ID: $Id: TheoMusicReadingCtrolParms.h,v 1.14 2006/03/03 15:01:11 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2006 Cecilio Salmeron
+//    Copyright (c) 2002-2007 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -19,10 +18,6 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file TheoMusicReadingCtrolParms.h
-    @brief Header file for class lmTheoMusicReadingCtrolParms
-    @ingroup html_controls
-*/
 #ifdef __GNUG__
 // #pragma interface
 #endif

@@ -12,7 +12,7 @@
 <p>Release 3.4 include new features, technical improvements and some bug fixes:</p>
 
 <ul>
-  <li>eMusicBook index now can display also images.</li>
+  <li>eMusicBook index now can also display images.</li>
 
   <li>Several <a href="#bugs">bug fixes</a> and other 
     <a href="#technical">technical</a> improvements.</li>
@@ -50,6 +50,15 @@
 <tr valign="top">
     <td class="ListaPar">
 	  <b>[1610186] Spanish translation error in aural training exercises.</b><br />Label'identify scales' was translated as 'identify intervals'. Now fixed.
+    </td></tr>
+
+<tr valign="top">
+    <td class="ListaPar">
+	  <b>Metronome lose previous run settings. Always initialized at 20.</b><br />
+	  Setting the spin ctrol triggers a EVT_SPINCTRL that
+	  causes a metronome reset. As this worked ok in previous versions I assume it is
+	  due to a change in wxSpinCtrol behaviour in new wxWidgets release. Solved by
+	  changing metronome initialization code.
     </td></tr>
 
 </table>

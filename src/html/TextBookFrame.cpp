@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2006 Cecilio Salmeron
+//    Copyright (c) 2002-2007 Cecilio Salmeron
 //
 //    This file was initially is based on file helpfrm.cpp from wxWidgets 2.6.2 project
 //    although now it must be something quite different

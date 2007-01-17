@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <content>
+
 <theme id="thm207">
 <titleabbrev>Lesson %d</titleabbrev>
 <title>Two 16th notes and one 8th</title>
@@ -60,7 +59,7 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Two 16th notes and one 8th</title>
 <para>Press 'Play' and lesson (carefully) the rhythm. Train your ear and practise reading this rhythm.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0>
+<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
     <control_go_back>thm207</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
@@ -70,7 +69,7 @@ studied in this lesson.</para>
     <time>24</time>
     <key>Do</key>
 </exercise>
-<!-- </theme> Doesn't parse with this -->
+</theme>
 
 <!-- ============================================================================ -->
 <!-- Exercise 2                                                                   -->
@@ -80,7 +79,7 @@ studied in this lesson.</para>
 <titleabbrev>Exercises</titleabbrev>
 <title>Two 16th notes and one 8th</title>
 <para>Press 'Play' and lesson the rhythm. Train your ear and practise reading this rhythm.</para>
-<exercise type='TheoMusicReading' width='100%' height='300' border='0>
+<exercise type='TheoMusicReading' width='100%' height='300' border='0'>
     <control_go_back>thm207</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
@@ -98,3 +97,4 @@ studied in this lesson.</para>
 </theme>
 
 </content>
+

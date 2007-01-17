@@ -1,7 +1,7 @@
-// RCS-ID: $Id: ToolbarsOptPanel.h,v 1.3 2006/02/23 19:22:19 cecilios Exp $
+
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2006 Cecilio Salmeron
+//    Copyright (c) 2002-2007 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -19,10 +19,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ToolbarsOptPanel.h
-    @brief Header file for class lmToolbarsOptPanel
-    @ingroup options_management
-*/
+
 #ifndef __TOOLBARSOPTPANEL_H__
 #define __TOOLBARSOPTPANEL_H__
 

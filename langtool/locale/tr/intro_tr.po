@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.4\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2006-08-25 12:19+0100\n"
+"PO-Revision-Date: 2007-01-17 14:21+0100\n"
 "Last-Translator: \n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -10,6 +10,64 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Turkish\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: c:\usr\desarrollo_wx\lenmus\langtool\locale\src\n"
+"X-Poedit-Basepath: c:\\usr\\desarrollo_wx\\lenmus\\langtool\\locale\\src\n"
 "X-Poedit-SearchPath-0: intro\n"
+
+#: intro/intro.cpp:2
+msgid "Send your comments and sugesstions to LenMus team (www.lenmus.org)"
+msgstr ""
+
+#: intro/intro.cpp:3
+msgid "Licensed under the terms of the GNU Free Documentation License v1.2"
+msgstr ""
+
+#: intro/intro.cpp:4
+msgid "the teacher of music"
+msgstr "müziğin öğretmeni"
+
+#: intro/intro.cpp:5
+msgid "Cover page"
+msgstr ""
+
+#: intro/intro.cpp:6
+#, fuzzy
+msgid "LenMus presentation"
+msgstr "LenMus. Giriş"
+
+#: intro/intro.cpp:7
+#, fuzzy
+msgid "LenMus Phonascus presentation"
+msgstr "LenMus Phonascus versiyonuna hoşgeldiniz "
+
+#: intro/intro.cpp:8
+msgid "Phonascus, from Latin 'the teacher of music', is a music education software that you can use to practice your music reading skills, improve your aural recognition abilities, or just learn the fundamental principles of music theory and language. Since version 3.1 it includes new functions that, I hope, will end up with full support for the creation, display, printing, play back and interactive edition of music scores. Visit the LenMus web site for more information about the current status of the score editor."
+msgstr "Phonascus, Latin 'müziğin öğretmeni', müzik okuma becerilerinizi pratik yapmak için  kullanabildiğiniz müzik eğitim yazılımı, işitsel tanıma yeteneklerinizi geliştirir veya sadece müziğin temel prensiplerini ve teorilerini öğrenebilmek için kullanabilirsiniz. Versiyon 3.1 yeni fonksiyonlar içeriyor,umarım, yaratma destek ile biter, gösterim, basım, tekrarla ve müziğin etkileşimli baskısı, sayı yapar.Sayı editörünün güncel konumu hakkında daha çok bilgi için lenmus ağ adresini  ziyaret et."
+
+#: intro/intro.cpp:9
+msgid "LenMus Phonascus allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your specific needs at each moment and it allows you to work at your own pace."
+msgstr "LenMus Phonascus programı  spesifik özelliklere ve  çalışmalara, teorik ve sesli olarak odaklanmaya imkan verir.Farklı faaliyetlerin herbiride özel ihtiyaçlarınızı karşılamak için  ihtiyaca göre düzenlenilebilirler ve kendi adımınızda çalışmak için size  izin verir."
+
+#: intro/intro.cpp:10
+msgid "LenMus is structured as a collection of fully interactive textbooks (eMusicBooks), including theory and exercises. All exercises are fully integrated into the text. Music scores are not just images or pictures but fully interactive operational music scores that you can hear, in whole or just the measures you choose. This enables you to put concepts into practice with immediate feedback and makes the subject matter both more accessible and more rewarding, as you can hear, test and put in practise immediately any new concept introduced."
+msgstr "Lenmus, tamamen etkileşimli ders kitaplarını kapsayan teori ve alıştırmaların koleksiyonu olarak biçimlendirilir. Bütün alıştırmalar, tamamen metin içinde  birleştirilirler.Müzik sayıları tamamen sadece görüntüler veya resimler değiller ama tamamen etkileşimli işlevsel müzik yapar işitmemiz için. Bu, acil geribildirim pratik içine kavramları koymak için size sağlanır ve her iki konuda daha çok ulaşılabilir konu yapar ve daha çok değerli olarak işitebilirsiniz, Hemen herhangi bir yeni tanıtılan kavramı pratikten  test et ve geçir."
+
+#: intro/intro.cpp:11
+msgid "Teaching material is organized into levels, and each level into lessons. Book"
+msgstr "Öğretim materyalleri bölümler içinde düzenlenir ve diğer bölümler derslerin içinde. Kitap"
+
+#: intro/intro.cpp:12
+msgid " Single exercises"
+msgstr " Tek alıştırmalar"
+
+#: intro/intro.cpp:13
+msgid " contains some basic exercises for aural training and to practise theoretical concepts, such as intervals and scales. Unlike exercises included in the other books, you can customize all single exercises included in this book. This will allow you meet your specific needs at each moment and to practise specific points."
+msgstr " işitsel eğitim için bazı temel alıştırmaları kapsar, teorik kavramları pratik yapmak için aralıklar ve ölçekler gibi.Alıştırmalardan farklı , diğer kitaplarda  içerir, bu kitapda  içerilen bütün tek alıştırmaları  ihtiyaca göre düzenleyebilirsiniz.Bu, özel noktaları pratik yapmanıza ve her an özel ihtiyaçlarınızı  karşılamanıza  izin verecek .      "
+
+#: intro/intro.cpp:14
+msgid "We hope that LenMus become a useful tool in your studies."
+msgstr "Çalışmalarınızda LenMus araçlarının yararlı  olduğunu  umarız.\"  "
+
+#: intro/intro.cpp:15
+msgid "The LenMus team."
+msgstr "LenMus ekibi"
 

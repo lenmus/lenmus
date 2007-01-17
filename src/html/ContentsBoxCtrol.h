@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2006 Cecilio Salmeron
+//    Copyright (c) 2002-2007 Cecilio Salmeron
 //
 //    This code is based on files wx/htmllbox.h and wx/vlbox.h from wxWidgets 2.8.0
 //    project. wxWidgets licence is compatible with GNU GPL.

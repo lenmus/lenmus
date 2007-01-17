@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.4\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-05 17:22+0100\n"
-"Last-Translator: cs <cs>\n"
+"PO-Revision-Date: 2007-01-17 12:20+0100\n"
+"Last-Translator: \n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -17,8 +17,8 @@ msgid "Send your comments and sugesstions to LenMus team (www.lenmus.org)"
 msgstr "Envía tus comentarios y sugerencias al equipo de LenMus (www.lenmus.org)"
 
 #: SingleExercises/SingleExercises.cpp:3
-msgid "Licensed under the terms of the GNU Free Documentation License (see 'Help > Copyrights' menu for details)"
-msgstr "Distribuido bajo los términos de la Licencia GNU de Documentación Libre  (ver menú 'Ayuda > Ccopyrights' para detalles)"
+msgid "Licensed under the terms of the GNU Free Documentation License v1.2"
+msgstr "Distribuido bajo los términos de la Licencia GNU de Documentación Libre  v1.2"
 
 #: SingleExercises/SingleExercises.cpp:4
 msgid "the teacher of music"
@@ -41,7 +41,7 @@ msgid "Cecilio Salmeron"
 msgstr "Cecilio Salmeron"
 
 #: SingleExercises/SingleExercises.cpp:9
-msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and is also available at ."
+msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
 msgstr "Se otorga permiso para copiar, distribuir y/o modificar este documento bajo los términos de la Licencia GNU de Documentación Libre, Versión 1.2 o cualquier otra versión posterior publicada por la Free Software Foundation; sin Secciones Invariantes ni Textos de Cubierta Delantera ni Textos de Cubierta Trasera. Una copia de la licencia está incluida en la documentación recibida junto con este programa. y también está accesible en"
 
 #: SingleExercises/SingleExercises.cpp:10
@@ -49,110 +49,105 @@ msgid "http://www.gnu.org/licenses/fdl.html"
 msgstr "http://www.gnu.org/licenses/fdl.html"
 
 #: SingleExercises/SingleExercises.cpp:11
-msgid "."
-msgstr "."
-
-#: SingleExercises/SingleExercises.cpp:12
-msgid "This document may be copied and distributed in any medium, either commercially or noncommercially, provided that the GNU Free Documentation License (FDL), the copyright notices, and the license notice saying the GNU FDL applies to the document are reproduced in all copies, and that you add no other conditions whatsoever to those of the GNU FDL."
-msgstr "Este documento puede copiarse y distribuirse por cualquier medio, ya sea con fines comerciales o sin ellos, siempre que el texto de la licencia GNU Free Documentation License (FDL), los avisos de copyright, y las notas indicando que la licencia GNU Free Documentation License es de aplicación a esta documentación aparezcan reproducidas en las copias, y que no se añada ninguna condición ni clausula adicional a las de la licencia GNU FDL. "
-
-#: SingleExercises/SingleExercises.cpp:13
 msgid "Contents"
 msgstr "Contenido"
 
-#: SingleExercises/SingleExercises.cpp:14
+#: SingleExercises/SingleExercises.cpp:12
 msgid "Introduction to single exercises"
 msgstr "Introducción a los ejercicios libres"
 
-#: SingleExercises/SingleExercises.cpp:15
+#: SingleExercises/SingleExercises.cpp:13
 msgid "Appart of exercises included in the eBooks, the following general exercises (customizable to suit your needs at any moment) are available:"
 msgstr "Además de los ejercicios incuidos en los eBooks, están disponibles los siguientes ejercicos generales, que puedes personalizar para satisfacer en cada momento tus necesidades:"
 
-#: SingleExercises/SingleExercises.cpp:16
+#: SingleExercises/SingleExercises.cpp:14
 msgid "Exercises for aural training"
 msgstr "Ejercicios para educación del oido"
 
-#: SingleExercises/SingleExercises.cpp:17
-#: SingleExercises/SingleExercises.cpp:29
+#: SingleExercises/SingleExercises.cpp:15
+#: SingleExercises/SingleExercises.cpp:27
 msgid "Intervals' comparison"
 msgstr "Comparar intervalos"
 
-#: SingleExercises/SingleExercises.cpp:18
-#: SingleExercises/SingleExercises.cpp:31
+#: SingleExercises/SingleExercises.cpp:16
+#: SingleExercises/SingleExercises.cpp:29
 msgid "Intervals' identification"
 msgstr "Identificar intervalos"
 
-#: SingleExercises/SingleExercises.cpp:19
-#: SingleExercises/SingleExercises.cpp:25
-#: SingleExercises/SingleExercises.cpp:33
-#: SingleExercises/SingleExercises.cpp:43
+#: SingleExercises/SingleExercises.cpp:17
+#: SingleExercises/SingleExercises.cpp:23
+#: SingleExercises/SingleExercises.cpp:31
+#: SingleExercises/SingleExercises.cpp:41
 msgid "Chords' identification"
 msgstr "Identificar acordes"
 
-#: SingleExercises/SingleExercises.cpp:20
-#: SingleExercises/SingleExercises.cpp:24
-#: SingleExercises/SingleExercises.cpp:35
-#: SingleExercises/SingleExercises.cpp:41
+#: SingleExercises/SingleExercises.cpp:18
+#: SingleExercises/SingleExercises.cpp:22
+#: SingleExercises/SingleExercises.cpp:33
+#: SingleExercises/SingleExercises.cpp:39
 msgid "Scales' identification"
 msgstr "Identificar escalas"
 
-#: SingleExercises/SingleExercises.cpp:21
+#: SingleExercises/SingleExercises.cpp:19
 msgid "Exercises to practise theory"
 msgstr "Ejercicios de teoría"
 
-#: SingleExercises/SingleExercises.cpp:22
-#: SingleExercises/SingleExercises.cpp:38
+#: SingleExercises/SingleExercises.cpp:20
+#: SingleExercises/SingleExercises.cpp:36
 msgid "Key signatures' identification"
 msgstr "Identificación de armaduras"
 
-#: SingleExercises/SingleExercises.cpp:23
-#: SingleExercises/SingleExercises.cpp:40
+#: SingleExercises/SingleExercises.cpp:21
+#: SingleExercises/SingleExercises.cpp:38
 msgid "Interval's identification and construction"
 msgstr "Identificación y construcción de intervalos"
 
-#: SingleExercises/SingleExercises.cpp:26
-#: SingleExercises/SingleExercises.cpp:45
+#: SingleExercises/SingleExercises.cpp:24
+#: SingleExercises/SingleExercises.cpp:43
 msgid "Other exercises"
 msgstr "Otros ejercicios"
 
-#: SingleExercises/SingleExercises.cpp:27
-#: SingleExercises/SingleExercises.cpp:46
-msgid "Clefs Reading"
+#: SingleExercises/SingleExercises.cpp:25
+msgid "Clefs reading"
 msgstr "Lectura de claves"
 
-#: SingleExercises/SingleExercises.cpp:28
+#: SingleExercises/SingleExercises.cpp:26
 msgid "Aural training exercises"
 msgstr "Ejercicios para educación del oido"
 
-#: SingleExercises/SingleExercises.cpp:30
+#: SingleExercises/SingleExercises.cpp:28
 msgid "Exercise: Lesson two intervals and identify which one is greater"
 msgstr "Ejercicio: Escucha dos intervalos e identifica cuál es mayor"
 
-#: SingleExercises/SingleExercises.cpp:32
+#: SingleExercises/SingleExercises.cpp:30
 msgid "Exercise: Lesson an interval and identify it"
 msgstr "Ejercicio: Escucha un intervalo e identifícalo"
 
-#: SingleExercises/SingleExercises.cpp:34
+#: SingleExercises/SingleExercises.cpp:32
 msgid "Exercise: Lesson a chord and identify its type"
 msgstr "Ejercicio: Escucha un acorde e identifica su tipo"
 
-#: SingleExercises/SingleExercises.cpp:36
+#: SingleExercises/SingleExercises.cpp:34
 msgid "Exercise: Lesson a scale and identify its type"
 msgstr "Ejercicio: Escucha una escala e identifica su tipo"
 
-#: SingleExercises/SingleExercises.cpp:37
+#: SingleExercises/SingleExercises.cpp:35
 msgid "Theory exercises"
 msgstr "Ejercicios de teoría"
 
-#: SingleExercises/SingleExercises.cpp:39
+#: SingleExercises/SingleExercises.cpp:37
 msgid "Exercise: Identify a key signature or indicate the number of accidentals it has"
 msgstr "Ejercicio: Identifica una armadura o indica el número de alteraciones que tiene"
 
-#: SingleExercises/SingleExercises.cpp:42
+#: SingleExercises/SingleExercises.cpp:40
 msgid "Exercise: Identify the scale shown"
 msgstr "Ejercicio: Identifica la escala mostrada"
 
-#: SingleExercises/SingleExercises.cpp:44
+#: SingleExercises/SingleExercises.cpp:42
 msgid "Exercise: Identify the type of the shown chord"
 msgstr "Ejercicio: Identifica el tipo de acorde mostrado"
+
+#: SingleExercises/SingleExercises.cpp:44
+msgid "Clefs Reading"
+msgstr "Lectura de claves"
 

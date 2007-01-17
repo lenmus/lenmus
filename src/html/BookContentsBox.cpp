@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2006 Cecilio Salmeron
+//    Copyright (c) 2002-2007 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -229,20 +229,20 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
 
     }
 
-    // DBG ------------------------------------------------------------------
-    // Dump m_aTree
-    wxLogMessage(_T("[lmBookContentsBox::CreateContents]:"));
-    wxLogMessage(_T("          level  visible open    children  titlenum"));
-    for(int i=0; i < (int)m_aTree.size(); i++) {
-        wxLogMessage(_T("entry %d : %d      %s      %s      %s      %s"),
-            i,
-            m_aTree[i].nLevel,
-            (m_aTree[i].fOpen ? _T("yes") : _T("no")),
-            (m_aTree[i].fVisible ? _T("yes") : _T("no")),
-            (m_aTree[i].fHasChildren ? _T("yes") : _T("no")),
-            m_aTree[i].sTitlenum );
-    }
-    // DBG end --------------------------------------------------------------
+    //// DBG ------------------------------------------------------------------
+    //// Dump m_aTree
+    //wxLogMessage(_T("[lmBookContentsBox::CreateContents]:"));
+    //wxLogMessage(_T("          level  visible open    children  titlenum"));
+    //for(int i=0; i < (int)m_aTree.size(); i++) {
+    //    wxLogMessage(_T("entry %d : %d      %s      %s      %s      %s"),
+    //        i,
+    //        m_aTree[i].nLevel,
+    //        (m_aTree[i].fOpen ? _T("yes") : _T("no")),
+    //        (m_aTree[i].fVisible ? _T("yes") : _T("no")),
+    //        (m_aTree[i].fHasChildren ? _T("yes") : _T("no")),
+    //        m_aTree[i].sTitlenum );
+    //}
+    //// DBG end --------------------------------------------------------------
 
     //re-build page hash table
     m_PagesHash.clear();
@@ -251,7 +251,7 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
         lmBookIndexItem *it = contents[i];
         wxFileName oFN(it->GetFullPath());
         m_PagesHash[oFN.GetFullPath()] = i;
-        wxLogMessage(_T("Full Path = '%s', item=%d"), it->GetFullPath(), i);
+        //wxLogMessage(_T("Full Path = '%s', item=%d"), it->GetFullPath(), i);
     }
 
     UpdateItemCount();

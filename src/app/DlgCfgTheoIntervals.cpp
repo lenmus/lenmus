@@ -1,7 +1,6 @@
-// RCS-ID: $Id: DlgCfgTheoIntervals.cpp,v 1.3 2006/02/23 19:15:54 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2006 Cecilio Salmeron
+//    Copyright (c) 2002-2007 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -19,10 +18,6 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file DlgCfgTheoIntervals.cpp
-    @brief Implementation file for class lmDlgCfgTheoIntervals
-    @ingroup app_gui
-*/
 
 //for GCC
 #ifdef __GNUG__

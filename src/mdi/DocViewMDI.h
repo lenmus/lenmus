@@ -4,7 +4,7 @@
 // Author:      Julian Smart
 // Modified by:
 // Created:     01/02/97
-// RCS-ID:      $Id: docmdi.h,v 1.21 2006/09/05 20:45:00 VZ Exp $
+// RCS-ID:      $Id: docmdi.h,v 1.21 2007/09/05 20:45:00 VZ Exp $
 // Copyright:   (c) Julian Smart
 // Licence:     wxWindows licence
 /////////////////////////////////////////////////////////////////////////////

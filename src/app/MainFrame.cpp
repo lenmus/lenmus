@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2006 Cecilio Salmeron
+//    Copyright (c) 2002-2007 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -548,8 +548,7 @@ void lmMainFrame::CreateMyToolBar()
     m_pTbMtr->SetToolBitmapSize(nSize);
     m_pTbMtr->AddTool(MENU_Metronome, _("Metronome"), wxArtProvider::GetIcon(_T("tool_metronome"), wxART_TOOLBAR, nSize), _("Turn metronome on/off"), wxITEM_CHECK);
     m_pSpinMetronome = new wxSpinCtrl(m_pTbMtr, ID_SPIN_METRONOME, _T(""), wxDefaultPosition, 
-        wxSize(60, -1), wxSP_ARROW_KEYS | wxSP_WRAP);    // , 20, 300, 60);
-    m_pSpinMetronome->SetRange(20,300);
+        wxSize(60, -1), wxSP_ARROW_KEYS | wxSP_WRAP, 20, 300);
     m_pSpinMetronome->SetValue( m_pMtr->GetMM() );
     m_pTbMtr->AddControl(m_pSpinMetronome);
     m_pTbMtr->Realize();
@@ -1120,7 +1119,7 @@ void lmMainFrame::InitializeBooks()
 //Scan the received folder for books and load all books found
 void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
 {
-    wxLogMessage(_T("[lmMainFrame::ScanForBooks] Scanning path <%s>"), sPath);
+    //wxLogMessage(_T("[lmMainFrame::ScanForBooks] Scanning path <%s>"), sPath);
     wxDir dir(sPath);
     if ( !dir.IsOpened() ) {
         // TODO: deal with the error here - wxDir would already log an error message
@@ -1135,7 +1134,7 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
     wxString sFilename;
     bool fFound = dir.GetFirst(&sFilename, sPattern, wxDIR_FILES);
     while (fFound) {
-        wxLogMessage(_T("[lmMainFrame::ScanForBooks] Encontrado %s"), sFilename);
+        //wxLogMessage(_T("[lmMainFrame::ScanForBooks] Encontrado %s"), sFilename);
         wxFileName oFilename(sPath, sFilename, wxPATH_NATIVE);
         if (oFilename.GetName() != _T("help")) {
             if (!m_pBookController->AddBook(oFilename)) {

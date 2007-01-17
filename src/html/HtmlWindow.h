@@ -1,7 +1,6 @@
-// RCS-ID: $Id: HtmlWindow.h,v 1.3 2006/02/23 19:21:06 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2006 Cecilio Salmeron
+//    Copyright (c) 2002-2007 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -19,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file HtmlWindow.h
-    @brief Header file for class lmHtmlWindow
-    @ingroup html_management
-*/
+
 #ifndef __SB_HTMLWINDOW_H__
 #define __SB_HTMLWINDOW_H__
 

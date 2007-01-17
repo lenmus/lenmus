@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2006 Cecilio Salmeron
+//    Copyright (c) 2002-2007 Cecilio Salmeron
 //
 //    This file was initially is based on file helpdata.h from wxWidgets 2.6.3 project
 //    although now it must be something totally different!!
@@ -115,10 +115,27 @@ struct lmBookIndexItem
     wxString GetIndentedName() const;
 };
 
+// lmPageIndexItem: an entry of the page index table
+// The page index is a global table with all the html pages available. It is used to
+// search for a page. This table is needed as all other tables only contains
+// information about the pages that are in a book's TOC
+struct lmPageIndexItem
+{
+    lmPageIndexItem() : page(wxEmptyString), book(wxEmptyString) {}
+
+    wxString    page;       // html page to display
+    wxString    book;       // book path
+
+    // returns full filename of page, i.e. with book's basePath prepended
+    wxString GetFullPath() const { return book + _T("#zip:") + page; }
+
+};
+
 
 #include "wx/dynarray.h"
 WX_DEFINE_ARRAY(lmBookRecord*, lmBookRecArray);
 WX_DEFINE_ARRAY(lmBookIndexItem*, lmBookIndexArray);
+WX_DEFINE_ARRAY(lmPageIndexItem*, lmPageIndexArray);
 
 
 //------------------------------------------------------------------------------
@@ -210,6 +227,7 @@ public:
 
 
 private:
+    bool AddBookPagesToList(const wxFileName& oFilename);
     bool ProcessIndexFile(const wxFileName& oFilename, lmBookRecord* pBookr);
     void ProcessIndexEntries(wxXmlNode* pNode, lmBookRecord *pBookr);
     lmBookRecord* ProcessTOCFile(const wxFileName& oFilename);
@@ -219,7 +237,8 @@ private:
     lmXmlParser*        m_pParser;
     lmBookRecArray      m_bookRecords;  // each book has one record in this array
     lmBookIndexArray    m_contents;     // list of all available books and their TOCs
-    lmBookIndexArray    m_index;     // list of all index items
+    lmBookIndexArray    m_index;        // list of all index items
+    lmPageIndexArray    m_pagelist;     // list of all html pages (whether in TOC or not in TOC)
 
     DECLARE_NO_COPY_CLASS(lmBookData)
 };

@@ -1,7 +1,6 @@
-// RCS-ID: $Id: ScoreConstrains.cpp,v 1.12 2006/02/28 17:40:21 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2006 Cecilio Salmeron
+//    Copyright (c) 2002-2007 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -19,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ScoreConstrains.cpp
-    @brief Implementation file for lmScoreConstrains class
-    @ingroup generators
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "EarIntvalConstrains.h"
 #endif

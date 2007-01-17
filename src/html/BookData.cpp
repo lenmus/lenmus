@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2006 Cecilio Salmeron
+//    Copyright (c) 2002-2007 Cecilio Salmeron
 //
 //    This file was initially is based on file helpdata.h from wxWidgets 2.6.3 project
 //    although now it must be something totally different!!
@@ -173,6 +173,10 @@ lmBookData::~lmBookData()
         delete m_contents[i-1];
         m_contents.RemoveAt(i-1);
     }
+    for(i = m_pagelist.GetCount(); i > 0; i--) {
+        delete m_pagelist[i-1];
+        m_pagelist.RemoveAt(i-1);
+    }
 
 }
 
@@ -195,6 +199,11 @@ bool lmBookData::AddBook(const wxFileName& oFilename)
     //Reads a book (either a .lmb or .toc file) and loads its content
     //Returns true if success.
 
+   if (oFilename.GetExt() == _T("lmb")) {
+        //add html page names to the pagelist table
+        AddBookPagesToList(oFilename);
+    }
+
     // Process the TOC file (.toc)
     lmBookRecord* pBookr = ProcessTOCFile(oFilename);
     if (!pBookr) {
@@ -210,6 +219,41 @@ bool lmBookData::AddBook(const wxFileName& oFilename)
 
     delete pFN;
     return fSuccess;
+}
+
+bool lmBookData::AddBookPagesToList(const wxFileName& oFilename)
+{
+    // Returns true if error.
+
+    // open the zip file
+    wxString sBookPath = oFilename.GetFullPath();
+    wxFFileInputStream in(sBookPath);
+    wxZipInputStream zip(in);
+    if (!zip.IsOk()) {
+        wxLogMessage(_T("Loading eBook. Error: can not open file '%s'."), sBookPath);
+        return true;   //error
+    }
+
+    // loop to get all files
+    wxZipEntry* pEntry = zip.GetNextEntry();
+    while (pEntry) 
+    {
+        //get its name
+        wxString sPageName = pEntry->GetName();
+        if (sPageName.Find(_T(".htm")) != wxNOT_FOUND) {
+            //add entry to pagelist
+            //wxLogMessage(_T("[lmBookData::AddBookPagesToList] Adding page '%s'"), sPageName);
+            lmPageIndexItem *pItem = new lmPageIndexItem();
+            pItem->page = sPageName;
+            pItem->book = sBookPath;
+            m_pagelist.Add(pItem);
+        }
+        delete pEntry;      //we have ownership of entry object
+        pEntry = zip.GetNextEntry();
+    }
+
+    return false;   //no error
+
 }
 
 bool lmBookData::ProcessIndexFile(const wxFileName& oFilename, lmBookRecord* pBookr)
@@ -298,8 +342,8 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
 {
     // Returns ptr to created book record if success, NULL if failure
 
-    wxLogMessage(_T("[lmBookData::ProcessTOCFile] Processing file %s"),
-                 oFilename.GetFullPath());
+    //wxLogMessage(_T("[lmBookData::ProcessTOCFile] Processing file %s"),
+    //             oFilename.GetFullPath());
 
     wxString sTitle = wxEmptyString,
              sPage = wxEmptyString,
@@ -567,11 +611,11 @@ wxString lmBookData::FindPageByName(const wxString& x)
     // 2. Try to interpret x as the filename of a book page (i.e. 'SingleExercises_0.htm')
     if (x.Right(4) == _T(".htm")) {
         // Try to find the book page
-        int nNumEntries = m_contents.size();
+        int nNumEntries = m_pagelist.size();
         for (i = 0; i < nNumEntries; i++)
         {
-            if (m_contents[i]->page == x)
-                return m_contents[i]->GetFullPath();
+            if (m_pagelist[i]->page == x)
+                return m_pagelist[i]->GetFullPath();
         }
     }
 
@@ -593,9 +637,7 @@ wxString lmBookData::FindPageByName(const wxString& x)
             return m_index[i]->GetFullPath();
     }
 
-
-
-
+    wxLogMessage(_T("[lmBookData::FindPageByName] Page '%s' not found."), x);
     return wxEmptyString;
 }
 

@@ -1,6 +1,6 @@
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2006 Cecilio Salmeron
+//    Copyright (c) 2002-2007 Cecilio Salmeron
 //
 //    This code is based on files generic/htmllbox.cpp and generic/vlbox.cpp from
 //    wxWidgets 2.8.0 project. wxWidgets licence is compatible with GNU GPL.
@@ -112,7 +112,7 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
     if (tag.GetName() == wxT("TOCITEM"))
     {
         // Get all parameters
-        wxLogMessage(tag.GetAllParams());
+        //wxLogMessage(tag.GetAllParams());
 
         // item level
         long nLevel;

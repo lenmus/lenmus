@@ -1,7 +1,6 @@
-// RCS-ID: $Id: Page.cpp,v 1.3 2006/02/23 19:17:12 cecilios Exp $
 //--------------------------------------------------------------------------------------
 //    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2002-2006 Cecilio Salmeron
+//    Copyright (c) 2002-2007 Cecilio Salmeron
 //
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -19,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Page.cpp
-    @brief Implementation file for class lmPage
-    @ingroup app_gui
-*/
+
 /*! @class lmPage
     @ingroup app_gui
     @brief A lmPage object defines the page layout 
