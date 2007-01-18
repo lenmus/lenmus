@@ -9,63 +9,30 @@
 
 <h2>What's new in 3.4</h2>
 
-<p>Release 3.4 include new features, technical improvements and some bug fixes:</p>
+<p>Release 3.4 includes, mainly, technical changes an some bug fixes:</p>
 
 <ul>
-  <li>eMusicBook index now can also display images.</li>
+  <li>A new eMusicBooks source format, based on XML and DocBook, has been developed
+    with three objectives in mind:
+    <ul>
+      <li>To simplify writing eMusicBooks.</li>
+      <li>To simplify the translation of eMusicBooks.</li>
+      <li>To enable new features.</li>
+    </ul></li>
 
-  <li>Several <a href="#bugs">bug fixes</a> and other 
-    <a href="#technical">technical</a> improvements.</li>
+  <li>The controller to display eMusicBooks has been rewritten to adapt to the new
+    eMusicBooks format. Now the index panel can also display images.</li>
+  <li>A program, named LangTool, has been developed to compile eMusicBooks and to
+    automate the translation process.</li>
+  <li>Supporting wxWidgets libraries upgraded to version 2.8.0</li>
+  <li>Several <a href="#bugs">bug fixes</a> and other
+    technical improvements.</li>
 </ul>
 
 <p>&nbsp;</p>
 
 
 <h2><a name="bugs">Bug fixed details</a></h2>
-
-<table class="Lista">
-<tr valign="top">
-  <td class="ListaImpar"><strong>Description</strong></td>
-</tr>
-
-<tr valign="top">
-    <td class="ListaPar">
-	  <b>[1610190] In the options panel, key signature 'D mayor/B minor' is duplicated
-	  and 'D b Mayor/B b minor' is mising.</b><br />
-	  The label has been corrected
-    </td></tr>
-
-<tr valign="top">
-    <td class="ListaPar">
-	  <b>[1604535 ] Minor scales, in scales exercises, have wrong key signature</b><br />
-		When the option 'draw key signature' is enabled, minor scales are drawn with the major scale key signature and the necessary accidentals added to the notes. The minor scale key signature should be used instead. Now fixed.
-    </td></tr>
-
-<tr valign="top">
-    <td class="ListaPar">
-	  <b>[1601350 ] No ascending intervals in aural training</b><br />
-	In exercise for aural training, intervals identification, whe you select the tree types (ascending descending and harmonic) most of the generated intervals are harmonic and a few descending, but never ascending. Now fixed.
-    </td></tr>
-
-<tr valign="top">
-    <td class="ListaPar">
-	  <b>[1610186] Spanish translation error in aural training exercises.</b><br />Label'identify scales' was translated as 'identify intervals'. Now fixed.
-    </td></tr>
-
-<tr valign="top">
-    <td class="ListaPar">
-	  <b>Metronome lose previous run settings. Always initialized at 20.</b><br />
-	  Setting the spin ctrol triggers a EVT_SPINCTRL that
-	  causes a metronome reset. As this worked ok in previous versions I assume it is
-	  due to a change in wxSpinCtrol behaviour in new wxWidgets release. Solved by
-	  changing metronome initialization code.
-    </td></tr>
-
-</table>
-
-
-
-<h2><a name="technical">Technical improvement details</a></h2>
 
 <table class="Lista" ID="Table1">
 <tr valign="top">
@@ -74,10 +41,36 @@
 
 <tr valign="top">
     <td class="ListaPar">
-	  <b>Support for 'score_type = full' parameter in eMusicBook score tag.</b><br />
-	  The code to deal with this parameter has been finished and tested.
+      <b>[1610190] In the options panel, key signature 'D mayor/B minor' is duplicated
+      and 'D b Mayor/B b minor' is missing.</b><br />
+      The label has been corrected
     </td></tr>
 
+<tr valign="top">
+    <td class="ListaPar">
+      <b>[1604535 ] Minor scales, in scales exercises, have wrong key signature</b><br />
+        When the option 'draw key signature' is enabled, minor scales are drawn with the major scale key signature and the necessary accidentals added to the notes. The minor scale key signature should be used instead. Now fixed.
+    </td></tr>
+
+<tr valign="top">
+    <td class="ListaPar">
+      <b>[1601350 ] No ascending intervals in aural training</b><br />
+    In exercise for aural training, intervals identification, when you select the tree types (ascending descending and harmonic) most of the generated intervals are harmonic and a few descending, but never ascending. Now fixed.
+    </td></tr>
+
+<tr valign="top">
+    <td class="ListaPar">
+      <b>[1610186] Spanish translation error in aural training exercises.</b><br />Label 'identify scales' was translated as 'identify intervals'. Now fixed.
+    </td></tr>
+
+<tr valign="top">
+    <td class="ListaPar">
+      <b>Metronome lose previous run settings. Always initialised at 20.</b><br />
+      Setting the spin ctrol triggers a EVT_SPINCTRL that
+      causes a metronome reset. As this worked ok in previous versions I assume it is
+      due to a change in wxSpinCtrol behaviour in new wxWidgets release. Solved by
+      changing metronome initialization code.
+    </td></tr>
 
 </table>
 

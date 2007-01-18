@@ -444,10 +444,6 @@ bool lmTheApp::OnInit(void)
     //program sound for metronome
     g_pMidiOut->ProgramChange(g_pMidi->MtrChannel(), g_pMidi->MtrInstr());
 
-    //Add handler for virtual books file system
-    m_pVBooks = new lmVirtualBooks(lang);
-    wxFileSystem::AddHandler(m_pVBooks);
-
         // all initialization finished.
 
 	// check if the splash window display time is ellapsed and wait if not
@@ -521,9 +517,6 @@ bool lmTheApp::OnInit(void)
 void lmTheApp::ChangeLanguage(wxString lang)
 {
     SetUpLocale(lang);
-
-    // Virtual books re-initialization
-    m_pVBooks->ReloadBooks(lang);
 
     //Re-create main frame
     RecreateGUI(0);   //recreate all. No splash

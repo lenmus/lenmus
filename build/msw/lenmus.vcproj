@@ -729,12 +729,6 @@
 			<File
 				RelativePath="..\..\src\html\TheoMusicReadingCtrolParms.h">
 			</File>
-			<File
-				RelativePath="..\..\src\html\VirtualBooks.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\html\VirtualBooks.h">
-			</File>
 		</Filter>
 		<Filter
 			Name="exercises"

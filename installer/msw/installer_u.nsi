@@ -9,7 +9,7 @@
 ;
 ;--------------------------------------------------------------------------------------
 ;    LenMus Phonascus: The teacher of music
-;    Copyright (c) 2002-2006 Cecilio Salmeron
+;    Copyright (c) 2002-2007 Cecilio Salmeron
 ;
 ;    This program is free software; you can redistribute it and/or modify it under the 
 ;    terms of the GNU General Public License as published by the Free Software Foundation;
@@ -39,7 +39,7 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "3.3"
+  !define APP_VERSION "3.4"
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 

@@ -62,6 +62,12 @@
 #include "wx/html/forcelnk.h"
 FORCE_WXHTML_MODULES()
 
+
+// access to paths
+#include "../globals/Paths.h"
+extern lmPaths* g_pPaths;
+
+
 // ----------------------------------------------------------------------------
 // constants
 // ----------------------------------------------------------------------------
@@ -161,7 +167,8 @@ bool lmHLB_TagHandler::HandleTag(const wxHtmlTag& tag)
         // aligment
         m_WParser->GetContainer()->SetAlignVer(wxHTML_ALIGN_CENTER);
 
-        wxString sPath = _T("c:\\usr\\desarrollo_wx\\lenmus\\res\\icons\\");
+        wxString sPath = g_pPaths->GetImagePath();
+            //_T("c:\\usr\\desarrollo_wx\\lenmus\\res\\icons\\");
         wxString sItemLink = wxString::Format(_T("item%d"), nItem);
 
         // expand / collapse image
@@ -914,12 +921,12 @@ void lmContentsBoxCtrol::OnLeftDown(wxMouseEvent& event)
         return;
     }
 
-    if ( !wxHtmlWindowMouseHelper::HandleMouseClick(cell, pos, event) )
-    {
-        // no link was clicked, so let the listbox code handle the click (e.g.
-        // by selecting another item in the list):
-        event.Skip();
-    }
+    //if ( !wxHtmlWindowMouseHelper::HandleMouseClick(cell, pos, event) )
+    //{
+    //    // no link was clicked, so let the listbox code handle the click (e.g.
+    //    // by selecting another item in the list):
+    //    event.Skip();
+    //}
 
     SetFocus();
 
@@ -942,6 +949,8 @@ void lmContentsBoxCtrol::OnLeftDown(wxMouseEvent& event)
 
         DoHandleItemClick(item, flags);
     }
+    wxHtmlWindowMouseHelper::HandleMouseClick(cell, pos, event);
+
 }
 
 void lmContentsBoxCtrol::OnLeftDClick(wxMouseEvent& eventMouse)

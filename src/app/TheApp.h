@@ -39,7 +39,6 @@ class wxDocManager;
 class lmMainFrame;
 class lmEditFrame;
 class lmScoreView;
-class lmVirtualBooks;
 
 // Class lmTheApp defines the lenmus application
 class lmTheApp: public wxApp
@@ -66,7 +65,6 @@ class lmTheApp: public wxApp
     wxString GetLocaleName() { return m_pLocale->GetLocale(); }
     wxString GetLocaleSysName() { return m_pLocale->GetSysName(); }
     wxString GetVersionNumber();
-    lmVirtualBooks* GetVBooks() { return m_pVBooks; }
 
 private:
     void GetMainWindowPlacement(wxRect *frameRect, bool *fMaximized);
@@ -80,7 +78,6 @@ private:
     wxDocManager*	m_pDocManager;
     wxLocale*       m_pLocale;          //locale we'll be using (user config)
     wxBitmap        m_background;       //background bitmap (user config)
-    lmVirtualBooks* m_pVBooks;          //ptr to virtual books object
 
 
 };

@@ -196,7 +196,6 @@ enum
     MENU_Debug_DumpBitmaps,
     MENU_Debug_UnitTests,
     MENU_Debug_UseAntiAliasing,
-    MENU_Debug_GenerateEBooks,
 
     // Menu Zoom
     MENU_Zoom_100,
@@ -340,7 +339,6 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_MENU (MENU_Debug_recSelec, lmMainFrame::OnDebugRecSelec)
     EVT_MENU (MENU_Debug_UnitTests, lmMainFrame::OnDebugUnitTests)
     EVT_MENU (MENU_Debug_UseAntiAliasing, lmMainFrame::OnDebugUseAntiAliasing)
-    EVT_MENU (MENU_Debug_GenerateEBooks, lmMainFrame::OnDebugGenerateEBooks)
         //debug events requiring a score to be enabled
     EVT_MENU      (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugDumpStaffObjs)
     EVT_UPDATE_UI (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugScoreUI)
@@ -879,7 +877,6 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
         debug_menu->Append(MENU_Debug_SeeMIDIEvents, _T("See &MIDI events") );
         debug_menu->Append(MENU_Debug_DumpBitmaps, _T("Save offscreen bitmaps") );
         debug_menu->Append(MENU_Debug_UnitTests, _T("Unit Tests") );
-        debug_menu->Append(MENU_Debug_GenerateEBooks, _T("Generate eBooks") );
     }
 
 
@@ -1476,12 +1473,6 @@ void lmMainFrame::OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event))
 {
     wxString sData = ::wxGetTextFromUser(_("Mask to add"));
     if (!sData.IsEmpty()) g_pLogger->AddTraceMask(sData);
-}
-
-void lmMainFrame::OnDebugGenerateEBooks(wxCommandEvent& event)
-{
-    lmVirtualBooks* pVBooks = g_pTheApp->GetVBooks();
-    pVBooks->GenerateEBooks();
 }
 
 void lmMainFrame::OnAllSoundsOff(wxCommandEvent& WXUNUSED(event))
