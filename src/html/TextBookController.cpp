@@ -74,8 +74,8 @@ lmTextBookController::lmTextBookController()
     m_pBookFrame = NULL;
     m_Config = NULL;
     m_ConfigRoot = wxEmptyString;
-    m_titleFormat = _("Help: %s");
-    m_FrameStyle = wxHF_DEFAULT_STYLE;
+    m_titleFormat = _T("eMusicBooks");  //_("Help: %s");
+    m_FrameStyle = wxHF_TOOLBAR | wxHF_CONTENTS | wxHF_BOOKMARKS | wxHF_PRINT; //wxHF_DEFAULT_STYLE;
 }
 
 lmTextBookController::~lmTextBookController()

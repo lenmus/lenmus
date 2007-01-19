@@ -353,7 +353,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
     if (m_Config)
         ReadCustomization(m_Config, m_ConfigRoot);
 
-    lmMDIChildFrame::Create((lmMDIParentFrame*)parent, id, _("Help"),
+    lmMDIChildFrame::Create((lmMDIParentFrame*)parent, id, _("eMusicBooks"),
                     wxPoint(m_Cfg.x, m_Cfg.y), wxSize(m_Cfg.w, m_Cfg.h),
                     wxDEFAULT_FRAME_STYLE, wxT("TextBookHelp") );
 
