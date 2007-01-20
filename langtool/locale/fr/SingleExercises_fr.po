@@ -2,14 +2,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.4\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-17 12:51+0100\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2007-01-19 22:08+0100\n"
+"Last-Translator: cs <cs>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: French\n"
-"X-Poedit-SourceCharset: iso-8859-1\n"
+"X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: c:\\usr\\desarrollo_wx\\lenmus\\langtool\\locale\\src\n"
 "X-Poedit-SearchPath-0: SingleExercises\n"
 
@@ -35,11 +34,11 @@ msgstr "Exercices  individuels"
 
 #: SingleExercises/SingleExercises.cpp:7
 msgid "General exercises, customizable to suit your needs at any moment."
-msgstr "Exercices générals, personnalisables pour s'adapter à vos besoins  n'importequel moment."
+msgstr "Exercices gÃ©nÃ©rals, personnalisables pour s'adapter Ã  vos besoins  n'importequel moment."
 
 #: SingleExercises/SingleExercises.cpp:8
 msgid "Cecilio Salmeron"
-msgstr "Cecilio Salmerón"
+msgstr "Cecilio SalmerÃ³n"
 
 #: SingleExercises/SingleExercises.cpp:9
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
@@ -59,7 +58,7 @@ msgstr "Introduction vers exercices simples"
 
 #: SingleExercises/SingleExercises.cpp:13
 msgid "Appart of exercises included in the eBooks, the following general exercises (customizable to suit your needs at any moment) are available:"
-msgstr "Apart des exercices inclus dans les eBooks, les suivant exercices générals (personnalisables pour s'adapter à vos besoins,  n'importequel moment) sont valides:"
+msgstr "Apart des exercices inclus dans les eBooks, les suivant exercices gÃ©nÃ©rals (personnalisables pour s'adapter Ã  vos besoins,  n'importequel moment) sont valides:"
 
 #: SingleExercises/SingleExercises.cpp:14
 msgid "Exercises for aural training"
@@ -67,15 +66,13 @@ msgstr "Exercices pour oral entrainement"
 
 #: SingleExercises/SingleExercises.cpp:15
 #: SingleExercises/SingleExercises.cpp:27
-#, fuzzy
 msgid "Intervals' comparison"
-msgstr "Oral entrainement. Comparison d'Intervalles"
+msgstr "Comparison d'intervalles"
 
 #: SingleExercises/SingleExercises.cpp:16
 #: SingleExercises/SingleExercises.cpp:29
-#, fuzzy
 msgid "Intervals' identification"
-msgstr "Identificastion d'échelles"
+msgstr "Identificastion d'intervalles"
 
 #: SingleExercises/SingleExercises.cpp:17
 #: SingleExercises/SingleExercises.cpp:23
@@ -89,16 +86,16 @@ msgstr "Identification d'accords"
 #: SingleExercises/SingleExercises.cpp:33
 #: SingleExercises/SingleExercises.cpp:39
 msgid "Scales' identification"
-msgstr "Identificastion d'échelles"
+msgstr "Identificastion d'Ã©chelles"
 
 #: SingleExercises/SingleExercises.cpp:19
 msgid "Exercises to practise theory"
-msgstr "Exercices pour practiquer la théorie"
+msgstr "Exercices pour practiquer la thÃ©orie"
 
 #: SingleExercises/SingleExercises.cpp:20
 #: SingleExercises/SingleExercises.cpp:36
 msgid "Key signatures' identification"
-msgstr "Identification de tonalités"
+msgstr "Identification de tonalitÃ©s"
 
 #: SingleExercises/SingleExercises.cpp:21
 #: SingleExercises/SingleExercises.cpp:38
@@ -132,7 +129,7 @@ msgstr "Exercice: Ecouter un accord et identifier son type"
 
 #: SingleExercises/SingleExercises.cpp:34
 msgid "Exercise: Lesson a scale and identify its type"
-msgstr "Exercice: Écouter une échelle et identifier son type"
+msgstr "Exercice: Ã‰couter une Ã©chelle et identifier son type"
 
 #: SingleExercises/SingleExercises.cpp:35
 msgid "Theory exercises"
@@ -140,15 +137,15 @@ msgstr "Autres exercices"
 
 #: SingleExercises/SingleExercises.cpp:37
 msgid "Exercise: Identify a key signature or indicate the number of accidentals it has"
-msgstr "Exercice: Identifier une tonalité ou indiquer le nombre d'accidentels qu'elle a"
+msgstr "Exercice: Identifier une tonalitÃ© ou indiquer le nombre d'accidentels qu'elle a"
 
 #: SingleExercises/SingleExercises.cpp:40
 msgid "Exercise: Identify the scale shown"
-msgstr "Exercice: Identifier l'échelle montrée"
+msgstr "Exercice: Identifier l'Ã©chelle montrÃ©e"
 
 #: SingleExercises/SingleExercises.cpp:42
 msgid "Exercise: Identify the type of the shown chord"
-msgstr "Exercice: Identifier le type de l'accord montré"
+msgstr "Exercice: Identifier le type de l'accord montrÃ©"
 
 #: SingleExercises/SingleExercises.cpp:44
 msgid "Clefs Reading"
