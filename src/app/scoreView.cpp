@@ -645,6 +645,8 @@ void lmScoreView::SetScale(double rScale)
 
         //// Get the logical pixels per inch of screen
         //wxSize ppiScreen = dc.GetPPI();
+        //wxLogMessage(_T("[lmScoreView::SetScale] ppiScreenX=%f, ppiScreenY=%f"),
+        //    ppiScreen.GetWidth(), ppiScreen.GetHeight() );
 
         //// There are approx. 25.4 mm to the inch. There are ppi
         //// device units to the inch. Therefore 1 mm corresponds to
@@ -662,10 +664,10 @@ void lmScoreView::SetScale(double rScale)
         //reposition controls
         ResizeControls();    
 
-        //wxLogMessage(_T("[lmScoreView::SetScale] scale=%f, m_rScale=%f, DisplayPixelsPerLU=(%f, %f), pageSize LU(%d, %d), pageSize pixels(%d, %d)"),
-        //    rScale, m_rScale, m_xDisplayPixelsPerLU, m_yDisplayPixelsPerLU,
-        //    uPageSize.GetWidth(), uPageSize.GetHeight(),
-        //    m_xPageSizeD, m_yPageSizeD);
+        wxLogMessage(_T("[lmScoreView::SetScale] scale=%f, m_rScale=%f, DisplayPixelsPerLU=(%f, %f), pageSize LU(%d, %d), pageSize pixels(%d, %d)"),
+            rScale, m_rScale, m_xDisplayPixelsPerLU, m_yDisplayPixelsPerLU,
+            uPageSize.GetWidth(), uPageSize.GetHeight(),
+            m_xPageSizeD, m_yPageSizeD);
     }
 
     m_pCanvas->Refresh(true);    //erase background
@@ -681,10 +683,10 @@ void lmScoreView::SetScaleFitWidth()
 
     double xScale = m_rScale * (double)(xScreen-50) / (double)m_xPageSizeD;
 
-    //wxLogMessage(_T("[] xScreen=%d, xPageSizeD=%d, rScale=%f, scale=%f"),
-    //        xScreen, m_xPageSizeD, m_rScale, xScale );
+    wxLogMessage(_T("[] xScreen=%d, xPageSizeD=%d, rScale=%f, scale=%f"),
+            xScreen, m_xPageSizeD, m_rScale, xScale );
 
-    SetScale(xScale);
+    SetScale(xScale / lmSCALE);
 
 }
 
@@ -697,7 +699,7 @@ void lmScoreView::SetScaleFitFull()
 
     double xScale = m_rScale * (double)(xScreen-50) / (double)m_xPageSizeD;
     double yScale = m_rScale * (double)(yScreen-20) / (double)m_yPageSizeD;
-    double rScale = wxMin(xScale, yScale);
+    double rScale = wxMin(xScale, yScale) / lmSCALE;
     SetScale(rScale);
 
 }

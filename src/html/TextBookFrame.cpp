@@ -97,6 +97,13 @@ extern lmPaths* g_pPaths;
 #undef Below
 #endif
 
+// Default font size
+#ifdef __WXMSW__
+    #define lmDEFAULT_FONT_SIZE    10
+#else
+    #define lmDEFAULT_FONT_SIZE    14
+#endif
+
 //--------------------------------------------------------------------------
 // TextBookHelpTreeItemData (private)
 //--------------------------------------------------------------------------
@@ -190,6 +197,9 @@ WX_DEFINE_OBJARRAY(TextBookHelpMergedIndex)
 
 void lmTextBookFrame::UpdateMergedIndex()
 {
+    // Updates "merged index" structure that combines indexes of all books
+    // into better searchable structure
+
     delete m_mergedIndex;
     m_mergedIndex = new TextBookHelpMergedIndex;
     TextBookHelpMergedIndex& merged = *m_mergedIndex;
@@ -255,7 +265,7 @@ IMPLEMENT_DYNAMIC_CLASS(lmTextBookFrame, lmMDIChildFrame)
 
 BEGIN_EVENT_TABLE(lmTextBookFrame, lmMDIChildFrame)
     EVT_ACTIVATE(lmTextBookFrame::OnActivate)
-    EVT_TOOL_RANGE(MENU_eBookPanel, MENU_eBook_Options, lmTextBookFrame::OnToolbar)
+    EVT_TOOL_RANGE(MENU_eBookPanel, MENU_eBook_IncreaseFont, lmTextBookFrame::OnToolbar)
 
     EVT_BUTTON      (ID_BOOKMARKS_REMOVE, lmTextBookFrame::OnToolbar)
     EVT_BUTTON      (ID_BOOKMARKS_ADD, lmTextBookFrame::OnToolbar)
@@ -318,21 +328,15 @@ void lmTextBookFrame::Init(lmBookData* data)
 
     m_NormalFonts = m_FixedFonts = NULL;
     m_NormalFace = m_FixedFace = wxEmptyString;
-#ifdef __WXMSW__
-    m_FontSize = 10;
-#else
-    m_FontSize = 14;
-#endif
+    m_nFontSize = lmDEFAULT_FONT_SIZE;
+    m_rScale = 1.0;
 
 #if wxUSE_PRINTING_ARCHITECTURE
     m_Printer = NULL;
 #endif
 
-    //m_PagesHash = NULL;
     m_UpdateContents = true;
     m_pBookController = (lmTextBookController*) NULL;
-
-    //CSG Added
     m_pToolbar = (wxToolBar*) NULL;
 }
 
@@ -394,6 +398,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
     }
 
     m_HtmlWin->SetRelatedFrame((wxFrame*)this, m_TitleFormat);
+    m_HtmlWin->SetScale(m_rScale);
     g_pMainFrame->SetHtmlWindow(m_HtmlWin);
 
     if ( m_Config )
@@ -421,12 +426,11 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
             m_Bookmarks->SetSelection(0);
 
             wxBitmapButton *bmpbt1, *bmpbt2;
+            wxSize nSize(22, 22);
             bmpbt1 = new wxBitmapButton(pPanel, ID_BOOKMARKS_ADD,
-                                 wxArtProvider::GetBitmap(wxART_ADD_BOOKMARK,
-                                                          wxART_BUTTON));
+                                wxArtProvider::GetBitmap(_T("tool_bookmark_add"), wxART_TOOLBAR, nSize) );
             bmpbt2 = new wxBitmapButton(pPanel, ID_BOOKMARKS_REMOVE,
-                                 wxArtProvider::GetBitmap(wxART_DEL_BOOKMARK,
-                                                          wxART_BUTTON));
+                                wxArtProvider::GetBitmap(_T("tool_bookmark_remove"), wxART_TOOLBAR, nSize) );
             bmpbt1->SetToolTip(_("Add current page to bookmarks"));
             bmpbt2->SetToolTip(_("Remove current page from bookmarks"));
 
@@ -911,7 +915,9 @@ void lmTextBookFrame::ReadCustomization(wxConfigBase *cfg, const wxString& path)
 
     m_FixedFace = cfg->Read(wxT("tbcFixedFace"), m_FixedFace);
     m_NormalFace = cfg->Read(wxT("tbcNormalFace"), m_NormalFace);
-    m_FontSize = cfg->Read(wxT("tbcBaseFontSize"), m_FontSize);
+    m_nFontSize = cfg->Read(wxT("tbcBaseFontSize"), m_nFontSize);
+    m_nFontSize = cfg->Read(wxT("tbcBaseFontSize"), m_nFontSize);
+    m_rScale = (double)m_nFontSize / (double)lmDEFAULT_FONT_SIZE;
 
     {
         int i;
@@ -973,7 +979,7 @@ void lmTextBookFrame::WriteCustomization(wxConfigBase *cfg, const wxString& path
     }
     cfg->Write(wxT("tbcFixedFace"), m_FixedFace);
     cfg->Write(wxT("tbcNormalFace"), m_NormalFace);
-    cfg->Write(wxT("tbcBaseFontSize"), (long)m_FontSize);
+    cfg->Write(wxT("tbcBaseFontSize"), (long)m_nFontSize);
 
     if (m_Bookmarks)
     {
@@ -1012,168 +1018,37 @@ static void SetFontsToHtmlWin(lmHtmlWindow *win, wxString scalf, wxString fixf, 
     win->SetFonts(scalf, fixf, f_sizes);
 }
 
-class TextBookHelpFrameOptionsDialog : public wxDialog
+void lmTextBookFrame::IncreaseFontSize()
 {
-public:
-    wxComboBox *NormalFont, *FixedFont;
-    wxSpinCtrl *FontSize;
-    lmHtmlWindow *TestWin;
+    //increase font size
 
-    TextBookHelpFrameOptionsDialog(wxWindow *parent)
-        : wxDialog(parent, wxID_ANY, wxString(_("Help Browser Options")))
-    {
-        wxBoxSizer *topsizer = new wxBoxSizer(wxVERTICAL);
-        wxFlexGridSizer *sizer = new wxFlexGridSizer(2, 3, 2, 5);
+    int incr = 1;
+    if (m_nFontSize > 11) incr = 2;
+    double ratio = (double)(m_nFontSize + incr) / (double)m_nFontSize;
+    m_nFontSize += incr;
+    //wxLogMessage(_T("[lmTextBookFrame::IncreaseFontSize] font size = %d"), m_nFontSize);
+    m_rScale *= ratio;
+    m_HtmlWin->SetScale(m_rScale);
+    SetFontsToHtmlWin(m_HtmlWin, wxEmptyString, wxEmptyString, m_nFontSize);
 
-        sizer->Add(new wxStaticText(this, wxID_ANY, _("Normal font:")));
-        sizer->Add(new wxStaticText(this, wxID_ANY, _("Fixed font:")));
-        sizer->Add(new wxStaticText(this, wxID_ANY, _("Font size:")));
-
-        sizer->Add(NormalFont = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
-                      wxSize(200, wxDefaultCoord),
-                      0, NULL, wxCB_DROPDOWN | wxCB_READONLY));
-
-        sizer->Add(FixedFont = new wxComboBox(this, wxID_ANY, wxEmptyString, wxDefaultPosition,
-                      wxSize(200, wxDefaultCoord),
-                      0, NULL, wxCB_DROPDOWN | wxCB_READONLY));
-
-        sizer->Add(FontSize = new wxSpinCtrl(this, wxID_ANY));
-        FontSize->SetRange(2, 100);
-
-        topsizer->Add(sizer, 0, wxLEFT|wxRIGHT|wxTOP, 10);
-
-        topsizer->Add(new wxStaticText(this, wxID_ANY, _("Preview:")),
-                        0, wxLEFT | wxTOP, 10);
-        topsizer->Add(TestWin = new lmHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(20, 150),
-                                                 wxHW_SCROLLBAR_AUTO | wxSUNKEN_BORDER),
-                        1, wxEXPAND | wxLEFT|wxTOP|wxRIGHT, 10);
-
-        wxBoxSizer *sizer2 = new wxBoxSizer(wxHORIZONTAL);
-        wxButton *ok;
-        sizer2->Add(ok = new wxButton(this, wxID_OK), 0, wxALL, 10);
-        ok->SetDefault();
-        sizer2->Add(new wxButton(this, wxID_CANCEL), 0, wxALL, 10);
-        topsizer->Add(sizer2, 0, wxALIGN_RIGHT);
-
-        SetSizer(topsizer);
-        topsizer->Fit(this);
-        Centre(wxBOTH);
-    }
-
-
-    void UpdateTestWin()
-    {
-        wxBusyCursor bcur;
-        SetFontsToHtmlWin(TestWin,
-                          NormalFont->GetStringSelection(),
-                          FixedFont->GetStringSelection(),
-                          FontSize->GetValue());
-
-        wxString content(_("font size"));
-
-        content = _T("<font size=-2>") + content + _T(" -2</font><br>")
-                  _T("<font size=-1>") + content + _T(" -1</font><br>")
-                  _T("<font size=+0>") + content + _T(" +0</font><br>")
-                  _T("<font size=+1>") + content + _T(" +1</font><br>")
-                  _T("<font size=+2>") + content + _T(" +2</font><br>")
-                  _T("<font size=+3>") + content + _T(" +3</font><br>")
-                  _T("<font size=+4>") + content + _T(" +4</font><br>") ;
-
-        content = wxString( _T("<html><body><table><tr><td>") ) +
-                  _("Normal face<br>and <u>underlined</u>. ") +
-                  _("<i>Italic face.</i> ") +
-                  _("<b>Bold face.</b> ") +
-                  _("<b><i>Bold italic face.</i></b><br>") +
-                  content +
-                  wxString( _T("</td><td><tt>") ) +
-                  _("Fixed size face.<br> <b>bold</b> <i>italic</i> ") +
-                  _("<b><i>bold italic <u>underlined</u></i></b><br>") +
-                  content +
-                  _T("</tt></td></tr></table></body></html>");
-
-        TestWin->SetPage( content );
-    }
-
-    void OnUpdate(wxCommandEvent& WXUNUSED(event))
-    {
-        UpdateTestWin();
-    }
-    void OnUpdateSpin(wxSpinEvent& WXUNUSED(event))
-    {
-        UpdateTestWin();
-    }
-
-    DECLARE_EVENT_TABLE()
-    DECLARE_NO_COPY_CLASS(TextBookHelpFrameOptionsDialog)
-};
-
-BEGIN_EVENT_TABLE(TextBookHelpFrameOptionsDialog, wxDialog)
-    EVT_COMBOBOX(wxID_ANY, TextBookHelpFrameOptionsDialog::OnUpdate)
-    EVT_SPINCTRL(wxID_ANY, TextBookHelpFrameOptionsDialog::OnUpdateSpin)
-END_EVENT_TABLE()
-
-void lmTextBookFrame::OptionsDialog()
-{
-    TextBookHelpFrameOptionsDialog dlg(this);
-    unsigned i;
-
-    if (m_NormalFonts == NULL)
-    {
-        wxFontEnumerator enu;
-        enu.EnumerateFacenames();
-        m_NormalFonts = new wxArrayString;
-        *m_NormalFonts = enu.GetFacenames();
-        m_NormalFonts->Sort(); // ascending sort
-    }
-    if (m_FixedFonts == NULL)
-    {
-        wxFontEnumerator enu;
-        enu.EnumerateFacenames(wxFONTENCODING_SYSTEM, true /*enum fixed width only*/);
-        m_FixedFonts = new wxArrayString;
-        *m_FixedFonts = enu.GetFacenames();
-        m_FixedFonts->Sort(); // ascending sort
-    }
-
-    // VS: We want to show the font that is actually used by wxHtmlWindow.
-    //     If customization dialog wasn't used yet, facenames are empty and
-    //     wxHtmlWindow uses default fonts -- let's find out what they
-    //     are so that we can pass them to the dialog:
-    if (m_NormalFace.empty())
-    {
-        wxFont fnt(m_FontSize, wxSWISS, wxNORMAL, wxNORMAL, false);
-        m_NormalFace = fnt.GetFaceName();
-    }
-    if (m_FixedFace.empty())
-    {
-        wxFont fnt(m_FontSize, wxMODERN, wxNORMAL, wxNORMAL, false);
-        m_FixedFace = fnt.GetFaceName();
-    }
-
-    for (i = 0; i < m_NormalFonts->GetCount(); i++)
-        dlg.NormalFont->Append((*m_NormalFonts)[i]);
-    for (i = 0; i < m_FixedFonts->GetCount(); i++)
-        dlg.FixedFont->Append((*m_FixedFonts)[i]);
-    if (!m_NormalFace.empty())
-        dlg.NormalFont->SetStringSelection(m_NormalFace);
-    else
-        dlg.NormalFont->SetSelection(0);
-    if (!m_FixedFace.empty())
-        dlg.FixedFont->SetStringSelection(m_FixedFace);
-    else
-        dlg.FixedFont->SetSelection(0);
-    dlg.FontSize->SetValue(m_FontSize);
-    dlg.UpdateTestWin();
-
-    if (dlg.ShowModal() == wxID_OK)
-    {
-        m_NormalFace = dlg.NormalFont->GetStringSelection();
-        m_FixedFace = dlg.FixedFont->GetStringSelection();
-        m_FontSize = dlg.FontSize->GetValue();
-        SetFontsToHtmlWin(m_HtmlWin, m_NormalFace, m_FixedFace, m_FontSize);
-    }
 }
 
+void lmTextBookFrame::DecreaseFontSize()
+{
+    //decrease font size
 
+    if (m_nFontSize == 4) return;       //minimun allowed size = 4pt
+
+    int decr = 2;
+    if (m_nFontSize <= 12) decr = 1;
+    double ratio = (double)(m_nFontSize - decr) / (double)m_nFontSize;
+    m_nFontSize -= decr;
+    //wxLogMessage(_T("[lmTextBookFrame::DecreaseFontSize] font size = %d"), m_nFontSize);
+    m_rScale *= ratio;
+    m_HtmlWin->SetScale(m_rScale);
+    SetFontsToHtmlWin(m_HtmlWin, wxEmptyString, wxEmptyString, (int)m_nFontSize);
+
+}
 
 void lmTextBookFrame::NotifyPageChanged()
 {
@@ -1189,11 +1064,6 @@ wxString lmTextBookFrame::GetOpenedPageWithAnchor()
 {
     return lmTextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
 }
-
-
-/*
-EVENT HANDLING :
-*/
 
 
 void lmTextBookFrame::OnActivate(wxActivateEvent& event)
@@ -1222,38 +1092,6 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
         case MENU_eBook_GoForward :
             m_HtmlWin->HistoryForward();
             NotifyPageChanged();
-            break;
-
-        case MENU_eBook_UpNode :
-            //if (m_PagesHash)
-            //{
-            //    wxString page = lmTextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
-            //    TextBookHelpHashData *ha = NULL;
-            //    if (!page.empty())
-            //        ha = (TextBookHelpHashData*) m_PagesHash->Get(page);
-            //    if (ha && ha->m_Index > 0)
-            //    {
-            //        int level =
-            //            m_pBookData->GetContentsArray()[ha->m_Index].level - 1;
-            //        int ind = ha->m_Index - 1;
-
-            //        const lmBookIndexItem *it =
-            //            &m_pBookData->GetContentsArray()[ind];
-            //        while (ind >= 0 && it->level != level)
-            //        {
-            //            ind--;
-            //            it = &m_pBookData->GetContentsArray()[ind];
-            //        }
-            //        if (ind >= 0)
-            //        {
-            //            if (!it->page.empty())
-            //            {
-            //                m_HtmlWin->LoadPage(it->GetFullPath());
-            //                NotifyPageChanged();
-            //            }
-            //        }
-            //    }
-            //}
             break;
 
         case MENU_eBook_PagePrev :
@@ -1296,8 +1134,12 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             }
             break;
 
-        case MENU_eBook_Options :
-            OptionsDialog();
+        case MENU_eBook_IncreaseFont :
+            IncreaseFontSize();
+            break;
+
+        case MENU_eBook_DecreaseFont :
+            DecreaseFontSize();
             break;
 
         case ID_BOOKMARKS_ADD :
@@ -1658,14 +1500,6 @@ void lmTextBookFrame::OnCloseWindow(wxCloseEvent& evt)
 
 void lmTextBookFrame::UpdateUIEvent(wxUpdateUIEvent& event, wxToolBar* pToolBar)
 {
-
-    //MENU_eBook_GoBack,
-    //MENU_eBook_GoForward,
-    //MENU_eBook_UpNode,
-    //MENU_eBook_Print,
-    //MENU_eBook_OpenFile,
-    //MENU_eBook_Options,
-
     bool fEnable = false;
     switch(event.GetId()) {
         case MENU_eBook_PageNext:
@@ -1676,7 +1510,21 @@ void lmTextBookFrame::UpdateUIEvent(wxUpdateUIEvent& event, wxToolBar* pToolBar)
             fEnable = !m_pContentsBox->IsFirstPage();
             break;
 
+        case MENU_eBook_GoBack:
+            fEnable = m_HtmlWin->HistoryCanBack();
+            break;
+
+        case MENU_eBook_GoForward:
+            fEnable = m_HtmlWin->HistoryCanForward();
+            break;
+
         default:
+            // Always enabled when TextBookFrame is visible. Disabled on MainFrame 
+            //      MENU_eBookPanel,
+            //      MENU_eBook_Print,
+            //      MENU_eBook_OpenFile,
+            //      MENU_eBook_DecreaseFont,
+            //      MENU_eBook_IncreaseFont,
             fEnable = true;
             pToolBar->ToggleTool(MENU_eBookPanel, IsNavPanelVisible());
     }

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.4\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-19 22:08+0100\n"
+"PO-Revision-Date: 2007-01-27 16:35+0100\n"
 "Last-Translator: cs <cs>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -14,19 +14,19 @@ msgstr ""
 
 #: SingleExercises/SingleExercises.cpp:2
 msgid "Send your comments and sugesstions to LenMus team (www.lenmus.org)"
-msgstr ""
+msgstr "Envoyez vos commentaires et suggestions à l'équipe LenMus (www.lenmus.org)"
 
 #: SingleExercises/SingleExercises.cpp:3
 msgid "Licensed under the terms of the GNU Free Documentation License v1.2"
-msgstr ""
+msgstr "Licencé sous les tèrmes du GNU Free Documentation License v1.2"
 
 #: SingleExercises/SingleExercises.cpp:4
 msgid "the teacher of music"
-msgstr ""
+msgstr "le proffeseur de musique"
 
 #: SingleExercises/SingleExercises.cpp:5
 msgid "Cover page"
-msgstr ""
+msgstr "Page de recouvrement"
 
 #: SingleExercises/SingleExercises.cpp:6
 msgid "Single exercises"
@@ -42,7 +42,7 @@ msgstr "Cecilio Salmerón"
 
 #: SingleExercises/SingleExercises.cpp:9
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
-msgstr ""
+msgstr "C'est permis de copier, distribuer et/ou modifier cet document sous les tèrmes du GNU Free Documentation License, Version 1.2 ou n'importequelle version posterieure publiée par the Free Software Foundation; Sans sections non variables, sans textes de couverture, et sans texts de page arrière. Une copie de la licence est inclue dans la documentation reçue avec ce logiciel et c'est aussi valable dedans"
 
 #: SingleExercises/SingleExercises.cpp:10
 msgid "http://www.gnu.org/licenses/fdl.html"
@@ -50,7 +50,7 @@ msgstr "http://www.gnu.org/licenses/fdl.html"
 
 #: SingleExercises/SingleExercises.cpp:11
 msgid "Contents"
-msgstr ""
+msgstr "Contenus"
 
 #: SingleExercises/SingleExercises.cpp:12
 msgid "Introduction to single exercises"
@@ -133,7 +133,7 @@ msgstr "Exercice: Écouter une échelle et identifier son type"
 
 #: SingleExercises/SingleExercises.cpp:35
 msgid "Theory exercises"
-msgstr "Autres exercices"
+msgstr "Exercises de théorie"
 
 #: SingleExercises/SingleExercises.cpp:37
 msgid "Exercise: Identify a key signature or indicate the number of accidentals it has"

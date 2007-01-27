@@ -26,23 +26,6 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file TextBookFrame.h
-    @brief Header file for class lmTextBookFrame
-    @ingroup html_management
-*/
-//===============================================================================
-/*
-    Start of code copied from helpfrm.h
-
-    Things deleted are commented with //CSG_DELETED and, if applicable, a comment with
-    additional explanation
-
-    Things modified are marked as //CSG_MODIFIED and an explanation
-
-    Global changes:
-      -    TextBookHelpFrame changed to lmTextBookFrame
-*/
-//===============================================================================
 
 #ifndef __TEXTBOOKFRAME__H_
 #define __TEXTBOOKFRAME__H_
@@ -136,17 +119,7 @@ public:
     void SetTitleFormat(const wxString& format);
     void SetTitle(const wxString& title) {}         //CSG AQUI_FALLA
 
-    // Displays page x. If not found it will offect the user a choice of
-    // searching books.
-    // Looking for the page runs in these steps:
-    // 1. try to locate file named x (if x is for example "doc/howto.htm")
-    // 2. try to open starting page of book x
-    // 3. try to find x in contents (if x is for example "How To ...")
-    // 4. try to find x in index (if x is for example "How To ...")
     bool Display(const wxString& x);
-
-    // Alternative version that works with numeric ID.
-    // (uses extension to MS format, <param name="ID" value=id>, see docs)
     bool Display(const int id);
 
     // Displays help window and focuses contents.
@@ -191,27 +164,17 @@ public:
     void OnToolbar(wxCommandEvent& event);
     bool IsNavPanelVisible() { return m_Cfg.navig_on; }
     void UpdateUIEvent(wxUpdateUIEvent& event, wxToolBar* pToolBar);
+    double GetScale() { return m_rScale; }
 
 
 protected:
     void Init(lmBookData* data = NULL);
-
-    // Adds items to m_Contents tree control
     void CreateContents();
-
-
-    // Adds items to m_IndexList
     void CreateIndex();
-
-    // Add books to search choice panel
     void CreateSearch();
-
-    // Updates "merged index" structure that combines indexes of all books
-    // into better searchable structure
     void UpdateMergedIndex();
-
-    // Displays options dialog (fonts etc.)
-    virtual void OptionsDialog();
+    void IncreaseFontSize();
+    void DecreaseFontSize();
 
     void OnContentsLinkClicked(wxHtmlLinkEvent& event);
     void OnIndexSel(wxCommandEvent& event);
@@ -275,13 +238,14 @@ protected:
 
     // lists of available fonts (used in options dialog)
     wxArrayString* m_NormalFonts,* m_FixedFonts;
-    int m_FontSize; // 0,1,2 = small,medium,big
-    wxString m_NormalFace, m_FixedFace;
+    int         m_nFontSize;
+    wxString    m_NormalFace, m_FixedFace;
 
     bool m_UpdateContents;
 
     //CSG Added
     wxToolBar*  m_pToolbar;
+    double      m_rScale;
 
 #if wxUSE_PRINTING_ARCHITECTURE
     wxHtmlEasyPrinting* m_Printer;

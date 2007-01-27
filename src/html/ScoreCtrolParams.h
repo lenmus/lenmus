@@ -44,9 +44,14 @@
 #include "../exercises/ScoreConstrains.h"
 #include "../ldp_parser/AuxString.h"
 #include "../xml_parser/MusicXMLParser.h"
+#include "HtmlWindow.h"     //to get scale
 
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
+
+// access to global external variables
+extern bool g_fBorderOnScores;            // in TheApp.cpp
+
 
 enum EHtmlScoreTypes
 {
@@ -326,15 +331,19 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
         return;
     }
 
-    /*! @todo solve the issue of score border vs. ctrol window border
-    */
-    m_pOptions->fBorder = (m_nWindowStyle == wxSIMPLE_BORDER);
+    //todo: create a parameter to enable border around the score? 
+    m_pOptions->fBorder = (m_nWindowStyle == wxSIMPLE_BORDER);      //around control
+    m_pOptions->fMusicBorder = g_fBorderOnScores;                   //around score
+
+    //set scale as a function of current font size
+    m_pOptions->rScale = g_pMainFrame->GetHtmlWindow()->GetScale() * 1.2;
+    int nHeight = (int)((double)m_nHeight * m_pOptions->rScale);
 
     // create the lmScoreCtrol
-    //wnd = new lmScoreCtrol((wxWindow*)pHtmlParser->GetWindow(), -1, m_pScore,
-    //    m_pOptions, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
+    int nStyle = 0;
+    if (m_pOptions->fBorder) nStyle |= wxSIMPLE_BORDER;
     wnd = new lmScoreCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, m_pScore,
-        m_pOptions, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
+        m_pOptions, wxPoint(0,0), wxSize(m_nWidth, nHeight), nStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
 

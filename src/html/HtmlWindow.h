@@ -31,13 +31,13 @@
 class lmHtmlWindow : public wxHtmlWindow
 {
 public:
-    lmHtmlWindow() : wxHtmlWindow() {}
+    lmHtmlWindow() : wxHtmlWindow() { m_rScale = 1.0; }
     lmHtmlWindow(wxWindow *parent, wxWindowID id = wxID_ANY,
                  const wxPoint& pos = wxDefaultPosition,
                  const wxSize& size = wxDefaultSize,
                  long style = wxHW_DEFAULT_STYLE | wxSIMPLE_BORDER ,
                  const wxString& name = wxT("htmlWindow"))
-        : wxHtmlWindow(parent, id, pos, size, style, name) {}
+        : wxHtmlWindow(parent, id, pos, size, style, name) { m_rScale = 1.0; }
     ~lmHtmlWindow() {}
 
     // -- overrides --
@@ -53,6 +53,13 @@ public:
         {
             m_OpenedPageTitle = title;
         }
+
+    // to deal with scale for scores
+    void SetScale(double rScale) { m_rScale = rScale; }
+    double GetScale() { return m_rScale; }
+
+private:
+    double      m_rScale;
 
 };
 

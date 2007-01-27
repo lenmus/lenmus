@@ -33,6 +33,7 @@
 #include "../app/global.h"
 #include "../sound/SoundEvents.h"
 #include "../graphic/GraphicManager.h"
+#include "wx/window.h"          //window styles
 
 // ----------------------------------------------------------------------------
 // lmScoreAuxCtrol: a control which shows a music score
@@ -87,15 +88,23 @@ public:
     void SourceXML();
     void DumpMidiEvents();
 
+    // info
+    double GetPixelsPerLU();
+
 
 private:
     void ResizePaper();
+    void SetBaseScale();
 
         // member variables
 
     lmScore*        m_pScore;       //the score to display. Never owned
     bool            m_fHidden;      //the score is hidden, that is, it must not be displayed
                                         //but can be played back
+    //scale management
+    // m_rBaseScale     Is the scale for 1:1 presentation (real size)
+    // m_rScale         Is the scale in use 
+    double          m_rBaseScale;
     double          m_rScale;       //presentation scale (default 1.0)
     lmPaper         m_Paper;        //the lmPaper object to use
 

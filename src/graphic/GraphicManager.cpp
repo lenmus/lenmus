@@ -120,6 +120,7 @@ void lmGraphicManager::Layout()
     lmFormatter4 oFormatter;   //the formatter object
     m_pBoxScore = oFormatter.Layout(m_pScore, m_pPaper, &m_options);
     wxASSERT(m_pBoxScore);
+    m_fReLayout = false;
 
 }
 
@@ -231,7 +232,8 @@ void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits pa
     // - the first time a score is going to be rendered
     // - if paper size has changed and so requested (option lmRELAYOUT_ON_PAPER_SIZE_CHANGE)
     // - if explicitly requested (option lmFORCE_RELAYOUT)
-    bool fLayoutScore = !m_pScore || m_nLastScoreID != pScore->GetID()
+    bool fLayoutScore = !m_pScore || m_fReLayout
+                || m_nLastScoreID != pScore->GetID()
                 || (nOptions & lmFORCE_RELAYOUT)
                 || ( (nOptions & lmRELAYOUT_ON_PAPER_SIZE_CHANGE)  && 
                      (m_xPageSize != paperWidth || m_yPageSize != paperHeight) );

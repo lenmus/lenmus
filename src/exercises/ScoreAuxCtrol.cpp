@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ScoreAuxCtrol.cpp
-    @brief Implementation file for class lmScoreAuxCtrol
-    @ingroup html_controls
-*/
+
 #ifdef __GNUG__
 // #pragma implementation
 #endif
@@ -42,16 +39,14 @@
 #include "ScoreAuxCtrol.h"
 #include "../app/DlgDebug.h"
 
-/*! @class lmScoreAuxCtrol
-    @ingroup html_controls
-    @brief A indow on which a music score is rendered.
-
-    ScoreControl is a window on which a music score is drawn. No direct interaction
-    with the score is allowed, that is, it is is just a display control.
-
-    It combines the behaviour of classes lmScoreCanvas, lmScoreView and Doc, so that scores
-    can be displayed/printed without having to use the doc/view model.
-*/
+// lmScoreAuxCtrol
+//	  A window on which a music score is rendered.
+//
+//    ScoreControl is a window on which a music score is drawn. No direct interaction
+//    with the score is allowed, that is, it is is just a display control.
+//
+//    It combines the behaviour of classes lmScoreCanvas, lmScoreView and Doc, so that scores
+//    can be displayed/printed without having to use the doc/view model.
 
 
 BEGIN_EVENT_TABLE(lmScoreAuxCtrol, wxWindow)
@@ -86,21 +81,17 @@ lmScoreAuxCtrol::~lmScoreAuxCtrol()
 
 void lmScoreAuxCtrol::SetMargins(lmLUnits nLeft, lmLUnits nRight, lmLUnits nTop)
 {
-    /*
-    Margings are absolute, that is, independent of the scale
-    */
     m_nTopMargin = nTop;
     m_nLeftMargin = nLeft;
     m_nRightMargin = nRight;
-
 }
 
 void lmScoreAuxCtrol::SetScale(float rScale)
 {
-    //Scale is the zooming factor. It does not affect to margins
+    //Scale is the zooming factor
     m_rZoom = rScale;
     m_rScale = rScale * lmSCALE;
-    //wxLogMessage(_T("[lmScoreAuxCtrol::SetScale]rScale=%f, lmSCALE=%f"), rScale, lmSCALE);
+    //wxLogMessage(_T("[lmScoreAuxCtrol::SetScale]rScale=%f, lmSCALE=%f, m_rScale=%f"), rScale, lmSCALE, m_rScale);
     ResizePaper();
 }
 
@@ -112,23 +103,92 @@ void lmScoreAuxCtrol::ResizePaper()
     dc.GetSize(&xPixels, &yPixels);
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale( m_rScale, m_rScale );
-    wxCoord xMicrons = dc.DeviceToLogicalXRel(xPixels);
-    wxCoord yMicrons = dc.DeviceToLogicalYRel(yPixels);
-    m_Paper.SetPageSize(xMicrons, yMicrons);
+    lmLUnits xLU = (lmLUnits)dc.DeviceToLogicalXRel(xPixels);
+    lmLUnits yLU = (lmLUnits)dc.DeviceToLogicalYRel(yPixels);
+    m_Paper.SetPageSize(xLU, yLU);
 
     //save new DC scaling factor to be used later for message positioning
-    m_yScalingFactor =(float)yPixels / (float)yMicrons;
+    m_yScalingFactor =(float)yPixels / (float)yLU;
 
-    //adjust margins to maintain absolute margin values
-    m_Paper.SetPageTopMargin(m_nTopMargin / m_rZoom);
-    m_Paper.SetPageLeftMargin(m_nLeftMargin / m_rZoom);
-    m_Paper.SetPageRightMargin(m_nRightMargin / m_rZoom);
+    m_Paper.SetPageTopMargin(m_nTopMargin);
+    m_Paper.SetPageLeftMargin(m_nLeftMargin);
+    m_Paper.SetPageRightMargin(m_nRightMargin);
 
-    //wxLogMessage(wxString::Format(
-    //    _T("[lmScoreAuxCtrol::ResizePaper]Paper size = (%d, %d), m_rScale=%f, scaling factor=%f, margins: left=%d, right=%d, top=%d"),
-    //    xMicrons, yMicrons, m_rScale, m_yScalingFactor, (int)(m_nLeftMargin / m_rZoom), (int)(m_nRightMargin / m_rZoom), 
-    //    (int)(m_nTopMargin / m_rZoom) ));
+    //wxLogMessage(_T("[lmScoreAuxCtrol::ResizePaper] :\n")
+    //    _T("Paper size: px = (%d, %d), LU= (%.2f, %.2f)\n")
+    //    _T("m_rScale=%f, scaling factor=%f, margins: left=%.2f, right=%.2f, top=%.2f"),
+    //    xPixels, yPixels,
+    //    xLU, yLU, m_rScale, m_yScalingFactor,
+    //    m_nLeftMargin, m_nRightMargin, m_nTopMargin );
 }
+
+double lmScoreAuxCtrol::GetPixelsPerLU()
+{
+    wxClientDC dc(this);
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale( m_rScale, m_rScale );
+
+    double xPixelsPerLU = (double)dc.LogicalToDeviceXRel(100000) / 100000.0;
+    double yPixelsPerLU = (double)dc.LogicalToDeviceYRel(100000) / 100000.0;
+    wxLogMessage(_T("[lmScoreAuxCtrol::GetPixelsPerLU] m_rScale=%f, DisplayPixelsPerLU=(%f, %f)"),
+        m_rScale, xPixelsPerLU, yPixelsPerLU );
+
+    // screen resolution (Pixels per inch)
+    wxSize sizePPI = dc.GetPPI(); 
+    // control size, in mm and pixels
+    wxCoord widthMM, heightMM, widthPx, heightPx;
+    dc.GetSizeMM(&widthMM, &heightMM);       // mm
+    dc.GetSize(&widthPx, &heightPx);         // pixels
+    SetBaseScale();
+
+    // In order to adjust staff lines to real size I will use only yPixelsPerLU
+    return yPixelsPerLU;
+
+}
+
+void lmScoreAuxCtrol::SetBaseScale()
+{
+    //compute scaling factor needed for real display size (real scale 1:1)
+
+    wxClientDC dc(this);
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale( m_rScale, m_rScale );
+
+    // screen resolution (Pixels per inch)
+    wxSize sizePPI = dc.GetPPI(); 
+
+    // control size, in mm and pixels
+    wxCoord widthMM, heightMM, widthPx, heightPx;
+    dc.GetSizeMM(&widthMM, &heightMM);       // mm
+    dc.GetSize(&widthPx, &heightPx);         // pixels
+    //lmLUnits oneMM = lmToLogicalUnits(1, lmMILLIMETERS);
+    //double yTargetPixelsPerLU = oneMM * heightPx / heightMM;
+
+    int wScreenMM, hScreenMM, wScreenPx, hScreenPx;
+    ::wxDisplaySize(&wScreenPx, &hScreenPx);
+    ::wxDisplaySizeMM(&wScreenMM, &hScreenMM);
+
+    // current internal DC scale is 1.0
+    double yCurPixelsPerLU = (double)dc.LogicalToDeviceYRel(100000) / 100000.0;
+    //m_rBaseScale = yTargetPixelsPerLU * yCurPixelsPerLU;
+
+    wxLogMessage(_T("[lmScoreAuxCtrol::SetBaseScale] : \n")
+                _T("PPI=(%d, %d) / control size px=(%d, %d), mm=(%d, %d) \n")
+                _T("display size px=(%d, %d), mm=(%d, %d) \n")
+                _T("yCurPixelsPerLU = %f \n")
+                _T("Computed values for screen size:\n")
+                _T("     using PPI: mm = (%.2f, %.2f)\n")
+                _T("     using control:  mm = (%.2f, %.2f)\n")
+                _T("     using display:  mm = (%d, %d)\n"),
+                sizePPI.GetWidth(), sizePPI.GetHeight(), widthPx, heightPx, widthMM, heightMM, 
+                wScreenPx, hScreenPx, wScreenMM, hScreenMM,
+                yCurPixelsPerLU,
+                25.4 * (double)wScreenPx / (double)sizePPI.GetWidth(), 25.4 * (double)hScreenPx / (double)sizePPI.GetHeight(),
+                (double)wScreenPx * (double)widthMM / (double)widthPx, (double)wScreenPx * (double)heightMM / (double)heightPx,
+                wScreenMM, hScreenMM );
+}
+
+
 
 void lmScoreAuxCtrol::OnSize(wxSizeEvent& WXUNUSED(event))
 {

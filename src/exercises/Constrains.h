@@ -196,6 +196,7 @@ public:
             sStopSolfaLabel = _("Stop");
             sMeasuresLabel = _("Measure %d");
             sStopMeasureLabel = _("Stop %d");
+            rScale = 1.0;
         }
 
     ~lmScoreCtrolOptions() {}
@@ -234,6 +235,8 @@ public:
 
     bool        fBorder;                // border around control
     bool        fMusicBorder;           // border around music
+
+    double      rScale;
 
 private:
     void SetLabels(wxString& sLabel, wxString* pStart, wxString* pStop);

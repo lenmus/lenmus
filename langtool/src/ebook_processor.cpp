@@ -1052,9 +1052,18 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode, int nOptions, wxString*
         else
             sHeaderTitle = sTitle;
 
-        //create page headers
+        // add parent number
         wxString sParentNum = GetParentNumber();
-        if (sParentNum == wxEmptyString) sParentNum = sTitleNum;
+        if (sParentNum == wxEmptyString) 
+            sParentNum = sTitleNum.Left(sTitleNum.Len()-2);     //remove final '. '
+        if (sHeaderTitle.Find(_T("%d")) != wxNOT_FOUND)
+            sHeaderTitle.Replace(_T("%d"), sParentNum);
+        else {
+            if (sParentNum != wxEmptyString)
+                sHeaderTitle = sParentNum + _T(". ") + sHeaderTitle;
+        }
+
+        //create page headers
         if (!m_fIsLeaflet)
             CreatePageHeaders(m_sBookTitle, sHeaderTitle, sParentNum);
         else
@@ -1076,24 +1085,18 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode, int nOptions, wxString*
 
 bool lmEbookProcessor::TitleabbrevTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
 {
-    //process tag's children. Do not write content
     wxString sTitle;
     bool fError = ProcessChildAndSiblings(oNode, eTRANSLATE, &sTitle);
-    //WriteToLang(sTitle);
-    //sTitle = ::wxGetTranslation(sTitle);
-
-    // get theme number
-    int nTheme = m_nNumTitle[0];
 
     //save the title
     if (m_nParentType == lmPARENT_BOOKINFO) {
-        m_sBookTitleAbbrev = wxString::Format(sTitle, nTheme);
+        m_sBookTitleAbbrev = sTitle;
     }
     else if (m_nParentType == lmPARENT_CHAPTER) {
-        m_sChapterTitleAbbrev = wxString::Format(sTitle, nTheme);
+        m_sChapterTitleAbbrev = sTitle;
     }
     else if (m_nParentType == lmPARENT_THEME) {
-        m_sThemeTitleAbbrev = wxString::Format(sTitle, nTheme);
+        m_sThemeTitleAbbrev = sTitle;
     }
     return fError;
 }
@@ -1175,13 +1178,15 @@ wxString lmEbookProcessor::GetTitleCounters()
 wxString lmEbookProcessor::GetParentNumber()
 {
     // Returns current theme number minus one level. For example, if current
-    // theme is '2.4.7' this method returns '2.4. '
+    // theme is '2.4.7' this method returns '2.4'
 
     wxString sTitleNum = wxEmptyString;
-    for (int i=0; i < m_nTitleLevel; i++) {
-        sTitleNum += wxString::Format(_T("%d."), m_nNumTitle[i] );
+    if(m_nTitleLevel > 0) {
+        sTitleNum = wxString::Format(_T("%d"), m_nNumTitle[0] );
+        for (int i=1; i < m_nTitleLevel; i++) {
+            sTitleNum += wxString::Format(_T(".%d"), m_nNumTitle[i] );
+        }
     }
-    if (sTitleNum != wxEmptyString) sTitleNum += _T(" ");
     
     return  sTitleNum;
 
@@ -1606,8 +1611,8 @@ void lmEbookProcessor::CreatePageHeaders(wxString sBookTitle, wxString sHeaderTi
         _T("<title>") );
     WriteToHtml( ::wxGetTranslation(sBookTitle) );
     WriteToHtml(_T(": "));
-    WriteToHtml(sTitleNum + ::wxGetTranslation(sHeaderTitle) + _T("</title>\n") );
-    WriteToHtml(_T("</head>\n\n"));
+    WriteToHtml( ::wxGetTranslation(sHeaderTitle));
+    WriteToHtml(_T("</title>\n</head>\n\n"));
 
     m_nHtmlIndentLevel = 1;     //indent
 
@@ -1626,7 +1631,7 @@ void lmEbookProcessor::CreatePageHeaders(wxString sBookTitle, wxString sHeaderTi
         _T("</font></td></tr>\n")
         _T("<tr><td bgcolor='#7f8adc' align='right'><br />\n")
         _T("	<b><font size='+4' color='#ffffff'>") );
-    WriteToHtml(sTitleNum + ::wxGetTranslation(sHeaderTitle) );
+    WriteToHtml( ::wxGetTranslation(sHeaderTitle) );
     WriteToHtml(
         _T("&nbsp;</font></b><br /></td></tr>\n")
         _T("<tr><td bgcolor='#ff8800'><img src='ebook_line_orange.png'></td></tr>\n")

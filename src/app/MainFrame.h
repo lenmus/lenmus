@@ -66,12 +66,12 @@ enum
     MENU_eBookPanel,
     MENU_eBook_GoBack,
     MENU_eBook_GoForward,
-    MENU_eBook_UpNode,
     MENU_eBook_PagePrev,
     MENU_eBook_PageNext,
     MENU_eBook_Print,
     MENU_eBook_OpenFile,
-    MENU_eBook_Options,
+    MENU_eBook_DecreaseFont,
+    MENU_eBook_IncreaseFont,
 
     MENU_Last_Public_ID
 };
@@ -127,6 +127,7 @@ public:
         // general options, always enabled
     void OnDebugForceReleaseBehaviour(wxCommandEvent& event);
     void OnDebugShowDebugLinks(wxCommandEvent& event);
+    void OnDebugShowBorderOnScores(wxCommandEvent& event);
     void OnDebugRecSelec(wxCommandEvent& event);
     void OnDebugTestMidi(wxCommandEvent& event);
     void OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event));

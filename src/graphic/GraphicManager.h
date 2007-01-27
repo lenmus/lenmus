@@ -70,7 +70,6 @@ enum lmGraphMngrOptions
     lmRELAYOUT_ON_PAPER_SIZE_CHANGE     = 0x0020,
 };
 
-
 //Class lmGraphicManager stores and manages all score renderization issues
 class lmGraphicManager
 {

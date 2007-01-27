@@ -145,13 +145,18 @@ bool g_fReleaseVersion = false;       // to enable/disable debug features
 bool g_fReleaseVersion = true;        // to enable/disable debug features
 #endif
 
-bool g_fReleaseBehaviour = false;    // This flag is only used to force release behaviour when
+bool g_fReleaseBehaviour = false;   // This flag is only used to force release behaviour when
                                     // in debug mode, and only for some functions (the ones using this flag)
-bool g_fShowDebugLinks = false;        // force to add aditional debug ctrols in exercises.
-                                    // only operative in debug mode,
+
+bool g_fShowDebugLinks = false;     // force to add aditional debug ctrols in exercises.
+                                    // only operative in debug mode.
+
 bool g_fUseAntiAliasing = true;     // for testing and comparison purposes. Changing the
                                     // value of this flags forces to use standar aliased
                                     // renderization in screen
+
+bool g_fBorderOnScores = false;     //to facilitate the height adjustement of
+                                    //scores included on eMusicBooks.
 
 
 // Global print data, to remember settings during the session

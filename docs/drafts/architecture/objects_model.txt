@@ -18,30 +18,117 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @page objects_model        Notes on score objects
 
-lmScoreObj:
----------
-    Is the most abstract class for all objects that can appear in a LenMus document
-    structure. Its subclasses define both primitive symbols (like a clef) and structural
-    elements (like an staff with all its rests and notes). This should be useful, for
-    example, to simplify copy/paste operations.
-    
-    ScoreObjs have three basic responsibilities. They know (1) how to draw themselves,
-    (2) what space they occupy, and (3) their compositional structure (owners and
-    component children ScoreObjs).
-    
-    Recursive composition ("composite" pattern) will be used to represent ScoreObjs.
+Notes on score objects
+
+    lmScoreObj:  The most abstract object. Anything that can appear in an score
+  
+    There are two main types of ScoreObjs: those that "consume time" (lmStaffObj) and 
+    those which do not (lmAuxObj).
+    The first group is formed by all those objects that, by necessity, must go in
+    sequence in a staff (such as notes, rests, clefs and keys). When one of these
+    signs appear they add time to the measure duration. 
+    Those that do not add time are always auxiliary, and their positioning is always 
+    relative to the position of one (or more) ScoreObjs of the first group.
+
+    To model this, we are going to define two types of lmScoreObj:
+
+    lmStaffObj (consume time ==> owned by the VSatff)
+        Symbols, related to an staff, that define the general sound and layout
+        of a measure, such as clefs, notes and barlines. They "consume time" and, therefore,
+        they have timing information. They must belong to an staff and, therefore,
+        they will get included in the staff objects collection associated to an lmVStaff.
+        
+        As staff symbols can be comosite symbols (i.e. a note plus its accidental symbol)
+        recursive composition ("composite" pattern) will be used to represent ScoreObjs.
+        Therefore, lmStaffObj specialices in two classes:
+        
         lmSimpleObj:
-            - position            - Draw()
-            - size
-            - fVisible
-    
-        lmCompositeObj:
-            (i.e: note + accidental; a whole measure with all its notes for a copy/paste
-            operation)
+            Are self-defined, that is, they do not own other StaffObj (lmAuxObj)
+        
+            Current:    lmBarline, lmClef, lmWordsDirection, lmKeySignature, lmSOControl,
+                        lmScoreText, lmTimeSignature, lmTupletBracket
 
+        lmCompositeObj:
+            Are composed by several StaffObj (They can own lmAuxObj)
+            Example: note + accidental; a whole measure with all its notes for a copy/paste
+            operation.
+            
+            Current:    lmNoteRest (lmNote, lmRest)
+       
+
+    lmAuxObj (do not consume time ==> owned by the Score)
+        Other symbols, related either to an staff, to the score (paper) or
+        to other ScoreObjs, that do not "take time". Examples of this group objects are
+        texts, slurs, ties, lyrics and note accidentals.
+        
+        As the owner is not the lmVStaff but other object (i.e: Ties are owned by Notes, 
+        scores titles are owned by the lmScore) they are not included in the lmVStaff
+        objects collection. Therefore, certain operations such as renderization are not
+        triggered by the VStaff. 
+        To deal with these AuxObjs in a uniform way for common functions such
+        as selecting, dragging, etc., they will be included in a global list,
+        so that all these function can be easily implemented by just iterating over
+        this collection.
+        
+        For some other functions, such as rendering, the uniform approach culd not be so
+        feasible as renderization will be launched sometimes by the owner lmStaffObj
+        (i.e. Ties)
+        and other times centrally, by iterating over the list and rendering the objects
+        in it (i.e. lmScore titles). In these cases, it will be necessary to include
+        flags to signal that the operation will be performed by the owner and, so,
+        to skip that object.
+        
+        Current lmAuxObjs:
+            lmTie
+            
+            lmNoteRestObj
+                AuxObjs related to NoteRests. The rendering is controlled by the owner
+                lmNoteRest and the measurement and drawing phases are implemented by
+                two different methods instead
+                of the combined method Draw() used by StaffObjs.
+        
+                Current:
+                    lmFermata
+                    lmLyric
+                    lmAccidental                
+
+
+Container classes:
+    lmScore: The top most container. A lmScore is, mainly, a collection of Instruments 
+        plus some data (composer, title, ...). It also contains all independent objects.
+        It contains:
+        - collection of instruments (m_cInstruments)
+        - list of score titles (m_cTitles)
+        - collection of independent ScoreObjs (m_cGlobalStaffobjs). These are all those
+            objects not directly associated to a musical object (notes, staff, etc.). 
+            They are owned by nobody.
+        
+    lmInstrument: A container for the ScoreObjs associated to one instrument:
+        - List of VStaves that this instrument has (m_cStaves)
+
+    lmVStaff: Container for the ScoreObjs on this VStaff (m_cStaffObjs)
+
+Other non-derived auxiliary classes:
     
+    lmBeam:     info about the beam for a group of notes
+    lmChord:    info about a chord
+    lmArch:     info to draw an arch
+    lmContext:  info about current accidentals 
+    lmBasicText: info for a text (font size, font familly, ..)
+    lmStaff:    Properties for each staff on a VStaff (num.lines, spacing, ...)
+
+
+
+
+
+
+
+
+
+
+
+
     Selection (selectable objects)
     ------------------------------
     ScoreObjs are selectable by definition, as the user should be able to select (and copy,
@@ -103,7 +190,7 @@ Analysis and operations:
     
     
 -----------------------------------------------------------------------------------------
-ScoreObjs:  The most abstract object. Anything that can appear in an score
+
   Simple:
     - position            - Draw()
     - size
@@ -146,16 +233,6 @@ StaffObjs:  ScoreObjs that appear in an staff/measure. All are selectable.
 
 -----------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------
-    Considering rendering method:
-    
-    FontRenderizedObj:
-        - Rendered by font: note, clef
-        
-    LineRenderedObj:
-        - Rendered by direct drawing: tie, slur, barline
-        
------------------------------------------------------------------------------------------
------------------------------------------------------------------------------------------
     Considering positioning and sizing, a lmScoreObj can be of two types:
         - draggable: the objects can be freely positioned on the score, only constrained
             by music writting rules (i.e.: note, clef).
@@ -165,72 +242,6 @@ StaffObjs:  ScoreObjs that appear in an staff/measure. All are selectable.
 
 -----------------------------------------------------------------------------------------
     
-	ScoreObjs:  The most abstract object. Anything that can appear in an score
-  
-    There are two main types of ScoreObjs: those that "consume time" and those which do not.
-    The first group is formed by all those objects that, by necessity, must go in
-    sequence in a staff (such as notes, rests, clefs and keys). When one of these
-    signs appear they add time to the measure duration. 
-    Those that do not add time are always auxiliary, and their positioning is always 
-    relative to the position of one (or more) ScoreObjs of the first group.
-
-    To model this, we are going to define two types of lmScoreObj:
-
-    lmStaffObj 
-        Symbols, related to an staff, that define the general sound and layout
-        of a measure, such as clefs, notes and barlines. They "consume time" and, therefore,
-        they have timing information. They must belong to an staff and, therefore,
-        they will get included in the staff objects collection associated to an lmVStaff.
-        
-        lmStaffObj specialices in two classes:
-        
-			lmSimpleObj
-				Current:	lmBarline, lmClef, lmWordsDirection, lmKeySignature, lmSOControl,
-							lmScoreText, lmTimeSignature, lmTupletBracket
-				
-			lmCompositeObj
-				Current:	lmNoteRest (lmNote, lmRest)
-		
-
-    lmAuxObj
-        Other symbols, related either to an staff, the score (paper) or
-        to other ScoreObjs, that do not "take time". Examples of this group objects are
-        texts, slurs, ties, lyrics and note accidentals.
-        When the owner is not the lmVStaff but other object (i.e: Ties are owned by Notes, 
-        scores titles are owned by the lmScore) they will not get included in the lmVStaff
-        objects collection. In addition we should include into this cathegory all document
-        owned objects such as "imported" objects (images, blocks of texts, etc.).
-
-        To deal with these AuxObjs in a uniform way for common functions such
-        as selecting, dragging, etc., they will be included in a global list,
-        so that all these function can be easily implemented by just iterating over
-        this collection.
-        
-        For some functions, such as rendering, the uniform approach culd not be so
-        feasible as renderization will be launched sometimes by the owner lmStaffObj (i.e. Ties)
-        and othertimes centrally, by iterating over the list and rendering the objects
-        in it (i.e. lmScore titles). In these cases, it will be necessary to include
-        flags to signal that the operation will be performed by the owner and, so,
-        to skip that object.
-        
-        Current:	lmTie, lmNoteRestObj
-
-		lmNoteRestObj
-			AuxObjs related to NoteRests. The rendering is controlled by the owner lmNoteRest and
-			the measurement and drawing phases are implemented by two different methods instead
-			of the combined method Draw() used by StaffObjs.
-	    
-			Current lmNOteRestObj: lmFermata, lmLyric, lmAccidental
-
-
-
-	Non-derived classes:
-	
-		Current:	lmBeam, lmChord, lmArch, lmStaff
-		
-					lmColStaffObjs, lmContext, lmGlyph, lmInstrument, lmScore,
-					lmStaffObjIterator, lmVStaff
-				
 
                               
     DraggableObject
@@ -258,19 +269,3 @@ TimePositioned      x  x  x
 
 
 
-Notes, Rests and NoteRests
--------------------------------
-  -    Rests can be part of a beamed group. Therefore all beaming information has to
-    be at lmNoteRest level.
-  - The lmNoteRest constructor builds the lmBeam object. But to do it it needs to know if it is
-    a note or a rest and, in case of notes, if the note is part of a chord -->
-    . Method IsInChord() will be a pure virtual method at lmNoteRest level; it will always
-        return false for rests.
-    . lmBeam will be created not in the lmNoteRest constructor but in a specific method invoked
-    from the lmRest and lmNote constructors, once the needed relevant information is set up.
-
-
-
-
-
-*/

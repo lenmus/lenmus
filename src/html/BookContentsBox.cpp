@@ -205,7 +205,8 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
         rItem.nLevel = it->level;
         rItem.fVisible = (it->level == 0);
         rItem.sImage = (it->image != wxEmptyString ? sImagePath + it->image : wxEmptyString);
-        rItem.sTitle = it->title;
+        //rItem.sTitle = it->title;
+        rItem.sTitle = (it->image == wxEmptyString ? it->title  : wxEmptyString);
         rItem.sTitlenum = it->titlenum;
         rItem.fHasChildren = false;     //it is updated when processing next entry
         rItem.fOpen = false;
