@@ -744,7 +744,7 @@ lmEditFrame* lmTheApp::CreateProjectFrame(wxDocument* doc, wxView* view)
 wxString lmTheApp::GetVersionNumber()
 {
     // Increment this every time you release a new version
-    wxString sVersion = _T("3.4b0");
+    wxString sVersion = _T("3.4");
     return sVersion;
 }
 

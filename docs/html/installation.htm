@@ -1,5 +1,5 @@
 <html>
-<!-- $Updated: 2007/01/18 -->
+<!-- $Updated: 2007/01/28 -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>LenMus installation procedure</title>
@@ -83,6 +83,17 @@ such as licence and installation procedure, and the following folders and conten
     <td class="ListaPar">Sample scores. There are two subdirectories. One, named 'MusicXML' for
         MusicXML scores; load them using File/Import. And another, named 'samples', for LDP (LenMus
         score language) scores; load them using File/Open.</td></tr>
+<tr class="ListaPar">
+    <td class="ListaPar">books</td>
+    <td class="ListaPar">xx/*.lmb</td>
+    <td class="ListaPar">
+        There is a subdirectory (xx) for each supported language.
+        Subdirectories are named, following RFC 1766, with the two letter
+        language code (.i.e. 'en' for English, 'es' for Spanish, etc.) or with the five chars
+        language-culture code (i.e. 'en-EN' for USA English or 'es-ES' for the Modern Spanish).
+        <br /><br />
+        Contains all eMusicBooks in compiled format (lmb stands for
+        <b>L</b>en<b>M</b>us <b>B</b>ook).</td></tr>
 <tr>
     <td class="ListaPar">temp</td>
     <td class="ListaPar">empty</td>
@@ -92,22 +103,15 @@ such as licence and installation procedure, and the following folders and conten
     <td class="ListaPar">locale</td>
     <td class="ListaPar">&nbsp;</td>
     <td class="ListaPar">Contains all language dependent files.
-        There is a subdirectory for each supported language.
-        Subdirectories are named, following RFC 1766, with the two letter
-        language code (.i.e. 'en' for English, 'es' for Spanish, etc.) or with the five chars
-        language-culture code (i.e. 'en-EN' for USA English or 'es-ES' for the Modern Spanish).
+        There is a subdirectory for each supported language, also named following RFC 1766.
         </td></tr>
 <tr>
-    <td rowspan="3" class="ListaPar">locale/xx</td>
+    <td rowspan="2" class="ListaPar">locale/xx</td>
     <td class="ListaPar">*.mo</td><td class="ListaPar">The .mo message translation
     catalogues, except for English language (not needed).</td></tr>
 <tr>
     <td class="ListaPar">help.htb</td>
     <td class="ListaPar">The help file</td></tr>
-<tr>
-    <td class="ListaPar">*.lmb</td>
-    <td class="ListaPar">Each file is an eMusicBook (lmb stands for
-        <b>L</b>en<b>M</b>us <b>B</b>ook).</td></tr>
 </table>
 
 </body>

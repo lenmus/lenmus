@@ -43,7 +43,7 @@
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v3.3"     ;product name displayed by the installer
+  Name "lenmus v3.4"     ;product name displayed by the installer
 
 
 ;support for Modern UI
@@ -215,6 +215,7 @@ Section  "-" "MainSection"
   ;If a previous version exits delete old installed files, but no scores
   ;-----------------------------------------------------------------------------------
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\bin"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\books"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\locale"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\res"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\xrc"
@@ -230,6 +231,8 @@ Section  "-" "MainSection"
      File "..\..\docs\html\licence.htm"
      File "..\..\docs\html\installation.htm"
      File "..\..\docs\html\singledoc.css"
+     File "..\..\docs\html\GNU_Free_doc_license_FDL.htm"
+
     ; ADD_LANG
      File ".\locale\license_en.txt"
      File ".\locale\license_es.txt"
@@ -241,6 +244,16 @@ Section  "-" "MainSection"
      File "..\..\fonts\lmbasic.ttf"
      File "msvcr71.dll"
      ;File "..\..\packages\wxMidi\lib\pm\pm_dll.dll"
+
+    ; ADD_LANG
+     SetOutPath "$INSTDIR\books\en"
+     File "..\..\books\en\*.*"
+     SetOutPath "$INSTDIR\books\es"
+     File "..\..\books\es\*.*"
+     SetOutPath "$INSTDIR\books\fr"
+     File "..\..\books\fr\*.*"
+     SetOutPath "$INSTDIR\books\tr"
+     File "..\..\books\tr\*.*"
 
     ; ADD_LANG
      SetOutPath "$INSTDIR\locale\en"
@@ -429,6 +442,13 @@ Section un.Install
   ;delete files
   ;Delete "$INSTDIR\*.*"
   ;Delete "$INSTDIR\bin\*.*"
+
+  ; ADD_LANG
+  ;Delete "$INSTDIR\books\en\*.*"
+  ;Delete "$INSTDIR\books\es\*.*"
+  ;Delete "$INSTDIR\books\fr\*.*"
+  ;Delete "$INSTDIR\books\tr\*.*"
+  
   ; ADD_LANG
   ;Delete "$INSTDIR\locale\en\*.*"
   ;Delete "$INSTDIR\locale\es\*.*"
@@ -446,12 +466,20 @@ Section un.Install
 
   ;delete folders
   ;RMDir "$INSTDIR\bin"
+
+  ; ADD_LANG
+  ;RMDir "$INSTDIR\books\en"
+  ;RMDir "$INSTDIR\books\es"
+  ;RMDir "$INSTDIR\books\fr"
+  ;RMDir "$INSTDIR\books\tr"
+  
   ; ADD_LANG
   ;RMDir "$INSTDIR\locale\en"
   ;RMDir "$INSTDIR\locale\es"
   ;RMDir "$INSTDIR\locale\fr"
   ;RMDir "$INSTDIR\locale\tr"
   
+  ;RMDir "$INSTDIR\books"
   ;RMDir "$INSTDIR\locale"
   ;RMDir "$INSTDIR\res\bitmaps"
   ;RMDir "$INSTDIR\res\icons"

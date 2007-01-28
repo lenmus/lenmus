@@ -1,5 +1,5 @@
 <html>
-<!-- $Updated: 2007/01/18 -->
+<!-- $Updated: 2007/01/28 -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>LenMus. Procedimiento de instalaci&oacute;n</title>
@@ -92,6 +92,17 @@ alguna documentaci&oacute;n, tal como la licencia, y las siguientes carpetas:</p
       llamado 'MusicXML' para partituras escritas en MusicXML. Y otro, llamado
       'samples', para partituras escritas con LDP (Lenguaje de Partituras de LenMus);
       se pueden cargar usando el men&uacute; 'Archivo/Abrir'.</td></tr>
+<tr class="ListaPar">
+    <td class="ListaPar">books</td>
+    <td class="ListaPar">xx/*.lmb</td>
+    <td class="ListaPar">
+      Hay un subdirectorio (xx) por cada idioma. Los subdirectorios se designan, seg&uacute;n el
+      estandar RFC 1766, con dos letras que identifican el idioma (por ejemplo,
+      'en' para Ingl&eacute;s, 'es' para Espa&ntilde;ol, etc.) o con cinco caracteres en el caso de
+      que haya variaciones culturales; por ejemplo, 'es-ES' el Espa&ntilde;ol moderno.).
+        <br /><br />
+        Contiene los eMusicBooks en formato compilado (lmb es el acr&oacute;nimo de
+        <b>L</b>en<b>M</b>us <b>B</b>ook).</td></tr>
 <tr>
     <td class="ListaPar">temp</td>
     <td class="ListaPar">vac&iacute;o</td>
@@ -101,22 +112,16 @@ alguna documentaci&oacute;n, tal como la licencia, y las siguientes carpetas:</p
     <td class="ListaPar">locale</td>
     <td class="ListaPar">&nbsp;</td>
     <td class="ListaPar">Contiene archivos con las traducciones a los idiomas soportados.
-      Hay un subdirectorio por cada idioma. Los subdirectorios se designan, seg&uacute;n el
-      estandar RFC 1766, con dos letras que identifican el idioma (por ejemplo,
-      'en' para Ingl&eacute;s, 'es' para Espa&ntilde;ol, etc.) o con cinco caracteres en el caso de
-      que haya variaciones culturales; por ejemplo, 'es-ES' el Espa&ntilde;ol moderno.).
+      Hay un subdirectorio por cada idioma. El nombre sigue tambi&eacute;n el
+      estandar RFC 1766.
         </td></tr>
 <tr>
-    <td rowspan="3" class="ListaPar">locale/xx</td>
+    <td rowspan="2" class="ListaPar">locale/xx</td>
     <td class="ListaPar">*.mo</td><td class="ListaPar">Los cat&aacute;logos binarios .mo
     con las traducciones de los mensages.</td></tr>
 <tr>
     <td class="ListaPar">help.htb</td>
     <td class="ListaPar">El archivo de ayuda del programa.</td></tr>
-<tr>
-    <td class="ListaPar">*.lmb</td>
-    <td class="ListaPar">Los archivos .lmb son los eMusicBooks
-        (lmb es el acr&oacute;nimo de <b>L</b>en<b>M</b>us <b>B</b>ook).</td></tr>
 </table>
 
 </body>
