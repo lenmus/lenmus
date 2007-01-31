@@ -291,7 +291,7 @@ lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
     m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pIntervalScore, wxDefaultPosition, wxSize(380,150), eSIMPLE_BORDER);
     m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),      //left=10mm
                               lmToLogicalUnits(25, lmMILLIMETERS),      //right=25mm
-                              lmToLogicalUnits(15, lmMILLIMETERS));     //top=15mm
+                              lmToLogicalUnits(10, lmMILLIMETERS));     //top=15mm
     pTopSizer->Add(
         m_pScoreCtrol,
         wxSizerFlags(1).Left().Border(wxTOP|wxBOTTOM, 10));

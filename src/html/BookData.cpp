@@ -48,6 +48,12 @@
 #include "../globals/Paths.h"
 extern lmPaths* g_pPaths;
 
+#ifdef _MBCS
+    //in Win95/98/Me release we need to change from utf-8 to local encoding
+    // include TheApp to have access to locale info
+    #include "..\app\TheApp.h"
+#endif
+
 
 // BookData object stores and manages all book indexes.
 // Html pages are not processed. When a page display is requested, the page is
@@ -267,8 +273,7 @@ bool lmBookData::ProcessIndexFile(const wxFileName& oFilename, lmBookRecord* pBo
     wxString sTitle = wxEmptyString,
              sDefaultPage = wxEmptyString,
              sContentsFile = wxEmptyString,
-             sIndexFile = wxEmptyString,
-             sCharset = wxEmptyString;
+             sIndexFile = wxEmptyString;
 
     // load the XML file as tree of nodes
     wxXmlDocument xdoc;
@@ -348,8 +353,7 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
     wxString sTitle = wxEmptyString,
              sPage = wxEmptyString,
              sContents = wxEmptyString,
-             sIndex = wxEmptyString,
-             sCharset = wxEmptyString;
+             sIndex = wxEmptyString;
 
 
     // wxXmlDocument::Load(filename) uses a wxTextStreamFile and it doesn't support
@@ -437,6 +441,30 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
     }
     sTitle = m_pParser->GetText(pNode);
 
+    //change encoding from utf-8 to local encoding if Win95/98/Me release
+    #ifdef _MBCS
+        wxString sLang = wxGetApp().GetLanguageCanonicalName();
+        wxString sCharset;
+        if (sLang == _T("en")) {
+            sCharset = _T("iso-8859-1");
+        }
+        else if (sLang == _T("es")) {
+            sCharset = _T("iso-8859-1");
+        }
+        else if (sLang == _T("fr")) {
+            sCharset = _T("iso-8859-1");
+        }
+        else if (sLang == _T("tr")) {
+            sCharset = _T("iso-8859-9");        //cp-1254
+        }
+        else {
+            wxASSERT(false);
+        }
+        wxCSConv convLocal(sCharset); 
+        wxCSConv conv(_T("utf-8")); 
+        sTitle = wxString(sTitle.wc_str(conv), convLocal);
+    #endif
+
     // next node: coverpage
     pNode = m_pParser->GetNextSibling(pNode);
     pElement = pNode;
@@ -511,6 +539,30 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
     // Get entry id
     sId = m_pParser->GetAttribute(pNode, _T("id"));
 
+
+    #ifdef _MBCS
+        //in Win95/98/Me release we need to chnage from utf-8 to local encoding
+        wxString sLang = wxGetApp().GetLanguageCanonicalName();
+        wxString sCharset;
+        if (sLang == _T("en")) {
+            sCharset = _T("iso-8859-1");
+        }
+        else if (sLang == _T("es")) {
+            sCharset = _T("iso-8859-1");
+        }
+        else if (sLang == _T("fr")) {
+            sCharset = _T("iso-8859-1");
+        }
+        else if (sLang == _T("tr")) {
+            sCharset = _T("iso-8859-9");        //cp-1254
+        }
+        else {
+            wxASSERT(false);
+        }
+        wxCSConv convLocal(sCharset); 
+    #endif
+
+
     // process children
     pNode = m_pParser->GetFirstChild(pNode);
     wxXmlNode* pElement = pNode;
@@ -526,6 +578,11 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
         else if (sElement == _T("title")) {
             sTitle = m_pParser->GetText(pElement);
             fTitleImage = true;
+            #ifdef _MBCS    //if Win95/98/Me release
+                //change encoding from utf-8 to local encoding 
+                wxCSConv conv(_T("utf-8")); 
+                sTitle = wxString(sTitle.wc_str(conv), convLocal);     //wxConvLocal);
+            #endif
         }
         else if (sElement == _T("page")) {
             sPage = m_pParser->GetText(pElement);

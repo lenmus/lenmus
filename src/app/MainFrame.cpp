@@ -66,7 +66,6 @@
 #include "../sound/MidiManager.h"           //access to Midi configuration
 #include "Preferences.h"                    //access to user preferences
 #include "../updater/Updater.h" 
-#include "../html/VirtualBooks.h"           //to load virtual books
 
 //access to error's logger
 #include "../app/Logger.h"

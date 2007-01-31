@@ -187,26 +187,14 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
         // set path for images
         if (it->level == 0)
         {
-            //wxFileSystem& oFS = GetFileSystem();
-            //wxFileName oFN( (it->pBookRecord)->GetBasePath() );
-            //oFN.AppendDir( _T("img") );
-            //sImagePath = oFN.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-            //sImagePath = (it->pBookRecord)->GetBasePath() + _T("img/");
-            //wxString sep(wxFileName::GetPathSeparator());
-            //sImagePath = (it->pBookRecord)->GetBasePath() + sep + _T("img") + sep;
-            //sImagePath = (it->pBookRecord)->GetBasePath() + _T("img") + sep;
-            //sImagePath = (it->pBookRecord)->GetBasePath() + sep + _T("img/");
-            //sImagePath = (it->pBookRecord)->GetBasePath() + _T("img/");
             sImagePath = (it->pBookRecord)->GetBasePath();
-            //sImagePath = wxEmptyString;
         }
 
         lmTreeContentRecord rItem;
         rItem.nLevel = it->level;
         rItem.fVisible = (it->level == 0);
         rItem.sImage = (it->image != wxEmptyString ? sImagePath + it->image : wxEmptyString);
-        //rItem.sTitle = it->title;
-        rItem.sTitle = (it->image == wxEmptyString ? it->title  : wxEmptyString);
+        rItem.sTitle = it->title;
         rItem.sTitlenum = it->titlenum;
         rItem.fHasChildren = false;     //it is updated when processing next entry
         rItem.fOpen = false;
@@ -330,11 +318,13 @@ wxString lmBookContentsBox::FormatItem(int nTree) const
     // add title number and close the tag
     sLine += _T(" titlenum='") + m_aTree[nTree].sTitlenum + _T("'>");
 
-    // add the title
-    bool fTitleBold = (m_aTree[nTree].nLevel == 0) && m_aTree[nTree].fHasChildren;
-    if (fTitleBold) sLine += _T("<b>");
-    sLine += m_aTree[nTree].sTitle;
-    if (fTitleBold) sLine += _T("</b>");
+    // add the title only if no image
+    if ((m_aTree[nTree].sImage).IsEmpty()) {
+        bool fTitleBold = (m_aTree[nTree].nLevel == 0) && m_aTree[nTree].fHasChildren;
+        if (fTitleBold) sLine += _T("<b>");
+        sLine += m_aTree[nTree].sTitle;
+        if (fTitleBold) sLine += _T("</b>");
+    }
 
     // close item
     sLine += _T("</tocitem>");

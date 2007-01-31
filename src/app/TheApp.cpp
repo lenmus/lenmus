@@ -53,6 +53,10 @@
 #include <wx/datetime.h>
 #include "wx/txtstrm.h"
 
+//#ifdef __WXMSW__
+////Support for alpha channel on toolbar bitmaps 
+//#include "wx/sysopt.h"      // to access wxSystemOptions. 
+//#endif
 
 
 #ifndef _DEBUG
@@ -102,8 +106,6 @@
 //        #error "You must set wxUSE_UNICODE_MSLU to 1 in setup.h!"
 //    #endif
 //#endif
-
-
 
 
 #include "TheApp.h"
@@ -216,6 +218,17 @@ bool lmTheApp::OnInit(void)
     wxLogChain *logChain = new wxLogChain(logger);
 	//delete wxLog::SetActiveTarget(logger);
 #endif
+
+//#ifdef __WXMSW__
+////Support for alpha channel on toolbar bitmaps 
+//// call wxSystemOptions::SetOption(wxT("msw.remap"), 0) to switch off the remapping
+//// that wxWidgets does to make the tool colours match the current system colours.
+//// This remapping is only relevant for 16-colour tools, and messes up high-colour tools. 
+////You'll need to include wx/sysopt.h to access wxSystemOptions. 
+//    wxLogMessage(_T("[App::OnInit] msw.remap=%s"), wxSystemOptions::GetOption(wxT("msw.remap")));
+//    wxSystemOptions::SetOption(wxT("msw.remap"), 0);
+//#endif
+
 
     //define trace mask to be known by trace system
     g_pLogger->DefineTraceMask(_T("lmKeySignature"));    
