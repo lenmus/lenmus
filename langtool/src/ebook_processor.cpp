@@ -101,7 +101,8 @@ lmEbookProcessor::~lmEbookProcessor()
 
 }
 
-bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, int nOptions)
+bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, 
+                                   wxString sCharCode, int nOptions)
 {
     // returns false if error
     // PO and lang.cpp are created in sDestName (langtool\locale\)
@@ -113,6 +114,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, int n
     m_fOnlyLangFile = nOptions & lmLANG_FILE;
     m_fGenerateLmb = !m_fOnlyLangFile;
     m_sFilename = sFilename;
+    m_sCharCode = sCharCode;
 
     //add layout files
     m_aFilesToPack.Empty();
@@ -153,7 +155,7 @@ bool lmEbookProcessor::GenerateLMB(wxString sFilename, wxString sLangCode, int n
 
     // prepare de LMB file
     if (m_fGenerateLmb) {
-        if (!StartLmbFile(sFilename, sLangCode)) {
+        if (!StartLmbFile(sFilename, sLangCode, m_sCharCode)) {
             LogMessage(_T("Error: LMB file '%s' can not be created."), sFilename);
             oRoot.DestroyIfUnlinked();
             oDoc.DestroyIfUnlinked();
@@ -1052,18 +1054,15 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode, int nOptions, wxString*
         else
             sHeaderTitle = sTitle;
 
-        // add parent number
+        // replace %d by parent number or preceed header by parent number
         wxString sParentNum = GetParentNumber();
-        if (sParentNum == wxEmptyString) 
-            sParentNum = sTitleNum.Left(sTitleNum.Len()-2);     //remove final '. '
         if (sHeaderTitle.Find(_T("%d")) != wxNOT_FOUND)
             sHeaderTitle.Replace(_T("%d"), sParentNum);
-        else {
-            if (sParentNum != wxEmptyString)
-                sHeaderTitle = sParentNum + _T(". ") + sHeaderTitle;
-        }
+        else
+            sHeaderTitle = sParentNum + _T(". ") + sHeaderTitle;
 
         //create page headers
+        if (sParentNum == wxEmptyString) sParentNum = sTitleNum;
         if (!m_fIsLeaflet)
             CreatePageHeaders(m_sBookTitle, sHeaderTitle, sParentNum);
         else
@@ -1085,8 +1084,14 @@ bool lmEbookProcessor::TitleTag(const wxXml2Node& oNode, int nOptions, wxString*
 
 bool lmEbookProcessor::TitleabbrevTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
 {
+    //process tag's children. Do not write content
     wxString sTitle;
     bool fError = ProcessChildAndSiblings(oNode, eTRANSLATE, &sTitle);
+    //WriteToLang(sTitle);
+    //sTitle = ::wxGetTranslation(sTitle);
+
+    // get theme number
+    int nTheme = m_nNumTitle[0];
 
     //save the title
     if (m_nParentType == lmPARENT_BOOKINFO) {
@@ -1181,11 +1186,10 @@ wxString lmEbookProcessor::GetParentNumber()
     // theme is '2.4.7' this method returns '2.4'
 
     wxString sTitleNum = wxEmptyString;
-    if(m_nTitleLevel > 0) {
+    if (m_nTitleLevel >= 0)
         sTitleNum = wxString::Format(_T("%d"), m_nNumTitle[0] );
-        for (int i=1; i < m_nTitleLevel; i++) {
-            sTitleNum += wxString::Format(_T(".%d"), m_nNumTitle[i] );
-        }
+    for (int i=1; i < m_nTitleLevel; i++) {
+        sTitleNum += wxString::Format(_T(".%d"), m_nNumTitle[i] );
     }
     
     return  sTitleNum;
@@ -1220,10 +1224,9 @@ void lmEbookProcessor::CreateBookCover()
 
     //Generate header
     wxString sNil = _T("");
-    wxString sCharset = _T("utf-8");
     wxString sHtml = sNil +
         _T("<html>\n<head>\n")
-        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + sCharset +
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + m_sCharCode +
         _T("\">\n")
         _T("</head>\n\n");
 
@@ -1607,12 +1610,13 @@ void lmEbookProcessor::CreatePageHeaders(wxString sBookTitle, wxString sHeaderTi
     //create page headers
     WriteToHtml(
         _T("<html>\n<head>\n")
-        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n")
-        _T("<title>") );
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") );
+    WriteToHtml(m_sCharCode + _T("\">\n<title>") );
     WriteToHtml( ::wxGetTranslation(sBookTitle) );
     WriteToHtml(_T(": "));
-    WriteToHtml( ::wxGetTranslation(sHeaderTitle));
-    WriteToHtml(_T("</title>\n</head>\n\n"));
+    WriteToHtml( ::wxGetTranslation(sHeaderTitle) );
+    WriteToHtml(_T("</title>\n"));
+    WriteToHtml(_T("</head>\n\n"));
 
     m_nHtmlIndentLevel = 1;     //indent
 
@@ -1652,8 +1656,8 @@ void lmEbookProcessor::CreateLeafletHeaders(wxString sBookTitle, wxString sHeade
     //create page headers
     WriteToHtml(
         _T("<html>\n<head>\n")
-        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n")
-        _T("<title>") );
+        _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") );
+    WriteToHtml(m_sCharCode + _T("\">\n<title>") );
     WriteToHtml( ::wxGetTranslation(sBookTitle) );
     WriteToHtml(_T(": "));
     WriteToHtml( ::wxGetTranslation(m_sCoverPage) );
@@ -1695,7 +1699,8 @@ void lmEbookProcessor::CreateLeafletHeaders(wxString sBookTitle, wxString sHeade
 //------------------------------------------------------------------------------------
 
 
-bool lmEbookProcessor::StartLmbFile(wxString sFilename, wxString sLangCode)
+bool lmEbookProcessor::StartLmbFile(wxString sFilename, wxString sLangCode,
+                                    wxString sCharCode)
 {
     // returns true if success
 
@@ -1705,14 +1710,10 @@ bool lmEbookProcessor::StartLmbFile(wxString sFilename, wxString sLangCode)
     oFDest.SetName( oFNP.GetName() );
     oFDest.SetExt(_T("lmb"));
     m_pZipOutFile = new wxFFileOutputStream( oFDest.GetFullPath() );
-    //wxFFileOutputStream out( oFNP.GetFullName() );
-    //if (!m_pLangFile->IsOpened()) {
-    //    wxLogMessage(_T("Error: File %s can not be created"), oFNP.GetFullName());
-    //    m_pLangFile = (wxFile*)NULL;
-    //    return false;        //error
-    //}
     m_pZipFile = new wxZipOutputStream(*m_pZipOutFile);
-    m_pLmbFile = new wxTextOutputStream(*m_pZipFile);
+    m_pLmbFile = new wxTextOutputStream(*m_pZipFile, wxEOL_NATIVE, wxCSConv(sCharCode));
+
+
     return true;
 
 }

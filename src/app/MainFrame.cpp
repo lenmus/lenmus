@@ -562,9 +562,18 @@ void lmMainFrame::CreateMyToolBar()
     //Play toolbar
     m_pTbPlay = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pTbPlay->SetToolBitmapSize(nSize);
-    m_pTbPlay->AddTool(MENU_Play_Start, _("Play"), wxArtProvider::GetBitmap(_T("tool_play"), wxART_TOOLBAR, nSize), _("Start/resume play back of the score"));
-    m_pTbPlay->AddTool(MENU_Play_Stop, _("Stop"), wxArtProvider::GetBitmap(_T("tool_stop"), wxART_TOOLBAR, nSize), _("Stop playing back"));
-    m_pTbPlay->AddTool(MENU_Play_Pause, _("Pause"), wxArtProvider::GetBitmap(_T("tool_pause"), wxART_TOOLBAR, nSize), _("Pause playing back"));
+    m_pTbPlay->AddTool(MENU_Play_Start, _("Play"), 
+            wxArtProvider::GetBitmap(_T("tool_play"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_play_dis"), wxART_TOOLBAR, nSize),
+            wxITEM_NORMAL, _("Start/resume play back of the score"));
+    m_pTbPlay->AddTool(MENU_Play_Stop, _("Stop"), 
+            wxArtProvider::GetBitmap(_T("tool_stop"), wxART_TOOLBAR, nSize), 
+            wxArtProvider::GetBitmap(_T("tool_stop_dis"), wxART_TOOLBAR, nSize), 
+            wxITEM_NORMAL, _("Stop playing back"));
+    m_pTbPlay->AddTool(MENU_Play_Pause, _("Pause"), 
+            wxArtProvider::GetBitmap(_T("tool_pause"), wxART_TOOLBAR, nSize), 
+            wxArtProvider::GetBitmap(_T("tool_pause_dis"), wxART_TOOLBAR, nSize), 
+            wxITEM_NORMAL, _("Pause playing back"));
     m_pTbPlay->Realize();
 
     //Metronome toolbar

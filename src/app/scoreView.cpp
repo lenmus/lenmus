@@ -664,10 +664,10 @@ void lmScoreView::SetScale(double rScale)
         //reposition controls
         ResizeControls();    
 
-        wxLogMessage(_T("[lmScoreView::SetScale] scale=%f, m_rScale=%f, DisplayPixelsPerLU=(%f, %f), pageSize LU(%d, %d), pageSize pixels(%d, %d)"),
-            rScale, m_rScale, m_xDisplayPixelsPerLU, m_yDisplayPixelsPerLU,
-            uPageSize.GetWidth(), uPageSize.GetHeight(),
-            m_xPageSizeD, m_yPageSizeD);
+        //wxLogMessage(_T("[lmScoreView::SetScale] scale=%f, m_rScale=%f, DisplayPixelsPerLU=(%f, %f), pageSize LU(%d, %d), pageSize pixels(%d, %d)"),
+        //    rScale, m_rScale, m_xDisplayPixelsPerLU, m_yDisplayPixelsPerLU,
+        //    uPageSize.GetWidth(), uPageSize.GetHeight(),
+        //    m_xPageSizeD, m_yPageSizeD);
     }
 
     m_pCanvas->Refresh(true);    //erase background

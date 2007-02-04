@@ -47,6 +47,7 @@ public:
     void OnInstaller(wxCommandEvent& event);
     void OnGeneratePO(wxCommandEvent& WXUNUSED(event));
     void OnCompileBook(wxCommandEvent& WXUNUSED(event));
+    void OnToggleUTF8(wxCommandEvent& WXUNUSED(event));
 
 private:
     void PutContentIntoFile(wxString sPath, wxString sContent);
@@ -56,6 +57,7 @@ private:
 	wxTextCtrl*     m_pText;
     wxString        m_sRootPath;
     wxString        m_sLenMusPath;
+    wxMenu*         m_pOptMenu;
 
     DECLARE_EVENT_TABLE()
 };

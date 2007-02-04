@@ -18,10 +18,6 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file TheApp.cpp
-    @brief Implementation file for class lmTheApp
-    @ingroup app_gui
-*/
 /*! @class lmTheApp
     @ingroup app_gui
     @brief lmTheApp class represents the application itself
@@ -54,8 +50,8 @@
 #include "wx/txtstrm.h"
 
 //#ifdef __WXMSW__
-////Support for alpha channel on toolbar bitmaps 
-//#include "wx/sysopt.h"      // to access wxSystemOptions. 
+////Support for alpha channel on toolbar bitmaps
+//#include "wx/sysopt.h"      // to access wxSystemOptions.
 //#endif
 
 
@@ -132,8 +128,6 @@
 //access to global objects
 #include "../globals/Paths.h"
 #include "../globals/Colors.h"
-
-#include "../html/VirtualBooks.h"       //for virtual eBooks file system
 
 //-------------------------------------------------------------------------------------------
 // global variables
@@ -220,18 +214,28 @@ bool lmTheApp::OnInit(void)
 #endif
 
 //#ifdef __WXMSW__
-////Support for alpha channel on toolbar bitmaps 
+////Support for alpha channel on toolbar bitmaps
 //// call wxSystemOptions::SetOption(wxT("msw.remap"), 0) to switch off the remapping
 //// that wxWidgets does to make the tool colours match the current system colours.
-//// This remapping is only relevant for 16-colour tools, and messes up high-colour tools. 
-////You'll need to include wx/sysopt.h to access wxSystemOptions. 
+//// This remapping is only relevant for 16-colour tools, and messes up high-colour tools.
+////You'll need to include wx/sysopt.h to access wxSystemOptions.
 //    wxLogMessage(_T("[App::OnInit] msw.remap=%s"), wxSystemOptions::GetOption(wxT("msw.remap")));
 //    wxSystemOptions::SetOption(wxT("msw.remap"), 0);
+//    if (wxTheApp->GetComCtl32Version() >= 600 && ::wxDisplayDepth() >= 32)
+//        wxSystemOptions::SetOption(wxT("msw.remap"), 2);
+//    else
+//        wxSystemOptions::SetOption(wxT("msw.remap"), 0);
+//
+//Convert your image to grayscale, using your favorite image editor. Submit the grayscale image as second (disabled) bitmap in wxToolBar::AddTool().
+
+//Keep in mind that setting the system option msw.remap equal to "0" on Windows results in disabled icons drawing the same way they do on Windows platforms with ComCtl version less than 600 or a display color depth less than 32-bit which means that images with alpha (not talking about image masks) are not going to be supported even on versions of Windows that meet those requirements and do have support for icons with alpha transparency
+
+
 //#endif
 
 
     //define trace mask to be known by trace system
-    g_pLogger->DefineTraceMask(_T("lmKeySignature"));    
+    g_pLogger->DefineTraceMask(_T("lmKeySignature"));
     g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
     g_pLogger->DefineTraceMask(_T("lmComposer5"));
     g_pLogger->DefineTraceMask(_T("lmMusicXMLParser"));
@@ -409,7 +413,7 @@ bool lmTheApp::OnInit(void)
     // Create a document manager
     m_pDocManager = new wxDocManager;
 
-    // Sets the directory to be displayed to the user when opening a score. 
+    // Sets the directory to be displayed to the user when opening a score.
     m_pDocManager->SetLastDirectory(g_pPaths->GetScoresPath());
 
     // Create a template relating score documents to their views
@@ -486,7 +490,7 @@ bool lmTheApp::OnInit(void)
     if (sCheckFreq != _T("Never")) {
         //get date of last sucessful check
         bool fDoCheck = false;
-        wxString sLastCheckDate = 
+        wxString sLastCheckDate =
             g_pPrefs->Read(_T("/Options/CheckForUpdates/LastCheck"), _T(""));
         if (sLastCheckDate == _T("")) {
             fDoCheck = true;
@@ -509,7 +513,7 @@ bool lmTheApp::OnInit(void)
                     dsSpan = wxDateSpan::Months(1);
 
                 dtNextCheck = dtLastCheck;
-                dtNextCheck.Add(dsSpan); 
+                dtNextCheck.Add(dsSpan);
                 fDoCheck = (dtNextCheck <= wxDateTime::Now());
             }
 

@@ -188,7 +188,7 @@ void lmGraphicManager::PrepareForHighlight()
     // The score is going to be highlighted while played back. This method
     // saves de AGGDrawer bitmap buffers, to achive fast un-highlight by just
     // restoring the original bitmap.
-    wxLogMessage(_T("[lmGraphicManager::PrepareForHighlight]"));
+    //wxLogMessage(_T("[lmGraphicManager::PrepareForHighlight]"));
 
     //If this method is invoked, a score must be currently displayed. This implies
     //that Layout() has benn invoked and, therefore, a BoxScore object exists. 

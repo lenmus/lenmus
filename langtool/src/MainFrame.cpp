@@ -61,13 +61,16 @@ enum
     MENU_COMPILE_BOOK,
     MENU_GENERATE_PO,
 
+    // options menu
+    MENU_UTF8,
+
 };
 
 // supported languages table
 typedef struct lmLangDataStruct {
     wxString sLang;
     wxString sLangName;
-    wxString sLangCode;
+    wxString sCharCode;
 } lmLangData;
 
 #define lmNUM_LANGUAGES 4
@@ -96,6 +99,9 @@ BEGIN_EVENT_TABLE(ltMainFrame, wxFrame)
 
     // Installer menu
     EVT_MENU(MENU_INSTALLER, ltMainFrame::OnInstaller)
+
+    // Options menu
+    EVT_MENU(MENU_UTF8, ltMainFrame::OnToggleUTF8)
 
 END_EVENT_TABLE()
 
@@ -140,6 +146,10 @@ ltMainFrame::ltMainFrame(const wxString& title, const wxString& sRootPath)
     pBooksMenu->Append(MENU_COMPILE_BOOK, _T("&Compile eBook"), _T("Convert eBook to LMB format"));
     pBooksMenu->Append(MENU_GENERATE_PO, _T("&Generate .po file"), _T("Generate a Lang file for the eBook"));
 
+    // the Options menu
+    m_pOptMenu = new wxMenu;
+    m_pOptMenu->Append(MENU_UTF8, _T("&Generate utf-8"), 
+                _T("Generate files in utf-8 encoding"), wxITEM_CHECK);
 
 
     // now append the freshly created menus to the menu bar...
@@ -147,10 +157,15 @@ ltMainFrame::ltMainFrame(const wxString& title, const wxString& sRootPath)
     menuBar->Append(pFileMenu, _T("&File"));
     menuBar->Append(pBooksMenu, _T("&eBooks"));
     menuBar->Append(pInstMenu, _T("&Installer"));
+    menuBar->Append(m_pOptMenu, _T("&Options"));
     menuBar->Append(pHelpMenu, _T("&Help"));
 
     // ... and attach this menu bar to the frame
     SetMenuBar(menuBar);
+
+    // create status bar
+    CreateStatusBar(2);
+    SetStatusText((m_pOptMenu->IsChecked(MENU_UTF8) ? _T("utf-8") : _T("MB charset")), 1);
 
 }
 
@@ -182,6 +197,11 @@ void ltMainFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
     wxMessageBox(msg, _T("About LangTool"), wxOK | wxICON_INFORMATION, this);
 }
 
+void ltMainFrame::OnToggleUTF8(wxCommandEvent& WXUNUSED(event))
+{
+    SetStatusText((m_pOptMenu->IsChecked(MENU_UTF8) ? _T("utf-8") : _T("MB charset")), 1);
+}
+
 void ltMainFrame::OnInstaller(wxCommandEvent& WXUNUSED(event))
 {
     // loop to generate the file for each language
@@ -206,7 +226,7 @@ void ltMainFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
     ::wxBeginBusyCursor();
     lmEbookProcessor oEBP(0, m_pText);
     wxFileName oFSrc(sPath);
-    oEBP.GenerateLMB(sPath, _T("en"), lmLANG_FILE);
+    oEBP.GenerateLMB(sPath, _T("en"), _T("utf-8"), lmLANG_FILE);
     wxString sFolder = oFSrc.GetName();
 
     //create the PO files if they do not exist
@@ -220,7 +240,7 @@ void ltMainFrame::OnGeneratePO(wxCommandEvent& WXUNUSED(event))
         oFDest.SetExt(_T("po"));
         if (!oFDest.FileExists()) {     //if file does not exist
             LogMessage(_T("Creating PO file %s\n"), oFDest.GetFullName());
-            wxString sCharset = tLanguages[i].sLangCode;
+            wxString sCharset = tLanguages[i].sCharCode;
             wxString sLangName = tLanguages[i].sLangName;
             if (!oEBP.CreatePoFile(oFDest.GetFullPath(), sCharset, sLangName, sLang, sFolder)) {
                 LogMessage(_T("Error: PO file can not be created\n"));
@@ -300,6 +320,7 @@ void ltMainFrame::OnCompileBook(wxCommandEvent& WXUNUSED(event))
         if (rOptions.fLanguage[i]) {
             wxLocale* pLocale = (wxLocale*)NULL;
             wxString sLang = tLanguages[i].sLang;
+            wxString sCharCode = tLanguages[i].sCharCode;
             if (i != 0) {
                 pLocale = new wxLocale();
                 wxString sNil = _T("");
@@ -313,7 +334,8 @@ void ltMainFrame::OnCompileBook(wxCommandEvent& WXUNUSED(event))
                 LogMessage(_T("Locale changed to %s language (using %s)."),
                             pLocale->GetName(), sCatalogName + _T(".mo\n") );
             }
-            oEBP.GenerateLMB(rOptions.sSrcPath, sLang);
+            if (m_pOptMenu->IsChecked(MENU_UTF8)) sCharCode = _T("utf-8");
+            oEBP.GenerateLMB(rOptions.sSrcPath, sLang, sCharCode);
 
             if (i != 0) delete pLocale;
         }

@@ -51,7 +51,8 @@ public:
     lmEbookProcessor(int nDbgOptions=0, wxTextCtrl* pUserLog=(wxTextCtrl*)NULL);
     ~lmEbookProcessor();
 
-    bool GenerateLMB(wxString sFilename, wxString sLangCode, int nOptions=0);
+    bool GenerateLMB(wxString sFilename, wxString sLangCode, wxString sCharCode,
+                     int nOptions=0);
     bool CreatePoFile(wxString sFilename, wxString& sCharSet, wxString& sLangName,
                       wxString& sLangCode, wxString& sFolder);
 
@@ -134,7 +135,7 @@ private:
     bool StartLangFile(wxString sFilename);
     void WriteToLang(wxString sText);
         // LMB
-    bool StartLmbFile(wxString sFilename, wxString sLangCode);
+    bool StartLmbFile(wxString sFilename, wxString sLangCode, wxString sCharCode);
     void TerminateLmbFile();
     void CopyToLmb(wxString sFilename);
 
@@ -163,6 +164,7 @@ private:
     wxString        m_sTocFilename;
 
     // variables for html processing
+    wxString        m_sCharCode;            // charset code (i.e. 'utf-8', 'iso-8859-9') to use
     int             m_nHtmlIndentLevel;     // to indent output
     wxString        m_sHtmlPagename;        
     int             m_nHeaderLevel;
