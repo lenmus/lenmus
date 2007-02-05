@@ -1,3 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<content>
 <theme id="thm205">
 <titleabbrev>Lesson %d</titleabbrev>
 <title>8th note tied to group of one 8th and two 16th notes</title>
@@ -102,3 +105,4 @@ this rhythm.</para>
 </exercise>
 </theme>
 
+</content>

@@ -220,16 +220,20 @@ bool lmTheApp::OnInit(void)
 //// This remapping is only relevant for 16-colour tools, and messes up high-colour tools.
 ////You'll need to include wx/sysopt.h to access wxSystemOptions.
 //    wxLogMessage(_T("[App::OnInit] msw.remap=%s"), wxSystemOptions::GetOption(wxT("msw.remap")));
-//    wxSystemOptions::SetOption(wxT("msw.remap"), 0);
 //    if (wxTheApp->GetComCtl32Version() >= 600 && ::wxDisplayDepth() >= 32)
 //        wxSystemOptions::SetOption(wxT("msw.remap"), 2);
 //    else
 //        wxSystemOptions::SetOption(wxT("msw.remap"), 0);
 //
-//Convert your image to grayscale, using your favorite image editor. Submit the grayscale image as second (disabled) bitmap in wxToolBar::AddTool().
+//  Convert your image to grayscale, using your favorite image editor. Submit the grayscale
+//  image as second (disabled) bitmap in wxToolBar::AddTool().
 
-//Keep in mind that setting the system option msw.remap equal to "0" on Windows results in disabled icons drawing the same way they do on Windows platforms with ComCtl version less than 600 or a display color depth less than 32-bit which means that images with alpha (not talking about image masks) are not going to be supported even on versions of Windows that meet those requirements and do have support for icons with alpha transparency
-
+//  Keep in mind that setting the system option msw.remap equal to "0" on Windows
+//  results in disabled icons drawing the same way they do on Windows platforms with 
+//  ComCtl version less than 600 or a display color depth less than 32-bit which 
+//  means that images with alpha (not talking about image masks) are not going to 
+//  be supported even on versions of Windows that meet those requirements and do 
+//  have support for icons with alpha transparency
 
 //#endif
 
