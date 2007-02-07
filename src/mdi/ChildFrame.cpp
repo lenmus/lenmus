@@ -2,6 +2,13 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
+//    This file is derived from file src/generic/mdig.cpp from wxWidgets 2.7.1 project.
+//    Author:       Hans Van Leemputten
+//    Copyright (c) Hans Van Leemputten
+// 
+//    Modified by:
+//        Cecilio Salmeron
+//
 //    This program is free software; you can redistribute it and/or modify it under the 
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
@@ -55,7 +62,9 @@
 #endif
 
 
-#include "NotebookMDI.h"
+#include "ParentFrame.h"
+#include "ChildFrame.h"
+#include "ClientWindow.h"
 
 #include "wx/panel.h"
 #include "wx/menu.h"

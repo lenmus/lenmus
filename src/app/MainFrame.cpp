@@ -444,6 +444,18 @@ void lmMainFrame::CreateControls()
     if (!m_pToolbar && fToolBar) {
         CreateMyToolBar();
     }
+    
+    //create the MDI client window
+    long style = wxAUI_NB_CLOSE_ON_ACTIVE_TAB |
+                 wxAUI_NB_WINDOWLIST_BUTTON |
+                 wxAUI_NB_SCROLL_BUTTONS |
+                 wxAUI_NB_TAB_MOVE ;
+
+    m_pClientWindow = new lmMDIClientWindow(this, style);
+
+    m_mgrAUI.AddPane(m_pClientWindow, wxAuiPaneInfo().Name(wxT("notebook")).
+                  CenterPane().PaneBorder(false));
+    m_mgrAUI.Update();
 
 }
 

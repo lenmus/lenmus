@@ -51,7 +51,7 @@
 
 #include "HtmlWindow.h"
 
-#include "../mdi/NotebookMDI.h"
+#include "../mdi/ChildFrame.h"
 #include "BookData.h"
 
 #include "BookContentsBox.h"

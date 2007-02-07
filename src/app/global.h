@@ -56,7 +56,7 @@ extern bool gfDrawSelRec;        //draw selection rectangles around staff object
 
 // MDI style: Windows or Notebook
 // 0 for Windows MDI style, 1 for Notebook MDI style
-#define lmUSE_NOTEBOOK_MDI          0
+#define lmUSE_NOTEBOOK_MDI          1
 
 
 

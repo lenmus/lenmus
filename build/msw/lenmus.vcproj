@@ -1124,7 +1124,13 @@
 				RelativePath="..\..\src\mdi\ChildFrame.cpp">
 			</File>
 			<File
+				RelativePath="..\..\src\mdi\ChildFrame.h">
+			</File>
+			<File
 				RelativePath="..\..\src\mdi\ClientWindow.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\mdi\ClientWindow.h">
 			</File>
 			<File
 				RelativePath="..\..\src\mdi\DocViewMDI.cpp">
@@ -1133,10 +1139,10 @@
 				RelativePath="..\..\src\mdi\DocViewMDI.h">
 			</File>
 			<File
-				RelativePath="..\..\src\mdi\NotebookMDI.h">
+				RelativePath="..\..\src\mdi\ParentFrame.cpp">
 			</File>
 			<File
-				RelativePath="..\..\src\mdi\ParentFrame.cpp">
+				RelativePath="..\..\src\mdi\ParentFrame.h">
 			</File>
 		</Filter>
 	</Files>

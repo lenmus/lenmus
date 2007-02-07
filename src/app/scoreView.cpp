@@ -320,7 +320,15 @@ lmScoreView::~lmScoreView()
 bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
 {
     m_pFrame = wxGetApp().CreateProjectFrame(doc, this);
-    m_pFrame->SetTitle(_T("lmScoreView"));
+    m_pFrame->SetTitle(_T("Score"));
+
+    // Set frame title: the score title
+    lmScore *pScore = ((lmScoreDocument *)GetDocument())->GetScore();
+    if (pScore)
+        m_pFrame->SetTitle( pScore->GetScoreName() );
+    else
+        m_pFrame->SetTitle(_T("Score"));
+
     //wxColour colorBg(10,36,106);        //deep blue
     //wxColour colorBg(200, 200, 200);    // light grey
     wxColour colorBg(127, 127, 127);    // dark grey

@@ -536,6 +536,7 @@ public:
     void AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation pos,
                   wxString sFontName, int nFontSize, lmETextStyle nStyle);
     void WriteTitles(bool fMeasuring, lmPaper *pPaper);
+    wxString GetScoreName();
 
     // methods related to MusicXML import/export
     lmInstrument* XML_FindInstrument(wxString sId);

@@ -56,7 +56,7 @@ WX_DEFINE_OBJARRAY(lmTreeArray)
 IMPLEMENT_DYNAMIC_CLASS(lmBookContentsBox, lmContentsBoxCtrol)
 
 lmBookContentsBox::lmBookContentsBox(wxWindow* parent,
-                                     wxFrame* pFrame,
+                                     lmTextBookFrame* pFrame,
                                      wxWindowID id, 
                                      const wxPoint& pos,
                                      const wxSize& size, long style,
@@ -338,7 +338,7 @@ void lmBookContentsBox::ChangePage()
     if (m_PagesHash.size() > 0)
     {
 
-        wxString page = ((lmTextBookFrame*)m_pFrame)->GetOpenedPageWithAnchor();
+        wxString page = m_pFrame->GetOpenedPageWithAnchor();
         int nTree = -1;
         if (!page.empty()) {
             wxFileName oFN(page);

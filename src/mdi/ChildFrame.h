@@ -26,87 +26,18 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_NOTEBOOKMDI_H__
-#define __LM_NOTEBOOKMDI_H__
+#ifndef __LM_CHILDFRAME_H__
+#define __LM_CHILDFRAME_H__
 
-#include "../app/global.h"
+#include "../app/global.h"      //access to lmUSE_NOTEBOOK_MDI flag
 
 #if lmUSE_NOTEBOOK_MDI
 
-// ----------------------------------------------------------------------------
-// headers
-// ----------------------------------------------------------------------------
-
-#include "wx/frame.h"
 #include "wx/panel.h"
-#include "wx/notebook.h"
 
-extern WXDLLEXPORT_DATA(const wxChar) wxStatusLineNameStr[];
-
-
-//-----------------------------------------------------------------------------
-// classes
-//-----------------------------------------------------------------------------
 
 class lmMDIParentFrame;
 class lmMDIClientWindow;
-class lmMDIChildFrame;
-
-//-----------------------------------------------------------------------------
-// lmMDIParentFrame
-//-----------------------------------------------------------------------------
-
-class lmMDIParentFrame: public wxFrame
-{
-public:
-    lmMDIParentFrame();
-    lmMDIParentFrame(wxWindow *parent,
-                     wxWindowID winid,
-                     const wxString& title,
-                     const wxPoint& pos = wxDefaultPosition,
-                     const wxSize& size = wxDefaultSize,
-                     long style = wxDEFAULT_FRAME_STYLE | wxVSCROLL | wxHSCROLL,
-                     const wxString& name = wxFrameNameStr);
-
-    virtual ~lmMDIParentFrame();
-    bool Create( wxWindow *parent,
-                 wxWindowID winid,
-                 const wxString& title,
-                 const wxPoint& pos = wxDefaultPosition,
-                 const wxSize& size = wxDefaultSize,
-                 long style = wxDEFAULT_FRAME_STYLE | wxVSCROLL | wxHSCROLL,
-                 const wxString& name = wxFrameNameStr );
-
-
-    virtual void SetMenuBar(wxMenuBar *pMenuBar);
-    virtual bool ProcessEvent(wxEvent& event);
-
-    lmMDIChildFrame *GetActiveChild() const;
-    inline void SetActiveChild(lmMDIChildFrame* pChildFrame);
-
-    lmMDIClientWindow *GetClientWindow() const;
-
-    virtual void ActivateNext();
-    virtual void ActivatePrevious();
-    virtual void CloseAll();
-    virtual void CloseActive();
-
-    void RemoveChildFrame(lmMDIChildFrame* pChild);
-    void OnSize(wxSizeEvent& event);
-
-protected:
-    void Init();
-    virtual void DoGetClientSize(int *width, int *height) const;
-
-
-    lmMDIClientWindow   *m_pClientWindow;
-    lmMDIChildFrame     *m_pActiveChild;
-    wxMenuBar           *m_pMyMenuBar;
-
-private:
-    DECLARE_DYNAMIC_CLASS(lmMDIParentFrame)
-    DECLARE_EVENT_TABLE()
-};
 
 //-----------------------------------------------------------------------------
 // lmMDIChildFrame
@@ -186,40 +117,14 @@ private:
     friend class lmMDIClientWindow;
 };
 
-//-----------------------------------------------------------------------------
-// lmMDIClientWindow
-//-----------------------------------------------------------------------------
-
-class lmMDIClientWindow: public wxNotebook
-{
-public:
-    lmMDIClientWindow();
-    lmMDIClientWindow( lmMDIParentFrame *parent, long style = 0 );
-    virtual ~lmMDIClientWindow();
-
-    virtual int SetSelection(size_t nPage);
-    void OnSize(wxSizeEvent& event);
-
-protected:
-    void PageChanged(int OldSelection, int newSelection);
-
-    void OnPageChanged(wxNotebookEvent& event);
-
-private:
-    DECLARE_DYNAMIC_CLASS(lmMDIClientWindow)
-    DECLARE_EVENT_TABLE()
-};
-
 
 #else   // do not lmUSE_NOTEBOOK_MDI
 
 //use standard wxWidgets classes
-#define lmMDIParentFrame wxMDIParentFrame
-#define lmMDIClientWindow wxMDIClientWindow
 #define lmMDIChildFrame wxMDIChildFrame
 
 
 #endif  //lmUSE_NOTEBOOK_MDI
 
 
-#endif      // __LM_NOTEBOOKMDI_H__
+#endif      // __LM_CHILDFRAME_H__

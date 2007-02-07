@@ -2,8 +2,7 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This file is a modified copy of file src/generic/mdig.cpp from wxWidgets 2.7.1 project.
-//    wxWidgets licence is compatible with GNU GPL.
+//    This file is derived from file src/generic/mdig.cpp from wxWidgets 2.7.1 project.
 //    Author:       Hans Van Leemputten
 //    Copyright (c) Hans Van Leemputten
 // 
@@ -47,7 +46,9 @@
 #endif
 
 
-#include "NotebookMDI.h"
+#include "ParentFrame.h"
+#include "ChildFrame.h"
+#include "ClientWindow.h"
 
 //-----------------------------------------------------------------------------
 // lmMDIParentFrame
@@ -65,6 +66,10 @@
 //-----------------------------------------------------------------------------
 
 IMPLEMENT_DYNAMIC_CLASS(lmMDIParentFrame, wxFrame)
+
+BEGIN_EVENT_TABLE(lmMDIParentFrame, wxFrame)
+    EVT_SIZE(lmMDIParentFrame::OnSize)
+END_EVENT_TABLE()
 
 
 lmMDIParentFrame::lmMDIParentFrame()
@@ -87,18 +92,19 @@ lmMDIParentFrame::lmMDIParentFrame(wxWindow *parent,
 
 lmMDIParentFrame::~lmMDIParentFrame()
 {
-    // Make sure the client window is destructed before the menu bars are!
-    wxDELETE(m_pClientWindow);
-
-#if wxUSE_MENUS
-    if (m_pMyMenuBar)
-    {
-        delete m_pMyMenuBar;
-        m_pMyMenuBar = (wxMenuBar *) NULL;
-    }
-
-
-#endif // wxUSE_MENUS
+//    // Make sure the client window is destructed before the menu bars are!
+//    //wxDELETE(m_pClientWindow);
+//    if (m_pClientWindow) delete m_pClientWindow;
+//
+//#if wxUSE_MENUS
+//    if (m_pMyMenuBar)
+//    {
+//        delete m_pMyMenuBar;
+//        m_pMyMenuBar = (wxMenuBar *) NULL;
+//    }
+//
+//
+//#endif // wxUSE_MENUS
 }
 
 bool lmMDIParentFrame::Create(wxWindow *parent,
@@ -109,11 +115,12 @@ bool lmMDIParentFrame::Create(wxWindow *parent,
                               long style,
                               const wxString& name)
 {
-    //creates the paren frame
+    //creates the parent frame
     wxFrame::Create( parent, id, title, pos, size, style, name );
 
-    //creates the client window on it
-    m_pClientWindow = new lmMDIClientWindow( this, wxVSCROLL | wxHSCROLL );
+    ////creates the client window on it
+    m_pClientWindow  = (lmMDIClientWindow*) NULL;
+    //m_pClientWindow = new lmMDIClientWindow( this, wxVSCROLL | wxHSCROLL );
     return true;
 }
 
@@ -171,7 +178,7 @@ bool lmMDIParentFrame::ProcessEvent(wxEvent& event)
 lmMDIChildFrame *lmMDIParentFrame::GetActiveChild() const
 {
     if (m_pClientWindow)
-        return (lmMDIChildFrame*)m_pClientWindow->GetCurrentPage();
+        return m_pClientWindow->GetSelectedPage();
     else
         return (lmMDIChildFrame*)NULL;
 }
@@ -243,6 +250,14 @@ void lmMDIParentFrame::Init()
 #endif // wxUSE_MENUS
 }
 
+void lmMDIParentFrame::OnSize(wxSizeEvent& event)
+{
+    if (m_pClientWindow)
+        m_pClientWindow->OnSize(event);
+    else
+        event.Skip();
+}
+
 void lmMDIParentFrame::DoGetClientSize(int *width, int *height) const
 {
     wxFrame::DoGetClientSize( width, height );
@@ -284,7 +299,7 @@ void lmMDIParentFrame::RemoveChildFrame(lmMDIChildFrame* pChild)
 
     // if there are still pages, activate the choosen one
     if (nNextPage != -1) {
-        m_pClientWindow->ChangeSelection(nNextPage);
+        m_pClientWindow->SetSelection(nNextPage);
         //SetActiveChild( (lmMDIChildFrame*)m_pClientWindow->GetCurrentPage() );
     }
     //else {

@@ -128,6 +128,15 @@ void lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation tPos,
 
 }
 
+wxString lmScore::GetScoreName()
+{
+    // returns the name of this score. The name is assigned by user. ( or file name)
+    // todo:  For now, lets return first title if exists or 'Score'
+    wxString sName = _T("Score");
+    return sName;
+
+}
+
 int lmScore::GetNumMeasures()
 {
     //! @limit it is being assumed that all instruments and staves have the same number of bars

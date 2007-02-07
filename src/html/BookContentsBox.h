@@ -50,12 +50,13 @@ WX_DECLARE_STRING_HASH_MAP( int, lmPagesHash );
 
 
 class wxWindow;
+class lmTextBookFrame;
 
 class lmBookContentsBox : public lmContentsBoxCtrol
 {
 public:
     lmBookContentsBox() { }
-    lmBookContentsBox(wxWindow* parent, wxFrame* pFrame, wxWindowID id = wxID_ANY,
+    lmBookContentsBox(wxWindow* parent, lmTextBookFrame* pFrame, wxWindowID id = wxID_ANY,
             const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
             long style = 0, const wxString& name = lmHtmlListBoxNameStr);
     ~lmBookContentsBox();
@@ -100,7 +101,7 @@ private:
     void DoHandleItemClick(int item, int flags);
 
 
-    wxFrame*        m_pFrame;
+    lmTextBookFrame*    m_pFrame;
 
 
     // content data

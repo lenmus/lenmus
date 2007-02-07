@@ -32,16 +32,18 @@
 #endif
 
 
-#include "NotebookMDI.h"
+#include "ParentFrame.h"
+#include "ChildFrame.h"
+#include "ClientWindow.h"
+
 
 #ifndef WX_PRECOMP
     #include "wx/panel.h"
     #include "wx/menu.h"
     #include "wx/intl.h"
     #include "wx/log.h"
-#endif //WX_PRECOMP
+#endif
 
-//#include "wx/stockitem.h"
 
 //-----------------------------------------------------------------------------
 // lmMDIClientWindow
@@ -49,7 +51,7 @@
 //    have to cover the whole parent frame; other windows such as toolbars and 
 //    a help window might coexist with it. There can be scrollbars on a client 
 //    window, which are controlled by the parent window style.
-//    As client I will use wxNotebook
+//    As client I will use wxAuiNotebook
 //
 //    The MDIClientWindow object is created by the MDI parent frame, in the 
 //    constructor. And is deleted also by MDIParentFrame in its destructor.
@@ -58,10 +60,9 @@
 
 #define lmID_NOTEBOOK wxID_HIGHEST + 100
 
-IMPLEMENT_DYNAMIC_CLASS(lmMDIClientWindow, wxNotebook)
+IMPLEMENT_DYNAMIC_CLASS(lmMDIClientWindow, wxAuiNotebook)
 
-BEGIN_EVENT_TABLE(lmMDIClientWindow, wxNotebook)
-    //EVT_NOTEBOOK_PAGE_CHANGED(lmID_NOTEBOOK, lmMDIClientWindow::OnPageChanged)
+BEGIN_EVENT_TABLE(lmMDIClientWindow, wxAuiNotebook)
     EVT_SIZE(lmMDIClientWindow::OnSize)
 END_EVENT_TABLE()
 
@@ -72,26 +73,18 @@ lmMDIClientWindow::lmMDIClientWindow()
 
 lmMDIClientWindow::lmMDIClientWindow( lmMDIParentFrame *parent, long style )
 {
-    SetWindowStyleFlag(style);
-    wxNotebook::Create(parent, lmID_NOTEBOOK, wxPoint(0,0), 
-        wxSize(100, 100), 0);
+    //SetWindowStyleFlag(style);
+    wxAuiNotebook::Create(parent, lmID_NOTEBOOK, wxPoint(0,0), 
+        wxSize(100, 100), style);
 }
 
 lmMDIClientWindow::~lmMDIClientWindow()
 {
-    DestroyChildren();
 }
 
 int lmMDIClientWindow::SetSelection(size_t nPage)
 {
-    int oldSelection = wxNotebook::SetSelection(nPage);
-
-#if !defined(__WXMSW__) // No need to do this for wxMSW as wxNotebook::SetSelection()
-                        // will already cause this to be done!
-    // Handle the page change.
-    PageChanged(oldSelection, nPage);
-#endif
-
+    int oldSelection = wxAuiNotebook::SetSelection(nPage);
     return oldSelection;
 }
 
@@ -108,46 +101,11 @@ void lmMDIClientWindow::PageChanged(int OldSelection, int newSelection)
         if (child->GetMDIParentFrame()->GetActiveChild() == child)
             return;
     }
-
-    //// Notify old active child that it has been deactivated
-    //if (OldSelection != -1)
-    //{
-    //    lmMDIChildFrame* oldChild = (lmMDIChildFrame *)GetPage(OldSelection);
-    //    if (oldChild)
-    //    {
-    //        wxActivateEvent event(wxEVT_ACTIVATE, false, oldChild->GetId());
-    //        event.SetEventObject( oldChild );
-    //        oldChild->GetEventHandler()->ProcessEvent(event);
-    //    }
-    //}
-
-    //// Notify new active child that it has been activated
-    //if (newSelection != -1)
-    //{
-    //    lmMDIChildFrame* activeChild = (lmMDIChildFrame *)GetPage(newSelection);
-    //    if (activeChild)
-    //    {
-    //        wxActivateEvent event(wxEVT_ACTIVATE, true, activeChild->GetId());
-    //        event.SetEventObject( activeChild );
-    //        activeChild->GetEventHandler()->ProcessEvent(event);
-
-    //        if (activeChild->GetMDIParentFrame())
-    //        {
-    //            activeChild->GetMDIParentFrame()->SetActiveChild(activeChild);
-    //        }
-    //    }
-    //}
-}
-
-void lmMDIClientWindow::OnPageChanged(wxNotebookEvent& event)
-{
-    PageChanged(event.GetOldSelection(), event.GetSelection());
-    event.Skip();
 }
 
 void lmMDIClientWindow::OnSize(wxSizeEvent& event)
 {
-    wxNotebook::OnSize(event);
+    wxAuiNotebook::OnSize(event);
 
     size_t pos;
     for (pos = 0; pos < GetPageCount(); pos++)
@@ -156,5 +114,12 @@ void lmMDIClientWindow::OnSize(wxSizeEvent& event)
     }
 }
 
+lmMDIChildFrame* lmMDIClientWindow::GetSelectedPage()
+{
+    if (GetPageCount() > 0)
+        return (lmMDIChildFrame*)GetPage(GetSelection());
+    else
+        return (lmMDIChildFrame*) NULL;
+}
 
 #endif  //lmUSE_NOTEBOOK_MDI
