@@ -64,6 +64,7 @@ IMPLEMENT_DYNAMIC_CLASS(lmMDIClientWindow, wxAuiNotebook)
 
 BEGIN_EVENT_TABLE(lmMDIClientWindow, wxAuiNotebook)
     EVT_SIZE(lmMDIClientWindow::OnSize)
+    EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, lmMDIClientWindow::OnChildClose)
 END_EVENT_TABLE()
 
 
@@ -120,6 +121,20 @@ lmMDIChildFrame* lmMDIClientWindow::GetSelectedPage()
         return (lmMDIChildFrame*)GetPage(GetSelection());
     else
         return (lmMDIChildFrame*) NULL;
+}
+
+void lmMDIClientWindow::OnChildClose(wxAuiNotebookEvent& evt)
+{    
+    //Do not allow direct closing of lmMDIChildFrame by wxAuiNotebook as it deletes
+    //the child frames and this causes problems with the view/doc model.
+    //So lets veto page closing and proceed to a controlled close.
+    evt.Veto();
+
+    //proceed to a controlled close
+    int iPage = GetSelection();
+    GetPage(iPage)->Close();
+    RemovePage(iPage);
+
 }
 
 #endif  //lmUSE_NOTEBOOK_MDI

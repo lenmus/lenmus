@@ -108,7 +108,6 @@ void lmDocMDIParentFrame::OnCloseWindow(wxCloseEvent& event)
     event.Veto();
 }
 
-
 /*
  * Default document child frame for MDI children
  */

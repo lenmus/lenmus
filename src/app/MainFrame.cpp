@@ -364,6 +364,9 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_TOOL_RANGE(MENU_eBookPanel, MENU_eBook_IncreaseFont, lmMainFrame::OnBookFrame)
     EVT_UPDATE_UI_RANGE (MENU_eBookPanel, MENU_eBook_IncreaseFont, lmMainFrame::OnBookFrameUpdateUI)
 
+    //other events
+    EVT_CLOSE(lmMainFrame::OnCloseWindow)
+
 END_EVENT_TABLE()
 
 lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& title,
@@ -504,7 +507,6 @@ void lmMainFrame::CreateMyToolBar()
     m_pToolbar->SetToolBitmapSize(nSize);
     m_pToolbar->AddTool(MENU_Preferences, _("Preferences"), wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nSize), _("Set user preferences"));
     m_pToolbar->AddTool(MENU_OpenHelp, _("Help"), wxArtProvider::GetBitmap(_T("tool_help"), wxART_TOOLBAR, nSize), _("Help button"), wxITEM_CHECK);
-    m_pToolbar->AddTool(MENU_OpenBook, _("Books"), wxArtProvider::GetBitmap(_T("tool_open_ebook"), wxART_TOOLBAR, nSize), _("Show the music books"), wxITEM_CHECK);
     m_pToolbar->Realize();
 
     //File toolbar
@@ -514,7 +516,11 @@ void lmMainFrame::CreateMyToolBar()
             wxArtProvider::GetBitmap(_T("tool_new"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_new_dis"), wxART_TOOLBAR, nSize), 
             wxITEM_NORMAL, _("New score"));
-    m_pTbFile->AddTool(wxID_OPEN, _("Open"), wxArtProvider::GetBitmap(_T("tool_open"), wxART_TOOLBAR, nSize), _("Open score"));
+    m_pTbFile->AddTool(wxID_OPEN, _("Open"), wxArtProvider::GetBitmap(_T("tool_open"),
+            wxART_TOOLBAR, nSize), _("Open a score"));
+    m_pTbFile->AddTool(MENU_OpenBook, _("Books"), 
+            wxArtProvider::GetBitmap(_T("tool_open_ebook"), wxART_TOOLBAR, nSize),
+            _("Open the music books"));
     m_pTbFile->AddTool(wxID_SAVE, _("Save"), 
             wxArtProvider::GetBitmap(_T("tool_save"), wxART_TOOLBAR, nSize), 
             wxArtProvider::GetBitmap(_T("tool_save_dis"), wxART_TOOLBAR, nSize), 
@@ -783,7 +789,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     wxMenu* pExportMenu = new wxMenu; 
 
 #if defined(__WXMSW__) || defined(__WXGTK__)
-    //bitmaps on menus are supported only on Windoows and GTK+ 
+    //bitmaps on menus are supported only on Windows and GTK+ 
     wxMenuItem* pItem;
     wxSize nIconSize(16, 16);
 
@@ -795,9 +801,8 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_open"), wxART_TOOLBAR, nIconSize) ); 
     file_menu->Append(pItem); 
 
-    pItem = new wxMenuItem(file_menu, MENU_OpenBook, _("Open &books"), _("Hide/show eMusicBooks"), wxITEM_CHECK);
-    pItem->SetBitmaps( wxArtProvider::GetBitmap(_T("tool_open_ebook"), wxART_TOOLBAR, nIconSize),
-                       wxArtProvider::GetBitmap(_T("tool_open_ebook"), wxART_TOOLBAR, nIconSize) ); 
+    pItem = new wxMenuItem(file_menu, MENU_OpenBook, _("Open &books"), _("Hide/show eMusicBooks"), wxITEM_NORMAL);
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_open_ebook"), wxART_TOOLBAR, nIconSize) );
     file_menu->Append(pItem); 
 
     file_menu->Append(MENU_File_Import, _("&Import..."));
@@ -836,9 +841,10 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     file_menu->Append(wxID_EXIT, _("&Quit\tCtrl+Q"));
 
 #else
+    //No bitmaps on menus for other plattforms different from Windows and GTK+ 
     file_menu->Append(MENU_File_New, _("&New\tCtrl+N"), _("Open new blank score"), wxITEM_NORMAL);
     file_menu->Append(wxID_OPEN, _("&Open ...\tCtrl+O"), _("Open a score"), wxITEM_NORMAL );
-    file_menu->Append(MENU_OpenBook, _("Open &books"), _("Hide/show eMusicBooks"), wxITEM_CHECK);
+    file_menu->Append(MENU_OpenBook, _("Open &books"), _("Hide/show eMusicBooks"), wxITEM_NORMAL);
     file_menu->Append(MENU_File_Import, _("&Import..."));
     //export submenu -----------------------------------------------
     pExportMenu->Append(MENU_File_Export_bmp, _("As &bmp image"), _("Save score as BMP images"));
@@ -1078,6 +1084,14 @@ lmMainFrame::~lmMainFrame()
         delete m_pMainMtr;
     }
 
+}
+
+void lmMainFrame::OnCloseBookFrame()
+{
+    //the TexBookFrame has been closed. Clean up
+    delete m_pBookController;
+    m_pBookController = (lmTextBookController*)NULL;
+    m_fBookOpened = false;
 }
 
 void lmMainFrame::InitializeHelp()
@@ -1322,67 +1336,48 @@ void lmMainFrame::SetOpenHelpButton(bool fPressed)
 
 void lmMainFrame::OnOpenBook(wxCommandEvent& event)
 {
-    if (m_fBookOpened) {
-        //The book is open. Close it.
-        wxASSERT(m_pBookController);
-        m_pBookController->Quit();
-        delete m_pBookController;
-        m_pBookController = (lmTextBookController*)NULL;
-        m_fBookOpened = false;
-    }
-    else {
-        // open book
+    if (!m_fBookOpened)
+    {
+        // create book controller and load books
         m_fBookOpened = true;
-
-        // in case the previous window was closed directly, the controller still
-        // exists. So delete the old controller
-        if (m_pBookController) {
-            delete m_pBookController;
-            m_pBookController = (lmTextBookController*)NULL;
-        }
-
-        // create the new controller
         InitializeBooks();
         wxASSERT(m_pBookController);
 
-        // open it and display book "intro"
+        // display book "intro"
         m_pBookController->Display(_T("intro_thm0.htm"));     //By page name
     }
+    else
+        wxASSERT(false);
 
 }
 
 void lmMainFrame::OnOpenBookUI(wxUpdateUIEvent &event)
 {
-    event.Check (m_fBookOpened);
+    event.Enable(!m_fBookOpened);
 }
 
-void lmMainFrame::SetOpenBookButton(bool fPressed)
+void lmMainFrame::OnCloseWindow(wxCloseEvent& event)
 {
-    m_fBookOpened = fPressed;
+    // Invoked when the application is going to close the main window
+    // Override default method in lmDocMDIParentFrame, to close also the TextBookFrame
+
+    CloseAll();
+    lmDocMDIParentFrame::OnCloseWindow(event);
+
 }
 
 void lmMainFrame::OnWindowClose(wxCommandEvent& WXUNUSED(event))
 {
-    lmMDIChildFrame* pChild = GetActiveChild();
-    if (pChild && pChild->IsKindOf(CLASSINFO(lmTextBookFrame)) && m_pBookController)
-    {
-        // is the eBook manager. Close it
-        wxCommandEvent event(MENU_OpenBook);
-        OnOpenBook(event);
-    }
-    else
-    {
-        // it is a score. Close is managed by doc/view manager
-        wxCommandEvent event(wxID_CLOSE);
-        g_pTheApp->GetDocManager()->OnFileClose(event);
-    }
+    // Invoked from menu: Window > Close
+
+    CloseActive();
 }
 
 void lmMainFrame::OnWindowCloseAll(wxCommandEvent& WXUNUSED(event))
 {
-#if lmUSE_NOTEBOOK_MDI
+    // Invoked from menu: Window > Close all
+
     CloseAll();
-#endif  // lmUSE_NOTEBOOK_MDI
 }
 
 void lmMainFrame::OnWindowNext(wxCommandEvent& WXUNUSED(event))

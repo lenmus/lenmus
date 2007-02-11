@@ -37,7 +37,6 @@
 
 class wxDocManager;
 class lmMainFrame;
-class lmEditFrame;
 class lmScoreView;
 
 // Class lmTheApp defines the lenmus application
@@ -51,7 +50,6 @@ class lmTheApp: public wxApp
     int OnExit();
 
 
-    lmEditFrame* CreateProjectFrame(wxDocument* doc, wxView* view);
     void UpdateCurrentDocViews();
 
     // operations

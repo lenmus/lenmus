@@ -238,6 +238,30 @@ void lmMDIChildFrame::OnSize(wxSizeEvent& WXUNUSED(event))
     }
 }
 
+void lmMDIChildFrame::SetIcon(const wxIcon& icon)
+{
+
+    lmMDIClientWindow* pNotebook = m_pMDIParentFrame->GetClientWindow();
+
+    //get index to this page
+    size_t pos;
+    for (pos = 0; pos < pNotebook->GetPageCount(); pos++)
+    {
+        if (pNotebook->GetPage(pos) == this)
+        {
+            pNotebook->SetSelection(pos);
+            break;
+        }
+    }
+    wxASSERT(pos < pNotebook->GetPageCount());
+
+    //set bitmap
+    wxBitmap bitmap(icon);
+    pNotebook->SetPageBitmap(pos, bitmap);
+
+}
+
+
 /*** Copied from top level..! ***/
 // The default implementation for the close window event.
 void lmMDIChildFrame::OnCloseWindow(wxCloseEvent& WXUNUSED(event))

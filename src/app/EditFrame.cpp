@@ -61,8 +61,8 @@ IMPLEMENT_CLASS(lmEditFrame, lmDocMDIChildFrame)
 
 
 lmEditFrame::lmEditFrame(wxDocument* doc, wxView* view, lmMainFrame *mainFrame,
-                     wxPoint& pos, wxSize& size) :
-    lmDocMDIChildFrame(doc, view, mainFrame, wxID_ANY, _T("Child Frame"), pos, size, 
+                     const wxPoint& pos, const wxSize& size) :
+    lmDocMDIChildFrame(doc, view, mainFrame, wxID_ANY, _T("EditFrame"), pos, size, 
                         wxDEFAULT_FRAME_STYLE ) //| wxNO_FULL_REPAINT_ON_RESIZE)
 {
     m_pView = (lmScoreView *) view;

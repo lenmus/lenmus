@@ -166,6 +166,8 @@ public:
     void UpdateUIEvent(wxUpdateUIEvent& event, wxToolBar* pToolBar);
     double GetScale() { return m_rScale; }
 
+    //
+
 
 protected:
     void Init(lmBookData* data = NULL);

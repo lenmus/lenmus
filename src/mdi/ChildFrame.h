@@ -71,8 +71,8 @@ public:
     virtual void Activate();
 
 
-    // no icon
-    void SetIcon( const wxIcon& WXUNUSED(icon) ) { }
+    // icons
+    void SetIcon( const wxIcon& icon );
     void SetIcons( const wxIconBundle& WXUNUSED(icons) ) { }
 
     // no maximize etc

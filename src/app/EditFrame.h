@@ -43,7 +43,9 @@ class lmEditFrame: public lmDocMDIChildFrame
 {
     DECLARE_DYNAMIC_CLASS(lmEditFrame)
 public:
-    lmEditFrame(wxDocument* doc, wxView* view, lmMainFrame* mainFrame, wxPoint& pos, wxSize& size);
+    lmEditFrame(wxDocument* doc, wxView* view, lmMainFrame* mainFrame, 
+                const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize);
 
     // event handlers
     void OnSize(wxSizeEvent& WXUNUSED(event));

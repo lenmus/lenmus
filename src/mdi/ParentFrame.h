@@ -78,7 +78,7 @@ public:
     virtual void CloseAll();
     virtual void CloseActive();
 
-    void RemoveChildFrame(lmMDIChildFrame* pChild);
+    virtual void RemoveChildFrame(lmMDIChildFrame* pChild);
     void OnSize(wxSizeEvent& event);
 
 protected:

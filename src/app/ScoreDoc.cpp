@@ -40,8 +40,9 @@
 #endif
 
 #include "wx/filedlg.h"            // for File Selector Dialog
+#include "wx/filename.h"        
+
 #include "ScoreDoc.h"
-//#include "textView.h"
 #include "scoreView.h"
 #include "../ldp_parser/LDPParser.h"
 #include "../xml_parser/MusicXMLParser.h"
@@ -120,6 +121,8 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
     m_pScore = parser.ParseFile(filename);
     if (!m_pScore) return false;
 
+    wxFileName oFN(filename);
+    m_pScore->SetScoreName(oFN.GetFullName());
     SetFilename(filename, true);
     Modify(false);
     UpdateAllViews();
@@ -132,6 +135,8 @@ bool lmScoreDocument::OnImportDocument(const wxString& filename)
     m_pScore = parser.ParseMusicXMLFile(filename);
     if (!m_pScore) return false;
 
+    wxFileName oFN(filename);
+    m_pScore->SetScoreName(oFN.GetFullName());
     SetFilename(filename, true);
     Modify(false);
     UpdateAllViews();

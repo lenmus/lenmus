@@ -77,6 +77,7 @@ lmScore::lmScore()
     
     //initializations
     m_pSoundMngr = (lmSoundManager*)NULL;
+    m_sScoreName = _T("New score");
 
     //! @todo user options, not a constant
     m_nTopSystemDistance = lmToLogicalUnits(2, lmCENTIMETERS);    // 2 cm
@@ -130,12 +131,16 @@ void lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation tPos,
 
 wxString lmScore::GetScoreName()
 {
-    // returns the name of this score. The name is assigned by user. ( or file name)
-    // todo:  For now, lets return first title if exists or 'Score'
-    wxString sName = _T("Score");
-    return sName;
+    // returns the name of this score (the file name)
+    return m_sScoreName;
 
 }
+
+void lmScore::SetScoreName(wxString sName)
+{
+    m_sScoreName = sName;
+}
+
 
 int lmScore::GetNumMeasures()
 {

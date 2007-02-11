@@ -219,26 +219,31 @@ void lmMDIParentFrame::ActivatePrevious()
 
 void lmMDIParentFrame::CloseAll()
 {
-    while (GetActiveChild())
-    {
-        GetActiveChild()->Close();
+    int nNumPages = (int)m_pClientWindow->GetPageCount();
+    int iActive = m_pClientWindow->GetSelection();
+
+    //loop to close all pages but not the active one. This is to avoid having
+    //to activate (and repaint) a new page if we close the current active one.
+    for (int i=nNumPages-1; i >= 0; i--) {
+        if (i != iActive) {
+            m_pClientWindow->GetPage(i)->Close();
+            m_pClientWindow->RemovePage(i);
+        }
     }
+
+    //Now the only remaining page is the active one. Close it.
+    m_pClientWindow->GetPage(0)->Close();
+    m_pClientWindow->RemovePage(0);
 
 }
 
 void lmMDIParentFrame::CloseActive()
 {
     if(!m_pClientWindow) return;
+    int iActive = m_pClientWindow->GetSelection();
+    m_pClientWindow->GetPage(iActive)->Close();
+    m_pClientWindow->RemovePage(iActive);
 
-    lmMDIChildFrame* pActive = GetActiveChild();
-    if (pActive)
-    {
-        size_t active = m_pClientWindow->GetSelection();
-        if (active == -1) return;   //no pages
-        m_pClientWindow->RemovePage(active);
-
-        //DON'T DELETE THE CHILD WINDOW. It will be deleted by the view
-    }
 }
 
 
@@ -265,46 +270,49 @@ void lmMDIParentFrame::DoGetClientSize(int *width, int *height) const
 
 void lmMDIParentFrame::RemoveChildFrame(lmMDIChildFrame* pChild)
 {
-    //Check if this child was the active one
-    bool fIsActive = (GetActiveChild() == pChild);
-    
-    //locate the page position
-    int nPos;
-    if (fIsActive)
-        nPos = (int)m_pClientWindow->GetSelection();
-    else {
-        for (nPos = 0; nPos < (int)m_pClientWindow->GetPageCount(); nPos++) {
-            if (m_pClientWindow->GetPage(nPos) == pChild) break;    //found.
-        }
-        wxASSERT(nPos < (int)m_pClientWindow->GetPageCount());
-    }
+    //This code is no longer needed as wxAuiNotebook manages the removal of a tab
+    //So here nothing else must be done
 
-    //delete the page
-    m_pClientWindow->RemovePage(nPos);
-    //m_pClientWindow->Refresh();
-
-    //if the deleted page was the active one, select the next one as active
-    int nNextPage = -1;
-    if (fIsActive) {
-        // If there are more, chose the next page
-        int nNumPages = (int)m_pClientWindow->GetPageCount();
-        if (nNumPages > nPos) {
-            nNextPage = nPos;
-        }
-        // If there are pages, choose the previous one
-        else if (nNumPages != 0) {
-            nNextPage = nNumPages - 1;
-        }
-    }
-
-    // if there are still pages, activate the choosen one
-    if (nNextPage != -1) {
-        m_pClientWindow->SetSelection(nNextPage);
-        //SetActiveChild( (lmMDIChildFrame*)m_pClientWindow->GetCurrentPage() );
-    }
+    ////Check if this child was the active one
+    //bool fIsActive = (GetActiveChild() == pChild);
+    //
+    ////locate the page position
+    //int nPos;
+    //if (fIsActive)
+    //    nPos = (int)m_pClientWindow->GetSelection();
     //else {
-    //    SetActiveChild( (lmMDIChildFrame*) NULL );
+    //    for (nPos = 0; nPos < (int)m_pClientWindow->GetPageCount(); nPos++) {
+    //        if (m_pClientWindow->GetPage(nPos) == pChild) break;    //found.
+    //    }
+    //    wxASSERT(nPos < (int)m_pClientWindow->GetPageCount());
     //}
+
+    ////delete the page
+    //m_pClientWindow->RemovePage(nPos);
+    ////m_pClientWindow->Refresh();
+
+    ////if the deleted page was the active one, select the next one as active
+    //int nNextPage = -1;
+    //if (fIsActive) {
+    //    // If there are more, chose the next page
+    //    int nNumPages = (int)m_pClientWindow->GetPageCount();
+    //    if (nNumPages > nPos) {
+    //        nNextPage = nPos;
+    //    }
+    //    // If there are pages, choose the previous one
+    //    else if (nNumPages != 0) {
+    //        nNextPage = nNumPages - 1;
+    //    }
+    //}
+
+    //// if there are still pages, activate the choosen one
+    //if (nNextPage != -1) {
+    //    m_pClientWindow->SetSelection(nNextPage);
+    //    //SetActiveChild( (lmMDIChildFrame*)m_pClientWindow->GetCurrentPage() );
+    //}
+    ////else {
+    ////    SetActiveChild( (lmMDIChildFrame*) NULL );
+    ////}
 
 }
 

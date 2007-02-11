@@ -83,11 +83,11 @@ lmTextBookController::~lmTextBookController()
     if (m_Config)
         WriteCustomization(m_Config, m_ConfigRoot);
     if (m_pBookFrame)
-        DestroyHelpWindow();
+        DestroyBookFrame();
 }
 
 
-void lmTextBookController::DestroyHelpWindow()
+void lmTextBookController::DestroyBookFrame()
 {
     if (m_pBookFrame)
         m_pBookFrame->Destroy();
@@ -97,10 +97,15 @@ void lmTextBookController::OnCloseFrame(wxCloseEvent& evt)
 {
     evt.Skip();
 
-    OnQuit();
+    lmMainFrame* pMainFrame = (lmMainFrame*)m_pBookFrame->GetMDIParentFrame();
 
+    //clear pointers
     m_pBookFrame->SetController((lmTextBookController*) NULL);
     m_pBookFrame = NULL;
+
+    //inform parent
+    pMainFrame->OnCloseBookFrame();
+
 }
 
 void lmTextBookController::SetTitleFormat(const wxString& title)
@@ -143,7 +148,7 @@ bool lmTextBookController::AddBook(const wxFileName& book, bool show_wait_msg)
 
 
 
-void lmTextBookController::CreateHelpWindow()
+void lmTextBookController::CreateBookFrame()
 {
     //Creates the  book frame. It is created when a request to display a page
 
@@ -194,7 +199,7 @@ void lmTextBookController::UseConfig(wxConfigBase *config, const wxString& rootp
 
 bool lmTextBookController::Quit()
 {
-    DestroyHelpWindow();
+    DestroyBookFrame();
     return true;
 }
 
@@ -228,7 +233,7 @@ bool lmTextBookController::Display(const wxString& x)
 {
     //Creates the  book frame, if not created yet, and shows the requested file
 
-    CreateHelpWindow();
+    CreateBookFrame();
     bool fSuccess = m_pBookFrame->Display(x);
     AddGrabIfNeeded();
     return fSuccess;
@@ -237,7 +242,7 @@ bool lmTextBookController::Display(const wxString& x)
 bool lmTextBookController::Display(int id)
 {
     //Creates the  book frame, if not created yet, and shows the requested file
-    CreateHelpWindow();
+    CreateBookFrame();
     bool fSuccess = m_pBookFrame->Display(id);
     AddGrabIfNeeded();
     return fSuccess;
@@ -245,7 +250,7 @@ bool lmTextBookController::Display(int id)
 
 bool lmTextBookController::DisplayContents()
 {
-    CreateHelpWindow();
+    CreateBookFrame();
     bool success = m_pBookFrame->DisplayContents();
     AddGrabIfNeeded();
     return success;
@@ -253,7 +258,7 @@ bool lmTextBookController::DisplayContents()
 
 bool lmTextBookController::DisplayIndex()
 {
-    CreateHelpWindow();
+    CreateBookFrame();
     bool success = m_pBookFrame->DisplayIndex();
     AddGrabIfNeeded();
     return success;
@@ -262,19 +267,9 @@ bool lmTextBookController::DisplayIndex()
 bool lmTextBookController::KeywordSearch(const wxString& keyword,
                                          wxHelpSearchMode mode)
 {
-    CreateHelpWindow();
+    CreateBookFrame();
     bool success = m_pBookFrame->KeywordSearch(keyword, mode);
     AddGrabIfNeeded();
     return success;
-}
-
-//------------------------------------------------------------------------------------
-//CSG_ADDED:
-//  - implemented to un-press 'Open book' toolbar button
-//------------------------------------------------------------------------------------
-
-void lmTextBookController::OnQuit()
-{
-    g_pMainFrame->SetOpenBookButton(false);
 }
 

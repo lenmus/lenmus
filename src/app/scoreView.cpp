@@ -246,6 +246,8 @@ Virtual paper layout
 #include "../widgets/Ruler.h"
 #include "FontManager.h"
 #include "global.h"
+#include "ArtProvider.h"
+
 
 // access to main frame
 extern lmMainFrame *GetMainFrame();
@@ -315,19 +317,20 @@ lmScoreView::~lmScoreView()
 // The OnCreate function, called when the window is created
 // When a view is created (via main menu 'file > new'  or 'file > open') class wxDocTemplate
 // invokes ::CreateDocument and ::CreateView. This last one invokes ::OnCreate
-// In this method a child MDI frame is created  (.CreateProjectFrame), populated with the
+// In this method a child MDI frame is created, populated with the
 // needed controls and shown.
 bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
 {
-    m_pFrame = wxGetApp().CreateProjectFrame(doc, this);
-    m_pFrame->SetTitle(_T("Score"));
+    // create the frame and set its icon and default title
+    m_pFrame = new lmEditFrame(doc, this, GetMainFrame());
+    m_pFrame->SetIcon( wxArtProvider::GetIcon(_T("app_score"), wxART_TOOLBAR, wxSize(16,16)) );
 
     // Set frame title: the score title
     lmScore *pScore = ((lmScoreDocument *)GetDocument())->GetScore();
     if (pScore)
         m_pFrame->SetTitle( pScore->GetScoreName() );
     else
-        m_pFrame->SetTitle(_T("Score"));
+        m_pFrame->SetTitle(_T("New score"));
 
     //wxColour colorBg(10,36,106);        //deep blue
     //wxColour colorBg(200, 200, 200);    // light grey
@@ -611,6 +614,8 @@ void lmScoreView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
     if (m_pFrame) {
         m_pCanvas->Refresh();
         ResizeControls();
+        lmScore *pScore = ((lmScoreDocument *)GetDocument())->GetScore();
+        m_pFrame->SetTitle( pScore->GetScoreName() );
     }
 
 }
@@ -620,12 +625,13 @@ bool lmScoreView::OnClose(bool deleteWindow)
 {
     if (!GetDocument()->Close()) return false;
 
-    //SetFrame((wxFrame*)NULL);
     Activate(false);
 
     if (deleteWindow) {
-        delete m_pFrame;
-        m_pFrame = (lmEditFrame*) NULL;
+        if (m_pFrame) {
+            delete m_pFrame;
+            m_pFrame = (lmEditFrame*) NULL;
+        }
         return true;
     }
     return true;

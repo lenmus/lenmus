@@ -52,6 +52,7 @@ public:
     lmMDIChildFrame* GetSelectedPage();
     int SetSelection(size_t nPage);
     void OnSize(wxSizeEvent& event);
+    void OnChildClose(wxAuiNotebookEvent& evt);
 
 protected:
     void PageChanged(int OldSelection, int newSelection);
@@ -66,7 +67,6 @@ private:
 
 //use standard wxWidgets classes
 #define lmMDIClientWindow wxMDIClientWindow
-
 
 #endif  //lmUSE_NOTEBOOK_MDI
 

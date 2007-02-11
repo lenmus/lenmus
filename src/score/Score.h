@@ -536,7 +536,10 @@ public:
     void AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation pos,
                   wxString sFontName, int nFontSize, lmETextStyle nStyle);
     void WriteTitles(bool fMeasuring, lmPaper *pPaper);
+
+    // identification
     wxString GetScoreName();
+    void SetScoreName(wxString sName);
 
     // methods related to MusicXML import/export
     lmInstrument* XML_FindInstrument(wxString sId);
@@ -591,6 +594,7 @@ private:
     wxInstrumentsListNode*  m_pNode;        //last returned instrument node
     StaffObjsList   m_cGlobalStaffobjs;     //list of other StaffObjs not included in an lmVStaff
     long            m_nID;                  //unique ID for this score
+    wxString        m_sScoreName;           //for user identification
 
 };
 

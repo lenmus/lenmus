@@ -63,6 +63,8 @@ public:
     void OnMRUFile(wxCommandEvent& event);
     void OnCloseWindow(wxCloseEvent& event);
 
+
+
 protected:
     void Init();
     wxDocManager *m_docManager;

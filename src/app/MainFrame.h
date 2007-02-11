@@ -55,6 +55,7 @@ class lmTextBookController;
 class lmHtmlWindow;
 class lmHelpController;
 class lmMetronome;
+class lmMDIChildFrame;
 
 
 //IDs for menu events that must be public (i.e. to generate them by program)
@@ -196,15 +197,18 @@ public:
     void OnMetronomeUpdate(wxSpinEvent& WXUNUSED(event));
     void OnMetronomeUpdateText(wxCommandEvent& WXUNUSED(event));
 
-    //textbook events
+    //textbook events and methods
     void OnBookFrame(wxCommandEvent& event);
     void OnBookFrameUpdateUI(wxUpdateUIEvent& event);
+    void OnCloseBookFrame();
 
     // other methods
-    void SetOpenBookButton(bool fButtonPressed);
     void SetOpenHelpButton(bool fButtonPressed);
     void UpdateToolbarsLayout();
     void SilentlyCheckForUpdates(bool fSilent);
+
+    //other events
+    void OnCloseWindow(wxCloseEvent& event);
 
     //options
     bool ShowRulers();
@@ -219,6 +223,7 @@ public:
 
 
     lmTextBookController* GetBookController() { return m_pBookController; }
+
 
 
 protected:

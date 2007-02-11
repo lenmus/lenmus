@@ -735,33 +735,6 @@ void lmTheApp::UpdateCurrentDocViews(void)
 
 }
 
-//
-// Centralised code for creating a document frame.
-// Called from scoreview.cpp, when a view is created.
-/*! @todo this is no longer needed here as CreateMenuBar is no longer invoked. So move
-    this to EditFrame.cpp
-    Chage to create frame maximized?
-    set icon ?
-*/
-lmEditFrame* lmTheApp::CreateProjectFrame(wxDocument* doc, wxView* view)
-{
-    //Get the size of the main frame client area
-    int nWidth, nHeight;
-    GetMainFrame()->GetClientSize(&nWidth, &nHeight);
-
-    // Create a child frame
-    int nToolbarHeight = 100;       //! @todo get toolbar height to discount it
-    wxSize size(nWidth-20, nHeight-nToolbarHeight-20);
-    wxPoint pos(10, 10);
-    lmEditFrame* pEditFrame = new lmEditFrame(doc, view, GetMainFrame(), pos, size);
-
-    //set icon
-    //! @todo Find a better icon
-    pEditFrame->SetIcon( wxArtProvider::GetIcon(_T("tool_new"), wxART_TOOLBAR, wxSize(16,16)) );
-
-    return pEditFrame;
-}
-
 wxString lmTheApp::GetVersionNumber()
 {
     // Increment this every time you release a new version

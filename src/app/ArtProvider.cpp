@@ -207,7 +207,7 @@ wxBitmap lmArtProvider::CreateBitmap(const wxArtID& id,
 
     // other IDs
     else {
-        wxLogMessage(_T("[lmArtProvider::CreateBitmap] id=<%s>, client=<%s>"), id, client);
+        sFile = id;
     }
 
     wxFileName oFilename = wxFileName(sPath, sFile + sSize, wxPATH_NATIVE);

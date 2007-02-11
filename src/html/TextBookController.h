@@ -81,7 +81,6 @@ public:
     lmBookData *GetHelpData() { return &m_oBookData; }
 
     bool Quit() ;
-    void OnQuit();                      //CSG_MODIFIED: implemented
     void OnCloseFrame(wxCloseEvent& evt);
 
 
@@ -89,8 +88,8 @@ public:
     void AddGrabIfNeeded();
 
 protected:
-    virtual void CreateHelpWindow();
-    virtual void DestroyHelpWindow();
+    virtual void CreateBookFrame();
+    virtual void DestroyBookFrame();
 
     lmBookData          m_oBookData;
     lmTextBookFrame*    m_pBookFrame;
