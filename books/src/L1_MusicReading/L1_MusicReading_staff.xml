@@ -1,0 +1,99 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<theme id="staff">
+<title>The staff</title>
+
+<para>In the Western musical notation system music is written on specially printed 
+paper called 'manuscript paper' (see next picture):
+</para>
+
+<!-- image: manuscript paper -->
+
+<para>The manuscript paper is organized as sets of horizontal lines, named 'staves', and
+each group of horizontal lines is called a 'staff' (in British English the word 'staff'
+is old-fashioned and rarely used; the word 'stave' is used instead).
+A staff is a set of five horizontal lines, 
+numbered from bottom to top; the bottom line is the first line and the top line 
+is the fifth line:
+</para>
+
+<!-- staff with labelled lines: 1,2,..5 -->
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language es iso-8859-1)
+         (instrumento
+          (datosMusica (clave Sol noVisible)(tonalidad Do)
+           (metrica 2 4 noVisible)(texto &quot;line 1&quot; dx:50 dy:55)
+           (barra Doble noVisible) )))
+    </music>
+</score>
+
+<para>
+The four spaces between the staff lines, are important and are also numbered 
+from bottom to top:</para>
+
+<!-- staff with labelled spaces: 1,2,3,4 -->
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language es iso-8859-1)
+         (instrumento
+          (datosMusica (clave Sol noVisible)(tonalidad Do)
+           (metrica 2 4 noVisible)(texto &quot;space 1&quot; dx:50 dy:55)
+           (barra Doble noVisible) )))
+    </music>
+</score>
+
+<para>
+The musical symbols are placed on the staff and the music on the staff is read 
+from left to right.
+</para>
+
+<para>
+The symbols for notes are placed either on a 
+line or on a space and the musical pitch (sound) is determined by the position
+of the note on the staff. Notes on the higher lines/spaces have higher pitch than 
+those on the lower ones:
+</para>
+
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language es iso-8859-1)
+         (instrumento
+          (datosMusica (clave Sol noVisible)(tonalidad Do)
+            (metrica 2 4 noVisible)
+            (texto &quot;First note has higher pitch than second one&quot; dx:0 dy:80)
+            (n c5 r)(n e4 r)
+            (barra Doble noVisible) )))
+    </music>
+</score>
+
+<para>
+As an example, press the 'Play' link and lesson to the next score:
+</para>
+
+<!-- scale to play, no key, no time signature, no other symbol, only whole notes -->
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play></control_play>
+    <music>
+        (score (vers 1.5)(language es iso-8859-1)
+         (instrumento
+          (datosMusica (clave Sol noVisible)(tonalidad Do)
+            (metrica 2 4 noVisible)
+            (n e4 r)(n f4 r)(n g4 r)(n a4 r)(n b4 r)(n c5 r)
+            (n d5 r)(n e5 r)(n f5 r)
+            (barra Doble noVisible) )))
+    </music>
+</score>
+
+
+</theme>

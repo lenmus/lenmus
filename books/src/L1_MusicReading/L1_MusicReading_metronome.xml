@@ -1,0 +1,120 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<content>
+<theme id="metronome">
+<title>The tempo and the metronome</title>
+
+<part>
+<title>The tempo</title>
+
+<para>
+The tempo of a piece of music is its speed, that is, how fast or slow the beats should 
+go. But the time signature does not give you an idea about this, as it only says
+how many beats there are in a measure. In written music there are two ways to specify the
+tempo of a piece of music. Traditionally, composers relied on using verbal descriptions,
+writing indications such as 'Slow', 'Very fast', or 'Calmly'. These tempo words are
+normally written in Italian and are very common, even today. You should learn them:
+</para>
+
+<itemizedlist>
+<listitem>Largo - very slow and broad</listitem>
+<listitem>Larghetto - not quite as slow as largo</listitem>
+<listitem>Lento - very slow</listitem>
+<listitem>Adagio - slow</listitem>
+<listitem>Andante - literally 'walking', a medium slow tempo</listitem>
+<listitem>Moderato - moderate, or medium</listitem>
+<listitem>Allegretto - Not as fast as allegro</listitem>
+<listitem>Allegro - fast</listitem>
+<listitem>Vivo, or Vivace - lively and brisk</listitem>
+<listitem>Presto - very fast</listitem>
+<listitem>Prestissimo - very, very fast</listitem>
+</itemizedlist>
+
+    
+<para>
+The modern way to specify tempo is by giving the number of beats per minute. 
+This is represented in the score by the letters 'm.m.' followed by the beats per minute rate.
+This indication is normally written at the beginning:
+</para>
+
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language es iso-8859-1)
+         (instrumento
+          (datosMusica (clave Sol)(tonalidad Do)
+            (metrica 2 4)
+            (texto &quot;m.m. = 60&quot; dx:-20 dy:-10)
+            (n e4 n)(n g4 n)(barra Simple)
+            (n g4 n)(n a4 n)(barra Simple)
+            (n f4 n)(n c5 n)(barra Final) )))
+    </music>
+</score>
+
+<para>
+Instead of letters 'm.m.' also note symbols are used:
+</para>
+
+
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language es iso-8859-1)
+         (instrumento
+          (datosMusica (clave Sol)(tonalidad Do)
+            (metrica 2 4)
+            (texto &quot;m.m. = 60&quot; dx:-20 dy:-10)
+            (n e4 n)(n g4 n)(barra Simple)
+            (n g4 n)(n a4 n)(barra Simple)
+            (n f4 n)(n c5 n)(barra Final) )))
+    </music>
+</score>
+
+</part>
+
+
+
+<part>
+<title>The metronome</title>
+
+<para>
+The metronome is a device that produces click sounds on regular basis. The speed can
+be easily adjusted to the required rate. It was invented by Johann Mälzel in 1816. The
+m.m. letters for tempo indication comes after 'Mälzel metronome'.
+</para>
+
+<para>
+The traditional metronomes are mechanic, based on a pendulum with a rod. The pendulum rod swings back and forth in tempo, producing a 'tick' sound on each swing.
+Modern metronomes are electronic. Next figure shows some examples of both types:
+</para>
+
+<para>
+LenMus program metronome description
+</para>
+
+
+<para>
+As an orientation, following table gives the assignment between traditional tempo terms
+and metronome settings:
+</para>
+
+<itemizedlist>
+<listitem>Largo: 40-49</listitem>
+<listitem>Adagio: 50-59</listitem>
+<listitem>Andante: 60-79</listitem>
+<listitem>Moderato: 80-99</listitem>
+<listitem>Allegretto: 100-119</listitem>
+<listitem>Aallegro: 120-159</listitem>
+<listitem>Presto: 160-179</listitem>
+<listitem>Prestissimo: 180-200</listitem>
+</itemizedlist>
+
+</part>
+
+</theme>
+
+</content>

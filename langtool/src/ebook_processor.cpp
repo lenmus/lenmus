@@ -1186,10 +1186,16 @@ wxString lmEbookProcessor::GetParentNumber()
     // theme is '2.4.7' this method returns '2.4'
 
     wxString sTitleNum = wxEmptyString;
-    if (m_nTitleLevel >= 0)
+    if (m_nTitleLevel >= 0) {
         sTitleNum = wxString::Format(_T("%d"), m_nNumTitle[0] );
-    for (int i=1; i < m_nTitleLevel; i++) {
-        sTitleNum += wxString::Format(_T(".%d"), m_nNumTitle[i] );
+        for (int i=1; i < m_nTitleLevel; i++) {
+            sTitleNum += wxString::Format(_T(".%d"), m_nNumTitle[i] );
+        }
+    }
+    else {
+        // title level is < 0. This is because it is a theme not in toc.
+        // lets return previous theme number
+        sTitleNum = wxString::Format(_T("%d"), m_nNumTitle[0] );
     }
     
     return  sTitleNum;

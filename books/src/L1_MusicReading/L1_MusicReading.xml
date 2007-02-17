@@ -8,11 +8,17 @@
     <!ENTITY uacute "&#250;" >
     <!ENTITY ntilde "&#241;" >
     <!ENTITY Ntilde "&#209;" >
-    <!ENTITY theme1 SYSTEM "L1_MusicReading_1.xml">
-    <!ENTITY theme2 SYSTEM "L1_MusicReading_2.xml">
-    <!ENTITY theme3 SYSTEM "L1_MusicReading_3.xml">
-    <!ENTITY theme4 SYSTEM "L1_MusicReading_4.xml">
-    <!ENTITY theme5 SYSTEM "L1_MusicReading_5.xml">
+    <!ENTITY theme1 SYSTEM "L1_MusicReading_staff.xml">
+    <!ENTITY theme2 SYSTEM "L1_MusicReading_clef.xml">
+    <!ENTITY theme3 SYSTEM "L1_MusicReading_notes.xml">
+    <!ENTITY theme4 SYSTEM "L1_MusicReading_measure.xml">
+    <!ENTITY theme5 SYSTEM "L1_MusicReading_time.xml">
+    <!ENTITY theme6 SYSTEM "L1_MusicReading_time24.xml">
+    <!ENTITY theme7 SYSTEM "L1_MusicReading_metronome.xml">
+    <!ENTITY theme8 SYSTEM "L1_MusicReading_1.xml">
+    <!ENTITY theme9 SYSTEM "L1_MusicReading_2.xml">
+    <!ENTITY theme10 SYSTEM "L1_MusicReading_3.xml">
+    <!ENTITY theme11 SYSTEM "L1_MusicReading_4.xml">
 ]>
 
 <book id="L1_MusicReading">
@@ -83,22 +89,19 @@ introduced in Level 1 are:</para>
 <title>Book organization</title>
 
 <para>
-This course has 31 lessons covering the following material:</para>
+This course has xx lessons covering the following material:</para>
 
-<para>
-Music notation basics:
-
-<!--    
-Clefs and  y itos:
-    En las primeras lecciones s* se usa la clave de Sol (lecciones 1 a 7) con un
-    *ito muy reducido (e4-g4). Progresivamente el *ito va aumentando para llegar,
-    en la lecci* 7 a c4-f5.
-    En la lecci* 8 se introduce la clave de Fa en 4* de nuevo con un *ito muy
-    reducido (a3;c4) y a partir de ah*n todas las lecciones siguientes
-    (8 a 26) se usa indistintamente la clave de Fa y la de Sol, cada una de ellas
-    con *itos progresivos, para finalizar con dos l*as adicionales por arriba
-    y por abajo en ambas claves (Sol: a3-c6 y Fa: a2-e4).
-
+<itemizedlist>
+<listitem>Clefs and note ranges: 
+    The course starts with the G clef using a very reduced note range (e4-g4).
+    Progressively, the note range is increased to reach, in lesson x, the range
+    c4-f5. Next the F key is introduced, again with a very reduced note range (a3;c4)
+    and from there the exercises of all following lessons use, indistinctely, 
+    F and G clef. The notes reange is continuosly being broaden to cover two leger lines, 
+    avove and below, in both clefs (G: a3-c6 y F: a2-e4).
+</listitem>
+</itemizedlist>
+<!--
 Time signatures:
     En las primeras lecciones (1 a 10) s* se usa el 2/4. Luego, progresivamente se
     amplia a 3/4 (lecciones 11 y 12)
@@ -110,8 +113,6 @@ Key signatures:
     una alteraci*(lecciones 3-10). Y en el resto del curso se
     manejan hasta dos alteraciones (lecciones 11-26).
 -->
-
-</para>
 
 </theme>
 
@@ -141,5 +142,11 @@ the new concepts introduced.</listitem>
 &theme3;
 &theme4;
 &theme5;
+&theme6;
+&theme7;
+&theme8;
+&theme9;
+&theme10;
+&theme11;
 
 </book>

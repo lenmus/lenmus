@@ -1,57 +1,107 @@
 <!-- =============================================== -->
 <!-- eMusicBook: Music reading. Level 1.             -->
-<!--             Measures and Bar lines              -->
 <!-- =============================================== -->
 
-<theme id="measure">
-<title>Measures and Bar lines</title>
+<content>
+<theme id="mr1_thm3">
+<title>Leger lines</title>
 
 <para>
-It is helpful to 'parcel up' the consecutive notes and rests into groups named 'measures'
-(in British English the word 'bar' is used instead of 'measure').
-All measures have the same temporal duration and, as any piece of music
-has always a pulsating rythm, the 'measures' are always composed by a fixed number of
-'beats'.
+When it is necessary to write a note higher or lower than the pitch represented
+by the staff lines, extra lines can be added to the staff. They are called 'leger lines'
+and are drawn as short lines, slightly longer than the note head. For example, next 
+score shows the natural scale starting on C:
 </para>
 
-<para>
-On the staff, the end of each measure is marked with a thin vertical line, drawn from the
-top line to the bottom line of the staff. This line is called a bar line. There are different
-types of bar lines, that are used for special purposes. For example, the end of the
-last measure
-of a piece of music is marked with a double bar line, being the fist line thin and the second
-one thick. The thin double bar line (two thin lines) is used to mark sections within a
-piece of music.
-</para>
-
-<!-- bar lines -->
-<score width="600" height="120" border="0">
-    <score_type>short_15_es</score_type>
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
     <music_border>0</music_border>
+    <control_play></control_play>
     <music>
-        (metrica 2 4 noVisible)(texto &quot;simple barlines&quot; dx:0 dy:-10)
-        (n g4 r noVisible)(barra Simple)
-        (n g4 r noVisible)(barra Simple)
-        (n g4 r noVisible)(barra Simple)
-        (texto &quot;duoble barline&quot; dx:0 dy:80)(n g4 r noVisible)(barra Doble)
-        (n g4 r noVisible)(barra Simple)
-        (n g4 r noVisible)(barra Simple)
-        (n g4 r noVisible)(barra Simple)
-        (texto &quot;final barline&quot; dx:0 dy:-10)(n g4 r noVisible)(barra Final)
+        (score (vers 1.5)(language es iso-8859-1)
+         (instrumento
+          (datosMusica (clave Sol)(tonalidad Do)
+            (metrica 2 4 noVisible)
+            (n c4 n)(n d4 n)
+            (n e4 n)(n f4 n)(n g4 n)(n a4 n)(n b4 n)(n c5 n)
+            (barra Final) )))
     </music>
 </score>
 
+<para>
+Leger lines can also be added on top, for high pitch notes:
+</para>
 
-<!--
-Resulta muy útil subdividir la partitura en unidades llamadas 'compases', conjuntos 
-de notas agrupar las notas 
--->
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play></control_play>
+    <music>
+        (score (vers 1.5)(language es iso-8859-1)
+         (instrumento
+          (datosMusica (clave Sol)(tonalidad Do)
+            (metrica 2 4 noVisible)
+            (n a3 n)(n b3 n)
+            (n c4 n)(n d4 n)
+            (n e4 n)(n f4 n)(n g4 n)(n a4 n)(n b4 n)(n c5 n)
+            (n d5 n)(n e5 n)(n f5 n)(n g5 n)(n a5 n)(n b5 n)
+            (n c6 n)(n d6 n)
+            (barra Final) )))
+    </music>
+</score>
 
 <para>
-Línea divisoria: encargada de delimitar los compases. Al final de la lección será 
-más gruesa. Se llama 'doble barra'. Notas: do mi sol. Do es el sonido más grave de 
-estos 3. Mi es el intermedio, y sol el más agudo.
+As notes written on leger lines are more difficult to read, usually only two
+or three leger lines are used. If the pitch range does not fit on this
+extended staff, it is usually preferable to switch clef to avoid having
+to add more leger lines.
 </para>
+
+<para>
+In the exercises of this lesson we are going to start reading scores with
+one leger line. In following lessons the range will be extended.
+</para>
+
+<part>
+<title>Exercises</title>
+
+<para>
+<link linkend="mr1_thm3_E1">Exercise 1</link> - Practise reading scores with 
+leger lines.
+</para>
+
+</part>
 
 </theme>
 
+<!-- ====================== -->
+<!-- Exercise 1  -->
+<!-- ====================== -->
+
+<theme id="mr1_thm3_E1" toc="no">
+<titleabbrev>Lesson %d. Exercise 1</titleabbrev>
+<title>Leger lines</title>
+
+<para>Practise reading scores with leger lines.</para>
+
+<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+    <control_go_back>mr1_thm3</control_go_back>
+    <control_play></control_play>
+    <control_solfa></control_solfa>
+    <clef>Sol;c4;c5</clef>
+    <key>Do</key>
+    <time>24</time>
+    <fragment>24;(n * n)(n * n),(n * n)(n * n),(n * b),(s b)</fragment>
+    <fragment>24;(s n)(n * n),(n * n)(n * n),(n * b),(s b)</fragment>
+    <fragment>24;(s n)(n * n),(n * n)(n * n)</fragment>
+    <fragment>24;(n * b),(n * n)(n * n),(n * n)(s n)</fragment>
+    <fragment>24;(n * n)(s n)</fragment>
+    <fragment>24;(s n)(n * n)</fragment>
+    <fragment>24;(n * b)</fragment>
+    <fragment>24;(n * n l)(n * n)</fragment>
+    <fragment>24;(s b)</fragment>
+</exercise>
+
+</theme>
+
+</content>

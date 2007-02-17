@@ -1,61 +1,121 @@
 <!-- =============================================== -->
 <!-- eMusicBook: Music reading. Level 1.             -->
-<!--             Lesson 2: The clef                 -->
 <!-- =============================================== -->
 
-<theme id="clef">
-<title>The clef</title>
+<content>
+<theme id="mr1_thm2">
+<title>The half note and its rest. Ties</title>
+<tocimage>img102.png</tocimage>
+
+<part>
+<title>The half note and its rest</title>
 
 <para>
-To determine which pitch is represented by each line and space in the staff a symbol, named
-'the clef' is placed at the beginning of each staff. In this course we are going to start
-with the study of the G clef, also named 'treble clef', that is represented by the
-following symbol:
+In this lesson we are going to learn a new note symbol and its rest: the half note.
+The following score shows a half note and the half rest:
 </para>
 
-<!-- Empty staff with a G clef -->
-<score width="600" height="100" border="0">
+<score width="600" height="70" border="0">
     <score_type>short</score_type>
     <music_border>0</music_border>
     <music>
-        (Metrica 2 4 noVisible)(Barra Doble noVisible))
-    </music>
-</score>
-
-
-<para> The clef assigns a particular line 
-to a specific pitch, and all other pitches are mapped in ascending and descending order to
-the lines and spaces above and below that reference line. In the G clef, the G note of 
-the four octave is assigned
-to the second line:
-</para>
-
-<!-- staff with a G clef and notes on all spaces and lines, with their names -->
-<score width="600" height="70" border="0">
-    <score_type>short_15_es</score_type>
-    <music_border>0</music_border>
-    <music>
-        (metrica 2 4 noVisible)(texto &quot;G note&quot; dx:0 dy:-10)
-        (n g4 r)(barra Doble noVisible)
+        (Metrica 4 4 NoVisible)(n a4 b)(s b)(Barra Final))
     </music>
 </score>
 
 <para>
-As a result, the staff lines and spaces get automatically assigned
-to consecutive notes, as shown in the next score:
+One half note equals two quarter notes and one half rest equals two quarter rests.
+So in time 2/4 a half note or rest gets two beats, and, therefore, takes a whole
+measure:
 </para>
 
-<!-- staff with a G clef and notes on all spaces and lines, with their names -->
-<score width="600" height="70" border="0">
-    <score_type>short_15_es</score_type>
+<score width="600" height="100" border="0">
+    <score_type>short</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
     <music>
-        (metrica 2 4 noVisible)(texto &quot;E  F  G  A  B  C  D  E  F&quot; dx:0 dy:-10)
-        (n e4 r)(n f4 r)(n g4 r)(n a4 r)(n b4 r)(n c5 r)
-        (n d5 r)(n e5 r)(n f5 r)(barra Doble noVisible)
+        (Metrica 2 4)(n * n)(n * n)(Barra Simple))
+        (c (n * b)(Barra Doble))
+        (c (s b)(Barra Final))
     </music>
 </score>
 
+</part>
+
+<part>
+<title>Ties</title>
+
+<para>
+A tie is a small arch connecting two consecutive notes of the same pitch. For example:
+</para>
+
+<score width="600" height="70" border="0">
+    <score_type>short</score_type>
+    <music_border>0</music_border>
+    <music>
+        (Metrica 2 4)(n * n l)(n * n)(Barra Final))
+    </music>
+</score>
+
+<para>The tie symbol indicates that the two tied notes must be joined, that is, the 
+sound must not be interrupted when passing from one note to the other one. Therefore,
+when two quarter notes are tied they are equivalent to a half note. Lesson to the
+following score:
+</para>
+
+<score width="600" height="100" border="0">
+    <score_type>short</score_type>
+    <control_play></control_play>
+    <music>
+        (Metrica 2 4)(n g4 n l)(n g4 n)(Barra Simple))
+        (c (n g4 b)(Barra Doble))
+        (c (n c5 n l)(n c5 n)(Barra Simple))
+        (c (n c5 b)(Barra Final))
+    </music>
+</score>
+
+</part>
+
+<part>
+<title>Exercises</title>
+
+<para>
+<link linkend="mr1_thm2_E1">Exercise 1</link> - Practise reading scores with
+half notes and tied quarter notes.</para>
+
+</part>
 
 </theme>
+
+<!-- ====================== -->
+<!-- Exercise 1  -->
+<!-- ====================== -->
+
+<theme id="mr1_thm2_E1" toc="no">
+<titleabbrev>Lesson %d. Exercise 1</titleabbrev>
+<title>The half note and its rest. Ties</title>
+
+<para>Press 'Play' and lesson the rhythm. Train your ear and practise reading
+this rhythm.</para>
+
+<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+    <control_go_back>mr1_thm2</control_go_back>
+    <control_play></control_play>
+    <control_solfa></control_solfa>
+    <clef>Sol;d4;b4</clef>
+    <key>Do</key>
+    <time>24</time>
+    <fragment>24;(n * n)(n * n)</fragment>
+    <fragment>24;(n * n)(n * n)</fragment>
+    <fragment>24;(n * n)(s n)</fragment>
+    <fragment>24;(n * n)(s n)</fragment>
+    <fragment>24;(s n)(n * n)</fragment>
+    <fragment>24;(n * b)</fragment>
+    <fragment>24;(n * n l)(n * n)</fragment>
+    <fragment>24;(s b)</fragment>
+</exercise>
+
+</theme>
+
+
+</content>
