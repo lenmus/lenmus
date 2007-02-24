@@ -697,10 +697,18 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
     // create the score
     pScore = new lmScore();
 
-    //parse element <titles>
+    //parse optional element <titles>
     pX = pNode->GetParameter(iP);
     while(pX->GetName() == m_pTags->TagName(_T("title")) &&  iP <= nNumParms) {
         AnalyzeTitle(pX, pScore);
+        iP++;
+        if (iP <= nNumParms) pX = pNode->GetParameter(iP);
+    }
+    
+    //parse optional elements <opt>
+    pX = pNode->GetParameter(iP);
+    while(pX->GetName() == m_pTags->TagName(_T("opt")) &&  iP <= nNumParms) {
+        AnalyzeOption(pX, pScore);
         iP++;
         if (iP <= nNumParms) pX = pNode->GetParameter(iP);
     }
@@ -1206,7 +1214,7 @@ void lmLDPParser::AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff)
         } else if (sName == _T("Barra")) {
                 fBarline = !AnalyzeBarline(pX, pVStaff);
             //case "OPCIONES"
-            //    AnalizarOpciones pVStaff, pX
+            //    AnalyzeOpt pVStaff, pX
             ////avances y retrocesos ----------------------------------------
             //case "AVANCE"
             //case "RETROCESO"
@@ -1359,51 +1367,6 @@ bool lmLDPParser::AnalyzeTimeExpression(wxString sData, float* pValue)
     return false;       //no error
     
 }
-
-//void lmLDPParser::AnalizarGrupo(lmLDPNode* pNode, lmVStaff* pVStaff)
-////  <Grupo> ::= ("G" <Nota> [<Figura>*] <Nota> [<Flags_grupo>])
-//    
-//    //obtiene parámetros
-//    Dim int nParms, lmLDPNode* pX, long iP, iPMax As Long
-//    nParms = pNode->GetNumParms()
-//    
-//    //analiza el último parámetro para ver si son flags de grupo
-//    Dim nTupla As ETuplas
-//    Set pX = pNode->GetParameter(nParms)
-//    if (pX->GetName() = "T3") {
-//        iPMax = nParms - 1
-//        nTupla = eTP_Tresillo
-//    } else {
-//        nTupla = eTP_NoTupla
-//        iPMax = nParms
-//    }
-//        
-//    //analiza las notas/silencios que componen el grupo
-//    Dim nBeamMode As ETipoAgrupacion
-//    iP = 1
-//    Do While iP <= iPMax
-//        if (iP = 1) {
-//            nBeamMode = etaInicioGrupo
-//        } else if { iP = iPMax) {
-//            nBeamMode = etaFinGrupo
-//        } else {
-//            nBeamMode = etaEnGrupo
-//        }
-//            
-//        Set pX = pNode->GetParameter(iP)
-//        switch (pX->GetName()
-//            case "N", "NA"    //<nota>
-//                AnalyzeNote pX, pVStaff, nTupla, nBeamMode
-//            case "S"   //<silencio>
-//                AnalizarSilencio pX, pVStaff, nTupla, nBeamMode
-//            default:
-//                AnalysisError(wxString::Format(_T("[AnalizarGrupo]: Se esperaba nodo NOTA o SILENCIO pero " & _
-//                    "viene un nodo <" & pX->GetName() & ">. Se ignora este nodo."
-//        }
-//        iP = iP + 1
-//    Loop
-//
-//}
 
 lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord)
 {
@@ -2304,82 +2267,59 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
     
 }
 
-//void lmLDPParser::AnalizarOpciones(lmVStaff* pVStaff, lmLDPNode* pNode)
-////(EspaciadoLineas { (pantalla  pixels) | (papel mm) }
-////
-////(EspacioNotas decimas)   <-- separación mínima entre notas
-////(EspacioAntesParte decimas)
-////(EspacioPentagramas decimas) <-- para instr. multipentagramas (piano)
-////(EspacioTrasParte decimas)
-////(EspacioSistemas decimas)
-////(EspacioNegra decimas)  <-- factor conversión tiempo/espacio
-//
-//
-//    Dim sData1 As String
-//    
-//    //obtiene parámetros
-//    Dim lmLDPNode* pX, long iP
-//    Dim sOpcion As String, rNum As Single, sNum As String
-//    
-//    //bucle de análisis de opciones
-//    for (iP = 1 To pNode->GetNumParms()
-//        Set pX = pNode->GetParameter(iP)
-//        if (pX->IsSimple()) {
-//            AnalysisError(wxString::Format(_T("[AnalizarOpciones]: Opción <" & sOpcion & _
-//                "> desconocida o falta su valor. Se ignora este elemento."
-//        } else {
-//            //opción con parámetros. Obtiene nombre y valor
-//            sOpcion = pX->GetName()
-//            sNum = pX->GetParameter(1).GetName();
-//            if (Not IsNumeric(sNum)) {
-//                AnalysisError(wxString::Format(_T("[AnalizarOpciones]: Valor <" & sNum & "> para la opción <" & _
-//                    sOpcion & "> no es numérica. Se ignora este elemento."
-//            } else {
-//                rNum = CSng(sNum)
-//                switch (UCase$(sOpcion)
-//                    case "ESPACIOANTESPARTE"
-//                        pVStaff.EspaciadoAntesParte = rNum
-//                    default:
-//                        AnalysisError(wxString::Format(_T("[AnalizarOpciones]: Opción <" & sOpcion & _
-//                            "> desconocida. Se ignora este elemento."
-//                }
-//            }
-//        }
-//    }   // iP
-//
-//}
-//
-////Devuelve true si hay error, es decir si no añade objeto al pentagrama
-//Function AnalizarStem(lmVStaff* pVStaff, lmLDPNode* pNode) As Boolean
-////<plica> = (plica [ "arriba" | "abajo" | "sin-plica" | "doble"])
-//    
-//    wxASSERT(pNode->GetName() = "PLICA"
-//    wxASSERT(pNode->GetNumParms() = 1
-//    
-//    Dim fVisible As Boolean
-//    Dim nTonalidad As EKeySignatures, sData1 As String
-//    
-//    sData1 = (pNode->GetParameter(1))->GetName();
-//    switch (sData1
-//        case "ARRIBA"
-//            nTonalidad = earmDo
-//        case "ABAJO"
-//            nTonalidad = earmDom
-//        case "SIN-PLICA"
-//            nTonalidad = earmDosm
-//        case "DOBLE"
-//            nTonalidad = earmFa
-//        default:
-//            AnalysisError(wxString::Format(_T("Elemento plica: valor <" & sData1 & "> desconocido. " & _
-//                "Se ignora elemento."
-//            nTonalidad = earmDo
-//    }
-//    
-//    pVStaff.AddArmadura nTonalidad, fVisible
-//    
-//    AnalizarStem = false       //no hay error
-//    
-//}
+void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmObject* pObject)
+{
+    //  <opt> := <name><value>
+
+    wxString sElmName = pNode->GetName();
+    wxASSERT(sElmName == m_pTags->TagName(_T("opt")) );
+
+    //check that there are 2 parameters (name and value)
+    if(pNode->GetNumParms() != 2) {
+        AnalysisError( _("Element '%s' needs exactly %d parameters. Tag ignored."),
+            m_pTags->TagName(_T("opt")), 2);
+        return;
+    }
+    
+    //get option name and value
+    wxString sName = (pNode->GetParameter(1))->GetName();
+    wxString sValue = ((pNode->GetParameter(2))->GetName()).Lower();
+
+    //verify option name
+    if (!(sName == _T("StaffLines.StopAtFinalBarline") ||
+          sName == _T("StaffLines.Hide") ))
+    {
+        AnalysisError( _("Option '%s' unknown. Ignored."), sName);
+        return;
+    }
+
+    //determine data type of value
+    long nNumberLong;
+    double nNumberDouble;
+    if (sValue == _T("true") || sValue == m_pTags->TagName(_T("yes")) ) {
+        pObject->SetOption(sName, true);
+        return;
+    }
+    else if (sValue == _T("false") || sValue == m_pTags->TagName(_T("no")) ) {
+        pObject->SetOption(sName, false);
+        return;
+    }
+    else if (sValue.ToLong(&nNumberLong)) {
+        //Long
+        pObject->SetOption(sName, nNumberLong);
+        return;
+    }
+    else if (sValue.ToDouble(&nNumberDouble)) {
+        //Double
+        pObject->SetOption(sName, nNumberDouble);
+        return;
+    }
+    else {
+        //string
+        pObject->SetOption(sName, sValue);
+        return;
+    }
+}
 
 //returns true if error; in this case nothing is added to the score
 bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)

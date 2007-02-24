@@ -31,7 +31,7 @@
 
 #include "Score.h"
 
-class lmStaff
+class lmStaff : public lmObject
 {
 public:
     //ctor and dtor

@@ -34,7 +34,7 @@ class StaffList;
 
 
 
-class lmVStaff
+class lmVStaff : public lmObject
 {
 public:
     //ctor and dtor

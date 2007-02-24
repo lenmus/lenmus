@@ -31,7 +31,7 @@
 
 
 
-class lmInstrument
+class lmInstrument : public lmObject
 {
 public:
     //ctors and dtor

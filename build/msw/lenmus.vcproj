@@ -398,6 +398,12 @@
 				RelativePath="..\..\src\score\NoteRestObj.h">
 			</File>
 			<File
+				RelativePath="..\..\src\score\ObjOptions.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\score\ObjOptions.h">
+			</File>
+			<File
 				RelativePath="..\..\src\score\Rest.cpp">
 			</File>
 			<File

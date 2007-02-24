@@ -50,7 +50,7 @@
 
 //constructors for type eTS_Normal
 lmTimeSignature::lmTimeSignature(int nBeats, int nBeatType, lmVStaff* pVStaff, bool fVisible) :
-    lmSimpleObj(eTPO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    lmSimpleObj(pVStaff, eTPO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_Normal;
     m_nBeats = nBeats;
@@ -58,7 +58,7 @@ lmTimeSignature::lmTimeSignature(int nBeats, int nBeatType, lmVStaff* pVStaff, b
 }
 
 lmTimeSignature::lmTimeSignature(ETimeSignature nTimeSign, lmVStaff* pVStaff, bool fVisible) :
-    lmSimpleObj(eTPO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    lmSimpleObj(pVStaff, eTPO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_Normal;
     m_nBeats = GetNumUnitsFromTimeSignType(nTimeSign);
@@ -67,7 +67,7 @@ lmTimeSignature::lmTimeSignature(ETimeSignature nTimeSign, lmVStaff* pVStaff, bo
 
 //constructor for types eTS_Common, eTS_Cut and eTS_SenzaMisura
 lmTimeSignature::lmTimeSignature(ETimeSignatureType nType, lmVStaff* pVStaff, bool fVisible) :
-    lmSimpleObj(eTPO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    lmSimpleObj(pVStaff, eTPO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = nType;
     wxASSERT(false);    //! @todo not yet implemented
@@ -75,7 +75,7 @@ lmTimeSignature::lmTimeSignature(ETimeSignatureType nType, lmVStaff* pVStaff, bo
 
 //constructor for type eTS_SingleNumber
 lmTimeSignature::lmTimeSignature(int nSingleNumber, lmVStaff* pVStaff, bool fVisible) :
-    lmSimpleObj(eTPO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    lmSimpleObj(pVStaff, eTPO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_SingleNumber;
     wxASSERT(false);    //! @todo not yet implemented
@@ -84,7 +84,7 @@ lmTimeSignature::lmTimeSignature(int nSingleNumber, lmVStaff* pVStaff, bool fVis
 //constructor for type eTS_Composite
 lmTimeSignature::lmTimeSignature(int nNumBeats, int nBeats[], int nBeatType, lmVStaff* pVStaff,
                              bool fVisible) :
-    lmSimpleObj(eTPO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    lmSimpleObj(pVStaff, eTPO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_Composite;
     wxASSERT(false);    //! @todo not yet implemented
@@ -93,7 +93,7 @@ lmTimeSignature::lmTimeSignature(int nNumBeats, int nBeats[], int nBeatType, lmV
 //constructor for type eTS_Multiple
 lmTimeSignature::lmTimeSignature(int nNumFractions, int nBeats[], int nBeatType[],
                              lmVStaff* pVStaff, bool fVisible) :
-    lmSimpleObj(eTPO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    lmSimpleObj(pVStaff, eTPO_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_Multiple;
     wxASSERT(false);    //! @todo not yet implemented

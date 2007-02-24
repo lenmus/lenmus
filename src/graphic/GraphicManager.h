@@ -46,23 +46,6 @@ WX_DECLARE_LIST(wxBitmap, BitmapList);
 #define lmUSE_BITMAPS       true        //create a compatible bitmap and return it
 #define lmNO_BITMAPS        false       //direct drawing on the DC
 
-// Rendering options description:
-//
-// fStopStaffLinesAtFinalBarline:
-//      Staff lines must finish at final barline instead of continuing to right margin
-//      of paper
-//
-class lmRenderOptions
-{
-public:
-    lmRenderOptions() {
-        m_fStopStaffLinesAtFinalBarline = true;
-    }
-
-    bool    m_fStopStaffLinesAtFinalBarline;
-
-};
-
 //Options for method Prepare
 enum lmGraphMngrOptions
 {
@@ -109,7 +92,6 @@ private:
 
     lmBoxScore*     m_pBoxScore;        //the main container
 
-    lmRenderOptions m_options;          //renderization options
     bool            m_fReLayout;        //force to re-layout the score
 
     //offscreen bitmaps management

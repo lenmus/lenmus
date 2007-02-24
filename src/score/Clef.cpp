@@ -50,7 +50,7 @@
 //
 
 lmClef::lmClef(EClefType nClefType, lmVStaff* pStaff, int nNumStaff, bool fVisible) :
-    lmSimpleObj(eTPO_Clef, pStaff, nNumStaff, fVisible, lmDRAGGABLE)
+    lmSimpleObj(pStaff, eTPO_Clef, pStaff, nNumStaff, fVisible, lmDRAGGABLE)
 {
     m_nClefType = nClefType;
     m_fHidden = false;

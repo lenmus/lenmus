@@ -44,73 +44,69 @@
 #define lmVISIBLE        true
 #define lmNO_VISIBLE    false
 
-//--------------------------------------------------------------------------------------
-// lmStaffObj: Abstract class to model all objects that migth appear on an staff
-//--------------------------------------------------------------------------------------
+class lmObjOptions;
 
-/*
-The full graphical object model is as follows:
+enum EScoreObjType
+{
+    eTPO_Clef = 1,            // clef                    (ESP: clave)
+    eTPO_KeySignature,        // key signature        (ESP: armadura, tonalidad)
+    eTPO_TimeSignature,        // time signature        (ESP: métrica)
+        eTPO_GrafObj,
+        eTPO_Symbol,            // graphical objects
+    eTPO_Barline,            // barlines
+        eTPO_Indicacion,
+    eTPO_NoteRest,            // notes and rests
+    eTPO_Text,
+        eTPO_Repeticion,        //directivas de repetición: D.C., Segno, Al Segno, Fine, ...
+    eTPO_Control,            //control element (backup, forward)
+    eTPO_Tie,                //lmAuxObj: tie            (ESP: ligadura (de duración))
+    eTPO_TupletBracket,        //lmAuxObj: tuplet bracket
+    eTPO_WordsDirection
+};
 
+//-------------------------------------------------------------------------------------------
+// class lmObject
+//  This is the most abstract object. An object has an associated  context options obj.
+//  and a parent
+//-------------------------------------------------------------------------------------------
+class lmObject
+{
+public:
 
-            |
-            |
-            |pt0: m_paperPos
-    --------+------------------------------------------------------------------
-            |
-            |
-            |
-            |            pt2: m_glyphPos (relative to m_paperPos)
-            |            +---------------------+ <-- Rectangle that surrounds the character
-            |            |                     |     or drag bitmap  
-            |            |                     |   
-            |            |                     |   
-            |            |                     |   
-            |            |pt3: m_selRect       |   
-  pt1: m_alterPos        |+----------+         |   
-            |pt1         ||          |         |   
-            +-------+    ||          |         | 
-            |       |    ||          |         | 
-            |       |    ||          |         | 
-            |       |    ||pt4: m_noteheadRect |       | 
-            |       |    ||+--------+|         |       | 
-            |       |    |||        ||         |<----->|  afterSpace
-            +-------+    ||+--------+|         |       |
-            |            |+----------+         |       | 
-            |            ||                    |       | 
-            |            +---------------------+       | 
-            |             |                            | 
-            |             |                            |
-            |             x: m_xAnchor                 |
-            |             |                            |
-            |<---------------------------------------->|          
-            |               m_nWidth                   |
+    lmObject(lmObject* pParent);
+    virtual ~lmObject();
 
+    lmObjOptions* GetCurrentObjOptions();
+    lmObjOptions* GetObjOptions() { return m_pObjOptions; }
+    void SetOption(wxString sName, long nLongValue);
+    void SetOption(wxString sName, wxString sStringValue);
+    void SetOption(wxString sName, double nDoubleValue);
+    void SetOption(wxString sName, bool fBoolValue);
 
-All positions are relative to m_paperPos
+    //Look for the value of an option. A method for each supported data type.
+    //Recursive search throug the ObjOptions chain
+    long GetOptionLong(wxString sOptName);
+    double GetOptionDouble(wxString sOptName);
+    bool GetOptionBool(wxString sOptName);
+    wxString GetOptionString(wxString sOptName);
 
-@attention
-  -    The anchor line is only used (for now) to align noteheads when some are precedeed by an alter
-    sign and others no. Then, as it doesn't matter for StaffObjs different from Notes, the base
-    class lmStaffObj just does it coincide with m_paperPos.x (see GetAnchoPos() virtual method
-    declaration).
-  -    Also, in StaffObjs different from Notes it does not exit the alter glyph. So, to save space
-  the relate variable m_alterPos could be removed from the base class to thye Notes class.
+private:
 
+    lmObject*       m_pParent;          //the parent for the ObjOptions chain
+    lmObjOptions*   m_pObjOptions;      //the options object associated to this object or
+                                        //   NULL if none
 
-
-*/
-
+};
 
 
 //-------------------------------------------------------------------------------------------
-/* @class lmScoreObj
-        This is the most abstract object. Has an ID. It is a renderizable object and,
-        therefore, has positioning information. 
-        They know (1) how to draw themselves, (2) what space they occupy, and (3) their 
-        structure (children and parent)
-*/
+// class lmScoreObj
+//  This is the next most abstract object. Has an ID. It is a renderizable object and,
+//  therefore, has positioning information. 
+//  They know (1) how to draw themselves, (2) what space they occupy, and (3) their 
+//  structure (children and parent)
 //-------------------------------------------------------------------------------------------
-class lmScoreObj
+class lmScoreObj : public lmObject
 {
 public:
     virtual ~lmScoreObj();
@@ -175,7 +171,7 @@ public:
 
 
 protected:
-    lmScoreObj(EScoreObjType nType, bool fIsDraggable = false);
+    lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable = false);
     virtual void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
                             bool fHighlight)=0;
 
@@ -230,7 +226,7 @@ public:
 
 
 protected:
-    lmAuxObj(EScoreObjType nType, bool fIsDraggable = false); 
+    lmAuxObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable = false); 
 
 };
 
@@ -250,6 +246,9 @@ WX_DECLARE_LIST(lmAuxObj, AuxObjsList);
 //        not all ScoreObjs are time positioned.
 //
 //-------------------------------------------------------------------------------------------
+
+class lmVStaff;
+
 class lmStaffObj : public lmScoreObj
 {
 public:
@@ -290,7 +289,7 @@ public:
 
 
 protected:
-    lmStaffObj(EScoreObjType nType, 
+    lmStaffObj(lmObject* pParent, EScoreObjType nType, 
              lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,    // only for staff owned objects    
              bool fVisible = true, 
              bool fIsDraggable = false);
@@ -330,7 +329,7 @@ public:
     inline bool IsComposite() { return false; }
 
 protected:
-    lmSimpleObj(EScoreObjType nType, 
+    lmSimpleObj(lmObject* pParent, EScoreObjType nType, 
              lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,
              bool fVisible = true, 
              bool fIsDraggable = false);
@@ -350,70 +349,11 @@ public:
     virtual lmScoreObj* FindSelectableObject(lmUPoint& pt)=0;
 
 protected:
-    lmCompositeObj(EScoreObjType nType, 
+    lmCompositeObj(lmObject* pParent, EScoreObjType nType, 
              lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,
              bool fVisible = true, 
              bool fIsDraggable = false);
 
 };
-
-///*
-//-------------------------------------------------------------------------------------------
-//    Font renderized object
-//        Its renderization is done totally (i.e. texts) or partially (i.e. notes) by
-//        using a font.
-//        In opposition to objects totally renderized by direct drawing: tie, slur, barline
-//-------------------------------------------------------------------------------------------
-//*/
-//class sbFontRenderizedObj : public lmStaffObj
-//{
-//public:
-//    sbFontRenderizedObj();
-//    ~sbFontRenderizedObj() {}
-//
-//    inline bool IsFontRederized() { return true; }
-//
-//    // methods related to font rendered objects
-//    lmUPoint GetGlyphPosition() const {
-//            return lmUPoint(m_paperPos.x + m_glyphPos.x, m_paperPos.y + m_glyphPos.y);
-//        }
-//
-//protected:
-//    // variables related to font rendered objects
-//    wxFont*        m_pFont;        // font to use for drawing this object
-//    lmUPoint        m_glyphPos;        // origing to position the glyphs (relative to m_paperPos)
-//
-//};
-//
-
-
-
-////-------------------------------------------------------------------------------------------
-////    Draggable object:
-////        is a SelectableObj that can be freely positioned on the score, only constrained
-////        by music writting rules (i.e.: note, clef).
-////-------------------------------------------------------------------------------------------
-//class sbDraggableObj : public sbSelectableObj
-//{
-//public:
-//    sbDraggableObj();
-//    ~sbDraggableObj() {}
-//    
-//    inline bool IsDraggable() { return true; };
-//
-//    // methods related to draggable objects
-//    virtual wxBitmap* GetBitmap(double rScale) = 0;
-//    virtual void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD, 
-//                         const lmUPoint& pagePosL, const lmUPoint& dragStartPosL,
-//                         const lmDPoint& canvasPosD);
-//    virtual lmUPoint EndDrag(const lmUPoint& pos);
-//    void MoveTo(lmUPoint& pt);
-//
-//protected:
-//    wxBitmap* PrepareBitMap(double rScale, const wxString sGlyph);
-//
-//};
-//
-
 
 #endif    // __STAFFOBJ_H__

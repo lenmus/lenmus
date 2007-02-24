@@ -364,6 +364,9 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, int nOptions, wxStrin
     else if (sElement == _T("exercise")) {
         return ExerciseTag(oNode, nOptions, pText);
     }
+    else if (sElement == _T("imagedata")) {
+        return ImagedataTag(oNode, nOptions, pText);
+    }
     else if (sElement == _T("itemizedlist")) {
         return ItemizedlistTag(oNode, nOptions, pText);
     }
@@ -708,6 +711,34 @@ bool lmEbookProcessor::HolderTag(const wxXml2Node& oNode, int nOptions, wxString
     return ProcessChildAndSiblings(oNode, eTRANSLATE, &m_sCopyrightHolder);
 }
 
+bool lmEbookProcessor::ImagedataTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
+{
+    // get attributes
+    wxString sFileref = oNode.GetPropVal(_T("fileref"), _T(""));
+    wxString sAlign = oNode.GetPropVal(_T("align"), _T(""));
+    wxString sValign = oNode.GetPropVal(_T("valign"), _T(""));
+    if (sFileref == _T("")) {
+        LogError(_T("Node <image> has no 'fileref' property"));
+        return true;    //error
+    }
+
+    // convert tag: output to open html tags
+    if (nOptions & eHTML) {
+        WriteToHtml( _T("<img src=\"") + sFileref + _T("\"") );
+        if (sAlign != _T("")) WriteToHtml( _T(" align=\"") + sAlign + _T("\"") );
+        if (sValign != _T("")) WriteToHtml( _T(" valign=\"") + sValign + _T("\"") );
+        WriteToHtml( _T(" >\n") );
+    }
+
+    //add to list of files to pack in lmb file
+    wxFileName oFN(m_sFilename);
+    oFN.AppendDir(_T("figures"));
+    oFN.SetFullName( sFileref );
+    m_aFilesToPack.Add(oFN.GetFullPath());
+
+    return false;   //no error
+}
+
 bool lmEbookProcessor::ItemizedlistTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
 {
     // openning tag
@@ -855,8 +886,14 @@ bool lmEbookProcessor::OrderedlistTag(const wxXml2Node& oNode, int nOptions, wxS
 
 bool lmEbookProcessor::ParaTag(const wxXml2Node& oNode, int nOptions, wxString* pText)
 {
+    // get attributes
+    wxString sRole = oNode.GetPropVal(_T("role"), _T(""));
+
     // openning tag
-    if (nOptions & eHTML) WriteToHtml(_T("<p>"));
+    if (nOptions & eHTML) {
+        if (sRole == _T("center")) WriteToHtml(_T("<center>"));
+        WriteToHtml(_T("<p>"));
+    }
 
     //process tag's children and write note content to html
     if (pText) *pText += _T("<p>");
@@ -864,7 +901,10 @@ bool lmEbookProcessor::ParaTag(const wxXml2Node& oNode, int nOptions, wxString* 
     if (pText) *pText += _T("</p>\n");
     
     //convert tag: output to close html tags
-    if (nOptions & eHTML) WriteToHtml(_T("</p>\n"));
+    if (nOptions & eHTML) {
+        WriteToHtml(_T("</p>\n"));
+        if (sRole == _T("center")) WriteToHtml(_T("</center>"));
+    }
 
     return fError;
 }

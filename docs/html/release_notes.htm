@@ -1,33 +1,20 @@
 <html>
 <head>
-<title>LenMus 3.4 Release Notes</title>
+<title>LenMus 3.5 Release Notes</title>
 <link rel="stylesheet" media="all" href="singledoc.css" type="text/css" >
 </head>
 <body>
 
-<h1>LenMus Phonascus 3.4 Release Notes</h1>
+<h1>LenMus Phonascus 3.5 Release Notes</h1>
 
-<h2>What's new in 3.4</h2>
+<h2>What's new in 3.5</h2>
 
-<p>Release 3.4 includes, mainly, technical changes an some bug fixes:</p>
+<p>Release 3.5 includes, mainly, technical changes an some bug fixes:</p>
 
 <ul>
-  <li>A new eMusicBooks source format, based on XML and DocBook, has been developed
-    with three objectives in mind:
-    <ul>
-      <li>To simplify writing eMusicBooks.</li>
-      <li>To simplify the translation of eMusicBooks.</li>
-      <li>To enable new features.</li>
-    </ul></li>
-
-  <li>The controller to display eMusicBooks has been rewritten to adapt to the new
-    eMusicBooks format. Now the index panel can also display images.</li>
-  <li>New buttons to increase/decrease font size on eMusicBooks. They scale also the
-    scores on the books.</li>
-  <li>All toolbar icons has been reviewed to improve the disable images.</li>
-  <li>A program, named LangTool, has been developed to compile eMusicBooks and to
-    automate the translation process.</li>
-  <li>Supporting wxWidgets libraries upgraded to version 2.8.0</li>
+  <li>Replaced MDI user interface by a notebook tabbed interface.</li>
+  <li>LDP score language: Added support for 'opt' element. Implemented option
+            'StopStaffLinesAtFinalBarline'</li>
   <li>Several <a href="#bugs">bug fixes</a> and other
     technical improvements.</li>
 </ul>
@@ -44,45 +31,7 @@
 
 <tr valign="top">
     <td class="ListaPar">
-      <b>[1610190] In the options panel, key signature 'D mayor/B minor' is duplicated
-      and 'D b Mayor/B b minor' is missing.</b><br />
-      The label has been corrected
-    </td></tr>
-
-<tr valign="top">
-    <td class="ListaPar">
-      <b>[1604535] Minor scales, in scales exercises, have wrong key signature</b><br />
-        When the option 'draw key signature' is enabled, minor scales are drawn
-        with the major scale key signature and the necessary accidentals added
-        to the notes. The minor scale key signature should be used instead. Now fixed.
-    </td></tr>
-
-<tr valign="top">
-    <td class="ListaPar">
-      <b>[1601350] No ascending intervals in aural training</b><br />
-    In exercise for aural training, intervals identification, when you select
-    the tree types (ascending descending and harmonic) most of the generated
-    intervals are harmonic and a few descending, but never ascending. Now fixed.
-    </td></tr>
-
-<tr valign="top">
-    <td class="ListaPar">
-      <b>[1610186] Spanish translation error in aural training exercises.</b><br />
-      Label 'identify scales' was translated as 'identify intervals'. Now fixed.
-    </td></tr>
-
-<tr valign="top">
-    <td class="ListaPar">
-      <b>Metronome lose previous run settings. Always initialised at 20.</b><br />
-      Setting the spin ctrol triggers a EVT_SPINCTRL that
-      causes a metronome reset. As this worked ok in previous versions I assume it is
-      due to a change in wxSpinCtrol behaviour in new wxWidgets release. Solved by
-      changing metronome initialization code.
-    </td></tr>
-
-<tr valign="top">
-    <td class="ListaPar">
-      <b>Some navigation buttons on eMusicBooks didn't work.</b><br />
+      <b>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.</b><br />
       The problem has been fixed.
     </td></tr>
 

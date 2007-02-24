@@ -39,6 +39,7 @@
 
 #include "wx/image.h"
 #include "Score.h"
+#include "ObjOptions.h"
 
 
 //implementation of the StaffObjs List
@@ -53,7 +54,8 @@ static int m_IdCounter = 0;        //to assign unique IDs to ScoreObjs
 //-------------------------------------------------------------------------------------------------
 // lmScoreObj implementation
 //-------------------------------------------------------------------------------------------------
-lmScoreObj::lmScoreObj(EScoreObjType nType, bool fIsDraggable)
+lmScoreObj::lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable) :
+    lmObject(pParent)
 {
     m_nId = m_IdCounter++;        // give it an ID
     m_nType = nType;            // save type
@@ -212,8 +214,8 @@ wxBitmap* lmScoreObj::PrepareBitMap(double rScale, const wxString sGlyph)
 //-------------------------------------------------------------------------------------------------
 // lmAuxObj implementation
 //-------------------------------------------------------------------------------------------------
-lmAuxObj::lmAuxObj(EScoreObjType nType, bool fIsDraggable) :
-    lmScoreObj(nType, fIsDraggable)
+lmAuxObj::lmAuxObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable) :
+    lmScoreObj(pParent, nType, fIsDraggable)
 {
 }
 void lmAuxObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
@@ -237,9 +239,9 @@ void lmAuxObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHig
 // lmStaffObj implementation
 //-------------------------------------------------------------------------------------------------
 
-lmStaffObj::lmStaffObj(EScoreObjType nType, lmVStaff* pStaff, int nStaff,
+lmStaffObj::lmStaffObj(lmObject* pParent, EScoreObjType nType, lmVStaff* pStaff, int nStaff,
                    bool fVisible, bool fIsDraggable) :
-    lmScoreObj(nType, fIsDraggable)
+    lmScoreObj(pParent, nType, fIsDraggable)
 {
     // store parameters
     m_fVisible = fVisible;
@@ -311,21 +313,92 @@ void lmStaffObj::SetFont(lmPaper* pPaper)
 //-------------------------------------------------------------------------------------------------
 // lmSimpleObj implementation
 //-------------------------------------------------------------------------------------------------
-lmSimpleObj::lmSimpleObj(EScoreObjType nType, lmVStaff* pStaff, int nStaff,
+lmSimpleObj::lmSimpleObj(lmObject* pParent, EScoreObjType nType, lmVStaff* pStaff, int nStaff,
              bool fVisible, bool fIsDraggable)
-    : lmStaffObj(nType, pStaff, nStaff, fVisible, fIsDraggable)
+    : lmStaffObj(pParent, nType, pStaff, nStaff, fVisible, fIsDraggable)
 {
 }
 
 //-------------------------------------------------------------------------------------------------
 // lmCompositeObj implementation
 //-------------------------------------------------------------------------------------------------
-lmCompositeObj::lmCompositeObj(EScoreObjType nType, lmVStaff* pStaff, int nStaff,
+lmCompositeObj::lmCompositeObj(lmObject* pParent, EScoreObjType nType, lmVStaff* pStaff, int nStaff,
              bool fVisible, bool fIsDraggable)
-    : lmStaffObj(nType, pStaff, nStaff, fVisible, fIsDraggable)
+    : lmStaffObj(pParent, nType, pStaff, nStaff, fVisible, fIsDraggable)
 {
 }
 
+//-------------------------------------------------------------------------------------
+// lmObject implementation
+//-------------------------------------------------------------------------------------
+lmObject::lmObject(lmObject* pParent)
+{ 
+    m_pParent = pParent;
+    m_pObjOptions = (lmObjOptions*)NULL;
+}
 
+lmObject::~lmObject()
+{ 
+    if (m_pObjOptions) delete m_pObjOptions;
+}
+
+lmObjOptions* lmObject::GetCurrentObjOptions()
+{
+    //recurse in the parents chain to find the first non-null CtxObject
+    //and return it
+    if (m_pObjOptions) return m_pObjOptions;
+    if (m_pParent) return m_pParent->GetCurrentObjOptions();
+    return (lmObjOptions*)NULL;
+}
+
+
+//Set value for option in this object context. If no context exist, create it
+
+void lmObject::SetOption(wxString sName, long nLongValue)
+{
+    if (!m_pObjOptions) m_pObjOptions = new lmObjOptions();
+    m_pObjOptions->SetOption(sName, nLongValue);
+}
+
+void lmObject::SetOption(wxString sName, wxString sStringValue)
+{
+    if (!m_pObjOptions) m_pObjOptions = new lmObjOptions();
+    m_pObjOptions->SetOption(sName, sStringValue);
+}
+
+void lmObject::SetOption(wxString sName, double nDoubleValue)
+{
+    if (!m_pObjOptions) m_pObjOptions = new lmObjOptions();
+    m_pObjOptions->SetOption(sName, nDoubleValue);
+}
+
+void lmObject::SetOption(wxString sName, bool fBoolValue)
+{
+    if (!m_pObjOptions) m_pObjOptions = new lmObjOptions();
+    m_pObjOptions->SetOption(sName, fBoolValue);
+}
+
+//Look for the value of an option. A method for each supported data type.
+//Recursive search throug the ObjOptions chain
+
+long lmObject::GetOptionLong(wxString sOptName)
+{ 
+    return GetCurrentObjOptions()->GetOptionLong(sOptName);
+}
+
+double lmObject::GetOptionDouble(wxString sOptName) 
+{ 
+    return GetCurrentObjOptions()->GetOptionDouble(sOptName); 
+}
+
+bool lmObject::GetOptionBool(wxString sOptName) 
+{ 
+    return GetCurrentObjOptions()->GetOptionBool(sOptName); 
+}
+
+wxString lmObject::GetOptionString(wxString sOptName) 
+{   
+    return GetCurrentObjOptions()->GetOptionString(sOptName);
+}
 
 

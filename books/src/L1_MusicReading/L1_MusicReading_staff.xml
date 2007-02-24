@@ -9,7 +9,9 @@
 paper called 'manuscript paper' (see next picture):
 </para>
 
-<!-- image: manuscript paper -->
+<para role='center'>
+<imagedata fileref='important.png' />
+</para>
 
 <para>The manuscript paper is organized as sets of horizontal lines, named 'staves', and
 each group of horizontal lines is called a 'staff' (in British English the word 'staff'
@@ -20,11 +22,12 @@ is the fifth line:
 </para>
 
 <!-- staff with labelled lines: 1,2,..5 -->
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
         (score (vers 1.5)(language es iso-8859-1)
+         (opcion StopStaffLinesAtFinalBarline no)
          (instrumento
           (datosMusica (clave Sol noVisible)(tonalidad Do)
            (metrica 2 4 noVisible)(texto &quot;line 1&quot; dx:50 dy:55)
@@ -37,7 +40,7 @@ The four spaces between the staff lines, are important and are also numbered
 from bottom to top:</para>
 
 <!-- staff with labelled spaces: 1,2,3,4 -->
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -61,7 +64,7 @@ of the note on the staff. Notes on the higher lines/spaces have higher pitch tha
 those on the lower ones:
 </para>
 
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -80,7 +83,7 @@ As an example, press the 'Play' link and lesson to the next score:
 </para>
 
 <!-- scale to play, no key, no time signature, no other symbol, only whole notes -->
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>

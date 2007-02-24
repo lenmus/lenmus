@@ -220,6 +220,7 @@ void lmMDIParentFrame::ActivatePrevious()
 void lmMDIParentFrame::CloseAll()
 {
     int nNumPages = (int)m_pClientWindow->GetPageCount();
+    if (nNumPages == 0) return;     //nothing to close
     int iActive = m_pClientWindow->GetSelection();
 
     //loop to close all pages but not the active one. This is to avoid having

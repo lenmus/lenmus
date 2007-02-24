@@ -78,7 +78,7 @@ WX_DEFINE_LIST(NoteRestsList);
 //====================================================================================================
 lmNoteRest::lmNoteRest(lmVStaff* pVStaff, bool IsRest, ENoteType nNoteType, float rDuration,
                    bool fDotted, bool fDoubleDotted, int nStaff) :
-    lmCompositeObj(eTPO_NoteRest, pVStaff, nStaff, true, lmDRAGGABLE)
+    lmCompositeObj(pVStaff, eTPO_NoteRest, pVStaff, nStaff, true, lmDRAGGABLE)
 {
     // initialize all atributes
     m_fCalderon = false;

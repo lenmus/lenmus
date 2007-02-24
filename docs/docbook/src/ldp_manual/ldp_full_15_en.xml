@@ -2,18 +2,14 @@
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
                "http://www.oasis-open.org/docbook/xml/5.0b.5/docbook.dtd" [
 
-<!ENTITY bkcgen SYSTEM "chap_m_general.xml">
-<!ENTITY bkc11 SYSTEM "chap_1.xml">
-<!ENTITY bkc12 SYSTEM "chap_2.xml">
-<!ENTITY bkc13 SYSTEM "chap_3.xml">
-<!ENTITY bkc14 SYSTEM "chap_4.xml">
+<!ENTITY ch_options SYSTEM "ldp_options.xml">
 
 ]>
 
 <book id="book">
 <bookinfo>
 <title>LDP Music representation language. Reference manual</title>
-<para>Version 1.5. Revision: July, 2006</para>
+<para>Version 1.5. Revision: February, 2007</para>
 
 <author>
 <surname>LenMus project</surname>
@@ -40,7 +36,7 @@ and that you add no other conditions whatsoever to those of the GNU FDL.
 </legalnotice>
 
 <copyright>
-<year>2002-2006</year>
+<year>2002-2007</year>
 <holder>Cecilio Salmeron</holder>
 </copyright>
 </bookinfo>
@@ -333,6 +329,7 @@ the author.</para>
     <replaceable><nonterminal def="#ebnf.language">Language</nonterminal></replaceable>
     <replaceable><nonterminal def="#ebnf.version">Version</nonterminal></replaceable>
     [<replaceable><nonterminal def="#ebnf.title">Title</nonterminal></replaceable>]<superscript>*</superscript>
+    [<replaceable><nonterminal def="#ebnf.opt">Option</nonterminal></replaceable>]<superscript>*</superscript>
     <replaceable><nonterminal def="#ebnf.instrument">Instrument</nonterminal></replaceable><superscript>+</superscript>
     <command>)</command>
     </rhs>
@@ -1986,6 +1983,8 @@ centered in a measure.</para>
 
 </sect1>
 
+
+&ch_options;
 
 </chapter>
 

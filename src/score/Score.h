@@ -33,24 +33,6 @@
 #include "defs.h"
 #include "../app/global.h"
 
-enum EScoreObjType
-{
-    eTPO_Clef = 1,            // clef                    (ESP: clave)
-    eTPO_KeySignature,        // key signature        (ESP: armadura, tonalidad)
-    eTPO_TimeSignature,        // time signature        (ESP: métrica)
-        eTPO_GrafObj,
-        eTPO_Symbol,            // graphical objects
-    eTPO_Barline,            // barlines
-        eTPO_Indicacion,
-    eTPO_NoteRest,            // notes and rests
-    eTPO_Text,
-        eTPO_Repeticion,        //directivas de repetición: D.C., Segno, Al Segno, Fine, ...
-    eTPO_Control,            //control element (backup, forward)
-    eTPO_Tie,                //lmAuxObj: tie            (ESP: ligadura (de duración))
-    eTPO_TupletBracket,        //lmAuxObj: tuplet bracket
-    eTPO_WordsDirection
-};
-
 enum EClefType
 {
     eclvUndefined = 0,
@@ -444,7 +426,7 @@ class StaffList;
 class lmContext;
 class ContextList;
 class lmSoundManager;
-
+class lmObjOptions;
 
 
 #include "Context.h"
@@ -481,7 +463,7 @@ class lmSoundManager;
 extern lmNoteRest* g_pLastNoteRest;
 extern lmBeam* g_pCurBeam;
 
-class lmScore
+class lmScore : public lmObject
 {
 public:
     //ctor and dtor

@@ -5,7 +5,7 @@
 <book id="book">
 <bookinfo>
 <title>LenMus eMusicBooks' file format</title>
-<subtitle>Version 1.1. Revision: January 2007</subtitle>
+<subtitle>Version 1.1. Revision: February 2007</subtitle>
 
 <author>
 <surname>LenMus team</surname>
@@ -309,7 +309,18 @@ This is a very short paragraph
 &lt;/para&gt;
 </programlisting>
 
-<para>All usable tags are going to be described in the following sections.</para> 
+<para>Tag &lt;para&gt; can have one attribute: role='center' to indicate that
+text must be displayed centered on the page. For example:
+</para>
+
+<programlisting>
+&lt;para role='center'&gt;
+This is a centered short paragraph
+&lt;/para&gt;
+</programlisting>
+
+<para>Other available tags, apart of tag &lt;para&gt;, are going to be described
+in the following sections.</para> 
 
 </sect1>
 
@@ -394,6 +405,29 @@ label, usually numerical. Example:</para>
 </tgroup>
 </informaltable>
 
+
+</sect1>
+
+<!-- =========================================================================== -->
+<sect1 id="images"><title>Images</title>
+
+<para>
+To include an image tag &lt;imagedata&gt; can be used. The image is rendered inline, that is,
+no linebreak takes place before and after the image is included.
+The filename to include is provided in attribute 'fileref'. Optional
+additional attributes are 'align' and 'valign'. Example:
+</para>
+
+<programlisting>
+&lt;para role='center'&gt;
+&lt;imagedata fileref='figure2.png' /&gt;
+&lt;/para&gt;
+</programlisting>
+
+<para>Attribute 'fileref' must be the file name, without path information. All images
+must be stored in a subfolder, named 'figures', placed in the same folder than the xml 
+eBook files.
+</para>
 
 </sect1>
 
@@ -1107,6 +1141,11 @@ version of the LangTool processor program, used to compile the eMusicBooks:
 <listitem><link linkend="bookinfo">holder</link> - 
     The name of the individual or organization that holds a copyright. It is 
     used inside &lt;copyright&gt; tag.
+</listitem>
+
+<listitem><link linkend="image">imagedata</link> - 
+    To include an image (rendered inline). The filename to include is provided in
+    attribute 'fileref'. Optional additional attributes are 'align' and 'valign'.
 </listitem>
 
 <listitem><link linkend="lists">itemizedlist</link> - 

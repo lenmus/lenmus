@@ -100,6 +100,7 @@ WX_DEFINE_LIST(VStavesList);
 
 //constructor
 lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
+    : lmObject(pScore)
 {
     //pScore is the lmScore to which this vstaff belongs.
     //Initially the lmVStaff will have only one standard five-lines staff. This can be
@@ -432,7 +433,10 @@ void lmVStaff::DrawStaffLines(bool fMeasuring, lmPaper* pPaper, lmLUnits xFrom, 
 {
     // Draw all staff lines of this lmVStaff and store their sizes and positions
 
-    if (fMeasuring) { return; }
+    if (fMeasuring) return;
+
+    if (GetOptionBool(_T("StaffLines.Hide")) ) return;
+
 
     lmLUnits xRight, yCur;
 

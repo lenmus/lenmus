@@ -26,7 +26,7 @@ the staff, after the clef. The time signature is the two numbers placed above an
 below the third line:
 </para>
 
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>

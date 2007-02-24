@@ -12,27 +12,28 @@ different types of signs for the notes, so each note sign corresponds to a diffe
 duration. The following picture shows the different types of notes and their names:
 </para>
 
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
-        (score (vers 1.5)(language es iso-8859-1)
-         (instrumento
-          (datosMusica (clave Sol noVisible)(tonalidad Do)
-            (texto &quot;Whole&quot; dx:0 dy:70)
-            (n a4 r)(barra Simple noVisible)
-            (texto &quot;Half&quot; dx:0 dy:70)
-            (n a4 b)(barra Simple noVisible)
-            (texto &quot;Quarter&quot; dx:0 dy:70)
-            (n a4 n)(barra Simple noVisible)
-            (texto &quot;Eight&quot; dx:0 dy:70)
-            (n a4 c)(barra Simple noVisible)
-            (texto &quot;16th&quot; dx:0 dy:70)
-            (n a4 s)(barra Simple noVisible)
-            (texto &quot;32th&quot; dx:0 dy:70)
-            (n a4 f)(barra Simple noVisible)
-            (texto &quot;64th&quot; dx:0 dy:70)
-            (n a4 m)(barra Simple noVisible) )))
+        (score (vers 1.5)(language en iso-8859-1)
+         (opt StaffLines.Hide yes)
+         (instrument
+          (musicData (clef Sol noVisible)(key Do)
+            (text &quot;Whole&quot; dx:0 dy:70 hasWidth)
+            (n a4 w)(barline Simple noVisible)
+            (text &quot;Half&quot; dx:0 dy:70 hasWidth)
+            (n a4 h)(barline Simple noVisible)
+            (text &quot;Quarter&quot; dx:0 dy:70 hasWidth)
+            (n a4 q)(barline Simple noVisible)
+            (text &quot;Eight&quot; dx:0 dy:70 hasWidth)
+            (n a4 e)(barline Simple noVisible)
+            (text &quot;16th&quot; dx:0 dy:70 hasWidth)
+            (n a4 s)(barline Simple noVisible)
+            (text &quot;32th&quot; dx:0 dy:70 hasWidth)
+            (n a4 t)(barline Simple noVisible)
+            (text &quot;64th&quot; dx:0 dy:70 hasWidth)
+            (n a4 x)(barra Simple noVisible) )))
     </music>
 </score>
 
@@ -58,7 +59,7 @@ Stems normally go up for notes placed below the third line and
 go down for notes placed on or above the third line:
 </para>
 
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>short_15_es</score_type>
     <music_border>0</music_border>
     <music>
@@ -74,7 +75,7 @@ the left-hand side of the note-head when the stem goes down. Flags are always dr
 on the right-hand side of the stem:
 </para>
 
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>short_15_es</score_type>
     <music_border>0</music_border>
     <music>
@@ -92,7 +93,7 @@ the four individual notes at the first part can also be drawn grouped,
 as shown in the second part:
 </para>
 
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>short_15_es</score_type>
     <music_border>0</music_border>
     <music>

@@ -106,7 +106,7 @@
 
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
-<xsl:import href="C:/USR/CosasMias/Software/DocBook/docbook-xsl-1.70.1/html/chunk.xsl"/>
+<xsl:import href="C:/USR/DocBook/xsl/html/chunk.xsl"/>
 
 <!-- parameters -->
 <xsl:param name="chunk.fast" select="1"/> 
@@ -115,10 +115,10 @@
 <xsl:param name="section.autolabel" select="1"/>
 <xsl:param name="section.label.includes.component.label" select="1"/>
 <!--<xsl:param name="navig.graphics" select="1"/>-->
-<xsl:param name="generate.legalnotice.link" select="1"/>
+<xsl:param name="generate.legalnotice.link" select="0"/>
 <xsl:param name="chunker.output.doctype-public" select="'-//W3C//DTD HTML 4.01//EN'"/>
 <xsl:param name="chunker.output.doctype-system" select="'http://www.w3.org/TR/html4/strict.dtd'"/>
-<xsl:param name="base.dir" select="'c:/usr/desarrollo_wx/lenmus/docs/ldp_manual/docbook/en/'"/>
+<xsl:param name="base.dir" select="'c:/usr/desarrollo_wx/lenmus/docs/docbook/html/ebooks_format/en/'"/>
 
 
 <!-- change the word Home with Table of Contents for English output -->
@@ -192,11 +192,11 @@
             <div id="lm-header-items">
 
           <ul>
-                <li><a title="View this site in Spanish" href="page.php?pid=noticias&amp;lang=es"
+                <li><a title="View this site in Spanish" href="/sw/page.php?pid=noticias&amp;lang=es"
                     onmouseover="changeImage('es', 'layout/images/menu_es_over.png');"
                     onmouseout="changeImage('es', 'layout/images/menu_es.png');">
                     <img name="es" src="../../layout/images/menu_es.png" /></a></li>
-                <li><a title="View this site in English" href="page.php?pid=noticias&amp;lang=en"
+                <li><a title="View this site in English" href="/sw/page.php?pid=noticias&amp;lang=en"
                     onmouseover="changeImage('en', 'layout/images/menu_en_over.png');"
                     onmouseout="changeImage('en', 'layout/images/menu_en.png');">
                     <img name="en" src="../../layout/images/menu_en.png" /></a></li>
@@ -210,7 +210,7 @@
 
         <!-- leftside BEGIN -->
         <div id="lm-side-left">
-            <!-- Búsqueda Google -->
+            <!-- Busqueda Google -->
             <div class="lm-search-box">       <!-- this is required for valid XML -->
                 <object>       <!-- this is required for valid XML -->
                     <form method="get" action="http://www.google.com/search">
@@ -227,42 +227,42 @@
             <!-- main navigation menu on the left -->
             <div id="lm-left-menu">
                 <ul id="lm-side-nav">
-              <li><a title="Home" href="page.php?pid=noticias&amp;lang=en">Home</a></li>
+              <li><a title="Home" href="/sw/page.php?pid=noticias&amp;lang=en">Home</a></li>
           <li><span class="lm-side-nav">General</span>
           <ul>
             <li><a title="LenMus at SourceForge" href="http://sourceforge.net/projects/lenmus" target="_blank&amp;lang=en">LenMus at SourceForge</a></li>
-            <li><a title="Contact us" href="page.php?pid=paginas&amp;name=contact&amp;lang=en">Contact us</a></li>
-            <li><a title="Acknowledgments" href="page.php?pid=paginas&amp;name=credits&amp;lang=en">Acknowledgments</a></li>
-            <li><a title="License" href="page.php?pid=paginas&amp;name=license&amp;lang=en">License</a></li>
+            <li><a title="Contact us" href="/sw/page.php?pid=paginas&amp;name=contact&amp;lang=en">Contact us</a></li>
+            <li><a title="Acknowledgments" href="/sw/page.php?pid=paginas&amp;name=credits&amp;lang=en">Acknowledgments</a></li>
+            <li><a title="License" href="/sw/page.php?pid=paginas&amp;name=license&amp;lang=en">License</a></li>
           </ul></li>
 
           <li><span class="lm-side-nav">LenMus Program</span>
           <ul>
-            <li><a title="Downloads" href="page.php?pid=paginas&amp;name=downloads&amp;lang=en">Downloads</a></li>
-            <li><a title="Roadmap" href="page.php?pid=paginas&amp;name=roadmap&amp;lang=en">Roadmap</a></li>
-            <li><a title="Objectives" href="page.php?pid=paginas&amp;name=objectives&amp;lang=en">Objectives</a></li>
-            <li><a title="Screenshots" href="page.php?pid=paginas&amp;name=screenshots&amp;lang=en">Screenshots</a></li>
-            <li><a title="Features" href="page.php?pid=paginas&amp;name=features&amp;lang=en">Features</a></li>
-            <li><a title="New in this version" href="page.php?pid=paginas&amp;name=new_in_version&amp;lang=en">New in this version</a></li>
-            <li><a title="Releases notification" href="page.php?pid=paginas&amp;name=release_notification&amp;lang=en">Releases notification</a></li>
-            <li><a title="Installation" href="page.php?pid=paginas&amp;name=installation&amp;lang=en">Installation</a></li>
-            <li><a title="Scores publication" href="page.php?pid=paginas&amp;name=score_publication&amp;lang=en">Scores publication</a></li>
+            <li><a title="Downloads" href="/sw/page.php?pid=paginas&amp;name=downloads&amp;lang=en">Downloads</a></li>
+            <li><a title="Roadmap" href="/sw/page.php?pid=paginas&amp;name=roadmap&amp;lang=en">Roadmap</a></li>
+            <li><a title="Objectives" href="/sw/page.php?pid=paginas&amp;name=objectives&amp;lang=en">Objectives</a></li>
+            <li><a title="Screenshots" href="/sw/page.php?pid=paginas&amp;name=screenshots&amp;lang=en">Screenshots</a></li>
+            <li><a title="Features" href="/sw/page.php?pid=paginas&amp;name=features&amp;lang=en">Features</a></li>
+            <li><a title="New in this version" href="/sw/page.php?pid=paginas&amp;name=new_in_version&amp;lang=en">New in this version</a></li>
+            <li><a title="Releases notification" href="/sw/page.php?pid=paginas&amp;name=release_notification&amp;lang=en">Releases notification</a></li>
+            <li><a title="Installation" href="/sw/page.php?pid=paginas&amp;name=installation&amp;lang=en">Installation</a></li>
+            <li><a title="Scores publication" href="/sw/page.php?pid=paginas&amp;name=score_publication&amp;lang=en">Scores publication</a></li>
           </ul></li>
 
           <li><span class="lm-side-nav">Help</span>
           <ul>
-            <li><a title="Documents" href="page.php?pid=paginas&amp;name=docs_index&amp;lang=en">Documents</a></li>
-            <li><a title="Report a bug" href="page.php?pid=paginas&amp;name=send_bugs&amp;lang=en">Report a bug</a></li>
+            <li><a title="Documents" href="/sw/page.php?pid=paginas&amp;name=docs_index&amp;lang=en">Documents</a></li>
+            <li><a title="Report a bug" href="/sw/page.php?pid=paginas&amp;name=send_bugs&amp;lang=en">Report a bug</a></li>
           </ul></li>
 
-          <li><a title="Get involved" href="page.php?pid=paginas&amp;name=get_involved&amp;lang=en">Get involved</a>
+          <li><a title="Get involved" href="/sw/page.php?pid=paginas&amp;name=get_involved&amp;lang=en">Get involved</a>
           <ul>
-            <li><a title="Developers" href="page.php?pid=paginas&amp;name=join_developers&amp;lang=en">Developers</a></li>
+            <li><a title="Developers" href="/sw/page.php?pid=paginas&amp;name=join_developers&amp;lang=en">Developers</a></li>
           </ul></li>
 
           <li><span class="lm-side-nav">Developers</span>
           <ul>
-            <li><a title="wxMidi" href="page.php?pid=paginas&amp;name=wxmidi&amp;lang=en">wxMidi</a></li>
+            <li><a title="wxMidi" href="/sw/page.php?pid=paginas&amp;name=wxmidi&amp;lang=en">wxMidi</a></li>
           </ul></li>
 
                     </ul>  <!-- lm-side-nav -->
@@ -322,8 +322,8 @@
 
         <!-- footer BEGIN -->
         <div id="lm-footer">
-            Copyright &copy; 2003-2006 Cecilio Salmer&oacute;n. All rights reserved.
-            <br /><a href="page.php?pid=paginas&amp;name=license">
+            Copyright &copy; 2003-2007 Cecilio Salmer&oacute;n. All rights reserved.
+            <br /><a href="/sw/page.php?pid=paginas&amp;name=license">
             License</a>
         </div>
         <!-- footer END -->
@@ -331,6 +331,7 @@
 </div>  <!-- wrap -->
 </body>
 </html>
+
 </xsl:template>
 
 <!-- ==================================================================== -->

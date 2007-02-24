@@ -13,7 +13,7 @@ indicated with symbols, called 'rests'. There also exists a rest for each note d
 The following score shows a quarter note and the quarter rest:
 </para>
 
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>short</score_type>
     <music_border>0</music_border>
     <music>
@@ -28,7 +28,7 @@ gets a beat. Lesson, for example, the first four measures of the
 popular song Frere Jacques:
 </para>
 
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>short</score_type>
     <music_border>0</music_border>
     <control_play></control_play>

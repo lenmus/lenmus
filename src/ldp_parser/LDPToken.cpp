@@ -295,6 +295,7 @@ void lmLDPTokenBuilder::ParseNewToken()
         FT_NUM02,
         FT_SPC01,
         FT_STR01,
+        FT_STR02,
         FT_S01,
         FT_S02,
         FT_S03,
@@ -343,6 +344,9 @@ void lmLDPTokenBuilder::ParseNewToken()
                             break;
                         case chQuotes:
                             nState = FT_STR01;
+                            break;
+                        case chApostrophe:
+                            nState = FT_STR02;
                             break;
                         case nEOF:
                             m_token.Set(tkEndOfFile, _T(""));
@@ -558,6 +562,20 @@ void lmLDPTokenBuilder::ParseNewToken()
                         nState = FT_Error;
                     } else {
                         nState = FT_STR01;
+                    }
+                }
+                break;
+
+            case FT_STR02:
+                GNC();
+                if (m_curChar == chApostrophe) {
+                    m_token.Set(tkString, Extract(iStart + 1, m_lastPos - 1) );
+                    return;
+                } else {
+                    if (m_curChar == nEOF || m_curChar == nEOL) {
+                        nState = FT_Error;
+                    } else {
+                        nState = FT_STR02;
                     }
                 }
                 break;

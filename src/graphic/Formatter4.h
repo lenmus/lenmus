@@ -36,7 +36,6 @@
 #include "../score/score.h"
 #include "TimeposTable.h"
 #include "BoxScore.h"
-#include "GraphicManager.h"     //class lmRenderOptions;      //defined in GraphicManager.h
 
 
 class lmFormatter4
@@ -46,12 +45,12 @@ public:
     ~lmFormatter4();
 
     //measure phase
-    lmBoxScore* Layout(lmScore* pScore, lmPaper* pPaper, lmRenderOptions* pOptions); 
+    lmBoxScore* Layout(lmScore* pScore, lmPaper* pPaper); 
 
 
 private:
     lmBoxScore* RenderMinimal(lmPaper *pPaper);
-    lmBoxScore* RenderJustified(lmPaper* pPaper, lmRenderOptions* pOptions);
+    lmBoxScore* RenderJustified(lmPaper* pPaper);
 
     lmLUnits SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem, 
                                lmPaper* pPaper, bool* pNewSystem);

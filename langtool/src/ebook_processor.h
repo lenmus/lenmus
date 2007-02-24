@@ -79,6 +79,7 @@ private:
     bool CopyrightTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool EmphasisTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool HolderTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
+    bool ImagedataTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool ItemizedlistTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool LeafletTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);
     bool LeafletcontentTag(const wxXml2Node& oNode, int nOptions=0, wxString* pText=NULL);

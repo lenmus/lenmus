@@ -18,7 +18,7 @@ following symbol:
 </para>
 
 <!-- Empty staff with a G clef -->
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -39,7 +39,7 @@ to the second line:
 </para>
 
 <!-- staff with a G clef and notes on all spaces and lines, with their names -->
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>short_15_es</score_type>
     <music_border>0</music_border>
     <music>
@@ -54,7 +54,7 @@ to consecutive notes, as shown in the next score:
 </para>
 
 <!-- staff with a G clef and notes on all spaces and lines, with their names -->
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>short_15_es</score_type>
     <music_border>0</music_border>
     <control_play></control_play>

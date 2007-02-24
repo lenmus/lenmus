@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file GraphicManager.cpp
-    @brief Implementation file for class lmGraphicManager
-    @ingroup graphic_management
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "GraphicManager.h"
 #endif
@@ -38,6 +35,7 @@
 #include "GraphicManager.h"
 #include "Formatter4.h"
 #include "AggDrawer.h"
+#include "../score/ObjOptions.h"
 
 //access to colors
 #include "../globals/Colors.h"
@@ -118,7 +116,7 @@ void lmGraphicManager::Layout()
         m_pBoxScore = (lmBoxScore*) NULL;
     }
     lmFormatter4 oFormatter;   //the formatter object
-    m_pBoxScore = oFormatter.Layout(m_pScore, m_pPaper, &m_options);
+    m_pBoxScore = oFormatter.Layout(m_pScore, m_pPaper);
     wxASSERT(m_pBoxScore);
     m_fReLayout = false;
 

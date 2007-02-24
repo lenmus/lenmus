@@ -67,8 +67,7 @@ lmFormatter4::~lmFormatter4()
 
 }
 
-lmBoxScore* lmFormatter4::Layout(lmScore* pScore, lmPaper* pPaper,
-                                 lmRenderOptions* pOptions)
+lmBoxScore* lmFormatter4::Layout(lmScore* pScore, lmPaper* pPaper)
 {
 //            Optional nTipoEspaciado As ESpacingMethod = esm_PropConstantShortNote, _
 //            Optional fJustificada As Boolean = true, _
@@ -78,7 +77,7 @@ lmBoxScore* lmFormatter4::Layout(lmScore* pScore, lmPaper* pPaper,
     switch (pScore->GetRenderizationType())
     {
         case eRenderJustified:
-            return RenderJustified(pPaper, pOptions);
+            return RenderJustified(pPaper);
         case eRenderSimple:
             return RenderMinimal(pPaper);
         default:
@@ -169,7 +168,7 @@ lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
 
 }
 
-lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOptions)
+lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 {
 
 //            nTipoEspaciado As ESpacingMethod, _
@@ -195,7 +194,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOpt
     if (!m_pScore || m_pScore->GetNumInstruments() == 0) return (lmBoxScore*)NULL;
 
     lmBoxScore* pBoxScore = new lmBoxScore(m_pScore);
-
+    bool fStopStaffLinesAtFinalBarline = m_pScore->GetOptionBool(_T("StaffLines.StopAtFinalBarline"));
 
     pPaper->RestartPageCursors();    //ensure that page cursors are at top-left corner
 
@@ -405,7 +404,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOpt
             //if requested to justify systems, divide up the remaining space
             //between all bars, except if this is the last bar and options flag
             //"StopStaffLinesAtFinalBar" is set.
-            if (!(fThisIsLastSystem && pOptions->m_fStopStaffLinesAtFinalBarline))
+            if (!(fThisIsLastSystem && fStopStaffLinesAtFinalBarline))
                 RedistributeFreeSpace(m_nFreeSpace);
         }
 
@@ -454,7 +453,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper, lmRenderOptions* pOpt
 
         //Store information about this system
         pBoxSystem->SetNumMeasures(m_nMeasuresInSystem);
-        if (fThisIsLastSystem && pOptions->m_fStopStaffLinesAtFinalBarline) {
+        if (fThisIsLastSystem && fStopStaffLinesAtFinalBarline) {
             //this is the last system and it has been requested to stop staff lines
             //in last measure. So, set final x so staff lines go to final bar line
             lmLUnits xPos;

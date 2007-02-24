@@ -161,8 +161,10 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("musicData")] = _T("musicData");
         m_Tags[0][_T("name")] = _T("name");
         m_Tags[0][_T("newSystem")] = _T("newSystem");
+        m_Tags[0][_T("no")] = _T("no");
         m_Tags[0][_T("normal")] = _T("normal");
         m_Tags[0][_T("noVisible")] = _T("noVisible");
+        m_Tags[0][_T("opt")] = _T("opt");
         m_Tags[0][_T("right")] = _T("right");
         m_Tags[0][_T("split")] = _T("split");
         m_Tags[0][_T("start")] = _T("start");
@@ -174,6 +176,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("up")] = _T("up");
         m_Tags[0][_T("x")] = _T("x");
         m_Tags[0][_T("y")] = _T("y");
+        m_Tags[0][_T("yes")] = _T("yes");
 
         //special context: note durations
         //letter 'x' can not be used as it is double sharp accidental
@@ -304,8 +307,10 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("musicData")] = _T("datosMusica");
         m_Tags[0][_T("name")] = _T("nombre");
         m_Tags[0][_T("newSystem")] = _T("nuevoSistema");
+        m_Tags[0][_T("no")] = _T("no");
         m_Tags[0][_T("normal")] = _T("normal");
         m_Tags[0][_T("noVisible")] = _T("noVisible");
+        m_Tags[0][_T("opt")] = _T("opcion");
         m_Tags[0][_T("right")] = _T("derecha");
         m_Tags[0][_T("split")] = _T("partes");
         m_Tags[0][_T("start")] = _T("inicio");
@@ -317,6 +322,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("up")] = _T("arriba");
         m_Tags[0][_T("x")] = _T("x");
         m_Tags[0][_T("y")] = _T("y");
+        m_Tags[0][_T("yes")] = _T("yes");
 
         //special context: note durations
         //letter 'x' can not be used as it is double sharp accidental

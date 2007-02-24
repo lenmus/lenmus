@@ -13,7 +13,7 @@ and are drawn as short lines, slightly longer than the note head. For example, n
 score shows the natural scale starting on C:
 </para>
 
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -32,7 +32,7 @@ score shows the natural scale starting on C:
 Leger lines can also be added on top, for high pitch notes:
 </para>
 
-<score width="600" height="70" border="0">
+<score width="600" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>

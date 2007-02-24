@@ -65,7 +65,7 @@ static wxString m_sLDPKeyName[30] = {
 
 //constructor for traditional key signatures
 lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool fVisible) :
-    lmSimpleObj(eTPO_KeySignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    lmSimpleObj(pVStaff, eTPO_KeySignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
 
     //language dependent strings. Can not be statically initiallized because

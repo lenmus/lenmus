@@ -111,14 +111,14 @@
 <!-- parameters -->
 <xsl:param name="chunk.fast" select="1"/> 
 <xsl:param name="admon.graphics" select="1"/>
-<xsl:param name="admon.graphics.path" select="'../figures/'"/>
+<xsl:param name="admon.graphics.path" select="'c:/usr/desarrollo_wx/lenmus/docs/docbook/src/ldp_manual/figures/'"/>
 <xsl:param name="section.autolabel" select="1"/>
 <xsl:param name="section.label.includes.component.label" select="1"/>
 <!--<xsl:param name="navig.graphics" select="1"/>-->
 <xsl:param name="generate.legalnotice.link" select="0"/>
 <xsl:param name="chunker.output.doctype-public" select="'-//W3C//DTD HTML 4.01//EN'"/>
 <xsl:param name="chunker.output.doctype-system" select="'http://www.w3.org/TR/html4/strict.dtd'"/>
-<xsl:param name="base.dir" select="'c:/usr/desarrollo_wx/lenmus/docs/docbook/html/ebooks_format/'"/>
+<xsl:param name="base.dir" select="'c:/usr/desarrollo_wx/lenmus/docs/docbook/html/ldp_manual/en/'"/>
 
 
 <!-- change the word Home with Table of Contents for English output -->
