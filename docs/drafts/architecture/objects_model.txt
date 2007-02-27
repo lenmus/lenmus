@@ -1,25 +1,5 @@
-//--------------------------------------------------------------------------------------
-//    LenMus Phonascus: The teacher of music
-//    Copyright (c) 2001-2006 Cecilio Salmeron
-//
-//    This program is free software; you can redistribute it and/or modify it under the 
-//    terms of the GNU General Public License as published by the Free Software Foundation;
-//    either version 2 of the License, or (at your option) any later version.
-//
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
-//    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-//
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
-//    Fifth Floor, Boston, MA  02110-1301, USA.
-//
-//    For any comment, suggestion or feature request, please contact the manager of 
-//    the project at cecilios@users.sourceforge.net
-//
-//-------------------------------------------------------------------------------------
-
 Notes on score objects
+--------------------------
 
     lmScoreObj:  The most abstract object. Anything that can appear in an score
   
@@ -39,7 +19,7 @@ Notes on score objects
         they have timing information. They must belong to an staff and, therefore,
         they will get included in the staff objects collection associated to an lmVStaff.
         
-        As staff symbols can be comosite symbols (i.e. a note plus its accidental symbol)
+        As staff symbols can be composite symbols (i.e. a note plus its accidental symbol)
         recursive composition ("composite" pattern) will be used to represent ScoreObjs.
         Therefore, lmStaffObj specialices in two classes:
         

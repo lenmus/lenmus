@@ -18,16 +18,14 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Barline.h
-    @brief Header file for class lmBarline
-    @ingroup score_kernel
-*/
-#ifdef __GNUG__
-// #pragma interface
-#endif
 
 #ifndef __BARLINE_H__        //to avoid nested includes
 #define __BARLINE_H__
+
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma interface "Barline.cpp"
+#endif
+
 
 #include "wx/dc.h"
 
@@ -58,6 +56,11 @@ public:
     void AddContext(lmContext* pContext, int nStaff);
     lmContext* GetContext(int nStaff);
 
+    //positioning
+    void SetLocation(lmLUnits xPos, lmELocationType nType);
+    lmLUnits GetLocationPos() { return m_xUserPos; }
+    lmELocationType GetLocationType() { return m_xUserPosType; }
+
 
     //    debugging
     wxString Dump();
@@ -77,6 +80,9 @@ private:
 private:
     EBarline            m_nBarlineType;     //type of barline
     ArrayOfContexts     m_aContexts;        //pointers to contexts at barline position
+
+    lmLUnits            m_xUserPos;
+    lmELocationType     m_xUserPosType;
 };
 
 //

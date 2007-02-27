@@ -88,6 +88,7 @@ lmScore::lmScore() : lmObject((lmObject*)NULL)
     //default ObjOptions
     SetOption(_T("StaffLines.StopAtFinalBarline"), true);
     SetOption(_T("StaffLines.Hide"), false);
+    SetOption(_T("Staff.DrawLeftBarline"), true);
 }
 
 lmScore::~lmScore()

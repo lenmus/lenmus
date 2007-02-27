@@ -124,16 +124,18 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
 
 
     //Draw the initial barline that joins all staffs in a system
-    pInstr = pScore->GetFirstInstrument();
-    pVStaff = pInstr->GetVStaff(1);                    // first lmVStaff of this system
-    lmLUnits xPos = pVStaff->GetXStartOfStaff();
-    lmLUnits yTop = pVStaff->GetYTop();
-    pInstr = pScore->GetLastInstrument();
-    pVStaff = pInstr->GetVStaff(pInstr->GetNumStaves());    //last staff of this system
-    lmLUnits yBottom = pVStaff->GetYBottom();
+    if (pScore->GetOptionBool(_T("Staff.DrawLeftBarline")) ) {
+        pInstr = pScore->GetFirstInstrument();
+        pVStaff = pInstr->GetVStaff(1);                    // first lmVStaff of this system
+        lmLUnits xPos = pVStaff->GetXStartOfStaff();
+        lmLUnits yTop = pVStaff->GetYTop();
+        pInstr = pScore->GetLastInstrument();
+        pVStaff = pInstr->GetVStaff(pInstr->GetNumStaves());    //last staff of this system
+        lmLUnits yBottom = pVStaff->GetYBottom();
 
-    lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
-    pPaper->SolidLine(xPos, yTop, xPos, yBottom, uLineThickness, eEdgeNormal, *wxBLACK);
+        lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
+        pPaper->SolidLine(xPos, yTop, xPos, yBottom, uLineThickness, eEdgeNormal, *wxBLACK);
+    }
 
 }
 

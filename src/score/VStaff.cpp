@@ -18,46 +18,40 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file VStaff.cpp
-    @brief Implementation file for class lmVStaff
-    @ingroup score_kernel
-*/
+
 //--------------------------------------------------------------------------------------------------
-/*! @class lmVStaff
-    @ingroup score_kernel
-    @brief A generalization of the 'staff' concept.
-
-    The object lmVStaff (Virtual staff) is a generalization of the concept 'staff': it is a staff
-    with an great number of lines and spaces (almost infinite) so to represent all posible pitches,
-    but whose visual renderization can be controlled so
-    that only the specified (needed) lines are rendered i.e: the standard five-lines staff, the piano
-    grand staff, the single line staff used for rithm or unpitched music, or any other design you
-    would like.
-
-    An lmVStaff can contain many 'staffs' (groups of lines rendered toghether), depending on the layout
-    choosen. For example:
-    - the standard five-lines staff is an lmVStaff with one five-lines staff.
-    - the grand staff is an lmVStaff with two five-lines staves.
-    - the single line unpitched staff is an VSatff with one sigle line staff.
-
-    The concept of 'staff' is not modelled into the program, its is just a term to be used only 
-    in documentation, algoritms explanations, etc.
-
-    An lmVStaff is composed by objects such as notes, rests, barlines, keys, and all other
-    musical signs traditionally used for writing music.
-    All this objects than can appear in a staff will be modeled by an abstract class 'lmStaffObj'.
-    Therefore an lmVStaff is, roughfly, a collection of StaffObjs and some attributes.
-
-    Bars are not modelled by objects. They are just the collection of lmStaffObj found between
-    two lmStaffObj of type 'barline' (and between the start of the score and the first barline).
-    Nevertheless, tha concept of bar is very important at least in two situations:
-        1. In interpretation (playing back the score). For example:  play from bar #7
-        2. When rendering the score, as all the objects in a bar must be rendered together in
-           the same paper line.
-    Due to this, althoug the bar is not modelled as an object, there exits methods in the
-    VStaff object to deal with bars.
-
-*/
+// class lmVStaff: A generalization of the 'staff' concept.
+//
+//    The object lmVStaff (Virtual staff) is a generalization of the concept 'staff': it is a staff
+//    with an great number of lines and spaces (almost infinite) so to represent all posible pitches,
+//    but whose visual renderization can be controlled so
+//    that only the specified (needed) lines are rendered i.e: the standard five-lines staff, the piano
+//    grand staff, the single line staff used for rithm or unpitched music, or any other design you
+//    would like.
+//
+//    An lmVStaff can contain many 'staffs' (groups of lines rendered toghether), depending on the layout
+//    choosen. For example:
+//    - the standard five-lines staff is an lmVStaff with one five-lines staff.
+//    - the grand staff is an lmVStaff with two five-lines staves.
+//    - the single line unpitched staff is an VSatff with one sigle line staff.
+//
+//    The concept of 'staff' is not modelled into the program, its is just a term to be used only 
+//    in documentation, algoritms explanations, etc.
+//
+//    An lmVStaff is composed by objects such as notes, rests, barlines, keys, and all other
+//    musical signs traditionally used for writing music.
+//    All this objects than can appear in a staff will be modeled by an abstract class 'lmStaffObj'.
+//    Therefore an lmVStaff is, roughfly, a collection of StaffObjs and some attributes.
+//
+//    Bars are not modelled by objects. They are just the collection of lmStaffObj found between
+//    two lmStaffObj of type 'barline' (and between the start of the score and the first barline).
+//    Nevertheless, tha concept of bar is very important at least in two situations:
+//        1. In interpretation (playing back the score). For example:  play from bar #7
+//        2. When rendering the score, as all the objects in a bar must be rendered together in
+//           the same paper line.
+//    Due to this, althoug the bar is not modelled as an object, there exits methods in the
+//    VStaff object to deal with bars.
+//
 //-------------------------------------------------------------------------------------------------
 
 //--------------------------------------------------------------------------------------------------

@@ -2105,7 +2105,7 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
     //returns true if error; in this case nothing is added to the lmVStaff
 
-    // <Barline> = (barline <BarType> [<Visible>])
+    // <Barline> = (barline <BarType> [<Visible>][<location>])
     // <BarType> = {"InicioRepeticion" | "FinRepeticion" | "Final" | "Doble" | "Simple" }
 
     wxString sElmName = pNode->GetName();
@@ -2142,13 +2142,51 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
             sType, m_pTags->TagName(_T("simple"), _T("Barlines")) );
     }
 
-    if (pNode->GetNumParms() == 2) {
-        if ((pNode->GetParameter(2))->GetName() == m_pTags->TagName(_T("noVisible"))) {
-            fVisible = false;
+    //analyze remaining optional parameters
+    lmLUnits            xUserPos;
+    lmELocationType     xUserPosType;
+
+    if (pNode->GetNumParms() > 1) {
+        int iP = 2;
+        lmLDPNode* pX;
+        for(; iP <= pNode->GetNumParms(); iP++) {
+            pX = pNode->GetParameter(iP);
+            wxString sName = pX->GetName();
+
+            if (sName == m_pTags->TagName(_T("noVisible")) ) {
+                fVisible = false;
+            }
+            else if (sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) )
+            {
+                lmLocation tPos;
+                tPos.xType = lmLOCATION_DEFAULT;
+                tPos.xUnits = lmTENTHS;
+                tPos.yType = lmLOCATION_DEFAULT;
+                tPos.yUnits = lmTENTHS;
+                AnalyzeLocation(pX, &tPos);
+
+                //convert tenths to logical units (referred to first staff of this VStaff)
+                xUserPosType = tPos.xType;
+                if (xUserPosType != lmLOCATION_DEFAULT) {
+                    if (tPos.xUnits == lmTENTHS) {
+                        xUserPos = pVStaff->TenthsToLogical(tPos.x, 1);
+                    }
+                    else
+                        xUserPos = lmToLogicalUnits(tPos.x, tPos.xUnits);
+                }
+            }
+            else {
+                AnalysisError( _("Unknown parameter '%s'. Ignored."), sName);
+            }
         }
     }
     
-    pVStaff->AddBarline(nType, fVisible);
+    lmBarline* pBarline = pVStaff->AddBarline(nType, fVisible);
+
+    //add location
+    if (xUserPosType != lmLOCATION_DEFAULT)
+        pBarline->SetLocation(xUserPos, xUserPosType);
+
     return false;
     
 }
@@ -2286,8 +2324,10 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmObject* pObject)
     wxString sValue = ((pNode->GetParameter(2))->GetName()).Lower();
 
     //verify option name
-    if (!(sName == _T("StaffLines.StopAtFinalBarline") ||
-          sName == _T("StaffLines.Hide") ))
+    if (!(sName == _T("StaffLines.StopAtFinalBarline")
+          || sName == _T("StaffLines.Hide")
+          || sName == _T("Staff.DrawLeftBarline")
+        ))
     {
         AnalysisError( _("Option '%s' unknown. Ignored."), sName);
         return;
@@ -2792,7 +2832,7 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
         sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) );
 
     int nValue;
-    lmEUnits nUnits;
+    lmEUnits nUnits = lmTENTHS;     //default value
     AnalyzeLocation(pNode, &nValue, &nUnits);
     if (sName == m_pTags->TagName(_T("x")) ) {
         //x

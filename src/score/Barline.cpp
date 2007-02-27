@@ -62,6 +62,10 @@ lmBarline::lmBarline(EBarline nBarlineType, lmVStaff* pVStaff, bool fVisible) :
     m_uSpacing = m_pVStaff->TenthsToLogical(4, 1);          // space between lines: 4 tenths
     m_uRadius = m_pVStaff->TenthsToLogical(2, 1);           // dots radius: 2 tenths
 
+    //default location (auto-layout)
+    m_xUserPosType = lmLOCATION_DEFAULT;
+    m_xUserPos = 0;
+
 }
 
 void lmBarline::AddContext(lmContext* pContext, int nStaff)
@@ -305,6 +309,13 @@ void lmBarline::DrawTwoDots(lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos)
     pPaper->SolidCircle(xPos, yPos + shift1, m_uRadius);
     pPaper->SolidCircle(xPos, yPos + shift2, m_uRadius);
 }
+
+void lmBarline::SetLocation(lmLUnits xPos, lmELocationType nType)
+{
+    m_xUserPos = xPos;
+    m_xUserPosType = nType;
+}
+
 
 //-------------------------------------------------------------------------------------------------
 // global functions related to barlines

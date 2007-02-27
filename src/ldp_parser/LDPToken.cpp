@@ -290,12 +290,14 @@ void lmLDPTokenBuilder::ParseNewToken()
         FT_EOF08,
         FT_EOF09,
         FT_EOF10,
+        FT_ETQ02,
         FT_ETQ01,
         FT_NUM01,
         FT_NUM02,
         FT_SPC01,
         FT_STR01,
         FT_STR02,
+        FT_STR03,
         FT_S01,
         FT_S02,
         FT_S03,
@@ -309,14 +311,19 @@ void lmLDPTokenBuilder::ParseNewToken()
         switch (nState) {
             case FT_Start:
                 GNC();
-                if (IsLetter(m_curChar) || m_curChar == chApostrophe ||
+                if (IsLetter(m_curChar) ||
                     m_curChar == chOpenBracket || m_curChar == chBar ||
                     m_curChar == chColon )
                 {
                     nState = FT_ETQ01;
-                } else if (IsNumber(m_curChar)) {
+                }
+                else if (m_curChar == chApostrophe) {
+                    nState = FT_ETQ02;
+                }
+                else if (IsNumber(m_curChar)) {
                     nState = FT_NUM01;
-                } else {
+                }
+                else {
                     switch (m_curChar) {
                         case chOpenParenthesis:
                             m_token.Set(tkStartOfElement, chOpenParenthesis);
@@ -371,6 +378,34 @@ void lmLDPTokenBuilder::ParseNewToken()
                 }
                 break;
     
+            case FT_ETQ02:
+                GNC();
+                if (m_curChar == chApostrophe) {
+                    nState = FT_STR02;
+                } else {
+                    nState = FT_ETQ01;
+                }
+                break;
+
+            case FT_STR02:
+                GNC();
+                if (m_curChar == chApostrophe) {
+                    nState = FT_STR03;
+                } else {
+                    nState = FT_STR02;
+                }
+                break;
+
+            case FT_STR03:
+                GNC();
+                if (m_curChar == chApostrophe) {
+                    m_token.Set(tkString, Extract(iStart + 2, m_lastPos - 2) );
+                    return;
+                } else {
+                    nState = FT_STR02;
+                }
+                break;
+
             case FT_CMT01:
                 GNC();
                 if (m_curChar == chSlash) {
@@ -562,20 +597,6 @@ void lmLDPTokenBuilder::ParseNewToken()
                         nState = FT_Error;
                     } else {
                         nState = FT_STR01;
-                    }
-                }
-                break;
-
-            case FT_STR02:
-                GNC();
-                if (m_curChar == chApostrophe) {
-                    m_token.Set(tkString, Extract(iStart + 1, m_lastPos - 1) );
-                    return;
-                } else {
-                    if (m_curChar == nEOF || m_curChar == nEOL) {
-                        nState = FT_Error;
-                    } else {
-                        nState = FT_STR02;
                     }
                 }
                 break;

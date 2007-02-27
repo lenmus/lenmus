@@ -18,14 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Formatter4.cpp
-    @brief Implementation file for class lmFormatter4
-    @ingroup graphic_management
-*/
-/*! @class lmFormatter4
-    @ingroup graphic_management
-    @brief A rendering algorithm based on containers and a table of times and positions
-*/
+
+// class lmFormatter4
+//      A rendering algorithm based on containers and a table of times and positions
 
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
@@ -670,18 +665,15 @@ void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable)
 bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasure,
                              lmPaper* pPaper)
 {
-    /*
-    Compute the width of the requested measure of the lmVStaff
-    Input variables:
-       pVStaff - lmVStaff to process
-       nAbsMeasure - number of measure to size (absolute, from the start of the score)
-       nRelMeasure - number of this measure (relative, referred to current system)
-    Results:
-       all measurements are stored in global variable  m_oTimepos[nRelMeasure]
+    // Compute the width of the requested measure of the lmVStaff
+    // Input variables:
+    //   pVStaff - lmVStaff to process
+    //   nAbsMeasure - number of measure to size (absolute, from the start of the score)
+    //   nRelMeasure - number of this measure (relative, referred to current system)
+    // Results:
+    //   all measurements are stored in global variable  m_oTimepos[nRelMeasure]
 
-       return bool: true if newSystem tag found in this measure
-
-    */
+    //   return bool: true if newSystem tag found in this measure
 
     wxASSERT(nAbsMeasure <= pVStaff->GetNumMeasures());
 
@@ -692,10 +684,11 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     //StaffObjs can be correctly positioned.
     //The stored value is accesible by method //GetXInicioCompas//
 //    pVStaff->SetXInicioCompas = pPaper->GetCursorX()
-//
+
     //start new thread
     m_oTimepos[nRelMeasure].NewThread();
-    m_oTimepos[nRelMeasure].SetCurXLeft( pPaper->GetCursorX() );
+    lmLUnits xStart = pPaper->GetCursorX();
+    m_oTimepos[nRelMeasure].SetCurXLeft( xStart );
 
     //if this is not the first measure of the score advance (horizontally) a space to leave a gap
     //between the previous barline (or the prolog, if first measure in system) and the first note
@@ -845,14 +838,44 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     //bar of a score. In theses cases, the loop is exited because the end of the score is
     //reached.
 
-    //end up current thread
-    m_oTimepos[nRelMeasure].CloseThread(pPaper->GetCursorX());
     //if the barline exists and is visible we have to advance paper x cursor
     //in barline width and store it in the Omega entry
-    if (pSO->GetType() == eTPO_Barline) {
+    if (pSO->GetType() == eTPO_Barline)
+    {
+        //reposition paper if user location for barline is defined
+        lmBarline* pBarline = (lmBarline*)pSO;
+        if (pBarline->GetLocationType() != lmLOCATION_DEFAULT)
+        {
+            lmLUnits xEnd = pPaper->GetCursorX();
+            wxLogMessage(_T("[lmFormatter4::SizeMeasure] xStart=%.2f, xEnd=%.2f"), xStart, xEnd);
+            lmLUnits xFinalPos = 0;
+            lmLUnits xPos = pBarline->GetLocationPos();
+
+            //compute user required barline position
+            if (pBarline->GetLocationType() == lmLOCATION_RELATIVE) {
+                xFinalPos = xStart + xPos;
+            }
+            else {  //lmLOCATION_ABSOLUTE
+                xFinalPos = xPos + pPaper->GetLeftMarginXPos();
+            }
+            xEnd = wxMax(xEnd, xFinalPos);
+            wxLogMessage(_T("[lmFormatter4::SizeMeasure] xFinalPos=%.2f, new xEnd=%.2f"),
+                xFinalPos, xEnd);
+            pPaper->SetCursorX(xEnd);
+        }
+
+        // end up current thread
+        m_oTimepos[nRelMeasure].CloseThread(pPaper->GetCursorX());
+
+        //Now add the barline
         m_oTimepos[nRelMeasure].AddBarline(pSO);
         pSO->Draw(DO_MEASURE, pPaper);
     }
+    else {
+        // no barline at the end of the measure. Close thread
+        m_oTimepos[nRelMeasure].CloseThread(pPaper->GetCursorX());
+    }
+
     //now store final x position of this measure
     m_oTimepos[nRelMeasure].SetCurXFinal(pPaper->GetCursorX());
 
