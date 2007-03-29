@@ -60,7 +60,7 @@ public:
     //destructor
     ~lmScalesManager();
 
-    EScaleType GetType() { return m_nType; }
+    EScaleType GetScaleType() { return m_nType; }
     wxString GetName() { return ScaleTypeToName( m_nType ); }
     int GetNumNotes();
 //    int GetMidiNote(int i);

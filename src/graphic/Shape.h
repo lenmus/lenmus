@@ -42,8 +42,7 @@
 
 #include "../score/defs.h"      // lmLUnits
 #include "../app/Paper.h"
-class lmScoreObj;
-class lmStaffObj;
+class lmObject;
 class lmStaff;
 
 
@@ -80,9 +79,9 @@ public:
 
 
 protected:
-    lmShapeObj(lmScoreObj* pOwner);
+    lmShapeObj(lmObject* pOwner);
 
-    lmScoreObj*     m_pOwner;       //musical object owning this shape
+    lmObject*     m_pOwner;       //musical object owning this shape
 
     wxRect          m_BoundsRect;   // boundling rectangle (logical units, relative to renderization point)
     wxRect          m_SelRect;      // selection rectangle (logical units, relative to renderization point)
@@ -106,7 +105,7 @@ public:
 
 
 protected:
-    lmShapeSimple(lmScoreObj* pOwner);
+    lmShapeSimple(lmObject* pOwner);
 
 
 };
@@ -115,7 +114,7 @@ protected:
 class lmShapeComposite : public lmShapeObj
 {
 public:
-    lmShapeComposite(lmScoreObj* pOwner);
+    lmShapeComposite(lmObject* pOwner);
     virtual ~lmShapeComposite();
 
     //implementation of virtual methods from base class
@@ -137,7 +136,9 @@ protected:
 class lmShapeLine : public lmShapeSimple
 {
 public:
-    lmShapeLine(lmScoreObj* pOwner, lmLUnits uLength, lmLUnits uWidth);
+    lmShapeLine(lmObject* pOwner, 
+                lmLUnits xStart, lmLUnits yStart, 
+                lmLUnits xEnd, lmLUnits yEnd, lmLUnits uWidth, wxColour nColor);
     ~lmShapeLine() {}
 
     //implementation of virtual methods from base class
@@ -146,8 +147,10 @@ public:
     void Shift(lmLUnits xIncr);
 
 private:
-    lmLUnits    m_uLength;
+    lmLUnits    m_xStart, m_yStart;
+    lmLUnits    m_xEnd, m_yEnd;
     lmLUnits    m_uWidth;
+    wxColour    m_color;
 
 };
 
@@ -155,7 +158,7 @@ private:
 class lmShapeGlyph : public lmShapeSimple
 {
 public:
-    lmShapeGlyph(lmScoreObj* pOwner, int nGlyph, wxFont* pFont);
+    lmShapeGlyph(lmObject* pOwner, int nGlyph, wxFont* pFont);
     ~lmShapeGlyph() {}
 
     //implementation of virtual methods from base class

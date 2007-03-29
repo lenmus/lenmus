@@ -44,7 +44,7 @@
 
 lmWordsDirection::lmWordsDirection(lmVStaff* pVStaff, wxString sText, lmEAlignment nAlign,
                    lmLocation* pPos, lmFontInfo oFontData, bool fHasWidth) 
-    : lmSimpleObj(pVStaff, eTPO_WordsDirection, pVStaff, 1, true, lmDRAGGABLE),
+    : lmStaffObj(pVStaff, eSFOT_WordsDirection, pVStaff, 1, true, lmDRAGGABLE),
       lmBasicText(sText, _T(""), pPos, oFontData)
 {
     m_fHasWidth = fHasWidth;

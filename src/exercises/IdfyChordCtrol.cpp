@@ -574,7 +574,7 @@ wxString lmIdfyChordCtrol::PrepareScore(EClefType nClef, EChordType nType, lmSco
     pVStaff->AddKeySignature( m_nKey );
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
 
-//    pVStaff->AddEspacio 24
+//    pVStaff->AddSpacer(30);       // 3 lines
     int i = (m_nMode == 2 ? nNumNotes-1 : 0);   // 2= melodic descending
     sPattern = _T("(n ") + oChordMngr.GetPattern(i) + _T(" r)");
     pNode = parserLDP.ParseText( sPattern );

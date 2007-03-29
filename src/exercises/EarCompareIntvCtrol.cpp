@@ -414,7 +414,7 @@ void lmEarCompareIntvCtrol::NewProblem()
         pVStaff->AddClef( nClef );
         pVStaff->AddKeySignature(nKey);
         pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
-    //    pVStaff->AddEspacio 24
+    //    pVStaff->AddSpacer(30);       // 3 lines
         pNode = parserLDP.ParseText( sPattern[i][0] );
         pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
         pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
@@ -432,7 +432,7 @@ void lmEarCompareIntvCtrol::NewProblem()
     pVStaff->AddKeySignature(nKey);
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
 
-//    pVStaff->AddEspacio 24
+//    pVStaff->AddSpacer(30);       // 3 lines
     pNode = parserLDP.ParseText( sPattern[0][0] );
     pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
@@ -440,7 +440,7 @@ void lmEarCompareIntvCtrol::NewProblem()
     pNote[1] = parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddBarline(etb_DoubleBarline);
 
-//    pVStaff->AddEspacio 24
+//    pVStaff->AddSpacer(30);       // 3 lines
     pNode = parserLDP.ParseText( sPattern[1][0] );
     parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note

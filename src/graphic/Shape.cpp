@@ -48,7 +48,7 @@ WX_DEFINE_LIST(ShapesList);
 // lmShapeObj object implementation
 //========================================================================================
 
-lmShapeObj::lmShapeObj(lmScoreObj* pOwner)
+lmShapeObj::lmShapeObj(lmObject* pOwner)
 {
     m_pOwner = pOwner;
     m_SelRect = wxRect(0,0,0,0);
@@ -81,7 +81,7 @@ bool lmShapeObj::Collision(lmShapeObj* pShape)
 // lmShapeSimple object implementation
 //========================================================================================
 
-lmShapeSimple::lmShapeSimple(lmScoreObj* pOwner) : lmShapeObj(pOwner)
+lmShapeSimple::lmShapeSimple(lmObject* pOwner) : lmShapeObj(pOwner)
 {
 
 }
@@ -91,7 +91,7 @@ lmShapeSimple::lmShapeSimple(lmScoreObj* pOwner) : lmShapeObj(pOwner)
 //========================================================================================
 // lmShapeComposite object implementation
 //========================================================================================
-lmShapeComposite::lmShapeComposite(lmScoreObj* pOwner) : lmShapeObj(pOwner)
+lmShapeComposite::lmShapeComposite(lmObject* pOwner) : lmShapeObj(pOwner)
 {
     //default values
     m_fGrouped = false;
@@ -144,20 +144,26 @@ void lmShapeComposite::Shift(lmLUnits xIncr)
 // lmShapeLine object implementation
 //========================================================================================
 
-lmShapeLine::lmShapeLine(lmScoreObj* pOwner, lmLUnits uLength, lmLUnits uWidth)
+lmShapeLine::lmShapeLine(lmObject* pOwner, 
+                lmLUnits xStart, lmLUnits yStart, 
+                lmLUnits xEnd, lmLUnits yEnd, lmLUnits uWidth, wxColour nColor)
     : lmShapeSimple(pOwner)
 {
-    m_uLength = uLength;
+    m_xStart = xStart;
+    m_yStart = yStart;
+    m_xEnd = xEnd;
+    m_yEnd = yEnd;
+    m_color = nColor;
     m_uWidth = uWidth;
 }
 
 void lmShapeLine::Render(lmPaper* pPaper, lmUPoint pos, wxColour color)
 {
     // start and end points
-    lmLUnits x1 = pos.x;
-    lmLUnits y1 = pos.y;
-    lmLUnits x2 = x1 + m_uLength;
-    lmLUnits y2 = y1 + m_uLength;
+    lmLUnits x1 = pos.x + m_xStart;
+    lmLUnits y1 = pos.y + m_yStart;
+    lmLUnits x2 = pos.x + m_xEnd;
+    lmLUnits y2 = pos.y + m_yEnd;
 
     pPaper->SolidLine(x1, y1, x2, y2, m_uWidth, eEdgeNormal, color);
 
@@ -177,7 +183,7 @@ void lmShapeLine::Shift(lmLUnits xIncr)
 // lmShapeGlyph object implementation
 //========================================================================================
 
-lmShapeGlyph::lmShapeGlyph(lmScoreObj* pOwner, int nGlyph, wxFont* pFont)
+lmShapeGlyph::lmShapeGlyph(lmObject* pOwner, int nGlyph, wxFont* pFont)
     : lmShapeSimple(pOwner)
 {
     m_nGlyph = nGlyph;

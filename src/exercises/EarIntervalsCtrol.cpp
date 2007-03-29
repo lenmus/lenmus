@@ -570,7 +570,7 @@ void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
     pVStaff->AddClef( eclvSol );
     pVStaff->AddKeySignature(m_nKey);
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
-//    pVStaff->AddEspacio 24
+//    pVStaff->AddSpacer(30);       // 3 lines
     //First note
     sPattern = _T("(n ") + lmConverter::NoteBitsToName(tBits[0], m_nKey) + _T(" r)");
     pNode = parserLDP.ParseText( sPattern );

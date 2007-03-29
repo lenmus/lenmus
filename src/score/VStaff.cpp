@@ -85,6 +85,7 @@
 #endif
 
 #include "Score.h"
+#include "Notation.h"
 #include "../app/global.h"
 
 //implementation of the staves List
@@ -222,8 +223,8 @@ void lmVStaff::UpdateContext(lmNote* pStartNote, int nStaff, int nStep,
     while(!pIter->EndOfList())
     {
         pSO = pIter->GetCurrent();
-        switch (pSO->GetType()) {
-            case eTPO_NoteRest:
+        switch (pSO->GetClass()) {
+            case eSFOT_NoteRest:
                 if (pSO->GetStaffNum() == nStaff) {
                     pNR = (lmNoteRest*)pSO;
                     if (!pNR->IsRest()) {
@@ -238,7 +239,7 @@ void lmVStaff::UpdateContext(lmNote* pStartNote, int nStaff, int nStep,
                 }
                 break;
 
-            case eTPO_Barline:
+            case eSFOT_Barline:
                 //End of measure reached. End uptade process
                     delete pIter;
                     return;
@@ -260,18 +261,25 @@ void lmVStaff::UpdateContext(lmNote* pStartNote, int nStaff, int nStep,
 // Methods for adding StaffObjs 
 //---------------------------------------------------------------------------------------
 
-////añade un staffobj de tipo lmClef al final de la colección.
-////Si con este staffobj se inicia un compas, incrementa la cuenta de compases y guarda el índice al
-////staffobj con el que comienza (este que se añade)
+// adds a clef to the end of current StaffObjs collection
 lmClef* lmVStaff::AddClef(EClefType nClefType, int nStaff, bool fVisible)
 {    
-    wxASSERT_MSG(nStaff <= GetNumStaves(), _T(""));
+    wxASSERT(nStaff <= GetNumStaves());
     
-    lmClef *pClef = new lmClef(nClefType, this, nStaff, fVisible);
+    lmClef* pClef = new lmClef(nClefType, this, nStaff, fVisible);
     lmStaff* pStaff = GetStaff(nStaff);
     pStaff->NewContext(pClef);
     m_cStaffObjs.Store(pClef);
     return pClef;
+
+}
+
+// adds a spacer to the end of current StaffObjs collection
+lmSpacer* lmVStaff::AddSpacer(lmTenths nWidth)
+{
+    lmSpacer* pSpacer = new lmSpacer(this, nWidth);
+    m_cStaffObjs.Store(pSpacer);
+    return pSpacer;
 
 }
 
@@ -536,13 +544,13 @@ lmScoreObj* lmVStaff::FindSelectableObject(lmUPoint& pt)
 {
     lmStaffObj* pSO;
     lmScoreObj* pChildSO;
-    lmCompositeObj* pCO;
+    lmStaffObj* pCO;
     lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_OptimizeAccess);
     //iterate over the collection of StaffObjs to look for a suitable lmStaffObj
     while(!pIter->EndOfList()) {
         pSO = pIter->GetCurrent();
         if (pSO->IsComposite()) {
-            pCO = (lmCompositeObj*)pSO;
+            pCO = (lmStaffObj*)pSO;
             pChildSO = pCO->FindSelectableObject(pt);
             if (pChildSO) {
                 delete pIter;
@@ -882,13 +890,13 @@ bool lmVStaff::GetXPosFinalBarline(lmLUnits* pPos)
     while(!pIter->EndOfList())
     {
         pSO = pIter->GetCurrent();
-        if (pSO->GetType() == eTPO_Barline) break;
+        if (pSO->GetClass() == eSFOT_Barline) break;
         pIter->MovePrev();
     }
     delete pIter;
 
     //check that a barline is found. Otherwise no barlines in the score
-    if (pSO->GetType() == eTPO_Barline) {
+    if (pSO->GetClass() == eSFOT_Barline) {
         *pPos = pSO->GetOrigin().x + pSO->GetSelRect().GetWidth();
         return true;
     }
@@ -954,7 +962,7 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
         pIter->AdvanceToMeasure(nMeasure);
         while(!pIter->EndOfList()) {
             pSO = pIter->GetCurrent();
-            if (pSO->GetType() == eTPO_NoteRest) {
+            if (pSO->GetClass() == eSFOT_NoteRest) {
                 pNR = (lmNoteRest*)pSO;
                 if (!pNR->IsRest() && pNR->GetStaffNum() == nStaff) {
                     //OK. Note fount. Take context
@@ -963,7 +971,7 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
                     break;
                 }
             }
-            else if (pSO->GetType() == eTPO_Barline) {
+            else if (pSO->GetClass() == eSFOT_Barline) {
                 lmBarline* pBar = (lmBarline*)pSO;
                 pContext = pBar->GetContext(nStaff);
                 break;
@@ -979,7 +987,7 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
 
             //render clef
             if (pClef) {
-                nClef = pClef->GetType();
+                nClef = pClef->GetClefType();
                 lmUPoint pos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
                 nWidth = pClef->DrawAt(fMeasuring, pPaper, pos);
                 xPos += nWidth;
@@ -1055,16 +1063,16 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
     lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
     while(!pIter->EndOfList()) {
         pSO = pIter->GetCurrent();
-        if (pSO->GetType() == eTPO_NoteRest) {
+        if (pSO->GetClass() == eSFOT_NoteRest) {
             pNR = (lmNoteRest*)pSO;
             pNR->AddMidiEvents(pSM, rMeasureStartTime, nChannel, nMeasure);
         }
-        else if (pSO->GetType() == eTPO_Barline) {
+        else if (pSO->GetClass() == eSFOT_Barline) {
             rMeasureStartTime += pSO->GetTimePos();        //add measure duration
             nMeasure++;
             pSM->StoreMeasureStartTime(nMeasure, rMeasureStartTime);
         }
-        else if (pSO->GetType() == eTPO_TimeSignature) {
+        else if (pSO->GetClass() == eSFOT_TimeSignature) {
             //add a RhythmChange event to set up tempo (num beats, duration of a beat)
             pTS = (lmTimeSignature*)pSO;
             pTS->AddMidiEvent(pSM, rMeasureStartTime, nMeasure);
@@ -1101,8 +1109,8 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep)
     while(!pIter->EndOfList())
     {
         pSO = pIter->GetCurrent();
-        switch (pSO->GetType()) {
-            case eTPO_NoteRest:
+        switch (pSO->GetClass()) {
+            case eSFOT_NoteRest:
                 pNR = (lmNoteRest*)pSO;
                 if (!pNR->IsRest()) {
                     pNote = (lmNote*)pSO;
@@ -1113,7 +1121,7 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep)
                 }
                 break;
 
-            case eTPO_Barline:
+            case eSFOT_Barline:
                 if (fInPrevMeasure) {
                     delete pIter;
                     return (lmNote*)NULL;        // no suitable note found
@@ -1161,7 +1169,7 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep)
 //        Set oPo = oIT.GetItem
 //        
 //        //if this staffobj is the barline, shift it and exit
-//        if (oPo.Tipo = eTPO_Barline {
+//        if (oPo.Tipo = eSFOT_Barline {
 //            nBarlineShift = (nBarLeft + nNewBarWidth) - oPo.Left
 //            oPo.Left = nBarLeft + nNewBarWidth - (oPo.Right - oPo.Left - 1)
 //            Exit Do
@@ -1191,7 +1199,7 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep)
 //    oIT.AdvanceToMeasure iCompas
 //    Do While oIT.QuedanItems
 //        Set oPo = oIT.GetItem
-//        if (oPo.Tipo = eTPO_Barline { Exit Do
+//        if (oPo.Tipo = eSCOT_Barline { Exit Do
 //        oIT.AdvanceCursor
 //    Loop
 //    
@@ -1217,11 +1225,11 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep)
 //    oIT.AdvanceToMeasure iCompas
 //    Do While oIT.QuedanItems
 //        Set oPo = oIT.GetItem
-//        if (oPo.Tipo = eTPO_Barline { Exit Do
+//        if (oPo.Tipo = eSCOT_Barline { Exit Do
 //        oIT.AdvanceCursor
 //    Loop
 //    
-//    wxASSERT(oPo.Tipo = eTPO_Barline      //no pueden existir compases que no acaben en barra
+//    wxASSERT(oPo.Tipo = eSCOT_Barline      //no pueden existir compases que no acaben en barra
 //    DuracionCompas = oPo.TimePos
 //
 //}

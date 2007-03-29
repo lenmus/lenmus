@@ -109,6 +109,14 @@
                                     <checked>0</checked>
                                 </object>
                             </object>
+                            <object class="sizeritem">
+                                <flag>wxALIGN_LEFT|wxALL</flag>
+                                <border>5</border>
+                                <object class="wxCheckBox" name="chkLangDutch">
+                                    <label>Dutch</label>
+                                    <checked>0</checked>
+                                </object>
+                            </object>
                             <object class="spacer">
                                 <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
                                 <border>5</border>

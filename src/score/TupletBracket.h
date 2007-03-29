@@ -53,7 +53,7 @@
     
 */
 
-class lmTupletBracket : public lmSimpleObj
+class lmTupletBracket : public lmStaffObj
 {
 public:
     lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket, bool fAbove,

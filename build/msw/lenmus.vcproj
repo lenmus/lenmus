@@ -368,6 +368,12 @@
 				RelativePath="..\..\src\score\Glyph.h">
 			</File>
 			<File
+				RelativePath="..\..\src\score\GraphicObj.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\score\GraphicObj.h">
+			</File>
+			<File
 				RelativePath="..\..\src\score\Instrument.cpp">
 			</File>
 			<File
@@ -378,6 +384,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\score\KeySignature.h">
+			</File>
+			<File
+				RelativePath="..\..\src\score\Notation.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\score\Notation.h">
 			</File>
 			<File
 				RelativePath="..\..\src\score\Note.cpp">

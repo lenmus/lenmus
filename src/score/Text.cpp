@@ -81,7 +81,7 @@ lmBasicText::lmBasicText(wxString sText, wxString sLanguage,
 
 lmScoreText::lmScoreText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,
                lmLocation tPos, lmFontInfo tFont) :
-    lmSimpleObj(pScore, eTPO_Text, (lmVStaff*)NULL, 0, true, lmDRAGGABLE)
+    lmStaffObj(pScore, eSFOT_Text, (lmVStaff*)NULL, 0, true, lmDRAGGABLE)
 {
     m_pScore = pScore;
     m_sText = sTitle;

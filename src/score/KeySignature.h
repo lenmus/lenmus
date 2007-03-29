@@ -33,7 +33,7 @@
 // lmKeySignature object
 //------------------------------------------------------------------------------------------------
 
-class lmKeySignature: public lmSimpleObj
+class lmKeySignature: public lmStaffObj
 {
 public:
     //constructors and destructor
@@ -44,7 +44,7 @@ public:
     ~lmKeySignature() {}
 
     //other methods
-    EKeySignatures GetType() { return m_nKeySignature; }
+    EKeySignatures GetKeyType() { return m_nKeySignature; }
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);

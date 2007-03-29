@@ -46,7 +46,7 @@
 
 lmTupletBracket::lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket, bool fAbove,
                                  int nActualNotes, int nNormalNotes)
-    : lmSimpleObj((lmObject*)NULL, eTPO_TupletBracket)
+    : lmStaffObj((lmObject*)NULL, eSFOT_TupletBracket)
 {
     m_fShowNumber = fShowNumber;
     m_nTupletNumber = nNumber;

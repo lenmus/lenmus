@@ -70,7 +70,7 @@ public:
     void        MoveNext();
     void        MovePrev();
     void        MoveLast();
-    void        BackToItemOfType(EScoreObjType nType);
+    void        BackToItemOfType(EStaffObjType nType);
     void        GoToItem(lmStaffObj* pSO);
 
 private:

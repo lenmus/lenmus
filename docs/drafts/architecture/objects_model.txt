@@ -1,57 +1,140 @@
-Notes on score objects
---------------------------
+Score objects model. Design rationale
+--------------------------------------
 
-    lmScoreObj:  The most abstract object. Anything that can appear in an score
-  
-    There are two main types of ScoreObjs: those that "consume time" (lmStaffObj) and 
-    those which do not (lmAuxObj).
-    The first group is formed by all those objects that, by necessity, must go in
-    sequence in a staff (such as notes, rests, clefs and keys). When one of these
-    signs appear they add time to the measure duration. 
-    Those that do not add time are always auxiliary, and their positioning is always 
-    relative to the position of one (or more) ScoreObjs of the first group.
 
-    To model this, we are going to define two types of lmScoreObj:
+Objects model: history and evolution
+-----------------------------------
 
-    lmStaffObj (consume time ==> owned by the VSatff)
-        Symbols, related to an staff, that define the general sound and layout
-        of a measure, such as clefs, notes and barlines. They "consume time" and, therefore,
-        they have timing information. They must belong to an staff and, therefore,
-        they will get included in the staff objects collection associated to an lmVStaff.
+I didn't have any previous experience about modelling music and so I started by following the MusicXML model. A second reason to follow it was that a liked to implement export/import MusicXML and so, to simplify this objective, my internal representation should allow for easy conversion to/from MusicXML.
+
+In MusicXML:
+
+- Score is a collection of instruments (<parts>). Titles are directly owned by the score:
+        <!ELEMENT score-partwise (%score-header;, part+)>
+    
+- <part> contains all measures for one instrument
+        <!ELEMENT part (measure+)>
         
-        As staff symbols can be composite symbols (i.e. a note plus its accidental symbol)
-        recursive composition ("composite" pattern) will be used to represent ScoreObjs.
-        Therefore, lmStaffObj specialices in two classes:
+- <measure> contains all the information
+        <!ELEMENT measure (%music-data;)>
+        <!ENTITY % music-data
+            "(note | backup | forward | direction | attributes |
+            harmony | figured-bass | print | sound | barline | 
+            grouping | link | bookmark)*">
+        
+- <notes> have additional elements, such as <notations><lyrics><technical><fermata>etc. Let me refer to all them by <notations>
+        <!ELEMENT note 
+        ( ( (grace, %full-note;, (tie, tie?)?) |
+               (cue, %full-note;, duration) |
+            (%full-note;, duration, (tie, tie?)?)),
+          instrument?, %editorial-voice;, type?, dot*, accidental?, time-modification?,
+          stem?, notehead?, staff?, beam*, notations*, lyric*)>
+
+- <notations> are musical notations, not other elements (directions).
+        <!ELEMENT notations
+            (%editorial;, 
+            (tied | slur | tuplet | glissando | slide | 
+            ornaments | technical | articulations | dynamics |
+            fermata | arpeggiate | non-arpeggiate | 
+            accidental-mark | other-notation)*)>
+            
+- <directions> are not note-specific, and therefore might attach to a
+    <part> or the overall score. i.e. texts
+        <!ELEMENT direction (direction-type+, offset?,
+            %editorial-voice;, staff?, sound?)>
+        <!ELEMENT direction-type (rehearsal+ | segno+ | words+ |
+            coda+ | wedge | dynamics+ | dashes | bracket | pedal | 
+            metronome | octave-shift | harp-pedals | damp | 
+            damp-all | eyeglasses | scordatura | other-direction)>
+
+I also took into account that in the Sibelius model all objects are attached to an staff. As this was not in contradiction with the MusicXML model I started assuming that any object will be a StaffObj, even if it does not consume time. <directions> where the only exception but they can be considered as attached to the score, as well as titles: everything fitted perfectly.
+
+When I started to implement <notations> I found that as they are attached to <notes> they did not fit in the lmStaffObj model. So I created a new class for <notations>: lmAuxObj
+
+Also I created a more abstract class (ScoreObj) with two specializations: lmStaffObj and lmAuxObj. And specialized lmStaffObj: CompositeObj, for objects that can own <notations>, that is lmAuxObjs, (only notes/rests) and SimpleObj, for the remaining objects.
+
+
+        
+Objects model
+--------------
+
+A root class lmObject with two specializations: 
+
+    - ContainerObj: main grouping elements: score, instrument, vstaff. As they do not share common operations I will not define (yet) an abstract class for them.
+
+    - ScoreObj: Anything that can appear in an score
+  
+Container classes:
+    lmScore: The top most container. A lmScore is, mainly, a collection of Instruments 
+        plus some data (composer, title, ...). It also contains all independent objects.
+        It contains:
+        - collection of instruments (m_cInstruments)
+        - list of score titles (m_cTitles)
+        - collection of independent ScoreObjs (m_cGlobalStaffobjs). These are all those
+            objects not directly associated to a musical object (notes, staff, etc.). 
+            They are owned by nobody.
+        
+    lmInstrument: A container for the ScoreObjs associated to one instrument:
+        - List of VStaves that this instrument has (m_cStaves)
+
+    lmVStaff: Container for the ScoreObjs on this VStaff (m_cStaffObjs)
+
+ScoreObj is specialized in three:
+
+    - StaffObj: objects attached to an VStaff (measure). In this group we have the main musical elements, normally with duration (notes/rests) or time positioned (clef, key signature, time signature). They are in a staff/measure, so they are attached to an VStaff. They normally 'consume' time and so measuring phase is done by time position and Draw() is done
+    in two phases controlled just by its timePos.
+
+    - AuxObj: objects attached not to a staff but to one or more StaffObj. For example, to one StaffObj: a note plus its accidental symbol; caesura marks, texts, and some <notations> (i.e. articulations) attached to notes; repeat signs attached to barlines, etc. To two StaffObj: ties attached to two notes, wedges for dynamics, etc. As the do not consume time, the measuring phase is done by specific methods, controlled by owner objects.
+
+    - GraphicObj (graphics): elements with no musical meaning for the program. So, from a program point of view they are just 'decoration': text (different from lyrics or other meaningful texts), lines, arrows. boxes, markup and visual emphasis, some <notations> (i.e. articulations), etc. They can be attached both to StaffObj and to AuxObj. 
+    For example: to put a coloured box around a caesura mark, with an arrow pointing to it and a text attached to the arrow. This can be achieved be drawing a box, an arrow and the text, positioning them as desired, grouping them to form a compound graphic object and attaching this GraphObj to the caesura AuxObj.
+    No measuring phase needed as they are always parent anchored (relative dx,dy to parent m_paperPos).
+
+    A GraphObj is not an StaffObj and, so it can not be attached directly to an staff. In order to allow for placing GraphObjs on the staff it is necessary to create an 'empty' StaffObj. This empty StaffObj could have width so it can also be used as a 'spacer'.
+
+    GraphObj are compound objs, that is, they can be formed by aggregation of simpler GraphObj.
+
+
+Finally, I defined other auxiliary objects non-derived from lmObject:
+    
+    lmBeam:     info about the beam for a group of notes
+    lmChord:    info about a chord
+    lmArch:     info to draw an arch
+    lmContext:  info about current accidentals 
+    lmBasicText: info for a text (font size, font family, ..)
+    lmStaff:    Properties for each staff on a VStaff (num.lines, spacing, ...)
+
+
+Currently (to be changed) lmStaffObj specializes in two classes:
         
         lmSimpleObj:
-            Are self-defined, that is, they do not own other StaffObj (lmAuxObj)
+            Are self-defined, that is, they do not own lmAuxObjs
         
             Current:    lmBarline, lmClef, lmWordsDirection, lmKeySignature, lmSOControl,
                         lmScoreText, lmTimeSignature, lmTupletBracket
 
-        lmCompositeObj:
-            Are composed by several StaffObj (They can own lmAuxObj)
+        lmCompositeObj: They can own lmAuxObjs
             Example: note + accidental; a whole measure with all its notes for a copy/paste
             operation.
             
             Current:    lmNoteRest (lmNote, lmRest)
        
 
-    lmAuxObj (do not consume time ==> owned by the Score)
+Currently (to be reviewed) lmAuxObj (do not consume time ==> owned by the Score)
         Other symbols, related either to an staff, to the score (paper) or
         to other ScoreObjs, that do not "take time". Examples of this group objects are
         texts, slurs, ties, lyrics and note accidentals.
         
-        As the owner is not the lmVStaff but other object (i.e: Ties are owned by Notes, 
+        As the owner is not the lmVStaff but other object (i.e.: Ties are owned by Notes, 
         scores titles are owned by the lmScore) they are not included in the lmVStaff
         objects collection. Therefore, certain operations such as renderization are not
         triggered by the VStaff. 
         To deal with these AuxObjs in a uniform way for common functions such
         as selecting, dragging, etc., they will be included in a global list,
-        so that all these function can be easily implemented by just iterating over
+        so that all these functions can be easily implemented by just iterating over
         this collection.
         
-        For some other functions, such as rendering, the uniform approach culd not be so
+        For some other functions, such as rendering, the uniform approach could not be so
         feasible as renderization will be launched sometimes by the owner lmStaffObj
         (i.e. Ties)
         and other times centrally, by iterating over the list and rendering the objects
@@ -74,118 +157,204 @@ Notes on score objects
                     lmAccidental                
 
 
-Container classes:
-    lmScore: The top most container. A lmScore is, mainly, a collection of Instruments 
-        plus some data (composer, title, ...). It also contains all independent objects.
-        It contains:
-        - collection of instruments (m_cInstruments)
-        - list of score titles (m_cTitles)
-        - collection of independent ScoreObjs (m_cGlobalStaffobjs). These are all those
-            objects not directly associated to a musical object (notes, staff, etc.). 
-            They are owned by nobody.
-        
-    lmInstrument: A container for the ScoreObjs associated to one instrument:
-        - List of VStaves that this instrument has (m_cStaves)
 
-    lmVStaff: Container for the ScoreObjs on this VStaff (m_cStaffObjs)
 
-Other non-derived auxiliary classes:
+
+
+Types of elements to consider and implementation criteria
+----------------------------------------------------------
+
+1. Elements with musical meaning directly on an staff and affecting only to that staff: notes, rests, clefs, keys, barlines, etc. ==> modelled by StaffObj
+
+2. Elements with musical meaning not directly on an staff but associated to elements on the staff and affecting only to them. For example: attached to notes/rests (ties, slurs, fermata, lyrics, accidentals, articulations, technical markup, etc.  ==> modelled by AuxObj
+
+3. Elements with musical meaning that can not be associated to elements on the staff, and affecting not only to one staff but to the system. These include tempo (metronome marks), text (dynamics texts) and rehearsal marks. ==> modelled by StaffObj
+
+4. Elements with no musical meaning but with meaning for the program. For example system and page breaks. ==> modelled by StaffObj
+
+5. Elements with no meaning at all for the program. So, from a program point of view they are just 'decoration': text (different from lyrics or other meaningful texts), lines, arrows. boxes,  etc.  ==> modelled by GraphObj attached either to AuxObj or to StaffObj
+
+
+The difference between AuxObj and GraphicObj is sometimes fuzzy. For example: Lyrics are text; therefore, should we model them as GraphicObjs or as AuxObjs? Two criteria will help:
+
+1. Is it going to be treated by the program just as 'decoration' or is there any possibility to perform some future 'musical' processing? For example, in future a feature to sing tunes could be added and, in this case, lyrics need to be 'understandable' by the program and should be modelled as AuxObj. Otherwise, if the program does not need to know the semantics of the element it is simpler to treat it as a GraphicObj.
+
+2. For auto-layout, is it 'user positioned' or its positioning is complex? If it is user positioned it should be treated as a GraphicObj.
+
+
+
+Attachment of GraphicObj to containers
+---------------------------------------------
+
+Should we allow direct attachment of graphic objs to containers (the score, a page, an staff, etc.)?
+
+With GraphicObj no measuring phase needed as they are always parent anchored (relative dx,dy to parent m_paperPos). But, where is the origin (m_paperPos) for containers?
+
+Probably it is non-sense to have GraphicObj attached to containers, other that the score. For the score, origin is paper origin of current page, so Draw should be launched by the BoxPage object. For other containers (lmInstrument, lmVStaff) the lmGraphicObj should be attached to an StaffObj or to a measure (in fact the barline StaffObj), and Draw() should be launched by the parent Draw method.
+
+The consequence is that only StaffObjs and the score can have other objects attached. This is compatible with MusicXML as all elements are part of a measure (I think it is an heritage of the initial MusicXML structure. The second consequence of this heritage is that the only objects attached to the score are the score titles). In Sibelious also all elements must be in a system. 
+
+But all this is consequence of the linear storage model imposed by MusicXML. In a score editor it should be feasible to attach objects and properties to any part. Let's analyse how to implement some examples to get knowledge to take a decision.
+
+Example 1. The user selects a system on page 2 and add a border frame to it and to change its background colour. 
+The user interacts with the GR (BoxSystem) and any object/property attached to that system could be stored in the first measure of that system. This will comply with MusicXML structure.
+
+Example 2. User selects a page and attach a text to it. 
+The user interacts with the GR (BoxPage) and any object/property attached to that system could be stored in the first system of that page. This in turn implies (example 1) to attach the object/property in the first measure of that system.
+
+    Conclusion
+    -----------
     
-    lmBeam:     info about the beam for a group of notes
-    lmChord:    info about a chord
-    lmArch:     info to draw an arch
-    lmContext:  info about current accidentals 
-    lmBasicText: info for a text (font size, font familly, ..)
-    lmStaff:    Properties for each staff on a VStaff (num.lines, spacing, ...)
+There is no need to attach GraphObj to the Score as we can attach them to the firts measure. This will force to move titles from the score. Does it worth moving them? 
+
+In favour:
+    - Uniform object model: GraphObjs only attached to AuxObj and StaffObj
+    - Could lose flexibility? --> It does not appear to.
+
+Against:
+    - Titles will not be identifyied as 'titles' but as 'grafic objects'. Therefore we lose
+        semantics. Problems to export to MusicXML and other formats. 
+    
+    
+So to avoid losing semantics and as it is already implemented, let's leave the titles in the Score.
 
 
 
 
+=============================================================================================
+Summary: Objects, properties and main behaviour/purpose
+=============================================================================================
+
+
+lmObject
+--------
+
+    - Can have options (m_pObjOptions)
+
+
+lmScoreObj
+-------------
+Any object displayed on the score:
+
+    - They have type and identification number (m_nType, m_nId)
+    - Could be draggable (m_fIsDraggable)
+    - They have positioning info: origin (m_paperPos), page num (m_nNumPage)
+    - Could be selected, so they have a selection rectangle (m_fSelected, m_selRect)
+    - can be rendered (methods: Draw, GetBitmap) Two phases draw. Invoke DrawObject.
+    - Can have Graphic objects attached (m_pAuxObjs)
+
+    - Dump method
+    
+    Optional:
+    - Can be font rendered (m_pFont, m_glyphPos)
+    - Can be Shape rendered (m_fShapeRendered m_pShape)
+
+
+lmStaffObj
+----------
+Objects on the Staff.
+
+    - Measuring phase is done by time position
+    
+    - They can have duration (time positioned: m_rTimePos)
+    - They are related to an Staff (m_pVStaff, m_nStaffNum, m_numMeasure)
+    - They can own objects lmAuxObj and lmGraphicObj
+    - Source code methods (SourceLDP, SourceXML)
+    
+lmAuxObj
+----------
+Objetcs attached to StaffObjs.
+
+    - Measuring phase is done by specific methods, controlled by owner StaffObj
+    - They can own objects lmGraphicObj
+    - No source code methods. Source code generated by owner StaffObj.
+    
+lmGraphicObj
+---------------
+    - No measuring phase. Parent anchored (relative dx,dy to parent m_paperPos).
+    - Recursive composition (aggregation)
+    
+    
+    
+    
+    
+lmScore
+------------
+    - play methods (Play, PlayMeasure, Pause, Stop, WaitForTermination)
+    - serving highlight events (ScoreHighlight)
+    - Dump methods (Dump, DumpMidiEvents)
+    - Source code methods (SourceLDP, SourceXML)
+    - Manage instruments
+    - Manage score titles
+    - identification (score name, m_nID)
+
+    InstrumentsList     m_cInstruments;     //list of instruments that form this score
+    StaffObjsList       m_cTitles;          //list of score titles
+    StaffObjsList   m_cGlobalStaffobjs;     //list of other StaffObjs not included in an lmVStaff
+
+
+lmInstrument
+-------------
+    - VStaff management (m_cStaves)
+    - Dump method
+    - Source code methods (SourceLDP, SourceXML)
+    - MIDI configuration (m_nMidiInstr, m_nMidiChannel)
+    - Instrument name and indentation (m_nIndentFirst, m_nIndentOther, m_pName, m_pAbbreviation)
+
+    VStavesList     m_cStaves;          //wxList of VStaves that this instrument has
+
+
+lmVStaff
+-------------
+    - Staff management
+    - Clef management
+    - Time signature management
+    - Key signature management
+    - notes and rests management
+    - barlines management
+    - control ScoreObjs management (AddNewSystem, ShiftTime)
+    - words directions management
+    - Measures management (GetNumMeasures)
+    - Rendering methods (DrawStaffLines, DrawProlog, NewLine, SetUpFonts, GetStaffLineThick)
+    - renderization helper methods (GetXPosFinalBarline)
+    - Units conversion (TenthsToLogical)
+    - Dump method
+    - Source code methods (SourceLDP, SourceXML)
+
+    - notes context management
+    - sound related methods (ComputeMidiEvents)
+    
+    
+    lmColStaffObjs      m_cStaffObjs;   //collection of StaffObjs
+    StaffList           m_cStaves;      //list of Staves (lmStaff objects)  
 
 
 
 
+=============================================================================================
 
 
 
 
-    Selection (selectable objects)
-    ------------------------------
+Selection (selectable objects)
+------------------------------
     ScoreObjs are selectable by definition, as the user should be able to select (and copy,
     delete, move, ...) any rendered object. But the procedure to select an object will
-    vary. Simple objects, such as notes or clefs, will have a clear boundling rectangle, that
-    normally will not intersect the boundling rectangle of neigbourgh objects; selection 
+    vary. Simple objects, such as notes or clefs, will have a clear bounding rectangle, that
+    normally will not intersect the bound ling rectangle of neighbour objects; selection 
     can be done just by clicking with the mouse on this selection rectangle. Other objects,
-    such an instrumet's staff or the whole score, could be difficult to select by this method
-    as either (1) will not have associated a selection rectangle (i.e. an instrumet's staff, 
+    such an instrument's staff or the whole score, could be difficult to select by this method
+    as either (1) will not have associated a selection rectangle (i.e. an instrument's staff, 
     as it goes across a lot of pages), or (2) will conflict with too many other selection
     rectangles (i.e. the staff lines or the whole score). Therefore, for these composite
-    objects we will need a different appproach for selection.
+    objects we will need a different approach for selection.
     
     So, we will call "RectSelectable objects" only to those of the first type: the will have a 
-    clear boundling selection rectangle and selection can be implemented just by clicking
+    clear bounding selection rectangle and selection can be implemented just by clicking
     on this rectangle with the mouse. The other ScoreObjs will have a different 
     procedure for selection but not a selection rectangle. 
     
     
-lmFormatter:
-    Because formatting algoritms tend to be complex, it's also desirable to keep them 
-    well contained and, if possible, completely independent of the document structure.
-    We will define a separate class hierarchy for objects that encapsulate formatting
-    algorithms. The root object is the class "lmFormatter".
-    
-
-Accessing scattered information:
-    For diverse operations it will be needed to access and analyze information scattered
-    throughout a hierarchical structure of ScoreObjs. We need an access mechanism that
-    has knowledge about the data structures in which objects are stored. Some ScoreObjs
-    will store their children in linked lists, others might use arrays, and still others
-    might use more esoteric structures. The access mechanism must be able to handle all
-    of these possibilities.
-    
-    So we will use the "iterator" pattern to define a general interface for access and
-    traversal
-    
-
-Analysis and operations:
-    The iterator will be a way of traversing the ScoreObjs structure. But to accumulate
-    information during traversal we will need to put the analytical capability into some
-    object. Putting it into the iterator will rest flexibility. Another possibility is
-    to put it into the ScoreObjs themselves. For each operation we will have to add one or
-    more abstract operations into the lmScoreObj class and have subclasses implement them.
-    The trouble with this approach is that the lmScoreObj interface expands with every new
-    operation capability we include and obscure the basic lmScoreObj interface. A third
-    option is to encapsulate the analysis in a separate object: the "visitor" pattern.
-    The visitor will define an abstract interface for visiting the ScoreObjs in a
-    structure.
-    
-    The visitor approach does not avoid having to code specific methods for each lmScoreObj
-    and operation but groups them all into the specific visitor class instead of having
-    all this methods scatered along the concrete lmScoreObj classes. Moreover it simplifies
-    adding new operations as the lmScoreObj interface does not change. The price to pay is
-    that the visitor class must have access to all private elements of the ScoreObjs as
-    the specific operation will be performed by the visitor class.
-    
-    
-    
-    
------------------------------------------------------------------------------------------
-
-  Simple:
-    - position            - Draw()
-    - size
-    - fVisible
-    
-  Composite: (i.e: note + accidental; a whole measure with all its notes for a copy/paste
-    operation)
------------------------------------------------------------------------------------------  
------------------------------------------------------------------------------------------
-StaffObjs:  ScoreObjs that appear in an staff/measure. All are selectable.
-    - timepos
-    - lmVStaff
-    - numStaff
-    - selRect
-    - fSelected
 -----------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------
     We could consider five types of positioning methods:
@@ -215,7 +384,7 @@ StaffObjs:  ScoreObjs that appear in an staff/measure. All are selectable.
 -----------------------------------------------------------------------------------------
     Considering positioning and sizing, a lmScoreObj can be of two types:
         - draggable: the objects can be freely positioned on the score, only constrained
-            by music writting rules (i.e.: note, clef).
+            by music writing rules (i.e.: note, clef).
         - sizable: the object size is not fully restricted by staff size or other and so,
             can be someway resized. The object is rendered with handle marks for
             resizing (i.e.: slur, tie, text)
@@ -223,29 +392,16 @@ StaffObjs:  ScoreObjs that appear in an staff/measure. All are selectable.
 -----------------------------------------------------------------------------------------
     
 
-                              
-    DraggableObject
-    SizableObject
------------------------------------------------------------------------------------------
 
+============================================================================================
+Move to architecture:
+============================================================================================
 
-                    lmNote
-                    |  lmClef
-                    |  |  lmBarline
-                    |  |  |  Text
-                    |  |  |  |  lmTie
-                    |  |  |  |  |
--------------------------------------------------
-lmScoreObj          x  x  x  x  x
-lmStaffObj          x  x  x  x
-lmAuxObj                        x
-lmSimpleObj            x  x  x
-lmCompositeObj      x
--------------------------------------------------
-Selectable          x  x  x  x  x
-Draggable           x  x  x  x
-FontRendered        x  x     x
-TimePositioned      x  x  x
-
+lmFormatter:
+    Because formatting algorithms tend to be complex, it's also desirable to keep them 
+    well contained and, if possible, completely independent of the document structure.
+    We will define a separate class hierarchy for objects that encapsulate formatting
+    algorithms. The root object is the class "lmFormatter".
+    
 
 

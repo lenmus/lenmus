@@ -73,7 +73,7 @@ typedef struct lmLangDataStruct {
     wxString sCharCode;
 } lmLangData;
 
-#define lmNUM_LANGUAGES 4
+#define lmNUM_LANGUAGES 5
 //table must be ordered by language name (in English) to
 //ensure correspondence with table in DlgCompileBook.h
 static const lmLangData tLanguages[lmNUM_LANGUAGES] = { 
@@ -81,6 +81,7 @@ static const lmLangData tLanguages[lmNUM_LANGUAGES] = {
     { _T("fr"), _T("French"), _T("iso-8859-1") }, 
     { _T("es"), _T("Spanish"), _T("iso-8859-1") }, 
     { _T("tr"), _T("Turkish"), _T("iso-8859-9") }, 
+    { _T("nl"), _T("Dutch"), _T("iso-8859-9") }, 
 };
 
 // ----------------------------------------------------------------------------
@@ -263,12 +264,14 @@ void ltMainFrame::GenerateLanguage(int i)
     wxString sLangName = tLanguages[i].sLangName;
 
     pLocale->Init(_T(""), sLang, _T(""), true, true);
-    pLocale->AddCatalogLookupPathPrefix( g_pPaths->GetLenMusLocalePath() + sLang );
-    pLocale->AddCatalog(_T("lenmus_") + pLocale->GetName());
+    wxString sPath = g_pPaths->GetLenMusLocalePath();
+    pLocale->AddCatalogLookupPathPrefix( sPath );
+    wxString sCatalog = _T("lenmus_") + pLocale->GetName();
+    pLocale->AddCatalog( sCatalog );
 
     wxString sContent = lmInstaller::GetInstallerStrings(sLang, sLangName);
     wxMessageBox(sContent);
-    wxString sPath = sNil + _T(".\\") + sLang + _T(".nsh");
+    sPath = sNil + _T(".\\") + sLang + _T(".nsh");
     PutContentIntoFile(sPath, sContent);
 
     delete pLocale;

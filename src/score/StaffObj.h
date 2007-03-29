@@ -18,12 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file StaffObj.h    
-    @brief Header file for classes lmScoreObj, lmAuxObj, lmStaffObj, lmSimpleObj and lmCompositeObj
-    @ingroup score_kernel
-*/
+
 #ifdef __GNUG__
-// #pragma interface
+#pragma interface
 #endif
 
 #ifndef __STAFFOBJ_H__        //to avoid nested includes
@@ -39,43 +36,28 @@
 #include "wx/dragimag.h"
 #endif
 
-#define lmDRAGGABLE        true
-#define lmNO_DRAGGABLE    false
-#define lmVISIBLE        true
-#define lmNO_VISIBLE    false
+#define lmDRAGGABLE         true
+#define lmNO_DRAGGABLE      false
+#define lmVISIBLE           true
+#define lmNO_VISIBLE        false
 
-class lmObjOptions;
 
-enum EScoreObjType
-{
-    eTPO_Clef = 1,            // clef                    (ESP: clave)
-    eTPO_KeySignature,        // key signature        (ESP: armadura, tonalidad)
-    eTPO_TimeSignature,        // time signature        (ESP: métrica)
-        eTPO_GrafObj,
-        eTPO_Symbol,            // graphical objects
-    eTPO_Barline,            // barlines
-        eTPO_Indicacion,
-    eTPO_NoteRest,            // notes and rests
-    eTPO_Text,
-        eTPO_Repeticion,        //directivas de repetición: D.C., Segno, Al Segno, Fine, ...
-    eTPO_Control,            //control element (backup, forward)
-    eTPO_Tie,                //lmAuxObj: tie            (ESP: ligadura (de duración))
-    eTPO_TupletBracket,        //lmAuxObj: tuplet bracket
-    eTPO_WordsDirection
-};
 
 //-------------------------------------------------------------------------------------------
 // class lmObject
 //  This is the most abstract object. An object has an associated  context options obj.
 //  and a parent
 //-------------------------------------------------------------------------------------------
+
+class lmObjOptions;
+class GraphicObjsList;
+
 class lmObject
 {
 public:
-
-    lmObject(lmObject* pParent);
     virtual ~lmObject();
 
+    // Options: access and set value
     lmObjOptions* GetCurrentObjOptions();
     lmObjOptions* GetObjOptions() { return m_pObjOptions; }
     void SetOption(wxString sName, long nLongValue);
@@ -90,9 +72,13 @@ public:
     bool GetOptionBool(wxString sOptName);
     wxString GetOptionString(wxString sOptName);
 
-private:
+
+protected:
+    lmObject(lmObject* pParent);
 
     lmObject*       m_pParent;          //the parent for the ObjOptions chain
+
+    // options
     lmObjOptions*   m_pObjOptions;      //the options object associated to this object or
                                         //   NULL if none
 
@@ -101,11 +87,16 @@ private:
 
 //-------------------------------------------------------------------------------------------
 // class lmScoreObj
-//  This is the next most abstract object. Has an ID. It is a renderizable object and,
-//  therefore, has positioning information. 
-//  They know (1) how to draw themselves, (2) what space they occupy, and (3) their 
-//  structure (children and parent)
 //-------------------------------------------------------------------------------------------
+
+enum EScoreObjType
+{
+    eSCOT_StaffObj = 1,         // staff objects (lmStaffObj). Main objects. Consume time
+    eSCOT_AuxObj,               // aux objects (lmAuxObj). Auxiliary. Owned by staffObjs
+    eSCOT_GraphicObj,           // graphic objects (lmGraphicObj). Has subtype
+};
+
+
 class lmScoreObj : public lmObject
 {
 public:
@@ -168,7 +159,8 @@ public:
     void SetShape(lmShapeObj* pShape) { m_pShape = pShape; }
     lmShapeObj* GetShape() { return m_pShape; }
 
-
+    // debug methods
+    virtual wxString Dump()=0;
 
 protected:
     lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable = false);
@@ -178,14 +170,19 @@ protected:
     // virtual methods related to draggable objects
     wxBitmap* PrepareBitMap(double rScale, const wxString sGlyph);
 
+    // Graphic objects can be attached to StaffObjs and AuxObj. The methods are
+    // defined here, as they are common to both.
+    void DoAddGraphicObj(lmScoreObj* pGO);
+    void DoRemoveGraphicObj(lmScoreObj* pGO);
+
 
     // type and identification
     EScoreObjType   m_nType;        //Type of lmScoreObj
-    int         m_nId;          //unique number, to identify each lmScoreObj
+    int             m_nId;          //unique number, to identify each lmScoreObj
 
     //positioning. Coordinates relative to origin of page (in logical units); updated each
     // time this object is drawn
-    lmUPoint     m_paperPos;         // paper xPos, yBase position to render this object
+    lmUPoint    m_paperPos;         // paper xPos, yBase position to render this object
     bool        m_fFixedPos;        // its position is fixed. Do not recalculate it
     wxCoord     m_nWidth;           // total width of the image, including after space
     int         m_nNumPage;         // page on which this SO is rendered (1..n). Set Up in BoxSystem::RenderMeasure().
@@ -199,55 +196,40 @@ protected:
 
     // variables related to font rendered objects
     wxFont*     m_pFont;            // font to use for drawing this object
-    lmUPoint     m_glyphPos;         // origing to position the glyph (relative to m_paperPos)
+    lmUPoint    m_glyphPos;         // origing to position the glyph (relative to m_paperPos)
 
     //transitional variables: renderization based on shapes
     bool            m_fShapeRendered;
     lmShapeObj*     m_pShape;
 
-};
-
-//-------------------------------------------------------------------------------------------
-//    lmAuxObj
-//
-//-------------------------------------------------------------------------------------------
-class lmAuxObj : public lmScoreObj
-{
-public:
-    virtual ~lmAuxObj() {}
-
-    // implementation of virtual methods of base class lmScoreObj
-    void Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK,
-              bool fHighlight = false);
-    virtual void SetFont(lmPaper* pPaper) {}
-
-    // debug methods
-    virtual wxString Dump() { return _T(""); }
-
-
-protected:
-    lmAuxObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable = false); 
+    // grapich objects attached to this one
+    GraphicObjsList*    m_pGraphObjs;   //the collection of GraphicObjs. NULL if none
 
 };
-
-// declare a list of AuxObjs
-#include "wx/list.h"
-WX_DECLARE_LIST(lmAuxObj, AuxObjsList);
-
 
 
 //-------------------------------------------------------------------------------------------
 //    lmStaffObj
-//        This is the most abstract object. Has an ID. It is a renderizable object and,
-//        therefore, has positioning information. 
-//        Can produce source code. 
-//
-//        To simplify the score layout process, all StaffObjs have timing information although
-//        not all ScoreObjs are time positioned.
-//
 //-------------------------------------------------------------------------------------------
 
+enum EStaffObjType
+{
+    eSFOT_Clef = 1,             // clef (lmClef)
+    eSFOT_KeySignature,         // key signature (lmKeySignature)
+    eSFOT_TimeSignature,        // time signature (lmTimeSignature)
+    eSFOT_Notation,             // notations (lmNotation). Has subtype
+    eSFOT_Barline,              // barlines (lmBarline)
+    eSFOT_NoteRest,             // notes and rests (lmNoreRest)
+    eSFOT_Text,                 // texts (lmScoreText)
+    eSFOT_Control,              // control element (backup, forward) (lmSOControl)
+    eSFOT_WordsDirection,       // texts (lmWordsDirection)
+
+    eSFOT_TupletBracket,        // tuplet bracket (lmTupletBracket)
+};
+
+
 class lmVStaff;
+class lmGraphicObj;
 
 class lmStaffObj : public lmScoreObj
 {
@@ -255,23 +237,19 @@ public:
     virtual ~lmStaffObj();
 
     // characteristics
-    virtual inline bool IsComposite()=0;
     virtual inline bool IsSizeable() { return false; }
     virtual inline bool IsFontRederized() { return false; }
     inline bool IsVisible() { return m_fVisible; }
+    EStaffObjType GetClass() { return m_nClass; }
 
     // source code related methods
     virtual wxString SourceLDP() = 0;
     virtual wxString SourceXML() = 0;
 
-    // debug related methods
-    virtual wxString Dump() = 0;
-
     // methods related to time and duration
     float GetTimePos() { return m_rTimePos; }
     void SetTimePos(float rTimePos) { m_rTimePos = rTimePos; }
     virtual float GetTimePosIncrement() { return 0; }
-    //virtual int GetDurationOld();
 
     // methods related to positioning
     virtual lmLUnits GetAnchorPos() {return 0; }
@@ -282,33 +260,39 @@ public:
     virtual void SetFont(lmPaper* pPaper);
 
     // methods related to staff ownership
-    void    SetNumMeasure(int nNum) { m_numMeasure = nNum; }
-    int    GetStaffNum() { return m_nStaffNum; }
+    void SetNumMeasure(int nNum) { m_numMeasure = nNum; }
+    int GetStaffNum() { return m_nStaffNum; }
     lmVStaff* GetVStaff() { return m_pVStaff; }
 
+    // methods related to AuxObj/GraphObj ownership
+    virtual lmScoreObj* FindSelectableObject(lmUPoint& pt) { return (lmScoreObj*)NULL; }
+    virtual bool IsComposite() { return false; }
+
+    // Graphic objects can be attached to any StaffObj
+    void AddGraphicObj(lmGraphicObj* pGO);
+    void RemoveGraphicObj(lmGraphicObj* pGO);
+
+    //helper methods
+    lmLUnits TenthsToLogical(lmTenths nTenths);
 
 
 protected:
-    lmStaffObj(lmObject* pParent, EScoreObjType nType, 
+    lmStaffObj(lmObject* pParent, EStaffObjType nType, 
              lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,    // only for staff owned objects    
              bool fVisible = true, 
              bool fIsDraggable = false);
 
-
-
-        // member variables
-        //----------------
-
     //properties
-    bool        m_fVisible;         // this lmScoreObj is visible on the score
+    bool            m_fVisible;     // this lmScoreObj is visible on the score
+    EStaffObjType   m_nClass;       // type of StaffObj
 
     // time related variables
     float       m_rTimePos;         // time from start of measure
 
     // Info about staff ownership
-    lmVStaff*   m_pVStaff;          // lmVStaff to which this lmStaffObj belongs or NULL
-    int     m_nStaffNum;        // lmStaff (1..n) on which this object is located
-    int     m_numMeasure;       // measure number in which this lmStaffObj is included
+    lmVStaff*   m_pVStaff;          // lmVStaff owning this lmStaffObj
+    int         m_nStaffNum;        // lmStaff (1..n) on which this object is located
+    int         m_numMeasure;       // measure number in which this lmStaffObj is included
 
 };
 
@@ -317,43 +301,62 @@ protected:
 WX_DECLARE_LIST(lmStaffObj, StaffObjsList);
 
 
+//-------------------------------------------------------------------------------------------
+//    lmAuxObj
+//-------------------------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------------------------
-//    lmSimpleObj
-//
-//-------------------------------------------------------------------------------------------
-class lmSimpleObj : public lmStaffObj
+enum EAuxObjType
+{
+    eAXOT_Symbol = 1,           // notations (lmNoteRestObj)
+    eAXOT_Tie,                  // tie (lmTie)
+};
+
+class lmAuxObj : public lmScoreObj
 {
 public:
-    virtual ~lmSimpleObj() {}
-    inline bool IsComposite() { return false; }
+    virtual ~lmAuxObj() {}
+
+    // implementation of virtual methods of base class lmScoreObj
+    void Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK,
+              bool fHighlight = false);
+    virtual void SetFont(lmPaper* pPaper) {}
+
+    // Graphic objects can be attached to any AuxObj
+    void AddGraphicObj(lmGraphicObj* pGO);
+    void RemoveGraphicObj(lmGraphicObj* pGO);
+
 
 protected:
-    lmSimpleObj(lmObject* pParent, EScoreObjType nType, 
-             lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,
-             bool fVisible = true, 
-             bool fIsDraggable = false);
+    lmAuxObj(lmObject* pParent, EAuxObjType nType, bool fIsDraggable = false); 
+
+    EAuxObjType     m_nClass;
 
 };
 
-//-------------------------------------------------------------------------------------------
-//    lmCompositeObj
+// declare a list of AuxObjs
+#include "wx/list.h"
+WX_DECLARE_LIST(lmAuxObj, AuxObjsList);
+
+
+
+////-------------------------------------------------------------------------------------------
+//// lmContainer
+////
+////-------------------------------------------------------------------------------------------
+//class lmContainer : public lmObject
+//{
+//public:
+//    virtual ~lmContainer();
 //
-//-------------------------------------------------------------------------------------------
-class lmCompositeObj : public lmStaffObj
-{
-public:
-    virtual ~lmCompositeObj() {}
-    inline bool IsComposite() { return true; }
+//    virtual lmScoreObj* FindSelectableObject(lmUPoint& pt)=0;
+//
+//
+//protected:
+//    lmContainer();
+//
+//
+//
+//};
 
-    virtual lmScoreObj* FindSelectableObject(lmUPoint& pt)=0;
-
-protected:
-    lmCompositeObj(lmObject* pParent, EScoreObjType nType, 
-             lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,
-             bool fVisible = true, 
-             bool fIsDraggable = false);
-
-};
 
 #endif    // __STAFFOBJ_H__

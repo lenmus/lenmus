@@ -129,7 +129,7 @@ void lmColStaffObjs::Store(lmStaffObj *pSO)
     pSO->SetTimePos(m_rTimePos);
     
     //increment time counters
-    if (pSO->GetType() == eTPO_NoteRest) {
+    if (pSO->GetClass() == eSFOT_NoteRest) {
         //only NoteRests increment time counters
         lmNoteRest* pNR = (lmNoteRest*)pSO;
         if (pNR->IsRest()) {
@@ -165,7 +165,7 @@ void lmColStaffObjs::Store(lmStaffObj *pSO)
     //if (the lmStaffObj being stored is a barline it is necessary to ensure that
     //its time position match up the measure duration, as there could have been back and forward
     //displacements.
-    if (pSO->GetType() == eTPO_Barline) {
+    if (pSO->GetClass() == eSFOT_Barline) {
         //the object is a barline. Assing to it the maximum time position
         pSO->SetTimePos(m_rMaxTimePos);
     }
@@ -186,7 +186,7 @@ void lmColStaffObjs::Store(lmStaffObj *pSO)
 
     //Finally, if this lmStaffObj is a barline, signal that a new measure must be started
     //for the next lmStaffObj and reset time counters
-    if (pSO->GetType() == eTPO_Barline)
+    if (pSO->GetClass() == eSFOT_Barline)
     {
         m_fStartMeasure = true;
         m_rTimePos = 0;            //reset time counters

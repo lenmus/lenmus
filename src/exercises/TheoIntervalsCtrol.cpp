@@ -619,7 +619,7 @@ void lmTheoIntervalsCtrol::NewProblem()
     pVStaff->AddClef( m_nClef );
     pVStaff->AddKeySignature(0, true);                    // 0 fifths, major
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
-    //pVStaff->AddEspacio 24
+    //pVStaff->AddSpacer(30);       // 3 lines
     pNode = parserLDP.ParseText( sPattern[0] );
     pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
@@ -651,7 +651,7 @@ void lmTheoIntervalsCtrol::NewProblem()
         pVStaff->AddClef( m_nClef );
         pVStaff->AddKeySignature(0, true);                    // 0 fifths, major
         pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
-        //pVStaff->AddEspacio 24
+        //pVStaff->AddSpacer(30);       // 3 lines
         pNode = parserLDP.ParseText( sPattern[0] );
         pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
         pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note

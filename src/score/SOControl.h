@@ -35,7 +35,7 @@ enum ESOCtrolType
     lmNEW_SYSTEM,           // force a new system
 };
 
-class lmSOControl:  public lmSimpleObj
+class lmSOControl:  public lmStaffObj
 {
 public:
     //constructors and destructor

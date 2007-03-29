@@ -140,7 +140,7 @@ lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
                 pSO = pIT->GetCurrent();
                 pSO->Draw(DO_MEASURE, pPaper);  //measure the staffobj
 
-                if (pSO->GetType() == eTPO_Barline) {
+                if (pSO->GetClass() == eSFOT_Barline) {
                     if (pSO->IsVisible()) {
                         //add space after barline
                         pPaper->IncrementCursorX(nSpaceAfterBarline);
@@ -710,18 +710,18 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     //loop to process all StaffObjs in this measure
     bool fNoteRestFound = false;            
     bool fNewSystem = false;                // newSystem tag found
-    EScoreObjType nType;                    //type of score obj being processed
+    EStaffObjType nType;                    //type of score obj being processed
     lmStaffObj* pSO = (lmStaffObj*)NULL;
     lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
     pIT->AdvanceToMeasure(nAbsMeasure);
     while(!pIT->EndOfList())
     {
         pSO = pIT->GetCurrent();
-        nType = pSO->GetType();
+        nType = pSO->GetClass();
 
-        if (nType == eTPO_Barline) break;         //End of measure: exit loop.
+        if (nType == eSFOT_Barline) break;         //End of measure: exit loop.
 
-        if (nType == eTPO_Control) {
+        if (nType == eSFOT_Control) {
             lmSOControl* pSOCtrol = (lmSOControl*)pSO;
             ESOCtrolType nCtrolType = pSOCtrol->GetCtrolType();
             if (lmTIME_SHIFT == nCtrolType) {
@@ -739,7 +739,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
         else {
             //collect data about the lmStaffObj
             lmTimeposTable& oTimepos = m_oTimepos[nRelMeasure];
-            if (nType == eTPO_NoteRest) {
+            if (nType == eSFOT_NoteRest) {
                 oTimepos.AddEntry(pSO->GetTimePos(), pSO);
             } else {
                 oTimepos.AddEntry (-1, pSO);
@@ -747,7 +747,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
 
             //if this lmStaffObj is a lmNoteRest that is part of a chord its
             //anchor x position must be the same than that of the base note
-            if (nType == eTPO_NoteRest) {
+            if (nType == eSFOT_NoteRest) {
                 fNoteRestFound = true;
                 fPreviousWasClef = false;            //this lmStaffObj is not a clef
                 pNoteRest = (lmNoteRest*)pSO;
@@ -778,20 +778,20 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
 
                 //if it is a clef or a key hide/unhide it in prologs
                 bool fHide = (nAbsMeasure != 1 && nRelMeasure == 1 && !fNoteRestFound);
-                if (nType == eTPO_Clef) {
+                if (nType == eSFOT_Clef) {
                     ((lmClef*)pSO)->Hide(fHide);
                 }
-                if (nType == eTPO_KeySignature) {
+                if (nType == eSFOT_KeySignature) {
                     ((lmKeySignature*)pSO)->Hide(fHide);
                 }
 
                 //if this is a key on the first measure of a system, add space before clef
-                if (nType == eTPO_Clef && nRelMeasure == 1) {
+                if (nType == eSFOT_Clef && nRelMeasure == 1) {
                     pPaper->IncrementCursorX( pVStaff->GetSpaceBeforeClef() );
                 }
 
                 //Store current x position for this lmStaffObj.
-                if (pSO->GetType() == eTPO_Clef) {
+                if (pSO->GetClass() == eSFOT_Clef) {
                     //if previous lmStaffObj was also a cleft and this new is in a
                     //different staff than the previous one, the left position of this new
                     //cleft must be the same than that of the previous clef so that
@@ -807,7 +807,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
 
                 //if it is a clef save xLeft position just in case the next
                 //lmStaffObj is also the clef for other staff
-                fPreviousWasClef = (pSO->GetType() == eTPO_Clef);
+                fPreviousWasClef = (pSO->GetClass() == eSFOT_Clef);
                 if (fPreviousWasClef) {
                     pClef = (lmClef*)pSO;
                     nClefXPos = oTimepos.GetCurXLeft();
@@ -820,7 +820,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
             //if (m_nSpacingMethod != esm_Fixed) {
                 //proportional spacing.
                 //! @todo implement the different methods. For now only PropConstant
-                if (pSO->GetType() == eTPO_NoteRest) {
+                if (pSO->GetClass() == eSFOT_NoteRest) {
                     pNoteRest = (lmNoteRest*)pSO;
                     pPaper->IncrementCursorX( pNoteRest->GetDuration() / 4 );
                 }
@@ -840,7 +840,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
 
     //if the barline exists and is visible we have to advance paper x cursor
     //in barline width and store it in the Omega entry
-    if (pSO->GetType() == eTPO_Barline)
+    if (pSO->GetClass() == eSFOT_Barline)
     {
         //reposition paper if user location for barline is defined
         lmBarline* pBarline = (lmBarline*)pSO;
@@ -859,8 +859,8 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
                 xFinalPos = xPos + pPaper->GetLeftMarginXPos();
             }
             xEnd = wxMax(xEnd, xFinalPos);
-            wxLogMessage(_T("[lmFormatter4::SizeMeasure] xFinalPos=%.2f, new xEnd=%.2f"),
-                xFinalPos, xEnd);
+            //wxLogMessage(_T("[lmFormatter4::SizeMeasure] xFinalPos=%.2f, new xEnd=%.2f"),
+            //    xFinalPos, xEnd);
             pPaper->SetCursorX(xEnd);
         }
 

@@ -89,6 +89,7 @@ public:
 
     // overrides for pure virtual methods of base classes
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
+    wxString Dump() { return _T("Tie"); }
 
     wxBitmap* GetBitmap(double rScale) { return (wxBitmap*)NULL; }
 

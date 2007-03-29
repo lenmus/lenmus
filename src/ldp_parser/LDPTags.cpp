@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file LDPTags.cpp
-    @brief Implementation file for class lmLDPTags
-    @ingroup ldp_parser
-*/
+
 /*! @class lmLDPTags
     @ingroup ldp_parser
     @brief lmLDPTags This class is a singleton to contain the LDP tags table.
@@ -39,8 +36,8 @@
 */
 
 
-#ifdef __GNUG__
-// #pragma implementation
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma implementation "LDPTags.h"
 #endif
 
 // for (compilers that support precompilation, includes "wx/wx.h".
@@ -151,6 +148,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("font")] = _T("font");
         m_Tags[0][_T("goBack")] = _T("goBack");
         m_Tags[0][_T("goFwd")] = _T("goFwd");
+        m_Tags[0][_T("graphic")] = _T("graphic");
         m_Tags[0][_T("hasWidth")] = _T("hasWidth");
         m_Tags[0][_T("infoMIDI")] = _T("infoMIDI");
         m_Tags[0][_T("instrName")] = _T("instrName");
@@ -166,6 +164,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("noVisible")] = _T("noVisible");
         m_Tags[0][_T("opt")] = _T("opt");
         m_Tags[0][_T("right")] = _T("right");
+        m_Tags[0][_T("spacer")] = _T("spacer");
         m_Tags[0][_T("split")] = _T("split");
         m_Tags[0][_T("start")] = _T("start");
         m_Tags[0][_T("staves")] = _T("staves");
@@ -278,6 +277,10 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[6][_T("numActual")] = _T("numActual");
         m_Tags[6][_T("numBoth")] = _T("numBoth");
 
+        //special context: graphic objects
+        m_Contexts[_T("GraphObjs")] = 7;
+        m_Tags[7][_T("line")] = _T("line");
+
     }
     else {
         // initialize table with default Spanish values
@@ -297,6 +300,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("font")] = _T("font");
         m_Tags[0][_T("goBack")] = _T("retroceder");
         m_Tags[0][_T("goFwd")] = _T("avanzar");
+        m_Tags[0][_T("graphic")] = _T("grafico");
         m_Tags[0][_T("hasWidth")] = _T("tieneAnchura");
         m_Tags[0][_T("infoMIDI")] = _T("infoMIDI");
         m_Tags[0][_T("instrName")] = _T("nombreInstrumento");
@@ -312,6 +316,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("noVisible")] = _T("noVisible");
         m_Tags[0][_T("opt")] = _T("opcion");
         m_Tags[0][_T("right")] = _T("derecha");
+        m_Tags[0][_T("spacer")] = _T("espacio");
         m_Tags[0][_T("split")] = _T("partes");
         m_Tags[0][_T("start")] = _T("inicio");
         m_Tags[0][_T("staves")] = _T("numPentagramas");
@@ -423,6 +428,10 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[6][_T("numNone")] = _T("numNone");
         m_Tags[6][_T("numActual")] = _T("numActual");
         m_Tags[6][_T("numBoth")] = _T("numBoth");
+
+        //special context: graphic objects
+        m_Contexts[_T("GraphObjs")] = 7;
+        m_Tags[7][_T("line")] = _T("linea");
 
     }
 

@@ -65,7 +65,7 @@ static wxString m_sLDPKeyName[30] = {
 
 //constructor for traditional key signatures
 lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool fVisible) :
-    lmSimpleObj(pVStaff, eTPO_KeySignature, pVStaff, 1, fVisible, lmDRAGGABLE)
+    lmStaffObj(pVStaff, eSFOT_KeySignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
 
     //language dependent strings. Can not be statically initiallized because
@@ -171,7 +171,7 @@ lmLUnits lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxCo
     for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++) {
         //get current clef
         lmClef* pClef = pStaff->GetCurrentClef();
-        EClefType nClef = pClef->GetType();
+        EClefType nClef = pClef->GetClefType();
 
         // Draw the key signature
         lmUPoint pos = lmUPoint(m_paperPos.x, m_paperPos.y + yOffset);

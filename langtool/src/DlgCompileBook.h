@@ -38,6 +38,7 @@ enum ELanguages
     eLangFrench,
     eLangSpanish,
     eLangTurkish,
+    eLangDutch,
     eLangLast
 };
 

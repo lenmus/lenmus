@@ -58,7 +58,7 @@
 //
 
 lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, float rTimeShift)
-    : lmSimpleObj(pVStaff, eTPO_Control, pVStaff, 1, lmNO_VISIBLE, lmNO_DRAGGABLE)
+    : lmStaffObj(pVStaff, eSFOT_Control, pVStaff, 1, lmNO_VISIBLE, lmNO_DRAGGABLE)
 {
     wxASSERT(nType == lmTIME_SHIFT);
     m_nCtrolType = lmTIME_SHIFT;
@@ -66,7 +66,7 @@ lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff, float rTimeShift
 }
 
 lmSOControl::lmSOControl(ESOCtrolType nType, lmVStaff* pVStaff)
-    : lmSimpleObj(pVStaff, eTPO_Control, pVStaff, 1, lmNO_VISIBLE, lmNO_DRAGGABLE)
+    : lmStaffObj(pVStaff, eSFOT_Control, pVStaff, 1, lmNO_VISIBLE, lmNO_DRAGGABLE)
 {
     wxASSERT(nType == lmNEW_SYSTEM);
     m_nCtrolType = lmNEW_SYSTEM;

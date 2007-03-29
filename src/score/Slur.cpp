@@ -153,7 +153,7 @@ void lmArch::CubicBezier(double* x, double* y, int nNumPoints)
 //   lmTie
 //---------------------------------------------------------
 
-lmTie::lmTie(lmNote* pStartNote, lmNote* pEndNote) : lmAuxObj(pStartNote, eTPO_Tie)
+lmTie::lmTie(lmNote* pStartNote, lmNote* pEndNote) : lmAuxObj(pStartNote, eAXOT_Tie)
 {
     m_pStartNote = pStartNote;
     m_pEndNote   = pEndNote;

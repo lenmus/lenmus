@@ -62,7 +62,7 @@ public:
     wxString    SourceLDP();
     wxString    SourceXML();
 
-        //lmCompositeObj
+        //lmStaffObj
     lmScoreObj* FindSelectableObject(lmUPoint& pt);
 
 

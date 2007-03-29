@@ -488,7 +488,7 @@ float lmFragmentsTable::GetPatternDuracion(wxString sPattern, lmTimeSignConstrai
     lmStaffObjIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
     pIter->MoveLast();
     pSO = pIter->GetCurrent();
-    wxASSERT(pSO->GetType() == eTPO_Barline);
+    wxASSERT(pSO->GetClass() == eSFOT_Barline);
     float rPatternDuration = pSO->GetTimePos();
 
     // iterator no longer needed. delete it
@@ -542,7 +542,7 @@ wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     float rRestsDuration = 0.0;
     while(!pIter->EndOfList()) {
         pSO = pIter->GetCurrent();
-        if (pSO->GetType() == eTPO_NoteRest) {
+        if (pSO->GetClass() == eSFOT_NoteRest) {
             pNR = (lmNoteRest*) pSO;
             if (pNR->IsRest()) {
                 rRestsDuration += pNR->GetDuration();        //add duration
@@ -557,7 +557,7 @@ wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     float rSegmentDuration = 0.0;
     pIter->MoveLast();
     pSO = pIter->GetCurrent();
-    wxASSERT(pSO->GetType() == eTPO_Barline);
+    wxASSERT(pSO->GetClass() == eSFOT_Barline);
     rSegmentDuration = pSO->GetTimePos() - rRestsDuration;
 
     // iterator no longer needed. delete it

@@ -18,20 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file LDPParser.cpp
-    @brief Implementation file for class lmLDPParser
-    @ingroup ldp_parser
-*/
-/*! @class lmLDPParser
-    @ingroup ldp_parser
-    @brief The parser for the LDP language
 
-    - "Parse" functions: work on source text
-    - "Analyze" functions: work on a tree of LMNodes
+// The parser for the LDP language
+// "Parse" functions: work on source text
+// "Analyze" functions: work on a tree of LMNodes
 
-*/
 #ifdef __GNUG__
-// #pragma implementation
+#pragma "LDPParser.h"
 #endif
 
 // for (compilers that support precompilation, includes "wx/wx.h".
@@ -50,6 +43,7 @@
 #include <math.h>        // for function pow()
 
 #include "../score/Score.h"
+#include "../score/GraphicObj.h"
 #include "LDPParser.h"
 #include "AuxString.h"
 #include "../auxmusic/Conversion.h"
@@ -894,6 +888,10 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
             AnalyzeText(pX, pVStaff);
         } else if (sName == m_pTags->TagName(_T("newSystem")) ) {
             AnalyzeNewSystem(pX, pVStaff);
+        } else if (sName == m_pTags->TagName(_T("spacer")) ) {
+            AnalyzeSpacer(pX, pVStaff);
+        } else if (sName == m_pTags->TagName(_T("graphic")) ) {
+            AnalyzeGraphicObj(pX, pVStaff);
         }
         // abbreviated barlines
         else if (sName == _T("|") ) {
@@ -2642,6 +2640,103 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
     
     pVStaff->AddTimeSignature((int)nBeats, (int)nBeatType, fVisible);
     return false;
+}
+
+void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+//  <spacer> ::= ("spacer" <width>)     width in tenths
+    
+    wxString sElmName = pNode->GetName();
+
+    //check that the width is specified
+    if(pNode->GetNumParms() < 1) {
+        AnalysisError( _("Element '%s' has less parameters that the minimum required. Ignored."),
+            sElmName);
+        return;
+    }
+    
+    wxString sNum1 = (pNode->GetParameter(1))->GetName();
+    if (!sNum1.IsNumber()) {
+        AnalysisError(
+            _("Element '%s': Width expected but found '%s'. Ignored."),
+            sElmName, sNum1);
+        return;
+    }
+
+    long nWidth;
+    sNum1.ToLong(&nWidth);
+    pVStaff->AddSpacer((lmTenths)nWidth);
+
+}
+
+void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+//  <graphic> ::= ("graphic" <type> <params>*)
+    
+    wxString sElmName = pNode->GetName();
+    int nNumParms = pNode->GetNumParms();
+
+    //check that type is specified
+    if(nNumParms < 2) {
+        AnalysisError( _("Element '%s' has less parameters that the minimum required. Element ignored."),
+            sElmName);
+        return;
+    }
+    
+    // analyze type and get its params.
+    int iP = 1;
+    wxString sType = (pNode->GetParameter(iP))->GetName();
+    if (sType == m_pTags->TagName(_T("line"), _T("GraphObjs")))
+    {
+        // line
+        // Parms: xStart, yStart, xEnd, yEnd, nWidth, colour.
+        // All coordinates in tenths, relative to current pos.
+        // line width in tenths (optional parameter). Default: 1 tenth
+        // colour (optional parameter). Default: black
+
+        // get parameters
+        if(nNumParms < 5) {
+            AnalysisError( _("Element '%s' has less parameters that the minimum required. Element ignored."),
+                sElmName);
+            return;
+        }
+
+        lmTenths rPos[4];
+        long nPos;
+        wxString sNum;
+        for (iP=2; iP <= 5; iP++) {
+            sNum = (pNode->GetParameter(iP))->GetName();
+            if (!sNum.IsNumber()) {
+                AnalysisError(
+                    _("Element '%s': Coordinate expected but found '%s'. Ignored."),
+                    sElmName, sNum);
+                return;
+            }
+            sNum.ToLong(&nPos);
+            rPos[iP-2] = (lmTenths)nPos;
+        }
+
+        // get line width (optional parameter). Default: 1 tenth
+        //@todo
+        lmTenths rWidth = 1;
+
+        // get colour (optional parameter). Default: black
+        //@todo
+        wxColour nColor = *wxBLACK;
+
+        // create the GraphicObj attached to a null lmSpacer
+        lmStaffObj* pSpacer = (lmStaffObj*) pVStaff->AddSpacer(0);
+        lmGOLine* pLine = new lmGOLine(pSpacer, rPos[0], rPos[1], rPos[2], rPos[3], 
+                                       rWidth, nColor);
+        pSpacer->AddGraphicObj(pLine);
+
+    }
+    else {
+        AnalysisError(
+            _("Element '%s': Type of graphic (%s) unknown. Ignored."),
+            sElmName, sType);
+    }
+
 }
 
 //returns true if error; in this case nothing is added to the lmVStaff

@@ -103,14 +103,14 @@ void lmStaffObjIterator::MoveLast()
     m_pCurrentNode = m_pColStaffobjs->GetLast();
 }
 
-void lmStaffObjIterator::BackToItemOfType(EScoreObjType nType)
+void lmStaffObjIterator::BackToItemOfType(EStaffObjType nType)
 {
     // goes back until an staffObj of type nType is found or until passing the start of 
     // the collection (cursor == 0) if none is found
     if (EndOfList()) return;
     MovePrev();
     for (; !EndOfList(); ) {
-        if (GetCurrent()->GetType() == nType) break;
+        if (GetCurrent()->GetClass() == nType) break;
         MovePrev();
     }
     

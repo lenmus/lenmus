@@ -58,6 +58,7 @@ public:
     void        AnalyzeChord(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode);
     void        AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont);
+    void        AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInstr);
     void        AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr);
     bool        AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff);
@@ -70,6 +71,7 @@ public:
     void        AnalyzeOption(lmLDPNode* pNode, lmObject* pObject);
     lmRest*     AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmScore*    AnalyzeScore(lmLDPNode* pNode);
+    void        AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeSplit(lmLDPNode* pNode, lmVStaff* pVStaff);
     EStemType   AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff);

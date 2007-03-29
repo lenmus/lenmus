@@ -97,7 +97,7 @@ struct lmTBeamInfo
 };
 
 
-class lmNoteRest:  public lmCompositeObj
+class lmNoteRest:  public lmStaffObj
 {
 public:
     //ctors and dtor
@@ -113,8 +113,10 @@ public:
     bool IsRest() { return m_fIsRest; }
     virtual bool IsInChord() = 0;    
 
-    //implementation of virtual methods of base class lmCompositeObj
+    //implementation of virtual methods of base class lmStaffObj
     virtual lmScoreObj* FindSelectableObject(lmUPoint& pt)=0;
+    virtual bool IsComposite() { return true; }
+
 
     // methods related to note/rest positioning information
     lmLUnits GetStaffOffset() { return m_pVStaff->GetStaffOffset(m_nStaffNum); }

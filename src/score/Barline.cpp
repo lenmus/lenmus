@@ -53,7 +53,7 @@ static lmLUnits m_uRadius;            // for dots
 //
 
 lmBarline::lmBarline(EBarline nBarlineType, lmVStaff* pVStaff, bool fVisible) :
-    lmSimpleObj(pVStaff, eTPO_Barline, pVStaff, 1, fVisible, lmDRAGGABLE)
+    lmStaffObj(pVStaff, eSFOT_Barline, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nBarlineType = nBarlineType;
 

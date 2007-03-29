@@ -1,29 +1,35 @@
-Score representations
+Score representation
+====================
 
-
+Following Guido approach I will distinguish different levels of representation.
 
 External representations
-------------------------
+========================
+
 LDP. Human readable. Easy to enter with a QWERTY keyboard.
 
 Others:
-Supported: MusicXML
-Not yet supported: abc, Guido, ...
+    Supported: MusicXML
+    Not yet supported: abc, Guido, ...
 
-Internal Independent Representation
------------------------------------
-The Internal Independent Representation (IIR) or just inner representation is an abstract representation of the score, containing all necessary information to derive any other representation when needed, but not oriented to any particular use. It should not favor any particular use (renderization, play back, ...) but try to serve all them equally (note 1).
+
+Internal representations
+========================
+
+Abstract Representation
+-----------------------
+The most inner representation is an abstract representation of the score, containing all necessary information to derive any other representation when needed, but not oriented to any particular use. It should not favor any particular use (renderization, play back, ...) but try to serve all them equally (note 1). This will be named the 'Abstract Representation' or AR.
 
 It contains all information present in a LDP score but in a flexible and powerful format more suitable for processing.
 
-When a particular use is intended, the corresponding optimized representaion is derived from the IIR. The required format for an application generally differs depending on the application itself, as the requirements vary: a music notation application has different needs than a musical analysis tool.
+When a particular use is intended, the corresponding optimized representaion is derived from the AR. The required format for an application generally differs depending on the application itself, as the requirements vary: a music notation application has different needs than a musical analysis tool.
 
-The IIR helps to enforce the document-view processing model that describes how an application can encapsulate its data from the actual display and manipulation of the data. Within the document-view model, the document contains the data (IIR reperesentation), which is displayed and manipulated by different views. Retrieval and change of the data by its views is done by using only strictly defined interface functions; this ensures that an alteration of the data in one view is reflecected immediately in all other views of the same data. The concept of view is a generic one: a view can either be a print out of a conventional music score, or it can be a textual representation in LDP or MusicXML, or play back representation (such a table of MIDI events), or some other interpretation of the musical information contained in the IIR score.
+The AR helps to enforce the document-view processing model that describes how an application can encapsulate its data from the actual display and manipulation of the data. Within the document-view model, the document contains the data (AR reperesentation), which is displayed and manipulated by different views. Retrieval and change of the data by its views is done by using only strictly defined interface functions; this ensures that an alteration of the data in one view is reflecected immediately in all other views of the same data. The concept of view is a generic one: a view can either be a print out of a conventional music score, or it can be a textual representation in LDP or MusicXML, or play back representation (such a table of MIDI events), or some other interpretation of the musical information contained in the AR score.
 
-Next figure shows the IIR in the context of the document view model:
+Next figure shows the AR in the context of the document view model:
 
 
-IIR (lmScore) ---+---- Interchange (MusicXML, LDP, Guido)
+ AR (lmScore) ---+---- Interchange (MusicXML, LDP, Guido)
                  |
                  +---- Renderization (lmBoxScore, classes lmRdXxxxxx )
                  |
@@ -37,7 +43,7 @@ Application dependent representations
 
 Renderization
 -------------
-The score as it has to be renderized. Similar to IIR but including additional container classes to organize ScoreObjs into pages and systems.
+The score as it has to be renderized. Similar to AR but including additional container classes to organize ScoreObjs into pages and systems.
 
 
 Play back
@@ -48,7 +54,7 @@ The score as in has to be played back. It is represented by a lmSoundEvents tabl
 
 NOTES
 
-1. This is not totally true. Currently, the internal representation favor (is optimized for) renderization as this is the more frequent use (at least in LenMus Phonascus program) and it is very costing. Currently the Formatter object updates information but do not inserts new ScoreObjs.
+1. This is not totally true. Currently, the internal representation favor (is optimized for) renderization as this is the more frequent use (at least in LenMus Phonascus program) and it is very expensive. Currently the Formatter object updates information but do not inserts new ScoreObjs.
 
 
 
@@ -162,7 +168,7 @@ lmBoxStaff directly inherits from class GRCompositeNotationElement, which
 is capable of storing an arbitrary number of instances of class GRNotation-
 Element. Using this storage, class lmBoxStaff stores graphical elements being
 placed upon it. This might be musical markup, like for example an instance of
-class GRClef or a musical event like an instance of class GRNote.
+class lmClef or a musical event like an instance of class lmNote.
 
 
 
@@ -184,3 +190,10 @@ requirement for a conventional music notation system is its ability to reect th
 hierarchical order of the relevant notational elements. When dealing with objectoriented
 terminology, this idea is reected in the usage of so called containers, which
 are capable of storing other elements.
+
+
+Splitted representation
+------------------------
+
+- Music notation/data information -> lmScoreObj (objects), lmScore (container)
+- The graphic representation of this information -> lmShape (objects), lmBox (container)

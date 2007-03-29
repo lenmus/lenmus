@@ -180,7 +180,7 @@ void lmBoxSystem::RenderMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper
     {
         pSO = pIT->GetCurrent();
 
-        if (pSO->GetType() == eTPO_Clef) {
+        if (pSO->GetClass() == eSFOT_Clef) {
             //clefs don't consume space until a lmStaffObj of other type is found
             if (!fSpacePending) {
                 //This is the first cleft. Save paper position
@@ -215,7 +215,7 @@ void lmBoxSystem::RenderMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper
         pSO->SetPageNumber(m_nNumPage);
 
         // if barline, exit loop: end of measure reached
-        if (pSO->GetType() == eTPO_Barline) break;
+        if (pSO->GetClass() == eSFOT_Barline) break;
 
         pIT->MoveNext();
     }

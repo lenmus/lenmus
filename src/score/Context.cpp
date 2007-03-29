@@ -63,7 +63,7 @@ void lmContext::InitializeAccidentals()
     }
     if (!m_pKey) return;
 
-    ComputeAccidentals(m_pKey->GetType(), m_nAccidentals);
+    ComputeAccidentals(m_pKey->GetKeyType(), m_nAccidentals);
 
 }
 

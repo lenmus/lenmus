@@ -80,6 +80,7 @@ lmDlgCompileBook::lmDlgCompileBook(wxWindow* parent, lmCompileBookOptions* pOpti
     m_pChkLang[eLangFrench] = XRCCTRL(*this, "chkLangFrench", wxCheckBox);
     m_pChkLang[eLangSpanish] = XRCCTRL(*this, "chkLangSpanish", wxCheckBox);
     m_pChkLang[eLangTurkish] = XRCCTRL(*this, "chkLangTurkish", wxCheckBox);
+    m_pChkLang[eLangDutch] = XRCCTRL(*this, "chkLangDutch", wxCheckBox);
     m_pChkLang[eLangLast] = XRCCTRL(*this, "chkLangAll", wxCheckBox);
     m_pTxtSrcPath = XRCCTRL(*this, "txtSrcPath", wxTextCtrl);     
     m_pTxtDestPath = XRCCTRL(*this, "txtDestPath", wxTextCtrl); 

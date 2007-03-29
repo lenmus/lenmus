@@ -37,7 +37,7 @@
 // lmClef object
 //------------------------------------------------------------------------------------------------
 
-class lmClef: public lmSimpleObj
+class lmClef: public lmStaffObj
 {
 public:
     //constructor and destructor
@@ -45,7 +45,7 @@ public:
     ~lmClef() {}
 
     //other methods
-    EClefType GetType() {return m_nClefType;}
+    EClefType GetClefType() {return m_nClefType;}
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);

@@ -29,7 +29,7 @@
 #ifndef __DIRECTION_H__        //to avoid nested includes
 #define __DIRECTION_H__
 
-class lmWordsDirection : public lmSimpleObj, public lmBasicText
+class lmWordsDirection : public lmStaffObj, public lmBasicText
 {
 public:
     lmWordsDirection(lmVStaff* pStaff, wxString sText, lmEAlignment nAlign,

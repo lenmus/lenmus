@@ -61,7 +61,7 @@ public:
     //destructor
     ~lmChordManager();
 
-    EChordType GetType() { return m_nType; }
+    EChordType GetChordType() { return m_nType; }
     wxString GetNameFull();
     wxString GetName() { return ChordTypeToName( m_nType ); }
     int GetNumNotes();

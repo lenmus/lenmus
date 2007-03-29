@@ -1,0 +1,8 @@
+(score (vers 1.5)(language es iso-8859-1)
+  (opcion Staff.DrawLeftBarline no)
+    (instrumento
+      (datosMusica (clave Sol noVisible)(tonalidad Do)
+       (metrica 2 4 noVisible)
+       (barra Doble noVisible)
+       (texto "line 1" dx:50 dy:55)
+)))

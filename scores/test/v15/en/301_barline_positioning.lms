@@ -1,0 +1,9 @@
+(score (vers 1.5)(language es iso-8859-1)
+  (instrumento
+    (datosMusica (clave Sol noVisible)(tonalidad Do)(metrica 2 4)
+      (n e4 c)(n f4 c)(n g4 s)(n a4 s)(barra Doble dx:400)
+      (n e4 c g+)(n f4 c)(n g4 s)(n a4 s g-)(barra Final noVisible)
+    )
+  )
+)
+    

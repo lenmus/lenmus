@@ -109,7 +109,7 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
     //context information
     m_pContext = pContext;
     m_pContext->StartUsing();
-    m_nClef = (m_pContext->GetClef())->GetType();
+    m_nClef = (m_pContext->GetClef())->GetClefType();
 //    m_nVoz = nVoz;        //! @todo parameter nVoz
     //for (int i=0; i < 7; i++) {
     //    m_anContext[i] = 0;    //! @todo parameter anContext[i]
@@ -1458,7 +1458,7 @@ bool lmNote::CanBeTied(lmPitch nMidiPitch, int nStep)
 
 
 //======================================================================================
-// lmCompositeObj virtual functions implementation
+// lmStaffObj virtual functions implementation
 //======================================================================================
 
 lmScoreObj* lmNote::FindSelectableObject(lmUPoint& pt)

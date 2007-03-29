@@ -58,7 +58,7 @@ protected:
 };
 
 
-class lmScoreText :  public lmSimpleObj
+class lmScoreText :  public lmStaffObj
 {
 public:
     lmScoreText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,

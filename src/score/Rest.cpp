@@ -277,7 +277,7 @@ wxString lmRest::SourceXML()
 
 
 //====================================================================================================
-// implementation of virtual methods defined in base class lmCompositeObj
+// implementation of virtual methods defined in base class lmStaffObj
 //====================================================================================================
 
 lmScoreObj* lmRest::FindSelectableObject(lmUPoint& pt)

@@ -18,12 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file StaffObj.cpp    
-    @brief Implementation file for classes lmScoreObj, lmAuxObj, lmStaffObj, lmSimpleObj and lmCompositeObj
-    @ingroup score_kernel
-*/
+
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -40,6 +37,7 @@
 #include "wx/image.h"
 #include "Score.h"
 #include "ObjOptions.h"
+#include "GraphicObj.h"
 
 
 //implementation of the StaffObjs List
@@ -81,11 +79,22 @@ lmScoreObj::lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable
     SetShapeRendered(false);
     m_pShape = (lmShapeObj*)NULL;
 
+    // GraphicObjs owned by this ScoreObj
+    m_pGraphObjs = (GraphicObjsList*)NULL;
+
 }
 
 lmScoreObj::~lmScoreObj()
 {
     if (m_pShape) delete m_pShape;
+
+    if (m_pGraphObjs) {
+        m_pGraphObjs->DeleteContents(true);
+        m_pGraphObjs->Clear();
+        delete m_pGraphObjs;
+        m_pGraphObjs = (GraphicObjsList*)NULL;
+    }
+
 }
 
 bool lmScoreObj::IsAtPoint(lmUPoint& pt)
@@ -209,15 +218,30 @@ wxBitmap* lmScoreObj::PrepareBitMap(double rScale, const wxString sGlyph)
 
 }
 
+// Management of GraphicObjs attached to this object
+
+void lmScoreObj::DoAddGraphicObj(lmScoreObj* pGO)
+{
+    wxASSERT(pGO->GetType() == eSCOT_GraphicObj);
+    if (!m_pGraphObjs) m_pGraphObjs = new GraphicObjsList();
+    m_pGraphObjs->Append((lmGraphicObj*)pGO);
+}
+
+void lmScoreObj::DoRemoveGraphicObj(lmScoreObj* pGO)
+{
+    wxASSERT(pGO->GetType() == eSCOT_GraphicObj);
+}
 
 
 //-------------------------------------------------------------------------------------------------
 // lmAuxObj implementation
 //-------------------------------------------------------------------------------------------------
-lmAuxObj::lmAuxObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable) :
-    lmScoreObj(pParent, nType, fIsDraggable)
+lmAuxObj::lmAuxObj(lmObject* pParent, EAuxObjType nType, bool fIsDraggable) :
+    lmScoreObj(pParent, eSCOT_AuxObj, fIsDraggable)
 {
+    m_nClass = nType;
 }
+
 void lmAuxObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
     wxASSERT(fMeasuring == DO_DRAW);    //For AuxObjs measuring phase is done by specific methods
@@ -234,17 +258,20 @@ void lmAuxObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHig
 
 }
 
+void lmAuxObj::AddGraphicObj(lmGraphicObj* pGO) { DoAddGraphicObj(pGO); }
+void lmAuxObj::RemoveGraphicObj(lmGraphicObj* pGO) { DoRemoveGraphicObj(pGO); }
 
 //-------------------------------------------------------------------------------------------------
 // lmStaffObj implementation
 //-------------------------------------------------------------------------------------------------
 
-lmStaffObj::lmStaffObj(lmObject* pParent, EScoreObjType nType, lmVStaff* pStaff, int nStaff,
+lmStaffObj::lmStaffObj(lmObject* pParent, EStaffObjType nType, lmVStaff* pStaff, int nStaff,
                    bool fVisible, bool fIsDraggable) :
-    lmScoreObj(pParent, nType, fIsDraggable)
+    lmScoreObj(pParent, eSCOT_StaffObj, fIsDraggable)
 {
     // store parameters
     m_fVisible = fVisible;
+    m_nClass = nType;
 
     //default values
     m_nWidth = 0;
@@ -288,6 +315,17 @@ void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fH
         DrawObject(fMeasuring, pPaper, colorC, fHighlight);
     }
 
+    // Draw GraphicObjs owned by this StaffObj
+    if (!fMeasuring && m_pGraphObjs)
+    {
+        lmGraphicObj* pGO;
+        wxGraphicObjsListNode* pNode = m_pGraphObjs->GetFirst();
+        for (; pNode; pNode = pNode->GetNext() ) {
+            pGO = (lmGraphicObj*)pNode->GetData();
+            pGO->Draw(DO_DRAW, pPaper, colorC, fHighlight);
+        }
+    }
+
     // update paper cursor position
     pPaper->SetCursorX(m_paperPos.x + m_nWidth);
     
@@ -306,27 +344,14 @@ void lmStaffObj::SetFont(lmPaper* pPaper)
     m_pFont = pStaff->GetFontDraw();
 }
 
-
-
-
-
-//-------------------------------------------------------------------------------------------------
-// lmSimpleObj implementation
-//-------------------------------------------------------------------------------------------------
-lmSimpleObj::lmSimpleObj(lmObject* pParent, EScoreObjType nType, lmVStaff* pStaff, int nStaff,
-             bool fVisible, bool fIsDraggable)
-    : lmStaffObj(pParent, nType, pStaff, nStaff, fVisible, fIsDraggable)
-{
+lmLUnits lmStaffObj::TenthsToLogical(lmTenths nTenths)
+{ 
+    return m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
 }
 
-//-------------------------------------------------------------------------------------------------
-// lmCompositeObj implementation
-//-------------------------------------------------------------------------------------------------
-lmCompositeObj::lmCompositeObj(lmObject* pParent, EScoreObjType nType, lmVStaff* pStaff, int nStaff,
-             bool fVisible, bool fIsDraggable)
-    : lmStaffObj(pParent, nType, pStaff, nStaff, fVisible, fIsDraggable)
-{
-}
+void lmStaffObj::AddGraphicObj(lmGraphicObj* pGO) { DoAddGraphicObj(pGO); }
+void lmStaffObj::RemoveGraphicObj(lmGraphicObj* pGO) { DoRemoveGraphicObj(pGO); }
+
 
 //-------------------------------------------------------------------------------------
 // lmObject implementation
@@ -340,6 +365,7 @@ lmObject::lmObject(lmObject* pParent)
 lmObject::~lmObject()
 { 
     if (m_pObjOptions) delete m_pObjOptions;
+
 }
 
 lmObjOptions* lmObject::GetCurrentObjOptions()

@@ -31,7 +31,7 @@
 
 #include "StaffObjIterator.h"
 class StaffList;
-
+class lmSpacer;
 
 
 class lmVStaff : public lmObject
@@ -80,6 +80,7 @@ public:
 
     lmSOControl* AddNewSystem();
 
+    lmSpacer* AddSpacer(lmTenths nWidth);
 
     lmWordsDirection* AddWordsDirection(wxString sText, lmEAlignment nAlign,
                         lmLocation* pPos, lmFontInfo oFontData, bool fHasWidth);

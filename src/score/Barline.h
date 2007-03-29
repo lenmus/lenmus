@@ -33,7 +33,7 @@
 // lmBarline object
 //------------------------------------------------------------------------------------------------
 
-class lmBarline:  public lmSimpleObj
+class lmBarline:  public lmStaffObj
 {
 public:
     //constructor and destructor
@@ -41,7 +41,7 @@ public:
     ~lmBarline() {}
 
     //other methods
-    EBarline GetType() {return m_nBarlineType;}
+    EBarline GetBarlineType() {return m_nBarlineType;}
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);

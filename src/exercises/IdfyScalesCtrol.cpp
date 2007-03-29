@@ -320,7 +320,7 @@ wxString lmIdfyScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmSc
     pVStaff->AddKeySignature( m_nKey );
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
 
-//    pVStaff->AddEspacio 24
+//    pVStaff->AddSpacer(30);       // 3 lines
     int i = (m_fAscending ? 0 : nNumNotes-1);
     sPattern = _T("(n ") + oScaleMngr.GetPattern(i) + _T(" r)");
     pNode = parserLDP.ParseText( sPattern );

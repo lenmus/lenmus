@@ -534,7 +534,7 @@ wxString lmTimeposTable::DumpTimeposTable()
             case eOmega:
                 sMsg += _T("\tOmega ");
                 if (pTE->m_pSO) {
-                    sMsg += wxString::Format(_T("%d"), (pTE->m_pSO)->GetType() );    //! @todo convert to string
+                    sMsg += wxString::Format(_T("%d"), (pTE->m_pSO)->GetClass() );    //! @todo convert to string
                 } else {
                     sMsg += _T("-");
                 }
@@ -543,7 +543,7 @@ wxString lmTimeposTable::DumpTimeposTable()
 
             default:
                 //lmStaffObj entry
-                sMsg += wxString::Format(_T("\tpSO %d\t"), (pTE->m_pSO)->GetType() );     //! @todo convert to string
+                sMsg += wxString::Format(_T("\tpSO %d\t"), (pTE->m_pSO)->GetClass() );     //! @todo convert to string
         }
             
         sMsg += wxString::Format(_T("%.2f\t%d\t%d\t%d\t%d\t%d\n"),

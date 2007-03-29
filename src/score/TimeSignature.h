@@ -33,7 +33,7 @@
 // lmTimeSignature object
 //------------------------------------------------------------------------------------------------
 
-class lmTimeSignature: public lmSimpleObj
+class lmTimeSignature: public lmStaffObj
 {
 public:
     //constructors and destructor
@@ -53,9 +53,6 @@ public:
                   bool fVisible = true);
 
     ~lmTimeSignature() {}
-
-    //other methods
-    //ETimeSignature GetType() {return m_nTimeSignature;}
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
