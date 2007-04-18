@@ -132,6 +132,7 @@
   !insertmacro MUI_LANGUAGE "Spanish"
   !insertmacro MUI_LANGUAGE "French"         
   !insertmacro MUI_LANGUAGE "Turkish"
+  !insertmacro MUI_LANGUAGE "Dutch"
 
   ;reserve files for languages
     ;These files should be inserted before other files in the data block
@@ -170,6 +171,7 @@
   !include "es.nsh"
   !include "fr.nsh"
   !include "tr.nsh"
+  !include "nl.nsh"
 
 
 
@@ -238,6 +240,7 @@ Section  "-" "MainSection"
      File ".\locale\license_es.txt"
      File ".\locale\license_fr.txt"
      File ".\locale\license_tr.txt"
+     File ".\locale\license_nl.txt"
 
      SetOutPath "$INSTDIR\bin"
      File "..\..\z_bin\lenmus_u.exe"
@@ -255,6 +258,8 @@ Section  "-" "MainSection"
      File "..\..\books\fr\*.lmb"
      SetOutPath "$INSTDIR\books\tr"
      File "..\..\books\tr\*.lmb"
+     SetOutPath "$INSTDIR\books\nl"
+     File "..\..\books\nl\*.lmb"
 
     ; ADD_LANG
      SetOutPath "$INSTDIR\locale\en"
@@ -265,6 +270,8 @@ Section  "-" "MainSection"
      File "..\..\locale\fr\*.*"
      SetOutPath "$INSTDIR\locale\tr"
      File "..\..\locale\tr\*.*"
+     SetOutPath "$INSTDIR\locale\nl"
+     File "..\..\locale\nl\*.*"
 
      SetOutPath "$INSTDIR\res\bitmaps"
      File "..\..\res\bitmaps\*.*"
@@ -447,12 +454,14 @@ Section un.Install
   ;Delete "$INSTDIR\books\es\*.*"
   ;Delete "$INSTDIR\books\fr\*.*"
   ;Delete "$INSTDIR\books\tr\*.*"
+  ;Delete "$INSTDIR\books\nl\*.*"
   
   ; ADD_LANG
   ;Delete "$INSTDIR\locale\en\*.*"
   ;Delete "$INSTDIR\locale\es\*.*"
   ;Delete "$INSTDIR\locale\fr\*.*"
   ;Delete "$INSTDIR\locale\tr\*.*"
+  ;Delete "$INSTDIR\locale\nl\*.*"
   
   ;Delete "$INSTDIR\res\bitmaps\*.*"
   ;Delete "$INSTDIR\res\icons\*.*"
@@ -470,12 +479,14 @@ Section un.Install
   ;RMDir "$INSTDIR\books\es"
   ;RMDir "$INSTDIR\books\fr"
   ;RMDir "$INSTDIR\books\tr"
+  ;RMDir "$INSTDIR\books\nl"
   
   ; ADD_LANG
   ;RMDir "$INSTDIR\locale\en"
   ;RMDir "$INSTDIR\locale\es"
   ;RMDir "$INSTDIR\locale\fr"
   ;RMDir "$INSTDIR\locale\tr"
+  ;RMDir "$INSTDIR\locale\nl"
   
   ;RMDir "$INSTDIR\books"
   ;RMDir "$INSTDIR\locale"

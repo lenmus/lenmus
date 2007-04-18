@@ -222,6 +222,7 @@ enum EStaffObjType
     eSFOT_NoteRest,             // notes and rests (lmNoreRest)
     eSFOT_Text,                 // texts (lmScoreText)
     eSFOT_Control,              // control element (backup, forward) (lmSOControl)
+    eSFOT_MetronomeMark,        // metronome mark (lmMetronomeMark)
     eSFOT_WordsDirection,       // texts (lmWordsDirection)
 
     eSFOT_TupletBracket,        // tuplet bracket (lmTupletBracket)

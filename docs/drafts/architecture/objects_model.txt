@@ -105,19 +105,16 @@ Finally, I defined other auxiliary objects non-derived from lmObject:
     lmStaff:    Properties for each staff on a VStaff (num.lines, spacing, ...)
 
 
-Currently (to be changed) lmStaffObj specializes in two classes:
+Current defined lmStaffObj:
         
-        lmSimpleObj:
-            Are self-defined, that is, they do not own lmAuxObjs
+    - not owning lmAuxObjs
         
-            Current:    lmBarline, lmClef, lmWordsDirection, lmKeySignature, lmSOControl,
-                        lmScoreText, lmTimeSignature, lmTupletBracket
+        lmBarline, lmClef, lmWordsDirection, lmKeySignature, lmSOControl,
+        lmScoreText, lmTimeSignature, lmTupletBracket, lmMetronomeMark
 
-        lmCompositeObj: They can own lmAuxObjs
-            Example: note + accidental; a whole measure with all its notes for a copy/paste
-            operation.
-            
-            Current:    lmNoteRest (lmNote, lmRest)
+    - can own lmAuxObjs
+        
+        lmNoteRest (lmNote, lmRest)
        
 
 Currently (to be reviewed) lmAuxObj (do not consume time ==> owned by the Score)
@@ -391,6 +388,7 @@ Selection (selectable objects)
 
 -----------------------------------------------------------------------------------------
     
+
 
 
 ============================================================================================

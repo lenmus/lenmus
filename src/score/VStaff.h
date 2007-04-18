@@ -18,12 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file VStaff.h
-    @brief Header file for class lmVStaff
-    @ingroup score_kernel
-*/
-#ifdef __GNUG__
-// #pragma interface
+
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma interface "VStaff.cpp"
 #endif
 
 #ifndef __VSTAFFT_H__        //to avoid nested includes
@@ -32,6 +29,7 @@
 #include "StaffObjIterator.h"
 class StaffList;
 class lmSpacer;
+class lmMetronomeMark;
 
 
 class lmVStaff : public lmObject
@@ -77,6 +75,15 @@ public:
                     EStemType nStem = eDefaultStem);
 
     lmBarline*  AddBarline(EBarline nType = etb_SimpleBarline, bool fVisible = true);
+
+    lmMetronomeMark* AddMetronomeMark(int nTicksPerMinute,
+                            bool fParentheses = false, bool fVisible = true);
+    lmMetronomeMark* AddMetronomeMark(ENoteType nLeftNoteType, int nLeftDots,
+                            ENoteType nRightNoteType, int nRightDots,
+                            bool fParentheses = false, bool fVisible = true);
+    lmMetronomeMark* AddMetronomeMark(ENoteType nLeftNoteType, int nLeftDots,
+                            int nTicksPerMinute,
+                            bool fParentheses = false, bool fVisible = true);
 
     lmSOControl* AddNewSystem();
 

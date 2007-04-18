@@ -174,9 +174,9 @@ void lmAccidental::CreateShapes()
     }
 
     wxFont* pFont = m_pOwner->GetFont();
-    m_pShape[0] = new lmShapeGlyph(this, nGlyph[0], pFont);
+    m_pShape[0] = new lmShapeGlyph((lmObject*)this, nGlyph[0], pFont);
     if (nGlyph[1] != -1)
-        m_pShape[1] = new lmShapeGlyph(this, nGlyph[1], pFont);
+        m_pShape[1] = new lmShapeGlyph((lmObject*)this, nGlyph[1], pFont);
     else
         m_pShape[1] = (lmShapeGlyph*)NULL;
 

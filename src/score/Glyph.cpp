@@ -154,6 +154,11 @@ const lmGlyph aGlyphsInfo[] =
 
 //signs
     lmGlyph(_T('.'), -60,     58,     5,   121,  -112,    _T("Dot (for dotted notes)")) ,
+    lmGlyph(_T('_'),   0,     33,    31,  1403,  -201,    _T("small quarter note up (for metronome marks)")) ,
+    lmGlyph(_T('`'),   0,     33,    31,  1403,  -201,    _T("small dotted quarter note up")) ,
+    lmGlyph(_T(']'),   0,     32,    32,  1432,  -205,    _T("small eighth note up")) ,
+    lmGlyph(_T('^'),   0,     32,    32,  1432,  -205,    _T("small dotted eighth note up")) ,
+    lmGlyph(_T('['),   0,      5,    32,   143,  -113,    _T("small equal sign")) ,
 
 //em=2048
 //ascender=3072
@@ -179,7 +184,15 @@ const lmGlyph aGlyphsInfo[] =
 
 //DOT, '.',0, 227, 121, -112
 //shift = 3072- 121 FU = 2951FU = 57,63 = 58
-//height = (121 + 112)FU = 233FU = 4,55 = 5       
+//height = (121 + 112)FU = 233FU = 4,55 = 5
+
+//small quarter note up (for metronome marks)
+//       xPos   yPos    width   height  Height+yPos
+//  '_', 0      -201    481     1604    1403
+//shift = 3072 - 1403 = 1669 FU = 1669*10/512 = 32,60 = 33
+//height = 1604; FU = 1604/51,2 = 31,33 = 31
+
+// see: lenmus/fonts/font_metrics.xml
 
 };
 

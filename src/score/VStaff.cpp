@@ -69,8 +69,8 @@
 //   colección. Ver método CIterador.PosicionarEnItem
 //--------------------------------------------------------------------------------------------------
 
-#ifdef __GNUG__
-// #pragma implementation
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma implementation "VStaff.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -87,6 +87,7 @@
 #include "Score.h"
 #include "Notation.h"
 #include "../app/global.h"
+#include "MetronomeMark.h"
 
 //implementation of the staves List
 #include <wx/listimpl.cpp>
@@ -340,6 +341,40 @@ lmWordsDirection* lmVStaff::AddWordsDirection(wxString sText, lmEAlignment nAlig
     return pWD;
 
 }
+
+lmMetronomeMark* lmVStaff::AddMetronomeMark(int nTicksPerMinute,
+                        bool fParentheses, bool fVisible)
+{
+    lmMetronomeMark* pMM = new lmMetronomeMark(this, nTicksPerMinute,
+                                               fParentheses, fVisible);
+    m_cStaffObjs.Store(pMM);
+    return pMM;
+
+}
+
+lmMetronomeMark* lmVStaff::AddMetronomeMark(ENoteType nLeftNoteType, int nLeftDots,
+                        ENoteType nRightNoteType, int nRightDots,
+                        bool fParentheses, bool fVisible)
+{
+    lmMetronomeMark* pMM = new lmMetronomeMark(this, nLeftNoteType, nLeftDots,
+                                               nRightNoteType, nRightDots,
+                                               fParentheses, fVisible);
+    m_cStaffObjs.Store(pMM);
+    return pMM;
+
+}
+
+lmMetronomeMark* lmVStaff::AddMetronomeMark(ENoteType nLeftNoteType, int nLeftDots,
+                        int nTicksPerMinute, bool fParentheses, bool fVisible)
+{
+    lmMetronomeMark* pMM = new lmMetronomeMark(this, nLeftNoteType, nLeftDots,
+                                               nTicksPerMinute,
+                                               fParentheses, fVisible);
+    m_cStaffObjs.Store(pMM);
+    return pMM;
+
+}
+
 
 //for types eTS_Common, eTS_Cut and eTS_SenzaMisura
 lmTimeSignature* lmVStaff::AddTimeSignature(ETimeSignatureType nType, bool fVisible)

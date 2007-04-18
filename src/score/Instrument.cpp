@@ -57,7 +57,7 @@ lmFontInfo g_tInstrumentDefaultFont = { _T("Times New Roman"), 14, lmTEXT_BOLD }
 
 lmInstrument::lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel,
                            int nMIDIInstr, wxString sName, wxString sAbbrev)
-    : lmObject(pScore)
+    : lmObject((lmObject*)pScore)
 {
     //create objects for name and abbreviation
     lmScoreText* pName = (lmScoreText*)NULL;

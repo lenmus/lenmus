@@ -174,9 +174,36 @@ public:
 private:
     int         m_nGlyph;
     wxFont*     m_pFont;
-    lmUPoint     m_shift;         // to correctly position the glyph (relative to shape offset point)
+    lmUPoint    m_shift;        // to correctly position the glyph (relative to shape offset point)
 
 };
+
+
+//represents a text with the same font
+class lmShapeText : public lmShapeSimple
+{
+public:
+    lmShapeText(lmObject* pOwner, wxString sText, wxFont* pFont);
+    ~lmShapeText() {}
+
+    //implementation of virtual methods from base class
+    void Render(lmPaper* pPaper, lmUPoint pos, wxColour color = *wxBLACK);
+    wxString Dump();
+    void Shift(lmLUnits xIncr);
+
+    //specific methods
+    void Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint shift);
+    void SetFont(wxFont *pFont);
+    wxString* GetText() { return &m_sText; }
+
+
+private:
+    wxString    m_sText;
+    wxFont*     m_pFont;
+    lmUPoint    m_shift;        // to correctly position the text (relative to shape offset point)
+
+};
+
 
 
 #endif    // __SHAPE_H__

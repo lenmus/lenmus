@@ -44,6 +44,7 @@
 
 #include "../score/Score.h"
 #include "../score/GraphicObj.h"
+#include "../score/MetronomeMark.h"
 #include "LDPParser.h"
 #include "AuxString.h"
 #include "../auxmusic/Conversion.h"
@@ -892,6 +893,8 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
             AnalyzeSpacer(pX, pVStaff);
         } else if (sName == m_pTags->TagName(_T("graphic")) ) {
             AnalyzeGraphicObj(pX, pVStaff);
+        } else if (sName == m_pTags->TagName(_T("metronome")) ) {
+            AnalyzeMetronome(pX, pVStaff);
         }
         // abbreviated barlines
         else if (sName == _T("|") ) {
@@ -1115,56 +1118,6 @@ void lmLDPParser::AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
     
 }
-
-////Devuelve true si hay error, es decir si no añade objeto al pentagrama
-//Function AnalizarMetronomo(lmVStaff* pVStaff, lmLDPNode* pNode) As Boolean
-////v1.1  <Metronomo> ::= ("Metronomo" <Valor_nota> {<Tics_minuto> | (<Valor_nota> )
-//
-//    wxASSERT(pNode->GetName() = "METRONOMO"
-//    
-//    Dim nNota1 As EMetronomo, nNota2 As EMetronomo, nVelocidad As Long
-//    Dim wxString sData
-//    
-//    //obtiene parámetros
-//    Dim int nParms
-//    nParms = pNode->GetNumParms()
-//    
-//    
-//    //analiza primer parámetro: valor de nota inicial
-//    sData = (pNode->GetParameter(1))->GetName();
-//    switch (sData
-//        case "N"
-//            nNota1 = eMtr_Negra
-//        case "N."
-//            nNota1 = eMtr_NegraPuntillo
-//        default:
-//            AnalysisError(wxString::Format(_T("Tipo de nota inicio <" & sData & "> desconocido. " & _
-//                "Se supone Negra."
-//            nNota1 = eMtr_Negra
-//    }
-//    
-//    //analiza segundo parámetro: valor de nota o num. tics por minuto
-//    sData = (pNode->GetParameter(2))->GetName();
-//    nVelocidad = 0
-//    if (IsNumeric(sData)) {
-//        nVelocidad = CLng(sData)
-//    } else {
-//        switch (sData
-//            case "N"
-//                nNota2 = eMtr_Negra
-//            case "N."
-//                nNota2 = eMtr_NegraPuntillo
-//            default:
-//                AnalysisError(wxString::Format(_T("Tipo de nota final <" & sData & "> desconocido. " & _
-//                    "Se supone Negra."
-//                nNota2 = eMtr_Negra
-//        }
-//    }
-//
-//    pVStaff.AddIndicacionMetronomo nNota1, nNota2, nVelocidad
-//    AnalizarMetronomo = false
-//    
-//}
 
 void lmLDPParser::AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
@@ -2300,6 +2253,114 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
 
     pVStaff->AddClef(nClef, nStaff, fVisible);
     return false;
+    
+}
+
+//returns true if error; in this case nothing is added to the lmVStaff
+bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
+{
+//  <metronome> = (metronome 
+//                    { <NoteType> {<TicksPerMinute> | <NoteType>}  |
+//                      <TicksPerMinute> }
+//                    (parentheses) (<Visible>) )
+    
+    wxString sElmName = pNode->GetName();
+    wxASSERT(sElmName == m_pTags->TagName(_T("metronome")) );
+
+    //check that at least one parameter is specified
+    int nNumParms = pNode->GetNumParms();
+    if(nNumParms < 1) {
+        AnalysisError(
+            _("Element '%s' has less parameters that the minimum required. Ignored'."),
+            sElmName );
+        return true;    //error
+    }
+    
+    long iP = 1;
+    wxString sName = (pNode->GetParameter(iP))->GetName();
+
+    EMetronomeMarkType nMarkType;
+    long nTicksPerMinute = 0;
+    bool fDotted = false;
+    bool fDoubleDotted = false;
+    ENoteType nLeftNoteType = eQuarter, nRightNoteType = eQuarter;
+    int nLeftDots = 0, nRightDots = 0;
+
+    //analize first parameter: value or left mark
+    wxString sData = (pNode->GetParameter(iP++))->GetName();
+    if (sData.IsNumber()) {
+        //numeric value. Assume it is the ticks per minute rate
+        sData.ToLong(&nTicksPerMinute);
+        nMarkType = eMMT_MM_Value;
+    }
+    else {
+        //string value. Assume it is mark type (note duration and dots)
+        if (AnalyzeNoteType(sData, &nLeftNoteType, &fDotted, &fDoubleDotted)) {
+            AnalysisError( _("Unknown note/rest duration '%s'. A quarter note assumed."),
+                sData );
+        }
+        if (fDotted) nLeftDots++;
+        if (fDoubleDotted) nLeftDots++;
+
+        // Get right part
+        if (iP > nNumParms) {
+            AnalysisError(
+                _("Element '%s' has less parameters that the minimum required. Ignored'."),
+                sElmName );
+            return true;    //error
+        }
+        sData = (pNode->GetParameter(iP++))->GetName();
+        if (sData.IsNumber()) {
+            //numeric value. Assume it is the ticks per minute rate
+            sData.ToLong(&nTicksPerMinute);
+            nMarkType = eMMT_Note_Value;
+        }
+        else {
+            //string value. Assume it is mark type (note duration and dots)
+            nMarkType = eMMT_Note_Note;
+            if (AnalyzeNoteType(sData, &nRightNoteType, &fDotted, &fDoubleDotted)) {
+                AnalysisError( _("Unknown note/rest duration '%s'. A quarter note assumed."),
+                    sData );
+            }
+            if (fDotted) nRightDots++;
+            if (fDoubleDotted) nRightDots++;
+        }
+    }
+
+    //Get optional parameters
+    bool fParentheses = false;
+    bool fVisible = true;
+    lmLDPNode* pX;
+    for (; iP <= nNumParms; iP++) {
+        pX = pNode->GetParameter(iP);
+        if (pX->GetName() == m_pTags->TagName(_T("noVisible")) )
+            fVisible = false;
+        else if (pX->GetName() == m_pTags->TagName(_T("parentheses")) )
+            fParentheses = true;
+        else {
+            AnalysisError( _("Unknown parameter '%s'. Ignored."), pX->GetName());
+        }
+    }
+
+    //create the metronome mark StaffObj
+    switch (nMarkType)
+    {
+        case eMMT_MM_Value:
+            pVStaff->AddMetronomeMark(nTicksPerMinute, fParentheses, fVisible);
+            break;
+        case eMMT_Note_Note:
+            pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nRightNoteType, nRightDots, 
+                            fParentheses, fVisible);
+            break;
+        case eMMT_Note_Value:
+            pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nTicksPerMinute,
+                            fParentheses, fVisible);
+            break;
+        default:
+            wxASSERT(false);
+    }
+
+    return false;    //no error
     
 }
 

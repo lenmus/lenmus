@@ -206,6 +206,7 @@ void lmShapeGlyph::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
     // store boundling rectangle position and size
     lmLUnits nWidth, nHeight;
     wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
+    pPaper->SetFont(*m_pFont);
     pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
     m_BoundsRect.height = pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectHeight);
     m_BoundsRect.width = nWidth;
@@ -240,6 +241,72 @@ wxString lmShapeGlyph::Dump()
 }
 
 void lmShapeGlyph::Shift(lmLUnits xIncr)
+{
+    m_shift.x += xIncr;
+    m_SelRect.x += xIncr;
+    m_BoundsRect.x += xIncr;
+}
+
+
+
+//========================================================================================
+// lmShapeText object implementation
+//========================================================================================
+
+lmShapeText::lmShapeText(lmObject* pOwner, wxString sText, wxFont* pFont)
+    : lmShapeSimple(pOwner)
+{
+    m_sText = sText;
+    m_pFont = pFont;
+
+    //default values
+    m_shift.x = 0;
+    m_shift.y = 0;
+
+
+
+}
+
+void lmShapeText::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
+{
+    // compute and store position
+    m_shift.x = offset.x;
+    m_shift.y = offset.y;
+
+    // store boundling rectangle position and size
+    lmLUnits uWidth, uHeight;
+    pPaper->SetFont(*m_pFont);
+    pPaper->GetTextExtent(m_sText, &uWidth, &uHeight);
+    m_BoundsRect.height = uHeight;
+    m_BoundsRect.width = uWidth;
+    m_BoundsRect.x = m_shift.x;
+    m_BoundsRect.y = m_shift.y;
+
+    // store selection rectangle position and size
+    m_SelRect = m_BoundsRect;
+
+}
+
+
+void lmShapeText::Render(lmPaper* pPaper, lmUPoint pos, wxColour color)
+{
+    pPaper->SetFont(*m_pFont);
+    pPaper->SetTextForeground(color);
+    pPaper->DrawText(m_sText, pos.x + m_shift.x, pos.y + m_shift.y);
+}
+
+void lmShapeText::SetFont(wxFont *pFont)
+{
+    m_pFont = pFont;
+}
+
+wxString lmShapeText::Dump()
+{
+    return wxString::Format(_T("TextShape: shift=(%d,%d), text=%s"),
+        m_shift.x, m_shift.y, m_sText);
+}
+
+void lmShapeText::Shift(lmLUnits xIncr)
 {
     m_shift.x += xIncr;
     m_SelRect.x += xIncr;

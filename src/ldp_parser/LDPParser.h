@@ -65,6 +65,7 @@ public:
     void        AnalyzeLocation(lmLDPNode* pNode, int* pValue, lmEUnits* pUnit);
     void        AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos);
     void        AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff);
+    bool        AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmNote*     AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);
     lmNoteRest* AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);

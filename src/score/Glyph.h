@@ -141,9 +141,12 @@ enum lmEGlyphIndex {
     GLYPH_NUMBER_9,
 
     //signs
-    GLYPH_DOT,      //for dotted notes
-
-
+    GLYPH_DOT,                          //dot, for dotted notes
+    GLYPH_SMALL_QUARTER_NOTE,           //small quarter note up, for metronome marks
+    GLYPH_SMALL_QUARTER_NOTE_DOTTED,    //small dotted quarter note up
+    GLYPH_SMALL_EIGHTH_NOTE,            //small eighth note up
+    GLYPH_SMALL_EIGHTH_NOTE_DOTTED,     //small dotted eighth note up
+    GLYPH_SMALL_EQUAL_SIGN,             //small equal sign, for metronome marks
 
 
 };

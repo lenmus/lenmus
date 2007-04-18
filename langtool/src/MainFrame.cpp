@@ -267,8 +267,9 @@ void ltMainFrame::GenerateLanguage(int i)
     wxString sPath = g_pPaths->GetLenMusLocalePath();
     pLocale->AddCatalogLookupPathPrefix( sPath );
     wxString sCatalog = _T("lenmus_") + pLocale->GetName();
-    pLocale->AddCatalog( sCatalog );
-
+    if (! pLocale->AddCatalog( sCatalog )) {
+        wxMessageBox(wxString::Format(_T("Fail adding catalog %s"), sCatalog));
+    }
     wxString sContent = lmInstaller::GetInstallerStrings(sLang, sLangName);
     wxMessageBox(sContent);
     sPath = sNil + _T(".\\") + sLang + _T(".nsh");

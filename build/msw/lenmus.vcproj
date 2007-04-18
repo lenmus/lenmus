@@ -386,6 +386,12 @@
 				RelativePath="..\..\src\score\KeySignature.h">
 			</File>
 			<File
+				RelativePath="..\..\src\score\MetronomeMark.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\score\MetronomeMark.h">
+			</File>
+			<File
 				RelativePath="..\..\src\score\Notation.cpp">
 			</File>
 			<File

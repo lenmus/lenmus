@@ -79,17 +79,15 @@ void lmSpacer::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
 wxString lmSpacer::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tSpacer %d\tTimePos=%.2f, fixed=%s paperPos=(%d, %d)\n"),
-        m_nId, m_nSpacerWidth, m_rTimePos, (m_fFixedPos ? _T("yes") : _T("no")),
-        m_paperPos.x, m_paperPos.y);
+        _T("%d\tSpacer %.2f\tTimePos=%.2f, fixed=%s\n"),
+        m_nId, m_nSpacerWidth, m_rTimePos, (m_fFixedPos ? _T("yes") : _T("no")) );
     return sDump;
             
 }
 
 wxString lmSpacer::SourceLDP()
 {
-    //! @todo all
-    wxString sSource = _T("TODO: lmSpacer LDP Source code generation methods");
+    wxString sSource = wxString::Format(_T("         (spacer %.0f)\n"), m_nSpacerWidth);
     return sSource;
 
 }

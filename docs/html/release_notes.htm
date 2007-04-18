@@ -9,33 +9,39 @@
 
 <h2>What's new in 3.5</h2>
 
-<p>Release 3.5 includes, mainly, technical changes an some bug fixes:</p>
-
 <ul>
+  <li>A new eMusicBook included: Music Reading level 1</li>
   <li>Replaced MDI user interface by a notebook tabbed interface.</li>
-  <li>LDP score language: Added support for 'opt' element. Implemented option
-            'StopStaffLinesAtFinalBarline'</li>
-  <li>Several <a href="#bugs">bug fixes</a> and other
-    technical improvements.</li>
+  <li>The lenmus program now includes the Dutch language translation.</li>
+  <li>Added support to include images on eMusicBooks texts.</li>
+  <li>Improvements in the Score internal model to support more features:
+    <ul>
+      <li>Support to include graphical objects (arrows, lines, circles,
+        etc.) on a score. For now only lines are implemented.</li>
+      <li>Implemented metronome marks notations.</li>
+      <li>Added support to set up the size of a measure by specifying barline
+        position.</li>
+      <li>Added support to have global, inheritable options in all score elements.
+        Implemented support for the following options:
+        <ul>
+         <li>Option 'Staff.DrawLeftBarline' to control left barline drawing.</li>
+          <li>Option 'StaffLines.Hide' to control staff lines drawing.</li>
+          <li>Option 'StaffLines.StopAtFinalBarline' to allow for staff lines
+            going to the right paper margin instead of finishing at the final
+            barline.</li>
+        </li></ul>
+    </li></ul>
+  <li>Improvements in LDP language to support the new features. New tags added:
+    <ul>
+      <li>tag 'metronome' to define metronome notations.</li>
+      <li>tag 'graphic line' to add lines on a score.</li>
+      <li>tag 'spacer' for better controlling staff space.</li>
+      <li>tag 'opt' to add global, inheritable options to all other tags.</li>
+      <li>Added support for strings enclosed in double simple quotes as
+        an alternative to double quotes.</li>
+    </li></ul>
 </ul>
 
-<p>&nbsp;</p>
-
-
-<h2><a name="bugs">Bug fixed details</a></h2>
-
-<table class="Lista">
-<tr valign="top">
-  <td class="ListaImpar"><strong>Description</strong></td>
-</tr>
-
-<tr valign="top">
-    <td class="ListaPar">
-      <b>xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.</b><br />
-      The problem has been fixed.
-    </td></tr>
-
-</table>
 
 </body>
 </html>

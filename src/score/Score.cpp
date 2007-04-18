@@ -69,7 +69,7 @@ static long m_nCounterID = 0;
 // lmScore constructors and destructor
 //---------------------------------------------------------------------------------------
 
-lmScore::lmScore() : lmObject((lmObject*)NULL)
+lmScore::lmScore() : lmObject(NULL)
 {
     //Set up an empty score, that is, without any lmInstrument.
 
