@@ -76,12 +76,6 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
     information is absolute (MusicXML style) or relative (LDP style).
     */
 
-//        nCalderon As ECalderon, _
-//        cAnotaciones As Collection, _
-//        ByRef anContext() As Long, _
-//        fCabezaX As Boolean, _
-//        nVoz As Long, _
-
     //shapes initialization
     m_pNoteheadShape = (lmShapeGlyph*)NULL;
     m_pStemLine = (lmShapeLine*)NULL;
@@ -697,6 +691,25 @@ lmLUnits lmNote::DrawAccidentals(lmPaper* pPaper, bool fMeasuring,
 
 }
 
+lmLUnits lmNote::GetPitchShift()
+{
+    int nPosOnStaff = GetPosOnStaff();
+    lmLUnits uShift = m_pVStaff->TenthsToLogical(nPosOnStaff * 10, m_nStaffNum ) / 2 ;
+    if (nPosOnStaff > 0 && nPosOnStaff < 12)
+        return uShift;
+    else {
+        if (nPosOnStaff > 11) {
+            // lines at top
+            lmTenths nDsplz = (lmTenths) m_pVStaff->GetOptionLong(_T("Staff.UpperLegerLines.Displacement"));
+            lmLUnits yDsplz = m_pVStaff->TenthsToLogical(nDsplz, m_nStaffNum);
+            return uShift + yDsplz;
+        }
+        else
+            return uShift;
+    }
+
+}
+
 bool lmNote::DrawNote(lmPaper* pPaper, bool fMeasuring,
                       lmLUnits xOffset, lmLUnits yOffset, wxColour colorC)
 {
@@ -876,10 +889,12 @@ void lmNote::DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits yStaffTop
     lmLUnits yPos, nTenths;
     if (nPosOnStaff > 11) {
         // lines at top
+        lmLUnits uDsplz = m_pVStaff->GetOptionLong(_T("Staff.UpperLegerLines.Displacement"));
+        lmLUnits yStart = yStaffTopLine - m_pVStaff->TenthsToLogical(uDsplz, m_nStaffNum);
         for (i=12; i <= nPosOnStaff; i++) {
             if (i % 2 == 0) {
                 nTenths = 5 * (i - 10);
-                yPos = yStaffTopLine - m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
+                yPos = yStart - m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
                 pPaper->SolidLine(xPos, yPos, xPos + width, yPos, nThick,
                                    eEdgeNormal, *wxBLACK);
             }

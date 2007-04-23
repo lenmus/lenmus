@@ -122,7 +122,7 @@ public:
     lmLUnits GetStaffOffset() { return m_pVStaff->GetStaffOffset(m_nStaffNum); }
 
     //methods related to associated AuxObjs management
-    void AddFermata(bool fOverNote = true);
+    void AddFermata(lmEPlacement nPlacement);
     void AddLyric(lmLyric* pLyric);
 
     //methods related to duration

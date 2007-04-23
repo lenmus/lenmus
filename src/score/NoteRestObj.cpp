@@ -61,9 +61,22 @@ void lmNoteRestObj::UpdateMeasurements()
 // lmFermata object implementation
 //========================================================================================
 
-lmFermata::lmFermata(lmNoteRest* pOwner, bool fOverNote) : lmNoteRestObj(eST_Fermata, pOwner)
+lmFermata::lmFermata(lmNoteRest* pOwner, lmEPlacement nPlacement)
+        : lmNoteRestObj(eST_Fermata, pOwner)
 {
-    m_fOverNote = fOverNote;
+    if (nPlacement == ep_Default) {
+        if (pOwner->IsRest())
+            m_nPlacement = ep_Above;
+        else {
+            lmNote* pNote = (lmNote*)pOwner;
+            if (pNote->GetNoteType() <= eWhole || pNote->StemGoesDown())
+                m_nPlacement = ep_Above;
+            else
+                m_nPlacement = ep_Below;
+        }
+    }
+    else
+        m_nPlacement = nPlacement;
 }
 
 void lmFermata::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
@@ -79,13 +92,14 @@ void lmFermata::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNu
     pPaper->SetFont( *(m_pOwner->GetFont()) );
 
     // prepare glyph and measure it
-    wxString sGlyph = (m_fOverNote ? CHAR_FERMATA_OVER : CHAR_FERMATA_UNDER );
+    bool fAboveNote = (m_nPlacement == ep_Above);
+    wxString sGlyph = (fAboveNote ? CHAR_FERMATA_OVER : CHAR_FERMATA_UNDER );
     lmLUnits nWidth, nHeight;
     pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
 
     // store glyph position
     m_glyphPos.x = xPos - nWidth/2;
-    if (m_fOverNote)
+    if (fAboveNote)
         m_glyphPos.y = yPos - pVStaff->TenthsToLogical( 70, nStaffNum );
     else
         m_glyphPos.y = yPos - pVStaff->TenthsToLogical( 5, nStaffNum );
@@ -95,7 +109,7 @@ void lmFermata::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNu
     m_selRect.width = nWidth;
     m_selRect.height = pVStaff->TenthsToLogical( 20, nStaffNum );
     m_selRect.x = m_glyphPos.x;
-    m_selRect.y = m_glyphPos.y + pVStaff->TenthsToLogical( (m_fOverNote ? 45 : 40), nStaffNum );
+    m_selRect.y = m_glyphPos.y + pVStaff->TenthsToLogical( (fAboveNote ? 45 : 40), nStaffNum );
 
 }
 
@@ -106,7 +120,8 @@ void lmFermata::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bo
     // prepare DC
     pPaper->SetFont( *(m_pOwner->GetFont()) );
 
-    wxString sGlyph = (m_fOverNote ? CHAR_FERMATA_OVER : CHAR_FERMATA_UNDER );
+    bool fAboveNote = (m_nPlacement == ep_Above);
+    wxString sGlyph = (fAboveNote ? CHAR_FERMATA_OVER : CHAR_FERMATA_UNDER );
     lmUPoint pos = GetGlyphPosition();
     pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
     pPaper->DrawText(sGlyph, pos.x, pos.y );

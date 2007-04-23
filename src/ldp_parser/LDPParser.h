@@ -57,6 +57,7 @@ public:
     bool        AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeChord(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode);
+    lmEPlacement AnalyzeFermata(lmLDPNode* pNode);
     void        AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont);
     void        AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInstr);

@@ -240,10 +240,13 @@ enum ETies
     eL_Tied
 };
 
-enum ECalderon
+// Placement indicates whether something is above or below another element, 
+// such as a note or a notation.
+enum lmEPlacement
 {
-    eC_SinCalderon = 0,
-    eC_ConCalderon
+    ep_Default = 0,
+    ep_Above,
+    ep_Below
 };
 
 //noteheads

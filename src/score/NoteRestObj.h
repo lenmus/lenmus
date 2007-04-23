@@ -78,7 +78,7 @@ protected:
 class lmFermata : public lmNoteRestObj
 {
 public:
-    lmFermata(lmNoteRest* pOwner, bool fOverNote);
+    lmFermata(lmNoteRest* pOwner, lmEPlacement nPlacement);
     ~lmFermata() {}
 
     // overrides for pure virtual methods of base class lmNoteRestObj
@@ -87,7 +87,7 @@ public:
                          lmLUnits xPos, lmLUnits yPos);
 
 private:
-    bool    m_fOverNote;
+    lmEPlacement    m_nPlacement;
 
 };
 

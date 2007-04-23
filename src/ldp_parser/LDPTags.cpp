@@ -135,7 +135,9 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
     //!         while program generated tags are in Spanish.
     if (sLanguage == _T("en")) {
         m_Tags[0][_T("abbrev")] = _T("abbrev");
+        m_Tags[0][_T("above")] = _T("above");
         m_Tags[0][_T("barline")] = _T("barline");
+        m_Tags[0][_T("below")] = _T("below");
         m_Tags[0][_T("bold")] = _T("bold");
         m_Tags[0][_T("bold_italic")] = _T("bold-italic");
         m_Tags[0][_T("center")] = _T("center");
@@ -145,6 +147,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("dx")] = _T("dx");
         m_Tags[0][_T("dy")] = _T("dy");
         m_Tags[0][_T("end")] = _T("end");
+        m_Tags[0][_T("fermata")] = _T("fermata");
         m_Tags[0][_T("font")] = _T("font");
         m_Tags[0][_T("goBack")] = _T("goBack");
         m_Tags[0][_T("goFwd")] = _T("goFwd");
@@ -289,7 +292,9 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
 
         //no context
         m_Tags[0][_T("abbrev")] = _T("abrev");
-        m_Tags[0][_T("barline")] = _T("barra");
+        m_Tags[0][_T("above")] = _T("encima");
+        m_Tags[0][_T("barline")] = _T("barline");
+        m_Tags[0][_T("below")] = _T("debajo");
         m_Tags[0][_T("bold")] = _T("negrita");
         m_Tags[0][_T("bold_italic")] = _T("negrita-cursiva");
         m_Tags[0][_T("center")] = _T("centrado");
@@ -299,6 +304,7 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
         m_Tags[0][_T("dx")] = _T("dx");
         m_Tags[0][_T("dy")] = _T("dy");
         m_Tags[0][_T("end")] = _T("final");
+        m_Tags[0][_T("fermata")] = _T("calderon");
         m_Tags[0][_T("font")] = _T("font");
         m_Tags[0][_T("goBack")] = _T("retroceder");
         m_Tags[0][_T("goFwd")] = _T("avanzar");

@@ -198,11 +198,11 @@ lmLUnits lmNoteRest::DrawDot(bool fMeasuring, lmPaper* pPaper,
 //====================================================================================================
 // methods related to associated AuxObjs management
 //====================================================================================================
-void lmNoteRest::AddFermata(bool fOverNote)
+void lmNoteRest::AddFermata(lmEPlacement nPlacement)
 {
     if (!m_pNotations) m_pNotations = new AuxObjsList();
 
-    lmFermata* pFermata = new lmFermata(this, fOverNote);
+    lmFermata* pFermata = new lmFermata(this, nPlacement);
     m_pNotations->Append(pFermata);
 
 }

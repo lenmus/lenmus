@@ -188,26 +188,6 @@ void lmLDPParser::FileParsingError(const wxString sMsg)
     wxMessageBox(sMsg, _T("Error"));
 }
 
-//void lmLDPParser::InformarIncidencias()
-//
-//    if (m_nWarnings > 0 Or m_nErrors > 0) {
-//        Dim sMsje As String
-//        if (m_nWarnings) {
-//            sMsje = sMsje & "Hay " & m_nWarnings & " aviso"
-//            if (m_nWarnings > 1) { sMsje = sMsje & "s"
-//            if (m_nErrors > 0) { sMsje = sMsje & " y " & m_nErrors & " error"
-//        } else {
-//            sMsje = "Hay " & m_nErrors & " error"
-//        }
-//        if (m_nErrors > 1) { sMsje = sMsje & "es"
-//        MsgBox sMsje, vbCritical, "Errores al analizar partitura"
-//        //mostrar el archivo de avisos
-//        if (m_nWarnings != 0 Or m_nErrors != 0) { MostrarErrores
-//    }
-//    
-//}
-//    
-
 //------------------------------------------------------------------------------------------
 // File management functions
 //------------------------------------------------------------------------------------------
@@ -271,34 +251,6 @@ void lmLDPParser::AnalysisError(const wxChar* szFormat, ...)
 
 }
 
-//void lmLDPParser::MsjeDebug(sEstado As String, m_pTk As lmLDPToken, sMsje As String)
-//    Dim sLit As String
-//    sLit = _
-//        "Estado: " & sEstado & ", Tipo token:" & m_pTk->GetDescription & sCrLf & _
-//        "Token: [" & m_pTk->GetValue() & "]" & sCrLf & _
-//        sMsje & sCrLf & _
-//        "Línea " & nNumLinea & sCrLf & m_sLastBuffer
-//    GrabarTrace sLit
-//    
-//}
-//
-//
-//
-//
-//
-//
-
-
-//Enum ETies
-//    eL_NotTied = 0
-//    eL_Tied
-//End Enum
-//
-//Enum ECalderon
-//    eC_SinCalderon = 0
-//    eC_ConCalderon
-//End Enum
-//
 lmLDPNode* lmLDPParser::LexicalAnalysis()
 {
     /*
@@ -1496,9 +1448,9 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     m_sLastDuration = sDuration;
     
     //analyze remaining parameters: annotations
-//    Dim nCalderon As ECalderon
+    bool fFermata = false;
+    lmEPlacement nFermataPlacement = ep_Default;
 //    Dim nTipoStem As EStemType
-//    nCalderon = eC_SinCalderon
 //    nTipoStem = eDefaultStem
 //    
     wxString sData;
@@ -1514,9 +1466,6 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             sData = pX->GetName();
     //            case "AMR"       //Articulaciones y acentos: marca de respiración
     //                cAnotaciones.Add sData
-    //                
-    //            case "C"        //Calderón
-    //                nCalderon = eC_ConCalderon
     //                
             if (sData == m_pTags->TagName(_T("l"), _T("SingleChar")) && !fIsRest) {       //Tied to the next one
                 fTie = true;
@@ -1651,6 +1600,9 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             else if (sData.Left(1) == m_pTags->TagName(_T("p"), _T("SingleChar"))) {       //staff number
                 m_nCurStaff = AnalyzeNumStaff(sData);
             }
+            else if (sData == m_pTags->TagName(_T("fermata"))) {       //fermata 
+                fFermata = true;
+            }
             else {
                 AnalysisError(_("Error: notation '%s' unknown. It will be ignored."), sData );
             }
@@ -1667,6 +1619,10 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             }
             else if (sData == m_pTags->TagName(_T("stem")) ) {       //stem attributes
                 nStem = AnalyzeStem(pX, pVStaff);
+            }
+            else if (sData == m_pTags->TagName(_T("fermata")) ) {   //fermata attributes
+                fFermata = true;
+                nFermataPlacement = AnalyzeFermata(pX);
             }
             else if (sData == m_pTags->TagName(_T("t"), _T("SingleChar"))) {       //start/end of tuplet. Simple parameter (tn / t-)
                 lmTupletBracket* pTuplet;
@@ -1777,6 +1733,8 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             m_pTupletBracket = (lmTupletBracket*)NULL;
         }
     }
+
+    if (fFermata) pNR->AddFermata(nFermataPlacement);
 
     return pNR;
 
@@ -2386,6 +2344,7 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmObject* pObject)
     if (!(sName == _T("StaffLines.StopAtFinalBarline")
           || sName == _T("StaffLines.Hide")
           || sName == _T("Staff.DrawLeftBarline")
+          || sName == _T("Staff.UpperLegerLines.Displacement")
         ))
     {
         AnalysisError( _("Option '%s' unknown. Ignored."), sName);
@@ -2846,6 +2805,35 @@ EStemType lmLDPParser::AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 
     return nStem;
+    
+}
+
+lmEPlacement lmLDPParser::AnalyzeFermata(lmLDPNode* pNode)
+{
+    //<Fermata> ::= (fermata [above | below]}
+
+    wxASSERT(pNode->GetName() == m_pTags->TagName(_T("fermata")) );
+
+    lmEPlacement nPlacement = ep_Default;
+
+    //check that there are parameters
+    if(pNode->GetNumParms() < 1) {
+        AnalysisError( _("Element '%s' has less parameters that the minimum required. Tag ignored. Assumed default stem."),
+            m_pTags->TagName(_T("fermata")));
+        return nPlacement;
+    }
+    
+    //get fermata placement
+    wxString sDir = (pNode->GetParameter(1))->GetName();
+    if (sDir == m_pTags->TagName(_T("above")) )
+        nPlacement = ep_Above;
+    else if (sDir == m_pTags->TagName(_T("below")) )
+        nPlacement = ep_Below;
+    else {
+        AnalysisError( _("Invalid fermata placement '%s'. Default placement assumed."), sDir);
+    }
+
+    return nPlacement;
     
 }
 

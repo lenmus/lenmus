@@ -69,7 +69,7 @@ static long m_nCounterID = 0;
 // lmScore constructors and destructor
 //---------------------------------------------------------------------------------------
 
-lmScore::lmScore() : lmObject(NULL)
+lmScore::lmScore() : lmObject((lmObject*)NULL)
 {
     //Set up an empty score, that is, without any lmInstrument.
 
@@ -89,6 +89,7 @@ lmScore::lmScore() : lmObject(NULL)
     SetOption(_T("StaffLines.StopAtFinalBarline"), true);
     SetOption(_T("StaffLines.Hide"), false);
     SetOption(_T("Staff.DrawLeftBarline"), true);
+    SetOption(_T("Staff.UpperLegerLines.Displacement"), 0L);
 }
 
 lmScore::~lmScore()

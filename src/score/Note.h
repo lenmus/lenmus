@@ -67,7 +67,7 @@ public:
 
 
     // methods related to note positioning information
-    lmLUnits GetPitchShift() { return (m_pVStaff->TenthsToLogical(GetPosOnStaff() * 10, m_nStaffNum )) / 2 ; }
+    lmLUnits GetPitchShift();
     lmLUnits GetAnchorPos() { return m_xAnchor; }
     void SetAnchorPos(lmLUnits xPos) { m_xAnchor = xPos; }
     int GetPosOnStaff();        //line/space on which note is rendered

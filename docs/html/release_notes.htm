@@ -21,6 +21,7 @@
       <li>Implemented metronome marks notations.</li>
       <li>Added support to set up the size of a measure by specifying barline
         position.</li>
+      <li>Added support for fermatas on notes and rests.</li>
       <li>Added support to have global, inheritable options in all score elements.
         Implemented support for the following options:
         <ul>
@@ -29,10 +30,15 @@
           <li>Option 'StaffLines.StopAtFinalBarline' to allow for staff lines
             going to the right paper margin instead of finishing at the final
             barline.</li>
+          <li>Option 'Staff.UpperLegerLines.Displacement' to shift the first upper leger
+            line so that it is closer/further than normal spacing.
+            The other leger lines spacing is not changed.</li>
         </li></ul>
     </li></ul>
   <li>Improvements in LDP language to support the new features. New tags added:
     <ul>
+      <li>Implemented simple notation 'fermata', and compound notation
+        '(fermata [above | below])' on notes and rests.</li>
       <li>tag 'metronome' to define metronome notations.</li>
       <li>tag 'graphic line' to add lines on a score.</li>
       <li>tag 'spacer' for better controlling staff space.</li>

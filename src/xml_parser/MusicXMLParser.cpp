@@ -911,7 +911,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
 
     //notations
     bool fFermata = false;
-    bool fFermataOverNote = true;
+    lmEPlacement nPlacement = ep_Above;
 
     //Tuplet brakets
     bool fEndTuplet = false;
@@ -1214,7 +1214,10 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
                 if (sChildName == _T("fermata")) {
                     wxString sFermataType = GetAttribute(pElmnt, _T("type"));
                     fFermata = true;
-                    fFermataOverNote = (sFermataType == _T("upright"));
+                    if (sFermataType == _T("upright"))
+                        nPlacement = ep_Above;
+                    else
+                        nPlacement = ep_Below;
                     g_pLogger->LogTrace(_T("lmMusicXMLParser"), _("Parsing <fermata>"), _T(""));
                 }
 
@@ -1506,7 +1509,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     }
 
     // Add notations
-    if (fFermata) pNR->AddFermata(fFermataOverNote);
+    if (fFermata) pNR->AddFermata(nPlacement);
 
     if (m_pTupletBracket) {
         m_pTupletBracket->Include(pNR);
