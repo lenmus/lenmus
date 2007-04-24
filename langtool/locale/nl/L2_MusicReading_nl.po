@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.4\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-03-29 07:59+0100\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2007-04-17 17:13+0100\n"
+"Last-Translator: Jack Van Handenhove <jvanhan@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -42,10 +42,9 @@ msgstr "Dit eMuziekBoek is bedoeld als hulp bij het verbeteren van muziek leesva
 msgid "Cecilio Salmeron"
 msgstr "Cecilio Salmeron"
 
-# u
 #: L2_MusicReading/L2_MusicReading.cpp:9
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
-msgstr "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
+msgstr "Toestemming wordt verleend tot het kopiëren, verspreiden en/of wijzigen van dit document onder de bepalingen van de GNU Vrije Documentatie Licentie, versie 1.2 of iedere latere versie uitgegeven door de Free Software Foundation; zonder Invariante Secties, zonder Omslagteksten voor de Voorkant en zonder Omslagteksten voor de Achterkant. Een kopie van de licentie is opgenomen in de sectie getiteld \"GNU Vrije Documentatie Licentie\"."
 
 #: L2_MusicReading/L2_MusicReading.cpp:10
 msgid "http://www.gnu.org/licenses/fdl.html"

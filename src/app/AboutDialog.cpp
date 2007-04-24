@@ -256,6 +256,8 @@ void lmAboutDialog::OnTranslators(wxCommandEvent& WXUNUSED(event))
             _("Language") + _T("</b></font></td><td bgcolor='#7f8adc'><font color='#ffffff'><b>") +
             _("Name") + _T("</b></font></td><td bgcolor='#7f8adc'><font color='#ffffff'><b>") +
             _("e-mail") + _T("</b></font></td></tr>")
+        _T("<tr><td>") + _("Dutch") + _T("</td><td>Jack Van Handenhove</td>") +
+            _T("<td>jvanhan@gmail.com</td></tr>") +
         _T("<tr><td>") + _("French") + _T("</td><td>Carlos Alarcia</td>") +
             _T("<td>calarcia@cyltel.com</td></tr>") +
         _T("<tr><td>") + _("Spanish") + _T("</td><td>Cecilio Salmerón</td>") +

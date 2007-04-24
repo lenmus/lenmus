@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.3\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-04-11 11:55+0100\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2007-04-17 16:59+0100\n"
+"Last-Translator: Jack Van Handenhove <jvanhan@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -515,7 +515,7 @@ msgstr "Melodisch"
 
 #: auxmusic/ScalesManager.cpp:174
 msgid "Greek Ionian"
-msgstr ""
+msgstr "Grieks Ionisch"
 
 #: auxmusic/ScalesManager.cpp:175
 #, fuzzy
@@ -524,41 +524,41 @@ msgstr "Dorisch"
 
 #: auxmusic/ScalesManager.cpp:176
 msgid "Greek Phrygian"
-msgstr ""
+msgstr "Grieks Frygisch"
 
 #: auxmusic/ScalesManager.cpp:177
 msgid "Greek Lydian"
-msgstr ""
+msgstr "Grieks Lydisch"
 
 #: auxmusic/ScalesManager.cpp:178
 msgid "Greek Mixolydian"
-msgstr ""
+msgstr "Grieks Mixolydisch"
 
 #: auxmusic/ScalesManager.cpp:179
 msgid "Greek Aeolian"
-msgstr ""
+msgstr "Grieks Aeolisch"
 
 #: auxmusic/ScalesManager.cpp:180
 msgid "Greek Locrian"
-msgstr ""
+msgstr "Grieks Locrisch"
 
 #: auxmusic/ScalesManager.cpp:183
 #: exercises/IdfyScalesCtrol.cpp:161
 #: ../xrc/xrc_strings.cpp:314
 msgid "Pentatonic minor"
-msgstr ""
+msgstr "Pentatonisch mineur"
 
 #: auxmusic/ScalesManager.cpp:184
 #: exercises/IdfyScalesCtrol.cpp:162
 #: ../xrc/xrc_strings.cpp:313
 msgid "Pentatonic major"
-msgstr ""
+msgstr "Pentatonisch majeur"
 
 #: auxmusic/ScalesManager.cpp:185
 #: exercises/IdfyScalesCtrol.cpp:163
 #: ../xrc/xrc_strings.cpp:316
 msgid "Blues"
-msgstr ""
+msgstr "Blues"
 
 #: auxmusic/ScalesManager.cpp:186
 #: exercises/IdfyScalesCtrol.cpp:164
@@ -937,7 +937,7 @@ msgstr "Programma fout: loop gedetecteerd in ImChordConstraints::GetRandomChordT
 
 #: exercises/CountersCtrol.cpp:75
 msgid "Two teams competition"
-msgstr ""
+msgstr "Teamcompetitie"
 
 #: exercises/CountersCtrol.cpp:91
 msgid "Reset counters"
@@ -945,7 +945,7 @@ msgstr "Tellers op nul zetten"
 
 #: exercises/CountersCtrol.cpp:124
 msgid "Team"
-msgstr ""
+msgstr "Team"
 
 #: exercises/CountersCtrol.cpp:141
 msgid "Right"
@@ -962,7 +962,7 @@ msgstr "Score"
 #: exercises/CountersCtrol.cpp:251
 #, c-format
 msgid "Team's %d turn"
-msgstr ""
+msgstr "Teams %d beurt"
 
 #: exercises/EarCompareIntvCtrol.cpp:118
 msgid "First one greater"
@@ -1304,12 +1304,12 @@ msgstr "Afdrukken"
 #: exercises/IdfyScalesCtrol.cpp:155
 #: ../xrc/xrc_strings.cpp:311
 msgid "Lydian"
-msgstr ""
+msgstr "Lydisch"
 
 #: exercises/IdfyScalesCtrol.cpp:156
 #: ../xrc/xrc_strings.cpp:306
 msgid "Mixolydian"
-msgstr ""
+msgstr "Mixolydisch"
 
 #: exercises/IdfyScalesCtrol.cpp:157
 #: ../xrc/xrc_strings.cpp:308
@@ -1335,7 +1335,7 @@ msgstr "Mineur"
 
 #: exercises/IdfyScalesCtrol.cpp:195
 msgid "Greek scales:"
-msgstr ""
+msgstr "Griekse Toonaarden:"
 
 #: exercises/IdfyScalesCtrol.cpp:199
 #, fuzzy
@@ -2401,7 +2401,7 @@ msgstr "LenMus Phonascus maakt gebruik van het <b>wxWidgets</b> applicatie frame
 
 #: app/AboutDialog.cpp:232
 msgid "This program uses the <b>Anti-Grain Geometry</b> (http://www.antigrain.com) software developed by Maxim Shemanarev. AGG is an excellent open source, free graphic library, in source code. It produces pixel images in memory from vectorial data and it supports anti-aliasing, has very high performance, it is platform independent, very flexible and extensible, with a lightweight design, and very good reliability and stability."
-msgstr ""
+msgstr "Dit progamma gebruikt de <b>Anti-Korrel Geometrie</b> ((http://www.antigrain.com) software ontwikkeld door Maxim Shemanarex. AGG is een excellente open source, gratisch grafische codebibliotheek in broncode. Ze genereert pixelbeelden in het geheugen van vectoriële data en ondersteunt anti-aliasing, heeft een hoge performantie en is platform onafhankelijk, erg flexibel en uitbreidbaar, met een lichtgewicht ontwerp en een zeer goede stabiliteit en betrouwbaarheid."
 
 #: app/AboutDialog.cpp:241
 msgid "Most of 'lmbasic.ttf' font glyphs are taken from <b>LilyPond</b> GNU GPL project (http://lilypond.org), Feta font."
@@ -2419,19 +2419,19 @@ msgstr "Taal"
 
 #: app/AboutDialog.cpp:257
 msgid "Name"
-msgstr ""
+msgstr "Naam"
 
 #: app/AboutDialog.cpp:258
 msgid "e-mail"
-msgstr ""
+msgstr "e-mail"
 
 #: app/AboutDialog.cpp:259
 msgid "French"
-msgstr ""
+msgstr "Frans"
 
 #: app/AboutDialog.cpp:261
 msgid "Spanish"
-msgstr ""
+msgstr "Spaans"
 
 #: app/AboutDialog.cpp:263
 #, fuzzy
@@ -2678,7 +2678,7 @@ msgstr "Ga naar de vorige pagina in de navigatie log"
 
 #: app/MainFrame.cpp:737
 msgid "Go to next visited page"
-msgstr ""
+msgstr "Ga naar de volgende bezochte pagina"
 
 #: app/MainFrame.cpp:742
 #, fuzzy
@@ -2893,7 +2893,7 @@ msgstr "&Sluiten"
 
 #: app/MainFrame.cpp:977
 msgid "&Next"
-msgstr ""
+msgstr "&Volgende"
 
 #: app/MainFrame.cpp:978
 #, fuzzy
@@ -3760,7 +3760,7 @@ msgstr "&Labels rechts"
 
 #: ../xrc/xrc_strings.cpp:193
 msgid "Internet connection options"
-msgstr ""
+msgstr "Internetconnectie opties"
 
 #: ../xrc/xrc_strings.cpp:194
 msgid "Software updates"
@@ -3780,7 +3780,7 @@ msgstr "dd/mm/aaaa"
 
 #: ../xrc/xrc_strings.cpp:198
 msgid "Use a proxy server to connect to Internet"
-msgstr ""
+msgstr "Gebruik een proxy server om te connecteren naar het Internet"
 
 #: ../xrc/xrc_strings.cpp:199
 #, fuzzy
@@ -3794,19 +3794,19 @@ msgstr "Andere instellingen"
 
 #: ../xrc/xrc_strings.cpp:201
 msgid "Host:"
-msgstr ""
+msgstr "Host:"
 
 #: ../xrc/xrc_strings.cpp:202
 msgid "Port number:"
-msgstr ""
+msgstr "Poortnummer:"
 
 #: ../xrc/xrc_strings.cpp:203
 msgid "Please enter data for both, host name and port number"
-msgstr ""
+msgstr "Voer aub data in voor zowel de hostnaam als het poortnummer"
 
 #: ../xrc/xrc_strings.cpp:204
 msgid "Proxy server requires authentication"
-msgstr ""
+msgstr "De proxyserver vereist een autenticatie"
 
 #: ../xrc/xrc_strings.cpp:205
 #, fuzzy
@@ -3815,15 +3815,15 @@ msgstr "Akkoordherkenning"
 
 #: ../xrc/xrc_strings.cpp:206
 msgid "Username:"
-msgstr ""
+msgstr "Gebruikersnaam:"
 
 #: ../xrc/xrc_strings.cpp:207
 msgid "Password:"
-msgstr ""
+msgstr "Paswoord"
 
 #: ../xrc/xrc_strings.cpp:208
 msgid "Please enter data for both, user name and password"
-msgstr ""
+msgstr "Voer aub zowel de gebruikersnaam als het paswoord in"
 
 #: ../xrc/xrc_strings.cpp:210
 msgid "Other options"
@@ -3836,15 +3836,15 @@ msgstr "Andere oefeningen"
 
 #: ../xrc/xrc_strings.cpp:212
 msgid "Generate right/wrong sounds when clicking an answer button"
-msgstr ""
+msgstr "Laat een juist/verkeerd geluid horen wanneer een antwoordknop wordt ingedrukt"
 
 #: ../xrc/xrc_strings.cpp:213
 msgid "Show two counters (for teams competition)"
-msgstr ""
+msgstr "Toon twee tellers (in team competitie)"
 
 #: ../xrc/xrc_strings.cpp:214
 msgid "If right answer, do not show solution and generate a new problem"
-msgstr ""
+msgstr "Geen oplossing tonen en een nieuw probleem genereren wanneer juist geantwoord wordt"
 
 #: ../xrc/xrc_strings.cpp:216
 #: ../xrc/xrc_strings.cpp:222
@@ -3901,7 +3901,7 @@ msgstr "Kunst ontwerp erkenning"
 
 #: ../xrc/xrc_strings.cpp:236
 msgid "Translators"
-msgstr ""
+msgstr "Vertalers"
 
 #: ../xrc/xrc_strings.cpp:237
 msgid "Build info."
@@ -3960,7 +3960,7 @@ msgstr "Configuratie: akkoord herkenning"
 
 #: ../xrc/xrc_strings.cpp:293
 msgid "Scales"
-msgstr ""
+msgstr "Toonaarden"
 
 #: ../xrc/xrc_strings.cpp:294
 #, fuzzy
@@ -3974,7 +3974,7 @@ msgstr "Mineur"
 
 #: ../xrc/xrc_strings.cpp:304
 msgid "Greek scales"
-msgstr ""
+msgstr "Griekse toonaarden"
 
 #: ../xrc/xrc_strings.cpp:312
 #, fuzzy
@@ -4003,7 +4003,7 @@ msgstr ", dalend"
 
 #: ../xrc/xrc_strings.cpp:341
 msgid "&Both"
-msgstr ""
+msgstr "&Allebei"
 
 #: updater/Updater.cpp:108
 msgid "Error"
@@ -4039,31 +4039,31 @@ msgstr "Sorry, niet genoeg geheugen om een Bitmap te creëeren om de pagina te t
 
 #: ../langtool/src/installer.cpp:60
 msgid "Please, choose the optional components you would like to install"
-msgstr ""
+msgstr "Toon de optionele componenten die u wenst te installeren, aub"
 
 #: ../langtool/src/installer.cpp:64
 msgid "Shorcut on desktop"
-msgstr ""
+msgstr "Snelkoppeling op bureaublad"
 
 #: ../langtool/src/installer.cpp:65
 msgid "Examples of music scores"
-msgstr ""
+msgstr "Voorbeelden van partituren"
 
 #: ../langtool/src/installer.cpp:66
 msgid "Add to Control Panel (to 'Add/Remove Programs')"
-msgstr ""
+msgstr "Toevoegen aan Controle Paneel (Programma's toevoegen/verwijderen)"
 
 #: ../langtool/src/installer.cpp:69
 msgid "Create a shorcut icon on the desktop"
-msgstr ""
+msgstr "Een snelkoppeling aanmaken op het bureaublad"
 
 #: ../langtool/src/installer.cpp:70
 msgid "Create a folder containing some examples of music scores"
-msgstr ""
+msgstr "Een folder aanmaken met enkele voorbeelden van partituren"
 
 #: ../langtool/src/installer.cpp:71
 msgid "Create keys in Windows Registry to add LenMus to 'Add/Remove Programs' in the Control Panel."
-msgstr ""
+msgstr "Genereer sleutels in de Windows Registry om LenMus toe te voegen aan 'Programma's toevoegen/verwijderen' in het Controle Paneel."
 
 #: ../langtool/src/installer.cpp:75
 #, fuzzy
@@ -4072,19 +4072,19 @@ msgstr "Fout bij het parsen van XML file"
 
 #: ../langtool/src/installer.cpp:76
 msgid "Error installing font"
-msgstr ""
+msgstr "Fout bij het installeren van de font"
 
 #: ../langtool/src/installer.cpp:77
 msgid "Error creating shortcut on desktop"
-msgstr ""
+msgstr "Fout bij het aanmaken van een snelkoppeling op de desktop"
 
 #: ../langtool/src/installer.cpp:78
 msgid "Error copying examples of music scores"
-msgstr ""
+msgstr "Fout bij het copieren van de partituurvoorbeelden"
 
 #: ../langtool/src/installer.cpp:79
 msgid "Would you like to continue the installation?"
-msgstr ""
+msgstr "Wilt u de installatie verder zetten?"
 
 #: ../langtool/src/installer.cpp:80
 #, fuzzy
@@ -4093,11 +4093,11 @@ msgstr "Afdrukken geannuleerd"
 
 #: ../langtool/src/installer.cpp:85
 msgid "Run"
-msgstr ""
+msgstr "Run"
 
 #: ../langtool/src/installer.cpp:86
 msgid "Uninstall"
-msgstr ""
+msgstr "Installatie verwijderen"
 
 #: exercises/Constrains.h:195
 #: exercises/Constrains.h:262

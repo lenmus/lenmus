@@ -6,33 +6,33 @@
 LicenseLangString license ${LANG_Turkish} ".\locale\license_tr.txt"
 
 ;strings to customize MUI pages
-LangString MSG_OptionalComponents   ${LANG_Turkish} "Lütfen, kurmak istediðiniz isteðe baðlý parçalarý seç"
+LangString MSG_OptionalComponents   ${LANG_Turkish} "LÃ¼tfen, kurmak istediÄŸiniz isteÄŸe baÄŸlÄ± parÃ§alarÄ± seÃ§"
 
 
 ;section titles, what user sees to select components for installation
-LangString TITLE_CreateIcon     ${LANG_Turkish} "Masaüstünde kýsa kesinti"
-LangString TITLE_Scores         ${LANG_Turkish} "Müzik sayýlarýnýnýn örnekleri"
+LangString TITLE_CreateIcon     ${LANG_Turkish} "MasaÃ¼stÃ¼nde kÄ±sa kesinti"
+LangString TITLE_Scores         ${LANG_Turkish} "MÃ¼zik sayÄ±larÄ±nÄ±nÄ±n Ã¶rnekleri"
 LangString TITLE_RegKeys        ${LANG_Turkish} "Kontrol paneli ekle(programlara ekle/sil"
 
 ;descriptions for the sections. Displayed to user when mouse hovers over a section
-LangString DESC_CreateIcon      ${LANG_Turkish} "Masaüstünde kýsayol ikonlarý yarat"
-LangString DESC_Scores          ${LANG_Turkish} "Müzik sayýlarýnýn bazý örneklerini  kapsayan dosyayý  yarat"
-LangString DESC_RegKeys         ${LANG_Turkish} "LenMus'u eklemek için windows kayýtýnda ana resimlerleri yarat, kontrol panelinde  'programa ekle/sil' "
+LangString DESC_CreateIcon      ${LANG_Turkish} "MasaÃ¼stÃ¼nde kÄ±sayol ikonlarÄ± yarat"
+LangString DESC_Scores          ${LANG_Turkish} "MÃ¼zik sayÄ±larÄ±nÄ±n bazÄ± Ã¶rneklerini  kapsayan dosyayÄ±  yarat"
+LangString DESC_RegKeys         ${LANG_Turkish} "LenMus'u eklemek iÃ§in windows kayÄ±tÄ±nda ana resimlerleri yarat, kontrol panelinde  'programa ekle/sil' "
 
 
 ;error messages and other texts
-LangString ERROR_CopyFiles          ${LANG_Turkish} "Program dosyalarý kopyalama hatasý"
-LangString ERROR_InstallFonts       ${LANG_Turkish} "Yazýtipi kurma hatasý"
-LangString ERROR_CreateIcon         ${LANG_Turkish} "Masaüstünde kýsa kesintili hatalar yaratýr"
-LangString ERROR_CopyScores         ${LANG_Turkish} "Müzik sayýlarýnýn kopyalanmasýndaki hatalarý örnekler"
+LangString ERROR_CopyFiles          ${LANG_Turkish} "Program dosyalarÄ± kopyalama hatasÄ±"
+LangString ERROR_InstallFonts       ${LANG_Turkish} "YazÄ±tipi kurma hatasÄ±"
+LangString ERROR_CreateIcon         ${LANG_Turkish} "MasaÃ¼stÃ¼nde kÄ±sa kesintili hatalar yaratÄ±r"
+LangString ERROR_CopyScores         ${LANG_Turkish} "MÃ¼zik sayÄ±larÄ±nÄ±n kopyalanmasÄ±ndaki hatalarÄ± Ã¶rnekler"
 LangString MSG_CONTINUE             ${LANG_Turkish} "Kurmaya devam etmek istiyormusun?"
-LangString MSG_ABORT                ${LANG_Turkish} "Kanalý kur"
+LangString MSG_ABORT                ${LANG_Turkish} "KanalÄ± kur"
 
 
 ;start menu & desktop descriptions
 LangString SM_PRODUCT_GROUP             ${LANG_Turkish} "${APP_NAME}"
-LangString SHORTCUT_NAME_EXEC           ${LANG_Turkish} "Çalýþtýr ${APP_NAME}"
-LangString SHORTCUT_NAME_UNINSTALL      ${LANG_Turkish} "Kaldýr ${APP_NAME}"
+LangString SHORTCUT_NAME_EXEC           ${LANG_Turkish} "Ã‡alÄ±ÅŸtÄ±r ${APP_NAME}"
+LangString SHORTCUT_NAME_UNINSTALL      ${LANG_Turkish} "KaldÄ±r ${APP_NAME}"
 
 ;other strings
 LangString OTHER_LangName             ${LANG_Turkish} "tr"
