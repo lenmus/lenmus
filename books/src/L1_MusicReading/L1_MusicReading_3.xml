@@ -1,0 +1,108 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<content>
+<theme id="mr1_thm3">
+<title>Leger lines</title>
+
+<para>
+When it is necessary to write a note higher or lower than the pitch represented
+by the staff lines, extra lines can be added to the staff. They are called 'leger lines'
+and are drawn as short lines, slightly longer than the note head. For example, next 
+score shows the natural scale starting on C:
+</para>
+
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play></control_play>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (n c4 q)(n d4 q)
+            (n e4 q)(n f4 q)(n g4 q)(n a4 q)(n b4 q)(n c5 q)
+            (barline final) )))
+    </music>
+</score>
+
+<para>
+Leger lines can also be added on top, for high pitch notes:
+</para>
+
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play></control_play>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (n a3 q)(n b3 q)
+            (n c4 q)(n d4 q)
+            (n e4 q)(n f4 q)(n g4 q)(n a4 q)(n b4 q)(n c5 q)
+            (n d5 q)(n e5 q)(n f5 q)(n g5 q)(n a5 q)(n b5 q)
+            (n c6 q)(n d6 q)
+            (barline final) )))
+    </music>
+</score>
+
+<para>
+As notes written on leger lines are more difficult to read, usually only two
+or three leger lines are used. If the pitch range does not fit on this
+extended staff, it is usually preferable to switch clef to avoid having
+to add more leger lines.
+</para>
+
+<para>
+In the exercises of this lesson we are going to start reading scores with
+one leger line. In following lessons the range will be extended.
+</para>
+
+<part>
+<title>Exercises</title>
+
+<para>
+<link linkend="mr1_thm3_E1">Exercise 1</link> - Practise reading scores with 
+leger lines.
+</para>
+
+</part>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Exercise 1  -->
+<!-- ====================== -->
+
+<theme id="mr1_thm3_E1" toc="no">
+<titleabbrev>Lesson %d. Exercise 1</titleabbrev>
+<title>Leger lines</title>
+
+<para>Practise reading scores with leger lines.</para>
+
+<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+    <control_go_back>mr1_thm3</control_go_back>
+    <control_play></control_play>
+    <control_solfa></control_solfa>
+    <clef>Sol;c4;c5</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <time>24</time>
+    <fragment>24;(n * n)(n * n),(n * n)(n * n),(n * b),(s b)</fragment>
+    <fragment>24;(s n)(n * n),(n * n)(n * n),(n * b),(s b)</fragment>
+    <fragment>24;(s n)(n * n),(n * n)(n * n)</fragment>
+    <fragment>24;(n * b),(n * n)(n * n),(n * n)(s n)</fragment>
+    <fragment>24;(n * n)(s n)</fragment>
+    <fragment>24;(s n)(n * n)</fragment>
+    <fragment>24;(n * b)</fragment>
+    <fragment>24;(n * n l)(n * n)</fragment>
+    <fragment>24;(s b)</fragment>
+</exercise>
+
+</theme>
+
+</content>

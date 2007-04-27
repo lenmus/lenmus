@@ -1,0 +1,182 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<content>
+<theme id="accidentals">
+<title>Accidentals. Key signature</title>
+
+<part>
+<title>Accidentals</title>
+
+<para>
+Accidental signs are marks placed before a notehead to indicate that the pitch
+of the note should be altered. At level 1 you should know about three signs: 
+the 'sharp', the 'flat' and the 'natural':
+</para>
+
+<score width="600" height='70' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (text ''sharp'' dx:20 dy:70)
+            (spacer 20)
+            (n +g4 q)(n +c5 q) (spacer 20)(barline double)
+            (spacer 20)
+            (text ''flat'' dx:0 dy:70)
+            (n -g4 q)(n -c5 q) (spacer 20)(barline double)
+            (spacer 20)
+            (text ''natural'' dx:0 dy:70)
+            (n =g4 q)(n =c5 q) (spacer 20)(barline end)
+        )))
+    </music>
+</score>
+
+
+<para>
+A sharp sign raises the pitch of a note by a half step (one semitone). 
+A flat sign lowers the pitch of a note a half step (one semitone).
+A natural sign cancels the effect of a flat or a sharp.
+</para>
+
+<para>
+The accidental sign alters the pitch of the note that it is attached to, but
+also any subsequent occurence of the same note in the
+same measure. Notes in the new measure will not be altered except those tied to
+one in the previous measure. Also, notes with the same pitch name, but higher
+or lower octave will not be be affected. 
+</para>
+
+</part>
+
+<part>
+<title>Key signature</title>
+
+<para>
+Having to write accidentals always in the same notes can be annoying.
+If, for example, a piece of music is written based on the D major scale, all F and
+C notes will have sharp signs placed before them. For example:
+</para>
+
+<score width="600" height='70' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play></control_play>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4)
+            (spacer 20)
+            (n d4 q)(n e4 q)(barline simple)
+            (n +f4 q)(n g4 q)(barline simple)
+            (n a4 q)(n b4 q)(barline simple)
+            (n +c5 q)(n d5 q)(barline simple)
+            (n d4 q)(n +f4 q)(barline simple)
+            (n a4 q)(n d5 q)
+            (spacer 20)
+            (barline end)
+        )))
+    </music>
+</score>
+
+<para>
+To make the writing process easier, instead of writing sharp signs before all F 
+and C notes, the accidentals can be written at the beginning of the staff, 
+immediately after the clef sign. These accidentals affect the whole score
+and are named the 'key signature'. They apply to all relevant notes 
+<emphasis>in every octave</emphasis>. As a consequence, is no longer needed to place 
+accidental signs in front of each note. So, the previous
+score can also be written as follows:
+</para>
+
+<score width="600" height='70' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play></control_play>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key D)
+            (time 2 4)
+            (spacer 20)
+            (n d4 q)(n e4 q)(barline simple)
+            (n f4 q)(n g4 q)(barline simple)
+            (n a4 q)(n b4 q)(barline simple)
+            (n c5 q)(n d5 q)(barline simple)
+            (n d4 q)(n f4 q)(barline simple)
+            (n a4 q)(n d5 q)
+            (spacer 20)
+            (barline end)
+        )))
+    </music>
+</score>
+
+<para>
+Note that the sharp for F note is placed on the 5th line but it affects all F notes, 
+independently of the octave.
+</para>
+
+<para>
+The key signature, apart of simplifying the notation, gives
+information about the 'tonality' of the composition, that is, roughly speaking, 
+which scale is used to build a piece of music. The key signature must be written
+on every music line, placed immediately after the clef sign.
+</para>
+
+</part>
+
+
+<part>
+<title>Exercises</title>
+<para>
+In this lesson we will continue with exercises containing the rythmic patterns of the
+previous lessons, but introducing the key signatures of G major and E minor (one sharp)
+and B flat major and G minor (one flat).
+</para>
+
+<para>
+<link linkend="accidentals_E1">Exercise 1</link> - Read scores containing the rhythms
+studied.</para>
+
+</part>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Exercise 1  -->
+<!-- ====================== -->
+
+<theme id="accidentals_E1" toc="no">
+<titleabbrev>Lesson %d. Exercise 1</titleabbrev>
+<title>Accidentals. Key signature</title>
+
+<para>Read scores containing the rhythms studied.</para>
+
+<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+    <control_go_back>accidentals</control_go_back>
+    <control_play></control_play>
+    <control_solfa></control_solfa>
+    <clef>Sol;c4;c5</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <time>24</time>
+    <fragment>24;(n * n)(n * n),(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(s n)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * c g+)(n * c g-),(n * b)</fragment>
+    <fragment>24;(s n)(n * n),(n * c g+)(n * c g-)(n * n)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * n)</fragment>
+    <fragment>24;(n * c g+)(n * c g-)(n * n),(n * c g+)(n * c)(n * c)(n * c g-),(n * b)</fragment>
+    <fragment>24;(s b),(n * c g+)(n * c g-)(n * n),(n * c g+)(n * c g-)(n * n),(n * b)</fragment>
+</exercise>
+
+</theme>
+
+</content>

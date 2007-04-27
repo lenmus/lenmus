@@ -1,0 +1,86 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<theme id="clef">
+<title>The clef</title>
+
+<para>
+Sounds are represented by notes. There are seven notes named either
+using the first seven letters of the alphabet A, B, C, D, E, F (Anglo-Saxon system) or
+using the names Do, Re, Mi, Fa, Sol, La and Si (Ti) (Latin system).
+To determine which pitch (sound) is represented 
+by each line and space in the staff
+a symbol, named
+'the clef' is placed at the beginning of each staff. In this course we are going to start
+with the study of the G clef, also named 'treble clef', that is represented by the
+following symbol:
+</para>
+
+<!-- Empty staff with a G clef -->
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language es iso-8859-1)
+         (instrumento
+          (datosMusica (clave Sol)(tonalidad Do)
+            (metrica 2 4 noVisible)
+            (barra doble noVisible) )))
+    </music>
+</score>
+
+
+<para> The clef assigns a particular line 
+to a specific pitch, and all other pitches are mapped in ascending and descending order to
+the lines and spaces above and below that reference line. In the G clef, the G note of 
+the four octave is assigned
+to the second line:
+</para>
+
+<!-- staff with a G clef and notes on all spaces and lines, with their names -->
+<score width="600" height='100' border="0">
+    <score_type>short_15_es</score_type>
+    <music_border>0</music_border>
+    <music>
+        (metrica 2 4 noVisible)(texto ''G note'' dx:0 dy:-10)
+        (n g4 r)(barra Doble noVisible)
+    </music>
+</score>
+
+<para>
+As a result, the staff lines and spaces get automatically assigned
+to consecutive notes, as shown in the next score:
+</para>
+
+<!-- staff with a G clef and notes on all spaces and lines, with their names -->
+<score width="600" height='100' border="0">
+    <score_type>short_15_es</score_type>
+    <music_border>0</music_border>
+    <control_play></control_play>
+    <music>
+        (metrica 2 4 noVisible)
+        (texto ''E'' dx:0 dy:-10)
+        (n e4 r)(barra simple noVisible)
+        (texto ''F'' dx:0 dy:-10)
+        (n f4 r)(barra simple noVisible)
+        (texto ''G'' dx:0 dy:-10)
+        (n g4 r)(barra simple noVisible)
+        (texto ''A'' dx:0 dy:-10)
+        (n a4 r)(barra simple noVisible)
+        (texto ''B'' dx:0 dy:-10)
+        (n b4 r)(barra simple noVisible)
+        (texto ''C'' dx:0 dy:-10)
+        (n c5 r)(barra simple noVisible)
+        (texto ''D'' dx:0 dy:-10)
+        (n d5 r)(barra simple noVisible)
+        (texto ''E'' dx:0 dy:-10)
+        (n e5 r)(barra simple noVisible)
+        (texto ''F'' dx:0 dy:-10)
+        (n f5 r)(barra simple noVisible)
+    </music>
+</score>
+
+
+
+</theme>

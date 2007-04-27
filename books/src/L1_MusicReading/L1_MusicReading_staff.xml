@@ -1,0 +1,140 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<theme id="staff">
+<title>The staff</title>
+
+<para>In the Western musical notation system music is written on specially printed 
+paper called 'manuscript paper' (see next picture):
+</para>
+
+<para role='center'>
+<imagedata fileref='important.png' />
+</para>
+
+<para>The manuscript paper is organized as sets of horizontal lines, named 'staves', and
+each group of horizontal lines is called a 'staff' (in British English the word 'staff'
+is old-fashioned and rarely used; the word 'stave' is used instead).
+A staff is a set of five horizontal lines, 
+numbered from bottom to top; the bottom line is the first line and the top line 
+is the fifth line:
+</para>
+
+<!-- staff with labelled lines: 1,2,..5 -->
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+          (opt Staff.DrawLeftBarline no)
+          (instrument
+            (musicData (clef G noVisible)(key C)(time 2 4 noVisible)
+              (spacer 500) 
+              (graphic line 5 0  80 -20)
+              (graphic line 5 10 80 0)
+              (graphic line 5 20 80 20)
+              (graphic line 5 30 80 40)
+              (graphic line 5 40 80 60)
+              (text ''line 5'' dx:90 dy:-10 left (font normal 10))
+              (text ''line 4'' dx:90 dy:10 left (font normal 10))
+              (text ''line 3'' dx:90 dy:30 left (font normal 10))
+              (text ''line 2'' dx:90 dy:50 left (font normal 10))
+              (text ''line 1'' dx:90 dy:70 left (font normal 10))
+              (barline end noVisible)
+            )
+          )
+        )
+    </music>
+</score>
+
+<para>
+The four spaces between the staff lines, are important and are also numbered 
+from bottom to top:</para>
+
+<!-- staff with labelled spaces: 1,2,3,4 -->
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+          (opt Staff.DrawLeftBarline no)
+          (instrument
+            (musicData (clef G noVisible)(key C)(time 2 4 noVisible)
+              (spacer 500) 
+              (graphic line 5 5  80 -10)
+              (graphic line 5 15 80 10)
+              (graphic line 5 25 80 30)
+              (graphic line 5 35 80 50)
+              (text ''space 4'' dx:90 dy:0 left (font normal 10))
+              (text ''space 3'' dx:90 dy:20 left (font normal 10))
+              (text ''space 2'' dx:90 dy:40 left (font normal 10))
+              (text ''space 1'' dx:90 dy:60 left (font normal 10))
+              (barline end noVisible)
+            )
+          )
+        )
+    </music>
+</score>
+
+<para>
+The musical symbols are placed on the staff and the music on the staff is read 
+from left to right.
+</para>
+
+<para>
+The symbols for notes are placed either on a 
+line or on a space and the musical pitch (sound) is determined by the position
+of the note on the staff. Notes on the higher lines/spaces have higher pitch than 
+those on the lower ones:
+</para>
+
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+          (opt Staff.DrawLeftBarline no)
+          (instrument
+            (musicData (clef G noVisible)(key C)(time 2 4 noVisible)
+            (text ''First note has higher pitch than second one'' dx:0 dy:80)
+            (spacer 200)
+            (n c5 w)
+            (spacer 40)
+            (n e4 w)
+            (spacer 200)
+            (barline end noVisible)
+            )
+          )
+        )
+    </music>
+</score>
+
+<para>
+As an example, press the 'Play' link and lesson to the next score:
+</para>
+
+<!-- scale to play, no key, no time signature, no other symbol, only whole notes -->
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play></control_play>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+          (opt Staff.DrawLeftBarline no)
+          (instrument
+            (musicData (clef G noVisible)(key C)(time 2 4 noVisible)
+            (text ''Play this scale and observe while lessoning'' dx:0 dy:80)
+            (spacer 150)
+            (n e4 w)(n f4 w)(n g4 w)(n a4 w)(n b4 w)(n c5 w)
+            (n d5 w)(n e5 w)(n f5 w)
+            (spacer 150)
+            (barline end noVisible)
+            )
+          )
+        )
+    </music>
+</score>
+
+
+</theme>

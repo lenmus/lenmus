@@ -1,0 +1,55 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<theme id="time_24">
+<title>The 2/4 time signature</title>
+
+<para>
+The first time signature we are going to use is the 2/4 time signature:
+</para>
+
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language es iso-8859-1)
+         (instrumento
+          (datosMusica (clave Sol)(tonalidad Do)
+            (metrica 2 4)
+            (barra Final noVisible) )))
+    </music>
+</score>
+
+<para>
+As you know 2/4 means that each measure has two beats and that each beat gets a quarter
+note. Therefore, each measure will get two quarter notes. For example:
+</para>
+
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language es iso-8859-1)
+         (instrumento
+          (datosMusica (clave Sol)(tonalidad Do)
+            (metrica 2 4)
+            (n e4 n)(n g4 n)(barra Simple)
+            (n g4 n)(n a4 n)(barra Simple)
+            (n f4 n)(n c5 n)(barra Final) )))
+    </music>
+</score>
+
+<para>
+We also know that the first beat of each measure is the stronger one. Therefore, 
+if you count beats along with the music, the 2/4 time signature will imply 
+a rhythm such as 'ONE-and-Two-and-ONE-and-Two-and ...', stressing the ONE syllable, as if
+you were a soldier marching.
+For studying music reading it makes sense to mark the beats with the hand, the first beat
+of each measure with a knock down (on the table or at the air) and the second beat of each
+measure with a knock up (at the air or on the shoulder). You can also mark the beats
+with you foot, it you prefer, but it is very, very important to mark the beats. You
+should do of it a habit, at least until you get enough skills at reading music.
+</para>
+
+</theme>

@@ -172,8 +172,7 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
     //Generate a random key, time signature and clef satisfying the constrains
     lmRandomGenerator oGenerator;
     m_nClef = oGenerator.GenerateClef(m_pConstrains->GetClefConstrains());
-    //! @todo generate key based on constrains
-    m_nKey = oGenerator.GenerateKey(m_pConstrains->GetKeyConstrains());  //.RandomKeySignature();
+    m_nKey = oGenerator.GenerateKey(m_pConstrains->GetKeyConstrains());
     m_nTimeSign = oGenerator.GenerateTimeSign(m_pConstrains->GetTimeSignConstrains());
 
 

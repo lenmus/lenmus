@@ -1,0 +1,228 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<content>
+<theme id="Fclef">
+<title>The bass clef</title>
+
+<para>
+The F clef on the fourth line, also named 'bass clef', is represented by the
+following symbol:
+</para>
+
+<!-- Empty staff with a F clef -->
+<score width="600" height='70' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef F)(key C)
+            (time 2 4 noVisible)
+            (barline double noVisible)
+        )))
+    </music>
+</score>
+
+
+<para>
+The bass clef assigns a the F note to the 4th line, as shown in following picture:
+</para>
+
+<score width="600" height='70' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef F)(key C)
+            (time 2 4 noVisible)
+            (text ''F note'' dx:0 dy:-10)
+            (n f3 w)
+            (barline double noVisible)
+        )))
+    </music>
+</score>
+
+<para>
+As a result, the staff lines and spaces get automatically assigned
+to consecutive notes, as shown in the next score:
+</para>
+
+<score width="600" height='80' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play></control_play>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef F)(key C)
+            (time 2 4 noVisible)
+            (text ''G'' dx:0 dy:-10)
+            (n g2 q)
+            (text ''A'' dx:0 dy:-10)
+            (n a2 q)
+            (text ''B'' dx:0 dy:-10)
+            (n b2 q)
+            (text ''C'' dx:0 dy:-10)
+            (n c3 q)
+            (text ''D'' dx:0 dy:-10)
+            (n d3 q)
+            (text ''E'' dx:0 dy:-10)
+            (n e3 q)
+            (text ''F'' dx:0 dy:-10)
+            (n f3 q)
+            (text ''G'' dx:0 dy:-10)
+            (n g3 q)
+            (text ''A'' dx:0 dy:-10)
+            (n a3 q)
+            (barline double noVisible)
+        )))
+    </music>
+</score>
+
+<para>
+In the bass clef the first upper leger line corresponds to the central C note (C4), 
+represented in G clef on the first lower leger line:
+</para>
+
+<score width="600" height='70' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (text ''C note'' dx:0 dy:-10)
+            (n c4 w)
+            (barline double)
+            (space 20)
+            (clef F)
+            (text ''C note'' dx:0 dy:-10)
+            (n c4 w)
+            (barline double)
+        )))
+    </music>
+</score>
+
+
+<para>
+By using both the G clef and the F clef and two leger lines a range of five octaves can
+be comfortably represented, as
+shown in the following score:
+</para>
+
+<score width='700' height='160' border='0'>
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play></control_play>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (opt Staff.UpperLegerLines.Displacement 20)
+         (instrument (staves 2)
+          (musicData 
+            (clef treble p1)
+            (clef bass p2)
+            (key C)
+            (time 4 4 noVisible)
+            (text ''C'' dx:0 dy:200)
+            (n c3 w p2)
+            (text ''D'' dx:0 dy:200)
+            (n d3 w)
+            (text ''E'' dx:0 dy:200)
+            (n e3 w)
+            (text ''F'' dx:0 dy:200)
+            (n f3 w)
+            (text ''G'' dx:0 dy:200)
+            (n g3 w)
+            (text ''A'' dx:0 dy:200)
+            (n a3 w)
+            (text ''B'' dx:0 dy:200)
+            (n b3 w)
+            (text ''C'' dx:0 dy:200)
+            (n c4 w)
+            (text ''D'' dx:0 dy:200)
+            (n d4 w p1)
+            (text ''E'' dx:0 dy:200)
+            (n e4 w)
+            (text ''F'' dx:0 dy:200)
+            (n f4 w)
+            (text ''G'' dx:0 dy:200)
+            (n g4 w)
+            (text ''A'' dx:0 dy:200)
+            (n a4 w)
+            (text ''B'' dx:0 dy:200)
+            (n b4 w)
+            (text ''C'' dx:0 dy:200)
+            (n c5 w)
+            (barline end)
+        )))
+    </music>
+</score>
+
+
+<part>
+<title>Lesson and note the differences</title>
+
+<para>In this lesson we are going to start reading the bass clef, while practising
+the rhythmic patterns studied in previous lessons. We will start reading notes A3, B3 and
+C4:</para>
+
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef bass)(key C)
+            (time 4 4 noVisible)
+            (text ''A'' dx:0 dy:200)
+            (n a3 w)
+            (text ''B'' dx:0 dy:200)
+            (n b3 w)
+            (text ''C'' dx:0 dy:200)
+            (n c4 w)
+            (barline final)
+        )))
+    </music>
+</score>
+
+</part>
+
+<part>
+<title>Exercises</title>
+
+<para>
+<link linkend="Fclef_E1">Exercise 1</link> - Read scores containing the 
+bass clef.</para>
+
+</part>
+
+</theme>
+
+<theme id="Fclef_E1" toc="no">
+<titleabbrev>Lesson %d. Exercise 1</titleabbrev>
+<title>The bass clef</title>
+
+<para>Read scores containing the bass clef.</para>
+
+<exercise type="TheoMusicReading" width="100%" height="300" border="0">
+    <control_go_back>Fclef</control_go_back>
+    <control_play></control_play>
+    <control_solfa></control_solfa>
+    <clef>Fa4;a3;c4</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <time>24</time>
+    <fragment>24;(n * n l)(n * c g+)(n * c g-)</fragment>
+    <fragment>24;(n * n.)(n * c)</fragment>
+</exercise>
+
+</theme>
+
+</content>

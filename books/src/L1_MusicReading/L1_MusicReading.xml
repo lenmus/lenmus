@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE book [
+    <!ENTITY quot   "&#34;" >
+    <!ENTITY aacute "&#225;" >
+    <!ENTITY eacute "&#233;" >
+    <!ENTITY iacute "&#237;" >
+    <!ENTITY oacute "&#243;" >
+    <!ENTITY uacute "&#250;" >
+    <!ENTITY ntilde "&#241;" >
+    <!ENTITY Ntilde "&#209;" >
+    <!ENTITY theme2 SYSTEM "L1_MusicReading_staff.xml">
+    <!ENTITY theme3 SYSTEM "L1_MusicReading_clef.xml">
+    <!ENTITY theme4 SYSTEM "L1_MusicReading_notes.xml">
+    <!ENTITY theme5 SYSTEM "L1_MusicReading_measure.xml">
+    <!ENTITY theme6 SYSTEM "L1_MusicReading_time.xml">
+    <!ENTITY theme7 SYSTEM "L1_MusicReading_time24.xml">
+    <!ENTITY theme8 SYSTEM "L1_MusicReading_metronome.xml">
+    <!ENTITY theme9 SYSTEM "L1_MusicReading_1.xml">
+    <!ENTITY theme10 SYSTEM "L1_MusicReading_2.xml">
+    <!ENTITY theme11 SYSTEM "L1_MusicReading_3.xml">
+    <!ENTITY theme12 SYSTEM "L1_MusicReading_4.xml">
+    <!ENTITY theme13 SYSTEM "L1_MusicReading_accidentals.xml">
+    <!ENTITY theme14 SYSTEM "L1_MusicReading_5.xml">
+    <!ENTITY theme15 SYSTEM "L1_MusicReading_Fclef.xml">
+    <!ENTITY theme16 SYSTEM "L1_MusicReading_6.xml">
+    <!ENTITY theme17 SYSTEM "L1_MusicReading_7.xml">
+    <!ENTITY theme18 SYSTEM "L1_MusicReading_8.xml">
+    <!ENTITY theme19 SYSTEM "L1_MusicReading_9.xml">
+    <!ENTITY theme20 SYSTEM "L1_MusicReading_10.xml">
+    <!ENTITY theme21 SYSTEM "L1_MusicReading_11.xml">
+    <!ENTITY theme22 SYSTEM "L1_MusicReading_12.xml">
+    <!ENTITY theme23 SYSTEM "L1_MusicReading_13.xml">
+    <!ENTITY theme24 SYSTEM "L1_MusicReading_14.xml">
+    <!ENTITY theme25 SYSTEM "L1_MusicReading_15.xml">
+    <!ENTITY theme26 SYSTEM "L1_MusicReading_16.xml">
+    <!ENTITY theme27 SYSTEM "L1_MusicReading_17.xml">
+    <!ENTITY theme28 SYSTEM "L1_MusicReading_18.xml">
+    <!ENTITY theme29 SYSTEM "L1_MusicReading_19.xml">
+    <!ENTITY theme30 SYSTEM "L1_MusicReading_20.xml">
+    <!ENTITY theme31 SYSTEM "L1_MusicReading_21.xml">
+    <!ENTITY theme32 SYSTEM "L1_MusicReading_22.xml">
+    <!ENTITY theme33 SYSTEM "L1_MusicReading_23.xml">
+    <!ENTITY theme34 SYSTEM "L1_MusicReading_24.xml">
+    <!ENTITY theme35 SYSTEM "L1_MusicReading_25.xml">
+]>
+
+<book id="L1_MusicReading">
+<bookinfo>
+    <title>Music reading. Level 1.</title>
+    <abstract>This eMusicBook is a self-instruction music reading course,
+        intended to help one improve one's reading skills, 
+        providing sort of practice and exercises that are required in order 
+        to become a good sightreader.</abstract>
+    <!-- <author>Cecilio Salmeron</author> -->
+    <copyright>
+        <year>2007</year>
+        <holder>Cecilio Salmeron</holder>
+    </copyright>
+    <legalnotice>
+        <para>Permission is granted to copy, distribute and/or modify this document
+        under the terms of the GNU Free Documentation License, Version 1.2 or any
+        later version published by the Free Software Foundation; with no Invariant
+        Sections, with no Front-Cover Texts, and with no Back-Cover Texts. 
+        A copy of the license is included in the documentation received with
+        this program, and it is also available at
+        <ulink url="http://www.gnu.org/licenses/fdl.html">http://www.gnu.org/licenses/fdl.html</ulink>
+        </para>
+    </legalnotice>
+</bookinfo>
+
+
+<chapter id="ch0">
+<titleabbrev>Presentation</titleabbrev>
+<title>Presentation</title>
+
+<theme id="ch0_0">
+<title>Syllabus</title>
+
+<para>
+This eMusicBook is intended to help one improve one's reading skills, providing sort 
+of practice and exercises that are required in order to become a good sightreader.
+</para>
+
+<para>Appart of introducing different rhythmic cells, of increasing complexity, the main concepts
+introduced in Level 1 are:</para>
+
+<orderedlist>
+<listitem>
+    The stave. Treble (G) and bass (F) clefs. Names of notes on the stave. 
+    Extension of the stave to include two ledger lines below and above each stave.
+</listitem>
+
+<listitem>
+    Note values of whole (semibreve), half (minim), quarter (crotchet), eighth (quaver)
+    and 16th (semiquaver), and their equivalent rests. Tied notes. Single-dotted 
+    notes and rests.
+</listitem>
+    
+<listitem>
+    Simple time signatures of 2/4, 3/4 and 4/4 and compound time signature of 6/8.
+    Bar-lines and the grouping of the notes listed above within these times.
+</listitem>
+
+<listitem>
+    Key signatures of all major and minor keys up to and including two sharps and flats.
+</listitem>
+
+</orderedlist>
+
+</theme>
+
+<theme id="ch0_1">
+<title>Book organization</title>
+
+<para>
+This course has xx lessons covering the following material:</para>
+
+<itemizedlist>
+<listitem>Clefs and note ranges: 
+    The course starts with the G clef using a very reduced note range (e4-g4).
+    Progressively, the note range is increased to reach, in lesson 14, the range
+    c4-f5. Next the F key is introduced, again with a very reduced note range (a3;c4)
+    and from there the exercises of all following lessons use, indistinctely, 
+    F and G clef. The notes reange is continuosly being broaden to cover two leger lines, 
+    avove and below, in both clefs (G: a3-c6 y F: a2-e4).
+</listitem>
+
+<listitem>Time signatures:
+    In first exercises (9 a 17) only the 2/4 simple time is used. Then 3/4
+    simple time (lessons 18 and 19) and 4/4 simple time (lessons 20 to 30) are used.
+    In lesson 31 the compound 6/8 is introduced and it is practised in the remaining
+    lessons (32 to 35).
+</listitem>
+    
+<listitem>Key signatures:
+    The exercises in the first two practical lessons (9 and 10) have scores using only 
+    the C major / A minor key signature (no accidentals). The key signature is introduced
+    in lesson 13 and from there (lessons 14 to 17) the exercises use also one accidental 
+    (G major / E minor and F major / D minor). In the remaining lessons (18 to 35)
+    exercises use up to two accidentals (D major / B minor and B flat major / G minor). 
+</listitem>
+
+</itemizedlist>
+
+</theme>
+
+<theme id="ch0_2">
+<title>Lessons' structure</title>
+
+<para>With exception of the firsts lessons, oriented to introduce the basic concepts of
+the musica notation, the remaining lessons are structured into three sections:</para>
+
+<itemizedlist>
+<listitem>In the first one the new concepts and rhythmic patterns introduced in the lesson
+are explained.</listitem>
+
+<listitem>In the second section, optional, the new concepts are compared with known ones,
+so that the student can better relate the new material and learn it.</listitem>
+
+<listitem>Finally, in the third section some exercises are proposed to learn and practise
+the new concepts introduced.</listitem>
+
+</itemizedlist>
+
+</theme>
+</chapter>
+
+&theme2;
+&theme3;
+&theme4;
+&theme5;
+&theme6;
+&theme7;
+&theme8;
+&theme9;
+&theme10;
+&theme11;
+&theme12;
+&theme13;
+&theme14;
+&theme15;
+&theme16;
+&theme17;
+&theme18;
+&theme19;
+&theme20;
+&theme21;
+&theme22;
+&theme23;
+&theme24;
+&theme25;
+&theme26;
+&theme27;
+&theme28;
+&theme29;
+&theme30;
+&theme31;
+&theme32;
+&theme33;
+&theme34;
+&theme35;
+
+</book>

@@ -1,0 +1,109 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Music reading. Level 1.             -->
+<!-- =============================================== -->
+
+<theme id="notes">
+<title>Note symbols</title>
+
+<para>
+We have learn that the vertical position of a note on the staff determines its pitch.
+The duration of the note (that, is the duration of its sound) is indicated by using
+different types of signs for the notes, so each note sign corresponds to a different
+duration. The following picture shows the different types of notes and their names:
+</para>
+
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (opt StaffLines.Hide yes)
+         (instrument
+          (musicData (clef G noVisible)(key C)
+            (text ''Whole'' dx:0 dy:70 (font normal 8))
+            (n a4 w)(barline simple noVisible dx:120)
+            (text ''Half'' dx:0 dy:70)
+            (n a4 h)(barline simple noVisible dx:120)
+            (text ''Quarter'' dx:0 dy:70)
+            (n a4 q)(barline simple noVisible dx:120)
+            (text ''Eight'' dx:0 dy:70)
+            (n a4 e)(barline simple noVisible dx:120)
+            (text ''16th'' dx:0 dy:70)
+            (n a4 s)(barline simple noVisible dx:120)
+            (text ''32th'' dx:0 dy:70)
+            (n a4 t)(barline simple noVisible dx:120)
+            (text ''64th'' dx:0 dy:70)
+            (n a4 i)
+            (barline simple noVisible dx:120)
+         )))
+    </music>
+</score>
+
+
+<para>
+In the coming lessons we will start using only the quarter note and will learn about notes
+duration, and progressively we will
+introduce the other note symbols. In this lesson we are going to learn some basic terminology
+about note symbols
+and some rules about how to draw them.
+</para>
+
+<para>
+The note symbols have three distinct parts: (1) the note-head, (2) the stem and
+(3) the flag (also named hook or tail), as depicted in next figure:
+</para>
+
+<para role='center'>
+<imagedata fileref='important.png' />
+</para>
+
+<para>
+Stems normally go up for notes placed below the third line and 
+go down for notes placed on or above the third line:
+</para>
+
+<score width="600" height='100' border="0">
+    <score_type>short_15_es</score_type>
+    <music_border>0</music_border>
+    <music>
+        (n e4 n)(n f4 n)(n g4 n)(n a4 n)
+        (n b4 n)(n c5 n)(n d5 n)(n e5 n)(n f5 n)
+        (barra Final noVisible)
+    </music>
+</score>
+
+<para>
+Stems are drawn on the right-hand side of the note-head when the stem goes up, and on
+the left-hand side of the note-head when the stem goes down. Flags are always drawn
+on the right-hand side of the stem:
+</para>
+
+<score width="600" height='100' border="0">
+    <score_type>short_15_es</score_type>
+    <music_border>0</music_border>
+    <music>
+        (n e4 c)(n f4 c)(n g4 c)(n a4 c)
+        (n b4 c)(n c5 c)(n d5 c)(n e5 c)(n f5 c)(barra Final noVisible)
+    </music>
+</score>
+
+
+<para>
+Often, consecutive notes with flags are linked together in groups by replacing the flags
+by lines called 'beams'. The number of beams must be the same that the number of flags
+each individual note would have had when drawn isolated. In the following example
+the four individual notes at the first part can also be drawn grouped, 
+as shown in the second part:
+</para>
+
+<score width="600" height='100' border="0">
+    <score_type>short_15_es</score_type>
+    <music_border>0</music_border>
+    <music>
+        (n e4 c)(n f4 c)(n g4 s)(n a4 s)(barra Doble)
+        (n e4 c g+)(n f4 c)(n g4 s)(n a4 s g-)(barra Final noVisible)
+    </music>
+</score>
+
+
+</theme>
