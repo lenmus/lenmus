@@ -29,18 +29,28 @@ followed by an eighth rest:</para>
 <part>
 <title>Lesson and note the differences</title>
 
-<para>Lesson each measure and note how the new introduced pattern appears:</para>
+<para>Note that this rhythm is similar to the quarter notes rhythm, but shortening 
+the notes:</para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
+<score width="600" height='70' border="0">
+    <score_type>full</score_type>
     <control_play></control_play>
-    <control_measures></control_measures>
+    <music_border>0</music_border>
     <music>
-        (Metrica 2 4)(n a4 n)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c g-)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Final))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4)
+            (n a4 q)(n a4 q)
+            (spacer 20)
+            (barline)
+            (n a4 e)(r e)(n a4 e)(r e)
+            (spacer 20)
+            (barline end)
+        )))
     </music>
 </score>
+
 
 </part>
 
@@ -74,9 +84,15 @@ this rhythm.</para>
     <control_go_back>mr1_thm7</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <fragment>24;(n * c g+)(n * c l g-),(n * c g+)(n * s)(n * s g-)</fragment>
-    <clef>Sol;a3;a5</clef>
-    <clef>Fa4;a2;f4</clef>
+    <fragment>24;(n * c)(s c)</fragment>
+    <clef>Sol;c4;g5</clef>
+    <clef>Fa4;d3;c4</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
     <time>24</time>
     <key>Do</key>
 </exercise>
@@ -99,16 +115,23 @@ this rhythm.</para>
     <control_go_back>mr1_thm7</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <fragment>24,34,44;(s c)(n * c),(n * c g+)(n * c l g-),(n * c g+)(n * s)(n * s g-),(n * c g+)(n * c g-),(n * n)</fragment>
-    <fragment>24,34,44;(n * c g+)(n * c l g-),(n * c g+)(n * s)(n * s g-),(n * n.)(n * c),(n * s g+)(n * s)(n * s)(n * s g-),(n * s g+)(n * s)(n * s)(n * s g-),(n * c g+)(n * c l g-),(n * n)</fragment>
-    <fragment>24,34,44;(n * c g+)(n * c l g-),(n * c g+)(n * s)(n * s g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * c)(n * n.)</fragment>
-    <fragment>24,34,44;(n * c g+)(n * c)(n * c)(n * c l g-),(n * c g+)(n * s)(n * s g-),(n * s g+)(n * s)(n * s)(n * s g-),(n * n),(n * n)</fragment>
-    <fragment>34,44;(n * n)(n * c)(n * n)(n * c)(n * c g+)(n * c g-)(n * c g+)(n * c l g-)(n * c g+)(n * s)(n * s g-)(n * c g+)(n * s)(n * s g-)(n * c g+)(n * c l g-)(n * n)</fragment>
-    <fragment>24,34,44;(s c)(n * c),(n * s g+)(n * s)(n * s)(n * s g-),(n * c)(n * n)(n * s g+)(n * s g-),(n * b)</fragment>
-    <clef>Sol;a3;a5</clef>
-    <clef>Fa4;a2;f4</clef>
-    <time>24,34,44</time>
+    <clef>Sol;c4;g5</clef>
+    <clef>Fa4;d3;c4</clef>
     <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <time>24</time>
+    <fragment>24;(n * n)(n * n),(n * c)(s c)(n * n)(s c),(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(s n)</fragment>
+    <fragment>24;(n * n l)(n * c g+)(n * c g-),(n * n)(n * c)(s c),(n * c g+)(n * c)(n * c)(n * c g-),(n * b)</fragment>
+    <fragment>24;(n * n)(n * c)(s c),(n * n.)(n * c),(n * c)(s c)(n * c)(s c),(n * b)</fragment>
+    <fragment>24;(n * c)(s c)(n * c g+)(n * c g-),(n * c)(s c)(n * c g+)(n * c g-),(n * n)(n * n)</fragment>
+    <fragment>24;(n * c)(s c)(n * c g+)(n * c g-),(n * c)(s c)(n * c)(s c),(n * n)(s n)</fragment>
+    <fragment>24;(n * c)(s c)(n * c g+)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * n),(n * b)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n l)(n * c g+)(n * c g-),(n * c)(s c)(n * c)(s c),(n * n)(s n)</fragment>
+    <fragment>24;(s n)(n * n),(n * n l)(n * c g+)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * n l)(n * c g+)(n * c g-),(n * c)(s c)(n * c)(s c),(n * b)</fragment>
 </exercise>
 
 </theme>

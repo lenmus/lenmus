@@ -741,7 +741,7 @@ the type of exercise:</para>
 
 <varlistentry><term>&lt;keys&gt;</term>
 <listitem>Defines the allowed key signatures for the exercise. Possible values: Keyword
-    "all" or a list of allowed key signatures, i.e.: "Do,Fas". If this param 
+    "all" or a list of allowed key signatures, i.e.: "Do,Fa+,Si-,Lam,Sol-m". If this param 
     is not specified, default 
     assumed value is: "all"</listitem></varlistentry>
 
@@ -803,7 +803,7 @@ the type of exercise:</para>
 <variablelist>
 
 <varlistentry><term>&lt;keys&gt;</term>
-<listitem>Possible values: Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
+<listitem>Possible values: Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fa+,Si-,Lam,Sol-m"
                     Default: all.</listitem></varlistentry>
 
 <varlistentry><term>&lt;scales&gt;</term>
@@ -893,7 +893,7 @@ the type of exercise:</para>
 <listitem>a list of allowed time signatures, i.e.: "68,98,128".</listitem></varlistentry>
 
 <varlistentry><term>&lt;key&gt;</term>
-<listitem>keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas".</listitem></varlistentry>
+<listitem>keyword "all" or a list of allowed key signatures, i.e.: "Do,Fa+,Si-,Lam,Sol-m".</listitem></varlistentry>
 
 <varlistentry><term>&lt;max_interval&gt;</term>
 <listitem>a number indicating the maximum allowed interval for two 
@@ -1004,13 +1004,13 @@ the described tag to each type of exercise, as listed here:</para>
 <row><entry>key</entry>
     <entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
     <entry>-</entry><entry>-</entry><entry>x</entry>
-    <entry>Information to set up the score composer. Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas".</entry></row>
+    <entry>Information to set up the score composer. Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fa+,Si-,Lam,Sol-m".</entry></row>
     
 <row><entry>keys</entry>
     <entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>
     <entry>x</entry><entry>x</entry><entry>-</entry>
     <entry>Possible keys to use in the exercise. Possible values: Keyword "all" or a list of allowed 
-    key signatures, i.e.: "Do,Fas" Default: all.</entry></row>
+    key signatures, i.e.: "Do,Fa+,Si-,Lam,Sol-m" Default: all.</entry></row>
     
 <row><entry>max_accidentals</entry>
     <entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry><entry>-</entry>

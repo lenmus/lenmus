@@ -73,9 +73,16 @@ void lmPaths::Init()
     m_sLayout = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
     // Paths in LenMus
-    m_sLenMus = _T("c:\\usr\\desarrollo_wx\\lenmus\\");
-    m_sBooksRoot = _T("c:\\usr\\desarrollo_wx\\lenmus\\books\\");
-    m_sLenMusLocale = _T("c:\\usr\\desarrollo_wx\\lenmus\\locale\\");
+    wxFileName oLenMusPath = m_root;    // 'lenmus/bin/'
+	oLenMusPath.RemoveLastDir();		// 'lenmus/'
+    m_sLenMus = oLenMusPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+	oLenMusPath.AppendDir(_T("books"));		// 'lenmus/books'
+    m_sBooksRoot = oLenMusPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+	oLenMusPath.RemoveLastDir();
+	oLenMusPath.AppendDir(_T("locale"));	// 'lenmus/locale'
+    m_sLenMusLocale = oLenMusPath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 }
 

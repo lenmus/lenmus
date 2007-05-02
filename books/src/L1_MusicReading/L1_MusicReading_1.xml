@@ -82,12 +82,11 @@ this rhythm.</para>
     <key>Do</key>
     <key>Lam</key>
     <time>24</time>
-    <fragment>24;(n * n)(n * n)</fragment>
-    <fragment>24;(n * n)(n * n)</fragment>
-    <fragment>24;(n * n)(n * n)</fragment>
-    <fragment>24;(n * n)(s n)</fragment>
-    <fragment>24;(n * n)(s n)</fragment>
-    <fragment>24;(s n)(n * n)</fragment>
+    <fragment>24;(n * n)(n * n),(n * n)(n * n)</fragment>
+    <fragment>24;(n * n)(n * n),(n * n)(s n)</fragment>
+    <fragment>24;(n * n)(s n),(n * n)(s n)</fragment>
+    <fragment>24;(n * n)(s n),(s n)(n * n)</fragment>
+    <fragment>24;(n * n)(n * n),(s n)(n * n)</fragment>
 </exercise>
 
 </theme>

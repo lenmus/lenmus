@@ -219,8 +219,12 @@ bass clef.</para>
     <key>Fa</key>
     <key>Rem</key>
     <time>24</time>
-    <fragment>24;(n * n l)(n * c g+)(n * c g-)</fragment>
-    <fragment>24;(n * n.)(n * c)</fragment>
+	<fragment>24;(n * b),(n * n)(n * n),(n * b)</fragment>
+    <fragment>24;(n * n)(n * c g+)(n * c g-),(n * n l)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n.)(n * c),(n * n)(n * n),(n * b)</fragment>
+    <fragment>24;(s n)(n * n),(n * c g+)(n * c g-)(n * n),(n * n.)(n * c),(n * n)(s n)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * c g+)(n * c g-),(n * n l)(n * c g+)(n * c g-),(n * b)</fragment>
+    <fragment>24;(n * n l)(n * c g+)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(s n)</fragment>
 </exercise>
 
 </theme>

@@ -13,11 +13,11 @@ The first time signature we are going to use is the 2/4 time signature:
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
-        (score (vers 1.5)(language es iso-8859-1)
-         (instrumento
-          (datosMusica (clave Sol)(tonalidad Do)
-            (metrica 2 4)
-            (barra Final noVisible) )))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4)
+            (barline end noVisible) )))
     </music>
 </score>
 
@@ -30,13 +30,13 @@ note. Therefore, each measure will get two quarter notes. For example:
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
-        (score (vers 1.5)(language es iso-8859-1)
-         (instrumento
-          (datosMusica (clave Sol)(tonalidad Do)
-            (metrica 2 4)
-            (n e4 n)(n g4 n)(barra Simple)
-            (n g4 n)(n a4 n)(barra Simple)
-            (n f4 n)(n c5 n)(barra Final) )))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4)
+            (n e4 q)(n g4 q)(barline simple)
+            (n g4 q)(n a4 q)(barline simple)
+            (n f4 q)(n c5 q)(barline end) )))
     </music>
 </score>
 
