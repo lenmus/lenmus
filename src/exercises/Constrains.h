@@ -197,6 +197,7 @@ public:
             sMeasuresLabel = _("Measure %d");
             sStopMeasureLabel = _("Stop %d");
             rScale = 1.0;
+            m_nMM = 0;
         }
 
     ~lmScoreCtrolOptions() {}
@@ -220,6 +221,9 @@ public:
                 SetLabels(sLabels, &sMeasuresLabel, &sStopMeasureLabel);
         }
 
+    void SetMetronomeMM(long nValue) { m_nMM = nValue; }
+    long GetMetronomeMM() { return m_nMM; }
+
     
     bool        fPlayCtrol;             //Instert "Play" link
     wxString    sPlayLabel;             //label for "Play" link
@@ -240,6 +244,8 @@ public:
 
 private:
     void SetLabels(wxString& sLabel, wxString* pStart, wxString* pStop);
+
+    long        m_nMM;                  // metronome setting
 
 };
 

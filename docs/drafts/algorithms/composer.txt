@@ -1,5 +1,3 @@
-/*
-
 Composer 5 algorithm 2.
 
 Algorithm 2 generates scores with mis-aligments and irregular measures.
@@ -100,6 +98,7 @@ The problem now is, how to use a fragment F to fill the measure M?
 
 
 Case 1. Fragment F does not require measure alignment (tam = 0).
+------------------------------------------------------------------
 
 Get the first segment S and compute its duration ts:
 
@@ -134,9 +133,92 @@ simplified modified algorithm will be:
 
 
 
-Case 2.  Fragment requires measure alignment (tam > 0)
+Case 2.  Fragment F requires measure alignment (tam > 0)
+------------------------------------------------------------
 
 Not yet implemented
 
+- compute how many beats to include in first measure so the measure alignment mark gets
+    automatically aligned to a barline
+    
+    tbeats = tam mod tm
+    nbeats = tbeats / tb
+    
+    tseg = 0
+    while (tseg < tbeats)
+        get next segment
+        tseg += Time(segment)
+        pattern += segment
+    end while
+    
+    if tseg == tbeats
+        include pattern
+        start new measure
+        continue as case a)
+    else
+        fragment is not usable
 
-*/
+
+
+
+
+
+Composer6. Composition based on rcells.
+---------------------------------------
+
+Score will have multiple of 4 measures (plus anacrusis)
+
+rcells (rhythmic cells) are clasified as:
+
+s - start (anacrusis cells)
+m - middle
+e - end of phrase (anacrusis end)
+
+
+Create phrase (4 beats, or 4 beats with anacrusis and complementary end)
+
+1. Choose start cell
+    - if anacrusis forced
+        choose a s-cell
+      else if anacrusis allowed
+        flip coin (s-cell, m-cell)
+      else
+        choose a m-cell
+   
+   - if s-cell chosen n=0, fScell=true
+     else n=1
+        
+2. while n < 3 choose m-cell
+
+3 if fScell
+    choose e-cell
+   else
+    synthesize e-cell
+    
+    
+    
+      +--------------- Number of beats in this fragment 
+      |       +------- Beats for a mandatory barline
+      |       |        
+      V       V
+    beats   align
+    2       0       XXXX,XXXX
+    3       1       XXXX|XXXX,XXXX
+    
+    
+
+1   0   n
+1   0   cc
+1   0   N
+1   0   c C
+2   0   n. c
+2   0   cccc
+2   0   n cc
+2   0   n c c
+2   0   cc-cc      (tie does not break beaming)
+2   0   cc - cc    (tie breaks beaming)
+4   0   cccc-cccc
+2   1   n + n       (tie across barline)
+
+
+

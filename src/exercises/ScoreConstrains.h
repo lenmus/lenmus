@@ -239,6 +239,9 @@ public:
     void SetMaxInterval(int nValue) { m_nMaxInterval = nValue; }
     int GetMaxInterval() { return m_nMaxInterval; }
 
+    void SetMetronomeMM(long nValue) { m_nMM = nValue; }
+    long GetMetronomeMM() { return m_nMM; }
+
     void LoadSettings();
     void SaveSettings();
     wxString Verify();
@@ -261,7 +264,8 @@ public:
 private:
 
     wxString    m_sSection;         // section name to save the constrains
-    int         m_nMaxInterval;     //max interval in two consecutive notes
+    int         m_nMaxInterval;     // max interval in two consecutive notes
+    long        m_nMM;              // metronome setting
 
     lmKeyConstrains         m_oValidKeys;           //allowed key signatures
     lmClefConstrain         m_oClefs;               //allowed clefs and scopes

@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ComposerV5.cpp
-    @brief Implementation file for lmComposer5 class
-    @ingroup auxmusic
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "ComposerV5.h"
 #endif
@@ -320,8 +317,35 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
 
     }
 
+    // In Music Reading, level 1, introduction lessons use only quarter notes. In those
+    // exercises we should not use half notes in the last measure. So lets check if
+    // only quarter notes are used in the composed piece of music.
+    lmStaffObj* pSO = (lmStaffObj*) NULL;
+    lmNoteRest* pNR = (lmNoteRest*)NULL;
+    lmNote* pNote = (lmNote*)NULL;
+    bool fOnlyQuarterNotes = true;
+    lmStaffObjIterator* pIter = pVStaff->CreateIterator(eTR_AsStored);
+    while(!pIter->EndOfList()) {
+        pSO = pIter->GetCurrent();
+        if (pSO->GetClass() == eSFOT_NoteRest) {
+            pNR = (lmNoteRest*)pSO;
+            if (!pNR->IsRest()) {
+                //OK. Note fount. Take duration
+                pNote = (lmNote*)pSO;
+                float rDuration = pNote->GetDuration();
+                fOnlyQuarterNotes &= (rDuration == (float)eQuarterDuration);
+                if (!fOnlyQuarterNotes) break;
+            }
+        }
+        pIter->MoveNext();
+    }
+    delete pIter;
+    g_pLogger->LogTrace(_T("lmComposer5"),
+            _T("[GenerateScore] fOnlyQuarterNotes=%s)"),
+            (fOnlyQuarterNotes ? _T("True") : _T("False")) );
+
     // add a final measure with a root pitch note lasting, at least, one beat
-    sMeasure = CreateLastMeasure(++nNumMeasures, m_nTimeSign);
+    sMeasure = CreateLastMeasure(++nNumMeasures, m_nTimeSign, fOnlyQuarterNotes);
     g_pLogger->LogTrace(_T("lmComposer5"),
             _T("[GenerateScore] Adding final measure = '%s')"), sMeasure);
     pNode = parserLDP.ParseText( InstantiateNotes(sMeasure, true) );
@@ -590,16 +614,17 @@ wxString lmComposer5::CreateNoteRest(int nNoteRestDuration, bool fNote)
 
 }
 
-/*! Returns a final meaure. This final measure has only a note, long enough, and
-    a final bar
-*/
-wxString lmComposer5::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign)
+wxString lmComposer5::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
+                                        bool fOnlyQuarterNotes)
 {
+    // Returns a final meaure. This final measure has only a note, long enough, and
+    // a final bar
+
     wxString sMeasure = wxString::Format(_T("(c %d "), nNumMeasure);
     float rMeasureDuration = GetMeasureDuration(nTimeSign);
     float rBeatDuration = GetBeatDuration(nTimeSign);
     float rNoteDuration = rBeatDuration;
-    if (rMeasureDuration / rBeatDuration >= 2.0) {
+    if (!fOnlyQuarterNotes && rMeasureDuration / rBeatDuration >= 2.0) {
         //flip coin to randomly add a one-beat note or a two-beats note
         lmRandomGenerator oGenerator;
         if (oGenerator.FlipCoin()) rNoteDuration += rBeatDuration;

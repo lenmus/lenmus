@@ -133,9 +133,7 @@ lmScoreCtrolParams::~lmScoreCtrolParams()
 
 void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
 {
-    /*! @page ScoreCtrolParams
-        @verbatim    
-
+    /*
         Params for lmScoreCtrol - html object type="Application/LenMusScore"
 
         score_type          'short | short_nn_ss | pattern | full | XMLFile | LDPFile' Default: full
@@ -159,7 +157,9 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
                             "Play|Stop". Stop label is optional.
                             Default labels: "Measure %d|Stop %d"
 
-        @endverbatim
+        metronome       Set a fixed metronome rate to play this piece of music
+                        Value="MM number". Default: user value in metronome control
+
 
     */
 
@@ -245,6 +245,23 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
                 tag.GetAllParams() );
         else
             m_pOptions->fMusicBorder = (nBorder != 0);
+    }
+
+    // metronome
+    else if ( sName == _T("METRONOME") ) {
+        wxString sMM = tag.GetParam(_T("VALUE"));
+        long nMM;
+        bool fOK = sMM.ToLong(&nMM);
+        if (!fOK || nMM < 0 ) {
+            m_sParamErrors += wxString::Format( 
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable values: numeric, greater than 0\n"),
+                tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
+        }
+        else {
+            m_pOptions->SetMetronomeMM(nMM);
+        }
     }
 
     // Unknown param

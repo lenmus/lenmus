@@ -160,6 +160,9 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
 
         control_go_back    URL, i.e.: "v2_L2_MusicReading_203.htm"
 
+        metronome       Set a fixed metronome rate to play this piece of music
+                        Value="MM number". Default: user value in metronome control
+
 
         params to set up the score composer:
         ------------------------------------
@@ -229,6 +232,23 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
     else if ( sName == _T("CONTROL_SETTINGS") ) {
         m_pOptions->SetControlSettings(true, tag.GetParam(_T("VALUE")) );
         m_pConstrains->SetSection( tag.GetParam(_T("VALUE") ));
+    }
+
+    // metronome
+    else if ( sName == _T("METRONOME") ) {
+        wxString sMM = tag.GetParam(_T("VALUE"));
+        long nMM;
+        bool fOK = sMM.ToLong(&nMM);
+        if (!fOK || nMM < 0 ) {
+            m_sParamErrors += wxString::Format( 
+_("Invalid param value in:\n<param %s >\n \
+Invalid value = %s \n \
+Acceptable values: numeric, greater than 0\n"),
+                tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
+        }
+        else {
+            m_pConstrains->SetMetronomeMM(nMM);
+        }
     }
 
     //fragments   the list of fragmens to use

@@ -14,6 +14,15 @@
   <li>Replaced MDI user interface by a notebook tabbed interface.</li>
   <li>The lenmus program now includes the Dutch language translation.</li>
   <li>Added support to include images on eMusicBooks texts.</li>
+  <li>Score parameters in eBooks: added tag <metronome> to specify a fixed metronome
+        rate to play the score, instead of using user specified value in metronome
+        control.</li>
+  <li>Improvements in automatic music composer:
+        <ul>
+          <li>Modified so that in final measure it never adds a note longer
+            that a quarter note if the composed piece only uses quarter notes. This was
+            needed for Music Reading Level 1 eBook, for the initial lessons.</li>
+        </ul></li>
   <li>Improvements in the Score internal model to support more features:
     <ul>
       <li>Support to include graphical objects (arrows, lines, circles,
@@ -25,7 +34,7 @@
       <li>Added support to have global, inheritable options in all score elements.
         Implemented support for the following options:
         <ul>
-         <li>Option 'Staff.DrawLeftBarline' to control left barline drawing.</li>
+          <li>Option 'Staff.DrawLeftBarline' to control left barline drawing.</li>
           <li>Option 'StaffLines.Hide' to control staff lines drawing.</li>
           <li>Option 'StaffLines.StopAtFinalBarline' to allow for staff lines
             going to the right paper margin instead of finishing at the final
@@ -33,8 +42,8 @@
           <li>Option 'Staff.UpperLegerLines.Displacement' to shift the first upper leger
             line so that it is closer/further than normal spacing.
             The other leger lines spacing is not changed.</li>
-        </li></ul>
-    </li></ul>
+        </ul></li>
+    </ul></li>
   <li>Improvements in LDP language to support the new features. New tags added:
     <ul>
       <li>Implemented simple notation 'fermata', and compound notation
@@ -45,7 +54,7 @@
       <li>tag 'opt' to add global, inheritable options to all other tags.</li>
       <li>Added support for strings enclosed in double simple quotes as
         an alternative to double quotes.</li>
-    </li></ul>
+    </ul></li>
 </ul>
 
 

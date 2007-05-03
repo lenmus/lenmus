@@ -18,12 +18,8 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ScoreCtrol.cpp
-    @brief Implementation file for class lmScoreCtrol
-    @ingroup html_controls
-*/
-/*! @class lmScoreCtrol
-    @brief    A control to embed a score in an HTML page by using an \<object\> directive
+
+/*  A control to embed a score in an HTML page by using an \<object\> directive
     of type="Application/LenMusScore" 
 
     A control to display a score in an HTML page. It displays a score with three optional 
@@ -263,11 +259,11 @@ void lmScoreCtrol::Play(EPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeasure)
         //play
         if (nMeasure == 0) {
             m_pScoreCtrol->PlayScore(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
-                                nPlayMode);
+                                nPlayMode, m_pOptions->GetMetronomeMM());
         }
         else {
             m_pScoreCtrol->PlayMeasure(nMeasure, lmVISUAL_TRACKING,  
-                                nPlayMode);
+                                nPlayMode, m_pOptions->GetMetronomeMM());
         }
         m_fPlaying = true;
 

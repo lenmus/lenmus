@@ -119,6 +119,7 @@ As an example, press the 'Play' link and lesson to the next score:
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
+    <metronome>320</metronome>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
           (opt Staff.DrawLeftBarline no)

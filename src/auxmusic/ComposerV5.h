@@ -19,8 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __GNUG__
-// #pragma interface
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma interface "Composer5.cpp"
 #endif
 
 #ifndef __COMPOSERV5_H__        //to avoid nested includes
@@ -46,7 +46,7 @@ private:
     wxString CreateNoteRest(int nNoteRestDuration, bool fNote);
     wxString CreateNote(int nNoteDuration) { return CreateNoteRest(nNoteDuration, true); }
     wxString CreateRest(int nRestDuration) { return CreateNoteRest(nRestDuration, false); }
-    wxString CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign);
+    wxString CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign, bool fOnlyQuarterNotes);
 
 
     ETimeSignature      m_nTimeSign;

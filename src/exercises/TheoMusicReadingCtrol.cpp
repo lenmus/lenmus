@@ -320,7 +320,7 @@ void lmTheoMusicReadingCtrol::Play()
 
         //play score
         m_pScoreCtrol->PlayScore(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
-                                ePM_NormalInstrument);
+                                ePM_NormalInstrument, m_pConstrains->GetMetronomeMM());
         m_fPlaying = true;
 
         //@attention The link label is restored to "Play" when the EndOfPlay event is

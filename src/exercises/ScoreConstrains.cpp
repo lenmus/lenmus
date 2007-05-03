@@ -20,7 +20,7 @@
 //-------------------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "EarIntvalConstrains.h"
+#pragma implementation "ScoreConstrains.h"
 #endif
 
 // for (compilers that support precompilation, includes "wx.h".
@@ -51,30 +51,30 @@ extern wxConfigBase *g_pPrefs;
 
 lmScoreConstrains::lmScoreConstrains()
 {
-    /*  Score Constrains objec are only created in html ScoreMusicReading exercises.
-        The exercise must provide all necessary values.
-        When a 'section key' is provided - by invoking method SetSection() - this object
-        valuaes are loaded from cofiguration file (or with default values if the key
-        does not exists).
-        If no 'section key' is provided, the exercise must be configure with the
-        settings provided in the htm params.
-        So, no initialization ob this object is needed (as long as we verify that
-        all necessary html params are included)
-    */
+    // Score Constrains objec are only created in html ScoreMusicReading exercises.
+    // The exercise must provide all necessary values.
+    // When a 'section key' is provided - by invoking method SetSection() - this object
+    // valuaes are loaded from cofiguration file (or with default values if the key
+    // does not exists).
+    // If no 'section key' is provided, the exercise must be configure with the
+    // settings provided in the htm params.
+    // So, no initialization ob this object is needed (as long as we verify that
+    // all necessary html params are included)
 
     //initializations
     m_sSection = _T("");
 
     //default values for html params
     m_nMaxInterval = 4;
+    m_nMM = 0;              // zero means: no predefined setting
 
 }
 
 void lmScoreConstrains::SaveSettings()
 {
-    /*
-    save settings in user configuration data file
-    */
+    //
+    // save settings in user configuration data file
+    //
 
     if (m_sSection == _T("")) return;
 
@@ -116,14 +116,13 @@ void lmScoreConstrains::SaveSettings()
 
 void lmScoreConstrains::LoadSettings()
 {
-    /*
-    load settings form user configuration data. Default values are taken from html params. 
-    
-    When arriving here, default values are already stored in this object. So we must check
-    if the section key is stored in the configuration file. If it is, then we have
-    to load config data from there; otherwise, do nothing as default values are in place.
-
-    */
+    //
+    // load settings form user configuration data. Default values are taken from html params. 
+    //
+    // When arriving here, default values are already stored in this object. So we must check
+    // if the section key is stored in the configuration file. If it is, then we have
+    // to load config data from there; otherwise, do nothing as default values are in place.
+    //
 
     if (m_sSection == _T("")) {
         // leave default values
