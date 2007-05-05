@@ -59,7 +59,6 @@ Lecciones
 --------------------------------------
 
 - 2 [staff] El pentagrama (The staff)
-    - foto de papel pautado
     + Set up metronome for last example (scale) at 320bpm
 
 - 3 [clef] La clave (The clef)
@@ -68,7 +67,6 @@ Lecciones
     
 - 4 [notes] Note symbols (Los símbolos para las notas)
     - spacing between notes
-    - imagen: la nota con sus partes
     - revisar texto: dirección plicas
     - última figura: espacio entre compases
 
@@ -85,7 +83,6 @@ Lecciones
     - pictures of metronomes
 
 -- 9 [1] La negra y su silencio
-    + Do not finish score with a half note
     - Find a better example
     
     <fragment>24;(n * n)(n * n),(n * n)(n * n)</fragment>
