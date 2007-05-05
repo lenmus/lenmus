@@ -1,4 +1,4 @@
-Composer 5 algorithm 2.
+Composer 5 algorithm 3.
 
 Algorithm 2 generates scores with mis-aligments and irregular measures.
 The problem is due to lack of information about alignment. So in this
@@ -9,31 +9,35 @@ These patterns will be called 'fragments'. Fragments are divided into
 go together and occupies one or more full beats).
 Fragments will contain baline alignment information.
 
-    Fragments & segments
-    --------------------
+Fragments & segments
+--------------------
 
-    Score composition is based on rhythmic patterns called 'fragments'.
+Score composition is based on rhythmic patterns called 'fragments'.
 
-    A fragment is formed by concatenating notes and rests elements, for example:
-    "(n * c)(n * c)(n * n)(n * c)(n * n)(n * s g+)(n * s)(n * c g-)"
+A fragment is formed by concatenating notes and rests elements, for example:
+"(n * c)(n * c)(n * n)(n * c l)(n * n)(n * s g+)(n * s)(n * c g-)"
+= c c n c n ssc
 
-    The elements are separated by commas (,) to form 'segments' (a segment is
-    a group of elements that must go together and accupies one or more full
-    beats), i.e:
-    "(n * c),(n * c)(n * n)(n * c),(n * n),(n * s g+)(n * s)(n * c g-)"
+The elements are separated by commas (,) to form 'segments' (a segment is
+a group of elements that must go together and accupies one or more full
+beats), i.e:
+"(n * c),(n * c)(n * n)(n * c l),(n * n),(n * s g+)(n * s)(n * c g-)"
+= c, c n c, n, ssc
 
-    In certain cases, it is necesary to specify that a barline must be in a 
-    specific point. This will be specified by putting a bar (|) instead of a
-    comma (,), i.e.:
-    "(n * c),(n * c)(n * n)(n * c)|(n * n),(n * s g+)(n * s)(n * c g-)"
+In certain cases, it is necesary to specify that a barline must be in a 
+specific point. This will be specified by putting a bar (|) instead of a
+comma (,), i.e.:
+"(n * c),(n * c)(n * n)(n * c l)|(n * n),(n * s g+)(n * s)(n * c g-)"
+= c, c n c + n, ssc
 
-    Fragments must always start aligned to beat. Therefore it is necessary
-    to include any requied rest at the begining. Previous example must be
-    finally written as:
-    "(s c)(n * c),(n * c)(n * n)(n * c)|(n * n),(n * s g+)(n * s)(n * c g-)"
+Fragments must always start aligned to beat. Therefore it is necessary
+to include any requied rest at the begining. Previous example must be
+finally written as:
+"(s c)(n * c),(n * c)(n * n)(n * c)|(n * n),(n * s g+)(n * s)(n * c g-)"
+= C c, c n c + n, ssc
 
-    Rests at the begining must occupy less than a beat. That is, no empty beats
-    are allowed at the begining.
+Rests at the begining must occupy less than a beat. That is, no empty beats
+are allowed at the begining.
 
 ----------------------------------------------------------------------------------------
 
@@ -163,19 +167,30 @@ Not yet implemented
 
 
 
-Composer6. Composition based on rcells.
----------------------------------------
+Composer6. Composition based on rhythmic cells 
+===================================================================================
 
-Score will have multiple of 4 measures (plus anacrusis)
 
-rcells (rhythmic cells) are clasified as:
+Cells are similar to fragments but:
+
+1. Can be shorter and there is need to include full phrases (but it is allowed)
+
+2. Have a type:
 
 s - start (anacrusis cells)
 m - middle
 e - end of phrase (anacrusis end)
 
+The core idea is that by combining one start cell, several middle cells and one final
+cell it will be possible to generate a good musical phrase.
 
-Create phrase (4 beats, or 4 beats with anacrusis and complementary end)
+
+Algorithm to generate a phrase (4 beats, or 4 beats with anacrusis and 
+complementary end)
+----------------------------------------------------------------------
+
+Note: A score will have multiple of 4 measures (plus anacrusis)
+
 
 1. Choose start cell
     - if anacrusis forced
@@ -197,13 +212,16 @@ Create phrase (4 beats, or 4 beats with anacrusis and complementary end)
     
     
     
-      +--------------- Number of beats in this fragment 
-      |       +------- Beats for a mandatory barline
-      |       |        
-      V       V
-    beats   align
-    2       0       XXXX,XXXX
-    3       1       XXXX|XXXX,XXXX
+------------------------------------------------------------------------------------
+    
+    
+          +--------------- Number of beats in this fragment 
+          |       +------- Beats for a mandatory barline
+          |       |        
+          V       V
+type    beats   align
+m       2       0       XXXX,XXXX
+m       3       1       XXXX|XXXX,XXXX
     
     
 
@@ -222,3 +240,14 @@ Create phrase (4 beats, or 4 beats with anacrusis and complementary end)
 
 
 
+In order to simplify tables, a fragment can contain several cells of the same
+characteristics:
+
+
+1   0   n / cc / N / c C
+2   0   n. c / cccc / n cc / cc-cc / cc - cc 
+
+syntax: start_cell : list of end_cells for this start cell
+34  s   n : b N / cc n N : 
+34  s   C c : c C N C c : c C B
+34  m   cccc n / n n n / n cc n / n. c cc / n. c n

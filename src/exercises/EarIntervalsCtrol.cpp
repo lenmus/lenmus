@@ -253,7 +253,7 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
         for (int iCol=0; iCol < NUM_COLS; iCol++) {
             iB = iCol + iRow * NUM_COLS;    // button index: 0 .. 24         
             pButton = new wxButton( this, ID_BUTTON + iB, _T("provisional"),
-                wxDefaultPosition, wxSize(100, 24));
+                wxDefaultPosition, wxSize(130, 24));
             m_pAnswerButton[iB++] = pButton;
             pRowSizer->Add(
                 pButton,

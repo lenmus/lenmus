@@ -1,0 +1,653 @@
+Lectura rítmica. Nivel 1. Estructura del curso
+-----------------------------------------------
+
+Objetivos:
+------------------
+1.  Las siguientes notas: redonda, blanca, negra, corchea y semicorchea, y sus
+    correspondientes silencios. Notas ligadas. Notas con un puntillo y sus
+    silencios.
+    
+    Note values of semibreve, minim, crotchet, quaver and semiquaver, and their 
+    equivalent rests. Tied notes. Single-dotted notes and rests.
+    
+2.  Compases de subdivisión binaria de 2/4, 3/4 y 4/4 y de subdivisión ternaria de 6/8.
+    Barras de compas y las agrupaciones de las notas estudiadas dentro de estos
+    compases.
+
+    Simple time signatures of 2/4, 3/4 and 4/4 and compound time signature of 6/8.
+    Bar-lines and the grouping of the notes listed above within these times.
+    
+3.  El pentagrama. Ambito en las claves de Sol (violín) y Fa en 4ª (bajo), para cubrir
+    dos lineas adicionales por encima y por debajo.
+    
+    The stave. Treble (G) and bass (F) clefs. Names of notes on the stave. 
+    Extension of the stave to include two ledger lines below and above each stave.
+    
+4.  Armaduras de todas las tonalidades mayores y menores hasta con dos alteraciones.
+
+    Key signatures of all major and minor keys up to and including two sharps and flats.
+
+
+Temario
+---------
+El curso consta de 34 lecciones.
+
+Claves y ámbitos:
+    En las primeras lecciones sólo se usa la clave de Sol (lecciones 1 a 7) con un
+    ámbito muy reducido (e4-g4). Progresivamente el ámbito va aumentando para llegar,
+    en la lección 7 a c4-f5.
+    En la lección 8 se introduce la clave de Fa en 4ª, de nuevo con un ámbito muy
+    reducido (a3;c4) y a partir de ahí en todas las lecciones siguientes
+    (8 a 26) se usa indistintamente la clave de Fa y la de Sol, cada una de ellas
+    con ámbitos progresivos, para finalizar con dos líneas adicionales por arriba
+    y por abajo en ambas claves (Sol: a3-c6 y Fa: a2-e4).
+
+Métricas:
+    En las primeras lecciones (1 a 10) sólo se usa el 2/4. Luego, progresivamente se
+    amplia a 3/4 (lecciones 11 y 12)
+    y a 4/4 (lecciones 13 a 21). Finalmente se introduce la subdivisión ternaria con
+    el compás de 6/8 (lecciones 22 a 26).
+    
+Tonalidades:
+    En las dos primeras lecciones sólo Do mayor/La menor. A partir de ahí se introduce
+    una alteración (lecciones 3-10). Y en el resto del curso se
+    manejan hasta dos alteraciones (lecciones 11-26).
+
+
+
+Lecciones
+--------------------------------------
+
+- 2 [staff] El pentagrama (The staff)
+    - foto de papel pautado
+    + Set up metronome for last example (scale) at 320bpm
+
+- 3 [clef] La clave (The clef)
+    - Set up metronome for last example (note names) at 320bpm
+    - fig 1: alargar pentagrama
+    
+- 4 [notes] Note symbols (Los símbolos para las notas)
+    - spacing between notes
+    - imagen: la nota con sus partes
+    - revisar texto: dirección plicas
+    - última figura: espacio entre compases
+
+- 5 [measure] Measures and bar lines (Compases y líneas divisorias)
+    - revisar figuras
+    
+- 6 [time] Time signatures (La métrica).
+    - figura: alargar pentagrama
+
+- 7 [time24] The 2/4 time signature (El compás de dos tiempos)
+
+- 8 [metronome] The metronome
+    - LenMus program metronome description
+    - pictures of metronomes
+
+-- 9 [1] La negra y su silencio
+    + Do not finish score with a half note
+    - Find a better example
+    
+    <fragment>24;(n * n)(n * n),(n * n)(n * n)</fragment>
+    <fragment>24;(n * n)(n * n),(n * n)(s n)</fragment>
+    <fragment>24;(n * n)(s n),(n * n)(s n)</fragment>
+    <fragment>24;(n * n)(s n),(s n)(n * n)</fragment>
+    <fragment>24;(n * n)(n * n),(s n)(n * n)</fragment>
+
+- 10 [2] La nota blanca y su silencio. Ligaduras (The half note and its rest. Ties)
+
+    <fragment>24;(n * n)(n * n),(n * n)(n * n),(n * n l)(n * n)</fragment>
+    <fragment>24;(n * n)(n * n),(n * n)(n * n),(n * b)</fragment>
+    <fragment>24;(s n)(n * n),(n * n)(n * n),(n * n l)(n * n)</fragment>
+    <fragment>24;(s n)(n * n),(n * n)(n * n),(n * b)</fragment>
+    <fragment>24;(n * n)(n * n),(n * b),(s b)</fragment>
+
+    
+- 11 [3] Leger lines (Líneas adicionales) 
+
+
+- 12 [4] The eighth note (La corchea)
+    <fragment>24;(n * n)(n * n),(n * c g+)(n * c)(n * c)(n * c g-)</fragment>
+    <fragment>24;(n * n)(n * n),(n * n)(s n)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * c g+)(n * c g-),(n * b)</fragment>
+    <fragment>24;(s n)(n * n),(n * n)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n l)(n * n),(s b)</fragment>
+    <fragment>24;(n * n)(n * c g+)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * b)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c g-)(n * n),(n * b)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * n)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c g-)(n * n),(n * n)(n * n)</fragment>
+    <fragment>24;(s n)(n * n),(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * b)</fragment>
+    <fragment>24;(s n)(n * n),(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * n),(n * n l) n </fragment>
+    
+
+- 13 [accidentals] Accidentals. Key signature (Signos de alteración. La armadura)
+    + introduction text, explanation of key signatures and accidentals
+
+- 14 [5] Marks to lengthen notes: tie, dot and fermata (Signos de prolongación: ligadura, puntillo y calderón)
+
+    <fragment>24;(n * n)(n * c g+)(n * c g-),(n * n l)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n.)(n * c),(n * n)(n * n),(n * b)</fragment>
+    <fragment>24;(s n)(n * n),(n * c g+)(n * c g-)(n * n),(n * n.)(n * c),(n * n)(s n)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * c g+)(n * c g-),(n * n l)(n * c g+)(n * c g-),(n * b)</fragment>
+
+- 15 [Fclef] La clave de Fa en cuarta línea (F clef on fourth line)
+    
+    <fragment>(n * b),(n * n)(n * n),(n * b)</fragment>
+    <fragment>24;(n * n)(n * c g+)(n * c g-),(n * n l)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n.)(n * c),(n * n)(n * n),(n * b)</fragment>
+    <fragment>24;(s n)(n * n),(n * c g+)(n * c g-)(n * n),(n * n.)(n * c),(n * n)(s n)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * c g+)(n * c g-),(n * n l)(n * c g+)(n * c g-),(n * b)</fragment>
+    <fragment>24;(n * n l)(n * c g+)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(s n)</fragment>
+
+- 16 [6] F clef on fourth line (La clave de Fa en cuarta línea. Ampliación del ámbito)
+    <clef>Fa4;f3;c4</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <time>24</time>
+
+- 17 [7] The eighth rest (El silencio de corchea)
+    (n * c)(s c)
+    <clef>Sol;c4;g5</clef>
+    <clef>Fa4;d3;c4</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <time>24</time>
+    <fragment>24;(n * n)(n * n),(n * c)(s c)(n * n)(s c),(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(s n)</fragment>
+    <fragment>24;(n * n l)(n * c g+)(n * c g-),(n * n)(n * c)(s c),(n * c g+)(n * c)(n * c)(n * c g-),(n * b)</fragment>
+    <fragment>24;(n * n)(n * c)(s c),(n * n.)(n * c),(n * c)(s c)(n * c)(s c),(n * b)</fragment>
+    <fragment>24;(n * c)(s c)(n * c g+)(n * c g-),(n * c)(s c)(n * c g+)(n * c g-),(n * n)(n * n)</fragment>
+    <fragment>24;(n * c)(s c)(n * c g+)(n * c g-),(n * c)(s c)(n * c)(s c),(n * n)(s n)</fragment>
+    <fragment>24;(n * c)(s c)(n * c g+)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * n),(n * b)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n l)(n * c g+)(n * c g-),(n * c)(s c)(n * c)(s c),(n * n)(s n)</fragment>
+    <fragment>24;(s n)(n * n),(n * n l)(n * c g+)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * n l)(n * c g+)(n * c g-),(n * c)(s c)(n * c)(s c),(n * b)</fragment>
+    
+- 18 [8] The 3/4 time signature. Dotted half note (Compás de tres tiempos (3/4))
+    + Introduction text and example
+    - example score: waltz
+    (n * b.), (s b.)
+    <clef>Sol;c4;g5</clef>
+    <clef>Fa4;c3;c4</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <key>Re</key>
+    <key>Si-</key>
+    <key>Solm</key>
+    <key>Sim</key>
+    <time>34</time>
+    <fragment>34;(n * n)(n * n)(n * c g+)(n * c g-),(n * b.)</fragment>
+    <fragment>34;(n * c g+)(n * c)(n * c)(n * c g-)(n * c)(s c),(n * n)(n * c g+)(n * c g-)(n * c)(s c),(s b.)</fragment>
+    <fragment>34;(s n)(n * c g+)(n * c)(n * c)(n * c g-),(n * n.)(n * c)(n * c)(s c),(n * n)(s b)</fragment>
+    <fragment>34;(n * n)(n * c g+)(n * c g-)(n * n),(n * n.)(n * c)(n * c g+)(n * c g-),(n * c)(s c)(n * c)(s c)(n * c)(s c),(s b.)</fragment>
+    <fragment>34;(n * c g+)(n * c)(n * c)(n * c g-)(n * c)(s c),(n * n)(s n)(n * c g+)(n * c g-),(n * n)(n * n)(n * c g+)(n * c g-),(n * b.)</fragment>
+    <fragment>34;(n * c g+)(n * c g-)(n * n)(n * c g+)(n * c g-),(n * c)(s c)(n * c)(s c)(n * c g+)(n * c g-),(n * n.)(n * c)(n * n),(s n)(n * c g+)(n * c)(n * c)(n * c g-),(n * b.)</fragment>
+    <fragment>34;(n * c g+)(n * c)(n * c)(n * c)(n * c)(n * c g-),(n * n.)(n * c)(n * n),(n * b.)</fragment>
+    <fragment>34;(n * n l)(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * n)(n * c)(s c),(n * b.)</fragment>
+    <fragment>34;(n * n)(n * n)(n * n),(n * b)(n * c g+)(n * c g-),(n * b)(s n),(n * b.)</fragment>
+    
+19 [9] The anacrusis (La anacrusa)
+No toda sla piezas empiezan en parte fuerte sino que a veces ocurre lo contrario. Enn estos casos el primero compás está incompleto. Se dice entonces que empieza en 'anacrusa' y
+consiste en que una o más notas acentuadas preceden al primer tiempo acentuado.
+
+Ejemplos:
+3/4:  c-c | n n n | n. c n | b sn ||
+2/4: n | n. c | c-c n | n sn ||
+
+
+    <clef>Sol;c4;g5</clef>
+    <clef>Fa4;b2;c4</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <key>Re</key>
+    <key>Si-</key>
+    <key>Solm</key>
+    <key>Sim</key>
+    <time>24,34</time>
+    
+- revisar composer. Necesidad de indentificar patrones de inicio
+
+    <fragment>24;(n * n),(n * c g+)(n * c)(n * c)(n * c g-),(n * b)</fragment>
+    <fragment>24;(n * c g+)(n * c g-),(n * n.)(n * c),(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c g-)(n * n),(n * n l)(n * c g+)(n * c g-),(n * b)</fragment>
+    <fragment>34;</fragment>
+    <fragment>34;</fragment>
+    <fragment>34;</fragment>
+    <fragment>34;</fragment>
+    <fragment>34;</fragment>
+    <fragment>34;</fragment>
+    <fragment>34;</fragment>
+    <fragment>34;</fragment>
+    
+    <fragment>34;</fragment>
+    (n * n)(n * n)(n * c g+)(n * c g-),
+    (n * n l)(n * c g+)(n * c g-),
+    (n * c g+)(n * c)(n * c)(n * c g-)(n * c)(s c),
+    (n * n.)(n * c),
+    (n * c g+)(n * c g-)(n * n),
+
+
+
+
+- 20 [10] The 4/4 time signature. The whole note and its rest. (Compás de cuatro tiempos (4/4). La redonda y su silencio)
+    - Introduction text and example
+    
+    
+    (n * b l)(n * b), (n * r), (s r)
+    <clef>Sol;c4;g5</clef>
+    <clef>Fa4;b2;d4</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <key>Re</key>
+    <key>Si-</key>
+    <key>Solm</key>
+    <key>Sim</key>
+    <time>44</time>
+    <fragment>44;(n * n)(n * c g+)(n * c g-)(n * n.)(n * c),(n b)(s n)(n * c g+)(n * c g-)</fragment>
+    <fragment>44;(n * n)(n * c g+)(n * c g-)(n * c g+)(n * c g-)(n * n),(n * b l)(n * b)</fragment>
+    <fragment>44;(s n)(n * c g+)(n * c g-)(n * c)(s c)(n * c)(s c),(n * r)</fragment>
+    <fragment>44;(n * c g+)(n * c)(n * c)(n * c g-)(n * n.)(n * c),(n * c g+)(n * c)(n * c)(n * c g-)(n * b)</fragment>
+    <fragment>44;(n * n l)(n * c g+)(n * c g-)(n * c)(s c)(n * c)(s c),(n * c g+)(n * c)(n * c)(n * c g-)(n * c g+)(n * c)(n * c)(n * c g-),(n * b.)(s n)</fragment>
+    <fragment>44;(n * c g+)(n * c)(n * c)(n * c g-)(n * n.)(n * c),(n * c g+)(n * c)(n * c)(n * c g-)(n * n)(n * n)</fragment>
+    <fragment>44;(n * n.)(n * c)(n * c g+)(n * c)(n * c)(n * c g-),(n * b l)(n * b)</fragment>
+
+- 21 [11] Syncopation (Alteraciones ritmicas: La sincopa)
+    - Introduction text and example
+    - Problema con fragmentos:
+        nl, nl,
+
+    (n * n l)|(n * n), (n * n l)|(n * c g+)(n * c g-)
+    <clef>Sol;c4;b5</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <key>Re</key>
+    <key>Si-</key>
+    <key>Solm</key>
+    <key>Sim</key>
+    <time>24,34,44</time>
+    <fragment>24;(n * n)(n * c g+)(n * c g-),(n * n)(n * n l)|(n * n),(s n)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * n l)|(n * c g+)(n * c g-)(n * n)</fragment>
+    <fragment>24,34,44;(n * n l)|(n * c g+)(n * c g-),(n * n)</fragment>
+    <fragment>44;(n * n)(n * c g+)(n * c g-)(n * n)(n * n l)|(n * n)(s n)</fragment>
+    <fragment>44;(n * c g+)(n * c)(n * c)(n * c g-)(n * n)(n * n l)|(n * c g+)(n * c g-)(n * n)</fragment>
+    <fragment>24;(n * c g+)(n * c g-)(n * n l)|(n * n)(n * c g+)(n * c g-)|(n * c g+)(n * c)(n * c)(n * c g-)|(n * c)(s c)(n * c)(s c)|(n * b)</fragment>
+    <fragment>24;(n * n)(n * n)|(n * c g+)(n * c g-)(n * n l),(n * c g+)(n * c g-)(n * c g+)(n * c g-)|(n * c g+)(n * c g-)(n * n l)|(n * n)(s n)</fragment>
+    <fragment>34;(n * c g+)(n * c)(n * c)(n * c)(n * c)(n * c g-)|(n * n.)(n * c)(n * n l)|(n * n)(s n)(n * c g+)(n * c g-)|(n * b.)</fragment>
+    <fragment>34;(n * c g+)(n * c)(n * c)(n * c g-)(n * n l)|(n * n)(n * c g+)(n * c g-)(n * n l)|(n * c g+)(n * c g-)(n * n)(n * n)</fragment>
+    <fragment>34;(n * n.)(n * c)(n * c g+)(n * c g-)|(n * b)(n * n l)|(n * c g+)(n * c g-)(n * c g+)(n * c)(n * c)(n * c g-)|(n * c g+)(n * c g-)(n * c)(s c)(n * n l)|(n * n)(n * b)</fragment>
+    <fragment>34;(n * b)(n * n l)|(n * c g+)(n * c g-)(n * c g+)(n * c g-)(n * n l)|(n * c g+)(n * c g-)(n * n)(n * n)|(n * b.)</fragment>
+    <fragment>44;(n * n)(n * n)(n * c g+)(n * c g-)(n * n l)|(n * c g+)(n * c)(n * c)(n * c g-)(n * n.)(n * c)|(n * c g+)(n * c)(n * c)(n * c g-)(n * n l)(n * c g+)(n * c g-)|(n * b)</fragment>
+
+    <f>24;n cg+ cg-, n nl| n, N</f>
+    <f>24;cg+ c c cg-, n nl| cg+ cg- n</f>
+    <f>24,34,44;nl| cg+ cg-, n</f>
+    <f>44;n cg+ cg- n nl| n N</f>
+    <f>44;cg+ c c cg- n nl| cg+ cg- n</f>
+    <f>24;cg+ cg- nl| n cg+ cg-| cg+ c c cg-| c C c C| b</f>
+    <f>24;n n| cg+ cg- nl, cg+ cg- cg+ cg-| cg+ cg- nl| n N</f>
+    <f>34;cg+ c c c c cg-| n. c nl| n N cg+ cg-| b.</f>
+    <f>34;cg+ c c cg- nl| n cg+ cg- nl| cg+ cg- n n</f>
+    <f>34;n. c cg+ cg-| b nl| cg+ cg- cg+ c c cg-| cg+ cg- c C nl| n b</f>
+    <f>34;b nl| cg+ cg- cg+ cg- nl| cg+ cg- n n| b.</f>
+    <f>44;n n cg+ cg- nl| cg+ c c cg- n. c| cg+ c c cg- nl cg+ cg-| b</f>
+
+- 22 [12] Syncopation (2) (Alteraciones rítmicas: La síncopa (2))
+    - Introduction text and example
+
+    (n * c g+)(n * c l g-)(n * n), (n * c)(n * n.), (n * c g+)(n * c l g-)|(n * n)
+    <clef>Sol;c4;b5</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <key>Re</key>
+    <key>Si-</key>
+    <key>Solm</key>
+    <key>Sim</key>
+    <time>24,34,44</time>
+    <fragment>24,34,44;(n * c g+)(n * c l g-)(n * n)</fragment>
+    <fragment>24,34,44;(n * c)(n * n.)</fragment>
+    <fragment>24,34,44;(n * c g+)(n * c l g-)|(n * n)</fragment>
+    <fragment>24,34,44;(n * n.)(n * c)</fragment>
+    <fragment>24;(n * c)(n * n.),(n * n)(n * c g+)(n * c g-),(n * c)(s c)(n * c)(s c),(n * b)</fragment>
+    <fragment>24;(s n)(n * c g+)(n * c l g-)|(n * n)(n * c g+)(n * c l g-),(n * n)(n * n l),(n * n)(s n)</fragment>
+    <fragment>24;(n * n.)(n * c),(n * c)(n * n.),(n * n)(n * c g+)(n * c g-),(n * b)</fragment>
+    <fragment>34;(n * b)(n * c g+)(n * c g-),(n * c)(n * n.)(n * n),(n * b.)</fragment>
+    <fragment>34;(n * b)(n * c g+)(n * c g- l)|(n * n)(n * n)(n * n),(n * b.)</fragment>
+    <fragment>44;(n * n.)(n * c)(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * c g+)(n * c g-)(n * c g+)(n * c g- l)(n * n)</fragment>
+    <fragment>44;(n * c g+)(n * c)(n * c)(n * c g-)(n * c g+)(n * c g-)(n * n l)|(n * c g+)(n * c g-)(n * c g+)(n * c g-)(n * c g+)(n * c g- l)(n * n)</fragment>
+
+- 23 [13] Syncopation (3) (Alteraciones rítmicas: La síncopa (3))
+    - Introduction text and example
+
+    (n * c g+)(n * c l g-)(n * c g+)(n * c g-), (n * c)(n * n)(n * c)
+    <clef>Sol;c4;c6</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <key>Re</key>
+    <key>Si-</key>
+    <key>Solm</key>
+    <key>Sim</key>
+    <time>24,34,44</time>
+    <fragment>24,34,44;(n * c g+)(n * c l g-)(n * c g+)(n * c g-)</fragment>
+    <fragment>24,34,44;(n * c)(n * n)(n * c)</fragment>
+    <fragment>24;(n * n.)(n * c),(n * c)(s c)(n * c)(s c),(n * c)(n * n)(n * c),(n * b)</fragment>
+    <fragment>24;(n * n l)(n * c g+)(n * c g-),(n * c)(s c)(n * c g+)(n * c l g-),(n * c g+)(n * c g-)(n * n),(n * b)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g- l),(n * c g+)(n * c)(n * c)(n * c g-),(n * n)</fragment>
+    <fragment>34;(n * n),(n * c)(n * n)(n * c)(n * c g+)(n * c g-),(n * n.)(n * c)(n * c g+)(n * c g-),(n * b)</fragment>
+    <fragment>34;(n * n),(n * c g+)(n * c l g-)(n * c g+)(n * c g-)(n * c g+)(n * c g-),(n * c)(n * n)(n * c)(n * c g+)(n * c g-),(n * b)</fragment>
+    <fragment>34;(n * c g+)(n * c l g-)(n * c g+)(n * c g-)(n * c g+)(n * c g-),(n * c)(s c)(n * c)(s c)(n * n)</fragment>
+    <fragment>34;(n * c g+)(n * c)(n * c)(n * c)(n * c)(n * c g-),(n * n.)(n * c)(n * c g+)(n * c g- l),(n * c g+)(n * c g-)(n * n)</fragment>
+    <fragment>44;(n * n.)(n * c)(n * c)(s c)(n * c)(s c),(n * c)(n * n)(n * c)(n * b)</fragment>
+    <fragment>44;(n * n l)(n * c g+)(n * c g-)(n * c)(s c)(n * c g+)(n * c l g-),(n * c g+)(n * c g-)(n * n)</fragment>
+    <fragment>44;(n * c g+)(n * c)(n * c)(n * c g- l)(n * c g+)(n * c)(n * c)(n * c g-),(n * n)</fragment>
+
+-------------- voy por aquí
+
+
+24 [14] Syncopation (4) (Alteraciones rítmicas: La síncopa (4))
+    - Introduction text and example
+    
+    (pag.61) cc - cc - cc / c n n c 
+    
+    (n * c g+)(n * c l g-)(n * c g+)(n * c l g-)(n * c g+)(n * c g-), (n * c)(n * n)(n * n)(n * c)
+    <clef>Sol;c4;c6</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <key>Re</key>
+    <key>Si-</key>
+    <key>Solm</key>
+    <key>Sim</key>
+    <time>34,44</time>
+    <fragment>34;(n * c g+)(n * c g-)(n * n)(n * c)(s c),(n * c g+)(n * c g- l)(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * n)(s n)(n * n l)|(n * c g+)(n * c g-)(n * c g+)(n * c g-)(n * c)(s c)</fragment>
+    <fragment>34;(n * c)(n * n)(n * n)(n * c),(n * c)(s c)(n * c)(s c)(n * n l)|(n * n)(s n)(n * c g+)(n * c g- l)|(n * n)(n * n.)(n * c),(n * c g+)(n * c g- l)(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * b.)</fragment>
+    <fragment>34;(n * n.)(n * c)(n * c g+)(n * c g-),(n * c)(n * n)(n * c)(n * c g+)(n * c g-),(n * c g+)(n * c g- l)(n * c g+)(n * c g-)(n * c g+)(n * c g-),(n * b.)</fragment>
+    <fragment>34;(n * c)(n * n)(n * n)(n * c),(n * c)(n * n)(n * n)(n * c),(n * c)(n * n.)(n * n l)|(n * c g+)(n * c g-)(n * n)(s n)</fragment>
+    <fragment>34;(n * c g+)(n * c)(n * c)(n * c g- l)(n * c g+)(n * c g-),(n * n)(n * c g+)(n * c)(n * c)(n * c g-),(n * b)(s n)</fragment>
+    <fragment>34;(n * n l)(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c g- l)(n * n)(n * c g+)(n * c g-),c (n * n)(n * c)(n * c g+)(n * c g-),(n * b)(s n)</fragment>
+    <fragment>34;(n * c g+)(n * c g- l)(n * c g+)(n * c g-)(n * c g+)(n * c g-),(n * c)(n * n.)(n * n),(n * b.)</fragment>
+    <fragment>44;(n * n l)(n * c g+)(n * c g-)(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * n.)(n * c)(n * b)</fragment>
+    <fragment>44;(n * n l)(n * c g+)(n * c g-)(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-)(n * n l)(n * c g+)(n * c g-),(n * b)(s b)</fragment>
+    <fragment>44;(n * n.)(n * c)(n * n)(n * c g+)(n * c g-),c (n * n)(n * n)(n * c)(n * c g+)(n * c g-),(n * n)(n * c g+)(n * c g-)(n * c g+)(n * c)(n * c)(n * c g-),(n * c)(n * n)(n * n)(n * c)(n * n)</fragment>
+
+25 [15] Syncopation (5) (Alteraciones rítmicas: La síncopa (5))
+    - Introduction text and example
+    
+    (pag.63) C c / n - c C
+    
+    (s c)(n * c) / (n * n l)(n * c)(s c)
+    <clef>Sol;c4;c6</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <key>Re</key>
+    <key>Si-</key>
+    <key>Solm</key>
+    <key>Sim</key>
+    <time>24,34,44</time>
+    <fragment>34;(n * n)(n * c g+)(n * c g-)(s c)(n * c),(n * n)(n * c)(n * n.)</fragment>
+    <fragment>34;(n * c)(s c)(n * c)(s c)(n * n l)|(n * c g+)(n * c g-)(n * n)(s c)(n * c),(n * n)(n * c g+)(n * c g-)(s c)(n * c),(n * c)(n * n)(n * n)(n * c),(n * n)(s b)</fragment>
+    <fragment>34;(n * c)(n * n)(n * n)(n * c),(n * n l)(n * c)(s c)(s c)(n * c),(n * b.)</fragment>
+    <fragment>34;(n * c g+)(n * c g-)(s c)(n * c)(n * c g+)(n * c g- l)|(n * c g+)(n * c g-)(n * n)(s c)(n * c),(n * b)(s n)</fragment>
+    <fragment>44;(n * c g+)(n * c)(n * c)(n * c g-)(n * n l)(n * c g+)(n * c g-),(n * n)(n * c g+)(n * c g-)(n * n)(s c) c</fragment>
+    <fragment>44;(n * n)(n * c g+)(n * c g-)(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * n)(n * c g+)(n * c g-)(n * b)</fragment>
+    <fragment>44;(s c)(n * c)(n * n l)(n * n)(n * c g+)(n * c g-),(n * c g+)(n * c g- l)(n * n)(s c)(n * n l)|(n * n)(n * c g+)(n * c g-)(n * b)</fragment>
+    <fragment>44;(s c)(n * c)(n * c g+)(n * c g- l)(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * n.)(n * c)(n * b)</fragment>
+    <fragment>44;(n * n.)(n * c) c (n * n)(n * c),(n * n)(n * n l)(n * n)(n * c g+)(n * c g-)</fragment>
+    <fragment>24;(n * n)(n * c g+)(n * c g-),(n * n)(s c)(n * c),(n * n)(s c)(n * c),(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(s n)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g- l)|(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(s n)</fragment>
+    <fragment>24;(s c)(n * c)(n * c g+)(n * c g-),(n * n)(s c)(n * c),(n * n)(n * n)</fragment>
+    <fragment>24;(n * c)(n * n)(n * c),(n * c g+)(n * c)(n * c)(n * c g-),(n * n l)(n * c)(s c)</fragment>
+    <fragment>24;(s c)(n * c)(n * c g+)(n * c g-),(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * c g+)(n * c g- l)(n * n)</fragment>
+
+26 [16] The backbeat (Alteraciones rítmicas: El contratiempo)
+    - Introduction text and example
+
+	El contratiempo se da cuando un sonido producido en parte débil
+	va precedido y seguido de silencio. De esta manera queda reforzado el acento en
+	la parte débil
+
+	(pag.65)  N n, N n / C c C c, C c n
+	
+    (s n)(n * n), (s c)(n * c)(s c)(n * c), (s c)(n * c)(n * n)
+    <clef>Sol;c4;c6</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <key>Re</key>
+    <key>Si-</key>
+    <key>Solm</key>
+    <key>Sim</key>
+    <time>24,44</time>
+	<fragment>24,44;(n * b),(s n)(n * n),(s n)(n * n)</fragment>
+	<fragment>24,44;(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(s c)(n * c),(s c)(n * c)(n * n)</fragment>
+	<fragment>24,44;(n * n)(n * c g+)(n * c g-),(n * n)(s c)(n * c),(s c)(n * c)(s c)(n * c),(n * c g+)(n * c g-)(n * n)</fragment>
+	<fragment>24,44;(s c)(n * c)(s c)(n * c),(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
+	<fragment>24;(n * c g+)(n * c g-)(n * n l)|(n * n)(s c)(n * c),(s c)(n * c)(n * n l)|(n * c g+)(n * c g-)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
+	<fragment>24,44;(n * n l)(n * c)(s c),(s c)(n * c)(n * c g+)(n * c g-),(n * c g+)(n * c g-)(n * c)(s c)</fragment>
+
+27 [17] The 16th note (La semicorchea)
+    - Introduction text and example
+    
+    (pag.69) ssss
+    
+    (n * s g+)(n * s)(n * s)(n * s g-)
+    <clef>Sol;c4;c6</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <key>Re</key>
+    <key>Si-</key>
+    <key>Solm</key>
+    <key>Sim</key>
+    <time>24,34,44</time>
+    <fragment>24,44;(n * n)(n * c g+)(n * c g-),(n * s g+)(n * s)(n * s)(n * s g-)(n * n)</fragment>
+    <fragment>24,44;(s c)(n * c)(n * n),(n * s g+)(n * s)(n * s)(n * s g-)(n * c)(s c)</fragment>
+    <fragment>24,44;(n * c)(n * n)(n * c),(n * n)(n * s g+)(n * s)(n * s)(n * s g-),(n * b)</fragment>
+    <fragment>24,44;(s c)(n * c)(s c)(n * c),(n * n l)(n * c g+)(n * c g-),(n * s g+)(n * s)(n * s)(n * s g-)(n * n)</fragment>
+    <fragment>34;(n * n)(s c)(n * c)(n * n),(n * c)(s c)(n * c)(s c)(n * s g+)(n * s)(n * s)(n * s g-),(n * b.)</fragment>
+    <fragment>34;(n * b)(n * s g+)(n * s)(n * s)(n * s g-),(n * b)(s c)(n * c),(s c)(n * c)(s c)(n * c)(n * c g+)(n * c g-),(n * c g+)(n * c g- l)(n * c g+)(n * c g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * b.)</fragment>
+    <fragment>34;(n * c)(n * n)(n * c)(n * s g+)(n * s)(n * s)(n * s g-),(n * n l)(n * c g+)(n * c g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * b)(s n)</fragment>
+    <fragment>34;(n * n)(s c)(n * c) c (n * n)(n * c),(n * c g+)(n * c g-)(n * s g+)(n * s)(n * s)(n * s g-)(n * b)</fragment>
+
+28 [18] Quarter note and two 16th notes
+    - Introduction text and example
+    
+    (pag.69) css
+    
+    (n * c g+)(n * s)(n * s g-)
+    <clef>Sol;a3;c6</clef>
+    <clef>Fa4;a2;e4</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <key>Re</key>
+    <key>Si-</key>
+    <key>Solm</key>
+    <key>Sim</key>
+    <time>24,34,44</time>
+    <fragment>24,44;(n * n)(n * c g+)(n * s)(n * s g-),(n * n)(s c)(n * c),(n * c g+)(n * s)(n * s g-)(n * c g+)(n * c g-),(n * n)(n * s g+)(n * s)(n * s)(n * s g-),(n * n)(s n)</fragment>
+    <fragment>24,44;(n * c g+)(n * s)(n * s g-)(n * c g+)(n * c g- l)|(n * c g+)(n * c g-)(n * c g+)(n * s)(n * s g-),(n * n)(s n)</fragment>
+    <fragment>24,44;(s c)(n * c)(n * c g+)(n * c g-),(n * c g+)(n * s)(n * s g-)(n * c g+)(n * s)(n * s g-),(n * c g+)(n * c)(n * c)(n * c g- l)|(n * c g+)(n * c g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * c g+)(n * c g- l)(n * n)</fragment>
+    <fragment>24,44;(s c)(n * c)(n * s g+)(n * s)(n * s)(n * s g-),(n * c g+)(n * c g- l)(n * c)(s c)</fragment>
+    <fragment>24,44;(n * s g+)(n * s)(n * s)(n * s g-)(n * c g+)(n * s)(n * s g-),(n * n.)(n * c),(n * c g+)(n * s)(n * s g-)(n * c g+)(n * c g- l)|(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * b)</fragment>
+    <fragment>24,44;(n * s g+)(n * s)(n * s)(n * s g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * n l)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
+    <fragment>24,44;(n * c g+)(n * s)(n * s g-)(n * c g+)(n * c g-),(n * c g+)(n * s)(n * s g-)(n * c g+)(n * c g- l)|(n * c g+)(n * c g-)(n * n)</fragment>
+    <fragment>34;(n * n.)(n * c)(n * c g+)(n * c g-),(n * c)(n * n)(n * n)(n * c),(n * s g+)(n * s)(n * s)(n * s g-)(n * c g+)(n * c g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * b)(s n)</fragment>
+    <fragment>34;(n * n.)(n * c)(n * s g+)(n * s)(n * s)(n * s g-),(n * c g+)(n * c)(n * c)(n * c g-)(n * n)</fragment>
+    <fragment>34;(n * c)(n * n)(n * c)(n * s g+)(n * s)(n * s)(n * s g-),(n * n l)(n * c g+)(n * c g-)(n * n)</fragment>
+    <fragment>34;(s c)(n * c)(s c)(n * c)(s c)(n * c),(n * n)(n * s g+)(n * s)(n * s)(n * s g-)(n * n)</fragment>
+
+29 [19] The 6/8 time signature (Compás de 6/8)
+    - Introduction text and example
+    
+    Es un compas binario de subdivisión ternaria.
+    Dos partes dividida cada parte en tercios. Los acentos: 1rd parte fuerte, 2nd debil
+    
+    observar que n. = c c c y que b. = n n n
+    
+    (pag.79) ccc / n. / N. / n. - n. / b. / B.
+    
+    (n * c g+)(n * c)(n * c g-), (n * n.), (s n.), (n * b.), (s b.), (n * n. l)(n * n.)
+    <clef>Sol;a3;c6</clef>
+    <clef>Fa4;a2;e4</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <key>Re</key>
+    <key>Si-</key>
+    <key>Solm</key>
+    <key>Sim</key>
+    <time>68</time>
+    <fragment>68;(n * c g+)(n * c)(n * c g-)(n * n.),(n * n.)(n * c g+)(n * c)(n * c g-),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * n. l)(n * n.),(n * c g+)(n * c)(n * c g-)(n * n. l)|(n * n.)(s n.)</fragment>
+    <fragment>68;(n * n.)(n * c g+)(n * c)(n * c g-),(n * n.)(n * n.),(s b.)</fragment>
+    <fragment>68;(n * c g+)(n * c)(n * c g-)(n * n.),(n * c g+)(n * c)(n * c g-)(n * c g+)(n * c)(n * c g-),(n * b.)</fragment>
+    <fragment>68;(n * c g+)(n * c)(n * c g-)(n * c g+)(n * c)(n * c g-),(n * c g+)(n * c)(n * c g-)(n * n.)</fragment>
+
+30 [20] The 6/8 time signature (2)
+    - Introduction text and example
+
+    (pag.81) n c / n. - ccc / n. - n c
+    
+    (n * n)(n * c), (n * n. l)(n * c g+)(n * c)(n * c g-), (n * n. l)(n * n)(n * c)
+    <clef>Sol;a3;c6</clef>
+    <clef>Fa4;a2;e4</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <key>Re</key>
+    <key>Si-</key>
+    <key>Solm</key>
+    <key>Sim</key>
+    <time>68</time>
+    <fragment>68;(n * n.)(n * n)(n * c),(n * n. l)(n * c g+)(n * c)(n * c g-),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * n)(n * c)(n * c g+)(n * c)(n * c g-),(n * n. l)(n * n)(n * c),(n * n.)(n * n.)</fragment>
+    <fragment>68;(n * n. l)(n * c g+)(n * c)(n * c g-),(n * n. l)(n * n)(n * c),(n * n. l)(n * n.)</fragment>
+    <fragment>68;(n * n)(n * c)(n * n. l)|(n * n)(n * c)(n * c g+)(n * c)(n * c g-),(n * b.)</fragment>
+    <fragment>68;(n * n)(n * c)(n * n)(n * c),(n * n. l)(n * c g+)(n * c)(n * c g-),(n * c g+)(n * c)(n * c g-)(n * n)(n * c),(n * b.)</fragment>
+    <fragment>68;(n * n)(n * c)(n * n)(n * c),(n * c g+)(n * c)(n * c g-)(n * c g+)(n * c)(n * c g-),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * n)(n * c)(n * c g+)(n * c)(n * c g-),(n * n)(n * c)(n * n)(n * c),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * c g+)(n * c)(n * c g-)(n * n)(n * c),(n * c g+)(n * c)(n * c g-)(n * n)(n * c),(n * b.)</fragment>
+
+31 [21] The 6/8 time signature (3)
+    - Introduction text and example
+
+    (pag.85) c n / c n - ccc / c n - n.
+    
+    (n * c)(n * n), (n * c)(n * n l)(n * c g+)(n * c)(n * c g-), (n * c)(n * n l)(n * n.)
+    <clef>Sol;a3;c6</clef>
+    <clef>Fa4;a2;e4</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <key>Re</key>
+    <key>Si-</key>
+    <key>Solm</key>
+    <key>Sim</key>
+    <time>68</time>
+    <fragment>68;(n * n.)(n * c g+)(n * c)(n * c g-),(n * n)(n * c) c (n * n),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * c)(n * n)(n * n.),(n * c g+)(n * c)(n * c g-)(n * n.)</fragment>
+    <fragment>68;(n * n.)(n * c)(n * n),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * c)(n * n l)(n * c g+)(n * c)(n * c g-),(n * n)(n * c)(n * n.)</fragment>
+    <fragment>68;(n * c g+)(n * c)(n * c g-)(n * n.),(n * c)(n * n l)(n * n.)</fragment>
+    <fragment>68;(n * n)(n * c)(n * n)(n * c),(n * c g+)(n * c)(n * c g-)(n * c)(n * n),(n * n.)(s n.)</fragment>
+
+32 [22] The 6/8 time signature (4)
+    - Introduction text and example
+
+    (pag.87)  C cc / cc C / cCc / N c
+    
+    (s c)(n * c g+)(n * c g-), (n * c g+)(n * c g-)(s c), (n * c g+)(s c)(n * c g-), (s n)(n * c)
+    <clef>Sol;a3;c6</clef>
+    <clef>Fa4;a2;e4</clef>
+    <key>Do</key>
+    <key>Lam</key>
+    <key>Sol</key>
+    <key>Mim</key>
+    <key>Fa</key>
+    <key>Rem</key>
+    <key>Re</key>
+    <key>Si-</key>
+    <key>Solm</key>
+    <key>Sim</key>
+    <time>68</time>
+    <fragment>68;(n * n)(n * c)(n * c g+)(n * c)(n * c g-),(n * n.)(s c)(n * c g+)(n * c g-),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * c g+)(n * c)(n * c g-)(n * c g+)(s c)(n * c g-),(n * n.)(n * c g+)(n * c g-)(s c),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * n.)(s n)(n * c),(n * n. l)(n * n)(n * c),(n * c g+)(n * c)(n * c g-)(n * n.),(n * c g+)(s c)(n * c g-)(n * n.)</fragment>
+    <fragment>68;(n * c g+)(s c)(n * c g-)(n * c g+)(s c)(n * c g-),(n * c g+)(n * c)(n * c g-)(n * n.)</fragment>
+    <fragment>68;(n * n.)(s c)(n * c g+)(n * c g-),(n * c g+)(n * c)(n * c g-)(n * c g+)(n * c)(n * c g-),(n * c)(n * n l)(n * n.)</fragment>
+
+
+------------------
+
+- Composer:
+    - take bar alignment into account. Fill previous space with notes/rests or
+        choose a fragment whose first segments fits exactly on available space.
+    !- allow for anacrusis
+            
+- Score parameters: 
+    - specify number of measures to generate
+    !- allow for anacrusis
+    - simplifyied syntax for fragments?
+    - <key> param: 
+        - accept list: <key>Do,Sol,Fa,Re</key>
+        - accept a list of numbers: <key>0,+1,-1,+2,-2</key>
+        - accept a number range: <key>0 +2,0 -2</key>
+
+- Score: 
+    - notes spacing proportional to duration
+    - Play: accent. Higher volume on strong beats
+

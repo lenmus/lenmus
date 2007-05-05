@@ -39,9 +39,6 @@
     <!ENTITY theme30 SYSTEM "L1_MusicReading_20.xml">
     <!ENTITY theme31 SYSTEM "L1_MusicReading_21.xml">
     <!ENTITY theme32 SYSTEM "L1_MusicReading_22.xml">
-    <!ENTITY theme33 SYSTEM "L1_MusicReading_23.xml">
-    <!ENTITY theme34 SYSTEM "L1_MusicReading_24.xml">
-    <!ENTITY theme35 SYSTEM "L1_MusicReading_25.xml">
 ]>
 
 <book id="L1_MusicReading">
@@ -113,7 +110,7 @@ introduced in Level 1 are:</para>
 <title>Book organization</title>
 
 <para>
-This course has xx lessons covering the following material:</para>
+This course has 33 lessons covering the following material:</para>
 
 <itemizedlist>
 <listitem>Clefs and note ranges: 
@@ -196,8 +193,5 @@ the new concepts introduced.</listitem>
 &theme30;
 &theme31;
 &theme32;
-&theme33;
-&theme34;
-&theme35;
 
 </book>

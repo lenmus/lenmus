@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -70,13 +70,13 @@ lmLDPParser::lmLDPParser()
     //! @todo user options instead of fixed values
     m_nTitleAlignment = lmALIGN_CENTER;
     m_sTitleFontName = _T("Times New Roman");
-    m_nTitleFontSize = 14; 
+    m_nTitleFontSize = 14;
     m_nTitleStyle = lmTEXT_BOLD;
 
     // default values for font and aligment for <text> elements
     //! @todo user options instead of fixed values
     m_sTextFontName = _T("Times New Roman");
-    m_nTextFontSize = 10; 
+    m_nTextFontSize = 10;
     m_nTextStyle = lmTEXT_NORMAL;
 
     // default values for notes/rests octave and duration
@@ -121,7 +121,7 @@ void lmLDPParser::Clear()
 }
 
 
-lmScore* lmLDPParser::ParseFile(const wxString& filename) 
+lmScore* lmLDPParser::ParseFile(const wxString& filename)
 {
     wxFileInputStream inFile(filename);
     if (!inFile.Ok()) {
@@ -139,7 +139,7 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename)
     g_pLogger->FlushDataErrorLog();
     lmLDPNode* pRoot = LexicalAnalysis();
     lmScore* pScore = (lmScore*) NULL;
-    if (pRoot) 
+    if (pRoot)
         pScore = AnalyzeScore(pRoot);
 
     // report errors
@@ -224,10 +224,10 @@ void lmLDPParser::ParseMsje(wxString sMsg)
 {
     //GrabarError "Aviso - " & sMsg
     m_nWarnings++;
-    
+
     if (m_fDebugMode)
         wxLogMessage( _T("**WARNING** %s"), sMsg );
-    
+
 }
 
 void lmLDPParser::ParseError(EParsingStates nState, lmLDPToken* pTk)
@@ -235,7 +235,7 @@ void lmLDPParser::ParseError(EParsingStates nState, lmLDPToken* pTk)
     m_nErrors++;
     wxLogMessage(_T("** LDP ERROR **: Syntax error. State %d, TkType %s, tkValue <%s>"),
             nState, pTk->GetDescription(), pTk->GetValue() );
-    
+
 }
 
 void lmLDPParser::AnalysisError(const wxChar* szFormat, ...)
@@ -254,18 +254,18 @@ void lmLDPParser::AnalysisError(const wxChar* szFormat, ...)
 lmLDPNode* lmLDPParser::LexicalAnalysis()
 {
     /*
-    This function analyzes string sSource and returns the root node of the analysis. 
-    The result of the analysis is a tree of nodes, each one representing an element. The 
+    This function analyzes string sSource and returns the root node of the analysis.
+    The result of the analysis is a tree of nodes, each one representing an element. The
     root node is the element representing the element sSource.
 
-    In this step a full lexical analysis is performed as well as a first syntactical 
+    In this step a full lexical analysis is performed as well as a first syntactical
     analysis limited to verify that sSource has the structure of an element and its content
     is also elements (data between parenthesis). This element structure is then transformed
     into nodes and arranged into a tree.
 
     It is admisible that sSource has new line and carriage return characters so that this
     funtion can parse a whole file whose content is received into the string sSource.
-    
+
     The analyzer is implemented with a main loop to keep trace of current automata state and
     as many functions as automata states, to perform the steps asociated to each state.
 
@@ -304,13 +304,13 @@ lmLDPNode* lmLDPParser::LexicalAnalysis()
 
     m_pCurNode = new lmLDPNode(_T("Root Node"));
     m_nLevel = 0;
-    
+
     m_nState = A0_WaitingForStartOfElement;
     PushNode(A0_WaitingForStartOfElement);      //start the tree with the root node
     bool fExitLoop = false;
     while(!fExitLoop) {
         m_pTk = m_pTokenizer->ReadToken();        //m_pTk->ReadToken();
-        
+
         // if debug mode write trace
         if (m_fDebugMode) {
             if (m_pTk->GetType() == tkEndOfElement) {
@@ -325,7 +325,7 @@ lmLDPNode* lmLDPParser::LexicalAnalysis()
         }
 
         switch (m_nState) {
-            case A0_WaitingForStartOfElement: 
+            case A0_WaitingForStartOfElement:
                 Do_WaitingForStartOfElement();
                 break;
             case A1_WaitingForName:
@@ -354,17 +354,17 @@ lmLDPNode* lmLDPParser::LexicalAnalysis()
         //! @todo delete node objects. Clear() is not enough. Something else is needed.
         return (lmLDPNode*) NULL;
     }
-    
+
     // at this point m_pCurNode is all the tree. Verify it.
     if (m_pCurNode->GetName() != _T("Root Node")) {
-        AnalysisError( _("Element RAIZ expected but found element %s. Analysis stopped."), 
+        AnalysisError( _("Element RAIZ expected but found element %s. Analysis stopped."),
             m_pCurNode->GetName() );
         m_pCurNode->DumpNode();
         return (lmLDPNode*) NULL;
     }
     //m_pCurNode->DumpNode();
     return m_pCurNode->GetParameter(1);
-       
+
 }
 
 void lmLDPParser::Do_WaitingForStartOfElement()
@@ -380,9 +380,9 @@ void lmLDPParser::Do_WaitingForStartOfElement()
             ParseError(m_nState, m_pTk);
             m_nState = A0_WaitingForStartOfElement;
     }
-    
+
 }
-    
+
 void lmLDPParser::Do_WaitingForName()
 {
     switch (m_pTk->GetType()) {
@@ -402,7 +402,7 @@ void lmLDPParser::Do_WaitingForName()
             else
                 m_nState = A1_WaitingForName;
     }
-    
+
 }
 
 void lmLDPParser::Do_WaitingForParameter()
@@ -427,7 +427,7 @@ void lmLDPParser::Do_WaitingForParameter()
             else
                 m_nState = A2_WaitingForParameter;
     }
-    
+
 }
 
 void lmLDPParser::Do_ProcessingParameter()
@@ -463,7 +463,7 @@ void lmLDPParser::Do_ProcessingParameter()
             else
                 m_nState = A3_ProcessingParameter;
     }
-    
+
 }
 
 void lmLDPParser::PushNode(EParsingStates nPopState)
@@ -517,12 +517,12 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
             pNode->GetName() );
         return pScore;
     }
-    
+
     //get parameters
     int nParms, iP;
     lmLDPNode* pX;
     nParms = pNode->GetNumParms();
-    
+
     //parse version
     iP = 1;
     pX = pNode->GetParameter(iP);     //version
@@ -544,7 +544,7 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
         m_nVersion = 100 * nVers + nRev;
         iP++;
     }
-    
+
     switch (m_nVersion) {
         case 102:
         case 103:
@@ -560,7 +560,7 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
     }
 
      return pScore;
-   
+
 }
 
 lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)
@@ -583,7 +583,7 @@ lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)
         //! @todo no treatment yet. Ignore
         iP++;
     }
-    
+
     // parse element <NumInstruments>
     long nInstruments = 0;
     pX = pNode->GetParameter(iP);
@@ -598,26 +598,26 @@ lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)
          }
         iP++;
     }
-    
+
     // build the score
     pScore = new lmScore();
 
     //if (sTitulo != _T(""))pScore->Set.Title(sTitle);
-    
+
     // loop to parse elements <instrument>
     for (i=1; iP <= pNode->GetNumParms(); i++, iP++) {
         pX = pNode->GetParameter(iP);
         AnalyzeInstrument(pX, pScore, i);
     }
-    
+
     return pScore;
-    
+
 }
 
 lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
 {
     //<score> = (score <vers> [<language>] [<titles>] <instrument>*)
-    //<language> = (language LanguageCode Charset ) 
+    //<language> = (language LanguageCode Charset )
 
     lmLDPNode* pX;
     long i, iP;
@@ -640,7 +640,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
         }
         iP++;
     }
-    
+
     // create the score
     pScore = new lmScore();
 
@@ -651,7 +651,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
         iP++;
         if (iP <= nNumParms) pX = pNode->GetParameter(iP);
     }
-    
+
     //parse optional elements <opt>
     pX = pNode->GetParameter(iP);
     while(pX->GetName() == m_pTags->TagName(_T("opt")) &&  iP <= nNumParms) {
@@ -659,7 +659,7 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
         iP++;
         if (iP <= nNumParms) pX = pNode->GetParameter(iP);
     }
-    
+
     // loop to parse elements <instrument>
     i=0;
     while(pX->GetName() == m_pTags->TagName(_T("instrument")) &&  iP <= nNumParms) {
@@ -667,9 +667,9 @@ lmScore* lmLDPParser::AnalyzeScoreV105(lmLDPNode* pNode)
         iP++;
         if (iP <= nNumParms) pX = pNode->GetParameter(iP);
     }
-    
+
     return pScore;
-    
+
 }
 
 void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr)
@@ -680,12 +680,12 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     //<InfoMIDI> = (infoMIDI num-instr [num-device])
     //<Staves> = (staves {num | overlayered} )
     //<Voice> = (MusicData <music>+ )
-    
+
     lmLDPNode* pX;
     wxString sData;
     long iP;
     iP = 1;
-    
+
     if (pNode->GetName() != m_pTags->TagName(_T("instrument")) ) {
         AnalysisError( _("Element '%s' expected but found element %s. Analysis stopped."),
             m_pTags->TagName(_T("instrument")), pNode->GetName() );
@@ -700,7 +700,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     //default values for name
     //! @todo user options instead of fixed values
     wxString sInstrName = _T("");           //no name for instrument
-    lmEAlignment nNameAlign = lmALIGN_LEFT;     
+    lmEAlignment nNameAlign = lmALIGN_LEFT;
     bool fNameHasWidth = false;
     lmFontInfo tNameFont = g_tInstrumentDefaultFont;
     lmLocation tNamePos = g_tDefaultPos;
@@ -708,7 +708,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     //default values for abbreviation
     //! @todo user options instead of fixed values
     wxString sInstrAbbrev = _T("");         //no abreviated name for instrument
-    lmEAlignment nAbbrevAlign = lmALIGN_LEFT;     
+    lmEAlignment nAbbrevAlign = lmALIGN_LEFT;
     bool fAbbrevHasWidth = false;
     lmFontInfo tAbbrevFont = g_tInstrumentDefaultFont;
     lmLocation tAbbrevPos = g_tDefaultPos;
@@ -733,7 +733,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             //! @todo No treatment for now
             //    nMIDIChannel = nMidiCanalVoz
             //    nMIDIInstr = nMidiInstrVoz
-            //    
+            //
             //    if (pX->GetName() = "INFOMIDI") {
             //        AnalizarInfoMIDI pX, nMIDIChannel, nMIDIInstr
             //        iP = iP + 1
@@ -871,7 +871,7 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
             pVStaff->AddBarline(etb_DoubleRepetitionBarline, true);
         }
         // go forward and backward
-        else if (sName == m_pTags->TagName(_T("goFwd")) 
+        else if (sName == m_pTags->TagName(_T("goFwd"))
                  || sName == m_pTags->TagName(_T("goBack")) )
         {
             AnalyzeTimeShift(pX, pVStaff);
@@ -931,18 +931,18 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
     //<NumPartes> = (NumPartes num ) - num vstaffs
     //<InfoMIDI num [num]> - Num.Instrumento MIDI, [Num.Dispositivo MIDI]
     //<Parte> = (Parte num [num pentagramas] <compas>* )
-    
+
     // <Parte> represents an lmVStaff
     wxString sLabelNumVStaves;
     sLabelNumVStaves = (m_nVersion > 102 ? _T("NumPartes") : _T("NumPentagramas"));
-    
-    
+
+
     lmLDPNode* pX;
     long i;
     wxString sData;
     long iP;
     iP = 1;
-    
+
     if (pNode->GetName() != _T("Instrumento") ) {
         AnalysisError( _("Element '%s' expected but found element %s. Analysis stopped."),
             _T("Instrumento"), pNode->GetName() );
@@ -959,7 +959,7 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
         //por ahora ignorar. No vale para nada
         iP++;
     }
-    
+
     // parse element <NumPartes>
     long nVStaves=0;
     pX = pNode->GetParameter(iP);
@@ -974,22 +974,22 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
          }
         iP++;
     }
-    
+
 //    // parse element <InfoMIDI>
 //    Set pX = pNode->GetParameter(iP)
     int nMIDIChannel, nMIDIInstr;
 //    nMIDIChannel = nMidiCanalVoz
 //    nMIDIInstr = nMidiInstrVoz
-//    
+//
 //    if (pX->GetName() = "INFOMIDI") {
 //        AnalizarInfoMIDI pX, nMIDIChannel, nMIDIInstr
 //        iP = iP + 1
 //    }
-    
+
     // create the instrument with empty VStaves
     nMIDIChannel=0, nMIDIInstr=0;        //dbg
     pScore->AddInstrument(nVStaves, nMIDIChannel, nMIDIInstr, _T(""));
-    
+
     //Loop to analyze elements <Pentagrama>
     lmVStaff* pVStaff;
     for (i=1; i <= nVStaves; i++) {
@@ -999,7 +999,7 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
         iP++;
     }
 
-   
+
 }
 
 void lmLDPParser::AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
@@ -1007,7 +1007,7 @@ void lmLDPParser::AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
     //v1.1  <Linea> = ("LINEA" <num> <Compas>* )
     //v1.2  <Pentagrama> = ("PENTAGRAMA" <num> <Compas>* )
     //v1.3  <Parte> = ("PARTE" <num> [<num_pentagramas>] <Compas>* )
-    
+
     wxString sLabel;
     if (m_nVersion <= 101) {
         sLabel = _T("Linea");
@@ -1016,15 +1016,15 @@ void lmLDPParser::AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
     } else {
         sLabel = _T("Parte");
     }
-    
+
     if (pNode->GetName() != sLabel) {
         AnalysisError( _("Expected node '%s' but found node '%s'. Analysis ended."),
             sLabel, pNode->GetName() );
         return;
     }
-    
+
     AnalyzeVStaff_V103(pNode, pVStaff);     //version 1.3
-    
+
 }
 
 void lmLDPParser::AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff)
@@ -1033,7 +1033,7 @@ void lmLDPParser::AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     lmLDPNode* pX;
     long iP = 1;
-    
+
     //analyze first parameter: num of this lmVStaff
     wxString sData1 = (pNode->GetParameter(iP))->GetName();
     if (! sData1.IsNumber()) {
@@ -1042,7 +1042,7 @@ void lmLDPParser::AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff)
         return;
     }
     iP++;
-    
+
     //analyze second parameter (optional): number of staves of this lmVStaff
     wxString sNumStaves = _T("1");       //default value
     pX = pNode->GetParameter(iP);
@@ -1068,7 +1068,7 @@ void lmLDPParser::AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff)
         pX = pNode->GetParameter(iP);
         AnalyzeMeasure(pX, pVStaff);
     }
-    
+
 }
 
 void lmLDPParser::AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff)
@@ -1088,7 +1088,7 @@ void lmLDPParser::AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff)
         iP++;
     } else {
     }
-    
+
     //analyze remaining parameters: {<Figura> | <Grupo> | <Atributo>}*
     bool fSomethingAdded = false, fBarline = false;
     //double rDesplz;
@@ -1149,13 +1149,13 @@ void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
     //so achieve the desired result.
 
     // the time shift can be:
-    // a) one of the tags 'start' and 'end' 
+    // a) one of the tags 'start' and 'end'
     // b) a number: the amount of 256th notes to go forward or backwards
     // c) an algebraic expression formed by note names, i.e. "3*q+e" meaning three quarter
     //      notes plus an eighth one.
 
     wxString sElmName = pNode->GetName();
-    wxASSERT(sElmName == m_pTags->TagName(_T("goFwd")) 
+    wxASSERT(sElmName == m_pTags->TagName(_T("goFwd"))
              || sElmName == m_pTags->TagName(_T("goBack")) );
 
     bool fForward = (sElmName == m_pTags->TagName(_T("goFwd")));
@@ -1166,7 +1166,7 @@ void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
             sElmName);
         return;
     }
-    
+
     //get first parameter: time shift amount
     float rShift;
     wxString sValue = (pNode->GetParameter(1))->GetName();
@@ -1192,20 +1192,20 @@ void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
         //algebraic expression. Analyze it
         if (AnalyzeTimeExpression(sValue, &rShift)) return;      //error
     }
-    
+
     //change sign for backwad movement
     if (!fForward) rShift = - rShift;
-    
+
     //procced to do the time shift
     pVStaff->ShiftTime(rShift);
-    
+
 }
 
 bool lmLDPParser::AnalyzeTimeExpression(wxString sData, float* pValue)
 {
     // receives an algebraic expression, formed by aditions and substractions of
     // notes and numbers; parenthesis are not allowed. i.e: 3q+e+256 (three quarter
-    // notes + one eighth note + one 256th note = 3*(256/4)+(256/8)+256 = 
+    // notes + one eighth note + one 256th note = 3*(256/4)+(256/8)+256 =
     // Analyzes this expresion and returns its numeric value
 
     float rTotal = 0.0;
@@ -1249,17 +1249,17 @@ bool lmLDPParser::AnalyzeTimeExpression(wxString sData, float* pValue)
             else {
                 rValue = NoteTypeToDuration(nNoteType, fDotted, fDoubleDotted);
             }
-            
+
             if (!fNumberReady) rNum = 1;       //no había multiplicador
             rTotal += (fAddUp ? (rValue * rNum) : - (rValue * rNum));
             fNumberReady = false;
-            
+
             //clear used data
             rNum = 0.0;
             fAddUp = true;
         }
     }
-    
+
     if (fNumberReady) {
         rTotal += (fAddUp ? rNum : - rNum);
         fNumberReady = false;
@@ -1268,7 +1268,7 @@ bool lmLDPParser::AnalyzeTimeExpression(wxString sData, float* pValue)
     *pValue = rTotal;
 
     return false;       //no error
-    
+
 }
 
 lmNote* lmLDPParser::AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord)
@@ -1303,7 +1303,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
              //          --------  compatibility 1.3
 
     bool fIsRest = (sElmName.Left(1) == m_pTags->TagName(_T("r"), _T("SingleChar")) );   //analysing a rest
-    
+
     EStemType nStem = eDefaultStem;
     bool fBeamed = false;
     bool fTie = false;
@@ -1314,8 +1314,8 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     }
 //    Dim cAnotaciones As Collection
 //    Set cAnotaciones = new Collection
-    
-    
+
+
     //Tuplet brakets
     bool fEndTuplet = false;
     int nTupletNumber = 0;      // 0 = no tuplet
@@ -1343,7 +1343,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         bool fPitchFound = false;
         bool fOctaveFound = false;
         int i;
-        wxChar sChar; 
+        wxChar sChar;
         for (i=1; i < (int)sElmName.Length(); i++)
         {
             sChar = sElmName.GetChar(i);
@@ -1364,7 +1364,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             }
             else {
                 if (fPitchFound) {
-                    //octave not present. This is Duration 
+                    //octave not present. This is Duration
                     break;
                 }
                 else {
@@ -1424,14 +1424,14 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         }
     }
 
-   
+
     //for notes: analyse pitch and accidentals
     if (!fIsRest) {
         if (sPitch.IsNumber()) {
             //if sPitch is a number it represents a MIDI pitch in C major key signature.
             lmConverter oConverter;
             long nMidi = 0;
-            sPitch.ToLong(&nMidi);   
+            sPitch.ToLong(&nMidi);
             sPitch = oConverter.MidiPitchToLDPName((lmPitch)nMidi);
         }
         if (LDPDataToPitch(sPitch, &nAccidentals, &sStep, &sOctave)) {
@@ -1446,13 +1446,13 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             sDuration );
     }
     m_sLastDuration = sDuration;
-    
+
     //analyze remaining parameters: annotations
     bool fFermata = false;
     lmEPlacement nFermataPlacement = ep_Default;
 //    Dim nTipoStem As EStemType
 //    nTipoStem = eDefaultStem
-//    
+//
     wxString sData;
     lmLDPNode* pX;
     int iLevel, nLevel;
@@ -1466,7 +1466,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             sData = pX->GetName();
     //            case "AMR"       //Articulaciones y acentos: marca de respiración
     //                cAnotaciones.Add sData
-    //                
+    //
             if (sData == m_pTags->TagName(_T("l"), _T("SingleChar")) && !fIsRest) {       //Tied to the next one
                 fTie = true;
             }
@@ -1481,7 +1481,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     }
                     else {
                         // and the previous note must be beamed
-                        if (g_pLastNoteRest && g_pLastNoteRest->IsBeamed() && 
+                        if (g_pLastNoteRest && g_pLastNoteRest->IsBeamed() &&
                             g_pLastNoteRest->GetBeamType(0) != eBeamEnd) {
                             AnalysisError(
                                 _("Requesting to start a beamed group but there is already an open group. Beaming ignored."));
@@ -1517,7 +1517,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     }
                     else {
                         // and the previous note must be beamed
-                        if (!g_pLastNoteRest->IsBeamed() || 
+                        if (!g_pLastNoteRest->IsBeamed() ||
                             g_pLastNoteRest->GetBeamType(0) == eBeamEnd) {
                             AnalysisError(
                                 _("Requesting ending a beaming a group but previous note is not beamed. Beaming ignored."));
@@ -1536,17 +1536,17 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                         // facilitate the understanding of the algorithm)
                         for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++) {
                             BeamInfo[iLevel].Type = eBeamEnd;
-                            g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                            g_pLogger->LogTrace(_T("LDPParser_beams"),
                                 _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamEnd"), iLevel);
                         }
 
                         // deal with differences between current note level and previous note level
                         if (nCurLevel > nPrevLevel) {
-                            // current level is grater than previous one ==> 
+                            // current level is grater than previous one ==>
                             // close common levels (done) and put backward in current deeper levels
                             for (; iLevel <= nCurLevel; iLevel++) {
                                 BeamInfo[iLevel].Type = eBeamBackward;
-                                g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                                g_pLogger->LogTrace(_T("LDPParser_beams"),
                                     _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamBackward"), iLevel);
                             }
                         }
@@ -1556,12 +1556,12 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                             for (; iLevel <= nPrevLevel; iLevel++) {
                                 if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
                                     g_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
-                                    g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                                    g_pLogger->LogTrace(_T("LDPParser_beams"),
                                         _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel);
                                 }
                                 else if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
                                     g_pLastNoteRest->SetBeamType(iLevel, eBeamForward);
-                                    g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                                    g_pLogger->LogTrace(_T("LDPParser_beams"),
                                         _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamForward"), iLevel);
                                 }
                             }
@@ -1600,7 +1600,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             else if (sData.Left(1) == m_pTags->TagName(_T("p"), _T("SingleChar"))) {       //staff number
                 m_nCurStaff = AnalyzeNumStaff(sData);
             }
-            else if (sData == m_pTags->TagName(_T("fermata"))) {       //fermata 
+            else if (sData == m_pTags->TagName(_T("fermata"))) {       //fermata
                 fFermata = true;
             }
             else {
@@ -1644,7 +1644,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
         }
     }
-    
+
     //force beaming for notes between eBeamBegin and eBeamEnd (only for single notes
     //and chord base notes, not for secondary notes of a chord)
     if (!fBeamed && !fInChord && nNoteType > eQuarter) {
@@ -1666,7 +1666,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     // continue common levels
                     for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++) {
                         BeamInfo[iLevel].Type = eBeamContinue;
-                        g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                        g_pLogger->LogTrace(_T("LDPParser_beams"),
                             _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamContinue"), iLevel);
                     }
 
@@ -1674,7 +1674,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                         // current level is grater than previous one, start new beams
                         for (; iLevel <= nCurLevel; iLevel++) {
                             BeamInfo[iLevel].Type = eBeamBegin;
-                            g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                            g_pLogger->LogTrace(_T("LDPParser_beams"),
                                 _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamBegin"), iLevel);
                         }
                     }
@@ -1684,12 +1684,12 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                         for (; iLevel <= nPrevLevel; iLevel++) {
                             if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
                                 g_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
-                                g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                                g_pLogger->LogTrace(_T("LDPParser_beams"),
                                     _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel);
                             }
                             else if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
                                 g_pLastNoteRest->SetBeamType(iLevel, eBeamForward);
-                                g_pLogger->LogTrace(_T("LDPParser_beams"), 
+                                g_pLogger->LogTrace(_T("LDPParser_beams"),
                                     _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamFordward"), iLevel);
                             }
                         }
@@ -1719,7 +1719,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     else {
         pNR = pVStaff->AddNote(false,    //relative pitch
                                sStep, sOctave, _T("0"), nAccidentals,
-                               nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff, 
+                               nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff,
                                fBeamed, BeamInfo, fInChord, fTie, nStem);
         m_sLastOctave = sOctave;
     }
@@ -1768,7 +1768,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
 
     if (pNode->IsSimple()) {
         //start/end of tuplet. Simple parameter (t- | tn | tn/m )
-        wxASSERT(sData.Left(1) == m_pTags->TagName(_T("t"), _T("SingleChar")) );       
+        wxASSERT(sData.Left(1) == m_pTags->TagName(_T("t"), _T("SingleChar")) );
         if (sData == _T("t-")) {
             //end of tuplet
             fEndTuplet = true;
@@ -1848,7 +1848,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
                 sElmName );
             return true;
         }
-        
+
         // get type: + or -
         wxString sType = (pNode->GetParameter(1))->GetName();
         if (sType ==_T("+") ) {             //start of tuplet
@@ -1939,7 +1939,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
     if (fEndTuplet) {
         if (!fCloseAllowed) {
             // there isn't an open tuplet
-            AnalysisError(_("[%s] Requesting to end a tuplet but there is not an open tuplet or it is not possible to cle it here. Tag '%s' ignored."),
+            AnalysisError(_("[%s] Requesting to end a tuplet but there is not an open tuplet or it is not possible to close it here. Tag '%s' ignored."),
                 sParent, sData);
             return true;
         }
@@ -1977,12 +1977,12 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
 //
 //    wxASSERT(pNode->GetName() = "INFOMIDI"
 //    wxASSERT(pNode->GetNumParms() >= 1
-//    
+//
 //    Dim long i
 //    Dim sTipo As String
 //    Dim nValor As Integer
 //    Dim wxString sData
-//    
+//
 //    for (i = 1 To pNode->GetNumParms()
 //        sData = pNode->GetParameter(i).GetName();
 //        sTipo = UCase$(Mid$(sData, 1, 1))
@@ -2007,7 +2007,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
 //                    "Se ignora."
 //        }
 //    }   // i
-//    
+//
 //}
 //
 bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
@@ -2019,7 +2019,7 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == _T("Barra") || sElmName == m_pTags->TagName(_T("barline")) );
-    //       ----------------------- compatibility eBooks v1.3 
+    //       ----------------------- compatibility eBooks v1.3
 
     //check that bar type is specified
     if(pNode->GetNumParms() < 1) {
@@ -2027,10 +2027,10 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
         pVStaff->AddBarline(etb_SimpleBarline, true);
         return false;
     }
-    
+
     bool fVisible = true;
     EBarline nType = etb_SimpleBarline;
-    
+
     wxString sType = (pNode->GetParameter(1))->GetName();
     if (sType == m_pTags->TagName(_T("endRepetition"), _T("Barlines")) ) {
         nType = etb_EndRepetitionBarline;
@@ -2089,7 +2089,7 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
             }
         }
     }
-    
+
     lmBarline* pBarline = pVStaff->AddBarline(nType, fVisible);
 
     //add location
@@ -2097,7 +2097,7 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
         pBarline->SetLocation(xUserPos, xUserPosType);
 
     return false;
-    
+
 }
 
 //returns true if error; in this case nothing is added to the lmVStaff
@@ -2105,10 +2105,10 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
 {
 //  <Clave> = ("Clave" {"Sol" | "Fa4" | "Fa3" | "Do1" | "Do2" | "Do3" | "Do4" | "SinClave" }
 //                [<numStaff>] [<Visible>] )
-    
+
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == _T("Clave") || sElmName == m_pTags->TagName(_T("clef")) );
-    //       ----------------------- compatibility eBooks v1.3 
+    //       ----------------------- compatibility eBooks v1.3
 
     //check that clef type is specified
     if(pNode->GetNumParms() < 1) {
@@ -2118,7 +2118,7 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
         pVStaff->AddClef(eclvSol, 1, true);
         return false;
     }
-    
+
     long iP = 1;
     wxString sName = (pNode->GetParameter(iP))->GetName();
     EClefType nClef;
@@ -2182,7 +2182,7 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
         nClef = eclvSol;
     }
     iP++;
-    
+
     //analyze optional parameters
     lmLDPNode* pX;
     long nStaff = 1;
@@ -2211,17 +2211,17 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
 
     pVStaff->AddClef(nClef, nStaff, fVisible);
     return false;
-    
+
 }
 
 //returns true if error; in this case nothing is added to the lmVStaff
 bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
-//  <metronome> = (metronome 
+//  <metronome> = (metronome
 //                    { <NoteType> {<TicksPerMinute> | <NoteType>}  |
 //                      <TicksPerMinute> }
 //                    (parentheses) (<Visible>) )
-    
+
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == m_pTags->TagName(_T("metronome")) );
 
@@ -2233,7 +2233,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
             sElmName );
         return true;    //error
     }
-    
+
     long iP = 1;
     wxString sName = (pNode->GetParameter(iP))->GetName();
 
@@ -2307,7 +2307,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
             pVStaff->AddMetronomeMark(nTicksPerMinute, fParentheses, fVisible);
             break;
         case eMMT_Note_Note:
-            pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nRightNoteType, nRightDots, 
+            pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nRightNoteType, nRightDots,
                             fParentheses, fVisible);
             break;
         case eMMT_Note_Value:
@@ -2319,7 +2319,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 
     return false;    //no error
-    
+
 }
 
 void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmObject* pObject)
@@ -2335,7 +2335,7 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmObject* pObject)
             m_pTags->TagName(_T("opt")), 2);
         return;
     }
-    
+
     //get option name and value
     wxString sName = (pNode->GetParameter(1))->GetName();
     wxString sValue = ((pNode->GetParameter(2))->GetName()).Lower();
@@ -2393,7 +2393,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
             m_pTags->TagName(_T("title")) );
         return true;
     }
-    
+
     wxString sTitle;
     lmEAlignment nAlign = m_nTitleAlignment;
     lmFontInfo tFont = {m_sTitleFontName, m_nTitleFontSize, m_nTitleStyle};
@@ -2435,7 +2435,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
             AnalyzeFont(pX, &tFont);
             //save font values as new default for titles
             m_sTitleFontName = tFont.sFontName;
-            m_nTitleFontSize = tFont.nFontSize; 
+            m_nTitleFontSize = tFont.nFontSize;
             m_nTitleStyle = tFont.nStyle;
         }
         else if (sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) ||
@@ -2450,12 +2450,12 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
 
     //create the title
     pScore->AddTitle(sTitle, nAlign, tPos, tFont.sFontName, tFont.nFontSize, tFont.nStyle);
-    
+
     return false;
-    
+
 }
 
-bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText, 
+bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText,
                                     lmEAlignment* pAlign, lmLocation* pPos,
                                     lmFontInfo* pFont, bool* pHasWidth)
 {
@@ -2475,7 +2475,7 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText,
             pNode->GetName() );
         return true;
     }
-    
+
     wxString sText;
     lmEAlignment nAlign = *pAlign;
     lmFontInfo tFont = {pFont->sFontName, pFont->nFontSize, pFont->nStyle};
@@ -2558,18 +2558,18 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     tPos.yUnits = lmTENTHS;
 
     if (AnalyzeTextString(pNode, &sText, &nAlign, &tPos, &tFont, &fHasWidth)) return true;
-    
+
     //no error:
     //save font values as new default for titles
     m_sTextFontName = tFont.sFontName;
-    m_nTextFontSize = tFont.nFontSize; 
+    m_nTextFontSize = tFont.nFontSize;
     m_nTextStyle = tFont.nStyle;
 
     //create the text
     pVStaff->AddWordsDirection(sText, nAlign, &tPos, tFont, fHasWidth);
 
     return false;
-    
+
 }
 
 //returns true if error; in this case nothing is added to the lmVStaff
@@ -2580,7 +2580,7 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == _T("Tonalidad") || sElmName == m_pTags->TagName(_T("key")) );
-    //       --------------------------- compatibility eBooks v1.3 
+    //       --------------------------- compatibility eBooks v1.3
 
     //check that key value is specified
     if(pNode->GetNumParms() < 1) {
@@ -2590,7 +2590,7 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
         pVStaff->AddKeySignature(earmDo);
         return false;
     }
-    
+
     long iP = 1;
     wxString sName = (pNode->GetParameter(iP))->GetName();
     EKeySignatures nKey;
@@ -2606,7 +2606,7 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
         nKey = LDPInternalNameToKey( sKey );
     }
     iP++;
-    
+
     //analyze second parameter (optional): visible or not
     lmLDPNode* pX;
     bool fVisible = true;
@@ -2614,20 +2614,20 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
         pX = pNode->GetParameter(iP);
         if (pX->GetName() == m_pTags->TagName(_T("noVisible")) ) fVisible = false;
     }
-    
+
     pVStaff->AddKeySignature(nKey, fVisible);
     return false;
-    
+
 }
 
 //returns true if error and in this case nothing is added to the lmVStaff
 bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
 {
 //  <Métrica> ::= ("Metrica" <num> <num> [<Visible>])
-    
+
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == _T("Metrica") || sElmName == m_pTags->TagName(_T("time")) );
-    //       ------------------------- compatibility eBooks v1.3 
+    //       ------------------------- compatibility eBooks v1.3
 
     //check that the two numbers are specified
     if(pNode->GetNumParms() < 2) {
@@ -2636,7 +2636,7 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
         pVStaff->AddTimeSignature(emtr44);
         return false;
     }
-    
+
     wxString sNum1 = (pNode->GetParameter(1))->GetName();
     wxString sNum2 = (pNode->GetParameter(2))->GetName();
     if (!sNum1.IsNumber() || !sNum2.IsNumber()) {
@@ -2657,7 +2657,7 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
         lmLDPNode* pX = pNode->GetParameter(3);
         if (pX->GetName() == m_pTags->TagName(_T("noVisible")) ) fVisible = false;
     }
-    
+
     pVStaff->AddTimeSignature((int)nBeats, (int)nBeatType, fVisible);
     return false;
 }
@@ -2665,7 +2665,7 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
 void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
 //  <spacer> ::= ("spacer" <width>)     width in tenths
-    
+
     wxString sElmName = pNode->GetName();
 
     //check that the width is specified
@@ -2674,7 +2674,7 @@ void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
             sElmName);
         return;
     }
-    
+
     wxString sNum1 = (pNode->GetParameter(1))->GetName();
     if (!sNum1.IsNumber()) {
         AnalysisError(
@@ -2692,7 +2692,7 @@ void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
 void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
 //  <graphic> ::= ("graphic" <type> <params>*)
-    
+
     wxString sElmName = pNode->GetName();
     int nNumParms = pNode->GetNumParms();
 
@@ -2702,7 +2702,7 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
             sElmName);
         return;
     }
-    
+
     // analyze type and get its params.
     int iP = 1;
     wxString sType = (pNode->GetParameter(iP))->GetName();
@@ -2746,7 +2746,7 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
 
         // create the GraphicObj attached to a null lmSpacer
         lmStaffObj* pSpacer = (lmStaffObj*) pVStaff->AddSpacer(0);
-        lmGOLine* pLine = new lmGOLine(pSpacer, rPos[0], rPos[1], rPos[2], rPos[3], 
+        lmGOLine* pLine = new lmGOLine(pSpacer, rPos[0], rPos[1], rPos[2], rPos[3],
                                        rWidth, nColor);
         pSpacer->AddGraphicObj(pLine);
 
@@ -2776,7 +2776,7 @@ bool lmLDPParser::AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff)
     //add control object
     pVStaff->AddNewSystem();
     return false;
-    
+
 }
 
 EStemType lmLDPParser::AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff)
@@ -2793,7 +2793,7 @@ EStemType lmLDPParser::AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff)
             m_pTags->TagName(_T("stem")));
         return nStem;
     }
-    
+
     //get stem direction
     wxString sDir = (pNode->GetParameter(1))->GetName();
     if (sDir == m_pTags->TagName(_T("up")) )
@@ -2805,7 +2805,7 @@ EStemType lmLDPParser::AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 
     return nStem;
-    
+
 }
 
 lmEPlacement lmLDPParser::AnalyzeFermata(lmLDPNode* pNode)
@@ -2822,7 +2822,7 @@ lmEPlacement lmLDPParser::AnalyzeFermata(lmLDPNode* pNode)
             m_pTags->TagName(_T("fermata")));
         return nPlacement;
     }
-    
+
     //get fermata placement
     wxString sDir = (pNode->GetParameter(1))->GetName();
     if (sDir == m_pTags->TagName(_T("above")) )
@@ -2834,11 +2834,11 @@ lmEPlacement lmLDPParser::AnalyzeFermata(lmLDPNode* pNode)
     }
 
     return nPlacement;
-    
+
 }
 
 void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
-{        
+{
     // <font> = (font <name> <size> <style>)
 
     //returns, in variables pointed by pFontName, pFontSize and pStyleDevuelve the
@@ -2857,7 +2857,7 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
     bool fName = false;
     bool fSize = false;
     bool fStyle = false;
-    
+
     //get parameters. The come in any order
     lmFontInfo tFont = *pFont;
     int iP;
@@ -2915,16 +2915,16 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
     }
 
     *pFont = tFont;
-    
+
 }
 
 void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, int* pValue, lmEUnits* pUnits)
-{        
+{
     // <location> = (x num) | (y num) | (dx num) | (dy num)
     // <num> = number [units]
 
     //returns, in variables pointed by pValue and pUnits the
-    //result of the analysis. 
+    //result of the analysis.
 
     //check that there are parameters
     if (pNode->GetNumParms()!= 1) {
@@ -3010,7 +3010,7 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
 //void lmLDPParser::AnalizarPosicion(lmLDPNode* pNode, _
 //        ByRef nX As Long, ByRef nY As Long, _
 //        ByRef fXAbs As Boolean, ByRef fYAbs As Boolean)
-//        
+//
 ////<posicion> = (xy ["x<modo><pos>"] ["y<modo><pos>"])
 ////
 ////<modo> = { r | a }
@@ -3020,20 +3020,20 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
 ////Ejemplos:
 ////(xy xa54) // coordenada x: 54 décimas de línea desde el origen del lienzo
 ////(xy xr-54) // coordenada x: 54 décimas de línea menos que la x de origen de la barra de inicio del compas
-//    
+//
 //    wxASSERT(pNode->GetName() = "XY"
 //    wxASSERT(pNode->GetNumParms() = 1 Or pNode->GetNumParms() = 2
-//    
+//
 //    Dim sNum As String, nNum As Long, wxString sData
 //    Dim fAbsoluta As Boolean                //modo: true=absoluta, false=relativa
 //    Dim long iP
-//    
+//
 //    //inicializa valores a devolver
 //    nX = 0
 //    fXAbs = false
 //    nY = 0
 //    fYAbs = false
-//    
+//
 //    //bucle de análisis de parámetros
 //    for (iP = 1 To pNode->GetNumParms()
 //        //comprueba que el parámetro consta de al menos tres caracteres
@@ -3043,7 +3043,7 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
 //                ">. Se sustituye por xr0."
 //            sData = "xr0"
 //        }
-//        
+//
 //        //obtiene el valor numérico de la coordenada
 //        sNum = Mid$(sData, 3)
 //        if (Not IsNumeric(sNum)) {
@@ -3052,7 +3052,7 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
 //            sNum = "0"
 //        }
 //        nNum = CLng(sNum)
-//        
+//
 //        //analiza la segunda letra para determinar el modo
 //        switch (UCase$(Mid$(sData, 2, 1))
 //            case "R"
@@ -3064,7 +3064,7 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
 //                    "> no es r ni a. Se supone r: relativa"
 //                fAbsoluta = false
 //        }
-//        
+//
 //        //analiza la primera letra y guarda el valor de la coordenada
 //        switch (UCase$(Left$(sData, 1))
 //            case "X"
@@ -3077,9 +3077,9 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
 //                AnalysisError(wxString::Format(_T("Primera letra de coordena <" & sData & _
 //                    "> no es x ni y. Se ignora esta coordenada."
 //        }
-//        
+//
 //    }   // iP
-//    
+//
 //}
 //
 ////Devuelve true si hay error, es decir si no añade objeto al pentagrama
@@ -3092,14 +3092,14 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
 ////        "coda" | ("coda" num) |
 ////        "tocoda" | ("tocoda" num) |
 ////        "fine"
-//    
+//
 //    wxASSERT(pNode->GetName() = "REPETICION"
 //    wxASSERT(pNode->GetNumParms() = 2
-//    
+//
 //    Dim lmLDPNode* pX, long iP
 //    Dim nNum As Long, sDuration As String, nType As EDirectivasRepeticion
 //    Dim sNum As String
-//    
+//
 //    //obtiene tipo de repeticion
 //    Set pX = pNode->GetParameter(1)
 //    sDuration = UCase$(pX->GetName())
@@ -3116,7 +3116,7 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
 //        }
 //        nNum = CLng(sNum)
 //    }
-//    
+//
 //    switch (sDuration
 //        case "DACAPO"
 //            nType = eDR_DaCapo
@@ -3150,12 +3150,12 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
 //    Set pX = pNode->GetParameter(iP)
 //    Dim nX As Long, nY As Long, fXAbs As Boolean, fYAbs As Boolean
 //    AnalizarPosicion pX, nX, nY, fXAbs, fYAbs
-//    
+//
 //    //crea el pentobj
 //    pVStaff.AddDirectivaRepeticion nType, nNum, nX, nY, fXAbs, fYAbs
-//    
+//
 //    AnalizarDirectivaRepeticion = false       //no hay error
-//    
+//
 //}
 
 int lmLDPParser::AnalyzeNumStaff(wxString sNotation)
@@ -3167,14 +3167,14 @@ int lmLDPParser::AnalyzeNumStaff(wxString sNotation)
             sNotation, m_pTags->TagName(_T("p"), _T("SingleChar")) );
         return 1;
     }
-    
+
     wxString sData = sNotation.Mid(1);         //remove char 'p'
     if (!sData.IsNumber()) {
         AnalysisError( _("Staff number not followed by number (%s). Replaced by '%s1'"),
             sNotation, m_pTags->TagName(_T("p"), _T("SingleChar")) );
         return 1;
     }
-    
+
     long nValue;
     sData.ToLong(&nValue);
     if (nValue > m_nNumStaves) {
@@ -3191,10 +3191,10 @@ float lmLDPParser::GetDefaultDuration(ENoteType nNoteType, bool fDotted, bool fD
 {
     //compute duration without modifiers
     float rDuration = NoteTypeToDuration(nNoteType, fDotted, fDoubleDotted);
-    
+
     //alter by tuplet modifiers
     if (nActualNotes != 0) rDuration = (rDuration * (float)nNormalNotes) / (float)nActualNotes;
-    
+
     return rDuration;
 }
 
@@ -3304,7 +3304,7 @@ bool lmLDPParser::AnalyzeNoteType(wxString sNoteType, ENoteType* pnNoteType,
         *pnNoteType = e256th;
     else
         return true;    //error
-    
+
     //analyze dots
     *pfDotted = false;
     *pfDoubleDotted = false;
@@ -3317,8 +3317,8 @@ bool lmLDPParser::AnalyzeNoteType(wxString sNoteType, ENoteType* pnNoteType,
             return true;    //error
         }
     }
-            
+
     return false;   //no error
-    
+
 }
 

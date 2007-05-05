@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SingleExercises\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-05-02 16:37+0100\n"
+"PO-Revision-Date: 2007-05-04 16:17+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Dutch\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: D:\\usr\\Desarrollo_wx\\lenmus\\langtool\\locale\\src\\\n"
+"X-Poedit-Basepath: d:\\usr\\desarrollo_wx\\lenmus\\langtool\\locale\\src\n"
 "X-Poedit-Country: BELGIUM\n"
 "X-Poedit-SearchPath-0: SingleExercises\n"
 
@@ -19,17 +19,16 @@ msgid "Send your comments and sugesstions to LenMus team (www.lenmus.org)"
 msgstr "Stuur uw commentaar en suggesties naar het LenMus team (www.lenmus.org)"
 
 #: SingleExercises/SingleExercises.cpp:3
-#, fuzzy
 msgid "Licensed under the terms of the GNU Free Documentation License v1.2"
 msgstr "Gelicentieerd onder de voorwaarden van de GNU Free Documentation License v1.2"
 
 #: SingleExercises/SingleExercises.cpp:4
 msgid "the teacher of music"
-msgstr ""
+msgstr "de muziekleraar"
 
 #: SingleExercises/SingleExercises.cpp:5
 msgid "Cover page"
-msgstr ""
+msgstr "Omslagpagina"
 
 #: SingleExercises/SingleExercises.cpp:6
 msgid "Single exercises"
@@ -47,18 +46,12 @@ msgid "Cecilio Salmeron"
 msgstr "Cecilio Salmeron"
 
 #: SingleExercises/SingleExercises.cpp:9
-#, fuzzy
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
-msgstr ""
-"Het is toegestaan om dit document te copieren, te verspreiden\n"
-"         en of te wijzigen onder de voorwaarden van de GNU Free Documentation Licence,\n"
-"         versie 1.1. of elkelatere versie gepubliceerd door de Free Software Foundation,\n"
-"         zonder ongewijzigdesecties, zonder omslag teksten (op de voor en achterkant).\n"
-"         Een copie van de licentie is bijgevoegd."
+msgstr "Toestemming wordt verleend tot het kopiëren, verspreiden en/of wijzigen van dit document onder de bepalingen van de GNU Vrije Documentatie Licentie, versie 1.2 of iedere latere versie uitgegeven door de Free Software Foundation; zonder Invariante Secties, zonder Omslagteksten voor de Voorkant en zonder Omslagteksten voor de Achterkant. Een kopie van de licentie is opgenomen in de documentatie bijgevoegde bij dit programma en is tevens beschikbaar op"
 
 #: SingleExercises/SingleExercises.cpp:10
 msgid "http://www.gnu.org/licenses/fdl.html"
-msgstr ""
+msgstr "http://www.gnu.org/licenses/fdl.html"
 
 #: SingleExercises/SingleExercises.cpp:11
 msgid "Contents"
@@ -71,9 +64,7 @@ msgstr "Introductie tot enkelvoudige oefeningen"
 #: SingleExercises/SingleExercises.cpp:13
 #, fuzzy
 msgid "Appart of exercises included in the eBooks, the following general exercises (customizable to suit your needs at any moment) are available:"
-msgstr ""
-", de volgende algemene oefeningen\n"
-"zijn beschikbaar. Ze kunnen ten allen tijde aan uw noden kunnen aangepast worden:"
+msgstr "Ze kunnen ten allen tijde aan uw noden kunnen aangepast worden:"
 
 #: SingleExercises/SingleExercises.cpp:14
 msgid "Exercises for aural training"
@@ -123,7 +114,6 @@ msgid "Other exercises"
 msgstr "Andere oefeningen"
 
 #: SingleExercises/SingleExercises.cpp:25
-#, fuzzy
 msgid "Clefs reading"
 msgstr "Lezen van sleutels"
 

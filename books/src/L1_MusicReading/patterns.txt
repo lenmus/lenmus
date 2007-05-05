@@ -1,0 +1,102 @@
+24 [14]---------------------------------------------------------------------------
+    
+    <fragment>34;(n * c g+)(n * c g-)(n * n)(n * c)(s c),(n * c g+)(n * c g- l)(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * n)(s n)(n * n l)|(n * c g+)(n * c g-)(n * c g+)(n * c g-)(n * c)(s c)</fragment>
+    <fragment>34;(n * c)(n * n)(n * n)(n * c),(n * c)(s c)(n * c)(s c)(n * n l)|(n * n)(s n)(n * c g+)(n * c g- l)|(n * n)(n * n.)(n * c),(n * c g+)(n * c g- l)(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * b.)</fragment>
+    <fragment>34;(n * n.)(n * c)(n * c g+)(n * c g-),(n * c)(n * n)(n * c)(n * c g+)(n * c g-),(n * c g+)(n * c g- l)(n * c g+)(n * c g-)(n * c g+)(n * c g-),(n * b.)</fragment>
+    <fragment>34;(n * c)(n * n)(n * n)(n * c),(n * c)(n * n)(n * n)(n * c),(n * c)(n * n.)(n * n l)|(n * c g+)(n * c g-)(n * n)(s n)</fragment>
+    <fragment>34;(n * c g+)(n * c)(n * c)(n * c g- l)(n * c g+)(n * c g-),(n * n)(n * c g+)(n * c)(n * c)(n * c g-),(n * b)(s n)</fragment>
+    <fragment>34;(n * n l)(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c g- l)(n * n)(n * c g+)(n * c g-),c (n * n)(n * c)(n * c g+)(n * c g-),(n * b)(s n)</fragment>
+    <fragment>34;(n * c g+)(n * c g- l)(n * c g+)(n * c g-)(n * c g+)(n * c g-),(n * c)(n * n.)(n * n),(n * b.)</fragment>
+    <fragment>44;(n * n l)(n * c g+)(n * c g-)(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * n.)(n * c)(n * b)</fragment>
+    <fragment>44;(n * n l)(n * c g+)(n * c g-)(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-)(n * n l)(n * c g+)(n * c g-),(n * b)(s b)</fragment>
+    <fragment>44;(n * n.)(n * c)(n * n)(n * c g+)(n * c g-),c (n * n)(n * n)(n * c)(n * c g+)(n * c g-),(n * n)(n * c g+)(n * c g-)(n * c g+)(n * c)(n * c)(n * c g-),(n * c)(n * n)(n * n)(n * c)(n * n)</fragment>
+    
+
+25 [15]---------------------------------------------------------------------------
+    
+    <fragment>34;(n * n)(n * c g+)(n * c g-)(s c)(n * c),(n * n)(n * c)(n * n.)</fragment>
+    <fragment>34;(n * c)(s c)(n * c)(s c)(n * n l)|(n * c g+)(n * c g-)(n * n)(s c)(n * c),(n * n)(n * c g+)(n * c g-)(s c)(n * c),(n * c)(n * n)(n * n)(n * c),(n * n)(s b)</fragment>
+    <fragment>34;(n * c)(n * n)(n * n)(n * c),(n * n l)(n * c)(s c)(s c)(n * c),(n * b.)</fragment>
+    <fragment>34;(n * c g+)(n * c g-)(s c)(n * c)(n * c g+)(n * c g- l)|(n * c g+)(n * c g-)(n * n)(s c)(n * c),(n * b)(s n)</fragment>
+    <fragment>44;(n * c g+)(n * c)(n * c)(n * c g-)(n * n l)(n * c g+)(n * c g-),(n * n)(n * c g+)(n * c g-)(n * n)(s c) c</fragment>
+    <fragment>44;(n * n)(n * c g+)(n * c g-)(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * n)(n * c g+)(n * c g-)(n * b)</fragment>
+    <fragment>44;(s c)(n * c)(n * n l)(n * n)(n * c g+)(n * c g-),(n * c g+)(n * c g- l)(n * n)(s c)(n * n l)|(n * n)(n * c g+)(n * c g-)(n * b)</fragment>
+    <fragment>44;(s c)(n * c)(n * c g+)(n * c g- l)(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * n.)(n * c)(n * b)</fragment>
+    <fragment>44;(n * n.)(n * c) c (n * n)(n * c),(n * n)(n * n l)(n * n)(n * c g+)(n * c g-)</fragment>
+    <fragment>24;(n * n)(n * c g+)(n * c g-),(n * n)(s c)(n * c),(n * n)(s c)(n * c),(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(s n)</fragment>
+    <fragment>24;(n * c g+)(n * c)(n * c)(n * c g- l)|(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(s n)</fragment>
+    <fragment>24;(s c)(n * c)(n * c g+)(n * c g-),(n * n)(s c)(n * c),(n * n)(n * n)</fragment>
+    <fragment>24;(n * c)(n * n)(n * c),(n * c g+)(n * c)(n * c)(n * c g-),(n * n l)(n * c)(s c)</fragment>
+    <fragment>24;(s c)(n * c)(n * c g+)(n * c g-),(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * c g+)(n * c g- l)(n * n)</fragment>
+
+ 26 [16] --------------------------------------------------------------------
+	
+	<fragment>24,44;(n * b),(s n)(n * n),(s n)(n * n)</fragment>
+	<fragment>24,44;(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(s c)(n * c),(s c)(n * c)(n * n)</fragment>
+	<fragment>24,44;(n * n)(n * c g+)(n * c g-),(n * n)(s c)(n * c),(s c)(n * c)(s c)(n * c),(n * c g+)(n * c g-)(n * n)</fragment>
+	<fragment>24,44;(s c)(n * c)(s c)(n * c),(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
+	<fragment>24;(n * c g+)(n * c g-)(n * n l)|(n * n)(s c)(n * c),(s c)(n * c)(n * n l)|(n * c g+)(n * c g-)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
+	<fragment>24,44;(n * n l)(n * c)(s c),(s c)(n * c)(n * c g+)(n * c g-),(n * c g+)(n * c g-)(n * c)(s c)</fragment>
+	
+27 [17] --------------------------------------------------------------------
+    
+    <fragment>24,44;(n * n)(n * c g+)(n * c g-),(n * s g+)(n * s)(n * s)(n * s g-)(n * n)</fragment>
+    <fragment>24,44;(s c)(n * c)(n * n),(n * s g+)(n * s)(n * s)(n * s g-)(n * c)(s c)</fragment>
+    <fragment>24,44;(n * c)(n * n)(n * c),(n * n)(n * s g+)(n * s)(n * s)(n * s g-),(n * b)</fragment>
+    <fragment>24,44;(s c)(n * c)(s c)(n * c),(n * n l)(n * c g+)(n * c g-),(n * s g+)(n * s)(n * s)(n * s g-)(n * n)</fragment>
+    <fragment>34;(n * n)(s c)(n * c)(n * n),(n * c)(s c)(n * c)(s c)(n * s g+)(n * s)(n * s)(n * s g-),(n * b.)</fragment>
+    <fragment>34;(n * b)(n * s g+)(n * s)(n * s)(n * s g-),(n * b)(s c)(n * c),(s c)(n * c)(s c)(n * c)(n * c g+)(n * c g-),(n * c g+)(n * c g- l)(n * c g+)(n * c g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * b.)</fragment>
+    <fragment>34;(n * c)(n * n)(n * c)(n * s g+)(n * s)(n * s)(n * s g-),(n * n l)(n * c g+)(n * c g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * b)(s n)</fragment>
+    <fragment>34;(n * n)(s c)(n * c) c (n * n)(n * c),(n * c g+)(n * c g-)(n * s g+)(n * s)(n * s)(n * s g-)(n * b)</fragment>
+    
+28 [18]--------------------------------------------------------------------
+   
+    <fragment>24,44;(n * n)(n * c g+)(n * s)(n * s g-),(n * n)(s c)(n * c),(n * c g+)(n * s)(n * s g-)(n * c g+)(n * c g-),(n * n)(n * s g+)(n * s)(n * s)(n * s g-),(n * n)(s n)</fragment>
+    <fragment>24,44;(n * c g+)(n * s)(n * s g-)(n * c g+)(n * c g- l)|(n * c g+)(n * c g-)(n * c g+)(n * s)(n * s g-),(n * n)(s n)</fragment>
+    <fragment>24,44;(s c)(n * c)(n * c g+)(n * c g-),(n * c g+)(n * s)(n * s g-)(n * c g+)(n * s)(n * s g-),(n * c g+)(n * c)(n * c)(n * c g- l)|(n * c g+)(n * c g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * c g+)(n * c g- l)(n * n)</fragment>
+    <fragment>24,44;(s c)(n * c)(n * s g+)(n * s)(n * s)(n * s g-),(n * c g+)(n * c g- l)(n * c)(s c)</fragment>
+    <fragment>24,44;(n * s g+)(n * s)(n * s)(n * s g-)(n * c g+)(n * s)(n * s g-),(n * n.)(n * c),(n * c g+)(n * s)(n * s g-)(n * c g+)(n * c g- l)|(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * b)</fragment>
+    <fragment>24,44;(n * s g+)(n * s)(n * s)(n * s g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * n l)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
+    <fragment>24,44;(n * c g+)(n * s)(n * s g-)(n * c g+)(n * c g-),(n * c g+)(n * s)(n * s g-)(n * c g+)(n * c g- l)|(n * c g+)(n * c g-)(n * n)</fragment>
+    <fragment>34;(n * n.)(n * c)(n * c g+)(n * c g-),(n * c)(n * n)(n * n)(n * c),(n * s g+)(n * s)(n * s)(n * s g-)(n * c g+)(n * c g-)(n * s g+)(n * s)(n * s)(n * s g-),(n * b)(s n)</fragment>
+    <fragment>34;(n * n.)(n * c)(n * s g+)(n * s)(n * s)(n * s g-),(n * c g+)(n * c)(n * c)(n * c g-)(n * n)</fragment>
+    <fragment>34;(n * c)(n * n)(n * c)(n * s g+)(n * s)(n * s)(n * s g-),(n * n l)(n * c g+)(n * c g-)(n * n)</fragment>
+    <fragment>34;(s c)(n * c)(s c)(n * c)(s c)(n * c),(n * n)(n * s g+)(n * s)(n * s)(n * s g-)(n * n)</fragment>
+    
+29 [19] --------------------------------------------------------------------
+    
+    <fragment>68;(n * c g+)(n * c)(n * c g-)(n * n.),(n * n.)(n * c g+)(n * c)(n * c g-),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * n. l)(n * n.),(n * c g+)(n * c)(n * c g-)(n * n. l)|(n * n.)(s n.)</fragment>
+    <fragment>68;(n * n.)(n * c g+)(n * c)(n * c g-),(n * n.)(n * n.),(s b.)</fragment>
+    <fragment>68;(n * c g+)(n * c)(n * c g-)(n * n.),(n * c g+)(n * c)(n * c g-)(n * c g+)(n * c)(n * c g-),(n * b.)</fragment>
+    <fragment>68;(n * c g+)(n * c)(n * c g-)(n * c g+)(n * c)(n * c g-),(n * c g+)(n * c)(n * c g-)(n * n.)</fragment>
+
+30 [20] --------------------------------------------------------------------
+    
+    <fragment>68;(n * n.)(n * n)(n * c),(n * n. l)(n * c g+)(n * c)(n * c g-),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * n)(n * c)(n * c g+)(n * c)(n * c g-),(n * n. l)(n * n)(n * c),(n * n.)(n * n.)</fragment>
+    <fragment>68;(n * n. l)(n * c g+)(n * c)(n * c g-),(n * n. l)(n * n)(n * c),(n * n. l)(n * n.)</fragment>
+    <fragment>68;(n * n)(n * c)(n * n. l)|(n * n)(n * c)(n * c g+)(n * c)(n * c g-),(n * b.)</fragment>
+    <fragment>68;(n * n)(n * c)(n * n)(n * c),(n * n. l)(n * c g+)(n * c)(n * c g-),(n * c g+)(n * c)(n * c g-)(n * n)(n * c),(n * b.)</fragment>
+    <fragment>68;(n * n)(n * c)(n * n)(n * c),(n * c g+)(n * c)(n * c g-)(n * c g+)(n * c)(n * c g-),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * n)(n * c)(n * c g+)(n * c)(n * c g-),(n * n)(n * c)(n * n)(n * c),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * c g+)(n * c)(n * c g-)(n * n)(n * c),(n * c g+)(n * c)(n * c g-)(n * n)(n * c),(n * b.)</fragment>
+
+31 [21] --------------------------------------------------------------------
+    
+    <fragment>68;(n * n.)(n * c g+)(n * c)(n * c g-),(n * n)(n * c) c (n * n),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * c)(n * n)(n * n.),(n * c g+)(n * c)(n * c g-)(n * n.)</fragment>
+    <fragment>68;(n * n.)(n * c)(n * n),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * c)(n * n l)(n * c g+)(n * c)(n * c g-),(n * n)(n * c)(n * n.)</fragment>
+    <fragment>68;(n * c g+)(n * c)(n * c g-)(n * n.),(n * c)(n * n l)(n * n.)</fragment>
+    <fragment>68;(n * n)(n * c)(n * n)(n * c),(n * c g+)(n * c)(n * c g-)(n * c)(n * n),(n * n.)(s n.)</fragment>
+    
+32 [22] --------------------------------------------------------------------
+    
+    <fragment>68;(n * n)(n * c)(n * c g+)(n * c)(n * c g-),(n * n.)(s c)(n * c g+)(n * c g-),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * c g+)(n * c)(n * c g-)(n * c g+)(s c)(n * c g-),(n * n.)(n * c g+)(n * c g-)(s c),(n * n.)(s n.)</fragment>
+    <fragment>68;(n * n.)(s n)(n * c),(n * n. l)(n * n)(n * c),(n * c g+)(n * c)(n * c g-)(n * n.),(n * c g+)(s c)(n * c g-)(n * n.)</fragment>
+    <fragment>68;(n * c g+)(s c)(n * c g-)(n * c g+)(s c)(n * c g-),(n * c g+)(n * c)(n * c g-)(n * n.)</fragment>
+    <fragment>68;(n * n.)(s c)(n * c g+)(n * c g-),(n * c g+)(n * c)(n * c g-)(n * c g+)(n * c)(n * c g-),(n * c)(n * n l)(n * n.)</fragment>
+    
+ 

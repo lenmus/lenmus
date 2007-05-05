@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.3\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-04-17 16:59+0100\n"
-"Last-Translator: Jack Van Handenhove <jvanhan@gmail.com>\n"
+"PO-Revision-Date: 2007-05-04 16:04+0100\n"
+"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Dutch\n"
 "X-Poedit-SourceCharset: iso-8859-1\n"
-"X-Poedit-Basepath: c:/usr/desarrollo_wx/lenmus/src\n"
+"X-Poedit-Basepath: d:/usr/desarrollo_wx/lenmus/src\n"
 "X-Poedit-Country: BELGIUM\n"
 "X-Poedit-SearchPath-0: score\n"
 "X-Poedit-SearchPath-1: auxmusic\n"
@@ -29,20 +29,13 @@ msgstr ""
 "X-Poedit-SearchPath-14: ../langtool/src\n"
 
 #: score/Direction.cpp:174
-#: score/NoteRestObj.cpp:142
+#: score/NoteRestObj.cpp:157
 #: score/Text.cpp:191
 #: score/TupletBracket.cpp:287
+#: score/MetronomeMark.cpp:173
 #: app/FontManager.cpp:121
 msgid "Sorry, an error has occurred while allocating the font."
-msgstr "Er heeft zich een fout voor gedaan bij het instellen van het font."
-
-#: score/Formatter3.cpp:426
-msgid "[lmFormatter3::RenderJustified]: Program limitation: Maximum number of systems per score has been exceeded."
-msgstr "[lmFormatter3::RenderJustified]: Programma beperking: Het maximaal aantal systemen per partituur is overschreden."
-
-#: score/Formatter3.cpp:562
-msgid "[lmFormatter3::RenderJustified]: Program limitation: Maximum number of staves per system has been exceeded."
-msgstr "[lmFormatter3::RenderJustified]: Program limitation: Het maximum aantal notenbalken per systeem is overschreden."
+msgstr "Er heeft zich een fout voorgedaan bij de allocatie van het font."
 
 #: score/KeySignature.cpp:73
 msgid "C Major"
@@ -108,115 +101,115 @@ msgstr "Fa Groot"
 #: exercises/TheoKeySignCtrol.cpp:129
 #: exercises/TheoKeySignCtrol.cpp:578
 msgid "A minor"
-msgstr "Si Klein"
+msgstr "la klein"
 
 #: score/KeySignature.cpp:89
 #: exercises/TheoKeySignCtrol.cpp:130
 #: exercises/TheoKeySignCtrol.cpp:572
 msgid "E minor"
-msgstr "Mi Klein"
+msgstr "mi klein"
 
 #: score/KeySignature.cpp:90
 #: exercises/TheoKeySignCtrol.cpp:131
 #: exercises/TheoKeySignCtrol.cpp:581
 msgid "B minor"
-msgstr "Si Klein"
+msgstr "si klein"
 
 #: score/KeySignature.cpp:91
 #: exercises/TheoKeySignCtrol.cpp:132
 msgid "F # minor"
-msgstr "Fa # Klein"
+msgstr "fa # klein"
 
 #: score/KeySignature.cpp:92
 #: exercises/TheoKeySignCtrol.cpp:133
 msgid "C # minor"
-msgstr "Do # Klein"
+msgstr "do # klein"
 
 #: score/KeySignature.cpp:93
 #: exercises/TheoKeySignCtrol.cpp:134
 msgid "G # minor"
-msgstr "Sol # Klein"
+msgstr "sol # klein"
 
 #: score/KeySignature.cpp:94
 #: exercises/TheoKeySignCtrol.cpp:135
 msgid "D # minor"
-msgstr "Re # Klein"
+msgstr "re # klein"
 
 #: score/KeySignature.cpp:95
 #: exercises/TheoKeySignCtrol.cpp:136
 msgid "A # minor"
-msgstr "La # Klein"
+msgstr "la # klein"
 
 #: score/KeySignature.cpp:96
 #: exercises/TheoKeySignCtrol.cpp:137
 msgid "A b minor"
-msgstr "La b Klein"
+msgstr "la b klein"
 
 #: score/KeySignature.cpp:97
 #: exercises/TheoKeySignCtrol.cpp:138
 msgid "E b minor"
-msgstr "Mi b Klein"
+msgstr "mi b klein"
 
 #: score/KeySignature.cpp:98
 #: exercises/TheoKeySignCtrol.cpp:139
 msgid "B b minor"
-msgstr "Si b Klein"
+msgstr "si b klein"
 
 #: score/KeySignature.cpp:99
 #: exercises/TheoKeySignCtrol.cpp:140
 #: exercises/TheoKeySignCtrol.cpp:573
 msgid "F minor"
-msgstr "Fa Klein"
+msgstr "fa klein"
 
 #: score/KeySignature.cpp:100
 #: exercises/TheoKeySignCtrol.cpp:141
 #: exercises/TheoKeySignCtrol.cpp:567
 msgid "C minor"
-msgstr "Do Klein"
+msgstr "do klein"
 
 #: score/KeySignature.cpp:101
 #: exercises/TheoKeySignCtrol.cpp:142
 #: exercises/TheoKeySignCtrol.cpp:575
 msgid "G minor"
-msgstr "Sol Klein"
+msgstr "sol klein"
 
 #: score/KeySignature.cpp:102
 #: exercises/TheoKeySignCtrol.cpp:143
 #: exercises/TheoKeySignCtrol.cpp:569
 msgid "D minor"
-msgstr "Re Klein"
+msgstr "re klein"
 
-#: score/Note.cpp:1702
+#: score/Note.cpp:1717
 #, c-format
 msgid "c%d"
 msgstr "do%d"
 
-#: score/Note.cpp:1702
+#: score/Note.cpp:1717
 #, c-format
 msgid "d%d"
 msgstr "re%d"
 
-#: score/Note.cpp:1702
+#: score/Note.cpp:1717
 #, c-format
 msgid "e%d"
 msgstr "mi%d"
 
-#: score/Note.cpp:1702
+#: score/Note.cpp:1717
 #, c-format
 msgid "f%d"
 msgstr "fa%d"
 
-#: score/Note.cpp:1702
+#: score/Note.cpp:1717
 #, c-format
 msgid "g%d"
 msgstr "sol%d"
 
-#: score/Note.cpp:1702
+#: score/Note.cpp:1717
 #, c-format
 msgid "a%d"
 msgstr "la%d"
 
-#: score/Note.cpp:1702
+#: score/Note.cpp:1717
 #, c-format
 msgid "b%d"
 msgstr "si%d"
@@ -227,15 +220,15 @@ msgstr "grondligging"
 
 #: auxmusic/ChordManager.cpp:239
 msgid "1st inversion"
-msgstr "1ste inversie"
+msgstr "1ste omkering"
 
 #: auxmusic/ChordManager.cpp:241
 msgid "2nd inversion"
-msgstr "2de inversie"
+msgstr "2de omkering"
 
 #: auxmusic/ChordManager.cpp:243
 msgid "3rd inversion"
-msgstr "3de inversie"
+msgstr "3de omkering"
 
 #: auxmusic/ChordManager.cpp:332
 #: ../xrc/xrc_strings.cpp:243
@@ -261,7 +254,6 @@ msgstr "Verlaagde drieklank"
 msgid "Suspended triad (4th)"
 msgstr "Vertraagde kwart"
 
-# a
 #: auxmusic/ChordManager.cpp:337
 msgid "Suspended triad (2nd)"
 msgstr "Vertraagde kwart (2de)"
@@ -271,7 +263,7 @@ msgstr "Vertraagde kwart (2de)"
 #: ../xrc/xrc_strings.cpp:15
 #: ../xrc/xrc_strings.cpp:250
 msgid "Major 7th"
-msgstr "Groot Septiem"
+msgstr "Groot septiem"
 
 #: auxmusic/ChordManager.cpp:341
 #: exercises/IdfyChordCtrol.cpp:133
@@ -283,7 +275,7 @@ msgstr "Dominant Septiem"
 #: exercises/IdfyChordCtrol.cpp:134
 #: ../xrc/xrc_strings.cpp:251
 msgid "Minor 7th"
-msgstr "Klein Septiem"
+msgstr "klein septiem"
 
 #: auxmusic/ChordManager.cpp:343
 #: exercises/IdfyChordCtrol.cpp:135
@@ -310,7 +302,7 @@ msgstr "Overmatig Septiem"
 #: auxmusic/ChordManager.cpp:347
 #: ../xrc/xrc_strings.cpp:257
 msgid "Minor major 7th"
-msgstr "Naamloos Septiem"
+msgstr "mineur Majeur 7"
 
 #: auxmusic/ChordManager.cpp:350
 #: exercises/IdfyChordCtrol.cpp:142
@@ -323,7 +315,7 @@ msgstr "Grote Sixt"
 #: exercises/IdfyChordCtrol.cpp:143
 #: ../xrc/xrc_strings.cpp:261
 msgid "Minor 6th"
-msgstr "Kleine Sixt"
+msgstr "kleine Sixt"
 
 #: auxmusic/ChordManager.cpp:352
 #: exercises/IdfyChordCtrol.cpp:144
@@ -331,7 +323,7 @@ msgstr "Kleine Sixt"
 msgid "Augmented 6th"
 msgstr "Verhoogde Sixt"
 
-#: auxmusic/ComposerV5.cpp:220
+#: auxmusic/ComposerV5.cpp:216
 msgid "[lmComposer5::GenerateScore] No usable fragments!"
 msgstr "[lmComposer5::GenerateScore] Geen bruikbare fragmenten!"
 
@@ -365,22 +357,22 @@ msgstr "si"
 
 #: auxmusic/Interval.cpp:193
 msgid "It is not possible to generate an interval satisfying the constrains imposed by the choosen settings."
-msgstr "Het is niet mogelijk een interval te generen dat voldoet aan de beperkingen opgelegd door de gekozen instellingen."
+msgstr "Het is niet mogelijk een interval te genereren dat voldoet aan de gekozen instellingen."
 
 #: auxmusic/Interval.cpp:311
 #: auxmusic/Interval.cpp:816
 msgid " diminished"
-msgstr "verminderd"
+msgstr " verminderd"
 
 #: auxmusic/Interval.cpp:312
 #: auxmusic/Interval.cpp:817
 msgid " minor"
-msgstr " mineur"
+msgstr " klein"
 
 #: auxmusic/Interval.cpp:313
 #: auxmusic/Interval.cpp:818
 msgid " mayor"
-msgstr " majeur"
+msgstr " groot"
 
 #: auxmusic/Interval.cpp:314
 #: auxmusic/Interval.cpp:819
@@ -395,12 +387,12 @@ msgstr " rein"
 #: auxmusic/Interval.cpp:316
 #: auxmusic/Interval.cpp:821
 msgid " double augmented"
-msgstr " dubbel overmatig"
+msgstr " overmatig"
 
 #: auxmusic/Interval.cpp:317
 #: auxmusic/Interval.cpp:822
 msgid " double diminished"
-msgstr " dubbel verminderd"
+msgstr " verminderd"
 
 #: auxmusic/Interval.cpp:335
 #: exercises/EarIntervalsCtrol.cpp:115
@@ -408,7 +400,7 @@ msgstr " dubbel verminderd"
 #: exercises/TheoIntervalsCtrol.cpp:637
 #: ../xrc/xrc_strings.cpp:4
 msgid "Unison"
-msgstr "Prime"
+msgstr "prime"
 
 #: auxmusic/Interval.cpp:336
 #: exercises/TheoIntervalsCtrol.cpp:149
@@ -474,53 +466,44 @@ msgid "Two octaves"
 msgstr "Twee oktaven"
 
 #: auxmusic/ScalesManager.cpp:162
-#, fuzzy
 msgid "Major natural"
-msgstr "Grote drieklank"
+msgstr "Majeur natuurlijk"
 
 #: auxmusic/ScalesManager.cpp:163
-#, fuzzy
 msgid "Major type II"
-msgstr "Groot Septiem"
+msgstr "Majeur type II"
 
 #: auxmusic/ScalesManager.cpp:164
-#, fuzzy
 msgid "Major type III"
-msgstr ", Type III"
+msgstr "Majeur Type III"
 
 #: auxmusic/ScalesManager.cpp:165
-#, fuzzy
 msgid "Major type IV"
-msgstr "Groot Septiem"
+msgstr "Majeur type IV"
 
 #: auxmusic/ScalesManager.cpp:168
-#, fuzzy
 msgid "Minor natural"
-msgstr "Kleine drieklank"
+msgstr "Mineur natuurlijk"
 
 #: auxmusic/ScalesManager.cpp:169
-#, fuzzy
 msgid "Minor Dorian"
-msgstr "Kleine drieklank"
+msgstr "Mineur Dorisch"
 
 #: auxmusic/ScalesManager.cpp:170
-#, fuzzy
 msgid "Minor Harmonic"
-msgstr "Harmonisch"
+msgstr "Mineur Harmonisch"
 
 #: auxmusic/ScalesManager.cpp:171
-#, fuzzy
 msgid "Minor Melodic"
-msgstr "Melodisch"
+msgstr "Mineur Melodisch"
 
 #: auxmusic/ScalesManager.cpp:174
 msgid "Greek Ionian"
 msgstr "Grieks Ionisch"
 
 #: auxmusic/ScalesManager.cpp:175
-#, fuzzy
 msgid "Greek Dorian"
-msgstr "Dorisch"
+msgstr "Grieks Dorisch"
 
 #: auxmusic/ScalesManager.cpp:176
 msgid "Greek Phrygian"
@@ -563,377 +546,389 @@ msgstr "Blues"
 #: auxmusic/ScalesManager.cpp:186
 #: exercises/IdfyScalesCtrol.cpp:164
 #: ../xrc/xrc_strings.cpp:315
-#, fuzzy
 msgid "Whole tones"
-msgstr "Hele noot"
+msgstr "Hele noten"
 
 #: auxmusic/ScalesManager.cpp:187
 #: exercises/IdfyScalesCtrol.cpp:165
 #: ../xrc/xrc_strings.cpp:317
-#, fuzzy
 msgid "Chromatic"
-msgstr "Chromatische halvetoonsafstand"
+msgstr "Chromatisch"
 
-#: ldp_parser/LDPParser.cpp:147
+#: ldp_parser/LDPParser.cpp:148
 msgid "Warnings/errores while reading LenMus score."
 msgstr "Waarschuwingen/Fouten bij het lezen van LenMus partituren."
 
-#: ldp_parser/LDPParser.cpp:407
+#: ldp_parser/LDPParser.cpp:360
 #, c-format
 msgid "Element RAIZ expected but found element %s. Analysis stopped."
 msgstr "Element RAIZ werd verwacht doch heb element %s gevonden. Analyse beëindigd."
 
-#: ldp_parser/LDPParser.cpp:538
+#: ldp_parser/LDPParser.cpp:491
 msgid "Syntax error: more closing parenthesis than parenthesis opened. Analysis stopped."
 msgstr "Syntax fout:meer sluitende haakjes dan openende haakjes. Analyse beëindigd."
 
-#: ldp_parser/LDPParser.cpp:563
+#: ldp_parser/LDPParser.cpp:516
 #, c-format
 msgid "Element 'score' expected but found element %s. Analysis stopped."
 msgstr "Verwachtte het element 'score' maar vond element %s. Analyse gestopt."
 
-#: ldp_parser/LDPParser.cpp:577
+#: ldp_parser/LDPParser.cpp:530
 #, c-format
 msgid "Element 'vers' expected but found element %s. Analysis stopped."
 msgstr "Verwachtte het element 'vers' maar vond element %s. Analyse gestopt."
 
-#: ldp_parser/LDPParser.cpp:604
+#: ldp_parser/LDPParser.cpp:557
 #, c-format
 msgid "Error analysing LDP score: LDP version (%d) not supported. Analysis stopped."
-msgstr "Probleem by het analyseren van de LDP score: LDP versie (%d) wordt niet ondersteund. Analyse gestopt."
+msgstr "Probleem bij het analyseren van de LDP score: LDP versie (%d) wordt niet ondersteund. Analyse gestopt."
 
-#: ldp_parser/LDPParser.cpp:638
+#: ldp_parser/LDPParser.cpp:591
 #, c-format
 msgid "Element 'NumInstrumentos' expected but found element %s. Analysis stopped."
 msgstr "Verwachtte het element ''NumInstrumentos' maar vond element %s. Analyse gestopt."
 
-#: ldp_parser/LDPParser.cpp:737
-#: ldp_parser/LDPParser.cpp:992
+#: ldp_parser/LDPParser.cpp:690
+#: ldp_parser/LDPParser.cpp:947
 #, c-format
 msgid "Element '%s' expected but found element %s. Analysis stopped."
 msgstr "Verwachtte het element '%s' maar vond element %s. Analyse gestopt."
 
-#: ldp_parser/LDPParser.cpp:794
+#: ldp_parser/LDPParser.cpp:747
 #, c-format
 msgid "Number of staves expected but found '%s'. Element '%s' ignored."
 msgstr "Verwachtte het aantal notenbalken maar vond '%s'. Element '%s' genegeerd."
 
-#: ldp_parser/LDPParser.cpp:800
+#: ldp_parser/LDPParser.cpp:753
 #, c-format
 msgid "Expected value for %s but found element '%s'. Ignored."
 msgstr "Verwachtte een waarde voor '%s' maar vond element %s. Genegeerd."
 
-#: ldp_parser/LDPParser.cpp:805
+#: ldp_parser/LDPParser.cpp:758
 #, c-format
 msgid "[%s]: unknown element '%s' found. Element ignored."
 msgstr "[%s]: onbekend element '%s' gevonden. Element genegeerd."
 
-#: ldp_parser/LDPParser.cpp:815
+#: ldp_parser/LDPParser.cpp:768
 #, c-format
 msgid "Expected '%s' but found element %s. Analysis stopped."
 msgstr "Verwachtte ''%s' maar vond element %s. Analyse gestopt."
 
-#: ldp_parser/LDPParser.cpp:844
+#: ldp_parser/LDPParser.cpp:797
 #, c-format
 msgid "Expected '%s' but found element %s. Element ignored."
 msgstr "Verwachtte '%s' maar vond element %s. Element genegeerd."
 
-#: ldp_parser/LDPParser.cpp:932
-#: ldp_parser/LDPParser.cpp:2296
+#: ldp_parser/LDPParser.cpp:887
+#: ldp_parser/LDPParser.cpp:2207
 #, c-format
 msgid "[AnalyzeMusicData]: Unknown or not allowed element '%s' found. Element ignored."
 msgstr "[AnalyzeMusicData]: Onbekend of niet toegelaten element '%s' gevonden. Element genegeerd."
 
-#: ldp_parser/LDPParser.cpp:963
+#: ldp_parser/LDPParser.cpp:918
 #, c-format
 msgid "[AnalyzeChord]: Expecting notes found element '%s'. Element ignored."
 msgstr "[AnalyzeChord]: Verwachtte noten, vond element '%s'. Element genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1012
+#: ldp_parser/LDPParser.cpp:967
 #, c-format
 msgid "Element %s expected but found element %s. Analysis stopped."
 msgstr "Verwachtte het element '%s' maar vond element %s. Analyse gestopt."
 
-#: ldp_parser/LDPParser.cpp:1066
+#: ldp_parser/LDPParser.cpp:1021
 #, c-format
 msgid "Expected node '%s' but found node '%s'. Analysis ended."
 msgstr "Verwachtte knoop '%s' maar vond knoop '%s'. Analyse beëindigd."
 
-#: ldp_parser/LDPParser.cpp:1085
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:1040
+#, c-format
 msgid "Expected 'número de parte' but found '%s'. Analysis stopped."
-msgstr "Verwachtte 'nÃºmero de parte' maar vond '%s'. Analyse gestopt."
+msgstr "Verwachtte 'número de parte' maar vond '%s'. Analyse gestopt."
 
-#: ldp_parser/LDPParser.cpp:1097
+#: ldp_parser/LDPParser.cpp:1052
 #, c-format
 msgid "Number of staves expected but found '%s'. Analysis stopped."
 msgstr "Verwachtte het aantal notenbalken maar vond '%s'. Analyse beëindigd."
 
-#: ldp_parser/LDPParser.cpp:1227
+#: ldp_parser/LDPParser.cpp:1132
 #, c-format
 msgid "[AnalyzeMeasure]: Expected node 'Figura', 'Grupo', 'Atributo' or 'Desplazamiento' but found node '%s'. Node ignored."
 msgstr "[AnalyzeMeasure]: Verwachtte knoop 'Figura', 'Grupo', 'Atributo' of 'Desplazamiento' maar vond knoop '%s'. Knoop genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1260
-#: ldp_parser/LDPParser.cpp:1936
-#: ldp_parser/LDPParser.cpp:2372
-#: ldp_parser/LDPParser.cpp:2454
-#: ldp_parser/LDPParser.cpp:2525
-#: ldp_parser/LDPParser.cpp:2681
-#: ldp_parser/LDPParser.cpp:2699
+#: ldp_parser/LDPParser.cpp:1165
+#: ldp_parser/LDPParser.cpp:1847
+#: ldp_parser/LDPParser.cpp:2392
+#: ldp_parser/LDPParser.cpp:2474
+#: ldp_parser/LDPParser.cpp:2545
+#: ldp_parser/LDPParser.cpp:2701
+#: ldp_parser/LDPParser.cpp:2719
 #, c-format
 msgid "Element '%s' has less parameters that the minimum required. Element ignored."
 msgstr "Element '%s' heeft minder parameters dan minimaal vereist. Element genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1272
+#: ldp_parser/LDPParser.cpp:1177
 #, c-format
 msgid "Element '%s' has an incoherent value: go forward to start?. Element ignored"
 msgstr "Element '%s' heeft een incoherente waarde: ga verder naar start? Element genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1281
+#: ldp_parser/LDPParser.cpp:1186
 #, c-format
 msgid "Element '%s' has an incoherent value: go backwards to end?. Element ignored"
 msgstr "Element '%s' heeft een incoherente waarde: teruggaan naar het einde?. Element genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1341
+#: ldp_parser/LDPParser.cpp:1246
 #, c-format
 msgid "Time shift: Letter %s is not a valid note duration. Replaced by a quarter note"
 msgstr "Tijd verschuiving: Letter '%s' is geen geldige noot duratie. Vervangen door een kwartnoot."
 
-#: ldp_parser/LDPParser.cpp:1490
+#: ldp_parser/LDPParser.cpp:1395
 #, c-format
 msgid "Missing parameters in rest '%s'. Replaced by '(%s %s)'."
 msgstr "Ontbrekende parameters in rust '%s'. Vervangen door '(%s %s)'."
 
-#: ldp_parser/LDPParser.cpp:1498
+#: ldp_parser/LDPParser.cpp:1403
 #, c-format
 msgid "Missing parameters in note '%s'. Assumed (%s c4 %s)."
 msgstr "Ontbrekende parameters in noot '%s'. Het volgende is verondersteld : '(%s c4 %s)'"
 
-#: ldp_parser/LDPParser.cpp:1533
+#: ldp_parser/LDPParser.cpp:1438
 #, c-format
 msgid "Unknown note pitch '%s'. Assumed 'c4'."
 msgstr "Onbekende toonhoogte '%s'. 'c4' is verondersteld."
 
-#: ldp_parser/LDPParser.cpp:1540
+#: ldp_parser/LDPParser.cpp:1445
+#: ldp_parser/LDPParser.cpp:2257
+#: ldp_parser/LDPParser.cpp:2280
 #, c-format
 msgid "Unknown note/rest duration '%s'. A quarter note assumed."
 msgstr "Onbekende noot/rust duur '%s'. Een kwart is verondersteld."
 
-#: ldp_parser/LDPParser.cpp:1578
+#: ldp_parser/LDPParser.cpp:1480
 msgid "Requesting beaming a note longer than eight. Beaming ignored."
 msgstr "Vraag om een noot te verbinden langer dan acht. Verbinding genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1585
+#: ldp_parser/LDPParser.cpp:1487
 msgid "Requesting to start a beamed group but there is already an open group. Beaming ignored."
 msgstr "Verzoek om een gekoppelde groep te beginnen, maar er is al een open groep. Koppeling genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1606
+#: ldp_parser/LDPParser.cpp:1508
 msgid "Requesting ending a beaming a group in a note that is note the first one of a chord. Beaming ignored."
 msgstr "Verzoek om een gekoppelde groep te beëindigen voor een noot die de eerste is van een akkoord. Koppeling genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1613
+#: ldp_parser/LDPParser.cpp:1515
 msgid "Requesting ending a beaming a group but there is not a  previous note. Beaming ignored."
 msgstr "Verzoek om een gekoppelde groep te beëindigen maar er is geen voorgaande noot. Koppeling genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1621
+#: ldp_parser/LDPParser.cpp:1523
 msgid "Requesting ending a beaming a group but previous note is not beamed. Beaming ignored."
 msgstr "Verzoek om een gekoppelde groep te beëindigen maar de vorige noot is niet gekoppeld. Koppeling genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1675
-#: ldp_parser/LDPParser.cpp:1702
+#: ldp_parser/LDPParser.cpp:1577
+#: ldp_parser/LDPParser.cpp:1607
 #, c-format
 msgid "Error: notation '%s' unknown. It will be ignored."
 msgstr "Foutmelding: notatie '%s' is onbekend. Wordt genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1713
+#: ldp_parser/LDPParser.cpp:1618
 #, c-format
 msgid "Notation '%s' unknown or not implemented. Old (g + t3) syntax?"
 msgstr "Notatie '%s' onbekend of niet geïmplementeerd. Oude (g + t3) syntax?"
 
-#: ldp_parser/LDPParser.cpp:1733
+#: ldp_parser/LDPParser.cpp:1642
 #, c-format
 msgid "Notation '%s' unknown or not implemented."
 msgstr "Notatie '%s' onbekend of niet geïmplementeerd."
 
-#: ldp_parser/LDPParser.cpp:1871
-#: ldp_parser/LDPParser.cpp:1878
-#: ldp_parser/LDPParser.cpp:1908
+#: ldp_parser/LDPParser.cpp:1782
+#: ldp_parser/LDPParser.cpp:1789
+#: ldp_parser/LDPParser.cpp:1819
 #, c-format
 msgid "[%s] Found unknown tag '%s'. Ignored."
 msgstr "[%s] vond onbekende tag '%s'. Wordt genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1896
+#: ldp_parser/LDPParser.cpp:1807
 #, c-format
 msgid "[%s] Found tag '%s' but no defaul value exists for NormalNotes. Ignored."
-msgstr "[%s] vond tag '%s' maar er bestaat geen standaardwaarde vor NormalNotes. Werd genegeerd."
+msgstr "[%s] vond tag '%s' maar er bestaat geen standaardwaarde voor NormalNotes. Werd genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1919
+#: ldp_parser/LDPParser.cpp:1830
 #, c-format
 msgid "[%s] Tag '%s'. Numbers must be greater than 0. Tag ignored."
 msgstr "[%s] Tag '%s'. Getallen dienen groter te zijn dan 0. Tag genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1956
+#: ldp_parser/LDPParser.cpp:1867
 #, c-format
 msgid "Element '%s': Expected number but found '%s'. Tuplet ignored."
 msgstr "element '%s': Verwachtte een getal maar vond '%s'. Antimetrische figuur genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1983
-#: ldp_parser/LDPParser.cpp:2019
+#: ldp_parser/LDPParser.cpp:1894
+#: ldp_parser/LDPParser.cpp:1930
 #, c-format
 msgid "Element '%s': Found unknown data '%s'. Data ignored."
 msgstr "Element '%s': Vond ongekende data '%s'. Data genegeerd."
 
-#: ldp_parser/LDPParser.cpp:1993
+#: ldp_parser/LDPParser.cpp:1904
 #, c-format
 msgid "Element '%s': Number for 'normal notes' must be greater than 0. Number ignored."
 msgstr "Element '%s': Het getal voor 'normale noten' dient groter te zijn dan 0. Getal genegeerd."
 
-# a
-#: ldp_parser/LDPParser.cpp:2031
-#, c-format
-msgid "[%s] Requesting to end a tuplet but there is not an open tuplet or it is not possible to cle it here. Tag '%s' ignored."
+#: ldp_parser/LDPParser.cpp:1942
+#, fuzzy, c-format
+msgid "[%s] Requesting to end a tuplet but there is not an open tuplet or it is not possible to close it here. Tag '%s' ignored."
 msgstr "[%s] Verzoek om een antimetrische figuur te beëindigen, maar er is geen open antimetrische figuur of het is niet mogelijk om het hier te ZZZ -cle. Tag '%s' genegeerd."
 
-#: ldp_parser/LDPParser.cpp:2040
+#: ldp_parser/LDPParser.cpp:1951
 #, c-format
 msgid "[%s] Requesting to start a tuplet but there is already a tuplet open. Tag '%s' ignored."
 msgstr "[%s] Aanvraag om een antimetrische figuur te starten, maar er is al een antimetrische figuur geopend. Tag '%s' genegeerd."
 
-#: ldp_parser/LDPParser.cpp:2139
+#: ldp_parser/LDPParser.cpp:2050
 #, c-format
 msgid "Unknown barline type '%s'. '%s' barline assumed."
 msgstr "Onbekend maatstreep type '%s'. '%s' maatstreep werd verondersteld."
 
-#: ldp_parser/LDPParser.cpp:2177
-#: ldp_parser/LDPParser.cpp:2427
+#: ldp_parser/LDPParser.cpp:2088
+#: ldp_parser/LDPParser.cpp:2299
+#: ldp_parser/LDPParser.cpp:2447
 #, c-format
 msgid "Unknown parameter '%s'. Ignored."
 msgstr "Onbekende parameters '%s'. Werd genegeerd."
 
-#: ldp_parser/LDPParser.cpp:2205
+#: ldp_parser/LDPParser.cpp:2116
 #, c-format
 msgid "Element '%s' has less parameters that the minimum required. Assumed '(%s Sol)'."
 msgstr "Element '%s' heeft minder parameters dan het minimum vereist aantal. '(%s Sol)' werd aangenomen."
 
-#: ldp_parser/LDPParser.cpp:2269
+#: ldp_parser/LDPParser.cpp:2180
 #, c-format
 msgid "Unknown clef '%s'. Assumed '%s'."
 msgstr "Onbekende sleutel '%s'. '%s' werd aangenomen."
 
-#: ldp_parser/LDPParser.cpp:2315
+#: ldp_parser/LDPParser.cpp:2232
+#: ldp_parser/LDPParser.cpp:2266
 #, fuzzy, c-format
+msgid "Element '%s' has less parameters that the minimum required. Ignored'."
+msgstr "Element '%s' heeft minder parameters dan het minimum vereist aantal. Tag genegeerd."
+
+#: ldp_parser/LDPParser.cpp:2334
+#, c-format
 msgid "Element '%s' needs exactly %d parameters. Tag ignored."
-msgstr "Element '%s': ongeldige parameter '%s'. Werd genegeerd."
+msgstr "Element '%s': behoeft precies %d parameters. Tag genegeerd."
 
-#: ldp_parser/LDPParser.cpp:2330
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2350
+#, c-format
 msgid "Option '%s' unknown. Ignored."
-msgstr "Foutmelding: notatie '%s' is onbekend. Wordt genegeerd."
+msgstr "Optie '%s' is onbekend. Wordt genegeerd."
 
-#: ldp_parser/LDPParser.cpp:2396
+#: ldp_parser/LDPParser.cpp:2416
 #, c-format
 msgid "Invalid alignment value '%s'. Assumed '%s'."
 msgstr "Onbekende aligneringswaarde '%s'. '%s' werd aangenomen."
 
-#: ldp_parser/LDPParser.cpp:2500
+#: ldp_parser/LDPParser.cpp:2520
 #, c-format
 msgid "[Element '%s'. Invalid parameter '%s'. Ignored."
 msgstr "Element '%s'. Ongeldige parameter '%s'. Werd genegeerd."
 
-#: ldp_parser/LDPParser.cpp:2568
+#: ldp_parser/LDPParser.cpp:2588
 #, c-format
 msgid "Element '%s' has less parameters that the minimum required. Assumed '(%s %s)'."
 msgstr "Element '%s' heeft minder parameters dan het minimum vereiste aantal. '(%s %s)' aangenomen."
 
-#: ldp_parser/LDPParser.cpp:2580
+#: ldp_parser/LDPParser.cpp:2600
 #, c-format
 msgid "Unknown key '%s'. Assumed '%s'."
 msgstr "Onbekende sleutel '%s'. '%s' werd aangenomen."
 
-#: ldp_parser/LDPParser.cpp:2614
+#: ldp_parser/LDPParser.cpp:2634
 #, c-format
 msgid "Element '%s' has less parameters that the minimum required. Assumed '(Metrica 4 4)'."
 msgstr "Element '%s' heeft minder parameters dan het minimum vereiste aantal. '(Metrica 4 4)' werd verondersteld."
 
-#: ldp_parser/LDPParser.cpp:2624
+#: ldp_parser/LDPParser.cpp:2644
 #, c-format
 msgid "Element '%s': Two numbers expected but found '%s' and '%s'. Assumed '(%s 4 4)'."
 msgstr "Element '%s': Verwachtte twee getallen maar vond '%s' en '%s'. Veronderstel '(%s 4 4)'."
 
-#: ldp_parser/LDPParser.cpp:2653
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2673
+#, c-format
 msgid "Element '%s' has less parameters that the minimum required. Ignored."
 msgstr "Element '%s' heeft minder parameters dan het minimum vereist aantal. Tag genegeerd."
 
-#: ldp_parser/LDPParser.cpp:2661
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2681
+#, c-format
 msgid "Element '%s': Width expected but found '%s'. Ignored."
-msgstr "element '%s': Verwachtte een getal maar vond '%s'. Antimetrische figuur genegeerd."
+msgstr "element '%s': Breedte verwacht maar vond '%s'. Genegeerd."
 
-#: ldp_parser/LDPParser.cpp:2711
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2731
+#, c-format
 msgid "Element '%s': Coordinate expected but found '%s'. Ignored."
-msgstr "element '%s': Verwachtte een getal maar vond '%s'. Antimetrische figuur genegeerd."
+msgstr "element '%s': Coördinaat verwacht maar vond  '%s'. Genegeerd."
 
-#: ldp_parser/LDPParser.cpp:2736
-#, fuzzy, c-format
+#: ldp_parser/LDPParser.cpp:2756
+#, c-format
 msgid "Element '%s': Type of graphic (%s) unknown. Ignored."
-msgstr "Element '%s': Vond ongekende data '%s'. Data genegeerd."
+msgstr "Element '%s': Grafisch type ('%s) onbekend. Genegeerd."
 
-#: ldp_parser/LDPParser.cpp:2772
+#: ldp_parser/LDPParser.cpp:2792
+#: ldp_parser/LDPParser.cpp:2821
 #, c-format
 msgid "Element '%s' has less parameters that the minimum required. Tag ignored. Assumed default stem."
 msgstr "Element '%s' heeft minder parameters dan het minimum vereiste aantal. Tag genegeerd. Standaard nootstok werd aangenomen."
 
-#: ldp_parser/LDPParser.cpp:2784
+#: ldp_parser/LDPParser.cpp:2804
 #, c-format
 msgid "Invalid stem direction '%s'. Default direction taken."
 msgstr "Ongeldige nootstok richting '%s'. Standaard richting werd aangenomen."
 
-#: ldp_parser/LDPParser.cpp:2803
+#: ldp_parser/LDPParser.cpp:2833
+#, fuzzy, c-format
+msgid "Invalid fermata placement '%s'. Default placement assumed."
+msgstr "Ongeldige nootstok richting '%s'. Standaard richting werd aangenomen."
+
+#: ldp_parser/LDPParser.cpp:2852
 #, c-format
 msgid "Element '%s' has less parameters than the minimum required. Tag ignored."
 msgstr "Element '%s' heeft minder parameters dan het minimum vereist aantal. Tag genegeerd."
 
-#: ldp_parser/LDPParser.cpp:2863
+#: ldp_parser/LDPParser.cpp:2912
 #, c-format
 msgid "Element '%s': invalid parameter '%s'. It is ignored."
 msgstr "Element '%s': ongeldige parameter '%s'. Werd genegeerd."
 
-#: ldp_parser/LDPParser.cpp:2882
+#: ldp_parser/LDPParser.cpp:2931
 #, c-format
 msgid "Element '%s' has less or more parameters than required. Tag ignored."
 msgstr "Element '%s' heeft minder of meer parameters dan vereist. Tag gegeneerd."
 
-#: ldp_parser/LDPParser.cpp:2904
+#: ldp_parser/LDPParser.cpp:2953
 #, c-format
 msgid "Element '%s': Invalid units '%s'. Ignored"
 msgstr "Element '%s': Ongeldige eenheid '%s'. Werd genegeerd."
 
-#: ldp_parser/LDPParser.cpp:2914
+#: ldp_parser/LDPParser.cpp:2963
 #, c-format
 msgid "Element '%s': Invalid value '%s'. It must be a number with optional units. Zero assumed."
 msgstr "Element '%s': Ongeldige waarde '%s'. Het dient een getal te zijn met optionele eenheid. Nul werd aangenomen."
 
-#: ldp_parser/LDPParser.cpp:3117
+#: ldp_parser/LDPParser.cpp:3166
 #, c-format
 msgid "Staff number expected but found '%s'. Replaced by '%s1'"
 msgstr "Het aantal notenbalken werd verwacht maar vond '%s'. Vervangen door '%s1'."
 
-#: ldp_parser/LDPParser.cpp:3124
+#: ldp_parser/LDPParser.cpp:3173
 #, c-format
 msgid "Staff number not followed by number (%s). Replaced by '%s1'"
-msgstr "notenbalk nummer niet gevolgd door een nummer (%s). Vervangen door '%s1'"
+msgstr "Notenbalk nummer niet gevolgd door een nummer (%s). Vervangen door '%s1'"
 
-#: ldp_parser/LDPParser.cpp:3132
+#: ldp_parser/LDPParser.cpp:3181
 #, c-format
 msgid "Notation '%s': number is greater than number of staves defined (%d). Replaced by '%s1'."
 msgstr "Notatie '%s': het getal is groter dan het opgegeven aantal notenbalken (%d). Vervangen door '%s1'."
 
 #: exercises/ChordConstrains.cpp:174
 msgid "Program error: Loop detected in lmChordConstrains::GetRandomChordType."
-msgstr "Programma fout: loop gedetecteerd in ImChordConstraints::GetRandomChordType"
+msgstr "Programma fout: loep gedetecteerd in ImChordConstraints::GetRandomChordType"
 
 #: exercises/CountersCtrol.cpp:75
 msgid "Two teams competition"
@@ -965,87 +960,92 @@ msgid "Team's %d turn"
 msgstr "Teams %d beurt"
 
 #: exercises/EarCompareIntvCtrol.cpp:118
+#: exercises/EarModeCtrol.cpp:117
 msgid "First one greater"
 msgstr "Eerste is groter"
 
 #: exercises/EarCompareIntvCtrol.cpp:119
+#: exercises/EarModeCtrol.cpp:118
 msgid "Second one greater"
 msgstr "Tweede is groter"
 
 #: exercises/EarCompareIntvCtrol.cpp:120
+#: exercises/EarModeCtrol.cpp:119
 msgid "Both are equal"
 msgstr "Beide zijn gelijk"
 
 #: exercises/EarCompareIntvCtrol.cpp:133
 #: exercises/EarIntervalsCtrol.cpp:162
+#: exercises/EarModeCtrol.cpp:132
 #: exercises/IdfyChordCtrol.cpp:157
 #: exercises/IdfyExerciseCtrol.cpp:152
-#: exercises/ScoreCtrol.cpp:191
+#: exercises/ScoreCtrol.cpp:187
 #: exercises/TheoIntervalsCtrol.cpp:272
 #: exercises/TheoKeySignCtrol.cpp:156
 #: exercises/TheoMusicReadingCtrol.cpp:153
-#: exercises/TheoSideReadingCtrol.cpp:153
 msgid "See source score"
 msgstr "Inspecteer broncode"
 
 #: exercises/EarCompareIntvCtrol.cpp:138
 #: exercises/EarIntervalsCtrol.cpp:167
+#: exercises/EarModeCtrol.cpp:137
 #: exercises/IdfyChordCtrol.cpp:162
 #: exercises/IdfyExerciseCtrol.cpp:157
-#: exercises/ScoreCtrol.cpp:195
+#: exercises/ScoreCtrol.cpp:191
 #: exercises/TheoIntervalsCtrol.cpp:276
 #: exercises/TheoKeySignCtrol.cpp:160
 #: exercises/TheoMusicReadingCtrol.cpp:157
-#: exercises/TheoSideReadingCtrol.cpp:157
 msgid "Dump score"
 msgstr "Dump score"
 
 #: exercises/EarCompareIntvCtrol.cpp:143
 #: exercises/EarIntervalsCtrol.cpp:172
+#: exercises/EarModeCtrol.cpp:142
 #: exercises/IdfyChordCtrol.cpp:167
 #: exercises/IdfyExerciseCtrol.cpp:162
-#: exercises/ScoreCtrol.cpp:199
+#: exercises/ScoreCtrol.cpp:195
 #: exercises/TheoIntervalsCtrol.cpp:280
 #: exercises/TheoMusicReadingCtrol.cpp:161
-#: exercises/TheoSideReadingCtrol.cpp:161
 msgid "See MIDI events"
 msgstr "Zie MIDI events"
 
 #: exercises/EarCompareIntvCtrol.cpp:181
 #: exercises/EarIntervalsCtrol.cpp:210
+#: exercises/EarModeCtrol.cpp:180
 #: exercises/IdfyChordCtrol.cpp:206
 #: exercises/IdfyExerciseCtrol.cpp:143
 #: exercises/TheoIntervalsCtrol.cpp:318
 #: exercises/TheoMusicReadingCtrol.cpp:170
-#: exercises/TheoSideReadingCtrol.cpp:170
 msgid "Settings"
 msgstr "Instellingen"
 
 #: exercises/EarCompareIntvCtrol.cpp:198
 #: exercises/EarIntervalsCtrol.cpp:227
+#: exercises/EarModeCtrol.cpp:197
 #: exercises/IdfyChordCtrol.cpp:224
 #: exercises/IdfyExerciseCtrol.cpp:210
 #: exercises/TheoIntervalsCtrol.cpp:336
 #: exercises/TheoKeySignCtrol.cpp:195
 #: exercises/TheoMusicReadingCtrol.cpp:132
-#: exercises/TheoSideReadingCtrol.cpp:132
 msgid "New problem"
 msgstr "Nieuw probleem"
 
 #: exercises/EarCompareIntvCtrol.cpp:202
 #: exercises/EarIntervalsCtrol.cpp:231
+#: exercises/EarModeCtrol.cpp:201
 #: exercises/IdfyChordCtrol.cpp:228
 #: exercises/IdfyExerciseCtrol.cpp:214
 #: exercises/IdfyExerciseCtrol.cpp:300
 #: exercises/TheoIntervalsCtrol.cpp:340
 #: app/MainFrame.cpp:583
 #: exercises/Constrains.h:193
-#: exercises/Constrains.h:260
+#: exercises/Constrains.h:266
 msgid "Play"
 msgstr "Afspelen"
 
 #: exercises/EarCompareIntvCtrol.cpp:208
 #: exercises/EarIntervalsCtrol.cpp:237
+#: exercises/EarModeCtrol.cpp:207
 #: exercises/IdfyChordCtrol.cpp:234
 #: exercises/IdfyExerciseCtrol.cpp:220
 #: exercises/TheoIntervalsCtrol.cpp:347
@@ -1055,6 +1055,7 @@ msgstr "Oplossing tonen"
 
 #: exercises/EarCompareIntvCtrol.cpp:235
 #: exercises/EarIntervalsCtrol.cpp:274
+#: exercises/EarModeCtrol.cpp:234
 #: exercises/IdfyChordCtrol.cpp:272
 #: exercises/IdfyExerciseCtrol.cpp:233
 msgid "Click on 'New problem' to start"
@@ -1084,7 +1085,7 @@ msgstr "reine kwart"
 
 #: exercises/EarIntervalsCtrol.cpp:121
 msgid "aug.4th/dim.5th"
-msgstr "verh. kwart/verl. kwint"
+msgstr "vergr kwart/verkl kwint"
 
 #: exercises/EarIntervalsCtrol.cpp:122
 #: ../xrc/xrc_strings.cpp:11
@@ -1139,7 +1140,7 @@ msgstr "reine undecime"
 
 #: exercises/EarIntervalsCtrol.cpp:133
 msgid "aug.11th / dim.12th"
-msgstr "verh. undecime/verl. duodecime"
+msgstr "vergr. undecime/verkl. duodecime"
 
 #: exercises/EarIntervalsCtrol.cpp:134
 #: ../xrc/xrc_strings.cpp:23
@@ -1170,7 +1171,7 @@ msgstr "twee oktaven"
 
 #: exercises/Generators.cpp:71
 msgid "Program error: Loop detected in lmRandomGenerator::GenerateClef."
-msgstr "Programma fout: Loop gedetecteerd in lmRandomGenerator::GenerateClef."
+msgstr "Programma fout: Loep gedetecteerd in lmRandomGenerator::GenerateClef."
 
 #: exercises/Generators.cpp:86
 msgid "Program error: Loop detected in lmRandomGenerator::GenerateKey."
@@ -1201,7 +1202,6 @@ msgstr "Verlaagd"
 msgid "Suspended (4th)"
 msgstr "Vertraagde kwart"
 
-# a
 #: exercises/IdfyChordCtrol.cpp:129
 #: ../xrc/xrc_strings.cpp:248
 msgid "Suspended (2nd)"
@@ -1225,7 +1225,7 @@ msgstr "Drieklanken:"
 
 #: exercises/IdfyChordCtrol.cpp:360
 msgid "Seventh chords:"
-msgstr "Zevende akkoorden:"
+msgstr "Septiem akkoorden:"
 
 #: exercises/IdfyChordCtrol.cpp:380
 msgid "Other chords:"
@@ -1244,8 +1244,8 @@ msgstr "Klik 'Afspelen' om de oefening te herhalen"
 #: app/MainFrame.cpp:587
 #: exercises/Constrains.h:194
 #: exercises/Constrains.h:196
-#: exercises/Constrains.h:261
-#: exercises/Constrains.h:263
+#: exercises/Constrains.h:267
+#: exercises/Constrains.h:269
 msgid "Stop"
 msgstr "Stoppen"
 
@@ -1291,15 +1291,13 @@ msgstr "Melodisch"
 
 #: exercises/IdfyScalesCtrol.cpp:152
 #: ../xrc/xrc_strings.cpp:305
-#, fuzzy
 msgid "Ionian"
-msgstr "Dorisch"
+msgstr "Ionisch"
 
 #: exercises/IdfyScalesCtrol.cpp:154
 #: ../xrc/xrc_strings.cpp:309
-#, fuzzy
 msgid "Phrygian"
-msgstr "Afdrukken"
+msgstr "Phrygisch"
 
 #: exercises/IdfyScalesCtrol.cpp:155
 #: ../xrc/xrc_strings.cpp:311
@@ -1313,56 +1311,49 @@ msgstr "Mixolydisch"
 
 #: exercises/IdfyScalesCtrol.cpp:157
 #: ../xrc/xrc_strings.cpp:308
-#, fuzzy
 msgid "Aeolian"
-msgstr "Dorisch"
+msgstr "Aolisch"
 
 #: exercises/IdfyScalesCtrol.cpp:158
 #: ../xrc/xrc_strings.cpp:310
-#, fuzzy
 msgid "Locrian"
-msgstr "Dorisch"
+msgstr "Locrisch"
 
 #: exercises/IdfyScalesCtrol.cpp:187
-#, fuzzy
 msgid "Major:"
-msgstr "Majeur"
+msgstr "Majeur:"
 
 #: exercises/IdfyScalesCtrol.cpp:191
-#, fuzzy
 msgid "Minor:"
-msgstr "Mineur"
+msgstr "Mineur:"
 
 #: exercises/IdfyScalesCtrol.cpp:195
 msgid "Greek scales:"
-msgstr "Griekse Toonaarden:"
+msgstr "Griekse toonaarden:"
 
 #: exercises/IdfyScalesCtrol.cpp:199
-#, fuzzy
 msgid "Other scales:"
-msgstr "Andere akkoorden:"
+msgstr "Andere toonaarden:"
 
 #: exercises/IdfyScalesCtrol.cpp:288
-#, fuzzy
 msgid "Identify the next scale:"
-msgstr "Identificeer het volgende akkoord:"
+msgstr "Identificeer de volgende toonaard:"
 
 #: exercises/ScalesConstrains.cpp:163
-#, fuzzy
 msgid "Program error: Loop detected in lmScalesConstrains::GetRandomChordType."
-msgstr "Programma fout: loop gedetecteerd in ImChordConstraints::GetRandomChordType"
+msgstr "Programma fout: loop vastgesteld in ImScalesScalesConstrains::GetRandomChordType."
 
-#: exercises/ScoreConstrains.cpp:197
+#: exercises/ScoreConstrains.cpp:196
 msgid "Global error: No clef constrains specified\n"
 msgstr "Algemene fout: Geen sleutel voorwaarde gespecifieerd\n"
 
-#: exercises/ScoreConstrains.cpp:207
+#: exercises/ScoreConstrains.cpp:206
 msgid "Global error: No time signature constrains specified\n"
-msgstr "Algemene fout: geen tijd signatuur beperking gespecifieerd\n"
+msgstr "Algemene fout: geen maatsoort beperking gespecifieerd\n"
 
-#: exercises/ScoreConstrains.cpp:217
+#: exercises/ScoreConstrains.cpp:216
 msgid "Global error: No key signature constrains specified\n"
-msgstr "Algemene fout: geen sleutel signatuur beperking gespecifieerd\n"
+msgstr "Algemene fout: geen voortekening beperking gespecifieerd\n"
 
 #: exercises/TheoIntervalsCtrol.cpp:134
 msgid "dd - double diminished"
@@ -1406,7 +1397,7 @@ msgstr "Dubbel Kruis"
 
 #: exercises/TheoIntervalsCtrol.cpp:155
 msgid "8th"
-msgstr "8ste"
+msgstr "oktaaf"
 
 #: exercises/TheoIntervalsCtrol.cpp:157
 #: exercises/TheoIntervalsCtrol.cpp:235
@@ -1588,7 +1579,7 @@ msgstr "dvh7"
 #: exercises/TheoIntervalsCtrol.cpp:215
 #: exercises/TheoIntervalsCtrol.cpp:639
 msgid "Chromatic semitone"
-msgstr "Chromatische halvetoonsafstand"
+msgstr "Chromatische halve toon"
 
 #: exercises/TheoIntervalsCtrol.cpp:219
 msgid "bb C"
@@ -1825,31 +1816,31 @@ msgstr "Do # Groot"
 
 #: exercises/TheoKeySignCtrol.cpp:570
 msgid "D sharp minor"
-msgstr "Re # Klein"
+msgstr "Re # klein"
 
 #: exercises/TheoKeySignCtrol.cpp:571
 msgid "E flat minor"
-msgstr "Mi b Klein"
+msgstr "Mi b klein"
 
 #: exercises/TheoKeySignCtrol.cpp:574
 msgid "F sharp minor"
-msgstr "Fa # Klein"
+msgstr "Fa # klein"
 
 #: exercises/TheoKeySignCtrol.cpp:576
 msgid "G sharp minor"
-msgstr "Sol # Klein"
+msgstr "Sol # klein"
 
 #: exercises/TheoKeySignCtrol.cpp:577
 msgid "A flat minor"
-msgstr "La b Klein"
+msgstr "La b klein"
 
 #: exercises/TheoKeySignCtrol.cpp:579
 msgid "A sharp minor"
-msgstr "La # Klein"
+msgstr "La # klein"
 
 #: exercises/TheoKeySignCtrol.cpp:580
 msgid "B flat minor"
-msgstr "Si b Kklein"
+msgstr "Si b klein"
 
 #: exercises/TheoKeySignCtrol.cpp:586
 msgid "No accidentals"
@@ -1912,7 +1903,6 @@ msgid "7 b"
 msgstr "7 b"
 
 #: exercises/TheoMusicReadingCtrol.cpp:126
-#: exercises/TheoSideReadingCtrol.cpp:126
 msgid "Go back to theory"
 msgstr "Ga terug naar theorie"
 
@@ -2017,23 +2007,22 @@ msgid "Adding book %s"
 msgstr "Bezig met toevoegen boek %s"
 
 #: html/TextBookFrame.cpp:360
-#, fuzzy
 msgid "eMusicBooks"
-msgstr "Verberg/toon eMuziekBoeken"
+msgstr "eMuziekBoeken"
 
 #: html/TextBookFrame.cpp:422
 #: html/TextBookFrame.cpp:934
 #: html/TextBookFrame.cpp:1468
 msgid "(bookmarks)"
-msgstr "(bladwijzer)"
+msgstr "(bladwijzers)"
 
 #: html/TextBookFrame.cpp:433
 msgid "Add current page to bookmarks"
-msgstr "Voeg pagina toe aan bladwijzers"
+msgstr "Huidige pagina aan bladwijzers toevoegen"
 
 #: html/TextBookFrame.cpp:434
 msgid "Remove current page from bookmarks"
-msgstr "Verwijder huidige pagina van bladwijzers"
+msgstr "Verwijder huidige pagina uit bladwijzers"
 
 #: html/TextBookFrame.cpp:451
 msgid "Contents"
@@ -2049,11 +2038,11 @@ msgstr "Alles tonen"
 
 #: html/TextBookFrame.cpp:477
 msgid "Display all index items that contain given substring. Search is case insensitive."
-msgstr "Toon alle index items die de gegeven substring bevatten. De zoekopdracht is hoofdlettergevoelig."
+msgstr "Toon alle geïndexeerde items die de gegeven substring bevatten. De zoekopdracht is hoofdlettergevoelig."
 
 #: html/TextBookFrame.cpp:478
 msgid "Show all items in index"
-msgstr "Toon alle items van de index"
+msgstr "Alle items van de index tonen"
 
 #: html/TextBookFrame.cpp:489
 msgid "Index"
@@ -2215,7 +2204,7 @@ msgstr "Parsing <beam>: value=%s, koppel-niveau=%s"
 #: xml_parser/MusicXMLParser.cpp:1039
 #, c-format
 msgid "Parsing <note.<beam>: unknown beam type %s"
-msgstr "Parsing <note.<beam>: ongekend koppelings type %s"
+msgstr "Parsing <note.<beam>: onbekend koppeling type %s"
 
 #: xml_parser/MusicXMLParser.cpp:1071
 #, c-format
@@ -2257,63 +2246,63 @@ msgstr "Parsing <tie>. Type=%s"
 msgid "Parsing <notations>"
 msgstr "Parsing <notations>"
 
-#: xml_parser/MusicXMLParser.cpp:1218
+#: xml_parser/MusicXMLParser.cpp:1221
 msgid "Parsing <fermata>"
 msgstr "Parsing <fermata>"
 
-#: xml_parser/MusicXMLParser.cpp:1271
+#: xml_parser/MusicXMLParser.cpp:1274
 #, c-format
 msgid "Parsing <tuplet>. Type=%s, bracket=%s, above=%s, showNumber=%s, number=%d"
 msgstr "Parsing <tuplet>. Type=%s, haakje=%s, boven=%s, toonNummerr=%s, nummer=%d"
 
-#: xml_parser/MusicXMLParser.cpp:1374
+#: xml_parser/MusicXMLParser.cpp:1377
 #, c-format
 msgid "Parsing <note>.<lyric>: unknown syllabic value %s"
-msgstr "Parsing <note>.<lyric>: onbekende syllabisch waarde %s"
+msgstr "Parsing <note>.<lyric>: onbekende syllabische waarde %s"
 
-#: xml_parser/MusicXMLParser.cpp:1409
+#: xml_parser/MusicXMLParser.cpp:1412
 msgid "Parsing <lyric>"
 msgstr "Parsing <lyric>"
 
-#: xml_parser/MusicXMLParser.cpp:1459
+#: xml_parser/MusicXMLParser.cpp:1462
 #, c-format
 msgid "Parsing <note>.<accidental>: unknown type %s"
 msgstr "Parsing <note>.<accidental>: onbekend type %s"
 
-#: xml_parser/MusicXMLParser.cpp:1462
+#: xml_parser/MusicXMLParser.cpp:1465
 #, c-format
 msgid "Parsing <accidental>. Type=%s"
 msgstr "Parsing <accidental>. Type=%s"
 
-#: xml_parser/MusicXMLParser.cpp:1720
+#: xml_parser/MusicXMLParser.cpp:1723
 #, c-format
 msgid "Attribute \"%s\" not found in tag <%s>."
 msgstr "Attribuut \"%s\" niet gevonden in merkteken <%s>."
 
-#: xml_parser/MusicXMLParser.cpp:1738
+#: xml_parser/MusicXMLParser.cpp:1741
 #, c-format
 msgid "Yes-no attribute \"%s\" has an invalid value \"%s\"."
 msgstr "Ja-nee attribuut \"%s\" heeft een ongeldige waarde \"%s\"."
 
-#: xml_parser/MusicXMLParser.cpp:1982
+#: xml_parser/MusicXMLParser.cpp:1985
 #, c-format
 msgid "Parsing <duration>: duration=%s"
 msgstr "Parsing <duration>: duur=%s"
 
-#: xml_parser/MusicXMLParser.cpp:2007
+#: xml_parser/MusicXMLParser.cpp:2010
 #, c-format
 msgid "Parsing <divisions>: divisions=%s"
 msgstr "Parsing <divisions>: divisies=%s"
 
-#: xml_parser/MusicXMLParser.cpp:2032
+#: xml_parser/MusicXMLParser.cpp:2035
 #, c-format
 msgid "Parsing <placement>: placement='%s'>"
 msgstr "Parsing <placement>: placement='%s'>"
 
-#: xml_parser/MusicXMLParser.cpp:2039
+#: xml_parser/MusicXMLParser.cpp:2042
 #, c-format
 msgid "<placement> element has an invalid value \"%s\". Asumed 'above'"
-msgstr "<placement> element heeft een ongeldige waarde \"%s\". verondersteld 'boven'"
+msgstr "<placement> element heeft een ongeldige waarde \"%s\". 'boven' verondersteld"
 
 #: app/AboutDialog.cpp:103
 #: ../xrc/xrc_strings.cpp:230
@@ -2327,28 +2316,27 @@ msgstr "Doelstelling"
 
 #: app/AboutDialog.cpp:128
 msgid "LenMus is a free program to help you in the study of music theory and ear training. It is available for Windows but soon it will be also available for Mac OS X, Linux, and other Unix-like operating systems."
-msgstr "LenMus is een gratis programma dat u helpt in de studie van muziektheorie en gehoortraining. het is beschikbaar voor Windows, maar zal binnenkort ook beschikbaar zijn voor Mac OS X, Linux en andere Unix besturingssystemen."
+msgstr "LenMus is een gratis programma dat u helpt in de studie van muziektheorie en gehoortraining. Het is beschikbaar voor Windows, maar zal binnenkort ook beschikbaar zijn voor Mac OS X, Linux en andere Unix besturingssystemen."
 
 #: app/AboutDialog.cpp:132
 msgid "The LenMus Project is an open project, committed to the principles of Open Source, free education, and free access to information. It has no comercial purpose. It is an open workbench for working on all areas related to teaching music, and music representation and management with computers. It aims at developping public knowledge, methods and algorithms related to all these areas and at the same time provides free quality software for music students, amateurs, and teachers."
-msgstr "Het LenMus Project is een open project, toegewijd aan de principes van Open Broncode, vrije educatie en vrije toegang tot informatie. Het heeft geen commerciële doeleinden. Het is een open werkbank voor werk gerelateerd aan alle aspecten van muziekonderwijs en muziekrepresentatie en management daarvan met computers. Het streeft naar het ontwikkelen van publieke kennis, methodes en algoritmes gerelateerd aan al deze onderwerpen en biedt op het zelfde moment gratis kwaliteitssoftware voor muziekstudenten, amateurs en leerkrachten."
+msgstr "Het LenMus Project is een open project, toegewijd aan de principes van Open Broncode, vrije educatie en vrije toegang tot informatie. Het heeft geen commerciële doeleinden. Het is een open werkbank voor alle aspecten van het muziekonderwijs en de muziekrepresentatie met behulp van een computer. Het project streeft naar het ontwikkelen van publiek beschikbare kennis, methodes en algoritmes gerelateerd aan al deze onderwerpen. Op deze manier biedt het project vrije kwaliteitssoftware voor muziekstudenten, liefhebbers en leerkrachten."
 
 #: app/AboutDialog.cpp:140
 msgid "If you find a bug or have a suggestion, please contact us. We depend on your feedback in order to continue to improve LenMus. So please visit our website and give us your bug reports  and feature requests. Thank you very much."
-msgstr "Als u een bug tegenkomt of u een suggestie heeft, aarzel dan niet ons te contacteren. Uw feedback laat ons toe om LenMus te blijven verbeteren. Bezoek aub onze website en geef ons uw bug rapporten en suggesties voor verbetering. Hartelijk dank voor uw input.²"
+msgstr "Als u een bug tegenkomt of u een suggestie voor verbetering heeft, aarzel dan niet ons te contacteren. Uw feedback laat ons toe om LenMus te blijven verbeteren. Bezoek aub onze website en geef ons uw bugrapporten en suggesties door. Hartelijk dank voor uw input."
 
 #: app/AboutDialog.cpp:154
 msgid "License"
 msgstr "Licentie"
 
 #: app/AboutDialog.cpp:156
-#, fuzzy
 msgid "Copyright &copy; 2002-2007 Cecilio Salmer&oacute;n."
-msgstr "Copyright &copy; 2002-2006 Cecilio Salmer&oacute;n."
+msgstr "Copyright &copy; 2002-2007 Cecilio Salmer&oacute;n."
 
 #: app/AboutDialog.cpp:158
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version."
-msgstr " Dit Programma is vrije software; U kan het verspreiden en/of wijzigen onder de bepalingen van de GNU Algemene Publieke Licentie, zoals uitgegeven door de Free Software Foundation; oftewel versie 2 van de Licentie, of (naar vrije keuze) een latere versie."
+msgstr " Dit Programma is vrije software; U kan het verspreiden en/of wijzigen onder de bepalingen van de GNU Algemene Publieke Licentie, zoals uitgegeven door de Free Software Foundation; ofwel versie 2 van de Licentie, of (naar vrije keuze) een latere versie."
 
 #: app/AboutDialog.cpp:163
 msgid "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General Public License at http://www.gnu.org/licenses/licenses.html"
@@ -2356,11 +2344,11 @@ msgstr "Dit Programma is verspreid in de hoop dat het nuttig zal zijn maar ZONDE
 
 #: app/AboutDialog.cpp:177
 msgid "Art desing credits"
-msgstr "Erkenning artistiek ontwerp"
+msgstr "Credits artistiek ontwerp"
 
 #: app/AboutDialog.cpp:178
 msgid "Some icons are original artwork for LenMus project; all these original icons are released under GNU GPL licence and under Creative Commons Attribution-ShareAlike license, you can choose the one you prefer for the intended usage. The other icons are taken from different sources:"
-msgstr "Sommige ikonen zijn origineel kunstwerk voor het LenMus project; al deze orginele ikonen zijn gereleased onder de GNU GPL licentie en onder de Creative Commons Attribution-ShareAlike licentie. U kan de licentie van uw voorkeur kiezen in functie van het beoogd gebruik. De overige iconen zijn afkomstig van andere bronnen:"
+msgstr "Sommige ikonen zijn origineel kunstwerk voor het LenMus project; al deze orginele ikonen zijn vrijgegeven onder de GNU GPL licentie en onder de Creative Commons Attribution-ShareAlike licentie. U kan de licentie van uw voorkeur kiezen in functie van het beoogd gebruik. De overige ikonen zijn afkomstig van andere bronnen:"
 
 #: app/AboutDialog.cpp:183
 msgid "Taken or derived from those available in the Ximian collection (http://www.novell.com/coolsolutions/feature/1637.html). Novell, who retains the copyright, has released these icons under the LGPL license. This means that you can use the icons in your programs free of charge. If you want to fork the icons into your own icon collection, you need to retain the license and the original copyrights, but from there you're free to do what you want."
@@ -2389,7 +2377,7 @@ msgstr "Voor zover bekend aan de LenMus ontwikkelaars, zijn alle gebruikte ikone
 #: app/AboutDialog.cpp:221
 #: ../xrc/xrc_strings.cpp:235
 msgid "Software credits"
-msgstr "Software erkenning"
+msgstr "Software credits"
 
 #: app/AboutDialog.cpp:222
 msgid "LenMus Phonascus uses <b>PortMidi</b> the Portable Real-Time MIDI Library (http://www.cs.cmu.edu/~music/portmusic/). PortMidi is copyright (c) 1999-2000 Ross Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg. Its licence permits free use."
@@ -2401,16 +2389,15 @@ msgstr "LenMus Phonascus maakt gebruik van het <b>wxWidgets</b> applicatie frame
 
 #: app/AboutDialog.cpp:232
 msgid "This program uses the <b>Anti-Grain Geometry</b> (http://www.antigrain.com) software developed by Maxim Shemanarev. AGG is an excellent open source, free graphic library, in source code. It produces pixel images in memory from vectorial data and it supports anti-aliasing, has very high performance, it is platform independent, very flexible and extensible, with a lightweight design, and very good reliability and stability."
-msgstr "Dit progamma gebruikt de <b>Anti-Korrel Geometrie</b> ((http://www.antigrain.com) software ontwikkeld door Maxim Shemanarex. AGG is een excellente open source, gratisch grafische codebibliotheek in broncode. Ze genereert pixelbeelden in het geheugen van vectoriële data en ondersteunt anti-aliasing, heeft een hoge performantie en is platform onafhankelijk, erg flexibel en uitbreidbaar, met een lichtgewicht ontwerp en een zeer goede stabiliteit en betrouwbaarheid."
+msgstr "Dit progamma gebruikt de <b>Anti-Korrel Geometrie</b> ((http://www.antigrain.com) software ontwikkeld door Maxim Shemanarex. AGG is een excellente open source, gratis grafische codebibliotheek. Ze genereert in het geheugen pixelbeelden van vectoriële data en ondersteunt anti-aliasing, heeft een hoge performantie en is platformonafhankelijk, erg flexibel en uitbreidbaar, met een lichtgewicht ontwerp en een zeer goede stabiliteit en betrouwbaarheid."
 
 #: app/AboutDialog.cpp:241
 msgid "Most of 'lmbasic.ttf' font glyphs are taken from <b>LilyPond</b> GNU GPL project (http://lilypond.org), Feta font."
 msgstr "De meeste van de 'lmbasic.ttf' font glyphs zijn ontleend aan <b>LilyPond</b> GNU GPL project (http://lilypond.org), Feta font."
 
 #: app/AboutDialog.cpp:253
-#, fuzzy
 msgid "Translation credits"
-msgstr "Erkenning artistiek ontwerp"
+msgstr "Credits vertaling"
 
 #: app/AboutDialog.cpp:256
 #: options/OptionsDlg.cpp:182
@@ -2426,59 +2413,61 @@ msgid "e-mail"
 msgstr "e-mail"
 
 #: app/AboutDialog.cpp:259
+msgid "Dutch"
+msgstr "Nederlands"
+
+#: app/AboutDialog.cpp:261
 msgid "French"
 msgstr "Frans"
 
-#: app/AboutDialog.cpp:261
+#: app/AboutDialog.cpp:263
 msgid "Spanish"
 msgstr "Spaans"
 
-#: app/AboutDialog.cpp:263
-#, fuzzy
+#: app/AboutDialog.cpp:265
 msgid "Turkish"
-msgstr "Drieklanken"
+msgstr "Turks"
 
-#: app/AboutDialog.cpp:275
+#: app/AboutDialog.cpp:277
 msgid "Build information"
 msgstr "Build informatie"
 
-#: app/AboutDialog.cpp:276
+#: app/AboutDialog.cpp:278
 msgid "Program build date:"
 msgstr "Programma build datum:"
 
-#: app/AboutDialog.cpp:279
+#: app/AboutDialog.cpp:281
 msgid "wxMidi Version "
 msgstr "wxMidi Version "
 
-#: app/AboutDialog.cpp:280
+#: app/AboutDialog.cpp:282
 msgid "Charset encoding: "
 msgstr "Charset encoding: "
 
-#: app/AboutDialog.cpp:281
+#: app/AboutDialog.cpp:283
 msgid "System locale name: "
 msgstr "System locale naam: "
 
-# a
-#: app/AboutDialog.cpp:282
+#: app/AboutDialog.cpp:284
 msgid "Canonical locale name: "
-msgstr "Canonical locale naam: "
+msgstr "Canonieke lokale naam: "
 
-#: app/AboutDialog.cpp:293
+#: app/AboutDialog.cpp:295
 #: ../xrc/xrc_strings.cpp:233
 msgid "Developers"
 msgstr "Ontwikkelaars"
 
-#: app/AboutDialog.cpp:295
+#: app/AboutDialog.cpp:297
 msgid "This program has been designed and developed by Cecilio Salmer&oacute;n. If you would like to help developing this program or join the project to help in any other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and leave a message in the 'contact' page. Thank you and welcome."
-msgstr "Dit programma is ontworpen en ontwikkeld door Cecilio Salmer&oacute;n. Als u zou willen helpen bij de ontwikking van het programma of op een andere manier wenst bij te dragen bent u van harte welkom; bezoek aub de LenMus website op www.lenmus.org en laat een boodschap achter in de contact pagina. Op voorhand bedankt en hartelijk welkom."
+msgstr "Dit programma is ontworpen en ontwikkeld door Cecilio Salmer&oacute;n. Als u zou willen helpen of op een andere manier wenst bij te dragen bij de ontwikking ervan bent u van harte welkom. Bezoek aub de LenMus website op www.lenmus.org en laat een boodschap achter in de contactpagina. Op voorhand bedankt en hartelijk welkom."
 
 #: app/DlgCfgEarIntervals.cpp:451
 msgid "It is nor possible to generate any interval. Selected notes range interval (tab 'Other settings') is lower than minimum allowed interval (tab 'Intervals')"
-msgstr "Het is niet mogelijk om een willekeurig interval te generen. De interval reikweidte (tab 'Andere instellingen') van de geselecteede noten is lager dan het minimaal toegelaten interval (tab 'Intervallen')"
+msgstr "Niet elk interval kan genegeerd worden. De intervalreikweidte (tab 'Andere instellingen') van de geselecteerde noten is lager dan het minimaal toegelaten interval (tab 'Intervallen')"
 
 #: app/DlgCfgEarIntervals.cpp:462
 msgid "It is nor possible to generate all the selected intervals. Selected notes range interval (tab 'Other settings') is lower than maximum allowed interval (tab 'Intervals')"
-msgstr "Het is niet mogelijk om een willekeurig interval te generen. De interval reikweidte (tab 'Andere instellingen') van de geselecteede noten is lager dan het maximaal toegelaten interval (tab 'Intervallen')"
+msgstr "Niet elk interval kan genegeerd worden. De intervalreikweidte (tab 'Andere instellingen') van de geselercteede noten is lager dan het maximaal toegelaten interval (tab 'Intervallen')"
 
 #: app/DlgDebug.cpp:73
 #: app/LangChoiceDlg.cpp:96
@@ -2503,11 +2492,11 @@ msgstr "Welkom bij LenMus!"
 #: app/MainFrame.cpp:508
 #: options/OptionsDlg.cpp:177
 msgid "Preferences"
-msgstr "Voorkeuren:"
+msgstr "Voorkeuren"
 
 #: app/MainFrame.cpp:508
 msgid "Set user preferences"
-msgstr "Gebruikspreferenties:"
+msgstr "Gebruiksvoorkeuren instellen"
 
 #: app/MainFrame.cpp:509
 msgid "Help"
@@ -2540,9 +2529,8 @@ msgid "Books"
 msgstr "Boeken"
 
 #: app/MainFrame.cpp:523
-#, fuzzy
 msgid "Open the music books"
-msgstr "Toon de muziekboeken"
+msgstr "Open de muziekboeken"
 
 #: app/MainFrame.cpp:524
 msgid "Save"
@@ -2558,7 +2546,7 @@ msgstr "Afdrukken"
 
 #: app/MainFrame.cpp:531
 msgid "Print document"
-msgstr "Document Afdrukken"
+msgstr "Document afdrukken"
 
 #: app/MainFrame.cpp:537
 #: app/MainFrame.cpp:540
@@ -2581,7 +2569,7 @@ msgstr "Volledig in venster passen"
 
 #: app/MainFrame.cpp:557
 msgid "Zoom so that the full page is displayed"
-msgstr "Zoomen zodat de volledig pagina getoond wordt"
+msgstr "Zoomen zodat de volledige pagina getoond wordt"
 
 #: app/MainFrame.cpp:558
 msgid "Fit width"
@@ -2607,7 +2595,7 @@ msgstr "Volle pagina inpassen"
 #: app/MainFrame.cpp:922
 #: app/MainFrame.cpp:1567
 msgid "Fit page width"
-msgstr "Aan pagina breedte aanpassen"
+msgstr "Aan paginabreedte aanpassen"
 
 #: app/MainFrame.cpp:586
 msgid "Start/resume play back of the score"
@@ -2643,7 +2631,7 @@ msgstr "Editeer hulpmiddelen"
 
 #: app/MainFrame.cpp:632
 msgid "Zooming tools"
-msgstr "Zoomhulpmiddelen"
+msgstr "Zoom hulpmiddelen"
 
 #: app/MainFrame.cpp:636
 msgid "Main tools"
@@ -2659,40 +2647,35 @@ msgstr "Metronoom hulpmiddelen"
 
 #: app/MainFrame.cpp:718
 msgid "Show/hide navigation panel"
-msgstr "Toon/verberg navigatie paneel"
+msgstr "Toon/verberg navigatiepaneel"
 
 #: app/MainFrame.cpp:725
-#, fuzzy
 msgid "Previous page of current eMusicBook"
-msgstr "Vorige pagina van het huidige document"
+msgstr "Vorige pagina van het huidige eMuziekBoek"
 
 #: app/MainFrame.cpp:729
-#, fuzzy
 msgid "Next page of current eMusicBook"
-msgstr "Volgende pagina van het huidige document"
+msgstr "Volgende pagina van het huidige eMuziekBoek"
 
 #: app/MainFrame.cpp:734
-#, fuzzy
 msgid "Go to previous visited page"
-msgstr "Ga naar de vorige pagina in de navigatie log"
+msgstr "Ga naar de laatst bezochte pagina"
 
 #: app/MainFrame.cpp:737
 msgid "Go to next visited page"
 msgstr "Ga naar de volgende bezochte pagina"
 
 #: app/MainFrame.cpp:742
-#, fuzzy
 msgid "Increase font size"
-msgstr "font grootte:"
+msgstr "Font vergroten:"
 
 #: app/MainFrame.cpp:745
-#, fuzzy
 msgid "Decrease font size"
-msgstr "font grootte:"
+msgstr "Font verkleinen:"
 
 #: app/MainFrame.cpp:750
 msgid "eBooks navigation tools"
-msgstr "eBoeken navigatie hulpmiddelen"
+msgstr "eBoek navigatiehulpmiddelen"
 
 #: app/MainFrame.cpp:796
 #: app/MainFrame.cpp:845
@@ -2712,7 +2695,7 @@ msgstr "&Open ...\tCtrl+O"
 #: app/MainFrame.cpp:804
 #: app/MainFrame.cpp:847
 msgid "Open &books"
-msgstr "Open &boeken"
+msgstr "O&pen boeken"
 
 #: app/MainFrame.cpp:804
 #: app/MainFrame.cpp:847
@@ -2742,17 +2725,17 @@ msgstr "Als &jpg beeld"
 #: app/MainFrame.cpp:815
 #: app/MainFrame.cpp:851
 msgid "Save score as JPG images"
-msgstr "Bewaar partituur als jpg figuur"
+msgstr "Bewaar partituur als jpg figuren"
 
 #: app/MainFrame.cpp:822
 #: app/MainFrame.cpp:854
 msgid "&Export ..."
-msgstr "&Exporteer..."
+msgstr "E&xporteer..."
 
 #: app/MainFrame.cpp:823
 #: app/MainFrame.cpp:855
 msgid "Save score in other formats"
-msgstr "Bewaar partituur in andere formaten"
+msgstr "Partituur in andere formaten bewaren"
 
 #: app/MainFrame.cpp:825
 #: app/MainFrame.cpp:857
@@ -2776,16 +2759,16 @@ msgstr "&Afdrukken..\tCtrl+P"
 #: app/MainFrame.cpp:838
 #: app/MainFrame.cpp:862
 msgid "Print &Setup..."
-msgstr "Afdrukken &Instellingen..."
+msgstr "Afdruk &Instellingen..."
 
 #: app/MainFrame.cpp:839
 msgid "Print Pre&view"
-msgstr "Afdrukvoor&beeld"
+msgstr "Afdruk&voorbeeld"
 
 #: app/MainFrame.cpp:841
 #: app/MainFrame.cpp:865
 msgid "&Quit\tCtrl+Q"
-msgstr "&Beëindigen\tCtrl+Q"
+msgstr "B&eëindigen\tCtrl+Q"
 
 #: app/MainFrame.cpp:858
 msgid "Save &as ...\tCtrl+Shift+S"
@@ -2809,7 +2792,7 @@ msgstr "Werk&balk"
 
 #: app/MainFrame.cpp:885
 msgid "Hide/show the tools bar"
-msgstr "Verbeg/toon de werkbalken"
+msgstr "Verberg/toon de werkbalken"
 
 #: app/MainFrame.cpp:886
 msgid "&Status bar"
@@ -2852,7 +2835,7 @@ msgstr "MIDI &Wizard starten"
 
 #: app/MainFrame.cpp:951
 msgid "Midi configuration wizard"
-msgstr "Midi configuration wizard"
+msgstr "Midi configuratie wizard"
 
 #: app/MainFrame.cpp:953
 msgid "&Test sound"
@@ -2860,15 +2843,15 @@ msgstr "&Test geluid"
 
 #: app/MainFrame.cpp:953
 msgid "Play an scale to test sound"
-msgstr "Speel een notenbalk om geluid te testen"
+msgstr "Speel een notenbalk als geluidstest"
 
 #: app/MainFrame.cpp:954
 msgid "&All sounds off"
-msgstr "&Alle geluid afzetten"
+msgstr "Alle &geluid afzetten"
 
 #: app/MainFrame.cpp:955
 msgid "Stop inmediatly all sounds"
-msgstr "Stop onmiddelijk alle geluiden"
+msgstr "Stop onmiddelijk alle geluid"
 
 #: app/MainFrame.cpp:961
 #: app/MainFrame.cpp:967
@@ -2882,31 +2865,28 @@ msgid "Open help book"
 msgstr "Help boek openen"
 
 #: app/MainFrame.cpp:974
-#, fuzzy
 msgid "Cl&ose"
 msgstr "&Sluiten"
 
 #: app/MainFrame.cpp:975
-#, fuzzy
 msgid "Close All"
-msgstr "&Sluiten"
+msgstr "&Alles Sluiten"
 
 #: app/MainFrame.cpp:977
 msgid "&Next"
 msgstr "&Volgende"
 
 #: app/MainFrame.cpp:978
-#, fuzzy
 msgid "&Previous"
-msgstr "Afdrukvoorbeeld"
+msgstr "V&orige"
 
 #: app/MainFrame.cpp:984
 msgid "&About\tF1"
-msgstr "&Info over\tF1"
+msgstr "Info &over\tF1"
 
 #: app/MainFrame.cpp:985
 msgid "Display information about program version and credits"
-msgstr "Informatie over de programmaversie en erkenningen weergeven"
+msgstr "Informatie over de programmaversie en credits weergeven"
 
 #: app/MainFrame.cpp:988
 #: app/MainFrame.cpp:994
@@ -2956,9 +2936,8 @@ msgid "&Options"
 msgstr "&Opties"
 
 #: app/MainFrame.cpp:1026
-#, fuzzy
 msgid "&Window"
-msgstr "&Ongedaan maken"
+msgstr "&Venster"
 
 #: app/MainFrame.cpp:1028
 #: options/OptionsDlg.cpp:267
@@ -3053,11 +3032,11 @@ msgstr "Te gebruiken Midi apparaten"
 
 #: app/MidiWizard.cpp:340
 msgid "To generate sounds the program needs a MIDI synthesizer device. Normally, one of these devices is included in the sound board of the PC, but your PC might have more than one."
-msgstr "Om geluiden te genereren heeft het progamma een MIDI synthesizer apparaat nodig. Normaal, is dit apparaat geintegreerd in de geluidkaart van de PC, maar uw PC heeft mogelijks meer dan een kaart."
+msgstr "Om geluiden te genereren heeft het progamma een MIDI synthesizer apparaat nodig. Normaal is dit apparaat geïntegreerd in de geluidskaart van de PC, maar uw PC heeft misschien meer dan één kaart."
 
 #: app/MidiWizard.cpp:343
 msgid "If your PC has more than one device, choose one of them. You can test all of them and choose the one whose sound you prefer."
-msgstr "Als uw PC meer dan een apparaat heeft, kies er dan een. U kan ze allemaal testen en vervolgens datgene met het beste geluid kiezen."
+msgstr "Als uw PC meer dan een MIDI apparaat heeft, kies er dan een. U kan ze allemaal testen en vervolgens datgene met het beste geluid kiezen."
 
 #: app/MidiWizard.cpp:352
 msgid "Output device:"
@@ -3152,9 +3131,8 @@ msgid "Toolbars"
 msgstr "Werkbalken"
 
 #: options/OptionsDlg.cpp:197
-#, fuzzy
 msgid "Internet"
-msgstr "Instrument:"
+msgstr "Internet"
 
 #: options/OptionsDlg.cpp:202
 msgid "Other"
@@ -3189,7 +3167,7 @@ msgstr "Intervallen"
 
 #: ../xrc/xrc_strings.cpp:3
 msgid "Intervals to practise"
-msgstr "In te oefenen Intervallen"
+msgstr "In te oefenen intervallen"
 
 #: ../xrc/xrc_strings.cpp:6
 msgid "Major 2nd"
@@ -3234,14 +3212,14 @@ msgstr "Grote Quattordecime"
 #: ../xrc/xrc_strings.cpp:286
 #: ../xrc/xrc_strings.cpp:318
 msgid "You must choose one at least! "
-msgstr "U dient er tenminste een te kiezen!"
+msgstr "U moet er tenminste één kiezen!"
 
 # a
 #: ../xrc/xrc_strings.cpp:30
 #: ../xrc/xrc_strings.cpp:31
 #: ../xrc/xrc_strings.cpp:140
 msgid "Accidentals"
-msgstr "Toevallige Voortekens"
+msgstr "Toevallige voortekens"
 
 #: ../xrc/xrc_strings.cpp:32
 msgid "&Use only notes from key signature"
@@ -3258,7 +3236,7 @@ msgstr "&Chromatische toevallige wijzigingstekens toelaten"
 #: ../xrc/xrc_strings.cpp:319
 #: ../xrc/xrc_strings.cpp:320
 msgid "Key signatures"
-msgstr "Sleutel signatuur"
+msgstr "Voortekeningen"
 
 #: ../xrc/xrc_strings.cpp:35
 #: ../xrc/xrc_strings.cpp:108
@@ -3282,7 +3260,7 @@ msgstr "Sol Groot / Mi klein"
 #: ../xrc/xrc_strings.cpp:275
 #: ../xrc/xrc_strings.cpp:323
 msgid "D Major / B minor"
-msgstr "D Groot / Si klein"
+msgstr "Re Groot / Si klein"
 
 #: ../xrc/xrc_strings.cpp:38
 #: ../xrc/xrc_strings.cpp:111
@@ -3296,7 +3274,7 @@ msgstr "La Groot / Fa # klein"
 #: ../xrc/xrc_strings.cpp:269
 #: ../xrc/xrc_strings.cpp:325
 msgid "E Major / C# minor"
-msgstr "Mi Groot / Do# klein"
+msgstr "Mi Groot / Do # klein"
 
 #: ../xrc/xrc_strings.cpp:40
 #: ../xrc/xrc_strings.cpp:113
@@ -3310,14 +3288,14 @@ msgstr "Si Groot / Sol klein"
 #: ../xrc/xrc_strings.cpp:271
 #: ../xrc/xrc_strings.cpp:327
 msgid "F# Major / D# minor"
-msgstr "Fa# Groot / Re# klein"
+msgstr "Fa # Groot / Re # klein"
 
 #: ../xrc/xrc_strings.cpp:42
 #: ../xrc/xrc_strings.cpp:115
 #: ../xrc/xrc_strings.cpp:272
 #: ../xrc/xrc_strings.cpp:328
 msgid "C# Major / A# minor"
-msgstr "Do# Groot / La# klein"
+msgstr "Do # Groot / La # klein"
 
 #: ../xrc/xrc_strings.cpp:43
 #: ../xrc/xrc_strings.cpp:116
@@ -3365,7 +3343,7 @@ msgstr "Fa groot / Re klein"
 #: ../xrc/xrc_strings.cpp:280
 #: ../xrc/xrc_strings.cpp:336
 msgid "You must choose one key signature at least! "
-msgstr "U dient tenminste een voortekening kiezen!"
+msgstr "U moet tenminste een voortekening kiezen!"
 
 #: ../xrc/xrc_strings.cpp:51
 #: ../xrc/xrc_strings.cpp:281
@@ -3448,7 +3426,7 @@ msgstr "Het is niet mogelijk om een willekeurig interval te generen. De interval
 
 #: ../xrc/xrc_strings.cpp:66
 msgid "Score generation settings"
-msgstr "Partituur aanmaak instellingen"
+msgstr "Partituur aanmaakinstellingen"
 
 #: ../xrc/xrc_strings.cpp:67
 msgid "Clefs and Notes"
@@ -3499,7 +3477,7 @@ msgstr "Do sleutel op de 4de lijn (tenor)"
 
 #: ../xrc/xrc_strings.cpp:90
 msgid "You must choose at least one clef! "
-msgstr "U moet minstens een sleutel kiezen!"
+msgstr "U moet minstens één sleutel kiezen!"
 
 #: ../xrc/xrc_strings.cpp:92
 msgid "Maximum interval between two consecutive notes"
@@ -3507,15 +3485,15 @@ msgstr "Maximum interval tussen twee opeenvolgende noten"
 
 #: ../xrc/xrc_strings.cpp:93
 msgid "Time signatures"
-msgstr "Tijd signatuur"
+msgstr "maatsoorten"
 
 #: ../xrc/xrc_strings.cpp:94
 msgid "Binary subdivision"
-msgstr "Binaire opdeling"
+msgstr "Binaire onderverdeling"
 
 #: ../xrc/xrc_strings.cpp:95
 msgid "2 4 time signature"
-msgstr "2 4 tijd signatuur"
+msgstr "2 4 maatsoort"
 
 #: ../xrc/xrc_strings.cpp:96
 msgid "3 4"
@@ -3539,11 +3517,11 @@ msgstr "3 2"
 
 #: ../xrc/xrc_strings.cpp:101
 msgid "Ternary subdivision"
-msgstr "Driedelige opdeling"
+msgstr "Driedelige onderverdeling"
 
 #: ../xrc/xrc_strings.cpp:102
 msgid "6 8 time signature"
-msgstr "6 8 tijd signatuur"
+msgstr "6 8 maatsoort"
 
 #: ../xrc/xrc_strings.cpp:103
 msgid "9 8"
@@ -3559,11 +3537,11 @@ msgstr "3 8"
 
 #: ../xrc/xrc_strings.cpp:106
 msgid "You must choose at least one time signature! "
-msgstr "U moet op minstens een tijd signatuur kiezen!"
+msgstr "U moet op minstens één maatsoort kiezen!"
 
 #: ../xrc/xrc_strings.cpp:123
 msgid "You must choose at least one key signature! "
-msgstr "U moet minstens een sleutel signatuur kiezen!"
+msgstr "U moet minstens één voortekening kiezen!"
 
 #: ../xrc/xrc_strings.cpp:124
 msgid "Rhymths"
@@ -3579,7 +3557,7 @@ msgstr "Ritme verwijderen"
 
 #: ../xrc/xrc_strings.cpp:130
 msgid "Configuration: Theory exercises on intervals"
-msgstr "Configuratie: Theorie oefeningen voor intervallen"
+msgstr "Configuratie: theorie oefeningen voor intervallen"
 
 #: ../xrc/xrc_strings.cpp:131
 msgid "Clefs to use"
@@ -3587,11 +3565,11 @@ msgstr "Te gebruiken sleutels"
 
 #: ../xrc/xrc_strings.cpp:141
 msgid "Allow accidentals"
-msgstr "Toevallige voortekens toelaten"
+msgstr "Toevallige wijzigingstekens toelaten"
 
 #: ../xrc/xrc_strings.cpp:142
 msgid "Allow double accidentals"
-msgstr "Dubbele voortekens toelaten"
+msgstr "Dubbele wijzigingstekens toelaten"
 
 #: ../xrc/xrc_strings.cpp:143
 msgid "Problem type"
@@ -3599,11 +3577,11 @@ msgstr "Probleem type"
 
 #: ../xrc/xrc_strings.cpp:144
 msgid "&Show an interval and ask student for its name"
-msgstr "&Toon een interval en vraag de naam aan de student"
+msgstr "&Toon een interval en vraag de naam ervan"
 
 #: ../xrc/xrc_strings.cpp:145
 msgid "&Name an interval and ask student to build it"
-msgstr "&Benoem een interval en vraag de student om het maken"
+msgstr "&Geef een interval en vraag om het te vervolledigen"
 
 #: ../xrc/xrc_strings.cpp:146
 msgid "&Both problem types"
@@ -3611,7 +3589,7 @@ msgstr "&Beide probleem types"
 
 #: ../xrc/xrc_strings.cpp:150
 msgid "Pattern's editor"
-msgstr "Patroon editor"
+msgstr "Patrooneditor"
 
 #: ../xrc/xrc_strings.cpp:151
 msgid "Step 1. Choose attributes for next note/rest to enter:"
@@ -3619,7 +3597,7 @@ msgstr "Stap 1. Kies de attributen voor de volgende noot/rust in te geven:"
 
 #: ../xrc/xrc_strings.cpp:152
 msgid "Dotted"
-msgstr "Gepunt"
+msgstr "Gepunteerd"
 
 # a
 #: ../xrc/xrc_strings.cpp:153
@@ -3668,11 +3646,11 @@ msgstr "16de noot"
 
 #: ../xrc/xrc_strings.cpp:164
 msgid "32th note"
-msgstr "32de noot"
+msgstr "32ste noot"
 
 #: ../xrc/xrc_strings.cpp:165
 msgid "64th note"
-msgstr "64de noot"
+msgstr "64ste noot"
 
 #: ../xrc/xrc_strings.cpp:166
 msgid "Whole rest"
@@ -3696,11 +3674,11 @@ msgstr "16de rust"
 
 #: ../xrc/xrc_strings.cpp:171
 msgid "32th rest"
-msgstr "32de rust"
+msgstr "32ste rust"
 
 #: ../xrc/xrc_strings.cpp:172
 msgid "64th rest"
-msgstr "64de rust"
+msgstr "64ste rust"
 
 #: ../xrc/xrc_strings.cpp:173
 msgid "Barline"
@@ -3724,11 +3702,11 @@ msgstr "Taal voorkeuren"
 
 #: ../xrc/xrc_strings.cpp:183
 msgid "Preferences for toolbars"
-msgstr "Werkbalk instellingen"
+msgstr "Werkbalkinstellingen"
 
 #: ../xrc/xrc_strings.cpp:184
 msgid "Icons' size"
-msgstr "Ikoon grootte"
+msgstr "Ikoongrootte"
 
 #: ../xrc/xrc_strings.cpp:185
 msgid "&Small"
@@ -3752,15 +3730,15 @@ msgstr "&Geen labels"
 
 #: ../xrc/xrc_strings.cpp:190
 msgid "&Labels bottom"
-msgstr "&Labels onder"
+msgstr "Labels &onder"
 
 #: ../xrc/xrc_strings.cpp:191
 msgid "&Labels right"
-msgstr "&Labels rechts"
+msgstr "Labels &rechts"
 
 #: ../xrc/xrc_strings.cpp:193
 msgid "Internet connection options"
-msgstr "Internetconnectie opties"
+msgstr "Opties internetconnectie"
 
 #: ../xrc/xrc_strings.cpp:194
 msgid "Software updates"
@@ -3783,14 +3761,12 @@ msgid "Use a proxy server to connect to Internet"
 msgstr "Gebruik een proxy server om te connecteren naar het Internet"
 
 #: ../xrc/xrc_strings.cpp:199
-#, fuzzy
 msgid "Proxy settings"
-msgstr "Andere instellingen"
+msgstr "Proxy instellingen"
 
 #: ../xrc/xrc_strings.cpp:200
-#, fuzzy
 msgid "Server settings"
-msgstr "Andere instellingen"
+msgstr "Server instellingen"
 
 #: ../xrc/xrc_strings.cpp:201
 msgid "Host:"
@@ -3806,12 +3782,11 @@ msgstr "Voer aub data in voor zowel de hostnaam als het poortnummer"
 
 #: ../xrc/xrc_strings.cpp:204
 msgid "Proxy server requires authentication"
-msgstr "De proxyserver vereist een autenticatie"
+msgstr "De proxyserver vereist een authenticatie"
 
 #: ../xrc/xrc_strings.cpp:205
-#, fuzzy
 msgid "Authentication"
-msgstr "Akkoordherkenning"
+msgstr "Authenticatie"
 
 #: ../xrc/xrc_strings.cpp:206
 msgid "Username:"
@@ -3830,21 +3805,20 @@ msgid "Other options"
 msgstr "Andere opties"
 
 #: ../xrc/xrc_strings.cpp:211
-#, fuzzy
 msgid "Exercises"
-msgstr "Andere oefeningen"
+msgstr "Oefeningen"
 
 #: ../xrc/xrc_strings.cpp:212
 msgid "Generate right/wrong sounds when clicking an answer button"
-msgstr "Laat een juist/verkeerd geluid horen wanneer een antwoordknop wordt ingedrukt"
+msgstr "Een juist/verkeerd geluid afspelen bij het indrukkenvan een antwoordknop."
 
 #: ../xrc/xrc_strings.cpp:213
 msgid "Show two counters (for teams competition)"
-msgstr "Toon twee tellers (in team competitie)"
+msgstr "In team competitie twee tellers tonen."
 
 #: ../xrc/xrc_strings.cpp:214
 msgid "If right answer, do not show solution and generate a new problem"
-msgstr "Geen oplossing tonen en een nieuw probleem genereren wanneer juist geantwoord wordt"
+msgstr "Toon geen oplossing bij een juist antwoord en maak een nieuw probleem aan."
 
 #: ../xrc/xrc_strings.cpp:216
 #: ../xrc/xrc_strings.cpp:222
@@ -3897,7 +3871,7 @@ msgstr "Licentie"
 
 #: ../xrc/xrc_strings.cpp:234
 msgid "Art design credits"
-msgstr "Kunst ontwerp erkenning"
+msgstr "Design credits"
 
 #: ../xrc/xrc_strings.cpp:236
 msgid "Translators"
@@ -3909,7 +3883,7 @@ msgstr "Build informatie."
 
 #: ../xrc/xrc_strings.cpp:240
 msgid "Configuration: Chords' identification"
-msgstr "Configuratie: akkoord herkenning"
+msgstr "Configuratie: akkoordherkenning"
 
 #: ../xrc/xrc_strings.cpp:241
 msgid "Chords"
@@ -3929,7 +3903,7 @@ msgstr "Andere akkoorden"
 
 #: ../xrc/xrc_strings.cpp:282
 msgid "Play modes"
-msgstr "Speel modes"
+msgstr "Speelmodes"
 
 # a
 #: ../xrc/xrc_strings.cpp:283
@@ -3951,55 +3925,47 @@ msgstr "Omkering toelaten"
 #: ../xrc/xrc_strings.cpp:288
 #: ../xrc/xrc_strings.cpp:342
 msgid "Display key signature"
-msgstr "Sleutel signatuur weergeven"
+msgstr "Voortekening weergeven"
 
 #: ../xrc/xrc_strings.cpp:292
-#, fuzzy
 msgid "Configuration: Scales' identification"
-msgstr "Configuratie: akkoord herkenning"
+msgstr "Configuratie: toonaardherkenning"
 
 #: ../xrc/xrc_strings.cpp:293
 msgid "Scales"
 msgstr "Toonaarden"
 
 #: ../xrc/xrc_strings.cpp:294
-#, fuzzy
 msgid "Major scales"
-msgstr "Majeur"
+msgstr "Majeur toonaarden"
 
 #: ../xrc/xrc_strings.cpp:299
-#, fuzzy
 msgid "Minor scales"
-msgstr "Mineur"
+msgstr "Mineur toonaarden"
 
 #: ../xrc/xrc_strings.cpp:304
 msgid "Greek scales"
 msgstr "Griekse toonaarden"
 
 #: ../xrc/xrc_strings.cpp:312
-#, fuzzy
 msgid "Other scales"
-msgstr "Andere instellingen"
+msgstr "Andere toonaarden"
 
 #: ../xrc/xrc_strings.cpp:331
-#, fuzzy
 msgid "Db Major / Bb minor"
-msgstr "D Groot / Si klein"
+msgstr "Db Groot / Si b klein"
 
 #: ../xrc/xrc_strings.cpp:338
-#, fuzzy
 msgid "Play mode"
-msgstr "Speel modes"
+msgstr "Afspeel mode"
 
 #: ../xrc/xrc_strings.cpp:339
-#, fuzzy
 msgid "&Ascending"
-msgstr ", stijgend"
+msgstr "&Stijgend"
 
 #: ../xrc/xrc_strings.cpp:340
-#, fuzzy
 msgid "&Descending"
-msgstr ", dalend"
+msgstr "&Dalend"
 
 #: ../xrc/xrc_strings.cpp:341
 msgid "&Both"
@@ -4027,19 +3993,19 @@ msgstr "Probleem met het checken van updates"
 
 #: updater/Updater.cpp:195
 msgid "Connection with the server could not be established. Check that you are connected to the internet and that no firewalls are blocking this program; then try again. If problems continue, the server may be down. Please, try again later."
-msgstr "Verbinding met de server kon niet tot stand worden gebracht. Controleer of u verbinding heeft met het internet en dat er geen firewall dit programma blokkeert; probeer dan opnieuw. indien het probleem blijft duren zou het kunnen dat de server down is. Probeer aub later nog eens."
+msgstr "De verbinding met de server kon niet tot stand worden gebracht. Controleer of u verbinding heeft met het internet en dat er geen firewall dit programma blokkeert. Probeer dan opnieuw. Indien het probleem blijft duren zou het kunnen dat de server down is. Probeer in dat geval later opnieuw."
 
 #: graphic/Formatter4.cpp:520
 msgid "[lmFormatter4::RenderJustified]: Program limitation: Maximum number of staves per system has been exceeded."
-msgstr "[lmFormatter3::RenderJustified]: Programma beperking: Het maximum aantal notenbalken per systeem is overschreden."
+msgstr "[lmFormatter4::RenderJustified]: Programma beperking: Het maximum aantal notenbalken per systeem is overschreden."
 
 #: graphic/GraphicManager.cpp:318
 msgid "Sorry, not enough memory to create a pBitmap to display the page."
-msgstr "Sorry, niet genoeg geheugen om een Bitmap te creëeren om de pagina te tonen."
+msgstr "Sorry, niet genoeg geheugen om een bitmap te creëeren. Kan de pagina niet weergeven."
 
 #: ../langtool/src/installer.cpp:60
 msgid "Please, choose the optional components you would like to install"
-msgstr "Toon de optionele componenten die u wenst te installeren, aub"
+msgstr "Kies aub de optionele componenten die u wenst te installeren"
 
 #: ../langtool/src/installer.cpp:64
 msgid "Shorcut on desktop"
@@ -4063,12 +4029,11 @@ msgstr "Een folder aanmaken met enkele voorbeelden van partituren"
 
 #: ../langtool/src/installer.cpp:71
 msgid "Create keys in Windows Registry to add LenMus to 'Add/Remove Programs' in the Control Panel."
-msgstr "Genereer sleutels in de Windows Registry om LenMus toe te voegen aan 'Programma's toevoegen/verwijderen' in het Controle Paneel."
+msgstr "Registry bewerken om LenMus toe te voegen aan 'Programma's toevoegen/verwijderen' in het Controle Paneel."
 
 #: ../langtool/src/installer.cpp:75
-#, fuzzy
 msgid "Error copying program files"
-msgstr "Fout bij het parsen van XML file"
+msgstr "Fout bij het copiëren van de programmabestanden"
 
 #: ../langtool/src/installer.cpp:76
 msgid "Error installing font"
@@ -4076,7 +4041,7 @@ msgstr "Fout bij het installeren van de font"
 
 #: ../langtool/src/installer.cpp:77
 msgid "Error creating shortcut on desktop"
-msgstr "Fout bij het aanmaken van een snelkoppeling op de desktop"
+msgstr "Fout bij het aanmaken van een snelkoppeling op het bureaublad"
 
 #: ../langtool/src/installer.cpp:78
 msgid "Error copying examples of music scores"
@@ -4084,12 +4049,11 @@ msgstr "Fout bij het copieren van de partituurvoorbeelden"
 
 #: ../langtool/src/installer.cpp:79
 msgid "Would you like to continue the installation?"
-msgstr "Wilt u de installatie verder zetten?"
+msgstr "Wilt u de installatie verderzetten?"
 
 #: ../langtool/src/installer.cpp:80
-#, fuzzy
 msgid "Installation canceled"
-msgstr "Afdrukken geannuleerd"
+msgstr "Installatie geannulleerd"
 
 #: ../langtool/src/installer.cpp:85
 msgid "Run"
@@ -4100,7 +4064,7 @@ msgid "Uninstall"
 msgstr "Installatie verwijderen"
 
 #: exercises/Constrains.h:195
-#: exercises/Constrains.h:262
+#: exercises/Constrains.h:268
 msgid "Read"
 msgstr "Lezen"
 
@@ -4134,24 +4098,24 @@ msgid "lmIdfyChordCtrol. Unknown param: <param %s >\n"
 msgstr "lmTheoIntervalsCtrol. Onbekende parameter: <param %s >\n"
 
 #: html/IdfyScalesCtrolParms.h:224
-#, fuzzy, c-format
+#, c-format
 msgid "lmIdfyScalesCtrol. Unknown param: <param %s >\n"
-msgstr "lmTheoScalesCtrol. Onbekende parameter: <param %s >\n"
+msgstr "lmIdfyScalesCtrol. Onbekende param: <param %s >\n"
 
 #: html/ScoreCtrolParams.h:182
 msgid "Invalid score: old G syntax.\n"
 msgstr "Ongeldige score: old G syntax.\n"
 
 #: html/ScoreCtrolParams.h:198
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Invalid param value in:\n"
 "<param %s >\n"
 "Acceptable value: 'short_nn'\n"
 msgstr ""
-"Ongeldige parameter waarde in :\n"
+"Ongeldige param waarde in :\n"
 "<param %s>\n"
-" Aanvaardbare waarden: 1 | 0 \n"
+" Aanvaardbare waarde: 'short_nn'\n"
 
 #: html/ScoreCtrolParams.h:223
 #, c-format
@@ -4164,17 +4128,32 @@ msgstr ""
 "<param %s >\n"
 "Geldige waarden: kort | vol | patroon\n"
 
-#: html/ScoreCtrolParams.h:253
+#: html/ScoreCtrolParams.h:257
+#: html/TheoMusicReadingCtrolParms.h:244
+#: html/TheoMusicReadingCtrolParms.h:317
+#, c-format
+msgid ""
+"Invalid param value in:\n"
+"<param %s >\n"
+" Invalid value = %s \n"
+" Acceptable values: numeric, greater than 0\n"
+msgstr ""
+"Ongeldige param waarde in:\n"
+"<param %s >\n"
+" Ongeldige waarde = %s \n"
+" Aanvaarde waarde: numerisch, groter dan 0\n"
+
+#: html/ScoreCtrolParams.h:270
 #, c-format
 msgid "Unknown param: <param %s >\n"
 msgstr "Onbekende parameter: <param %s >\n"
 
-#: html/ScoreCtrolParams.h:281
-#: html/ScoreCtrolParams.h:292
+#: html/ScoreCtrolParams.h:298
+#: html/ScoreCtrolParams.h:309
 msgid "Invalid score: unmatched parenthesis.\n"
 msgstr "Ongeldige score: haakje niet gesloten/geopend.\n"
 
-#: html/ScoreCtrolParams.h:326
+#: html/ScoreCtrolParams.h:343
 #, c-format
 msgid ""
 "Errors in score: it can not be created. Score:\n"
@@ -4183,7 +4162,7 @@ msgstr ""
 "Fout in partituur: kan niet gecreëerd worden. partituur:\n"
 "%s\n"
 
-#: html/TheoMusicReadingCtrolParms.h:253
+#: html/TheoMusicReadingCtrolParms.h:273
 #, c-format
 msgid ""
 "Invalid param value in:\n"
@@ -4198,9 +4177,9 @@ msgstr ""
 " Ongeldige waarde = %s \n"
 " Aanvaard formaat: <Clef,LowerNote,UpperNote> \n"
 " Aanvaarde sleutel waarden: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1 \n"
-" Aanvaarde noot toonhoogte: c0 - c9"
+" Aanvaarde toonhoogte: c0 - c9"
 
-#: html/TheoMusicReadingCtrolParms.h:269
+#: html/TheoMusicReadingCtrolParms.h:289
 #, c-format
 msgid ""
 "Invalid param value in:\n"
@@ -4211,9 +4190,9 @@ msgstr ""
 "Ongeldige param waardein:\n"
 "<param %s >\n"
 " Ongeldige waarde = %s \n"
-" Aanvaard formaat: lijst van tijd signaturen \n"
+" Aanvaard formaat: lijst van maatsoorten \n"
 
-#: html/TheoMusicReadingCtrolParms.h:283
+#: html/TheoMusicReadingCtrolParms.h:303
 #, c-format
 msgid ""
 "Invalid param value in:\n"
@@ -4224,27 +4203,14 @@ msgstr ""
 "Ongeldige param waarde in:\n"
 "<param %s >\n"
 " Ongeldige waarde= %s \n"
-" Aanvaard formaat: lijstvan sleutel signaturen of kernwoord 'all' \n"
+" Aanvaard formaat: lijst van toonaarden of kernwoord 'all' \n"
 
-#: html/TheoMusicReadingCtrolParms.h:297
-#, c-format
-msgid ""
-"Invalid param value in:\n"
-"<param %s >\n"
-" Invalid value = %s \n"
-" Acceptable values: numeric, greater than 0\n"
-msgstr ""
-"Ongeldige param waarde in:\n"
-"<param %s >\n"
-" Ongeldige waarde = %s \n"
-" Aanvaarde waarde: numeriscc, groter dan 0\n"
-
-#: html/TheoMusicReadingCtrolParms.h:310
+#: html/TheoMusicReadingCtrolParms.h:330
 #, c-format
 msgid "lmTheoMusicReadingCtrol. Unknown param: <param %s >\n"
 msgstr "lmTheoIntervalsCtrol. Onbekende parameter: <param %s >\n"
 
-#: html/TheoMusicReadingCtrolParms.h:449
+#: html/TheoMusicReadingCtrolParms.h:469
 #, c-format
 msgid ""
 "Error in fragment. Invalid time signature list '%s'\n"
@@ -4253,12 +4219,12 @@ msgstr ""
 "Fout in fragment. Ongeldge tijd signatuur lijst '%s'\n"
 "In fragment: '%s'\n"
 
-#: html/TheoMusicReadingCtrolParms.h:459
+#: html/TheoMusicReadingCtrolParms.h:479
 #, c-format
 msgid "Invalid fragment. Unmatched parenthesis: '%s'\n"
 msgstr "Ongeldig fragment. haakje niet gesloten/geopend: '%s'\n"
 
-#: html/TheoMusicReadingCtrolParms.h:463
+#: html/TheoMusicReadingCtrolParms.h:483
 #, c-format
 msgid "Invalid fragment. Old G syntax: '%s'\n"
 msgstr "Ongeldige fragment. Old G Syntax: '%s'\n"

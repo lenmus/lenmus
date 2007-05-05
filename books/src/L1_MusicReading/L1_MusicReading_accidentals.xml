@@ -44,12 +44,14 @@ A natural sign cancels the effect of a flat or a sharp.
 </para>
 
 <para>
-The accidental sign alters the pitch of the note that it is attached to, but
-also any subsequent occurence of the same note in the
-same measure. Notes in the new measure will not be altered except those tied to
-one in the previous measure. Also, notes with the same pitch name, but higher
-or lower octave will not be be affected. 
+An accidental sign alters not only the pitch of the note that it is attached to, but
+also the pitch of any subsequent occurence of the same note in the
+same measure. Notes with the same pitch name, but in a higher
+or lower octave are not affected. The effect of the accidental ends at the end of
+the measure, so notes in the next measure will not be altered, except those tied to
+one in the previous measure.
 </para>
+
 
 </part>
 
@@ -57,9 +59,8 @@ or lower octave will not be be affected.
 <title>Key signature</title>
 
 <para>
-Having to write accidentals always in the same notes can be annoying.
 If, for example, a piece of music is written based on the D major scale, all F and
-C notes will have sharp signs placed before them. For example:
+C notes will have sharp signs placed before them. For example (play it):
 </para>
 
 <score width="600" height='70' border="0">
@@ -85,6 +86,7 @@ C notes will have sharp signs placed before them. For example:
 </score>
 
 <para>
+Having to write accidentals always in the same notes can be annoying.
 To make the writing process easier, instead of writing sharp signs before all F 
 and C notes, the accidentals can be written at the beginning of the staff, 
 immediately after the clef sign. These accidentals affect the whole score
@@ -123,7 +125,7 @@ independently of the octave.
 
 <para>
 The key signature, apart of simplifying the notation, gives
-information about the 'tonality' of the composition, that is, roughly speaking, 
+information about the 'tonality' of the composition, roughly speaking, 
 which scale is used to build a piece of music. The key signature must be written
 on every music line, placed immediately after the clef sign.
 </para>

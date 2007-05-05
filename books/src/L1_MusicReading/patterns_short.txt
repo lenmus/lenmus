@@ -1,0 +1,101 @@
+24 [14] --------------------------------------------------------------------
+    
+    <f>34;cc n c C, cc - cc - cc, n N n + cc cc c C</f>
+    <f>34;c n n c, c C c C n + n N cc + n n. c, cc - cc - cc, b.</f>
+    <f>34;n. c cc, c n c cc, cc - cc cc, b.</f>
+    <f>34;c n n c, c n n c, c n. n + cc n N</f>
+    <f>34;cccc - cc, n cccc, b N</f>
+    <f>34;n - cccc, cc - n cc,c n c cc, b N</f>
+    <f>34;cc - cc cc, c n. n, b.</f>
+    <f>44;n - cc cc - cc, n. c b</f>
+    <f>44;n - cc cccc, cccc n - cc, b B</f>
+    <f>44;n. c n cc,c n n c cc, n cc cccc, c n n c n</f>
+    
+25 [15] --------------------------------------------------------------------
+    
+    <f>34;n cc C c, n c n.</f>
+    <f>34;c C c C n + cc n C c, n cc C c, c n n c, n B</f>
+    <f>34;c n n c, n - c C C c, b.</f>
+    <f>34;cc C c cc + cc n C c, b N</f>
+    <f>44;cccc n - cc, n cc n C c</f>
+    <f>44;n cc cc - cc, n cc b</f>
+    <f>44;C c n - n cc, cc - n C n + n cc b</f>
+    <f>44;C c cc - cc - cc, n. c b</f>
+    <f>44;n. c c n c, n n - n cc</f>
+    <f>24;n cc, n C c, n C c, cccc, n N</f>
+    <f>24;cccc + cccc, n N</f>
+    <f>24;C c cc, n C c, n n</f>
+    <f>24;c n c, cccc, n - c C</f>
+    <f>24;C c cc, cc - cc, cc - n</f>
+
+26 [16] --------------------------------------------------------------------
+	
+	<f>24,44;b, N n, N n</f>
+	<f>24,44;cccc, n C c, C c n</f>
+	<f>24,44;n cc, n C c, C c C c, cc n</f>
+	<f>24,44;C c C c, cc - cc, n N</f>
+	<f>24;cc n + n C c, C c n + cc cc, n N</f>
+	<f>24,44;n - c C, C c cc, cc c C</f>
+	
+27 [17] --------------------------------------------------------------------
+    
+    <f>24,44;n cc, ssss n</f>
+    <f>24,44;C c n, ssss c C</f>
+    <f>24,44;c n c, n ssss, b</f>
+    <f>24,44;C c C c, n - cc, ssss n</f>
+    <f>34;n C c n, c C c C ssss, b.</f>
+    <f>34;b ssss, b C c, C c C c cc, cc - cc ssss, b.</f>
+    <f>34;c n c ssss, n - cc ssss, b N</f>
+    <f>34;n C c c n c, cc ssss b</f>
+    
+28 [18] --------------------------------------------------------------------
+    
+    <f>24,44;n css, n C c, css cc, n ssss, n N</f>
+    <f>24,44;css cc + cc css, n N</f>
+    <f>24,44;C c cc, css css, cccc + cc ssss, cc - n</f>
+    <f>24,44;C c ssss, cc - c C</f>
+    <f>24,44;ssss css, n. c, css cc + cc - cc, b</f>
+    <f>24,44;ssss ssss, n - cc, n N</f>
+    <f>24,44;css cc, css cc + cc n</f>
+    <f>34;n. c cc, c n n c, ssss cc ssss, b N</f>
+    <f>34;n. c ssss, cccc n</f>
+    <f>34;c n c ssss, n - cc n</f>
+    <f>34;C c C c C c, n ssss n</f>
+    
+29 [19] --------------------------------------------------------------------
+    
+    <f>68;ccc n., n. ccc, n. N.</f>
+    <f>68;n. - n., ccc n. + n. N.</f>
+    <f>68;n. ccc, n. n., B.</f>
+    <f>68;ccc n., ccc ccc, b.</f>
+    <f>68;ccc ccc, ccc n.</f>
+
+30 [20] --------------------------------------------------------------------
+    
+    <f>68;n. n c, n. - ccc, n. N.</f>
+    <f>68;n c ccc, n. - n c, n. n.</f>
+    <f>68;n. - ccc, n. - n c, n. - n.</f>
+    <f>68;n c n. + n c ccc, b.</f>
+    <f>68;n c n c, n. - ccc, ccc n c, b.</f>
+    <f>68;n c n c, ccc ccc, n. N.</f>
+    <f>68;n c ccc, n c n c, n. N.</f>
+    <f>68;ccc n c, ccc n c, b.</f>
+
+31 [21] --------------------------------------------------------------------
+    
+    <f>68;n. ccc, n c c n, n. N.</f>
+    <f>68;c n n., ccc n.</f>
+    <f>68;n. c n, n. N.</f>
+    <f>68;c n - ccc, n c n.</f>
+    <f>68;ccc n., c n - n.</f>
+    <f>68;n c n c, ccc c n, n. N.</f>
+    
+32 [22] --------------------------------------------------------------------
+    
+    <f>68;n c ccc, n. C cc, n. N.</f>
+    <f>68;ccc cCc, n. cc C, n. N.</f>
+    <f>68;n. N c, n. - n c, ccc n., cCc n.</f>
+    <f>68;cCc cCc, ccc n.</f>
+    <f>68;n. C cc, ccc ccc, c n - n.</f>
+    
+    

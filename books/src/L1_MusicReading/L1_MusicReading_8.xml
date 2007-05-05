@@ -7,37 +7,60 @@
 <title>The 3/4 time signature. Dotted half note</title>
 <!-- <tocimage>img108.png</tocimage> -->
 
-<para>In this lesson a new rhythmic pattern is introduced:
-One 8th note tied to group of one 8th and two 16th notes.
-Note that this new pattern can be written in two different ways:</para>
+<para>
+In this lesson we will learn about the 3/4 time signature.
+As you should know (lesson 6) the top number tells how many beats are there in a measure,
+and the bottom number shows the type of note that gets one beat; the
+number 4 means 'quarter note'. Therefore, the 3/4 time signature is a rhythm with three beats
+per measure and each measure gets three quarter notes. The first beat of a measure is always 
+strong and the two other beats are weaker.
+</para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
+<para>
+If you count beats along with the music, the 3/4 time signature will imply 
+a rhythm such as 'ONE-two-three-and-ONE-two-three-and- ...', stressing the 
+ONE syllable. This is the typical waltz rhythm.
+For example:
+</para>
+
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
     <music_border>0</music_border>
-    <control_play></control_play>
     <music>
-        (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
-        (c (n a4 c)(n a4 n)(n a4 s g+)(n a4 s g-)(Barra Final))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 3 4)
+            (n c4 q)(n e4 q)(n g4 q)(barline simple)
+            (n g4 q)(n a4 q)(n g4 q)(barline simple)
+            (n g4 q)(n a4 q)(n g4 q)(barline simple)
+            (n f4 q)(n c5 q)(n g4 q)(barline end) )))
     </music>
 </score>
 
-<part>
-<title>Lesson and note the differences</title>
-
-<para>Lesson each measure and note how the new introduced pattern appears:</para>
+<para>In this lesson also a new rhythmic pattern is introduced:
+the dotted half note, equivalent to a half note tied to a quarter note:
+</para>
 
 <score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+    <score_type>full</score_type>
     <music>
-        (Metrica 2 4)(n a4 n)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c g-)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Final))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 3 4 noVisible)
+            (n a4 b.)(barline double)
+            (n a4 b l)(n a4 n)(barline double)
+            (s b.)(barline double)
+            (barline final)
+        )))
     </music>
 </score>
 
-</part>
+<para>
+Note that the dotted half note takes a whole measure in the 3/4 rhythm.
+</para>
+
 
 <part>
 <title>Exercises</title>

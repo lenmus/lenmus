@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxMidi\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-03-06 12:07+0100\n"
-"Last-Translator: Jack Van Handenhove <jvanhan@gmail.com>\n"
+"PO-Revision-Date: 2007-05-04 16:05+0100\n"
+"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team: LenMus org\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -17,31 +17,31 @@ msgstr ""
 #: wxMidi/wxMidi.cpp:129
 #: wxMidi/wxMidi.cpp:142
 msgid "Error: Device not properly created"
-msgstr "Error: Device not properly created"
+msgstr "Fout: apparaat niet correct aangemaakt"
 
 #: wxMidi/wxMidi.cpp:619
 msgid "PortMidi: `Host error'"
-msgstr "PortMidi: `Host error'"
+msgstr "PortMidi: `Host fout'"
 
 #: wxMidi/wxMidi.cpp:621
 msgid "PortMidi: `Invalid device ID'"
-msgstr "PortMidi: `Invalid device ID'"
+msgstr "PortMidi: `ongeldig apparaat ID'"
 
 #: wxMidi/wxMidi.cpp:623
 msgid "PortMidi: `Insufficient memory'"
-msgstr "PortMidi: `Insufficient memory'"
+msgstr "PortMidi: `onvoldoende geheugen'"
 
 #: wxMidi/wxMidi.cpp:625
 msgid "PortMidi: 'Buffer too small'"
-msgstr "PortMidi: 'Buffer too small'"
+msgstr "PortMidi: 'Buffer te klein'"
 
 #: wxMidi/wxMidi.cpp:627
 msgid "PortMidi: `Bad pointer'"
-msgstr "PortMidi: `Bad pointer'"
+msgstr "PortMidi: `Slechte pointer'"
 
 #: wxMidi/wxMidi.cpp:629
 msgid "PortMidi: 'Internal PortMidi Error'"
-msgstr "PortMidi: 'Internal PortMidi Error'"
+msgstr "PortMidi: 'Interne PortMidi Fout'"
 
 #: wxMidi/wxMidi.cpp:631
 msgid "PortMidi: 'Buffer overflow'"
@@ -49,23 +49,23 @@ msgstr "PortMidi: 'Buffer overflow'"
 
 #: wxMidi/wxMidi.cpp:633
 msgid "PortMidi: 'Invalid MIDI message Data'"
-msgstr "PortMidi: 'Invalid MIDI message Data'"
+msgstr "PortMidi: 'Ongeldig MIDI bericht Data'"
 
 #: wxMidi/wxMidi.cpp:635
 msgid "PortMidi: 'Buffer is already as large as it can be'"
-msgstr "PortMidi: 'Buffer is already as large as it can be'"
+msgstr "PortMidi: 'Buffer kan niet nog groter gemaakt worden'"
 
 #: wxMidi/wxMidi.cpp:639
 msgid "wxMidi: 'Already lisening!'"
-msgstr "wxMidi: 'Already lisening!'"
+msgstr "wxMidi: 'Reeds aan het luisteren!'"
 
 #: wxMidi/wxMidi.cpp:641
 msgid "wxMidi: 'Error while creating the thread object'"
-msgstr "wxMidi: 'Error while creating the thread object'"
+msgstr "wxMidi: 'Fout bij het creëren van het thread object'"
 
 #: wxMidi/wxMidi.cpp:643
 msgid "wxMidi: 'Error while starting the thread execution'"
-msgstr "wxMidi: 'Error while starting the thread execution'"
+msgstr "wxMidi: 'Fout bij de start van de thread uitvoering'"
 
 #: wxMidi/wxMidi.cpp:645
 msgid "wxMidi. 'Bad sysex msg: It does not start with 0xF0'"
@@ -77,19 +77,19 @@ msgstr "wxMidi. 'Bad sysex msg: Length greater than 10000 or no final byte 0xF7'
 
 #: wxMidi/wxMidi.cpp:649
 msgid "wxMidi. 'There are no MIDI messages pending to be read'"
-msgstr "wxMidi. 'There are no MIDI messages pending to be read'"
+msgstr "wxMidi. 'Er zijn geen hangende MIDI berichten die gelezen moeten worden'"
 
 #: wxMidi/wxMidi.cpp:652
 msgid "wxMidi: 'Illegal error number'"
-msgstr "wxMidi: 'Illegal error number'"
+msgstr "wxMidi: 'Illegaal fout nummer'"
 
 #: wxMidi/wxMidiDatabase.cpp:90
 msgid "Acoustic Grand Piano"
-msgstr "Aoestische Vleugel Piano"
+msgstr "Akoestische Vleugel Piano"
 
 #: wxMidi/wxMidiDatabase.cpp:91
 msgid "Bright Acoustic Piano"
-msgstr "Heldere Accoustische Piano"
+msgstr "Heldere Akoestische Piano"
 
 #: wxMidi/wxMidiDatabase.cpp:92
 msgid "Electric Grand Piano"
@@ -109,7 +109,7 @@ msgstr "Elektrische Piano 2"
 
 #: wxMidi/wxMidiDatabase.cpp:96
 msgid "Harpsichord"
-msgstr "Clavecimbel"
+msgstr "Klavecimbel"
 
 #: wxMidi/wxMidiDatabase.cpp:97
 msgid "Clavinet"
@@ -125,7 +125,7 @@ msgstr "Klokkenspel"
 
 #: wxMidi/wxMidiDatabase.cpp:100
 msgid "Music Box"
-msgstr "Muziek Doos"
+msgstr "Muziekdoos"
 
 #: wxMidi/wxMidiDatabase.cpp:101
 msgid "Vibraphone"
@@ -148,13 +148,12 @@ msgid "Dulcimer"
 msgstr "Dulcimer"
 
 #: wxMidi/wxMidiDatabase.cpp:106
-#, fuzzy
 msgid "Drawbar Organ"
-msgstr "Drawbar Organ"
+msgstr "Trekbalk orgel"
 
 #: wxMidi/wxMidiDatabase.cpp:107
 msgid "Percussive Organ"
-msgstr "Percussie-orgel"
+msgstr "Percussie orgel"
 
 #: wxMidi/wxMidiDatabase.cpp:108
 msgid "Rock Organ"
@@ -182,18 +181,17 @@ msgstr "Tango Accordeon"
 
 #: wxMidi/wxMidiDatabase.cpp:114
 msgid "Acoustic Guitar (nylon)"
-msgstr "Acoustische Gitaar (nylon)"
+msgstr "Akoestische Gitaar (nylon)"
 
 #: wxMidi/wxMidiDatabase.cpp:115
 msgid "Acoustic Guitar (steel)"
-msgstr "Accoustische Gitaar (steel)"
+msgstr "Akoestische Gitaar (steel)"
 
 #: wxMidi/wxMidiDatabase.cpp:116
 msgid "Electric Guitar (jazz)"
 msgstr "Elektrische Gitaar (jazz)"
 
 #: wxMidi/wxMidiDatabase.cpp:117
-#, fuzzy
 msgid "Electric Guitar (clean)"
 msgstr "Elektrische Gitaar (zuiver)"
 
@@ -202,7 +200,6 @@ msgid "Electric Guitar (muted)"
 msgstr "Elektrische Gitaar (gedempt)"
 
 #: wxMidi/wxMidiDatabase.cpp:119
-#, fuzzy
 msgid "Overdriven Guitar"
 msgstr "Overdriven Gitaar"
 
@@ -211,20 +208,18 @@ msgid "Distortion Guitar"
 msgstr "Distortie Gitaar"
 
 #: wxMidi/wxMidiDatabase.cpp:121
-#, fuzzy
 msgid "Guitar harmonics"
-msgstr "Gitaar Harmonium"
+msgstr "Gitaar Harmonieken"
 
 #: wxMidi/wxMidiDatabase.cpp:122
 msgid "Acoustic Bass"
-msgstr "Accoustische Bas"
+msgstr "Akoestische Bas"
 
 #: wxMidi/wxMidiDatabase.cpp:123
 msgid "Electric Bass (finger)"
 msgstr "Elektrische Bas (vinger)"
 
 #: wxMidi/wxMidiDatabase.cpp:124
-#, fuzzy
 msgid "Electric Bass (pick)"
 msgstr "Elektrische Bas (pick)"
 
@@ -337,7 +332,7 @@ msgstr "Hoorn"
 
 #: wxMidi/wxMidiDatabase.cpp:151
 msgid "Brass Section"
-msgstr "Brass Sectie"
+msgstr "Koper Sectie"
 
 #: wxMidi/wxMidiDatabase.cpp:152
 #, fuzzy
@@ -367,7 +362,7 @@ msgstr "Bariton Sax"
 
 #: wxMidi/wxMidiDatabase.cpp:158
 msgid "Oboe"
-msgstr "Oboe"
+msgstr "Hobo"
 
 #: wxMidi/wxMidiDatabase.cpp:159
 msgid "English Horn"
@@ -379,7 +374,7 @@ msgstr "Fagot"
 
 #: wxMidi/wxMidiDatabase.cpp:161
 msgid "Clarinet"
-msgstr "Clarinet"
+msgstr "Klarinet"
 
 #: wxMidi/wxMidiDatabase.cpp:162
 msgid "Piccolo"
@@ -387,19 +382,17 @@ msgstr "Piccolo"
 
 #: wxMidi/wxMidiDatabase.cpp:163
 msgid "Flute"
-msgstr "Fluit"
+msgstr "Dwarsfluit"
 
 #: wxMidi/wxMidiDatabase.cpp:164
-#, fuzzy
 msgid "Recorder"
-msgstr "Recorder"
+msgstr "Blokfluit"
 
 #: wxMidi/wxMidiDatabase.cpp:165
 msgid "Pan Flute"
 msgstr "Panfluit"
 
 #: wxMidi/wxMidiDatabase.cpp:166
-#, fuzzy
 msgid "Blown Bottle"
 msgstr "Blaas Fles"
 
@@ -426,9 +419,8 @@ msgid "Lead 2 (sawtooth)"
 msgstr "Lead 2 (sawtooth)"
 
 #: wxMidi/wxMidiDatabase.cpp:172
-#, fuzzy
 msgid "Lead 3 (calliope)"
-msgstr "Lead 3 (calliope)"
+msgstr "Lead 3 (stoomorgel)"
 
 #: wxMidi/wxMidiDatabase.cpp:173
 #, fuzzy
@@ -455,7 +447,6 @@ msgid "Lead 8 (bass + lead)"
 msgstr "Lead 8 (bass + lead)"
 
 #: wxMidi/wxMidiDatabase.cpp:178
-#, fuzzy
 msgid "Pad 1 (new age)"
 msgstr "Pad 1 (new age)"
 
@@ -464,7 +455,6 @@ msgid "Pad 2 (warm)"
 msgstr "Pad 2 (warm)"
 
 #: wxMidi/wxMidiDatabase.cpp:180
-#, fuzzy
 msgid "Pad 3 (polysynth)"
 msgstr "Pad 3 (polysynth)"
 
@@ -473,17 +463,14 @@ msgid "Pad 4 (choir)"
 msgstr "Pad 4 (kerkkoor)"
 
 #: wxMidi/wxMidiDatabase.cpp:182
-#, fuzzy
 msgid "Pad 5 (bowed)"
-msgstr "Pad 5 (bowed)"
+msgstr "Pad 5 (gebogen)"
 
 #: wxMidi/wxMidiDatabase.cpp:183
-#, fuzzy
 msgid "Pad 6 (metallic)"
 msgstr "Pad 6 (metaal)"
 
 #: wxMidi/wxMidiDatabase.cpp:184
-#, fuzzy
 msgid "Pad 7 (halo)"
 msgstr "Pad 7 (halo)"
 
@@ -624,7 +611,7 @@ msgstr "Geweerschot"
 
 #: wxMidi/wxMidiDatabase.cpp:354
 msgid "35-Acoustic Bass Drum"
-msgstr "35-Accoustische Bas Drum"
+msgstr "35-Akoestische Bas Drum"
 
 #: wxMidi/wxMidiDatabase.cpp:355
 msgid "36-Bass Drum 1"
@@ -636,9 +623,8 @@ msgid "37-Side Stick"
 msgstr "37-Side Stick"
 
 #: wxMidi/wxMidiDatabase.cpp:357
-#, fuzzy
 msgid "38-Acoustic Snare"
-msgstr "38-Acoustic Snare"
+msgstr "38-Akoestische snaartrom"
 
 #: wxMidi/wxMidiDatabase.cpp:358
 msgid "39-Hand clap"
@@ -702,7 +688,7 @@ msgstr "53-Ride Bell"
 
 #: wxMidi/wxMidiDatabase.cpp:373
 msgid "54-Tambourine"
-msgstr "54-Tambourijn"
+msgstr "54-Tamboerijn"
 
 #: wxMidi/wxMidiDatabase.cpp:374
 msgid "55-Splash Cymbal"
@@ -842,7 +828,7 @@ msgstr "Ensembles"
 
 #: wxMidi/wxMidiDatabase.cpp:504
 msgid "Brass"
-msgstr "Brass"
+msgstr "Koper"
 
 #: wxMidi/wxMidiDatabase.cpp:516
 msgid "Reed"
