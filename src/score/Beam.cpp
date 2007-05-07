@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Beam.cpp
-    @brief Implementation file for class lmBeam
-    @ingroup score_kernel
-*/
+
 /*! @class lmBeam
     lmBeam objects are auxiliary objects within lmNote objects to contain the information and
     methods related to beaming: i.e. grouping the beams of several consecutive notes.
@@ -36,8 +33,8 @@
 		    and removed.
 */
 
-#ifdef __GNUG__
-    #pragma implementation "Beam.h"
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma implementation "Beam.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -384,7 +381,7 @@ void lmBeam::TrimStems()
         lmLUnits nLength = (yBase[i] > yTop[i] ? yBase[i] - yTop[i] : yTop[i] - yBase[i]);
         pNR = (lmNoteRest*)pNode->GetData();
         if (pNR->IsRest()) {
-            ((lmRest*)pNR)->SetDisplacement(m_nPosForRests);
+            ((lmRest*)pNR)->DoVerticalShift(m_nPosForRests);
         }
         else {
             pNote = (lmNote*)pNR;

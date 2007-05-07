@@ -18,12 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Rest.cpp
-    @brief Implementation file for class lmRest
-    @ingroup score_kernel
-*/
-#ifdef __GNUG__
-// #pragma implementation
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma implementation "Rest.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -50,7 +47,6 @@ lmRest::lmRest(lmVStaff* pVStaff, ENoteType nNoteType, float rDuration, bool fDo
     : lmNoteRest(pVStaff, DEFINE_REST, nNoteType, rDuration, fDotted, fDoubleDotted, nStaff)
 {
 
-    m_yShift = 0;
     CreateBeam(fBeamed, BeamInfo);
     g_pLastNoteRest = this;
 
@@ -128,8 +124,7 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
 
 
     // move to right staff
-    lmLUnits nyTop = m_paperPos.y + GetStaffOffset() + 
-                      m_pVStaff->TenthsToLogical(m_yShift, m_nStaffNum);
+    lmLUnits nyTop = m_paperPos.y + GetStaffOffset();
     lmLUnits nxLeft = m_paperPos.x;
 
     // prepare DC
@@ -140,11 +135,8 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
         m_pBeam->ComputeStemsDirection();
     }
 
-
     // Draw rest symbol
     //----------------------------------------------------------------------------------
-//    if (fMeasuring) { m_xAnchor = CSng(xLeft)
-//    xAncho = m_oPapel.PintarSilencio(fMeasuring, m_nNoteType, xLeft, yTop)
     lmEGlyphIndex nGlyph = GetGlyphIndex();
     wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
     if (fMeasuring) {
@@ -204,7 +196,7 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
                 switch(pNRO->GetSymbolType()) {
                     case eST_Fermata:
                         // set position (relative to paperPos)
-                         xPos = m_selRect.x + m_selRect.width / 2;
+                        xPos = m_selRect.x + m_selRect.width / 2;
                         yPos = nyTop - m_paperPos.y;
                         pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
                         pNRO->UpdateMeasurements();
@@ -219,6 +211,44 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
     }
 
     
+}
+
+void lmRest::DoVerticalShift(lmTenths yShift)
+{ 
+    // rests inside a group of beamed notes need to be shifted to align with the noteheads.
+    // This method is invoked *after* the measurement phase. Therefore we have to 
+    // shift all already measured affected values
+
+    // compute shift in logical units
+    lmLUnits uShift = m_pVStaff->TenthsToLogical(yShift, m_nStaffNum);
+
+    // apply shift to rest object
+    m_glyphPos.y += uShift;
+    m_selRect.y += uShift;
+
+    // apply shift to associated notations
+    // todo: there is a problem with following code: I need pointer pPaper
+    //if (m_pNotations) {
+    //    lmNoteRestObj* pNRO;
+    //    wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
+    //    for (; pNode; pNode = pNode->GetNext() ) {
+    //        pNRO = (lmNoteRestObj*)pNode->GetData();
+    //        lmLUnits xPos = 0;
+    //        lmLUnits yPos = 0;
+    //        switch(pNRO->GetSymbolType()) {
+    //            case eST_Fermata:
+    //                // set position (relative to paperPos)
+    //                xPos = m_selRect.x + m_selRect.width / 2;
+    //                yPos = GetStaffOffset() + uShift;
+    //                pNRO->SetSizePosition(m_pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
+    //                pNRO->UpdateMeasurements();
+    //                break;
+    //            default:
+    //                wxASSERT(false);
+    //        }
+    //    }
+    //}
+
 }
 
 wxString lmRest::Dump()

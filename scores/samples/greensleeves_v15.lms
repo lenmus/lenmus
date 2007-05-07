@@ -2,7 +2,7 @@
    (vers 1.5)(language en iso-8859-1)
    
    (title center "Greenslevees" (font bold 14))
-   (title center "(Melodía popular inglesa)" (font normal 10))
+   (title center "(Melodia popular inglesa)" (font normal 10))
 
    (instrument
       (musicData 

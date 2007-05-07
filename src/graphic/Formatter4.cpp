@@ -64,9 +64,6 @@ lmFormatter4::~lmFormatter4()
 
 lmBoxScore* lmFormatter4::Layout(lmScore* pScore, lmPaper* pPaper)
 {
-//            Optional nTipoEspaciado As ESpacingMethod = esm_PropConstantShortNote, _
-//            Optional fJustificada As Boolean = true, _
-//            Optional rFactorAjuste As Single = 1#)
 
     m_pScore = pScore;
     switch (pScore->GetRenderizationType())
@@ -166,16 +163,7 @@ lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
 lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 {
 
-//            nTipoEspaciado As ESpacingMethod, _
-//            fJustified As Boolean, _
-//            rFactorAjuste As Single)
-    bool fJustified = true;
-    /*
-    // - fJustified: justificar compases a derecha
-    // - rFactorAjuste: Factor de ajuste. Se aplica a todas las modalides salvo en
-    //   esm_PropVariableNumBars
-    */
-
+    bool fJustified = true;     // right justify measures
 
     //---------------------------------------------------------------------------------------
     //Render a score justifying measures so that they fit exactly in the width of the staff
@@ -694,7 +682,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     //between the previous barline (or the prolog, if first measure in system) and the first note
     if (nAbsMeasure != 1) {
         //! @todo review this fixed barline after space
-        lmLUnits nSpaceAfterBarline = pVStaff->TenthsToLogical(10, 1);    // one line
+        lmLUnits nSpaceAfterBarline = pVStaff->TenthsToLogical(20, 1);    // two lines
         pPaper->IncrementCursorX(nSpaceAfterBarline);       //space after barline
     }
 
@@ -817,16 +805,25 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
 
             //measure lmStaffObj and store its final and anchor x positions
             pSO->Draw(DO_MEASURE, pPaper);
+                //store its final and anchor x positions
+            oTimepos.SetCurXFinal(pPaper->GetCursorX());
+            oTimepos.SetCurXAnchor(oTimepos.GetCurXLeft() + pSO->GetAnchorPos());
+                // add after space
             //if (m_nSpacingMethod != esm_Fixed) {
                 //proportional spacing.
                 //! @todo implement the different methods. For now only PropConstant
                 if (pSO->GetClass() == eSFOT_NoteRest) {
                     pNoteRest = (lmNoteRest*)pSO;
-                    pPaper->IncrementCursorX( pNoteRest->GetDuration() / 4 );
+                    // Note spacing has to be proportional to duration.
+                    // As the duration of quarter note is 64 (duration units), I am
+                    // going to map it to 35 tenths. This gives a conversion factor
+                    // of 35/64 = 0.547
+                    #define lmSPACING_FACTOR    0.547       //todo: user options
+                    lmTenths rSpace = pNoteRest->GetDuration()* lmSPACING_FACTOR;
+                    lmLUnits uSpace = pVStaff->TenthsToLogical(rSpace, pSO->GetStaffNum());
+                    pPaper->IncrementCursorX( uSpace );
                 }
             //}
-            oTimepos.SetCurXFinal(pPaper->GetCursorX());
-            oTimepos.SetCurXAnchor(oTimepos.GetCurXLeft() + pSO->GetAnchorPos());
 
         }
 

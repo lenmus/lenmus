@@ -514,7 +514,7 @@ wxString lmTimeposTable::DumpTimeposTable()
     }
         
     //headers
-    sMsg += _T("Item\tThread\tType\tTimePos\tSize\txLeft\txAnchor\txRight\txFinal\n");
+    sMsg += _T("Item    Thread  Type         TimePos    Size   xLeft xAnchor  xRight  xFinal\n");
             
     //loop to dump table entries
     lmTimeposEntry* pTE;
@@ -524,29 +524,28 @@ wxString lmTimeposTable::DumpTimeposTable()
             sMsg += wxT("----------------------------------------------------------------------------\n");
         }
         pTE = m_aTimePos[i];
-        sMsg += wxString::Format(_T("%4d:\t%d"), i, pTE->m_nThread);
+        sMsg += wxString::Format(_T("%4d: %8d"), i, pTE->m_nThread);
         switch (pTE->m_nType)
         {
             case eAlfa:
-                sMsg += _T("\tAlfa\t");
+                sMsg += _T("  Alfa     ");
                 break;
 
             case eOmega:
-                sMsg += _T("\tOmega ");
+                sMsg += _T("  Omega");
                 if (pTE->m_pSO) {
-                    sMsg += wxString::Format(_T("%d"), (pTE->m_pSO)->GetClass() );    //! @todo convert to string
+                    sMsg += wxString::Format(_T("%3d "), (pTE->m_pSO)->GetClass() );    //! @todo convert to string
                 } else {
-                    sMsg += _T("-");
+                    sMsg += _T("  -        ");
                 }
-                sMsg += _T("\t");
                 break;
 
             default:
                 //lmStaffObj entry
-                sMsg += wxString::Format(_T("\tpSO %d\t"), (pTE->m_pSO)->GetClass() );     //! @todo convert to string
+                sMsg += wxString::Format(_T("  pSO %4d "), (pTE->m_pSO)->GetClass() );     //! @todo convert to string
         }
             
-        sMsg += wxString::Format(_T("%.2f\t%d\t%d\t%d\t%d\t%d\n"),
+        sMsg += wxString::Format(_T("%11.2f %7d %7d %7d %7d %7d\n"),
             pTE->m_rTimePos, pTE->m_nSize, pTE->m_xLeft, pTE->m_xAnchor,
             pTE->m_xRight, pTE->m_xFinal);
     }
@@ -567,7 +566,7 @@ wxString lmTimeposTable::DumpTimeauxTable()
     }
         
     //headers
-    sMsg += _T("Item\tThread\tRef\tTimePos\tSize\txLeft\txAnchor\txRight\txFinal\n");
+    sMsg += _T("Item    Thread  Ref     TimePos    Size   xLeft xAnchor  xRight  xFinal\n");
             
     //loop to dump table entries
     int iItem;
@@ -584,12 +583,12 @@ wxString lmTimeposTable::DumpTimeauxTable()
             rTimePrev = pTAE->rTimePos;
             sMsg += _T("----------------------------------------------------------------------------\n");
         }
-        sMsg += wxString::Format( _T("%4d:\t%d\t%d\t%.10f\t"), 
+        sMsg += wxString::Format( _T("%4d: %8d %4d %11.2f "), 
             i, pTAE->nThread, pTAE->nItem, pTAE->rTimePos);
         iItem = pTAE->nItem;
         
         pTPE = m_aTimePos[iItem];
-        sMsg += wxString::Format( _T("%d\t%d\t%d\t%d\t%d\n"),
+        sMsg += wxString::Format( _T("%7d %7d %7d %7d %7d\n"),
             pTPE->m_nSize, pTPE->m_xLeft, pTPE->m_xAnchor, pTPE->m_xRight, pTPE->m_xFinal);
     }
         

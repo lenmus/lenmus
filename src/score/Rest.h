@@ -18,12 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Rest.h
-    @brief Header file for class lmRest
-    @ingroup score_kernel
-*/
-#ifdef __GNUG__
-// #pragma interface
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "Rest.cpp"
 #endif
 
 #ifndef __REST_H__        //to avoid nested includes
@@ -65,18 +62,13 @@ public:
     bool IsInChord() { return false; }        
 
     //lmRest methods
-    void SetDisplacement(lmTenths yShift) { m_yShift = yShift; }
+    void DoVerticalShift(lmTenths yShift);
 
 
 
 private:
     // access to glyph data to define character to use and selection rectangle 
     lmEGlyphIndex GetGlyphIndex();
-
-        // member variables
-
-    lmTenths    m_yShift;        
-
 
 };
 

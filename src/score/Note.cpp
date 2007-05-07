@@ -579,7 +579,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
     }
 
     // set total width
-    #define NOTE_AFTERSPACE     10      //one line space     @todo user options
+    #define NOTE_AFTERSPACE     0      //one line space     @todo user options
     lmLUnits nAfterSpace = m_pVStaff->TenthsToLogical(NOTE_AFTERSPACE, m_nStaffNum);
     if (fMeasuring) m_nWidth = nxLeft + nAfterSpace - m_paperPos.x;
 
