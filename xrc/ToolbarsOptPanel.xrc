@@ -77,8 +77,8 @@
                             <label>Labels</label>
                             <content>
                                 <item>&amp;No labels</item>
-                                <item>&amp;Labels bottom</item>
-                                <item>&amp;Labels right</item>
+                                <item>Labels &amp;bottom</item>
+                                <item>Labels &amp;right</item>
                             </content>
                         </object>
                     </object>

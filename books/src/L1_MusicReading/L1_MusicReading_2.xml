@@ -12,14 +12,20 @@
 
 <para>
 In this lesson we are going to learn a new note symbol and its rest: the half note.
-The following score shows a half note and the half rest:
+The following score shows a half note and a half rest:
 </para>
 
 <score width="600" height='100' border="0">
-    <score_type>short</score_type>
+    <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
-        (Metrica 4 4 NoVisible)(n a4 b)(s b)(Barra Final))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 4 4 NoVisible)
+            (spacer 50)(n a4 h)(r h)
+            (barline end)
+        )))
     </music>
 </score>
 

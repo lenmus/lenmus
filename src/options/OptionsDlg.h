@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file OptionsDlg.h
-    @brief Header file for class lmOptionsDlg
-    @ingroup options_management
-*/
+
 #ifndef _OPTIONSDLG_H_
 #define _OPTIONSDLG_H_
 
@@ -103,7 +100,7 @@ public:
 
 private:
     void CreateControls();
-    void SelectPanel(int nPanel);
+    bool SelectPanel(int nPanel);
     void CreateImageList();
     lmOptionsPanel* CreatePanel(EOptionsPanels nPanel);
 

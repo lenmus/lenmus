@@ -122,8 +122,11 @@ void lmBeam::ComputeStemsDirection()
 
     // look for the highest and lowest pitch notes so that we can properly position posible
     // rests along the group
+    // I am going to place the rest in the average position of all noteheads.
     int nMaxPosOnStaff = 0;
     int nMinPosOnStaff = 99999;
+    m_nPosForRests = 0;
+    int nNumNotes = 0;
     for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext()) 
     {
         pNote = (lmNote*)pNode->GetData();
@@ -137,11 +140,29 @@ void lmBeam::ComputeStemsDirection()
                 nMaxPosOnStaff = wxMax(nMaxPosOnStaff, pNote->GetPosOnStaff());
                 nMinPosOnStaff = wxMin(nMinPosOnStaff, pNote->GetPosOnStaff());
             }
+            m_nPosForRests += pNote->GetPosOnStaff();
+            nNumNotes++;
+            wxLogMessage(_T("[Beam::ComputeStemsDirection] NotePos = %d"), pNote->GetPosOnStaff());
         }
     }
     if (nMinPosOnStaff == 99999) nMinPosOnStaff = 0;
-    m_nPosForRests = (nMaxPosOnStaff + nMinPosOnStaff)*5;        // average * 10 --> tenths
-    
+
+    // Now lets compute the average
+    m_nPosForRests = (m_nPosForRests * 5) / nNumNotes;
+    // Here m_nPosForRests is the position (line/space) in which to place the rest.
+    // We have computed the average noteheads position (m_nPosForRests / nNumNotes) to
+    // get the following values
+    //        0 - on first ledger line (C note in G clef)
+    //        1 - on next space (D in G clef)
+    //        2 - on first line (E not in G clef)
+    //        3 - on first space
+    //        4 - on second line
+    //        5 - on second space
+    //       etc.
+    // To convert to tenths it is necesary to multiply by 10/2 = 5.
+
+    // As rests are normally positioned on 3rd space (pos 35), the shift to apply is
+    m_nPosForRests = 35 - m_nPosForRests;
     
     //look for the stem direction of most notes. If one note has is stem direction
     // forced (by a slur, probably) forces the group stem in this direction
@@ -149,7 +170,7 @@ void lmBeam::ComputeStemsDirection()
     bool fStemForced = false;    // assume no stem forced
     bool fStemMixed = false;    // assume all stems in the same direction
     int nStemDown = 0;            // number of noteheads with stem down
-    int nNumNotes = 0;            // total number of notes            
+    nNumNotes = 0;            // total number of notes            
     m_fStemsDown = false;        // stems up by default
 
     for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext()) 

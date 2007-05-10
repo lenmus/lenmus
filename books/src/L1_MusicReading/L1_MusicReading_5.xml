@@ -61,13 +61,13 @@ occasionally can be placed below it and upside down:
         (score (vers 1.5)(language en iso-8859-1)
          (instrument
           (musicData (clef G)(key C)
-            (time 2 4 noVisible)
+            (spacer 30)
             (n g4  q (fermata above))
-            (barline double)
+            //(barline double)
             (n g4  q (fermata below))
-            (barline double)
+            //(barline double)
             (r q (fermata above))
-            (barline final)
+            (barline end)
         )))
     </music>
 </score>

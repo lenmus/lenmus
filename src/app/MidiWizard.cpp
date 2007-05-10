@@ -353,14 +353,14 @@ void WizardDevicesPage::CreateControls()
     itemBoxSizer11->Add(itemStaticText12, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pOutComboStrings = NULL;
-    m_pOutCombo = new wxComboBox( itemWizardPageSimple2, ID_COMBO_OUT_DEVICES, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pOutComboStrings, wxCB_DROPDOWN );
+    m_pOutCombo = new wxComboBox( itemWizardPageSimple2, ID_COMBO_OUT_DEVICES, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pOutComboStrings, wxCB_READONLY );
     itemBoxSizer11->Add(m_pOutCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     wxStaticText* itemStaticText14 = new wxStaticText( itemWizardPageSimple2, wxID_STATIC, _("Input device:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer11->Add(itemStaticText14, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pInComboStrings = NULL;
-    m_pInCombo = new wxComboBox( itemWizardPageSimple2, ID_COMBO_IN_DEVICES, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pInComboStrings, wxCB_DROPDOWN );
+    m_pInCombo = new wxComboBox( itemWizardPageSimple2, ID_COMBO_IN_DEVICES, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pInComboStrings, wxCB_READONLY );
     itemBoxSizer11->Add(m_pInCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
 ////@end WizardDevicesPage content construction
@@ -543,7 +543,7 @@ void WizardInstrumentsPage::CreateControls()
     itemBoxSizer25->Add(itemStaticText26, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pVoiceChannelComboStrings = NULL;
-    m_pVoiceChannelCombo = new wxComboBox( itemWizardPageSimple16, ID_COMBO_CHANNEL, _T(""), wxDefaultPosition, wxSize(70, -1), 0, m_pVoiceChannelComboStrings, wxCB_DROPDOWN );
+    m_pVoiceChannelCombo = new wxComboBox( itemWizardPageSimple16, ID_COMBO_CHANNEL, _T(""), wxDefaultPosition, wxSize(70, -1), 0, m_pVoiceChannelComboStrings, wxCB_READONLY );
     itemBoxSizer25->Add(m_pVoiceChannelCombo, 0, wxALIGN_LEFT|wxALL, 5);
 
     wxBoxSizer* itemBoxSizer28 = new wxBoxSizer(wxVERTICAL);
@@ -553,14 +553,14 @@ void WizardInstrumentsPage::CreateControls()
     itemBoxSizer25->Add(itemStaticText29, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pSectComboStrings = NULL;
-    m_pSectCombo = new wxComboBox( itemWizardPageSimple16, ID_COMBO_SECTION, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pSectComboStrings, wxCB_DROPDOWN );
+    m_pSectCombo = new wxComboBox( itemWizardPageSimple16, ID_COMBO_SECTION, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pSectComboStrings, wxCB_READONLY );
     itemBoxSizer25->Add(m_pSectCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     wxStaticText* itemStaticText31 = new wxStaticText( itemWizardPageSimple16, wxID_STATIC, _("Instrument:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer25->Add(itemStaticText31, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pInstrComboStrings = NULL;
-    m_pInstrCombo = new wxComboBox( itemWizardPageSimple16, ID_COMBO_INSTRUMENT, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pInstrComboStrings, wxCB_DROPDOWN );
+    m_pInstrCombo = new wxComboBox( itemWizardPageSimple16, ID_COMBO_INSTRUMENT, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pInstrComboStrings, wxCB_READONLY );
     itemBoxSizer25->Add(m_pInstrCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     wxButton* itemButton33 = new wxButton( itemWizardPageSimple16, ID_BUTTON_TEST_SOUND, _("Test sound"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -780,7 +780,7 @@ void WizardMetronomePage::CreateControls()
     itemBoxSizer43->Add(itemStaticText44, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pMtrChannelComboStrings = NULL;
-    m_pMtrChannelCombo = new wxComboBox( itemWizardPageSimple34, ID_COMBO_MTR_CHANNEL, _T(""), wxDefaultPosition, wxSize(70, -1), 0, m_pMtrChannelComboStrings, wxCB_DROPDOWN );
+    m_pMtrChannelCombo = new wxComboBox( itemWizardPageSimple34, ID_COMBO_MTR_CHANNEL, _T(""), wxDefaultPosition, wxSize(70, -1), 0, m_pMtrChannelComboStrings, wxCB_READONLY );
     itemBoxSizer43->Add(m_pMtrChannelCombo, 0, wxALIGN_LEFT|wxALL, 5);
 
     wxBoxSizer* itemBoxSizer46 = new wxBoxSizer(wxVERTICAL);
@@ -790,14 +790,14 @@ void WizardMetronomePage::CreateControls()
     itemBoxSizer43->Add(itemStaticText47, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pMtrInstr1ComboStrings = NULL;
-    m_pMtrInstr1Combo = new wxComboBox( itemWizardPageSimple34, ID_COMBO_MTR_INSTR1, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pMtrInstr1ComboStrings, wxCB_DROPDOWN );
+    m_pMtrInstr1Combo = new wxComboBox( itemWizardPageSimple34, ID_COMBO_MTR_INSTR1, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pMtrInstr1ComboStrings, wxCB_READONLY );
     itemBoxSizer43->Add(m_pMtrInstr1Combo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     wxStaticText* itemStaticText49 = new wxStaticText( itemWizardPageSimple34, wxID_STATIC, _("Sound for other beats of each measure:"), wxDefaultPosition, wxDefaultSize, 0 );
     itemBoxSizer43->Add(itemStaticText49, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pMtrInstr2ComboStrings = NULL;
-    m_pMtrInstr2Combo = new wxComboBox( itemWizardPageSimple34, ID_COMBO_MTR_INSTR2, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pMtrInstr2ComboStrings, wxCB_DROPDOWN );
+    m_pMtrInstr2Combo = new wxComboBox( itemWizardPageSimple34, ID_COMBO_MTR_INSTR2, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pMtrInstr2ComboStrings, wxCB_READONLY );
     itemBoxSizer43->Add(m_pMtrInstr2Combo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
     wxButton* itemButton51 = new wxButton( itemWizardPageSimple34, ID_BUTTON, _("Test sound"), wxDefaultPosition, wxDefaultSize, 0 );

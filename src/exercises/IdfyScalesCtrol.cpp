@@ -273,6 +273,7 @@ wxString lmIdfyScalesCtrol::SetNewProblem()
     m_sRootNote = oGenerator.GenerateRandomRootNote(nClef, m_nKey, false);  //false = do not allow accidentals. Only those in the key signature
 
     //create the score
+    bool fDisplayKey = m_pConstrains->DisplayKey();
     if (!m_pConstrains->DisplayKey()) m_nKey = earmDo;
     m_sAnswer = PrepareScore(nClef, nScaleType, &m_pProblemScore);
     

@@ -90,6 +90,11 @@ lmScore::lmScore() : lmObject((lmObject*)NULL)
     SetOption(_T("StaffLines.Hide"), false);
     SetOption(_T("Staff.DrawLeftBarline"), true);
     SetOption(_T("Staff.UpperLegerLines.Displacement"), 0L);
+        // Note spacing is proportional to duration.
+        // As the duration of quarter note is 64 (duration units), I am
+        // going to map it to 35 tenths. This gives a conversion factor
+        // of 35/64 = 0.547
+    SetOption(_T("Render.SpacingFactor"), 0.547);
 }
 
 lmScore::~lmScore()

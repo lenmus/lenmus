@@ -18,12 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Note.h
-    @brief Header file for class lmNote
-    @ingroup score_kernel
-*/
-#ifdef __GNUG__
-// #pragma interface
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "Note.cpp"
 #endif
 
 #ifndef __NOTE_H__        //to avoid nested includes
@@ -218,6 +215,10 @@ private:
     lmLUnits        m_nStemLength;     //length of stem;
     bool            m_fStemDown;       //stem direccion. true if down
     EStemType       m_nStemType;       //type of stem
+
+    // dealing with beams
+    bool            m_fMakeUpDone;      //make up phase done, to avoid doing it
+                                        //   several times
 
     // common for sound and look 
     //-----------------------------------------------------------------------

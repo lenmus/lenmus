@@ -18,12 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Note.cpp
-    @brief Implementation file for class lmNote
-    @ingroup score_kernel
-*/
-#ifdef __GNUG__
-// #pragma implementation
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma implementation "Note.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -233,7 +230,7 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
     
     // Generate beaming information -----------------------------------------------------
     CreateBeam(fBeamed, BeamInfo);
-    
+    m_fMakeUpDone = false;
     
     if (!IsInChord() || IsBaseOfChord()) g_pLastNoteRest = this;
 
@@ -435,7 +432,10 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
 
 
     //If drawing phase do first MakeUp phase
-    if (!fMeasuring) MakeUpPhase(pPaper);
+    if (fMeasuring)
+        m_fMakeUpDone = false;
+    else if (!m_fMakeUpDone)
+        MakeUpPhase(pPaper);
 
     //In measuring phase, if this is the first note of a chord, give lmChord the
     //responsibility for computing chord layout (notes and rests' positions). If it is 
@@ -845,6 +845,7 @@ void lmNote::ShiftNoteShape(lmLUnits xShift)
 
 void lmNote::MakeUpPhase(lmPaper* pPaper)
 {
+    m_fMakeUpDone = true;
 
     //Beams. If this is the first note/rest of a beam, do final trimming of stems' length
     if (m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {

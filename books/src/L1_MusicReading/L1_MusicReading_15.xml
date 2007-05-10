@@ -7,17 +7,28 @@
 <title>Syncopation (5)</title>
 <!-- <tocimage>img115.png</tocimage> -->
 
-<para>In this lesson a new rhythmic pattern is introduced:
-One 8th note tied to group of one 8th and two 16th notes.
-Note that this new pattern can be written in two different ways:</para>
+<para>
+In this lesson we continue with syncopation. We are going to practice
+the following rhythmic pattern, that can be written in two ways:
+</para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
     <music_border>0</music_border>
-    <control_play></control_play>
     <music>
-        (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
-        (c (n a4 c)(n a4 n)(n a4 s g+)(n a4 s g-)(Barra Final))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (spacer 20)
+            (r e)(n a4 e)
+            (spacer 20)
+            (barline double)
+            (spacer 20)
+            (n a4 q l)(n a4 e)(r e)
+            (spacer 20)
+            (barline end)
+        )))
     </music>
 </score>
 
@@ -26,14 +37,25 @@ Note that this new pattern can be written in two different ways:</para>
 
 <para>Lesson each measure and note how the new introduced pattern appears:</para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
+<score width="600" height='70' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
     <control_play></control_play>
-    <control_measures></control_measures>
     <music>
-        (Metrica 2 4)(n a4 n)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c g-)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Final))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 4 4)
+            (n a4 e g+)(n a4 e g-)(r e)(n a4 e)(n a4 e g+)(n a4 e g-)(r e)(n a4 e)
+            (spacer 20)
+            (barline simple)
+            (n a4 q)(n a4 e g+)(n a4 e g-)(n a4 q l)(n a4 e g+)(n a4 e g-)
+            (spacer 20)
+            (barline simple)
+            (n a4 q l)(n a4 e g+)(n a4 e g-)(n a4 q l)(n a4 e)(r e)
+            (spacer 20)
+            (barline end)
+        )))
     </music>
 </score>
 

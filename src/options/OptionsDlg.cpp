@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file OptionsDlg.cpp
-    @brief Implementation file for class lmOptionsDlg
-    @ingroup options_management
-*/
+
 //-----------------------------------------------------------------------------------
 //AWARE
 //
@@ -97,7 +94,7 @@ static wxString sImageID[] = {
 
 
 BEGIN_EVENT_TABLE( lmOptionsDlg, wxDialog )
-    EVT_TREE_SEL_CHANGED( ID_TREECTRL, lmOptionsDlg::OnTreectrlItemSelected )
+    EVT_TREE_SEL_CHANGING( ID_TREECTRL, lmOptionsDlg::OnTreectrlItemSelected )
     EVT_BUTTON( ID_BUTTON_ACCEPT, lmOptionsDlg::OnButtonAcceptClick )
 END_EVENT_TABLE()
 
@@ -298,13 +295,15 @@ void lmOptionsDlg::CreateImageList()
     m_pTreeCtrl->AssignImageList(images);
 }
 
-void lmOptionsDlg::SelectPanel(int nPanel)
+bool lmOptionsDlg::SelectPanel(int nPanel)
 {
-    if (nPanel == m_nCurPanel) return;        //panel already shown
+    // returns false if new panel can not be selected
+
+    if (nPanel == m_nCurPanel) return true;        //panel already shown
 
     //Verify input in current panel and
     //do not change panel if current panel input is not valid
-    if (m_pPanel->Verify()) return;
+    if (m_pPanel->Verify()) return false;
 
     //changes applied. Change to new panel
     m_nCurPanel = nPanel;
@@ -314,6 +313,7 @@ void lmOptionsDlg::SelectPanel(int nPanel)
     m_pPanel->Show(false);
     m_pPanel = pNewPanel;
 
+    return true;
 }
 
 lmOptionsPanel* lmOptionsDlg::CreatePanel(EOptionsPanels nPanel)
@@ -344,7 +344,12 @@ void lmOptionsDlg::OnTreectrlItemSelected( wxTreeEvent& event )
     lmTreeItemData* pData = (lmTreeItemData*)(m_pTreeCtrl->GetItemData(itemId));
     long nOpt = pData->GetOptId();
     if (nOpt != -1) {
-        SelectPanel(nOpt);
+        if (!SelectPanel(nOpt)) {
+            // the panel can not be selected. Move focus to previous treectrol item
+            // and inform user
+            wxMessageBox(_("Please correct the errors before moving to another section."));
+            event.Veto();
+        }
     }
 
 }

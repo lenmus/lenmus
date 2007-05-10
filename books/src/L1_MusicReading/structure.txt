@@ -58,8 +58,7 @@ Tonalidades:
 Lecciones
 --------------------------------------
 
-- 2 [staff] El pentagrama (The staff)
-    + Set up metronome for last example (scale) at 320bpm
++ 2 [staff] El pentagrama (The staff)
 
 - 3 [clef] La clave (The clef)
     - Set up metronome for last example (note names) at 320bpm
@@ -70,8 +69,7 @@ Lecciones
     - revisar texto: dirección plicas
     - última figura: espacio entre compases
 
-- 5 [measure] Measures and bar lines (Compases y líneas divisorias)
-    - revisar figuras
++ 5 [measure] Measures and bar lines (Compases y líneas divisorias)
     
 - 6 [time] Time signatures (La métrica).
     - figura: alargar pentagrama
@@ -366,11 +364,8 @@ Ejemplos:
     <fragment>44;(n * n l)(n * c g+)(n * c g-)(n * c)(s c)(n * c g+)(n * c l g-),(n * c g+)(n * c g-)(n * n)</fragment>
     <fragment>44;(n * c g+)(n * c)(n * c)(n * c g- l)(n * c g+)(n * c)(n * c)(n * c g-),(n * n)</fragment>
 
--------------- voy por aquí
-
-
 24 [14] Syncopation (4) (Alteraciones rítmicas: La síncopa (4))
-    - Introduction text and example
+    + Introduction text and example
     
     (pag.61) cc - cc - cc / c n n c 
     
@@ -399,7 +394,7 @@ Ejemplos:
     <fragment>44;(n * n.)(n * c)(n * n)(n * c g+)(n * c g-),c (n * n)(n * n)(n * c)(n * c g+)(n * c g-),(n * n)(n * c g+)(n * c g-)(n * c g+)(n * c)(n * c)(n * c g-),(n * c)(n * n)(n * n)(n * c)(n * n)</fragment>
 
 25 [15] Syncopation (5) (Alteraciones rítmicas: La síncopa (5))
-    - Introduction text and example
+    + Introduction text and example
     
     (pag.63) C c / n - c C
     
@@ -431,15 +426,14 @@ Ejemplos:
     <fragment>24;(n * c)(n * n)(n * c),(n * c g+)(n * c)(n * c)(n * c g-),(n * n l)(n * c)(s c)</fragment>
     <fragment>24;(s c)(n * c)(n * c g+)(n * c g-),(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * c g+)(n * c g- l)(n * n)</fragment>
 
-26 [16] The backbeat (Alteraciones rítmicas: El contratiempo)
+-------------- voy por aquí
+
+
+26 [16] The off-beat (Alteraciones rítmicas: El contratiempo)
     - Introduction text and example
 
-	El contratiempo se da cuando un sonido producido en parte débil
-	va precedido y seguido de silencio. De esta manera queda reforzado el acento en
-	la parte débil
-
-	(pag.65)  N n, N n / C c C c, C c n
-	
+    (pag.65)  N n, N n / C c C c, C c n
+    
     (s n)(n * n), (s c)(n * c)(s c)(n * c), (s c)(n * c)(n * n)
     <clef>Sol;c4;c6</clef>
     <key>Do</key>
@@ -453,12 +447,12 @@ Ejemplos:
     <key>Solm</key>
     <key>Sim</key>
     <time>24,44</time>
-	<fragment>24,44;(n * b),(s n)(n * n),(s n)(n * n)</fragment>
-	<fragment>24,44;(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(s c)(n * c),(s c)(n * c)(n * n)</fragment>
-	<fragment>24,44;(n * n)(n * c g+)(n * c g-),(n * n)(s c)(n * c),(s c)(n * c)(s c)(n * c),(n * c g+)(n * c g-)(n * n)</fragment>
-	<fragment>24,44;(s c)(n * c)(s c)(n * c),(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
-	<fragment>24;(n * c g+)(n * c g-)(n * n l)|(n * n)(s c)(n * c),(s c)(n * c)(n * n l)|(n * c g+)(n * c g-)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
-	<fragment>24,44;(n * n l)(n * c)(s c),(s c)(n * c)(n * c g+)(n * c g-),(n * c g+)(n * c g-)(n * c)(s c)</fragment>
+    <fragment>24,44;(n * b),(s n)(n * n),(s n)(n * n)</fragment>
+    <fragment>24,44;(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(s c)(n * c),(s c)(n * c)(n * n)</fragment>
+    <fragment>24,44;(n * n)(n * c g+)(n * c g-),(n * n)(s c)(n * c),(s c)(n * c)(s c)(n * c),(n * c g+)(n * c g-)(n * n)</fragment>
+    <fragment>24,44;(s c)(n * c)(s c)(n * c),(n * c g+)(n * c g- l)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
+    <fragment>24;(n * c g+)(n * c g-)(n * n l)|(n * n)(s c)(n * c),(s c)(n * c)(n * n l)|(n * c g+)(n * c g-)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
+    <fragment>24,44;(n * n l)(n * c)(s c),(s c)(n * c)(n * c g+)(n * c g-),(n * c g+)(n * c g-)(n * c)(s c)</fragment>
 
 27 [17] The 16th note (La semicorchea)
     - Introduction text and example
@@ -645,6 +639,5 @@ Ejemplos:
         - accept a number range: <key>0 +2,0 -2</key>
 
 - Score: 
-    - notes spacing proportional to duration
     - Play: accent. Higher volume on strong beats
 

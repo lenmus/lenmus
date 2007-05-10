@@ -178,6 +178,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 
     lmBoxScore* pBoxScore = new lmBoxScore(m_pScore);
     bool fStopStaffLinesAtFinalBarline = m_pScore->GetOptionBool(_T("StaffLines.StopAtFinalBarline"));
+    m_rSpacingFactor = m_pScore->GetOptionDouble(_T("Render.SpacingFactor"));
 
     pPaper->RestartPageCursors();    //ensure that page cursors are at top-left corner
 
@@ -814,12 +815,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
                 //! @todo implement the different methods. For now only PropConstant
                 if (pSO->GetClass() == eSFOT_NoteRest) {
                     pNoteRest = (lmNoteRest*)pSO;
-                    // Note spacing has to be proportional to duration.
-                    // As the duration of quarter note is 64 (duration units), I am
-                    // going to map it to 35 tenths. This gives a conversion factor
-                    // of 35/64 = 0.547
-                    #define lmSPACING_FACTOR    0.547       //todo: user options
-                    lmTenths rSpace = pNoteRest->GetDuration()* lmSPACING_FACTOR;
+                    lmTenths rSpace = pNoteRest->GetDuration()* m_rSpacingFactor;
                     lmLUnits uSpace = pVStaff->TenthsToLogical(rSpace, pSO->GetStaffNum());
                     pPaper->IncrementCursorX( uSpace );
                 }

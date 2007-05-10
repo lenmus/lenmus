@@ -187,8 +187,8 @@ _("&Medium");
 _("&Large");
 _("Labels");
 _("&No labels");
-_("&Labels bottom");
-_("&Labels right");
+_("Labels &bottom");
+_("Labels &right");
 //InternetOptPanel.xrc 
 _("Internet connection options");
 _("Software updates");

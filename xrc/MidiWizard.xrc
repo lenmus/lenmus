@@ -87,7 +87,7 @@
                                     <border>5</border>
                                     <object class="wxComboBox" name="ID_COMBO_OUT_DEVICES">
                                         <size>250,-1</size>
-                                        <style>wxCB_DROPDOWN</style>
+                                        <style>wxCB_READONLY</style>
                                     </object>
                                 </object>
                                 <object class="sizeritem">
@@ -102,7 +102,7 @@
                                     <border>5</border>
                                     <object class="wxComboBox" name="ID_COMBO_IN_DEVICES">
                                         <size>250,-1</size>
-                                        <style>wxCB_DROPDOWN</style>
+                                        <style>wxCB_READONLY</style>
                                     </object>
                                 </object>
                             </object>
@@ -194,7 +194,7 @@
                                     <border>5</border>
                                     <object class="wxComboBox" name="ID_COMBO_CHANNEL">
                                         <size>70,-1</size>
-                                        <style>wxCB_DROPDOWN</style>
+                                        <style>wxCB_READONLY</style>
                                     </object>
                                 </object>
                                 <object class="sizeritem">
@@ -216,7 +216,7 @@
                                     <border>5</border>
                                     <object class="wxComboBox" name="ID_COMBO_SECTION">
                                         <size>250,-1</size>
-                                        <style>wxCB_DROPDOWN</style>
+                                        <style>wxCB_READONLY</style>
                                     </object>
                                 </object>
                                 <object class="sizeritem">
@@ -231,7 +231,7 @@
                                     <border>5</border>
                                     <object class="wxComboBox" name="ID_COMBO_INSTRUMENT">
                                         <size>250,-1</size>
-                                        <style>wxCB_DROPDOWN</style>
+                                        <style>wxCB_READONLY</style>
                                     </object>
                                 </object>
                                 <object class="sizeritem">
@@ -330,7 +330,7 @@
                                     <border>5</border>
                                     <object class="wxComboBox" name="ID_COMBO_MTR_CHANNEL">
                                         <size>70,-1</size>
-                                        <style>wxCB_DROPDOWN</style>
+                                        <style>wxCB_READONLY</style>
                                     </object>
                                 </object>
                                 <object class="sizeritem">
@@ -352,7 +352,7 @@
                                     <border>5</border>
                                     <object class="wxComboBox" name="ID_COMBO_MTR_INSTR1">
                                         <size>250,-1</size>
-                                        <style>wxCB_DROPDOWN</style>
+                                        <style>wxCB_READONLY</style>
                                     </object>
                                 </object>
                                 <object class="sizeritem">
@@ -367,7 +367,7 @@
                                     <border>5</border>
                                     <object class="wxComboBox" name="ID_COMBO_MTR_INSTR2">
                                         <size>250,-1</size>
-                                        <style>wxCB_DROPDOWN</style>
+                                        <style>wxCB_READONLY</style>
                                     </object>
                                 </object>
                                 <object class="sizeritem">

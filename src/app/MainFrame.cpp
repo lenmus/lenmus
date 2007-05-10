@@ -1216,8 +1216,9 @@ void lmMainFrame::OnBookFrameUpdateUI(wxUpdateUIEvent& event)
         if (pBookFrame)
             pBookFrame->UpdateUIEvent(event, m_pTbTextBooks);
     }
-    else
+    else {
         event.Enable(false);
+    }
 }
 
 void lmMainFrame::OnVisitWebsite(wxCommandEvent& WXUNUSED(event))

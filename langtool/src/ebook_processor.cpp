@@ -1275,6 +1275,7 @@ void lmEbookProcessor::CreateBookCover()
         _T("<html>\n<head>\n")
         _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=") + m_sCharCode +
         _T("\">\n")
+        _T("<title>") + m_sBookTitle + _T("</title>\n")
         _T("</head>\n\n");
 
     WriteToHtml(sHtml);
