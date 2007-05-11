@@ -6,7 +6,8 @@
    (title left "To the Countess JULIA GUICCIARDI" (dy 10mm) (font normal 10))
    (title right "L. van BEETHOVEN")
 
-    
+   (opt Render.SpacingFactor 0.4)
+   
    (instrument (name "   I.   ") (staves 2)
       (musicData 
         (clef treble p1)

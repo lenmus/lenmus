@@ -238,7 +238,8 @@ Ejemplos:
 
 
 - 20 [10] The 4/4 time signature. The whole note and its rest. (Compás de cuatro tiempos (4/4). La redonda y su silencio)
-    - Introduction text and example
+    + Introduction text
+    - example
     
     
     (n * b l)(n * b), (n * r), (s r)
@@ -308,7 +309,8 @@ Ejemplos:
     <f>44;n n cg+ cg- nl| cg+ c c cg- n. c| cg+ c c cg- nl cg+ cg-| b</f>
 
 - 22 [12] Syncopation (2) (Alteraciones rítmicas: La síncopa (2))
-    - Introduction text and example
+    + Introduction text
+    - example
 
     (n * c g+)(n * c l g-)(n * n), (n * c)(n * n.), (n * c g+)(n * c l g-)|(n * n)
     <clef>Sol;c4;b5</clef>
@@ -429,7 +431,7 @@ Ejemplos:
 -------------- voy por aquí
 
 
-26 [16] The off-beat (Alteraciones rítmicas: El contratiempo)
+26 [16] Counter-time (Alteraciones rítmicas: El contratiempo)
     - Introduction text and example
 
     (pag.65)  N n, N n / C c C c, C c n

@@ -7,19 +7,35 @@
 <title>Syncopation (2)</title>
 <!-- <tocimage>img112.png</tocimage> -->
 
-<para>In this lesson a new rhythmic pattern is introduced:
-One 8th note tied to group of one 8th and two 16th notes.
-Note that this new pattern can be written in two different ways:</para>
+<para>
+In this lesson we continue with syncopation. We are going to practice
+the following rhythmic patterns:
+</para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
+<score width="600" height='70' border="0">
+    <score_type>full</score_type>
     <music_border>0</music_border>
-    <control_play></control_play>
     <music>
-        (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
-        (c (n a4 c)(n a4 n)(n a4 s g+)(n a4 s g-)(Barra Final))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (spacer 20)
+            (n a4 e g+)(n a4 e l g-)(n a4 q)
+            (spacer 20)
+            (barline double)
+            (spacer 20)
+            (n a4 e)(n a4 q.)
+            (spacer 20)
+            (barline double)
+            (spacer 20)
+            (n a4 e g+)(n a4 e l g-)(barline simple)(n a4 q)
+            (spacer 20)
+            (barline double)
+        )))
     </music>
 </score>
+
 
 <part>
 <title>Lesson and note the differences</title>

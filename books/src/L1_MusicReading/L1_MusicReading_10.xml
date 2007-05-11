@@ -7,42 +7,91 @@
 <title>The 4/4 time signature. The whole note and its rest</title>
 <!-- <tocimage>img110.png</tocimage> -->
 
-<para>In this lesson a new rhythmic pattern is introduced:
-One 8th note tied to group of one 8th and two 16th notes.
-Note that this new pattern can be written in two different ways:
-
-Los acentos en esté compás se suceden de la siguiente manera: 1st parte fuerte, 2nd débil,
-3rd semifuerte y 4th débil.
-
+<para>
+In this lesson we will learn about the 4/4 time signature.
+As you know the top number tells how many beats are there in a measure,
+and the bottom number shows the type of note that gets one beat ('4' means 'quarter note').
+Therefore, the 4/4 time signature is a rhythm with four beats
+per measure and each measure gets four quarter notes.
 </para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
+<para>
+The accents on this rhythm follows the pattern Strong-Weak-Medium-Weak, 
+that is, the first beat of a measure is always the strongest one,
+and the three other beats are weaker, being the third one a litle stronger.
+</para>
+
+<para>
+If you count beats along with the music, the 4/4 time signature will imply 
+a rhythm such as 'ONE-two-three-four-and-ONE-two-three-four-and- ...', stressing the 
+ONE syllable and a little less the 'three' syllable.
+</para>
+
+<para>
+This rhythm is widely used in classical music; also it is the
+usual time signature in rock, jazz, and modern pop and dance music.
+For example:
+</para>
+
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
     <music_border>0</music_border>
-    <control_play></control_play>
     <music>
-        (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
-        (c (n a4 c)(n a4 n)(n a4 s g+)(n a4 s g-)(Barra Final))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 4 4)
+            (n c4 q)(n e4 q)(n g4 q)(barline simple)
+            (n g4 q)(n a4 q)(n g4 q)(barline simple)
+            (n g4 q)(n a4 q)(n g4 q)(barline simple)
+            (n f4 q)(n c5 q)(n g4 q)(barline end) )))
     </music>
 </score>
 
-<part>
-<title>Lesson and note the differences</title>
+<para>
+In this lesson we are also going to learn a new note symbol and its rest: the whole note.
+The following score shows a whole note and a whole rest:
+</para>
 
-<para>Lesson each measure and note how the new introduced pattern appears:</para>
-
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
+<score width="600" height='70' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
     <music>
-        (Metrica 2 4)(n a4 n)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c g-)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Final))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 4 4 NoVisible)
+            (spacer 50)(n a4 w)(r w)
+            (barline end)
+        )))
+    </music>
+</score>
+
+<para>
+One whole note equals two half notes and one whole rest equals two half rests.
+So in time 4/4 a whole note or rest gets four beats, and, therefore, takes a whole
+measure. Two tied half notes equals a whole note:
+</para>
+
+<score width="600" height='70' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 4 4)
+            (spacer 20)
+            (n a4 w)(barline)
+            (r w)(barline)
+            (n a4 h l)(n a4 h)
+            (barline end)
+        )))
     </music>
 </score>
 
 </part>
+
 
 <part>
 <title>Exercises</title>

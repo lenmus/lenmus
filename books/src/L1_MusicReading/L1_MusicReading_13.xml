@@ -20,10 +20,10 @@ a new rhythmic pattern, the eighth note followed by a quarter note:
          (instrument
           (musicData (clef G)(key C)
             (time 2 4 noVisible)
-	    (n * c)(n * n)(n * c)
+            (n a4 e g+)(n a4 e l g-)(n a4 e g+)(n a4 e g-)
             (spacer 20)
             (barline double)
-            (n * c g+)(n * c l g-)(n * c g+)(n * c g-)
+            (n a4 e)(n a4 q)(n a4 e)
             (spacer 20)
             (barline end)
         )))
@@ -31,8 +31,8 @@ a new rhythmic pattern, the eighth note followed by a quarter note:
 </score>
 
 <para>
-Note that the quarter note starts in the weak part of the beat an continues in the first
-part of the following beat. This is the basis of syncopation.
+Note that the quarter note starts in the weak part of the beat (off-beat) an continues
+in the first part of the following beat. This is the basis of syncopation.
 </para>
 
 <part>
@@ -58,7 +58,7 @@ part of the following beat. This is the basis of syncopation.
             (n * c g+)(n * c g-)(n * c g+)(n * c g-)
             (spacer 20)
             (barline simple)
-	    (n * c)(n * n)(n * c)
+        (n * c)(n * n)(n * c)
             (spacer 20)
             (barline end)
         )))

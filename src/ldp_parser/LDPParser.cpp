@@ -2326,6 +2326,13 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmObject* pObject)
 {
     //  <opt> := <name><value>
 
+    enum {
+        lmBoolean = 0,
+        lmNumberLong,
+        lmNumberDouble,
+        lmString
+    };
+
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == m_pTags->TagName(_T("opt")) );
 
@@ -2340,43 +2347,76 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmObject* pObject)
     wxString sName = (pNode->GetParameter(1))->GetName();
     wxString sValue = ((pNode->GetParameter(2))->GetName()).Lower();
 
-    //verify option name
-    if (!(sName == _T("StaffLines.StopAtFinalBarline")
-          || sName == _T("StaffLines.Hide")
-          || sName == _T("Staff.DrawLeftBarline")
-          || sName == _T("Staff.UpperLegerLines.Displacement")
-        ))
+    //verify option name and determine required data type
+    int nDataType;
+    if (sName == _T("StaffLines.StopAtFinalBarline"))
+        nDataType = lmBoolean;
+    else if (sName == _T("StaffLines.Hide"))
+        nDataType = lmBoolean;
+    else if (sName == _T("Staff.DrawLeftBarline"))
+        nDataType = lmBoolean;
+    else if (sName == _T("Staff.UpperLegerLines.Displacement"))
+        nDataType = lmNumberLong;
+    else if (sName == _T("Render.SpacingFactor"))
+        nDataType = lmNumberDouble;
+    else
     {
         AnalysisError( _("Option '%s' unknown. Ignored."), sName);
         return;
     }
 
-    //determine data type of value
+    //get value
     long nNumberLong;
     double nNumberDouble;
-    if (sValue == _T("true") || sValue == m_pTags->TagName(_T("yes")) ) {
-        pObject->SetOption(sName, true);
-        return;
+    bool fError = false;
+
+    switch(nDataType) {
+        case lmBoolean:
+            if (sValue == _T("true") || sValue == m_pTags->TagName(_T("yes")) ) {
+                pObject->SetOption(sName, true);
+                return;
+            }
+            else if (sValue == _T("false") || sValue == m_pTags->TagName(_T("no")) ) {
+                pObject->SetOption(sName, false);
+                return;
+            }
+            else {
+                wxString sError = _("a 'yes/no' or 'true/false' value");
+                AnalysisError( _("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
+                    sName, sError, sValue);
+            }
+            return;
+
+        case lmNumberLong:
+            if (sValue.ToLong(&nNumberLong)) {
+                pObject->SetOption(sName, nNumberLong);
+                return;
+            }
+            else {
+                wxString sError = _("an integer number");
+                AnalysisError( _("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
+                    sName, sError, sValue);
+            }
+            return;
+
+        case lmNumberDouble:
+            sValue.Replace(_T("."), _T(","));
+            if (sValue.ToDouble(&nNumberDouble)) {
+                pObject->SetOption(sName, nNumberDouble);
+                return;
+            }
+            else {
+                wxString sError = _("a real number");
+                AnalysisError( _("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
+                    sName, sError, sValue);
+            }
+            return;
+
+        case lmString:
+            pObject->SetOption(sName, sValue);
+            return;
     }
-    else if (sValue == _T("false") || sValue == m_pTags->TagName(_T("no")) ) {
-        pObject->SetOption(sName, false);
-        return;
-    }
-    else if (sValue.ToLong(&nNumberLong)) {
-        //Long
-        pObject->SetOption(sName, nNumberLong);
-        return;
-    }
-    else if (sValue.ToDouble(&nNumberDouble)) {
-        //Double
-        pObject->SetOption(sName, nNumberDouble);
-        return;
-    }
-    else {
-        //string
-        pObject->SetOption(sName, sValue);
-        return;
-    }
+
 }
 
 //returns true if error; in this case nothing is added to the score
