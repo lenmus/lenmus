@@ -30,26 +30,10 @@ ONE syllable and a little less the 'three' syllable.
 <para>
 This rhythm is widely used in classical music; also it is the
 usual time signature in rock, jazz, and modern pop and dance music.
-For example:
 </para>
 
-<score width="600" height='100' border="0">
-    <score_type>full</score_type>
-    <music_border>0</music_border>
-    <music>
-        (score (vers 1.5)(language en iso-8859-1)
-         (instrument
-          (musicData (clef G)(key C)
-            (time 4 4)
-            (n c4 q)(n e4 q)(n g4 q)(barline simple)
-            (n g4 q)(n a4 q)(n g4 q)(barline simple)
-            (n g4 q)(n a4 q)(n g4 q)(barline simple)
-            (n f4 q)(n c5 q)(n g4 q)(barline end) )))
-    </music>
-</score>
-
 <para>
-In this lesson we are also going to learn a new note symbol and its rest: the whole note.
+In this lesson we are going also to learn a new note symbol and its rest: the whole note.
 The following score shows a whole note and a whole rest:
 </para>
 
@@ -89,9 +73,6 @@ measure. Two tied half notes equals a whole note:
         )))
     </music>
 </score>
-
-</part>
-
 
 <part>
 <title>Exercises</title>

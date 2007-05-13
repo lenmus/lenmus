@@ -38,7 +38,7 @@ in the first part of the following beat. This is the basis of syncopation.
 <part>
 <title>Lesson and note the differences</title>
 
-<para>Lesson each measure and note how the new introduced pattern appears:</para>
+<para>Lesson each measure and note the rhythm of the new introduced patterns:</para>
 
 <score width="600" height='70' border="0">
     <score_type>full</score_type>
@@ -49,16 +49,16 @@ in the first part of the following beat. This is the basis of syncopation.
          (instrument
           (musicData (clef G)(key C)
             (time 2 4)
-            (n * c g+)(n * c g-)(n * c g+)(n * c g-)
+            (n a4 e g+)(n a4 e g-)(n a4 e g+)(n a4 e g-)
             (spacer 20)
             (barline simple)
-            (n * c g+)(n * c l g-)(n * c g+)(n * c g-)
+            (n a4 e g+)(n a4 e l g-)(n a4 e g+)(n a4 e g-)
             (spacer 20)
             (barline simple)
-            (n * c g+)(n * c g-)(n * c g+)(n * c g-)
+            (n a4 e g+)(n a4 e g-)(n a4 e g+)(n a4 e g-)
             (spacer 20)
             (barline simple)
-        (n * c)(n * n)(n * c)
+        	(n a4 e)(n a4 q)(n a4 e)
             (spacer 20)
             (barline end)
         )))

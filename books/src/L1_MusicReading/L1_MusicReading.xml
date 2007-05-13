@@ -25,7 +25,7 @@
     <!ENTITY theme16 SYSTEM "L1_MusicReading_6.xml">
     <!ENTITY theme17 SYSTEM "L1_MusicReading_7.xml">
     <!ENTITY theme18 SYSTEM "L1_MusicReading_8.xml">
-    <!ENTITY theme19 SYSTEM "L1_MusicReading_9.xml">
+    <!-- <!ENTITY theme19 SYSTEM "L1_MusicReading_9.xml">  Anacrusis -->
     <!ENTITY theme20 SYSTEM "L1_MusicReading_10.xml">
     <!ENTITY theme21 SYSTEM "L1_MusicReading_11.xml">
     <!ENTITY theme22 SYSTEM "L1_MusicReading_12.xml">
@@ -45,9 +45,8 @@
 <bookinfo>
     <title>Music reading. Level 1.</title>
     <abstract>This eMusicBook is a self-instruction music reading course,
-        intended to help one improve one's reading skills, 
-        providing sort of practice and exercises that are required in order 
-        to become a good sightreader.</abstract>
+        intended to help improve one's reading skills, providing the sort of practice
+        and exercise that are required to become a good sight-reader.</abstract>
     <!-- <author>Cecilio Salmeron</author> -->
     <copyright>
         <year>2007</year>
@@ -74,12 +73,10 @@
 <title>Syllabus</title>
 
 <para>
-This eMusicBook is intended to help one improve one's reading skills, providing sort 
-of practice and exercises that are required in order to become a good sightreader.
+This eMusicBook is intended to help improve one's reading skills, providing the sort of practice and exercise that are required to become a good sight-reader.
 </para>
 
-<para>Appart of introducing different rhythmic cells, of increasing complexity, the main concepts
-introduced in Level 1 are:</para>
+<para>Appart of introducing different rhythmic cells, of increasing complexity, the main concepts introduced in Level 1 are:</para>
 
 <orderedlist>
 <listitem>
@@ -89,7 +86,7 @@ introduced in Level 1 are:</para>
 
 <listitem>
     Note values of whole (semibreve), half (minim), quarter (crotchet), eighth (quaver)
-    and 16th (semiquaver), and their equivalent rests. Tied notes. Single-dotted 
+    and sixteenth (semiquaver), and their equivalent rests. Tied notes. Single-dotted 
     notes and rests.
 </listitem>
     
@@ -110,10 +107,10 @@ introduced in Level 1 are:</para>
 <title>Book organization</title>
 
 <para>
-This course has 33 lessons covering the following material:</para>
+This course has 31 lessons covering the following material:</para>
 
 <itemizedlist>
-<listitem>Clefs and note ranges: 
+<listitem><emphasis>Clefs and note ranges:</emphasis>
     The course starts with the G clef using a very reduced note range (e4-g4).
     Progressively, the note range is increased to reach, in lesson 14, the range
     c4-f5. Next the F key is introduced, again with a very reduced note range (a3;c4)
@@ -122,18 +119,18 @@ This course has 33 lessons covering the following material:</para>
     avove and below, in both clefs (G: a3-c6 y F: a2-e4).
 </listitem>
 
-<listitem>Time signatures:
+<listitem><emphasis>Time signatures:</emphasis>
     In first exercises (9 a 17) only the 2/4 simple time is used. Then 3/4
-    simple time (lessons 18 and 19) and 4/4 simple time (lessons 20 to 30) are used.
-    In lesson 31 the compound 6/8 is introduced and it is practised in the remaining
-    lessons (32 to 35).
+    simple time (lesson 18) and 4/4 simple time (lesson 19) are used.
+    In lesson 28 the compound 6/8 is introduced and it is practised in the remaining
+    lessons (29 to 31).
 </listitem>
     
-<listitem>Key signatures:
+<listitem><emphasis>Key signatures:</emphasis>
     The exercises in the first two practical lessons (9 and 10) have scores using only 
     the C major / A minor key signature (no accidentals). The key signature is introduced
     in lesson 13 and from there (lessons 14 to 17) the exercises use also one accidental 
-    (G major / E minor and F major / D minor). In the remaining lessons (18 to 35)
+    (G major / E minor and F major / D minor). In the remaining lessons (18 to 31)
     exercises use up to two accidentals (D major / B minor and B flat major / G minor). 
 </listitem>
 
@@ -179,7 +176,7 @@ the new concepts introduced.</listitem>
 &theme16;
 &theme17;
 &theme18;
-&theme19;
+<!-- &theme19; -->
 &theme20;
 &theme21;
 &theme22;

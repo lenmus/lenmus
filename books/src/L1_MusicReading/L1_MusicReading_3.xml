@@ -13,7 +13,7 @@ and are drawn as short lines, slightly longer than the note head. For example, n
 score shows the natural scale starting on C:
 </para>
 
-<score width="600" height='100' border="0">
+<score width="600" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -32,21 +32,27 @@ score shows the natural scale starting on C:
 Leger lines can also be added on top, for high pitch notes:
 </para>
 
-<score width="600" height='100' border="0">
+<score width="700" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
+         (opt Render.SpacingFactor 0.4)
          (instrument
           (musicData (clef G)(key C)
             (time 2 4 noVisible)
-            (n a3 q)(n b3 q)
-            (n c4 q)(n d4 q)
-            (n e4 q)(n f4 q)(n g4 q)(n a4 q)(n b4 q)(n c5 q)
-            (n d5 q)(n e5 q)(n f5 q)(n g5 q)(n a5 q)(n b5 q)
+            (n a3 q)(n b3 q)(barline simple noVisible)
+            (n c4 q)(n d4 q)(barline simple noVisible)
+            (n e4 q)(n f4 q)(barline simple noVisible)
+            (n g4 q)(n a4 q)(barline simple noVisible)
+            (n b4 q)(n c5 q)(barline simple noVisible)
+            (n d5 q)(n e5 q)(barline simple noVisible)
+            (n f5 q)(n g5 q)(barline simple noVisible)
+            (n a5 q)(n b5 q)(barline simple noVisible)
             (n c6 q)(n d6 q)
-            (barline final) )))
+            (barline final)
+        )))
     </music>
 </score>
 

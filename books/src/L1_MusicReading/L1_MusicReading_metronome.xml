@@ -19,17 +19,17 @@ normally written in Italian and are very common, even today. You should learn th
 </para>
 
 <itemizedlist>
-<listitem>Largo - very slow and broad</listitem>
-<listitem>Larghetto - not quite as slow as largo</listitem>
-<listitem>Lento - very slow</listitem>
-<listitem>Adagio - slow</listitem>
-<listitem>Andante - literally 'walking', a medium slow tempo</listitem>
-<listitem>Moderato - moderate, or medium</listitem>
-<listitem>Allegretto - Not as fast as allegro</listitem>
-<listitem>Allegro - fast</listitem>
-<listitem>Vivo, or Vivace - lively and brisk</listitem>
-<listitem>Presto - very fast</listitem>
-<listitem>Prestissimo - very, very fast</listitem>
+<listitem><emphasis>Largo</emphasis> - very slow and broad</listitem>
+<listitem><emphasis>Larghetto</emphasis> - not quite as slow as largo</listitem>
+<listitem><emphasis>Lento</emphasis> - very slow</listitem>
+<listitem><emphasis>Adagio</emphasis> - slow</listitem>
+<listitem><emphasis>Andante</emphasis> - literally 'walking', a medium slow tempo</listitem>
+<listitem><emphasis>Moderato</emphasis> - moderate, or medium</listitem>
+<listitem><emphasis>Allegretto</emphasis> - Not as fast as allegro</listitem>
+<listitem><emphasis>Allegro</emphasis> - fast</listitem>
+<listitem><emphasis>Vivo, or Vivace</emphasis> - lively and brisk</listitem>
+<listitem><emphasis>Presto</emphasis> - very fast</listitem>
+<listitem><emphasis>Prestissimo</emphasis> - very, very fast</listitem>
 </itemizedlist>
 
     
@@ -39,7 +39,7 @@ This is represented in the score by the letters 'm.m.' followed by the beats per
 This indication is normally written at the beginning:
 </para>
 
-<score width="600" height='100' border="0">
+<score width="600" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -59,7 +59,7 @@ Instead of letters 'm.m.' also note symbols are used:
 </para>
 
 
-<score width="600" height='100' border="0">
+<score width="600" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -89,13 +89,12 @@ m.m. letters for tempo indication comes after 'Mälzel metronome'.
 
 <para>
 The traditional metronomes are mechanic, based on a pendulum with a rod. The pendulum rod swings back and forth in tempo, producing a 'tick' sound on each swing.
-Modern metronomes are electronic. Next figure shows some examples of both types:
+Modern metronomes are electronic. Next figure shows an example of a typical mechanic metronome:
 </para>
 
-<para>
-LenMus program metronome description
+<para role='center'>
+<imagedata fileref='important.png' />
 </para>
-
 
 <para>
 As an orientation, following table gives the assignment between traditional tempo terms
@@ -103,15 +102,48 @@ and metronome settings:
 </para>
 
 <itemizedlist>
-<listitem>Largo: 40-49</listitem>
-<listitem>Adagio: 50-59</listitem>
-<listitem>Andante: 60-79</listitem>
-<listitem>Moderato: 80-99</listitem>
-<listitem>Allegretto: 100-119</listitem>
-<listitem>Aallegro: 120-159</listitem>
-<listitem>Presto: 160-179</listitem>
-<listitem>Prestissimo: 180-200</listitem>
+<listitem><emphasis>Largo</emphasis>: 40-49</listitem>
+<listitem><emphasis>Adagio</emphasis>: 50-59</listitem>
+<listitem><emphasis>Andante</emphasis>: 60-79</listitem>
+<listitem><emphasis>Moderato</emphasis>: 80-99</listitem>
+<listitem><emphasis>Allegretto</emphasis>: 100-119</listitem>
+<listitem><emphasis>Aallegro</emphasis>: 120-159</listitem>
+<listitem><emphasis>Presto</emphasis>: 160-179</listitem>
+<listitem><emphasis>Prestissimo</emphasis>: 180-200</listitem>
 </itemizedlist>
+
+</part>
+
+<part>
+<title>The LenMus program metronome</title>
+
+<para>
+The LenMus program has a buil-in metronome that you can use as an independent metronome.
+For example, when practising with your musical instrument or when doing sight-reading.
+</para>
+
+<para>
+Just click on the 'metronome' button 
+<imagedata fileref='tool_metronome_16.png' /> and the sound will inmediately start. To stop
+the metronome click on the button again. To adjust the tempo just type the 
+required tempo number in the box on the right of the metronome button (2), or click on the up/down arrows
+on the right (3) to adjust the desired tempo. Try it now!
+</para>
+
+<para role='center'>
+<imagedata fileref='metronome_settings.png' />
+</para>
+
+<para>
+When playing back a score its tempo is also controlled by the built-in settings.
+Just change the displayed tempo number and the tempo of the score will automatically 
+adjust to it.
+</para>
+
+<para>
+If while playing back a score you would like to hear also the metronome, press
+the metronome button before or during playback.
+</para>
 
 </part>
 

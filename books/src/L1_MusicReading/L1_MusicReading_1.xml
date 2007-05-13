@@ -22,25 +22,27 @@ The following score shows a quarter note and the quarter rest:
 </score>
 
 <para>
-In this lesson we will start music reading by exercising to read scores composed
-just by quarter notes and rests. These rhythms are very simple as each note or rest
-gets a beat. Lesson, for example, the first four measures of the
-popular song Frere Jacques:
+In this lesson we will start reading music with scores composed
+just by quarter notes and rests. These rhythms are very simple, as each note or rest
+gets a beat. Lesson, for example, the following song:
 </para>
 
-<score width="600" height='100' border="0">
-    <score_type>short</score_type>
+<score width="600" height='70' border="0">
+    <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
     <music>
-        (Metrica 2 4)(n g4 n)(n a4 n)(Barra Simple)
-        (n b4 n)(n g4 n)(Barra Simple)
-        (n g4 n)(n a4 n)(Barra Simple)
-        (n b4 n)(n g4 n)(Barra Simple)
-        (n b4 n)(n c5 n)(Barra Simple)
-        (n d5 n)(s n)(Barra Simple)
-        (n b4 n)(n c5 n)(Barra Simple)
-        (n d5 n)(s n)(Barra Final))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+			(Metrica 2 4)
+			(n g4 n)(n e4 n)(barline)
+			(n a4 n)(n f4 n)(barline)
+			(n b4 n)(n g4 n)(barline)
+			(n c5 n)(r n)(barline)
+			(n c5 n)(n g4 n)(barline)
+			(n c5 n)(r n)(barline end)
+		)))
     </music>
 </score>
 

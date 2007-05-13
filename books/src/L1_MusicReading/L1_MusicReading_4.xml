@@ -25,22 +25,31 @@ like a quarter note with a flag added to its stem; they are usually drawn beamed
 
 <para>
 One quarter note equals two eighth notes and one quarter rest equals two eighth rests.
-So in time 2/4 an eighth note or rest gets half a beats, and, therefore, there are two 
-eighth notes in a beat. So in 2/4 they are usually drawn beamed, occupying a beat. In this 
+So in 2/4 time signature an eighth note or rest gets half a beats, and, therefore, there are two 
+eighth notes in a beat. So in 2/4 they are usually drawn beamed, occupying a beat.
+</para>
+
+<para>
+In this 
 lesson we will start the study of rhythms with eighth notes. Play the following
 score and take note of the new rhythmic patterns introduced in each measure:
 </para>
 
-<score width="600" height="100" border="0">
-    <score_type>short_15_es</score_type>
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
     <control_play></control_play>
-    <control_measures></control_measures>
     <music>
-        (metrica 2 4)
-        (n g4 n)(n g4 c g+)(n g4 c g-)(barra Simple)
-        (n g4 c g+)(n g4 c g-)(n g4 n)(barra Simple)
-        (n g4 c g+)(n g4 c)(n g4 c)(n g4 c g-)(barra Simple)
-        (n g4 n)(s n)(barra Final)
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+			(time 2 4)
+			(n g4 q)(n g4 e g+)(n g4 e g-)(barline)
+			(n g4 e g+)(n g4 e g-)(n g4 q)(barline)
+			(n g4 e g+)(n g4 e)(n g4 e)(n g4 e g-)(barline)
+			(n g4 q)(r q)
+			(barline end)
+		)))
     </music>
 </score>
 

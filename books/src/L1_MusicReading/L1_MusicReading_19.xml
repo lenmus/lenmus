@@ -4,40 +4,69 @@
 
 <content>
 <theme id="mr1_thm19">
-<title>The 6/8 time signature</title>
+<title>The 6/8 time signature: compound meters</title>
 <!-- <tocimage>img119.png</tocimage> -->
 
-<para>In this lesson a new rhythmic pattern is introduced:
-One 8th note tied to group of one 8th and two 16th notes.
-Note that this new pattern can be written in two different ways:</para>
+<part>
+<title>Simple and compound time signatures</title>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
+<para>
+We learnt, in lesson 6, that written music is organized by dividing it into small
+groups of beats, called 'measures'. The measures of the time signatures studied
+in previous lessons (2/2, 3/4 and 4/4) have,
+respectively, two, three and four beats per measure. These time signatures are
+known as 'simple meter'
+or 'simple time signatures'.
+</para>
+
+<para>
+In simple meter time signatures, each beat can be subdivided into two halves. For
+example, replacing a quarter note with two eight notes.
+But there are rhythms that require to subdivide the beats in three parts or
+'pulses'. These rhythms are known as 'compound meter'.
+</para>
+
+<para>
+By convention, in compound time signatures the top number indicates not the
+number of beats per measure but
+the number of pulses per measure, and the bottom number indicates the note that
+take each pulse.
+</para>
+
+</part>
+
+<part>
+<title>The 6/8 time signature</title>
+
+<para>
+In this lesson we will start the study of compound meters with the introduction
+of the 6/8 time
+signature.
+The 6/8 time signature is a compound time. Therefore, 6/8 means that each measure
+will have 6 pulses (two beats) and each pulse is occupied by an eighth note (each
+beats takes three eight notes):
+</part>
+
+<score width="600" height='70' border="0">
+    <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
     <music>
-        (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
-        (c (n a4 c)(n a4 n)(n a4 s g+)(n a4 s g-)(Barra Final))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 6 8)
+            (n c4 e)(n e4 e)(n g4 e)(barline simple)
+            (n g4 q.)(n a4 e)(barline end) )))
     </music>
 </score>
 
-<part>
-<title>Lesson and note the differences</title>
-
-<para>Lesson each measure and note how the new introduced pattern appears:</para>
-
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
-    <music>
-        (Metrica 2 4)(n a4 n)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c g-)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Final))
-    </music>
-</score>
+<para>
+As the 6/8 has two beats per measure, it is called a compound duple meter. The  accent is strong on the first eighth note of the first beat, a medium accent on the first eighth note of the second beat, and the remaining pulses are week.
+</para>
 
 </part>
+
 
 <part>
 <title>Exercises</title>

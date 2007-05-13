@@ -2367,8 +2367,10 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmObject* pObject)
 
     //get value
     long nNumberLong;
-    double nNumberDouble;
+    double rNumberDouble;
     bool fError = false;
+	wxString sError;
+	int i;
 
     switch(nDataType) {
         case lmBoolean:
@@ -2393,24 +2395,40 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmObject* pObject)
                 return;
             }
             else {
-                wxString sError = _("an integer number");
+                sError = _("an integer number");
                 AnalysisError( _("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
                     sName, sError, sValue);
             }
             return;
 
         case lmNumberDouble:
-            sValue.Replace(_T("."), _T(","));
-            if (sValue.ToDouble(&nNumberDouble)) {
-                pObject->SetOption(sName, nNumberDouble);
+			fError = false;
+			i = sValue.Find(_T("."));
+			if (i != wxNOT_FOUND) {
+				if (i > 0) {
+					wxString sLeft = sValue.Left(i);
+					fError |= !sLeft.ToDouble(&rNumberDouble);
+				}
+				else
+					rNumberDouble = 0.0;
+
+				double rRight;
+				wxString sRight = sValue.Mid(i+1);
+				fError |= !sRight.ToDouble(&rRight);
+				if (!fError) {
+					rNumberDouble += rRight / (double)(10 ^ sRight.Length()); 
+					pObject->SetOption(sName, rNumberDouble);
+					return;
+				}
+			}
+            else if (sValue.ToDouble(&rNumberDouble)) {
+                pObject->SetOption(sName, rNumberDouble);
                 return;
             }
-            else {
-                wxString sError = _("a real number");
-                AnalysisError( _("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
-                    sName, sError, sValue);
-            }
-            return;
+            sError = _("a real number");
+            AnalysisError( _("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
+                sName, sError, sValue);
+			return;
 
         case lmString:
             pObject->SetOption(sName, sValue);

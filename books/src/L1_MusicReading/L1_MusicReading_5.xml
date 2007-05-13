@@ -49,7 +49,7 @@ A fermata is a musical symbol, looking like a semicircle containing a dot, that 
 above or below a note or rest. It indicates that the
 note/rest should be sustained for longer than its normal duration. Usualy the note/rest
 is held for one and a half to twice the normal duration, but it is always up to the discretion 
-of the performer or the conuctor. The fermata symbol is usually placed above the note/rest, but 
+of the performer or the conductor. The fermata symbol is usually placed above the note/rest, but 
 occasionally can be placed below it and upside down:
 </para>
 
@@ -63,9 +63,7 @@ occasionally can be placed below it and upside down:
           (musicData (clef G)(key C)
             (spacer 30)
             (n g4  q (fermata above))
-            //(barline double)
             (n g4  q (fermata below))
-            //(barline double)
             (r q (fermata above))
             (barline end)
         )))

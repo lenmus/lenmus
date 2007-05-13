@@ -8,42 +8,59 @@
 <!-- <tocimage>img111.png</tocimage> -->
 
 <para>
-
-========
-In music, syncopation is when a stressing of a normally unstressed beat 
-in a bar or failure to sound a tone on an accented beat occurs. 
-
-In meters with even numbers of beats (2/4, 4/4, etc.), the stress normally falls 
-on the odd-numbered beats. If the even-numbered beats are stressed instead, 
-the rhythm is syncopated.
-
-Off-beat syncopation
-The stress can shift by less than a whole beat so it falls on an off-beat,
-as in the following example where the stress in the first bar is shifted 
-by an eighth note (or quaver):
-
-4/4 c n n n c |
-
-
-========
-Deliberate upsetting of the meter or pulse of a composition by means of 
-a temporary shifting of the accent to a weak beat or an off-beat.
-
-
+We know that there are strong and weak beats. For example, the first beat 
+of a measure normally has the strongest accent. But the accent can be
+deliberately shifted to weak parts, as in the following example where 
+the quarter notes are shifted by the initial eighth note, so that they
+are placed 'off-beat':
 </para>
 
-<para>In this lesson a new rhythmic pattern is introduced:
-One 8th note tied to group of one 8th and two 16th notes.
-Note that this new pattern can be written in two different ways:
-</para>
-
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <music_border>0</music_border>
+<score width="600" height='70' border="0">
+    <score_type>full</score_type>
     <control_play></control_play>
+    <music_border>0</music_border>
     <music>
-        (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
-        (c (n a4 c)(n a4 n)(n a4 s g+)(n a4 s g-)(Barra Final))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 4 4)
+            (n a4 e)(n a4 q)(n a4 q)(n a4 q)(n a4 e)(barline simple)
+            (n a4 e)(n a4 q)(n a4 q)(n a4 q)(n a4 e)(barline simple)
+            (n a4 e)(n a4 q)(n a4 q)(n a4 q)(n a4 e)(barline end)
+		)))
+    </music>
+</score>
+
+<para>
+These type of rhythms in which the stress is shifted to weak parts are known as
+'syncopated rhythms'.
+</para>
+
+<para>
+If a note starts in weak place and prolog its sound to a strong part it is
+called 'syncopated note'.
+</para>
+
+<para>
+In this lesson we are goint to start studying the syncopated rhyths that
+result by using the following patterns::
+</para>
+
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+	    	(spacer 30)
+            (n a4 q l)(barline)(n a4 q)
+	    	(spacer 40)
+	    	(barline double)
+	    	(spacer 30)
+            (n a4 q l)(barline)(n a4 e g+)(n a4 e g-)
+	    	(spacer 40)
+	    	(barline double)
+        )))
     </music>
 </score>
 
@@ -52,14 +69,21 @@ Note that this new pattern can be written in two different ways:
 
 <para>Lesson each measure and note how the new introduced pattern appears:</para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
-        (Metrica 2 4)(n a4 n)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c g-)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Final))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4)
+            (n a4 q)(n a4 q l)(barline)
+			(n a4 q)(n a4 q)(barline)
+            (n a4 e)(n a4 e)(n a4 q)(barline)
+			(n a4 e)(n a4 e)(n a4 q l)(barline)
+            (n a4 e)(n a4 e)(n a4 q)(barline end)
+		)))
     </music>
 </score>
 

@@ -69,6 +69,7 @@ C notes will have sharp signs placed before them. For example (play it):
     <control_play></control_play>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
+         (opt Render.SpacingFactor 0.4)
          (instrument
           (musicData (clef G)(key C)
             (time 2 4)
