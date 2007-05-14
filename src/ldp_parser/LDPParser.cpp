@@ -2359,6 +2359,10 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmObject* pObject)
         nDataType = lmNumberLong;
     else if (sName == _T("Render.SpacingFactor"))
         nDataType = lmNumberDouble;
+    else if (sName == _T("Render.SpacingMethod"))
+        nDataType = lmString;
+    else if (sName == _T("Render.SpacingValue"))
+        nDataType = lmNumberLong;
     else
     {
         AnalysisError( _("Option '%s' unknown. Ignored."), sName);
@@ -2402,6 +2406,12 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmObject* pObject)
             return;
 
         case lmNumberDouble:
+            // There is a problem with wxString::ToDouble(). The issue is that apparently
+            // the expected number format varies with locale settings. For example,
+            // in my computer (Spanish locale) instead of decimal point (dot) it only
+            // accepts comma. As, for LenMus, the real number format is always with dot, 
+            // I cannot use ToDouble(). So I will look for the dot, extract the integer
+            // part and the fraction part, convert both to double, and combine the results
 			fError = false;
 			i = sValue.Find(_T("."));
 			if (i != wxNOT_FOUND) {
@@ -2431,7 +2441,19 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmObject* pObject)
 			return;
 
         case lmString:
-            pObject->SetOption(sName, sValue);
+            if (sName == _T("Render.SpacingMethod"))
+            {
+                if (sValue == _T("fixed"))
+                    pObject->SetOption(sName, (long)esm_Fixed);
+                else if (sValue == _T("propConstantFixed"))
+                    pObject->SetOption(sName, (long)esm_PropConstantFixed);
+                else
+                    AnalysisError( _("Error in data value for option '%s'.  Value '%s' ignored."),
+                    sName, sValue);
+            }
+            else
+                pObject->SetOption(sName, sValue);
+
             return;
     }
 

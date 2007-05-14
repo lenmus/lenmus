@@ -121,6 +121,7 @@ shown in the following score:
     <music>
         (score (vers 1.5)(language en iso-8859-1)
          (opt Staff.UpperLegerLines.Displacement 20)
+         (opt Render.SpacingMethod fixed)
          (instrument (staves 2)
           (musicData 
             (clef treble p1)
@@ -219,7 +220,7 @@ bass clef.</para>
     <key>Fa</key>
     <key>Rem</key>
     <time>24</time>
-	<fragment>24;(n * b),(n * n)(n * n),(n * b)</fragment>
+    <fragment>24;(n * b),(n * n)(n * n),(n * b)</fragment>
     <fragment>24;(n * n)(n * c g+)(n * c g-),(n * n l)(n * c g+)(n * c g-),(n * n)(s n)</fragment>
     <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n.)(n * c),(n * n)(n * n),(n * b)</fragment>
     <fragment>24;(s n)(n * n),(n * c g+)(n * c g-)(n * n),(n * n.)(n * c),(n * n)(s n)</fragment>

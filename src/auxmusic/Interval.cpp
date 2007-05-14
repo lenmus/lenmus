@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Interval.cpp
-    @brief Implementation file for class lmInterval
-    @ingroup auxmusic
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "Interval.h"
 #endif
@@ -68,7 +65,7 @@ lmInterval::lmInterval(lmNote* pNote1, lmNote* pNote2, EKeySignatures nKey)
 
 //Generate a random interval satisfying the received constrains.
 lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax, bool fAllowedIntervals[],
-             bool fAscending, EKeySignatures nKey)
+             bool fAscending, EKeySignatures nKey, int nMidiStartNote)
 {
     if (!fStringsInitialized) InitializeStrings();
 
@@ -209,9 +206,13 @@ lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax, bool fAllow
     }
     g_pLogger->LogTrace(_T("lmInterval"), sDbgMsg);
     //end dbg --------------------------------------------
-        
-    i = oGen.RandomNumber(0, nNumValidNotes - 1);
-    m_ntMidi1 = nValidNotes.Item(i);
+    
+    if (nMidiStartNote != 0) 
+        m_ntMidi1 = nMidiStartNote;
+    else {
+        i = oGen.RandomNumber(0, nNumValidNotes - 1);
+        m_ntMidi1 = nValidNotes.Item(i);
+    }
     
     if (fAscending) {
         m_ntMidi2 = m_ntMidi1 + nSelIntv;
@@ -224,7 +225,68 @@ lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax, bool fAllow
     //Interval successfully generated. Prepare interval information
     wxASSERT( m_ntMidi1 > 11 && m_ntMidi2 > 11);
     m_sPattern[0] = MIDINoteToLDPPattern(m_ntMidi1, m_nKey, &m_ntDiat1);
-    m_sPattern[1] = MIDINoteToLDPPattern(m_ntMidi2, m_nKey, &m_ntDiat2);
+    //m_sPattern[1] = MIDINoteToLDPPattern(m_ntMidi2, m_nKey, &m_ntDiat2);
+
+    // MIDINoteToLDPPattern() always returns notes with sharps. Therefore, the
+    // second diatonic note might not correspond to the interval. For example,
+    // if the interval is 7th Major (semitones=11) first note could be c5 and
+    // second note will be c4+ instead of the right value d4-.
+    // To fix this problem the second note will be generated from the first one
+
+    // As this constructor is only used for ear training exercises, some intervals
+    // are not valid and must be replaced by its enarmonic. For example:
+    // d8 --> M7
+
+    g_pLogger->LogTrace(_T("lmInterval"),
+            _T("Before: ntMidi1=%d, ntMidi2=%d, m_ntDiat1=%d, m_ntDiat2=%d, nKey=%d, nSelIntv=%d, sPattern[0]='%s', sPattern[1]='%s', name=%s\n"),
+            m_ntMidi1, m_ntMidi2, m_ntDiat1, m_ntDiat2, m_nKey, nSelIntv, m_sPattern[0], m_sPattern[1], m_sName);
+    // This table is in correspondence with enum EIntervalName
+    static wxString sValidIntervals[] = {
+        _T("p1"),      // unison
+        _T("m2"),
+        _T("M2"),
+        _T("m3"),
+        _T("M3"),
+        _T("p4"),
+        _T("a4"),
+        _T("p5"),
+        _T("m6"),
+        _T("M6"),
+        _T("m7"),
+        _T("M7"),
+        _T("p8"),
+        _T("m9"),
+        _T("M9"),
+        _T("m10"),
+        _T("M10"),
+        _T("p11"),
+        _T("a11"),
+        _T("p12"),
+        _T("m13"),
+        _T("M13"),
+        _T("m14"),
+        _T("M14"),
+        _T("p15") };
+
+    wxString sIntvCode = sValidIntervals[nSelIntv];
+    m_sPattern[1] = ComputeInterval(m_sPattern[0], sIntvCode,
+                         (m_ntMidi2 > m_ntMidi1), m_nKey);
+
+    //Get interval number
+    wxString sIntvNum = sIntvCode.Mid(1);
+    long nIntvNum;
+    sIntvNum.ToLong(&nIntvNum);
+
+    //compute diatonic pitch of second note
+    if (m_ntMidi2 > m_ntMidi1)
+        m_ntDiat2 = m_ntDiat1 + nIntvNum -1;
+    else
+        m_ntDiat2 = m_ntDiat1 - nIntvNum +1;
+
+    g_pLogger->LogTrace(_T("lmInterval"),
+            _T("After: ntMidi1=%d, ntMidi2=%d, m_ntDiat1=%d, m_ntDiat2=%d, nKey=%d, nSelIntv=%d, sPattern[0]='%s', sPattern[1]='%s', nIntvNum=%d\n"),
+            m_ntMidi1, m_ntMidi2, m_ntDiat1, m_ntDiat2, m_nKey, nSelIntv, m_sPattern[0], m_sPattern[1], nIntvNum);
+
 //    if (Abs(m_ntDiat1 - m_ntDiat2) <> nSelIntv) {
 //        //mala suerte. Estamos en el caso de no ajustar a notas propias de la tonalidad y
 //        //el intervalo generado, aunque correcto, es aumentado o disminuido, con lo que
@@ -232,6 +294,9 @@ lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax, bool fAllow
 //        MsgBox "mala suerte"
 //    }
     Analyze();
+
+    g_pLogger->LogTrace(_T("lmInterval"), 
+        _T("m_nNumIntv=%d, name=%s\n"), m_nNumIntv, m_sName);
 
 }
 
@@ -573,6 +638,7 @@ void AddSemitonesToNote(lmNoteBits* pRoot, wxString sIntvCode, EKeySignatures nK
 
 bool IntervalCodeToBits(wxString sIntvCode, lmIntvBits* pBits)
 {
+    //return true if error
     //Restrictions: any interval , including greater that one octave, but limited to
     // d, m , p , M and a. That is, it is not allowed double augmented, double diminished, etc.
 
@@ -602,20 +668,34 @@ bool IntervalCodeToBits(wxString sIntvCode, lmIntvBits* pBits)
     else if (nNum == 6) nSemi = 7;
     else if (nNum == 7) nSemi = 9;
     else
+    {
+        wxLogMessage(_T("[IntervalCodeToBits] Program error: Invalid interval '%s', nNum=%d"),
+                sIntvCode, nNum );
         wxASSERT(false);    //impossible
+    }
 
     if ( nNum == 1 || nNum == 4 || nNum == 5) {
         if (sChar == _T("d"))       nSemi += 0;
         else if (sChar == _T("p"))  nSemi += 1;
         else if (sChar == _T("a"))  nSemi += 2;
-        else wxASSERT(false);
+        else
+        {
+            wxLogMessage(_T("[IntervalCodeToBits] Program error: Invalid interval '%s', nNum=%d, sChar='%s'"),
+                    sIntvCode, nNum, sChar );
+            wxASSERT(false);    //impossible
+        }
     }
     else {  // 2, 3, 6, 7
         if (sChar == _T("d"))       nSemi += 0;
         else if (sChar == _T("m"))  nSemi += 1;
         else if (sChar == _T("M"))  nSemi += 2;
         else if (sChar == _T("a"))  nSemi += 3;
-        else wxASSERT(false);
+        else
+        {
+            wxLogMessage(_T("[IntervalCodeToBits] Program error: Invalid interval '%s', nNum=%d, sChar='%s'"),
+                    sIntvCode, nNum, sChar );
+            wxASSERT(false);    //impossible
+        }
     }
     pBits->nSemitones = nSemi + 12 * nOctaves;
 
@@ -715,13 +795,23 @@ wxString SubstractIntervals(wxString sIntvCode1, wxString sIntvCode2)
 
 wxString IntervalBitsToCode(lmIntvBits& tIntv)
 {
+    g_pLogger->LogTrace(_T("lmInterval"),
+            _T("IntervalBitsToCode: nNum=%d, nSemitones=%d\n"), 
+            tIntv.nNum, tIntv.nSemitones );
+
     wxString sNormal = _T("dmMa");
     wxString sPerfect = _T("dpa");
     int nSemitones = tIntv.nSemitones % 12;
     int nNum = 1 + (tIntv.nNum - 1) % 7;
     wxString sResp;
-    if (nNum == 1) 
+    if (nNum == 1)  {
+        // unison, octave
+        // For unison nSemitones = -1, 0, 1
+        // For octave nSemitones = 11, 12, 13 (reduced in previous step to 11,0,1)
+        //    so we need to correct semitones
+        if (nSemitones == 11) nSemitones = -1;
         sResp = sPerfect.Mid(nSemitones + 1, 1);
+    }
     else if (nNum == 2) 
         sResp = sNormal.Mid(nSemitones, 1);
     else if (nNum == 3) 

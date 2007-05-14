@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file IdfyChordCtrol.cpp
-    @brief Implementation file for class lmIdfyChordCtrol
-    @ingroup html_controls
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "IdfyChordCtrol.h"
 #endif
@@ -568,6 +565,7 @@ wxString lmIdfyChordCtrol::PrepareScore(EClefType nClef, EChordType nType, lmSco
     int nNumNotes = oChordMngr.GetNumNotes();
     *pScore = new lmScore();
     (*pScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
+    (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
     (*pScore)->AddInstrument(1,0,0,_T(""));                     //one vstaff, MIDI channel 0, MIDI instr 0
     pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
     pVStaff->AddClef( eclvSol );

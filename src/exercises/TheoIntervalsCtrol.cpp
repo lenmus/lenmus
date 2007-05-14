@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file TheoIntervalsCtrol.cpp
-    @brief Implementation file for class lmTheoIntervalsCtrol
-    @ingroup html_controls
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "TheoIntervalsCtrol.h"
 #endif
@@ -614,6 +611,7 @@ void lmTheoIntervalsCtrol::NewProblem()
 
     m_pIntervalScore = new lmScore();
     m_pIntervalScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
+    m_pIntervalScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
     m_pIntervalScore->AddInstrument(1,0,0,_T(""));                    //one vstaff, MIDI channel 0, MIDI instr 0
     pVStaff = m_pIntervalScore->GetVStaff(1, 1);    //get first vstaff of instr.1
     pVStaff->AddClef( m_nClef );
@@ -625,6 +623,7 @@ void lmTheoIntervalsCtrol::NewProblem()
     pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
     pNode = parserLDP.ParseText( sPattern[1] );
     pNote[1] = parserLDP.AnalyzeNote(pNode, pVStaff);
+    pVStaff->AddSpacer(75);       // 7.5 lines
     pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);
 
     //compute the interval name
@@ -654,7 +653,6 @@ void lmTheoIntervalsCtrol::NewProblem()
         //pVStaff->AddSpacer(30);       // 3 lines
         pNode = parserLDP.ParseText( sPattern[0] );
         pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
-        pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
         pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);
     }
 

@@ -176,10 +176,13 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     //verify that there is a score
     if (!m_pScore || m_pScore->GetNumInstruments() == 0) return (lmBoxScore*)NULL;
 
-    lmBoxScore* pBoxScore = new lmBoxScore(m_pScore);
+    // get options for renderization
     bool fStopStaffLinesAtFinalBarline = m_pScore->GetOptionBool(_T("StaffLines.StopAtFinalBarline"));
     m_rSpacingFactor = m_pScore->GetOptionDouble(_T("Render.SpacingFactor"));
+    m_nSpacingMethod = (lmESpacingMethod) m_pScore->GetOptionLong(_T("Render.SpacingMethod"));
+    m_nSpacingValue = (lmTenths) m_pScore->GetOptionLong(_T("Render.SpacingValue"));
 
+    lmBoxScore* pBoxScore = new lmBoxScore(m_pScore);
     pPaper->RestartPageCursors();    //ensure that page cursors are at top-left corner
 
     //for each staff size, setup fonts of right point size for that staff size
@@ -681,24 +684,43 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
 
     //if this is not the first measure of the score advance (horizontally) a space to leave a gap
     //between the previous barline (or the prolog, if first measure in system) and the first note
-    if (nAbsMeasure != 1) {
-        //! @todo review this fixed barline after space
-        lmLUnits nSpaceAfterBarline = pVStaff->TenthsToLogical(20, 1);    // two lines
-        pPaper->IncrementCursorX(nSpaceAfterBarline);       //space after barline
+    if (nAbsMeasure != 1)
+    {
+        // If previous barline is not visible, do not add space
+
+        // Get the previous barline
+        lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
+        pIT->AdvanceToMeasure(nAbsMeasure);
+        pIT->BackToItemOfType(eSFOT_Barline);
+        if (!pIT->EndOfList())
+        {
+            // a barline found
+            // todo: how do you know it is the previous barline?
+            lmStaffObj* pSO = pIT->GetCurrent();
+            if (pSO->IsVisible())
+            {
+                // the barline is visble. Add space
+                // todo: review this fixed barline after space
+                lmLUnits nSpaceAfterBarline = pVStaff->TenthsToLogical(20, 1);    // two lines
+                pPaper->IncrementCursorX(nSpaceAfterBarline);       //space after barline
+           }
+            
+        }
+        delete pIT;
     }
 
     lmNote* pNote = (lmNote*)NULL;
     lmNoteRest* pNoteRest = (lmNoteRest*)NULL;
     lmClef* pClef = (lmClef*)NULL;
     lmKeySignature* pKey = (lmKeySignature*)NULL;
-    bool fPreviousWasClef = false;        //the previous lmStaffObj was a clef
-    lmLUnits nClefXPos=0;                //x left position of previous clef
+    bool fPreviousWasClef = false;      //the previous lmStaffObj was a clef
+    lmLUnits nClefXPos=0;               //x left position of previous clef
     int nClefStaffNum=0;                //number of staff in which the previous clef was located
-    lmLUnits xChordPos=0;                //position of base note of a chord
+    lmLUnits xChordPos=0;               //position of base note of a chord
 
     //loop to process all StaffObjs in this measure
     bool fNoteRestFound = false;            
-    bool fNewSystem = false;                // newSystem tag found
+    bool fNewSystem = false;                //newSystem tag found
     EStaffObjType nType;                    //type of score obj being processed
     lmStaffObj* pSO = (lmStaffObj*)NULL;
     lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
@@ -710,16 +732,19 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
 
         if (nType == eSFOT_Barline) break;         //End of measure: exit loop.
 
-        if (nType == eSFOT_Control) {
+        if (nType == eSFOT_Control)
+        {
             lmSOControl* pSOCtrol = (lmSOControl*)pSO;
             ESOCtrolType nCtrolType = pSOCtrol->GetCtrolType();
-            if (lmTIME_SHIFT == nCtrolType) {
+            if (lmTIME_SHIFT == nCtrolType)
+            {
                 //start a new thread, returning x pos to the same x pos than the 
                 //previous thread
                 m_oTimepos[nRelMeasure].NewThread();
                 pPaper->SetCursorX(m_oTimepos[nRelMeasure].GetCurXLeft());
             }
-            else if(lmNEW_SYSTEM == nCtrolType) {
+            else if(lmNEW_SYSTEM == nCtrolType)
+            {
                 //new system tag found in this measure
                 fNewSystem = true;
             }
@@ -809,17 +834,24 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
                 //store its final and anchor x positions
             oTimepos.SetCurXFinal(pPaper->GetCursorX());
             oTimepos.SetCurXAnchor(oTimepos.GetCurXLeft() + pSO->GetAnchorPos());
-                // add after space
-            //if (m_nSpacingMethod != esm_Fixed) {
-                //proportional spacing.
-                //! @todo implement the different methods. For now only PropConstant
-                if (pSO->GetClass() == eSFOT_NoteRest) {
+            // add after space
+            if (pSO->GetClass() == eSFOT_NoteRest) {
+                lmTenths rSpace;
+                if (m_nSpacingMethod == esm_PropConstantFixed) {
+                    //proportional constant spacing.
                     pNoteRest = (lmNoteRest*)pSO;
-                    lmTenths rSpace = pNoteRest->GetDuration()* m_rSpacingFactor;
-                    lmLUnits uSpace = pVStaff->TenthsToLogical(rSpace, pSO->GetStaffNum());
-                    pPaper->IncrementCursorX( uSpace );
+                    rSpace = pNoteRest->GetDuration()* m_rSpacingFactor;
                 }
-            //}
+                else if (m_nSpacingMethod == esm_Fixed) {
+                    // fixed spacing
+                    rSpace = m_nSpacingValue;
+                }
+                else
+                    wxASSERT(false);
+
+                lmLUnits uSpace = pVStaff->TenthsToLogical(rSpace, pSO->GetStaffNum());
+                pPaper->IncrementCursorX( uSpace );
+            }
 
         }
 
@@ -840,7 +872,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
         if (pBarline->GetLocationType() != lmLOCATION_DEFAULT)
         {
             lmLUnits xEnd = pPaper->GetCursorX();
-            wxLogMessage(_T("[lmFormatter4::SizeMeasure] xStart=%.2f, xEnd=%.2f"), xStart, xEnd);
+            //wxLogMessage(_T("[lmFormatter4::SizeMeasure] xStart=%.2f, xEnd=%.2f"), xStart, xEnd);
             lmLUnits xFinalPos = 0;
             lmLUnits xPos = pBarline->GetLocationPos();
 

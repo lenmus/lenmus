@@ -83,17 +83,6 @@ static char *error_16_xpm[] = {
 // To simplify maintenace, all icons of this application are defined in this class
 //
 
-    // NOTE: bitmap names are defined in lenmus.rc
-
-#if USE_XPM_BITMAPS
-    #define lmRETURN_BMP(bmp) \
-        oBitmap = wxBitmap(bmp##_xpm); return oBitmap
-#else
-    #define lmRETURN_BMP(bmp) \
-        oBitmap = wxBITMAP(bmp##_bmp); return oBitmap
-#endif
-
-
 // resources are identified by an wxArtId. This is just a string. 
 wxBitmap lmArtProvider::CreateBitmap(const wxArtID& id,
                                      const wxArtClient& client,
@@ -190,7 +179,11 @@ wxBitmap lmArtProvider::CreateBitmap(const wxArtID& id,
         return wxNullBitmap;
     }
     else if (id == _T("app_icon")) {
-        lmRETURN_BMP(app_icon);
+        if (image.LoadFile(_T("app_icon.png"), wxBITMAP_TYPE_PNG)) {
+            oBitmap = wxBitmap(image);
+            return oBitmap;
+        }
+        return wxNullBitmap;
     }
     else if (id == _T("app_splash")) {
         sFile = _T("splash30");

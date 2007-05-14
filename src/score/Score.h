@@ -318,8 +318,8 @@ enum ERenderizationType
     eRenderSimple
 };
 
-///*  Spacing methods for rendering scores  (obsolete?)
-//    -------------------------------------
+// Spacing methods for rendering scores
+// -------------------------------------
 //    Two basic methods:
 //    1. Fixed: the spacing between notes is constant, independently of note duration.
 //    2. Proportional: the spacing is adjusted so that note position is proportional to time.
@@ -332,15 +332,15 @@ enum ERenderizationType
 //    2. ProportionalVariable: the proportion factor is computed for each bar. Two alternatives:
 //        a) ShortNote: is computed for the shorter note in the bar
 //        b) NumBars: Computed so taht the number of bars in the system is a predefined number
-//*/
-//enum ESpacingMethod
-//{
-//    esm_Fixed = 1,                    //used in RenderSimple
-//    esm_PropConstantFixed,            //Used in FTeoria
-//    esm_PropConstantShortNote,        //Default method in lmFormatter.RenderScore(). Not used
-//    esm_PropVariableShortNote,        //Not used/implemented
-//    esm_PropVariableNumBars           //Not used/implemented
-//};
+
+enum lmESpacingMethod
+{
+    esm_Fixed = 1,
+    esm_PropConstantFixed,
+    //esm_PropConstantShortNote,
+    //esm_PropVariableShortNote,
+    //esm_PropVariableNumBars,
+};
 
 
 // font specification

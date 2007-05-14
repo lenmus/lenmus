@@ -315,6 +315,7 @@ wxString lmIdfyScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmSc
     int nNumNotes = oScaleMngr.GetNumNotes();
     *pScore = new lmScore();
     (*pScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
+    (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
     (*pScore)->AddInstrument(1,0,0,_T(""));     //one vstaff, MIDI channel 0, MIDI instr 0
     pVStaff = (*pScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
     pVStaff->AddClef( eclvSol );
@@ -326,12 +327,14 @@ wxString lmIdfyScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmSc
     sPattern = _T("(n ") + oScaleMngr.GetPattern(i) + _T(" r)");
     pNode = parserLDP.ParseText( sPattern );
     pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+    pVStaff->AddSpacer(10);       // 1 lines
     for (i=1; i < nNumNotes; i++) {
         sPattern = _T("(n ");
         sPattern += oScaleMngr.GetPattern((m_fAscending ? i : nNumNotes-1-i));
         sPattern +=  _T(" r)");
         pNode = parserLDP.ParseText( sPattern );
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+        pVStaff->AddSpacer(10);       // 1 lines
         pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);   //so accidentals doesn't affect a 2nd note
     }
     pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);

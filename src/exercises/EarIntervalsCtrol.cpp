@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file EarIntervalsCtrol.cpp
-    @brief Implementation file for class lmEarIntervalsCtrol
-    @ingroup html_controls
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "EarIntervalsCtrol.h"
 #endif
@@ -565,6 +562,7 @@ void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
     lmLDPNode* pNode;
     *pScore = new lmScore();
     (*pScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
+    (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
     (*pScore)->AddInstrument(1,0,0,_T(""));                     //one vstaff, MIDI channel 0, MIDI instr 0
     lmVStaff *pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
     pVStaff->AddClef( eclvSol );
@@ -578,15 +576,17 @@ void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
     //second note
     if (m_fHarmonic)
         sPattern = _T("(na ");
-        //todo: is it necessary to avoid accidental propagation to the second note
+        //todo: is it necessary to avoid propagation of the accidental to the second note
     else {
-        sPattern = _T("(n ");
+        pVStaff->AddSpacer(20);
         pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+        sPattern = _T("(n ");
     }
     sPattern += lmConverter::NoteBitsToName(tBits[1], m_nKey) + _T(" r)");
     pNode = parserLDP.ParseText( sPattern );
     pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pVStaff->AddSpacer(60);
+    pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);
 
 }
 

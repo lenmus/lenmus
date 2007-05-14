@@ -381,11 +381,19 @@ void lmEarCompareIntvCtrol::NewProblem()
     // generate the two intervals
     lmInterval oIntv0(m_pConstrains->OnlyNatural(), m_pConstrains->MinNote(),
         m_pConstrains->MaxNote(), m_pConstrains->AllowedIntervals(), fAscending, nKey);
-    //if (m_pConstrains->FirstNoteEqual()) {
-    //}
-    //else 
-    lmInterval oIntv1(m_pConstrains->OnlyNatural(), m_pConstrains->MinNote(),
-        m_pConstrains->MaxNote(), m_pConstrains->AllowedIntervals(), fAscending, nKey);
+
+    bool fOnlyNatural;
+    int nMidi0;
+    if (m_pConstrains->FirstNoteEqual()) {
+        fOnlyNatural = false;
+        nMidi0 = oIntv0.GetMidiNote1();
+    }
+    else {
+        fOnlyNatural = m_pConstrains->OnlyNatural();
+        nMidi0 = 0;
+    }
+    lmInterval oIntv1(fOnlyNatural, m_pConstrains->MinNote(), m_pConstrains->MaxNote(),
+            m_pConstrains->AllowedIntervals(), fAscending, nKey, nMidi0);
 
     //Convert problem to LDP pattern
     wxString sPattern[2][2];
@@ -426,7 +434,7 @@ void lmEarCompareIntvCtrol::NewProblem()
     //create the answer score with both intervals
     m_pTotalScore = new lmScore();
     m_pTotalScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
-    m_pTotalScore->SetOption(_T("Render.SpacingFactor"), 0.1);
+    m_pTotalScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
     m_pTotalScore->AddInstrument(1,0,0,_T(""));                     //one vstaff, MIDI channel 0, MIDI instr 0
     pVStaff = m_pTotalScore->GetVStaff(1, 1);      //get first vstaff of instr.1
     pVStaff->AddClef( nClef );

@@ -68,7 +68,11 @@ private:
     lmLUnits        m_nFreeSpace;                               //free space available on current system
     lmLUnits        m_nMeasureSize[MAX_STAVES_PER_SYSTEM+1];    //size of all measure columns of current system
     int             m_nMeasuresInSystem;                        //the number of measures in current system
-    double          m_rSpacingFactor;                           //for proportional spacing of notes
+
+    // renderization options and parameters
+    double              m_rSpacingFactor;           //for proportional spacing of notes
+    lmESpacingMethod    m_nSpacingMethod;           //fixed, proportional, etc.
+    lmTenths            m_nSpacingValue;            //spacing for 'fixed' method
 
     // variables for debugging
     bool        m_fDebugMode;            //debug on/off
