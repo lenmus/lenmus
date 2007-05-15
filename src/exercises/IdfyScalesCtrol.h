@@ -38,7 +38,7 @@
 #endif
 
 #include "ScalesConstrains.h"
-#include "../score/score.h"
+#include "../score/Score.h"
 #include "ScoreAuxCtrol.h"
 #include "UrlAuxCtrol.h"
 #include "CountersCtrol.h"

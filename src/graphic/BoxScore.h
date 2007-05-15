@@ -37,7 +37,7 @@
 #endif
 
 #include "BoxPage.h"
-#include "../score/score.h"
+#include "../score/Score.h"
 
 // to manage pages let's define an array to contain pointers to pages
 #include "wx/dynarray.h"

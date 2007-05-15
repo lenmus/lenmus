@@ -33,7 +33,7 @@
 #include "wx/arrstr.h"      // to use wxArrayString
 
 
-#include "../score/score.h"
+#include "../score/Score.h"
 #include "../ldp_parser/LDPParser.h"
 #include "ComposerV5.h"
 #include "Conversion.h"

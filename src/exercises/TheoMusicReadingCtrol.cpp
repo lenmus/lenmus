@@ -42,7 +42,7 @@
 #include "Generators.h"
 #include "../auxmusic/Conversion.h"
 #include "../ldp_parser/LDPParser.h"
-#include "../score/score.h"
+#include "../score/Score.h"
 #include "../auxmusic/ComposerV5.h"
 #include "../app/DlgCfgScoreReading.h"
 #include "../app/MainFrame.h"

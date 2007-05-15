@@ -38,13 +38,20 @@ the four octave is assigned
 to the second line:
 </para>
 
-<!-- staff with a G clef and notes on all spaces and lines, with their names -->
+<!-- staff with a G clef -->
 <score width="600" height='100' border="0">
-    <score_type>short_15_es</score_type>
+    <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
-        (metrica 2 4 noVisible)(texto ''G note'' dx:0 dy:-10)
-        (n g4 r)(barra Doble noVisible)
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+			(spacer 60)
+			(text ''G'' dx:0 dy:-10)
+			(n g4 w)
+			(barline end noVisible)
+		)))
     </music>
 </score>
 
@@ -55,29 +62,36 @@ to consecutive notes, as shown in the next score:
 
 <!-- staff with a G clef and notes on all spaces and lines, with their names -->
 <score width="600" height='100' border="0">
-    <score_type>short_15_es</score_type>
+    <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
+    <metronome>320</metronome>
     <music>
-        (metrica 2 4 noVisible)
-        (texto ''E'' dx:0 dy:-10)
-        (n e4 r)(barra simple noVisible)
-        (texto ''F'' dx:0 dy:-10)
-        (n f4 r)(barra simple noVisible)
-        (texto ''G'' dx:0 dy:-10)
-        (n g4 r)(barra simple noVisible)
-        (texto ''A'' dx:0 dy:-10)
-        (n a4 r)(barra simple noVisible)
-        (texto ''B'' dx:0 dy:-10)
-        (n b4 r)(barra simple noVisible)
-        (texto ''C'' dx:0 dy:-10)
-        (n c5 r)(barra simple noVisible)
-        (texto ''D'' dx:0 dy:-10)
-        (n d5 r)(barra simple noVisible)
-        (texto ''E'' dx:0 dy:-10)
-        (n e5 r)(barra simple noVisible)
-        (texto ''F'' dx:0 dy:-10)
-        (n f5 r)(barra simple noVisible)
+        (score (vers 1.5)(language en iso-8859-1)
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 50)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+			(text ''E'' dx:0 dy:-10)
+			(n e4 w)(barline simple noVisible)
+			(text ''F'' dx:0 dy:-10)
+			(n f4 w)(barline simple noVisible)
+			(text ''G'' dx:0 dy:-10)
+			(n g4 w)(barline simple noVisible)
+			(text ''A'' dx:0 dy:-10)
+			(n a4 w)(barline simple noVisible)
+			(text ''B'' dx:0 dy:-10)
+			(n b4 w)(barline simple noVisible)
+			(text ''C'' dx:0 dy:-10)
+			(n c5 w)(barline simple noVisible)
+			(text ''D'' dx:0 dy:-10)
+			(n d5 w)(barline simple noVisible)
+			(text ''E'' dx:0 dy:-10)
+			(n e5 w)(barline simple noVisible)
+			(text ''F'' dx:0 dy:-10)
+			(n f5 w)(barline simple noVisible)
+		)))
     </music>
 </score>
 

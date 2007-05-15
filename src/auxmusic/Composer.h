@@ -26,7 +26,7 @@
 #ifndef __COMPOSER_H__        //to avoid nested includes
 #define __COMPOSER_H__
 
-#include "../score/score.h"
+#include "../score/Score.h"
 #include "../exercises/ScoreConstrains.h"
 
 

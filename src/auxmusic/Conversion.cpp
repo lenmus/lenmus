@@ -33,7 +33,7 @@
 #pragma hdrstop
 #endif
 
-#include "../score/score.h"
+#include "../score/Score.h"
 #include "Conversion.h"
 
 static wxString sEnglishNoteName[7] = { 

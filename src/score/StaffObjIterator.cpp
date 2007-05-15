@@ -43,7 +43,7 @@
 #include "wx/wx.h"
 #endif
 
-#include "score.h"
+#include "Score.h"
 
 
 lmStaffObjIterator::lmStaffObjIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO)

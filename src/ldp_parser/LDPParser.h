@@ -36,7 +36,7 @@
 #include "LDPToken.h"
 #include "LDPTags.h"
 
-#include "../score/score.h"
+#include "../score/Score.h"
 
 // The stack of states will be implemented by an array of integers. Let's declare this array
 //WX_DEFINE_ARRAY(int, wxArrayInt);

@@ -42,7 +42,7 @@
 
 #include "Constrains.h"
 #include "TheoKeySignConstrains.h"
-#include "../score/score.h"
+#include "../score/Score.h"
 #include "ScoreAuxCtrol.h"
 #include "CountersCtrol.h"
 

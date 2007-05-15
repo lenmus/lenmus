@@ -37,7 +37,7 @@
 #include "wx/wx.h"
 #endif
 
-#include "../score/score.h"
+#include "../score/Score.h"
 #include "Interval.h"
 #include "../exercises/ScalesConstrains.h"
 #include "Conversion.h"

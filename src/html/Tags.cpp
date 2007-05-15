@@ -94,7 +94,7 @@
 
 // for displaying a score
 #include "../exercises/ScoreCtrol.h"
-#include "../score/score.h"
+#include "../score/Score.h"
 #include "../xml_parser/XMLParser.h"
 #include "../ldp_parser/LDPParser.h"
 

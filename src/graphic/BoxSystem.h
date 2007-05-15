@@ -36,7 +36,7 @@
 #include "wx/wx.h"
 #endif
 
-#include "../score/score.h"
+#include "../score/Score.h"
 
 /*
     Class lmBoxSystem represents a line of music in the printed score. It is made up from

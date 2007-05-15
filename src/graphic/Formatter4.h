@@ -33,7 +33,7 @@
 #define MAX_STAVES_PER_SYSTEM        30    //max number of staves in a system
 #define MAX_MEASURES_PER_SYSTEM        20    //max number of measures in a system
 
-#include "../score/score.h"
+#include "../score/Score.h"
 #include "TimeposTable.h"
 #include "BoxScore.h"
 

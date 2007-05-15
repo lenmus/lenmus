@@ -40,7 +40,7 @@
 #include "wx/wx.h"
 #endif
 
-#include "score.h"
+#include "Score.h"
 
 
 class lmContext

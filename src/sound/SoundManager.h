@@ -33,7 +33,7 @@
 #include "wx/wx.h"
 #endif
 
-#include "../score/score.h"
+#include "../score/Score.h"
 
 
 enum ESoundEventType

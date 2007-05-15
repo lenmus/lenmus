@@ -53,9 +53,10 @@ The four spaces between the staff lines, are important and are also numbered
 from bottom to top:</para>
 
 <!-- staff with labelled spaces: 1,2,3,4 -->
-<score width="600" height='100' border="0">
+<score width="600" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
+    <metronome>320</metronome>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
           (opt Staff.DrawLeftBarline no)
@@ -89,10 +90,11 @@ of the note on the staff. Notes on the higher lines/spaces have higher pitch tha
 those on the lower ones:
 </para>
 
-<score width="600" height='100' border="0">
+<score width="600" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
+    <metronome>320</metronome>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
           (opt Staff.DrawLeftBarline no)

@@ -37,7 +37,7 @@
 #endif
 
 #include "BoxScore.h"
-#include "../score/score.h"
+#include "../score/Score.h"
 
 // offscreen bitmaps will be maintained in a list structure. Let's declare it
 WX_DECLARE_LIST(wxBitmap, BitmapList);

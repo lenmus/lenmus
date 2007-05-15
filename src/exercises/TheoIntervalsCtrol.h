@@ -41,7 +41,7 @@
 #endif
 
 #include "Constrains.h"
-#include "../score/score.h"
+#include "../score/Score.h"
 #include "ScoreAuxCtrol.h"
 #include "CountersCtrol.h"
 #include "UrlAuxCtrol.h"

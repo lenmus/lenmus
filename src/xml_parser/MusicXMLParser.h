@@ -33,7 +33,7 @@
 #include "wx/wfstream.h"
 #include "wx/xml/xml.h"          // to use wxXmlDocument
 
-#include "../score/score.h"
+#include "../score/Score.h"
 
 
 //to give a name to ParseMusicXMLFile optional flags

@@ -35,7 +35,7 @@
 #endif
 
 
-#include "../score/score.h"
+#include "../score/Score.h"
 #include "ScoreAuxCtrol.h"
 #include "../app/DlgDebug.h"
 

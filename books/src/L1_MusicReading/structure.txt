@@ -60,9 +60,7 @@ Lecciones
 
 + 2 [staff] El pentagrama (The staff)
 
-- 3 [clef] La clave (The clef)
-    - Set up metronome for last example (note names) at 320bpm
-    - fig 1: alargar pentagrama
++ 3 [clef] La clave (The clef)
     
 - 4 [notes] Note symbols (Los símbolos para las notas)
     - spacing between notes
