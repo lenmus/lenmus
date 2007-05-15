@@ -12,29 +12,32 @@ different types of signs for the notes, so each note sign corresponds to a diffe
 duration. The following picture shows the different types of notes and their names:
 </para>
 
-<score width="600" height='100' border="0">
+<score width="600" height='280' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
          (opt StaffLines.Hide yes)
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 170)
          (instrument
           (musicData (clef G noVisible)(key C)
             (text ''Whole'' dx:0 dy:70 (font normal 8))
-            (n a4 w)(barline simple noVisible dx:120)
+            (n a4 w)
             (text ''Half'' dx:0 dy:70)
-            (n a4 h)(barline simple noVisible dx:120)
+            (n a4 h)
             (text ''Quarter'' dx:0 dy:70)
-            (n a4 q)(barline simple noVisible dx:120)
+            (n a4 q)
             (text ''Eight'' dx:0 dy:70)
-            (n a4 e)(barline simple noVisible dx:120)
+            (n a4 e)(newSystem)
+            (barline simple)
             (text ''16th'' dx:0 dy:70)
-            (n a4 s)(barline simple noVisible dx:120)
+            (n a4 s)
             (text ''32th'' dx:0 dy:70)
-            (n a4 t)(barline simple noVisible dx:120)
+            (n a4 t)
             (text ''64th'' dx:0 dy:70)
             (n a4 i)
-            (barline simple noVisible dx:120)
+            (barline end noVisible)
          )))
     </music>
 </score>
@@ -63,12 +66,20 @@ go down for notes placed on or above the third line:
 </para>
 
 <score width="600" height='100' border="0">
-    <score_type>short_15_es</score_type>
+    <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
-        (n e4 n)(n f4 n)(n g4 n)(n a4 n)
-        (n b4 n)(n c5 n)(n d5 n)(n e5 n)(n f5 n)
-        (barra Final noVisible)
+        (score (vers 1.5)(language en iso-8859-1)
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 30)
+         (instrument
+          (musicData (clef G)(key C)
+            (spacer 30)
+			(n e4 q)(n f4 q)(n g4 q)(n a4 q)
+			(n b4 q)(n c5 q)(n d5 q)(n e5 q)(n f5 q)
+         	(spacer 20)
+            (barline end noVisible)
+         )))
     </music>
 </score>
 
@@ -79,11 +90,20 @@ on the right-hand side of the stem:
 </para>
 
 <score width="600" height='100' border="0">
-    <score_type>short_15_es</score_type>
+    <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
-        (n e4 c)(n f4 c)(n g4 c)(n a4 c)
-        (n b4 c)(n c5 c)(n d5 c)(n e5 c)(n f5 c)(barra Final noVisible)
+        (score (vers 1.5)(language en iso-8859-1)
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 30)
+         (instrument
+          (musicData (clef G)(key C)
+            (spacer 30)
+            (n e4 e)(n f4 e)(n g4 e)(n a4 e)
+         	(n b4 e)(n c5 e)(n d5 e)(n e5 e)(n f5 e)
+         	(spacer 20)
+            (barline end noVisible)
+         )))
     </music>
 </score>
 
@@ -97,11 +117,23 @@ as shown in the second part:
 </para>
 
 <score width="600" height='100' border="0">
-    <score_type>short_15_es</score_type>
+    <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
-        (n e4 c)(n f4 c)(n g4 s)(n a4 s)(barra Doble)
-        (n e4 c g+)(n f4 c)(n g4 s)(n a4 s g-)(barra Final noVisible)
+        (score (vers 1.5)(language en iso-8859-1)
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 30)
+         (instrument
+          (musicData (clef G)(key C)
+            (spacer 30)
+			(n e4 e)(n f4 e)(n g4 s)(n a4 s)
+			(spacer 20)
+			(barline double)
+			(spacer 20)
+			(n e4 e g+)(n f4 e)(n g4 s)(n a4 s g-)
+         	(spacer 20)
+            (barline end noVisible)
+         )))
     </music>
 </score>
 

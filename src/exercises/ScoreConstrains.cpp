@@ -445,7 +445,10 @@ int lmFragmentsTable::SplitFragment(wxString sSource)
 
     iMax = sSource.Length();
     wxASSERT(iMax > 0);                         //sSource must not be empty
-    wxASSERT(sSource.Mid(0, 1) == _T("(") );    //must start with parenthesis
+	if (sSource.Mid(0, 1) != _T("(") ) {    //must start with parenthesis
+		wxLogMessage(_T("[lmFragmentsTable::SplitFragment] Error in fragment '%s'"), sSource);
+		wxASSERT(false);
+	}
     
     //look for a comma (,) or a barline (|)
     for (i=1; i < iMax; i++) {

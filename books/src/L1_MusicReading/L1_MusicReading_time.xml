@@ -30,12 +30,14 @@ below the third line:
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
-        (score (vers 1.5)(language es iso-8859-1)
-         (instrumento
-          (datosMusica (clave Sol)(tonalidad Do)
-            (metrica 2 4)
-            (texto &quot;A 2/4 time signature&quot; dx:0 dy:80)
-            (barra Final noVisible) )))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4)
+            (text ''A 2/4 time signature'' dx:0 dy:80)
+            (spacer 280)
+            (barline end noVisible)
+        )))
     </music>
 </score>
 

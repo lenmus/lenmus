@@ -9,7 +9,7 @@
 
 <para>
 In this lesson we are going to study a new note: the sixteenth (also called 'semiquaver' in 
-British English). Its symbols are shown in the followig score, and are 
+British English). Its symbols are shown in the following score, and are 
 like a quarter note with two flags added to its stem; they are usually drawn beamed:
 </para>
 
@@ -36,8 +36,11 @@ Two sixteenth notes equal one eighth note and four sixteenth notes equal one qua
 So in 2/4, 3/4 and 4/4 time signatures a beat is occupied by four sixteenth notes and,
 conversely, a sixteenth note receives 1/4 of a beat.
 In these time signatures sixteenth notes are
-are usually drawn beamed.
+usually drawn beamed.
 </para>
+
+<part>
+<title>Lesson and note the differences</title>
 
 <para>
 In this 
@@ -56,32 +59,18 @@ score and take note of the new rhythmic patterns introduced in each measure:
             (time 2 4)
             (n a4 q)(n a4 e g+)(n a4 e g-)
             (barline simple)
-            (n a4 e g+)(n a4 e g-)(n a4 e g+)(n a4 e g-)
-            (barline simple)
+            (n a4 e g+)(n a4 e g-)
             (n a4 s g+)(n a4 s)(n a4 s)(n a4 s g-)
             (barline simple)
+            (n a4 e g+)(n a4 e g-)
             (n a4 s g+)(n a4 s)(n a4 s)(n a4 s g-)
+            (barline)
+            (n a4 q)(r q)
             (barline end)
         )))
     </music>
 </score>
 
-
-<part>
-<title>Lesson and note the differences</title>
-
-<para>Lesson each measure and note how the new introduced pattern appears:</para>
-
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
-    <control_play></control_play>
-    <control_measures></control_measures>
-    <music>
-        (Metrica 2 4)(n a4 n)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c g-)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Final))
-    </music>
-</score>
 
 </part>
 
@@ -108,18 +97,18 @@ studied in this lesson.</para>
 <titleabbrev>Lesson %d. Exercise 1</titleabbrev>
 <title>The sixteenth note</title>
 
-<para>Press 'Play' and lesson the rhythm. Train your ear and practise reading
+<para>Start the metronome. Press 'Play' and lesson the rhythm. Train your ear and practise reading
 this rhythm.</para>
 
 <exercise type="TheoMusicReading" width="100%" height="300" border="0">
     <control_go_back>mr1_thm17</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <fragment>24;(n * c g+)(n * c l g-),(n * c g+)(n * s)(n * s g-)</fragment>
     <clef>Sol;a3;a5</clef>
     <clef>Fa4;a2;f4</clef>
-    <time>24</time>
+    <time>34</time>
     <key>Do</key>
+    <fragment>34;(n * n)(n * s g+)(n * s)(n * s)(n * s g-)(n * c g+)(n * c g-)</fragment>
 </exercise>
 
 </theme>
@@ -133,7 +122,7 @@ this rhythm.</para>
 <titleabbrev>Lesson %d. Exercise 2</titleabbrev>
 <title>The sixteenth note</title>
 
-<para>Press 'Play' and lesson the rhythm. Train your ear and practise reading
+<para>Start the metronome. Press 'Play' and lesson the rhythm. Train your ear and practise reading
 this rhythm.</para>
 
 <exercise type="TheoMusicReading" width="100%" height="300" border="0">

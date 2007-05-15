@@ -142,7 +142,7 @@ void lmBeam::ComputeStemsDirection()
             }
             m_nPosForRests += pNote->GetPosOnStaff();
             nNumNotes++;
-            wxLogMessage(_T("[Beam::ComputeStemsDirection] NotePos = %d"), pNote->GetPosOnStaff());
+            //wxLogMessage(_T("[Beam::ComputeStemsDirection] NotePos = %d"), pNote->GetPosOnStaff());
         }
     }
     if (nMinPosOnStaff == 99999) nMinPosOnStaff = 0;

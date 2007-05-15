@@ -1023,13 +1023,15 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
             //render clef
             if (pClef) {
                 nClef = pClef->GetClefType();
-                lmUPoint pos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
-                nWidth = pClef->DrawAt(fMeasuring, pPaper, pos);
-                xPos += nWidth;
+				if (pClef->IsVisible()) {
+					lmUPoint pos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
+					nWidth = pClef->DrawAt(fMeasuring, pPaper, pos);
+					xPos += nWidth;
+				}
             }
             
             //render key signature
-            if (pKey) {
+            if (pKey && pKey->IsVisible()) {
                 wxASSERT(nClef != eclvUndefined);
                 lmUPoint pos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
                 nWidth = pKey->DrawAt(fMeasuring, pPaper, pos, nClef, nStaff);

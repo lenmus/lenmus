@@ -87,7 +87,7 @@ In the bass clef the first upper leger line corresponds to the central C note (C
 represented in G clef on the first lower leger line:
 </para>
 
-<score width="600" height='70' border="0">
+<score width="600" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -98,9 +98,9 @@ represented in G clef on the first lower leger line:
             (text ''C note'' dx:0 dy:-10)
             (n c4 w)
             (barline double)
-            (space 20)
             (clef F)
-            (text ''C note'' dx:0 dy:-10)
+            (spacer 20)
+            (text ''C note'' dx:0 dy:-20)
             (n c4 w)
             (barline double)
         )))
@@ -122,14 +122,21 @@ shown in the following score:
         (score (vers 1.5)(language en iso-8859-1)
          (opt Staff.UpperLegerLines.Displacement 20)
          (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 20)
          (instrument (staves 2)
           (musicData 
             (clef treble p1)
             (clef bass p2)
             (key C)
             (time 4 4 noVisible)
+            (text ''G'' dx:0 dy:200)
+            (n g2 w p2)
+            (text ''A'' dx:0 dy:200)
+            (n a2 w)
+            (text ''B'' dx:0 dy:200)
+            (n b2 w)
             (text ''C'' dx:0 dy:200)
-            (n c3 w p2)
+            (n c3 w)
             (text ''D'' dx:0 dy:200)
             (n d3 w)
             (text ''E'' dx:0 dy:200)
@@ -158,6 +165,12 @@ shown in the following score:
             (n b4 w)
             (text ''C'' dx:0 dy:200)
             (n c5 w)
+            (text ''D'' dx:0 dy:200)
+            (n d5 w)
+            (text ''E'' dx:0 dy:200)
+            (n e5 w)
+            (text ''F'' dx:0 dy:200)
+            (n f5 w)
             (barline end)
         )))
     </music>
@@ -171,20 +184,22 @@ shown in the following score:
 the rhythmic patterns studied in previous lessons. We will start reading notes A3, B3 and
 C4:</para>
 
-<score width="600" height="70" border="0">
+<score width="600" height="100" border="0">
     <score_type>full</score_type>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 60)
          (instrument
           (musicData (clef bass)(key C)
             (time 4 4 noVisible)
-            (text ''A'' dx:0 dy:200)
+            (text ''A'' dx:0 dy:-20)
             (n a3 w)
-            (text ''B'' dx:0 dy:200)
+            (text ''B'' dx:0 dy:-20)
             (n b3 w)
-            (text ''C'' dx:0 dy:200)
+            (text ''C'' dx:0 dy:-20)
             (n c4 w)
-            (barline final)
+            (barline end)
         )))
     </music>
 </score>

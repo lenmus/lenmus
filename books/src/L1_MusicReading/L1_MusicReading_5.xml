@@ -12,11 +12,19 @@ of two consecutive notes of the same pitch, to join the duration of two notes.
 In this lesson we will learn about two other symbols to lengthen the duration of
 a note or a rest: the dot and the fermata.</para>
 
+<score width="600" height='100' border="0">
+    <score_type>short</score_type>
+    <music_border>0</music_border>
+    <music>
+        (Metrica 2 4)(n * n l)(n * n)(Barra Final))
+    </music>
+</score>
+
 <part>
 <title>Dotted notes</title>
 
 <para>
-Another way to change a note's duration is by writting a small dot after the notehead, to
+Another way to change a note's duration is by writing a small dot after the notehead, to
 create 'a dotted note'. The dot adds one half of the value of the original note. For 
 example, if a dot is placed to the right of a half note, 
 the note would then have the duration of a half note plus a quarter note and it will be
@@ -47,7 +55,7 @@ equivalent to writing a tie between a half note and a quarter note:
 <para>
 A fermata is a musical symbol, looking like a semicircle containing a dot, that is placed 
 above or below a note or rest. It indicates that the
-note/rest should be sustained for longer than its normal duration. Usualy the note/rest
+note/rest should be sustained for longer than its normal duration. Usually the note/rest
 is held for one and a half to twice the normal duration, but it is always up to the discretion 
 of the performer or the conductor. The fermata symbol is usually placed above the note/rest, but 
 occasionally can be placed below it and upside down:
@@ -121,7 +129,7 @@ studied in this lesson.</para>
 <titleabbrev>Lesson %d. Exercise 1</titleabbrev>
 <title>Dotted quarter note. Quarter note tied to eighth note</title>
 
-<para>Press 'Play' and lesson the rhythm. Train your ear and practise reading
+<para>Start the metronome. Press 'Play' and lesson the rhythm. Train your ear and practise reading
 this rhythm.</para>
 
 <exercise type="TheoMusicReading" width="100%" height="300" border="0">
@@ -151,7 +159,7 @@ this rhythm.</para>
 <titleabbrev>Lesson %d. Exercise 2</titleabbrev>
 <title>Dotted quarter note. Quarter note tied to eighth note</title>
 
-<para>Press 'Play' and lesson the rhythm. Train your ear and practise reading
+<para>Start the metronome. Press 'Play' and lesson the rhythm. Train your ear and practise reading
 this rhythm.</para>
 
 <exercise type="TheoMusicReading" width="100%" height="300" border="0">

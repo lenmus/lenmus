@@ -39,16 +39,49 @@ of new rhythmic patterns:
 <part>
 <title>Lesson and note the differences</title>
 
-<para>Lesson each measure and note how the new introduced pattern appears:</para>
+<para>Lesson each measure and note the new introduced patterns:</para>
 
-<score width="600" height="100" border="0">
-    <score_type>short</score_type>
+
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
     <control_play></control_play>
-    <control_measures></control_measures>
+    <music_border>0</music_border>
     <music>
-        (Metrica 2 4)(n a4 n)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c g-)(n a4 c g+)(n a4 s)(n a4 s g-) )
-        (c (n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Final))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 6 8)
+            (n a4 e g+)(n a4 e)(n a4 e g-)
+            (n a4 e g+)(n a4 e l)(n a4 e g-)
+            (barline)
+            (n a4 e g+)(n a4 e l)(n a4 e g-)
+            (n a4 e)(n a4 q)
+            (barline)
+            (n a4 e)(n a4 q)
+            (n a4 q.)
+            (barline end)
+        )))
+    </music>
+</score>
+
+<score width="600" height="70" border="0">
+    <score_type>full</score_type>
+    <control_play></control_play>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 6 8)
+            (n a4 e)(n a4 q)
+            (n a4 e g+)(n a4 e)(n a4 e g-)
+            (barline)
+            (n a4 e)(n a4 q l)
+            (n a4 e g+)(n a4 e)(n a4 e g-)
+            (barline)
+            (n a4 e)(n a4 q l)(n a4 q.)
+            (barline end)
+        )))
     </music>
 </score>
 
@@ -58,11 +91,7 @@ of new rhythmic patterns:
 <title>Exercises</title>
 
 <para>
-<link linkend="mr1_thm23_E1">Exercise 1</link> - Train your ear and practise the
-introduced rhythmic patterns.</para>
-
-<para>
-<link linkend="mr1_thm23_E2">Exercise 2</link> - Read scores containing the rhythms
+<link linkend="mr1_thm23_E1">Exercise 1</link> - Read scores containing the rhythms
 studied in this lesson.</para>
 
 </part>
@@ -77,32 +106,7 @@ studied in this lesson.</para>
 <titleabbrev>Lesson %d. Exercise 1</titleabbrev>
 <title>The 6/8 time signature (3)</title>
 
-<para>Press 'Play' and lesson the rhythm. Train your ear and practise reading
-this rhythm.</para>
-
-<exercise type="TheoMusicReading" width="100%" height="300" border="0">
-    <control_go_back>mr1_thm23</control_go_back>
-    <control_play></control_play>
-    <control_solfa></control_solfa>
-    <fragment>24;(n * c g+)(n * c l g-),(n * c g+)(n * s)(n * s g-)</fragment>
-    <clef>Sol;a3;a5</clef>
-    <clef>Fa4;a2;f4</clef>
-    <time>24</time>
-    <key>Do</key>
-</exercise>
-
-</theme>
-
-
-<!-- ====================== -->
-<!-- Exercise 2  -->
-<!-- ====================== -->
-
-<theme id="mr1_thm23_E2" toc="no">
-<titleabbrev>Lesson %d. Exercise 2</titleabbrev>
-<title>The 6/8 time signature (3)</title>
-
-<para>Press 'Play' and lesson the rhythm. Train your ear and practise reading
+<para>Start the metronome. Press 'Play' and lesson the rhythm. Train your ear and practise reading
 this rhythm.</para>
 
 <exercise type="TheoMusicReading" width="100%" height="300" border="0">

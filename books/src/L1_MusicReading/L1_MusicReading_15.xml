@@ -35,7 +35,7 @@ the following rhythmic patterns:
 <part>
 <title>Lesson and note the differences</title>
 
-<para>Lesson each measure and note how the new introduced pattern appears:</para>
+<para>Lesson each measure and note the new introduced patterns:</para>
 
 <score width="600" height='70' border="0">
     <score_type>full</score_type>
@@ -47,9 +47,6 @@ the following rhythmic patterns:
           (musicData (clef G)(key C)
             (time 4 4)
             (n a4 e g+)(n a4 e g-)(r e)(n a4 e)(n a4 e g+)(n a4 e g-)(r e)(n a4 e)
-            (spacer 20)
-            (barline simple)
-            (n a4 q)(n a4 e g+)(n a4 e g-)(n a4 q l)(n a4 e g+)(n a4 e g-)
             (spacer 20)
             (barline simple)
             (n a4 q l)(n a4 e g+)(n a4 e g-)(n a4 q l)(n a4 e)(r e)
@@ -84,18 +81,19 @@ studied in this lesson.</para>
 <titleabbrev>Lesson %d. Exercise 1</titleabbrev>
 <title>Syncopation</title>
 
-<para>Press 'Play' and lesson the rhythm. Train your ear and practise reading
+<para>Start the metronome. Press 'Play' and lesson the rhythm. Train your ear and practise reading
 this rhythm.</para>
 
 <exercise type="TheoMusicReading" width="100%" height="300" border="0">
     <control_go_back>mr1_thm15</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-    <fragment>24;(n * c g+)(n * c l g-),(n * c g+)(n * s)(n * s g-)</fragment>
     <clef>Sol;a3;a5</clef>
     <clef>Fa4;a2;f4</clef>
     <time>24</time>
     <key>Do</key>
+    <fragment>24;(s c)(n * c)(s c)(n * c),(n * n)(n * c g+)(n * c g-)</fragment>
+    <fragment>24;(n * n l)(n * c)(s c),(n * n l)(n * c)(s c)</fragment>
 </exercise>
 
 </theme>
@@ -109,7 +107,7 @@ this rhythm.</para>
 <titleabbrev>Lesson %d. Exercise 2</titleabbrev>
 <title>Syncopation</title>
 
-<para>Press 'Play' and lesson the rhythm. Train your ear and practise reading
+<para>Start the metronome. Press 'Play' and lesson the rhythm. Train your ear and practise reading
 this rhythm.</para>
 
 <exercise type="TheoMusicReading" width="100%" height="300" border="0">

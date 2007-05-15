@@ -62,53 +62,44 @@ Lecciones
 
 + 3 [clef] La clave (The clef)
     
-- 4 [notes] Note symbols (Los símbolos para las notas)
-    - spacing between notes
-    - revisar texto: dirección plicas
-    - última figura: espacio entre compases
++ 4 [notes] Note symbols (Los símbolos para las notas)
 
 + 5 [measure] Measures and bar lines (Compases y líneas divisorias)
     
-- 6 [time] Time signatures (La métrica).
-    - figura: alargar pentagrama
++ 6 [time] Time signatures (La métrica).
 
-- 7 [time24] The 2/4 time signature (El compás de dos tiempos)
++ 7 [time24] The 2/4 time signature (El compás de dos tiempos)
 
 - 8 [metronome] The metronome
-    - LenMus program metronome description
     - pictures of metronomes
 
--- 9 [1] La negra y su silencio
-    - Find a better example
++ 9 [1] La negra y su silencio
     
-- 10 [2] La nota blanca y su silencio. Ligaduras (The half note and its rest. Ties)
++ 10 [2] La nota blanca y su silencio. Ligaduras (The half note and its rest. Ties)
 
-- 11 [3] Leger lines (Líneas adicionales) 
++ 11 [3] Leger lines (Líneas adicionales) 
 
-- 12 [4] The eighth note (La corchea)
-    
-
-- 13 [accidentals] Accidentals. Key signature (Signos de alteración. La armadura)
-    + introduction text, explanation of key signatures and accidentals
-
-- 14 [5] Marks to lengthen notes: tie, dot and fermata (Signos de prolongación: ligadura, puntillo y calderón)
-
-
-- 15 [Fclef] La clave de Fa en cuarta línea (F clef on fourth line)
++ 12 [4] The eighth note (La corchea)
     
 
-- 16 [6] F clef on fourth line (La clave de Fa en cuarta línea. Ampliación del ámbito)
++ 13 [accidentals] Accidentals. Key signature (Signos de alteración. La armadura)
+
++ 14 [5] Marks to lengthen notes: tie, dot and fermata (Signos de prolongación: ligadura, puntillo y calderón)
 
 
-- 17 [7] The eighth rest (El silencio de corchea)
++ 15 [Fclef] La clave de Fa en cuarta línea (F clef on fourth line)
+    
+
++ 16 [6] F clef on fourth line (La clave de Fa en cuarta línea. Ampliación del ámbito)
+
+
++ 17 [7] The eighth rest (El silencio de corchea)
 
     
-- 18 [8] The 3/4 time signature. Dotted half note (Compás de tres tiempos (3/4))
-    + Introduction text and example
-    - example score: waltz
++ 18 [8] The 3/4 time signature. Dotted half note (Compás de tres tiempos (3/4))
 
     
-19 [9] The anacrusis (La anacrusa)
+- No [9] The anacrusis (La anacrusa)
 
 	- revisar composer. Necesidad de indentificar patrones de inicio
 No toda sla piezas empiezan en parte fuerte sino que a veces ocurre lo contrario. Enn estos casos el primero compás está incompleto. Se dice entonces que empieza en 'anacrusa' y
@@ -141,100 +132,49 @@ Ejemplos:
 
 
 
-- 20 [10] The 4/4 time signature. The whole note and its rest. (Compás de cuatro tiempos (4/4). La redonda y su silencio)
-    + Introduction text
-    - example
++ 19 [10] The 4/4 time signature. The whole note and its rest. (Compás de cuatro tiempos (4/4). La redonda y su silencio)
     
 
-- 21 [11] Syncopation (Alteraciones ritmicas: La sincopa)
-    + Introduction text and example
-    - Problema con fragmentos: ???
-        nl, nl,
++ 20 [11] Syncopation (Alteraciones ritmicas: La sincopa)
 
 
-- 22 [12] Syncopation (2) (Alteraciones rítmicas: La síncopa (2))
-    + Introduction text
-    - example
++ 21 [12] Syncopation (2) (Alteraciones rítmicas: La síncopa (2))
 
 
-- 23 [13] Syncopation (3) (Alteraciones rítmicas: La síncopa (3))
-    - Introduction text and example
++ 22 [13] Syncopation (3) (Alteraciones rítmicas: La síncopa (3))
 
 
-24 [14] Syncopation (4) (Alteraciones rítmicas: La síncopa (4))
-    + Introduction text and example
++ 23 [14] Syncopation (4) (Alteraciones rítmicas: La síncopa (4))
     
 
-25 [15] Syncopation (5) (Alteraciones rítmicas: La síncopa (5))
-    + Introduction text and example
-    
++24 [15] Syncopation (5) (Alteraciones rítmicas: La síncopa (5))   
     (pag.63) C c / n - c C
     
 
-26 [16] Counter-time (Alteraciones rítmicas: El contratiempo)
-    - Introduction text and example
-
++ 25 [16] Counter-time (Alteraciones rítmicas: El contratiempo)
     (pag.65)  N n, N n / C c C c, C c n
 
-27 [17] The 16th note (La semicorchea)
-    - Introduction text and example
-    
++ 26 [17] The 16th note (La semicorchea)
     (pag.69) ssss
     
 
-28 [18] Quarter note and two 16th notes
-    - Introduction text and example
-    
++ 27 [18] Quarter note and two 16th notes
     (pag.69) css
     
 
-29 [19] The 6/8 time signature (Compás de 6/8)
-    + Introduction text and example
-    
-    
-    observar que n. = c c c y que b. = n n n
-    
++ 28 [19] The 6/8 time signature (Compás de 6/8)
     (pag.79) ccc / n. / N. / n. - n. / b. / B.
     
-
-30 [20] The 6/8 time signature (2)
-    + Introduction text
-	- example
-
++ 29 [20] The 6/8 time signature (2)
     (pag.81) n c / n. - ccc / n. - n c
     
 
-31 [21] The 6/8 time signature (3)
-    + Introduction text
-	- example
-
++ 30 [21] The 6/8 time signature (3)
     (pag.85) c n / c n - ccc / c n - n.
     
 
-32 [22] The 6/8 time signature (4)
-    + Introduction text
-	- example
-
++ 31 [22] The 6/8 time signature (4)
     (pag.87)  C cc / cc C / cCc / N c
     
 
-
-------------------
-
-- Composer:
-    - take bar alignment into account. Fill previous space with notes/rests or
-        choose a fragment whose first segments fits exactly on available space.
-    !- allow for anacrusis
-            
-- Score parameters: 
-    - specify number of measures to generate
-    !- allow for anacrusis
-    - simplifyied syntax for fragments?
-    - <key> param: 
-        - accept list: <key>Do,Sol,Fa,Re</key>
-        - accept a list of numbers: <key>0,+1,-1,+2,-2</key>
-        - accept a number range: <key>0 +2,0 -2</key>
-
-- Score: 
-    - Play: accent. Higher volume on strong beats
 

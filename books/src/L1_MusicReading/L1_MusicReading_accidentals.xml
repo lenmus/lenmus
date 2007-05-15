@@ -15,7 +15,7 @@ of the note should be altered. At level 1 you should know about three signs:
 the 'sharp', the 'flat' and the 'natural':
 </para>
 
-<score width="600" height='70' border="0">
+<score width="600" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -45,7 +45,7 @@ A natural sign cancels the effect of a flat or a sharp.
 
 <para>
 An accidental sign alters not only the pitch of the note that it is attached to, but
-also the pitch of any subsequent occurence of the same note in the
+also the pitch of any subsequent occurrence of the same note in the
 same measure. Notes with the same pitch name, but in a higher
 or lower octave are not affected. The effect of the accidental ends at the end of
 the measure, so notes in the next measure will not be altered, except those tied to
@@ -137,7 +137,7 @@ on every music line, placed immediately after the clef sign.
 <part>
 <title>Exercises</title>
 <para>
-In this lesson we will continue with exercises containing the rythmic patterns of the
+In this lesson we will continue with exercises containing the rhythmic patterns of the
 previous lessons, but introducing the key signatures of G major and E minor (one sharp)
 and B flat major and G minor (one flat).
 </para>
@@ -182,7 +182,7 @@ studied.</para>
     <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * n)</fragment>
     <fragment>24;(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c g-)(n * n),(n * n)(n * n)</fragment>
     <fragment>24;(s n)(n * n),(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * c g+)(n * c)(n * c)(n * c g-),(n * b)</fragment>
-    <fragment>24;(s n)(n * n),(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * n),(n * n l) n </fragment>
+    <fragment>24;(s n)(n * n),(n * c g+)(n * c)(n * c)(n * c g-),(n * n)(n * n),(n * n l)(n * n)</fragment>
 </exercise>
 
 </theme>

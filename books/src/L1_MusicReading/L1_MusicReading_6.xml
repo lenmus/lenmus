@@ -10,6 +10,30 @@
 <para>In this lesson we continue reading the F key on fourth line. The range of
 notes is enlarged to cover F3 to C4.</para>
 
+<score width="600" height="100" border="0">
+    <score_type>full</score_type>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 60)
+         (instrument
+          (musicData (clef bass)(key C)
+            (time 4 4 noVisible)
+            (text ''F'' dx:0 dy:-20)
+            (n f3 w)
+            (text ''G'' dx:0 dy:-20)
+            (n g3 w)
+            (text ''A'' dx:0 dy:-20)
+            (n a3 w)
+            (text ''B'' dx:0 dy:-20)
+            (n b3 w)
+            (text ''C'' dx:0 dy:-20)
+            (n c4 w)
+            (barline end)
+        )))
+    </music>
+</score>
+
 <part>
 <title>Exercises</title>
 
@@ -29,7 +53,7 @@ studied in previous lessons.</para>
 <titleabbrev>Lesson %d. Exercise 2</titleabbrev>
 <title>F clef on fourth line</title>
 
-<para>Press 'Play' and lesson the rhythm. Train your ear and practise reading
+<para>Start the metronome. Press 'Play' and lesson the rhythm. Train your ear and practise reading
 these rhythm.</para>
 
 <exercise type="TheoMusicReading" width="100%" height="300" border="0">
