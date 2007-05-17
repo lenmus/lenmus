@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Updater.cpp
-    @brief Implementation file for class lmUpdater
-    @ingroup updates_management
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "Updater.h"
 #endif
@@ -192,9 +189,9 @@ Please, connect to internet and then retry."));
             if (pInput) delete pInput;
             //wxLogMessage( oHttp.GetLastError() );
             lmErrorDlg dlg(m_pParent, _("Error checking for updates"),
-_("Connection with the server could not be established. \
+_("A connection with the server could not be established. \
 Check that you are connected to the internet and that no firewalls are blocking \
-this program; then try again. If problems continue, the server \
+this program; then try again. If problems persists, the server \
 may be down. Please, try again later."));
             dlg.ShowModal();
             return true;

@@ -370,7 +370,7 @@ void lmEarCompareIntvCtrol::NewProblem()
         // allow only descending intervals
         fAscending = false;
     }
-    // select a random key signature satisfying the constrains
+    // select a random key signature satisfying the constraints
     EKeySignatures nKey;
     if (m_pConstrains->OnlyNatural()) {
         nKey = oGenerator.GenerateKey(m_pConstrains->GetKeyConstrains());

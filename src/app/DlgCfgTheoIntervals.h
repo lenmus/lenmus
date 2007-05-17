@@ -48,7 +48,7 @@ public:
 private:
     bool VerifyData();
 
-    lmTheoIntervalsConstrains*   m_pConstrains; // the constrains to set up
+    lmTheoIntervalsConstrains*   m_pConstrains; // the constraints to set up
 
     //controls
     wxCheckBox*     m_pChkDoubleAccidentals;

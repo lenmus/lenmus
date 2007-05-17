@@ -69,7 +69,7 @@
                                 <border>5</border>
                                 <object class="wxCheckBox" name="chkTeamCounters">
                                     <style>wxCHK_2STATE</style>
-                                    <label>Show two counters (for teams competition)</label>
+                                    <label>Show two counters (for team competition)</label>
                                     <checked>0</checked>
                                 </object>
                             </object>
@@ -78,7 +78,7 @@
                                 <border>5</border>
                                 <object class="wxCheckBox" name="chkAutoNewProblem">
                                     <style>wxCHK_2STATE</style>
-                                    <label>If right answer, do not show solution and generate a new problem</label>
+                                    <label>Do not show solution and generate new problem if answer is correct</label>
                                     <checked>0</checked>
                                 </object>
                             </object>

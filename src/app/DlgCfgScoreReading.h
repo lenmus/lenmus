@@ -58,7 +58,7 @@ public:
 private:
     bool VerifyData();
 
-    lmScoreConstrains*  m_pConstrains;      // the constrains to set up
+    lmScoreConstrains*  m_pConstrains;      // the constraints to set up
     wxString            m_sSettingsKey;     // key to use (implies type of dialog)
     EScoreReadingDlg    m_nDialogType;      // type of dialog
     wxNotebook*         m_pBook;

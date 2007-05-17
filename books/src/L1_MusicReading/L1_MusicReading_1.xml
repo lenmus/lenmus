@@ -24,7 +24,7 @@ The following score shows a quarter note and the quarter rest:
 <para>
 In this lesson we will start reading music with scores composed
 just by quarter notes and rests. These rhythms are very simple, as each note or rest
-gets a beat. Lesson, for example, the following song:
+gets a beat. Listen, for example, the following song:
 </para>
 
 <score width="600" height='70' border="0">
@@ -35,14 +35,14 @@ gets a beat. Lesson, for example, the following song:
         (score (vers 1.5)(language en iso-8859-1)
          (instrument
           (musicData (clef G)(key C)
-			(Metrica 2 4)
-			(n g4 n)(n e4 n)(barline)
-			(n a4 n)(n f4 n)(barline)
-			(n b4 n)(n g4 n)(barline)
-			(n c5 n)(r n)(barline)
-			(n c5 n)(n g4 n)(barline)
-			(n c5 n)(r n)(barline end)
-		)))
+            (Metrica 2 4)
+            (n g4 n)(n e4 n)(barline)
+            (n a4 n)(n f4 n)(barline)
+            (n b4 n)(n g4 n)(barline)
+            (n c5 n)(r n)(barline)
+            (n c5 n)(n g4 n)(barline)
+            (n c5 n)(r n)(barline end)
+        )))
     </music>
 </score>
 
@@ -73,7 +73,7 @@ quarter notes and rests.</para>
 <titleabbrev>Lesson %d. Exercise 1</titleabbrev>
 <title>The quarter note and its rest</title>
 
-<para>Start the metronome. Press 'Play' and lesson the rhythm. Train your ear and practise reading
+<para>Start the metronome. Press 'Play' and listen. Train your ear and practise reading
 this rhythm.</para>
 
 <exercise type="TheoMusicReading" width="100%" height="300" border="0">

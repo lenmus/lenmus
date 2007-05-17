@@ -69,7 +69,7 @@
 */
 
 /*! This class pack all parameters to set up a Music Reading exercise.
-    The contained lmScoreConstrains object has the constrains for the 'ByProgram'
+    The contained lmScoreConstrains object has the constraints for the 'ByProgram'
     settings mode (default mode). For other modes ('UserSettings' and 'ReadingNotes')
     the settings must be read/setup by the TheoMusicReadingCtrol object.
 */
@@ -110,7 +110,7 @@ lmTheoMusicReadingCtrolParms::lmTheoMusicReadingCtrolParms(const wxHtmlTag& tag,
     // html object window attributes
     m_nWindowStyle = nStyle;
 
-    // construct constrains object
+    // construct constraints object
     m_pConstrains = new lmScoreConstrains();
 
     // object options
@@ -390,7 +390,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeTime(wxString sLine)
 {
     //i.e.: "98" , "38,68,128" , "24,44"
 
-    //build time signatures constrains object
+    //build time signatures constraints object
     lmTimeSignConstrains* pTimeSigns = new lmTimeSignConstrains();
     if (pTimeSigns->SetConstrains(sLine)) return true;
 
@@ -463,7 +463,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeFragments(wxString sLine)
     //get fragment
     wxString sFragment = sLine.Mid(iSemicolon + 1);   //skip the semicolon and take the rest
 
-    //build time signatures constrains object
+    //build time signatures constraints object
     lmTimeSignConstrains* pTimeSigns = new lmTimeSignConstrains();
     if (pTimeSigns->SetConstrains(sTimeSign)) {
         m_sParamErrors += wxString::Format(_("Error in fragment. Invalid time signature list '%s'\nIn fragment: '%s'\n"),

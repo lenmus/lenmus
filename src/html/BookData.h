@@ -140,7 +140,7 @@ WX_DEFINE_ARRAY(lmPageIndexItem*, lmPageIndexArray);
 
 //------------------------------------------------------------------------------
 // lmBookSearchEngine
-//                  This class takes input streams and scans them for occurence
+//                  This class takes input streams and scans them for occurrence
 //                  of keyword(s)
 //------------------------------------------------------------------------------
 

@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file AboutDialog.cpp
-    @brief Implementation file for class lmAboutDialog
-    @ingroup app_gui
-*/
+
 //for GCC
 #ifdef __GNUG__
     #pragma implementation "ErrorDlg.h"
@@ -130,10 +127,10 @@ It is available for Windows but soon it will be also available \
 for Mac OS X, Linux, and other Unix-like operating systems.") +
       _T("</p><p>") +
       _("The LenMus Project is an open project, committed to the principles of \
-Open Source, free education, and free access to information. It has no comercial \
+Open Source, free education, and open access to information. It has no comercial \
 purpose. It is an open workbench for working on all areas related to teaching music, \
-and music representation and management with computers. It aims at developping \
-public knowledge, methods and algorithms related to all these areas and at the \
+and music representation and management with computers. It aims at developing \
+publicly available knowledge, methods and algorithms related to all these areas and at the \
 same time provides free quality software for music students, amateurs, and \
 teachers.") +
       _T("</p><p>") +
@@ -224,7 +221,7 @@ void lmAboutDialog::OnSoftwareCredits(wxCommandEvent& WXUNUSED(event))
 Bencina and Phil Burk and copyright (c) 2001 Roger B. Dannenberg. Its licence permits \
 free use.") +
         _T("</p><p>") +
-        _("LenMus Phonascus is build using the <b>wxWidgets</b> application framework \
+        _("LenMus Phonascus is built using the <b>wxWidgets</b> application framework \
 (http://www.wxwidgets.org). It is 'Open Source', has multi-platform support, it is \
 ease to learn and extend, it has a helpful community, and also has the possibility \
 to use it in commercial products without licencing.") +
@@ -235,7 +232,7 @@ free graphic library, in source code. \
 It produces pixel images \
 in memory from vectorial data and it supports anti-aliasing, \
 has very high performance, it is platform independent, very \
-flexible and extensible, with a lightweight design, and very good \
+flexible and extensible, with a light weight design, and very good \
 reliability and stability.") +
         _T("</p><p>") +
         _("Most of 'lmbasic.ttf' font glyphs are taken from <b>LilyPond</b> GNU GPL project \

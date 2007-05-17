@@ -45,7 +45,7 @@
 
 
 //--------------------------------------------------------------------------------
-// Abstract class for ear exercises constrains
+// Abstract class for ear exercises constraints
 //--------------------------------------------------------------------------------
 class lmIdfyConstrains
 {
@@ -65,7 +65,7 @@ public:
 protected:
     virtual void LoadSettings() {};
 
-    wxString    m_sSection;         //section name to save the constrains
+    wxString    m_sSection;         //section name to save the constraints
     bool        m_fSettingsLink;    //include settings link
 
     //The Ctrol could be used both for ear training exercises and for theory exercises.
@@ -143,7 +143,7 @@ protected:
     wxBoxSizer*         m_pMainSizer;
     wxFlexGridSizer*    m_pKeyboardSizer;
 
-    lmIdfyConstrains*    m_pConstrains;      //constrains for the exercise
+    lmIdfyConstrains*    m_pConstrains;      //constraints for the exercise
     bool                m_fQuestionAsked;   //question asked but not yet answered
     int                 m_nRespIndex;       //index to the button with the right answer
     wxString            m_sAnswer;          //string with the right answer

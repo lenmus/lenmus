@@ -996,7 +996,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 #endif
     help_menu->AppendSeparator();
     help_menu->Append(MENU_CheckForUpdates, _("Check now for &updates"), 
-        _("Connect to Internet and check for program updates") );
+        _("Connect to the Internet and check for program updates") );
 
 #if defined(__WXMSW__) || defined(__WXGTK__)
     pItem = new wxMenuItem(help_menu, MENU_VisitWebsite,  _("&Visit LenMus website"),
@@ -1771,7 +1771,7 @@ void lmMainFrame::OnPrint(wxCommandEvent& event)
             if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
                 wxMessageBox(_("There is a problem for printing.\nPerhaps your current printer is not set correctly?"), _T("Printing"), wxOK);
             else
-                wxMessageBox(_("Printing canceled"), _T("Printing"), wxOK);
+                wxMessageBox(_("Printing cancelled"), _T("Printing"), wxOK);
 
         } else {
             (*g_pPrintData) = printer.GetPrintDialogData().GetPrintData();

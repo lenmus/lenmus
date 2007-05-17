@@ -79,7 +79,7 @@ private:
     void LoadSettings();
 
 
-    wxString    m_sSection;         // section name to save the constrains
+    wxString    m_sSection;         // section name to save the constraints
 
     bool    m_fIntervalAllowed[lmNUM_INTVALS];     //interval n allowed (0..24)
     int     m_nMinPitch;                // interval allowed range: min. diatonic pitch

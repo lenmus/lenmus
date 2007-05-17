@@ -273,7 +273,7 @@ lmIdfyChordCtrol::lmIdfyChordCtrol(wxWindow* parent, wxWindowID id,
     m_pPlayButton->Enable(false);
     m_pShowSolution->Enable(false);
 
-    SetUpButtons();     //reconfigure buttons in accordance with constrains
+    SetUpButtons();     //reconfigure buttons in accordance with constraints
 
     //allow to play chords
     m_nKey = earmDo;
@@ -533,7 +533,7 @@ void lmIdfyChordCtrol::NewProblem()
     } else {
         //ear training
         Play();
-        wxString sProblem = _("Press 'Play' to lesson it again");
+        wxString sProblem = _("Press 'Play' to hear it again");
         m_pScoreCtrol->DisplayMessage(sProblem, lmToLogicalUnits(5, lmMILLIMETERS), false);
     }
 

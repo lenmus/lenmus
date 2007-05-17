@@ -57,7 +57,7 @@ wxString lmInstaller::GetInstallerStrings(wxString sLangCode, wxString sLangName
     _T("LicenseLangString license ") + sLang + _T(".\\locale\\license_") + sLangCode + _T(".txt\"\n")
     _T("\n")
     _T(";strings to customize MUI pages\n")
-    _T("LangString MSG_OptionalComponents   ") + sLang + _("Please, choose the optional components you would like to install") + _T("\"\n")
+    _T("LangString MSG_OptionalComponents   ") + sLang + _("Please choose the optional components you would like to install") + _T("\"\n")
     _T("\n")
     _T("\n")
     _T(";section titles, what user sees to select components for installation\n")

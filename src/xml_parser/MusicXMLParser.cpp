@@ -2039,7 +2039,7 @@ bool lmMusicXMLParser::ParsePlacement(wxXmlNode* pElement, bool fDefault)
                 return false;
             else {
                 ParseError(
-                    _("<placement> element has an invalid value \"%s\". Asumed 'above'"),
+                    _("<placement> element has an invalid value \"%s\". Assumed 'above'"),
                     sValue );
                 return fDefault;
             }

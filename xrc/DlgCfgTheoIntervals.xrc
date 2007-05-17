@@ -154,8 +154,8 @@
                                             <style>wxRA_SPECIFY_COLS</style>
                                             <label>Problem type</label>
                                             <content>
-                                                <item>&amp;Show an interval and ask student for its name</item>
-                                                <item>&amp;Name an interval and ask student to build it</item>
+                                                <item>&amp;Show an interval and ask for its name</item>
+                                                <item>&amp;Name an interval and ask to build it</item>
                                                 <item>&amp;Both problem types</item>
                                             </content>
                                         </object>

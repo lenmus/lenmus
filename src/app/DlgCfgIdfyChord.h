@@ -53,7 +53,7 @@ public:
 private:
     bool VerifyData();
 
-    lmChordConstrains*  m_pConstrains;          // the constrains to set up
+    lmChordConstrains*  m_pConstrains;          // the constraints to set up
     bool                m_fTheoryMode;
 
     //controls

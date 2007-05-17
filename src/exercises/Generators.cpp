@@ -60,7 +60,7 @@ bool lmRandomGenerator::FlipCoin()
     return ((rand() & 0x01) == 0x01);     //true in odd number, false if even
 }
 
-//! Generates a random clef, choosen to satisfy the received constrains
+//! Generates a random clef, choosen to satisfy the received constraints
 EClefType lmRandomGenerator::GenerateClef(lmClefConstrain* pValidClefs)
 {
     int nWatchDog = 0;
@@ -75,7 +75,7 @@ EClefType lmRandomGenerator::GenerateClef(lmClefConstrain* pValidClefs)
     return (EClefType)nClef;
 }
 
-//! Generates a random key signature, choosen to satisfy the received constrains
+//! Generates a random key signature, choosen to satisfy the received constraints
 EKeySignatures lmRandomGenerator::GenerateKey(lmKeyConstrains* pValidKeys)
 {
     int nWatchDog = 0;
@@ -95,7 +95,7 @@ EKeySignatures lmRandomGenerator::RandomKeySignature()
     return (EKeySignatures)RandomNumber(lmMIN_KEY, lmMAX_KEY);
 }
 
-//! Generates a random time signature, choosen to satisfy the received constrains
+//! Generates a random time signature, choosen to satisfy the received constraints
 ETimeSignature lmRandomGenerator::GenerateTimeSign(lmTimeSignConstrains* pValidTimeSignatures)
 {
     int nWatchDog = 0;

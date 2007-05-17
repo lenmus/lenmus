@@ -57,7 +57,7 @@ extern bool g_fAutoNewProblem;          // in Preferences.cpp
 
 
 //--------------------------------------------------------------------------------
-// Implementation of abstract class for ear exercises constrains
+// Implementation of abstract class for ear exercises constraints
 //--------------------------------------------------------------------------------
 lmIdfyConstrains::lmIdfyConstrains(wxString sSection)
 {
@@ -237,7 +237,7 @@ void lmIdfyExerciseCtrol::Create(int nCtrolWidth, int nCtrolHeight)
     m_pPlayButton->Enable(false);
     m_pShowSolution->Enable(false);
 
-    ReconfigureButtons();     //reconfigure buttons in accordance with constrains
+    ReconfigureButtons();     //reconfigure buttons in accordance with constraints
 
 }
 

@@ -63,7 +63,7 @@ lmInterval::lmInterval(lmNote* pNote1, lmNote* pNote2, EKeySignatures nKey)
     
 }
 
-//Generate a random interval satisfying the received constrains.
+//Generate a random interval satisfying the received constraints.
 lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax, bool fAllowedIntervals[],
              bool fAscending, EKeySignatures nKey, int nMidiStartNote)
 {
@@ -187,7 +187,7 @@ lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax, bool fAllow
     //1. nNumValidNotes > 0 (There are starting notes and we must proceed to choose the ending notes)
     //2. nNumIntv==0 (The interval can not be generated as there are no valid notes to start it)
     if (nNumIntv == 0) {
-        wxMessageBox(_("It is not possible to generate an interval satisfying the constrains imposed by the choosen settings."));
+        wxMessageBox(_("It is not possible to generate an interval satisfying the constraints imposed by the chosen settings."));
         m_ntMidi1 = 60;
         m_ntMidi2 = 65;
         m_sPattern[0] = MIDINoteToLDPPattern(m_ntMidi1, m_nKey, &m_ntDiat1);

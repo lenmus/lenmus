@@ -474,7 +474,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
                                     wxDefaultPosition, wxSize(125,-1),
                                     0, NULL, wxLB_SINGLE);
 
-        m_IndexButton->SetToolTip(_("Display all index items that contain given substring. Search is case insensitive."));
+        m_IndexButton->SetToolTip(_("Display all index items that contain the given substring. The search is case insensitive."));
         m_IndexButtonAll->SetToolTip(_("Show all items in index"));
 
         topsizer->Add(m_IndexText, 0, wxEXPAND | wxALL, 10);
@@ -507,7 +507,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
         m_SearchCaseSensitive = new wxCheckBox(pPanel, wxID_ANY, _("Case sensitive"));
         m_SearchWholeWords = new wxCheckBox(pPanel, wxID_ANY, _("Whole words only"));
         m_SearchButton = new wxButton(pPanel, ID_SEARCHBUTTON, _("Search"));
-        m_SearchButton->SetToolTip(_("Search contents of help book(s) for all occurences of the text you typed above"));
+        m_SearchButton->SetToolTip(_("Search contents of help book(s) for all occurrences of the text you typed above"));
         m_SearchList = new wxListBox(pPanel, ID_SEARCHLIST,
                                      wxDefaultPosition, wxSize(125,-1),
                                      0, NULL, wxLB_SINGLE);
@@ -1181,7 +1181,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
                 if (m_Printer == NULL)
                     m_Printer = new wxHtmlEasyPrinting(_("Help Printing"), this);
                 if (!m_HtmlWin->GetOpenedPage())
-                    wxLogWarning(_("Cannot print empty page."));
+                    wxLogWarning(_("Cannot print an empty page."));
                 else
                     m_Printer->PrintFile(m_HtmlWin->GetOpenedPage());
             }

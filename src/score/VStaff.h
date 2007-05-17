@@ -148,7 +148,7 @@ private:
     void ResetContexts();
 
     //common code for all time signatures types
-    lmTimeSignature* lmVStaff::AddTimeSignature(lmTimeSignature* pTS);
+    lmTimeSignature* AddTimeSignature(lmTimeSignature* pTS);
 
 
 

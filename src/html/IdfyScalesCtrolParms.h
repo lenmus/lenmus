@@ -81,7 +81,7 @@ lmIdfyScalesCtrolParms::lmIdfyScalesCtrolParms(const wxHtmlTag& tag, int nWidth,
     // html object window attributes
     m_nWindowStyle = nStyle;
 
-    // construct constrains object
+    // construct constraints object
     m_pConstrains = new lmScalesConstrains(_T("IdfyScale"));
 
     // initializations

@@ -499,7 +499,7 @@ void lmEarIntervalsCtrol::NewProblem()
             m_fAscending = oGenerator.FlipCoin();
     }
 
-    // select a random key signature satisfying the constrains
+    // select a random key signature satisfying the constraints
     if (m_pConstrains->OnlyNatural()) {
         m_nKey = oGenerator.GenerateKey(m_pConstrains->GetKeyConstrains());
     }

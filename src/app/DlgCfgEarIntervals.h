@@ -60,7 +60,7 @@ public:
 private:
     bool VerifyData();
 
-    lmEarIntervalsConstrains*   m_pConstrains;      // the constrains to set up
+    lmEarIntervalsConstrains*   m_pConstrains;      // the constraints to set up
     bool            m_fEnableFirstEqual;
 
     //controls

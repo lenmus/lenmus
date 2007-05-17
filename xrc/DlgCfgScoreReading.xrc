@@ -513,7 +513,7 @@ maximum pitches for the notes to use with each selected clef.</label>
                                                             <border>5</border>
                                                             <object class="wxStaticText" name="lblRangeError">
                                                                 <bg>#FFD7D7</bg>
-                                                                <label>Minimum pitch must be lower than maximum one </label>
+                                                                <label>Minimum pitch must be lower than maximum pitch </label>
                                                             </object>
                                                         </object>
                                                     </object>

@@ -91,7 +91,7 @@ class lmInterval
 public:
     //build from two notes
     lmInterval(lmNote* pNote1, lmNote* pNote2, EKeySignatures nKey = earmDo);
-    //buid from constrains
+    //buid from constraints
     lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax, bool fAllowedIntervals[],
              bool fAscending, EKeySignatures nKey = earmDo, int nMidiStartNote=0);
     //destructor

@@ -68,7 +68,7 @@ lmComposer5::~lmComposer5()
                 BeatsToGenerate = Beats_per_measure x N
                 NumBeats = 0
         2. while (NumBeats < BeatsToGenerate) {
-            2.1 Randomly choose a pattern satisfying the constrains (lesson, level, time
+            2.1 Randomly choose a pattern satisfying the constraints (lesson, level, time
                 signature, etc.).
             2.2 Instantiate the choosen pattern by assingning note pitches
             2.3 NumBeats = NumBeats + num. beats in choosen pattern
@@ -99,7 +99,7 @@ lmComposer5::~lmComposer5()
         while (NumMeasures < MeasuresToGenerate) {
             If (no measure is opened) start a measure
             If (no beats in pattern) {
-                Randomly choose a pattern satisfying the constrains (lesson,
+                Randomly choose a pattern satisfying the constraints (lesson,
                     level, time signature, etc.).
                 Instantiate the choosen pattern by assingning note pitches.
                 Align pattern to measure by adding any required rest to the measure
@@ -145,7 +145,7 @@ lmComposer5::~lmComposer5()
         while (NumMeasures < MeasuresToGenerate - 1 ) {
             If (no measure is opened) start a measure
             If (no beats in pattern) {
-                Randomly choose a pattern satisfying the constrains (lesson,
+                Randomly choose a pattern satisfying the constraints (lesson,
                     level, time signature, etc.).
                 Instantiate the choosen pattern by assingning note pitches.
             }
@@ -166,7 +166,7 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
     //Save parameters
     m_pConstrains = pConstrains;
 
-    //Generate a random key, time signature and clef satisfying the constrains
+    //Generate a random key, time signature and clef satisfying the constraints
     lmRandomGenerator oGenerator;
     m_nClef = oGenerator.GenerateClef(m_pConstrains->GetClefConstrains());
     m_nKey = oGenerator.GenerateKey(m_pConstrains->GetKeyConstrains());
@@ -217,10 +217,10 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
         return pScore;
     }
 
-    //chose ramdomly a fragment satisfying the constrains, and take the first segment
+    //chose ramdomly a fragment satisfying the constraints, and take the first segment
     pConstrains->ChooseRandomFragment();
     pSegment = pConstrains->GetNextSegment();
-    //! @todo what if no fragment satisfies the constrains?
+    //! @todo what if no fragment satisfies the constraints?
 
     int nSegmentLoopCounter = 0;
     while (nNumMeasures < nMeasuresToGenerate) {
@@ -233,11 +233,11 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
 
         //If there are no more segments in current fragment, choose a new fragment
         if (!pSegment) {
-            //Randomly choose a new fragment satisfying the constrains
+            //Randomly choose a new fragment satisfying the constraints
             pConstrains->ChooseRandomFragment();
             pSegment = pConstrains->GetNextSegment();
             wxASSERT(pSegment);     //there must exits a fragment satisfying
-                                    //the constrains. Otherwise this would have been
+                                    //the constraints. Otherwise this would have been
                                     //detected before entering the main while loop
         }
 

@@ -289,7 +289,7 @@ wxString lmIdfyScalesCtrol::SetNewProblem()
         return _("Identify the next scale:");
     } else {
         //ear training
-        return _("Press 'Play' to lesson it again");
+        return _("Press 'Play' to hear it again");
     }
 
 }

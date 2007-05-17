@@ -73,7 +73,7 @@ enum EIntervalName              // name of the intervals considered in exercises
     ein_Max_Item        //Must be the last one. Just to know how many items
 };
 
-#define lmNUM_INTVALS  ein_Max_Item     //num intervals considered in constrains
+#define lmNUM_INTVALS  ein_Max_Item     //num intervals considered in constraints
 
 //----------------------------------------------------------------------------------------
 

@@ -767,7 +767,7 @@ void WizardMetronomePage::CreateControls()
     wxStaticText* itemStaticText40 = new wxStaticText( itemWizardPageSimple34, wxID_STATIC, _("Channels 10 and 16 are specialized in percussion sounds. So it is recommended to choose one of these (it doesn't matter wich one)."), wxDefaultPosition, wxSize(250, -1), 0 );
     itemBoxSizer39->Add(itemStaticText40, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
-    wxStaticText* itemStaticText41 = new wxStaticText( itemWizardPageSimple34, wxID_STATIC, _("To better identify the first beat of each measure it is possible to assign a different sound to it. But also you can choose the same sound for both, the first beat and the others."), wxDefaultPosition, wxSize(250, -1), 0 );
+    wxStaticText* itemStaticText41 = new wxStaticText( itemWizardPageSimple34, wxID_STATIC, _("To better identify the first beat of each measure it is possible to assign a different sound to it. But you can also choose the same sound for both, the first beat and the others."), wxDefaultPosition, wxSize(250, -1), 0 );
     itemBoxSizer39->Add(itemStaticText41, 1, wxGROW|wxALL|wxADJUST_MINSIZE, 5);
 
     wxStaticLine* itemStaticLine42 = new wxStaticLine( itemWizardPageSimple34, wxID_STATIC, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL );

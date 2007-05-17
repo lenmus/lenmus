@@ -120,7 +120,7 @@ lmDlgCfgTheoIntervals::lmDlgCfgTheoIntervals(wxWindow * parent,
     m_pBmpClefError->Show(false);
 
         //
-        // initialize all controls with current constrains data
+        // initialize all controls with current constraints data
         //
 
     // check boxes for allowed clefs

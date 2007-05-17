@@ -315,7 +315,7 @@ wxBitmap* lmGraphicManager::NewBitmap(int nPage)
             pBitmap = (wxBitmap *) NULL;
         }
         wxLogMessage(_T("[lmGraphicManager::NewBitmap] Bitmap size (%d, %d) pixels."), m_xPageSize, m_yPageSize);
-        wxMessageBox(_("Sorry, not enough memory to create a pBitmap to display the page."),
+        wxMessageBox(_("Sorry, not enough memory to create a Bitmap to display the page."),
             _T("lmGraphicManager::NewBitmap"), wxOK);
         ::wxExit();
     }

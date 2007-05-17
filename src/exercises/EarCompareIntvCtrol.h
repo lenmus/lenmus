@@ -90,7 +90,7 @@ private:
     lmScoreAuxCtrol*    m_pScoreCtrol;
     lmCountersCtrol*    m_pCounters;
 
-    lmEarIntervalsConstrains* m_pConstrains;    //use same constrains than for intervals
+    lmEarIntervalsConstrains* m_pConstrains;    //use same constraints than for intervals
     bool            m_fProblemCreated;      //there is a problem prepared
     lmPitch         m_ntMidi[2];            //the midi pitch of the two notes
     lmPitch         m_ntPitch[2];           //the pitch of the two notes

@@ -195,7 +195,7 @@ lmDlgCfgIdfyChord::lmDlgCfgIdfyChord(wxWindow* parent,
     m_pBmpAllowedChordsError->Show(false);
 
         //
-        // initialize all controls with current constrains data
+        // initialize all controls with current constraints data
         //
 
     //initialize check boxes for allowed chords with current settings

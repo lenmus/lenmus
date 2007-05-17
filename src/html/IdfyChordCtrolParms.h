@@ -81,7 +81,7 @@ lmIdfyChordCtrolParms::lmIdfyChordCtrolParms(const wxHtmlTag& tag, int nWidth, i
     // html object window attributes
     m_nWindowStyle = nStyle;
 
-    // construct constrains object
+    // construct constraints object
     m_pConstrains = new lmChordConstrains(_T("IdfyChord"));
 
     // initializations

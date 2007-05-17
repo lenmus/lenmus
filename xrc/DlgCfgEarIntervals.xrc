@@ -603,7 +603,7 @@
                                                             <border>5</border>
                                                             <object class="wxStaticText" name="lblRangeError">
                                                                 <bg>#FFD7D7</bg>
-                                                                <label>Minimum pitch must be lower than maximum one </label>
+                                                                <label>Minimum pitch must be lower than maximum pitch </label>
                                                             </object>
                                                         </object>
                                                     </object>
@@ -731,7 +731,7 @@
                         <object class="wxStaticText" name="lblGeneralError">
                             <size>300,50</size>
                             <bg>#FFD7D7</bg>
-                            <label>It is nor possible to generate any interval. Selected notes range interval (see tab 'Other settings') is lower than minimun allowed interval (see tab 'Intervals')</label>
+                            <label>It is not possible to generate any interval. Selected notes range interval (see tab 'Other settings') is lower than minimun allowed interval (see tab 'Intervals')</label>
                         </object>
                     </object>
                     <object class="sizeritem">

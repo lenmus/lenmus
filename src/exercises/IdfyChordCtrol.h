@@ -91,7 +91,7 @@ private:
     lmCountersCtrol*    m_pCounters;
     wxFlexGridSizer*    m_pKeyboardSizer;
 
-    lmChordConstrains* m_pConstrains;       //constrains for the exercise
+    lmChordConstrains* m_pConstrains;       //constraints for the exercise
     bool            m_fQuestionAsked;       //question asked but not yet answered
 
     //problem asked

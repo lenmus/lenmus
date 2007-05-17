@@ -222,7 +222,7 @@ lmDlgCfgEarIntervals::lmDlgCfgEarIntervals(wxWindow * parent,
     m_pBmpGeneralError->Show(false);
 
         //
-        // initialize all controls with current constrains data
+        // initialize all controls with current constraints data
         //
 
     //initialize check boxes for allowed intervals with current settings
@@ -448,8 +448,8 @@ bool lmDlgCfgEarIntervals::VerifyData()
     
     if (fError) {
         m_pLblGeneralError->SetLabel(
-_("It is nor possible to generate any interval. \
-Selected notes range interval (tab 'Other settings') is lower than \
+_("It is not possible to generate any interval. \
+Selected notes' range interval (tab 'Other settings') is lower than \
 minimum allowed interval (tab 'Intervals')"));
     }
     else {

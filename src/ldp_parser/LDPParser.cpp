@@ -145,7 +145,7 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename)
     // report errors
     bool fShowLog = true;
     if (fShowLog && m_nErrors != 0) {
-        g_pLogger->ShowDataErrors(_("Warnings/errores while reading LenMus score."));
+        g_pLogger->ShowDataErrors(_("Warnings/errors while reading LenMus score."));
     }
 
     //if (pScore) pScore->Dump(_T("lenmus_score_dump.txt"));      //dbg
@@ -1162,7 +1162,7 @@ void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //check that there are parameters
     if(pNode->GetNumParms() < 1) {
-        AnalysisError( _("Element '%s' has less parameters that the minimum required. Element ignored."),
+        AnalysisError( _("Element '%s' has less parameters than the minimum required. Element ignored."),
             sElmName);
         return;
     }
@@ -1505,14 +1505,14 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     //!         to be in the last note of the chord.
                     if (fInChord) {
                         AnalysisError(
-                            _("Requesting ending a beaming a group in a note that is note the first one of a chord. Beaming ignored."));
+                            _("Request to end beaming a group in a note that is note the first one of a chord. Beaming ignored."));
                         fCloseBeam = false;
                     }
 
                     //There must exist a previous note/rest
                     if (!g_pLastNoteRest) {
                         AnalysisError(
-                            _("Requesting ending a beaming a group but there is not a  previous note. Beaming ignored."));
+                            _("Request to end beaming a group but there is not a  previous note. Beaming ignored."));
                         fCloseBeam = false;
                     }
                     else {
@@ -1520,7 +1520,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                         if (!g_pLastNoteRest->IsBeamed() ||
                             g_pLastNoteRest->GetBeamType(0) == eBeamEnd) {
                             AnalysisError(
-                                _("Requesting ending a beaming a group but previous note is not beamed. Beaming ignored."));
+                                _("Request to end beaming a group but previous note is not beamed. Beaming ignored."));
                             fCloseBeam = false;
                         }
                     }
@@ -1804,7 +1804,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
                     else if (nActualNum == 5)
                         nNormalNum = 6;
                     else {
-                        AnalysisError(_("[%s] Found tag '%s' but no defaul value exists for NormalNotes. Ignored."),
+                        AnalysisError(_("[%s] Found tag '%s' but no default value exists for NormalNotes. Ignored."),
                             sParent, sData);
                         return true;
                     }
@@ -1844,7 +1844,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
         //check that at least one parameters (+, - sign) is specified
         if(pNode->GetNumParms() < 2) {
             AnalysisError(
-                _("Element '%s' has less parameters that the minimum required. Element ignored."),
+                _("Element '%s' has less parameters than the minimum required. Element ignored."),
                 sElmName );
             return true;
         }
@@ -2113,7 +2113,7 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
     //check that clef type is specified
     if(pNode->GetNumParms() < 1) {
         AnalysisError(
-            _("Element '%s' has less parameters that the minimum required. Assumed '(%s Sol)'."),
+            _("Element '%s' has less parameters than the minimum required. Assumed '(%s Sol)'."),
             m_pTags->TagName(_T("clef")), m_pTags->TagName(_T("clef")) );
         pVStaff->AddClef(eclvSol, 1, true);
         return false;
@@ -2229,7 +2229,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
     int nNumParms = pNode->GetNumParms();
     if(nNumParms < 1) {
         AnalysisError(
-            _("Element '%s' has less parameters that the minimum required. Ignored'."),
+            _("Element '%s' has less parameters than the minimum required. Ignored'."),
             sElmName );
         return true;    //error
     }
@@ -2263,7 +2263,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
         // Get right part
         if (iP > nNumParms) {
             AnalysisError(
-                _("Element '%s' has less parameters that the minimum required. Ignored'."),
+                _("Element '%s' has less parameters than the minimum required. Ignored'."),
                 sElmName );
             return true;    //error
         }
@@ -2469,7 +2469,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     //check that at least two parameters (aligment and text string) are specified
     if(pNode->GetNumParms() < 2) {
         AnalysisError(
-            _("Element '%s' has less parameters that the minimum required. Element ignored."),
+            _("Element '%s' has less parameters than the minimum required. Element ignored."),
             m_pTags->TagName(_T("title")) );
         return true;
     }
@@ -2551,7 +2551,7 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText,
     //check that at least one parameter (text string) is specified
     if(pNode->GetNumParms() < 1) {
         AnalysisError(
-            _("Element '%s' has less parameters that the minimum required. Element ignored."),
+            _("Element '%s' has less parameters than the minimum required. Element ignored."),
             pNode->GetName() );
         return true;
     }
@@ -2622,7 +2622,7 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     //check that at least two parameters (location and text string) are specified
     if(pNode->GetNumParms() < 2) {
         AnalysisError(
-            _("Element '%s' has less parameters that the minimum required. Element ignored."),
+            _("Element '%s' has less parameters than the minimum required. Element ignored."),
             m_pTags->TagName(_T("text")) );
         return true;
     }
@@ -2665,7 +2665,7 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
     //check that key value is specified
     if(pNode->GetNumParms() < 1) {
         AnalysisError(
-            _("Element '%s' has less parameters that the minimum required. Assumed '(%s %s)'."),
+            _("Element '%s' has less parameters than the minimum required. Assumed '(%s %s)'."),
             sElmName, sElmName, m_pTags->TagName(_T("Do"), _T("Keys")) );
         pVStaff->AddKeySignature(earmDo);
         return false;
@@ -2711,7 +2711,7 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
 
     //check that the two numbers are specified
     if(pNode->GetNumParms() < 2) {
-        AnalysisError( _("Element '%s' has less parameters that the minimum required. Assumed '(Metrica 4 4)'."),
+        AnalysisError( _("Element '%s' has less parameters than the minimum required. Assumed '(Metrica 4 4)'."),
             m_pTags->TagName(_T("time")));
         pVStaff->AddTimeSignature(emtr44);
         return false;
@@ -2750,7 +2750,7 @@ void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //check that the width is specified
     if(pNode->GetNumParms() < 1) {
-        AnalysisError( _("Element '%s' has less parameters that the minimum required. Ignored."),
+        AnalysisError( _("Element '%s' has less parameters than the minimum required. Ignored."),
             sElmName);
         return;
     }
@@ -2778,7 +2778,7 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //check that type is specified
     if(nNumParms < 2) {
-        AnalysisError( _("Element '%s' has less parameters that the minimum required. Element ignored."),
+        AnalysisError( _("Element '%s' has less parameters than the minimum required. Element ignored."),
             sElmName);
         return;
     }
@@ -2796,7 +2796,7 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
 
         // get parameters
         if(nNumParms < 5) {
-            AnalysisError( _("Element '%s' has less parameters that the minimum required. Element ignored."),
+            AnalysisError( _("Element '%s' has less parameters than the minimum required. Element ignored."),
                 sElmName);
             return;
         }
@@ -2869,7 +2869,7 @@ EStemType lmLDPParser::AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //check that there are parameters
     if(pNode->GetNumParms() < 1) {
-        AnalysisError( _("Element '%s' has less parameters that the minimum required. Tag ignored. Assumed default stem."),
+        AnalysisError( _("Element '%s' has less parameters than the minimum required. Tag ignored. Assumed default stem."),
             m_pTags->TagName(_T("stem")));
         return nStem;
     }
@@ -2898,7 +2898,7 @@ lmEPlacement lmLDPParser::AnalyzeFermata(lmLDPNode* pNode)
 
     //check that there are parameters
     if(pNode->GetNumParms() < 1) {
-        AnalysisError( _("Element '%s' has less parameters that the minimum required. Tag ignored. Assumed default stem."),
+        AnalysisError( _("Element '%s' has less parameters than the minimum required. Tag ignored. Assumed default stem."),
             m_pTags->TagName(_T("fermata")));
         return nPlacement;
     }

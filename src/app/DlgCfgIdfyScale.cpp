@@ -189,7 +189,7 @@ lmDlgCfgIdfyScale::lmDlgCfgIdfyScale(wxWindow* parent,
     m_pBmpAllowedScalesError->Show(false);
 
         //
-        // initialize all controls with current constrains data
+        // initialize all controls with current constraints data
         //
 
     //initialize check boxes for allowed scales with current settings

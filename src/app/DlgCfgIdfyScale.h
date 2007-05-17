@@ -52,7 +52,7 @@ public:
 private:
     bool VerifyData();
 
-    lmScalesConstrains*  m_pConstrains;          // the constrains to set up
+    lmScalesConstrains*  m_pConstrains;          // the constraints to set up
     bool                m_fTheoryMode;
 
     //controls

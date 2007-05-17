@@ -77,7 +77,7 @@ private:
         m_NUM_BUTTONS = 24,     // NUM_COLS * NUM_ROWS;
     };
 
-    lmScalesConstrains* m_pConstrains;       //constrains for the exercise
+    lmScalesConstrains* m_pConstrains;       //constraints for the exercise
 
     //problem asked
     EKeySignatures  m_nKey;

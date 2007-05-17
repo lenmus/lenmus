@@ -74,7 +74,7 @@ lmTimeSignConstrains::lmTimeSignConstrains()
     }
 }
 
-/*! Initialize constrains from a comma separated list of values.
+/*! Initialize constraints from a comma separated list of values.
     i.e.: '24,34,44' (no spaces allowed)
     Returns true if error
 */

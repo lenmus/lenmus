@@ -263,7 +263,7 @@ public:
 
 private:
 
-    wxString    m_sSection;         // section name to save the constrains
+    wxString    m_sSection;         // section name to save the constraints
     int         m_nMaxInterval;     // max interval in two consecutive notes
     long        m_nMM;              // metronome setting
 

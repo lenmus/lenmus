@@ -203,7 +203,7 @@ lmTheoKeySignParms::lmTheoKeySignParms(const wxHtmlTag& tag, int nWidth, int nHe
     // html object window attributes
     m_nWindowStyle = nStyle;
 
-    // create constrains object (construtor initilizes it with default values for attributes)
+    // create constraints object (construtor initilizes it with default values for attributes)
     m_pConstrains = new lmTheoKeySignConstrains();
 
 }
@@ -394,7 +394,7 @@ lmTheoIntervalsCtrolParms::lmTheoIntervalsCtrolParms(const wxHtmlTag& tag, int n
     // html object window attributes
     m_nWindowStyle = nStyle;
 
-    // create the constrains object
+    // create the constraints object
     m_pConstrains = new lmTheoIntervalsConstrains();
 
 }

@@ -306,7 +306,7 @@ lmDlgCfgScoreReading::lmDlgCfgScoreReading(wxWindow * parent,
     m_pLblKeySignError->Show(false);
 
         //
-        // initialize all controls with current constrains data
+        // initialize all controls with current constraints data
         //
 
     //page 0: clefs and notes

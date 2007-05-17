@@ -193,7 +193,7 @@ wxString lmScoreConstrains::Verify()
         if (fAtLeastOne) break;
     }
     if (!fAtLeastOne) {
-        sError += _("Global error: No clef constrains specified\n");
+        sError += _("Global error: No clef constraints specified\n");
     }
 
     // ensure that at least a time signature is selected
@@ -203,7 +203,7 @@ wxString lmScoreConstrains::Verify()
         if (fAtLeastOne) break;
     }
     if (!fAtLeastOne) {
-        sError += _("Global error: No time signature constrains specified\n");
+        sError += _("Global error: No time signature constraints specified\n");
     }
 
     // ensure that at least a key signature is selected
@@ -213,7 +213,7 @@ wxString lmScoreConstrains::Verify()
         if (fAtLeastOne) break;
     }
     if (!fAtLeastOne) {
-        sError += _("Global error: No key signature constrains specified\n");
+        sError += _("Global error: No key signature constraints specified\n");
     }
 
     //! @todo verify remaining data: fragments
