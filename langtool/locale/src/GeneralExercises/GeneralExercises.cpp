@@ -1,15 +1,15 @@
 wxString sTxt;
-sTxt = _("Send your comments and sugesstions to LenMus team (www.lenmus.org)");
+sTxt = _("Send your comments and sugesstions to the LenMus team (www.lenmus.org)");
 sTxt = _("Licensed under the terms of the GNU Free Documentation License v1.2");
 sTxt = _("the teacher of music");
 sTxt = _("Cover page");
-sTxt = _("Single exercises");
+sTxt = _("General exercises");
 sTxt = _("General exercises, customizable to suit your needs at any moment.");
 sTxt = _("Cecilio Salmeron");
 sTxt = _("Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at");
 sTxt = _("http://www.gnu.org/licenses/fdl.html");
 sTxt = _("Contents");
-sTxt = _("Introduction to single exercises");
+sTxt = _("Introduction to general exercises");
 sTxt = _("Appart of exercises included in the eBooks, the following general exercises (customizable to suit your needs at any moment) are available:");
 sTxt = _("Exercises for aural training");
 sTxt = _("Intervals' comparison");

@@ -1,21 +1,21 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: LenMus 3.4\n"
+"Project-Id-Version: MusicReading_L2 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-05-04 16:17+0100\n"
-"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
+"PO-Revision-Date: 2007-05-18 11:43+0100\n"
+"Last-Translator: \n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: d:\\usr\\desarrollo_wx\\lenmus\\langtool\\locale\\src\n"
+"X-Poedit-Basepath: ..\\src\n"
 "X-Poedit-Language: Dutch\n"
 "X-Poedit-Country: NETHERLANDS\n"
 "X-Poedit-SearchPath-0: L2_MusicReading\n"
 
 #: L2_MusicReading/L2_MusicReading.cpp:2
-msgid "Send your comments and sugesstions to LenMus team (www.lenmus.org)"
+msgid "Send your comments and sugesstions to the LenMus team (www.lenmus.org)"
 msgstr "Stuur uw opmerkingen en suggesties naar het LenMus team (www.lenmus.org)"
 
 #: L2_MusicReading/L2_MusicReading.cpp:3
@@ -133,11 +133,11 @@ msgstr "In het derde gedeelte worden uiteindelijk een aantal oefeningen voorgest
 #: L2_MusicReading/L2_MusicReading.cpp:188
 #: L2_MusicReading/L2_MusicReading.cpp:204
 #: L2_MusicReading/L2_MusicReading.cpp:220
-#: L2_MusicReading/L2_MusicReading.cpp:245
-#: L2_MusicReading/L2_MusicReading.cpp:265
-#: L2_MusicReading/L2_MusicReading.cpp:290
-#: L2_MusicReading/L2_MusicReading.cpp:310
-#: L2_MusicReading/L2_MusicReading.cpp:330
+#: L2_MusicReading/L2_MusicReading.cpp:246
+#: L2_MusicReading/L2_MusicReading.cpp:266
+#: L2_MusicReading/L2_MusicReading.cpp:291
+#: L2_MusicReading/L2_MusicReading.cpp:311
+#: L2_MusicReading/L2_MusicReading.cpp:331
 #, c-format
 msgid "Lesson %d"
 msgstr "Les %d"
@@ -158,20 +158,23 @@ msgstr "In deze les wordt een nieuw ritmisch patroon geïntroduceerd: een 8ste n
 #: L2_MusicReading/L2_MusicReading.cpp:110
 #: L2_MusicReading/L2_MusicReading.cpp:126
 #: L2_MusicReading/L2_MusicReading.cpp:142
+#: L2_MusicReading/L2_MusicReading.cpp:160
 #: L2_MusicReading/L2_MusicReading.cpp:175
 #: L2_MusicReading/L2_MusicReading.cpp:191
 #: L2_MusicReading/L2_MusicReading.cpp:207
 #: L2_MusicReading/L2_MusicReading.cpp:223
-#: L2_MusicReading/L2_MusicReading.cpp:248
-#: L2_MusicReading/L2_MusicReading.cpp:268
-#: L2_MusicReading/L2_MusicReading.cpp:293
-#: L2_MusicReading/L2_MusicReading.cpp:313
-#: L2_MusicReading/L2_MusicReading.cpp:333
-msgid "Lesson and note the differences"
+#: L2_MusicReading/L2_MusicReading.cpp:249
+#: L2_MusicReading/L2_MusicReading.cpp:269
+#: L2_MusicReading/L2_MusicReading.cpp:294
+#: L2_MusicReading/L2_MusicReading.cpp:314
+#: L2_MusicReading/L2_MusicReading.cpp:334
+#, fuzzy
+msgid "Listen and take notice of the differences"
 msgstr "Bestudeer en noteer de verschillen"
 
 #: L2_MusicReading/L2_MusicReading.cpp:32
-msgid "Lesson each measure and note how the new introduced pattern appears:"
+#, fuzzy
+msgid "Listen to each measure and pay attention to the newly introduced patterns:"
 msgstr "Bestudeer elke maat en noteer de opbouw van het nieuwe patroon:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:33
@@ -210,32 +213,32 @@ msgstr "Bestudeer elke maat en noteer de opbouw van het nieuwe patroon:"
 #: L2_MusicReading/L2_MusicReading.cpp:209
 #: L2_MusicReading/L2_MusicReading.cpp:214
 #: L2_MusicReading/L2_MusicReading.cpp:217
-#: L2_MusicReading/L2_MusicReading.cpp:226
-#: L2_MusicReading/L2_MusicReading.cpp:233
-#: L2_MusicReading/L2_MusicReading.cpp:236
-#: L2_MusicReading/L2_MusicReading.cpp:239
-#: L2_MusicReading/L2_MusicReading.cpp:242
-#: L2_MusicReading/L2_MusicReading.cpp:249
-#: L2_MusicReading/L2_MusicReading.cpp:256
-#: L2_MusicReading/L2_MusicReading.cpp:259
-#: L2_MusicReading/L2_MusicReading.cpp:262
-#: L2_MusicReading/L2_MusicReading.cpp:269
-#: L2_MusicReading/L2_MusicReading.cpp:278
-#: L2_MusicReading/L2_MusicReading.cpp:281
-#: L2_MusicReading/L2_MusicReading.cpp:284
-#: L2_MusicReading/L2_MusicReading.cpp:287
-#: L2_MusicReading/L2_MusicReading.cpp:294
-#: L2_MusicReading/L2_MusicReading.cpp:301
-#: L2_MusicReading/L2_MusicReading.cpp:304
-#: L2_MusicReading/L2_MusicReading.cpp:307
-#: L2_MusicReading/L2_MusicReading.cpp:314
-#: L2_MusicReading/L2_MusicReading.cpp:321
-#: L2_MusicReading/L2_MusicReading.cpp:324
-#: L2_MusicReading/L2_MusicReading.cpp:327
-#: L2_MusicReading/L2_MusicReading.cpp:334
-#: L2_MusicReading/L2_MusicReading.cpp:341
-#: L2_MusicReading/L2_MusicReading.cpp:344
-#: L2_MusicReading/L2_MusicReading.cpp:347
+#: L2_MusicReading/L2_MusicReading.cpp:227
+#: L2_MusicReading/L2_MusicReading.cpp:234
+#: L2_MusicReading/L2_MusicReading.cpp:237
+#: L2_MusicReading/L2_MusicReading.cpp:240
+#: L2_MusicReading/L2_MusicReading.cpp:243
+#: L2_MusicReading/L2_MusicReading.cpp:250
+#: L2_MusicReading/L2_MusicReading.cpp:257
+#: L2_MusicReading/L2_MusicReading.cpp:260
+#: L2_MusicReading/L2_MusicReading.cpp:263
+#: L2_MusicReading/L2_MusicReading.cpp:270
+#: L2_MusicReading/L2_MusicReading.cpp:279
+#: L2_MusicReading/L2_MusicReading.cpp:282
+#: L2_MusicReading/L2_MusicReading.cpp:285
+#: L2_MusicReading/L2_MusicReading.cpp:288
+#: L2_MusicReading/L2_MusicReading.cpp:295
+#: L2_MusicReading/L2_MusicReading.cpp:302
+#: L2_MusicReading/L2_MusicReading.cpp:305
+#: L2_MusicReading/L2_MusicReading.cpp:308
+#: L2_MusicReading/L2_MusicReading.cpp:315
+#: L2_MusicReading/L2_MusicReading.cpp:322
+#: L2_MusicReading/L2_MusicReading.cpp:325
+#: L2_MusicReading/L2_MusicReading.cpp:328
+#: L2_MusicReading/L2_MusicReading.cpp:335
+#: L2_MusicReading/L2_MusicReading.cpp:342
+#: L2_MusicReading/L2_MusicReading.cpp:345
+#: L2_MusicReading/L2_MusicReading.cpp:348
 msgid "Exercises"
 msgstr "Oefeningen"
 
@@ -251,12 +254,12 @@ msgstr "Oefeningen"
 #: L2_MusicReading/L2_MusicReading.cpp:178
 #: L2_MusicReading/L2_MusicReading.cpp:194
 #: L2_MusicReading/L2_MusicReading.cpp:210
-#: L2_MusicReading/L2_MusicReading.cpp:227
-#: L2_MusicReading/L2_MusicReading.cpp:250
-#: L2_MusicReading/L2_MusicReading.cpp:270
-#: L2_MusicReading/L2_MusicReading.cpp:295
-#: L2_MusicReading/L2_MusicReading.cpp:315
-#: L2_MusicReading/L2_MusicReading.cpp:335
+#: L2_MusicReading/L2_MusicReading.cpp:228
+#: L2_MusicReading/L2_MusicReading.cpp:251
+#: L2_MusicReading/L2_MusicReading.cpp:271
+#: L2_MusicReading/L2_MusicReading.cpp:296
+#: L2_MusicReading/L2_MusicReading.cpp:316
+#: L2_MusicReading/L2_MusicReading.cpp:336
 msgid "Exercise 1"
 msgstr "Oefening 1"
 
@@ -287,12 +290,12 @@ msgstr "- Oefen uw gehoor voor de nieuwe ritmische patronen."
 #: L2_MusicReading/L2_MusicReading.cpp:180
 #: L2_MusicReading/L2_MusicReading.cpp:196
 #: L2_MusicReading/L2_MusicReading.cpp:212
-#: L2_MusicReading/L2_MusicReading.cpp:229
-#: L2_MusicReading/L2_MusicReading.cpp:252
-#: L2_MusicReading/L2_MusicReading.cpp:272
-#: L2_MusicReading/L2_MusicReading.cpp:297
-#: L2_MusicReading/L2_MusicReading.cpp:317
-#: L2_MusicReading/L2_MusicReading.cpp:337
+#: L2_MusicReading/L2_MusicReading.cpp:230
+#: L2_MusicReading/L2_MusicReading.cpp:253
+#: L2_MusicReading/L2_MusicReading.cpp:273
+#: L2_MusicReading/L2_MusicReading.cpp:298
+#: L2_MusicReading/L2_MusicReading.cpp:318
+#: L2_MusicReading/L2_MusicReading.cpp:338
 msgid "Exercise 2"
 msgstr "Oefening 2"
 
@@ -307,16 +310,33 @@ msgstr "Oefening 2"
 #: L2_MusicReading/L2_MusicReading.cpp:181
 #: L2_MusicReading/L2_MusicReading.cpp:197
 #: L2_MusicReading/L2_MusicReading.cpp:213
-#: L2_MusicReading/L2_MusicReading.cpp:255
-#: L2_MusicReading/L2_MusicReading.cpp:277
-#: L2_MusicReading/L2_MusicReading.cpp:300
-#: L2_MusicReading/L2_MusicReading.cpp:320
-#: L2_MusicReading/L2_MusicReading.cpp:340
+#: L2_MusicReading/L2_MusicReading.cpp:256
+#: L2_MusicReading/L2_MusicReading.cpp:278
+#: L2_MusicReading/L2_MusicReading.cpp:301
+#: L2_MusicReading/L2_MusicReading.cpp:321
+#: L2_MusicReading/L2_MusicReading.cpp:341
 msgid " - Read scores containing the rhythms studied in this lesson."
 msgstr "- Lees partituren die de ritmes bevatten, die bestudeerd worden in deze les."
 
 #: L2_MusicReading/L2_MusicReading.cpp:40
 #: L2_MusicReading/L2_MusicReading.cpp:43
+#, fuzzy
+msgid "Press 'Play' and listen. Train your ear and practise reading this rhythm."
+msgstr "Druk 'Afspelen' om het ritme aan te leren. Oefen uw gehoor en het lezen van dit ritme."
+
+#: L2_MusicReading/L2_MusicReading.cpp:45
+msgid "Compound time of 9/8. Dotted quarter note"
+msgstr "Samengestelde maat van 9/8. Gepunteerde vierde noot."
+
+#: L2_MusicReading/L2_MusicReading.cpp:46
+msgid "In this lesson the compound time of 9/8 is introduced, as well as two new rhythmic patterns. The 9/8 time has three beats and each beat is occupied by a 8th note. The measure is occupied by a dotted quarter note."
+msgstr "In deze les wordt de samengestelde maat van 9/8 tesamen met twee nieuwe ritmische patronen geïntroduceerd. De 9/8ste maat heeft drie slagen en elke slag stemt overeen met een 8ste noot. De maat wordt beheerst door een gepunteerde vierde noot."
+
+#: L2_MusicReading/L2_MusicReading.cpp:53
+#: L2_MusicReading/L2_MusicReading.cpp:56
+msgid "Compound time of 9/8. Whole note tied to next beat"
+msgstr "Samengestelde tijd van 9/8. Hele noot gebonden aan de volgende tel."
+
 #: L2_MusicReading/L2_MusicReading.cpp:54
 #: L2_MusicReading/L2_MusicReading.cpp:57
 #: L2_MusicReading/L2_MusicReading.cpp:73
@@ -338,41 +358,29 @@ msgstr "- Lees partituren die de ritmes bevatten, die bestudeerd worden in deze 
 #: L2_MusicReading/L2_MusicReading.cpp:203
 #: L2_MusicReading/L2_MusicReading.cpp:216
 #: L2_MusicReading/L2_MusicReading.cpp:219
-#: L2_MusicReading/L2_MusicReading.cpp:235
-#: L2_MusicReading/L2_MusicReading.cpp:238
-#: L2_MusicReading/L2_MusicReading.cpp:241
-#: L2_MusicReading/L2_MusicReading.cpp:244
-#: L2_MusicReading/L2_MusicReading.cpp:258
-#: L2_MusicReading/L2_MusicReading.cpp:261
-#: L2_MusicReading/L2_MusicReading.cpp:264
-#: L2_MusicReading/L2_MusicReading.cpp:280
-#: L2_MusicReading/L2_MusicReading.cpp:283
-#: L2_MusicReading/L2_MusicReading.cpp:286
-#: L2_MusicReading/L2_MusicReading.cpp:289
-#: L2_MusicReading/L2_MusicReading.cpp:303
-#: L2_MusicReading/L2_MusicReading.cpp:306
-#: L2_MusicReading/L2_MusicReading.cpp:309
-#: L2_MusicReading/L2_MusicReading.cpp:323
-#: L2_MusicReading/L2_MusicReading.cpp:326
-#: L2_MusicReading/L2_MusicReading.cpp:329
-#: L2_MusicReading/L2_MusicReading.cpp:343
-#: L2_MusicReading/L2_MusicReading.cpp:346
-#: L2_MusicReading/L2_MusicReading.cpp:349
-msgid "Press 'Play' and lesson the rhythm. Train your ear and practise reading this rhythm."
-msgstr "Druk 'Afspelen' om het ritme aan te leren. Oefen uw gehoor en het lezen van dit ritme."
-
-#: L2_MusicReading/L2_MusicReading.cpp:45
-msgid "Compound time of 9/8. Dotted quarter note"
-msgstr "Samengestelde maat van 9/8. Gepunteerde vierde noot."
-
-#: L2_MusicReading/L2_MusicReading.cpp:46
-msgid "In this lesson the compound time of 9/8 is introduced, as well as two new rhythmic patterns. The 9/8 time has three beats and each beat is occupied by a 8th note. The measure is occupied by a dotted quarter note."
-msgstr "In deze les wordt de samengestelde maat van 9/8 tesamen met twee nieuwe ritmische patronen geïntroduceerd. De 9/8ste maat heeft drie slagen en elke slag stemt overeen met een 8ste noot. De maat wordt beheerst door een gepunteerde vierde noot."
-
-#: L2_MusicReading/L2_MusicReading.cpp:53
-#: L2_MusicReading/L2_MusicReading.cpp:56
-msgid "Compound time of 9/8. Whole note tied to next beat"
-msgstr "Samengestelde tijd van 9/8. Hele noot gebonden aan de volgende tel."
+#: L2_MusicReading/L2_MusicReading.cpp:236
+#: L2_MusicReading/L2_MusicReading.cpp:239
+#: L2_MusicReading/L2_MusicReading.cpp:242
+#: L2_MusicReading/L2_MusicReading.cpp:245
+#: L2_MusicReading/L2_MusicReading.cpp:259
+#: L2_MusicReading/L2_MusicReading.cpp:262
+#: L2_MusicReading/L2_MusicReading.cpp:265
+#: L2_MusicReading/L2_MusicReading.cpp:281
+#: L2_MusicReading/L2_MusicReading.cpp:284
+#: L2_MusicReading/L2_MusicReading.cpp:287
+#: L2_MusicReading/L2_MusicReading.cpp:290
+#: L2_MusicReading/L2_MusicReading.cpp:304
+#: L2_MusicReading/L2_MusicReading.cpp:307
+#: L2_MusicReading/L2_MusicReading.cpp:310
+#: L2_MusicReading/L2_MusicReading.cpp:324
+#: L2_MusicReading/L2_MusicReading.cpp:327
+#: L2_MusicReading/L2_MusicReading.cpp:330
+#: L2_MusicReading/L2_MusicReading.cpp:344
+#: L2_MusicReading/L2_MusicReading.cpp:347
+#: L2_MusicReading/L2_MusicReading.cpp:350
+#, fuzzy
+msgid "Press 'Play' and listen. Train your ear and practise the newly introduced patterns."
+msgstr "- Oefen uw gehoor voor de nieuwe ritmische patronen."
 
 #: L2_MusicReading/L2_MusicReading.cpp:59
 #: L2_MusicReading/L2_MusicReading.cpp:69
@@ -390,7 +398,8 @@ msgid "Note the differences between the following rhythmic patterns and how they
 msgstr "Noteer het verschil tussen de volgende ritmische patronen en hoe ze gevormd worden wanneer we de noten verbinden in het basis 8ste noten patroon. Vergelijk dit patroon met dat van de laatste maat. Noteer het ritmisch accent tussen de derde en vierde maat."
 
 #: L2_MusicReading/L2_MusicReading.cpp:70
-msgid "Press 'Play' and lesson (carefully) the rhythm. Train your ear and practise reading this rhythm."
+#, fuzzy
+msgid "Press 'Play' and listen carefully the rhythm. Train your ear and practise the newly introduced patterns."
 msgstr "Druk 'Afspelen' en bestudeer aandachtig het ritme. Oefen uw gehoor en het lezen van het ritme."
 
 #: L2_MusicReading/L2_MusicReading.cpp:75
@@ -406,7 +415,8 @@ msgid "In this lesson a new rhythmic pattern is introduced: the 8th note tied to
 msgstr "In deze les wordt een nieuw ritmisch patroon geïntroduceerd: de 8ste noot gebonden aan de volgende tel:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:78
-msgid "Lesson and observe the differences"
+#, fuzzy
+msgid "Listen and observe the differences"
 msgstr "Bestudeer en observeer de verschillen"
 
 #: L2_MusicReading/L2_MusicReading.cpp:79
@@ -490,10 +500,6 @@ msgstr "U weet ook dat elke tel onderverdeeld kan worden in kleinere eenheden. W
 msgid "But, what to do if you want to divide the beat into three even parts? The answer is called a 'triplet': you write three eight notes and you group them together, using a slur or bracket, with a number '3'. The '3' indicates that the three notes must be played in the time alloted for two notes. So a triplet quarter note is 2/3 the duration of a standard quarter note. Similarly, three triplet eighth notes are equal in duration to a quarter note. If several note values appear under the triplet bracket, they are all affected the same way, reduced to 2/3 their original duration."
 msgstr "Maar, wat als we de slag willen onderverdelen in drie gelijke delen? Het antwoord wordt een triool genoemd. U schrijft drie achtste noten en groepeert deze door middel van een trioolboog, met het getal drie. De drie duidt aan dat de drie noten gespeeld dienen te worden in de tijd toegekend aan twee noten. Dus een triool van vierde noten is 2/3 van de duur van een standaard kwartnoot. Overeenkomstig, drie achtste noten van een triool stemmen overeen in tijdsduur met een vierde noot. Indien verschillende nootwaarden verschijnen onder de trioolboog, worden ze allen op dezelfde manier behandeld door ze te reduceren tot 2/3 van hun originele tijdsduur."
 
-#: L2_MusicReading/L2_MusicReading.cpp:160
-msgid "Lesson the difference"
-msgstr "Bestudeer het verschil"
-
 #: L2_MusicReading/L2_MusicReading.cpp:165
 msgid " - Read scores with triplets."
 msgstr " - Lees partituren met triolen."
@@ -541,8 +547,8 @@ msgid "Note the difference between the first and the second measure, and between
 msgstr "Noteer het verschil tussen de eerste en de tweede maat en tussen de derde en de vierde. Noteer hoe maat 2 en 4 overeenstemmen met maat 1 en 3 door het verbinden van de triolen."
 
 #: L2_MusicReading/L2_MusicReading.cpp:221
-#: L2_MusicReading/L2_MusicReading.cpp:234
-#: L2_MusicReading/L2_MusicReading.cpp:243
+#: L2_MusicReading/L2_MusicReading.cpp:235
+#: L2_MusicReading/L2_MusicReading.cpp:244
 msgid "Dotted 8th note"
 msgstr "Gepunteerde 8ste noot"
 
@@ -552,161 +558,168 @@ msgstr "In deze les wordt de gepunteerde 8ste noot in eenvoudige maatsoorten gei
 
 # This phrase is a bit strange. It is suggested to first tying the notes and then to study the notes without the ties.
 #: L2_MusicReading/L2_MusicReading.cpp:224
-msgid "As always that you find any trouble with a rhymic pattern try to get it by tying notes and study it firts without the ties. Note how the rhythm of dotted 8th note can be obtained from one 8th note and two 16th notes, when tying the 8th note."
+#, fuzzy
+msgid "Note how the rhythm of dotted 8th note can be obtained from one 8th note and two 16th notes, when tying the 8th note."
 msgstr "Tracht, zoals steeds bij het aanleren van een nieuw ritmisch patroon, het te vatten door het eerst te bestuderen zonder de koppelingen. Merk op hoe het ritme van gepunteerde achtste noten bekomen kan worden door één 8ste noot en twee 16de noten, waarbij de 8ste noot gekoppeld wordt."
 
+# This phrase is a bit strange. It is suggested to first tying the notes and then to study the notes without the ties.
 #: L2_MusicReading/L2_MusicReading.cpp:225
+#, fuzzy
+msgid "Always that you find a trouble with a rhythmic pattern, study it first without the ties. When learned without the ties it will be easier to learn the original one with ties."
+msgstr "Tracht, zoals steeds bij het aanleren van een nieuw ritmisch patroon, het te vatten door het eerst te bestuderen zonder de koppelingen. Merk op hoe het ritme van gepunteerde achtste noten bekomen kan worden door één 8ste noot en twee 16de noten, waarbij de 8ste noot gekoppeld wordt."
+
+#: L2_MusicReading/L2_MusicReading.cpp:226
 msgid "In a similar way you can get and learn the other patterns of this lesson:"
 msgstr "Op dezelfde manier kan u de andere patronen van deze les aanleren:"
 
-#: L2_MusicReading/L2_MusicReading.cpp:228
+#: L2_MusicReading/L2_MusicReading.cpp:229
 msgid " - Train your ear: the dotted 8th note pattern."
 msgstr " - Oefen uw gehoor: een gepunteerde 8ste noot patroon."
 
-#: L2_MusicReading/L2_MusicReading.cpp:230
+#: L2_MusicReading/L2_MusicReading.cpp:231
 msgid " - Train your ear: a quarter note tied to a dotted 8th note."
 msgstr " - Oefen uw gehoor: een vierde noot gebonden aan een gepunteerde 8ste noot."
 
-#: L2_MusicReading/L2_MusicReading.cpp:231
-#: L2_MusicReading/L2_MusicReading.cpp:254
-#: L2_MusicReading/L2_MusicReading.cpp:274
-#: L2_MusicReading/L2_MusicReading.cpp:299
-#: L2_MusicReading/L2_MusicReading.cpp:319
-#: L2_MusicReading/L2_MusicReading.cpp:339
+#: L2_MusicReading/L2_MusicReading.cpp:232
+#: L2_MusicReading/L2_MusicReading.cpp:255
+#: L2_MusicReading/L2_MusicReading.cpp:275
+#: L2_MusicReading/L2_MusicReading.cpp:300
+#: L2_MusicReading/L2_MusicReading.cpp:320
+#: L2_MusicReading/L2_MusicReading.cpp:340
 msgid "Exercise 3"
 msgstr "Oefening 3"
 
-#: L2_MusicReading/L2_MusicReading.cpp:232
+#: L2_MusicReading/L2_MusicReading.cpp:233
 msgid " - Train your ear: Group of two 8th notes tied to a dotted 8th note."
 msgstr " - Oefen uw gehoor: groep van twee 8ste noten gebonden aan één gepunteerde 8ste noot."
 
-#: L2_MusicReading/L2_MusicReading.cpp:237
+#: L2_MusicReading/L2_MusicReading.cpp:238
 msgid "A quarter note tied to a dotted 8th note"
 msgstr "Een vierde noot gebonden aan een gepunteerde 8ste noot"
 
-#: L2_MusicReading/L2_MusicReading.cpp:240
+#: L2_MusicReading/L2_MusicReading.cpp:241
 msgid "Group of two 8th notes tied to a dotted 8th note"
 msgstr "Groep van twee 8ste noten gebonden aan één gepunteerde 8ste noot"
 
-#: L2_MusicReading/L2_MusicReading.cpp:246
-#: L2_MusicReading/L2_MusicReading.cpp:257
-#: L2_MusicReading/L2_MusicReading.cpp:263
+#: L2_MusicReading/L2_MusicReading.cpp:247
+#: L2_MusicReading/L2_MusicReading.cpp:258
+#: L2_MusicReading/L2_MusicReading.cpp:264
 msgid "Compound time. 8th note tied to next beat"
 msgstr "Samengestelde tijd. 8ste noot gebonden aan de volgende maat"
 
-#: L2_MusicReading/L2_MusicReading.cpp:247
-#: L2_MusicReading/L2_MusicReading.cpp:267
-#: L2_MusicReading/L2_MusicReading.cpp:292
-#: L2_MusicReading/L2_MusicReading.cpp:312
-#: L2_MusicReading/L2_MusicReading.cpp:332
+#: L2_MusicReading/L2_MusicReading.cpp:248
+#: L2_MusicReading/L2_MusicReading.cpp:268
+#: L2_MusicReading/L2_MusicReading.cpp:293
+#: L2_MusicReading/L2_MusicReading.cpp:313
+#: L2_MusicReading/L2_MusicReading.cpp:333
 msgid "In this lesson the next patterns are introduced:"
 msgstr "In deze les worden de volgende patronen geïntroduceerd:"
 
-#: L2_MusicReading/L2_MusicReading.cpp:251
+#: L2_MusicReading/L2_MusicReading.cpp:252
 msgid " - Train your ear: 8th note tied to next beat."
 msgstr " - Oefen uw gehoor: 8ste noot gebonden aan de volgende maat."
 
-#: L2_MusicReading/L2_MusicReading.cpp:253
+#: L2_MusicReading/L2_MusicReading.cpp:254
 msgid " - Train your ear: Dotted quarter note tied to group of 8th note, 8th rest and 8th note."
 msgstr " - Oefen uw gehoor: gepunteerde vierde noot gebonden aan een groep van een 8ste noot, een 8ste rust en nog een 8ste noot."
 
-#: L2_MusicReading/L2_MusicReading.cpp:260
+#: L2_MusicReading/L2_MusicReading.cpp:261
 msgid "Dotted quarter note tied to group of 8th note, 8th rest and 8th note"
 msgstr "Gepunteerde vierde noot gebonden aan een groep van 8ste noot, 8ste rust en 8ste noot"
 
-#: L2_MusicReading/L2_MusicReading.cpp:266
-#: L2_MusicReading/L2_MusicReading.cpp:288
+#: L2_MusicReading/L2_MusicReading.cpp:267
+#: L2_MusicReading/L2_MusicReading.cpp:289
 msgid "Tied dotted 8th note"
 msgstr "Gebonden gepunteerde noot"
 
-#: L2_MusicReading/L2_MusicReading.cpp:271
+#: L2_MusicReading/L2_MusicReading.cpp:272
 msgid " - Train your ear: Pattern of 16th note and dotted 8th note."
 msgstr " - Oefen uw gehoor: Patroon van 16de en 8ste gepunteerde noten."
 
-#: L2_MusicReading/L2_MusicReading.cpp:273
+#: L2_MusicReading/L2_MusicReading.cpp:274
 msgid " - Train your ear: 16th note and dotted 8th note tied to quarter note."
 msgstr " - Oefen uw gehoor: 16de noot en een gepunteerde 8ste noot gebonden aan een vierde noot."
 
-#: L2_MusicReading/L2_MusicReading.cpp:275
+#: L2_MusicReading/L2_MusicReading.cpp:276
 msgid " - Train your ear: 16th note and dotted 8th note tied to 8th note."
 msgstr " - Oefen uw gehoor: 16de noot en een gepunteerde 8ste noot gebonden aan een 8ste noot."
 
-#: L2_MusicReading/L2_MusicReading.cpp:276
+#: L2_MusicReading/L2_MusicReading.cpp:277
 msgid "Exercise 4"
 msgstr "Oefening 4"
 
-#: L2_MusicReading/L2_MusicReading.cpp:279
+#: L2_MusicReading/L2_MusicReading.cpp:280
 msgid "16th note and dotted 8th note"
 msgstr "16de noot en een gepunteerde 8ste noot"
 
-#: L2_MusicReading/L2_MusicReading.cpp:282
+#: L2_MusicReading/L2_MusicReading.cpp:283
 msgid "16th note and dotted 8th note tied to quarter note"
 msgstr "16de noot en een gepunteerde noot gebonden aan een vierde noot"
 
-#: L2_MusicReading/L2_MusicReading.cpp:285
+#: L2_MusicReading/L2_MusicReading.cpp:286
 msgid "16th note and dotted 8th note tied to 8th note"
 msgstr "16de noten en een gepunteerde 8ste noot gebonden aan een 8ste noot"
 
-#: L2_MusicReading/L2_MusicReading.cpp:291
-#: L2_MusicReading/L2_MusicReading.cpp:308
+#: L2_MusicReading/L2_MusicReading.cpp:292
+#: L2_MusicReading/L2_MusicReading.cpp:309
 msgid "Groups of two 16th notes"
 msgstr "Groepen van twee 16de noten"
 
-#: L2_MusicReading/L2_MusicReading.cpp:296
+#: L2_MusicReading/L2_MusicReading.cpp:297
 msgid " - Train your ear: 8th rest and two 16th notes."
 msgstr " - Oefen uw gehoor: 8ste rust en twee 16de noten."
 
-#: L2_MusicReading/L2_MusicReading.cpp:298
+#: L2_MusicReading/L2_MusicReading.cpp:299
 msgid " - Train your ear: Two 16th notes and 8th rest."
 msgstr " - Oefen uw gehoor: twee 16de noten en een 8ste rust."
 
-#: L2_MusicReading/L2_MusicReading.cpp:302
+#: L2_MusicReading/L2_MusicReading.cpp:303
 msgid "8th rest and two 16th notes"
 msgstr "8ste rust en twee zestiende noten"
 
-#: L2_MusicReading/L2_MusicReading.cpp:305
+#: L2_MusicReading/L2_MusicReading.cpp:306
 msgid "Two 16th notes and 8th rest"
 msgstr "Twee 16e noten en een 8ste rust"
 
-#: L2_MusicReading/L2_MusicReading.cpp:311
-#: L2_MusicReading/L2_MusicReading.cpp:328
+#: L2_MusicReading/L2_MusicReading.cpp:312
+#: L2_MusicReading/L2_MusicReading.cpp:329
 msgid "Compound time. 8th note tied to next beat (2)"
 msgstr "Samengestelde tijd. 8ste noot gebonden aan volgende maat (2)"
 
-#: L2_MusicReading/L2_MusicReading.cpp:316
+#: L2_MusicReading/L2_MusicReading.cpp:317
 msgid " - Train your ear: Quarter note tied to 8th note."
 msgstr " - Oefen uw gehoor: Vierde noot gebonden aan 8ste noot."
 
-#: L2_MusicReading/L2_MusicReading.cpp:318
+#: L2_MusicReading/L2_MusicReading.cpp:319
 msgid " - Train your ear: 8th note tied to quarter note in next beat."
 msgstr " - Oefen uw gehoor: 8ste noot gebonden aan vierde noot in volgende maat."
 
-#: L2_MusicReading/L2_MusicReading.cpp:322
+#: L2_MusicReading/L2_MusicReading.cpp:323
 msgid "Quarter note tied to 8th note"
 msgstr "Vierde noot gebonden aan 8ste noot"
 
-#: L2_MusicReading/L2_MusicReading.cpp:325
+#: L2_MusicReading/L2_MusicReading.cpp:326
 msgid "8th note tied to quarter note in next beat"
 msgstr "8ste noot gebonden aan vierde noot in de volgende maat"
 
-#: L2_MusicReading/L2_MusicReading.cpp:331
-#: L2_MusicReading/L2_MusicReading.cpp:348
+#: L2_MusicReading/L2_MusicReading.cpp:332
+#: L2_MusicReading/L2_MusicReading.cpp:349
 msgid "Note tied to four 16th notes"
 msgstr "Noot gebonden aan vier 16de noten"
 
-#: L2_MusicReading/L2_MusicReading.cpp:336
+#: L2_MusicReading/L2_MusicReading.cpp:337
 msgid " - Train your ear: Quarter note tied to four 16th notes."
 msgstr " - Oefen uw gehoor: Vierde noot gebonden aan vier 16de noten."
 
-#: L2_MusicReading/L2_MusicReading.cpp:338
+#: L2_MusicReading/L2_MusicReading.cpp:339
 msgid " - Train your ear: 8th note tied to four 16th notes."
 msgstr "- Oefen uw gehoor: 8ste noot gebonden aan vier 16de noten."
 
-#: L2_MusicReading/L2_MusicReading.cpp:342
+#: L2_MusicReading/L2_MusicReading.cpp:343
 msgid "Quarter note tied to four 16th notes"
 msgstr "Vierde noot gebonden aan vier 16de noten"
 
-#: L2_MusicReading/L2_MusicReading.cpp:345
+#: L2_MusicReading/L2_MusicReading.cpp:346
 msgid "8th note tied to four 16th notes"
 msgstr "8ste noot gebonden aan vier 16de noten"
 

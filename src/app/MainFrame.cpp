@@ -1169,6 +1169,15 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
         return;
     }
 
+    // Add firts the 'intro' eBook
+    wxFileName oFileIntro(sPath, _T("intro"), _T("lmb"), wxPATH_NATIVE);
+    if (!m_pBookController->AddBook(oFileIntro)) {
+        //! @todo better error handling
+        wxMessageBox(wxString::Format(_("Failed adding book %s"), oFileIntro.GetFullPath() ));
+    }
+
+    // Add now any other eBook found on this folder
+
     //wxLogMessage(wxString::Format(
     //    _T("Enumerating .hhp files in directory: %s"), sPath));
     wxString sFilename;
@@ -1176,7 +1185,7 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
     while (fFound) {
         //wxLogMessage(_T("[lmMainFrame::ScanForBooks] Encontrado %s"), sFilename);
         wxFileName oFilename(sPath, sFilename, wxPATH_NATIVE);
-        if (oFilename.GetName() != _T("help")) {
+        if (oFilename.GetName() != _T("help") && oFilename.GetName() != _T("intro")) {
             if (!m_pBookController->AddBook(oFilename)) {
                 //! @todo better error handling
                 wxMessageBox(wxString::Format(_("Failed adding book %s"), oFilename.GetFullPath() ));

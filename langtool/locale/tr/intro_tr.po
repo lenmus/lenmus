@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: LenMus 3.4\n"
+"Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-17 14:21+0100\n"
+"PO-Revision-Date: 2007-05-18 08:09+0100\n"
 "Last-Translator: \n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -10,11 +10,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Turkish\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: c:\\usr\\desarrollo_wx\\lenmus\\langtool\\locale\\src\n"
+"X-Poedit-Basepath: ..\\src\n"
 "X-Poedit-SearchPath-0: intro\n"
 
 #: intro/intro.cpp:2
-msgid "Send your comments and sugesstions to LenMus team (www.lenmus.org)"
+msgid "Send your comments and sugesstions to the LenMus team (www.lenmus.org)"
 msgstr ""
 
 #: intro/intro.cpp:3
@@ -56,11 +56,13 @@ msgid "Teaching material is organized into levels, and each level into lessons. 
 msgstr "Öğretim materyalleri bölümler içinde düzenlenir ve diğer bölümler derslerin içinde. Kitap"
 
 #: intro/intro.cpp:12
-msgid " Single exercises"
+#, fuzzy
+msgid " General exercises"
 msgstr " Tek alıştırmalar"
 
 #: intro/intro.cpp:13
-msgid " contains some basic exercises for aural training and to practise theoretical concepts, such as intervals and scales. Unlike exercises included in the other books, you can customize all single exercises included in this book. This will allow you meet your specific needs at each moment and to practise specific points."
+#, fuzzy
+msgid " contains some basic exercises for aural training and to practise theoretical concepts, such as intervals and scales. Unlike exercises included in the other books, you can customize all exercises included in this book. This will allow you meet your specific needs at each moment and to practise specific points."
 msgstr " işitsel eğitim için bazı temel alıştırmaları kapsar, teorik kavramları pratik yapmak için aralıklar ve ölçekler gibi.Alıştırmalardan farklı , diğer kitaplarda  içerir, bu kitapda  içerilen bütün tek alıştırmaları  ihtiyaca göre düzenleyebilirsiniz.Bu, özel noktaları pratik yapmanıza ve her an özel ihtiyaçlarınızı  karşılamanıza  izin verecek .      "
 
 #: intro/intro.cpp:14

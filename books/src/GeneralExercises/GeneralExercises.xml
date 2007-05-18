@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!DOCTYPE book [
-    <!ENTITY chapter1 SYSTEM "SingleExercises_1.xml">
-    <!ENTITY chapter2 SYSTEM "SingleExercises_2.xml">
-    <!ENTITY chapter3 SYSTEM "SingleExercises_3.xml">
-    <!ENTITY chapter4 SYSTEM "SingleExercises_4.xml">
-    <!ENTITY chapter5 SYSTEM "SingleExercises_5.xml">
-    <!ENTITY chapter6 SYSTEM "SingleExercises_6.xml">
-    <!ENTITY chapter7 SYSTEM "SingleExercises_7.xml">
-    <!ENTITY chapter8 SYSTEM "SingleExercises_8.xml">
-    <!ENTITY chapter9 SYSTEM "SingleExercises_9.xml">
+    <!ENTITY chapter1 SYSTEM "GeneralExercises_1.xml">
+    <!ENTITY chapter2 SYSTEM "GeneralExercises_2.xml">
+    <!ENTITY chapter3 SYSTEM "GeneralExercises_3.xml">
+    <!ENTITY chapter4 SYSTEM "GeneralExercises_4.xml">
+    <!ENTITY chapter5 SYSTEM "GeneralExercises_5.xml">
+    <!ENTITY chapter6 SYSTEM "GeneralExercises_6.xml">
+    <!ENTITY chapter7 SYSTEM "GeneralExercises_7.xml">
+    <!ENTITY chapter8 SYSTEM "GeneralExercises_8.xml">
+    <!ENTITY chapter9 SYSTEM "GeneralExercises_9.xml">
 ]>
 
-<book id="SingleExercises">
+<book id="GeneralExercises">
 <bookinfo>
-    <title>Single exercises</title>
+    <title>General exercises</title>
     <abstract>General exercises, customizable to suit your needs at any moment.</abstract>
     <copyright>
         <year>2002-2007</year>
@@ -33,7 +33,7 @@
 
 <theme id="ch0">
 <titleabbrev>Contents</titleabbrev>
-<title>Introduction to single exercises</title>
+<title>Introduction to general exercises</title>
 
 <para>Appart of exercises included in the eBooks, the following general exercises
 (customizable to suit your needs at any moment) are available:</para>

@@ -1,19 +1,19 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: LenMus 3.4\n"
+"Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-27 16:50+0100\n"
-"Last-Translator: cs <cs>\n"
+"PO-Revision-Date: 2007-05-18 08:08+0100\n"
+"Last-Translator: \n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: c:\\usr\\desarrollo_wx\\lenmus\\langtool\\locale\\src\n"
+"X-Poedit-Basepath: ..\\src\n"
 "X-Poedit-SearchPath-0: intro\n"
 
 #: intro/intro.cpp:2
-msgid "Send your comments and sugesstions to LenMus team (www.lenmus.org)"
+msgid "Send your comments and sugesstions to the LenMus team (www.lenmus.org)"
 msgstr "Envoyez vos commentaires et suggestions à l'équipe LenMus (www.lenmus.org)"
 
 #: intro/intro.cpp:3
@@ -53,12 +53,13 @@ msgid "Teaching material is organized into levels, and each level into lessons. 
 msgstr "Le matériel d'enseignement est organisé en niveaux, et chaque niveau en leçons. Le livre"
 
 #: intro/intro.cpp:12
-msgid " Single exercises"
+#, fuzzy
+msgid " General exercises"
 msgstr "Exercices simples"
 
 #: intro/intro.cpp:13
-msgid " contains some basic exercises for aural training and to practise theoretical concepts, such as intervals and scales. Unlike exercises included in the other books, you can customize all single exercises included in this book. This will allow you meet your specific needs at each moment and to practise specific points."
-msgstr " contient quelques exercices basiques pour l'entraînement oral et la practice des concepts théoriques, comme des intervalles et échelles. A la difference d'exercices inclus dans des autres livres, vous pouvez personnaliser tous les exercices simples inclus dans ce livre. Cela vous permettra de trouver vos besoins specifiques à chaque fois et pratiquer des points spécifiques"
+msgid " contains some basic exercises for aural training and to practise theoretical concepts, such as intervals and scales. Unlike exercises included in the other books, you can customize all exercises included in this book. This will allow you meet your specific needs at each moment and to practise specific points."
+msgstr " contient quelques exercices basiques pour l'entraînement oral et la practice des concepts théoriques, comme des intervalles et échelles. A la difference d'exercices inclus dans des autres livres, vous pouvez personnaliser tous les exercices inclus dans ce livre. Cela vous permettra de trouver vos besoins specifiques à chaque fois et pratiquer des points spécifiques"
 
 #: intro/intro.cpp:14
 msgid "We hope that LenMus become a useful tool in your studies."

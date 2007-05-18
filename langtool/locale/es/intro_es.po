@@ -1,20 +1,20 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: LenMus 3.4\n"
+"Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-01-17 12:18+0100\n"
+"PO-Revision-Date: 2007-05-18 08:07+0100\n"
 "Last-Translator: \n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: c:\\usr\\desarrollo_wx\\lenmus\\langtool\\locale\\src\n"
+"X-Poedit-Basepath: ..\\src\n"
 "X-Poedit-SearchPath-0: intro\n"
 
 #: intro/intro.cpp:2
-msgid "Send your comments and sugesstions to LenMus team (www.lenmus.org)"
-msgstr "Portada"
+msgid "Send your comments and sugesstions to the LenMus team (www.lenmus.org)"
+msgstr "Envía tus comentarios y sugerencias al equipo de LenMus (www.lenmus.org)"
 
 #: intro/intro.cpp:3
 msgid "Licensed under the terms of the GNU Free Documentation License v1.2"
@@ -53,12 +53,12 @@ msgid "Teaching material is organized into levels, and each level into lessons. 
 msgstr "El material didáctico esá organizado por niveles y, cada nivel, por lecciones. El libro "
 
 #: intro/intro.cpp:12
-msgid " Single exercises"
+msgid " General exercises"
 msgstr "Ejercicios sueltos"
 
 #: intro/intro.cpp:13
-msgid " contains some basic exercises for aural training and to practise theoretical concepts, such as intervals and scales. Unlike exercises included in the other books, you can customize all single exercises included in this book. This will allow you meet your specific needs at each moment and to practise specific points."
-msgstr "contiene ejercicios básicos para educación del oido y para practicar algunos conceptos teóricos, tales como intervalos, escalas y armaduras. A diferencia de los ejercicios incluidos en los restantes libros, los de este son personalizables, de forma que puedes adaptarlos para practicar los aspectos concretos que desees o con el nivel de dificultad que quieras."
+msgid " contains some basic exercises for aural training and to practise theoretical concepts, such as intervals and scales. Unlike exercises included in the other books, you can customize all exercises included in this book. This will allow you meet your specific needs at each moment and to practise specific points."
+msgstr " contiene ejercicios básicos para educación del oido y para practicar algunos conceptos teóricos, tales como intervalos, escalas y armaduras. A diferencia de los ejercicios incluidos en los restantes libros, los de este son personalizables, de forma que puedes adaptarlos para practicar los aspectos concretos que desees o con el nivel de dificultad que quieras."
 
 #: intro/intro.cpp:14
 msgid "We hope that LenMus become a useful tool in your studies."

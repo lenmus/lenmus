@@ -1,5 +1,5 @@
 wxString sTxt;
-sTxt = _("Send your comments and sugesstions to LenMus team (www.lenmus.org)");
+sTxt = _("Send your comments and sugesstions to the LenMus team (www.lenmus.org)");
 sTxt = _("Licensed under the terms of the GNU Free Documentation License v1.2");
 sTxt = _("the teacher of music");
 sTxt = _("Cover page");
@@ -9,7 +9,7 @@ sTxt = _("Phonascus, from Latin 'the teacher of music', is a music education sof
 sTxt = _("LenMus Phonascus allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your specific needs at each moment and it allows you to work at your own pace.");
 sTxt = _("LenMus is structured as a collection of fully interactive textbooks (eMusicBooks), including theory and exercises. All exercises are fully integrated into the text. Music scores are not just images or pictures but fully interactive operational music scores that you can hear, in whole or just the measures you choose. This enables you to put concepts into practice with immediate feedback and makes the subject matter both more accessible and more rewarding, as you can hear, test and put in practise immediately any new concept introduced.");
 sTxt = _("Teaching material is organized into levels, and each level into lessons. Book");
-sTxt = _(" Single exercises");
-sTxt = _(" contains some basic exercises for aural training and to practise theoretical concepts, such as intervals and scales. Unlike exercises included in the other books, you can customize all single exercises included in this book. This will allow you meet your specific needs at each moment and to practise specific points.");
+sTxt = _(" General exercises");
+sTxt = _(" contains some basic exercises for aural training and to practise theoretical concepts, such as intervals and scales. Unlike exercises included in the other books, you can customize all exercises included in this book. This will allow you meet your specific needs at each moment and to practise specific points.");
 sTxt = _("We hope that LenMus become a useful tool in your studies.");
 sTxt = _("The LenMus team.");
