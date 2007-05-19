@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-05-18 11:53+0100\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2007-05-19 08:21+0100\n"
+"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -29,10 +29,10 @@ msgstr ""
 "X-Poedit-SearchPath-14: ../langtool/src\n"
 
 #: score/Direction.cpp:174
-#: score/MetronomeMark.cpp:173
 #: score/NoteRestObj.cpp:157
 #: score/Text.cpp:191
 #: score/TupletBracket.cpp:287
+#: score/MetronomeMark.cpp:173
 #: app/FontManager.cpp:121
 msgid "Sorry, an error has occurred while allocating the font."
 msgstr "Er heeft zich een fout voorgedaan bij de allocatie van het font."
@@ -778,9 +778,9 @@ msgid "Element '%s': Number for 'normal notes' must be greater than 0. Number ig
 msgstr "Element '%s': Het getal voor 'normale noten' dient groter te zijn dan 0. Getal genegeerd."
 
 #: ldp_parser/LDPParser.cpp:1942
-#, fuzzy, c-format
+#, c-format
 msgid "[%s] Requesting to end a tuplet but there is not an open tuplet or it is not possible to close it here. Tag '%s' ignored."
-msgstr "[%s] Verzoek om een antimetrische figuur te beëindigen, maar er is geen open antimetrische figuur of het is niet mogelijk om het hier te ZZZ -cle. Tag '%s' genegeerd."
+msgstr "[%s] Verzoek om een antimetrische figuur te beëindigen, maar er is geen open antimetrische figuur of het is niet mogelijk om het hier te sluiten. Tag '%s' genegeerd."
 
 #: ldp_parser/LDPParser.cpp:1951
 #, c-format
@@ -912,9 +912,9 @@ msgid "Invalid stem direction '%s'. Default direction taken."
 msgstr "Ongeldige nootstok richting '%s'. Standaard richting werd aangenomen."
 
 #: ldp_parser/LDPParser.cpp:2913
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid fermata placement '%s'. Default placement assumed."
-msgstr "Ongeldige nootstok richting '%s'. Standaard richting werd aangenomen."
+msgstr "Ongeldige fermate plaatsing '%s'. Standaard plaatsing werd aangenomen."
 
 #: ldp_parser/LDPParser.cpp:2932
 #, c-format
@@ -990,19 +990,23 @@ msgid "Team's %d turn"
 msgstr "Teams %d beurt"
 
 #: exercises/EarCompareIntvCtrol.cpp:115
+#: exercises/EarModeCtrol.cpp:117
 msgid "First one greater"
 msgstr "Eerste is groter"
 
 #: exercises/EarCompareIntvCtrol.cpp:116
+#: exercises/EarModeCtrol.cpp:118
 msgid "Second one greater"
 msgstr "Tweede is groter"
 
 #: exercises/EarCompareIntvCtrol.cpp:117
+#: exercises/EarModeCtrol.cpp:119
 msgid "Both are equal"
 msgstr "Beide zijn gelijk"
 
 #: exercises/EarCompareIntvCtrol.cpp:130
 #: exercises/EarIntervalsCtrol.cpp:159
+#: exercises/EarModeCtrol.cpp:132
 #: exercises/IdfyChordCtrol.cpp:154
 #: exercises/IdfyExerciseCtrol.cpp:152
 #: exercises/ScoreCtrol.cpp:187
@@ -1014,6 +1018,7 @@ msgstr "Inspecteer broncode"
 
 #: exercises/EarCompareIntvCtrol.cpp:135
 #: exercises/EarIntervalsCtrol.cpp:164
+#: exercises/EarModeCtrol.cpp:137
 #: exercises/IdfyChordCtrol.cpp:159
 #: exercises/IdfyExerciseCtrol.cpp:157
 #: exercises/ScoreCtrol.cpp:191
@@ -1025,6 +1030,7 @@ msgstr "Dump score"
 
 #: exercises/EarCompareIntvCtrol.cpp:140
 #: exercises/EarIntervalsCtrol.cpp:169
+#: exercises/EarModeCtrol.cpp:142
 #: exercises/IdfyChordCtrol.cpp:164
 #: exercises/IdfyExerciseCtrol.cpp:162
 #: exercises/ScoreCtrol.cpp:195
@@ -1035,6 +1041,7 @@ msgstr "Zie MIDI events"
 
 #: exercises/EarCompareIntvCtrol.cpp:178
 #: exercises/EarIntervalsCtrol.cpp:207
+#: exercises/EarModeCtrol.cpp:180
 #: exercises/IdfyChordCtrol.cpp:203
 #: exercises/IdfyExerciseCtrol.cpp:143
 #: exercises/TheoIntervalsCtrol.cpp:315
@@ -1044,6 +1051,7 @@ msgstr "Instellingen"
 
 #: exercises/EarCompareIntvCtrol.cpp:195
 #: exercises/EarIntervalsCtrol.cpp:224
+#: exercises/EarModeCtrol.cpp:197
 #: exercises/IdfyChordCtrol.cpp:221
 #: exercises/IdfyExerciseCtrol.cpp:210
 #: exercises/TheoIntervalsCtrol.cpp:333
@@ -1054,6 +1062,7 @@ msgstr "Nieuw probleem"
 
 #: exercises/EarCompareIntvCtrol.cpp:199
 #: exercises/EarIntervalsCtrol.cpp:228
+#: exercises/EarModeCtrol.cpp:201
 #: exercises/IdfyChordCtrol.cpp:225
 #: exercises/IdfyExerciseCtrol.cpp:214
 #: exercises/IdfyExerciseCtrol.cpp:300
@@ -1066,6 +1075,7 @@ msgstr "Afspelen"
 
 #: exercises/EarCompareIntvCtrol.cpp:205
 #: exercises/EarIntervalsCtrol.cpp:234
+#: exercises/EarModeCtrol.cpp:207
 #: exercises/IdfyChordCtrol.cpp:231
 #: exercises/IdfyExerciseCtrol.cpp:220
 #: exercises/TheoIntervalsCtrol.cpp:344
@@ -1075,6 +1085,7 @@ msgstr "Oplossing tonen"
 
 #: exercises/EarCompareIntvCtrol.cpp:232
 #: exercises/EarIntervalsCtrol.cpp:271
+#: exercises/EarModeCtrol.cpp:234
 #: exercises/IdfyChordCtrol.cpp:269
 #: exercises/IdfyExerciseCtrol.cpp:233
 msgid "Click on 'New problem' to start"
@@ -3771,12 +3782,10 @@ msgid "&No labels"
 msgstr "&Geen labels"
 
 #: ../xrc/xrc_strings.cpp:190
-#, fuzzy
 msgid "Labels &bottom"
 msgstr "Labels &onder"
 
 #: ../xrc/xrc_strings.cpp:191
-#, fuzzy
 msgid "Labels &right"
 msgstr "Labels &rechts"
 
@@ -3857,12 +3866,10 @@ msgid "Generate right/wrong sounds when clicking an answer button"
 msgstr "Een juist/verkeerd geluid afspelen bij het indrukkenvan een antwoordknop."
 
 #: ../xrc/xrc_strings.cpp:213
-#, fuzzy
 msgid "Show two counters (for team competition)"
 msgstr "In team competitie twee tellers tonen."
 
 #: ../xrc/xrc_strings.cpp:214
-#, fuzzy
 msgid "Do not show solution and generate new problem if answer is correct"
 msgstr "Toon geen oplossing bij een juist antwoord en maak een nieuw probleem aan."
 
@@ -4038,7 +4045,6 @@ msgid "Error checking for updates"
 msgstr "Probleem met het checken van updates"
 
 #: updater/Updater.cpp:192
-#, fuzzy
 msgid "A connection with the server could not be established. Check that you are connected to the internet and that no firewalls are blocking this program; then try again. If problems persists, the server may be down. Please, try again later."
 msgstr "De verbinding met de server kon niet tot stand worden gebracht. Controleer of u verbinding heeft met het internet en dat er geen firewall dit programma blokkeert. Probeer dan opnieuw. Indien het probleem blijft duren zou het kunnen dat de server down is. Probeer in dat geval later opnieuw."
 
@@ -4047,12 +4053,10 @@ msgid "[lmFormatter4::RenderJustified]: Program limitation: Maximum number of st
 msgstr "[lmFormatter4::RenderJustified]: Programma beperking: Het maximum aantal notenbalken per systeem is overschreden."
 
 #: graphic/GraphicManager.cpp:318
-#, fuzzy
 msgid "Sorry, not enough memory to create a Bitmap to display the page."
 msgstr "Sorry, niet genoeg geheugen om een bitmap te creëeren. Kan de pagina niet weergeven."
 
 #: ../langtool/src/installer.cpp:60
-#, fuzzy
 msgid "Please choose the optional components you would like to install"
 msgstr "Kies aub de optionele componenten die u wenst te installeren"
 

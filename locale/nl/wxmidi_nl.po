@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: wxMidi\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-05-04 16:05+0100\n"
+"PO-Revision-Date: 2007-05-18 16:12+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team: LenMus org\n"
 "MIME-Version: 1.0\n"
@@ -228,12 +228,10 @@ msgid "Fretless Bass"
 msgstr "Fretloze Bas"
 
 #: wxMidi/wxMidiDatabase.cpp:126
-#, fuzzy
 msgid "Slap Bass 1"
 msgstr "Slap Bass 1"
 
 #: wxMidi/wxMidiDatabase.cpp:127
-#, fuzzy
 msgid "Slap Bass 2"
 msgstr "Slap Bass 2"
 
@@ -242,7 +240,6 @@ msgid "Synth Bass 1"
 msgstr "Synth Bass 1"
 
 #: wxMidi/wxMidiDatabase.cpp:129
-#, fuzzy
 msgid "Synth Bass 2"
 msgstr "Synth Bass 2"
 
@@ -335,12 +332,10 @@ msgid "Brass Section"
 msgstr "Koper Sectie"
 
 #: wxMidi/wxMidiDatabase.cpp:152
-#, fuzzy
 msgid "SynthBrass 1"
 msgstr "SynthBrass 1"
 
 #: wxMidi/wxMidiDatabase.cpp:153
-#, fuzzy
 msgid "SynthBrass 2"
 msgstr "SynthBrass 2"
 
@@ -409,12 +404,10 @@ msgid "Ocarina"
 msgstr "Ocarina"
 
 #: wxMidi/wxMidiDatabase.cpp:170
-#, fuzzy
 msgid "Lead 1 (square)"
 msgstr "Lead 1 (square)"
 
 #: wxMidi/wxMidiDatabase.cpp:171
-#, fuzzy
 msgid "Lead 2 (sawtooth)"
 msgstr "Lead 2 (sawtooth)"
 
@@ -423,12 +416,10 @@ msgid "Lead 3 (calliope)"
 msgstr "Lead 3 (stoomorgel)"
 
 #: wxMidi/wxMidiDatabase.cpp:173
-#, fuzzy
 msgid "Lead 4 (chiff)"
 msgstr "Lead 4 (chiff)"
 
 #: wxMidi/wxMidiDatabase.cpp:174
-#, fuzzy
 msgid "Lead 5 (charang)"
 msgstr "Lead 5 (charang)"
 
@@ -437,12 +428,10 @@ msgid "Lead 6 (voice)"
 msgstr "Lead 6 (stem)"
 
 #: wxMidi/wxMidiDatabase.cpp:176
-#, fuzzy
 msgid "Lead 7 (fifths)"
 msgstr "Lead 7 (fifths)"
 
 #: wxMidi/wxMidiDatabase.cpp:177
-#, fuzzy
 msgid "Lead 8 (bass + lead)"
 msgstr "Lead 8 (bass + lead)"
 
@@ -475,7 +464,6 @@ msgid "Pad 7 (halo)"
 msgstr "Pad 7 (halo)"
 
 #: wxMidi/wxMidiDatabase.cpp:185
-#, fuzzy
 msgid "Pad 8 (sweep)"
 msgstr "Pad 8 (sweep)"
 
@@ -500,7 +488,6 @@ msgid "FX 5 (brightness)"
 msgstr "FX 5 (helderheid)"
 
 #: wxMidi/wxMidiDatabase.cpp:191
-#, fuzzy
 msgid "FX 6 (goblins)"
 msgstr "FX 6 (goblins)"
 
@@ -545,7 +532,6 @@ msgid "Shanai"
 msgstr "Shanai"
 
 #: wxMidi/wxMidiDatabase.cpp:202
-#, fuzzy
 msgid "Tinkle Bell"
 msgstr "Tinkle Bell"
 
@@ -618,7 +604,6 @@ msgid "36-Bass Drum 1"
 msgstr "36-Bas Drum 1"
 
 #: wxMidi/wxMidiDatabase.cpp:356
-#, fuzzy
 msgid "37-Side Stick"
 msgstr "37-Side Stick"
 
@@ -839,12 +824,10 @@ msgid "Pipe"
 msgstr "Pijp"
 
 #: wxMidi/wxMidiDatabase.cpp:540
-#, fuzzy
 msgid "Synth. lead"
 msgstr "Synth. lead"
 
 #: wxMidi/wxMidiDatabase.cpp:552
-#, fuzzy
 msgid "Synth. pad"
 msgstr "Synth. pad"
 

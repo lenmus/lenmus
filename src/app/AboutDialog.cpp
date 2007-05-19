@@ -257,9 +257,9 @@ void lmAboutDialog::OnTranslators(wxCommandEvent& WXUNUSED(event))
             _T("<td>jvanhan@gmail.com</td></tr>") +
         _T("<tr><td>") + _("French") + _T("</td><td>Carlos Alarcia</td>") +
             _T("<td>calarcia@cyltel.com</td></tr>") +
-        _T("<tr><td>") + _("Spanish") + _T("</td><td>Cecilio Salmerón</td>") +
+        _T("<tr><td>") + _("Spanish") + _T("</td><td>Cecilio Salmer&oacute;n</td>") +
             _T("<td>s.cecilio@gmail.com</td></tr>") +
-        _T("<tr><td>") + _("Turkish") + _T("</td><td>Elif Öztürk</td>") +
+        _T("<tr><td>") + _("Turkish") + _T("</td><td>Elif &Ouml;zt&uuml;rk</td>") +
             _T("<td>elif_ozturk23@yahoo.com</td></tr>") +
         _T("</table></body></html>");
 
