@@ -287,9 +287,7 @@ lmIdfyChordCtrol::lmIdfyChordCtrol(wxWindow* parent, wxWindowID id,
 
 lmIdfyChordCtrol::~lmIdfyChordCtrol()
 {
-    //stop any possible chord being played
-    if (m_pAuxScore) m_pAuxScore->Stop();
-    if (m_pChordScore) m_pChordScore->Stop();
+    DoStopSounds();     //stop any possible score being played
 
     //delete objects
 
@@ -428,20 +426,13 @@ void lmIdfyChordCtrol::OnNewProblem(wxCommandEvent& event)
 
 void lmIdfyChordCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
-    //First, stop any possible chord being played to avoid crashes
-    if (m_pAuxScore) m_pAuxScore->Stop();
-    if (m_pChordScore) m_pChordScore->Stop();
-
-    //now proceed
     m_pCounters->IncrementWrong();
     DisplaySolution();
 }
 
 void lmIdfyChordCtrol::OnRespButton(wxCommandEvent& event)
 {
-    //First, stop any possible chord being played to avoid crashes
-    if (m_pAuxScore) m_pAuxScore->Stop();
-    if (m_pChordScore) m_pChordScore->Stop();
+    DoStopSounds();     //stop any possible score being played
 
     //identify button pressed
     int nIndex = event.GetId() - ID_BUTTON;
@@ -615,6 +606,8 @@ void lmIdfyChordCtrol::Play()
 
 void lmIdfyChordCtrol::DisplaySolution()
 {
+    DoStopSounds();     //stop any possible score being played
+
     m_pScoreCtrol->HideScore(false);
     m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
 
@@ -645,6 +638,8 @@ void lmIdfyChordCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
 
 void lmIdfyChordCtrol::ResetExercise()
 {
+    DoStopSounds();     //stop any possible score being played
+
     //clear the canvas
     m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
     m_pScoreCtrol->Update();    //to force to clear it now
@@ -661,5 +656,13 @@ void lmIdfyChordCtrol::ResetExercise()
         delete m_pChordScore;
         m_pChordScore = (lmScore*)NULL;
     }
+
+}
+
+void lmIdfyChordCtrol::DoStopSounds()
+{
+    //Stop any possible score being played to avoid crashes
+    if (m_pAuxScore) m_pAuxScore->Stop();
+    if (m_pChordScore) m_pChordScore->Stop();
 
 }

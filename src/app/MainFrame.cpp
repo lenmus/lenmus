@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -65,7 +65,7 @@
 #include "../../wxMidi/include/wxMidi.h"    //MIDI support throgh Portmidi lib
 #include "../sound/MidiManager.h"           //access to Midi configuration
 #include "Preferences.h"                    //access to user preferences
-#include "../updater/Updater.h" 
+#include "../updater/Updater.h"
 
 //access to error's logger
 #include "../app/Logger.h"
@@ -156,7 +156,7 @@ extern lmPaths* g_pPaths;
 extern bool g_fReleaseVersion;          // in TheApp.cpp
 extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 extern bool g_fShowDebugLinks;          // in TheApp.cpp
-extern bool g_fUseAntiAliasing;         // in TheApp.cpp 
+extern bool g_fUseAntiAliasing;         // in TheApp.cpp
 extern bool g_fBorderOnScores;          // in TheApp.cpp
 
 
@@ -257,7 +257,7 @@ enum
 /*
  lmMainFrame is the top-level window of the application.
 */
- 
+
 IMPLEMENT_CLASS(lmMainFrame, lmDocMDIParentFrame)
 BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
 
@@ -331,7 +331,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_UPDATE_UI (MENU_OpenHelp, lmMainFrame::OnOpenHelpUI)
     EVT_MENU      (MENU_CheckForUpdates, lmMainFrame::OnCheckForUpdates)
     EVT_MENU      (MENU_VisitWebsite, lmMainFrame::OnVisitWebsite)
- 
+
         //general debug options. Always enabled
     EVT_MENU (MENU_Debug_ForceReleaseBehaviour, lmMainFrame::OnDebugForceReleaseBehaviour)
     EVT_MENU (MENU_Debug_ShowDebugLinks, lmMainFrame::OnDebugShowDebugLinks)
@@ -352,11 +352,11 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_UPDATE_UI (MENU_Debug_SeeMIDIEvents, lmMainFrame::OnDebugScoreUI)
     EVT_MENU      (MENU_Debug_DumpBitmaps, lmMainFrame::OnDebugDumpBitmaps)
     EVT_UPDATE_UI (MENU_Debug_DumpBitmaps, lmMainFrame::OnDebugScoreUI)
-    
+
 
 
     //metronome
-    EVT_SPINCTRL    (ID_SPIN_METRONOME, lmMainFrame::OnMetronomeUpdate) 
+    EVT_SPINCTRL    (ID_SPIN_METRONOME, lmMainFrame::OnMetronomeUpdate)
     EVT_TEXT        (ID_SPIN_METRONOME,    lmMainFrame::OnMetronomeUpdateText)
     EVT_TIMER       (ID_TIMER_MTR,        lmMainFrame::OnMetronomeTimer)
 
@@ -428,7 +428,7 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     //! @todo metronome LED
     // Set picMetronomoOn = LoadResPicture("METRONOMO_ON", vbResBitmap)
     //Set picMetronomoOff = LoadResPicture("METRONOMO_OFF", vbResBitmap)
-    //configurar controles en el frame Metrónomo
+    //configurar controles en el frame MetrÃ³nomo
     //picMtrLEDOff.Visible = True
     //Me.picMtrLEDRojoOn.Visible = False
     //picMtrLEDRojoOn.Top = Me.picMtrLEDOff.Top
@@ -447,7 +447,7 @@ void lmMainFrame::CreateControls()
     if (!m_pToolbar && fToolBar) {
         CreateMyToolBar();
     }
-    
+
     //create the MDI client window
     long style = wxAUI_NB_CLOSE_ON_ACTIVE_TAB |
                  wxAUI_NB_WINDOWLIST_BUTTON |
@@ -464,7 +464,6 @@ void lmMainFrame::CreateControls()
 
 void lmMainFrame::OnMetronomeOnOff(wxCommandEvent& WXUNUSED(event))
 {
-    bool fIsMetronomeOn = m_pMtr->IsRunning();
     if (m_pMtr->IsRunning()) {
         m_pMtr->Stop();
         //! @todo switch off metronome LED
@@ -472,7 +471,7 @@ void lmMainFrame::OnMetronomeOnOff(wxCommandEvent& WXUNUSED(event))
     else {
         m_pMtr->Start();
     }
-    
+
 }
 
 // Recreate toolbars if visible. User has changed visualization options
@@ -492,9 +491,9 @@ void lmMainFrame::CreateMyToolBar()
     //prepare style
     long style = wxTB_FLAT | wxTB_NODIVIDER;
     long nLabelsIndex = g_pPrefs->Read(_T("/Toolbars/Labels"), 0L);
-    if (nLabelsIndex == 1) 
+    if (nLabelsIndex == 1)
         style |= wxTB_TEXT;
-    else if (nLabelsIndex == 2) 
+    else if (nLabelsIndex == 2)
         style |= wxTB_HORZ_TEXT;
 
     //prepare icons size
@@ -512,52 +511,53 @@ void lmMainFrame::CreateMyToolBar()
     //File toolbar
     m_pTbFile = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pTbFile->SetToolBitmapSize(nSize);
-    m_pTbFile->AddTool(MENU_File_New, _("New"), 
+    m_pTbFile->AddTool(MENU_File_New, _("New"),
             wxArtProvider::GetBitmap(_T("tool_new"), wxART_TOOLBAR, nSize),
-            wxArtProvider::GetBitmap(_T("tool_new_dis"), wxART_TOOLBAR, nSize), 
+            wxArtProvider::GetBitmap(_T("tool_new_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("New score"));
     m_pTbFile->AddTool(wxID_OPEN, _("Open"), wxArtProvider::GetBitmap(_T("tool_open"),
             wxART_TOOLBAR, nSize), _("Open a score"));
-    m_pTbFile->AddTool(MENU_OpenBook, _("Books"), 
+    m_pTbFile->AddTool(MENU_OpenBook, _("Books"),
             wxArtProvider::GetBitmap(_T("tool_open_ebook"), wxART_TOOLBAR, nSize),
-            _("Open the music books"));
-    m_pTbFile->AddTool(wxID_SAVE, _("Save"), 
-            wxArtProvider::GetBitmap(_T("tool_save"), wxART_TOOLBAR, nSize), 
-            wxArtProvider::GetBitmap(_T("tool_save_dis"), wxART_TOOLBAR, nSize), 
+            wxArtProvider::GetBitmap(_T("tool_open_ebook_dis"), wxART_TOOLBAR, nSize),
+            wxITEM_NORMAL, _("Open the music books"));
+    m_pTbFile->AddTool(wxID_SAVE, _("Save"),
+            wxArtProvider::GetBitmap(_T("tool_save"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_save_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Save current score to disk"));
-    m_pTbFile->AddTool(MENU_Print, _("Print"), 
-            wxArtProvider::GetBitmap(_T("tool_print"), wxART_TOOLBAR, nSize), 
-            wxArtProvider::GetBitmap(_T("tool_print_dis"), wxART_TOOLBAR, nSize), 
+    m_pTbFile->AddTool(MENU_Print, _("Print"),
+            wxArtProvider::GetBitmap(_T("tool_print"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_print_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Print document"));
     m_pTbFile->Realize();
 
     //Edit toolbar
     m_pTbEdit = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pTbEdit->SetToolBitmapSize(nSize);
-    m_pTbEdit->AddTool(wxID_COPY, _("Copy"), 
-            wxArtProvider::GetBitmap(_T("tool_copy"), wxART_TOOLBAR, nSize), 
-            wxArtProvider::GetBitmap(_T("tool_copy_dis"), wxART_TOOLBAR, nSize),     
+    m_pTbEdit->AddTool(wxID_COPY, _("Copy"),
+            wxArtProvider::GetBitmap(_T("tool_copy"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_copy_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Copy"));
-    m_pTbEdit->AddTool(wxID_CUT, _("Cut"), 
-            wxArtProvider::GetBitmap(_T("tool_cut"), wxART_TOOLBAR, nSize),     
-            wxArtProvider::GetBitmap(_T("tool_cut_dis"), wxART_TOOLBAR, nSize),     
+    m_pTbEdit->AddTool(wxID_CUT, _("Cut"),
+            wxArtProvider::GetBitmap(_T("tool_cut"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_cut_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Cut"));
-    m_pTbEdit->AddTool(wxID_PASTE, _("Paste"), 
-            wxArtProvider::GetBitmap(_T("tool_paste"), wxART_TOOLBAR, nSize), 
-            wxArtProvider::GetBitmap(_T("tool_paste_dis"), wxART_TOOLBAR, nSize), 
+    m_pTbEdit->AddTool(wxID_PASTE, _("Paste"),
+            wxArtProvider::GetBitmap(_T("tool_paste"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_paste_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Paste"));
     m_pTbEdit->Realize();
 
     //Zoom toolbar
     m_pTbZoom = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pTbZoom->SetToolBitmapSize(nSize);
-    m_pTbZoom->AddTool(MENU_Zoom_Fit_Full, _("Fit full"), 
-            wxArtProvider::GetBitmap(_T("tool_zoom_fit_full"), wxART_TOOLBAR, nSize), 
-            wxArtProvider::GetBitmap(_T("tool_zoom_fit_full_dis"), wxART_TOOLBAR, nSize), 
+    m_pTbZoom->AddTool(MENU_Zoom_Fit_Full, _("Fit full"),
+            wxArtProvider::GetBitmap(_T("tool_zoom_fit_full"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_zoom_fit_full_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Zoom so that the full page is displayed"));
-    m_pTbZoom->AddTool(MENU_Zoom_Fit_Width, _("Fit width"), 
-            wxArtProvider::GetBitmap(_T("tool_zoom_fit_width"), wxART_TOOLBAR, nSize), 
-            wxArtProvider::GetBitmap(_T("tool_zoom_fit_width_dis"), wxART_TOOLBAR, nSize), 
+    m_pTbZoom->AddTool(MENU_Zoom_Fit_Width, _("Fit width"),
+            wxArtProvider::GetBitmap(_T("tool_zoom_fit_width"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_zoom_fit_width_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Zoom so that page width equals window width"));
     m_pComboZoom = new wxComboBox(m_pTbZoom, ID_COMBO_ZOOM, _T(""),
                                   wxDefaultPosition, wxSize(70, -1) );
@@ -570,9 +570,9 @@ void lmMainFrame::CreateMyToolBar()
     m_pComboZoom->Append(_T("300%"));
     m_pComboZoom->Append(_T("400%"));
     m_pComboZoom->Append(_T("800%"));
-    m_pComboZoom->Append(_("Actual size"));         // tamaño real
-    m_pComboZoom->Append(_("Fit page full"));       // toda la página
-    m_pComboZoom->Append(_("Fit page width"));      // ancho de página
+    m_pComboZoom->Append(_("Actual size"));         // tamaÃ±o real
+    m_pComboZoom->Append(_("Fit page full"));       // toda la pÃ¡gina
+    m_pComboZoom->Append(_("Fit page width"));      // ancho de pÃ¡gina
     m_pComboZoom->SetSelection(3);
     m_pTbZoom->AddControl(m_pComboZoom);
     m_pTbZoom->Realize();
@@ -580,17 +580,17 @@ void lmMainFrame::CreateMyToolBar()
     //Play toolbar
     m_pTbPlay = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pTbPlay->SetToolBitmapSize(nSize);
-    m_pTbPlay->AddTool(MENU_Play_Start, _("Play"), 
+    m_pTbPlay->AddTool(MENU_Play_Start, _("Play"),
             wxArtProvider::GetBitmap(_T("tool_play"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_play_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Start/resume play back of the score"));
-    m_pTbPlay->AddTool(MENU_Play_Stop, _("Stop"), 
-            wxArtProvider::GetBitmap(_T("tool_stop"), wxART_TOOLBAR, nSize), 
-            wxArtProvider::GetBitmap(_T("tool_stop_dis"), wxART_TOOLBAR, nSize), 
+    m_pTbPlay->AddTool(MENU_Play_Stop, _("Stop"),
+            wxArtProvider::GetBitmap(_T("tool_stop"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_stop_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Stop playing back"));
-    m_pTbPlay->AddTool(MENU_Play_Pause, _("Pause"), 
-            wxArtProvider::GetBitmap(_T("tool_pause"), wxART_TOOLBAR, nSize), 
-            wxArtProvider::GetBitmap(_T("tool_pause_dis"), wxART_TOOLBAR, nSize), 
+    m_pTbPlay->AddTool(MENU_Play_Pause, _("Pause"),
+            wxArtProvider::GetBitmap(_T("tool_pause"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_pause_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Pause playing back"));
     m_pTbPlay->Realize();
 
@@ -598,7 +598,7 @@ void lmMainFrame::CreateMyToolBar()
     m_pTbMtr = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pTbMtr->SetToolBitmapSize(nSize);
     m_pTbMtr->AddTool(MENU_Metronome, _("Metronome"), wxArtProvider::GetBitmap(_T("tool_metronome"), wxART_TOOLBAR, nSize), _("Turn metronome on/off"), wxITEM_CHECK);
-    m_pSpinMetronome = new wxSpinCtrl(m_pTbMtr, ID_SPIN_METRONOME, _T(""), wxDefaultPosition, 
+    m_pSpinMetronome = new wxSpinCtrl(m_pTbMtr, ID_SPIN_METRONOME, _T(""), wxDefaultPosition,
         wxSize(60, -1), wxSP_ARROW_KEYS | wxSP_WRAP, 20, 300);
     m_pSpinMetronome->SetValue( m_pMtr->GetMM() );
     m_pTbMtr->AddControl(m_pSpinMetronome);
@@ -607,7 +607,7 @@ void lmMainFrame::CreateMyToolBar()
     //compute best size for metronome toolbar
     wxSize sizeSpin = m_pSpinMetronome->GetSize();
     wxSize sizeButton = m_pTbMtr->GetToolSize();
-    wxSize sizeBest(sizeButton.GetWidth() + sizeSpin.GetWidth() + 
+    wxSize sizeBest(sizeButton.GetWidth() + sizeSpin.GetWidth() +
                         m_pTbMtr->GetToolSeparation() + 10,
                     wxMax(sizeSpin.GetHeight(), sizeButton.GetHeight()));
 
@@ -615,7 +615,7 @@ void lmMainFrame::CreateMyToolBar()
     wxSize sizeCombo = m_pComboZoom->GetSize();
     sizeButton = m_pTbZoom->GetToolSize();
     wxSize sizeZoomTb(2 * (sizeButton.GetWidth() + m_pTbZoom->GetToolSeparation()) +
-                      sizeCombo.GetWidth() + 
+                      sizeCombo.GetWidth() +
                       m_pTbZoom->GetToolSeparation() + 10,
                       wxMax(sizeCombo.GetHeight(), sizeButton.GetHeight()));
 
@@ -712,35 +712,35 @@ void lmMainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize)
     m_pTbTextBooks->SetToolBitmapSize(nIconSize);
 
     //add tools
-    m_pTbTextBooks->AddTool(MENU_eBookPanel, _T("Index"), 
+    m_pTbTextBooks->AddTool(MENU_eBookPanel, _T("Index"),
             wxArtProvider::GetBitmap(_T("tool_index_panel"), wxART_TOOLBAR, nIconSize),
             wxArtProvider::GetBitmap(_T("tool_index_panel_dis"), wxART_TOOLBAR, nIconSize),
             wxITEM_CHECK, _("Show/hide navigation panel") );
     m_pTbTextBooks->ToggleTool(MENU_eBookPanel, false);
 
     m_pTbTextBooks->AddSeparator();
-    m_pTbTextBooks->AddTool(MENU_eBook_PagePrev, _T("Back page"), 
+    m_pTbTextBooks->AddTool(MENU_eBook_PagePrev, _T("Back page"),
             wxArtProvider::GetBitmap(_T("tool_page_previous"), wxART_TOOLBAR, nIconSize),
             wxArtProvider::GetBitmap(_T("tool_page_previous_dis"), wxART_TOOLBAR, nIconSize),
             wxITEM_NORMAL, _("Previous page of current eMusicBook") );
-    m_pTbTextBooks->AddTool(MENU_eBook_PageNext, _T("Next page"), 
+    m_pTbTextBooks->AddTool(MENU_eBook_PageNext, _T("Next page"),
             wxArtProvider::GetBitmap(_T("tool_page_next"), wxART_TOOLBAR, nIconSize),
             wxArtProvider::GetBitmap(_T("tool_page_next_dis"), wxART_TOOLBAR, nIconSize),
             wxITEM_NORMAL, _("Next page of current eMusicBook") );
 
     m_pTbTextBooks->AddSeparator();
-    m_pTbTextBooks->AddTool(MENU_eBook_GoBack, _T("Go back"), 
+    m_pTbTextBooks->AddTool(MENU_eBook_GoBack, _T("Go back"),
             wxArtProvider::GetBitmap(_T("tool_previous"), wxART_TOOLBAR, nIconSize),
             _("Go to previous visited page"), wxITEM_NORMAL );
-    m_pTbTextBooks->AddTool(MENU_eBook_GoForward, _T("Go forward"), 
+    m_pTbTextBooks->AddTool(MENU_eBook_GoForward, _T("Go forward"),
             wxArtProvider::GetBitmap(_T("tool_next"), wxART_TOOLBAR, nIconSize),
             _("Go to next visited page"), wxITEM_NORMAL );
 
     m_pTbTextBooks->AddSeparator();
-    m_pTbTextBooks->AddTool(MENU_eBook_IncreaseFont, _T("Increase font"), 
+    m_pTbTextBooks->AddTool(MENU_eBook_IncreaseFont, _T("Increase font"),
             wxArtProvider::GetBitmap(_T("tool_font_increase"), wxART_TOOLBAR, nIconSize),
             _("Increase font size"), wxITEM_NORMAL );
-    m_pTbTextBooks->AddTool(MENU_eBook_DecreaseFont, _T("Decrease font"),  
+    m_pTbTextBooks->AddTool(MENU_eBook_DecreaseFont, _T("Decrease font"),
             wxArtProvider::GetBitmap(_T("tool_font_decrease"), wxART_TOOLBAR, nIconSize),
             _("Decrease font size"), wxITEM_NORMAL );
 
@@ -776,7 +776,7 @@ void lmMainFrame::DeleteStatusBar()
 }
 
 
-wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView, 
+wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
                                 bool fEdit, bool fDebug)
 {
     //Centralized code to create the menu bar. It will be customized according to the
@@ -786,24 +786,24 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
     // file menu
     wxMenu* file_menu = new wxMenu;
-    wxMenu* pExportMenu = new wxMenu; 
+    wxMenu* pExportMenu = new wxMenu;
 
 #if defined(__WXMSW__) || defined(__WXGTK__)
-    //bitmaps on menus are supported only on Windows and GTK+ 
+    //bitmaps on menus are supported only on Windows and GTK+
     wxMenuItem* pItem;
     wxSize nIconSize(16, 16);
 
-    pItem = new wxMenuItem(file_menu, MENU_File_New, _("&New\tCtrl+N"), _("Open new blank score"), wxITEM_NORMAL); 
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_new"), wxART_TOOLBAR, nIconSize) ); 
-    file_menu->Append(pItem); 
+    pItem = new wxMenuItem(file_menu, MENU_File_New, _("&New\tCtrl+N"), _("Open new blank score"), wxITEM_NORMAL);
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_new"), wxART_TOOLBAR, nIconSize) );
+    file_menu->Append(pItem);
 
     pItem = new wxMenuItem(file_menu, wxID_OPEN, _("&Open ...\tCtrl+O"), _("Open a score"), wxITEM_NORMAL );
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_open"), wxART_TOOLBAR, nIconSize) ); 
-    file_menu->Append(pItem); 
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_open"), wxART_TOOLBAR, nIconSize) );
+    file_menu->Append(pItem);
 
     pItem = new wxMenuItem(file_menu, MENU_OpenBook, _("Open &books"), _("Hide/show eMusicBooks"), wxITEM_NORMAL);
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_open_ebook"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem); 
+    file_menu->Append(pItem);
 
     file_menu->Append(MENU_File_Import, _("&Import..."));
 
@@ -824,7 +824,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
     pItem = new wxMenuItem(file_menu, wxID_SAVE, _("&Save\tCtrl+S"));
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_save"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem); 
+    file_menu->Append(pItem);
 
     file_menu->Append(wxID_SAVEAS, wxString::Format(_T("%s\tCtrl+Shift+S"), _("Save &as ...")) );
 
@@ -833,7 +833,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
     pItem = new wxMenuItem(file_menu, MENU_Print, _("&Print ...\tCtrl+P"));
     pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_print"), wxART_TOOLBAR, nIconSize) );
-    file_menu->Append(pItem); 
+    file_menu->Append(pItem);
 
     file_menu->Append(wxID_PRINT_SETUP, _("Print &Setup..."));
     file_menu->Append(MENU_Print_Preview, wxString::Format(_T("%s\tCtrl+Shift+P"), _("Print Pre&view")) );
@@ -841,7 +841,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     file_menu->Append(wxID_EXIT, _("&Quit\tCtrl+Q"));
 
 #else
-    //No bitmaps on menus for other plattforms different from Windows and GTK+ 
+    //No bitmaps on menus for other plattforms different from Windows and GTK+
     file_menu->Append(MENU_File_New, _("&New\tCtrl+N"), _("Open new blank score"), wxITEM_NORMAL);
     file_menu->Append(wxID_OPEN, _("&Open ...\tCtrl+O"), _("Open a score"), wxITEM_NORMAL );
     file_menu->Append(MENU_OpenBook, _("Open &books"), _("Hide/show eMusicBooks"), wxITEM_NORMAL);
@@ -889,25 +889,25 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     view_menu->Append(MENU_View_Rulers, _("&Rulers"), _("Hide/show rulers"), wxITEM_CHECK);
 
     // debug menu
-    // Debug strings will not be translatable. It is mandatory that all development is 
+    // Debug strings will not be translatable. It is mandatory that all development is
     // in English
     wxMenu* debug_menu;
     if (fDebug) {
         debug_menu = new wxMenu;
-        debug_menu->Append(MENU_Debug_ForceReleaseBehaviour, _T("&Release Behaviour"), 
+        debug_menu->Append(MENU_Debug_ForceReleaseBehaviour, _T("&Release Behaviour"),
             _T("Force release behaviour for certain functions"), wxITEM_CHECK);
-        debug_menu->Append(MENU_Debug_ShowDebugLinks, _T("&Include debug links"), 
+        debug_menu->Append(MENU_Debug_ShowDebugLinks, _T("&Include debug links"),
             _T("Include debug controls in exercises"), wxITEM_CHECK);
-        debug_menu->Append(MENU_Debug_ShowBorderOnScores, _T("&Border on ScoreAuxCtrol"), 
+        debug_menu->Append(MENU_Debug_ShowBorderOnScores, _T("&Border on ScoreAuxCtrol"),
             _T("Show border on ScoreAuxCtrol"), wxITEM_CHECK);
-        debug_menu->Append(MENU_Debug_recSelec, _T("&Draw recSelec"), 
+        debug_menu->Append(MENU_Debug_recSelec, _T("&Draw recSelec"),
             _T("Force to draw selection rectangles around staff objects"), wxITEM_CHECK);
-        debug_menu->Append(MENU_Debug_UseAntiAliasing, _T("&Use anti-aliasing"), 
+        debug_menu->Append(MENU_Debug_UseAntiAliasing, _T("&Use anti-aliasing"),
             _T("Use anti-aliasing for screen renderization"), wxITEM_CHECK);
         debug_menu->Append(MENU_Debug_SetTraceLevel, _T("Set trace level ...") );
         debug_menu->Append(MENU_Debug_PatternEditor, _T("Test Pattern Editor") );
-        debug_menu->Append(MENU_Debug_DumpStaffObjs, _T("&Dump of score") ); 
-        debug_menu->Append(MENU_Debug_SeeSource, _T("See &LDP source") ); 
+        debug_menu->Append(MENU_Debug_DumpStaffObjs, _T("&Dump of score") );
+        debug_menu->Append(MENU_Debug_SeeSource, _T("See &LDP source") );
         debug_menu->Append(MENU_Debug_SeeXML, _T("See &XML") );
         debug_menu->Append(MENU_Debug_SeeMIDIEvents, _T("See &MIDI events") );
         debug_menu->Append(MENU_Debug_DumpBitmaps, _T("Save offscreen bitmaps") );
@@ -927,16 +927,16 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 #if defined(__WXMSW__) || defined(__WXGTK__)
 
     pItem = new wxMenuItem(sound_menu, MENU_Play_Start, _("&Play"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_play"), wxART_TOOLBAR, nIconSize) ); 
-    sound_menu->Append(pItem); 
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_play"), wxART_TOOLBAR, nIconSize) );
+    sound_menu->Append(pItem);
 
     pItem = new wxMenuItem(sound_menu, MENU_Play_Stop, _("S&top"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_stop"), wxART_TOOLBAR, nIconSize) ); 
-    sound_menu->Append(pItem); 
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_stop"), wxART_TOOLBAR, nIconSize) );
+    sound_menu->Append(pItem);
 
     pItem = new wxMenuItem(sound_menu, MENU_Play_Pause, _("P&ause"));
-    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_pause"), wxART_TOOLBAR, nIconSize) ); 
-    sound_menu->Append(pItem); 
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_pause"), wxART_TOOLBAR, nIconSize) );
+    sound_menu->Append(pItem);
 
 
 #else
@@ -957,12 +957,12 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
 
     // Options menu
     wxMenu* options_menu = new wxMenu;
-#if defined(__WXMSW__) || defined(__WXGTK__)
+#if defined(__WXMSW__)
     pItem = new wxMenuItem(options_menu, MENU_Preferences,  _("&Preferences"),
                             _("Open help book"), wxITEM_CHECK);
     pItem->SetBitmaps( wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nIconSize),
-                       wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nIconSize) ); 
-    options_menu->Append(pItem); 
+                       wxArtProvider::GetBitmap(_T("tool_options"), wxART_TOOLBAR, nIconSize) );
+    options_menu->Append(pItem);
 #else
     options_menu->Append(MENU_Preferences, _("&Preferences"));
 #endif
@@ -984,35 +984,35 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     help_menu->Append(MENU_Help_About, _("&About\tF1"),
                 _("Display information about program version and credits") );
     help_menu->AppendSeparator();
-#if defined(__WXMSW__) || defined(__WXGTK__)
+#if defined(__WXMSW__)
     pItem = new wxMenuItem(help_menu, MENU_OpenHelp,  _("&Content\tCtrl+Alt+F1"),
                             _("Open help book"), wxITEM_CHECK);
     pItem->SetBitmaps( wxArtProvider::GetBitmap(_T("tool_help"), wxART_TOOLBAR, nIconSize),
-                       wxArtProvider::GetBitmap(_T("tool_help"), wxART_TOOLBAR, nIconSize) ); 
-    help_menu->Append(pItem); 
+                       wxArtProvider::GetBitmap(_T("tool_help"), wxART_TOOLBAR, nIconSize) );
+    help_menu->Append(pItem);
 #else
     help_menu->Append(MENU_OpenHelp, _("&Content\tCtrl+Alt+F1"),
         _("Open help book"), wxITEM_CHECK);
 #endif
     help_menu->AppendSeparator();
-    help_menu->Append(MENU_CheckForUpdates, _("Check now for &updates"), 
+    help_menu->Append(MENU_CheckForUpdates, _("Check now for &updates"),
         _("Connect to the Internet and check for program updates") );
 
-#if defined(__WXMSW__) || defined(__WXGTK__)
+#if defined(__WXMSW__)
     pItem = new wxMenuItem(help_menu, MENU_VisitWebsite,  _("&Visit LenMus website"),
                             _("Open the Internet browser and go to LenMus website") );
     pItem->SetBitmaps( wxArtProvider::GetBitmap(_T("tool_website"), wxART_TOOLBAR, nIconSize),
-                       wxArtProvider::GetBitmap(_T("tool_website"), wxART_TOOLBAR, nIconSize) ); 
-    help_menu->Append(pItem); 
+                       wxArtProvider::GetBitmap(_T("tool_website"), wxART_TOOLBAR, nIconSize) );
+    help_menu->Append(pItem);
 #else
-    help_menu->Append(MENU_VisitWebsite, _("&Visit LenMus website"), 
+    help_menu->Append(MENU_VisitWebsite, _("&Visit LenMus website"),
         _("Open the Internet browser and go to LenMus website") );
 #endif
 
     // set up the menubar.
-    // AWARE: As lmMainFrame is derived from lmMDIParentFrame, in MSWindows build the menu 
+    // AWARE: As lmMainFrame is derived from lmMDIParentFrame, in MSWindows build the menu
     // bar automatically inherits a "Window" menu inserted in the second last position.
-    // To suppress it (under MSWindows) it is necessary to add style wxFRAME_NO_WINDOW_MENU  
+    // To suppress it (under MSWindows) it is necessary to add style wxFRAME_NO_WINDOW_MENU
     // in frame creation.
     wxMenuBar *menu_bar = new wxMenuBar;
     menu_bar->Append(file_menu, _("&File"));
@@ -1080,7 +1080,7 @@ lmMainFrame::~lmMainFrame()
 
     //save metronome settings and delete main metronome
     if (m_pMainMtr) {
-        g_pPrefs->Write(_T("/Metronome/MM"), m_pMainMtr->GetMM() );   
+        g_pPrefs->Write(_T("/Metronome/MM"), m_pMainMtr->GetMM() );
         delete m_pMainMtr;
     }
 
@@ -1096,14 +1096,14 @@ void lmMainFrame::OnCloseBookFrame()
 
 void lmMainFrame::InitializeHelp()
 {
-    // create the help window 
+    // create the help window
     //m_pHelp = new lmHelpController(wxHF_DEFAULT_STYLE | wxHF_FLAT_TOOLBAR );
     // previous sentence commented out and replaced by next one to remove
     // index panel.
     m_pHelp = new lmHelpController(wxHF_TOOLBAR | wxHF_FLAT_TOOLBAR | wxHF_CONTENTS |
                         wxHF_SEARCH | wxHF_BOOKMARKS | wxHF_PRINT);
     // set the config object
-    m_pHelp->UseConfig(wxConfig::Get(), _T("HelpController"));        
+    m_pHelp->UseConfig(wxConfig::Get(), _T("HelpController"));
 
     //set directory for cache files. TODO: allow user to set up any other directory
     m_pHelp->SetTempDir( g_pPaths->GetTempPath() );
@@ -1138,11 +1138,11 @@ void lmMainFrame::InitializeHelp()
 
 void lmMainFrame::InitializeBooks()
 {
-    // create the books window 
+    // create the books window
     m_pBookController = new lmTextBookController();
 
     // set the config object
-    m_pBookController->UseConfig(wxConfig::Get(), _T("TextBooksController"));        
+    m_pBookController->UseConfig(wxConfig::Get(), _T("TextBooksController"));
 
     //set directory for cache files.
     m_pBookController->SetTempDir( g_pPaths->GetTempPath() );
@@ -1226,7 +1226,13 @@ void lmMainFrame::OnBookFrameUpdateUI(wxUpdateUIEvent& event)
             pBookFrame->UpdateUIEvent(event, m_pTbTextBooks);
     }
     else {
+        // Bug in wxWidgets: if the button is a check button, disabled image is not
+        // set unless the button is unchecked. To bypass this bug, first uncheck button
+        // then disable it and finally, restore check state
+        bool fChecked = event.GetChecked();
+        event.Check(false);
         event.Enable(false);
+        event.Check(fChecked);
     }
 }
 
@@ -1295,7 +1301,7 @@ void lmMainFrame::ExportAsImage(int nImgType)
                                         this);
     if ( !sFilename.IsEmpty() )
     {
-        //remove extension including dot 
+        //remove extension including dot
         wxString sName = sFilename.Left( sFilename.Length() - sExt.Length() - 1 );
         lmScoreView* pView = g_pTheApp->GetActiveView();
         pView->SaveAsImage(sName, sExt, nImgType);
@@ -1693,9 +1699,9 @@ void lmMainFrame::OnImportFile(wxCommandEvent& WXUNUSED(event))
         wxString sPath = _T("\\<<IMPORT>>//");
         sPath += sFilename;
         sPath += _T(".txt");            //for DocumentManager
-        // get the document manager 
+        // get the document manager
         wxDocManager* pDocManager = g_pTheApp->GetDocManager();
-        
+
         //WXDEP: The following code is a modified copy of wxDocManager::OnFileOpen taken
         // form docview.cpp source file. Review each time a new version of wxWidgets is used.
         if ( !pDocManager->CreateDocument( sPath, wxDOC_SILENT) )
@@ -1703,7 +1709,7 @@ void lmMainFrame::OnImportFile(wxCommandEvent& WXUNUSED(event))
             pDocManager->OnOpenFileFailure();
         }
     }
-    
+
 }
 
 //-----------------------------------------------------------------------------------------------
@@ -1728,7 +1734,7 @@ void lmMainFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event))
             wxMessageBox(_("There is a problem previewing.\nPerhaps your current printer is not set correctly?"), _("Previewing"), wxOK);
             return;
         }
-        
+
         wxPreviewFrame *frame = new wxPreviewFrame(preview, this, _("Preview"), wxPoint(100, 100), wxSize(600, 650));
         frame->Centre(wxBOTH);
         frame->Initialize();
@@ -1744,7 +1750,7 @@ void lmMainFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event))
 //
 //    wxPageSetupDialog pageSetupDialog(this, g_pPaperSetupData);
 //    pageSetupDialog.ShowModal();
-//    
+//
 //    (*g_pPrintData) = pageSetupDialog.GetPageSetupData().GetPrintData();
 //    (*g_pPaperSetupData) = pageSetupDialog.GetPageSetupData();
 //
@@ -1797,7 +1803,7 @@ void lmMainFrame::OnPrint(wxCommandEvent& event)
 
 void lmMainFrame::OnEditUpdateUI(wxUpdateUIEvent &event)
 {
-    lmMDIChildFrame* pChild = GetActiveChild();
+    //lmMDIChildFrame* pChild = GetActiveChild();
     event.Enable(false);    //pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
     //always disabled in current version
 }
@@ -1925,7 +1931,7 @@ void lmMainFrame::OnMetronomeTimer(wxTimerEvent& event)
 {
     /*
     A metronome click has been produced, and this event is generated so that we
-    can flash the metronome LED or do any other    desired visual efect. 
+    can flash the metronome LED or do any other    desired visual efect.
     Do not generate sounds as they are done by the lmMetronome object
     */
 

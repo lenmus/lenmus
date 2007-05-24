@@ -18,12 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file EarCompareIntvCtrol.h
-    @brief Header file for class lmEarCompareIntvCtrol
-    @ingroup html_controls
-*/
-#ifdef __GNUG__
-// #pragma interface
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "EarCompareIntvCtrol.cpp"
 #endif
 
 #ifndef __EARCOMPAREINTVCTROL_H__        //to avoid nested includes
@@ -82,6 +79,7 @@ private:
     void DisplaySolution();
     void ResetExercise();
     void ResetCounters();
+    void DoStopSounds();
 
         // member variables
 
@@ -96,6 +94,7 @@ private:
     lmPitch         m_ntPitch[2];           //the pitch of the two notes
     bool            m_fPlayEnabled;         //Play enabled
     bool            m_fButtonsEnabled;      //buttons enabled
+    bool            m_fCancel;              //to inform that the exercise is cancelled
 
     //answer
     wxButton*       m_pAnswerButton[3];     //3 buttons for the answers

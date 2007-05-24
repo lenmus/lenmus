@@ -18,12 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ScoreAuxCtrol.h
-    @brief Header file for class lmScoreAuxCtrol
-    @ingroup html_controls
-*/
-#ifdef __GNUG__
-// #pragma interface
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "ScoreAuxCtrol.cpp"
 #endif
 
 #ifndef __SCOREAUXCTROL_H__        //to avoid nested includes
@@ -95,6 +92,7 @@ public:
 private:
     void ResizePaper();
     void SetBaseScale();
+    void DoStopSounds();
 
         // member variables
 

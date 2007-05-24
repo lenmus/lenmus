@@ -25,7 +25,7 @@
 #include <wx/config.h>
 
 //to use wxMidi
-#include "wxMidi.h"
+#include "../../wxMidi/include/wxMidi.h"
 
 
 //This class is a singleton

@@ -133,7 +133,7 @@ public:
 
     // sound events table
     void StoreEvent(float rTime, ESoundEventType nEventType, int nChannel,
-                    lmPitch nMidiPitch, int nStep, lmStaffObj* pSO, int nMeasure);
+                    lmPitch nMidiPitch, int nVolume, int nStep, lmStaffObj* pSO, int nMeasure);
     int GetNumEvents() { return (int)m_aEvents.GetCount(); }
     lmSoundEvent* GetEvent(int i);
     void CloseTable();

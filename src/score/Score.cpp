@@ -667,7 +667,7 @@ void lmScore::ComputeMidiEvents()
         }
 
         //Add an event to program sound for this instrument
-        m_pSoundMngr->StoreEvent(0, eSET_ProgInstr, nChannel, nInstr, 0, (lmStaffObj*)NULL, 0);
+        m_pSoundMngr->StoreEvent(0, eSET_ProgInstr, nChannel, nInstr, 0, 0, (lmStaffObj*)NULL, 0);
         
     }
     

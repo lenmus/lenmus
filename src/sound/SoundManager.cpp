@@ -159,12 +159,11 @@ lmSoundManager::~lmSoundManager()
 }
 
 void lmSoundManager::StoreEvent(float rTime, ESoundEventType nEventType, int nChannel,
-                           lmPitch nMidiPitch, int nStep, lmStaffObj* pSO, int nMeasure)
+                           lmPitch nMidiPitch, int nVolume, int nStep, lmStaffObj* pSO, int nMeasure)
 {
     //create the event and add it to the table
-    //! @todo Volume is fixed (127). Future improvement: variable volume
     lmSoundEvent* pEvent = new lmSoundEvent(rTime, nEventType, nChannel, nMidiPitch,
-                                            127, nStep, pSO, nMeasure);
+                                            nVolume, nStep, pSO, nMeasure);
     m_aEvents.Add(pEvent);        //add event to table
 
 }
@@ -248,7 +247,7 @@ void lmSoundManager::CloseTable()
     
     //Add an EndOfScore event
     StoreEvent( (float)(m_aEvents.Item(m_aEvents.GetCount()-1)->DeltaTime), eSET_EndOfScore,
-            0, 0, 0, (lmStaffObj*)NULL, 0);
+            0, 0, 0, 0, (lmStaffObj*)NULL, 0);
     
     //Create the table of measures
     int nM = -1;

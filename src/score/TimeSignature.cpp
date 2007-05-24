@@ -236,7 +236,7 @@ void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime,
     int nBeatDuration = GetBeatDuration(m_nBeatType);
 
     //add the RhythmChange event
-    pSM->StoreEvent( rTime, eSET_RhythmChange, 0, m_nBeats, nBeatDuration, this, nMeasure);
+    pSM->StoreEvent( rTime, eSET_RhythmChange, 0, m_nBeats, 0, nBeatDuration, this, nMeasure);
     
 }
 
@@ -428,3 +428,41 @@ float GetMeasureDuration(ETimeSignature nTimeSign)
 //
 //}
 
+int AssignVolume(float rTimePos, int nBeats, int nBeatType)
+{
+    //Volume should depend on beak (strong, medium, weak) on which a note 
+    //is placed. This method receives the time for a note and the current time signature
+    //and return the volume to assign to it
+
+    // coumpute beat duration
+    int nBeatDuration;
+    switch (nBeatType) {
+        case 1: nBeatDuration = (int)eWholeDuration; break;
+        case 2: nBeatDuration = (int)eHalfDuration; break;
+        case 4: nBeatDuration = (int)eQuarterDuration; break;
+        case 8: nBeatDuration = 3* (int)eEighthDuration; break;
+        case 16: nBeatDuration = (int)e16thDuration; break;
+        default:
+            wxLogMessage(_T("[AssignVolume] BeatType %d unknown."), nBeatType);
+            wxASSERT(false);
+    }
+
+    // compute relative position of this note with reference to the beat
+    int nBeatNum = (int)rTimePos / nBeatDuration;               //number of beat 
+    float rBeatShift = fabs(rTimePos - (float)(nBeatDuration * nBeatNum));
+
+    int nVolume = 60;       // volume for off-beat notes
+
+    if (nBeatNum == 0 && rBeatShift < 1.0)
+        //on-beat notes on first beat
+        nVolume = 85;
+    else if (rBeatShift < 1.0)
+        //on-beat notes on other beats
+        nVolume = 75;
+    else
+        // off-beat notes
+        nVolume = 60;
+
+    return nVolume;
+
+}

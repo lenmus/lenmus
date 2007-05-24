@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -128,19 +128,19 @@ public:
                 m_selRect.y = y;
         }
     void DrawSelRectangle(lmPaper* pPaper, wxColour colorC = *wxRED);
-    wxRect GetSelRect() const { return wxRect(m_selRect.x + m_paperPos.x, 
-                                              m_selRect.y + m_paperPos.y,
+    wxRect GetSelRect() const { return wxRect((int)(m_selRect.x + m_paperPos.x),
+                                              (int)(m_selRect.y + m_paperPos.y),
                                               m_selRect.width,
                                               m_selRect.height); }
 
     // drawing related methods
-    virtual void Draw(bool fMeasuring, lmPaper* pPaper, 
+    virtual void Draw(bool fMeasuring, lmPaper* pPaper,
                       wxColour colorC = *wxBLACK,
                       bool fHighlight = false)=0;
 
     // methods for draggable objects
     virtual wxBitmap* GetBitmap(double rScale) = 0;
-    virtual void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD, 
+    virtual void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
                          const lmUPoint& pagePosL, const lmUPoint& dragStartPosL,
                          const lmDPoint& canvasPosD);
     virtual lmUPoint EndDrag(const lmUPoint& pos);
@@ -278,9 +278,9 @@ public:
 
 
 protected:
-    lmStaffObj(lmObject* pParent, EStaffObjType nType, 
-             lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,    // only for staff owned objects    
-             bool fVisible = true, 
+    lmStaffObj(lmObject* pParent, EStaffObjType nType,
+             lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,    // only for staff owned objects
+             bool fVisible = true,
              bool fIsDraggable = false);
 
     //properties
@@ -328,7 +328,7 @@ public:
 
 
 protected:
-    lmAuxObj(lmObject* pParent, EAuxObjType nType, bool fIsDraggable = false); 
+    lmAuxObj(lmObject* pParent, EAuxObjType nType, bool fIsDraggable = false);
 
     EAuxObjType     m_nClass;
 

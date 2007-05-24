@@ -422,6 +422,8 @@ lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
 
 lmTheoIntervalsCtrol::~lmTheoIntervalsCtrol()
 {
+    DoStopSounds();     //stop any possible score being played
+
     if (m_pScoreCtrol) {
         delete m_pScoreCtrol;
         m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
@@ -499,6 +501,8 @@ void lmTheoIntervalsCtrol::OnDisplaySolution(wxCommandEvent& event)
 
 void lmTheoIntervalsCtrol::OnRespButton(wxCommandEvent& event)
 {
+    DoStopSounds();     //stop any possible score being played
+
     int nIndex = event.GetId() - ID_BUTTON;
 
     //buttons are only enabled in m_fIntervalKnow type problems
@@ -757,6 +761,8 @@ void lmTheoIntervalsCtrol::Play()
 
 void lmTheoIntervalsCtrol::DisplaySolution()
 {
+    DoStopSounds();     //stop any possible score being played
+
     if (m_fIntervalKnown) {
         m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
         m_pAnswerButton[m_nRespIndex]->SetBackgroundColour(g_pColors->Success());
@@ -788,6 +794,8 @@ void lmTheoIntervalsCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
 
 void lmTheoIntervalsCtrol::ResetExercise()
 {
+    DoStopSounds();     //stop any possible score being played
+
     //restore colors
     if (m_nCurrentKeyboard == eKeyboardIntv)
     {
@@ -895,3 +903,12 @@ void lmTheoIntervalsCtrol::SetButtonsForIntervals()
     m_pKeyboardSizer->Layout();
 
 }
+
+void lmTheoIntervalsCtrol::DoStopSounds()
+{
+    //Stop any possible score being played to avoid crashes
+    if (m_pIntervalScore) m_pIntervalScore->Stop();
+    if (m_pProblemScore) m_pProblemScore->Stop();
+
+}
+

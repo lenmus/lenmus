@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -155,7 +155,7 @@ lmDlgCfgScoreReading::lmDlgCfgScoreReading(wxWindow * parent,
     // save received data
     m_pConstrains = pConstrains;
     m_sSettingsKey = sSettingsKey;
-    
+
     if (m_sSettingsKey == _T("single_clefs_reading")) {
         m_nDialogType = eDlgNotesReading;
     }
@@ -173,12 +173,12 @@ lmDlgCfgScoreReading::lmDlgCfgScoreReading(wxWindow * parent,
         //
         //get pointers to all controls
         //
-    
+
     // the notebook control
     m_pBook = XRCCTRL(*this, "bookCtrol", wxNotebook);
 
         // Panel 0: Clefs & Notes
-    
+
     // Error messages and bitmaps
     m_pLblClefError = XRCCTRL(*this, "lblClefError", wxStaticText);
     m_pBmpClefError = XRCCTRL(*this, "bmpClefError", wxStaticBitmap);
@@ -222,7 +222,7 @@ lmDlgCfgScoreReading::lmDlgCfgScoreReading(wxWindow * parent,
     m_pSpinMaxInterval = XRCCTRL(*this, "spinMaxInterval", wxSpinCtrl);
 
         // Panel 1: Time signatures
-    
+
     // Error messages and bitmaps
     m_pLblTimeError = XRCCTRL(*this, "lblTimeError", wxStaticText);
     m_pBmpTimeError = XRCCTRL(*this, "bmpTimeError", wxStaticBitmap);
@@ -240,7 +240,7 @@ lmDlgCfgScoreReading::lmDlgCfgScoreReading(wxWindow * parent,
     m_pChkTime[emtr32 - lmMIN_TIME_SIGN] = XRCCTRL(*this, "chkTime32", wxCheckBox);
 
         // Panel 2: Key signatures
-    
+
     // Error messages and bitmaps
     m_pBmpKeySignError = XRCCTRL(*this, "bmpKeySignError", wxStaticBitmap);
     m_pLblKeySignError = XRCCTRL(*this, "lblKeySignError", wxStaticText);
@@ -406,12 +406,12 @@ void lmDlgCfgScoreReading::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
 
     }
 
-    //terminate the dialog 
+    //terminate the dialog
     //! @todo save the currently shown panel number to open this panel next time
-    EndModal(wxID_OK);      
+    EndModal(wxID_OK);
 }
 
-/*! Returns true if there are errors. If there are no  
+/*! Returns true if there are errors. If there are no
     errors the Accept button is enabled. Otherwise it is disabled.
 */
 bool lmDlgCfgScoreReading::VerifyData()
@@ -522,7 +522,7 @@ bool lmDlgCfgScoreReading::VerifyData()
 
     }
 
-    //! @todo verify that there are fragments for the choosen time signatures 
+    //! @todo verify that there are fragments for the choosen time signatures
 
     //
     //enable / disable accept button
@@ -531,7 +531,7 @@ bool lmDlgCfgScoreReading::VerifyData()
     pButtonAccept->Enable(!fGlobalError);
 
     return fGlobalError;
-    
+
 }
 
 void lmDlgCfgScoreReading::OnControlClicked(wxCommandEvent& WXUNUSED(event))

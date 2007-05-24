@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-05-17 11:30+0100\n"
+"PO-Revision-Date: 2007-05-21 15:28+0100\n"
 "Last-Translator: \n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -894,9 +894,9 @@ msgstr "Elemento '%s': Tipo de gráfico (%s) desconocido. Se ignora."
 
 #: ldp_parser/LDPParser.cpp:2872
 #: ldp_parser/LDPParser.cpp:2901
-#, fuzzy, c-format
+#, c-format
 msgid "Element '%s' has less parameters than the minimum required. Tag ignored. Assumed default stem."
-msgstr "Elemento '%s' tiene menos parámetros de los necesarios. Se ignora."
+msgstr "Elemento '%s' tiene menos parámetros de los necesarios. Se ignora. Se pondrá la plica por defecto."
 
 #: ldp_parser/LDPParser.cpp:2884
 #, c-format
@@ -904,9 +904,9 @@ msgid "Invalid stem direction '%s'. Default direction taken."
 msgstr "Dirección de plica '%s' incorrecta. Se pondrá la dirección por defecto."
 
 #: ldp_parser/LDPParser.cpp:2913
-#, fuzzy, c-format
+#, c-format
 msgid "Invalid fermata placement '%s'. Default placement assumed."
-msgstr "Dirección de plica '%s' incorrecta. Se pondrá la dirección por defecto."
+msgstr "Posición de calderón '%s' incorrecta. Se colocará en la posición por defecto."
 
 #: ldp_parser/LDPParser.cpp:2932
 #, c-format
@@ -1355,17 +1355,14 @@ msgid "Program error: Loop detected in lmScalesConstrains::GetRandomChordType."
 msgstr "Error de programa: detectado bucle en lmScalesConstrains::GetRandomChordType."
 
 #: exercises/ScoreConstrains.cpp:196
-#, fuzzy
 msgid "Global error: No clef constraints specified\n"
 msgstr "Error global: no se ha especificado clave\n"
 
 #: exercises/ScoreConstrains.cpp:206
-#, fuzzy
 msgid "Global error: No time signature constraints specified\n"
 msgstr "Error global: no se ha especificado métrica\n"
 
 #: exercises/ScoreConstrains.cpp:216
-#, fuzzy
 msgid "Global error: No key signature constraints specified\n"
 msgstr "Error global: no se ha especificado armadura\n"
 
@@ -2051,7 +2048,6 @@ msgid "Show all"
 msgstr "Mostrar todo"
 
 #: html/TextBookFrame.cpp:477
-#, fuzzy
 msgid "Display all index items that contain the given substring. The search is case insensitive."
 msgstr "Muestra todos los items del índice que contienen la cadena especificada. La búsqueda no distingue entre mayúsculas y minúsculas."
 
@@ -2077,9 +2073,8 @@ msgid "Search"
 msgstr "Buscar"
 
 #: html/TextBookFrame.cpp:510
-#, fuzzy
 msgid "Search contents of help book(s) for all occurrences of the text you typed above"
-msgstr "Busca en el contenido de todos los libros y muestra todas las ocurrencias del texto que se haya tecleado antes"
+msgstr "Busca en el contenido de todos los libros y muestra todas las ocurrencias del texto que se haya tecleado"
 
 #: html/TextBookFrame.cpp:706
 msgid "Please choose the page to display:"

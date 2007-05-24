@@ -18,12 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file EarIntervalsCtrol.h
-    @brief Header file for class lmEarIntervalsCtrol
-    @ingroup html_controls
-*/
-#ifdef __GNUG__
-// #pragma interface
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "EarIntervalsCtrol.cpp"
 #endif
 
 #ifndef __EARINTERVALSCTROL_H__        //to avoid nested includes
@@ -88,6 +85,7 @@ private:
     void DisplaySolution();
     void ResetExercise();
     void PrepareScore(wxString& sIntvCode, lmScore** pScore);
+    void DoStopSounds();
 
         // member variables
 

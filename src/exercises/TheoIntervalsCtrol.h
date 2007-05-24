@@ -18,12 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file TheoIntervalsCtrol.h
-    @brief Header file for class lmTheoIntervalsCtrol
-    @ingroup html_controls
-*/
-#ifdef __GNUG__
-// #pragma interface
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "TheoIntervalsCtrol.cpp"
 #endif
 
 #ifndef __THEOINTERVALSCTROL_H__        //to avoid nested includes
@@ -82,6 +79,7 @@ private:
     void ResetExercise();
     void SetButtonsForNotes();
     void SetButtonsForIntervals();
+    void DoStopSounds();
 
 
         // member variables

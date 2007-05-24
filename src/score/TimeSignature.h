@@ -73,6 +73,9 @@ public:
     //sound related methods
     void AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime, int nMeasure);
 
+    // access to information
+    int GetNumBeats() { return m_nBeats; }
+    int GetBeatType() { return m_nBeatType; }
 
 private:
     void PrepareGlyphs();
@@ -115,7 +118,7 @@ extern float GetBeatDuration(ETimeSignature nTimeSign);
 extern float GetBeatDuration(int nBeatType);
 extern float GetMeasureDuration(ETimeSignature nTimeSign);
 //extern bool IsBinaryTimeSignature(ETimeSignature nTimeSign);
-
+extern int AssignVolume(float rTimePos, int nBeats, int nBeatType);
 
 #endif    // __TIMESIGNATURE_H__
 

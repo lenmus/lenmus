@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    for (any comment, suggestion or feature request, please contact the manager of 
+//    for (any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -140,7 +140,7 @@ lmDlgCfgTheoIntervals::lmDlgCfgTheoIntervals(wxWindow * parent,
 
     // problem type
     m_radProblemType->SetSelection( (int)m_pConstrains->GetProblemType() );
-   
+
     //center dialog on screen
     CentreOnScreen();
 
@@ -160,19 +160,19 @@ void lmDlgCfgTheoIntervals::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     for (i=0; i < 7; i++) {
         m_pConstrains->SetClef((EClefType)((int)lmMIN_CLEF+i), m_pChkClef[i]->GetValue());
     }
-    
+
     // save allowed accidentals
     m_pConstrains->SetAccidentals( m_pChkAccidentals->GetValue() );
     m_pConstrains->SetDoubleAccidentals( m_pChkDoubleAccidentals->GetValue() );
 
     // problem type
     m_pConstrains->SetProblemType((EProblemTheoIntervals)m_radProblemType->GetSelection() );
-   
-    //terminate the dialog 
-    EndModal(wxID_OK);      
+
+    //terminate the dialog
+    EndModal(wxID_OK);
 }
 
-/*! Returns true if there are errors. If there are no  
+/*! Returns true if there are errors. If there are no
     errors the Accept button is enabled. Otherwise it is disabled.
 */
 bool lmDlgCfgTheoIntervals::VerifyData()
@@ -184,7 +184,7 @@ bool lmDlgCfgTheoIntervals::VerifyData()
     bool fGlobalError = false;
     m_pLblClefError->Show(false);
     m_pBmpClefError->Show(false);
-    
+
     // check that at least one clef is allowed
     bool fAtLeastOne = false;
     for (i=0; i < 7; i++) {
@@ -208,13 +208,13 @@ bool lmDlgCfgTheoIntervals::VerifyData()
         m_pChkDoubleAccidentals->SetValue(false);
         m_pChkDoubleAccidentals->Enable(false);
     }
-    
+
     //enable / disable accept button
     wxButton* pButtonAccept = XRCCTRL(*this, "buttonAccept", wxButton);
     pButtonAccept->Enable(!fGlobalError);
 
     return fGlobalError;
-    
+
 }
 
 void lmDlgCfgTheoIntervals::OnControlClicked(wxCommandEvent& WXUNUSED(event))

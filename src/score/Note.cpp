@@ -181,7 +181,13 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
 //                Debug.Assert false
 //        }
 //    }
-    
+
+    // MIDI volume information can not be computed until the note is created (constructor
+    // method finished) and the note added to the VStaff collection. Otherwise
+    // timing information is not valid.
+    // So I am going to set a default initial value meaning 'no initialized'
+    m_nVolume = -1;
+
     //if the note is part of a chord find the base note and take some values from it
     m_fIsNoteBase = true;        //by default all notes are base notes
     m_pChord = (lmChord*)NULL;    //by defaul note is not in chord
@@ -341,6 +347,20 @@ void lmNote::ClearChordInformation()
     m_pChord = (lmChord*)NULL;    //by defaul note is not in chord
 }
 
+void lmNote::ComputeVolume()
+{
+    // If volume is not set assign a value
+    if (m_nVolume != -1) return;    //volume already set. Do nothing.
+
+    // Volume should depend on several factors: beak (strong, medium, weak) on which 
+    // this note, phrase, on dynamics information, etc. For now we are going to
+    // consider only beat information
+    lmTimeSignature* pTS = m_pContext->GetTime();
+    if (pTS)
+        m_nVolume = AssignVolume(m_rTimePos, pTS->GetNumBeats(), pTS->GetBeatType());
+    else
+        m_nVolume = 64;
+}
 
 //====================================================================================================
 // implementation of virtual methods defined in base abstract class lmNoteRest
@@ -1332,8 +1352,8 @@ wxString lmNote::Dump()
 {
     wxString sDump;
     sDump = wxString::Format(
-        _T("%d\tNote\tType=%d, Pitch=%d, MidiPitch=%d, PosOnStaff=%d, Step=%d, Alter=%d, TimePos=%.2f, rDuration=%.2f, StemType=%d"),
-        m_nId, m_nNoteType, m_nPitch, m_nMidiPitch, GetPosOnStaff(), m_nStep, m_nAlter, m_rTimePos, m_rDuration,
+        _T("%d\tNote\tType=%d, Pitch=%d, MidiPitch=%d, Volume=%d, PosOnStaff=%d, Step=%d, Alter=%d, TimePos=%.2f, rDuration=%.2f, StemType=%d"),
+        m_nId, m_nNoteType, m_nPitch, m_nMidiPitch, m_nVolume, GetPosOnStaff(), m_nStep, m_nAlter, m_rTimePos, m_rDuration,
         m_nStemType);
     if (m_pTieNext) sDump += _T(", TiedNext");
     if (m_pTiePrev) sDump += _T(", TiedPrev");

@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -117,7 +117,7 @@ bool lmMidiWizard::Create( wxWindow* parent, wxWindowID id, const wxPoint& pos )
  */
 
 void lmMidiWizard::CreateControls()
-{    
+{
 ////@begin lmMidiWizard content construction
     wxWizard* itemWizard1 = this;
 
@@ -149,7 +149,6 @@ void lmMidiWizard::CreateControls()
 
 bool lmMidiWizard::Run()
 {
-    wxWizardPage* startPage = NULL;
     wxWindowListNode* node = GetChildren().GetFirst();
     while (node)
     {
@@ -317,7 +316,7 @@ bool WizardDevicesPage::Create( wxWizard* parent )
  */
 
 void WizardDevicesPage::CreateControls()
-{    
+{
 ////@begin WizardDevicesPage content construction
     WizardDevicesPage* itemWizardPageSimple2 = this;
 
@@ -492,7 +491,7 @@ bool WizardInstrumentsPage::Create( wxWizard* parent )
     }
     //Set selection according to current user prefs
     m_pVoiceChannelCombo->SetSelection( g_pMidi->VoiceChannel() );
-    
+
     //populate sections and instruments combos
     wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
     int nInstr = g_pMidi->VoiceInstr();
@@ -507,7 +506,7 @@ bool WizardInstrumentsPage::Create( wxWizard* parent )
  */
 
 void WizardInstrumentsPage::CreateControls()
-{    
+{
 ////@begin WizardInstrumentsPage content construction
     WizardInstrumentsPage* itemWizardPageSimple16 = this;
 
@@ -728,7 +727,7 @@ bool WizardMetronomePage::Create( wxWizard* parent )
     }
     //Set selection according to current user prefs
     m_pMtrChannelCombo->SetSelection( g_pMidi->MtrChannel() );
-    
+
     //populate metronome sounds combos
     wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
     int nTone1 = g_pMidi->MtrTone1();
@@ -744,7 +743,7 @@ bool WizardMetronomePage::Create( wxWizard* parent )
  */
 
 void WizardMetronomePage::CreateControls()
-{    
+{
 ////@begin WizardMetronomePage content construction
     WizardMetronomePage* itemWizardPageSimple34 = this;
 

@@ -276,9 +276,7 @@ lmEarIntervalsCtrol::lmEarIntervalsCtrol(wxWindow* parent, wxWindowID id,
 
 lmEarIntervalsCtrol::~lmEarIntervalsCtrol()
 {
-    //stop any possible chord being played
-    if (m_pAuxScore) m_pAuxScore->Stop();
-    if (m_pScore) m_pScore->Stop();
+    DoStopSounds();     //stop any possible score being played
 
     if (m_pScoreCtrol) {
         delete m_pScoreCtrol;
@@ -370,9 +368,7 @@ void lmEarIntervalsCtrol::OnNewProblem(wxCommandEvent& event)
 
 void lmEarIntervalsCtrol::OnDisplaySolution(wxCommandEvent& event)
 {
-    //First, stop any possible interval being played to avoid crashes
-    if (m_pAuxScore) m_pAuxScore->Stop();
-    if (m_pScore) m_pScore->Stop();
+    DoStopSounds();     //stop any possible score being played
 
     //now proceed
     m_pCounters->IncrementWrong();
@@ -381,9 +377,7 @@ void lmEarIntervalsCtrol::OnDisplaySolution(wxCommandEvent& event)
 
 void lmEarIntervalsCtrol::OnRespButton(wxCommandEvent& event)
 {
-    //First, stop any possible interval being played to avoid crashes
-    if (m_pAuxScore) m_pAuxScore->Stop();
-    if (m_pScore) m_pScore->Stop();
+    DoStopSounds();     //stop any possible score being played
 
     //identify button pressed
     int nIndex = event.GetId() - ID_BUTTON;
@@ -600,6 +594,8 @@ void lmEarIntervalsCtrol::Play()
 
 void lmEarIntervalsCtrol::DisplaySolution()
 {
+    DoStopSounds();     //stop any possible score being played
+
     m_pScoreCtrol->HideScore(false);
     m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
 
@@ -626,6 +622,8 @@ void lmEarIntervalsCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
 
 void lmEarIntervalsCtrol::ResetExercise()
 {
+    DoStopSounds();     //stop any possible score being played
+
     for (int i=0; i < lmEAR_INVAL_NUM_BUTTONS; i++) {
         if (m_pAnswerButton[i]) {
             m_pAnswerButton[i]->SetBackgroundColour( g_pColors->Normal() );
@@ -637,4 +635,12 @@ void lmEarIntervalsCtrol::ResetExercise()
         m_pScore = (lmScore*)NULL;
     }
     
+}
+
+void lmEarIntervalsCtrol::DoStopSounds()
+{
+    //Stop any possible score being played to avoid crashes
+    if (m_pAuxScore) m_pAuxScore->Stop();
+    if (m_pScore) m_pScore->Stop();
+
 }

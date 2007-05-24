@@ -126,6 +126,9 @@ public:
     lmPitch GetPitch() { return m_nPitch; }
     lmPitch GetMidiPitch() { return m_nMidiPitch; }
     int     GetStep() { return m_nStep; }        //0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
+    int     GetVolume() { return m_nVolume; }
+    void    SetVolume(int nVolume) { m_nVolume = nVolume; }
+    void    ComputeVolume();
 
     // methods used during layout computation
     bool DrawNote(lmPaper* pPaper, bool fMeasuring,
@@ -154,6 +157,8 @@ private:
     int PosOnStaffToPitch(int nSteps);
     void SetUpPitchRelatedVariables(lmPitch nNewPitch);
     void SetUpStemDirection();
+
+
 
         //============================================================
         // member variables 
@@ -219,6 +224,8 @@ private:
     // dealing with beams
     bool            m_fMakeUpDone;      //make up phase done, to avoid doing it
                                         //   several times
+    // playback info
+    int             m_nVolume;          // MIDI volume (0-127)
 
     // common for sound and look 
     //-----------------------------------------------------------------------

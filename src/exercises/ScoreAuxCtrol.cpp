@@ -20,7 +20,7 @@
 //-------------------------------------------------------------------------------------
 
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "ScoreAuxCtrol.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -77,6 +77,7 @@ lmScoreAuxCtrol::lmScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScor
 
 lmScoreAuxCtrol::~lmScoreAuxCtrol()
 {
+    DoStopSounds();     //stop any possible score being played
 }
 
 void lmScoreAuxCtrol::SetMargins(lmLUnits nLeft, lmLUnits nRight, lmLUnits nTop)
@@ -378,5 +379,13 @@ void lmScoreAuxCtrol::DumpMidiEvents()
     if (!m_pScore) return;
     lmDlgDebug dlg(this, _T("MIDI events table"), m_pScore->DumpMidiEvents() );
     dlg.ShowModal();
+
+}
+
+void lmScoreAuxCtrol::DoStopSounds()
+{
+    //Stop the score being played to avoid crashes
+    if (!m_pScore) return;
+    if (m_pScore) m_pScore->Stop();
 
 }

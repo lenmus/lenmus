@@ -97,6 +97,7 @@ lmEarCompareIntvCtrol::lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id,
     : wxWindow(parent, id, pos, size, style )
 {
     //initializations
+    m_fCancel = false;
     SetBackgroundColour(*wxWHITE);
     int i;
     for (i=0; i < 3; i++) { m_pAnswerButton[i] = (wxButton*)NULL; }
@@ -240,6 +241,10 @@ lmEarCompareIntvCtrol::lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id,
 
 lmEarCompareIntvCtrol::~lmEarCompareIntvCtrol()
 {
+    m_fCancel = true;       //inform that the exercise is cancelled
+    wxMilliSleep(3000);     //wait for 1000ms for any score being played
+    DoStopSounds();         //stop any possible score being played
+
     if (m_pScoreCtrol) {
         delete m_pScoreCtrol;
         m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
@@ -496,6 +501,7 @@ void lmEarCompareIntvCtrol::Play()
 #else
     m_pAnswerButton[0]->SetBackgroundColour( g_pColors->ButtonHighlight() );
     m_pAnswerButton[0]->Update();    //Refresh works vie events and, so, it is not inmediate
+    if (m_fCancel) return;
     m_pScore[0]->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
                              ePM_NormalInstrument, 320);
     m_pScore[0]->WaitForTermination();
@@ -505,6 +511,7 @@ void lmEarCompareIntvCtrol::Play()
     wxMilliSleep(1000);     //wait for 1sec (1000ms)
 
     //second interval
+    if (m_fCancel) return;
     m_pAnswerButton[1]->SetBackgroundColour( g_pColors->ButtonHighlight() );
     m_pAnswerButton[1]->Update();
     m_pScore[1]->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
@@ -517,6 +524,7 @@ void lmEarCompareIntvCtrol::Play()
 
 void lmEarCompareIntvCtrol::DisplaySolution()
 {
+    DoStopSounds();     //stop any possible score being played
     wxString sAnswer = m_sAnswer[0] + _T(", ") + m_sAnswer[1];
     m_pScoreCtrol->HideScore(false);
     m_pScoreCtrol->DisplayMessage(sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
@@ -551,6 +559,8 @@ void lmEarCompareIntvCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
 
 void lmEarCompareIntvCtrol::ResetExercise()
 {
+    DoStopSounds();     //stop any possible score being played
+
     //clear the canvas
     m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
     m_pScoreCtrol->Update();    //to force to clear it now
@@ -576,5 +586,13 @@ void lmEarCompareIntvCtrol::ResetExercise()
         delete m_pTotalScore;
         m_pTotalScore = (lmScore*)NULL;
     }
+
+}
+
+void lmEarCompareIntvCtrol::DoStopSounds()
+{
+    //Stop any possible score being played to avoid crashes
+    if (m_pScore[0]) m_pScore[0]->Stop();
+    if (m_pScore[1]) m_pScore[1]->Stop();
 
 }

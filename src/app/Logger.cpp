@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -61,14 +61,14 @@ extern lmMainFrame *g_pMainFrame;
     LogFatalError    which is like LogError, but also terminates the program with
                     the exit code 3 (using abort() standard function). Unlike for all
                     the other logging functions, this function can't be overridden by
-                    a log target. 
+                    a log target.
     LogError        is the function to use for error messages, i.e. the messages that must
                     be shown to the user. The default processing is to pop up a message
-                    box to inform the user about it. 
+                    box to inform the user about it.
     LogWarning        for warnings - they are also normally shown to the user, but don't
-                    interrupt the program work. 
+                    interrupt the program work.
     LogMessage        is for all normal, informational messages. They also appear in a
-                    message box by default (but it can be changed, see below). 
+                    message box by default (but it can be changed, see below).
     LogVerbose        is for verbose output. Normally, it is suppressed, but might be
                     activated if the user wishes to know more details about the program
                     progress.
@@ -77,19 +77,19 @@ extern lmMainFrame *g_pMainFrame;
                     message text as well as the last system error code (errno or
                     ::GetLastError() depending on the platform) and the corresponding
                     error message. The second form of this function takes the error
-                    code explicitly as the first argument. 
+                    code explicitly as the first argument.
     LogDebug        is the right function for debug output. It only does anything at all
                     in the debug mode (when the preprocessor symbol __WXDEBUG__ is defined)
                     and expands to nothing in release mode (otherwise). Tip: under Windows,
                     you must either run the program under debugger or use a 3rd party
-                    program such as DbgView to actually see the debug output. 
+                    program such as DbgView to actually see the debug output.
     LogTrace        as LogDebug only does something in debug build. The reason for making
                     it a separate function from it is that usually there are a lot of
                     trace messages, so it might make sense to separate them from
                     other debug messages which would be flooded in them. Moreover, the
                     second version of this function takes a trace mask as the first
                     argument which allows to further restrict the amount of messages
-                    generated. 
+                    generated.
 
 */
 
@@ -224,7 +224,7 @@ void lmLogger::LogFatalError(const wxChar* szFormat, ...)
 {
     va_list argptr;
     va_start(argptr, szFormat);
-    wxVLogFatalError(szFormat, argptr); 
+    wxVLogFatalError(szFormat, argptr);
     va_end(argptr);
 }
 
@@ -232,7 +232,7 @@ void lmLogger::LogError(const wxChar* szFormat, ...)
 {
     va_list argptr;
     va_start(argptr, szFormat);
-    wxVLogError(szFormat, argptr); 
+    wxVLogError(szFormat, argptr);
     va_end(argptr);
 }
 
@@ -240,7 +240,7 @@ void lmLogger::LogWarning(const wxChar* szFormat, ...)
 {
     va_list argptr;
     va_start(argptr, szFormat);
-    wxVLogWarning(szFormat, argptr); 
+    wxVLogWarning(szFormat, argptr);
     va_end(argptr);
 }
 
@@ -248,7 +248,7 @@ void lmLogger::LogMessage(const wxChar* szFormat, ...)
 {
     va_list argptr;
     va_start(argptr, szFormat);
-    wxVLogMessage(szFormat, argptr); 
+    wxVLogMessage(szFormat, argptr);
     va_end(argptr);
 }
 
@@ -256,7 +256,7 @@ void lmLogger::LogVerbose(const wxChar* szFormat, ...)
 {
     va_list argptr;
     va_start(argptr, szFormat);
-    wxVLogVerbose(szFormat, argptr); 
+    wxVLogVerbose(szFormat, argptr);
     va_end(argptr);
 }
 
@@ -264,7 +264,7 @@ void lmLogger::LogSysError(const wxChar* szFormat, ...)
 {
     va_list argptr;
     va_start(argptr, szFormat);
-    wxVLogSysError(szFormat, argptr); 
+    wxVLogSysError(szFormat, argptr);
     va_end(argptr);
 }
 
@@ -276,7 +276,7 @@ void lmLogger::LogDebug(const wxChar* szFormat, ...)
 {
     va_list argptr;
     va_start(argptr, szFormat);
-    wxVLogDebug(szFormat, argptr); 
+    wxVLogDebug(szFormat, argptr);
     va_end(argptr);
 }
 
@@ -284,7 +284,7 @@ void lmLogger::LogTrace(const wxString& mask, const wxChar* szFormat, ...)
 {
     va_list argptr;
     va_start(argptr, szFormat);
-    wxVLogTrace(mask, szFormat, argptr); 
+    wxVLogTrace(mask, szFormat, argptr);
     va_end(argptr);
 }
 

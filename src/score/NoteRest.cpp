@@ -226,7 +226,7 @@ void lmNoteRest::AddMidiEvents(lmSoundManager* pSM, float rMeasureStartTime, int
     float rTime = m_rTimePos + rMeasureStartTime;
     if (IsRest()) {
         //Generate only event for visual highlight
-        pSM->StoreEvent( rTime, eSET_VisualON, nChannel, 0, 0, this, nMeasure);
+        pSM->StoreEvent( rTime, eSET_VisualON, nChannel, 0, 0, 0, this, nMeasure);
     }
     else {
         //It is a note. Generate Note On event
@@ -234,13 +234,14 @@ void lmNoteRest::AddMidiEvents(lmSoundManager* pSM, float rMeasureStartTime, int
         if (!pN->IsTiedToPrev()) {
             //It is not tied to the previous one. Generate NoteOn event to start the sound and
             //highlight the note
-            pSM->StoreEvent(rTime, eSET_NoteON, nChannel, pN->GetMidiPitch(), pN->GetStep(),
-                            this, nMeasure);
+            pN->ComputeVolume();
+            pSM->StoreEvent(rTime, eSET_NoteON, nChannel, pN->GetMidiPitch(),
+                            pN->GetVolume(), pN->GetStep(), this, nMeasure);
         }
         else {
             //This note is tied to the previous one. Generate only a VisualOn event as the
             //sound is already started by the previous note.
-            pSM->StoreEvent(rTime, eSET_VisualON, nChannel, pN->GetMidiPitch(), pN->GetStep(),
+            pSM->StoreEvent(rTime, eSET_VisualON, nChannel, pN->GetMidiPitch(), 0, pN->GetStep(),
                             this, nMeasure);
         }
     }
@@ -249,7 +250,7 @@ void lmNoteRest::AddMidiEvents(lmSoundManager* pSM, float rMeasureStartTime, int
     rTime += GetDuration();
     if (IsRest()) {
         //Is a rest. Genera only a VisualOff event
-        pSM->StoreEvent(rTime, eSET_VisualOFF, nChannel, 0, 0, this, nMeasure);
+        pSM->StoreEvent(rTime, eSET_VisualOFF, nChannel, 0, 0, 0, this, nMeasure);
     }
     else {
         //It is a note
@@ -257,13 +258,13 @@ void lmNoteRest::AddMidiEvents(lmSoundManager* pSM, float rMeasureStartTime, int
         if (!pN->IsTiedToNext()) {
             //It is not tied to next note. Generate NoteOff event to stop the sound and
             //un-highlight the note
-            pSM->StoreEvent(rTime, eSET_NoteOFF, nChannel, pN->GetMidiPitch(), pN->GetStep(),
+            pSM->StoreEvent(rTime, eSET_NoteOFF, nChannel, pN->GetMidiPitch(), 0, pN->GetStep(),
                             this, nMeasure);
         }
         else {
             //This note is tied to the next one. Generate only a VisualOff event so that
             //the note will be un-highlighted but the sound will not be stopped.
-            pSM->StoreEvent(rTime, eSET_VisualOFF, nChannel, pN->GetMidiPitch(), pN->GetStep(),
+            pSM->StoreEvent(rTime, eSET_VisualOFF, nChannel, pN->GetMidiPitch(), 0, pN->GetStep(),
                             this, nMeasure);
         }
     }

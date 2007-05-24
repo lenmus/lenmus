@@ -42,7 +42,15 @@
           <li>Option 'Staff.UpperLegerLines.Displacement' to shift the first upper leger
             line so that it is closer/further than normal spacing.
             The other leger lines spacing is not changed.</li>
+        <li>Options 'Render.SpacingMethod' and 'Render.SpacingValue', to allow for
+            more control of score renderization.</li>
         </ul></li>
+    </ul></li>
+  <li>Improvements in score renderization:
+    <ul>
+      <li>Fixed spacing method implemented.</li>
+      <li>Fixed bug [#1715968]. Proportional spacing of notes is now working.</li>
+      <li>Do not add spacing after barline if barline is not visible.</li>
     </ul></li>
   <li>Improvements in LDP language to support the new features. New tags added:
     <ul>
@@ -55,19 +63,30 @@
       <li>Added support for strings enclosed in double simple quotes as
         an alternative to double quotes.</li>
     </ul></li>
-  <li>Several <a href="#bugs">bug fixes</a> and other
-    technical improvements.</li>
+  <li>Several bug fixes and other technical improvements.</li>
 </ul>
 
 
 <p>&nbsp;</p>
 
 
-<h2><a name="bugs">Bug fixed details</a></h2>
+<h2>Bug fixed details</h2>
 
 <ul>
+  <li>Bug fixed [#1715979]: When you have a score open, the 'show/hide navigation panel'
+        button shows as active but you cannot click on it.</li>
+  <li>Bug fixed [#1715953]: In the Midi configuration wizard the drop downs in
+        the wizard should not be editable.</li>
+  <li>Bug fixed [#1715959]: Focus problem. In the configuration window when you check
+        the proxy configuration but do not fill it in and then change the focus to
+        section 'language', the category selector changes but the focus remains on
+        the Internet section. Alternatively you could generate a warning message and
+        leave the focus on the Internet section.</li>
+  <li>Bug fixed [#1715963]: Repeated quick acceleration letters in options, menu
+        labels. The English text has the same letter as quick key for bottom
+        and right labels.</li>
   <li>Bug fixed [#1715965]: Rests in a group of tied notes are not rendered in the right position.</li>
-  <li>Bug fixed [#1715968]: Proportional spacing of notes is not functioning.</li>
+  <li>Bug fixed [#1715968]: Proportional spacing of notes is not working.</li>
   <li>Bug fixed [#1715953]: In the Midi configuration wizard the drop downs in
         the wizard should not be editable.</li>
   <li>Bug fixed [#1715959]: Focus problem. In the configuration window when you check

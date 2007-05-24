@@ -18,10 +18,10 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file IdfyChordCtrol.h
-    @brief Header file for class lmIdfyChordCtrol
-    @ingroup html_controls
-*/
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "IdfyChordCtrol.cpp"
+#endif
 
 #ifndef __IDFYCHORDCTROL_H__        //to avoid nested includes
 #define __IDFYCHORDCTROL_H__
@@ -82,6 +82,7 @@ private:
     void ResetExercise();
     void ResetCounters();
     wxString PrepareScore(EClefType nClef, EChordType nType, lmScore** pScore);
+    void DoStopSounds();
 
         // member variables
 
