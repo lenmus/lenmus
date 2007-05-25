@@ -9,14 +9,35 @@
 <para>
 The next figure we are going to study is the eighth note (also called 'quaver' in 
 British English). Its symbols are shown in the followig score, and are 
-like a quarter note with a flag added to its stem; they are usually drawn beamed:
+like a quarter note with a flag added to its stem:
+</para>
+
+<score width="600" height="100" border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (spacer 40)
+        	(n c5 e)
+            (spacer 40)
+        	(n f4 e)
+            (spacer 40)
+        	(barline end)
+        )))
+    </music>
+</score>
+
+<para>
+Many times the eight noyes are drawn beamed:
 </para>
 
 <score width="600" height="100" border="0">
     <score_type>short</score_type>
     <music_border>0</music_border>
     <music>
-        (n c5 c)(n f4 c)(espacio 20)(Barra Doble)
+    	(espaceo 30)
         (n c4 c g+)(n g4 c g-)(n b4 c g+)(n e5 c g-)(Barra Doble)
         (n c5 c g+)(n e5 c)(n b4 c)(n d4 c g-)(Barra Doble)
         (n e4 c g+)(n g4 c)(n f4 c)(n a4 c g-)(Barra Final))

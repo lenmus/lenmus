@@ -50,7 +50,7 @@ Leger lines can also be added on top, for high pitch notes:
             (n d5 q)(n e5 q)(barline simple noVisible)
             (n f5 q)(n g5 q)(barline simple noVisible)
             (n a5 q)(n b5 q)(barline simple noVisible)
-            (n c6 q)(n d6 q)
+            (n c6 q)
             (barline final)
         )))
     </music>

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-05-25 20:33+0100\n"
+"PO-Revision-Date: 2007-05-25 23:28+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -353,7 +353,7 @@ msgstr "Compases y líneas divisorias"
 
 #: L1_MusicReading/L1_MusicReading.cpp:80
 msgid "Music is normally divided into equal parts named 'measures' (in British English the word 'bar' is used instead of 'measure'). On the staff, the end of each measure is marked with a thin vertical line, drawn from the top line to the bottom line of the staff. This line is called a bar line:"
-msgstr "La música escrita es organiza, normalmente, dividiéndola en partes llamadas 'compases'. En el pentagrama, el final de cada compás se indica por una fina raya vertical, dibujada desde la línea superios hasta la inferior. Esta raya se denomina 'la barra del compás':"
+msgstr "La música escrita es organiza, normalmente, dividiéndola en partes llamadas 'compases'. En el pentagrama, el final de cada compás se indica por una fina raya vertical, dibujada desde la línea superios hasta la inferior. Esta raya se denomina 'línea divisoria':"
 
 #: L1_MusicReading/L1_MusicReading.cpp:81
 #: L1_MusicReading/L1_MusicReading.cpp:83
@@ -368,7 +368,7 @@ msgstr "Compás"
 
 #: L1_MusicReading/L1_MusicReading.cpp:86
 msgid "There are different types of bar lines, that are used for special purposes. For example, the end of the last measure of a piece of music is marked with a double bar line, being the fist line thin and the second one thick. The thin double bar line (two thin lines) is used to mark sections within a piece of music."
-msgstr "Hay distintos tipos de barras de compas, que se utilizan para distintas finalidades. Por ejemplo, el final del último compás de una pieza se indica mediante la 'barra final' (una líea fina seguida de una línea gruesa). Para separar secciones dentro de una pieza se utiliza la 'doble barra' (dos lineas finas consecutivas)."
+msgstr "Hay distintos tipos de líneas divisorias, que se utilizan para distintas finalidades. Por ejemplo, el final del último compás de una pieza se indica mediante la 'barra final' (una líea fina seguida de una línea gruesa). Para separar secciones dentro de una pieza se utiliza la 'doble barra' (dos lineas finas consecutivas)."
 
 #: L1_MusicReading/L1_MusicReading.cpp:87
 msgid "simple barline"
@@ -424,7 +424,7 @@ msgstr "Como sabes, la métrica de 2/4 indica que cada compás tiene dos tiempos
 
 #: L1_MusicReading/L1_MusicReading.cpp:100
 msgid "We also know that the first beat of each measure is the stronger one. Therefore, if you count beats along with the music, the 2/4 time signature will imply a rhythm such as 'ONE-and-Two-and-ONE-and-Two-and ...', stressing the ONE syllable, as if you were a soldier marching. For studying music reading it makes sense to mark the beats with the hand, the first beat of each measure with a knock down (on the table or at the air) and the second beat of each measure with a knock up (at the air or on the shoulder). You can also mark the beats with you foot, it you prefer, but it is very, very important to mark the beats. You should do of it a habit, at least until you get enough skills at reading music."
-msgstr "También sabemos que el primer pulso de cada compás es el más fuerte. Por tanto, si cuentas los pulsos a medida que lees una partitura, la métrica de 2/4 corresonde a un ritmo tal como 'UNO-y-dos-y-UNO-y-dos-...' como si estuvieras desfilando, con un acento en la palabra UNO. Para estudiar la lectura de partituras es importante marcar los pulsos del compás, bien sea con la mano, con un golpe seco abajo (en la mesa o en el aire) y otro arriba (en el hombro o en el aire). También puedes marcarlos con el pie, si lo prefieres. Pero es importante que te acostumbres a pmarcar los pulsos según lees. Debes hacer de ello un hábito hasta que tengas la destreza necesaria para leer correctamente una partitura."
+msgstr "También sabemos que el primer pulso de cada compás es el más fuerte. Por tanto, si cuentas los pulsos a medida que lees una partitura, la métrica de 2/4 corresonde a un ritmo tal como 'UNO-y-dos-y-UNO-y-dos-...' como si estuvieras desfilando, con un acento en la palabra UNO. Para estudiar la lectura de partituras es importante marcar los pulsos del compás, bien sea con la mano, con un golpe seco abajo (en la mesa o en el aire) y otro arriba (en el hombro o en el aire). También puedes marcarlos con el pie, si lo prefieres. Pero es importante que te acostumbres a marcar los pulsos según lees. Debes hacer de ello un hábito hasta que tengas la destreza necesaria para leer correctamente una partitura."
 
 #: L1_MusicReading/L1_MusicReading.cpp:101
 msgid "The tempo and the metronome"
@@ -510,7 +510,7 @@ msgstr " - Deprisa"
 
 #: L1_MusicReading/L1_MusicReading.cpp:120
 msgid "Vivo, or Vivace"
-msgstr " - Rápido y enérgico, con brío "
+msgstr "Vivo o Vivace"
 
 #: L1_MusicReading/L1_MusicReading.cpp:121
 msgid " - lively and brisk"
@@ -596,7 +596,7 @@ msgstr "El programa LenMus incorpora un metrónomo que puedes utilizarcuando qui
 
 #: L1_MusicReading/L1_MusicReading.cpp:149
 msgid "Just click on the 'metronome' button"
-msgstr "Simplemente haz click en el botón 'metrónomo'"
+msgstr "Simplemente haz click en el botón 'metrónomo' "
 
 #: L1_MusicReading/L1_MusicReading.cpp:150
 msgid " and the sound will inmediately start. To stop the metronome click on the button again. To adjust the tempo just type the required tempo number in the box on the right of the metronome button (2), or click on the up/down arrows on the right (3) to adjust the desired tempo. Try it now!"
@@ -608,7 +608,7 @@ msgstr "Cuando el programa interpreta una partitura el tempo también está cont
 
 #: L1_MusicReading/L1_MusicReading.cpp:152
 msgid "If while playing back a score you would like to hear also the metronome, press the metronome button before or during playback."
-msgstr "Si mientras el programa interpreta una partituras quieres que se escuche el metrónomo basta con que pulses el botón del metrónomo, bien antes de comenzar la ejecución o bien mientras la partitura esté sonando."
+msgstr "Si mientras el programa interpreta una partitura quieres que se escuche el metrónomo basta con que pulses el botón del metrónomo, bien antes de comenzar la ejecución o bien mientras la partitura esté sonando."
 
 #: L1_MusicReading/L1_MusicReading.cpp:153
 #: L1_MusicReading/L1_MusicReading.cpp:161
@@ -921,7 +921,7 @@ msgstr "natural"
 
 #: L1_MusicReading/L1_MusicReading.cpp:210
 msgid "A sharp sign raises the pitch of a note by a half step (one semitone). A flat sign lowers the pitch of a note a half step (one semitone). A natural sign cancels the effect of a flat or a sharp."
-msgstr "UN sostenido eleva la altura de la nota en un semitono. Un bemosl lo disminuye en un semitono. Y un natural cancela el efecto de un sostenido o un bemol anterior."
+msgstr "Un sostenido eleva la altura de la nota en un semitono. Un bemosl lo disminuye en un semitono. Y un natural cancela el efecto de un sostenido o un bemol anterior."
 
 #: L1_MusicReading/L1_MusicReading.cpp:211
 msgid "An accidental sign alters not only the pitch of the note that it is attached to, but also the pitch of any subsequent occurrence of the same note in the same measure. Notes with the same pitch name, but in a higher or lower octave are not affected. The effect of the accidental ends at the end of the measure, so notes in the next measure will not be altered, except those tied to one in the previous measure."
@@ -941,7 +941,7 @@ msgstr "Tener que escribir muchas alteraciones en una partitura resulta incómod
 
 #: L1_MusicReading/L1_MusicReading.cpp:215
 msgid "in every octave"
-msgstr "in cada octava"
+msgstr "en cada octava"
 
 #: L1_MusicReading/L1_MusicReading.cpp:216
 msgid ". As a consequence, is no longer needed to place accidental signs in front of each note. So, the previous score can also be written as follows:"
@@ -953,7 +953,7 @@ msgstr "Observa que el sostenido de la nota Fa está escrito en la 5ª línea pe
 
 #: L1_MusicReading/L1_MusicReading.cpp:218
 msgid "The key signature, apart of simplifying the notation, gives information about the 'tonality' of the composition, roughly speaking, which scale is used to build a piece of music. The key signature must be written on every music line, placed immediately after the clef sign."
-msgstr "La armadura, además de simplificar la escritura, nos da información sobre la 'tonalidad' de la pieza musical, esto es, básicamente una indicación sobre en qué escala está basada la composición. La armadura hay que escribirla en cada pentagrama, colocada justo detrás de la clave."
+msgstr "La armadura, además de simplificar la escritura, nos da información sobre la 'tonalidad' de la pieza musical, es deir, una indicación sobre en qué escala está basada la composición. La armadura hay que escribirla en cada pentagrama, colocada justo detrás de la clave."
 
 #: L1_MusicReading/L1_MusicReading.cpp:220
 msgid "In this lesson we will continue with exercises containing the rhythmic patterns of the previous lessons, but introducing the key signatures of G major and E minor (one sharp) and B flat major and G minor (one flat)."
@@ -1097,11 +1097,11 @@ msgstr "El compás de 3/4. La blanca con puntillo"
 
 #: L1_MusicReading/L1_MusicReading.cpp:324
 msgid "In this lesson we will learn about the 3/4 time signature. As you should know (lesson 6) the top number tells how many beats are there in a measure, and the bottom number shows the type of note that gets one beat; the number 4 means 'quarter note'. Therefore, the 3/4 time signature is a rhythm with three beats per measure and each measure gets three quarter notes. The first beat of a measure is always strong and the two other beats are weaker."
-msgstr "En esta lección iniciamos el estudio del compas de 3/4. Com sabes (lección 6) el número de arriba indica cuántos pulsos tiene cada compás, y el número de abajo indicá qué nota es la que ocupa cada pulso (el número 4 significa 'nota negra'). Así pues, la métrica de 3/4 corresponde a un ritmo en el que cada compás va a tener tres pulsos y cada uno de ellos va a estar ocupado por una nota negra. El primer pulso de cada compás es fuerte y los otros dos son débiles."
+msgstr "En esta lección iniciamos el estudio del compas de 3/4. Como sabes (lección 6) el número de arriba indica cuántos pulsos tiene cada compás, y el número de abajo indicá qué nota es la que ocupa cada pulso (el número 4 significa 'nota negra'). Así pues, la métrica de 3/4 corresponde a un ritmo en el que cada compás va a tener tres pulsos y cada uno de ellos va a estar ocupado por una nota negra. El primer pulso de cada compás es fuerte y los otros dos son débiles."
 
 #: L1_MusicReading/L1_MusicReading.cpp:325
 msgid "If you count beats along with the music, the 3/4 time signature will imply a rhythm such as 'ONE-two-three-and-ONE-two-three-and- ...', stressing the ONE syllable. This is the typical waltz rhythm."
-msgstr "Si cuentas los pulsos de cada compas, el tempo de 3/4 implica un ritmo tal como 'UNO-y-dos-y -tres-y-UNO-y-dos-y-tres-y-...', enfatizando la palabra UNO. Este ritmo es típico de los valses."
+msgstr "Si cuentas los pulsos de cada compás, el tempo de 3/4 implica un ritmo tal como 'UNO-y-dos-y -tres-y-UNO-y-dos-y-tres-y-...', enfatizando la palabra UNO. Este ritmo es típico de los valses."
 
 #: L1_MusicReading/L1_MusicReading.cpp:326
 msgid "In this lesson also a new rhythmic pattern is introduced: the dotted half note, equivalent to a half note tied to a quarter note:"
@@ -1129,7 +1129,7 @@ msgstr "Si cuentas los pulsos del compás, la métrica de 4/4 implica un ritmo t
 
 #: L1_MusicReading/L1_MusicReading.cpp:338
 msgid "This rhythm is widely used in classical music; also it is the usual time signature in rock, jazz, and modern pop and dance music."
-msgstr "Esste ritmo es habitual en música clásica; tambén es ampliamente utilizado en musica rock, jazz y pop."
+msgstr "Este ritmo es habitual en música clásica; también es ampliamente utilizado en música rock, jazz y pop."
 
 #: L1_MusicReading/L1_MusicReading.cpp:339
 msgid "The whole note and its rest"

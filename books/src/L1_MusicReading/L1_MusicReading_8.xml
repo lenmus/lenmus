@@ -22,6 +22,27 @@ a rhythm such as 'ONE-two-three-and-ONE-two-three-and- ...', stressing the
 ONE syllable. This is the typical waltz rhythm.
 </para>
 
+<score width="600" height='70' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <control_play></control_play>
+    <metronome>90</metronome>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 3 4)
+            (metronome q 90)
+            (spacer 20)
+            (n a4 q)(n a4 q)(n a4 q)(barline)
+            (n a4 q)(n a4 q)(n a4 q)(barline)
+            (n a4 q)(n a4 q)(n a4 q)
+            (barline end)
+        )))
+    </music>
+</score>
+
+
 <para>In this lesson also a new rhythmic pattern is introduced:
 the dotted half note, equivalent to a half note tied to a quarter note:
 </para>
