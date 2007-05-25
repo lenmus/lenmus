@@ -674,8 +674,15 @@ bool lmEbookProcessor::ExerciseMusicTag(const wxXml2Node& oNode)
 
     //locate all translatable strings
     wxString sNoTrans, sTrans;
-    int iStart, iEnd;
+    int iStart, iEnd, nQuoteLength;
+
     iStart = sMusic.Find(_T("&quot;"));
+    nQuoteLength = 6;   //length of string "&quot;"
+    if (iStart == wxNOT_FOUND) {
+        iStart = sMusic.Find(_T("''"));
+        nQuoteLength = 2;   //length of string "''"
+    }
+
     while (sMusic.Length() > 0 && iStart != wxNOT_FOUND)
     {
         if (iStart != wxNOT_FOUND) {
@@ -683,8 +690,16 @@ bool lmEbookProcessor::ExerciseMusicTag(const wxXml2Node& oNode)
             sNoTrans = sMusic.Left(iStart);
             WriteToHtml( sNoTrans );
 
-            sMusic = sMusic.Mid(iStart+6);
+            sMusic = sMusic.Mid(iStart+nQuoteLength);
+
+            // find end of string
             iEnd = sMusic.Find(_T("&quot;"));
+            nQuoteLength = 6;   //length of string "&quot;"
+            if (iEnd == wxNOT_FOUND) {
+                iEnd = sMusic.Find(_T("''"));
+                nQuoteLength = 2;       //length of string "''"
+            }
+
             //end of translatable string
             sTrans = sMusic.Left(iEnd);
             if (m_fOnlyLangFile) {
@@ -693,11 +708,16 @@ bool lmEbookProcessor::ExerciseMusicTag(const wxXml2Node& oNode)
                 WriteToLang(sTrans);
             }
             sTrans = ::wxGetTranslation(sTrans);
-            WriteToHtml( _T("&quot;") + sTrans + _T("&quot;") );
+            WriteToHtml( _T("''") + sTrans + _T("''") );
 
             //remaining
-            sMusic = sMusic.Mid(iEnd+6);
+            sMusic = sMusic.Mid(iEnd+nQuoteLength);
             iStart = sMusic.Find(_T("&quot;"));
+            nQuoteLength = 6;   //length of string "&quot;"
+            if (iStart == wxNOT_FOUND) {
+                iStart = sMusic.Find(_T("''"));
+                nQuoteLength = 2;   //length of string "''"
+            }
         }
     }
 
