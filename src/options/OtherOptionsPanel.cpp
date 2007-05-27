@@ -2,26 +2,23 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
-//-------------------------------------------------------------------------------------
-/*! @file OtherOptionsPanel.cpp
-    @brief Implementation file for class lmOtherOptionsPanel
-    @ingroup options_management
-*/
+//-------------------------------------------------------------------------------------/
+
 #if defined(__GNUG__) && !defined(__APPLE__)
 #pragma implementation "OtherOptionsPanel.h"
 #endif
@@ -47,8 +44,8 @@ extern wxConfigBase* g_pPrefs;
 
 //access to global flag
 #include "../app/Preferences.h"
-extern bool g_fAnswerSoundsEnabled; 
-extern bool g_fTeamCounters; 
+extern bool g_fAnswerSoundsEnabled;
+extern bool g_fTeamCounters;
 extern bool g_fAutoNewProblem;
 
 
@@ -57,19 +54,19 @@ lmOtherOptionsPanel::lmOtherOptionsPanel(wxWindow* parent)
 {
     // create the panel
     wxXmlResource::Get()->LoadPanel(this, parent, _T("OtherOptionsPanel"));
-   
+
     //load icon
     wxStaticBitmap* pBmpIcon = XRCCTRL(*this, "bmpIconTitle", wxStaticBitmap);
     pBmpIcon->SetBitmap( wxArtProvider::GetIcon(_T("opt_other"), wxART_TOOLBAR, wxSize(24,24)) );
 
     //store pointers to controls
-    m_pChkAnswerSounds = XRCCTRL(*this, "chkAnswerSounds", wxCheckBox); 
-    m_pChkTeamCounters = XRCCTRL(*this, "chkTeamCounters", wxCheckBox); 
-    m_pChkAutoNewProblem = XRCCTRL(*this, "chkAutoNewProblem", wxCheckBox); 
+    m_pChkAnswerSounds = XRCCTRL(*this, "chkAnswerSounds", wxCheckBox);
+    m_pChkTeamCounters = XRCCTRL(*this, "chkTeamCounters", wxCheckBox);
+    m_pChkAutoNewProblem = XRCCTRL(*this, "chkAutoNewProblem", wxCheckBox);
 
         //Select current settings
 
-    // Exercises options 
+    // Exercises options
     m_pChkAnswerSounds->SetValue(g_fAnswerSoundsEnabled);
     m_pChkTeamCounters->SetValue(g_fTeamCounters);
     m_pChkAutoNewProblem->SetValue(g_fAutoNewProblem);

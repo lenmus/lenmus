@@ -2,26 +2,23 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Languages.cpp
-    @brief Implementation file for global functions related to language
-    @ingroup options_management
-*/
+
 #if defined(__GNUG__) && !defined(__APPLE__)
 #pragma implementation "Languages.h"
 #endif
@@ -51,7 +48,7 @@ extern lmPaths* g_pPaths;
 
 bool TranslationExists(wxArrayString& pathList, wxString code)
 {
-    wxArrayString results;   
+    wxArrayString results;
     wxString sPattern = code;
 
     if (sPattern == _T("")) return false;
@@ -91,7 +88,7 @@ wxString GetSystemLanguageCode()
     GetLanguages(langCodes, langNames);
     int sysLang = wxLocale::GetSystemLanguage();
     const wxLanguageInfo *info = wxLocale::GetLanguageInfo(sysLang);
-       
+
     if (info) {
         wxString fullCode = info->CanonicalName;
         if (fullCode.Length() < 2)
@@ -117,14 +114,14 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     /*
     Figure out what translations are installed and return a list
     of language codes (like "es", "fr", or "pt_BR") and corresponding
-    language names (like "Español", "Français", and "Português").
+    language names (like "EspaÃ±ol", "FranÃ§ais", and "PortuguÃªs").
     */
 
     /*! @todo
         The language names are translated to the locale name (in occidental chars) but
         I have not a clear idea of how these translated strings will be displayed in a system
         whose system language is, for example, chinesse. Will display correctly
-        in latin characters or will display garbage? 
+        in latin characters or will display garbage?
     */
 
     /*
@@ -142,7 +139,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     translation and have it work immediately.
     */
 
-    //@attention using string translation ( macro _() ) is not possible as locale could 
+    //@attention using string translation ( macro _() ) is not possible as locale could
     //not yet be set, as this code is used at first run.
 
     wxArrayString tempNames, tempCodes;
@@ -155,9 +152,13 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     localLanguageName[_T("da")] = _T("Dansk");
     localLanguageName[_T("de")] = _T("Deutsch");
     localLanguageName[_T("en")] = _T("English");
-    localLanguageName[_T("es")] = _T("Español");
+#if !defined(__GNUG__)
+    localLanguageName[_T("es")] = _T("EspaÃ±ol");    //<--
+#endif
     localLanguageName[_T("fi")] = _T("Suomi");
-    localLanguageName[_T("fr")] = _T("Français");
+#if !defined(__GNUG__)
+    localLanguageName[_T("fr")] = _T("FranÃ§ais");    //<--
+#endif
     localLanguageName[_T("it")] = _T("Italiano");
     localLanguageName[_T("ja")] = _T("Nihongo");
     localLanguageName[_T("hu")] = _T("Magyar");
@@ -165,11 +166,15 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     localLanguageName[_T("nl")] = _T("Nederlands");
     localLanguageName[_T("nb")] = _T("Norsk");
     localLanguageName[_T("pl")] = _T("Polski");
-    localLanguageName[_T("pt")] = _T("Português");
+#if !defined(__GNUG__)
+    localLanguageName[_T("pt")] = _T("PortuguÃªs");    //<--
+#endif
     localLanguageName[_T("ru")] = _T("Russky");
     localLanguageName[_T("sl")] = _T("Slovenscina");
     localLanguageName[_T("sv")] = _T("Svenska");
-    localLanguageName[_T("tr")] = _T("Türkçe");
+#if !defined(__GNUG__)
+    localLanguageName[_T("tr")] = _T("TÃ¼rkÃ§e");    //<--
+#endif
     localLanguageName[_T("uk")] = _T("Ukrainska");
     localLanguageName[_T("zh_CN")] = _T("Chinese(Simplified)");
 

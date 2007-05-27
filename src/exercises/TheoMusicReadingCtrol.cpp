@@ -2,26 +2,23 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file TheoMusicReadingCtrol.cpp
-    @brief Implementation file for class lmTheoMusicReadingCtrol
-    @ingroup html_controls
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "TheoMusicReadingCtrol.h"
 #endif
@@ -131,13 +128,13 @@ lmTheoMusicReadingCtrol::lmTheoMusicReadingCtrol(wxWindow* parent, wxWindowID id
     pButtonsSizer->Add(
         new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") ),
         wxSizerFlags(0).Left().Border(wxALL, 5) );
-    
+
     // "play" button
     m_pPlayLink = new lmUrlAuxCtrol(this, ID_LINK_PLAY, m_pOptions->sPlayLabel, m_pOptions->sStopPlayLabel );
     pButtonsSizer->Add(
         m_pPlayLink,
         wxSizerFlags(0).Left().Border(wxALL, 5) );
-    
+
     // "solfa" button
     if (pOptions->fSolfaCtrol) {
         //m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, m_pOptions->sSolfaLabel, m_pOptions->sStopSolfaLabel );
@@ -172,20 +169,20 @@ lmTheoMusicReadingCtrol::lmTheoMusicReadingCtrol(wxWindow* parent, wxWindowID id
     }
 
     // horizontal line
-    wxStaticLine* pStaticLine1 = new wxStaticLine(this, wxID_ANY, 
+    wxStaticLine* pStaticLine1 = new wxStaticLine(this, wxID_ANY,
                             wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
     ((wxWindow*)pStaticLine1)->SetBackgroundColour(*wxRED);
     ((wxWindow*)pStaticLine1)->SetForegroundColour(*wxBLUE);
     pMainSizer->Add(pStaticLine1, 0, wxGROW|wxALL, 5);
 
 
-    // create score ctrl 
+    // create score ctrl
     wxBoxSizer* pScoreSizer = new wxBoxSizer( wxHORIZONTAL );
     pMainSizer->Add(
         pScoreSizer,
         wxSizerFlags(0).Left().Expand().Border(wxALL, 5) );
 
-    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, 
+    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition,
         wxSize(600,800), eNO_BORDER);
     m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
                               lmToLogicalUnits(10, lmMILLIMETERS),
@@ -234,7 +231,7 @@ void lmTheoMusicReadingCtrol::OnGoBackButton(wxCommandEvent& event)
 {
     //wxLogMessage(_T("[lmTheoMusicReadingCtrol::OnGoBackButton] back URL = '%s'"), m_pOptions->sGoBackURL);
     lmMainFrame* pFrame = GetMainFrame();
-    lmTextBookController* pBookController = pFrame->GetBookController(); 
+    lmTextBookController* pBookController = pFrame->GetBookController();
     pBookController->Display( m_pOptions->sGoBackURL );
 }
 
@@ -303,15 +300,15 @@ void lmTheoMusicReadingCtrol::NewProblem()
     m_pScoreCtrol->DisplayScore(m_pScore);
     m_fPlayEnabled = true;
     m_fProblemCreated = true;
-    
+
 }
 
 /*! Playback the score.
-    Play() method is called either to play or to stop playing. 
+    Play() method is called either to play or to stop playing.
 */
 void lmTheoMusicReadingCtrol::Play()
 {
-    
+
     if (!m_fPlaying) {
         // Play button pressed
 
@@ -319,7 +316,7 @@ void lmTheoMusicReadingCtrol::Play()
         m_pPlayLink->SetAlternativeLabel();
 
         //play score
-        m_pScoreCtrol->PlayScore(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
+        m_pScoreCtrol->PlayScore(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
                                 ePM_NormalInstrument, m_pConstrains->GetMetronomeMM());
         m_fPlaying = true;
 

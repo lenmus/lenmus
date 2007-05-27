@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -29,7 +29,7 @@
     of a StaffObjs collection without affecting the rest of the program.
 */
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "StaffObjIterator.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -47,14 +47,14 @@
 
 
 lmStaffObjIterator::lmStaffObjIterator(ETraversingOrder nOrder, lmColStaffObjs* pCSO)
-{    
+{
     // Currently, StaffObjs are stored in a list and the list is always ordered by time.
-    // Therefore all three types of ETraversingOrder are the equivalent and can be implemented 
+    // Therefore all three types of ETraversingOrder are the equivalent and can be implemented
     // just by traversing the list
 
     m_pColStaffobjs = pCSO;
     MoveFirst();
-    
+
 }
 
 bool lmStaffObjIterator::EndOfList()
@@ -105,7 +105,7 @@ void lmStaffObjIterator::MoveLast()
 
 void lmStaffObjIterator::BackToItemOfType(EStaffObjType nType)
 {
-    // goes back until an staffObj of type nType is found or until passing the start of 
+    // goes back until an staffObj of type nType is found or until passing the start of
     // the collection (cursor == 0) if none is found
     if (EndOfList()) return;
     MovePrev();
@@ -113,7 +113,7 @@ void lmStaffObjIterator::BackToItemOfType(EStaffObjType nType)
         if (GetCurrent()->GetClass() == nType) break;
         MovePrev();
     }
-    
+
 }
 
 void lmStaffObjIterator::GoToItem(lmStaffObj* pSO)
@@ -134,7 +134,7 @@ void lmStaffObjIterator::GoToItem(lmStaffObj* pSO)
     //    if (pX->GetId() == pSO->GetId()) break;
     //    m_pCurrentNode = m_pCurrentNode->GetNext();
     //}
-    
+
 }
 
 

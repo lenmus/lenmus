@@ -2,29 +2,22 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file IdfyChordCtrolParms.h
-    @brief Header file for class lmIdfyChordCtrolParms
-    @ingroup html_controls
-*/
-#ifdef __GNUG__
-// #pragma interface
-#endif
 
 #ifndef __IDFYCHORDCTROLPARMS_H__        //to avoid nested includes
 #define __IDFYCHORDCTROLPARMS_H__
@@ -103,7 +96,7 @@ lmIdfyChordCtrolParms::~lmIdfyChordCtrolParms()
 void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
 {
     /*! @page IdfyChordCtrolParams
-        @verbatim    
+        @verbatim
 
         Params for lmIdfyChordCtrol - html object type="Application/LenMusIdfyChord"
 
@@ -121,16 +114,16 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
                     Default: "mT,MT,aT,dT,m7,M7"
 
         mode        'theory' | 'earTraining'  Keyword indicating type of exercise
-        
+
         play_mode*   'chord | ascending | descending' allowed play modes. Default: chord
 
         show_key     '0 | 1' Default: 0 (do not display key signature)
 
         inversions  '0 | 1' Default: 0 (do not allow inversions)
 
-        control_settings    Value="[key for storing the settings]"  
+        control_settings    Value="[key for storing the settings]"
                             By coding this param it is forced the inclusion of
-                            the 'settings' link. Its value will be used 
+                            the 'settings' link. Its value will be used
                             as the key for saving the user settings.
 
         Example:
@@ -154,15 +147,15 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
     sName.UpperCase();        //convert to upper case
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
-    
+
     // allow inversions
     if ( sName == _T("INVERSIONS") ) {
         int nValue;
         bool fOK = tag.GetParamAsInt(_T("VALUE"), &nValue);
-        if (!fOK) 
+        if (!fOK)
             m_sParamErrors += wxString::Format(
                 _("Invalid param value in:\n<param %s >\nAcceptable values: 1 | 0 \n"),
-                tag.GetAllParams() );
+                tag.GetAllParams().c_str() );
         else
             m_pConstrains->SetInversionsAllowed( nValue != 0 );
     }
@@ -171,10 +164,10 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
     else if ( sName == _T("SHOW_KEY") ) {
         int nValue;
         bool fOK = tag.GetParamAsInt(_T("VALUE"), &nValue);
-        if (!fOK) 
+        if (!fOK)
             m_sParamErrors += wxString::Format(
                 _("Invalid param value in:\n<param %s >\nAcceptable values: 1 | 0 \n"),
-                tag.GetAllParams() );
+                tag.GetAllParams().c_str() );
         else
             m_pConstrains->SetDisplayKey( nValue != 0 );
     }
@@ -182,18 +175,18 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
     // play mode
     else if ( sName == _T("PLAY_MODE") ) {
         wxString sMode = tag.GetParam(_T("VALUE"));
-        if (sMode == _T("chord")) 
+        if (sMode == _T("chord"))
             m_pConstrains->SetModeAllowed(0, true);
-        else if (sMode == _T("ascending")) 
+        else if (sMode == _T("ascending"))
             m_pConstrains->SetModeAllowed(1, true);
-        else if (sMode == _T("descending")) 
+        else if (sMode == _T("descending"))
             m_pConstrains->SetModeAllowed(2, true);
         else {
             m_sParamErrors += wxString::Format( wxGetTranslation(
                 _T("Invalid param value in:\n<param %s >\n")
                 _T("Invalid value = %s \n")
                 _T("Acceptable values: 'chord | ascending | descending'\n")),
-                tag.GetAllParams(), sMode );
+                tag.GetAllParams().c_str(), sMode.c_str() );
         }
     }
 
@@ -207,16 +200,16 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
     // mode        'theory | earTraining'  Keyword indicating type of exercise
     else if ( sName == _T("MODE") ) {
         wxString sMode = tag.GetParam(_T("VALUE"));
-        if (sMode == _T("theory")) 
+        if (sMode == _T("theory"))
             m_pConstrains->SetTheoryMode(true);
-        else if (sMode == _T("earTraining")) 
+        else if (sMode == _T("earTraining"))
             m_pConstrains->SetTheoryMode(false);
         else {
             m_sParamErrors += wxString::Format( wxGetTranslation(
                 _T("Invalid param value in:\n<param %s >\n")
                 _T("Invalid value = %s \n")
                 _T("Acceptable values:  'theory | earTraining'\n")),
-                tag.GetAllParams(), sMode );
+                tag.GetAllParams().c_str(), sMode.c_str() );
         }
     }
 
@@ -234,9 +227,9 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
 
     // Unknown param
     else
-        m_sParamErrors += wxString::Format( 
+        m_sParamErrors += wxString::Format(
             _("lmIdfyChordCtrol. Unknown param: <param %s >\n"),
-            tag.GetAllParams() );
+            tag.GetAllParams().c_str() );
 
 }
 
@@ -261,7 +254,7 @@ void lmIdfyChordCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     }
     else {
         // create the IdfyChordCtrol
-        pWnd = new lmIdfyChordCtrol((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1, 
+        pWnd = new lmIdfyChordCtrol((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1,
             m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     }
     pWnd->Show(true);

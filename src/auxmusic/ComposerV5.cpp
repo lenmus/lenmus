@@ -210,7 +210,7 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
     lmSegmentEntry* pSegment;       //segment to add to measure
 
     //select all usable fragments for current time signature
-    int nBeatType= GetBeatTypeFromTimeSignType(m_nTimeSign);
+    //int nBeatType= GetBeatTypeFromTimeSignType(m_nTimeSign);
     if (m_pConstrains->SelectFragments(m_nTimeSign) == 0) {
         //! @todo error logging. Suppress message
         wxMessageBox(_("[lmComposer5::GenerateScore] No usable fragments!"));
@@ -255,8 +255,8 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
             fFits = (rTimeRemaining >= rSegmentDuration && rConsumedBeatTime <= rSegmentAlignBeatTime);
 
             g_pLogger->LogTrace(_T("lmComposer5"), _T("[GenerateScore] sMeasure=%s, pSegment=%s, tr=%.2f, ts=%.2f, tcb=%.2f, tab=%.2f, tc=%.2f, tb=%.2f, fits=%s"),
-                    sMeasure,
-                    pSegment->GetSource(), rTimeRemaining, rSegmentDuration,
+                    sMeasure.c_str(),
+                    (pSegment->GetSource()).c_str(), rTimeRemaining, rSegmentDuration,
                     rConsumedBeatTime, rSegmentAlignBeatTime,
                     rOccupiedDuration, rBeatDuration,
                     (fFits ? _T("yes") : _T("no")) );
@@ -310,7 +310,7 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
             // Instantiate the notes by assigning note pitches and add
             // the measure to the score
             g_pLogger->LogTrace(_T("lmComposer5"),
-                    _T("[GenerateScore] Adding measure = '%s')"), sMeasure);
+                    _T("[GenerateScore] Adding measure = '%s')"), sMeasure.c_str());
             pNode = parserLDP.ParseText( InstantiateNotes(sMeasure) );
             parserLDP.AnalyzeMeasure(pNode, pVStaff);
         }
@@ -347,7 +347,7 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
     // add a final measure with a root pitch note lasting, at least, one beat
     sMeasure = CreateLastMeasure(++nNumMeasures, m_nTimeSign, fOnlyQuarterNotes);
     g_pLogger->LogTrace(_T("lmComposer5"),
-            _T("[GenerateScore] Adding final measure = '%s')"), sMeasure);
+            _T("[GenerateScore] Adding final measure = '%s')"), sMeasure.c_str());
     pNode = parserLDP.ParseText( InstantiateNotes(sMeasure, true) );
     parserLDP.AnalyzeMeasure(pNode, pVStaff);
 
@@ -520,7 +520,8 @@ void lmComposer5::AddSegment(wxString* pMeasure, lmSegmentEntry* pSegment, float
     if (nNoteTime > 0) *pMeasure += CreateNote(nNoteTime);
 
     // step 2
-    g_pLogger->LogTrace(_T("lmComposer5"), _T("[AddSegment] Adding segment %s, duration=%.2f"), pSegment->GetSource(), pSegment->GetSegmentDuration());
+    g_pLogger->LogTrace(_T("lmComposer5"), _T("[AddSegment] Adding segment %s, duration=%.2f"),
+        (pSegment->GetSource()).c_str(), pSegment->GetSegmentDuration());
     *pMeasure += pSegment->GetSource();
 
 }
@@ -609,7 +610,8 @@ wxString lmComposer5::CreateNoteRest(int nNoteRestDuration, bool fNote)
         nTimeNeeded -= nDuration;
 
     }
-    g_pLogger->LogTrace(_T("lmComposer5"), _T("[CreateNoteRest] Needed duration= %d, added=%s"), nNoteRestDuration, sElement);
+    g_pLogger->LogTrace(_T("lmComposer5"), _T("[CreateNoteRest] Needed duration= %d, added=%s"),
+        nNoteRestDuration, sElement.c_str());
     return sElement;
 
 }

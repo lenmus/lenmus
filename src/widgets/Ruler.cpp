@@ -2,25 +2,25 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------
 //    @brief A ruler around the score page
-//    
+//
 //    You can use a lmRuler like any other wxWindow.
 //
 //    At a minimum, the user must specify the dimensions of the
@@ -46,7 +46,7 @@
 //#include <math.h>
 
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "Ruler.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -77,10 +77,10 @@ END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmRuler, wxPanel)
 
-lmRuler::lmRuler(wxWindow* parent, 
-                    lmScoreView* view, 
+lmRuler::lmRuler(wxWindow* parent,
+                    lmScoreView* view,
                     wxWindowID id,
-                    int orientation, 
+                    int orientation,
                     const wxPoint& pos,
                     const int length) :
    wxPanel(parent, id, pos, wxSize(10,10))
@@ -275,7 +275,7 @@ void lmRuler::ShowPosition(wxPoint mousePos)
 
     // Store where the marker is currently drawn
     m_oldPos = pt;
-    
+
 }
 
 // This override is needed to erase the marker line before scrolling and redrawing it
@@ -419,7 +419,7 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //   mBits = NULL;
 //   mUserBits = NULL;
 //   mUserBitLen = 0;
-//   
+//
 //   mValid = false;
 //}
 //
@@ -437,7 +437,7 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //
 //   if (mFormat != format) {
 //      mFormat = format;
-//      
+//
 //      Invalidate();
 //   }
 //}
@@ -448,7 +448,7 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //
 //   if (mLog != log) {
 //      mLog = log;
-//      
+//
 //      Invalidate();
 //   }
 //}
@@ -460,7 +460,7 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //
 //   if (mUnits != units) {
 //      mUnits = units;
-//      
+//
 //      Invalidate();
 //   }
 //}
@@ -471,10 +471,10 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //
 //   if (m_Orientation != orient) {
 //      m_Orientation = orient;
-//      
+//
 //      if (m_Orientation == wxVERTICAL && !mHasSetSpacing)
 //         mSpacing = 2;
-//      
+//
 //      Invalidate();
 //   }
 //}
@@ -488,7 +488,7 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //   if (mMin != min || mMax != max) {
 //      mMin = min;
 //      mMax = max;
-//      
+//
 //      Invalidate();
 //   }
 //}
@@ -512,7 +512,7 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //
 //   if (mLabelEdges != labelEdges) {
 //      mLabelEdges = labelEdges;
-//      
+//
 //      Invalidate();
 //   }
 //}
@@ -525,7 +525,7 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //
 //   if (mFlip != flip) {
 //      mFlip = flip;
-//      
+//
 //      Invalidate();
 //   }
 //}
@@ -551,7 +551,7 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //      if (m_Orientation == wxHORIZONTAL)
 //         mLength = m_right-m_left;
 //      else
-//         mLength = m_bottom-m_top;      
+//         mLength = m_bottom-m_top;
 //      mUserBits = new int[mLength+1];
 //      for(i=0; i<=mLength; i++)
 //         mUserBits[i] = 0;
@@ -867,7 +867,7 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //      else {
 //      }
 //   }
-//   
+//
 //   if (mUnits != "")
 //      s = (s + " " + mUnits);
 //
@@ -973,7 +973,7 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //   mMajorLabels = new Label[mLength+1];
 //   mNumMinor = 0;
 //   mMinorLabels = new Label[mLength+1];
-//   
+//
 //   if (mBits)
 //      delete[] mBits;
 //   mBits = new int[mLength+1];
@@ -989,21 +989,21 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //      double UPP = (mMax-mMin)/mLength;  // Units per pixel
 //
 //      FindLinearTickSizes(UPP);
-//      
+//
 //      // Left and Right Edges
 //      if (mLabelEdges) {
 //         Tick(0, mMin, true);
 //         Tick(mLength, mMax, true);
 //      }
-//      
+//
 //      // Zero (if it's in the middle somewhere)
 //      if (mMin * mMax < 0.0) {
 //         int mid = (int)(mLength*(mMin/(mMin-mMax)) + 0.5);
 //         Tick(mid, 0.0, true);
 //      }
-//      
+//
 //      double sg = UPP > 0.0? 1.0: -1.0;
-//      
+//
 //      // Major ticks
 //      double d = mMin - UPP/2;
 //      double lastD = d;
@@ -1020,17 +1020,17 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //         }
 //         else
 //            warpfactor = 1.0;
-//         
+//
 //         i++;
 //         lastD = d;
 //         d += UPP*warpfactor;
-//         
+//
 //         if ((int)floor(sg * d / mMajor) > majorInt) {
 //            majorInt = (int)floor(sg * d / mMajor);
 //            Tick(i, sg * majorInt * mMajor, true);
 //         }
 //      }
-//         
+//
 //      // Minor ticks
 //      d = mMin - UPP/2;
 //      lastD = d;
@@ -1047,37 +1047,37 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //         }
 //         else
 //            warpfactor = 1.0;
-//         
+//
 //         i++;
 //         lastD = d;
 //         d += UPP*warpfactor;
-//         
+//
 //         if ((int)floor(sg * d / mMinor) > minorInt) {
 //            minorInt = (int)floor(sg * d / mMinor);
 //            Tick(i, sg * minorInt * mMinor, false);
 //         }
 //      }
-//      
+//
 //      // Left and Right Edges
 //      if (mLabelEdges) {
 //         Tick(0, mMin, true);
 //         Tick(mLength, mMax, true);
 //      }
-//      
+//
 //   }
 //   else {
 //      // log case
-//      
+//
 //      double loLog = log10(mMin);
 //      double hiLog = log10(mMax);
 //      double scale = mLength/(hiLog - loLog);
 //      int loDecade = (int) floor(loLog);
 //      int hiDecade = (int) ceil(hiLog);
-//      
+//
 //      int pos;
 //      double val;
 //      double startDecade = pow(10., (double)loDecade);
-//      
+//
 //      // Major ticks are the decades
 //      double decade = startDecade;
 //      for(i=loDecade; i<hiDecade; i++) {
@@ -1090,7 +1090,7 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //         }
 //         decade *= 10.;
 //      }
-//      
+//
 //      // Minor ticks are multiples of decades
 //      decade = startDecade;
 //      for(i=loDecade; i<hiDecade; i++) {
@@ -1104,7 +1104,7 @@ void lmRuler::ScrollWindow(int dx, int dy, const wxRect *rect)
 //         decade *= 10.;
 //      }
 //   }
-//   
+//
 //   mValid = true;
 //}
 //

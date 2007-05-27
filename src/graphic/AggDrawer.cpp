@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -35,19 +35,19 @@
 
 // lmDrawer interface must be designed so that all methods can be easily implemented
 // with wxDC methods as all printing will be done without anti-aliasing, by direct usage
-// of printer wxDC (through lmDirecDrawer object). Also dragging 
+// of printer wxDC (through lmDirecDrawer object). Also dragging
 // and play highlight is done with wxDC methods
 //
 // In wxWidgets:
 // - the pen is for drawing outlines (outline of rectangles, ellipses, etc.)
 // - the brush is for filling in areas (background of rectangles, ellipses, etc.)
 // - text appearance is controlled neither by pen nor by brush but by methods
-//      SetTextForeground() and SetTextBackground() 
+//      SetTextForeground() and SetTextBackground()
 //
 // Drawing methods
 // - SolidX : Solid renderization, anti-aliased
 // - OutlinedX: Outline renderization, anti-aliased
-// - SketchX: Aliased renderization. Will use current settings for outline and 
+// - SketchX: Aliased renderization. Will use current settings for outline and
 //      fill colors.
 //
 // Two versions: with pen/brush parameters and without these parameters. Versions
@@ -65,9 +65,9 @@
 
 // I use an wxImage as buffer. wxImage is platform independent
 // and its buffer is an array of characters
-// in RGBRGBRGB... format in the top-to-bottom, left-to-right order, that 
+// in RGBRGBRGB... format in the top-to-bottom, left-to-right order, that
 // is the first RGB triplet corresponds to the pixel first pixel of the first
-// row, the second one --- to the second pixel of the first row and so on until 
+// row, the second one --- to the second pixel of the first row and so on until
 // the end of the first row, with second row following after it and so on.
 #define BYTES_PP 3      // Bytes per pixel
 
@@ -82,7 +82,7 @@ lmAggDrawer::lmAggDrawer(wxDC* pDC, int widthPixels, int heightPixels, int strid
     Initialize();
 
     // allocate a rendering buffer
-    if (stride==0) 
+    if (stride==0)
         m_nStride = widthPixels * BYTES_PP;
     else
         m_nStride = stride * BYTES_PP;
@@ -164,7 +164,7 @@ void lmAggDrawer::Initialize()
 //draw shapes
 void lmAggDrawer::SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
                              wxColour color)
-{ 
+{
     m_pRenMarker->line_color( lmToRGBA8(color) );
     // renderer_marker expects no decimals, so values must be multiplied by 256.
     m_pRenMarker->line(WorldToDeviceX(x1)*256, WorldToDeviceY(y1)*256,
@@ -173,7 +173,7 @@ void lmAggDrawer::SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
 }
 
 void lmAggDrawer::SketchRectangle(lmUPoint point, wxSize size, wxColour color)
-{ 
+{
     // renderer_marker expects no decimals, so values must be multiplied by 256.
     double x = WorldToDeviceX(point.x) * 256.0;
     double y = WorldToDeviceY(point.y) * 256.0;
@@ -190,13 +190,13 @@ void lmAggDrawer::SketchRectangle(lmUPoint point, wxSize size, wxColour color)
 }
 
 //void lmAggDrawer::SolidRectangle(wxCoord left, wxCoord top, wxCoord width, wxCoord height)
-//{ 
+//{
 //    double x = WorldToDeviceX(left);
 //    double y = WorldToDeviceY(top);
 //    double w = WorldToDeviceX(width);
 //    double h = WorldToDeviceY(height);
 //
-//    m_ras.reset(); 
+//    m_ras.reset();
 //    m_ras.move_to_d(x, y);
 //    m_ras.line_to_d(x, y + h);
 //    m_ras.line_to_d(x + w, y + h);
@@ -207,22 +207,22 @@ void lmAggDrawer::SketchRectangle(lmUPoint point, wxSize size, wxColour color)
 //}
 
 void lmAggDrawer::SolidCircle(lmLUnits xCenter, lmLUnits yCenter, lmLUnits radius)
-{ 
+{
     double x = WorldToDeviceX(xCenter);
     double y = WorldToDeviceY(yCenter);
     double r = WorldToDeviceX(radius);
 
     agg::ellipse e1;
-    m_ras.reset(); 
+    m_ras.reset();
     e1.init(x, y, r, r, 0);
     m_ras.add_path(e1);
     agg::render_scanlines_aa_solid(m_ras, m_sl, *m_pRenBase, m_fillColor);
 }
 
-void lmAggDrawer::SolidPolygon(int n, lmUPoint points[], wxColor color) 
-{ 
+void lmAggDrawer::SolidPolygon(int n, lmUPoint points[], wxColor color)
+{
     //wxLogMessage(_T("[lmAggDrawer::SolidPolygon]"));
-    m_ras.reset(); 
+    m_ras.reset();
     m_ras.move_to_d( WorldToDeviceX(points[0].x), WorldToDeviceY(points[0].y) );
     int i;
     for (i=1; i < n; i++) {
@@ -267,26 +267,26 @@ void lmAggDrawer::SetPen(wxColour color, lmLUnits uWidth)
     m_uLineWidth = uWidth;
 }
 
-void lmAggDrawer::SetFont(wxFont& font) 
+void lmAggDrawer::SetFont(wxFont& font)
 {
     //wxLogMessage(_T("[lmAggDrawer::SetFont]"));
-    m_pDC->SetFont(font); 
+    m_pDC->SetFont(font);
 }
 
-void lmAggDrawer::SetLogicalFunction(int function) 
-{ 
+void lmAggDrawer::SetLogicalFunction(int function)
+{
     //! @todo
     //wxLogMessage(_T("[lmAggDrawer::SetLogicalFunction]"));
-    m_pDC->SetLogicalFunction(function); 
+    m_pDC->SetLogicalFunction(function);
 }
 
 
 //text
-void lmAggDrawer::DrawText(const wxString& text, wxCoord x, wxCoord y) 
+void lmAggDrawer::DrawText(const wxString& text, wxCoord x, wxCoord y)
 {
     //wxLogMessage(_T("[lmAggDrawer::DrawText]"));
         //
-        // Experimental code to use native text renderization. 
+        // Experimental code to use native text renderization.
         // Version 2. Render on a copy of main bitmap
         //
 
@@ -314,7 +314,7 @@ void lmAggDrawer::DrawText(const wxString& text, wxCoord x, wxCoord y)
     //if intersection is null, terminate. Text is clipped
     if (wC <= 0 || hC <= 0) return;
 
-    int xS = (xD > 0 ? 0 : -xD);
+    //int xS = (xD > 0 ? 0 : -xD);
     int yS = (yD > 0 ? 0 : -yD);
 
     //if text bitmap is fully over main bitmap, just get subimage
@@ -334,7 +334,7 @@ void lmAggDrawer::DrawText(const wxString& text, wxCoord x, wxCoord y)
         int iY;
         int nLength = wC * BYTES_PP;       // line length
         for (iY=0; iY < hC; iY++) {
-            memcpy(pData+(iY+yS)*nLength, 
+            memcpy(pData+(iY+yS)*nLength,
                    m_pdata + m_nBufWidth*(yC+iY)*BYTES_PP + xC*BYTES_PP,
                    nLength);
         }
@@ -362,22 +362,22 @@ void lmAggDrawer::DrawText(const wxString& text, wxCoord x, wxCoord y)
 
 }
 
-void lmAggDrawer::SetTextForeground(const wxColour& colour) 
+void lmAggDrawer::SetTextForeground(const wxColour& colour)
 {
     //! @todo
     //wxLogMessage(_T("[lmAggDrawer::SetTextForeground]"));
-    m_pDC->SetTextForeground(colour); 
+    m_pDC->SetTextForeground(colour);
 }
 
-void lmAggDrawer::SetTextBackground(const wxColour& colour) 
+void lmAggDrawer::SetTextBackground(const wxColour& colour)
 {
     //! @todo
     //wxLogMessage(_T("[lmAggDrawer::SetTextBackground]"));
-    m_pDC->SetTextBackground(colour); 
+    m_pDC->SetTextBackground(colour);
 }
 
-void lmAggDrawer::GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h) 
-{ 
+void lmAggDrawer::GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h)
+{
     //! @todo
     //wxLogMessage(_T("[lmAggDrawer::GetTextExtent]"));
     wxCoord width, height;
@@ -388,24 +388,24 @@ void lmAggDrawer::GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h
 
 
 // units conversion
-lmLUnits lmAggDrawer::DeviceToLogicalX(lmPixels x) 
+lmLUnits lmAggDrawer::DeviceToLogicalX(lmPixels x)
 {
-    return m_pDC->DeviceToLogicalXRel(x); 
+    return m_pDC->DeviceToLogicalXRel(x);
 }
 
-lmLUnits lmAggDrawer::DeviceToLogicalY(lmPixels y) 
-{ 
-    return m_pDC->DeviceToLogicalYRel(y); 
+lmLUnits lmAggDrawer::DeviceToLogicalY(lmPixels y)
+{
+    return m_pDC->DeviceToLogicalYRel(y);
 }
 
-lmPixels lmAggDrawer::LogicalToDeviceX(lmLUnits x) 
-{ 
-    return m_pDC->LogicalToDeviceXRel(x); 
+lmPixels lmAggDrawer::LogicalToDeviceX(lmLUnits x)
+{
+    return m_pDC->LogicalToDeviceXRel(x);
 }
 
-lmPixels lmAggDrawer::LogicalToDeviceY(lmLUnits y) 
-{ 
-    return m_pDC->LogicalToDeviceYRel(y); 
+lmPixels lmAggDrawer::LogicalToDeviceY(lmLUnits y)
+{
+    return m_pDC->LogicalToDeviceYRel(y);
 }
 
 
@@ -425,7 +425,7 @@ void lmAggDrawer::Clear()
 {
     memset(m_pdata, 255, m_nBufWidth * m_nBufHeight * BYTES_PP);
 }
- 
+
 unsigned int lmAggDrawer::DrawText(wxString& sText)
 {
     //render text (FreeType) at current position, using current settings for font
@@ -468,7 +468,7 @@ bool lmAggDrawer::LoadFont(wxString sFontName)
     //m_feng.transform(mtx);
 
     m_fValidFont = true;
-    return false;   
+    return false;
 }
 
 unsigned int lmAggDrawer::DrawText(unsigned int* pText, size_t nLength)
@@ -507,8 +507,8 @@ unsigned int lmAggDrawer::DrawText(unsigned int* pText, size_t nLength)
 
             //render the glyph using method agg::glyph_ren_agg_gray8
             m_pRenSolid->color(agg::rgba8(0, 0, 0));
-            agg::render_scanlines(m_fman.gray8_adaptor(), 
-                                    m_fman.gray8_scanline(), 
+            agg::render_scanlines(m_fman.gray8_adaptor(),
+                                    m_fman.gray8_scanline(),
                                     *m_pRenSolid);
 
             // increment pen position

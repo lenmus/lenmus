@@ -2,25 +2,25 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
 
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "ScoreDoc.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -40,7 +40,7 @@
 #endif
 
 #include "wx/filedlg.h"            // for File Selector Dialog
-#include "wx/filename.h"        
+#include "wx/filename.h"
 
 #include "ScoreDoc.h"
 #include "scoreView.h"
@@ -113,7 +113,7 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
     {
         wxString sPath = filename.Mid(15);
         size_t nSize = sPath.Length() - 4;
-        wxLogMessage(_T("Importing <%s>"), sPath.Left(nSize));
+        wxLogMessage(_T("Importing <%s>"), sPath.Left(nSize).c_str());
         return OnImportDocument(sPath.Left(nSize) );
     }
 

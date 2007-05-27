@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -96,24 +96,24 @@ void lmScalesConstrains::SaveSettings()
     int i;
     wxString sKey;
     for (i=0; i < est_Max; i++) {
-        sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/Scale%dAllowed"), 
-            m_sSection, i );
+        sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/Scale%dAllowed"),
+            m_sSection.c_str(), i );
         g_pPrefs->Write(sKey, m_fValidScales[i]);
     }
 
     // key signatures
     bool fValid;
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
-        sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/KeySignature%d"), 
-            m_sSection, i );
+        sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/KeySignature%d"),
+            m_sSection.c_str(), i );
         fValid = m_oValidKeys.IsValid((EKeySignatures)i);
         g_pPrefs->Write(sKey, fValid);
     }
 
     // other settings
-    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection);
+    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection.c_str());
     g_pPrefs->Write(sKey, m_fDisplayKey);
-    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/PlayMode"), m_sSection);
+    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/PlayMode"), m_sSection.c_str());
     g_pPrefs->Write(sKey, m_nPlayMode);
 
 }
@@ -128,26 +128,26 @@ void lmScalesConstrains::LoadSettings()
     int i;
     wxString sKey;
     for (i=0; i < est_Max; i++) {
-        sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/Scale%dAllowed"), 
-            m_sSection, i );
+        sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/Scale%dAllowed"),
+            m_sSection.c_str(), i );
         g_pPrefs->Read(sKey, &m_fValidScales[i], (bool)(i < 8) );
     }
 
     // key signatures. Default use C major
     bool fValid;
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
-        sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/KeySignature%d"), 
-            m_sSection, i );
+        sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/KeySignature%d"),
+            m_sSection.c_str(), i );
         g_pPrefs->Read(sKey, &fValid, (bool)((EKeySignatures)i == earmDo) );
         m_oValidKeys.SetValid((EKeySignatures)i, fValid);
     }
 
     // other settings:
     //      Display key - default: not allowed
-    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection);
+    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/DisplayKey"), m_sSection.c_str());
     g_pPrefs->Read(sKey, &m_fDisplayKey, false);
     // play modes. Default: ascending
-    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/PlayMode"), m_sSection);
+    sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/PlayMode"), m_sSection.c_str());
     g_pPrefs->Read(sKey, &m_nPlayMode, 0);   //0-ascending
 
 }

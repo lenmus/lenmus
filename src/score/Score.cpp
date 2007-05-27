@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -34,7 +34,7 @@
 //--------------------------------------------------------------------------------------------------
 
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "Score.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -74,7 +74,7 @@ lmScore::lmScore() : lmObject((lmObject*)NULL)
     //Set up an empty score, that is, without any lmInstrument.
 
     m_nID = ++m_nCounterID;
-    
+
     //initializations
     m_pSoundMngr = (lmSoundManager*)NULL;
     m_sScoreName = _T("New score");
@@ -175,7 +175,7 @@ lmInstrument* lmScore::AddInstrument(int nVStaves,
                                             sName, sAbbrev);
     m_cInstruments.Append(pInstr);
     return pInstr;
-    
+
 }
 
 lmInstrument* lmScore::AddInstrument(int nVStaves, int nMIDIChannel, int nMIDIInstr,
@@ -187,7 +187,7 @@ lmInstrument* lmScore::AddInstrument(int nVStaves, int nMIDIChannel, int nMIDIIn
                                             pName, pAbbrev);
     m_cInstruments.Append(pInstr);
     return pInstr;
-    
+
 }
 
 //returns lmVStaff number nVStaff (1..n), of lmInstrument nInstr (1..m)
@@ -197,7 +197,7 @@ lmVStaff* lmScore::GetVStaff(int nInstr, int nVStaff)
     InstrumentsList::Node *node;
     lmInstrument *pInstr;
     //iterate over the list to locate lmInstrument nInstr
-    for (i=1, node = m_cInstruments.GetFirst(); 
+    for (i=1, node = m_cInstruments.GetFirst();
         node && i < nInstr; node = node->GetNext(), i++ ) {}
 //    wxASSERT_MSG{pInstr != 0, _T("No existe el Instrumento num. nInstr"));
     pInstr = node->GetData();
@@ -285,7 +285,7 @@ lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle, lmLUnits nP
         }
         pPaper->SetCursorY( yPaperPos );
 
-        //measure the text so that it can be properly positioned 
+        //measure the text so that it can be properly positioned
         pTitle->Draw(DO_MEASURE, pPaper);
         pPaper->SetCursorX(xInitPaperPos);      //restore value altered by Draw sentence
         pPaper->SetCursorY(yPaperPos);
@@ -301,7 +301,7 @@ lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle, lmLUnits nP
 
         if (nAlign == lmALIGN_CENTER)
         {
-            // 'center' alignment forces to center the string in current line, 
+            // 'center' alignment forces to center the string in current line,
             // without taking into account the space consumed by any posible existing
             // left title. That is, 'center' always means 'centered in the line'
 
@@ -318,7 +318,7 @@ lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle, lmLUnits nP
         }
 
         else if (nAlign == lmALIGN_LEFT)
-        {   
+        {
             //align left.
             if (tPos.xType == lmLOCATION_DEFAULT)
                 pPaper->SetCursorX(pPaper->GetLeftMarginXPos());
@@ -327,7 +327,7 @@ lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle, lmLUnits nP
         }
 
         else
-        {   
+        {
             //align right
             if (tPos.xType == lmLOCATION_DEFAULT)
                 pPaper->SetCursorX(pPaper->GetRightMarginXPos() - nWidth);
@@ -342,7 +342,7 @@ lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle, lmLUnits nP
     nHeight = pTitle->GetSelRect().height;
 
     //if rigth aligned, advance new line
-    if (pTitle->GetAlignment() == lmALIGN_RIGHT) {   
+    if (pTitle->GetAlignment() == lmALIGN_RIGHT) {
         pPaper->SetCursorX(pPaper->GetLeftMarginXPos());
         pPaper->IncrementCursorY( nHeight );
     }
@@ -388,11 +388,11 @@ lmScoreObj* lmScore::FindSelectableObject(lmUPoint& pt)
     //for each instrument
     for (node = m_cInstruments.GetFirst(); node; node=node->GetNext()) {
         pInstr = node->GetData();
-        
+
         //for each lmVStaff
         for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
             pStaff = pInstr->GetVStaff(iVStaff);
-            
+
             //look for posible lmStaffObj and exit if any found
             pScO = pStaff->FindSelectableObject(pt);
             if (pScO) return(pScO);
@@ -427,13 +427,13 @@ lmInstrument* lmScore::GetLastInstrument()
 ////Returns the lmInstrument number nInstr (1..n)
 //Friend Property Get lmInstrument(nInstr As Long) As CInstrumento
 //    Set lmInstrument = m_cInstruments.Item(nInstr)
-//    
+//
 //}
 //
 ////Returns the number of Instruments in the Score
 //Friend Property Get InstrumentsCount() As Long
 //    InstrumentsCount = m_cInstruments.Count
-//    
+//
 //}
 //
 ////== End of Friend methods for lmFormatter object ============================================
@@ -507,7 +507,7 @@ wxString lmScore::SourceXML(wxString sFilename)
     wxString sSource = _T("TODO: lmScore XML Source code generation methods");
 
 //    Dim i As Long, sFuente As String
-//    
+//
 //    sFuente = "<?xml version=""1.0"" standalone=""no""?>" & sCrLf & _
 //            "<!DOCTYPE score-partwise PUBLIC ""-//Recordare//DTD MusicXML 0.7 Partwise//EN"" " & _
 //            """http://www.musicxml.org/dtds/partwise.dtd"">" & sCrLf & _
@@ -537,7 +537,7 @@ wxString lmScore::SourceXML(wxString sFilename)
     WriteToFile(sFilename, sSource);
 
     return sSource;
-        
+
 }
 
 ////Toca el compas nCompas (1 .. n)
@@ -552,7 +552,7 @@ wxString lmScore::SourceXML(wxString sFilename)
 //
 //}
 
-void lmScore::Play(bool fVisualTracking, bool fMarcarCompasPrevio, EPlayMode nPlayMode, 
+void lmScore::Play(bool fVisualTracking, bool fMarcarCompasPrevio, EPlayMode nPlayMode,
                  long nMM, wxWindow* pWindow)
 {
     if (!m_pSoundMngr) {
@@ -643,8 +643,8 @@ void lmScore::RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper)
 void lmScore::ComputeMidiEvents()
 {
     int nChannel, nInstr;        //MIDI info. for instrument in process
-    lmSoundManager* pSM;            
-    
+    lmSoundManager* pSM;
+
     if (m_pSoundMngr)
         m_pSoundMngr->DeleteEventsTable();
     else
@@ -654,7 +654,7 @@ void lmScore::ComputeMidiEvents()
     lmVStaff* pVStaff;
      lmInstrument *pInstr = GetFirstInstrument();
     for (int i=1; i<= (int)m_cInstruments.GetCount(); i++, pInstr = GetNextInstrument())
-    {       
+    {
         nChannel = pInstr->GetMIDIChannel();
         nInstr = pInstr->GetMIDIInstrument();
 
@@ -668,12 +668,12 @@ void lmScore::ComputeMidiEvents()
 
         //Add an event to program sound for this instrument
         m_pSoundMngr->StoreEvent(0, eSET_ProgInstr, nChannel, nInstr, 0, 0, (lmStaffObj*)NULL, 0);
-        
+
     }
-    
+
     //End up Midi events table and sort it by time
     m_pSoundMngr->CloseTable();
-    
+
 }
 
 wxString lmScore::DumpMidiEvents(wxString sFilename)

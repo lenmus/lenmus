@@ -48,6 +48,7 @@
 #include "wx/splash.h"
 #include <wx/datetime.h>
 #include "wx/txtstrm.h"
+#include "wx/stdpaths.h"		// to get executable path
 
 //#ifdef __WXMSW__
 ////Support for alpha channel on toolbar bitmaps
@@ -55,13 +56,13 @@
 //#endif
 
 
-#ifndef _DEBUG
+#if defined(__WXMSW__) && !defined(_DEBUG)
 //For release versions (ANSI and Unicode) there is a compilation/linking error somewhere
 //either in wxWidgets or in wxMidi as these two errors are generated:
-//  wxmidiu.lib(wxMidi.obj) : error LNK2019: símbolo externo "void __cdecl wxOnAssert(unsigned short const *,int,char const *,unsigned short const *,unsigned short const *)" (?wxOnAssert@@YAXPBGHPBD00@Z) sin resolver al que se hace referencia en la función "void __cdecl wxPostEvent(class wxEvtHandler *,class wxEvent &)" (?wxPostEvent@@YAXPAVwxEvtHandler@@AAVwxEvent@@@Z)
-//  wxmidiu.lib(wxMidiDatabase.obj) : error LNK2001: símbolo externo "void __cdecl wxOnAssert(unsigned short const *,int,char const *,unsigned short const *,unsigned short const *)" (?wxOnAssert@@YAXPBGHPBD00@Z) sin resolver
+//  wxmidiu.lib(wxMidi.obj) : error LNK2019: sÃ­mbolo externo "void __cdecl wxOnAssert(unsigned short const *,int,char const *,unsigned short const *,unsigned short const *)" (?wxOnAssert@@YAXPBGHPBD00@Z) sin resolver al que se hace referencia en la funciÃ³n "void __cdecl wxPostEvent(class wxEvtHandler *,class wxEvent &)" (?wxPostEvent@@YAXPAVwxEvtHandler@@AAVwxEvent@@@Z)
+//  wxmidiu.lib(wxMidiDatabase.obj) : error LNK2001: sÃ­mbolo externo "void __cdecl wxOnAssert(unsigned short const *,int,char const *,unsigned short const *,unsigned short const *)" (?wxOnAssert@@YAXPBGHPBD00@Z) sin resolver
 //As I can not avoid the error, these next definitions are a bypass:
-    #if _UNICODE
+    #if defined(_UNICODE)
         extern void __cdecl wxOnAssert(unsigned short const *n1,int n2,char const *n3,unsigned short const *n4,unsigned short const *n5);
         void __cdecl wxOnAssert(unsigned short const *n1,int n2,char const *n3,unsigned short const *n4,unsigned short const *n5) {}
     #else
@@ -229,10 +230,10 @@ bool lmTheApp::OnInit(void)
 //  image as second (disabled) bitmap in wxToolBar::AddTool().
 
 //  Keep in mind that setting the system option msw.remap equal to "0" on Windows
-//  results in disabled icons drawing the same way they do on Windows platforms with 
-//  ComCtl version less than 600 or a display color depth less than 32-bit which 
-//  means that images with alpha (not talking about image masks) are not going to 
-//  be supported even on versions of Windows that meet those requirements and do 
+//  results in disabled icons drawing the same way they do on Windows platforms with
+//  ComCtl version less than 600 or a display color depth less than 32-bit which
+//  means that images with alpha (not talking about image masks) are not going to
+//  be supported even on versions of Windows that meet those requirements and do
 //  have support for icons with alpha transparency
 
 //#endif
@@ -255,6 +256,12 @@ bool lmTheApp::OnInit(void)
         // Get program directory and set up global paths object
         //
 
+    #ifdef __WXGTK__
+    // On Linux, the path to the LenMus program is in argv[0]
+    wxStandardPaths oStandardPaths;
+    wxString sHomeDir = oStandardPaths.GetExecutablePath();
+    sHomeDir = _T("/media/sdb1/usr/Desarrollo_wx/lenmus/z_bin");
+    #endif
     #ifdef __WXMSW__
     // On Windows, the path to the LenMus program is in argv[0]
     wxString sHomeDir = wxPathOnly(argv[0]);
@@ -268,7 +275,6 @@ bool lmTheApp::OnInit(void)
     // contains the program.
     wxString sHomeDir = wxGetCwd();
     #endif
-    //! @todo Set path on UNIX systems
     g_pPaths = new lmPaths(sHomeDir);
 
 
@@ -445,6 +451,9 @@ bool lmTheApp::OnInit(void)
     //the numbers will be different every time we run.
     srand( (unsigned)time( NULL ) );
 
+    #if !defined(__GNUC__)
+    //Linux dbg removed
+
         //
         //Set up MIDI
         //
@@ -469,7 +478,7 @@ bool lmTheApp::OnInit(void)
 
     //program sound for metronome
     g_pMidiOut->ProgramChange(g_pMidi->MtrChannel(), g_pMidi->MtrInstr());
-
+    #endif
         // all initialization finished.
 
 	// check if the splash window display time is ellapsed and wait if not
@@ -480,7 +489,7 @@ bool lmTheApp::OnInit(void)
     }
 
 //remove this in debug version to start with nothing displayed
-#if !_DEBUG
+#if !defined(_DEBUG) && !defined(__GNUC__)
     //force to show book frame
     wxCommandEvent event;       //it is not used, so not need to initialize it
     g_pMainFrame->OnOpenBook(event);
@@ -504,7 +513,7 @@ bool lmTheApp::OnInit(void)
             wxDateSpan dsSpan;
             const wxChar *p = dtLastCheck.ParseDate(sLastCheckDate);
             if ( !p ) {
-                wxLogMessage(_T("[TheApp::OnInit] Error parsing the last check for updates date '%s'.\n"), sLastCheckDate);
+                wxLogMessage(_T("[TheApp::OnInit] Error parsing the last check for updates date '%s'.\n"), sLastCheckDate.c_str());
                 fDoCheck = true;
             }
             else {
@@ -521,11 +530,12 @@ bool lmTheApp::OnInit(void)
                 fDoCheck = (dtNextCheck <= wxDateTime::Now());
             }
 
+            wxString sDoCheck = fDoCheck ? _T("True") : _T("False");
             wxLogMessage(_T("[TheApp::OnInit] CheckForUpdates: dtLastCheck='%s', sCheckFreq=%s (%d), dtNextCheck='%s', fDoCheck=%s"),
                     dtLastCheck.Format(_T("%x")).c_str(),
-                    sCheckFreq, dsSpan.GetTotalDays(),
+                    sCheckFreq.c_str(), dsSpan.GetTotalDays(),
                     dtNextCheck.Format(_T("%x")).c_str(),
-                    (fDoCheck ? _T("True") : _T("False")) );
+                    sDoCheck.c_str() );
 
         }
 
@@ -565,7 +575,7 @@ void lmTheApp::SetUpLocale(wxString lang)
     else {
         nLang = wxLANGUAGE_ENGLISH;
         sLangName = _T("English");
-        wxLogMessage(_T("[lmTheApp::SetUpLocale] Language '%s' not found. Update lmApp.cpp?"), lang);
+        wxLogMessage(_T("[lmTheApp::SetUpLocale] Language '%s' not found. Update lmApp.cpp?"), lang.c_str());
     }
 
 
@@ -576,7 +586,7 @@ void lmTheApp::SetUpLocale(wxString lang)
     //if (!m_pLocale->Init( nLang, wxLOCALE_CONV_ENCODING )) {
         wxMessageBox( wxString::Format(_T("Language %s can not be set. ")
             _T("Please, verify that any required language codepages are installed in your system."),
-            sLangName));
+            sLangName.c_str()));
     }
     else {
         wxString sPath = g_pPaths->GetLocaleRootPath();
@@ -585,13 +595,16 @@ void lmTheApp::SetUpLocale(wxString lang)
         wxString sNil = _T("");
         sCtlg = sNil + _T("lenmus_") + lang;    //m_pLocale->GetName();
         if (!m_pLocale->AddCatalog(sCtlg))
-            wxLogMessage(_T("[lmTheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"), sCtlg, sPath);
+            wxLogMessage(_T("[lmTheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"),
+                sCtlg.c_str(), sPath.c_str());
         sCtlg = sNil + _T("wxwidgets_") + lang;
         if (!m_pLocale->AddCatalog(sCtlg))
-            wxLogMessage(_T("[lmTheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"), sCtlg, sPath);
+            wxLogMessage(_T("[lmTheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"),
+                sCtlg.c_str(), sPath.c_str());
         sCtlg = sNil + _T("wxmidi_") + lang;
         if (!m_pLocale->AddCatalog(sCtlg))
-            wxLogMessage(_T("[lmTheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"), sCtlg, sPath);
+            wxLogMessage(_T("[lmTheApp::SetUpLocale] Failure to load catalog '%s'. Path='%s'"),
+                sCtlg.c_str(), sPath.c_str());
     }
 }
 
@@ -657,8 +670,8 @@ void lmTheApp::GetDefaultMainWindowRect(wxRect *defRect)
    defRect->x = 10;
    defRect->y = 10;
 
-   defRect->width = screenRect.width * 0.95;
-   defRect->height = screenRect.height * 0.95;
+   defRect->width = (int)((double)screenRect.width * 0.95);
+   defRect->height = (int)((double)screenRect.height * 0.95);
 
    //These conditional values assist in improving placement and size
    //of new windows on different platforms.

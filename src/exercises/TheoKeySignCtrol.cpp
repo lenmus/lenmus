@@ -2,26 +2,23 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file TheoKeySignCtrol.cpp
-    @brief Implementation file for class lmTheoKeySignCtrol
-    @ingroup html_controls
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "TheoKeySignCtrol.h"
 #endif
@@ -91,7 +88,7 @@ static wxString sMajor[15];
 static wxString sMinor[15];
 
 
-lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id, 
+lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
                            lmTheoKeySignConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
     : wxWindow(parent, id, pos, size, style )
@@ -143,7 +140,7 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
     sMinor[14] = _("D minor");
 
     //the window is divided into two regions: top, for score on left and counters and links
-    //on the right, and bottom region, for answer buttons 
+    //on the right, and bottom region, for answer buttons
     wxBoxSizer* pMainSizer = new wxBoxSizer( wxVERTICAL );
 
     // debug buttons
@@ -167,7 +164,7 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
         pTopSizer,
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
 
-    // create score ctrl 
+    // create score ctrl
     m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, wxSize(350,150), eSIMPLE_BORDER);
     pTopSizer->Add(m_pScoreCtrol,
                    wxSizerFlags(1).Left().Border(wxTOP|wxBOTTOM, 10));
@@ -181,9 +178,9 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
     pTopSizer->Add(
         m_pCounters,
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
-    
 
-        //links 
+
+        //links
 
     wxBoxSizer* pLinksSizer = new wxBoxSizer( wxHORIZONTAL );
     pMainSizer->Add(
@@ -194,12 +191,12 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
     pLinksSizer->Add(
         new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") ),
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT|wxBOTTOM, 20) );
-    
+
     // "show solution" button
     pLinksSizer->Add(
         new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") ),
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT|wxBOTTOM, 20) );
-    
+
 
     //create 15 buttons for the answers: three rows, five buttons per row
     wxBoxSizer* pRowSizer;
@@ -209,13 +206,13 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
     const int NUM_COLS = 5;
     for (int iRow=0; iRow < NUM_ROWS; iRow++) {
         pRowSizer = new wxBoxSizer( wxHORIZONTAL );
-        pMainSizer->Add(    
+        pMainSizer->Add(
             pRowSizer,
             wxSizerFlags(0).Left());
         pRowSizer->Add(20+BUTTONS_DISTANCE, 24, 0);    //spacer to center labels
 
         for (int iCol=0; iCol < NUM_COLS; iCol++) {
-            iB = iCol + iRow * NUM_COLS;    // button index: 0 .. 24         
+            iB = iCol + iRow * NUM_COLS;    // button index: 0 .. 24
             pButton = new wxButton( this, ID_BUTTON + iB, _T(""),
                 wxDefaultPosition, wxSize(90, 24));
             m_pAnswerButton[iB++] = pButton;
@@ -287,14 +284,14 @@ void lmTheoKeySignCtrol::OnRespButton(wxCommandEvent& event)
 
     //verify if success or failure
     bool fSuccess = (nIndex == m_nIndexKeyName);
-    
+
     //produce feedback sound, and update counters
     if (fSuccess) {
         m_pCounters->IncrementRight();
     } else {
         m_pCounters->IncrementWrong();
     }
-        
+
     //if failure or not auto-new problem, display the solution.
     //Else, if success and auto-new problem, generate a new problem
     if (!fSuccess || !g_fAutoNewProblem) {
@@ -310,7 +307,7 @@ void lmTheoKeySignCtrol::OnRespButton(wxCommandEvent& event)
     } else {
         NewProblem();
     }
-    
+
 }
 
 void lmTheoKeySignCtrol::NewProblem()
@@ -326,7 +323,7 @@ void lmTheoKeySignCtrol::NewProblem()
     else {
         m_fMajorMode = (m_pConstrains->GetScaleMode() == eMajorMode);
     }
- 
+
     // choose key signature and prepare answer
     bool fFlats = oGenerator.FlipCoin();
     int nAnswer;
@@ -612,7 +609,7 @@ void lmTheoKeySignCtrol::NewProblem()
     //wxLogMessage(wxString::Format(
     //    _T("[lmTheoKeySignCtrol::NewProblem] m_nIndexKeyName=%d, oIntv.GetIntervalNum()=%d"),
     //    m_nIndexKeyName, oIntv.GetIntervalNum() ));
-    
+
     //display the problem
     m_pCounters->NextTeam();
     if (m_fIdentifyKey) {
@@ -626,7 +623,7 @@ void lmTheoKeySignCtrol::NewProblem()
     }
     m_fProblemCreated = true;
     EnableButtons(true);
-    
+
 }
 
 void lmTheoKeySignCtrol::DisplaySolution()
@@ -636,9 +633,9 @@ void lmTheoKeySignCtrol::DisplaySolution()
     } else {
         m_pScoreCtrol->DisplayScore(m_pScore, false);
     }
-    
+
     m_fProblemCreated = false;
-    
+
 }
 
 void lmTheoKeySignCtrol::OnDebugShowSourceScore(wxCommandEvent& event)
@@ -664,6 +661,6 @@ void lmTheoKeySignCtrol::ResetExercise()
         delete m_pScore;
         m_pScore = (lmScore*)NULL;
     }
-    
+
 }
 

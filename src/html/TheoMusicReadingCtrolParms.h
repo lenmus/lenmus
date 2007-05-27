@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@
 /*
     Four different ways for choosing the settings:
 
-    1. By level and lesson: Useful for what? It was necessary with old non-html 
+    1. By level and lesson: Useful for what? It was necessary with old non-html
         organization. Now for each lesson there will be an html page and the
         score object will have all necessary information for that lesson. So method
         3 will replace this one.
@@ -58,7 +58,7 @@
         Score generation based only on received fragments.
 
     4. Reading notes exercises: the parameters are fixed for this exercise (parameters
-        the html object) but certain values (clefs, notes range) would need 
+        the html object) but certain values (clefs, notes range) would need
         user settings
 
     Free exercises page will be based only on method 2 in coherence with its purpose
@@ -136,7 +136,7 @@ lmTheoMusicReadingCtrolParms::~lmTheoMusicReadingCtrolParms()
 void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
 {
     /*! @page MusicReadingCtrolParams
-        @verbatim    
+        @verbatim
 
         Params for lmScoreCtrol - html object type="Application/LenMusTheoMusicReading"
 
@@ -149,11 +149,11 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
                         is optional. Default labels: "Play|Stop"
 
         control_solfa   Include 'solfa' link. Default: do not include it.
-                        Value="music read label|stop music reading label". i.e.: 
+                        Value="music read label|stop music reading label". i.e.:
                         "Play|Stop". Stop label is optional.
                         Default labels: "Read|Stop"
 
-        control_settings    Value="[key for storing the settings]"  
+        control_settings    Value="[key for storing the settings]"
                             This param forces to include the 'settings' link. The
                             key will be used both as the key for saving the user settings
                             and as a tag to select the Setting Dialog options to allow.
@@ -212,7 +212,7 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
     sName.UpperCase();        //convert to upper case
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
-    
+
     // control_play
     if ( sName == _T("CONTROL_PLAY") ) {
         m_pOptions->SetControlPlay(true, tag.GetParam(_T("VALUE")) );
@@ -240,11 +240,11 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
         long nMM;
         bool fOK = sMM.ToLong(&nMM);
         if (!fOK || nMM < 0 ) {
-            m_sParamErrors += wxString::Format( 
+            m_sParamErrors += wxString::Format(
 _("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: numeric, greater than 0\n"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
+                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() );
         }
         else {
             m_pConstrains->SetMetronomeMM(nMM);
@@ -275,7 +275,7 @@ Invalid value = %s \n \
 Acceptable format: <Clef,LowerNote,UpperNote> \n \
 Acceptable clef values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1 \n \
 Acceptable note pitch: c0 - c9"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
+                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() );
         }
     }
 
@@ -285,11 +285,11 @@ Acceptable note pitch: c0 - c9"),
     else if ( sName == _T("TIME") ) {
         wxString sTime = tag.GetParam(_T("VALUE"));
         if (AnalyzeTime(sTime)) {
-            m_sParamErrors += wxString::Format( 
+            m_sParamErrors += wxString::Format(
 _("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable format: list of time signatures \n"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
+                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() );
         }
     }
 
@@ -303,7 +303,7 @@ Acceptable format: list of time signatures \n"),
 _("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable format: list of key signatures or keyword 'all' \n"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
+                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() );
         }
     }
 
@@ -313,11 +313,11 @@ Acceptable format: list of key signatures or keyword 'all' \n"),
         long nMaxInterval;
         bool fOK = sMaxInterval.ToLong(&nMaxInterval);
         if (!fOK || nMaxInterval < 0 ) {
-            m_sParamErrors += wxString::Format( 
+            m_sParamErrors += wxString::Format(
 _("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: numeric, greater than 0\n"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
+                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() );
         }
         else {
             m_pConstrains->SetMaxInterval((int)nMaxInterval);
@@ -326,9 +326,9 @@ Acceptable values: numeric, greater than 0\n"),
 
     // Unknown param
     else
-        m_sParamErrors += wxString::Format( 
+        m_sParamErrors += wxString::Format(
             _("lmTheoMusicReadingCtrol. Unknown param: <param %s >\n"),
-            tag.GetAllParams() );
+            tag.GetAllParams().c_str() );
 
 }
 
@@ -348,7 +348,7 @@ void lmTheoMusicReadingCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     }
     else {
         // create the TheoMusicReadingCtrol
-        pWnd = new lmTheoMusicReadingCtrol((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1, 
+        pWnd = new lmTheoMusicReadingCtrol((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1,
             m_pOptions, m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     }
     pWnd->Show(true);
@@ -411,7 +411,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeTime(wxString sLine)
 /// returns true if error
 bool lmTheoMusicReadingCtrolParms::AnalyzeKeys(wxString sLine)
 {
-    //i.e.: "all" , "do,sol,fa," 
+    //i.e.: "all" , "do,sol,fa,"
 
     if (sLine == _T("all")) {
         // allow all key signatures
@@ -467,7 +467,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeFragments(wxString sLine)
     lmTimeSignConstrains* pTimeSigns = new lmTimeSignConstrains();
     if (pTimeSigns->SetConstrains(sTimeSign)) {
         m_sParamErrors += wxString::Format(_("Error in fragment. Invalid time signature list '%s'\nIn fragment: '%s'\n"),
-                sTimeSign, sFragment);
+                sTimeSign.c_str(), sFragment.c_str());
         return true;
      }
     // verify fragment to avoid program failures
@@ -476,11 +476,13 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeFragments(wxString sLine)
     //lmLDPNode* pRoot = parserLDP.ParseText(sFragment);
     //if (! pRoot) {
     if (!parserLDP.ParenthesisMatch(sFragment)) {
-        m_sParamErrors += wxString::Format(_("Invalid fragment. Unmatched parenthesis: '%s'\n"), sFragment);
+        m_sParamErrors += wxString::Format(_("Invalid fragment. Unmatched parenthesis: '%s'\n"),
+                                sFragment.c_str());
         return true;
      }
     if (sFragment.Find(_T("(g (")) != -1 || sFragment.Find(_T("(g(")) != -1) {
-        m_sParamErrors += wxString::Format(_("Invalid fragment. Old G syntax: '%s'\n"), sFragment);
+        m_sParamErrors += wxString::Format(_("Invalid fragment. Old G syntax: '%s'\n"),
+                                sFragment.c_str());
         return true;
      }
 

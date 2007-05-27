@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -47,25 +47,25 @@ extern bool LaunchDefaultBrowser(const wxString& url);      // in Updater.cpp
 
 
 /*! @page InternalLinks
-   
+
 	<h2>Internal links: rationale and syntax</h2>
     <!-- ====================================== -->
 
     There are cases in which it is necessary to have links containing commands for the
-    program. For example, embbeding a MusicReadingCtrol in music reading books is not a 
-    good solution as normally there are two or more exercises associated to a lesson. 
+    program. For example, embbeding a MusicReadingCtrol in music reading books is not a
+    good solution as normally there are two or more exercises associated to a lesson.
     So, it is necessary to jump to a MusicReading dialog customized
 	according exercises needs; and this dialog must have a "return to theory" link. All
     these forward/backward links must be managed by the program, as well as the dynamic
     generation of the html page.
-	
+
     Although wxHtmlHelpController Display() method deals with books, pages IDs and other
     posibilities to specify the page to display, once a page is displayed the URLs specified
     in \<a href=xx\> tags are normal links, that is, they will be interpreted as references
-    to html pages. 
-    
+    to html pages.
+
     Then, for links in pages, it is required that either the relative path
-    is included or that all html pages are stored in the same folder. Moreover, 
+    is included or that all html pages are stored in the same folder. Moreover,
     if .htb books (zip files) are used, the html page is only looked for inside
     the zip file.
 
@@ -79,13 +79,13 @@ extern bool LaunchDefaultBrowser(const wxString& url);      // in Updater.cpp
     when, as it is here the case, the pages of each book are in different folder).
     And it does not work when the book is in zip format (.htb)
 
-    So, to allow for a method to refer to other books or to pages in other books the 
+    So, to allow for a method to refer to other books or to pages in other books the
     following URL syntax is defined:
-    
+
     <code>
     href="#[LenMusType]/[parm_1]/[parm_2]/.../[parm_n]
     </code>
-    
+
     where:
 
     [LenMusType]  - a string to identify the the link as an internal one and its type:
@@ -154,7 +154,7 @@ extern bool LaunchDefaultBrowser(const wxString& url);      // in Updater.cpp
 //
 //
 //<Phonascus migration notes>
-//    - Los enlaces de tipos D y P no son necesarios pues est·n cubiertos por la funcionalidad
+//    - Los enlaces de tipos D y P no son necesarios pues est√°n cubiertos por la funcionalidad
 //        normal de un link html.
 //
 //    - Los enlaces O corresponden a URLs de tipo LenMusCmd
@@ -173,7 +173,7 @@ extern bool LaunchDefaultBrowser(const wxString& url);      // in Updater.cpp
 //    '       F<nombre del formulario>
 //    ' O - orden para objeto empotrado
 //    '       O<?>
-//    ' P - link a otra p·gina de este documento
+//    ' P - link a otra p√°gina de este documento
 //    '       P<Ref.tema>
 //    ' T - Tocar partitura/compas
 //    '       T<?>
@@ -190,7 +190,7 @@ void lmHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link)
     //verify if it is a LenMus command link
     int iPos = sLocation.Find(wxT("#LenMus"));
     if (iPos == wxNOT_FOUND) {
-        // normal link. 
+        // normal link.
         // Open web browser as wxHtml doesn't work
         LaunchDefaultBrowser(sLocation);
 
@@ -246,11 +246,12 @@ void lmHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link)
     }
 
     else {
-        wxString sMsg = wxString::Format(_T("Bad syntax in link href <%s>"), sLocation);
-        wxLogMessage(_T("[lmHtmlWindow::OnLinkClicked] %s"), sMsg);
+        wxString sMsg = wxString::Format(_T("Bad syntax in link href <%s>"),
+                            sLocation.c_str());
+        wxLogMessage(_T("[lmHtmlWindow::OnLinkClicked] %s"), sMsg.c_str());
         return;     // ignore the link
     }
-    
+
 
 }
 

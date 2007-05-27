@@ -2,26 +2,23 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ScoreCanvas.cpp
-    @brief Implementation file for class lmScoreCanvas
-    @ingroup app_gui
-*/
+
 /*! @class lmScoreCanvas
     @ingroup app_gui
     @brief The lmScoreCanvas is the window on which the lmPaper object is placed.
@@ -31,7 +28,7 @@
 */
 
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "ScoreCanvas.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -67,7 +64,7 @@ BEGIN_EVENT_TABLE(lmScoreCanvas, wxWindow)
 END_EVENT_TABLE()
 
 // Define a constructor for my canvas
-lmScoreCanvas::lmScoreCanvas(lmScoreView *v, wxWindow *parent, const wxPoint& pos, 
+lmScoreCanvas::lmScoreCanvas(lmScoreView *v, wxWindow *parent, const wxPoint& pos,
         const wxSize& size, long style, wxColor colorBg) :
     wxWindow(parent, -1, pos, size, style)
 {
@@ -92,15 +89,15 @@ lmScoreCanvas::~lmScoreCanvas()
 //
 void lmScoreCanvas::OnPaint(wxPaintEvent &WXUNUSED(event))
 {
-    // In a paint event handler, the application must always create a wxPaintDC object, 
-    // even if it is not used. Otherwise, under MS Windows, refreshing for this and 
+    // In a paint event handler, the application must always create a wxPaintDC object,
+    // even if it is not used. Otherwise, under MS Windows, refreshing for this and
     // other windows will go wrong.
     wxPaintDC dc(this);
     if (!m_pView) return;
 
     // get the updated rectangles list
-    wxRegionIterator upd(GetUpdateRegion());    
-    
+    wxRegionIterator upd(GetUpdateRegion());
+
     // iterate to redraw each damaged rectangle
     // The rectangles are in pixels, referred to the client area, and are unscrolled
     while (upd) {
@@ -155,7 +152,7 @@ void lmScoreCanvas::OnEraseBackground(wxEraseEvent& event)
         int xShift = xOrg % w;
         int yShift = yOrg % h;
         wxRect rect(-xShift, -yShift, sz.x+xShift, sz.y+yShift);
-    
+
         if (event.GetDC() ) {
             TileBitmap(rect, *(event.GetDC()), bitmap);
         } else {
@@ -172,7 +169,7 @@ bool lmScoreCanvas::TileBitmap(const wxRect& rect, wxDC& dc, wxBitmap& bitmap)
 {
     int w = bitmap.GetWidth();
     int h = bitmap.GetHeight();
-    
+
     int i, j;
     for (i = rect.x; i < rect.x + rect.width; i += w) {
         for (j = rect.y; j < rect.y + rect.height; j+= h)

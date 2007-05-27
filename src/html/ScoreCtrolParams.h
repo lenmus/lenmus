@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ enum EHtmlScoreTypes
 class lmScoreCtrolParams : public lmObjectParams
 {
 public:
-    lmScoreCtrolParams(const wxHtmlTag& tag, int nWidth, int nHeight, int nPercent, 
+    lmScoreCtrolParams(const wxHtmlTag& tag, int nWidth, int nHeight, int nPercent,
         EScoreStyles nStyle);
 
     ~lmScoreCtrolParams();
@@ -147,13 +147,13 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
                             is optional. Default labels: "Play|Stop"
 
         control_solfa       Include 'solfa' link. Default: do not include it.
-                            Value="music read label|stop music reading label". i.e.: 
+                            Value="music read label|stop music reading label". i.e.:
                             "Play|Stop". Stop label is optional.
                             Default labels: "Read|Stop"
 
-        control_measures    Include 'play measure #' links, one per measure. 
+        control_measures    Include 'play measure #' links, one per measure.
                             Default: do not include them.
-                            Value="play label|stop label". i.e.: 
+                            Value="play label|stop label". i.e.:
                             "Play|Stop". Stop label is optional.
                             Default labels: "Measure %d|Stop %d"
 
@@ -173,7 +173,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
     sName.UpperCase();        //convert to upper case
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
-    
+
     // process value
     if ( sName == _T("MUSIC") ) {
         m_sMusic = tag.GetParam(_T("VALUE"));
@@ -196,7 +196,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
                 if (sType.Left(6) != _T("SHORT_")) {
                     m_sParamErrors += wxString::Format(
                         _("Invalid param value in:\n<param %s >\nAcceptable value: 'short_nn'\n"),
-                        tag.GetAllParams() );
+                        tag.GetAllParams().c_str() );
                 }
                 else {
                     wxString sNum = sType.Mid(6, 2);
@@ -221,7 +221,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
         else
             m_sParamErrors += wxString::Format(
                 _("Invalid param value in:\n<param %s >\nAcceptable values: short | full | pattern\n"),
-                tag.GetAllParams() );
+                tag.GetAllParams().c_str() );
     }
 
     else if ( sName == _T("CONTROL_PLAY") ) {
@@ -239,10 +239,10 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
     else if ( sName == _T("MUSIC_BORDER") ) {
         int nBorder;
         fOK = tag.GetParamAsInt(_T("VALUE"), &nBorder);
-        if (!fOK) 
+        if (!fOK)
             m_sParamErrors += wxString::Format(
                 _("Invalid param value in:\n<param %s >\nAcceptable values: 1 | 0 \n"),
-                tag.GetAllParams() );
+                tag.GetAllParams().c_str() );
         else
             m_pOptions->fMusicBorder = (nBorder != 0);
     }
@@ -253,11 +253,11 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
         long nMM;
         bool fOK = sMM.ToLong(&nMM);
         if (!fOK || nMM < 0 ) {
-            m_sParamErrors += wxString::Format( 
+            m_sParamErrors += wxString::Format(
 _("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: numeric, greater than 0\n"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) );
+                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() );
         }
         else {
             m_pOptions->SetMetronomeMM(nMM);
@@ -266,9 +266,9 @@ Acceptable values: numeric, greater than 0\n"),
 
     // Unknown param
     else
-        m_sParamErrors += wxString::Format( 
+        m_sParamErrors += wxString::Format(
             _("Unknown param: <param %s >\n"),
-            tag.GetAllParams() );
+            tag.GetAllParams().c_str() );
 
 }
 
@@ -283,7 +283,7 @@ void lmScoreCtrolParams::PrepareScore()
     switch(m_nScoreType) {
         case eHST_fileXML:
             m_pScore = parserXML.ParseMusicXMLFile(m_sMusic,
-                                                   sbDO_NOT_START_NEW_LOG, 
+                                                   sbDO_NOT_START_NEW_LOG,
                                                    sbDO_NOT_SHOW_LOG_TO_USER );
             break;
 
@@ -340,7 +340,7 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     //if errors display a text box with an error message and finish
     if (!m_pScore || m_sParamErrors != _T("")) {
         m_sParamErrors += wxString::Format(
-            _("Errors in score: it can not be created. Score:\n%s\n"), m_sMusic);
+            _("Errors in score: it can not be created. Score:\n%s\n"), m_sMusic.c_str());
         wnd = new wxTextCtrl((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1, m_sParamErrors,
             wxPoint(0,0), wxSize(300, 100), wxTE_MULTILINE);
         wnd->Show(true);
@@ -348,7 +348,7 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
         return;
     }
 
-    //todo: create a parameter to enable border around the score? 
+    //todo: create a parameter to enable border around the score?
     m_pOptions->fBorder = (m_nWindowStyle == wxSIMPLE_BORDER);      //around control
     m_pOptions->fMusicBorder = g_fBorderOnScores;                   //around score
 
@@ -379,12 +379,12 @@ wxString lmScoreCtrolParams::FinishShortScore(wxString sPattern)
     if (m_nVersion == 15)
     {
         if (m_sLanguage == _T("es")) {
-            sPart = _T("(score (vers 1.5)(language es iso-8859-1)") 
+            sPart = _T("(score (vers 1.5)(language es iso-8859-1)")
                     _T("(instrumento ")
                     _T("(datosMusica (clave Sol)(tonalidad Do)");
         }
         else {
-            sPart = _T("(score (vers 1.5)(language en iso-8859-1)") 
+            sPart = _T("(score (vers 1.5)(language en iso-8859-1)")
                     _T("(instrument ")
                     _T("(musicData (clef treble)(key Do)");
         }
@@ -393,12 +393,12 @@ wxString lmScoreCtrolParams::FinishShortScore(wxString sPattern)
     }
     else if (m_nVersion == 13)
     {
-        sPart = _T("(Score (Vers 1.3)(NumInstrumentos 1)") 
+        sPart = _T("(Score (Vers 1.3)(NumInstrumentos 1)")
                 _T("(Instrumento 1 (NumPartes 1)")
                 _T("(Parte 1 ")
                     _T("(c 1 (Clave Sol)")
                         _T("(Tonalidad Do)");
-        
+
         sPart += sPattern;
         sPart += _T(" )))");
     }

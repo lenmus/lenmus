@@ -2,26 +2,23 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Conversion.cpp
-    @brief Implementation file for gloabl static functions for conversions
-    @ingroup auxmusic
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "Conversion.h"
 #endif
@@ -36,7 +33,7 @@
 #include "../score/Score.h"
 #include "Conversion.h"
 
-static wxString sEnglishNoteName[7] = { 
+static wxString sEnglishNoteName[7] = {
             _T("c"),  _T("d"), _T("e"), _T("f"), _T("g"), _T("a"), _T("b") };
 
 static wxString sNoteName[7];
@@ -55,12 +52,12 @@ lmConverter::lmConverter()
     sNoteName[6] = _("b");
 
 }
-            
+
 lmPitch lmConverter::PitchToMidiPitch(lmPitch nPitch)
 {
     int nOctave = (nPitch - 1) / 7;
     int nRemainder = nPitch % 7;
-    
+
     int nMidiPitch = nOctave * 12;
     switch (nRemainder) {
         case 0:  //si
@@ -80,15 +77,15 @@ lmPitch lmConverter::PitchToMidiPitch(lmPitch nPitch)
             nMidiPitch += 9;   break;
     }
     nMidiPitch += 12;
-    
+
     return nMidiPitch;
-    
+
 }
 
 bool lmConverter::IsNaturalNote(lmPitch ntMidi, EKeySignatures nKey)
 {
     // Returns true if the Midi note corresponds to natural note of the key signature scale
-    
+
     //Prepare string with "1" in natural tones of the scale
     wxString sScale;
     switch (nKey) {
@@ -159,7 +156,7 @@ bool lmConverter::IsNaturalNote(lmPitch ntMidi, EKeySignatures nKey)
         default:
             wxASSERT(false);
     }
-    
+
     int nRemainder = ntMidi % 12;      //nRemainder goes from 0 (Do) to 11 (Si)
     return (sScale.Mid(nRemainder, 1) == _T("1"));
 
@@ -172,16 +169,16 @@ lmPitch lmConverter::MidiPitchToPitch(lmPitch nMidiPitch)
     // Returns the diatonic pitch that corresponds to the received MIDI pitch.
     // It is assumed C major key signature.
 
-    //! @aware: To make this algorithm indepedent from the choosen pitch scale, 
+    //! @aware: To make this algorithm indepedent from the choosen pitch scale,
     //!         we will use constant lmC4PITCH to determine the right value.
 
     int nOctave = (nMidiPitch - 12) / 12;
     int nRemainder = nMidiPitch % 12;
-    int nPitch = nOctave * 7 + 1;      // C note 
+    int nPitch = nOctave * 7 + 1;      // C note
     int nShift = lmC4PITCH - 29;       // if nOctave is 4, nPicht will be 29
     int nScale[] = {0,0,1,1,2,3,3,4,4,5,5,6};
     return nPitch + nShift + nScale[nRemainder];
-    
+
 }
 
 wxString lmConverter::MidiPitchToLDPName(lmPitch nMidiPitch)
@@ -194,19 +191,19 @@ wxString lmConverter::MidiPitchToLDPName(lmPitch nMidiPitch)
     wxString sNote[] = {_T("c"), _T("+c"), _T("d"), _T("+d"), _T("e"), _T("f"), _T("+f"),
                         _T("g"), _T("+g"), _T("a"), _T("+a"), _T("b") };
     return sNote[nRemainder] + wxString::Format(_T("%d"), nOctave);
-    
+
 }
 
 wxString lmConverter::PitchToLDPName(lmPitch nPitch)
 {
     // Returns the LDP note name that corresponds to the received pitch. For exaplample,
-    // pitch 29 will return "c4". 
+    // pitch 29 will return "c4".
 
     int nOctave = (nPitch - 1) / 7;
     int nStep = (nPitch -1) % 7;
     wxString sNote[] = {_T("c"), _T("d"), _T("e"), _T("f"), _T("g"), _T("a"), _T("b") };
     return sNote[nStep] + wxString::Format(_T("%d"), nOctave);
-    
+
 }
 
 //---------------------------------------------------------------------------------------
@@ -220,11 +217,11 @@ bool lmConverter::NoteToBits(wxString sNote, lmNoteBits* pBits)
     //  accidentals (i.e.: "++c4")
     //- It is assumed that sNote is trimmed (no spaces before or after data)
     //  and lower case.
-    
+
     //split the string: accidentals and name
     wxString sAccidentals;
     switch (sNote.Len()) {
-        case 2: 
+        case 2:
             sAccidentals = _T("");
             break;
         case 3:
@@ -249,12 +246,12 @@ bool lmConverter::NoteToBits(wxString sNote, lmNoteBits* pBits)
     long nOctave;
     if (!sOctave.ToLong(&nOctave)) return true;    //error
     pBits->nOctave = (int)nOctave;
-    
+
     //compute accidentals
     int nAccidentals = AccidentalsToInt(sAccidentals);
     if (nAccidentals == -999) return true;  //error
     pBits->nAccidentals = nAccidentals;
-    
+
     //compute step semitones
     pBits->nStepSemitones = StepToSemitones( pBits->nStep );
 
@@ -266,7 +263,7 @@ wxString lmConverter::NoteBitsToName(lmNoteBits& tBits, EKeySignatures nKey)
 {
     static wxString m_sSteps = _T("cdefgab");
 
-    // Get the accidentals implied by the key signature. 
+    // Get the accidentals implied by the key signature.
     // Each element of the array refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
     // and its value can be one of: 0=no accidental, -1 = a flat, 1 = a sharp
     int nAccidentals[7];
@@ -361,8 +358,8 @@ wxString lmConverter::GetEnglishNoteName(lmPitch nPitch)
 {
     int iNota = (nPitch - 1) % 7;
     int nOctava = (nPitch - 1) / 7;
-    
-    return wxString::Format(_T("%s%d"), sEnglishNoteName[iNota], nOctava );
+
+    return wxString::Format(_T("%s%d"), sEnglishNoteName[iNota].c_str(), nOctava );
 
 }
 

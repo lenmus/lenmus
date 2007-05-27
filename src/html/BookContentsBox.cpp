@@ -2,25 +2,25 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __GNUG__
-    #pragma implementation BookContentsBox.h
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma implementation "BookContentsBox.h"
 #endif
 
 // for (compilers that support precompilation, includes "wx/wx.h".
@@ -57,7 +57,7 @@ IMPLEMENT_DYNAMIC_CLASS(lmBookContentsBox, lmContentsBoxCtrol)
 
 lmBookContentsBox::lmBookContentsBox(wxWindow* parent,
                                      lmTextBookFrame* pFrame,
-                                     wxWindowID id, 
+                                     wxWindowID id,
                                      const wxPoint& pos,
                                      const wxSize& size, long style,
                                      const wxString& name)
@@ -72,7 +72,7 @@ lmBookContentsBox::lmBookContentsBox(wxWindow* parent,
     //SetSelection(1);
 }
 
-lmBookContentsBox::~lmBookContentsBox() 
+lmBookContentsBox::~lmBookContentsBox()
 {
     m_aTree.Clear();
 
@@ -146,14 +146,14 @@ void lmBookContentsBox::SelectItem(const long& item, bool select)
 
 void lmBookContentsBox::SetItemBold(const long& item, bool bold)
 {
-    //Makes item appear in bold font if bold parameter is true or resets it to 
+    //Makes item appear in bold font if bold parameter is true or resets it to
     //the normal state.
 }
 
 void lmBookContentsBox::SetItemImage(const long& item, int image,
                                      wxTreeItemIcon which)
 {
-    //Sets the specified item image. See GetItemImage for the description of 
+    //Sets the specified item image. See GetItemImage for the description of
     //the which parameter.
 }
 
@@ -193,7 +193,10 @@ void lmBookContentsBox::CreateContents(lmBookData* pBookData)
         lmTreeContentRecord rItem;
         rItem.nLevel = it->level;
         rItem.fVisible = (it->level == 0);
-        rItem.sImage = (it->image != wxEmptyString ? sImagePath + it->image : wxEmptyString);
+        if (it->image != wxEmptyString)
+            rItem.sImage = sImagePath + it->image;
+        else
+            rItem.sImage = wxEmptyString;
         rItem.sTitle = it->title;
         rItem.sTitlenum = it->titlenum;
         rItem.fHasChildren = false;     //it is updated when processing next entry
@@ -280,7 +283,7 @@ int lmBookContentsBox::LocateEntry(int nTree) const
     }
     return nEntry;
 
-    
+
 }
 
 wxString lmBookContentsBox::FormatItem(int nTree) const
@@ -374,8 +377,8 @@ int lmBookContentsBox::FindNextPage(int nTree)
         //find the next page
         nTree++;
         if (nTree < (int)m_aTree.GetCount() && m_aTree[nTree].nLevel > 0) {
-            while (nTree < (int)m_aTree.GetCount() && 
-                   m_aTree[nTree].fHasChildren && 
+            while (nTree < (int)m_aTree.GetCount() &&
+                   m_aTree[nTree].fHasChildren &&
                    m_aTree[nTree].nLevel > 0)
             {
                 nTree++;
@@ -458,8 +461,8 @@ void lmBookContentsBox::Expand(int nItem, bool fRefresh)
     //for (long i = 0; i < (int)m_aTree.GetCount(); i++)
     //{
     //    wxLogMessage(_T("%d\t%d\t%s\t%s\t%s"),
-    //        i, m_aTree[i].nLevel, 
-    //        (m_aTree[i].fVisible ? _T("yes") : _T("no")),   
+    //        i, m_aTree[i].nLevel,
+    //        (m_aTree[i].fVisible ? _T("yes") : _T("no")),
     //        (m_aTree[i].fOpen ? _T("yes") : _T("no")),
     //        (m_aTree[i].fHasChildren ? _T("yes") : _T("no")) );
     //}

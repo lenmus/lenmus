@@ -3,19 +3,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 
 */
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "LDPNode.h"
 #endif
 
 // for (compilers that support precompilation, includes "wx/wx.h".
@@ -119,36 +119,38 @@ void lmLDPNode::DumpNode(wxString sIndent)
     lmLDPNode* pX;
     long i;
     wxString sName = m_sName;
-    wxString sMsg = wxString::Format(_T("%sNode: %s, num.parms=%d"), sIndent, sName, m_cNodes.GetCount());
-    wxLogMessage( _T("**DUMP OF NODE** %s"), sMsg );
+    wxString sMsg = wxString::Format(_T("%sNode: %s, num.parms=%d"),
+                        sIndent.c_str(), sName.c_str(), m_cNodes.GetCount());
+    wxLogMessage( _T("**DUMP OF NODE** %s"), sMsg.c_str() );
     wxString sSpaces = sIndent;
     sSpaces += _T("   ");
     for (i = 1; i <= (long)m_cNodes.GetCount(); i++) {
         pX = this->GetParameter(i);
         if (pX->IsSimple()) {
             sName = pX->GetName();
-            sMsg = wxString::Format(_T("%s   Parm %d : %s"), sIndent, i, sName);
-            wxLogMessage( _T("**DUMP OF NODE** %s"), sMsg );
+            sMsg = wxString::Format(_T("%s   Parm %d : %s"),
+                        sIndent.c_str(), i, sName.c_str());
+            wxLogMessage( _T("**DUMP OF NODE** %s"), sMsg.c_str() );
         } else {
             pX->DumpNode(sSpaces);
         }
     }
-    
+
 }
 
 wxString lmLDPNode::ToString()
 {
     lmLDPNode* pX;
-    wxString sResp = wxString::Format( _T("(%s"), m_sName );
+    wxString sResp = wxString::Format( _T("(%s"), m_sName.c_str() );
     for (int i = 1; i <= (int)m_cNodes.GetCount(); i++) {
         pX = GetParameter(i);
         if (pX->IsSimple()) {
-            sResp = wxString::Format( _T("%s %s"), sResp, pX->GetName() );
+            sResp = wxString::Format( _T("%s %s"), sResp.c_str(), pX->GetName().c_str() );
         } else {
-            sResp = wxString::Format( _T("%s %s"), sResp, pX->ToString() );
+            sResp = wxString::Format( _T("%s %s"), sResp.c_str(), pX->ToString().c_str() );
         }
     }
-    
-    return wxString::Format(_T("%s)"), sResp);
+
+    return wxString::Format(_T("%s)"), sResp.c_str());
 
 }

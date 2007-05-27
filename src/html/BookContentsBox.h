@@ -20,7 +20,7 @@
 //-------------------------------------------------------------------------------------
 
 #ifdef __GNUG__
-    #pragma interface "BookContentsBox.h"
+#pragma interface "BookContentsBox.cpp"
 #endif
 
 #ifndef __LM_BOOKCONTENTSBOX_H__        //to avoid nested includes

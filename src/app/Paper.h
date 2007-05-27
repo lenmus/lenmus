@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 #ifdef __GNUG__
-// #pragma interface
+#pragma interface "Paper.cpp"
 #endif
 
 #ifndef _PAPER_H        //to avoid nested includes

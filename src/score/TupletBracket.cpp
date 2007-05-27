@@ -2,28 +2,25 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file TupletBracket.cpp
-    @brief Implementation file for class lmTupletBracket
-    @ingroup score_kernel
-*/
+
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "TupletBracket.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -65,7 +62,7 @@ lmTupletBracket::lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket, b
 
 lmTupletBracket::~lmTupletBracket()
 {
-    //notes/rests will not be deleted when deleting the list, as they are part of a lmScore 
+    //notes/rests will not be deleted when deleting the list, as they are part of a lmScore
     //and will be deleted there.
     m_cNotes.DeleteContents(false);
     m_cNotes.Clear();
@@ -145,7 +142,7 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
     It is too early to define an standard behaviour for AuxObjs. In general:
       -    m_paperPos and m_selRect must be always updated as it is being used for selection.
         This implies that positioning and size information of AuxObjs associated to an
-        lmStaffObj (i.e. Ties, TupletBrackets) must be updated when the owner lmStaffObj is 
+        lmStaffObj (i.e. Ties, TupletBrackets) must be updated when the owner lmStaffObj is
         updated (i.e. the formatting and justification process).
 
     For lmTupletBracket and Ties:
@@ -211,24 +208,24 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
     if (m_fAbove) {
         yLineStart = yStart - BRACKET_DISTANCE;
         yLineEnd = yEnd - BRACKET_DISTANCE;
-        yStartBorder = yLineStart + BORDER_LENGHT;        
-        yEndBorder = yLineEnd + BORDER_LENGHT;        
+        yStartBorder = yLineStart + BORDER_LENGHT;
+        yEndBorder = yLineEnd + BORDER_LENGHT;
         yNumber = yStartBorder - NUMBER_DISTANCE - nNumberHeight;
     } else {
         yLineStart = yStart + BRACKET_DISTANCE;
         yLineEnd = yEnd + BRACKET_DISTANCE;
-        yStartBorder = yLineStart - BORDER_LENGHT;        
-        yEndBorder = yLineEnd - BORDER_LENGHT;        
+        yStartBorder = yLineStart - BORDER_LENGHT;
+        yEndBorder = yLineEnd - BORDER_LENGHT;
         yNumber = yStartBorder + NUMBER_DISTANCE;
     }
     lmLUnits xNumber = (xStart + xEnd - nNumberWidth)/2;
-    
+
 
     //draw bracket
     //---------------------------------------------
     //horizontal line
     pPaper->SolidLine(xStart, yLineStart, xEnd, yLineEnd, uThick, eEdgeVertical, color);
-    
+
     //vertical borders
     lmLUnits x1 = xStart + uThick / 2;
     lmLUnits x2 = xEnd - uThick / 2;
@@ -243,7 +240,7 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
         pPaper->DrawText(sNumber, xNumber, yNumber);
     }
 
-    
+
 }
 
 int lmTupletBracket::NumNotes()
@@ -262,7 +259,7 @@ void lmTupletBracket::Remove(lmNoteRest* pNR)
     m_cNotes.DeleteObject(pNR);
 }
 
-lmNoteRest* lmTupletBracket::GetStartNote() 
+lmNoteRest* lmTupletBracket::GetStartNote()
 {
     wxNoteRestsListNode *pNode = m_cNotes.GetFirst();
     return (lmNoteRest*)pNode->GetData();
@@ -307,7 +304,7 @@ void lmTupletBracket::ComputePosition()
     //// rests along the group
     //int nMaxPosOnStaff = 0;
     //int nMinPosOnStaff = 99999;
-    //for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext()) 
+    //for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext())
     //{
     //    pNR = (lmNoteRest*)pNode->GetData();
  //       if (!pNR->IsRest()) {     //ignore rests
@@ -324,8 +321,8 @@ void lmTupletBracket::ComputePosition()
  //   }
  //   if (nMinPosOnStaff == 99999) nMinPosOnStaff = 0;
  //   m_nPosForRests = (nMaxPosOnStaff + nMinPosOnStaff) / 2;
-    
-    
+
+
 //    //look for the stem direction of most notes. If one note has is stem direction
 //    // forced (by a slur, probably) forces the group stem in this direction
 //
@@ -334,7 +331,7 @@ void lmTupletBracket::ComputePosition()
 //    int nNumNotes = 0;
 //    m_fStemsDown = false;            // stems up by default
 //
-//    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext()) 
+//    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext())
 //    {
 //        pNR = (lmNoteRest*)pNode->GetData();
 //        if (!pNR->IsRest()) {     //ignore rests
@@ -343,7 +340,7 @@ void lmTupletBracket::ComputePosition()
 //                nNumNotes++;
 //                if (pNR->StemGoesDown()) nAboveCentre++;
 //            } else {
-//                //Note is not in chord. Compute its stem direction 
+//                //Note is not in chord. Compute its stem direction
 //                nNumNotes++;
 //                if (pNR->GetPosOnStaff() > 5) nAboveCentre++;
 //            }
@@ -355,12 +352,12 @@ void lmTupletBracket::ComputePosition()
 //            }
 //        }
 //    }
-//    
+//
 //    if (!fStemForced) {
-//        if (nAboveCentre >= (nNumNotes + 1) / 2 ) 
+//        if (nAboveCentre >= (nNumNotes + 1) / 2 )
 //            m_fStemsDown = true;
 //    }
-//    
+//
 //    // At this point the stem direction is computed. Now we proceed to compute
 //    // the stem size for each note in the beaming, so that all stem final poins get aligned.
 //
@@ -378,7 +375,7 @@ void lmTupletBracket::ComputePosition()
 //
 //    lmNoteRest* pChordNote;
 //    int i = 1;
-//    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++) 
+//    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++)
 //    {
 //        pNR = (lmNoteRest*)pNode->GetData();
 //         lmLUnits dyStem = pNR->GetDefaultStemLength();
@@ -399,14 +396,14 @@ void lmTupletBracket::ComputePosition()
 //            yTop[i] = yBase[i] + (m_fStemsDown ? dyStem : -dyStem);
 //        }
 //    }
-//    
+//
 //    //trim stem length of intermediate notes
 //    lmLUnits dyA = (yTop[nNumNotes] - yTop[1]) / (nNumNotes - 1);
 //    for (i = 2; i < nNumNotes; i++) {
 //        yTop[i] = yTop[i - 1] + dyA;
 //    }
-//    
-////    //ajusta altura para que haya un mínimo y no se sobrepase dyPlica
+//
+////    //ajusta altura para que haya un mÃ­nimo y no se sobrepase dyPlica
 ////    Dim fAjustar As Boolean, dyMinimo As Single
 ////    dyMinimo = 3 * dyLinea
 ////    dyMin = Abs(yBase(2) - yTop(2))
@@ -433,10 +430,10 @@ void lmTupletBracket::ComputePosition()
 ////            }
 ////        }   //   i
 ////    }
-//    
+//
 //    // At this point stems' lengths are computed.
 //    // Transfer the computed values to the notes
-//    for(i=1, pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++) 
+//    for(i=1, pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++)
 //    {
 //        pNR = (lmNoteRest*)pNode->GetData();
 //        lmLUnits nLength = (yBase[i] > yTop[i] ? yBase[i] - yTop[i] : yTop[i] - yBase[i]);
@@ -449,6 +446,6 @@ void lmTupletBracket::ComputePosition()
 //            pNR->SetStemDirection(m_fStemsDown);
 //        }
 //    }
-    
+
 }
 

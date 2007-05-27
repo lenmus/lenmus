@@ -2,28 +2,25 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file TheoKeySignCtrol.h
-    @brief Header file for class lmTheoKeySignCtrol
-    @ingroup html_controls
-*/
+
 #ifdef __GNUG__
-// #pragma interface
+#pragma interface "TheoKeySignCtrol.cpp"
 #endif
 
 #ifndef __THEOKEYSIGNCTROL_H__        //to avoid nested includes
@@ -49,16 +46,16 @@
 
 const int lmTHEO_KEYSIGN_NUM_BUTTONS = 15;               //buttons for answers
 
-class lmTheoKeySignCtrol : public wxWindow    
+class lmTheoKeySignCtrol : public wxWindow
 {
    DECLARE_DYNAMIC_CLASS(lmTheoKeySignCtrol)
 
 public:
 
-    // constructor and destructor    
+    // constructor and destructor
     lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
-               lmTheoKeySignConstrains* pConstrains, 
-               const wxPoint& pos = wxDefaultPosition, 
+               lmTheoKeySignConstrains* pConstrains,
+               const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize, int style = 0);
 
     ~lmTheoKeySignCtrol();

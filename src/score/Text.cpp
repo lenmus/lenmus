@@ -2,28 +2,25 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Text.cpp
-    @brief Implementation file for classes lmBasicText and lmScoreText
-    @ingroup score_kernel
-*/
+
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "Text.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -59,7 +56,7 @@ lmFontInfo tBasicTextDefaultFont = { _T("Arial"), 12, lmTEXT_NORMAL };
 //==========================================================================================
 
 lmBasicText::lmBasicText(wxString sText, wxString sLanguage,
-                   lmLocation* pPos, lmFontInfo tFontData) 
+                   lmLocation* pPos, lmFontInfo tFontData)
 {
     m_sText = sText;
     m_sLanguage = sLanguage;
@@ -124,7 +121,7 @@ void lmScoreText::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, 
         // set total width
         m_nWidth = nWidth;
 
-        // store glyph position (relative to paper pos). 
+        // store glyph position (relative to paper pos).
         m_glyphPos.x = 0;
         m_glyphPos.y = 0;
 
@@ -144,7 +141,7 @@ wxString lmScoreText::Dump()
         m_nId, m_sText.Left(15), (m_fFixedPos ? _T("yes") : _T("no")),
         m_paperPos.x, m_paperPos.y);
     return sDump;
-            
+
 }
 
 wxString lmScoreText::SourceLDP()
@@ -168,14 +165,14 @@ wxString lmScoreText::SourceXML()
 //// dicit:</words>
 ////      </direction-type>
 ////    </direction>
-//    
+//
 //    sFuente = "<direction placement=""?"">" & sCrLf & _
 //                "  <direction-type>" & sCrLf & _
 //                "    <words xml:lang=""??"" relative-y=""??"" relative-x=""??"">" & _
 //                    m_sTexto & "</words>" & sCrLf & _
 //                "  </direction-type>" & sCrLf & _
 //                "<direction>"
-//    
+//
 }
 
 void lmScoreText::SetFont(lmPaper* pPaper)

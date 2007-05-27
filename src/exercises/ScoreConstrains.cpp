@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    for (any comment, suggestion or feature request, please contact the manager of 
+//    for (any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -82,31 +82,38 @@ void lmScoreConstrains::SaveSettings()
     int i;
     wxString sKey;
     for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
-        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Clef%d"), m_sSection, i); 
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Clef%d"),
+            m_sSection.c_str(), i);
         g_pPrefs->Write(sKey, m_oClefs.IsValid( (EClefType)i ));
-        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MinNote%d"), m_sSection, i);
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MinNote%d"),
+            m_sSection.c_str(), i);
         g_pPrefs->Write(sKey, m_oClefs.GetLowerPitch( (EClefType)i ));
-        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxNote%d"), m_sSection, i);
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxNote%d"),
+            m_sSection.c_str(), i);
         g_pPrefs->Write(sKey, m_oClefs.GetUpperPitch( (EClefType)i ));
     }
 
     // max interval in two consecutive notes
-    sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxInterval"), m_sSection);
+    sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxInterval"),
+                m_sSection.c_str());
     g_pPrefs->Write(sKey, (long)m_nMaxInterval);
 
     // flag to signal that this key has data
-    sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/HasData"), m_sSection);
+    sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/HasData"),
+                m_sSection.c_str());
     g_pPrefs->Write(sKey, true);
 
     // allowed time signatures
     for (i = lmMIN_TIME_SIGN; i <= lmMAX_TIME_SIGN; i++) {
-        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Time%d"), m_sSection, i); 
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Time%d"),
+                    m_sSection.c_str(), i);
         g_pPrefs->Write(sKey, m_oValidTimeSign.IsValid( (ETimeSignature)i ));
     }
 
     // allowed key signatures
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
-        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/KeySignature%d"), m_sSection, i); 
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/KeySignature%d"),
+                    m_sSection.c_str(), i);
         g_pPrefs->Write(sKey, m_oValidKeys.IsValid((EKeySignatures)i) );
     }
 
@@ -117,7 +124,7 @@ void lmScoreConstrains::SaveSettings()
 void lmScoreConstrains::LoadSettings()
 {
     //
-    // load settings form user configuration data. Default values are taken from html params. 
+    // load settings form user configuration data. Default values are taken from html params.
     //
     // When arriving here, default values are already stored in this object. So we must check
     // if the section key is stored in the configuration file. If it is, then we have
@@ -130,7 +137,8 @@ void lmScoreConstrains::LoadSettings()
     }
 
     //check if the section key is stored in the configuration file.
-    wxString sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/HasData"), m_sSection);
+    wxString sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/HasData"),
+                        m_sSection.c_str());
     bool fHasData = false;
     g_pPrefs->Read(sKey, &fHasData, false);
 
@@ -147,30 +155,35 @@ void lmScoreConstrains::LoadSettings()
     int i;
     bool fValue;
     for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
-        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Clef%d"), m_sSection, i);
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Clef%d"),
+                    m_sSection.c_str(), i);
         g_pPrefs->Read(sKey, &fValue, ((EClefType)i == eclvSol));
         m_oClefs.SetValid((EClefType)i, fValue);
-        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MinNote%d"), m_sSection, i);
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MinNote%d"),
+                    m_sSection.c_str(), i);
         m_oClefs.SetLowerPitch((EClefType)i, g_pPrefs->Read(sKey, _T("a3")));
-        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxNote%d"), m_sSection, i);
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxNote%d"),
+                    m_sSection.c_str(), i);
         m_oClefs.SetUpperPitch((EClefType)i, g_pPrefs->Read(sKey, _T("a5")));
     }
 
     // max interval in two consecutive notes
-    sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxInterval"), m_sSection);
+    sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxInterval"),
+                m_sSection.c_str());
     m_nMaxInterval = (int)g_pPrefs->Read(sKey, 4L);     //default value 4
 
     // allowed time signatures
     for (i = lmMIN_TIME_SIGN; i <= lmMAX_TIME_SIGN; i++) {
-        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Time%d"), m_sSection, i); 
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Time%d"),
+                    m_sSection.c_str(), i);
         g_pPrefs->Read(sKey, &fValue, true);
         m_oValidTimeSign.SetValid((ETimeSignature)i, fValue);
     }
 
     // allowed key signatures
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
-        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/KeySignature%d"), 
-            m_sSection, i );
+        sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/KeySignature%d"),
+            m_sSection.c_str(), i );
         g_pPrefs->Read(sKey, &fValue, (bool)((EKeySignatures)i == earmDo) );
         m_oValidKeys.SetValid((EKeySignatures)i, fValue);
     }
@@ -310,7 +323,7 @@ void lmFragmentsTable::AddEntry(lmTimeSignConstrains* pValidTimeSigns, wxString 
     @return the index to the end (closing parenthesis) or first element
 */
 int lmFragmentsTable::SplitPattern(wxString sSource)
-{                    
+{
     int i;                  //index to character being explored
     int iMax;               //sSource length
     int nAPar;              //open parenthesis counter
@@ -318,7 +331,7 @@ int lmFragmentsTable::SplitPattern(wxString sSource)
     iMax = sSource.Length();
     wxASSERT(iMax > 0);                         //sSource must not be empty
     wxASSERT(sSource.Mid(0, 1) == _T("(") );    //must start with parenthesis
-    
+
     nAPar = 1;       //let//s count first parenthesis
     //look for the matching closing parenthesis
     bool fFound = false;
@@ -336,12 +349,12 @@ int lmFragmentsTable::SplitPattern(wxString sSource)
     }
     wxASSERT(fFound);
     return i;
-        
+
 }
 
 /*! Select the fragments that are usable with requested time signature.
     A reference to the usable framents is stored in the fragment table
-    variable m_aSelectionSet so that 
+    variable m_aSelectionSet so that
     @return The number of fragments selected
 */
 int lmFragmentsTable::SelectFragments(ETimeSignature nTimeSign)
@@ -361,7 +374,7 @@ int lmFragmentsTable::SelectFragments(ETimeSignature nTimeSign)
 }
 
 /*! Select one fragment, at random, from the set of selected fragments.
-    Also, all variables related to retrieving the segments composing the 
+    Also, all variables related to retrieving the segments composing the
     selected fragment are initialized.
 */
 void lmFragmentsTable::ChooseRandom()
@@ -439,17 +452,18 @@ lmSegmentEntry* lmFragmentsTable::GetNextSegment()
 //}
 
 int lmFragmentsTable::SplitFragment(wxString sSource)
-{                    
+{
     int i;                  //index to character being explored
     int iMax;               //sSource length
 
     iMax = sSource.Length();
     wxASSERT(iMax > 0);                         //sSource must not be empty
 	if (sSource.Mid(0, 1) != _T("(") ) {    //must start with parenthesis
-		wxLogMessage(_T("[lmFragmentsTable::SplitFragment] Error in fragment '%s'"), sSource);
+		wxLogMessage(_T("[lmFragmentsTable::SplitFragment] Error in fragment '%s'"),
+            sSource.c_str());
 		wxASSERT(false);
 	}
-    
+
     //look for a comma (,) or a barline (|)
     for (i=1; i < iMax; i++) {
         if (sSource.Mid(i, 1) == _T(",") || sSource.Mid(i, 1) == _T("|") ) {
@@ -457,9 +471,9 @@ int lmFragmentsTable::SplitFragment(wxString sSource)
             return i;
         }
     }
-    
+
     return -1;      // not found
-        
+
 }
 
 float lmFragmentsTable::GetPatternDuracion(wxString sPattern, lmTimeSignConstrains* pValidTimeSigns)
@@ -516,7 +530,7 @@ wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     */
     g_pLogger->LogTrace(_T("lmFragmentsTable::GetFirstSegmentDuracion"),
             _T("[lmFragmentsTable::GetFirstSegmentDuracion] analyzing='%s'"),
-            sSegment );
+            sSegment.c_str() );
 
     //prepare source with a measure and instatiate note pitches
     wxString sSource = _T("(c 1 ") + sSegment;
@@ -574,7 +588,7 @@ wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
 
     wxString sElement;
     sSource = sSegment;
-    while (sSource != _T("") ) 
+    while (sSource != _T("") )
     {
         //extract an element
         iEnd = SrcSplitPattern(sSource) + 1;
@@ -592,7 +606,7 @@ wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     //return results
     g_pLogger->LogTrace(_T("lmFragmentsTable::GetFirstSegmentDuracion"),
             _T("[lmFragmentsTable::GetFirstSegmentDuracion] sSource='%s', ts=%.2f, tab=%.2f"),
-            sSource, rSegmentDuration, rRestsDuration );
+            sSource.c_str(), rSegmentDuration, rRestsDuration );
 
     *pSegmentDuration = rSegmentDuration;
     *pTimeAlignBeat = rRestsDuration;

@@ -2,25 +2,25 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
 
 #ifdef __GNUG__
-// #pragma interface
+#pragma interface "TupletBracket.cpp"
 #endif
 
 #ifndef __TUPLETBRACKET_H__        //to avoid nested includes
@@ -29,7 +29,7 @@
 
 /*! @class lmTupletBracket
     A lmTupletBracket represents the optional bracket graphically associated
-    to tuplets. The lmTupletBracket object does not have any effect on sound. It is only to  
+    to tuplets. The lmTupletBracket object does not have any effect on sound. It is only to
     describe how a tuplet must be displayed.
 
     As it is a pure graphical object there is no need to keep links to the notes/rests
@@ -50,7 +50,7 @@
 
     So for now, I will treat TupleBracket analogously to a beamed group
 
-    
+
 */
 
 class lmTupletBracket : public lmStaffObj
@@ -87,8 +87,8 @@ private:
     void ComputePosition();
 
 
-    NoteRestsList    m_cNotes;  // list of notes/rest grouped by this bracket. 
-                                // For chords only the base note of the chord 
+    NoteRestsList    m_cNotes;  // list of notes/rest grouped by this bracket.
+                                // For chords only the base note of the chord
                                 // is included in this list
     lmLUnits    m_xPaperLeft;
     lmLUnits    m_xPaperRight;

@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -36,6 +36,7 @@
 #include "wx/mstream.h"         //to use files in memory
 #include <wx/url.h>
 #include <wx/datetime.h>        //to get and save the date of last successful check
+#include "wx/mimetype.h"
 
 
 
@@ -80,7 +81,7 @@ void lmUpdater::LoadUserPreferences()
 void lmUpdater::SaveUserPreferences()
 {
     //save settings in user congiguration data
-    g_pPrefs->Write(_T("/Internet/CheckForUpdates"), m_fCheckForUpdates );   
+    g_pPrefs->Write(_T("/Internet/CheckForUpdates"), m_fCheckForUpdates );
 
 }
 
@@ -119,7 +120,7 @@ Please, connect to internet and then retry."));
      //   // ensure we can build a wxURL object from the given URL
      //   wxURL oURL(sUrl);
      //   wxASSERT( oURL.GetError() == wxURL_NOERR);
-     //   
+     //
      //   //Setup user-agent string to be identified not as a bot but as a browser
      //   wxProtocol& oProt = oURL.GetProtocol();
      //   wxHTTP* pHTTP = (wxHTTP*)&oProt;
@@ -156,7 +157,7 @@ Please, connect to internet and then retry."));
         // ensure we can build a wxURL object from the given URL
         wxURL oURL(sUrl);
         wxASSERT( oURL.GetError() == wxURL_NOERR);
-        
+
         //Setup user-agent string to be identified not as a bot but as a browser
         wxProtocol& oProt = oURL.GetProtocol();
         wxHTTP* pHTTP = (wxHTTP*)&oProt;
@@ -175,7 +176,7 @@ Please, connect to internet and then retry."));
                 sProxyUrl += pSettings->sProxyUsername + _T(":") +
                              pSettings->sProxyPassword + _T("@");
             }
-            sProxyUrl += pSettings->sProxyHostname  + 
+            sProxyUrl += pSettings->sProxyHostname  +
                 wxString::Format( _T(":%d"), pSettings->nProxyPort );
             oURL.SetProxy( sProxyUrl );
         }
@@ -217,14 +218,14 @@ may be down. Please, try again later."));
     wxXmlNode *pRoot = oDoc.GetRoot();
     if (pRoot->GetName() != _T("UpdateData")) {
         g_pLogger->ReportProblem(
-            _("Error. <%s> files are not supported"), pRoot->GetName() );
+            _("Error. <%s> files are not supported"), pRoot->GetName().c_str() );
         return true;
     }
-    
+
     //analyze document and extract information for this platform
     ParseDocument(pRoot);
 
-    m_fNeedsUpdate = (m_sVersion != _T("") && 
+    m_fNeedsUpdate = (m_sVersion != _T("") &&
                       m_sVersion != wxGetApp().GetVersionNumber());
 
     return false;       //no errors
@@ -258,12 +259,12 @@ void lmUpdater::ParseDocument(wxXmlNode* pNode)
         _T("[lmUpdater::ParseDocument] Starting the parser"));
     pNode = GetFirstChild(pNode);
     wxXmlNode* pElement = pNode;
-    
+
     while (pElement) {
         if (pElement->GetName() != _T("platform")) {
             g_pLogger->LogError(
                 _T("[lmUpdater::ParseDocument] Expected tag <platform> but found <%s>"),
-                pElement->GetName() );
+                pElement->GetName().c_str() );
             return;
         }
         else {
@@ -271,12 +272,12 @@ void lmUpdater::ParseDocument(wxXmlNode* pNode)
             if (GetAttribute(pElement, _T("name"), _T("")) == m_sPlatform) {
                 g_pLogger->LogTrace(_T("lmUpdater"),
                     _T("[lmUpdater::ParseDocument] Analyzing data for <platform name='%s'>"),
-                    m_sPlatform );
+                    m_sPlatform.c_str() );
 
                 //find first child
                 pNode = GetFirstChild(pNode);
                 pElement = pNode;
-                  
+
                 while (pElement) {
                     if (pElement->GetName() == _T("version")) {
                         m_sVersion = GetText(pElement);
@@ -293,10 +294,10 @@ void lmUpdater::ParseDocument(wxXmlNode* pNode)
                     else {
                         g_pLogger->LogError(
                             _T("[lmUpdater::ParseDocument] Expected tag <version> or <description> but found <%s>"),
-                            pElement->GetName() );
+                            pElement->GetName().c_str() );
                     }
 
-                    // Find next sibling 
+                    // Find next sibling
                     pNode = GetNextSibling(pNode);
                     pElement = pNode;
                 }
@@ -308,7 +309,7 @@ void lmUpdater::ParseDocument(wxXmlNode* pNode)
         // Find next next <platform> tag
         pNode = GetNextSibling(pNode);
         pElement = pNode;
-    
+
     }
 
 }
@@ -321,7 +322,7 @@ void lmUpdater::CheckForUpdates(wxFrame* pParent, bool fSilent)
     m_pParent = pParent;
     m_fNeedsUpdate = false;
     ::wxBeginBusyCursor();
-    
+
     //Inform user and ask permision to proceed
     if (!fSilent) {
         lmUpdaterDlgStart dlgStart(m_pParent);
@@ -387,7 +388,7 @@ wxString lmUpdater::GetText(wxXmlNode* pElement)
     wxXmlNode* pNode = pElement->GetChildren();
     wxString sName = pElement->GetName();
     wxString sValue = _T("");
-    
+
     if (pNode->GetType() == wxXML_TEXT_NODE) {
         sValue = pNode->GetContent();
     }
@@ -430,7 +431,7 @@ wxXmlNode* lmUpdater::GetFirstChild(wxXmlNode* pNode)
 // ----------------------------------------------------------------------------
 //    Launch default browser
 //
-//! @todo   This is the latest (18/may/2006) code for ::wxLaunchDefaultBrowser() 
+//! @todo   This is the latest (18/may/2006) code for ::wxLaunchDefaultBrowser()
 //!    function taken from wxWidgets CVS. Remove this code at next wxWidgets release,
 //!    once checked that wxLaunchDefaultBrowser() works ok.
 //-----------------------------------------------------------------------------

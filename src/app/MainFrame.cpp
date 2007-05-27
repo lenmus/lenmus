@@ -18,12 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file MainFrame.cpp
-    @brief Implementation file for class lmMainFrame
-    @ingroup app_gui
-*/
+
 #ifdef __GNUG__
-// #pragma implementation "MainFrame.h"
+#pragma implementation "MainFrame.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -1132,7 +1129,8 @@ void lmMainFrame::InitializeHelp()
     wxFileName oFilename(sPath, _T("help"), sExt, wxPATH_NATIVE);
     bool fOK = m_pHelp->AddBook(oFilename);
     if (! fOK)
-        wxMessageBox(wxString::Format(_("Failed adding book %s"), oFilename.GetFullPath() ));
+        wxMessageBox(wxString::Format(_("Failed adding book %s"),
+            oFilename.GetFullPath().c_str() ));
 
 }
 
@@ -1165,7 +1163,7 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
         // TODO: deal with the error here - wxDir would already log an error message
         // explaining the exact reason of the failure
         wxMessageBox(wxString::Format(_("Error when trying to move to folder %s"),
-            sPath ));
+            sPath.c_str() ));
         return;
     }
 
@@ -1173,7 +1171,8 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
     wxFileName oFileIntro(sPath, _T("intro"), _T("lmb"), wxPATH_NATIVE);
     if (!m_pBookController->AddBook(oFileIntro)) {
         //! @todo better error handling
-        wxMessageBox(wxString::Format(_("Failed adding book %s"), oFileIntro.GetFullPath() ));
+        wxMessageBox(wxString::Format(_("Failed adding book %s"),
+            oFileIntro.GetFullPath().c_str() ));
     }
 
     // Add now any other eBook found on this folder
@@ -1188,7 +1187,8 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
         if (oFilename.GetName() != _T("help") && oFilename.GetName() != _T("intro")) {
             if (!m_pBookController->AddBook(oFilename)) {
                 //! @todo better error handling
-                wxMessageBox(wxString::Format(_("Failed adding book %s"), oFilename.GetFullPath() ));
+                wxMessageBox(wxString::Format(_("Failed adding book %s"),
+                    oFilename.GetFullPath().c_str() ));
             }
         }
         fFound = dir.GetNext(&sFilename);
@@ -1592,7 +1592,7 @@ void lmMainFrame::OnComboZoom(wxCommandEvent& event)
         sValue.Trim();
         double rZoom;
         if (!sValue.ToDouble(&rZoom)) {
-            wxMessageBox(wxString::Format(_("Invalid zooming factor '%s'"), sValue),
+            wxMessageBox(wxString::Format(_("Invalid zooming factor '%s'"), sValue.c_str()),
                          _("Error message"), wxOK || wxICON_HAND );
             return;
         }

@@ -7,23 +7,23 @@
 //    wxWidgets licence is compatible with GNU GPL.
 //    Author:      Harm van der Heijden and Vaclav Slavik
 //    Copyright (c) Harm van der Heijden and Vaclav Slavik
-// 
+//
 //    Modified by:
 //        Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -40,6 +40,7 @@
 #endif
 
 #include "wx/defs.h"
+#include "wx/log.h"
 #include "wx/zipstrm.h"
 
 #include "BookData.h"
@@ -236,13 +237,14 @@ bool lmBookData::AddBookPagesToList(const wxFileName& oFilename)
     wxFFileInputStream in(sBookPath);
     wxZipInputStream zip(in);
     if (!zip.IsOk()) {
-        wxLogMessage(_T("Loading eBook. Error: can not open file '%s'."), sBookPath);
+        wxLogMessage(_T("Loading eBook. Error: can not open file '%s'."),
+            sBookPath.c_str());
         return true;   //error
     }
 
     // loop to get all files
     wxZipEntry* pEntry = zip.GetNextEntry();
-    while (pEntry) 
+    while (pEntry)
     {
         //get its name
         wxString sPageName = pEntry->GetName();
@@ -268,7 +270,7 @@ bool lmBookData::ProcessIndexFile(const wxFileName& oFilename, lmBookRecord* pBo
 
 
     wxLogMessage(_T("[lmBookData::ProcessIndexFile] Processing file %s"),
-            oFilename.GetFullPath() );
+            oFilename.GetFullPath().c_str() );
 
     wxString sTitle = wxEmptyString,
              sDefaultPage = wxEmptyString,
@@ -279,7 +281,7 @@ bool lmBookData::ProcessIndexFile(const wxFileName& oFilename, lmBookRecord* pBo
     wxXmlDocument xdoc;
     if (!xdoc.Load(oFilename.GetFullPath()) ) {
         wxLogMessage(_T("Loading eBook. Error parsing index file %s"),
-            oFilename.GetFullPath() );
+            oFilename.GetFullPath().c_str() );
         return false;   //error
     }
 
@@ -289,10 +291,10 @@ bool lmBookData::ProcessIndexFile(const wxFileName& oFilename, lmBookRecord* pBo
     wxString sElement = pNode->GetName();
     if (sElement != sTag) {
         wxLogMessage(_T("Loading eBook. Error: First tag is not <%s> but <%s>"),
-            sTag, sElement);
+            sTag.c_str(), sElement.c_str());
         return false;   //error
     }
-    
+
     //process children nodes: <entry>
     pNode = m_pParser->GetFirstChild(pNode);
     wxXmlNode* pElement = pNode;
@@ -300,7 +302,7 @@ bool lmBookData::ProcessIndexFile(const wxFileName& oFilename, lmBookRecord* pBo
     sTag = _T("entry");
     if (sElement != sTag) {
         wxLogMessage(_T("Loading eBook. Error: Expected tag <%s> but found <%s>"),
-            sTag, sElement);
+            sTag.c_str(), sElement.c_str());
         return false;   //error
     }
     ProcessIndexEntries(pElement, pBookr);
@@ -385,7 +387,8 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
         wxFFileInputStream in( oFilename.GetFullPath() );
         wxZipInputStream zip(in);
         if (!zip.IsOk()) {
-            wxLogMessage(_T("Loading eBook. Error: TOC file '%s' not found."), oFilename.GetFullPath());
+            wxLogMessage(_T("Loading eBook. Error: TOC file '%s' not found."),
+                oFilename.GetFullPath().c_str());
             return (lmBookRecord*) NULL;   //error
         }
 
@@ -398,7 +401,8 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
         while (pEntry && pEntry->GetInternalName() != sInternalName);
 
         if (!pEntry) {
-            wxLogMessage(_T("Loading eBook. Error: TOC file '%s' not found."), sFullName);
+            wxLogMessage(_T("Loading eBook. Error: TOC file '%s' not found."),
+                sFullName.c_str());
             return (lmBookRecord*) NULL;   //error
         }
         zip.OpenEntry(*pEntry);
@@ -408,12 +412,13 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
         delete pEntry;
     }
     else {
-        wxLogMessage(_T("Loading eBook. Error in TOC file '%s'. Extension is neither LMB nor TOC."), oFilename.GetFullPath());
+        wxLogMessage(_T("Loading eBook. Error in TOC file '%s'. Extension is neither LMB nor TOC."),
+            oFilename.GetFullPath().c_str());
         return (lmBookRecord*) NULL;   //error
     }
 
     // load the XML file as tree of nodes
-    if (!fOK)   
+    if (!fOK)
     {
         wxLogMessage(_T("Loading eBook. Error parsing TOC file ") + sFullName);
         return (lmBookRecord*) NULL;   //error
@@ -425,10 +430,10 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
     wxString sElement = pNode->GetName();
     if (sElement != sTag) {
         wxLogMessage(_T("Loading eBook. Error: First tag is not <%s> but <%s>"),
-            sTag, sElement);
+            sTag.c_str(), sElement.c_str());
         return (lmBookRecord*) NULL;   //error
     }
-    
+
     // firts node: title
     pNode = m_pParser->GetFirstChild(pNode);
     wxXmlNode* pElement = pNode;
@@ -436,7 +441,7 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
     sTag = _T("title");
     if (sElement != sTag) {
         wxLogMessage(_T("Loading eBook. Error: Expected tag <%s> but found <%s>"),
-            sTag, sElement);
+            sTag.c_str(), sElement.c_str());
         return (lmBookRecord*) NULL;   //error
     }
     sTitle = m_pParser->GetText(pNode);
@@ -460,8 +465,8 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
         else {
             wxASSERT(false);
         }
-        wxCSConv convLocal(sCharset); 
-        wxCSConv conv(_T("utf-8")); 
+        wxCSConv convLocal(sCharset);
+        wxCSConv conv(_T("utf-8"));
         sTitle = wxString(sTitle.wc_str(conv), convLocal);
     #endif
 
@@ -472,7 +477,7 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
     sTag = _T("coverpage");
     if (sElement != sTag) {
         wxLogMessage(_T("Loading eBook. Error: Expected tag <%s> but found <%s>"),
-            sTag, sElement);
+            sTag.c_str(), sElement.c_str());
         return (lmBookRecord*) NULL;   //error
     }
     sPage = m_pParser->GetText(pNode);
@@ -501,7 +506,7 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
         sElement = pElement->GetName();
         if (sElement != sTag) {
             wxLogMessage(_T("Loading eBook. Error: Expected tag <%s> but found <%s>"),
-                sTag, sElement);
+                sTag.c_str(), sElement.c_str());
             delete pBookr;
             return (lmBookRecord*) NULL;   //error
         }
@@ -559,7 +564,7 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
         else {
             wxASSERT(false);
         }
-        wxCSConv convLocal(sCharset); 
+        wxCSConv convLocal(sCharset);
     #endif
 
 
@@ -579,8 +584,8 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
             sTitle = m_pParser->GetText(pElement);
             fTitleImage = true;
             #ifdef _MBCS    //if Win95/98/Me release
-                //change encoding from utf-8 to local encoding 
-                wxCSConv conv(_T("utf-8")); 
+                //change encoding from utf-8 to local encoding
+                wxCSConv conv(_T("utf-8"));
                 sTitle = wxString(sTitle.wc_str(conv), convLocal);     //wxConvLocal);
             #endif
         }
@@ -620,7 +625,7 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
         sElement = pElement->GetName();
         if (sElement != sTag) {
             wxLogMessage(_T("Loading eBook. Error: Expected tag <%s> but found <%s>"),
-                sTag, sElement);
+                sTag.c_str(), sElement.c_str());
             return false;   //error
         }
         if (!ProcessTOCEntry(pElement, pBookr, nLevel)) return false;     //error
@@ -641,7 +646,7 @@ wxString lmBookData::FindPageByName(const wxString& x)
     // - By book filename: i.e. 'SingleExercises.lmb' (returns the cover page)
     // - By page filename: i.e. 'SingleExercises_ch0.htm'
     // - By page title: i.e. 'Exercises for aural training'
-    // - By index enty: 
+    // - By index enty:
     //
     // Returns the url to the page (the full path)
     //    i.e. 'c:\lenmus\books\en\SingleExercises.lmb#zip:SingleExercises_ch0.htm'
@@ -694,7 +699,7 @@ wxString lmBookData::FindPageByName(const wxString& x)
             return m_index[i]->GetFullPath();
     }
 
-    wxLogMessage(_T("[lmBookData::FindPageByName] Page '%s' not found."), x);
+    wxLogMessage(_T("[lmBookData::FindPageByName] Page '%s' not found."), x.c_str());
     return wxEmptyString;
 }
 

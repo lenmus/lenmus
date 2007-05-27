@@ -164,7 +164,8 @@ lmDlgCfgScoreReading::lmDlgCfgScoreReading(wxWindow * parent,
     }
     else {
         m_nDialogType = eDlgCfgError;
-        wxLogMessage(_T("[lmDlgCfgScoreReading constructor] Bad key received: '%s'"), m_sSettingsKey);
+        wxLogMessage(_T("[lmDlgCfgScoreReading constructor] Bad key received: '%s'"),
+            m_sSettingsKey.c_str());
     }
 
     // create the dialog controls

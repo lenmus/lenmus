@@ -2,33 +2,30 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Staff.cpp
-    @brief Implementation file for class lmStaff
-    @ingroup score_kernel
-*/
+
 /*! @class lmStaff
     @ingroup score_kernel
-    @brief A lmStaff is a collection of consecutive lines and spaces. 
+    @brief A lmStaff is a collection of consecutive lines and spaces.
 */
 
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "Staff.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -79,10 +76,10 @@ lmStaff::~lmStaff()
 
 lmLUnits lmStaff::GetHeight()
 {
-    // returns the height (in logical units) of the staff without margins, that is, the 
+    // returns the height (in logical units) of the staff without margins, that is, the
     // distance between first and last line
     return (m_numLines - 1) * m_spacing;
-    
+
 }
 
 lmContext* lmStaff::NewContext(lmClef* pNewClef)
@@ -184,13 +181,13 @@ lmContext* lmStaff::NewContext(lmContext* pCurrentContext, int nNewAccidentals, 
 
         Problem 1: How to propagate changes to Notes using the context ?
             When an accidental is inserted in/ deleted from a note it is the note who must
-            invoke for a change in context. And context propagates changes to the start of 
+            invoke for a change in context. And context propagates changes to the start of
             a new measure. To update pitch I devise two alternatives:
             1. If notes does not have precomputed pitch but it is computed when needed, nothing
                 else must be done: context is updated and pitch will be updated when required.
             2. If notes must have pitch updated, then context must invoke a process to update
                 the pitch of all notes in the measure.
-    
+
         Problem 2: How to know when the start of measure is reached ?
             The context must keep information about the measure in which it is created.
             If, for example, the next context was created three measures later, how do we know

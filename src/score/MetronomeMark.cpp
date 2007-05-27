@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, int nTicksPerMinute,
 }
 
 // 'note_symbol = note_symbol'
-lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff,          
+lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff,
                     ENoteType nLeftNoteType, int nLeftDots,
                     ENoteType nRightNoteType, int nRightDots,
                     bool fParentheses, bool fVisible)
@@ -121,7 +121,7 @@ void lmMetronomeMark::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
         // set total width to zero: metronome marks does not consume staff space
         m_nWidth = 0;   // uWidth;
 
-        // store glyph position (relative to paper pos). 
+        // store glyph position (relative to paper pos).
         m_glyphPos.x = 0;
         m_glyphPos.y = pPaper->GetCursorY() - yPos;
     }
@@ -138,7 +138,7 @@ lmLUnits lmMetronomeMark::DrawMetronomeMark(bool fMeasuring, lmPaper* pPaper,
         case eMMT_MM_Value:         // 'm.m. = 80'
             return DrawText(fMeasuring, pPaper, xPos, yPos, colorC);
             break;
-            
+
         case eMMT_Note_Note:        // 'note_symbol = note_symbol'
             xPos += DrawSymbol(fMeasuring, pPaper, m_pLeftNoteShape, xPos, yPos, colorC);
             xPos += DrawText(fMeasuring, pPaper, xPos, yPos, colorC);
@@ -151,11 +151,11 @@ lmLUnits lmMetronomeMark::DrawMetronomeMark(bool fMeasuring, lmPaper* pPaper,
             xPos += DrawText(fMeasuring, pPaper, xPos, yPos, colorC);
             return xPos - xStart;
             break;
- 
+
         default:
             wxASSERT(false);
             return 0;            // to keep compiler happy
-            
+
     }
 }
 

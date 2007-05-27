@@ -2,26 +2,23 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Slur.cpp
-    @brief Implementation file for classes lmArch and lmTie
-    @ingroup score_kernel
-*/
+
 #ifdef __GNUG__
 #pragma implementation "Slur.h"
 #endif
@@ -82,7 +79,7 @@ void lmArch::Draw(lmPaper* pPaper, wxColour colorC)
     lmLUnits uWidth = lmToLogicalUnits(0.2, lmMILLIMETERS);         // width = 0.2 mm
 
     //lmArch is rendered as a cubic bezier curve. The number of points to draw is
-    // variable, to suit a minimun resolution of 5 points / mm. 
+    // variable, to suit a minimun resolution of 5 points / mm.
 
     // determine number of interpolation points to use
     int nNumPoints = (m_xEnd - m_xStart) / lmToLogicalUnits(0.2, lmMILLIMETERS);
@@ -233,7 +230,7 @@ void lmTie::SetEndPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperLeft)
     lmLUnits yDsplz = lmToLogicalUnits(2, lmMILLIMETERS);
     lmLUnits yCtrol = yStart + (m_fTieUnderNote ? yDsplz : -yDsplz);
     m_mainArc.SetCtrolPoint1(xCtrol, yCtrol);
-    
+
     xCtrol += (xEnd - xStart) / 3;
     yCtrol = yEnd + (m_fTieUnderNote ? yDsplz : -yDsplz);
     m_mainArc.SetCtrolPoint2(xCtrol, yCtrol);
@@ -249,7 +246,7 @@ void lmTie::SetEndPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperLeft)
         lmLUnits xCtrol = xStart + (xEnd - xStart) / 3;
         lmLUnits yCtrol = yStart + (m_fTieUnderNote ? yDsplz : -yDsplz);
         m_pExtraArc->SetCtrolPoint1(xCtrol, yCtrol);
-        
+
         xCtrol += (xEnd - xStart) / 3;
         yCtrol = yEnd + (m_fTieUnderNote ? yDsplz : -yDsplz);
         m_pExtraArc->SetCtrolPoint2(xCtrol, yCtrol);

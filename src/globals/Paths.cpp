@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -94,7 +94,8 @@ void lmPaths::SetLanguageCode(wxString sLangCode)
         wxString sFile = wxFindFirstFile(m_sTemp);
         while ( !sFile.empty() ) {
             if (!::wxRemoveFile(sFile)) {
-                wxLogMessage(_T("[lmPaths::LoadUserPreferences] Error deleting %s"), sFile );
+                wxLogMessage(_T("[lmPaths::LoadUserPreferences] Error deleting %s"),
+                    sFile.c_str() );
             }
             sFile = wxFindNextFile();
         }
@@ -127,7 +128,7 @@ void lmPaths::LoadUserPreferences()
     path.AppendDir(_T("scores"));
     path.AppendDir(_T("samples"));
     m_sScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    g_pPrefs->Read(_T("/Paths/Scores"), &m_sScores);   
+    g_pPrefs->Read(_T("/Paths/Scores"), &m_sScores);
 
 
     path = m_root;
@@ -160,7 +161,10 @@ void lmPaths::LoadUserPreferences()
 	//create temp folder if it does not exist. Otherwise the program will
     //fail when the user tries to open an eMusicBook
     if (!::wxDirExists(m_sTemp)) {
-        ::wxMkDir(m_sTemp);
+		//bypass for bug in unicode build (GTK) for wxMkdir
+        //::wxMkDir(m_sTemp.c_str());
+		wxFileName oFN(m_sTemp);
+		oFN.Mkdir(777);
     }
     else {
         // When changing language a flag was stored so that at next run the program must
@@ -173,7 +177,8 @@ void lmPaths::LoadUserPreferences()
             wxString sFile = wxFindFirstFile(m_sTemp);
             while ( !sFile.empty() ) {
                 if (!::wxRemoveFile(sFile)) {
-                    wxLogMessage(_T("[lmPaths::LoadUserPreferences] Error deleting %s"), sFile );
+                    wxLogMessage(_T("[lmPaths::LoadUserPreferences] Error deleting %s"),
+                        sFile.c_str() );
                 }
                 sFile = wxFindNextFile();
             }
@@ -189,16 +194,16 @@ void lmPaths::LoadUserPreferences()
 //! save path settings in user configuration data
 void lmPaths::SaveUserPreferences()
 {
-    g_pPrefs->Write(_T("/Paths/Locale"), m_sLocaleRoot);   
-    g_pPrefs->Write(_T("/Paths/Scores"), m_sScores);   
-    g_pPrefs->Write(_T("/Paths/Temp"), m_sTemp);   
-    g_pPrefs->Write(_T("/Paths/Data"), m_sData);   
-    g_pPrefs->Write(_T("/Paths/Xrc"), m_sXrc);   
+    g_pPrefs->Write(_T("/Paths/Locale"), m_sLocaleRoot);
+    g_pPrefs->Write(_T("/Paths/Scores"), m_sScores);
+    g_pPrefs->Write(_T("/Paths/Temp"), m_sTemp);
+    g_pPrefs->Write(_T("/Paths/Data"), m_sData);
+    g_pPrefs->Write(_T("/Paths/Xrc"), m_sXrc);
     g_pPrefs->Write(_T("/Paths/Images"), m_sImages);
     g_pPrefs->Write(_T("/Paths/Sounds"), m_sSounds);
     g_pPrefs->Write(_T("/Paths/VBookImages"), m_sVBookImages);
 
     // bin path is nor user configurable
-    //g_pPrefs->Write(_T("/Paths/Bin"), m_sBin);   
+    //g_pPrefs->Write(_T("/Paths/Bin"), m_sBin);
 
 }

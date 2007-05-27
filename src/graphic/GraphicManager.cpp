@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ extern lmColors* g_pColors;
 WX_DEFINE_LIST(BitmapList);
 
 // access to global some global flags
-extern bool g_fUseAntiAliasing;         // in TheApp.cpp 
+extern bool g_fUseAntiAliasing;         // in TheApp.cpp
 
 //-----------------------------------------------------------------------------------------
 
@@ -108,7 +108,7 @@ int lmGraphicManager::GetNumPages()
 void lmGraphicManager::Layout()
 {
     // The goal of this method is to parse the IIR representation of a score and
-    // generate the graphical representation so that it can be displayed or printed. 
+    // generate the graphical representation so that it can be displayed or printed.
     // The result is a lmBoxScore object.
 
     if (m_pBoxScore) {
@@ -189,7 +189,7 @@ void lmGraphicManager::PrepareForHighlight()
     //wxLogMessage(_T("[lmGraphicManager::PrepareForHighlight]"));
 
     //If this method is invoked, a score must be currently displayed. This implies
-    //that Layout() has benn invoked and, therefore, a BoxScore object exists. 
+    //that Layout() has benn invoked and, therefore, a BoxScore object exists.
     wxASSERT(m_pBoxScore);  //Layout phase omitted?
 
     //If anti-aliased is not used there is nothing to do in this method
@@ -225,7 +225,7 @@ void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits pa
 
 
 
-    //Is it necessary to force a re-layout? 
+    //Is it necessary to force a re-layout?
     // Yes in following cases:
     // - the first time a score is going to be rendered
     // - if paper size has changed and so requested (option lmRELAYOUT_ON_PAPER_SIZE_CHANGE)
@@ -233,7 +233,7 @@ void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits pa
     bool fLayoutScore = !m_pScore || m_fReLayout
                 || m_nLastScoreID != pScore->GetID()
                 || (nOptions & lmFORCE_RELAYOUT)
-                || ( (nOptions & lmRELAYOUT_ON_PAPER_SIZE_CHANGE)  && 
+                || ( (nOptions & lmRELAYOUT_ON_PAPER_SIZE_CHANGE)  &&
                      (m_xPageSize != paperWidth || m_yPageSize != paperHeight) );
 
     //Is it necessary to delete stored offscreen bitmaps?
@@ -256,9 +256,9 @@ void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits pa
     //delete existing offscreen bitmaps if necessary
     if (fDeleteBitmaps) DeleteBitmaps();
 
-    //wxLogMessage(_T("[lmGraphicManager::Prepare] fLayoutScore=%s, fDeleteBitmaps=%s, Hay BoxScore=%s"), 
-    //    (fLayoutScore ? _T("Yes") : _T("No")), 
-    //    (fDeleteBitmaps ? _T("Yes") : _T("No")), 
+    //wxLogMessage(_T("[lmGraphicManager::Prepare] fLayoutScore=%s, fDeleteBitmaps=%s, Hay BoxScore=%s"),
+    //    (fLayoutScore ? _T("Yes") : _T("No")),
+    //    (fDeleteBitmaps ? _T("Yes") : _T("No")),
     //    (m_pBoxScore ? _T("Yes") : _T("No")) );
 
 }
@@ -282,7 +282,7 @@ wxBitmap* lmGraphicManager::GetPageBitmap(int nPage)
     // Get the bitmap for requested page, or NULL if no bitmap exits for that page.
 
     wxASSERT(nPage > 0);
-        
+
     int i;
     for (i=0; i < (int)m_cBitmaps.GetCount(); i++) {
         if (m_aBitmapPage.Item(i) == nPage) {
@@ -353,7 +353,8 @@ void lmGraphicManager::BitmapsToFile(wxString& sFilename, wxString& sExt, int nI
     while (pNode) {
         wxBitmap* pBitmap = pNode->GetData();
         wxImage oImg = pBitmap->ConvertToImage();
-        wxString sName = wxString::Format(_T("%s_%d.%s"), sFilename, m_aBitmapPage.Item(i-1), sExt);
+        wxString sName = wxString::Format(_T("%s_%d.%s"),
+                                sFilename.c_str(), m_aBitmapPage.Item(i-1), sExt.c_str());
         oImg.SaveFile(sName, nImgType);
         pNode = pNode->GetNext();
         i++;
@@ -374,7 +375,8 @@ void lmGraphicManager::ExportAsImage(wxString& sFilename, wxString& sExt, int nI
     for(i=1; i <= GetNumPages(); i++) {
         wxBitmap* pBitmap = Render(lmUSE_BITMAPS, i);
         wxImage oImg = pBitmap->ConvertToImage();
-        wxString sName = wxString::Format(_T("%s_%d.%s"), sFilename, m_aBitmapPage.Item(i-1), sExt);
+        wxString sName = wxString::Format(_T("%s_%d.%s"), sFilename.c_str(),
+                                m_aBitmapPage.Item(i-1), sExt.c_str());
         oImg.SaveFile(sName, nImgType);
     }
 

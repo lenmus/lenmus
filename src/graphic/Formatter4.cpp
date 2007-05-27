@@ -220,7 +220,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             in first loop.
     */
 
-    //compute systems indentation 
+    //compute systems indentation
     lmLUnits nFirstSystemIndent = 0;
     lmLUnits nOtherSystemIndent = 0;
     lmInstrument *pI;
@@ -346,9 +346,9 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         }    //end of loop to process a measure column
 
         //helper flag to signal if current system is the last one.
-        bool fThisIsLastSystem = 
+        bool fThisIsLastSystem =
                 (iIni + m_nMeasuresInSystem > nTotalMeasures);
-        
+
         //-------------------------------------------------------------------------------
         //Step 2: Justify measures (distribute remainnig space across all measures)
         //-------------------------------------------------------------------------------
@@ -521,7 +521,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
         {
             pVStaff = pInstr->GetVStaff(iVStaff);
 
-            //if it is not first VStaff, set paper position for this VStaff 
+            //if it is not first VStaff, set paper position for this VStaff
             if (iVStaff != 1) {
                 if (pVStaff->IsOverlayered()) {
                     //overlayered: restore paper position to previous VStaff position
@@ -704,7 +704,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
                 lmLUnits nSpaceAfterBarline = pVStaff->TenthsToLogical(20, 1);    // two lines
                 pPaper->IncrementCursorX(nSpaceAfterBarline);       //space after barline
            }
-            
+
         }
         delete pIT;
     }
@@ -712,14 +712,14 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
     lmNote* pNote = (lmNote*)NULL;
     lmNoteRest* pNoteRest = (lmNoteRest*)NULL;
     lmClef* pClef = (lmClef*)NULL;
-    lmKeySignature* pKey = (lmKeySignature*)NULL;
+    //lmKeySignature* pKey = (lmKeySignature*)NULL;
     bool fPreviousWasClef = false;      //the previous lmStaffObj was a clef
     lmLUnits nClefXPos=0;               //x left position of previous clef
     int nClefStaffNum=0;                //number of staff in which the previous clef was located
     lmLUnits xChordPos=0;               //position of base note of a chord
 
     //loop to process all StaffObjs in this measure
-    bool fNoteRestFound = false;            
+    bool fNoteRestFound = false;
     bool fNewSystem = false;                //newSystem tag found
     EStaffObjType nType;                    //type of score obj being processed
     lmStaffObj* pSO = (lmStaffObj*)NULL;
@@ -738,7 +738,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
             ESOCtrolType nCtrolType = pSOCtrol->GetCtrolType();
             if (lmTIME_SHIFT == nCtrolType)
             {
-                //start a new thread, returning x pos to the same x pos than the 
+                //start a new thread, returning x pos to the same x pos than the
                 //previous thread
                 m_oTimepos[nRelMeasure].NewThread();
                 pPaper->SetCursorX(m_oTimepos[nRelMeasure].GetCurXLeft());

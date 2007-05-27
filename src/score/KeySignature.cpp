@@ -2,28 +2,25 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file KeySignature.cpp
-    @brief Implementation file for class lmKeySignature
-    @ingroup score_kernel
-*/
+
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "KeySignature.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -140,7 +137,7 @@ wxString lmKeySignature::SourceXML()
 
 void lmKeySignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
                                 bool fHighlight)
-{    
+{
     if (m_fHidden) return;
 
     if (fMeasuring) {
@@ -159,7 +156,7 @@ void lmKeySignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour color
 
 // returns the width of the draw (logical units)
 lmLUnits lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
-{    
+{
     pPaper->SetFont(*m_pFont);
     pPaper->SetTextForeground(colorC);
 
@@ -189,11 +186,11 @@ lmLUnits lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxCo
         //compute vertical displacement for next staff
         yOffset += pStaff->GetHeight();
         yOffset += pStaff->GetAfterSpace();
-            
+
     }
 
     return m_nWidth;
-        
+
 }
 
 lmLUnits lmKeySignature::DrawAccidental(bool fMeasuring, lmPaper* pPaper, EAccidentals nAlter,
@@ -206,7 +203,7 @@ lmLUnits lmKeySignature::DrawAccidental(bool fMeasuring, lmPaper* pPaper, EAccid
     lmLUnits nWidth, nHeight;
 
     lmLUnits yPos = nyTop - m_pVStaff->TenthsToLogical( 10, nStaff );
-    
+
     switch(nAlter) {
         case eNatural:
             sGlyph = _T("//");
@@ -260,8 +257,8 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos,
     This method returns the width of the draw
     */
 
-    lmLUnits nSharpPos[8];        //orden de aparición de los sostenidos
-    lmLUnits nFlatPos[8];        //orden de aparición de los bemoles
+    lmLUnits nSharpPos[8];        //orden de apariciÃ³n de los sostenidos
+    lmLUnits nFlatPos[8];        //orden de apariciÃ³n de los bemoles
     lmLUnits nOneLine;            //space, in microns, for half line
 
     nOneLine = m_pVStaff->TenthsToLogical( 10, nStaff );
@@ -278,7 +275,7 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos,
             nSharpPos[5] = yPos - 2.5 * nOneLine;        //space between lines 2 y 3 (La)
             nSharpPos[6] = yPos - 4.5 * nOneLine;        //space between lines 4 y 5 (Mi)
             nSharpPos[7] = yPos - 3 * nOneLine;            //line 3 (Si)
-            
+
             nFlatPos[1] = yPos - 3 * nOneLine;            //line 3 (Si)
             nFlatPos[2] = yPos - 4.5 * nOneLine;        //space between lines 4 y 5 (Mi)
             nFlatPos[3] = yPos - 2.5 * nOneLine;        //space between lines 2 y 3 (La)
@@ -287,7 +284,7 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos,
             nFlatPos[6] = yPos - 3.5 * nOneLine;        //space between lines 3 y 4 (Do)
             nFlatPos[7] = yPos - 1.5 * nOneLine;        //space between lines 1 y 2 (Fa)
             break;
-            
+
         case eclvFa4:
             nSharpPos[1] = yPos - 4 * nOneLine;            //line 4 (Fa)
             nSharpPos[2] = yPos - 2.5 * nOneLine;        //space between lines 2 y 3 (Do)
@@ -296,7 +293,7 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos,
             nSharpPos[5] = yPos - 1.5 * nOneLine;        //line 5 (La)
             nSharpPos[6] = yPos - 3.5 * nOneLine;        //space between lines 3 y 4 (Mi)
             nSharpPos[7] = yPos - 2 * nOneLine;            //space aboveline 5 (Si)
-            
+
             nFlatPos[1] = yPos - 2 * nOneLine;            //line 2 (Si)
             nFlatPos[2] = yPos - 3.5 * nOneLine;        //space between lines 3 y 4 (Mi)
             nFlatPos[3] = yPos - 1.5 * nOneLine;        //space between lines 1 y 2 (La)
@@ -305,11 +302,11 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos,
             nFlatPos[6] = yPos - 2.5 * nOneLine;        //space between lines 2 y 3 (Do)
             nFlatPos[7] = yPos - 4 * nOneLine;            //linea 4 (Fa)
             break;
-            
+
         case eclvFa3:
             wxASSERT(false);        //! @todo Clef Fa3
             break;
-            
+
         case eclvDo1:
             nSharpPos[1] = yPos - 2.5 * nOneLine;        //space between lines 2 y 3 (Fa)
             nSharpPos[2] = yPos - nOneLine;                //line 1 (Do)
@@ -318,7 +315,7 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos,
             nSharpPos[5] = yPos - 3.5 * nOneLine;        //space between lines 3 y 4 (La)
             nSharpPos[6] = yPos - 2 * nOneLine;            //line 2 (Mi)
             nSharpPos[7] = yPos - 4 * nOneLine;            //linea 4 (Si)
-            
+
             nFlatPos[1] = yPos - 4 * nOneLine;            //linea 4 (Si)
             nFlatPos[2] = yPos - 2 * nOneLine;            //line 2 (Mi)
             nFlatPos[3] = yPos - 3.5 * nOneLine;        //space between lines 3 y 4 (La)
@@ -327,7 +324,7 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos,
             nFlatPos[6] = yPos - nOneLine;                //line 1 (Do)
             nFlatPos[7] = yPos - 2.5 * nOneLine;        //space between lines 2 y 3 (Fa)
             break;
-            
+
         case eclvDo2:
             wxASSERT(false);        //! @todo Clef Do2
             break;
@@ -345,7 +342,7 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos,
     }
 
     // Check if it is necessary to draw sharps or flats, and how many.
-    int nNumAccidentals = KeySignatureToNumFifths(nKeySignature);   
+    int nNumAccidentals = KeySignatureToNumFifths(nKeySignature);
     bool fDrawFlats = (nNumAccidentals < 0);    //true if flats, false if sharps
 
     g_pLogger->LogTrace(_T("lmKeySignature"),
@@ -359,13 +356,13 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos,
     lmLUnits nWidth=0, nHeight=0;
     if (fDrawFlats) {
         for (int i=1; i <= nNumAccidentals; i++) {
-            nWidth += 
+            nWidth +=
                 DrawAccidental(fMeasuring, pPaper, eFlat, pos.x+nWidth, nFlatPos[i], nStaff);
         }
     }
     else {
         for (int i=1; i <= nNumAccidentals; i++) {
-            nWidth += 
+            nWidth +=
                 DrawAccidental(fMeasuring, pPaper, eSharp, pos.x+nWidth, nSharpPos[i], nStaff);
         }
     }
@@ -384,7 +381,7 @@ wxBitmap* lmKeySignature::GetBitmap(double rScale)
     return (wxBitmap*)NULL;
 }
 
-void lmKeySignature::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
+void lmKeySignature::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
                         const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels)
 {
 }
@@ -451,7 +448,7 @@ void ComputeAccidentals(EKeySignatures nKeySignature, int nAccidentals[])
 {
     /*
     Given a key signature (nKeySignature) this function fills the array
-    nAccidentals with the accidentals implied by the key signature. 
+    nAccidentals with the accidentals implied by the key signature.
     Each element of the array refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
     and its value can be one of:
          0  = no accidental
@@ -634,9 +631,9 @@ int GetRootNoteIndex(EKeySignatures nKeySignature)
         default:
             wxASSERT(false);
     }
-            
+
     return nRootNote;
-    
+
 }
 
 bool IsMajor(EKeySignatures nKeySignature)

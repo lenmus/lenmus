@@ -2,26 +2,23 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Generators.cpp
-    @brief Implementation file for generator classes
-    @ingroup generators
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "Generators.h"
 #endif
@@ -120,11 +117,11 @@ ETimeSignature lmRandomGenerator::RandomTimeSignature()
 /*! Generates a random pitch in the range nMinLine to nMinLine+nRange-1, both included.
     If fRest==true also pitch = 0 (rest) can be generated.
 */
-lmPitch lmRandomGenerator::GenerateRandomPitch(int nMinLine, int nRange, bool fRests, 
+lmPitch lmRandomGenerator::GenerateRandomPitch(int nMinLine, int nRange, bool fRests,
                                      EClefType nClef)
 {
     int nPitch;
-    
+
     if (fRests) {
         //allow for generating rests
         nRange++;
@@ -146,10 +143,14 @@ lmPitch lmRandomGenerator::GenerateRandomPitch(int nMinLine, int nRange, bool fR
         case eclvDo3:        nPitch += 23;    break;
         case eclvDo4:        nPitch += 21;    break;
         case eclvPercussion:    nPitch = 34;    break;
+        default:
+            wxLogMessage(_T("[lmRandomGenerator::GenerateRandomPitch] No treatment for clef %s"),
+                        nClef);
+            wxASSERT(false);
     }
-    
+
     return nPitch;
-    
+
 }
 wxString lmRandomGenerator::GenerateRandomRootNote(EClefType nClef,
                                                    EKeySignatures nKey,
@@ -161,7 +162,7 @@ wxString lmRandomGenerator::GenerateRandomRootNote(EClefType nClef,
     int nRoot = GetRootNoteIndex(nKey);
     wxString sNotes = _T("cdefgab");
 
-    // Get the accidentals implied by the key signature. 
+    // Get the accidentals implied by the key signature.
     // Each element of the array refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
     // and its value can be one of: 0=no accidental, -1 = a flat, 1 = a sharp
     int nAccidentals[7];

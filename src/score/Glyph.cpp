@@ -2,29 +2,25 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Glyph.cpp
-    @brief Implementation file for class lmGlyph
-    @ingroup score_kernel
-*/
 
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "Glyph.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -60,35 +56,35 @@
 
 //the glyphs table
 //IMPORTANT: The table inicialization values MUST be ordered following the
-//           enum lmEGlyphIndex, defined in Glyph.h 
+//           enum lmEGlyphIndex, defined in Glyph.h
 const lmGlyph aGlyphsInfo[] =
 {
 // notes and notheads (LeMus font)
     //                       sel rectangle
-    //       Glyph   offset  shift   height 
+    //       Glyph   offset  shift   height
     lmGlyph(_T('J'),  10,     55,     10,   0,      0,    _T("Longa note")) ,
     lmGlyph(_T('M'),  10,     55,     10,   0,      0,    _T("Breve note")) ,
-    lmGlyph(_T('N'),  10,     55,     10,   0,      0,    _T("Whole note")) , 
-    lmGlyph(_T('O'),  10,     55,     10,   0,      0,    _T("Half note")) , 
-    lmGlyph(_T('P'),  10,     55,     10,   0,      0,    _T("Quarter note notehead")) , 
+    lmGlyph(_T('N'),  10,     55,     10,   0,      0,    _T("Whole note")) ,
+    lmGlyph(_T('O'),  10,     55,     10,   0,      0,    _T("Half note")) ,
+    lmGlyph(_T('P'),  10,     55,     10,   0,      0,    _T("Quarter note notehead")) ,
     lmGlyph(_T('L'),  10,     55,     10,   0,      0,    _T("Cross notehead")) ,
     //short notes in single char
-    lmGlyph(_T('V'),  30,     15,     40,   0,      0,    _T("Eight note, flag bottom")) , 
-    lmGlyph(_T('Q'), -10,     25,     40,   0,      0,    _T("Eight note, flag top")) , 
-    lmGlyph(_T('W'),  30,     15,     45,   0,      0,    _T("16th note, flag bottom")) , 
-    lmGlyph(_T('R'), -10,     25,     40,   0,      0,    _T("16th note, flag top")) , 
-    lmGlyph(_T('X'),  30,     15,     55,   0,      0,    _T("32nd note, flag bottom")) , 
+    lmGlyph(_T('V'),  30,     15,     40,   0,      0,    _T("Eight note, flag bottom")) ,
+    lmGlyph(_T('Q'), -10,     25,     40,   0,      0,    _T("Eight note, flag top")) ,
+    lmGlyph(_T('W'),  30,     15,     45,   0,      0,    _T("16th note, flag bottom")) ,
+    lmGlyph(_T('R'), -10,     25,     40,   0,      0,    _T("16th note, flag top")) ,
+    lmGlyph(_T('X'),  30,     15,     55,   0,      0,    _T("32nd note, flag bottom")) ,
     lmGlyph(_T('S'), -10,     20,     45,   0,      0,    _T("32nd note, flag top")) ,
-    lmGlyph(_T('Y'),  30,     15,     60,   0,      0,    _T("64th note, flag bottom")) , 
+    lmGlyph(_T('Y'),  30,     15,     60,   0,      0,    _T("64th note, flag bottom")) ,
     lmGlyph(_T('T'), -10,     20,     45,   0,      0,    _T("64th note, flag top")),
     lmGlyph(_T('?'),  30,     15,     60,   0,      0,    _T("128th note, flag bottom")) ,
-    lmGlyph(_T('?'), -10,     20,     45,   0,      0,    _T("128th note, flag top")),    
+    lmGlyph(_T('?'), -10,     20,     45,   0,      0,    _T("128th note, flag top")),
     lmGlyph(_T('?'),  30,     15,     60,   0,      0,    _T("256th note, flag bottom")) ,
-    lmGlyph(_T('?'), -10,     20,     45,   0,      0,    _T("256th note, flag top")),    
+    lmGlyph(_T('?'), -10,     20,     45,   0,      0,    _T("256th note, flag top")),
 
 // rests (LeMus font)
     //                       sel rectangle
-    //       Glyph   offset  shift   height 
+    //       Glyph   offset  shift   height
     lmGlyph(_T('}'), -20,     30,     5,    0,      0,    _T("Longa rest")) ,     //larga
     lmGlyph(_T('|'), -20,     30,     5,    0,      0,    _T("Breve rest")) ,    //breve, cuadrada
     lmGlyph(_T('{'), -20,     30,     5,    0,      0,    _T("Whole rest")) ,    //whole redonda
@@ -105,15 +101,15 @@ const lmGlyph aGlyphsInfo[] =
     //  shift and height info is no needed
     //
     //                       sel rectangle
-    //       Glyph   offset  shift   height 
+    //       Glyph   offset  shift   height
     lmGlyph(_T('o'), -20,      0,      0,  2956, 1570,    _T("Eight note flag down")) ,
     lmGlyph(_T('n'), -20,      0,      0,  2606, 1310,    _T("16th note flag down")) ,
-    lmGlyph(_T('m'), -20,      0,      0,  2586,  912,    _T("32nd note flag down")) ,         
-    lmGlyph(_T('l'), -20,      0,      0,  2435,  545,    _T("64th note flag down")) , 
-    lmGlyph(_T('k'), -20,      0,      0,  2437,  180,    _T("128th note flag down")) , 
-    lmGlyph(_T('j'), -20,      0,      0,  2434, -180,    _T("256th note flag down")) , 
-    lmGlyph(_T('f'), -60,      0,      0,   508, -1043,    _T("Eight note flag up")) , 
-    lmGlyph(_T('e'), -60,      0,      0,   890, -945,    _T("16th note flag up")) , 
+    lmGlyph(_T('m'), -20,      0,      0,  2586,  912,    _T("32nd note flag down")) ,
+    lmGlyph(_T('l'), -20,      0,      0,  2435,  545,    _T("64th note flag down")) ,
+    lmGlyph(_T('k'), -20,      0,      0,  2437,  180,    _T("128th note flag down")) ,
+    lmGlyph(_T('j'), -20,      0,      0,  2434, -180,    _T("256th note flag down")) ,
+    lmGlyph(_T('f'), -60,      0,      0,   508, -1043,    _T("Eight note flag up")) ,
+    lmGlyph(_T('e'), -60,      0,      0,   890, -945,    _T("16th note flag up")) ,
     lmGlyph(_T('d'), -60,      0,      0,  1120, -727,    _T("32nd note flag up")) ,
     lmGlyph(_T('c'), -60,      0,      0,  1541, -770,    _T("64th note flag up")),
     lmGlyph(_T('b'), -60,      0,      0,  1901, -756,    _T("128th note flag up")) ,
@@ -122,7 +118,7 @@ const lmGlyph aGlyphsInfo[] =
 //accidentals
 
     //                       sel rectangle
-    //       Glyph   offset  shift   height 
+    //       Glyph   offset  shift   height
     lmGlyph(_T('\''), 10,     45,     30,   0,      0,    _T("Natural accidental")) ,
     lmGlyph(_T('#'),  10,     45,     30,   0,      0,    _T("Sharp accidental")) ,
     lmGlyph(_T('%'),  10,     40,     27,   0,      0,    _T("Flat accidental")) ,
@@ -132,7 +128,7 @@ const lmGlyph aGlyphsInfo[] =
 
 //clefs
     //                       sel rectangle
-    //       Glyph   offset  shift   height 
+    //       Glyph   offset  shift   height
     lmGlyph(_T('A'), -20,      6,     71,   0,      0,    _T("G clef")) ,
     lmGlyph(_T('B'), -20,     20,     34,   0,      0,    _T("F clef")) ,
     lmGlyph(_T('D'), -20,     20,     35,   0,      0,    _T("F clef ottava alta")) ,
@@ -165,7 +161,7 @@ const lmGlyph aGlyphsInfo[] =
 //descender=-1024
 //tenths = 512
 
-//512 FUnits = 10 tenths   -->  t = FU*10/512 
+//512 FUnits = 10 tenths   -->  t = FU*10/512
 
 //offset = -20 for objects pre-positioned on staff
 //shift = ascender - top

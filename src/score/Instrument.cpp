@@ -2,26 +2,23 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Instrument.cpp
-    @brief Implementation file for class lmInstrument
-    @ingroup score_kernel
-*/
+
 /*! class lmInstrument    A collection of Staves
 
     An lmInstrument is a collection of Staves. Usually only one staff or two staves
@@ -29,7 +26,7 @@
 
 */
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "Instrument.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -170,7 +167,7 @@ wxString lmInstrument::Dump()
         sDump += pVStaff->Dump();
     }
     return sDump;
-        
+
 }
 
 wxString lmInstrument::SourceLDP()
@@ -293,7 +290,8 @@ void lmInstrument::DrawName(lmPaper* pPaper, wxColour colorC)
         //It also performs other non necessary thigs.
         //So, I will invoke directly DarwObject and, previouly, set the text
         //position at current paper position
-        m_pName->MoveTo(lmUPoint(pPaper->GetCursorX(), pPaper->GetCursorY()));
+        lmUPoint rPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+        m_pName->MoveTo(rPos);
         m_pName->DrawObject(DO_DRAW, pPaper, colorC, NO_HIGHLIGHT);
     }
 }
@@ -312,7 +310,8 @@ void lmInstrument::DrawAbbreviation(lmPaper* pPaper, wxColour colorC)
         //draw it at the same position.
         //So, I will invoke directly DarwObject and, previouly, set the text
         //position at current paper position.
-        m_pAbbreviation->MoveTo(lmUPoint(pPaper->GetCursorX(), pPaper->GetCursorY()));
+        lmUPoint rPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+        m_pAbbreviation->MoveTo(rPos);
         m_pAbbreviation->DrawObject(DO_DRAW, pPaper, colorC, NO_HIGHLIGHT);
     }
 }

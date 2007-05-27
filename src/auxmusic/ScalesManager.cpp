@@ -2,26 +2,23 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ScalesManager.cpp
-    @brief Implementation file for class lmScalesManager
-    @ingroup auxmusic
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "ScalesManager.h"
 #endif
@@ -49,15 +46,15 @@ typedef struct lmScaleDataStruct {
 } lmScaleData;
 
 static wxString m_sScaleName[est_Max];
-static m_fStringsInitialized = false;
+static bool m_fStringsInitialized = false;
 
 //! @aware Array indexes are in correspondence with enum EScaleType
-// - intervals are from root note if flag is 'true'. Otherwise, 
+// - intervals are from root note if flag is 'true'. Otherwise,
 //   if flag is 'false', intervals are from previous note
 //
-static const lmScaleData tData[est_Max] = { 
+static const lmScaleData tData[est_Max] = {
         //Major scales
-    { false, _T("M2,M2,m2,M2,M2,M2,m2,") },     //Major natural 
+    { false, _T("M2,M2,m2,M2,M2,M2,m2,") },     //Major natural
     { false, _T("M2,M2,m2,M2,m2,a2,m2,") },     //Major TypeII
     { false, _T("M2,M2,m2,M2,m2,M2,M2,") },     //Major TypeIII
     { false, _T("M2,M2,m2,M2,M2,m2,M2,") },     //Major TypeIV
@@ -87,7 +84,7 @@ static const lmScaleData tData[est_Max] = {
 // Implementation of lmScalesManager class
 
 
-lmScalesManager::lmScalesManager(wxString sRootNote, EScaleType nScaleType, 
+lmScalesManager::lmScalesManager(wxString sRootNote, EScaleType nScaleType,
                                  EKeySignatures nKey)
 {
 //    //save parameters
@@ -96,7 +93,7 @@ lmScalesManager::lmScalesManager(wxString sRootNote, EScaleType nScaleType,
 
     if (lmConverter::NoteToBits(sRootNote, &m_tBits[0])) {
         wxLogMessage(_T("[lmScalesManager::lmScalesManager] Unexpected error in lmConverter::NoteToBits coversion. Note: '%s'"),
-                sRootNote );
+                sRootNote.c_str() );
         wxASSERT(false);
     }
 
@@ -188,9 +185,9 @@ wxString ScaleTypeToName(EScaleType nType)
 
         m_fStringsInitialized = true;
     }
-    
+
     return m_sScaleName[nType];
-    
+
 }
 
 int NumNotesInScale(EScaleType nType)

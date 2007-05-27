@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -22,7 +22,7 @@
     @brief Implementation file for class lmChord
     @ingroup score_kernel
 */
-/*! @class lmChord 
+/*! @class lmChord
     @ingroup score_kernel
     @brief Information and methods to group several notes into a chord.
 
@@ -31,13 +31,13 @@
     note of the chord
 
     The class is named lmChord instead of Chord because there is a function named "Chord"
-    defined in WinGDI.h (Microsoft), and it causes compilation problems (with MS VC) 
+    defined in WinGDI.h (Microsoft), and it causes compilation problems (with MS VC)
     as the names collide.
 
 */
 
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "Chord.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -77,7 +77,7 @@ lmChord::lmChord(lmNote* pBaseNote)
     m_nStemType = pBaseNote->GetStemType();
 }
 
-/*! Destructor. When invoked, only from lmNote destructor, there must be only one 
+/*! Destructor. When invoked, only from lmNote destructor, there must be only one
     note: the base note.
 */
 lmChord::~lmChord()
@@ -130,8 +130,8 @@ void lmChord::AddNote(lmNote* pNewNote)
         if (pNote->GetPitch() > pNewNote->GetPitch()) break;
     }
     m_cNotes.Insert((size_t)iPos, pNewNote);
-    
-    //Update Max and Min note 
+
+    //Update Max and Min note
     if (m_pMinNote->GetPitch() > pNewNote->GetPitch()) {
         m_pMinNote = pNewNote;
     } else if (m_pMaxNote->GetPitch() < pNewNote->GetPitch()) {
@@ -144,9 +144,9 @@ void lmChord::AddNote(lmNote* pNewNote)
 }
 
 /*! @brief Removes a note from a chord.
-    
-    When invoked there must be at least two notes as 
-    otherwise it can not be a chord. 
+
+    When invoked there must be at least two notes as
+    otherwise it can not be a chord.
 */
 void lmChord::RemoveNote(lmNote* pNote)
 {
@@ -154,14 +154,14 @@ void lmChord::RemoveNote(lmNote* pNote)
 
     m_cNotes.DeleteObject(pNote);
 
-    //Update Max and Min note 
+    //Update Max and Min note
     wxNotesListNode *pNode = m_cNotes.GetFirst();
     pNote = (lmNote*)pNode->GetData();
     m_pMinNote = pNote;
     m_pMaxNote = pNote;
 
     pNode=pNode->GetNext();
-    for(; pNode; pNode=pNode->GetNext()) 
+    for(; pNode; pNode=pNode->GetNext())
     {
         pNote = (lmNote*)pNode->GetData();
         if (m_pMinNote->GetPitch() > pNote->GetPitch()) {
@@ -179,8 +179,8 @@ lmNote* lmChord::GetBaseNote()
 }
 
 int lmChord::GetNumNotes()
-{ 
-    return (int)m_cNotes.GetCount(); 
+{
+    return (int)m_cNotes.GetCount();
 }
 
 /*!    @brief Draw the stem of the chord.
@@ -235,7 +235,7 @@ void lmChord::DrawStem(bool fMeasuring, lmPaper* pPaper, wxColour colorC, wxFont
         DrawFlag(fMeasuring, pPaper, pBaseNote, lmUPoint(xStem, yStemEnd), colorC, pFont,
                  pVStaff, nStaff);
     }
-    
+
 }
 
 bool lmChord::IsLastNoteOfChord(lmNote* pNote)
@@ -243,7 +243,7 @@ bool lmChord::IsLastNoteOfChord(lmNote* pNote)
     wxNotesListNode *pNode = m_cNotes.GetLast();
     lmNote* pLastNote = (lmNote*)pNode->GetData();
     return (pLastNote->GetID() == pNote->GetID());
-    
+
 }
 
 lmLUnits lmChord::DrawFlag(bool fMeasuring, lmPaper* pPaper, lmNote* pBaseNote,
@@ -255,8 +255,8 @@ lmLUnits lmChord::DrawFlag(bool fMeasuring, lmPaper* pPaper, lmNote* pBaseNote,
     //
 
     ENoteType nNoteType = pBaseNote->GetNoteType();
-    bool fStemDown = pBaseNote->StemGoesDown(); 
-        
+    bool fStemDown = pBaseNote->StemGoesDown();
+
     lmEGlyphIndex nGlyph = GLYPH_EIGHTH_FLAG_DOWN;
     switch (nNoteType) {
         case eEighth :
@@ -284,19 +284,19 @@ lmLUnits lmChord::DrawFlag(bool fMeasuring, lmPaper* pPaper, lmNote* pBaseNote,
         }
 
     wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
-  
+
     pPaper->SetFont(*pFont);
     if (!fMeasuring) {
         // drawing phase: do the draw
         pPaper->SetTextForeground(colorC);
-        pPaper->DrawText(sGlyph, pos.x, 
+        pPaper->DrawText(sGlyph, pos.x,
             pos.y + pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, nStaff ) );
     }
 
     lmLUnits width, height;
     pPaper->GetTextExtent(sGlyph, &width, &height);
     return width;
-        
+
 }
 
 void lmChord::ComputeStemDirection()
@@ -318,16 +318,16 @@ void lmChord::ComputeStemDirection()
     //  b) More than two notes on a stem:
     //
     //    b1. If the interval of the highest note above the middle line is greater than the
-    //      interval of the lowest note below the middle line: downward stems. 
+    //      interval of the lowest note below the middle line: downward stems.
     //      ==>   same than a1
     //
     //    b2. If the interval of the lowest note below the middle line is greater than the
-    //      interval of the highest note above the middle line: upward stems. 
+    //      interval of the highest note above the middle line: upward stems.
     //      ==>   same than a2
     //
     //    b3. If the highest and the lowest notes are the same distance from the middle line
     //      use the majority rule to determine stem direction: If the majority of the notes
-    //      are above the middle: downward stems. Else: upward stems. 
+    //      are above the middle: downward stems. Else: upward stems.
     //      ==>   Mean(NotePos) > MiddleLinePos -> downward
 
 
@@ -336,7 +336,7 @@ void lmChord::ComputeStemDirection()
     lmNote* pBaseNote = GetBaseNote();
 
     #define TWO_NOTES_DEFAULT true          //! @todo move to layout user options
-    
+
     if (m_nStemType == eStemUp) {          //force stem up
         m_fStemDown = false;
     }

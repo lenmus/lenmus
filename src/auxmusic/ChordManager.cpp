@@ -2,26 +2,23 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ChordManager.cpp
-    @brief Implementation file for class lmChordManager
-    @ingroup auxmusic
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "ChordManager.h"
 #endif
@@ -50,29 +47,29 @@ typedef struct lmChordDataStruct {
 } lmChordData;
 
 static wxString m_sChordName[ect_Max];
-static m_fStringsInitialized = false;
+static bool m_fStringsInitialized = false;
 
 //! @aware Array indexes are in correspondence with enum EChordType
 // - intervals are from root note
 //      number + type:   m=minor, M=major, p=perfect, a=augmented, d=diminished
-static lmChordData tData[ect_Max] = { 
-    { 3, _T("M3"), _T("p5"), _T("") },        //MT        - MajorTriad
-    { 3, _T("m3"), _T("p5"), _T("") },        //mT        - MinorTriad
-    { 3, _T("M3"), _T("a5"), _T("") },        //aT        - AugTriad
-    { 3, _T("m3"), _T("d5"), _T("") },        //dT        - DimTriad
-    { 3, _T("p4"), _T("p5"), _T("") },        //I,IV,V    - Suspended_4th
-    { 3, _T("M2"), _T("p5"), _T("") },        //I,II,V    - Suspended_2nd
-    { 4, _T("M3"), _T("p5"), _T("M7") },      //MT + M7   - MajorSeventh
-    { 4, _T("M3"), _T("p5"), _T("m7") },      //MT + m7   - DominantSeventh
-    { 4, _T("m3"), _T("p5"), _T("m7") },      //mT + m7   - MinorSeventh
-    { 4, _T("m3"), _T("d5"), _T("d7") },      //dT + d7   - HalfDimSeventh
-    { 4, _T("m3"), _T("d5"), _T("m7") },      //dT + m7   - HalfDimSeventh
-    { 4, _T("M3"), _T("a5"), _T("M7") },      //aT + M7   - AugMajorSeventh
-    { 4, _T("M3"), _T("a5"), _T("m7") },      //aT + m7   - AugSeventh
-    { 4, _T("m3"), _T("p5"), _T("M7") },      //mT + M7   - MinorMajorSeventh
-    { 4, _T("M3"), _T("p5"), _T("M6") },      //MT + M6   - MajorSixth
-    { 4, _T("m3"), _T("p5"), _T("M6") },      //mT + M6   - MinorSixth
-    { 3, _T("M3"), _T("a4"), _T("a6") },      //          - AugSixth
+static lmChordData tData[ect_Max] = {
+    { 3, { _T("M3"), _T("p5"), _T("") }},        //MT        - MajorTriad
+    { 3, { _T("m3"), _T("p5"), _T("") }},        //mT        - MinorTriad
+    { 3, { _T("M3"), _T("a5"), _T("") }},        //aT        - AugTriad
+    { 3, { _T("m3"), _T("d5"), _T("") }},        //dT        - DimTriad
+    { 3, { _T("p4"), _T("p5"), _T("") }},        //I,IV,V    - Suspended_4th
+    { 3, { _T("M2"), _T("p5"), _T("") }},        //I,II,V    - Suspended_2nd
+    { 4, { _T("M3"), _T("p5"), _T("M7") }},      //MT + M7   - MajorSeventh
+    { 4, { _T("M3"), _T("p5"), _T("m7") }},      //MT + m7   - DominantSeventh
+    { 4, { _T("m3"), _T("p5"), _T("m7") }},      //mT + m7   - MinorSeventh
+    { 4, { _T("m3"), _T("d5"), _T("d7") }},      //dT + d7   - HalfDimSeventh
+    { 4, { _T("m3"), _T("d5"), _T("m7") }},      //dT + m7   - HalfDimSeventh
+    { 4, { _T("M3"), _T("a5"), _T("M7") }},      //aT + M7   - AugMajorSeventh
+    { 4, { _T("M3"), _T("a5"), _T("m7") }},      //aT + m7   - AugSeventh
+    { 4, { _T("m3"), _T("p5"), _T("M7") }},      //mT + M7   - MinorMajorSeventh
+    { 4, { _T("M3"), _T("p5"), _T("M6") }},      //MT + M6   - MajorSixth
+    { 4, { _T("m3"), _T("p5"), _T("M6") }},      //mT + M6   - MinorSixth
+    { 3, { _T("M3"), _T("a4"), _T("a6") }},      //          - AugSixth
 };
 
 
@@ -80,7 +77,7 @@ static lmChordData tData[ect_Max] = {
 // Implementation of lmChordManager class
 
 
-lmChordManager::lmChordManager(wxString sRootNote, EChordType nChordType, 
+lmChordManager::lmChordManager(wxString sRootNote, EChordType nChordType,
                                int nInversion, EKeySignatures nKey)
 {
     //parameter 'nInversion' is encoded as follows:
@@ -96,7 +93,7 @@ lmChordManager::lmChordManager(wxString sRootNote, EChordType nChordType,
 
     if (lmConverter::NoteToBits(sRootNote, &m_tBits[0])) {
         wxLogMessage(_T("[lmChordManager::lmChordManager] Unexpected error in lmConverter::NoteToBits coversion. Note: '%s'"),
-                sRootNote );
+                sRootNote.c_str() );
         wxASSERT(false);
     }
 
@@ -133,13 +130,13 @@ lmChordManager::lmChordManager(wxString sRootNote, EChordType nChordType,
             sNewIntv[1] = InvertInterval( sIntval[1] );
             sNewIntv[2] = InvertInterval( sIntval[0] );
         }
-    } 
+    }
     else if (m_nInversion == 3)
     {
         sNewIntv[0] = SubstractIntervals( _T("p8"), sIntval[2] );
         sNewIntv[1] = AddIntervals( sNewIntv[0], sIntval[0] );
         sNewIntv[2] = AddIntervals( sNewIntv[0], sIntval[1] );
-    } 
+    }
     if (m_nInversion != 0) {
         sIntval[0] = sNewIntv[0];
         sIntval[1] = sNewIntv[1];
@@ -164,12 +161,12 @@ lmChordManager::~lmChordManager()
 }
 
 int lmChordManager::GetNumNotes()
-{ 
+{
     return tData[m_nType].nNumNotes;
 }
 
 int lmChordManager::GetMidiNote(int i)
-{ 
+{
     wxASSERT(i < GetNumNotes());
     return m_ntMidi[i];
 }
@@ -177,8 +174,8 @@ int lmChordManager::GetMidiNote(int i)
 int lmChordManager::GetMidiNote(int nMidiRoot, wxString sInterval)
 {
     // Receives a Midi pitch and a string encoding the interval as follows:
-    // - intval = number + type: 
-    //      m=minor, M=major, p=perfect, a=augmented, 
+    // - intval = number + type:
+    //      m=minor, M=major, p=perfect, a=augmented,
     //      d=diminished, += double aug. -=double dim.
     //   examples:
     //      3M - major 3th
@@ -192,9 +189,9 @@ int lmChordManager::GetMidiNote(int nMidiRoot, wxString sInterval)
     //  3m      3
     //  3M      4
     //  3a/4p   5
-    //  4a/5d   6 
+    //  4a/5d   6
     //  5p      7
-    //  5a/6m   8      
+    //  5a/6m   8
     //  6M      9
     //  6a/7m   10
     //  7M      11
@@ -230,7 +227,7 @@ wxString lmChordManager::GetPattern(int i)
 }
 
 wxString lmChordManager::GetNameFull()
-{ 
+{
     wxString sName = ChordTypeToName( m_nType );
     sName += _T(", ");
     if (m_nInversion == 0)
@@ -260,7 +257,7 @@ void lmChordManager::UnitTests()
         _T("+e4"), _T("++f6"), _T("b1"), _T("xc4") };
     lmNoteBits tNote;
     for(i=0; i < 8; i++) {
-        if (lmConverter::NoteToBits(sNote[i], &tNote)) 
+        if (lmConverter::NoteToBits(sNote[i], &tNote))
             wxLogMessage(_T("Unexpected error in lmConverter::NoteToBits()"));
         else {
             wxLogMessage(_T("Note: '%s'. Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d --> '%s'"),
@@ -287,7 +284,7 @@ void lmChordManager::UnitTests()
     wxLogMessage(_T("[lmChordManager::UnitTests] Test of IntervalCodeToBits() method:"));
     lmIntvBits tIntv;
     for(i=0; i < 8; i++) {
-        if (IntervalCodeToBits(sIntv[i], &tIntv)) 
+        if (IntervalCodeToBits(sIntv[i], &tIntv))
             wxLogMessage(_T("Unexpected error in IntervalCodeToBits()"));
         else {
             wxLogMessage(_T("Intv: '%s'. Bits: num=%d, Semitones=%d --> '%s'"),
@@ -353,9 +350,9 @@ wxString ChordTypeToName(EChordType nType)
 
         m_fStringsInitialized = true;
     }
-    
+
     return m_sChordName[nType];
-    
+
 }
 
 int NumNotesInChord(EChordType nChordType)

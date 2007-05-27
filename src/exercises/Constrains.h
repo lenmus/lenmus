@@ -2,28 +2,25 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Constrains.h
-    @brief Header file for Constrain derived classes
-    @ingroup generators
-*/
+
 #ifdef __GNUG__
-// #pragma interface
+#pragma interface "Constrains.cpp"
 #endif
 
 #ifndef __CONSTRAINS_H__        //to avoid nested includes
@@ -94,7 +91,7 @@ public:
     void SetUpperPitch(EClefType nClef, wxString sPitch)  {
                 m_aUpperPitch[nClef-lmMIN_CLEF] = sPitch;
             }
- 
+
 
 private:
     bool m_fValidClefs[lmMAX_CLEF - lmMIN_CLEF + 1];
@@ -125,7 +122,7 @@ public:
     ~lmTimeSignConstrains() {}
     bool IsValid(ETimeSignature nTime) { return m_fValidTimes[nTime-lmMIN_TIME_SIGN]; }
     void SetValid(ETimeSignature nTime, bool fValid) {
-            m_fValidTimes[nTime-lmMIN_TIME_SIGN] = fValid; 
+            m_fValidTimes[nTime-lmMIN_TIME_SIGN] = fValid;
         }
     bool SetConstrains(wxString sTimeSigns);
 
@@ -203,19 +200,19 @@ public:
     ~lmScoreCtrolOptions() {}
 
     void SetControlPlay(bool fValue, wxString sLabels = _T(""))
-        { 
+        {
             fPlayCtrol = fValue;
             if (sLabels != _T(""))
                 SetLabels(sLabels, &sPlayLabel, &sStopPlayLabel);
         }
     void SetControlSolfa(bool fValue, wxString sLabels = _T(""))
-        { 
+        {
             fSolfaCtrol = fValue;
             if (sLabels != _T(""))
                 SetLabels(sLabels, &sSolfaLabel, &sStopSolfaLabel);
         }
     void SetControlMeasures(bool fValue, wxString sLabels = _T(""))
-        { 
+        {
             fMeasuresCtrol = fValue;
             if (sLabels != _T(""))
                 SetLabels(sLabels, &sMeasuresLabel, &sStopMeasureLabel);
@@ -224,7 +221,7 @@ public:
     void SetMetronomeMM(long nValue) { m_nMM = nValue; }
     long GetMetronomeMM() { return m_nMM; }
 
-    
+
     bool        fPlayCtrol;             //Instert "Play" link
     wxString    sPlayLabel;             //label for "Play" link
     wxString    sStopPlayLabel;         //label for "Stop playing" link
@@ -271,13 +268,13 @@ public:
 
     ~lmMusicReadingCtrolOptions() {}
     void SetControlPlay(bool fValue, wxString sLabels = _T(""))
-        { 
+        {
             fPlayCtrol = fValue;
             if (sLabels != _T(""))
                 SetLabels(sLabels, &sPlayLabel, &sStopPlayLabel);
         }
     void SetControlSolfa(bool fValue, wxString sLabels = _T(""))
-        { 
+        {
             fSolfaCtrol = fValue;
             if (sLabels != _T(""))
                 SetLabels(sLabels, &sSolfaLabel, &sStopSolfaLabel);

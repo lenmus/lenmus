@@ -18,12 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file LDPTags.h
-    @brief Header file with LDP language tags
-    @ingroup ldp_parser
-*/
+
 #ifdef __GNUG__
-// #pragma interface
+#pragma interface "LDPTags.cpp"
 #endif
 
 #ifndef __LDPTAGS_H__        //to avoid nested includes

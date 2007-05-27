@@ -7,23 +7,23 @@
 //    wxWidgets licence is compatible with GNU GPL.
 //    Author:      Harm van der Heijden and Vaclav Slavik
 //    Copyright (c) Harm van der Heijden and Vaclav Slavik
-// 
+//
 //    Modified by:
 //        Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ extern lmPaths* g_pPaths;
 // what is considered "small index"?
 #define INDEX_IS_SMALL 100
 
-// Motif defines this as a macro 
+// Motif defines this as a macro
 #ifdef Below
 #undef Below
 #endif
@@ -384,7 +384,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
         m_HtmlWin = new lmTextBookHelpHtmlWindow(this, m_Splitter);
         m_NavigPan = new wxPanel(m_Splitter, wxID_ANY); //, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER);
         m_NavigNotebook = new wxNotebook(m_NavigPan, ID_NOTEBOOK,
-                                         wxDefaultPosition, wxDefaultSize); 
+                                         wxDefaultPosition, wxDefaultSize);
 
         navigSizer = new wxBoxSizer(wxVERTICAL);
         navigSizer->Add(m_NavigNotebook, 1, wxEXPAND);
@@ -442,7 +442,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
             topsizer->Add(sizer, 0, wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT, 10);
         }
 
-        m_pContentsBox = new lmBookContentsBox(pPanel, this, ID_TREECTRL, 
+        m_pContentsBox = new lmBookContentsBox(pPanel, this, ID_TREECTRL,
                                 wxDefaultPosition, wxDefaultSize, wxSIMPLE_BORDER );
         topsizer->Add(m_pContentsBox, 1,
                       wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT,
@@ -1477,12 +1477,12 @@ void lmTextBookFrame::OnCloseWindow(wxCloseEvent& evt)
     GetSize(&m_Cfg.w, &m_Cfg.h);
     GetPosition(&m_Cfg.x, &m_Cfg.y);
 
-#ifdef __WXGTK__
-    if (IsGrabbed())
-    {
-        RemoveGrab();
-    }
-#endif
+//#ifdef __WXGTK__
+//    if (IsGrabbed())
+//    {
+//        RemoveGrab();
+//    }
+//#endif
 
     if (m_Splitter && m_Cfg.navig_on) m_Cfg.sashpos = m_Splitter->GetSashPosition();
 
@@ -1518,7 +1518,7 @@ void lmTextBookFrame::UpdateUIEvent(wxUpdateUIEvent& event, wxToolBar* pToolBar)
             break;
 
         default:
-            // Always enabled when TextBookFrame is visible. Disabled on MainFrame 
+            // Always enabled when TextBookFrame is visible. Disabled on MainFrame
             //      MENU_eBookPanel,
             //      MENU_eBook_Print,
             //      MENU_eBook_OpenFile,

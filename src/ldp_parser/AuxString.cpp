@@ -2,28 +2,25 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file AuxString.cpp
-    @brief Implementation file for auxiliary global functions to verify / convert strings
-    @ingroup ldp_parser
-*/
+
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "AuxString.h"
 #endif
 
 // for (compilers that support precompilation, includes "wx/wx.h".
@@ -52,25 +49,25 @@
 
  a pitch value of 0 (zero) represents a rest.
 
-                                AltDiatonica                
-  name      Octave      PitchMIDI    Pitch      Observations        
+                                AltDiatonica
+  name      Octave      PitchMIDI    Pitch      Observations
   ----      ------      ---------    -------    -----------------------------------
   rest      any         0            0          Any rest
-  (c-1)    -1           1            
+  (c-1)    -1           1
   c0        0           12           1          Do2 de la subcontraoctava (16,35 Hz)
-  d0        0           14           2            
-  e0        0           16           3            
-  f0        0           17           4            
-  g0        0           19           5            
-  a0        0           21           6            
-  b0        0           23           7            
+  d0        0           14           2
+  e0        0           16           3
+  f0        0           17           4
+  g0        0           19           5
+  a0        0           21           6
+  b0        0           23           7
   c1        1           24           8          Do1 de la contraoctava
   c2        2           36           15         Do de la gran octava
-  c3        3           48           22         do de la pequeña octava
+  c3        3           48           22         do de la pequeÃ±a octava
   c4        4           60           29         do1 de la octava primera (la1 = 440Hz)
-  d4        4           62           30            
-  e4        4           64           31            
-  f4        4           65           32            
+  d4        4           62           30
+  e4        4           64           31
+  f4        4           65           32
   ...
   c5        5           72           36         do2 de la octava segunda
   c6        6           84           43         do3 de la octava tercera
@@ -98,14 +95,14 @@
 
     Convert LDP pitch name to pitch and accidentals.
     @return    Returns true if error (sPitch is not a valid pitch name)
-            Otherwise, stores the corresponding data into the parameters pPitch, and 
+            Otherwise, stores the corresponding data into the parameters pPitch, and
             pAccidentals.
 
-    @param[in]  sPitch    The LDP string with the pitch to convert. Pitch is represented 
+    @param[in]  sPitch    The LDP string with the pitch to convert. Pitch is represented
                 as the combination of the chromatic alteration, the step in the
                 diatonic scale, and the octave (i.e. "+c4").
     @param[out] pPitch    Diatonic MIDI pitch.
-    @param[out] pAccidentals parameter represents chromatic accidentals (does not 
+    @param[out] pAccidentals parameter represents chromatic accidentals (does not
                 include key signature accidentals)
 */
 bool PitchNameToData(wxString sPitch, int* pPitch, EAccidentals* pAccidentals)
@@ -113,27 +110,27 @@ bool PitchNameToData(wxString sPitch, int* pPitch, EAccidentals* pAccidentals)
 
     //It is assumed that sPitch is Trimed (no spaces before or after real data) and lower case
     bool fError = false;
-    
+
     //if sPitch is a number it is interpreted as a MIDI pitch
     if (sPitch.IsNumber()) {
         long nAux = 0;
-        fError = !sPitch.ToLong(&nAux);   
+        fError = !sPitch.ToLong(&nAux);
         wxASSERT(!fError);
         *pPitch = (int)nAux;
-        *pAccidentals = eNoAccidentals; 
+        *pAccidentals = eNoAccidentals;
         /*! @todo
             analizar la nota MIDI y determinar las
-            alteraciones en función de la armadura
+            alteraciones en funciÃ³n de la armadura
         */
         return false;
     }
-    
+
     //sPitch is alfanumeric: must be letter followed by a number (i.e.: "c4" )
     wxString sAlter;
-    
+
     //split the string: accidentals and name
     switch (sPitch.Len()) {
-        case 2: 
+        case 2:
             sAlter = _T("");
             break;
         case 3:
@@ -152,7 +149,7 @@ bool PitchNameToData(wxString sPitch, int* pPitch, EAccidentals* pAccidentals)
     wxString sOctave = sPitch.Mid(1, 1);
     fError = StringToPitch(sStep, sOctave, pPitch);
     if (fError) return true;
-    
+
     //analyse accidentals
     if (sAlter.IsEmpty()) {
         *pAccidentals = eNoAccidentals;
@@ -179,7 +176,7 @@ bool PitchNameToData(wxString sPitch, int* pPitch, EAccidentals* pAccidentals)
     } else {
         return true;  //error
     }
-    
+
     return false;  //no error
 
 }
@@ -198,7 +195,7 @@ bool StringToPitch(wxString sStep, wxString sOctave, int* pPitch)
     //analyze the letter and store it as diatonic pitch step
     *pPitch = LetterToStep(sStep) + 1;
     if (*pPitch == 0) return true;   //error
-    
+
     //combine octave with pitch step
     if (! sOctave.IsNumber()) {
         return true;   //error
@@ -288,7 +285,7 @@ float SrcGetElementDuracion(wxString sElement)
 
     //extract NoteType and dots
     wxString sNoteType = sAux.Mid(iStart, i - iStart);
-    
+
     // compute duration
     return LDPNoteTypeToDuration(sNoteType);
 
@@ -308,7 +305,7 @@ bool SrcIsRest(wxString sElement)
     @return the index to the end (closing parenthesis) of first element
 */
 int SrcSplitPattern(wxString sSource)
-{                    
+{
     int i;                  //index to character being explored
     int iMax;               //sSource length
     int nAPar;              //open parenthesis counter
@@ -316,7 +313,7 @@ int SrcSplitPattern(wxString sSource)
     iMax = sSource.Length();
     wxASSERT(iMax > 0);                         //sSource must not be empty
     wxASSERT(sSource.Mid(0, 1) == _T("(") );    //must start with parenthesis
-    
+
     nAPar = 1;       //let//s count first parenthesis
     //look for the matching closing parenthesis
     bool fFound = false;
@@ -334,7 +331,7 @@ int SrcSplitPattern(wxString sSource)
     }
     wxASSERT(fFound);
     return i;
-        
+
 }
 
 
@@ -348,11 +345,11 @@ bool LDPDataToPitch(wxString sPitch, EAccidentals* pAccidentals,
                     wxString* sStep, wxString* sOctave)
 {
     /*
-    Analyzes string sPitch (LDP format) and extracts its parts (Step, octave and 
+    Analyzes string sPitch (LDP format) and extracts its parts (Step, octave and
     accidentals) and stores them in the corresponding parameters.
     Returns true if error (sPitch is not a valid pitch name)
 
-    In LDP pitch is represented as a combination of the step of the diatonic scale, the 
+    In LDP pitch is represented as a combination of the step of the diatonic scale, the
     chromatic alteration, and the octave.
       - The nAccidentals parameter represents chromatic alteration (does not include tonal
         key alterations)
@@ -362,11 +359,11 @@ bool LDPDataToPitch(wxString sPitch, EAccidentals* pAccidentals,
 
     //It is assumed that sPitch is Trimed (no spaces before or after real data) and lower case
     bool fError = false;
-    
+
     //if sPitch is a number it is interpreted as a MIDI pitch
     if (sPitch.IsNumber()) {
         long nAux = 0;
-        fError = !sPitch.ToLong(&nAux);   
+        fError = !sPitch.ToLong(&nAux);
         wxASSERT(!fError);
         lmConverter oConverter;
         sPitch = oConverter.MidiPitchToLDPName((lmPitch) nAux);
@@ -383,13 +380,13 @@ bool LDPDataToPitch(wxString sPitch, EAccidentals* pAccidentals,
         }
         return false;
     }
-    
+
     //sPitch is alfanumeric: must be letter followed by a number (i.e.: "c4" )
     wxString sAlter;
-    
+
     //split the string: accidentals and name
     switch (sPitch.Len()) {
-        case 2: 
+        case 2:
             sAlter = _T("");
             break;
         case 3:
@@ -406,7 +403,7 @@ bool LDPDataToPitch(wxString sPitch, EAccidentals* pAccidentals,
 
     *sStep = sPitch.Left(1);
     *sOctave = sPitch.Mid(1, 1);
-   
+
     //analyse accidentals
     if (sAlter.IsEmpty()) {
         *pAccidentals = eNoAccidentals;
@@ -433,7 +430,7 @@ bool LDPDataToPitch(wxString sPitch, EAccidentals* pAccidentals,
     } else {
         return true;  //error
     }
-    
+
     return false;  //no error
 
 }
@@ -441,7 +438,6 @@ bool LDPDataToPitch(wxString sPitch, EAccidentals* pAccidentals,
 /// Returns -1 if error
 EClefType LDPNameToClef(wxString sClefName)
 {
-    EClefType nClef = eclvSol;
     if (sClefName == _T("Do1")) {
         return eclvDo1;
     } else if (sClefName == _T("Do2")) {
@@ -504,13 +500,13 @@ EKeySignatures LDPInternalNameToKey(wxString sKeyName)
         m_sLDPKeyNames[earmRem] = _T("Rem");
         m_fLDPNamesLoaded = true;
     }
-    
+
     int i;
     for (i = lmMIN_KEY; i <= lmMAX_KEY; i++) {
         if (m_sLDPKeyNames[i-lmMIN_KEY] == sKeyName) return (EKeySignatures)i;
     }
     return (EKeySignatures)-1;
-    
+
 }
 
 
@@ -579,7 +575,7 @@ void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, lmPitch nSelNote)
         pCboBox->Append( GetNoteNamePhysicists((lmPitch) i) );
     }
     pCboBox->SetValue( GetNoteNamePhysicists(nSelNote) );
-    
+
 }
 
 void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, wxString sNoteName)
@@ -590,6 +586,6 @@ void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, wxString sNoteName)
         pCboBox->Append( GetNoteNamePhysicists((lmPitch) i) );
     }
     pCboBox->SetValue( sNoteName );
-    
+
 }
 

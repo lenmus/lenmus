@@ -2,28 +2,25 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file TimeSignature.cpp
-    @brief Implementation file for class lmTimeSignature
-    @ingroup score_kernel
-*/
+
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "TimeSignature.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -139,7 +136,7 @@ wxString lmTimeSignature::SourceXML()
 
 void lmTimeSignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
                                  bool fHighlight)
-{    
+{
     if (fMeasuring) {
         // get the shift to the staff on which the time key must be drawn
         lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
@@ -154,7 +151,7 @@ void lmTimeSignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
 }
 // returns the width of the draw (logical units)
 lmLUnits lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
-{    
+{
     pPaper->SetFont(*m_pFont);
 
     wxString sTopGlyphs = wxString::Format(_T("%d"), m_nBeats );
@@ -214,12 +211,12 @@ lmLUnits lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wx
 
 void lmTimeSignature::PrepareGlyphs()
 {
-//    
+//
 //    if Not fMeasuring {
 //        Escribir CStr(sTopGlyphs), Int(m_xCursor), CLng(m_yCursor - 10# * m_ndyLines + yShift)
 //        Escribir CStr(sBottomGlyphs), Int(m_xCursor), CLng(m_yCursor - 8# * m_ndyLines + yShift)
 //    }
-//    m_xCursor = m_xCursor + 30# * m_rEscala     //avance tras la métrica
+//    m_xCursor = m_xCursor + 30# * m_rEscala     //avance tras la mÃ©trica
 //
 //}
 //
@@ -237,7 +234,7 @@ void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime,
 
     //add the RhythmChange event
     pSM->StoreEvent( rTime, eSET_RhythmChange, 0, m_nBeats, 0, nBeatDuration, this, nMeasure);
-    
+
 }
 
 //! @todo Code all following methods needed for dragging and selection rectangle
@@ -248,7 +245,7 @@ wxBitmap* lmTimeSignature::GetBitmap(double rScale)
     return (wxBitmap*)NULL;
 }
 
-void lmTimeSignature::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
+void lmTimeSignature::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
                         const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels)
 {
 }
@@ -389,20 +386,20 @@ float GetBeatDuration(ETimeSignature nTimeSign)
 float GetBeatDuration(int nBeatType)
 {
     switch(nBeatType) {
-        case 1:    
+        case 1:
             return pow(2, (10 - eWhole));
-        case 2:    
+        case 2:
             return pow(2, (10 - eHalf));
-        case 4:    
+        case 4:
             return pow(2, (10 - eQuarter));
-        case 8:    
+        case 8:
             return (1.5 * pow(2, (10 - eQuarter)) );
-        case 16:    
+        case 16:
             return pow(2, (10 - eEighth));
         default:
             wxASSERT(false);
             return 0;     //compiler happy
-    }    
+    }
 }
 
 //! Returns the required duration for a measure in the received time signature
@@ -430,7 +427,7 @@ float GetMeasureDuration(ETimeSignature nTimeSign)
 
 int AssignVolume(float rTimePos, int nBeats, int nBeatType)
 {
-    //Volume should depend on beak (strong, medium, weak) on which a note 
+    //Volume should depend on beak (strong, medium, weak) on which a note
     //is placed. This method receives the time for a note and the current time signature
     //and return the volume to assign to it
 
@@ -448,7 +445,7 @@ int AssignVolume(float rTimePos, int nBeats, int nBeatType)
     }
 
     // compute relative position of this note with reference to the beat
-    int nBeatNum = (int)rTimePos / nBeatDuration;               //number of beat 
+    int nBeatNum = (int)rTimePos / nBeatDuration;               //number of beat
     float rBeatShift = fabs(rTimePos - (float)(nBeatDuration * nBeatNum));
 
     int nVolume = 60;       // volume for off-beat notes

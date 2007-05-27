@@ -2,33 +2,30 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file LDPToken.cpp
-    @brief Implementation file for class lmLDPToken
-    @ingroup ldp_parser
-*/
+
 /*! @class lmLDPToken
     @ingroup ldp_parser
     @brief Methods to read and form a token
 
 */
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "LDPToken.h"
 #endif
 
 // for (compilers that support precompilation, includes "wx/wx.h".
@@ -74,7 +71,7 @@ const wxChar chUnderscore = _T('_');
 const wxChar nEOF = _T('\x03');        //ETX
 const wxChar nEOL = _T('\x04');        //EOT
 
-const wxString sLetters = _T("ABCDEFGHIJKLMNÑOPQRSTUVWXYZabcdefghijklmnñopqrstuvwxyz");
+const wxString sLetters = _T("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
 const wxString sNumbers = _T("0123456789");
 
 const wxString sEOF = _T("<<$$EOF$$>>");
@@ -122,7 +119,7 @@ wxString lmLDPToken::GetDescription()
 
 //These methods perform an analysis at character level to form tokens.
 //If during the analyisis the char sequence "//" is found the remaining chars until
-//end of line are ignoerd, including both "//" chars. An then analyisis continues as 
+//end of line are ignoerd, including both "//" chars. An then analyisis continues as
 //if all those ignored chars never existed.
 
 lmLDPTokenBuilder::lmLDPTokenBuilder(lmLDPParser* pParser)
@@ -209,17 +206,17 @@ lmLDPToken* lmLDPTokenBuilder::ReadToken()
     // loop until a token is found
     while(true) {
         if (m_sInBuf == _T("")) GetNewBuffer();
-        
+
         //if end of file return
         if (m_sInBuf == sEOF ) {    //|| m_token.GetType() == tkEndOfFile) {
             m_token.Set(tkEndOfFile, _T(""));
             return &m_token;
         }
-        
+
         ParseNewToken();
 
         if (m_token.GetType() != tkSpaces && m_token.GetType() != tkComment) return &m_token;
-            // spaces are not an external token but an internal token to signal 
+            // spaces are not an external token but an internal token to signal
             // a separator between tokens
             // Comments could be an external token but as they are not going to be treated
             // we filter them out in here for optimization
@@ -237,7 +234,7 @@ void lmLDPTokenBuilder::GNC()
     }
     if (m_curChar == chTab) m_curChar = chSpace;    //change Tabs by Spaces
     m_lastPos++;
-    
+
 }
 
 void lmLDPTokenBuilder::GetNewBuffer()
@@ -250,7 +247,7 @@ void lmLDPTokenBuilder::GetNewBuffer()
 
 wxString lmLDPTokenBuilder::Extract(long iFrom, long iTo)
 {
-    // This auxiliary function is a wrapper for extracting a substring. 
+    // This auxiliary function is a wrapper for extracting a substring.
     // As all buffer indexes are referred to 1 this function helps to avoid stupid errors
     // that takes a lot of time to debug
     if (iTo >= iFrom) {
@@ -258,7 +255,7 @@ wxString lmLDPTokenBuilder::Extract(long iFrom, long iTo)
     } else {
         return m_sInBuf.Mid(iFrom-1);
     }
-    
+
 }
 
 bool lmLDPTokenBuilder::IsLetter(wxChar ch)
@@ -377,7 +374,7 @@ void lmLDPTokenBuilder::ParseNewToken()
                     }
                 }
                 break;
-    
+
             case FT_ETQ02:
                 GNC();
                 if (m_curChar == chApostrophe) {
@@ -549,7 +546,7 @@ void lmLDPTokenBuilder::ParseNewToken()
                     return;
                 }
                 break;
-                
+
             case FT_NUM01:
                 GNC();
                 if (IsNumber(m_curChar)) {
@@ -646,10 +643,10 @@ void lmLDPTokenBuilder::ParseNewToken()
                     m_token.Set(tkEndOfFile, _T("") );
                     return;
                 } else if (m_curChar == nEOL) {
-                    m_pParser->ParseMsje(wxString::Format(_T("[Formador de tokens.%d]: Encontrado EOL"),
+                    m_pParser->ParseMsje(wxString::Format(_T("[lmLDPTokenBuilder::ParseNewToken.%d]: EOL found"),
                         nState));
                 } else {
-                    m_pParser->ParseMsje(wxString::Format(_T("[Formador de tokens.%d]: Encontrado caracter extraño"),    // (Char:[%s], Dec:%s, Hex:%s). Token=<%s>"),
+                    m_pParser->ParseMsje(wxString::Format(_T("[lmLDPTokenBuilder::ParseNewToken.%d]: Bad character found"),    // (Char:[%s], Dec:%s, Hex:%s). Token=<%s>"),
                         //nState, Chr$(m_curChar), m_curChar, Hex$(m_curChar),
                         //nState, m_curChar, m_curChar, m_curChar,
                         Extract(iStart, m_lastPos)) );

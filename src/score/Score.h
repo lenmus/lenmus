@@ -2,28 +2,25 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Score.h
-    @brief Header file for class lmScore
-    @ingroup score_kernel
-*/
+
 #ifdef __GNUG__
-// #pragma interface
+#pragma interface "Score.cpp"
 #endif
 
 #ifndef __SCORE_H__        //to avoid nested includes
@@ -72,11 +69,11 @@ enum EStemType
 
 // Beaming: type of beaming
 enum EBeamType {
-    eBeamNone = 0, 
-    eBeamBegin, 
-    eBeamContinue, 
-    eBeamEnd, 
-    eBeamForward, 
+    eBeamNone = 0,
+    eBeamBegin,
+    eBeamContinue,
+    eBeamEnd,
+    eBeamForward,
     eBeamBackward
 };
 
@@ -110,7 +107,7 @@ enum ENoteType
     e256th          // es: semigarrapatea   en-UK: ?                        en_USA: 256th
 };
 
-// to facilitate access to standard notes' duration. 
+// to facilitate access to standard notes' duration.
 enum ENoteDuration
 {
     eLongaDuration = 1024,
@@ -140,7 +137,7 @@ enum ENoteDuration
 //! accidental signs
 enum EAccidentals
 {
-    eNoAccidentals = 0,        
+    eNoAccidentals = 0,
     eNatural,               // es: becuadro
     eFlat,                  // es: bemol
     eSharp,                 // es: sostenido
@@ -197,9 +194,9 @@ enum EKeySignatures
 #define lmMAX_KEY  earmRem
 #define lmNUM_KEYS lmMAX_KEY - lmMIN_KEY + 1
 // @attention names for key signatures are defined in object lmKeySignature. There is an
-// array, named sKeySignatureName, and the key signatures names are defined 
+// array, named sKeySignatureName, and the key signatures names are defined
 // assuming a predefined order in the enum EKeySignatures
-// @attention items 'earmDo' to 'earmFa' are used as indexes in DlgCfgEarIntervals. 
+// @attention items 'earmDo' to 'earmFa' are used as indexes in DlgCfgEarIntervals.
 //  'earmDo' must be 0 and consecutive orden must be kept.
 
 
@@ -240,7 +237,7 @@ enum ETies
     eL_Tied
 };
 
-// Placement indicates whether something is above or below another element, 
+// Placement indicates whether something is above or below another element,
 // such as a note or a notation.
 enum lmEPlacement
 {
@@ -303,7 +300,7 @@ enum EHighlightType
 /*  Renderization options
     ---------------------
     eRenderJustified
-        Render a score justifying measures so that they fit exactly in the width of the 
+        Render a score justifying measures so that they fit exactly in the width of the
         staff
 
     eRenderSimple
@@ -462,7 +459,7 @@ class lmObjOptions;
 
 
 // global unique variables used during score building
-// TODO: Replace for lmScore/lmNote member funtions 
+// TODO: Replace for lmScore/lmNote member funtions
 extern lmNoteRest* g_pLastNoteRest;
 extern lmBeam* g_pCurBeam;
 
@@ -482,13 +479,13 @@ public:
     int GetNumMeasures();
 
     // play methods
-    void Play(bool fVisualTracking = lmNO_VISUAL_TRACKING, 
+    void Play(bool fVisualTracking = lmNO_VISUAL_TRACKING,
               bool fMarcarCompasPrevio = NO_MARCAR_COMPAS_PREVIO,
               EPlayMode nPlayMode = ePM_NormalInstrument,
-              long nMM = 0, 
+              long nMM = 0,
               wxWindow* pWindow = (wxWindow*)NULL );
     void PlayMeasure(int nMeasure,
-                     bool fVisualTracking = lmNO_VISUAL_TRACKING, 
+                     bool fVisualTracking = lmNO_VISUAL_TRACKING,
                      EPlayMode nPlayMode = ePM_NormalInstrument,
                      long nMM = 0,
                      wxWindow* pWindow = (wxWindow*)NULL );

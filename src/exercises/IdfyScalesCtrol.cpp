@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ BEGIN_EVENT_TABLE(lmIdfyScalesCtrol, lmIdfyExerciseCtrol)
 END_EVENT_TABLE()
 
 
-lmIdfyScalesCtrol::lmIdfyScalesCtrol(wxWindow* parent, wxWindowID id, 
+lmIdfyScalesCtrol::lmIdfyScalesCtrol(wxWindow* parent, wxWindowID id,
                            lmScalesConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
     : lmIdfyExerciseCtrol(parent, id, pConstrains, pos, size, style )
@@ -171,7 +171,7 @@ void lmIdfyScalesCtrol::ReconfigureButtons()
     //Reconfigure buttons keyboard depending on the scales allowed
 
     int iB;     // button index: 0 .. m_NUM_BUTTONS-1
-    
+
     //hide all rows and buttons so that later we only have to enable the valid ones
     for (iB=0; iB < m_NUM_BUTTONS; iB++) {
         m_pAnswerButton[iB]->Show(false);
@@ -210,7 +210,7 @@ int lmIdfyScalesCtrol::ReconfigureGroup(int iBt, int iStartC, int iEndC, wxStrin
     int iC;     // real scale. Correspondence to EScaleTypes
     int iB;     // button index: 0 .. m_NUM_BUTTONS-1
     int iR;     // row index: 0 .. m_NUM_ROWS-1
-    
+
     iB = iBt;
     iR = iB / m_NUM_COLS;
     m_pRowLabel[iR]->SetLabel(sRowLabel);
@@ -268,22 +268,22 @@ wxString lmIdfyScalesCtrol::SetNewProblem()
             m_nKey = GetRelativeMinorKey(m_nKey);
     }
 
-    //Generate a random root note 
+    //Generate a random root note
     EClefType nClef = eclvSol;
     m_sRootNote = oGenerator.GenerateRandomRootNote(nClef, m_nKey, false);  //false = do not allow accidentals. Only those in the key signature
 
     //create the score
     bool fDisplayKey = m_pConstrains->DisplayKey();
-    if (!m_pConstrains->DisplayKey()) m_nKey = earmDo;
+    if (!fDisplayKey) m_nKey = earmDo;
     m_sAnswer = PrepareScore(nClef, nScaleType, &m_pProblemScore);
-    
+
     //compute the index for the button that corresponds to the right answer
     int i;
     for (i = 0; i < m_NUM_BUTTONS; i++) {
         if (m_nRealScale[i] == nScaleType) break;
     }
     m_nRespIndex = i;
-    
+
     //return string to introduce the problem
     if (m_fTheoryMode) {
         return _("Identify the next scale:");
@@ -341,10 +341,10 @@ wxString lmIdfyScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmSc
 
     //use simple renderer; otherwise chromatic scale does not fit in available space
     (*pScore)->SetRenderizationType(eRenderSimple);
-    
+
     //(*pScore)->Dump(_T("lmIdfyScalesCtrol.PrepareScore.ScoreDump.txt"));  //dbg
 
-    //set metronome. As the problem score is built using whole notes, we will 
+    //set metronome. As the problem score is built using whole notes, we will
     //set metronome at MM=400 so the resulting note rate will be 100.
     m_nPlayMM = 400;
 

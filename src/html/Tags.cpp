@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -219,7 +219,7 @@ lmTheoKeySignParms::~lmTheoKeySignParms()
 void lmTheoKeySignParms::AddParam(const wxHtmlTag& tag)
 {
     /*! @page KeySignParms
-        @verbatim    
+        @verbatim
 
         Params for lmTheoKeySignParms - html object type="Application/LenMusTheoKeySignatures"
 
@@ -251,7 +251,7 @@ void lmTheoKeySignParms::AddParam(const wxHtmlTag& tag)
     sName.UpperCase();        //convert to upper case
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
-    
+
     // max_accidentals        num (0..7)
     if ( sName == _T("MAX_ACCIDENTALS") ) {
         wxString sAccidentals = tag.GetParam(_T("VALUE"));
@@ -262,7 +262,7 @@ void lmTheoKeySignParms::AddParam(const wxHtmlTag& tag)
                 _("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: numeric, 0..7"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
+                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
         }
         else {
             m_pConstrains->SetMaxAccidentals((int)nAccidentals);
@@ -280,14 +280,14 @@ Acceptable values: numeric, 0..7"),
         else if (sProblem == _T("BOTH"))
             m_pConstrains->SetProblemType( eBothKeySignProblems );
         else
-            LogError(wxString::Format( 
+            LogError(wxString::Format(
 _("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: DeduceKey | WriteKey | Both"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
+                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
     }
 
-    // clef        Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1 
+    // clef        Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1
     else if ( sName == _T("CLEF") ) {
         wxString sClef = tag.GetParam(_T("VALUE"));
         sClef.UpperCase();
@@ -310,7 +310,7 @@ Acceptable values: DeduceKey | WriteKey | Both"),
 _("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
+                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
     }
 
     // mode         Major | Minor | Both                        [Both]
@@ -324,18 +324,18 @@ Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"),
         else if (sProblem == _T("BOTH"))
             m_pConstrains->SetScaleMode( eMayorAndMinorModes );
         else
-            LogError(wxString::Format( 
+            LogError(wxString::Format(
 _("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: Major | Minor | Both"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
+                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
     }
 
     // Unknown param
     else
-        LogError(wxString::Format( 
+        LogError(wxString::Format(
             _("lmTheoIntervalsCtrol. Unknown param: <param %s >\n"),
-            tag.GetAllParams() ));
+            tag.GetAllParams().c_str() ));
 
 }
 
@@ -352,7 +352,7 @@ void lmTheoKeySignParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     }
 
     // create the window
-    wxWindow* wnd = new lmTheoKeySignCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, 
+    wxWindow* wnd = new lmTheoKeySignCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1,
         m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
@@ -425,7 +425,7 @@ void lmTheoIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
     sName.UpperCase();        //convert to upper case
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
-    
+
     // accidentals        none | simple | double
     if ( sName == _T("ACCIDENTALS") ) {
         wxString sAccidentals = tag.GetParam(_T("VALUE"));
@@ -443,7 +443,7 @@ void lmTheoIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
 _("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: none | simple | double"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
+                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
     }
 
     //problem_type    DeduceInterval | BuildInterval | Both
@@ -461,10 +461,10 @@ Acceptable values: none | simple | double"),
 _("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: DeduceInterval | BuildInterval | Both"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
+                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
     }
 
-    // clef        Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1 
+    // clef        Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1
     else if ( sName == _T("CLEF") ) {
         wxString sClef = tag.GetParam(_T("VALUE"));
         sClef.UpperCase();
@@ -483,18 +483,18 @@ Acceptable values: DeduceInterval | BuildInterval | Both"),
         else if (sClef == _T("DO1"))
             m_pConstrains->SetClef(eclvDo1, true);
         else
-            LogError(wxString::Format( 
+            LogError(wxString::Format(
 _("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"),
-                tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
+                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
     }
 
     // Unknown param
     else
-        LogError(wxString::Format( 
+        LogError(wxString::Format(
             _("lmTheoIntervalsCtrol. Unknown param: <param %s >\n"),
-            tag.GetAllParams() ));
+            tag.GetAllParams().c_str() ));
 
 }
 
@@ -511,7 +511,7 @@ void lmTheoIntervalsCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     }
 
     // create the window
-    wxWindow* wnd = new lmTheoIntervalsCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, 
+    wxWindow* wnd = new lmTheoIntervalsCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1,
         m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
@@ -575,7 +575,7 @@ void lmEarIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
     sName.UpperCase();        //convert to upper case
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
-    
+
     // max_interval    num         default: 8
     if ( sName == _T("MAX_INTERVAL") ) {
         //wxString sAccidentals = tag.GetParam(_T("VALUE"));
@@ -598,9 +598,9 @@ void lmEarIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
 
     // Unknown param
     else
-        LogError(wxString::Format( 
+        LogError(wxString::Format(
             _("lmEarIntervalsCtrol. Unknown param: <param %s >\n"),
-            tag.GetAllParams() ));
+            tag.GetAllParams().c_str() ));
 
 }
 
@@ -617,7 +617,7 @@ void lmEarIntervalsCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     }
 
     // create the window
-    wxWindow* wnd = new lmEarIntervalsCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, 
+    wxWindow* wnd = new lmEarIntervalsCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1,
         m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
@@ -681,7 +681,7 @@ void lmEarCompareIntvCtrolParms::AddParam(const wxHtmlTag& tag)
     sName.UpperCase();        //convert to upper case
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
-    
+
     // max_interval    num         default: 8
     if ( sName == _T("MAX_INTERVAL") ) {
         //wxString sAccidentals = tag.GetParam(_T("VALUE"));
@@ -704,9 +704,9 @@ void lmEarCompareIntvCtrolParms::AddParam(const wxHtmlTag& tag)
 
     // Unknown param
     else
-        LogError(wxString::Format( 
+        LogError(wxString::Format(
             _("lmEarIntervalsCtrol. Unknown param: <param %s >\n"),
-            tag.GetAllParams() ));
+            tag.GetAllParams().c_str() ));
 
 }
 
@@ -723,7 +723,7 @@ void lmEarCompareIntvCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     }
 
     // create the window
-    wxWindow* wnd = new lmEarCompareIntvCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, 
+    wxWindow* wnd = new lmEarCompareIntvCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1,
         m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
@@ -767,7 +767,7 @@ TAG_HANDLER_CONSTR(OBJECT)
 
 TAG_HANDLER_PROC(tag)
 {
-    // This handler deals with the <object type="application/LenMus"> 
+    // This handler deals with the <object type="application/LenMus">
     // No nested <object> tags are allowed
 
     if (tag.GetName() == wxT("OBJECT"))
@@ -805,7 +805,7 @@ TAG_HANDLER_PROC(tag)
         }
         if (nType == eHO_Unknown) {
             wxLogMessage(_T("[TAG_HANDLER_PROC] Object type '%s' is not processable by LenMus."),
-                sType);
+                sType.c_str());
             return true;        // type non processable by LenMus
         }
 
@@ -841,7 +841,7 @@ TAG_HANDLER_PROC(tag)
             }
         }
         EScoreStyles nStyle = (nBorder == 0 ? eNO_BORDER : eSIMPLE_BORDER);
-    
+
         // create object to store param data, depending of object type
         switch (nType) {
             case eHO_Control:
@@ -854,37 +854,37 @@ TAG_HANDLER_PROC(tag)
                 break;
 
             case eHO_Exercise_TheoIntervals:
-                m_pObjectParams = new lmTheoIntervalsCtrolParms(tag, nWidth, nHeight, 
+                m_pObjectParams = new lmTheoIntervalsCtrolParms(tag, nWidth, nHeight,
                     nPercent, nStyle);
                 break;
 
             case eHO_Exercise_TheoKeySignatures:
-                m_pObjectParams = new lmTheoKeySignParms(tag, nWidth, nHeight, 
+                m_pObjectParams = new lmTheoKeySignParms(tag, nWidth, nHeight,
                     nPercent, nStyle);
                 break;
 
             case eHO_Exercise_EarIntervals:
-                m_pObjectParams = new lmEarIntervalsCtrolParms(tag, nWidth, nHeight, 
+                m_pObjectParams = new lmEarIntervalsCtrolParms(tag, nWidth, nHeight,
                     nPercent, nStyle);
                 break;
 
             case eHO_Exercise_EarCompareIntervals:
-                m_pObjectParams = new lmEarCompareIntvCtrolParms(tag, nWidth, nHeight, 
+                m_pObjectParams = new lmEarCompareIntvCtrolParms(tag, nWidth, nHeight,
                     nPercent, nStyle);
                 break;
 
             case eHO_Exercise_IdfyChord:
-                m_pObjectParams = new lmIdfyChordCtrolParms(tag, nWidth, nHeight, 
+                m_pObjectParams = new lmIdfyChordCtrolParms(tag, nWidth, nHeight,
                     nPercent, nStyle);
                 break;
 
             case eHO_Exercise_IdfyScales:
-                m_pObjectParams = new lmIdfyScalesCtrolParms(tag, nWidth, nHeight, 
+                m_pObjectParams = new lmIdfyScalesCtrolParms(tag, nWidth, nHeight,
                     nPercent, nStyle);
                 break;
 
             case eHO_Exercise_TheoMusicReading:
-                m_pObjectParams = new lmTheoMusicReadingCtrolParms(tag, nWidth, nHeight, 
+                m_pObjectParams = new lmTheoMusicReadingCtrolParms(tag, nWidth, nHeight,
                     nPercent, nStyle);
                 break;
 
@@ -893,7 +893,7 @@ TAG_HANDLER_PROC(tag)
         }
 
         // parse <param> tags
-        ParseInner(tag);        
+        ParseInner(tag);
 
         // finally, create the html object
         m_pObjectParams->CreateHtmlCell(m_WParser);

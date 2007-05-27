@@ -2,28 +2,25 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Barline.cpp
-    @brief Implementation file for class lmBarline
-    @ingroup score_kernel
-*/
+
 #ifdef __GNUG__
-//  #pragma implementation
+#pragma implementation "Barline.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -75,7 +72,7 @@ void lmBarline::AddContext(lmContext* pContext, int nStaff)
 }
 
 lmContext* lmBarline::GetContext(int nStaff)
-{ 
+{
     wxASSERT(nStaff <= (int)m_aContexts.GetCount());
     return m_aContexts.Item(nStaff-1);
 }
@@ -129,7 +126,7 @@ wxBitmap* lmBarline::GetBitmap(double rScale)
 
 }
 
-void lmBarline::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD, 
+void lmBarline::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
         const lmUPoint& pagePosL, const lmUPoint& dragStartPosL, const lmDPoint& canvasPosD)
 {
     // A barline only can be moved horizonatlly
@@ -138,7 +135,7 @@ void lmBarline::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint
     pDragImage->Move(ptNew);
 
 }
-    
+
 lmUPoint lmBarline::EndDrag(const lmUPoint& pos)
 {
     lmUPoint oldPos(m_paperPos + m_glyphPos);
@@ -153,9 +150,9 @@ wxString lmBarline::Dump()
 {
     wxString sDump = wxString::Format(
         _T("%d\tBarline %s\tTimePos=%.2f\n"),
-        m_nId, GetBarlineLDPNameFromType(m_nBarlineType), m_rTimePos );
+        m_nId, GetBarlineLDPNameFromType(m_nBarlineType).c_str(), m_rTimePos );
     return sDump;
-            
+
 }
 
 wxString lmBarline::SourceLDP()
@@ -190,7 +187,7 @@ void lmBarline::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bo
         // set total width
         m_nWidth = uWidth;
 
-        // store glyph position (relative to paper pos). 
+        // store glyph position (relative to paper pos).
         m_glyphPos.x = 0;
         m_glyphPos.y = pPaper->GetCursorY() - yTop;
     }
@@ -212,7 +209,7 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, lmPaper* pPaper,
             }
             return (lmLUnits)(m_uThinLineWidth + m_uSpacing + m_uThinLineWidth);
             break;
-            
+
         case etb_EndRepetitionBarline:
             if (!fMeasuring) {
                 xPos += m_uRadius;
@@ -233,10 +230,10 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, lmPaper* pPaper,
                 xPos += m_uThinLineWidth + m_uSpacing + m_uRadius;
                 DrawTwoDots(pPaper, xPos, yTop);
             }
-            return (lmLUnits)(m_uThinLineWidth + m_uSpacing + m_uThickLineWidth + 
+            return (lmLUnits)(m_uThinLineWidth + m_uSpacing + m_uThickLineWidth +
                         m_uSpacing + m_uRadius + m_uRadius);
             break;
-            
+
         case etb_DoubleRepetitionBarline:
             if (!fMeasuring) {
                 xPos += m_uRadius;
@@ -251,7 +248,7 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, lmPaper* pPaper,
             return (lmLUnits)(m_uRadius + m_uSpacing + m_uRadius + m_uThinLineWidth + m_uSpacing +
                         m_uThinLineWidth + m_uSpacing + m_uRadius + m_uRadius);
             break;
-        
+
         case etb_StartBarline:
             if (!fMeasuring) {
                 DrawThickLine(pPaper, xPos, yTop, m_uThickLineWidth, yBottom-yTop, colorC);
@@ -260,7 +257,7 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, lmPaper* pPaper,
             }
             return (lmLUnits)(m_uThinLineWidth + m_uSpacing + m_uThickLineWidth);
             break;
-            
+
         case etb_EndBarline:
             if (!fMeasuring) {
                 DrawThinLine(pPaper, xPos, yTop, yBottom, colorC);
@@ -280,7 +277,7 @@ lmLUnits lmBarline::DrawBarline(bool fMeasuring, lmPaper* pPaper,
         default:
             wxASSERT(false);
             return 0;            // to keep compiler happy
-            
+
     }
 }
 
@@ -303,7 +300,7 @@ void lmBarline::DrawThickLine(lmPaper* pPaper, lmLUnits xLeft, lmLUnits yTop, lm
 }
 
 void lmBarline::DrawTwoDots(lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos)
-{            
+{
     lmLUnits shift1 = m_pVStaff->TenthsToLogical(15, 1);    // 1.5 lines
     lmLUnits shift2 = m_pVStaff->TenthsToLogical(25, 1);    // 2.5 lines
     pPaper->SolidCircle(xPos, yPos + shift1, m_uRadius);
@@ -343,5 +340,5 @@ wxString GetBarlineLDPNameFromType(EBarline nBarlineType)
             wxASSERT(false);
             return _T("");        //let's keep the compiler happy
     }
-    
+
 }

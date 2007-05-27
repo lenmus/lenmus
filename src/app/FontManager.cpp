@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -28,7 +28,7 @@
 
     The fontsize to use to draw any musical symbol depends on two factors: stafflines
     spacing and rendering scale.
-    
+
     Allocating the font in the lmStaff object would lead to many allocations of the same
     font. Therefore it's been decided that the staff object will have a pointer to the
     font, and all fonts will be uniquely allocated in the lmFontManager object.
@@ -41,7 +41,7 @@
 
 */
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "FontManager.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -74,7 +74,7 @@ lmFontManager::~lmFontManager()
 
 }
 
-wxFont* lmFontManager::GetFont(int nPointSize, wxString sFontName, 
+wxFont* lmFontManager::GetFont(int nPointSize, wxString sFontName,
                                int nFamily, int nStyle, int nWeight, bool fUnderline)
 {
     /*
@@ -82,10 +82,10 @@ wxFont* lmFontManager::GetFont(int nPointSize, wxString sFontName,
 
     - nPointSize:    size in points
     - nFamily:    Supported families are: wxDEFAULT, wxDECORATIVE, wxROMAN, wxSCRIPT, wxSWISS,
-                wxMODERN. wxMODERN is a fixed pitch font; the others are either fixed or variable pitch.  
-    - nStyle:    The value can be wxNORMAL, wxSLANT or wxITALIC.  
-    - nWeight:    The value can be wxNORMAL, wxLIGHT or wxBOLD.  
-    - fUnderline:     The value can be true or false.  
+                wxMODERN. wxMODERN is a fixed pitch font; the others are either fixed or variable pitch.
+    - nStyle:    The value can be wxNORMAL, wxSLANT or wxITALIC.
+    - nWeight:    The value can be wxNORMAL, wxLIGHT or wxBOLD.
+    - fUnderline:     The value can be true or false.
     - sFontName:    An string specifying the actual typeface to be used.
 
     */
@@ -114,7 +114,7 @@ wxFont* lmFontManager::GetFont(int nPointSize, wxString sFontName,
     //wxLogMessage(_T("[lmFontManager::GetFont]: Allocating new font. size=%d, name=%s"),
     //        nPointSize, sFontName);
 
-    pFont = new wxFont(nPointSize, nFamily, nStyle, nWeight, fUnderline, 
+    pFont = new wxFont(nPointSize, nFamily, nStyle, nWeight, fUnderline,
                         sFontName, wxFONTENCODING_DEFAULT);
 
     if (!pFont) {
@@ -122,7 +122,7 @@ wxFont* lmFontManager::GetFont(int nPointSize, wxString sFontName,
             _T("lmFontManager.GetFont"), wxOK);
         wxLogMessage(wxString::Format(
             _T("Error allocating font: PointSize=%d, FontName=%s, Family=%d, Style=%d, Weight=%d, Underline=%s"),
-            nPointSize, sFontName, nFamily, nStyle, nWeight, (fUnderline ? _T("yes") : _T("no")) )); 
+            nPointSize, sFontName.c_str(), nFamily, nStyle, nWeight, (fUnderline ? _T("yes") : _T("no")) ));
         ::wxExit();
     }
 
@@ -171,11 +171,11 @@ void lmFontManager::LoadFile(wxString sFileName)
 
     //close the file
     oFile.Close();
-           
+
 }
 
 // Analyzes a line and loads it in the corresponding table.
-//    
+//
 //    @returns The level and lesson numbers combined (100*level+lesson) for controlling
 //             that the files are ordered
 //
@@ -198,7 +198,7 @@ int lmFontManager::AnalyzeGlyphLine(int nLine, wxString sLine)
     fOK = sData.ToLong(&nLevel);
     wxASSERT(fOK);
     sLine = sLine.Mid(iSemicolon + 1);      //skip the semicolon
-    
+
     //get lesson
     iSemicolon = sLine.Find(_T(";"));
     sData = sLine.Left(iSemicolon);
@@ -206,7 +206,7 @@ int lmFontManager::AnalyzeGlyphLine(int nLine, wxString sLine)
     fOK = sData.ToLong(&nLesson);
     wxASSERT(fOK);
     sLine = sLine.Mid(iSemicolon + 1);      //skip the semicolon
-    
+
     //get clef
     iSemicolon = sLine.Find(_T(";"));
     wxString sClef = sLine.Left(iSemicolon);

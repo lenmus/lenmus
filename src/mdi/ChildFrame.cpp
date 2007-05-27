@@ -5,30 +5,30 @@
 //    This file is derived from file src/generic/mdig.cpp from wxWidgets 2.7.1 project.
 //    Author:       Hans Van Leemputten
 //    Copyright (c) Hans Van Leemputten
-// 
+//
 //    Modified by:
 //        Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
 //----------------------------------------------------------------------------
 // The main menu is fixed. Child window dosen't change it
 
-//  An MDI child frame is a frame that can only exist on a MDIClientWindow, 
+//  An MDI child frame is a frame that can only exist on a MDIClientWindow,
 //  which is itself a child of MDIParentFrame.
 //  It is going to be a notebook page, to contains either a score (lmEditFrame) or
 //  the eBookManager (lmTextBookFrame)
@@ -102,7 +102,7 @@ lmMDIChildFrame::~lmMDIChildFrame()
     lmMDIParentFrame* pParentFrame = GetMDIParentFrame();
     if (pParentFrame)
         pParentFrame->RemoveChildFrame(this);
-    
+
 }
 
 bool lmMDIChildFrame::Create( lmMDIParentFrame *parent,
@@ -256,7 +256,8 @@ void lmMDIChildFrame::SetIcon(const wxIcon& icon)
     wxASSERT(pos < pNotebook->GetPageCount());
 
     //set bitmap
-    wxBitmap bitmap(icon);
+    wxBitmap bitmap;
+    bitmap.CopyFromIcon(icon);
     pNotebook->SetPageBitmap(pos, bitmap);
 
 }

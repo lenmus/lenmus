@@ -2,28 +2,25 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file NoteRestObj.cpp
-    @brief Implementation file for class lmNoteRestObj
-    @ingroup score_kernel
-*/
+
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "NoteRestObj.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -50,7 +47,7 @@ lmNoteRestObj::lmNoteRestObj(ESymbolType nType, lmNoteRest* pOwner)
     m_pOwner = pOwner;
 
 }
-    
+
 void lmNoteRestObj::UpdateMeasurements()
 {
     m_paperPos = m_pOwner->GetOrigin();
@@ -116,7 +113,7 @@ void lmFermata::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNu
 void lmFermata::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
     //nxLeft es la coordenada x del centro del calderon
-    
+
     // prepare DC
     pPaper->SetFont( *(m_pOwner->GetFont()) );
 
@@ -200,10 +197,10 @@ void lmLyric::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
     m_nWidth = nWidth;
 
     // store glyph position (relative to paper pos).
-    //// Remember: XML positioning values origin is the left-hand side of the note 
+    //// Remember: XML positioning values origin is the left-hand side of the note
     //// or the musical position within the bar (x) and the top line of the staff (y)
     //m_glyphPos.x = m_pVStaff->TenthsToLogical(m_xRel, m_nStaffNum);
-    //// as relative-y refers to the top line of the staff, so 5 lines must be 
+    //// as relative-y refers to the top line of the staff, so 5 lines must be
     //// substracted from yBase position
     //m_glyphPos.y = m_pVStaff->TenthsToLogical(m_yRel-50, m_nStaffNum);
     //if (m_fOverrideDefaultX) {

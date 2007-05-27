@@ -495,8 +495,8 @@ bool WizardInstrumentsPage::Create( wxWizard* parent )
     //populate sections and instruments combos
     wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
     int nInstr = g_pMidi->VoiceInstr();
-    int nSect = pMidiGM->PopulateWithSections(m_pSectCombo, nInstr );
-    pMidiGM->PopulateWithInstruments(m_pInstrCombo, nSect, nInstr);
+    int nSect = pMidiGM->PopulateWithSections((wxControlWithItems*)m_pSectCombo, nInstr );
+    pMidiGM->PopulateWithInstruments((wxControlWithItems*)m_pInstrCombo, nSect, nInstr);
 
     return TRUE;
 }
@@ -636,7 +636,7 @@ void WizardInstrumentsPage::OnComboSection( wxCommandEvent& event )
 
     wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
     int nSect = m_pSectCombo->GetSelection();
-    pMidiGM->PopulateWithInstruments(m_pInstrCombo, nSect);
+    pMidiGM->PopulateWithInstruments((wxControlWithItems*)m_pInstrCombo, nSect);
     DoProgramChange();
 
 }
@@ -732,8 +732,8 @@ bool WizardMetronomePage::Create( wxWizard* parent )
     wxMidiDatabaseGM* pMidiGM = wxMidiDatabaseGM::GetInstance();
     int nTone1 = g_pMidi->MtrTone1();
     int nTone2 = g_pMidi->MtrTone2();
-    pMidiGM->PopulateWithPercusionInstr(m_pMtrInstr1Combo, nTone1);
-    pMidiGM->PopulateWithPercusionInstr(m_pMtrInstr2Combo, nTone2);
+    pMidiGM->PopulateWithPercusionInstr((wxControlWithItems*)m_pMtrInstr1Combo, nTone1);
+    pMidiGM->PopulateWithPercusionInstr((wxControlWithItems*)m_pMtrInstr2Combo, nTone2);
 
     return TRUE;
 }
