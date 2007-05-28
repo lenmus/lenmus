@@ -18,12 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Paths.h
-    @brief Header file for class lmPaths
-    @ingroup configuration
-*/
-#ifndef __SBPATHS_H__
-#define __SBPATHS_H__
+
+#ifndef __LM_PATH_H__
+#define __LM_PATH_H__
+
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma interface "Paths.cpp"
+#endif
 
 #include "wx/config.h"
 #include "wx/filename.h"
@@ -85,4 +86,4 @@ private:
 
 };
 
-#endif    // __SBPATHS_H__
+#endif    // __LM_PATH_H__

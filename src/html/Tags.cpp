@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Tags.cpp
-    @brief Hooks to handle LenMus defined HTML directives.
-    @ingroup html_management
-*/
+
 //-------------------------------------------------------------------------------------
 /*! @page embedded_controls    Controls embedded in HTML pages
 
@@ -71,10 +68,6 @@
 
 */
 
-
-#ifdef __GNUG__
-#pragma implementation
-#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

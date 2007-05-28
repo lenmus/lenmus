@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file BoxPage.cpp
-    @brief Implementation file for class lmBoxPage
-    @ingroup graphic_management
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "BoxPage.h"
 #endif

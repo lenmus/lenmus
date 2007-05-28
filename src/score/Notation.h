@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __NOTATION_H__        //to avoid nested includes
+#define __NOTATION_H__
+
 #if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "Notation.cpp"
 #endif
-
-#ifndef __NOTATION_H__        //to avoid nested includes
-#define __NOTATION_H__
 
 // lmNotations are graphical StaffObjs, i.e.: breath mark, spacer, symbol
 // This is an abstract class so specific notations must derive from this one

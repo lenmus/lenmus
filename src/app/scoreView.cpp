@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file scoreview.cpp
-    @brief Implementation file for class lmScoreView
-    @ingroup app_gui
-*/
+
 /*
 The view displays the data and manages user interaction with it, including selection and 
 editing.

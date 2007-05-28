@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file HtmlWindow.cpp
-    @brief Implementation file for class lmHtmlWindow
-    @ingroup html_management
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "HtmlWindow.h"
 #endif

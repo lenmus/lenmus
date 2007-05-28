@@ -18,9 +18,6 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-#ifdef __GNUG__
-// #pragma interface
-#endif
 
 #ifndef __THEOMUSICREADINGCTROLPARAMS_H__        //to avoid nested includes
 #define __THEOMUSICREADINGCTROLPARAMS_H__

@@ -18,12 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Preferences.h
-    @brief Header file for class lmPreferences
-    @ingroup app_gui
-*/
+
 #ifndef __PREFERENCES_H__
 #define __PREFERENCES_H__
+
+#ifdef __GNUG__
+#pragma interface "Preferences.cpp"
+#endif
 
 #include <wx/config.h>
 

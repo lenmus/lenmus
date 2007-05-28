@@ -22,9 +22,8 @@
 #ifndef __DLGCFGTHEOINTERVALS_H__        //to avoid nested includes
 #define __DLGCFGTHEOINTERVALS_H__
 
-// GCC interface
 #if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "DlgCfgTheoIntervals.h"
+#pragma interface "DlgCfgTheoIntervals.cpp"
 #endif
 
 // headers

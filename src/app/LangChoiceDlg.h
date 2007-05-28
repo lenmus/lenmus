@@ -22,6 +22,11 @@
 #ifndef __LANGCHOICEDLG_H__
 #define __LANGCHOICEDLG_H__
 
+#ifdef __GNUG__
+#pragma interface "LangChoiceDlg.cpp"
+#endif
+
+
 class lmLangChoiceDlg: public wxDialog
 {
 public:

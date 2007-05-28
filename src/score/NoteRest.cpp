@@ -48,7 +48,7 @@
 */
 
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "NoteRest.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".

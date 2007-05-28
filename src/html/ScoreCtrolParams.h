@@ -18,13 +18,6 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ScoreCtrolParams.h
-    @brief Header file for class lmScoreCtrolParams
-    @ingroup html_controls
-*/
-#ifdef __GNUG__
-// #pragma interface
-#endif
 
 #ifndef __SCORECTROLPARAMS_H__        //to avoid nested includes
 #define __SCORECTROLPARAMS_H__

@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file SoundManager.cpp
-    @brief Implementation file for class lmSoundManager
-    @ingroup sound_management
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "SoundManager.h"
 #endif

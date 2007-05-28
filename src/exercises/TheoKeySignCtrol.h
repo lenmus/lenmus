@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __THEOKEYSIGNCTROL_H__        //to avoid nested includes
+#define __THEOKEYSIGNCTROL_H__
+
 #ifdef __GNUG__
 #pragma interface "TheoKeySignCtrol.cpp"
 #endif
-
-#ifndef __THEOKEYSIGNCTROL_H__        //to avoid nested includes
-#define __THEOKEYSIGNCTROL_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

@@ -26,24 +26,17 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file TextBookController.h
-    @brief Header file for class lmTextBookController
-    @ingroup html_management
-*/
+
 #ifndef __TEXTBOOKCONTROLLER_H__
 #define __TEXTBOOKCONTROLLER_H__
 
-#include "wx/defs.h"
-
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "TextBookController.h"
+#pragma interface "TextBookController.cpp"
 #endif
 
-//#include "wx/helpbase.h"
-#include "BookData.h"
+#include "wx/defs.h"
 
-//class lmTextBookFrame;
-//class wxHelpSearchMode;
+#include "BookData.h"
 #include "TextBookFrame.h"
 
 #define wxID_HTML_HELPFRAME   (wxID_HIGHEST + 1)

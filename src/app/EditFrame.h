@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef _EDITFRAME_H        //to avoid nested includes
+#define _EDITFRAME_H
+
 #ifdef __GNUG__
 #pragma interface "EditFrame.cpp"
 #endif
-
-#ifndef _EDITFRAME_H        //to avoid nested includes
-#define _EDITFRAME_H
 
 #include "../mdi/DocViewMDI.h"
 

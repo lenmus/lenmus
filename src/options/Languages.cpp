@@ -147,18 +147,37 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     LangHash reverseHash;
 
     //List of local translations. //! @todo Add more languages
+
+    // AWARE: I am having problems with GCC as it doesn't 
+    // Look for list of entities codes in file include/wx/html/htmlpars.h
+    //method wxHtmlEntitiesParser::GetEntityChar(const wxString& entity)
+
+    static wxChar ch_ntilde = 241;
+    static wxChar ch_ccedil = 231;
+    static wxChar ch_ecirc = 234;
+    static wxChar ch_uuml = 252;
+    wxString sLangName;
+
     localLanguageName[_T("bg")] = _T("Balgarski");
     localLanguageName[_T("ca")] = _T("Catalan");
     localLanguageName[_T("da")] = _T("Dansk");
     localLanguageName[_T("de")] = _T("Deutsch");
     localLanguageName[_T("en")] = _T("English");
-#if !defined(__GNUG__)
-    localLanguageName[_T("es")] = _T("Español");    //<--
-#endif
+
+    // _T("Español");
+    sLangName = _T("Espa");
+    sLangName.Append(ch_ntilde);
+    sLangName.Append( _T("ol") );
+    localLanguageName[_T("es")] = sLangName;    // _T("Español");
+
     localLanguageName[_T("fi")] = _T("Suomi");
-#if !defined(__GNUG__)
-    localLanguageName[_T("fr")] = _T("Français");    //<--
-#endif
+
+    // _T("Français"); 
+    sLangName = _T("Fran");
+    sLangName.Append(ch_ccedil);
+    sLangName.Append( _T("ais") );
+    localLanguageName[_T("fr")] = sLangName;    // _T("Français");
+
     localLanguageName[_T("it")] = _T("Italiano");
     localLanguageName[_T("ja")] = _T("Nihongo");
     localLanguageName[_T("hu")] = _T("Magyar");
@@ -166,15 +185,25 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     localLanguageName[_T("nl")] = _T("Nederlands");
     localLanguageName[_T("nb")] = _T("Norsk");
     localLanguageName[_T("pl")] = _T("Polski");
-#if !defined(__GNUG__)
-    localLanguageName[_T("pt")] = _T("Português");    //<--
-#endif
+
+    // _T("Português");
+    sLangName = _T("Portugu");
+    sLangName.Append(ch_ecirc);
+    sLangName.Append( _T("s") );
+    localLanguageName[_T("pt")] = sLangName;    // _T("Português");
+
     localLanguageName[_T("ru")] = _T("Russky");
     localLanguageName[_T("sl")] = _T("Slovenscina");
     localLanguageName[_T("sv")] = _T("Svenska");
-#if !defined(__GNUG__)
-    localLanguageName[_T("tr")] = _T("Türkçe");    //<--
-#endif
+
+    // _T("Türkçe")
+    sLangName = _T("T");
+    sLangName.Append(ch_uuml);
+    sLangName.Append( _T("rk") );
+    sLangName.Append(ch_ccedil);
+    sLangName.Append( _T("e") );
+    localLanguageName[_T("tr")] = sLangName;    // _T("Türkçe");
+
     localLanguageName[_T("uk")] = _T("Ukrainska");
     localLanguageName[_T("zh_CN")] = _T("Chinese(Simplified)");
 

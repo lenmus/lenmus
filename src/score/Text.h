@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __SBTEXT__H__        //to avoid nested includes
+#define __SBTEXT__H__
+
 #ifdef __GNUG__
 #pragma interface "Text.cpp"
 #endif
-
-#ifndef __SBTEXT__H__        //to avoid nested includes
-#define __SBTEXT__H__
 
 
 class lmBasicText

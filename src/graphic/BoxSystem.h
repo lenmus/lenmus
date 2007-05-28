@@ -18,12 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file BoxSystem.h
-    @brief Header file for class lmBoxSystem
-    @ingroup graphic_management
-*/
+
 #ifndef __BOXSYSTEM_H__        //to avoid nested includes
 #define __BOXSYSTEM_H__
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "BoxSystem.cpp"
+#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

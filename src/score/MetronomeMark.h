@@ -18,12 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-#if defined(__GNUG__) && !defined(__APPLE__)
-#pragma interface "MetronomeMark.cpp"
-#endif
 
 #ifndef __METRONOMEMARK_H__        //to avoid nested includes
 #define __METRONOMEMARK_H__
+
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma interface "MetronomeMark.cpp"
+#endif
 
 #include "Glyph.h"
 class lmShapeGlyph;

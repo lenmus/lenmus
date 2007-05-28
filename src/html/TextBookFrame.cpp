@@ -27,12 +27,12 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "TextBookFrame.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h"
-
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__

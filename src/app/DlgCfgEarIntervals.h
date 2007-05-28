@@ -22,9 +22,8 @@
 #ifndef __DLGCFGEARINTERVALS_H__        //to avoid nested includes
 #define __DLGCFGEARINTERVALS_H__
 
-// GCC interface
 #if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "DlgCfgEarIntervals.h"
+#pragma interface "DlgCfgEarIntervals.cpp"
 #endif
 
 // headers

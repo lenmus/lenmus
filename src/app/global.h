@@ -18,14 +18,6 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file global.h
-    @brief Some useful definitions and global includes
-    @ingroup app_gui
-*/
-
-#ifdef __GNUG__
-// #pragma interface
-#endif
 
 #ifndef __GLOBAL_H__        //to avoid nested includes
 #define __GLOBAL_H__

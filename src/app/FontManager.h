@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __FONTMANAGER_H        //to avoid nested includes
+#define __FONTMANAGER_H
+
 #ifdef __GNUG__
 #pragma interface "FontManager.cpp"
 #endif
-
-#ifndef __FONTMANAGER_H        //to avoid nested includes
-#define __FONTMANAGER_H
 
 // fonts will be maintained in a keyed list structure. Let's declare it
 #include "wx/list.h"

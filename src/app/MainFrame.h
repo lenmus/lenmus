@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __LMMAINFRAME_H__
+#define __LMMAINFRAME_H__
+
 #ifdef __GNUG__
 #pragma interface "MainFrame.cpp"
 #endif
-
-#ifndef __MYMAINFRAME_H_
-#define __MYMAINFRAME_H_
 
 #include "wx/mdi.h"
 #include "wx/docview.h"
@@ -266,4 +266,4 @@ protected:
 };
 
 
-#endif    // __MYMAINFRAME_H_
+#endif    // __LMMAINFRAME_H__

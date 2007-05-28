@@ -18,12 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file TimeposTable.h
-    @brief Header file for class lmTimeposTable
-    @ingroup graphic_management
-*/
+
 #ifndef __TIMEPOSTABLE_H__        //to avoid nested includes
 #define __TIMEPOSTABLE_H__
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "TimeposTable.cpp"
+#endif
 
 #include "../score/Score.h"
 

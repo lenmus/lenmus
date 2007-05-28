@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __NOTE_H__        //to avoid nested includes
+#define __NOTE_H__
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "Note.cpp"
 #endif
-
-#ifndef __NOTE_H__        //to avoid nested includes
-#define __NOTE_H__
 
 #include "../graphic/Shape.h"
 

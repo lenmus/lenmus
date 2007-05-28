@@ -18,12 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-#ifdef __GNUG__
-#pragma interface "Paper.cpp"
-#endif
 
 #ifndef _PAPER_H        //to avoid nested includes
 #define _PAPER_H
+
+#ifdef __GNUG__
+#pragma interface "Paper.cpp"
+#endif
 
 
 #include "wx/dc.h"

@@ -26,6 +26,9 @@
 //
 //-------------------------------------------------------------------------------------
 
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma implementation "ParentFrame.h"
+#endif
 
 #include "../app/global.h"
 

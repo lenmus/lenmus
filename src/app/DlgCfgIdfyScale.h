@@ -18,16 +18,12 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file DlgCfgIdfyScale.h
-    @brief Header file for class lmDlgCfgIdfyScale
-    @ingroup app_gui
-*/
+
 #ifndef __DLGCFGIDFYSCALE_H__        //to avoid nested includes
 #define __DLGCFGIDFYSCALE_H__
 
-// GCC interface
 #if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "DlgCfgIdfyScale.h"
+#pragma interface "DlgCfgIdfyScale.cpp"
 #endif
 
 // headers

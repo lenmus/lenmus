@@ -19,8 +19,13 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __SBCOLORS_H__
-#define __SBCOLORS_H__
+#ifndef __LM_COLORS_H__
+#define __LM_COLORS_H__
+
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma interface "Colors.cpp"
+#endif
+
 
 #include <wx/config.h>
 
@@ -73,4 +78,4 @@ private:
     
 };
 
-#endif    // __SBCOLORS_H__
+#endif    // __LM_COLORS_H__

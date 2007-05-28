@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __STAFFOBJITERATOR_H__        //to avoid nested includes
+#define __STAFFOBJITERATOR_H__
+
 #ifdef __GNUG__
 #pragma interface "StaffObjIterator.cpp"
 #endif
-
-#ifndef __STAFFOBJITERATOR_H__        //to avoid nested includes
-#define __STAFFOBJITERATOR_H__
 
 #include "Score.h"
 

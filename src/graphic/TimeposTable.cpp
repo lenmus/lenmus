@@ -18,17 +18,14 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file TimeposTable.cpp
-    @brief Implementation file for class lmTimeposTable
-    @ingroup graphic_management
-*/
+
 /*! @class lmTimeposTable
-    @ingroup graphic_management
     @brief Table and management algoritms to compute the positioning data for ScoreObjs.
 
     Encapsulation of the table and of management algoritms to compute the positioning
     data for each lmStaffObj, when a bar column must be rendered.
 */
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "TimeposTable.h"
 #endif

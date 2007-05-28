@@ -27,12 +27,10 @@
 //          Copyright:   (c) 2005 Francesco Montorsi
 //          Licence:     wxWidgets licence
 //-------------------------------------------------------------------------------------
-/*! @file Downloader.h
-    @brief Header file for class lmDownloadThread
-    @ingroup updates_management
-*/
 
-
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma implementation "Downloader.h"
+#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"

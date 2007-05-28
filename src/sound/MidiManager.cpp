@@ -19,10 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-/*! @class lmMidiManager
-    @ingroup sound_management
-    @brief Stores current Midi configuration and interfaces with the MIDI API
-*/
+// class lmMidiManagers tores current Midi configuration and interfaces with the MIDI API
+
 #if defined(__GNUG__) && !defined(__APPLE__)
 #pragma implementation "MidiManager.h"
 #endif

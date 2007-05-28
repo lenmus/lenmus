@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __SCORECONSTRAINS_H__        //to avoid nested includes
+#define __SCORECONSTRAINS_H__
+
 #ifdef __GNUG__
 #pragma interface "ScoreConstrains.cpp"
 #endif
-
-#ifndef __SCORECONSTRAINS_H__        //to avoid nested includes
-#define __SCORECONSTRAINS_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

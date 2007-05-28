@@ -18,8 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @class lmTheApp
-    @ingroup app_gui
+/*
     @brief lmTheApp class represents the application itself
 
     Derived from wxApp class, lmTheApp class represents the application itself. Takes care of
@@ -30,6 +29,7 @@
     - To initiate application processing via wxApp::OnInit;
 
 */
+
 #ifdef __GNUG__
 #pragma implementation "TheApp.h"
 #endif

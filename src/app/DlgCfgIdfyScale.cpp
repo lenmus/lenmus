@@ -18,14 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file DlgCfgIdfyScale.cpp
-    @brief Implementation file for class lmDlgCfgIdfyScale
-    @ingroup app_gui
-*/
 
-//for GCC
 #ifdef __GNUG__
-    #pragma implementation "DlgCfgIdfyScale.h"
+#pragma implementation "DlgCfgIdfyScale.h"
 #endif
 
 // for (compilers that support precompilation, includes "wx/wx.h".

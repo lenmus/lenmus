@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __SCORE_H__        //to avoid nested includes
+#define __SCORE_H__
+
 #ifdef __GNUG__
 #pragma interface "Score.cpp"
 #endif
-
-#ifndef __SCORE_H__        //to avoid nested includes
-#define __SCORE_H__
 
 #include "wx/debug.h"
 #include "defs.h"

@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __PARAMSPARSER_H__        //to avoid nested includes
+#define __PARAMSPARSER_H__
+
 #ifdef __GNUG__
 #pragma interface "ParamsParser.cpp"
 #endif
-
-#ifndef __PARAMSPARSER_H__        //to avoid nested includes
-#define __PARAMSPARSER_H__
 
 #include "../exercises/Constrains.h"    //KeyConstrains
 

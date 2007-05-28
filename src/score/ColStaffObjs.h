@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __GNUG__
-// #pragma interface
-#endif
-
 #ifndef __COLSTAFFOBJS_H__        //to avoid nested includes
 #define __COLSTAFFOBJS_H__
+
+#ifdef __GNUG__
+#pragma interface "ColStaffObjs.cpp"
+#endif
 
 #include "Score.h"
 

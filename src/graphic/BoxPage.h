@@ -18,12 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file BoxPage.h
-    @brief Header file for class lmBoxPage
-    @ingroup graphic_management
-*/
+
 #ifndef __BOXPAGE_H__        //to avoid nested includes
 #define __BOXPAGE_H__
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "BoxPage.cpp"
+#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

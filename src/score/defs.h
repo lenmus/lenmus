@@ -18,14 +18,8 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file defs.h
-    @brief Common definitions for all score kernel
-    @ingroup score_kernel
-*/
 
-#ifdef __GNUG__
-// #pragma interface
-#endif
+// Common definitions for all score kernel
 
 #ifndef __DEFS_H__        //to avoid nested includes
 #define __DEFS_H__

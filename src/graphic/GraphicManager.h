@@ -18,12 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file GraphicManager.h
-    @brief Header file for class lmGraphicManager
-    @ingroup graphic_management
-*/
+
 #ifndef __GRAPHICMANAGER_H__        //to avoid nested includes
 #define __GRAPHICMANAGER_H__
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "GraphicManager.cpp"
+#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

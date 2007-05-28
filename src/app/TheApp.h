@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __LENMUS_APP_H_
+#define __LENMUS_APP_H_
+
 #ifdef __GNUG__
 #pragma interface "TheApp.cpp"
 #endif
-
-#ifndef __LENMUS_APP_H_
-#define __LENMUS_APP_H_
 
 #include "wx/mdi.h"
 #include "wx/docview.h"

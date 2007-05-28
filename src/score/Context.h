@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __CONTEXT_H__        //to avoid nested includes
+#define __CONTEXT_H__
+
 #ifdef __GNUG__
 #pragma interface "Context.cpp"
 #endif
-
-#ifndef __CONTEXT_H__        //to avoid nested includes
-#define __CONTEXT_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

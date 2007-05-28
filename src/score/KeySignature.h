@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __KEYSIGNATURE_H__        //to avoid nested includes
+#define __KEYSIGNATURE_H__
+
 #ifdef __GNUG__
 #pragma interface "KeySignature.cpp"
 #endif
-
-#ifndef __KEYSIGNATURE_H__        //to avoid nested includes
-#define __KEYSIGNATURE_H__
 
 //------------------------------------------------------------------------------------------------
 // lmKeySignature object

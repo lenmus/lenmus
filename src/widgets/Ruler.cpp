@@ -43,8 +43,6 @@
 //*/
 //---------------------------------------------------------------------------------
 
-//#include <math.h>
-
 #ifdef __GNUG__
 #pragma implementation "Ruler.h"
 #endif

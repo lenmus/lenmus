@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __TUPLETBRACKET_H__        //to avoid nested includes
+#define __TUPLETBRACKET_H__
+
 #ifdef __GNUG__
 #pragma interface "TupletBracket.cpp"
 #endif
-
-#ifndef __TUPLETBRACKET_H__        //to avoid nested includes
-#define __TUPLETBRACKET_H__
 
 
 /*! @class lmTupletBracket

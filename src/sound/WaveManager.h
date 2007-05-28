@@ -18,12 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file WaveManager.h
-    @brief Header file for class lmWaveManager
-    @ingroup sound_management
-*/
+
 #ifndef __WAVEMANAGER_H__        //to avoid nested includes
 #define __WAVEMANAGER_H__
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "WaveManager.cpp"
+#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

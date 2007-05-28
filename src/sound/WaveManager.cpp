@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file WaveManager.cpp
-    @brief Implementation file for class lmWaveManager
-    @ingroup sound_management
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "WaveManager.h"
 #endif

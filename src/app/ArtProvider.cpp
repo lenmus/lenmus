@@ -18,14 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ArtProvider.cpp
-    @brief Implementation file for class lmArtProvider
-    @ingroup app_gui
-*/
 
-//for GCC
 #ifdef __GNUG__
-    #pragma implementation "ArtProvider.h"
+#pragma implementation "ArtProvider.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".

@@ -18,10 +18,6 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file NoteRest.h
-    @brief Header file for class lmNoteRest
-    @ingroup score_kernel
-*/
 
 //-------------------------------------------------------------------------------------------
 //Este programa maneja tres tipos de alturas:
@@ -78,12 +74,12 @@
 //   encapsular la llamada a la función de análisis
 //---------------------------------------------------------------------------------------------
 
-#ifdef __GNUG__
-// #pragma interface
-#endif
-
 #ifndef __NOTEREST_H__        //to avoid nested includes
 #define __NOTEREST_H__
+
+#ifdef __GNUG__
+#pragma interface "NoteRest.cpp"
+#endif
 
 #define DEFINE_REST        true
 #define DEFINE_NOTE        false

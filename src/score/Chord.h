@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __CHORD_H__        //to avoid nested includes
+#define __CHORD_H__
+
 #ifdef __GNUG__
 #pragma interface "Chord.cpp"
 #endif
-
-#ifndef __CHORD_H__        //to avoid nested includes
-#define __CHORD_H__
 
 class lmChord
 {

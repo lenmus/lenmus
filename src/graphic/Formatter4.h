@@ -18,13 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Formatter4.h
-    @brief Header file for class lmFormatter4
-    @ingroup graphic_management
-*/
 
 #ifndef __FORMATTER4_H__        //to avoid nested includes
 #define __FORMATTER4_H__
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "Formatter4.cpp"
+#endif
 
 //constants to define some tables' size
 //! @limit a system can not have more than 30 staves

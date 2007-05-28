@@ -22,12 +22,11 @@
 #ifndef __HELPCONTROLLER_H__
 #define __HELPCONTROLLER_H__
 
-#include "wx/defs.h"
-
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "HelpController.h"
+#pragma interface "HelpController.cpp"
 #endif
 
+#include "wx/defs.h"
 #include "wx/html/helpctrl.h"
 
 class lmHelpController : public wxHtmlHelpController

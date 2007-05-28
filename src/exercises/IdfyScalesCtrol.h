@@ -18,13 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file IdfyScalesCtrol.h
-    @brief Header file for class lmIdfyScalesCtrol
-    @ingroup html_controls
-*/
 
 #ifndef __IDFYSCALESCTROL_H__        //to avoid nested includes
 #define __IDFYSCALESCTROL_H__
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "IdfyScalesCtrol.cpp"
+#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

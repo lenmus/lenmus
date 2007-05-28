@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file BoxScore.cpp
-    @brief Implementation file for class lmBoxScore
-    @ingroup graphic_management
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "BoxScore.h"
 #endif

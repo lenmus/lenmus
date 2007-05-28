@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __ACCIDENTAL_H__        //to avoid nested includes
+#define __ACCIDENTAL_H__
+
 #ifdef __GNUG__
 #pragma interface "Accidental.cpp"
 #endif
-
-#ifndef __ACCIDENTAL_H__        //to avoid nested includes
-#define __ACCIDENTAL_H__
 
 #include "../graphic/Shape.h"
 

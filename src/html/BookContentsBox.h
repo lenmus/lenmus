@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __LM_BOOKCONTENTSBOX_H__        //to avoid nested includes
+#define __LM_BOOKCONTENTSBOX_H__
+
 #ifdef __GNUG__
 #pragma interface "BookContentsBox.cpp"
 #endif
-
-#ifndef __LM_BOOKCONTENTSBOX_H__        //to avoid nested includes
-#define __LM_BOOKCONTENTSBOX_H__
 
 #include "wx/treectrl.h"
 #include "wx/dynarray.h"

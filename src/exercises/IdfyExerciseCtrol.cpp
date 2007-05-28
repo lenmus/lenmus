@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file IdfyExerciseCtrol.cpp
-    @brief Implementation file for class lmIdfyExerciseCtrol
-    @ingroup html_controls
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "IdfyExerciseCtrol.h"
 #endif

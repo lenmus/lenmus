@@ -19,11 +19,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __SB_HTMLWINDOW_H__
-#define __SB_HTMLWINDOW_H__
+#ifndef __LM_HTMLWINDOW_H__
+#define __LM_HTMLWINDOW_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "HtmlWindow.h"
+#pragma interface "HtmlWindow.cpp"
 #endif
 
 #include "wx/html/htmlwin.h"
@@ -65,5 +65,5 @@ private:
 
 
 
-#endif // __SB_HTMLWINDOW_H__
+#endif // __LM_HTMLWINDOW_H__
 

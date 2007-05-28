@@ -19,14 +19,13 @@
 //
 //-------------------------------------------------------------------------------------
 
-// GCC interface
+#ifndef __RULER_H__        //to avoid nested includes
+#define __RULER_H__
+
 #if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "Ruler.cpp"
 #endif
 
-
-#ifndef __RULERH__        //to avoid nested includes
-#define __RULERH__
 
 #include <wx/dc.h>
 #include <wx/event.h>
@@ -81,4 +80,4 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-#endif    // __RULERH__
+#endif    // __RULER_H__

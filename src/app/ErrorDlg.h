@@ -18,16 +18,12 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ErrorDlg.h
-    @brief Header file for class lmErrorDlg
-    @ingroup app_gui
-*/
+
 #ifndef __ERRORDLG_H__        //to avoid nested includes
 #define __ERRORDLG_H__
 
-// GCC interface
 #if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "ErrorDlg.h"
+#pragma interface "ErrorDlg.cpp"
 #endif
 
 // headers

@@ -22,9 +22,8 @@
 #ifndef __DLGPATTERNEDITOR_H__        //to avoid nested includes
 #define __DLGPATTERNEDITOR_H__
 
-// GCC interface
 #if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "DlgPatternEditor.h"
+#pragma interface "DlgPatternEditor.cpp"
 #endif
 
 // headers

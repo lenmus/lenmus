@@ -18,16 +18,12 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file DlgCfgIdfyChord.h
-    @brief Header file for class lmDlgCfgIdfyChord
-    @ingroup app_gui
-*/
+
 #ifndef __DLGCFGIDFYCHORD_H__        //to avoid nested includes
 #define __DLGCFGIDFYCHORD_H__
 
-// GCC interface
 #if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "DlgCfgIdfyChord.h"
+#pragma interface "DlgCfgIdfyChord.cpp"
 #endif
 
 // headers

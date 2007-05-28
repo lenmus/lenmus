@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __COMPOSERV5_H__        //to avoid nested includes
+#define __COMPOSERV5_H__
+
 #if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "ComposerV5.cpp"
 #endif
-
-#ifndef __COMPOSERV5_H__        //to avoid nested includes
-#define __COMPOSERV5_H__
 
 #include "Composer.h"
 

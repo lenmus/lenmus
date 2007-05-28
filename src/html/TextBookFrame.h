@@ -30,6 +30,11 @@
 #ifndef __TEXTBOOKFRAME__H_
 #define __TEXTBOOKFRAME__H_
 
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "TextBookFrame.cpp"
+#endif
+
+
 #include "wx/defs.h"
 
 #if wxUSE_WXHTML_HELP

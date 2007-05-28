@@ -32,6 +32,7 @@
 
 #include "ObjectParams.h"
 #include "wx/html/winpars.h"
+#include "wx/html/htmlwin.h"
 
 
 
@@ -52,7 +53,7 @@ void lmObjectParams::LogError(const wxString& sMsg)
 
 void lmObjectParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 {
-    wxWindow *wnd = new wxTextCtrl((wxWindow*)pHtmlParser->GetWindow(), -1,
+    wxWindow *wnd = new wxTextCtrl((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1,
             _("Default <object> window: you MUST implement this virtual method!"),
             wxPoint(0,0), wxSize(300, 100), wxTE_MULTILINE);
     wnd->Show(true);

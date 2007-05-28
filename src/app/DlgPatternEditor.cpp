@@ -19,9 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-//for GCC
 #ifdef __GNUG__
-    #pragma implementation "DlgPatternEditor.h"
+#pragma implementation "DlgPatternEditor.h"
 #endif
 
 // for (compilers that support precompilation, includes "wx/wx.h".

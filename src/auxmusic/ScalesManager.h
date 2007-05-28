@@ -18,13 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ScalesManager.h
-    @brief Header file for class lmScalesManager
-    @ingroup auxmusic
-*/
 
 #ifndef __SCALESMANAGER_H__        //to avoid nested includes
 #define __SCALESMANAGER_H__
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "ScalesManager.cpp"
+#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

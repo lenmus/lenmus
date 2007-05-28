@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __SCORECTROL_H__        //to avoid nested includes
+#define __SCORECTROL_H__
+
 #ifdef __GNUG__
 #pragma interface "ScoreCtrol.cpp"
 #endif
-
-#ifndef __SCORECTROL_H__        //to avoid nested includes
-#define __SCORECTROL_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

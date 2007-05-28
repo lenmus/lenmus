@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __GLYPH_H__        //to avoid nested includes
+#define __GLYPH_H__
+
 #ifdef __GNUG__
 #pragma interface "Glyph.cpp"
 #endif
-
-#ifndef __GLYPH_H__        //to avoid nested includes
-#define __GLYPH_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

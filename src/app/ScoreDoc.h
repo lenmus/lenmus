@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __SCOREDOC_H__
+#define __SCOREDOC_H__
+
 #ifdef __GNUG__
 #pragma interface "ScoreDoc.cpp"
 #endif
-
-#ifndef __LENMUS_DOC_H__
-#define __LENMUS_DOC_H__
 
 #include "wx/docview.h"
 #include "wx/cmdproc.h"
@@ -55,4 +55,4 @@ private:
 };
 
 
-#endif    // __LENMUS_DOC_H__
+#endif    // __SCOREDOC_H__

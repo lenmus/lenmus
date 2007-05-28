@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __THOEMUSICREADINGCTROL_H__        //to avoid nested includes
+#define __THOEMUSICREADINGCTROL_H__
+
 #ifdef __GNUG__
 #pragma interface "TheoMusicReadingCtrol.cpp"
 #endif
-
-#ifndef __THOEMUSICREADINGCTROL_H__        //to avoid nested includes
-#define __THOEMUSICREADINGCTROL_H__
 
 // for (compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

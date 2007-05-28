@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __TIMESIGNATURE_H__        //to avoid nested includes
+#define __TIMESIGNATURE_H__
+
 #ifdef __GNUG__
 #pragma interface "TimeSignature.cpp"
 #endif
-
-#ifndef __TIMESIGNATURE_H__        //to avoid nested includes
-#define __TIMESIGNATURE_H__
 
 //------------------------------------------------------------------------------------------------
 // lmTimeSignature object

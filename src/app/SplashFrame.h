@@ -22,9 +22,8 @@
 #ifndef __SPLASHFRAME_H__        //to avoid nested includes
 #define __SPLASHFRAME_H__
 
-// GCC interface
 #if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "SplashFrame.h"
+#pragma interface "SplashFrame.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".

@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __AUXSTRING_H        //to avoid nested includes
+#define __AUXSTRING_H
+
 #ifdef __GNUG__
 #pragma interface "AuxString.cpp"
 #endif
-
-#ifndef __AUXSTRING_H        //to avoid nested includes
-#define __AUXSTRING_H
 
 #include "../score/Score.h"
 

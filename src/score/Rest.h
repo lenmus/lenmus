@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __REST_H__        //to avoid nested includes
+#define __REST_H__
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "Rest.cpp"
 #endif
-
-#ifndef __REST_H__        //to avoid nested includes
-#define __REST_H__
 
 #include "Glyph.h"
 

@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __SCOREVIEWH__        //to avoid nested includes
+#define __SCOREVIEWH__
+
 #ifdef __GNUG__
 #pragma interface "scoreView.cpp"
 #endif
-
-#ifndef __SCOREVIEWH__        //to avoid nested includes
-#define __SCOREVIEWH__
 
 #if wxUSE_GENERIC_DRAGIMAGE
 #include "wx/generic/dragimgg.h"

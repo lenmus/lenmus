@@ -18,8 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "Drawer.h"
+#pragma implementation "AggDrawer.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".

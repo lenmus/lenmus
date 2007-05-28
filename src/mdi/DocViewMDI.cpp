@@ -25,6 +25,11 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
+
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma implementation "DocViewMDI.h"
+#endif
+
 #include "../app/global.h"
 
 #if lmUSE_NOTEBOOK_MDI

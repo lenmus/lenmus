@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file IdfyScalesCtrol.cpp
-    @brief Implementation file for class lmIdfyScalesCtrol
-    @ingroup html_controls
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "IdfyScalesCtrol.h"
 #endif

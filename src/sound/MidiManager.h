@@ -19,8 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __MIDICONFIG_H__
-#define __MIDICONFIG_H__
+#ifndef __LM_MIDIMANAGER_H__
+#define __LM_MIDIMANAGER_H__
+
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma interface "MidiManager.cpp"
+#endif
 
 #include <wx/config.h>
 
@@ -102,5 +106,5 @@ extern wxMidiOutDevice* g_pMidiOut;        //out device object
 extern lmMidiManager* g_pMidi;        //current MIDI configuration
 
 
-#endif    // __MIDICONFIG_H__
+#endif    // __LM_MIDIMANAGER_H__
 

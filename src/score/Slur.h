@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __SLUR_H__        //to avoid nested includes
+#define __SLUR_H__
+
 #ifdef __GNUG__
 #pragma interface "Slur.cpp"
 #endif
-
-#ifndef __SLUR_H__        //to avoid nested includes
-#define __SLUR_H__
 
 
 //---------------------------------------------------------

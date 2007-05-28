@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __EARINTERVALSCTROL_H__        //to avoid nested includes
+#define __EARINTERVALSCTROL_H__
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "EarIntervalsCtrol.cpp"
 #endif
-
-#ifndef __EARINTERVALSCTROL_H__        //to avoid nested includes
-#define __EARINTERVALSCTROL_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

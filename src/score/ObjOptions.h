@@ -18,8 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
+
 #ifndef _OBJOPTIONS_H__        //to avoid nested includes
 #define _OBJOPTIONS_H__
+
+#ifdef __GNUG__
+#pragma interface "ObjOptions.cpp"
+#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

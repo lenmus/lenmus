@@ -19,9 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-//for GCC
 #ifdef __GNUG__
-    #pragma implementation "SplashFrame.h"
+#pragma implementation "SplashFrame.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".

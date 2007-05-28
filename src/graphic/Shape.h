@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __SHAPE_H__        //to avoid nested includes
+#define __SHAPE_H__
+
 #ifdef __GNUG__
 #pragma interface "Shape.cpp"
 #endif
-
-#ifndef __SHAPE_H__        //to avoid nested includes
-#define __SHAPE_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

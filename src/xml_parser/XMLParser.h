@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __XMLPARSER_H__        //to avoid nested includes
+#define __XMLPARSER_H__
+
 #ifdef __GNUG__
 #pragma interface "XmlParser.cpp"
 #endif
-
-#ifndef __XMLPARSER_H__        //to avoid nested includes
-#define __XMLPARSER_H__
 
 #include "wx/txtstrm.h"
 #include "wx/wfstream.h"

@@ -18,12 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Preferences.cpp
-    @brief Implementation file for class lmPreferences
-    @ingroup app_gui
-*/
+
 #ifdef __GNUG__
-#pragma implementation "TheApp.h"
+#pragma implementation "Preferences.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".

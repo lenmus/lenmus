@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __SCORE_COMMAND_H__        //to avoid nested includes
+#define __SCORE_COMMAND_H__
+
 #ifdef __GNUG__
 #pragma interface "ScoreCommand.cpp"
 #endif
-
-#ifndef __SCORE_COMMAND_H__        //to avoid nested includes
-#define __SCORE_COMMAND_H__
 
 #include "wx/cmdproc.h"
 #include "../app/global.h"

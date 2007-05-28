@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __EARINTERVALSCONSTRAINS_H__        //to avoid nested includes
+#define __EARINTERVALSCONSTRAINS_H__
+
 #ifdef __GNUG__
 #pragma interface "EarIntvalConstrains.cpp"
 #endif
-
-#ifndef __EARINTERVALSCONSTRAINS_H__        //to avoid nested includes
-#define __EARINTERVALSCONSTRAINS_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

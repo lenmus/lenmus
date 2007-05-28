@@ -29,6 +29,10 @@
 #ifndef __LM_CHILDFRAME_H__
 #define __LM_CHILDFRAME_H__
 
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma interface "ChildFrame.cpp"
+#endif
+
 #include "../app/global.h"      //access to lmUSE_NOTEBOOK_MDI flag
 
 #if lmUSE_NOTEBOOK_MDI

@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef _PAGE_H        //to avoid nested includes
+#define _PAGE_H
+
 #ifdef __GNUG__
 #pragma interface "Page.cpp"
 #endif
-
-#ifndef _PAGE_H        //to avoid nested includes
-#define _PAGE_H
 
 #include "../score/defs.h"
 

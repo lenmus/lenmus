@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef _SCORECANVAS_H        //to avoid nested includes
+#define _SCORECANVAS_H
+
 #ifdef __GNUG__
 #pragma interface "ScoreCanvas.cpp"
 #endif
-
-#ifndef _SCORECANVAS_H        //to avoid nested includes
-#define _SCORECANVAS_H
 
 #if wxUSE_GENERIC_DRAGIMAGE
 #include "wx/generic/dragimgg.h"

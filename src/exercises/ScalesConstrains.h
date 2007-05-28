@@ -18,16 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ScalesConstrains.h
-    @brief Header file for Scales exercises
-    @ingroup generators
-*/
-#ifdef __GNUG__
-// #pragma interface
-#endif
 
 #ifndef __SCALESCONSTRAINS_H__        //to avoid nested includes
 #define __SCALESCONSTRAINS_H__
+
+#ifdef __GNUG__
+#pragma interface "ScalesConstrains.cpp"
+#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

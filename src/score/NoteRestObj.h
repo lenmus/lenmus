@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __NOTERESTOBJ_H__        //to avoid nested includes
+#define __NOTERESTOBJ_H__
+
 #ifdef __GNUG__
 #pragma interface "NoteRestObj.cpp"
 #endif
-
-#ifndef __NOTERESTOBJ_H__        //to avoid nested includes
-#define __NOTERESTOBJ_H__
 
 enum ESymbolType {
     eST_Fermata = 0,        // ESP: calderón

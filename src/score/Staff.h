@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __STAFFT_H__        //to avoid nested includes
+#define __STAFFT_H__
+
 #ifdef __GNUG__
 #pragma interface "Staff.cpp"
 #endif
-
-#ifndef __STAFFT_H__        //to avoid nested includes
-#define __STAFFT_H__
 
 #include "Score.h"
 

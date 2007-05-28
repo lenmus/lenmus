@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __CHORDCONSTRAINS_H__        //to avoid nested includes
+#define __CHORDCONSTRAINS_H__
+
 #ifdef __GNUG__
 #pragma interface "ChordConstrains.cpp"
 #endif
-
-#ifndef __CHORDCONSTRAINS_H__        //to avoid nested includes
-#define __CHORDCONSTRAINS_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

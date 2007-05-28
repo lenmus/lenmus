@@ -30,6 +30,10 @@
 #ifndef __LM_CONTENTSBOXCTROL_H__
 #define __LM_CONTENTSBOXCTROL_H__
 
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "ContentsBoxCtrol.cpp"
+#endif
+
 #include "wx/vscroll.h"         // base class
 #include "wx/bitmap.h"
 

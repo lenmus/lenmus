@@ -18,6 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
+
 #if defined(__GNUG__) && !defined(__APPLE__)
 #pragma implementation "Paths.h"
 #endif

@@ -18,16 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Beam.h
-    @brief Header file for class lmBeam
-    @ingroup score_kernel
-*/
-#ifdef __GNUG__
-// #pragma interface
-#endif
 
 #ifndef __BEAM_H__        //to avoid nested includes
 #define __BEAM_H__
+
+#ifdef __GNUG__
+#pragma interface "Beam.cpp"
+#endif
 
 #include "wx/dc.h"
 

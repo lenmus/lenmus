@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __LDPTAGS_H__        //to avoid nested includes
+#define __LDPTAGS_H__
+
 #ifdef __GNUG__
 #pragma interface "LDPTags.cpp"
 #endif
-
-#ifndef __LDPTAGS_H__        //to avoid nested includes
-#define __LDPTAGS_H__
 
 #include "wx/hashmap.h"
 

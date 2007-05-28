@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __URLAUXCTROL_H__        //to avoid nested includes
+#define __URLAUXCTROL_H__
+
 #ifdef __GNUG__
 #pragma interface "UrlAuxCtrol.cpp"
 #endif
-
-#ifndef __URLAUXCTROL_H__        //to avoid nested includes
-#define __URLAUXCTROL_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

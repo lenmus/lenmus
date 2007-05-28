@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __SCOREAUXCTROL_H__        //to avoid nested includes
+#define __SCOREAUXCTROL_H__
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "ScoreAuxCtrol.cpp"
 #endif
-
-#ifndef __SCOREAUXCTROL_H__        //to avoid nested includes
-#define __SCOREAUXCTROL_H__
 
 #include "../app/Paper.h"
 #include "../app/global.h"

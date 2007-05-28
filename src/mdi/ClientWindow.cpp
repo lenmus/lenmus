@@ -19,6 +19,10 @@
 //
 //-------------------------------------------------------------------------------------
 
+#if defined(__GNUG__) && !defined(__APPLE__)
+#pragma implementation "ClientWindow.h"
+#endif
+
 #include "../app/global.h"
 
 #if lmUSE_NOTEBOOK_MDI

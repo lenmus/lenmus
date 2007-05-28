@@ -18,16 +18,14 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file LDPParser.h
-    @brief Header file for class lmLDPParser
-    @ingroup ldp_parser
-*/
-#ifdef __GNUG__
-// #pragma interface
-#endif
 
 #ifndef __LMPARSER_H        //to avoid nested includes
 #define __LMPARSER_H
+
+#ifdef __GNUG__
+#pragma interface "LDPParser.cpp"
+#endif
+
 
 #include "wx/txtstrm.h"
 #include "wx/wfstream.h"

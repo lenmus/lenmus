@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __VSTAFFT_H__        //to avoid nested includes
+#define __VSTAFFT_H__
+
 #if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "VStaff.cpp"
 #endif
-
-#ifndef __VSTAFFT_H__        //to avoid nested includes
-#define __VSTAFFT_H__
 
 #include "StaffObjIterator.h"
 class StaffList;

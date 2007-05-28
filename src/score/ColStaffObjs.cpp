@@ -67,7 +67,7 @@
 //----------------------------------------------------------------------------------------------------
 
 #ifdef __GNUG__
-// #pragma implementation
+#pragma implementation "ColStaffObjs.h"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".

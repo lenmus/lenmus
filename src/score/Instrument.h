@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __INSTRUMENT_H__        //to avoid nested includes
+#define __INSTRUMENT_H__
+
 #ifdef __GNUG__
 #pragma interface "Instrument.cpp"
 #endif
-
-#ifndef __INSTRUMENT_H__        //to avoid nested includes
-#define __INSTRUMENT_H__
 
 
 

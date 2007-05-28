@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __MUSICXMLPARSER_H__        //to avoid nested includes
+#define __MUSICXMLPARSER_H__
+
 #ifdef __GNUG__
 #pragma interface "MusicXMLParser.cpp"
 #endif
-
-#ifndef __MUSICXMLPARSER_H__        //to avoid nested includes
-#define __MUSICXMLPARSER_H__
 
 #include "wx/txtstrm.h"
 #include "wx/wfstream.h"

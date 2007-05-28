@@ -18,13 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ErrorDlg.cpp
-    @brief Implementation file for class lmErrorDlg
-    @ingroup app_gui
-*/
-//for GCC
+
 #ifdef __GNUG__
-    #pragma implementation "ErrorDlg.h"
+#pragma implementation "ErrorDlg.h"
 #endif
 
 // for (compilers that support precompilation, includes "wx/wx.h".

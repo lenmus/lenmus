@@ -19,6 +19,10 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifdef __GNUG__
+#pragma implementation "ObjOptions.h"
+#endif
+
 #include "StaffObj.h"
 #include "ObjOptions.h"
 

@@ -18,12 +18,8 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file FontManager.cpp
-    @brief Implementation file for class lmFontManager
-    @ingroup app_gui
-*/
-/*! @class lmFontManager
-    @ingroup app_gui
+
+/*  class lmFontManager
     @brief Takes care of all font allocation and management duties for a view.
 
     The fontsize to use to draw any musical symbol depends on two factors: stafflines
@@ -40,6 +36,7 @@
 
 
 */
+
 #ifdef __GNUG__
 #pragma implementation "FontManager.h"
 #endif

@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __PRINTOUT_H        //to avoid nested includes
+#define __PRINTOUT_H
+
 #ifdef __GNUG__
 #pragma interface "Printout.cpp"
 #endif
-
-#ifndef __PRINTOUT_H        //to avoid nested includes
-#define __PRINTOUT_H
 
 class lmScoreView;
 

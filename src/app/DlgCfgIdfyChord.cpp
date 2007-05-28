@@ -18,14 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file DlgCfgIdfyChord.cpp
-    @brief Implementation file for class lmDlgCfgIdfyChord
-    @ingroup app_gui
-*/
 
-//for GCC
 #ifdef __GNUG__
-    #pragma implementation "DlgCfgIdfyChord.h"
+#pragma implementation "DlgCfgIdfyChord.h"
 #endif
 
 // for (compilers that support precompilation, includes "wx/wx.h".

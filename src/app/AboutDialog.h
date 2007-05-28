@@ -18,16 +18,12 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file AboutDialog.h
-    @brief Header file for class lmAboutDialog
-    @ingroup app_gui
-*/
+
 #ifndef __ABOUTDLGH__        //to avoid nested includes
 #define __ABOUTDLGH__
 
-// GCC interface
 #if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "ErrorDlg.h"
+#pragma interface "AboutDlg.cpp"
 #endif
 
 // headers

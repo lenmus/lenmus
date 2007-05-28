@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __DIRECTION_H__        //to avoid nested includes
+#define __DIRECTION_H__
+
 #ifdef __GNUG__
 #pragma interface "Direction.cpp"
 #endif
-
-#ifndef __DIRECTION_H__        //to avoid nested includes
-#define __DIRECTION_H__
 
 class lmWordsDirection : public lmStaffObj, public lmBasicText
 {

@@ -22,9 +22,8 @@
 #ifndef __DLGCFGSCOREREADING_H__        //to avoid nested includes
 #define __DLGCFGSCOREREADING_H__
 
-// GCC interface
 #if defined(__GNUG__) && !defined(__APPLE__)
-    #pragma interface "DlgCfgScoreReading.h"
+#pragma interface "DlgCfgScoreReading.cpp"
 #endif
 
 // headers

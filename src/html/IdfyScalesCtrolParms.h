@@ -18,16 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file IdfyScalesCtrolParms.h
-    @brief Header file for class lmIdfyScalesCtrolParms
-    @ingroup html_controls
-*/
-#ifdef __GNUG__
-// #pragma interface
-#endif
 
-#ifndef __EARSCALESCTROLPARMS_H__        //to avoid nested includes
-#define __EARSCALESCTROLPARMS_H__
+#ifndef __LM_IDFYSCALESCTROLPARMS_H__        //to avoid nested includes
+#define __LM_IDFYSCALESCTROLPARMS_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -245,4 +238,4 @@ void lmIdfyScalesCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 
 }
 
-#endif  // __EARSCALESCTROLPARMS_H__
+#endif  // __LM_IDFYSCALESCTROLPARMS_H__

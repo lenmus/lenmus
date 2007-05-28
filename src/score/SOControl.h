@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __SOCONTROL_H__        //to avoid nested includes
+#define __SOCONTROL_H__
+
 #ifdef __GNUG__
 #pragma interface "SOControl.cpp"
 #endif
-
-#ifndef __SOCONTROL_H__        //to avoid nested includes
-#define __SOCONTROL_H__
 
 enum ESOCtrolType
 {

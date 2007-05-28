@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file ScalesConstrains.cpp
-    @brief Implementation file for lmScalesConstrains class
-    @ingroup generators
-*/
+
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "ScalesConstrains.h"
 #endif

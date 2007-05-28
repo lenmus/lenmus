@@ -19,17 +19,14 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __LMNODE_H        //to avoid nested includes
+#define __LMNODE_H
+
 #ifdef __GNUG__
 #pragma interface "LDPNode.cpp"
 #endif
 
-#ifndef __LMNODE_H        //to avoid nested includes
-#define __LMNODE_H
-
 class lmLDPNode;
-//// node parameters (also LMNodes) will be maintained in a list structure. Let's declare it
-//#include "wx/list.h"
-//WX_DECLARE_LIST(lmLDPNode, LMNodeList);
 
 #include "wx/dynarray.h"
 WX_DEFINE_ARRAY(lmLDPNode*, ArrayNodePtrs);

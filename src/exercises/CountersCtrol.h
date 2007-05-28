@@ -18,12 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file CountersCtrol.h
-    @brief Header file for class lmCountersCtrol
-    @ingroup html_controls
-*/
+
 #ifndef __COUNTERSCTROL_H__        //to avoid nested includes
 #define __COUNTERSCTROL_H__
+
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "CountersCtrol.cpp"
+#endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

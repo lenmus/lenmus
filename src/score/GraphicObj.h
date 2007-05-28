@@ -19,12 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
+#ifndef __GRAPHOBJ_H__        //to avoid nested includes
+#define __GRAPHOBJ_H__
+
 #if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "GraphicObj.cpp"
 #endif
-
-#ifndef __GRAPHOBJ_H__        //to avoid nested includes
-#define __GRAPHOBJ_H__
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"

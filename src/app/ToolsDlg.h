@@ -23,7 +23,7 @@
 #define __TOOLSDLG_H__
 
 #ifdef __GNUG__
-#pragma implementation "ToolsDlg.cpp"
+#pragma interface "ToolsDlg.cpp"
 #endif
 
 

@@ -19,9 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-//for GCC
 #ifdef __GNUG__
-    #pragma implementation "DlgCfgTheoIntervals.h"
+#pragma implementation "DlgCfgTheoIntervals.h"
 #endif
 
 // for (compilers that support precompilation, includes "wx/wx.h".
