@@ -267,7 +267,7 @@ void lmLogger::LogSysError(const wxChar* szFormat, ...)
 
 // the following methods are only for the debug version. For the release one they
 // expand to nothing
-#ifdef _DEBUG
+#ifdef __WXDEBUG__
 
 void lmLogger::LogDebug(const wxChar* szFormat, ...)
 {
@@ -287,15 +287,27 @@ void lmLogger::LogTrace(const wxString& mask, const wxChar* szFormat, ...)
 
 void lmLogger::DefineTraceMask(wxString mask)
 {
-    //! @todo
+    m_aMasks.Add( mask );
 }
 
-wxString lmLogger::GetDefinedTraceMasks()
+void lmLogger::PopulateWithDefinedTraceMasks(wxControlWithItems* pCtrol, int nSelected)
 {
-        //! @todo
+	// Populate a wxControlWithItems (wxListBox, wxCheckListBox, wxChoice, wxComboBox, ...)
+	// with the list of defined trace masks.
+    // Set 'nSelected' trace mask as the selected one (default: the first one)
 
-    return wxString(_T("//TODO"));
+	pCtrol->Clear();
+	int iSel = 0;
+
+    //populate control
+	for (int i=0; i < (int)m_aMasks.GetCount(); i++ ) {
+        pCtrol->Append( m_aMasks[i] );
+		if (i == nSelected) iSel = i;
+    }
+    pCtrol->SetStringSelection( pCtrol->GetString(iSel) );
+    
 }
+
 
 void lmLogger::AddTraceMask(const wxString& mask) { wxLog::AddTraceMask(mask); }
 void lmLogger::RemoveTraceMask(const wxString& mask) { wxLog::RemoveTraceMask(mask); }
@@ -308,4 +320,4 @@ bool lmLogger::IsAllowedTraceMask(const wxChar *mask)
 
 
 
-#endif        // definitions for _DEBUG mode
+#endif        // definitions for __WXDEBUG__ mode

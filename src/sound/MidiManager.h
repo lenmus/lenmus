@@ -68,6 +68,9 @@ public:
     void SaveUserPreferences();
     void TestOut();
 
+    //access to methods in midi system
+    int CountDevices();
+
 protected:
     lmMidiManager();
 
@@ -100,10 +103,10 @@ private:
 };
 
 // global MIDI related variables
-extern wxMidiSystem* g_pMidiSystem;        //MIDI system
-extern wxMidiInDevice* g_pMidiIn;        //in device object
-extern wxMidiOutDevice* g_pMidiOut;        //out device object
-extern lmMidiManager* g_pMidi;        //current MIDI configuration
+// direct access to MidiOutDevice and MidiInDevices to avoid delays
+extern wxMidiInDevice* g_pMidiIn;       //in device object
+extern wxMidiOutDevice* g_pMidiOut;     //out device object
+extern lmMidiManager* g_pMidi;          //current MIDI configuration
 
 
 #endif    // __LM_MIDIMANAGER_H__

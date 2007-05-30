@@ -9,10 +9,18 @@
 
 <h2>What's new in 3.5</h2>
 
+<p>From a user point of view the main changes are the new features introduced:</p>
+
 <ul>
   <li>A new eMusicBook included: Music Reading level 1</li>
+  <li>Playback: added rhythmic accent. Higher volume on stronger beats.</li>
   <li>Replaced MDI user interface by a notebook tabbed interface.</li>
   <li>The lenmus program now includes the Dutch language translation.</li>
+</ul>
+
+<p>But the new version has a lot of technical changes an some bug fixes:</p>
+
+<ul>
   <li>Added support to include images on eMusicBooks texts.</li>
   <li>Score parameters in eBooks: added tag <metronome> to specify a fixed metronome
         rate to play the score, instead of using user specified value in metronome
@@ -73,6 +81,8 @@
 <h2>Bug fixed details</h2>
 
 <ul>
+  <li>Bug fixed [#1724988]: Crash if program is closed while playing intervals
+        in aural training compare intervals exercise.</li>
   <li>Bug fixed [#1715979]: When you have a score open, the 'show/hide navigation panel'
         button shows as active but you cannot click on it.</li>
   <li>Bug fixed [#1715953]: In the Midi configuration wizard the drop downs in
@@ -85,18 +95,14 @@
   <li>Bug fixed [#1715963]: Repeated quick acceleration letters in options, menu
         labels. The English text has the same letter as quick key for bottom
         and right labels.</li>
-  <li>Bug fixed [#1715965]: Rests in a group of tied notes are not rendered in the right position.</li>
+  <li>Bug fixed [#1715965]: Rests in a group of tied notes are not rendered in the right
+        position.</li>
   <li>Bug fixed [#1715968]: Proportional spacing of notes is not working.</li>
-  <li>Bug fixed [#1715953]: In the Midi configuration wizard the drop downs in
-        the wizard should not be editable.</li>
-  <li>Bug fixed [#1715959]: Focus problem. In the configuration window when you check
-        the proxy configuration but do not fill it in and then change the focus to
-        section 'language', the category selector changes but the focus remains on
-        the Internet section. Alternatively you could generate a warning message and
-        leave the focus on the Internet section.</li>
-  <li>Bug fixed [#1715963]: Repeated quick acceleration letters in options, menu
-        labels. The English text has the same letter as quick key for bottom
-        and right labels.</li>
+  <li>Bug fixed [#176634]: Program crash if closed while playing a score.</li>
+  <li>Bug fixed [#176635]: Crash if program is closed while playing an exercise
+        (L2_MusicReading).</li>
+  <li>Bug fixed [#1590088]: Program crash if move to another exercise while playing an
+        exercise.</li>
 </ul>
 
 </body>

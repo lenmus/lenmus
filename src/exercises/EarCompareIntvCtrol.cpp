@@ -75,6 +75,8 @@ enum {
 };
 
 
+IMPLEMENT_CLASS(lmEarCompareIntvCtrol, wxWindow)
+
 BEGIN_EVENT_TABLE(lmEarCompareIntvCtrol, wxWindow)
     EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+2, wxEVT_COMMAND_BUTTON_CLICKED, lmEarCompareIntvCtrol::OnRespButton)
     EVT_SIZE            (lmEarCompareIntvCtrol::OnSize)
@@ -87,9 +89,11 @@ BEGIN_EVENT_TABLE(lmEarCompareIntvCtrol, wxWindow)
     LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmEarCompareIntvCtrol::OnPlay)
     LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, lmEarCompareIntvCtrol::OnDisplaySolution)
     LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmEarCompareIntvCtrol::OnSettingsButton)
-END_EVENT_TABLE()
 
-IMPLEMENT_CLASS(lmEarCompareIntvCtrol, wxWindow)
+    LM_EVT_END_OF_PLAY  (lmEarCompareIntvCtrol::OnEndOfPlay)
+    EVT_TIMER           (wxID_ANY, lmEarCompareIntvCtrol::OnTimerEvent)
+
+END_EVENT_TABLE()
 
 lmEarCompareIntvCtrol::lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id, 
                            lmEarIntervalsConstrains* pConstrains,
@@ -97,7 +101,6 @@ lmEarCompareIntvCtrol::lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id,
     : wxWindow(parent, id, pos, size, style )
 {
     //initializations
-    m_fCancel = false;
     SetBackgroundColour(*wxWHITE);
     int i;
     for (i=0; i < 3; i++) { m_pAnswerButton[i] = (wxButton*)NULL; }
@@ -109,6 +112,7 @@ lmEarCompareIntvCtrol::lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id,
     m_pTotalScore = (lmScore*)NULL;
     m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
     m_pConstrains = pConstrains;
+    m_fPlaying = false;
 
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
@@ -241,8 +245,6 @@ lmEarCompareIntvCtrol::lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id,
 
 lmEarCompareIntvCtrol::~lmEarCompareIntvCtrol()
 {
-    m_fCancel = true;       //inform that the exercise is cancelled
-    wxMilliSleep(3000);     //wait for 1000ms for any score being played
     DoStopSounds();         //stop any possible score being played
 
     if (m_pScoreCtrol) {
@@ -488,38 +490,44 @@ void lmEarCompareIntvCtrol::NewProblem()
 
 void lmEarCompareIntvCtrol::Play()
 {
-    //@attention As the intervals are built using whole notes, we will play them at MM=240 so
-    //that real note rate will be 80.
+    if (!m_fPlaying) {
+        // Play button pressed
+        //wxLogMessage(_T("Play button pressed"));
 
-    //first interval
-#if 0
-    m_pScoreCtrol->SetScore(m_pScore[0], true);   //true: the score must be hidden
-    m_pAnswerButton[0]->SetBackgroundColour( g_pColors->ButtonHighlight() );
-    m_pScoreCtrol->PlayScore(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
-                             ePM_NormalInstrument, 320);
-    //m_pAnswerButton[0]->SetBackgroundColour( g_pColors->Normal() );
-#else
-    m_pAnswerButton[0]->SetBackgroundColour( g_pColors->ButtonHighlight() );
-    m_pAnswerButton[0]->Update();    //Refresh works vie events and, so, it is not inmediate
-    if (m_fCancel) return;
-    m_pScore[0]->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
-                             ePM_NormalInstrument, 320);
-    m_pScore[0]->WaitForTermination();
-    m_pAnswerButton[0]->SetBackgroundColour( g_pColors->Normal() );
-    m_pAnswerButton[0]->Update();
+        //change link from "Play" to "Stop"
+        m_pPlayButton->SetLabel(_("Stop"));
+        m_fPlaying = true;
 
-    wxMilliSleep(1000);     //wait for 1sec (1000ms)
+        //AWARE: The link label is restored to "Play" when the EndOfPlay() event is
+        //       received. Flag m_fPlaying is also reset there
 
-    //second interval
-    if (m_fCancel) return;
-    m_pAnswerButton[1]->SetBackgroundColour( g_pColors->ButtonHighlight() );
-    m_pAnswerButton[1]->Update();
-    m_pScore[1]->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
-                             ePM_NormalInstrument, 320);
-    m_pScore[1]->WaitForTermination();
-    m_pAnswerButton[1]->SetBackgroundColour( g_pColors->Normal() );
-    m_pAnswerButton[1]->Update();
-#endif
+        //play first interval
+        PlayInterval(0);
+
+        //AWARE:
+        // when 1st interval is finished an event will be generated. Then method 
+        // OnEndOfPlay() will handle the event and play the second interval.
+        // It is programmed this way (asynchonously) to avoid crashes if program/exercise
+        // is closed. Old serial code follows for historical reference
+    }
+    else {
+        // "Stop" button pressed
+        //wxLogMessage(_T("Stop button pressed"));
+        m_fPlaying = false;
+    }
+}
+
+void lmEarCompareIntvCtrol::PlayInterval(int nIntv)
+{
+    m_nNowPlaying = nIntv;
+    m_pAnswerButton[nIntv]->SetBackgroundColour( g_pColors->ButtonHighlight() );
+    m_pAnswerButton[nIntv]->Update();    //Refresh works vie events and, so, it is not inmediate
+
+    //AWARE: As the intervals are built using whole notes, we will play them at
+    // MM=320 so that real note rate will be 80.
+    m_pScore[nIntv]->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
+                             ePM_NormalInstrument, 320, this);
+
 }
 
 void lmEarCompareIntvCtrol::DisplaySolution()
@@ -596,3 +604,36 @@ void lmEarCompareIntvCtrol::DoStopSounds()
     if (m_pScore[1]) m_pScore[1]->Stop();
 
 }
+
+void lmEarCompareIntvCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
+{
+    // remove highlight in button
+    m_pAnswerButton[m_nNowPlaying]->SetBackgroundColour( g_pColors->Normal() );
+    m_pAnswerButton[m_nNowPlaying]->Update();
+
+    if (m_nNowPlaying == 0 && m_fPlaying) {
+        //wxLogMessage(_T("EndOfPlay event: Starting timer"));
+        m_oPauseTimer.SetOwner( this, wxID_ANY );
+        m_oPauseTimer.Start(1000, wxTIMER_CONTINUOUS );     //wait for 1sec (1000ms)
+    }
+    else {
+        //wxLogMessage(_T("EndOfPlay event: play stopped"));
+        m_fPlaying = false;
+        m_pPlayButton->SetLabel(_("Play"));
+    }
+
+}
+
+void lmEarCompareIntvCtrol::OnTimerEvent(wxTimerEvent& WXUNUSED(event))
+{
+    m_oPauseTimer.Stop();
+    if (m_fPlaying) {
+        //wxLogMessage(_T("Timer event: play(1)"));
+        PlayInterval(1);
+    }
+    else {
+        //wxLogMessage(_T("Timer event: play stopped"));
+        m_pPlayButton->SetLabel(_("Play"));
+    }
+}
+

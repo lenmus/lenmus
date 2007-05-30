@@ -68,7 +68,7 @@ public:
     int GetMidiNote(int i);
     wxString GetPattern(int i);
 
-#ifdef _DEBUG
+#ifdef __WXDEBUG__
     void UnitTests();
 #endif
 

@@ -101,6 +101,11 @@ lmLangChoiceDlg::lmLangChoiceDlg(wxWindow* parent, wxWindowID id, const wxString
     SetSizer(mainSizer);
     mainSizer->Fit(this);
     mainSizer->SetSizeHints(this);
+
+    // set default language, just in case user closes the dialog by clicking on
+    // the dialog title [X] button
+    m_sLang = m_cLangCodes[m_pChoice->GetSelection()];
+
 }
 
 void lmLangChoiceDlg::OnOk(wxCommandEvent & event)
@@ -108,5 +113,4 @@ void lmLangChoiceDlg::OnOk(wxCommandEvent & event)
     m_sLang = m_cLangCodes[m_pChoice->GetSelection()];
     EndModal(true);
 }
-
 

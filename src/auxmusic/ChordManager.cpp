@@ -246,7 +246,7 @@ wxString lmChordManager::GetNameFull()
 }
 
 
-#ifdef _DEBUG
+#ifdef __WXDEBUG__
 void lmChordManager::UnitTests()
 {
     int i, j;
@@ -312,7 +312,7 @@ void lmChordManager::UnitTests()
     }
 
 }
-#endif  // _DEBUG
+#endif  // __WXDEBUG__
 
 //----------------------------------------------------------------------------------------
 //global functions

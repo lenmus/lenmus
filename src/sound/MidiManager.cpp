@@ -43,10 +43,12 @@
 extern wxConfigBase *g_pPrefs;
 
 // global MIDI configuration variables
-wxMidiSystem*        g_pMidiSystem = (wxMidiSystem*)NULL;    //MIDI system
-wxMidiInDevice*        g_pMidiIn = (wxMidiInDevice*) NULL;        //in device object
-wxMidiOutDevice*    g_pMidiOut = (wxMidiOutDevice*) NULL;    //out device object
-lmMidiManager*        g_pMidi = (lmMidiManager*)NULL;            //current MIDI configuration
+wxMidiSystem*       m_pMidiSystem = (wxMidiSystem*)NULL;    //MIDI system
+
+//direct access to MidiOutDevice and MidiInDevices to avoid delays
+wxMidiInDevice*     g_pMidiIn = (wxMidiInDevice*) NULL;     //in device object
+wxMidiOutDevice*    g_pMidiOut = (wxMidiOutDevice*) NULL;   //out device object
+lmMidiManager*      g_pMidi = (lmMidiManager*)NULL;         //current MIDI configuration
 
 //-------------------------------------------------------------------------------------------
 // lmMidiManager implementation
@@ -74,9 +76,9 @@ lmMidiManager::~lmMidiManager()
     }
 
     //delete midi system
-    if (g_pMidiSystem) {
-        delete g_pMidiSystem;
-        g_pMidiSystem = (wxMidiSystem*)NULL;
+    if (m_pMidiSystem) {
+        delete m_pMidiSystem;
+        m_pMidiSystem = (wxMidiSystem*)NULL;
     }
 
     g_pMidi = (lmMidiManager*)NULL;
@@ -87,7 +89,7 @@ lmMidiManager* lmMidiManager::GetInstance()
 {
     if (!m_pInstance) {
         m_pInstance = new lmMidiManager();
-        g_pMidiSystem = wxMidiSystem::GetInstance();
+        m_pMidiSystem = wxMidiSystem::GetInstance();
         m_pInstance->LoadUserPreferences();
     }
     return m_pInstance;
@@ -153,7 +155,7 @@ void lmMidiManager::SetOutDevice(int nOutDevId)
             if (nErr) {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n"),
-                    nErr, g_pMidiSystem->GetErrorText(nErr) ));
+                    nErr, m_pMidiSystem->GetErrorText(nErr) ));
                 m_fMidiOK = false;
                 return;
             }
@@ -169,7 +171,7 @@ void lmMidiManager::SetOutDevice(int nOutDevId)
             if (nErr) {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n"),
-                    nErr, g_pMidiSystem->GetErrorText(nErr) ));
+                    nErr, m_pMidiSystem->GetErrorText(nErr) ));
                 m_fMidiOK = false;
                 return;
             }
@@ -194,7 +196,7 @@ void lmMidiManager::SetInDevice(int nInDevId)
             if (nErr) {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n"),
-                    nErr, g_pMidiSystem->GetErrorText(nErr) ));
+                    nErr, m_pMidiSystem->GetErrorText(nErr) ));
                 m_fMidiOK = false;
                 return;
             }
@@ -210,7 +212,7 @@ void lmMidiManager::SetInDevice(int nInDevId)
             if (nErr) {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n"),
-                    nErr, g_pMidiSystem->GetErrorText(nErr) ));
+                    nErr, m_pMidiSystem->GetErrorText(nErr) ));
                 m_fMidiOK = false;
                 return;
             }
@@ -263,7 +265,7 @@ void lmMidiManager::TestOut()
     int scale[] = { 60, 62, 64, 65, 67, 69, 71, 72 };
     #define SCALE_SIZE 8
 
-    wxMidiTimestamp now = g_pMidiSystem->GetTime();
+    wxMidiTimestamp now = m_pMidiSystem->GetTime();
     for (int i = 0; i < SCALE_SIZE; i++) {
         g_pMidiOut->NoteOn(m_nVoiceChannel, scale[i], 100);
         ::wxMilliSleep(200);    // wait 200ms
@@ -271,3 +273,9 @@ void lmMidiManager::TestOut()
     }
 
 }
+
+int lmMidiManager::CountDevices()
+{ 
+    return m_pMidiSystem->CountDevices();
+}
+

@@ -107,10 +107,11 @@ void lmMetronome::OnTimerEvent()
         //Me.picMtrLEDRojoOn.Visible = True
         
         // generate metronome click
-        g_pMidiOut->NoteOn(g_pMidi->MtrChannel(), g_pMidi->MtrTone1(), 127);
-        ::wxMilliSleep(100);        //wait for 100 ms
-        g_pMidiOut->NoteOff(g_pMidi->MtrChannel(), g_pMidi->MtrTone1(), 127);
-
+        if (g_pMidiOut) {
+            g_pMidiOut->NoteOn(g_pMidi->MtrChannel(), g_pMidi->MtrTone1(), 127);
+            ::wxMilliSleep(100);        //wait for 100 ms
+            g_pMidiOut->NoteOff(g_pMidi->MtrChannel(), g_pMidi->MtrTone1(), 127);
+        }
         // flash metronome LED
         //Me.picMtrLEDOff.Visible = True
         //Me.picMtrLEDRojoOn.Visible = False

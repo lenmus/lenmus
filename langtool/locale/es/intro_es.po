@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-05-18 08:07+0100\n"
+"PO-Revision-Date: 2007-05-30 12:56+0100\n"
 "Last-Translator: \n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -54,7 +54,7 @@ msgstr "El material didáctico esá organizado por niveles y, cada nivel, por le
 
 #: intro/intro.cpp:12
 msgid " General exercises"
-msgstr "Ejercicios sueltos"
+msgstr "Ejercicios generales"
 
 #: intro/intro.cpp:13
 msgid " contains some basic exercises for aural training and to practise theoretical concepts, such as intervals and scales. Unlike exercises included in the other books, you can customize all exercises included in this book. This will allow you meet your specific needs at each moment and to practise specific points."

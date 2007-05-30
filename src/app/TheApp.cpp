@@ -56,7 +56,7 @@
 //#endif
 
 
-#if defined(__WXMSW__) && !defined(_DEBUG)
+#if defined(__WXMSW__) && !defined(__WXDEBUG__)
 //For release versions (ANSI and Unicode) there is a compilation/linking error somewhere
 //either in wxWidgets or in wxMidi as these two errors are generated:
 //  wxmidiu.lib(wxMidi.obj) : error LNK2019: símbolo externo "void __cdecl wxOnAssert(unsigned short const *,int,char const *,unsigned short const *,unsigned short const *)" (?wxOnAssert@@YAXPBGHPBD00@Z) sin resolver al que se hace referencia en la función "void __cdecl wxPostEvent(class wxEvtHandler *,class wxEvent &)" (?wxPostEvent@@YAXPAVwxEvtHandler@@AAVwxEvent@@@Z)
@@ -95,7 +95,7 @@
 #define wxUSE_GENERIC_DRAGIMAGE 1
 
 
-//#ifdef _DEBUG
+//#ifdef __WXDEBUG__
 //    #if !wxUSE_UNICODE
 //        #error "You must set wxUSE_UNICODE to 1 in setup.h!"
 //    #endif
@@ -136,7 +136,7 @@
 lmMainFrame *g_pMainFrame = (lmMainFrame*) NULL;
 lmTheApp* g_pTheApp = (lmTheApp*) NULL;
 
-#ifdef _DEBUG
+#ifdef __WXDEBUG__
 bool g_fReleaseVersion = false;       // to enable/disable debug features
 #else
 bool g_fReleaseVersion = true;        // to enable/disable debug features
@@ -201,7 +201,7 @@ bool lmTheApp::OnInit(void)
     // Error reporting and trace
     g_pLogger = new lmLogger();
 
-#ifdef _DEBUG
+#ifdef __WXDEBUG__
 	// For debugging: send log messages to a file
     FILE* pFile;
     #ifdef _UNICODE
@@ -239,6 +239,7 @@ bool lmTheApp::OnInit(void)
 //#endif
 
 
+#ifdef __WXDEBUG__
     //define trace mask to be known by trace system
     g_pLogger->DefineTraceMask(_T("lmKeySignature"));
     g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
@@ -246,7 +247,9 @@ bool lmTheApp::OnInit(void)
     g_pLogger->DefineTraceMask(_T("lmMusicXMLParser"));
     g_pLogger->DefineTraceMask(_T("lmUpdater"));
     g_pLogger->DefineTraceMask(_T("lmInterval"));
-
+    g_pLogger->DefineTraceMask(_T("lmFragmentsTable::GetFirstSegmentDuracion"));
+    g_pLogger->DefineTraceMask(_T("LDPParser_beams"));
+#endif
 
     // set information about this application
     SetVendorName(_T("LenMus"));
@@ -256,27 +259,17 @@ bool lmTheApp::OnInit(void)
         // Get program directory and set up global paths object
         //
 
-    #ifdef __WXGTK__
-    // On Linux, the path to the LenMus program is in argv[0]
-    wxStandardPaths oStandardPaths;
-    wxString sHomeDir = oStandardPaths.GetExecutablePath();
-    sHomeDir = _T("/media/sdb1/usr/Desarrollo_wx/lenmus/z_bin");
-    #endif
-    #ifdef __WXMSW__
-    // On Windows, the path to the LenMus program is in argv[0]
+    #if defined(__WXGTK__) || defined(__WXMSW__) || defined(__MACOSX__)
+    // On Linux, Windows and Mac OS X the path to the LenMus program is in argv[0]
     wxString sHomeDir = wxPathOnly(argv[0]);
-    #endif
-    #ifdef __MACOSX__
-    // On Mac OS X, the path to the LenMus program is in argv[0]
-    wxString sHomeDir = wxPathOnly(argv[0]);
-    #endif
-    #ifdef __MACOS9__
+    #elif defined(__MACOS9__)
     // On Mac OS 9, the initial working directory is the one that
     // contains the program.
     wxString sHomeDir = wxGetCwd();
+    #else
+    #error "Unknown operating system!"
     #endif
     g_pPaths = new lmPaths(sHomeDir);
-
 
         //
         // Prepare preferences object
@@ -416,6 +409,11 @@ bool lmTheApp::OnInit(void)
     oXrcFile = wxFileName(sPath, _T("AboutDialog"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
+#ifdef __WXDEBUG__
+    // Debug: masks to trace dialog
+    oXrcFile = wxFileName(sPath, _T("DlgDebugTrace"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+#endif
         //
         // Create document manager and templates
         //
@@ -451,12 +449,12 @@ bool lmTheApp::OnInit(void)
     //the numbers will be different every time we run.
     srand( (unsigned)time( NULL ) );
 
-    #if !defined(__GNUC__)
-    //Linux dbg removed
-
         //
         //Set up MIDI
         //
+
+    #if !defined(__GNUC__)
+    //Linux dbg removed
 
     g_pMidi = lmMidiManager::GetInstance();
 
@@ -477,7 +475,9 @@ bool lmTheApp::OnInit(void)
     g_pMidi->SetUpCurrentConfig();
 
     //program sound for metronome
-    g_pMidiOut->ProgramChange(g_pMidi->MtrChannel(), g_pMidi->MtrInstr());
+    if (g_pMidiOut)
+        g_pMidiOut->ProgramChange(g_pMidi->MtrChannel(), g_pMidi->MtrInstr());
+
     #endif
         // all initialization finished.
 
@@ -489,7 +489,7 @@ bool lmTheApp::OnInit(void)
     }
 
 //remove this in debug version to start with nothing displayed
-#if !defined(_DEBUG) && !defined(__GNUC__)
+#if !defined(__WXDEBUG__) && !defined(__GNUC__)
     //force to show book frame
     wxCommandEvent event;       //it is not used, so not need to initialize it
     g_pMainFrame->OnOpenBook(event);
@@ -626,7 +626,7 @@ int lmTheApp::OnExit(void)
         //
 
     // the Midi configuration and related objects
-    delete g_pMidi;
+    if (g_pMidi) delete g_pMidi;
 
     // the wave sound manager object
     lmWaveManager::Destroy();

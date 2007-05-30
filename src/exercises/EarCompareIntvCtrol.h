@@ -72,9 +72,15 @@ public:
     void OnDebugDumpScore(wxCommandEvent& event);
     void OnDebugShowMidiEvents(wxCommandEvent& event);
 
+    // event handlers related with playing a score
+    void OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event));
+    void OnTimerEvent(wxTimerEvent& WXUNUSED(event));
+
+
 private:
     void EnableButtons(bool fEnable);
     void Play();
+    void PlayInterval(int nIntv);
     void NewProblem();
     void DisplaySolution();
     void ResetExercise();
@@ -84,6 +90,7 @@ private:
         // member variables
 
     lmScore*            m_pScore[2];        // two scores, one for each interval
+    int                 m_nNowPlaying;      // score being played (0, 1)
     lmScore*            m_pTotalScore;      //solution score with both intervals
     lmScoreAuxCtrol*    m_pScoreCtrol;
     lmCountersCtrol*    m_pCounters;
@@ -94,7 +101,7 @@ private:
     lmPitch         m_ntPitch[2];           //the pitch of the two notes
     bool            m_fPlayEnabled;         //Play enabled
     bool            m_fButtonsEnabled;      //buttons enabled
-    bool            m_fCancel;              //to inform that the exercise is cancelled
+    bool            m_fPlaying;             //currently playing the intervals
 
     //answer
     wxButton*       m_pAnswerButton[3];     //3 buttons for the answers
@@ -104,6 +111,8 @@ private:
 
     lmUrlAuxCtrol*  m_pPlayButton;       // "play" button
     lmUrlAuxCtrol*  m_pShowSolution;     // "show solution" button
+    wxTimer         m_oPauseTimer;      //timer to do a pause beetwen the two intervals
+
 
     DECLARE_EVENT_TABLE()
 };

@@ -55,6 +55,7 @@
 #include "../options/OptionsDlg.h"
 #include "ToolsDlg.h"
 #include "DlgDebug.h"
+#include "DlgDebugTrace.h"
 #include "Printout.h"
 #include "MidiWizard.h"             //Use lmMidiWizard
 #include "wx/helpbase.h"		    //for wxHELP constants
@@ -161,7 +162,7 @@ extern bool g_fBorderOnScores;          // in TheApp.cpp
 // Appart of these, there are more definitions in MainFrame.h
 enum
 {
-#ifdef _DEBUG           //to disable New/Open items in Release version
+#ifdef __WXDEBUG__           //to disable New/Open items in Release version
     // Menu File
     MENU_File_New = wxID_NEW,
 #else
@@ -1496,7 +1497,7 @@ void lmMainFrame::OnDebugSeeXML(wxCommandEvent& event)
 
 void lmMainFrame::OnDebugUnitTests(wxCommandEvent& event)
 {
-#ifdef _DEBUG
+#ifdef __WXDEBUG__
     lmChordManager oChord(_T("c4"), ect_MajorTriad);
     oChord.UnitTests();
 #endif
@@ -1516,8 +1517,8 @@ void lmMainFrame::OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event))
 {
-    wxString sData = ::wxGetTextFromUser(_("Mask to add"));
-    if (!sData.IsEmpty()) g_pLogger->AddTraceMask(sData);
+    lmDlgDebugTrace dlg(this);
+    dlg.ShowModal();
 }
 
 void lmMainFrame::OnAllSoundsOff(wxCommandEvent& WXUNUSED(event))

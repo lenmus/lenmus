@@ -507,6 +507,16 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     // This is the real method doing the work. It will execute in the lmSoundManagerThread
     //
 
+    // if MIDI not operative terminate
+    if (!g_pMidi || !g_pMidiOut) {
+        // inform that the play has ended
+        if (pWindow) {
+            lmEndOfPlayEvent event(0);
+            ::wxPostEvent( pWindow, event );
+        }
+        return;
+    }
+
     //! @todo All issues related to sol-fa voice
 
     wxASSERT(nEvStart >= 0 && nEvEnd < (int)m_aEvents.GetCount() );

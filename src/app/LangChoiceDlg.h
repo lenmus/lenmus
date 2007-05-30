@@ -36,11 +36,11 @@ public:
 private:
     void OnOk(wxCommandEvent& event);
        
-    wxChoice*        m_pChoice;
+    wxChoice*       m_pChoice;
     wxString        m_sLang;
-    int                m_nNumLangs;
-    wxArrayString    m_cLangCodes;
-    wxArrayString    m_cLangNames;
+    int             m_nNumLangs;
+    wxArrayString   m_cLangCodes;
+    wxArrayString   m_cLangNames;
      
     DECLARE_EVENT_TABLE()
 };

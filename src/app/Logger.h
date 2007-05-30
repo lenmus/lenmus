@@ -123,7 +123,7 @@ public:
     void LogMessage(const wxChar* szFormat, ...);
     void LogVerbose(const wxChar* szFormat, ...);
     void LogSysError(const wxChar* szFormat, ...);
-#ifdef _DEBUG
+#ifdef __WXDEBUG__
     void LogDebug(const wxChar* szFormat, ...);
     void LogTrace(const wxString& mask, const wxChar* szFormat, ...);
     void DefineTraceMask(wxString mask);
@@ -131,7 +131,7 @@ public:
     void RemoveTraceMask(const wxString& mask);
     void ClearTraceMasks();
     bool IsAllowedTraceMask(const wxChar* mask);
-    wxString GetDefinedTraceMasks();
+    void PopulateWithDefinedTraceMasks(wxControlWithItems* pCtrol, int nSelected=0);
 
 #else
     inline void LogDebug(const wxChar* szFormat, ...) {}
@@ -141,16 +141,16 @@ public:
     inline void RemoveTraceMask(wxString& mask) {}
     inline void ClearTraceMasks() {}
     inline bool IsAllowedTraceMask(const wxChar *mask) { return false; }
-    inline wxString GetDefinedTraceMasks() { return _T("");}
-
+    inline void PopulateWithDefinedTraceMasks(wxControlWithItems* pCtrol, int nSelected=0) {}
 #endif
 
 
 private:
-    wxFile*        m_pTrace;
-    wxFile*        m_pDataError;
+    wxFile*         m_pTrace;
+    wxFile*         m_pDataError;
+    wxArrayString   m_aMasks;
+    wxString        m_sDataErrorPath;
 
-    wxString    m_sDataErrorPath;
 };
 
 #endif    // __LOGGER_H__
