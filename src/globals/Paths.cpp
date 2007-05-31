@@ -110,54 +110,100 @@ void lmPaths::SetLanguageCode(wxString sLangCode)
 
 void lmPaths::LoadUserPreferences()
 {
-    /*
-    load settings form user congiguration data or default values
-    */
+    //
+    // load settings form user congiguration data or default values
+    // For Windows all folders follow the working copy structure.
+    // For Linux folders are organized into four groups:
+    //
+    // ------------------------------------------------------------------------------
+    //      Linux                       Windows
+    // ------------------------------------------------------------------------------
+    // 1. Software and essentials:
+    //      <prefix>/bin/lenmus         lenmus
+    //          + /bin                      + \bin
+    //          + /xrc                      + \xrc
+    //          + /res                      + \res
+    //          + /locale                   + \locale
+    //          + /books                    + \books
+    //
+    // 2. Logs and temporal files:
+    // ------------------------------------------------------------------------------
+    //      /var/lenmus                 lenmus
+    //          + /logs                     + \logs
+    //          + /temp                     + \temp
+    //
+    // 3. Configuration files, user dependent:
+    // ------------------------------------------------------------------------------
+    //      $HOME/.lenmus               lenmus\bin
+    //
+    // 4. User scores and samples:
+    // ------------------------------------------------------------------------------
+    //      $HOME/lenmus                lenmus\scores
+    //          + /scores
+    //
+
 
     wxFileName path;
     wxString sDefault;
 
-    //! @todo There must be a bug somewhere but Read does not work
-    //bool fOK = g_pPrefs->Read(_T("/Paths/Locale"), &m_sLocaleRoot);
-    //if (m_sLocaleRoot == _T("")) {
-        path = m_root;
-        path.AppendDir(_T("locale"));
-        m_sLocaleRoot = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    //}
+#if defined(__WXDEBUG__) || defined(__WXMSW__)
+    wxFileName oRootG1 = m_root; 
+    wxFileName oRootG2 = m_root; 
+    wxFileName oRootG3 = m_root; 
+    wxFileName oRootG4 = m_root; 
+#elif defined(_GNUC_)
+    wxFileName oRootG1 = m_root; 
+    wxFileName oRootG2(_T("/var/lenmus"); 
+    wxFileName oRootG3(_T("~/.lenmus"); 
+    wxFileName oRootG4(_T("~/lenmus");
+#endif
 
-    path = m_root;
+    // Group 1. Software and essentials
+
+    path = oRootG1;
+    path.AppendDir(_T("xrc"));
+    m_sXrc = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+    path = oRootG1;
+    path.AppendDir(_T("res"));
+    path.AppendDir(_T("icons"));
+    m_sImages = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+    path = oRootG1;
+    path.AppendDir(_T("res"));
+    path.AppendDir(_T("sounds"));
+    m_sSounds = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+    path = oRootG1;
+    path.AppendDir(_T("locale"));
+    m_sLocaleRoot = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+
+    // Group 2. Logs and temporal files
+
+    path = oRootG2;
+    path.AppendDir(_T("temp"));
+    m_sTemp = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+    path = oRootG2;
+    path.AppendDir(_T("logs"));
+    m_sLogs = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+
+    // Group 3. Configuration files, user dependent
+
+    path = oRootG3;
+    m_sConfig = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+
+    // Group 4. User scores and samples
+
+    path = oRootG4;
     path.AppendDir(_T("scores"));
     path.AppendDir(_T("samples"));
     m_sScores = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     g_pPrefs->Read(_T("/Paths/Scores"), &m_sScores);
 
-
-    path = m_root;
-    path.AppendDir(_T("temp"));
-    m_sTemp = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-
-    path = m_root;
-    path.AppendDir(_T("data"));
-    m_sData = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-
-    path = m_root;
-    path.AppendDir(_T("xrc"));
-    m_sXrc = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-
-    path = m_root;
-    path.AppendDir(_T("res"));
-    path.AppendDir(_T("icons"));
-    m_sImages = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-
-    path = m_root;
-    path.AppendDir(_T("res"));
-    path.AppendDir(_T("sounds"));
-    m_sSounds = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-
-    path = m_root;
-    path.AppendDir(_T("res"));
-    path.AppendDir(_T("vbooks"));
-    m_sVBookImages = path.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
 	//create temp folder if it does not exist. Otherwise the program will
     //fail when the user tries to open an eMusicBook
@@ -189,7 +235,6 @@ void lmPaths::LoadUserPreferences()
         }
     }
 
-    //SetLocalePathNames(m_sLangCode);
 }
 
 //! save path settings in user configuration data
@@ -198,13 +243,13 @@ void lmPaths::SaveUserPreferences()
     g_pPrefs->Write(_T("/Paths/Locale"), m_sLocaleRoot);
     g_pPrefs->Write(_T("/Paths/Scores"), m_sScores);
     g_pPrefs->Write(_T("/Paths/Temp"), m_sTemp);
-    g_pPrefs->Write(_T("/Paths/Data"), m_sData);
     g_pPrefs->Write(_T("/Paths/Xrc"), m_sXrc);
     g_pPrefs->Write(_T("/Paths/Images"), m_sImages);
     g_pPrefs->Write(_T("/Paths/Sounds"), m_sSounds);
-    g_pPrefs->Write(_T("/Paths/VBookImages"), m_sVBookImages);
+    g_pPrefs->Write(_T("/Paths/Config"), m_sConfig);
+    g_pPrefs->Write(_T("/Paths/Logs"), m_sLogs);
 
-    // bin path is nor user configurable
+    // bin path is not user configurable
     //g_pPrefs->Write(_T("/Paths/Bin"), m_sBin);
 
 }

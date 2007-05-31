@@ -42,13 +42,13 @@ public:
     wxString GetRootPath() { return m_root.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR); }
     wxString GetBinPath() { return m_sBin; }
     wxString GetXrcPath() { return m_sXrc; }
-    wxString GetDataPath() { return m_sData; }
     wxString GetTempPath() { return m_sTemp; }
     wxString GetImagePath() { return m_sImages; }
     wxString GetSoundsPath() { return m_sSounds; }
-    wxString GetVBookImagesPath() { return m_sVBookImages; }
     wxString GetLocaleRootPath() { return m_sLocaleRoot; }
     wxString GetScoresPath() { return m_sScores; }
+    wxString GetConfigPath() { return m_sConfig; }
+    wxString GetLogPath() { return m_sLogs; }
 
     // paths that depend on the language name
     wxString GetLocalePath() { return m_sLocale; }
@@ -78,11 +78,11 @@ private:
     wxString    m_sBooks;       //path for books
     wxString    m_sHelp;        //path for help files
     wxString    m_sBin;         //path for binaries
-    wxString    m_sData;        //path for .ini database files
     wxString    m_sXrc;         //path for .xrc and .xrs resource files
     wxString    m_sImages;      //path for resource images
     wxString    m_sSounds;      //path for wave sounds
-    wxString    m_sVBookImages; //path for images used in virtual books
+    wxString    m_sConfig;      //path for user configuration file
+    wxString    m_sLogs;        //path for logs and dumps
 
 };
 

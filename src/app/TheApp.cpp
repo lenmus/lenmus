@@ -198,22 +198,6 @@ bool lmTheApp::OnInit(void)
     m_pDocManager = (wxDocManager *) NULL;
     m_pLocale = (wxLocale*) NULL;
 
-    // Error reporting and trace
-    g_pLogger = new lmLogger();
-
-#ifdef __WXDEBUG__
-	// For debugging: send log messages to a file
-    FILE* pFile;
-    #ifdef _UNICODE
-        pFile = _wfopen(_T("LenMus_error_log.txt"), _T("w"));
-    #else
-        pFile = fopen(_T("LenMus_error_log.txt"), _T("w"));
-    #endif
-	wxLog *logger = new wxLogStderr(pFile);
-    wxLogChain *logChain = new wxLogChain(logger);
-	//delete wxLog::SetActiveTarget(logger);
-#endif
-
 //#ifdef __WXMSW__
 ////Support for alpha channel on toolbar bitmaps
 //// call wxSystemOptions::SetOption(wxT("msw.remap"), 0) to switch off the remapping
@@ -237,19 +221,6 @@ bool lmTheApp::OnInit(void)
 //  have support for icons with alpha transparency
 
 //#endif
-
-
-#ifdef __WXDEBUG__
-    //define trace mask to be known by trace system
-    g_pLogger->DefineTraceMask(_T("lmKeySignature"));
-    g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
-    g_pLogger->DefineTraceMask(_T("lmComposer5"));
-    g_pLogger->DefineTraceMask(_T("lmMusicXMLParser"));
-    g_pLogger->DefineTraceMask(_T("lmUpdater"));
-    g_pLogger->DefineTraceMask(_T("lmInterval"));
-    g_pLogger->DefineTraceMask(_T("lmFragmentsTable::GetFirstSegmentDuracion"));
-    g_pLogger->DefineTraceMask(_T("LDPParser_beams"));
-#endif
 
     // set information about this application
     SetVendorName(_T("LenMus"));
@@ -296,6 +267,34 @@ bool lmTheApp::OnInit(void)
 
     // colors
     g_pColors = new lmColors();
+
+    // Error reporting and trace
+    g_pLogger = new lmLogger();
+
+	// For debugging: send log messages to a file
+    FILE* pFile;
+    wxString sLogFile = g_pPaths->GetLogPath() + _T("LenMus_error_log.txt");
+    wxMessageBox(sLogFile);
+    #ifdef _UNICODE
+        pFile = _wfopen(sLogFile.c_str(), _T("w"));
+    #else
+        pFile = fopen(sLogFile.c_str(), _T("w"));
+    #endif
+	wxLog *logger = new wxLogStderr(pFile);
+    wxLogChain *logChain = new wxLogChain(logger);
+
+
+#ifdef __WXDEBUG__
+    //define trace mask to be known by trace system
+    g_pLogger->DefineTraceMask(_T("lmKeySignature"));
+    g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
+    g_pLogger->DefineTraceMask(_T("lmComposer5"));
+    g_pLogger->DefineTraceMask(_T("lmMusicXMLParser"));
+    g_pLogger->DefineTraceMask(_T("lmUpdater"));
+    g_pLogger->DefineTraceMask(_T("lmInterval"));
+    g_pLogger->DefineTraceMask(_T("lmFragmentsTable::GetFirstSegmentDuracion"));
+    g_pLogger->DefineTraceMask(_T("LDPParser_beams"));
+#endif
 
         //
         // Set up current language
