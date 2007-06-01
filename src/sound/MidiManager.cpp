@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -116,7 +116,7 @@ void lmMidiManager::LoadUserPreferences()
 void lmMidiManager::SaveUserPreferences()
 {
     //save settings in user congiguration data
-    g_pPrefs->Write(_T("/Midi/IsSet"), m_fMidiSet );   
+    g_pPrefs->Write(_T("/Midi/IsSet"), m_fMidiSet );
     g_pPrefs->Write(_T("/Midi/InDevice"), (long)m_nInDevId );
     g_pPrefs->Write(_T("/Midi/OutDevice"), (long)m_nOutDevId );
     g_pPrefs->Write(_T("/Midi/VoiceChannel"), (long)m_nVoiceChannel );
@@ -130,7 +130,7 @@ void lmMidiManager::SaveUserPreferences()
 
 void lmMidiManager::SetUpCurrentConfig()
 {
-    int nInDev = m_nInDevId;    //save current Id
+    //int nInDev = m_nInDevId;    //save current Id
     m_nInDevId = -1;            //mark as 'not set yet'
 
     int nOutDev = m_nOutDevId;    //save current Id
@@ -155,7 +155,7 @@ void lmMidiManager::SetOutDevice(int nOutDevId)
             if (nErr) {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n"),
-                    nErr, m_pMidiSystem->GetErrorText(nErr) ));
+                    nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));
                 m_fMidiOK = false;
                 return;
             }
@@ -171,7 +171,7 @@ void lmMidiManager::SetOutDevice(int nOutDevId)
             if (nErr) {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n"),
-                    nErr, m_pMidiSystem->GetErrorText(nErr) ));
+                    nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));
                 m_fMidiOK = false;
                 return;
             }
@@ -196,7 +196,7 @@ void lmMidiManager::SetInDevice(int nInDevId)
             if (nErr) {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n"),
-                    nErr, m_pMidiSystem->GetErrorText(nErr) ));
+                    nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));
                 m_fMidiOK = false;
                 return;
             }
@@ -212,7 +212,7 @@ void lmMidiManager::SetInDevice(int nInDevId)
             if (nErr) {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n"),
-                    nErr, m_pMidiSystem->GetErrorText(nErr) ));
+                    nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));
                 m_fMidiOK = false;
                 return;
             }
@@ -261,11 +261,10 @@ void lmMidiManager::TestOut()
 {
     if (!g_pMidiOut) return;
 
-    //Play a scale 
+    //Play a scale
     int scale[] = { 60, 62, 64, 65, 67, 69, 71, 72 };
     #define SCALE_SIZE 8
 
-    wxMidiTimestamp now = m_pMidiSystem->GetTime();
     for (int i = 0; i < SCALE_SIZE; i++) {
         g_pMidiOut->NoteOn(m_nVoiceChannel, scale[i], 100);
         ::wxMilliSleep(200);    // wait 200ms
@@ -275,7 +274,7 @@ void lmMidiManager::TestOut()
 }
 
 int lmMidiManager::CountDevices()
-{ 
+{
     return m_pMidiSystem->CountDevices();
 }
 

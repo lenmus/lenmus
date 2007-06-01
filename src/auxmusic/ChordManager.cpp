@@ -261,8 +261,8 @@ void lmChordManager::UnitTests()
             wxLogMessage(_T("Unexpected error in lmConverter::NoteToBits()"));
         else {
             wxLogMessage(_T("Note: '%s'. Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d --> '%s'"),
-                sNote[i], tNote.nStep, tNote.nOctave, tNote.nAccidentals, tNote.nStepSemitones,
-                lmConverter::NoteBitsToName(tNote, m_nKey) );
+                sNote[i].c_str(), tNote.nStep, tNote.nOctave, tNote.nAccidentals, tNote.nStepSemitones,
+                lmConverter::NoteBitsToName(tNote, m_nKey).c_str() );
         }
     }
 
@@ -273,10 +273,10 @@ void lmChordManager::UnitTests()
         for (j=0; j < 8; j++) {
             wxString sNewNote = ComputeInterval(sNote[i], sIntv[j], true, m_nKey);
             wxLogMessage(_T("Note='%s' + Intv='%s' --> '%s'"),
-                         sNote[i], sIntv[j], sNewNote );
+                         sNote[i].c_str(), sIntv[j].c_str(), sNewNote.c_str() );
             wxString sStartNote = ComputeInterval(sNewNote, sIntv[j], false, m_nKey);
             wxLogMessage(_T("Note='%s' - Intv='%s' --> '%s'"),
-                         sNewNote, sIntv[j], sStartNote );
+                         sNewNote.c_str(), sIntv[j].c_str(), sStartNote.c_str() );
         }
     }
 
@@ -288,8 +288,8 @@ void lmChordManager::UnitTests()
             wxLogMessage(_T("Unexpected error in IntervalCodeToBits()"));
         else {
             wxLogMessage(_T("Intv: '%s'. Bits: num=%d, Semitones=%d --> '%s'"),
-                sIntv[i], tIntv.nNum,tIntv.nSemitones,
-                IntervalBitsToCode(tIntv) );
+                sIntv[i].c_str(), tIntv.nNum,tIntv.nSemitones,
+                IntervalBitsToCode(tIntv).c_str() );
         }
     }
 
@@ -308,7 +308,7 @@ void lmChordManager::UnitTests()
     wxString sIntv2[8] = { _T("M3"), _T("m3"), _T("m2"), _T("m3"), _T("M3"), _T("M3"), _T("m7"), _T("p8") };
     for(i=0; i < 8; i++) {
         wxLogMessage(_T("Intv1='%s', intv2='%s' --> sum='%s'"),
-            sIntv1[i], sIntv2[i], AddIntervals(sIntv1[i], sIntv2[i]) );
+            sIntv1[i].c_str(), sIntv2[i].c_str(), AddIntervals(sIntv1[i], sIntv2[i]).c_str() );
     }
 
 }

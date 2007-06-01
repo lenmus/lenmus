@@ -31,6 +31,7 @@
 #include "wx/docmdi.h"
 #include "wx/app.h"
 #include "wx/bitmap.h"
+#include "wx/snglinst.h"
 
 #include "SplashFrame.h"
 
@@ -77,6 +78,8 @@ private:
     wxLocale*       m_pLocale;          //locale we'll be using (user config)
     wxBitmap        m_background;       //background bitmap (user config)
 
+    //object used to check if another instance of this program is running
+    wxSingleInstanceChecker*    m_pInstanceChecker;
 
 };
 

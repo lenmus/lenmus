@@ -45,10 +45,17 @@
 #include "Formatter4.h"
 #include "BoxSystem.h"
 
+//access to logger
+#include "../app/Logger.h"
+extern lmLogger* g_pLogger;
+
+
 
 lmFormatter4::lmFormatter4()
 {
-    m_fDebugMode = false;
+    m_fDebugMode = g_pLogger->IsAllowedTraceMask(_T("Formater4"));
+	//wxString sData = ::wxGetTextFromUser(_("Mask to add"));
+
 }
 
 lmFormatter4::~lmFormatter4()

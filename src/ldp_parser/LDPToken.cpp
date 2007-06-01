@@ -649,7 +649,8 @@ void lmLDPTokenBuilder::ParseNewToken()
                     m_pParser->ParseMsje(wxString::Format(_T("[lmLDPTokenBuilder::ParseNewToken.%d]: Bad character found"),    // (Char:[%s], Dec:%s, Hex:%s). Token=<%s>"),
                         //nState, Chr$(m_curChar), m_curChar, Hex$(m_curChar),
                         //nState, m_curChar, m_curChar, m_curChar,
-                        Extract(iStart, m_lastPos)) );
+                        //Extract(iStart, m_lastPos)) );
+                        m_curChar ));
                 }
                 nState = FT_Start;
                 break;

@@ -1542,7 +1542,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                         for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++) {
                             BeamInfo[iLevel].Type = eBeamEnd;
                             g_pLogger->LogTrace(_T("LDPParser_beams"),
-                                _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamEnd"), iLevel);
+                                _T("[lmLDPParser::AnalyzeNoteRest] BeamInfo[%d] = eBeamEnd"), iLevel);
                         }
 
                         // deal with differences between current note level and previous note level
@@ -1552,7 +1552,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                             for (; iLevel <= nCurLevel; iLevel++) {
                                 BeamInfo[iLevel].Type = eBeamBackward;
                                 g_pLogger->LogTrace(_T("LDPParser_beams"),
-                                    _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamBackward"), iLevel);
+                                    _T("[lmLDPParser::AnalyzeNoteRest] BeamInfo[%d] = eBeamBackward"), iLevel);
                             }
                         }
                         else if  (nCurLevel < nPrevLevel) {
@@ -1562,12 +1562,12 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                                 if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
                                     g_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
                                     g_pLogger->LogTrace(_T("LDPParser_beams"),
-                                        _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel);
+                                        _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel);
                                 }
                                 else if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
                                     g_pLastNoteRest->SetBeamType(iLevel, eBeamForward);
                                     g_pLogger->LogTrace(_T("LDPParser_beams"),
-                                        _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamForward"), iLevel);
+                                        _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = eBeamForward"), iLevel);
                                 }
                             }
                         }
@@ -1672,7 +1672,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     for (iLevel=0; iLevel <= wxMin(nCurLevel, nPrevLevel); iLevel++) {
                         BeamInfo[iLevel].Type = eBeamContinue;
                         g_pLogger->LogTrace(_T("LDPParser_beams"),
-                            _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamContinue"), iLevel);
+                            _T("[lmLDPParser::AnalyzeNoteRest] BeamInfo[%d] = eBeamContinue"), iLevel);
                     }
 
                     if (nCurLevel > nPrevLevel) {
@@ -1680,7 +1680,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                         for (; iLevel <= nCurLevel; iLevel++) {
                             BeamInfo[iLevel].Type = eBeamBegin;
                             g_pLogger->LogTrace(_T("LDPParser_beams"),
-                                _T("[lmLDPParser::AnalyzeNote] BeamInfo[%d] = eBeamBegin"), iLevel);
+                                _T("[lmLDPParser::AnalyzeNoteRest] BeamInfo[%d] = eBeamBegin"), iLevel);
                         }
                     }
                     else if  (nCurLevel < nPrevLevel) {
@@ -1690,12 +1690,12 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                             if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamContinue) {
                                 g_pLastNoteRest->SetBeamType(iLevel, eBeamEnd);
                                 g_pLogger->LogTrace(_T("LDPParser_beams"),
-                                    _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel);
+                                    _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = eBeamEnd"), iLevel);
                             }
                             else if (g_pLastNoteRest->GetBeamType(iLevel) == eBeamBegin) {
                                 g_pLastNoteRest->SetBeamType(iLevel, eBeamForward);
                                 g_pLogger->LogTrace(_T("LDPParser_beams"),
-                                    _T("[lmLDPParser::AnalyzeNote] Changing previous BeamInfo[%d] = eBeamFordward"), iLevel);
+                                    _T("[lmLDPParser::AnalyzeNoteRest] Changing previous BeamInfo[%d] = eBeamFordward"), iLevel);
                             }
                         }
                     }

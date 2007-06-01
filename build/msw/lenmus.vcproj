@@ -557,6 +557,12 @@
 				RelativePath="..\..\src\app\DlgDebug.h">
 			</File>
 			<File
+				RelativePath="..\..\src\app\DlgDebugTrace.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\app\DlgDebugTrace.h">
+			</File>
+			<File
 				RelativePath="..\..\src\app\DlgPatternEditor.cpp">
 			</File>
 			<File

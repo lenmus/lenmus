@@ -191,6 +191,7 @@ IMPLEMENT_APP(lmTheApp)
 lmTheApp::lmTheApp(void)
 {
     g_pTheApp = this;
+    m_pInstanceChecker = (wxSingleInstanceChecker*) NULL;
 }
 
 bool lmTheApp::OnInit(void)
@@ -223,8 +224,19 @@ bool lmTheApp::OnInit(void)
 //#endif
 
     // set information about this application
+    const wxString sAppName = _T("LenMus");
     SetVendorName(_T("LenMus"));
-    SetAppName(_T("LenMus"));
+    SetAppName(sAppName);
+
+    // verify that this is the only instance running
+    wxString name = sAppName + _T("-") + GetVersionNumber() + _T("-") + wxGetUserId();
+    m_pInstanceChecker = new wxSingleInstanceChecker(name);
+    if ( m_pInstanceChecker->IsAnotherRunning() )
+    {
+        wxMessageBox(_("Another instance of LenMus is already running."),
+                     sAppName, wxOK | wxICON_EXCLAMATION );
+        return false;
+    }
 
         //
         // Get program directory and set up global paths object
@@ -242,13 +254,18 @@ bool lmTheApp::OnInit(void)
     #endif
     g_pPaths = new lmPaths(sHomeDir);
 
+
+	// AWARE: All paths, exect user configurable ones, are valid from this point
+	// *************************************************************************
+
+
         //
         // Prepare preferences object
         //
 
     // set path and name for config file
-    wxFileName sCfgFile(sHomeDir, _T("lenmus"), _T("ini") );
-    wxFileConfig *pConfig = new wxFileConfig(_T("lenmus"), _T("LenMus"), sCfgFile.GetFullPath(),
+    wxFileName oCfgFile(g_pPaths->GetConfigPath(), _T("lenmus"), _T("ini") );
+    wxFileConfig *pConfig = new wxFileConfig(_T("lenmus"), _T("LenMus"), oCfgFile.GetFullPath(),
             _T("lenmus"), wxCONFIG_USE_LOCAL_FILE );
     wxConfigBase::Set(pConfig);
 
@@ -265,27 +282,32 @@ bool lmTheApp::OnInit(void)
     InitPreferences();
     g_pPaths->LoadUserPreferences();
 
+
+	// AWARE: All paths, even user configurable ones, are valid from this point
+	// *************************************************************************
+
+
     // colors
     g_pColors = new lmColors();
 
-    // Error reporting and trace
+        //
+        // Error reporting and trace/dump logs
+        //
+
     g_pLogger = new lmLogger();
 
 	// For debugging: send log messages to a file
-    FILE* pFile;
-    wxString sLogFile = g_pPaths->GetLogPath() + _T("LenMus_error_log.txt");
-    wxMessageBox(sLogFile);
-    #ifdef _UNICODE
-        pFile = _wfopen(sLogFile.c_str(), _T("w"));
-    #else
-        pFile = fopen(sLogFile.c_str(), _T("w"));
-    #endif
-	wxLog *logger = new wxLogStderr(pFile);
-    wxLogChain *logChain = new wxLogChain(logger);
+    wxString sUserId = ::wxGetUserId();
+    wxString sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_Debug_log.txt");
+	wxLog *logger = new wxLogStderr( wxFopen(sLogFile.c_str(), _T("w")) );
+    new wxLogChain(logger);
 
+    // open data log file and re-direct all loging there
+    sLogFile = g_pPaths->GetLogPath() + sUserId + _T("_DataError_log.txt");
+    g_pLogger->SetDataErrorTarget(sLogFile);
 
 #ifdef __WXDEBUG__
-    //define trace mask to be known by trace system
+    //define trace masks to be known by trace system
     g_pLogger->DefineTraceMask(_T("lmKeySignature"));
     g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
     g_pLogger->DefineTraceMask(_T("lmComposer5"));
@@ -294,7 +316,14 @@ bool lmTheApp::OnInit(void)
     g_pLogger->DefineTraceMask(_T("lmInterval"));
     g_pLogger->DefineTraceMask(_T("lmFragmentsTable::GetFirstSegmentDuracion"));
     g_pLogger->DefineTraceMask(_T("LDPParser_beams"));
+    g_pLogger->DefineTraceMask(_T("Formater4"));
 #endif
+
+
+	// AWARE: Log/debug methods are available from this point
+	// *******************************************************
+
+	wxLogMessage(_T("Config file: ") + oCfgFile.GetFullPath() );
 
         //
         // Set up current language
@@ -318,11 +347,6 @@ bool lmTheApp::OnInit(void)
     // Now that language code is know we can finish lmPaths initialization
     // and load locale catalogs
     SetUpLocale(lang);
-
-    // open log file and re-direct all loging there
-    wxFileName oFilename(g_pPaths->GetTempPath(), _T("DataError"), _T("log"), wxPATH_NATIVE);
-    g_pLogger->SetDataErrorTarget(oFilename.GetFullPath());
-
 
     // Define handlers for the image types managed by the application
     // BMP handler is by default always defined
@@ -424,8 +448,11 @@ bool lmTheApp::OnInit(void)
     m_pDocManager->SetLastDirectory(g_pPaths->GetScoresPath());
 
     // Create a template relating score documents to their views
-    (void) new wxDocTemplate(m_pDocManager, _T("LenMus score"), _T("*.lms"), _T(""), _T("lms"), _T("Music lmScore"), _T("lmScore View"),
+    (void) new wxDocTemplate(m_pDocManager, _T("LenMus score"), _T("*.lms"), _T(""), _T("lms"), _T("LenMus score"), _T("lmScore View"),
           CLASSINFO(lmScoreDocument), CLASSINFO(lmScoreView));
+    (void) new wxDocTemplate(m_pDocManager, _T("MusicXML score"), _T("*.xml;*.*"), _T(""), _T("xml"), _T("MusicXML score"), _T("lmScore View"),
+          CLASSINFO(lmScoreDocument), CLASSINFO(lmScoreView), wxTEMPLATE_INVISIBLE );
+
 
         //
         // Create the main frame window
@@ -654,6 +681,9 @@ int lmTheApp::OnExit(void)
 
     //locale object
     delete m_pLocale;
+
+    // single instance checker
+    if (m_pInstanceChecker) delete m_pInstanceChecker;
 
     return 0;
 }

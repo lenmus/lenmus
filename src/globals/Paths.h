@@ -61,6 +61,7 @@ public:
     void SetScoresPath(wxString sPath) { m_sScores = sPath; }
 
 private:
+	void ClearTempFiles();
 
         //
         // member variables

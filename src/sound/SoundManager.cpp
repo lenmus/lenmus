@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ lmSoundEvent::lmSoundEvent(float rTime, ESoundEventType nEventType, int nChannel
 //
 //    There are three tables to maintain:
 //    - m_aEvents: contains the MIDI events.
-//    - m_aMeasures (wxArrayInt): 
+//    - m_aMeasures (wxArrayInt):
 //        It contains the index over m_aEvents for the first event of each measure.
 //    - m_aStartTime (wxArrayLong): Also, each item corresponds to a measure and
 //        contains the start time for that measure.
@@ -109,7 +109,7 @@ void lmSoundManager::Initialize(int nPartes, int nTiempoIni, int nDurCompas, int
     // This method MUST BE invoked before using the table. Can be invoked later, at any time,
     // to reuse the object
     //
-    
+
     //delete events in table
     for (int i = m_aEvents.GetCount(); i > 0; i--) {
         delete m_aEvents.Item(i-1);
@@ -124,7 +124,7 @@ void lmSoundManager::Initialize(int nPartes, int nTiempoIni, int nDurCompas, int
     m_nPartesCompas = nPartes;
     m_nDuracionCompas = nDurCompas;
     m_nNumCompases = nNumCompases;
-    
+
 }
 
 
@@ -172,7 +172,7 @@ void lmSoundManager::StoreMeasureStartTime(int nMeasure, float rTime)
         //add start time for fictitius control measure 0
        m_aStartTime.Add(0L);
     }
-    wxASSERT(nMeasure == m_aStartTime.GetCount());        //remember: nMeasure is 1 based
+    wxASSERT(nMeasure == (int)m_aStartTime.GetCount());        //remember: nMeasure is 1 based
     m_aStartTime.Add((long)(rTime + 0.5));
 }
 
@@ -191,14 +191,14 @@ void lmSoundManager::Append(lmSoundManager* pSndMgr)
     int nNewRows = pSndMgr->GetNumEvents();
     //int nCurSize = m_aEvents.GetCount();
     //m_aEvents.Alloc((size_t)(nCurSize + nNewRows));        //allocate more space if needed
-    
+
     //loop to copy entries
     for (int i=0; i < nNewRows; i++) {
         m_aEvents.Add( pSndMgr->GetEvent(i) );
     }
 
         //
-        // Merge m_aStartTime table. All measures should be equal in the different 
+        // Merge m_aStartTime table. All measures should be equal in the different
         // instruments and VSTaffs, so the merge process is just to verify tables
         //
 
@@ -241,11 +241,11 @@ void lmSoundManager::CloseTable()
 {
     //sort table by time
     SortByTime();
-    
+
     //Add an EndOfScore event
     StoreEvent( (float)(m_aEvents.Item(m_aEvents.GetCount()-1)->DeltaTime), eSET_EndOfScore,
             0, 0, 0, 0, (lmStaffObj*)NULL, 0);
-    
+
     //Create the table of measures
     int nM = -1;
     for (int i=0; i < (int)m_aEvents.GetCount(); i++) {
@@ -255,20 +255,20 @@ void lmSoundManager::CloseTable()
             wxASSERT(nM == m_aEvents.Item(i)->Measure || 0 == m_aEvents.Item(i)->Measure);
         }
     }
-                
+
 }
 
 wxString lmSoundManager::DumpMidiEvents()
 {
     wxString sMsg = wxEmptyString;
-    
+
     if (m_aEvents.GetCount() == 0) {
         sMsg = _T("There are no MIDI events");
     }
     else {
         //headers
         sMsg = _T("Num.\tTime\tChannel\tMeas.\tEvent\t\tPitch\tStep\tVolume\n");
-        
+
         lmSoundEvent* pSE;
         for(int i=0; i < (int)m_aEvents.GetCount(); i++) {
             //division line every four entries
@@ -309,12 +309,12 @@ wxString lmSoundManager::DumpMidiEvents()
                 default:
                     sMsg += wxString::Format(_T("?? %d"), pSE->EventType);
             }
-            sMsg += wxString::Format(_T("\t%d\t%d\t%d\n"), 
+            sMsg += wxString::Format(_T("\t%d\t%d\t%d\n"),
                         pSE->NotePitch, pSE->NoteStep, pSE->Volume);
         }
-        
+
         // measures start time table and first event for each measure
-        sMsg += wxString::Format( _T("\n\nMeasures start times and first event (%d measures)\n\n"), 
+        sMsg += wxString::Format( _T("\n\nMeasures start times and first event (%d measures)\n\n"),
                     m_aStartTime.GetCount() );
         sMsg += _T("Num.\tTime\tEvent\n");
         for(int i=0; i < (int)m_aStartTime.GetCount(); i++) {
@@ -327,7 +327,7 @@ wxString lmSoundManager::DumpMidiEvents()
        }
 
     }
-    
+
     return sMsg;
 
 }
@@ -343,16 +343,16 @@ void lmSoundManager::SortByTime()
     int nNumElements = m_aEvents.GetCount();
     lmSoundEvent* pEvAux;
 
-    for (int i = 0; i < nNumElements; i++) 
+    for (int i = 0; i < nNumElements; i++)
     {
         fChanges = false;
         j = nNumElements - 1;
-        
-        while ( j != i ) 
+
+        while ( j != i )
         {
             k = j - 1;
             if ((m_aEvents[j]->DeltaTime < m_aEvents[k]->DeltaTime) ||
-                ((m_aEvents[j]->DeltaTime == m_aEvents[k]->DeltaTime) && 
+                ((m_aEvents[j]->DeltaTime == m_aEvents[k]->DeltaTime) &&
                  ((m_aEvents[j]->Measure < m_aEvents[k]->Measure) ||
                   (m_aEvents[j]->EventType < m_aEvents[k]->EventType))))
             {
@@ -364,7 +364,7 @@ void lmSoundManager::SortByTime()
             }
             j = k;
         }
-        
+
         //If there were no changes in this loop step it implies that the table is ordered;
         //in this case exit loop to save time
         if (!fChanges) break;
@@ -388,7 +388,7 @@ void lmSoundManager::PlayMeasure(int nMeasure, bool fVisualTracking,
     //
 
     int nEvStart, nEvEnd;
-    
+
     //remember:
     //   real measures 1..n correspond to table items 1..n
     //   items 0 and n+1 are fictitius measures for pre and post control events
@@ -400,8 +400,8 @@ void lmSoundManager::PlayMeasure(int nMeasure, bool fVisualTracking,
 }
 
 
-////fMarcarUnCompasPrevio - marcar con el metrónomo un compas completo antes de comenzar la
-////       ejecución. Para que este flag actúe requiere que el lmMetronome esté activo
+////fMarcarUnCompasPrevio - marcar con el metrÃ³nomo un compas completo antes de comenzar la
+////       ejecuciÃ³n. Para que este flag actÃºe requiere que el lmMetronome estÃ© activo
 void lmSoundManager::PlaySegment(int nEvStart, int nEvEnd,
                                EPlayMode nPlayMode,
                                bool fVisualTracking,
@@ -444,12 +444,12 @@ void lmSoundManager::PlaySegment(int nEvStart, int nEvEnd,
     }
     m_pThread->SetPriority(WXTHREAD_MAX_PRIORITY);
 
-    //Start the thread execution. This will cause that thread method Enter() is invoked 
+    //Start the thread execution. This will cause that thread method Enter() is invoked
     //and it will do the job to play the segment.
     if (m_pThread->Run() != wxTHREAD_NO_ERROR ) {
         //! @todo proper error handling
-        wxMessageBox(_("Can't start the thread!"));    
- 
+        wxMessageBox(_("Can't start the thread!"));
+
         m_pThread->Delete();    //to free the memory occupied by the thread object
         delete m_pThread;
         m_pThread = (lmSoundManagerThread*) NULL;
@@ -472,7 +472,7 @@ void lmSoundManager::Stop()
 void lmSoundManager::Pause()
 {
     if (!m_pThread) return;
-    
+
     m_pThread->Pause();
 
 }
@@ -484,7 +484,7 @@ void lmSoundManager::WaitForTermination()
     //
 
     if (!m_pThread) return;
-    
+
     m_pThread->Wait();
     delete m_pThread;
     m_pThread = (lmSoundManagerThread*)NULL;
@@ -521,18 +521,18 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
 
     wxASSERT(nEvStart >= 0 && nEvEnd < (int)m_aEvents.GetCount() );
     if (m_aEvents.GetCount() == 0) return;                  //tabla empty
-    
+
     #define EIGHT_DURATION    64        //duration (LDP units) of an eight note (to convert to milliseconds)
     #define SOLFA_NOTE        60        //pitch for sight reading with percussion sound
     int nPercussionChannel = g_pMidi->MtrChannel();        //channel to use for percussion
-    
+
     //prepare metronome settings
     lmMetronome* pMtr = g_pMainFrame->GetMetronome();
     long nMtrClickIntval = (nMM == 0 ? 0 : 60000/nMM);
     bool fPlayWithMetronome = pMtr->IsRunning();
     bool fMetronomeEnabled = pMtr->IsEnabled();
     pMtr->Enable(false);    //mute sound
-    
+
     // Ask score window to get ready for visual highlight
     bool fVisualHighlight = fVisualTracking && pWindow;
     if (fVisualHighlight && pWindow) {
@@ -611,7 +611,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     nMtrEvDeltaTime = (m_aEvents[i]->DeltaTime / nMtrBeatDuration) * nMtrBeatDuration;
 
     /*! @todo
-        Si el metrónomo no está activo o se solicita que no se marque un compás completo antes de empezar
+        Si el metrÃ³nomo no estÃ¡ activo o se solicita que no se marque un compÃ¡s completo antes de empezar
         hay que avanzar el contador de tiempo hasta la primera nota
     */
 //////    if (Not (fPlayWithMetronome && fMarcarUnCompasPrevio)) {
@@ -621,14 +621,14 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
 //////            nTime = (m_nTiempoIni Mod nMtrBeatDuration) * nMtrBeatDuration    //coge partes completas
 //////            nTime = (nSpeed * nTime) / EIGHT_DURATION;
 //////        }
-//////        //localiza el primer evento de figsil (los eventos de control están en compas 0)
+//////        //localiza el primer evento de figsil (los eventos de control estÃ¡n en compas 0)
 //////        for (i = nEvStart To nEvEnd
 //////            if (m_aEvents[i]->Measure <> 0) { Exit For
 //////        }   // i
 //////        wxASSERT(i <= nEvEnd
 //////        nMtrEvDeltaTime = (m_aEvents[i]->DeltaTime \ nMtrBeatDuration) * nMtrBeatDuration
 //////    }
-    
+
     //loop to execute events
     bool fFirstBeatInMeasure = true;    //first beat of a measure
     bool fMtrOn = false;
@@ -640,7 +640,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
             fMtrOn = false;
         }
         fPlayWithMetronome = pMtr->IsRunning();
-        
+
         //Verify if next event should be a metronome click
         if (fPlayWithMetronome && nMtrEvDeltaTime <= m_aEvents[i]->DeltaTime)
         {
@@ -680,10 +680,10 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                 //FMain.picMtrLEDRojoOn.Visible = true;
                 fMtrOn = true;
                 nMtrEvDeltaTime += nMtrIntvalOff;
-                
+
             }
             nTime = nEvTime;
-            
+
         }
          else
         {
@@ -696,7 +696,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                 //::wxMilliSleep((unsigned long)(nEvTime - nTime));
                 wxThread::Sleep((unsigned long)(nEvTime - nTime));
             }
-                
+
             if (m_aEvents[i]->EventType == eSET_NoteON)
             {
                 //start of note
@@ -720,16 +720,16 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                     default:
                         wxASSERT(false);
                 }
-                
+
                 if (fVisualHighlight && pWindow) {
                     lmScoreHighlightEvent event(m_aEvents[i]->pSO, eVisualOn);
                     ::wxPostEvent( pWindow, event );
                 }
-                
+
             }
             else if (m_aEvents[i]->EventType == eSET_NoteOFF)
             {
-                //finalización de nota
+                //finalizaciÃ³n de nota
                 switch(nPlayMode)
                 {
                     case ePM_NormalInstrument:
@@ -744,7 +744,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                     default:
                         wxASSERT(false);
                 }
-                
+
                 if (fVisualHighlight && pWindow) {
                     lmScoreHighlightEvent event(m_aEvents[i]->pSO, eVisualOff);
                     ::wxPostEvent( pWindow, event );
@@ -753,7 +753,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
 //                else if (m_aEvents[i]->EventType == eSET_MarcaEnFRitmos) {
 //                    //Marcaje en FRitmos
 //                    FRitmos.AvanzarMarca
-//                    
+//
 //                }
             else if (m_aEvents[i]->EventType == eSET_VisualON)
             {
@@ -808,19 +808,19 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
                 //program error. Unknown event type
                 //wxASSERT(false);        //! @todo remove comment
             }
-                
-            nTime = wxMax(nTime, nEvTime);        //to avoid going backwards when no metronome 
+
+            nTime = wxMax(nTime, nEvTime);        //to avoid going backwards when no metronome
                                                 //before start and progInstr events
             i++;
         }
-        
+
         if (m_pThread->TestDestroy()) {
             //Stop playing requested. Exit the loop
             break;
         }
-        
+
     } while (i <= nEvEnd);
-    
+
     //restore main metronome
     pMtr->Enable(fMetronomeEnabled);
 
@@ -830,7 +830,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
         lmScoreHighlightEvent event((lmStaffObj*)NULL, eRemoveAllHighlight);
         ::wxPostEvent( pWindow, event );
     }
-    
+
     //ensure that all sounds are off and that metronome LED is switched off
     g_pMidiOut->AllSoundsOff();
     //! @todo    metronome LED
@@ -877,8 +877,8 @@ void* lmSoundManagerThread::Entry()
 {
 
     //ask Sound Manager to play
-    //@attention the checking to see if the thread was asked to exit is done in DoPlaySegment 
-    m_pSM->DoPlaySegment(m_nEvStart, m_nEvEnd, m_nPlayMode, m_fVisualTracking, 
+    //@attention the checking to see if the thread was asked to exit is done in DoPlaySegment
+    m_pSM->DoPlaySegment(m_nEvStart, m_nEvEnd, m_nPlayMode, m_fVisualTracking,
                 m_fMarcarUnCompasPrevio, m_nMM, m_pWindow);
 
     return NULL;
