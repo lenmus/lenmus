@@ -17,7 +17,7 @@
 		<Cursor position="7426" topLine="192" />
 	</File>
 	<File name="../../src/app/FontManager.cpp" open="1" top="0" tabpos="80">
-		<Cursor position="4897" topLine="114" />
+		<Cursor position="4448" topLine="105" />
 	</File>
 	<File name="../../src/app/Logger.cpp" open="1" top="0" tabpos="12">
 		<Cursor position="9504" topLine="281" />
@@ -26,7 +26,7 @@
 		<Cursor position="5466" topLine="120" />
 	</File>
 	<File name="../../src/app/MainFrame.cpp" open="1" top="0" tabpos="8">
-		<Cursor position="56943" topLine="1509" />
+		<Cursor position="52970" topLine="1350" />
 	</File>
 	<File name="../../src/app/MidiWizard.cpp" open="1" top="0" tabpos="13">
 		<Cursor position="22230" topLine="18" />
@@ -38,7 +38,7 @@
 		<Cursor position="1889" topLine="11" />
 	</File>
 	<File name="../../src/app/Paper.h" open="1" top="0" tabpos="4">
-		<Cursor position="6064" topLine="108" />
+		<Cursor position="5328" topLine="108" />
 	</File>
 	<File name="../../src/app/ScoreDoc.cpp" open="1" top="0" tabpos="24">
 		<Cursor position="3517" topLine="105" />
@@ -49,7 +49,7 @@
 	<File name="../../src/app/SplashFrame.h" open="1" top="0" tabpos="71">
 		<Cursor position="2629" topLine="56" />
 	</File>
-	<File name="../../src/app/TheApp.cpp" open="1" top="1" tabpos="15">
+	<File name="../../src/app/TheApp.cpp" open="1" top="0" tabpos="15">
 		<Cursor position="13315" topLine="317" />
 	</File>
 	<File name="../../src/app/TheApp.h" open="1" top="0" tabpos="17">
@@ -116,10 +116,10 @@
 		<Cursor position="4017" topLine="87" />
 	</File>
 	<File name="../../src/graphic/Drawer.h" open="1" top="0" tabpos="5">
-		<Cursor position="5400" topLine="111" />
+		<Cursor position="4590" topLine="111" />
 	</File>
 	<File name="../../src/graphic/Formatter4.cpp" open="1" top="0" tabpos="35">
-		<Cursor position="38473" topLine="861" />
+		<Cursor position="4590" topLine="123" />
 	</File>
 	<File name="../../src/graphic/GraphicManager.cpp" open="1" top="0" tabpos="36">
 		<Cursor position="12778" topLine="354" />
@@ -142,8 +142,11 @@
 	<File name="../../src/html/BookData.h" open="1" top="0" tabpos="84">
 		<Cursor position="1688" topLine="21" />
 	</File>
+	<File name="../../src/html/ContentsBoxCtrol.cpp" open="1" top="0" tabpos="102">
+		<Cursor position="20922" topLine="60" />
+	</File>
 	<File name="../../src/html/HtmlWindow.cpp" open="1" top="0" tabpos="41">
-		<Cursor position="9432" topLine="224" />
+		<Cursor position="9158" topLine="224" />
 	</File>
 	<File name="../../src/html/IdfyChordCtrolParms.h" open="1" top="0" tabpos="46">
 		<Cursor position="8735" topLine="228" />
@@ -164,10 +167,16 @@
 		<Cursor position="29563" topLine="797" />
 	</File>
 	<File name="../../src/html/TextBookController.cpp" open="1" top="0" tabpos="72">
-		<Cursor position="3846" topLine="122" />
+		<Cursor position="6479" topLine="221" />
 	</File>
-	<File name="../../src/html/TextBookFrame.cpp" open="1" top="0" tabpos="49">
-		<Cursor position="47080" topLine="1470" />
+	<File name="../../src/html/TextBookController.h" open="1" top="0" tabpos="103">
+		<Cursor position="2524" topLine="50" />
+	</File>
+	<File name="../../src/html/TextBookFrame.cpp" open="1" top="1" tabpos="49">
+		<Cursor position="33672" topLine="1040" />
+	</File>
+	<File name="../../src/html/TextBookFrame.h" open="1" top="0" tabpos="104">
+		<Cursor position="6100" topLine="153" />
 	</File>
 	<File name="../../src/html/TheoMusicReadingCtrolParms.h" open="1" top="0" tabpos="44">
 		<Cursor position="18110" topLine="463" />
@@ -236,7 +245,7 @@
 		<Cursor position="1309" topLine="12" />
 	</File>
 	<File name="../../src/score/Barline.cpp" open="1" top="0" tabpos="61">
-		<Cursor position="2659" topLine="59" />
+		<Cursor position="2659" topLine="275" />
 	</File>
 	<File name="../../src/score/Barline.h" open="1" top="0" tabpos="79">
 		<Cursor position="2616" topLine="11" />
@@ -251,7 +260,7 @@
 		<Cursor position="9872" topLine="282" />
 	</File>
 	<File name="../../src/score/KeySignature.cpp" open="1" top="0" tabpos="68">
-		<Cursor position="14606" topLine="348" />
+		<Cursor position="6734" topLine="160" />
 	</File>
 	<File name="../../src/score/MetronomeMark.cpp" open="1" top="0" tabpos="69">
 		<Cursor position="10232" topLine="282" />

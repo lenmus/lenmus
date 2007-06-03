@@ -14,7 +14,7 @@
 
 1141558904 /media/sdb1/usr/Desarrollo_wx/lenmus/res/bitmaps/null.xpm
 
-1180620746 /media/sdb1/usr/Desarrollo_wx/lenmus/src/globals/Paths.h
+1180720814 /media/sdb1/usr/Desarrollo_wx/lenmus/src/globals/Paths.h
 	"wx/config.h"
 	"wx/filename.h"
 
@@ -547,7 +547,7 @@
 
 1154356926 /media/sdb1/usr/Desarrollo_wx/wxMidi/src/portmidi/porttime/porttime.h
 
-1180527122 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/MainFrame.cpp
+1180789864 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/MainFrame.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -646,7 +646,7 @@
 	"wx/wfstream.h"
 	"wx/xml/xml.h"
 
-1180335114 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/TextBookFrame.h
+1180790670 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/TextBookFrame.h
 	"wx/defs.h"
 	"wx/helpbase.h"
 	"wx/html/helpdata.h"
@@ -824,7 +824,7 @@
 	"../score/KeySignature.h"
 	"../app/Logger.h"
 
-1180692794 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
+1180766014 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/frame.h"
@@ -834,6 +834,7 @@
 	<wx/datetime.h>
 	"wx/txtstrm.h"
 	"wx/stdpaths.h"
+	"wx/memory.h"
 	<stdlib.h>
 	<crtdbg.h>
 	"TheApp.h"
@@ -1166,7 +1167,7 @@
 	"../src/portmidi/pm_common/portmidi.h"
 	"../src/portmidi/porttime/porttime.h"
 
-1180630760 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/globals/Paths.cpp
+1180766014 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/globals/Paths.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Paths.h"
@@ -1312,7 +1313,7 @@
 	"../score/Score.h"
 	<wx/dynarray.h>
 
-1180188494 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.cpp
+1180764198 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/debug.h"
@@ -1321,6 +1322,7 @@
 	"TimeposTable.h"
 	"Formatter4.h"
 	"BoxSystem.h"
+	"../app/Logger.h"
 
 1180336204 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.h
 	"../score/Score.h"
@@ -1481,7 +1483,7 @@
 	"../auxmusic/ChordManager.h"
 	"../ldp_parser/AuxString.h"
 
-1180335114 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/html/TextBookFrame.cpp
+1180790670 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/html/TextBookFrame.cpp
 	"wx/wxprec.h"
 	"wx/intl.h"
 	"wx/log.h"
@@ -1560,7 +1562,7 @@
 1180335110 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/MetronomeMark.h
 	"Glyph.h"
 
-1180296728 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPToken.cpp
+1180707370 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPToken.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"LDPToken.h"
@@ -1744,7 +1746,7 @@
 	"wx/debug.h"
 	<wx/listimpl.cpp>
 
-1180296728 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/KeySignature.cpp
+1180771995 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/KeySignature.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"

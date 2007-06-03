@@ -380,6 +380,11 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
                 in simple short scores (no multi-line or multi-instrument)
             */
             wxLogMessage(_T("[lmFormatter4::RenderJustified] The line width is not enough for drawing just one bar!!!. RenderMinimal() used."));
+
+			//delete all objects created here
+			if (pBoxScore) delete pBoxScore;
+
+			// try to do a minimal renderization
             return RenderMinimal(pPaper);
         }
 

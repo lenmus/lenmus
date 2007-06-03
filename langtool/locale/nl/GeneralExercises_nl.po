@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GeneralExercises 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-05-18 08:31+0100\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2007-06-03 10:20+0100\n"
+"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -31,16 +31,12 @@ msgid "Cover page"
 msgstr "Omslagpagina"
 
 #: GeneralExercises/GeneralExercises.cpp:6
-#, fuzzy
 msgid "General exercises"
-msgstr "Andere oefeningen"
+msgstr "Algemene oefeningen"
 
 #: GeneralExercises/GeneralExercises.cpp:7
-#, fuzzy
 msgid "General exercises, customizable to suit your needs at any moment."
-msgstr ""
-", de volgende algemene oefeningen\n"
-"zijn beschikbaar. Ze kunnen ten allen tijde aan uw noden kunnen aangepast worden:"
+msgstr "Algemene oefeningen, op elk moment aanpasbaar aan uw noden."
 
 #: GeneralExercises/GeneralExercises.cpp:8
 msgid "Cecilio Salmeron"
@@ -59,14 +55,12 @@ msgid "Contents"
 msgstr "Inhoud"
 
 #: GeneralExercises/GeneralExercises.cpp:12
-#, fuzzy
 msgid "Introduction to general exercises"
-msgstr "Introductie tot enkelvoudige oefeningen"
+msgstr "Introductie tot de algemene oefeningen"
 
 #: GeneralExercises/GeneralExercises.cpp:13
-#, fuzzy
 msgid "Appart of exercises included in the eBooks, the following general exercises (customizable to suit your needs at any moment) are available:"
-msgstr "Ze kunnen ten allen tijde aan uw noden kunnen aangepast worden:"
+msgstr "Naast de oefeningen uit de eBoeken zijn de volgende algemene oefeningen beschikbaar. Ze zijn ten allen tijde aanpasbaar aan uw noden:"
 
 #: GeneralExercises/GeneralExercises.cpp:14
 msgid "Exercises for aural training"
@@ -80,21 +74,21 @@ msgstr "Interval vergelijking"
 #: GeneralExercises/GeneralExercises.cpp:16
 #: GeneralExercises/GeneralExercises.cpp:29
 msgid "Intervals' identification"
-msgstr "Interval vergelijking"
+msgstr "Interval herkenning"
 
 #: GeneralExercises/GeneralExercises.cpp:17
 #: GeneralExercises/GeneralExercises.cpp:23
 #: GeneralExercises/GeneralExercises.cpp:31
 #: GeneralExercises/GeneralExercises.cpp:41
 msgid "Chords' identification"
-msgstr "Identificatie van akkoorden"
+msgstr "Herkenning van akkoorden"
 
 #: GeneralExercises/GeneralExercises.cpp:18
 #: GeneralExercises/GeneralExercises.cpp:22
 #: GeneralExercises/GeneralExercises.cpp:33
 #: GeneralExercises/GeneralExercises.cpp:39
 msgid "Scales' identification"
-msgstr "Toonaard identificatie"
+msgstr "Toonaard herkenning"
 
 #: GeneralExercises/GeneralExercises.cpp:19
 msgid "Exercises to practise theory"
@@ -103,12 +97,12 @@ msgstr "Theoretische oefeningen"
 #: GeneralExercises/GeneralExercises.cpp:20
 #: GeneralExercises/GeneralExercises.cpp:36
 msgid "Key signatures' identification"
-msgstr "Sleutel signatuur oefeningen"
+msgstr "Toonaard herkenning"
 
 #: GeneralExercises/GeneralExercises.cpp:21
 #: GeneralExercises/GeneralExercises.cpp:38
 msgid "Interval's identification and construction"
-msgstr "Interval identificatie en opbouw"
+msgstr "Interval herkenning en opbouw"
 
 #: GeneralExercises/GeneralExercises.cpp:24
 #: GeneralExercises/GeneralExercises.cpp:43
@@ -145,7 +139,7 @@ msgstr "Theoretische oefeningen"
 
 #: GeneralExercises/GeneralExercises.cpp:37
 msgid "Exercise: Identify a key signature or indicate the number of accidentals it has"
-msgstr "Oefening: identificeer een sleutel signatuur of duid het aantal toevallige voortekens aan."
+msgstr "Oefening: identificeer een toonaard of duid het aantal toevallige voortekens aan."
 
 #: GeneralExercises/GeneralExercises.cpp:40
 msgid "Exercise: Identify the scale shown"

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MusicReading_L2\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-05-19 08:28+0100\n"
+"PO-Revision-Date: 2007-06-03 10:22+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -15,7 +15,6 @@ msgstr ""
 "X-Poedit-SearchPath-0: L2_MusicReading\n"
 
 #: L2_MusicReading/L2_MusicReading.cpp:2
-#, fuzzy
 msgid "Send your comments and sugesstions to the LenMus team (www.lenmus.org)"
 msgstr "Stuur uw opmerkingen en suggesties naar het LenMus team (www.lenmus.org)"
 
@@ -167,14 +166,12 @@ msgstr "In deze les wordt een nieuw ritmisch patroon geïntroduceerd: een 8ste n
 #: L2_MusicReading/L2_MusicReading.cpp:294
 #: L2_MusicReading/L2_MusicReading.cpp:314
 #: L2_MusicReading/L2_MusicReading.cpp:334
-#, fuzzy
 msgid "Listen and take notice of the differences"
-msgstr "Bestudeer de verschillen"
+msgstr "Luister en merk de verschillen op"
 
 #: L2_MusicReading/L2_MusicReading.cpp:32
-#, fuzzy
 msgid "Listen to each measure and pay attention to the newly introduced patterns:"
-msgstr "Bestudeer elke maat en noteer de opbouw van het nieuwe patroon:"
+msgstr "Luister naar elke maat en schenk aandacht aan de nieuwe patronen:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:33
 #: L2_MusicReading/L2_MusicReading.cpp:38
@@ -319,7 +316,6 @@ msgstr " - Lees partituren die de ritmes bevatten die bestudeerd worden in deze 
 
 #: L2_MusicReading/L2_MusicReading.cpp:40
 #: L2_MusicReading/L2_MusicReading.cpp:43
-#, fuzzy
 msgid "Press 'Play' and listen. Train your ear and practise reading this rhythm."
 msgstr "Druk 'Afspelen' om het ritme aan te leren. Oefen uw gehoor en het lezen van dit ritme."
 
@@ -377,9 +373,8 @@ msgstr "Samengestelde tijd van 9/8. Hele noot gebonden aan de volgende tel."
 #: L2_MusicReading/L2_MusicReading.cpp:344
 #: L2_MusicReading/L2_MusicReading.cpp:347
 #: L2_MusicReading/L2_MusicReading.cpp:350
-#, fuzzy
 msgid "Press 'Play' and listen. Train your ear and practise the newly introduced patterns."
-msgstr " - Oefen uw gehoor voor de nieuwe ritmische patronen."
+msgstr "Druk op 'Afspelen' en luister. Oefen uw oor voor het herkennen van de nieuwe patronen."
 
 #: L2_MusicReading/L2_MusicReading.cpp:59
 #: L2_MusicReading/L2_MusicReading.cpp:69
@@ -397,9 +392,8 @@ msgid "Note the differences between the following rhythmic patterns and how they
 msgstr "Noteer het verschil tussen de volgende ritmische patronen en hoe ze gevormd worden wanneer we de noten verbinden in het basis 8ste noten patroon. Vergelijk dit patroon met dat van de laatste maat. Noteer het ritmisch accent tussen de derde en vierde maat."
 
 #: L2_MusicReading/L2_MusicReading.cpp:70
-#, fuzzy
 msgid "Press 'Play' and listen carefully the rhythm. Train your ear and practise the newly introduced patterns."
-msgstr "Druk 'Afspelen' en bestudeer aandachtig het ritme. Oefen uw gehoor en het lezen van het ritme."
+msgstr "Druk op 'Afspelen' en bestudeer aandachtig het ritme. Oefen uw gehoor en het lezen van het ritme."
 
 #: L2_MusicReading/L2_MusicReading.cpp:75
 msgid "Compound time of 12/8. 8th note tied to 16th notes"
@@ -407,20 +401,19 @@ msgstr "Samengestelde tijd van 12/8. 8ste noot gebonden aan 16de noten"
 
 #: L2_MusicReading/L2_MusicReading.cpp:76
 msgid "The compound time of 12/8 has four parts and each beat is occupied by a dotted quarter note. The accent is on the first one. Ii is a time similar to the 6/8 and 9/8 times but with four beats. The note occupying all the measure is the dotted whole note."
-msgstr "De samengestelde maat van 12/8 heeft vier tellen en elke tel stemt overeen met een gepunteerde vierde noot. Het accent ligt op de eerste. Deze maatsoort is vergelijkbaar met 6/8 en 9/8 maar heeft vier slagen. De noot die een volledige maat in beslag neemt is de gepunteerde hele noot."
+msgstr "De samengestelde maat van 12/8 heeft vier tellen en elke tel stemt overeen met een gepunteerde vierde noot. Het accent ligt op de eerste tel. Deze maatsoort is vergelijkbaar met 6/8 en 9/8 maar heeft vier tellen. De noot die een volledige maat in beslag neemt is de gepunteerde hele noot."
 
 #: L2_MusicReading/L2_MusicReading.cpp:77
 msgid "In this lesson a new rhythmic pattern is introduced: the 8th note tied to next beat:"
 msgstr "In deze les wordt een nieuw ritmisch patroon geïntroduceerd: de 8ste noot gebonden aan de volgende tel:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:78
-#, fuzzy
 msgid "Listen and observe the differences"
-msgstr "Bestudeer de verschillen"
+msgstr "Luister en merk de verschilen op"
 
 #: L2_MusicReading/L2_MusicReading.cpp:79
 msgid "Note the differences between the following rhythmic patterns and how the second one is formed when the notes are tied."
-msgstr "Noteer de verschillen tussen de volgende ritmische patronen en hoe de tweede gevormd wordt wanneer de noten gebonden worden."
+msgstr "Noteer de verschillen tussen de volgende ritmische patronen en hoe het tweede gevormd wordt wanneer de noten gebonden worden."
 
 #: L2_MusicReading/L2_MusicReading.cpp:86
 #: L2_MusicReading/L2_MusicReading.cpp:89
@@ -489,7 +482,7 @@ msgstr "Tweedelige maatsoort. De triool."
 
 #: L2_MusicReading/L2_MusicReading.cpp:157
 msgid "You know that simple time signatures tell us the number of beats in each measure. For example, in 3/4 there are three beats in each measure and each beat is occupied by a quarter note:"
-msgstr "U weet dat eenvoudige maatsoorten het aantal slagen in elke maat weergeven. Bijvoorbeeld, in 3/4 zijn er drie slagen in elke maat en elke slag stemt overeen met een vierde noot:"
+msgstr "U weet dat enkelvoudige maatsoorten het aantal slagen in elke maat weergeven. Bijvoorbeeld, in 3/4 zijn er drie slagen in elke maat en elke slag stemt overeen met een vierde noot:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:158
 msgid "You also know that each beat can subdivide into smaller units. For example, we can divide it into two parts by writting two eighth notes or into four parts by using 16th notes:"
@@ -555,17 +548,13 @@ msgstr "Gepunteerde 8ste noot"
 msgid "In this lesson the dotted 8th note pattern in simple times is introduced:"
 msgstr "In deze les wordt de gepunteerde 8ste noot in eenvoudige maatsoorten geintroduceerd:"
 
-# This phrase is a bit strange. It is suggested to first tying the notes and then to study the notes without the ties.
 #: L2_MusicReading/L2_MusicReading.cpp:224
-#, fuzzy
 msgid "Note how the rhythm of dotted 8th note can be obtained from one 8th note and two 16th notes, when tying the 8th note."
-msgstr "Tracht, zoals steeds bij het aanleren van een nieuw ritmisch patroon, het te vatten door het eerst te bestuderen zonder de koppelingen. Merk op hoe het ritme van gepunteerde achtste noten bekomen kan worden door één 8ste noot en twee 16de noten, waarbij de 8ste noot gekoppeld wordt."
+msgstr "Merk op hoe het ritme van de gepunte 8ste noot bekomen kan worden via een 8ste noot en twee 16de noten door de 8ste noot te binden."
 
-# This phrase is a bit strange. It is suggested to first tying the notes and then to study the notes without the ties.
 #: L2_MusicReading/L2_MusicReading.cpp:225
-#, fuzzy
 msgid "Always that you find a trouble with a rhythmic pattern, study it first without the ties. When learned without the ties it will be easier to learn the original one with ties."
-msgstr "Tracht, zoals steeds bij het aanleren van een nieuw ritmisch patroon, het te vatten door het eerst te bestuderen zonder de koppelingen. Merk op hoe het ritme van gepunteerde achtste noten bekomen kan worden door één 8ste noot en twee 16de noten, waarbij de 8ste noot gekoppeld wordt."
+msgstr "Tracht, zoals steeds bij het aanleren van een nieuw ritmisch patroon, het te vatten door het eerst te bestuderen zonder de koppelingen. Zo wordt het makkelijker om het oorspronkelijke ritme, met koppelingen, aan te leren."
 
 #: L2_MusicReading/L2_MusicReading.cpp:226
 msgid "In a similar way you can get and learn the other patterns of this lesson:"

@@ -1042,7 +1042,7 @@ void lmLDPParser::AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff)
     //analyze first parameter: num of this lmVStaff
     wxString sData1 = (pNode->GetParameter(iP))->GetName();
     if (! sData1.IsNumber()) {
-        AnalysisError( _("Expected 'número de parte' but found '%s'. Analysis stopped."),
+        AnalysisError( _("Expected 'numero de parte' but found '%s'. Analysis stopped."),
             pNode->GetName().c_str() );
         return;
     }

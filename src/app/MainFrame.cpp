@@ -1361,7 +1361,8 @@ void lmMainFrame::OnOpenBook(wxCommandEvent& event)
         wxASSERT(m_pBookController);
 
         // display book "intro"
-        m_pBookController->Display(_T("intro_thm0.htm"));     //By page name
+        m_pBookController->Display(_T("intro_thm0.htm"));       //By page name
+        m_pBookController->GetFrame()->NotifyPageChanged();     // needed in Linux. I don't know why !
     }
     else
         wxASSERT(false);

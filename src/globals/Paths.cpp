@@ -104,7 +104,7 @@ lmPaths::lmPaths(wxString sBinPath)
     oRootG3.AppendDir(_T("bin"));
     #endif
     wxFileName oRootG4 = m_root;
-#elif defined(_GNUC_)
+#elif defined(__WXGTK__)
     wxFileName oRootG1 = m_root;
     wxFileName oRootG2(_T("/var/lenmus");
     wxFileName oRootG3(_T("~/.lenmus");

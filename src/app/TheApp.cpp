@@ -49,6 +49,7 @@
 #include <wx/datetime.h>
 #include "wx/txtstrm.h"
 #include "wx/stdpaths.h"		// to get executable path
+#include "wx/memory.h"			// to trace memory leaks
 
 //#ifdef __WXMSW__
 ////Support for alpha channel on toolbar bitmaps
@@ -479,7 +480,7 @@ bool lmTheApp::OnInit(void)
         //Set up MIDI
         //
 
-    #if !defined(__GNUC__)
+    #if !defined(__WXGTK__)
     //Linux dbg removed
 
     g_pMidi = lmMidiManager::GetInstance();
@@ -515,7 +516,7 @@ bool lmTheApp::OnInit(void)
     }
 
 //remove this in debug version to start with nothing displayed
-#if !defined(__WXDEBUG__) && !defined(__GNUC__)
+#if !defined(__WXDEBUG__) && !defined(__WXGTK__)
     //force to show book frame
     wxCommandEvent event;       //it is not used, so not need to initialize it
     g_pMainFrame->OnOpenBook(event);
@@ -685,7 +686,9 @@ int lmTheApp::OnExit(void)
     // single instance checker
     if (m_pInstanceChecker) delete m_pInstanceChecker;
 
-    return 0;
+	//wxDebugContext::Dump();
+	
+	return 0;
 }
 
 // Set up the default size and position of the main window

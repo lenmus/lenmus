@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: intro 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-05-19 08:26+0100\n"
+"PO-Revision-Date: 2007-06-03 10:21+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr "De muziekleraar"
 
 #: intro/intro.cpp:5
 msgid "Cover page"
-msgstr "Omslag pagina"
+msgstr "Omslagpagina"
 
 #: intro/intro.cpp:6
 msgid "LenMus presentation"
@@ -55,12 +55,10 @@ msgid "Teaching material is organized into levels, and each level into lessons. 
 msgstr "Het lesmateriaal is georganiseerd in niveaus, en elk niveau is opgesplitst in lessen. Boek"
 
 #: intro/intro.cpp:12
-#, fuzzy
 msgid " General exercises"
-msgstr "Enkelvoudige oefeningen"
+msgstr " Algemene oefeningen"
 
 #: intro/intro.cpp:13
-#, fuzzy
 msgid " contains some basic exercises for aural training and to practise theoretical concepts, such as intervals and scales. Unlike exercises included in the other books, you can customize all exercises included in this book. This will allow you meet your specific needs at each moment and to practise specific points."
 msgstr " bevat een aantal basis oefeningen voor auditieve training en het inoefenen van theoretische concepten, zoals intervallen en toonladders. In tegenstelling tot de oefeningen in andere boeken, kan u hier alle oefeningen customizeren. Dit laat toe om op elk moment aan uw specifieke noden tegemoet te komen en om specifieke onderwerpen in te oefenen."
 

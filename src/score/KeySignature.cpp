@@ -157,8 +157,11 @@ void lmKeySignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour color
 // returns the width of the draw (logical units)
 lmLUnits lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {
+#if !defined(__WXGTK__)
+//TODO: In linux SetTextForegroung fails !!!
     pPaper->SetFont(*m_pFont);
     pPaper->SetTextForeground(colorC);
+#endif
 
     //Key signature is common to all lmVStaff staves, but it is only present, as lmStaffObj, in
     //the first staff. Therefore, for renderization, it is necessary to repeat for

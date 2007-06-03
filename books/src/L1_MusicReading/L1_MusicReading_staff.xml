@@ -124,6 +124,8 @@ As an example, press the 'Play' link and listen to the next score:
     <music>
         (score (vers 1.5)(language en iso-8859-1)
           (opt Staff.DrawLeftBarline no)
+          (opt Render.SpacingMethod fixed)
+          (opt Render.SpacingValue 15)
           (instrument
             (musicData (clef G noVisible)(key C)(time 2 4 noVisible)
             (text ''Pitch increases as the note is higher'' dx:0 dy:80)

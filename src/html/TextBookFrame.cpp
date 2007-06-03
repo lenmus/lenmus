@@ -1059,6 +1059,14 @@ void lmTextBookFrame::NotifyPageChanged()
 
 }
 
+void lmTextBookFrame::RefreshContent()
+{
+    if (m_pContentsBox) {
+        m_pContentsBox->Refresh();
+    }
+
+}
+
 wxString lmTextBookFrame::GetOpenedPageWithAnchor()
 {
     return lmTextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
