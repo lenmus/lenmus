@@ -27,10 +27,9 @@ But there are rhythms that require to subdivide the beats in three parts or
 </para>
 
 <para>
-By convention, in compound time signatures the top number indicates not the
-number of beats per measure but
-the number of pulses per measure, and the bottom number indicates the note that
-take each pulse.
+By convention, in compound time signatures the top number indicates not the number of
+beats per measure but the number of pulses per measure, and the bottom number
+indicates the note that takes each pulse.
 </para>
 
 </part>
@@ -39,12 +38,10 @@ take each pulse.
 <title>The 6/8 time signature</title>
 
 <para>
-In this lesson we will start the study of compound meters with the introduction
-of the 6/8 time
-signature.
-The 6/8 time signature is a compound time. Therefore, 6/8 means that each measure
-will have 6 pulses (two beats) and each pulse is occupied by an eighth note (each
-beats takes three eight notes):
+In this lesson we will start the study of compound meters with the introduction of the
+6/8 time signature. The 6/8 time signature is a compound time. Therefore, 6/8 means
+that each measure will have 6 pulses (two beats) and each pulse is occupied by an
+eighth note (each beat takes three eight notes):
 </part>
 
 <score width="600" height='100' border="0">
@@ -64,14 +61,14 @@ beats takes three eight notes):
 </score>
 
 <para>
-Note that a dotted quarter note equal three eighth notes. Therefore, in the 6/8 time
-the note that occupies a beat is the dotted quarter note. And each measure takes
-two dotted quarter notes.
+Note that a dotted quarter note equals three eighth notes. Therefore, in the 6/8 time
+the note that occupies a beat is the dotted quarter note and each measure takes two
+dotted quarter notes.
 </para>
 
 <para>
-Also note that two dotted quarter note equal a half dotted note. Therefore, in the 6/8 time
-a half dotted note takes a whole measure.
+Also note that two dotted quarter note equals a dotted half note. Therefore, in the
+6/8 time a dotted half note takes a whole measure.
 </para>
 
 

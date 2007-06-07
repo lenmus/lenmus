@@ -169,6 +169,7 @@ void lmMidiManager::SetOutDevice(int nOutDevId)
             nErr = g_pMidiOut->Open(0, NULL);        // 0 latency, no driver user info
             //! @todo better error reporting
             if (nErr) {
+				wxLogMessage(_T("Error %d opening Midi device"));
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n"),
                     nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));

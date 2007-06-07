@@ -64,7 +64,7 @@ enum {
 
 // Constant strings that need translation
 static const wxString m_sFooter1 = 
-    _T("Send your comments and sugesstions to the LenMus team (www.lenmus.org)");
+    _T("Send your comments and suggestions to the LenMus team (www.lenmus.org)");
 static const wxString m_sFooter2 = 
     _T("Licensed under the terms of the GNU Free Documentation License v1.2");
 static const wxString m_sPhonascus =

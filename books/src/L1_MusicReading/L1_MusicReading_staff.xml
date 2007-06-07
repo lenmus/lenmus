@@ -49,8 +49,8 @@ is the fifth line:
 </score>
 
 <para>
-The four spaces between the staff lines, are important and are also numbered 
-from bottom to top:</para>
+The four spaces between the staff lines are also important and are also numbered from
+bottom to top:</para>
 
 <!-- staff with labelled spaces: 1,2,3,4 -->
 <score width="600" height='70' border="0">
@@ -84,10 +84,9 @@ from left to right.
 </para>
 
 <para>
-The symbols for notes are placed either on a 
-line or on a space and the musical pitch (sound) is determined by the position
-of the note on the staff. Notes on the higher lines/spaces have higher pitch than 
-those on the lower ones:
+The symbols for notes are placed either on a line or on a space and the musical pitch
+(sound) is determined by the position of the note on the staff. Notes on the higher
+lines/spaces have a higher pitch than those on the lower ones:
 </para>
 
 <score width="600" height='100' border="0">
@@ -100,7 +99,7 @@ those on the lower ones:
           (opt Staff.DrawLeftBarline no)
           (instrument
             (musicData (clef G noVisible)(key C)(time 2 4 noVisible)
-            (text ''First note has higher pitch than second one'' dx:0 dy:80)
+            (text ''The first note has higher pitch than the second one'' dx:0 dy:80)
             (spacer 100)
             (n c5 w)
             (n e4 w)
@@ -112,7 +111,7 @@ those on the lower ones:
 </score>
 
 <para>
-As an example, press the 'Play' link and listen to the next score:
+As an example, press the 'Play' link and listen to the following score:
 </para>
 
 <!-- scale to play, no key, no time signature, no other symbol, only whole notes -->

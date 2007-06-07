@@ -8,12 +8,12 @@
 <!-- <tocimage>img108.png</tocimage> -->
 
 <para>
-In this lesson we will learn about the 3/4 time signature.
-As you should know (lesson 6) the top number tells how many beats are there in a measure,
-and the bottom number shows the type of note that gets one beat; the
-number 4 means 'quarter note'. Therefore, the 3/4 time signature is a rhythm with three beats
-per measure and each measure gets three quarter notes. The first beat of a measure is always 
-strong and the two other beats are weaker.
+In this lesson we will learn about the 3/4 time signature. As you should know (lesson
+6) the top number tells how many beats there are in a measure, and the bottom number
+shows the type of note that gets one beat. The number 4 means 'quarter note'.
+Therefore, the 3/4 time signature is a rhythm with three beats per measure and each
+measure gets three quarter notes. The first beat of a measure is always strong and the
+two other beats are weaker.
 </para>
 
 <para>
@@ -56,7 +56,7 @@ the dotted half note, equivalent to a half note tied to a quarter note:
           (musicData (clef G)(key C)
             (time 3 4 noVisible)
             (n a4 w.)(barline double)
-            (n a4 w l)(n a4 n)(barline double)
+            (n a4 w l)(n a4 q)(barline double)
             (r w.)(barline double)
         )))
     </music>

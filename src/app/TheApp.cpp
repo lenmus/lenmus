@@ -256,7 +256,7 @@ bool lmTheApp::OnInit(void)
     g_pPaths = new lmPaths(sHomeDir);
 
 
-	// AWARE: All paths, exect user configurable ones, are valid from this point
+	// AWARE: All paths, except user configurable ones, are valid from this point
 	// *************************************************************************
 
 
@@ -480,9 +480,6 @@ bool lmTheApp::OnInit(void)
         //Set up MIDI
         //
 
-    #if !defined(__WXGTK__)
-    //Linux dbg removed
-
     g_pMidi = lmMidiManager::GetInstance();
 
     //if MIDI not set, force to run the MIDI wizard
@@ -505,7 +502,6 @@ bool lmTheApp::OnInit(void)
     if (g_pMidiOut)
         g_pMidiOut->ProgramChange(g_pMidi->MtrChannel(), g_pMidi->MtrInstr());
 
-    #endif
         // all initialization finished.
 
 	// check if the splash window display time is ellapsed and wait if not

@@ -7,24 +7,31 @@
 <title>The quarter note and its rest</title>
 <!-- <tocimage>img101.png</tocimage> -->
 
-<para>You know that in written music sound is indicated by using note symbols, and 
-that there exits a note symbol for each duration. In written music silence is also
-indicated with symbols, called 'rests'. There also exists a rest for each note duration.
-The following score shows a quarter note and the quarter rest:
+<para>
+You know that in written music sound is indicated by using note symbols, and that
+there exists a note symbol for each duration. In written music silence is also
+indicated with symbols, called 'rests'. There also exists a rest for each note
+duration. The following score shows a quarter note and the quarter rest:
 </para>
 
 <score width="600" height='100' border="0">
-    <score_type>short</score_type>
+    <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
-        (Metrica 2 4 NoVisible)(espacio 20)(n a4 n)(s n)(Barra Final))
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 nVisible)
+            (spacer 20)(n a4 q)(r q)
+            (barline end)
+        )))
     </music>
 </score>
 
 <para>
-In this lesson we will start reading music with scores composed
-just by quarter notes and rests. These rhythms are very simple, as each note or rest
-gets a beat. Listen, for example, the following song:
+In this lesson we will start reading music with scores composed just by quarter notes
+and rests. These rhythms are very simple, as each note or rest gets a beat. Listen for
+example to the following song:
 </para>
 
 <score width="600" height='70' border="0">
@@ -35,13 +42,13 @@ gets a beat. Listen, for example, the following song:
         (score (vers 1.5)(language en iso-8859-1)
          (instrument
           (musicData (clef G)(key C)
-            (Metrica 2 4)
-            (n g4 n)(n e4 n)(barline)
-            (n a4 n)(n f4 n)(barline)
-            (n b4 n)(n g4 n)(barline)
-            (n c5 n)(r n)(barline)
-            (n c5 n)(n g4 n)(barline)
-            (n c5 n)(r n)(barline end)
+            (time 2 4)
+            (n g4 q)(n e4 q)(barline)
+            (n a4 q)(n f4 q)(barline)
+            (n b4 q)(n g4 q)(barline)
+            (n c5 q)(r q)(barline)
+            (n c5 q)(n g4 q)(barline)
+            (n c5 q)(r q)(barline end)
         )))
     </music>
 </score>
@@ -50,11 +57,10 @@ gets a beat. Listen, for example, the following song:
 <part>
 <title>Exercises</title>
 <para>
-Now is your time to start reading music. Remember to mark the beats with your
-hand or foot. Use also the metronome. The notes range will be very reduced (two first lines
-and first space, notes E4, F4 and G4) to
-help you to memorize them. The range will be broaden, progressively and slowly, in
-following lessons.
+Now is your time to start reading music. Remember to mark the beats with your hand or
+foot. Use also the metronome. The note range will be very limited (two first lines and
+first space, notes E4, F4 and G4) to help you to memorize them. The range will be
+broadened, progressively and slowly, in the following lessons.
 </part>
 
 <para>

@@ -76,7 +76,7 @@
 This eMusicBook is intended to help improve one's reading skills, providing the sort of practice and exercise that are required to become a good sight-reader.
 </para>
 
-<para>Appart of introducing different rhythmic cells, of increasing complexity, the main concepts introduced in Level 1 are:</para>
+<para>Apart of introducing different rhythmic cells of increasing complexity, the main concepts introduced in Level 1 are:</para>
 
 <orderedlist>
 <listitem>
@@ -112,18 +112,18 @@ This course has 31 lessons covering the following material:</para>
 <itemizedlist>
 <listitem><emphasis>Clefs and note ranges:</emphasis>
     The course starts with the G clef using a very reduced note range (e4-g4).
-    Progressively, the note range is increased to reach, in lesson 14, the range
-    c4-f5. Next the F key is introduced, again with a very reduced note range (a3;c4)
-    and from there the exercises of all following lessons use, indistinctely, 
-    F and G clef. The notes reange is continuosly being broaden to cover two leger lines, 
-    avove and below, in both clefs (G: a3-c6 y F: a2-e4).
+    Progressively, the note range is increased to reach the range c4-f5 in lesson 14.
+    Next, the F key is introduced, again with a very reduced note range (a3-c4) and
+    from there, the exercises of all following lessons use the F and G clef
+    indistinctely. The note range is continuously being broadened in both clefs (G:
+    a3-c6 y F: a2-e4), to cover two legder lines, above and below.
 </listitem>
 
 <listitem><emphasis>Time signatures:</emphasis>
-    In first exercises (9 a 17) only the 2/4 simple time is used. Then 3/4
-    simple time (lesson 18) and 4/4 simple time (lesson 19) are used.
-    In lesson 28 the compound 6/8 is introduced and it is practised in the remaining
-    lessons (29 to 31).
+    In the first exercises (9 to 17) only the 2/4 simple time is used. Next, the 3/4
+    simple time (lesson 18) and the 4/4 simple time (lesson 19) are used. In lesson 28
+    the compound 6/8 is introduced and it is practised in the remaining lessons (29 to
+    31).
 </listitem>
     
 <listitem><emphasis>Key signatures:</emphasis>
@@ -141,17 +141,22 @@ This course has 31 lessons covering the following material:</para>
 <theme id="ch0_2">
 <title>Lessons' structure</title>
 
-<para>With exception of the firsts lessons, oriented to introduce the basic concepts of
-the musica notation, the remaining lessons are structured into three sections:</para>
+<para>
+With exception of the first lessons, aimed at introducing the basic concepts of the
+music notation, the remaining lessons are structured into three sections:
+</para>
 
 <itemizedlist>
-<listitem>In the first one the new concepts and rhythmic patterns introduced in the lesson
-are explained.</listitem>
+<listitem>
+In the first section the new concepts and rhythmic patterns introduced in the lesson are explained.
+</listitem>
 
-<listitem>In the second section, optional, the new concepts are compared with known ones,
-so that the student can better relate the new material and learn it.</listitem>
+<listitem>
+In the second section, optional, the new concepts are compared with known ones,
+so that the student can better relate the new material and learn it.
+</listitem>
 
-<listitem>Finally, in the third section some exercises are proposed to lpractise
+<listitem>Finally, in the third section some exercises are proposed to practise
 the newly introduced concepts.</listitem>
 
 </itemizedlist>

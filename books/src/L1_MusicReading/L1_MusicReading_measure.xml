@@ -64,7 +64,7 @@ piece of music.
             (spacer 50)
             (barline double)
             (graphic line -20 45 10 60)
-            (text ''duoble barline'' dx:15 dy:80)
+            (text ''double barline'' dx:15 dy:80)
             (spacer 50)(barline simple)
             (spacer 50)(barline simple)
             (spacer 50)(barline simple)

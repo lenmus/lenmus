@@ -26,10 +26,10 @@
 		<Cursor position="5466" topLine="120" />
 	</File>
 	<File name="../../src/app/MainFrame.cpp" open="1" top="0" tabpos="8">
-		<Cursor position="52970" topLine="1350" />
+		<Cursor position="69225" topLine="1886" />
 	</File>
 	<File name="../../src/app/MidiWizard.cpp" open="1" top="0" tabpos="13">
-		<Cursor position="22230" topLine="18" />
+		<Cursor position="2650" topLine="76" />
 	</File>
 	<File name="../../src/app/MidiWizard.h" open="1" top="0" tabpos="75">
 		<Cursor position="1357" topLine="17" />
@@ -50,7 +50,7 @@
 		<Cursor position="2629" topLine="56" />
 	</File>
 	<File name="../../src/app/TheApp.cpp" open="1" top="0" tabpos="15">
-		<Cursor position="13315" topLine="317" />
+		<Cursor position="19935" topLine="488" />
 	</File>
 	<File name="../../src/app/TheApp.h" open="1" top="0" tabpos="17">
 		<Cursor position="1398" topLine="26" />
@@ -146,7 +146,7 @@
 		<Cursor position="20922" topLine="60" />
 	</File>
 	<File name="../../src/html/HtmlWindow.cpp" open="1" top="0" tabpos="41">
-		<Cursor position="9158" topLine="224" />
+		<Cursor position="9158" topLine="176" />
 	</File>
 	<File name="../../src/html/IdfyChordCtrolParms.h" open="1" top="0" tabpos="46">
 		<Cursor position="8735" topLine="228" />
@@ -167,13 +167,13 @@
 		<Cursor position="29563" topLine="797" />
 	</File>
 	<File name="../../src/html/TextBookController.cpp" open="1" top="0" tabpos="72">
-		<Cursor position="6479" topLine="221" />
+		<Cursor position="6479" topLine="224" />
 	</File>
 	<File name="../../src/html/TextBookController.h" open="1" top="0" tabpos="103">
 		<Cursor position="2524" topLine="50" />
 	</File>
 	<File name="../../src/html/TextBookFrame.cpp" open="1" top="1" tabpos="49">
-		<Cursor position="33672" topLine="1040" />
+		<Cursor position="20329" topLine="580" />
 	</File>
 	<File name="../../src/html/TextBookFrame.h" open="1" top="0" tabpos="104">
 		<Cursor position="6100" topLine="153" />
@@ -284,7 +284,7 @@
 		<Cursor position="4989" topLine="122" />
 	</File>
 	<File name="../../src/sound/MidiManager.h" open="1" top="0" tabpos="99">
-		<Cursor position="2175" topLine="36" />
+		<Cursor position="2176" topLine="9" />
 	</File>
 	<File name="../../src/sound/SoundManager.cpp" open="1" top="0" tabpos="101">
 		<Cursor position="6245" topLine="93" />

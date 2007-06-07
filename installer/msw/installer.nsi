@@ -1,9 +1,11 @@
 ;==============================================================================================
-; Windows installer for LenMus
+; Windows installer for LenMus. Unicode version
+;
 ; NSIS v2.15 script for generating the exe installer and uninstaller
 ;
 ; To add a new language:
 ;   Search for ADD_LANG and modify inthese points
+;
 ;
 ;--------------------------------------------------------------------------------------
 ;    LenMus Phonascus: The teacher of music
@@ -37,11 +39,11 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "3.4"
+  !define APP_VERSION "3.5"
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v3.4"     ;product name displayed by the installer
+  Name "lenmus v3.5"     ;product name displayed by the installer
 
 
 ;support for Modern UI
@@ -128,7 +130,7 @@
   ; ADD_LANG
   !insertmacro MUI_LANGUAGE "English"
   !insertmacro MUI_LANGUAGE "Spanish"
-  !insertmacro MUI_LANGUAGE "French"
+  !insertmacro MUI_LANGUAGE "French"         
   !insertmacro MUI_LANGUAGE "Turkish"
   !insertmacro MUI_LANGUAGE "Dutch"
 
@@ -175,7 +177,6 @@
 
 
 
-
 ; *********************************************************************
 ; Install Sections
 ; *********************************************************************
@@ -206,6 +207,7 @@ Function WriteToFile
  Pop $0
 FunctionEnd
 
+
 ;Install all the mandatory components
 Section  "-" "MainSection"
 
@@ -220,6 +222,8 @@ Section  "-" "MainSection"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\res"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\xrc"
   !insertmacro RemoveFilesAndSubDirs "$INSTDIR\temp"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\logs"
+  !insertmacro RemoveFilesAndSubDirs "$INSTDIR\docs"
 
 
   ;install application files
@@ -227,11 +231,7 @@ Section  "-" "MainSection"
   CopyFiles:
      ClearErrors
      SetOverWrite try
-     SetOutPath "$INSTDIR"
-     File "..\..\docs\html\licence.htm"
-     File "..\..\docs\html\installation.htm"
-     File "..\..\docs\html\singledoc.css"
-     File "..\..\docs\html\GNU_Free_doc_license_FDL.htm"
+     SetOutPath "$INSTDIR\docs"
 
     ; ADD_LANG
      File ".\locale\license_en.txt"
@@ -239,6 +239,14 @@ Section  "-" "MainSection"
      File ".\locale\license_fr.txt"
      File ".\locale\license_tr.txt"
      File ".\locale\license_nl.txt"
+     
+     File "..\..\docs\html\licence.htm"
+     File "..\..\docs\html\installation.htm"
+     File "..\..\docs\html\singledoc.css"
+     File "..\..\docs\html\GNU_Free_doc_license_FDL.htm"
+     
+     SetOutPath "$INSTDIR\docs\images"
+     File "..\..\docs\html\images\*.*"
 
      SetOutPath "$INSTDIR\bin"
      File "..\..\z_bin\lenmus.exe"
@@ -282,7 +290,8 @@ Section  "-" "MainSection"
      File "..\..\xrc\*.xrc"
 
      SetOutPath "$INSTDIR\temp"
-     File "..\..\temp\DataError.log"
+
+     SetOutPath "$INSTDIR\logs"
 
       IfErrors +1 EndCopyFiles
         StrCmp $STEP "ErrorCopyingFiles" "Error_CopyFiles"
@@ -293,13 +302,14 @@ Section  "-" "MainSection"
           MessageBox MB_YESNO|MB_ICONQUESTION $(MSG_CONTINUE) IDYES +2
       Abort "$(MSG_ABORT)"
      EndCopyFiles:
-     
+
   ; Save install options
   ;-----------------------------------------------------------------------------------
      SetOutPath "$INSTDIR\bin"
      Push "$(OTHER_LangName)"                               ;text to write to file 
      Push "$INSTDIR\\bin\config_ini.txt"        ;file to write to 
      Call WriteToFile
+
 
 
 
@@ -441,61 +451,6 @@ Section un.Install
   ; move to root directory and delete all folders and files
   ${un.GetParent} "$INSTDIR" $LENMUS_DIR
   !insertmacro RemoveFilesAndSubDirs "$LENMUS_DIR"
-
-  ;delete files
-  ;Delete "$INSTDIR\*.*"
-  ;Delete "$INSTDIR\bin\*.*"
-
-  ; ADD_LANG
-  ;Delete "$INSTDIR\books\en\*.*"
-  ;Delete "$INSTDIR\books\es\*.*"
-  ;Delete "$INSTDIR\books\fr\*.*"
-  ;Delete "$INSTDIR\books\tr\*.*"
-  ;Delete "$INSTDIR\books\nl\*.*"
-  
-  ; ADD_LANG
-  ;Delete "$INSTDIR\locale\en\*.*"
-  ;Delete "$INSTDIR\locale\es\*.*"
-  ;Delete "$INSTDIR\locale\fr\*.*"
-  ;Delete "$INSTDIR\locale\tr\*.*"
-  ;Delete "$INSTDIR\locale\nl\*.*"
-  
-  ;Delete "$INSTDIR\res\bitmaps\*.*"
-  ;Delete "$INSTDIR\res\icons\*.*"
-  ;Delete "$INSTDIR\res\sounds\*.*"
-  ;Delete "$INSTDIR\xrc\*.*"
-  ;Delete "$INSTDIR\temp\*.*"
-  ;Delete "$INSTDIR\scores\MusicXML\*.*"
-  ;Delete "$INSTDIR\scores\samples\*.*"
-
-  ;delete folders
-  ;RMDir "$INSTDIR\bin"
-
-  ; ADD_LANG
-  ;RMDir "$INSTDIR\books\en"
-  ;RMDir "$INSTDIR\books\es"
-  ;RMDir "$INSTDIR\books\fr"
-  ;RMDir "$INSTDIR\books\tr"
-  ;RMDir "$INSTDIR\books\nl"
-  
-  ; ADD_LANG
-  ;RMDir "$INSTDIR\locale\en"
-  ;RMDir "$INSTDIR\locale\es"
-  ;RMDir "$INSTDIR\locale\fr"
-  ;RMDir "$INSTDIR\locale\tr"
-  ;RMDir "$INSTDIR\locale\nl"
-  
-  ;RMDir "$INSTDIR\books"
-  ;RMDir "$INSTDIR\locale"
-  ;RMDir "$INSTDIR\res\bitmaps"
-  ;RMDir "$INSTDIR\res\icons"
-  ;RMDir "$INSTDIR\res\sounds"
-  ;RMDir "$INSTDIR\res"
-  ;RMDir "$INSTDIR\xrc"
-  ;RMDir "$INSTDIR\temp"
-  ;RMDir "$INSTDIR\scores\MusicXML"
-  ;RMDir "$INSTDIR\scores\samples"
-  ;RMDir "$INSTDIR\scores"
   RMDir "$LENMUS_DIR"
 
   ;delete ico on desktop

@@ -30,9 +30,8 @@ The following score shows a half note and a half rest:
 </score>
 
 <para>
-One half note equals two quarter notes and one half rest equals two quarter rests.
-So in time 2/4 a half note or rest gets two beats, and, therefore, takes a whole
-measure:
+One half note equals two quarter notes and one half rest equals two quarter rests. So
+in time 2/4 a half note or rest gets two beats. Therefore it takes a whole measure:
 </para>
 
 <score width="600" height="100" border="0">
@@ -82,11 +81,11 @@ duration (a half note). Listen to the following score:
             (barline simple)
             (n g4 h)
             (barline double)
-            (space 20)
+            (spacer 20)
             (n c5 q l)(n c5 q)
             (barline simple)
             (n c5 h)
-            (barline final)
+            (barline end)
         )))
     </music>
 </score>

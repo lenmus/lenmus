@@ -38,9 +38,7 @@ the 'sharp', the 'flat' and the 'natural':
 
 
 <para>
-A sharp sign raises the pitch of a note by a half step (one semitone). 
-A flat sign lowers the pitch of a note a half step (one semitone).
-A natural sign cancels the effect of a flat or a sharp.
+A sharp sign raises the pitch of a note by half a step (one semitone). A flat sign lowers the pitch of a note half a step (one semitone). A natural sign cancels the effect of a flat or a sharp.
 </para>
 
 <para>
@@ -92,9 +90,9 @@ To make the writing process easier, instead of writing sharp signs before all F
 and C notes, the accidentals can be written at the beginning of the staff, 
 immediately after the clef sign. These accidentals affect the whole score
 and are named the 'key signature'. They apply to all relevant notes 
-<emphasis>in every octave</emphasis>. As a consequence, is no longer needed to place 
-accidental signs in front of each note. So, the previous
-score can also be written as follows:
+<emphasis>in every octave</emphasis>. As a consequence, it is no longer needed to
+place accidental signs in front of each note. So, the previous score can also be
+written as follows:
 </para>
 
 <score width="600" height='70' border="0">
@@ -120,8 +118,8 @@ score can also be written as follows:
 </score>
 
 <para>
-Note that the sharp for F note is placed on the 5th line but it affects all F notes, 
-independently of the octave.
+Note that the sharp for the F note is placed on the 5th line but it affects all F
+notes, independently of the octave.
 </para>
 
 <para>

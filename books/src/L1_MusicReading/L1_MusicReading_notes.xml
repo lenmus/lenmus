@@ -6,20 +6,20 @@
 <title>Note symbols</title>
 
 <para>
-We have learn that the vertical position of a note on the staff determines its pitch.
+We have learnt that the vertical position of a note on the staff determines its pitch.
 The duration of the note (that, is the duration of its sound) is indicated by using
 different types of signs for the notes, so each note sign corresponds to a different
 duration. The following picture shows the different types of notes and their names:
 </para>
 
-<score width="600" height='280' border="0">
+<score width="700" height='280' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
          (opt StaffLines.Hide yes)
          (opt Render.SpacingMethod fixed)
-         (opt Render.SpacingValue 170)
+         (opt Render.SpacingValue 150)
          (instrument
           (musicData (clef G noVisible)(key C)
             (text ''Whole'' dx:0 dy:70 (font normal 8))
@@ -30,7 +30,7 @@ duration. The following picture shows the different types of notes and their nam
             (n a4 q)
             (text ''Eight'' dx:0 dy:70)
             (n a4 e)(newSystem)
-            (barline simple)
+            (barline simple noVisible)
             (text ''16th'' dx:0 dy:70)
             (n a4 s)
             (text ''32th'' dx:0 dy:70)
@@ -44,11 +44,10 @@ duration. The following picture shows the different types of notes and their nam
 
 
 <para>
-In the coming lessons we will start using only the quarter note and will learn about notes
-duration, and progressively we will
-introduce the other note symbols. In this lesson we are going to learn some basic terminology
-about note symbols
-and some rules about how to draw them.
+In the coming lessons we will start using only the quarter note and will learn about
+note duration. Progressively, we will introduce the other note symbols. In this lesson
+we are going to learn some basic terminology about note symbols and some rules about
+how to draw them.
 </para>
 
 <para>
@@ -75,9 +74,9 @@ go down for notes placed on or above the third line:
          (instrument
           (musicData (clef G)(key C)
             (spacer 30)
-			(n e4 q)(n f4 q)(n g4 q)(n a4 q)
-			(n b4 q)(n c5 q)(n d5 q)(n e5 q)(n f5 q)
-         	(spacer 20)
+            (n e4 q)(n f4 q)(n g4 q)(n a4 q)
+            (n b4 q)(n c5 q)(n d5 q)(n e5 q)(n f5 q)
+            (spacer 20)
             (barline end noVisible)
          )))
     </music>
@@ -100,8 +99,8 @@ on the right-hand side of the stem:
           (musicData (clef G)(key C)
             (spacer 30)
             (n e4 e)(n f4 e)(n g4 e)(n a4 e)
-         	(n b4 e)(n c5 e)(n d5 e)(n e5 e)(n f5 e)
-         	(spacer 20)
+            (n b4 e)(n c5 e)(n d5 e)(n e5 e)(n f5 e)
+            (spacer 20)
             (barline end noVisible)
          )))
     </music>
@@ -109,11 +108,11 @@ on the right-hand side of the stem:
 
 
 <para>
-Often, consecutive notes with flags are linked together in groups by replacing the flags
-by lines called 'beams'. The number of beams must be the same that the number of flags
-each individual note would have had when drawn isolated. In the following example
-the four individual notes at the first part can also be drawn grouped, 
-as shown in the second part:
+Often, consecutive notes with flags are linked together in groups by replacing the
+flags by lines called 'beams'. The number of beams must be the same as the number of
+flags each individual note would have had when drawn isolated. In the following
+example the four individual notes at the first part can also be drawn grouped, as
+shown in the second part:
 </para>
 
 <score width="600" height='100' border="0">
@@ -126,12 +125,12 @@ as shown in the second part:
          (instrument
           (musicData (clef G)(key C)
             (spacer 30)
-			(n e4 e)(n f4 e)(n g4 s)(n a4 s)
-			(spacer 20)
-			(barline double)
-			(spacer 20)
-			(n e4 e g+)(n f4 e)(n g4 s)(n a4 s g-)
-         	(spacer 20)
+            (n e4 e)(n f4 e)(n g4 s)(n a4 s)
+            (spacer 20)
+            (barline double)
+            (spacer 20)
+            (n e4 e g+)(n f4 e)(n g4 s)(n a4 s g-)
+            (spacer 20)
             (barline end noVisible)
          )))
     </music>

@@ -7,10 +7,10 @@
 <title>Leger lines</title>
 
 <para>
-When it is necessary to write a note higher or lower than the pitch represented
-by the staff lines, extra lines can be added to the staff. They are called 'leger lines'
-and are drawn as short lines, slightly longer than the note head. For example, next 
-score shows the natural scale starting on C:
+When it is necessary to write a note higher or lower than the pitch represented by the
+staff lines, extra lines can be added to the staff. They are called 'leger (or ledger)
+lines' and are drawn as short lines, slightly longer than the note head. For example,
+the following score shows the natural scale starting on C:
 </para>
 
 <score width="600" height='70' border="0">
@@ -24,7 +24,7 @@ score shows the natural scale starting on C:
             (time 2 4 noVisible)
             (n c4 q)(n d4 q)
             (n e4 q)(n f4 q)(n g4 q)(n a4 q)(n b4 q)(n c5 q)
-            (barline final) )))
+            (barline end) )))
     </music>
 </score>
 
@@ -51,7 +51,7 @@ Leger lines can also be added on top, for high pitch notes:
             (n f5 q)(n g5 q)(barline simple noVisible)
             (n a5 q)(n b5 q)(barline simple noVisible)
             (n c6 q)
-            (barline final)
+            (barline end)
         )))
     </music>
 </score>
