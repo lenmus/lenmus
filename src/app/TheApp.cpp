@@ -256,7 +256,7 @@ bool lmTheApp::OnInit(void)
     g_pPaths = new lmPaths(sHomeDir);
 
 
-	// AWARE: All paths, except user configurable ones, are valid from this point
+	// AWARE: All paths, exect user configurable ones, are valid from this point
 	// *************************************************************************
 
 
@@ -318,6 +318,7 @@ bool lmTheApp::OnInit(void)
     g_pLogger->DefineTraceMask(_T("lmFragmentsTable::GetFirstSegmentDuracion"));
     g_pLogger->DefineTraceMask(_T("LDPParser_beams"));
     g_pLogger->DefineTraceMask(_T("Formater4"));
+    g_pLogger->DefineTraceMask(_T("Formatter4.Step1"));
 #endif
 
 

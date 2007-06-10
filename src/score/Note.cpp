@@ -564,11 +564,17 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
                 lmLUnits nStem = GetStandardStemLenght();
                 lmLUnits nFlag, nMinStem;
                 if (m_fStemDown) {
-                    nFlag = abs((int)( (float)(2048.0-aGlyphsInfo[nGlyph].Bottom) / 51.2 + 0.5));
-                    nMinStem = (int)( (float)(aGlyphsInfo[nGlyph].Top - 2048.0 +128.0) / 51.2 + 0.5);
+                    nFlag = abs((int)( (2048.0-(float)aGlyphsInfo[nGlyph].Bottom) / 51.2 + 0.5));
+                    nMinStem = (int)( ((float)aGlyphsInfo[nGlyph].Top - 2048.0 +128.0) / 51.2 + 0.5);
                 }
                 else {
-                    nFlag = (int)( (float)aGlyphsInfo[nGlyph].Top / 51.2 + 0.5);
+                    if (m_nNoteType == eEighth)
+                        nFlag = (int)( ((float)aGlyphsInfo[nGlyph].Top) / 51.2 + 0.5);
+                    else if (m_nNoteType == e16th)
+                        nFlag = (int)( ((float)aGlyphsInfo[nGlyph].Top + 128.0) / 51.2 + 0.5);
+                    else
+                        nFlag = (int)( ((float)aGlyphsInfo[nGlyph].Top + 512.0) / 51.2 + 0.5);
+
                     nMinStem = abs((int)( (float)aGlyphsInfo[nGlyph].Bottom / 51.2 + 0.5));
                 }
                 nFlag = (lmLUnits)m_pVStaff->TenthsToLogical(nFlag, m_nStaffNum);

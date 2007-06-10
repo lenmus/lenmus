@@ -1,0 +1,137 @@
+#! /bin/bash
+#--------------------------------------------------------------------
+# Pack all sources
+#
+# usage: pack-sources version [options]
+# options: -q : quiet
+# example: pack_sources 3.5
+#--------------------------------------------------------------------
+
+E_XCD=66       	# Can't change directory
+E_NO_ARGS=65
+
+if [ $# -eq 0 ]  # Must have command-line args to demo script.
+then
+  echo "Please invoke this script with one or more command-line arguments."
+  exit $E_NO_ARGS
+fi  
+
+
+
+ROOT_DIR=/media/sdb1/usr/Desarrollo_wx/lenmus
+TMP_DIR=${ROOT_DIR}/z_temp
+PACK_ROOT=${TMP_DIR}/lenmus-temp
+
+function MyGetopt()
+{
+    until [ -z "$1" ]
+    do
+      if [ ${1:0:1} = '/' ]
+      then
+          tmp=${1:1}               # Strip off leading '/' . . .
+          parameter=${tmp%%=*}     # Extract name.
+          value=${tmp##*=}         # Extract value.
+          echo "Parameter: '$parameter', value: '$value'"
+          eval $parameter=$value
+	  else
+		  echo "Flag: $1"
+      fi
+      shift
+    done
+}
+
+# Change to dir
+function ChangeToDir()
+{
+    cd $1
+    if [ `pwd` != "$1" ]  # or  if [ "$PWD" != "$1" ]
+	then
+      echo "Can't change to $1."
+      exit $E_XCD
+	fi
+}
+
+# if directory does not exist create it
+function CreateDir()
+{
+	if [ -d "$1" ]  # Test if target directory exists. 
+	then
+		echo "" 
+	else
+		mkdir $1		
+	fi
+	return 0   # Success.
+}  
+
+# delete a file if exists
+function DeleteFile()
+{
+	if [ -e "$1" ]  # Test if target exists.
+	then
+		rm $1		
+	fi
+	return 0   # Success.
+}  
+
+# process starts here -------------------------------------------------
+
+# Pass all options to MyGetopt()
+echo "With MyGetopt"
+MyGetopt $*
+
+#using bash getopts
+echo ""
+echo "With bash getopts"
+while getopts ":abcqe:fg" Option
+# Initial declaration.
+# a, b, c, q, e, f, and g are the options (flags) expected.
+# The : after option 'e' shows it will have an argument passed with it.
+do
+  case $Option in
+    a) echo "Option \"a\"";;
+    b) echo "Option \"b\"";;
+    c) echo "Option \"c\"";;
+    q) echo "Option -q   [OPTIND=${OPTIND}]";;
+    e) echo "Option -e with argument \"$OPTARG\"   [OPTIND=${OPTIND}]";;
+    f) echo "Option \"f\"";;
+    g) echo "Option \"g\"";;
+  esac
+done
+shift $(($OPTIND - 1))
+# Move argument pointer to next.
+
+#check parameters
+VERS=$1
+if [ $# -eq 0 ]  # Must have command-line args
+then
+	echo "Missing required parameter VERS"
+	exit $E_NO_ARGS
+fi
+
+
+#create temp folder
+CreateDir $TMP_DIR
+CreateDir $PACK_ROOT
+
+#copy sources
+echo "Copying files ..."
+rsync -aC ${ROOT_DIR}/src ${PACK_ROOT}
+rsync -aC ${ROOT_DIR}/xrc ${PACK_ROOT}
+rsync -aC --exclude zh_CN ${ROOT_DIR}/locale ${PACK_ROOT}
+rsync -aC ${ROOT_DIR}/res ${PACK_ROOT}
+rsync -aC --exclude test ${ROOT_DIR}/scores ${PACK_ROOT}
+rsync -aC --exclude src ${ROOT_DIR}/books ${PACK_ROOT}
+
+#pack all the temp tree
+echo "Compressing files ..."
+ChangeToDir $PACK_ROOT
+DeleteFile ${TMP_DIR}/lenmus-${VERS}-src.tar.bz2
+tar --bzip2 -cf ${TMP_DIR}/lenmus-${VERS}-src.tar.bz2 *
+
+#remove all files but the package file
+echo "Cleaning up .."
+rm -R $PACK_ROOT
+
+echo "done"
+exit 0      # sucess
+

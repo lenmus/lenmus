@@ -40,6 +40,8 @@
 
 #include "wx/debug.h"
 #include "wx/list.h"
+#include "wx/numdlg.h"      // for ::wxGetNumberFromUser
+
 #include "../score/Score.h"
 #include "TimeposTable.h"
 #include "Formatter4.h"
@@ -53,8 +55,16 @@ extern lmLogger* g_pLogger;
 
 lmFormatter4::lmFormatter4()
 {
+    // set debugging options
     m_fDebugMode = g_pLogger->IsAllowedTraceMask(_T("Formater4"));
-	//wxString sData = ::wxGetTextFromUser(_("Mask to add"));
+    m_nTraceMeasure = 0;
+    if (m_fDebugMode) {
+        m_nTraceMeasure = ::wxGetNumberFromUser(
+                                _T("Specify the measure to trace (0 for all measures)"),
+                                _T("Measure: "), 
+                                _T("Debug Formatter4"),
+                                0L);        // default value: all measures
+    }
 
 }
 
@@ -312,8 +322,10 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             m_nMeasureSize[nRelMeasure] =
                 SizeMeasureColumn(nAbsMeasure, nRelMeasure, nSystem, pPaper, &fNewSystem);
 
-///*LogDbg*/        wxLogMessage(wxString::Format(_T("[lmFormatter4::RenderJustified]: ")
-//                    _T("m_nMeasureSize[%d] = %d"), nRelMeasure, m_nMeasureSize[nRelMeasure] ));
+            #if defined(__WXDEBUG__)
+            g_pLogger->LogTrace(_T("Formatter4.Step1"),
+                _T("m_nMeasureSize[%d] = %d"), nRelMeasure, m_nMeasureSize[nRelMeasure] );
+            #endif
 
             //if this is the first measure column compute the space available in
             //this system. The method is a little tricky. The total space available
@@ -326,10 +338,14 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
                     pPaper->GetRightMarginXPos() - m_oTimepos[nRelMeasure].GetStartOfBarPosition();
             }
 
-///*LogDbg*/        wxLogMessage(wxString::Format(_T("[lmFormatter4::RenderJustified]: ")
-//                    _T("m_nFreeSpace = %d, PageRightMargin=%d, StartOfBar=%d"),
-//                    m_nFreeSpace, pPaper->GetPageRightMargin(), m_oTimepos[nRelMeasure].GetStartOfBarPosition() ));
-///*LogDbg*/        wxLogMessage(m_oTimepos[nRelMeasure].DumpTimeposTable());
+            #if defined(__WXDEBUG__)
+            g_pLogger->LogTrace(_T("Formatter4.Step1"),
+                _T("m_nFreeSpace = %d, PageRightMargin=%d, StartOfBar=%d"),
+                m_nFreeSpace, pPaper->GetPageRightMargin(), 
+                m_oTimepos[nRelMeasure].GetStartOfBarPosition() );
+            g_pLogger->LogTrace(_T("Formatter4.Step1"),
+                m_oTimepos[nRelMeasure].DumpTimeposTable());
+            #endif
 
             //substract space ocupied by this measure from space available in the system
             if (m_nFreeSpace < m_nMeasureSize[nRelMeasure]) {
@@ -574,7 +590,8 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
     //sounding at the same time will have the same x coordinate. The method .ArrageStaffobjsByTime
     //returns the measure column size
     *pNewSystem = fNewSystem;
-    return m_oTimepos[nRelMeasure].ArrangeStaffobjsByTime(m_fDebugMode);      //true = debug on
+    bool fTrace =  m_fDebugMode && (m_nTraceMeasure == 0 || m_nTraceMeasure == nAbsMeasure);
+    return m_oTimepos[nRelMeasure].ArrangeStaffobjsByTime(fTrace);      //true = debug on
 
 }
 

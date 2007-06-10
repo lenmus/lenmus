@@ -75,8 +75,8 @@ private:
     lmTenths            m_nSpacingValue;            //spacing for 'fixed' method
 
     // variables for debugging
-    bool        m_fDebugMode;            //debug on/off
-
+    bool        m_fDebugMode;           //debug on/off
+    long        m_nTraceMeasure;        //measure to trace. 0 = all
 };
 
 
