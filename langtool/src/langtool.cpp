@@ -34,9 +34,11 @@
 
 #include "wx/fs_zip.h"
 #include "wx/xrc/xmlres.h"          // use the xrc resource system
+#include "wx/cmdline.h"             // to parse command line arguments
 
 #include "MainFrame.h"
 #include "Paths.h"
+#include "command.h"
 
 // ----------------------------------------------------------------------------
 // resources
@@ -59,6 +61,12 @@ public:
     virtual bool OnInit();
     virtual int MyApp::OnExit();
 
+    // command line
+    wxArrayString *m_fnames;
+    bool ProcessCmdLine (wxChar** argv, int argc = 0);
+
+    bool m_fUseGUI;
+
 };
 
 // Create a new application object: this macro will allow wxWidgets to create
@@ -79,6 +87,11 @@ IMPLEMENT_APP(MyApp)
 // 'Main program' equivalent: the program execution "starts" here
 bool MyApp::OnInit()
 {
+    // set information about this application
+    const wxString sAppName = _T("langtool");
+    SetVendorName(_T("LenMus"));
+    SetAppName(sAppName);
+
     // Add support for zip files
     wxFileSystem::AddHandler(new wxZipFSHandler);
 
@@ -112,17 +125,30 @@ bool MyApp::OnInit()
     oFN.SetFullName(_T("DlgCompileBook.xrc"));
     wxXmlResource::Get()->Load( oFN.GetFullPath() );
 
-    // create the main application window
-    ltMainFrame *frame = new ltMainFrame(_T("LangTool - eMusicBooks and Lang files processor"), sHomeDir);
+    // get and process command line
+    //m_fnames = new wxArrayString();
+    ProcessCmdLine(argv, argc);
 
-    // and show it (the frames, unlike simple controls, are not shown when
-    // created initially)
-    frame->Show(true);
+        // Create GUI
 
-    // success: wxApp::OnRun() will be called which will enter the main message
-    // loop and the application will run. If we returned false here, the
-    // application would exit immediately.
-    return true;
+    if (m_fUseGUI) {
+        // create the main application window
+        ltMainFrame *frame = new ltMainFrame(_T("LangTool - eMusicBooks and Lang files processor"), sHomeDir);
+
+        // and show it (the frames, unlike simple controls, are not shown when
+        // created initially)
+        frame->Show(true);
+
+        // success: wxApp::OnRun() will be called which will enter the main message
+        // loop and the application will run. If we returned false here, the
+        // application would exit immediately.
+        return true;
+    }
+    else {
+        OnExit();
+        return false;
+    }
+
 }
 
 int MyApp::OnExit()
@@ -133,5 +159,59 @@ int MyApp::OnExit()
     delete g_pPaths;
 
     return 0;
+}
+
+bool MyApp::ProcessCmdLine (wxChar** argv, int argc) {
+
+    // get and process command line
+
+    // The structure wxCmdLineEntryDesc is used to describe the one command line switch, 
+    // option or parameter. 
+    static const wxCmdLineEntryDesc cmdLineDesc[] = {
+        {wxCMD_LINE_SWITCH, _T("v"), _T("verbose"), _T("be verbose") },
+        {wxCMD_LINE_SWITCH, _T("c"), NULL, _T("Command mode: GUI not activated") },
+        {wxCMD_LINE_OPTION, _T("book"), NULL, _T("Source eBook to process (full path)") },
+        {wxCMD_LINE_OPTION, _T("out"), NULL, _T("Path to store results") },
+        {wxCMD_LINE_OPTION, _T("langs"), NULL, _T("languages") },
+        //{wxCMD_LINE_PARAM,  NULL, NULL, _T("input files"),
+        // wxCMD_LINE_VAL_STRING,
+        // wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE},
+        // End of command list
+        {wxCMD_LINE_NONE}
+    };
+    
+    // default values for params
+    wxString sBook = _T("nil");
+    wxString sOut = _T("nil");
+    wxString sLangs = _T("nil");
+
+    //analyse the command line
+    wxCmdLineParser oParser(cmdLineDesc, argc, argv);
+    int nResp = oParser.Parse();
+    if (nResp == -1) {      //solicitado help. Ya ha sido impreso
+    }
+    else if (nResp > 0) {      //error
+        wxLogMessage(_T("Syntax error detected, aborting."));
+    }
+    else {      //todo correcto. Procesar
+        m_fUseGUI = !oParser.Found(_T("c"));
+        oParser.Found(_T("book"), &sBook);
+        oParser.Found(_T("out"), &sOut);
+        oParser.Found(_T("langs"), &sLangs);
+    }
+
+    if (!m_fUseGUI) {
+        CmdCompileBook(sBook, sOut, sLangs, g_pPaths->GetLocalePath() );
+    }
+
+    //// get filenames from the commandline
+    //m_fnames->Clear();
+    //if (parser.Parse() == 0) {
+    //    for (size_t paramNr=0; paramNr < parser.GetParamCount(); ++paramNr) {
+    //        m_fnames->Add (parser.GetParam (paramNr));
+    //    }
+    //}
+
+    return true;
 }
 

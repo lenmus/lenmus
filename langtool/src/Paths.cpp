@@ -48,7 +48,12 @@ lmPaths::lmPaths(wxString sBinPath)
 {
     //Receives the full path to the langtool executable folder (/bin) and
     //extracts the root path
-    m_root.Assign(sBinPath, _T(""), wxPATH_NATIVE);
+    if (sBinPath == _T(""))
+        m_root.AssignCwd();
+    else
+        m_root.Assign(sBinPath, _T(""), wxPATH_NATIVE);
+    m_root.Normalize();
+    //wxMessageBox(m_root.GetFullPath());
     m_root.RemoveLastDir();
     Init();
 

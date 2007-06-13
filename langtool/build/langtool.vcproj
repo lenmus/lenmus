@@ -289,6 +289,12 @@
 			Name="Source Files"
 			Filter="">
 			<File
+				RelativePath="..\src\command.cpp">
+			</File>
+			<File
+				RelativePath="..\src\command.h">
+			</File>
+			<File
 				RelativePath="..\src\DlgCompileBook.cpp">
 			</File>
 			<File
