@@ -684,7 +684,7 @@ int lmTheApp::OnExit(void)
     if (m_pInstanceChecker) delete m_pInstanceChecker;
 
 	//wxDebugContext::Dump();
-	
+
 	return 0;
 }
 
@@ -780,7 +780,7 @@ void lmTheApp::UpdateCurrentDocViews(void)
 wxString lmTheApp::GetVersionNumber()
 {
     // Increment this every time you release a new version
-    wxString sVersion = _T("3.5b1");
+    wxString sVersion = _T("3.5");
     return sVersion;
 }
 

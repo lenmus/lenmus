@@ -7,12 +7,12 @@
 <!-- ******* Max. usable space **** Up to 7 lines *********** -->
     <description>
 - A new eMusicBook included: Music Reading level 1
-- Replaced MDI user interface by a notebook tabbed interface.
 - Dutch language translation now included
-- Improvements in the Score internal model to support more 
-   features: graphical objects (arrows, lines, etc.); metronome
-   marks; global, inheritable options in all score elements.
-- Improvements in LDP language to support the new features.
+- Playback: added rhythmic accent. Higher volume on stronger beats. 
+- Replaced MDI user interface by a notebook tabbed interface.
+- Improvements in the Score internal model and on LDP language
+   to support more features: graphical objects (arrows, lines, 
+   etc.); metronome marks; global, inheritable options.
     </description>
     <download_url>http://www.lenmus.org/sw/page.php?pid=paginas&amp;name=downloads</download_url>
 </platform>

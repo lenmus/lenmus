@@ -1,5 +1,5 @@
 <html>
-<!-- $Updated: 2007/01/28 -->
+<!-- $Updated: 2007/06/05 -->
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>LenMus installation procedure</title>
@@ -7,18 +7,28 @@
 </head>
 <body>
 
-<h1>LenMus 3.4 installation</h1>
+<h1>LenMus installation</h1>
 
-<h2>Microsoft Windows LenMus 3.4 installation</h2>
+<p>
+<a href="#MSWin">Microsoft Windows installation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+<a href="#Linux">GNU/Linux installation</a><br />
+</p>
+
+
+<h2><img src="images/linux.gif" alt="Linux logo" style="MARGING-RIGHT: 2em">
+<a name="Linux">GNU/Linux installation</a></h2>
+
+<p>In preparation</p>
+
+<p>&nbsp;</p>
+<h2><img src="images/winXP.jpg" alt="Windows XP logo" style="MARGING-RIGHT: 2em">
+<a name="MSWin">Microsoft Windows installation</a></h2>
 
 <h3>Automatic installation</h3>
 
-<p>Just run the installer:</p>
-<ul>
-  <li>For Widows 98:&nbsp;&nbsp;&nbsp; lenmus_3.4_setup.exe</li>
-  <li>For Windows NT / 2000 / XP:&nbsp;&nbsp;&nbsp; lenmus_3.4u_setup.exe</li>
-</ul>
-It will ask you the language to use (for the installer and also as default LenMus language),
+<p>Only modern Windows versions (NT/2000/XP/Vista) are supported. Just run the installer
+(lenmus_3.5_setup.exe).</p>
+<p>It will ask you the language to use (for the installer and also as default LenMus language),
 the path to install LenMus
 and ask you about installing optional components.</p>
 
@@ -52,67 +62,51 @@ Follow this procedure:<p/>
 </ol>
 
 
-<h3>LenMus 3.4 directories</h3>
+<h3>LenMus 3.5 directories</h3>
 <p>After installation, in the chosen installation folder you will find some documentation,
 such as licence and installation procedure, and the following folders and content: </p>
 
-<table class="Lista">
-<thead class="ListaImpar">
-    <td class="ListaImpar">Directory</td>
-    <td class="ListaImpar">Files</td>
-    <td class="ListaImpar">Contents</td></thead>
-<tr class="ListaPar">
-    <td rowspan="2" class="ListaPar">bin</td>
-    <td class="ListaPar">lenmus.exe</td><td class="ListaPar">Executable</td></tr>
-<tr>
-    <td class="ListaPar">lmbasic.ttf&nbsp;</td>
-    <td class="ListaPar">True Type font with music symbols. <b>If you install LenMus without using
-    the setup program, YOU MUST INSTALL this font in the
-        Windows/fonts directory.</b></td></tr>
-<tr>
-    <td class="ListaPar">res</td>
-    <td class="ListaPar">&nbsp;</td>
-    <td class="ListaPar">Icons, bitmaps and related files.</td></tr>
-<tr>
-    <td class="ListaPar">xrc</td>
-    <td class="ListaPar">*.xrc</td>
-    <td class="ListaPar">XRC resources used by the program.</td></tr>
-<tr>
-    <td class="ListaPar">scores</td>
-    <td class="ListaPar">&nbsp;</td>
-    <td class="ListaPar">Sample scores. There are two subdirectories. One, named 'MusicXML' for
-        MusicXML scores; load them using File/Import. And another, named 'samples', for LDP (LenMus
-        score language) scores; load them using File/Open.</td></tr>
-<tr class="ListaPar">
-    <td class="ListaPar">books</td>
-    <td class="ListaPar">xx/*.lmb</td>
-    <td class="ListaPar">
-        There is a subdirectory (xx) for each supported language.
-        Subdirectories are named, following RFC 1766, with the two letter
-        language code (.i.e. 'en' for English, 'es' for Spanish, etc.) or with the five chars
-        language-culture code (i.e. 'en-EN' for USA English or 'es-ES' for the Modern Spanish).
-        <br /><br />
-        Contains all eMusicBooks in compiled format (lmb stands for
-        <b>L</b>en<b>M</b>us <b>B</b>ook).</td></tr>
-<tr>
-    <td class="ListaPar">temp</td>
-    <td class="ListaPar">empty</td>
-    <td class="ListaPar">Empty folder. Used during LenMus execution. Can be changed
-        with the 'options' menu</td></tr>
-<tr class="ListaPar">
-    <td class="ListaPar">locale</td>
-    <td class="ListaPar">&nbsp;</td>
-    <td class="ListaPar">Contains all language dependent files.
-        There is a subdirectory for each supported language, also named following RFC 1766.
-        </td></tr>
-<tr>
-    <td rowspan="2" class="ListaPar">locale/xx</td>
-    <td class="ListaPar">*.mo</td><td class="ListaPar">The .mo message translation
-    catalogues, except for English language (not needed).</td></tr>
-<tr>
-    <td class="ListaPar">help.htb</td>
-    <td class="ListaPar">The help file</td></tr>
+
+<br />
+<table cellspacing='0' cellpadding='0'>
+<tr><td colspan='2'><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>c:\Program files</b> (or any other location you would prefer)</td></tr>
+<tr><td colspan='2'><img src="images/tree-L.png"    alt="(1st level)" width="20" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>lenmus</b></td></tr>
+<tr><td colspan='2'><img src="images/tree-ST.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>bin</b> - Executable files.</td></tr>
+<tr><td colspan='2'><img src="images/tree-SV.png"   alt="(3rd level)" width="40" height="20" /><img src="images/tree-ST.png"   alt="(3rd level)" width="40" height="20" /><img src="images/file-binary.png" alt="[DIR]" width="20" height="20" />&nbsp;<b>lenmus.exe</b> - program executable.</td></tr>
+<tr><td colspan='2'><img src="images/tree-SV.png"   alt="(3rd level)" width="40" height="20" /><img src="images/tree-ST.png"   alt="(3rd level)" width="40" height="20" /><img src="images/file-document.png" alt="[DIR]" width="20" height="20" />&nbsp;<b>lenmus.ini</b> - user options file.</td></tr>
+<tr><td colspan='2'><img src="images/tree-SV.png"   alt="(3rd level)" width="40" height="20" /><img src="images/tree-SL.png"   alt="(3rd level)" width="40" height="20" /><img src="images/file-font-truetype.png" alt="[DIR]" width="20" height="20" />&nbsp;<b>lmbasic.ttf</b> - True Type font (note 2).</td></tr>
+
+
+
+<tr><td colspan='2'><img src="images/tree-ST.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>logs</b> - log files.</td></tr>
+
+<tr><td colspan='2'><img src="images/tree-ST.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>xrc</b> - XRC resources used by the program.</td></tr>
+<tr><td colspan='2'><img src="images/tree-ST.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>res</b> - Icons, bitmaps and related files.</td></tr>
+<tr><td colspan='2'><img src="images/tree-ST.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>locale</b> - Language dependent files.</td></tr>
+<tr><td colspan='2'><img src="images/tree-SV.png"   alt="(3rd level)" width="40" height="20" /><img src="images/tree-SL.png"   alt="(3rd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>xx</b> - Language xx (note 1).</td></tr>
+<tr><td colspan='2'><img src="images/tree-ST.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>books</b> - eMusicBooks.</td></tr>
+<tr><td colspan='2'><img src="images/tree-SV.png"   alt="(3rd level)" width="40" height="20" /><img src="images/tree-SL.png"   alt="(3rd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>xx</b> - Language xx (note 1).</td></tr>
+
+
+<tr><td colspan='2'><img src="images/tree-ST.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>temp</b> - Used during LenMus execution.</td></tr>
+
+
+<tr><td colspan='2'><img src="images/tree-ST.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>scores</b> - user scores</td></tr>
+<tr><td colspan='2'><img src="images/tree-SV.png"   alt="(3rd level)" width="40" height="20" /><img src="images/tree-ST.png"   alt="(3rd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>MusicXML</b>  - MusicXML scores; load them using File/Import.</td></tr>
+<tr><td colspan='2'><img src="images/tree-SV.png"   alt="(3rd level)" width="40" height="20" /><img src="images/tree-SL.png"   alt="(3rd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>samples</b> - LenMus scores; load them using File/Open.</td></tr>
+
+
+<tr><td colspan='2'><img src="images/tree-SL.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>docs</b> - Documentation (license, installation guide, ...)</td></tr>
+
 </table>
 
+<p><b>Notes</b></p>
+<ol>
+<li>There is a subdirectory (xx) for each supported language. Subdirectories are named, following RFC 1766, with the two letter language code (.i.e. 'en' for English, 'es' for Spanish, etc.) or with the five chars language-culture code (i.e. 'en-EN' for USA English or 'es-ES' for the Modern Spanish).<br /><br /></li>
+<li>Contains music symbols. It must be installed in Windows font folder.</li>
+</ol>
+
+
+<p>&nbsp;</p>
 </body>
 </html>

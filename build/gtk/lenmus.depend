@@ -824,7 +824,7 @@
 	"../score/KeySignature.h"
 	"../app/Logger.h"
 
-1181121310 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
+1181850784 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/frame.h"
@@ -1313,18 +1313,19 @@
 	"../score/Score.h"
 	<wx/dynarray.h>
 
-1180764198 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.cpp
+1181300908 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/debug.h"
 	"wx/list.h"
+	"wx/numdlg.h"
 	"../score/Score.h"
 	"TimeposTable.h"
 	"Formatter4.h"
 	"BoxSystem.h"
 	"../app/Logger.h"
 
-1180336204 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.h
+1181298132 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.h
 	"../score/Score.h"
 	"TimeposTable.h"
 	"BoxScore.h"
@@ -1483,7 +1484,7 @@
 	"../auxmusic/ChordManager.h"
 	"../ldp_parser/AuxString.h"
 
-1180790670 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/html/TextBookFrame.cpp
+1181233166 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/html/TextBookFrame.cpp
 	"wx/wxprec.h"
 	"wx/intl.h"
 	"wx/log.h"
@@ -1760,7 +1761,7 @@
 
 1180335110 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Notation.h
 
-1179836862 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Note.cpp
+1181296662 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Note.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -1884,7 +1885,7 @@
 	"Metronome.h"
 	"../sound/MidiManager.h"
 
-1180630218 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/sound/MidiManager.cpp
+1181236510 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/sound/MidiManager.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"MidiManager.h"

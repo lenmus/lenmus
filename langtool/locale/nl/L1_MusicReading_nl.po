@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-06-13 17:56+0100\n"
+"PO-Revision-Date: 2007-06-14 19:23+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -825,7 +825,7 @@ msgstr "De volgende figuur die we zullen bestuderen is de achtste noot. Zijn sym
 
 #: L1_MusicReading/L1_MusicReading.cpp:191
 msgid "Many times eighth notes are drawn beamed:"
-msgstr ""
+msgstr "Achtste noten worden dikwijls met koppeling getekend:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:192
 msgid "One quarter note equals two eighth notes and one quarter rest equals two eighth rests. So in 2/4 time signature an eighth note or rest gets half a beats, and, therefore, there are two eighth notes in a beat. So in 2/4 they are usually drawn beamed, occupying a beat."
