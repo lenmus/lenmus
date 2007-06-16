@@ -45,6 +45,9 @@
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
+//access to MIDI manager to get default settings for instrument to use
+#include "../sound/MidiManager.h"
+
 
 lmMusicXMLParser::lmMusicXMLParser()
 {
@@ -1795,7 +1798,8 @@ void lmMusicXMLParser::ParseScorePart(wxXmlNode* pNode, lmScore* pScore)
     // create one instrument with empty VStaves
     g_pLogger->LogTrace(_T("lmMusicXMLParser"), _T("Procesing score-part id = "), sId.c_str() );
     long nVStaves=1;
-    int nMIDIChannel=0, nMIDIInstr=0;        //dbg
+	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();	
+	int nMIDIInstr = g_pMidi->DefaultVoiceInstr();
     lmInstrument* pInstr = pScore->AddInstrument(nVStaves, nMIDIChannel, nMIDIInstr, _T(""));
     pInstr->XML_SetId(sId);
 

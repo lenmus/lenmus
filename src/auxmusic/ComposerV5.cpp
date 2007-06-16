@@ -44,6 +44,9 @@
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
+//access to MIDI manager to get default settings for instrument to use
+#include "../sound/MidiManager.h"
+
 
 
 lmComposer5::lmComposer5() : lmComposer()
@@ -178,7 +181,8 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
     lmLDPNode* pNode;
     lmScore* pScore = new lmScore();
     pScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );            //5mm
-    pScore->AddInstrument(1,0,0,_T(""));           //one vstaff, MIDI channel 0, MIDI instr 0
+    pScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+						  g_pMidi->DefaultVoiceInstr(), _T(""));
     lmVStaff *pVStaff = pScore->GetVStaff(1, 1);   //get first vstaff of instr.1
     pVStaff->AddClef( m_nClef );
     pVStaff->AddKeySignature( m_nKey );

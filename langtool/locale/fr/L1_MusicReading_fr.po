@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-06-15 18:29+0100\n"
+"PO-Revision-Date: 2007-06-16 08:51+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: L1_MusicReading/L1_MusicReading.cpp:2
 msgid "Send your comments and suggestions to the LenMus team (www.lenmus.org)"
-msgstr "Envoyez vos commentaires et suggestions à l'équipe LenMus (www.lenmus.org)Envoyez vos commentaires et suggestions à l'équipe LenMus (www.lenmus.org)"
+msgstr "Envoyez vos commentaires et suggestions à l'équipe LenMus (www.lenmus.org)"
 
 #: L1_MusicReading/L1_MusicReading.cpp:3
 msgid "Licensed under the terms of the GNU Free Documentation License v1.2"
@@ -22,7 +22,7 @@ msgstr "Licencié sous les termes du GNU Licence libre de documentation v1.2"
 
 #: L1_MusicReading/L1_MusicReading.cpp:4
 msgid "the teacher of music"
-msgstr "Le professeur de musique"
+msgstr "le professeur de musique"
 
 #: L1_MusicReading/L1_MusicReading.cpp:5
 msgid "Cover page"
@@ -55,7 +55,7 @@ msgstr "Présentation"
 
 #: L1_MusicReading/L1_MusicReading.cpp:13
 msgid "Syllabus"
-msgstr "programme"
+msgstr "Programme"
 
 #: L1_MusicReading/L1_MusicReading.cpp:14
 msgid "This eMusicBook is intended to help improve one's reading skills, providing the sort of practice and exercise that are required to become a good sight-reader."
@@ -67,19 +67,19 @@ msgstr "Àpart d'introduire differents cellules rhytmiques, en augmentation de s
 
 #: L1_MusicReading/L1_MusicReading.cpp:16
 msgid " The stave. Treble (G) and bass (F) clefs. Names of notes on the stave. Extension of the stave to include two ledger lines below and above each stave."
-msgstr "La portée. clef aigue (Sol) et clef basse (Fa) . Noms des notes dans la portée. Extension de la portée pour inclure deux lines en bas et en dessus de chaque portée"
+msgstr " La portée. clef aigue (Sol) et clef basse (Fa) . Noms des notes dans la portée. Extension de la portée pour inclure deux lines en bas et en dessus de chaque portée"
 
 #: L1_MusicReading/L1_MusicReading.cpp:17
 msgid " Note values of whole (semibreve), half (minim), quarter (crotchet), eighth (quaver) and sixteenth (semiquaver), and their equivalent rests. Tied notes. Single-dotted notes and rests."
-msgstr "Les valeurs des notes entiers (semibreve), demi (minim), noire (Crotchet), croche (quaver) et double croche (semiquaver), et ses equivalents silences. Notes liées. Notes simples pointillées et silences."
+msgstr " Les valeurs des notes entiers (semibreve), demi (minim), noire (Crotchet), croche (quaver) et double croche (semiquaver), et ses equivalents silences. Notes liées. Notes simples pointillées et silences."
 
 #: L1_MusicReading/L1_MusicReading.cpp:18
 msgid " Simple time signatures of 2/4, 3/4 and 4/4 and compound time signature of 6/8. Bar-lines and the grouping of the notes listed above within these times."
-msgstr "Simple mesures de 2/4, 3/4 et 4/4 et mesures de temps composés de 6/8. Lines de mesure et le groupement des notes lsitées dessus dans ces temps."
+msgstr " Simple mesures de 2/4, 3/4 et 4/4 et mesures de temps composés de 6/8. Lines de mesure et le groupement des notes lsitées dessus dans ces temps."
 
 #: L1_MusicReading/L1_MusicReading.cpp:19
 msgid " Key signatures of all major and minor keys up to and including two sharps and flats."
-msgstr "La tonalite a l'armure de toutes les clés majeures et mineures arrive y compris deux dièses et bemols"
+msgstr " La tonalite a l'armure de toutes les clés majeures et mineures arrive y compris deux dièses et bemols"
 
 #: L1_MusicReading/L1_MusicReading.cpp:20
 msgid "Book organization"
@@ -95,7 +95,7 @@ msgstr "Périmètre de clefs et notes"
 
 #: L1_MusicReading/L1_MusicReading.cpp:23
 msgid " The course starts with the G clef using a very reduced note range (e4-g4). Progressively, the note range is increased to reach the range c4-f5 in lesson 14. Next, the F key is introduced, again with a very reduced note range (a3-c4) and from there, the exercises of all following lessons use the F and G clef indistinctely. The note range is continuously being broadened in both clefs (G: a3-c6 y F: a2-e4), to cover two legder lines, above and below."
-msgstr "Le cours commence avec la clé de SOL utilisant une très réduite gamme (mi4-sol4). progressivément, la gamme de notes est incrementée jusqu'à arriver, dans la leçon 14, la gamme do4-fa5. Comme suite on introduit la clef de FA, à nouveau avec une note très réduite gamme  (la3;do4) et dès là les exercices des leçons suivants utilissent indistinctement ls cles de Fa et Sol. La gamme de notes est toujours élargée pour couvrir deux légéres lignes en dessus et dessous dans les deux clés (Sol: la3-do6 et Fa: la2-mi4)."
+msgstr " Le cours commence avec la clé de SOL utilisant une très réduite gamme (mi4-sol4). progressivément, la gamme de notes est incrementée jusqu'à arriver, dans la leçon 14, la gamme do4-fa5. Comme suite on introduit la clef de FA, à nouveau avec une note très réduite gamme  (la3;do4) et dès là les exercices des leçons suivants utilissent indistinctement ls cles de Fa et Sol. La gamme de notes est toujours élargée pour couvrir deux légéres lignes en dessus et dessous dans les deux clés (Sol: la3-do6 et Fa: la2-mi4)."
 
 #: L1_MusicReading/L1_MusicReading.cpp:24
 msgid "Time signatures:"
@@ -103,7 +103,7 @@ msgstr "Mesures à la clé:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:25
 msgid " In the first exercises (9 to 17) only the 2/4 simple time is used. Next, the 3/4 simple time (lesson 18) and the 4/4 simple time (lesson 19) are used. In lesson 28 the compound 6/8 is introduced and it is practised in the remaining lessons (29 to 31)."
-msgstr "Dans les premiers exercices (9 à 17) n'est utilisé que le simple temps 2/4. Alors le simple temps 3/4 (leçon 18) et le simple temps 4/4 (leçon 19) sont utilisés. Dans la leçon 28 es introduite la combinaison 6/8 et c'est practiquée dans les leçons qui restent"
+msgstr " Dans les premiers exercices (9 à 17) n'est utilisé que le simple temps 2/4. Alors le simple temps 3/4 (leçon 18) et le simple temps 4/4 (leçon 19) sont utilisés. Dans la leçon 28 es introduite la combinaison 6/8 et c'est practiquée dans les leçons qui restent"
 
 #: L1_MusicReading/L1_MusicReading.cpp:26
 msgid "Key signatures:"
@@ -111,7 +111,7 @@ msgstr "Tonalites à l'armure:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:27
 msgid " The exercises in the first two practical lessons (9 and 10) have scores using only the C major / A minor key signature (no accidentals). The key signature is introduced in lesson 13 and from there (lessons 14 to 17) the exercises use also one accidental (G major / E minor and F major / D minor). In the remaining lessons (18 to 31) exercises use up to two accidentals (D major / B minor and B flat major / G minor)."
-msgstr "Les exercices dans les premiers leçons practiques (9 et 10) ont des partitions utilisant seulement la Do majeure / La Mineure tonalité à l'armure (non accidentels). La tonalité à l'armure est introduite dans la leçon 13 et dès ici (lessons 14 à 17) les exercices utilisent aussi une acidentel (Sol majeure /Mi mineure et Fa majeure / Re mineure). Dans las leçons qui restent (18 à 31) les exercices utilisent jusqu'à deux accidentels (Re majeure / Si mineure et Si bemol majeure / Sol mineur)."
+msgstr " Les exercices dans les premiers leçons practiques (9 et 10) ont des partitions utilisant seulement la Do majeure / La Mineure tonalité à l'armure (non accidentels). La tonalité à l'armure est introduite dans la leçon 13 et dès ici (lessons 14 à 17) les exercices utilisent aussi une acidentel (Sol majeure /Mi mineure et Fa majeure / Re mineure). Dans las leçons qui restent (18 à 31) les exercices utilisent jusqu'à deux accidentels (Re majeure / Si mineure et Si bemol majeure / Sol mineur)."
 
 #: L1_MusicReading/L1_MusicReading.cpp:28
 msgid "Lessons' structure"
@@ -147,43 +147,43 @@ msgstr "Le papier manuscrit est organisé à faisceaux de lines horizontaux, app
 
 #: L1_MusicReading/L1_MusicReading.cpp:36
 msgid "line 5"
-msgstr ""
+msgstr "Ligne 5"
 
 #: L1_MusicReading/L1_MusicReading.cpp:37
 msgid "line 4"
-msgstr ""
+msgstr "Ligne 4"
 
 #: L1_MusicReading/L1_MusicReading.cpp:38
 msgid "line 3"
-msgstr ""
+msgstr "Ligne 3"
 
 #: L1_MusicReading/L1_MusicReading.cpp:39
 msgid "line 2"
-msgstr ""
+msgstr "Ligne 2"
 
 #: L1_MusicReading/L1_MusicReading.cpp:40
 msgid "line 1"
-msgstr ""
+msgstr "Ligne 1"
 
 #: L1_MusicReading/L1_MusicReading.cpp:41
 msgid "The four spaces between the staff lines are also important and are also numbered from bottom to top:"
-msgstr "Les quatre spaces entre les lines de portée, c'est important at c'est ausi numeroté des le bas vers le haut:"
+msgstr " Les quatre spaces entre les lines de portée, c'est important at c'est ausi numeroté des le bas vers le haut:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:42
 msgid "space 4"
-msgstr ""
+msgstr "Espace 4"
 
 #: L1_MusicReading/L1_MusicReading.cpp:43
 msgid "space 3"
-msgstr ""
+msgstr "Espace 3"
 
 #: L1_MusicReading/L1_MusicReading.cpp:44
 msgid "space 2"
-msgstr ""
+msgstr "Espace 2"
 
 #: L1_MusicReading/L1_MusicReading.cpp:45
 msgid "space 1"
-msgstr ""
+msgstr "Espace 1"
 
 #: L1_MusicReading/L1_MusicReading.cpp:46
 msgid "The musical symbols are placed on the staff and the music on the staff is read from left to right."
@@ -195,15 +195,15 @@ msgstr "Les figures des notes sont placées soit sur la ligne soit sur un espace
 
 #: L1_MusicReading/L1_MusicReading.cpp:48
 msgid "The first note has higher pitch than the second one"
-msgstr ""
+msgstr "La première note est plus haute que la deuxième."
 
 #: L1_MusicReading/L1_MusicReading.cpp:49
 msgid "As an example, press the 'Play' link and listen to the following score:"
-msgstr "Comme exemple, appuyez le link 'Play? et écoutez jusqu'à la partition suivante:"
+msgstr "Comme exemple, appuyez le link 'Jouer' et écoutez jusqu'à la partition suivante:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:50
 msgid "Pitch increases as the note is higher"
-msgstr ""
+msgstr "L'hauteur incrementée comme la note est plus haute."
 
 #: L1_MusicReading/L1_MusicReading.cpp:51
 msgid "The clef"
@@ -211,7 +211,7 @@ msgstr "La Clef"
 
 #: L1_MusicReading/L1_MusicReading.cpp:52
 msgid "Sounds are represented by notes. There are seven notes named either using the first seven letters of the alphabet A, B, C, D, E, F (Anglo-Saxon system) or using the names Do, Re, Mi, Fa, Sol, La and Si (Ti) (Latin system). To determine which pitch (sound) is represented by each line and space in the staff a symbol, named 'the clef', is placed at the beginning of each staff. In this course we are going to start with the study of the G clef, also named 'treble clef', that is represented by the following symbol:"
-msgstr ""
+msgstr "Les sons sont representées par des notes. il y a sept notes appelées chaq'une d'elles par les syllabes Do, Re, Mi, Fa, Sol, La, Si (latin système), ou las lettres A, B, C, D, E, G et G (Systeme anglais). Pour determiner quel son est representé par chaque ligne et espace dans la portée est placé un symbole , 'La clef' au debut de chaque portée. Dans ce course nous allons commencer l'étude de la clé de Sol appelée aussi 'clef aigue', c'est réprésentée par le symbole suivante:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:53
 msgid "The clef assigns a particular line to a specific pitch, and all other pitches are mapped in ascending and descending order to the lines and spaces above and below that reference line. In the G clef, the G note of the fourth octave is assigned to the second line:"
@@ -301,31 +301,31 @@ msgstr "Nous avons déjà appris que la position verticale d'une note sur la por
 
 #: L1_MusicReading/L1_MusicReading.cpp:67
 msgid "Whole"
-msgstr ""
+msgstr "Ronde"
 
 #: L1_MusicReading/L1_MusicReading.cpp:68
 msgid "Half"
-msgstr ""
+msgstr "Blanche"
 
 #: L1_MusicReading/L1_MusicReading.cpp:69
 msgid "Quarter"
-msgstr ""
+msgstr "Noire"
 
 #: L1_MusicReading/L1_MusicReading.cpp:70
 msgid "Eight"
-msgstr ""
+msgstr "Croche"
 
 #: L1_MusicReading/L1_MusicReading.cpp:71
 msgid "16th"
-msgstr ""
+msgstr "Double Croche"
 
 #: L1_MusicReading/L1_MusicReading.cpp:72
 msgid "32th"
-msgstr ""
+msgstr "Triple croche"
 
 #: L1_MusicReading/L1_MusicReading.cpp:73
 msgid "64th"
-msgstr ""
+msgstr "Quadruple croche"
 
 #: L1_MusicReading/L1_MusicReading.cpp:74
 msgid "In the coming lessons we will start using only the quarter note and will learn about note duration. Progressively, we will introduce the other note symbols. In this lesson we are going to learn some basic terminology about note symbols and some rules about how to draw them."
@@ -337,7 +337,7 @@ msgstr "Las figures de notes ont trois parts differents: (1) la tête de note, (
 
 #: L1_MusicReading/L1_MusicReading.cpp:76
 msgid "Stems normally go up for notes placed below the third line and go down for notes placed on or above the third line:"
-msgstr "les tiges vont normalement vers le haut pour les notes placées en bas de la troisième ligne et vont vers le bas pour les notes placées en or sur la troisième ligne:"
+msgstr "Les tiges vont normalement vers le haut pour les notes placées en bas de la troisième ligne et vont vers le bas pour les notes placées en or sur la troisième ligne:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:77
 msgid "Stems are drawn on the right-hand side of the note-head when the stem goes up, and on the left-hand side of the note-head when the stem goes down. Flags are always drawn on the right-hand side of the stem:"
@@ -359,12 +359,12 @@ msgstr "La musique est normallement divisée en parties égaux appelées 'Mesure
 #: L1_MusicReading/L1_MusicReading.cpp:83
 #: L1_MusicReading/L1_MusicReading.cpp:85
 msgid "barline"
-msgstr ""
+msgstr "Barre de mesure"
 
 #: L1_MusicReading/L1_MusicReading.cpp:82
 #: L1_MusicReading/L1_MusicReading.cpp:84
 msgid "measure"
-msgstr ""
+msgstr "Mesure"
 
 #: L1_MusicReading/L1_MusicReading.cpp:86
 msgid "There are different types of bar lines, that are used for special purposes. For example, the end of the last measure of a piece of music is marked with a double bar line, being the fist line thin and the second one thick. The thin double bar line (two thin lines) is used to mark sections within a piece of music."
@@ -372,15 +372,15 @@ msgstr "Il y a differents types de bares de mesure qui sont utilisées pour des 
 
 #: L1_MusicReading/L1_MusicReading.cpp:87
 msgid "simple barline"
-msgstr ""
+msgstr "barre de mesure simple"
 
 #: L1_MusicReading/L1_MusicReading.cpp:88
 msgid "double barline"
-msgstr ""
+msgstr "barre de mesure double"
 
 #: L1_MusicReading/L1_MusicReading.cpp:89
 msgid "final barline"
-msgstr ""
+msgstr "barre de mesure finale"
 
 #: L1_MusicReading/L1_MusicReading.cpp:90
 msgid "Time signatures"
@@ -420,7 +420,7 @@ msgstr "La premiere mesure à la clé que nous allons utiliser c'est celle de 2/
 
 #: L1_MusicReading/L1_MusicReading.cpp:99
 msgid "As you know 2/4 means that each measure has two beats and that each beat gets a quarter note. Therefore, each measure will get two quarter notes. For example:"
-msgstr "CVomme vous savez, 2/4 signifie que chaque mesure a deux coups et chaque coup prendre une noire. Donc, chaque mesure prendra deux noires. Par exemple:"
+msgstr "Comme vous savez, 2/4 signifie que chaque mesure a deux coups et chaque coup prendre une noire. Donc, chaque mesure prendra deux noires. Par exemple:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:100
 msgid "We also know that the first beat of each measure is the stronger one. Therefore, if you count beats along with the music, the 2/4 time signature will imply a rhythm such as 'ONE-and-Two-and-ONE-and-Two-and ...', stressing the ONE syllable, as if you were a soldier marching. For studying music reading it makes sense to mark the beats with the hand, the first beat of each measure with a knock down (on the table or in the air) and the second beat of each measure with a knock up (in the air or on the shoulder). You can also mark the beats with your foot, it you prefer, but it is very, very important to mark the beats. You should make a habit out of it, at least until you get enough skills at reading music."
@@ -600,7 +600,7 @@ msgstr "Appuyez sur le bouton 'Metronome'"
 
 #: L1_MusicReading/L1_MusicReading.cpp:150
 msgid " and the sound will inmediately start. To stop the metronome click on the button again. To adjust the tempo just type the required tempo number in the box on the right of the metronome button (2), or click on the up/down arrows on the right (3) to adjust the desired tempo. Try it now!"
-msgstr "et le son commencerá d'inmediat. Pour arrêter le metronome appuyez sur le bouton à nouveau. Pour adjuster le tempo, seulement tapez le tempo requis sur la boîte à droite du metronome bouton (2) ou clickez sur les flèches haut/bas dans la droite (3) pour adjuster le tempo désiré. Essayez maintenant!"
+msgstr " et le son commencerá d'inmediat. Pour arrêter le metronome appuyez sur le bouton à nouveau. Pour adjuster le tempo, seulement tapez le tempo requis sur la boîte à droite du metronome bouton (2) ou clickez sur les flèches haut/bas dans la droite (3) pour adjuster le tempo désiré. Essayez maintenant!"
 
 #: L1_MusicReading/L1_MusicReading.cpp:151
 msgid "When playing back a score its tempo is also controlled by the built-in settings. Just change the displayed tempo number and the tempo of the score will automatically adjust to it."
@@ -824,7 +824,7 @@ msgstr "La prochaîne figure que nous allons étudier c'est la Croche. Ses figur
 
 #: L1_MusicReading/L1_MusicReading.cpp:191
 msgid "Many times eighth notes are drawn beamed:"
-msgstr ""
+msgstr "Beaucoup de fois la croche est desinée avec poutres"
 
 #: L1_MusicReading/L1_MusicReading.cpp:192
 msgid "One quarter note equals two eighth notes and one quarter rest equals two eighth rests. So in 2/4 time signature an eighth note or rest gets half a beats, and, therefore, there are two eighth notes in a beat. So in 2/4 they are usually drawn beamed, occupying a beat."
@@ -913,15 +913,15 @@ msgstr "Alterations accidentelles sont des marques placées avant la tête de no
 
 #: L1_MusicReading/L1_MusicReading.cpp:208
 msgid "sharp"
-msgstr ""
+msgstr "diese"
 
 #: L1_MusicReading/L1_MusicReading.cpp:209
 msgid "flat"
-msgstr ""
+msgstr "bemole"
 
 #: L1_MusicReading/L1_MusicReading.cpp:210
 msgid "natural"
-msgstr ""
+msgstr "becarre"
 
 #: L1_MusicReading/L1_MusicReading.cpp:211
 msgid "A sharp sign raises the pitch of a note by half a step (one semitone). A flat sign lowers the pitch of a note half a step (one semitone). A natural sign cancels the effect of a flat or a sharp."
@@ -937,7 +937,7 @@ msgstr "Tonalite à l'armure"
 
 #: L1_MusicReading/L1_MusicReading.cpp:214
 msgid "If, for example, a piece of music is written based on the D major scale, all F and C notes will have sharp signs placed before them. For example (play it):"
-msgstr "Si, par exemple, une pièce musical est écrite basé en l'échelle de Re majeure, toutes les notes de Fa et Do auront avant d'elles des signs diese. Par exemple (Jouez la):"
+msgstr "Si, par exemple, une pièce musical est écrite basé en l'échelle de Re majeure, toutes les notes de Fa et Do auront avant d'elles des signs diese. Par exemple (jouez la):"
 
 #: L1_MusicReading/L1_MusicReading.cpp:215
 msgid "Having to write accidentals always in the same notes can be annoying. To make the writing process easier, instead of writing sharp signs before all F and C notes, the accidentals can be written at the beginning of the staff, immediately after the clef sign. These accidentals affect the whole score and are named the 'key signature'. They apply to all relevant notes"
@@ -957,7 +957,7 @@ msgstr "Remarquez que le diese pour la note Fa est placée sur la cinquième lig
 
 #: L1_MusicReading/L1_MusicReading.cpp:219
 msgid "The key signature, apart of simplifying the notation, gives information about the 'tonality' of the composition, roughly speaking, which scale is used to build a piece of music. The key signature must be written on every music line, placed immediately after the clef sign."
-msgstr "la tonalité à l'armure, rende plus facil la notation musicale, nous donne information sur la tonalité de la composition, parlant en gros, quelle  l'échelle est utilisée pour construire une pièce musicale. La tonalite à l'armure doit être écrite sur toutes les lignes, placée justement après le sign de clé."
+msgstr "La tonalité à l'armure, rende plus facil la notation musicale, nous donne information sur la tonalité de la composition, parlant en gros, quelle  l'échelle est utilisée pour construire une pièce musicale. La tonalite à l'armure doit être écrite sur toutes les lignes, placée justement après le sign de clé."
 
 #: L1_MusicReading/L1_MusicReading.cpp:221
 msgid "In this lesson we will continue with exercises containing the rhythmic patterns of the previous lessons, but introducing the key signatures of G major and E minor (one sharp) and B flat major and G minor (one flat)."
@@ -973,7 +973,7 @@ msgstr "Lisez les partitions contenent les rhytmes étudiés."
 
 #: L1_MusicReading/L1_MusicReading.cpp:227
 msgid "Marks to lengthen notes: tie, dot and fermata"
-msgstr "marquez les notes rallongées: Lien, point et point d'orgue"
+msgstr "Marquez les notes rallongées: Lien, point et point d'orgue"
 
 #: L1_MusicReading/L1_MusicReading.cpp:228
 msgid "We already know (lesson 10) about ties: a tie is a small arch between the heads of two consecutive notes of the same pitch, to join the duration of two notes. In this lesson we will learn about two other symbols to lengthen the duration of a note or a rest: the dot and the fermata."
@@ -1014,7 +1014,7 @@ msgstr "Ecoutez et rémarquez les differences"
 
 #: L1_MusicReading/L1_MusicReading.cpp:234
 msgid "In this lesson we are going to practise the following rhythmic patterns:"
-msgstr "dans cette leçon nous allons pratiquer les suivants patrons rhytmiques:"
+msgstr "Dans cette leçon nous allons pratiquer les suivants patrons rhytmiques:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:241
 #: L1_MusicReading/L1_MusicReading.cpp:244
@@ -1036,7 +1036,7 @@ msgstr "La clef de Fa attibue la note Fa à la quatrième ligne comem montre le 
 
 #: L1_MusicReading/L1_MusicReading.cpp:249
 msgid "F note"
-msgstr ""
+msgstr "Fa"
 
 #: L1_MusicReading/L1_MusicReading.cpp:260
 msgid "In the bass clef the first upper leger line corresponds to the central C note (C4), represented in G clef on the first lower leger line:"
@@ -1045,7 +1045,7 @@ msgstr "Dans la clef de Fa la première ligne extra d'en haute corresponds au Do
 #: L1_MusicReading/L1_MusicReading.cpp:261
 #: L1_MusicReading/L1_MusicReading.cpp:262
 msgid "C note"
-msgstr ""
+msgstr "Do"
 
 #: L1_MusicReading/L1_MusicReading.cpp:263
 msgid "By using both the G clef and the F clef and two leger lines a range of five octaves can be comfortably represented, as shown in the following score:"
@@ -1078,7 +1078,7 @@ msgstr " - Lisez partitions contenant les rhytmes étudiés dans les leçons pr�
 
 #: L1_MusicReading/L1_MusicReading.cpp:308
 msgid "Start the metronome. Press 'Play' and listen. Train your ear and practise reading these rhythms."
-msgstr "Demarrez le metronome. Appuyez 'Play' et écoutez. Entraînez vos oreilles et pratiquez lisant ces rhytmes."
+msgstr "Demarrez le metronome. Appuyez 'Jouer' et écoutez. Entraînez vos oreilles et pratiquez lisant ces rhytmes."
 
 #: L1_MusicReading/L1_MusicReading.cpp:309
 #: L1_MusicReading/L1_MusicReading.cpp:319
@@ -1088,7 +1088,7 @@ msgstr "Le silence de croche ou demi-soupir"
 
 #: L1_MusicReading/L1_MusicReading.cpp:310
 msgid "In this lesson we will start introducing the eighth rest in the rhythmic patterns. The first pattern we are going to study is the eighth note followed by an eighth rest:"
-msgstr "dans cette leçon nous allons commencer introduisant le demi-soupir dans les patrons rhytmiques. Le premier patron que nous allons étudier c'est la croche suivie d'un demi-soupir:"
+msgstr "Dans cette leçon nous allons commencer introduisant le demi-soupir dans les patrons rhytmiques. Le premier patron que nous allons étudier c'est la croche suivie d'un demi-soupir:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:312
 msgid "Note that this rhythm is similar to the quarter notes rhythm, but shortening the notes:"
@@ -1109,7 +1109,7 @@ msgstr "Si vous comptez les coups au long de la musique, la mesure á la cle de 
 
 #: L1_MusicReading/L1_MusicReading.cpp:327
 msgid "In this lesson also a new rhythmic pattern is introduced: the dotted half note, equivalent to a half note tied to a quarter note:"
-msgstr "dans cette leçon on introduit un nouveau patron rhytmique: La blanche pointillée, equivalente à una blanche liée à une noire:"
+msgstr "Dans cette leçon on introduit un nouveau patron rhytmique: La blanche pointillée, equivalente à una blanche liée à une noire:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:328
 msgid "Note that the dotted half note takes a whole measure in the 3/4 rhythm."
@@ -1117,7 +1117,7 @@ msgstr "Remarquez que la blanche pointillée prends una mesure complete dans le 
 
 #: L1_MusicReading/L1_MusicReading.cpp:335
 msgid "The 4/4 time signature"
-msgstr "la mesure à la cle 4/4"
+msgstr "La mesure à la cle 4/4"
 
 #: L1_MusicReading/L1_MusicReading.cpp:336
 msgid "In this lesson we will learn about the 4/4 time signature. As you know the top number tells how many beats are there in a measure, and the bottom number shows the type of note that gets one beat ('4' means 'quarter note'). Therefore, the 4/4 time signature is a rhythm with four beats per measure and each measure gets four quarter notes."
@@ -1275,10 +1275,10 @@ msgstr "La mesure à la cle 6/8: Mesures combinées"
 
 #: L1_MusicReading/L1_MusicReading.cpp:477
 msgid "Simple and compound time signatures"
-msgstr "mesures à la cle simples et combinées"
+msgstr "Mesures à la cle simples et combinées"
 
 #: L1_MusicReading/L1_MusicReading.cpp:478
-msgid "We learnt, in lesson 6, that written music is organized by dividing it into small groups of beats, called 'measures'. The measures of the time signatures studied in previous lessons (2/2, 3/4 and 4/4) have, respectively, two, three and four beats per measure. These time signatures are known as 'simple meter' or 'simple time signatures'."
+msgid "We learnt, in lesson 6, that written music is organized by dividing it into small groups of beats, called 'measures'. The measures of the time signatures studied in previous lessons (2/4, 3/4 and 4/4) have, respectively, two, three and four beats per measure. These time signatures are known as 'simple meter' or 'simple time signatures'."
 msgstr "Nous avons appris dans la leçon 6 que la musique écrite c'est organisée la divisant en petits groups de coups, appelés 'mesures'. La mesure des mesures à la cle étudiées dans les leçons précedents (2/4, 3/4 et 4/4) ont, respectivement deux, trois et quatre coups par mesure. Ces mesures à la cle sont connues comme 'mesures simples' ou 'mesures à la cle simples'."
 
 #: L1_MusicReading/L1_MusicReading.cpp:479
@@ -1319,7 +1319,7 @@ msgstr "La mesure à la cle de 6/8 (2)"
 #: L1_MusicReading/L1_MusicReading.cpp:503
 #: L1_MusicReading/L1_MusicReading.cpp:513
 msgid "In this lesson we continue the study of the 6/8 compound time with the introduction of new rhythmic patterns:"
-msgstr "dans cette leçon nous continuons l'étude du temps combine de 6/8 avec l'introduction de nouveauc patrons rhytmiques:"
+msgstr "Dans cette leçon nous continuons l'étude du temps combine de 6/8 avec l'introduction de nouveauc patrons rhytmiques:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:495
 msgid "Listen to each measure and note the newly introduced patterns:"

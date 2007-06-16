@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MusicReading_L2 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-06-15 18:31+0100\n"
+"PO-Revision-Date: 2007-06-16 08:55+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr "Licencié sous les tèrmes du GNU Free Documentation License v1.2"
 
 #: L2_MusicReading/L2_MusicReading.cpp:4
 msgid "the teacher of music"
-msgstr "Le professeur de musique"
+msgstr "le professeur de musique"
 
 #: L2_MusicReading/L2_MusicReading.cpp:5
 msgid "Cover page"
@@ -315,7 +315,7 @@ msgstr " - Lisez les partitions contenant les rythmes étudiés dans cette leço
 #: L2_MusicReading/L2_MusicReading.cpp:40
 #: L2_MusicReading/L2_MusicReading.cpp:43
 msgid "Press 'Play' and listen. Train your ear and practise reading this rhythm."
-msgstr "Appuyez 'Jouer? et observe le rythme. Entraîne votres oreilles et practique lisant cet rythme."
+msgstr "Appuyez 'Jouer' et observe le rythme. Entraîne votres oreilles et practique lisant cet rythme."
 
 #: L2_MusicReading/L2_MusicReading.cpp:45
 msgid "Compound time of 9/8. Dotted quarter note"
@@ -371,9 +371,8 @@ msgstr "Temps composé de 9/8. Une ronde liée au prochaine pulsation."
 #: L2_MusicReading/L2_MusicReading.cpp:344
 #: L2_MusicReading/L2_MusicReading.cpp:347
 #: L2_MusicReading/L2_MusicReading.cpp:350
-#, fuzzy
 msgid "Press 'Play' and listen. Train your ear and practise the newly introduced patterns."
-msgstr " - Entraînez vos oreilles et practiquer les patrons rythmiques introduits"
+msgstr "Appuyez 'Jouer' and ecute. Entraînez vos oreilles et practiquer les patrons rythmiques introduits"
 
 #: L2_MusicReading/L2_MusicReading.cpp:59
 #: L2_MusicReading/L2_MusicReading.cpp:69
@@ -392,7 +391,7 @@ msgstr "Rémarque les differences entre les suivants patrons rythmiques et comm'
 
 #: L2_MusicReading/L2_MusicReading.cpp:70
 msgid "Press 'Play' and listen carefully the rhythm. Train your ear and practise the newly introduced patterns."
-msgstr "Appuyer 'jouer' et observer soigneusement  le rythm . Entraînez vos oreilles et practiquez lisant ce rythm."
+msgstr "Appuyer 'Jouer' et observer soigneusement  le rythm . Entraînez vos oreilles et practiquez lisant ce rythm."
 
 #: L2_MusicReading/L2_MusicReading.cpp:75
 msgid "Compound time of 12/8. 8th note tied to 16th notes"

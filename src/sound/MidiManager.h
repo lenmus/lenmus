@@ -71,6 +71,10 @@ public:
     //access to methods in midi system
     int CountDevices();
 
+	//default instrument
+    int DefaultVoiceChannel() { return m_nDefaultVoiceChannel; }
+    int DefaultVoiceInstr() { return m_nDefaultVoiceInstr; }
+
 protected:
     lmMidiManager();
 
@@ -86,16 +90,19 @@ private:
 
 
     //MIDI configuration information
-    int        m_nInDevId;
-    int        m_nOutDevId;
+    int		m_nInDevId;
+    int		m_nOutDevId;
 
-    int        m_nVoiceChannel;
-    int        m_nVoiceInstr;
+    int		m_nVoiceChannel;
+    int		m_nVoiceInstr;
+	int		m_nDefaultVoiceChannel;
+	int		m_nDefaultVoiceInstr;
 
-    int        m_nMtrChannel;
-    int        m_nMtrInstr;
-    int        m_nMtrTone1;
-    int        m_nMtrTone2;
+
+    int		m_nMtrChannel;
+    int		m_nMtrInstr;
+    int		m_nMtrTone1;
+    int		m_nMtrTone2;
 
     bool    m_fMidiSet;
     bool    m_fMidiOK;

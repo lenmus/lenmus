@@ -114,7 +114,7 @@ be comfortably represented, as
 shown in the following score:
 </para>
 
-<score width='700' height='160' border='0'>
+<score width='750' height='160' border='0'>
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>

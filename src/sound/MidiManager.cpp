@@ -111,6 +111,9 @@ void lmMidiManager::LoadUserPreferences()
 
     m_nInDevId = (int)g_pPrefs->Read(_T("/Midi/InDevice"), (long)0);    // 0 based. So this is device 1
 
+	m_nDefaultVoiceChannel = m_nVoiceChannel;
+	m_nDefaultVoiceInstr = m_nVoiceInstr;
+
 }
 
 void lmMidiManager::SaveUserPreferences()
@@ -125,6 +128,9 @@ void lmMidiManager::SaveUserPreferences()
     g_pPrefs->Write(_T("/Midi/MtrInstr"), (long)m_nMtrInstr );
     g_pPrefs->Write(_T("/Midi/MtrTone1"), (long)m_nMtrTone1 );
     g_pPrefs->Write(_T("/Midi/MtrTone2"), (long)m_nMtrTone2 );
+
+	m_nDefaultVoiceChannel = m_nVoiceChannel;
+	m_nDefaultVoiceInstr = m_nVoiceInstr;
 
 }
 
@@ -170,9 +176,9 @@ void lmMidiManager::SetOutDevice(int nOutDevId)
             //! @todo better error reporting
             if (nErr) {
 				wxLogMessage(_T("Error %d opening Midi device"));
-                wxMessageBox( wxString::Format(
-                    _T("Error %d in Open: %s \n"),
-                    nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));
+                //wxMessageBox( wxString::Format(
+                //    _T("Error %d in Open: %s \n"),
+                //    nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));
                 m_fMidiOK = false;
                 return;
             }

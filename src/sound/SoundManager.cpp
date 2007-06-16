@@ -602,32 +602,35 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     }
     //Here i points to the first event of desired measure that is not a control event.
 
-    //Define and initialize time counter
+    //Define and initialize time counter. If playback starts not at the begining but 
+	//in another measure, advance time counter to that measure
     long nTime = 0;
+	if (nEvStart > 1) {
+		nTime = (pMtr->GetInterval() * m_aEvents[nEvStart]->DeltaTime) / nMtrBeatDuration; //EIGHT_DURATION;
+	}
 
 
-    //first note could be a sincopa o a contratiempo. In these cases metronome will
-    //start before the first note
+    //first note could be a syncopated note or an off-beat note. In these cases metronome
+	//will start before the first note
     nMtrEvDeltaTime = (m_aEvents[i]->DeltaTime / nMtrBeatDuration) * nMtrBeatDuration;
 
-    /*! @todo
-        Si el metrónomo no está activo o se solicita que no se marque un compás completo antes de empezar
-        hay que avanzar el contador de tiempo hasta la primera nota
-    */
-//////    if (Not (fPlayWithMetronome && fMarcarUnCompasPrevio)) {
-//////        if (m_nTiempoIni = nMeasureDuration) {
-//////            nTime = (nSpeed * m_nTiempoIni) / EIGHT_DURATION;
-//////        } else {
-//////            nTime = (m_nTiempoIni Mod nMtrBeatDuration) * nMtrBeatDuration    //coge partes completas
-//////            nTime = (nSpeed * nTime) / EIGHT_DURATION;
-//////        }
-//////        //localiza el primer evento de figsil (los eventos de control están en compas 0)
-//////        for (i = nEvStart To nEvEnd
-//////            if (m_aEvents[i]->Measure <> 0) { Exit For
-//////        }   // i
-//////        wxASSERT(i <= nEvEnd
-//////        nMtrEvDeltaTime = (m_aEvents[i]->DeltaTime \ nMtrBeatDuration) * nMtrBeatDuration
-//////    }
+    /*! @todo */
+	//// if metronome is off or it is required 'que no se marque un compás completo' before
+	//// start, it is necessary to advance time counter to the first note/rest event
+ //   if (!(fPlayWithMetronome && fMarcarUnCompasPrevio)) {
+ //       if (m_nTiempoIni = nMeasureDuration) {
+ //           nTime = (nSpeed * m_nTiempoIni) / nMtrBeatDuration;	//EIGHT_DURATION;
+ //       } else {
+ //           nTime = (m_nTiempoIni Mod nMtrBeatDuration) * nMtrBeatDuration    //coge partes completas
+ //           nTime = (nSpeed * nTime) / nMtrBeatDuration;	//EIGHT_DURATION;
+ //       }
+ //       //localiza el primer evento de figsil (los eventos de control están en compas 0)
+	//	for (i = nEvStart; i <= nEvEnd; i++) {
+ //           if (m_aEvents[i]->Measure <> 0) break;
+ //       }
+ //       wxASSERT(i <= nEvEnd);
+ //       nMtrEvDeltaTime = (m_aEvents[i]->DeltaTime / nMtrBeatDuration) * nMtrBeatDuration;
+ //   }
 
     //loop to execute events
     bool fFirstBeatInMeasure = true;    //first beat of a measure

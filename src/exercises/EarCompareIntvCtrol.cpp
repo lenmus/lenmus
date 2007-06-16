@@ -50,6 +50,9 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 extern bool g_fShowDebugLinks;          // in TheApp.cpp
 extern bool g_fAutoNewProblem;          // in Preferences.cpp
 
+//access to MIDI manager to get default settings for instrument to use
+#include "../sound/MidiManager.h"
+
 //------------------------------------------------------------------------------------
 // Implementation of lmEarCompareIntvCtrol
 
@@ -424,7 +427,8 @@ void lmEarCompareIntvCtrol::NewProblem()
     for (i=0; i<2; i++) {
         m_pScore[i] = new lmScore();
         m_pScore[i]->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) ); //5mm
-        m_pScore[i]->AddInstrument(1,0,0,_T(""));                     //one vstaff, MIDI channel 0, MIDI instr 0
+        m_pScore[i]->AddInstrument(1, 
+						g_pMidi->DefaultVoiceChannel(), g_pMidi->DefaultVoiceInstr(), _T(""));                     //one vstaff, MIDI channel 0, MIDI instr 0
         pVStaff = m_pScore[i]->GetVStaff(1, 1);      //get first vstaff of instr.1
         pVStaff->AddClef( nClef );
         pVStaff->AddKeySignature(nKey);
@@ -442,7 +446,8 @@ void lmEarCompareIntvCtrol::NewProblem()
     m_pTotalScore = new lmScore();
     m_pTotalScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
     m_pTotalScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-    m_pTotalScore->AddInstrument(1,0,0,_T(""));                     //one vstaff, MIDI channel 0, MIDI instr 0
+    m_pTotalScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+								 g_pMidi->DefaultVoiceInstr(), _T(""));
     pVStaff = m_pTotalScore->GetVStaff(1, 1);      //get first vstaff of instr.1
     pVStaff->AddClef( nClef );
     pVStaff->AddKeySignature(nKey);

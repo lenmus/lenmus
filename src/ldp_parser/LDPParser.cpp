@@ -55,6 +55,10 @@
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
+//access to MIDI manager to get default settings for instrument to use
+#include "../sound/MidiManager.h"
+
+
 const wxString sEOF = _T("<<$$EOF$$>>");
 
 lmLDPParser::lmLDPParser()
@@ -698,7 +702,8 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     }
 
     //default values
-    int nMIDIChannel=0, nMIDIInstr=0;       //default MIDI values: channel 0, instr=Piano
+	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();	
+	int nMIDIInstr = g_pMidi->DefaultVoiceInstr();
     bool fMusicFound = false;               // <MusicData> tag found
     wxString sNumStaves = _T("1");          //one staff
 

@@ -48,6 +48,9 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 extern bool g_fShowDebugLinks;            // in TheApp.cpp
 extern bool g_fAutoNewProblem;          // in Preferences.cpp
 
+//access to MIDI manager to get default settings for instrument to use
+#include "../sound/MidiManager.h"
+
 
 //------------------------------------------------------------------------------------
 // Implementation of lmTheoIntervalsCtrol
@@ -616,7 +619,8 @@ void lmTheoIntervalsCtrol::NewProblem()
     m_pIntervalScore = new lmScore();
     m_pIntervalScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
     m_pIntervalScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-    m_pIntervalScore->AddInstrument(1,0,0,_T(""));                    //one vstaff, MIDI channel 0, MIDI instr 0
+    m_pIntervalScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+								    g_pMidi->DefaultVoiceInstr(), _T(""));
     pVStaff = m_pIntervalScore->GetVStaff(1, 1);    //get first vstaff of instr.1
     pVStaff->AddClef( m_nClef );
     pVStaff->AddKeySignature(0, true);                    // 0 fifths, major
@@ -649,7 +653,8 @@ void lmTheoIntervalsCtrol::NewProblem()
     if (!m_fIntervalKnown) {
         m_pProblemScore = new lmScore();
         m_pProblemScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
-        m_pProblemScore->AddInstrument(1,0,0,_T(""));                    //one vstaff, MIDI channel 0, MIDI instr 0
+        m_pProblemScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+									   g_pMidi->DefaultVoiceInstr(), _T(""));
         pVStaff = m_pProblemScore->GetVStaff(1, 1);    //get first vstaff of instr.1
         pVStaff->AddClef( m_nClef );
         pVStaff->AddKeySignature(0, true);                    // 0 fifths, major
