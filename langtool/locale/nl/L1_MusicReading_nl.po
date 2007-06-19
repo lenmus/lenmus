@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-06-14 19:23+0100\n"
+"PO-Revision-Date: 2007-06-17 21:19+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -31,7 +31,7 @@ msgstr "Omslagpagina"
 
 #: L1_MusicReading/L1_MusicReading.cpp:6
 msgid "Music reading. Level 1."
-msgstr "Muziek lezen niveau 1."
+msgstr "Muziek lezen niveau 1"
 
 #: L1_MusicReading/L1_MusicReading.cpp:7
 msgid "This eMusicBook is a self-instruction music reading course, intended to help improve one's reading skills, providing the sort of practice and exercise that are required to become a good sight-reader."
@@ -100,7 +100,7 @@ msgstr " De cursus start met de Sol sleutel met een beperkt notenbereik: mi 4-so
 
 #: L1_MusicReading/L1_MusicReading.cpp:24
 msgid "Time signatures:"
-msgstr "maatsoorten:"
+msgstr "Maatsoorten:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:25
 msgid " In the first exercises (9 to 17) only the 2/4 simple time is used. Next, the 3/4 simple time (lesson 18) and the 4/4 simple time (lesson 19) are used. In lesson 28 the compound 6/8 is introduced and it is practised in the remaining lessons (29 to 31)."
@@ -787,7 +787,7 @@ msgstr " - Oefen het lezen van partituren met halve noten en gebonden kwartnoten
 #: L1_MusicReading/L1_MusicReading.cpp:178
 #: L1_MusicReading/L1_MusicReading.cpp:187
 msgid "Leger lines"
-msgstr "hulplijnen"
+msgstr "Hulplijnen"
 
 #: L1_MusicReading/L1_MusicReading.cpp:179
 msgid "When it is necessary to write a note higher or lower than the pitch represented by the staff lines, extra lines can be added to the staff. They are called 'leger (or ledger) lines' and are drawn as short lines, slightly longer than the note head. For example, the following score shows the natural scale starting on C:"
@@ -1279,8 +1279,8 @@ msgid "Simple and compound time signatures"
 msgstr "Enkelvoudige en samengestelde maatsoorten"
 
 #: L1_MusicReading/L1_MusicReading.cpp:478
-msgid "We learnt, in lesson 6, that written music is organized by dividing it into small groups of beats, called 'measures'. The measures of the time signatures studied in previous lessons (2/2, 3/4 and 4/4) have, respectively, two, three and four beats per measure. These time signatures are known as 'simple meter' or 'simple time signatures'."
-msgstr "In les 6 hebben we geleerd dat geschreven muziek georganiseerd is door deze te verdelen in kleine groepen van tellen, maten genaamd. De maatsoorten die we in de vorige lessen bestudeerd hebben (2/2, 3/4, 4/4) hebben respectievelijk twee, drie en vier slagen per maat. Deze maatsoorten staan bekend als enkelvoudige maatsoorten."
+msgid "We learnt, in lesson 6, that written music is organized by dividing it into small groups of beats, called 'measures'. The measures of the time signatures studied in previous lessons (2/4, 3/4 and 4/4) have, respectively, two, three and four beats per measure. These time signatures are known as 'simple meter' or 'simple time signatures'."
+msgstr "In les 6 hebben we geleerd dat geschreven muziek georganiseerd is door deze te verdelen in kleine groepen van tellen, maten genaamd. De maatsoorten die we in de vorige lessen bestudeerd hebben (2/4, 3/4, 4/4) hebben respectievelijk twee, drie en vier slagen per maat. Deze maatsoorten staan bekend als enkelvoudige maatsoorten."
 
 #: L1_MusicReading/L1_MusicReading.cpp:479
 msgid "In simple meter time signatures, each beat can be subdivided into two halves. For example, replacing a quarter note with two eight notes. But there are rhythms that require to subdivide the beats in three parts or 'pulses'. These rhythms are known as 'compound meter'."
