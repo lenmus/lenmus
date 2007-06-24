@@ -2,29 +2,29 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
 
 /*
-The view displays the data and manages user interaction with it, including selection and 
+The view displays the data and manages user interaction with it, including selection and
 editing.
 A view is attached to a document and acts as an intermediary between the document and the
 user: the view renders an image of the document on the screen and interprets user input as
-operations upon the document. The view also renders the image for both printing and print 
+operations upon the document. The view also renders the image for both printing and print
 preview.
 
 
@@ -44,8 +44,8 @@ Units
     Device units
         The "device coordinates space" representes the physical redering device (display,
         printer, ...) on which the score is rendered. The pixel is the usual unit in this
-        space. 
-    
+        space.
+
     Program will operate on the logical coordinates space. Operation in device coordinates
     and transformation to/from device coordinates will be restricted to low program
     layers.
@@ -57,32 +57,32 @@ Considerations for the choice of logical units and data types:
 
     1. Precision
     -------------------------------
-    Los atributos de posición, en MusicXML (common.dtd), utilizan unidades relativas: 
-    décimas del espacio entre líneas de pentagrama . Ahora bien, espaciado entre líneas y, 
-    en consecuencia, todos los demas valores relativos a esta medida de un pentagrama, debe 
-    poder establecerse para cada pentagrama, ya que en una misma pieza pueden coexistir 
-    pentagramas de distinto tamaño; por ejemplo, en partituras de piano en obras para varios 
-    instrumentos, el piano va en grande mientras que la línea para el otro instrumento va en 
-    pequeñito. En consecuencia, no parece una unidad adecuada para una página en la que se 
-    mezclen pentagramas de distinto tamaño y habrá que utilizar una unidad que no varíe 
-    entre pentagramas, al menos para  parámetros no asociados a un solo pentagrama, 
-    tales como espaciados entre pentagramas o márgenes de página. Para estos parámetros 
-    se decide utilizar como unidad  una décima de milímetro .  
+    Los atributos de posiciÃ³n, en MusicXML (common.dtd), utilizan unidades relativas:
+    dÃ©cimas del espacio entre lÃ­neas de pentagrama . Ahora bien, espaciado entre lÃ­neas y,
+    en consecuencia, todos los demas valores relativos a esta medida de un pentagrama, debe
+    poder establecerse para cada pentagrama, ya que en una misma pieza pueden coexistir
+    pentagramas de distinto tamaÃ±o; por ejemplo, en partituras de piano en obras para varios
+    instrumentos, el piano va en grande mientras que la lÃ­nea para el otro instrumento va en
+    pequeÃ±ito. En consecuencia, no parece una unidad adecuada para una pÃ¡gina en la que se
+    mezclen pentagramas de distinto tamaÃ±o y habrÃ¡ que utilizar una unidad que no varÃ­e
+    entre pentagramas, al menos para  parÃ¡metros no asociados a un solo pentagrama,
+    tales como espaciados entre pentagramas o mÃ¡rgenes de pÃ¡gina. Para estos parÃ¡metros
+    se decide utilizar como unidad  una dÃ©cima de milÃ­metro .
 
-    En PDF el posicionamiento en el user space se mide por defecto en 1/72 de pulgada, 
-    ya que esa unidad es ampliamente utilizada en la industria tipográfica y equivale, 
-    aproximadamente, a un punto tipográfico. Su valor es de 0,35 mm. (parece poco precisa). 
-    Para fonts utiliza una resolución 1000 veces mayor (¿sería 0,001 mm?). Además, las unidades en el user 
-    space pueden definirse con otra precisión distinta, según necesidades. 
+    En PDF el posicionamiento en el user space se mide por defecto en 1/72 de pulgada,
+    ya que esa unidad es ampliamente utilizada en la industria tipogrÃ¡fica y equivale,
+    aproximadamente, a un punto tipogrÃ¡fico. Su valor es de 0,35 mm. (parece poco precisa).
+    Para fonts utiliza una resoluciÃ³n 1000 veces mayor (Â¿serÃ­a 0,001 mm?). AdemÃ¡s, las unidades en el user
+    space pueden definirse con otra precisiÃ³n distinta, segÃºn necesidades.
 
     In MusicXML, units are fixed and relative
-    las unidades son fijas y relativas, y utiliza como unidad una décima del espacio entre 
-    líneas de pentagrama. Suponiendo un espaciado entre líneas de 3mm tendríamos una 
-    precisión de 0,3 mm, del estilo de la estándar en PDF. Como cuesta lo mismo, me decanto 
-    por permitir más precisión y que pueda variarse según necesidades, según hace PDF.
+    las unidades son fijas y relativas, y utiliza como unidad una dÃ©cima del espacio entre
+    lÃ­neas de pentagrama. Suponiendo un espaciado entre lÃ­neas de 3mm tendrÃ­amos una
+    precisiÃ³n de 0,3 mm, del estilo de la estÃ¡ndar en PDF. Como cuesta lo mismo, me decanto
+    por permitir mÃ¡s precisiÃ³n y que pueda variarse segÃºn necesidades, segÃºn hace PDF.
 
     One tenth of a millimeter seems to be enough precision for positioning objects but
-    cumulative truncation errors are inaceptable. Therefore, at least a couple of decimal 
+    cumulative truncation errors are inaceptable. Therefore, at least a couple of decimal
     figures should be taken into account during computations.
     Another posibilitry is to the use of one thousandth of a mm (one micron) as the choice
     for logical units and operate always with integers.
@@ -95,7 +95,7 @@ Considerations for the choice of logical units and data types:
         4200 x 5900 in tenths of a mm
         42,000 x 59,400 in hundredths of a mm
         420,000 x 594,000 in thousandths of a mm (one micron)
-    so a variable of type int32 (-2,146,483,648 to +2,147,483,647) has enough precision 
+    so a variable of type int32 (-2,146,483,648 to +2,147,483,647) has enough precision
     and no overflow problems (maximum paper size would be  2.1 Km using the micron
     as logical unit !).
     Another posibility is to use float, as 6 significative digits is enough to deal with the
@@ -113,7 +113,7 @@ Considerations for the choice of logical units and data types:
     ------------------------------
   -    Maximum resolution wxWidgets mapping mode is MM_LOMETRIC, whose units are tenths of a mm.
     But greater precision can be easily achieved just by using MM_LOMETRIC and using a
-    scaling factor. For example, to use the micron as logical unit the scaling factor 
+    scaling factor. For example, to use the micron as logical unit the scaling factor
     would be 0.01. This scaling factor must multiply the scaling factor used for zooming
     the the view.
 
@@ -121,12 +121,12 @@ Considerations for the choice of logical units and data types:
     Final conclusions
     ------------------------------
     We are going to use two units:
-      - Logical units: to use in those cases in which it is necessary to refer to real world, 
+      - Logical units: to use in those cases in which it is necessary to refer to real world,
         such as when specifying the physical size of the paper to use. The choosen unit will
         be the micron (one thousand of a millimeter) and will be called "Micron" in the
         program.
 
-      - Relative units (tenths of distance between staff lines) for all other cases. For 
+      - Relative units (tenths of distance between staff lines) for all other cases. For
       example to specify a note position. This unit will be called "Tenth" in the program.
 
     For future portability and to improve program legibility we are going to use our own
@@ -136,7 +136,7 @@ Considerations for the choice of logical units and data types:
         lmTenths - for staff relative units. Mapped to int32
 
     For calculations, all methods will operate (unless strictly necessary) in logical units.
-    As the precision is one micron, cumulative truncation errors are neglectable. We can 
+    As the precision is one micron, cumulative truncation errors are neglectable. We can
     safely operate with integers.
 
 
@@ -165,7 +165,7 @@ Virtual paper layout
 |   +-->+-------------------------------------------------------------------+
 |       |                                   A               (lmPaper object)|
 |       |                                   |                               |
-|       |                               nTopMarging                         |      
+|       |                               nTopMarging                         |
 |       |   +-- nLeftMarging                |             nRightMarging-+   |
 |       |   |                               V                           |   |
 |       |   |   + - - - - - - - - - - - - - - - - - - - - - - - - - - + |   |
@@ -184,7 +184,7 @@ Virtual paper layout
 |       |       |                           V                         |     |
 |       |     / ------------------------------------------------------      |
 |       |     | ------------------------------------------------------|     |
-|       |     | ------ 2º  Pentagrama --------------------------------      |
+|       |     | ------ 2Âº  Pentagrama --------------------------------      |
 |       |     | ------------------------------------------------------|     |
 |       |     | ------------------------------------------------------      |
 |       |    /  |                                                     |     |
@@ -388,7 +388,7 @@ void lmScoreView::ResizeControls()
             dyFree = dyFrame;
 
     // Discount scrollbars
-    // default value is ugly (14 pixels). Lets have wider scrollbars 
+    // default value is ugly (14 pixels). Lets have wider scrollbars
     int dxVScroll = 16,    //m_pVScroll->GetSize().GetWidth(),
             dyHScroll = 16;    //m_pHScroll->GetSize().GetHeight();
 
@@ -443,11 +443,11 @@ void lmScoreView::AdjustScrollbars()
     //     fVScroll = (dyCanvas < m_yPageSizeD);
 
     // scroll step size will be 5 mm . transform into device units (pixels)
-    m_pixelsPerStepX = wxMax(lmToLogicalUnits(5, lmMILLIMETERS) * m_xDisplayPixelsPerLU, 1);
-    m_pixelsPerStepY = wxMax(lmToLogicalUnits(5, lmMILLIMETERS) * m_yDisplayPixelsPerLU, 1);
+    m_pixelsPerStepX = (int)wxMax(lmToLogicalUnits(5, lmMILLIMETERS) * m_xDisplayPixelsPerLU, 1);
+    m_pixelsPerStepY = (int)wxMax(lmToLogicalUnits(5, lmMILLIMETERS) * m_yDisplayPixelsPerLU, 1);
 
     // compute height and width of the whole view (all pages in the view plus margins)
-    lmPixels xViewD = m_xPageSizeD + 2 * m_xBorder, 
+    lmPixels xViewD = m_xPageSizeD + 2 * m_xBorder,
             yViewD = m_numPages * (m_yPageSizeD + m_yInterpageGap)- m_yInterpageGap + 2 * m_yBorder;
 
     // The range is the total number of units associated with the view represented by the scrollbar.
@@ -482,7 +482,7 @@ void lmScoreView::AdjustScrollbars()
 
     ////DEBUG
     //wxLogStatus(_T("nPag=%d,lmPage(%d,%d),Px/Step(%d,%d),View(%d,%d),MaxSteps(%d,%d),StepsPage(%d,%d),Canvas(%d,%d)"),
-    //    m_numPages, m_xPageSizeD, m_yPageSizeD, m_pixelsPerStepX, m_pixelsPerStepY, 
+    //    m_numPages, m_xPageSizeD, m_yPageSizeD, m_pixelsPerStepX, m_pixelsPerStepY,
     //    xViewD, yViewD,
     //    m_xMaxScrollSteps, m_yMaxScrollSteps,
     //    m_xScrollStepsPerPage, m_yScrollStepsPerPage,
@@ -599,7 +599,7 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
         //Direct renderization on printer DC
         m_Paper.SetDrawer(new lmDirectDrawer(pDC));
         m_graphMngr.Prepare(pScore, nDCPixelsW, nDCPixelsH, (double)overallScale, &m_Paper);
-        m_graphMngr.Render(lmNO_BITMAPS, nPage);        
+        m_graphMngr.Render(lmNO_BITMAPS, nPage);
     }
 
 }
@@ -673,7 +673,7 @@ void lmScoreView::SetScale(double rScale)
         m_yDisplayPixelsPerLU = (double)dc.LogicalToDeviceYRel(100000) / 100000.0;
 
         //reposition controls
-        ResizeControls();    
+        ResizeControls();
 
         //wxLogMessage(_T("[lmScoreView::SetScale] scale=%f, m_rScale=%f, DisplayPixelsPerLU=(%f, %f), pageSize LU(%d, %d), pageSize pixels(%d, %d)"),
         //    rScale, m_rScale, m_xDisplayPixelsPerLU, m_yDisplayPixelsPerLU,
@@ -843,7 +843,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
     yOrg *= yScrollUnits;
     lmDPoint canvasOrgD(xOrg, yOrg);
 
-    // the origin of current page is 
+    // the origin of current page is
     lmDPoint pageOrgD(m_xBorder, m_yBorder);
     //! @todo pageOrgD is valid only for the first page.
 
@@ -894,14 +894,14 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
              m_pSoDrag = pScO;
             m_dragState = DRAG_START;
             m_dragStartPosL = pagePosL;        // save mouse position (page logical coordinates)
-            // compute the location of the drag position relative to the upper-left 
+            // compute the location of the drag position relative to the upper-left
             // corner of the image (pixels)
             lmUPoint hotSpot = pagePosL - pScO->GetGlyphPosition();
-            m_dragHotSpot.x = pDC->LogicalToDeviceXRel(hotSpot.x);
-            m_dragHotSpot.y = pDC->LogicalToDeviceYRel(hotSpot.y);
+            m_dragHotSpot.x = pDC->LogicalToDeviceXRel((int)hotSpot.x);
+            m_dragHotSpot.y = pDC->LogicalToDeviceYRel((int)hotSpot.y);
        }
 
-    } 
+    }
     else if ((event.LeftUp() && m_dragState != DRAG_NONE )) {
         // Left up & dragging: Finish dragging
         //---------------------------------------------------
@@ -930,7 +930,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 
         m_pSoDrag = (lmScoreObj *) NULL;
 
-    } 
+    }
 
     else if (event.Dragging() && (m_dragState == DRAG_START)) {
         // The mouse was clicked and now has started to drag
@@ -950,7 +950,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
             delete m_pDragImage;
             m_pDragImage = (wxDragImage*) NULL;
             m_dragState = DRAG_NONE;
-            
+
         } else {
             //drag image started OK. Move image to current cursor position
             //and show it (was hidden until now)
@@ -1082,16 +1082,16 @@ void lmScoreView::DoScroll(int orientation, int nScrollSteps)
 
     if (orientation == wxHORIZONTAL) {
         newPos = nScrollSteps + m_xScrollPosition;
-        nScrollSteps = (newPos < 0 ? -m_xScrollPosition : 
+        nScrollSteps = (newPos < 0 ? -m_xScrollPosition :
             ((newPos > xMaxSteps) ? (xMaxSteps - m_xScrollPosition) : nScrollSteps) );
     } else {
         newPos = nScrollSteps + m_yScrollPosition;
-        nScrollSteps = (newPos < 0 ? -m_yScrollPosition : 
+        nScrollSteps = (newPos < 0 ? -m_yScrollPosition :
             ((newPos > yMaxSteps) ? (yMaxSteps - m_yScrollPosition) : nScrollSteps) );
     }
 
     if (nScrollSteps == 0) return;        // can't scroll further
- 
+
 
     // save data and transform steps into pixels
     if (orientation == wxHORIZONTAL) {
@@ -1266,11 +1266,11 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
 
     // the repaintRect is referred to canvas window origin and is unscrolled.
     // To refer it to view origin it is necessary to add scrolling origin
-    wxRect drawRect(repaintRect.x + xOrg, repaintRect.y + yOrg, 
+    wxRect drawRect(repaintRect.x + xOrg, repaintRect.y + yOrg,
                     repaintRect.width, repaintRect.height );
 
     // loop to verify if page nPag (0..n-1) is visible and needs redrawing.
-    // To optimize, the loop is exited as soon as we find a non-visible page after 
+    // To optimize, the loop is exited as soon as we find a non-visible page after
     // a visible one.
     bool fPreviousPageVisible = false;
     int nPag=0;
@@ -1280,7 +1280,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
                         yTopMargin + nPag * (yPageSize+yInterpageGap),
                         xPageSize,
                         yPageSize);
-        //wxLogStatus(wxT("pageRect(%d,%d, %d, %d)"), 
+        //wxLogStatus(wxT("pageRect(%d,%d, %d, %d)"),
         //    pageRect.x, pageRect.y, pageRect.width, pageRect.height);
 
         // Lets intersect pageRect with drawRect to verify if this page is affected
@@ -1302,12 +1302,12 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
             // to bitmap coordinates we need to substract page origin
             int xBitmap = interRect.x - pageRect.x,
                     yBitmap = interRect.y - pageRect.y;
-            // and to refer it to canvas window coordinates we need to 
+            // and to refer it to canvas window coordinates we need to
             // substract scroll origin
             int xCanvas = interRect.x - xOrg,
                     yCanvas = interRect.y - yOrg;
 
-            //wxLogStatus(wxT("bitmap size (%d,%d), interRec (%d, %d)"), 
+            //wxLogStatus(wxT("bitmap size (%d,%d), interRec (%d, %d)"),
             //    pPageBitmap->GetWidth(), pPageBitmap->GetHeight(),
             //    interRect.width, interRect.height);
 
@@ -1324,7 +1324,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
             //pDC->DrawRectangle(xCanvas, yCanvas, interRect.width, interRect.height);
 
             //draw page cast shadow
-            // to refer page rectangle to canvas window coordinates we need to 
+            // to refer page rectangle to canvas window coordinates we need to
             // substract scroll origin
             int xRight = pageRect.x + pageRect.width - xOrg,
                 yTop = pageRect.y - yOrg,

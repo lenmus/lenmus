@@ -47,16 +47,16 @@ lmPage::lmPage()
     m_nBottomMargin = lmToLogicalUnits(20, lmMILLIMETERS);  // 20 mm
     m_nBindingMargin = 0;    // no binding margin
 
-    m_pageSize.SetHeight(lmToLogicalUnits(297, lmMILLIMETERS));        //DIN A4: 210.0 x 297.0 mm
-    m_pageSize.SetWidth(lmToLogicalUnits(210, lmMILLIMETERS));
+    m_pageSize.SetHeight((int)lmToLogicalUnits(297, lmMILLIMETERS));        //DIN A4: 210.0 x 297.0 mm
+    m_pageSize.SetWidth((int)lmToLogicalUnits(210, lmMILLIMETERS));
     m_nPageNum = 1;
 
 }
 
 void lmPage::SetPageSize(lmLUnits width, lmLUnits height)
 {
-    m_pageSize.SetWidth(width);
-    m_pageSize.SetHeight(height);
+    m_pageSize.SetWidth((int)width);
+    m_pageSize.SetHeight((int)height);
 }
 
 

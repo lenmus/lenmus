@@ -1717,6 +1717,8 @@ wxString MIDINoteToLDPPattern(lmPitch nPitchMIDI, EKeySignatures nTonalidad, lmP
     int i = 3 * nResto + 1;
     long nShift;
     wxString sShift = sDisplcm.Mid(i-1, 1);
+    if (sShift == _T("-")) 
+        sShift = sDisplcm.Mid(i-1, 2);
     bool fOK = sShift.ToLong(&nShift);
     wxASSERT(fOK);
 

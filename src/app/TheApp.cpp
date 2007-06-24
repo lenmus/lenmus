@@ -319,6 +319,7 @@ bool lmTheApp::OnInit(void)
     g_pLogger->DefineTraceMask(_T("LDPParser_beams"));
     g_pLogger->DefineTraceMask(_T("Formater4"));
     g_pLogger->DefineTraceMask(_T("Formatter4.Step1"));
+    g_pLogger->DefineTraceMask(_T("lmIdfyScalesCtrol"));
 #endif
 
 
@@ -780,7 +781,7 @@ void lmTheApp::UpdateCurrentDocViews(void)
 wxString lmTheApp::GetVersionNumber()
 {
     // Increment this every time you release a new version
-    wxString sVersion = _T("3.5");
+    wxString sVersion = _T("3.6b0");
     return sVersion;
 }
 

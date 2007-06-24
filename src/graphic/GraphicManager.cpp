@@ -245,8 +245,8 @@ void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits pa
     //store received values
     m_pPaper = pPaper;
     m_rScale = rScale;
-    m_xPageSize = paperWidth;
-    m_yPageSize = paperHeight;
+    m_xPageSize = (int)paperWidth;
+    m_yPageSize = (int)paperHeight;
     m_pScore = pScore;
     m_nLastScoreID = m_pScore->GetID();
 

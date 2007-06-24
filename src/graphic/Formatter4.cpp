@@ -61,7 +61,7 @@ lmFormatter4::lmFormatter4()
     if (m_fDebugMode) {
         m_nTraceMeasure = ::wxGetNumberFromUser(
                                 _T("Specify the measure to trace (0 for all measures)"),
-                                _T("Measure: "), 
+                                _T("Measure: "),
                                 _T("Debug Formatter4"),
                                 0L);        // default value: all measures
     }
@@ -140,7 +140,7 @@ lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
             nSpaceAfterBarline = pVStaff->TenthsToLogical(20, 1);
 
             pBoxSystem = pBoxPage->AddSystem(iVStaff);
-            int ySystemPos = pPaper->GetCursorY();      //save the start of system position
+            int ySystemPos = (int)pPaper->GetCursorY();      //save the start of system position
             pBoxSystem->SetPosition(pPaper->GetCursorX(), ySystemPos);
             nAbsMeasure = 1;
             pBoxSystem->SetFirstMeasure(nAbsMeasure);
@@ -341,7 +341,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             #if defined(__WXDEBUG__)
             g_pLogger->LogTrace(_T("Formatter4.Step1"),
                 _T("m_nFreeSpace = %d, PageRightMargin=%d, StartOfBar=%d"),
-                m_nFreeSpace, pPaper->GetPageRightMargin(), 
+                m_nFreeSpace, pPaper->GetPageRightMargin(),
                 m_oTimepos[nRelMeasure].GetStartOfBarPosition() );
             g_pLogger->LogTrace(_T("Formatter4.Step1"),
                 m_oTimepos[nRelMeasure].DumpTimeposTable());

@@ -205,10 +205,10 @@ void lmShapeGlyph::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
     wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
     pPaper->SetFont(*m_pFont);
     pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
-    m_BoundsRect.height = pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectHeight);
-    m_BoundsRect.width = nWidth;
-    m_BoundsRect.x = m_shift.x;
-    m_BoundsRect.y = m_shift.y + pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectShift);
+    m_BoundsRect.height = (int)pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectHeight);
+    m_BoundsRect.width = (int)nWidth;
+    m_BoundsRect.x = (int)m_shift.x;
+    m_BoundsRect.y = (int)m_shift.y + (int)pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectShift);
 
     // store selection rectangle position and size
     m_SelRect = m_BoundsRect;
@@ -222,7 +222,7 @@ void lmShapeGlyph::Render(lmPaper* pPaper, lmUPoint pos, wxColour color)
 
     pPaper->SetFont(*m_pFont);
     pPaper->SetTextForeground(color);
-    pPaper->DrawText(sGlyph, pos.x + m_shift.x, pos.y + m_shift.y);
+    pPaper->DrawText(sGlyph, (int)(pos.x + m_shift.x), (int)(pos.y + m_shift.y));
 
 }
 
@@ -240,8 +240,8 @@ wxString lmShapeGlyph::Dump()
 void lmShapeGlyph::Shift(lmLUnits xIncr)
 {
     m_shift.x += xIncr;
-    m_SelRect.x += xIncr;
-    m_BoundsRect.x += xIncr;
+    m_SelRect.x += (int)xIncr;
+    m_BoundsRect.x += (int)xIncr;
 }
 
 
@@ -274,10 +274,10 @@ void lmShapeText::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
     lmLUnits uWidth, uHeight;
     pPaper->SetFont(*m_pFont);
     pPaper->GetTextExtent(m_sText, &uWidth, &uHeight);
-    m_BoundsRect.height = uHeight;
-    m_BoundsRect.width = uWidth;
-    m_BoundsRect.x = m_shift.x;
-    m_BoundsRect.y = m_shift.y;
+    m_BoundsRect.height = (int)uHeight;
+    m_BoundsRect.width = (int)uWidth;
+    m_BoundsRect.x = (int)m_shift.x;
+    m_BoundsRect.y = (int)m_shift.y;
 
     // store selection rectangle position and size
     m_SelRect = m_BoundsRect;
@@ -289,7 +289,7 @@ void lmShapeText::Render(lmPaper* pPaper, lmUPoint pos, wxColour color)
 {
     pPaper->SetFont(*m_pFont);
     pPaper->SetTextForeground(color);
-    pPaper->DrawText(m_sText, pos.x + m_shift.x, pos.y + m_shift.y);
+    pPaper->DrawText(m_sText, (int)(pos.x + m_shift.x), (int)(pos.y + m_shift.y));
 }
 
 void lmShapeText::SetFont(wxFont *pFont)
@@ -306,7 +306,7 @@ wxString lmShapeText::Dump()
 void lmShapeText::Shift(lmLUnits xIncr)
 {
     m_shift.x += xIncr;
-    m_SelRect.x += xIncr;
-    m_BoundsRect.x += xIncr;
+    m_SelRect.x += (int)xIncr;
+    m_BoundsRect.x += (int)xIncr;
 }
 

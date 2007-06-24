@@ -46,8 +46,9 @@
 #include "../globals/Colors.h"
 extern lmColors* g_pColors;
 
-//access to MIDI manager to get default settings for instrument to use
-#include "../sound/MidiManager.h"
+//access to error's logger
+#include "../app/Logger.h"
+extern lmLogger* g_pLogger;
 
 //------------------------------------------------------------------------------------
 // Implementation of lmIdfyScalesCtrol
@@ -299,6 +300,12 @@ wxString lmIdfyScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmSc
 //    //create the scale object
     lmScalesManager oScaleMngr(m_sRootNote, nType, m_nKey);
 
+    //dbg------------------------------------------------------
+    g_pLogger->LogTrace(_T("lmIdfyScalesCtrol"), _T("nClef = %d, nType = %d, m_sRootNote='%s', m_nKey=%d"),
+                    nClef, nType, m_sRootNote.c_str(), m_nKey );
+    //end dbg------------------------------------------------
+
+
     //delete the previous score
     if (*pScore) {
         delete *pScore;
@@ -316,8 +323,7 @@ wxString lmIdfyScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmSc
     *pScore = new lmScore();
     (*pScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
     (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-    (*pScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
-							 g_pMidi->DefaultVoiceInstr(), _T(""));
+    (*pScore)->AddInstrument(1,0,0,_T(""));     //one vstaff, MIDI channel 0, MIDI instr 0
     pVStaff = (*pScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
     pVStaff->AddClef( eclvSol );
     pVStaff->AddKeySignature( m_nKey );

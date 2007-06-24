@@ -168,8 +168,8 @@ void lmAggDrawer::SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
 {
     m_pRenMarker->line_color( lmToRGBA8(color) );
     // renderer_marker expects no decimals, so values must be multiplied by 256.
-    m_pRenMarker->line(WorldToDeviceX(x1)*256, WorldToDeviceY(y1)*256,
-            WorldToDeviceX(x2)*256, WorldToDeviceY(y2)*256, true);  //true means 'include last point'
+    m_pRenMarker->line((int)(WorldToDeviceX(x1)*256), int(WorldToDeviceY(y1)*256),
+            (int)(WorldToDeviceX(x2)*256), (int)(WorldToDeviceY(y2)*256), true);  //true means 'include last point'
 
 }
 
@@ -183,10 +183,10 @@ void lmAggDrawer::SketchRectangle(lmUPoint point, wxSize size, wxColour color)
 
     m_pRenMarker->line_color( lmToRGBA8(color) );
     // in last parameter, true means 'include last point'
-    m_pRenMarker->line(x, y, x+w, y, false);
-    m_pRenMarker->line(x+w, y, x+w, y+h, false);
-    m_pRenMarker->line(x+w, y+h, x, y+h, false);
-    m_pRenMarker->line(x, y+h, x, y, false);
+    m_pRenMarker->line((int)x, (int)y, (int)(x+w), (int)y, false);
+    m_pRenMarker->line((int)(x+w), (int)y, (int)(x+w), (int)(y+h), false);
+    m_pRenMarker->line((int)(x+w), (int)(y+h), (int)x, (int)(y+h), false);
+    m_pRenMarker->line((int)x, (int)(y+h), (int)x, (int)y, false);
 
 }
 
@@ -297,8 +297,8 @@ void lmAggDrawer::DrawText(const wxString& text, wxCoord x, wxCoord y)
 
     // convert size to pixels. As GetTextExtent has not enough precision
     // I will add a couple of pixels for security
-    wxCoord wD = m_pDC->LogicalToDeviceXRel(wL) + 2,
-            hD = m_pDC->LogicalToDeviceYRel(hL) + 2;
+    wxCoord wD = m_pDC->LogicalToDeviceXRel((int)wL) + 2,
+            hD = m_pDC->LogicalToDeviceYRel((int)hL) + 2;
 
     // get a bitmap initialized with main bitmap
     int xD = (int)floor(WorldToDeviceX(x) + 0.5);
@@ -401,12 +401,12 @@ lmLUnits lmAggDrawer::DeviceToLogicalY(lmPixels y)
 
 lmPixels lmAggDrawer::LogicalToDeviceX(lmLUnits x)
 {
-    return m_pDC->LogicalToDeviceXRel(x);
+    return m_pDC->LogicalToDeviceXRel((int)x);
 }
 
 lmPixels lmAggDrawer::LogicalToDeviceY(lmLUnits y)
 {
-    return m_pDC->LogicalToDeviceYRel(y);
+    return m_pDC->LogicalToDeviceYRel((int)y);
 }
 
 

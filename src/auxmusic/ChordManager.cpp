@@ -62,7 +62,7 @@ static lmChordData tData[ect_Max] = {
     { 4, { _T("M3"), _T("p5"), _T("M7") }},      //MT + M7   - MajorSeventh
     { 4, { _T("M3"), _T("p5"), _T("m7") }},      //MT + m7   - DominantSeventh
     { 4, { _T("m3"), _T("p5"), _T("m7") }},      //mT + m7   - MinorSeventh
-    { 4, { _T("m3"), _T("d5"), _T("d7") }},      //dT + d7   - HalfDimSeventh
+    { 4, { _T("m3"), _T("d5"), _T("d7") }},      //dT + d7   - DimSeventh
     { 4, { _T("m3"), _T("d5"), _T("m7") }},      //dT + m7   - HalfDimSeventh
     { 4, { _T("M3"), _T("a5"), _T("M7") }},      //aT + M7   - AugMajorSeventh
     { 4, { _T("M3"), _T("a5"), _T("m7") }},      //aT + m7   - AugSeventh

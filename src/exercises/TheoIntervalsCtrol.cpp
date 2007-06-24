@@ -48,9 +48,6 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 extern bool g_fShowDebugLinks;            // in TheApp.cpp
 extern bool g_fAutoNewProblem;          // in Preferences.cpp
 
-//access to MIDI manager to get default settings for instrument to use
-#include "../sound/MidiManager.h"
-
 
 //------------------------------------------------------------------------------------
 // Implementation of lmTheoIntervalsCtrol
@@ -171,7 +168,7 @@ lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id,
     m_sIntvButtonLabel[5] = _("dd7");
     m_sIntvButtonLabel[6] = _("dd8");
 
-    m_sIntvButtonLabel[7] = _T("");         //dim2
+    m_sIntvButtonLabel[7] = _T("dim2");         //dim2
     m_sIntvButtonLabel[8] = _("dim3");
     m_sIntvButtonLabel[9] = _("dim4");
     m_sIntvButtonLabel[10] = _("dim5");
@@ -619,8 +616,7 @@ void lmTheoIntervalsCtrol::NewProblem()
     m_pIntervalScore = new lmScore();
     m_pIntervalScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
     m_pIntervalScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-    m_pIntervalScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
-								    g_pMidi->DefaultVoiceInstr(), _T(""));
+    m_pIntervalScore->AddInstrument(1,0,0,_T(""));                    //one vstaff, MIDI channel 0, MIDI instr 0
     pVStaff = m_pIntervalScore->GetVStaff(1, 1);    //get first vstaff of instr.1
     pVStaff->AddClef( m_nClef );
     pVStaff->AddKeySignature(0, true);                    // 0 fifths, major
@@ -653,8 +649,7 @@ void lmTheoIntervalsCtrol::NewProblem()
     if (!m_fIntervalKnown) {
         m_pProblemScore = new lmScore();
         m_pProblemScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
-        m_pProblemScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
-									   g_pMidi->DefaultVoiceInstr(), _T(""));
+        m_pProblemScore->AddInstrument(1,0,0,_T(""));                    //one vstaff, MIDI channel 0, MIDI instr 0
         pVStaff = m_pProblemScore->GetVStaff(1, 1);    //get first vstaff of instr.1
         pVStaff->AddClef( m_nClef );
         pVStaff->AddKeySignature(0, true);                    // 0 fifths, major

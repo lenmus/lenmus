@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ END_EVENT_TABLE()
 
 
 lmScoreAuxCtrol::lmScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
-                                 const wxPoint& pos, 
+                                 const wxPoint& pos,
                                  const wxSize& size, EScoreStyles style) :
     wxWindow(parent, id, pos, size, style)
 {
@@ -135,7 +135,7 @@ double lmScoreAuxCtrol::GetPixelsPerLU()
         m_rScale, xPixelsPerLU, yPixelsPerLU );
 
     // screen resolution (Pixels per inch)
-    wxSize sizePPI = dc.GetPPI(); 
+    wxSize sizePPI = dc.GetPPI();
     // control size, in mm and pixels
     wxCoord widthMM, heightMM, widthPx, heightPx;
     dc.GetSizeMM(&widthMM, &heightMM);       // mm
@@ -156,7 +156,7 @@ void lmScoreAuxCtrol::SetBaseScale()
     dc.SetUserScale( m_rScale, m_rScale );
 
     // screen resolution (Pixels per inch)
-    wxSize sizePPI = dc.GetPPI(); 
+    wxSize sizePPI = dc.GetPPI();
 
     // control size, in mm and pixels
     wxCoord widthMM, heightMM, widthPx, heightPx;
@@ -181,7 +181,7 @@ void lmScoreAuxCtrol::SetBaseScale()
                 _T("     using PPI: mm = (%.2f, %.2f)\n")
                 _T("     using control:  mm = (%.2f, %.2f)\n")
                 _T("     using display:  mm = (%d, %d)\n"),
-                sizePPI.GetWidth(), sizePPI.GetHeight(), widthPx, heightPx, widthMM, heightMM, 
+                sizePPI.GetWidth(), sizePPI.GetHeight(), widthPx, heightPx, widthMM, heightMM,
                 wScreenPx, hScreenPx, wScreenMM, hScreenMM,
                 yCurPixelsPerLU,
                 25.4 * (double)wScreenPx / (double)sizePPI.GetWidth(), 25.4 * (double)hScreenPx / (double)sizePPI.GetHeight(),
@@ -212,8 +212,8 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
 {
     bool fClear = true;
 
-    // In a paint event handler, the application must always create a wxPaintDC object, 
-    // even if it is not used. Otherwise, under MS Windows, refreshing for this and 
+    // In a paint event handler, the application must always create a wxPaintDC object,
+    // even if it is not used. Otherwise, under MS Windows, refreshing for this and
     // other windows will go wrong.
     wxPaintDC dc(this);
 
@@ -246,8 +246,8 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
     if (m_fDisplayMessage) {
         fClear = false;
         dc.DrawText(m_sMsg,
-                    lmToLogicalUnits(5, lmMILLIMETERS) * m_yScalingFactor,
-                    m_yMsg * m_yScalingFactor);
+                    (int)(lmToLogicalUnits(5, lmMILLIMETERS) * m_yScalingFactor),
+                    (int)(m_yMsg * m_yScalingFactor));
     }
 
     if (fClear) {
