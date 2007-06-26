@@ -37,6 +37,7 @@
 #include "wx/wx.h"
 #endif
 
+#include "../score/defs.h"
 #include "Drawer.h"
 
 #include "wx/image.h"
@@ -70,11 +71,11 @@ public:
 
     // Aliased shapes, even when anti-alising is supported.
     void SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, wxColour color);
-    void SketchRectangle(lmUPoint uPoint, wxSize size, wxColour color);
+    void SketchRectangle(lmUPoint uPoint, lmUSize uSize, wxColour color);
 
     //solid shapes, anti-aliased when supported.
-    void SolidPolygon(int n, lmUPoint points[], wxColor color);
-    void SolidCircle(lmLUnits x, lmLUnits y, lmLUnits radius);
+    void SolidPolygon(int n, lmUPoint uPoints[], wxColor color);
+    void SolidCircle(lmLUnits ux, lmLUnits uy, lmLUnits uRadius);
 
     //brushes, colors, fonts, ...
     void SetFont(wxFont& font);
@@ -88,7 +89,7 @@ public:
     void SetPen(wxColour color, lmLUnits uWidth);
 
     //text
-    void DrawText(const wxString& text, wxCoord x, wxCoord y);
+    void DrawText(const wxString& text, lmLUnits x, lmLUnits y);
     void SetTextForeground(const wxColour& colour);
     void SetTextBackground(const wxColour& colour);
     void GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h);

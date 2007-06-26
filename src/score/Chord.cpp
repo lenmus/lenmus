@@ -247,7 +247,7 @@ bool lmChord::IsLastNoteOfChord(lmNote* pNote)
 }
 
 lmLUnits lmChord::DrawFlag(bool fMeasuring, lmPaper* pPaper, lmNote* pBaseNote,
-                                 lmUPoint pos, wxColour colorC, wxFont* pFont,
+                                 lmUPoint uPos, wxColour colorC, wxFont* pFont,
                                  lmVStaff* pVStaff, int nStaff)
 {
     //
@@ -289,8 +289,8 @@ lmLUnits lmChord::DrawFlag(bool fMeasuring, lmPaper* pPaper, lmNote* pBaseNote,
     if (!fMeasuring) {
         // drawing phase: do the draw
         pPaper->SetTextForeground(colorC);
-        pPaper->DrawText(sGlyph, pos.x,
-            pos.y + pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, nStaff ) );
+        pPaper->DrawText(sGlyph, uPos.x,
+            uPos.y + pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, nStaff ) );
     }
 
     lmLUnits width, height;
@@ -424,7 +424,7 @@ void lmChord::ArrangeNoteheads()
 
 }
 
-void lmChord::ComputeLayout(lmPaper* pPaper, lmUPoint paperPos, wxColour colorC)
+void lmChord::ComputeLayout(lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC)
 {
     //arrange noteheads at left/right of stem to avoid collisions
     ArrangeNoteheads();
@@ -455,7 +455,7 @@ void lmChord::ComputeLayout(lmPaper* pPaper, lmUPoint paperPos, wxColour colorC)
         pNote->SetFont(pPaper);
 
         if (!pNote->IsNoteheadReversed() && pNote->HasAccidentals())
-            ComputeAccidentalLayout(true, pNote, iN, pPaper, paperPos, colorC);
+            ComputeAccidentalLayout(true, pNote, iN, pPaper, uPaperPos, colorC);
     }
     //second loop to process notes  shitfted to right
     //wxLogMessage(_T("[lmChord::ComputeLayout] Second loop to process notes  shitfted to right"));
@@ -463,7 +463,7 @@ void lmChord::ComputeLayout(lmPaper* pPaper, lmUPoint paperPos, wxColour colorC)
     for(iN=1; pNode; pNode=pNode->GetNext(), iN++ ) {
         pNote = (lmNote*)pNode->GetData();
         if (pNote->IsNoteheadReversed() && pNote->HasAccidentals())
-            ComputeAccidentalLayout(false, pNote, iN, pPaper, paperPos, colorC);
+            ComputeAccidentalLayout(false, pNote, iN, pPaper, uPaperPos, colorC);
     }
 
     //Here all accidentals are positioned without collisions. Procceed to compute
@@ -606,7 +606,7 @@ lmNote* lmChord::CheckIfNoteCollision(lmShapeObj* pShape)
 
 }
 
-void lmChord::ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, int iN, lmPaper* pPaper, lmUPoint paperPos, wxColour colorC)
+void lmChord::ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, int iN, lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC)
 {
     wxASSERT(pNote->HasAccidentals());
 

@@ -48,28 +48,27 @@ WX_DEFINE_LIST(ShapesList);
 lmShapeObj::lmShapeObj(lmObject* pOwner)
 {
     m_pOwner = pOwner;
-    m_SelRect = wxRect(0,0,0,0);
-    m_BoundsRect = wxRect(0,0,0,0);
+    m_uSelRect = lmURect(0.0, 0.0, 0.0, 0.0);
+    m_uBoundsRect = lmURect(0.0, 0.0, 0.0, 0.0);
 }
 
-void lmShapeObj::SetSelRectangle(int x, int y, int nWidth, int nHeight)
+void lmShapeObj::SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight)
 {
-    m_SelRect.width = nWidth;
-    m_SelRect.height = nHeight;
-    m_SelRect.x = x;
-    m_SelRect.y = y;
+    m_uSelRect.width = uWidth;
+    m_uSelRect.height = uHeight;
+    m_uSelRect.x = x;
+    m_uSelRect.y = y;
 }
 
-void lmShapeObj::DrawSelRectangle(lmPaper* pPaper, lmUPoint pos, wxColour colorC)
+void lmShapeObj::DrawSelRectangle(lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
-    wxPoint pt = m_SelRect.GetPosition();
-    lmUPoint uPoint((lmLUnits)pt.x, (lmLUnits)pt.y);
-    pPaper->SketchRectangle(uPoint + pos, m_SelRect.GetSize(), colorC);
+    lmUPoint uPoint = m_uSelRect.GetPosition();
+    pPaper->SketchRectangle(uPoint + uPos, m_uSelRect.GetSize(), colorC);
 }
 
 bool lmShapeObj::Collision(lmShapeObj* pShape)
 {
-    wxRect rect1 = GetBoundsRectangle();
+    lmURect rect1 = GetBoundsRectangle();
     return rect1.Intersects( pShape->GetBoundsRectangle() );
 }
 
@@ -107,20 +106,20 @@ void lmShapeComposite::Add(lmShapeObj* pShape)
     m_Components.Append(pShape);
 
     //compute new selection rectangle by union of individual selection rectangles
-    m_SelRect.Union(pShape->GetSelRectangle());
+    m_uSelRect.Union(pShape->GetSelRectangle());
 
     //! @todo add boundling rectangle to bounds rectangle list
-    m_BoundsRect = m_SelRect;
+    m_uBoundsRect = m_uSelRect;
 
 }
 
-void lmShapeComposite::Render(lmPaper* pPaper, lmUPoint pos, wxColour color)
+void lmShapeComposite::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
 {
     lmShapeObj* pShape;
     ShapesList::Node* pNode = m_Components.GetFirst();
     while (pNode) {
         pShape = (lmShapeObj*)pNode->GetData();
-        pShape->Render(pPaper, pos, color);
+        pShape->Render(pPaper, uPos, color);
         pNode = pNode->GetNext();
     }
 }
@@ -154,13 +153,13 @@ lmShapeLine::lmShapeLine(lmObject* pOwner,
     m_uWidth = uWidth;
 }
 
-void lmShapeLine::Render(lmPaper* pPaper, lmUPoint pos, wxColour color)
+void lmShapeLine::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
 {
     // start and end points
-    lmLUnits x1 = pos.x + m_xStart;
-    lmLUnits y1 = pos.y + m_yStart;
-    lmLUnits x2 = pos.x + m_xEnd;
-    lmLUnits y2 = pos.y + m_yEnd;
+    lmLUnits x1 = uPos.x + m_xStart;
+    lmLUnits y1 = uPos.y + m_yStart;
+    lmLUnits x2 = uPos.x + m_xEnd;
+    lmLUnits y2 = uPos.y + m_yEnd;
 
     pPaper->SolidLine(x1, y1, x2, y2, m_uWidth, eEdgeNormal, color);
 
@@ -187,8 +186,8 @@ lmShapeGlyph::lmShapeGlyph(lmObject* pOwner, int nGlyph, wxFont* pFont)
     m_pFont = pFont;
 
     //default values
-    m_shift.x = 0;
-    m_shift.y = 0;
+    m_uShift.x = 0;
+    m_uShift.y = 0;
 
 
 
@@ -197,32 +196,32 @@ lmShapeGlyph::lmShapeGlyph(lmObject* pOwner, int nGlyph, wxFont* pFont)
 void lmShapeGlyph::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
 {
     // compute and store position
-    m_shift.x = offset.x;
-    m_shift.y = offset.y - pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].GlyphOffset);
+    m_uShift.x = offset.x;
+    m_uShift.y = offset.y - pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].GlyphOffset);
 
     // store boundling rectangle position and size
-    lmLUnits nWidth, nHeight;
+    lmLUnits uWidth, uHeight;
     wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
     pPaper->SetFont(*m_pFont);
-    pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
-    m_BoundsRect.height = (int)pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectHeight);
-    m_BoundsRect.width = (int)nWidth;
-    m_BoundsRect.x = (int)m_shift.x;
-    m_BoundsRect.y = (int)m_shift.y + (int)pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectShift);
+    pPaper->GetTextExtent(sGlyph, &uWidth, &uHeight);
+    m_uBoundsRect.height = pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectHeight);
+    m_uBoundsRect.width = uWidth;
+    m_uBoundsRect.x = m_uShift.x;
+    m_uBoundsRect.y = m_uShift.y + pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectShift);
 
     // store selection rectangle position and size
-    m_SelRect = m_BoundsRect;
+    m_uSelRect = m_uBoundsRect;
 
 }
 
 
-void lmShapeGlyph::Render(lmPaper* pPaper, lmUPoint pos, wxColour color)
+void lmShapeGlyph::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
 {
     wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
 
     pPaper->SetFont(*m_pFont);
     pPaper->SetTextForeground(color);
-    pPaper->DrawText(sGlyph, (int)(pos.x + m_shift.x), (int)(pos.y + m_shift.y));
+    pPaper->DrawText(sGlyph, uPos.x + m_uShift.x, uPos.y + m_uShift.y);
 
 }
 
@@ -234,14 +233,14 @@ void lmShapeGlyph::SetFont(wxFont *pFont)
 wxString lmShapeGlyph::Dump()
 {
     return wxString::Format(_T("GlyphShape: shift=(%d,%d)"),
-        m_shift.x, m_shift.y);
+        m_uShift.x, m_uShift.y);
 }
 
 void lmShapeGlyph::Shift(lmLUnits xIncr)
 {
-    m_shift.x += xIncr;
-    m_SelRect.x += (int)xIncr;
-    m_BoundsRect.x += (int)xIncr;
+    m_uShift.x += xIncr;
+    m_uSelRect.x += xIncr;
+    m_uBoundsRect.x += xIncr;
 }
 
 
@@ -257,8 +256,8 @@ lmShapeText::lmShapeText(lmObject* pOwner, wxString sText, wxFont* pFont)
     m_pFont = pFont;
 
     //default values
-    m_shift.x = 0;
-    m_shift.y = 0;
+    m_uShift.x = 0;
+    m_uShift.y = 0;
 
 
 
@@ -267,29 +266,29 @@ lmShapeText::lmShapeText(lmObject* pOwner, wxString sText, wxFont* pFont)
 void lmShapeText::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
 {
     // compute and store position
-    m_shift.x = offset.x;
-    m_shift.y = offset.y;
+    m_uShift.x = offset.x;
+    m_uShift.y = offset.y;
 
     // store boundling rectangle position and size
     lmLUnits uWidth, uHeight;
     pPaper->SetFont(*m_pFont);
     pPaper->GetTextExtent(m_sText, &uWidth, &uHeight);
-    m_BoundsRect.height = (int)uHeight;
-    m_BoundsRect.width = (int)uWidth;
-    m_BoundsRect.x = (int)m_shift.x;
-    m_BoundsRect.y = (int)m_shift.y;
+    m_uBoundsRect.height = uHeight;
+    m_uBoundsRect.width = uWidth;
+    m_uBoundsRect.x = m_uShift.x;
+    m_uBoundsRect.y = m_uShift.y;
 
     // store selection rectangle position and size
-    m_SelRect = m_BoundsRect;
+    m_uSelRect = m_uBoundsRect;
 
 }
 
 
-void lmShapeText::Render(lmPaper* pPaper, lmUPoint pos, wxColour color)
+void lmShapeText::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
 {
     pPaper->SetFont(*m_pFont);
     pPaper->SetTextForeground(color);
-    pPaper->DrawText(m_sText, (int)(pos.x + m_shift.x), (int)(pos.y + m_shift.y));
+    pPaper->DrawText(m_sText, uPos.x + m_uShift.x, uPos.y + m_uShift.y);
 }
 
 void lmShapeText::SetFont(wxFont *pFont)
@@ -300,13 +299,13 @@ void lmShapeText::SetFont(wxFont *pFont)
 wxString lmShapeText::Dump()
 {
     return wxString::Format(_T("TextShape: shift=(%d,%d), text=%s"),
-        m_shift.x, m_shift.y, m_sText.c_str() );
+        m_uShift.x, m_uShift.y, m_sText.c_str() );
 }
 
 void lmShapeText::Shift(lmLUnits xIncr)
 {
-    m_shift.x += xIncr;
-    m_SelRect.x += (int)xIncr;
-    m_BoundsRect.x += (int)xIncr;
+    m_uShift.x += xIncr;
+    m_uSelRect.x += xIncr;
+    m_uBoundsRect.x += xIncr;
 }
 

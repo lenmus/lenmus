@@ -48,8 +48,8 @@ public:
     wxBitmap*   GetBitmap(double rScale);
     void        DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
     void        MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
-                            const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels);
-    lmUPoint    EndDrag(const lmUPoint& pos);
+                            const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels);
+    lmUPoint    EndDrag(const lmUPoint& uPos);
 
     wxString    Dump();
     wxString    SourceLDP();

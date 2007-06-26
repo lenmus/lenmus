@@ -47,8 +47,8 @@ public:
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
     wxBitmap* GetBitmap(double rScale);
     void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
-                         const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels);
-    lmUPoint EndDrag(const lmUPoint& pos);
+                         const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels);
+    lmUPoint EndDrag(const lmUPoint& uPos);
 
 
     //    debugging
@@ -57,8 +57,8 @@ public:
     wxString SourceXML();
 
     //rendering related methods
-    lmLUnits DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos, EClefType nClef,
-                     int nStaff, wxColour colorC = *wxBLACK);
+    lmLUnits DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, EClefType nClef,
+                    int nStaff, wxColour colorC = *wxBLACK);
 
     //methods for hiding the key in prologs
     void Hide(bool fHide) { m_fHidden = fHide; }
@@ -68,7 +68,7 @@ public:
 private:
     void SetKeySignatureType();
     lmLUnits DrawAccidental(bool fMeasuring, lmPaper* pPaper, EAccidentals nAlter,
-                    lmLUnits nxLeft, lmLUnits nyTop, int nStaff);
+                    lmLUnits uxLeft, lmLUnits uyTop, int nStaff);
 
     // get fixed measures and values that depend on lmKeySignature type
     lmLUnits DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);

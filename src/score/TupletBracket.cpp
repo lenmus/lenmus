@@ -94,7 +94,7 @@ lmTupletBracket::~lmTupletBracket()
 //    lmUPoint startOffset = (GetStartNote())->GetOrigin();
 //    lmUPoint endOffset = (GetEndNote())->GetOrigin();
 //
-//    m_paperPos = startOffset;
+//    m_uPaperPos = startOffset;
 //    SetSelRectangle(m_xStart, m_yStart,
 //                    m_xEnd + endOffset.x - startOffset.x - m_xStart,
 //                    m_yEnd + endOffset.y - startOffset.y - m_yStart + 2000);
@@ -140,7 +140,7 @@ void lmTupletBracket::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
     but is always controlled by the two owner NotesRests.
 
     It is too early to define an standard behaviour for AuxObjs. In general:
-      -    m_paperPos and m_selRect must be always updated as it is being used for selection.
+      -    m_uPaperPos and m_uSelRect must be always updated as it is being used for selection.
         This implies that positioning and size information of AuxObjs associated to an
         lmStaffObj (i.e. Ties, TupletBrackets) must be updated when the owner lmStaffObj is
         updated (i.e. the formatting and justification process).

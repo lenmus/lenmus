@@ -55,8 +55,8 @@ public:
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
     wxBitmap* GetBitmap(double rScale);
     void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
-                         const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels);
-    lmUPoint EndDrag(const lmUPoint& pos);
+                         const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels);
+    lmUPoint EndDrag(const lmUPoint& uPos);
 
 
     //    debugging
@@ -65,7 +65,7 @@ public:
     wxString SourceXML();
 
     //rendering related methods
-    lmLUnits DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos, wxColour colorC = *wxBLACK);
+    lmLUnits DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, wxColour colorC = *wxBLACK);
 
     //sound related methods
     void AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime, int nMeasure);

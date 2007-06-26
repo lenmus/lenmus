@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -35,7 +35,7 @@
 //    - the grand staff is an lmVStaff with two five-lines staves.
 //    - the single line unpitched staff is an VSatff with one sigle line staff.
 //
-//    The concept of 'staff' is not modelled into the program, its is just a term to be used only 
+//    The concept of 'staff' is not modelled into the program, its is just a term to be used only
 //    in documentation, algoritms explanations, etc.
 //
 //    An lmVStaff is composed by objects such as notes, rests, barlines, keys, and all other
@@ -56,17 +56,17 @@
 
 //--------------------------------------------------------------------------------------------------
 // Modelo
-//   - Todos los StaffObjs que componen el pentagrama est醤 en la colecci髇 m_cStaffObjs, ordenados por
-//   orden de creaci髇
+//   - Todos los StaffObjs que componen el pentagrama est谩n en la colecci贸n m_cStaffObjs, ordenados por
+//   orden de creaci贸n
 //   - Cada staffobj:
-//       - mantiene el n鷐 del compas al que pertenece. Si se inserta o se borra un compas
+//       - mantiene el n煤m del compas al que pertenece. Si se inserta o se borra un compas
 //           hay que renumerar
-//   - La colecci髇 m_cPoInicioCompas contiene un puntero al primer staffobj de cada compas
+//   - La colecci贸n m_cPoInicioCompas contiene un puntero al primer staffobj de cada compas
 //
-//   - THINK: Dado un Pentobj deber韆 ser inmediato localizarle dentro de la colecci髇. Para ello
-//   en cada staffobj deber韆 guardarse su 韓dice en la colecci髇. Ello obliga a realmacenar 韓dices
-//   tras una inserci髇 o un borrado. La alternativa actual es recorrer secuencialmente la
-//   colecci髇. Ver m閠odo CIterador.PosicionarEnItem
+//   - THINK: Dado un Pentobj deber铆a ser inmediato localizarle dentro de la colecci贸n. Para ello
+//   en cada staffobj deber铆a guardarse su 铆ndice en la colecci贸n. Ello obliga a realmacenar 铆ndices
+//   tras una inserci贸n o un borrado. La alternativa actual es recorrer secuencialmente la
+//   colecci贸n. Ver m茅todo CIterador.PosicionarEnItem
 //--------------------------------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
@@ -101,7 +101,7 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
     //pScore is the lmScore to which this vstaff belongs.
     //Initially the lmVStaff will have only one standard five-lines staff. This can be
     //later modified invoking the 'AddStaff' method (REVIEW)
-       
+
     m_pScore = pScore;
     m_pInstrument = pInstr;
     m_fOverlayered = fOverlayered;
@@ -116,7 +116,7 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
     //create one standard staff (five lines, 7.2 mm height)
     lmStaff* pStaff = new lmStaff(pScore);
     m_cStaves.Append(pStaff);
-    
+
     //default value
     //! @todo review this fixed space before the clef
     m_nSpaceBeforeClef = TenthsToLogical(10, 1);    // one line of first staff
@@ -135,7 +135,7 @@ lmStaff* lmVStaff::AddStaff(int nNumLines, lmLUnits nMicrons)
 {
     lmStaff* pStaff = new lmStaff(m_pScore, nNumLines, nMicrons);
     m_cStaves.Append(pStaff);
-    
+
     return pStaff;
 
 }
@@ -201,7 +201,7 @@ void lmVStaff::UpdateContext(lmNote* pStartNote, int nStaff, int nStep,
 
     //create a new context by updating current one
     lmStaff* pStaff = GetStaff(nStaff);
-    lmContext* pNewContext = pStaff->NewContext(pCurrentContext, nNewAccidentals, nStep);    
+    lmContext* pNewContext = pStaff->NewContext(pCurrentContext, nNewAccidentals, nStep);
 
     /*! @todo
     For now, as we are not yet dealing with edition, it is not possible to
@@ -259,14 +259,14 @@ void lmVStaff::UpdateContext(lmNote* pStartNote, int nStaff, int nStep,
 
 
 //---------------------------------------------------------------------------------------
-// Methods for adding StaffObjs 
+// Methods for adding StaffObjs
 //---------------------------------------------------------------------------------------
 
 // adds a clef to the end of current StaffObjs collection
 lmClef* lmVStaff::AddClef(EClefType nClefType, int nStaff, bool fVisible)
-{    
+{
     wxASSERT(nStaff <= GetNumStaves());
-    
+
     lmClef* pClef = new lmClef(nClefType, this, nStaff, fVisible);
     lmStaff* pStaff = GetStaff(nStaff);
     pStaff->NewContext(pClef);
@@ -298,13 +298,13 @@ lmNote* lmVStaff::AddNote(bool fAbsolutePitch,
 {
 
     wxASSERT(nStaff <= GetNumStaves() );
-    
+
     lmStaff* pStaff = GetStaff(nStaff);
     lmContext* pContext = pStaff->GetLastContext();
 
     lmNote* pNt = new lmNote(this, fAbsolutePitch,
                         sStep, sOctave, sAlter, nAccidentals,
-                        nNoteType, rDuration, fDotted, fDoubleDotted, nStaff, pContext, 
+                        nNoteType, rDuration, fDotted, fDoubleDotted, nStaff, pContext,
                         fBeamed, BeamInfo, fInChord, fTie, nStem);
 
     m_cStaffObjs.Store(pNt);
@@ -319,7 +319,7 @@ lmRest* lmVStaff::AddRest(ENoteType nNoteType, float rDuration,
                       bool fBeamed, lmTBeamInfo BeamInfo[])
 {
     wxASSERT(nStaff <= GetNumStaves() );
-    
+
     lmStaff* pStaff = GetStaff(nStaff);
     lmContext* pContext = pStaff->GetLastContext();
 
@@ -328,7 +328,7 @@ lmRest* lmVStaff::AddRest(ENoteType nNoteType, float rDuration,
 
     m_cStaffObjs.Store(pR);
     return pR;
-    
+
 }
 
 lmWordsDirection* lmVStaff::AddWordsDirection(wxString sText, lmEAlignment nAlign,
@@ -489,7 +489,7 @@ void lmVStaff::DrawStaffLines(bool fMeasuring, lmPaper* pPaper, lmLUnits xFrom, 
     m_xLeft = xFrom;
     xRight = xTo;
     m_dxLin = xRight - m_xLeft;            //lenght of staff lines
-   
+
     yCur = pPaper->GetCursorY() + m_topMargin;
     m_yLinTop = yCur;              //save y coord. for first line start point
 
@@ -551,16 +551,16 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
     lmLUnits dyLinesL = pStaff->GetLineSpacing();
 
     // the font for drawing is scaled by the DC.
-    pStaff->SetFontDraw( pPaper->GetFont(3 * dyLinesL, _T("LenMus Basic") ) );        //logical points
+    pStaff->SetFontDraw( pPaper->GetFont((int)(3.0 * dyLinesL), _T("LenMus Basic") ) );        //logical points
 
-    //wxLogMessage(_T("[lmVStaff::SetFont] dyLinesL=%d"), dyLinesL); 
+    //wxLogMessage(_T("[lmVStaff::SetFont] dyLinesL=%d"), dyLinesL);
 
     //// the font for dragging is not scaled by the DC as all dragging operations takes
     //// place dealing with device units
     //int dyLinesD = pPaper->LogicalToDeviceY(100 * dyLinesL);
     //pStaff->SetFontDrag( pPaper->GetFont((3 * dyLinesD) / 100) );
 
-    ////Calcula, en pixels, el grosor de las l韓eas (es de 51 FUnits, la d閏ima parte de la distancia entre l韓eas)
+    ////Calcula, en pixels, el grosor de las l铆neas (es de 51 FUnits, la d茅cima parte de la distancia entre l铆neas)
     //m_nGrosorLineas = FUnitsToTwips(51) * nResolucion \ 1440
     //if (m_nGrosorLineas < 1) m_nGrosorLineas = 1;
     //sDbgFonts = sDbgFonts & "nGrosorLineas = " & m_nGrosorLineas & sCrLf
@@ -652,7 +652,7 @@ wxString lmVStaff::Dump()
     }
 
     return sDump;
- 
+
 }
 
 wxString lmVStaff::SourceLDP()
@@ -680,7 +680,7 @@ wxString lmVStaff::SourceXML()
 
 //    Dim oPo As IPentObj, iC As Long, sFuente As String
 //    Dim oIT As CIterador
-//    
+//
 //    Set oIT = m_cStaffObjs.CreateIterator(eTR_AsStored)
 //    iC = 1
 //    Do While oIT.QuedanItems
@@ -700,12 +700,12 @@ wxString lmVStaff::SourceXML()
 //        //avanza al siguiente staffobj
 //        oIT.AdvanceCursor
 //    Loop
-//    //cierra 鷏timo compas
+//    //cierra 煤ltimo compas
 //    sFuente = sFuente & "    </measure>" & sCrLf
 //    FuenteXML = sFuente
 
     return sSource;
-    
+
 }
 
 //void lmVStaff::Get GetXStartOfStaff() As Long
@@ -751,7 +751,7 @@ lmLUnits lmVStaff::GetVStaffHeight()
     }
 
     return m_nHeight;
-    
+
 }
 
 //
@@ -791,7 +791,7 @@ lmLUnits lmVStaff::GetVStaffHeight()
 //
 //void lmVStaff::AddDirectivaRepeticion(nTipo As EDirectivasRepeticion, nNum As Long, _
 //        nX As Long, nY As Long, fXAbs As Boolean, fYAbs As Boolean)
-//        
+//
 //    //construye el staffobj de tipo "repeticion"
 //    Dim oRepe As CPORepeticion
 //    Set oRepe = new CPORepeticion
@@ -806,7 +806,7 @@ lmLUnits lmVStaff::GetVStaffHeight()
 //        Optional nFontSize As Long = 10, _
 //        Optional fBold As Boolean = False, _
 //        Optional fItalic As Boolean = False)
-//        
+//
 //    //construye el staffobj de tipo "texto"
 //    Dim oTxt As CPOTexto
 //    Set oTxt = new CPOTexto
@@ -818,7 +818,7 @@ lmLUnits lmVStaff::GetVStaffHeight()
 //void lmVStaff::AddIndicacionMetronomo(nTipoNotaIni As EMetronomo, _
 //        nTipoNotaFin As EMetronomo, nVelocidad As Long, _
 //        Optional fVisible As Boolean = True)
-//        
+//
 //    Dim oIndicacion As CPOIndicacion
 //    Set oIndicacion = new CPOIndicacion
 //    oIndicacion.ConstructorIndMetronomo nTipoNotaIni, nTipoNotaFin, nVelocidad, this, fVisible
@@ -851,7 +851,7 @@ lmBarline* lmVStaff::AddBarline(EBarline nType, bool fVisible)
     ResetContexts();
 
     return pBarline;
-    
+
 }
 
 void lmVStaff::ResetContexts()
@@ -859,7 +859,7 @@ void lmVStaff::ResetContexts()
     /*
     Verify if current context is just the key signature accidentals. If not,
     create a new context.
-    This method is invoked after a barline to reset the context if it was modified 
+    This method is invoked after a barline to reset the context if it was modified
     by accidentals in notes
     */
 
@@ -897,7 +897,7 @@ void lmVStaff::ResetContexts()
 //void lmVStaff::AddGrafObj(nTipo As EGrafObjs, _
 //                Optional fVisible As Boolean = True, _
 //                Optional nParm1 As Long)
-//    
+//
 //    Dim oGrafObj As CPOGrafObj
 //    Set oGrafObj = new CPOGrafObj
 //    oGrafObj.ConstructorGrafObj nTipo, this, fVisible, nParm1
@@ -910,7 +910,7 @@ void lmVStaff::ResetContexts()
 //End Sub
 //
 //void lmVStaff::Get NumParte() As Long
-//    //Devuelve el n鷐ero que hace esta parte (1..n) dentro de los de su instrumento
+//    //Devuelve el n煤mero que hace esta parte (1..n) dentro de los de su instrumento
 //    NumParte = m_nStaff
 //}
 
@@ -941,18 +941,18 @@ bool lmVStaff::GetXPosFinalBarline(lmLUnits* pPos)
 }
 
 void lmVStaff::NewLine(lmPaper* pPaper)
-{        
-    //move x cursor to the left and advance y cursor the space 
+{
+    //move x cursor to the left and advance y cursor the space
     //height of all stafves of this lmVStaff
     pPaper->NewLine(GetVStaffHeight());
-    
+
 }
 
 void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPaper* pPaper)
 {
     // The prolog (clef and key signature) must be rendered on each system,
-    // but the matching StaffObjs only exist in the first system. Therefore, in the 
-    // normal staffobj rendering process, the prolog would be rendered only in 
+    // but the matching StaffObjs only exist in the first system. Therefore, in the
+    // normal staffobj rendering process, the prolog would be rendered only in
     // the first system.
     // So, for the other systems it is necessary to force the rendering
     // of the prolog because there are no StaffObjs representing it.
@@ -973,7 +973,7 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
     //at the start of a new system.
     lmLUnits xStartPos = pPaper->GetCursorX() + m_nSpaceBeforeClef;         //Save x to align all clefs
     lmLUnits yStartPos = pPaper->GetCursorY();
-    
+
     //iterate over the collection of lmStaff objects to draw current cleft and key signature
 
     wxStaffListNode* pNode = m_cStaves.GetFirst();
@@ -1024,17 +1024,17 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
             if (pClef) {
                 nClef = pClef->GetClefType();
 				if (pClef->IsVisible()) {
-					lmUPoint pos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
-					nWidth = pClef->DrawAt(fMeasuring, pPaper, pos);
+					lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
+					nWidth = pClef->DrawAt(fMeasuring, pPaper, uPos);
 					xPos += nWidth;
 				}
             }
-            
+
             //render key signature
             if (pKey && pKey->IsVisible()) {
                 wxASSERT(nClef != eclvUndefined);
-                lmUPoint pos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
-                nWidth = pKey->DrawAt(fMeasuring, pPaper, pos, nClef, nStaff);
+                lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
+                nWidth = pKey->DrawAt(fMeasuring, pPaper, uPos, nClef, nStaff);
                 xPos += nWidth;
             }
 
@@ -1050,16 +1050,16 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
 
         //compute prolog width
         nPrologWidth = wxMax(nPrologWidth, xPos - xStartPos);
-        
+
         //compute vertical displacement for next staff
         yOffset += pStaff->GetHeight();
         yOffset += pStaff->GetAfterSpace();
-            
+
     }
 
     // update paper cursor position
     pPaper->SetCursorX(xStartPos + nPrologWidth);
-    
+
 }
 
 lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
@@ -1072,17 +1072,17 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
 
     //! @todo review this commented code
 //    Dim nMetrica As ETimeSignature, nDurCompas As Long, nTiempoIni As Long
-//    
+//
 //    nMetrica = this.MetricaInicial
 //    nDurCompas = GetDuracionMetrica(nMetrica)
 //    nTiempoIni = nDurCompas - this.DuracionCompas(1)
-//    
-//    wxASSERT(nTiempoIni >= 0        //El compas tiene m醩 notas de las que caben
-//    
+//
+//    wxASSERT(nTiempoIni >= 0        //El compas tiene m谩s notas de las que caben
+//
 //    //Si el primer compas no es anacrusa, retrasa todo un compas para que
 //    //se marque un compas completo antes de comenzar
 //    if (nTiempoIni = 0 { nTiempoIni = nDurCompas
-    
+
     //Create lmSoundManager and initialize MIDI events table
     lmSoundManager* pSM = new lmSoundManager();
     //! @todo review next line
@@ -1119,19 +1119,19 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
     delete pIter;
 
     return pSM;
-    
+
 }
 
 lmNote* lmVStaff::FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep)
 {
     /*
-    This method is invoked from lmNote constructor to find if the note being created 
-    (the "target note") is tied to a previous one ("the candidate" one). 
-    This method explores backwards to try to find a note that can be tied with the received 
+    This method is invoked from lmNote constructor to find if the note being created
+    (the "target note") is tied to a previous one ("the candidate" one).
+    This method explores backwards to try to find a note that can be tied with the received
     as parameter (the "target note").
 
     Algorithm:
-    Find the first previous note of the same pitch and step, in this measure or 
+    Find the first previous note of the same pitch and step, in this measure or
     in the previous one
 
     */
@@ -1189,47 +1189,47 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep)
 //    //nShift - the shift amount to apply to all StaffObjs of bar number iBar
 //    //nBarLeft - the new left position for the start of this bar
 //    //nNewBarWidth - the new width that this bar will have.
-//    
-//    
+//
+//
 //    wxASSERT(iBar <= this.NumCompases
-//    
+//
 //    if (nNewBarWidth = 0 { Exit Function
 //
 //    Dim i As Long, nBarlineShift As Long
 //    Dim oPo As IPentObj
-//    
+//
 //    //get staffobj on which the bar starts
 //    Dim oIT As CIterador
 //    Set oIT = m_cStaffObjs.CreateIterator(eTR_OptimizeAccess)
 //    oIT.AdvanceToMeasure iBar
 //    Do While oIT.QuedanItems
 //        Set oPo = oIT.GetItem
-//        
+//
 //        //if this staffobj is the barline, shift it and exit
 //        if (oPo.Tipo = eSFOT_Barline {
 //            nBarlineShift = (nBarLeft + nNewBarWidth) - oPo.Left
 //            oPo.Left = nBarLeft + nNewBarWidth - (oPo.Right - oPo.Left - 1)
 //            Exit Do
 //        }
-//        
+//
 //        //otherwise shift the staffobj
 //        oPo.Left = oPo.Left + nShift
-//            
+//
 //        oIT.AdvanceCursor
 //    Loop
 //    RepositionBar = nBarlineShift
-//    
+//
 //}
 //
-////Desplaza la barra de fin de compas para que quede en la posici髇 nLeft.
+////Desplaza la barra de fin de compas para que quede en la posici贸n nLeft.
 ////Devuelve el desplazamiento aplicado a la barra
 //Function SetAnchoCompas(iCompas As Long, nLeft As Long) As Long
-//    
+//
 //    wxASSERT(iCompas <= this.NumCompases
 //
 //    Dim i As Long
 //    Dim oPo As IPentObj
-//    
+//
 //    //localizar el fin del compas
 //    Dim oIT As CIterador
 //    Set oIT = m_cStaffObjs.CreateIterator(eTR_OptimizeAccess)
@@ -1239,23 +1239,23 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep)
 //        if (oPo.Tipo = eSCOT_Barline { Exit Do
 //        oIT.AdvanceCursor
 //    Loop
-//    
+//
 //    i = nLeft - oPo.Left    //desplazamiento a aplicar
 //    oPo.Left = nLeft - (oPo.Right - oPo.Left - 1)
 //    SetAnchoCompas = i
 //
 //}
 //
-////Devuelve la duraci髇 del compas
-////Al llevarse ahora una marca de tiempo, la duraci髇 del compas viene dada por la marca de
+////Devuelve la duraci贸n del compas
+////Al llevarse ahora una marca de tiempo, la duraci贸n del compas viene dada por la marca de
 ////tiempo de la barra de fin de compas, lo que simplifica el tratamiento
 //Function DuracionCompas(iCompas As Long) As Long
 //    wxASSERT(iCompas <= this.NumCompases
-//    
+//
 //    //Algoritmo: Localizar la barra de fin del compas y devolver su marca de tiempo
 //
 //    Dim oPo As IPentObj
-//    
+//
 //    //bucle hasta el fin del compas
 //    Dim oIT As CIterador
 //    Set oIT = m_cStaffObjs.CreateIterator(eTR_OptimizeAccess)
@@ -1265,7 +1265,7 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep)
 //        if (oPo.Tipo = eSCOT_Barline { Exit Do
 //        oIT.AdvanceCursor
 //    Loop
-//    
+//
 //    wxASSERT(oPo.Tipo = eSCOT_Barline      //no pueden existir compases que no acaben en barra
 //    DuracionCompas = oPo.TimePos
 //
@@ -1284,11 +1284,11 @@ void lmVStaff::ShiftTime(float rTimeShift)
     //shift time counters
     m_cStaffObjs.ShiftTime(rTimeShift);
 
-    //Insert a control object to signal the shift event so that we can start a 
+    //Insert a control object to signal the shift event so that we can start a
     //new thread at rendering
     lmSOControl* pControl = new lmSOControl(lmTIME_SHIFT, this, rTimeShift);
     m_cStaffObjs.Store(pControl);
-    
+
 }
 
 lmSOControl* lmVStaff::AddNewSystem()
@@ -1301,7 +1301,7 @@ lmSOControl* lmVStaff::AddNewSystem()
     lmSOControl* pControl = new lmSOControl(lmNEW_SYSTEM, this);
     m_cStaffObjs.Store(pControl);
     return pControl;
-    
+
 }
 
 //=========================================================================================
@@ -1315,8 +1315,8 @@ lmStaffObjIterator* lmVStaff::CreateIterator(ETraversingOrder nOrder)
 }
 
 ////el posicionamiento relativo de objetos requiere conocer la
-////posici髇 de inicio del compas. Para ello, las funciones de dibujo lo guardan
-//// aqui, de forma que el m閠odo GetXInicioCompas pueda devolver este valor
+////posici贸n de inicio del compas. Para ello, las funciones de dibujo lo guardan
+//// aqui, de forma que el m茅todo GetXInicioCompas pueda devolver este valor
 //Friend void lmVStaff::Let SetXInicioCompas(xPos As Long)
 //    m_xInicioCompas = xPos
 //}
@@ -1325,7 +1325,7 @@ lmStaffObjIterator* lmVStaff::CreateIterator(ETraversingOrder nOrder)
 //
 //
 ////==============================================================================================
-//// Funciones que a馻den StaffObjs al final del pentagrama a partir de un fuente.
+//// Funciones que a帽aden StaffObjs al final del pentagrama a partir de un fuente.
 ////==============================================================================================
 //
 //
@@ -1336,7 +1336,7 @@ lmStaffObjIterator* lmVStaff::CreateIterator(ETraversingOrder nOrder)
 //    Dim oRaiz As CNodo
 //    Set oRaiz = AnalizarFuente(sElemento)
 //    AnalizarCompas oRaiz, this
-//        
+//
 //End Sub
 
 //Devuelve una referencia al objeto CPONota creado.
@@ -1352,5 +1352,5 @@ lmStaffObjIterator* lmVStaff::CreateIterator(ETraversingOrder nOrder)
 //    }
 //
 //    return pNR;
-//        
+//
 //}

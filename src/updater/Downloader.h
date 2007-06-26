@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //    This file is based in code taken from package 'WebDownloader'
@@ -39,51 +39,6 @@
 #include <wx/url.h>
 #include <wx/datetime.h>
 
-
-//// defined later
-//class wxFileName;
-//
-//
-
-// Global utilities
-// -----------------------
-
-////! Returns the filename pointed by the given file URI.
-//wxFileName wxGetFileNameFromURI(const wxString &uri);
-//
-////! Returns a string with the file URI for the given filename.
-//wxString wxMakeFileURI(const wxFileName &fn);
-
-////! Returns the size in bytes of the resource pointed by the given URI or zero.
-//unsigned long wxGetSizeOfURI(const wxString &uri);
-//
-//
-//
-//
-//// Events
-//// ----------------------
-//
-//// this is the even sent by a lmDownloadThread class to the wxEvtHandler
-//// which is given it in its constructor.
-//DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_WEBUPDATE, wxEVT_COMMAND_DOWNLOAD_COMPLETE, -1);
-//
-//// this is the event sent by a wxSizeCacherThread class to the wxEvtHandler which
-//// is given in its constructor.
-//DECLARE_EXPORTED_EVENT_TYPE(WXDLLIMPEXP_WEBUPDATE, wxEVT_COMMAND_CACHESIZE_COMPLETE, -1);
-//
-//#define EVT_DOWNLOAD_COMPLETE(id, func)		\
-//	EVT_COMMAND(id, wxEVT_COMMAND_DOWNLOAD_COMPLETE, func)
-//
-//#define EVT_CACHESIZE_COMPLETE(id, func)		\
-//	EVT_COMMAND(id, wxEVT_COMMAND_CACHESIZE_COMPLETE, func)
-//	
-//	
-////size of the temporary buffer to store the downloaded data
-//#define wxDT_BUF_TEMP_SIZE				2048
-//
-////size of the queue of a lmDownloadThread.
-//#define wxDT_QUEUE_SIZE					32
-//
 
 //possible values  for the m_nStatus variable
 enum mThreadWorkStatus {
@@ -111,38 +66,14 @@ public:
 
     void SetURL(wxString sUrl) { m_sUrl = sUrl; }
 
-//    // accessors
-//
-//	//! Returns TRUE if the last download was successful.
-//	bool DownloadWasSuccessful() const { return m_bSuccess; }
-//
-//	//! Returns the number of files successfully installed by this thread.
-//    int GetDownloadCount() const { return m_nFileCount; }
-//
-//	//! Returns the number of milliseconds elapsed from the start of the
-//	//! current download.
-//	wxLongLong GetElapsedMSec() const
-//		{ wxTimeSpan t = wxDateTime::UNow() - m_dtStart; return t.GetMilliseconds(); }
-//
-//	//! Returns the number of bytes currently downloaded.
-//	unsigned long GetCurrDownloadedBytes() const { return m_nCurrentSize; }
-//
-//	//! Returns a string containing the current download speed.
-//	//! The speed is calculated using #GetCurrDownloadedBytes and #GetElapsedMSec.
-//	virtual wxString GetDownloadSpeed() const;
-//
-//	//! Returns a string containing the current time left for this download.
-//	virtual wxString GetRemainingTime() const;
-//
-
         // current status
-	
+
 	//! Returns TRUE if this thread is downloading a file.
 	bool IsDownloading() const
 		{ return (IsRunning() && m_nStatus == lmTWS_DOWNLOADING); }
 
 	//! Returns TRUE if this thread is running but it's not downloading anything.
-	bool IsWaiting() const 
+	bool IsWaiting() const
 		{ return (IsRunning() && m_nStatus == lmTWS_IDDLE); }
 
 //        // miscellaneous
@@ -172,7 +103,7 @@ public:
 //
 //
 //protected:
-//	
+//
 //	wxDateTime      m_dtStart;          //time when the download started.
 //	unsigned long   m_nCurrentSize;     //bytes currently downloaded
 //	unsigned long   m_nFinalSize;       //final size of the download
@@ -184,7 +115,7 @@ public:
 
 	mThreadWorkStatus   m_nStatus;  //current working status (iddle, downloading, ...)
 	wxMutex             m_mStatus;  //mutex over previous variable
-	
+
 //	int         m_nCurrentIndex;    //current element being downloaded
 //	wxMutex     m_mIndex;           //mutex over previous variable
 

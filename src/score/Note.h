@@ -47,26 +47,26 @@ public:
 
     //implementation of virtual methods of base classes
         // lmScoreObj
-    void SetLeft(lmLUnits nLeft);
+    void SetLeft(lmLUnits uLeft);
         // lmStaffObj
     wxBitmap*   GetBitmap(double rScale);
     void        DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
     void        MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
-                            const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels);
-    lmUPoint    EndDrag(const lmUPoint& pos);
+                            const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels);
+    lmUPoint    EndDrag(const lmUPoint& uPos);
 
     wxString    Dump();
     wxString    SourceLDP();
     wxString    SourceXML();
 
         //lmStaffObj
-    lmScoreObj* FindSelectableObject(lmUPoint& pt);
+    lmScoreObj* FindSelectableObject(lmUPoint& uPt);
 
 
     // methods related to note positioning information
     lmLUnits GetPitchShift();
-    lmLUnits GetAnchorPos() { return m_xAnchor; }
-    void SetAnchorPos(lmLUnits xPos) { m_xAnchor = xPos; }
+    lmLUnits GetAnchorPos() { return m_uxAnchor; }
+    void SetAnchorPos(lmLUnits uxPos) { m_uxAnchor = uxPos; }
     int GetPosOnStaff();        //line/space on which note is rendered
 
     // bounds of image. Abolute position (->referred to page origin)
@@ -79,20 +79,20 @@ public:
     EStemType   GetStemType() { return m_nStemType; }
     lmLUnits    GetDefaultStemLength();
     lmLUnits    GetStandardStemLenght();
-    void        SetStemLength(lmLUnits length) { m_nStemLength = length; };
+    void        SetStemLength(lmLUnits uLength) { m_uStemLength = uLength; };
     void        SetStemDirection(bool fStemDown);
-    lmLUnits    GetXStemLeft() {return m_xStem + m_paperPos.x; }
-    lmLUnits    GetXStemRight() {return m_xStem + m_nStemThickness + m_paperPos.x; }
-    lmLUnits    GetStemThickness() {return m_nStemThickness; }
-    lmLUnits    GetYStem() {return m_yStem + m_paperPos.y; }
-    lmLUnits    GetStemLength() { return m_nStemLength; }
+    lmLUnits    GetXStemLeft() {return m_uxStem + m_uPaperPos.x; }
+    lmLUnits    GetXStemRight() {return m_uxStem + m_uStemThickness + m_uPaperPos.x; }
+    lmLUnits    GetStemThickness() {return m_uStemThickness; }
+    lmLUnits    GetYStem() {return m_uyStem + m_uPaperPos.y; }
+    lmLUnits    GetStemLength() { return m_uStemLength; }
     lmLUnits    GetFinalYStem() {
-                    return GetYStem() + (m_fStemDown ? m_nStemLength : -m_nStemLength); }
+                    return GetYStem() + (m_fStemDown ? m_uStemLength : -m_uStemLength); }
     bool        StemGoesDown() { return m_fStemDown; }
-    void        SetStemInfo(lmLUnits xStem, lmLUnits yStem, lmLUnits length) {
-                    m_xStem = xStem;
-                    m_yStem = yStem;
-                    m_nStemLength = length;
+    void        SetStemInfo(lmLUnits uxStem, lmLUnits uyStem, lmLUnits uLength) {
+                    m_uxStem = uxStem;
+                    m_uyStem = uyStem;
+                    m_uStemLength = uLength;
                 }
 
     // methods related to chords
@@ -108,7 +108,7 @@ public:
     bool HasAccidentals() { return (m_pAccidentals != (lmAccidental*)NULL); }
     lmAccidental* GetAccidentals() { return m_pAccidentals; }
     lmLUnits DrawAccidentals(lmPaper* pPaper, bool fMeasuring,
-                        lmLUnits xLeft, lmLUnits yTop, wxColour colorC);
+                        lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC);
 
 
     //methods related to ties
@@ -132,9 +132,9 @@ public:
 
     // methods used during layout computation
     bool DrawNote(lmPaper* pPaper, bool fMeasuring,
-                  lmLUnits xOffset, lmLUnits yOffset, wxColour colorC);
+                  lmLUnits uxOffset, lmLUnits uyOffset, wxColour colorC);
     lmShapeObj* GetNoteheadShape() { return m_pNoteheadShape; }
-    void ShiftNoteShape(lmLUnits xShift);
+    void ShiftNoteShape(lmLUnits uxShift);
 
     //other methods
     bool        UpdateContext(int nStep, int nNewAccidentals, lmContext* pNewContext);
@@ -146,12 +146,12 @@ private:
     // rendering
     void MakeUpPhase(lmPaper* pPaper);
     void DrawSingleNote(lmPaper* pPaper, bool fMeasuring, ENoteType nTipoNota,
-                        bool fStemAbajo, lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC);
+                        bool fStemAbajo, lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC);
     void DrawNoteHead(lmPaper* pPaper, bool fMeasuring, ENoteHeads nNoteheadType,
-                        lmLUnits nxLeft, lmLUnits nyTop, wxColour colorC);
-    void DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits yTopLine, lmLUnits xPos,
-                        lmLUnits width, int nStaff, int nROP = wxCOPY);
-    lmEGlyphIndex DrawFlag(bool fMeasuring, lmPaper* pPaper, lmUPoint pos, wxColour colorC);
+                        lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC);
+    void DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits uyTopLine, lmLUnits uxPos,
+                        lmLUnits uWidth, int nStaff, int nROP = wxCOPY);
+    lmEGlyphIndex DrawFlag(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 
     //auxiliary
     int PosOnStaffToPitch(int nSteps);
@@ -206,18 +206,18 @@ private:
     lmShapeGlyph*   m_pFlagShape;
 
     // additional positioning related variables
-    lmLUnits        m_nSpacePrev;       // space (after accidental) before note
-    lmLUnits        m_xAnchor;          // x position of anchor line (relative to m_paperPos.x)
-    wxRect          m_noteheadRect;     // notehead bounding rectangle (relative to paper)
+    lmLUnits        m_uSpacePrev;       // space (after accidental) before note
+    lmLUnits        m_uxAnchor;          // x position of anchor line (relative to m_uPaperPos.x)
+    lmURect         m_uNoteheadRect;    // notehead bounding rectangle (relative to paper)
 
     // flag information
-    lmLUnits        m_yFlag;            //y pos for flag
+    lmLUnits        m_uyFlag;            //y pos for flag
 
     // stem information
-    lmLUnits        m_xStem;           //pos and length of stem (relative to m_paperPos)
-    lmLUnits        m_yStem;           //yStem refers to the notehead nearest position
-    lmLUnits        m_nStemThickness;
-    lmLUnits        m_nStemLength;     //length of stem;
+    lmLUnits        m_uxStem;           //pos and length of stem (relative to m_uPaperPos)
+    lmLUnits        m_uyStem;           //yStem refers to the notehead nearest position
+    lmLUnits        m_uStemThickness;
+    lmLUnits        m_uStemLength;     //length of stem;
     bool            m_fStemDown;       //stem direccion. true if down
     EStemType       m_nStemType;       //type of stem
 

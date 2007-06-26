@@ -111,7 +111,7 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
 {
     /*
     This method is invoked by the base class (lmStaffObj). When reaching this point 
-    paper cursor variable (m_paperPos) has been updated. This value must be used
+    paper cursor variable (m_uPaperPos) has been updated. This value must be used
     as the base for any measurement / drawing operation.
 
     DrawObject() method is responsible for:
@@ -124,8 +124,8 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
 
 
     // move to right staff
-    lmLUnits nyTop = m_paperPos.y + GetStaffOffset();
-    lmLUnits nxLeft = m_paperPos.x;
+    lmLUnits uyTop = m_uPaperPos.y + GetStaffOffset();
+    lmLUnits uxLeft = m_uPaperPos.x;
 
     // prepare DC
     pPaper->SetFont(*m_pFont);
@@ -142,45 +142,45 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
     if (fMeasuring) {
 
         // store position
-        m_glyphPos.x = 0;
-        m_glyphPos.y = nyTop - m_paperPos.y +
+        m_uGlyphPos.x = 0;
+        m_uGlyphPos.y = uyTop - m_uPaperPos.y +
             m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
 
         // store selection rectangle position and size
         lmLUnits nWidth, nHeight;
         pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
-        m_selRect.width = nWidth;
-        m_selRect.height = m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
-        m_selRect.x = m_glyphPos.x;
-        m_selRect.y = m_glyphPos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum );
+        m_uSelRect.width = nWidth;
+        m_uSelRect.height = m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
+        m_uSelRect.x = m_uGlyphPos.x;
+        m_uSelRect.y = m_uGlyphPos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum );
 
         // store total width
         lmLUnits afterSpace = m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
-        m_nWidth = nWidth + afterSpace;
+        m_uWidth = nWidth + afterSpace;
 
     } else {
         // drawing phase: do the draw
-        lmUPoint pos = GetGlyphPosition();
+        lmUPoint uPos = GetGlyphPosition();
         pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-        pPaper->DrawText(sGlyph, pos.x, pos.y );
+        pPaper->DrawText(sGlyph, uPos.x, uPos.y );
     }
-    nxLeft += m_selRect.width;
+    uxLeft += m_uSelRect.width;
 
     //draw dots
     //------------------------------------------------------------
     if (m_fDotted || m_fDoubleDotted)
     {
         lmLUnits nSpaceBeforeDot = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-        nxLeft += nSpaceBeforeDot;      //! @todo user selectable
+        uxLeft += nSpaceBeforeDot;      //! @todo user selectable
 
         lmLUnits nShift = aGlyphsInfo[nGlyph].SelRectShift + (aGlyphsInfo[nGlyph].SelRectHeight / 2);
         nShift = m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);
-        lmLUnits yPos = m_glyphPos.y + m_paperPos.y; // + nShift;
+        lmLUnits yPos = m_uGlyphPos.y + m_uPaperPos.y; // + nShift;
 
-        nxLeft += DrawDot(fMeasuring, pPaper, nxLeft, yPos, colorC, true);
+        uxLeft += DrawDot(fMeasuring, pPaper, uxLeft, yPos, colorC, true);
         if (m_fDoubleDotted) {
-            nxLeft += nSpaceBeforeDot;
-            nxLeft += DrawDot(fMeasuring, pPaper, nxLeft, yPos, colorC, true);
+            uxLeft += nSpaceBeforeDot;
+            uxLeft += DrawDot(fMeasuring, pPaper, uxLeft, yPos, colorC, true);
         }
     }
 
@@ -196,8 +196,8 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
                 switch(pNRO->GetSymbolType()) {
                     case eST_Fermata:
                         // set position (relative to paperPos)
-                        xPos = m_selRect.x + m_selRect.width / 2;
-                        yPos = nyTop - m_paperPos.y;
+                        xPos = m_uSelRect.x + m_uSelRect.width / 2;
+                        yPos = uyTop - m_uPaperPos.y;
                         pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
                         pNRO->UpdateMeasurements();
                         break;
@@ -223,8 +223,8 @@ void lmRest::DoVerticalShift(lmTenths yShift)
     lmLUnits uShift = m_pVStaff->TenthsToLogical(yShift, m_nStaffNum);
 
     // apply shift to rest object
-    m_glyphPos.y += uShift;
-    m_selRect.y += uShift;
+    m_uGlyphPos.y += uShift;
+    m_uSelRect.y += uShift;
 
     // apply shift to associated notations
     // todo: there is a problem with following code: I need pointer pPaper
@@ -238,7 +238,7 @@ void lmRest::DoVerticalShift(lmTenths yShift)
     //        switch(pNRO->GetSymbolType()) {
     //            case eST_Fermata:
     //                // set position (relative to paperPos)
-    //                xPos = m_selRect.x + m_selRect.width / 2;
+    //                xPos = m_uSelRect.x + m_uSelRect.width / 2;
     //                yPos = GetStaffOffset() + uShift;
     //                pNRO->SetSizePosition(m_pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
     //                pNRO->UpdateMeasurements();
@@ -335,14 +335,14 @@ lmScoreObj* lmRest::FindSelectableObject(lmUPoint& pt)
 //====================================================================================================
 
 void lmRest::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
-            const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels)
+            const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels)
 {
-    lmScoreObj::MoveDragImage(pPaper, pDragImage, ptOffset, ptLog, dragStartPosL, ptPixels);
+    lmScoreObj::MoveDragImage(pPaper, pDragImage, ptOffset, ptLog, uDragStartPos, ptPixels);
 }
 
-lmUPoint lmRest::EndDrag(const lmUPoint& pos)
+lmUPoint lmRest::EndDrag(const lmUPoint& uPos)
 {
-    return lmScoreObj::EndDrag(pos);
+    return lmScoreObj::EndDrag(uPos);
 }
 
 //====================================================================================================

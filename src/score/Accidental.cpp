@@ -63,17 +63,17 @@ void lmAccidental::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaf
 //    pPaper->GetTextExtent(sGlyphs, &nWidth, &nNotUsed);
 //
 //    // store glyphs position
-//    m_glyphPos.x = xPos;
-//    m_glyphPos.y = yPos + nOffset;
+//    m_uGlyphPos.x = xPos;
+//    m_uGlyphPos.y = yPos + nOffset;
 //
 //    // store selection rectangle position and size
-//    m_selRect.width = nWidth;
-//    m_selRect.height = nHeight;
-//    m_selRect.x = m_glyphPos.x;
-//    m_selRect.y = m_glyphPos.y + nShift;
+//    m_uSelRect.width = nWidth;
+//    m_uSelRect.height = nHeight;
+//    m_uSelRect.x = m_uGlyphPos.x;
+//    m_uSelRect.y = m_uGlyphPos.y + nShift;
 }
 
-void lmAccidental::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
+void lmAccidental::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint uOffset)
 {
     //set again the font, just in case the scale has changed
     wxFont* pFont = m_pOwner->GetFont();
@@ -81,10 +81,10 @@ void lmAccidental::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
     if (m_pShape[1]) m_pShape[1]->SetFont(pFont);
 
     //do the measurement
-    m_pShape[0]->Measure(pPaper, pStaff, offset);
+    m_pShape[0]->Measure(pPaper, pStaff, uOffset);
     if (m_pShape[1]) {
-        int width = (m_pShape[0]->GetSelRectangle()).width;
-        m_pShape[1]->Measure(pPaper, pStaff, lmUPoint(offset.x+width, offset.y));
+        lmLUnits uWidth = (m_pShape[0]->GetSelRectangle()).width;
+        m_pShape[1]->Measure(pPaper, pStaff, lmUPoint(uOffset.x+uWidth, uOffset.y));
     }
 
     //set the ScoreObj shape
@@ -102,7 +102,7 @@ void lmAccidental::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
 
     //set up the after space
     #define ACCIDENTALS_AFTERSPACE  7      //in tenths   @todo user options
-    m_nAfterSpace = pStaff->TenthsToLogical(ACCIDENTALS_AFTERSPACE);
+    m_uAfterSpace = pStaff->TenthsToLogical(ACCIDENTALS_AFTERSPACE);
 
 }
 
@@ -111,14 +111,14 @@ void lmAccidental::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
 {
 }
 
-void lmAccidental::Render(lmPaper* pPaper, lmUPoint pos, wxColour color)
+void lmAccidental::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
 {
-    GetShape()->Render(pPaper, pos, color);
+    GetShape()->Render(pPaper, uPos, color);
 }
 
 lmLUnits lmAccidental::GetWidth()
 {
-    return (GetShape()->GetSelRectangle()).width + m_nAfterSpace;
+    return (GetShape()->GetSelRectangle()).width + m_uAfterSpace;
 
 }
 

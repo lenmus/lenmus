@@ -54,7 +54,7 @@ public:
 
     // Aliased shapes, even when anti-alising is supported.
     virtual void SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, wxColour color) = 0;
-    virtual void SketchRectangle(lmUPoint uPoint, wxSize size, wxColour color) = 0;
+    virtual void SketchRectangle(lmUPoint uPoint, lmUSize uSize, wxColour color) = 0;
 
     //solid shapes, anti-aliased when supported.
     virtual void SolidLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
@@ -76,7 +76,7 @@ public:
 
 
     //text
-    virtual void DrawText(const wxString& text, wxCoord x, wxCoord y) = 0;
+    virtual void DrawText(const wxString& text, lmLUnits x, lmLUnits y) = 0;
     virtual void SetTextForeground(const wxColour& colour) = 0;
     virtual void SetTextBackground(const wxColour& colour) = 0;
     virtual void GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h) = 0;
@@ -102,12 +102,12 @@ public:
     ~lmDirectDrawer() {};
 
     // Aliased shapes, even when anti-alising is supported.
-    void SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, wxColour color);
-    void SketchRectangle(lmUPoint uPoint, wxSize size, wxColour color);
+    void SketchLine(lmLUnits ux1, lmLUnits uy1, lmLUnits ux2, lmLUnits uy2, wxColour color);
+    void SketchRectangle(lmUPoint uPoint, lmUSize uSize, wxColour color);
 
     //solid shapes, anti-aliased when supported.
     void SolidPolygon(int n, lmUPoint points[], wxColour color);
-    void SolidCircle(lmLUnits x, lmLUnits y, lmLUnits radius);
+    void SolidCircle(lmLUnits ux, lmLUnits uy, lmLUnits uRadius);
 
 
     //settings: line width, colors, fonts, ...
@@ -122,16 +122,16 @@ public:
     void SetPen(wxColour color, lmLUnits uWidth);
 
     //text
-    void DrawText(const wxString& text, wxCoord x, wxCoord y) {m_pDC->DrawText(text, x, y); }
+    void DrawText(const wxString& text, lmLUnits ux, lmLUnits uy) {m_pDC->DrawText(text, (int)ux, (int)uy); }
     void SetTextForeground(const wxColour& colour) {m_pDC->SetTextForeground(colour); }
     void SetTextBackground(const wxColour& colour) {m_pDC->SetTextBackground(colour); }
     void GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h);
 
     // units conversion
-    lmLUnits DeviceToLogicalX(lmPixels x) { return m_pDC->DeviceToLogicalXRel(x); }
-    lmLUnits DeviceToLogicalY(lmPixels y) { return m_pDC->DeviceToLogicalYRel(y); }
-    lmPixels LogicalToDeviceX(lmLUnits x) { return m_pDC->LogicalToDeviceXRel((wxCoord)x); }
-    lmPixels LogicalToDeviceY(lmLUnits y) { return m_pDC->LogicalToDeviceYRel((wxCoord)y); }
+    lmLUnits DeviceToLogicalX(lmPixels vx) { return m_pDC->DeviceToLogicalXRel(vx); }
+    lmLUnits DeviceToLogicalY(lmPixels vy) { return m_pDC->DeviceToLogicalYRel(vy); }
+    lmPixels LogicalToDeviceX(lmLUnits ux) { return m_pDC->LogicalToDeviceXRel((int)ux); }
+    lmPixels LogicalToDeviceY(lmLUnits uy) { return m_pDC->LogicalToDeviceYRel((int)uy); }
 
 private:
     //current brush/pen/color settings

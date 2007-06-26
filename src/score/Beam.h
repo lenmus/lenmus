@@ -45,17 +45,17 @@ public:
     int     NumNotes();
     void    ComputeStemsDirection();
     void    TrimStems();
-    void    DrawBeamLines(lmPaper* pPaper, lmLUnits nThickness, lmLUnits nBeamSpacing,
+    void    DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits uBeamSpacing,
                           wxColour color);
 
 
 private:
     void DrawBeamSegment(lmPaper* pPaper, bool fStemDown,
-                         lmLUnits xStart, lmLUnits yStart,
-                         lmLUnits xEnd, lmLUnits yEnd, lmLUnits nThickness,
+                         lmLUnits uxStart, lmLUnits uyStart,
+                         lmLUnits uxEnd, lmLUnits uyEnd, lmLUnits uThickness,
                          lmNote* pStartNote, lmNote* pEndNote,
                          wxColour color);
-    int ComputeYPosOfSegment(lmNote* pNote, bool fStemDown, int yShift);
+    lmLUnits ComputeYPosOfSegment(lmNote* pNote, bool fStemDown, lmLUnits yShift);
 
     lmNoteRest*     m_pNotePrev;    //the previous note to the group (for ties)
     bool            m_fStemsDown;

@@ -42,21 +42,21 @@ public:
     void SetStemDirection(bool fStemDown);
     void DrawStem(bool fMeasuring, lmPaper* pPaper, wxColour colorC, wxFont* pFont,
                   lmVStaff* pVStaff, int nStaff);
-    void ComputeLayout(lmPaper* pPaper, lmUPoint paperPos, wxColour colorC);
+    void ComputeLayout(lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC);
 
     //debug
     wxString Dump();
 
 
 private:
-    lmLUnits DrawFlag(bool fMeasuring, lmPaper* pPaper, lmNote* pBaseNote, lmUPoint pos,
+    lmLUnits DrawFlag(bool fMeasuring, lmPaper* pPaper, lmNote* pBaseNote, lmUPoint uPos,
                       wxColour colorC, wxFont* pFont, lmVStaff* pVStaff, int nStaff);
     void ComputeStemDirection();
     void ArrangeNoteheads();
     lmNote* CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNote, lmShapeObj* pShape);
 
     void ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, int iN, lmPaper* pPaper,
-                                 lmUPoint paperPos, wxColour colorC);
+                                 lmUPoint uPaperPos, wxColour colorC);
     lmNote* CheckIfNoteCollision(lmShapeObj* pShape);
 
 

@@ -2,36 +2,33 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
 
-/*! @class lmBeam
-    lmBeam objects are auxiliary objects within lmNote objects to contain the information and
-    methods related to beaming: i.e. grouping the beams of several consecutive notes.
+// @class lmBeam
+//    lmBeam objects are auxiliary objects within lmNote objects to contain the information and
+//    methods related to beaming: i.e. grouping the beams of several consecutive notes.
+//
+//    A beamed group can contain rests, but can not start or end with a rest.
 
-    A beamed group can contain rests, but can not start or end with a rest.
-
-*/
-
-/*! @todo   Beamed groups can not start nor end with a rest. I am not sure if this is
-		    has been systematically enforced; I belive that there is still code to
-		    support rests in the begining or in the end. This code has to be identified
-		    and removed.
-*/
+// @todo   Beamed groups can not start nor end with a rest. I am not sure if this is
+//		    has been systematically enforced; I belive that there is still code to
+//		    support rests in the begining or in the end. This code has to be identified
+//		    and removed.
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "Beam.h"
@@ -61,11 +58,11 @@ lmBeam::lmBeam(lmNoteRest* pNotePrev)
 
     m_pFirstNote = (lmNote*)NULL;
     m_pLastNote = (lmNote*)NULL;
-    
+
 }
 lmBeam::~lmBeam()
 {
-    // notes will not be deleted when deleting the list, as they are part of a lmScore 
+    // notes will not be deleted when deleting the list, as they are part of a lmScore
     // and will be deleted there.
     m_cNotes.DeleteContents(false);
     m_cNotes.Clear();
@@ -92,9 +89,9 @@ int lmBeam::NumNotes()
     return m_cNotes.GetCount();
 }
 
-//! 
+//!
 //!   This method is invoked during the measurement phase, from the first note of a beamed
-//!   group. Here we precompute some rendering information: stems length, m_fStemsDown 
+//!   group. Here we precompute some rendering information: stems length, m_fStemsDown
 //!   and position for rests included in the beamed group (m_nPosForRests).
 //!
 //!   In chords, if the stem goes up only the highest pitch note should be used for computations.
@@ -107,7 +104,7 @@ int lmBeam::NumNotes()
 //!
 void lmBeam::ComputeStemsDirection()
 {
-    //  BUG_BYPASS: There is a bug in Composer5 and it some times generate scores 
+    //  BUG_BYPASS: There is a bug in Composer5 and it some times generate scores
     //    ending with a start of group. As this start is in the last note of the score,
     //    the group has only one note.
     //
@@ -127,7 +124,7 @@ void lmBeam::ComputeStemsDirection()
     int nMinPosOnStaff = 99999;
     m_nPosForRests = 0;
     int nNumNotes = 0;
-    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext()) 
+    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext())
     {
         pNote = (lmNote*)pNode->GetData();
         if (!pNote->IsRest()) {     //ignore rests
@@ -163,17 +160,17 @@ void lmBeam::ComputeStemsDirection()
 
     // As rests are normally positioned on 3rd space (pos 35), the shift to apply is
     m_nPosForRests = 35 - m_nPosForRests;
-    
+
     //look for the stem direction of most notes. If one note has is stem direction
     // forced (by a slur, probably) forces the group stem in this direction
 
     bool fStemForced = false;    // assume no stem forced
     bool fStemMixed = false;    // assume all stems in the same direction
     int nStemDown = 0;            // number of noteheads with stem down
-    nNumNotes = 0;            // total number of notes            
+    nNumNotes = 0;            // total number of notes
     m_fStemsDown = false;        // stems up by default
 
-    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext()) 
+    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext())
     {
         pNote = (lmNote*)pNode->GetData();
         if (!pNote->IsRest()) {     //ignore rests
@@ -187,9 +184,9 @@ void lmBeam::ComputeStemsDirection()
             }
         }
     }
-    
+
     if (!fStemForced) {
-        if (nStemDown >= (nNumNotes + 1) / 2 ) 
+        if (nStemDown >= (nNumNotes + 1) / 2 )
             m_fStemsDown = true;
         fStemMixed = false;
     }
@@ -197,7 +194,7 @@ void lmBeam::ComputeStemsDirection()
         if (nStemDown !=0 && nStemDown != nNumNotes)
             fStemMixed = true;
     }
-    
+
     //correct beam position (and reverse stems direction) if first note of beamed group is
     //tied to a previous note and the stems' directions are not forced
     if (!fStemForced && m_pNotePrev && !m_pNotePrev->IsRest()) {
@@ -218,7 +215,7 @@ void lmBeam::ComputeStemsDirection()
             }
         }
     }
-    
+
 }
 
 /*! In this method the lenght of note stems in a beamed group is adjusted.
@@ -229,7 +226,7 @@ void lmBeam::ComputeStemsDirection()
 */
 void lmBeam::TrimStems()
 {
-    //  BUG_BYPASS: There is a bug in Composer5 and it some times generate scores 
+    //  BUG_BYPASS: There is a bug in Composer5 and it some times generate scores
     //    ending with a start of group. As this start is in the last note of the score,
     //    the group has only one note.
     //
@@ -242,7 +239,7 @@ void lmBeam::TrimStems()
 
     // At this point all stems have the standard size and the stem start point (the point
     // nearest to the notehead) is computed. Now we are goin to compute the end point
-    // for each stem. 
+    // for each stem.
     // As we are interested in the stems' length, not in the exact coordinates, instead
     // of using the real start coordinates, we are going to compute an arbitrary start
     // coordinate relative to zero. This has the advantage, over using the real coordinates,
@@ -264,7 +261,7 @@ void lmBeam::TrimStems()
 
 #if 1
     //code using an arbitrary start coordinate relative to zero
-    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++) 
+    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++)
     {
         pNote = (lmNote*)pNode->GetData();
          lmLUnits dyStem = pNote->GetDefaultStemLength();
@@ -292,7 +289,7 @@ void lmBeam::TrimStems()
 
 #else
     //  code using the real start coordinate
-    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++) 
+    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++)
     {
         pNote = (lmNote*)pNode->GetData();
         lmLUnits dyStem = pNote->GetDefaultStemLength();
@@ -340,7 +337,7 @@ void lmBeam::TrimStems()
     lmLUnits Ax = m_pLastNote->GetXStemLeft() - x1;
     lmNoteRest* pNR;
     int nMinStem;
-    for(i=1, pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++) 
+    for(i=1, pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++)
     {
         pNR = (lmNoteRest*)pNode->GetData();
         if (!pNR->IsRest()) {
@@ -358,7 +355,7 @@ void lmBeam::TrimStems()
     // last note, then stem could be too too short. For example, a group of three notes,
     // the first and the last ones D4 and the middle one G4; the beam is horizontal, nearly
     // the G4 line; so the midle notehead would be positioned just on the beam line.
-    // So let's avoid these problems by adjusting the stems so that all stems have 
+    // So let's avoid these problems by adjusting the stems so that all stems have
     // a minimum height
 
     lmLUnits dyStem = m_pFirstNote->GetDefaultStemLength();
@@ -397,7 +394,7 @@ void lmBeam::TrimStems()
 
     // At this point stems' lengths are computed and adjusted.
     // Transfer the computed values to the notes
-    for(i=1, pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++) 
+    for(i=1, pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++)
     {
         lmLUnits nLength = (yBase[i] > yTop[i] ? yBase[i] - yTop[i] : yTop[i] - yBase[i]);
         pNR = (lmNoteRest*)pNode->GetData();
@@ -412,7 +409,7 @@ void lmBeam::TrimStems()
 
 }
 
-void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits nBeamSpacing,
+void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits uBeamSpacing,
                            wxColour color)
 {
     //
@@ -421,37 +418,37 @@ void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits nBeamS
     // of the group.
     //
 
-    int xStart=0, xEnd=0, yStart=0, yEnd=0; // start and end points for a segment
-    int xPrev=0, yPrev=0, xCur=0, yCur=0;   // points for previous and current note
-    int yShift = 0;                         // shift, to separate a beam line from the previous one
+    lmLUnits uxStart=0, uxEnd=0, uyStart=0, uyEnd=0; // start and end points for a segment
+    lmLUnits uxPrev=0, uyPrev=0, uxCur=0, uyCur=0;   // points for previous and current note
+    lmLUnits uyShift = 0;                         // shift, to separate a beam line from the previous one
     lmNote* pNote = (lmNote*)NULL;          // note being processed
     bool fStemDown = false;
     wxNoteRestsListNode *pNode;
     bool fStart = false, fEnd = false;      // we've got the start/end point.
     bool fForwardPending = false;           //finish a Forward hook in prev note
     lmNote* pStartNote = (lmNote*)NULL;      // origin and destination notes of a beam segment
-    lmNote* pEndNote = (lmNote*)NULL;       
+    lmNote* pEndNote = (lmNote*)NULL;
 
     //! @todo set BeamHookSize equal to notehead width and allow for customization.
 
     for (int iLevel=0; iLevel < 6; iLevel++) {
         fStart = false;
         fEnd = false;
-        for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext()) 
+        for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext())
         {
             pNote = (lmNote*)pNode->GetData();
             fStemDown = pNote->StemGoesDown();
 
             //compute current position to optimize
-            xCur = pNote->GetXStemLeft();
-            yCur = ComputeYPosOfSegment(pNote, fStemDown, yShift);
+            uxCur = pNote->GetXStemLeft();
+            uyCur = ComputeYPosOfSegment(pNote, fStemDown, uyShift);
 
             //Let's check if we have to finish a forward hook in prev. note
             if (fForwardPending) {
                 //! @todo set forward hook equal to notehead width and allow for customization.
-                xEnd = xPrev + (xCur-xPrev)/3;
-                yEnd = yPrev + (yCur-yPrev)/3;
-                DrawBeamSegment(pPaper, fStemDown, xStart, yStart, xEnd, yEnd, uThickness,
+                uxEnd = uxPrev + (uxCur-uxPrev)/3;
+                uyEnd = uyPrev + (uyCur-uyPrev)/3;
+                DrawBeamSegment(pPaper, fStemDown, uxStart, uyStart, uxEnd, uyEnd, uThickness,
                         pStartNote, pEndNote, color);
                 fForwardPending = false;
             }
@@ -461,16 +458,16 @@ void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits nBeamS
                 case eBeamBegin:
                     //start of segment. Compute initial point
                     fStart = true;
-                    xStart = xCur; 
-                    yStart = yCur;
+                    uxStart = uxCur;
+                    uyStart = uyCur;
                     pStartNote = pNote;
                     break;
 
                 case eBeamEnd:
                     // end of segment. Compute end point
                     fEnd = true;
-                    xEnd = xCur;
-                    yEnd = yCur;
+                    uxEnd = uxCur;
+                    uyEnd = uyCur;
                     pEndNote = pNote;
                     break;
 
@@ -478,19 +475,19 @@ void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits nBeamS
                     // start of segment. Mark that a forward hook is pending and
                     // compute initial point
                     fForwardPending = true;
-                    xStart = xCur;
-                    yStart = yCur;
+                    uxStart = uxCur;
+                    uyStart = uyCur;
                     pStartNote = pNote;
                     break;
 
                 case eBeamBackward:
                     // end of segment. compute start and end points
-                    xEnd = xCur;
-                    yEnd = yCur;
+                    uxEnd = uxCur;
+                    uyEnd = uyCur;
                     pEndNote = pNote;
                     //! @todo set backward hook equal to notehead width and allow for customization.
-                    xStart = xPrev + (2*(xCur-xPrev))/3;
-                    yStart = yPrev + (2*(yCur-yPrev))/3;
+                    uxStart = uxPrev + (2*(uxCur-uxPrev))/3;
+                    uyStart = uyPrev + (2*(uyCur-uyPrev))/3;
                     fStart = true;      //mark 'segment ready to be drawn'
                     fEnd = true;
                    break;
@@ -508,7 +505,7 @@ void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits nBeamS
             if (fStart && fEnd) {
                 lmLUnits uStemWidth = pEndNote->GetStemThickness();
                 DrawBeamSegment(pPaper, fStemDown,
-                    xStart, yStart, xEnd + uStemWidth, yEnd, uThickness,
+                    uxStart, uyStart, uxEnd + uStemWidth, uyEnd, uThickness,
                     pStartNote, pEndNote, color);
                 fStart = false;
                 fEnd = false;
@@ -516,42 +513,42 @@ void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits nBeamS
                 pEndNote = (lmNote*)NULL;
             }
 
-            // save position of current note 
-            xPrev = xCur;
-            yPrev = yCur;
+            // save position of current note
+            uxPrev = uxCur;
+            uyPrev = uyCur;
         }
 
         // displace y coordinate for next beamline
-        yShift += (fStemDown ? - nBeamSpacing : nBeamSpacing);
+        uyShift += (fStemDown ? - uBeamSpacing : uBeamSpacing);
     }
-            
+
 }
 
-int lmBeam::ComputeYPosOfSegment(lmNote* pNote, bool fStemDown, int yShift)
+lmLUnits lmBeam::ComputeYPosOfSegment(lmNote* pNote, bool fStemDown, lmLUnits uyShift)
 {
-    int yPos;
+    lmLUnits uyPos;
     if (pNote->IsInChord()) {
         if (fStemDown) {
             lmNote* pMinNote = (pNote->GetChord())->GetMinNote();
-            yPos = pMinNote->GetYStem() + pNote->GetStemLength();
+            uyPos = pMinNote->GetYStem() + pNote->GetStemLength();
         }
         else {
             lmNote* pMaxNote = (pNote->GetChord())->GetMaxNote();
-            yPos = pMaxNote->GetYStem() - pNote->GetStemLength();
+            uyPos = pMaxNote->GetYStem() - pNote->GetStemLength();
         }
     }
     else {
-        yPos = pNote->GetFinalYStem();
+        uyPos = pNote->GetFinalYStem();
     }
-    yPos += yShift;
+    uyPos += uyShift;
 
-    return yPos;
+    return uyPos;
 
 }
 
 void lmBeam::DrawBeamSegment(lmPaper* pPaper, bool fStemDown,
-                             lmLUnits xStart, lmLUnits yStart,
-                             lmLUnits xEnd, lmLUnits yEnd, lmLUnits nThickness,
+                             lmLUnits uxStart, lmLUnits uyStart,
+                             lmLUnits uxEnd, lmLUnits uyEnd, lmLUnits uThickness,
                              lmNote* pStartNote, lmNote* pEndNote,
                              wxColour color)
 {
@@ -571,9 +568,9 @@ void lmBeam::DrawBeamSegment(lmPaper* pPaper, bool fStemDown,
     }
 
     //draw the segment
-    pPaper->SolidLine(xStart, yStart, xEnd, yEnd, nThickness, eEdgeVertical, color);
+    pPaper->SolidLine(uxStart, uyStart, uxEnd, uyEnd, uThickness, eEdgeVertical, color);
 
-    //wxLogMessage(_T("[lmBeam::DrawBeamSegment] xStart=%d, yStart=%d, xEnd=%d, yEnd=%d, nThickness=%d, yStartIncr=%d, yEndIncr=%d, fStemDown=%s"),
-    //    xStart, yStart, xEnd, yEnd, nThickness, yStartIncr, yEndIncr, (fStemDown ? _T("down") : _T("up")) );
+    //wxLogMessage(_T("[lmBeam::DrawBeamSegment] uxStart=%d, uyStart=%d, uxEnd=%d, uyEnd=%d, uThickness=%d, yStartIncr=%d, yEndIncr=%d, fStemDown=%s"),
+    //    uxStart, uyStart, uxEnd, uyEnd, uThickness, yStartIncr, yEndIncr, (fStemDown ? _T("down") : _T("up")) );
 
 }

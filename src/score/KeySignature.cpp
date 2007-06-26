@@ -145,8 +145,8 @@ void lmKeySignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour color
         lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
 
         // store glyph position
-        m_glyphPos.x = 0;
-        m_glyphPos.y = yShift;
+        m_uGlyphPos.x = 0;
+        m_uGlyphPos.y = yShift;
     }
 
     DrawKeySignature(fMeasuring, pPaper,
@@ -174,16 +174,16 @@ lmLUnits lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxCo
         EClefType nClef = pClef->GetClefType();
 
         // Draw the key signature
-        lmUPoint pos = lmUPoint(m_paperPos.x, m_paperPos.y + yOffset);
-        DrawAt(fMeasuring, pPaper, pos, nClef, nStaff);
+        lmUPoint uPos = lmUPoint(m_uPaperPos.x, m_uPaperPos.y + yOffset);
+        DrawAt(fMeasuring, pPaper, uPos, nClef, nStaff);
 
         if (nStaff==1 && fMeasuring) {
-            //@attention DrawAt() has updated m_nWidth and the after space is included
-            // store selection rectangle measures and position (relative to m_paperPos)
-            m_selRect.width = m_nWidth - m_pVStaff->TenthsToLogical(10, nStaff); // substrac after space;
-            m_selRect.height = m_pVStaff->TenthsToLogical( 40, nStaff );
-            m_selRect.x = m_glyphPos.x;
-            m_selRect.y = m_glyphPos.y + m_pVStaff->TenthsToLogical( 50, nStaff );
+            //@attention DrawAt() has updated m_uWidth and the after space is included
+            // store selection rectangle measures and position (relative to m_uPaperPos)
+            m_uSelRect.width = m_uWidth - m_pVStaff->TenthsToLogical(10, nStaff); // substrac after space;
+            m_uSelRect.height = m_pVStaff->TenthsToLogical( 40, nStaff );
+            m_uSelRect.x = m_uGlyphPos.x;
+            m_uSelRect.y = m_uGlyphPos.y + m_pVStaff->TenthsToLogical( 50, nStaff );
         }
 
         //compute vertical displacement for next staff
@@ -192,20 +192,20 @@ lmLUnits lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxCo
 
     }
 
-    return m_nWidth;
+    return m_uWidth;
 
 }
 
 lmLUnits lmKeySignature::DrawAccidental(bool fMeasuring, lmPaper* pPaper, EAccidentals nAlter,
-        lmLUnits nxLeft, lmLUnits nyTop, int nStaff)
+        lmLUnits uxLeft, lmLUnits uyTop, int nStaff)
 {
-    //render the accidental nAlter at position nxLeft, nyTop. Returns its width
+    //render the accidental nAlter at position uxLeft, uyTop. Returns its width
 
     wxString sGlyph;
     lmLUnits nTotalWidth = 0;
     lmLUnits nWidth, nHeight;
 
-    lmLUnits yPos = nyTop - m_pVStaff->TenthsToLogical( 10, nStaff );
+    lmLUnits yPos = uyTop - m_pVStaff->TenthsToLogical( 10, nStaff );
 
     switch(nAlter) {
         case eNatural:
@@ -225,14 +225,14 @@ lmLUnits lmKeySignature::DrawAccidental(bool fMeasuring, lmPaper* pPaper, EAccid
             break;
         case eNaturalFlat:
             sGlyph = _T("//");
-            if (!fMeasuring) pPaper->DrawText(sGlyph, nxLeft, yPos);
+            if (!fMeasuring) pPaper->DrawText(sGlyph, uxLeft, yPos);
             pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
             nTotalWidth = nWidth;
             sGlyph = _T("%");
             break;
         case eNaturalSharp:
             sGlyph = _T("//");
-            if (!fMeasuring) pPaper->DrawText(sGlyph, nxLeft, yPos);
+            if (!fMeasuring) pPaper->DrawText(sGlyph, uxLeft, yPos);
             pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
             nTotalWidth = nWidth;
             sGlyph = _T("#");
@@ -242,7 +242,7 @@ lmLUnits lmKeySignature::DrawAccidental(bool fMeasuring, lmPaper* pPaper, EAccid
     }
 
     if (!fMeasuring) {
-        pPaper->DrawText(sGlyph, nxLeft, yPos);
+        pPaper->DrawText(sGlyph, uxLeft, yPos);
     }
     pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
     nTotalWidth += nWidth;
@@ -251,7 +251,7 @@ lmLUnits lmKeySignature::DrawAccidental(bool fMeasuring, lmPaper* pPaper, EAccid
 
 }
 
-lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos,
+lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos,
                                EClefType nClef, int nStaff, wxColour colorC)
 {
     /*
@@ -268,7 +268,7 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos,
     EKeySignatures nKeySignature = m_nKeySignature;
 
     //Compute position of sharps and flats. Depends on the clef
-    lmLUnits yPos = pos.y;
+    lmLUnits yPos = uPos.y;
     switch(nClef) {
         case eclvSol:
             nSharpPos[1] = yPos - 5 * nOneLine;            //line 5 (Fa)
@@ -360,20 +360,20 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos,
     if (fDrawFlats) {
         for (int i=1; i <= nNumAccidentals; i++) {
             nWidth +=
-                DrawAccidental(fMeasuring, pPaper, eFlat, pos.x+nWidth, nFlatPos[i], nStaff);
+                DrawAccidental(fMeasuring, pPaper, eFlat, uPos.x+nWidth, nFlatPos[i], nStaff);
         }
     }
     else {
         for (int i=1; i <= nNumAccidentals; i++) {
             nWidth +=
-                DrawAccidental(fMeasuring, pPaper, eSharp, pos.x+nWidth, nSharpPos[i], nStaff);
+                DrawAccidental(fMeasuring, pPaper, eSharp, uPos.x+nWidth, nSharpPos[i], nStaff);
         }
     }
 
     // save total width and increment it in one line for after space
-    if (fMeasuring) m_nWidth = nWidth + m_pVStaff->TenthsToLogical(10, nStaff);    //one line space
+    if (fMeasuring) m_uWidth = nWidth + m_pVStaff->TenthsToLogical(10, nStaff);    //one line space
 
-    return m_nWidth;
+    return m_uWidth;
 }
 
 
@@ -385,11 +385,11 @@ wxBitmap* lmKeySignature::GetBitmap(double rScale)
 }
 
 void lmKeySignature::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
-                        const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels)
+                        const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels)
 {
 }
 
-lmUPoint lmKeySignature::EndDrag(const lmUPoint& pos)
+lmUPoint lmKeySignature::EndDrag(const lmUPoint& uPos)
 {
     return lmUPoint(0,0);
 }

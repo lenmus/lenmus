@@ -107,49 +107,49 @@ wxBitmap* lmMetronomeMark::GetBitmap(double rScale)
 void lmMetronomeMark::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
                                   bool fHighlight)
 {
-    lmLUnits yPos = pPaper->GetCursorY() - m_pVStaff->TenthsToLogical(50, m_nStaffNum);
-    lmLUnits xPos = pPaper->GetCursorX();
-    lmLUnits uWidth = DrawMetronomeMark(fMeasuring, pPaper, xPos, yPos, colorC);
+    lmLUnits uyPos = pPaper->GetCursorY() - m_pVStaff->TenthsToLogical(50, m_nStaffNum);
+    lmLUnits uxPos = pPaper->GetCursorX();
+    lmLUnits uWidth = DrawMetronomeMark(fMeasuring, pPaper, uxPos, uyPos, colorC);
 
     if (fMeasuring) {
         // store selection rectangle measures and position
-        m_selRect.width = uWidth;
-        m_selRect.height = m_pVStaff->TenthsToLogical(32, m_nStaffNum); //todo
-        m_selRect.x = xPos - m_paperPos.x;        //relative to m_paperPos
-        m_selRect.y = yPos - m_paperPos.y;;
+        m_uSelRect.width = uWidth;
+        m_uSelRect.height = m_pVStaff->TenthsToLogical(32, m_nStaffNum); //todo
+        m_uSelRect.x = uxPos - m_uPaperPos.x;        //relative to m_uPaperPos
+        m_uSelRect.y = uyPos - m_uPaperPos.y;;
 
         // set total width to zero: metronome marks does not consume staff space
-        m_nWidth = 0;   // uWidth;
+        m_uWidth = 0;   // uWidth;
 
         // store glyph position (relative to paper pos).
-        m_glyphPos.x = 0;
-        m_glyphPos.y = pPaper->GetCursorY() - yPos;
+        m_uGlyphPos.x = 0;
+        m_uGlyphPos.y = pPaper->GetCursorY() - uyPos;
     }
 
 }
 
 // returns the width of the metronome mark (in logical units)
 lmLUnits lmMetronomeMark::DrawMetronomeMark(bool fMeasuring, lmPaper* pPaper,
-                                lmLUnits xPos, lmLUnits yPos, wxColour colorC)
+                                lmLUnits uxPos, lmLUnits uyPos, wxColour colorC)
 {
-    lmLUnits xStart = xPos;
+    lmLUnits xStart = uxPos;
     switch(m_nMarkType)
     {
         case eMMT_MM_Value:         // 'm.m. = 80'
-            return DrawText(fMeasuring, pPaper, xPos, yPos, colorC);
+            return DrawText(fMeasuring, pPaper, uxPos, uyPos, colorC);
             break;
 
         case eMMT_Note_Note:        // 'note_symbol = note_symbol'
-            xPos += DrawSymbol(fMeasuring, pPaper, m_pLeftNoteShape, xPos, yPos, colorC);
-            xPos += DrawText(fMeasuring, pPaper, xPos, yPos, colorC);
-            xPos += DrawSymbol(fMeasuring, pPaper, m_pRightNoteShape, xPos, yPos, colorC);
-            return xPos - xStart;
+            uxPos += DrawSymbol(fMeasuring, pPaper, m_pLeftNoteShape, uxPos, uyPos, colorC);
+            uxPos += DrawText(fMeasuring, pPaper, uxPos, uyPos, colorC);
+            uxPos += DrawSymbol(fMeasuring, pPaper, m_pRightNoteShape, uxPos, uyPos, colorC);
+            return uxPos - xStart;
             break;
 
         case eMMT_Note_Value:       // 'note_symbol = 80'
-            xPos += DrawSymbol(fMeasuring, pPaper, m_pLeftNoteShape, xPos, yPos, colorC);
-            xPos += DrawText(fMeasuring, pPaper, xPos, yPos, colorC);
-            return xPos - xStart;
+            uxPos += DrawSymbol(fMeasuring, pPaper, m_pLeftNoteShape, uxPos, uyPos, colorC);
+            uxPos += DrawText(fMeasuring, pPaper, uxPos, uyPos, colorC);
+            return uxPos - xStart;
             break;
 
         default:
@@ -160,7 +160,7 @@ lmLUnits lmMetronomeMark::DrawMetronomeMark(bool fMeasuring, lmPaper* pPaper,
 }
 
 lmLUnits lmMetronomeMark::DrawText(bool fMeasuring, lmPaper* pPaper,
-                               lmLUnits xPos, lmLUnits yPos, wxColour colorC)
+                               lmLUnits uxPos, lmLUnits uyPos, wxColour colorC)
 {
     // returns the width of the text (in logical units)
 
@@ -175,30 +175,30 @@ lmLUnits lmMetronomeMark::DrawText(bool fMeasuring, lmPaper* pPaper,
             ::wxExit();
         }
         m_pTextShape->SetFont(pFont);
-        lmUPoint offset(xPos - m_paperPos.x,
-                        yPos - m_paperPos.y + m_pVStaff->TenthsToLogical(10, m_nStaffNum));
-        m_pTextShape->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum), offset);
+        lmUPoint uOffset(uxPos - m_uPaperPos.x,
+                        uyPos - m_uPaperPos.y + m_pVStaff->TenthsToLogical(10, m_nStaffNum));
+        m_pTextShape->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum), uOffset);
     }
     else {
-        m_pTextShape->Render(pPaper, m_paperPos, colorC);
+        m_pTextShape->Render(pPaper, m_uPaperPos, colorC);
     }
     return m_pTextShape->GetWidth();
 
 }
 
 lmLUnits lmMetronomeMark::DrawSymbol(bool fMeasuring, lmPaper* pPaper, lmShapeGlyph* pShape,
-                                     lmLUnits xPos, lmLUnits yPos, wxColour colorC)
+                                     lmLUnits uxPos, lmLUnits uyPos, wxColour colorC)
 {
     // returns the width of the note (in logical units)
 
     wxASSERT(pShape);
     if (fMeasuring) {
-        lmUPoint offset(xPos - m_paperPos.x, yPos - m_paperPos.y - m_pVStaff->TenthsToLogical(35, m_nStaffNum));
+        lmUPoint offset(uxPos - m_uPaperPos.x, uyPos - m_uPaperPos.y - m_pVStaff->TenthsToLogical(35, m_nStaffNum));
         pShape->SetFont(m_pFont);
         pShape->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum), offset);
     }
     else {
-        pShape->Render(pPaper, m_paperPos, colorC);
+        pShape->Render(pPaper, m_uPaperPos, colorC);
     }
     return pShape->GetWidth();
 }
@@ -304,6 +304,9 @@ wxString lmMetronomeMark::GetLDPNote(ENoteType nNoteType, int nDots)
         case e256th:
             sNote += _T("f");
             break;
+        default:
+            wxLogMessage(_T("[lmMetronomeMark::GetLDPNote] Invalid NoteType %d "), nNoteType);
+            wxASSERT(false);
     }
 
     for(int i=0; i < nDots; i++) sNote += _T(".");

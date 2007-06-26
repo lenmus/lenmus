@@ -82,7 +82,7 @@ void lmArch::Draw(lmPaper* pPaper, wxColour colorC)
     // variable, to suit a minimun resolution of 5 points / mm.
 
     // determine number of interpolation points to use
-    int nNumPoints = (m_xEnd - m_xStart) / lmToLogicalUnits(0.2, lmMILLIMETERS);
+    int nNumPoints = (int)((m_xEnd - m_xStart) / lmToLogicalUnits(0.2, lmMILLIMETERS) );
     if (nNumPoints < 5) nNumPoints = 5;
 
     // compute increment for mu variable
@@ -265,9 +265,9 @@ void lmTie::UpdateMeasurements()
     lmUPoint startOffset = m_pStartNote->GetOrigin();
 
     //! @todo Adjust selRect to sourround control points
-    m_paperPos = startOffset;
-    SetSelRectangle(m_mainArc.GetStartPosX() - m_paperPos.x,
-                    m_mainArc.GetStartPosY() - m_paperPos.y,
+    m_uPaperPos = startOffset;
+    SetSelRectangle(m_mainArc.GetStartPosX() - m_uPaperPos.x,
+                    m_mainArc.GetStartPosY() - m_uPaperPos.y,
                     m_mainArc.GetEndPosX() - m_mainArc.GetStartPosX(),
                     m_mainArc.GetEndPosY() - m_mainArc.GetStartPosY() + (m_fTieUnderNote ? 2000 : -2000));
 
@@ -281,7 +281,7 @@ void lmTie::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool f
     but is always controlled by the two owners Notes.
 
     It is too early to define an standard behaviour. In general:
-      -    m_paperPos and m_selRect must be always updated as it is being used for selection.
+      -    m_uPaperPos and m_uSelRect must be always updated as it is being used for selection.
         This implies that positioning and size information of AuxObjs associated to an
         lmStaffObj (i.e. Ties) must be updated when the owner lmStaffObj is updated (i.e. the
         formatting and justification process).

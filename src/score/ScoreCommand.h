@@ -64,10 +64,10 @@ class lmScoreCommandMove: public lmScoreCommand
 {
 public:
     lmScoreCommandMove(const wxString& name, lmScoreDocument *pDoc, lmScoreObj* pScO,
-            const lmUPoint& pos) :
+            const lmUPoint& uPos) :
         lmScoreCommand(name, CMD_MoveStaffObj, pDoc, pScO)
         {
-            m_pos = pos;
+            m_pos = uPos;
         }
     ~lmScoreCommandMove() {}
 

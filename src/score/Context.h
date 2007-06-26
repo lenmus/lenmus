@@ -50,8 +50,8 @@ public:
     int GetAccidentals(int i) { return m_nAccidentals[i]; }
     void CopyAccidentals(lmContext* pContext);
 
-    lmClef*            GetClef() { return m_pClef; }
-    lmKeySignature*    GeyKey() { return m_pKey; }
+    lmClef*             GetClef() { return m_pClef; }
+    lmKeySignature*     GeyKey() { return m_pKey; }
     lmTimeSignature*    GetTime() { return m_pTime; }
 
     //management of references counter
@@ -65,16 +65,16 @@ private:
         // member variables
 
     //information about current clef, key and time signature
-    lmClef*            m_pClef;
-    lmKeySignature*    m_pKey;
+    lmClef*             m_pClef;
+    lmKeySignature*     m_pKey;
     lmTimeSignature*    m_pTime;
 
     //the next array keeps information about the accidentals applicable to each
     //note. Each element refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
-    int        m_nAccidentals[7];
+    int     m_nAccidentals[7];
 
     //counter of references to this context (to delete it when not used)
-    int        m_nNumReferences;
+    int     m_nNumReferences;
 
 };
 

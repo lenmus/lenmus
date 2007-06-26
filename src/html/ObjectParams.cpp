@@ -39,7 +39,7 @@
 lmObjectParams::lmObjectParams(const wxHtmlTag& tag, int nWidth, int nHeight, int nPercent)
 {
     // html object window attributes
-    m_nWidth = nWidth;
+    m_uWidth = nWidth;
     m_nHeight = nHeight;
     m_nPercent = nPercent;
 

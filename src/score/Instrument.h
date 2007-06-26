@@ -81,8 +81,8 @@ private:
 
     lmLUnits        m_nIndentFirst;     //indentation for first system
     lmLUnits        m_nIndentOther;     //indentation for other systems
-    lmScoreText*         m_pName;            //instrument name
-    lmScoreText*         m_pAbbreviation;    //abreviated name to use
+    lmScoreText*    m_pName;            //instrument name
+    lmScoreText*    m_pAbbreviation;    //abreviated name to use
 
 
     // variables related to MusicXML import/export

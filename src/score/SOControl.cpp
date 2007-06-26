@@ -86,7 +86,7 @@ wxString lmSOControl::Dump()
         }
         sDump = wxString::Format(
             _T("%d\tControl %s\tTimeShift=%.2f\n"),
-            m_nId, sType, m_rTimeShift);
+            m_nId, sType.c_str(), m_rTimeShift);
     }
     else if (m_nCtrolType == lmNEW_SYSTEM) {
         sDump = wxString::Format(
@@ -94,7 +94,7 @@ wxString lmSOControl::Dump()
     }
     else {
         sDump = wxString::Format(
-            _T("%d\tControl <??? UNKNOWN ???>\n"), m_nId);
+            _T("%d\tControl <*** UNKNOWN ***>\n"), m_nId);
     }
 
     return sDump;

@@ -62,13 +62,13 @@ lmScoreObj::lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable
     m_fIsDraggable = fIsDraggable;
 
     // initializations: font related info
-    m_glyphPos.x = 0;
-    m_glyphPos.y = 0;
+    m_uGlyphPos.x = 0;
+    m_uGlyphPos.y = 0;
     m_pFont = (wxFont *)NULL;
 
     // initializations: positioning related info
-    m_paperPos.y = 0;
-    m_paperPos.x = 0;
+    m_uPaperPos.y = 0;
+    m_uPaperPos.x = 0;
     m_fFixedPos = false;
     m_nNumPage = 1;
 
@@ -99,19 +99,19 @@ lmScoreObj::~lmScoreObj()
 
 bool lmScoreObj::IsAtPoint(lmUPoint& pt)
 {
-    wxRect rect(GetSelRect());
+    lmURect rect(GetSelRect());
     return rect.Contains(pt.x, pt.y);
 }
 
 void lmScoreObj::DrawSelRectangle(lmPaper* pPaper, wxColour colorC)
 {
     if (IsShapeRendered()) {
-        m_pShape->DrawSelRectangle(pPaper, m_paperPos, colorC);
+        m_pShape->DrawSelRectangle(pPaper, m_uPaperPos, colorC);
     }
     else {
-        wxPoint pt = GetSelRect().GetPosition();
-        lmUPoint uPoint((lmLUnits)pt.x, (lmLUnits)pt.y);
-        pPaper->SketchRectangle(uPoint, GetSelRect().GetSize(), *wxRED);
+        lmUPoint uPt = GetSelRect().GetPosition();
+        //lmUPoint uPoint((lmLUnits)pt.x, (lmLUnits)pt.y);
+        pPaper->SketchRectangle(uPt, GetSelRect().GetSize(), *wxRED);
         //! @todo change *wxRED by colorC when no longer necesary to distinguise
         //!       between shape rendered and drawing rendered objects
     }
@@ -123,14 +123,14 @@ void lmScoreObj::DrawSelRectangle(lmPaper* pPaper, wxColour colorC)
 // methods only for daggable objects
 //======================================================================================
 
-void lmScoreObj::MoveTo(lmUPoint& pt)
+void lmScoreObj::MoveTo(lmUPoint& uPt)
 {
-    m_paperPos.y = pt.y;
-    m_paperPos.x = pt.x;
+    m_uPaperPos.y = uPt.y;
+    m_uPaperPos.x = uPt.x;
 }
 
 void lmScoreObj::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD, 
-                const lmUPoint& pagePosL, const lmUPoint& dragStartPosL, const lmDPoint& canvasPosD)
+                const lmUPoint& pagePosL, const lmUPoint& uDragStartPos, const lmDPoint& canvasPosD)
 {
     /*
      DragImage->Move() requires device units referred to canvas window. To compute the
@@ -144,7 +144,7 @@ void lmScoreObj::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoin
             offset introduced by the hotSpot point.
         pagePosL:
             Current mouse position (logical units referred to page origin).
-        dragStartPosL:
+        uDragStartPos:
             Mouse position (logical units) of the mouse point at which the dragging
             was started.
     */
@@ -154,24 +154,24 @@ void lmScoreObj::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoin
 
     // and it is equivalent to work from logical units and doing all this:
 
-//    lmUPoint nShiftVector = pagePosL - dragStartPosL;        // the displacement
-//    // as m_glyphPos is fixed, the displacement must be translated to paperPos
-//    lmUPoint newPaperPos = m_paperPos + nShiftVector;
+//    lmUPoint nShiftVector = pagePosL - uDragStartPos;        // the displacement
+//    // as m_uGlyphPos is fixed, the displacement must be translated to paperPos
+//    lmUPoint newPaperPos = m_uPaperPos + nShiftVector;
 //    // then the shape must be drawn at:
 //    lmDPoint ptNewD;
-//    ptNewD.x = pPaper->LogicalToDeviceX(newPaperPos.x + m_glyphPos.x) + offsetD.x;
-//    ptNewD.y = pPaper->LogicalToDeviceY(newPaperPos.y + m_glyphPos.y) + offsetD.y;
+//    ptNewD.x = pPaper->LogicalToDeviceX(newPaperPos.x + m_uGlyphPos.x) + offsetD.x;
+//    ptNewD.y = pPaper->LogicalToDeviceY(newPaperPos.y + m_uGlyphPos.y) + offsetD.y;
 //    pDragImage->Move(ptNewD);
 
 }
 
-lmUPoint lmScoreObj::EndDrag(const lmUPoint& pos)
+lmUPoint lmScoreObj::EndDrag(const lmUPoint& uPos)
 {
-    lmUPoint oldPos(m_paperPos + m_glyphPos);        // save current position for Undo command
+    lmUPoint oldPos(m_uPaperPos + m_uGlyphPos);        // save current position for Undo command
 
     // move object to new position
-    m_paperPos.x = pos.x - m_glyphPos.x;
-    m_paperPos.y = pos.y - m_glyphPos.y;
+    m_uPaperPos.x = uPos.x - m_uGlyphPos.x;
+    m_uPaperPos.y = uPos.y - m_uGlyphPos.y;
 
     return oldPos;        //return old position
 }
@@ -247,8 +247,8 @@ void lmAuxObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHig
     wxASSERT(fMeasuring == DO_DRAW);    //For AuxObjs measuring phase is done by specific methods
 
     //restore paper pos.
-    pPaper->SetCursorX(m_paperPos.x);
-    pPaper->SetCursorY(m_paperPos.y);
+    pPaper->SetCursorX(m_uPaperPos.x);
+    pPaper->SetCursorY(m_uPaperPos.y);
 
     // ask derived object to draw itself
     DrawObject(fMeasuring, pPaper, colorC, fHighlight);
@@ -274,7 +274,7 @@ lmStaffObj::lmStaffObj(lmObject* pParent, EStaffObjType nType, lmVStaff* pStaff,
     m_nClass = nType;
 
     //default values
-    m_nWidth = 0;
+    m_uWidth = 0;
 
     // initializations: staff ownership info
     m_pVStaff = pStaff;
@@ -291,11 +291,11 @@ void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fH
     if (!m_fVisible) return;
     
     if (fMeasuring && !m_fFixedPos) {
-        m_paperPos.x = pPaper->GetCursorX();
-        m_paperPos.y = pPaper->GetCursorY();
+        m_uPaperPos.x = pPaper->GetCursorX();
+        m_uPaperPos.y = pPaper->GetCursorY();
     } else {
-        pPaper->SetCursorX(m_paperPos.x);
-        pPaper->SetCursorY(m_paperPos.y);
+        pPaper->SetCursorX(m_uPaperPos.x);
+        pPaper->SetCursorY(m_uPaperPos.y);
     }
 
     // set the font
@@ -307,7 +307,7 @@ void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fH
             DrawObject(fMeasuring, pPaper, colorC, fHighlight);
         }
         else {
-            m_pShape->Render(pPaper, m_paperPos, colorC);
+            m_pShape->Render(pPaper, m_uPaperPos, colorC);
         }
     }
     else {
@@ -327,7 +327,7 @@ void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fH
     }
 
     // update paper cursor position
-    pPaper->SetCursorX(m_paperPos.x + m_nWidth);
+    pPaper->SetCursorX(m_uPaperPos.x + m_uWidth);
     
     // draw selection rectangle
     if (gfDrawSelRec && !fMeasuring)

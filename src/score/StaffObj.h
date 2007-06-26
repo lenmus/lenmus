@@ -110,9 +110,9 @@ public:
     inline bool IsDraggable() { return m_fIsDraggable; }
 
     // methods related to positioning
-    inline lmUPoint& GetOrigin() { return m_paperPos; }
+    inline lmUPoint& GetOrigin() { return m_uPaperPos; }
     bool IsAtPoint(lmUPoint& pt);
-    virtual void SetLeft(lmLUnits nLeft) { m_paperPos.x = nLeft; }
+    virtual void SetLeft(lmLUnits uLeft) { m_uPaperPos.x = uLeft; }
     bool IsFixed() const { return m_fFixedPos; }
     void SetFixed(bool fFixed) { m_fFixedPos = fFixed; }
     void SetPageNumber(int nNum) { m_nNumPage = nNum; }
@@ -121,17 +121,17 @@ public:
     // methods related to selection
     inline bool IsSelected() { return m_fSelected; }
     void SetSelected(bool fValue) { m_fSelected = fValue; }
-    void SetSelRectangle(int x, int y, int nWidth, int nHeight) {
-                m_selRect.width = nWidth;
-                m_selRect.height = nHeight;
-                m_selRect.x = x;
-                m_selRect.y = y;
+    void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight) {
+                m_uSelRect.width = uWidth;
+                m_uSelRect.height = uHeight;
+                m_uSelRect.x = x;
+                m_uSelRect.y = y;
         }
     void DrawSelRectangle(lmPaper* pPaper, wxColour colorC = *wxRED);
-    wxRect GetSelRect() const { return wxRect((int)(m_selRect.x + m_paperPos.x),
-                                              (int)(m_selRect.y + m_paperPos.y),
-                                              m_selRect.width,
-                                              m_selRect.height); }
+    lmURect GetSelRect() const { return lmURect(m_uSelRect.x + m_uPaperPos.x,
+                                                m_uSelRect.y + m_uPaperPos.y,
+                                                m_uSelRect.width,
+                                                m_uSelRect.height); }
 
     // drawing related methods
     virtual void Draw(bool fMeasuring, lmPaper* pPaper,
@@ -141,16 +141,16 @@ public:
     // methods for draggable objects
     virtual wxBitmap* GetBitmap(double rScale) = 0;
     virtual void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
-                         const lmUPoint& pagePosL, const lmUPoint& dragStartPosL,
+                         const lmUPoint& pagePosL, const lmUPoint& uDragStartPos,
                          const lmDPoint& canvasPosD);
-    virtual lmUPoint EndDrag(const lmUPoint& pos);
+    virtual lmUPoint EndDrag(const lmUPoint& uPos);
     virtual void MoveTo(lmUPoint& pt);
 
     // methods related to font rendered objects
     virtual void SetFont(lmPaper* pPaper) {}
     wxFont* GetFont() { return m_pFont; }
     lmUPoint GetGlyphPosition() const {
-            return lmUPoint(m_paperPos.x + m_glyphPos.x, m_paperPos.y + m_glyphPos.y);
+            return lmUPoint(m_uPaperPos.x + m_uGlyphPos.x, m_uPaperPos.y + m_uGlyphPos.y);
         }
 
     //transitional methods to shapes renderization
@@ -182,21 +182,21 @@ protected:
 
     //positioning. Coordinates relative to origin of page (in logical units); updated each
     // time this object is drawn
-    lmUPoint    m_paperPos;         // paper xPos, yBase position to render this object
+    lmUPoint    m_uPaperPos;        // paper xPos, yBase position to render this object
     bool        m_fFixedPos;        // its position is fixed. Do not recalculate it
-    wxCoord     m_nWidth;           // total width of the image, including after space
+    lmLUnits    m_uWidth;           // total width of the image, including after space
     int         m_nNumPage;         // page on which this SO is rendered (1..n). Set Up in BoxSystem::RenderMeasure().
 
     // selection related variables
     bool        m_fSelected;        // this obj is selected
-    wxRect      m_selRect;          // selection rectangle (logical units, relative to paperPos)
+    lmURect     m_uSelRect;         // selection rectangle (logical units, relative to paperPos)
 
     // Info for draggable objects
     bool        m_fIsDraggable;
 
     // variables related to font rendered objects
     wxFont*     m_pFont;            // font to use for drawing this object
-    lmUPoint    m_glyphPos;         // origing to position the glyph (relative to m_paperPos)
+    lmUPoint    m_uGlyphPos;        // origing to position the glyph (relative to m_uPaperPos)
 
     //transitional variables: renderization based on shapes
     bool            m_fShapeRendered;

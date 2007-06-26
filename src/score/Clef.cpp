@@ -124,7 +124,7 @@ void lmClef::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
 {
     /*
     This method is invoked by the base class (lmStaffObj). When reaching this point
-    paper cursor variable (m_paperPos) has been updated. This value must be used
+    paper cursor variable (m_uPaperPos) has been updated. This value must be used
     as the base for any measurement / drawing operation.
 
     DrawObject() method is responsible for:
@@ -146,24 +146,24 @@ void lmClef::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
         lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
 
         // store glyph position
-        m_glyphPos.x = 0;
-        m_glyphPos.y = yShift + m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
+        m_uGlyphPos.x = 0;
+        m_uGlyphPos.y = yShift + m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
     }
 
     lmLUnits nWidth = DrawClef(fMeasuring, pPaper,
         (m_fSelected ? g_pColors->ScoreSelected() : g_pColors->ScoreNormal() ));
 
     if (fMeasuring) {
-        // store selection rectangle measures and position (relative to m_paperPos)
-        m_selRect.width = nWidth;
-        m_selRect.height = m_pVStaff->TenthsToLogical(
+        // store selection rectangle measures and position (relative to m_uPaperPos)
+        m_uSelRect.width = nWidth;
+        m_uSelRect.height = m_pVStaff->TenthsToLogical(
                             aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
-        m_selRect.x = m_glyphPos.x;
-        m_selRect.y = m_glyphPos.y + m_pVStaff->TenthsToLogical(
+        m_uSelRect.x = m_uGlyphPos.x;
+        m_uSelRect.y = m_uGlyphPos.y + m_pVStaff->TenthsToLogical(
                             aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum );
 
         // set total width (incremented in one line for after space)
-        m_nWidth = nWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
+        m_uWidth = nWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
     }
 
 }
@@ -181,32 +181,32 @@ lmLUnits lmClef::DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
         return width;
     } else {
         //wxLogMessage(_T("[lmClef::DrawClef]"));
-        lmUPoint pos = GetGlyphPosition();
+        lmUPoint uPos = GetGlyphPosition();
         pPaper->SetTextForeground(colorC);
-        pPaper->DrawText(sGlyph, pos.x, pos.y );
+        pPaper->DrawText(sGlyph, uPos.x, uPos.y );
         return 0;
     }
 
 }
 
-lmLUnits lmClef::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos, wxColour colorC)
+lmLUnits lmClef::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is, primarely, to be used when rendering the prolog
     // Returns the width of the draw
 
-    if (fMeasuring) return m_nWidth;
+    if (fMeasuring) return m_uWidth;
 
     lmEGlyphIndex nGlyph = GetGlyphIndex();
     wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
     pPaper->SetFont(*m_pFont);
     pPaper->SetTextForeground(colorC);
-    pPaper->DrawText(sGlyph, pos.x, pos.y + m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum ) );
+    pPaper->DrawText(sGlyph, uPos.x, uPos.y + m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum ) );
 
-    return m_nWidth;
+    return m_uWidth;
 }
 
 void lmClef::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
-                         const lmUPoint& pagePosL, const lmUPoint& dragStartPosL, const lmDPoint& canvasPosD)
+                         const lmUPoint& pagePosL, const lmUPoint& uDragStartPos, const lmDPoint& canvasPosD)
 {
     // DragImage->Move() requires device units referred to canvas window. To compute the
     // desired position the following coordinates are received:
@@ -222,17 +222,17 @@ void lmClef::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& o
 
     // A clef only can be moved horizonatlly
     lmDPoint ptNew = canvasPosD;
-    ptNew.y = pPaper->LogicalToDeviceY(m_paperPos.y + m_glyphPos.y) + offsetD.y;
+    ptNew.y = pPaper->LogicalToDeviceY(m_uPaperPos.y + m_uGlyphPos.y) + offsetD.y;
     pDragImage->Move(ptNew);
 
 }
 
-lmUPoint lmClef::EndDrag(const lmUPoint& pos)
+lmUPoint lmClef::EndDrag(const lmUPoint& uPos)
 {
-    lmUPoint oldPos(m_paperPos + m_glyphPos);
+    lmUPoint oldPos(m_uPaperPos + m_uGlyphPos);
 
-    //Only X pos. can be changed
-    m_paperPos.x = pos.x - m_glyphPos.x;
+    //Only X uPos. can be changed
+    m_uPaperPos.x = uPos.x - m_uGlyphPos.x;
 
     return lmUPoint(oldPos);
 }

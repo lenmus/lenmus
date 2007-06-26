@@ -56,19 +56,19 @@ void lmSpacer::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
 {
     if (fMeasuring) {
         // set total width
-        m_nWidth = m_pVStaff->TenthsToLogical(m_nSpacerWidth, m_nStaffNum);
+        m_uWidth = m_pVStaff->TenthsToLogical(m_nSpacerWidth, m_nStaffNum);
 
         // store glyph position. As it is relative to paper pos, it is always zero.
-        //m_glyphPos.x = m_pVStaff->TenthsToLogical(m_nWidth, m_nStaffNum);
-        m_glyphPos.x = 0;
-        m_glyphPos.y = 0;
+        //m_uGlyphPos.x = m_pVStaff->TenthsToLogical(m_uWidth, m_nStaffNum);
+        m_uGlyphPos.x = 0;
+        m_uGlyphPos.y = 0;
 
-         // store selection rectangle (relative to m_paperPos).
+         // store selection rectangle (relative to m_uPaperPos).
         //  Coincides with glyph rectangle. Height is arbitrary: staff height.
-        m_selRect.width = m_nWidth;
-        m_selRect.height = 50;      // staff height: 5 lines
-        m_selRect.x = m_glyphPos.x;
-        m_selRect.y = m_glyphPos.y;
+        m_uSelRect.width = m_uWidth;
+        m_uSelRect.height = 50;      // staff height: 5 lines
+        m_uSelRect.x = m_uGlyphPos.x;
+        m_uSelRect.y = m_uGlyphPos.y;
     }
     else {
         // Drawing phase. Nothing to do

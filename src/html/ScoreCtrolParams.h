@@ -342,7 +342,7 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     }
 
     //todo: create a parameter to enable border around the score?
-    m_pOptions->fBorder = (m_nWindowStyle == wxSIMPLE_BORDER);      //around control
+    m_pOptions->fBorder = (m_nWindowStyle == eSIMPLE_BORDER);      //around control
     m_pOptions->fMusicBorder = g_fBorderOnScores;                   //around score
 
     //set scale as a function of current font size
@@ -353,7 +353,7 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     int nStyle = 0;
     if (m_pOptions->fBorder) nStyle |= wxSIMPLE_BORDER;
     wnd = new lmScoreCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, m_pScore,
-        m_pOptions, wxPoint(0,0), wxSize(m_nWidth, nHeight), nStyle );
+        m_pOptions, wxPoint(0,0), wxSize(m_uWidth, nHeight), nStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
 

@@ -50,7 +50,7 @@
 // - GraphicObjs are compound objs, that is, they can be formed by aggregation of 
 //   simpler GraphicObjs.
 // - No measuring phase needed as they are always parent anchored (relative dx,dy 
-//   to parent m_paperPos) and do not 'consume' staff space/time.
+//   to parent m_uPaperPos) and do not 'consume' staff space/time.
 
 
 

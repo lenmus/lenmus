@@ -50,7 +50,7 @@ lmNoteRestObj::lmNoteRestObj(ESymbolType nType, lmNoteRest* pOwner)
 
 void lmNoteRestObj::UpdateMeasurements()
 {
-    m_paperPos = m_pOwner->GetOrigin();
+    m_uPaperPos = m_pOwner->GetOrigin();
 }
 
 
@@ -83,7 +83,7 @@ void lmFermata::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNu
     This method does the measurement phase
     */
 
-    m_paperPos = m_pOwner->GetOrigin();
+    m_uPaperPos = m_pOwner->GetOrigin();
 
     // prepare DC
     pPaper->SetFont( *(m_pOwner->GetFont()) );
@@ -95,33 +95,33 @@ void lmFermata::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNu
     pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
 
     // store glyph position
-    m_glyphPos.x = xPos - nWidth/2;
+    m_uGlyphPos.x = xPos - nWidth/2;
     if (fAboveNote)
-        m_glyphPos.y = yPos - pVStaff->TenthsToLogical( 70, nStaffNum );
+        m_uGlyphPos.y = yPos - pVStaff->TenthsToLogical( 70, nStaffNum );
     else
-        m_glyphPos.y = yPos - pVStaff->TenthsToLogical( 5, nStaffNum );
+        m_uGlyphPos.y = yPos - pVStaff->TenthsToLogical( 5, nStaffNum );
 
 
     // store selection rectangle position and size
-    m_selRect.width = nWidth;
-    m_selRect.height = pVStaff->TenthsToLogical( 20, nStaffNum );
-    m_selRect.x = m_glyphPos.x;
-    m_selRect.y = m_glyphPos.y + pVStaff->TenthsToLogical( (fAboveNote ? 45 : 40), nStaffNum );
+    m_uSelRect.width = nWidth;
+    m_uSelRect.height = pVStaff->TenthsToLogical( 20, nStaffNum );
+    m_uSelRect.x = m_uGlyphPos.x;
+    m_uSelRect.y = m_uGlyphPos.y + pVStaff->TenthsToLogical( (fAboveNote ? 45 : 40), nStaffNum );
 
 }
 
 void lmFermata::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
-    //nxLeft es la coordenada x del centro del calderon
+    //uxLeft es la coordenada x del centro del calderon
 
     // prepare DC
     pPaper->SetFont( *(m_pOwner->GetFont()) );
 
     bool fAboveNote = (m_nPlacement == ep_Above);
     wxString sGlyph = (fAboveNote ? CHAR_FERMATA_OVER : CHAR_FERMATA_UNDER );
-    lmUPoint pos = GetGlyphPosition();
+    lmUPoint uPos = GetGlyphPosition();
     pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-    pPaper->DrawText(sGlyph, pos.x, pos.y );
+    pPaper->DrawText(sGlyph, uPos.x, uPos.y );
 
 }
 
@@ -163,9 +163,9 @@ void lmLyric::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool
 
     pPaper->SetFont(*m_pFont);
 
-    lmUPoint pos = GetGlyphPosition();
+    lmUPoint uPos = GetGlyphPosition();
     pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-    pPaper->DrawText(m_sText, pos.x, pos.y );
+    pPaper->DrawText(m_sText, uPos.x, uPos.y );
 
 }
 
@@ -185,7 +185,7 @@ void lmLyric::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
     */
 
     // save paper position and prepare font
-    m_paperPos = m_pOwner->GetOrigin();
+    m_uPaperPos = m_pOwner->GetOrigin();
     SetFont(pPaper);
 
     // prepare DC
@@ -194,29 +194,29 @@ void lmLyric::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
     // prepare the text and measure it
     lmLUnits nWidth, nHeight;
     pPaper->GetTextExtent(m_sText, &nWidth, &nHeight);
-    m_nWidth = nWidth;
+    m_uWidth = nWidth;
 
     // store glyph position (relative to paper pos).
     //// Remember: XML positioning values origin is the left-hand side of the note
     //// or the musical position within the bar (x) and the top line of the staff (y)
-    //m_glyphPos.x = m_pVStaff->TenthsToLogical(m_xRel, m_nStaffNum);
+    //m_uGlyphPos.x = m_pVStaff->TenthsToLogical(m_xRel, m_nStaffNum);
     //// as relative-y refers to the top line of the staff, so 5 lines must be
     //// substracted from yBase position
-    //m_glyphPos.y = m_pVStaff->TenthsToLogical(m_yRel-50, m_nStaffNum);
+    //m_uGlyphPos.y = m_pVStaff->TenthsToLogical(m_yRel-50, m_nStaffNum);
     //if (m_fOverrideDefaultX) {
-    //    m_glyphPos.x += m_pVStaff->TenthsToLogical(m_xDef, m_nStaffNum) - m_paperPos.x;
+    //    m_uGlyphPos.x += m_pVStaff->TenthsToLogical(m_xDef, m_nStaffNum) - m_uPaperPos.x;
     //}
     //if (m_fOverrideDefaultY) {
-    //    m_glyphPos.y += m_pVStaff->TenthsToLogical(m_yDef, m_nStaffNum) - m_paperPos.y;
+    //    m_uGlyphPos.y += m_pVStaff->TenthsToLogical(m_yDef, m_nStaffNum) - m_uPaperPos.y;
     //}
-    m_glyphPos.x = xPos;
-    m_glyphPos.y = yPos + pVStaff->TenthsToLogical( 40, nStaffNum ) * m_nNumLine;
+    m_uGlyphPos.x = xPos;
+    m_uGlyphPos.y = yPos + pVStaff->TenthsToLogical( 40, nStaffNum ) * m_nNumLine;
 
-     // store selection rectangle (relative to m_paperPos). Coincides with glyph rectangle
-    m_selRect.width = nWidth;
-    m_selRect.height = nHeight;
-    m_selRect.x = m_glyphPos.x;
-    m_selRect.y = m_glyphPos.y;
+     // store selection rectangle (relative to m_uPaperPos). Coincides with glyph rectangle
+    m_uSelRect.width = nWidth;
+    m_uSelRect.height = nHeight;
+    m_uSelRect.x = m_uGlyphPos.x;
+    m_uSelRect.y = m_uGlyphPos.y;
 
 }
 
@@ -224,7 +224,7 @@ wxString lmLyric::Dump()
 {
     wxString sDump = wxString::Format(
         _T("\t-->lmLyric\t%s\tnumLine=%d, paperPos=(%d, %d)\n"),
-        m_sText, m_nNumLine, m_paperPos.x, m_paperPos.y);
+        m_sText.c_str(), m_nNumLine, m_uPaperPos.x, m_uPaperPos.y);
     return sDump;
 
 }

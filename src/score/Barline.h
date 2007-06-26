@@ -47,8 +47,8 @@ public:
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
     wxBitmap* GetBitmap(double rScale);
     void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
-                         const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels);
-    lmUPoint EndDrag(const lmUPoint& pos);
+                         const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels);
+    lmUPoint EndDrag(const lmUPoint& uPos);
 
         //specific methods for barline
 
@@ -57,8 +57,8 @@ public:
     lmContext* GetContext(int nStaff);
 
     //positioning
-    void SetLocation(lmLUnits xPos, lmELocationType nType);
-    lmLUnits GetLocationPos() { return m_xUserPos; }
+    void SetLocation(lmLUnits uxPos, lmELocationType nType);
+    lmLUnits GetLocationPos() { return m_uxUserPos; }
     lmELocationType GetLocationType() { return m_xUserPosType; }
 
 
@@ -69,19 +69,19 @@ public:
 
 
 private:
-    lmLUnits DrawBarline(bool fMeasuring, lmPaper* pPaper, lmLUnits xPos, lmLUnits yTop,
-                         lmLUnits yBottom, wxColour colorC = *wxBLACK);
-    void DrawThinLine(lmPaper* pPaper, lmLUnits xPos, lmLUnits yTop, lmLUnits yBottom,
+    lmLUnits DrawBarline(bool fMeasuring, lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyTop,
+                         lmLUnits uyBottom, wxColour colorC = *wxBLACK);
+    void DrawThinLine(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyTop, lmLUnits uyBottom,
                       wxColour color);
-    void DrawThickLine(lmPaper* pPaper, lmLUnits xLeft, lmLUnits yTop, lmLUnits nWidth,
-                       lmLUnits nHeight, wxColour color);
-    void DrawTwoDots(lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos);
+    void DrawThickLine(lmPaper* pPaper, lmLUnits uxLeft, lmLUnits uyTop, lmLUnits uWidth,
+                       lmLUnits uHeight, wxColour color);
+    void DrawTwoDots(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos);
 
 private:
     EBarline            m_nBarlineType;     //type of barline
     ArrayOfContexts     m_aContexts;        //pointers to contexts at barline position
 
-    lmLUnits            m_xUserPos;
+    lmLUnits            m_uxUserPos;
     lmELocationType     m_xUserPosType;
 };
 

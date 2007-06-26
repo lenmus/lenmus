@@ -78,11 +78,11 @@ public:
 private:
     wxString GetLDPNote(ENoteType nNoteType, int nDots);
     lmLUnits DrawMetronomeMark(bool fMeasuring, lmPaper* pPaper,
-                               lmLUnits xPos, lmLUnits yPos, wxColour colorC = *wxBLACK);
+                               lmLUnits uxPos, lmLUnits uyPos, wxColour colorC = *wxBLACK);
     lmLUnits DrawText(bool fMeasuring, lmPaper* pPaper,
-                      lmLUnits xPos, lmLUnits yPos, wxColour colorC);
+                      lmLUnits uxPos, lmLUnits uyPos, wxColour colorC);
     lmLUnits DrawSymbol(bool fMeasuring, lmPaper* pPaper, lmShapeGlyph* pShape,
-                        lmLUnits xPos, lmLUnits yPos, wxColour colorC);
+                        lmLUnits uxPos, lmLUnits uyPos, wxColour colorC);
     lmEGlyphIndex SelectGlyph(ENoteType nNoteType, int nDots);
 
     EMetronomeMarkType  m_nMarkType;

@@ -129,7 +129,7 @@ Obsolete code. Left here as reference about how to insert text into the HTML str
 
     //Insert the score in the html page
     wnd = new lmScoreAuxCtrol((wxWindow*)pHtmlParser->GetWindow(), -1, m_pScore,
-        wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
+        wxPoint(0,0), wxSize(m_uWidth, m_nHeight), m_nWindowStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
 
@@ -346,7 +346,7 @@ void lmTheoKeySignParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 
     // create the window
     wxWindow* wnd = new lmTheoKeySignCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1,
-        m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
+        m_pConstrains, wxPoint(0,0), wxSize(m_uWidth, m_nHeight), m_nWindowStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
 
@@ -505,7 +505,7 @@ void lmTheoIntervalsCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 
     // create the window
     wxWindow* wnd = new lmTheoIntervalsCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1,
-        m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
+        m_pConstrains, wxPoint(0,0), wxSize(m_uWidth, m_nHeight), m_nWindowStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
 
@@ -611,7 +611,7 @@ void lmEarIntervalsCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 
     // create the window
     wxWindow* wnd = new lmEarIntervalsCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1,
-        m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
+        m_pConstrains, wxPoint(0,0), wxSize(m_uWidth, m_nHeight), m_nWindowStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
 
@@ -717,7 +717,7 @@ void lmEarCompareIntvCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 
     // create the window
     wxWindow* wnd = new lmEarCompareIntvCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1,
-        m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
+        m_pConstrains, wxPoint(0,0), wxSize(m_uWidth, m_nHeight), m_nWindowStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
 

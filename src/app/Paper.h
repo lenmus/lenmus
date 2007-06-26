@@ -89,8 +89,8 @@ public:
     //solid shapes, anti-aliased when supported.
     void SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2, wxColour color)
             { m_pDrawer->SketchLine(x1, y1, x2, y2, color); }
-    void SketchRectangle(lmUPoint point, wxSize size, wxColour color)
-            { m_pDrawer->SketchRectangle(point, size, color); }
+    void SketchRectangle(lmUPoint point, lmUSize uSize, wxColour color)
+            { m_pDrawer->SketchRectangle(point, uSize, color); }
 
     // Aliased shapes, even when anti-alising is supported.
     void SolidCircle(lmLUnits x, lmLUnits y, lmLUnits radius)
@@ -114,7 +114,7 @@ public:
     void SetPen(wxColour color, lmLUnits uWidth) {m_pDrawer->SetPen(color, uWidth); };
 
     //text
-    void DrawText(const wxString& text, wxCoord x, wxCoord y) {m_pDrawer->DrawText(text, x, y); }
+    void DrawText(const wxString& text, lmLUnits x, lmLUnits y) {m_pDrawer->DrawText(text, x, y); }
     void SetTextForeground(const wxColour& colour) {m_pDrawer->SetTextForeground(colour); }
     void SetTextBackground(const wxColour& colour) {m_pDrawer->SetTextBackground(colour); }
     void GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h)

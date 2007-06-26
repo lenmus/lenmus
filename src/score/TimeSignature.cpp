@@ -142,8 +142,8 @@ void lmTimeSignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colo
         lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
 
         // store glyph position
-        m_glyphPos.x = 0;
-        m_glyphPos.y = yShift - m_pVStaff->TenthsToLogical( 40, m_nStaffNum );
+        m_uGlyphPos.x = 0;
+        m_uGlyphPos.y = yShift - m_pVStaff->TenthsToLogical( 40, m_nStaffNum );
     }
 
     DrawTimeSignature(fMeasuring, pPaper, (m_fSelected ? g_pColors->ScoreSelected() : *wxBLACK) );
@@ -162,11 +162,11 @@ lmLUnits lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wx
         pPaper->GetTextExtent(sTopGlyphs, &nWidth1, &nHeight1);
         pPaper->GetTextExtent(sBottomGlyphs, &nWidth2, &nHeight2);
 
-        // store selection rectangle measures and position (relative to m_paperPos)
-        m_selRect.width = wxMax(nWidth1, nWidth2);
-        m_selRect.height = m_pVStaff->TenthsToLogical( 40, m_nStaffNum );
-        m_selRect.x = m_glyphPos.x;
-        m_selRect.y = m_glyphPos.y + m_pVStaff->TenthsToLogical( 40, m_nStaffNum );
+        // store selection rectangle measures and position (relative to m_uPaperPos)
+        m_uSelRect.width = wxMax(nWidth1, nWidth2);
+        m_uSelRect.height = m_pVStaff->TenthsToLogical( 40, m_nStaffNum );
+        m_uSelRect.x = m_uGlyphPos.x;
+        m_uSelRect.y = m_uGlyphPos.y + m_pVStaff->TenthsToLogical( 40, m_nStaffNum );
 
         //compute Beats and BeatsType positions so that one is centered on the other
         if (nWidth2 > nWidth1) {
@@ -181,8 +181,8 @@ lmLUnits lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wx
         }
 
         // set total width (incremented in one line for after space)
-        m_nWidth = m_selRect.width + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
-        return m_nWidth;
+        m_uWidth = m_uSelRect.width + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
+        return m_uWidth;
     }
     else {
         //Time signature is common to all lmVStaff staves, but it is only present, as lmStaffObj, in
@@ -194,10 +194,10 @@ lmLUnits lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wx
         lmStaff* pStaff = m_pVStaff->GetFirstStaff();
         for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++) {
             // Draw the time signature
-            lmUPoint pos = GetGlyphPosition();
-            pPaper->DrawText(sTopGlyphs, pos.x + m_xPosTop, pos.y + yOffset );
-            pPaper->DrawText(sBottomGlyphs, pos.x + m_xPosBottom,
-                            pos.y + yOffset + m_pVStaff->TenthsToLogical( 20, nStaff ) );
+            lmUPoint uPos = GetGlyphPosition();
+            pPaper->DrawText(sTopGlyphs, uPos.x + m_xPosTop, uPos.y + yOffset );
+            pPaper->DrawText(sBottomGlyphs, uPos.x + m_xPosBottom,
+                            uPos.y + yOffset + m_pVStaff->TenthsToLogical( 20, nStaff ) );
 
             //compute vertical displacement for next staff
             yOffset += pStaff->GetHeight();
@@ -246,17 +246,17 @@ wxBitmap* lmTimeSignature::GetBitmap(double rScale)
 }
 
 void lmTimeSignature::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
-                        const lmUPoint& ptLog, const lmUPoint& dragStartPosL, const lmDPoint& ptPixels)
+                        const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels)
 {
 }
 
-lmUPoint lmTimeSignature::EndDrag(const lmUPoint& pos)
+lmUPoint lmTimeSignature::EndDrag(const lmUPoint& uPos)
 {
     //! @todo
     return lmUPoint(0,0);
 }
 
-lmLUnits lmTimeSignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint pos, wxColour colorC)
+lmLUnits lmTimeSignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     //! @todo
     return 0;

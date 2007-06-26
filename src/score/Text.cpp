@@ -43,7 +43,7 @@ int PointsToLUnits(lmLUnits nPoints)
     //One point equals 1/72 of an inch
     //One inch equals 2.54 cm = 25.4 mm
     //then 1 pt = 25.4/72 mm
-    return lmToLogicalUnits(nPoints * 25.4 / 72.0, lmMILLIMETERS);
+    return (int)lmToLogicalUnits(nPoints * 25.4 / 72.0, lmMILLIMETERS);
 }
 
 //Global variables used as default initializators
@@ -112,24 +112,24 @@ void lmScoreText::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, 
         pPaper->GetTextExtent(m_sText, &nWidth, &nHeight);
         //wxLogMessage(_T("[lmScoreText::DrawObject] text='%s'. width=%d"), m_sText, nWidth);
 
-         // store selection rectangle (relative to m_paperPos)
-        m_selRect.width = nWidth;
-        m_selRect.height = nHeight;
-        m_selRect.x = 0;    //remember: relative to m_paperPos
-        m_selRect.y = 0;
+         // store selection rectangle (relative to m_uPaperPos)
+        m_uSelRect.width = nWidth;
+        m_uSelRect.height = nHeight;
+        m_uSelRect.x = 0;    //remember: relative to m_uPaperPos
+        m_uSelRect.y = 0;
 
         // set total width
-        m_nWidth = nWidth;
+        m_uWidth = nWidth;
 
         // store glyph position (relative to paper pos).
-        m_glyphPos.x = 0;
-        m_glyphPos.y = 0;
+        m_uGlyphPos.x = 0;
+        m_uGlyphPos.y = 0;
 
     }
     else {
-        lmUPoint pos = GetGlyphPosition();
+        lmUPoint uPos = GetGlyphPosition();
         pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-        pPaper->DrawText(m_sText, pos.x, pos.y );
+        pPaper->DrawText(m_sText, uPos.x, uPos.y );
     }
 
 }
@@ -138,8 +138,8 @@ wxString lmScoreText::Dump()
 {
     wxString sDump = wxString::Format(
         _T("%d\tText %s\tfixed=%s paperPos=(%d, %d)\n"),
-        m_nId, m_sText.Left(15), (m_fFixedPos ? _T("yes") : _T("no")),
-        m_paperPos.x, m_paperPos.y);
+        m_nId, m_sText.Left(15).c_str(), (m_fFixedPos ? _T("yes") : _T("no")),
+        m_uPaperPos.x, m_uPaperPos.y);
     return sDump;
 
 }

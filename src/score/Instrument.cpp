@@ -286,7 +286,7 @@ void lmInstrument::DrawName(lmPaper* pPaper, wxColour colorC)
 
     if (m_pName) {
         //As name/abbreviation are StaffObjs, method Draw() should be invoked but
-        //it draws the object not at current paper pos but at stored m_paperPos.
+        //it draws the object not at current paper pos but at stored m_uPaperPos.
         //It also performs other non necessary thigs.
         //So, I will invoke directly DarwObject and, previouly, set the text
         //position at current paper position
@@ -304,7 +304,7 @@ void lmInstrument::DrawAbbreviation(lmPaper* pPaper, wxColour colorC)
 
     if (m_pAbbreviation) {
         //As name/abbreviation are StaffObjs, method Draw() should be invoked but
-        //it draws the object not at current paper pos but at stored m_paperPos.
+        //it draws the object not at current paper pos but at stored m_uPaperPos.
         //It also performs other non necessary thigs.
         //More: Abbreviation is written on every system but Draw will always
         //draw it at the same position.

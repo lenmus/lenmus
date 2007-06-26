@@ -447,7 +447,7 @@ void lmScore::WriteToFile(wxString sFilename, wxString sContent)
     oFile.Open(sFilename, wxFile::write);
     if (!oFile.IsOpened()) {
         wxLogMessage(_T("[lmScore::WriteToFile] File '%s' could not be openned. Write to file cancelled"),
-            sFilename);
+            sFilename.c_str());
     }
     else {
         oFile.Write(sContent);

@@ -56,17 +56,17 @@ class lmShapeObj
 public:
     virtual ~lmShapeObj() {}
 
-    virtual void Render(lmPaper* pPaper, lmUPoint pos, wxColour color = *wxBLACK) {};
+    virtual void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK) {};
 
     // methods related to selection rectangle
-    void SetSelRectangle(int x, int y, int nWidth, int nHeight);
-    void DrawSelRectangle(lmPaper* pPaper, lmUPoint pos, wxColour colorC = *wxBLUE);
-    wxRect GetSelRectangle() const { return m_SelRect; }
+    void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight);
+    void DrawSelRectangle(lmPaper* pPaper, lmUPoint uPos, wxColour colorC = *wxBLUE);
+    lmURect GetSelRectangle() const { return m_uSelRect; }
 
     // methods related to bounds
-    wxRect GetBoundsRectangle() const { return m_BoundsRect; }
+    lmURect GetBoundsRectangle() const { return m_uBoundsRect; }
     bool Collision(lmShapeObj* pShape);
-    virtual lmLUnits GetWidth() { return m_BoundsRect.width; }
+    virtual lmLUnits GetWidth() { return m_uBoundsRect.width; }
 
     //methods related to position
     virtual void Shift(lmLUnits xIncr) = 0;
@@ -78,10 +78,10 @@ public:
 protected:
     lmShapeObj(lmObject* pOwner);
 
-    lmObject*     m_pOwner;       //musical object owning this shape
+    lmObject*   m_pOwner;       //musical object owning this shape
 
-    wxRect          m_BoundsRect;   // boundling rectangle (logical units, relative to renderization point)
-    wxRect          m_SelRect;      // selection rectangle (logical units, relative to renderization point)
+    lmURect     m_uBoundsRect;  // boundling rectangle (logical units, relative to renderization point)
+    lmURect     m_uSelRect;     // selection rectangle (logical units, relative to renderization point)
 
 };
 
@@ -115,7 +115,7 @@ public:
     virtual ~lmShapeComposite();
 
     //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, lmUPoint pos, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
     virtual wxString Dump() { return _T("ShapeComposite"); }
     virtual void Shift(lmLUnits xIncr);
 
@@ -139,7 +139,7 @@ public:
     ~lmShapeLine() {}
 
     //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, lmUPoint pos, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
     wxString Dump();
     void Shift(lmLUnits xIncr);
 
@@ -159,7 +159,7 @@ public:
     ~lmShapeGlyph() {}
 
     //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, lmUPoint pos, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
     wxString Dump();
     void Shift(lmLUnits xIncr);
 
@@ -171,7 +171,7 @@ public:
 private:
     int         m_nGlyph;
     wxFont*     m_pFont;
-    lmUPoint    m_shift;        // to correctly position the glyph (relative to shape offset point)
+    lmUPoint    m_uShift;   // to correctly position the glyph (relative to shape offset point)
 
 };
 
@@ -184,7 +184,7 @@ public:
     ~lmShapeText() {}
 
     //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, lmUPoint pos, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
     wxString Dump();
     void Shift(lmLUnits xIncr);
 
@@ -197,7 +197,7 @@ public:
 private:
     wxString    m_sText;
     wxFont*     m_pFont;
-    lmUPoint    m_shift;        // to correctly position the text (relative to shape offset point)
+    lmUPoint    m_uShift;        // to correctly position the text (relative to shape offset point)
 
 };
 

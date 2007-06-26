@@ -247,7 +247,7 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
         fClear = false;
         dc.DrawText(m_sMsg,
                     (int)(lmToLogicalUnits(5, lmMILLIMETERS) * m_yScalingFactor),
-                    (int)(m_yMsg * m_yScalingFactor));
+                    (int)(m_yMsg * m_yScalingFactor) );
     }
 
     if (fClear) {

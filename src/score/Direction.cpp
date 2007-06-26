@@ -68,7 +68,7 @@ void lmWordsDirection::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour col
         pPaper->GetTextExtent(m_sText, &nWidth, &nHeight);
 
         // set total width
-        m_nWidth = nWidth;
+        m_uWidth = nWidth;
 
         //compute paper x shift to align text
         lmLUnits xPaperShift;
@@ -84,35 +84,35 @@ void lmWordsDirection::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour col
 
         // store glyph position. Take into account that it is relative to paper pos.
         if (m_tPos.xType == lmLOCATION_RELATIVE)
-            m_glyphPos.x = m_pVStaff->TenthsToLogical(m_tPos.x, m_nStaffNum) + xPaperShift;
+            m_uGlyphPos.x = m_pVStaff->TenthsToLogical(m_tPos.x, m_nStaffNum) + xPaperShift;
         else if (m_tPos.xType == lmLOCATION_ABSOLUTE)
-            m_glyphPos.x = m_pVStaff->TenthsToLogical(m_tPos.x, m_nStaffNum) - m_paperPos.x  + xPaperShift;
+            m_uGlyphPos.x = m_pVStaff->TenthsToLogical(m_tPos.x, m_nStaffNum) - m_uPaperPos.x  + xPaperShift;
         else
-            m_glyphPos.x = xPaperShift;
+            m_uGlyphPos.x = xPaperShift;
 
         //method DC::DrawText position text with reference to its upper left
         //corner but lenmus anchor point is lower left corner. Therefore, it
         //is necessary to shift text up by text height
         if (m_tPos.yType == lmLOCATION_RELATIVE)
-            m_glyphPos.y = m_pVStaff->TenthsToLogical(m_tPos.y, m_nStaffNum) - nHeight;
+            m_uGlyphPos.y = m_pVStaff->TenthsToLogical(m_tPos.y, m_nStaffNum) - nHeight;
         else if (m_tPos.yType == lmLOCATION_ABSOLUTE)
-            m_glyphPos.y = m_pVStaff->TenthsToLogical(m_tPos.y, m_nStaffNum) - m_paperPos.y - nHeight;
+            m_uGlyphPos.y = m_pVStaff->TenthsToLogical(m_tPos.y, m_nStaffNum) - m_uPaperPos.y - nHeight;
         else
-            m_glyphPos.y = - nHeight;
+            m_uGlyphPos.y = - nHeight;
 
-         // store selection rectangle (relative to m_paperPos). Coincides with glyph rectangle
-        m_selRect.width = nWidth;
-        m_selRect.height = nHeight;
-        m_selRect.x = m_glyphPos.x;
-        m_selRect.y = m_glyphPos.y;
+         // store selection rectangle (relative to m_uPaperPos). Coincides with glyph rectangle
+        m_uSelRect.width = nWidth;
+        m_uSelRect.height = nHeight;
+        m_uSelRect.x = m_uGlyphPos.x;
+        m_uSelRect.y = m_uGlyphPos.y;
 
-        if (!m_fHasWidth) m_nWidth=0;
+        if (!m_fHasWidth) m_uWidth=0;
 
     }
     else {
-        lmUPoint pos = GetGlyphPosition();
+        lmUPoint uPos = GetGlyphPosition();
         pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-        pPaper->DrawText(m_sText, pos.x, pos.y );
+        pPaper->DrawText(m_sText, uPos.x, uPos.y );
     }
 
 }
@@ -122,7 +122,7 @@ wxString lmWordsDirection::Dump()
     wxString sDump = wxString::Format(
         _T("%d\tText %s\tTimePos=%.2f, fixed=%s paperPos=(%d, %d)\n"),
         m_nId, m_sText.Left(15).c_str(), m_rTimePos, (m_fFixedPos ? _T("yes") : _T("no")),
-        m_paperPos.x, m_paperPos.y);
+        m_uPaperPos.x, m_uPaperPos.y);
     return sDump;
 
 }

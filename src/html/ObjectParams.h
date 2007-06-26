@@ -55,7 +55,7 @@ protected:
     void LogError(const wxString& sMsg);
 
     // html object window attributes
-    int                m_nWidth;
+    int                m_uWidth;
     int                m_nHeight;
     int                m_nPercent;
 };

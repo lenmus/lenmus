@@ -29,17 +29,7 @@
 #include "../graphic/Shape.h"
 
 
-/*
-    An lmAccidental represents the accidental sign associated to notes.
-<!ATTLIST accidental
-    cautionary %yes-no; #IMPLIED
-    editorial %yes-no; #IMPLIED
-    size %symbol-size; #IMPLIED
-    %position;
->
-
-
-*/
+// An lmAccidental represents an accidental sign associated to a note
 
 class lmAccidental : public lmNoteRestObj
 {
@@ -53,17 +43,17 @@ public:
                          lmLUnits xPos, lmLUnits yPos);
 
     lmLUnits GetWidth();
-    void SetAfterspace(lmLUnits nSpace) { m_nAfterSpace = nSpace; }
+    void SetAfterspace(lmLUnits nSpace) { m_uAfterSpace = nSpace; }
 
-    void Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint shift);
-    void Render(lmPaper* pPaper, lmUPoint pos, wxColour color = *wxBLACK);
+    void Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint uShift);
+    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
 
 
 private:
     void CreateShapes();
 
     EAccidentals    m_nType;            //accidental type
-    lmLUnits        m_nAfterSpace;
+    lmLUnits        m_uAfterSpace;
 
     lmShapeGlyph*   m_pShape[2];        //the shapes to render the accidental
 

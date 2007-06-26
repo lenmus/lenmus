@@ -39,52 +39,52 @@ lmDrawer::lmDrawer(wxDC* pDC)
 
 }
 
-void lmDrawer::SolidLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
-                           lmLUnits width, lmELineEdges nEdge, wxColor color)
+void lmDrawer::SolidLine(lmLUnits ux1, lmLUnits uy1, lmLUnits ux2, lmLUnits uy2,
+                           lmLUnits uWidth, lmELineEdges nEdge, wxColor color)
 {
-    double alpha = atan((y2 - y1) / (x2 - x1));
+    double alpha = atan((uy2 - uy1) / (ux2 - ux1));
 
     switch(nEdge) {
         case eEdgeNormal:
             // edge line is perpendicular to line
             {
-            lmLUnits incrX = (lmLUnits)( (width * sin(alpha)) / 2.0 );
-            lmLUnits incrY = (lmLUnits)( (width * cos(alpha)) / 2.0 );
-            lmUPoint points[] = {
-                lmUPoint(x1+incrX, y1-incrY),
-                lmUPoint(x1-incrX, y1+incrY),
-                lmUPoint(x2-incrX, y2+incrY),
-                lmUPoint(x2+incrX, y2-incrY)
+            lmLUnits uIncrX = (lmLUnits)( (uWidth * sin(alpha)) / 2.0 );
+            lmLUnits uIncrY = (lmLUnits)( (uWidth * cos(alpha)) / 2.0 );
+            lmUPoint uPoints[] = {
+                lmUPoint(ux1+uIncrX, uy1-uIncrY),
+                lmUPoint(ux1-uIncrX, uy1+uIncrY),
+                lmUPoint(ux2-uIncrX, uy2+uIncrY),
+                lmUPoint(ux2+uIncrX, uy2-uIncrY)
             };
-            SolidPolygon(4, points, color);
+            SolidPolygon(4, uPoints, color);
             break;
             }
 
         case eEdgeVertical:
             // edge is always a vertical line
             {
-            lmLUnits incrY = (lmLUnits)( (width / cos(alpha)) / 2.0 );
-            lmUPoint points[] = {
-                lmUPoint(x1, y1-incrY),
-                lmUPoint(x1, y1+incrY),
-                lmUPoint(x2, y2+incrY),
-                lmUPoint(x2, y2-incrY)
+            lmLUnits uIncrY = (lmLUnits)( (uWidth / cos(alpha)) / 2.0 );
+            lmUPoint uPoints[] = {
+                lmUPoint(ux1, uy1-uIncrY),
+                lmUPoint(ux1, uy1+uIncrY),
+                lmUPoint(ux2, uy2+uIncrY),
+                lmUPoint(ux2, uy2-uIncrY)
             };
-            SolidPolygon(4, points, color);
+            SolidPolygon(4, uPoints, color);
             break;
             }
 
         case eEdgeHorizontal:
             // edge is always a horizontal line
             {
-            lmLUnits incrX = (lmLUnits)( (width / sin(alpha)) / 2.0 );
-            lmUPoint points[] = {
-                lmUPoint(x1+incrX, y1),
-                lmUPoint(x1-incrX, y1),
-                lmUPoint(x2-incrX, y2),
-                lmUPoint(x2+incrX, y2)
+            lmLUnits uIncrX = (lmLUnits)( (uWidth / sin(alpha)) / 2.0 );
+            lmUPoint uPoints[] = {
+                lmUPoint(ux1+uIncrX, uy1),
+                lmUPoint(ux1-uIncrX, uy1),
+                lmUPoint(ux2-uIncrX, uy2),
+                lmUPoint(ux2+uIncrX, uy2)
             };
-            SolidPolygon(4, points, color);
+            SolidPolygon(4, uPoints, color);
             break;
             }
     }
@@ -97,34 +97,34 @@ void lmDrawer::SolidLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
 // lmDirectDrawer
 //------------------------------------------------------------------------------------
 
-void lmDirectDrawer::GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h)
+void lmDirectDrawer::GetTextExtent(const wxString& string, lmLUnits* uw, lmLUnits* uh)
 {
-    wxCoord width, height;
-    m_pDC->GetTextExtent(string, &width, &height);
-    *w = (lmLUnits)width;
-    *h = (lmLUnits)height;
+    lmPixels vWidth, vHeight;
+    m_pDC->GetTextExtent(string, &vWidth, &vHeight);
+    *uw = (lmLUnits)vWidth;
+    *uh = (lmLUnits)vHeight;
 }
 
-void lmDirectDrawer::SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
+void lmDirectDrawer::SketchLine(lmLUnits ux1, lmLUnits uy1, lmLUnits ux2, lmLUnits uy2,
                                 wxColour color)
 {
     m_pDC->SetPen( wxPen(color, 1, wxSOLID) );
     m_pDC->SetBrush( *wxTRANSPARENT_BRUSH );
-    m_pDC->DrawLine((int)x1, (int)y1, (int)x2, (int)y2);
+    m_pDC->DrawLine((int)ux1, (int)uy1, (int)ux2, (int)uy2);
 }
 
-void lmDirectDrawer::SketchRectangle(lmUPoint uPoint, wxSize size, wxColour color)
+void lmDirectDrawer::SketchRectangle(lmUPoint uPoint, lmUSize uSize, wxColour color)
 {
     wxPoint point = lmUPointToPoint(uPoint);
     m_pDC->SetPen( wxPen(color, 1, wxSOLID) );
     m_pDC->SetBrush( *wxTRANSPARENT_BRUSH );
-    m_pDC->DrawRectangle(point, size);
+    m_pDC->DrawRectangle(point, lmUSizeToSize(uSize) );
 }
 
-void lmDirectDrawer::SolidCircle(lmLUnits x, lmLUnits y, lmLUnits radius)
+void lmDirectDrawer::SolidCircle(lmLUnits ux, lmLUnits uy, lmLUnits uRadius)
 {
-    wxPoint point((int)x, (int)y);
-    m_pDC->DrawCircle(point, (wxCoord)radius);
+    wxPoint point((int)ux, (int)uy);
+    m_pDC->DrawCircle(point, (int)uRadius);
 }
 
 void lmDirectDrawer::SolidPolygon(int n, lmUPoint points[], wxColour color)

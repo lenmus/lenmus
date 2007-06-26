@@ -173,13 +173,13 @@ void lmAggDrawer::SketchLine(lmLUnits x1, lmLUnits y1, lmLUnits x2, lmLUnits y2,
 
 }
 
-void lmAggDrawer::SketchRectangle(lmUPoint point, wxSize size, wxColour color)
+void lmAggDrawer::SketchRectangle(lmUPoint uPoint, lmUSize uSize, wxColour color)
 {
     // renderer_marker expects no decimals, so values must be multiplied by 256.
-    double x = WorldToDeviceX(point.x) * 256.0;
-    double y = WorldToDeviceY(point.y) * 256.0;
-    double w = WorldToDeviceX(size.GetWidth()) * 256.0;
-    double h = WorldToDeviceY(size.GetHeight()) * 256.0;
+    double x = WorldToDeviceX(uPoint.x) * 256.0;
+    double y = WorldToDeviceY(uPoint.y) * 256.0;
+    double w = WorldToDeviceX((int)(uSize.GetWidth() * 256.0));
+    double h = WorldToDeviceY((int)(uSize.GetHeight() * 256.0));
 
     m_pRenMarker->line_color( lmToRGBA8(color) );
     // in last parameter, true means 'include last point'
@@ -283,7 +283,7 @@ void lmAggDrawer::SetLogicalFunction(int function)
 
 
 //text
-void lmAggDrawer::DrawText(const wxString& text, wxCoord x, wxCoord y)
+void lmAggDrawer::DrawText(const wxString& text, lmLUnits x, lmLUnits y)
 {
     //wxLogMessage(_T("[lmAggDrawer::DrawText]"));
         //
