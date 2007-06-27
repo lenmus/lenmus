@@ -115,7 +115,7 @@
 	<File name="../../src/globals/Paths.cpp" open="0" top="0" tabpos="32">
 		<Cursor position="7615" topLine="205" />
 	</File>
-	<File name="../../src/graphic/AggDrawer.cpp" open="1" top="0" tabpos="68">
+	<File name="../../src/graphic/AggDrawer.cpp" open="1" top="0" tabpos="67">
 		<Cursor position="6763" topLine="170" />
 	</File>
 	<File name="../../src/graphic/AggDrawer.h" open="1" top="0" tabpos="9">
@@ -133,7 +133,7 @@
 	<File name="../../src/graphic/GraphicManager.cpp" open="0" top="0" tabpos="36">
 		<Cursor position="8442" topLine="237" />
 	</File>
-	<File name="../../src/graphic/Shape.cpp" open="1" top="0" tabpos="69">
+	<File name="../../src/graphic/Shape.cpp" open="1" top="0" tabpos="68">
 		<Cursor position="1846" topLine="37" />
 	</File>
 	<File name="../../src/graphic/Shape.h" open="1" top="0" tabpos="20">
@@ -266,7 +266,7 @@
 		<Cursor position="2616" topLine="11" />
 	</File>
 	<File name="../../src/score/Beam.cpp" open="1" top="0" tabpos="57">
-		<Cursor position="10956" topLine="261" />
+		<Cursor position="15204" topLine="363" />
 	</File>
 	<File name="../../src/score/Chord.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="9685" topLine="282" />
@@ -281,13 +281,16 @@
 		<Cursor position="9872" topLine="282" />
 	</File>
 	<File name="../../src/score/KeySignature.cpp" open="1" top="0" tabpos="24">
-		<Cursor position="14496" topLine="348" />
+		<Cursor position="14501" topLine="348" />
 	</File>
-	<File name="../../src/score/MetronomeMark.cpp" open="1" top="1" tabpos="25">
+	<File name="../../src/score/MetronomeMark.cpp" open="1" top="0" tabpos="25">
 		<Cursor position="11056" topLine="285" />
 	</File>
 	<File name="../../src/score/Note.cpp" open="1" top="0" tabpos="60">
-		<Cursor position="2186" topLine="26" />
+		<Cursor position="18444" topLine="496" />
+	</File>
+	<File name="../../src/score/NoteRest.cpp" open="1" top="0" tabpos="71">
+		<Cursor position="6496" topLine="162" />
 	</File>
 	<File name="../../src/score/NoteRestObj.cpp" open="1" top="0" tabpos="26">
 		<Cursor position="7867" topLine="201" />
@@ -307,7 +310,7 @@
 	<File name="../../src/score/Slur.cpp" open="1" top="0" tabpos="63">
 		<Cursor position="2609" topLine="74" />
 	</File>
-	<File name="../../src/score/StaffObj.cpp" open="1" top="0" tabpos="70">
+	<File name="../../src/score/StaffObj.cpp" open="1" top="0" tabpos="69">
 		<Cursor position="3147" topLine="92" />
 	</File>
 	<File name="../../src/score/StaffObj.h" open="1" top="0" tabpos="6">
@@ -317,12 +320,12 @@
 		<Cursor position="4954" topLine="131" />
 	</File>
 	<File name="../../src/score/TimeSignature.cpp" open="1" top="0" tabpos="65">
-		<Cursor position="8547" topLine="222" />
+		<Cursor position="8576" topLine="222" />
 	</File>
 	<File name="../../src/score/VStaff.cpp" open="1" top="0" tabpos="66">
-		<Cursor position="32372" topLine="924" />
+		<Cursor position="8114" topLine="194" />
 	</File>
-	<File name="../../src/score/defs.cpp" open="1" top="0" tabpos="71">
+	<File name="../../src/score/defs.cpp" open="1" top="1" tabpos="70">
 		<Cursor position="1726" topLine="82" />
 	</File>
 	<File name="../../src/score/defs.h" open="1" top="0" tabpos="23">
@@ -336,12 +339,6 @@
 	</File>
 	<File name="../../src/sound/SoundManager.cpp" open="1" top="0" tabpos="52">
 		<Cursor position="6245" topLine="93" />
-	</File>
-	<File name="../../src/updater/Downloader.cpp" open="1" top="0" tabpos="72">
-		<Cursor position="5112" topLine="82" />
-	</File>
-	<File name="../../src/updater/Downloader.h" open="1" top="0" tabpos="67">
-		<Cursor position="2572" topLine="33" />
 	</File>
 	<File name="../../src/updater/Updater.cpp" open="1" top="0" tabpos="28">
 		<Cursor position="11664" topLine="18" />

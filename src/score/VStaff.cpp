@@ -201,7 +201,8 @@ void lmVStaff::UpdateContext(lmNote* pStartNote, int nStaff, int nStep,
 
     //create a new context by updating current one
     lmStaff* pStaff = GetStaff(nStaff);
-    lmContext* pNewContext = pStaff->NewContext(pCurrentContext, nNewAccidentals, nStep);
+    //lmContext* pNewContext = pStaff->NewContext(pCurrentContext, nNewAccidentals, nStep);
+    pStaff->NewContext(pCurrentContext, nNewAccidentals, nStep);
 
     /*! @todo
     For now, as we are not yet dealing with edition, it is not possible to

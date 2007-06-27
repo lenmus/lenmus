@@ -45,6 +45,7 @@
 #include "wx/wx.h"
 #endif
 
+#include "vector"
 #include "Score.h"
 
 lmBeam::lmBeam(lmNoteRest* pNotePrev)
@@ -249,9 +250,8 @@ void lmBeam::TrimStems()
     // arrays yBase and yTop, respectively.
 
     int nNumNotes = m_cNotes.GetCount();
-    wxArrayInt yBase, yTop;
-    yBase.SetCount(nNumNotes+1, 0);     // 1 based
-    yTop.SetCount(nNumNotes+1, 0);      // 1 based
+    std::vector<float>yBase(nNumNotes+1);   // 1 based
+    std::vector<float>yTop(nNumNotes+1);    // 1 based
 
     wxNoteRestsListNode *pNode;
     lmNote* pMaxNote;
@@ -264,16 +264,16 @@ void lmBeam::TrimStems()
     for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++)
     {
         pNote = (lmNote*)pNode->GetData();
-         lmLUnits dyStem = pNote->GetDefaultStemLength();
+         lmLUnits udyStem = pNote->GetDefaultStemLength();
         if (pNote->IsInChord()) {
              pMinNote = (pNote->GetChord())->GetMinNote();
              pMaxNote = (pNote->GetChord())->GetMaxNote();
             if (pNote->StemGoesDown()) {
                 yBase[i] = pMaxNote->GetStaffOffset() - pMaxNote->GetPitchShift();
-                yTop[i] = pMinNote->GetStaffOffset() - pMinNote->GetPitchShift() + dyStem;
+                yTop[i] = pMinNote->GetStaffOffset() - pMinNote->GetPitchShift() + udyStem;
             } else {
                 yBase[i] = pMinNote->GetStaffOffset() - pMinNote->GetPitchShift();
-                yTop[i] = pMaxNote->GetStaffOffset() - pMaxNote->GetPitchShift() - dyStem;
+                yTop[i] = pMaxNote->GetStaffOffset() - pMaxNote->GetPitchShift() - udyStem;
             }
         } else {
             if (pNote->IsRest()) {
@@ -282,7 +282,7 @@ void lmBeam::TrimStems()
             }
             else {
                 yBase[i] = pNote->GetStaffOffset() - pNote->GetPitchShift();
-                yTop[i] = yBase[i] + (pNote->StemGoesDown() ? dyStem : -dyStem);
+                yTop[i] = yBase[i] + (pNote->StemGoesDown() ? udyStem : -udyStem);
             }
         }
     }
@@ -336,7 +336,7 @@ void lmBeam::TrimStems()
     lmLUnits x1 = m_pFirstNote->GetXStemLeft();
     lmLUnits Ax = m_pLastNote->GetXStemLeft() - x1;
     lmNoteRest* pNR;
-    int nMinStem;
+    lmLUnits uMinStem;
     for(i=1, pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++)
     {
         pNR = (lmNoteRest*)pNode->GetData();
@@ -345,9 +345,9 @@ void lmBeam::TrimStems()
             yTop[i] = yTop[1] + (Ay * (pNote->GetXStemLeft() - x1)) / Ax;
             //save the shortest stem
             if (i==1)
-                nMinStem = abs(yBase[1] - yTop[1]);
+                uMinStem = fabs(yBase[1] - yTop[1]);
             else
-                nMinStem = wxMin(nMinStem, abs(yBase[i] - yTop[i]));
+                uMinStem = wxMin(uMinStem, fabs(yBase[i] - yTop[i]));
         }
     }
 
@@ -359,19 +359,19 @@ void lmBeam::TrimStems()
     // a minimum height
 
     lmLUnits dyStem = m_pFirstNote->GetDefaultStemLength();
-    int dyMin = (2 * dyStem) / 3;
+    lmLUnits dyMin = (2 * dyStem) / 3;
     bool fAdjust;
 
     // compare the shortest with this minimun required
-    int yIncr;
-    if (nMinStem < dyMin) {
+    lmLUnits uyIncr;
+    if (uMinStem < dyMin) {
         // a stem is smaller than dyMin. Increment all stems.
-        yIncr = dyMin - nMinStem;
+        uyIncr = dyMin - uMinStem;
         fAdjust = true;
     }
-    else if ( nMinStem > dyStem) {
+    else if (uMinStem > dyStem) {
         // all stems are greater than the standard size. Reduce them.
-        yIncr = -(nMinStem - dyStem);
+        uyIncr = -(uMinStem - dyStem);
         fAdjust = true;
     }
     else {
@@ -384,9 +384,9 @@ void lmBeam::TrimStems()
         for (i = 1; i <= nNumNotes; i++) {
             //wxLogMessage(_T("[lmBeam::TrimStems] before yTop[%d]=%d"), i, yTop[i]);
            if (yBase[i] < yTop[i]) {
-                yTop[i] += yIncr;
+                yTop[i] += uyIncr;
             } else {
-                yTop[i] -= yIncr;
+                yTop[i] -= uyIncr;
             }
             //wxLogMessage(_T("[lmBeam::TrimStems] after yTop[%d]=%d"), i, yTop[i]);
         }
@@ -396,14 +396,14 @@ void lmBeam::TrimStems()
     // Transfer the computed values to the notes
     for(i=1, pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++)
     {
-        lmLUnits nLength = (yBase[i] > yTop[i] ? yBase[i] - yTop[i] : yTop[i] - yBase[i]);
+        lmLUnits uLength = (yBase[i] > yTop[i] ? yBase[i] - yTop[i] : yTop[i] - yBase[i]);
         pNR = (lmNoteRest*)pNode->GetData();
         if (pNR->IsRest()) {
             ((lmRest*)pNR)->DoVerticalShift(m_nPosForRests);
         }
         else {
             pNote = (lmNote*)pNR;
-            pNote->SetStemLength(nLength);
+            pNote->SetStemLength(uLength);
         }
     }
 

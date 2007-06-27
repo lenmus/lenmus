@@ -504,7 +504,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
         fDrawStem = DrawNote(pPaper, fMeasuring, uxLeft - m_uPaperPos.x, uyTop - m_uPaperPos.y, colorC);
     }
     uxLeft += m_uNoteheadRect.width;
-    lmLUnits uxNote = uxLeft;
+    //lmLUnits uxNote = uxLeft;
 
     if (!fMeasuring && fHighlight) return;  //highlight done. Finish
 
@@ -562,23 +562,26 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
             if (!m_fDrawSmallNotesInBlock && !m_fBeamed && m_nNoteType > eQuarter) {
                 int nGlyph = DrawFlag(fMeasuring, pPaper, lmUPoint(0, 0), colorC);
                 lmLUnits uStem = GetStandardStemLenght();
-                lmLUnits uFlag, uMinStem;
+                // to measure flag and stem I am going to use some glyph data. These
+                // data is in FUnits but as 512 FU are 1 line (10 tenths) it is simple
+                // to convert these data into tenths: just divide FU by 51.2
+                float rFlag, rMinStem;
                 if (m_fStemDown) {
-                    uFlag = abs((2048.0-(float)aGlyphsInfo[nGlyph].Bottom) / 51.2 + 0.5);
-                    uMinStem = ((float)aGlyphsInfo[nGlyph].Top - 2048.0 +128.0) / 51.2 + 0.5;
+                    rFlag = fabs((2048.0 - (float)aGlyphsInfo[nGlyph].Bottom) / 51.2 );
+                    rMinStem = ((float)aGlyphsInfo[nGlyph].Top - 2048.0 + 128.0) / 51.2 ;
                 }
                 else {
                     if (m_nNoteType == eEighth)
-                        uFlag = ((float)aGlyphsInfo[nGlyph].Top) / 51.2 + 0.5;
+                        rFlag = ((float)aGlyphsInfo[nGlyph].Top) / 51.2 ;
                     else if (m_nNoteType == e16th)
-                        uFlag = ((float)aGlyphsInfo[nGlyph].Top + 128.0) / 51.2 + 0.5;
+                        rFlag = ((float)aGlyphsInfo[nGlyph].Top + 128.0) / 51.2 ;
                     else
-                        uFlag = ((float)aGlyphsInfo[nGlyph].Top + 512.0) / 51.2 + 0.5;
+                        rFlag = ((float)aGlyphsInfo[nGlyph].Top + 512.0) / 51.2 ;
 
-                    uMinStem = abs( (float)aGlyphsInfo[nGlyph].Bottom / 51.2 + 0.5);
+                    rMinStem = fabs( (float)aGlyphsInfo[nGlyph].Bottom / 51.2 );
                 }
-                uFlag = m_pVStaff->TenthsToLogical(uFlag, m_nStaffNum);
-                uMinStem = m_pVStaff->TenthsToLogical(uMinStem, m_nStaffNum);
+                lmLUnits uFlag = m_pVStaff->TenthsToLogical(rFlag, m_nStaffNum);
+                lmLUnits uMinStem = m_pVStaff->TenthsToLogical(rMinStem, m_nStaffNum);
                 uStem = wxMax((uStem > uFlag ? uStem-uFlag : 0), uMinStem);
                 m_uyFlag = GetYStem() + (m_fStemDown ? uStem : -uStem);
                 SetStemLength(uStem + uFlag);

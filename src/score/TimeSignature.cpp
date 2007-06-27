@@ -230,7 +230,7 @@ void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime,
     float rTime = m_rTimePos + rMeasureStartTime;
 
     //transform beat type into duration in LDP notes duration units
-    int nBeatDuration = GetBeatDuration(m_nBeatType);
+    int nBeatDuration = (int)GetBeatDuration(m_nBeatType);
 
     //add the RhythmChange event
     pSM->StoreEvent( rTime, eSET_RhythmChange, 0, m_nBeats, 0, nBeatDuration, this, nMeasure);

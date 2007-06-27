@@ -299,8 +299,6 @@
 		<Unit filename="../../src/sound/SoundManager.h" />
 		<Unit filename="../../src/sound/WaveManager.cpp" />
 		<Unit filename="../../src/sound/WaveManager.h" />
-		<Unit filename="../../src/updater/Downloader.cpp" />
-		<Unit filename="../../src/updater/Downloader.h" />
 		<Unit filename="../../src/updater/Updater.cpp" />
 		<Unit filename="../../src/updater/Updater.h" />
 		<Unit filename="../../src/updater/UpdaterDlg.cpp" />

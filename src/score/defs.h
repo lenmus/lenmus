@@ -106,6 +106,7 @@ extern lmLUnits lmToLogicalUnits(int nValue, lmEUnits nUnits);
 extern lmLUnits lmToLogicalUnits(double rValue, lmEUnits nUnits);
 
 
+
 //-------------------------------------------------------------------------------------
 // class lmUSize. Size object in lmLUnits. Based on wxSize
 //-------------------------------------------------------------------------------------

@@ -356,7 +356,7 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos,
     nNumAccidentals = abs(nNumAccidentals);
 
     //Render the required flats / sharps
-    lmLUnits nWidth=0, nHeight=0;
+    lmLUnits nWidth=0;  // nHeight=0;
     if (fDrawFlats) {
         for (int i=1; i <= nNumAccidentals; i++) {
             nWidth +=

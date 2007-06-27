@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -27,22 +27,22 @@
     @ingroup score_kernel
     @brief Object lmNoteRest represents a note or a silence
 
-    Si consideramos los silencios como un tipo de figura y los acordes como una generalizaci髇 de
-    una nota, obtenemos una entidad conceptual m醩 general que engloba a todos ellos. Como en la
-    notaci髇 m鷖ical tradicional no existe este concepto, le llamo "FigSil" (Figura/Silencio):
+    Si consideramos los silencios como un tipo de figura y los acordes como una generalizaci贸n de
+    una nota, obtenemos una entidad conceptual m谩s general que engloba a todos ellos. Como en la
+    notaci贸n m煤sical tradicional no existe este concepto, le llamo "FigSil" (Figura/Silencio):
         - Un silencio es un lmNoteRest sin notas
-        - Una nota es un lmNoteRest con s髄o una nota
+        - Una nota es un lmNoteRest con s贸lo una nota
         - Un acorde es un lmNoteRest con varias notas
 
-    Por c髆o ha ido evolucionando el programa, no se ha definido un objeto abstracto (FigSil) y
+    Por c贸mo ha ido evolucionando el programa, no se ha definido un objeto abstracto (FigSil) y
     tres objetos concretos (Nota, Acorde y Silencio) sino que el objeto lmNoteRest modela todo.
 
-    Se han definido los m閠odos .EsSilencio y .InChord para identificar, respectivamente, si
+    Se han definido los m茅todos .EsSilencio y .InChord para identificar, respectivamente, si
     una lmNoteRest modeliza un silencio y si una lmNoteRest es una nota que forma parte de un acorde. Si
     el resultado de ambas es False, indica que es una nota simple.
 
-    Existe un objeto auxiliar (CAcorde) cuya funci髇 es englobar algunas funcionalidaes propias
-    de los acordes. Pero el acorde no es m醩 que un conjunto de CNotas, identificadas como
+    Existe un objeto auxiliar (CAcorde) cuya funci贸n es englobar algunas funcionalidaes propias
+    de los acordes. Pero el acorde no es m谩s que un conjunto de CNotas, identificadas como
     que forman un acorde.
 
 */
@@ -92,11 +92,11 @@ lmNoteRest::lmNoteRest(lmVStaff* pVStaff, bool IsRest, ENoteType nNoteType, floa
 
     m_rDuration = rDuration;
     m_pTupletBracket = (lmTupletBracket*)NULL;
-    
+
     // default beaming information: not beamed
     m_fBeamed = false;
     m_pBeam = (lmBeam*)NULL;
-   
+
 }
 
 lmNoteRest::~lmNoteRest()
@@ -145,7 +145,7 @@ void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
         } else {
             m_pBeam = g_pCurBeam;
             if (!m_pBeam) {
-                //! @todo Show message. Error: e pide finalizar un grupo que no ha sido abierto!
+                //! @todo Show message. Error: 隆se pide finalizar un grupo que no ha sido abierto!
                 fBeamed = false;
             } else {
                 if (IsRest())
@@ -170,13 +170,13 @@ lmLUnits lmNoteRest::DrawDot(bool fMeasuring, lmPaper* pPaper,
                              lmLUnits xPos, lmLUnits yPos,
                              wxColour colorC, bool fUseFont)
 {
-    lmLUnits halfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
+    //lmLUnits halfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
     yPos += m_pVStaff->TenthsToLogical(50, m_nStaffNum);
 
     if (fUseFont) {
         //Draw dot by using the font glyph
         wxString sGlyph( aGlyphsInfo[GLYPH_DOT].GlyphChar );
-        yPos += m_pVStaff->TenthsToLogical(aGlyphsInfo[GLYPH_DOT].GlyphOffset, m_nStaffNum); 
+        yPos += m_pVStaff->TenthsToLogical(aGlyphsInfo[GLYPH_DOT].GlyphOffset, m_nStaffNum);
         if (!fMeasuring) {
             pPaper->SetTextForeground(colorC);
             pPaper->DrawText(sGlyph, xPos, yPos);
@@ -245,7 +245,7 @@ void lmNoteRest::AddMidiEvents(lmSoundManager* pSM, float rMeasureStartTime, int
                             this, nMeasure);
         }
     }
-    
+
     //generate NoteOff event
     rTime += GetDuration();
     if (IsRest()) {
@@ -268,7 +268,7 @@ void lmNoteRest::AddMidiEvents(lmSoundManager* pSM, float rMeasureStartTime, int
                             this, nMeasure);
         }
     }
-    
+
 }
 
 wxString lmNoteRest::GetLDPNoteType()
@@ -367,7 +367,7 @@ float NoteTypeToDuration(ENoteType nNoteType, bool fDotted, bool fDoubleDotted)
 {
     //compute duration without modifiers
     float rDuration = pow(2, (10 - nNoteType));
-    
+
    //take dots into account
     if (fDotted) { rDuration *= 1.5; }
     if (fDoubleDotted) { rDuration *= 1.75; }
