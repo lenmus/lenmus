@@ -49,6 +49,30 @@ extern lmLogger* g_pLogger;
 
 
 
+enum lmEHarmonicFunction
+{
+    lmTONIC             = 0x00000001,   // I
+    lmSUPERTONIC        = 0x00000002,   // ii
+    lmMEDIANT           = 0x00000003,   // iii
+    lmSUBDOMINANT       = 0x00000004,   // IV
+    lmDOMINANT          = 0x00000005,   // V
+    lmSUBMEDIANT        = 0x00000006,   // vi
+    lmLEADING           = 0x00000007,   // vii
+    lmSUBTONIC          = 0x00000007,   // vii
+
+    lmROOT_POSITION     = 0x00000008,
+    lmFIRST_INVERSION   = 0x00000010,
+    lmSECOND_INVERSION  = 0x00000020,
+    lmTHIRD_INVERSION   = 0x00000040,
+
+    lmSEVENTH_ADDED     = 0x00000100,
+
+    // masks
+    lmGRADE_MASK        = 0x00000007,   // to extract grade
+};
+
+
+
 lmComposer5::lmComposer5() : lmComposer()
 
 {
@@ -182,7 +206,7 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
     lmScore* pScore = new lmScore();
     pScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );            //5mm
     pScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
-						  g_pMidi->DefaultVoiceInstr(), _T(""));
+   						  g_pMidi->DefaultVoiceInstr(), _T(""));
     lmVStaff *pVStaff = pScore->GetVStaff(1, 1);   //get first vstaff of instr.1
     pVStaff->AddClef( m_nClef );
     pVStaff->AddKeySignature( m_nKey );
@@ -426,11 +450,11 @@ wxString lmComposer5::GenerateNewNote(bool fRepeat, bool fRootPitch)
 }
 
 
-/*! returns the pitch of root note (in octave 4) for the given key signature. For example,
-    for C major returns 29 (c4); for A sharp minor returns 34 (a4).
-*/
 lmPitch lmComposer5::RootNote(EKeySignatures nKey)
 {
+    // returns the pitch of root note (in octave 4) for the given key signature.
+    // For example, for C major returns 29 (c4); for A sharp minor returns 34 (a4).
+
     switch(nKey) {
         case earmDo:
         case earmDom:
@@ -481,10 +505,11 @@ lmPitch lmComposer5::RootNote(EKeySignatures nKey)
     }
 }
 
-// it is assumed that the pattern is normalized (lower case, no extra spaces).
-// if fRootPitch the firts note will be root pitch
 wxString lmComposer5::InstantiateNotes(wxString sPattern, bool fRootPitch)
 {
+    // it is assumed that the pattern is normalized (lower case, no extra spaces).
+    // if fRootPitch the firts note will be root pitch
+
     wxString sSource = sPattern;
     wxString sResult = _T("");
     bool fRepeat, fFirstNote=true;
@@ -509,16 +534,16 @@ wxString lmComposer5::InstantiateNotes(wxString sPattern, bool fRootPitch)
 
 }
 
-/*! This method adds the segment to the measure.
-    Precondition: it must be checked that segment fits in measure
-    The procedure is:
-        1. Add note N(tab-tcb).
-        2. Add segment S
-        3. Update remaining time:  tr = tr - ts - (tab - tcb)
-                [time update is not done here, but in calling method]
-*/
 void lmComposer5::AddSegment(wxString* pMeasure, lmSegmentEntry* pSegment, float rNoteTime)
 {
+    //This method adds the segment to the measure.
+    //Precondition: it must be checked that segment fits in measure
+    //The procedure is:
+    //    1. Add note N(tab-tcb).
+    //    2. Add segment S
+    //    3. Update remaining time:  tr = tr - ts - (tab - tcb)
+    //            [time update is not done here, but in calling method]
+
     //step 1
     int nNoteTime = (int)rNoteTime;
     if (nNoteTime > 0) *pMeasure += CreateNote(nNoteTime);
@@ -530,12 +555,12 @@ void lmComposer5::AddSegment(wxString* pMeasure, lmSegmentEntry* pSegment, float
 
 }
 
-/*! Returns a string with one or more LDP elements containing notes o rests up to a total
-    duration nNoteDuration. They will be notes if fNote==true; otherwise they will be rests.
-    For example, for nNoteDuration=64 it will return "(n * n)"
-*/
 wxString lmComposer5::CreateNoteRest(int nNoteRestDuration, bool fNote)
 {
+    //Returns a string with one or more LDP elements containing notes o rests up to a total
+    //duration nNoteDuration. They will be notes if fNote==true; otherwise they will be rests.
+    //For example, for nNoteDuration=64 it will return "(n * n)"
+
     wxString sElement = _T("");
     int nDuration;
     int nTimeNeeded = nNoteRestDuration;
@@ -643,3 +668,207 @@ wxString lmComposer5::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSig
     return sMeasure;
 }
 
+/*
+void lmComposer5::GetRandomHarmony(int nFunctions, long* pFunction[])
+{
+    //Fills array 'pFunction' with an ordered set of harmonic functions to
+    //build a melody.
+    //i.e.: I,V,I,IV,II,III,IV,I
+
+    wxASSERT(nFunctions == 8);
+    *pFunction[0] = lmTONIC;         // I
+    *pFunction[1] = lmDOMINANT;      // V
+    *pFunction[2] = lmTONIC;         // I
+    *pFunction[3] = lmSUBDOMINANT;   // IV
+    *pFunction[4] = lmSUPERTONIC;    // ii
+    *pFunction[5] = lmMEDIANT;       // iii
+    *pFunction[6] = lmSUBDOMINANT;   // IV
+    *pFunction[7] = lmTONIC;         // I
+
+}
+
+void lmComposer5::FunctionToChordNotes(EKeySignatures nKey, long nFunction, lmNoteData* pNote[4])
+{
+    //Given a key signature and an harmonic function returns the notes to build the
+    //chord (four notes per chord). The first chord note is always in octave 4
+    //i.e.:
+    //C Major, II --> d4, f4, a4
+    //D Major, I  --> d4, +f4, a4
+
+    //TODO: For testing purposes only C major key is encoded
+
+    int iN = 0;         // index to current note
+
+    // Case earmDo
+    switch (nFunction & lmGRADE_MASK) {
+        case lmTONIC:       // I
+            *pNote[iN++] = lmC_NOTE || lmOCTAVE_4;
+            *pNote[iN++] = lmE_NOTE || lmOCTAVE_4;
+            *pNote[iN++] = lmG_NOTE || lmOCTAVE_4;
+            *pNote[iN++] = lmNO_NOTE;
+            break;
+
+        case lmSUPERTONIC:  // ii
+            *pNote[iN++] = lmD_NOTE || lmOCTAVE_4;
+            *pNote[iN++] = lmF_NOTE || lmOCTAVE_4;
+            *pNote[iN++] = lmA_NOTE || lmOCTAVE_4;
+            *pNote[iN++] = lmNO_NOTE;
+            break;
+
+        case lmMEDIANT:     // iii
+            *pNote[iN++] = lmE_NOTE || lmOCTAVE_4;
+            *pNote[iN++] = lmG_NOTE || lmOCTAVE_4;
+            *pNote[iN++] = lmB_NOTE || lmOCTAVE_4;
+            *pNote[iN++] = lmNO_NOTE;
+            break;
+
+        case lmSUBDOMINANT: // IV
+            *pNote[iN++] = lmF_NOTE || lmOCTAVE_4;
+            *pNote[iN++] = lmA_NOTE || lmOCTAVE_4;
+            *pNote[iN++] = lmC_NOTE || lmOCTAVE_5;
+            *pNote[iN++] = lmNO_NOTE;
+            break;
+
+        case lmDOMINANT:    // V
+            *pNote[iN++] = lmG_NOTE || lmOCTAVE_4;
+            *pNote[iN++] = lmB_NOTE || lmOCTAVE_4;
+            *pNote[iN++] = lmD_NOTE || lmOCTAVE_5;
+            *pNote[iN++] = lmNO_NOTE;
+            break;
+
+        case lmSUBMEDIANT:  // vi
+            *pNote[iN++] = lmA_NOTE || lmOCTAVE_4;
+            *pNote[iN++] = lmC_NOTE || lmOCTAVE_5;
+            *pNote[iN++] = lmE_NOTE || lmOCTAVE_5;
+            *pNote[iN++] = lmNO_NOTE;
+            break;
+
+        case lmSUBTONIC:    // vii
+            *pNote[iN++] = lmB_NOTE || lmOCTAVE_4;
+            *pNote[iN++] = lmD_NOTE || lmOCTAVE_5;
+            *pNote[iN++] = lmF_NOTE || lmOCTAVE_5;
+            *pNote[iN++] = lmNO_NOTE;
+            break;
+
+        default:
+            wxLogMessage(_T("[] Invalid function %d. Grade %d"),
+                nFunction, nFunction & lmGRADE_MASK);
+            wxASSERT(false);
+    }
+
+
+}
+
+wxString lmComposer5::InstantiateNotesInMeasure(wxString sMeasure, bool fRootPitch,
+                                                long nChord)
+{
+    // Composer algorithm works adding measures, one by one, to the score.
+    // Method 'InstantiateNotesInMeasure' receives the LDP source for a full measure,
+    // but with '*' instead of note pitches, and replaces the '*' by pitches.
+    //
+    // Parameters received:
+    //     - sMeasure   : the LDP pattern to instantiate. It must be normalized (lower
+    //                    case, no extra spaces).
+    //     - nChord     : chord function to use to define the harmony of this measure
+    //     - fRootPitch : if true the first instantiated note will be root pitch
+    //
+    // In addition the following global variables are used (either here or in auxiliary
+    // method GeneratePitch):
+    //     - m_tbeat[]  : table with beat times for time signature used
+    //     -            : previous measure last note pitch.
+    //     - m_fTied    : true if first note is tied to previous measure
+    // In GeneratePitch():
+    //     - m_nNumNotes
+    //     - m_nKey
+    //     - m_lastPitch
+    //     - m_minPitch
+    //     - m_maxPitch
+    //
+    //
+    // Algorithm:
+    //   It is a loop to process notes:
+    //   - Set time counter to zero: rCurTime = 0
+    //   - For each note:
+    //      1. Get note duration: tdur
+    //
+    //      2. If is a beat-note (tnote is in tbeat[]):
+    //              // on beat note. Pitch must be in chord.
+    //              - Assign pitch in chords[ic]. If first note assign root note
+    //              - If note out of range, choose another in chord
+    //          Else
+    //              // off-beat note.
+    //              - Assign previous pitch + - 1 (passing note)
+    //
+    //      3. Increment current time:  rCurTime += tdur
+    //
+
+
+
+
+    wxString sSource = sMeasure;
+    wxString sResult = _T("");
+    bool fRepeat, fFirstNote=true;
+    bool fRoot = fRootPitch;
+    float rCurTime = 0.0;       // time at which current note is played
+    float rNoteDuration;        // duration of current note
+
+    int i = sSource.Find(_T("*"));
+    int j = sSource.Find(_T(" l"));
+    while (i != -1) {
+        sResult += sSource.Mid(0, i);
+        fRepeat = (fFirstNote ? m_fTied : (j != -1 && j < i) );
+        sResult += GeneratePitch(fRepeat, fRoot);
+        rNoteDuration = ????
+        rCurTime += rNoteDuration;
+        sSource = sSource.Mid(i + 1);
+        i = sSource.Find(_T("*"));
+        j = sSource.Find(_T(" l"));
+        fFirstNote = false;
+        fRoot = false;
+    }
+    sResult += sSource;
+    m_fTied = (j != -1);
+
+    return sResult;
+
+}
+
+wxString lmComposer5::GeneratePitch(bool fRepeat, bool fRootPitch)
+{
+
+    lmPitch newPitch;
+    lmRandomGenerator oGenerator;
+
+    if (m_nNumNotes == 0 || fRootPitch) {
+        // First note always the root note
+        newPitch = RootNote(m_nKey);
+        // ensure it is in range minPitch to maxPitch
+        if (newPitch > m_maxPitch) {
+            while (newPitch > m_maxPitch) newPitch -= 7;    // go down one octave
+            if (newPitch < m_minPitch)  newPitch = oGenerator.RandomNumber(m_minPitch, m_maxPitch);
+        }
+        else if (newPitch < m_minPitch) {
+            while (newPitch < m_minPitch) newPitch += 7;    // go up one octave
+            if (newPitch > m_maxPitch)  newPitch = oGenerator.RandomNumber(m_minPitch, m_maxPitch);
+        }
+    }
+    else if (fRepeat) {
+        newPitch = m_lastPitch;
+    }
+    else {
+        int nRange = m_pConstrains->GetMaxInterval();
+        int lowLimit = wxMax(m_lastPitch - nRange, m_minPitch);
+        int upperLimit = wxMin(m_lastPitch + nRange, m_maxPitch);
+        newPitch = oGenerator.RandomNumber(lowLimit, upperLimit);
+    }
+
+    // save values
+    m_nNumNotes++;
+    m_lastPitch = newPitch;
+
+    lmConverter oConverter;
+    return oConverter.PitchToLDPName(newPitch);
+
+}
+
+*/

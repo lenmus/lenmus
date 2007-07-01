@@ -511,7 +511,7 @@
 	<wx/string.h>
 	<wx/list.h>
 
-1180527122 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Logger.cpp
+1183217971 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Logger.cpp
 	"wx/wxprec.h"
 	"Logger.h"
 	"MainFrame.h"
@@ -877,7 +877,7 @@
 	"../score/Score.h"
 	"Conversion.h"
 
-1181988714 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ComposerV5.cpp
+1183187748 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ComposerV5.cpp
 	"wx/wxprec.h"
 	"wx/arrstr.h"
 	"../score/Score.h"
@@ -889,7 +889,7 @@
 	"../app/Logger.h"
 	"../sound/MidiManager.h"
 
-1180335114 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ComposerV5.h
+1183187748 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ComposerV5.h
 	"Composer.h"
 
 1180186842 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/Interval.cpp
@@ -1680,9 +1680,10 @@
 	"wx/wx.h"
 	"Score.h"
 
-1182861020 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Beam.cpp
+1183015102 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Beam.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
+	"vector"
 	"Score.h"
 
 1182865502 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Chord.cpp
@@ -1756,7 +1757,7 @@
 	"wx/debug.h"
 	<wx/listimpl.cpp>
 
-1182865502 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/KeySignature.cpp
+1182964028 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/KeySignature.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -1770,7 +1771,7 @@
 
 1180335110 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Notation.h
 
-1182963031 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Note.cpp
+1182964028 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Note.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -1780,7 +1781,7 @@
 	"Glyph.h"
 	<wx/listimpl.cpp>
 
-1180335108 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/NoteRest.cpp
+1182964028 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/NoteRest.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Score.h"
@@ -1869,7 +1870,7 @@
 	"Score.h"
 	"Text.h"
 
-1182963031 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/TimeSignature.cpp
+1182963030 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/TimeSignature.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -1880,7 +1881,7 @@
 	"wx/wx.h"
 	"Score.h"
 
-1182874278 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.cpp
+1182964028 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Score.h"
