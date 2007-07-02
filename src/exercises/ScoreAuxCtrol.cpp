@@ -39,6 +39,11 @@
 #include "ScoreAuxCtrol.h"
 #include "../app/DlgDebug.h"
 
+//access to error's logger
+#include "../app/Logger.h"
+extern lmLogger* g_pLogger;
+
+
 // lmScoreAuxCtrol
 //	  A window on which a music score is rendered.
 //
@@ -115,12 +120,14 @@ void lmScoreAuxCtrol::ResizePaper()
     m_Paper.SetPageLeftMargin(m_nLeftMargin);
     m_Paper.SetPageRightMargin(m_nRightMargin);
 
-    //wxLogMessage(_T("[lmScoreAuxCtrol::ResizePaper] :\n")
-    //    _T("Paper size: px = (%d, %d), LU= (%.2f, %.2f)\n")
-    //    _T("m_rScale=%f, scaling factor=%f, margins: left=%.2f, right=%.2f, top=%.2f"),
-    //    xPixels, yPixels,
-    //    xLU, yLU, m_rScale, m_yScalingFactor,
-    //    m_nLeftMargin, m_nRightMargin, m_nTopMargin );
+    if (g_pLogger->IsAllowedTraceMask(_T("lmScoreAuxCtrol"))) GetPixelsPerLU();
+    g_pLogger->LogTrace(_T("lmScoreAuxCtrol"),
+        _T("[lmScoreAuxCtrol::ResizePaper] :\n")
+        _T("Paper size: px = (%d, %d), LU= (%.2f, %.2f)\n")
+        _T("m_rScale=%f, scaling factor=%f, margins: left=%.2f, right=%.2f, top=%.2f"),
+        xPixels, yPixels,
+        xLU, yLU, m_rScale, m_yScalingFactor,
+        m_nLeftMargin, m_nRightMargin, m_nTopMargin );
 }
 
 double lmScoreAuxCtrol::GetPixelsPerLU()

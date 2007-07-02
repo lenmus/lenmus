@@ -1511,7 +1511,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
                         nNumStaff, fBeamed, BeamInfo);
     }
     else {
-        pNR = pVStaff->AddNote(true,    //absolute pitch
+        pNR = pVStaff->AddNote(lm_ePitchAbsolute,
                         sStep, sOctave, sAlter, nAccidentals,
                         nNoteType, rDuration,
                         fDotted, fDoubleDotted,

@@ -47,7 +47,7 @@ WX_DEFINE_LIST(NotesList);
 
 const bool m_fDrawSmallNotesInBlock = false;    //! @todo option depending on used font
 
-lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
+lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         wxString sStep, wxString sOctave, wxString sAlter,
         EAccidentals nAccidentals,
         ENoteType nNoteType, float rDuration,
@@ -111,10 +111,10 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
     int nNewAlter = m_pContext->GetAccidentals(m_nStep);
 
     //update context with displayed accidentals or with alterations
-    if (fAbsolutePitch) {
+    if (nPitchType == lm_ePitchAbsolute) {
         //update context with alterations
     }
-    else {
+    else if (nPitchType == lm_ePitchRelative) {
         //update context with accidentals
         switch (nAccidentals) {
             case eNoAccidentals:
@@ -146,6 +146,10 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
                 ;
         }
     }
+    else {
+        wxLogMessage(_T("[lmNote] unknown nPitchType %d"), nPitchType);
+        wxASSERT(false);
+    }
 
     // if needed, update context for following notes
     if (nNewAlter != m_pContext->GetAccidentals(m_nStep)) {
@@ -157,7 +161,7 @@ lmNote::lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
     sOctave.ToLong(&nAux);
     m_nOctave = (int)nAux;
     sAlter.ToLong(&nAux);
-    m_nAlter = (fAbsolutePitch ? (int)nAux : nNewAlter);
+    m_nAlter = ((nPitchType == lm_ePitchAbsolute) ? (int)nAux : nNewAlter);
     m_nPitch = StepAndOctaveToPitch(m_nStep, m_nOctave);
     m_nMidiPitch = PitchToMidi(m_nPitch, m_nAlter);
 

@@ -31,7 +31,8 @@
 class lmNote: public lmNoteRest
 {
 public:
-    lmNote(lmVStaff* pVStaff, bool fAbsolutePitch,
+
+    lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         wxString sStep, wxString sOctave, wxString sAlter,
         EAccidentals nAccidentals,
         ENoteType nNoteType, float rDuration,

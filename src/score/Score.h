@@ -257,6 +257,14 @@ enum ENoteHeads
     enh_Cross               //Cross (for percussion) (aspa)
 };
 
+// pitch type
+enum lmEPitchType
+{
+    lm_ePitchAbsolute = 0,  // absolute pitch (MusicXML style), equal temperament tuning system
+    lm_ePitchRelative,      // relative pitch (LDP style), equal temperament tuning system
+    lm_ePitchNotDefined,    // pitch value is not yet defined
+};
+
 // barlines
 enum EBarline
 {

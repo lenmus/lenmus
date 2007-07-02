@@ -27,6 +27,7 @@
 #endif
 
 #include "StaffObjIterator.h"
+
 class StaffList;
 class lmSpacer;
 class lmMetronomeMark;
@@ -63,7 +64,7 @@ public:
                       int nStaff,
                       bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL);
 
-    lmNote*     AddNote(bool fAbsolutePitch,
+    lmNote*     AddNote(lmEPitchType nPitchType,
                     wxString sStep, wxString sOctave, wxString sAlter,
                     EAccidentals nAccidentals,
                     ENoteType nNoteType, float rDuration,

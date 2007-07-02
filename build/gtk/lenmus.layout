@@ -19,14 +19,17 @@
 	<File name="../../src/app/FontManager.cpp" open="0" top="0" tabpos="80">
 		<Cursor position="4448" topLine="105" />
 	</File>
-	<File name="../../src/app/Logger.cpp" open="1" top="1" tabpos="2">
-		<Cursor position="5241" topLine="94" />
+	<File name="../../src/app/Logger.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="4940" topLine="85" />
 	</File>
 	<File name="../../src/app/Logger.h" open="0" top="0" tabpos="4">
 		<Cursor position="4140" topLine="94" />
 	</File>
-	<File name="../../src/app/MainFrame.cpp" open="0" top="0" tabpos="8">
-		<Cursor position="47140" topLine="3" />
+	<File name="../../src/app/MainFrame.cpp" open="1" top="0" tabpos="5">
+		<Cursor position="47140" topLine="1159" />
+	</File>
+	<File name="../../src/app/MainFrame.h" open="1" top="0" tabpos="6">
+		<Cursor position="7975" topLine="217" />
 	</File>
 	<File name="../../src/app/MidiWizard.cpp" open="0" top="0" tabpos="13">
 		<Cursor position="2650" topLine="76" />
@@ -50,7 +53,7 @@
 		<Cursor position="2629" topLine="54" />
 	</File>
 	<File name="../../src/app/TheApp.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="10222" topLine="235" />
+		<Cursor position="31531" topLine="820" />
 	</File>
 	<File name="../../src/app/TheApp.h" open="0" top="0" tabpos="7">
 		<Cursor position="1398" topLine="26" />
@@ -100,14 +103,14 @@
 	<File name="../../src/exercises/Generators.cpp" open="0" top="0" tabpos="28">
 		<Cursor position="5493" topLine="130" />
 	</File>
-	<File name="../../src/exercises/IdfyScalesCtrol.cpp" open="0" top="0" tabpos="29">
-		<Cursor position="10239" topLine="294" />
+	<File name="../../src/exercises/IdfyScalesCtrol.cpp" open="1" top="0" tabpos="4">
+		<Cursor position="10090" topLine="271" />
 	</File>
 	<File name="../../src/exercises/ScalesConstrains.cpp" open="0" top="0" tabpos="30">
 		<Cursor position="5306" topLine="140" />
 	</File>
-	<File name="../../src/exercises/ScoreAuxCtrol.cpp" open="0" top="0" tabpos="58">
-		<Cursor position="9317" topLine="92" />
+	<File name="../../src/exercises/ScoreAuxCtrol.cpp" open="1" top="0" tabpos="3">
+		<Cursor position="4193" topLine="124" />
 	</File>
 	<File name="../../src/exercises/ScoreConstrains.cpp" open="0" top="0" tabpos="31">
 		<Cursor position="21423" topLine="588" />
@@ -181,8 +184,8 @@
 	<File name="../../src/html/Tags.cpp" open="0" top="0" tabpos="16">
 		<Cursor position="29563" topLine="797" />
 	</File>
-	<File name="../../src/html/TextBookController.cpp" open="0" top="0" tabpos="72">
-		<Cursor position="3655" topLine="0" />
+	<File name="../../src/html/TextBookController.cpp" open="1" top="1" tabpos="7">
+		<Cursor position="3886" topLine="118" />
 	</File>
 	<File name="../../src/html/TextBookController.h" open="0" top="0" tabpos="53">
 		<Cursor position="2524" topLine="50" />

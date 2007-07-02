@@ -757,6 +757,12 @@
 				RelativePath="..\..\src\auxmusic\ComposerV5.h">
 			</File>
 			<File
+				RelativePath="..\..\src\auxmusic\ComposerV6.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\auxmusic\ComposerV6.h">
+			</File>
+			<File
 				RelativePath="..\..\src\auxmusic\Conversion.cpp">
 			</File>
 			<File

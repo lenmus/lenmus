@@ -286,7 +286,7 @@ lmSpacer* lmVStaff::AddSpacer(lmTenths nWidth)
 }
 
 // returns a pointer to the lmNote object just created
-lmNote* lmVStaff::AddNote(bool fAbsolutePitch,
+lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
                     wxString sStep, wxString sOctave, wxString sAlter,
                     EAccidentals nAccidentals,
                     ENoteType nNoteType, float rDuration,
@@ -303,7 +303,7 @@ lmNote* lmVStaff::AddNote(bool fAbsolutePitch,
     lmStaff* pStaff = GetStaff(nStaff);
     lmContext* pContext = pStaff->GetLastContext();
 
-    lmNote* pNt = new lmNote(this, fAbsolutePitch,
+    lmNote* pNt = new lmNote(this, nPitchType,
                         sStep, sOctave, sAlter, nAccidentals,
                         nNoteType, rDuration, fDotted, fDoubleDotted, nStaff, pContext,
                         fBeamed, BeamInfo, fInChord, fTie, nStem);

@@ -97,14 +97,8 @@ lmLogger::lmLogger()
 
     // For now use wxLog facilities and send messages to Stderr
     #if defined(__WXGTK__)
-        //wxLog *logger=new wxLogStream(&cout);
-        //delete wxLog::SetActiveTarget(NULL);
-//        wxWindow* pcbWindow = new wxWindow();
-//        wxLogWindow* pMyLog = new wxLogWindow(pcbWindow, _T("debug log"));
-//        wxLog::SetActiveTarget(pMyLog);
-//        wxLogMessage(_T("Test of log message"));
-//        pMyLog->Flush();
-//        pMyLog->GetFrame()->Move(20,20);
+        wxLog *logger=new wxLogStderr();
+        delete wxLog::SetActiveTarget(logger);
     #elif defined(__WXMSW__)
         wxLog *logger=new wxLogStderr();
         delete wxLog::SetActiveTarget(logger);

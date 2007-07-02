@@ -1412,7 +1412,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             if (nParms < 2) {
                 AnalysisError( _("Missing parameters in note '%s'. Assumed (%s c4 %s)."),
                     pNode->ToString().c_str(), sElmName.c_str(), m_pTags->TagName(_T("n"), _T("NoteType")).c_str() );
-                return pVStaff->AddNote(false,    //relative pitch
+                return pVStaff->AddNote(lm_ePitchRelative,
                                         _T("c"), _T("4"), _T("0"), nAccidentals,
                                         nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff,
                                         fBeamed, BeamInfo, fInChord, fTie, nStem);
@@ -1727,7 +1727,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                                m_nCurStaff, fBeamed, BeamInfo);
     }
     else {
-        pNR = pVStaff->AddNote(false,    //relative pitch
+        pNR = pVStaff->AddNote(lm_ePitchRelative,
                                sStep, sOctave, _T("0"), nAccidentals,
                                nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff,
                                fBeamed, BeamInfo, fInChord, fTie, nStem);
