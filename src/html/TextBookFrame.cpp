@@ -593,12 +593,14 @@ void lmTextBookFrame::SetTitleFormat(const wxString& format)
 bool lmTextBookFrame::Display(const wxString& x)
 {
     wxString url = m_pBookData->FindPageByName(x);
+    //#if !defined(__WXGTK__)     //Linux-dbg
     if (!url.empty())
     {
         m_HtmlWin->LoadPage(url);
         NotifyPageChanged();
         return true;
     }
+    //#endif
 
     return false;
 }

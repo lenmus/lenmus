@@ -40,7 +40,7 @@
 #include "../auxmusic/Conversion.h"
 #include "../ldp_parser/LDPParser.h"
 #include "../score/Score.h"
-#include "../auxmusic/ComposerV5.h"
+#include "../auxmusic/ComposerV6.h"
 #include "../app/DlgCfgScoreReading.h"
 #include "../app/MainFrame.h"
 #include "../html/TextBookController.h"
@@ -293,7 +293,7 @@ void lmTheoMusicReadingCtrol::NewProblem()
     }
 
     //Generate a random score
-    lmComposer5 oComposer;
+    lmComposer6 oComposer;
     m_pScore = oComposer.GenerateScore(m_pConstrains);
 
     //display the score

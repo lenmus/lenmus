@@ -618,6 +618,37 @@ void lmMainFrame::CreateMyToolBar()
                       wxMax(sizeCombo.GetHeight(), sizeButton.GetHeight()));
 
     // add the toolbars to the manager
+#if defined(__WXGTK__)
+    //In gtk reverse creation order
+        // row 1
+    m_mgrAUI.AddPane(m_pToolbar, wxAuiPaneInfo().
+                Name(wxT("toolbar")).Caption(_("Main tools")).
+                ToolbarPane().Top().
+                LeftDockable(false).RightDockable(false));
+    m_mgrAUI.AddPane(m_pTbZoom, wxAuiPaneInfo().
+                Name(wxT("Zooming tools")).Caption(_("Zooming tools")).
+                ToolbarPane().Top().BestSize( sizeZoomTb ).
+                LeftDockable(false).RightDockable(false));
+    m_mgrAUI.AddPane(m_pTbEdit, wxAuiPaneInfo().
+                Name(wxT("Edit tools")).Caption(_("Edit tools")).
+                ToolbarPane().Top().
+                LeftDockable(false).RightDockable(false));
+    m_mgrAUI.AddPane(m_pTbFile, wxAuiPaneInfo().
+                Name(wxT("File tools")).Caption(_("File tools")).
+                ToolbarPane().Top().
+                LeftDockable(false).RightDockable(false));
+        // row 2
+    m_mgrAUI.AddPane(m_pTbMtr, wxAuiPaneInfo().
+                Name(wxT("Metronome")).Caption(_("Metronome tools")).
+                ToolbarPane().Top().Row(1).BestSize( sizeBest ).
+                LeftDockable(false).RightDockable(false));
+    m_mgrAUI.AddPane(m_pTbPlay, wxAuiPaneInfo().
+                Name(wxT("Play")).Caption(_("Play tools")).
+                ToolbarPane().Top().Row(1).
+                LeftDockable(false).RightDockable(false));
+
+#else
+        // row 1
     m_mgrAUI.AddPane(m_pTbFile, wxAuiPaneInfo().
                 Name(wxT("File tools")).Caption(_("File tools")).
                 ToolbarPane().Top().
@@ -634,6 +665,7 @@ void lmMainFrame::CreateMyToolBar()
                 Name(wxT("toolbar")).Caption(_("Main tools")).
                 ToolbarPane().Top().
                 LeftDockable(false).RightDockable(false));
+        // row 2
     m_mgrAUI.AddPane(m_pTbPlay, wxAuiPaneInfo().
                 Name(wxT("Play")).Caption(_("Play tools")).
                 ToolbarPane().Top().Row(1).
@@ -642,7 +674,7 @@ void lmMainFrame::CreateMyToolBar()
                 Name(wxT("Metronome")).Caption(_("Metronome tools")).
                 ToolbarPane().Top().Row(1).BestSize( sizeBest ).
                 LeftDockable(false).RightDockable(false));
-
+#endif
     CreateTextBooksToolBar(style, nSize);
 
     // tell the manager to "commit" all the changes just made

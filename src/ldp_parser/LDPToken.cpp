@@ -46,6 +46,7 @@
 
 //constants for comparations
 const wxChar chApostrophe = _T('\'');
+const wxChar chAsterisk = _T('*');
 const wxChar chBar = _T('|');
 const wxChar chCloseBracket = _T(']');
 const wxChar chCloseParenthesis = _T(')');
@@ -310,7 +311,7 @@ void lmLDPTokenBuilder::ParseNewToken()
                 GNC();
                 if (IsLetter(m_curChar) ||
                     m_curChar == chOpenBracket || m_curChar == chBar ||
-                    m_curChar == chColon )
+                    m_curChar == chColon || m_curChar == chAsterisk)
                 {
                     nState = FT_ETQ01;
                 }

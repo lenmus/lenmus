@@ -158,7 +158,7 @@ void lmKeySignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour color
 lmLUnits lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {
 #if !defined(__WXGTK__)
-//TODO: In linux SetTextForegroung fails !!!
+//TODO: Linux-dbg: In linux SetTextForegroung fails !!!
     pPaper->SetFont(*m_pFont);
     pPaper->SetTextForeground(colorC);
 #endif

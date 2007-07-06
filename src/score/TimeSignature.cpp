@@ -431,6 +431,32 @@ int AssignVolume(float rTimePos, int nBeats, int nBeatType)
     //is placed. This method receives the time for a note and the current time signature
     //and return the volume to assign to it
 
+    lmENoteBeatPosition nPos = GetNoteBeatPosition(rTimePos, nBeats, nBeatType);
+
+    int nVolume = 60;       // volume for off-beat notes
+
+    if (nPos == lmON_BEAT_FIRST)
+        //on-beat notes on first beat
+        nVolume = 85;
+    else if (nPos == lmON_BEAT_OTHER)
+        //on-beat notes on other beats
+        nVolume = 75;
+    else
+        // off-beat notes
+        nVolume = 60;
+
+    return nVolume;
+
+}
+
+
+lmENoteBeatPosition GetNoteBeatPosition(float rTimePos, int nBeats, int nBeatType)
+{
+    // Some times it is necessary to know the type of beak (strong, medium, weak, off-beat)
+    // at which a note or rest is positioned.
+    // This method receives the time for a note/rest and the current time signature
+    //  and return the type of beat
+
     // coumpute beat duration
     int nBeatDuration;
     switch (nBeatType) {
@@ -440,26 +466,22 @@ int AssignVolume(float rTimePos, int nBeats, int nBeatType)
         case 8: nBeatDuration = 3* (int)eEighthDuration; break;
         case 16: nBeatDuration = (int)e16thDuration; break;
         default:
-            wxLogMessage(_T("[AssignVolume] BeatType %d unknown."), nBeatType);
+            wxLogMessage(_T("[GetPositionBeatType] BeatType %d unknown."), nBeatType);
             wxASSERT(false);
     }
 
-    // compute relative position of this note with reference to the beat
+    // compute relative position of this note/rest with reference to the beat
     int nBeatNum = (int)rTimePos / nBeatDuration;               //number of beat
     float rBeatShift = fabs(rTimePos - (float)(nBeatDuration * nBeatNum));
 
-    int nVolume = 60;       // volume for off-beat notes
-
     if (nBeatNum == 0 && rBeatShift < 1.0)
-        //on-beat notes on first beat
-        nVolume = 85;
+        //on-beat, first beat
+        return lmON_BEAT_FIRST;
     else if (rBeatShift < 1.0)
-        //on-beat notes on other beats
-        nVolume = 75;
+        //on-beat, other beats
+        return lmON_BEAT_OTHER;
     else
-        // off-beat notes
-        nVolume = 60;
-
-    return nVolume;
+        // off-beat
+        return lmOFF_BEAT;
 
 }

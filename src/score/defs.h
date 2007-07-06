@@ -67,7 +67,9 @@
 
 
 //pitch
-#define lmPitch        int        // Midi pitch or diatonic pitch
+#define lmPitch         int         // Midi pitch or diatonic pitch
+#define lmDPitch        int         // Diatonic pitch
+#define lmMPitch        int         // Midi pitch
 
 //// Other definitions
 
@@ -342,6 +344,66 @@ public:
 
 #define lmUSizeToSize(uSize) \
         wxSize((int)floor(uSize.x + 0.5), (int)floor(uSize.y + 0.5))
+
+
+
+
+//====================================================================================
+// Pitch
+//  Absoulte pitch is defined by the note step (0..6, 0=C, 1=D, ..., 6=B), the 
+//  octave (0..9) and the number of accidentals (-2..+2)
+//====================================================================================
+
+enum
+{
+    //octave: 8 bits (0x000000ff)
+    lmOCTAVE_MASK       = 0x000000ff,   // to extract octave
+
+    lmOCTAVE_0          = 0x00000000,
+    lmOCTAVE_1          = 0x00000001,
+    lmOCTAVE_2          = 0x00000002,
+    lmOCTAVE_3          = 0x00000003,
+    lmOCTAVE_4          = 0x00000004,
+    lmOCTAVE_5          = 0x00000005,
+    lmOCTAVE_6          = 0x00000006,
+    lmOCTAVE_7          = 0x00000007,
+    lmOCTAVE_8          = 0x00000008,
+    lmOCTAVE_9          = 0x00000009,
+
+    // step (diatonic note): 8 bits (0x0000ff00) 0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
+    lmC_NOTE            = 0x00000000,
+    lmD_NOTE            = 0x00000100,
+    lmE_NOTE            = 0x00000200,
+    lmF_NOTE            = 0x00000300,
+    lmG_NOTE            = 0x00000400,
+    lmA_NOTE            = 0x00000500,
+    lmB_NOTE            = 0x00000600,
+
+    lmNOTE_MASK         = 0x00000f00,   // to extract note
+
+    //accidentals: 8 bits (number of accidentals + 2)
+    lmFLAT_FLAT         = 0x00000000,   // 0 - 2 = -2
+    lmFLAT              = 0x00010000,   // 1 - 2 = -1
+    lmNO_ACCIDENTAL     = 0x00020000,   // 2 - 2 = 0
+    lmSHARP             = 0x00030000,   // 3 - 2 = +1
+    lmSHARP_SHARP       = 0x00040000,   // 4 - 2 = +2
+
+    lmACCIDENTAL_MASK   = 0x00ff0000,   // to extract accidentals
+
+    lmNO_NOTE           = 0x00000000,
+
+};
+
+#define lmNotePitch  long    //Type used for portability and legibility
+
+// Pitch components extraction
+#define lmGET_STEP(nPitch)      ((nPitch & lmNOTE_MASK) >> 8)
+#define lmGET_OCTAVE(nPitch)    (nPitch & lmOCTAVE_MASK)
+#define lmGET_ALTER(nPitch)     (((nPitch & lmACCIDENTAL_MASK) >> 16) - 2)
+
+#define lmGET_PITCH(nStep, nOctave, nAlter)             \
+            (nOctave | (nStep << 8) | ((nAlter + 2) << 16))
+        
 
 
 

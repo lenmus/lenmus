@@ -56,8 +56,8 @@ lmInterval::lmInterval(lmNote* pNote1, lmNote* pNote2, EKeySignatures nKey)
     //save parameters and compute the interval
     m_ntMidi1 = pNote1->GetMidiPitch();
     m_ntMidi2 = pNote2->GetMidiPitch();
-    m_ntDiat1 = pNote1->GetPitch();
-    m_ntDiat2 = pNote2->GetPitch();
+    m_ntDiat1 = pNote1->GetDiatonicPitch();
+    m_ntDiat2 = pNote2->GetDiatonicPitch();
     m_nKey = nKey;
     Analyze();
 
@@ -78,8 +78,8 @@ lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax, bool fAllow
     m_nKey = nKey;
 
     //compute max number of semitones in the allowed note range
-    int ntMidiMin = lmConverter::PitchToMidiPitch(ntDiatMin);
-    int ntMidiMax = lmConverter::PitchToMidiPitch(ntDiatMax);
+    int ntMidiMin = lmConverter::DPitchToMPitch(ntDiatMin);
+    int ntMidiMax = lmConverter::DPitchToMPitch(ntDiatMax);
     int nRange = ntMidiMax - ntMidiMin;
     wxArrayInt nValidNotes;       //to store the midi notes that can be used
     g_pLogger->LogTrace(_T("lmInterval"), _T("MidiMin=%d, MidiMax=%d\n"),

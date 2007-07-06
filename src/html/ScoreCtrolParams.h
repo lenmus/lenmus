@@ -348,12 +348,14 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     //set scale as a function of current font size
     m_pOptions->rScale = g_pMainFrame->GetHtmlWindow()->GetScale() * 1.2;
     int nHeight = (int)((double)m_nHeight * m_pOptions->rScale);
+    wxLogMessage(_T("[lmScoreCtrolParams::CreateHtmlCell] Char height = %d, rScale=%.4f"),
+        g_pMainFrame->GetHtmlWindow()->GetCharHeight(), m_pOptions->rScale);
 
     // create the lmScoreCtrol
     int nStyle = 0;
     if (m_pOptions->fBorder) nStyle |= wxSIMPLE_BORDER;
     wnd = new lmScoreCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1, m_pScore,
-        m_pOptions, wxPoint(0,0), wxSize(m_uWidth, nHeight), nStyle );
+        m_pOptions, wxPoint(0,0), wxSize(m_nWidth, nHeight), nStyle );
     wnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
 

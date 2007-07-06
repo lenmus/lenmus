@@ -346,7 +346,7 @@ void lmTheoMusicReadingCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     else {
         // create the TheoMusicReadingCtrol
         pWnd = new lmTheoMusicReadingCtrol((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1,
-            m_pOptions, m_pConstrains, wxPoint(0,0), wxSize(m_uWidth, m_nHeight), m_nWindowStyle );
+            m_pOptions, m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     }
     pWnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(pWnd, m_nPercent));

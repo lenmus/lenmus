@@ -231,6 +231,17 @@ enum ETimeSignature
 #define lmMAX_TIME_SIGN  emtr32
 
 
+// note/rest position on a measure
+enum lmENoteBeatPosition
+{
+    lmUNKNOWN_BEAT = 0,     //unknown (possibly, time signature is not set)
+    lmON_BEAT_FIRST,        //on-beat, first beat
+    lmON_BEAT_OTHER,        //on-beat, other beats
+    lmOFF_BEAT,             //off-beat
+};
+
+
+
 enum ETies
 {
     eL_NotTied = 0,

@@ -65,7 +65,7 @@ lmLDPParser::lmLDPParser()
 {
     m_pTokenizer = new lmLDPTokenBuilder(this);
     m_pCurNode = (lmLDPNode*) NULL;
-    m_fDebugMode = false;
+    m_fDebugMode = g_pLogger->IsAllowedTraceMask(_T("lmLDPParser"));
     m_pTupletBracket = (lmTupletBracket*)NULL;
     m_pTags = lmLdpTagsTable::GetInstance();
     m_pTags->LoadTags(_T("es"), _T("iso-8859-1"));      //default tags in Spanish
@@ -230,7 +230,7 @@ void lmLDPParser::ParseMsje(wxString sMsg)
     //GrabarError "Aviso - " & sMsg
     m_nWarnings++;
 
-    if (m_fDebugMode)
+    //if (m_fDebugMode)
         wxLogMessage( _T("**WARNING** %s"), sMsg.c_str() );
 
 }
@@ -1340,6 +1340,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     wxString sStep = _T("c");
     wxString sOctave = _T("4");
     EAccidentals nAccidentals = eNoAccidentals;
+    lmEPitchType nPitchType = lm_ePitchRelative;
 
     bool fInChord = !fIsRest && ( (m_nVersion < 105 && sElmName == _T("na")) || fChord );
     long nParms = pNode->GetNumParms();
@@ -1442,11 +1443,16 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             lmConverter oConverter;
             long nMidi = 0;
             sPitch.ToLong(&nMidi);
-            sPitch = oConverter.MidiPitchToLDPName((lmPitch)nMidi);
+            sPitch = oConverter.MPitchToLDPName((lmPitch)nMidi);
         }
-        if (LDPDataToPitch(sPitch, &nAccidentals, &sStep, &sOctave)) {
-            AnalysisError( _("Unknown note pitch '%s'. Assumed 'c4'."),
-                sPitch.c_str() );
+        if (sPitch == _T("*")) {
+            nPitchType = lm_ePitchNotDefined;
+        }
+        else {
+            if (LDPDataToPitch(sPitch, &nAccidentals, &sStep, &sOctave)) {
+                AnalysisError( _("Unknown note pitch '%s'. Assumed 'c4'."),
+                    sPitch.c_str() );
+            }
         }
     }
 
@@ -1727,7 +1733,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                                m_nCurStaff, fBeamed, BeamInfo);
     }
     else {
-        pNR = pVStaff->AddNote(lm_ePitchRelative,
+        pNR = pVStaff->AddNote(nPitchType,
                                sStep, sOctave, _T("0"), nAccidentals,
                                nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff,
                                fBeamed, BeamInfo, fInChord, fTie, nStem);

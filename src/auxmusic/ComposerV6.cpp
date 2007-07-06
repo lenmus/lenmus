@@ -20,7 +20,7 @@
 //-------------------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "ComposerV5.h"
+#pragma implementation "ComposerV6.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h"
@@ -31,11 +31,11 @@
 #endif
 
 #include "wx/arrstr.h"      // to use wxArrayString
-
+#include "vector"
 
 #include "../score/Score.h"
 #include "../ldp_parser/LDPParser.h"
-#include "ComposerV5.h"
+#include "ComposerV6.h"
 #include "Conversion.h"
 #include "../ldp_parser/AuxString.h"
 #include "../exercises/Generators.h"
@@ -73,14 +73,13 @@ enum lmEHarmonicFunction
 
 
 
-lmComposer5::lmComposer5() : lmComposer()
+lmComposer6::lmComposer6() : lmComposer()
 
 {
-    m_nNumNotes = 0;
 
 }
 
-lmComposer5::~lmComposer5()
+lmComposer6::~lmComposer6()
 {
     //
 }
@@ -188,7 +187,7 @@ lmComposer5::~lmComposer5()
 
 
 */
-lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
+lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
 {
     //Save parameters
     m_pConstrains = pConstrains;
@@ -215,7 +214,7 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
     //
     // Content generation
     //
-    ChooseRangeOfNotes();
+    GetNotesRange();
 
     // Determine how may measures we have to generate:
     #define NUM_MEASURES   8        //num of measures to generate
@@ -241,7 +240,7 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
     //int nBeatType= GetBeatTypeFromTimeSignType(m_nTimeSign);
     if (m_pConstrains->SelectFragments(m_nTimeSign) == 0) {
         //! @todo error logging. Suppress message
-        wxMessageBox(_("[lmComposer5::GenerateScore] No usable fragments!"));
+        wxMessageBox(_("[lmComposer6::GenerateScore] No usable fragments!"));
         return pScore;
     }
 
@@ -282,7 +281,7 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
             rSegmentAlignBeatTime = pSegment->GetTimeAlignBeat();
             fFits = (rTimeRemaining >= rSegmentDuration && rConsumedBeatTime <= rSegmentAlignBeatTime);
 
-            g_pLogger->LogTrace(_T("lmComposer5"), _T("[GenerateScore] sMeasure=%s, pSegment=%s, tr=%.2f, ts=%.2f, tcb=%.2f, tab=%.2f, tc=%.2f, tb=%.2f, fits=%s"),
+            g_pLogger->LogTrace(_T("lmComposer6"), _T("[GenerateScore] sMeasure=%s, pSegment=%s, tr=%.2f, ts=%.2f, tcb=%.2f, tab=%.2f, tc=%.2f, tb=%.2f, fits=%s"),
                     sMeasure.c_str(),
                     (pSegment->GetSource()).c_str(), rTimeRemaining, rSegmentDuration,
                     rConsumedBeatTime, rSegmentAlignBeatTime,
@@ -337,9 +336,9 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
 
             // Instantiate the notes by assigning note pitches and add
             // the measure to the score
-            g_pLogger->LogTrace(_T("lmComposer5"),
+            g_pLogger->LogTrace(_T("lmComposer6"),
                     _T("[GenerateScore] Adding measure = '%s')"), sMeasure.c_str());
-            pNode = parserLDP.ParseText( InstantiateNotes(sMeasure) );
+            pNode = parserLDP.ParseText(sMeasure);
             parserLDP.AnalyzeMeasure(pNode, pVStaff);
         }
 
@@ -368,16 +367,20 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
         pIter->MoveNext();
     }
     delete pIter;
-    g_pLogger->LogTrace(_T("lmComposer5"),
+    g_pLogger->LogTrace(_T("lmComposer6"),
             _T("[GenerateScore] fOnlyQuarterNotes=%s)"),
             (fOnlyQuarterNotes ? _T("True") : _T("False")) );
 
     // add a final measure with a root pitch note lasting, at least, one beat
     sMeasure = CreateLastMeasure(++nNumMeasures, m_nTimeSign, fOnlyQuarterNotes);
-    g_pLogger->LogTrace(_T("lmComposer5"),
+    g_pLogger->LogTrace(_T("lmComposer6"),
             _T("[GenerateScore] Adding final measure = '%s')"), sMeasure.c_str());
-    pNode = parserLDP.ParseText( InstantiateNotes(sMeasure, true) );
+    pNode = parserLDP.ParseText(sMeasure);
     parserLDP.AnalyzeMeasure(pNode, pVStaff);
+
+    // Score is built but pitches are not yet defined.
+    // Proceed to instatiate pitches according to key signature
+    InstantiateNotes(pScore, m_nKey);
 
     // done
     //pScore->Dump(_T("lenus_score_dump.txt"));
@@ -385,72 +388,20 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
 
 }
 
-void lmComposer5::ChooseRangeOfNotes()
+void lmComposer6::GetNotesRange()
 {
-    m_nNumNotes = 0;    // the next note to generate will be the first one
-    m_fTied = false;    // no tie yet
-
-    //set the minimum note and the range
+    //get the minimum and maximum notes
     wxString sMinPitch = (m_pConstrains->GetClefConstrains())->GetLowerPitch(m_nClef);
     wxString sMaxPitch = (m_pConstrains->GetClefConstrains())->GetUpperPitch(m_nClef);
-    EAccidentals nAccidentals;
-    PitchNameToData(sMinPitch, &m_minPitch, &nAccidentals);
-    PitchNameToData(sMaxPitch, &m_maxPitch, &nAccidentals);
-}
-
-wxString lmComposer5::GenerateNewNote(bool fRepeat, bool fRootPitch)
-{
-
-    lmPitch newPitch;
-    lmRandomGenerator oGenerator;
-
-    if (m_nNumNotes == 0 || fRootPitch) {
-        // First note always the root note
-        newPitch = RootNote(m_nKey);
-        // ensure it is in range minPitch to maxPitch
-        if (newPitch > m_maxPitch) {
-            while (newPitch > m_maxPitch) newPitch -= 7;    // go down one octave
-            if (newPitch < m_minPitch)  newPitch = oGenerator.RandomNumber(m_minPitch, m_maxPitch);
-        }
-        else if (newPitch < m_minPitch) {
-            while (newPitch < m_minPitch) newPitch += 7;    // go up one octave
-            if (newPitch > m_maxPitch)  newPitch = oGenerator.RandomNumber(m_minPitch, m_maxPitch);
-        }
-    }
-    else if (fRepeat) {
-        newPitch = m_lastPitch;
-    }
-    else {
-        //int nStep = oGenerator.RandomNumber(1, m_pConstrains->GetMaxInterval());
-        //bool fUp;
-        //if (m_lastPitch < m_minPitch + 3)
-        //    fUp = true;
-        //else if (m_lastPitch > m_maxPitch - 3)
-        //    fUp = false;
-        //else
-        //    fUp = oGenerator.FlipCoin();
-
-        //newPitch = m_lastPitch + (fUp ? nStep : -nStep);
-        //if (newPitch > m_maxPitch) newPitch = m_maxPitch;
-        //else if (newPitch < m_minPitch) newPitch = m_minPitch;
-
-        int nRange = m_pConstrains->GetMaxInterval();
-        int lowLimit = wxMax(m_lastPitch - nRange, m_minPitch);
-        int upperLimit = wxMin(m_lastPitch + nRange, m_maxPitch);
-        newPitch = oGenerator.RandomNumber(lowLimit, upperLimit);
-    }
-
-    // save values
-    m_nNumNotes++;
-    m_lastPitch = newPitch;
-
-    lmConverter oConverter;
-    return oConverter.DPitchToLDPName(newPitch);
+    lmConverter oConv;
+    m_nMinPitch = oConv.NoteNameToNotePitch(sMinPitch);
+    m_nMaxPitch = oConv.NoteNameToNotePitch(sMaxPitch);
 
 }
 
 
-lmPitch lmComposer5::RootNote(EKeySignatures nKey)
+
+lmPitch lmComposer6::RootNote(EKeySignatures nKey)
 {
     // returns the pitch of root note (in octave 4) for the given key signature.
     // For example, for C major returns 29 (c4); for A sharp minor returns 34 (a4).
@@ -505,36 +456,7 @@ lmPitch lmComposer5::RootNote(EKeySignatures nKey)
     }
 }
 
-wxString lmComposer5::InstantiateNotes(wxString sPattern, bool fRootPitch)
-{
-    // it is assumed that the pattern is normalized (lower case, no extra spaces).
-    // if fRootPitch the firts note will be root pitch
-
-    wxString sSource = sPattern;
-    wxString sResult = _T("");
-    bool fRepeat, fFirstNote=true;
-    bool fRoot = fRootPitch;
-
-    int i = sSource.Find(_T("*"));
-    int j = sSource.Find(_T(" l"));
-    while (i != -1) {
-        sResult += sSource.Mid(0, i);
-        fRepeat = (fFirstNote ? m_fTied : (j != -1 && j < i) );
-        sResult += GenerateNewNote(fRepeat, fRoot);
-        sSource = sSource.Mid(i + 1);
-        i = sSource.Find(_T("*"));
-        j = sSource.Find(_T(" l"));
-        fFirstNote = false;
-        fRoot = false;
-    }
-    sResult += sSource;
-    m_fTied = (j != -1);
-
-    return sResult;
-
-}
-
-void lmComposer5::AddSegment(wxString* pMeasure, lmSegmentEntry* pSegment, float rNoteTime)
+void lmComposer6::AddSegment(wxString* pMeasure, lmSegmentEntry* pSegment, float rNoteTime)
 {
     //This method adds the segment to the measure.
     //Precondition: it must be checked that segment fits in measure
@@ -549,13 +471,13 @@ void lmComposer5::AddSegment(wxString* pMeasure, lmSegmentEntry* pSegment, float
     if (nNoteTime > 0) *pMeasure += CreateNote(nNoteTime);
 
     // step 2
-    g_pLogger->LogTrace(_T("lmComposer5"), _T("[AddSegment] Adding segment %s, duration=%.2f"),
+    g_pLogger->LogTrace(_T("lmComposer6"), _T("[AddSegment] Adding segment %s, duration=%.2f"),
         (pSegment->GetSource()).c_str(), pSegment->GetSegmentDuration());
     *pMeasure += pSegment->GetSource();
 
 }
 
-wxString lmComposer5::CreateNoteRest(int nNoteRestDuration, bool fNote)
+wxString lmComposer6::CreateNoteRest(int nNoteRestDuration, bool fNote)
 {
     //Returns a string with one or more LDP elements containing notes o rests up to a total
     //duration nNoteDuration. They will be notes if fNote==true; otherwise they will be rests.
@@ -639,13 +561,13 @@ wxString lmComposer5::CreateNoteRest(int nNoteRestDuration, bool fNote)
         nTimeNeeded -= nDuration;
 
     }
-    g_pLogger->LogTrace(_T("lmComposer5"), _T("[CreateNoteRest] Needed duration= %d, added=%s"),
+    g_pLogger->LogTrace(_T("lmComposer6"), _T("[CreateNoteRest] Needed duration= %d, added=%s"),
         nNoteRestDuration, sElement.c_str());
     return sElement;
 
 }
 
-wxString lmComposer5::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
+wxString lmComposer6::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
                                         bool fOnlyQuarterNotes)
 {
     // Returns a final meaure. This final measure has only a note, long enough, and
@@ -668,3 +590,381 @@ wxString lmComposer5::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSig
     return sMeasure;
 }
 
+//----------------------------------------------------------------------------------
+// Methods to deal with tonality
+//----------------------------------------------------------------------------------
+
+bool lmComposer6::InstantiateNotes(lmScore* pScore, EKeySignatures nKey)
+{
+    // Returns true if error
+
+    //-------------------------------------------------------------------------------------
+    // Algorithm for tonal note-pitch generation
+    //
+    //   It is a loop to process notes:
+    //   - For each note:
+    //          If it is a beat-note then pitch must be in chord.
+    //              - Assign pitch in chords[ic]. If first note assign root note
+    //              - If note out of range, choose another in chord
+    //          Else (off-beat note)
+    //              - Assign previous pitch + - 1 (passing note)
+    //
+    //-------------------------------------------------------------------------------------
+
+    int nNumMeasures = pScore->GetNumMeasures();
+
+    // Choose a chord progression, based on key signature: nChords[]
+    std::vector<long> nChords(nNumMeasures);
+    GetRandomHarmony(nNumMeasures, nChords);
+
+    lmNote* pNotePrev = (lmNote*)NULL;
+    lmNote* pNoteCur;
+    long nPitchNew = lmNO_NOTE;
+
+    // compute notes in the natural scale of the key signature in use
+    lmNotePitch aScale[7];      // notes in the scale
+    GenerateScale(nKey, aScale);
+
+    int iC = 0;                 //index to current chord (ic)
+
+    // allocate a vector for valid notes in chord (all notes in valid notes range)
+    lmConverter oCV;
+    lmDPitch nMinDPitch = oCV.NotePitchToDPitch(m_nMinPitch);
+    lmDPitch nMaxDPitch = oCV.NotePitchToDPitch(m_nMaxPitch);
+    std::vector<lmNotePitch> aOnChordPitch;
+    aOnChordPitch.reserve((nMaxDPitch - nMinDPitch)/2);    // Reserve space. Upper limit estimation
+    lmNotePitch nRootNote = GenerateInChordList(nKey, nChords[iC], aOnChordPitch);
+
+    // Loop to process notes/rests in first staff of first instrument
+    lmInstrument* pInstr = pScore->GetFirstInstrument();
+    lmVStaff* pVStaff = pInstr->GetVStaff(1);
+    lmStaffObjIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
+    lmStaffObj* pSO;
+
+    while(!pIter->EndOfList()) {
+        pSO = pIter->GetCurrent();
+        if (pSO->GetClass() == eSFOT_NoteRest)
+        {
+            // 1. It is a note or a rest
+            if (!((lmNoteRest*)pSO)->IsRest())
+            {
+                // It is a note. Get beat position type
+                pNoteCur = (lmNote*)pSO;
+                lmENoteBeatPosition nPos = pNoteCur->GetPositionInBeat();
+
+                if (nPos == lmON_BEAT_FIRST || nPos == lmON_BEAT_OTHER)
+                {
+                    // on beat note
+                    // Pitch must be in chord. Assign pitch in nChords[iC].
+                    // If first note assign root note
+                    nPitchNew = GenerateOnBeatNote(pNotePrev, pNoteCur,
+                                                   aOnChordPitch, nRootNote);
+                }
+                else {
+                    // off-beat note.
+                    nPitchNew = GenerateOffBeatNote(pNotePrev, aScale);
+                }
+
+                //Change its pitch
+                pNoteCur->ChangePitch(nPitchNew);
+                pNotePrev = pNoteCur;
+            }
+        }
+
+        else if (pSO->GetClass() == eSFOT_Barline)
+        {
+            // End of measure:
+            // choose the next chord in progression
+            iC++;
+            nRootNote = GenerateInChordList(nKey, nChords[iC % 8], aOnChordPitch);
+        }
+
+        // get next note/rest
+        pIter->MoveNext();
+
+    }
+    delete pIter;
+
+    return false;       // no error
+
+}
+
+lmNotePitch lmComposer6::GenerateOnBeatNote(lmNote* pNotePrev, lmNote* pNoteCur,
+                                       std::vector<lmNotePitch>& aOnChordPitch,
+                                       lmNotePitch nRootPitch)
+{
+    // if first note, return root pitch
+    if (!pNotePrev)
+        return nRootPitch;
+
+    // if note is tied to previous one, return previous note pitch
+    if (pNotePrev->IsTiedToNext())
+        return pNotePrev->GetPitch();
+
+    // choose a random note in chord
+    lmRandomGenerator oGenerator;
+    int iN = oGenerator.RandomNumber(0, aOnChordPitch.size()-1);
+    return aOnChordPitch[iN];
+
+        //    int nRange = m_pConstrains->GetMaxInterval();
+        //int lowLimit = wxMax(m_lastPitch - nRange, m_minPitch);
+        //int upperLimit = wxMin(m_lastPitch + nRange, m_maxPitch);
+        //newPitch = oGenerator.RandomNumber(lowLimit, upperLimit);
+
+
+}
+
+void lmComposer6::GetRandomHarmony(int nFunctions, std::vector<long>& aFunction)
+{
+    //Fills array 'pFunction' with an ordered set of harmonic functions to
+    //build a melody.
+    //i.e.: I,V,I,IV,II,III,IV,I
+
+    wxASSERT(nFunctions == 8);
+    aFunction[0] = lmTONIC;         // I
+    aFunction[1] = lmDOMINANT;      // V
+    aFunction[2] = lmTONIC;         // I
+    aFunction[3] = lmSUBDOMINANT;   // IV
+    aFunction[4] = lmSUPERTONIC;    // ii
+    aFunction[5] = lmMEDIANT;       // iii
+    aFunction[6] = lmSUBDOMINANT;   // IV
+    aFunction[7] = lmTONIC;         // I
+
+}
+
+void lmComposer6::FunctionToChordNotes(EKeySignatures nKey, long nFunction,
+                                       lmNotePitch aNotes[4])
+{
+    //Given a key signature and an harmonic function returns the notes to build the
+    //chord (four notes per chord). The first chord note is always in octave 4
+    //i.e.:
+    //C Major, II --> d4, f4, a4
+    //D Major, I  --> d4, +f4, a4
+
+    //TODO: For testing purposes only C major key is encoded
+
+    int iN = 0;         // index to current note
+
+    // Case earmDo
+    switch (nFunction & lmGRADE_MASK) {
+        case lmTONIC:       // I
+            aNotes[iN++] = lmC_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmE_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmG_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmNO_NOTE;
+            break;
+
+        case lmSUPERTONIC:  // ii
+            aNotes[iN++] = lmD_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmF_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmA_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmNO_NOTE;
+            break;
+
+        case lmMEDIANT:     // iii
+            aNotes[iN++] = lmE_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmG_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmB_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmNO_NOTE;
+            break;
+
+        case lmSUBDOMINANT: // IV
+            aNotes[iN++] = lmF_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmA_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmC_NOTE | lmOCTAVE_5 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmNO_NOTE;
+            break;
+
+        case lmDOMINANT:    // V
+            aNotes[iN++] = lmG_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmB_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmD_NOTE | lmOCTAVE_5 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmNO_NOTE;
+            break;
+
+        case lmSUBMEDIANT:  // vi
+            aNotes[iN++] = lmA_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmC_NOTE | lmOCTAVE_5 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmE_NOTE | lmOCTAVE_5 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmNO_NOTE;
+            break;
+
+        case lmSUBTONIC:    // vii
+            aNotes[iN++] = lmB_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmD_NOTE | lmOCTAVE_5 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmF_NOTE | lmOCTAVE_5 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmNO_NOTE;
+            break;
+
+        default:
+            wxLogMessage(_T("[lmComposer6::FunctionToChordNotes] Invalid function %d. Grade %d"),
+                nFunction, nFunction & lmGRADE_MASK);
+            wxASSERT(false);
+    }
+
+
+}
+
+lmNotePitch lmComposer6::GenerateOffBeatNote(lmNote* pNotePrev, lmNotePitch aScale[7])
+{
+    // Generates a new note by randomly addind/substracting 1 to previous note pitch
+    // The new pitch must be on the key signature natural scale
+
+    // Get previous pitch
+    lmNotePitch nPitch;
+    if (!pNotePrev)
+        nPitch = aScale[0];     // use root note
+    else
+        nPitch = pNotePrev->GetPitch();
+
+    // extract pitch components
+    int nStep = lmGET_STEP(nPitch);
+    int nOctave = lmGET_OCTAVE(nPitch);
+
+    // find current note in scale
+    int i;
+    for (i=0; i < 7; i++) {
+        if (lmGET_STEP(aScale[i]) == nStep) break;
+    }
+    if (i==7)
+        i=6;
+    wxASSERT(i < 7);
+
+    lmRandomGenerator oGenerator;
+    if (oGenerator.FlipCoin()) {
+        // increment note
+        i++;
+        if (i == 7) {
+            i = 0;
+            nOctave++;
+        }
+    }
+    else {
+        // decrement note
+        i--;
+        if (i == -1) {
+            i = 6;
+            nOctave--;
+        }
+    }
+
+    nStep = lmGET_STEP(aScale[i]);
+    int nAlter = lmGET_ALTER(aScale[i]);
+    return lmGET_PITCH(nStep, nOctave, nAlter);
+
+}
+
+void lmComposer6::GenerateScale(EKeySignatures nKey, lmNotePitch aNotes[7])
+{
+    int iN = 0;
+
+    // Case earmDo
+    switch (nKey) {
+        case earmDo:    // C major
+            aNotes[iN++] = lmC_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmD_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmE_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmF_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmG_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmA_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmB_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            break;
+        default:       // D major
+            aNotes[iN++] = lmD_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmE_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmF_NOTE | lmOCTAVE_4 | lmSHARP;
+            aNotes[iN++] = lmG_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmA_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmB_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+            aNotes[iN++] = lmC_NOTE | lmOCTAVE_4 | lmSHARP;
+            break;
+    }
+
+}
+
+lmNotePitch lmComposer6::GenerateInChordList(EKeySignatures nKey, long nChord,
+                                             std::vector<lmNotePitch>& aValidPitch)
+{
+    // Returns the root note in octave 4
+    // Generates a list with all allowed notes in the chord, satisfying the
+    // constraints for notes range. For instance:
+    // D Major chord: d4, +f4, a4
+    // notes range: a3 to a5
+    // returns: a3, d4, +f4, a4, d5, +f5, a5
+
+    // allocate an array for notes in chord (basic chord, octave 4)
+    lmNotePitch aNotes[4];                          // notes in current chord
+    FunctionToChordNotes(nKey, nChord, aNotes);
+
+    // extract valid steps, to simplify
+    int nValidStep[4];
+    for (int i=0; i < 4; i++) {
+        if (aNotes[i] == lmNO_NOTE)
+            nValidStep[i] = -1;        //you can assign any non valid value for a step
+        else
+            nValidStep[i] = lmGET_STEP(aNotes[i]);
+    }
+
+    // empty valid pitches array
+    aValidPitch.clear();
+
+    // scan notes range and select those in chord
+    lmConverter oCV;
+    lmDPitch nMinDPitch = oCV.NotePitchToDPitch(m_nMinPitch);
+    lmDPitch nMaxDPitch = oCV.NotePitchToDPitch(m_nMaxPitch);
+    for (int i=nMinDPitch; i <= nMaxDPitch; i++) {
+        int nStep = oCV.GetStepFromDPitch(i);
+        for (int j=0; j < 4; j++) {
+            if (nStep == nValidStep[j]) {
+                // Note in chord. Add it to the list
+                lmNotePitch nPitch = lmGET_PITCH(nStep, oCV.GetOctaveFromDPitch(i), lmGET_ALTER(aNotes[j]));
+                aValidPitch.push_back(nPitch);
+            }
+        }
+    }
+
+    return aNotes[0];
+
+}
+
+
+/*
+wxString lmComposer6::GeneratePitch(bool fRepeat, bool fRootPitch)
+{
+
+    lmPitch newPitch;
+    lmRandomGenerator oGenerator;
+
+    if (m_nNumNotes == 0 || fRootPitch) {
+        // First note always the root note
+        newPitch = RootNote(m_nKey);
+        // ensure it is in range minPitch to maxPitch
+        if (newPitch > m_maxPitch) {
+            while (newPitch > m_maxPitch) newPitch -= 7;    // go down one octave
+            if (newPitch < m_minPitch)  newPitch = oGenerator.RandomNumber(m_minPitch, m_maxPitch);
+        }
+        else if (newPitch < m_minPitch) {
+            while (newPitch < m_minPitch) newPitch += 7;    // go up one octave
+            if (newPitch > m_maxPitch)  newPitch = oGenerator.RandomNumber(m_minPitch, m_maxPitch);
+        }
+    }
+    else if (fRepeat) {
+        newPitch = m_lastPitch;
+    }
+    else {
+        int nRange = m_pConstrains->GetMaxInterval();
+        int lowLimit = wxMax(m_lastPitch - nRange, m_minPitch);
+        int upperLimit = wxMin(m_lastPitch + nRange, m_maxPitch);
+        newPitch = oGenerator.RandomNumber(lowLimit, upperLimit);
+    }
+
+    // save values
+    m_nNumNotes++;
+    m_lastPitch = newPitch;
+
+    lmConverter oConverter;
+    return oConverter.DPitchToLDPName(newPitch);
+
+}
+
+*/

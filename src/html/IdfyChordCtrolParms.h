@@ -255,7 +255,7 @@ void lmIdfyChordCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     else {
         // create the IdfyChordCtrol
         pWnd = new lmIdfyChordCtrol((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1,
-            m_pConstrains, wxPoint(0,0), wxSize(m_uWidth, m_nHeight), m_nWindowStyle );
+            m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     }
     pWnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(pWnd, m_nPercent));

@@ -105,6 +105,8 @@
 		<Unit filename="../../src/auxmusic/Composer.h" />
 		<Unit filename="../../src/auxmusic/ComposerV5.cpp" />
 		<Unit filename="../../src/auxmusic/ComposerV5.h" />
+		<Unit filename="../../src/auxmusic/ComposerV6.cpp" />
+		<Unit filename="../../src/auxmusic/ComposerV6.h" />
 		<Unit filename="../../src/auxmusic/Conversion.cpp" />
 		<Unit filename="../../src/auxmusic/Conversion.h" />
 		<Unit filename="../../src/auxmusic/Interval.cpp" />

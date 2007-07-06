@@ -86,7 +86,7 @@
        x  : double sharp
   i.e.:  ++c3, =+c3, +c3, =c3, -c3, --c3, =-c3, xc3
 
-  Pitch name can also be a number, representing MIDI pitch. i.e.: (n 29 n) = (n c4 n)
+  Pitch name can also be a number, representing MIDI pitch. i.e.: (n 60 n) = (n c4 n)
 @endverbatim
 */
 //-------------------------------------------------------------------------------------------*/
@@ -366,7 +366,7 @@ bool LDPDataToPitch(wxString sPitch, EAccidentals* pAccidentals,
         fError = !sPitch.ToLong(&nAux);
         wxASSERT(!fError);
         lmConverter oConverter;
-        sPitch = oConverter.MidiPitchToLDPName((lmPitch) nAux);
+        sPitch = oConverter.MPitchToLDPName((lmPitch) nAux);
         nAux = sPitch.Length();
         if (nAux == 2) {
             *sStep = sPitch.Mid(0, 1);

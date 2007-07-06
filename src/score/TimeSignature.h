@@ -116,6 +116,7 @@ extern float GetBeatDuration(int nBeatType);
 extern float GetMeasureDuration(ETimeSignature nTimeSign);
 //extern bool IsBinaryTimeSignature(ETimeSignature nTimeSign);
 extern int AssignVolume(float rTimePos, int nBeats, int nBeatType);
+extern lmENoteBeatPosition GetNoteBeatPosition(float rTimePos, int nBeats, int nBeatType);
 
 #endif    // __TIMESIGNATURE_H__
 

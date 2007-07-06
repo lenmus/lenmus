@@ -53,7 +53,12 @@ lmConverter::lmConverter()
 
 }
 
-lmPitch lmConverter::PitchToMidiPitch(lmPitch nPitch)
+
+//---------------------------------------------------------------------------------------
+// lmDPitch: Diatonic pitch
+//---------------------------------------------------------------------------------------
+
+lmPitch lmConverter::DPitchToMPitch(lmDPitch nPitch)
 {
     int nOctave = (nPitch - 1) / 7;
     int nRemainder = nPitch % 7;
@@ -82,7 +87,22 @@ lmPitch lmConverter::PitchToMidiPitch(lmPitch nPitch)
 
 }
 
-bool lmConverter::IsNaturalNote(lmPitch ntMidi, EKeySignatures nKey)
+int lmConverter::GetStepFromDPitch(lmDPitch nPitch)
+{
+    return ((int)nPitch - 1) % 7;
+}
+
+int lmConverter::GetOctaveFromDPitch(lmDPitch nPitch)
+{
+    return  ((int)nPitch - 1) / 7;
+}
+
+
+//---------------------------------------------------------------------------------------
+// lmMPitch: MIDI pitch
+//---------------------------------------------------------------------------------------
+
+bool lmConverter::IsNaturalNote(lmMPitch ntMidi, EKeySignatures nKey)
 {
     // Returns true if the Midi note corresponds to natural note of the key signature scale
 
@@ -164,7 +184,7 @@ bool lmConverter::IsNaturalNote(lmPitch ntMidi, EKeySignatures nKey)
 
 
 
-lmPitch lmConverter::MidiPitchToPitch(lmPitch nMidiPitch)
+lmPitch lmConverter::MPitchToDPitch(lmMPitch nMidiPitch)
 {
     // Returns the diatonic pitch that corresponds to the received MIDI pitch.
     // It is assumed C major key signature.
@@ -181,7 +201,7 @@ lmPitch lmConverter::MidiPitchToPitch(lmPitch nMidiPitch)
 
 }
 
-wxString lmConverter::MidiPitchToLDPName(lmPitch nMidiPitch)
+wxString lmConverter::MPitchToLDPName(lmMPitch nMidiPitch)
 {
     // Returns the LDP diatonic pitch that corresponds to the received MIDI pitch.
     // It is assumed C major key signature.
@@ -194,7 +214,7 @@ wxString lmConverter::MidiPitchToLDPName(lmPitch nMidiPitch)
 
 }
 
-wxString lmConverter::PitchToLDPName(lmPitch nPitch)
+wxString lmConverter::DPitchToLDPName(lmDPitch nPitch)
 {
     // Returns the LDP note name that corresponds to the received pitch. For exaplample,
     // pitch 29 will return "c4".
@@ -341,6 +361,71 @@ int lmConverter::StepToInt(wxString sStep)
     return -1;
 }
 
+
+
+//---------------------------------------------------------------------------------------
+// lmNotePitch
+//---------------------------------------------------------------------------------------
+
+lmNotePitch lmConverter::NoteNameToNotePitch(wxString sNote)
+{
+    // sNote must be letter followed by a number (i.e.: "c4" ) optionally precedeed by
+    // accidentals (i.e.: "++c4")
+    // It is assumed that sNote is trimmed (no spaces before or after data)
+    // and lower case.
+
+    //split the string: accidentals and name
+    wxString sAccidentals;
+    switch (sNote.Len()) {
+        case 2:
+            sAccidentals = _T("");
+            break;
+        case 3:
+            sAccidentals = sNote.Mid(0, 1);
+            sNote = sNote.Mid(1, 2);
+            break;
+        case 4:
+            sAccidentals = sNote.Mid(0, 2);
+            sNote = sNote.Mid(2, 2);
+            break;
+        default:
+            wxLogMessage(_T("[lmConverter::NoteNameToNotePitch] Bad note name '%s'"), sNote.c_str());
+            return lmC_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+    }
+
+    //compute step
+    int nStep = StepToInt( sNote.Left(1) );
+    if (nStep == -1) {
+        wxLogMessage(_T("[lmConverter::NoteNameToNotePitch] Bad note name '%s'"), sNote.c_str());
+        return lmC_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+    }
+
+    //compute octave
+    wxString sOctave = sNote.Mid(1, 1);
+    long nOctave;
+    if (!sOctave.ToLong(&nOctave)) {
+        wxLogMessage(_T("[lmConverter::NoteNameToNotePitch] Bad note name '%s'"), sNote.c_str());
+        return lmC_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+    }
+
+    //compute accidentals
+    int nAccidentals = AccidentalsToInt(sAccidentals);
+    if (nAccidentals == -999) {
+        wxLogMessage(_T("[lmConverter::NoteNameToNotePitch] Bad note name '%s'"), sNote.c_str());
+        return lmC_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
+    }
+
+    return lmGET_PITCH(nStep, (int)nOctave, nAccidentals);
+
+}
+
+lmDPitch lmConverter::NotePitchToDPitch(lmNotePitch nPitch)
+{
+    int nStep = lmGET_STEP(nPitch);
+    int nOctave = lmGET_OCTAVE(nPitch);
+
+    return nOctave * 7 + nStep + 1;
+}
 
 //---------------------------------------------------------------------------------------
 // Pitch name

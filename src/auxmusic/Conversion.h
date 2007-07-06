@@ -51,24 +51,32 @@ public:
     lmConverter();
     ~lmConverter() {}
 
-    //notes
-    static bool NoteToBits(wxString sNote, lmNoteBits* pBits);
-    static wxString NoteBitsToName(lmNoteBits& tBits, EKeySignatures nKey);
-    static int StepToSemitones(int nStep);
-    static int AccidentalsToInt(wxString sAccidentals);
-    static int StepToInt(wxString sStep);
+    //note parts
+    static bool         NoteToBits(wxString sNote, lmNoteBits* pBits);
+    static wxString     NoteBitsToName(lmNoteBits& tBits, EKeySignatures nKey);
+    static int          StepToSemitones(int nStep);
+    static int          AccidentalsToInt(wxString sAccidentals);
+    static int          StepToInt(wxString sStep);
+
+    // lmDPitch: Diatonic pitch
+    int GetStepFromDPitch(lmDPitch nPitch);
+    int GetOctaveFromDPitch(lmDPitch nPitch);
+
+    // lm MPitch: MIDI pitch
+    static lmMPitch     DPitchToMPitch(lmDPitch nPitch);
+    static lmDPitch     MPitchToDPitch(lmMPitch nMidiPitch);
+    static wxString     MPitchToLDPName(lmMPitch nMidiPitch);
+    static wxString     DPitchToLDPName(lmDPitch nPitch);
+    static bool         IsNaturalNote(lmMPitch ntMidi, EKeySignatures nKey);
+
+    //lmNotePitch
+    static lmNotePitch  NoteNameToNotePitch(wxString sPitch);
+    static lmDPitch     NotePitchToDPitch(lmNotePitch nPitch);
 
 
-    //MIDI pitch
-    static lmPitch  PitchToMidiPitch(lmPitch nPitch);
-    static lmPitch  MidiPitchToPitch(lmPitch nMidiPitch);
-    static wxString MidiPitchToLDPName(lmPitch nMidiPitch);
-    static wxString PitchToLDPName(lmPitch nPitch);
-    static bool     IsNaturalNote(lmPitch ntMidi, EKeySignatures nKey);
-
-    // pitch name
-    wxString        GetEnglishNoteName(lmPitch nPitch);
-    wxString        GetNoteName(lmPitch nPitch);
+    // note name
+    static wxString     GetEnglishNoteName(lmPitch nPitch);
+    static wxString     GetNoteName(lmPitch nPitch);
 
 
 

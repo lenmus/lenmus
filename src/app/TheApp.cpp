@@ -321,6 +321,7 @@ bool lmTheApp::OnInit(void)
     g_pLogger->DefineTraceMask(_T("Formatter4.Step1"));
     g_pLogger->DefineTraceMask(_T("lmIdfyScalesCtrol"));
     g_pLogger->DefineTraceMask(_T("lmScoreAuxCtrol"));
+    g_pLogger->DefineTraceMask(_T("lmLDPParser"));
 #endif
 
 
@@ -836,13 +837,10 @@ lmSplashFrame* lmTheApp::RecreateGUI(int nMilliseconds)
     SetTopWindow(g_pMainFrame);
 
     //force to show book frame
-    //#if !defined(__WXGTK__)
-    //todo: this code fails in Linux. why?
     if (fRestarting) {
         wxCommandEvent event;       //it is not used, so not need to initialize it
         g_pMainFrame->OnOpenBook(event);
     }
-    //#endif
 
     return pSplash;
 }

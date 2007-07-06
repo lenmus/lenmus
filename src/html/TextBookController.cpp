@@ -124,23 +124,23 @@ bool lmTextBookController::AddBook(const wxString& book, bool show_wait_msg)
 
 bool lmTextBookController::AddBook(const wxFileName& book, bool show_wait_msg)
 {
-    wxBusyCursor cur;
-#if wxUSE_BUSYINFO
-    wxBusyInfo* busy = NULL;
-    wxString info;
-    if (show_wait_msg)
-    {
-        info.Printf(_("Adding book %s"), book.GetFullPath().c_str());
-        busy = new wxBusyInfo(info);
-    }
-#endif
+//    wxBusyCursor cur;
+//#if wxUSE_BUSYINFO
+//    wxBusyInfo* busy = NULL;
+//    wxString info;
+//    if (show_wait_msg)
+//    {
+//        info.Printf(_("Adding book %s"), book.GetFullPath().c_str());
+//        busy = new wxBusyInfo(info);
+//    }
+//#endif
     bool retval = m_oBookData.AddBook(book);
-#if wxUSE_BUSYINFO
-    if (show_wait_msg)
-        delete busy;
-#else
+//#if wxUSE_BUSYINFO
+//    if (show_wait_msg)
+//        delete busy;
+//#else
     wxUnusedVar(show_wait_msg);
-#endif
+//#endif
     if (m_pBookFrame)
         m_pBookFrame->RefreshLists();
     return retval;

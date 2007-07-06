@@ -110,11 +110,27 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     m_nStep = LetterToStep(sStep);
     int nNewAlter = m_pContext->GetAccidentals(m_nStep);
 
-    //update context with displayed accidentals or with alterations
-    if (nPitchType == lm_ePitchAbsolute) {
+    //update context with displayed accidentals or with alterations,
+    //and store all pitch related info
+    if (nPitchType == lm_ePitchAbsolute)
+    {
         //update context with alterations
+        //TODO ?
+
+        //store all pitch related information
+        long nAux;
+        sOctave.ToLong(&nAux);
+        m_nOctave = (int)nAux;
+        sAlter.ToLong(&nAux);
+        m_nAlter = (int)nAux;
+
+        // set pitch
+        m_nPitch = StepAndOctaveToPitch(m_nStep, m_nOctave);
+        m_nMidiPitch = PitchToMidi(m_nPitch, m_nAlter);
     }
-    else if (nPitchType == lm_ePitchRelative) {
+
+    else if (nPitchType == lm_ePitchRelative)
+    {
         //update context with accidentals
         switch (nAccidentals) {
             case eNoAccidentals:
@@ -145,7 +161,24 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
             default:
                 ;
         }
+
+        //store all pitch related information
+        long nOctave;
+        sOctave.ToLong(&nOctave);
+        m_nOctave = (int)nOctave;
+        m_nAlter = nNewAlter;
+
+        //set pitch
+        m_nPitch = StepAndOctaveToPitch(m_nStep, m_nOctave);
+        m_nMidiPitch = PitchToMidi(m_nPitch, m_nAlter);
     }
+
+    else if (nPitchType == lm_ePitchNotDefined)
+    {
+        m_nPitch = -1;
+        m_nMidiPitch = -1;
+    }
+
     else {
         wxLogMessage(_T("[lmNote] unknown nPitchType %d"), nPitchType);
         wxASSERT(false);
@@ -155,15 +188,6 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     if (nNewAlter != m_pContext->GetAccidentals(m_nStep)) {
         m_pVStaff->UpdateContext(this, nStaff, m_nStep, nNewAlter, m_pContext);
     }
-
-    //store all pitch related information
-    long nAux;
-    sOctave.ToLong(&nAux);
-    m_nOctave = (int)nAux;
-    sAlter.ToLong(&nAux);
-    m_nAlter = ((nPitchType == lm_ePitchAbsolute) ? (int)nAux : nNewAlter);
-    m_nPitch = StepAndOctaveToPitch(m_nStep, m_nOctave);
-    m_nMidiPitch = PitchToMidi(m_nPitch, m_nAlter);
 
     SetUpStemDirection();       // and standard lenght
 
@@ -305,11 +329,9 @@ lmNote::~lmNote()
 
 bool lmNote::UpdateContext(int nStep, int nNewAccidentals, lmContext* pNewContext)
 {
-    /*
-    A previous note has updated the contex. It is necessary to verify if this note is
-    affected and, if it is affected, to update context dependent information.
-    Returns true if no context modification was needed.
-    */
+    // A previous note has updated the contex. It is necessary to verify if this note is
+    // affected and, if it is affected, to update context dependent information.
+    // Returns true if no context modification was needed.
 
     //get context accidentals for the modified step
     int nAccidentals = m_pContext->GetAccidentals(nStep);
@@ -365,6 +387,17 @@ void lmNote::ComputeVolume()
     else
         m_nVolume = 64;
 }
+
+lmENoteBeatPosition lmNote::GetPositionInBeat()
+{
+    lmTimeSignature* pTS = m_pContext->GetTime();
+    if (pTS)
+        return GetNoteBeatPosition(m_rTimePos, pTS->GetNumBeats(), pTS->GetBeatType());
+    else
+        return lmUNKNOWN_BEAT;
+}
+
+
 
 //====================================================================================================
 // implementation of virtual methods defined in base abstract class lmNoteRest
@@ -1277,6 +1310,10 @@ int lmNote::GetPosOnStaff()
     //        5 - on second space
     //        etc.
 
+    // if pitch is not yet defined, return line 0 (first bottom ledger line
+    if (!IsPitchDefined()) return 0; 
+
+    // pitch is defined. Position will depend on key
     switch (m_nClef) {
         case eclvSol :
             return m_nPitch - lmC4PITCH;
@@ -1300,6 +1337,57 @@ int lmNote::GetPosOnStaff()
             // no key, assume eclvSol
             return m_nPitch - lmC4PITCH;
     }
+}
+
+
+lmPitch lmNote::GetDiatonicPitch()
+{ 
+    if (IsPitchDefined())
+        return m_nPitch;
+    else
+        return lmC4PITCH;
+}
+
+lmPitch lmNote::GetMidiPitch()
+{ 
+    if (IsPitchDefined())
+        return m_nMidiPitch;
+    else
+        return 60;      // C4 midi key
+}
+
+bool lmNote::IsPitchDefined()
+{
+    return (m_nPitch != -1);
+}
+
+lmNotePitch lmNote::GetPitch()
+{
+    return lmGET_PITCH(m_nStep, m_nOctave, m_nAlter);
+}
+
+void lmNote::ChangePitch(lmNotePitch nPitch)
+{
+    int nStep = lmGET_STEP(nPitch);
+    int nOctave = lmGET_OCTAVE(nPitch);
+    int nAlter = lmGET_ALTER(nPitch);
+    ChangePitch(nStep, nOctave, nAlter);
+}
+
+void lmNote::ChangePitch(int nStep, int nOctave, int nAlter)
+{
+    //update context with alterations
+    //TODO ?
+
+    //store all pitch related information
+    m_nStep = nStep;
+    m_nOctave = nOctave;
+    m_nAlter = nAlter;
+    m_nPitch = StepAndOctaveToPitch(m_nStep, m_nOctave);
+    m_nMidiPitch = PitchToMidi(m_nPitch, m_nAlter);
+
+    SetUpStemDirection();
+
 }
 
 // Rectangle that bounds the image. Absolute position referred to page origin
@@ -1419,7 +1507,11 @@ wxString lmNote::SourceLDP()
 {
     wxString sSource = _T("         (n ");
     //(fInChord ? _T("            (NA "), _T("            (N "));
-    sSource += MIDINoteToLDPPattern(PitchToMidi(m_nPitch,0), earmDo, (lmPitch*)NULL);
+    if (IsPitchDefined())
+        sSource += MIDINoteToLDPPattern(PitchToMidi(m_nPitch,0), earmDo, (lmPitch*)NULL);
+    else
+        sSource += _T("*");
+
     sSource += _T(" ");
     sSource += GetLDPNoteType();
     if (m_fDotted) sSource += _T(".");
@@ -1545,7 +1637,6 @@ lmScoreObj* lmNote::FindSelectableObject(lmUPoint& pt)
 }
 
 
-
 //==========================================================================================
 // Global functions related to notes
 //    See AuxString.cpp for details about note pitch encoding
@@ -1556,7 +1647,7 @@ lmPitch StepAndOctaveToPitch(int nStep, int nOctave)
     return (nStep + 1) + (7 * nOctave);
 }
 
-// PitchToMidiPitch -> PitchToMidi
+// DPitchToMPitch -> PitchToMidi
 lmPitch PitchToMidi(lmPitch nPitch, int nAlter)
 {
     int nOctave = ((nPitch - 1) / 7) + 1;
@@ -1746,10 +1837,10 @@ wxString MIDINoteToLDPPattern(lmPitch nPitchMIDI, EKeySignatures nTonalidad, lmP
 
 }
 
-/*! Returns the note name and octave in the physics namespace
-*/
 wxString GetNoteNamePhysicists(lmPitch nPitch)
 {
+    // Returns the note name and octave in the physics namespace
+
     static wxString sNoteName[7] = {
         _("c%d"), _("d%d"), _("e%d"), _("f%d"), _("g%d"), _("a%d"), _("b%d")
     };

@@ -124,9 +124,14 @@ public:
     bool    IsTiedToPrev() { return (m_pTiePrev != (lmTie*)NULL); } 
 
     // methods related to sound
-    lmPitch GetPitch() { return m_nPitch; }
-    lmPitch GetMidiPitch() { return m_nMidiPitch; }
+    lmPitch     GetDiatonicPitch();
+    lmPitch     GetMidiPitch();
+    lmNotePitch GetPitch();
+    bool    IsPitchDefined();
+    void    ChangePitch(int nStep, int nOctave, int nAlter); 
+    void    ChangePitch(lmNotePitch nPitch);
     int     GetStep() { return m_nStep; }        //0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
+    int     GetOctave() { return m_nOctave; }
     int     GetVolume() { return m_nVolume; }
     void    SetVolume(int nVolume) { m_nVolume = nVolume; }
     void    ComputeVolume();
@@ -140,6 +145,10 @@ public:
     //other methods
     bool        UpdateContext(int nStep, int nNewAccidentals, lmContext* pNewContext);
     lmContext*  GetContext() { return m_pContext; }
+
+    // methods oriented to score processing
+    lmENoteBeatPosition GetPositionInBeat();
+
 
 
 

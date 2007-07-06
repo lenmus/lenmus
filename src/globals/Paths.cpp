@@ -99,7 +99,11 @@ lmPaths::lmPaths(wxString sBinPath)
     wxFileName oRootG2 = m_root;
     wxFileName oRootG3 = m_root;
     #if defined(__WXDEBUG__)
-    oRootG3.AppendDir(_T("z_bin"));
+        #if defined(__WXMSW__)
+        oRootG3.AppendDir(_T("z_bin"));
+        #else
+        oRootG3.AppendDir(_T("z_gtk_obj"));
+        #endif
     #else
     oRootG3.AppendDir(_T("bin"));
     #endif

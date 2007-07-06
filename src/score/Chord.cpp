@@ -57,9 +57,9 @@
 int GlobalPitchCompare(const void* pNote1, const void* pNote2)
 {
     if ((*(lmNote**)pNote1)->StemGoesDown())
-        return ((*(lmNote**)pNote1)->GetPitch() < (*(lmNote**)pNote2)->GetPitch());
+        return ((*(lmNote**)pNote1)->GetDiatonicPitch() < (*(lmNote**)pNote2)->GetDiatonicPitch());
     else
-        return ((*(lmNote**)pNote1)->GetPitch() > (*(lmNote**)pNote2)->GetPitch());
+        return ((*(lmNote**)pNote1)->GetDiatonicPitch() > (*(lmNote**)pNote2)->GetDiatonicPitch());
 }
 
 
@@ -105,10 +105,10 @@ wxString lmChord::Dump()
     lmNote* pNote;
     for(iPos=0; pNode; pNode=pNode->GetNext(), iPos++) {
         pNote = (lmNote*)pNode->GetData();
-        sDump += wxString::Format(_T("%d,") ,pNote->GetPitch() );
+        sDump += wxString::Format(_T("%d,") ,pNote->GetDiatonicPitch() );
     }
     sDump += wxString::Format(_T("), max=%d, min=%d, base=%d, stem="),
-                m_pMaxNote->GetPitch(), m_pMinNote->GetPitch(), m_pBaseNote->GetPitch() );
+                m_pMaxNote->GetDiatonicPitch(), m_pMinNote->GetDiatonicPitch(), m_pBaseNote->GetDiatonicPitch() );
     sDump += (m_fStemDown ? _T("down") : _T("up"));
 
     return sDump;
@@ -127,14 +127,14 @@ void lmChord::AddNote(lmNote* pNewNote)
     lmNote* pNote;
     for(iPos=0; pNode; pNode=pNode->GetNext(), iPos++) {
         pNote = (lmNote*)pNode->GetData();
-        if (pNote->GetPitch() > pNewNote->GetPitch()) break;
+        if (pNote->GetDiatonicPitch() > pNewNote->GetDiatonicPitch()) break;
     }
     m_cNotes.Insert((size_t)iPos, pNewNote);
 
     //Update Max and Min note
-    if (m_pMinNote->GetPitch() > pNewNote->GetPitch()) {
+    if (m_pMinNote->GetDiatonicPitch() > pNewNote->GetDiatonicPitch()) {
         m_pMinNote = pNewNote;
-    } else if (m_pMaxNote->GetPitch() < pNewNote->GetPitch()) {
+    } else if (m_pMaxNote->GetDiatonicPitch() < pNewNote->GetDiatonicPitch()) {
         m_pMaxNote = pNewNote;
     }
 
@@ -164,9 +164,9 @@ void lmChord::RemoveNote(lmNote* pNote)
     for(; pNode; pNode=pNode->GetNext())
     {
         pNote = (lmNote*)pNode->GetData();
-        if (m_pMinNote->GetPitch() > pNote->GetPitch()) {
+        if (m_pMinNote->GetDiatonicPitch() > pNote->GetDiatonicPitch()) {
             m_pMinNote = pNote;
-        } else if (m_pMaxNote->GetPitch() < pNote->GetPitch()) {
+        } else if (m_pMaxNote->GetDiatonicPitch() < pNote->GetDiatonicPitch()) {
             m_pMaxNote = pNote;
         }
     }
