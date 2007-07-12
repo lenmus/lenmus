@@ -76,9 +76,18 @@ static lmChordData tData[ect_Max] = {
 //-------------------------------------------------------------------------------------
 // Implementation of lmChordManager class
 
+lmChordManager::lmChordManager()
+{
+}
 
 lmChordManager::lmChordManager(wxString sRootNote, EChordType nChordType,
                                int nInversion, EKeySignatures nKey)
+{
+    Create(sRootNote, nChordType, nInversion, nKey);
+}
+
+void lmChordManager::Create(wxString sRootNote, EChordType nChordType,
+                            int nInversion, EKeySignatures nKey)
 {
     //parameter 'nInversion' is encoded as follows:
     //  0 - root position
@@ -144,15 +153,42 @@ lmChordManager::lmChordManager(wxString sRootNote, EChordType nChordType,
     }
 
     //get notes that form the interval
-    //wxLogMessage(_T("[lmChordManager] Root note = %s, interval type=%s, inversion=%d"),
-    //              lmConverter::NoteBitsToName(m_tBits[0], m_nKey), GetName(), m_nInversion );
+    bool fLog = g_pLogger->IsAllowedTraceMask(_T("lmChordManager"));
+    if (fLog) {
+        g_pLogger->LogTrace(_T("lmChordManager"),
+            _T("[lmChordManager] Root note = %s, interval type=%s, inversion=%d"),
+            lmConverter::NoteBitsToName(m_tBits[0], m_nKey).c_str(),
+            GetName().c_str(), m_nInversion );
+    }
     for (i=1; i < tData[m_nType].nNumNotes; i++) {
         ComputeInterval(&m_tBits[0], sIntval[i-1], true, &m_tBits[i]);
-        //wxLogMessage(_T("[lmChordManager] Note %d = %s, (Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d), key=%d"),
-        //             i, lmConverter::NoteBitsToName(m_tBits[i],m_nKey),
-        //             m_tBits[i].nStep, m_tBits[i].nOctave, m_tBits[i].nAccidentals, m_tBits[i].nStepSemitones,
-        //             m_nKey );
+        if (fLog) {
+            g_pLogger->LogTrace(_T("lmChordManager"),
+                _T("[lmChordManager] Note %d = %s, (Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d), key=%d"),
+                i, lmConverter::NoteBitsToName(m_tBits[i],m_nKey).c_str(),
+                m_tBits[i].nStep, m_tBits[i].nOctave, m_tBits[i].nAccidentals,
+                m_tBits[i].nStepSemitones, m_nKey );
+        }
     }
+
+}
+
+void lmChordManager::Create(wxString sRootNote, wxString sIntervals)
+{
+    // extract intervals
+    wxString sIntval[10];       //LIMIT: ten notes in a chord
+    int nSize = (int)sIntervals.length();
+    int iT = 0;                 //index to interval
+    int iStart = 0;
+    int iEnd = sIntervals.find(_T(','), iStart);
+    while (iEnd != wxStringBase::npos) {
+        sIntval[iT++] = sIntervals.substr(iStart, iEnd-iStart);
+        iStart = iEnd + 1;
+        if (iStart >= nSize) break;
+        iEnd = sIntervals.find(_T(','), iStart);
+    }
+    sIntval[iT] = sIntervals.substr(iStart);
+
 
 }
 

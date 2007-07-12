@@ -384,6 +384,12 @@
 				RelativePath="..\..\src\app\DlgCfgEarIntervals.h">
 			</File>
 			<File
+				RelativePath="..\..\src\app\DlgCfgIdfyCadence.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\app\DlgCfgIdfyCadence.h">
+			</File>
+			<File
 				RelativePath="..\..\src\app\DlgCfgIdfyChord.cpp">
 			</File>
 			<File
@@ -578,6 +584,9 @@
 				RelativePath="..\..\src\html\HtmlWindow.h">
 			</File>
 			<File
+				RelativePath="..\..\src\html\IdfyCadencesCtrolParms.h">
+			</File>
+			<File
 				RelativePath="..\..\src\html\IdfyChordCtrolParms.h">
 			</File>
 			<File
@@ -621,6 +630,12 @@
 			Name="exercises"
 			Filter="">
 			<File
+				RelativePath="..\..\src\exercises\CadencesConstrains.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\CadencesConstrains.h">
+			</File>
+			<File
 				RelativePath="..\..\src\exercises\ChordConstrains.cpp">
 			</File>
 			<File
@@ -661,6 +676,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\Generators.h">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\IdfyCadencesCtrol.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\IdfyCadencesCtrol.h">
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\IdfyChordCtrol.cpp">
@@ -738,6 +759,12 @@
 		<Filter
 			Name="auxmusic"
 			Filter="">
+			<File
+				RelativePath="..\..\src\auxmusic\Cadence.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\auxmusic\Cadence.h">
+			</File>
 			<File
 				RelativePath="..\..\src\auxmusic\ChordManager.cpp">
 			</File>

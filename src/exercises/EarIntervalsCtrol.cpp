@@ -590,7 +590,7 @@ void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
 
 void lmEarIntervalsCtrol::Play()
 {
-    //@attention As the interval is built using whole notes, we will play it at MM=240 so
+    //AWARE As the interval is built using whole notes, we will play it at MM=240 so
     //that real note rate will be 80.
     m_pScoreCtrol->PlayScore(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
                              ePM_NormalInstrument, 320);

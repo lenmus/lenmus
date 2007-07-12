@@ -409,7 +409,7 @@ void lmIdfyExerciseCtrol::Play()
                                 ePM_NormalInstrument, m_nPlayMM);
         m_fPlaying = true;
 
-        //! @attention The link label is restored to "Play" when the EndOfPlay event is
+        //! AWARE The link label is restored to "Play" when the EndOfPlay event is
         //! received. Flag m_fPlaying is also reset there
     }
     else {

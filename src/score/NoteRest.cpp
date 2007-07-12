@@ -155,7 +155,7 @@ void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
                 }
                 if (m_BeamInfo[0].Type == eBeamEnd) {
                         //m_pBeam->ComputeStemsDirection();
-                    //@attention with this note/rest the beaming ends. But it si not yet posible to
+                    //AWARE with this note/rest the beaming ends. But it si not yet posible to
                     //compute beaming information as ther could remain notes to add in
                     //chord to this note. Due to this, the computation of stems has
                     //been delayed to the measuremen phase of the first note of the beam.

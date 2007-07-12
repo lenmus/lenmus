@@ -510,7 +510,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
     }
 
     //if this is the first note/rest of a beam, measure beam
-    //@attention This must be done before using stem information, as the beam could
+    //AWARE This must be done before using stem information, as the beam could
     //change stem direction if it is not determined for some/all the notes in the beam
     //During measurement phase all computations, except final trimming of stem' lengths, is
     //done. Final trimming of stems' length is delayed to MakeUp phase because it is not
@@ -1651,7 +1651,7 @@ lmPitch StepAndOctaveToPitch(int nStep, int nOctave)
 lmPitch PitchToMidi(lmPitch nPitch, int nAlter)
 {
     int nOctave = ((nPitch - 1) / 7) + 1;
-    wxASSERT(lmC4PITCH == 29);    //@attention It's assumed that we start in C0
+    wxASSERT(lmC4PITCH == 29);    //AWARE It's assumed that we start in C0
     lmPitch nMidi = (lmPitch)(nOctave * 12);
 
     switch(nPitch % 7)

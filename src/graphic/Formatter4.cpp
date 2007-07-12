@@ -575,7 +575,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             fNewSystem |= SizeMeasure(pVStaff, nAbsMeasure, nRelMeasure, pPaper);
 
             //advance paper in height off this lmVStaff
-            //@attention As advancing one staff has the effect of returning
+            //AWARE As advancing one staff has the effect of returning
             //x position to the left marging, all x position information stored
             //in m_timepos is relative to the start of the measure
             pVStaff->NewLine(pPaper);
@@ -794,7 +794,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
                 fNoteRestFound = true;
                 fPreviousWasClef = false;            //this lmStaffObj is not a clef
                 pNoteRest = (lmNoteRest*)pSO;
-                pNote = (lmNote*)pSO;        //@attention we do not know yet if it is a note or a rest,
+                pNote = (lmNote*)pSO;        //AWARE we do not know yet if it is a note or a rest,
                                         //but I force the casting to simplify next if statement
                 if (!pNoteRest->IsRest() && pNote->IsInChord())
                 {

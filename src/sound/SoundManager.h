@@ -42,7 +42,7 @@
 
 enum ESoundEventType
 {
-    // @attention Event type value is used to sort the events table. 
+    // AWARE Event type value is used to sort the events table. 
     // MUST keep order for priority
     eSET_ProgInstr = 1,        //program a new instrument
     eSET_NoteOFF,              //sound off

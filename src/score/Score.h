@@ -51,11 +51,11 @@ enum EClefType
     eclvFa8,        //8 below
 
 };
-// @attention enum constats EClefType are going to be ramdomly generated in object
+// AWARE enum constats EClefType are going to be ramdomly generated in object
 // Generators. The next constants defines de range.
 #define lmMIN_CLEF        eclvSol
 #define lmMAX_CLEF        eclvPercussion
-// @attention enum constats EClefType are going to be used as indexes in ClefConstrains
+// AWARE enum constats EClefType are going to be used as indexes in ClefConstrains
 
 
 enum EStemType
@@ -170,7 +170,7 @@ enum EKeySignatures
     earmMib,
     earmSib,
     earmFa,
-    //@attention minor keys must go after major keys. This is exploited in IsMajor() global
+    //AWARE minor keys must go after major keys. This is exploited in IsMajor() global
     //function
     earmLam,
     earmMim,
@@ -188,15 +188,15 @@ enum EKeySignatures
     earmSolm,
     earmRem
 };
-// @attention enum constats EKeySignatures are going to be ramdomly generated in object
+// AWARE enum constats EKeySignatures are going to be ramdomly generated in object
 // Generators. The next constant defines de maximum and minimum values.
 #define lmMIN_KEY  earmDo
 #define lmMAX_KEY  earmRem
 #define lmNUM_KEYS lmMAX_KEY - lmMIN_KEY + 1
-// @attention names for key signatures are defined in object lmKeySignature. There is an
+// AWARE names for key signatures are defined in object lmKeySignature. There is an
 // array, named sKeySignatureName, and the key signatures names are defined
 // assuming a predefined order in the enum EKeySignatures
-// @attention items 'earmDo' to 'earmFa' are used as indexes in DlgCfgEarIntervals.
+// AWARE items 'earmDo' to 'earmFa' are used as indexes in DlgCfgEarIntervals.
 //  'earmDo' must be 0 and consecutive orden must be kept.
 
 
@@ -225,7 +225,7 @@ enum ETimeSignature
     emtr22,      //  2/2
     emtr32,      //  3/2
 };
-// @attention enum constats ETimeSignature are going to be ramdomly generated in object
+// AWARE enum constats ETimeSignature are going to be ramdomly generated in object
 // Generators. The next constant defines de maximum and minimum values.
 #define lmMIN_TIME_SIGN  emtr24
 #define lmMAX_TIME_SIGN  emtr32

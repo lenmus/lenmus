@@ -178,7 +178,7 @@ lmLUnits lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxCo
         DrawAt(fMeasuring, pPaper, uPos, nClef, nStaff);
 
         if (nStaff==1 && fMeasuring) {
-            //@attention DrawAt() has updated m_uWidth and the after space is included
+            //AWARE DrawAt() has updated m_uWidth and the after space is included
             // store selection rectangle measures and position (relative to m_uPaperPos)
             m_uSelRect.width = m_uWidth - m_pVStaff->TenthsToLogical(10, nStaff); // substrac after space;
             m_uSelRect.height = m_pVStaff->TenthsToLogical( 40, nStaff );

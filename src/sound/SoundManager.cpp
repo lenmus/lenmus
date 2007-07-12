@@ -76,7 +76,7 @@ lmSoundEvent::lmSoundEvent(float rTime, ESoundEventType nEventType, int nChannel
 //    - m_aStartTime (wxArrayLong): Also, each item corresponds to a measure and
 //        contains the start time for that measure.
 //
-//    @attention
+//    AWARE
 //    Measures are numbered 1..n (musicians usual way) not 0..n-1. But tables
 //    go 0..n+1 :
 //      - Item 0 corresponds to control events before the start of the first
@@ -140,7 +140,7 @@ void lmSoundManager::DeleteEventsTable()
 
 lmSoundManager::~lmSoundManager()
 {
-    //@attention Sound manager destructor MUST NOT delete the events table, as the table
+    //AWARE Sound manager destructor MUST NOT delete the events table, as the table
     //could be appended to other table.
     //So the table MUST BE explicitly deleted by calling DeleteEventsTable() when required
 
@@ -877,7 +877,7 @@ void* lmSoundManagerThread::Entry()
 {
 
     //ask Sound Manager to play
-    //@attention the checking to see if the thread was asked to exit is done in DoPlaySegment
+    //AWARE the checking to see if the thread was asked to exit is done in DoPlaySegment
     m_pSM->DoPlaySegment(m_nEvStart, m_nEvEnd, m_nPlayMode, m_fVisualTracking,
                 m_fMarcarUnCompasPrevio, m_nMM, m_pWindow);
 

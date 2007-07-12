@@ -50,6 +50,8 @@
 		<Unit filename="../../src/app/ArtProvider.h" />
 		<Unit filename="../../src/app/DlgCfgEarIntervals.cpp" />
 		<Unit filename="../../src/app/DlgCfgEarIntervals.h" />
+		<Unit filename="../../src/app/DlgCfgIdfyCadence.cpp" />
+		<Unit filename="../../src/app/DlgCfgIdfyCadence.h" />
 		<Unit filename="../../src/app/DlgCfgIdfyChord.cpp" />
 		<Unit filename="../../src/app/DlgCfgIdfyChord.h" />
 		<Unit filename="../../src/app/DlgCfgIdfyScale.cpp" />
@@ -113,6 +115,8 @@
 		<Unit filename="../../src/auxmusic/Interval.h" />
 		<Unit filename="../../src/auxmusic/ScalesManager.cpp" />
 		<Unit filename="../../src/auxmusic/ScalesManager.h" />
+		<Unit filename="../../src/exercises/CadencesConstrains.cpp" />
+		<Unit filename="../../src/exercises/CadencesConstrains.h" />
 		<Unit filename="../../src/exercises/ChordConstrains.cpp" />
 		<Unit filename="../../src/exercises/ChordConstrains.h" />
 		<Unit filename="../../src/exercises/Constrains.cpp" />
@@ -127,6 +131,8 @@
 		<Unit filename="../../src/exercises/EarIntvalConstrains.h" />
 		<Unit filename="../../src/exercises/Generators.cpp" />
 		<Unit filename="../../src/exercises/Generators.h" />
+		<Unit filename="../../src/exercises/IdfyCadencesCtrol.cpp" />
+		<Unit filename="../../src/exercises/IdfyCadencesCtrol.h" />
 		<Unit filename="../../src/exercises/IdfyChordCtrol.cpp" />
 		<Unit filename="../../src/exercises/IdfyChordCtrol.h" />
 		<Unit filename="../../src/exercises/IdfyExerciseCtrol.cpp" />
@@ -183,6 +189,7 @@
 		<Unit filename="../../src/html/HelpController.h" />
 		<Unit filename="../../src/html/HtmlWindow.cpp" />
 		<Unit filename="../../src/html/HtmlWindow.h" />
+		<Unit filename="../../src/html/IdfyCadencesCtrolParms.h" />
 		<Unit filename="../../src/html/IdfyChordCtrolParms.h" />
 		<Unit filename="../../src/html/IdfyScalesCtrolParms.h" />
 		<Unit filename="../../src/html/ObjectParams.cpp" />

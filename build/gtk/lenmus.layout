@@ -10,6 +10,9 @@
 	<File name="../../src/app/ArtProvider.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="6173" topLine="189" />
 	</File>
+	<File name="../../src/app/DlgCfgIdfyCadence.cpp" open="1" top="0" tabpos="39">
+		<Cursor position="12986" topLine="264" />
+	</File>
 	<File name="../../src/app/DlgCfgIdfyScale.cpp" open="1" top="0" tabpos="36">
 		<Cursor position="11259" topLine="228" />
 	</File>
@@ -111,6 +114,9 @@
 	</File>
 	<File name="../../src/exercises/Generators.cpp" open="0" top="0" tabpos="28">
 		<Cursor position="5493" topLine="130" />
+	</File>
+	<File name="../../src/exercises/IdfyCadencesCtrol.cpp" open="1" top="1" tabpos="38">
+		<Cursor position="7411" topLine="218" />
 	</File>
 	<File name="../../src/exercises/IdfyChordCtrol.cpp" open="1" top="0" tabpos="34">
 		<Cursor position="9888" topLine="247" />
@@ -220,8 +226,8 @@
 	<File name="../../src/html/TextBookController.h" open="1" top="0" tabpos="11">
 		<Cursor position="3224" topLine="65" />
 	</File>
-	<File name="../../src/html/TextBookFrame.cpp" open="1" top="1" tabpos="8">
-		<Cursor position="33349" topLine="1021" />
+	<File name="../../src/html/TextBookFrame.cpp" open="1" top="0" tabpos="8">
+		<Cursor position="33986" topLine="1081" />
 	</File>
 	<File name="../../src/html/TextBookFrame.h" open="1" top="0" tabpos="16">
 		<Cursor position="7500" topLine="201" />

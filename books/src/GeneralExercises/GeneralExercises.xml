@@ -4,10 +4,12 @@
     <!ENTITY chapter2 SYSTEM "GeneralExercises_2.xml">
     <!ENTITY chapter3 SYSTEM "GeneralExercises_3.xml">
     <!ENTITY chapter4 SYSTEM "GeneralExercises_4.xml">
+    <!ENTITY chEarCadences SYSTEM "GeneralExercises_EarCadences.xml">
     <!ENTITY chapter5 SYSTEM "GeneralExercises_5.xml">
     <!ENTITY chapter6 SYSTEM "GeneralExercises_6.xml">
-    <!ENTITY chapter7 SYSTEM "GeneralExercises_7.xml">
     <!ENTITY chapter8 SYSTEM "GeneralExercises_8.xml">
+    <!ENTITY chapter7 SYSTEM "GeneralExercises_7.xml">
+    <!ENTITY chTheoCadences SYSTEM "GeneralExercises_TheoCadences.xml">
     <!ENTITY chapter9 SYSTEM "GeneralExercises_9.xml">
 ]>
 
@@ -46,6 +48,7 @@
 <listitem><link linkend="ch2">Intervals' identification</link></listitem>
 <listitem><link linkend="ch3">Chords' identification</link></listitem>
 <listitem><link linkend="ch4">Scales' identification</link></listitem>
+<listitem><link linkend="EarCadences">Cadences' identification</link></listitem>
 </itemizedlist>
 
 </part>
@@ -56,8 +59,9 @@
 <itemizedlist>
 <listitem><link linkend="ch5">Key signatures' identification</link></listitem>
 <listitem><link linkend="ch6">Interval's identification and construction</link></listitem>
-<listitem><link linkend="ch7">Scales' identification</link></listitem>
 <listitem><link linkend="ch8">Chords' identification</link></listitem>
+<listitem><link linkend="ch7">Scales' identification</link></listitem>
+<listitem><link linkend="TheoCadences">Cadences' identification</link></listitem>
 </itemizedlist>
 
 </part>
@@ -80,14 +84,16 @@
     &chapter2;
     &chapter3;
     &chapter4;
+    &chEarCadences;
 </chapter>
 
 <chapter>
 <title>Theory exercises</title>
     &chapter5;
     &chapter6;
-    &chapter7;
     &chapter8;
+    &chapter7;
+    &chTheoCadences;
 </chapter>
 
 <chapter>

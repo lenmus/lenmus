@@ -970,7 +970,7 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
     lmKeySignature* pKey = (lmKeySignature*)NULL;
     lmTimeSignature* pTime = (lmTimeSignature*)NULL;
 
-    //@attention when this method is invoked the paper position must be at the left marging,
+    //AWARE when this method is invoked the paper position must be at the left marging,
     //at the start of a new system.
     lmLUnits xStartPos = pPaper->GetCursorX() + m_nSpaceBeforeClef;         //Save x to align all clefs
     lmLUnits yStartPos = pPaper->GetCursorY();

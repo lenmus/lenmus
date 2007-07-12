@@ -581,7 +581,7 @@ wxString lmIdfyChordCtrol::PrepareScore(EClefType nClef, EChordType nType, lmSco
     }
     pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);
 
-    (*pScore)->Dump();  //dbg
+    //(*pScore)->Dump();  //dbg
 
     //return the chord name
     if (m_pConstrains->AreInversionsAllowed())

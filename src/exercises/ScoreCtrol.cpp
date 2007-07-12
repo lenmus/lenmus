@@ -67,7 +67,7 @@ enum {
     ID_LINK_MIDI_EVENTS,
     ID_LINK_PLAY,
     ID_LINK_SOLFA,
-    ID_LINK_MEASURE         // @attention this one must be the last one, as its ID is going
+    ID_LINK_MEASURE         // AWARE this one must be the last one, as its ID is going
                             // to be incremented from 0 .. 9 to deal with the 10 possible
                             // 'play_measure' links
 };
@@ -267,7 +267,7 @@ void lmScoreCtrol::Play(EPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeasure)
         }
         m_fPlaying = true;
 
-        //@attention Link label is restored to Normal_label when the EndOfPlay event is
+        //AWARE Link label is restored to Normal_label when the EndOfPlay event is
         //received. Flag m_fPlaying is also reset there
     }
     else {

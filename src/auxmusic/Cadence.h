@@ -19,11 +19,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __CHORDMANAGER_H__        //to avoid nested includes
-#define __CHORDMANAGER_H__
+#ifndef __LM_CADENCE_H__        //to avoid nested includes
+#define __LM_CADENCE_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "ChordManager.cpp"
+#pragma interface "Cadence.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -39,60 +39,44 @@
 
 #include "../score/Score.h"
 #include "Interval.h"
-#include "../exercises/ChordConstrains.h"
+#include "../exercises/CadencesConstrains.h"
 #include "Conversion.h"
+#include "ChordManager.h"
 
 
-//declare global functions defined in this module
-extern wxString ChordTypeToName(EChordType nChordType);
-extern int NumNotesInChord(EChordType nChordType);
-extern EChordType ChordShortNameToType(wxString sName);
+////declare global functions defined in this module
+//extern wxString ScaleTypeToName(lmECadenceType nType);
+//extern int NumNotesInScale(lmECadenceType nType);
 
+//A cadence is a sequence of up to 2 chords
+//Change this for more chords in a cadence
+#define lmCHORDS_IN_CADENCE  2
 
-//a chord is a sequence of up 4 notes. Change this for more notes in chord
-#define lmNOTES_IN_CHORD  4
-
-class lmChordManager
+class lmCadence
 {
 public:
-    //default constructor
-    lmChordManager();
-    //build a chord from root note and type
-    lmChordManager(wxString sRootNote, EChordType nChordType, int nInversion = 0,
-                   EKeySignatures nKey = earmDo);
-    //destructor
-    ~lmChordManager();
+    lmCadence();
+    ~lmCadence();
 
-    //creation
-    void Create(wxString sRootNote, EChordType nChordType, int nInversion,
-                EKeySignatures nKey);
-    void Create(wxString sRootNote, wxString sIntervals);
+    bool Create(wxString sRootNote, lmECadenceType nCadenceType, EKeySignatures nKey);
+    bool IsCreated() { return m_fCreated; }
 
-    EChordType GetChordType() { return m_nType; }
-    wxString GetNameFull();
-    wxString GetName() { return ChordTypeToName( m_nType ); }
-    int GetNumNotes();
-    int GetMidiNote(int i);
-    wxString GetPattern(int i);
-
-#ifdef __WXDEBUG__
-    void UnitTests();
-#endif
+    lmECadenceType GetCadenceType() { return m_nType; }
+    int GetNumChords() { return m_nNumChords; }
+    lmChordManager* GetChord(int iC);
 
 private:
-    int GetMidiNote(int nMidiRoot, wxString sInterval);
+    wxString SelectChord(wxString sFunction, EKeySignatures nKey);
 
+    //member variables
 
-
-//member variables
-
-    EChordType      m_nType;
+    bool            m_fCreated;
+    lmECadenceType  m_nType;
     EKeySignatures  m_nKey;
-    int             m_ntMidi[lmNOTES_IN_CHORD];
-    lmNoteBits      m_tBits[lmNOTES_IN_CHORD];
-    int             m_nInversion;
+    lmChordManager  m_aChord[lmCHORDS_IN_CADENCE];
+    int             m_nNumChords;       //num of chords in this cadence
 
 };
 
-#endif  // __CHORDMANAGER_H__
+#endif  // __LM_CADENCE_H__
 

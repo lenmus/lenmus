@@ -309,19 +309,21 @@ bool lmTheApp::OnInit(void)
 
 #ifdef __WXDEBUG__
     //define trace masks to be known by trace system
-    g_pLogger->DefineTraceMask(_T("lmKeySignature"));
-    g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
+    g_pLogger->DefineTraceMask(_T("lmChordManager"));
     g_pLogger->DefineTraceMask(_T("lmComposer5"));
-    g_pLogger->DefineTraceMask(_T("lmMusicXMLParser"));
-    g_pLogger->DefineTraceMask(_T("lmUpdater"));
-    g_pLogger->DefineTraceMask(_T("lmInterval"));
-    g_pLogger->DefineTraceMask(_T("lmFragmentsTable::GetFirstSegmentDuracion"));
-    g_pLogger->DefineTraceMask(_T("LDPParser_beams"));
     g_pLogger->DefineTraceMask(_T("Formater4"));
     g_pLogger->DefineTraceMask(_T("Formatter4.Step1"));
+    g_pLogger->DefineTraceMask(_T("lmFragmentsTable::GetFirstSegmentDuracion"));
     g_pLogger->DefineTraceMask(_T("lmIdfyScalesCtrol"));
-    g_pLogger->DefineTraceMask(_T("lmScoreAuxCtrol"));
+    g_pLogger->DefineTraceMask(_T("lmIdfyCadencesCtrol"));
+    g_pLogger->DefineTraceMask(_T("lmInterval"));
+    g_pLogger->DefineTraceMask(_T("lmKeySignature"));
     g_pLogger->DefineTraceMask(_T("lmLDPParser"));
+    g_pLogger->DefineTraceMask(_T("LDPParser_beams"));
+    g_pLogger->DefineTraceMask(_T("lmMusicXMLParser"));
+    g_pLogger->DefineTraceMask(_T("lmScoreAuxCtrol"));
+    g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
+    g_pLogger->DefineTraceMask(_T("lmUpdater"));
 #endif
 
 
@@ -415,6 +417,10 @@ bool lmTheApp::OnInit(void)
 
     // Scales identification exercises: configuration dialog
     oXrcFile = wxFileName(sPath, _T("DlgCfgIdfyScale"), _T("xrc"), wxPATH_NATIVE);
+    wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
+
+    // Cedences identification exercises: configuration dialog
+    oXrcFile = wxFileName(sPath, _T("DlgCfgIdfyCadence"), _T("xrc"), wxPATH_NATIVE);
     wxXmlResource::Get()->Load( oXrcFile.GetFullPath() );
 
     // Pattern Editor dialog

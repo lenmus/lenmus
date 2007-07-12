@@ -139,7 +139,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     translation and have it work immediately.
     */
 
-    //@attention using string translation ( macro _() ) is not possible as locale could
+    //AWARE using string translation ( macro _() ) is not possible as locale could
     //not yet be set, as this code is used at first run.
 
     wxArrayString tempNames, tempCodes;

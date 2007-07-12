@@ -124,7 +124,7 @@ void lmStaffObjIterator::GoToItem(lmStaffObj* pSO)
         Review implementation and usage. Is it still true what is said in the
         "aware" note?
     */
-    //@attention This method is only used in FindPossibleStartOfTie. Therefore, search is
+    //AWARE This method is only used in FindPossibleStartOfTie. Therefore, search is
     // done backwards to optimize.
 
  //   lmStaffObj* pX;

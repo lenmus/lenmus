@@ -259,7 +259,7 @@
 	"wx/dialog.h"
 	"../exercises/ScalesConstrains.h"
 
-1180335110 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScalesConstrains.h
+1183964844 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScalesConstrains.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Generators.h"
@@ -825,7 +825,7 @@
 	"../score/KeySignature.h"
 	"../app/Logger.h"
 
-1183484340 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
+1183976578 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/frame.h"
@@ -1393,7 +1393,7 @@
 	"wx/wx.h"
 	"wx/html/htmltag.h"
 
-1183570478 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/html/Tags.cpp
+1183976580 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/html/Tags.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/html/forcelnk.h"
@@ -1413,11 +1413,13 @@
 	"../exercises/EarIntvalConstrains.h"
 	"../exercises/IdfyChordCtrol.h"
 	"../exercises/IdfyScalesCtrol.h"
+	"../exercises/IdfyCadencesCtrol.h"
 	"ObjectParams.h"
 	"TheoMusicReadingCtrolParms.h"
 	"ScoreCtrolParams.h"
 	"IdfyChordCtrolParms.h"
 	"IdfyScalesCtrolParms.h"
+	"IdfyCadencesCtrolParms.h"
 	"../app/MainFrame.h"
 
 1183570428 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/TheoMusicReadingCtrolParms.h
@@ -2016,4 +2018,51 @@
 	"../exercises/Generators.h"
 	"../app/Logger.h"
 	"../sound/MidiManager.h"
+
+1184147896 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyCadencesCtrol.h
+	"wx/wxprec.h"
+	"wx/wx.h"
+	"CadencesConstrains.h"
+	"../score/Score.h"
+	"ScoreAuxCtrol.h"
+	"UrlAuxCtrol.h"
+	"CountersCtrol.h"
+
+1184145864 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/CadencesConstrains.h
+	"wx/wxprec.h"
+	"wx/wx.h"
+	"Generators.h"
+	"Constrains.h"
+	"IdfyExerciseCtrol.h"
+
+1184064382 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/IdfyCadencesCtrolParms.h
+	"wx/wxprec.h"
+	"wx/wx.h"
+	"ObjectParams.h"
+	"../ldp_parser/AuxString.h"
+	"ParamsParser.h"
+	"../exercises/CadencesConstrains.h"
+
+1184069292 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/CadencesConstrains.cpp
+	"wx/wxprec.h"
+	"CadencesConstrains.h"
+	"Generators.h"
+
+1183982734 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyCadencesCtrol.cpp
+	"wx/wxprec.h"
+	"IdfyCadencesCtrol.h"
+	"UrlAuxCtrol.h"
+	"Constrains.h"
+	"Generators.h"
+	"../auxmusic/Conversion.h"
+	"../ldp_parser/LDPParser.h"
+	"../auxmusic/Interval.h"
+	"../app/DlgCfgIdfyCadence.h"
+	"../auxmusic/ScalesManager.h"
+	"../globals/Colors.h"
+	"../app/Logger.h"
+
+1183974854 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/DlgCfgIdfyCadence.h
+	"wx/dialog.h"
+	"../exercises/CadencesConstrains.h"
 

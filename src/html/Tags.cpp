@@ -63,6 +63,7 @@
     classid="EarCompareIntervals"    lmEarCompareIntvCtrolParms : public lmObjectParams
     classid="IdfyChord"              lmIdfyChordCtrolParms : public lmObjectParams
     classid="IdfyScales"             lmIdfyScalesCtrolParms : public lmObjectParams
+    classid="IdfyCadences"           lmIdfyCadencesCtrolParms : public lmObjectParams
 
     @endverbatim
 
@@ -105,12 +106,14 @@
 #include "../exercises/EarIntvalConstrains.h"
 #include "../exercises/IdfyChordCtrol.h"
 #include "../exercises/IdfyScalesCtrol.h"
+#include "../exercises/IdfyCadencesCtrol.h"
 
 #include "ObjectParams.h"
 #include "TheoMusicReadingCtrolParms.h"
 #include "ScoreCtrolParams.h"
 #include "IdfyChordCtrolParms.h"
 #include "IdfyScalesCtrolParms.h"
+#include "IdfyCadencesCtrolParms.h"
 
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
@@ -739,6 +742,7 @@ enum EHtmlObjectTypes {
     eHO_Exercise_TheoMusicReading,
     eHO_Exercise_IdfyChord,
     eHO_Exercise_IdfyScales,
+    eHO_Exercise_IdfyCadences,
     eHO_Control
 };
 
@@ -793,6 +797,8 @@ TAG_HANDLER_PROC(tag)
                         nType = eHO_Exercise_IdfyChord;
                     else if (sClassid.Upper() == _T("IDFYSCALES"))
                         nType = eHO_Exercise_IdfyScales;
+                    else if (sClassid.Upper() == _T("IDFYCADENCES"))
+                        nType = eHO_Exercise_IdfyCadences;
                 }
             }
         }
@@ -873,6 +879,11 @@ TAG_HANDLER_PROC(tag)
 
             case eHO_Exercise_IdfyScales:
                 m_pObjectParams = new lmIdfyScalesCtrolParms(tag, nWidth, nHeight,
+                    nPercent, nStyle);
+                break;
+
+            case eHO_Exercise_IdfyCadences:
+                m_pObjectParams = new lmIdfyCadencesCtrolParms(tag, nWidth, nHeight,
                     nPercent, nStyle);
                 break;
 

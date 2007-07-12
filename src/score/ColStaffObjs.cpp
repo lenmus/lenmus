@@ -138,7 +138,7 @@ void lmColStaffObjs::Store(lmStaffObj *pSO)
             //It is a note. Verify if it is part of a chord
             lmNote* pNote = (lmNote*)pSO;
             if (!pNote->IsInChord()) {
-                //@attention time counter is going to be incremented also for chord base notes,
+                //AWARE time counter is going to be incremented also for chord base notes,
                 //what is right.
                 //As we are in the process of building the score object from the source code,
                 //chord base notes have not yet being marked as "InChord". This is because
