@@ -49,8 +49,8 @@ extern int NumNotesInChord(EChordType nChordType);
 extern EChordType ChordShortNameToType(wxString sName);
 
 
-//a chord is a sequence of up 4 notes. Change this for more notes in chord
-#define lmNOTES_IN_CHORD  4
+//a chord is a sequence of up 6 notes. Change this for more notes in chord
+#define lmNOTES_IN_CHORD  6
 
 class lmChordManager
 {
@@ -66,13 +66,13 @@ public:
     //creation
     void Create(wxString sRootNote, EChordType nChordType, int nInversion,
                 EKeySignatures nKey);
-    void Create(wxString sRootNote, wxString sIntervals);
+    void Create(wxString sRootNote, wxString sIntervals, EKeySignatures nKey);
 
     EChordType GetChordType() { return m_nType; }
     wxString GetNameFull();
     wxString GetName() { return ChordTypeToName( m_nType ); }
     int GetNumNotes();
-    int GetMidiNote(int i);
+    lmMPitch GetMidiNote(int i);
     wxString GetPattern(int i);
 
 #ifdef __WXDEBUG__
@@ -80,7 +80,8 @@ public:
 #endif
 
 private:
-    int GetMidiNote(int nMidiRoot, wxString sInterval);
+    lmMPitch GetMidiNote(lmMPitch nMidiRoot, wxString sInterval);
+    void DoCreateChord(wxString sRootNote, wxString sIntval[], int nNumIntv);
 
 
 
@@ -88,9 +89,10 @@ private:
 
     EChordType      m_nType;
     EKeySignatures  m_nKey;
-    int             m_ntMidi[lmNOTES_IN_CHORD];
+    lmMPitch        m_ntMidi[lmNOTES_IN_CHORD];
     lmNoteBits      m_tBits[lmNOTES_IN_CHORD];
     int             m_nInversion;
+    int             m_nNumNotes;                    // num notes in the chord
 
 };
 

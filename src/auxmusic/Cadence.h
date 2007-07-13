@@ -44,8 +44,8 @@
 #include "ChordManager.h"
 
 
-////declare global functions defined in this module
-//extern wxString ScaleTypeToName(lmECadenceType nType);
+//declare global functions defined in this module
+extern wxString CadenceTypeToName(lmECadenceType nType);
 //extern int NumNotesInScale(lmECadenceType nType);
 
 //A cadence is a sequence of up to 2 chords
@@ -58,15 +58,17 @@ public:
     lmCadence();
     ~lmCadence();
 
-    bool Create(wxString sRootNote, lmECadenceType nCadenceType, EKeySignatures nKey);
+    bool Create(lmECadenceType nCadenceType, EKeySignatures nKey);
     bool IsCreated() { return m_fCreated; }
 
     lmECadenceType GetCadenceType() { return m_nType; }
     int GetNumChords() { return m_nNumChords; }
     lmChordManager* GetChord(int iC);
+	wxString GetName();
 
 private:
     wxString SelectChord(wxString sFunction, EKeySignatures nKey);
+    wxString GetRootNote(wxString sFunct, EKeySignatures nKey, EClefType nClef);
 
     //member variables
 

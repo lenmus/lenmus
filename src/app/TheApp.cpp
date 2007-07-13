@@ -309,7 +309,8 @@ bool lmTheApp::OnInit(void)
 
 #ifdef __WXDEBUG__
     //define trace masks to be known by trace system
-    g_pLogger->DefineTraceMask(_T("lmChordManager"));
+	g_pLogger->DefineTraceMask(_T("lmCadence"));
+	g_pLogger->DefineTraceMask(_T("lmChordManager"));
     g_pLogger->DefineTraceMask(_T("lmComposer5"));
     g_pLogger->DefineTraceMask(_T("Formater4"));
     g_pLogger->DefineTraceMask(_T("Formatter4.Step1"));

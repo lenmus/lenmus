@@ -100,14 +100,14 @@ void lmChordManager::Create(wxString sRootNote, EChordType nChordType,
     m_nKey = nKey;
     m_nInversion = nInversion;
 
+    // Create root note data
     if (lmConverter::NoteToBits(sRootNote, &m_tBits[0])) {
-        wxLogMessage(_T("[lmChordManager::lmChordManager] Unexpected error in lmConverter::NoteToBits coversion. Note: '%s'"),
+        wxLogMessage(_T("[lmChordManager::Crate] Unexpected error in lmConverter::NoteToBits coversion. Note: '%s'"),
                 sRootNote.c_str() );
         wxASSERT(false);
     }
 
     //get the intervals that form the chord
-    int i;
     wxString sIntval[3], sNewIntv[3];
     sIntval[0] = tData[m_nType].sIntervals[0];
     sIntval[1] = tData[m_nType].sIntervals[1];
@@ -152,43 +152,67 @@ void lmChordManager::Create(wxString sRootNote, EChordType nChordType,
         sIntval[2] = sNewIntv[2];
     }
 
-    //get notes that form the interval
-    bool fLog = g_pLogger->IsAllowedTraceMask(_T("lmChordManager"));
-    if (fLog) {
-        g_pLogger->LogTrace(_T("lmChordManager"),
-            _T("[lmChordManager] Root note = %s, interval type=%s, inversion=%d"),
-            lmConverter::NoteBitsToName(m_tBits[0], m_nKey).c_str(),
-            GetName().c_str(), m_nInversion );
-    }
-    for (i=1; i < tData[m_nType].nNumNotes; i++) {
-        ComputeInterval(&m_tBits[0], sIntval[i-1], true, &m_tBits[i]);
-        if (fLog) {
-            g_pLogger->LogTrace(_T("lmChordManager"),
-                _T("[lmChordManager] Note %d = %s, (Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d), key=%d"),
-                i, lmConverter::NoteBitsToName(m_tBits[i],m_nKey).c_str(),
-                m_tBits[i].nStep, m_tBits[i].nOctave, m_tBits[i].nAccidentals,
-                m_tBits[i].nStepSemitones, m_nKey );
-        }
-    }
+    DoCreateChord(sRootNote, sIntval, tData[m_nType].nNumNotes);
 
 }
 
-void lmChordManager::Create(wxString sRootNote, wxString sIntervals)
+void lmChordManager::Create(wxString sRootNote, wxString sIntervals, EKeySignatures nKey)
 {
-    // extract intervals
-    wxString sIntval[10];       //LIMIT: ten notes in a chord
-    int nSize = (int)sIntervals.length();
+    // save data
+    m_nKey = nKey;
+
+    wxString sIntval[lmNOTES_IN_CHORD];       
     int iT = 0;                 //index to interval
+
+    // extract intervals
+    int nSize = (int)sIntervals.length();
     int iStart = 0;
     int iEnd = sIntervals.find(_T(','), iStart);
-    while (iEnd != wxStringBase::npos) {
+    while (iEnd != (int)wxStringBase::npos && iT < lmNOTES_IN_CHORD) {
         sIntval[iT++] = sIntervals.substr(iStart, iEnd-iStart);
         iStart = iEnd + 1;
         if (iStart >= nSize) break;
         iEnd = sIntervals.find(_T(','), iStart);
     }
-    sIntval[iT] = sIntervals.substr(iStart);
+    if (iT < lmNOTES_IN_CHORD)
+        sIntval[iT++] = sIntervals.substr(iStart);
 
+    DoCreateChord(sRootNote, sIntval, iT+1);
+
+}
+
+void lmChordManager::DoCreateChord(wxString sRootNote, wxString sIntval[], int nNumNotes)
+{
+	//TODO: deal with accidentals in root position
+
+    // save data
+    m_nNumNotes = nNumNotes;
+
+    // Create root note data
+    if (lmConverter::NoteToBits(sRootNote, &m_tBits[0])) {
+        wxLogMessage(_T("[lmChordManager::DoCreateChord] Unexpected error in lmConverter::NoteToBits coversion. Note: '%s'"),
+                sRootNote.c_str() );
+        wxASSERT(false);
+    }
+
+    // create the chord
+    bool fLog = g_pLogger->IsAllowedTraceMask(_T("lmChordManager"));
+    if (fLog) {
+        g_pLogger->LogTrace(_T("lmChordManager"),
+            _T("[lmChordManager::DoCreateChord] Root note = %s, interval type=%s, inversion=%d"),
+            lmConverter::NoteBitsToName(m_tBits[0], m_nKey).c_str(),
+            GetName().c_str(), m_nInversion );
+    }
+    for (int i=1; i < nNumNotes; i++) {
+        ComputeInterval(&m_tBits[0], sIntval[i-1], true, &m_tBits[i]);
+        if (fLog) {
+            g_pLogger->LogTrace(_T("lmChordManager"),
+                _T("[lmChordManager::DoCreateChord] Note %d = %s, (Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d), key=%d"),
+                i, lmConverter::NoteBitsToName(m_tBits[i],m_nKey).c_str(),
+                m_tBits[i].nStep, m_tBits[i].nOctave, m_tBits[i].nAccidentals,
+                m_tBits[i].nStepSemitones, m_nKey );
+        }
+    }
 
 }
 
@@ -198,16 +222,16 @@ lmChordManager::~lmChordManager()
 
 int lmChordManager::GetNumNotes()
 {
-    return tData[m_nType].nNumNotes;
+    return m_nNumNotes;
 }
 
-int lmChordManager::GetMidiNote(int i)
+lmMPitch lmChordManager::GetMidiNote(int i)
 {
     wxASSERT(i < GetNumNotes());
     return m_ntMidi[i];
 }
 
-int lmChordManager::GetMidiNote(int nMidiRoot, wxString sInterval)
+int lmChordManager::GetMidiNote(lmMPitch nMidiRoot, wxString sInterval)
 {
     // Receives a Midi pitch and a string encoding the interval as follows:
     // - intval = number + type:

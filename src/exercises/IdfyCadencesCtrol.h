@@ -81,8 +81,6 @@ private:
 
     //problem asked
     EKeySignatures  m_nKey;
-    wxString        m_sRootNote;
-    bool            m_fAscending;
 
     //answer
     wxButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers

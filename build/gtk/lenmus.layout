@@ -70,8 +70,8 @@
 	<File name="../../src/app/scoreView.h" open="0" top="0" tabpos="55">
 		<Cursor position="4338" topLine="111" />
 	</File>
-	<File name="../../src/auxmusic/ChordManager.cpp" open="0" top="0" tabpos="18">
-		<Cursor position="12163" topLine="300" />
+	<File name="../../src/auxmusic/ChordManager.cpp" open="1" top="0" tabpos="40">
+		<Cursor position="7238" topLine="122" />
 	</File>
 	<File name="../../src/auxmusic/Composer.cpp" open="0" top="0" tabpos="19">
 		<Cursor position="1556" topLine="20" />
@@ -115,7 +115,7 @@
 	<File name="../../src/exercises/Generators.cpp" open="0" top="0" tabpos="28">
 		<Cursor position="5493" topLine="130" />
 	</File>
-	<File name="../../src/exercises/IdfyCadencesCtrol.cpp" open="1" top="1" tabpos="38">
+	<File name="../../src/exercises/IdfyCadencesCtrol.cpp" open="1" top="0" tabpos="38">
 		<Cursor position="7411" topLine="218" />
 	</File>
 	<File name="../../src/exercises/IdfyChordCtrol.cpp" open="1" top="0" tabpos="34">
@@ -379,8 +379,8 @@
 	<File name="../../src/sound/MidiManager.h" open="0" top="0" tabpos="50">
 		<Cursor position="2176" topLine="9" />
 	</File>
-	<File name="../../src/sound/SoundManager.cpp" open="0" top="0" tabpos="52">
-		<Cursor position="6245" topLine="93" />
+	<File name="../../src/sound/SoundManager.cpp" open="1" top="1" tabpos="41">
+		<Cursor position="21866" topLine="630" />
 	</File>
 	<File name="../../src/updater/Updater.cpp" open="1" top="0" tabpos="35">
 		<Cursor position="17032" topLine="494" />

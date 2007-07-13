@@ -51,10 +51,14 @@ typedef struct lmFunctionDataStruct {
 
 
 // Conversion table: harmonic function to chord intervals
+// AWARE: The maximum number of notes in a chord is defined in 'ChordManager.h', constant
+//        lmNOTES_IN_CHORD. Currently its value is 6. Change this value if you need more
+//        notes.
+
 static const lmFunctionData m_aFunctionData[] = {
     //                                    minor key      minor key
     //Function        Major key           option 1       option 2
-    //----------    ------------------  -------------   --------------
+    //-----------    ------------------  -------------   --------------
     {_T("I"),       _T("M3,p5"),        _T("m3,p5"),    _T("nil") },    // 
     {_T("II"),      _T("m3,p5"),        _T("m3,d5"),    _T("m3,p5") },  //
     {_T("IIm"),     _T("?"),            _T("?"),        _T("nil") },    // 
@@ -63,8 +67,8 @@ static const lmFunctionData m_aFunctionData[] = {
     {_T("IVm"),     _T("m3,p5"),        _T("?"),        _T("nil") },    //
     {_T("V"),       _T("M3,p5"),        _T("M3,p5"),    _T("nil") },    //
     {_T("V7"),      _T("M3,p5,m7"),     _T("M3,p5,m7"), _T("nil") },    //
-    {_T("Vaug5"),   _T("M3,a5"),        _T("nil"),      _T("nil") },    //
-    {_T("Vdim5"),   _T("M3,d5"),        _T("M3,d5"),    _T("nil") },    // 
+    {_T("Va5"),     _T("M3,a5"),        _T("nil"),      _T("nil") },    //
+    {_T("Vd5"),     _T("M3,d5"),        _T("M3,d5"),    _T("nil") },    // 
     {_T("VI"),      _T("m3,p5"),        _T("M3,p5"),    _T("m3,d5") },  //
     {_T("VIaum"),   _T("?"),            _T("?"),        _T("nil") },    // 
     {_T("IVm6"),    _T("nil"),          _T("M3,M6"),    _T("nil") },    //    
@@ -73,7 +77,7 @@ static const lmFunctionData m_aFunctionData[] = {
 };
 
 
-static wxString m_sCadenceName[lm_eCadMaxCadence];
+static wxString m_sCadenceName[lm_eCadMaxCadence+1];
 static bool m_fStringsInitialized = false;
 
 
@@ -124,8 +128,7 @@ lmCadence::lmCadence()
     m_nNumChords = 0;
 }
 
-bool lmCadence::Create(wxString sRootNote, lmECadenceType nCadenceType,
-                       EKeySignatures nKey)
+bool lmCadence::Create(lmECadenceType nCadenceType, EKeySignatures nKey)
 {
     // return true if cadence created
 
@@ -159,8 +162,14 @@ bool lmCadence::Create(wxString sRootNote, lmECadenceType nCadenceType,
             return false;
         }
 
-        //Prepare the chord
-        m_aChord[iC].Create(sIntervals, sRootNote);
+        //Get root note for this key signature and clef
+        wxString sRootNote = GetRootNote(sFunct, nKey, eclvSol);
+        g_pLogger->LogTrace(_T("lmCadence"),
+                _T("[lmCadence::Create] sFunc='%s', nKey=%d, sRootNote='%s'"),
+				sFunct.c_str(), nKey, sRootNote.c_str());
+				
+       //Prepare the chord
+        m_aChord[iC].Create(sRootNote, sIntervals, nKey);
         m_nNumChords++;
     }
 
@@ -188,15 +197,38 @@ wxString lmCadence::SelectChord(wxString sFunction, EKeySignatures nKey)
 {
     // return the intervals that form the chord, or empty string if errors
 
+    //TODO: how to return inversions?
+
+    //Strip out inversions
+    wxString sFunc;
+    int nInversion;
+    int iSlash = sFunction.find(_T('/'));
+    if (iSlash != (int)wxStringBase::npos) {
+        sFunc = sFunction.substr(0, iSlash);
+        wxString sInv = sFunction.substr(iSlash+1);
+        if (sInv==_T("6"))
+            nInversion = 1;
+        else if (sInv==_T("64"))
+            nInversion = 2;
+        else {
+            wxLogMessage(_T("[lmCadence::SelectChord] Conversion table maintenance error. Unknown inversion code '%s'"), sInv.c_str());
+            nInversion = 0;
+        }
+    }
+    else {
+        sFunc = sFunction;
+        nInversion = 0;
+    }
 
     // look for function
     int iF, iMax = sizeof(m_aFunctionData)/sizeof(lmFunctionData);
     for (iF=0; iF < iMax; iF++) {
-        if (m_aFunctionData[iF].sFunction == sFunction) break;
+        if (m_aFunctionData[iF].sFunction == sFunc) break;
     }
     if (iF == iMax) {
         // table maintenance error
-        wxLogMessage(_T("[]"), sFunction.c_str(), nKey);
+        wxLogMessage(_T("[lmCadence::SelectChord] Conversion table maintenance error. Function '%s' not found. Key=%d"),
+            sFunction.c_str(), nKey);
         return _T("");      // not valid chord
     }
 
@@ -206,6 +238,11 @@ wxString lmCadence::SelectChord(wxString sFunction, EKeySignatures nKey)
         wxString sChord = m_aFunctionData[iF].sChordMajor;
         if (sChord == _T("nil"))
             return _T("");        // not valid chord
+        if (sChord == _T("?")) {
+            wxLogMessage(_T("[lmCadence::SelectChord] Conversion table maintenance error. Undefined chord. Function '%s', Key=%d"),
+                sFunction.c_str(), nKey);
+            return _T("");        // not valid chord
+        }
         else
             return sChord;
     }
@@ -228,54 +265,121 @@ wxString lmCadence::SelectChord(wxString sFunction, EKeySignatures nKey)
     }
 }
 
+wxString lmCadence::GetRootNote(wxString sFunct, EKeySignatures nKey, EClefType nClef)
+{
+    // TODO: Take clef into account
+
+    //Get root note for this key signature
+    int nRoot = GetRootNoteIndex(nKey);    //index (0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si) to root note
+
+    // add function grade
+    size_t nSize = sFunct.length();
+    if (nSize > 2) {
+        if (sFunct.compare(0, 3, _T("VII")) == 0)
+            nRoot += 6;
+        else if (sFunct.compare(0, 3, _T("III")) == 0)
+            nRoot += 2;
+        else if (sFunct.compare(0, 2, _T("VI")) == 0)
+            nRoot += 5;
+        else if (sFunct.compare(0, 2, _T("IV")) == 0)
+            nRoot += 3;
+        else if (sFunct.compare(0, 2, _T("II")) == 0)
+            nRoot += 1;
+        else if (sFunct.compare(0, 1, _T("V")) == 0)
+            nRoot += 4;
+    }
+    else if (nSize > 1) {
+        if (sFunct.compare(0, 2, _T("VI")) == 0)
+            nRoot += 5;
+        else if (sFunct.compare(0, 2, _T("IV")) == 0)
+            nRoot += 3;
+        else if (sFunct.compare(0, 2, _T("II")) == 0)
+            nRoot += 1;
+        else if (sFunct.compare(0, 1, _T("V")) == 0)
+            nRoot += 4;
+    }
+    else if (sFunct.compare(0, 1, _T("V")) == 0)
+        nRoot += 4;
+
+    nRoot = nRoot % 7;
+
+    // convert to note name in octave 4
+    wxString sNotes = _T("cdefgab");
+    wxString sRootNote = sNotes.substr(nRoot,1) + _T("4");
+    return sRootNote;
+
+}
+
+wxString lmCadence::GetName()
+{
+    //get the functions
+    int iC;
+	wxString sName = CadenceTypeToName(m_nType) + _T(" : ");
+    for (iC=0; iC < lmCHORDS_IN_CADENCE; iC++)
+    {
+        wxString sFunct = aFunction[m_nType][iC];
+        if (sFunct == _T("")) break;
+		if (iC != 0) sName += _T(" -> ");
+		sName += sFunct;
+	}
+	return sName;
+
+}
 
 //----------------------------------------------------------------------------------------
 //global functions
 //----------------------------------------------------------------------------------------
 
-//wxString ScaleTypeToName(lmECadenceType nType)
-//{
-//    wxASSERT(nType < est_Max);
-//
-//    //language dependent strings. Can not be statically initiallized because
-//    //then they do not get translated
-//    if (!m_fStringsInitialized)
-//    {
-//        // Major scales
-//        m_sCadenceName[est_MajorNatural] = _("Major natural");
-//        m_sCadenceName[est_MajorTypeII] = _("Major type II");
-//        m_sCadenceName[est_MajorTypeIII] = _("Major type III");
-//        m_sCadenceName[est_MajorTypeIV] = _("Major type IV");
-//
-//        // Minor scales
-//        m_sCadenceName[est_MinorNatural] = _("Minor natural");
-//        m_sCadenceName[est_MinorDorian] = _("Minor Dorian");
-//        m_sCadenceName[est_MinorHarmonic] = _("Minor Harmonic");
-//        m_sCadenceName[est_MinorMelodic] = _("Minor Melodic");
-//
-//        // Greek scales
-//        m_sCadenceName[est_GreekIonian] = _("Greek Ionian");
-//        m_sCadenceName[est_GreekDorian] = _("Greek Dorian");
-//        m_sCadenceName[est_GreekPhrygian] = _("Greek Phrygian");
-//        m_sCadenceName[est_GreekLydian] = _("Greek Lydian");
-//        m_sCadenceName[est_GreekMixolydian] = _("Greek Mixolydian");
-//        m_sCadenceName[est_GreekAeolian] = _("Greek Aeolian");
-//        m_sCadenceName[est_GreekLocrian] = _("Greek Locrian");
-//
-//        // Other scales
-//        m_sCadenceName[est_PentatonicMinor] = _("Pentatonic minor");
-//        m_sCadenceName[est_PentatonicMajor] = _("Pentatonic major");
-//        m_sCadenceName[est_Blues] = _("Blues");
-//        m_sCadenceName[est_WholeTones] = _("Whole tones");
-//        m_sCadenceName[est_Chromatic] = _("Chromatic");
-//
-//        m_fStringsInitialized = true;
-//    }
-//
-//    return m_sCadenceName[nType];
-//
-//}
-//
+wxString CadenceTypeToName(lmECadenceType nType)
+{
+    wxASSERT(nType <= lm_eCadMaxCadence);
+
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    if (!m_fStringsInitialized)
+    {
+	    // Terminal cadences
+		    // Perfect authentic cadences
+        m_sCadenceName[lm_eCadPerfect_V_I] = _("Perfect");
+        m_sCadenceName[lm_eCadPerfect_V7_I] = _("Perfect");
+        m_sCadenceName[lm_eCadPerfect_Ic64_V] = _("Perfect");
+        m_sCadenceName[lm_eCadPerfect_Va5_I] = _("Perfect");
+        m_sCadenceName[lm_eCadPerfect_Vd5_I] = _("Perfect");
+			// Plagal cadences
+        m_sCadenceName[lm_eCadPlagal_IV_I] = _("Plagal");
+        m_sCadenceName[lm_eCadPlagal_iv_I] = _("Plagal");
+        m_sCadenceName[lm_eCadPlagal_II_I] = _("Plagal");
+        m_sCadenceName[lm_eCadPlagal_ii_I] = _("Plagal");
+        m_sCadenceName[lm_eCadPlagal_VI_I] = _("Plagal");
+
+		// Transient cadences
+			// Imperfect authentic cadences
+	    m_sCadenceName[lm_eCadImperfect_V_I] = _("Imperfect authentic");
+			// Deceptive cadences
+        m_sCadenceName[lm_eCadDeceptive_V_IV] = _("Deceptive");
+        m_sCadenceName[lm_eCadDeceptive_V_iv] = _("Deceptive");
+        m_sCadenceName[lm_eCadDeceptive_V_VI] = _("Deceptive");
+        m_sCadenceName[lm_eCadDeceptive_V_vi] = _("Deceptive");
+        m_sCadenceName[lm_eCadDeceptive_V_ii] = _("Deceptive");
+        m_sCadenceName[lm_eCadDeceptive_V_III] = _("Deceptive");
+        m_sCadenceName[lm_eCadDeceptive_V_VII] = _("Deceptive");
+			// Half cadences
+        m_sCadenceName[lm_eCadHalf_iic6_V] = _("Half cadence");
+        m_sCadenceName[lm_eCadHalf_IV_V] = _("Half cadence");
+        m_sCadenceName[lm_eCadHalf_I_V] = _("Half cadence");
+        m_sCadenceName[lm_eCadHalf_IV6_V] = _("Half cadence");
+        m_sCadenceName[lm_eCadHalf_II_V] = _("Half cadence");
+        m_sCadenceName[lm_eCadHalf_IIdimc6_V] = _("Half cadence");
+        m_sCadenceName[lm_eCadHalf_VdeVdim5c64_V] = _("Half cadence");
+        m_sCadenceName[lm_eCadLastHalf] = _("Half cadence");
+
+        m_fStringsInitialized = true;
+    }
+
+    return m_sCadenceName[nType];
+
+}
+
 //int NumNotesInScale(lmECadenceType nType)
 //{
 //    wxASSERT(nType < est_Max);

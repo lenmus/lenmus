@@ -86,6 +86,12 @@ private:
 
         // member variables
 
+    enum {
+        m_NUM_COLS = 4,
+        m_NUM_ROWS = 5,
+        m_NUM_BUTTONS = 20,     // NUM_COLS * NUM_ROWS;
+    };
+
     lmScore*            m_pChordScore;      //solution score with the chord
     lmScore*            m_pAuxScore;        //score to play user selected chords
     lmScoreAuxCtrol*    m_pScoreCtrol;
@@ -102,10 +108,10 @@ private:
     int             m_nMode;
 
     //answer
-    wxStaticText*   m_pRowLabel[5];
-    wxButton*       m_pAnswerButton[ect_Max];   //buttons for the answers
-    int             m_nRealChord[ect_Max];      // chord that corresponds
-                                                // to each valid button
+    wxStaticText*   m_pRowLabel[m_NUM_ROWS];
+    wxButton*       m_pAnswerButton[m_NUM_BUTTONS]; //buttons for the answers
+    int             m_nRealChord[m_NUM_BUTTONS];    // chord that corresponds
+                                                    // to each valid button
     int             m_nRespIndex;           //index to the button with the right answer
     wxString        m_sAnswer;              //The names of each interval
 

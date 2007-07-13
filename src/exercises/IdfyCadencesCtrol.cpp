@@ -38,9 +38,10 @@
 #include "../auxmusic/Conversion.h"
 
 #include "../ldp_parser/LDPParser.h"
-#include "../auxmusic/Interval.h"
+//#include "../auxmusic/Interval.h"
 #include "../app/DlgCfgIdfyCadence.h"
 #include "../auxmusic/ChordManager.h"
+#include "../auxmusic/Cadence.h"
 
 
 #include "../globals/Colors.h"
@@ -90,8 +91,6 @@ lmIdfyCadencesCtrol::lmIdfyCadencesCtrol(wxWindow* parent, wxWindowID id,
     //initializatios to allow to play scales
     //TODO: Review this
     m_nKey = earmDo;
-    m_sRootNote = _T("c4");
-    m_fAscending = m_pConstrains->GetRandomPlayMode();
 
     if (m_fTheoryMode) NewProblem();
 
@@ -223,9 +222,6 @@ wxString lmIdfyCadencesCtrol::SetNewProblem()
     //This method must prepare the problem score and set variables:
     //  m_pProblemScore, m_sAnswer, m_nRespIndex and m_nPlayMM
 
-    //select a random mode
-    m_fAscending = m_pConstrains->GetRandomPlayMode();
-
     // generate a random cadence
     lmECadenceType nCadenceType = m_pConstrains->GetRandomCadence();
 
@@ -233,15 +229,23 @@ wxString lmIdfyCadencesCtrol::SetNewProblem()
     lmRandomGenerator oGenerator;
     m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
 
-    //Generate a random root note
-    EClefType nClef = eclvSol;
-    m_sRootNote = oGenerator.GenerateRandomRootNote(nClef, m_nKey, false);  //false = do not allow accidentals. Only those in the key signature
-
     //create the score
-    m_nKey = earmDo;
+    EClefType nClef = eclvSol;
     m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore);
 
-    //compute the index for the button that corresponds to the right answer
+	// If it was not possible to cleate the cadence for this key signature, try
+	// again with another cadence
+	int nTimes = 0;
+	while (m_sAnswer == _T("")) {
+		nCadenceType = m_pConstrains->GetRandomCadence();
+		m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore);
+		if (++nTimes == 1000) {
+			wxLogMessage(_T("[lmIdfyCadencesCtrol::SetNewProblem] Loop. Impossible to get a cadence."));
+			break;
+		}
+	}
+
+	//compute the index for the button that corresponds to the right answer
     int i;
     for (i = 0; i < m_NUM_BUTTONS; i++) {
         if (nCadenceType >= m_nStartCadence[i] && nCadenceType < m_nEndCadence[i]) break;
@@ -262,9 +266,8 @@ wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType
                                            lmScore** pScore)
 {
     //create the chords
-    lmChordManager oChord[2];
-    oChord[0].Create(_T("g4"), ect_MajorTriad, 0, m_nKey);
-    oChord[1].Create(_T("c4"), ect_MajorTriad, 0, m_nKey);
+    lmCadence oCad;
+    if (!oCad.Create(nType, m_nKey)) return _T("");
 
     //delete the previous score
     if (*pScore) {
@@ -287,29 +290,29 @@ wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType
     pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
     pVStaff->AddClef( nClef );
     pVStaff->AddKeySignature( m_nKey );
-    pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
-
-//    pVStaff->AddSpacer(30);       // 3 lines
+    pVStaff->AddTimeSignature(2 ,4);
 
     // Loop to add chords
-    int nNumNotes;
-    for (int iC=0; iC < 2; iC++)
+    for (int iC=0; iC < oCad.GetNumChords(); iC++)
     {
-        nNumNotes = oChord[iC].GetNumNotes();
-        sPattern = _T("(n ") + oChord[iC].GetPattern(0) + _T(" r)");
+        pVStaff->AddSpacer(15);       
+        if (iC != 0) pVStaff->AddBarline(etb_SimpleBarline);
+        lmChordManager* pChord = oCad.GetChord(iC);
+        int nNumNotes = pChord->GetNumNotes();
+        sPattern = _T("(n ") + pChord->GetPattern(0) + _T(" r)");
         pNode = parserLDP.ParseText( sPattern );
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
         for (int i=1; i < nNumNotes; i++) {
             sPattern = _T("(na ");
-            sPattern += oChord[iC].GetPattern(i);
+            sPattern += pChord->GetPattern(i);
             sPattern +=  _T(" r)");
             pNode = parserLDP.ParseText( sPattern );
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
         }
-        pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);
     }
+    pVStaff->AddBarline(etb_EndBarline);
 
-    //return cadence type
-    return  _T("Transient");
+    //return cadence name
+    return  oCad.GetName();
 
 }

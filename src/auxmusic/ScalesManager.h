@@ -63,7 +63,6 @@ public:
     EScaleType GetScaleType() { return m_nType; }
     wxString GetName() { return ScaleTypeToName( m_nType ); }
     int GetNumNotes();
-//    int GetMidiNote(int i);
     wxString GetPattern(int i);
 
 
@@ -74,7 +73,6 @@ private:
 
     EScaleType      m_nType;
     EKeySignatures  m_nKey;
-//    int             m_ntMidi[lmNOTES_IN_SCALE];
     lmNoteBits      m_tBits[lmNOTES_IN_SCALE];
 
 };

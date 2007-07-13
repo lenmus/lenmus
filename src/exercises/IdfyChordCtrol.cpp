@@ -62,9 +62,6 @@ extern bool g_fAutoNewProblem;          // in Preferences.cpp
 
 //Layout definitions
 const int BUTTONS_DISTANCE = 5;        //pixels
-const int NUM_BUTTONS = ect_Max;
-const int NUM_COLS = 4;
-const int NUM_ROWS = 5;
 
 static wxString m_sButtonLabel[ect_Max];
 
@@ -73,18 +70,17 @@ enum {
     ID_LINK_SEE_SOURCE = 3000,
     ID_LINK_DUMP,
     ID_LINK_MIDI_EVENTS,
-    ID_BUTTON,
-    ID_LINK = ID_BUTTON + NUM_BUTTONS,
     ID_LINK_NEW_PROBLEM,
     ID_LINK_PLAY,
     ID_LINK_SOLUTION,
-    ID_LINK_SETTINGS
+    ID_LINK_SETTINGS,
+    ID_BUTTON,
 
 };
 
 
 BEGIN_EVENT_TABLE(lmIdfyChordCtrol, wxWindow)
-    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmIdfyChordCtrol::OnRespButton)
+    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmIdfyChordCtrol::OnRespButton)
     EVT_SIZE            (lmIdfyChordCtrol::OnSize)
 
     LM_EVT_URL_CLICK    (ID_LINK_SEE_SOURCE, lmIdfyChordCtrol::OnDebugShowSourceScore)
@@ -107,7 +103,7 @@ lmIdfyChordCtrol::lmIdfyChordCtrol(wxWindow* parent, wxWindowID id,
     //initializations
     SetBackgroundColour(*wxWHITE);
     int i;
-    for (i=0; i < NUM_BUTTONS; i++) { m_pAnswerButton[i] = (wxButton*)NULL; }
+    for (i=0; i < m_NUM_BUTTONS; i++) { m_pAnswerButton[i] = (wxButton*)NULL; }
     m_fQuestionAsked = false;
     m_pChordScore = (lmScore*)NULL;
     m_pAuxScore = (lmScore*)NULL;
@@ -240,29 +236,27 @@ lmIdfyChordCtrol::lmIdfyChordCtrol(wxWindow* parent, wxWindowID id,
     //create buttons for the answers, two rows
     int iB = 0;
 
-    m_pKeyboardSizer = new wxFlexGridSizer(NUM_ROWS+1, NUM_COLS+1, 10, 0);
+    m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS+1, m_NUM_COLS+1, 10, 0);
     pMainSizer->Add(
         m_pKeyboardSizer,
         wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 10) );
 
-    for (int iRow=0; iRow < NUM_ROWS; iRow++) {
+    for (int iRow=0; iRow < m_NUM_ROWS; iRow++) {
         m_pKeyboardSizer->Add(
             m_pRowLabel[iRow] = new wxStaticText(this, -1, _T("")),
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
 
         // the buttons for this row
-        for (int iCol=0; iCol < NUM_COLS; iCol++) {
-            iB = iCol + iRow * NUM_COLS;    // button index
-            if (iB >= NUM_BUTTONS) break;
+        for (int iCol=0; iCol < m_NUM_COLS; iCol++) {
+            iB = iCol + iRow * m_NUM_COLS;    // button index
+            if (iB >= m_NUM_BUTTONS) break;
             m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, _T("Undefined"),
                 wxDefaultPosition, wxSize(120, 24));
             m_pKeyboardSizer->Add(
                 m_pAnswerButton[iB],
                 wxSizerFlags(0).Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
-            if (m_sButtonLabel[iB].IsEmpty()) {
-                m_pAnswerButton[iB]->Show(false);
-                m_pAnswerButton[iB]->Enable(false);
-            }
+            //m_pAnswerButton[iB]->Show(false);
+            //m_pAnswerButton[iB]->Enable(false);
         }
     }
 
@@ -319,15 +313,15 @@ void lmIdfyChordCtrol::SetUpButtons()
     //Reconfigure buttons keyboard depending on the chords allowed
 
     int iC;     // real chord. Correspondence to EChordTypes
-    int iB;     // button index: 0 .. NUM_BUTTONS-1
-    int iR;     // row index: 0 .. NUM_ROWS-1
+    int iB;     // button index: 0 .. m_NUM_BUTTONS-1
+    int iR;     // row index: 0 .. m_NUM_ROWS-1
 
     //hide all rows and buttons so that later we only have to enable the valid ones
-    for (iB=0; iB < NUM_BUTTONS; iB++) {
+    for (iB=0; iB < m_NUM_BUTTONS; iB++) {
         m_pAnswerButton[iB]->Show(false);
         m_pAnswerButton[iB]->Enable(false);
     }
-    for (int iRow=0; iRow < NUM_ROWS; iRow++) {
+    for (int iRow=0; iRow < m_NUM_ROWS; iRow++) {
         m_pRowLabel[iRow]->SetLabel(_T(""));
     }
 
@@ -343,18 +337,18 @@ void lmIdfyChordCtrol::SetUpButtons()
                 m_pAnswerButton[iB]->Show(true);
                 m_pAnswerButton[iB]->Enable(true);
                 iB++;
-                if (iB % NUM_COLS == 0) {
+                if (iB % m_NUM_COLS == 0) {
                     iR++;
                     m_pRowLabel[iR]->SetLabel(_T(""));
                 }
            }
         }
     }
-    if (iB % NUM_COLS != 0) iB += (NUM_COLS - (iB % NUM_COLS));
+    if (iB % m_NUM_COLS != 0) iB += (m_NUM_COLS - (iB % m_NUM_COLS));
 
     //sevenths
     if (m_pConstrains->IsValidGroup(ecg_Sevenths)) {
-        iR = iB / NUM_COLS;
+        iR = iB / m_NUM_COLS;
         m_pRowLabel[iR]->SetLabel(_("Seventh chords:"));
         for (iC=ect_LastTriad+1; iC <= ect_LastSeventh; iC++) {
             if (m_pConstrains->IsChordValid((EChordType)iC)) {
@@ -363,18 +357,18 @@ void lmIdfyChordCtrol::SetUpButtons()
                 m_pAnswerButton[iB]->Show(true);
                 m_pAnswerButton[iB]->Enable(true);
                 iB++;
-                if (iB % NUM_COLS == 0) {
+                if (iB % m_NUM_COLS == 0) {
                     iR++;
                     m_pRowLabel[iR]->SetLabel(_T(""));
                 }
            }
         }
     }
-    if (iB % NUM_COLS != 0) iB += (NUM_COLS - (iB % NUM_COLS));
+    if (iB % m_NUM_COLS != 0) iB += (m_NUM_COLS - (iB % m_NUM_COLS));
 
     //Other
     if (m_pConstrains->IsValidGroup(ecg_Sixths)) {
-        iR = iB / NUM_COLS;
+        iR = iB / m_NUM_COLS;
         m_pRowLabel[iR]->SetLabel(_("Other chords:"));
         for (iC=ect_LastSeventh+1; iC < ect_Max; iC++) {
             if (m_pConstrains->IsChordValid((EChordType)iC)) {
@@ -383,7 +377,7 @@ void lmIdfyChordCtrol::SetUpButtons()
                 m_pAnswerButton[iB]->Show(true);
                 m_pAnswerButton[iB]->Enable(true);
                 iB++;
-                if (iB % NUM_COLS == 0) {
+                if (iB % m_NUM_COLS == 0) {
                     iR++;
                     m_pRowLabel[iR]->SetLabel(_T(""));
                 }
@@ -507,7 +501,7 @@ void lmIdfyChordCtrol::NewProblem()
 
     //compute the index for the button that corresponds to the right answer
     int i;
-    for (i = 0; i < NUM_BUTTONS; i++) {
+    for (i = 0; i < m_NUM_BUTTONS; i++) {
         if (m_nRealChord[i] == nChordType) break;
     }
     m_nRespIndex = i;
@@ -593,7 +587,7 @@ wxString lmIdfyChordCtrol::PrepareScore(EClefType nClef, EChordType nType, lmSco
 
 void lmIdfyChordCtrol::EnableButtons(bool fEnable)
 {
-    for (int iB=0; iB < NUM_BUTTONS; iB++) {
+    for (int iB=0; iB < m_NUM_BUTTONS; iB++) {
         m_pAnswerButton[iB]->Enable(fEnable);
     }
 }
@@ -649,8 +643,8 @@ void lmIdfyChordCtrol::ResetExercise()
     m_pScoreCtrol->Update();    //to force to clear it now
 
     // restore buttons' normal color
-    for (int iB=0; iB < NUM_BUTTONS; iB++) {
-        if (!m_sButtonLabel[iB].IsEmpty()) {
+    for (int iB=0; iB < m_NUM_BUTTONS; iB++) {
+        if (!m_pAnswerButton[iB]->IsEnabled()) {
             m_pAnswerButton[iB]->SetBackgroundColour( g_pColors->Normal() );
         }
     }

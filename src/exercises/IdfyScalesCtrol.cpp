@@ -62,14 +62,12 @@ extern lmLogger* g_pLogger;
 
 //Layout definitions
 const int BUTTONS_DISTANCE = 5;        //pixels
-//const int NUM_BUTTONS = 24;
 
 static wxString m_sButtonLabel[est_Max];
 
 //IDs for controls
 enum {
     ID_BUTTON = 3010,
-//    ID_LINK = ID_BUTTON + NUM_BUTTONS,
 };
 
 
@@ -242,7 +240,6 @@ wxDialog* lmIdfyScalesCtrol::GetSettingsDlg()
 {
     wxDialog* pDlg = new lmDlgCfgIdfyScale(this, m_pConstrains, m_fTheoryMode);
     return pDlg;
-    //return (wxDialog*)NULL;
 }
 
 void lmIdfyScalesCtrol::PrepareAuxScore(int nButton)
