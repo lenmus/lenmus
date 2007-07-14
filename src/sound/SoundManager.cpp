@@ -602,12 +602,16 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
     }
     //Here i points to the first event of desired measure that is not a control event.
 
-    //Define and initialize time counter
+    //Define and initialize time counter. If playback starts not at the begining but 
+	//in another measure, advance time counter to that measure
     long nTime = 0;
+	if (nEvStart > 1) {
+		nTime = (pMtr->GetInterval() * m_aEvents[nEvStart]->DeltaTime) / nMtrBeatDuration; //EIGHT_DURATION;
+	}
 
 
-    //first note could be a sincopa o a contratiempo. In these cases metronome will
-    //start before the first note
+    //first note could be a syncopated note or an off-beat note. In these cases metronome
+	//will start before the first note
     nMtrEvDeltaTime = (m_aEvents[i]->DeltaTime / nMtrBeatDuration) * nMtrBeatDuration;
 
     /*! @todo
