@@ -702,7 +702,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     }
 
     //default values
-	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();	
+	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();
 	int nMIDIInstr = g_pMidi->DefaultVoiceInstr();
     bool fMusicFound = false;               // <MusicData> tag found
     wxString sNumStaves = _T("1");          //one staff
@@ -987,9 +987,8 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
 
 //    // parse element <InfoMIDI>
 //    Set pX = pNode->GetParameter(iP)
-    int nMIDIChannel, nMIDIInstr;
-//    nMIDIChannel = nMidiCanalVoz
-//    nMIDIInstr = nMidiInstrVoz
+	int nMIDIChannel = g_pMidi->DefaultVoiceChannel();
+	int nMIDIInstr = g_pMidi->DefaultVoiceInstr();
 //
 //    if (pX->GetName() = "INFOMIDI") {
 //        AnalizarInfoMIDI pX, nMIDIChannel, nMIDIInstr
@@ -997,7 +996,6 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
 //    }
 
     // create the instrument with empty VStaves
-    nMIDIChannel=0, nMIDIInstr=0;        //dbg
     pScore->AddInstrument(nVStaves, nMIDIChannel, nMIDIInstr, _T(""));
 
     //Loop to analyze elements <Pentagrama>
@@ -1310,7 +1308,6 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     wxASSERT(sElmName.Left(1) == m_pTags->TagName(_T("n"), _T("SingleChar")) ||
              sElmName.Left(1) == m_pTags->TagName(_T("r"), _T("SingleChar")) ||
              sElmName == _T("na") );
-             //          --------  compatibility 1.3
 
     bool fIsRest = (sElmName.Left(1) == m_pTags->TagName(_T("r"), _T("SingleChar")) );   //analysing a rest
 
@@ -1342,14 +1339,14 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     EAccidentals nAccidentals = eNoAccidentals;
     lmEPitchType nPitchType = lm_ePitchRelative;
 
-    bool fInChord = !fIsRest && ( (m_nVersion < 105 && sElmName == _T("na")) || fChord );
+    bool fInChord = !fIsRest && ((sElmName == _T("na")) || fChord );
     long nParms = pNode->GetNumParms();
 
     //get parameters for pitch and duration
     int iP = 1;
     wxString sPitch = _T("");
     wxString sDuration = _T("");
-    if (m_nVersion >= 105 && sElmName.Length() > 1) {
+    if (sElmName != _T("na") && sElmName.Length() > 1) {
         //abbreviated notation. Split node name
         bool fPitchFound = false;
         bool fOctaveFound = false;

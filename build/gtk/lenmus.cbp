@@ -101,6 +101,8 @@
 		<Unit filename="../../src/app/global.h" />
 		<Unit filename="../../src/app/scoreView.cpp" />
 		<Unit filename="../../src/app/scoreView.h" />
+		<Unit filename="../../src/auxmusic/Cadence.cpp" />
+		<Unit filename="../../src/auxmusic/Cadence.h" />
 		<Unit filename="../../src/auxmusic/ChordManager.cpp" />
 		<Unit filename="../../src/auxmusic/ChordManager.h" />
 		<Unit filename="../../src/auxmusic/Composer.cpp" />
@@ -320,6 +322,7 @@
 		<Unit filename="../../src/xml_parser/XMLParser.h" />
 		<Extensions>
 			<code_completion />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

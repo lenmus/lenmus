@@ -611,7 +611,7 @@
 	"wx/wx.h"
 	"wx/xml/xml.h"
 
-1184247510 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ChordManager.h
+1184312966 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ChordManager.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/Score.h"
@@ -816,7 +816,7 @@
 	"../app/ScoreDoc.h"
 	"../app/scoreView.h"
 
-1184249566 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ChordManager.cpp
+1184334110 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ChordManager.cpp
 	"wx/wxprec.h"
 	"ChordManager.h"
 	"Conversion.h"
@@ -825,7 +825,7 @@
 	"../score/KeySignature.h"
 	"../app/Logger.h"
 
-1184227976 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
+1184335736 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/frame.h"
@@ -909,7 +909,7 @@
 	"../score/KeySignature.h"
 	"../app/Logger.h"
 
-1180335114 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ScalesManager.h
+1184307556 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/ScalesManager.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"../score/Score.h"
@@ -971,7 +971,7 @@
 	"CountersCtrol.h"
 	"../auxmusic/Interval.h"
 
-1184147084 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyChordCtrol.cpp
+1184310286 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyChordCtrol.cpp
 	"wx/wxprec.h"
 	"IdfyChordCtrol.h"
 	"UrlAuxCtrol.h"
@@ -985,7 +985,7 @@
 	"../globals/Colors.h"
 	"../sound/MidiManager.h"
 
-1180335108 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyChordCtrol.h
+1184309730 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyChordCtrol.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"ChordConstrains.h"
@@ -1127,7 +1127,7 @@
 	"Generators.h"
 	"../score/KeySignature.h"
 
-1184147084 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyScalesCtrol.cpp
+1184309730 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyScalesCtrol.cpp
 	"wx/wxprec.h"
 	"IdfyScalesCtrol.h"
 	"UrlAuxCtrol.h"
@@ -1550,7 +1550,7 @@
 	"wx/wx.h"
 	"LDPNode.h"
 
-1183621472 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.cpp
+1184493937 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/ldp_parser/LDPParser.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/textfile.h"
@@ -1908,14 +1908,14 @@
 	"wx/wxprec.h"
 	"SoundEvents.h"
 
-1184246976 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/sound/SoundManager.cpp
+1184492972 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/sound/SoundManager.cpp
 	"wx/wxprec.h"
 	"SoundManager.h"
 	"../sound/Metronome.h"
 	"../sound/MidiManager.h"
 	"../app/MainFrame.h"
 
-1180336202 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/sound/WaveManager.cpp
+1184494614 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/sound/WaveManager.cpp
 	"wx/wxprec.h"
 	"WaveManager.h"
 	"wx/filename.h"
@@ -2020,7 +2020,7 @@
 	"../app/Logger.h"
 	"../sound/MidiManager.h"
 
-1184147896 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyCadencesCtrol.h
+1184316292 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyCadencesCtrol.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"CadencesConstrains.h"
@@ -2049,7 +2049,7 @@
 	"CadencesConstrains.h"
 	"Generators.h"
 
-1184247510 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyCadencesCtrol.cpp
+1184494467 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyCadencesCtrol.cpp
 	"wx/wxprec.h"
 	"IdfyCadencesCtrol.h"
 	"UrlAuxCtrol.h"
@@ -2057,9 +2057,9 @@
 	"Generators.h"
 	"../auxmusic/Conversion.h"
 	"../ldp_parser/LDPParser.h"
-	"../auxmusic/Interval.h"
 	"../app/DlgCfgIdfyCadence.h"
 	"../auxmusic/ChordManager.h"
+	"../auxmusic/Cadence.h"
 	"../globals/Colors.h"
 	"../app/Logger.h"
 	"../sound/MidiManager.h"
@@ -2078,4 +2078,22 @@
 	"DlgCfgIdfyCadence.h"
 	"../ldp_parser/AuxString.h"
 	"../auxmusic/Conversion.h"
+
+1184337012 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/Cadence.h
+	"wx/wxprec.h"
+	"wx/wx.h"
+	"../score/Score.h"
+	"Interval.h"
+	"../exercises/CadencesConstrains.h"
+	"Conversion.h"
+	"ChordManager.h"
+
+1184337150 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/Cadence.cpp
+	"wx/wxprec.h"
+	"Cadence.h"
+	"Conversion.h"
+	"../ldp_parser/AuxString.h"
+	"../exercises/Generators.h"
+	"../score/KeySignature.h"
+	"../app/Logger.h"
 

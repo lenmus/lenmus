@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-06-15 09:33+0100\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2007-07-13 22:30+0100\n"
+"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -42,7 +42,7 @@ msgstr "Cecilio Salmerón"
 
 #: L1_MusicReading/L1_MusicReading.cpp:9
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
-msgstr "Se otorga permiso para copiar, distribuir y/o modificar este documento bajo los términos de la Licencia GNU de Documentación Libre, Versión 1.2 o cualquier otra versión posterior publicada por la Free Software Foundation; sin Secciones Invariantes ni Textos de Cubierta Delantera ni Textos de Cubierta Trasera. Una copia de la licencia está incluida en la documentación recibida junto con este programa. y también está accesible en "
+msgstr "Se otorga permiso para copiar, distribuir y/o modificar este documento bajo los términos de la Licencia GNU de Documentación Libre, Versión 1.2 o cualquier otra versión posterior publicada por la Free Software Foundation; sin Secciones Invariantes ni Textos de Cubierta Delantera ni Textos de Cubierta Trasera. Una copia de la licencia está incluida en la documentación recibida junto con este programa y también está accesible en "
 
 #: L1_MusicReading/L1_MusicReading.cpp:10
 msgid "http://www.gnu.org/licenses/fdl.html"
@@ -67,7 +67,7 @@ msgstr "Además de introducir distintas células rítimicas de complejidad creci
 
 #: L1_MusicReading/L1_MusicReading.cpp:16
 msgid " The stave. Treble (G) and bass (F) clefs. Names of notes on the stave. Extension of the stave to include two ledger lines below and above each stave."
-msgstr " El pentagrama. Ambito en las claves de Sol (violín) y Fa en 4ª (bajo), para cubrir dos líneas adicionales por encima y por debajo."
+msgstr " El pentagrama. Ámbito en las claves de Sol (violín) y Fa en 4ª (bajo), para cubrir dos líneas adicionales por encima y por debajo."
 
 #: L1_MusicReading/L1_MusicReading.cpp:17
 msgid " Note values of whole (semibreve), half (minim), quarter (crotchet), eighth (quaver) and sixteenth (semiquaver), and their equivalent rests. Tied notes. Single-dotted notes and rests."
@@ -95,7 +95,7 @@ msgstr "Claves y ámbito de notas:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:23
 msgid " The course starts with the G clef using a very reduced note range (e4-g4). Progressively, the note range is increased to reach the range c4-f5 in lesson 14. Next, the F key is introduced, again with a very reduced note range (a3-c4) and from there, the exercises of all following lessons use the F and G clef indistinctely. The note range is continuously being broadened in both clefs (G: a3-c6 y F: a2-e4), to cover two legder lines, above and below."
-msgstr "El curso comienza con la clave de Sol, utilizándo un ámbito reducido (Mi4-Sol4). Progresivamente, el ámbito se va ampliando hasta alcanzar, en la lección 14, el rango Do4-Fa5. En la lección 15 se introduce la clave de Fa en 4ª línea, de nuevo con un ámbito muy reducido (La3-Do4) y en las sucesivas lecciones los ejercicios emplean indistintamente la clave de Sol y la de Fa. El ámbito de notas va ampliándose prograsivamente hasta alcanzar dos líneas adicionales, por encima y por debajo, en ambas claves (Clave de Sol: La3 a Do6. Clave de Fa: La2 a Mi4)."
+msgstr "El curso comienza con la clave de Sol, utilizándo un ámbito reducido (Mi4-Sol4). Progresivamente, el ámbito se va ampliando hasta alcanzar, en la lección 14, el rango Do4-Fa5. En la lección 15 se introduce la clave de Fa en 4ª línea, de nuevo con un ámbito muy reducido (La3-Do4) y en las sucesivas lecciones los ejercicios emplean indistintamente la clave de Sol y la de Fa. El ámbito de notas va ampliándose progresivamente hasta alcanzar dos líneas adicionales, por encima y por debajo, en ambas claves (Clave de Sol: La3 a Do6. Clave de Fa: La2 a Mi4)."
 
 #: L1_MusicReading/L1_MusicReading.cpp:24
 msgid "Time signatures:"
@@ -103,7 +103,7 @@ msgstr "Métricas:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:25
 msgid " In the first exercises (9 to 17) only the 2/4 simple time is used. Next, the 3/4 simple time (lesson 18) and the 4/4 simple time (lesson 19) are used. In lesson 28 the compound 6/8 is introduced and it is practised in the remaining lessons (29 to 31)."
-msgstr "En los primeros ejercicios (lecciones 9 a 17) sólo se utiliza el compás de 2/4. En la lección 18 se introduce el de 3/4 y en la 19 el de 4/4. Estos tres compases se utilizan hasta la lección 28, en la que se introduce el compás de 6/8 y se dedican a este compas las restantes lecciones (29 a 31)."
+msgstr "En los primeros ejercicios (lecciones 9 a 17) sólo se utiliza el compás de 2/4. En la lección 18 se introduce el de 3/4 y en la 19 el de 4/4. Estos tres compases se utilizan hasta la lección 28, en la que se introduce el compás de 6/8 y se dedican a este compás las restantes lecciones (29 a 31)."
 
 #: L1_MusicReading/L1_MusicReading.cpp:26
 msgid "Key signatures:"
@@ -111,7 +111,7 @@ msgstr "Armaduras:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:27
 msgid " The exercises in the first two practical lessons (9 and 10) have scores using only the C major / A minor key signature (no accidentals). The key signature is introduced in lesson 13 and from there (lessons 14 to 17) the exercises use also one accidental (G major / E minor and F major / D minor). In the remaining lessons (18 to 31) exercises use up to two accidentals (D major / B minor and B flat major / G minor)."
-msgstr " Los ejercicios de las dos primeras lecciones prácticas (lecciones 9 y 10) tienen partituras que utilizan sólo las armaduras de Do mayor y La menor, esto es, sin alteraciones. El concepto de armadura se introduce en la lección 13 y a partir de ahí y hasta la lección 17, los ejercicios pueden utilizar armaduras con una alteración (tonalidades de Sol mayor / Mi menor y Fa mayor / Re menor). En el resto de las lecciones (18 a 31) los ejercicios pueden tener hasat dos alteraciones (Re mayor / Si menor y Si bemol mayor / Sol menor)."
+msgstr " Los ejercicios de las dos primeras lecciones prácticas (lecciones 9 y 10) tienen partituras que utilizan sólo las armaduras de Do mayor y La menor, esto es, sin alteraciones. El concepto de armadura se introduce en la lección 13 y a partir de ahí y hasta la lección 17, los ejercicios pueden utilizar armaduras con una alteración (tonalidades de Sol mayor / Mi menor y Fa mayor / Re menor). En el resto de las lecciones (18 a 31) los ejercicios pueden tener hasta dos alteraciones (Re mayor / Si menor y Si bemol mayor / Sol menor)."
 
 #: L1_MusicReading/L1_MusicReading.cpp:28
 msgid "Lessons' structure"
@@ -119,7 +119,7 @@ msgstr "Estructura de las lecciones"
 
 #: L1_MusicReading/L1_MusicReading.cpp:29
 msgid "With exception of the first lessons, aimed at introducing the basic concepts of the music notation, the remaining lessons are structured into three sections:"
-msgstr "Excepto en las primeras lecciones, de orientación teórica y dedicadas a explicar los conceptos básicos de la notación musical, los restantes temas están estructurados en tres secciones:"
+msgstr "Excepto en las primeras lecciones, de orientación teórica y dedicadas a explicar los conceptos básicos de la notación musical, los restantes temas están estructurados en tres 22secciones:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:30
 msgid "In the first section the new concepts and rhythmic patterns introduced in the lesson are explained."
@@ -231,7 +231,7 @@ msgstr "Sol"
 #: L1_MusicReading/L1_MusicReading.cpp:55
 #: L1_MusicReading/L1_MusicReading.cpp:250
 msgid "As a result, the staff lines and spaces get automatically assigned to consecutive notes, as shown in the next score:"
-msgstr "Como consecuencia, todas las restabntes lineas y los espacios quedan automáticamente asignados a notas consecutivas, como se muestra en la siguiente partitura:"
+msgstr "Como consecuencia, todas las restantes líneas y los espacios quedan automáticamente asignados a notas consecutivas, como se muestra en la siguiente partitura:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:56
 #: L1_MusicReading/L1_MusicReading.cpp:63
@@ -329,7 +329,7 @@ msgstr "Semifusa"
 
 #: L1_MusicReading/L1_MusicReading.cpp:74
 msgid "In the coming lessons we will start using only the quarter note and will learn about note duration. Progressively, we will introduce the other note symbols. In this lesson we are going to learn some basic terminology about note symbols and some rules about how to draw them."
-msgstr "En las siguientes lecciones comenzaremos a estudiar la notaa negra y su duración y, progresivamente iremos estudiando los otros tipos de notas. En esta lección vamos a estudiar algunos términos y conceptos básicos relacionados con los símbolos de las notas y las reglas para dibujarlos."
+msgstr "En las siguientes lecciones comenzaremos a estudiar la nota negra y su duración y, progresivamente iremos estudiando los otros tipos de notas. En esta lección vamos a estudiar algunos términos y conceptos básicos relacionados con los símbolos de las notas y las reglas para dibujarlos."
 
 #: L1_MusicReading/L1_MusicReading.cpp:75
 msgid "The note symbols have three distinct parts: (1) the note-head, (2) the stem and (3) the flag (also named hook or tail), as depicted in next figure:"
@@ -353,7 +353,7 @@ msgstr "Compases y líneas divisorias"
 
 #: L1_MusicReading/L1_MusicReading.cpp:80
 msgid "Music is normally divided into equal parts named 'measures' (in British English the word 'bar' is used instead of 'measure'). On the staff, the end of each measure is marked with a thin vertical line, drawn from the top line to the bottom line of the staff. This line is called a bar line:"
-msgstr "La música escrita es organiza, normalmente, dividiéndola en partes llamadas 'compases'. En el pentagrama, el final de cada compás se indica por una fina raya vertical, dibujada desde la línea superios hasta la inferior. Esta raya se denomina 'línea divisoria':"
+msgstr "La música escrita se organiza, normalmente, dividiéndola en partes llamadas 'compases'. En el pentagrama, el final de cada compás se indica por una fina raya vertical, dibujada desde la línea superior hasta la inferior. Esta raya se denomina 'línea divisoria':"
 
 #: L1_MusicReading/L1_MusicReading.cpp:81
 #: L1_MusicReading/L1_MusicReading.cpp:83
@@ -388,7 +388,7 @@ msgstr "La métrica"
 
 #: L1_MusicReading/L1_MusicReading.cpp:91
 msgid "Most music has a rhythm that you can perceive as a repetitive pattern of pulses. It is easy to identify these pulses: it is what we all do when we clap our hands or tap our foot while listening to a song. These pulses are the 'beats' of the music and are the basis to organize written music."
-msgstr "La mayoría de las pieza musicales tiene un ritmo que puede fácilmente percibirse. Es fácil identificar los 'pulsos' de la música: es lo que hacemos cuando damos palmas al ritmo de la música o cuando damos golpecitos con el pie. Estos pulsos son muy importantes y constituyen la base para organizar la música escrita."
+msgstr "La mayoría de las piezas musicales tienen un ritmo que puede fácilmente percibirse. Es fácil identificar los 'pulsos' de la música: es lo que hacemos cuando damos palmas al ritmo de la música o cuando damos golpecitos con el pie. Estos pulsos son muy importantes y constituyen la base para organizar la música escrita."
 
 #: L1_MusicReading/L1_MusicReading.cpp:92
 msgid "We said in previous lesson that written music is divided on the staff into parts named 'measures'. All the measures of a piece of music will have the same number of beats. Therefore, we must learn that written music is organized by dividing it into small groups of beats, and these groups are called 'measures'."
@@ -436,7 +436,7 @@ msgstr "El tempo"
 
 #: L1_MusicReading/L1_MusicReading.cpp:103
 msgid "The tempo of a piece of music is its speed, that is, how fast or slow the beats should go. But the time signature does not give you an idea about this, as it only says how many beats there are in a measure. In written music there are two ways to specify the tempo of a piece of music. Traditionally, composers relied on using verbal descriptions, writing indications such as 'Slow', 'Very fast', or 'Calmly'. These tempo words are normally written in Italian and are very common, even today. You should learn them:"
-msgstr "El tempo de la música es su velocidad, esto es, lo rápido o lento que deben ir los pulsos del compás. Hemos visto que la métrica nos indica cuantos pulsos hay en un compás pero la métrica no nos dice nada sobre la cadencia de los pulsos. En la música escrita hay dos formas de imdicar el tempo. Tradicionalmente los compositores utilizaban descripciones verbales, escribiendo indicaciones como 'Lento', 'Muy rápido' o 'Pausado'. Estos términos normalmente se escriben en italiano y es muy frecuente encontrarlos, incluso en partituras modernas. Por ello, debes estar muy familiarizado con ellos y aprenderlos:"
+msgstr "El tempo de la música es su velocidad, esto es, lo rápido o lento que deben ir los pulsos del compás. Hemos visto que la métrica nos indica cuantos pulsos hay en un compás pero la métrica no nos dice nada sobre la cadencia de los pulsos. En la música escrita hay dos formas de indicar el tempo. Tradicionalmente los compositores utilizaban descripciones verbales, escribiendo indicaciones como 'Lento', 'Muy rápido' o 'Pausado'. Estos términos normalmente se escriben en italiano y es muy frecuente encontrarlos, incluso en partituras modernas. Por ello, debes estar muy familiarizado con ellos y aprenderlos:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:104
 #: L1_MusicReading/L1_MusicReading.cpp:131
@@ -544,7 +544,7 @@ msgstr "En vez de las letras 'm.m' también se usan los símolos de las notas:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:128
 msgid "The metronome"
-msgstr "El metronomo"
+msgstr "El metrónomo"
 
 #: L1_MusicReading/L1_MusicReading.cpp:129
 msgid "The traditional metronomes are mechanic, based on a pendulum with a rod. The pendulum rod swings back and forth in tempo, producing a 'tick' sound on each swing. Modern metronomes are electronic. The following figure shows an example of a typical mechanic metronome:"
@@ -592,7 +592,7 @@ msgstr "El metrónomo del programa LenMus"
 
 #: L1_MusicReading/L1_MusicReading.cpp:148
 msgid "The LenMus program has a buil-in metronome that you can use as an independent metronome. For example, when practising with your musical instrument or when doing sight-reading."
-msgstr "El programa LenMus incorpora un metrónomo que puedes utilizarcuando quieras. Por ejemplo, al practicar con tu instrumento musical o cuando estes realizando ejercicios de solfeo."
+msgstr "El programa LenMus incorpora un metrónomo que puedes utilizar cuando quieras. Por ejemplo, al practicar con tu instrumento musical o cuando estés realizando ejercicios de solfeo."
 
 #: L1_MusicReading/L1_MusicReading.cpp:149
 msgid "Just click on the 'metronome' button"
@@ -617,7 +617,7 @@ msgstr "La negra y su silencio"
 
 #: L1_MusicReading/L1_MusicReading.cpp:154
 msgid "You know that in written music sound is indicated by using note symbols, and that there exists a note symbol for each duration. In written music silence is also indicated with symbols, called 'rests'. There also exists a rest for each note duration. The following score shows a quarter note and the quarter rest:"
-msgstr "Sabemos ya que la forma de representar los sonidos en la partitura es mediante notas, y que exite un símbolo distinto para las notas en función de su duración. En la música escrita el silencio o ausencia de sonido se representa ta´mbien mediante símbolos llamados 'silencios'. Existe igualmente un símbolo para cada duración de un silencio. La siguiente partitura mustra los símbolos para la nota negra y el silencio de negra:"
+msgstr "Sabemos ya que la forma de representar los sonidos en la partitura es mediante notas, y que existe un símbolo distinto para las notas en función de su duración. En la música escrita el silencio o ausencia de sonido se representa también mediante símbolos llamados 'silencios'. Existe igualmente un símbolo para cada duración de un silencio. La siguiente partitura muestra los símbolos para la nota negra y el silencio de negra:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:155
 msgid "In this lesson we will start reading music with scores composed just by quarter notes and rests. These rhythms are very simple, as each note or rest gets a beat. Listen for example to the following song:"
@@ -651,7 +651,7 @@ msgstr "Ejercicios"
 
 #: L1_MusicReading/L1_MusicReading.cpp:157
 msgid "Now is your time to start reading music. Remember to mark the beats with your hand or foot. Use also the metronome. The note range will be very limited (two first lines and first space, notes E4, F4 and G4) to help you to memorize them. The range will be broadened, progressively and slowly, in the following lessons."
-msgstr "Ahora es tu turno de comenzar a leer música. Recuerda que es importante que te acostumbres a marcar los pulsos, bien con la mano o con el pie. Puede utilizar también el metrónomo. Para comenzar, el ámbito de notas va a ser muy reducido (las dos primeras líneas y el primer silencio, notas Mi, Fa y Sol) de forma que no tengas dificultades para irlas aprendiendo. Progresivamente, en los ejercicios de las lecciones sucesivas, se irá ampliando el ámbito."
+msgstr "Ahora es tu turno de comenzar a leer música. Recuerda que es importante que te acostumbres a marcar los pulsos, bien con la mano o con el pie. Puedes utilizar también el metrónomo. Para comenzar, el ámbito de notas va a ser muy reducido (las dos primeras líneas y el primer silencio, notas Mi, Fa y Sol) de forma que no tengas dificultades para irlas aprendiendo. Progresivamente, en los ejercicios de las lecciones sucesivas, se irá ampliando el ámbito."
 
 #: L1_MusicReading/L1_MusicReading.cpp:158
 #: L1_MusicReading/L1_MusicReading.cpp:173
@@ -880,7 +880,7 @@ msgstr "Ejercicio 2"
 #: L1_MusicReading/L1_MusicReading.cpp:508
 #: L1_MusicReading/L1_MusicReading.cpp:518
 msgid " - Read scores containing the rhythms studied in this lesson."
-msgstr "- Practica la lectura de partituras que los patrones estudiados en esta lección."
+msgstr "- Practica la lectura de partituras con los patrones estudiados en esta lección."
 
 #: L1_MusicReading/L1_MusicReading.cpp:202
 #: L1_MusicReading/L1_MusicReading.cpp:243
@@ -925,11 +925,11 @@ msgstr "natural"
 
 #: L1_MusicReading/L1_MusicReading.cpp:211
 msgid "A sharp sign raises the pitch of a note by half a step (one semitone). A flat sign lowers the pitch of a note half a step (one semitone). A natural sign cancels the effect of a flat or a sharp."
-msgstr "Un sostenido eleva la altura de la nota en un semitono. Un bemosl lo disminuye en un semitono. Y un natural cancela el efecto de un sostenido o un bemol anterior."
+msgstr "Un sostenido eleva la altura de la nota en un semitono. Un bemol lo disminuye en un semitono. Y un natural cancela el efecto de un sostenido o un bemol anterior."
 
 #: L1_MusicReading/L1_MusicReading.cpp:212
 msgid "An accidental sign alters not only the pitch of the note that it is attached to, but also the pitch of any subsequent occurrence of the same note in the same measure. Notes with the same pitch name, but in a higher or lower octave are not affected. The effect of the accidental ends at the end of the measure, so notes in the next measure will not be altered, except those tied to one in the previous measure."
-msgstr "Un signo de alteración afecta no sólo a la nota a la que precede sino también a todas las siguientes de igual nombrey misma octava dentro del mismo compás. Las notas de igual nombre peros de octavas superiores o inferiores no resultan afectadas. El efecto de la alteración dura hast el final del compás; por ello, las notas en los siguientes compases no resultarán afectadas, excepto aquellas que estén ligadas a una alterada en el compas en el que se incluye la alteración."
+msgstr "Un signo de alteración afecta no sólo a la nota a la que precede sino también a todas las siguientes de igual nombre y misma octava dentro del mismo compás. Las notas de igual nombre pero de octavas superiores o inferiores no resultan afectadas. El efecto de la alteración dura hasta el final del compás; por ello, las notas en los siguientes compases no resultarán afectadas, excepto aquellas que estén ligadas a una alterada en el compás en el que se incluye la alteración."
 
 #: L1_MusicReading/L1_MusicReading.cpp:213
 msgid "Key signature"
@@ -957,7 +957,7 @@ msgstr "Observa que el sostenido de la nota Fa está escrito en la 5ª línea pe
 
 #: L1_MusicReading/L1_MusicReading.cpp:219
 msgid "The key signature, apart of simplifying the notation, gives information about the 'tonality' of the composition, roughly speaking, which scale is used to build a piece of music. The key signature must be written on every music line, placed immediately after the clef sign."
-msgstr "La armadura, además de simplificar la escritura, nos da información sobre la 'tonalidad' de la pieza musical, es deir, una indicación sobre en qué escala está basada la composición. La armadura hay que escribirla en cada pentagrama, colocada justo detrás de la clave."
+msgstr "La armadura, además de simplificar la escritura, nos da información sobre la 'tonalidad' de la pieza musical, es decir, una indicación sobre en qué escala está basada la composición. La armadura hay que escribirla en cada pentagrama, colocada justo detrás de la clave."
 
 #: L1_MusicReading/L1_MusicReading.cpp:221
 msgid "In this lesson we will continue with exercises containing the rhythmic patterns of the previous lessons, but introducing the key signatures of G major and E minor (one sharp) and B flat major and G minor (one flat)."
@@ -993,7 +993,7 @@ msgstr "El calderón"
 
 #: L1_MusicReading/L1_MusicReading.cpp:232
 msgid "A fermata is a musical symbol, looking like a semicircle containing a dot, that is placed above or below a note or rest. It indicates that the note/rest should be sustained for longer than its normal duration. Usually the note/rest is held for one and a half to twice the normal duration, but it is always up to the discretion of the performer or the conductor. The fermata symbol is usually placed above the note/rest, but occasionally can be placed below it and upside down:"
-msgstr "El calderón es un signo, semejante a un semicirculo co un punto en el centro, que se coloca encima o debajo de una nota o silencio. Indica que la nota o silencio debe prolongarse para que dura más de lo normal. La duración de una nota o silencio con calderón no está predeterminada y queda a discreción del intérprete o del director. Como valor de referencia, un calderón prolonga la duración entre vez y media y dos veces la duración de la nota original. El calderón se coloca normalmente sobre la nota o silencio, pero en ocasiones puede colocarse debajo; en estos casos el símbolo del calderón se coloca invertido:"
+msgstr "El calderón es un signo, semejante a un semicirculo con un punto en el centro, que se coloca encima o debajo de una nota o silencio. Indica que la nota o silencio debe prolongarse para que dure más de lo normal. La duración de una nota o silencio con calderón no está predeterminada y queda a discreción del intérprete o del director. Como valor de referencia, un calderón prolonga la duración entre vez y media y dos veces la duración de la nota original. El calderón se coloca normalmente sobre la nota o silencio, pero en ocasiones puede colocarse debajo; en estos casos el símbolo del calderón se coloca invertido:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:233
 #: L1_MusicReading/L1_MusicReading.cpp:285
@@ -1074,7 +1074,7 @@ msgstr "En esta lección continuamos el estudio de la clave de Fa en 4ª línea.
 
 #: L1_MusicReading/L1_MusicReading.cpp:305
 msgid " - Read scores containing the rhythms studied in previous lessons."
-msgstr "- Practica la lectura de partituras que los patrones estudiados en las lecciones anteriores."
+msgstr "- Practica la lectura de partituras que contienen los patrones estudiados en las lecciones anteriores."
 
 #: L1_MusicReading/L1_MusicReading.cpp:308
 msgid "Start the metronome. Press 'Play' and listen. Train your ear and practise reading these rhythms."
@@ -1101,7 +1101,7 @@ msgstr "El compás de 3/4. La blanca con puntillo"
 
 #: L1_MusicReading/L1_MusicReading.cpp:325
 msgid "In this lesson we will learn about the 3/4 time signature. As you should know (lesson 6) the top number tells how many beats there are in a measure, and the bottom number shows the type of note that gets one beat. The number 4 means 'quarter note'. Therefore, the 3/4 time signature is a rhythm with three beats per measure and each measure gets three quarter notes. The first beat of a measure is always strong and the two other beats are weaker."
-msgstr "En esta lección iniciamos el estudio del compas de 3/4. Como sabes (lección 6) el número de arriba indica cuántos pulsos tiene cada compás, y el número de abajo indicá qué nota es la que ocupa cada pulso (el número 4 significa 'nota negra'). Así pues, la métrica de 3/4 corresponde a un ritmo en el que cada compás va a tener tres pulsos y cada uno de ellos va a estar ocupado por una nota negra. El primer pulso de cada compás es fuerte y los otros dos son débiles."
+msgstr "En esta lección iniciamos el estudio del compas de 3/4. Como sabes (lección 6) el número de arriba indica cuántos pulsos tiene cada compás, y el número de abajo indica qué nota es la que ocupa cada pulso (el número 4 significa 'nota negra'). Así pues, la métrica de 3/4 corresponde a un ritmo en el que cada compás va a tener tres pulsos y cada uno de ellos va a estar ocupado por una nota negra. El primer pulso de cada compás es fuerte y los otros dos son débiles."
 
 #: L1_MusicReading/L1_MusicReading.cpp:326
 msgid "If you count beats along with the music, the 3/4 time signature will imply a rhythm such as 'ONE-two-three-and-ONE-two-three-and- ...', stressing the ONE syllable. This is the typical waltz rhythm."
@@ -1145,11 +1145,11 @@ msgstr "En esta lección vamos a estudiar dos nuevas figuras: la nota redonda y 
 
 #: L1_MusicReading/L1_MusicReading.cpp:342
 msgid "One whole note equals two half notes and one whole rest equals two half rests. So in time 4/4 a whole note or rest gets four beats, and, therefore, takes a whole measure. Two tied half notes equals a whole note:"
-msgstr "Una nota redonda dura lo mismo que dos notas blancas y un silencio deredonda lo mismo que dos silencios de blanca. Por tanto, en el compás de 4/4, una redonda dura cuatro pulsos y, por ello, ocupa un compás completo. Dos notas blancas ligadas equivalen a una redonda:"
+msgstr "Una nota redonda dura lo mismo que dos notas blancas y un silencio de redonda lo mismo que dos silencios de blanca. Por tanto, en el compás de 4/4, una redonda dura cuatro pulsos y, por ello, ocupa un compás completo. Dos notas blancas ligadas equivalen a una redonda:"
 
 #: L1_MusicReading/L1_MusicReading.cpp:347
 msgid "The 4/4 time signature. The whole note and its rest"
-msgstr "El compas de 4/4. La negra y su silencio"
+msgstr "El compás de 4/4. La negra y su silencio"
 
 #: L1_MusicReading/L1_MusicReading.cpp:349
 #: L1_MusicReading/L1_MusicReading.cpp:362
@@ -1275,7 +1275,7 @@ msgstr "El compás de 6/8: compases de subdivisión ternaria"
 
 #: L1_MusicReading/L1_MusicReading.cpp:477
 msgid "Simple and compound time signatures"
-msgstr "Métricas de subdivisión binaria de de subdivisión ternaria."
+msgstr "Métricas de subdivisión binaria y de subdivisión ternaria."
 
 #: L1_MusicReading/L1_MusicReading.cpp:478
 msgid "We learnt, in lesson 6, that written music is organized by dividing it into small groups of beats, called 'measures'. The measures of the time signatures studied in previous lessons (2/4, 3/4 and 4/4) have, respectively, two, three and four beats per measure. These time signatures are known as 'simple meter' or 'simple time signatures'."
@@ -1287,7 +1287,7 @@ msgstr "En la métricas de subdivisión binaria cada parte puede subdividirse en
 
 #: L1_MusicReading/L1_MusicReading.cpp:480
 msgid "By convention, in compound time signatures the top number indicates not the number of beats per measure but the number of pulses per measure, and the bottom number indicates the note that takes each pulse."
-msgstr "Por convenio, en las métricas de subdivisión ternaria el número superior no ndica el número de partes del compas, sino el número de fracciones, y el número inferior indica qué nota ocupa cada fracción."
+msgstr "Por convenio, en las métricas de subdivisión ternaria el número superior no indica el número de partes del compás, sino el número de fracciones, y el número inferior indica qué nota ocupa cada fracción."
 
 #: L1_MusicReading/L1_MusicReading.cpp:481
 #: L1_MusicReading/L1_MusicReading.cpp:490
@@ -1300,7 +1300,7 @@ msgstr "En esta lección vamos a iniciar el estudio de los ritmos de subdivisió
 
 #: L1_MusicReading/L1_MusicReading.cpp:483
 msgid "Note that a dotted quarter note equals three eighth notes. Therefore, in the 6/8 time the note that occupies a beat is the dotted quarter note and each measure takes two dotted quarter notes."
-msgstr "Observa que una negra con puntillo equivale a tres corcheas. Por ello, en la métrica de 6/8 la nota que ocupa cada parte es la negra con puntillo, y cada compas está ocupado con dos negras con puntillo."
+msgstr "Observa que una negra con puntillo equivale a tres corcheas. Por ello, en la métrica de 6/8 la nota que ocupa cada parte es la negra con puntillo, y cada compás está ocupado con dos negras con puntillo."
 
 #: L1_MusicReading/L1_MusicReading.cpp:484
 msgid "Also note that two dotted quarter note equals a dotted half note. Therefore, in the 6/8 time a dotted half note takes a whole measure."

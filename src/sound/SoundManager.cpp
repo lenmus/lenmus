@@ -601,6 +601,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
         if (fContinue) i++;
     }
     //Here i points to the first event of desired measure that is not a control event.
+    //Here i points to the first event of desired measure that is not a control event.
 
     //Define and initialize time counter. If playback starts not at the begining but 
 	//in another measure, advance time counter to that measure

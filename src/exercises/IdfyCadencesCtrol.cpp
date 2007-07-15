@@ -295,7 +295,7 @@ wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType
     // Loop to add chords
     for (int iC=0; iC < oCad.GetNumChords(); iC++)
     {
-        pVStaff->AddSpacer(15);       
+        pVStaff->AddSpacer(15);
         if (iC != 0) pVStaff->AddBarline(etb_SimpleBarline);
         lmChordManager* pChord = oCad.GetChord(iC);
         int nNumNotes = pChord->GetNumNotes();
@@ -310,6 +310,7 @@ wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
         }
     }
+    pVStaff->AddSpacer(20);
     pVStaff->AddBarline(etb_EndBarline);
 
     //return cadence name
