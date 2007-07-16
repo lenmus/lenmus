@@ -110,7 +110,7 @@ private:
     lmLDPNode*  LexicalAnalysis();
     bool        AnalyzeNoteType(wxString sNoteType, ENoteType* pnNoteType, 
                                 bool* pfDotted, bool* pfDoubleDotted);
-    int         AnalyzeNumStaff(wxString sNotation);
+    int         AnalyzeNumStaff(wxString sNotation, long nNumStaves);
     lmScore*    AnalyzeScoreV102(lmLDPNode* pNode);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
     bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, 
@@ -142,7 +142,7 @@ private:
     // variables to store temporary values as the file is being analized.
     int     m_nCurStaff;        //default staff num. for the lmNoteRest being processed
     int     m_nCurVoice;        //default voice num. for the lmNoteRest being processed
-    long        m_nNumStaves;       //number of staffs for the lmVStaff being processed
+    long    m_nNumStaves;       //number of staffs for the lmVStaff being processed
     lmTupletBracket* m_pTupletBracket;      //tuplet being analyzed
 
 

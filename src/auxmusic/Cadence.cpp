@@ -76,7 +76,6 @@ static const lmFunctionData m_aFunctionData[] = {
     {_T("IIb/6"),   _T("m3,m6"),        _T("m3,m6"),    _T("nil") },    //
 };
 
-
 static wxString m_sCadenceName[lm_eCadMaxCadence+1];
 static bool m_fStringsInitialized = false;
 
@@ -128,9 +127,10 @@ lmCadence::lmCadence()
     m_nNumChords = 0;
 }
 
-bool lmCadence::Create(lmECadenceType nCadenceType, EKeySignatures nKey)
+bool lmCadence::Create(lmECadenceType nCadenceType, EKeySignatures nKey, bool fUseGrandStaff)
 {
     // return true if cadence created
+    // if fUseGrandStaff is true chords will have 4 notes, with root note in 2/3 octaves
 
 
     //save parameters
@@ -163,13 +163,13 @@ bool lmCadence::Create(lmECadenceType nCadenceType, EKeySignatures nKey)
         }
 
         //Get root note for this key signature and clef
-        wxString sRootNote = GetRootNote(sFunct, nKey, eclvSol);
+        wxString sRootNote = GetRootNote(sFunct, nKey, eclvSol, fUseGrandStaff);
         g_pLogger->LogTrace(_T("lmCadence"),
                 _T("[lmCadence::Create] sFunc='%s', nKey=%d, sRootNote='%s'"),
 				sFunct.c_str(), nKey, sRootNote.c_str());
 				
        //Prepare the chord
-        m_aChord[iC].Create(sRootNote, sIntervals, nKey);
+        m_aChord[iC].Create(sRootNote, sIntervals, nKey, fUseGrandStaff);
         m_nNumChords++;
     }
 
@@ -265,7 +265,8 @@ wxString lmCadence::SelectChord(wxString sFunction, EKeySignatures nKey)
     }
 }
 
-wxString lmCadence::GetRootNote(wxString sFunct, EKeySignatures nKey, EClefType nClef)
+wxString lmCadence::GetRootNote(wxString sFunct, EKeySignatures nKey, EClefType nClef,
+                                bool fUseGrandStaff)
 {
     // TODO: Take clef into account
 
@@ -303,9 +304,29 @@ wxString lmCadence::GetRootNote(wxString sFunct, EKeySignatures nKey, EClefType 
 
     nRoot = nRoot % 7;
 
-    // convert to note name in octave 4
-    wxString sNotes = _T("cdefgab");
-    wxString sRootNote = sNotes.substr(nRoot,1) + _T("4");
+    //Get accidentals for this note
+    int nAccidentals[7];
+    ComputeAccidentals(nKey, nAccidentals);
+
+    //convert accidentals to symbol +, -
+    wxString sRootNote = _T("");
+    if (nAccidentals[nRoot] > 0)
+        sRootNote = _T("+");
+    else if (nAccidentals[nRoot] < 0)
+        sRootNote = _T("-");
+
+    // convert to note name. Octave depends on clef and use of grand-staff
+    wxString sNotes;
+    if (fUseGrandStaff) {
+        sNotes = _T("c3d3e3f3g2a2b2");
+    }
+    else {
+        if (nClef == eclvSol)
+            sNotes = _T("c4d4e4f4g4a4b4");
+        else
+            wxASSERT(false);
+    }
+    sRootNote += sNotes.substr(nRoot*2, 2);
     return sRootNote;
 
 }

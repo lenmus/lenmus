@@ -73,6 +73,10 @@ void lmCadencesConstrains::SaveSettings()
         g_pPrefs->Write(sKey, m_fValidButtons[i]);
     }
 
+    // some options flags
+    sKey = _T("/Constrains/IdfyCadence/%s/UseGrandStaff");
+    g_pPrefs->Write(sKey, m_fGrandStaff);
+
     //// other settings
     //sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/DisplayKey"), m_sSection.c_str());
     //g_pPrefs->Write(sKey, m_fDisplayKey);
@@ -111,6 +115,10 @@ void lmCadencesConstrains::LoadSettings()
             m_sSection.c_str(), i );
         g_pPrefs->Read(sKey, &m_fValidButtons[i], (bool)(i < 2) );
     }
+
+    // some options flags
+    sKey = _T("/Constrains/IdfyCadence/%s/UseGrandStaff");
+    g_pPrefs->Read(sKey, &m_fGrandStaff, true );
 
     // display key. Default: using a label
     //sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/DisplayKey"), m_sSection.c_str());

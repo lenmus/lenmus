@@ -66,7 +66,8 @@ public:
     //creation
     void Create(wxString sRootNote, EChordType nChordType, int nInversion,
                 EKeySignatures nKey);
-    void Create(wxString sRootNote, wxString sIntervals, EKeySignatures nKey);
+    void Create(wxString sRootNote, wxString sIntervals, EKeySignatures nKey,
+                bool fUseGrandStaff);
 
     EChordType GetChordType() { return m_nType; }
     wxString GetNameFull();
@@ -81,7 +82,8 @@ public:
 
 private:
     lmMPitch GetMidiNote(lmMPitch nMidiRoot, wxString sInterval);
-    void DoCreateChord(wxString sRootNote, wxString sIntval[], int nNumIntv);
+    void DoCreateChord(wxString sRootNote, wxString sIntval[], int nNumIntv,
+                       bool fUseGrandStaff);
 
 
 

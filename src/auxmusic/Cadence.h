@@ -58,7 +58,7 @@ public:
     lmCadence();
     ~lmCadence();
 
-    bool Create(lmECadenceType nCadenceType, EKeySignatures nKey);
+    bool Create(lmECadenceType nCadenceType, EKeySignatures nKey, bool fUseGrandStaff);
     bool IsCreated() { return m_fCreated; }
 
     lmECadenceType GetCadenceType() { return m_nType; }
@@ -68,7 +68,8 @@ public:
 
 private:
     wxString SelectChord(wxString sFunction, EKeySignatures nKey);
-    wxString GetRootNote(wxString sFunct, EKeySignatures nKey, EClefType nClef);
+    wxString GetRootNote(wxString sFunct, EKeySignatures nKey, EClefType nClef,
+                         bool fUseGrandStaff);
 
     //member variables
 

@@ -388,8 +388,8 @@
 	<File name="../../src/sound/SoundManager.cpp" open="0" top="0" tabpos="41">
 		<Cursor position="22361" topLine="610" />
 	</File>
-	<File name="../../src/sound/WaveManager.cpp" open="1" top="0" tabpos="45">
-		<Cursor position="3324" topLine="91" />
+	<File name="../../src/sound/WaveManager.cpp" open="1" top="1" tabpos="45">
+		<Cursor position="3324" topLine="79" />
 	</File>
 	<File name="../../src/updater/Updater.cpp" open="1" top="0" tabpos="35">
 		<Cursor position="17032" topLine="494" />

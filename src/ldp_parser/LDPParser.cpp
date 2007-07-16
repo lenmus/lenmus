@@ -302,7 +302,6 @@ lmLDPNode* lmLDPParser::LexicalAnalysis()
     m_nErrors = 0;
     m_nWarnings = 0;
 
-    m_nNumStaves = 1;
     m_nCurStaff = 1;
     m_nCurVoice = 1;
 
@@ -770,7 +769,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
         }
     }
 
-    //set number of staves
+    //set number of staves (to be used by AnalyzeMusicData in order to add staves)
     sNumStaves.ToLong(&m_nNumStaves);
 
     //process firts voice
@@ -1064,10 +1063,11 @@ void lmLDPParser::AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff)
             iP++;
         }
     }
-    sNumStaves.ToLong(&m_nNumStaves);
+    long nNumStaves;
+    sNumStaves.ToLong(&nNumStaves);
     int i;
     //the VStaff already contains one staff. So we have to add nNumStaves - 1
-    for(i=1; i < m_nNumStaves; i++) {
+    for(i=1; i < nNumStaves; i++) {
         pVStaff->AddStaff(5);    //five lines staff, standard size
     }
 
@@ -1611,7 +1611,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             }
 
             else if (sData.Left(1) == m_pTags->TagName(_T("p"), _T("SingleChar"))) {       //staff number
-                m_nCurStaff = AnalyzeNumStaff(sData);
+                m_nCurStaff = AnalyzeNumStaff(sData, pVStaff->GetNumStaves());
             }
             else if (sData == m_pTags->TagName(_T("fermata"))) {       //fermata
                 fFermata = true;
@@ -2205,7 +2205,7 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
         sName = pX->GetName();
         if (sName.Left(1) == m_pTags->TagName(_T("p"), _T("SingleChar")))   //number of staff on which this clef is located
         {
-            nStaff = AnalyzeNumStaff(sName);
+            nStaff = AnalyzeNumStaff(sName, pVStaff->GetNumStaves());
             iP++;
         }
         else if (sName == m_pTags->TagName(_T("noVisible"))) {     //visible or not
@@ -3252,9 +3252,9 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
 //
 //}
 
-int lmLDPParser::AnalyzeNumStaff(wxString sNotation)
+int lmLDPParser::AnalyzeNumStaff(wxString sNotation, long nNumStaves)
 {
-    //analyzes a notation Pxx.  xx must be lower or equal than m_nNumStaves
+    //analyzes a notation Pxx.  xx must be lower or equal than nNumStaves
 
     if (sNotation.Left(1) != m_pTags->TagName(_T("p"), _T("SingleChar")) ) {
         AnalysisError( _("Staff number expected but found '%s'. Replaced by '%s1'"),
@@ -3271,9 +3271,9 @@ int lmLDPParser::AnalyzeNumStaff(wxString sNotation)
 
     long nValue;
     sData.ToLong(&nValue);
-    if (nValue > m_nNumStaves) {
+    if (nValue > nNumStaves) {
         AnalysisError( _("Notation '%s': number is greater than number of staves defined (%d). Replaced by '%s1'."),
-            sNotation.c_str(), m_nNumStaves, m_pTags->TagName(_T("p"), _T("SingleChar")).c_str() );
+            sNotation.c_str(), nNumStaves, m_pTags->TagName(_T("p"), _T("SingleChar")).c_str() );
         return 1;
     }
     return (int)nValue;

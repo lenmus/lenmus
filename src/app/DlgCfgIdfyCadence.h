@@ -43,6 +43,8 @@ public:
     void OnAcceptClicked(wxCommandEvent& WXUNUSED(event));
     void OnCancelClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_CANCEL); }
     void OnDataChanged(wxCommandEvent& WXUNUSED(event));
+    void OnRadAnswerType(wxCommandEvent& WXUNUSED(event));
+
 
 
 private:
@@ -56,6 +58,12 @@ private:
     wxCheckBox*     m_pChkKeySign[earmFa+1];    // Allowed key signatures check boxes
     wxRadioBox*     m_pBoxShowKey;              // box with show key radio buttons
     wxRadioBox*     m_pBoxAnswerType;           // box with answer type radio buttons
+    wxCheckBox*     m_pChkButtonPerfect;
+    wxCheckBox*     m_pChkButtonPlagal;
+    wxCheckBox*     m_pChkButtonImperfect;
+    wxCheckBox*     m_pChkButtonDeceptive;
+    wxCheckBox*     m_pChkButtonHalf;
+
 
     wxStaticBitmap* m_pBmpKeySignError;
     wxStaticText*   m_pLblKeySignError;

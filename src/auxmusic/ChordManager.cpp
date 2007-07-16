@@ -152,11 +152,12 @@ void lmChordManager::Create(wxString sRootNote, EChordType nChordType,
         sIntval[2] = sNewIntv[2];
     }
 
-    DoCreateChord(sRootNote, sIntval, tData[m_nType].nNumNotes);
+    DoCreateChord(sRootNote, sIntval, tData[m_nType].nNumNotes, false);
 
 }
 
-void lmChordManager::Create(wxString sRootNote, wxString sIntervals, EKeySignatures nKey)
+void lmChordManager::Create(wxString sRootNote, wxString sIntervals, EKeySignatures nKey,
+                            bool fUseGrandStaff)
 {
     // save data
     m_nKey = nKey;
@@ -177,11 +178,12 @@ void lmChordManager::Create(wxString sRootNote, wxString sIntervals, EKeySignatu
     if (iT < lmNOTES_IN_CHORD)
         sIntval[iT++] = sIntervals.substr(iStart);
 
-    DoCreateChord(sRootNote, sIntval, iT+1);
+    DoCreateChord(sRootNote, sIntval, iT+1, fUseGrandStaff);
 
 }
 
-void lmChordManager::DoCreateChord(wxString sRootNote, wxString sIntval[], int nNumNotes)
+void lmChordManager::DoCreateChord(wxString sRootNote, wxString sIntval[], int nNumNotes,
+                                   bool fUseGrandStaff)
 {
 	//TODO: deal with accidentals in root position
 
@@ -195,23 +197,19 @@ void lmChordManager::DoCreateChord(wxString sRootNote, wxString sIntval[], int n
         wxASSERT(false);
     }
 
-    // create the chord
-    bool fLog = g_pLogger->IsAllowedTraceMask(_T("lmChordManager"));
-    if (fLog) {
-        g_pLogger->LogTrace(_T("lmChordManager"),
-            _T("[lmChordManager::DoCreateChord] Root note = %s, interval type=%s, inversion=%d"),
-            lmConverter::NoteBitsToName(m_tBits[0], m_nKey).c_str(),
-            GetName().c_str(), m_nInversion );
+    //if use Grand Staff duplicate the root note
+    int iT = 1;
+    int iRef = 0;               //note to use as reference to add intervals
+    if (fUseGrandStaff) {
+        ComputeInterval(&m_tBits[0], _T("p8"), true, &m_tBits[iT++]);
+        m_nNumNotes++;
+        iRef = 1;                   // use this note as reference
     }
-    for (int i=1; i < nNumNotes; i++) {
-        ComputeInterval(&m_tBits[0], sIntval[i-1], true, &m_tBits[i]);
-        if (fLog) {
-            g_pLogger->LogTrace(_T("lmChordManager"),
-                _T("[lmChordManager::DoCreateChord] Note %d = %s, (Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d), key=%d"),
-                i, lmConverter::NoteBitsToName(m_tBits[i],m_nKey).c_str(),
-                m_tBits[i].nStep, m_tBits[i].nOctave, m_tBits[i].nAccidentals,
-                m_tBits[i].nStepSemitones, m_nKey );
-        }
+
+    // create the reamining notes
+    bool fLog = g_pLogger->IsAllowedTraceMask(_T("lmChordManager"));
+    for (int i=0; i < nNumNotes-1; i++) {
+        ComputeInterval(&m_tBits[iRef], sIntval[i], true, &m_tBits[iT++]);
     }
 
 }

@@ -61,7 +61,14 @@ BEGIN_EVENT_TABLE(lmDlgCfgIdfyCadence, wxDialog)
 
     // Radio button boxes
     EVT_RADIOBOX( XRCID( "radBoxShowKey" ), lmDlgCfgIdfyCadence::OnDataChanged )
-    EVT_RADIOBOX( XRCID( "radBoxAnswerType" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_RADIOBOX( XRCID( "radBoxAnswerType" ), lmDlgCfgIdfyCadence::OnRadAnswerType )
+
+    // answer buttons
+    EVT_CHECKBOX( XRCID( "chkButtonPerfect" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkButtonPlagal" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkButtonImperfect" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkButtonDeceptive" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkButtonHalf" ), lmDlgCfgIdfyCadence::OnDataChanged )
 
     // Key signature check boxes
     EVT_CHECKBOX( XRCID( "chkKeyC" ), lmDlgCfgIdfyCadence::OnDataChanged )
@@ -188,6 +195,13 @@ lmDlgCfgIdfyCadence::lmDlgCfgIdfyCadence(wxWindow* parent,
     m_pChkKeySign[earmSib] = XRCCTRL(*this, "chkKeyBFlat", wxCheckBox);
     m_pChkKeySign[earmFa] = XRCCTRL(*this, "chkKeyF", wxCheckBox);
 
+    // Allowed answer buttons
+    m_pChkButtonPerfect = XRCCTRL(*this, "chkButtonPerfect", wxCheckBox);
+    m_pChkButtonPlagal = XRCCTRL(*this, "chkButtonPlagal", wxCheckBox);
+    m_pChkButtonImperfect = XRCCTRL(*this, "chkButtonImperfect", wxCheckBox);
+    m_pChkButtonDeceptive = XRCCTRL(*this, "chkButtonDeceptive", wxCheckBox);
+    m_pChkButtonHalf = XRCCTRL(*this, "chkButtonHalf", wxCheckBox);
+
     //other controls
     m_pBoxAnswerType = XRCCTRL(*this, "radBoxAnswerType", wxRadioBox);
     m_pBoxShowKey = XRCCTRL(*this, "radBoxShowKey", wxRadioBox);
@@ -226,11 +240,47 @@ lmDlgCfgIdfyCadence::lmDlgCfgIdfyCadence(wxWindow* parent,
         m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((EKeySignatures)i) );
     }
 
+    // allowed answer buttons
+    if (pConstrains->IsValidButton(lm_eCadButtonTerminal))
+    {
+        //Identify cadence group (terminal/transient)
+        m_pBoxAnswerType->SetSelection(0);
+
+        m_pChkButtonPerfect->Enable(false);
+        m_pChkButtonPlagal->Enable(false);
+        m_pChkButtonImperfect->Enable(false);
+        m_pChkButtonDeceptive->Enable(false);
+        m_pChkButtonHalf->Enable(false);
+
+        m_pChkButtonPerfect->SetValue(false);
+        m_pChkButtonPlagal->SetValue(false);
+        m_pChkButtonImperfect->SetValue(false);
+        m_pChkButtonDeceptive->SetValue(false);
+        m_pChkButtonHalf->SetValue(false);
+    }
+    else
+    {
+        //Identify cadence type
+        m_pBoxAnswerType->SetSelection(1);
+
+        m_pChkButtonPerfect->Enable(true);
+        m_pChkButtonPlagal->Enable(true);
+        m_pChkButtonImperfect->Enable(true);
+        m_pChkButtonDeceptive->Enable(true);
+        m_pChkButtonHalf->Enable(true);
+
+        m_pChkButtonPerfect->SetValue( m_pConstrains->IsValidButton(lm_eCadButtonPerfect) );
+        m_pChkButtonPlagal->SetValue( m_pConstrains->IsValidButton(lm_eCadButtonPlagal) );
+        m_pChkButtonImperfect->SetValue( m_pConstrains->IsValidButton(lm_eCadButtonImperfect) );
+        m_pChkButtonDeceptive->SetValue( m_pConstrains->IsValidButton(lm_eCadButtonDeceptive) );
+        m_pChkButtonHalf->SetValue( m_pConstrains->IsValidButton(lm_eCadButtonHalf) );
+    }
+
     // As this dialog is shared by EarTraining and Theory.
     // Flag m_fTheoryMode controls whether to show/hide
     // specific controls used only in one of the exercises
     if (m_fTheoryMode) {
-        //// This dialog is being used for Theory so, hide Shoy key radio buttons
+        //// This dialog is being used for Theory so, hide Show key radio buttons
         //m_pBoxShowKey->Show(false);
     }
 
@@ -266,6 +316,30 @@ void lmDlgCfgIdfyCadence::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
         pKeyConstrains->SetValid((EKeySignatures)i, m_pChkKeySign[i]->GetValue());
     }
 
+    // save answer buttons
+    if (m_pBoxAnswerType->GetSelection() == 0)
+    {
+        //Identify cadence group (terminal/transient)
+        m_pConstrains->SetValidButton(lm_eCadButtonTerminal, true);
+        m_pConstrains->SetValidButton(lm_eCadButtonTransient, true);
+        m_pConstrains->SetValidButton(lm_eCadButtonPerfect, false);
+	    m_pConstrains->SetValidButton(lm_eCadButtonPlagal, false);
+        m_pConstrains->SetValidButton(lm_eCadButtonImperfect, false);
+        m_pConstrains->SetValidButton(lm_eCadButtonDeceptive, false);
+        m_pConstrains->SetValidButton(lm_eCadButtonHalf, false);
+    }
+    else
+    {
+        //Identify cadence type
+        m_pConstrains->SetValidButton(lm_eCadButtonTerminal, false);
+        m_pConstrains->SetValidButton(lm_eCadButtonTransient, false);
+        m_pConstrains->SetValidButton(lm_eCadButtonPerfect, m_pChkButtonPerfect->GetValue());
+	    m_pConstrains->SetValidButton(lm_eCadButtonPlagal, m_pChkButtonPlagal->GetValue());
+        m_pConstrains->SetValidButton(lm_eCadButtonImperfect, m_pChkButtonImperfect->GetValue());
+        m_pConstrains->SetValidButton(lm_eCadButtonDeceptive, m_pChkButtonDeceptive->GetValue());
+        m_pConstrains->SetValidButton(lm_eCadButtonHalf, m_pChkButtonHalf->GetValue());
+    }
+
     ////save other options
     //
     //// save options depending on mode: theory/ear training
@@ -292,7 +366,7 @@ bool lmDlgCfgIdfyCadence::VerifyData()
     //int i;
 
     //assume no errors
-    //bool fError = false;
+    bool fError = false;
     bool fLocalError = false;
     bool fGlobalError = false;
 
@@ -303,6 +377,25 @@ bool lmDlgCfgIdfyCadence::VerifyData()
     m_pLblButtonsError->Show(false);
     m_pBmpButtonsError->Show(false);
     
+    // check answer buttons and enable/disable not applicable ones
+    if (m_pBoxAnswerType->GetSelection() == 1)
+    {
+        //at least two buttons checked
+        int nButtons = 0;
+        if (m_pChkButtonPerfect->GetValue()) nButtons++;
+        if (m_pChkButtonPlagal->GetValue()) nButtons++;
+        if (m_pChkButtonImperfect->GetValue()) nButtons++;
+        if (m_pChkButtonDeceptive->GetValue()) nButtons++;
+        if (m_pChkButtonHalf->GetValue()) nButtons++;
+        fError = (nButtons < 2);
+        if (fError) {
+            m_pLblButtonsError->Show(true);
+            m_pBmpButtonsError->Show(true);
+        }
+        fLocalError |= fError;
+    }
+    
+
     //// check that at least one cadence is selected
     //fError = false;
     //fAtLeastOne = false;
@@ -346,3 +439,28 @@ bool lmDlgCfgIdfyCadence::VerifyData()
     return fLocalError;
 
 }
+
+void lmDlgCfgIdfyCadence::OnRadAnswerType(wxCommandEvent& WXUNUSED(event))
+{
+    if (m_pBoxAnswerType->GetSelection() == 0)
+    {
+        //Identify cadence group (terminal/transient). Disable individual cadences
+        m_pChkButtonPerfect->Enable(false);
+        m_pChkButtonPlagal->Enable(false);
+        m_pChkButtonImperfect->Enable(false);
+        m_pChkButtonDeceptive->Enable(false);
+        m_pChkButtonHalf->Enable(false);
+    }
+    else
+    {
+        //Identify cadence type. Enable individual cadences
+        m_pChkButtonPerfect->Enable(true);
+        m_pChkButtonPlagal->Enable(true);
+        m_pChkButtonImperfect->Enable(true);
+        m_pChkButtonDeceptive->Enable(true);
+        m_pChkButtonHalf->Enable(true);
+    }
+
+    VerifyData();
+}
+

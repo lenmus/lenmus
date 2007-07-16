@@ -86,7 +86,7 @@ lmIdfyCadencesCtrol::lmIdfyCadencesCtrol(wxWindow* parent, wxWindowID id,
     m_pConstrains = pConstrains;
 
     //create the controls and buttons for the answers
-    Create(400, 150);       //score ctrol size = 400x150 pixels
+    Create(400, 200);       //score ctrol size = 400x200 pixels
 
     //initializatios to allow to play scales
     //TODO: Review this
@@ -233,7 +233,7 @@ wxString lmIdfyCadencesCtrol::SetNewProblem()
     EClefType nClef = eclvSol;
     m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore);
 
-	// If it was not possible to cleate the cadence for this key signature, try
+	// If it was not possible to create the cadence for this key signature, try
 	// again with another cadence
 	int nTimes = 0;
 	while (m_sAnswer == _T("")) {
@@ -246,11 +246,50 @@ wxString lmIdfyCadencesCtrol::SetNewProblem()
 	}
 
 	//compute the index for the button that corresponds to the right answer
-    int i;
-    for (i = 0; i < m_NUM_BUTTONS; i++) {
-        if (nCadenceType >= m_nStartCadence[i] && nCadenceType < m_nEndCadence[i]) break;
+    if (m_pConstrains->IsValidButton(lm_eCadButtonTerminal)) {
+        //Terminal / transient cadences
+        if (nCadenceType >= lm_eCadTerminal && nCadenceType < lm_eCadLastTerminal)
+            m_nRespIndex = 0;
+        else
+            m_nRespIndex = 1;
     }
-    m_nRespIndex = i;
+    else
+    {
+        //Perfect / Plagal cadences
+        m_nRespIndex = -1;      //not set
+        int iB = 0;
+        if (m_pConstrains->IsValidButton(lm_eCadButtonPerfect)) {
+            if (nCadenceType >= lm_eCadPerfect && nCadenceType < lm_eCadLastPerfect)
+                m_nRespIndex = iB;
+        }
+        //Plagal cadences
+        if (m_nRespIndex == -1 && m_pConstrains->IsValidButton(lm_eCadButtonPlagal)) {
+            iB++;
+            if (nCadenceType >= lm_eCadPlagal && nCadenceType < lm_eCadLastPlagal)
+                m_nRespIndex = iB;
+        }
+
+        //Imperfect cadences
+        if (m_nRespIndex == -1 && m_pConstrains->IsValidButton(lm_eCadButtonImperfect)) {
+            iB++;
+            if (nCadenceType >= lm_eCadImperfect && nCadenceType < lm_eCadLastImperfect)
+                m_nRespIndex = iB;
+        }
+
+        //Deceptive cadences
+        if (m_nRespIndex == -1 && m_pConstrains->IsValidButton(lm_eCadButtonDeceptive)) {
+            iB++;
+            if (nCadenceType >= lm_eCadDeceptive && nCadenceType < lm_eCadLastDeceptive)
+                m_nRespIndex = iB;
+        }
+
+        //Half cadences
+        if (m_nRespIndex == -1 && m_pConstrains->IsValidButton(lm_eCadButtonHalf)) {
+            iB++;
+            if (nCadenceType >= lm_eCadHalf && nCadenceType < lm_eCadLastHalf)
+                m_nRespIndex = iB;
+        }
+    }
 
     //return string to introduce the problem
     if (m_fTheoryMode) {
@@ -266,8 +305,9 @@ wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType
                                            lmScore** pScore)
 {
     //create the chords
+    bool fUseGrandStaff = m_pConstrains->UseGrandStaff();
     lmCadence oCad;
-    if (!oCad.Create(nType, m_nKey)) return _T("");
+    if (!oCad.Create(nType, m_nKey, fUseGrandStaff)) return _T("");
 
     //delete the previous score
     if (*pScore) {
@@ -285,33 +325,81 @@ wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType
     *pScore = new lmScore();
     (*pScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
     (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-    (*pScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
-							 g_pMidi->DefaultVoiceInstr(), _T(""));
-    pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
-    pVStaff->AddClef( nClef );
-    pVStaff->AddKeySignature( m_nKey );
-    pVStaff->AddTimeSignature(2 ,4);
 
-    // Loop to add chords
-    for (int iC=0; iC < oCad.GetNumChords(); iC++)
+    if (fUseGrandStaff)
     {
-        pVStaff->AddSpacer(15);
-        if (iC != 0) pVStaff->AddBarline(etb_SimpleBarline);
-        lmChordManager* pChord = oCad.GetChord(iC);
-        int nNumNotes = pChord->GetNumNotes();
-        sPattern = _T("(n ") + pChord->GetPattern(0) + _T(" r)");
-        pNode = parserLDP.ParseText( sPattern );
-        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-        for (int i=1; i < nNumNotes; i++) {
-            sPattern = _T("(na ");
-            sPattern += pChord->GetPattern(i);
-            sPattern +=  _T(" r)");
+        // Use a grand staff
+        (*pScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+							    g_pMidi->DefaultVoiceInstr(), _T(""));
+        pVStaff = (*pScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
+        pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
+        pVStaff->AddClef( eclvSol, 1 );
+        pVStaff->AddClef( eclvFa4, 2 );
+        pVStaff->AddKeySignature( m_nKey );
+        pVStaff->AddTimeSignature(2 ,4);
+
+        // Loop to add chords
+        for (int iC=0; iC < oCad.GetNumChords(); iC++)
+        {
+            pVStaff->AddSpacer(15);
+            if (iC != 0) pVStaff->AddBarline(etb_SimpleBarline);
+            lmChordManager* pChord = oCad.GetChord(iC);
+            int nNumNotes = pChord->GetNumNotes();
+            // first and second notes on F4 clef staff
+            sPattern = _T("(n ") + pChord->GetPattern(0) + _T(" r p2)");
+        wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
             pNode = parserLDP.ParseText( sPattern );
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+            sPattern = _T("(na ") + pChord->GetPattern(1) + _T(" r p2)");
+        wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
+            pNode = parserLDP.ParseText( sPattern );
+            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+            // third and fourth notes on G clef staff
+            sPattern = _T("(na ") + pChord->GetPattern(2) + _T(" r p1)");
+        wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
+            pNode = parserLDP.ParseText( sPattern );
+            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+            if (nNumNotes > 3) {
+                sPattern = _T("(na ") + pChord->GetPattern(3) + _T(" r p1)");
+        wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
+                pNode = parserLDP.ParseText( sPattern );
+                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+            }
         }
+        pVStaff->AddSpacer(20);
+        pVStaff->AddBarline(etb_EndBarline);
     }
-    pVStaff->AddSpacer(20);
-    pVStaff->AddBarline(etb_EndBarline);
+    else
+    {
+        // Use a single staff
+        (*pScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+							    g_pMidi->DefaultVoiceInstr(), _T(""));
+        pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
+        pVStaff->AddClef( nClef );
+        pVStaff->AddKeySignature( m_nKey );
+        pVStaff->AddTimeSignature(2 ,4);
+
+        // Loop to add chords
+        for (int iC=0; iC < oCad.GetNumChords(); iC++)
+        {
+            pVStaff->AddSpacer(15);
+            if (iC != 0) pVStaff->AddBarline(etb_SimpleBarline);
+            lmChordManager* pChord = oCad.GetChord(iC);
+            int nNumNotes = pChord->GetNumNotes();
+            sPattern = _T("(n ") + pChord->GetPattern(0) + _T(" r)");
+            pNode = parserLDP.ParseText( sPattern );
+            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+            for (int i=1; i < nNumNotes; i++) {
+                sPattern = _T("(na ");
+                sPattern += pChord->GetPattern(i);
+                sPattern +=  _T(" r)");
+                pNode = parserLDP.ParseText( sPattern );
+                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+            }
+        }
+        pVStaff->AddSpacer(20);
+        pVStaff->AddBarline(etb_EndBarline);
+    }
 
     //return cadence name
     return  oCad.GetName();
