@@ -70,8 +70,11 @@
 	<File name="../../src/app/scoreView.h" open="0" top="0" tabpos="55">
 		<Cursor position="4338" topLine="111" />
 	</File>
+	<File name="../../src/auxmusic/Cadence.cpp" open="1" top="0" tabpos="46">
+		<Cursor position="22196" topLine="578" />
+	</File>
 	<File name="../../src/auxmusic/ChordManager.cpp" open="1" top="0" tabpos="40">
-		<Cursor position="7238" topLine="122" />
+		<Cursor position="7805" topLine="196" />
 	</File>
 	<File name="../../src/auxmusic/Composer.cpp" open="0" top="0" tabpos="19">
 		<Cursor position="1556" topLine="20" />
@@ -88,8 +91,8 @@
 	<File name="../../src/auxmusic/ComposerV6.cpp" open="1" top="0" tabpos="19">
 		<Cursor position="31261" topLine="901" />
 	</File>
-	<File name="../../src/auxmusic/Conversion.cpp" open="1" top="0" tabpos="37">
-		<Cursor position="13652" topLine="403" />
+	<File name="../../src/auxmusic/Conversion.cpp" open="1" top="1" tabpos="37">
+		<Cursor position="1698" topLine="146" />
 	</File>
 	<File name="../../src/auxmusic/Interval.cpp" open="0" top="0" tabpos="23">
 		<Cursor position="11822" topLine="15" />
@@ -388,7 +391,7 @@
 	<File name="../../src/sound/SoundManager.cpp" open="0" top="0" tabpos="41">
 		<Cursor position="22361" topLine="610" />
 	</File>
-	<File name="../../src/sound/WaveManager.cpp" open="1" top="1" tabpos="45">
+	<File name="../../src/sound/WaveManager.cpp" open="1" top="0" tabpos="45">
 		<Cursor position="3324" topLine="79" />
 	</File>
 	<File name="../../src/updater/Updater.cpp" open="1" top="0" tabpos="35">

@@ -36,6 +36,7 @@
 static wxString sEnglishNoteName[7] = {
             _T("c"),  _T("d"), _T("e"), _T("f"), _T("g"), _T("a"), _T("b") };
 
+static bool m_fStringsInitialized = false;
 static wxString sNoteName[7];
 
 
@@ -43,13 +44,16 @@ lmConverter::lmConverter()
 {
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
-    sNoteName[0] = _("c");
-    sNoteName[1] = _("d");
-    sNoteName[2] = _("e");
-    sNoteName[3] = _("f");
-    sNoteName[4] = _("g");
-    sNoteName[5] = _("a");
-    sNoteName[6] = _("b");
+    if (!m_fStringsInitialized) {
+        sNoteName[0] = _("c");
+        sNoteName[1] = _("d");
+        sNoteName[2] = _("e");
+        sNoteName[3] = _("f");
+        sNoteName[4] = _("g");
+        sNoteName[5] = _("a");
+        sNoteName[6] = _("b");
+        m_fStringsInitialized = true;
+    }
 
 }
 
@@ -97,6 +101,10 @@ int lmConverter::GetOctaveFromDPitch(lmDPitch nPitch)
     return  ((int)nPitch - 1) / 7;
 }
 
+lmDPitch lmConverter::DPitch(int nStep, int nOctave)
+{
+    return nOctave * 7 + nStep + 1;
+}
 
 //---------------------------------------------------------------------------------------
 // lmMPitch: MIDI pitch
@@ -279,6 +287,28 @@ bool lmConverter::NoteToBits(wxString sNote, lmNoteBits* pBits)
 
 }
 
+bool lmConverter::DPitchToBits(lmDPitch nPitch, lmNoteBits* pBits)
+{
+    //Returns true if error
+    //Accidentals are set to 'none' (zero)
+
+    //compute step
+    pBits->nStep = GetStepFromDPitch(nPitch);
+
+    //compute octave
+    pBits->nOctave = GetOctaveFromDPitch(nPitch);
+
+    //compute accidentals
+    pBits->nAccidentals = 0;
+
+    //compute step semitones
+    pBits->nStepSemitones = StepToSemitones( pBits->nStep );
+
+    return false;  //no error
+
+}
+
+
 wxString lmConverter::NoteBitsToName(lmNoteBits& tBits, EKeySignatures nKey)
 {
     static wxString m_sSteps = _T("cdefgab");
@@ -431,7 +461,7 @@ lmDPitch lmConverter::NotePitchToDPitch(lmNotePitch nPitch)
 // Pitch name
 //---------------------------------------------------------------------------------------
 
-wxString lmConverter::GetNoteName(lmPitch nPitch)
+wxString lmConverter::GetNoteName(lmDPitch nPitch)
 {
     //returns the name of the note translated to current language
     int iNote = (nPitch - 1) % 7;
@@ -439,7 +469,7 @@ wxString lmConverter::GetNoteName(lmPitch nPitch)
 
 }
 
-wxString lmConverter::GetEnglishNoteName(lmPitch nPitch)
+wxString lmConverter::GetEnglishNoteName(lmDPitch nPitch)
 {
     int iNota = (nPitch - 1) % 7;
     int nOctava = (nPitch - 1) / 7;

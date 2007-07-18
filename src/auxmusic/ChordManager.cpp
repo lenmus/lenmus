@@ -162,7 +162,7 @@ void lmChordManager::Create(wxString sRootNote, wxString sIntervals, EKeySignatu
     // save data
     m_nKey = nKey;
 
-    wxString sIntval[lmNOTES_IN_CHORD];       
+    wxString sIntval[lmNOTES_IN_CHORD];
     int iT = 0;                 //index to interval
 
     // extract intervals
@@ -207,7 +207,6 @@ void lmChordManager::DoCreateChord(wxString sRootNote, wxString sIntval[], int n
     }
 
     // create the reamining notes
-    bool fLog = g_pLogger->IsAllowedTraceMask(_T("lmChordManager"));
     for (int i=0; i < nNumNotes-1; i++) {
         ComputeInterval(&m_tBits[iRef], sIntval[i], true, &m_tBits[iT++]);
     }

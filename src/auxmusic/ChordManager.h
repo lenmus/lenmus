@@ -76,6 +76,12 @@ public:
     lmMPitch GetMidiNote(int i);
     wxString GetPattern(int i);
 
+    // access to note data
+    int GetStep(int i) { return m_tBits[i].nStep; }
+    int GetOctave(int i) { return m_tBits[i].nOctave; }
+    int GetAccidentals(int i) { return m_tBits[i].nAccidentals; }
+    int GetStepSemitones(int i) { return m_tBits[i].nStepSemitones; }
+
 #ifdef __WXDEBUG__
     void UnitTests();
 #endif

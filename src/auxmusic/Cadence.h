@@ -37,11 +37,33 @@
 #include "wx/wx.h"
 #endif
 
+#include "vector"
+
 #include "../score/Score.h"
 #include "Interval.h"
 #include "../exercises/CadencesConstrains.h"
 #include "Conversion.h"
 #include "ChordManager.h"
+
+
+// auxiliary object to comfortably manage chords
+class lmHChord
+{
+public:
+
+    lmHChord() { 
+        nNote[0] = nNote[1] = nNote[2] = nNote[3] = -1;
+        nAcc[0] = nAcc[1] = nAcc[2] = nAcc[3] = 0;
+        fValid=false;
+        nNumNotes=0;
+    };
+
+    lmDPitch nNote[4];      //diatonic pitch so 1:1 mapping to staff lines/spaces
+    int      nAcc[4];       //accidentals: -2 ... +2
+    bool     fValid;        //useful to filter out invalid chords
+    int      nNumNotes;     //normally 4
+};
+
 
 
 //declare global functions defined in this module
@@ -65,11 +87,18 @@ public:
     int GetNumChords() { return m_nNumChords; }
     lmChordManager* GetChord(int iC);
 	wxString GetName();
+    wxString GetNotePattern(int iChord, int iNote);
 
 private:
     wxString SelectChord(wxString sFunction, EKeySignatures nKey);
     wxString GetRootNote(wxString sFunct, EKeySignatures nKey, EClefType nClef,
                          bool fUseGrandStaff);
+    //--------
+    void GenerateFirstChord(lmChordManager* pChord, int nInversion);
+    int GenerateSopranoNote(lmNoteBits oChordNotes[4], int iBass, int nNumNotes);
+    int FilterChords(std::vector<lmHChord>& aChords, int nSteps[4], int nNumSteps);
+    void GenerateNextChord(lmChordManager* pChord, int nInversion, int iPrevHChord);
+
 
     //member variables
 
@@ -78,6 +107,7 @@ private:
     EKeySignatures  m_nKey;
     lmChordManager  m_aChord[lmCHORDS_IN_CADENCE];
     int             m_nNumChords;       //num of chords in this cadence
+    lmHChord        m_Chord[lmCHORDS_IN_CADENCE];
 
 };
 
