@@ -50,7 +50,9 @@ typedef struct lmFunctionDataStruct {
 } lmFunctionData;
 
 
-// Conversion table: harmonic function to chord intervals
+// Conversion table: harmonic function to chord intervals.
+// Inversions are not necessary except in minor modes. In these cases the inversion
+// is notated without the slash (IVm6, 
 // AWARE: The maximum number of notes in a chord is defined in 'ChordManager.h', constant
 //        lmNOTES_IN_CHORD. Currently its value is 6. Change this value if you need more
 //        notes.
@@ -59,21 +61,21 @@ static const lmFunctionData m_aFunctionData[] = {
     //                                    minor key      minor key
     //Function        Major key           option 1       option 2
     //-----------    ------------------  -------------   --------------
-    {_T("I"),       _T("M3,p5"),        _T("m3,p5"),    _T("nil") },    //
-    {_T("II"),      _T("m3,p5"),        _T("m3,d5"),    _T("m3,p5") },  //
-    {_T("IIm"),     _T("?"),            _T("?"),        _T("nil") },    //
-    {_T("III"),     _T("M3,p5"),        _T("M3,p5"),    _T("M3,a5") },  //
-    {_T("IV"),      _T("M3,p5"),        _T("m3,p5"),    _T("M3,p5") },  //
-    {_T("IVm"),     _T("m3,p5"),        _T("?"),        _T("nil") },    //
-    {_T("V"),       _T("M3,p5"),        _T("M3,p5"),    _T("nil") },    //
-    {_T("V7"),      _T("M3,p5,m7"),     _T("M3,p5,m7"), _T("nil") },    //
-    {_T("Va5"),     _T("M3,a5"),        _T("nil"),      _T("nil") },    //
-    {_T("Vd5"),     _T("M3,d5"),        _T("M3,d5"),    _T("nil") },    //
-    {_T("VI"),      _T("m3,p5"),        _T("M3,p5"),    _T("m3,d5") },  //
-    {_T("VIaum"),   _T("?"),            _T("?"),        _T("nil") },    //
-    {_T("IVm6"),    _T("nil"),          _T("M3,M6"),    _T("nil") },    //
-    {_T("VII"),     _T("m3,d5"),        _T("#,m3,d5"),  _T("nil") },    //
-    {_T("IIb/6"),   _T("m3,m6"),        _T("m3,m6"),    _T("nil") },    //
+    {_T("I"),       _T("M3,p5"),        _T("m3,p5"),    _T("nil") },
+    {_T("II"),      _T("m3,p5"),        _T("m3,d5"),    _T("m3,p5") },
+    {_T("IIm"),     _T("m3,p5"),        _T("nil"),      _T("nil") },
+    {_T("III"),     _T("m3,p5"),        _T("M3,p5"),    _T("M3,a5") },
+    {_T("IV"),      _T("M3,p5"),        _T("m3,p5"),    _T("M3,p5") },
+    {_T("IVm"),     _T("m3,p5"),        _T("nil"),      _T("nil") },
+    {_T("IVm6"),    _T("nil"),          _T("M3,M6"),    _T("nil") },    // IVm/6 used in Phrygian half cadence
+    {_T("V"),       _T("M3,p5"),        _T("M3,p5"),    _T("m3,p5") },
+    {_T("V7"),      _T("M3,p5,m7"),     _T("M3,p5,m7"), _T("nil") },
+    {_T("Va5"),     _T("M3,a5"),        _T("nil"),      _T("nil") },
+    {_T("Vd5"),     _T("M3,d5"),        _T("M3,d5"),    _T("m3,d5") },
+    {_T("VI"),      _T("m3,p5"),        _T("M3,p5"),    _T("#,m3,d5") },
+    {_T("VII"),     _T("m3,d5"),        _T("#,m3,d5"),  _T("M3,p5") },
+    {_T("IIb6"),    _T("m3,m6"),        _T("m3,m6"),    _T("nil") },    // IIb/6 used in neapolitan sixth
+	{_T("IId"),     _T("m3,d5"),		_T("nil"),      _T("nil") },	// IId used in augmented sixth
 };
 
 static wxString m_sCadenceName[lm_eCadMaxCadence+1];
@@ -86,36 +88,42 @@ static const wxString aFunction[lm_eCadMaxCadence][lmCHORDS_IN_CADENCE] = {
     // Perfect authentic cadences
     { _T("V"),      _T("I") },      //Perfect_V_I
     { _T("V7"),     _T("I") },      //Perfect_V7_I
-    { _T("I/64"),   _T("V") },      //Perfect_Ic64_V
     { _T("Va5"),    _T("I") },      //Perfect_Va5_I
     { _T("Vd5"),    _T("I") },      //Perfect_Vd5_I
     // Plagal cadences
     { _T("IV"),     _T("I") },      //Plagal_IV_I
-    { _T("IVm"),    _T("I") },      //Plagal_iv_I
-    { _T("II"),     _T("I") },      //Plagal_II_I
-    { _T("IIm"),    _T("I") },      //Plagal_ii_I
-    { _T("VI"),     _T("I") },      //Plagal_VI_I
+    { _T("IVm"),    _T("I") },      //Plagal_IVm_I
+    { _T("II/6"),   _T("I") },      //Plagal_IIc6_I
+    { _T("IIm/6"),  _T("I") },      //Plagal_IImc6_I
     // Imperfect authentic cadences
-	{ _T("V/6"),    _T("I") },      //Imperfect_V_I
+    // AWARE: This entry is not used. Inversions are encoded in aImperfect[]
+	{ _T("V"),      _T("I") },      //Imperfect_V_I
     // Deceptive cadences
     { _T("V"),      _T("IV") },     //Deceptive_V_IV
-    { _T("V"),      _T("IVm") },    //Deceptive_V_iv
+    { _T("V"),      _T("IVm") },    //Deceptive_V_IVm
     { _T("V"),      _T("VI") },     //Deceptive_V_VI
-    { _T("V"),      _T("VIm") },    //Deceptive_V_vi
-    { _T("V"),      _T("IIm") },    //Deceptive_V_ii
+    { _T("V"),      _T("VIm") },    //Deceptive_V_VIm
+    { _T("V"),      _T("IIm") },    //Deceptive_V_IIm
     { _T("V"),      _T("III") },    //Deceptive_V_III
     { _T("V"),      _T("VII") },    //Deceptive_V_VII
     // Half cadences
-    { _T("IIm/6"),  _T("V") },      //Half_iic6_V
+    { _T("IIm/6"),  _T("V") },      //Half_IImc6_V
     { _T("IV"),     _T("V") },      //Half_IV_V
     { _T("I"),      _T("V") },      //Half_I_V
-    { _T("IV6"),    _T("V") },      //Half_IV6_V
+    { _T("I/64"),   _T("V") },      //Half_Ic64_V 
+    { _T("IV6"),    _T("V") },      //Half_IV6_V (Phrygian)
     { _T("II"),     _T("V") },      //Half_II_V
-    { _T("IId/6"),  _T("V") },      //Half_IIdimc6_V
-    { _T("IIb/6"),  _T("V") },      //Half_VdeVdim5c64_V
+    { _T("IId6"),   _T("V") },      //Half_IIdimc6_V (Neapolitan sixth)
+    { _T("IIb/6"),  _T("V") },      //Half_VdeVdim5c64_V (augmented sixth)
 };
 
-
+// Chords for imperfect cadence
+static const wxString aImperfect[4][lmCHORDS_IN_CADENCE] = {
+    { _T("V/6"),    _T("I") },      
+    { _T("V/64"),   _T("I") },    
+    { _T("V/64"),   _T("I/6") },   
+    { _T("V"),      _T("I/64") }, 
+};
 
 //-------------------------------------------------------------------------------------
 // Implementation of lmCadence class
@@ -138,11 +146,15 @@ bool lmCadence::Create(lmECadenceType nCadenceType, EKeySignatures nKey, bool fU
     m_nKey = nKey;
 
     //get chords
+    wxString sFunct;
     int iC;
     for (iC=0; iC < lmCHORDS_IN_CADENCE; iC++)
     {
         // get the function
-        wxString sFunct = aFunction[nCadenceType][iC];
+        if (nCadenceType == lm_eCadImperfect_V_I)
+            sFunct = aImperfect[lmRandomGenerator::RandomNumber(0, 3)][iC];
+        else
+            sFunct = aFunction[nCadenceType][iC];
 
         // if no function, exit loop. No more chords in cadence
         if (sFunct == _T("")) {
@@ -154,7 +166,9 @@ bool lmCadence::Create(lmECadenceType nCadenceType, EKeySignatures nKey, bool fU
         }
 
         //get the chord intervals
-        wxString sIntervals = SelectChord(aFunction[nCadenceType][iC], nKey);
+        wxString sIntervals = SelectChord(sFunct, nKey, &m_nInversions[iC]);
+ /*dbg*/ wxLogMessage(_T("[lmCadence::Create] sFunct='%s', chord intervals='%s'"),
+                sFunct.c_str(), sIntervals.c_str() );
         if (sIntervals == _T("")) {
             //error: no chord for choosen function
             wxLogMessage(_T("[lmCadence::Create] No chord found for nCadenceType=%d, nKey=%d, iC=%d"),
@@ -173,11 +187,8 @@ bool lmCadence::Create(lmECadenceType nCadenceType, EKeySignatures nKey, bool fU
         m_nNumChords++;
     }
 
-/*dbg*/
-    int nInversion = 0;     //TODO: compute inversion for first chord
-    GenerateFirstChord(&m_aChord[0], nInversion);
-    nInversion = 0;     //TODO: compute inversion for second chord
-    GenerateNextChord(&m_aChord[1], nInversion, 0);
+    GenerateFirstChord(&m_aChord[0], m_nInversions[0]);
+    GenerateNextChord(&m_aChord[1], m_nInversions[1], 0);
 
     m_fCreated = true;
     return true;
@@ -199,31 +210,30 @@ lmChordManager* lmCadence::GetChord(int iC)
 }
 
 
-wxString lmCadence::SelectChord(wxString sFunction, EKeySignatures nKey)
+wxString lmCadence::SelectChord(wxString sFunction, EKeySignatures nKey, int* pInversion)
 {
-    // return the intervals that form the chord, or empty string if errors
-
-    //TODO: how to return inversions?
+    // returns the intervals that form the chord, or empty string if errors
+    // and updates variable pointed by pInversion to place the number of the
+    // applicable inversion
 
     //Strip out inversions
     wxString sFunc;
-    int nInversion;
     int iSlash = sFunction.find(_T('/'));
     if (iSlash != (int)wxStringBase::npos) {
         sFunc = sFunction.substr(0, iSlash);
         wxString sInv = sFunction.substr(iSlash+1);
         if (sInv==_T("6"))
-            nInversion = 1;
+            *pInversion = 1;
         else if (sInv==_T("64"))
-            nInversion = 2;
+            *pInversion = 2;
         else {
             wxLogMessage(_T("[lmCadence::SelectChord] Conversion table maintenance error. Unknown inversion code '%s'"), sInv.c_str());
-            nInversion = 0;
+            *pInversion = 0;
         }
     }
     else {
         sFunc = sFunction;
-        nInversion = 0;
+        *pInversion = 0;
     }
 
     // look for function
@@ -358,15 +368,19 @@ wxString lmCadence::GetName()
 void lmCadence::GenerateFirstChord(lmChordManager* pChord, int nInversion)
 {
     // Generates the first chord for a cadence.
-    // Ranges allowed by most theorists for each voice. Both notes inclusive
-    // Soprano: d4-g5
-    // Alto: g3-d5
-    // Tenor: d3-g4
-    // Bass: e2-d4
 
     lmConverter oConv;
+    #define lmMAX_NOTES 12      // max notes in a set for a voice: 3 octaves * 4 notes
 
-    // 1. Get chord notes (no octave) for the required harmonic function
+    // Ranges allowed by most theorists for each voice. Both notes inclusive
+    // Soprano: d4-g5,  Alto: g3-d5,  Tenor: d3-g4,  Bass: e2-d4
+    lmDPitch nMinAltoPitch = oConv.DPitch(lmSTEP_G, 3);
+    lmDPitch nMaxAltoPitch = oConv.DPitch(lmSTEP_D, 5);
+    lmDPitch nMinTenorPitch = oConv.DPitch(lmSTEP_D, 3);
+    lmDPitch nMaxTenorPitch = oConv.DPitch(lmSTEP_G, 4);
+
+
+    // 1. Get chord note-steps for the required harmonic function.
     int nNumNotes = pChord->GetNumNotes();   // notes in chord
     lmNoteBits oChordNotes[4];
     int nSteps[4];
@@ -375,6 +389,7 @@ void lmCadence::GenerateFirstChord(lmChordManager* pChord, int nInversion)
         oChordNotes[i].nStep = nSteps[i] = pChord->GetStep(i);
         oChordNotes[i].nOctave = 0;
     }
+    int nStep5 = nSteps[2];     // the fifth of the chord
     //dbg
     wxLogMessage(_T("[lmCadence::GenerateFirstChord] Base chord. Num notes = %d"), nNumNotes);
     wxString sNotes = _T("cdefgabc");
@@ -395,66 +410,51 @@ void lmCadence::GenerateFirstChord(lmChordManager* pChord, int nInversion)
     oChord.nNote[0] = oConv.DPitch(oChordNotes[iB].nStep, oChordNotes[iB].nOctave);
     oChord.nAcc[0] = oChordNotes[iB].nAccidentals;
     wxLogMessage(_T("[lmCadence::GenerateFirstChord] Bass = %s"),
-                    oConv.GetEnglishNoteName(oChord.nNote[0]).c_str() );
+                    oChord.GetPrintName(0).c_str() );
 
     // 3. Generate note for soprano voice
+    //    At random, any of the chord notes (except the bass one)
     int iS = GenerateSopranoNote(oChordNotes, iB, nNumNotes);
     oChord.nNote[3] = oConv.DPitch(oChordNotes[iS].nStep, oChordNotes[iS].nOctave);
     oChord.nAcc[3] = oChordNotes[iS].nAccidentals;
     wxLogMessage(_T("[lmCadence::GenerateFirstChord] Soprano = %s"),
-                    oConv.GetEnglishNoteName(oChord.nNote[3]).c_str() );
+                    oChord.GetPrintName(3).c_str() );
 
-    // generate the set of possible notes for Alto voice
+    // 4. Generate the set of possible notes for Alto voice.
+    //    All chord notes possible
+    int nAltoSet[lmMAX_NOTES];
+    int nAltoSetAcc[lmMAX_NOTES];
+    int iAS = 0;
     int iA;
     for (iA=0; iA < nNumNotes; iA++) {
-        if (iA != iS && iA != iB) break;
-    }
-    lmDPitch nAltoPitch = oConv.DPitch(oChordNotes[iA].nStep, 3);
-    int nAltoAcc = oChordNotes[iA].nAccidentals;
-    lmDPitch nSopranoPitch = oChord.nNote[3];
-    int nAltoSet[4];
-    int iAS = 0;
-    while (nAltoPitch < nSopranoPitch) {
-        nAltoSet[iAS++] = nAltoPitch;
-        wxLogMessage(_T("[lmCadence::GenerateFirstChord] Alto = %s"),
-                     oConv.GetEnglishNoteName(nAltoPitch).c_str() );
-        nAltoPitch += 7;
+        lmDPitch nAltoPitch = oConv.DPitch(oChordNotes[iA].nStep, 3);
+        lmDPitch nSopranoPitch = oChord.nNote[3];
+        while (nAltoPitch < nSopranoPitch && nAltoPitch < nMaxAltoPitch) {
+            if (nAltoPitch >= nMinAltoPitch) {
+                nAltoSetAcc[iAS] = oChordNotes[iA].nAccidentals;
+                nAltoSet[iAS++] = nAltoPitch;
+                wxLogMessage(_T("[lmCadence::GenerateFirstChord] Alto = %s"),
+                            oConv.GetEnglishNoteName(nAltoPitch).c_str() );
+            }
+            nAltoPitch += 7;
+        }
     }
 
-    // 4. Generate the set of possible notes for Tenor voice
-    int nTenorSet[10];
-    int nTenorSetAcc[10];
+    // 5. Generate the set of possible notes for Tenor voice.
+    //    All chord notes possible
+    int nTenorSet[lmMAX_NOTES];
+    int nTenorSetAcc[lmMAX_NOTES];
     int iTS = 0;
-    if (nNumNotes == 4) {
-       int iT;
-       for (iT=0; iT < nNumNotes; iT++) {
-            if (iT != iS && iT != iB && iT != iA) break;
-        }
+    int iT;
+    for (iT=0; iT < nNumNotes; iT++) {
         lmDPitch nTenorPitch = oConv.DPitch(oChordNotes[iT].nStep, 3);
-        while (nTenorPitch < nSopranoPitch) {
-            nTenorSetAcc[iTS] = oChordNotes[iT].nAccidentals;
-            nTenorSet[iTS++] = nTenorPitch;
-            wxLogMessage(_T("[lmCadence::GenerateFirstChord] Tenor = %s"),
-                        oConv.GetEnglishNoteName(nTenorPitch).c_str() );
-            nTenorPitch += 7;
-        }
-    }
-    else {
-        // generate set of duplicate root and third
-        lmDPitch nTenorPitch = oConv.DPitch(oChordNotes[0].nStep, 3);
-        while (nTenorPitch < nSopranoPitch) {
-            nTenorSetAcc[iTS] = oChordNotes[0].nAccidentals;
-            nTenorSet[iTS++] = nTenorPitch;
-            wxLogMessage(_T("[lmCadence::GenerateFirstChord] Tenor = %s"),
-                        oConv.GetEnglishNoteName(nTenorPitch).c_str() );
-            nTenorPitch += 7;
-        }
-        nTenorPitch = oConv.DPitch(oChordNotes[1].nStep, 3);
-        while (nTenorPitch < nSopranoPitch) {
-            nTenorSetAcc[iTS] = oChordNotes[1].nAccidentals;
-            nTenorSet[iTS++] = nTenorPitch;
-            wxLogMessage(_T("[lmCadence::GenerateFirstChord] Tenor = %s"),
-                        oConv.GetEnglishNoteName(nTenorPitch).c_str() );
+        while (nTenorPitch < nMaxTenorPitch) {
+            if (nTenorPitch >= nMinTenorPitch) {
+                nTenorSetAcc[iTS] = oChordNotes[iT].nAccidentals;
+                nTenorSet[iTS++] = nTenorPitch;
+                wxLogMessage(_T("[lmCadence::GenerateFirstChord] Tenor = %s"),
+                            oConv.GetEnglishNoteName(nTenorPitch).c_str() );
+            }
             nTenorPitch += 7;
         }
     }
@@ -473,7 +473,7 @@ void lmCadence::GenerateFirstChord(lmChordManager* pChord, int nInversion)
             aChords[iC].nAcc[3] = oChord.nAcc[3];
             // alto
             aChords[iC].nNote[2] = nAltoSet[iA];
-            aChords[iC].nAcc[2] = nAltoAcc;
+            aChords[iC].nAcc[2] = nAltoSetAcc[iA];
             // tenor
             aChords[iC].nNote[1] = nTenorSet[iT];
             aChords[iC].nAcc[1] = nTenorSetAcc[iT];
@@ -488,22 +488,22 @@ void lmCadence::GenerateFirstChord(lmChordManager* pChord, int nInversion)
     for (int i=0; i < nNumChords; i++) {
         wxLogMessage(_T("[lmCadence::GenerateFirstChord] Chord %d : %s, %s, %s, %s"),
                 i,
-                oConv.GetEnglishNoteName(aChords[i].nNote[0]).c_str(),
-                oConv.GetEnglishNoteName(aChords[i].nNote[1]).c_str(),
-                oConv.GetEnglishNoteName(aChords[i].nNote[2]).c_str(),
-                oConv.GetEnglishNoteName(aChords[i].nNote[3]).c_str() );
+                aChords[i].GetPrintName(0).c_str(),
+                aChords[i].GetPrintName(1).c_str(),
+                aChords[i].GetPrintName(2).c_str(),
+                aChords[i].GetPrintName(3).c_str() );
     }
 
-    int nValidChords = FilterChords(aChords, nSteps, nNumNotes);
+    int nValidChords = FilterChords(aChords, nSteps, nNumNotes, nStep5);
     wxLogMessage(_T("[lmCadence::GenerateFirstChord] Valid Chords = %d"), nValidChords);
-    for (i=0; i < nNumChords; i++) {
+    for (int i=0; i < nNumChords; i++) {
         if (aChords[i].fValid) {
             wxLogMessage(_T("[lmCadence::GenerateFirstChord] Valid chord %d : %s, %s, %s, %s"),
                 i,
-                oConv.GetEnglishNoteName(aChords[i].nNote[0]).c_str(),
-                oConv.GetEnglishNoteName(aChords[i].nNote[1]).c_str(),
-                oConv.GetEnglishNoteName(aChords[i].nNote[2]).c_str(),
-                oConv.GetEnglishNoteName(aChords[i].nNote[3]).c_str() );
+                aChords[i].GetPrintName(0).c_str(),
+                aChords[i].GetPrintName(1).c_str(),
+                aChords[i].GetPrintName(2).c_str(),
+                aChords[i].GetPrintName(3).c_str() );
         }
     }
 
@@ -512,18 +512,18 @@ void lmCadence::GenerateFirstChord(lmChordManager* pChord, int nInversion)
     lmRandomGenerator oRnd;
     int iSel = oRnd.RandomNumber(1, nValidChords);
     int nValid = 0;
-    for (i=0; i < nNumChords; i++) {
-        if (aChords[i].fValid) {
+    for (iC=0; iC < nNumChords; iC++) {
+        if (aChords[iC].fValid) {
             if (iSel == ++nValid) break;
         }
     }
-    // chord i is the selected one.
-    m_Chord[0] = aChords[i];
+    // chord iC is the selected one.
+    m_Chord[0] = aChords[iC];
     wxLogMessage(_T("[lmCadence::GenerateFirstChord] Selected : %s, %s, %s, %s"),
-        oConv.GetEnglishNoteName(aChords[i].nNote[0]).c_str(),
-        oConv.GetEnglishNoteName(aChords[i].nNote[1]).c_str(),
-        oConv.GetEnglishNoteName(aChords[i].nNote[2]).c_str(),
-        oConv.GetEnglishNoteName(aChords[i].nNote[3]).c_str() );
+                aChords[iC].GetPrintName(0).c_str(),
+                aChords[iC].GetPrintName(1).c_str(),
+                aChords[iC].GetPrintName(2).c_str(),
+                aChords[iC].GetPrintName(3).c_str() );
 
 
 }
@@ -544,6 +544,7 @@ void lmCadence::GenerateNextChord(lmChordManager* pChord, int nInversion, int iP
         oChordNotes[i].nStep = nSteps[i] = pChord->GetStep(i);
         oChordNotes[i].nOctave = 0;
     }
+    int nStep5 = nSteps[2];     // the fifth of the chord
     //dbg
     wxLogMessage(_T("[lmCadence::GenerateNextChord] Base chord. Num notes = %d"), nNumNotes);
     wxString sNotes = _T("cdefgabc");
@@ -570,7 +571,7 @@ void lmCadence::GenerateNextChord(lmChordManager* pChord, int nInversion, int iP
     int nSetNotes[20];
     int nSetAcc[20];
     int nSet = 0;       //points to first not used entry = number of entries
-    lmDPitch nMaxPitch = oConv.DPitch(lmSTEP_C, 6); 
+    lmDPitch nMaxPitch = oConv.DPitch(lmSTEP_C, 6);
     int iN;             // point to note in process
     for (iN=0; iN < nNumNotes; iN++) {
         lmDPitch nDPitch = oConv.DPitch(oChordNotes[iN].nStep, 2);
@@ -589,7 +590,7 @@ void lmCadence::GenerateNextChord(lmChordManager* pChord, int nInversion, int iP
         bool fSwap = false;
         int j = nSet -1;      // last element
         while(j != i) {
-            int k = j-1; 
+            int k = j-1;
             if (nSetNotes[j] < nSetNotes[k]) {
                 fSwap = true;
                 int nNote = nSetNotes[j];
@@ -610,8 +611,8 @@ void lmCadence::GenerateNextChord(lmChordManager* pChord, int nInversion, int iP
 
     //for each previous chord note (except bass) find the nearest ones to move to
     //and for the sets of eligible notes
-    lmDPitch nElegibleNote[4][2];   // four voices, two alternatives for each one
-    int nElegibleAcc[4][2];         
+    lmDPitch nElegibleNote[4][3];   // four voices, three alternatives for each one
+    int nElegibleAcc[4][3];
     int nE[4];                      // number of elegible notes for each voice
 
     for (iN = 1; iN < 4; iN++) {
@@ -624,19 +625,25 @@ void lmCadence::GenerateNextChord(lmChordManager* pChord, int nInversion, int iP
                 // note in chord. keep it.
                 nElegibleNote[iN][nE[iN]] = nNote;
                 nElegibleAcc[iN][nE[iN]++] = nAcc;
+
+                // and add also the next and previous ones
+                if (i > 0) {
+                    nElegibleNote[iN][nE[iN]] = nSetNotes[i-1];
+                    nElegibleAcc[iN][nE[iN]++] = nSetAcc[i-1];
+                }
+                if (i+1 < nSet) {
+                    nElegibleNote[iN][nE[iN]] = nSetNotes[i+1];
+                    nElegibleAcc[iN][nE[iN]++] = nSetAcc[i+1];
+                }
                 break;
             }
             else if (nNote < nSetNotes[i]) {
                 // note not in chord. Take the two nearest ones
-                if (i == nSet-1) {
-                    // is the last note, take the previous one
-                    nElegibleNote[iN][nE[iN]] = nSetNotes[i-1];
-                    nElegibleAcc[iN][nE[iN]++] = nAcc;
-                }
-                else {
-                    // Take the two nearest ones
+                if (i > 0) {
                     nElegibleNote[iN][nE[iN]] = nSetNotes[i-1];
                     nElegibleAcc[iN][nE[iN]++] = nSetAcc[i-1];
+                }
+                if (i != nSet-1) {
                     nElegibleNote[iN][nE[iN]] = nSetNotes[i];
                     nElegibleAcc[iN][nE[iN]++] = nSetAcc[i];
                 }
@@ -644,18 +651,21 @@ void lmCadence::GenerateNextChord(lmChordManager* pChord, int nInversion, int iP
             }
         }
     }
-    wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set S: Num.notes=%d, %s, %s"),
-        nE[3], 
+    wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set S: Num.notes=%d, %s, %s, %s"),
+        nE[3],
         oConv.GetEnglishNoteName(nElegibleNote[3][0]).c_str(),
-        oConv.GetEnglishNoteName(nElegibleNote[3][1]).c_str() );
-    wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set A: Num.notes=%d, %s, %s"),
-        nE[2], 
+        oConv.GetEnglishNoteName(nElegibleNote[3][1]).c_str(),
+        oConv.GetEnglishNoteName(nElegibleNote[3][2]).c_str() );
+    wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set A: Num.notes=%d, %s, %s, %s"),
+        nE[2],
         oConv.GetEnglishNoteName(nElegibleNote[2][0]).c_str(),
-        oConv.GetEnglishNoteName(nElegibleNote[2][1]).c_str() );
-    wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set T: Num.notes=%d, %s, %s"),
-        nE[1], 
+        oConv.GetEnglishNoteName(nElegibleNote[2][1]).c_str(),
+        oConv.GetEnglishNoteName(nElegibleNote[2][2]).c_str() );
+    wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set T: Num.notes=%d, %s, %s, %s"),
+        nE[1],
         oConv.GetEnglishNoteName(nElegibleNote[1][0]).c_str(),
-        oConv.GetEnglishNoteName(nElegibleNote[1][1]).c_str() );
+        oConv.GetEnglishNoteName(nElegibleNote[1][1]).c_str(),
+        oConv.GetEnglishNoteName(nElegibleNote[1][2]).c_str() );
 
     // create the set of possible chords
     int nNumChords = nE[1] * nE[2] * nE[3];
@@ -695,9 +705,9 @@ void lmCadence::GenerateNextChord(lmChordManager* pChord, int nInversion, int iP
     }
 
     //Filter invalid chords
-    int nValidChords = FilterChords(aChords, nSteps, nNumNotes);
+    int nValidChords = FilterChords(aChords, nSteps, nNumNotes, nStep5);
     wxLogMessage(_T("[lmCadence::GenerateNextChord] Valid Chords = %d"), nValidChords);
-    for (i=0; i < nNumChords; i++) {
+    for (int i=0; i < nNumChords; i++) {
         if (aChords[i].fValid) {
             wxLogMessage(_T("[lmCadence::GenerateNextChord] Valid chord %d : %s, %s, %s, %s"),
                 i,
@@ -713,18 +723,18 @@ void lmCadence::GenerateNextChord(lmChordManager* pChord, int nInversion, int iP
     lmRandomGenerator oRnd;
     int iSel = oRnd.RandomNumber(1, nValidChords);
     int nValid = 0;
-    for (i=0; i < nNumChords; i++) {
-        if (aChords[i].fValid) {
+    for (iC=0; iC < nNumChords; iC++) {
+        if (aChords[iC].fValid) {
             if (iSel == ++nValid) break;
         }
     }
-    // chord i is the selected one.
-    m_Chord[iThisChord] = aChords[i];
+    // chord iC is the selected one.
+    m_Chord[iThisChord] = aChords[iC];
     wxLogMessage(_T("[lmCadence::GenerateNextChord] Selected : %s, %s, %s, %s"),
-        oConv.GetEnglishNoteName(aChords[i].nNote[0]).c_str(),
-        oConv.GetEnglishNoteName(aChords[i].nNote[1]).c_str(),
-        oConv.GetEnglishNoteName(aChords[i].nNote[2]).c_str(),
-        oConv.GetEnglishNoteName(aChords[i].nNote[3]).c_str() );
+        oConv.GetEnglishNoteName(aChords[iC].nNote[0]).c_str(),
+        oConv.GetEnglishNoteName(aChords[iC].nNote[1]).c_str(),
+        oConv.GetEnglishNoteName(aChords[iC].nNote[2]).c_str(),
+        oConv.GetEnglishNoteName(aChords[iC].nNote[3]).c_str() );
 
 }
 
@@ -761,28 +771,31 @@ int lmCadence::GenerateSopranoNote(lmNoteBits oChordNotes[4], int iBass,
 
 }
 
-int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nSteps[4], int nNumSteps)
+int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nSteps[4], int nNumSteps,
+                            int nStep5)
 {
+    // nStep5 is the fifth of the chord
     // Possible validations:
     // + 1. B < T < A < S
     // + 2. A <= T+7; S <= A+7
     // + 3. The chord is complete (has all note steps)
-    // 
+    // + 4. The fifth is not duplicated
+    //
 
 
     for (int i=0; i < (int)aChords.size(); i++)
     {
         //1. notes in ascending sequence (no voice cross). No duplicates
-        if (aChords[i].fValid && 
+        if (aChords[i].fValid &&
             (aChords[i].nNote[1] <= aChords[i].nNote[0] ||
              aChords[i].nNote[2] <= aChords[i].nNote[1] ||
              aChords[i].nNote[3] <= aChords[i].nNote[2] ))
                 aChords[i].fValid = false;
 
-        //2. notes interval lower than one octave (except bass-tenor)
-        if (aChords[i].fValid && 
-            (aChords[i].nNote[2] - aChords[i].nNote[1] >= 7 ||
-             aChords[i].nNote[3] - aChords[i].nNote[2] >= 7 ))
+        //2. notes interval not greater than one octave (except bass-tenor)
+        if (aChords[i].fValid &&
+            (aChords[i].nNote[2] - aChords[i].nNote[1] > 7 ||
+             aChords[i].nNote[3] - aChords[i].nNote[2] > 7 ))
                 aChords[i].fValid = false;
 
         //3. all steps are in the chord
@@ -796,12 +809,23 @@ int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nSteps[4], int n
                     }
                 }
             }
-            bool fValid = true;     
+            bool fValid = true;
             for(int j=0; j < nNumSteps; j++) {
-                fValid &= fFound[j]; 
+                fValid &= fFound[j];
             }
             aChords[i].fValid = fValid;
         }
+
+        //4. The fifth is not duplicated
+        if (aChords[i].fValid) {
+            int nFifths = 0;
+            for (int iN=0; iN < 4; iN++) {
+                if (lmConverter::GetStepFromDPitch(aChords[i].nNote[iN]) == nStep5)
+                    nFifths++;
+            }
+            aChords[i].fValid = (nFifths == 1);
+        }
+
 
 
     }
@@ -838,31 +862,30 @@ wxString CadenceTypeToName(lmECadenceType nType)
 		    // Perfect authentic cadences
         m_sCadenceName[lm_eCadPerfect_V_I] = _("Perfect");
         m_sCadenceName[lm_eCadPerfect_V7_I] = _("Perfect");
-        m_sCadenceName[lm_eCadPerfect_Ic64_V] = _("Perfect");
         m_sCadenceName[lm_eCadPerfect_Va5_I] = _("Perfect");
         m_sCadenceName[lm_eCadPerfect_Vd5_I] = _("Perfect");
 			// Plagal cadences
         m_sCadenceName[lm_eCadPlagal_IV_I] = _("Plagal");
-        m_sCadenceName[lm_eCadPlagal_iv_I] = _("Plagal");
-        m_sCadenceName[lm_eCadPlagal_II_I] = _("Plagal");
-        m_sCadenceName[lm_eCadPlagal_ii_I] = _("Plagal");
-        m_sCadenceName[lm_eCadPlagal_VI_I] = _("Plagal");
+        m_sCadenceName[lm_eCadPlagal_IVm_I] = _("Plagal");
+        m_sCadenceName[lm_eCadPlagal_IIc6_I] = _("Plagal");
+        m_sCadenceName[lm_eCadPlagal_IImc6_I] = _("Plagal");
 
 		// Transient cadences
 			// Imperfect authentic cadences
 	    m_sCadenceName[lm_eCadImperfect_V_I] = _("Imperfect authentic");
 			// Deceptive cadences
         m_sCadenceName[lm_eCadDeceptive_V_IV] = _("Deceptive");
-        m_sCadenceName[lm_eCadDeceptive_V_iv] = _("Deceptive");
+        m_sCadenceName[lm_eCadDeceptive_V_IVm] = _("Deceptive");
         m_sCadenceName[lm_eCadDeceptive_V_VI] = _("Deceptive");
-        m_sCadenceName[lm_eCadDeceptive_V_vi] = _("Deceptive");
-        m_sCadenceName[lm_eCadDeceptive_V_ii] = _("Deceptive");
+        m_sCadenceName[lm_eCadDeceptive_V_VIm] = _("Deceptive");
+        m_sCadenceName[lm_eCadDeceptive_V_IIm] = _("Deceptive");
         m_sCadenceName[lm_eCadDeceptive_V_III] = _("Deceptive");
         m_sCadenceName[lm_eCadDeceptive_V_VII] = _("Deceptive");
 			// Half cadences
-        m_sCadenceName[lm_eCadHalf_iic6_V] = _("Half cadence");
+        m_sCadenceName[lm_eCadHalf_IImc6_V] = _("Half cadence");
         m_sCadenceName[lm_eCadHalf_IV_V] = _("Half cadence");
         m_sCadenceName[lm_eCadHalf_I_V] = _("Half cadence");
+        m_sCadenceName[lm_eCadHalf_Ic64_V] = _("Half cadence");
         m_sCadenceName[lm_eCadHalf_IV6_V] = _("Half cadence");
         m_sCadenceName[lm_eCadHalf_II_V] = _("Half cadence");
         m_sCadenceName[lm_eCadHalf_IIdimc6_V] = _("Half cadence");

@@ -46,23 +46,23 @@ public:
     ~lmRandomGenerator() {}
 
     //random numbers
-    int RandomNumber(int nMin, int nMax);
-    bool FlipCoin();
+    static int RandomNumber(int nMin, int nMax);
+    static bool FlipCoin();
 
     // clefs
-    EClefType GenerateClef(lmClefConstrain* pValidClefs);
+    static EClefType GenerateClef(lmClefConstrain* pValidClefs);
 
     // key signature
-    EKeySignatures GenerateKey(lmKeyConstrains* pValidKeys);
-    EKeySignatures RandomKeySignature();
+    static EKeySignatures GenerateKey(lmKeyConstrains* pValidKeys);
+    static EKeySignatures RandomKeySignature();
 
     //time signature
-    ETimeSignature GenerateTimeSign(lmTimeSignConstrains* pValidTimeSignatures);
-    ETimeSignature RandomTimeSignature();
+    static ETimeSignature GenerateTimeSign(lmTimeSignConstrains* pValidTimeSignatures);
+    static ETimeSignature RandomTimeSignature();
 
     //notes
-    lmPitch GenerateRandomPitch(int nMinLine, int nRange, bool fRests, EClefType nClef);
-    wxString GenerateRandomRootNote(EClefType nClef, EKeySignatures nKey, bool fAllowAccidentals);
+    static lmPitch GenerateRandomPitch(int nMinLine, int nRange, bool fRests, EClefType nClef);
+    static wxString GenerateRandomRootNote(EClefType nClef, EKeySignatures nKey, bool fAllowAccidentals);
 
 };
 

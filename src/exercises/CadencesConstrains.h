@@ -90,7 +90,6 @@ enum lmECadenceType
     lm_eCadPerfect = lm_eCadTerminal,         
     lm_eCadPerfect_V_I = lm_eCadPerfect,
     lm_eCadPerfect_V7_I,
-    lm_eCadPerfect_Ic64_V,
     lm_eCadPerfect_Va5_I,
     lm_eCadPerfect_Vd5_I,
     lm_eCadLastPerfect,
@@ -98,10 +97,9 @@ enum lmECadenceType
     // Start of Plagal cadences
 	lm_eCadPlagal = lm_eCadLastPerfect,
     lm_eCadPlagal_IV_I = lm_eCadPlagal,
-    lm_eCadPlagal_iv_I,
-    lm_eCadPlagal_II_I,
-    lm_eCadPlagal_ii_I,
-    lm_eCadPlagal_VI_I,
+    lm_eCadPlagal_IVm_I,
+    lm_eCadPlagal_IIc6_I,
+    lm_eCadPlagal_IImc6_I,
     lm_eCadLastPlagal,
 
     lm_eCadLastTerminal = lm_eCadLastPlagal,    // last terminal cadence
@@ -117,19 +115,20 @@ enum lmECadenceType
     // Deceptive cadences
     lm_eCadDeceptive = lm_eCadLastImperfect,
     lm_eCadDeceptive_V_IV = lm_eCadDeceptive,
-    lm_eCadDeceptive_V_iv,
+    lm_eCadDeceptive_V_IVm,
     lm_eCadDeceptive_V_VI,
-    lm_eCadDeceptive_V_vi,
-    lm_eCadDeceptive_V_ii,
+    lm_eCadDeceptive_V_VIm,
+    lm_eCadDeceptive_V_IIm,
     lm_eCadDeceptive_V_III,
     lm_eCadDeceptive_V_VII,
     lm_eCadLastDeceptive,
 
     // Half cadences
     lm_eCadHalf = lm_eCadLastDeceptive,
-    lm_eCadHalf_iic6_V = lm_eCadHalf,
+    lm_eCadHalf_IImc6_V = lm_eCadHalf,
     lm_eCadHalf_IV_V,
     lm_eCadHalf_I_V,
+    lm_eCadHalf_Ic64_V,
     lm_eCadHalf_IV6_V,
     lm_eCadHalf_II_V,
     lm_eCadHalf_IIdimc6_V,

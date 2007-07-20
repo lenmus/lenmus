@@ -146,33 +146,32 @@ lmDlgCfgIdfyCadence::lmDlgCfgIdfyCadence(wxWindow* parent,
         // Perfect authentic cadences
     m_pChkCadence[lm_eCadPerfect_V_I] = XRCCTRL(*this, "chkCad_V_I", wxCheckBox);
     m_pChkCadence[lm_eCadPerfect_V7_I] = XRCCTRL(*this, "chkCad_V7_I", wxCheckBox);
-    m_pChkCadence[lm_eCadPerfect_Ic64_V] = XRCCTRL(*this, "chkCad_Ic64_V", wxCheckBox);
     m_pChkCadence[lm_eCadPerfect_Va5_I] = XRCCTRL(*this, "chkCad_Va5_I", wxCheckBox);
     m_pChkCadence[lm_eCadPerfect_Vd5_I] = XRCCTRL(*this, "chkCad_Vd5_I", wxCheckBox);
 
         // Plagal cadences
     m_pChkCadence[lm_eCadPlagal_IV_I] = XRCCTRL(*this, "chkCad_IV_I", wxCheckBox);
-    m_pChkCadence[lm_eCadPlagal_iv_I] = XRCCTRL(*this, "chkCad_IVm_I", wxCheckBox);
-    m_pChkCadence[lm_eCadPlagal_II_I] = XRCCTRL(*this, "chkCad_II_I", wxCheckBox);
-    m_pChkCadence[lm_eCadPlagal_ii_I] = XRCCTRL(*this, "chkCad_IIm_I", wxCheckBox);
-    m_pChkCadence[lm_eCadPlagal_VI_I] = XRCCTRL(*this, "chkCad_VI_I", wxCheckBox);
+    m_pChkCadence[lm_eCadPlagal_IVm_I] = XRCCTRL(*this, "chkCad_IVm_I", wxCheckBox);
+    m_pChkCadence[lm_eCadPlagal_IIc6_I] = XRCCTRL(*this, "chkCad_IIc6_I", wxCheckBox);
+    m_pChkCadence[lm_eCadPlagal_IImc6_I] = XRCCTRL(*this, "chkCad_IImc6_I", wxCheckBox);
 
         // Imperfect authentic cadences
 	m_pChkCadence[lm_eCadImperfect_V_I] = XRCCTRL(*this, "chkCad_V_I_inv", wxCheckBox);
 
         // Deceptive cadences
     m_pChkCadence[lm_eCadDeceptive_V_IV] = XRCCTRL(*this, "chkCad_V_IV", wxCheckBox);
-    m_pChkCadence[lm_eCadDeceptive_V_iv] = XRCCTRL(*this, "chkCad_V_IVm", wxCheckBox);
+    m_pChkCadence[lm_eCadDeceptive_V_IVm] = XRCCTRL(*this, "chkCad_V_IVm", wxCheckBox);
     m_pChkCadence[lm_eCadDeceptive_V_VI] = XRCCTRL(*this, "chkCad_V_VI", wxCheckBox);
-    m_pChkCadence[lm_eCadDeceptive_V_vi] = XRCCTRL(*this, "chkCad_V_VIm", wxCheckBox);
-    m_pChkCadence[lm_eCadDeceptive_V_ii] = XRCCTRL(*this, "chkCad_V_IIm", wxCheckBox);
+    m_pChkCadence[lm_eCadDeceptive_V_VIm] = XRCCTRL(*this, "chkCad_V_VIm", wxCheckBox);
+    m_pChkCadence[lm_eCadDeceptive_V_IIm] = XRCCTRL(*this, "chkCad_V_IIm", wxCheckBox);
     m_pChkCadence[lm_eCadDeceptive_V_III] = XRCCTRL(*this, "chkCad_V_III", wxCheckBox);
     m_pChkCadence[lm_eCadDeceptive_V_VII] = XRCCTRL(*this, "chkCad_V_VII", wxCheckBox);
 
     // Half cadences
-    m_pChkCadence[lm_eCadHalf_iic6_V] = XRCCTRL(*this, "chkCad_IImc6_V", wxCheckBox);
+    m_pChkCadence[lm_eCadHalf_IImc6_V] = XRCCTRL(*this, "chkCad_IImc6_V", wxCheckBox);
     m_pChkCadence[lm_eCadHalf_IV_V] = XRCCTRL(*this, "chkCad_IV_V", wxCheckBox);
     m_pChkCadence[lm_eCadHalf_I_V] = XRCCTRL(*this, "chkCad_I_V", wxCheckBox);
+    m_pChkCadence[lm_eCadHalf_Ic64_V] = XRCCTRL(*this, "chkCad_Ic64_V", wxCheckBox);
     m_pChkCadence[lm_eCadHalf_IV6_V] = XRCCTRL(*this, "chkCad_IV6_V", wxCheckBox);
     m_pChkCadence[lm_eCadHalf_II_V] = XRCCTRL(*this, "chkCad_II_V", wxCheckBox);
     m_pChkCadence[lm_eCadHalf_IIdimc6_V] = XRCCTRL(*this, "chkCad_N6_V", wxCheckBox);

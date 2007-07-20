@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="windows-1252"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
-    <object class="wxDialog" name="DlgCfgIdfyCadence" subclass="lmDlgCfgIdfyCadence">
+    <object class="wxDialog" name="DlgCfgIdfyCadence">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
         <exstyle>wxWS_EX_BLOCK_EVENTS</exstyle>
         <size>266,184d</size>
@@ -11,7 +11,7 @@
                 <flag>wxGROW|wxALL</flag>
                 <border>5</border>
                 <object class="wxNotebook" name="noteBook">
-                    <style>wxNB_TOP</style>
+                    <style>wxNB_DEFAULT|wxNB_TOP</style>
                     <object class="notebookpage">
                         <label>Cadences</label>
                         <object class="wxPanel" name="ID_PANEL3">
@@ -52,28 +52,26 @@
                                                 <object class="sizeritem">
                                                     <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
                                                     <border>5</border>
-                                                    <object class="wxCheckBox" name="chkCad_Ic64_V">
-                                                        <style>wxCHK_2STATE</style>
-                                                        <label>I(64) --&gt; V</label>
-                                                        <checked>0</checked>
-                                                    </object>
-                                                </object>
-                                                <object class="sizeritem">
-                                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
-                                                    <border>5</border>
                                                     <object class="wxCheckBox" name="chkCad_Va5_I">
                                                         <style>wxCHK_2STATE</style>
-                                                        <label>V con 5ª aum --&gt; I</label>
+                                                        <label>V aug5 --&gt; I</label>
                                                         <checked>0</checked>
                                                     </object>
                                                 </object>
                                                 <object class="sizeritem">
-                                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
+                                                    <flag>wxALIGN_LEFT|wxALL</flag>
                                                     <border>5</border>
                                                     <object class="wxCheckBox" name="chkCad_Vd5_I">
                                                         <style>wxCHK_2STATE</style>
-                                                        <label>V con 5ª dism --&gt; I</label>
+                                                        <label>V dim5 --&gt; I</label>
                                                         <checked>0</checked>
+                                                    </object>
+                                                </object>
+                                                <object class="sizeritem">
+                                                    <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                                    <border>5</border>
+                                                    <object class="wxButton" name="btnCheckAllPerfect">
+                                                        <label>check/uncheck all</label>
                                                     </object>
                                                 </object>
                                             </object>
@@ -99,35 +97,33 @@
                                                     <border>5</border>
                                                     <object class="wxCheckBox" name="chkCad_IVm_I">
                                                         <style>wxCHK_2STATE</style>
-                                                        <label>iv --&gt; I</label>
+                                                        <label>IVm --&gt; I</label>
                                                         <checked>0</checked>
                                                     </object>
                                                 </object>
                                                 <object class="sizeritem">
                                                     <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
                                                     <border>5</border>
-                                                    <object class="wxCheckBox" name="chkCad_II_I">
+                                                    <object class="wxCheckBox" name="chkCad_IIc6_I">
                                                         <style>wxCHK_2STATE</style>
-                                                        <label>II --&gt; I</label>
+                                                        <label>II/6 --&gt; I</label>
                                                         <checked>0</checked>
                                                     </object>
                                                 </object>
                                                 <object class="sizeritem">
-                                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
+                                                    <flag>wxALIGN_LEFT|wxALL</flag>
                                                     <border>5</border>
-                                                    <object class="wxCheckBox" name="chkCad_IIm_I">
+                                                    <object class="wxCheckBox" name="chkCad_IImc6_I">
                                                         <style>wxCHK_2STATE</style>
-                                                        <label>ii --&gt; I</label>
+                                                        <label>IIm/6 --&gt; I</label>
                                                         <checked>0</checked>
                                                     </object>
                                                 </object>
                                                 <object class="sizeritem">
-                                                    <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
+                                                    <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
                                                     <border>5</border>
-                                                    <object class="wxCheckBox" name="chkCad_VI_I">
-                                                        <style>wxCHK_2STATE</style>
-                                                        <label>VI --&gt; I</label>
-                                                        <checked>0</checked>
+                                                    <object class="wxButton" name="btnCheckAllPlagal">
+                                                        <label>check/uncheck all</label>
                                                     </object>
                                                 </object>
                                             </object>
@@ -158,7 +154,7 @@
                                                             <border>5</border>
                                                             <object class="wxCheckBox" name="chkCad_IImc6_V">
                                                                 <style>wxCHK_2STATE</style>
-                                                                <label>ii(6) --&gt; V</label>
+                                                                <label>IIm/6 --&gt; V</label>
                                                                 <checked>0</checked>
                                                             </object>
                                                         </object>
@@ -183,9 +179,18 @@
                                                         <object class="sizeritem">
                                                             <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
                                                             <border>5</border>
+                                                            <object class="wxCheckBox" name="chkCad_Ic64_V">
+                                                                <style>wxCHK_2STATE</style>
+                                                                <label>I/64 --&gt; V</label>
+                                                                <checked>0</checked>
+                                                            </object>
+                                                        </object>
+                                                        <object class="sizeritem">
+                                                            <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
+                                                            <border>5</border>
                                                             <object class="wxCheckBox" name="chkCad_IV6_V">
                                                                 <style>wxCHK_2STATE</style>
-                                                                <label>IV6 --&gt; V</label>
+                                                                <label>IVm/6 --&gt; V (Phrygian half cadence)</label>
                                                                 <checked>0</checked>
                                                             </object>
                                                         </object>
@@ -203,17 +208,24 @@
                                                             <border>5</border>
                                                             <object class="wxCheckBox" name="chkCad_N6_V">
                                                                 <style>wxCHK_2STATE</style>
-                                                                <label>sexta napolitana -&gt; V</label>
+                                                                <label>Neapolitan sixth --&gt; V</label>
                                                                 <checked>0</checked>
                                                             </object>
                                                         </object>
                                                         <object class="sizeritem">
-                                                            <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
+                                                            <flag>wxALIGN_LEFT|wxALL</flag>
                                                             <border>5</border>
                                                             <object class="wxCheckBox" name="chkCad_VIa_V">
                                                                 <style>wxCHK_2STATE</style>
-                                                                <label>sexta aumentada -&gt; V</label>
+                                                                <label>VI+ --&gt; V</label>
                                                                 <checked>0</checked>
+                                                            </object>
+                                                        </object>
+                                                        <object class="sizeritem">
+                                                            <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                                            <border>5</border>
+                                                            <object class="wxButton" name="btnCheckAllHalf">
+                                                                <label>check/uncheck all</label>
                                                             </object>
                                                         </object>
                                                     </object>
@@ -247,7 +259,7 @@
                                                             <border>5</border>
                                                             <object class="wxCheckBox" name="chkCad_V_IVm">
                                                                 <style>wxCHK_2STATE</style>
-                                                                <label>V --&gt; iv</label>
+                                                                <label>V --&gt; IVm</label>
                                                                 <checked>0</checked>
                                                             </object>
                                                         </object>
@@ -256,7 +268,7 @@
                                                             <border>5</border>
                                                             <object class="wxCheckBox" name="chkCad_V_IIm">
                                                                 <style>wxCHK_2STATE</style>
-                                                                <label>V --&gt; ii</label>
+                                                                <label>V --&gt; IIm</label>
                                                                 <checked>0</checked>
                                                             </object>
                                                         </object>
@@ -288,12 +300,19 @@
                                                             </object>
                                                         </object>
                                                         <object class="sizeritem">
-                                                            <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
+                                                            <flag>wxALIGN_LEFT|wxALL</flag>
                                                             <border>5</border>
                                                             <object class="wxCheckBox" name="chkCad_V_VIm">
                                                                 <style>wxCHK_2STATE</style>
-                                                                <label>V --&gt; vi</label>
+                                                                <label>V --&gt; VIm</label>
                                                                 <checked>0</checked>
+                                                            </object>
+                                                        </object>
+                                                        <object class="sizeritem">
+                                                            <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
+                                                            <border>5</border>
+                                                            <object class="wxButton" name="btnCheckAllDeceptive">
+                                                                <label>check/uncheck all</label>
                                                             </object>
                                                         </object>
                                                     </object>
@@ -309,7 +328,7 @@
                                                             <border>5</border>
                                                             <object class="wxCheckBox" name="chkCad_V_I_inv">
                                                                 <style>wxCHK_2STATE</style>
-                                                                <label>V --&gt; I (with inversions)</label>
+                                                                <label>V --&gt; I (one or both with inversions)</label>
                                                                 <checked>0</checked>
                                                             </object>
                                                         </object>
@@ -334,6 +353,7 @@
                                             <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
                                             <border>5</border>
                                             <object class="wxStaticText" name="wxID_STATIC">
+                                                <label></label>
                                             </object>
                                         </object>
                                         <object class="sizeritem">
@@ -535,6 +555,7 @@
                                                     <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
                                                     <border>5</border>
                                                     <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label></label>
                                                     </object>
                                                 </object>
                                                 <object class="sizeritem">
@@ -560,8 +581,9 @@
                                             <object class="wxRadioBox" name="radBoxShowKey">
                                                 <style>wxRA_SPECIFY_ROWS</style>
                                                 <label>How to show key signature?</label>
+                                                <dimension>2</dimension>
+                                                <selection>0</selection>
                                                 <content>
-                                                    <item>&amp;Show label</item>
                                                     <item>&amp;Play A4 note</item>
                                                     <item>Play &amp;tonic chord</item>
                                                 </content>
@@ -590,6 +612,8 @@
                                             <object class="wxRadioBox" name="radBoxAnswerType">
                                                 <style>wxRA_SPECIFY_ROWS</style>
                                                 <label>Type of desired answer</label>
+                                                <dimension>2</dimension>
+                                                <selection>0</selection>
                                                 <content>
                                                     <item>Identify cadence &amp;group (terminal/transient)</item>
                                                     <item>Identify cadence &amp;type</item>
@@ -687,6 +711,7 @@
                                                     <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
                                                     <border>5</border>
                                                     <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label></label>
                                                     </object>
                                                 </object>
                                                 <object class="sizeritem">

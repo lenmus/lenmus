@@ -58,6 +58,21 @@ public:
         nNumNotes=0;
     };
 
+    wxString GetPrintName(int iNote) {
+        wxString sAnswer;
+        switch(nAcc[iNote]) {
+            case -2: sAnswer =_T("--"); break;
+            case -1: sAnswer =_T("-"); break;
+            case 0:  sAnswer =_T(" "); break;
+            case 1:  sAnswer =_T("+"); break;
+            case 2:  sAnswer =_T("++"); break;
+            default:
+                sAnswer = _T("");
+        }
+        sAnswer += lmConverter::GetEnglishNoteName(nNote[iNote]).c_str();
+        return sAnswer;
+    };
+
     lmDPitch nNote[4];      //diatonic pitch so 1:1 mapping to staff lines/spaces
     int      nAcc[4];       //accidentals: -2 ... +2
     bool     fValid;        //useful to filter out invalid chords
@@ -90,13 +105,14 @@ public:
     wxString GetNotePattern(int iChord, int iNote);
 
 private:
-    wxString SelectChord(wxString sFunction, EKeySignatures nKey);
+    wxString SelectChord(wxString sFunction, EKeySignatures nKey, int* pInversion);
     wxString GetRootNote(wxString sFunct, EKeySignatures nKey, EClefType nClef,
                          bool fUseGrandStaff);
     //--------
     void GenerateFirstChord(lmChordManager* pChord, int nInversion);
     int GenerateSopranoNote(lmNoteBits oChordNotes[4], int iBass, int nNumNotes);
-    int FilterChords(std::vector<lmHChord>& aChords, int nSteps[4], int nNumSteps);
+    int FilterChords(std::vector<lmHChord>& aChords, int nSteps[4], int nNumSteps,
+                     int nStep5);
     void GenerateNextChord(lmChordManager* pChord, int nInversion, int iPrevHChord);
 
 
@@ -106,6 +122,7 @@ private:
     lmECadenceType  m_nType;
     EKeySignatures  m_nKey;
     lmChordManager  m_aChord[lmCHORDS_IN_CADENCE];
+    int             m_nInversions[lmCHORDS_IN_CADENCE];
     int             m_nNumChords;       //num of chords in this cadence
     lmHChord        m_Chord[lmCHORDS_IN_CADENCE];
 
