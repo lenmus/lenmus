@@ -239,7 +239,7 @@
 	"Generators.h"
 	"Constrains.h"
 
-1180335108 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Generators.h
+1184829840 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/Generators.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Constrains.h"
@@ -872,7 +872,7 @@
 	"../score/Score.h"
 	"../exercises/ScoreConstrains.h"
 
-1184700063 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/Conversion.cpp
+1184738058 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/Conversion.cpp
 	"wx/wxprec.h"
 	"../score/Score.h"
 	"Conversion.h"
@@ -2029,7 +2029,7 @@
 	"UrlAuxCtrol.h"
 	"CountersCtrol.h"
 
-1184590768 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/CadencesConstrains.h
+1184913830 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/CadencesConstrains.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Generators.h"
@@ -2049,7 +2049,7 @@
 	"CadencesConstrains.h"
 	"Generators.h"
 
-1184678308 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyCadencesCtrol.cpp
+1184748798 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/IdfyCadencesCtrol.cpp
 	"wx/wxprec.h"
 	"IdfyCadencesCtrol.h"
 	"UrlAuxCtrol.h"
@@ -2068,7 +2068,7 @@
 	"wx/dialog.h"
 	"../exercises/CadencesConstrains.h"
 
-1184592692 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/DlgCfgIdfyCadence.cpp
+1184913830 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/DlgCfgIdfyCadence.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<wx/dialog.h>
@@ -2079,7 +2079,7 @@
 	"../ldp_parser/AuxString.h"
 	"../auxmusic/Conversion.h"
 
-1184679444 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/Cadence.h
+1184844946 /media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/Cadence.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"vector"
@@ -2089,7 +2089,7 @@
 	"Conversion.h"
 	"ChordManager.h"
 
-1184700026 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/Cadence.cpp
+1185030750 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/Cadence.cpp
 	"wx/wxprec.h"
 	"Cadence.h"
 	"Conversion.h"

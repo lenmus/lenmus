@@ -345,20 +345,20 @@ wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType
             if (iC != 0) pVStaff->AddBarline(etb_SimpleBarline);
             // first and second notes on F4 clef staff
             sPattern = _T("(n ") + oCad.GetNotePattern(iC, 0) + _T(" r p2)");
-        wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
+        //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
             pNode = parserLDP.ParseText( sPattern );
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
             sPattern = _T("(na ") + oCad.GetNotePattern(iC, 1) + _T(" r p2)");
-        wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
+        //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
             pNode = parserLDP.ParseText( sPattern );
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
             // third and fourth notes on G clef staff
             sPattern = _T("(na ") + oCad.GetNotePattern(iC, 2) + _T(" r p1)");
-        wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
+        //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
             pNode = parserLDP.ParseText( sPattern );
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
             sPattern = _T("(na ") + oCad.GetNotePattern(iC, 3) + _T(" r p1)");
-        wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
+        //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
             pNode = parserLDP.ParseText( sPattern );
             pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
         }

@@ -47,6 +47,22 @@
 
 
 // auxiliary object to comfortably manage chords
+enum lmBadChordReason {
+    lm_eChordValid = 0,
+    lm_eChordDiscarded,     //Chord discarded: not possible to generate a valid next chord
+    lm_eVoiceCrossing,      //notes not in ascending sequence or duplicated
+    lm_eGreaterThanOctave,  //notes interval greater than one octave (other than bass-tenor)
+    lm_eChordIncomplete,    //not all chord steps in the chord
+    lm_eFifthDoubled,       //the fifth is doubled
+    lm_eLeadingToneDoubled, //the leading tone is doubled
+    lm_eFifthOctaveMotion,  //parallel motion of perfect octaves or perfect fifths
+    lm_eVoiceOverlap,       //voice overlap
+    lm_eNotContraryMotion,  //bass moves by step and not all other voices moves in opposite direction to bass
+    lm_eLeadingResolution,  //Scale degree seven (the leading tone) doesn't resolve to tonic
+    lm_eChromaticAlter,     //Chromatic alteration not resolved the same direction than the alteration
+
+};
+
 class lmHChord
 {
 public:
@@ -54,7 +70,7 @@ public:
     lmHChord() { 
         nNote[0] = nNote[1] = nNote[2] = nNote[3] = -1;
         nAcc[0] = nAcc[1] = nAcc[2] = nAcc[3] = 0;
-        fValid=false;
+        nReason=lm_eChordValid;
         nNumNotes=0;
     };
 
@@ -71,12 +87,46 @@ public:
         }
         sAnswer += lmConverter::GetEnglishNoteName(nNote[iNote]).c_str();
         return sAnswer;
-    };
+    }
 
-    lmDPitch nNote[4];      //diatonic pitch so 1:1 mapping to staff lines/spaces
-    int      nAcc[4];       //accidentals: -2 ... +2
-    bool     fValid;        //useful to filter out invalid chords
-    int      nNumNotes;     //normally 4
+    wxString GetReason() {
+        switch (nReason) {
+            case lm_eChordValid:
+                return _T("Chord is valid");
+            case lm_eChordDiscarded:
+                return _T("Chord discarded: not possible to generate a valid next chord");
+            case lm_eVoiceCrossing:
+                return _T("Notes not in ascending sequence or duplicated");
+            case lm_eGreaterThanOctave:
+                return _T("Notes interval greater than one octave (other than bass-tenor)");
+            case lm_eChordIncomplete:
+                return _T("Not all chord steps in the chord");
+            case lm_eFifthDoubled:
+                return _T("The fifth is doubled");
+            case lm_eLeadingToneDoubled:
+                return _T("The leading tone is doubled");
+            case lm_eFifthOctaveMotion:
+                return _T("Parallel motion of perfect octaves or perfect fifths");
+            case lm_eVoiceOverlap:
+                return _T("Voice overlap");
+            case lm_eNotContraryMotion:
+                return _T("Bass moves by step and not all other voices moves in opposite direction to bass");
+            case lm_eLeadingResolution:
+                return _T("Scale degree seven (the leading tone) doesn't resolve to tonic.");
+            case lm_eChromaticAlter:
+                return _T("Chromatic alteration not resolved the same direction than the alteration.");
+
+            default:
+                return _T("Error: Invalid value");
+        }
+    }
+
+    lmDPitch            nNote[4];       //diatonic pitch so 1:1 mapping to staff lines/spaces
+    int                 nAcc[4];        //accidentals: -2 ... +2
+    lmBadChordReason    nReason;        //used when filtering out invalid chords
+    int                 nSeverity;      //highest broken rule
+    int                 nImpact;        //0-internal voices, 1-external voices
+    int                 nNumNotes;      //normally 4
 };
 
 
@@ -109,11 +159,13 @@ private:
     wxString GetRootNote(wxString sFunct, EKeySignatures nKey, EClefType nClef,
                          bool fUseGrandStaff);
     //--------
-    void GenerateFirstChord(lmChordManager* pChord, int nInversion);
+    int GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordManager* pChord,
+                            int nInversion);
     int GenerateSopranoNote(lmNoteBits oChordNotes[4], int iBass, int nNumNotes);
-    int FilterChords(std::vector<lmHChord>& aChords, int nSteps[4], int nNumSteps,
-                     int nStep5);
-    void GenerateNextChord(lmChordManager* pChord, int nInversion, int iPrevHChord);
+    int FilterChords(std::vector<lmHChord>& aChords, int nNumChords, int nSteps[4], int nNumSteps,
+                     int nStep5, lmHChord* pPrevChord);
+    int GenerateNextChord(lmChordManager* pChord, int nInversion, int iPrevHChord);
+
 
 
     //member variables

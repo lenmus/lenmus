@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MUsicReading_L2 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-05-18 11:31+0100\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2007-07-21 22:29+0100\n"
+"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -42,7 +42,7 @@ msgstr "Cecilio Salmerón"
 
 #: L2_MusicReading/L2_MusicReading.cpp:9
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
-msgstr "Se otorga permiso para copiar, distribuir y/o modificar este documento bajo los términos de la Licencia GNU de Documentación Libre, Versión 1.2 o cualquier otra versión posterior publicada por la Free Software Foundation; sin Secciones Invariantes ni Textos de Cubierta Delantera ni Textos de Cubierta Trasera. Una copia de la licencia está incluida en la documentación recibida junto con este programa. y también está accesible en "
+msgstr "Se otorga permiso para copiar, distribuir y/o modificar este documento bajo los términos de la Licencia GNU de Documentación Libre, Versión 1.2 o cualquier otra versión posterior publicada por la Free Software Foundation; sin Secciones Invariantes ni Textos de Cubierta Delantera ni Textos de Cubierta Trasera. Una copia de la licencia está incluida en la documentación recibida junto con este programa y también está accesible en "
 
 #: L2_MusicReading/L2_MusicReading.cpp:10
 msgid "http://www.gnu.org/licenses/fdl.html"
@@ -58,7 +58,7 @@ msgstr "Introducción"
 
 #: L2_MusicReading/L2_MusicReading.cpp:13
 msgid "In level 2 we continue with all concepts introduced in level 1, and new concepts are introduced in a progressive way, alternating simple time signatures and duple time ones."
-msgstr "En este segundo nivel se continuan ejercitando los temas estudiados en el primer curso y se introducen progresivamente ritmos más complejos, alternando métricas de subdivisión binaria y métricas de subdivisión ternaria."
+msgstr "En este segundo nivel se continúan ejercitando los temas estudiados en el primer curso y se introducen progresivamente ritmos más complejos, alternando métricas de subdivisión binaria y métricas de subdivisión ternaria."
 
 #: L2_MusicReading/L2_MusicReading.cpp:14
 msgid "Syllabus"
@@ -78,7 +78,7 @@ msgstr "Tresillos, incluyendo tresillos con silencios."
 
 #: L2_MusicReading/L2_MusicReading.cpp:18
 msgid "Extension of the stave in treble (G) and bass (F) clefs to include two ledger lines below and above each stave."
-msgstr "Extensión del ámbito en las claves de Sol (Violín) y Fa en 4ª (Bajo), para cubrir dos lineas adicionales por encima y por debajo."
+msgstr "Extensión del ámbito en las claves de Sol (Violín) y Fa en 4ª (Bajo), para cubrir dos líneas adicionales por encima y por debajo."
 
 #: L2_MusicReading/L2_MusicReading.cpp:19
 msgid "Compound time signatures of 9/8, 12/8 and the grouping of notes and rests within these times."
@@ -90,7 +90,7 @@ msgstr "La clave de Do en 1º (Soprano)."
 
 #: L2_MusicReading/L2_MusicReading.cpp:21
 msgid "Extension of the stave in C1 clef to include one ledger line above the stave."
-msgstr "Extensión de la clave de Do en 1º para cubrir el ámbito una linea adicional, por encima y por debajo del pentagrama."
+msgstr "Extensión de la clave de Do en 1º para cubrir el ámbito una línea adicional, por encima y por debajo del pentagrama."
 
 #: L2_MusicReading/L2_MusicReading.cpp:22
 msgid "Key signatures of all major and minor keys up to and including four sharps and flats."
@@ -270,7 +270,7 @@ msgstr "Ejercicio 1"
 #: L2_MusicReading/L2_MusicReading.cpp:195
 #: L2_MusicReading/L2_MusicReading.cpp:211
 msgid " - Train your ear and practise the introduced rhythmic patterns."
-msgstr " - Entrena tu oido y practica los nuevos ritmos introducidos."
+msgstr " - Entrena tu oído y practica los nuevos ritmos introducidos."
 
 #: L2_MusicReading/L2_MusicReading.cpp:36
 #: L2_MusicReading/L2_MusicReading.cpp:50
@@ -315,11 +315,11 @@ msgstr " - Lee partituras que contienen los ritmos introducidos en esta lección
 #: L2_MusicReading/L2_MusicReading.cpp:40
 #: L2_MusicReading/L2_MusicReading.cpp:43
 msgid "Press 'Play' and listen. Train your ear and practise reading this rhythm."
-msgstr "Pulsa 'Tocar' y escucha el ritmo. Entrena tu oido y practica la lectura de este ritmo."
+msgstr "Pulsa 'Tocar' y escucha el ritmo. Entrena tu oído y practica la lectura de este ritmo."
 
 #: L2_MusicReading/L2_MusicReading.cpp:45
 msgid "Compound time of 9/8. Dotted quarter note"
-msgstr "Subdivisión ternaria. Compás de 9/8.Negra con puntillo"
+msgstr "Subdivisión ternaria. Compás de 9/8. Negra con puntillo"
 
 #: L2_MusicReading/L2_MusicReading.cpp:46
 msgid "In this lesson the compound time of 9/8 is introduced, as well as two new rhythmic patterns. The 9/8 time has three beats and each beat is occupied by a 8th note. The measure is occupied by a dotted quarter note."
@@ -372,7 +372,7 @@ msgstr "Subdivisión ternaria de 9/8. Blanca ligada a siguiente parte fuerte"
 #: L2_MusicReading/L2_MusicReading.cpp:347
 #: L2_MusicReading/L2_MusicReading.cpp:350
 msgid "Press 'Play' and listen. Train your ear and practise the newly introduced patterns."
-msgstr "Pulsa 'Tocar' y escucha el ritmo. Entrena tu oido y practica la lectura de los nuevos patrones."
+msgstr "Pulsa 'Tocar' y escucha el ritmo. Entrena tu oído y practica la lectura de los nuevos patrones."
 
 #: L2_MusicReading/L2_MusicReading.cpp:59
 #: L2_MusicReading/L2_MusicReading.cpp:69
@@ -391,7 +391,7 @@ msgstr "Observa la diferencia entre los siguientes patrones rítmicos y cómo se
 
 #: L2_MusicReading/L2_MusicReading.cpp:70
 msgid "Press 'Play' and listen carefully the rhythm. Train your ear and practise the newly introduced patterns."
-msgstr "Pulsa 'Tocar' y escucha con atención el ritmo. Entrena tu oido y practica la lectura de este ritmo."
+msgstr "Pulsa 'Tocar' y escucha con atención el ritmo. Entrena tu oído y practica la lectura de este ritmo."
 
 #: L2_MusicReading/L2_MusicReading.cpp:75
 msgid "Compound time of 12/8. 8th note tied to 16th notes"
@@ -403,7 +403,7 @@ msgstr "El compás de 12/8 es de subdivisión ternaria y tiene cuatro tiempos. L
 
 #: L2_MusicReading/L2_MusicReading.cpp:77
 msgid "In this lesson a new rhythmic pattern is introduced: the 8th note tied to next beat:"
-msgstr "En este tema se estudia un nuevo patrón rítmico: la corchea ligada a la siguiente parte fuere:"
+msgstr "En este tema se estudia un nuevo patrón rítmico: la corchea ligada a la siguiente parte fuerte:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:78
 msgid "Listen and observe the differences"
@@ -454,7 +454,7 @@ msgstr "En este tema se introduce un nuevo patrón rítmico, resultante de ligar
 
 #: L2_MusicReading/L2_MusicReading.cpp:127
 msgid "Note the difference between the first and the second measure. Note how it is formed when putting a tie."
-msgstr "Observa la diferencia entre el primer y el segundo compas. Observa cómo éste se obtiene al ligar los dos grupos del primer compas."
+msgstr "Observa la diferencia entre el primer y el segundo compás. Observa cómo éste se obtiene al ligar los dos grupos del primer compás."
 
 #: L2_MusicReading/L2_MusicReading.cpp:140
 #: L2_MusicReading/L2_MusicReading.cpp:150
@@ -468,7 +468,7 @@ msgstr "En este tema se introduce un nuevo patrón rítmico, resultante de ligar
 
 #: L2_MusicReading/L2_MusicReading.cpp:143
 msgid "Note the difference between the first and the second measure. Note how it is formed when tying the two groups of the first measure."
-msgstr "Observa la diferencia entre el primer y el segundo compas. Observa cómo éste se obtiene al ligar los dos grupos del primer compas."
+msgstr "Observa la diferencia entre el primer y el segundo compas. Observa cómo éste se obtiene al ligar los dos grupos del primer compás."
 
 #: L2_MusicReading/L2_MusicReading.cpp:156
 #: L2_MusicReading/L2_MusicReading.cpp:167
@@ -504,7 +504,7 @@ msgstr "En este tema se introduce un nuevo patrón rítmico, al ligar una nota a
 
 #: L2_MusicReading/L2_MusicReading.cpp:176
 msgid "Note the difference between the first and the second measure, and between the third and the fourth. Note how they are formed when tying the note to the triplet:"
-msgstr "Observa la diferencia entre el primer y el segundo compas, y entre el tercero y el cuarto. Observa cómo los segundos se obtienen al ligar la nota con el tresillo:"
+msgstr "Observa la diferencia entre el primer y el segundo compás, y entre el tercero y el cuarto. Observa cómo los segundos se obtienen al ligar la nota con el tresillo:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:189
 #: L2_MusicReading/L2_MusicReading.cpp:199
@@ -518,7 +518,7 @@ msgstr "En este tema se introduce un nuevo patrón rítmico, resultante de ligar
 
 #: L2_MusicReading/L2_MusicReading.cpp:192
 msgid "Note the difference between the first and the second measure, and between the third and the fourth ones. Note how measures 2 and 4 are similar to measures 1 and 3 and are formed by tying the triplets."
-msgstr "Observa la diferencia entre el primer y el segundo compas, y entre el tercero y el cuarto. Observa cómo los compases 2 y 4 son similares al 1 y 3, respectivamente, y se obtienen al ligarlos tresillos:"
+msgstr "Observa la diferencia entre el primer y el segundo compás, y entre el tercero y el cuarto. Observa cómo los compases 2 y 4 son similares al 1 y 3, respectivamente, y se obtienen al ligarlos tresillos:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:205
 #: L2_MusicReading/L2_MusicReading.cpp:215
@@ -532,7 +532,7 @@ msgstr "En este tema se introducen dos nuevos patrones rítmicos, resultantes de
 
 #: L2_MusicReading/L2_MusicReading.cpp:208
 msgid "Note the difference between the first and the second measure, and between the third and the fourth ones. Note how measures 2 and 4 are similar to measures 1 and 3 but tying the triplets."
-msgstr "Observa la diferencia entre el primer y el segundo compas, y entre el tercero y el cuarto. Observa cómo los compases 2 y 4 son similares a los compases 1 y 3 pero ligando los tresillos."
+msgstr "Observa la diferencia entre el primer y el segundo compás, y entre el tercero y el cuarto. Observa cómo los compases 2 y 4 son similares a los compases 1 y 3 pero ligando los tresillos."
 
 #: L2_MusicReading/L2_MusicReading.cpp:221
 #: L2_MusicReading/L2_MusicReading.cpp:235
@@ -546,7 +546,7 @@ msgstr "En este tema se introduce el patrón de corchea con puntillo en ritmos d
 
 #: L2_MusicReading/L2_MusicReading.cpp:224
 msgid "Note how the rhythm of dotted 8th note can be obtained from one 8th note and two 16th notes, when tying the 8th note."
-msgstr "Observa cómo el ritmo de corchea con puntillo resulta del ritmo de corchea y dos semicorcheas, ya estudiado, al ligar la corchea. A su vez, el ritmo de cochea y dos semicorcheas puede obtenerse del de cuatrosemicurcheas al ligar las dos primeras."
+msgstr "Observa cómo el ritmo de corchea con puntillo resulta del ritmo de corchea y dos semicorcheas, ya estudiado, al ligar la corchea. A su vez, el ritmo de cochea y dos semicorcheas puede obtenerse del de cuatro semicorcheas al ligar las dos primeras."
 
 #: L2_MusicReading/L2_MusicReading.cpp:225
 msgid "Always that you find a trouble with a rhythmic pattern, study it first without the ties. When learned without the ties it will be easier to learn the original one with ties."
@@ -558,11 +558,11 @@ msgstr "De forma similar, puedes obtener y aprender los otros dos patrones de es
 
 #: L2_MusicReading/L2_MusicReading.cpp:229
 msgid " - Train your ear: the dotted 8th note pattern."
-msgstr " - Educa el oido: el patrón de corchea con puntillo."
+msgstr " - Educa el oído: el patrón de corchea con puntillo."
 
 #: L2_MusicReading/L2_MusicReading.cpp:231
 msgid " - Train your ear: a quarter note tied to a dotted 8th note."
-msgstr " - Educa el oido: la nota negra ligada a corchea con puntillo."
+msgstr " - Educa el oído: la nota negra ligada a corchea con puntillo."
 
 #: L2_MusicReading/L2_MusicReading.cpp:232
 #: L2_MusicReading/L2_MusicReading.cpp:255
@@ -575,7 +575,7 @@ msgstr "Ejercicio 3"
 
 #: L2_MusicReading/L2_MusicReading.cpp:233
 msgid " - Train your ear: Group of two 8th notes tied to a dotted 8th note."
-msgstr " - Educa el oido: grupo de dos corcheas ligado a corchea con puntillo."
+msgstr " - Educa el oído: grupo de dos corcheas ligado a corchea con puntillo."
 
 #: L2_MusicReading/L2_MusicReading.cpp:238
 msgid "A quarter note tied to a dotted 8th note"
@@ -601,11 +601,11 @@ msgstr "En este tema se introducen los siguientes patrones:"
 
 #: L2_MusicReading/L2_MusicReading.cpp:252
 msgid " - Train your ear: 8th note tied to next beat."
-msgstr " - Educa el oido: la corchea ligada a la siguiente parte."
+msgstr " - Educa el oído: la corchea ligada a la siguiente parte."
 
 #: L2_MusicReading/L2_MusicReading.cpp:254
 msgid " - Train your ear: Dotted quarter note tied to group of 8th note, 8th rest and 8th note."
-msgstr " - Educa el oido: negra con puntillo ligada a grupo de corchea, silencio y corchea."
+msgstr " - Educa el oído: negra con puntillo ligada a grupo de corchea, silencio y corchea."
 
 #: L2_MusicReading/L2_MusicReading.cpp:261
 msgid "Dotted quarter note tied to group of 8th note, 8th rest and 8th note"
@@ -618,15 +618,15 @@ msgstr "Subdivisión binaria. Semicorchea y corchea con puntillo"
 
 #: L2_MusicReading/L2_MusicReading.cpp:272
 msgid " - Train your ear: Pattern of 16th note and dotted 8th note."
-msgstr " - Educa el oido: Patrón de semicorchea y corchea con puntillo."
+msgstr " - Educa el oído: Patrón de semicorchea y corchea con puntillo."
 
 #: L2_MusicReading/L2_MusicReading.cpp:274
 msgid " - Train your ear: 16th note and dotted 8th note tied to quarter note."
-msgstr " - Educa el oido: Semicorchea y corchea con puntillo ligada a negra."
+msgstr " - Educa el oído: Semicorchea y corchea con puntillo ligada a negra."
 
 #: L2_MusicReading/L2_MusicReading.cpp:276
 msgid " - Train your ear: 16th note and dotted 8th note tied to 8th note."
-msgstr " - Educa el oido: Semicorchea y corchea con puntillo ligada a corchea."
+msgstr " - Educa el oído: Semicorchea y corchea con puntillo ligada a corchea."
 
 #: L2_MusicReading/L2_MusicReading.cpp:277
 msgid "Exercise 4"
@@ -651,11 +651,11 @@ msgstr "Subdivisión binaria. Grupos de dos semicorcheas"
 
 #: L2_MusicReading/L2_MusicReading.cpp:297
 msgid " - Train your ear: 8th rest and two 16th notes."
-msgstr " - Educa el oido: Silencio de corchea y dos semicorcheas."
+msgstr " - Educa el oído: Silencio de corchea y dos semicorcheas."
 
 #: L2_MusicReading/L2_MusicReading.cpp:299
 msgid " - Train your ear: Two 16th notes and 8th rest."
-msgstr " - Educa el oido: Dos semicorcheas y silencio de corchea."
+msgstr " - Educa el oído: Dos semicorcheas y silencio de corchea."
 
 #: L2_MusicReading/L2_MusicReading.cpp:303
 msgid "8th rest and two 16th notes"
@@ -672,11 +672,11 @@ msgstr "Subdivisión ternaria. Negra o corchea débil ligada a negra"
 
 #: L2_MusicReading/L2_MusicReading.cpp:317
 msgid " - Train your ear: Quarter note tied to 8th note."
-msgstr " - Educa el oido: Negra ligada a corchea."
+msgstr " - Educa el oído: Negra ligada a corchea."
 
 #: L2_MusicReading/L2_MusicReading.cpp:319
 msgid " - Train your ear: 8th note tied to quarter note in next beat."
-msgstr " - Educa el oido: Corchea débil ligada a negra."
+msgstr " - Educa el oído: Corchea débil ligada a negra."
 
 #: L2_MusicReading/L2_MusicReading.cpp:323
 msgid "Quarter note tied to 8th note"
@@ -693,11 +693,11 @@ msgstr "Subdivisión binaria. Negra o corchea ligada a cuatro semicorcheas"
 
 #: L2_MusicReading/L2_MusicReading.cpp:337
 msgid " - Train your ear: Quarter note tied to four 16th notes."
-msgstr " - Educa el oido: Negra ligada a cuatro semicorcheas."
+msgstr " - Educa el oído: Negra ligada a cuatro semicorcheas."
 
 #: L2_MusicReading/L2_MusicReading.cpp:339
 msgid " - Train your ear: 8th note tied to four 16th notes."
-msgstr " - Educa el oido: Corchea ligada a cuatro semicorcheas."
+msgstr " - Educa el oído: Corchea ligada a cuatro semicorcheas."
 
 #: L2_MusicReading/L2_MusicReading.cpp:343
 msgid "Quarter note tied to four 16th notes"
