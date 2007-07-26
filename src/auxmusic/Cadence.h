@@ -47,20 +47,34 @@
 
 
 // auxiliary object to comfortably manage chords
+
+// For selecting the less bad chrd it is necessary to know all errors and defects that a chord
+// has. To this end , each defect will be stored as a bit mark
+#define lmChordError    long
+
+// Values for defects must be assigned by severity: higher numbers for higher severity
 enum lmBadChordReason {
     lm_eChordValid = 0,
-    lm_eChordDiscarded,     //Chord discarded: not possible to generate a valid next chord
-    lm_eVoiceCrossing,      //notes not in ascending sequence or duplicated
-    lm_eGreaterThanOctave,  //notes interval greater than one octave (other than bass-tenor)
-    lm_eChordIncomplete,    //not all chord steps in the chord
-    lm_eFifthDoubled,       //the fifth is doubled
-    lm_eLeadingToneDoubled, //the leading tone is doubled
-    lm_eFifthOctaveMotion,  //parallel motion of perfect octaves or perfect fifths
-    lm_eVoiceOverlap,       //voice overlap
-    lm_eNotContraryMotion,  //bass moves by step and not all other voices moves in opposite direction to bass
-    lm_eLeadingResolution,  //Scale degree seven (the leading tone) doesn't resolve to tonic
-    lm_eChromaticAlter,     //Chromatic alteration not resolved the same direction than the alteration
+    lm_eNotDoubledThird     = 0x0001,   //Cuando el bajo enlaza el V grado con el VI (cadencia rota), en el acorde de VI grado se duplica la tercera.
+    lm_eNotContraryMotion   = 0x0002,   //bass moves by step and not all other voices moves in opposite direction to bass
+    lm_eGreaterThanSixth    = 0x0004,   //No es conveniente exceder el intervalo de sexta, exceptuando la octava justa
+    lm_eChromaticAlter      = 0x0008,   //Chromatic alteration not resolved the same direction than the alteration
+    lm_eVoiceOverlap        = 0x0010,   //voice overlap
+    lm_eVoiceCrossing       = 0x0020,   //notes not in ascending sequence or duplicated
+    lm_eGreaterThanOctave   = 0x0040,   //notes interval greater than one octave (other than bass-tenor)
+    lm_eSeventhResolution   = 0x0080,   //La 7ª de un acorde debe resolver descendiendo, por segundas
+    lm_eLeadingResolution   = 0x0100,   //Scale degree seven (the leading tone) doesn't resolve to tonic
+    lm_eLeadingToneDoubled  = 0x0200,   //the leading tone is doubled
+    lm_eFifthDoubled        = 0x0400,   //the fifth is doubled
+    lm_eResultantFifthOctves = 0x0800,  //3. No hacer 5ªs ni 8ªs resultantes, excepto:
+                                            //> a) la soprano se ha movido por segundas
+                                            //> b) (para 5ªs) uno de los sonidos ya estaba
+    lm_eFifthOctaveMotion   = 0x1000,   //parallel motion of perfect octaves or perfect fifths
+    lm_eFifthMissing        = 0x2000,   // Acorde completo. Contiene todas las notas (en todo caso, elidir la 5ª)
+    lm_eNotAllNotes         = 0x4000,   //not all chord steps in the chord
+    lm_eChordDiscarded      = 0x8000,   //Chord discarded: not possible to generate a valid next chord
 
+    lm_eMaxSeverity         = 0x8888,
 };
 
 class lmHChord
@@ -89,51 +103,24 @@ public:
         return sAnswer;
     }
 
-    wxString GetReason() {
-        switch (nReason) {
-            case lm_eChordValid:
-                return _T("Chord is valid");
-            case lm_eChordDiscarded:
-                return _T("Chord discarded: not possible to generate a valid next chord");
-            case lm_eVoiceCrossing:
-                return _T("Notes not in ascending sequence or duplicated");
-            case lm_eGreaterThanOctave:
-                return _T("Notes interval greater than one octave (other than bass-tenor)");
-            case lm_eChordIncomplete:
-                return _T("Not all chord steps in the chord");
-            case lm_eFifthDoubled:
-                return _T("The fifth is doubled");
-            case lm_eLeadingToneDoubled:
-                return _T("The leading tone is doubled");
-            case lm_eFifthOctaveMotion:
-                return _T("Parallel motion of perfect octaves or perfect fifths");
-            case lm_eVoiceOverlap:
-                return _T("Voice overlap");
-            case lm_eNotContraryMotion:
-                return _T("Bass moves by step and not all other voices moves in opposite direction to bass");
-            case lm_eLeadingResolution:
-                return _T("Scale degree seven (the leading tone) doesn't resolve to tonic.");
-            case lm_eChromaticAlter:
-                return _T("Chromatic alteration not resolved the same direction than the alteration.");
-
-            default:
-                return _T("Error: Invalid value");
-        }
-    }
 
     lmDPitch            nNote[4];       //diatonic pitch so 1:1 mapping to staff lines/spaces
     int                 nAcc[4];        //accidentals: -2 ... +2
     lmBadChordReason    nReason;        //used when filtering out invalid chords
-    int                 nSeverity;      //highest broken rule
+    lmChordError        nSeverity;      //broken rules
     int                 nImpact;        //0-internal voices, 1-external voices
     int                 nNumNotes;      //normally 4
 };
 
-
+typedef struct lmChordAuxDataStruct {
+	int nSteps[4];	// the steps of the chord
+    int nStep5;     // the fifth of the chord
+	int nNumSteps;	// how many steps this chord has (3 or 4)
+} lmChordAuxData;
 
 //declare global functions defined in this module
 extern wxString CadenceTypeToName(lmECadenceType nType);
-//extern int NumNotesInScale(lmECadenceType nType);
+extern wxString GetChordErrorDescription(lmChordError nError);
 
 //A cadence is a sequence of up to 2 chords
 //Change this for more chords in a cadence
@@ -159,12 +146,19 @@ private:
     wxString GetRootNote(wxString sFunct, EKeySignatures nKey, EClefType nClef,
                          bool fUseGrandStaff);
     //--------
-    int GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordManager* pChord,
-                            int nInversion);
+    int GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData& tChordData,
+						   lmChordManager* pChord, int nInversion);
+    int GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData& tChordData,
+						  lmChordManager* pChord, int nInversion, int iPrevHChord);
+    int FilterChords(std::vector<lmHChord>& aChords, int nNumChords, lmChordAuxData& tChordData,
+                     lmHChord* pPrevChord, bool fExhaustive=false);
+    void SelectLessBad(std::vector<lmHChord>& aChords, lmChordAuxData& tChordData,
+					   int iHChord);
     int GenerateSopranoNote(lmNoteBits oChordNotes[4], int iBass, int nNumNotes);
-    int FilterChords(std::vector<lmHChord>& aChords, int nNumChords, int nSteps[4], int nNumSteps,
-                     int nStep5, lmHChord* pPrevChord);
-    int GenerateNextChord(lmChordManager* pChord, int nInversion, int iPrevHChord);
+
+
+	// Debug methods
+	void Debug_DumpChords(std::vector<lmHChord>& aChords);
 
 
 
@@ -172,6 +166,7 @@ private:
 
     bool            m_fCreated;
     lmECadenceType  m_nType;
+	int				m_nImperfectCad;		
     EKeySignatures  m_nKey;
     lmChordManager  m_aChord[lmCHORDS_IN_CADENCE];
     int             m_nInversions[lmCHORDS_IN_CADENCE];
