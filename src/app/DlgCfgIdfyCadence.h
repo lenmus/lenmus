@@ -44,11 +44,20 @@ public:
     void OnCancelClicked(wxCommandEvent& WXUNUSED(event)) { EndDialog(wxID_CANCEL); }
     void OnDataChanged(wxCommandEvent& WXUNUSED(event));
     void OnRadAnswerType(wxCommandEvent& WXUNUSED(event));
+    void OnCheckAllPerfect(wxCommandEvent& WXUNUSED(event));
+    void OnCheckAllPlagal(wxCommandEvent& WXUNUSED(event));
+    void OnCheckAllHalf(wxCommandEvent& WXUNUSED(event));
+    void OnCheckAllDeceptive(wxCommandEvent& WXUNUSED(event));
+    void OnAnswerButton(wxCommandEvent& WXUNUSED(event));
 
 
 
 private:
     bool VerifyData();
+    void SetCadenceCheckBoxes(int iCad, bool fEnable, bool fChangeCheck=false,
+							  bool fNewCheckValue=false);
+    void SetAnswerButton(int iButton, bool fEnable);
+
 
     lmCadencesConstrains*   m_pConstrains;      // the constraints to set up
     bool                    m_fTheoryMode;      // exercise type: theory / aural training
@@ -58,12 +67,8 @@ private:
     wxCheckBox*     m_pChkKeySign[earmFa+1];    // Allowed key signatures check boxes
     wxRadioBox*     m_pBoxShowKey;              // box with show key radio buttons
     wxRadioBox*     m_pBoxAnswerType;           // box with answer type radio buttons
-    wxCheckBox*     m_pChkButtonPerfect;
-    wxCheckBox*     m_pChkButtonPlagal;
-    wxCheckBox*     m_pChkButtonImperfect;
-    wxCheckBox*     m_pChkButtonDeceptive;
-    wxCheckBox*     m_pChkButtonHalf;
-
+    wxCheckBox*     m_pChkAnswerButton[5];      // Perfect, Plagal, Half, Deceptive, Imperfect
+	wxButton*       m_pBtnCheckAll[5];			// idem.
 
     wxStaticBitmap* m_pBmpKeySignError;
     wxStaticText*   m_pLblKeySignError;

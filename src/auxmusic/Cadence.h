@@ -62,7 +62,7 @@ enum lmBadChordReason {
     lm_eVoiceOverlap        = 0x0010,   //voice overlap
     lm_eVoiceCrossing       = 0x0020,   //notes not in ascending sequence or duplicated
     lm_eGreaterThanOctave   = 0x0040,   //notes interval greater than one octave (other than bass-tenor)
-    lm_eSeventhResolution   = 0x0080,   //La 7ª de un acorde debe resolver descendiendo, por segundas
+    lm_eSeventhResolution   = 0x0080,   //the seventh of a chord should always resolve down by second.
     lm_eLeadingResolution   = 0x0100,   //Scale degree seven (the leading tone) doesn't resolve to tonic
     lm_eLeadingToneDoubled  = 0x0200,   //the leading tone is doubled
     lm_eFifthDoubled        = 0x0400,   //the fifth is doubled
@@ -158,7 +158,8 @@ private:
 
 
 	// Debug methods
-	void Debug_DumpChords(std::vector<lmHChord>& aChords);
+	void Debug_DumpAllChords(std::vector<lmHChord>& aChords);
+	void Debug_DumpChord(lmHChord& oChord, int iChord=0);
 
 
 
