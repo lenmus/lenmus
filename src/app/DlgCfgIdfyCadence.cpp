@@ -241,35 +241,10 @@ lmDlgCfgIdfyCadence::lmDlgCfgIdfyCadence(wxWindow* parent,
         // initialize all controls with current constraints data
         //
 
-    ////play mode
-    //m_pBoxShowKey->SetSelection( m_pConstrains->GetPlayMode() );
-
     // allowed key signatures
     lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
     for (int i=0; i < earmFa+1; i++) {
         m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((EKeySignatures)i) );
-    }
-
-    // allowed answer buttons and cadence groups
-    if (pConstrains->IsValidButton(lm_eCadButtonTerminal))
-    {
-        //Identify cadence group (terminal/transient)
-        m_pBoxAnswerType->SetSelection(0);
-
-        for (int i=0; i < 5; i++) {
-			SetAnswerButton(i, false);
-        }
-    }
-    else
-    {
-        //Identify cadence type
-        m_pBoxAnswerType->SetSelection(1);
-
-        SetAnswerButton(lmBT_PERFECT, m_pConstrains->IsValidButton(lm_eCadButtonPerfect) );
-        SetAnswerButton(lmBT_PLAGAL, m_pConstrains->IsValidButton(lm_eCadButtonPlagal) );
-        SetAnswerButton(lmBT_IMPERFECT, m_pConstrains->IsValidButton(lm_eCadButtonImperfect) );
-        SetAnswerButton(lmBT_DECEPTIVE, m_pConstrains->IsValidButton(lm_eCadButtonDeceptive) );
-        SetAnswerButton(lmBT_HALF, m_pConstrains->IsValidButton(lm_eCadButtonHalf) );
     }
 
     //initialize check boxes for allowed cadences with current settings
@@ -277,12 +252,60 @@ lmDlgCfgIdfyCadence::lmDlgCfgIdfyCadence(wxWindow* parent,
         m_pChkCadence[i]->SetValue( m_pConstrains->IsCadenceValid((lmECadenceType)i) );
     }
     
-    // As this dialog is shared by EarTraining and Theory.
+    // allowed answer buttons and cadence groups
+    if (pConstrains->IsValidButton(lm_eCadButtonTerminal))
+    {
+ 		//option 0 selected: use only terminal/transient answer buttons
+        m_pBoxAnswerType->SetSelection(0);
+
+		//1. disable all individual answer buttons and uncheck all them
+		for (int i=0; i < 5; i++) {
+			m_pChkAnswerButton[i]->Enable(false);
+			m_pChkAnswerButton[i]->SetValue(false);
+		}
+
+		//2. In cadences tab, enable all check boxes and 'check all' buttons. Check status
+		//is not be changed.
+		for (int iCad=0; iCad < 5; iCad++) {
+			SetCadenceCheckBoxes(iCad, true);
+			if (iCad != lmBT_IMPERFECT) m_pBtnCheckAll[iCad]->Enable(true);
+		}
+   }
+    else
+    {
+		//option 1: use an answer button for each cadence
+        m_pBoxAnswerType->SetSelection(1);
+
+		//1. Enable all individual answer buttons. Check buttons according settings
+        for (int iCad=0; iCad < 5; iCad++) {
+        		m_pChkAnswerButton[iCad]->Enable(true);
+        }
+        m_pChkAnswerButton[lmBT_PERFECT]->SetValue( m_pConstrains->IsValidButton(lm_eCadButtonPerfect) );
+        m_pChkAnswerButton[lmBT_PLAGAL]->SetValue( m_pConstrains->IsValidButton(lm_eCadButtonPlagal) );
+        m_pChkAnswerButton[lmBT_IMPERFECT]->SetValue( m_pConstrains->IsValidButton(lm_eCadButtonImperfect) );
+        m_pChkAnswerButton[lmBT_DECEPTIVE]->SetValue( m_pConstrains->IsValidButton(lm_eCadButtonDeceptive) );
+        m_pChkAnswerButton[lmBT_HALF]->SetValue( m_pConstrains->IsValidButton(lm_eCadButtonHalf) );
+
+		//2. In cadences tab, disable all check boxes and 'check all' buttons for those 
+		//	 answer buttons not selected. When disabling then also uncheck them.
+		for (int iCad=0; iCad < 5; iCad++) {
+			if (!m_pChkAnswerButton[iCad]->IsChecked()) {
+				SetCadenceCheckBoxes(iCad, false, true, false);
+				if (iCad != lmBT_IMPERFECT) m_pBtnCheckAll[iCad]->Enable(false);
+			}
+		}
+    }
+
+    // This dialog is shared by EarTraining and Theory exercises.
     // Flag m_fTheoryMode controls whether to show/hide
     // specific controls used only in one of the exercises
     if (m_fTheoryMode) {
-        //// This dialog is being used for Theory so, hide Show key radio buttons
-        //m_pBoxShowKey->Show(false);
+        //Hide controls used only in ear trainig mode
+        m_pBoxShowKey->Show(false);
+    }
+    else {
+        m_pBoxShowKey->Show(true);
+        m_pBoxShowKey->SetSelection( m_pConstrains->GetKeyDisplayMode() );
     }
 
 
@@ -341,13 +364,13 @@ void lmDlgCfgIdfyCadence::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
         m_pConstrains->SetValidButton(lm_eCadButtonHalf, m_pChkAnswerButton[lmBT_HALF]->GetValue());
     }
 
-    ////save other options
-    //
-    //// save options depending on mode: theory/ear training
-    //if (!m_fTheoryMode) {
-    //    //ear training. Save play modes
-    //    m_pConstrains->SetPlayMode(m_pBoxShowKey->GetSelection());
-    //}
+    //save other options
+    
+    // save options depending on mode: theory/ear training
+    if (!m_fTheoryMode) {
+        //ear training. Save setting about how to play key signature
+        m_pConstrains->SetKeyDisplayMode(m_pBoxShowKey->GetSelection());
+    }
 
     //terminate the dialog
     EndModal(wxID_OK);

@@ -66,7 +66,8 @@ public:
     void ReconfigureButtons();
 
 private:
-    wxString PrepareScore(EClefType nClef, lmECadenceType nType, lmScore** pScore);
+    wxString PrepareScore(EClefType nClef, lmECadenceType nType, lmScore** pProblemScore,
+                          lmScore** pSolutionScore = NULL );
     int DisplayButton(int iBt, lmECadenceType iStartC, lmECadenceType iEndC, wxString sButtonLabel);
 
         // member variables

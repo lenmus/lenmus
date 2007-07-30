@@ -136,7 +136,9 @@ protected:
         // member variables
 
     int                 m_nNumButtons;      //num answer buttons
-    lmScore*            m_pProblemScore;    //score with the problem (= solution)
+    lmScore*            m_pProblemScore;    //score with the problem
+	lmScore*			m_pSolutionScore;	//if not NULL, score with the solution. If NULL
+											//   problem score will be used as solution score
     lmScore*            m_pAuxScore;        //score to play user selected buttons 
     lmScoreAuxCtrol*    m_pScoreCtrol;
     lmCountersCtrol*    m_pCounters;

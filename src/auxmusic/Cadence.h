@@ -140,12 +140,14 @@ public:
     lmChordManager* GetChord(int iC);
 	wxString GetName();
     wxString GetNotePattern(int iChord, int iNote);
+    lmChordManager* GetTonicChord();
+
 
 private:
     wxString SelectChord(wxString sFunction, EKeySignatures nKey, int* pInversion);
     wxString GetRootNote(wxString sFunct, EKeySignatures nKey, EClefType nClef,
                          bool fUseGrandStaff);
-    //--------
+
     int GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData& tChordData,
 						   lmChordManager* pChord, int nInversion);
     int GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData& tChordData,
@@ -169,6 +171,8 @@ private:
     lmECadenceType  m_nType;
 	int				m_nImperfectCad;		
     EKeySignatures  m_nKey;
+    bool            m_fTonicCreated;
+    lmChordManager  m_oTonicChord;
     lmChordManager  m_aChord[lmCHORDS_IN_CADENCE];
     int             m_nInversions[lmCHORDS_IN_CADENCE];
     int             m_nNumChords;       //num of chords in this cadence

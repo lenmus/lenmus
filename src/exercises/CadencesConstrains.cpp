@@ -77,11 +77,9 @@ void lmCadencesConstrains::SaveSettings()
     sKey = _T("/Constrains/IdfyCadence/%s/UseGrandStaff");
     g_pPrefs->Write(sKey, m_fGrandStaff);
 
-    //// other settings
-    //sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/DisplayKey"), m_sSection.c_str());
-    //g_pPrefs->Write(sKey, m_fDisplayKey);
-    //sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/PlayMode"), m_sSection.c_str());
-    //g_pPrefs->Write(sKey, m_nPlayMode);
+    // how to display key
+    sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/DisplayKeyMode"), m_sSection.c_str());
+    g_pPrefs->Write(sKey, m_nKeyDisplayMode);
 
 }
 
@@ -120,9 +118,9 @@ void lmCadencesConstrains::LoadSettings()
     sKey = _T("/Constrains/IdfyCadence/%s/UseGrandStaff");
     g_pPrefs->Read(sKey, &m_fGrandStaff, true );
 
-    // display key. Default: using a label
-    //sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/DisplayKey"), m_sSection.c_str());
-    //g_pPrefs->Read(sKey, &m_fDisplayKey, false);
+    // how to display key. Default: play tonic chord
+    sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/DisplayKeyMode"), m_sSection.c_str());
+    g_pPrefs->Read(sKey, &m_nKeyDisplayMode, 1);
 
 }
 
@@ -140,20 +138,5 @@ lmECadenceType lmCadencesConstrains::GetRandomCadence()
     }
     return (lmECadenceType)nType;
 
-}
-
-bool lmCadencesConstrains::GetRandomPlayMode()
-{
-   // //return 'true' for ascending and 'false' for descending
-
-   // if (m_nPlayMode == 0) //ascending
-   //     return true;
-   // else if (m_nPlayMode == 1) //descending
-   //     return false;
-   // else {  // both modes allowed. Choose one at random
-   //     lmRandomGenerator oGenerator;
-   //     return oGenerator.FlipCoin();
-   //}
-    return true;
 }
 

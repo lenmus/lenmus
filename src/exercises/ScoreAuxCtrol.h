@@ -107,7 +107,8 @@ private:
     lmPaper         m_Paper;        //the lmPaper object to use
 
     //message management
-    wxString        m_sMsg;                 // message to display
+    wxString        m_sMsg;                 // message to display. Line 1
+    wxString        m_sMsg2;                // message to display. Line 2
     bool            m_fDisplayMessage;        
     lmLUnits        m_yMsg;                 // message position (microns)
     float           m_yScalingFactor;       // pixels per micron

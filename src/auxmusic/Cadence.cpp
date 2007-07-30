@@ -135,6 +135,7 @@ lmCadence::lmCadence()
 {
     m_fCreated = false;
     m_nNumChords = 0;
+    m_fTonicCreated = false;
 }
 
 bool lmCadence::Create(lmECadenceType nCadenceType, EKeySignatures nKey, bool fUseGrandStaff)
@@ -1211,6 +1212,29 @@ void lmCadence::Debug_DumpChord(lmHChord& oChord, int iChord)
     }
 
 }
+
+lmChordManager* lmCadence::GetTonicChord()
+{
+    if (!m_fTonicCreated)
+    {
+        //Create tonic chord
+
+        //Get root note for this key signature and clef
+        wxString sRootNote = GetRootNote(_T("I"), m_nKey, eclvSol, false);  //false = don't use Grand Staff
+        wxString sIntervals = _T("");
+        if (IsMajor(m_nKey))
+            sIntervals = _T("M3,p5");
+        else
+            sIntervals = _T("m3,p5");
+
+        //create the chord
+        m_oTonicChord.Create(sRootNote, sIntervals, m_nKey, false);     //false = don't use Grand Staff
+
+        m_fTonicCreated = true;
+    }
+    return &m_oTonicChord;
+}
+
 
 
 //----------------------------------------------------------------------------------------

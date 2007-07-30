@@ -39,8 +39,8 @@
 #include "../exercises/CadencesConstrains.h"
 
 
-//! This class pack all parameters to set up a Scale Identification exercise,
-//! The settings must be read/setup by the IdfyCadencesCtrol object.
+// This class pack all parameters to set up a Cadence identification exercise,
+// The settings must be read/setup by the IdfyCadencesCtrol object.
 
 class lmIdfyCadencesCtrolParms : public lmObjectParams
 {
@@ -53,13 +53,15 @@ public:
     void CreateHtmlCell(wxHtmlWinParser *pHtmlParser);
 
 protected:
+    wxString ParseCadences(wxString sParamValue, wxString sFullParam, bool* pfValidCadences);
+    lmECadenceType CadenceNameToType(wxString sCadence);
 
         // Member variables:
 
     // html object window attributes
     long                    m_nWindowStyle;
     wxString                m_sParamErrors;
-    lmCadencesConstrains*     m_pConstrains;
+    lmCadencesConstrains*   m_pConstrains;
 
     DECLARE_NO_COPY_CLASS(lmIdfyCadencesCtrolParms)
 };
@@ -95,47 +97,47 @@ lmIdfyCadencesCtrolParms::~lmIdfyCadencesCtrolParms()
 
 void lmIdfyCadencesCtrolParms::AddParam(const wxHtmlTag& tag)
 {
-    //TODO: Change this documentation. 
-    /*! @page IdfyCadencesCtrolParams
-        @verbatim
+    //    Params for lmIdfyCadenceCtrol - html object type="Application/LenMusIdfyChord"
+    //
+    //    keys        Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
+    //                Default: all
+    //
+    //    cadences    Keywords "all", "all_perfect", "all_imperfect", "all_plagal",
+    //                  "all_deceptive", "all_half", "all_terminal", "all_transient"
+    //                  or a list of allowed cadences:
+    //                  Perfect authentic: 
+    //                      V_I_Perfect, V7_I, Va5_I, Vd5_I
+    //                  Plagal:
+    //                      IV_I, IVm_I, IIc6_I, IImc6_I
+    //                  Imperfect authentic:
+	//                      V_I_Imperfect
+    //                  Deceptive:
+    //                      V_IV, V_IVm, V_VI, V_VIm, V_IIm, V_III, V_VII
+    //                  Half cadences:
+    //                      IImc6_V, IV_V, I_V, Ic64_V, IV6_V, II_V, IIdimc6_V, VdeVdim5c64_V
+    //
+    //                Default: "all"
+    //
+    //    mode        'theory' | 'earTraining'  Keyword indicating type of exercise
+    //
+    //    play_key     'A4 | tonic_chord' Default: 'tonic_chord'
+    //
+    //    cadence_buttons   Terminal, Transient, Perfect, Plagal, Imperfect, Deceptive, Half,
+    //
+    //
+    //    control_settings    Value="[key for storing the settings]"
+    //                        By coding this param it is forced the inclusion of
+    //                        the 'settings' link. Its value will be used
+    //                        as the key for saving the user settings.
 
-        Params for lmIdfyChordCtrol - html object type="Application/LenMusIdfyChord"
+    //    Example:
+    //    ------------------------------------
+    //    <object type="Application/LenMus" class="IdfyScale" width="100%" height="300" border="0">
+    //        <param name="mode" value="earTraining">
+    //        <param name="scales" value="mT,MT,aT,dT,m7,M7,dom7">
+    //        <param name="keys" value="all">
+    //    </object>
 
-        keys        Keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
-                    Default: all
-
-        scales      Keyword "all" or a list of allowed scales:
-                        m-minor, M-major, a-augmented, d-diminished, s-suspended
-                        T-triad, dom-dominant, hd-half diminished
-
-                        triads: mT, MT, aT, dT, s4, s2
-                        sevenths: m7, M7, a7, d7, mM7, aM7 dom7, hd7
-                        sixths: m6, M6, a6
-
-                    Default: "mT,MT,aT,dT,m7,M7"
-
-        mode        'theory' | 'earTraining'  Keyword indicating type of exercise
-
-        play_mode*   'ascending | descending | both' allowed play modes. Default: ascending
-
-        show_key     '0 | 1' Default: 0 (do not display key signature)
-
-        control_settings    Value="[key for storing the settings]"
-                            By coding this param it is forced the inclusion of
-                            the 'settings' link. Its value will be used
-                            as the key for saving the user settings.
-
-        Example:
-        ------------------------------------
-        <object type="Application/LenMus" class="IdfyScale" width="100%" height="300" border="0">
-            <param name="mode" value="earTraining">
-            <param name="scales" value="mT,MT,aT,dT,m7,M7,dom7">
-            <param name="keys" value="all">
-        </object>
-
-        @endverbatim
-
-    */
 
     wxString sName = wxEmptyString;
     wxString sValue = wxEmptyString;
@@ -177,11 +179,10 @@ void lmIdfyCadencesCtrolParms::AddParam(const wxHtmlTag& tag)
     //    }
     //}
 
-    // chords      Keyword "all" or a list of allowed chords:
-    else if ( sName == _T("SCALES") ) {
+    // cadences      list of allowed cadences:
+    else if ( sName == _T("CADENCES") ) {
         wxString sClef = tag.GetParam(_T("VALUE"));
-        //TODO: Replace 'ParseChords' by 'ParseCadences'
-        m_sParamErrors += ParseChords(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
+        m_sParamErrors += ParseCadences(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
                                     m_pConstrains->GetValidCadences());
     }
 
@@ -193,10 +194,10 @@ void lmIdfyCadencesCtrolParms::AddParam(const wxHtmlTag& tag)
         else if (sMode == _T("earTraining"))
             m_pConstrains->SetTheoryMode(false);
         else {
-            m_sParamErrors += wxString::Format( wxGetTranslation(
+            m_sParamErrors += wxString::Format( 
                 _T("Invalid param value in:\n<param %s >\n")
                 _T("Invalid value = %s \n")
-                _T("Acceptable values:  'theory | earTraining'\n")),
+                _T("Acceptable values:  'theory | earTraining'\n"),
                 tag.GetAllParams().c_str(), sMode.c_str() );
         }
     }
@@ -237,6 +238,125 @@ void lmIdfyCadencesCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     }
     pWnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(pWnd, m_nPercent));
+
+}
+
+wxString lmIdfyCadencesCtrolParms::ParseCadences(wxString sParamValue, wxString sFullParam,
+                                                 bool* pfValidCadences)
+{
+    //    cadences    Keywords "all", "all_perfect", "all_imperfect", "all_plagal",
+    //                  "all_deceptive", "all_half", "all_terminal", "all_transient"
+    //                  or a list of allowed cadences:
+    //                  Perfect authentic: 
+    //                      V_I_Perfect, V7_I, Va5_I, Vd5_I
+    //                  Plagal:
+    //                      IV_I, IVm_I, IIc6_I, IImc6_I
+    //                  Imperfect authentic:
+	//                      V_I_Imperfect
+    //                  Deceptive:
+    //                      V_IV, V_IVm, V_VI, V_VIm, V_IIm, V_III, V_VII
+    //                  Half cadences:
+    //                      IImc6_V, IV_V, I_V, Ic64_V, IV6_V, II_V, IIdimc6_V, VdeVdim5c64_V
+    //
+    //                Default: "all"
+
+    bool fError = false;
+
+    if (sParamValue == _T("all")) {
+        // allow all cadences
+        for (int i=0; i < lm_eCadMaxCadence; i++) {
+            *(pfValidCadences+i) = true;
+        }
+    }
+    else if (sParamValue == _T("all_perfect")) {
+        // allow all Perfect cadences
+        for (int i=lm_eCadPerfect; i < lm_eCadLastPerfect; i++) {
+            *(pfValidCadences+i) = true;
+        }
+    }
+    else if (sParamValue == _T("all_plagal")) {
+        // allow all Plagal cadences
+        for (int i=lm_eCadPlagal; i < lm_eCadLastPlagal; i++) {
+            *(pfValidCadences+i) = true;
+        }
+    }
+    else if (sParamValue == _T("all_deceptive")) {
+        // allow all Deceptive cadences
+        for (int i=lm_eCadDeceptive; i < lm_eCadLastDeceptive; i++) {
+            *(pfValidCadences+i) = true;
+        }
+    }
+    else if (sParamValue == _T("all_half")) {
+        // allow all Half cadences
+        for (int i=lm_eCadHalf; i < lm_eCadLastHalf; i++) {
+            *(pfValidCadences+i) = true;
+        }
+    }
+    else if (sParamValue == _T("all_imperfect")) {
+        // allow all Imperfect cadences
+        for (int i=lm_eCadImperfect; i < lm_eCadLastImperfect; i++) {
+            *(pfValidCadences+i) = true;
+        }
+    }
+
+    else {
+        //loop to get allowed cadences
+        int iColon;
+        wxString sCadence;
+        lmECadenceType nType;
+        while (sParamValue != _T("")) {
+            //get cadence
+            iColon = sParamValue.Find(_T(","));
+            if (iColon != -1) {
+                sCadence = sParamValue.Left(iColon);
+                sParamValue = sParamValue.Mid(iColon + 1);      //skip the colon
+            }
+            else {
+                sCadence = sParamValue;
+                sParamValue = _T("");
+            }
+            nType = CadenceNameToType(sCadence);
+            if (nType == (lmECadenceType)-1) {
+                fError = true;
+                break;
+            }
+            *(pfValidCadences + (int)nType) = true;
+        }
+    }
+
+    if (fError)
+        return wxString::Format( 
+            _T("Invalid param value in:\n<param %s >\n")
+            _T("Invalid value = %s \n")
+            _T("Acceptable format: Keywords 'all', 'all_xxxx' or a list of allowed cadences.\n"),
+            sFullParam.c_str(), sParamValue.c_str() );
+    else
+        return wxEmptyString;
+
+}
+
+lmECadenceType lmIdfyCadencesCtrolParms::CadenceNameToType(wxString sCadence)
+{
+    //AWARE: biyective to lmECadenceType
+    static const wxString sNames[] = {
+        // Perfect authentic: 
+        _T("V_I_Perfect"), _T("V7_I"), _T("Va5_I"), _T("Vd5_I"),
+        // Plagal:
+        _T("IV_I"), _T("IVm_I"), _T("IIc6_I"), _T("IImc6_I"),
+        // Imperfect authentic:
+	    _T("V_I_Imperfect"),
+        // Deceptive:
+        _T("V_IV"), _T("V_IVm"), _T("V_VI"), _T("V_VIm"), _T("V_IIm"), 
+        _T("V_III"), _T("V_VII"),
+        // Half cadences:
+        _T("IImc6_V"), _T("IV_V"), _T("I_V"), _T("Ic64_V"), _T("IV6_V"), 
+        _T("II_V"), _T("IIdimc6_V"), _T("VdeVdim5c64_V"),
+    };
+
+    for (int i=0; i < lm_eCadMaxCadence; i++) {
+        if (sCadence == sNames[i]) return (lmECadenceType)i;
+    }
+    return (lmECadenceType)-1;
 
 }
 

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="windows-1252"?>
 <resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
     <object class="wxDialog" name="DlgCfgIdfyCadence" subclass="lmDlgCfgIdfyCadence">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
@@ -11,7 +11,7 @@
                 <flag>wxGROW|wxALL</flag>
                 <border>5</border>
                 <object class="wxNotebook" name="noteBook">
-                    <style>wxNB_DEFAULT|wxNB_TOP</style>
+                    <style>wxNB_TOP</style>
                     <object class="notebookpage">
                         <label>Cadences</label>
                         <object class="wxPanel" name="ID_PANEL3">
@@ -527,7 +527,6 @@
                                                     <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
                                                     <border>5</border>
                                                     <object class="wxStaticText" name="wxID_STATIC">
-                                                        <label></label>
                                                     </object>
                                                 </object>
                                                 <object class="sizeritem">
@@ -553,8 +552,6 @@
                                             <object class="wxRadioBox" name="radBoxShowKey">
                                                 <style>wxRA_SPECIFY_ROWS</style>
                                                 <label>How to show key signature?</label>
-                                                <dimension>2</dimension>
-                                                <selection>0</selection>
                                                 <content>
                                                     <item>&amp;Play A4 note</item>
                                                     <item>Play &amp;tonic chord</item>
@@ -584,8 +581,6 @@
                                             <object class="wxRadioBox" name="radBoxAnswerType">
                                                 <style>wxRA_SPECIFY_ROWS</style>
                                                 <label>Type of desired answer</label>
-                                                <dimension>2</dimension>
-                                                <selection>0</selection>
                                                 <content>
                                                     <item>Identify cadence &amp;group (terminal/transient)</item>
                                                     <item>Identify cadence &amp;type</item>
@@ -683,7 +678,6 @@
                                                     <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
                                                     <border>5</border>
                                                     <object class="wxStaticText" name="wxID_STATIC">
-                                                        <label></label>
                                                     </object>
                                                 </object>
                                                 <object class="sizeritem">
@@ -718,7 +712,6 @@
                         <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
                         <border>5</border>
                         <object class="wxStaticText" name="wxID_STATIC">
-                            <label></label>
                         </object>
                     </object>
                     <object class="sizeritem">

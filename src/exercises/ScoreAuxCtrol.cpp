@@ -69,6 +69,7 @@ lmScoreAuxCtrol::lmScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScor
     SetBackgroundColour(*wxWHITE);
     m_pScore = pScore;
     m_sMsg = wxEmptyString;
+    m_sMsg2 = wxEmptyString;
     m_fDisplayMessage = false;
 
     SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
@@ -252,9 +253,16 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
 
     if (m_fDisplayMessage) {
         fClear = false;
-        dc.DrawText(m_sMsg,
-                    (int)(lmToLogicalUnits(5, lmMILLIMETERS) * m_yScalingFactor),
-                    (int)(m_yMsg * m_yScalingFactor) );
+        int xPos = (int)(lmToLogicalUnits(5, lmMILLIMETERS) * m_yScalingFactor);
+        int yPos = (int)(m_yMsg * m_yScalingFactor);
+        dc.DrawText(m_sMsg, xPos, yPos);
+        if (m_sMsg2 != wxEmptyString) {
+            long nHeight, nWidth;
+            dc.GetTextExtent(m_sMsg, &nWidth, &nHeight);
+            yPos += nHeight * 1.2;
+            dc.DrawText(m_sMsg2, xPos, yPos);
+        }
+
     }
 
     if (fClear) {
@@ -268,7 +276,16 @@ void lmScoreAuxCtrol::DisplayMessage(wxString sMsg, lmLUnits posMsg, bool fClear
     if (m_pScore && !m_fHidden && fClearScore) {
         m_pScore = (lmScore*)NULL;
     }
-    m_sMsg = sMsg;
+    //If message contains a new line control char. split it
+    int i = sMsg.Find(_T('\n'));
+    if (i != wxNOT_FOUND) {
+        m_sMsg = sMsg.Mid(0, i);
+        m_sMsg2 = sMsg.Mid(i+1);
+    }
+    else {
+        m_sMsg = sMsg;
+        m_sMsg2 = wxEmptyString;
+    }
     m_yMsg = posMsg;
     m_fDisplayMessage = true;
     Refresh();

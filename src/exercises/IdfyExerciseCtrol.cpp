@@ -111,6 +111,7 @@ lmIdfyExerciseCtrol::lmIdfyExerciseCtrol(wxWindow* parent, wxWindowID id,
     m_nNumButtons = 0;
     m_fQuestionAsked = false;
     m_pProblemScore = (lmScore*)NULL;
+	m_pSolutionScore = (lmScore*)NULL;
     m_pAuxScore = (lmScore*)NULL;
     m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
     m_pConstrains = pConstrains;
@@ -259,6 +260,10 @@ lmIdfyExerciseCtrol::~lmIdfyExerciseCtrol()
         delete m_pProblemScore;
         m_pProblemScore = (lmScore*)NULL;
     }
+    if (m_pSolutionScore) {
+        delete m_pSolutionScore;
+        m_pSolutionScore = (lmScore*)NULL;
+    }
     if (m_pAuxScore) {
         delete m_pAuxScore;
         m_pAuxScore = (lmScore*)NULL;
@@ -369,7 +374,7 @@ void lmIdfyExerciseCtrol::NewProblem()
 {
     ResetExercise();
 
-    //set m_pProblemScore, m_sAnswer, m_nRespIndex, m_nPlayMM
+    //set m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex, m_nPlayMM
     wxString sProblemMessage = SetNewProblem();    
 
     //load total score into the control
@@ -423,7 +428,14 @@ void lmIdfyExerciseCtrol::DisplaySolution()
     DoStopSounds();
 
     //show the score
-    m_pScoreCtrol->HideScore(false);
+	if (m_pSolutionScore) {
+		//There is a solution score. Display it
+		m_pScoreCtrol->SetScore(m_pSolutionScore);
+	}
+	else {
+		//No solution score. Display problem score
+		m_pScoreCtrol->HideScore(false);
+	}
     m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
 
     // mark right button in green
@@ -499,6 +511,7 @@ void lmIdfyExerciseCtrol::DoStopSounds()
     //Stop any possible chord being played to avoid crashes
     if (m_pAuxScore) m_pAuxScore->Stop();
     if (m_pProblemScore) m_pProblemScore->Stop();
+    if (m_pSolutionScore) m_pSolutionScore->Stop();
 
     //Require to do it for other scores in the derived class
     StopSounds();       

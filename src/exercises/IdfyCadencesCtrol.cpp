@@ -88,7 +88,7 @@ lmIdfyCadencesCtrol::lmIdfyCadencesCtrol(wxWindow* parent, wxWindowID id,
     //create the controls and buttons for the answers
     Create(400, 200);       //score ctrol size = 400x200 pixels
 
-    //initializatios to allow to play scales
+    //initializatios to allow to play cadences when clicking on answer buttons
     //TODO: Review this
     m_nKey = earmDo;
 
@@ -188,7 +188,7 @@ int lmIdfyCadencesCtrol::DisplayButton(int iBt, lmECadenceType iStartC,
                                        lmECadenceType iEndC, wxString sButtonLabel)
 {
     // Display a button
-    // iBt: number of button to display
+    // iB: number of button to display
     // iStartC-iEndC: range of cadences associated to this button
     // sButtonLabel: label for this button
 
@@ -220,7 +220,7 @@ void lmIdfyCadencesCtrol::PrepareAuxScore(int nButton)
 wxString lmIdfyCadencesCtrol::SetNewProblem()
 {
     //This method must prepare the problem score and set variables:
-    //  m_pProblemScore, m_sAnswer, m_nRespIndex and m_nPlayMM
+    //  m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex and m_nPlayMM
 
     // generate a random cadence
     lmECadenceType nCadenceType = m_pConstrains->GetRandomCadence();
@@ -231,14 +231,20 @@ wxString lmIdfyCadencesCtrol::SetNewProblem()
 
     //create the score
     EClefType nClef = eclvSol;
-    m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore);
+    if (m_pConstrains->IsTheoryMode())
+        m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore);
+    else
+        m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore, &m_pSolutionScore);
 
 	// If it was not possible to create the cadence for this key signature, try
 	// again with another cadence
 	int nTimes = 0;
 	while (m_sAnswer == _T("")) {
 		nCadenceType = m_pConstrains->GetRandomCadence();
-		m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore);
+        if (m_pConstrains->IsTheoryMode())
+            m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore);
+        else
+            m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore, &m_pSolutionScore);
 		if (++nTimes == 1000) {
 			wxLogMessage(_T("[lmIdfyCadencesCtrol::SetNewProblem] Loop. Impossible to get a cadence."));
 			break;
@@ -296,13 +302,21 @@ wxString lmIdfyCadencesCtrol::SetNewProblem()
         return _("Identify the next cadence:");
     } else {
         //ear training
-        return _("Press 'Play' to hear it again");
+		wxString sText;
+        if (m_pConstrains->GetKeyDisplayMode() == 0)
+            sText = _("An A4 note will be played before the cadence begins.");
+        else
+            sText = _("A tonic chord will be played before the cadence begins.");
+		sText += _T("\n");
+		sText += _("Press 'Play' to hear the problem again.");
+        return sText;
     }
 
 }
 
 wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType,
-                                           lmScore** pScore)
+                                           lmScore** pProblemScore,
+                                           lmScore** pSolutionScore)
 {
     //create the chords
     bool fUseGrandStaff = m_pConstrains->UseGrandStaff();
@@ -310,9 +324,13 @@ wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType
     if (!oCad.Create(nType, m_nKey, fUseGrandStaff)) return _T("");
 
     //delete the previous score
-    if (*pScore) {
-        delete *pScore;
-        *pScore = (lmScore*)NULL;
+    if (*pProblemScore) {
+        delete *pProblemScore;
+        *pProblemScore = (lmScore*)NULL;
+    }
+    if (pSolutionScore) {
+        delete *pSolutionScore;
+        *pSolutionScore = (lmScore*)NULL;
     }
 
     //create a score with the chord
@@ -322,21 +340,58 @@ wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType
     lmLDPNode* pNode;
     lmVStaff* pVStaff;
 
-    *pScore = new lmScore();
-    (*pScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
-    (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
+    *pProblemScore = new lmScore();
+    (*pProblemScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
+    (*pProblemScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
+
+    if (pSolutionScore) {
+        *pSolutionScore = new lmScore();
+        (*pSolutionScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
+        (*pSolutionScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
+    }
 
     if (fUseGrandStaff)
     {
         // Use a grand staff
-        (*pScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+        (*pProblemScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
 							    g_pMidi->DefaultVoiceInstr(), _T(""));
-        pVStaff = (*pScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
+        pVStaff = (*pProblemScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
         pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
         pVStaff->AddClef( eclvSol, 1 );
         pVStaff->AddClef( eclvFa4, 2 );
         pVStaff->AddKeySignature( m_nKey );
         pVStaff->AddTimeSignature(2 ,4);
+
+        //If ear training add A4/Tonic chord
+        if (pSolutionScore) {
+            if (m_pConstrains->GetKeyDisplayMode() == 0) {
+                // Use A4 note
+                sPattern = _T("(n a4 r)");
+                pNode = parserLDP.ParseText( sPattern );
+                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+            }
+            else {
+                // Use tonic chord
+                lmChordManager* pChord = oCad.GetTonicChord();
+                int nNumNotes = pChord->GetNumNotes();
+                sPattern = _T("(n ") + pChord->GetPattern(0) + _T(" r)");
+                pNode = parserLDP.ParseText( sPattern );
+                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+                for (int i=1; i < nNumNotes; i++) {
+                    sPattern = _T("(na ");
+                    sPattern += pChord->GetPattern(i);
+                    sPattern +=  _T(" r)");
+                    pNode = parserLDP.ParseText( sPattern );
+                    pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+                }
+            }
+            pVStaff->AddBarline(etb_SimpleBarline);
+
+            sPattern = _T("(s r)");
+            pNode = parserLDP.ParseText( sPattern );
+            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+            pVStaff->AddBarline(etb_SimpleBarline);
+        }
 
         // Loop to add chords
         for (int iC=0; iC < oCad.GetNumChords(); iC++)
@@ -364,13 +419,52 @@ wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType
         }
         pVStaff->AddSpacer(20);
         pVStaff->AddBarline(etb_EndBarline);
+
+        //Prepare Solution Score
+        if (pSolutionScore) {
+            (*pSolutionScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+							        g_pMidi->DefaultVoiceInstr(), _T(""));
+            pVStaff = (*pSolutionScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
+            pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
+            pVStaff->AddClef( eclvSol, 1 );
+            pVStaff->AddClef( eclvFa4, 2 );
+            pVStaff->AddKeySignature( m_nKey );
+            pVStaff->AddTimeSignature(2 ,4);
+
+            // Loop to add chords
+            for (int iC=0; iC < oCad.GetNumChords(); iC++)
+            {
+                pVStaff->AddSpacer(15);
+                if (iC != 0) pVStaff->AddBarline(etb_SimpleBarline);
+                // first and second notes on F4 clef staff
+                sPattern = _T("(n ") + oCad.GetNotePattern(iC, 0) + _T(" r p2)");
+            //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
+                pNode = parserLDP.ParseText( sPattern );
+                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+                sPattern = _T("(na ") + oCad.GetNotePattern(iC, 1) + _T(" r p2)");
+            //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
+                pNode = parserLDP.ParseText( sPattern );
+                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+                // third and fourth notes on G clef staff
+                sPattern = _T("(na ") + oCad.GetNotePattern(iC, 2) + _T(" r p1)");
+            //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
+                pNode = parserLDP.ParseText( sPattern );
+                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+                sPattern = _T("(na ") + oCad.GetNotePattern(iC, 3) + _T(" r p1)");
+            //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
+                pNode = parserLDP.ParseText( sPattern );
+                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+            }
+            pVStaff->AddSpacer(20);
+            pVStaff->AddBarline(etb_EndBarline);
+        }
     }
     else
     {
         // Use a single staff
-        (*pScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+        (*pProblemScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
 							    g_pMidi->DefaultVoiceInstr(), _T(""));
-        pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
+        pVStaff = (*pProblemScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
         pVStaff->AddClef( nClef );
         pVStaff->AddKeySignature( m_nKey );
         pVStaff->AddTimeSignature(2 ,4);

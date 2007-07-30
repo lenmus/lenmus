@@ -81,6 +81,10 @@
 //                     Ej: en Do: Fa-lab-reb -Sol-si-re)
 //      * VdeV con 5ª dim y en 2ª inversión -> V (sexta aumentada)
 //
+
+//AWARE: any change in this enumeration requieres the appropriate change in
+//      method lmIdfyCadencesCtrolParms::CadenceNameToType()
+
 enum lmECadenceType
 {
     // Terminal cadences
@@ -162,7 +166,6 @@ public:
     ~lmCadencesConstrains() {}
 
     lmECadenceType GetRandomCadence();
-    bool GetRandomPlayMode();
 
     bool IsCadenceValid(lmECadenceType nType) { return m_fValidCadences[nType]; }
     void SetCadenceValid(lmECadenceType nType, bool fValid) { m_fValidCadences[nType] = fValid; }
@@ -195,9 +198,10 @@ private:
     bool                m_fValidButtons[lm_eCadMaxButton];
     bool                m_fValidCadences[lm_eCadMaxCadence];
     lmKeyConstrains     m_oValidKeys;           //allowed key signatures
-    int                 m_nKeyDisplayMode;      // 0-ascending
-                                                // 1-descending
-                                                // 2-both
+
+    //params only for ear training exercises
+    int                 m_nKeyDisplayMode;      // 0-play A4 note
+                                                // 1-play tonic chord
 
 };
 
