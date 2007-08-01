@@ -426,6 +426,8 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, int nOptions, wxStrin
 
         // a) Non-translatable params
         if (   (sElement == _T("accidentals"))
+            || (sElement == _T("cadences"))
+            || (sElement == _T("cadence_buttons"))
             || (sElement == _T("chords"))
             || (sElement == _T("clef"))
             || (sElement == _T("control_go_back"))
@@ -440,6 +442,7 @@ bool lmEbookProcessor::ProcessTag(const wxXml2Node& oNode, int nOptions, wxStrin
             || (sElement == _T("mode"))
             || (sElement == _T("music_border"))
             || (sElement == _T("problem_type"))
+            || (sElement == _T("play_key"))
             || (sElement == _T("play_mode"))
             || (sElement == _T("scales"))
             || (sElement == _T("score_type"))

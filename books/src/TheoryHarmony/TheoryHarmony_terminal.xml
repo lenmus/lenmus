@@ -1,0 +1,65 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Theory and harmony                  -->
+<!-- =============================================== -->
+
+<theme id="terminal">
+<title>Terminal cadences</title>
+
+<para>
+Caracterizadas por crear reposo y estabilidad, se consiguen llegando a la tonica anteponiendo, al menos, uno de los grados tonales, ambos en estado fundamental. De este modo, se distinguen dos cadencias:
+</para>
+
+<para>
+1) Cadencia autentica: Se produce enlazando el V o V7 (Dominante) y el I (Tonica), ambos grados en estado fundamental. Es la cadencia con mayor poder conclusivo. La cadencia autentica puede verse ampliada anteponiendo el IV (Subdominante) al acorde de Dominante (con o sin septima), esta cadencia se llama compuesta. Cuando la voz superior no va a la tonica, el poder conclusivo de esta cadencia queda reducido.
+</para>
+
+<!-- (Colocar ejemplo) -->
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (barline end noVisible) )))
+    </music>
+</score>
+
+
+<para>
+2) Cadencia plagal: Se produce enlazando el IV (Subdominante) y el I (Tonica), ambos grados en estado fundamental.  Es menos tensa que la cadencia autentica.
+</para>
+
+<!-- (Colocar ejemplo) -->
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (barline end noVisible) )))
+    </music>
+</score>
+
+<part>
+<title>Exercise 1</title>
+
+<para>
+Train your ear and practise to
+identify if a terminal cadence is authentic perfect or plagal.
+</para>
+<para></para>
+
+<exercise type="IdfyCadences" width="100%" height="300" border="0">
+    <cadences>all_perfect,all_plagal</cadences>
+    <cadence_buttons>perfect,plagal</cadence_buttons>
+    <mode>earTraining</mode>
+</exercise>
+
+</part>
+
+
+</theme>

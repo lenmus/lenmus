@@ -173,6 +173,7 @@ public:
 
     bool IsValidButton(lmECadenceButtons nB) { return m_fValidButtons[nB]; }
     void SetValidButton(lmECadenceButtons nB, bool fValue) { m_fValidButtons[nB] = fValue; }
+    bool* GetValidButtons() { return m_fValidButtons; }
 
     bool UseGrandStaff() { return m_fGrandStaff; }
     void SetGrandStaff(bool fValue) { m_fGrandStaff = fValue; }

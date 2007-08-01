@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE book [
+    <!ENTITY ch_cadences  SYSTEM "TheoryHarmony_cadences.xml">
+    <!ENTITY ch_terminal  SYSTEM "TheoryHarmony_terminal.xml">
+    <!ENTITY ch_transient SYSTEM "TheoryHarmony_transient.xml">
+]>
+
+<book id="TheoryHarmony">
+<bookinfo>
+    <title>Theory and harmony</title>
+    <abstract>A collection of yet un-ordered/un-related themes on music theory.</abstract>
+    <copyright>
+        <year>2007</year>
+        <holder>LenMus project</holder>
+    </copyright>
+    <legalnotice>
+        <para>Permission is granted to copy, distribute and/or modify this document
+        under the terms of the GNU Free Documentation License, Version 1.2 or any
+        later version published by the Free Software Foundation; with no Invariant
+        Sections, with no Front-Cover Texts, and with no Back-Cover Texts. 
+        A copy of the license is included in the documentation received with
+        this program, and it is also available at
+        <ulink url="http://www.gnu.org/licenses/fdl.html">http://www.gnu.org/licenses/fdl.html</ulink>
+        </para>
+    </legalnotice>
+</bookinfo>
+
+<theme id="ch0">
+<titleabbrev>Contents</titleabbrev>
+<title>Presentation</title>
+
+<para>It takes a lot of time to prepare an eBbook. So to we have decided to publish the
+chapters/themes/articles as soon as we write them, instead of waiting to have the book
+finished. All these provisional themes and articles are boundled into this eBook.
+Therefore this 'Theory and harmony' eBook is just a collection of yet un-ordered/un-related 
+themes.</para>
+
+
+</theme>
+
+<chapter id="ch1">
+<titleabbrev>Harmony</titleabbrev>
+<title>Harmony</title>
+
+    &ch_cadences;
+    &ch_terminal;
+    &ch_transient;
+    
+</chapter>
+
+</book>

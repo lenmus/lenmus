@@ -1,0 +1,183 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Theory and harmony                  -->
+<!-- =============================================== -->
+<content>
+
+<theme id="th1_transient">
+<title>Transient cadences</title>
+
+<para>
+Caracterizadas por crear inestabilidad, tension y necesidad de continuacion, se logran 
+De este modo, se distinguen dos cadencias principales:
+</para>
+
+<para>
+1) Semicadencia: Se produce llegado a cualquier grado de la escala, a excepcion de la tonica, preferentemente sobre la dominante. 
+</para>
+
+<para>
+Un uso especial de esta cadencia es la cadencia frigia, usada profusamente en el Barroco para finalizar un movimiento o introduccion lentos en modo menor, al que continua un movimiento rapido, preferentemente en modo mayor, su formula es IV (en primera inversion) – V. 
+</para>
+
+<para>
+De color particular, la cadencia andaluza es una progresion cadencial empleada en el modo menor, cuya formula es I-VII-VI (grado sustituible)-V. El colorido particular lo otorga el cromatismo producido entre la fundamental del VII y la tercera del V.
+</para>
+
+<!-- (Colocar ejemplo) -->
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (barline end noVisible) )))
+    </music>
+</score>
+
+
+<para>
+2) Cadencia rota o interrumpida: Es un proceso de cadencia autentica en el que se sustituye el acorde de tonica por uno inesperado, generalmente VI,  el IV o cualquier grado que contenga a la tonica en sustitucion de esta.
+</para>
+
+<!-- (Colocar ejemplo) -->
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (barline end noVisible) )))
+    </music>
+</score>
+
+
+
+<para>
+Tomando la cadencia autentica, si al menos uno  de los grados esta invertido, se hablara de cadencia imperfecta. No existe un acuerdo claro para ubicar esta cadencia, si bien entre las conclusivas o suspensivas.
+</para>
+
+<!-- (Colocar ejemplo) -->
+<score width="600" height='100' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (instrument
+          (musicData (clef G)(key C)
+            (time 2 4 noVisible)
+            (barline end noVisible) )))
+    </music>
+</score>
+
+
+<part>
+<title>Ear training exercises</title>
+
+<para>
+<link linkend="th1_transient_E1">Exercise 1</link> - Diferenciar auditivamente una 
+cadencia rota de una semicadencia</para>
+
+<para>
+<link linkend="th1_transient_E2">Exercise 2</link> - Diferenciar auditivamente 
+todos los tipos de cadencias.</para>
+
+</part>
+
+<part>
+<title>Theory exercises</title>
+
+<para>
+<link linkend="th1_transient_E3">Exercise 3</link> - Diferenciar sobre una partitura
+cadencia rota de una semicadencia</para>
+
+<para>
+<link linkend="th1_transient_E4">Exercise 4</link> - Diferenciar sobre una partitura
+todos los tipos de cadencias.</para>
+
+</part>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Exercise 1  -->
+<!-- ====================== -->
+
+<theme id="th1_transient_E1" toc="no">
+<titleabbrev>Deceptive and half cadences</titleabbrev>
+<title>Deceptive and half cadences</title>
+
+<para>Diferenciar auditivamente una cadencia rota de una semicadencia.</para>
+
+<exercise type="IdfyCadences" width="100%" height="300" border="0">
+    <control_go_back>th1_transient</control_go_back>
+    <cadences>all_half,all_deceptive</cadences>
+    <cadence_buttons>half,deceptive</cadence_buttons>
+    <mode>earTraining</mode>
+</exercise>
+
+</theme>
+
+
+<!-- ====================== -->
+<!-- Exercise 2  -->
+<!-- ====================== -->
+
+<theme id="th1_transient_E2" toc="no">
+<titleabbrev>All cadences</titleabbrev>
+<title>All cadences</title>
+
+<para>Diferenciar auditivamente todos los tipos de cadencias.</para>
+
+<exercise type="IdfyCadences" width="100%" height="300" border="0">
+    <control_go_back>th1_transient</control_go_back>
+    <cadences>all</cadences>
+    <cadence_buttons>half,deceptive,perfect,plagal,imperfect</cadence_buttons>
+    <mode>earTraining</mode>
+</exercise>
+
+</theme>
+
+
+<!-- ====================== -->
+<!-- Exercise 3  -->
+<!-- ====================== -->
+
+<theme id="th1_transient_E3" toc="no">
+<titleabbrev>Deceptive and half cadences</titleabbrev>
+<title>Deceptive and half cadences</title>
+
+<para>Diferenciar sobre una partitura una cadencia rota de una semicadencia.</para>
+
+<exercise type="IdfyCadences" width="100%" height="300" border="0">
+    <control_go_back>th1_transient</control_go_back>
+    <cadences>all_half,all_deceptive</cadences>
+    <cadence_buttons>half,deceptive</cadence_buttons>
+    <mode>theory</mode>
+</exercise>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Exercise 4  -->
+<!-- ====================== -->
+
+<theme id="th1_transient_E4" toc="no">
+<titleabbrev>All cadences</titleabbrev>
+<title>All cadences</title>
+
+<para>Diferenciar sobre una partitura todos los tipos de cadencias.</para>
+
+<exercise type="IdfyCadences" width="100%" height="300" border="0">
+    <control_go_back>th1_transient</control_go_back>
+    <cadences>all</cadences>
+    <cadence_buttons>half,deceptive,perfect,plagal,imperfect</cadence_buttons>
+    <mode>theory</mode>
+</exercise>
+
+</theme>
+
+</content>

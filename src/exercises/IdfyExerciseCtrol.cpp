@@ -35,7 +35,8 @@
 #include "Constrains.h"
 #include "Generators.h"
 #include "../auxmusic/Conversion.h"
-
+#include "../app/MainFrame.h"
+#include "../html/TextBookController.h"
 #include "../ldp_parser/LDPParser.h"
 #include "../auxmusic/Interval.h"
 #include "../app/DlgCfgIdfyChord.h"
@@ -60,9 +61,9 @@ lmIdfyConstrains::lmIdfyConstrains(wxString sSection)
 {
     m_sSection = sSection;
     m_fSettingsLink = false;
+    m_sGoBackURL = _T("");
     LoadSettings();
 }
-
 
 
 //------------------------------------------------------------------------------------
@@ -78,7 +79,8 @@ enum {
     ID_LINK_NEW_PROBLEM,
     ID_LINK_PLAY,
     ID_LINK_SOLUTION,
-    ID_LINK_SETTINGS
+    ID_LINK_SETTINGS,
+    ID_LINK_GO_BACK
 
 };
 
@@ -94,6 +96,7 @@ BEGIN_EVENT_TABLE(lmIdfyExerciseCtrol, wxWindow)
     LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmIdfyExerciseCtrol::OnPlay)
     LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, lmIdfyExerciseCtrol::OnDisplaySolution)
     LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmIdfyExerciseCtrol::OnSettingsButton)
+    LM_EVT_URL_CLICK    (ID_LINK_GO_BACK, lmIdfyExerciseCtrol::OnGoBackButton)
 
     LM_EVT_END_OF_PLAY  (lmIdfyExerciseCtrol::OnEndOfPlay)
 
@@ -140,6 +143,11 @@ void lmIdfyExerciseCtrol::Create(int nCtrolWidth, int nCtrolHeight)
     if (m_pConstrains->IncludeSettingsLink()) {
         lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
         pTopLineSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+    }
+    // "Go back to theory" link
+    if (m_pConstrains->IncludeGoBackLink()) {
+        lmUrlAuxCtrol* pGoBackLink = new lmUrlAuxCtrol(this, ID_LINK_GO_BACK, _("Go back to theory") );
+        pTopLineSizer->Add(pGoBackLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
     }
 
     // debug links
@@ -284,6 +292,14 @@ void lmIdfyExerciseCtrol::OnSettingsButton(wxCommandEvent& event)
         delete pDlg;
     }
 
+}
+
+void lmIdfyExerciseCtrol::OnGoBackButton(wxCommandEvent& event)
+{
+    //wxLogMessage(_T("[lmIdfyExerciseCtrol::OnGoBackButton] back URL = '%s'"), m_pConstrains->GetGoBackURL());
+    lmMainFrame* pFrame = GetMainFrame();
+    lmTextBookController* pBookController = pFrame->GetBookController();
+    pBookController->Display( m_pConstrains->GetGoBackURL() );
 }
 
 void lmIdfyExerciseCtrol::OnSize(wxSizeEvent& event)

@@ -40,6 +40,32 @@ extern wxConfigBase *g_pPrefs;
 lmCadencesConstrains::lmCadencesConstrains(wxString sSection)
     : lmIdfyConstrains(sSection)
 {
+    //
+    // default settings
+    //
+
+    // allowed cadences. Default: all allowed
+    for (int i=0; i < lm_eCadMaxCadence; i++) {
+        m_fValidCadences[i] = true;
+    }
+
+    // key signatures. Default use C major
+    for (int i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
+        bool fValid = ((EKeySignatures)i == earmDo);
+        m_oValidKeys.SetValid((EKeySignatures)i, fValid);
+    }
+
+    // answer buttons. Default: transient / terminal
+    for (int i=0; i < lm_eCadMaxButton; i++) {
+        m_fValidButtons[i] = (i < 2);
+    }
+
+    // Use grand staff. Default: true
+    m_fGrandStaff = true;
+
+    // how to display key. Default: play tonic chord
+    m_nKeyDisplayMode = 1;
+
 }
 
 void lmCadencesConstrains::SaveSettings()

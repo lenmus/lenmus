@@ -676,6 +676,8 @@ wxString lmBookData::FindPageByName(const wxString& x)
         int nNumEntries = m_pagelist.size();
         for (i = 0; i < nNumEntries; i++)
         {
+            //wxLogMessage(_T("[lmBookData::FindPageByName] page %d, name = %s"),
+            //    i, (m_pagelist[i]->page).c_str() );
             if (m_pagelist[i]->page == x)
                 return m_pagelist[i]->GetFullPath();
         }

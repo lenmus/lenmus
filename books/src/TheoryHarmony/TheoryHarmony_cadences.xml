@@ -1,0 +1,43 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Theory and harmony                  -->
+<!-- =============================================== -->
+
+<theme id="th1_cadences">
+<title>Cadences</title>
+
+<para>
+Musicalmente, el termino 'cadencia' puede significar varias cosas. No obstante, el uso que vamos a hacer de el es de una formula armonica o melodica que tiene una funcion analoga a los signos de puntuacion (coma, punto, punto y coma, etc.) en el lenguaje, es decir, sirven para articular el discurso musical creando puntos de reposo y suspension que hacen posible entenderlo.
+</para>
+
+<para>
+Existen dos tipos fundamentales de cadencia: 
+</para>
+
+<orderedlist>
+<listitem>
+1) Cadencias conclusivas, caracterizadas por crear reposo y estabilidad.
+</listitem>
+<listitem>
+2) Cadencias suspensivas, caracterizadas por crear inestabilidad, tension y necesidad de continuacion.
+</listitem>
+</orderedlist>
+
+<part>
+<title>Exercise 1</title>
+
+<para>
+Train your ear and practise to
+identify if a cadence is terminal or transient.
+</para>
+
+<para></para>
+
+<exercise type="IdfyCadences" width="100%" height="300" border="0">
+    <cadences>all</cadences>
+    <cadence_buttons>terminal,transient</cadence_buttons>
+    <mode>earTraining</mode>
+</exercise>
+
+</theme>
+
+

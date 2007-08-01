@@ -55,6 +55,7 @@ public:
 protected:
     wxString ParseCadences(wxString sParamValue, wxString sFullParam, bool* pfValidCadences);
     lmECadenceType CadenceNameToType(wxString sCadence);
+    wxString ParseAnswerButtons(wxString sParamValue, wxString sFullParam, bool* pfValidButtons);
 
         // Member variables:
 
@@ -122,7 +123,8 @@ void lmIdfyCadencesCtrolParms::AddParam(const wxHtmlTag& tag)
     //
     //    play_key     'A4 | tonic_chord' Default: 'tonic_chord'
     //
-    //    cadence_buttons   Terminal, Transient, Perfect, Plagal, Imperfect, Deceptive, Half,
+    //    cadence_buttons   list of answer buttons to display:
+    //                 'terminal, transient, perfect, plagal, imperfect, deceptive, half'
     //
     //
     //    control_settings    Value="[key for storing the settings]"
@@ -161,29 +163,21 @@ void lmIdfyCadencesCtrolParms::AddParam(const wxHtmlTag& tag)
     //        m_pConstrains->SetDisplayKey( nValue != 0 );
     //}
 
-    //// play mode
-    //else if ( sName == _T("PLAY_MODE") ) {
-    //    wxString sMode = tag.GetParam(_T("VALUE"));
-    //    if (sMode == _T("ascending"))
-    //        m_pConstrains->SetPlayMode(0);
-    //    else if (sMode == _T("descending"))
-    //        m_pConstrains->SetPlayMode(1);
-    //    else if (sMode == _T("both"))
-    //        m_pConstrains->SetPlayMode(2);
-    //    else {
-    //        m_sParamErrors += wxString::Format( wxGetTranslation(
-    //            _T("Invalid param value in:\n<param %s >\n")
-    //            _T("Invalid value = %s \n")
-    //            _T("Acceptable values: 'ascending | descending | both'\n")),
-    //            tag.GetAllParams().c_str(), sMode.c_str() );
-    //    }
-    //}
+    // "Go back to theory" link
+    else if ( sName == _T("CONTROL_GO_BACK") ) {
+        m_pConstrains->SetGoBackLink( tag.GetParam(_T("VALUE") ));
+    }
 
     // cadences      list of allowed cadences:
     else if ( sName == _T("CADENCES") ) {
-        wxString sClef = tag.GetParam(_T("VALUE"));
         m_sParamErrors += ParseCadences(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
                                     m_pConstrains->GetValidCadences());
+    }
+
+    // cadence_buttons      list of answer buttons to display
+    else if ( sName == _T("CADENCE_BUTTONS") ) {
+        m_sParamErrors += ParseAnswerButtons(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
+                                    m_pConstrains->GetValidButtons());
     }
 
     // mode        'theory | earTraining'  Keyword indicating type of exercise
@@ -241,11 +235,72 @@ void lmIdfyCadencesCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 
 }
 
+wxString lmIdfyCadencesCtrolParms::ParseAnswerButtons(wxString sParamValue, wxString sFullParam,
+                                                 bool* pfValidButtons)
+{
+    //    cadence_buttons   list of answer buttons to display:
+    //                 'terminal, transient, perfect, plagal, imperfect, deceptive, half'
+
+    bool fError = false;
+
+    //disable all buttons
+    for (long i=0; i < lm_eCadMaxButton; i++) {
+        *(pfValidButtons + i) = false;
+    }
+
+    //loop to get allowed buttons
+    lmECadenceButtons nButton;
+    int iColon;
+    wxString sButton;
+    while (sParamValue != _T("")) {
+        //get button
+        iColon = sParamValue.Find(_T(","));
+        if (iColon != -1) {
+            sButton = sParamValue.Left(iColon);
+            sParamValue = sParamValue.Mid(iColon + 1);      //skip the colon
+        }
+        else {
+            sButton = sParamValue;
+            sParamValue = _T("");
+        }
+
+        if (sButton == _T("terminal"))
+            nButton = lm_eCadButtonTerminal;
+        else if (sButton == _T("transient"))
+            nButton = lm_eCadButtonTransient;
+        else if (sButton == _T("perfect"))
+            nButton = lm_eCadButtonPerfect;
+        else if (sButton == _T("plagal"))
+            nButton = lm_eCadButtonPlagal;
+        else if (sButton == _T("imperfect"))
+            nButton = lm_eCadButtonImperfect;
+        else if (sButton == _T("deceptive"))
+            nButton = lm_eCadButtonDeceptive;
+        else if (sButton == _T("half"))
+            nButton = lm_eCadButtonHalf;
+        else {
+            fError = true;
+            break;
+        }
+        *(pfValidButtons + (int)nButton) = true;
+    }
+
+    if (fError)
+        return wxString::Format( 
+            _T("Invalid param value in:\n<param %s >\n")
+            _T("Invalid value = %s \n")
+            _T("Acceptable format: a list of allowed buttons.\n"),
+            sFullParam.c_str(), sParamValue.c_str() );
+    else
+        return wxEmptyString;
+
+}
+
 wxString lmIdfyCadencesCtrolParms::ParseCadences(wxString sParamValue, wxString sFullParam,
                                                  bool* pfValidCadences)
 {
     //    cadences    Keywords "all", "all_perfect", "all_imperfect", "all_plagal",
-    //                  "all_deceptive", "all_half", "all_terminal", "all_transient"
+    //                  "all_deceptive", "all_half"
     //                  or a list of allowed cadences:
     //                  Perfect authentic: 
     //                      V_I_Perfect, V7_I, Va5_I, Vd5_I
@@ -262,59 +317,65 @@ wxString lmIdfyCadencesCtrolParms::ParseCadences(wxString sParamValue, wxString 
 
     bool fError = false;
 
-    if (sParamValue == _T("all")) {
-        // allow all cadences
-        for (int i=0; i < lm_eCadMaxCadence; i++) {
-            *(pfValidCadences+i) = true;
-        }
-    }
-    else if (sParamValue == _T("all_perfect")) {
-        // allow all Perfect cadences
-        for (int i=lm_eCadPerfect; i < lm_eCadLastPerfect; i++) {
-            *(pfValidCadences+i) = true;
-        }
-    }
-    else if (sParamValue == _T("all_plagal")) {
-        // allow all Plagal cadences
-        for (int i=lm_eCadPlagal; i < lm_eCadLastPlagal; i++) {
-            *(pfValidCadences+i) = true;
-        }
-    }
-    else if (sParamValue == _T("all_deceptive")) {
-        // allow all Deceptive cadences
-        for (int i=lm_eCadDeceptive; i < lm_eCadLastDeceptive; i++) {
-            *(pfValidCadences+i) = true;
-        }
-    }
-    else if (sParamValue == _T("all_half")) {
-        // allow all Half cadences
-        for (int i=lm_eCadHalf; i < lm_eCadLastHalf; i++) {
-            *(pfValidCadences+i) = true;
-        }
-    }
-    else if (sParamValue == _T("all_imperfect")) {
-        // allow all Imperfect cadences
-        for (int i=lm_eCadImperfect; i < lm_eCadLastImperfect; i++) {
-            *(pfValidCadences+i) = true;
-        }
+    // disable all cadences
+    for (int i=0; i < lm_eCadMaxCadence; i++) {
+        *(pfValidCadences+i) = false;
     }
 
-    else {
-        //loop to get allowed cadences
-        int iColon;
-        wxString sCadence;
-        lmECadenceType nType;
-        while (sParamValue != _T("")) {
-            //get cadence
-            iColon = sParamValue.Find(_T(","));
-            if (iColon != -1) {
-                sCadence = sParamValue.Left(iColon);
-                sParamValue = sParamValue.Mid(iColon + 1);      //skip the colon
+    //loop to get allowed cadences
+    int iColon;
+    wxString sCadence;
+    lmECadenceType nType;
+    while (sParamValue != _T("")) {
+        //get cadence
+        iColon = sParamValue.Find(_T(","));
+        if (iColon != -1) {
+            sCadence = sParamValue.Left(iColon);
+            sParamValue = sParamValue.Mid(iColon + 1);      //skip the colon
+        }
+        else {
+            sCadence = sParamValue;
+            sParamValue = _T("");
+        }
+
+        //determine cadence
+        if (sCadence == _T("all")) {
+            // allow all cadences
+            for (int i=0; i < lm_eCadMaxCadence; i++) {
+                *(pfValidCadences+i) = true;
             }
-            else {
-                sCadence = sParamValue;
-                sParamValue = _T("");
+        }
+        else if (sCadence == _T("all_perfect")) {
+            // allow all Perfect cadences
+            for (int i=lm_eCadPerfect; i < lm_eCadLastPerfect; i++) {
+                *(pfValidCadences+i) = true;
             }
+        }
+        else if (sCadence == _T("all_plagal")) {
+            // allow all Plagal cadences
+            for (int i=lm_eCadPlagal; i < lm_eCadLastPlagal; i++) {
+                *(pfValidCadences+i) = true;
+            }
+        }
+        else if (sCadence == _T("all_deceptive")) {
+            // allow all Deceptive cadences
+            for (int i=lm_eCadDeceptive; i < lm_eCadLastDeceptive; i++) {
+                *(pfValidCadences+i) = true;
+            }
+        }
+        else if (sCadence == _T("all_half")) {
+            // allow all Half cadences
+            for (int i=lm_eCadHalf; i < lm_eCadLastHalf; i++) {
+                *(pfValidCadences+i) = true;
+            }
+        }
+        else if (sCadence == _T("all_imperfect")) {
+            // allow all Imperfect cadences
+            for (int i=lm_eCadImperfect; i < lm_eCadLastImperfect; i++) {
+                *(pfValidCadences+i) = true;
+            }
+        }
+        else {
             nType = CadenceNameToType(sCadence);
             if (nType == (lmECadenceType)-1) {
                 fError = true;
@@ -329,7 +390,7 @@ wxString lmIdfyCadencesCtrolParms::ParseCadences(wxString sParamValue, wxString 
             _T("Invalid param value in:\n<param %s >\n")
             _T("Invalid value = %s \n")
             _T("Acceptable format: Keywords 'all', 'all_xxxx' or a list of allowed cadences.\n"),
-            sFullParam.c_str(), sParamValue.c_str() );
+            sFullParam.c_str(), sCadence.c_str() );
     else
         return wxEmptyString;
 

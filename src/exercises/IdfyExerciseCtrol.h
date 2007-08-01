@@ -58,6 +58,10 @@ public:
     void SetSettingsLink(bool fValue) { m_fSettingsLink = fValue; }
     bool IncludeSettingsLink() { return m_fSettingsLink; }
 
+    void SetGoBackLink(wxString sURL) { m_sGoBackURL = sURL; }
+    bool IncludeGoBackLink() { return m_sGoBackURL != _T(""); }
+    wxString GetGoBackURL() { return m_sGoBackURL; }
+
     void SetTheoryMode(bool fValue) { m_fTheoryMode = fValue; }
     bool IsTheoryMode() { return m_fTheoryMode; }
 
@@ -66,7 +70,8 @@ protected:
     virtual void LoadSettings() {};
 
     wxString    m_sSection;         //section name to save the constraints
-    bool        m_fSettingsLink;    //include settings link
+    bool        m_fSettingsLink;    //include 'settings' link
+    wxString    m_sGoBackURL;       //URL for "Go back" link of empty string if no link
 
     //The Ctrol could be used both for ear training exercises and for theory exercises.
     //Following variables are used for configuration
@@ -102,6 +107,7 @@ public:
     virtual void OnNewProblem(wxCommandEvent& event);
     virtual void OnDisplaySolution(wxCommandEvent& event);
     virtual void OnSettingsButton(wxCommandEvent& event);
+    virtual void OnGoBackButton(wxCommandEvent& event);
 
     // event handlers related to debugging
     virtual void OnDebugShowSourceScore(wxCommandEvent& event);
