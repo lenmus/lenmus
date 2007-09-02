@@ -39,7 +39,7 @@ This is represented in the score by the letters 'm.m.' followed by the beats per
 This indication is normally written at the beginning:
 </para>
 
-<score width="600" height='70' border="0">
+<para><score width="685" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -52,14 +52,14 @@ This indication is normally written at the beginning:
             (n g4 q)(n a4 q)(barline simple)
             (n f4 q)(n c5 q)(barline end) )))
     </music>
-</score>
+</score></para>
 
 <para>
 Instead of letters 'm.m.' also note symbols are used:
 </para>
 
 
-<score width="600" height='70' border="0">
+<para><score width="685" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -72,7 +72,7 @@ Instead of letters 'm.m.' also note symbols are used:
             (n g4 q)(n a4 q)(barline simple)
             (n f4 q)(n c5 q)(barline end) )))
     </music>
-</score>
+</score></para>
 
 </part>
 

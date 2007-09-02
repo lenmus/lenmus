@@ -99,7 +99,7 @@ public:
             default:
                 sAnswer = _T("");
         }
-        sAnswer += lmConverter::GetEnglishNoteName(nNote[iNote]).c_str();
+        sAnswer += DPitch_GetEnglishNoteName(nNote[iNote]);
         return sAnswer;
     }
 

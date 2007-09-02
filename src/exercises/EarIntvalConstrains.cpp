@@ -37,6 +37,7 @@ extern wxConfigBase *g_pPrefs;
 
 
 lmEarIntervalsConstrains::lmEarIntervalsConstrains(wxString sSection)
+    : lmExerciseConstrains(sSection)
 {
     m_sSection = sSection;
     LoadSettings();
@@ -45,9 +46,9 @@ lmEarIntervalsConstrains::lmEarIntervalsConstrains(wxString sSection)
 
 void lmEarIntervalsConstrains::SaveSettings()
 {
-    /*
-    save settings in user configuration data file
-    */
+    //
+    //save settings in user configuration data file
+    //
 
     // allowed intervals
     int i;

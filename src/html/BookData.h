@@ -144,10 +144,10 @@ WX_DEFINE_ARRAY(lmPageIndexItem*, lmPageIndexArray);
 //                  of keyword(s)
 //------------------------------------------------------------------------------
 
-class lmBookSearchEngine : public wxObject
+class lmBookSearchEngine
 {
 public:
-    lmBookSearchEngine() : wxObject() {}
+    lmBookSearchEngine() {}
     ~lmBookSearchEngine() {}
 
     // Sets the keyword we will be searching for
@@ -202,9 +202,8 @@ private:
 
 
 // Class lmBookData contains the information about all loaded books
-class lmBookData : public wxObject
+class lmBookData
 {
-    DECLARE_DYNAMIC_CLASS(lmBookData)
     friend class lmSearchStatus;
 
 public:

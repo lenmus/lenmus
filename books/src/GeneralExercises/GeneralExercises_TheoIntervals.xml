@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<theme id="TheoIntervals">
+<title>Interval's identification and construction</title>
+
+<exercise type="TheoIntervals" width="100%" height="300" border="0">
+    <accidentals>simple</accidentals>
+    <control_settings>TheoIntervals</control_settings>
+</exercise>
+
+</theme>

@@ -8,7 +8,7 @@
 
 <para>In this lesson the next patterns are introduced:</para>
 
-<score width="600" height="100" border="0">
+<para><score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -16,11 +16,11 @@
         (Metrica 2 8 NoVisible)(s c)(n * s g+)(n * s g-)(Barra Doble))
         (c (n * s g+)(n * s g-)(s c)(Barra Final))
     </music>
-</score>
+</score></para>
 
 <part><title>Listen and take notice of the differences</title>
 
-<score width="600" height="100" border="0">
+<para><score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -28,7 +28,7 @@
         (Metrica 2 8)(s c)(n * s g+)(n * s g-))
         (c (n * s g+)(n * s g-)(s c)(Barra Final))
     </music>
-</score>
+</score></para>
 </part>
 
 <part>

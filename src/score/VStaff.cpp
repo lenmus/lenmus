@@ -291,7 +291,7 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
                     EAccidentals nAccidentals,
                     ENoteType nNoteType, float rDuration,
                     bool fDotted, bool fDoubleDotted,
-                    int nStaff,
+                    int nStaff, bool fVisible,
                     bool fBeamed, lmTBeamInfo BeamInfo[],
                     bool fInChord,
                     bool fTie,
@@ -305,8 +305,8 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
 
     lmNote* pNt = new lmNote(this, nPitchType,
                         sStep, sOctave, sAlter, nAccidentals,
-                        nNoteType, rDuration, fDotted, fDoubleDotted, nStaff, pContext,
-                        fBeamed, BeamInfo, fInChord, fTie, nStem);
+                        nNoteType, rDuration, fDotted, fDoubleDotted, nStaff, fVisible,
+                        pContext, fBeamed, BeamInfo, fInChord, fTie, nStem);
 
     m_cStaffObjs.Store(pNt);
     return pNt;
@@ -316,7 +316,7 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
 // returns a pointer to the lmRest object just created
 lmRest* lmVStaff::AddRest(ENoteType nNoteType, float rDuration,
                       bool fDotted, bool fDoubleDotted,
-                      int nStaff,
+                      int nStaff, bool fVisible,
                       bool fBeamed, lmTBeamInfo BeamInfo[])
 {
     wxASSERT(nStaff <= GetNumStaves() );
@@ -325,7 +325,7 @@ lmRest* lmVStaff::AddRest(ENoteType nNoteType, float rDuration,
     lmContext* pContext = pStaff->GetLastContext();
 
     lmRest* pR = new lmRest(this, nNoteType, rDuration, fDotted, fDoubleDotted, nStaff,
-                        pContext, fBeamed, BeamInfo);
+                        fVisible, pContext, fBeamed, BeamInfo);
 
     m_cStaffObjs.Store(pR);
     return pR;
@@ -1123,19 +1123,19 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
 
 }
 
-lmNote* lmVStaff::FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep)
+lmNote* lmVStaff::FindPossibleStartOfTie(lmAPitch anPitch)
 {
-    /*
-    This method is invoked from lmNote constructor to find if the note being created
-    (the "target note") is tied to a previous one ("the candidate" one).
-    This method explores backwards to try to find a note that can be tied with the received
-    as parameter (the "target note").
+    //
+    // This method is invoked from lmNote constructor to find if the note being created
+    // (the "target note") is tied to a previous one ("the candidate" one).
+    // This method explores backwards to try to find a note that can be tied with the received
+    // as parameter (the "target note").
+    //
+    // Algorithm:
+    // Find the first previous note of the same pitch, in this measure or
+    // in the previous one
+    //
 
-    Algorithm:
-    Find the first previous note of the same pitch and step, in this measure or
-    in the previous one
-
-    */
 
     //define a backwards iterator
     bool fInPrevMeasure = false;
@@ -1152,7 +1152,7 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep)
                 pNR = (lmNoteRest*)pSO;
                 if (!pNR->IsRest()) {
                     pNote = (lmNote*)pSO;
-                    if (pNote->CanBeTied(nMidiPitch, nStep)) {
+                    if (pNote->CanBeTied(anPitch)) {
                         delete pIter;
                         return pNote;    // candidate found
                     }

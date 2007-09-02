@@ -457,7 +457,7 @@ bool lmDlgCfgScoreReading::VerifyData()
     //For selected clefs, verify that min note is lower than max note
     fError = false;
     wxString sMinPitch, sMaxPitch;
-    lmPitch nMaxPitch, nMinPitch;
+    lmDPitch nMaxPitch, nMinPitch;
     EAccidentals nAccidentals;
     for (i=0; i < 7; i++) {
         sMinPitch = m_pCboMinNote[i]->GetValue();

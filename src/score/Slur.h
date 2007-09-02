@@ -69,6 +69,10 @@ protected:
 //   lmTie
 //---------------------------------------------------------
 
+//constants for PropagateNotePitchChange() method
+#define lmBACKWARDS false
+#define lmFORWARDS  true
+
 class lmTie : public lmAuxObj
 {
 public:
@@ -81,6 +85,8 @@ public:
     void SetStartPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperRight, bool fUnderNote);
     void SetEndPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperLeft);
     bool IsUnderNote() { return m_fTieUnderNote; }
+    void PropagateNotePitchChange(lmNote* pNote, int nStep, int nOctave, int nAlter, bool fForward);
+
 
     void UpdateMeasurements();
 

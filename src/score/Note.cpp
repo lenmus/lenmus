@@ -48,17 +48,18 @@ WX_DEFINE_LIST(NotesList);
 const bool m_fDrawSmallNotesInBlock = false;    //! @todo option depending on used font
 
 lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
-        wxString sStep, wxString sOctave, wxString sAlter,
+        wxString& sStep, wxString& sOctave, wxString& sAlter,
         EAccidentals nAccidentals,
         ENoteType nNoteType, float rDuration,
         bool fDotted, bool fDoubleDotted,
-        int nStaff,
+        int nStaff, bool fVisible,
         lmContext* pContext,
         bool fBeamed, lmTBeamInfo BeamInfo[],
         bool fInChord,
         bool fTie,
         EStemType nStem)  :
-    lmNoteRest(pVStaff, DEFINE_NOTE, nNoteType, rDuration, fDotted, fDoubleDotted, nStaff)
+    lmNoteRest(pVStaff, DEFINE_NOTE, nNoteType, rDuration, fDotted, fDoubleDotted, nStaff,
+               fVisible)
 {
     /*
     Diatonic Pitch is determined by Step
@@ -85,17 +86,10 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     m_uStemLength = GetDefaultStemLength();     //default. If beamed note, this value will
                                                 //be updated in lmBeam::ComputeStemsDirection
     ////DBG
-    //if (GetID() == 13) {
+    //if (fTie) {   //GetID() == 13) {
     //    // break here
     //    int nDbg = 0;
     //}
-
-    // accidentals
-    if (nAccidentals == eNoAccidentals) {
-        m_pAccidentals = (lmAccidental*)NULL;
-    } else {
-        m_pAccidentals = new lmAccidental(this, nAccidentals);
-    }
 
     //context information
     m_pContext = pContext;
@@ -106,77 +100,79 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     //    m_anContext[i] = 0;    //! @todo parameter anContext[i]
     //}
 
-    //get context accidentals for this note step
-    m_nStep = LetterToStep(sStep);
-    int nNewAlter = m_pContext->GetAccidentals(m_nStep);
+    //get octave, step and context accidentals for this note step
+    long nAux;
+    sOctave.ToLong(&nAux);
+    int nOctave = (int)nAux;
+    int nStep = LetterToStep(sStep);
+    int nCurContextAcc = m_pContext->GetAccidentals(nStep);
+    int nNewContextAcc = nCurContextAcc;
+    EAccidentals nDisplayAcc = nAccidentals;
 
     //update context with displayed accidentals or with alterations,
     //and store all pitch related info
     if (nPitchType == lm_ePitchAbsolute)
     {
-        //update context with alterations
-        //TODO ?
+        // Pitch is absolute and is defined by combining Step, Octave and Alter.
+        // Accidentals are just for rendering.
+        // Sound and look information totally independent
 
-        //store all pitch related information
-        long nAux;
-        sOctave.ToLong(&nAux);
-        m_nOctave = (int)nAux;
+        //set pitch and accidentals to display
         sAlter.ToLong(&nAux);
-        m_nAlter = (int)nAux;
-
-        // set pitch
-        m_nPitch = StepAndOctaveToPitch(m_nStep, m_nOctave);
-        m_nMidiPitch = PitchToMidi(m_nPitch, m_nAlter);
+        nNewContextAcc = (int)nAux;
+        m_anPitch.Set(nStep, nOctave, nNewContextAcc);
+        nDisplayAcc = ComputeAccidentalsToDisplay(nCurContextAcc, nNewContextAcc);
     }
 
     else if (nPitchType == lm_ePitchRelative)
     {
+        // Relative pitch: pitch depends on context (key signature
+        // and accidentals introduced by a previous note in the same measure) and its own
+        // accidentals. Therefore pitch is computred from Step, Octave, Accidentals and Context.
+        // Alter is not used.
+
         //update context with accidentals
+        int nTotalAcc = nCurContextAcc;
         switch (nAccidentals) {
             case eNoAccidentals:
                 //do not modify context
                 break;
             case eNatural:
-                nNewAlter = 0;    //! @todo review: shouldn't be the accidentals of the key signature?
+                //ignore context. Force 'natural' (=no accidentals)
+                nNewContextAcc = 0; 
                 break;
             case eFlat:
-                nNewAlter = -1;
+            case eNaturalFlat:
+                //ignore context. Put one flat
+                nNewContextAcc = -1;
                 break;
             case eSharp:
-                nNewAlter = 1;
+            case eNaturalSharp:
+                //ignore context. Put one sharp
+                nNewContextAcc = 1;
                 break;
             case eFlatFlat:
-                nNewAlter = -2;
+                //ignore context. Put two flats
+                nNewContextAcc = -2;
                 break;
             case eSharpSharp:
             case eDoubleSharp:
-                nNewAlter = 2;
-                break;
-            case eNaturalFlat:
-                nNewAlter = 1;
-                break;
-            case eNaturalSharp:
-                nNewAlter = -1;
+                //ignore context. Put two sharps
+                nNewContextAcc = 2;
                 break;
             default:
                 ;
         }
 
-        //store all pitch related information
-        long nOctave;
-        sOctave.ToLong(&nOctave);
-        m_nOctave = (int)nOctave;
-        m_nAlter = nNewAlter;
-
-        //set pitch
-        m_nPitch = StepAndOctaveToPitch(m_nStep, m_nOctave);
-        m_nMidiPitch = PitchToMidi(m_nPitch, m_nAlter);
+        //set pitch and displayed accidentals
+        m_anPitch.Set(nStep, nOctave, nNewContextAcc);
+        nDisplayAcc = nAccidentals;
     }
 
     else if (nPitchType == lm_ePitchNotDefined)
     {
-        m_nPitch = -1;
-        m_nMidiPitch = -1;
+        m_anPitch.Set(-1, 0);
+        nDisplayAcc = eNoAccidentals;
     }
 
     else {
@@ -185,11 +181,19 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     }
 
     // if needed, update context for following notes
-    if (nNewAlter != m_pContext->GetAccidentals(m_nStep)) {
-        m_pVStaff->UpdateContext(this, nStaff, m_nStep, nNewAlter, m_pContext);
+    if (nNewContextAcc != nCurContextAcc) {
+        m_pVStaff->UpdateContext(this, nStaff, nStep, nNewContextAcc, m_pContext);
     }
 
-    SetUpStemDirection();       // and standard lenght
+    // create the accidentals
+    if (nDisplayAcc == eNoAccidentals) {
+        m_pAccidentals = (lmAccidental*)NULL;
+    } else {
+        m_pAccidentals = new lmAccidental(this, nDisplayAcc);
+    }
+
+    //initialize stem
+    SetUpStemDirection();       // standard lenght
 
 //    Set m_cPentobjs = new Collection
 //
@@ -245,7 +249,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     m_pTieNext = (lmTie*)NULL;        //assume no tied
 
     // verify if a previous note is tied to this one and if so, build the tie
-    lmNote* pNtPrev = m_pVStaff->FindPossibleStartOfTie(m_nMidiPitch, m_nStep);
+    lmNote* pNtPrev = m_pVStaff->FindPossibleStartOfTie(m_anPitch);
     if (pNtPrev && pNtPrev->NeedToBeTied()) {
 
         //do the tie between previous note and this one
@@ -349,8 +353,7 @@ bool lmNote::UpdateContext(int nStep, int nNewAccidentals, lmContext* pNewContex
         m_pContext = pNewContext;    //update context for this note
         m_pContext->StartUsing();    //and inform new context that it is being used by this note
         //update pitch
-        m_nAlter = nNewAccidentals;
-        m_nMidiPitch = PitchToMidi(m_nPitch, m_nAlter);
+        m_anPitch.SetAccidentals(nNewAccidentals);
         return false;
     }
 
@@ -388,7 +391,7 @@ void lmNote::ComputeVolume()
         m_nVolume = 64;
 }
 
-lmENoteBeatPosition lmNote::GetPositionInBeat()
+int lmNote::GetPositionInBeat() const
 {
     lmTimeSignature* pTS = m_pContext->GetTime();
     if (pTS)
@@ -397,7 +400,14 @@ lmENoteBeatPosition lmNote::GetPositionInBeat()
         return lmUNKNOWN_BEAT;
 }
 
-
+int lmNote::GetChordPosition() const
+{
+    lmTimeSignature* pTS = m_pContext->GetTime();
+    if (pTS)
+        return ::GetChordPosition(m_rTimePos, m_rDuration, pTS->GetNumBeats(), pTS->GetBeatType());
+    else
+        return lmNON_CHORD_NOTE;
+}
 
 //====================================================================================================
 // implementation of virtual methods defined in base abstract class lmNoteRest
@@ -1173,19 +1183,19 @@ int lmNote::PosOnStaffToPitch(int nSteps)
     int nPos = GetPosOnStaff() + nSteps;
     switch (m_nClef) {
         case eclvSol :
-            return nPos + lmC4PITCH;
+            return nPos + lmC4_DPITCH;
         case eclvFa4 :
-            return nPos + lmC4PITCH - 12;
+            return nPos + lmC4_DPITCH - 12;
         case eclvFa3 :
-            return nPos + lmC4PITCH - 10;
+            return nPos + lmC4_DPITCH - 10;
         case eclvDo1 :
-            return nPos + lmC4PITCH - 2;
+            return nPos + lmC4_DPITCH - 2;
         case eclvDo2 :
-            return nPos + lmC4PITCH - 4;
+            return nPos + lmC4_DPITCH - 4;
         case eclvDo3 :
-            return nPos + lmC4PITCH - 6;
+            return nPos + lmC4_DPITCH - 6;
         case eclvDo4 :
-            return nPos + lmC4PITCH - 8;
+            return nPos + lmC4_DPITCH - 8;
         default:
             wxASSERT(false);
             return 0;    //to get the compiler happy
@@ -1193,12 +1203,14 @@ int lmNote::PosOnStaffToPitch(int nSteps)
 
 }
 
-void lmNote::SetUpPitchRelatedVariables(lmPitch nNewPitch)
+void lmNote::SetUpPitchRelatedVariables(lmDPitch nNewPitch)
 {
-    m_nPitch = nNewPitch;
-    //! @todo compute new m_nAlter
-    int nAlter = m_nAlter;
-    m_nMidiPitch = PitchToMidi(nNewPitch, nAlter);
+    // A note has been moved. Put pitch to new pitch and current context for
+    // new step
+
+    int nStep = m_anPitch.Step();
+    int nAcc = m_pContext->GetAccidentals(nStep);
+    m_anPitch.Set(nNewPitch, nAcc);
     SetUpStemDirection();
 }
 
@@ -1316,77 +1328,163 @@ int lmNote::GetPosOnStaff()
     // pitch is defined. Position will depend on key
     switch (m_nClef) {
         case eclvSol :
-            return m_nPitch - lmC4PITCH;
+            return m_anPitch.ToDPitch() - lmC4_DPITCH;
         case eclvFa4 :
-            return m_nPitch - lmC4PITCH + 12;
+            return m_anPitch.ToDPitch() - lmC4_DPITCH + 12;
         case eclvFa3 :
-            return m_nPitch - lmC4PITCH + 10;
+            return m_anPitch.ToDPitch() - lmC4_DPITCH + 10;
         case eclvFa5 :
-            return m_nPitch - lmC4PITCH + 14;
+            return m_anPitch.ToDPitch() - lmC4_DPITCH + 14;
         case eclvDo1 :
-            return m_nPitch - lmC4PITCH + 2;
+            return m_anPitch.ToDPitch() - lmC4_DPITCH + 2;
         case eclvDo2 :
-            return m_nPitch - lmC4PITCH + 4;
+            return m_anPitch.ToDPitch() - lmC4_DPITCH + 4;
         case eclvDo3 :
-            return m_nPitch - lmC4PITCH + 6;
+            return m_anPitch.ToDPitch() - lmC4_DPITCH + 6;
         case eclvDo4 :
-            return m_nPitch - lmC4PITCH + 8;
+            return m_anPitch.ToDPitch() - lmC4_DPITCH + 8;
         case eclvDo5 :
-            return m_nPitch - lmC4PITCH + 10;
+            return m_anPitch.ToDPitch() - lmC4_DPITCH + 10;
         default:
             // no key, assume eclvSol
-            return m_nPitch - lmC4PITCH;
+            return m_anPitch.ToDPitch() - lmC4_DPITCH;
     }
 }
 
+const EAccidentals  lmNote::ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const
+{
+    //Current context accidentals for considered step is nCurContextAcc.
+    //Note has nNewAcc. This method computes the accidentals to display so that
+    //sound has nNewAcc
 
-lmPitch lmNote::GetDiatonicPitch()
-{ 
-    if (IsPitchDefined())
-        return m_nPitch;
-    else
-        return lmC4PITCH;
+    EAccidentals nDisplayAcc;
+    if (nNewAcc == nCurContextAcc)
+        nDisplayAcc = eNoAccidentals;
+    else if (nNewAcc == 1 && nCurContextAcc == 2)
+        nDisplayAcc = eNaturalSharp;
+    else if (nNewAcc == -1 && nCurContextAcc == -2)
+        nDisplayAcc = eNaturalFlat;
+    else if (nNewAcc == 2)
+        nDisplayAcc = eDoubleSharp;
+    else if (nNewAcc == -2)
+        nDisplayAcc = eFlatFlat;
+    else if (nNewAcc == 1)
+        nDisplayAcc = eSharp;
+    else if (nNewAcc == -1)
+        nDisplayAcc = eFlat;
+    else {
+        wxLogMessage(_T("[lmNote::ComputeAccidentalsToDisplay] Non prgrammed case: nNewAcc=%d, nCurContextAcc=%d"),
+            nNewAcc, nCurContextAcc );
+        wxASSERT(false);
+    }
+    return nDisplayAcc;
+
 }
 
-lmPitch lmNote::GetMidiPitch()
+lmDPitch lmNote::GetDPitch()
 { 
     if (IsPitchDefined())
-        return m_nMidiPitch;
+        return m_anPitch.ToDPitch();
+    else
+        return lmC4_DPITCH;
+}
+
+lmMPitch lmNote::GetMPitch()
+{ 
+    if (IsPitchDefined())
+        return m_anPitch.GetMPitch();
     else
         return 60;      // C4 midi key
 }
 
 bool lmNote::IsPitchDefined()
 {
-    return (m_nPitch != -1);
+    return (m_anPitch.ToDPitch() != -1);
 }
 
-lmNotePitch lmNote::GetPitch()
+void lmNote::ChangePitch(lmAPitch nPitch, bool fRemoveTies)
 {
-    return lmGET_PITCH(m_nStep, m_nOctave, m_nAlter);
+    // This method changes the note pitch. If the note is tied, changing its pitch
+    // will create inconsistencies. To avoid this flag 'fRemoveTies' is used.
+    // If the note is tied and flag is true, ties will be removed. If flag is false
+    // pitch change will be propagated to all tied notes.
+
+    ChangePitch(nPitch.Step(), nPitch.Octave(), nPitch.Accidentals(), fRemoveTies);
 }
 
-void lmNote::ChangePitch(lmNotePitch nPitch)
+void lmNote::ChangePitch(int nStep, int nOctave, int nAlter, bool fRemoveTies)
 {
-    int nStep = lmGET_STEP(nPitch);
-    int nOctave = lmGET_OCTAVE(nPitch);
-    int nAlter = lmGET_ALTER(nPitch);
-    ChangePitch(nStep, nOctave, nAlter);
+    // This method changes the note pitch. If the note is tied, changing its pitch
+    // will create inconsistencies. To avoid this flag 'fRemoveTies' is used.
+    // If the note is tied and flag is true, ties will be removed. If flag is false
+    // pitch change will be propagated to all tied notes.
+
+    DoChangePitch(nStep, nOctave, nAlter);
+    
+    // If the note is tied either remove ties or propagate pitch change
+    if (m_pTiePrev) {
+        if (fRemoveTies) {
+            m_pTiePrev->Remove(this);
+            delete m_pTiePrev;
+            m_pTiePrev = (lmTie*)NULL;
+        }
+        else {
+            m_pTiePrev->PropagateNotePitchChange(this, nStep, nOctave, nAlter, lmBACKWARDS);
+        }
+    }
+    if (m_pTieNext) {
+        if (fRemoveTies) {
+            m_pTieNext->Remove(this);
+            delete m_pTieNext;
+            m_pTieNext = (lmTie*)NULL;
+        }
+        else {
+            m_pTieNext->PropagateNotePitchChange(this, nStep, nOctave, nAlter, lmFORWARDS);
+        }
+    }
+
 }
 
-void lmNote::ChangePitch(int nStep, int nOctave, int nAlter)
+void lmNote::DoChangePitch(int nStep, int nOctave, int nAlter)
 {
-    //update context with alterations
-    //TODO ?
+    // This method changes the note pitch. It does not take care of tied notes
 
-    //store all pitch related information
-    m_nStep = nStep;
-    m_nOctave = nOctave;
-    m_nAlter = nAlter;
-    m_nPitch = StepAndOctaveToPitch(m_nStep, m_nOctave);
-    m_nMidiPitch = PitchToMidi(m_nPitch, m_nAlter);
+    //Update context and displayed accidentals
+    int nCurAcc = m_pContext->GetAccidentals(nStep);
+    if (nCurAcc == nAlter) {
+        //Accidentals already included. Remove any possible displayed accidental
+        if (m_pAccidentals) {
+            delete m_pAccidentals;
+            m_pAccidentals = (lmAccidental*)NULL;
+        }
+    }
+    else {
+        // need to add/change displayed accidentals
+        if (m_pAccidentals) delete m_pAccidentals;
+        EAccidentals nNewAcc = ComputeAccidentalsToDisplay(nCurAcc, nAlter);
+        m_pAccidentals = new lmAccidental(this, nNewAcc);
+        // update context
+        m_pVStaff->UpdateContext(this, GetStaffNum(), nStep, nAlter, m_pContext);
+    }
 
+    //update all pitch related information
+    m_anPitch.Set(nStep, nOctave, nAlter);
     SetUpStemDirection();
+
+}
+
+void lmNote::PropagateNotePitchChange(int nStep, int nOctave, int nAlter, bool fForward)
+{
+    //change note pitch
+    DoChangePitch(nStep, nOctave, nAlter);
+
+    // If the note is tied propagate pitch change
+    if (m_pTiePrev && !fForward) {
+        m_pTiePrev->PropagateNotePitchChange(this, nStep, nOctave, nAlter, lmBACKWARDS);
+    }
+    if (m_pTieNext && fForward) {
+        m_pTieNext->PropagateNotePitchChange(this, nStep, nOctave, nAlter, lmFORWARDS);
+    }
 
 }
 
@@ -1454,8 +1552,8 @@ wxString lmNote::Dump()
 {
     wxString sDump;
     sDump = wxString::Format(
-        _T("%d\tNote\tType=%d, Pitch=%d, MidiPitch=%d, Volume=%d, PosOnStaff=%d, Step=%d, Alter=%d, TimePos=%.2f, rDuration=%.2f, StemType=%d"),
-        m_nId, m_nNoteType, m_nPitch, m_nMidiPitch, m_nVolume, GetPosOnStaff(), m_nStep, m_nAlter, m_rTimePos, m_rDuration,
+        _T("%d\tNote\tType=%d, Pitch=%s, Midi=%d, Volume=%d, PosOnStaff=%d, TimePos=%.2f, rDuration=%.2f, StemType=%d"),
+        m_nId, m_nNoteType, m_anPitch.LDPName().c_str(), m_anPitch.GetMPitch(), m_nVolume, GetPosOnStaff(), m_rTimePos, m_rDuration,
         m_nStemType);
     if (m_pTieNext) sDump += _T(", TiedNext");
     if (m_pTiePrev) sDump += _T(", TiedPrev");
@@ -1508,7 +1606,7 @@ wxString lmNote::SourceLDP()
     wxString sSource = _T("         (n ");
     //(fInChord ? _T("            (NA "), _T("            (N "));
     if (IsPitchDefined())
-        sSource += MIDINoteToLDPPattern(PitchToMidi(m_nPitch,0), earmDo, (lmPitch*)NULL);
+        sSource += m_anPitch.LDPName();
     else
         sSource += _T("*");
 
@@ -1562,7 +1660,7 @@ wxString lmNote::SourceXML()
 {
     wxString sSource = _T("TODO: lmNote XML Source code generation methods");
     return sSource;
-//    sPitch = GetNombreSajon(m_nPitch)
+//    sPitch = GetNombreSajon(m_anPitch.ToDPitch())
 //
 //    sFuente = "            <note>" & sCrLf
 //    sFuente = sFuente & "                <pitch>" & sCrLf
@@ -1589,13 +1687,9 @@ lmChord* lmNote::StartChord()
 }
 
 //devuelve true si esta nota puede estar ligada con otra cuyos valores se reciben como argumentos
-bool lmNote::CanBeTied(lmPitch nMidiPitch, int nStep)
+bool lmNote::CanBeTied(lmAPitch anPitch)
 {
-    //wxLogMessage(wxString::Format(
-    //    _T("[lmNote::CanBeTied(%d, %d): m_nMidiPitch=%d, m_nStep=%d"),
-    //    nMidiPitch, nStep, m_nMidiPitch, m_nStep));
-    if (nMidiPitch != m_nMidiPitch || nStep != m_nStep) return false;
-    return true;    // can be tied
+    return (anPitch == m_anPitch);
 }
 
 
@@ -1642,48 +1736,7 @@ lmScoreObj* lmNote::FindSelectableObject(lmUPoint& pt)
 //    See AuxString.cpp for details about note pitch encoding
 //==========================================================================================
 
-lmPitch StepAndOctaveToPitch(int nStep, int nOctave)
-{
-    return (nStep + 1) + (7 * nOctave);
-}
-
-// DPitchToMPitch -> PitchToMidi
-lmPitch PitchToMidi(lmPitch nPitch, int nAlter)
-{
-    int nOctave = ((nPitch - 1) / 7) + 1;
-    wxASSERT(lmC4PITCH == 29);    //AWARE It's assumed that we start in C0
-    lmPitch nMidi = (lmPitch)(nOctave * 12);
-
-    switch(nPitch % 7)
-    {
-        case 0:  //si
-            nMidi = nMidi + 11;
-            break;
-        case 1:  //do
-            //nada. valor correcto
-            break;
-        case 2:  //re
-            nMidi = nMidi + 2;
-            break;
-        case 3:  //mi
-            nMidi = nMidi + 4;
-            break;
-        case 4:  //fa
-            nMidi = nMidi + 5;
-            break;
-        case 5:  //sol
-            nMidi = nMidi + 7;
-            break;
-        case 6:  //la
-            nMidi = nMidi + 9;
-            break;
-    }
-
-    return nMidi + nAlter;
-
-}
-
-wxString MIDINoteToLDPPattern(lmPitch nPitchMIDI, EKeySignatures nTonalidad, lmPitch* pPitch)
+wxString MIDINoteToLDPPattern(lmMPitch nPitchMIDI, EKeySignatures nTonalidad, lmDPitch* pPitch)
 {
     /*
     Returns the LDP pattern (accidentals, note name and octave) representing the MIDI pitch
@@ -1815,29 +1868,29 @@ wxString MIDINoteToLDPPattern(lmPitch nPitchMIDI, EKeySignatures nTonalidad, lmP
 
     int i = 3 * nResto + 1;
     long nShift;
-    wxString sShift = sDisplcm.Mid(i-1, 1);
+    wxString sShift = sDisplcm.substr(i-1, 1);
     if (sShift == _T("-"))
-        sShift = sDisplcm.Mid(i-1, 2);
+        sShift = sDisplcm.substr(i-1, 2);
     bool fOK = sShift.ToLong(&nShift);
     wxASSERT(fOK);
 
     if (pPitch)    // if requested, return the diatonic pitch
-        *pPitch = (lmPitch)(nOctave * 7 + 1) + (lmPitch)nShift;
+        *pPitch = (lmDPitch)(nOctave * 7 + 1) + (lmDPitch)nShift;
 
     if (nShift == -1)
         nOctave--;
     else if (nShift == 7)
         nOctave++;
     wxString sOctave = wxString::Format(_T("%d"), nOctave);
-    wxString sAnswer = sPattern.Mid(i, 2);        // alterations
+    wxString sAnswer = sPattern.substr(i, 2);        // alterations
     sAnswer.Trim();
-    sAnswer += sPattern.Mid(i-1, 1);            // note name
+    sAnswer += sPattern.substr(i-1, 1);            // note name
     sAnswer += sOctave;                            // octave
     return sAnswer;
 
 }
 
-wxString GetNoteNamePhysicists(lmPitch nPitch)
+wxString GetNoteNamePhysicists(lmDPitch nPitch)
 {
     // Returns the note name and octave in the physics namespace
 

@@ -40,43 +40,45 @@
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;
 
-typedef struct lmScaleDataStruct {
-    bool fFromRootNote;
-    wxString sIntervals;
-} lmScaleData;
+typedef struct lmScaleInfoStruct {
+    int nNumNotes;
+    lmFIntval nInterval[lmNOTES_IN_SCALE];
+} lmScaleInfo;
+
 
 static wxString m_sScaleName[est_Max];
 static bool m_fStringsInitialized = false;
 
-//! @aware Array indexes are in correspondence with enum EScaleType
-// - intervals are from root note if flag is 'true'. Otherwise,
-//   if flag is 'false', intervals are from previous note
-//
-static const lmScaleData tData[est_Max] = {
+// AWARE: Array indexes are in correspondence with enum EScaleType
+// - intervals are from previous note
+
+#define lm_1s  -2
+static const lmScaleInfo tData[est_Max] = {
         //Major scales
-    { false, _T("M2,M2,m2,M2,M2,M2,m2,") },     //Major natural
-    { false, _T("M2,M2,m2,M2,m2,a2,m2,") },     //Major TypeII
-    { false, _T("M2,M2,m2,M2,m2,M2,M2,") },     //Major TypeIII
-    { false, _T("M2,M2,m2,M2,M2,m2,M2,") },     //Major TypeIV
+    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2} },    //Major natural
+    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_m2,lm_a2,lm_m2} },    //Major TypeII
+    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Major TypeIII
+    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Major TypeIV
         // Minor scales
-    { false, _T("M2,m2,M2,M2,m2,M2,M2,") },     //Minor Natural,
-    { false, _T("M2,m2,M2,M2,M2,m2,M2,") },     //Minor Dorian,
-    { false, _T("M2,m2,M2,M2,m2,a2,m2,") },     //Minor Harmonic,
-    { false, _T("M2,m2,M2,M2,M2,M2,m2,") },     //Minor Melodic,
-        // Greek modes
-    { false, _T("2s,2s,1s,2s,2s,2s,1s,") },     //Greek Ionian (major natural),
-    { false, _T("2s,1s,2s,2s,2s,1s,2s,") },     //Greek Dorian,
-    { false, _T("1s,2s,2s,2s,1s,2s,2s,") },     //Greek Phrygian,
-    { false, _T("2s,2s,2s,1s,2s,2s,1s,") },     //Greek Lydian,
-    { false, _T("2s,2s,1s,2s,2s,1s,2s,") },     //Greek Mixolydian,
-    { false, _T("2s,1s,2s,2s,1s,2s,2s,") },     //Greek Aeolian (minor natural),
-    { false, _T("1s,2s,2s,1s,2s,2s,2s,") },     //Greek Locrian,
+    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Minor Natural,
+    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Minor Dorian,
+    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_a2,lm_m2} },    //Minor Harmonic,
+    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_M2,lm_m2} },    //Minor Melodic,
+        // Gregorian modes
+    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2} },    //Gregorian Ionian (major natural),
+    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Gregorian Dorian,
+    { 8, { lm_m2,lm_M2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Gregorian Phrygian,
+    { 8, { lm_M2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_m2} },    //Gregorian Lydian,
+    { 8, { lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2} },    //Gregorian Mixolydian,
+    { 8, { lm_M2,lm_m2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2} },    //Gregorian Aeolian (minor natural),
+    { 8, { lm_m2,lm_M2,lm_M2,lm_m2,lm_M2,lm_M2,lm_M2} },    //Gregorian Locrian,
         // Other scales
-    { false, _T("3s,2s,2s,3s,2s,") },           //Pentatonic Minor,
-    { false, _T("2s,2s,3s,2s,3s,") },           //Pentatonic Major,
-    { false, _T("3s,2s,1s,1s,3s,2s,") },        //Blues,
-    { false, _T("2s,2s,2s,2s,2s,2s,") },        //WholeTones,
-    { false, _T("1s,1s,1s,1s,1s,1s,1s,1s,1s,1s,1s,1s,") },   //Chromatic,
+    { 6, { lm_m3,lm_M2,lm_M2,lm_m3,lm_M2} },                //Pentatonic Minor,
+    { 6, { lm_M2,lm_M2,lm_m3,lm_M2,lm_m3} },                //Pentatonic Major,
+    { 7, { lm_m3,lm_M2,lm_m2,lm_m2,lm_m3,lm_M2} },          //Blues,
+        // Non-tonal scales
+    { 7, { lm_M2,lm_M2,lm_M2,lm_M2,lm_M2,lm_M2} },          //WholeTones,
+    {12, { lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s} },       //Chromatic,
 };
 
 
@@ -87,41 +89,37 @@ static const lmScaleData tData[est_Max] = {
 lmScalesManager::lmScalesManager(wxString sRootNote, EScaleType nScaleType,
                                  EKeySignatures nKey)
 {
-//    //save parameters
+    //save parameters
     m_nType = nScaleType;
     m_nKey = nKey;
 
-    if (lmConverter::NoteToBits(sRootNote, &m_tBits[0])) {
-        wxLogMessage(_T("[lmScalesManager::lmScalesManager] Unexpected error in lmConverter::NoteToBits coversion. Note: '%s'"),
-                sRootNote.c_str() );
-        wxASSERT(false);
-    }
+    m_fpNote[0] = FPitch(sRootNote);
+
+    //for non-tonal scales, key signature is not used
+    bool fUseSharps = lmRandomGenerator::FlipCoin();
 
     //get notes that form the scale
-    int i;
     int nNumNotes = GetNumNotes();
-    for (i=1; i < nNumNotes; i++) {
-        //get the next interval
-        wxString sIntval = (tData[m_nType].sIntervals).Mid((i-1)*3, 2);
-        //compute next note
-        if (sIntval.GetChar(1) == _T('s')) {
-            //Non modal interval
-            if (tData[m_nType].fFromRootNote)
-                AddSemitonesToNote(&m_tBits[0], sIntval, m_nKey, edi_Ascending, &m_tBits[i]);
-            else
-                AddSemitonesToNote(&m_tBits[i-1], sIntval, m_nKey, edi_Ascending, &m_tBits[i]);
+    if (m_nType == est_Chromatic) 
+    {
+        for (int i=1; i < nNumNotes; i++)
+        {
+            m_fpNote[i] = FPitch_AddSemitone(m_fpNote[i-1], fUseSharps);
         }
-        else {
-            //Modal interval
-            if (tData[m_nType].fFromRootNote)
-                ComputeInterval(&m_tBits[0], sIntval, true, &m_tBits[i]);
-            else
-                ComputeInterval(&m_tBits[i-1], sIntval, true, &m_tBits[i]);
+    }
+    else if (m_nType == est_WholeTones)
+    {
+        for (int i=1; i < nNumNotes; i++)
+        {
+            m_fpNote[i] = FPitch_AddSemitone(m_fpNote[i-1], fUseSharps);
+            m_fpNote[i] = FPitch_AddSemitone(m_fpNote[i], fUseSharps);
         }
-        //wxLogMessage(_T("[lmScalesManager] Intval='%s', Note %d = %s, (Bits: Step=%d, Octave=%d, Accidentals=%d, StepSemitones=%d), key=%d"),
-        //             sIntval, i, lmConverter::NoteBitsToName(m_tBits[i],m_nKey),
-        //             m_tBits[i].nStep, m_tBits[i].nOctave, m_tBits[i].nAccidentals, m_tBits[i].nStepSemitones,
-        //             m_nKey );
+    }
+    else 
+    {
+        for (int i=1; i < nNumNotes; i++) {
+            m_fpNote[i] = m_fpNote[i-1] + tData[m_nType].nInterval[i-1];
+        }
     }
 
 }
@@ -132,14 +130,14 @@ lmScalesManager::~lmScalesManager()
 
 int lmScalesManager::GetNumNotes()
 {
-    return 1 + ((tData[m_nType].sIntervals).Length() / 3);
+    return tData[m_nType].nNumNotes;
 }
 
 wxString lmScalesManager::GetPattern(int i)
 {
-    // Returns LDP pattern for note i (0 .. m_nNumNotes-1)
+    // Returns relative LDP pattern for note i (0 .. m_nNumNotes-1)
     wxASSERT( i < GetNumNotes());
-    return lmConverter::NoteBitsToName(m_tBits[i], m_nKey);
+    return FPitch_ToRelLDPName(m_fpNote[i], m_nKey);
 
 }
 
@@ -167,14 +165,14 @@ wxString ScaleTypeToName(EScaleType nType)
         m_sScaleName[est_MinorHarmonic] = _("Minor Harmonic");
         m_sScaleName[est_MinorMelodic] = _("Minor Melodic");
 
-        // Greek scales
-        m_sScaleName[est_GreekIonian] = _("Greek Ionian");
-        m_sScaleName[est_GreekDorian] = _("Greek Dorian");
-        m_sScaleName[est_GreekPhrygian] = _("Greek Phrygian");
-        m_sScaleName[est_GreekLydian] = _("Greek Lydian");
-        m_sScaleName[est_GreekMixolydian] = _("Greek Mixolydian");
-        m_sScaleName[est_GreekAeolian] = _("Greek Aeolian");
-        m_sScaleName[est_GreekLocrian] = _("Greek Locrian");
+        // Gregorian modes
+        m_sScaleName[est_GreekIonian] = _("Ionian");
+        m_sScaleName[est_GreekDorian] = _("Dorian");
+        m_sScaleName[est_GreekPhrygian] = _("Phrygian");
+        m_sScaleName[est_GreekLydian] = _("Lydian");
+        m_sScaleName[est_GreekMixolydian] = _("Mixolydian");
+        m_sScaleName[est_GreekAeolian] = _("Aeolian");
+        m_sScaleName[est_GreekLocrian] = _("Locrian");
 
         // Other scales
         m_sScaleName[est_PentatonicMinor] = _("Pentatonic minor");
@@ -193,5 +191,21 @@ wxString ScaleTypeToName(EScaleType nType)
 int NumNotesInScale(EScaleType nType)
 {
     wxASSERT(nType < est_Max);
-    return 1 + ((tData[nType].sIntervals).Length() / 3);
+    return tData[nType].nNumNotes;
 }
+
+bool IsScaleMajor(EScaleType nType)
+{
+    return (nType <= est_LastMajor);
+}
+
+bool IsScaleMinor(EScaleType nType)
+{
+    return (nType > est_LastMajor && nType <= est_LastMinor);
+}
+
+bool IsScaleGregorian(EScaleType nType)
+{
+    return (nType > est_LastMinor && nType <= est_LastGreek);
+}
+

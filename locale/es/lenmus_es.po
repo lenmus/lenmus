@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-06-15 08:16+0100\n"
+"PO-Revision-Date: 2007-08-22 15:26+0100\n"
 "Last-Translator: \n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -250,11 +250,11 @@ msgstr "5ª disminuida"
 
 #: auxmusic/ChordManager.cpp:333
 msgid "Suspended triad (4th)"
-msgstr "4ª suspendida"
+msgstr "4ª añadida"
 
 #: auxmusic/ChordManager.cpp:334
 msgid "Suspended triad (2nd)"
-msgstr "2ª suspendida"
+msgstr "2ª añadida"
 
 #: auxmusic/ChordManager.cpp:337
 #: exercises/IdfyChordCtrol.cpp:129
@@ -1223,12 +1223,12 @@ msgstr "5ª disminuida"
 #: exercises/IdfyChordCtrol.cpp:125
 #: ../xrc/xrc_strings.cpp:247
 msgid "Suspended (4th)"
-msgstr "4ª suspendida"
+msgstr "4ª añadida"
 
 #: exercises/IdfyChordCtrol.cpp:126
 #: ../xrc/xrc_strings.cpp:248
 msgid "Suspended (2nd)"
-msgstr "2ª suspendida"
+msgstr "2ª añadida"
 
 #: exercises/IdfyChordCtrol.cpp:133
 msgid "Half dim. 7th"
@@ -1343,7 +1343,7 @@ msgstr "Menor:"
 
 #: exercises/IdfyScalesCtrol.cpp:192
 msgid "Greek scales:"
-msgstr "Modos Griegos:"
+msgstr "Modos Gregirianos:"
 
 #: exercises/IdfyScalesCtrol.cpp:196
 msgid "Other scales:"
@@ -3955,7 +3955,7 @@ msgstr "Escalas menores"
 
 #: ../xrc/xrc_strings.cpp:304
 msgid "Greek scales"
-msgstr "Modos Griegos"
+msgstr "Modos Gregorianos"
 
 #: ../xrc/xrc_strings.cpp:312
 msgid "Other scales"

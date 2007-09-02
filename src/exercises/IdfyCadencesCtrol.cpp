@@ -32,13 +32,11 @@
 
 #include "IdfyCadencesCtrol.h"
 
-#include "UrlAuxCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
 #include "../auxmusic/Conversion.h"
 
 #include "../ldp_parser/LDPParser.h"
-//#include "../auxmusic/Interval.h"
 #include "../app/DlgCfgIdfyCadence.h"
 #include "../auxmusic/ChordManager.h"
 #include "../auxmusic/Cadence.h"
@@ -80,18 +78,16 @@ END_EVENT_TABLE()
 lmIdfyCadencesCtrol::lmIdfyCadencesCtrol(wxWindow* parent, wxWindowID id,
                            lmCadencesConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
-    : lmIdfyExerciseCtrol(parent, id, pConstrains, pos, size, style )
+    : lmIdfyExerciseCtrol(parent, id, pConstrains, wxSize(400,200), pos, size, style )
 {
     //initializations
     m_pConstrains = pConstrains;
-
-    //create the controls and buttons for the answers
-    Create(400, 200);       //score ctrol size = 400x200 pixels
 
     //initializatios to allow to play cadences when clicking on answer buttons
     //TODO: Review this
     m_nKey = earmDo;
 
+    CreateControls();
     if (m_fTheoryMode) NewProblem();
 
 }
@@ -251,6 +247,14 @@ wxString lmIdfyCadencesCtrol::SetNewProblem()
 		}
 	}
 
+    //// For debugging and testing. Force to display and use the problem score for the
+    //// solution score; the tonic chord is then visible
+    //if (!m_pConstrains->IsTheoryMode()) {
+    //    delete m_pSolutionScore;
+    //    m_pSolutionScore = NULL;
+    //}
+
+
 	//compute the index for the button that corresponds to the right answer
     if (m_pConstrains->IsValidButton(lm_eCadButtonTerminal)) {
         //Terminal / transient cadences
@@ -263,8 +267,9 @@ wxString lmIdfyCadencesCtrol::SetNewProblem()
     {
         //Perfect / Plagal cadences
         m_nRespIndex = -1;      //not set
-        int iB = 0;
+        int iB = -1;
         if (m_pConstrains->IsValidButton(lm_eCadButtonPerfect)) {
+            iB++;
             if (nCadenceType >= lm_eCadPerfect && nCadenceType < lm_eCadLastPerfect)
                 m_nRespIndex = iB;
         }

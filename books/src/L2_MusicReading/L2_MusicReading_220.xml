@@ -8,7 +8,7 @@
 
 <para>In this lesson the next patterns are introduced:</para>
 
-<score width="600" height="100" border="0">
+<para><score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -17,12 +17,12 @@
            (n * n)(n * c l)(n * n)(n * c)(Barra Doble))
         (c (n * n. l)(n * c g+)(s c)(n * c g-)(Barra Final))
     </music>
-</score>
+</score></para>
 
 <part>
 <title>Listen and take notice of the differences</title>
 
-<score width="600" height="100" border="0">
+<para><score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -33,7 +33,7 @@
         (c (n * n.)(n * c g+)(s c)(n * c g-))
         (c (n * n. l)(n * c g+)(s c)(n * c g-)(Barra Final))
     </music>
-</score>
+</score></para>
 </part>
 
 <part>

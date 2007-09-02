@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<theme id="EarScales">
+<title>Scales' identification</title>
+
+<para>Exercise: Listen a scale and identify its type</para>
+
+<exercise type="IdfyScales" width="100%" height="300" border="0">
+    <control_settings>EarIdfyScale</control_settings>
+    <mode>earTraining</mode>
+</exercise>
+
+</theme>

@@ -22,7 +22,7 @@ is the fifth line:
 </para>
 
 <!-- staff with labelled lines: 1,2,..5 -->
-<score width="600" height='100' border="0">
+<para><score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -46,14 +46,14 @@ is the fifth line:
           )
         )
     </music>
-</score>
+</score></para>
 
 <para>
 The four spaces between the staff lines are also important and are also numbered from
 bottom to top:</para>
 
 <!-- staff with labelled spaces: 1,2,3,4 -->
-<score width="600" height='70' border="0">
+<para><score width="685" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>320</metronome>
@@ -76,7 +76,7 @@ bottom to top:</para>
           )
         )
     </music>
-</score>
+</score></para>
 
 <para>
 The musical symbols are placed on the staff and the music on the staff is read 
@@ -89,7 +89,7 @@ The symbols for notes are placed either on a line or on a space and the musical 
 lines/spaces have a higher pitch than those on the lower ones:
 </para>
 
-<score width="600" height='100' border="0">
+<para><score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -108,14 +108,14 @@ lines/spaces have a higher pitch than those on the lower ones:
           )
         )
     </music>
-</score>
+</score></para>
 
 <para>
 As an example, press the 'Play' link and listen to the following score:
 </para>
 
 <!-- scale to play, no key, no time signature, no other symbol, only whole notes -->
-<score width="600" height='100' border="0">
+<para><score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -143,7 +143,7 @@ As an example, press the 'Play' link and listen to the following score:
           )
         )
     </music>
-</score>
+</score></para>
 
 
 </theme>

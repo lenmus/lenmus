@@ -58,7 +58,7 @@ BEGIN_EVENT_TABLE(lmAboutDialog, wxDialog)
     EVT_BUTTON( XRCID( "btnDevelopers" ), lmAboutDialog::OnDevelopers )
     EVT_BUTTON( XRCID( "btnArtCredits" ), lmAboutDialog::OnArtCredits )
     EVT_BUTTON( XRCID( "btnSoftwareCredits" ), lmAboutDialog::OnSoftwareCredits )
-    EVT_BUTTON( XRCID( "btnTranslators" ), lmAboutDialog::OnTranslators )
+    //EVT_BUTTON( XRCID( "btnTranslators" ), lmAboutDialog::OnTranslators )
     EVT_BUTTON( XRCID( "btnBuildInfo" ), lmAboutDialog::OnBuildInfo )
 
 END_EVENT_TABLE()
@@ -121,21 +121,21 @@ void lmAboutDialog::OnPurpose(wxCommandEvent& WXUNUSED(event))
       _T("<center>")
       _T("<h3>") + _("Purpose") + _T("</h3>")
       _T("</center><p>") +
-      _("LenMus is a free program to help you in the study of music theory and ear training. \
-It is available for Windows but soon it will be also available \
+_("LenMus is a free program to help you in the study of music theory and  \
+ear training. It is available for Windows but soon it will be also available \
 for Mac OS X, Linux, and other Unix-like operating systems.") +
       _T("</p><p>") +
-      _("The LenMus Project is an open project, committed to the principles of \
+_("The LenMus Project is an open project, committed to the principles of \
 Open Source, free education, and open access to information. It has no comercial \
-purpose. It is an open workbench for working on all areas related to teaching music, \
-and music representation and management with computers. It aims at developing \
-publicly available knowledge, methods and algorithms related to all these areas and at the \
-same time provides free quality software for music students, amateurs, and \
-teachers.") +
+purpose. It is an open workbench for working on all areas related to teaching \
+music, and music representation and management with computers. It aims at \
+developing publicly available knowledge, methods and algorithms related to all \
+these areas and at the same time provides free quality software for music \
+students, amateurs, and teachers.") +
       _T("</p><p>") +
-      _("If you find a bug or have a suggestion, please contact us. \
+_("If you find a bug or have a suggestion, please contact us. \
 We depend on your feedback in order to continue to improve \
-LenMus. So please visit our website and give us your bug reports  \
+LenMus. So please visit our website and give us your bug reports \
 and feature requests. Thank you very much.") +
       _T("</p></body></html>");
 
@@ -151,12 +151,12 @@ void lmAboutDialog::OnLicense(wxCommandEvent& WXUNUSED(event))
         _T("LenMus ") + m_sVersionNumber + _T(" ") +
         _("Copyright &copy; 2002-2007 Cecilio Salmer&oacute;n.") +
         _T("</p><p>") +
-        _("This program is free software; you can redistribute it and/or modify it \
+_("This program is free software; you can redistribute it and/or modify it \
 under the terms of the GNU General Public License as published by the Free \
 Software Foundation; either version 2 of the License, or (at your option) \
 any later version.") +
         _T("</p><p>") +
-        _("This program is distributed in the hope that it will be useful, but \
+_("This program is distributed in the hope that it will be useful, but \
 WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY \
 or FITNESS FOR A PARTICULAR PURPOSE.  For more details see the GNU General \
 Public License at http://www.gnu.org/licenses/licenses.html") +
@@ -242,29 +242,29 @@ reliability and stability.") +
 
 }
 
-void lmAboutDialog::OnTranslators(wxCommandEvent& WXUNUSED(event))
-{
-    wxString sContent = m_sHeader +
-        _T("<center>")
-        _T("<h3>") + _("Translation credits") +
-        _T("</h3></center><table border='1' width='100%' cellpadding='5' cellspacing='0'>")
-        _T("<tr><td bgcolor='#7f8adc'><font color='#ffffff'><b>") +
-            _("Language") + _T("</b></font></td><td bgcolor='#7f8adc'><font color='#ffffff'><b>") +
-            _("Name") + _T("</b></font></td><td bgcolor='#7f8adc'><font color='#ffffff'><b>") +
-            _("e-mail") + _T("</b></font></td></tr>")
-        _T("<tr><td>") + _("Dutch") + _T("</td><td>Jack Van Handenhove</td>") +
-            _T("<td>jvanhan@gmail.com</td></tr>") +
-        _T("<tr><td>") + _("French") + _T("</td><td>Carlos Alarcia</td>") +
-            _T("<td>calarcia@cyltel.com</td></tr>") +
-        _T("<tr><td>") + _("Spanish") + _T("</td><td>Cecilio Salmer&oacute;n</td>") +
-            _T("<td>s.cecilio@gmail.com</td></tr>") +
-        _T("<tr><td>") + _("Turkish") + _T("</td><td>Elif &Ouml;zt&uuml;rk</td>") +
-            _T("<td>elif_ozturk23@yahoo.com</td></tr>") +
-        _T("</table></body></html>");
-
-        m_pHtmlWindow->SetPage(sContent);
-
-}
+//void lmAboutDialog::OnTranslators(wxCommandEvent& WXUNUSED(event))
+//{
+//    wxString sContent = m_sHeader +
+//        _T("<center>")
+//        _T("<h3>") + _("Translation credits") +
+//        _T("</h3></center><table border='1' width='100%' cellpadding='5' cellspacing='0'>")
+//        _T("<tr><td bgcolor='#7f8adc'><font color='#ffffff'><b>") +
+//            _("Language") + _T("</b></font></td><td bgcolor='#7f8adc'><font color='#ffffff'><b>") +
+//            _("Name") + _T("</b></font></td><td bgcolor='#7f8adc'><font color='#ffffff'><b>") +
+//            _("e-mail") + _T("</b></font></td></tr>")
+//        _T("<tr><td>") + _("Dutch") + _T("</td><td>Jack Van Handenhove</td>") +
+//            _T("<td>jvanhan@gmail.com</td></tr>") +
+//        _T("<tr><td>") + _("French") + _T("</td><td>Carlos Alarcia</td>") +
+//            _T("<td>calarcia@cyltel.com</td></tr>") +
+//        _T("<tr><td>") + _("Spanish") + _T("</td><td>Cecilio Salmer&oacute;n</td>") +
+//            _T("<td>s.cecilio@gmail.com</td></tr>") +
+//        _T("<tr><td>") + _("Turkish") + _T("</td><td>Elif &Ouml;zt&uuml;rk</td>") +
+//            _T("<td>elif_ozturk23@yahoo.com</td></tr>") +
+//        _T("</table></body></html>");
+//
+//        m_pHtmlWindow->SetPage(sContent);
+//
+//}
 
 void lmAboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
 {
@@ -288,13 +288,61 @@ void lmAboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
 {
     wxString sContent = m_sHeader +
       _T("<center>")
-      _T("<h3>") + _("Developers") + _T("</h3>")
-      _T("</center><p>") +
-      _("This program has been designed and developed by Cecilio Salmer&oacute;n. \
-If you would like to help developing this program or join the project to help in any \
+      _T("<p><font size='+2'><b>") + _("Project team") + _T("</b></font><br />")
+      + _("(alphabetical order)") +
+      _T("</p></center><p>") +
+_("This program has been designed and developed by volunteers. \
+Some of them devoted a few hours, others months or years. But all them \
+gave their time for free to the project. Thanks to all them.") + 
+    _T("</p><p>&nbsp;</p><p>") +
+    _T("<table border='0' width='100%' cellpadding='0' cellspacing='0'>")
+    _T("<tr><td colspan='3'><b>") + 
+        _("Management and programming:") + _T("</b></td></tr>")
+    _T("  <tr><td width='40px'>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
+    _T("<tr><td colspan='3'>&nbsp;</td></tr>")
+        //
+    //_T("<tr><td colspan='3'><b>") + 
+    //    _("Programmers:") + _T("</b></td></tr>")
+    //_T("  <tr><td>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
+    //_T("<tr><td colspan='3'>&nbsp;</td></tr>")
+        //
+    _T("<tr><td colspan='3'><b>") + 
+        _("Music texts and exercises:") + _T("</b></td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Marcelo G&aacute;lvez</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
+    _T("<tr><td colspan='3'>&nbsp;</td></tr>")
+        //
+    _T("<tr><td colspan='3'><b>") + 
+        _("Translation:") + _T("</b></td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("Dutch") + _T("</td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
+        _T("<td>Jack Van Handenhove</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("French") + _T("</td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
+        _T("<td>Carlos Alarcia</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("Spanish") + _T("</td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
+        _T("<td>Cecilio Salmer&oacute;n</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("Turkish") + _T("</td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
+        _T("<td>Elif &Ouml;zt&uuml;rk</td></tr>")
+    _T("<tr><td colspan='3'>&nbsp;</td></tr>")
+        //
+    _T("<tr><td colspan='3'><b>") + 
+        _("Website maintenace:") + _T("</b></td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Jack Van Handenhove</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
+    _T("<tr><td colspan='3'>&nbsp;</td></tr>")
+        //
+    _T("<tr><td colspan='3'><b>") + 
+        _("Thanks also to:") + _T("</b></td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Ana María Madorr&aacute;n</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Mar&iacute;a Jes&uacute;s Mart&iacute;nez Pascua</td></tr>")
+    _T("</table><p>&nbsp;</p><p>") +
+_("If you would like to help developing this program or join the project to help in any \
 other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and \
 leave a message in the 'contact' page. Thank you and welcome.") +
-      _T("</p></body></html>");
+    _T("</p></body></html>");
 
     m_pHtmlWindow->SetPage(sContent);
 

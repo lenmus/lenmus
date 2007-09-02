@@ -142,7 +142,7 @@ void lmIdfyScalesCtrolParms::AddParam(const wxHtmlTag& tag)
     // scan name and value
     if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
     sName = tag.GetParam(_T("NAME"));
-    sName.UpperCase();        //convert to upper case
+    sName.MakeUpper();        //convert to upper case
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
 

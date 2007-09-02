@@ -11,7 +11,7 @@
 rhythmic patterns. The first pattern we are going to study is the eighth note
 followed by an eighth rest:</para>
 
-<score width="600" height='70' border="0">
+<para><score width="685" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -24,7 +24,7 @@ followed by an eighth rest:</para>
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 <part>
 <title>Listen and take notice of the differences</title>
@@ -32,7 +32,7 @@ followed by an eighth rest:</para>
 <para>Note that this rhythm is similar to the quarter notes rhythm, but shortening 
 the notes:</para>
 
-<score width="600" height='70' border="0">
+<para><score width="685" height='70' border="0">
     <score_type>full</score_type>
     <control_play></control_play>
     <music_border>0</music_border>
@@ -49,7 +49,7 @@ the notes:</para>
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 
 </part>

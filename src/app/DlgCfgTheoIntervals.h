@@ -31,6 +31,7 @@
 #include "wx/spinctrl.h"        //to use wxSpinCtrl
 
 #include "../exercises/Constrains.h"
+#include "../exercises/TheoIntervalsConstrains.h"
 
 // class definition
 class lmDlgCfgTheoIntervals : public wxDialog {

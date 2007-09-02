@@ -87,6 +87,7 @@ enum {
 
 BEGIN_EVENT_TABLE(lmIdfyExerciseCtrol, wxWindow)
     EVT_SIZE            (lmIdfyExerciseCtrol::OnSize)
+    //EVT_PAINT           (lmIdfyExerciseCtrol::OnPaint)
 
     LM_EVT_URL_CLICK    (ID_LINK_SEE_SOURCE, lmIdfyExerciseCtrol::OnDebugShowSourceScore)
     LM_EVT_URL_CLICK    (ID_LINK_DUMP, lmIdfyExerciseCtrol::OnDebugDumpScore)
@@ -105,12 +106,13 @@ END_EVENT_TABLE()
 IMPLEMENT_CLASS(lmIdfyExerciseCtrol, wxWindow)
 
 lmIdfyExerciseCtrol::lmIdfyExerciseCtrol(wxWindow* parent, wxWindowID id, 
-                           lmIdfyConstrains* pConstrains, 
+                           lmIdfyConstrains* pConstrains, wxSize nScoreSize,
                            const wxPoint& pos, const wxSize& size, int style)
     : wxWindow(parent, id, pos, size, style )
 {
     //initializations
     SetBackgroundColour(*wxWHITE);
+    m_nScoreSize = nScoreSize;
     m_nNumButtons = 0;
     m_fQuestionAsked = false;
     m_pProblemScore = (lmScore*)NULL;
@@ -121,10 +123,26 @@ lmIdfyExerciseCtrol::lmIdfyExerciseCtrol(wxWindow* parent, wxWindowID id,
     m_fTheoryMode = m_pConstrains->IsTheoryMode();
     m_nPlayMM = 320;    //it is assumed whole notes
     m_fPlaying = false;
+    m_fControlsCreated = false;
 }
 
-void lmIdfyExerciseCtrol::Create(int nCtrolWidth, int nCtrolHeight)
+void lmIdfyExerciseCtrol::CreateControls()
 {
+    // This is an wxHtmlWidgetsCell. Therefore the window is first created (when the cell
+    // is parsed and created) and later, it is displayed (when all html parsing is finished
+    // and the html page is rendered. 
+    // There is a broblem with this: as the control is buid on a wxWindow, the window
+    // gets displayed as soon as it is created. This takes place at html parsing time,
+    // when the lmIdfyExerciseCtrol is created. This early disply causes a flicker as
+    // it is not displayed in the right position.
+    // I don't know how to solve this. I have tried to delay the control creation
+    // but without succes.
+    // TODO:
+    // Probably the best solution would be to abandom the idea of inserting wxHtmlWidgetCell
+    // for the controls and creating my own html cells. 
+    
+
+
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
     InitializeStrings();
@@ -137,7 +155,7 @@ void lmIdfyExerciseCtrol::Create(int nCtrolWidth, int nCtrolHeight)
         // settings and debug options
         //
     wxBoxSizer* pTopLineSizer = new wxBoxSizer( wxHORIZONTAL );
-    m_pMainSizer->Add(pTopLineSizer, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
+    m_pMainSizer->Add(pTopLineSizer, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 5));
 
     // settings link
     if (m_pConstrains->IncludeSettingsLink()) {
@@ -156,17 +174,17 @@ void lmIdfyExerciseCtrol::Create(int nCtrolWidth, int nCtrolHeight)
         // "See source score"
         pTopLineSizer->Add(
             new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, _("See source score") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
+            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
 
         // "Dump score"
         pTopLineSizer->Add(
             new lmUrlAuxCtrol(this, ID_LINK_DUMP, _("Dump score") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
+            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
 
         // "See MIDI events"
         pTopLineSizer->Add(
             new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, _("See MIDI events") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
+            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
     }
 
 
@@ -178,7 +196,7 @@ void lmIdfyExerciseCtrol::Create(int nCtrolWidth, int nCtrolHeight)
 
     // create score ctrl 
     m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, (lmScore*)NULL, wxDefaultPosition,
-                                        wxSize(nCtrolWidth, nCtrolHeight), eSIMPLE_BORDER);
+                                        m_nScoreSize, eSIMPLE_BORDER);
     m_pScoreCtrol->SetMargins(lmToLogicalUnits(5, lmMILLIMETERS),      //left=1cm
                               lmToLogicalUnits(5, lmMILLIMETERS),      //right=1cm
                               lmToLogicalUnits(10, lmMILLIMETERS));     //top=1cm
@@ -203,7 +221,7 @@ void lmIdfyExerciseCtrol::Create(int nCtrolWidth, int nCtrolHeight)
 
 
         //
-        //links 
+        // links 
         //
 
     wxBoxSizer* pLinksSizer = new wxBoxSizer( wxHORIZONTAL );
@@ -234,7 +252,9 @@ void lmIdfyExerciseCtrol::Create(int nCtrolWidth, int nCtrolHeight)
     //finish creation
     SetSizer( m_pMainSizer );                 // use the sizer for window layout
     m_pMainSizer->SetSizeHints( this );       // set size hints to honour minimum size
-
+        //commented out. This sentece causes to display the window but, as the html cell is
+        //being created, this causes a 'ghost' display in top left corner of the
+        //html window
 
     m_pScoreCtrol->DisplayMessage(_("Click on 'New problem' to start"), 
                                   lmToLogicalUnits(10, lmMILLIMETERS),
@@ -244,6 +264,8 @@ void lmIdfyExerciseCtrol::Create(int nCtrolWidth, int nCtrolHeight)
     m_pShowSolution->Enable(false);
 
     ReconfigureButtons();     //reconfigure buttons in accordance with constraints
+
+    m_fControlsCreated = true;
 
 }
 
@@ -390,6 +412,10 @@ void lmIdfyExerciseCtrol::NewProblem()
 {
     ResetExercise();
 
+    //prepare answer buttons and counters
+    m_pCounters->NextTeam();
+    EnableButtons(true);
+
     //set m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex, m_nPlayMM
     wxString sProblemMessage = SetNewProblem();    
 
@@ -398,13 +424,12 @@ void lmIdfyExerciseCtrol::NewProblem()
     m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
 
     //display the problem
-    m_pCounters->NextTeam();
     if (m_fTheoryMode) {
         //theory
         m_pScoreCtrol->DisplayScore(m_pProblemScore);
         m_pScoreCtrol->DisplayMessage(sProblemMessage, lmToLogicalUnits(5, lmMILLIMETERS), false);
-        EnableButtons(true);
-    } else {
+    } 
+    else {
         //ear training
         Play();
         m_pScoreCtrol->DisplayMessage(sProblemMessage, lmToLogicalUnits(5, lmMILLIMETERS), false);
@@ -533,3 +558,20 @@ void lmIdfyExerciseCtrol::DoStopSounds()
     StopSounds();       
 
 }
+
+// Repainting behaviour
+//void lmIdfyExerciseCtrol::OnPaint(wxPaintEvent& event)
+//{
+//    // In a paint event handler, the application must always create a wxPaintDC object,
+//    // even if it is not used. Otherwise, under MS Windows, refreshing for this and
+//    // other windows will go wrong.
+//    wxPaintDC dc(this);
+//
+//    if (!m_fControlsCreated) {
+//        CreateControls();
+//        OnStartingExercise();       //inform derived class that it is going to be displayed
+//    }
+//
+//    wxWindow::OnPaint(event);
+//
+//}

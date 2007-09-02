@@ -43,6 +43,7 @@ class lmLDPParser
 {
 public:
     lmLDPParser();
+    lmLDPParser(wxString sLanguage, wxString sCharset);
     ~lmLDPParser();
 
     // "Parse" methods: work on source text
@@ -107,24 +108,25 @@ private:
         A5_ExitError
     };
 
+    void        Create(const wxString& sLanguage, const wxString& sCharset);
     lmLDPNode*  LexicalAnalysis();
-    bool        AnalyzeNoteType(wxString sNoteType, ENoteType* pnNoteType, 
+    bool        AnalyzeNoteType(wxString& sNoteType, ENoteType* pnNoteType, 
                                 bool* pfDotted, bool* pfDoubleDotted);
-    int         AnalyzeNumStaff(wxString sNotation, long nNumStaves);
+    int         AnalyzeNumStaff(const wxString& sNotation, long nNumStaves);
     lmScore*    AnalyzeScoreV102(lmLDPNode* pNode);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
     bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, 
                                   lmEAlignment* pAlign, lmLocation* pPos,
                                   lmFontInfo* pFont, bool* pHasWidth);
-    bool        AnalyzeTimeExpression(wxString sData, float* pValue);
+    bool        AnalyzeTimeExpression(const wxString& sData, float* pValue);
     void        AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pStaff);
-    bool        AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent, bool fOpenAllowed,
+    bool        AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent, bool fOpenAllowed,
                               bool fCloseAllowed,
                               lmTupletBracket** pTuplet, int* pActual, int* pNormal);
     void        AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff);
 
     void Clear();
-    void FileParsingError(const wxString sMsg);
+    void FileParsingError(const wxString& sMsg);
     void PushNode(EParsingStates nPopState);
     bool PopNode();
     void Do_WaitingForStartOfElement();

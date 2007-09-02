@@ -58,7 +58,7 @@ bool lmScalesConstrains::IsValidGroup(EScaleGroup nGroup)
                 IsScaleValid( est_MinorHarmonic ) ||
                 IsScaleValid( est_MinorMelodic ) );
     }
-    else if(nGroup == esg_Greek)
+    else if(nGroup == esg_Gregorian)
     {
         return (IsScaleValid( est_GreekIonian ) ||
                 IsScaleValid( est_GreekDorian ) ||

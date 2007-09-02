@@ -66,8 +66,8 @@ public:
     //creation
     void Create(wxString sRootNote, EChordType nChordType, int nInversion,
                 EKeySignatures nKey);
-    void Create(wxString sRootNote, wxString sIntervals, EKeySignatures nKey,
-                bool fUseGrandStaff);
+    void Create(wxString sRootNote, wxString sIntervals, EKeySignatures nKey);
+    void Create(lmFPitch fpRootNote, int nNumNotes, lmFIntval nIntervals[], EKeySignatures nKey);
 
     EChordType GetChordType() { return m_nType; }
     wxString GetNameFull();
@@ -77,19 +77,16 @@ public:
     wxString GetPattern(int i);
 
     // access to note data
-    int GetStep(int i) { return m_tBits[i].nStep; }
-    int GetOctave(int i) { return m_tBits[i].nOctave; }
-    int GetAccidentals(int i) { return m_tBits[i].nAccidentals; }
-    int GetStepSemitones(int i) { return m_tBits[i].nStepSemitones; }
+    int GetStep(int i) { return FPitch_Step(m_fpNote[i]); }
+    int GetOctave(int i) { return FPitch_Octave(m_fpNote[i]); }
+    int GetAccidentals(int i) { return FPitch_Accidentals(m_fpNote[i]); }
 
 #ifdef __WXDEBUG__
     void UnitTests();
 #endif
 
 private:
-    lmMPitch GetMidiNote(lmMPitch nMidiRoot, wxString sInterval);
-    void DoCreateChord(wxString sRootNote, wxString sIntval[], int nNumIntv,
-                       bool fUseGrandStaff);
+    void DoCreateChord(lmFIntval nIntval[]);
 
 
 
@@ -97,10 +94,9 @@ private:
 
     EChordType      m_nType;
     EKeySignatures  m_nKey;
-    lmMPitch        m_ntMidi[lmNOTES_IN_CHORD];
-    lmNoteBits      m_tBits[lmNOTES_IN_CHORD];
     int             m_nInversion;
-    int             m_nNumNotes;                    // num notes in the chord
+    int             m_nNumNotes;                    //num notes in the chord
+    lmFPitch        m_fpNote[lmNOTES_IN_CHORD];     //the chord notes
 
 };
 

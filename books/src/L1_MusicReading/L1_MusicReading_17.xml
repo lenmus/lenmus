@@ -14,7 +14,7 @@ are like a quarter note with two flags added to its stem. They are usually drawn
 beamed:
 </para>
 
-<score width="600" height="70" border="0">
+<para><score width="685" height="70" border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -30,7 +30,7 @@ beamed:
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 <para>
 Two sixteenth notes equal one eighth note and four sixteenth notes equal one quarter note.
@@ -49,7 +49,7 @@ lesson we will start the study of rhythms with 16th notes. Play the following
 score and take note of the new rhythmic patterns introduced in each measure:
 </para>
 
-<score width="600" height='70' border="0">
+<para><score width="685" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -70,7 +70,7 @@ score and take note of the new rhythmic patterns introduced in each measure:
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 
 </part>

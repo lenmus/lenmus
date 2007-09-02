@@ -40,49 +40,14 @@
 //// Types used for portability and legibility
 
 //units
-#define lmLUnits    float           // lmPaper logical units.
-#define lmTenths    float           // Staff relative units.
-#define lmPixels    int             // Device units (usually pixels).  32 bits int
+typedef float lmLUnits;             // lmPaper logical units.
+typedef float lmTenths;             // Staff relative units.
+typedef int lmPixels;               // Device units (usually pixels).  32 bits int
 
-#define lmUPoint    wxRealPoint     // a point in logical units
-#define lmDPoint    wxPoint         // a point in device units
-
-
-// prefixes for variables:
-//
-//  a) standard types:
-//      p - pointer
-//      n - integer, long
-//      s - string
-//      r - real (float, double)
-//
-//  b) program specific types:
-//      u - logical units (lmLUnits)
-//      v - device units (lmPixels)
-//      ? - tenths (lmTenths)
-//      ux, uy - logical units. coordinates
-//      vx, vy - device units. coordinates
-//
+typedef wxRealPoint lmUPoint;       // a point in logical units
+typedef wxPoint lmDPoint;           // a point in device units
 
 
-
-//pitch
-#define lmPitch         int         // Midi pitch or diatonic pitch
-#define lmDPitch        int         // Diatonic pitch
-#define lmMPitch        int         // Midi pitch
-
-//// Other definitions
-
-// Pitch conversion
-#define lmC0PITCH         1        // Pitch assigned to C0
-#define lmC1PITCH         8        // Pitch assigned to C1
-#define lmC2PITCH        15        // Pitch assigned to C2
-#define lmC3PITCH        22        // Pitch assigned to C3
-#define lmC4PITCH        29        // Pitch assigned to C4
-#define lmC5PITCH        36        // Pitch assigned to C5
-#define lmC6PITCH        43        // Pitch assigned to C6
-#define lmC7PITCH        50        // Pitch assigned to C7
-#define lmC8PITCH        57        // Pitch assigned to C8
 
 
 // DC user mode
@@ -107,6 +72,257 @@ enum lmEUnits {
 extern lmLUnits lmToLogicalUnits(int nValue, lmEUnits nUnits);
 extern lmLUnits lmToLogicalUnits(double rValue, lmEUnits nUnits);
 
+
+enum EClefType
+{
+    eclvUndefined = 0,
+    eclvSol,
+    eclvFa4,
+    eclvFa3,
+    eclvDo1,
+    eclvDo2,
+    eclvDo3,
+    eclvDo4,
+    eclvPercussion,
+    // other clefs not available for exercises
+    eclvDo5,
+    eclvFa5,
+    eclvSol1,
+    eclv8Sol,       //8 above
+    eclvSol8,       //8 below
+    eclv8Fa,        //8 above
+    eclvFa8,        //8 below
+
+};
+// AWARE enum constats EClefType are going to be ramdomly generated in object
+// Generators. The next constants defines de range.
+#define lmMIN_CLEF        eclvSol
+#define lmMAX_CLEF        eclvPercussion
+// AWARE enum constats EClefType are going to be used as indexes in ClefConstrains
+
+
+enum EStemType
+{
+    eDefaultStem = 0,   //default: as decided by program
+    eStemUp,            //up: force stem up
+    eStemDown,          //down: force stem down
+    eStemNone,          //none: force no stem
+    eStemDouble         //double: force doble line. Direction as decided by program
+};
+
+// Beaming: type of beaming
+enum EBeamType {
+    eBeamNone = 0,
+    eBeamBegin,
+    eBeamContinue,
+    eBeamEnd,
+    eBeamForward,
+    eBeamBackward
+};
+
+
+
+//-----------------------------------------------------------------------------------------------
+// Note type
+// This definition of note type has the following properties:
+//
+//   a)  2 ^ (NoteType - 2)   is the number used as divider in the American English name
+//                            of the note. Examples:
+//                                crochet (quarter) = 2^(4-2) = 4
+//                                quaver (eighth) = 2^(5-2) = 8
+//   b)  2 ^ (10 - NoteType)  is the note's duration, relative to the shortest note (256th).
+//                            So the longest one (longa) last 1024 units and
+//                            the shortest one (256th, semigarrapatea) last 1 unit.
+//-----------------------------------------------------------------------------------------------
+enum ENoteType
+{
+    eLonga = 0,     // es: longa            en-UK: longa                    en-USA: long
+    eBreve,         // es: breve, cuadrada  en-UK: breve                    en-USA: double whole
+    eWhole,         // es: redonda,         en-UK: semibreve                en_USA: whole
+    eHalf,          // es: blanca,          en-UK: minim                    en_USA: half
+    eQuarter,       // es: negra,           en-UK: crochet                  en_USA: quarter
+    eEighth,        // es: corchea,         en-UK: quaver                   en_USA: eighth
+    e16th,          // es: semicorchea,     en-UK: semiquaver               en_USA: 16th
+    e32th,          // es: fusa,            en-UK: demisemiquaver           en_USA: 32nd
+    e64th,          // es: semifusa,        en-UK: hemidemisemiquaver       en_USA: 64th
+    e128th,         // es: garrapatea       en-UK: semihemidemisemiquaver   en_USA: 128th
+    e256th          // es: semigarrapatea   en-UK: ?                        en_USA: 256th
+};
+
+// to facilitate access to standard notes' duration.
+enum ENoteDuration
+{
+    eLongaDuration = 1024,
+    eBreveDottedDuration = 768,
+    eBreveDuration = 512,
+    eWholeDottedDuration = 384,
+    eWholeDuration = 256,
+    eHalfDottedDuration = 192,
+    eHalfDuration = 128,
+    eQuarterDottedDuration = 96,
+    eQuarterDuration = 64,
+    eEighthDottedDuration = 48,
+    eEighthDuration = 32,
+    e16hDottedDuration = 24,
+    e16thDuration = 16,
+    e32thDottedDuration = 12,
+    e32thDuration = 8,
+    e64thDottedDuration = 6,
+    e64thDuration = 4,
+    e128thDottedDuration = 3,
+    e128thDuration = 2,
+    e256thDuration = 1
+};
+
+
+
+// accidental signs
+enum EAccidentals
+{
+    eNoAccidentals = 0,
+    eNatural,               // es: becuadro
+    eFlat,                  // es: bemol
+    eSharp,                 // es: sostenido
+    eFlatFlat,              // es: doble bemol
+    eDoubleSharp,           // es: doble sostenido (single sign)
+    eSharpSharp,            // es: doble sostenido (two sharp signs)
+    eNaturalFlat,           // es: becuadro bemol
+    eNaturalSharp,          // es: becuadro sostenido
+    eQuarterFlat,
+    eQuarterSharp,
+    eThreeQuartersFlat,
+    eThreeQuartersSharp
+};
+
+//! key signatures
+enum EKeySignatures
+{
+    earmDo = 0,
+    earmSol,
+    earmRe,
+    earmLa,
+    earmMi,
+    earmSi,
+    earmFas,
+    earmDos,
+    earmDob,
+    earmSolb,
+    earmReb,
+    earmLab,
+    earmMib,
+    earmSib,
+    earmFa,
+    //AWARE minor keys must go after major keys. This is exploited in IsMajor() global
+    //function
+    earmLam,
+    earmMim,
+    earmSim,
+    earmFasm,
+    earmDosm,
+    earmSolsm,
+    earmResm,
+    earmLasm,
+    earmLabm,
+    earmMibm,
+    earmSibm,
+    earmFam,
+    earmDom,
+    earmSolm,
+    earmRem
+};
+// AWARE enum constats EKeySignatures are going to be ramdomly generated in object
+// Generators. The next constant defines de maximum and minimum values.
+#define lmMIN_KEY  earmDo
+#define lmMAX_KEY  earmRem
+#define lmNUM_KEYS lmMAX_KEY - lmMIN_KEY + 1
+// AWARE names for key signatures are defined in object lmKeySignature. There is an
+// array, named sKeySignatureName, and the key signatures names are defined
+// assuming a predefined order in the enum EKeySignatures
+// AWARE items 'earmDo' to 'earmFa' are used as indexes in DlgCfgEarIntervals.
+//  'earmDo' must be 0 and consecutive orden must be kept.
+
+
+//! TimeSignatureType indicates the signature encoding being used
+enum ETimeSignatureType
+{
+    eTS_Normal = 1,        // it is a single fraction
+    eTS_Common,            // it is 4/4 but represented by a C symbol
+    eTS_Cut,            // it is 2/4 but represented by a C/ simbol
+    eTS_SingleNumber,    // it is a single number with an implied denominator
+    eTS_Multiple,        // multiple fractions, i.e.: 2/4 + 3/8
+    eTS_Composite,        // composite fraction, i.e.: 3+2/8
+    eTS_SenzaMisura        // no time signature is present
+};
+
+enum ETimeSignature
+{
+    emtr24 = 1,  //  2/4
+    emtr34,      //  3/4
+    emtr44,      //  4/4
+    emtr68,      //  6/8
+    emtr98,      //  9/8
+    emtr128,     // 12/8
+    emtr28,      //  2/8
+    emtr38,      //  3/8
+    emtr22,      //  2/2
+    emtr32,      //  3/2
+};
+// AWARE enum constats ETimeSignature are going to be ramdomly generated in object
+// Generators. The next constant defines de maximum and minimum values.
+#define lmMIN_TIME_SIGN  emtr24
+#define lmMAX_TIME_SIGN  emtr32
+
+
+// note/rest position on a measure
+#define lmUNKNOWN_BEAT  -2      //unknown (possibly, time signature is not set)
+#define lmOFF_BEAT      -1      //off-beat
+
+
+enum ETies
+{
+    eL_NotTied = 0,
+    eL_Tied
+};
+
+// Placement indicates whether something is above or below another element,
+// such as a note or a notation.
+enum lmEPlacement
+{
+    ep_Default = 0,
+    ep_Above,
+    ep_Below
+};
+
+//noteheads
+enum ENoteHeads
+{
+    enh_Longa = 1,
+    enh_Breve,
+    enh_Whole,              //Whole note (redonda)
+    enh_Half,               //Half note (blanca)
+    enh_Quarter,            //Quarter note (negra)
+    enh_Cross               //Cross (for percussion) (aspa)
+};
+
+// pitch type
+enum lmEPitchType
+{
+    lm_ePitchAbsolute = 0,  // absolute pitch (MusicXML style), equal temperament tuning system
+    lm_ePitchRelative,      // relative pitch (LDP style), equal temperament tuning system
+    lm_ePitchNotDefined,    // pitch value is not yet defined
+};
+
+// barlines
+enum EBarline
+{
+    etb_SimpleBarline = 1,          //thin line
+    etb_DoubleBarline,              //two thin lines
+    etb_EndBarline,                 //thin-thick lines
+    etb_StartRepetitionBarline,     //thick-thin-two dots
+    etb_EndRepetitionBarline,       //two dots-thin-thick
+    etb_StartBarline,               //thick-thin
+    etb_DoubleRepetitionBarline     //two dots-thin-thin-two dots
+};
 
 
 //-------------------------------------------------------------------------------------
@@ -344,66 +560,6 @@ public:
 
 #define lmUSizeToSize(uSize) \
         wxSize((int)floor(uSize.x + 0.5), (int)floor(uSize.y + 0.5))
-
-
-
-
-//====================================================================================
-// Pitch
-//  Absoulte pitch is defined by the note step (0..6, 0=C, 1=D, ..., 6=B), the 
-//  octave (0..9) and the number of accidentals (-2..+2)
-//====================================================================================
-
-enum
-{
-    //octave: 8 bits (0x000000ff)
-    lmOCTAVE_MASK       = 0x000000ff,   // to extract octave
-
-    lmOCTAVE_0          = 0x00000000,
-    lmOCTAVE_1          = 0x00000001,
-    lmOCTAVE_2          = 0x00000002,
-    lmOCTAVE_3          = 0x00000003,
-    lmOCTAVE_4          = 0x00000004,
-    lmOCTAVE_5          = 0x00000005,
-    lmOCTAVE_6          = 0x00000006,
-    lmOCTAVE_7          = 0x00000007,
-    lmOCTAVE_8          = 0x00000008,
-    lmOCTAVE_9          = 0x00000009,
-
-    // step (diatonic note): 8 bits (0x0000ff00) 0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
-    lmC_NOTE            = 0x00000000,
-    lmD_NOTE            = 0x00000100,
-    lmE_NOTE            = 0x00000200,
-    lmF_NOTE            = 0x00000300,
-    lmG_NOTE            = 0x00000400,
-    lmA_NOTE            = 0x00000500,
-    lmB_NOTE            = 0x00000600,
-
-    lmNOTE_MASK         = 0x00000f00,   // to extract note
-
-    //accidentals: 8 bits (number of accidentals + 2)
-    lmFLAT_FLAT         = 0x00000000,   // 0 - 2 = -2
-    lmFLAT              = 0x00010000,   // 1 - 2 = -1
-    lmNO_ACCIDENTAL     = 0x00020000,   // 2 - 2 = 0
-    lmSHARP             = 0x00030000,   // 3 - 2 = +1
-    lmSHARP_SHARP       = 0x00040000,   // 4 - 2 = +2
-
-    lmACCIDENTAL_MASK   = 0x00ff0000,   // to extract accidentals
-
-    lmNO_NOTE           = 0x00000000,
-
-};
-
-#define lmNotePitch  long    //Type used for portability and legibility
-
-// Pitch components extraction
-#define lmGET_STEP(nPitch)      ((nPitch & lmNOTE_MASK) >> 8)
-#define lmGET_OCTAVE(nPitch)    (nPitch & lmOCTAVE_MASK)
-#define lmGET_ALTER(nPitch)     (((nPitch & lmACCIDENTAL_MASK) >> 16) - 2)
-
-#define lmGET_PITCH(nStep, nOctave, nAlter)             \
-            (nOctave | (nStep << 8) | ((nAlter + 2) << 16))
-        
 
 
 

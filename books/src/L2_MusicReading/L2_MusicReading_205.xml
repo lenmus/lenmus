@@ -10,7 +10,7 @@
 One 8th note tied to group of one 8th and two 16th notes.
 Note that this new pattern can be written in two different ways:</para>
 
-<score width="600" height="100" border="0">
+<para><score width="600" height="100" border="0">
     <score_type>short</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -18,14 +18,14 @@ Note that this new pattern can be written in two different ways:</para>
         (Metrica 2 4)(n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Doble))
         (c (n a4 c)(n a4 n)(n a4 s g+)(n a4 s g-)(Barra Final))
     </music>
-</score>
+</score></para>
 
 <part>
 <title>Listen and take notice of the differences</title>
 
 <para>Listen to each measure and pay attention to the newly introduced patterns:</para>
 
-<score width="600" height="100" border="0">
+<para><score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -34,7 +34,7 @@ Note that this new pattern can be written in two different ways:</para>
         (c (n a4 c g+)(n a4 c g-)(n a4 c g+)(n a4 s)(n a4 s g-) )
         (c (n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Final))
     </music>
-</score>
+</score></para>
 
 </part>
 

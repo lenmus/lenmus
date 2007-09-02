@@ -41,37 +41,37 @@
 extern lmLogger* g_pLogger;
 
 
-typedef struct lmChordDataStruct {
+typedef struct lmChordInfoStruct {
     int nNumNotes;
-    wxString sIntervals[3];
-} lmChordData;
+    lmFIntval nIntervals[3];
+} lmChordInfo;
 
 static wxString m_sChordName[ect_Max];
 static bool m_fStringsInitialized = false;
 
-//! @aware Array indexes are in correspondence with enum EChordType
+// AWARE: Array indexes are in correspondence with enum EChordType
 // - intervals are from root note
 //      number + type:   m=minor, M=major, p=perfect, a=augmented, d=diminished
-static lmChordData tData[ect_Max] = {
-    { 3, { _T("M3"), _T("p5"), _T("") }},        //MT        - MajorTriad
-    { 3, { _T("m3"), _T("p5"), _T("") }},        //mT        - MinorTriad
-    { 3, { _T("M3"), _T("a5"), _T("") }},        //aT        - AugTriad
-    { 3, { _T("m3"), _T("d5"), _T("") }},        //dT        - DimTriad
-    { 3, { _T("p4"), _T("p5"), _T("") }},        //I,IV,V    - Suspended_4th
-    { 3, { _T("M2"), _T("p5"), _T("") }},        //I,II,V    - Suspended_2nd
-    { 4, { _T("M3"), _T("p5"), _T("M7") }},      //MT + M7   - MajorSeventh
-    { 4, { _T("M3"), _T("p5"), _T("m7") }},      //MT + m7   - DominantSeventh
-    { 4, { _T("m3"), _T("p5"), _T("m7") }},      //mT + m7   - MinorSeventh
-    { 4, { _T("m3"), _T("d5"), _T("d7") }},      //dT + d7   - DimSeventh
-    { 4, { _T("m3"), _T("d5"), _T("m7") }},      //dT + m7   - HalfDimSeventh
-    { 4, { _T("M3"), _T("a5"), _T("M7") }},      //aT + M7   - AugMajorSeventh
-    { 4, { _T("M3"), _T("a5"), _T("m7") }},      //aT + m7   - AugSeventh
-    { 4, { _T("m3"), _T("p5"), _T("M7") }},      //mT + M7   - MinorMajorSeventh
-    { 4, { _T("M3"), _T("p5"), _T("M6") }},      //MT + M6   - MajorSixth
-    { 4, { _T("m3"), _T("p5"), _T("M6") }},      //mT + M6   - MinorSixth
-    { 3, { _T("M3"), _T("a4"), _T("a6") }},      //          - AugSixth
+#define lmNIL   lmNULL_FIntval
+static lmChordInfo tData[ect_Max] = {
+    { 3, { lm_M3, lm_p5, lmNIL }},      //MT        - MajorTriad
+    { 3, { lm_m3, lm_p5, lmNIL }},      //mT        - MinorTriad
+    { 3, { lm_M3, lm_a5, lmNIL }},      //aT        - AugTriad
+    { 3, { lm_m3, lm_d5, lmNIL }},      //dT        - DimTriad
+    { 3, { lm_p4, lm_p5, lmNIL }},      //I,IV,V    - Suspended_4th
+    { 3, { lm_M2, lm_p5, lmNIL }},      //I,II,V    - Suspended_2nd
+    { 4, { lm_M3, lm_p5, lm_M7 }},      //MT + M7   - MajorSeventh
+    { 4, { lm_M3, lm_p5, lm_m7 }},      //MT + m7   - DominantSeventh
+    { 4, { lm_m3, lm_p5, lm_m7 }},      //mT + m7   - MinorSeventh
+    { 4, { lm_m3, lm_d5, lm_d7 }},      //dT + d7   - DimSeventh
+    { 4, { lm_m3, lm_d5, lm_m7 }},      //dT + m7   - HalfDimSeventh
+    { 4, { lm_M3, lm_a5, lm_M7 }},      //aT + M7   - AugMajorSeventh
+    { 4, { lm_M3, lm_a5, lm_m7 }},      //aT + m7   - AugSeventh
+    { 4, { lm_m3, lm_p5, lm_M7 }},      //mT + M7   - MinorMajorSeventh
+    { 4, { lm_M3, lm_p5, lm_M6 }},      //MT + M6   - MajorSixth
+    { 4, { lm_m3, lm_p5, lm_M6 }},      //mT + M6   - MinorSixth
+    { 3, { lm_M3, lm_a4, lm_a6 }},      //          - AugSixth
 };
-
 
 //-------------------------------------------------------------------------------------
 // Implementation of lmChordManager class
@@ -101,114 +101,124 @@ void lmChordManager::Create(wxString sRootNote, EChordType nChordType,
     m_nInversion = nInversion;
 
     // Create root note data
-    if (lmConverter::NoteToBits(sRootNote, &m_tBits[0])) {
-        wxLogMessage(_T("[lmChordManager::Crate] Unexpected error in lmConverter::NoteToBits coversion. Note: '%s'"),
-                sRootNote.c_str() );
-        wxASSERT(false);
-    }
+    m_fpNote[0] = FPitch(sRootNote);
 
     //get the intervals that form the chord
-    wxString sIntval[3], sNewIntv[3];
-    sIntval[0] = tData[m_nType].sIntervals[0];
-    sIntval[1] = tData[m_nType].sIntervals[1];
-    sIntval[2] = tData[m_nType].sIntervals[2];
+    lmFIntval nIntval[3], nNewIntv[3];
+    nIntval[0] = (lmFIntval)tData[m_nType].nIntervals[0];
+    nIntval[1] = (lmFIntval)tData[m_nType].nIntervals[1];
+    nIntval[2] = (lmFIntval)tData[m_nType].nIntervals[2];
 
     //correction for inversions
     if (m_nInversion == 1)
     {
-        sNewIntv[0] = SubstractIntervals( sIntval[1], sIntval[0] );
+        nNewIntv[0] = nIntval[1] - nIntval[0];
 
-        if (sIntval[2] == _T("")) {
-            sNewIntv[1] = InvertInterval( sIntval[0] );
-            sNewIntv[2] = _T("");
+        if (nIntval[2] == lmNIL) {
+            nNewIntv[1] = lm_p8 - nIntval[0];   //invert the interval
+            nNewIntv[2] = lmNIL;
         }
         else {
-            sNewIntv[1] = SubstractIntervals( sIntval[2], sIntval[0] );
-            sNewIntv[2] = InvertInterval( sIntval[0] );
+            nNewIntv[1] = nIntval[2] - nIntval[0];
+            nNewIntv[2] = lm_p8 - nIntval[0];   //invert the interval
         }
     }
     else if (m_nInversion == 2)
     {
-        if (sIntval[2] == _T("")) {
-            sNewIntv[0] = InvertInterval( sIntval[1] );
-            sNewIntv[1] = InvertInterval( sIntval[0] );
-            sNewIntv[2] = _T("");
+        if (nIntval[2] == lmNIL) {
+            nNewIntv[0] = lm_p8 - nIntval[1];   //invert the interval
+            nNewIntv[1] = lm_p8 - nIntval[0];   //invert the interval
+            nNewIntv[2] = lmNIL;
         }
         else {
-            sNewIntv[0] = SubstractIntervals( sIntval[2], sIntval[1] );
-            sNewIntv[1] = InvertInterval( sIntval[1] );
-            sNewIntv[2] = InvertInterval( sIntval[0] );
+            nNewIntv[0] = nIntval[2] - nIntval[1];
+            nNewIntv[1] = lm_p8 - nIntval[1];   //invert the interval
+            nNewIntv[2] = lm_p8 - nIntval[0];   //invert the interval
         }
     }
     else if (m_nInversion == 3)
     {
-        sNewIntv[0] = SubstractIntervals( _T("p8"), sIntval[2] );
-        sNewIntv[1] = AddIntervals( sNewIntv[0], sIntval[0] );
-        sNewIntv[2] = AddIntervals( sNewIntv[0], sIntval[1] );
+        nNewIntv[0] = lm_p8 - nIntval[2];   //invert the interval
+        nNewIntv[1] = nNewIntv[0] + nIntval[0];
+        nNewIntv[2] = nNewIntv[0] + nIntval[1];
     }
     if (m_nInversion != 0) {
-        sIntval[0] = sNewIntv[0];
-        sIntval[1] = sNewIntv[1];
-        sIntval[2] = sNewIntv[2];
+        nIntval[0] = nNewIntv[0];
+        nIntval[1] = nNewIntv[1];
+        nIntval[2] = nNewIntv[2];
     }
 
-    DoCreateChord(sRootNote, sIntval, tData[m_nType].nNumNotes, false);
+    m_nNumNotes = tData[m_nType].nNumNotes;
+    DoCreateChord(nIntval);
 
 }
 
-void lmChordManager::Create(wxString sRootNote, wxString sIntervals, EKeySignatures nKey,
-                            bool fUseGrandStaff)
+void lmChordManager::Create(lmFPitch fpRootNote, int nNumNotes, lmFIntval nIntervals[], EKeySignatures nKey)
+{
+    // save data
+    m_nKey = nKey;
+    m_nNumNotes = nNumNotes;
+    m_fpNote[0] = fpRootNote;
+
+    DoCreateChord(nIntervals);
+}
+
+
+void lmChordManager::Create(wxString sRootNote, wxString sIntervals, EKeySignatures nKey)
 {
     // save data
     m_nKey = nKey;
 
-    wxString sIntval[lmNOTES_IN_CHORD];
-    int iT = 0;                 //index to interval
+    // prepare root note
+    m_fpNote[0] = FPitch(sRootNote);
 
     // extract intervals
+    lmFIntval nIntval[lmNOTES_IN_CHORD];
+    int iT = 0;                 //index to interval
+
     int nSize = (int)sIntervals.length();
     int iStart = 0;
     int iEnd = sIntervals.find(_T(','), iStart);
-    while (iEnd != (int)wxStringBase::npos && iT < lmNOTES_IN_CHORD) {
-        sIntval[iT++] = sIntervals.substr(iStart, iEnd-iStart);
+    while (iEnd != (int)wxStringBase::npos && iT < lmNOTES_IN_CHORD-1)
+    {
+        wxString sIntval = sIntervals.substr(iStart, iEnd-iStart);
+        // If first interval is "#" or "b" it refers to the root note
+        if (iStart==0 && (sIntval == _T("#") || sIntval == _T("b")))
+        {
+            // modify root pitch
+            if (sIntval == _T("#"))
+                m_fpNote[0]++;
+            else
+                m_fpNote[0]--;
+        }
+        else
+        {
+            // convert interval name to value
+            nIntval[iT++] = FIntval(sIntval);
+        }
+
+        // advance pointers
         iStart = iEnd + 1;
         if (iStart >= nSize) break;
         iEnd = sIntervals.find(_T(','), iStart);
-    }
-    if (iT < lmNOTES_IN_CHORD)
-        sIntval[iT++] = sIntervals.substr(iStart);
 
-    DoCreateChord(sRootNote, sIntval, iT+1, fUseGrandStaff);
+    }
+    if (iT < lmNOTES_IN_CHORD-1) {
+        wxString sIntval = sIntervals.substr(iStart);
+        nIntval[iT++] = FIntval(sIntval);
+    }
+
+    m_nNumNotes = iT+1;     //num notes = nim.intervals + 1
+
+    DoCreateChord(nIntval);
 
 }
 
-void lmChordManager::DoCreateChord(wxString sRootNote, wxString sIntval[], int nNumNotes,
-                                   bool fUseGrandStaff)
+void lmChordManager::DoCreateChord(lmFIntval nIntval[])
 {
-	//TODO: deal with accidentals in root position
-
-    // save data
-    m_nNumNotes = nNumNotes;
-
-    // Create root note data
-    if (lmConverter::NoteToBits(sRootNote, &m_tBits[0])) {
-        wxLogMessage(_T("[lmChordManager::DoCreateChord] Unexpected error in lmConverter::NoteToBits coversion. Note: '%s'"),
-                sRootNote.c_str() );
-        wxASSERT(false);
-    }
-
-    //if use Grand Staff duplicate the root note
-    int iT = 1;
-    int iRef = 0;               //note to use as reference to add intervals
-    if (fUseGrandStaff) {
-        ComputeInterval(&m_tBits[0], _T("p8"), true, &m_tBits[iT++]);
-        m_nNumNotes++;
-        iRef = 1;                   // use this note as reference
-    }
-
-    // create the reamining notes
-    for (int i=0; i < nNumNotes-1; i++) {
-        ComputeInterval(&m_tBits[iRef], sIntval[i], true, &m_tBits[iT++]);
+    // root note is created in m_fpNote[0]. Create the remaining notes
+    for (int i=1; i < m_nNumNotes; i++) {
+        m_fpNote[i] = m_fpNote[0] + nIntval[i-1];
     }
 
 }
@@ -225,62 +235,14 @@ int lmChordManager::GetNumNotes()
 lmMPitch lmChordManager::GetMidiNote(int i)
 {
     wxASSERT(i < GetNumNotes());
-    return m_ntMidi[i];
-}
-
-int lmChordManager::GetMidiNote(lmMPitch nMidiRoot, wxString sInterval)
-{
-    // Receives a Midi pitch and a string encoding the interval as follows:
-    // - intval = number + type:
-    //      m=minor, M=major, p=perfect, a=augmented,
-    //      d=diminished, += double aug. -=double dim.
-    //   examples:
-    //      3M - major 3th
-    //      +7 - double augmented 7th
-    //
-    // Returns the top midi pitch of the requested interval
-
-    //  intval  semitones
-    //  2m      1
-    //  2M      2
-    //  3m      3
-    //  3M      4
-    //  3a/4p   5
-    //  4a/5d   6
-    //  5p      7
-    //  5a/6m   8
-    //  6M      9
-    //  6a/7m   10
-    //  7M      11
-    //  8p      12
-
-    if (sInterval == _T("m2"))  return nMidiRoot + 1;
-    if (sInterval == _T("M2"))  return nMidiRoot + 2;
-    if (sInterval == _T("m3"))  return nMidiRoot + 3;
-    if (sInterval == _T("M3"))  return nMidiRoot + 4;
-    if (sInterval == _T("a3"))  return nMidiRoot + 5;
-    if (sInterval == _T("p4"))  return nMidiRoot + 5;
-    if (sInterval == _T("a4"))  return nMidiRoot + 6;
-    if (sInterval == _T("d5"))  return nMidiRoot + 6;
-    if (sInterval == _T("p5"))  return nMidiRoot + 7;
-    if (sInterval == _T("a5"))  return nMidiRoot + 8;
-    if (sInterval == _T("m6"))  return nMidiRoot + 8;
-    if (sInterval == _T("M6"))  return nMidiRoot + 9;
-    if (sInterval == _T("a6"))  return nMidiRoot + 10;
-    if (sInterval == _T("m7"))  return nMidiRoot + 10;
-    if (sInterval == _T("M7"))  return nMidiRoot + 11;
-    if (sInterval == _T("p8"))  return nMidiRoot + 12;
-
-    return 0;
-
+    return FPitch_ToMPitch(m_fpNote[i]);
 }
 
 wxString lmChordManager::GetPattern(int i)
 {
-    // Returns LDP pattern for note i (0 .. m_nNumNotes-1)
+    // Returns Relative LDP pattern for note i (0 .. m_nNumNotes-1)
     wxASSERT( i < GetNumNotes());
-    return lmConverter::NoteBitsToName(m_tBits[i], m_nKey);
-
+    return FPitch_ToRelLDPName(m_fpNote[i], m_nKey);
 }
 
 wxString lmChordManager::GetNameFull()
@@ -359,14 +321,14 @@ void lmChordManager::UnitTests()
     //        sIntv1[i], sIntv2[i], SubstractIntervals(sIntv1[i], sIntv2[i]) );
     //}
 
-    //AddIntervals
-    wxLogMessage(_T("[lmChordManager::UnitTests] Test of AddIntervals() method:"));
-    wxString sIntv1[8] = { _T("p5"), _T("p5"), _T("M6"), _T("M3"), _T("M3"), _T("M6"), _T("d4"), _T("p8") };
-    wxString sIntv2[8] = { _T("M3"), _T("m3"), _T("m2"), _T("m3"), _T("M3"), _T("M3"), _T("m7"), _T("p8") };
-    for(i=0; i < 8; i++) {
-        wxLogMessage(_T("Intv1='%s', intv2='%s' --> sum='%s'"),
-            sIntv1[i].c_str(), sIntv2[i].c_str(), AddIntervals(sIntv1[i], sIntv2[i]).c_str() );
-    }
+    ////AddIntervals
+    //wxLogMessage(_T("[lmChordManager::UnitTests] Test of AddIntervals() method:"));
+    //wxString sIntv1[8] = { _T("p5"), _T("p5"), _T("M6"), _T("M3"), _T("M3"), _T("M6"), _T("d4"), _T("p8") };
+    //wxString sIntv2[8] = { _T("M3"), _T("m3"), _T("m2"), _T("m3"), _T("M3"), _T("M3"), _T("m7"), _T("p8") };
+    //for(i=0; i < 8; i++) {
+    //    wxLogMessage(_T("Intv1='%s', intv2='%s' --> sum='%s'"),
+    //        sIntv1[i].c_str(), sIntv2[i].c_str(), AddIntervals(sIntv1[i], sIntv2[i]).c_str() );
+    //}
 
 }
 #endif  // __WXDEBUG__

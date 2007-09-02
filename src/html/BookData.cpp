@@ -157,8 +157,6 @@ wxString lmBookIndexItem::GetIndentedName() const
 // lmBookData
 //-----------------------------------------------------------------------------
 
-IMPLEMENT_DYNAMIC_CLASS(lmBookData, wxObject)
-
 lmBookData::lmBookData()
 {
     m_pParser = new lmXmlParser();
@@ -196,7 +194,7 @@ void lmBookData::SetTempDir(const wxString& path)
         if (wxIsAbsolutePath(path)) m_tempPath = path;
         else m_tempPath = wxGetCwd() + _T("/") + path;
 
-        if (m_tempPath[m_tempPath.Length() - 1] != _T('/'))
+        if (m_tempPath[m_tempPath.length() - 1] != _T('/'))
             m_tempPath << _T('/');
     }
 }
@@ -272,10 +270,10 @@ bool lmBookData::ProcessIndexFile(const wxFileName& oFilename, lmBookRecord* pBo
     wxLogMessage(_T("[lmBookData::ProcessIndexFile] Processing file %s"),
             oFilename.GetFullPath().c_str() );
 
-    wxString sTitle = wxEmptyString,
-             sDefaultPage = wxEmptyString,
-             sContentsFile = wxEmptyString,
-             sIndexFile = wxEmptyString;
+    wxString sTitle = _T(""),
+             sDefaultPage = _T(""),
+             sContentsFile = _T(""),
+             sIndexFile = _T("");
 
     // load the XML file as tree of nodes
     wxXmlDocument xdoc;
@@ -332,8 +330,8 @@ void lmBookData::ProcessIndexEntries(wxXmlNode* pNode, lmBookRecord *pBookr)
             pItem->id = m_pParser->GetAttribute(pElement, _T("id"));
             pItem->page = m_pParser->GetAttribute(pElement, _T("page"));
             pItem->title = m_pParser->GetText(pElement);
-            pItem->titlenum = wxEmptyString;
-            pItem->image = wxEmptyString;
+            pItem->titlenum = _T("");
+            pItem->image = _T("");
             pItem->pBookRecord = pBookr;
             m_index.Add(pItem);
         }
@@ -349,13 +347,13 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
 {
     // Returns ptr to created book record if success, NULL if failure
 
-    //wxLogMessage(_T("[lmBookData::ProcessTOCFile] Processing file %s"),
-    //             oFilename.GetFullPath());
+    wxLogMessage(_T("[lmBookData::ProcessTOCFile] Processing file %s"),
+                 oFilename.GetFullPath());
 
-    wxString sTitle = wxEmptyString,
-             sPage = wxEmptyString,
-             sContents = wxEmptyString,
-             sIndex = wxEmptyString;
+    wxString sTitle = _T(""),
+             sPage = _T(""),
+             sContents = _T(""),
+             sIndex = _T("");
 
 
     // wxXmlDocument::Load(filename) uses a wxTextStreamFile and it doesn't support
@@ -490,11 +488,11 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
     int nContentStart = m_contents.size();          // save the contents index for later
     lmBookIndexItem *bookitem = new lmBookIndexItem;
     bookitem->level = 0;
-    bookitem->id = wxEmptyString;
+    bookitem->id = _T("");
     bookitem->page = sPage;
     bookitem->title = sTitle;
-    bookitem->titlenum = wxEmptyString;
-    bookitem->image = wxEmptyString;
+    bookitem->titlenum = _T("");
+    bookitem->image = _T("");
     bookitem->pBookRecord = pBookr;
     m_contents.Add(bookitem);
 
@@ -534,12 +532,12 @@ bool lmBookData::ProcessTOCEntry(wxXmlNode* pNode, lmBookRecord *pBookr, int nLe
 
         //process children nodes
 
-    wxString sTitle = wxEmptyString,
-             sPage = wxEmptyString,
-             sName = wxEmptyString,
-             sImage = wxEmptyString,
-             sTitlenum = wxEmptyString,
-             sId = wxEmptyString;
+    wxString sTitle = _T(""),
+             sPage = _T(""),
+             sName = _T(""),
+             sImage = _T(""),
+             sTitlenum = _T(""),
+             sId = _T("");
 
     // Get entry id
     sId = m_pParser->GetAttribute(pNode, _T("id"));
@@ -702,7 +700,7 @@ wxString lmBookData::FindPageByName(const wxString& x)
     }
 
     wxLogMessage(_T("[lmBookData::FindPageByName] Page '%s' not found."), x.c_str());
-    return wxEmptyString;
+    return _T("");
 }
 
 wxString lmBookData::FindPageById(int id)
@@ -716,7 +714,7 @@ wxString lmBookData::FindPageById(int id)
     //    }
     //}
 
-    return wxEmptyString;
+    return _T("");
 }
 
 
@@ -731,7 +729,7 @@ lmSearchStatus::lmSearchStatus(lmBookData* data, const wxString& keyword,
     m_Data = data;
     m_Keyword = keyword;
     lmBookRecord* bookr = NULL;
-    if (book != wxEmptyString)
+    if (book != _T(""))
     {
         // we have to search in a specific book. Find it first
         int i, cnt = data->m_bookRecords.GetCount();
@@ -770,7 +768,7 @@ bool lmSearchStatus::Search()
     //    return false;
     //}
 
-    //m_Name = wxEmptyString;
+    //m_Name = _T("");
     //m_CurItem = NULL;
     //thepage = m_Data->m_contents[i].page;
 
@@ -823,7 +821,7 @@ void lmBookSearchEngine::LookFor(const wxString& keyword, bool case_sensitive, b
     m_Keyword = keyword;
 
     if (!m_CaseSensitive)
-        m_Keyword.LowerCase();
+        m_Keyword.MakeLower();
 }
 
 
@@ -837,7 +835,7 @@ bool lmBookSearchEngine::Scan(const wxFSFile& file)
     //wxASSERT_MSG(!m_Keyword.empty(), wxT("lmBookSearchEngine::LookFor must be called before scanning!"));
 
     //int i, j;
-    //int wrd = m_Keyword.Length();
+    //int wrd = m_Keyword.length();
     //bool found = false;
     //wxHtmlFilterHTML filter;
     //wxString tmp = filter.ReadFile(file);
@@ -845,7 +843,7 @@ bool lmBookSearchEngine::Scan(const wxFSFile& file)
     //const wxChar *buf = tmp.c_str();
 
     //if (!m_CaseSensitive)
-    //    tmp.LowerCase();
+    //    tmp.MakeLower();
 
     //const wxChar *kwd = m_Keyword.c_str();
 

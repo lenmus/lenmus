@@ -252,9 +252,9 @@ wxString lmLDPTokenBuilder::Extract(long iFrom, long iTo)
     // As all buffer indexes are referred to 1 this function helps to avoid stupid errors
     // that takes a lot of time to debug
     if (iTo >= iFrom) {
-        return m_sInBuf.Mid(iFrom-1, iTo - iFrom + 1);
+        return m_sInBuf.substr(iFrom-1, iTo - iFrom + 1);
     } else {
-        return m_sInBuf.Mid(iFrom-1);
+        return m_sInBuf.substr(iFrom-1);
     }
 
 }

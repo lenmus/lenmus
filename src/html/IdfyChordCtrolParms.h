@@ -144,7 +144,7 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
     // scan name and value
     if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
     sName = tag.GetParam(_T("NAME"));
-    sName.UpperCase();        //convert to upper case
+    sName.MakeUpper();        //convert to upper case
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
 
@@ -257,8 +257,8 @@ void lmIdfyChordCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
         pWnd = new lmIdfyChordCtrol((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1,
             m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     }
-    pWnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(pWnd, m_nPercent));
+    //pWnd->Show(true);
 
 }
 

@@ -15,7 +15,7 @@ In this lesson we are going to learn a new note symbol and its rest: the half no
 The following score shows a half note and a half rest:
 </para>
 
-<score width="600" height='100' border="0">
+<para><score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -27,14 +27,14 @@ The following score shows a half note and a half rest:
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 <para>
 One half note equals two quarter notes and one half rest equals two quarter rests. So
 in time 2/4 a half note or rest gets two beats. Therefore it takes a whole measure:
 </para>
 
-<score width="600" height="100" border="0">
+<para><score width="685" height="100" border="0">
     <score_type>short</score_type>
     <music_border>0</music_border>
     <music>
@@ -43,7 +43,7 @@ in time 2/4 a half note or rest gets two beats. Therefore it takes a whole measu
         (n * b)(Barra Simple)
         (s b)(Barra Final))
     </music>
-</score>
+</score></para>
 
 </part>
 
@@ -55,13 +55,13 @@ A tie is a small arch between the heads of two <emphasis>consecutive notes of th
 same pitch</emphasis>. For example:
 </para>
 
-<score width="600" height='100' border="0">
+<para><score width="685" height='100' border="0">
     <score_type>short</score_type>
     <music_border>0</music_border>
     <music>
         (Metrica 2 4)(n * n l)(n * n)(Barra Final))
     </music>
-</score>
+</score></para>
 
 <para>The tie symbol indicates that the two tied notes must be played as a single
 note with a duration equal to the sum of the two individual notes. In the previous
@@ -69,7 +69,7 @@ example, the tie joins two quarter notes, creating a note of double
 duration (a half note). Listen to the following score:
 </para>
 
-<score width="600" height="70" border="0">
+<para><score width="685" height="70" border="0">
     <score_type>full</score_type>
     <control_play></control_play>
     <music>
@@ -88,7 +88,7 @@ duration (a half note). Listen to the following score:
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 </part>
 

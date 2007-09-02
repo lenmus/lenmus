@@ -10,7 +10,7 @@
 with a group of a 8th note and two 16th notes.
 Note that in can also be written using a quarter note:
 </para>
-<score width="600" height="100" border="0">
+<para><score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -18,14 +18,14 @@ Note that in can also be written using a quarter note:
         (Metrica 6 8 NoVisible)(n * c g+)(s c)(n * c l g-)(n * c g+)(n * c)(n * c g-))
         (c (n * c g+)(s c)(n * c l g-)(n * n.)(Barra Final))
     </music>
-</score>
+</score></para>
 
 <part>
 <title>Listen and take notice of the differences</title>
 <para>Note the difference between the first and the second measure. Note how
 it is formed when tying the two groups of the first measure.</para>
 
-<score width="600" height="100" border="0">
+<para><score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -34,7 +34,7 @@ it is formed when tying the two groups of the first measure.</para>
         (c (n * c g+)(s c)(n * c l g-)(n * c g+)(n * c)(n * c g-))
         (c (n * c g+)(s c)(n * c l g-)(n * n.)(Barra Final))
     </music>
-</score>
+</score></para>
 </part>
 
 <part>

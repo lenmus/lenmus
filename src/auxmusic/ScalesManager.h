@@ -46,6 +46,10 @@
 //declare global functions defined in this module
 extern wxString ScaleTypeToName(EScaleType nType);
 extern int NumNotesInScale(EScaleType nType);
+extern bool IsScaleMajor(EScaleType nType);
+extern bool IsScaleMinor(EScaleType nType);
+extern bool IsScaleGregorian(EScaleType nType);
+#define IsTonalScale(nScaleType)  ((nScaleType < est_StartNonTonal))
 
 //a scale is a sequence of up 13 notes (12 chromatic notes plus repetition of first one).
 //Change this for more notes in a scale
@@ -66,14 +70,14 @@ public:
     wxString GetPattern(int i);
 
 
+
 private:
-//    int GetMidiNote(int nMidiRoot, wxString sInterval);
 
     //member variables
 
     EScaleType      m_nType;
     EKeySignatures  m_nKey;
-    lmNoteBits      m_tBits[lmNOTES_IN_SCALE];
+    lmFPitch        m_fpNote[lmNOTES_IN_SCALE];     //the scale
 
 };
 

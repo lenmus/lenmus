@@ -1335,7 +1335,7 @@ void lmMainFrame::ExportAsImage(int nImgType)
     if ( !sFilename.IsEmpty() )
     {
         //remove extension including dot
-        wxString sName = sFilename.Left( sFilename.Length() - sExt.Length() - 1 );
+        wxString sName = sFilename.Left( sFilename.length() - sExt.length() - 1 );
         lmScoreView* pView = g_pTheApp->GetActiveView();
         pView->SaveAsImage(sName, sExt, nImgType);
     }

@@ -55,7 +55,7 @@
 //    Dorian
 //    Harmonic
 //
-//    Medievals modes         Mode    Greek modes
+//    Medievals modes         Mode    Gregorian modes
 //    ---------------------   ----    --------------------------
 //    Protus      auténtico   I       Dorico          Dorian (Re)
 //                plagal      II      Hipodórico
@@ -97,7 +97,7 @@ enum EScaleType
     // From here, scales without mode
     est_EndOfModalScales = est_LastMinor,
 
-    // Greek modes
+    // Gregorian modes
     est_GreekIonian,
     est_GreekDorian,
     est_GreekPhrygian,
@@ -111,7 +111,9 @@ enum EScaleType
     est_PentatonicMinor,
     est_PentatonicMajor,
     est_Blues,
-    est_WholeTones,
+        //Start of non-tonal scales 
+    est_StartNonTonal, 
+    est_WholeTones = est_StartNonTonal,
     est_Chromatic,
     est_LastOther = est_Chromatic,
 
@@ -123,7 +125,7 @@ enum EScaleGroup
 {
     esg_Major = 0,
     esg_Minor,
-    esg_Greek,
+    esg_Gregorian,
     esg_Other,
     //last element, to signal End Of Table
     esg_Max

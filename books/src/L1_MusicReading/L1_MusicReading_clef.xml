@@ -16,7 +16,7 @@ symbol:
 </para>
 
 <!-- Empty staff with a G clef -->
-<score width="600" height='100' border="0">
+<para><score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -26,7 +26,7 @@ symbol:
             (time 2 4 noVisible)
             (barline end noVisible) )))
     </music>
-</score>
+</score></para>
 
 
 <para>The clef assigns a particular line to a specific pitch, and all other pitches
@@ -36,7 +36,7 @@ second line:
 </para>
 
 <!-- staff with a G clef -->
-<score width="600" height='100' border="0">
+<para><score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -50,7 +50,7 @@ second line:
             (barline end noVisible)
         )))
     </music>
-</score>
+</score></para>
 
 <para>
 As a result, the staff lines and spaces get automatically assigned
@@ -58,7 +58,7 @@ to consecutive notes, as shown in the next score:
 </para>
 
 <!-- staff with a G clef and notes on all spaces and lines, with their names -->
-<score width="600" height='100' border="0">
+<para><score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -90,7 +90,7 @@ to consecutive notes, as shown in the next score:
             (n f5 w)(barline simple noVisible)
         )))
     </music>
-</score>
+</score></para>
 
 
 

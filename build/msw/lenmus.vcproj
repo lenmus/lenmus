@@ -283,6 +283,12 @@
 				RelativePath="..\..\src\score\ObjOptions.h">
 			</File>
 			<File
+				RelativePath="..\..\src\score\Pitch.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\score\Pitch.h">
+			</File>
+			<File
 				RelativePath="..\..\src\score\Rest.cpp">
 			</File>
 			<File
@@ -623,6 +629,9 @@
 				RelativePath="..\..\src\html\TextBookFrame.h">
 			</File>
 			<File
+				RelativePath="..\..\src\html\TheoIntervalsCtrolParams.h">
+			</File>
+			<File
 				RelativePath="..\..\src\html\TheoMusicReadingCtrolParms.h">
 			</File>
 		</Filter>
@@ -670,6 +679,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\EarIntvalConstrains.h">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\ExerciseCtrol.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\ExerciseCtrol.h">
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\Generators.cpp">
@@ -724,6 +739,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\ScoreCtrol.h">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\TheoIntervalsConstrains.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\TheoIntervalsConstrains.h">
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\TheoIntervalsCtrol.cpp">
@@ -1018,12 +1039,6 @@
 		<Filter
 			Name="updater"
 			Filter="">
-			<File
-				RelativePath="..\..\src\updater\Downloader.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\updater\Downloader.h">
-			</File>
 			<File
 				RelativePath="..\..\src\updater\Updater.cpp">
 			</File>

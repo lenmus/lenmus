@@ -79,21 +79,18 @@ END_EVENT_TABLE()
 lmIdfyScalesCtrol::lmIdfyScalesCtrol(wxWindow* parent, wxWindowID id,
                            lmScalesConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
-    : lmIdfyExerciseCtrol(parent, id, pConstrains, pos, size, style )
+    : lmIdfyExerciseCtrol(parent, id, pConstrains, wxSize(400, 150), pos, size, style )
 {
     //initializations
     m_pConstrains = pConstrains;
-
-    //create the controls and buttons for the answers
-    Create(400, 150);       //score ctrol size = 400x150 pixels
 
     //initializatios to allow to play scales
     m_nKey = earmDo;
     m_sRootNote = _T("c4");
     m_fAscending = m_pConstrains->GetRandomPlayMode();
 
+    CreateControls();
     if (m_fTheoryMode) NewProblem();
-
 }
 
 lmIdfyScalesCtrol::~lmIdfyScalesCtrol()
@@ -151,7 +148,7 @@ void lmIdfyScalesCtrol::InitializeStrings()
     m_sButtonLabel[est_MinorHarmonic] = _("Harmonic");
     m_sButtonLabel[est_MinorMelodic] = _("Melodic");
 
-    // Greek scales
+    // Gregorian modes
     m_sButtonLabel[est_GreekIonian] = _("Ionian");
     m_sButtonLabel[est_GreekDorian] = _("Dorian");
     m_sButtonLabel[est_GreekPhrygian] = _("Phrygian");
@@ -193,9 +190,9 @@ void lmIdfyScalesCtrol::ReconfigureButtons()
     if (m_pConstrains->IsValidGroup(esg_Minor)) {
          iB = ReconfigureGroup(iB, est_LastMajor+1, est_LastMinor, _("Minor:"));
     }
-    //Greek scales
-    if (m_pConstrains->IsValidGroup(esg_Greek)) {
-         iB = ReconfigureGroup(iB, est_LastMinor+1, est_LastGreek, _("Greek scales:"));
+    //Gregorian modes
+    if (m_pConstrains->IsValidGroup(esg_Gregorian)) {
+         iB = ReconfigureGroup(iB, est_LastMinor+1, est_LastGreek, _("Gregorian modes:"));
     }
     //Other scales
     if (m_pConstrains->IsValidGroup(esg_Other)) {
@@ -260,22 +257,17 @@ wxString lmIdfyScalesCtrol::SetNewProblem()
 
     // select a key signature
     lmRandomGenerator oGenerator;
-    if (nScaleType > est_EndOfModalScales) {
-        m_nKey = earmDo;
-    }
-    else {
-        m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
-        // for minor scales use minor key signature
-        if (nScaleType >= est_MinorNatural && nScaleType <= est_LastMinor)
-            m_nKey = GetRelativeMinorKey(m_nKey);
-    }
+    m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
+    // for minor scales use minor key signature
+    if (nScaleType >= est_MinorNatural && nScaleType <= est_LastMinor)
+        m_nKey = GetRelativeMinorKey(m_nKey);
 
     //Generate a random root note
     EClefType nClef = eclvSol;
     m_sRootNote = oGenerator.GenerateRandomRootNote(nClef, m_nKey, false);  //false = do not allow accidentals. Only those in the key signature
 
     //create the score
-    bool fDisplayKey = m_pConstrains->DisplayKey();
+    bool fDisplayKey = m_pConstrains->DisplayKey() && IsTonalScale(nScaleType);
     if (!fDisplayKey) m_nKey = earmDo;
     m_sAnswer = PrepareScore(nClef, nScaleType, &m_pProblemScore);
 
@@ -285,6 +277,10 @@ wxString lmIdfyScalesCtrol::SetNewProblem()
         if (m_nRealScale[i] == nScaleType) break;
     }
     m_nRespIndex = i;
+
+    //if two solutions (minor/major or Gregorian mode) disable answer buttons
+    //for the not valid answer
+    DisableGregorianMajorMinor(nScaleType);
 
     //return string to introduce the problem
     if (m_fTheoryMode) {
@@ -361,3 +357,53 @@ wxString lmIdfyScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmSc
     return oScaleMngr.GetName();
 
 }
+
+void lmIdfyScalesCtrol::DisableGregorianMajorMinor(EScaleType nType)
+{
+    // Gregorian scale Ionian has the same notes than Major natural and
+    // Gregorian scale Aeolian has the same notes than the Minor natural.
+    // When Gregorian answer buttons and maor or minor are enabled there
+    // will be cases in which the answer is nor clear as two anserws are
+    // posible. To solve this, we are going to disable one of the answer
+    // buttons
+
+    if ((m_pConstrains->IsValidGroup(esg_Major) || m_pConstrains->IsValidGroup(esg_Minor)) &&
+         m_pConstrains->IsValidGroup(esg_Gregorian) )
+    {
+        EScaleType nDisable; 
+        if (nType == est_GreekIonian && m_pConstrains->IsScaleValid(est_MajorNatural))
+        {
+            //disable major natural
+            nDisable = est_MajorNatural;
+        }
+        else if (nType == est_GreekAeolian && m_pConstrains->IsScaleValid(est_MinorNatural))
+        {
+            //disable minor natural
+            nDisable = est_MinorNatural;
+        }
+        else if (nType == est_MajorNatural && m_pConstrains->IsScaleValid(est_GreekIonian))
+        {
+            //disable Gregorian ionian
+            nDisable = est_GreekIonian;
+        }
+        else if (nType == est_MinorNatural && m_pConstrains->IsScaleValid(est_GreekAeolian))
+        {
+            //disable Gregorian aeolian
+            nDisable = est_GreekAeolian;
+        }
+        else
+            return;     //not necessary to disable any button
+
+        //compute the index for the button to disable
+        int iB;
+        for (iB = 0; iB < m_NUM_BUTTONS; iB++) {
+            if (m_nRealScale[iB] == nDisable) break;
+        }
+
+        //disable button iB
+        m_pAnswerButton[iB]->Enable(false);
+
+    }
+
+}
+

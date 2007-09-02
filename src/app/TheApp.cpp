@@ -311,7 +311,12 @@ bool lmTheApp::OnInit(void)
     //define trace masks to be known by trace system
 	g_pLogger->DefineTraceMask(_T("lmCadence"));
 	g_pLogger->DefineTraceMask(_T("lmChordManager"));
-    g_pLogger->DefineTraceMask(_T("lmComposer5"));
+    g_pLogger->DefineTraceMask(_T("lmComposer6"));
+    g_pLogger->DefineTraceMask(_T("lmComposer6::AssignNonChordNotes")); 
+    g_pLogger->DefineTraceMask(_T("lmComposer6::FunctionToChordNotes")); 
+    g_pLogger->DefineTraceMask(_T("lmComposer6::GenerateContour"));
+    g_pLogger->DefineTraceMask(_T("lmComposer6::InstantiateNotes"));     
+    g_pLogger->DefineTraceMask(_T("lmComposer6::NearestNoteOnChord"));
     g_pLogger->DefineTraceMask(_T("Formater4"));
     g_pLogger->DefineTraceMask(_T("Formatter4.Step1"));
     g_pLogger->DefineTraceMask(_T("lmFragmentsTable::GetFirstSegmentDuracion"));

@@ -14,7 +14,7 @@ indicated with symbols, called 'rests'. There also exists a rest for each note
 duration. The following score shows a quarter note and the quarter rest:
 </para>
 
-<score width="600" height='100' border="0">
+<para><score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -26,7 +26,7 @@ duration. The following score shows a quarter note and the quarter rest:
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 <para>
 In this lesson we will start reading music with scores composed just by quarter notes
@@ -34,7 +34,7 @@ and rests. These rhythms are very simple, as each note or rest gets a beat. List
 example to the following song:
 </para>
 
-<score width="600" height='70' border="0">
+<para><score width="685" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -51,7 +51,7 @@ example to the following song:
             (n c5 q)(r q)(barline end)
         )))
     </music>
-</score>
+</score></para>
 
 
 <part>

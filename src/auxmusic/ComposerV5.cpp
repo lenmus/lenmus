@@ -401,7 +401,7 @@ void lmComposer5::ChooseRangeOfNotes()
 wxString lmComposer5::GenerateNewNote(bool fRepeat, bool fRootPitch)
 {
 
-    lmPitch newPitch;
+    lmDPitch newPitch;
     lmRandomGenerator oGenerator;
 
     if (m_nNumNotes == 0 || fRootPitch) {
@@ -444,13 +444,12 @@ wxString lmComposer5::GenerateNewNote(bool fRepeat, bool fRootPitch)
     m_nNumNotes++;
     m_lastPitch = newPitch;
 
-    lmConverter oConverter;
-    return oConverter.DPitchToLDPName(newPitch);
+    return DPitch_ToLDPName(newPitch);
 
 }
 
 
-lmPitch lmComposer5::RootNote(EKeySignatures nKey)
+lmDPitch lmComposer5::RootNote(EKeySignatures nKey)
 {
     // returns the pitch of root note (in octave 4) for the given key signature.
     // For example, for C major returns 29 (c4); for A sharp minor returns 34 (a4).
@@ -461,47 +460,47 @@ lmPitch lmComposer5::RootNote(EKeySignatures nKey)
         case earmDosm:
         case earmDos:
         case earmDob:
-            return lmC4PITCH;
+            return lmC4_DPITCH;
 
         case earmRe:
         case earmReb:
         case earmResm:
         case earmRem:
-            return lmC4PITCH+1;
+            return lmC4_DPITCH+1;
 
         case earmMi:
         case earmMim:
         case earmMib:
         case earmMibm:
-            return lmC4PITCH+2;
+            return lmC4_DPITCH+2;
 
         case earmFa:
         case earmFasm:
         case earmFas:
         case earmFam:
-            return lmC4PITCH+3;
+            return lmC4_DPITCH+3;
 
         case earmSol:
         case earmSolsm:
         case earmSolm:
         case earmSolb:
-            return lmC4PITCH+4;
+            return lmC4_DPITCH+4;
 
         case earmLa:
         case earmLam:
         case earmLasm:
         case earmLab:
         case earmLabm:
-            return lmC4PITCH+5;
+            return lmC4_DPITCH+5;
 
         case earmSim:
         case earmSi:
         case earmSib:
         case earmSibm:
-            return lmC4PITCH+6;
+            return lmC4_DPITCH+6;
 
         default:
-            return lmC4PITCH;
+            return lmC4_DPITCH;
     }
 }
 
@@ -518,10 +517,10 @@ wxString lmComposer5::InstantiateNotes(wxString sPattern, bool fRootPitch)
     int i = sSource.Find(_T("*"));
     int j = sSource.Find(_T(" l"));
     while (i != -1) {
-        sResult += sSource.Mid(0, i);
+        sResult += sSource.substr(0, i);
         fRepeat = (fFirstNote ? m_fTied : (j != -1 && j < i) );
         sResult += GenerateNewNote(fRepeat, fRoot);
-        sSource = sSource.Mid(i + 1);
+        sSource = sSource.substr(i + 1);
         i = sSource.Find(_T("*"));
         j = sSource.Find(_T(" l"));
         fFirstNote = false;

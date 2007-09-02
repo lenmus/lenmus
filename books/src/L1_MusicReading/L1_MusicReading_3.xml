@@ -13,7 +13,7 @@ lines' and are drawn as short lines, slightly longer than the note head. For exa
 the following score shows the natural scale starting on C:
 </para>
 
-<score width="600" height='70' border="0">
+<para><score width="685" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -26,13 +26,13 @@ the following score shows the natural scale starting on C:
             (n e4 q)(n f4 q)(n g4 q)(n a4 q)(n b4 q)(n c5 q)
             (barline end) )))
     </music>
-</score>
+</score></para>
 
 <para>
 Leger lines can also be added on top, for high pitch notes:
 </para>
 
-<score width="700" height='70' border="0">
+<para><score width="700" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -54,7 +54,7 @@ Leger lines can also be added on top, for high pitch notes:
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 <para>
 As notes written on leger lines are more difficult to read, usually only two

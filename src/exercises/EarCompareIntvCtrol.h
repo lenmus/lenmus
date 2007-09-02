@@ -39,12 +39,10 @@
 
 #include "EarIntvalConstrains.h"
 #include "../score/Score.h"
-#include "ScoreAuxCtrol.h"
-#include "UrlAuxCtrol.h"
-#include "CountersCtrol.h"
+#include "ExerciseCtrol.h"
 
 
-class lmEarCompareIntvCtrol : public wxWindow    
+class lmEarCompareIntvCtrol : public lmCompareScoresCtrol    
 {
    DECLARE_DYNAMIC_CLASS(lmEarCompareIntvCtrol)
 
@@ -58,63 +56,20 @@ public:
 
     ~lmEarCompareIntvCtrol();
 
-    // event handlers
-    void OnSize(wxSizeEvent& event);
-    void OnRespButton(wxCommandEvent& event);
-    void OnPlay(wxCommandEvent& event);
-    void OnNewProblem(wxCommandEvent& event);
-    void OnResetCounters(wxCommandEvent& event);
-    void OnDisplaySolution(wxCommandEvent& event);
-    void OnSettingsButton(wxCommandEvent& event);
-
-    // event handlers related to debugging
-    void OnDebugShowSourceScore(wxCommandEvent& event);
-    void OnDebugDumpScore(wxCommandEvent& event);
-    void OnDebugShowMidiEvents(wxCommandEvent& event);
-
-    // event handlers related with playing a score
-    void OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event));
-    void OnTimerEvent(wxTimerEvent& WXUNUSED(event));
+    // implementation of virtual methods
+    wxString SetNewProblem();    
+    wxDialog* GetSettingsDlg();
+    void PrepareAuxScore(int nButton) {}
 
 
 private:
-    void EnableButtons(bool fEnable);
-    void Play();
-    void PlayInterval(int nIntv);
-    void NewProblem();
-    void DisplaySolution();
-    void ResetExercise();
-    void ResetCounters();
-    void DoStopSounds();
 
         // member variables
 
-    lmScore*            m_pScore[2];        // two scores, one for each interval
-    int                 m_nNowPlaying;      // score being played (0, 1)
-    lmScore*            m_pTotalScore;      //solution score with both intervals
-    lmScoreAuxCtrol*    m_pScoreCtrol;
-    lmCountersCtrol*    m_pCounters;
-
     lmEarIntervalsConstrains* m_pConstrains;    //use same constraints than for intervals
-    bool            m_fProblemCreated;      //there is a problem prepared
-    lmPitch         m_ntMidi[2];            //the midi pitch of the two notes
-    lmPitch         m_ntPitch[2];           //the pitch of the two notes
-    bool            m_fPlayEnabled;         //Play enabled
-    bool            m_fButtonsEnabled;      //buttons enabled
-    bool            m_fPlaying;             //currently playing the intervals
+    lmMPitch        m_ntMidi[2];            //the midi pitch of the two notes
+    lmMPitch        m_ntPitch[2];           //the pitch of the two notes
 
-    //answer
-    wxButton*       m_pAnswerButton[3];     //3 buttons for the answers
-    bool            m_fFirstGreater;        //two flags to encode the right answer
-    bool            m_fBothEqual;
-    wxString        m_sAnswer[2];           //The names of each interval
-
-    lmUrlAuxCtrol*  m_pPlayButton;       // "play" button
-    lmUrlAuxCtrol*  m_pShowSolution;     // "show solution" button
-    wxTimer         m_oPauseTimer;      //timer to do a pause beetwen the two intervals
-
-
-    DECLARE_EVENT_TABLE()
 };
 
 

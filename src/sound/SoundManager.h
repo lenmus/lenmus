@@ -59,7 +59,7 @@ class lmSoundEvent
 {
 public:
     lmSoundEvent(float rTime, ESoundEventType nEventType, int nChannel,
-                 lmPitch nMidiPitch, int nVolume, int nStep, lmStaffObj* pSO,
+                 lmMPitch nMidiPitch, int nVolume, int nStep, lmStaffObj* pSO,
                  int nMeasure);
     ~lmSoundEvent() {}
 
@@ -137,7 +137,7 @@ public:
 
     // sound events table
     void StoreEvent(float rTime, ESoundEventType nEventType, int nChannel,
-                    lmPitch nMidiPitch, int nVolume, int nStep, lmStaffObj* pSO, int nMeasure);
+                    lmMPitch nMidiPitch, int nVolume, int nStep, lmStaffObj* pSO, int nMeasure);
     int GetNumEvents() { return (int)m_aEvents.GetCount(); }
     lmSoundEvent* GetEvent(int i);
     void CloseTable();

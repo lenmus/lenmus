@@ -12,7 +12,7 @@ In this lesson we continue with syncopation. We are going to practice
 the following rhythmic patterns:
 </para>
 
-<score width="600" height='70' border="0">
+<para><score width="685" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -30,7 +30,7 @@ the following rhythmic patterns:
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 <para>
 Again, syncopation is achieved by starting
@@ -43,7 +43,7 @@ the accent (start of the note sound) does not coincide with the start of the bea
 
 <para>Listen to each measure and pay attention to the newly introduced patterns:</para>
 
-<score width="600" height='70' border="0">
+<para><score width="685" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -62,7 +62,7 @@ the accent (start of the note sound) does not coincide with the start of the bea
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 </part>
 

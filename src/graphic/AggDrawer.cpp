@@ -435,7 +435,7 @@ unsigned int lmAggDrawer::DrawText(wxString& sText)
     if (!m_fValidFont) return 0;
 
     //convert text to utf-32
-    size_t nLength = sText.Length();
+    size_t nLength = sText.length();
     wxMBConvUTF32 oConv32;
     wxCharBuffer s32Text = sText.mb_str(oConv32);
 

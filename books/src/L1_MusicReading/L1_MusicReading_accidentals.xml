@@ -15,7 +15,7 @@ of the note should be altered. At level 1 you should know about three signs:
 the 'sharp', the 'flat' and the 'natural':
 </para>
 
-<score width="600" height='100' border="0">
+<para><score width="685" height='100' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -34,7 +34,7 @@ the 'sharp', the 'flat' and the 'natural':
             (n =g4 q)(n =c5 q) (spacer 20)(barline end)
         )))
     </music>
-</score>
+</score></para>
 
 
 <para>
@@ -61,7 +61,7 @@ If, for example, a piece of music is written based on the D major scale, all F a
 C notes will have sharp signs placed before them. For example (play it):
 </para>
 
-<score width="600" height='70' border="0">
+<para><score width="685" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -82,7 +82,7 @@ C notes will have sharp signs placed before them. For example (play it):
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 <para>
 Having to write accidentals always in the same notes can be annoying.
@@ -95,7 +95,7 @@ place accidental signs in front of each note. So, the previous score can also be
 written as follows:
 </para>
 
-<score width="600" height='70' border="0">
+<para><score width="685" height='70' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -115,7 +115,7 @@ written as follows:
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 <para>
 Note that the sharp for the F note is placed on the 5th line but it affects all F
@@ -129,6 +129,9 @@ which scale is used to build a piece of music. The key signature must be written
 on every music line, placed immediately after the clef sign.
 </para>
 
+<para>
+The accidentals on the key signature are named 'proper accidentals' whereas those added
+in addition to individual notes are named 'chromatic accidentals'.</para>
 </part>
 
 
@@ -137,7 +140,7 @@ on every music line, placed immediately after the clef sign.
 <para>
 In this lesson we will continue with exercises containing the rhythmic patterns of the
 previous lessons, but introducing the key signatures of G major and E minor (one sharp)
-and B flat major and G minor (one flat).
+and F major and D minor (one flat).
 </para>
 
 <para>

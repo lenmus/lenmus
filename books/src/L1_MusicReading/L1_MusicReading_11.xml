@@ -15,7 +15,7 @@ the quarter notes are shifted by the initial eighth note, so that they
 are placed 'off-beat':
 </para>
 
-<score width="600" height='70' border="0">
+<para><score width="685" height='70' border="0">
     <score_type>full</score_type>
     <control_play></control_play>
     <music_border>0</music_border>
@@ -29,7 +29,7 @@ are placed 'off-beat':
             (n a4 e)(n a4 q)(n a4 q)(n a4 q)(n a4 e)(barline end)
         )))
     </music>
-</score>
+</score></para>
 
 <para>
 These type of rhythms in which the stress is shifted to weak parts are known as
@@ -49,7 +49,7 @@ In this lesson we are going to start studying the syncopated rhythms that
 result by using the following patterns::
 </para>
 
-<score width="600" height="70" border="0">
+<para><score width="685" height="70" border="0">
     <score_type>full</score_type>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
@@ -65,11 +65,11 @@ result by using the following patterns::
             (barline double)
         )))
     </music>
-</score>
+</score></para>
 
 <para>Listen to each measure and pay attention to the newly introduced patterns:</para>
 
-<score width="600" height="70" border="0">
+<para><score width="685" height="70" border="0">
     <score_type>full</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -85,7 +85,7 @@ result by using the following patterns::
             (n a4 e)(n a4 e)(n a4 q)(barline end)
         )))
     </music>
-</score>
+</score></para>
 
 </part>
 

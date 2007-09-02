@@ -12,7 +12,7 @@ In this lesson we continue the study of the 6/8 compound time with the introduct
 of new rhythmic patterns:
 </para>
 
-<score width="600" height="70" border="0">
+<para><score width="685" height="70" border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -34,14 +34,14 @@ of new rhythmic patterns:
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 <part>
 <title>Listen and take notice of the differences</title>
 
 <para>Listen to each measure and note the newly introduced patterns:</para>
 
-<score width="600" height="100" border="0">
+<para><score width="685" height="100" border="0">
     <score_type>full</score_type>
     <control_play></control_play>
     <music>
@@ -57,9 +57,9 @@ of new rhythmic patterns:
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
-<score width="600" height="100" border="0">
+<para><score width="685" height="100" border="0">
     <score_type>full</score_type>
     <control_play></control_play>
     <music>
@@ -77,7 +77,7 @@ of new rhythmic patterns:
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 </part>
 

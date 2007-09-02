@@ -3,100 +3,227 @@
 <!-- =============================================== -->
 <content>
 
-<theme id="th1_transient">
+<theme id="transient">
 <title>Transient cadences</title>
 
 <para>
-Caracterizadas por crear inestabilidad, tension y necesidad de continuacion, se logran 
-De este modo, se distinguen dos cadencias principales:
+Transient cadences are not conclusive. They create a sensation tension and unstability and expectations for continuation. They are more like a short pause in the musical flow. There are two types of transient cadences:
+<link linkend="half_cadence"> half cadences</link> and <link linkend="deceptive"> deceptive cadences</link>.</para>
+
+<part id='half_cadence'>
+<title>Half cadences</title>
+
+<para>
+A half cadence takes place when the harmony moves to the V degree (dominant) from any other degree, except the tonic (I). The ending on V causes it to sound incomplete or 'suspended' due to the unstableness of the dominant chord. It is considered as the weakest cadence and cannot be use to end a musical phrase.
 </para>
 
 <para>
-1) Semicadencia: Se produce llegado a cualquier grado de la escala, a excepcion de la tonica, preferentemente sobre la dominante. 
-</para>
-
-<para>
-Un uso especial de esta cadencia es la cadencia frigia, usada profusamente en el Barroco para finalizar un movimiento o introduccion lentos en modo menor, al que continua un movimiento rapido, preferentemente en modo mayor, su formula es IV (en primera inversion) – V. 
-</para>
-
-<para>
-De color particular, la cadencia andaluza es una progresion cadencial empleada en el modo menor, cuya formula es I-VII-VI (grado sustituible)-V. El colorido particular lo otorga el cromatismo producido entre la fundamental del VII y la tercera del V.
-</para>
-
-<!-- (Colocar ejemplo) -->
-<score width="600" height='100' border="0">
+<score width="300" height='160' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
+    <metronome>320</metronome>
+    <control_play />
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (instrument
-          (musicData (clef G)(key C)
-            (time 2 4 noVisible)
-            (barline end noVisible) )))
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 40)
+          (instrument (staves 2)
+          (musicData 
+            (clef treble p1)
+            (clef bass p2)
+            (key C)
+            (time 4 4 noVisible)
+            (chord (n f3 w p2)(n c4 w)(n f4 w p1)(n a4 w))
+            (text ''IV'' dx:-65 dy:200)
+            (barline)
+            (chord (n g3 w p2)(n b3 w)(n d4 w p1)(n g4 w))
+            (text ''V'' (font 10pt) dx:-55 dy:200)
+            (barline end)
+        )))
     </music>
 </score>
 
-
-<para>
-2) Cadencia rota o interrumpida: Es un proceso de cadencia autentica en el que se sustituye el acorde de tonica por uno inesperado, generalmente VI,  el IV o cualquier grado que contenga a la tonica en sustitucion de esta.
-</para>
-
-<!-- (Colocar ejemplo) -->
-<score width="600" height='100' border="0">
+<score width="300" height='160' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
+    <metronome>320</metronome>
+    <control_play />
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (instrument
-          (musicData (clef G)(key C)
-            (time 2 4 noVisible)
-            (barline end noVisible) )))
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 40)
+          (instrument (staves 2)
+          (musicData 
+            (clef treble p1)
+            (clef bass p2)
+            (key C)
+            (time 4 4 noVisible)
+            (chord (n g3 w p2)(n c4 w)(n e4 w p1)(n g4 w))
+            (text ''II'' (font 10pt) dx:-60 dy:200)
+            (text ''6'' (font 7pt) dx:-40 dy:185)
+            (text ''4'' (font 7pt) dx:-40 dy:210)
+            (barline)
+            (chord (n g3 w p2)(n b3 w)(n d4 w p1)(n g4 w))
+            (text ''V'' (font 10pt) dx:-55 dy:200)
+            (barline end)
+        )))
     </music>
 </score>
 
-
-
-<para>
-Tomando la cadencia autentica, si al menos uno  de los grados esta invertido, se hablara de cadencia imperfecta. No existe un acuerdo claro para ubicar esta cadencia, si bien entre las conclusivas o suspensivas.
 </para>
 
-<!-- (Colocar ejemplo) -->
-<score width="600" height='100' border="0">
+
+<para>
+A particular case of the half cadence is the Phrygian half cadence. It consist of a IV chord in first inversion that resolves to a V (or V7) chord in root position. It only occurs in minor keys (the IV is minor) and was widely used during the Baroque period to end a slow musical movement in minor mode, continued by a fast movement in major mode.
+</para>
+
+<para><score width="600" height='160' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
+    <metronome>320</metronome>
+    <control_play />
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (instrument
-          (musicData (clef G)(key C)
-            (time 2 4 noVisible)
-            (barline end noVisible) )))
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 40)
+          (instrument (staves 2)
+          (musicData 
+            (clef treble p1)
+            (clef bass p2)
+            (key C)
+            (time 4 4 noVisible)
+            (chord (n f3 w p2)(n a3 w)(n d4 w p1)(n f4 w))
+            (text ''IV'' (font 10pt) dx:-60 dy:200)
+            (text ''6'' (font 7pt) dx:-35 dy:185)
+            (barline)
+            (chord (n e3 w p2)(n b3 w)(n e4 w p1)(n g4 w))
+            (text ''V'' (font 10pt) dx:-55 dy:200)
+            (barline end)
+        )))
     </music>
-</score>
+</score></para>
 
 
-<part>
-<title>Ear training exercises</title>
 
 <para>
-<link linkend="th1_transient_E1">Exercise 1</link> - Diferenciar auditivamente una 
-cadencia rota de una semicadencia</para>
+Another very specific case is the Andalusian cadence. It only occurs in minor keys and is given by the progression I-VII-VI-V, where the IV degree can be replaced. This cadence has a particular colour due to the chromatic half step between the root of the VII and the third of the V.
+</para>
 
-<para>
-<link linkend="th1_transient_E2">Exercise 2</link> - Diferenciar auditivamente 
-todos los tipos de cadencias.</para>
+<para><score width="600" height='160' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <metronome>320</metronome>
+    <control_play />
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 40)
+          (instrument (staves 2)
+          (musicData 
+            (clef treble p1)
+            (clef bass p2)
+            (key C)
+            (time 4 4 noVisible)
+            (chord (n a3 w p2)(n c4 w)(n e4 w p1)(n c5 w))
+            (text ''I'' (font 10pt) dx:-60 dy:200)
+            (barline)
+            (chord (n g3 w p2)(n d4 w)(n g4 w p1)(n d5 w))
+            (text ''VII'' (font 10pt) dx:-60 dy:200)
+            (barline)
+            (chord (n f3 w p2)(n f4 w)(n a4 w p1)(n c5 w))
+            (text ''VI'' (font 10pt) dx:-55 dy:200)
+            (barline)
+            (chord (n e3 w p2)(n +g3 w)(n +g4 w p1)(n b4 w))
+            (text ''V'' (font 10pt) dx:-50 dy:200)
+            (text ''#'' (font 7pt) dx:-30 dy:185)
+            (barline end)
+        )))
+    </music>
+</score></para>
+
 
 </part>
 
+<part id='deceptive'>
+<title>Deceptive cadences</title>
+
+<para>
+A deceptive cadence takes place when a V chord does not resolve to a I chord, as the ear is expecting, but instead resolves to any other chord, typically to one containing the tonic pitch (the VI or the IV degrees).
+</para>
+
+<para>
+<score width="300" height='160' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <metronome>320</metronome>
+    <control_play />
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 40)
+          (instrument (staves 2)
+          (musicData 
+            (clef treble p1)
+            (clef bass p2)
+            (key C)
+            (time 4 4 noVisible)
+            (chord (n g2 w p2)(n g3 w)(n d4 w p1)(n b4 w))
+            (text ''V'' dx:-60 dy:200)
+            (barline)
+            (chord (n f2 w p2)(n a3 w)(n f4 w p1)(n c5 w))
+            (text ''IV'' (font 10pt) dx:-55 dy:200)
+            (barline end)
+        )))
+    </music>
+</score>
+
+<score width="300" height='160' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <metronome>320</metronome>
+    <control_play />
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 40)
+          (instrument (staves 2)
+          (musicData 
+            (clef treble p1)
+            (clef bass p2)
+            (key C)
+            (time 4 4 noVisible)
+            (chord (n g2 w p2)(n g3 w)(n d4 w p1)(n b4 w))
+            (text ''V'' dx:-60 dy:200)
+            (barline)
+            (chord (n a2 w p2)(n e3 w)(n c4 w p1)(n a4 w))
+            (text ''VI'' (font 10pt) dx:-55 dy:200)
+            (barline end)
+        )))
+    </music>
+</score>
+
+</para>
+
+
+<para>
+The deceptive cadence is considered a weak cadence because of the 'surprise' and  'hanging' feel it invokes, so it is never used to end a music piece. However, it provides variety and surprise by resolving to a minor chord in major keys, and to a major chord in minor keys, and when used near the end of a piece it helps to sustain the musical interest at the moment when the final authentic cadence is expected.
+</para>
+
+
+
+</part>
+
+
 <part>
-<title>Theory exercises</title>
+<title>Exercises</title>
 
 <para>
-<link linkend="th1_transient_E3">Exercise 3</link> - Diferenciar sobre una partitura
-cadencia rota de una semicadencia</para>
+<link linkend="transient_E1">Theory exercise</link> - Practise to
+recognize on a score if a transient cadence is a half cadence or a deceptive one.</para>
 
 <para>
-<link linkend="th1_transient_E4">Exercise 4</link> - Diferenciar sobre una partitura
-todos los tipos de cadencias.</para>
+<link linkend="transient_E2">Aural training</link> - Train your ear and practise to
+identify if a transient cadence is a half cadence or a deceptive one.</para>
 
 </part>
 
@@ -106,17 +233,18 @@ todos los tipos de cadencias.</para>
 <!-- Exercise 1  -->
 <!-- ====================== -->
 
-<theme id="th1_transient_E1" toc="no">
-<titleabbrev>Deceptive and half cadences</titleabbrev>
+<theme id="transient_E1" toc="no">
+<titleabbrev>Trasient cadences</titleabbrev>
 <title>Deceptive and half cadences</title>
 
-<para>Diferenciar auditivamente una cadencia rota de una semicadencia.</para>
+<para>Theory: Identify if a transient cadence is a half cadence or a deceptive one.</para>
 
 <exercise type="IdfyCadences" width="100%" height="300" border="0">
-    <control_go_back>th1_transient</control_go_back>
+    <control_go_back>transient</control_go_back>
     <cadences>all_half,all_deceptive</cadences>
     <cadence_buttons>half,deceptive</cadence_buttons>
-    <mode>earTraining</mode>
+    <keys>Do,Re,Mi,Fa,Sol,La,Si,Dom,Rem,Mim,Fam,Solm,Lam,Sim</keys>
+    <mode>theory</mode>
 </exercise>
 
 </theme>
@@ -126,56 +254,18 @@ todos los tipos de cadencias.</para>
 <!-- Exercise 2  -->
 <!-- ====================== -->
 
-<theme id="th1_transient_E2" toc="no">
-<titleabbrev>All cadences</titleabbrev>
-<title>All cadences</title>
-
-<para>Diferenciar auditivamente todos los tipos de cadencias.</para>
-
-<exercise type="IdfyCadences" width="100%" height="300" border="0">
-    <control_go_back>th1_transient</control_go_back>
-    <cadences>all</cadences>
-    <cadence_buttons>half,deceptive,perfect,plagal,imperfect</cadence_buttons>
-    <mode>earTraining</mode>
-</exercise>
-
-</theme>
-
-
-<!-- ====================== -->
-<!-- Exercise 3  -->
-<!-- ====================== -->
-
-<theme id="th1_transient_E3" toc="no">
-<titleabbrev>Deceptive and half cadences</titleabbrev>
+<theme id="transient_E2" toc="no">
+<titleabbrev>Transient cadences</titleabbrev>
 <title>Deceptive and half cadences</title>
 
-<para>Diferenciar sobre una partitura una cadencia rota de una semicadencia.</para>
+<para>Aural training: Identify if a transient cadence is a half cadence or a deceptive one.</para>
 
 <exercise type="IdfyCadences" width="100%" height="300" border="0">
-    <control_go_back>th1_transient</control_go_back>
+    <control_go_back>transient</control_go_back>
     <cadences>all_half,all_deceptive</cadences>
     <cadence_buttons>half,deceptive</cadence_buttons>
-    <mode>theory</mode>
-</exercise>
-
-</theme>
-
-<!-- ====================== -->
-<!-- Exercise 4  -->
-<!-- ====================== -->
-
-<theme id="th1_transient_E4" toc="no">
-<titleabbrev>All cadences</titleabbrev>
-<title>All cadences</title>
-
-<para>Diferenciar sobre una partitura todos los tipos de cadencias.</para>
-
-<exercise type="IdfyCadences" width="100%" height="300" border="0">
-    <control_go_back>th1_transient</control_go_back>
-    <cadences>all</cadences>
-    <cadence_buttons>half,deceptive,perfect,plagal,imperfect</cadence_buttons>
-    <mode>theory</mode>
+    <keys>Do,Re,Mi,Fa,Sol,La,Si,Dom,Rem,Mim,Fam,Solm,Lam,Sim</keys>
+    <mode>earTraining</mode>
 </exercise>
 
 </theme>

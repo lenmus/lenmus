@@ -39,13 +39,10 @@
 
 #include "CadencesConstrains.h"
 #include "../score/Score.h"
-#include "ScoreAuxCtrol.h"
-#include "UrlAuxCtrol.h"
-#include "CountersCtrol.h"
 
 
 
-class lmIdfyCadencesCtrol :    public lmIdfyExerciseCtrol    
+class lmIdfyCadencesCtrol : public lmIdfyExerciseCtrol    
 {
 public:
 
@@ -64,6 +61,7 @@ public:
     wxString SetNewProblem();    
     wxDialog* GetSettingsDlg();
     void ReconfigureButtons();
+
 
 private:
     wxString PrepareScore(EClefType nClef, lmECadenceType nType, lmScore** pProblemScore,

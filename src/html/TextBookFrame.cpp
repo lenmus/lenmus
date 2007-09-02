@@ -787,7 +787,7 @@ bool lmTextBookFrame::KeywordSearch(const wxString& keyword,
 //        }
 //
 //        m_SearchButton->Enable();
-//        m_SearchText->SetSelection(0, keyword.Length());
+//        m_SearchText->SetSelection(0, keyword.length());
 //        m_SearchText->SetFocus();
 //    }
 //    else if (mode == wxHELP_SEARCH_INDEX)
@@ -1417,7 +1417,7 @@ void lmTextBookFrame::OnIndexFind(wxCommandEvent& event)
         cnttext.Printf(_("%i of %i"), displ, cnt);
         m_IndexCountInfo->SetLabel(cnttext);
 
-        m_IndexText->SetSelection(0, sr.Length());
+        m_IndexText->SetSelection(0, sr.length());
         m_IndexText->SetFocus();
     }
 }

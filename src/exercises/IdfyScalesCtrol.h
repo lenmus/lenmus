@@ -39,13 +39,10 @@
 
 #include "ScalesConstrains.h"
 #include "../score/Score.h"
-#include "ScoreAuxCtrol.h"
-#include "UrlAuxCtrol.h"
-#include "CountersCtrol.h"
 
 
 
-class lmIdfyScalesCtrol :    public lmIdfyExerciseCtrol    
+class lmIdfyScalesCtrol : public lmIdfyExerciseCtrol    
 {
 public:
 
@@ -68,6 +65,7 @@ public:
 private:
     wxString PrepareScore(EClefType nClef, EScaleType nType, lmScore** pScore);
     int ReconfigureGroup(int iBt, int iStartC, int iEndC, wxString sRowLabel);
+    void DisableGregorianMajorMinor(EScaleType nType);
 
         // member variables
 

@@ -129,24 +129,24 @@ bool PitchNameToData(wxString sPitch, int* pPitch, EAccidentals* pAccidentals)
     wxString sAlter;
 
     //split the string: accidentals and name
-    switch (sPitch.Len()) {
+    switch (sPitch.length()) {
         case 2:
             sAlter = _T("");
             break;
         case 3:
-            sAlter = sPitch.Mid(0, 1);
-            sPitch = sPitch.Mid(1, 2);
+            sAlter = sPitch.substr(0, 1);
+            sPitch = sPitch.substr(1, 2);
             break;
         case 4:
-            sAlter = sPitch.Mid(0, 2);
-            sPitch = sPitch.Mid(2, 2);
+            sAlter = sPitch.substr(0, 2);
+            sPitch = sPitch.substr(2, 2);
             break;
         default:
             return true;   //error
     }
 
     wxString sStep = sPitch.Left(1);
-    wxString sOctave = sPitch.Mid(1, 1);
+    wxString sOctave = sPitch.substr(1, 1);
     fError = StringToPitch(sStep, sOctave, pPitch);
     if (fError) return true;
 
@@ -251,8 +251,8 @@ float SrcGetPatternDuracion(wxString sPattern)
     {
         //extract the element and remove it from source
         iEnd = SrcSplitPattern(sSource) + 1;
-        sElement = sSource.Mid(0, iEnd);
-        sSource = sSource.Mid(iEnd);
+        sElement = sSource.substr(0, iEnd);
+        sSource = sSource.substr(iEnd);
 
         //compute element's duration
         rPatternDuration += SrcGetElementDuracion(sElement);
@@ -268,10 +268,10 @@ float SrcGetElementDuracion(wxString sElement)
 
     int iStart, i;
     wxString sAux;
-    wxString sElementType = sElement.Mid(1, 1);
+    wxString sElementType = sElement.substr(1, 1);
     if (sElementType == _T("n") ) {
         //skip note pitch
-        sAux = sElement.Mid(3);
+        sAux = sElement.substr(3);
     } else if (sElementType == _T("s") ) {
         sAux = sElement;
     }
@@ -281,10 +281,10 @@ float SrcGetElementDuracion(wxString sElement)
 
     // fin dots
     i = iStart + 1;
-    while (sAux.Mid(i, 1) == _T(".") ) i++;
+    while (sAux.substr(i, 1) == _T(".") ) i++;
 
     //extract NoteType and dots
-    wxString sNoteType = sAux.Mid(iStart, i - iStart);
+    wxString sNoteType = sAux.substr(iStart, i - iStart);
 
     // compute duration
     return LDPNoteTypeToDuration(sNoteType);
@@ -296,7 +296,7 @@ float SrcGetElementDuracion(wxString sElement)
 */
 bool SrcIsRest(wxString sElement)
 {
-    return (sElement.Mid(1, 1) == _T("s") );
+    return (sElement.substr(1, 1) == _T("s") );
 }
 
 /*! Receives an string formed by concatenated elements, for example:
@@ -310,17 +310,17 @@ int SrcSplitPattern(wxString sSource)
     int iMax;               //sSource length
     int nAPar;              //open parenthesis counter
 
-    iMax = sSource.Length();
+    iMax = sSource.length();
     wxASSERT(iMax > 0);                         //sSource must not be empty
-    wxASSERT(sSource.Mid(0, 1) == _T("(") );    //must start with parenthesis
+    wxASSERT(sSource.substr(0, 1) == _T("(") );    //must start with parenthesis
 
     nAPar = 1;       //let//s count first parenthesis
     //look for the matching closing parenthesis
     bool fFound = false;
     for (i=1; i < iMax; i++) {
-        if (sSource.Mid(i, 1) == _T("(") ) {
+        if (sSource.substr(i, 1) == _T("(") ) {
             nAPar++;
-        } else if (sSource.Mid(i, 1) == _T(")") ) {
+        } else if (sSource.substr(i, 1) == _T(")") ) {
             nAPar--;
             if (nAPar == 0) {
                 //matching parenthesis found. Exit loop
@@ -365,17 +365,16 @@ bool LDPDataToPitch(wxString sPitch, EAccidentals* pAccidentals,
         long nAux = 0;
         fError = !sPitch.ToLong(&nAux);
         wxASSERT(!fError);
-        lmConverter oConverter;
-        sPitch = oConverter.MPitchToLDPName((lmPitch) nAux);
-        nAux = sPitch.Length();
+        sPitch = MPitch_ToLDPName((lmMPitch) nAux);
+        nAux = sPitch.length();
         if (nAux == 2) {
-            *sStep = sPitch.Mid(0, 1);
-            *sOctave =  sPitch.Mid(1);
+            *sStep = sPitch.substr(0, 1);
+            *sOctave =  sPitch.substr(1);
             *pAccidentals = eNoAccidentals;
         }
         else {
-            *sStep =  sPitch.Mid(1, 1);
-            *sOctave =  sPitch.Mid(2);
+            *sStep =  sPitch.substr(1, 1);
+            *sOctave =  sPitch.substr(2);
             *pAccidentals = eSharp;
         }
         return false;
@@ -385,24 +384,24 @@ bool LDPDataToPitch(wxString sPitch, EAccidentals* pAccidentals,
     wxString sAlter;
 
     //split the string: accidentals and name
-    switch (sPitch.Len()) {
+    switch (sPitch.length()) {
         case 2:
             sAlter = _T("");
             break;
         case 3:
-            sAlter = sPitch.Mid(0, 1);
-            sPitch = sPitch.Mid(1, 2);
+            sAlter = sPitch.substr(0, 1);
+            sPitch = sPitch.substr(1, 2);
             break;
         case 4:
-            sAlter = sPitch.Mid(0, 2);
-            sPitch = sPitch.Mid(2, 2);
+            sAlter = sPitch.substr(0, 2);
+            sPitch = sPitch.substr(2, 2);
             break;
         default:
             return true;   //error
     }
 
     *sStep = sPitch.Left(1);
-    *sOctave = sPitch.Mid(1, 1);
+    *sOctave = sPitch.substr(1, 1);
 
     //analyse accidentals
     if (sAlter.IsEmpty()) {
@@ -567,12 +566,12 @@ bool XmlDataToBarStyle(wxString sBarStyle, EBarline* pType)
 
 }
 
-void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, lmPitch nSelNote)
+void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, lmDPitch nSelNote)
 {
     int i;
     pCboBox->Clear();
     for (i=1; i < 60; i++) {
-        pCboBox->Append( GetNoteNamePhysicists((lmPitch) i) );
+        pCboBox->Append( GetNoteNamePhysicists((lmDPitch) i) );
     }
     pCboBox->SetValue( GetNoteNamePhysicists(nSelNote) );
 
@@ -583,7 +582,7 @@ void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, wxString sNoteName)
     int i;
     pCboBox->Clear();
     for (i=1; i < 60; i++) {
-        pCboBox->Append( GetNoteNamePhysicists((lmPitch) i) );
+        pCboBox->Append( GetNoteNamePhysicists((lmDPitch) i) );
     }
     pCboBox->SetValue( sNoteName );
 

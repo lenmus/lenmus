@@ -39,16 +39,11 @@
 
 #include "ChordConstrains.h"
 #include "../score/Score.h"
-#include "ScoreAuxCtrol.h"
-#include "UrlAuxCtrol.h"
-#include "CountersCtrol.h"
 
 
 
-class lmIdfyChordCtrol : public wxWindow    
+class lmIdfyChordCtrol : public lmOneScoreCtrol     
 {
-   DECLARE_DYNAMIC_CLASS(lmIdfyChordCtrol)
-
 public:
 
     // constructor and destructor    
@@ -59,30 +54,17 @@ public:
 
     ~lmIdfyChordCtrol();
 
-    // event handlers
-    void OnSize(wxSizeEvent& event);
-    void OnRespButton(wxCommandEvent& event);
-    void OnPlay(wxCommandEvent& event);
-    void OnNewProblem(wxCommandEvent& event);
-    void OnResetCounters(wxCommandEvent& event);
-    void OnDisplaySolution(wxCommandEvent& event);
-    void OnSettingsButton(wxCommandEvent& event);
-
-    // event handlers related to debugging
-    void OnDebugShowSourceScore(wxCommandEvent& event);
-    void OnDebugDumpScore(wxCommandEvent& event);
-    void OnDebugShowMidiEvents(wxCommandEvent& event);
+protected:
+    //implementation of virtual methods
+    void InitializeStrings();
+    void CreateAnswerButtons();
+    void PrepareAuxScore(int nButton);
+    wxString SetNewProblem();    
+    wxDialog* GetSettingsDlg();
+    void ReconfigureButtons();
 
 private:
-    void SetUpButtons();
-    void EnableButtons(bool fEnable);
-    void Play();
-    void NewProblem();
-    void DisplaySolution();
-    void ResetExercise();
-    void ResetCounters();
     wxString PrepareScore(EClefType nClef, EChordType nType, lmScore** pScore);
-    void DoStopSounds();
 
         // member variables
 
@@ -92,14 +74,7 @@ private:
         m_NUM_BUTTONS = 20,     // NUM_COLS * NUM_ROWS;
     };
 
-    lmScore*            m_pChordScore;      //solution score with the chord
-    lmScore*            m_pAuxScore;        //score to play user selected chords
-    lmScoreAuxCtrol*    m_pScoreCtrol;
-    lmCountersCtrol*    m_pCounters;
-    wxFlexGridSizer*    m_pKeyboardSizer;
-
     lmChordConstrains* m_pConstrains;       //constraints for the exercise
-    bool            m_fQuestionAsked;       //question asked but not yet answered
 
     //problem asked
     EKeySignatures  m_nKey;
@@ -108,19 +83,9 @@ private:
     int             m_nMode;
 
     //answer
-    wxStaticText*   m_pRowLabel[m_NUM_ROWS];
     wxButton*       m_pAnswerButton[m_NUM_BUTTONS]; //buttons for the answers
-    int             m_nRealChord[m_NUM_BUTTONS];    // chord that corresponds
-                                                    // to each valid button
-    int             m_nRespIndex;           //index to the button with the right answer
-    wxString        m_sAnswer;              //The names of each interval
-
-    lmUrlAuxCtrol*  m_pPlayButton;       // "play" button
-    lmUrlAuxCtrol*  m_pShowSolution;     // "show solution" button
-
-    //lmIdfyChordCtrol is used both for ear training exercises and for theory exercises.
-    //Following variables are used for configuration
-    bool        m_fTheoryMode;
+    int             m_nRealChord[m_NUM_BUTTONS];    //chord associated to each valid button
+    wxStaticText*   m_pRowLabel[m_NUM_ROWS];
 
     DECLARE_EVENT_TABLE()
 };

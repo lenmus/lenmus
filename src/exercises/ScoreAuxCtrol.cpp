@@ -279,8 +279,8 @@ void lmScoreAuxCtrol::DisplayMessage(wxString sMsg, lmLUnits posMsg, bool fClear
     //If message contains a new line control char. split it
     int i = sMsg.Find(_T('\n'));
     if (i != wxNOT_FOUND) {
-        m_sMsg = sMsg.Mid(0, i);
-        m_sMsg2 = sMsg.Mid(i+1);
+        m_sMsg = sMsg.substr(0, i);
+        m_sMsg2 = sMsg.substr(i+1);
     }
     else {
         m_sMsg = sMsg;
@@ -288,7 +288,7 @@ void lmScoreAuxCtrol::DisplayMessage(wxString sMsg, lmLUnits posMsg, bool fClear
     }
     m_yMsg = posMsg;
     m_fDisplayMessage = true;
-    Refresh();
+    if (IsShown()) Refresh();
 }
 
 void lmScoreAuxCtrol::DisplayScore(lmScore* pScore, bool fClearMessage)

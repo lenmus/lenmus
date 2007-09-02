@@ -69,6 +69,8 @@ BEGIN_EVENT_TABLE(lmDlgCfgIdfyCadence, wxDialog)
     EVT_BUTTON( XRCID( "btnCheckAllPlagal" ), lmDlgCfgIdfyCadence::OnCheckAllPlagal )
     EVT_BUTTON( XRCID( "btnCheckAllHalf" ), lmDlgCfgIdfyCadence::OnCheckAllHalf )
     EVT_BUTTON( XRCID( "btnCheckAllDeceptive" ), lmDlgCfgIdfyCadence::OnCheckAllDeceptive )
+    EVT_BUTTON( XRCID( "btnCheckAllMajor" ), lmDlgCfgIdfyCadence::OnCheckAllMajor )
+    EVT_BUTTON( XRCID( "btnCheckAllMinor" ), lmDlgCfgIdfyCadence::OnCheckAllMinor )
 
     // Radio button boxes
     EVT_RADIOBOX( XRCID( "radBoxShowKey" ), lmDlgCfgIdfyCadence::OnDataChanged )
@@ -97,6 +99,22 @@ BEGIN_EVENT_TABLE(lmDlgCfgIdfyCadence, wxDialog)
     EVT_CHECKBOX( XRCID( "chkKeyEFlat" ), lmDlgCfgIdfyCadence::OnDataChanged )
     EVT_CHECKBOX( XRCID( "chkKeyBFlat" ), lmDlgCfgIdfyCadence::OnDataChanged )
     EVT_CHECKBOX( XRCID( "chkKeyF" ), lmDlgCfgIdfyCadence::OnDataChanged )
+        // Minor keys
+    EVT_CHECKBOX( XRCID( "chkKeyAMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyEMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyBMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyFSharpMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyCSharpMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyGSharpMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyDSharpMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyASharpMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyAFlatMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyEFlatMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyBFlatMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyFMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyCMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyGMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
+    EVT_CHECKBOX( XRCID( "chkKeyDMinor" ), lmDlgCfgIdfyCadence::OnDataChanged )
 
     // Allowed cadences check boxes
     EVT_CHECKBOX( XRCID( "chkCad_V_I" ), lmDlgCfgIdfyCadence::OnDataChanged )
@@ -204,6 +222,22 @@ lmDlgCfgIdfyCadence::lmDlgCfgIdfyCadence(wxWindow* parent,
     m_pChkKeySign[earmMib] = XRCCTRL(*this, "chkKeyEFlat", wxCheckBox);
     m_pChkKeySign[earmSib] = XRCCTRL(*this, "chkKeyBFlat", wxCheckBox);
     m_pChkKeySign[earmFa] = XRCCTRL(*this, "chkKeyF", wxCheckBox);
+        // Minor keys
+    m_pChkKeySign[earmLam] = XRCCTRL(*this, "chkKeyAMinor", wxCheckBox);
+    m_pChkKeySign[earmMim] = XRCCTRL(*this, "chkKeyEMinor", wxCheckBox);
+    m_pChkKeySign[earmSim] = XRCCTRL(*this, "chkKeyBMinor", wxCheckBox);
+    m_pChkKeySign[earmFasm] = XRCCTRL(*this, "chkKeyFSharpMinor", wxCheckBox);
+    m_pChkKeySign[earmDosm] = XRCCTRL(*this, "chkKeyCSharpMinor", wxCheckBox);
+    m_pChkKeySign[earmSolsm] = XRCCTRL(*this, "chkKeyGSharpMinor", wxCheckBox);
+    m_pChkKeySign[earmResm] = XRCCTRL(*this, "chkKeyDSharpMinor", wxCheckBox);
+    m_pChkKeySign[earmLasm] = XRCCTRL(*this, "chkKeyASharpMinor", wxCheckBox);
+    m_pChkKeySign[earmLabm] = XRCCTRL(*this, "chkKeyAFlatMinor", wxCheckBox);
+    m_pChkKeySign[earmMibm] = XRCCTRL(*this, "chkKeyEFlatMinor", wxCheckBox);
+    m_pChkKeySign[earmSibm] = XRCCTRL(*this, "chkKeyBFlatMinor", wxCheckBox);
+    m_pChkKeySign[earmFam] = XRCCTRL(*this, "chkKeyFMinor", wxCheckBox);
+    m_pChkKeySign[earmDom] = XRCCTRL(*this, "chkKeyCMinor", wxCheckBox);
+    m_pChkKeySign[earmSolm] = XRCCTRL(*this, "chkKeyGMinor", wxCheckBox);
+    m_pChkKeySign[earmRem] = XRCCTRL(*this, "chkKeyDMinor", wxCheckBox);
 
     // Allowed answer buttons
     m_pChkAnswerButton[lmBT_PERFECT] = XRCCTRL(*this, "chkButtonPerfect", wxCheckBox);
@@ -243,7 +277,7 @@ lmDlgCfgIdfyCadence::lmDlgCfgIdfyCadence(wxWindow* parent,
 
     // allowed key signatures
     lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
-    for (int i=0; i < earmFa+1; i++) {
+    for (int i=0; i <= lmMAX_KEY; i++) {
         m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((EKeySignatures)i) );
     }
 
@@ -336,7 +370,7 @@ void lmDlgCfgIdfyCadence::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     
     // save selected key signatures
     lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
-    for (i=0; i < earmFa+1; i++) {
+    for (i=0; i <= lmMAX_KEY; i++) {
         pKeyConstrains->SetValid((EKeySignatures)i, m_pChkKeySign[i]->GetValue());
     }
 
@@ -438,7 +472,7 @@ bool lmDlgCfgIdfyCadence::VerifyData()
 
     // check that at least one key signature has been choosen
     fAtLeastOne = false;
-    for (i=0; i < earmFa+1; i++) {
+    for (i=0; i <= lmMAX_KEY; i++) {
         fAtLeastOne |= m_pChkKeySign[i]->GetValue();
     }
     fError = !fAtLeastOne;
@@ -565,6 +599,24 @@ void lmDlgCfgIdfyCadence::OnRadAnswerType(wxCommandEvent& WXUNUSED(event))
 		}
 	}
 
+    VerifyData();
+}
+
+void lmDlgCfgIdfyCadence::OnCheckAllMajor(wxCommandEvent& WXUNUSED(event))
+{
+    bool fCheck = !m_pChkKeySign[earmDo]->GetValue();
+    for (int i=0; i <= earmFa; i++) {
+        m_pChkKeySign[i]->SetValue(fCheck);
+    }
+    VerifyData();
+}
+
+void lmDlgCfgIdfyCadence::OnCheckAllMinor(wxCommandEvent& WXUNUSED(event))
+{
+    bool fCheck = !m_pChkKeySign[earmLam]->GetValue();
+    for (int i=earmLam; i <= lmMAX_KEY; i++) {
+        m_pChkKeySign[i]->SetValue(fCheck);
+    }
     VerifyData();
 }
 

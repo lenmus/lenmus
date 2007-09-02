@@ -61,7 +61,7 @@ public:
     static ETimeSignature RandomTimeSignature();
 
     //notes
-    static lmPitch GenerateRandomPitch(int nMinLine, int nRange, bool fRests, EClefType nClef);
+    static lmDPitch GenerateRandomDPitch(int nMinLine, int nRange, bool fRests, EClefType nClef);
     static wxString GenerateRandomRootNote(EClefType nClef, EKeySignatures nKey, bool fAllowAccidentals);
 
 };

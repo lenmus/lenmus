@@ -94,13 +94,14 @@ public:
 
     // constructor and destructor    
     lmIdfyExerciseCtrol(wxWindow* parent, wxWindowID id,
-               lmIdfyConstrains* pConstrains, 
+               lmIdfyConstrains* pConstrains, wxSize nScoreSize, 
                const wxPoint& pos = wxDefaultPosition, 
                const wxSize& size = wxDefaultSize, int style = 0);
 
     virtual ~lmIdfyExerciseCtrol();
 
     // event handlers
+    void OnPaint(wxPaintEvent& WXUNUSED(event));
     virtual void OnSize(wxSizeEvent& event);
     virtual void OnRespButton(wxCommandEvent& event);
     virtual void OnPlay(wxCommandEvent& event);
@@ -116,7 +117,6 @@ public:
 
     // event handlers related with playing a score
     void OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event));
-
 
 protected:
     //virtual pure methods
@@ -136,7 +136,7 @@ protected:
     virtual void ResetExercise();
     virtual void StopSounds() {};
 
-    void Create(int nCtrolWidth, int nCtrolHeight);
+    void CreateControls();
     void SetButtons(wxButton* pButton[], int nNumButtons, int nIdFirstButton);
 
         // member variables
@@ -171,6 +171,9 @@ private:
     wxButton**      m_pAnswerButtons;   //buttons for the answers
     int             m_nIdFirstButton;   //ID of first button; the others in sequence
     bool            m_fPlaying;         //currently playing the score
+
+    bool            m_fControlsCreated; 
+    wxSize          m_nScoreSize;        // ScoreAuxCtrol size
 
     DECLARE_EVENT_TABLE()
 };

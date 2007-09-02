@@ -431,14 +431,14 @@ int AssignVolume(float rTimePos, int nBeats, int nBeatType)
     //is placed. This method receives the time for a note and the current time signature
     //and return the volume to assign to it
 
-    lmENoteBeatPosition nPos = GetNoteBeatPosition(rTimePos, nBeats, nBeatType);
+    int nPos = GetNoteBeatPosition(rTimePos, nBeats, nBeatType);
 
     int nVolume = 60;       // volume for off-beat notes
 
-    if (nPos == lmON_BEAT_FIRST)
+    if (nPos == 0)
         //on-beat notes on first beat
         nVolume = 85;
-    else if (nPos == lmON_BEAT_OTHER)
+    else if (nPos > 0)
         //on-beat notes on other beats
         nVolume = 75;
     else
@@ -450,11 +450,11 @@ int AssignVolume(float rTimePos, int nBeats, int nBeatType)
 }
 
 
-lmENoteBeatPosition GetNoteBeatPosition(float rTimePos, int nBeats, int nBeatType)
+int GetNoteBeatPosition(float rTimePos, int nBeats, int nBeatType)
 {
     // Some times it is necessary to know the type of beak (strong, medium, weak, off-beat)
     // at which a note or rest is positioned.
-    // This method receives the time for a note/rest and the current time signature
+    // This function receives the time for a note/rest and the current time signature
     //  and return the type of beat
 
     // coumpute beat duration
@@ -474,14 +474,67 @@ lmENoteBeatPosition GetNoteBeatPosition(float rTimePos, int nBeats, int nBeatTyp
     int nBeatNum = (int)rTimePos / nBeatDuration;               //number of beat
     float rBeatShift = fabs(rTimePos - (float)(nBeatDuration * nBeatNum));
 
-    if (nBeatNum == 0 && rBeatShift < 1.0)
-        //on-beat, first beat
-        return lmON_BEAT_FIRST;
-    else if (rBeatShift < 1.0)
-        //on-beat, other beats
-        return lmON_BEAT_OTHER;
+    if (rBeatShift < 1.0)
+        //on-beat
+        return nBeatNum;
     else
         // off-beat
         return lmOFF_BEAT;
+
+}
+
+int GetChordPosition(float rTimePos, float rDuration, int nBeats, int nBeatType) 
+{
+    // Some times it is necessary to know a note/rest sounds in beat part.
+    // This method receives the time for a note/rest and the current time signature
+    // and returns the beat number if the note sounds in beat part (starts in beat or 
+    // is sounding at beat time, or returns -1 (lmNON_CHORD_NOTE) if non-chord note
+
+    // coumpute beat duration
+    int nBeatDuration;
+    switch (nBeatType) {
+        case 1: nBeatDuration = (int)eWholeDuration; break;
+        case 2: nBeatDuration = (int)eHalfDuration; break;
+        case 4: nBeatDuration = (int)eQuarterDuration; break;
+        case 8: nBeatDuration = 3* (int)eEighthDuration; break;
+        case 16: nBeatDuration = (int)e16thDuration; break;
+        default:
+            wxLogMessage(_T("[GetPositionBeatType] BeatType %d unknown."), nBeatType);
+            wxASSERT(false);
+    }
+
+    // compute start and end time
+    // Duration: quarter = 64, eighth = 32
+    // Example. 3/4 time, quarter note starting on third beat:
+    //      rTimePos= 128
+    //      nStartBeat = 128 / 64 = 2
+    //      rStartShift = 128 - 2*64 = 0  --> starts on beat
+    //
+    // Example. 3/4 time, off-baet quarter note starting before third beat (rTimePos=96)
+    //      rTimePos = 64+32= 96
+    //      nStartBeat = 96/64 = 1
+    //      rStartShift = 96 - 1*64 = 32 ==> Doesn't start on beat
+    //      rEndTimePos = 96+64 = 160
+    //      nEndBeat = 160/64 = 2
+    //      rEndShift = 160 - 64*2 = 160-128 = 32
+
+    // compute relative position of this note/rest with reference to the beat
+    int nStartBeat = (int)rTimePos / nBeatDuration;               //start beat number (minus 1)
+    float rStartShift = fabs(rTimePos - (float)(nBeatDuration * nStartBeat));
+
+    float rEndTimePos = rTimePos + rDuration;
+    int nEndBeat = (int)rEndTimePos /nBeatDuration;
+    float rEndShift = fabs(rEndTimePos - (float)(nBeatDuration * nEndBeat));
+
+    // note on chord if starts on beat or start point on beat N and end point on beat N+1.
+    // 1.0 is the duration of a 256th note. I use 1.0 instead of e256thDuration to avoid
+    // conversions
+    if (rStartShift < 1.0 )
+        return nStartBeat;
+    else if (nStartBeat != nEndBeat && rEndShift > 1.0)
+        return nStartBeat+1;    //AWARE: The note might last for many beats. So nEndBeat is
+                                // not the right answer.
+    else
+        return lmNON_CHORD_NOTE;
 
 }

@@ -91,7 +91,7 @@ wxString GetSystemLanguageCode()
 
     if (info) {
         wxString fullCode = info->CanonicalName;
-        if (fullCode.Length() < 2)
+        if (fullCode.length() < 2)
             return _T("en");
 
         wxString code = fullCode.Left(2);
@@ -232,7 +232,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
             name = localLanguageName[code];
         }
 
-        if (fullCode.Length() < 2)
+        if (fullCode.length() < 2)
             continue;
 
         if (TranslationExists(pathList, fullCode)) {

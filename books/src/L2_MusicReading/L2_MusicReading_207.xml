@@ -7,7 +7,7 @@
 
 
 <para>In this lesson two new rhythmic patterns are introduced:</para>
-<score width="600" height="100" border="0">
+<para><score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -15,7 +15,7 @@
         (Metrica 2 4 NoVisible)(n a4 s g+)(n a4 s)(n a4 c g-))
         (c (n a4 s g+)(n a4 s)(n a4 c l g-)(n a4 n)(Barra Final))
     </music>
-</score>
+</score></para>
 
 <part>
 <title>Listen and take notice of the differences</title>
@@ -23,7 +23,7 @@
 when we tie notes in the basic four 8th notes pattern.
 Compare this pattern with the one in the last measure. Note
 the different rhythmic accent between measures 3 and 4.</para>
-<score width="600" height="100" border="0">
+<para><score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -33,7 +33,7 @@ the different rhythmic accent between measures 3 and 4.</para>
         (c (n a4 s g+)(n a4 s)(n a4 c g-))
         (c (n a4 c g+)(n a4 s)(n a4 s g-)(Barra Final))
     </music>
-</score>
+</score></para>
 </part>
 
 <part>

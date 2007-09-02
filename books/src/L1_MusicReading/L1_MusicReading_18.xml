@@ -12,7 +12,7 @@ In this lesson a new rhythmic pattern is introduced:
 One eighth note and two 16th notes.
 </para>
 
-<score width="600" height="70" border="0">
+<para><score width="685" height="70" border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -26,7 +26,7 @@ One eighth note and two 16th notes.
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 
 <part>
@@ -34,7 +34,7 @@ One eighth note and two 16th notes.
 
 <para>Listen to each measure and pay attention to the newly introduced patterns:</para>
 
-<score width="600" height="100" border="0">
+<para><score width="685" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -43,7 +43,7 @@ One eighth note and two 16th notes.
         (c (n a4 c g+)(n a4 c g-)(n a4 c g+)(n a4 s)(n a4 s g-) )
         (c (n a4 c g+)(n a4 c l g-)(n a4 c g+)(n a4 s)(n a4 s g-)(Barra Final))
     </music>
-</score>
+</score></para>
 
 </part>
 

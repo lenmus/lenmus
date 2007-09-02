@@ -49,7 +49,7 @@ extern lmMainFrame *g_pMainFrame;
 //-----------------------------------------------------------------------------------------
 
 lmSoundEvent::lmSoundEvent(float rTime, ESoundEventType nEventType, int nChannel,
-                           lmPitch nMidiPitch, int nVolume, int nStep, lmStaffObj* pStaffObj,
+                           lmMPitch nMidiPitch, int nVolume, int nStep, lmStaffObj* pStaffObj,
                            int nMeasure)
 {
     DeltaTime = (long)(rTime + 0.5);
@@ -156,7 +156,7 @@ lmSoundManager::~lmSoundManager()
 }
 
 void lmSoundManager::StoreEvent(float rTime, ESoundEventType nEventType, int nChannel,
-                           lmPitch nMidiPitch, int nVolume, int nStep, lmStaffObj* pSO, int nMeasure)
+                           lmMPitch nMidiPitch, int nVolume, int nStep, lmStaffObj* pSO, int nMeasure)
 {
     //create the event and add it to the table
     lmSoundEvent* pEvent = new lmSoundEvent(rTime, nEventType, nChannel, nMidiPitch,

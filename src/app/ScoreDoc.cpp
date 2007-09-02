@@ -111,8 +111,8 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
 
     if (filename.StartsWith( _T("\\<<IMPORT>>//") ))
     {
-        wxString sPath = filename.Mid(15);
-        size_t nSize = sPath.Length() - 4;
+        wxString sPath = filename.substr(15);
+        size_t nSize = sPath.length() - 4;
         wxLogMessage(_T("Importing <%s>"), sPath.Left(nSize).c_str());
         return OnImportDocument(sPath.Left(nSize) );
     }

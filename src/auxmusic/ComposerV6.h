@@ -30,7 +30,9 @@
 
 #include "Composer.h"
 
-
+// symbolic names for bool fUpStep
+#define lmDOWN      false
+#define lmUP        true
 
 class lmComposer6 : lmComposer
 {
@@ -52,17 +54,41 @@ private:
     // pitch related methods
     bool InstantiateNotes(lmScore* pScore, EKeySignatures nKey);
     void GetRandomHarmony(int nFunctions, std::vector<long>& aFunction);
-    void FunctionToChordNotes(EKeySignatures nKey, long nFunction, lmNotePitch aNotes[4]);
-    lmNotePitch GenerateOnBeatNote(lmNote* pNotePrev, lmNote* pNoteCur,
-                                   std::vector<lmNotePitch>& aOnChordPitch,
-                                   lmNotePitch nRootPitch);
+    void FunctionToChordNotes(EKeySignatures nKey, long nFunction, lmAPitch aNotes[4]);
 
-    void GenerateScale(EKeySignatures nKey, lmNotePitch aNotes[7]);
-    lmNotePitch GenerateOffBeatNote(lmNote* pNotePrev, lmNotePitch aScale[7]);
-    lmNotePitch GenerateInChordList(EKeySignatures nKey, long nFunction,
-                                    std::vector<lmNotePitch>& aValidPitch);
+    void GenerateScale(EKeySignatures nKey, lmAPitch aNotes[7]);
+    lmAPitch GenerateInChordList(EKeySignatures nKey, long nFunction,
+                                    std::vector<lmAPitch>& aValidPitch);
 
-    lmPitch RootNote(EKeySignatures nKey);
+    int GetRootStep(const EKeySignatures nKey) const;
+
+        // contour
+    void GenerateContour(int nNumPoints, std::vector<lmDPitch>& nContour);
+    void ComputeTriangle(bool fUp, int iStart, int nPoints, lmDPitch nLowPitch,
+                         lmDPitch nHighPitch, std::vector<lmDPitch>& aPoints);
+    void ComputeRamp(int iStart, int nPoints, lmDPitch nStartPitch,
+                     lmDPitch nEndPitch, std::vector<lmDPitch>& aPoints);
+    void ComputeArch(bool fUp, int iStart, int nPoints, lmDPitch nLowPitch,
+                     lmDPitch nHighPitch, std::vector<lmDPitch>& aPoints);
+
+        // pitch
+    lmAPitch NearestNoteOnChord(lmDPitch nPoint, lmNote* pNotePrev, lmNote* pNoteCur,
+                                            std::vector<lmAPitch>& aOnChordPitch);
+        // pitch for non-chord notes
+    void AssignNonChordNotes(int nNumNotes, lmNote* pOnChord1, lmNote* pOnChord2,
+                             lmNote* pNonChord[], lmAPitch aScale[7]);
+    void NeightboringNotes(int nNumNotes, lmNote* pOnChord1, lmNote* pOnChord2,
+                           lmNote* pNonChord[], lmAPitch aScale[7]);
+    void PassingNotes(bool fUp, int nNumNotes, lmNote* pOnChord1, lmNote* pOnChord2,
+                      lmNote* pNonChord[], lmAPitch aScale[7]);
+    void ThirdFifthNotes(bool fUp, int nNumNotes, lmNote* pOnChord1, lmNote* pOnChord2,
+                         lmNote* pNonChord[], lmAPitch aScale[7]);
+
+    lmAPitch MoveByChromaticStep(bool fUpStep, lmAPitch nPitch);
+    lmAPitch MoveByStep(bool fUpStep, lmAPitch nPitch, lmAPitch aScale[7]);
+
+    //debug
+    void InstantiateWithNote(lmScore* pScore, lmAPitch anPitch);
 
 
 
@@ -73,7 +99,7 @@ private:
     lmScoreConstrains*  m_pConstrains;
 
     //variables to control note pitch generation
-    lmNotePitch     m_nMinPitch, m_nMaxPitch;   // the valid range of notes to generate
+    lmAPitch     m_nMinPitch, m_nMaxPitch;   // the valid range of notes to generate
 
 
 };

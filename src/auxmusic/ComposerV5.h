@@ -48,7 +48,7 @@ private:
 
     // pitch related methods
     wxString    InstantiateNotes(wxString sBeats, bool fRootPtich=false);
-    lmPitch     RootNote(EKeySignatures nKey);
+    lmDPitch    RootNote(EKeySignatures nKey);
 
 
 
@@ -60,8 +60,8 @@ private:
 
     //variables to control note pitch generation
     int         m_nNumNotes;                // num of notes generated
-    lmPitch     m_minPitch, m_maxPitch;     // range of notes to generate
-    lmPitch     m_lastPitch;                // last note pitch
+    lmDPitch    m_minPitch, m_maxPitch;     // range of notes to generate
+    lmDPitch    m_lastPitch;                // last note pitch
     bool        m_fTied;                    // next note tied to m_lastPitch
 
 

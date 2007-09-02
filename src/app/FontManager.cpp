@@ -150,7 +150,7 @@ void lmFontManager::LoadFile(wxString sFileName)
     int nNumLine = 1;
     for (sLine = oFile.GetFirstLine(); !oFile.Eof(); sLine = oFile.GetNextLine() ) {
         //process current line
-        if (sLine.Trim() != _T("") && sLine.Mid(0, 2) != _T("//")) {
+        if (sLine.Trim() != _T("") && sLine.substr(0, 2) != _T("//")) {
             nCurLesson = AnalyzeGlyphLine(nNumLine, sLine);
             if (nPreviousLesson > nCurLesson) {
                 wxMessageBox(wxString::Format(
@@ -162,7 +162,7 @@ void lmFontManager::LoadFile(wxString sFileName)
         }
     }
     //process the last line
-    if (sLine.Trim(false) != _T("") && sLine.Mid(0, 2) != _T("//")) {
+    if (sLine.Trim(false) != _T("") && sLine.substr(0, 2) != _T("//")) {
         AnalyzeLine(iFile, nNumLine, sLine);
     }
 
@@ -194,7 +194,7 @@ int lmFontManager::AnalyzeGlyphLine(int nLine, wxString sLine)
     long nLevel;
     fOK = sData.ToLong(&nLevel);
     wxASSERT(fOK);
-    sLine = sLine.Mid(iSemicolon + 1);      //skip the semicolon
+    sLine = sLine.substr(iSemicolon + 1);      //skip the semicolon
 
     //get lesson
     iSemicolon = sLine.Find(_T(";"));
@@ -202,7 +202,7 @@ int lmFontManager::AnalyzeGlyphLine(int nLine, wxString sLine)
     long nLesson;
     fOK = sData.ToLong(&nLesson);
     wxASSERT(fOK);
-    sLine = sLine.Mid(iSemicolon + 1);      //skip the semicolon
+    sLine = sLine.substr(iSemicolon + 1);      //skip the semicolon
 
     //get clef
     iSemicolon = sLine.Find(_T(";"));
@@ -219,7 +219,7 @@ int lmFontManager::AnalyzeGlyphLine(int nLine, wxString sLine)
     wxString sUpperScope = sLine.Left(iSemicolon);
 
     //get flag
-    bool fOnlyThisLesson = (sLine.Mid(iSemicolon + 1, 1) == _T("1"));
+    bool fOnlyThisLesson = (sLine.substr(iSemicolon + 1, 1) == _T("1"));
 
     // build the entry
     m_pLessonsClefs->AddEntry((int)nLevel, (int)nLesson, fOnlyThisLesson, nClef,

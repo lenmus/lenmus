@@ -31,7 +31,6 @@
 #endif
 
 #include "IdfyChordCtrol.h"
-#include "UrlAuxCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
 #include "../auxmusic/Conversion.h"
@@ -44,12 +43,6 @@
 
 #include "../globals/Colors.h"
 extern lmColors* g_pColors;
-
-// access to global external variables
-extern bool g_fReleaseVersion;            // in TheApp.cpp
-extern bool g_fReleaseBehaviour;        // in TheApp.cpp
-extern bool g_fShowDebugLinks;            // in TheApp.cpp
-extern bool g_fAutoNewProblem;          // in Preferences.cpp
 
 //access to MIDI manager to get default settings for instrument to use
 #include "../sound/MidiManager.h"
@@ -67,50 +60,39 @@ static wxString m_sButtonLabel[ect_Max];
 
 //IDs for controls
 enum {
-    ID_LINK_SEE_SOURCE = 3000,
-    ID_LINK_DUMP,
-    ID_LINK_MIDI_EVENTS,
-    ID_LINK_NEW_PROBLEM,
-    ID_LINK_PLAY,
-    ID_LINK_SOLUTION,
-    ID_LINK_SETTINGS,
-    ID_BUTTON,
-
+    ID_BUTTON = 3010,
 };
 
 
-BEGIN_EVENT_TABLE(lmIdfyChordCtrol, wxWindow)
+BEGIN_EVENT_TABLE(lmIdfyChordCtrol, lmOneScoreCtrol)
     EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmIdfyChordCtrol::OnRespButton)
-    EVT_SIZE            (lmIdfyChordCtrol::OnSize)
-
-    LM_EVT_URL_CLICK    (ID_LINK_SEE_SOURCE, lmIdfyChordCtrol::OnDebugShowSourceScore)
-    LM_EVT_URL_CLICK    (ID_LINK_DUMP, lmIdfyChordCtrol::OnDebugDumpScore)
-    LM_EVT_URL_CLICK    (ID_LINK_MIDI_EVENTS, lmIdfyChordCtrol::OnDebugShowMidiEvents)
-
-    LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, lmIdfyChordCtrol::OnNewProblem)
-    LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmIdfyChordCtrol::OnPlay)
-    LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, lmIdfyChordCtrol::OnDisplaySolution)
-    LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmIdfyChordCtrol::OnSettingsButton)
 END_EVENT_TABLE()
 
-IMPLEMENT_CLASS(lmIdfyChordCtrol, wxWindow)
 
 lmIdfyChordCtrol::lmIdfyChordCtrol(wxWindow* parent, wxWindowID id,
                            lmChordConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
-    : wxWindow(parent, id, pos, size, style )
+    : lmOneScoreCtrol(parent, id, pConstrains, wxSize(320, 150), pos, size, style )
 {
     //initializations
-    SetBackgroundColour(*wxWHITE);
-    int i;
-    for (i=0; i < m_NUM_BUTTONS; i++) { m_pAnswerButton[i] = (wxButton*)NULL; }
-    m_fQuestionAsked = false;
-    m_pChordScore = (lmScore*)NULL;
-    m_pAuxScore = (lmScore*)NULL;
-    m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
     m_pConstrains = pConstrains;
-    m_fTheoryMode = m_pConstrains->IsTheoryMode();
 
+    //allow to play chords
+    m_nKey = earmDo;
+    m_sRootNote = _T("c4");
+    m_nInversion = 0;
+    m_nMode = m_pConstrains->GetRandomMode();
+
+    CreateControls();
+    if (m_pConstrains->IsTheoryMode()) NewProblem();
+}
+
+lmIdfyChordCtrol::~lmIdfyChordCtrol()
+{
+}
+
+void lmIdfyChordCtrol::InitializeStrings()
+{
     //language dependent strings. Can not be statically initiallized because
     //then they do not get translated
 
@@ -139,105 +121,17 @@ lmIdfyChordCtrol::lmIdfyChordCtrol(wxWindow* parent, wxWindowID id,
     m_sButtonLabel[ect_MinorSixth] = _("Minor 6th");
     m_sButtonLabel[ect_AugSixth] = _("Augmented 6th");
 
-    //the window is divided into two regions: top, for score on left and counters and links
-    //on the right, and bottom region, for answer buttons
-    wxBoxSizer* pMainSizer = new wxBoxSizer( wxVERTICAL );
+}
 
-    // debug buttons
-    if (g_fShowDebugLinks && !g_fReleaseVersion) {
-        wxBoxSizer* pDbgSizer = new wxBoxSizer( wxHORIZONTAL );
-        pMainSizer->Add(pDbgSizer, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
-
-        // "See source score"
-        pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, _("See source score") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
-
-        // "Dump score"
-        pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_DUMP, _("Dump score") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
-
-        // "See MIDI events"
-        pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, _("See MIDI events") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
-    }
-
-    // sizer for the scoreCtrol and the CountersCtrol
-    wxBoxSizer* pTopSizer = new wxBoxSizer( wxHORIZONTAL );
-    pMainSizer->Add(
-        pTopSizer,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
-
-    // create score ctrl
-    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, (lmScore*)NULL, wxDefaultPosition, wxSize(320,150), eSIMPLE_BORDER);
-    m_pScoreCtrol->SetMargins(lmToLogicalUnits(5, lmMILLIMETERS),      //left=1cm
-                              lmToLogicalUnits(5, lmMILLIMETERS),      //right=1cm
-                              lmToLogicalUnits(10, lmMILLIMETERS));     //top=1cm
-    pTopSizer->Add(
-        m_pScoreCtrol,
-        wxSizerFlags(1).Left().Border(wxTOP|wxBOTTOM, 10));
-
-    m_pScoreCtrol->SetScale((float)1.3);
-
-
-    // sizer for the CountersCtrol and the settings link
-    wxBoxSizer* pCountersSizer = new wxBoxSizer( wxVERTICAL );
-    pTopSizer->Add(
-        pCountersSizer,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10).Expand() );
-
-    // right/wrong answers counters control
-    m_pCounters = new lmCountersCtrol(this, wxID_ANY);
-    pCountersSizer->Add(
-        m_pCounters,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
-
-    // spacer to move the settings link to bottom
-    pCountersSizer->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-    // settings link
-    if (m_pConstrains->IncludeSettingsLink()) {
-        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
-        pCountersSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
-    }
-
-    // spacer to move the settings link a little up
-    pCountersSizer->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-        //
-        //links
-        //
-
-    wxBoxSizer* pLinksSizer = new wxBoxSizer( wxHORIZONTAL );
-    pMainSizer->Add(
-        pLinksSizer,
-        wxSizerFlags(0).Center().Border(wxLEFT|wxALL, 10) );
-
-    // "new problem" button
-    pLinksSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") ),
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
-
-    // "play" button
-    m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, _("Play") );
-    pLinksSizer->Add(
-        m_pPlayButton,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
-
-    // "show solution" button
-    m_pShowSolution = new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") );
-    pLinksSizer->Add(
-        m_pShowSolution,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT|wxBOTTOM, 20) );
-
-
+void lmIdfyChordCtrol::CreateAnswerButtons()
+{
     //create buttons for the answers, two rows
     int iB = 0;
+    for (iB=0; iB < m_NUM_BUTTONS; iB++)
+        m_pAnswerButton[iB] = (wxButton*)NULL;
 
     m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS+1, m_NUM_COLS+1, 10, 0);
-    pMainSizer->Add(
+    m_pMainSizer->Add(
         m_pKeyboardSizer,
         wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 10) );
 
@@ -255,61 +149,19 @@ lmIdfyChordCtrol::lmIdfyChordCtrol(wxWindow* parent, wxWindowID id,
             m_pKeyboardSizer->Add(
                 m_pAnswerButton[iB],
                 wxSizerFlags(0).Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
-            //m_pAnswerButton[iB]->Show(false);
-            //m_pAnswerButton[iB]->Enable(false);
         }
     }
 
-    SetSizer( pMainSizer );                 // use the sizer for window layout
-    pMainSizer->SetSizeHints( this );       // set size hints to honour minimum size
-
-    m_pScoreCtrol->DisplayMessage(_("Click on 'New problem' to start"),
-                                  lmToLogicalUnits(10, lmMILLIMETERS),
-                                  true);
-
-    m_pPlayButton->Enable(false);
-    m_pShowSolution->Enable(false);
-
-    SetUpButtons();     //reconfigure buttons in accordance with constraints
-
-    //allow to play chords
-    m_nKey = earmDo;
-    m_sRootNote = _T("c4");
-    m_nInversion = 0;
-    m_nMode = m_pConstrains->GetRandomMode();
-
-    if (m_fTheoryMode) NewProblem();
+    //inform base class about the settings
+    SetButtons(m_pAnswerButton, m_NUM_BUTTONS, ID_BUTTON);
 
 }
 
-lmIdfyChordCtrol::~lmIdfyChordCtrol()
+void lmIdfyChordCtrol::ReconfigureButtons()
 {
-    DoStopSounds();     //stop any possible score being played
+    // The settings has been changed. This method is invoked to reconfigure
+    // answer keyboard in case it is needed for new settings
 
-    //delete objects
-
-    if (m_pScoreCtrol) {
-        delete m_pScoreCtrol;
-        m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
-    }
-
-    if (m_pConstrains) {
-        delete m_pConstrains;
-        m_pConstrains = (lmChordConstrains*) NULL;
-    }
-
-    if (m_pChordScore) {
-        delete m_pChordScore;
-        m_pChordScore = (lmScore*)NULL;
-    }
-    if (m_pAuxScore) {
-        delete m_pAuxScore;
-        m_pAuxScore = (lmScore*)NULL;
-    }
-}
-
-void lmIdfyChordCtrol::SetUpButtons()
-{
     //Reconfigure buttons keyboard depending on the chords allowed
 
     int iC;     // real chord. Correspondence to EChordTypes
@@ -388,95 +240,34 @@ void lmIdfyChordCtrol::SetUpButtons()
     m_pKeyboardSizer->Layout();
 }
 
-//----------------------------------------------------------------------------------------
-// Event handlers
-
-void lmIdfyChordCtrol::OnSettingsButton(wxCommandEvent& event)
+wxDialog* lmIdfyChordCtrol::GetSettingsDlg()
 {
-    lmDlgCfgIdfyChord dlg(this, m_pConstrains, m_fTheoryMode);
-    int retcode = dlg.ShowModal();
-    if (retcode == wxID_OK) {
-        m_pConstrains->SaveSettings();
-        // When changing interval settings it is necessary review the buttons
-        // as number of buttons and/or its name could have changed.
-        SetUpButtons();
-    }
-
+    wxDialog* pDlg = new lmDlgCfgIdfyChord(this, m_pConstrains, m_pConstrains->IsTheoryMode());
+    return pDlg;
 }
 
-void lmIdfyChordCtrol::OnSize(wxSizeEvent& event)
+void lmIdfyChordCtrol::PrepareAuxScore(int nButton)
 {
-    //wxLogMessage(_T("OnSize at lmIdfyChordCtrol"));
-    Layout();
+    // No problem is presented and the user press the button to play a specific 
+    // sound (chord, interval, scale, etc.)
+    // This method is then invoked to prepare the score with the requested sound.
+    // At return, base class will play it
 
+    PrepareScore(eclvSol, (EChordType)m_nRealChord[nButton], &m_pAuxScore);
 }
 
-void lmIdfyChordCtrol::OnPlay(wxCommandEvent& event)
+wxString lmIdfyChordCtrol::SetNewProblem()
 {
-    Play();
-}
+    //This method must prepare the problem score and set variables:
+    //  m_pProblemScore - The score with the problem to propose
+    //  m_pSolutionScore - The score with the solution or NULL if it is the
+    //              same score than the problem score.
+    //  m_sAnswer - the message to present when displaying the solution
+    //  m_nRespIndex - the number of the button for the right answer
+    //  m_nPlayMM - the speed to play the score
+    //
+    //It must return the message to display to introduce the problem.
 
-void lmIdfyChordCtrol::OnNewProblem(wxCommandEvent& event)
-{
-    NewProblem();
-}
-
-void lmIdfyChordCtrol::OnDisplaySolution(wxCommandEvent& event)
-{
-    m_pCounters->IncrementWrong();
-    DisplaySolution();
-}
-
-void lmIdfyChordCtrol::OnRespButton(wxCommandEvent& event)
-{
-    DoStopSounds();     //stop any possible score being played
-
-    //identify button pressed
-    int nIndex = event.GetId() - ID_BUTTON;
-
-    if (m_fQuestionAsked)
-    {
-        // There is a question asked. The user press the button to give the answer
-
-        //verify if success or failure
-        bool fSuccess = (nIndex == m_nRespIndex);
-
-        //produce feedback sound, and update counters
-        if (fSuccess) {
-            m_pCounters->IncrementRight();
-        } else {
-            m_pCounters->IncrementWrong();
-        }
-
-        //if failure or not auto-new problem, display the solution.
-        //Else, if success and auto-new problem, generate a new problem
-        if (!fSuccess || !g_fAutoNewProblem) {
-            if (!fSuccess) {
-                //failure: mark wrong button in red and right one in green
-                m_pAnswerButton[m_nRespIndex]->SetBackgroundColour(g_pColors->Success());
-                m_pAnswerButton[nIndex]->SetBackgroundColour(g_pColors->Failure());
-            }
-            //show the solucion
-            DisplaySolution();
-       }
-        else {
-            NewProblem();
-        }
-    }
-    else {
-        // No problem presented. The user press the button to play a chord
-
-        //prepare the new chord and play it
-        PrepareScore(eclvSol, (EChordType)m_nRealChord[nIndex], &m_pAuxScore);
-        m_pAuxScore->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
-                            ePM_NormalInstrument, 320, (wxWindow*) NULL);
-    }
-
-}
-
-void lmIdfyChordCtrol::NewProblem()
-{
-    ResetExercise();
 
     //select a random mode
     m_nMode = m_pConstrains->GetRandomMode();
@@ -497,7 +288,7 @@ void lmIdfyChordCtrol::NewProblem()
         m_nInversion = oGenerator.RandomNumber(0, NumNotesInChord(nChordType) - 1);
 
     if (!m_pConstrains->DisplayKey()) m_nKey = earmDo;
-    m_sAnswer = PrepareScore(nClef, nChordType, &m_pChordScore);
+    m_sAnswer = PrepareScore(nClef, nChordType, &m_pProblemScore);
 
     //compute the index for the button that corresponds to the right answer
     int i;
@@ -506,29 +297,14 @@ void lmIdfyChordCtrol::NewProblem()
     }
     m_nRespIndex = i;
 
-
-    //load total score into the control
-    m_pScoreCtrol->SetScore(m_pChordScore, true);   //true: the score must be hidden
-    m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
-
-    //display the problem
-    m_pCounters->NextTeam();
-    if (m_fTheoryMode) {
+    //return message to introduce the problem
+    if (m_pConstrains->IsTheoryMode()) {
         //theory
-        m_pScoreCtrol->DisplayScore(m_pChordScore);
-        m_pScoreCtrol->DisplayMessage(_("Identify the next chord:"), lmToLogicalUnits(5, lmMILLIMETERS), false);
-        EnableButtons(true);
+        return _("Identify the next chord:");
     } else {
         //ear training
-        Play();
-        wxString sProblem = _("Press 'Play' to hear it again");
-        m_pScoreCtrol->DisplayMessage(sProblem, lmToLogicalUnits(5, lmMILLIMETERS), false);
+        return _("Press 'Play' to hear it again");
     }
-
-    m_fQuestionAsked = true;
-    m_pPlayButton->Enable(true);
-    m_pShowSolution->Enable(true);
-
 
 }
 
@@ -561,7 +337,6 @@ wxString lmIdfyChordCtrol::PrepareScore(EClefType nClef, EChordType nType, lmSco
     pVStaff->AddKeySignature( m_nKey );
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
 
-//    pVStaff->AddSpacer(30);       // 3 lines
     int i = (m_nMode == 2 ? nNumNotes-1 : 0);   // 2= melodic descending
     sPattern = _T("(n ") + oChordMngr.GetPattern(i) + _T(" r)");
     pNode = parserLDP.ParseText( sPattern );
@@ -573,6 +348,7 @@ wxString lmIdfyChordCtrol::PrepareScore(EClefType nClef, EChordType nType, lmSco
         pNode = parserLDP.ParseText( sPattern );
         pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
     }
+    pVStaff->AddSpacer(30);       // 5 lines
     pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);
 
     //(*pScore)->Dump();  //dbg
@@ -582,85 +358,5 @@ wxString lmIdfyChordCtrol::PrepareScore(EClefType nClef, EChordType nType, lmSco
         return oChordMngr.GetNameFull();       //name including inversion
     else
         return oChordMngr.GetName();           //only name
-
-}
-
-void lmIdfyChordCtrol::EnableButtons(bool fEnable)
-{
-    for (int iB=0; iB < m_NUM_BUTTONS; iB++) {
-        m_pAnswerButton[iB]->Enable(fEnable);
-    }
-}
-
-
-void lmIdfyChordCtrol::Play()
-{
-    //As scale is built using whole notes, we will play scale at MM=320 so
-    //that real note rate will be 80.
-    m_pScoreCtrol->PlayScore(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
-                            ePM_NormalInstrument, 320);
-
-}
-
-void lmIdfyChordCtrol::DisplaySolution()
-{
-    DoStopSounds();     //stop any possible score being played
-
-    m_pScoreCtrol->HideScore(false);
-    m_pScoreCtrol->DisplayMessage(m_sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
-
-    // mark right button in green
-    m_pAnswerButton[m_nRespIndex]->SetBackgroundColour(g_pColors->Success());
-
-    m_pPlayButton->Enable(true);
-    m_pShowSolution->Enable(false);
-    m_fQuestionAsked = false;
-    if (m_fTheoryMode) EnableButtons(false);
-
-}
-
-void lmIdfyChordCtrol::OnDebugShowSourceScore(wxCommandEvent& event)
-{
-    m_pScoreCtrol->SourceLDP();
-}
-
-void lmIdfyChordCtrol::OnDebugDumpScore(wxCommandEvent& event)
-{
-    m_pScoreCtrol->Dump();
-}
-
-void lmIdfyChordCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
-{
-    m_pScoreCtrol->DumpMidiEvents();
-}
-
-void lmIdfyChordCtrol::ResetExercise()
-{
-    DoStopSounds();     //stop any possible score being played
-
-    //clear the canvas
-    m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
-    m_pScoreCtrol->Update();    //to force to clear it now
-
-    // restore buttons' normal color
-    for (int iB=0; iB < m_NUM_BUTTONS; iB++) {
-        if (!m_pAnswerButton[iB]->IsEnabled()) {
-            m_pAnswerButton[iB]->SetBackgroundColour( g_pColors->Normal() );
-        }
-    }
-
-    //delete the previous score
-    if (m_pChordScore) {
-        delete m_pChordScore;
-        m_pChordScore = (lmScore*)NULL;
-    }
-
-}
-
-void lmIdfyChordCtrol::DoStopSounds()
-{
-    //Stop any possible score being played to avoid crashes
-    if (m_pAuxScore) m_pAuxScore->Stop();
-    if (m_pChordScore) m_pChordScore->Stop();
 
 }

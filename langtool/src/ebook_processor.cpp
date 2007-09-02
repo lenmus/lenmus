@@ -974,7 +974,7 @@ bool lmEbookProcessor::ScoreTag(const wxXml2Node& oNode, int nOptions, wxString*
     wxString sBorder = oNode.GetPropVal(_T("border"), _T(""));
 
     // convert tag: output to open html tags
-    WriteToHtml(_T("<br /><object type=\"Application/LenMus\" classid=\"Score")
+    WriteToHtml(_T("<object type=\"Application/LenMus\" classid=\"Score")
         _T("\" width=\"") + sWidth +
         _T("\" height=\"") + sHeight +
         _T("\" border=\"") + sBorder +

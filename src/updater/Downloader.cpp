@@ -61,7 +61,7 @@
 ////{
 ////    // remove the file: prefix
 ////    wxString path(uri);
-////    path.Remove(0, wxString(wxT("file:")).Len());
+////    path.Remove(0, wxString(wxT("file:")).length());
 ////
 ////    // now just build a wxfilename
 ////    return wxFileName(path);            // URIs always use the '/' directory separator

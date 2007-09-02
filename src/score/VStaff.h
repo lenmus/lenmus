@@ -61,7 +61,7 @@ public:
 
     lmRest*     AddRest(ENoteType nNoteType, float rDuration,
                       bool fDotted, bool fDoubleDotted,
-                      int nStaff,
+                      int nStaff, bool fVisible = true,
                       bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL);
 
     lmNote*     AddNote(lmEPitchType nPitchType,
@@ -69,7 +69,7 @@ public:
                     EAccidentals nAccidentals,
                     ENoteType nNoteType, float rDuration,
                     bool fDotted, bool fDoubleDotted,
-                    int nStaff,
+                    int nStaff, bool fVisible = true,
                     bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL,
                     bool fInChord = false,
                     bool fTie = false,
@@ -107,7 +107,7 @@ public:
     lmLUnits GetStaffLineThick(int nStaff);
 
     lmScoreObj* FindSelectableObject(lmUPoint& pt);
-    lmNote* FindPossibleStartOfTie(lmPitch nMidiPitch, int nStep);
+    lmNote* FindPossibleStartOfTie(lmAPitch anPitch);
 
     lmLUnits TenthsToLogical(lmTenths nTenths, int nStaff);
     lmStaff* GetStaff(int nStaff);

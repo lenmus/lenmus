@@ -44,19 +44,10 @@ typedef struct lmNoteBitsStruct {
     int nStepSemitones;     // 'c'=0, 'd'=2, 'e'=4, 'f'=5, 'g'=7, 'a'=9, 'b'=11
 } lmNoteBits;
 
-#define lmSTEP_C    0
-#define lmSTEP_D    1
-#define lmSTEP_E    2
-#define lmSTEP_F    3
-#define lmSTEP_G    4
-#define lmSTEP_A    5
-#define lmSTEP_B    6
-
 class lmConverter
 {
 public:
     lmConverter();
-    ~lmConverter() {}
 
     //note parts
     static bool         NoteToBits(wxString sNote, lmNoteBits* pBits);
@@ -65,33 +56,6 @@ public:
     static int          AccidentalsToInt(wxString sAccidentals);
     static int          StepToInt(wxString sStep);
     static bool         DPitchToBits(lmDPitch nPitch, lmNoteBits* pBits);
-
-    // lmDPitch: Diatonic pitch
-    static int GetStepFromDPitch(lmDPitch nPitch);
-    static int GetOctaveFromDPitch(lmDPitch nPitch);
-
-    // lm MPitch: MIDI pitch
-    static lmMPitch     DPitchToMPitch(lmDPitch nPitch);
-    static lmDPitch     MPitchToDPitch(lmMPitch nMidiPitch);
-    static wxString     MPitchToLDPName(lmMPitch nMidiPitch);
-    static wxString     DPitchToLDPName(lmDPitch nPitch);
-    static bool         IsNaturalNote(lmMPitch ntMidi, EKeySignatures nKey);
-
-    //lmNotePitch
-    static lmNotePitch  NoteNameToNotePitch(wxString sPitch);
-    static lmDPitch     NotePitchToDPitch(lmNotePitch nPitch);
-    static lmDPitch     DPitch(int nStep, int nOctave);
-
-
-    // note name
-    static wxString     GetEnglishNoteName(lmDPitch nPitch);
-    static wxString     GetNoteName(lmDPitch nPitch);
-
-
-
-
-private:
-
 };
 
 #endif  // __CONVERSION_H__

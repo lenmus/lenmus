@@ -117,7 +117,7 @@ ETimeSignature lmRandomGenerator::RandomTimeSignature()
 /*! Generates a random pitch in the range nMinLine to nMinLine+nRange-1, both included.
     If fRest==true also pitch = 0 (rest) can be generated.
 */
-lmPitch lmRandomGenerator::GenerateRandomPitch(int nMinLine, int nRange, bool fRests,
+lmDPitch lmRandomGenerator::GenerateRandomDPitch(int nMinLine, int nRange, bool fRests,
                                      EClefType nClef)
 {
     int nPitch;
@@ -144,7 +144,7 @@ lmPitch lmRandomGenerator::GenerateRandomPitch(int nMinLine, int nRange, bool fR
         case eclvDo4:        nPitch += 21;    break;
         case eclvPercussion:    nPitch = 34;    break;
         default:
-            wxLogMessage(_T("[lmRandomGenerator::GenerateRandomPitch] No treatment for clef %s"),
+            wxLogMessage(_T("[lmRandomGenerator::GenerateRandomDPitch] No treatment for clef %s"),
                         nClef);
             wxASSERT(false);
     }
@@ -170,7 +170,7 @@ wxString lmRandomGenerator::GenerateRandomRootNote(EClefType nClef,
 
     wxString sAcc[5] = { _T("--"), _T("-"), _T(""), _T("+"), _T("x") };
     wxString sRootNote = sAcc[nAccidentals[nRoot]+ 2] +
-                         sNotes.Mid(nRoot, 1) +
+                         sNotes.substr(nRoot, 1) +
                          (nRoot > 4 ? _T("3") : _T("4"));
 
     return sRootNote;

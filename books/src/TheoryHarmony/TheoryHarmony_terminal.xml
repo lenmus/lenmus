@@ -1,65 +1,229 @@
 <!-- =============================================== -->
 <!-- eMusicBook: Theory and harmony                  -->
 <!-- =============================================== -->
+<content>
 
 <theme id="terminal">
 <title>Terminal cadences</title>
 
 <para>
-Caracterizadas por crear reposo y estabilidad, se consiguen llegando a la tonica anteponiendo, al menos, uno de los grados tonales, ambos en estado fundamental. De este modo, se distinguen dos cadencias:
+Terminal cadences create a sensation of stability and conclusion of the musical phrase or sentence. This feeling is achieved by moving to the tonic grade (grade I) from some other chord grades. Depending on the starting chord grade two types of cadences are considered:
+<link linkend="authentic"> authentic cadences</link> and <link linkend="plagal"> plagal cadences</link>.</para>
+
+<part id='authentic'>
+<title>Authentic cadences</title>
+
+<para>
+An authentic cadence takes place when grade V, dominant, (or V7, a V chord with an added seventh) resolves in grade I (tonic). 
+The authentic cadence is the strongest terminal cadence, with great conclusive power.
 </para>
 
 <para>
-1) Cadencia autentica: Se produce enlazando el V o V7 (Dominante) y el I (Tonica), ambos grados en estado fundamental. Es la cadencia con mayor poder conclusivo. La cadencia autentica puede verse ampliada anteponiendo el IV (Subdominante) al acorde de Dominante (con o sin septima), esta cadencia se llama compuesta. Cuando la voz superior no va a la tonica, el poder conclusivo de esta cadencia queda reducido.
-</para>
-
-<!-- (Colocar ejemplo) -->
-<score width="600" height='100' border="0">
+<score width="300" height='160' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
+    <metronome>320</metronome>
+    <control_play />
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (instrument
-          (musicData (clef G)(key C)
-            (time 2 4 noVisible)
-            (barline end noVisible) )))
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 40)
+          (instrument (staves 2)
+          (musicData 
+            (clef treble p1)
+            (clef bass p2)
+            (key C)
+            (time 4 4 noVisible)
+            (chord (n g2 w p2)(n g3 w)(n d4 w p1)(n b4 w))
+            (text ''V'' dx:-60 dy:200)
+            (barline)
+            (chord (n c3 w p2)(n g3 w)(n e4 w p1)(n c5 w))
+            (text ''I'' (font 10pt) dx:-55 dy:200)
+            (barline end)
+        )))
     </music>
 </score>
 
-
-<para>
-2) Cadencia plagal: Se produce enlazando el IV (Subdominante) y el I (Tonica), ambos grados en estado fundamental.  Es menos tensa que la cadencia autentica.
-</para>
-
-<!-- (Colocar ejemplo) -->
-<score width="600" height='100' border="0">
+<score width="300" height='160' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
+    <metronome>320</metronome>
+    <control_play />
     <music>
         (score (vers 1.5)(language en iso-8859-1)
-         (instrument
-          (musicData (clef G)(key C)
-            (time 2 4 noVisible)
-            (barline end noVisible) )))
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 40)
+          (instrument (staves 2)
+          (musicData 
+            (clef treble p1)
+            (clef bass p2)
+            (key C)
+            (time 4 4 noVisible)
+            (chord (n g2 w p2)(n d4 w)(n f4 w p1)(n b4 w))
+            (text ''V7'' dx:-65 dy:200)
+            (barline)
+            (chord (n c3 w p2)(n c4 w)(n e4 w p1)(n c5 w))
+            (text ''I'' (font 10pt) dx:-55 dy:200)
+            (barline end)
+        )))
     </music>
 </score>
 
-<part>
-<title>Exercise 1</title>
+</para>
+
 
 <para>
-Train your ear and practise to
-identify if a terminal cadence is authentic perfect or plagal.
+When the authentic cadence satisfies the following conditions:
 </para>
-<para></para>
 
-<exercise type="IdfyCadences" width="100%" height="300" border="0">
-    <cadences>all_perfect,all_plagal</cadences>
-    <cadence_buttons>perfect,plagal</cadence_buttons>
-    <mode>earTraining</mode>
-</exercise>
+<orderedlist>
+<listitem>
+both chords are in root position;
+</listitem>
+<listitem>
+the first chord is the V or the V7 ; and
+</listitem>
+<listitem>
+the melody (soprano voice) ends on the tonic pitch.
+</listitem>
+</orderedlist>
+
+<para>
+then the cadenced has its strongest conclusive power and it is the one that creates the most final sounding of all cadences. Due to this fact, if the previously listed conditions are satisfied the cadence it is named 'perfect authentic cadence' or just 'perfect cadence'. If the conditions are not satisfied the conclusive feeling of the cadence is less strong and then the cadence is named 'imperfect authentic cadence' or just 'imperfect cadence'.
+
+The perfect cadence is usually found at the end of a piece of music and the end of significant sections.
+
+</para>
 
 </part>
 
+<part id='plagal'>
+<title>Plagal cadences</title>
+
+<para>
+A plagal cadence takes place when grade IV (subdominant) resolves in grade I (tonic), both in root position. The plagal cadence is less strong than the authentic cadence and it is also known as the "Amen" cadence as it is used at the end of most church hymns.
+</para>
+
+<para>
+In both cadence types, authentic and plagal, it must be taken into account that other chords playing the same harmonic functions can be used. For example, in the authentic cadence the V (dominant function) can be played by the VII. And in the plagal cadence the IV (subdominant function) can be played by the II. These replacements add variety and harmonic colour to the cadence.
+</para>
+
+
+<para>
+<score width="300" height='160' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <metronome>320</metronome>
+    <control_play />
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 40)
+          (instrument (staves 2)
+          (musicData 
+            (clef treble p1)
+            (clef bass p2)
+            (key C)
+            (time 4 4 noVisible)
+            (chord (n f3 w p2)(n c4 w)(n f4 w p1)(n a4 w))
+            (text ''IV'' dx:-65 dy:200)
+            (barline)
+            (chord (n c3 w p2)(n c4 w)(n e4 w p1)(n g4 w))
+            (text ''I'' (font 10pt) dx:-55 dy:200)
+            (barline end)
+        )))
+    </music>
+</score>
+
+<score width="300" height='160' border="0">
+    <score_type>full</score_type>
+    <music_border>0</music_border>
+    <metronome>320</metronome>
+    <control_play />
+    <music>
+        (score (vers 1.5)(language en iso-8859-1)
+         (opt Render.SpacingMethod fixed)
+         (opt Render.SpacingValue 40)
+          (instrument (staves 2)
+          (musicData 
+            (clef treble p1)
+            (clef bass p2)
+            (key C)
+            (time 4 4 noVisible)
+            (chord (n f3 w p2)(n d4 w)(n f4 w p1)(n a4 w))
+            (text ''II'' (font 10pt) dx:-65 dy:200)
+            (text ''6'' (font 7pt) dx:-45 dy:185)
+            (barline)
+            (chord (n c3 w p2)(n c4 w)(n e4 w p1)(n g4 w))
+            (text ''I'' (font 10pt) dx:-55 dy:200)
+            (barline end)
+        )))
+    </music>
+</score>
+
+</para>
+
+
+</part>
+
+<part>
+<title>Exercises</title>
+
+<para>
+<link linkend="terminal_E1">Theory exercise</link> - Practise to
+recognize on a score if a terminal cadence is authentic perfect or plagal.</para>
+
+<para>
+<link linkend="terminal_E2">Aural training</link> - Train your ear and practise to
+identify if a terminal cadence is authentic perfect or plagal.</para>
+
+</part>
 
 </theme>
+
+
+<!-- ====================== -->
+<!-- Exercise 1  -->
+<!-- ====================== -->
+
+<theme id="terminal_E1" toc="no">
+<titleabbrev>Terminal cadences</titleabbrev>
+<title>Authentic and plagal cadences</title>
+
+<para>Theory: Identify if a terminal cadence is authentic perfect or plagal.</para>
+
+<exercise type="IdfyCadences" width="100%" height="300" border="0">
+    <control_go_back>terminal</control_go_back>
+    <cadences>all_perfect,all_plagal</cadences>
+    <cadence_buttons>perfect,plagal</cadence_buttons>
+    <keys>Do,Re,Mi,Fa,Sol,La,Si,Dom,Rem,Mim,Fam,Solm,Lam,Sim</keys>
+    <mode>theory</mode>
+</exercise>
+
+
+</theme>
+
+
+<!-- ====================== -->
+<!-- Exercise 2  -->
+<!-- ====================== -->
+
+<theme id="terminal_E2" toc="no">
+<titleabbrev>Terminal cadences</titleabbrev>
+<title>Authentic and plagal cadences</title>
+
+<para>Aural training: Identify if a terminal cadence is authentic perfect or plagal.</para>
+
+<exercise type="IdfyCadences" width="100%" height="300" border="0">
+    <control_go_back>terminal</control_go_back>
+    <cadences>all_perfect,all_plagal</cadences>
+    <cadence_buttons>perfect,plagal</cadence_buttons>
+    <keys>Do,Re,Mi,Fa,Sol,La,Si,Dom,Rem,Mim,Fam,Solm,Lam,Sim</keys>
+    <mode>earTraining</mode>
+</exercise>
+
+
+</theme>
+
+
+</content>

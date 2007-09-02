@@ -37,17 +37,12 @@
 #include "wx/wx.h"
 #endif
 
-#include "Constrains.h"
+#include "TheoIntervalsConstrains.h"
 #include "../score/Score.h"
-#include "ScoreAuxCtrol.h"
-#include "CountersCtrol.h"
-#include "UrlAuxCtrol.h"
 
 
-class lmTheoIntervalsCtrol : public wxWindow    
+class lmTheoIntervalsCtrol :    public lmIdfyExerciseCtrol        
 {
-   DECLARE_DYNAMIC_CLASS(lmTheoIntervalsCtrol)
-
 public:
 
     // constructor and destructor    
@@ -58,60 +53,40 @@ public:
 
     ~lmTheoIntervalsCtrol();
 
-    // event handlers
-    void OnSize(wxSizeEvent& event);
-    void OnRespButton(wxCommandEvent& event);
-    void OnPlay(wxCommandEvent& event);
-    void OnNewProblem(wxCommandEvent& event);
-    void OnDisplaySolution(wxCommandEvent& event);
-    void OnSettingsButton(wxCommandEvent& event);
+    //implementation of virtual methods
+    void InitializeStrings();
+    void CreateAnswerButtons();
+    void PrepareAuxScore(int nButton);
+    wxString SetNewProblem();    
+    wxDialog* GetSettingsDlg();
+    void ReconfigureButtons();
 
-    // event handlers related to debugging
-    void OnDebugShowSourceScore(wxCommandEvent& event);
-    void OnDebugDumpScore(wxCommandEvent& event);
-    void OnDebugShowMidiEvents(wxCommandEvent& event);
+    enum {
+        m_NUM_COLS = 7,
+        m_NUM_ROWS = 6,
+        m_NUM_BUTTONS = 44,     
+    };
+
 
 private:
     void EnableButtons(bool fEnable);
-    void Play();
-    void NewProblem();
-    void DisplaySolution();
-    void ResetExercise();
     void SetButtonsForNotes();
     void SetButtonsForIntervals();
-    void DoStopSounds();
-
 
         // member variables
 
-    lmScore*            m_pIntervalScore;   // the score with the interval
-    lmScore*            m_pProblemScore;    // the score with the problem
-    lmScoreAuxCtrol*    m_pScoreCtrol;
-    lmCountersCtrol*    m_pCounters;
-
-    lmUrlAuxCtrol*      m_pPlayButton;      // "play" button
-
     lmTheoIntervalsConstrains* m_pConstrains;
-    bool            m_fProblemCreated;      //there is a problem prepared
-    lmPitch         m_ntMidi[2];            //the midi pitch of the two notes
-    lmPitch         m_ntPitch[2];           //the pitch of the two notes
-    bool            m_fPlayEnabled;         //Play enabled
+    lmDPitch        m_DPitch[2];           //the pitch of the two notes
     bool            m_fIntervalKnown;
     int             m_nCurrentKeyboard;     //not avoid unnecessary redrawing 
-    wxFlexGridSizer* m_pKeyboardSizer;      //to force re-layouts
 
     //buttons for the answers: 6 rows, 7 cols + 2 extra buttons (Unisons) = 44 buttons
-    wxButton*       m_pAnswerButton[44];
-    wxStaticText*   m_pRowLabel[6];
-    wxStaticText*   m_pColumnLabel[7];
-
-    int             m_nRespIndex;           //index to the button with the right answer
-    bool            m_fButtonsEnabled;      //buttons enabled
+    wxButton*       m_pAnswerButton[m_NUM_BUTTONS];
+    wxStaticText*   m_pRowLabel[m_NUM_ROWS];
+    wxStaticText*   m_pColumnLabel[m_NUM_COLS];
 
     //to give the answer
-    wxString        m_sAnswer;              //name of the interval
     EClefType       m_nClef;
-
 
     DECLARE_EVENT_TABLE()
 };

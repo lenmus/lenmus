@@ -39,8 +39,6 @@
 
 #include "wx/xml/xml.h"          // to use wxXmlDocument
 
-//#include "Downloader.h"
-
 // values for flag fSilent (method CheckForUpdates)
 #define lmNOT_SILENT    false
 #define lmSILENT        true

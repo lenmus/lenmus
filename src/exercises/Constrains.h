@@ -72,7 +72,7 @@ enum EIntervalName              // name of the intervals considered in exercises
 
 #define lmNUM_INTVALS  ein_Max_Item     //num intervals considered in constraints
 
-//----------------------------------------------------------------------------------------
+
 
 class lmClefConstrain
 {
@@ -130,53 +130,7 @@ private:
     bool m_fValidTimes[lmMAX_TIME_SIGN - lmMIN_TIME_SIGN + 1];
 };
 
-// lmTheoIntervalsConstrains -------------------------------------------------------------
-
-enum EProblemTheoIntervals
-{
-    ePT_DeduceInterval = 0,         //WARNING: the enum values are used as indexes
-    ePT_BuildInterval,              // in DlgCfgTheoIntervals. Do not alter
-    ePT_Both                        // neither order nor values. Must start in 0
-};
-
-
-class lmTheoIntervalsConstrains //: public ProblemConstrains
-{
-public:
-    lmTheoIntervalsConstrains();
-    ~lmTheoIntervalsConstrains() {}
-
-    bool IsValidClef(EClefType nClef) { return m_oClefs.IsValid(nClef); }
-    void SetClef(EClefType nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
-
-    EProblemTheoIntervals GetProblemType() { return m_nProblemType; }
-    void SetProblemType(EProblemTheoIntervals nType) { m_nProblemType = nType; }
-
-    bool GetAccidentals() { return m_fAccidentals; }
-    void SetAccidentals(bool fValue) { m_fAccidentals = fValue; }
-
-    bool GetDoubleAccidentals() { return m_fDoubleAccidentals; }
-    void SetDoubleAccidentals(bool fValue) { m_fDoubleAccidentals = fValue; }
-
-    lmClefConstrain* GetClefConstrains() { return &m_oClefs; }
-
-    void SaveSettings();
-
-
-private:
-    void LoadSettings();
-
-    lmClefConstrain         m_oClefs;
-    EProblemTheoIntervals   m_nProblemType;
-    bool                    m_fAccidentals;             //allow accidentals
-    bool                    m_fDoubleAccidentals;       //allow double accidentals
-
-};
-
-
-/*! @class lmScoreCtrolOptions
-    @brief Options for lmScoreCtrol control
-*/
+// Options for lmScoreCtrol control
 class lmScoreCtrolOptions
 {
 public:
@@ -247,9 +201,7 @@ private:
 };
 
 
-/*! @class lmMusicReadingCtrolOptions
-    @brief Options for lmTheoMusicReadingCtrol control
-*/
+// Options for lmTheoMusicReadingCtrol control
 class lmMusicReadingCtrolOptions
 {
 public:
@@ -310,53 +262,6 @@ private:
 };
 
 
-
-// lmTheoScalesConstrains -------------------------------------------------------------
-
-enum EProblemTheoScales
-{
-    ePTS_DeduceScale = 0,
-    ePTS_BuildScale,
-    ePTS_Both
-};
-
-
-class lmTheoScalesConstrains
-{
-public:
-    lmTheoScalesConstrains() {
-            m_fCtrolKeySignature = false;
-            m_fDrawWithoutKeySignature = true;
-            m_fMajor = false;
-            m_fMinor = false;
-            m_nProblemType = ePTS_Both;
-        }
-    ~lmTheoScalesConstrains() {}
-
-    bool IsValidClef(EClefType nClef) { return m_oClefs.IsValid(nClef); }
-    void SetClef(EClefType nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
-    lmClefConstrain* GetClefConstrains() { return &m_oClefs; }
-
-    EProblemTheoScales GetProblemType() { return m_nProblemType; }
-    void SetProblemType(EProblemTheoScales nType) { m_nProblemType = nType; }
-
-    void SetMajorType(bool fValue) { m_fMajor = fValue; }
-    bool MajorType() { return m_fMajor; }
-    void SetMinorType(bool fValue) { m_fMinor = fValue; }
-    bool MinorType() { return m_fMinor; }
-    void SetCtrolKeySignature(bool fValue) { m_fCtrolKeySignature = fValue; }
-    bool CtrolKeySignature() { return m_fCtrolKeySignature; }
-    bool DrawWithoutKeySignature() { return m_fDrawWithoutKeySignature; }
-
-private:
-    bool                m_fCtrolKeySignature;
-    bool                m_fDrawWithoutKeySignature;
-    bool                m_fMajor;
-    bool                m_fMinor;
-    lmClefConstrain     m_oClefs;
-    EProblemTheoScales  m_nProblemType;
-
-};
 
 #endif  // __CONSTRAINS_H__
 

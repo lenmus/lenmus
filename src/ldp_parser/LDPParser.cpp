@@ -63,13 +63,22 @@ const wxString sEOF = _T("<<$$EOF$$>>");
 
 lmLDPParser::lmLDPParser()
 {
+    Create(_T("es"), _T("iso-8859-1"));     //default tags in Spanish
+}
+
+lmLDPParser::lmLDPParser(wxString sLanguage, wxString sCharset)
+{
+    Create(sLanguage, sCharset);
+}
+
+void lmLDPParser::Create(const wxString& sLanguage, const wxString& sCharset)
+{
     m_pTokenizer = new lmLDPTokenBuilder(this);
     m_pCurNode = (lmLDPNode*) NULL;
     m_fDebugMode = g_pLogger->IsAllowedTraceMask(_T("lmLDPParser"));
     m_pTupletBracket = (lmTupletBracket*)NULL;
     m_pTags = lmLdpTagsTable::GetInstance();
-    m_pTags->LoadTags(_T("es"), _T("iso-8859-1"));      //default tags in Spanish
-
+    m_pTags->LoadTags(sLanguage, sCharset);
     // default values for font and aligment for <title> elements
     //! @todo user options instead of fixed values
     m_nTitleAlignment = lmALIGN_CENTER;
@@ -175,9 +184,9 @@ lmLDPNode* lmLDPParser::ParseText(const wxString& sSource)
 
 bool lmLDPParser::ParenthesisMatch(const wxString& sSource)
 {
-    int i = sSource.Length();
+    int i = sSource.length();
     int nPar = 0;
-    for(i=0; i < (int)sSource.Length(); i++) {
+    for(i=0; i < (int)sSource.length(); i++) {
         if (sSource.GetChar(i) == _T('('))
             nPar++;
         else if (sSource.GetChar(i) == _T(')'))
@@ -188,7 +197,7 @@ bool lmLDPParser::ParenthesisMatch(const wxString& sSource)
 }
 
 
-void lmLDPParser::FileParsingError(const wxString sMsg)
+void lmLDPParser::FileParsingError(const wxString& sMsg)
 {
     wxMessageBox(sMsg, _T("Error"));
 }
@@ -1209,7 +1218,7 @@ void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 }
 
-bool lmLDPParser::AnalyzeTimeExpression(wxString sData, float* pValue)
+bool lmLDPParser::AnalyzeTimeExpression(const wxString& sData, float* pValue)
 {
     // receives an algebraic expression, formed by aditions and substractions of
     // notes and numbers; parenthesis are not allowed. i.e: 3q+e+256 (three quarter
@@ -1225,7 +1234,7 @@ bool lmLDPParser::AnalyzeTimeExpression(wxString sData, float* pValue)
     //loop. take a token, analyze it and if operator, perform operation
     int i = 1;
     bool fNumberReady = false;              //number ready to be processed
-    for (i=0; i < (int)sData.Length(); i++)
+    for (i=0; i < (int)sData.length(); i++)
     {
         sChar = sData.GetChar(i);
 
@@ -1314,6 +1323,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     EStemType nStem = eDefaultStem;
     bool fBeamed = false;
     bool fTie = false;
+    bool fVisible = true;
     lmTBeamInfo BeamInfo[6];
     for (int i=0; i < 6; i++) {
         BeamInfo[i].Repeat = false;
@@ -1346,13 +1356,13 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     int iP = 1;
     wxString sPitch = _T("");
     wxString sDuration = _T("");
-    if (sElmName != _T("na") && sElmName.Length() > 1) {
+    if (sElmName != _T("na") && sElmName.length() > 1) {
         //abbreviated notation. Split node name
         bool fPitchFound = false;
         bool fOctaveFound = false;
         int i;
         wxChar sChar;
-        for (i=1; i < (int)sElmName.Length(); i++)
+        for (i=1; i < (int)sElmName.length(); i++)
         {
             sChar = sElmName.GetChar(i);
             if (sChar == _T('-') ||
@@ -1384,12 +1394,12 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         }
 
         //remaining string is Duration
-        if (i >= (int)sElmName.Length()) {
+        if (i >= (int)sElmName.length()) {
             //Duration not included. Inherit it
             sDuration = m_sLastDuration;
         }
         else
-            sDuration = sElmName.Mid(i);
+            sDuration = sElmName.substr(i);
 
         // inherit octave if not found
         if (!fOctaveFound) sPitch += m_sLastOctave;
@@ -1403,7 +1413,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                 AnalysisError( _("Missing parameters in rest '%s'. Replaced by '(%s %s)'."),
                     pNode->ToString().c_str(), sElmName.c_str(), m_pTags->TagName(_T("n"), _T("NoteType")).c_str() );
                 return pVStaff->AddRest(nNoteType, rDuration, fDotted, fDoubleDotted,
-                                        m_nCurStaff);
+                                        m_nCurStaff, fVisible);
             }
         }
         else {
@@ -1413,7 +1423,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                 return pVStaff->AddNote(lm_ePitchRelative,
                                         _T("c"), _T("4"), _T("0"), nAccidentals,
                                         nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff,
-                                        fBeamed, BeamInfo, fInChord, fTie, nStem);
+                                        fVisible, fBeamed, BeamInfo, fInChord, fTie, nStem);
             }
         }
 
@@ -1437,10 +1447,9 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     if (!fIsRest) {
         if (sPitch.IsNumber()) {
             //if sPitch is a number it represents a MIDI pitch in C major key signature.
-            lmConverter oConverter;
             long nMidi = 0;
             sPitch.ToLong(&nMidi);
-            sPitch = oConverter.MPitchToLDPName((lmPitch)nMidi);
+            sPitch = MPitch_ToLDPName((lmMPitch)nMidi);
         }
         if (sPitch == _T("*")) {
             nPitchType = lm_ePitchNotDefined;
@@ -1485,7 +1494,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             }
             else if (sData.Left(1) == m_pTags->TagName(_T("g"), _T("SingleChar")))
             {
-                if (sData.Mid(1,1) == _T("+")) {       //Start of beamed group. Simple parameter
+                if (sData.substr(1,1) == _T("+")) {       //Start of beamed group. Simple parameter
                     //compute beaming level dependig on note type
                     nLevel = GetBeamingLevel(nNoteType);
                     if (nLevel == -1) {
@@ -1508,7 +1517,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     }
                 }
 
-                else if (sData.Mid(1,1) == _T("-")) {       //End of beamed group
+                else if (sData.substr(1,1) == _T("-")) {       //End of beamed group
                     //allow to close the beamed group
                     bool fCloseBeam = true;
 
@@ -1615,6 +1624,9 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
             }
             else if (sData == m_pTags->TagName(_T("fermata"))) {       //fermata
                 fFermata = true;
+            }
+            else if (sData == m_pTags->TagName(_T("noVisible"))) {     //no visible
+                fVisible = false;
             }
             else {
                 AnalysisError(_("Error: notation '%s' unknown. It will be ignored."), sData.c_str() );
@@ -1727,13 +1739,13 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     lmNoteRest* pNR;
     if (fIsRest) {
         pNR = pVStaff->AddRest(nNoteType, rDuration, fDotted, fDoubleDotted,
-                               m_nCurStaff, fBeamed, BeamInfo);
+                               m_nCurStaff, fVisible, fBeamed, BeamInfo);
     }
     else {
         pNR = pVStaff->AddNote(nPitchType,
                                sStep, sOctave, _T("0"), nAccidentals,
                                nNoteType, rDuration, fDotted, fDoubleDotted, m_nCurStaff,
-                               fBeamed, BeamInfo, fInChord, fTie, nStem);
+                               fVisible, fBeamed, BeamInfo, fInChord, fTie, nStem);
         m_sLastOctave = sOctave;
     }
 
@@ -1753,7 +1765,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
 }
 
-bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
+bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
                                 bool fOpenAllowed, bool fCloseAllowed,
                                 lmTupletBracket** pTuplet, int* pActual, int* pNormal)
 {
@@ -1788,7 +1800,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
         }
         else {
             //start of tuplet
-            wxString sNumTuplet = sData.Mid(1);
+            wxString sNumTuplet = sData.substr(1);
             int nSlash = sNumTuplet.Find(_T("/"));
             if (nSlash == 0) {
                 //error: invalid element 't/num'
@@ -1826,7 +1838,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, wxString& sParent,
             else {
                 //abbreviated tuplet: 'tn:m'. Split the two numbers
                 wxString sActualNum = sNumTuplet.Left(nSlash);
-                wxString sNormalNum = sNumTuplet.Mid(nSlash+1);
+                wxString sNormalNum = sNumTuplet.substr(nSlash+1);
 
                 if (!sActualNum.IsNumber() || !sNormalNum.IsNumber() ) {
                     AnalysisError(_("[%s] Found unknown tag '%s'. Ignored."),
@@ -2436,10 +2448,10 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmObject* pObject)
 					rNumberDouble = 0.0;
 
 				double rRight;
-				wxString sRight = sValue.Mid(i+1);
+				wxString sRight = sValue.substr(i+1);
 				fError |= !sRight.ToDouble(&rRight);
 				if (!fError) {
-					rNumberDouble += rRight / (double)(10 ^ sRight.Length());
+					rNumberDouble += rRight / (double)(10 ^ sRight.length());
 					pObject->SetOption(sName, rNumberDouble);
 					return;
 				}
@@ -2983,8 +2995,8 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
 
         if (!fSize && !fProcessed) {
             wxString sSize = sParm;
-            if (sParm.Length() > 2 && sParm.Right(2) == _T("pt")) {
-                sSize = sParm.Left(sParm.Length() - 2);
+            if (sParm.length() > 2 && sParm.Right(2) == _T("pt")) {
+                sSize = sParm.Left(sParm.length() - 2);
             }
             if (sSize.IsNumber()) {
                 long nSize;
@@ -3033,7 +3045,7 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, int* pValue, lmEUnits* pUnit
     wxString sValue = sParm;
     if (!sValue.IsNumber()) {
         wxString sUnits = sParm.Right(2);
-        sValue = sParm.Left(sParm.Length() - 2);
+        sValue = sParm.Left(sParm.length() - 2);
         if (sUnits == _T("mm")) {
             *pUnits = lmMILLIMETERS;
         }
@@ -3252,7 +3264,7 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
 //
 //}
 
-int lmLDPParser::AnalyzeNumStaff(wxString sNotation, long nNumStaves)
+int lmLDPParser::AnalyzeNumStaff(const wxString& sNotation, long nNumStaves)
 {
     //analyzes a notation Pxx.  xx must be lower or equal than nNumStaves
 
@@ -3262,7 +3274,7 @@ int lmLDPParser::AnalyzeNumStaff(wxString sNotation, long nNumStaves)
         return 1;
     }
 
-    wxString sData = sNotation.Mid(1);         //remove char 'p'
+    wxString sData = sNotation.substr(1);         //remove char 'p'
     if (!sData.IsNumber()) {
         AnalysisError( _("Staff number not followed by number (%s). Replaced by '%s1'"),
             sNotation.c_str(), m_pTags->TagName(_T("p"), _T("SingleChar")).c_str() );
@@ -3312,7 +3324,7 @@ int lmLDPParser::GetBeamingLevel(ENoteType nNoteType)
     }
 }
 
-bool lmLDPParser::AnalyzeNoteType(wxString sNoteType, ENoteType* pnNoteType,
+bool lmLDPParser::AnalyzeNoteType(wxString& sNoteType, ENoteType* pnNoteType,
                                   bool* pfDotted, bool* pfDoubleDotted)
 {
     // Receives a string (sNoteType) with the LDP letter for the type of note and, optionally,
@@ -3345,7 +3357,7 @@ bool lmLDPParser::AnalyzeNoteType(wxString sNoteType, ENoteType* pnNoteType,
     int iDot = sNoteType.Find(_T("."));
     if (iDot != -1) {
         sType = sNoteType.Left(iDot);
-        sDots = sNoteType.Mid(iDot);
+        sDots = sNoteType.substr(iDot);
     }
     else {
         sType = sNoteType;
@@ -3355,7 +3367,7 @@ bool lmLDPParser::AnalyzeNoteType(wxString sNoteType, ENoteType* pnNoteType,
     //identify note type
     if (sType.Left(1) == _T("'")) {
         // numeric duration: '1, '2, '4, '8, '16, '32, ..., '256
-        sType = sType.Mid(1);
+        sType = sType.substr(1);
         if (!sType.IsNumber()) return true;     //error
         long nType;
         sType.ToLong(&nType);
@@ -3402,7 +3414,7 @@ bool lmLDPParser::AnalyzeNoteType(wxString sNoteType, ENoteType* pnNoteType,
     //analyze dots
     *pfDotted = false;
     *pfDoubleDotted = false;
-    if (sDots.Len() > 0) {
+    if (sDots.length() > 0) {
         if (sDots.StartsWith( _T("..") )) {
             *pfDoubleDotted = true;
         } else if (sDots.StartsWith( _T(".") )) {

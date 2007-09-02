@@ -163,7 +163,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
     // scan name and value
     if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
     sName = tag.GetParam(_T("NAME"));
-    sName.UpperCase();        //convert to upper case
+    sName.MakeUpper();        //convert to upper case
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
 
@@ -178,7 +178,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
 
     else if ( sName == _T("SCORE_TYPE") ) {
         wxString sType = tag.GetParam(_T("VALUE"));
-        sType.UpperCase();
+        sType.MakeUpper();
         if (sType.Left(5) == _T("SHORT")) {
             if (sType == _T("SHORT")) {
                 m_nScoreType = eHST_short;
@@ -192,13 +192,13 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
                         tag.GetAllParams().c_str() );
                 }
                 else {
-                    wxString sNum = sType.Mid(6, 2);
+                    wxString sNum = sType.substr(6, 2);
                     sNum.ToLong(&m_nVersion);
                     m_nScoreType = eHST_short;
                     m_sLanguage = _T("en");
-                    if (sType.Length() > 9) {
+                    if (sType.length() > 9) {
                         sType = tag.GetParam(_T("VALUE"));     //to take the original case, upper, lower or mixed
-                        m_sLanguage = sType.Mid(9);
+                        m_sLanguage = sType.substr(9);
                     }
                 }
             }

@@ -39,11 +39,11 @@
 
 #include "../score/Score.h"
 #include "Constrains.h"
+#include "ExerciseCtrol.h"
 
-/*! @class lmEarIntervalsConstrains
-    @brief Options for lmEarIntervalsCtrol control
-*/
-class lmEarIntervalsConstrains
+// class lmEarIntervalsConstrains:
+// Options for lmEarIntervalsCtrol control
+class lmEarIntervalsConstrains : public lmExerciseConstrains
 {
 public:
     lmEarIntervalsConstrains(wxString sSection);
@@ -67,10 +67,10 @@ public:
     lmKeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
 
     bool* AllowedIntervals() { return m_fIntervalAllowed; }
-    void SetMinNote(lmPitch nPitch) { m_nMinPitch = nPitch; }
-    lmPitch MinNote() { return m_nMinPitch; }
-    void SetMaxNote(lmPitch nPitch) { m_nMaxPitch = nPitch; }
-    lmPitch MaxNote() { return m_nMaxPitch; }
+    void SetMinNote(lmDPitch nPitch) { m_nMinPitch = nPitch; }
+    lmDPitch MinNote() { return m_nMinPitch; }
+    void SetMaxNote(lmDPitch nPitch) { m_nMaxPitch = nPitch; }
+    lmDPitch MaxNote() { return m_nMaxPitch; }
 
     void SaveSettings();
 

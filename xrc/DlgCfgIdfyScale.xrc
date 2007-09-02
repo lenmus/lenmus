@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="windows-1252"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
     <object class="wxDialog" name="DlgCfgIdfyScale" subclass="DlgCfgIdfyScale">
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxCLOSE_BOX</style>
@@ -12,7 +12,7 @@
                 <flag>wxGROW|wxALL</flag>
                 <border>5</border>
                 <object class="wxNotebook" name="noteBook">
-                    <style>wxNB_TOP</style>
+                    <style>wxNB_DEFAULT|wxNB_TOP</style>
                     <object class="notebookpage">
                         <label>Scales</label>
                         <object class="wxPanel" name="ID_PANEL3">
@@ -176,7 +176,7 @@
                                     <border>5</border>
                                     <object class="wxStaticBoxSizer" name="wxID_ANY">
                                         <orient>wxHORIZONTAL</orient>
-                                        <label>Greek scales</label>
+                                        <label>Gregorian scales</label>
                                         <object class="sizeritem">
                                             <flag>wxGROW|wxALL</flag>
                                             <border>5</border>
@@ -366,6 +366,7 @@
                                             <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
                                             <border>5</border>
                                             <object class="wxStaticText" name="wxID_STATIC">
+                                                <label></label>
                                             </object>
                                         </object>
                                         <object class="sizeritem">
@@ -567,6 +568,7 @@
                                                     <flag>wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE</flag>
                                                     <border>5</border>
                                                     <object class="wxStaticText" name="wxID_STATIC">
+                                                        <label></label>
                                                     </object>
                                                 </object>
                                                 <object class="sizeritem">
@@ -596,6 +598,8 @@
                                     <object class="wxRadioBox" name="radBoxPlayModes">
                                         <style>wxRA_SPECIFY_ROWS</style>
                                         <label>Play mode</label>
+                                        <dimension>1</dimension>
+                                        <selection>0</selection>
                                         <content>
                                             <item>&amp;Ascending</item>
                                             <item>&amp;Descending</item>

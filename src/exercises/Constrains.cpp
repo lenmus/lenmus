@@ -89,7 +89,7 @@ bool lmTimeSignConstrains::SetConstrains(wxString sTimeSign)
     int nTimeSign;
 
     //split the list into values
-    i = sTimeSign.First(_T(","));
+    i = sTimeSign.find(_T(","));
     sData = ((i > 0) ? sTimeSign.Left(i) : sTimeSign);
     while (sData != _T("")) {
         // 24,34,44,68,98,128,28,38,22,32
@@ -107,78 +107,11 @@ bool lmTimeSignConstrains::SetConstrains(wxString sTimeSign)
             return true;
         }
         m_fValidTimes[nTimeSign-lmMIN_TIME_SIGN] = true;
-        sTimeSign = ((i > 0) ? sTimeSign.Mid(i+1) : _T(""));
-        i = sTimeSign.First(_T(","));
+        sTimeSign = ((i > 0) ? sTimeSign.substr(i+1) : _T(""));
+        i = sTimeSign.find(_T(","));
         sData = ((i > 0) ? sTimeSign.Left(i) : sTimeSign);
     }
     return false;
-
-}
-
-
-
-//-------------------------------------------------------------------------------------------
-// lmTheoIntervalsConstrains
-//-------------------------------------------------------------------------------------------
-
-lmTheoIntervalsConstrains::lmTheoIntervalsConstrains()
-{
-    LoadSettings();
-}
-
-void lmTheoIntervalsConstrains::SaveSettings()
-{
-    /*
-    save settings in user configuration data file
-    */
-
-    // allowed clefs
-    int i;
-    wxString sKey;
-    for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
-        sKey = wxString::Format(_T("/Constrains/TheoIntval/TheoIntervals/Clef%d"), i); 
-        g_pPrefs->Write(sKey, IsValidClef((EClefType)i) );
-    }
-
-    // allowed accidentals
-    g_pPrefs->Write(_T("/Constrains/TheoIntval/TheoIntervals/Accidentals"),
-                    m_fAccidentals);
-    g_pPrefs->Write(_T("/Constrains/TheoIntval/TheoIntervals/DoubleAccidentals"),
-                    m_fDoubleAccidentals);
-
-    // problem type
-    g_pPrefs->Write(_T("/Constrains/TheoIntval/TheoIntervals/ProblemType"),
-                    (long) m_nProblemType );
-
-}
-
-void lmTheoIntervalsConstrains::LoadSettings()
-{
-    /*
-    load settings form user configuration data or default values
-    */
-
-    // allowed clefs. Default G clef
-    int i;
-    wxString sKey;
-    bool fValid;
-    for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
-        sKey = wxString::Format(_T("/Constrains/TheoIntval/TheoIntervals/Clef%d"), i); 
-        g_pPrefs->Read(sKey, &fValid, (i == eclvSol) );
-        SetClef((EClefType)i, fValid);
-    }
-
-    // allowed accidentals. Defaul: none
-    g_pPrefs->Read(_T("/Constrains/TheoIntval/TheoIntervals/Accidentals"),
-                    &m_fAccidentals, false);
-    g_pPrefs->Read(_T("/Constrains/TheoIntval/TheoIntervals/DoubleAccidentals"),
-                    &m_fDoubleAccidentals, false);
-
-    // problem type
-    m_nProblemType = (EProblemTheoIntervals) g_pPrefs->Read(
-                        _T("/Constrains/TheoIntval/TheoIntervals/ProblemType"),
-                        (long) ePT_Both );
-
 
 }
 
@@ -193,8 +126,8 @@ void lmMusicReadingCtrolOptions::SetLabels(wxString& sLabel, wxString* pStart, w
     //find the bar
     int i = sLabel.Find(_T("|"));
     if (i != -1) {
-        if (i > 1) *pStart = sLabel.Mid(0, i-1);
-        if (i < (int)sLabel.Length()-1) *pStop = sLabel.Mid(i+1);
+        if (i > 1) *pStart = sLabel.substr(0, i-1);
+        if (i < (int)sLabel.length()-1) *pStop = sLabel.substr(i+1);
     }
     else {
          *pStart = sLabel;
@@ -213,8 +146,8 @@ void lmScoreCtrolOptions::SetLabels(wxString& sLabel, wxString* pStart, wxString
     //find the bar
     int i = sLabel.Find(_T("|"));
     if (i != -1) {
-        if (i > 1) *pStart = sLabel.Mid(0, i-1);
-        if (i < (int)sLabel.Length()-1) *pStop = sLabel.Mid(i+1);
+        if (i > 1) *pStart = sLabel.substr(0, i-1);
+        if (i < (int)sLabel.length()-1) *pStop = sLabel.substr(i+1);
     }
     else {
          *pStart = sLabel;

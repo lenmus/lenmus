@@ -48,7 +48,7 @@ wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* p
     if (sParamValue == _T("all")) {
         // allow all key signatures
         int i;
-        for (i=0; i <= earmFa; i++) {
+        for (i=0; i <= lmMAX_KEY; i++) {
             pKeys->SetValid((EKeySignatures)i, true);
         }
     }
@@ -63,7 +63,7 @@ wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* p
             iColon = sParamValue.Find(_T(","));
             if (iColon != -1) {
                 sKey = sParamValue.Left(iColon);
-                sParamValue = sParamValue.Mid(iColon + 1);      //skip the colon
+                sParamValue = sParamValue.substr(iColon + 1);      //skip the colon
             }
             else {
                 sKey = sParamValue;
@@ -119,7 +119,7 @@ wxString ParseChords(wxString sParamValue, wxString sFullParam, bool* pfValidCho
             iColon = sParamValue.Find(_T(","));
             if (iColon != -1) {
                 sChord = sParamValue.Left(iColon);
-                sParamValue = sParamValue.Mid(iColon + 1);      //skip the colon
+                sParamValue = sParamValue.substr(iColon + 1);      //skip the colon
             }
             else {
                 sChord = sParamValue;

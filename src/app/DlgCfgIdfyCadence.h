@@ -48,6 +48,8 @@ public:
     void OnCheckAllPlagal(wxCommandEvent& WXUNUSED(event));
     void OnCheckAllHalf(wxCommandEvent& WXUNUSED(event));
     void OnCheckAllDeceptive(wxCommandEvent& WXUNUSED(event));
+    void OnCheckAllMajor(wxCommandEvent& WXUNUSED(event));
+    void OnCheckAllMinor(wxCommandEvent& WXUNUSED(event));
     void OnAnswerButton(wxCommandEvent& WXUNUSED(event));
 
 
@@ -64,11 +66,11 @@ private:
 
     //controls
     wxCheckBox*     m_pChkCadence[lm_eCadMaxCadence];   // Allowed cadences check boxes
-    wxCheckBox*     m_pChkKeySign[earmFa+1];    // Allowed key signatures check boxes
-    wxRadioBox*     m_pBoxShowKey;              // box with show key radio buttons
-    wxRadioBox*     m_pBoxAnswerType;           // box with answer type radio buttons
-    wxCheckBox*     m_pChkAnswerButton[5];      // Perfect, Plagal, Half, Deceptive, Imperfect
-	wxButton*       m_pBtnCheckAll[5];			// idem.
+    wxCheckBox*     m_pChkKeySign[lmMAX_KEY+1];         // Allowed key signatures check boxes
+    wxRadioBox*     m_pBoxShowKey;                  // box with show key radio buttons
+    wxRadioBox*     m_pBoxAnswerType;               // box with answer type radio buttons
+    wxCheckBox*     m_pChkAnswerButton[5];          // Perfect, Plagal, Half, Deceptive, Imperfect
+	wxButton*       m_pBtnCheckAll[5];			    // idem.
 
     wxStaticBitmap* m_pBmpKeySignError;
     wxStaticText*   m_pLblKeySignError;

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="windows-1252"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
     <object class="wxDialog" name="AboutDialog" subclass="lmAboutDialog">
         <style>wxCAPTION|wxSYSTEM_MENU|wxCLOSE_BOX</style>
@@ -32,9 +32,7 @@
                                     <font>
                                         <size>14</size>
                                         <family>swiss</family>
-                                        <style>normal</style>
                                         <weight>bold</weight>
-                                        <underlined>0</underlined>
                                         <face>Arial</face>
                                     </font>
                                     <label>LenMus Phonascus </label>
@@ -47,9 +45,6 @@
                                     <font>
                                         <size>10</size>
                                         <family>swiss</family>
-                                        <style>normal</style>
-                                        <weight>normal</weight>
-                                        <underlined>0</underlined>
                                         <face>Arial</face>
                                     </font>
                                     <label>A free program for music language learning</label>
@@ -97,28 +92,21 @@
                                 <flag>wxGROW|wxLEFT|wxRIGHT|wxBOTTOM</flag>
                                 <border>5</border>
                                 <object class="wxButton" name="btnDevelopers">
-                                    <label>Developers</label>
+                                    <label>Project team</label>
                                 </object>
                             </object>
                             <object class="sizeritem">
                                 <flag>wxGROW|wxLEFT|wxRIGHT|wxBOTTOM</flag>
                                 <border>5</border>
                                 <object class="wxButton" name="btnArtCredits">
-                                    <label>Art design credits</label>
+                                    <label>Art design</label>
                                 </object>
                             </object>
                             <object class="sizeritem">
                                 <flag>wxGROW|wxLEFT|wxRIGHT|wxBOTTOM</flag>
                                 <border>5</border>
                                 <object class="wxButton" name="btnSoftwareCredits">
-                                    <label>Software credits</label>
-                                </object>
-                            </object>
-                            <object class="sizeritem">
-                                <flag>wxGROW|wxLEFT|wxRIGHT|wxBOTTOM</flag>
-                                <border>5</border>
-                                <object class="wxButton" name="btnTranslators">
-                                    <label>Translators</label>
+                                    <label>Software used</label>
                                 </object>
                             </object>
                             <object class="sizeritem">

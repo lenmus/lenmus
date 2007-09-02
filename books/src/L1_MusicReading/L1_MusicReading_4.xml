@@ -9,10 +9,10 @@
 <para>
 The next figure we are going to study is the eighth note (also called 'quaver' in
 British English). Its symbols are shown in the followig score, and are like a quarter
-note with a flag added to its stem. They are usually drawn beamed:
+note with a flag added to its stem:
 </para>
 
-<score width="600" height="100" border="0">
+<para><score width="685" height="100" border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -27,13 +27,13 @@ note with a flag added to its stem. They are usually drawn beamed:
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 <para>
 Many times eighth notes are drawn beamed:
 </para>
 
-<score width="600" height="100" border="0">
+<para><score width="685" height="100" border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -47,7 +47,11 @@ Many times eighth notes are drawn beamed:
             (barline end)
         )))
     </music>
-</score>
+</score></para>
+
+<para>
+Beaming is not done at random or by personal taste. The rules for beaming depend on the time signature.
+</para>
 
 <para>
 One quarter note equals two eighth notes and one quarter rest equals two eighth rests.
@@ -60,7 +64,7 @@ In this lesson we will start the study of rhythms with eighth notes. Play the
 following score and take note of the new rhythmic patterns introduced in each measure:
 </para>
 
-<score width="600" height="70" border="0">
+<para><score width="685" height="70" border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -76,7 +80,7 @@ following score and take note of the new rhythmic patterns introduced in each me
             (barline end)
         )))
     </music>
-</score>
+</score></para>
 
 
 <part>

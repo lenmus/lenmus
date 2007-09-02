@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<theme id="chEarIntervals">
+<title>Intervals' identification</title>
+
+<para>Exercise: Lesson an interval and identify it</para>
+
+<exercise type="EarIntervals" width="100%" height="300" border="0">
+    <max_interval>8</max_interval>
+</exercise>
+
+</theme>

@@ -292,7 +292,7 @@ void lmDlgCfgEarIntervals::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     
     //save notes range
     wxString sPitch = m_pCboFromNote->GetValue();
-    lmPitch nPitch;
+    lmDPitch nPitch;
     EAccidentals nAccidentals;
     PitchNameToData(sPitch, &nPitch, &nAccidentals);
     m_pConstrains->SetMinNote(nPitch);
@@ -368,7 +368,7 @@ bool lmDlgCfgEarIntervals::VerifyData()
     fError = false;
     wxString sFromPitch = m_pCboFromNote->GetValue();
     wxString sToPitch = m_pCboToNote->GetValue();
-    lmPitch nToPitch, nFromPitch;
+    lmDPitch nToPitch, nFromPitch;
     EAccidentals nAccidentals;
     PitchNameToData(sFromPitch, &nFromPitch, &nAccidentals);
     PitchNameToData(sToPitch, &nToPitch, &nAccidentals);
@@ -435,8 +435,8 @@ bool lmDlgCfgEarIntervals::VerifyData()
     fError = true;      // assume error
     //compute max number of semitones in the allowed note range
     //AWARE: nFromPitch and nToPitch where computed when checking the notes range
-    int ntMidiMin = lmConverter::DPitchToMPitch(nFromPitch);
-    int ntMidiMax = lmConverter::DPitchToMPitch(nToPitch);
+    int ntMidiMin = DPitch_ToMPitch(nFromPitch);
+    int ntMidiMax = DPitch_ToMPitch(nToPitch);
     int nRange = wxMin(ntMidiMax - ntMidiMin, lmNUM_INTVALS);
     for (i=0; i <= nRange; i++) {
         if (m_pChkIntval[i]->GetValue()) {

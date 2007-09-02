@@ -177,6 +177,19 @@ void lmTie::Remove(lmNote* pNote)
     }
 }
 
+void lmTie::PropagateNotePitchChange(lmNote* pNote, int nStep, int nOctave, int nAlter, bool fForward)
+{
+    if (pNote == m_pStartNote && fForward) {
+        // propagate forwards
+        m_pEndNote->PropagateNotePitchChange(nStep, nOctave, nAlter, lmFORWARDS);
+    }
+    else if (pNote == m_pEndNote && !fForward) {
+        // propagate backwards
+        m_pStartNote->PropagateNotePitchChange(nStep, nOctave, nAlter, lmBACKWARDS);
+    }
+    //other cases are for notes whose pitch is already changed 
+}
+
 void lmTie::SetStartPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperRight, bool fUnderNote)
 {
     m_fTieUnderNote = fUnderNote;

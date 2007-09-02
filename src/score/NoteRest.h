@@ -19,35 +19,6 @@
 //
 //-------------------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------------------------
-//Este programa maneja tres tipos de alturas:
-// AltDiatonica: Altura diatónica. Se refiere al nombre de la nota, sin tener en cuenta las
-//   alteraciones.
-//       0 - silencio
-//       1 - C0  - Do2 de la subcontraoctava (16,35 Hz)
-//       8 - C1  - Do1 de la contraoctava
-//      15 - C2  - Do de la gran octava
-//      22 - C3  - do de la pequeña octava
-//      29 - C4  - do1 de la octava primera (la1 = 440Hz)
-//      36 - C5  - do2 de la octava segunda
-//      43 - C6  - do3 de la octava tercera
-//      50 - C7  - do4 de la octava cuarta
-//      57 - C8  - do5 de la octava quinta (4.186 Hz)
-//      etc.
-//
-// AlturaRel: Altura relativa. Igual que la absoluta pero referida a la primera línea del
-//   pentagrama correspondiente a la clave en que se dibuja la partitura:
-//       0 - una linea inferior (Do en clave de Sol, Mi en clave de Fa4)
-//       1 - en espacio debajo de primera línea (Re en clave de Sol)
-//       2 - en primera línea (Mi en clave de Sol)
-//       3 - en primer espacio
-//       4 - en segunda línea
-//       5 - en segundo espacio
-//       etc.
-//
-// AlturaMIDI: Altura cromátrica. Es la nota MIDI equivalente, incluyendo las alteraciones que hubiera.
-//   Es un dato derivado que se obtiene cuando hace falta
-//-------------------------------------------------------------------------------------------
 //THINK: -----------------------------------------------------------------------------------
 //Pregunta: ¿No debería existir un constructor en lmNoteRest capaz de crear una nota a partir del fuente?
 //Resp: Ningún PentObj deben crearse fuera de un pentagrama y luego agregarse a él.
@@ -98,7 +69,7 @@ class lmNoteRest:  public lmStaffObj
 public:
     //ctors and dtor
     lmNoteRest(lmVStaff* pVStaff, bool IsRest, ENoteType nNoteType, float rDuration,
-             bool fDotted, bool fDoubleDotted, int nStaff);
+             bool fDotted, bool fDoubleDotted, int nStaff, bool fVisible);
     virtual ~lmNoteRest();
 
     virtual void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, 
@@ -106,7 +77,7 @@ public:
     virtual wxBitmap* GetBitmap(double rScale) = 0;
     virtual wxString Dump() = 0;
 
-    bool IsRest() { return m_fIsRest; }
+    bool IsRest() const { return m_fIsRest; }
     virtual bool IsInChord() = 0;    
 
     //implementation of virtual methods of base class lmStaffObj
@@ -115,18 +86,18 @@ public:
 
 
     // methods related to note/rest positioning information
-    lmLUnits GetStaffOffset() { return m_pVStaff->GetStaffOffset(m_nStaffNum); }
+    lmLUnits GetStaffOffset() const { return m_pVStaff->GetStaffOffset(m_nStaffNum); }
 
     //methods related to associated AuxObjs management
-    void AddFermata(lmEPlacement nPlacement);
+    void AddFermata(const lmEPlacement nPlacement);
     void AddLyric(lmLyric* pLyric);
 
     //methods related to duration
-    float GetDuration() { return m_rDuration; }
+    float GetDuration() const { return m_rDuration; }
 
     // methods related to beams
     void CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[]);
-    bool IsBeamed() { return m_fBeamed; }
+    bool IsBeamed() const { return m_fBeamed; }
     EBeamType GetBeamType(int level) { return m_BeamInfo[level].Type; }
     void SetBeamType(int level, EBeamType type) { m_BeamInfo[level].Type = type; }
 
@@ -138,7 +109,7 @@ public:
                        int nMeasure);
 
     //accessors
-    ENoteType GetNoteType() { return m_nNoteType; }
+    ENoteType GetNoteType() const { return m_nNoteType; }
 
 
 protected:
@@ -178,8 +149,8 @@ protected:
 WX_DECLARE_LIST(lmNoteRest, NoteRestsList);
 
 // global functions related to noterests
-extern int LDPNoteTypeToEnumNoteType(wxString sNoteType);
-extern float LDPNoteTypeToDuration(wxString sNoteType);
+extern int LDPNoteTypeToEnumNoteType(const wxString& sNoteType);
+extern float LDPNoteTypeToDuration(const wxString& sNoteType);
 extern float NoteTypeToDuration(ENoteType nNoteType, bool fDotted, bool fDoubleDotted);
 
 

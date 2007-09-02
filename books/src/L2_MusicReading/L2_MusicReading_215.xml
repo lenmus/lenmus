@@ -7,7 +7,7 @@
 <tocimage>img215.png</tocimage>
 
 <para>In this lesson a new rhythmic pattern is introduced, by tying a note to a triplet:</para>
-<score width="600" height="100" border="0">
+<para><score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -15,7 +15,7 @@
         (Metrica 2 4 NoVisible)(n * n l)(n * c g+ t3)(n * c)(n * c g- t-))
         (c (n * c g+)(n * c l g-)(n * c g+ t3)(n * c)(n * c g- t-)(Barra Final))
     </music>
-</score>
+</score></para>
 
 <part>
 <title>Listen and take notice of the differences</title>
@@ -23,7 +23,7 @@
 between the third and the fourth. Note how
 they are formed when tying the note to the triplet:</para>
 
-<score width="600" height="100" border="0">
+<para><score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -33,7 +33,7 @@ they are formed when tying the note to the triplet:</para>
         (c (n * c g+)(n * c g-)(n * c g+ t3)(n * c)(n * c g- t-))
         (c (n * c g+)(n * c l g-)(n * c g+ t3)(n * c)(n * c g- t-)(Barra Final))
     </music>
-</score>
+</score></para>
 </part>
 
 <part>

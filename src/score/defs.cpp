@@ -40,6 +40,31 @@
 #include "wx/utils.h"
 #include "defs.h"
 
+// DOC: 
+// prefixes for variables:
+//
+//  a) standard types:
+//      p - pointer
+//      n - integer, long
+//      s - string
+//      r - real (float, double)
+//
+//  b) program specific types:
+//      u - logical units (lmLUnits)
+//      v - device units (lmPixels)
+//      ? - tenths (lmTenths)
+//      ux, uy - logical units. coordinates
+//      udx, udy - logical units. distances
+//      vx, vy - device units. coordinates
+//      vdx, vdy - device units. distances
+//
+//      Pitch
+//      ap - lmAPitch
+//      dp - lmDPitch
+//      mp - lmMPitch
+//      fp - lmFPitch
+//
+//
 
 //-------------------------------------------------------------------------------------
 // implementation of class lmURect code. A real rectangle (lmLUnits). Based on wxRect

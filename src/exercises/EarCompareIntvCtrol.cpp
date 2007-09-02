@@ -31,7 +31,6 @@
 #endif
 
 #include "EarCompareIntvCtrol.h"
-#include "UrlAuxCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
 #include "../auxmusic/Conversion.h"
@@ -59,302 +58,36 @@ extern bool g_fAutoNewProblem;          // in Preferences.cpp
 
 
 
-//Layout definitions
-const int BUTTONS_DISTANCE    = 5;        //pixels
-const int NUM_LINKS = 3;                //links for actions
-
-//IDs for controls
-enum {
-    ID_LINK_SEE_SOURCE = 3000,
-    ID_LINK_DUMP,
-    ID_LINK_MIDI_EVENTS,
-    ID_BUTTON,
-    ID_LINK = ID_BUTTON + 3,
-    ID_LINK_NEW_PROBLEM,
-    ID_LINK_PLAY,
-    ID_LINK_SOLUTION,
-    ID_LINK_SETTINGS
-
-};
-
-
-IMPLEMENT_CLASS(lmEarCompareIntvCtrol, wxWindow)
-
-BEGIN_EVENT_TABLE(lmEarCompareIntvCtrol, wxWindow)
-    EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+2, wxEVT_COMMAND_BUTTON_CLICKED, lmEarCompareIntvCtrol::OnRespButton)
-    EVT_SIZE            (lmEarCompareIntvCtrol::OnSize)
-
-    LM_EVT_URL_CLICK    (ID_LINK_SEE_SOURCE, lmEarCompareIntvCtrol::OnDebugShowSourceScore)
-    LM_EVT_URL_CLICK    (ID_LINK_DUMP, lmEarCompareIntvCtrol::OnDebugDumpScore)
-    LM_EVT_URL_CLICK    (ID_LINK_MIDI_EVENTS, lmEarCompareIntvCtrol::OnDebugShowMidiEvents)
-
-    LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, lmEarCompareIntvCtrol::OnNewProblem)
-    LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmEarCompareIntvCtrol::OnPlay)
-    LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, lmEarCompareIntvCtrol::OnDisplaySolution)
-    LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmEarCompareIntvCtrol::OnSettingsButton)
-
-    LM_EVT_END_OF_PLAY  (lmEarCompareIntvCtrol::OnEndOfPlay)
-    EVT_TIMER           (wxID_ANY, lmEarCompareIntvCtrol::OnTimerEvent)
-
-END_EVENT_TABLE()
+IMPLEMENT_CLASS(lmEarCompareIntvCtrol, lmCompareScoresCtrol)
 
 lmEarCompareIntvCtrol::lmEarCompareIntvCtrol(wxWindow* parent, wxWindowID id, 
                            lmEarIntervalsConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
-    : wxWindow(parent, id, pos, size, style )
+    : lmCompareScoresCtrol(parent, id, pConstrains, wxSize(400,150), pos, size, style )
 {
     //initializations
-    SetBackgroundColour(*wxWHITE);
-    int i;
-    for (i=0; i < 3; i++) { m_pAnswerButton[i] = (wxButton*)NULL; }
-    EnableButtons(false);
-    m_fProblemCreated = false;
-    m_fPlayEnabled = false;
-    m_pScore[0] = (lmScore*)NULL;
-    m_pScore[1] = (lmScore*)NULL;
-    m_pTotalScore = (lmScore*)NULL;
-    m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
     m_pConstrains = pConstrains;
-    m_fPlaying = false;
 
-    //language dependent strings. Can not be statically initiallized because
-    //then they do not get translated
-    wxString sBtLabel[3];
-    sBtLabel[0] = _("First one greater");
-    sBtLabel[1] = _("Second one greater");
-    sBtLabel[2] = _("Both are equal");
+    //options
+    m_pConstrains->SetButtonsEnabledAfterSolution(false);
+    m_nPlayMM = 320;    //score build with whole notes, so metronome rate 320
+                        //will force to play at 80 notes/minute
 
-    //the window is divided into two regions: top, for score on left and counters and links
-    //on the right, and bottom region, for answer buttons 
-    wxBoxSizer* pMainSizer = new wxBoxSizer( wxVERTICAL );
-
-    // debug buttons
-    if (g_fShowDebugLinks && !g_fReleaseVersion) {
-        wxBoxSizer* pDbgSizer = new wxBoxSizer( wxHORIZONTAL );
-        pMainSizer->Add(pDbgSizer, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT, 5);
-
-        // "See source score"
-        pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, _("See source score") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
-
-        // "Dump score"
-        pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_DUMP, _("Dump score") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
-
-        // "See MIDI events"
-        pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, _("See MIDI events") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
-    }
-
-    // sizer for the scoreCtrol and the CountersCtrol
-    wxBoxSizer* pTopSizer = new wxBoxSizer( wxHORIZONTAL );
-    pMainSizer->Add(
-        pTopSizer,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
-
-    // create score ctrl 
-    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, (lmScore*)NULL, wxDefaultPosition, wxSize(400,150), eSIMPLE_BORDER);
-    m_pScoreCtrol->SetMargins(lmToLogicalUnits(5, lmMILLIMETERS),      //left=1cm
-                              lmToLogicalUnits(5, lmMILLIMETERS),      //right=1cm
-                              lmToLogicalUnits(10, lmMILLIMETERS));     //top=1cm
-    pTopSizer->Add(
-        m_pScoreCtrol,
-        wxSizerFlags(1).Left().Border(wxTOP|wxBOTTOM, 10));
-
-    m_pScoreCtrol->SetScale((float)1.3);
-
-
-    // sizer for the CountersCtrol and the settings link
-    wxBoxSizer* pCountersSizer = new wxBoxSizer( wxVERTICAL );
-    pTopSizer->Add(
-        pCountersSizer,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10).Expand() );
-
-    // right/wrong answers counters control
-    m_pCounters = new lmCountersCtrol(this, wxID_ANY);
-    pCountersSizer->Add(
-        m_pCounters,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
-
-    // spacer to move the settings link to bottom
-    pCountersSizer->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-    // settings link
-    lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
-    pCountersSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
-
-    // spacer to move the settings link a little up
-    pCountersSizer->Add(5, 5, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
-
-        //
-        //links 
-        //
-
-    wxBoxSizer* pLinksSizer = new wxBoxSizer( wxHORIZONTAL );
-    pMainSizer->Add(
-        pLinksSizer,
-        wxSizerFlags(0).Center().Border(wxLEFT|wxALL, 10) );
-
-    // "new problem" button
-    pLinksSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") ),
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
-    
-    // "play" button
-    m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, _("Play") );
-    pLinksSizer->Add(
-        m_pPlayButton,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
-    
-    // "show solution" button
-    m_pShowSolution = new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") );
-    pLinksSizer->Add(
-        m_pShowSolution,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT|wxBOTTOM, 20) );
-    
-
-    //create 3 buttons for the answers, in one row
-    wxBoxSizer* pRowSizer = new wxBoxSizer( wxHORIZONTAL );
-    wxButton* pButton;
-    int iB = 0;
-    //pRowSizer->Add(20+BUTTONS_DISTANCE, 24, 0);    //spacer to center labels
-
-    for (iB=0; iB < 3; iB++) {
-        pButton = new wxButton( this, ID_BUTTON + iB, sBtLabel[iB],
-            wxDefaultPosition, wxSize(134, 24));
-        m_pAnswerButton[iB] = pButton;
-        pRowSizer->Add(
-            pButton,
-            wxSizerFlags(0).Border(wxALL, BUTTONS_DISTANCE) );
-    }
-    pMainSizer->Add(    
-        pRowSizer,
-        wxSizerFlags(0).Left());
-
-    SetSizer( pMainSizer );                 // use the sizer for window layout
-    pMainSizer->SetSizeHints( this );       // set size hints to honour minimum size
-
-    m_pScoreCtrol->DisplayMessage(_("Click on 'New problem' to start"), 
-                                  lmToLogicalUnits(10, lmMILLIMETERS),
-                                  true);
-
-    m_pPlayButton->Enable(false);
-    m_pShowSolution->Enable(false);
+    CreateControls();
 
 }
 
 lmEarCompareIntvCtrol::~lmEarCompareIntvCtrol()
 {
-    DoStopSounds();         //stop any possible score being played
-
-    if (m_pScoreCtrol) {
-        delete m_pScoreCtrol;
-        m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
-    }
-
-    if (m_pConstrains) {
-        delete m_pConstrains;
-        m_pConstrains = (lmEarIntervalsConstrains*) NULL;
-    }
-
-    if (m_pScore[0]) {
-        delete m_pScore[0];
-        m_pScore[0] = (lmScore*)NULL;
-    }
-    if (m_pScore[1]) {
-        delete m_pScore[1];
-        m_pScore[1] = (lmScore*)NULL;
-    }
-    if (m_pTotalScore) {
-        delete m_pTotalScore;
-        m_pTotalScore = (lmScore*)NULL;
-    }
 }
 
-void lmEarCompareIntvCtrol::EnableButtons(bool fEnable)
+wxDialog* lmEarCompareIntvCtrol::GetSettingsDlg()
 {
-    for (int i=0; i < 3; i++) {
-        if (m_pAnswerButton[i])
-            m_pAnswerButton[i]->Enable(fEnable);
-    }
-    m_fButtonsEnabled = fEnable;
-
+    return new lmDlgCfgEarIntervals(this, m_pConstrains, true);    // true -> enable First note equal checkbox
 }
 
-//----------------------------------------------------------------------------------------
-// Event handlers
-
-void lmEarCompareIntvCtrol::OnSettingsButton(wxCommandEvent& event)
+wxString lmEarCompareIntvCtrol::SetNewProblem()
 {
-    lmDlgCfgEarIntervals dlg(this, m_pConstrains, true);    // true -> enable First note equal checkbox
-    int retcode = dlg.ShowModal();
-    if (retcode == wxID_OK) m_pConstrains->SaveSettings();
-
-}
-
-void lmEarCompareIntvCtrol::OnSize(wxSizeEvent& event)
-{
-    //wxLogMessage(_T("OnSize at lmEarCompareIntvCtrol"));
-    Layout();
-
-}
-
-void lmEarCompareIntvCtrol::OnPlay(wxCommandEvent& event)
-{
-    Play();
-}
-
-void lmEarCompareIntvCtrol::OnNewProblem(wxCommandEvent& event)
-{
-    NewProblem();
-}
-
-void lmEarCompareIntvCtrol::OnDisplaySolution(wxCommandEvent& event)
-{
-    m_pCounters->IncrementWrong();
-    DisplaySolution();
-    EnableButtons(false);
-}
-
-void lmEarCompareIntvCtrol::OnRespButton(wxCommandEvent& event)
-{
-    int nIndex = event.GetId() - ID_BUTTON;
-
-    //show the solucion
-    DisplaySolution();
-    EnableButtons(true);
-
-    //verify if success or failure
-    bool fSecondGreater = !(m_fFirstGreater || m_fBothEqual);
-    bool fSuccess = (nIndex == 0 && m_fFirstGreater) ||
-               (nIndex == 1 && fSecondGreater) ||
-               (nIndex == 2 && m_fBothEqual);
-                
-
-    //produce feedback sound, and update counters
-    if (fSuccess) {
-        m_pCounters->IncrementRight();
-    } else {
-        m_pCounters->IncrementWrong();
-    }
-        
-    // if failure mark pushed button in red
-    if (!fSuccess) {
-        m_pAnswerButton[nIndex]->SetBackgroundColour(g_pColors->Failure());
-    }
-
-    EnableButtons(false);
-    m_pShowSolution->Enable(false);
-
-}
-
-void lmEarCompareIntvCtrol::NewProblem()
-{
-
-    ResetExercise();
     
     //
     //generate the two intervals to compare
@@ -443,202 +176,56 @@ void lmEarCompareIntvCtrol::NewProblem()
     }
 
     //create the answer score with both intervals
-    m_pTotalScore = new lmScore();
-    m_pTotalScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
-    m_pTotalScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
-    m_pTotalScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+    m_pSolutionScore = new lmScore();
+    m_pSolutionScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
+    m_pSolutionScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
+    m_pSolutionScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
 								 g_pMidi->DefaultVoiceInstr(), _T(""));
-    pVStaff = m_pTotalScore->GetVStaff(1, 1);      //get first vstaff of instr.1
+    pVStaff = m_pSolutionScore->GetVStaff(1, 1);      //get first vstaff of instr.1
     pVStaff->AddClef( nClef );
     pVStaff->AddKeySignature(nKey);
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
-
-//    pVStaff->AddSpacer(30);       // 3 lines
+        //fisrt interval
+    pNode = parserLDP.ParseText(_T("(texto ''") + oIntv0.GetIntervalName() +
+                                _T("'' dy:-40 (font ''Arial'' 6))"));
+    parserLDP.AnalyzeText(pNode, pVStaff);
     pNode = parserLDP.ParseText( sPattern[0][0] );
     pNote[0] = parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
     pNode = parserLDP.ParseText( sPattern[0][1] );
     pNote[1] = parserLDP.AnalyzeNote(pNode, pVStaff);
+    pVStaff->AddSpacer(30);       // 3 lines
     pVStaff->AddBarline(etb_DoubleBarline);
-
-//    pVStaff->AddSpacer(30);       // 3 lines
+        // two invisible rests to do a pause when playing the score
+    pNode = parserLDP.ParseText( _T("(s b noVisible)"));
+    parserLDP.AnalyzeNote(pNode, pVStaff);
+    pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);
+    pNode = parserLDP.ParseText( _T("(s b noVisible)"));
+    parserLDP.AnalyzeNote(pNode, pVStaff);
+    pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);
+        //second interval
+    pNode = parserLDP.ParseText(_T("(texto ''") + oIntv1.GetIntervalName() +
+                                _T("'' dy:-40 (font ''Arial'' 6))"));
+    parserLDP.AnalyzeText(pNode, pVStaff);
     pNode = parserLDP.ParseText( sPattern[1][0] );
     parserLDP.AnalyzeNote(pNode, pVStaff);
     pVStaff->AddBarline(etb_SimpleBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
     pNode = parserLDP.ParseText( sPattern[1][1] );
     parserLDP.AnalyzeNote(pNode, pVStaff);
-    pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);    //so that accidental doesn't affect 2nd note
+    pVStaff->AddSpacer(30);      
+    pVStaff->AddBarline(etb_EndBarline);
 
     //compute the right answer
-    m_sAnswer[0] = oIntv0.GetIntervalName();
-    m_sAnswer[1] = oIntv1.GetIntervalName();
-    m_fFirstGreater = (oIntv0.GetNumSemitones() > oIntv1.GetNumSemitones());
-    m_fBothEqual = (oIntv0.GetNumSemitones() == oIntv1.GetNumSemitones());
-    
-    //load total score into the control
-    m_pScoreCtrol->SetScore(m_pTotalScore, true);   //true: the score must be hidden
-    m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
-
-    m_fPlayEnabled = true;
-    m_fProblemCreated = true;
-    EnableButtons(true);
-    m_pPlayButton->Enable(true);
-    m_pShowSolution->Enable(true);
-
-    m_pCounters->NextTeam();
-
-
-    //play the interval
-    Play();
-
-}
-
-void lmEarCompareIntvCtrol::Play()
-{
-    if (!m_fPlaying) {
-        // Play button pressed
-        //wxLogMessage(_T("Play button pressed"));
-
-        //change link from "Play" to "Stop"
-        m_pPlayButton->SetLabel(_("Stop"));
-        m_fPlaying = true;
-
-        //AWARE: The link label is restored to "Play" when the EndOfPlay() event is
-        //       received. Flag m_fPlaying is also reset there
-
-        //play first interval
-        PlayInterval(0);
-
-        //AWARE:
-        // when 1st interval is finished an event will be generated. Then method 
-        // OnEndOfPlay() will handle the event and play the second interval.
-        // It is programmed this way (asynchonously) to avoid crashes if program/exercise
-        // is closed. Old serial code follows for historical reference
-    }
-    else {
-        // "Stop" button pressed
-        //wxLogMessage(_T("Stop button pressed"));
-        m_fPlaying = false;
-    }
-}
-
-void lmEarCompareIntvCtrol::PlayInterval(int nIntv)
-{
-    m_nNowPlaying = nIntv;
-    m_pAnswerButton[nIntv]->SetBackgroundColour( g_pColors->ButtonHighlight() );
-    m_pAnswerButton[nIntv]->Update();    //Refresh works vie events and, so, it is not inmediate
-
-    //AWARE: As the intervals are built using whole notes, we will play them at
-    // MM=320 so that real note rate will be 80.
-    m_pScore[nIntv]->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, 
-                             ePM_NormalInstrument, 320, this);
-
-}
-
-void lmEarCompareIntvCtrol::DisplaySolution()
-{
-    DoStopSounds();     //stop any possible score being played
-    wxString sAnswer = m_sAnswer[0] + _T(", ") + m_sAnswer[1];
-    m_pScoreCtrol->HideScore(false);
-    m_pScoreCtrol->DisplayMessage(sAnswer, lmToLogicalUnits(5, lmMILLIMETERS), false);
-
-    // mark right button in green
-    if (m_fFirstGreater) 
-        m_pAnswerButton[0]->SetBackgroundColour(g_pColors->Success());
-    else if (m_fBothEqual)
-        m_pAnswerButton[2]->SetBackgroundColour(g_pColors->Success());
+    m_sAnswer = _T("");
+    if (oIntv0.GetNumSemitones() > oIntv1.GetNumSemitones())
+        m_nRespIndex = 0;   //First is greater
+    else if (oIntv0.GetNumSemitones() == oIntv1.GetNumSemitones())
+        m_nRespIndex = 2;   //both are equal
     else
-        m_pAnswerButton[1]->SetBackgroundColour(g_pColors->Success());
-    
-    m_fPlayEnabled = true;
-    m_fProblemCreated = false;
-    
-}
+        m_nRespIndex = 1;   //second is greater
 
-void lmEarCompareIntvCtrol::OnDebugShowSourceScore(wxCommandEvent& event)
-{
-    m_pScoreCtrol->SourceLDP();
-}
+    //return message to display to introduce the problem
+    return _T("");
 
-void lmEarCompareIntvCtrol::OnDebugDumpScore(wxCommandEvent& event)
-{
-    m_pScoreCtrol->Dump();
-}
-
-void lmEarCompareIntvCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
-{
-    m_pScoreCtrol->DumpMidiEvents();
-}
-
-void lmEarCompareIntvCtrol::ResetExercise()
-{
-    DoStopSounds();     //stop any possible score being played
-
-    //clear the canvas
-    m_pScoreCtrol->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
-    m_pScoreCtrol->Update();    //to force to clear it now
-
-    // restore buttons' normal color
-    for (int i=0; i < 3; i++) {
-        if (m_pAnswerButton[i]) {
-            m_pAnswerButton[i]->SetBackgroundColour( g_pColors->Normal() );
-        }
-    }
-    EnableButtons(false);
-
-    //delete the previous scores
-    if (m_pScore[0]) {
-        delete m_pScore[0];
-        m_pScore[0] = (lmScore*)NULL;
-    }
-    if (m_pScore[1]) {
-        delete m_pScore[1];
-        m_pScore[1] = (lmScore*)NULL;
-    }
-    if (m_pTotalScore) {
-        delete m_pTotalScore;
-        m_pTotalScore = (lmScore*)NULL;
-    }
-
-}
-
-void lmEarCompareIntvCtrol::DoStopSounds()
-{
-    //Stop any possible score being played to avoid crashes
-    if (m_pScore[0]) m_pScore[0]->Stop();
-    if (m_pScore[1]) m_pScore[1]->Stop();
-
-}
-
-void lmEarCompareIntvCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
-{
-    // remove highlight in button
-    m_pAnswerButton[m_nNowPlaying]->SetBackgroundColour( g_pColors->Normal() );
-    m_pAnswerButton[m_nNowPlaying]->Update();
-
-    if (m_nNowPlaying == 0 && m_fPlaying) {
-        //wxLogMessage(_T("EndOfPlay event: Starting timer"));
-        m_oPauseTimer.SetOwner( this, wxID_ANY );
-        m_oPauseTimer.Start(1000, wxTIMER_CONTINUOUS );     //wait for 1sec (1000ms)
-    }
-    else {
-        //wxLogMessage(_T("EndOfPlay event: play stopped"));
-        m_fPlaying = false;
-        m_pPlayButton->SetLabel(_("Play"));
-    }
-
-}
-
-void lmEarCompareIntvCtrol::OnTimerEvent(wxTimerEvent& WXUNUSED(event))
-{
-    m_oPauseTimer.Stop();
-    if (m_fPlaying) {
-        //wxLogMessage(_T("Timer event: play(1)"));
-        PlayInterval(1);
-    }
-    else {
-        //wxLogMessage(_T("Timer event: play stopped"));
-        m_pPlayButton->SetLabel(_("Play"));
-    }
 }
 

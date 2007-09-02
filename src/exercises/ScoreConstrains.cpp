@@ -285,9 +285,9 @@ void lmFragmentsTable::AddEntry(lmTimeSignConstrains* pValidTimeSigns, wxString 
        }
         else {
             //intermediate segment
-            sSegment = sSource.Mid(0, iEnd);
-            if (!fBarMark) fBarMark = (sSource.Mid(iEnd, 1) == _T("|"));
-            sSource = sSource.Mid(iEnd+1);
+            sSegment = sSource.substr(0, iEnd);
+            if (!fBarMark) fBarMark = (sSource.substr(iEnd, 1) == _T("|"));
+            sSource = sSource.substr(iEnd+1);
         }
 
         //compute segment duration and time to align to beat (tab)
@@ -331,17 +331,17 @@ int lmFragmentsTable::SplitPattern(wxString sSource)
     int iMax;               //sSource length
     int nAPar;              //open parenthesis counter
 
-    iMax = sSource.Length();
+    iMax = sSource.length();
     wxASSERT(iMax > 0);                         //sSource must not be empty
-    wxASSERT(sSource.Mid(0, 1) == _T("(") );    //must start with parenthesis
+    wxASSERT(sSource.substr(0, 1) == _T("(") );    //must start with parenthesis
 
     nAPar = 1;       //let//s count first parenthesis
     //look for the matching closing parenthesis
     bool fFound = false;
     for (i=1; i < iMax; i++) {
-        if (sSource.Mid(i, 1) == _T("(") ) {
+        if (sSource.substr(i, 1) == _T("(") ) {
             nAPar++;
-        } else if (sSource.Mid(i, 1) == _T(")") ) {
+        } else if (sSource.substr(i, 1) == _T(")") ) {
             nAPar--;
             if (nAPar == 0) {
                 //matching parenthesis found. Exit loop
@@ -427,8 +427,8 @@ lmSegmentEntry* lmFragmentsTable::GetNextSegment()
 //    {
 //        //extract the element and remove it from source
 //        iEnd = SrcSplitPattern(sSource) + 1;
-//        sElement = sSource.Mid(0, iEnd);
-//        sSource = sSource.Mid(iEnd);
+//        sElement = sSource.substr(0, iEnd);
+//        sSource = sSource.substr(iEnd);
 //
 //        //compute element's duration
 //        rElementDuration = SrcGetElementDuracion(sElement);
@@ -459,9 +459,9 @@ int lmFragmentsTable::SplitFragment(wxString sSource)
     int i;                  //index to character being explored
     int iMax;               //sSource length
 
-    iMax = sSource.Length();
+    iMax = sSource.length();
     wxASSERT(iMax > 0);                         //sSource must not be empty
-	if (sSource.Mid(0, 1) != _T("(") ) {    //must start with parenthesis
+	if (sSource.substr(0, 1) != _T("(") ) {    //must start with parenthesis
 		wxLogMessage(_T("[lmFragmentsTable::SplitFragment] Error in fragment '%s'"),
             sSource.c_str());
 		wxASSERT(false);
@@ -469,7 +469,7 @@ int lmFragmentsTable::SplitFragment(wxString sSource)
 
     //look for a comma (,) or a barline (|)
     for (i=1; i < iMax; i++) {
-        if (sSource.Mid(i, 1) == _T(",") || sSource.Mid(i, 1) == _T("|") ) {
+        if (sSource.substr(i, 1) == _T(",") || sSource.substr(i, 1) == _T("|") ) {
             // found. Exit loop
             return i;
         }
@@ -597,11 +597,11 @@ wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     {
         //extract an element
         iEnd = SrcSplitPattern(sSource) + 1;
-        sElement = sSource.Mid(0, iEnd);
+        sElement = sSource.substr(0, iEnd);
 
         // if it is a rest remove it from pattern; otherwise finish loop
         if (SrcIsRest(sElement)) {
-            sSource = sSource.Mid(iEnd);
+            sSource = sSource.substr(iEnd);
         }
         else {
             break;

@@ -186,7 +186,7 @@ bool lmCadence::Create(lmECadenceType nCadenceType, EKeySignatures nKey, bool fU
 				sFunct.c_str(), nKey, sRootNote.c_str());
 
        //Prepare the chord
-        m_aChord[iC].Create(sRootNote, sIntervals, nKey, false);    //fUseGrandStaff);
+        m_aChord[iC].Create(sRootNote, sIntervals, nKey);
         m_nNumChords++;
     }
 
@@ -413,16 +413,15 @@ int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData
     // Returns the number of valid chords found.
     // Generated chords are placed in vector aChords. They are filtered and marked
 
-    lmConverter oConv;
     #define lmMAX_NOTES 12      // max notes in a set for a voice: 3 octaves * 4 notes
 
     // Ranges allowed by most theorists for each voice. Both notes inclusive
     // Soprano: d4-g5,  Alto: g3-d5,  Tenor: d3-g4,  Bass: e2-d4
 	// 	        e4-a5	      a3-d5			 f3-g4		   e2-c4
-    lmDPitch nMinAltoPitch = oConv.DPitch(lmSTEP_G, 3);
-    lmDPitch nMaxAltoPitch = oConv.DPitch(lmSTEP_D, 5);
-    lmDPitch nMinTenorPitch = oConv.DPitch(lmSTEP_D, 3);
-    lmDPitch nMaxTenorPitch = oConv.DPitch(lmSTEP_G, 4);
+    lmDPitch nMinAltoPitch = DPitch(lmSTEP_G, 3);
+    lmDPitch nMaxAltoPitch = DPitch(lmSTEP_D, 5);
+    lmDPitch nMinTenorPitch = DPitch(lmSTEP_D, 3);
+    lmDPitch nMaxTenorPitch = DPitch(lmSTEP_G, 4);
 
 
     // 1. Get chord note-steps for the required harmonic function.
@@ -454,7 +453,7 @@ int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData
         oChordNotes[iB].nOctave = 2;      //  place note in octave 2
     else                            // else
         oChordNotes[iB].nOctave = 3;      //  place note in octave 3
-    oChord.nNote[0] = oConv.DPitch(oChordNotes[iB].nStep, oChordNotes[iB].nOctave);
+    oChord.nNote[0] = DPitch(oChordNotes[iB].nStep, oChordNotes[iB].nOctave);
     oChord.nAcc[0] = oChordNotes[iB].nAccidentals;
     wxLogMessage(_T("[lmCadence::GenerateFirstChord] Bass = %s"),
                     oChord.GetPrintName(0).c_str() );
@@ -462,7 +461,7 @@ int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData
     // 3. Generate note for soprano voice
     //    At random, any of the chord notes (except the bass one)
     int iS = GenerateSopranoNote(oChordNotes, iB, nNumNotes);
-    oChord.nNote[3] = oConv.DPitch(oChordNotes[iS].nStep, oChordNotes[iS].nOctave);
+    oChord.nNote[3] = DPitch(oChordNotes[iS].nStep, oChordNotes[iS].nOctave);
     oChord.nAcc[3] = oChordNotes[iS].nAccidentals;
     wxLogMessage(_T("[lmCadence::GenerateFirstChord] Soprano = %s"),
                     oChord.GetPrintName(3).c_str() );
@@ -474,14 +473,14 @@ int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData
     int iAS = 0;
     int iA;
     for (iA=0; iA < nNumNotes; iA++) {
-        lmDPitch nAltoPitch = oConv.DPitch(oChordNotes[iA].nStep, 3);
+        lmDPitch nAltoPitch = DPitch(oChordNotes[iA].nStep, 3);
         lmDPitch nSopranoPitch = oChord.nNote[3];
         while (nAltoPitch < nSopranoPitch && nAltoPitch < nMaxAltoPitch) {
             if (nAltoPitch >= nMinAltoPitch) {
                 nAltoSetAcc[iAS] = oChordNotes[iA].nAccidentals;
                 nAltoSet[iAS++] = nAltoPitch;
                 wxLogMessage(_T("[lmCadence::GenerateFirstChord] Alto = %s"),
-                            oConv.GetEnglishNoteName(nAltoPitch).c_str() );
+                            DPitch_GetEnglishNoteName(nAltoPitch).c_str() );
             }
             nAltoPitch += 7;
         }
@@ -494,13 +493,13 @@ int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData
     int iTS = 0;
     int iT;
     for (iT=0; iT < nNumNotes; iT++) {
-        lmDPitch nTenorPitch = oConv.DPitch(oChordNotes[iT].nStep, 3);
+        lmDPitch nTenorPitch = DPitch(oChordNotes[iT].nStep, 3);
         while (nTenorPitch < nMaxTenorPitch) {
             if (nTenorPitch >= nMinTenorPitch) {
                 nTenorSetAcc[iTS] = oChordNotes[iT].nAccidentals;
                 nTenorSet[iTS++] = nTenorPitch;
                 wxLogMessage(_T("[lmCadence::GenerateFirstChord] Tenor = %s"),
-                            oConv.GetEnglishNoteName(nTenorPitch).c_str() );
+                            DPitch_GetEnglishNoteName(nTenorPitch).c_str() );
             }
             nTenorPitch += 7;
         }
@@ -600,26 +599,26 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
         oChordNotes[iB].nOctave = 2;      //  place note in octave 2
     else                            // else
         oChordNotes[iB].nOctave = 3;      //  place note in octave 3
-    lmDPitch nBassPitch = oConv.DPitch(oChordNotes[iB].nStep, oChordNotes[iB].nOctave);
+    lmDPitch nBassPitch = DPitch(oChordNotes[iB].nStep, oChordNotes[iB].nOctave);
     m_Chord[iThisChord].nNote[0] = nBassPitch;
     m_Chord[iThisChord].nAcc[0] = oChordNotes[iB].nAccidentals;
     wxLogMessage(_T("[lmCadence::GenerateNextChord] Bass = %s"),
-                    oConv.GetEnglishNoteName(m_Chord[iThisChord].nNote[0]).c_str() );
+                    DPitch_GetEnglishNoteName(m_Chord[iThisChord].nNote[0]).c_str() );
 
     // generate the set of possible notes for each chord note
     int nSetNotes[20];
     int nSetAcc[20];
     int nSet = 0;       //points to first not used entry = number of entries
-    lmDPitch nMaxPitch = oConv.DPitch(lmSTEP_C, 6);
+    lmDPitch nMaxPitch = DPitch(lmSTEP_C, 6);
     int iN;             // point to note in process
     for (iN=0; iN < nNumNotes; iN++) {
-        lmDPitch nDPitch = oConv.DPitch(oChordNotes[iN].nStep, 2);
+        lmDPitch nDPitch = DPitch(oChordNotes[iN].nStep, 2);
         if (nDPitch < nBassPitch) nDPitch += 7;
         while (nDPitch <= nMaxPitch) {
             nSetNotes[nSet] = nDPitch;
             nSetAcc[nSet++] = oChordNotes[iN].nAccidentals;
             //wxLogMessage(_T("[lmCadence::GenerateNextChord] Added to set = %s (%d)"),
-            //            oConv.GetEnglishNoteName(nDPitch).c_str(), nDPitch );
+            //            DPitch_GetEnglishNoteName(nDPitch).c_str(), nDPitch );
             nDPitch += 7;
         }
     }
@@ -645,7 +644,7 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
     }
     //for (int i=0; i < nSet; i++) {
     //    wxLogMessage(_T("[lmCadence::GenerateNextChord] ordered set: note %d = %s"),
-    //            i, oConv.GetEnglishNoteName(nSetNotes[i]).c_str() );
+    //            i, DPitch_GetEnglishNoteName(nSetNotes[i]).c_str() );
     //}
 
     //for each previous chord note (except bass) find the nearest ones to move to
@@ -708,25 +707,25 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
     //START DBG -------------------------------------------------------------
     wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set S: Num.notes=%d, %s, %s, %s, %s, %s"),
         nE[3],
-        oConv.GetEnglishNoteName(nElegibleNote[3][0]).c_str(),
-        oConv.GetEnglishNoteName(nElegibleNote[3][1]).c_str(),
-        oConv.GetEnglishNoteName(nElegibleNote[3][2]).c_str(),
-        oConv.GetEnglishNoteName(nElegibleNote[3][3]).c_str(),
-        oConv.GetEnglishNoteName(nElegibleNote[3][4]).c_str() );
+        DPitch_GetEnglishNoteName(nElegibleNote[3][0]).c_str(),
+        DPitch_GetEnglishNoteName(nElegibleNote[3][1]).c_str(),
+        DPitch_GetEnglishNoteName(nElegibleNote[3][2]).c_str(),
+        DPitch_GetEnglishNoteName(nElegibleNote[3][3]).c_str(),
+        DPitch_GetEnglishNoteName(nElegibleNote[3][4]).c_str() );
     wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set A: Num.notes=%d, %s, %s, %s, %s, %s"),
         nE[2],
-        oConv.GetEnglishNoteName(nElegibleNote[2][0]).c_str(),
-        oConv.GetEnglishNoteName(nElegibleNote[2][1]).c_str(),
-        oConv.GetEnglishNoteName(nElegibleNote[2][2]).c_str(),
-        oConv.GetEnglishNoteName(nElegibleNote[2][3]).c_str(),
-        oConv.GetEnglishNoteName(nElegibleNote[2][4]).c_str() );
+        DPitch_GetEnglishNoteName(nElegibleNote[2][0]).c_str(),
+        DPitch_GetEnglishNoteName(nElegibleNote[2][1]).c_str(),
+        DPitch_GetEnglishNoteName(nElegibleNote[2][2]).c_str(),
+        DPitch_GetEnglishNoteName(nElegibleNote[2][3]).c_str(),
+        DPitch_GetEnglishNoteName(nElegibleNote[2][4]).c_str() );
     wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set T: Num.notes=%d, %s, %s, %s, %s, %s"),
         nE[1],
-        oConv.GetEnglishNoteName(nElegibleNote[1][0]).c_str(),
-        oConv.GetEnglishNoteName(nElegibleNote[1][1]).c_str(),
-        oConv.GetEnglishNoteName(nElegibleNote[1][2]).c_str(),
-        oConv.GetEnglishNoteName(nElegibleNote[1][3]).c_str(),
-        oConv.GetEnglishNoteName(nElegibleNote[1][4]).c_str() );
+        DPitch_GetEnglishNoteName(nElegibleNote[1][0]).c_str(),
+        DPitch_GetEnglishNoteName(nElegibleNote[1][1]).c_str(),
+        DPitch_GetEnglishNoteName(nElegibleNote[1][2]).c_str(),
+        DPitch_GetEnglishNoteName(nElegibleNote[1][3]).c_str(),
+        DPitch_GetEnglishNoteName(nElegibleNote[1][4]).c_str() );
     //END DBG ---------------------------------------------------------------
 
     // create the set of possible chords
@@ -772,10 +771,10 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
     for (int i=0; i < nNumChords; i++) {
         wxLogMessage(_T("[lmCadence::GenerateNextChord] Possible chord %d : %s, %s, %s, %s"),
                 i,
-                oConv.GetEnglishNoteName(aChords[i].nNote[0]).c_str(),
-                oConv.GetEnglishNoteName(aChords[i].nNote[1]).c_str(),
-                oConv.GetEnglishNoteName(aChords[i].nNote[2]).c_str(),
-                oConv.GetEnglishNoteName(aChords[i].nNote[3]).c_str() );
+                DPitch_GetEnglishNoteName(aChords[i].nNote[0]).c_str(),
+                DPitch_GetEnglishNoteName(aChords[i].nNote[1]).c_str(),
+                DPitch_GetEnglishNoteName(aChords[i].nNote[2]).c_str(),
+                DPitch_GetEnglishNoteName(aChords[i].nNote[3]).c_str() );
     }
     //END DBG ---------------------------------------------------------------
 
@@ -799,10 +798,10 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
     m_Chord[iThisChord] = aChords[iC];
     //START DBG -------------------------------------------------------------
     wxLogMessage(_T("[lmCadence::GenerateNextChord] Selected : %s, %s, %s, %s"),
-        oConv.GetEnglishNoteName(aChords[iC].nNote[0]).c_str(),
-        oConv.GetEnglishNoteName(aChords[iC].nNote[1]).c_str(),
-        oConv.GetEnglishNoteName(aChords[iC].nNote[2]).c_str(),
-        oConv.GetEnglishNoteName(aChords[iC].nNote[3]).c_str() );
+        DPitch_GetEnglishNoteName(aChords[iC].nNote[0]).c_str(),
+        DPitch_GetEnglishNoteName(aChords[iC].nNote[1]).c_str(),
+        DPitch_GetEnglishNoteName(aChords[iC].nNote[2]).c_str(),
+        DPitch_GetEnglishNoteName(aChords[iC].nNote[3]).c_str() );
     //END DBG ---------------------------------------------------------------
 
     return nValidChords;
@@ -877,7 +876,7 @@ int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nNumChords,
     if (pPrevChord) {
         //Check if leading tone is present in previous chord
         for (int iN=0; iN < 4; iN++) {
-            if (lmConverter::GetStepFromDPitch(pPrevChord->nNote[iN]) == nStepLeading) {
+            if (DPitch_Step(pPrevChord->nNote[iN]) == nStepLeading) {
                 iLeading = iN;
                 break;
             }
@@ -890,7 +889,7 @@ int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nNumChords,
         int nKeyAccidentals[7];
         ComputeAccidentals(m_nKey, nKeyAccidentals);
         for (int iN=0; iN < 4; iN++) {
-            int nStep = lmConverter::GetStepFromDPitch(pPrevChord->nNote[iN]);
+            int nStep = DPitch_Step(pPrevChord->nNote[iN]);
             nPrevAlter[iN] = pPrevChord->nAcc[iN] - nKeyAccidentals[nStep];
             wxLogMessage(_T("[lmCadence::FilterChords] nPrevAlter[%d] = %d"), iN, nPrevAlter[iN] );
         }
@@ -904,7 +903,7 @@ int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nNumChords,
         if (fExhaustive || aChords[i].nReason == lm_eChordValid) {
             bool fFound[4] = { false, false, false, false };
             for (int iN=0; iN < 4; iN++) {
-				int nStep = lmConverter::GetStepFromDPitch(aChords[i].nNote[iN]);
+				int nStep = DPitch_Step(aChords[i].nNote[iN]);
                 for(int j=0; j < tChordData.nNumSteps; j++) {
                     if (nStep == tChordData.nSteps[j]) {
                         fFound[j] = true;
@@ -968,7 +967,7 @@ int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nNumChords,
             int nFifths = 0;
             int nLeadingTones = 0;
             for (int iN=0; iN < 4; iN++) {
-                int nStep = lmConverter::GetStepFromDPitch(aChords[i].nNote[iN]);
+                int nStep = DPitch_Step(aChords[i].nNote[iN]);
                 if (nStep == tChordData.nStep5)
                     nFifths++;
                 else if (nStep == nStepLeading)
@@ -1164,19 +1163,19 @@ void lmCadence::Debug_DumpChord(lmHChord& oChord, int iChord)
     if (oChord.nReason == lm_eChordValid) {
         wxLogMessage(_T("[lmCadence::Debug_DumpChord] Valid chord %d : %s, %s, %s, %s"),
             iChord,
-            lmConverter::GetEnglishNoteName(oChord.nNote[0]).c_str(),
-            lmConverter::GetEnglishNoteName(oChord.nNote[1]).c_str(),
-            lmConverter::GetEnglishNoteName(oChord.nNote[2]).c_str(),
-            lmConverter::GetEnglishNoteName(oChord.nNote[3]).c_str() );
+            DPitch_GetEnglishNoteName(oChord.nNote[0]).c_str(),
+            DPitch_GetEnglishNoteName(oChord.nNote[1]).c_str(),
+            DPitch_GetEnglishNoteName(oChord.nNote[2]).c_str(),
+            DPitch_GetEnglishNoteName(oChord.nNote[3]).c_str() );
     }
     else {
 		lmChordError nError = oChord.nSeverity;
         wxLogMessage(_T("[lmCadence::Debug_DumpChord] Invalid chord %d : %s, %s, %s, %s - Impact %d, severity %d"),
             iChord,
-            lmConverter::GetEnglishNoteName(oChord.nNote[0]).c_str(),
-            lmConverter::GetEnglishNoteName(oChord.nNote[1]).c_str(),
-            lmConverter::GetEnglishNoteName(oChord.nNote[2]).c_str(),
-            lmConverter::GetEnglishNoteName(oChord.nNote[3]).c_str(),
+            DPitch_GetEnglishNoteName(oChord.nNote[0]).c_str(),
+            DPitch_GetEnglishNoteName(oChord.nNote[1]).c_str(),
+            DPitch_GetEnglishNoteName(oChord.nNote[2]).c_str(),
+            DPitch_GetEnglishNoteName(oChord.nNote[3]).c_str(),
             oChord.nImpact, nError );
 
 		if (nError & lm_eNotDoubledThird) 
@@ -1228,7 +1227,7 @@ lmChordManager* lmCadence::GetTonicChord()
             sIntervals = _T("m3,p5");
 
         //create the chord
-        m_oTonicChord.Create(sRootNote, sIntervals, m_nKey, false);     //false = don't use Grand Staff
+        m_oTonicChord.Create(sRootNote, sIntervals, m_nKey);
 
         m_fTonicCreated = true;
     }

@@ -77,9 +77,6 @@ extern void AddSemitonesToNote(lmNoteBits* pRoot, wxString sIntvCode,
                                lmNoteBits* pNewNote);
 extern wxString IntervalBitsToCode(lmIntvBits& tIntv);
 extern bool IntervalCodeToBits(wxString sIntvCode, lmIntvBits* pBits);
-extern wxString InvertInterval(wxString sIntvCode);
-extern wxString AddIntervals(wxString sIntvCode1, wxString sIntvCode2);
-extern wxString SubstractIntervals(wxString sIntvCode1, wxString sIntvCode2);
 
 
 
@@ -95,7 +92,7 @@ public:
     ~lmInterval() {};
 
     int GetNumSemitones() { return m_nSemi; }
-    bool IsAscending() { return (m_ntMidi1 < m_ntMidi2); }
+    bool IsAscending() { return (m_MPitch1 < m_MPitch2); }
 
     // access to interval name and type:
     //      Name - a string with the interval full name, i.e.: "Major 3rd"
@@ -114,8 +111,8 @@ public:
             wxASSERT(i == 0 || i == 1);
             return m_sPattern[i];
         }
-    int GetMidiNote1() { return m_ntMidi1; }
-    int GetMidiNote2() { return m_ntMidi2; }
+    int GetMidiNote1() { return m_MPitch1; }
+    int GetMidiNote2() { return m_MPitch2; }
     void GetNoteBits(int i, lmNoteBits* pNote);
 
 
@@ -129,10 +126,10 @@ private:
     //data variables
     int               m_nSemi;
     EKeySignatures    m_nKey;            //key signature
-    int               m_ntMidi1;
-    int               m_ntMidi2;
-    int               m_ntDiat1;
-    int               m_ntDiat2;
+    lmMPitch          m_MPitch1;
+    lmMPitch          m_MPitch2;
+    lmDPitch          m_DPitch1;
+    lmDPitch          m_DPitch2;
 
     // results of the analysis
     EIntervalType    m_nType;

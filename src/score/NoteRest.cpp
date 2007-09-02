@@ -18,10 +18,7 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file NoteRest.cpp
-    @brief Implementation file for class lmNoteRest
-    @ingroup score_kernel
-*/
+
 //--------------------------------------------------------------------------------------------------
 /*! @class lmNoteRest
     @ingroup score_kernel
@@ -77,8 +74,8 @@ WX_DEFINE_LIST(NoteRestsList);
 //Constructors and destructors
 //====================================================================================================
 lmNoteRest::lmNoteRest(lmVStaff* pVStaff, bool IsRest, ENoteType nNoteType, float rDuration,
-                   bool fDotted, bool fDoubleDotted, int nStaff) :
-    lmStaffObj(pVStaff, eSFOT_NoteRest, pVStaff, nStaff, true, lmDRAGGABLE)
+                   bool fDotted, bool fDoubleDotted, int nStaff, bool fVisible) :
+    lmStaffObj(pVStaff, eSFOT_NoteRest, pVStaff, nStaff, fVisible, lmDRAGGABLE)
 {
     // initialize all atributes
     m_fCalderon = false;
@@ -198,7 +195,7 @@ lmLUnits lmNoteRest::DrawDot(bool fMeasuring, lmPaper* pPaper,
 //====================================================================================================
 // methods related to associated AuxObjs management
 //====================================================================================================
-void lmNoteRest::AddFermata(lmEPlacement nPlacement)
+void lmNoteRest::AddFermata(const lmEPlacement nPlacement)
 {
     if (!m_pNotations) m_pNotations = new AuxObjsList();
 
@@ -235,13 +232,13 @@ void lmNoteRest::AddMidiEvents(lmSoundManager* pSM, float rMeasureStartTime, int
             //It is not tied to the previous one. Generate NoteOn event to start the sound and
             //highlight the note
             pN->ComputeVolume();
-            pSM->StoreEvent(rTime, eSET_NoteON, nChannel, pN->GetMidiPitch(),
+            pSM->StoreEvent(rTime, eSET_NoteON, nChannel, pN->GetMPitch(),
                             pN->GetVolume(), pN->GetStep(), this, nMeasure);
         }
         else {
             //This note is tied to the previous one. Generate only a VisualOn event as the
             //sound is already started by the previous note.
-            pSM->StoreEvent(rTime, eSET_VisualON, nChannel, pN->GetMidiPitch(), 0, pN->GetStep(),
+            pSM->StoreEvent(rTime, eSET_VisualON, nChannel, pN->GetMPitch(), 0, pN->GetStep(),
                             this, nMeasure);
         }
     }
@@ -258,13 +255,13 @@ void lmNoteRest::AddMidiEvents(lmSoundManager* pSM, float rMeasureStartTime, int
         if (!pN->IsTiedToNext()) {
             //It is not tied to next note. Generate NoteOff event to stop the sound and
             //un-highlight the note
-            pSM->StoreEvent(rTime, eSET_NoteOFF, nChannel, pN->GetMidiPitch(), 0, pN->GetStep(),
+            pSM->StoreEvent(rTime, eSET_NoteOFF, nChannel, pN->GetMPitch(), 0, pN->GetStep(),
                             this, nMeasure);
         }
         else {
             //This note is tied to the next one. Generate only a VisualOff event so that
             //the note will be un-highlighted but the sound will not be stopped.
-            pSM->StoreEvent(rTime, eSET_VisualOFF, nChannel, pN->GetMidiPitch(), 0, pN->GetStep(),
+            pSM->StoreEvent(rTime, eSET_VisualOFF, nChannel, pN->GetMPitch(), 0, pN->GetStep(),
                             this, nMeasure);
         }
     }
@@ -308,7 +305,7 @@ wxString lmNoteRest::GetLDPNoteType()
     dots ".". It is assumed the source is normalized (no spaces, lower case)
     @returns the enum value that corresponds to this note type, or -1 if error
 */
-int LDPNoteTypeToEnumNoteType(wxString sNoteType)
+int LDPNoteTypeToEnumNoteType(const wxString& sNoteType)
 {
     wxChar cNoteType = sNoteType.GetChar(0);
     switch (cNoteType) {
@@ -343,17 +340,17 @@ int LDPNoteTypeToEnumNoteType(wxString sNoteType)
     dots ".". It is assumed the source is normalized (no spaces, lower case)
     @returns the duration or -1.0 if error
 */
-float LDPNoteTypeToDuration(wxString sNoteType)
+float LDPNoteTypeToDuration(const wxString& sNoteType)
 {
     int nNoteType = LDPNoteTypeToEnumNoteType(sNoteType);
     if (nNoteType == -1) return -1.0;    //error
 
     //analyze dots
     bool fDotted=false, fDoubleDotted=false;
-    if (sNoteType.Len() > 1) {
-        if (sNoteType.Mid(1) == _T("..") ) {
+    if (sNoteType.length() > 1) {
+        if (sNoteType.substr(1) == _T("..") ) {
             fDoubleDotted = true;
-        } else if (sNoteType.Mid(1) ==  _T(".") ) {
+        } else if (sNoteType.substr(1) ==  _T(".") ) {
             fDotted = true;
         } else {
             return -1.0;    //error

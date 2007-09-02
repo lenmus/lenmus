@@ -114,6 +114,7 @@
 #include "IdfyChordCtrolParms.h"
 #include "IdfyScalesCtrolParms.h"
 #include "IdfyCadencesCtrolParms.h"
+#include "TheoIntervalsCtrolParams.h"
 
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
@@ -244,7 +245,7 @@ void lmTheoKeySignParms::AddParam(const wxHtmlTag& tag)
     // scan name and value
     if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
     sName = tag.GetParam(_T("NAME"));
-    sName.UpperCase();        //convert to upper case
+    sName.MakeUpper();        //convert to upper case
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
 
@@ -268,7 +269,7 @@ Acceptable values: numeric, 0..7"),
     // problem_type        DeduceKey | WriteKey | Both                 [Both]
     else if ( sName == _T("PROBLEM_TYPE") ) {
         wxString sProblem = tag.GetParam(_T("VALUE"));
-        sProblem.UpperCase();
+        sProblem.MakeUpper();
         if (sProblem == _T("DEDUCEKEY"))
             m_pConstrains->SetProblemType( eIdentifyKeySignature );
         else if (sProblem == _T("WRITEKEY"))
@@ -286,7 +287,7 @@ Acceptable values: DeduceKey | WriteKey | Both"),
     // clef        Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1
     else if ( sName == _T("CLEF") ) {
         wxString sClef = tag.GetParam(_T("VALUE"));
-        sClef.UpperCase();
+        sClef.MakeUpper();
         if (sClef == _T("SOL"))
             m_pConstrains->SetClef(eclvSol, true);
         else if (sClef == _T("FA4"))
@@ -312,7 +313,7 @@ Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"),
     // mode         Major | Minor | Both                        [Both]
     else if ( sName == _T("MODE") ) {
         wxString sProblem = tag.GetParam(_T("VALUE"));
-        sProblem.UpperCase();
+        sProblem.MakeUpper();
         if (sProblem == _T("MAJOR"))
             m_pConstrains->SetScaleMode( eMajorMode );
         else if (sProblem == _T("MINOR"))
@@ -355,164 +356,6 @@ void lmTheoKeySignParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 
 }
 
-
-
-//===============================================================================================
-class lmTheoIntervalsCtrolParms : public lmObjectParams
-{
-public:
-    lmTheoIntervalsCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
-                              int nPercent, long nStyle);
-    ~lmTheoIntervalsCtrolParms();
-
-    void AddParam(const wxHtmlTag& tag);
-    void CreateHtmlCell(wxHtmlWinParser *pHtmlParser);
-
-protected:
-
-
-        // Member variables:
-
-    // html object window attributes
-    long    m_nWindowStyle;
-    lmTheoIntervalsConstrains* m_pConstrains;
-
-    DECLARE_NO_COPY_CLASS(lmTheoIntervalsCtrolParms)
-};
-
-
-
-lmTheoIntervalsCtrolParms::lmTheoIntervalsCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
-                                   int nPercent, long nStyle)
-    : lmObjectParams(tag, nWidth, nHeight, nPercent)
-{
-
-    // html object window attributes
-    m_nWindowStyle = nStyle;
-
-    // create the constraints object
-    m_pConstrains = new lmTheoIntervalsConstrains();
-
-}
-
-
-lmTheoIntervalsCtrolParms::~lmTheoIntervalsCtrolParms()
-{
-    //Constrains will be deleted by the Ctrol. DO NOT DELETE IT HERE
-    //if (m_pConstrains) delete m_pConstrains;
-
-}
-
-void lmTheoIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
-{
-    /*
-        accidentals        none | simple | double                        [none]
-        problem_type    DeduceInterval | BuildInterval | Both        [both]
-        clef*            Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1        [Sol]
-
-    */
-
-    wxString sName = wxEmptyString;
-    wxString sValue = wxEmptyString;
-
-    // scan name and value
-    if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
-    sName = tag.GetParam(_T("NAME"));
-    sName.UpperCase();        //convert to upper case
-
-    if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
-
-    // accidentals        none | simple | double
-    if ( sName == _T("ACCIDENTALS") ) {
-        wxString sAccidentals = tag.GetParam(_T("VALUE"));
-        sAccidentals.UpperCase();
-        if (sAccidentals == _T("NONE")) {
-            m_pConstrains->SetAccidentals(false);
-            m_pConstrains->SetDoubleAccidentals(false);
-        }
-        else if (sAccidentals == _T("SIMPLE"))
-            m_pConstrains->SetAccidentals(true);
-        else if (sAccidentals == _T("DOUBLE"))
-            m_pConstrains->SetDoubleAccidentals(true);
-        else
-            LogError(wxString::Format(
-_("Invalid param value in:\n<param %s >\n \
-Invalid value = %s \n \
-Acceptable values: none | simple | double"),
-                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
-    }
-
-    //problem_type    DeduceInterval | BuildInterval | Both
-    else if ( sName == _T("PROBLEM_TYPE") ) {
-        wxString sProblem = tag.GetParam(_T("VALUE"));
-        sProblem.UpperCase();
-        if (sProblem == _T("DEDUCEINTERVAL"))
-            m_pConstrains->SetProblemType( ePT_DeduceInterval );
-        else if (sProblem == _T("BUILDINTERVAL"))
-            m_pConstrains->SetProblemType( ePT_BuildInterval );
-        else if (sProblem == _T("BOTH"))
-            m_pConstrains->SetProblemType( ePT_Both );
-        else
-            LogError(wxString::Format(
-_("Invalid param value in:\n<param %s >\n \
-Invalid value = %s \n \
-Acceptable values: DeduceInterval | BuildInterval | Both"),
-                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
-    }
-
-    // clef        Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1
-    else if ( sName == _T("CLEF") ) {
-        wxString sClef = tag.GetParam(_T("VALUE"));
-        sClef.UpperCase();
-        if (sClef == _T("SOL"))
-            m_pConstrains->SetClef(eclvSol, true);
-        else if (sClef == _T("FA4"))
-            m_pConstrains->SetClef(eclvFa4, true);
-        else if (sClef == _T("FA3"))
-            m_pConstrains->SetClef(eclvFa3, true);
-        else if (sClef == _T("DO4"))
-            m_pConstrains->SetClef(eclvDo4, true);
-        else if (sClef == _T("DO3"))
-            m_pConstrains->SetClef(eclvDo3, true);
-        else if (sClef == _T("DO2"))
-            m_pConstrains->SetClef(eclvDo2, true);
-        else if (sClef == _T("DO1"))
-            m_pConstrains->SetClef(eclvDo1, true);
-        else
-            LogError(wxString::Format(
-_("Invalid param value in:\n<param %s >\n \
-Invalid value = %s \n \
-Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"),
-                tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
-    }
-
-    // Unknown param
-    else
-        LogError(wxString::Format(
-            _("lmTheoIntervalsCtrol. Unknown param: <param %s >\n"),
-            tag.GetAllParams().c_str() ));
-
-}
-
-void lmTheoIntervalsCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
-{
-    // ensure that at least a Clef is selected
-    bool fClefSpecified = false;
-    for (int i=lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
-        fClefSpecified = fClefSpecified || m_pConstrains->IsValidClef((EClefType)i);
-        if (fClefSpecified) break;
-    }
-    if (!fClefSpecified) {
-        m_pConstrains->SetClef(eclvSol, true);
-    }
-
-    // create the window
-    wxWindow* wnd = new lmTheoIntervalsCtrol((wxWindow*)g_pMainFrame->GetHtmlWindow(), -1,
-        m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
-    wnd->Show(true);
-    pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
-
-}
 
 
 //===============================================================================================
@@ -568,14 +411,14 @@ void lmEarIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
     // scan name and value
     if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
     sName = tag.GetParam(_T("NAME"));
-    sName.UpperCase();        //convert to upper case
+    sName.MakeUpper();        //convert to upper case
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
 
     // max_interval    num         default: 8
     if ( sName == _T("MAX_INTERVAL") ) {
         //wxString sAccidentals = tag.GetParam(_T("VALUE"));
-        //sAccidentals.UpperCase();
+        //sAccidentals.MakeUpper();
         //if (sAccidentals == _T("NONE")) {
         //    m_pConstrains->SetAccidentals(false);
         //    m_pConstrains->SetDoubleAccidentals(false);
@@ -652,6 +495,10 @@ lmEarCompareIntvCtrolParms::lmEarCompareIntvCtrolParms(const wxHtmlTag& tag, int
 {
     m_nWindowStyle = nStyle;
     m_pConstrains = new lmEarIntervalsConstrains(_T("EarCompare"));
+
+    //force aural training mode
+    m_pConstrains->SetTheoryMode(false);
+
 }
 
 
@@ -674,14 +521,14 @@ void lmEarCompareIntvCtrolParms::AddParam(const wxHtmlTag& tag)
     // scan name and value
     if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
     sName = tag.GetParam(_T("NAME"));
-    sName.UpperCase();        //convert to upper case
+    sName.MakeUpper();        //convert to upper case
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
 
     // max_interval    num         default: 8
     if ( sName == _T("MAX_INTERVAL") ) {
         //wxString sAccidentals = tag.GetParam(_T("VALUE"));
-        //sAccidentals.UpperCase();
+        //sAccidentals.MakeUpper();
         //if (sAccidentals == _T("NONE")) {
         //    m_pConstrains->SetAccidentals(false);
         //    m_pConstrains->SetDoubleAccidentals(false);
@@ -696,6 +543,17 @@ void lmEarCompareIntvCtrolParms::AddParam(const wxHtmlTag& tag)
         //        _T("Invalid value = %s \n")
         //        _T("Acceptable values: none | simple | double") ),
         //        tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
+    }
+
+    // "Go back to theory" link
+    else if ( sName == _T("CONTROL_GO_BACK") ) {
+        m_pConstrains->SetGoBackLink( tag.GetParam(_T("VALUE") ));
+    }
+
+    // control_settings
+    else if ( sName == _T("CONTROL_SETTINGS") ) {
+        m_pConstrains->SetSettingsLink(true);
+        m_pConstrains->SetSection( tag.GetParam(_T("VALUE") ));
     }
 
     // Unknown param

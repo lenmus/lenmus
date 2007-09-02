@@ -90,13 +90,13 @@ private:
     ETimeSignatureType    m_nType;
 
     int        m_nNumFractions;    // for type eTS_Multiple and eTS_Normal
-        //eTS_Normal = 1,        // it is a single fraction
-        //eTS_Common,            // it is 4/4 but represented by a C symbol
-        //eTS_Cut,            // it is 2/4 but represented by a C/ simbol
-        //sTS_SingleNumber,    // it is a single number with an implied denominator
-        //eTS_Multiple,        // multiple fractions, i.e.: 2/4 + 3/8
+        //eTS_Normal = 1,       // it is a single fraction
+        //eTS_Common,           // it is 4/4 but represented by a C symbol
+        //eTS_Cut,              // it is 2/4 but represented by a C/ simbol
+        //sTS_SingleNumber,     // it is a single number with an implied denominator
+        //eTS_Multiple,         // multiple fractions, i.e.: 2/4 + 3/8
         //eTS_Composite,        // composite fraction, i.e.: 3+2/8
-        //eTS_SenzaMisura        // no time signature is present
+        //eTS_SenzaMisura       // no time signature is present
 
     int         m_nBeats;
     int         m_nBeatType;
@@ -106,8 +106,10 @@ private:
 };
 
 //
-// global functions related to TimeSignatures
+// global functions related to TimeSignatures, and some definitions used by them
 //
+#define lmNON_CHORD_NOTE    -1
+
 extern int GetNumUnitsFromTimeSignType(ETimeSignature nTimeSign);
 extern int GetBeatTypeFromTimeSignType(ETimeSignature nTimeSign);
 extern int GetNumBeatsFromTimeSignType(ETimeSignature nTimeSign);
@@ -116,7 +118,8 @@ extern float GetBeatDuration(int nBeatType);
 extern float GetMeasureDuration(ETimeSignature nTimeSign);
 //extern bool IsBinaryTimeSignature(ETimeSignature nTimeSign);
 extern int AssignVolume(float rTimePos, int nBeats, int nBeatType);
-extern lmENoteBeatPosition GetNoteBeatPosition(float rTimePos, int nBeats, int nBeatType);
+extern int GetNoteBeatPosition(float rTimePos, int nBeats, int nBeatType);
+extern int GetChordPosition(float rTimePos, float rDuration, int nBeats, int nBeatType);
 
 #endif    // __TIMESIGNATURE_H__
 

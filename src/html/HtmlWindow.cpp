@@ -212,7 +212,7 @@ void lmHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link)
     iPos = sLocation.Find(sTag);
     if (iPos != wxNOT_FOUND) {
         //Get content
-        wxString sContent = sLocation.Mid(sTag.Len());
+        wxString sContent = sLocation.substr(sTag.length());
 
         // replace "{" and "}" by "<" and ">", respectively
         sContent.Replace(_T("{"), _T("<"));
@@ -231,7 +231,7 @@ void lmHtmlWindow::OnLinkClicked(const wxHtmlLinkInfo& link)
     iPos = sLocation.Find(sTag);
     if (iPos != wxNOT_FOUND) {
         // extract page name
-        wxString sPageName = sLocation.Mid(sTag.Len());
+        wxString sPageName = sLocation.substr(sTag.length());
 
         // get text book controller
         lmTextBookController* pBook = g_pMainFrame->GetBookController();

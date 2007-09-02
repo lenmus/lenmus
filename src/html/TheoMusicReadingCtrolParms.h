@@ -206,7 +206,7 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
     // scan name and value
     if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
     sName = tag.GetParam(_T("NAME"));
-    sName.UpperCase();        //convert to upper case
+    sName.MakeUpper();        //convert to upper case
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
 
@@ -365,12 +365,12 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeClef(wxString sLine)
     if (nClef == (EClefType)-1) return true;    //error
 
     //get lower scope
-    sLine = sLine.Mid(iSemicolon+1);
+    sLine = sLine.substr(iSemicolon+1);
     iSemicolon = sLine.Find(_T(";"));
     wxString sLowerScope = sLine.Left(iSemicolon);
 
     //get upper scope
-    wxString sUpperScope = sLine.Mid(iSemicolon + 1);
+    wxString sUpperScope = sLine.substr(iSemicolon + 1);
 
     //Update information for this clef
     lmClefConstrain* pClefs = m_pConstrains->GetClefConstrains();
@@ -432,7 +432,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeKeys(wxString sLine)
             iColon = sLine.Find(_T(","));
             if (iColon != -1) {
                 sKey = sLine.Left(iColon);
-                sLine = sLine.Mid(iColon + 1);      //skip the colon
+                sLine = sLine.substr(iColon + 1);      //skip the colon
             }
             else {
                 sKey = sLine;
@@ -458,7 +458,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeFragments(wxString sLine)
     wxString sTimeSign = sLine.Left(iSemicolon);
 
     //get fragment
-    wxString sFragment = sLine.Mid(iSemicolon + 1);   //skip the semicolon and take the rest
+    wxString sFragment = sLine.substr(iSemicolon + 1);   //skip the semicolon and take the rest
 
     //build time signatures constraints object
     lmTimeSignConstrains* pTimeSigns = new lmTimeSignConstrains();

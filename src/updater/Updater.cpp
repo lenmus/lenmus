@@ -480,7 +480,7 @@ bool LaunchDefaultBrowser(const wxString& urlOrig)
         {
             ConstStr255Param hint = 0;
             startSel = 0;
-            endSel = url.Length();
+            endSel = url.length();
             err = ICLaunchURL(inst, hint, url.fn_str(), endSel, &startSel, &endSel);
             if (err != noErr)
                 wxLogDebug(wxT("ICLaunchURL error %d"), (int) err);

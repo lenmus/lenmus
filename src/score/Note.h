@@ -28,16 +28,19 @@
 
 #include "../graphic/Shape.h"
 
+#define lmREMOVE_TIES   true
+#define lmCHANGE_TIED   false
+
 class lmNote: public lmNoteRest
 {
 public:
 
     lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
-        wxString sStep, wxString sOctave, wxString sAlter,
+        wxString& sStep, wxString& sOctave, wxString& sAlter,
         EAccidentals nAccidentals,
         ENoteType nNoteType, float rDuration,
         bool fDotted, bool fDoubleDotted,
-        int nStaff,
+        int nStaff, bool fVisible,
         lmContext* pContext, 
         bool fBeamed, lmTBeamInfo BeamInfo[],
         bool fInChord,
@@ -76,7 +79,7 @@ public:
     lmLUnits GetBoundsLeft();
     lmLUnits GetBoundsRight();
 
-    //methos related to stems
+    //methods related to stems
     EStemType   GetStemType() { return m_nStemType; }
     lmLUnits    GetDefaultStemLength();
     lmLUnits    GetStandardStemLenght();
@@ -113,7 +116,7 @@ public:
 
 
     //methods related to ties
-    bool    CanBeTied(lmPitch nMidiPitch, int nStep);
+    bool    CanBeTied(lmAPitch anPitch);
     bool    NeedToBeTied() { return m_fNeedToBeTied; }
     void    SetTie(lmTie* pTie) {
                     m_pTieNext = pTie;
@@ -124,14 +127,15 @@ public:
     bool    IsTiedToPrev() { return (m_pTiePrev != (lmTie*)NULL); } 
 
     // methods related to sound
-    lmPitch     GetDiatonicPitch();
-    lmPitch     GetMidiPitch();
-    lmNotePitch GetPitch();
+    lmDPitch    GetDPitch();
+    lmMPitch    GetMPitch();
+    inline lmAPitch GetAPitch() { return m_anPitch; }
     bool    IsPitchDefined();
-    void    ChangePitch(int nStep, int nOctave, int nAlter); 
-    void    ChangePitch(lmNotePitch nPitch);
-    int     GetStep() { return m_nStep; }        //0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
-    int     GetOctave() { return m_nOctave; }
+    void    ChangePitch(int nStep, int nOctave, int nAlter, bool fRemoveTies); 
+    void    ChangePitch(lmAPitch nAPitch, bool fRemoveTies);
+    void    PropagateNotePitchChange(int nStep, int nOctave, int nAlter, bool fForward);
+    int     GetStep() { return m_anPitch.Step(); }      //0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
+    int     GetOctave() { return m_anPitch.Octave(); }
     int     GetVolume() { return m_nVolume; }
     void    SetVolume(int nVolume) { m_nVolume = nVolume; }
     void    ComputeVolume();
@@ -147,7 +151,11 @@ public:
     lmContext*  GetContext() { return m_pContext; }
 
     // methods oriented to score processing
-    lmENoteBeatPosition GetPositionInBeat();
+    int GetPositionInBeat() const;
+
+    // methods for harmonic analisis
+    int GetChordPosition() const;
+
 
 
 
@@ -165,48 +173,26 @@ private:
 
     //auxiliary
     int PosOnStaffToPitch(int nSteps);
-    void SetUpPitchRelatedVariables(lmPitch nNewPitch);
+    void SetUpPitchRelatedVariables(lmDPitch nNewPitch);
     void SetUpStemDirection();
+    const EAccidentals ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const;
 
+    //pitch
+    void DoChangePitch(int nStep, int nOctave, int nAlter);
 
 
         //============================================================
         // member variables 
         //============================================================
 
-    //
-    // Pitch information is stored in:
-    // a) variables related to sound:
-    //    m_nMidiPitch        real pitch. accidentals and context already included
-    //    m_nAlter            accidentals added to diatonic pitch implied by the combination of
-    //                        m_nStep, m_nOctave and context accidentals. If displayed music 
-    //                        coincides with played music then the combination of m_nPitch and
-    //                        m_nAlter should match the real pitch m_nMidiPitch.
-    //
-    // b) variables related to how the note should look:
-    //    m_nStep             note name: 0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
-    //    m_nOctave           octave: 0 .. 9.  4 = the octave started by middle C.
-    //    m_nPitch            diatonic pitch: the combination of m_nStep and m_nOctave
-    //    m_pAccidentals      to render in this note. Other than the implied by key signature
-    //
-    //
+    // Absolute pitch information (that is, the real sound) is stored in m_anPitch, so
+    // the real accidentals are in m_anPitch.Accidentals(). As the displayed accidentals
+    // are usually different (some accidentals such as key signature accidentals and alterations
+    // in previous notes are not displayed) the displayed accidentals are stored in 
+    // graphic m_pAccidentals
 
-    // variables related to how the note should sound when playing the score
-    //-----------------------------------------------------------------------
-    lmPitch     m_nMidiPitch;    //real pitch: combination of all three previous vars.
-    int         m_nAlter;        //chromatic alteration in number of semitones
-                                 //(e.g., -1 for flat, 1 for sharp).
-                                 //! @todo accept decimal values like 0.5 (quarter tone sharp)
-
-
-    // variables related to how the note should look when rendering the score
-    //-----------------------------------------------------------------------
-
-    // pitch and accidentals
-    int             m_nStep;            //0-C, 1-D, 2-E, 3-F, 4-G, 5-A, 6-B
-    int             m_nOctave;          //0 .. 9.  4 = the octave started by middle C.
-    lmPitch         m_nPitch;           //absolute pitch, without accidentals (diatonic pitch)
-    lmAccidental*   m_pAccidentals;     //accidentals
+    lmAPitch        m_anPitch;          //real absolute pitch. Accidentals and context already included
+    lmAccidental*   m_pAccidentals;     //accidentals to be drawn
     EClefType       m_nClef;            //clef to draw this note
     lmContext*      m_pContext;         //context for this note
 
@@ -263,11 +249,9 @@ WX_DECLARE_LIST(lmNote, NotesList);
 
 // Global functions related to notes
 
-lmPitch StepAndOctaveToPitch(int nStep, int nOctave);
-lmPitch PitchToMidi(lmPitch nPitch, int nAlter);
-wxString MIDINoteToLDPPattern(lmPitch nPitchMIDI, EKeySignatures nTonalidad, 
-                              lmPitch* pPitch = (lmPitch*)NULL);
-wxString GetNoteNamePhysicists(lmPitch nPitch);
+wxString MIDINoteToLDPPattern(lmMPitch nPitchMIDI, EKeySignatures nTonalidad, 
+                              lmDPitch* pPitch = (lmDPitch*)NULL);
+wxString GetNoteNamePhysicists(lmDPitch nPitch);
 
 
 #endif    // __NOTE_H__

@@ -9,7 +9,7 @@
 <para>In this lesson two new rhythmic patterns are introduced. They are the result of
 tying a triplet to the next note:</para>
 
-<score width="600" height="100" border="0">
+<para><score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -18,7 +18,7 @@ tying a triplet to the next note:</para>
         (n * c g+ t3)(n * c)(n * c g- t- l)(n * n))
         (c (n * c g+ t3)(n * c)(n * c g- t- l)(n * c g+)(n * c g-)(Barra Final))
     </music>
-</score>
+</score></para>
 
 <part>
 <title>Listen and take notice of the differences</title>
@@ -26,7 +26,7 @@ tying a triplet to the next note:</para>
 the fourth ones. Note how
 measures 2 and 4 are similar to measures 1 and 3 but tying the triplets.</para>
 
-<score width="600" height="100" border="0">
+<para><score width="600" height="100" border="0">
     <score_type>short</score_type>
     <control_play></control_play>
     <control_measures></control_measures>
@@ -37,7 +37,7 @@ measures 2 and 4 are similar to measures 1 and 3 but tying the triplets.</para>
         (c (n * c g+ t3)(n * c)(n * c g- t-)(n * c g+)(n * c g-))
         (c (n * c g+ t3)(n * c)(n * c l g- t-)(n * c g+)(n * c g-)(Barra Final))
     </music>
-</score>
+</score></para>
 </part>
 
 <part>

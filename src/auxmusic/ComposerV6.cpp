@@ -60,6 +60,16 @@ enum lmEHarmonicFunction
     lmLEADING           = 0x00000007,   // vii
     lmSUBTONIC          = 0x00000007,   // vii
 
+    // alias
+    lm_I                = 0x00000001,
+    lm_II               = 0x00000002,
+    lm_III              = 0x00000003,
+    lm_IV               = 0x00000004,
+    lm_V                = 0x00000005,
+    lm_VI               = 0x00000006,
+    lm_VII              = 0x00000007,
+
+
     lmROOT_POSITION     = 0x00000008,
     lmFIRST_INVERSION   = 0x00000010,
     lmSECOND_INVERSION  = 0x00000020,
@@ -71,7 +81,13 @@ enum lmEHarmonicFunction
     lmGRADE_MASK        = 0x00000007,   // to extract grade
 };
 
+// table of typical harmonic progressions, to base compositions on them
+static lmEHarmonicFunction m_aProgression[][8] =
+{ 
+    {lm_I,  lm_V,   lm_I,   lm_IV,  lm_II,  lm_III, lm_IV,  lm_I },
+    {lm_I,  lm_II,  lm_V,   lm_I,   lm_III, lm_IV,  lm_V,   lm_I },
 
+};
 
 lmComposer6::lmComposer6() : lmComposer()
 
@@ -200,7 +216,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
 
 
     // prepare and initialize the score
-    lmLDPParser parserLDP;
+    lmLDPParser parserLDP(_T("es"), _T("utf-8"));
     lmLDPNode* pNode;
     lmScore* pScore = new lmScore();
     pScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );            //5mm
@@ -209,12 +225,31 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     lmVStaff *pVStaff = pScore->GetVStaff(1, 1);   //get first vstaff of instr.1
     pVStaff->AddClef( m_nClef );
     pVStaff->AddKeySignature( m_nKey );
+#if 0   //useful for debugging and to generate scores with a chosen rhythm line to write documentation
+    pVStaff->AddTimeSignature( emtr24 );
+    pNode = parserLDP.ParseText(_T("(c 1 (s c)(n * c)(n * c g+)(n * c l g-)(Barra Simple))"));
+    parserLDP.AnalyzeMeasure(pNode, pVStaff);
+    pNode = parserLDP.ParseText(_T("(c 2 (n * c g+)(n * s)(n * s g-)(n * c g+)(n * c g-)(Barra Simple))"));
+    parserLDP.AnalyzeMeasure(pNode, pVStaff);
+    pNode = parserLDP.ParseText(_T("(c 3 (n * n)(s c)(n * c)(Barra Simple))"));
+    parserLDP.AnalyzeMeasure(pNode, pVStaff);
+    pNode = parserLDP.ParseText(_T("(c 4 (n * s g+)(n * s)(n * s)(n * s g-)(n * c g+)(n * c l g-)(Barra Simple))"));
+    parserLDP.AnalyzeMeasure(pNode, pVStaff);
+    pNode = parserLDP.ParseText(_T("(c 5 (n * c g+)(n * s)(n * s g-)(n * s g+)(n * s)(n * s)(n * s g-)(Barra Simple))"));
+    parserLDP.AnalyzeMeasure(pNode, pVStaff);
+    pNode = parserLDP.ParseText(_T("(c 6 (n * s g+)(n * s)(n * s)(n * s g-)(n * c g+)(n * c l g-)(Barra Simple))"));
+    parserLDP.AnalyzeMeasure(pNode, pVStaff);
+    pNode = parserLDP.ParseText(_T("(c 7 (n * n)(s c)(n * c)(Barra Simple))"));
+    parserLDP.AnalyzeMeasure(pNode, pVStaff);
+    pNode = parserLDP.ParseText(_T("(c 8 (n * b)(Barra Final))"));
+    parserLDP.AnalyzeMeasure(pNode, pVStaff);
+
+#else
     pVStaff->AddTimeSignature( m_nTimeSign );
 
     //
     // Content generation
     //
-    GetNotesRange();
 
     // Determine how may measures we have to generate:
     #define NUM_MEASURES   8        //num of measures to generate
@@ -239,7 +274,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     //select all usable fragments for current time signature
     //int nBeatType= GetBeatTypeFromTimeSignType(m_nTimeSign);
     if (m_pConstrains->SelectFragments(m_nTimeSign) == 0) {
-        //! @todo error logging. Suppress message
+        //TODO: error logging. Suppress message
         wxMessageBox(_("[lmComposer6::GenerateScore] No usable fragments!"));
         return pScore;
     }
@@ -247,13 +282,14 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     //chose ramdomly a fragment satisfying the constraints, and take the first segment
     pConstrains->ChooseRandomFragment();
     pSegment = pConstrains->GetNextSegment();
-    //! @todo what if no fragment satisfies the constraints?
+    //TODO: what if no fragment satisfies the constraints?
 
     int nSegmentLoopCounter = 0;
     while (nNumMeasures < nMeasuresToGenerate) {
         //If no measure is opened start a new measure
         if (!fMeasure) {
             sMeasure = wxString::Format(_T("(c %d "), nNumMeasures+1);
+            //NEW sMeasure = _T("(musicData ");
             rOccupiedDuration = 0.0;
             fMeasure = true;
         }
@@ -330,6 +366,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
             // close current measure
             fMeasure = false;   // no measure opened
             sMeasure += _T("(Barra Simple))");
+            //NEW sMeasure += _T("(barline simple))");
 
             // increment measures counter
             nNumMeasures++;
@@ -340,6 +377,7 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
                     _T("[GenerateScore] Adding measure = '%s')"), sMeasure.c_str());
             pNode = parserLDP.ParseText(sMeasure);
             parserLDP.AnalyzeMeasure(pNode, pVStaff);
+            //NEW parserLDP.AnalyzeMusicData(pNode, pVStaff);
         }
 
     }
@@ -377,10 +415,17 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
             _T("[GenerateScore] Adding final measure = '%s')"), sMeasure.c_str());
     pNode = parserLDP.ParseText(sMeasure);
     parserLDP.AnalyzeMeasure(pNode, pVStaff);
+    //NEW parserLDP.AnalyzeMusicData(pNode, pVStaff);
+#endif
 
     // Score is built but pitches are not yet defined.
     // Proceed to instatiate pitches according to key signature
+    GetNotesRange();
+#if 0   //useful to generate only the rhymth line, to write documenation
+    InstantiateWithNote(pScore, lmAPitch(_T("a4")) );
+#else
     InstantiateNotes(pScore, m_nKey);
+#endif
 
     // done
     //pScore->Dump(_T("lenus_score_dump.txt"));
@@ -394,17 +439,17 @@ void lmComposer6::GetNotesRange()
     wxString sMinPitch = (m_pConstrains->GetClefConstrains())->GetLowerPitch(m_nClef);
     wxString sMaxPitch = (m_pConstrains->GetClefConstrains())->GetUpperPitch(m_nClef);
     lmConverter oConv;
-    m_nMinPitch = oConv.NoteNameToNotePitch(sMinPitch);
-    m_nMaxPitch = oConv.NoteNameToNotePitch(sMaxPitch);
+    m_nMinPitch = lmAPitch(sMinPitch);
+    m_nMaxPitch = lmAPitch(sMaxPitch);
 
 }
 
 
 
-lmPitch lmComposer6::RootNote(EKeySignatures nKey)
+int lmComposer6::GetRootStep(const EKeySignatures nKey) const
 {
-    // returns the pitch of root note (in octave 4) for the given key signature.
-    // For example, for C major returns 29 (c4); for A sharp minor returns 34 (a4).
+    // returns the step of root note for the given key signature.
+    // For example, for C major returns lmSTEP_C (0); for A sharp minor returns lmSTEP_A (6).
 
     switch(nKey) {
         case earmDo:
@@ -412,47 +457,48 @@ lmPitch lmComposer6::RootNote(EKeySignatures nKey)
         case earmDosm:
         case earmDos:
         case earmDob:
-            return lmC4PITCH;
+            return lmSTEP_C;
 
         case earmRe:
         case earmReb:
         case earmResm:
         case earmRem:
-            return lmC4PITCH+1;
+            return lmSTEP_D;
 
         case earmMi:
         case earmMim:
         case earmMib:
         case earmMibm:
-            return lmC4PITCH+2;
+            return lmSTEP_E;
 
         case earmFa:
         case earmFasm:
         case earmFas:
         case earmFam:
-            return lmC4PITCH+3;
+            return lmSTEP_F;
 
         case earmSol:
         case earmSolsm:
         case earmSolm:
         case earmSolb:
-            return lmC4PITCH+4;
+            return lmSTEP_G;
 
         case earmLa:
         case earmLam:
         case earmLasm:
         case earmLab:
         case earmLabm:
-            return lmC4PITCH+5;
+            return lmSTEP_A;
 
         case earmSim:
         case earmSi:
         case earmSib:
         case earmSibm:
-            return lmC4PITCH+6;
+            return lmSTEP_B;
 
         default:
-            return lmC4PITCH;
+            wxASSERT(false);
+            return lmSTEP_C;
     }
 }
 
@@ -598,75 +644,128 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, EKeySignatures nKey)
 {
     // Returns true if error
 
-    //-------------------------------------------------------------------------------------
-    // Algorithm for tonal note-pitch generation
-    //
-    //   It is a loop to process notes:
-    //   - For each note:
-    //          If it is a beat-note then pitch must be in chord.
-    //              - Assign pitch in chords[ic]. If first note assign root note
-    //              - If note out of range, choose another in chord
-    //          Else (off-beat note)
-    //              - Assign previous pitch + - 1 (passing note)
-    //
-    //-------------------------------------------------------------------------------------
-
-    int nNumMeasures = pScore->GetNumMeasures();
 
     // Choose a chord progression, based on key signature: nChords[]
+    int nNumMeasures = pScore->GetNumMeasures();
     std::vector<long> nChords(nNumMeasures);
     GetRandomHarmony(nNumMeasures, nChords);
 
-    lmNote* pNotePrev = (lmNote*)NULL;
-    lmNote* pNoteCur;
-    long nPitchNew = lmNO_NOTE;
-
-    // compute notes in the natural scale of the key signature in use
-    lmNotePitch aScale[7];      // notes in the scale
+    // Lets compute the notes in the natural scale of the key signature to use
+    // This will be used later in various places
+    lmAPitch aScale[7];             // the notes in the scale
     GenerateScale(nKey, aScale);
 
-    int iC = 0;                 //index to current chord (ic)
-
-    // allocate a vector for valid notes in chord (all notes in valid notes range)
-    lmConverter oCV;
-    lmDPitch nMinDPitch = oCV.NotePitchToDPitch(m_nMinPitch);
-    lmDPitch nMaxDPitch = oCV.NotePitchToDPitch(m_nMaxPitch);
-    std::vector<lmNotePitch> aOnChordPitch;
-    aOnChordPitch.reserve((nMaxDPitch - nMinDPitch)/2);    // Reserve space. Upper limit estimation
-    lmNotePitch nRootNote = GenerateInChordList(nKey, nChords[iC], aOnChordPitch);
-
-    // Loop to process notes/rests in first staff of first instrument
+    // In a later step we are goin to choose and compute a contour curve.
+    // The contour curve will have as many points as on-chord notes in the music line.
+    // So first we have to compute the number of on-chord notes. The following code is a
+    // loop to count on-chord notes in first staff of first instrument
+    // and to locate last note. This is necessary to assign it the root pitch (later)
+    lmNote* pLastNote = (lmNote*)NULL;
     lmInstrument* pInstr = pScore->GetFirstInstrument();
     lmVStaff* pVStaff = pInstr->GetVStaff(1);
     lmStaffObjIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
-    lmStaffObj* pSO;
+    int nNumPoints = 0;
+    while(!pIter->EndOfList())
+    {
+        lmStaffObj* pSO = pIter->GetCurrent();
+        EStaffObjType nType = pSO->GetClass();
+        if (nType == eSFOT_NoteRest) {
+            if (!((lmNoteRest*)pSO)->IsRest())
+            {
+                // It is a note. Get its chord position
+                if( ((lmNote*)pSO)->GetChordPosition() != lmNON_CHORD_NOTE)
+                {
+                    // on beat note
+                    nNumPoints++;
+                }
+                pLastNote = (lmNote*)pSO;
+            }
+        }
 
-    while(!pIter->EndOfList()) {
-        pSO = pIter->GetCurrent();
+        pIter->MoveNext();
+    }
+    delete pIter;
+
+
+    // Now we are going to choose at random a contour curve and compute its points
+    // The curve will always start and finish in the root note. Its amplitude will
+    // be adjusted to satisfy the constrains (min and max pitch)
+    std::vector<lmDPitch> aContour(nNumPoints);
+    GenerateContour(nNumPoints, aContour);
+
+    // allocate a vector for valid notes in chord (all notes in valid notes range)
+    int iC = 0;                                         //index to current chord (ic)
+    lmDPitch dnMinPitch = m_nMinPitch.ToDPitch();
+    lmDPitch dnMaxPitch = m_nMaxPitch.ToDPitch();
+    g_pLogger->LogTrace(_T("lmComposer6::InstantiateNotes"), _T("min pitch %d (%s), max pitch %d (%s)"),
+        dnMinPitch, DPitch_ToLDPName(dnMinPitch).c_str(), 
+        dnMaxPitch, DPitch_ToLDPName(dnMaxPitch).c_str() ); 
+    std::vector<lmAPitch> aOnChordPitch;
+    aOnChordPitch.reserve((dnMaxPitch - dnMinPitch)/2);    // Reserve space. Upper limit estimation
+    lmAPitch nRootNote = GenerateInChordList(nKey, nChords[iC], aOnChordPitch);
+
+    // Loop to process notes/rests in first staff of first instrument
+    lmNote* pOnChord1 = (lmNote*)NULL;      //Pair of on-chord notes. First one
+    lmNote* pOnChord2 = (lmNote*)NULL;      //Pair of on-chord notes. Second one
+    lmNote* pNonChord[20];                  //non-chod notes between the two on-chord notes
+    int nCount = 0;                         //number of non-chord notes between the two on-chord notes
+
+    lmNote* pNotePrev = (lmNote*)NULL;
+    lmNote* pNoteCur;
+    int iPt = 0;
+    lmAPitch apPitchNew;
+    wxString sDbg = _T("");
+    pIter = pVStaff->CreateIterator(eTR_ByTime);
+    while(!pIter->EndOfList())
+    {
+        lmStaffObj* pSO = pIter->GetCurrent();
         if (pSO->GetClass() == eSFOT_NoteRest)
         {
             // 1. It is a note or a rest
             if (!((lmNoteRest*)pSO)->IsRest())
             {
-                // It is a note. Get beat position type
+                // It is a note. Get its chord position
                 pNoteCur = (lmNote*)pSO;
-                lmENoteBeatPosition nPos = pNoteCur->GetPositionInBeat();
-
-                if (nPos == lmON_BEAT_FIRST || nPos == lmON_BEAT_OTHER)
+                if (pNoteCur->GetChordPosition() != lmNON_CHORD_NOTE)
                 {
-                    // on beat note
-                    // Pitch must be in chord. Assign pitch in nChords[iC].
-                    // If first note assign root note
-                    nPitchNew = GenerateOnBeatNote(pNotePrev, pNoteCur,
-                                                   aOnChordPitch, nRootNote);
-                }
-                else {
-                    // off-beat note.
-                    nPitchNew = GenerateOffBeatNote(pNotePrev, aScale);
+                    // on beat note. Pitch must be on chord.
+                    // Assign a pitch from nChords[iC].
+                    for(int k=0; k < (int)aOnChordPitch.size(); k++)
+                        g_pLogger->LogTrace(_T("lmComposer6::InstantiateNotes"), _T("OnChord %d = %s"), k, aOnChordPitch[k].LDPName() );
+                    apPitchNew = NearestNoteOnChord(aContour[iPt++], pNotePrev, pNoteCur,
+                                            aOnChordPitch);
+                    for(int k=0; k < (int)aOnChordPitch.size(); k++)
+                        g_pLogger->LogTrace(_T("lmComposer6::InstantiateNotes"), _T("OnChord %d = %s"), k, aOnChordPitch[k].LDPName() );
+                    wxString sNoteName = apPitchNew.LDPName();
+                    g_pLogger->LogTrace(_T("lmComposer6::InstantiateNotes"), _T("on-chord note %d. Assigned pitch = %d (%s), chord=%d"),
+                        iPt, apPitchNew.ToDPitch(), sNoteName.c_str(),
+                        nChords[iC] & lmGRADE_MASK); 
+                    pNoteCur->ChangePitch(apPitchNew, lmCHANGE_TIED);
+
+                    // assing pitch to non-chord notes between previous on-chord one
+                    // and this one
+                    sDbg += _T(",c");
+                    if (nCount != 0) {
+                        pOnChord2 = pNoteCur;
+                        AssignNonChordNotes(nCount, pOnChord1, pOnChord2, pNonChord, aScale);
+                    }
+
+                    // Prepare data for next pair processing
+                    nCount = 0;
+                    pOnChord1 = pNoteCur;
+
                 }
 
-                //Change its pitch
-                pNoteCur->ChangePitch(nPitchNew);
+                else
+                {
+                    // non-chord note. Save it to be processed
+                    if (!pNoteCur->IsPitchDefined()) {
+                        pNonChord[nCount++] = pNoteCur;
+                        sDbg += _T(",nc");
+                    }
+                    else
+                        sDbg += _T(",(nc)");
+                }
                 pNotePrev = pNoteCur;
             }
         }
@@ -685,55 +784,30 @@ bool lmComposer6::InstantiateNotes(lmScore* pScore, EKeySignatures nKey)
     }
     delete pIter;
 
+    //// All chord notes are assigned. Now we are going to traverse the score again
+    //// to classify non-chord notes and to assign pitch to them
+    //AssignNCT(pScore, aScale);
+    g_pLogger->LogTrace(_T("lmComposer6::InstantiateNotes"), sDbg);
+
     return false;       // no error
-
-}
-
-lmNotePitch lmComposer6::GenerateOnBeatNote(lmNote* pNotePrev, lmNote* pNoteCur,
-                                       std::vector<lmNotePitch>& aOnChordPitch,
-                                       lmNotePitch nRootPitch)
-{
-    // if first note, return root pitch
-    if (!pNotePrev)
-        return nRootPitch;
-
-    // if note is tied to previous one, return previous note pitch
-    if (pNotePrev->IsTiedToNext())
-        return pNotePrev->GetPitch();
-
-    // choose a random note in chord
-    lmRandomGenerator oGenerator;
-    int iN = oGenerator.RandomNumber(0, aOnChordPitch.size()-1);
-    return aOnChordPitch[iN];
-
-        //    int nRange = m_pConstrains->GetMaxInterval();
-        //int lowLimit = wxMax(m_lastPitch - nRange, m_minPitch);
-        //int upperLimit = wxMin(m_lastPitch + nRange, m_maxPitch);
-        //newPitch = oGenerator.RandomNumber(lowLimit, upperLimit);
-
 
 }
 
 void lmComposer6::GetRandomHarmony(int nFunctions, std::vector<long>& aFunction)
 {
     //Fills array 'pFunction' with an ordered set of harmonic functions to
-    //build a melody.
-    //i.e.: I,V,I,IV,II,III,IV,I
+    //build a melody. i.e.: I,V,I,IV,II,III,IV,I
 
-    wxASSERT(nFunctions == 8);
-    aFunction[0] = lmTONIC;         // I
-    aFunction[1] = lmDOMINANT;      // V
-    aFunction[2] = lmTONIC;         // I
-    aFunction[3] = lmSUBDOMINANT;   // IV
-    aFunction[4] = lmSUPERTONIC;    // ii
-    aFunction[5] = lmMEDIANT;       // iii
-    aFunction[6] = lmSUBDOMINANT;   // IV
-    aFunction[7] = lmTONIC;         // I
+    int nNumProgs = sizeof(m_aProgression) / (8 * sizeof(long));
+    int iP = lmRandomGenerator::RandomNumber(0, nNumProgs-1);
+    for(int i=0; i < 8; i++) {
+        aFunction[i] = m_aProgression[iP][i];
+    }
 
 }
 
 void lmComposer6::FunctionToChordNotes(EKeySignatures nKey, long nFunction,
-                                       lmNotePitch aNotes[4])
+                                       lmAPitch aNotes[4])
 {
     //Given a key signature and an harmonic function returns the notes to build the
     //chord (four notes per chord). The first chord note is always in octave 4
@@ -741,149 +815,98 @@ void lmComposer6::FunctionToChordNotes(EKeySignatures nKey, long nFunction,
     //C Major, II --> d4, f4, a4
     //D Major, I  --> d4, +f4, a4
 
-    //TODO: For testing purposes only C major key is encoded
-
-    int iN = 0;         // index to current note
-
-    // Case earmDo
-    switch (nFunction & lmGRADE_MASK) {
-        case lmTONIC:       // I
-            aNotes[iN++] = lmC_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmE_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmG_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmNO_NOTE;
-            break;
-
-        case lmSUPERTONIC:  // ii
-            aNotes[iN++] = lmD_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmF_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmA_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmNO_NOTE;
-            break;
-
-        case lmMEDIANT:     // iii
-            aNotes[iN++] = lmE_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmG_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmB_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmNO_NOTE;
-            break;
-
-        case lmSUBDOMINANT: // IV
-            aNotes[iN++] = lmF_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmA_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmC_NOTE | lmOCTAVE_5 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmNO_NOTE;
-            break;
-
-        case lmDOMINANT:    // V
-            aNotes[iN++] = lmG_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmB_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmD_NOTE | lmOCTAVE_5 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmNO_NOTE;
-            break;
-
-        case lmSUBMEDIANT:  // vi
-            aNotes[iN++] = lmA_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmC_NOTE | lmOCTAVE_5 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmE_NOTE | lmOCTAVE_5 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmNO_NOTE;
-            break;
-
-        case lmSUBTONIC:    // vii
-            aNotes[iN++] = lmB_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmD_NOTE | lmOCTAVE_5 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmF_NOTE | lmOCTAVE_5 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmNO_NOTE;
-            break;
-
-        default:
-            wxLogMessage(_T("[lmComposer6::FunctionToChordNotes] Invalid function %d. Grade %d"),
-                nFunction, nFunction & lmGRADE_MASK);
-            wxASSERT(false);
+    int nAcc[7];
+    ComputeAccidentals(nKey, nAcc);
+    int nStep = GetRootStep(nKey);
+    lmAPitch aScale[15];
+    int nOctave = lmOCTAVE_4;
+    for (int iN=0; iN < 15; iN++) {
+        aScale[iN].Set(nStep, nOctave, nAcc[nStep]);
+        if(++nStep == 7) {
+            nStep = 0;
+            nOctave++;
+        }
     }
+
+
+    // Compute the triad
+    long iF = (nFunction & lmGRADE_MASK) - 1L;
+    aNotes[0].Set( aScale[iF] );     
+    aNotes[1].Set( aScale[iF+2] );
+    aNotes[2].Set( aScale[iF+4] );
+
+    g_pLogger->LogTrace(_T("lmComposer6::FunctionToChordNotes"), _T("Function %d, Key=%d, note0 %d (%s), note1 %d (%s), note2 %d (%s)."),
+        iF, nKey,
+        aNotes[0].ToDPitch(), aNotes[0].LDPName().c_str(),
+        aNotes[1].ToDPitch(), aNotes[1].LDPName().c_str(),
+        aNotes[2].ToDPitch(), aNotes[2].LDPName().c_str() );
 
 
 }
 
-lmNotePitch lmComposer6::GenerateOffBeatNote(lmNote* pNotePrev, lmNotePitch aScale[7])
+lmAPitch lmComposer6::MoveByStep(bool fUpStep, lmAPitch nPitch, lmAPitch aScale[7])
 {
-    // Generates a new note by randomly addind/substracting 1 to previous note pitch
+    // Generates a new note by moving up/down one step in the scale
     // The new pitch must be on the key signature natural scale
 
-    // Get previous pitch
-    lmNotePitch nPitch;
-    if (!pNotePrev)
-        nPitch = aScale[0];     // use root note
-    else
-        nPitch = pNotePrev->GetPitch();
-
     // extract pitch components
-    int nStep = lmGET_STEP(nPitch);
-    int nOctave = lmGET_OCTAVE(nPitch);
+    int nStep = nPitch.Step();
+    int nOctave = nPitch.Octave();
 
     // find current note in scale
     int i;
     for (i=0; i < 7; i++) {
-        if (lmGET_STEP(aScale[i]) == nStep) break;
+        if (aScale[i].Step() == nStep) break;
     }
-    if (i==7)
-        i=6;
     wxASSERT(i < 7);
 
-    lmRandomGenerator oGenerator;
-    if (oGenerator.FlipCoin()) {
+    if (fUpStep) {
         // increment note
-        i++;
-        if (i == 7) {
-            i = 0;
-            nOctave++;
-        }
+        if (++i == 7) i = 0;
+        if (nStep == lmSTEP_B) nOctave++;
     }
     else {
         // decrement note
-        i--;
-        if (i == -1) {
-            i = 6;
-            nOctave--;
-        }
+        if (--i == -1) i = 6;
+        if (nStep == lmSTEP_C) nOctave--;
     }
 
-    nStep = lmGET_STEP(aScale[i]);
-    int nAlter = lmGET_ALTER(aScale[i]);
-    return lmGET_PITCH(nStep, nOctave, nAlter);
+    nStep = aScale[i].Step();
+    int nAcc = aScale[i].Accidentals();
+    return lmAPitch(nStep, nOctave, nAcc);
 
 }
 
-void lmComposer6::GenerateScale(EKeySignatures nKey, lmNotePitch aNotes[7])
+lmAPitch lmComposer6::MoveByChromaticStep(bool fUpStep, lmAPitch nPitch)
 {
-    int iN = 0;
+    // Generates a new note by moving up/down one chromatic step in the scale
 
-    // Case earmDo
-    switch (nKey) {
-        case earmDo:    // C major
-            aNotes[iN++] = lmC_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmD_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmE_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmF_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmG_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmA_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmB_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            break;
-        default:       // D major
-            aNotes[iN++] = lmD_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmE_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmF_NOTE | lmOCTAVE_4 | lmSHARP;
-            aNotes[iN++] = lmG_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmA_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmB_NOTE | lmOCTAVE_4 | lmNO_ACCIDENTAL;
-            aNotes[iN++] = lmC_NOTE | lmOCTAVE_4 | lmSHARP;
-            break;
+    // extract pitch accidentals
+    int nAcc = nPitch.Accidentals();
+
+    if (fUpStep) {
+        nAcc++;
     }
+    else {
+        nAcc--;
+    }
+    return lmAPitch(nPitch.ToDPitch(), nAcc);
 
 }
 
-lmNotePitch lmComposer6::GenerateInChordList(EKeySignatures nKey, long nChord,
-                                             std::vector<lmNotePitch>& aValidPitch)
+void lmComposer6::GenerateScale(EKeySignatures nKey, lmAPitch aNotes[7])
+{
+    int nAcc[7];
+    ComputeAccidentals(nKey, nAcc);
+    int nStep = GetRootStep(nKey);
+    for (int iN=0; iN < 7; iN++) {
+        aNotes[iN].Set(nStep, lmOCTAVE_4, nAcc[nStep]);
+        if(++nStep == 7) nStep = 0;
+    }
+}
+
+lmAPitch lmComposer6::GenerateInChordList(EKeySignatures nKey, long nChord,
+                                             std::vector<lmAPitch>& aValidPitch)
 {
     // Returns the root note in octave 4
     // Generates a list with all allowed notes in the chord, satisfying the
@@ -893,31 +916,30 @@ lmNotePitch lmComposer6::GenerateInChordList(EKeySignatures nKey, long nChord,
     // returns: a3, d4, +f4, a4, d5, +f5, a5
 
     // allocate an array for notes in chord (basic chord, octave 4)
-    lmNotePitch aNotes[4];                          // notes in current chord
+    lmAPitch aNotes[4];                          // notes in current chord
     FunctionToChordNotes(nKey, nChord, aNotes);
 
     // extract valid steps, to simplify
     int nValidStep[4];
     for (int i=0; i < 4; i++) {
-        if (aNotes[i] == lmNO_NOTE)
+        if (aNotes[i].ToDPitch() == lmNO_NOTE)
             nValidStep[i] = -1;        //you can assign any non valid value for a step
         else
-            nValidStep[i] = lmGET_STEP(aNotes[i]);
+            nValidStep[i] = aNotes[i].Step();
     }
 
     // empty valid pitches array
     aValidPitch.clear();
 
     // scan notes range and select those in chord
-    lmConverter oCV;
-    lmDPitch nMinDPitch = oCV.NotePitchToDPitch(m_nMinPitch);
-    lmDPitch nMaxDPitch = oCV.NotePitchToDPitch(m_nMaxPitch);
-    for (int i=nMinDPitch; i <= nMaxDPitch; i++) {
-        int nStep = oCV.GetStepFromDPitch(i);
+    lmDPitch dnMinPitch = m_nMinPitch.ToDPitch();
+    lmDPitch dnMaxPitch = m_nMaxPitch.ToDPitch();
+    for (int i=dnMinPitch; i <= dnMaxPitch; i++) {
+        int nStep = DPitch_Step(i);
         for (int j=0; j < 4; j++) {
             if (nStep == nValidStep[j]) {
                 // Note in chord. Add it to the list
-                lmNotePitch nPitch = lmGET_PITCH(nStep, oCV.GetOctaveFromDPitch(i), lmGET_ALTER(aNotes[j]));
+                lmAPitch nPitch(nStep, DPitch_Octave(i), aNotes[j].Accidentals());
                 aValidPitch.push_back(nPitch);
             }
         }
@@ -927,44 +949,607 @@ lmNotePitch lmComposer6::GenerateInChordList(EKeySignatures nKey, long nChord,
 
 }
 
-
-/*
-wxString lmComposer6::GeneratePitch(bool fRepeat, bool fRootPitch)
+void lmComposer6::GenerateContour(int nNumPoints, std::vector<lmDPitch>& aContour)
 {
+    // In this method we choose at random a contour curve and compute its points
+    // The curve will always start and finish in the root note. Its amplitude will
+    // be adjusted to satisfy the constrains (min and max pitch), and will be
+    // a value between one and two octaves, depending on the valid notes range and
+    // the type of contour.
+    // In case the valid notes range is lower than one octave, arch like curves will
+    // be forced
 
-    lmPitch newPitch;
-    lmRandomGenerator oGenerator;
+    // First, we will determine the root note
+    int nRootStep = GetRootStep(m_nKey);
 
-    if (m_nNumNotes == 0 || fRootPitch) {
-        // First note always the root note
-        newPitch = RootNote(m_nKey);
-        // ensure it is in range minPitch to maxPitch
-        if (newPitch > m_maxPitch) {
-            while (newPitch > m_maxPitch) newPitch -= 7;    // go down one octave
-            if (newPitch < m_minPitch)  newPitch = oGenerator.RandomNumber(m_minPitch, m_maxPitch);
+    // Now lets do some computations to determine a suitable octave 
+    lmDPitch dnMinPitch = m_nMinPitch.ToDPitch();
+    lmDPitch dnMaxPitch = m_nMaxPitch.ToDPitch();
+    int nAmplitude = dnMaxPitch - dnMinPitch + 1;
+    g_pLogger->LogTrace(_T("lmComposer6::GenerateContour"), _T("minPitch %d  (%s), max pitch %d (%s), amplitude %d"),
+        dnMinPitch, DPitch_ToLDPName(dnMinPitch).c_str(), 
+        dnMaxPitch, DPitch_ToLDPName(dnMaxPitch).c_str(),
+        nAmplitude ); 
+
+
+        // determine minimum root pitch
+    int nOctave = DPitch_Octave(dnMinPitch);
+    if (DPitch_Step(dnMinPitch) > nRootStep) nOctave++;
+    lmDPitch dnMinRoot = DPitch(nRootStep, nOctave);
+
+        // determine maximum root pitch
+    lmDPitch dnMaxRoot = dnMinRoot;
+    while (dnMaxRoot+7 <= dnMaxPitch)
+        dnMaxRoot+=7;
+
+        // if range greater than two octaves reduce it and reposition
+    if (dnMaxRoot-dnMinRoot > 14) {
+        int nRange = (dnMaxRoot-dnMinRoot) / 7;
+        int nShift = lmRandomGenerator::RandomNumber(0, nRange-2);
+        dnMinRoot += 7*nShift;
+        dnMaxRoot = dnMinRoot + 14;
+    }
+
+
+
+    g_pLogger->LogTrace(_T("lmComposer6::GenerateContour"), _T("min root %d  (%s), max root %d (%s)"),
+        dnMinRoot, DPitch_ToLDPName(dnMinRoot).c_str(),
+        dnMaxRoot, DPitch_ToLDPName(dnMaxRoot).c_str() );
+
+
+
+    // Choose a contour curve
+    enum {
+        lmCONTOUR_TRIANGLE = 0,
+        lmCONTOUR_TRIANGLE_RAMP,
+        lmCONTOUR_RAMP_TRIANGLE,
+        lmSTART_RESTRICTED_CONTOURS,
+        lmCONTOUR_ZIG_ZAG = lmSTART_RESTRICTED_CONTOURS,
+        lmCONTOUR_RAMP,
+        lmMAX_CONTOUR,
+        lmCONTOUR_ARCH,             //Bad results. Top is very flat so the sensation of 
+                                    //raeching a peak is very poor
+    };
+
+
+
+    // Choose a contour curve. If range is not at least an octave, do not allow 
+    // ramp curves
+    int nCurve;
+    bool fUp;
+    if (dnMaxRoot == dnMinRoot)
+    {
+        // Pitch range is not at least an octave. Only some curves allowed.
+        nCurve = lmRandomGenerator::RandomNumber(0, lmSTART_RESTRICTED_CONTOURS-1);
+        // Lets force curve direction to better use the avalable notes range
+        if (dnMaxPitch < dnMinRoot)
+        {
+            // allowed notes does not include root note. Use all notes range.
+            // Curve direction doesn't matter
+            dnMinRoot = dnMinPitch;
+            dnMaxRoot = dnMaxPitch;
+            fUp = lmRandomGenerator::FlipCoin();
         }
-        else if (newPitch < m_minPitch) {
-            while (newPitch < m_minPitch) newPitch += 7;    // go up one octave
-            if (newPitch > m_maxPitch)  newPitch = oGenerator.RandomNumber(m_minPitch, m_maxPitch);
+        else if (dnMinRoot-dnMinPitch < dnMaxPitch-dnMinRoot)
+        {
+            // Use upper part of range. Curve going up
+            fUp = true;
+            dnMaxRoot = dnMaxPitch;
+        }
+        else
+        {
+            // use lower part of range. Curve going down.
+            fUp = false;
+            dnMinRoot = dnMinPitch;
         }
     }
-    else if (fRepeat) {
-        newPitch = m_lastPitch;
-    }
-    else {
-        int nRange = m_pConstrains->GetMaxInterval();
-        int lowLimit = wxMax(m_lastPitch - nRange, m_minPitch);
-        int upperLimit = wxMin(m_lastPitch + nRange, m_maxPitch);
-        newPitch = oGenerator.RandomNumber(lowLimit, upperLimit);
+    else
+    {
+        // range is grater than one octave. Any curve and direction allowed
+        nCurve = lmRandomGenerator::RandomNumber(0, lmMAX_CONTOUR-1);
+        fUp = lmRandomGenerator::FlipCoin();
     }
 
-    // save values
-    m_nNumNotes++;
-    m_lastPitch = newPitch;
+    g_pLogger->LogTrace(_T("lmComposer6::GenerateContour"), _T("type=%d, nNumPoints=%d, up=%s"),
+        nCurve, nNumPoints, (fUp ? _T("Yes") : _T("No")) );
 
-    lmConverter oConverter;
-    return oConverter.DPitchToLDPName(newPitch);
+    // prepare curve parameters and compute the curve points
+    lmDPitch dnLowPitch, dnHighPitch, dnStartRamp, dnEndRamp;
+    switch (nCurve)
+    {
+        case lmCONTOUR_ARCH:
+            //----------------------------------------------------------------------------
+            // Arch. An arch will be defined by the amplitude, the center beat, and 
+            //the direction
+            // 
+            if (fUp) {
+                dnLowPitch = dnMinRoot;
+                nAmplitude = dnMaxPitch - dnLowPitch;
+                if (nAmplitude > 14)
+                    nAmplitude = 14;
+                dnHighPitch = dnLowPitch + nAmplitude;
+            }
+            else {
+                dnHighPitch = dnMaxRoot;
+                nAmplitude = dnHighPitch - dnMinPitch;
+                if (nAmplitude > 14)
+                    nAmplitude = 14;
+                dnLowPitch = dnHighPitch - nAmplitude;
+            }
+            ComputeArch(fUp, 0, nNumPoints, dnLowPitch, dnHighPitch, aContour);
+            break;
+
+        case lmCONTOUR_TRIANGLE:
+            //----------------------------------------------------------------------------
+            // Triangle. Defined the amplitude, the center beat, and the direction
+            if (fUp) {
+                dnLowPitch = dnMinRoot;
+                nAmplitude = dnMaxPitch - dnLowPitch;
+                if (nAmplitude > 14)
+                    nAmplitude = 14;
+                dnHighPitch = dnLowPitch + nAmplitude;
+            }
+            else {
+                dnHighPitch = dnMaxRoot;
+                nAmplitude = dnHighPitch - dnMinPitch;
+                if (nAmplitude > 14)
+                    nAmplitude = 14;
+                dnLowPitch = dnHighPitch - nAmplitude;
+            }
+            ComputeTriangle(fUp, 0, nNumPoints, dnLowPitch, dnHighPitch, aContour);
+            break;
+
+        case lmCONTOUR_RAMP:
+            //----------------------------------------------------------------------------
+            // Ramp.
+            // Amplitude will move two octaves from root to root note unless not possible
+            if (fUp)
+                ComputeRamp(0, nNumPoints, dnMinRoot, dnMaxRoot, aContour);
+            else
+                ComputeRamp(0, nNumPoints, dnMaxRoot, dnMinRoot, aContour);
+            break;
+
+        case lmCONTOUR_TRIANGLE_RAMP:
+            //----------------------------------------------------------------------------
+            // Triangle+Ramp
+            // Triangle occupies two thirds and ramp one third
+        {
+            // Triangle: set up amplitude and last point
+            int nPoints = 2* nNumPoints / 3;
+            if (fUp) {
+                dnLowPitch = dnMinRoot;
+                nAmplitude = dnMaxPitch - dnLowPitch;
+                if (nAmplitude > 14)
+                    nAmplitude = 14;
+                dnHighPitch = dnLowPitch + nAmplitude;
+                dnStartRamp = dnHighPitch;
+                dnEndRamp = dnLowPitch;
+            }
+            else {
+                dnHighPitch = dnMaxRoot;
+                nAmplitude = dnHighPitch - dnMinPitch;
+                if (nAmplitude > 14)
+                    nAmplitude = 14;
+                dnLowPitch = dnHighPitch - nAmplitude;
+                dnStartRamp = dnLowPitch;
+                dnEndRamp = dnHighPitch;
+            }
+            ComputeTriangle(fUp, 0, nPoints, dnLowPitch, dnHighPitch, aContour);
+            ComputeRamp(nPoints, nNumPoints, dnStartRamp, dnEndRamp, aContour);
+            break;
+        }
+
+        case lmCONTOUR_ZIG_ZAG:
+            //----------------------------------------------------------------------------
+            // Triangle+Ramp
+            // Triangle occupies two thirds and ramp one third
+        {
+            // Triangle: set up amplitude and last point
+            int nPoints = 2* nNumPoints / 3;
+            if (fUp) {
+                dnLowPitch = dnMinRoot;
+                nAmplitude = dnMaxPitch - dnLowPitch;
+                if (nAmplitude > 14)
+                    nAmplitude = 14;
+                dnHighPitch = dnLowPitch + nAmplitude;
+                dnStartRamp = dnLowPitch;
+                dnEndRamp = dnMaxRoot;
+            }
+            else {
+                dnHighPitch = dnMaxRoot;
+                nAmplitude = dnHighPitch - dnMinPitch;
+                if (nAmplitude > 14)
+                    nAmplitude = 14;
+                dnLowPitch = dnHighPitch - nAmplitude;
+                dnStartRamp = dnHighPitch;
+                dnEndRamp = dnMinRoot;
+            }
+            ComputeTriangle(fUp, 0, nPoints, dnLowPitch, dnHighPitch, aContour);
+            ComputeRamp(nPoints, nNumPoints, dnStartRamp, dnEndRamp, aContour);
+            break;
+        }
+
+        case lmCONTOUR_RAMP_TRIANGLE:
+            //----------------------------------------------------------------------------
+            // Ramp+Triangle
+        {
+            // Ramp: num points
+            int nPoints = nNumPoints / 3;
+
+            // Triangle: set up amplitude and last point
+            if (fUp) {
+                dnLowPitch = dnMinRoot;
+                nAmplitude = dnMaxPitch - dnLowPitch;
+                if (nAmplitude > 14)
+                    nAmplitude = 14;
+                dnHighPitch = dnLowPitch + nAmplitude;
+                dnStartRamp = dnLowPitch;
+                dnEndRamp = dnMaxRoot;
+            }
+            else {
+                dnHighPitch = dnMaxRoot;
+                nAmplitude = dnHighPitch - dnMinPitch;
+                if (nAmplitude > 14)
+                    nAmplitude = 14;
+                dnLowPitch = dnHighPitch - nAmplitude;
+                dnStartRamp = dnHighPitch;
+                dnEndRamp = dnMinRoot;
+            }
+
+            ComputeRamp(0, nPoints, dnStartRamp, dnEndRamp, aContour);
+            ComputeTriangle(fUp, nPoints, nNumPoints, dnLowPitch, dnHighPitch, aContour);
+            break;
+        }
+    }
+
+    for (int i=0; i < nNumPoints; i++)
+        g_pLogger->LogTrace(_T("lmComposer6::GenerateContour"), _T("point[%d] = %d"), i, aContour[i]);
 
 }
 
-*/
+void lmComposer6::ComputeTriangle(bool fUp, int iStart, int nPoints, lmDPitch dnLowPitch,
+                                  lmDPitch dnHighPitch, std::vector<lmDPitch>& aPoints)
+{
+    // Triangle. Defined the amplitude, the center beat, and the direction
+    // (up/down). Also by start pitch, top/bottom pitch, and end pitch
+
+    // first ramp
+    float rNumPoints = (float)((nPoints-iStart)/2);
+    float rStep = (float)(dnHighPitch - dnLowPitch) / rNumPoints;
+    if (!fUp) rStep = -rStep;
+    float yValue = (float)(fUp ? dnLowPitch : dnHighPitch);
+    g_pLogger->LogTrace(_T("lmComposer6"), _T("[ComputeTriangle] fUp=%s, iStart=%d, nPoints=%d, dnLowPitch=%d, dnHighPitch=%d, rStep=%.5f"),
+        (fUp ? _T("Yes") : _T("No")), iStart, nPoints, dnLowPitch, dnHighPitch, rStep);
+    int i = iStart;
+    int nCenter = (nPoints+iStart)/2;
+    for (; i < nCenter; i++) {
+        aPoints[i] = (int)floor(yValue+0.5);
+        yValue += rStep;
+    }
+    yValue -= rStep;
+
+    // second ramp
+    rStep = (float)(dnHighPitch - dnLowPitch) / ((float)(nPoints-iStart) - rNumPoints);
+    if (fUp) rStep = -rStep;
+    g_pLogger->LogTrace(_T("lmComposer6"), _T("[ComputeTriangle] fUp=%s, iStart=%d, nPoints=%d, dnLowPitch=%d, dnHighPitch=%d, rStep=%.5f"),
+        (fUp ? _T("Yes") : _T("No")), i, nPoints, dnLowPitch, dnHighPitch, rStep);
+    for (; i < nPoints; i++) {
+        aPoints[i] = (int)floor(yValue+0.5);
+        yValue += rStep;
+    }
+
+    //force last point to be a root note
+    aPoints[nPoints-1] = (fUp ? dnLowPitch : dnHighPitch);
+
+}
+
+void lmComposer6::ComputeRamp(int iStart, int nPoints, lmDPitch dnStartPitch,
+                              lmDPitch dnEndPitch, std::vector<lmDPitch>& aPoints)
+{
+    // Ramp
+    float rNumPoints = (float)(nPoints-iStart);
+    float rStep = (float)(dnEndPitch - dnStartPitch) / rNumPoints;
+    float yValue = (float)dnStartPitch;
+    g_pLogger->LogTrace(_T("lmComposer6"), _T("[ComputeRamp] iStart=%d, nPoints=%d, dnStartPitch=%d, dnEndPitch=%d, rStep=%.5f"),
+        iStart, nPoints, dnStartPitch, dnEndPitch, rStep);
+    for (int i=iStart; i < nPoints; i++) {
+        aPoints[i] = (int)floor(yValue+0.5);
+        yValue += rStep;
+    }
+    //force last point to be a root note
+    aPoints[nPoints-1] = dnEndPitch;
+
+}
+
+void lmComposer6::ComputeArch(bool fUp, int iStart, int nPoints, lmDPitch dnLowPitch,
+                              lmDPitch dnHighPitch, std::vector<lmDPitch>& aPoints)
+{
+    // Arch. An arch will be defined the amplitude, the center beat, and the direction
+    // (up/down). Also by start pitch, top/bottom pitch, and end pitch
+    // I will use a second degree polinimio. I approximate it by using the Lagrange method.
+    // The resulting polinom is 
+    //      P(x) = RootPitch + ((4 * maxPitch * x * (numPoints - x))/numPoints**2)
+    //           = a3 + ((a1 * x * (numPoints - x))/ a2)
+    //      a1 = 4 * maxPitch
+    //      a2 = numPoints**2
+    //      a3 = RootPitch
+    //      a4 = numPoints
+
+    g_pLogger->LogTrace(_T("lmComposer6"), _T("[ComputeArch] fUp=%s, iStart=%d, nPoints=%d, dnLowPitch=%d, dnHighPitch=%d"),
+        (fUp ? _T("Yes") : _T("No")), iStart, nPoints, dnLowPitch, dnHighPitch);
+    float a1 = 4.0 * (float)(dnHighPitch-dnLowPitch);
+    float a2 = (float)(nPoints * nPoints);
+    float a3 = (float)dnLowPitch;
+    float a4 = (float)nPoints;
+    float x = 0.0;
+    for (int i=iStart; i < iStart+nPoints; i++, x+=1.0) {
+        float y = a3 + ((a1 * x * (a4 - x)) / a2);
+        aPoints[i] = (int)floor(y + 0.5);
+    }
+    //force last point to be a root note
+    aPoints[iStart+nPoints-1] = (fUp ? dnLowPitch : dnHighPitch);
+
+}
+
+
+lmAPitch lmComposer6::NearestNoteOnChord(lmDPitch nPoint, lmNote* pNotePrev,
+                                            lmNote* pNoteCur,
+                                            std::vector<lmAPitch>& aOnChordPitch)
+{
+    g_pLogger->LogTrace(_T("lmComposer6::NearestNoteOnChord"), _T("nPoint=%d"), nPoint );
+
+    // if note is tied to previous one, return previous note pitch
+    if (pNotePrev && pNotePrev->IsTiedToNext() && pNotePrev->IsPitchDefined()) {
+        g_pLogger->LogTrace(_T("lmComposer6::NearestNoteOnChord"), _T("Previous note = %s"), (pNotePrev->GetAPitch()).LDPName().c_str());
+        return pNotePrev->GetAPitch();
+    }
+
+    for (int i=0; i < (int)aOnChordPitch.size(); i++) {
+        lmDPitch dnCur = aOnChordPitch[i].ToDPitch();
+        if (nPoint == dnCur)
+            return aOnChordPitch[i];
+        else if (nPoint < dnCur) {
+            // The nearest one is this one or the previous one
+            // If no previous one, return this one
+            if (i == 0)
+                return aOnChordPitch[i];
+            // there is a 'previous one'. So lets compute differences
+            lmDPitch dnPrev = aOnChordPitch[i-1].ToDPitch();
+            if (nPoint - dnPrev < dnCur - nPoint)
+                return aOnChordPitch[i-1];
+            else
+                return aOnChordPitch[i];
+        }
+    }
+
+    //requested note is out of range. Return maximum allowed one
+    //return aOnChordPitch[aOnChordPitch.size()-1];
+    return aOnChordPitch[aOnChordPitch.size()-1];
+}
+
+void lmComposer6::InstantiateWithNote(lmScore* pScore, lmAPitch anPitch)
+{
+    // This method is used only to generate images for documentation.
+    // The idea is to instantiate the score with the same pitch for all
+    // notes, to create scores with the rhymth pattern before instatiation algorithm
+
+    // Loop to instantiate notes
+    lmInstrument* pInstr = pScore->GetFirstInstrument();
+    lmVStaff* pVStaff = pInstr->GetVStaff(1);
+    lmStaffObjIterator* pIter = pVStaff->CreateIterator(eTR_ByTime);
+    while(!pIter->EndOfList())
+    {
+        lmStaffObj* pSO = pIter->GetCurrent();
+        EStaffObjType nType = pSO->GetClass();
+        if (nType == eSFOT_NoteRest) {
+            if (!((lmNoteRest*)pSO)->IsRest())
+            {
+                // It is a note. Instantiate it
+                ((lmNote*)pSO)->ChangePitch(anPitch, lmCHANGE_TIED);
+            }
+        }
+
+        pIter->MoveNext();
+    }
+    delete pIter;
+
+}
+
+
+void lmComposer6::AssignNonChordNotes(int nNumNotes, lmNote* pOnChord1, lmNote* pOnChord2,
+                                      lmNote* pNonChord[], lmAPitch aScale[7])
+{
+    // Receives the two on-chord notes and the non-chord notes between them, and assign
+    // the pitch to all notes
+    // The first on-chord note can be NULL (first anacruxis measure)
+    // The number of non-chord notes received is in 'nNumNotes'
+
+
+    //case: no non-chord notes. Nothing to do
+    if (nNumNotes == 0) {
+        g_pLogger->LogTrace(_T("lmComposer6::AssignNonChordNotes"), _T("[AssignNonChordNotes] No non-chord notes. Nothing to do."));
+        return;
+    }
+
+    //case: anacruxis measure
+    if (!pOnChord1) {
+        g_pLogger->LogTrace(_T("lmComposer6::AssignNonChordNotes"), _T("[AssignNonChordNotes] Anacruxis measure"));
+        //we are going to assing an ascending sequence, by step, to finish in the root
+        //note (the first on chord note)
+        if (nNumNotes == 1) {
+            //assign root pitch
+            pNonChord[0]->ChangePitch(pOnChord2->GetAPitch(), lmCHANGE_TIED);
+        }
+        else {
+            // ascending sequence of steps
+            lmAPitch nPitch = pOnChord2->GetAPitch();
+            for(int i=nNumNotes-1; i >= 0; i--) {
+                if (!pNonChord[i]->IsPitchDefined()) {
+                    nPitch = MoveByStep(lmDOWN, nPitch, aScale);
+                    pNonChord[i]->ChangePitch(nPitch, lmCHANGE_TIED);
+                }
+            }
+        }
+        return;
+    }
+
+    // Compute inteval formed by on-chord notes
+    lmAPitch ap1 = pOnChord1->GetAPitch();
+    lmAPitch ap2 = pOnChord2->GetAPitch();
+    lmFPitch fp1 = FPitch(ap1);
+    lmFPitch fp2 = FPitch(ap2);
+    int nDIntval = ap2.ToDPitch() - ap1.ToDPitch();
+    int nFIntval = abs(fp2 - fp1);
+    int nAbsIntval = abs(nDIntval) + 1;
+
+    //Choose non-chord notes type depending on interval formed by on-chord notes
+    if (nAbsIntval == 1)
+    {
+        //unison
+        //If one or two notes use neighboring notes. If more notes
+        //choose between neighboring notes or on-chord arpege
+        if (nNumNotes < 3)
+            NeightboringNotes(nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        else 
+            NeightboringNotes(nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        return;
+    }
+
+    else if (nAbsIntval == 2)
+    {
+        //second
+        //If one note there are several possibilities (anticipation / suspension / 
+        //retardation / appogiatura) but I will just use a on-chord tone (a third apart) 
+        if (nNumNotes == 1)
+            ThirdFifthNotes((nDIntval > 0), nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        else 
+            NeightboringNotes(nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        return;
+    }
+
+    else if (nAbsIntval == 3)
+    {
+        //third
+        //If one note use a passing note, else we could use two passing notes by
+        //chromatic step, but chromatic accidentals could not be appropriate for
+        //lower music reading levels; therefore I will use a neighboring tone
+        if (nNumNotes == 1)
+            PassingNotes((nDIntval > 0), nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        else 
+            NeightboringNotes(nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        return;
+    }
+
+    else if (nAbsIntval == 4)
+    {
+        //fourth
+        //interval 1:   Third / Appoggiatura
+        //interval 2:   Two passing tones (by step) / Appoggiatura
+        if (nNumNotes == 1)
+            ThirdFifthNotes((nDIntval > 0), nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        else if (nNumNotes == 1)
+            PassingNotes((nDIntval > 0), nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        else
+            NeightboringNotes(nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        return;
+    }
+
+    else if (nAbsIntval == 5)
+    {
+        //fifth
+        //interval 1:   Third / Appoggiatura
+        //interval 2:   Third+Fifth / Double appoggiatura
+        //interval 3:   three passing tones (by step)
+        if (nNumNotes < 3)
+            ThirdFifthNotes((nDIntval > 0), nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        else if (nNumNotes == 3)
+            PassingNotes((nDIntval > 0), nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        else
+            NeightboringNotes(nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        return;
+    }
+
+    else if (nAbsIntval == 6)
+    {
+        //sixth
+        //interval 1:   Appoggiatura
+        //interval 2:   Double appoggiatura
+        //interval 4:   four passing tones (by step)
+        if (nNumNotes < 3)
+            ThirdFifthNotes((nDIntval > 0), nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        else if (nNumNotes == 4)
+            PassingNotes((nDIntval > 0), nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        else
+            NeightboringNotes(nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        return;
+    }
+
+    else {
+        wxLogMessage(_T("[lmComposer6::AssignNonChordNotes] Program error: ")
+            _T("case not defined: Intval %d, num.notes %d"),
+            nAbsIntval, nNumNotes );
+        NeightboringNotes(nNumNotes, pOnChord1, pOnChord2, pNonChord, aScale);
+        return;
+    }
+
+}
+
+void lmComposer6::NeightboringNotes(int nNumNotes, lmNote* pOnChord1, lmNote* pOnChord2,
+                                    lmNote* pNonChord[], lmAPitch aScale[7])
+{
+    // Receives the two on-chord notes and the non-chord notes between them, and assign
+    // the pitch to all notes. The number of non-chord notes received is in 'nNumNotes'
+
+    wxASSERT(nNumNotes > 0 && nNumNotes < 4);
+    // 1, 2 or 3 neightboring notes
+
+    bool fUpStep = lmRandomGenerator::FlipCoin();
+    lmAPitch ap = pOnChord1->GetAPitch();
+    lmAPitch nFirstPitch = MoveByStep(fUpStep, ap, aScale);
+    pNonChord[0]->ChangePitch(nFirstPitch, lmCHANGE_TIED);
+    if (nNumNotes == 1) return;
+    pNonChord[1]->ChangePitch(MoveByStep(!fUpStep, ap, aScale), lmCHANGE_TIED);
+    if (nNumNotes == 2) return;
+    pNonChord[2]->ChangePitch(nFirstPitch, lmCHANGE_TIED);
+
+}
+
+void lmComposer6::PassingNotes(bool fUp, int nNumNotes, lmNote* pOnChord1, lmNote* pOnChord2,
+                               lmNote* pNonChord[], lmAPitch aScale[7])
+{
+    // Receives the two on-chord notes and the non-chord notes between them, and assign
+    // the pitch to all notes. The number of non-chord notes received is in 'nNumNotes'
+
+    wxASSERT(nNumNotes > 0);
+
+    // passing note
+    lmAPitch apNewPitch = pOnChord1->GetAPitch();
+    pNonChord[0]->ChangePitch(MoveByStep(fUp, apNewPitch, aScale), lmCHANGE_TIED);
+    
+    // two passing notes
+    for (int i=1; i < nNumNotes; i++) {
+        apNewPitch = MoveByStep(fUp, apNewPitch, aScale);
+        pNonChord[1]->ChangePitch(apNewPitch, lmCHANGE_TIED);
+    }
+
+}
+
+void lmComposer6::ThirdFifthNotes(bool fUp, int nNumNotes, lmNote* pOnChord1, lmNote* pOnChord2,
+                               lmNote* pNonChord[], lmAPitch aScale[7])
+{
+    // Receives the two on-chord notes and the non-chord notes between them, and assign
+    // the pitch to all notes. The number of non-chord notes received is in 'nNumNotes'
+
+    wxASSERT(nNumNotes == 1 || nNumNotes == 2);
+
+    // third
+    lmAPitch apPitch = MoveByStep(fUp, pOnChord1->GetAPitch(), aScale);  //second
+    apPitch = MoveByStep(fUp, apPitch, aScale);     //third
+    pNonChord[0]->ChangePitch(apPitch, lmCHANGE_TIED);
+    if (nNumNotes == 1) return;
+    // fifth
+    apPitch = MoveByStep(fUp, apPitch, aScale);     //fourth
+    apPitch = MoveByStep(fUp, apPitch, aScale);     //fifth
+    pNonChord[1]->ChangePitch(apPitch, lmCHANGE_TIED);
+
+}
