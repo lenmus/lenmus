@@ -148,7 +148,7 @@ class lmBookSearchEngine
 {
 public:
     lmBookSearchEngine() {}
-    ~lmBookSearchEngine() {}
+    virtual ~lmBookSearchEngine() {}
 
     // Sets the keyword we will be searching for
     virtual void LookFor(const wxString& keyword, bool case_sensitive, bool whole_words_only);

@@ -259,7 +259,7 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
         if (m_sMsg2 != wxEmptyString) {
             long nHeight, nWidth;
             dc.GetTextExtent(m_sMsg, &nWidth, &nHeight);
-            yPos += nHeight * 1.2;
+            yPos += (int)((double)nHeight * 1.2);
             dc.DrawText(m_sMsg2, xPos, yPos);
         }
 

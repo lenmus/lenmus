@@ -347,8 +347,8 @@ lmBookRecord* lmBookData::ProcessTOCFile(const wxFileName& oFilename)
 {
     // Returns ptr to created book record if success, NULL if failure
 
-    wxLogMessage(_T("[lmBookData::ProcessTOCFile] Processing file %s"),
-                 oFilename.GetFullPath());
+//    wxLogMessage(_T("[lmBookData::ProcessTOCFile] Processing file %s"),
+//                 oFilename.GetFullPath().c_str());
 
     wxString sTitle = _T(""),
              sPage = _T(""),

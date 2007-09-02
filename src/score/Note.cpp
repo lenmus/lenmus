@@ -132,14 +132,13 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         // Alter is not used.
 
         //update context with accidentals
-        int nTotalAcc = nCurContextAcc;
         switch (nAccidentals) {
             case eNoAccidentals:
                 //do not modify context
                 break;
             case eNatural:
                 //ignore context. Force 'natural' (=no accidentals)
-                nNewContextAcc = 0; 
+                nNewContextAcc = 0;
                 break;
             case eFlat:
             case eNaturalFlat:
@@ -1323,7 +1322,7 @@ int lmNote::GetPosOnStaff()
     //        etc.
 
     // if pitch is not yet defined, return line 0 (first bottom ledger line
-    if (!IsPitchDefined()) return 0; 
+    if (!IsPitchDefined()) return 0;
 
     // pitch is defined. Position will depend on key
     switch (m_nClef) {
@@ -1382,7 +1381,7 @@ const EAccidentals  lmNote::ComputeAccidentalsToDisplay(int nCurContextAcc, int 
 }
 
 lmDPitch lmNote::GetDPitch()
-{ 
+{
     if (IsPitchDefined())
         return m_anPitch.ToDPitch();
     else
@@ -1390,7 +1389,7 @@ lmDPitch lmNote::GetDPitch()
 }
 
 lmMPitch lmNote::GetMPitch()
-{ 
+{
     if (IsPitchDefined())
         return m_anPitch.GetMPitch();
     else
@@ -1420,7 +1419,7 @@ void lmNote::ChangePitch(int nStep, int nOctave, int nAlter, bool fRemoveTies)
     // pitch change will be propagated to all tied notes.
 
     DoChangePitch(nStep, nOctave, nAlter);
-    
+
     // If the note is tied either remove ties or propagate pitch change
     if (m_pTiePrev) {
         if (fRemoveTies) {

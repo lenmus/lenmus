@@ -131,6 +131,8 @@
 		<Unit filename="../../src/exercises/EarIntervalsCtrol.h" />
 		<Unit filename="../../src/exercises/EarIntvalConstrains.cpp" />
 		<Unit filename="../../src/exercises/EarIntvalConstrains.h" />
+		<Unit filename="../../src/exercises/ExerciseCtrol.cpp" />
+		<Unit filename="../../src/exercises/ExerciseCtrol.h" />
 		<Unit filename="../../src/exercises/Generators.cpp" />
 		<Unit filename="../../src/exercises/Generators.h" />
 		<Unit filename="../../src/exercises/IdfyCadencesCtrol.cpp" />
@@ -149,6 +151,8 @@
 		<Unit filename="../../src/exercises/ScoreConstrains.h" />
 		<Unit filename="../../src/exercises/ScoreCtrol.cpp" />
 		<Unit filename="../../src/exercises/ScoreCtrol.h" />
+		<Unit filename="../../src/exercises/TheoIntervalsConstrains.cpp" />
+		<Unit filename="../../src/exercises/TheoIntervalsConstrains.h" />
 		<Unit filename="../../src/exercises/TheoIntervalsCtrol.cpp" />
 		<Unit filename="../../src/exercises/TheoIntervalsCtrol.h" />
 		<Unit filename="../../src/exercises/TheoKeySignConstrains.cpp" />
@@ -274,6 +278,8 @@
 		<Unit filename="../../src/score/NoteRestObj.h" />
 		<Unit filename="../../src/score/ObjOptions.cpp" />
 		<Unit filename="../../src/score/ObjOptions.h" />
+		<Unit filename="../../src/score/Pitch.cpp" />
+		<Unit filename="../../src/score/Pitch.h" />
 		<Unit filename="../../src/score/Rest.cpp" />
 		<Unit filename="../../src/score/Rest.h" />
 		<Unit filename="../../src/score/SOControl.cpp" />

@@ -293,26 +293,26 @@ void lmAboutDialog::OnDevelopers(wxCommandEvent& WXUNUSED(event))
       _T("</p></center><p>") +
 _("This program has been designed and developed by volunteers. \
 Some of them devoted a few hours, others months or years. But all them \
-gave their time for free to the project. Thanks to all them.") + 
+gave their time for free to the project. Thanks to all them.") +
     _T("</p><p>&nbsp;</p><p>") +
     _T("<table border='0' width='100%' cellpadding='0' cellspacing='0'>")
-    _T("<tr><td colspan='3'><b>") + 
+    _T("<tr><td colspan='3'><b>") +
         _("Management and programming:") + _T("</b></td></tr>")
     _T("  <tr><td width='40px'>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //
-    //_T("<tr><td colspan='3'><b>") + 
+    //_T("<tr><td colspan='3'><b>") +
     //    _("Programmers:") + _T("</b></td></tr>")
     //_T("  <tr><td>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
     //_T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //
-    _T("<tr><td colspan='3'><b>") + 
+    _T("<tr><td colspan='3'><b>") +
         _("Music texts and exercises:") + _T("</b></td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Marcelo G&aacute;lvez</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //
-    _T("<tr><td colspan='3'><b>") + 
+    _T("<tr><td colspan='3'><b>") +
         _("Translation:") + _T("</b></td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("Dutch") + _T("</td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
@@ -328,15 +328,15 @@ gave their time for free to the project. Thanks to all them.") +
         _T("<td>Elif &Ouml;zt&uuml;rk</td></tr>")
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //
-    _T("<tr><td colspan='3'><b>") + 
+    _T("<tr><td colspan='3'><b>") +
         _("Website maintenace:") + _T("</b></td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Jack Van Handenhove</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
         //
-    _T("<tr><td colspan='3'><b>") + 
+    _T("<tr><td colspan='3'><b>") +
         _("Thanks also to:") + _T("</b></td></tr>")
-    _T("  <tr><td>&nbsp;</td><td colspan='2'>Ana María Madorr&aacute;n</td></tr>")
+    _T("  <tr><td>&nbsp;</td><td colspan='2'>Ana Mar&iacute;a Madorr&aacute;n</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Mar&iacute;a Jes&uacute;s Mart&iacute;nez Pascua</td></tr>")
     _T("</table><p>&nbsp;</p><p>") +
 _("If you would like to help developing this program or join the project to help in any \

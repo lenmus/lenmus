@@ -2,7 +2,7 @@
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
 	<File name="../../src/app/AboutDialog.cpp" open="1" top="0" tabpos="15">
-		<Cursor position="4444" topLine="115" />
+		<Cursor position="15176" topLine="325" />
 	</File>
 	<File name="../../src/app/AboutDialog.h" open="0" top="0" tabpos="1">
 		<Cursor position="0" topLine="34" />
@@ -71,7 +71,7 @@
 		<Cursor position="4338" topLine="111" />
 	</File>
 	<File name="../../src/auxmusic/Cadence.cpp" open="1" top="0" tabpos="46">
-		<Cursor position="46899" topLine="1105" />
+		<Cursor position="46767" topLine="1104" />
 	</File>
 	<File name="../../src/auxmusic/ChordManager.cpp" open="1" top="0" tabpos="40">
 		<Cursor position="7805" topLine="196" />
@@ -88,8 +88,8 @@
 	<File name="../../src/auxmusic/ComposerV5.h" open="0" top="0" tabpos="31">
 		<Cursor position="2820" topLine="69" />
 	</File>
-	<File name="../../src/auxmusic/ComposerV6.cpp" open="1" top="1" tabpos="19">
-		<Cursor position="36625" topLine="968" />
+	<File name="../../src/auxmusic/ComposerV6.cpp" open="1" top="0" tabpos="19">
+		<Cursor position="54523" topLine="1392" />
 	</File>
 	<File name="../../src/auxmusic/Conversion.cpp" open="1" top="0" tabpos="37">
 		<Cursor position="1698" topLine="146" />
@@ -107,7 +107,7 @@
 		<Cursor position="8357" topLine="190" />
 	</File>
 	<File name="../../src/exercises/EarCompareIntvCtrol.cpp" open="1" top="0" tabpos="32">
-		<Cursor position="1232" topLine="207" />
+		<Cursor position="1232" topLine="201" />
 	</File>
 	<File name="../../src/exercises/EarCompareIntvCtrol.h" open="0" top="0" tabpos="11">
 		<Cursor position="1202" topLine="9" />
@@ -137,7 +137,7 @@
 		<Cursor position="5306" topLine="140" />
 	</File>
 	<File name="../../src/exercises/ScoreAuxCtrol.cpp" open="1" top="0" tabpos="3">
-		<Cursor position="9718" topLine="252" />
+		<Cursor position="9827" topLine="252" />
 	</File>
 	<File name="../../src/exercises/ScoreConstrains.cpp" open="0" top="0" tabpos="31">
 		<Cursor position="21423" topLine="588" />
@@ -193,11 +193,11 @@
 	<File name="../../src/html/BookContentsBox.h" open="0" top="0" tabpos="5">
 		<Cursor position="1193" topLine="12" />
 	</File>
-	<File name="../../src/html/BookData.cpp" open="0" top="0" tabpos="40">
-		<Cursor position="7738" topLine="211" />
+	<File name="../../src/html/BookData.cpp" open="1" top="0" tabpos="48">
+		<Cursor position="10735" topLine="341" />
 	</File>
-	<File name="../../src/html/BookData.h" open="0" top="0" tabpos="37">
-		<Cursor position="1688" topLine="21" />
+	<File name="../../src/html/BookData.h" open="1" top="0" tabpos="47">
+		<Cursor position="5838" topLine="138" />
 	</File>
 	<File name="../../src/html/ContentsBoxCtrol.cpp" open="0" top="0" tabpos="102">
 		<Cursor position="20922" topLine="60" />
@@ -337,8 +337,8 @@
 	<File name="../../src/score/MetronomeMark.cpp" open="0" top="0" tabpos="25">
 		<Cursor position="11056" topLine="283" />
 	</File>
-	<File name="../../src/score/Note.cpp" open="0" top="0" tabpos="60">
-		<Cursor position="18444" topLine="496" />
+	<File name="../../src/score/Note.cpp" open="1" top="1" tabpos="49">
+		<Cursor position="5445" topLine="132" />
 	</File>
 	<File name="../../src/score/NoteRest.cpp" open="0" top="0" tabpos="71">
 		<Cursor position="6496" topLine="162" />

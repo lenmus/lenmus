@@ -52,7 +52,7 @@ typedef struct lmFunctionDataStruct {
 
 // Conversion table: harmonic function to chord intervals.
 // Inversions are not necessary except in minor modes. In these cases the inversion
-// is notated without the slash (IVm6, 
+// is notated without the slash (IVm6,
 // AWARE: The maximum number of notes in a chord is defined in 'ChordManager.h', constant
 //        lmNOTES_IN_CHORD. Currently its value is 6. Change this value if you need more
 //        notes.
@@ -110,7 +110,7 @@ static const wxString aFunction[lm_eCadMaxCadence][lmCHORDS_IN_CADENCE] = {
     { _T("IIm/6"),  _T("V") },      //Half_IImc6_V
     { _T("IV"),     _T("V") },      //Half_IV_V
     { _T("I"),      _T("V") },      //Half_I_V
-    { _T("I/64"),   _T("V") },      //Half_Ic64_V 
+    { _T("I/64"),   _T("V") },      //Half_Ic64_V
     { _T("IVm6"),   _T("V") },      //Half_IV6_V (Phrygian)
     { _T("II"),     _T("V") },      //Half_II_V
     { _T("IId/6"),  _T("V") },      //Half_IIdimc6_V (Neapolitan sixth)
@@ -119,10 +119,10 @@ static const wxString aFunction[lm_eCadMaxCadence][lmCHORDS_IN_CADENCE] = {
 
 // Chords for imperfect cadence
 static const wxString aImperfect[4][lmCHORDS_IN_CADENCE] = {
-    { _T("V/6"),    _T("I") },      
-    { _T("V/64"),   _T("I") },    
-    { _T("V/64"),   _T("I/6") },   
-    { _T("V"),      _T("I/64") }, 
+    { _T("V/6"),    _T("I") },
+    { _T("V/64"),   _T("I") },
+    { _T("V/64"),   _T("I/6") },
+    { _T("V"),      _T("I/64") },
 };
 
 #define lmEXHAUSTIVE  true      //for FilterChords() method
@@ -742,17 +742,17 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
                 aChords[iC].nNote[1] = nElegibleNote[1][iT];
                 aChords[iC].nAcc[1] = nElegibleAcc[1][iT];
 
-                if (aChords[iC].nNote[1] > aChords[iC].nNote[0]) { 
+                if (aChords[iC].nNote[1] > aChords[iC].nNote[0]) {
                     // alto
                     aChords[iC].nNote[2] = nElegibleNote[2][iA];
                     aChords[iC].nAcc[2] = nElegibleAcc[2][iA];
 
-                    if (aChords[iC].nNote[2] > aChords[iC].nNote[1]) { 
+                    if (aChords[iC].nNote[2] > aChords[iC].nNote[1]) {
                         // soprano
                         aChords[iC].nNote[3] = nElegibleNote[3][iS];
                         aChords[iC].nAcc[3] = nElegibleAcc[3][iS];
 
-                        if (aChords[iC].nNote[3] > aChords[iC].nNote[2]) { 
+                        if (aChords[iC].nNote[3] > aChords[iC].nNote[2]) {
                             aChords[iC].nReason = lm_eChordValid;
                             aChords[iC].nSeverity = lm_eChordValid;
                             aChords[iC].nNumNotes = 4;
@@ -840,7 +840,7 @@ int lmCadence::GenerateSopranoNote(lmNoteBits oChordNotes[4], int iBass,
 
 }
 
-int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nNumChords, 
+int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nNumChords,
                             lmChordAuxData& tChordData, lmHChord* pPrevChord,
                             bool fExhaustive)
 {
@@ -849,11 +849,11 @@ int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nNumChords,
     //
     // Validations:
     // 1. The chord is complete (has all note steps)
-    // *2. lm_eFifthMissing - Acorde completo. Contiene todas las notas (en todo caso, elidir la 5ª)
+    // *2. lm_eFifthMissing - Acorde completo. Contiene todas las notas (en todo caso, elidir la 5Âª)
     // 3. No parallel motion of perfect octaves, perfect fifths, and unisons
-    // *4. lm_eResultantFifthOctves - No hacer 5ªs ni 8ªs resultantes, excepto:
+    // *4. lm_eResultantFifthOctves - No hacer 5Âªs ni 8Âªs resultantes, excepto:
                                             //> a) la soprano se ha movido por segundas
-                                            //> b) (para 5ªs) uno de los sonidos ya estaba
+                                            //> b) (para 5Âªs) uno de los sonidos ya estaba
     // 5. The fifth is not doubled
 	// 6. The leading tone is never doubled
     // 7. Scale degree seven (the leading tone) should resolve to tonic.
@@ -922,7 +922,7 @@ int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nNumChords,
 			}
         }
 
-        //2. lm_eFifthMissing        = 0x2000,   // Acorde completo. Contiene todas las notas (en todo caso, elidir la 5ª)
+        //2. lm_eFifthMissing        = 0x2000,   // Acorde completo. Contiene todas las notas (en todo caso, elidir la 5Âª)
 
         //3. No parallel motion of perfect octaves or perfect fifths
         int aMotion[4];
@@ -939,13 +939,13 @@ int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nNumChords,
                     else
                         nMotion--;
                 }
-                if (nMotion == 5) 
+                if (nMotion == 5)
                     nUpFifth++;
-                else if (nMotion == 8) 
+                else if (nMotion == 8)
                     nUpOctave++;
-                else if (nMotion == -5) 
+                else if (nMotion == -5)
                     nDownFifth++;
-                else if (nMotion == -8) 
+                else if (nMotion == -8)
                     nDownOctave++;
 
                 aMotion[iN] = nMotion;
@@ -957,9 +957,9 @@ int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nNumChords,
 			}
         }
 
-        //4. lm_eResultantFifthOctves = 0x0800,  //3. No hacer 5ªs ni 8ªs resultantes, excepto:
+        //4. lm_eResultantFifthOctves = 0x0800,  //3. No hacer 5Âªs ni 8Âªs resultantes, excepto:
                                             //> a) la soprano se ha movido por segundas
-                                            //> b) (para 5ªs) uno de los sonidos ya estaba
+                                            //> b) (para 5Âªs) uno de los sonidos ya estaba
 
         //5. The fifth is not doubled
         //6. The leading tone is never doubled
@@ -1111,8 +1111,7 @@ void lmCadence::SelectLessBad(std::vector<lmHChord>& aChords, lmChordAuxData& tC
 
     // Apply all checking rules
 	lmHChord* pPrevChord = (iHChord == 0 ? (lmHChord*)NULL : &m_Chord[iHChord-1] );
-    int nValidChords = FilterChords(aChords, (int)aChords.size(), tChordData,
-                                    pPrevChord, lmEXHAUSTIVE);
+    FilterChords(aChords, (int)aChords.size(), tChordData, pPrevChord, lmEXHAUSTIVE);
 
     //find minimum impact chords
     int aImpact[4] = {0,0,0,0};      //AWARE: dimension must be grater than number of impact values
@@ -1178,7 +1177,7 @@ void lmCadence::Debug_DumpChord(lmHChord& oChord, int iChord)
             DPitch_GetEnglishNoteName(oChord.nNote[3]).c_str(),
             oChord.nImpact, nError );
 
-		if (nError & lm_eNotDoubledThird) 
+		if (nError & lm_eNotDoubledThird)
 			wxLogMessage(_T("                                      %s"), GetChordErrorDescription(lm_eNotDoubledThird).c_str() );
 		if (nError & lm_eNotContraryMotion)
 			wxLogMessage(_T("                                      %s"), GetChordErrorDescription(lm_eNotContraryMotion).c_str() );
