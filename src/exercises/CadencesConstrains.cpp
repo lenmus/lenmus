@@ -38,7 +38,7 @@ extern wxConfigBase *g_pPrefs;
 
 
 lmCadencesConstrains::lmCadencesConstrains(wxString sSection)
-    : lmIdfyConstrains(sSection)
+    : lmExerciseConstrains(sSection)
 {
     //
     // default settings

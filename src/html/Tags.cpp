@@ -20,34 +20,34 @@
 //-------------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------------------
-/*! @page embedded_controls    Controls embedded in HTML pages
+/*  Controls embedded in HTML pages
 
-    Two types of embedded controls: main (Ctrol) and auxiliary (AuxCtrol).
+    Two types of embedded controls: html (Ctrol) and auxiliary (AuxCtrol).
 
-    A Ctrol can be included directly in html by using an \<object\> directive. Therefore
+    A Ctrol can be included directly in html by using an <object> directive. Therefore
     there must exist a correspondence between Ctrol objects and CtrolParams objects.
-    An AuxCtrol can not be included directly in html by using an \<object\> directive. It
+    An AuxCtrol can not be included directly in html by using an <object> directive. It
     only can be included programatically, either inside a Ctrol or by direct usage during
     the construction of an HtmlCell.
 
-    Main controls enclose all the functionality. Are implemented as windows with all its
-    controls on it. So commnads for main controls are processed as events on that windows
+    Html controls enclose all the functionality. Are implemented as windows with all its
+    controls on it. So commnads for html controls are processed as events on that windows
     (see TheoIntervalCtrol.cpp as an example) and there is no need to respond to
     external commands.
 
-    Auxiliary controls implement sub-controls in main controls. They generate events to
+    Auxiliary controls implement sub-controls in html controls. They generate events to
     be processed in the parent window.
 
     @verbatim
 
-    Ctrols                                          AuxCtrols
+    Html Ctrols                                     AuxCtrols
     ---------------------------------------         -------------------------------------
     lmScoreCtrol : public wxWindow                  lmScoreAuxCtrol : public wxWindow
     lmTheoIntervalsCtrol : public wxWindow          lmUrlAuxCtrol : public wxStaticText
     lmTheoKeySignCtrol : public wxWindow            lmCountersCtrol : public wxWindow
-    lmEarIntervalsCtrol : public wxWindow
-    lmEarCompareIntvCtrol : public wxWindow
-    lmIdfyChordCtrol : public wxWindow
+    lmEarIntervalsCtrol : public lmExerciseCtrol
+    lmEarCompareIntvCtrol : public lmExerciseCtrol
+    lmIdfyChordCtrol : public lmExerciseCtrol
     lmTheoMusicReadingCtrol : public wxWindow
     lmIdfyScalesCtrol : public wxWindow
 
@@ -64,8 +64,6 @@
     classid="IdfyChord"              lmIdfyChordCtrolParms : public lmObjectParams
     classid="IdfyScales"             lmIdfyScalesCtrolParms : public lmObjectParams
     classid="IdfyCadences"           lmIdfyCadencesCtrolParms : public lmObjectParams
-
-    @endverbatim
 
 */
 
@@ -107,6 +105,7 @@
 #include "../exercises/IdfyChordCtrol.h"
 #include "../exercises/IdfyScalesCtrol.h"
 #include "../exercises/IdfyCadencesCtrol.h"
+#include "../exercises/EarTunningCtrol.h"
 
 #include "ObjectParams.h"
 #include "TheoMusicReadingCtrolParms.h"
@@ -115,6 +114,7 @@
 #include "IdfyScalesCtrolParms.h"
 #include "IdfyCadencesCtrolParms.h"
 #include "TheoIntervalsCtrolParams.h"
+#include "EarTunningCtrolParms.h"
 
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
@@ -435,6 +435,17 @@ void lmEarIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
         //        tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
     }
 
+    // "Go back to theory" link
+    else if ( sName == _T("CONTROL_GO_BACK") ) {
+        m_pConstrains->SetGoBackLink( tag.GetParam(_T("VALUE") ));
+    }
+
+    // control_settings
+    else if ( sName == _T("CONTROL_SETTINGS") ) {
+        m_pConstrains->SetSettingsLink(true);
+        m_pConstrains->SetSection( tag.GetParam(_T("VALUE") ));
+    }
+
     // Unknown param
     else
         LogError(wxString::Format(
@@ -601,6 +612,7 @@ enum EHtmlObjectTypes {
     eHO_Exercise_IdfyChord,
     eHO_Exercise_IdfyScales,
     eHO_Exercise_IdfyCadences,
+    eHO_Exercise_EarTunning,
     eHO_Control
 };
 
@@ -657,14 +669,25 @@ TAG_HANDLER_PROC(tag)
                         nType = eHO_Exercise_IdfyScales;
                     else if (sClassid.Upper() == _T("IDFYCADENCES"))
                         nType = eHO_Exercise_IdfyCadences;
-                }
+                    else if (sClassid.Upper() == _T("EARTUNNING"))
+                        nType = eHO_Exercise_EarTunning;
+                    else
+                    {
+                        wxLogMessage(_T("[TAG_HANDLER_PROC] Object type 'Application/LenMus': classid '%s' is unknown."),
+                            sClassid.c_str());
+                        return true;        // error in classid
+                    }
+               }
+            }
+            else
+            {
+                wxLogMessage(_T("[TAG_HANDLER_PROC] Object type '%s' is not processable by LenMus."),
+                    sType.c_str());
+                return true;        // type non processable by LenMus
             }
         }
-        if (nType == eHO_Unknown) {
-            wxLogMessage(_T("[TAG_HANDLER_PROC] Object type '%s' is not processable by LenMus."),
-                sType.c_str());
-            return true;        // type non processable by LenMus
-        }
+
+        wxASSERT(nType != eHO_Unknown);
 
         // parse common attributes for all object types
         // attributes "width" and "height": height is always in pixels
@@ -745,6 +768,11 @@ TAG_HANDLER_PROC(tag)
                     nPercent, nStyle);
                 break;
 
+            case eHO_Exercise_EarTunning:
+                m_pObjectParams = new lmEarTunningCtrolParms(tag, nWidth, nHeight,
+                    nPercent, nStyle);
+                break;
+
             case eHO_Exercise_TheoMusicReading:
                 m_pObjectParams = new lmTheoMusicReadingCtrolParms(tag, nWidth, nHeight,
                     nPercent, nStyle);
@@ -772,7 +800,7 @@ TAG_HANDLER_PROC(tag)
             m_pObjectParams->AddParam(tag);
             return false;
         }
-        return true;    // error: tag <param> not inside \<object\> tag
+        return true;    // error: tag <param> not inside <object> tag
     }
 
     // unknown tag

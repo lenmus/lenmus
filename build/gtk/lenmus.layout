@@ -89,7 +89,7 @@
 		<Cursor position="2820" topLine="69" />
 	</File>
 	<File name="../../src/auxmusic/ComposerV6.cpp" open="1" top="0" tabpos="19">
-		<Cursor position="54523" topLine="1392" />
+		<Cursor position="54256" topLine="1389" />
 	</File>
 	<File name="../../src/auxmusic/Conversion.cpp" open="1" top="0" tabpos="37">
 		<Cursor position="1698" topLine="146" />
@@ -137,13 +137,13 @@
 		<Cursor position="5306" topLine="140" />
 	</File>
 	<File name="../../src/exercises/ScoreAuxCtrol.cpp" open="1" top="0" tabpos="3">
-		<Cursor position="9827" topLine="252" />
+		<Cursor position="7850" topLine="179" />
 	</File>
 	<File name="../../src/exercises/ScoreConstrains.cpp" open="0" top="0" tabpos="31">
 		<Cursor position="21423" topLine="588" />
 	</File>
 	<File name="../../src/exercises/ScoreCtrol.cpp" open="1" top="0" tabpos="22">
-		<Cursor position="0" topLine="270" />
+		<Cursor position="0" topLine="126" />
 	</File>
 	<File name="../../src/exercises/TheoIntervalsCtrol.cpp" open="1" top="0" tabpos="30">
 		<Cursor position="0" topLine="360" />
@@ -337,7 +337,7 @@
 	<File name="../../src/score/MetronomeMark.cpp" open="0" top="0" tabpos="25">
 		<Cursor position="11056" topLine="283" />
 	</File>
-	<File name="../../src/score/Note.cpp" open="1" top="1" tabpos="49">
+	<File name="../../src/score/Note.cpp" open="1" top="0" tabpos="49">
 		<Cursor position="5445" topLine="132" />
 	</File>
 	<File name="../../src/score/NoteRest.cpp" open="0" top="0" tabpos="71">
@@ -388,8 +388,8 @@
 	<File name="../../src/sound/MidiManager.h" open="0" top="0" tabpos="50">
 		<Cursor position="2176" topLine="9" />
 	</File>
-	<File name="../../src/sound/SoundManager.cpp" open="0" top="0" tabpos="41">
-		<Cursor position="22361" topLine="610" />
+	<File name="../../src/sound/SoundManager.cpp" open="1" top="1" tabpos="51">
+		<Cursor position="31343" topLine="0" />
 	</File>
 	<File name="../../src/sound/WaveManager.cpp" open="1" top="0" tabpos="45">
 		<Cursor position="3324" topLine="79" />

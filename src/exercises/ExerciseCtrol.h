@@ -52,7 +52,7 @@ public:
     lmExerciseConstrains(wxString sSection);
     virtual ~lmExerciseConstrains() {}
 
-    virtual void SaveSettings() {};
+    virtual void SaveSettings() {}
 
     void SetSettingsLink(bool fValue) { m_fSettingsLink = fValue; }
     bool IncludeSettingsLink() { return m_fSettingsLink; }
@@ -75,7 +75,7 @@ public:
 
 
 protected:
-    virtual void LoadSettings() {};
+    virtual void LoadSettings() {}
 
     wxString    m_sSection;         //section name to save the constraints
     wxString    m_sGoBackURL;       //URL for "Go back" link of empty string if no link
@@ -134,13 +134,14 @@ protected:
     virtual void ReconfigureButtons()=0;
     virtual wxString SetNewProblem()=0;    
     virtual wxDialog* GetSettingsDlg()=0;
-    virtual void PrepareAuxScore(int nButton)=0;
     virtual wxWindow* CreateDisplayCtrol()=0;
     virtual void Play()=0;
+    virtual void PlaySpecificSound(int nButton)=0;
     virtual void DisplaySolution()=0;
     virtual void DisplayProblem()=0;
-    virtual void DeleteScores() {};     //should be virtual pure but the linker complains !!!
-    virtual void StopSounds() {};     //should be virtual pure but the linker complains !!!
+    virtual void DisplayMessage(wxString& sMsg, bool fClearDisplay)=0;
+    virtual void DeleteScores() {}     //should be virtual pure but the linker complains !!!
+    virtual void StopSounds() {}     //should be virtual pure but the linker complains !!!
 
     //methods that, normally, it is not necessary to implement
     virtual void SetButtonColor(int i, wxColour& color);
@@ -178,7 +179,6 @@ protected:
 
 private:
     void DoStopSounds();
-    void DisplayMessage(wxString& sMsg, bool fClearDisplay);
     void DoDisplaySolution();
 
 
@@ -220,22 +220,23 @@ protected:
     //virtual pure methods to be implemented by derived classes
     virtual wxString SetNewProblem()=0;    
     virtual wxDialog* GetSettingsDlg()=0;
-    virtual void PrepareAuxScore(int nButton)=0;
     virtual wxWindow* CreateDisplayCtrol()=0;
     virtual void Play()=0;
+    virtual void PlaySpecificSound(int nButton)=0;
     virtual void DisplaySolution()=0;
     virtual void DisplayProblem()=0;
-    virtual void DeleteScores() {};     //should be virtual pure but the linker complains !!!
-    virtual void StopSounds() {};   //should be virtual pure but the linker complains !!!
+    virtual void DisplayMessage(wxString& sMsg, bool fClearDisplay)=0;
+    virtual void DeleteScores() {}     //should be virtual pure but the linker complains !!!
+    virtual void StopSounds() {}   //should be virtual pure but the linker complains !!!
 
     //virtual methods implemented in this class
     void CreateAnswerButtons();
     virtual void InitializeStrings();   
-    void ReconfigureButtons() {};
+    void ReconfigureButtons() {}
 
 protected:
     // member variables
-    wxButton*          m_pAnswerButton[m_NUM_BUTTONS];   //buttons for the answers
+    wxButton*       m_pAnswerButton[m_NUM_BUTTONS];   //buttons for the answers
 
 
 
@@ -273,15 +274,16 @@ protected:
     //virtual pure methods to be implemented by derived classes
     virtual wxString SetNewProblem()=0;    
     virtual wxDialog* GetSettingsDlg()=0;
-    virtual void PrepareAuxScore(int nButton)=0;
     
     //implementation of some virtual methods
     void Play();
+    void PlaySpecificSound(int nButton) {}
     void DisplaySolution();
     void DisplayProblem();
     void DeleteScores();
     void StopSounds();
     wxWindow* CreateDisplayCtrol();
+    void DisplayMessage(wxString& sMsg, bool fClearDisplay);
 
 
 protected:
@@ -326,21 +328,25 @@ public:
 
 
 protected:
-    //virtual pure methods to be implemented by derived classes
-    virtual wxString SetNewProblem() {return _T(""); };     //should be virtual pure but the linker doesn't do its job properly !!! 
-    virtual wxDialog* GetSettingsDlg() {return NULL; };     //should be virtual pure but the linker doesn't do its job properly !!! 
-    virtual void PrepareAuxScore(int nButton) {};     //should be virtual pure but the linker doesn't do its job properly !!! 
-    virtual void CreateAnswerButtons() {};     //should be virtual pure but the linker doesn't do its job properly !!! 
-    virtual void InitializeStrings() {};     //should be virtual pure but the linker doesn't do its job properly !!!   
-    virtual void ReconfigureButtons() {};     //should be virtual pure but the linker doesn't do its job properly !!! 
-    
+    //virtual pure methods from parent class to be implemented by derived classes
+    virtual wxString SetNewProblem() {return _T(""); }     //should be virtual pure but the linker doesn't do its job properly !!! 
+    virtual wxDialog* GetSettingsDlg() {return NULL; }     //should be virtual pure but the linker doesn't do its job properly !!! 
+    virtual void CreateAnswerButtons() {}     //should be virtual pure but the linker doesn't do its job properly !!! 
+    virtual void InitializeStrings() {}     //should be virtual pure but the linker doesn't do its job properly !!!   
+    virtual void ReconfigureButtons() {}     //should be virtual pure but the linker doesn't do its job properly !!! 
+
+    //virtual pure methods defined in this class
+    virtual void PrepareAuxScore(int nButton)=0;
+
     //implementation of some virtual methods
     void Play();
+    void PlaySpecificSound(int nButton);
     void DisplaySolution();
     void DisplayProblem();
     void DeleteScores();
     void StopSounds();
     wxWindow* CreateDisplayCtrol();
+    void DisplayMessage(wxString& sMsg, bool fClearDisplay);
 
         // member variables
 
@@ -354,37 +360,63 @@ protected:
     DECLARE_EVENT_TABLE()
 };
 
-////--------------------------------------------------------------------------------
-//// Abstract class to create exercises to compare two Midi pitches
-////--------------------------------------------------------------------------------
-//class lmCompareMidiCtrol : public wxWindow      //lmExerciseCtrol    
-//{
-//   DECLARE_DYNAMIC_CLASS(lmCompareMidiCtrol)
-//
-//public:
-//
-//    // constructor and destructor    
-//    lmCompareMidiCtrol(wxWindow* parent, wxWindowID id,
-//               lmExerciseConstrains* pConstrains, wxSize nDisplaySize, 
-//               const wxPoint& pos = wxDefaultPosition, 
-//               const wxSize& size = wxDefaultSize, int style = 0);
-//
-//    virtual ~lmCompareMidiCtrol();
-//
-//
-//    //methods to define the control behaviour
-//    void CreateControls();
-//    void SetButtons(wxButton* pButton[], int nNumButtons, int nIdFirstButton);
-//
-//        // member variables
-//
-//    lmMPitch            m_mpPitch[2];
-//    long                m_nTimeIntval;      //interval between first and second pitch
-//    long                m_nTimeSecond;      //duration of second sound
-//    bool                m_fStopFirst;       //stop first sound when sounding the second pitch
-//
-//    DECLARE_EVENT_TABLE()
-//};
+//--------------------------------------------------------------------------------
+// Abstract class to create exercises to compare two Midi pitches
+//--------------------------------------------------------------------------------
+class lmCompareMidiCtrol : public lmCompareCtrol    
+{
+   DECLARE_DYNAMIC_CLASS(lmCompareMidiCtrol)
+
+public:
+
+    // constructor and destructor    
+    lmCompareMidiCtrol(wxWindow* parent, wxWindowID id,
+               lmExerciseConstrains* pConstrains, wxSize nDisplaySize, 
+               const wxPoint& pos = wxDefaultPosition, 
+               const wxSize& size = wxDefaultSize, int style = 0);
+
+    virtual ~lmCompareMidiCtrol();
+
+    // event handlers
+    void OnTimerEvent(wxTimerEvent& WXUNUSED(event));
+
+    //implementation of virtual event handlers
+    virtual void OnDebugShowSourceScore(wxCommandEvent& event) {}
+    virtual void OnDebugDumpScore(wxCommandEvent& event) {}
+    virtual void OnDebugShowMidiEvents(wxCommandEvent& event) {}
+
+protected:
+    //virtual pure methods to be implemented by derived classes
+    virtual wxString SetNewProblem()=0;    
+    virtual wxDialog* GetSettingsDlg()=0;
+    
+    //implementation of some virtual methods
+    virtual void Play();
+    void PlaySpecificSound(int nButton) {}
+    void DisplaySolution();
+    void DisplayProblem();
+    void DeleteScores() {}
+    void StopSounds();
+    wxWindow* CreateDisplayCtrol();
+    void DisplayMessage(wxString& sMsg, bool fClearDisplay);
+
+protected:
+    void PlaySound(int iSound);
+
+
+        // member variables
+
+    lmMPitch            m_mpPitch[2];
+    int                 m_nChannel[2];
+    int                 m_nInstr[2];
+    long                m_nTimeIntval[2];   //interval between first and second pitch
+    bool                m_fStopPrev;        //stop previous pitch when sounding the next pitch
+
+    wxTimer             m_oTimer;           //timer to control sounds' duration
+    int                 m_nNowPlaying;      //pitch number being played or -1
+
+    DECLARE_EVENT_TABLE()
+};
 
 
 #endif  // __EXERCISECTROL_H__

@@ -70,7 +70,7 @@ enum {
 };
 
 
-BEGIN_EVENT_TABLE(lmIdfyCadencesCtrol, lmIdfyExerciseCtrol)
+BEGIN_EVENT_TABLE(lmIdfyCadencesCtrol, lmOneScoreCtrol)
     EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmIdfyCadencesCtrol::OnRespButton)
 END_EVENT_TABLE()
 
@@ -78,7 +78,7 @@ END_EVENT_TABLE()
 lmIdfyCadencesCtrol::lmIdfyCadencesCtrol(wxWindow* parent, wxWindowID id,
                            lmCadencesConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
-    : lmIdfyExerciseCtrol(parent, id, pConstrains, wxSize(400,200), pos, size, style )
+    : lmOneScoreCtrol(parent, id, pConstrains, wxSize(400,200), pos, size, style )
 {
     //initializations
     m_pConstrains = pConstrains;
@@ -88,7 +88,7 @@ lmIdfyCadencesCtrol::lmIdfyCadencesCtrol(wxWindow* parent, wxWindowID id,
     m_nKey = earmDo;
 
     CreateControls();
-    if (m_fTheoryMode) NewProblem();
+    if (m_pConstrains->IsTheoryMode()) NewProblem();
 
 }
 
@@ -204,7 +204,7 @@ int lmIdfyCadencesCtrol::DisplayButton(int iBt, lmECadenceType iStartC,
 
 wxDialog* lmIdfyCadencesCtrol::GetSettingsDlg()
 {
-    wxDialog* pDlg = new lmDlgCfgIdfyCadence(this, m_pConstrains, m_fTheoryMode);
+    wxDialog* pDlg = new lmDlgCfgIdfyCadence(this, m_pConstrains, m_pConstrains->IsTheoryMode());
     return pDlg;
 }
 
@@ -303,7 +303,7 @@ wxString lmIdfyCadencesCtrol::SetNewProblem()
     }
 
     //return string to introduce the problem
-    if (m_fTheoryMode) {
+    if (m_pConstrains->IsTheoryMode()) {
         return _("Identify the next cadence:");
     } else {
         //ear training

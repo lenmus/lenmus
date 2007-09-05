@@ -64,6 +64,7 @@ public:
     //settings
     void SetMargins(lmLUnits nLeft, lmLUnits nRight, lmLUnits nTop);
     void SetScale(float rScale);
+    const float GetScale() const { return m_rZoom; }
     void SetScore(lmScore* pScore, bool fHidden = false);
     void HideScore(bool fHide);
 
@@ -104,7 +105,7 @@ private:
     // m_rScale         Is the scale in use 
     double          m_rBaseScale;
     double          m_rScale;       //presentation scale (default 1.0)
-    lmPaper         m_Paper;        //the lmPaper object to use
+    float           m_rZoom;                //zooming factor (default 1.0)
 
     //message management
     wxString        m_sMsg;                 // message to display. Line 1
@@ -113,9 +114,9 @@ private:
     lmLUnits        m_yMsg;                 // message position (microns)
     float           m_yScalingFactor;       // pixels per micron
 
-    //paper margins
-    float           m_rZoom;                //zooming factor (default 1.0)
-    lmLUnits        m_nTopMargin;
+    //paper
+    lmPaper         m_Paper;        //the lmPaper object to use
+    lmLUnits        m_nTopMargin;       //paper margins
     lmLUnits        m_nLeftMargin;
     lmLUnits        m_nRightMargin;
 

@@ -42,7 +42,7 @@
 
 
 
-class lmIdfyCadencesCtrol : public lmIdfyExerciseCtrol    
+class lmIdfyCadencesCtrol : public lmOneScoreCtrol    
 {
 public:
 

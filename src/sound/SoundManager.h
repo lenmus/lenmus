@@ -174,6 +174,8 @@ public:
                      long nMM,
                      wxWindow* pWindow );
 
+    void EndOfThread() { m_pThread = (lmSoundManagerThread*)NULL; }
+
 
 private:
     void SortByTime();

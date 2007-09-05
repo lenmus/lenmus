@@ -130,7 +130,7 @@ lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
     m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
                               lmToLogicalUnits(10, lmMILLIMETERS),
                               - lmToLogicalUnits(10, lmMILLIMETERS));
-    m_pScoreCtrol->SetScale((float)m_pOptions->rScale);
+    m_pScoreCtrol->SetScale( m_pScoreCtrol->GetScale() * (float)m_pOptions->rScale);
 
 
     //

@@ -39,7 +39,7 @@
 
 #include "Generators.h"
 #include "Constrains.h"
-#include "IdfyExerciseCtrol.h"
+#include "ExerciseCtrol.h"
 
 //    Major scales            Type
 //    ---------------------   ----
@@ -132,7 +132,7 @@ enum EScaleGroup
 };
 
 
-class lmScalesConstrains : public lmIdfyConstrains
+class lmScalesConstrains : public lmExerciseConstrains
 {
 public:
     lmScalesConstrains(wxString sSection);

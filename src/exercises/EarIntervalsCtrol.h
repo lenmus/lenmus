@@ -39,16 +39,10 @@
 
 #include "EarIntvalConstrains.h"
 #include "../score/Score.h"
-#include "ScoreAuxCtrol.h"
-#include "UrlAuxCtrol.h"
-#include "CountersCtrol.h"
 #include "../auxmusic/Interval.h"
 
 
-const int lmEAR_INVAL_NUM_BUTTONS = 25;               //buttons for answers
-
-
-class lmEarIntervalsCtrol : public wxWindow    
+class lmEarIntervalsCtrol : public lmOneScoreCtrol    
 {
    DECLARE_DYNAMIC_CLASS(lmEarIntervalsCtrol)
 
@@ -62,43 +56,32 @@ public:
 
     ~lmEarIntervalsCtrol();
 
-    // event handlers
-    void OnSize(wxSizeEvent& event);
-    void OnRespButton(wxCommandEvent& event);
-    void OnPlay(wxCommandEvent& event);
-    void OnNewProblem(wxCommandEvent& event);
-    void OnDisplaySolution(wxCommandEvent& event);
-    void OnSettingsButton(wxCommandEvent& event);
+    enum {
+        m_NUM_COLS = 5,
+        m_NUM_ROWS = 5,
+        m_NUM_BUTTONS = 25,     // NUM_COLS * NUM_ROWS;
+        m_ID_BUTTON = 3010,
+    };
 
-
-    // event handlers related to debugging
-    void OnDebugShowSourceScore(wxCommandEvent& event);
-    void OnDebugDumpScore(wxCommandEvent& event);
-    void OnDebugShowMidiEvents(wxCommandEvent& event);
-
-    // other methods
-    void SetUpButtons();
+protected:
+    //implementation of virtual methods
+    void InitializeStrings();
+    void CreateAnswerButtons();
+    void PrepareAuxScore(int nButton);
+    wxString SetNewProblem();    
+    wxDialog* GetSettingsDlg();
+    void ReconfigureButtons();
 
 private:
-    void Play();
-    void NewProblem();
-    void DisplaySolution();
-    void ResetExercise();
     void PrepareScore(wxString& sIntvCode, lmScore** pScore);
-    void DoStopSounds();
+
 
         // member variables
 
-    lmScore*        m_pScore;               // the score with the interval
-    lmScore*        m_pAuxScore;            //score to play user selected interval
     lmEarIntervalsConstrains* m_pConstrains;
-    bool            m_fProblemCreated;      //there is a problem prepared
-    int             m_nRespIndex;           //index to the button with the right answer
-    int             m_nRealIntval[lmEAR_INVAL_NUM_BUTTONS]; // intval. that corresponds
-                                                            // to each valid button
-    int             m_nValidIntervals;      // num of enabled buttons 
-    wxString        m_sAnswer;              //name of the interval
-    bool            m_fQuestionAsked;       //question asked but not yet answered
+    wxButton*   m_pAnswerButton[m_NUM_BUTTONS];
+    int         m_nValidIntervals;              // num of enabled buttons 
+    int         m_nRealIntval[m_NUM_BUTTONS];   // intval. associated to each valid button
 
     //problem asked
     wxString            m_sIntvCode;
@@ -106,15 +89,6 @@ private:
     bool                m_fHarmonic;
     EKeySignatures      m_nKey;
     lmNoteBits          m_tNote[2];
-
-    // controls on the window
-    wxButton*           m_pAnswerButton[lmEAR_INVAL_NUM_BUTTONS];
-    lmScoreAuxCtrol*    m_pScoreCtrol;
-    lmCountersCtrol*    m_pCounters;
-
-    lmUrlAuxCtrol*  m_pPlayButton;       // "play" button
-    lmUrlAuxCtrol*  m_pShowSolution;     // "show solution" button
-
 
     DECLARE_EVENT_TABLE()
 };

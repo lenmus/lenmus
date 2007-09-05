@@ -75,7 +75,12 @@ lmScoreAuxCtrol::lmScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScor
     SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
                lmToLogicalUnits(10, lmMILLIMETERS),
                lmToLogicalUnits(10, lmMILLIMETERS));    //right=1cm, left=1cm, top=1cm
-    SetScale(1.0);
+
+    // For exercises user can not change the scale. So to choose the score size I will
+    // maintain the proportions between text size and scores. As users normally adjust
+    // the OS font sizes to confortably read them, if we adjust staff sizes to text
+    // sizes we will get a good compromise solution.
+    SetScale( (float)GetCharHeight() / 10.0 );
 
     m_fHidden = false;
 
@@ -95,7 +100,7 @@ void lmScoreAuxCtrol::SetMargins(lmLUnits nLeft, lmLUnits nRight, lmLUnits nTop)
 
 void lmScoreAuxCtrol::SetScale(float rScale)
 {
-    //Scale is the zooming factor
+    //rScale is the zooming factor
     m_rZoom = rScale;
     m_rScale = rScale * lmSCALE;
     //wxLogMessage(_T("[lmScoreAuxCtrol::SetScale]rScale=%f, lmSCALE=%f, m_rScale=%f"), rScale, lmSCALE, m_rScale);
@@ -193,7 +198,7 @@ void lmScoreAuxCtrol::SetBaseScale()
                 wScreenPx, hScreenPx, wScreenMM, hScreenMM,
                 yCurPixelsPerLU,
                 25.4 * (double)wScreenPx / (double)sizePPI.GetWidth(), 25.4 * (double)hScreenPx / (double)sizePPI.GetHeight(),
-                (double)wScreenPx * (double)widthMM / (double)widthPx, (double)wScreenPx * (double)heightMM / (double)heightPx,
+                (double)wScreenPx * (double)widthMM / (double)widthPx, (double)hScreenPx * (double)heightMM / (double)heightPx,
                 wScreenMM, hScreenMM );
 }
 

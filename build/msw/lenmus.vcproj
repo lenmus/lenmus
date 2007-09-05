@@ -578,6 +578,9 @@
 				RelativePath="..\..\src\html\ContentsBoxCtrol.h">
 			</File>
 			<File
+				RelativePath="..\..\src\html\EarTunningCtrolParms.h">
+			</File>
+			<File
 				RelativePath="..\..\src\html\HelpController.cpp">
 			</File>
 			<File
@@ -681,6 +684,12 @@
 				RelativePath="..\..\src\exercises\EarIntvalConstrains.h">
 			</File>
 			<File
+				RelativePath="..\..\src\exercises\EarTunningCtrol.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\EarTunningCtrol.h">
+			</File>
+			<File
 				RelativePath="..\..\src\exercises\ExerciseCtrol.cpp">
 			</File>
 			<File
@@ -703,12 +712,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\IdfyChordCtrol.h">
-			</File>
-			<File
-				RelativePath="..\..\src\exercises\IdfyExerciseCtrol.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\exercises\IdfyExerciseCtrol.h">
 			</File>
 			<File
 				RelativePath="..\..\src\exercises\IdfyScalesCtrol.cpp">

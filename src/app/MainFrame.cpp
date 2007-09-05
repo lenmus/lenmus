@@ -376,7 +376,7 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     m_pHelp = (lmHelpController*) NULL;
     m_pBookController = (lmTextBookController*) NULL;
 	m_pTbTextBooks = (wxToolBar*) NULL;
-
+    m_pHtmlWin = (lmHtmlWindow*) NULL;
 
     // set the app icon
 	// All non-MSW platforms use a bitmap. MSW uses an .ico file

@@ -71,7 +71,7 @@ enum {
 };
 
 
-BEGIN_EVENT_TABLE(lmIdfyScalesCtrol, lmIdfyExerciseCtrol)
+BEGIN_EVENT_TABLE(lmIdfyScalesCtrol, lmOneScoreCtrol)
     EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmIdfyScalesCtrol::OnRespButton)
 END_EVENT_TABLE()
 
@@ -79,7 +79,7 @@ END_EVENT_TABLE()
 lmIdfyScalesCtrol::lmIdfyScalesCtrol(wxWindow* parent, wxWindowID id,
                            lmScalesConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
-    : lmIdfyExerciseCtrol(parent, id, pConstrains, wxSize(400, 150), pos, size, style )
+    : lmOneScoreCtrol(parent, id, pConstrains, wxSize(450, 150), pos, size, style )
 {
     //initializations
     m_pConstrains = pConstrains;
@@ -90,7 +90,7 @@ lmIdfyScalesCtrol::lmIdfyScalesCtrol(wxWindow* parent, wxWindowID id,
     m_fAscending = m_pConstrains->GetRandomPlayMode();
 
     CreateControls();
-    if (m_fTheoryMode) NewProblem();
+    if (m_pConstrains->IsTheoryMode()) NewProblem();
 }
 
 lmIdfyScalesCtrol::~lmIdfyScalesCtrol()
@@ -235,7 +235,7 @@ int lmIdfyScalesCtrol::ReconfigureGroup(int iBt, int iStartC, int iEndC, wxStrin
 
 wxDialog* lmIdfyScalesCtrol::GetSettingsDlg()
 {
-    wxDialog* pDlg = new lmDlgCfgIdfyScale(this, m_pConstrains, m_fTheoryMode);
+    wxDialog* pDlg = new lmDlgCfgIdfyScale(this, m_pConstrains, m_pConstrains->IsTheoryMode());
     return pDlg;
 }
 
@@ -283,7 +283,7 @@ wxString lmIdfyScalesCtrol::SetNewProblem()
     DisableGregorianMajorMinor(nScaleType);
 
     //return string to introduce the problem
-    if (m_fTheoryMode) {
+    if (m_pConstrains->IsTheoryMode()) {
         return _("Identify the next scale:");
     } else {
         //ear training

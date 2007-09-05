@@ -346,10 +346,11 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     m_pOptions->fMusicBorder = g_fBorderOnScores;                   //around score
 
     //set scale as a function of current font size
-    m_pOptions->rScale = g_pMainFrame->GetHtmlWindow()->GetScale() * 1.2;
-    int nHeight = (int)((double)m_nHeight * m_pOptions->rScale);
-    wxLogMessage(_T("[lmScoreCtrolParams::CreateHtmlCell] Char height = %d, rScale=%.4f"),
-        g_pMainFrame->GetHtmlWindow()->GetCharHeight(), m_pOptions->rScale);
+    float rTextScale = g_pMainFrame->GetHtmlWindow()->GetScale();
+    m_pOptions->rScale = rTextScale * 0.9;
+    int nHeight = (int)((double)m_nHeight * rTextScale);
+    wxLogMessage(_T("[lmScoreCtrolParams::CreateHtmlCell] Char height = %d, rTextScale=%.4f"),
+        g_pMainFrame->GetHtmlWindow()->GetCharHeight(), rTextScale);
 
     // create the lmScoreCtrol
     int nStyle = 0;

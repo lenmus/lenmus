@@ -255,10 +255,11 @@ P.TituloPagina {
 }
 
 IMG.figure {
+    display: block;
+    text-align: center;
     margin-top: 1em;
     margin-bottom: 0em;
     border: 1px #cccccc solid;
-    align: center;
 }
 
 DIV.rayaVertical {

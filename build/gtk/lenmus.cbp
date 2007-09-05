@@ -131,6 +131,8 @@
 		<Unit filename="../../src/exercises/EarIntervalsCtrol.h" />
 		<Unit filename="../../src/exercises/EarIntvalConstrains.cpp" />
 		<Unit filename="../../src/exercises/EarIntvalConstrains.h" />
+		<Unit filename="../../src/exercises/EarTunningCtrol.cpp" />
+		<Unit filename="../../src/exercises/EarTunningCtrol.h" />
 		<Unit filename="../../src/exercises/ExerciseCtrol.cpp" />
 		<Unit filename="../../src/exercises/ExerciseCtrol.h" />
 		<Unit filename="../../src/exercises/Generators.cpp" />

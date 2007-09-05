@@ -39,7 +39,7 @@
 
 #include "Generators.h"
 #include "Constrains.h"
-#include "IdfyExerciseCtrol.h"
+#include "ExerciseCtrol.h"
 
 // Cadences
 // --------
@@ -159,7 +159,7 @@ enum lmECadenceButtons
 };
 
 
-class lmCadencesConstrains : public lmIdfyConstrains
+class lmCadencesConstrains : public lmExerciseConstrains
 {
 public:
     lmCadencesConstrains(wxString sSection);

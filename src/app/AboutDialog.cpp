@@ -50,6 +50,12 @@ extern bool g_fReleaseBehaviour;    // This flag is only used to force release b
 
 #include "TheApp.h"         //to get access to locale info.
 
+// To get char and scale info
+#include "../app/MainFrame.h"
+extern lmMainFrame* g_pMainFrame;
+
+#include "../html/HtmlWindow.h"
+
 
 BEGIN_EVENT_TABLE(lmAboutDialog, wxDialog)
     EVT_BUTTON( XRCID( "btnAccept" ), lmAboutDialog::OnAccept )
@@ -268,6 +274,25 @@ reliability and stability.") +
 
 void lmAboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
 {
+    // Get screen information
+    wxScreenDC dc;
+    wxSize ppiScreen = dc.GetPPI();     //logical pixels per inch of screen
+    wxString sScreenPPI = wxString::Format(_T("PPI: (x=%d, y=%d), Char size (px): (w=%d, h=%d)"),
+                            ppiScreen.GetWidth(), ppiScreen.GetHeight(),
+                            dc.GetCharWidth(), dc.GetCharHeight() );
+
+    //get info about font size
+    wxString sFontInfo = _T("No window available");
+    lmHtmlWindow* pHtmlWnd = g_pMainFrame->GetHtmlWindow();
+    if (pHtmlWnd) {
+        double rHtmlWinScale = pHtmlWnd->GetScale();
+        int nCharWidth = pHtmlWnd->GetCharWidth();
+        int nCharHeight = pHtmlWnd->GetCharHeight();
+        sFontInfo = wxString::Format(_T("Char size (px): (w=%d, h=%d), rScale=%.4f"),
+                        nCharWidth, nCharHeight, rHtmlWinScale );
+    }
+
+    //Prepare build info message
     wxString sContent = m_sHeader +
         _T("<center>")
         _T("<h3>") + _("Build information") + _T("</h3></center><p>") +
@@ -275,10 +300,15 @@ void lmAboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
         _T(" ") __TDATE__ _T("<br>") +
         wxVERSION_STRING + _T("<br>") +
         _("wxMidi Version ") + wxMIDI_VERSION + _T("<br><br><br>") +
-        _("Charset encoding: ") + wxLocale::GetSystemEncodingName() + _T("<br>") +
-        _("System locale name: ") + wxGetApp().GetLocaleSysName() + _T("<br>") +
-        _("Canonical locale name: ") + wxGetApp().GetLanguageCanonicalName() +
+        _("Equipment information:") +
+        _T("<br>Charset encoding: ") + wxLocale::GetSystemEncodingName() + 
+        _T("<br>System locale name: ") + wxGetApp().GetLocaleSysName() + 
+        _T("<br>Canonical locale name: ") + wxGetApp().GetLanguageCanonicalName() + 
+        _T("<br><br>Display: ") + sScreenPPI + 
+        _T("<br>eBook window: ") + sFontInfo + 
         _T("<br></body></html>");
+
+
 
         m_pHtmlWindow->SetPage(sContent);
 

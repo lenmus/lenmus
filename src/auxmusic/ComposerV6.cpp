@@ -1396,10 +1396,10 @@ void lmComposer6::AssignNonChordNotes(int nNumNotes, lmNote* pOnChord1, lmNote* 
     // Compute inteval formed by on-chord notes
     lmAPitch ap1 = pOnChord1->GetAPitch();
     lmAPitch ap2 = pOnChord2->GetAPitch();
-    lmFPitch fp1 = FPitch(ap1);
-    lmFPitch fp2 = FPitch(ap2);
+    //lmFPitch fp1 = FPitch(ap1);
+    //lmFPitch fp2 = FPitch(ap2);
     int nDIntval = ap2.ToDPitch() - ap1.ToDPitch();
-    int nFIntval = abs(fp2 - fp1);
+    //int nFIntval = abs(fp2 - fp1);
     int nAbsIntval = abs(nDIntval) + 1;
 
     //Choose non-chord notes type depending on interval formed by on-chord notes
@@ -1500,8 +1500,8 @@ void lmComposer6::NeightboringNotes(int nNumNotes, lmNote* pOnChord1, lmNote* pO
     // Receives the two on-chord notes and the non-chord notes between them, and assign
     // the pitch to all notes. The number of non-chord notes received is in 'nNumNotes'
 
-    wxASSERT(nNumNotes > 0 && nNumNotes < 4);
-    // 1, 2 or 3 neightboring notes
+    //wxASSERT(nNumNotes > 0 && nNumNotes < 4);
+    //// 1, 2 or 3 neightboring notes
 
     bool fUpStep = lmRandomGenerator::FlipCoin();
     lmAPitch ap = pOnChord1->GetAPitch();

@@ -187,7 +187,6 @@ lmTheoMusicReadingCtrol::lmTheoMusicReadingCtrol(wxWindow* parent, wxWindowID id
     m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
                               lmToLogicalUnits(10, lmMILLIMETERS),
                               lmToLogicalUnits(10, lmMILLIMETERS));        //right=1cm, left=1cm, top=1cm
-    m_pScoreCtrol->SetScale((float)1.3);
     pScoreSizer->Add(
         m_pScoreCtrol,
         wxSizerFlags(1).Left().Border(0, 5));

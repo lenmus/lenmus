@@ -41,7 +41,7 @@
 #include "../score/Score.h"
 
 
-class lmTheoIntervalsCtrol :    public lmIdfyExerciseCtrol        
+class lmTheoIntervalsCtrol : public lmOneScoreCtrol        
 {
 public:
 

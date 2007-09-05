@@ -78,7 +78,7 @@ static const lmScaleInfo tData[est_Max] = {
     { 7, { lm_m3,lm_M2,lm_m2,lm_m2,lm_m3,lm_M2} },          //Blues,
         // Non-tonal scales
     { 7, { lm_M2,lm_M2,lm_M2,lm_M2,lm_M2,lm_M2} },          //WholeTones,
-    {12, { lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s} },       //Chromatic,
+    {13, { lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s,lm_1s} },       //Chromatic,
 };
 
 

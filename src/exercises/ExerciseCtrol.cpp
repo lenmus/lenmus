@@ -49,6 +49,8 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 extern bool g_fShowDebugLinks;          // in TheApp.cpp
 extern bool g_fAutoNewProblem;          // in Preferences.cpp
 
+//access to MIDI manager to play MIDI sounds
+#include "../sound/MidiManager.h"
 
 
 //--------------------------------------------------------------------------------
@@ -252,25 +254,10 @@ void lmExerciseCtrol::CreateControls()
 
 lmExerciseCtrol::~lmExerciseCtrol()
 {
-    //stop any possible chord being played
-    StopSounds();
-
     //delete objects
     if (m_pConstrains) {
         delete m_pConstrains;
         m_pConstrains = (lmExerciseConstrains*) NULL;
-    }
-    DeleteScores();
-}
-
-void lmExerciseCtrol::DisplayMessage(wxString& sMsg, bool fClearDisplay)
-{
-    if (m_pDisplayCtrol->IsKindOf(CLASSINFO(lmScoreAuxCtrol))) {
-        ((lmScoreAuxCtrol*)m_pDisplayCtrol)->DisplayMessage(
-                sMsg, lmToLogicalUnits(5, lmMILLIMETERS), fClearDisplay);
-    }
-    else {
-        ((wxTextCtrl*)m_pDisplayCtrol)->ChangeValue(sMsg);
     }
 }
 
@@ -361,16 +348,9 @@ void lmExerciseCtrol::OnRespButton(wxCommandEvent& event)
         }
     }
     else {
-        //TODO
-        //// No problem presented. The user press the button to play a specific 
-        //// sound (chord, interval, scale, etc.)
-
-        ////prepare the score with the requested sound and play it
-        //PrepareAuxScore(nIndex);
-        //if (m_pAuxScore) {
-        //    m_pAuxScore->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
-        //                        ePM_NormalInstrument, 320, (wxWindow*) NULL);
-        //}
+        // No problem presented. The user press the button to play a specific 
+        // sound (chord, interval, scale, etc.)
+        PlaySpecificSound(nIndex);
     }
 
 }
@@ -415,15 +395,8 @@ void lmExerciseCtrol::ResetExercise()
     StopSounds();
 
     //clear the display ctrol
-    if (m_pDisplayCtrol->IsKindOf(CLASSINFO(lmScoreAuxCtrol)))
-    {
-        ((lmScoreAuxCtrol*)m_pDisplayCtrol)->DisplayMessage(_T(""), 0, true);     //true: clear the canvas
-        ((lmScoreAuxCtrol*)m_pDisplayCtrol)->Update();    //to force to clear it now
-    }
-    else {
-        ((wxTextCtrl*)m_pDisplayCtrol)->ChangeValue(_T(""));
-    }
-
+    wxString sMsg = _T("");
+    DisplayMessage(sMsg, true);   //true: clear the display ctrol
 
     // restore buttons' normal color
     for (int iB=0; iB < m_nNumButtons; iB++) {
@@ -549,6 +522,9 @@ lmCompareScoresCtrol::lmCompareScoresCtrol(wxWindow* parent, wxWindowID id,
 
 lmCompareScoresCtrol::~lmCompareScoresCtrol()
 {
+    StopSounds();
+    DeleteScores();
+    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->SetScore((lmScore*)NULL);
 }
 
 wxWindow* lmCompareScoresCtrol::CreateDisplayCtrol()
@@ -559,8 +535,6 @@ wxWindow* lmCompareScoresCtrol::CreateDisplayCtrol()
     pScoreCtrol->SetMargins(lmToLogicalUnits(5, lmMILLIMETERS),      //left=1cm
                             lmToLogicalUnits(5, lmMILLIMETERS),      //right=1cm
                             lmToLogicalUnits(10, lmMILLIMETERS));     //top=1cm
-
-    pScoreCtrol->SetScale((float)1.3);
     return pScoreCtrol;
 }
 
@@ -718,6 +692,12 @@ void lmCompareScoresCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
     ((lmScoreAuxCtrol*)m_pDisplayCtrol)->DumpMidiEvents();
 }
 
+void lmCompareScoresCtrol::DisplayMessage(wxString& sMsg, bool fClearDisplay)
+{
+    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->DisplayMessage(
+            sMsg, lmToLogicalUnits(5, lmMILLIMETERS), fClearDisplay);
+}
+
 
 
 
@@ -750,6 +730,9 @@ lmOneScoreCtrol::lmOneScoreCtrol(wxWindow* parent, wxWindowID id,
 
 lmOneScoreCtrol::~lmOneScoreCtrol()
 {
+    StopSounds();
+    DeleteScores();
+    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->SetScore((lmScore*)NULL);
 }
 
 wxWindow* lmOneScoreCtrol::CreateDisplayCtrol()
@@ -757,11 +740,9 @@ wxWindow* lmOneScoreCtrol::CreateDisplayCtrol()
     // Using scores and ScoreAuxCtrol
     lmScoreAuxCtrol* pScoreCtrol = new lmScoreAuxCtrol(this, -1, (lmScore*)NULL, wxDefaultPosition,
                                         m_nDisplaySize, eSIMPLE_BORDER);
-    pScoreCtrol->SetMargins(lmToLogicalUnits(5, lmMILLIMETERS),      //left=1cm
-                            lmToLogicalUnits(5, lmMILLIMETERS),      //right=1cm
-                            lmToLogicalUnits(10, lmMILLIMETERS));     //top=1cm
-
-    pScoreCtrol->SetScale((float)1.3);
+    pScoreCtrol->SetMargins(lmToLogicalUnits(5, lmMILLIMETERS),     //left
+                            lmToLogicalUnits(5, lmMILLIMETERS),     //right
+                            lmToLogicalUnits(10, lmMILLIMETERS));   //top
     return pScoreCtrol;
 }
 
@@ -793,6 +774,24 @@ void lmOneScoreCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
 {
     m_pPlayButton->SetLabel(_("Play"));
     m_fPlaying = false;
+}
+
+void lmOneScoreCtrol::PlaySpecificSound(int nButton)
+{
+    StopSounds();
+
+    //delete any previous score
+    if (m_pAuxScore) {
+        delete m_pAuxScore;
+        m_pAuxScore = (lmScore*)NULL;
+    }
+
+    //prepare the score with the requested sound and play it
+    PrepareAuxScore(nButton);
+    if (m_pAuxScore) {
+        m_pAuxScore->Play(lmNO_VISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
+                            ePM_NormalInstrument, m_nPlayMM, (wxWindow*) NULL);
+    }
 }
 
 void lmOneScoreCtrol::DisplaySolution()
@@ -866,23 +865,138 @@ void lmOneScoreCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
     ((lmScoreAuxCtrol*)m_pDisplayCtrol)->DumpMidiEvents();
 }
 
+void lmOneScoreCtrol::DisplayMessage(wxString& sMsg, bool fClearDisplay)
+{
+    ((lmScoreAuxCtrol*)m_pDisplayCtrol)->DisplayMessage(
+            sMsg, lmToLogicalUnits(5, lmMILLIMETERS), fClearDisplay);
+}
 
 
-//MIDI cuts =========================================================================
+//------------------------------------------------------------------------------------
+// Implementation of lmCompareMidiCtrol
+//  An ExerciseCtrol without scores. It uses MIDI pitches for the problem and 
+//  the solution.
+//------------------------------------------------------------------------------------
 
-//constructor
-//    //MIDI case
-//    m_mpPitch[0] = m_mpPitch[1] = -1;
-//    m_pMessagesCtrol = (wxTextCtrl*)NULL;
-//    m_nTimeIntval = 500;        //500 ms between first and second pitch
-//    m_fStopFirst = false;       // do not stop first sound when sounding the second pitch
-//    m_nTimeSecond = 2000;       // stop all sounds after 2s from start of second pitch
+IMPLEMENT_CLASS(lmCompareMidiCtrol, lmCompareCtrol)
 
-//wxWindow* lmCompareMidiCtrol::CreateDisplayCtrol()
-//{
-//    // Using MIDI Pitches and Static Text box
-//    return new wxTextCtrl(this, -1, _T(""), wxDefaultPosition,
-//                          m_nDisplaySize, wxSIMPLE_BORDER | wxTE_MULTILINE);
-//
-//}
+BEGIN_EVENT_TABLE(lmCompareMidiCtrol, lmCompareCtrol)
+    EVT_TIMER           (wxID_ANY, lmCompareMidiCtrol::OnTimerEvent)
+END_EVENT_TABLE()
 
+lmCompareMidiCtrol::lmCompareMidiCtrol(wxWindow* parent, wxWindowID id,
+               lmExerciseConstrains* pConstrains, wxSize nDisplaySize, 
+               const wxPoint& pos, const wxSize& size, int style)
+    : lmCompareCtrol(parent, id, pConstrains, nDisplaySize, pos, size, style )
+{
+    //initializations
+    m_oTimer.SetOwner( this, wxID_ANY );    //needed to receive the timer events
+
+    m_mpPitch[0] = m_mpPitch[1] = -1;
+    m_nTimeIntval[0] = 500;     //500 ms between first and second pitch
+    m_nTimeIntval[1] = 2000;    //stop all sounds after 2s from start of second pitch
+    m_fStopPrev = false;        //do not stop first sound when sounding the second pitch
+    m_nNowPlaying = -1;
+
+    //default channels and instruments
+    m_nChannel[0] = m_nChannel[1] = g_pMidi->DefaultVoiceChannel();
+    m_nInstr[0] = m_nInstr[1] = g_pMidi->DefaultVoiceInstr();
+
+}
+
+lmCompareMidiCtrol::~lmCompareMidiCtrol()
+{
+    StopSounds();
+}
+
+wxWindow* lmCompareMidiCtrol::CreateDisplayCtrol()
+{
+    // Using MIDI Pitches and Static Text box
+    return new wxStaticText(this, -1, _T(""), wxDefaultPosition,
+                          m_nDisplaySize, 
+                          wxSIMPLE_BORDER | wxST_NO_AUTORESIZE );
+
+}
+
+void lmCompareMidiCtrol::Play()
+{
+    //wxLogMessage(_T("[lmCompareMidiCtrol::Play] m_nNowPlaying=%d"), m_nNowPlaying);
+    if (m_nNowPlaying == -1)
+    {
+        // Starting to play
+
+        //change link from "Play" to "Stop"
+        m_pPlayButton->SetLabel(_("Stop"));
+
+        //AWARE: The link label is restored to "Play" when the OnTimerEvent() event is
+        //       received. Flag m_fPlaying is also reset there
+
+        if (m_fQuestionAsked)
+        {
+            //Introducing the problem. Play the first sound
+            PlaySound(0);
+            //AWARE: method OnTimerEvent() will handle the event and play the 
+            //next sound.
+        }
+    }
+    else {
+        // "Stop" button pressed
+        m_oTimer.Stop();
+        m_nNowPlaying = -1;
+        m_pPlayButton->SetLabel(_("Play"));
+        StopSounds();
+    }
+
+}
+
+void lmCompareMidiCtrol::PlaySound(int iSound)
+{
+    //wxLogMessage(_T("[lmCompareMidiCtrol::PlaySound] iSound=%d"), iSound);
+    m_nNowPlaying = iSound;
+    g_pMidiOut->NoteOn(m_nChannel[iSound], m_mpPitch[iSound], 127);
+    m_oTimer.Start(m_nTimeIntval[iSound], wxTIMER_ONE_SHOT);
+}
+
+void lmCompareMidiCtrol::DisplaySolution()
+{
+    DisplayMessage(m_sAnswer, true);
+}
+
+
+void lmCompareMidiCtrol::DisplayProblem()
+{
+    Play();
+}
+
+void lmCompareMidiCtrol::StopSounds()
+{
+    g_pMidiOut->AllSoundsOff();
+}
+
+void lmCompareMidiCtrol::DisplayMessage(wxString& sMsg, bool fClearDisplay)
+{
+    ((wxStaticText*)m_pDisplayCtrol)->SetLabel(sMsg);
+}
+
+void lmCompareMidiCtrol::OnTimerEvent(wxTimerEvent& WXUNUSED(event))
+{
+    //wxLogMessage(_T("[lmCompareMidiCtrol::OnTimerEvent] m_nNowPlaying=%d"), m_nNowPlaying);
+    m_oTimer.Stop();
+    if (m_nNowPlaying == -1) return;
+    
+    if (m_nNowPlaying == 0)
+    {   
+        //play next sound
+        //wxLogMessage(_T("Timer event: play(1)"));
+        if (m_fStopPrev)
+            g_pMidiOut->NoteOff(m_nChannel[m_nNowPlaying], m_mpPitch[m_nNowPlaying], 127);
+        PlaySound(++m_nNowPlaying);
+    }
+    else
+    {
+        //wxLogMessage(_T("Timer event: play stopped"));
+        m_nNowPlaying = -1;
+        StopSounds();
+        m_pPlayButton->SetLabel(_("Play"));
+    }
+}

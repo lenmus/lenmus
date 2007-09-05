@@ -171,7 +171,6 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
     m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),      //left=1cm
                               lmToLogicalUnits(10, lmMILLIMETERS),      //right=1cm
                               lmToLogicalUnits(10, lmMILLIMETERS));     //top=1cm
-    m_pScoreCtrol->SetScale((float)1.3);
 
     // right/wrong answers counters control
     m_pCounters = new lmCountersCtrol(this, wxID_ANY);

@@ -1,0 +1,71 @@
+<!-- =============================================== -->
+<!-- eMusicBook: Theory and harmony                  -->
+<!-- =============================================== -->
+<content>
+
+<theme id="cad_review">
+<title>Exercises on cadences</title>
+
+<para>
+Once reviewed all cadence types it is important to practise to recognize and identify them. A useful trick is to associate each cadence to a melody or song you remember well. Practise to recognise cadences while you listen to music.
+</para>
+
+<para>
+In this theme we just propose you some additional exercises to identify cadences, both aurally and in written music.</para>
+
+
+<part>
+<title>Exercises</title>
+
+<para>
+<link linkend="cad_review_E1">Exercise 1</link> - Aural training: identify the type of cadence: perfect, imperfect, plagal, half or deceptive.</para>
+
+<para>
+<link linkend="cad_review_E2">Exercise 2</link> - Theory: identify the type of cadence: perfect, imperfect, plagal, half or deceptive.</para>
+
+</part>
+
+</theme>
+
+<!-- ====================== -->
+<!-- Exercise 1  -->
+<!-- ====================== -->
+
+<theme id="cad_review_E1" toc="no">
+<titleabbrev>All cadences</titleabbrev>
+<title>All cadences</title>
+
+<para>Aural training: identify the type of cadence.</para>
+
+<exercise type="IdfyCadences" width="100%" height="300" border="0">
+    <control_go_back>cad_review</control_go_back>
+    <cadences>all</cadences>
+    <cadence_buttons>half,deceptive,perfect,plagal,imperfect</cadence_buttons>
+    <keys>Do,Re,Mi,Fa,Sol,La,Si,Dom,Rem,Mim,Fam,Solm,Lam,Sim</keys>
+    <mode>earTraining</mode>
+</exercise>
+
+</theme>
+
+
+<!-- ====================== -->
+<!-- Exercise 2  -->
+<!-- ====================== -->
+
+<theme id="cad_review_E2" toc="no">
+<titleabbrev>All cadences</titleabbrev>
+<title>All cadences</title>
+
+<para>Theory: identify the type of cadence.</para>
+
+<exercise type="IdfyCadences" width="100%" height="300" border="0">
+    <control_go_back>cad_review</control_go_back>
+    <cadences>all</cadences>
+    <cadence_buttons>half,deceptive,perfect,plagal,imperfect</cadence_buttons>
+    <keys>Do,Re,Mi,Fa,Sol,La,Si,Dom,Rem,Mim,Fam,Solm,Lam,Sim</keys>
+    <mode>theory</mode>
+</exercise>
+
+</theme>
+
+</content>

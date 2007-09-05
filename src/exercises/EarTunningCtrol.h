@@ -37,11 +37,9 @@
 #include "wx/wx.h"
 #endif
 
-#include "EarIntvalConstrains.h"
+//#include "EarTunningConstrains.h"
+#include "ExerciseCtrol.h"
 #include "../score/Score.h"
-#include "ScoreAuxCtrol.h"
-#include "UrlAuxCtrol.h"
-#include "CountersCtrol.h"
 
 //--------------------------------------------------------------------------------
 // class for the exercise of un-tunned pitches
@@ -55,40 +53,18 @@ public:
 
     // constructor and destructor    
     lmEarTunningCtrol(wxWindow* parent, wxWindowID id,
-               lmEarIntervalsConstrains* pConstrains, 
+               lmExerciseConstrains* pConstrains, 
                const wxPoint& pos = wxDefaultPosition, 
                const wxSize& size = wxDefaultSize, int style = 0);
 
     ~lmEarTunningCtrol();
 
-    // event handlers
-    void OnSize(wxSizeEvent& event);
-    void OnRespButton(wxCommandEvent& event);
-    void OnPlay(wxCommandEvent& event);
-    void OnNewProblem(wxCommandEvent& event);
-    void OnResetCounters(wxCommandEvent& event);
-    void OnDisplaySolution(wxCommandEvent& event);
-    void OnSettingsButton(wxCommandEvent& event);
-
-    // event handlers related to debugging
-    void OnDebugShowSourceScore(wxCommandEvent& event);
-    void OnDebugDumpScore(wxCommandEvent& event);
-    void OnDebugShowMidiEvents(wxCommandEvent& event);
-
-    // event handlers related with playing a score
-    void OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event));
-    void OnTimerEvent(wxTimerEvent& WXUNUSED(event));
-
+protected:
+    //implementation of virtual methods
+    wxString SetNewProblem();
+    wxDialog* GetSettingsDlg();
 
 private:
-    void EnableButtons(bool fEnable);
-    void Play();
-    void PlayInterval(int nIntv);
-    void NewProblem();
-    void DisplaySolution();
-    void ResetExercise();
-    void ResetCounters();
-    void DoStopSounds();
 
         // member variables
 

@@ -78,7 +78,7 @@ enum {
 };
 
 
-BEGIN_EVENT_TABLE(lmTheoIntervalsCtrol, lmIdfyExerciseCtrol)
+BEGIN_EVENT_TABLE(lmTheoIntervalsCtrol, lmOneScoreCtrol)
     EVT_COMMAND_RANGE (ID_BUTTON, ID_BUTTON+m_NUM_BUTTONS-1, wxEVT_COMMAND_BUTTON_CLICKED, lmTheoIntervalsCtrol::OnRespButton)
 END_EVENT_TABLE()
 
@@ -87,14 +87,14 @@ END_EVENT_TABLE()
 lmTheoIntervalsCtrol::lmTheoIntervalsCtrol(wxWindow* parent, wxWindowID id, 
                            lmTheoIntervalsConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
-    : lmIdfyExerciseCtrol(parent, id, pConstrains, wxSize(380, 150), pos, size, style )
+    : lmOneScoreCtrol(parent, id, pConstrains, wxSize(380, 150), pos, size, style )
 {
     //initializations
     m_pConstrains = pConstrains;
     m_nRespIndex = 0;
 
     CreateControls();
-    if (m_fTheoryMode) NewProblem();
+    if (m_pConstrains->IsTheoryMode()) NewProblem();
 
 }
 

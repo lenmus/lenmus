@@ -39,7 +39,7 @@
 
 #include "../score/Score.h"
 #include "Constrains.h"
-#include "IdfyExerciseCtrol.h"
+#include "ExerciseCtrol.h"
 
 
 enum EProblemTheoIntervals
@@ -50,7 +50,7 @@ enum EProblemTheoIntervals
 };
 
 
-class lmTheoIntervalsConstrains: public lmIdfyConstrains
+class lmTheoIntervalsConstrains: public lmExerciseConstrains
 {
 public:
     lmTheoIntervalsConstrains(wxString sSection);

@@ -147,8 +147,6 @@ lmSoundManager::~lmSoundManager()
     //if the play thread exists, delete it
     if (m_pThread) {
         m_pThread->Delete();
-        //m_pThread->Wait();
-        delete m_pThread;
         m_pThread = (lmSoundManagerThread*)NULL;
     }
 
@@ -422,8 +420,6 @@ void lmSoundManager::PlaySegment(int nEvStart, int nEvEnd,
         else {
             // It must be an old thread. Delete it
             m_pThread->Delete();
-            //m_pThread->Wait();
-            delete m_pThread;
             m_pThread = (lmSoundManagerThread*)NULL;
         }
     }
@@ -438,7 +434,6 @@ void lmSoundManager::PlaySegment(int nEvStart, int nEvEnd,
         wxMessageBox(_("Can't create a thread!"));
 
         m_pThread->Delete();    //to free the memory occupied by the thread object
-        delete m_pThread;
         m_pThread = (lmSoundManagerThread*) NULL;
         return;
     }
@@ -451,7 +446,6 @@ void lmSoundManager::PlaySegment(int nEvStart, int nEvEnd,
         wxMessageBox(_("Can't start the thread!"));
 
         m_pThread->Delete();    //to free the memory occupied by the thread object
-        delete m_pThread;
         m_pThread = (lmSoundManagerThread*) NULL;
         return;
    }
@@ -463,8 +457,6 @@ void lmSoundManager::Stop()
     if (!m_pThread) return;
 
     m_pThread->Delete();    //request the tread to terminate
-    //m_pThread->Wait();
-    delete m_pThread;
     m_pThread = (lmSoundManagerThread*)NULL;
 
 }
@@ -485,8 +477,7 @@ void lmSoundManager::WaitForTermination()
 
     if (!m_pThread) return;
 
-    m_pThread->Wait();
-    delete m_pThread;
+    m_pThread->Delete();
     m_pThread = (lmSoundManagerThread*)NULL;
 
 }
@@ -862,7 +853,7 @@ lmSoundManagerThread::lmSoundManagerThread(lmSoundManager* pSM,
                                        bool fMarcarUnCompasPrevio,
                                        long nMM,
                                        wxWindow* pWindow )
-    : wxThread(wxTHREAD_JOINABLE)
+    : wxThread(wxTHREAD_DETACHED)
 {
     m_pSM = pSM;
     m_nEvStart = nEvStart;
@@ -876,6 +867,7 @@ lmSoundManagerThread::lmSoundManagerThread(lmSoundManager* pSM,
 
 lmSoundManagerThread::~lmSoundManagerThread()
 {
+    m_pSM->EndOfThread();
 }
 
 void* lmSoundManagerThread::Entry()
