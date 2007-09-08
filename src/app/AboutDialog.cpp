@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "AboutDlg.h"
 #endif
 
@@ -34,8 +34,8 @@
 #include "wx/wx.h"
 #endif
 
-#include <wx/dialog.h>
-#include <wx/button.h>
+#include "wx/dialog.h"
+#include "wx/button.h"
 #include "wx/xrc/xmlres.h"
 
 #include "AboutDialog.h"

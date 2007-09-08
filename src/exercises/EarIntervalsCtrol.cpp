@@ -47,9 +47,6 @@
 
 
 
-//Layout definitions
-const int BUTTONS_DISTANCE = 5;        //pixels
-
 static wxString m_sButtonLabel[lmEarIntervalsCtrol::m_NUM_BUTTONS];
 
 
@@ -118,7 +115,7 @@ void lmEarIntervalsCtrol::InitializeStrings()
 
 }
 
-void lmEarIntervalsCtrol::CreateAnswerButtons()
+void lmEarIntervalsCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)
 {
     //create up to 25 buttons for the answers: five rows, five buttons per row
     //Buttons are created disabled and no visible
@@ -127,10 +124,10 @@ void lmEarIntervalsCtrol::CreateAnswerButtons()
     for (iB=0; iB < m_NUM_BUTTONS; iB++)
         m_pAnswerButton[iB] = (wxButton*)NULL;
 
-    m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS, m_NUM_COLS, 10, 0);
+    m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS, m_NUM_COLS, 2*nSpacing, 0);
     m_pMainSizer->Add(
         m_pKeyboardSizer,
-        wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 10) );
+        wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 2*nSpacing) );
 
     for (int iRow=0; iRow < m_NUM_ROWS; iRow++)
     {
@@ -138,10 +135,11 @@ void lmEarIntervalsCtrol::CreateAnswerButtons()
         {
             int iB = iCol + iRow * m_NUM_COLS;    // button index: 0 .. 24         
             m_pAnswerButton[iB] = new wxButton( this, m_ID_BUTTON + iB, _T("Undefined"),
-                wxDefaultPosition, wxSize(130, 24));
+                wxDefaultPosition, wxSize(26*nSpacing, nHeight));
+            m_pAnswerButton[iB]->SetFont(font);
             m_pKeyboardSizer->Add(
                 m_pAnswerButton[iB],
-                wxSizerFlags(0).Border(wxRIGHT, BUTTONS_DISTANCE) );
+                wxSizerFlags(0).Border(wxRIGHT, nSpacing) );
         }
     }
 
@@ -321,11 +319,11 @@ void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
     lmLDPParser parserLDP;
     lmLDPNode* pNode;
     *pScore = new lmScore();
-    (*pScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
     (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
     (*pScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
 							 g_pMidi->DefaultVoiceInstr(), _T(""));
     lmVStaff *pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
+    (*pScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddClef( eclvSol );
     pVStaff->AddKeySignature(m_nKey);
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );

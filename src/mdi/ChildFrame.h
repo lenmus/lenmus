@@ -98,6 +98,16 @@ public:
     void SetMDIParentFrame(lmMDIParentFrame* parentFrame);
     lmMDIParentFrame* GetMDIParentFrame() const;
 
+	//New mthods not in wxMDIChildFrame --------------------------
+	
+	// methods to deal with zooming
+	virtual	double GetActiveViewScale() { return 1.0; }
+	virtual bool SetActiveViewScale(double rScale) { return false; }
+
+	// call back from lmMDIClientWindow::PageChanged
+	virtual void OnChildFrameActivated() {}
+
+
 protected:
     lmMDIParentFrame *m_pMDIParentFrame;
     wxRect            m_MDIRect;

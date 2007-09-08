@@ -219,10 +219,10 @@ lmScore* lmComposer6::GenerateScore(lmScoreConstrains* pConstrains)
     lmLDPParser parserLDP(_T("es"), _T("utf-8"));
     lmLDPNode* pNode;
     lmScore* pScore = new lmScore();
-    pScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );            //5mm
     pScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
    						  g_pMidi->DefaultVoiceInstr(), _T(""));
     lmVStaff *pVStaff = pScore->GetVStaff(1, 1);   //get first vstaff of instr.1
+    pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddClef( m_nClef );
     pVStaff->AddKeySignature( m_nKey );
 #if 0   //useful for debugging and to generate scores with a chosen rhythm line to write documentation

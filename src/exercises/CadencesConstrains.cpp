@@ -60,9 +60,6 @@ lmCadencesConstrains::lmCadencesConstrains(wxString sSection)
         m_fValidButtons[i] = (i < 2);
     }
 
-    // Use grand staff. Default: true
-    m_fGrandStaff = true;
-
     // how to display key. Default: play tonic chord
     m_nKeyDisplayMode = 1;
 
@@ -98,10 +95,6 @@ void lmCadencesConstrains::SaveSettings()
             m_sSection.c_str(), i );
         g_pPrefs->Write(sKey, m_fValidButtons[i]);
     }
-
-    // some options flags
-    sKey = _T("/Constrains/IdfyCadence/%s/UseGrandStaff");
-    g_pPrefs->Write(sKey, m_fGrandStaff);
 
     // how to display key
     sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/DisplayKeyMode"), m_sSection.c_str());
@@ -139,10 +132,6 @@ void lmCadencesConstrains::LoadSettings()
             m_sSection.c_str(), i );
         g_pPrefs->Read(sKey, &m_fValidButtons[i], (bool)(i < 2) );
     }
-
-    // some options flags
-    sKey = _T("/Constrains/IdfyCadence/%s/UseGrandStaff");
-    g_pPrefs->Read(sKey, &m_fGrandStaff, true );
 
     // how to display key. Default: play tonic chord
     sKey = wxString::Format(_T("/Constrains/IdfyCadence/%s/DisplayKeyMode"), m_sSection.c_str());

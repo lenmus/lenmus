@@ -47,8 +47,8 @@ class lmCountersCtrol : public wxWindow
 public:
 
     // constructor and destructor    
-    lmCountersCtrol(wxWindow* parent, wxWindowID id,
-               const wxPoint& pos = wxDefaultPosition);
+    lmCountersCtrol(wxWindow* parent, wxWindowID id, double rScale,
+                    const wxPoint& pos = wxDefaultPosition);
 
     ~lmCountersCtrol();
 
@@ -80,7 +80,10 @@ private:
     //teams
     int         m_nMaxTeam;             //num of teams (1..2)
     int         m_nCurrentTeam;         //team currently playing (0..1)
-    bool        fStart;                 //to ensure that first time we start with first team
+    bool        m_fStart;               //to ensure that first time we start with first team
+
+    // other
+    double      m_rScale;               //current scaling factor
 
     DECLARE_EVENT_TABLE()
 };

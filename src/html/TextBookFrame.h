@@ -166,13 +166,19 @@ public:
     void RefreshLists();        // to update content
     void RefreshContent();      // just refresh window
 
-    //CSG Added
+	//From here CSG added -------------------------------------
+
+	//event handlers
     void OnToolbar(wxCommandEvent& event);
-    bool IsNavPanelVisible() { return m_Cfg.navig_on; }
     void UpdateUIEvent(wxUpdateUIEvent& event, wxToolBar* pToolBar);
+
+    bool IsNavPanelVisible() { return m_Cfg.navig_on; }
     double GetScale() { return m_rScale; }
 
-    //
+	//Overrides from lmMDIChildFrame: Call backs
+	double GetActiveViewScale() { return m_rScale; }
+	bool SetActiveViewScale(double rScale);
+	void OnChildFrameActivated();
 
 
 protected:
@@ -181,8 +187,6 @@ protected:
     void CreateIndex();
     void CreateSearch();
     void UpdateMergedIndex();
-    void IncreaseFontSize();
-    void DecreaseFontSize();
 
     void OnContentsLinkClicked(wxHtmlLinkEvent& event);
     void OnIndexSel(wxCommandEvent& event);
@@ -192,7 +196,6 @@ protected:
     void OnSearch(wxCommandEvent& event);
     void OnBookmarksSel(wxCommandEvent& event);
     void OnCloseWindow(wxCloseEvent& event);
-    void OnActivate(wxActivateEvent& event);
 
 
     // Images:

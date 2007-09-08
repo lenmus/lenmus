@@ -31,6 +31,7 @@
 #endif
 
 #include "UrlAuxCtrol.h"
+#include "../html/HtmlWindow.h"
 
 //colors
 #include "../globals/Colors.h"
@@ -50,7 +51,7 @@ END_EVENT_TABLE()
 IMPLEMENT_CLASS(lmUrlAuxCtrol, wxStaticText)
 
 
-lmUrlAuxCtrol::lmUrlAuxCtrol(wxWindow* parent, wxWindowID id,
+lmUrlAuxCtrol::lmUrlAuxCtrol(wxWindow* parent, wxWindowID id, double rScale,
                              const wxString& sNormalLabel, 
                              const wxString& sAltLabel,
                              const wxPoint& pos,
@@ -59,8 +60,10 @@ lmUrlAuxCtrol::lmUrlAuxCtrol(wxWindow* parent, wxWindowID id,
                              const wxString& name)
     : wxStaticText(parent, id, sNormalLabel, pos, size, style, name)
 {
-    wxFont font = GetFont();
+    wxFont font = parent->GetFont();
     font.SetUnderlined(true);
+    double rCurSize = (double)font.GetPointSize();
+    font.SetPointSize( (int)(rCurSize * rScale) );
     SetFont(font);
     SetForegroundColour(g_pColors->HtmlLinks());
     SetCursor(wxCURSOR_HAND);

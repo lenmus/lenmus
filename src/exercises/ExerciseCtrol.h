@@ -124,13 +124,10 @@ public:
     virtual void OnDebugShowMidiEvents(wxCommandEvent& event)=0;
 
 protected:
-    enum {
-        m_BUTTONS_DISTANCE = 5,     //pixels
-    };
 
     //virtual pure methods to be implemented by derived classes
     virtual void InitializeStrings()=0;   
-    virtual void CreateAnswerButtons()=0;
+    virtual void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)=0;
     virtual void ReconfigureButtons()=0;
     virtual wxString SetNewProblem()=0;    
     virtual wxDialog* GetSettingsDlg()=0;
@@ -175,7 +172,10 @@ protected:
     int                 m_nIdFirstButton;   //ID of first button; the others in sequence
 
     bool                m_fControlsCreated; 
-    wxSize              m_nDisplaySize;     // DisplayCtrol size
+
+
+    wxSize              m_nDisplaySize;     // DisplayCtrol size (pixels at 1:1)
+    double              m_rScale;           // Current scaling factor
 
 private:
     void DoStopSounds();
@@ -230,7 +230,7 @@ protected:
     virtual void StopSounds() {}   //should be virtual pure but the linker complains !!!
 
     //virtual methods implemented in this class
-    void CreateAnswerButtons();
+    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font);
     virtual void InitializeStrings();   
     void ReconfigureButtons() {}
 
@@ -331,7 +331,7 @@ protected:
     //virtual pure methods from parent class to be implemented by derived classes
     virtual wxString SetNewProblem() {return _T(""); }     //should be virtual pure but the linker doesn't do its job properly !!! 
     virtual wxDialog* GetSettingsDlg() {return NULL; }     //should be virtual pure but the linker doesn't do its job properly !!! 
-    virtual void CreateAnswerButtons() {}     //should be virtual pure but the linker doesn't do its job properly !!! 
+    virtual void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font) {}     //should be virtual pure but the linker doesn't do its job properly !!! 
     virtual void InitializeStrings() {}     //should be virtual pure but the linker doesn't do its job properly !!!   
     virtual void ReconfigureButtons() {}     //should be virtual pure but the linker doesn't do its job properly !!! 
 

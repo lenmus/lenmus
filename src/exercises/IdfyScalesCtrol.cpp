@@ -60,9 +60,6 @@ extern lmLogger* g_pLogger;
 
 
 
-//Layout definitions
-const int BUTTONS_DISTANCE = 5;        //pixels
-
 static wxString m_sButtonLabel[est_Max];
 
 //IDs for controls
@@ -97,32 +94,38 @@ lmIdfyScalesCtrol::~lmIdfyScalesCtrol()
 {
 }
 
-void lmIdfyScalesCtrol::CreateAnswerButtons()
+void lmIdfyScalesCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)
 {
     //create buttons for the answers, two rows
     int iB = 0;
     for (iB=0; iB < m_NUM_BUTTONS; iB++)
         m_pAnswerButton[iB] = (wxButton*)NULL;
 
-    m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS+1, m_NUM_COLS+1, 10, 0);
+    m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS+1, m_NUM_COLS+1, 2*nSpacing, 0);
     m_pMainSizer->Add(
         m_pKeyboardSizer,
-        wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 10) );
+        wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 2*nSpacing) );
 
-    for (int iRow=0; iRow < m_NUM_ROWS; iRow++) {
+    for (int iRow=0; iRow < m_NUM_ROWS; iRow++)
+    {
+        m_pRowLabel[iRow] = new wxStaticText(this, -1, _T(""));
+        m_pRowLabel[iRow]->SetFont(font);
         m_pKeyboardSizer->Add(
-            m_pRowLabel[iRow] = new wxStaticText(this, -1, _T("")),
-            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
+            m_pRowLabel[iRow],
+            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, nSpacing) );
 
         // the buttons for this row
-        for (int iCol=0; iCol < m_NUM_COLS; iCol++) {
+        for (int iCol=0; iCol < m_NUM_COLS; iCol++)
+        {
             iB = iCol + iRow * m_NUM_COLS;    // button index
             if (iB >= m_NUM_BUTTONS) break;
             m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, _T("Undefined"),
-                wxDefaultPosition, wxSize(120, 20));
+                wxDefaultPosition, wxSize(24*nSpacing, nHeight));
+            m_pAnswerButton[iB]->SetFont(font);
+
             m_pKeyboardSizer->Add(
                 m_pAnswerButton[iB],
-                wxSizerFlags(0).Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
+                wxSizerFlags(0).Border(wxLEFT|wxRIGHT, nSpacing) );
         }
     }
 
@@ -318,11 +321,11 @@ wxString lmIdfyScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmSc
 
     int nNumNotes = oScaleMngr.GetNumNotes();
     *pScore = new lmScore();
-    (*pScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
     (*pScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
     (*pScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
 							 g_pMidi->DefaultVoiceInstr(), _T(""));
     pVStaff = (*pScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
+    (*pScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddClef( eclvSol );
     pVStaff->AddKeySignature( m_nKey );
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );

@@ -55,14 +55,10 @@ class lmUrlAuxCtrol : public wxStaticText
 public:
 
     // constructor and destructor
-    lmUrlAuxCtrol(wxWindow* parent,
-                wxWindowID id,
-                const wxString& sNormalLabel,
-                const wxString& sAltLabel = _T("??????"),
-                const wxPoint& pos = wxDefaultPosition,
-                const wxSize& size = wxDefaultSize,
-                long style = 0,
-                const wxString& name = _T("lmUrlAuxCtrol"));
+    lmUrlAuxCtrol(wxWindow* parent, wxWindowID id, double rScale,
+                const wxString& sNormalLabel, const wxString& sAltLabel = _T("??????"),
+                const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
+                long style = 0, const wxString& name = _T("lmUrlAuxCtrol"));
 
     ~lmUrlAuxCtrol() {}
 

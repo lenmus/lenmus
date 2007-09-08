@@ -120,24 +120,24 @@ lmTheoMusicReadingCtrol::lmTheoMusicReadingCtrol(wxWindow* parent, wxWindowID id
     // "Go back to theory" button
     if (pOptions->fGoBackLink) {
         pButtonsSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_GO_BACK, _("Go back to theory") ),
+            new lmUrlAuxCtrol(this, ID_LINK_GO_BACK, 1.0, _("Go back to theory") ),
             wxSizerFlags(0).Left().Border(wxALL, 5) );
     }
 
     // "new problem" button
     pButtonsSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") ),
+        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, 1.0, _("New problem") ),
         wxSizerFlags(0).Left().Border(wxALL, 5) );
 
     // "play" button
-    m_pPlayLink = new lmUrlAuxCtrol(this, ID_LINK_PLAY, m_pOptions->sPlayLabel, m_pOptions->sStopPlayLabel );
+    m_pPlayLink = new lmUrlAuxCtrol(this, ID_LINK_PLAY, 1.0, m_pOptions->sPlayLabel, m_pOptions->sStopPlayLabel );
     pButtonsSizer->Add(
         m_pPlayLink,
         wxSizerFlags(0).Left().Border(wxALL, 5) );
 
     // "solfa" button
     if (pOptions->fSolfaCtrol) {
-        //m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, m_pOptions->sSolfaLabel, m_pOptions->sStopSolfaLabel );
+        //m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, 1.0, m_pOptions->sSolfaLabel, m_pOptions->sStopSolfaLabel );
         //pButtonsSizer->Add(
         //    m_pPlayLink,
         //    wxSizerFlags(0).Left().Border(wxALL, 5) );
@@ -147,15 +147,15 @@ lmTheoMusicReadingCtrol::lmTheoMusicReadingCtrol(wxWindow* parent, wxWindowID id
     if (g_fShowDebugLinks && !g_fReleaseVersion) {
         // "See source score"
         pButtonsSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, _("See source score") ),
+            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, 1.0, _("See source score") ),
             wxSizerFlags(0).Left().Border(wxALL, 5) );
         // "Dump score"
         pButtonsSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_DUMP, _("Dump score") ),
+            new lmUrlAuxCtrol(this, ID_LINK_DUMP, 1.0, _("Dump score") ),
             wxSizerFlags(0).Left().Border(wxALL, 5) );
         // "See MIDI events"
         pButtonsSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, _("See MIDI events") ),
+            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, 1.0, _("See MIDI events") ),
             wxSizerFlags(0).Left().Border(wxALL, 5) );
     }
 
@@ -164,7 +164,7 @@ lmTheoMusicReadingCtrol::lmTheoMusicReadingCtrol(wxWindow* parent, wxWindowID id
 
     // settings link
     if (pOptions->fSettingsLink) {
-        m_pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
+        m_pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, 1.0, _("Settings") );
         pButtonsSizer->Add(m_pSettingsLink, wxSizerFlags(0).Left().Border(wxALL, 5) );
     }
 

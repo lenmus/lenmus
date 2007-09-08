@@ -175,10 +175,6 @@ public:
     void SetValidButton(lmECadenceButtons nB, bool fValue) { m_fValidButtons[nB] = fValue; }
     bool* GetValidButtons() { return m_fValidButtons; }
 
-    bool UseGrandStaff() { return m_fGrandStaff; }
-    void SetGrandStaff(bool fValue) { m_fGrandStaff = fValue; }
-
-
     int GetKeyDisplayMode() { return m_nKeyDisplayMode; }
     void SetKeyDisplayMode(int nKeyDisplayMode) { m_nKeyDisplayMode = nKeyDisplayMode; }
 
@@ -195,7 +191,6 @@ public:
 private:
     void LoadSettings();
 
-    bool                m_fGrandStaff;          // use a grand-staff
     bool                m_fValidButtons[lm_eCadMaxButton];
     bool                m_fValidCadences[lm_eCadMaxCadence];
     lmKeyConstrains     m_oValidKeys;           //allowed key signatures

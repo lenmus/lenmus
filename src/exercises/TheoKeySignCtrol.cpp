@@ -150,11 +150,11 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
 
         // "See source score"
         pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, _("See source score") ),
+            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, 1.0, _("See source score") ),
             wxSizerFlags(0).Left().Border(wxALL, 10) );
         // "Dump score"
         pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_DUMP, _("Dump score") ),
+            new lmUrlAuxCtrol(this, ID_LINK_DUMP, 1.0, _("Dump score") ),
             wxSizerFlags(0).Left().Border(wxALL, 10) );
     }
 
@@ -173,7 +173,7 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
                               lmToLogicalUnits(10, lmMILLIMETERS));     //top=1cm
 
     // right/wrong answers counters control
-    m_pCounters = new lmCountersCtrol(this, wxID_ANY);
+    m_pCounters = new lmCountersCtrol(this, wxID_ANY, 1.0);
     pTopSizer->Add(
         m_pCounters,
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
@@ -188,12 +188,12 @@ lmTheoKeySignCtrol::lmTheoKeySignCtrol(wxWindow* parent, wxWindowID id,
 
     // "new problem" button
     pLinksSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") ),
+        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, 1.0, _("New problem") ),
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT|wxBOTTOM, 20) );
 
     // "show solution" button
     pLinksSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") ),
+        new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, 1.0, _("Show solution") ),
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT|wxBOTTOM, 20) );
 
 
@@ -598,9 +598,9 @@ void lmTheoKeySignCtrol::NewProblem()
 
     //create the score
     m_pScore = new lmScore();
-    m_pScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
     m_pScore->AddInstrument(1,0,0,_T(""));                   //one vstaff, MIDI channel 0, MIDI instr 0
     lmVStaff *pVStaff = m_pScore->GetVStaff(1, 1);    //get first vstaff of instr.1
+    m_pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddClef( nClef );
     pVStaff->AddKeySignature(nKey);
     pVStaff->AddBarline(etb_EndBarline, lmNO_VISIBLE);

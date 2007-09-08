@@ -34,6 +34,7 @@
 #include "wx/wx.h"
 #endif
 
+#include "wx/font.h"
 
 #include "../score/Score.h"
 #include "ScoreAuxCtrol.h"
@@ -66,6 +67,7 @@ lmScoreAuxCtrol::lmScoreAuxCtrol(wxWindow* parent, wxWindowID id, lmScore* pScor
                                  const wxSize& size, EScoreStyles style) :
     wxWindow(parent, id, pos, size, style)
 {
+
     SetBackgroundColour(*wxWHITE);
     m_pScore = pScore;
     m_sMsg = wxEmptyString;
@@ -103,6 +105,7 @@ void lmScoreAuxCtrol::SetScale(float rScale)
     //rScale is the zooming factor
     m_rZoom = rScale;
     m_rScale = rScale * lmSCALE;
+
     //wxLogMessage(_T("[lmScoreAuxCtrol::SetScale]rScale=%f, lmSCALE=%f, m_rScale=%f"), rScale, lmSCALE, m_rScale);
     ResizePaper();
 }
@@ -260,6 +263,12 @@ void lmScoreAuxCtrol::OnPaint(wxPaintEvent &WXUNUSED(event))
         fClear = false;
         int xPos = (int)(lmToLogicalUnits(5, lmMILLIMETERS) * m_yScalingFactor);
         int yPos = (int)(m_yMsg * m_yScalingFactor);
+
+        //scale the font
+        wxFont font = GetParent()->GetFont();
+        font.SetPointSize( (int)((float)font.GetPointSize() * m_rZoom) );
+        dc.SetFont( font );
+
         dc.DrawText(m_sMsg, xPos, yPos);
         if (m_sMsg2 != wxEmptyString) {
             long nHeight, nWidth;

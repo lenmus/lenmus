@@ -35,7 +35,9 @@
 #include "Constrains.h"
 #include "Generators.h"
 #include "../app/MainFrame.h"
+extern lmMainFrame* g_pMainFrame;
 #include "../html/TextBookController.h"
+#include "wx/html/htmlwin.h"
 
 #include "wx/textctrl.h"
 
@@ -114,6 +116,7 @@ lmExerciseCtrol::lmExerciseCtrol(wxWindow* parent, wxWindowID id,
     m_fQuestionAsked = false;
     m_pConstrains = pConstrains;
     m_fControlsCreated = false;
+    m_rScale = 1.0;
 }
 
 void lmExerciseCtrol::CreateControls()
@@ -137,6 +140,17 @@ void lmExerciseCtrol::CreateControls()
     //then they do not get translated
     InitializeStrings();
 
+    // ensure that sizes are properly scaled
+    m_rScale = g_pMainFrame->GetHtmlWindow()->GetScale();
+    m_nDisplaySize.x = (int)((double)m_nDisplaySize.x * m_rScale);
+    m_nDisplaySize.y = (int)((double)m_nDisplaySize.y * m_rScale);
+
+    // prepare layout info for answer buttons and spacing
+    int nButtonsHeight = (int)(m_rScale * 24.0);    // 24 pixels, scaled
+    wxFont oButtonsFont = GetParent()->GetFont();
+    oButtonsFont.SetPointSize( (int)((double)oButtonsFont.GetPointSize() * m_rScale) );
+    int nSpacing = (int)(5.0 * m_rScale);       //5 pixels, scaled
+
     //the window is divided into two regions: top, for score on left and counters and links
     //on the right, and bottom region, for answer buttons 
     m_pMainSizer = new wxBoxSizer( wxVERTICAL );
@@ -149,12 +163,14 @@ void lmExerciseCtrol::CreateControls()
 
     // settings link
     if (m_pConstrains->IncludeSettingsLink()) {
-        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, _("Settings") );
+        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale, 
+             _("Settings") );
         pTopLineSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
     }
     // "Go back to theory" link
     if (m_pConstrains->IncludeGoBackLink()) {
-        lmUrlAuxCtrol* pGoBackLink = new lmUrlAuxCtrol(this, ID_LINK_GO_BACK, _("Go back to theory") );
+        lmUrlAuxCtrol* pGoBackLink = new lmUrlAuxCtrol(this, ID_LINK_GO_BACK, m_rScale,
+            _("Go back to theory") );
         pTopLineSizer->Add(pGoBackLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
     }
 
@@ -163,17 +179,17 @@ void lmExerciseCtrol::CreateControls()
     {
         // "See source score"
         pTopLineSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, _("See source score") ),
+            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, m_rScale, _("See source score") ),
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
 
         // "Dump score"
         pTopLineSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_DUMP, _("Dump score") ),
+            new lmUrlAuxCtrol(this, ID_LINK_DUMP, m_rScale, _("Dump score") ),
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
 
         // "See MIDI events"
         pTopLineSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, _("See MIDI events") ),
+            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, m_rScale, _("See MIDI events") ),
             wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
     }
 
@@ -184,7 +200,7 @@ void lmExerciseCtrol::CreateControls()
         pTopSizer,
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
 
-    // create the display control (ScoreAuxCtrol or wxTextCtrl)
+    // create the display control (ScoreAuxCtrol or wxTextCtrl):
     m_pDisplayCtrol = CreateDisplayCtrol();
     pTopSizer->Add(m_pDisplayCtrol,
                    wxSizerFlags(1).Left().Border(wxTOP|wxBOTTOM, 10));
@@ -196,7 +212,7 @@ void lmExerciseCtrol::CreateControls()
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10).Expand() );
 
     // right/wrong answers counters control
-    m_pCounters = new lmCountersCtrol(this, wxID_ANY);
+    m_pCounters = new lmCountersCtrol(this, wxID_ANY, m_rScale);
     pCountersSizer->Add(
         m_pCounters,
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
@@ -213,23 +229,23 @@ void lmExerciseCtrol::CreateControls()
 
     // "new problem" button
     pLinksSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, _("New problem") ),
+        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem") ),
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
     
     // "play" button
-    m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, _("Play") );
+    m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, m_rScale, _("Play") );
     pLinksSizer->Add(
         m_pPlayButton,
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
     
     // "show solution" button
-    m_pShowSolution = new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, _("Show solution") );
+    m_pShowSolution = new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, m_rScale, _("Show solution") );
     pLinksSizer->Add(
         m_pShowSolution,
         wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT|wxBOTTOM, 20) );
     
     //create buttons for the answers
-    CreateAnswerButtons();
+    CreateAnswerButtons(nButtonsHeight, nSpacing, oButtonsFont);
 
     //finish creation
     SetSizer( m_pMainSizer );                 // use the sizer for window layout
@@ -464,22 +480,24 @@ void lmCompareCtrol::InitializeStrings()
     m_sButtonLabel[2] = _("Both are equal");
 }
 
-void lmCompareCtrol::CreateAnswerButtons()
+void lmCompareCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)
 {
 
     //create buttons for the answers: three buttons in one row
-    m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS, m_NUM_COLS, 10, 0);
+    m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS, m_NUM_COLS, 2*nSpacing, 0);
     m_pMainSizer->Add(
         m_pKeyboardSizer,
-        wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 10) );
+        wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 2*nSpacing) );
 
     // the buttons 
     for (int iB=0; iB < m_NUM_COLS; iB++) {
         m_pAnswerButton[iB] = new wxButton( this, m_ID_BUTTON + iB, m_sButtonLabel[iB],
-            wxDefaultPosition, wxSize(134, 24));
+            wxDefaultPosition, wxSize(27*nSpacing, nHeight));
+        m_pAnswerButton[iB]->SetFont(font);
+
         m_pKeyboardSizer->Add(
             m_pAnswerButton[iB],
-            wxSizerFlags(0).Border(wxLEFT|wxRIGHT, m_BUTTONS_DISTANCE) );
+            wxSizerFlags(0).Border(wxLEFT|wxRIGHT, nSpacing) );
     }
 
     //inform base class about the settings
@@ -532,9 +550,10 @@ wxWindow* lmCompareScoresCtrol::CreateDisplayCtrol()
     // Using scores and ScoreAuxCtrol
     lmScoreAuxCtrol* pScoreCtrol = new lmScoreAuxCtrol(this, -1, (lmScore*)NULL, wxDefaultPosition,
                                         m_nDisplaySize, eSIMPLE_BORDER);
-    pScoreCtrol->SetMargins(lmToLogicalUnits(5, lmMILLIMETERS),      //left=1cm
-                            lmToLogicalUnits(5, lmMILLIMETERS),      //right=1cm
-                            lmToLogicalUnits(10, lmMILLIMETERS));     //top=1cm
+    pScoreCtrol->SetMargins(lmToLogicalUnits(5, lmMILLIMETERS),     //left
+                            lmToLogicalUnits(5, lmMILLIMETERS),     //right
+                            lmToLogicalUnits(10, lmMILLIMETERS));   //top
+    pScoreCtrol->SetScale( pScoreCtrol->GetScale() * (float)m_rScale );
     return pScoreCtrol;
 }
 
@@ -704,8 +723,8 @@ void lmCompareScoresCtrol::DisplayMessage(wxString& sMsg, bool fClearDisplay)
 //------------------------------------------------------------------------------------
 // Implementation of lmOneScoreCtrol
 //  An ExerciseCtrol with one score for the problem and one optional score for
-//  the solution. If no solution score the the problem score is used to present
-//  the solution
+//  the solution. If no solution score is defined the problem score is used as
+//  solution.
 //------------------------------------------------------------------------------------
 
 IMPLEMENT_CLASS(lmOneScoreCtrol, lmExerciseCtrol)
@@ -743,6 +762,7 @@ wxWindow* lmOneScoreCtrol::CreateDisplayCtrol()
     pScoreCtrol->SetMargins(lmToLogicalUnits(5, lmMILLIMETERS),     //left
                             lmToLogicalUnits(5, lmMILLIMETERS),     //right
                             lmToLogicalUnits(10, lmMILLIMETERS));   //top
+    pScoreCtrol->SetScale( pScoreCtrol->GetScale() * (float)m_rScale );
     return pScoreCtrol;
 }
 

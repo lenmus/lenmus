@@ -361,11 +361,6 @@ void lmUpdater::CheckForUpdates(wxFrame* pParent, bool fSilent)
 
 bool lmUpdater::DownloadFiles()
 {
-/*! @todo   Function ::wxLaunchDefaultBrowser() does not work. So I have defined
-    LaunchDefaultBrowser() and copied the latest code for wxLaunchDefaultBrowser
-    taken from wxWidgets CVS. Remove this code at next wxWidgets release,
-    once checked that wxLaunchDefaultBrowser() works ok, and change next statement.
-*/
     LaunchDefaultBrowser( m_sUrl );
 
     return false;
@@ -431,102 +426,108 @@ wxXmlNode* lmUpdater::GetFirstChild(wxXmlNode* pNode)
 // ----------------------------------------------------------------------------
 //    Launch default browser
 //
-//! @todo   This is the latest (18/may/2006) code for ::wxLaunchDefaultBrowser()
-//!    function taken from wxWidgets CVS. Remove this code at next wxWidgets release,
-//!    once checked that wxLaunchDefaultBrowser() works ok.
+//  
+//  TODO:   Function ::wxLaunchDefaultBrowser() does not work. So I have defined
+//  LaunchDefaultBrowser() and copied the latest code (18/may/2006) from wxLaunchDefaultBrowser
+//  taken from wxWidgets CVS. Remove this code at next wxWidgets release,
+//  once checked that wxLaunchDefaultBrowser() works ok, and change next statement.
+//
+//  Now (6/Sep/07) it works (wxWidgets 2.8.0) in Windows but not in Ubuntu
 //-----------------------------------------------------------------------------
 
 bool LaunchDefaultBrowser(const wxString& urlOrig)
 {
-    // set the scheme of url to http if it does not have one
-    wxString url(urlOrig);
-    if ( !wxURI(url).HasScheme() )
-        url.Prepend(wxT("http://"));
+    return ::wxLaunchDefaultBrowser(urlOrig);
 
-#if defined(__WXMSW__)
-    WinStruct<SHELLEXECUTEINFO> sei;
-    sei.lpFile = url.c_str();
-    sei.lpVerb = _T("open");
-    sei.nShow = SW_SHOWNORMAL;
-
-    ::ShellExecuteEx(&sei);
-
-    const int nResult = (int) sei.hInstApp;
-
-    // Firefox returns file not found for some reason, so make an exception
-    // for it
-    if ( nResult > 32 || nResult == SE_ERR_FNF )
-    {
-#ifdef __WXDEBUG__
-        // Log something if SE_ERR_FNF happens
-        if ( nResult == SE_ERR_FNF )
-            wxLogDebug(wxT("SE_ERR_FNF from ShellExecute -- maybe FireFox?"));
-#endif // __WXDEBUG__
-        return true;
-    }
-#elif defined(__WXMAC__)
-    OSStatus err;
-    ICInstance inst;
-    SInt32 startSel;
-    SInt32 endSel;
-
-    err = ICStart(&inst, 'STKA'); // put your app creator code here
-    if (err == noErr)
-    {
-#if !TARGET_CARBON
-        err = ICFindConfigFile(inst, 0, NULL);
-#endif
-        if (err == noErr)
-        {
-            ConstStr255Param hint = 0;
-            startSel = 0;
-            endSel = url.length();
-            err = ICLaunchURL(inst, hint, url.fn_str(), endSel, &startSel, &endSel);
-            if (err != noErr)
-                wxLogDebug(wxT("ICLaunchURL error %d"), (int) err);
-        }
-        ICStop(inst);
-        return true;
-    }
-    else
-    {
-        wxLogDebug(wxT("ICStart error %d"), (int) err);
-        return false;
-    }
-#elif wxUSE_MIMETYPE
-    // Non-windows way
-    bool ok = false;
-    wxString cmd;
-
-    wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
-    if ( ft )
-    {
-        wxString mt;
-        ft->GetMimeType(&mt);
-
-        ok = ft->GetOpenCommand(&cmd, wxFileType::MessageParameters(url));
-        delete ft;
-    }
-
-    if ( !ok || cmd.empty() )
-    {
-        // fallback to checking for the BROWSER environment variable
-        cmd = wxGetenv(wxT("BROWSER"));
-        if ( !cmd.empty() )
-            cmd << _T(' ') << url;
-    }
-
-    ok = ( !cmd.empty() && wxExecute(cmd) );
-    if (ok)
-        return ok;
-
-    // no file type for HTML extension
-    wxLogError(_T("No default application configured for HTML files."));
-
-#endif // !wxUSE_MIMETYPE && !__WXMSW__
-
-    wxLogSysError(_T("Failed to open URL \"%s\" in default browser."),
-                  url.c_str());
-
-    return false;
+//    // set the scheme of url to http if it does not have one
+//    wxString url(urlOrig);
+//    if ( !wxURI(url).HasScheme() )
+//        url.Prepend(wxT("http://"));
+//
+//#if defined(__WXMSW__)
+//    WinStruct<SHELLEXECUTEINFO> sei;
+//    sei.lpFile = url.c_str();
+//    sei.lpVerb = _T("open");
+//    sei.nShow = SW_SHOWNORMAL;
+//
+//    ::ShellExecuteEx(&sei);
+//
+//    const int nResult = (int) sei.hInstApp;
+//
+//    // Firefox returns file not found for some reason, so make an exception
+//    // for it
+//    if ( nResult > 32 || nResult == SE_ERR_FNF )
+//    {
+//#ifdef __WXDEBUG__
+//        // Log something if SE_ERR_FNF happens
+//        if ( nResult == SE_ERR_FNF )
+//            wxLogDebug(wxT("SE_ERR_FNF from ShellExecute -- maybe FireFox?"));
+//#endif // __WXDEBUG__
+//        return true;
+//    }
+//#elif defined(__WXMAC__)
+//    OSStatus err;
+//    ICInstance inst;
+//    SInt32 startSel;
+//    SInt32 endSel;
+//
+//    err = ICStart(&inst, 'STKA'); // put your app creator code here
+//    if (err == noErr)
+//    {
+//#if !TARGET_CARBON
+//        err = ICFindConfigFile(inst, 0, NULL);
+//#endif
+//        if (err == noErr)
+//        {
+//            ConstStr255Param hint = 0;
+//            startSel = 0;
+//            endSel = url.length();
+//            err = ICLaunchURL(inst, hint, url.fn_str(), endSel, &startSel, &endSel);
+//            if (err != noErr)
+//                wxLogDebug(wxT("ICLaunchURL error %d"), (int) err);
+//        }
+//        ICStop(inst);
+//        return true;
+//    }
+//    else
+//    {
+//        wxLogDebug(wxT("ICStart error %d"), (int) err);
+//        return false;
+//    }
+//#elif wxUSE_MIMETYPE
+//    // Non-windows way
+//    bool ok = false;
+//    wxString cmd;
+//
+//    wxFileType *ft = wxTheMimeTypesManager->GetFileTypeFromExtension(_T("html"));
+//    if ( ft )
+//    {
+//        wxString mt;
+//        ft->GetMimeType(&mt);
+//
+//        ok = ft->GetOpenCommand(&cmd, wxFileType::MessageParameters(url));
+//        delete ft;
+//    }
+//
+//    if ( !ok || cmd.empty() )
+//    {
+//        // fallback to checking for the BROWSER environment variable
+//        cmd = wxGetenv(wxT("BROWSER"));
+//        if ( !cmd.empty() )
+//            cmd << _T(' ') << url;
+//    }
+//
+//    ok = ( !cmd.empty() && wxExecute(cmd) );
+//    if (ok)
+//        return ok;
+//
+//    // no file type for HTML extension
+//    wxLogError(_T("No default application configured for HTML files."));
+//
+//#endif // !wxUSE_MIMETYPE && !__WXMSW__
+//
+//    wxLogSysError(_T("Failed to open URL \"%s\" in default browser."),
+//                  url.c_str());
+//
+//    return false;
 }

@@ -58,12 +58,14 @@ BEGIN_EVENT_TABLE(lmCountersCtrol, wxWindow)
 END_EVENT_TABLE()
 
 
-lmCountersCtrol::lmCountersCtrol(wxWindow* parent, wxWindowID id, const wxPoint& pos) :
-    wxWindow(parent, id, pos, wxDefaultSize, wxNO_BORDER )
+lmCountersCtrol::lmCountersCtrol(wxWindow* parent, wxWindowID id,  double rScale, 
+                                 const wxPoint& pos)
+    : wxWindow(parent, id, pos, wxDefaultSize, wxNO_BORDER )
 {
     //initializations
     m_nMaxTeam = 0;             
     m_nCurrentTeam = 0;
+    m_rScale = rScale;
 
     // Create the controls
     wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
@@ -85,7 +87,7 @@ lmCountersCtrol::lmCountersCtrol(wxWindow* parent, wxWindowID id, const wxPoint&
 
     //'reset counters' link
     pMainSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_RESET_COUNTERS, _("Reset counters") ),
+        new lmUrlAuxCtrol(this, ID_LINK_RESET_COUNTERS, rScale, _("Reset counters") ),
         0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxRIGHT|wxBOTTOM|wxADJUST_MINSIZE, 5);
 
     //set main window sizer
@@ -112,65 +114,89 @@ void lmCountersCtrol::CreateCountersGroup(int nTeam, wxBoxSizer* pMainSizer, boo
     wxBoxSizer* pCountersSizer = new wxBoxSizer(wxHORIZONTAL);
     pMainSizer->Add(pCountersSizer, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5);
 
+    // Font sizes
+    int nNormalSize = (int)(m_rScale * 8.0);      // 8pt, scaled
+    int nBigSize = (int)(m_rScale * 18.0);      // 18pt, scaled
+
+    // Boxes sizes and spacing
+    int nBoxSize = (int)(m_rScale * 50.0);      // 50px, scaled
+    int nSpacing = (int)(m_rScale * 5.0);       // 5px, scaled
+
     // Team label
     if (fTeam) {
         wxBoxSizer* pTeamSizer = new wxBoxSizer(wxVERTICAL);
-        pCountersSizer->Add(pTeamSizer, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5);
+        pCountersSizer->Add(pTeamSizer, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, nSpacing);
 
         if (nTeam == 0) {
-            wxStaticText* pTxtRight = new wxStaticText( this, wxID_STATIC, _("Team"), wxDefaultPosition, wxDefaultSize, 0 );
-            pTxtRight->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
-            pTeamSizer->Add(pTxtRight, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxADJUST_MINSIZE, 5);
+            wxStaticText* pTxtRight = new wxStaticText( this, wxID_STATIC, _("Team"),
+				wxDefaultPosition, wxDefaultSize, 0 );
+            pTxtRight->SetFont(wxFont(nNormalSize, wxSWISS, wxNORMAL, wxBOLD, false,
+				_T("Arial")));
+            pTeamSizer->Add(pTxtRight, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxADJUST_MINSIZE,
+				nSpacing);
         }
         wxStaticText* pTeamLabel = new wxStaticText( this, wxID_STATIC, 
                 wxString::Format(_T("%d"), nTeam+1), wxDefaultPosition,
-                wxSize(50, -1), wxALIGN_CENTRE|wxNO_BORDER|wxST_NO_AUTORESIZE );
+                wxSize(nBoxSize, -1), wxALIGN_CENTRE|wxNO_BORDER|wxST_NO_AUTORESIZE );
         pTeamLabel->SetBackgroundColour(wxColour(255, 255, 255));
-        pTeamLabel->SetFont(wxFont(18, wxSWISS, wxNORMAL, wxNORMAL, false, _T("")));
+        pTeamLabel->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxNORMAL, false, _T("")));
         pTeamSizer->Add(pTeamLabel, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 0);
     }
 
     //display for right answers
     wxBoxSizer* pRightSizer = new wxBoxSizer(wxVERTICAL);
-    pCountersSizer->Add(pRightSizer, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5);
+    pCountersSizer->Add(pRightSizer, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, nSpacing);
 
     if (nTeam == 0) {
-        wxStaticText* pTxtRight = new wxStaticText( this, wxID_STATIC, _("Right"), wxDefaultPosition, wxDefaultSize, 0 );
-        pTxtRight->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
-        pRightSizer->Add(pTxtRight, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxADJUST_MINSIZE, 5);
+        wxStaticText* pTxtRight = new wxStaticText( this, wxID_STATIC, _("Right"),
+			wxDefaultPosition, wxDefaultSize, 0 );
+        pTxtRight->SetFont(wxFont(nNormalSize, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
+        pRightSizer->Add(pTxtRight, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxADJUST_MINSIZE,
+			nSpacing);
     }
-    m_pRightCounter[nTeam] = new wxStaticText( this, wxID_STATIC, _T(""), wxDefaultPosition, wxSize(50, -1), wxALIGN_CENTRE|wxSIMPLE_BORDER|wxST_NO_AUTORESIZE );
+    m_pRightCounter[nTeam] = new wxStaticText( this, wxID_STATIC, _T(""),
+		wxDefaultPosition, wxSize(nBoxSize, -1),
+		wxALIGN_CENTRE|wxSIMPLE_BORDER|wxST_NO_AUTORESIZE );
     m_pRightCounter[nTeam]->SetBackgroundColour(wxColour(255, 255, 255));
-    m_pRightCounter[nTeam]->SetFont(wxFont(18, wxSWISS, wxNORMAL, wxNORMAL, false, _T("")));
-    pRightSizer->Add(m_pRightCounter[nTeam], 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 0);
+    m_pRightCounter[nTeam]->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxNORMAL, false, _T("")));
+    pRightSizer->Add(m_pRightCounter[nTeam], 0,
+		wxALIGN_CENTER_HORIZONTAL|wxALL|wxADJUST_MINSIZE, 0);
 
     //display for wrong answers
     wxBoxSizer* pWrongSizer = new wxBoxSizer(wxVERTICAL);
-    pCountersSizer->Add(pWrongSizer, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    pCountersSizer->Add(pWrongSizer, 0, wxALIGN_CENTER_VERTICAL|wxALL, nSpacing);
 
     if (nTeam == 0) {
-        wxStaticText* pTxtWrong = new wxStaticText( this, wxID_STATIC, _("Wrong"), wxDefaultPosition, wxDefaultSize, 0 );
-        pTxtWrong->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
-        pWrongSizer->Add(pTxtWrong, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxADJUST_MINSIZE, 5);
+        wxStaticText* pTxtWrong = new wxStaticText( this, wxID_STATIC, _("Wrong"),
+			wxDefaultPosition, wxDefaultSize, 0 );
+        pTxtWrong->SetFont(wxFont(nNormalSize, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
+        pWrongSizer->Add(pTxtWrong, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxADJUST_MINSIZE, nSpacing);
     }
-    m_pWrongCounter[nTeam] = new wxStaticText( this, wxID_STATIC, _T(""), wxDefaultPosition, wxSize(50, -1), wxALIGN_CENTRE|wxSIMPLE_BORDER|wxST_NO_AUTORESIZE );
+    m_pWrongCounter[nTeam] = new wxStaticText( this, wxID_STATIC, _T(""),
+		wxDefaultPosition, wxSize(nBoxSize, -1),
+		wxALIGN_CENTRE|wxSIMPLE_BORDER|wxST_NO_AUTORESIZE );
     m_pWrongCounter[nTeam]->SetBackgroundColour(wxColour(255, 255, 255));
-    m_pWrongCounter[nTeam]->SetFont(wxFont(18, wxSWISS, wxNORMAL, wxNORMAL, false, _T("")));
-    pWrongSizer->Add(m_pWrongCounter[nTeam], 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM|wxADJUST_MINSIZE, 0);
+    m_pWrongCounter[nTeam]->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxNORMAL, false, _T("")));
+    pWrongSizer->Add(m_pWrongCounter[nTeam], 0,
+		wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM|wxADJUST_MINSIZE, 0);
 
     //display for total score
     wxBoxSizer* pTotalSizer = new wxBoxSizer(wxVERTICAL);
-    pCountersSizer->Add(pTotalSizer, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, 5);
+    pCountersSizer->Add(pTotalSizer, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM, nSpacing);
     
     if (nTeam == 0) {
-        wxStaticText* pTxtTotal = new wxStaticText( this, wxID_STATIC, _("Mark"), wxDefaultPosition, wxDefaultSize, 0 );
-        pTxtTotal->SetFont(wxFont(8, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
-        pTotalSizer->Add(pTxtTotal, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxADJUST_MINSIZE, 5);
+        wxStaticText* pTxtTotal = new wxStaticText( this, wxID_STATIC, _("Mark"),
+			wxDefaultPosition, wxDefaultSize, 0 );
+        pTxtTotal->SetFont(wxFont(nNormalSize, wxSWISS, wxNORMAL, wxBOLD, false, _T("Arial")));
+        pTotalSizer->Add(pTxtTotal, 0, wxALIGN_CENTER_HORIZONTAL|wxBOTTOM|wxADJUST_MINSIZE, nSpacing);
     }
-    m_pTotalCounter[nTeam] = new wxStaticText( this, wxID_STATIC, _T(""), wxDefaultPosition, wxSize(50, -1), wxALIGN_CENTRE|wxSIMPLE_BORDER|wxST_NO_AUTORESIZE );
+    m_pTotalCounter[nTeam] = new wxStaticText( this, wxID_STATIC, _T(""),
+		wxDefaultPosition, wxSize(nBoxSize, -1),
+		wxALIGN_CENTRE|wxSIMPLE_BORDER|wxST_NO_AUTORESIZE );
     m_pTotalCounter[nTeam]->SetBackgroundColour(wxColour(255, 255, 255));
-    m_pTotalCounter[nTeam]->SetFont(wxFont(18, wxSWISS, wxNORMAL, wxNORMAL, false, _T("Arial")));
-    pTotalSizer->Add(m_pTotalCounter[nTeam], 0, wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxTOP|wxBOTTOM|wxADJUST_MINSIZE, 0);
+    m_pTotalCounter[nTeam]->SetFont(wxFont(nBigSize, wxSWISS, wxNORMAL, wxNORMAL, false, _T("Arial")));
+    pTotalSizer->Add(m_pTotalCounter[nTeam], 0,
+		wxALIGN_CENTER_HORIZONTAL|wxLEFT|wxTOP|wxBOTTOM|wxADJUST_MINSIZE, 0);
 
 }
 
@@ -187,7 +213,7 @@ void lmCountersCtrol::ResetCounters()
         m_nWrong[i] = 0;
         UpdateDisplays(i);
     }
-    fStart = true;
+    m_fStart = true;
 }
 
 void lmCountersCtrol::IncrementWrong()
@@ -238,9 +264,9 @@ void lmCountersCtrol::NextTeam()
     }
 
     //ensure that first time after a reset we start with first team
-    if (fStart) {
+    if (m_fStart) {
         m_nCurrentTeam = 0;
-        fStart = false;
+        m_fStart = false;
     }
 
     //update label

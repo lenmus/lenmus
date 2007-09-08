@@ -22,7 +22,7 @@
 #ifndef __ABOUTDLGH__        //to avoid nested includes
 #define __ABOUTDLGH__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "AboutDlg.cpp"
 #endif
 

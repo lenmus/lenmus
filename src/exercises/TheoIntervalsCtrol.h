@@ -55,7 +55,7 @@ public:
 
     //implementation of virtual methods
     void InitializeStrings();
-    void CreateAnswerButtons();
+    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font);
     void PrepareAuxScore(int nButton);
     wxString SetNewProblem();    
     wxDialog* GetSettingsDlg();

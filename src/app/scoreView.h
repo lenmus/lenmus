@@ -52,20 +52,17 @@ public:
     lmScoreView();
     ~lmScoreView();
 
+	//overrides of virtual methods in wxView
+    bool OnClose(bool deleteWindow = true);
+    void OnUpdate(wxView* WXUNUSED(sender), wxObject* WXUNUSED(hint));
     bool OnCreate(wxDocument* doc, long WXUNUSED(flags));
-    void OnDraw(wxDC *dc);
-    void RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect);
-    void OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint));
-    bool OnClose(bool deleteWindow = TRUE);
-
-    void OnCut(wxCommandEvent& event);
+    void OnDraw(wxDC* dc);
 
     // options
-
     void SetScale(double rScale);
     void SetScaleFitWidth();
     void SetScaleFitFull();
-    double GetScale() { return m_rScale; }
+    double GetScale() { return m_rScale / lmSCALE; }
     void SetRulersVisible(bool fVisible);
 
     // debug options
@@ -79,8 +76,10 @@ public:
     //scrolling and painting
     void AdjustScrollbars();
     void ResizeControls();
-    void GetViewStart (int *x, int *y) const;
-    void GetScrollPixelsPerUnit (int *x_unit, int *y_unit) const;
+    void GetViewStart (int* x, int* y) const;
+    void GetScrollPixelsPerUnit (int* x_unit, int* y_unit) const;
+    void RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect);
+
 
     // print/preview/export as image
     void GetPageInfo(int* pMinPage, int* pMaxPage, int* pSelPageFrom, int* pSelPageTo);
@@ -93,6 +92,7 @@ public:
     void StopPlaying(bool fWait=false);
     void PausePlaying();
     void OnVisualHighlight(lmScoreHighlightEvent& event);
+
 
 
 private:

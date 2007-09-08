@@ -201,6 +201,8 @@ enum
     MENU_Zoom_Other,
     MENU_Zoom_Fit_Full,
     MENU_Zoom_Fit_Width,
+    MENU_Zoom_Decrease,
+    MENU_Zoom_Increase,
 
 
     //Menu Sound
@@ -294,7 +296,9 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_MENU (MENU_Zoom_Other, lmMainFrame::OnZoomOther)
     EVT_MENU (MENU_Zoom_Fit_Full, lmMainFrame::OnZoomFitFull)
     EVT_MENU (MENU_Zoom_Fit_Width, lmMainFrame::OnZoomFitWidth)
-    EVT_UPDATE_UI_RANGE (MENU_Zoom_100, MENU_Zoom_Fit_Width, lmMainFrame::OnZoomUpdateUI)
+    EVT_MENU (MENU_Zoom_Decrease, lmMainFrame::OnZoomDecrease)
+    EVT_MENU (MENU_Zoom_Increase, lmMainFrame::OnZoomIncrease)
+    EVT_UPDATE_UI_RANGE (MENU_Zoom_100, MENU_Zoom_Increase, lmMainFrame::OnZoomUpdateUI)
     EVT_COMBOBOX  (ID_COMBO_ZOOM, lmMainFrame::OnComboZoom )
     EVT_TEXT_ENTER(ID_COMBO_ZOOM, lmMainFrame::OnComboZoom )
     EVT_UPDATE_UI (ID_COMBO_ZOOM, lmMainFrame::OnZoomUpdateUI)
@@ -359,8 +363,8 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_TIMER       (ID_TIMER_MTR,        lmMainFrame::OnMetronomeTimer)
 
     //TextBookFrame
-    EVT_TOOL_RANGE(MENU_eBookPanel, MENU_eBook_IncreaseFont, lmMainFrame::OnBookFrame)
-    EVT_UPDATE_UI_RANGE (MENU_eBookPanel, MENU_eBook_IncreaseFont, lmMainFrame::OnBookFrameUpdateUI)
+    EVT_TOOL_RANGE(MENU_eBookPanel, MENU_eBook_OpenFile, lmMainFrame::OnBookFrame)
+    EVT_UPDATE_UI_RANGE (MENU_eBookPanel, MENU_eBook_OpenFile, lmMainFrame::OnBookFrameUpdateUI)
 
     //other events
     EVT_CLOSE(lmMainFrame::OnCloseWindow)
@@ -557,13 +561,25 @@ void lmMainFrame::CreateMyToolBar()
             wxArtProvider::GetBitmap(_T("tool_zoom_fit_width"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_zoom_fit_width_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Zoom so that page width equals window width"));
+    m_pTbZoom->AddTool(MENU_Zoom_Increase, _T("Zoom in"),
+            wxArtProvider::GetBitmap(_T("tool_zoom_in"), wxART_TOOLBAR, nSize),
+            _("Enlarge image size"), wxITEM_NORMAL );
+    m_pTbZoom->AddTool(MENU_Zoom_Decrease, _T("Zoom out"),
+            wxArtProvider::GetBitmap(_T("tool_zoom_out"), wxART_TOOLBAR, nSize),
+            _("Reduce image size"), wxITEM_NORMAL );
+
     m_pComboZoom = new wxComboBox(m_pTbZoom, ID_COMBO_ZOOM, _T(""),
                                   wxDefaultPosition, wxSize(70, -1) );
     m_pComboZoom->Append(_T("25%"));
     m_pComboZoom->Append(_T("50%"));
     m_pComboZoom->Append(_T("75%"));
+    m_pComboZoom->Append(_T("90%"));
     m_pComboZoom->Append(_T("100%"));
+    m_pComboZoom->Append(_T("110%"));
+    m_pComboZoom->Append(_T("120%"));
+    m_pComboZoom->Append(_T("133%"));
     m_pComboZoom->Append(_T("150%"));
+    m_pComboZoom->Append(_T("175%"));
     m_pComboZoom->Append(_T("200%"));
     m_pComboZoom->Append(_T("300%"));
     m_pComboZoom->Append(_T("400%"));
@@ -612,7 +628,7 @@ void lmMainFrame::CreateMyToolBar()
     //compute best size for zoom toolbar
     wxSize sizeCombo = m_pComboZoom->GetSize();
     sizeButton = m_pTbZoom->GetToolSize();
-    wxSize sizeZoomTb(2 * (sizeButton.GetWidth() + m_pTbZoom->GetToolSeparation()) +
+    wxSize sizeZoomTb(4 * (sizeButton.GetWidth() + m_pTbZoom->GetToolSeparation()) +
                       sizeCombo.GetWidth() +
                       m_pTbZoom->GetToolSeparation() + 10,
                       wxMax(sizeCombo.GetHeight(), sizeButton.GetHeight()));
@@ -765,14 +781,6 @@ void lmMainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize)
     m_pTbTextBooks->AddTool(MENU_eBook_GoForward, _T("Go forward"),
             wxArtProvider::GetBitmap(_T("tool_next"), wxART_TOOLBAR, nIconSize),
             _("Go to next visited page"), wxITEM_NORMAL );
-
-    m_pTbTextBooks->AddSeparator();
-    m_pTbTextBooks->AddTool(MENU_eBook_IncreaseFont, _T("Increase font"),
-            wxArtProvider::GetBitmap(_T("tool_font_increase"), wxART_TOOLBAR, nIconSize),
-            _("Increase font size"), wxITEM_NORMAL );
-    m_pTbTextBooks->AddTool(MENU_eBook_DecreaseFont, _T("Decrease font"),
-            wxArtProvider::GetBitmap(_T("tool_font_decrease"), wxART_TOOLBAR, nIconSize),
-            _("Decrease font size"), wxITEM_NORMAL );
 
     m_pTbTextBooks->Realize();
 
@@ -1395,6 +1403,7 @@ void lmMainFrame::OnOpenBook(wxCommandEvent& event)
         // display book "intro"
         m_pBookController->Display(_T("intro_thm0.htm"));       //By page name
         m_pBookController->GetFrame()->NotifyPageChanged();     // needed in Linux. I don't know why !
+		OnActiveViewChanged(m_pBookController->GetFrame());
     }
     else
         wxASSERT(false);
@@ -1567,19 +1576,66 @@ void lmMainFrame::OnSoundTest(wxCommandEvent& WXUNUSED(event))
 
 }
 
+void lmMainFrame::OnActiveViewChanged(lmMDIChildFrame* pFrame)
+{
+	// The active frame/view has changed. Update GUI
+
+	// update zoom combo box 
+	double rScale = pFrame->GetActiveViewScale();
+	m_pComboZoom->SetValue(wxString::Format(_T("%d%%"), (int)((rScale + 0.005) * 100.0) ));
+
+}
+
 void lmMainFrame::OnZoom(wxCommandEvent& event, int nZoom)
 {
-    lmScoreView* pView = g_pTheApp->GetActiveView();
-    pView->SetScale((double)nZoom / 100.0 );
-    m_pComboZoom->SetValue(wxString::Format(_T("%d%%"), nZoom));
+    lmMDIChildFrame* pChild = GetActiveChild();
+	if (pChild)
+	{
+		double rScale = (double)nZoom / 100.0;
+		if (pChild->SetActiveViewScale(rScale) )
+			m_pComboZoom->SetValue(wxString::Format(_T("%d%%"), nZoom ));
+	}
+}
+
+void lmMainFrame::OnZoomIncrease(wxCommandEvent& event)
+{
+    lmMDIChildFrame* pChild = GetActiveChild();
+	if (pChild)
+	{
+		double rScale = pChild->GetActiveViewScale() * 1.1;
+		if (pChild->SetActiveViewScale(rScale) )
+			m_pComboZoom->SetValue(wxString::Format(_T("%d%%"), (int)((rScale + 0.005) * 100.0) ));
+	}
+
+}
+
+void lmMainFrame::OnZoomDecrease(wxCommandEvent& event)
+{
+    lmMDIChildFrame* pChild = GetActiveChild();
+	if (pChild)
+	{
+		double rScale = pChild->GetActiveViewScale() / 1.1;
+		if ( pChild->SetActiveViewScale(rScale) )
+			m_pComboZoom->SetValue(wxString::Format(_T("%d%%"), (int)((rScale + 0.005) * 100.0) ));
+	}
 
 }
 
 void lmMainFrame::OnZoomUpdateUI(wxUpdateUIEvent &event)
 {
+	int nId = event.GetId();
     lmMDIChildFrame* pChild = GetActiveChild();
-    event.Enable( pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)) );
-
+	if (pChild)
+	{
+		if ( pChild->IsKindOf(CLASSINFO(lmEditFrame)) )
+			event.Enable(true);
+		else
+			event.Enable(nId == MENU_Zoom_Decrease ||
+						 nId == ID_COMBO_ZOOM ||
+						 nId == MENU_Zoom_Increase );
+	}
+	else
+		event.Enable(false);
 }
 
 void lmMainFrame::OnZoomOther(wxCommandEvent& event)
@@ -1637,6 +1693,7 @@ void lmMainFrame::OnComboZoom(wxCommandEvent& event)
         }
         OnZoom(event, (int)rZoom);
     }
+	event.Skip();
 
 }
 

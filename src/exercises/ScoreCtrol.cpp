@@ -142,7 +142,7 @@ lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
     // "play" link
     if (pOptions->fPlayCtrol)
     {
-        m_pPlayLink = new lmUrlAuxCtrol(this, ID_LINK_PLAY, pOptions->sPlayLabel,
+        m_pPlayLink = new lmUrlAuxCtrol(this, ID_LINK_PLAY, 1.0, pOptions->sPlayLabel,
                                         pOptions->sStopPlayLabel );
         pLinksSizer->Add(m_pPlayLink,
                     0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
@@ -151,7 +151,7 @@ lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
     // "solfa" link
     if (pOptions->fSolfaCtrol)
     {
-        m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, pOptions->sSolfaLabel,
+        m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, 1.0, pOptions->sSolfaLabel,
                                          pOptions->sStopSolfaLabel );
         pLinksSizer->Add(m_pSolfaLink,
                     0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
@@ -169,7 +169,7 @@ lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
         int nNumMeasures = wxMin(pScore->GetNumMeasures(), 10);
         for (int i=0; i < nNumMeasures; i++) {
             m_pMeasureLink[i] =
-                new lmUrlAuxCtrol(this, ID_LINK_MEASURE+i,
+                new lmUrlAuxCtrol(this, ID_LINK_MEASURE+i, 1.0, 
                         wxString::Format(pOptions->sMeasuresLabel, i+1),
                         wxString::Format(pOptions->sStopMeasureLabel, i+1) );
             pLinksSizer->Add(m_pMeasureLink[i],
@@ -184,15 +184,15 @@ lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
 
         // "See source score"
         pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, _("See source score") ),
+            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, 1.0, _("See source score") ),
             wxSizerFlags(0).Left().Border(wxALL, 10) );
         // "Dump score"
         pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_DUMP, _("Dump score") ),
+            new lmUrlAuxCtrol(this, ID_LINK_DUMP, 1.0, _("Dump score") ),
             wxSizerFlags(0).Left().Border(wxALL, 10) );
         // "See MIDI events"
         pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, _("See MIDI events") ),
+            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, 1.0, _("See MIDI events") ),
             wxSizerFlags(0).Left().Border(wxALL, 10) );
     }
 

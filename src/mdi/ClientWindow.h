@@ -59,7 +59,8 @@ public:
     void OnChildClose(wxAuiNotebookEvent& evt);
 
 protected:
-    void PageChanged(int OldSelection, int newSelection);
+	//event handlers
+	void OnPageChanged(wxAuiNotebookEvent& event);
 
 private:
     DECLARE_DYNAMIC_CLASS(lmMDIClientWindow)

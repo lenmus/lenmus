@@ -69,9 +69,6 @@ static wxString m_sIntvColumnLabel[lmTheoIntervalsCtrol::m_NUM_COLS];
 static wxString m_sNotesColumnLabel[lmTheoIntervalsCtrol::m_NUM_COLS];
 
 
-//Layout definitions
-const int BUTTONS_DISTANCE = 5;     //pixels
-
 //IDs for controls
 enum {
     ID_BUTTON = 3010,
@@ -102,7 +99,7 @@ lmTheoIntervalsCtrol::~lmTheoIntervalsCtrol()
 {
 }
 
-void lmTheoIntervalsCtrol::CreateAnswerButtons()
+void lmTheoIntervalsCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)
 {
     //
     //create 42 buttons for the answers: six rows, seven buttons per row
@@ -116,32 +113,39 @@ void lmTheoIntervalsCtrol::CreateAnswerButtons()
     m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS+1, m_NUM_COLS+1, 0, 0);
     m_pMainSizer->Add(
         m_pKeyboardSizer,
-        wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 10)  );
+        wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 2*nSpacing)  );
 
     //row with column labels
-    m_pKeyboardSizer->Add(5, 5, 0);               //spacer for labels column
-    for (int iCol=0; iCol < m_NUM_COLS; iCol++) {
+    m_pKeyboardSizer->Add(nSpacing, nSpacing, 0);               //spacer for labels column
+    for (int iCol=0; iCol < m_NUM_COLS; iCol++)
+    {
         m_pColumnLabel[iCol] = new wxStaticText(this, -1, m_sIntvColumnLabel[iCol]);
+        m_pColumnLabel[iCol]->SetFont(font);
         m_pKeyboardSizer->Add(
-            m_pColumnLabel[iCol],
-            0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+            m_pColumnLabel[iCol], 0,
+            wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE,
+            nSpacing);
     }
 
     //remaining rows with buttons
-    for (int iRow=0; iRow < m_NUM_ROWS; iRow++) {
+    for (int iRow=0; iRow < m_NUM_ROWS; iRow++)
+    {
         m_pRowLabel[iRow] = new wxStaticText(this, -1, m_sIntvRowLabel[iRow]);
+        m_pRowLabel[iRow]->SetFont(font);
         m_pKeyboardSizer->Add(
             m_pRowLabel[iRow],
-            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
+            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, nSpacing) );
 
         // the buttons for this row
         for (int iCol=0; iCol < m_NUM_COLS; iCol++) {
             iB = iCol + iRow * m_NUM_COLS;    // button index: 0 .. 41            
             m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, m_sIntvButtonLabel[iB],
-                wxDefaultPosition, wxSize(54, 20));
+                wxDefaultPosition, wxSize(11*nSpacing, nHeight));
+            m_pAnswerButton[iB]->SetFont(font);
+
             m_pKeyboardSizer->Add(
                 m_pAnswerButton[iB],
-                wxSizerFlags(0).Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
+                wxSizerFlags(0).Border(wxLEFT|wxRIGHT, nSpacing) );
             if (m_sIntvButtonLabel[iB].IsEmpty()) {
                 m_pAnswerButton[iB]->Show(false);
                 m_pAnswerButton[iB]->Enable(false);
@@ -154,24 +158,26 @@ void lmTheoIntervalsCtrol::CreateAnswerButtons()
     wxBoxSizer* pUnisonSizer = new wxBoxSizer( wxHORIZONTAL );
     m_pMainSizer->Add(
         pUnisonSizer,
-        wxSizerFlags(0).Left().Border(wxTOP, 10)  );
+        wxSizerFlags(0).Left().Border(wxTOP, 2*nSpacing)  );
 
         //spacer to skip the labels
-    pUnisonSizer->Add(120+BUTTONS_DISTANCE+BUTTONS_DISTANCE+10, 20, 0);
+    pUnisonSizer->Add(28*nSpacing, 4*nSpacing, 0);
 
         //unison button
     iB = 42;
     m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, m_sIntvButtonLabel[iB] );
+    m_pAnswerButton[iB]->SetFont(font);
     pUnisonSizer->Add(
         m_pAnswerButton[iB],
-        wxSizerFlags(0).Border(wxALL, BUTTONS_DISTANCE) );
+        wxSizerFlags(0).Border(wxALL, nSpacing) );
 
         // "chromatic semitone" button
     iB = 43;
     m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, m_sIntvButtonLabel[iB] );
+    m_pAnswerButton[iB]->SetFont(font);
     pUnisonSizer->Add(
         m_pAnswerButton[iB],
-        wxSizerFlags(0).Border(wxALL, BUTTONS_DISTANCE) );
+        wxSizerFlags(0).Border(wxALL, nSpacing) );
 
     m_nCurrentKeyboard = eKeyboardIntv;
 
@@ -281,10 +287,10 @@ wxString lmTheoIntervalsCtrol::SetNewProblem()
     lmVStaff* pVStaff;
 
     lmScore* pScore = new lmScore();
-    pScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
     pScore->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
     pScore->AddInstrument(1,0,0,_T(""));                    //one vstaff, MIDI channel 0, MIDI instr 0
     pVStaff = pScore->GetVStaff(1, 1);    //get first vstaff of instr.1
+    pScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddClef( m_nClef );
     pVStaff->AddKeySignature(0, true);                    // 0 fifths, major  ==> earmDo
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
@@ -323,9 +329,9 @@ wxString lmTheoIntervalsCtrol::SetNewProblem()
     {
         m_pSolutionScore = pScore;
         m_pProblemScore = new lmScore();
-        m_pProblemScore->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );   //5mm
         m_pProblemScore->AddInstrument(1,0,0,_T(""));                    //one vstaff, MIDI channel 0, MIDI instr 0
         pVStaff = m_pProblemScore->GetVStaff(1, 1);    //get first vstaff of instr.1
+        m_pProblemScore->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
         pVStaff->AddClef( m_nClef );
         pVStaff->AddKeySignature(0, true);                    // 0 fifths, major
         pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );

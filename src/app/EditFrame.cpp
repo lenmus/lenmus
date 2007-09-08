@@ -49,8 +49,9 @@ extern lmMainFrame* g_pMainFrame;
 
 
 BEGIN_EVENT_TABLE(lmEditFrame, lmDocMDIChildFrame)
-  EVT_SIZE      (lmEditFrame::OnSize)
-  EVT_CLOSE     (lmEditFrame::OnClose)
+	EVT_SIZE		(lmEditFrame::OnSize)
+	EVT_CLOSE		(lmEditFrame::OnClose)
+
 END_EVENT_TABLE()
 
 
@@ -78,5 +79,22 @@ void lmEditFrame::OnClose(wxCloseEvent& event)
     m_pView->StopPlaying(true); //true -> wait for termination
     event.Skip();               //continue normal processing of the OnClose event
 
+}
+
+double lmEditFrame::GetActiveViewScale()
+{
+	return m_pView->GetScale();
+}
+
+bool lmEditFrame::SetActiveViewScale(double rScale)
+{
+    m_pView->SetScale(rScale);
+	return true;
+}
+
+void lmEditFrame::OnChildFrameActivated()
+{
+	//this frame is now the active frame. Inform main frame.
+	g_pMainFrame->OnActiveViewChanged(this);
 }
 

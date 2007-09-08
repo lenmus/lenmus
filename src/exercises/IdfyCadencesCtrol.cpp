@@ -59,9 +59,6 @@ extern lmLogger* g_pLogger;
 
 
 
-//Layout definitions
-const int BUTTONS_DISTANCE = 5;        //pixels
-
 static wxString m_sButtonLabel[lm_eCadMaxCadence];
 
 //IDs for controls
@@ -96,17 +93,17 @@ lmIdfyCadencesCtrol::~lmIdfyCadencesCtrol()
 {
 }
 
-void lmIdfyCadencesCtrol::CreateAnswerButtons()
+void lmIdfyCadencesCtrol::CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font)
 {
     //create buttons for the answers, two rows
     int iB = 0;
     for (iB=0; iB < m_NUM_BUTTONS; iB++)
         m_pAnswerButton[iB] = (wxButton*)NULL;
 
-    m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS+1, m_NUM_COLS+1, 10, 0);
+    m_pKeyboardSizer = new wxFlexGridSizer(m_NUM_ROWS+1, m_NUM_COLS+1, 2*nSpacing, 0);
     m_pMainSizer->Add(
         m_pKeyboardSizer,
-        wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 10) );
+        wxSizerFlags(0).Left().Border(wxALIGN_LEFT|wxTOP, 2*nSpacing) );
 
     for (int iRow=0; iRow < m_NUM_ROWS; iRow++) {
         // the buttons for this row
@@ -114,10 +111,12 @@ void lmIdfyCadencesCtrol::CreateAnswerButtons()
             iB = iCol + iRow * m_NUM_COLS;    // button index
             if (iB >= m_NUM_BUTTONS) break;
             m_pAnswerButton[iB] = new wxButton( this, ID_BUTTON + iB, _T("Undefined"),
-                wxDefaultPosition, wxSize(120, 24));
+                wxDefaultPosition, wxSize(24*nSpacing, nHeight));
+            m_pAnswerButton[iB]->SetFont(font);
+
             m_pKeyboardSizer->Add(
                 m_pAnswerButton[iB],
-                wxSizerFlags(0).Border(wxLEFT|wxRIGHT, BUTTONS_DISTANCE) );
+                wxSizerFlags(0).Border(wxLEFT|wxRIGHT, nSpacing) );
         }
     }
 
@@ -324,9 +323,8 @@ wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType
                                            lmScore** pSolutionScore)
 {
     //create the chords
-    bool fUseGrandStaff = m_pConstrains->UseGrandStaff();
     lmCadence oCad;
-    if (!oCad.Create(nType, m_nKey, fUseGrandStaff)) return _T("");
+    if (!oCad.Create(nType, m_nKey, true)) return _T("");
 
     //delete the previous score
     if (*pProblemScore) {
@@ -346,57 +344,90 @@ wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType
     lmVStaff* pVStaff;
 
     *pProblemScore = new lmScore();
-    (*pProblemScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
     (*pProblemScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
+    (*pProblemScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+							g_pMidi->DefaultVoiceInstr(), _T(""));
+    pVStaff = (*pProblemScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
+    (*pProblemScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
+    pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
+    pVStaff->AddClef( eclvSol, 1 );
+    pVStaff->AddClef( eclvFa4, 2 );
+    pVStaff->AddKeySignature( m_nKey );
+    pVStaff->AddTimeSignature(2 ,4);
 
-    if (pSolutionScore) {
-        *pSolutionScore = new lmScore();
-        (*pSolutionScore)->SetTopSystemDistance( lmToLogicalUnits(5, lmMILLIMETERS) );    //5mm
-        (*pSolutionScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
+    //If ear training add A4/Tonic chord
+    if (!m_pConstrains->IsTheoryMode())
+    {
+        //it is ear training exercise
+        if (m_pConstrains->GetKeyDisplayMode() == 0) {
+            // Use A4 note
+            sPattern = _T("(n a4 r)");
+            pNode = parserLDP.ParseText( sPattern );
+            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+        }
+        else {
+            // Use tonic chord
+            lmChordManager* pChord = oCad.GetTonicChord();
+            int nNumNotes = pChord->GetNumNotes();
+            sPattern = _T("(n ") + pChord->GetPattern(0) + _T(" r)");
+            pNode = parserLDP.ParseText( sPattern );
+            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+            for (int i=1; i < nNumNotes; i++) {
+                sPattern = _T("(na ");
+                sPattern += pChord->GetPattern(i);
+                sPattern +=  _T(" r)");
+                pNode = parserLDP.ParseText( sPattern );
+                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+            }
+        }
+        pVStaff->AddBarline(etb_SimpleBarline);
+
+        sPattern = _T("(s r)");
+        pNode = parserLDP.ParseText( sPattern );
+        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+        pVStaff->AddBarline(etb_SimpleBarline);
     }
 
-    if (fUseGrandStaff)
+    // Loop to add chords
+    for (int iC=0; iC < oCad.GetNumChords(); iC++)
     {
-        // Use a grand staff
-        (*pProblemScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
+        pVStaff->AddSpacer(15);
+        if (iC != 0) pVStaff->AddBarline(etb_SimpleBarline);
+        // first and second notes on F4 clef staff
+        sPattern = _T("(n ") + oCad.GetNotePattern(iC, 0) + _T(" r p2)");
+    //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
+        pNode = parserLDP.ParseText( sPattern );
+        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+        sPattern = _T("(na ") + oCad.GetNotePattern(iC, 1) + _T(" r p2)");
+    //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
+        pNode = parserLDP.ParseText( sPattern );
+        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+        // third and fourth notes on G clef staff
+        sPattern = _T("(na ") + oCad.GetNotePattern(iC, 2) + _T(" r p1)");
+    //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
+        pNode = parserLDP.ParseText( sPattern );
+        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+        sPattern = _T("(na ") + oCad.GetNotePattern(iC, 3) + _T(" r p1)");
+    //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
+        pNode = parserLDP.ParseText( sPattern );
+        pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
+    }
+    pVStaff->AddSpacer(20);
+    pVStaff->AddBarline(etb_EndBarline);
+
+    //Prepare Solution Score
+    if (pSolutionScore) {
+        *pSolutionScore = new lmScore();
+        (*pSolutionScore)->SetOption(_T("Render.SpacingMethod"), (long)esm_Fixed);
+        (*pSolutionScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
 							    g_pMidi->DefaultVoiceInstr(), _T(""));
-        pVStaff = (*pProblemScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
+        pVStaff = (*pSolutionScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
+        (*pSolutionScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
         pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
         pVStaff->AddClef( eclvSol, 1 );
         pVStaff->AddClef( eclvFa4, 2 );
         pVStaff->AddKeySignature( m_nKey );
         pVStaff->AddTimeSignature(2 ,4);
-
-        //If ear training add A4/Tonic chord
-        if (pSolutionScore) {
-            if (m_pConstrains->GetKeyDisplayMode() == 0) {
-                // Use A4 note
-                sPattern = _T("(n a4 r)");
-                pNode = parserLDP.ParseText( sPattern );
-                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-            }
-            else {
-                // Use tonic chord
-                lmChordManager* pChord = oCad.GetTonicChord();
-                int nNumNotes = pChord->GetNumNotes();
-                sPattern = _T("(n ") + pChord->GetPattern(0) + _T(" r)");
-                pNode = parserLDP.ParseText( sPattern );
-                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-                for (int i=1; i < nNumNotes; i++) {
-                    sPattern = _T("(na ");
-                    sPattern += pChord->GetPattern(i);
-                    sPattern +=  _T(" r)");
-                    pNode = parserLDP.ParseText( sPattern );
-                    pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-                }
-            }
-            pVStaff->AddBarline(etb_SimpleBarline);
-
-            sPattern = _T("(s r)");
-            pNode = parserLDP.ParseText( sPattern );
-            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-            pVStaff->AddBarline(etb_SimpleBarline);
-        }
 
         // Loop to add chords
         for (int iC=0; iC < oCad.GetNumChords(); iC++)
@@ -424,78 +455,8 @@ wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType
         }
         pVStaff->AddSpacer(20);
         pVStaff->AddBarline(etb_EndBarline);
-
-        //Prepare Solution Score
-        if (pSolutionScore) {
-            (*pSolutionScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
-							        g_pMidi->DefaultVoiceInstr(), _T(""));
-            pVStaff = (*pSolutionScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
-            pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
-            pVStaff->AddClef( eclvSol, 1 );
-            pVStaff->AddClef( eclvFa4, 2 );
-            pVStaff->AddKeySignature( m_nKey );
-            pVStaff->AddTimeSignature(2 ,4);
-
-            // Loop to add chords
-            for (int iC=0; iC < oCad.GetNumChords(); iC++)
-            {
-                pVStaff->AddSpacer(15);
-                if (iC != 0) pVStaff->AddBarline(etb_SimpleBarline);
-                // first and second notes on F4 clef staff
-                sPattern = _T("(n ") + oCad.GetNotePattern(iC, 0) + _T(" r p2)");
-            //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-                pNode = parserLDP.ParseText( sPattern );
-                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-                sPattern = _T("(na ") + oCad.GetNotePattern(iC, 1) + _T(" r p2)");
-            //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-                pNode = parserLDP.ParseText( sPattern );
-                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-                // third and fourth notes on G clef staff
-                sPattern = _T("(na ") + oCad.GetNotePattern(iC, 2) + _T(" r p1)");
-            //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-                pNode = parserLDP.ParseText( sPattern );
-                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-                sPattern = _T("(na ") + oCad.GetNotePattern(iC, 3) + _T(" r p1)");
-            //wxLogMessage(_T("[lmIdfyCadencesCtrol::PrepareScore] sPattern='%s'"), sPattern.c_str());
-                pNode = parserLDP.ParseText( sPattern );
-                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-            }
-            pVStaff->AddSpacer(20);
-            pVStaff->AddBarline(etb_EndBarline);
-        }
     }
-    else
-    {
-        // Use a single staff
-        (*pProblemScore)->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
-							    g_pMidi->DefaultVoiceInstr(), _T(""));
-        pVStaff = (*pProblemScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
-        pVStaff->AddClef( nClef );
-        pVStaff->AddKeySignature( m_nKey );
-        pVStaff->AddTimeSignature(2 ,4);
-
-        // Loop to add chords
-        for (int iC=0; iC < oCad.GetNumChords(); iC++)
-        {
-            pVStaff->AddSpacer(15);
-            if (iC != 0) pVStaff->AddBarline(etb_SimpleBarline);
-            lmChordManager* pChord = oCad.GetChord(iC);
-            int nNumNotes = pChord->GetNumNotes();
-            sPattern = _T("(n ") + pChord->GetPattern(0) + _T(" r)");
-            pNode = parserLDP.ParseText( sPattern );
-            pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-            for (int i=1; i < nNumNotes; i++) {
-                sPattern = _T("(na ");
-                sPattern += pChord->GetPattern(i);
-                sPattern +=  _T(" r)");
-                pNode = parserLDP.ParseText( sPattern );
-                pNote = parserLDP.AnalyzeNote(pNode, pVStaff);
-            }
-        }
-        pVStaff->AddSpacer(20);
-        pVStaff->AddBarline(etb_EndBarline);
-    }
-
+    
     //return cadence name
     return  oCad.GetName();
 

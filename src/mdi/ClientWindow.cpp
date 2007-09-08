@@ -69,6 +69,7 @@ IMPLEMENT_DYNAMIC_CLASS(lmMDIClientWindow, wxAuiNotebook)
 BEGIN_EVENT_TABLE(lmMDIClientWindow, wxAuiNotebook)
     EVT_SIZE(lmMDIClientWindow::OnSize)
     EVT_AUINOTEBOOK_PAGE_CLOSE(wxID_ANY, lmMDIClientWindow::OnChildClose)
+    EVT_AUINOTEBOOK_PAGE_CHANGED(wxID_ANY, lmMDIClientWindow::OnPageChanged)
 END_EVENT_TABLE()
 
 
@@ -93,18 +94,15 @@ int lmMDIClientWindow::SetSelection(size_t nPage)
     return oldSelection;
 }
 
-void lmMDIClientWindow::PageChanged(int OldSelection, int newSelection)
+void lmMDIClientWindow::OnPageChanged(wxAuiNotebookEvent& event)
 {
-    // Don't do to much work, only when something realy should change!
-    if (OldSelection == newSelection)
-        return;
-    // Again check if we realy need to do this...
+	int OldSelection = event.GetOldSelection();
+	int newSelection = event.GetSelection();
+    if (OldSelection == newSelection) return;		//nothing to do
     if (newSelection != -1)
     {
-        lmMDIChildFrame* child = (lmMDIChildFrame *)GetPage(newSelection);
-
-        if (child->GetMDIParentFrame()->GetActiveChild() == child)
-            return;
+        lmMDIChildFrame* child = (lmMDIChildFrame*)GetPage(newSelection);
+		child->OnChildFrameActivated();
     }
 }
 

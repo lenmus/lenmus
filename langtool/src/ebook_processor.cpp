@@ -1361,8 +1361,8 @@ void lmEbookProcessor::CreateBookCover()
         _T("\n")
         _T("<!-- banner -->\n")
         _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
-        _T("<tr><td bgcolor='#7f8adc' width='165px'><img src='navbg7.jpg'></td>\n")
-	    _T("    <td bgcolor='#ffffff' width='40px'>&nbsp;</td>\n")
+        _T("<tr><td bgcolor='#7f8adc' width='23%' valign='top'><img src='navbg7.jpg'></td>\n")
+	    _T("    <td bgcolor='#ffffff' width='6%'>&nbsp;</td>\n")
         _T("<td valign='top' bgcolor='#ffffff'>\n")
         _T("\n")
         _T("<!-- content -->\n")
@@ -1602,7 +1602,7 @@ void lmEbookProcessor::TerminateLeafletFile()
 
     // Write footer
     WriteToHtml(
-        _T("</td><td bgcolor='#ffffff' width='10px'></td></tr></table>\n")
+        _T("</td><td bgcolor='#ffffff' width='10'></td></tr></table>\n")
         _T("\n")
         _T("<br /><br /><br /><br />\n")
         _T("<br /><br /><br /><br />\n")
@@ -1740,18 +1740,18 @@ void lmEbookProcessor::CreateLeafletHeaders(wxString sBookTitle, wxString sHeade
         _T("<body bgcolor='#808080'>\n")
         _T("\n")
         _T("<center>\n")
-        _T("<table width='720px' bgcolor='#ffffff' cellpadding='0' cellspacing='0'>\n")
+        _T("<table width='720' bgcolor='#ffffff' cellpadding='0' cellspacing='0'>\n")
         _T("<tr><td bgcolor='#ffffff'>\n")
         _T("\n")
         _T("<!-- banner -->\n")
         _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
-        _T("<tr><td width='300' rowspan='2'><img src='ebook_banner_left1.png'></td>\n")
+        _T("<tr><td width='42%' rowspan='2' bgcolor='#7f8adc'><img src='ebook_banner_left1.png'></td>\n")
         _T("<td bgcolor='#7f8adc' rowspan='2'>&nbsp;</td>\n")
-        _T("<td width='200' bgcolor='#7f8adc'><img src='leaflet_banner_right.png'></td>\n")
-        _T("<td bgcolor='#7f8adc' rowspan='2' width='20px'>&nbsp;</td>\n")
+        _T("<td width='28%' bgcolor='#7f8adc' align='right'><img src='leaflet_banner_right.png'></td>\n")
+        _T("<td width='20' bgcolor='#7f8adc' rowspan='2'>&nbsp;</td>\n")
         _T("</tr>\n")
         _T("<tr height='30'><td bgcolor='#7f8adc' align='right' valign='top'>\n")
-        _T("	<font color='#ffffff' size='5' face='Monotype Corsiva'>") );
+        _T("	<font color='#ffffff' size=5 face='Monotype Corsiva'>") );
     WriteToHtml( ::wxGetTranslation(m_sPhonascus) );
     WriteToHtml(
         _T("</font></td></tr>\n")
@@ -1759,8 +1759,8 @@ void lmEbookProcessor::CreateLeafletHeaders(wxString sBookTitle, wxString sHeade
         _T("</table>\n\n")
         _T("\n")
         _T("<br />\n")
-        _T("<table width='100%' cellpadding='0' cellspacing='0'>\n")
-        _T("<tr><td bgcolor='#ffffff' width='14px'></td>\n")
+        _T("<table width='720' cellpadding='0' cellspacing='0'>\n")
+        _T("<tr><td width='14' bgcolor='#ffffff'></td>\n")
         _T("<td>\n") );
 
 }

@@ -165,7 +165,7 @@ class lmTextBookHelpHtmlWindow : public lmHtmlWindow
             wxString pg = win->GetOpenedPage();
             if(!an.empty())
             {
-                pg << wxT("#");
+                pg << _T("#");
                 pg << an;
             }
             return pg;
@@ -264,8 +264,7 @@ IMPLEMENT_DYNAMIC_CLASS(lmTextBookFrame, lmMDIChildFrame)
 
 
 BEGIN_EVENT_TABLE(lmTextBookFrame, lmMDIChildFrame)
-    EVT_ACTIVATE(lmTextBookFrame::OnActivate)
-    EVT_TOOL_RANGE(MENU_eBookPanel, MENU_eBook_IncreaseFont, lmTextBookFrame::OnToolbar)
+    EVT_TOOL_RANGE(MENU_eBookPanel, MENU_eBook_OpenFile, lmTextBookFrame::OnToolbar)
 
     EVT_BUTTON      (ID_BOOKMARKS_REMOVE, lmTextBookFrame::OnToolbar)
     EVT_BUTTON      (ID_BOOKMARKS_ADD, lmTextBookFrame::OnToolbar)
@@ -359,7 +358,7 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
 
     lmMDIChildFrame::Create((lmMDIParentFrame*)parent, id, _("eMusicBooks"),
                     wxPoint(m_Cfg.x, m_Cfg.y), wxSize(m_Cfg.w, m_Cfg.h),
-                    wxDEFAULT_FRAME_STYLE, wxT("TextBookFrame") );
+                    wxDEFAULT_FRAME_STYLE, _T("TextBookFrame") );
 
 #if lmUSE_NOTEBOOK_MDI
     ////Notebook: is always maximized
@@ -396,12 +395,12 @@ bool lmTextBookFrame::Create(wxWindow* parent, wxWindowID id,
         m_HtmlWin = new lmHtmlWindow(this);
     }
 
-    m_HtmlWin->SetRelatedFrame((wxFrame*)this, m_TitleFormat);
-    m_HtmlWin->SetScale(m_rScale);
-    g_pMainFrame->SetHtmlWindow(m_HtmlWin);
-
     if ( m_Config )
         m_HtmlWin->ReadCustomization(m_Config, m_ConfigRoot);
+
+    m_HtmlWin->SetRelatedFrame((wxFrame*)this, m_TitleFormat);
+    g_pMainFrame->SetHtmlWindow(m_HtmlWin);
+	SetActiveViewScale(m_rScale);
 
     // contents tree panel?
     if ( style & wxHF_CONTENTS )
@@ -907,25 +906,21 @@ void lmTextBookFrame::ReadCustomization(wxConfigBase *cfg, const wxString& path)
         cfg->SetPath(_T("/") + path);
     }
 
-    m_Cfg.navig_on = cfg->Read(wxT("tbcNavigPanel"), m_Cfg.navig_on) != 0;
-    m_Cfg.sashpos = cfg->Read(wxT("tbcSashPos"), m_Cfg.sashpos);
-    m_Cfg.x = cfg->Read(wxT("tbcX"), m_Cfg.x);
-    m_Cfg.y = cfg->Read(wxT("tbcY"), m_Cfg.y);
-    m_Cfg.w = cfg->Read(wxT("tbcW"), m_Cfg.w);
-    m_Cfg.h = cfg->Read(wxT("tbcH"), m_Cfg.h);
+    m_Cfg.navig_on = cfg->Read(_T("tbcNavigPanel"), m_Cfg.navig_on) != 0;
+    m_Cfg.sashpos = cfg->Read(_T("tbcSashPos"), m_Cfg.sashpos);
+    m_Cfg.x = cfg->Read(_T("tbcX"), m_Cfg.x);
+    m_Cfg.y = cfg->Read(_T("tbcY"), m_Cfg.y);
+    m_Cfg.w = cfg->Read(_T("tbcW"), m_Cfg.w);
+    m_Cfg.h = cfg->Read(_T("tbcH"), m_Cfg.h);
 
-    m_FixedFace = cfg->Read(wxT("tbcFixedFace"), m_FixedFace);
-    m_NormalFace = cfg->Read(wxT("tbcNormalFace"), m_NormalFace);
-    m_nFontSize = cfg->Read(wxT("tbcBaseFontSize"), m_nFontSize);
-    m_nFontSize = cfg->Read(wxT("tbcBaseFontSize"), m_nFontSize);
-    m_rScale = (double)m_nFontSize / (double)lmDEFAULT_FONT_SIZE;
+    m_rScale = cfg->Read(_T("tbcScale"), m_rScale);
 
     {
         int i;
         int cnt;
         wxString val, s;
 
-        cnt = cfg->Read(wxT("tbcBookmarksCnt"), 0L);
+        cnt = cfg->Read(_T("tbcBookmarksCnt"), 0L);
         if (cnt != 0)
         {
             m_BookmarksNames.Clear();
@@ -938,11 +933,11 @@ void lmTextBookFrame::ReadCustomization(wxConfigBase *cfg, const wxString& path)
 
             for (i = 0; i < cnt; i++)
             {
-                val.Printf(wxT("tbcBookmark_%i"), i);
+                val.Printf(_T("tbcBookmark_%i"), i);
                 s = cfg->Read(val);
                 m_BookmarksNames.Add(s);
                 if (m_Bookmarks) m_Bookmarks->Append(s);
-                val.Printf(wxT("tbcBookmark_%i_url"), i);
+                val.Printf(_T("tbcBookmark_%i_url"), i);
                 s = cfg->Read(val);
                 m_BookmarksPages.Add(s);
             }
@@ -967,20 +962,8 @@ void lmTextBookFrame::WriteCustomization(wxConfigBase *cfg, const wxString& path
         cfg->SetPath(_T("/") + path);
     }
 
-    cfg->Write(wxT("tbcNavigPanel"), m_Cfg.navig_on);
-    cfg->Write(wxT("tbcSashPos"), (long)m_Cfg.sashpos);
-    //if ( !IsIconized() )
-    //{
-    //    //  Don't write if iconized as this would make the window
-    //    //  disappear next time it is shown!
-    //    cfg->Write(wxT("tbcX"), (long)m_Cfg.x);
-    //    cfg->Write(wxT("tbcY"), (long)m_Cfg.y);
-    //    cfg->Write(wxT("tbcW"), (long)m_Cfg.w);
-    //    cfg->Write(wxT("tbcH"), (long)m_Cfg.h);
-    //}
-    cfg->Write(wxT("tbcFixedFace"), m_FixedFace);
-    cfg->Write(wxT("tbcNormalFace"), m_NormalFace);
-    cfg->Write(wxT("tbcBaseFontSize"), (long)m_nFontSize);
+    cfg->Write(_T("tbcNavigPanel"), m_Cfg.navig_on);
+    cfg->Write(_T("tbcSashPos"), (long)m_Cfg.sashpos);
 
     if (m_Bookmarks)
     {
@@ -988,15 +971,17 @@ void lmTextBookFrame::WriteCustomization(wxConfigBase *cfg, const wxString& path
         int cnt = m_BookmarksNames.GetCount();
         wxString val;
 
-        cfg->Write(wxT("tbcBookmarksCnt"), (long)cnt);
+        cfg->Write(_T("tbcBookmarksCnt"), (long)cnt);
         for (i = 0; i < cnt; i++)
         {
-            val.Printf(wxT("tbcBookmark_%i"), i);
+            val.Printf(_T("tbcBookmark_%i"), i);
             cfg->Write(val, m_BookmarksNames[i]);
-            val.Printf(wxT("tbcBookmark_%i_url"), i);
+            val.Printf(_T("tbcBookmark_%i_url"), i);
             cfg->Write(val, m_BookmarksPages[i]);
         }
     }
+    cfg->Write(_T("tbcScale"), m_rScale);
+
 
     if (m_HtmlWin)
         m_HtmlWin->WriteCustomization(cfg);
@@ -1005,49 +990,36 @@ void lmTextBookFrame::WriteCustomization(wxConfigBase *cfg, const wxString& path
         cfg->SetPath(oldpath);
 }
 
-static void SetFontsToHtmlWin(lmHtmlWindow *win, wxString scalf, wxString fixf, int size)
+bool lmTextBookFrame::SetActiveViewScale(double rScale)
 {
-    int f_sizes[7];
-    f_sizes[0] = int(size * 0.6);
-    f_sizes[1] = int(size * 0.8);
-    f_sizes[2] = size;
-    f_sizes[3] = int(size * 1.2);
-    f_sizes[4] = int(size * 1.4);
-    f_sizes[5] = int(size * 1.6);
-    f_sizes[6] = int(size * 1.8);
+	//Main frame invokes this method to inform that zomming factor has been changed.
+	//Returns false is scale has not been changed
 
-    win->SetFonts(scalf, fixf, f_sizes);
-}
+	double rFontSize = (double)m_nFontSize * rScale;
 
-void lmTextBookFrame::IncreaseFontSize()
-{
-    //increase font size
+	int nFontSizes[7];
+    nFontSizes[0] = int(rFontSize * 0.6 + 0.5);
+    nFontSizes[1] = int(rFontSize * 0.8 + 0.5);
+    nFontSizes[2] = int(rFontSize + 0.5);
+    nFontSizes[3] = int(rFontSize * 1.2 + 0.5);
+    nFontSizes[4] = int(rFontSize * 1.4 + 0.5);
+    nFontSizes[5] = int(rFontSize * 1.6 + 0.5);
+    nFontSizes[6] = int(rFontSize * 1.8 + 0.5);
 
-    int incr = 1;
-    if (m_nFontSize > 11) incr = 2;
-    double ratio = (double)(m_nFontSize + incr) / (double)m_nFontSize;
-    m_nFontSize += incr;
-    //wxLogMessage(_T("[lmTextBookFrame::IncreaseFontSize] font size = %d"), m_nFontSize);
-    m_rScale *= ratio;
-    m_HtmlWin->SetScale(m_rScale);
-    SetFontsToHtmlWin(m_HtmlWin, wxEmptyString, wxEmptyString, m_nFontSize);
+	//wxLogMessage(_T("[] scale=%.4f, font[0]=%d,%d,%d,%d,%d,%d,%d , m_nFontSize=%d"), rScale,
+	//	nFontSizes[0], nFontSizes[1], nFontSizes[2], nFontSizes[3], nFontSizes[4], 
+	//	nFontSizes[5], nFontSizes[6], m_nFontSize);
 
-}
-
-void lmTextBookFrame::DecreaseFontSize()
-{
-    //decrease font size
-
-    if (m_nFontSize == 4) return;       //minimun allowed size = 4pt
-
-    int decr = 2;
-    if (m_nFontSize <= 12) decr = 1;
-    double ratio = (double)(m_nFontSize - decr) / (double)m_nFontSize;
-    m_nFontSize -= decr;
-    //wxLogMessage(_T("[lmTextBookFrame::DecreaseFontSize] font size = %d"), m_nFontSize);
-    m_rScale *= ratio;
-    m_HtmlWin->SetScale(m_rScale);
-    SetFontsToHtmlWin(m_HtmlWin, wxEmptyString, wxEmptyString, (int)m_nFontSize);
+	if (nFontSizes[0] < 3) 
+		return false;
+	else
+	{
+		m_rScale = rScale;
+		m_HtmlWin->SetScale(m_rScale);
+		m_HtmlWin->SetPixelScalingFactor(m_rScale);
+		m_HtmlWin->SetFonts(wxEmptyString, wxEmptyString, nFontSizes);
+		return true;
+	}
 
 }
 
@@ -1072,21 +1044,6 @@ void lmTextBookFrame::RefreshContent()
 wxString lmTextBookFrame::GetOpenedPageWithAnchor()
 {
     return lmTextBookHelpHtmlWindow::GetOpenedPageWithAnchor(m_HtmlWin);
-}
-
-
-void lmTextBookFrame::OnActivate(wxActivateEvent& event)
-{
-    // This saves one mouse click when using the
-    // wxHTML for context sensitive help systems
-#ifndef __WXGTK__
-    // NB: wxActivateEvent is a bit broken in wxGTK
-    //     and is sometimes sent when it should not be
-    if (event.GetActive() && m_HtmlWin)
-        m_HtmlWin->SetFocus();
-#endif
-
-    event.Skip();
 }
 
 void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
@@ -1143,14 +1100,6 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
             }
             break;
 
-        case MENU_eBook_IncreaseFont :
-            IncreaseFontSize();
-            break;
-
-        case MENU_eBook_DecreaseFont :
-            DecreaseFontSize();
-            break;
-
         case ID_BOOKMARKS_ADD :
             {
                 wxString item;
@@ -1159,7 +1108,7 @@ void lmTextBookFrame::OnToolbar(wxCommandEvent& event)
                 item = m_HtmlWin->GetOpenedPageTitle();
                 url = m_HtmlWin->GetOpenedPage();
                 if (item == wxEmptyString)
-                    item = url.AfterLast(wxT('/'));
+                    item = url.AfterLast(_T('/'));
                 if (m_BookmarksPages.Index(url) == wxNOT_FOUND)
                 {
                     m_Bookmarks->Append(item);
@@ -1532,11 +1481,16 @@ void lmTextBookFrame::UpdateUIEvent(wxUpdateUIEvent& event, wxToolBar* pToolBar)
             //      MENU_eBookPanel,
             //      MENU_eBook_Print,
             //      MENU_eBook_OpenFile,
-            //      MENU_eBook_DecreaseFont,
-            //      MENU_eBook_IncreaseFont,
+            //      MENU_Zoom_Decrease,
+            //      MENU_Zoom_Increase,
             fEnable = true;
             pToolBar->ToggleTool(MENU_eBookPanel, IsNavPanelVisible());
     }
     event.Enable(fEnable);
 }
 
+void lmTextBookFrame::OnChildFrameActivated()
+{
+	//this frame is now the active frame. Inform main frame.
+	g_pMainFrame->OnActiveViewChanged(this);
+}

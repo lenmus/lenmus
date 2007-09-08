@@ -68,8 +68,6 @@ enum
     MENU_eBook_PageNext,
     MENU_eBook_Print,
     MENU_eBook_OpenFile,
-    MENU_eBook_DecreaseFont,
-    MENU_eBook_IncreaseFont,
 
     MENU_Last_Public_ID
 };
@@ -147,6 +145,8 @@ public:
     void OnZoomFitWidth(wxCommandEvent& event);
     void OnZoomFitFull(wxCommandEvent& event);
     void OnZoomOther(wxCommandEvent& event);
+    void OnZoomIncrease(wxCommandEvent& event);
+    void OnZoomDecrease(wxCommandEvent& event);
     void OnZoomUpdateUI(wxUpdateUIEvent &event);
 
 
@@ -220,6 +220,9 @@ public:
 
 
     lmTextBookController* GetBookController() { return m_pBookController; }
+
+	// call backs
+	void OnActiveViewChanged(lmMDIChildFrame* pFrame);
 
 
 

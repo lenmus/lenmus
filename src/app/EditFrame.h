@@ -48,6 +48,11 @@ public:
     void OnSize(wxSizeEvent& WXUNUSED(event));
     void OnClose(wxCloseEvent& event);
 
+	double GetActiveViewScale();
+	bool SetActiveViewScale(double rScale);
+	void OnChildFrameActivated();
+
+
 private:
     lmScoreView*        m_pView;    //the owner view of this frame
 
