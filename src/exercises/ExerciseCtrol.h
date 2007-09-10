@@ -73,18 +73,32 @@ public:
     }
     bool ButtonsEnabledAfterSolution() { return m_fButtonsEnabledAfterSolution; }
 
+    void SetPlayLink(bool fValue) { m_fPlayLink = fValue; }
+    bool IncludePlayLink() { return m_fPlayLink; }
+
+    void SetSolutionLink(bool fValue) { m_fSolutionLink = fValue; }
+    bool IncludeSolutionLink() { return m_fSolutionLink; }
+
+    void SetUsingCounters(bool fValue) { m_fUseCounters = fValue; }
+    bool IsUsingCounters() { return m_fUseCounters; }
+
 
 protected:
     virtual void LoadSettings() {}
 
     wxString    m_sSection;         //section name to save the constraints
     wxString    m_sGoBackURL;       //URL for "Go back" link of empty string if no link
-    bool        m_fSettingsLink;    //include 'settings' link
-    bool        m_fButtonsEnabledAfterSolution;
 
     //The Ctrol could be used both for ear training exercises and for theory exercises.
     //Following variables are used for configuration
     bool        m_fTheoryMode;
+
+    //options
+    bool        m_fButtonsEnabledAfterSolution;
+    bool        m_fPlayLink;        //In theory mode the score could be not playable
+    bool        m_fSettingsLink;    //include 'settings' link
+    bool        m_fUseCounters;     //option to not use counters
+    bool        m_fSolutionLink;    //include 'show solution' link
 
 
 };
@@ -109,7 +123,6 @@ public:
     virtual ~lmExerciseCtrol();
 
     // event handlers. No need to implement in derived classes
-    void OnPaint(wxPaintEvent& WXUNUSED(event));
     virtual void OnSize(wxSizeEvent& event);
     virtual void OnRespButton(wxCommandEvent& event);
     virtual void OnPlay(wxCommandEvent& event);
@@ -124,6 +137,18 @@ public:
     virtual void OnDebugShowMidiEvents(wxCommandEvent& event)=0;
 
 protected:
+    //IDs for controls
+    enum {
+        ID_LINK_SEE_SOURCE = 3000,
+        ID_LINK_DUMP,
+        ID_LINK_MIDI_EVENTS,
+        ID_LINK_NEW_PROBLEM,
+        ID_LINK_PLAY,
+        ID_LINK_SOLUTION,
+        ID_LINK_SETTINGS,
+        ID_LINK_GO_BACK
+
+    };
 
     //virtual pure methods to be implemented by derived classes
     virtual void InitializeStrings()=0;   
@@ -147,7 +172,7 @@ protected:
     virtual void ResetExercise();
 
     //methods invoked from derived classes
-    void CreateControls();
+    virtual void CreateControls();
     void SetButtons(wxButton* pButton[], int nNumButtons, int nIdFirstButton);
 
 

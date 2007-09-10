@@ -201,7 +201,7 @@ lmTheoKeySignParms::lmTheoKeySignParms(const wxHtmlTag& tag, int nWidth, int nHe
     m_nWindowStyle = nStyle;
 
     // create constraints object (construtor initilizes it with default values for attributes)
-    m_pConstrains = new lmTheoKeySignConstrains();
+    m_pConstrains = new lmTheoKeySignConstrains(_T("TheoKeys"));
 
 }
 
@@ -256,7 +256,7 @@ void lmTheoKeySignParms::AddParam(const wxHtmlTag& tag)
         bool fOK = sAccidentals.ToLong(&nAccidentals);
         if (!fOK || nAccidentals < 0 || nAccidentals > 7) {
             LogError( wxString::Format(
-                _("Invalid param value in:\n<param %s >\n \
+                _T("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: numeric, 0..7"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
@@ -278,7 +278,7 @@ Acceptable values: numeric, 0..7"),
             m_pConstrains->SetProblemType( eBothKeySignProblems );
         else
             LogError(wxString::Format(
-_("Invalid param value in:\n<param %s >\n \
+_T("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: DeduceKey | WriteKey | Both"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
@@ -304,7 +304,7 @@ Acceptable values: DeduceKey | WriteKey | Both"),
             m_pConstrains->SetClef(eclvDo1, true);
         else
             LogError(wxString::Format(
-_("Invalid param value in:\n<param %s >\n \
+_T("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
@@ -322,7 +322,7 @@ Acceptable values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1"),
             m_pConstrains->SetScaleMode( eMayorAndMinorModes );
         else
             LogError(wxString::Format(
-_("Invalid param value in:\n<param %s >\n \
+_T("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: Major | Minor | Both"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
@@ -331,7 +331,7 @@ Acceptable values: Major | Minor | Both"),
     // Unknown param
     else
         LogError(wxString::Format(
-            _("lmTheoIntervalsCtrol. Unknown param: <param %s >\n"),
+            _T("lmTheoIntervalsCtrol. Unknown param: <param %s >\n"),
             tag.GetAllParams().c_str() ));
 
 }
@@ -449,7 +449,7 @@ void lmEarIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
     // Unknown param
     else
         LogError(wxString::Format(
-            _("lmEarIntervalsCtrol. Unknown param: <param %s >\n"),
+            _T("lmEarIntervalsCtrol. Unknown param: <param %s >\n"),
             tag.GetAllParams().c_str() ));
 
 }
@@ -570,7 +570,7 @@ void lmEarCompareIntvCtrolParms::AddParam(const wxHtmlTag& tag)
     // Unknown param
     else
         LogError(wxString::Format(
-            _("lmEarIntervalsCtrol. Unknown param: <param %s >\n"),
+            _T("lmEarIntervalsCtrol. Unknown param: <param %s >\n"),
             tag.GetAllParams().c_str() ));
 
 }

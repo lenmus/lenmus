@@ -36,6 +36,7 @@
 #include "wx/html/htmlwin.h"
 #include "ObjectParams.h"
 #include "../exercises/ScoreConstrains.h"
+#include "../exercises/MusicReadingConstrains.h"
 #include "../ldp_parser/AuxString.h"
 
 //! enum assigning name to the score generation settings source.
@@ -65,11 +66,11 @@
 
 */
 
-/*! This class pack all parameters to set up a Music Reading exercise.
-    The contained lmScoreConstrains object has the constraints for the 'ByProgram'
-    settings mode (default mode). For other modes ('UserSettings' and 'ReadingNotes')
-    the settings must be read/setup by the TheoMusicReadingCtrol object.
-*/
+// This class pack all parameters to set up a Music Reading exercise.
+// The contained lmScoreConstrains object has the constraints for the 'ByProgram'
+// settings mode (default mode). For other modes ('UserSettings' and 'ReadingNotes')
+// the settings must be read/setup by the TheoMusicReadingCtrol object.
+
 class lmTheoMusicReadingCtrolParms : public lmObjectParams
 {
 public:
@@ -80,21 +81,50 @@ public:
     void AddParam(const wxHtmlTag& tag);
     void CreateHtmlCell(wxHtmlWinParser *pHtmlParser);
 
+    // Options for Music Reading Ctrol
+    void SetControlPlay(bool fValue, wxString sLabels = _T(""))
+        {
+            fPlayCtrol = fValue;
+            if (sLabels != _T(""))
+                SetLabels(sLabels, &sPlayLabel, &sStopPlayLabel);
+        }
+    void SetControlSolfa(bool fValue, wxString sLabels = _T(""))
+        {
+            fSolfaCtrol = fValue;
+            if (sLabels != _T(""))
+                SetLabels(sLabels, &sSolfaLabel, &sStopSolfaLabel);
+        }
+
+
+    bool        fPlayCtrol;             //Instert "Play" link
+    wxString    sPlayLabel;             //label for "Play" link
+    wxString    sStopPlayLabel;         //label for "Stop playing" link
+
+    bool        fSolfaCtrol;            //insert a "Sol-fa" link
+    wxString    sSolfaLabel;            //label for "Sol-fa" link
+    wxString    sStopSolfaLabel;        //label for "Stop sol-fa" link
+
+    bool        fBorder;
+
+
 protected:
     bool AnalyzeClef(wxString sLine);
     bool AnalyzeTime(wxString sLine);
     bool AnalyzeKeys(wxString sLine);
     bool AnalyzeFragments(wxString sLine);
 
+    void SetLabels(wxString& sLabel, wxString* pStart, wxString* pStop);
+
         // Member variables:
 
     // html object window attributes
     long                        m_nWindowStyle;
-    lmScoreConstrains*          m_pConstrains;
-    lmMusicReadingCtrolOptions*  m_pOptions;
+    lmScoreConstrains*          m_pScoreConstrains;
+    lmMusicReadingConstrains*   m_pConstrains;
     wxString                    m_sParamErrors;
 
     DECLARE_NO_COPY_CLASS(lmTheoMusicReadingCtrolParms)
+
 };
 
 
@@ -108,13 +138,24 @@ lmTheoMusicReadingCtrolParms::lmTheoMusicReadingCtrolParms(const wxHtmlTag& tag,
     m_nWindowStyle = nStyle;
 
     // construct constraints object
-    m_pConstrains = new lmScoreConstrains();
+    m_pScoreConstrains = new lmScoreConstrains();
 
     // object options
-    m_pOptions = new lmMusicReadingCtrolOptions();
+    m_pConstrains = new lmMusicReadingConstrains(_T("MusicReading"));
+
 
     // initializations
     m_sParamErrors = _T("");    //no errors
+
+    // control options initializations
+    fPlayCtrol = false;
+    fSolfaCtrol = false;
+    fBorder = false;
+    sPlayLabel = _("Play");
+    sStopPlayLabel = _("Stop");
+    sSolfaLabel = _("Read");
+    sStopSolfaLabel = _("Stop");
+
 
 }
 
@@ -124,8 +165,8 @@ lmTheoMusicReadingCtrolParms::~lmTheoMusicReadingCtrolParms()
     //Constrains and options will be deleted by the Ctrol. DO NOT DELETE THEM HERE
     //IF THE CONTROL HAS BEEN CREATED
     if (m_sParamErrors != _T("")) {
+        if (m_pScoreConstrains) delete m_pScoreConstrains;
         if (m_pConstrains) delete m_pConstrains;
-        if (m_pOptions) delete m_pOptions;
     }
 
 }
@@ -212,23 +253,23 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
 
     // control_play
     if ( sName == _T("CONTROL_PLAY") ) {
-        m_pOptions->SetControlPlay(true, tag.GetParam(_T("VALUE")) );
+        m_pConstrains->SetControlPlay(true, tag.GetParam(_T("VALUE")) );
     }
 
     // control_solfa
     else if ( sName == _T("CONTROL_SOLFA") ) {
-        m_pOptions->SetControlSolfa(true, tag.GetParam(_T("VALUE")) );
+        m_pConstrains->SetControlSolfa(true, tag.GetParam(_T("VALUE")) );
     }
 
     // "Go back to theory" link
     else if ( sName == _T("CONTROL_GO_BACK") ) {
-        m_pOptions->SetGoBackURL( tag.GetParam(_T("VALUE") ));
+        m_pConstrains->SetGoBackLink( tag.GetParam(_T("VALUE") ));
     }
 
     // control_settings
     else if ( sName == _T("CONTROL_SETTINGS") ) {
-        m_pOptions->SetControlSettings(true, tag.GetParam(_T("VALUE")) );
-        m_pConstrains->SetSection( tag.GetParam(_T("VALUE") ));
+        m_pConstrains->SetControlSettings(true, tag.GetParam(_T("VALUE")) );
+        m_pScoreConstrains->SetSection( tag.GetParam(_T("VALUE") ));
     }
 
     // metronome
@@ -244,7 +285,7 @@ Acceptable values: numeric, greater than 0\n"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() );
         }
         else {
-            m_pConstrains->SetMetronomeMM(nMM);
+            m_pScoreConstrains->SetMetronomeMM(nMM);
         }
     }
 
@@ -317,14 +358,14 @@ Acceptable values: numeric, greater than 0\n"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() );
         }
         else {
-            m_pConstrains->SetMaxInterval((int)nMaxInterval);
+            m_pScoreConstrains->SetMaxInterval((int)nMaxInterval);
         }
     }
 
     // Unknown param
     else
         m_sParamErrors += wxString::Format(
-            _("lmTheoMusicReadingCtrol. Unknown param: <param %s >\n"),
+            _("lmMusicReadingConstrains. Unknown param: <param %s >\n"),
             tag.GetAllParams().c_str() );
 
 }
@@ -333,11 +374,11 @@ void lmTheoMusicReadingCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 {
     //The <object> tag has been read. If param 'control_settings' has been specified
     // configuration values must be loaded from the specified section key
-    m_pConstrains->LoadSettings();
+    m_pScoreConstrains->LoadSettings();
 
     //verify that all necessary html params has been specified
     wxWindow* pWnd;
-    m_sParamErrors += m_pConstrains->Verify();
+    m_sParamErrors += m_pScoreConstrains->Verify();
     if (m_sParamErrors != _T("")) {
         // there are errors: display a text box with the error message
         pWnd = new wxTextCtrl((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1, m_sParamErrors,
@@ -345,8 +386,9 @@ void lmTheoMusicReadingCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     }
     else {
         // create the TheoMusicReadingCtrol
+        m_pConstrains->SetScoreConstrains(m_pScoreConstrains);
         pWnd = new lmTheoMusicReadingCtrol((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1,
-            m_pOptions, m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
+            m_pConstrains, wxPoint(0,0), wxSize(m_nWidth, m_nHeight), m_nWindowStyle );
     }
     pWnd->Show(true);
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(pWnd, m_nPercent));
@@ -373,7 +415,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeClef(wxString sLine)
     wxString sUpperScope = sLine.substr(iSemicolon + 1);
 
     //Update information for this clef
-    lmClefConstrain* pClefs = m_pConstrains->GetClefConstrains();
+    lmClefConstrain* pClefs = m_pScoreConstrains->GetClefConstrains();
     pClefs->SetValid(nClef, true);
     pClefs->SetLowerPitch(nClef, sLowerScope);
     pClefs->SetUpperPitch(nClef, sUpperScope);
@@ -392,7 +434,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeTime(wxString sLine)
     if (pTimeSigns->SetConstrains(sLine)) return true;
 
     //Replace information about allowed time signatures
-    lmTimeSignConstrains* pOldTimeSigns = m_pConstrains->GetTimeSignConstrains();
+    lmTimeSignConstrains* pOldTimeSigns = m_pScoreConstrains->GetTimeSignConstrains();
     int i;
     ETimeSignature nTime;
     for (i=lmMIN_TIME_SIGN; i <= lmMAX_TIME_SIGN; i++) {
@@ -412,7 +454,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeKeys(wxString sLine)
 
     if (sLine == _T("all")) {
         // allow all key signatures
-        lmKeyConstrains* pKeys = m_pConstrains->GetKeyConstrains();
+        lmKeyConstrains* pKeys = m_pScoreConstrains->GetKeyConstrains();
         int i;
         for (i=0; i <= earmFa; i++) {
             pKeys->SetValid((EKeySignatures)i, true);
@@ -421,7 +463,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeKeys(wxString sLine)
 
     else {
         //analyze and set key signatures
-        lmKeyConstrains* pKeys = m_pConstrains->GetKeyConstrains();
+        lmKeyConstrains* pKeys = m_pScoreConstrains->GetKeyConstrains();
 
         //loop to get all keys
         int iColon;
@@ -484,7 +526,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeFragments(wxString sLine)
      }
 
     // build the entry
-    m_pConstrains->AddFragment(pTimeSigns, sFragment);
+    m_pScoreConstrains->AddFragment(pTimeSigns, sFragment);
 
     return false;   //no error
 

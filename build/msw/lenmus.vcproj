@@ -720,6 +720,12 @@
 				RelativePath="..\..\src\exercises\IdfyScalesCtrol.h">
 			</File>
 			<File
+				RelativePath="..\..\src\exercises\MusicReadingConstrains.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\exercises\MusicReadingConstrains.h">
+			</File>
+			<File
 				RelativePath="..\..\src\exercises\ScalesConstrains.cpp">
 			</File>
 			<File

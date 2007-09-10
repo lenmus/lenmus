@@ -35,15 +35,17 @@
 #include "TheoMusicReadingCtrol.h"
 #include "UrlAuxCtrol.h"
 #include "ScoreAuxCtrol.h"
+#include "CountersCtrol.h"
 #include "Constrains.h"
 #include "Generators.h"
-#include "../auxmusic/Conversion.h"
-#include "../ldp_parser/LDPParser.h"
 #include "../score/Score.h"
 #include "../auxmusic/ComposerV6.h"
 #include "../app/DlgCfgScoreReading.h"
-#include "../app/MainFrame.h"
 #include "../html/TextBookController.h"
+#include "wx/html/htmlwin.h"
+
+#include "../app/MainFrame.h"
+extern lmMainFrame* g_pMainFrame;
 
 
 // access to global functions
@@ -56,116 +58,108 @@ extern bool g_fReleaseVersion;            // in TheApp.cpp
 extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 extern bool g_fShowDebugLinks;            // in TheApp.cpp
 
-// access to main frame to get text book controller
-extern lmMainFrame *GetMainFrame();
-
 
 //------------------------------------------------------------------------------------
 // Implementation of lmTheoMusicReadingCtrol
 //------------------------------------------------------------------------------------
 
-//IDs for controls
-enum {
-    ID_LINK_NEW_PROBLEM = 3000,
-    ID_LINK_PLAY,
-    ID_LINK_SEE_SOURCE,
-    ID_LINK_DUMP,
-    ID_LINK_MIDI_EVENTS,
-    ID_LINK_SETTINGS,
-    ID_LINK_GO_BACK,
-};
 
-
-BEGIN_EVENT_TABLE(lmTheoMusicReadingCtrol, wxWindow)
-    EVT_SIZE            (lmTheoMusicReadingCtrol::OnSize)
-    LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, lmTheoMusicReadingCtrol::OnNewProblem)
-    LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmTheoMusicReadingCtrol::OnPlay)
-    LM_EVT_URL_CLICK    (ID_LINK_SEE_SOURCE, lmTheoMusicReadingCtrol::OnDebugShowSourceScore)
-    LM_EVT_URL_CLICK    (ID_LINK_DUMP, lmTheoMusicReadingCtrol::OnDebugDumpScore)
-    LM_EVT_URL_CLICK    (ID_LINK_MIDI_EVENTS, lmTheoMusicReadingCtrol::OnDebugShowMidiEvents)
-    LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmTheoMusicReadingCtrol::OnSettingsButton)
-    LM_EVT_URL_CLICK    (ID_LINK_GO_BACK, lmTheoMusicReadingCtrol::OnGoBackButton)
-    LM_EVT_END_OF_PLAY  (lmTheoMusicReadingCtrol::OnEndOfPlay)
-    EVT_CLOSE           (lmTheoMusicReadingCtrol::OnClose)
-END_EVENT_TABLE()
-
-IMPLEMENT_CLASS(lmTheoMusicReadingCtrol, wxWindow)
+IMPLEMENT_CLASS(lmTheoMusicReadingCtrol, lmOneScoreCtrol)
 
 lmTheoMusicReadingCtrol::lmTheoMusicReadingCtrol(wxWindow* parent, wxWindowID id,
-                           lmMusicReadingCtrolOptions* pOptions,
-                           lmScoreConstrains* pConstrains,
+                           lmMusicReadingConstrains* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
-    : wxWindow(parent, id, pos, size, style )
+    : lmOneScoreCtrol(parent, id, pConstrains, wxSize(600,800), pos, size, style )
 {
     //initializations
-    SetBackgroundColour(*wxWHITE);
-    m_fProblemCreated = false;
-    m_fPlayEnabled = false;
-    m_pScore = (lmScore*)NULL;
-    m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
+    m_pScoreConstrains = pConstrains->GetScoreConstrains();
     m_pConstrains = pConstrains;
-    m_pOptions = pOptions;
-    m_fPlaying = false;
-    m_fClosing = false;
+
+    //configuration options
+    m_pConstrains->SetSolutionLink(false);
+    m_pConstrains->SetUsingCounters(false);
+    m_nPlayMM = 0;       //use metronome settings
+
+    CreateControls();
+    NewProblem();
+
+}
+
+void lmTheoMusicReadingCtrol::CreateControls()
+{
+    //language dependent strings. Can not be statically initiallized because
+    //then they do not get translated
+    InitializeStrings();
+
+    // ensure that sizes are properly scaled
+    m_rScale = g_pMainFrame->GetHtmlWindow()->GetScale();
+    m_nDisplaySize.x = (int)((double)m_nDisplaySize.x * m_rScale);
+    m_nDisplaySize.y = (int)((double)m_nDisplaySize.y * m_rScale);
+
+    // prepare layout info for answer buttons and spacing
+    int nButtonsHeight = (int)(m_rScale * 24.0);    // 24 pixels, scaled
+    wxFont oButtonsFont = GetParent()->GetFont();
+    oButtonsFont.SetPointSize( (int)((double)oButtonsFont.GetPointSize() * m_rScale) );
+    int nSpacing = (int)(5.0 * m_rScale);       //5 pixels, scaled
 
     //the window is divided into two regions: top for links, and bottom for the score
-    wxBoxSizer* pMainSizer = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer* m_pMainSizer = new wxBoxSizer( wxVERTICAL );
 
     // buttons and links
-    wxBoxSizer* pButtonsSizer = new wxBoxSizer( wxHORIZONTAL );
-    pMainSizer->Add(
-        pButtonsSizer,
-        wxSizerFlags(0).Left().Expand().Border(wxLEFT|wxRIGHT|wxTOP, 5) );
+    wxBoxSizer* m_pButtonsSizer = new wxBoxSizer( wxHORIZONTAL );
+    m_pMainSizer->Add(
+        m_pButtonsSizer,
+        wxSizerFlags(0).Left().Expand().Border(wxLEFT|wxRIGHT|wxTOP, nSpacing) );
 
     // "Go back to theory" button
-    if (pOptions->fGoBackLink) {
-        pButtonsSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_GO_BACK, 1.0, _("Go back to theory") ),
-            wxSizerFlags(0).Left().Border(wxALL, 5) );
+    if (m_pConstrains->IncludeGoBackLink()) {
+        m_pButtonsSizer->Add(
+            new lmUrlAuxCtrol(this, ID_LINK_GO_BACK, m_rScale, _("Go back to theory") ),
+            wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
     }
 
     // "new problem" button
-    pButtonsSizer->Add(
-        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, 1.0, _("New problem") ),
-        wxSizerFlags(0).Left().Border(wxALL, 5) );
+    m_pButtonsSizer->Add(
+        new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem") ),
+        wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
 
     // "play" button
-    m_pPlayLink = new lmUrlAuxCtrol(this, ID_LINK_PLAY, 1.0, m_pOptions->sPlayLabel, m_pOptions->sStopPlayLabel );
-    pButtonsSizer->Add(
-        m_pPlayLink,
-        wxSizerFlags(0).Left().Border(wxALL, 5) );
+    m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, m_rScale, m_pConstrains->sPlayLabel, m_pConstrains->sStopPlayLabel );
+    m_pButtonsSizer->Add(
+        m_pPlayButton,
+        wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
 
     // "solfa" button
-    if (pOptions->fSolfaCtrol) {
-        //m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, 1.0, m_pOptions->sSolfaLabel, m_pOptions->sStopSolfaLabel );
-        //pButtonsSizer->Add(
-        //    m_pPlayLink,
-        //    wxSizerFlags(0).Left().Border(wxALL, 5) );
+    if (m_pConstrains->fSolfaCtrol) {
+        //m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, m_rScale, m_pConstrains->sSolfaLabel, m_pConstrains->sStopSolfaLabel );
+        //m_pButtonsSizer->Add(
+        //    m_pPlayButton,
+        //    wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
     }
 
     // debug buttons
     if (g_fShowDebugLinks && !g_fReleaseVersion) {
         // "See source score"
-        pButtonsSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, 1.0, _("See source score") ),
-            wxSizerFlags(0).Left().Border(wxALL, 5) );
+        m_pButtonsSizer->Add(
+            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, m_rScale, _("See source score") ),
+            wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
         // "Dump score"
-        pButtonsSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_DUMP, 1.0, _("Dump score") ),
-            wxSizerFlags(0).Left().Border(wxALL, 5) );
+        m_pButtonsSizer->Add(
+            new lmUrlAuxCtrol(this, ID_LINK_DUMP, m_rScale, _("Dump score") ),
+            wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
         // "See MIDI events"
-        pButtonsSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, 1.0, _("See MIDI events") ),
-            wxSizerFlags(0).Left().Border(wxALL, 5) );
+        m_pButtonsSizer->Add(
+            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, m_rScale, _("See MIDI events") ),
+            wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
     }
 
     // spacer
-    pButtonsSizer->Add(5, 5, 1, wxALIGN_CENTER_VERTICAL|wxALL, 5);
+    m_pButtonsSizer->Add(nSpacing, nSpacing, 1, wxALIGN_CENTER_VERTICAL|wxALL, nSpacing);
 
     // settings link
-    if (pOptions->fSettingsLink) {
-        m_pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, 1.0, _("Settings") );
-        pButtonsSizer->Add(m_pSettingsLink, wxSizerFlags(0).Left().Border(wxALL, 5) );
+    if (m_pConstrains->IncludeSettingsLink()) {
+        lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale, _("Settings") );
+        m_pButtonsSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxALL, nSpacing) );
     }
 
     // horizontal line
@@ -173,179 +167,65 @@ lmTheoMusicReadingCtrol::lmTheoMusicReadingCtrol(wxWindow* parent, wxWindowID id
                             wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
     ((wxWindow*)pStaticLine1)->SetBackgroundColour(*wxRED);
     ((wxWindow*)pStaticLine1)->SetForegroundColour(*wxBLUE);
-    pMainSizer->Add(pStaticLine1, 0, wxGROW|wxALL, 5);
+    m_pMainSizer->Add(pStaticLine1, 0, wxGROW|wxALL, nSpacing);
 
 
     // create score ctrl
     wxBoxSizer* pScoreSizer = new wxBoxSizer( wxHORIZONTAL );
-    pMainSizer->Add(
+    m_pMainSizer->Add(
         pScoreSizer,
-        wxSizerFlags(0).Left().Expand().Border(wxALL, 5) );
+        wxSizerFlags(0).Left().Expand().Border(wxALL, nSpacing) );
 
-    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition,
-        wxSize(600,800), eNO_BORDER);
-    m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
+    lmScoreAuxCtrol* pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pProblemScore,
+        wxDefaultPosition, m_nDisplaySize, eNO_BORDER);
+    pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
                               lmToLogicalUnits(10, lmMILLIMETERS),
                               lmToLogicalUnits(10, lmMILLIMETERS));        //right=1cm, left=1cm, top=1cm
+    pScoreCtrol->SetScale( pScoreCtrol->GetScale() * (float)m_rScale );
     pScoreSizer->Add(
-        m_pScoreCtrol,
-        wxSizerFlags(1).Left().Border(0, 5));
+        pScoreCtrol,
+        wxSizerFlags(1).Left().Border(0, nSpacing));
+    m_pDisplayCtrol = pScoreCtrol;
 
-    SetSizer( pMainSizer );                // use the sizer for window layout
-    pMainSizer->SetSizeHints( this );        // set size hints to honour minimum size
+    SetSizer( m_pMainSizer );                // use the sizer for window layout
+    m_pMainSizer->SetSizeHints( this );        // set size hints to honour minimum size
 
-    NewProblem();
+    m_pCounters = (lmCountersCtrol*) NULL;
 
+    m_fControlsCreated = true;
+
+    //inform base class about the settings
+    SetButtons(NULL, 0, wxID_ANY);
 }
 
 
 lmTheoMusicReadingCtrol::~lmTheoMusicReadingCtrol()
 {
-    if (m_pScoreCtrol) {
-        delete m_pScoreCtrol;
-        m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
-    }
-
-    if (m_pConstrains) {
-        delete m_pConstrains;
-        m_pConstrains = (lmScoreConstrains*) NULL;
-    }
-
-    if (m_pOptions) {
-        delete m_pOptions;
-        m_pOptions = (lmMusicReadingCtrolOptions*) NULL;
-    }
-
-    if (m_pScore) {
-        delete m_pScore;
-        m_pScore = (lmScore*)NULL;
-    }
 }
 
-
-//----------------------------------------------------------------------------------------
-// Event handlers
-
-void lmTheoMusicReadingCtrol::OnGoBackButton(wxCommandEvent& event)
+wxDialog* lmTheoMusicReadingCtrol::GetSettingsDlg()
 {
-    //wxLogMessage(_T("[lmTheoMusicReadingCtrol::OnGoBackButton] back URL = '%s'"), m_pOptions->sGoBackURL);
-    lmMainFrame* pFrame = GetMainFrame();
-    lmTextBookController* pBookController = pFrame->GetBookController();
-    pBookController->Display( m_pOptions->sGoBackURL );
+    return new lmDlgCfgScoreReading(this, m_pScoreConstrains, m_pConstrains->sSettingsKey);
 }
 
-void lmTheoMusicReadingCtrol::OnSettingsButton(wxCommandEvent& event)
+wxString lmTheoMusicReadingCtrol::SetNewProblem()    
 {
-    lmDlgCfgScoreReading dlg(this, m_pConstrains, m_pOptions->sSettingsKey);
-    int retcode = dlg.ShowModal();
-    if (retcode == wxID_OK) m_pConstrains->SaveSettings();
-}
-
-void lmTheoMusicReadingCtrol::OnClose(wxCloseEvent& event)
-{
-    /*! @todo
-        The window does not receive the event. Therefore this code never get executed.
-        And this produces a crash if lenmus is closed while playing.
-        It is not clear if it will be possible to detect the closing request in a parent
-        window. The TheoScoreCtrol's parent is an wxHtmlCell and it derives from wxObject,
-        not from wxWindow.
-    */
-    if (m_fPlaying) {
-        //ongoing playing.
-        if (!m_fClosing) m_pScoreCtrol->Stop();        // Stop playing
-        ::wxMilliSleep(500);                //wait for 500 ms to give time for stopping
-        m_fClosing = true;
-        //re-send a close event
-        wxCloseEvent newEvent(event);
-        AddPendingEvent(newEvent);
-        event.Veto(true);
-    }
-    else {
-        //Not playing. close the window
-        Destroy();
-    }
-
-}
-
-void lmTheoMusicReadingCtrol::OnSize(wxSizeEvent& event)
-{
-    Layout();
-}
-
-void lmTheoMusicReadingCtrol::OnPlay(wxCommandEvent& event)
-{
-    Play();
-}
-
-void lmTheoMusicReadingCtrol::OnNewProblem(wxCommandEvent& event)
-{
-    if (m_fPlaying) return;
-    NewProblem();
-}
-
-void lmTheoMusicReadingCtrol::NewProblem()
-{
-    //delete previous score
-    if (m_pScore) {
-        delete m_pScore;
-        m_pScore = (lmScore*)NULL;
-    }
+    //This method must prepare the problem score and set variables:
+    //  m_pProblemScore - The score with the problem to propose
+    //  m_pSolutionScore - The score with the solution or NULL if it is the
+    //              same score than the problem score.
+    //  m_sAnswer - the message to present when displaying the solution
+    //  m_nRespIndex - the number of the button for the right answer
+    //  m_nPlayMM - the speed to play the score
+    //
+    //It must return the message to display to introduce the problem.
 
     //Generate a random score
     lmComposer6 oComposer;
-    m_pScore = oComposer.GenerateScore(m_pConstrains);
+    m_pProblemScore = oComposer.GenerateScore(m_pScoreConstrains);
 
-    //display the score
-    m_pScoreCtrol->DisplayScore(m_pScore);
-    m_fPlayEnabled = true;
-    m_fProblemCreated = true;
+    return _T("");
 
 }
 
-/*! Playback the score.
-    Play() method is called either to play or to stop playing.
-*/
-void lmTheoMusicReadingCtrol::Play()
-{
 
-    if (!m_fPlaying) {
-        // Play button pressed
-
-        //change link from "Play" to "Stop playing"
-        m_pPlayLink->SetAlternativeLabel();
-
-        //play score
-        m_pScoreCtrol->PlayScore(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO,
-                                ePM_NormalInstrument, m_pConstrains->GetMetronomeMM());
-        m_fPlaying = true;
-
-        //AWARE The link label is restored to "Play" when the EndOfPlay event is
-        //received. Flag m_fPlaying is also reset there
-    }
-    else {
-        // "Stop playing" button pressed
-        m_pScoreCtrol->Stop();
-    }
-
-}
-
-void lmTheoMusicReadingCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
-{
-    m_pPlayLink->SetNormalLabel();
-    m_fPlaying = false;
-}
-
-void lmTheoMusicReadingCtrol::OnDebugShowSourceScore(wxCommandEvent& event)
-{
-    m_pScoreCtrol->SourceLDP();
-}
-
-void lmTheoMusicReadingCtrol::OnDebugDumpScore(wxCommandEvent& event)
-{
-    m_pScoreCtrol->Dump();
-}
-
-void lmTheoMusicReadingCtrol::OnDebugShowMidiEvents(wxCommandEvent& event)
-{
-    m_pScoreCtrol->DumpMidiEvents();
-}

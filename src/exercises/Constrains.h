@@ -201,66 +201,6 @@ private:
 };
 
 
-// Options for lmTheoMusicReadingCtrol control
-class lmMusicReadingCtrolOptions
-{
-public:
-    lmMusicReadingCtrolOptions() {
-            //default values
-            fPlayCtrol = false;
-            fSolfaCtrol = false;
-            fBorder = false;
-            fGoBackLink = false;
-            fSettingsLink = false;
-            sPlayLabel = _("Play");
-            sStopPlayLabel = _("Stop");
-            sSolfaLabel = _("Read");
-            sStopSolfaLabel = _("Stop");
-        }
-
-    ~lmMusicReadingCtrolOptions() {}
-    void SetControlPlay(bool fValue, wxString sLabels = _T(""))
-        {
-            fPlayCtrol = fValue;
-            if (sLabels != _T(""))
-                SetLabels(sLabels, &sPlayLabel, &sStopPlayLabel);
-        }
-    void SetControlSolfa(bool fValue, wxString sLabels = _T(""))
-        {
-            fSolfaCtrol = fValue;
-            if (sLabels != _T(""))
-                SetLabels(sLabels, &sSolfaLabel, &sStopSolfaLabel);
-        }
-    void SetControlSettings(bool fValue, wxString sKey =_T(""))
-        {
-            fSettingsLink = fValue;
-            sSettingsKey = sKey;
-        }
-
-    void SetGoBackURL(wxString sURL) { fGoBackLink = true; sGoBackURL = sURL; }
-
-
-    bool        fPlayCtrol;             //Instert "Play" link
-    wxString    sPlayLabel;             //label for "Play" link
-    wxString    sStopPlayLabel;         //label for "Stop playing" link
-
-    bool        fSolfaCtrol;            //insert a "Sol-fa" link
-    wxString    sSolfaLabel;            //label for "Sol-fa" link
-    wxString    sStopSolfaLabel;        //label for "Stop sol-fa" link
-
-    bool        fBorder;
-    bool        fGoBackLink;            // insert a "Go back to theory" link
-    wxString    sGoBackURL;             //URL for "Go back" link
-
-    bool        fSettingsLink;          // insert the settings link
-    wxString    sSettingsKey;           // key for saving the user settings
-
-private:
-    void SetLabels(wxString& sLabel, wxString* pStart, wxString* pStop);
-
-
-};
-
 
 
 #endif  // __CONSTRAINS_H__

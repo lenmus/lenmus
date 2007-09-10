@@ -118,26 +118,6 @@ bool lmTimeSignConstrains::SetConstrains(wxString sTimeSign)
 
 
 //-------------------------------------------------------------------------------------------
-// lmMusicReadingCtrolOptions
-//-------------------------------------------------------------------------------------------
-
-void lmMusicReadingCtrolOptions::SetLabels(wxString& sLabel, wxString* pStart, wxString* pStop)
-{
-    //find the bar
-    int i = sLabel.Find(_T("|"));
-    if (i != -1) {
-        if (i > 1) *pStart = sLabel.substr(0, i-1);
-        if (i < (int)sLabel.length()-1) *pStop = sLabel.substr(i+1);
-    }
-    else {
-         *pStart = sLabel;
-    }
-
-}
-
-
-
-//-------------------------------------------------------------------------------------------
 // lmScoreCtrolOptions
 //-------------------------------------------------------------------------------------------
 

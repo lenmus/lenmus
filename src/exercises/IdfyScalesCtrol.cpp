@@ -250,7 +250,15 @@ void lmIdfyScalesCtrol::PrepareAuxScore(int nButton)
 wxString lmIdfyScalesCtrol::SetNewProblem()
 {
     //This method must prepare the problem score and set variables:
-    //  m_pProblemScore, m_sAnswer, m_nRespIndex and m_nPlayMM
+    //  m_pProblemScore - The score with the problem to propose
+    //  m_pSolutionScore - The score with the solution or NULL if it is the
+    //              same score than the problem score.
+    //  m_sAnswer - the message to present when displaying the solution
+    //  m_nRespIndex - the number of the button for the right answer
+    //  m_nPlayMM - the speed to play the score
+    //
+    //It must return the message to display to introduce the problem.
+
 
     //select a random mode
     m_fAscending = m_pConstrains->GetRandomPlayMode();

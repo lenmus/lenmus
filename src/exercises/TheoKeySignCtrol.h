@@ -40,13 +40,9 @@
 #include "Constrains.h"
 #include "TheoKeySignConstrains.h"
 #include "../score/Score.h"
-#include "ScoreAuxCtrol.h"
-#include "CountersCtrol.h"
 
 
-const int lmTHEO_KEYSIGN_NUM_BUTTONS = 15;               //buttons for answers
-
-class lmTheoKeySignCtrol : public wxWindow
+class lmTheoKeySignCtrol : public lmOneScoreCtrol
 {
    DECLARE_DYNAMIC_CLASS(lmTheoKeySignCtrol)
 
@@ -60,34 +56,28 @@ public:
 
     ~lmTheoKeySignCtrol();
 
-    // event handlers
-    void OnSize(wxSizeEvent& event);
-    void OnRespButton(wxCommandEvent& event);
-    void OnPlay(wxCommandEvent& event);
-    void OnNewProblem(wxCommandEvent& event);
-    void OnDisplaySolution(wxCommandEvent& event);
-
-    // event handlers related to debugging
-    void OnDebugShowSourceScore(wxCommandEvent& event);
-    void OnDebugDumpScore(wxCommandEvent& event);
+    //implementation of virtual methods
+    void InitializeStrings();
+    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font);
+    void PrepareAuxScore(int nButton) {}
+    wxString SetNewProblem();    
+    wxDialog* GetSettingsDlg();
+    void ReconfigureButtons() {}
 
 private:
-    void EnableButtons(bool fEnable);
-    void NewProblem();
-    void DisplaySolution();
-    void ResetExercise();
 
-        // member variables
+    enum {
+        m_NUM_COLS = 5,
+        m_NUM_ROWS = 3,
+        m_NUM_BUTTONS = 15,     // NUM_COLS * NUM_ROWS;
+    };
 
-    lmScore*            m_pScore;           // the score with the interval
-    lmScoreAuxCtrol*    m_pScoreCtrol;
-    lmCountersCtrol*    m_pCounters;
+    // member variables
 
     lmTheoKeySignConstrains* m_pConstrains;
-    bool            m_fProblemCreated;      //there is a problem prepared
 
     //buttons for the answers: 3 rows, 5 buttons per row
-    wxButton*       m_pAnswerButton[lmTHEO_KEYSIGN_NUM_BUTTONS];
+    wxButton*       m_pAnswerButton[m_NUM_BUTTONS];
     int             m_nIndexKeyName;        //index to right answer button
     bool            m_fButtonsEnabled;      //buttons enabled
 

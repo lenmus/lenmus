@@ -32,7 +32,8 @@
 
 #include "TheoKeySignConstrains.h"
 
-lmTheoKeySignConstrains::lmTheoKeySignConstrains()
+lmTheoKeySignConstrains::lmTheoKeySignConstrains(wxString sSection)
+    : lmExerciseConstrains(sSection)
 {
     //
     // default values

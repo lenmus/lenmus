@@ -118,43 +118,51 @@ lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
         m_pMeasureLink[i] = (lmUrlAuxCtrol*) NULL;
     }
 
+        //Create the controls
+
+    // ensure that sizes are properly scaled
+    double rScale = m_pOptions->rScale;
+    int nSpacing = (int)(5.0 * rScale);       //5 pixels, scaled
+    wxSize nScoreSize( (int)((double)size.x * rScale) ,
+                       (int)((double)size.y * rScale) );
+
     //the window is divided into two regions: top, for score
     //and bottom region, for links
     wxBoxSizer* pMainSizer = new wxBoxSizer( wxVERTICAL );
 
     // create score ctrl 
-    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, pScore, wxDefaultPosition, size,
+    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, pScore, wxDefaultPosition, nScoreSize,
                             (m_pOptions->fMusicBorder ? eSIMPLE_BORDER : eNO_BORDER) );
-    pMainSizer->Add(m_pScoreCtrol, 1, wxGROW|wxALL, 5);
+    pMainSizer->Add(m_pScoreCtrol, 1, wxGROW|wxALL, nSpacing);
 
     m_pScoreCtrol->SetMargins(lmToLogicalUnits(10, lmMILLIMETERS),
                               lmToLogicalUnits(10, lmMILLIMETERS),
                               - lmToLogicalUnits(10, lmMILLIMETERS));
-    m_pScoreCtrol->SetScale( m_pScoreCtrol->GetScale() * (float)m_pOptions->rScale);
+    m_pScoreCtrol->SetScale( 1.1f * (float)rScale); //m_pScoreCtrol->GetScale() * 
 
 
     //
     //Optionally, add links
     //
     wxBoxSizer* pLinksSizer = new wxBoxSizer( wxHORIZONTAL );
-    pMainSizer->Add(pLinksSizer, 0, wxALIGN_LEFT|wxALL, 5);
+    pMainSizer->Add(pLinksSizer, 0, wxALIGN_LEFT|wxALL, nSpacing);
 
     // "play" link
     if (pOptions->fPlayCtrol)
     {
-        m_pPlayLink = new lmUrlAuxCtrol(this, ID_LINK_PLAY, 1.0, pOptions->sPlayLabel,
+        m_pPlayLink = new lmUrlAuxCtrol(this, ID_LINK_PLAY, rScale, pOptions->sPlayLabel,
                                         pOptions->sStopPlayLabel );
         pLinksSizer->Add(m_pPlayLink,
-                    0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+                    0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, nSpacing);
     }
 
     // "solfa" link
     if (pOptions->fSolfaCtrol)
     {
-        m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, 1.0, pOptions->sSolfaLabel,
+        m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, rScale, pOptions->sSolfaLabel,
                                          pOptions->sStopSolfaLabel );
         pLinksSizer->Add(m_pSolfaLink,
-                    0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+                    0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, nSpacing);
     }
 
     /*! @todo Play_measure links are not positioned under each measure, as the lmScoreCtrol
@@ -169,31 +177,31 @@ lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
         int nNumMeasures = wxMin(pScore->GetNumMeasures(), 10);
         for (int i=0; i < nNumMeasures; i++) {
             m_pMeasureLink[i] =
-                new lmUrlAuxCtrol(this, ID_LINK_MEASURE+i, 1.0, 
+                new lmUrlAuxCtrol(this, ID_LINK_MEASURE+i, rScale,
                         wxString::Format(pOptions->sMeasuresLabel, i+1),
                         wxString::Format(pOptions->sStopMeasureLabel, i+1) );
             pLinksSizer->Add(m_pMeasureLink[i],
-                        0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, 5);
+                        0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, nSpacing);
         }
     }
     
     // debug buttons
     if (g_fShowDebugLinks && !g_fReleaseVersion) {
         wxBoxSizer* pDbgSizer = new wxBoxSizer( wxHORIZONTAL );
-        pMainSizer->Add(pDbgSizer, 0, wxALIGN_LEFT|wxALL, 5);
+        pMainSizer->Add(pDbgSizer, 0, wxALIGN_LEFT|wxALL, nSpacing);
 
         // "See source score"
         pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, 1.0, _("See source score") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
+            new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, rScale, _("See source score") ),
+            wxSizerFlags(0).Left().Border(wxALL, 2*nSpacing) );
         // "Dump score"
         pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_DUMP, 1.0, _("Dump score") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
+            new lmUrlAuxCtrol(this, ID_LINK_DUMP, rScale, _("Dump score") ),
+            wxSizerFlags(0).Left().Border(wxALL, 2*nSpacing) );
         // "See MIDI events"
         pDbgSizer->Add(
-            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, 1.0, _("See MIDI events") ),
-            wxSizerFlags(0).Left().Border(wxALL, 10) );
+            new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, rScale, _("See MIDI events") ),
+            wxSizerFlags(0).Left().Border(wxALL, 2*nSpacing) );
     }
 
     SetSizer( pMainSizer );                // use the sizer for window layout

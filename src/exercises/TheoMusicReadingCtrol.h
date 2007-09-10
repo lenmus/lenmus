@@ -37,17 +37,13 @@
 #include "wx/wx.h"
 #endif
 
-#include "wx/combobox.h"
-
 #include "Constrains.h"
-#include "../score/Score.h"
-#include "ScoreAuxCtrol.h"
-#include "UrlAuxCtrol.h"
-#include "../sound/SoundEvents.h"
-#include "ScoreConstrains.h"
+#include "MusicReadingConstrains.h"
 
+// lmTheoMusicReadingCtrol is an lmOneScoreCtrol but the controls are created
+// by this class by overriding virtual method CreateControls()
 
-class lmTheoMusicReadingCtrol : public wxWindow
+class lmTheoMusicReadingCtrol : public lmOneScoreCtrol
 {
    DECLARE_DYNAMIC_CLASS(lmTheoMusicReadingCtrol)
 
@@ -55,51 +51,36 @@ public:
 
     // constructor and destructor
     lmTheoMusicReadingCtrol(wxWindow* parent, wxWindowID id,
-               lmMusicReadingCtrolOptions* pOptions,
-               lmScoreConstrains* pConstrains,
+               lmMusicReadingConstrains* pOptions,
                const wxPoint& pos = wxDefaultPosition,
                const wxSize& size = wxDefaultSize, int style = 0);
 
     ~lmTheoMusicReadingCtrol();
 
-    // event handlers
-    void OnClose(wxCloseEvent& event);
-    void OnSize(wxSizeEvent& event);
-    void OnPlay(wxCommandEvent& event);
-    void OnNewProblem(wxCommandEvent& event);
-    void OnSettingsButton(wxCommandEvent& event);
-    void OnGoBackButton(wxCommandEvent& event);
+    //implementation of virtual methods
+    void InitializeStrings() {}
+    void CreateAnswerButtons(int nHeight, int nSpacing, wxFont& font) {}
+    void PrepareAuxScore(int nButton) {}
+    wxString SetNewProblem();    
+    wxDialog* GetSettingsDlg();
+    void ReconfigureButtons() {}
 
-    // event handlers related to debugging
-    void OnDebugShowSourceScore(wxCommandEvent& event);
-    void OnDebugDumpScore(wxCommandEvent& event);
-    void OnDebugShowMidiEvents(wxCommandEvent& event);
+    //overrides of virtual methods
+    void CreateControls();
 
-    // event handlers related with playing a score
-    void OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event));
 
 
 private:
-    void Play();
-    void NewProblem();
 
         // member variables
 
-    lmScore*                    m_pScore;            // the score to read
-    lmScoreAuxCtrol*            m_pScoreCtrol;
-    lmScoreConstrains*          m_pConstrains;
-    lmMusicReadingCtrolOptions*  m_pOptions;
+    lmScoreConstrains*          m_pScoreConstrains;
+    lmMusicReadingConstrains*   m_pConstrains;
 
-    bool        m_fProblemCreated;  //there is a problem prepared
-    bool        m_fPlayEnabled;     //Play enabled
+    //layout
+    wxBoxSizer*     m_pButtonsSizer;
 
-    lmUrlAuxCtrol*  m_pSettingsLink;
 
-    lmUrlAuxCtrol*  m_pPlayLink;
-    bool            m_fPlaying;         //playing
-    bool            m_fClosing;         // waiting for play stopped to close the window
-
-    DECLARE_EVENT_TABLE()
 };
 
 

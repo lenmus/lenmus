@@ -64,6 +64,9 @@ lmExerciseConstrains::lmExerciseConstrains(wxString sSection)
     m_fSettingsLink = false;
     m_sGoBackURL = _T("");
     m_fButtonsEnabledAfterSolution = true;
+    m_fPlayLink = true;
+    m_fSolutionLink = true;
+    m_fUseCounters = true;
     LoadSettings();
 }
 
@@ -72,19 +75,6 @@ lmExerciseConstrains::lmExerciseConstrains(wxString sSection)
 // Implementation of lmExerciseCtrol:
 // An abstract class to create exercises
 //------------------------------------------------------------------------------------
-
-//IDs for controls
-enum {
-    ID_LINK_SEE_SOURCE = 3000,
-    ID_LINK_DUMP,
-    ID_LINK_MIDI_EVENTS,
-    ID_LINK_NEW_PROBLEM,
-    ID_LINK_PLAY,
-    ID_LINK_SOLUTION,
-    ID_LINK_SETTINGS,
-    ID_LINK_GO_BACK
-
-};
 
 
 BEGIN_EVENT_TABLE(lmExerciseCtrol, wxWindow)
@@ -117,6 +107,12 @@ lmExerciseCtrol::lmExerciseCtrol(wxWindow* parent, wxWindowID id,
     m_pConstrains = pConstrains;
     m_fControlsCreated = false;
     m_rScale = 1.0;
+
+    m_pDisplayCtrol =(wxWindow*)NULL;
+    m_pCounters = (lmCountersCtrol*)NULL;
+    m_pPlayButton = (lmUrlAuxCtrol*)NULL;
+    m_pShowSolution = (lmUrlAuxCtrol*)NULL;
+
 }
 
 void lmExerciseCtrol::CreateControls()
@@ -159,19 +155,19 @@ void lmExerciseCtrol::CreateControls()
         // settings and debug options
         //
     wxBoxSizer* pTopLineSizer = new wxBoxSizer( wxHORIZONTAL );
-    m_pMainSizer->Add(pTopLineSizer, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 5));
+    m_pMainSizer->Add(pTopLineSizer, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, nSpacing));
 
     // settings link
     if (m_pConstrains->IncludeSettingsLink()) {
         lmUrlAuxCtrol* pSettingsLink = new lmUrlAuxCtrol(this, ID_LINK_SETTINGS, m_rScale, 
              _("Settings") );
-        pTopLineSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+        pTopLineSizer->Add(pSettingsLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
     }
     // "Go back to theory" link
     if (m_pConstrains->IncludeGoBackLink()) {
         lmUrlAuxCtrol* pGoBackLink = new lmUrlAuxCtrol(this, ID_LINK_GO_BACK, m_rScale,
             _("Go back to theory") );
-        pTopLineSizer->Add(pGoBackLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+        pTopLineSizer->Add(pGoBackLink, wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
     }
 
     // debug links
@@ -180,17 +176,17 @@ void lmExerciseCtrol::CreateControls()
         // "See source score"
         pTopLineSizer->Add(
             new lmUrlAuxCtrol(this, ID_LINK_SEE_SOURCE, m_rScale, _("See source score") ),
-            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
 
         // "Dump score"
         pTopLineSizer->Add(
             new lmUrlAuxCtrol(this, ID_LINK_DUMP, m_rScale, _("Dump score") ),
-            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
 
         // "See MIDI events"
         pTopLineSizer->Add(
             new lmUrlAuxCtrol(this, ID_LINK_MIDI_EVENTS, m_rScale, _("See MIDI events") ),
-            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
     }
 
 
@@ -198,25 +194,27 @@ void lmExerciseCtrol::CreateControls()
     wxBoxSizer* pTopSizer = new wxBoxSizer( wxHORIZONTAL );
     m_pMainSizer->Add(
         pTopSizer,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
 
     // create the display control (ScoreAuxCtrol or wxTextCtrl):
     m_pDisplayCtrol = CreateDisplayCtrol();
     pTopSizer->Add(m_pDisplayCtrol,
-                   wxSizerFlags(1).Left().Border(wxTOP|wxBOTTOM, 10));
+                   wxSizerFlags(1).Left().Border(wxTOP|wxBOTTOM, 2*nSpacing));
 
     // sizer for the CountersCtrol and the settings link
-    wxBoxSizer* pCountersSizer = new wxBoxSizer( wxVERTICAL );
-    pTopSizer->Add(
-        pCountersSizer,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10).Expand() );
+    if (m_pConstrains->IsUsingCounters())
+    {
+        wxBoxSizer* pCountersSizer = new wxBoxSizer( wxVERTICAL );
+        pTopSizer->Add(
+            pCountersSizer,
+            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing).Expand() );
 
-    // right/wrong answers counters control
-    m_pCounters = new lmCountersCtrol(this, wxID_ANY, m_rScale);
-    pCountersSizer->Add(
-        m_pCounters,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 10) );
-
+        // right/wrong answers counters control
+        m_pCounters = new lmCountersCtrol(this, wxID_ANY, m_rScale);
+        pCountersSizer->Add(
+            m_pCounters,
+            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 2*nSpacing) );
+    }
 
         //
         // links 
@@ -225,24 +223,28 @@ void lmExerciseCtrol::CreateControls()
     wxBoxSizer* pLinksSizer = new wxBoxSizer( wxHORIZONTAL );
     m_pMainSizer->Add(
         pLinksSizer,
-        wxSizerFlags(0).Center().Border(wxLEFT|wxALL, 10) );
+        wxSizerFlags(0).Center().Border(wxLEFT|wxALL, 2*nSpacing) );
 
     // "new problem" button
     pLinksSizer->Add(
         new lmUrlAuxCtrol(this, ID_LINK_NEW_PROBLEM, m_rScale, _("New problem") ),
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
+        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 4*nSpacing) );
     
     // "play" button
-    m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, m_rScale, _("Play") );
-    pLinksSizer->Add(
-        m_pPlayButton,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 20) );
+    if (m_pConstrains->IncludePlayLink()) {
+        m_pPlayButton = new lmUrlAuxCtrol(this, ID_LINK_PLAY, m_rScale, _("Play") );
+        pLinksSizer->Add(
+            m_pPlayButton,
+            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT, 4*nSpacing) );
+    }
     
     // "show solution" button
-    m_pShowSolution = new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, m_rScale, _("Show solution") );
-    pLinksSizer->Add(
-        m_pShowSolution,
-        wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT|wxBOTTOM, 20) );
+    if (m_pConstrains->IncludeSolutionLink()) {
+        m_pShowSolution = new lmUrlAuxCtrol(this, ID_LINK_SOLUTION, m_rScale, _("Show solution") );
+        pLinksSizer->Add(
+            m_pShowSolution,
+            wxSizerFlags(0).Left().Border(wxLEFT|wxRIGHT|wxBOTTOM, 4*nSpacing) );
+    }
     
     //create buttons for the answers
     CreateAnswerButtons(nButtonsHeight, nSpacing, oButtonsFont);
@@ -259,8 +261,8 @@ void lmExerciseCtrol::CreateControls()
     DisplayMessage(sMsg, true);
 
     // final buttons/links enable/setup
-    m_pPlayButton->Enable(false);
-    m_pShowSolution->Enable(false);
+    if (m_pPlayButton) m_pPlayButton->Enable(false);
+    if (m_pShowSolution) m_pShowSolution->Enable(false);
 
     ReconfigureButtons();     //reconfigure buttons in accordance with constraints
 
@@ -321,7 +323,7 @@ void lmExerciseCtrol::OnDisplaySolution(wxCommandEvent& event)
     StopSounds();
 
     //now proceed
-    m_pCounters->IncrementWrong();
+    if (m_pCounters) m_pCounters->IncrementWrong();
     DoDisplaySolution();
 }
 
@@ -341,10 +343,13 @@ void lmExerciseCtrol::OnRespButton(wxCommandEvent& event)
         bool fSuccess = (nIndex == m_nRespIndex);
         
         //produce feedback sound, and update counters
-        if (fSuccess) {
-            m_pCounters->IncrementRight();
-        } else {
-            m_pCounters->IncrementWrong();
+        if (m_pCounters)
+        {
+            if (fSuccess) {
+                m_pCounters->IncrementRight();
+            } else {
+                m_pCounters->IncrementWrong();
+            }
         }
             
         //if failure or not auto-new problem, display the solution.
@@ -376,7 +381,7 @@ void lmExerciseCtrol::NewProblem()
     ResetExercise();
 
     //prepare answer buttons and counters
-    m_pCounters->NextTeam();
+    if (m_pCounters) m_pCounters->NextTeam();
     EnableButtons(true);
 
     //set m_pProblemScore, m_pSolutionScore, m_sAnswer, m_nRespIndex, m_nPlayMM
@@ -386,8 +391,8 @@ void lmExerciseCtrol::NewProblem()
     m_fQuestionAsked = true;
     DisplayProblem();
     DisplayMessage(sProblemMessage, false);
-    m_pPlayButton->Enable(true);
-    m_pShowSolution->Enable(true);
+    if (m_pPlayButton) m_pPlayButton->Enable(true);
+    if (m_pShowSolution) m_pShowSolution->Enable(true);
 
 }
 
@@ -399,8 +404,8 @@ void lmExerciseCtrol::DoDisplaySolution()
     // mark right button in green
     SetButtonColor(m_nRespIndex, g_pColors->Success());
     
-    m_pPlayButton->Enable(true);
-    m_pShowSolution->Enable(false);
+    if (m_pPlayButton) m_pPlayButton->Enable(true);
+    if (m_pShowSolution) m_pShowSolution->Enable(false);
     m_fQuestionAsked = false;
     if (!m_pConstrains->ButtonsEnabledAfterSolution()) EnableButtons(false);
 
