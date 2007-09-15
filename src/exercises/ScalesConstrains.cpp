@@ -38,7 +38,7 @@ extern wxConfigBase *g_pPrefs;
 
 
 lmScalesConstrains::lmScalesConstrains(wxString sSection)
-    : lmExerciseConstrains(sSection)
+    : lmExerciseOptions(sSection)
 {
 }
 

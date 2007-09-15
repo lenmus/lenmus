@@ -39,6 +39,7 @@
 
 #include "ScalesConstrains.h"
 #include "../score/Score.h"
+#include "ExerciseCtrol.h"
 
 
 

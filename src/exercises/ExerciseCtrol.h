@@ -38,103 +38,40 @@
 #endif
 
 #include "../score/Score.h"
+#include "Constrains.h"
 #include "ScoreAuxCtrol.h"
 #include "UrlAuxCtrol.h"
 #include "CountersCtrol.h"
 
 
 //--------------------------------------------------------------------------------
-// Abstract class to create constrains/options objects for lmExerciseCtrols
+// An abstract class for any kind of Ctrol (wxHtmlWidgetsCell) included in an eBook.
+// Just define the interface
 //--------------------------------------------------------------------------------
-class lmExerciseConstrains
+class lmEBookCtrol : public wxWindow
 {
-public:
-    lmExerciseConstrains(wxString sSection);
-    virtual ~lmExerciseConstrains() {}
-
-    virtual void SaveSettings() {}
-
-    void SetSettingsLink(bool fValue) { m_fSettingsLink = fValue; }
-    bool IncludeSettingsLink() { return m_fSettingsLink; }
-    void SetSection(wxString sSection) {
-                m_sSection = sSection;
-                LoadSettings();
-            }
-
-    void SetGoBackLink(wxString sURL) { m_sGoBackURL = sURL; }
-    bool IncludeGoBackLink() { return m_sGoBackURL != _T(""); }
-    wxString GetGoBackURL() { return m_sGoBackURL; }
-
-    void SetTheoryMode(bool fValue) { m_fTheoryMode = fValue; }
-    bool IsTheoryMode() { return m_fTheoryMode; }
-
-    void SetButtonsEnabledAfterSolution(bool fValue) {
-            m_fButtonsEnabledAfterSolution = fValue;
-    }
-    bool ButtonsEnabledAfterSolution() { return m_fButtonsEnabledAfterSolution; }
-
-    void SetPlayLink(bool fValue) { m_fPlayLink = fValue; }
-    bool IncludePlayLink() { return m_fPlayLink; }
-
-    void SetSolutionLink(bool fValue) { m_fSolutionLink = fValue; }
-    bool IncludeSolutionLink() { return m_fSolutionLink; }
-
-    void SetUsingCounters(bool fValue) { m_fUseCounters = fValue; }
-    bool IsUsingCounters() { return m_fUseCounters; }
-
-
-protected:
-    virtual void LoadSettings() {}
-
-    wxString    m_sSection;         //section name to save the constraints
-    wxString    m_sGoBackURL;       //URL for "Go back" link of empty string if no link
-
-    //The Ctrol could be used both for ear training exercises and for theory exercises.
-    //Following variables are used for configuration
-    bool        m_fTheoryMode;
-
-    //options
-    bool        m_fButtonsEnabledAfterSolution;
-    bool        m_fPlayLink;        //In theory mode the score could be not playable
-    bool        m_fSettingsLink;    //include 'settings' link
-    bool        m_fUseCounters;     //option to not use counters
-    bool        m_fSolutionLink;    //include 'show solution' link
-
-
-};
-
-
-
-//--------------------------------------------------------------------------------
-// Abstract class to create exercises controls
-//--------------------------------------------------------------------------------
-class lmExerciseCtrol : public wxWindow    
-{
-   DECLARE_DYNAMIC_CLASS(lmExerciseCtrol)
+   DECLARE_DYNAMIC_CLASS(lmEBookCtrol)
 
 public:
 
     // constructor and destructor    
-    lmExerciseCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseConstrains* pConstrains, wxSize nDisplaySize, 
+    lmEBookCtrol(wxWindow* parent, wxWindowID id,
+               lmEBookCtrolOptions* pOptions, 
                const wxPoint& pos = wxDefaultPosition, 
                const wxSize& size = wxDefaultSize, int style = 0);
 
-    virtual ~lmExerciseCtrol();
+    virtual ~lmEBookCtrol();
 
-    // event handlers. No need to implement in derived classes
-    virtual void OnSize(wxSizeEvent& event);
-    virtual void OnRespButton(wxCommandEvent& event);
-    virtual void OnPlay(wxCommandEvent& event);
-    virtual void OnNewProblem(wxCommandEvent& event);
-    virtual void OnDisplaySolution(wxCommandEvent& event);
-    virtual void OnSettingsButton(wxCommandEvent& event);
-    virtual void OnGoBackButton(wxCommandEvent& event);
-
-    // event handlers to be implemented by derived classes
+    // virtual pure event handlers to be implemented by derived classes
     virtual void OnDebugShowSourceScore(wxCommandEvent& event)=0;
     virtual void OnDebugDumpScore(wxCommandEvent& event)=0;
     virtual void OnDebugShowMidiEvents(wxCommandEvent& event)=0;
+
+    // event handlers. No need to implement in derived classes
+    virtual void OnSize(wxSizeEvent& event);
+    virtual void OnPlay(wxCommandEvent& event);
+    virtual void OnSettingsButton(wxCommandEvent& event);
+    virtual void OnGoBackButton(wxCommandEvent& event);
 
 protected:
     //IDs for controls
@@ -142,13 +79,71 @@ protected:
         ID_LINK_SEE_SOURCE = 3000,
         ID_LINK_DUMP,
         ID_LINK_MIDI_EVENTS,
-        ID_LINK_NEW_PROBLEM,
         ID_LINK_PLAY,
-        ID_LINK_SOLUTION,
         ID_LINK_SETTINGS,
         ID_LINK_GO_BACK
 
     };
+
+    //virtual pure methods to be implemented by derived classes
+    virtual void InitializeStrings()=0;   
+    virtual wxDialog* GetSettingsDlg()=0;
+    virtual void Play()=0;
+    virtual void StopSounds()=0;
+    virtual void OnSettingsChanged()=0;
+
+    //methods invoked from derived classes
+    virtual void CreateControls()=0;
+    void SetButtons(wxButton* pButton[], int nNumButtons, int nIdFirstButton);
+
+
+    // member variables
+
+    lmEBookCtrolOptions* m_pOptions;        //options for the exercise
+    lmUrlAuxCtrol*      m_pPlayButton;      // "play" button
+    bool                m_fControlsCreated; 
+    double              m_rScale;           // Current scaling factor
+
+private:
+    void DoStopSounds();
+
+    DECLARE_EVENT_TABLE()
+};
+
+
+
+//--------------------------------------------------------------------------------
+// An abstract class for any kind of exercise included in an eBook.
+//--------------------------------------------------------------------------------
+class lmExerciseCtrol : public lmEBookCtrol    
+{
+   DECLARE_DYNAMIC_CLASS(lmExerciseCtrol)
+
+public:
+
+    // constructor and destructor    
+    lmExerciseCtrol(wxWindow* parent, wxWindowID id,
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
+               const wxPoint& pos = wxDefaultPosition, 
+               const wxSize& size = wxDefaultSize, int style = 0);
+
+    virtual ~lmExerciseCtrol();
+
+    // event handlers. No need to implement in derived classes
+    virtual void OnRespButton(wxCommandEvent& event);
+    virtual void OnNewProblem(wxCommandEvent& event);
+    virtual void OnDisplaySolution(wxCommandEvent& event);
+
+protected:
+    //IDs for controls
+    enum {
+        ID_LINK_SOLUTION = 3006,
+        ID_LINK_NEW_PROBLEM,
+    };
+
+    //implementation of virtual pure methods
+    void OnSettingsChanged() { ReconfigureButtons(); }
+
 
     //virtual pure methods to be implemented by derived classes
     virtual void InitializeStrings()=0;   
@@ -184,23 +179,18 @@ protected:
     wxBoxSizer*         m_pMainSizer;
     wxFlexGridSizer*    m_pKeyboardSizer;
 
-    lmExerciseConstrains*   m_pConstrains;  //constraints for the exercise
+    lmExerciseOptions*   m_pConstrains;  //constraints for the exercise
     bool                m_fQuestionAsked;   //question asked but not yet answered
     int                 m_nRespIndex;       //index to the button with the right answer
     wxString            m_sAnswer;          //string with the right answer
 
-    lmUrlAuxCtrol*      m_pPlayButton;      // "play" button
     lmUrlAuxCtrol*      m_pShowSolution;    // "show solution" button
     int                 m_nNumButtons;      //num answer buttons
 
     wxButton**          m_pAnswerButtons;   //buttons for the answers
     int                 m_nIdFirstButton;   //ID of first button; the others in sequence
 
-    bool                m_fControlsCreated; 
-
-
     wxSize              m_nDisplaySize;     // DisplayCtrol size (pixels at 1:1)
-    double              m_rScale;           // Current scaling factor
 
 private:
     void DoStopSounds();
@@ -222,16 +212,16 @@ public:
 
     // constructor and destructor    
     lmCompareCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseConstrains* pConstrains, wxSize nDisplaySize, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
                const wxPoint& pos = wxDefaultPosition, 
                const wxSize& size = wxDefaultSize, int style = 0);
 
     virtual ~lmCompareCtrol();
 
-    //virtual pure methods to be implemented by derived classes
-    virtual void OnDebugShowSourceScore(wxCommandEvent& event)=0;
-    virtual void OnDebugDumpScore(wxCommandEvent& event)=0;
-    virtual void OnDebugShowMidiEvents(wxCommandEvent& event)=0;
+    ////virtual pure methods to be implemented by derived classes
+    //virtual void OnDebugShowSourceScore(wxCommandEvent& event)=0;
+    //virtual void OnDebugDumpScore(wxCommandEvent& event)=0;
+    //virtual void OnDebugShowMidiEvents(wxCommandEvent& event)=0;
 
     enum {
         m_NUM_ROWS = 1,
@@ -280,7 +270,7 @@ public:
 
     // constructor and destructor    
     lmCompareScoresCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseConstrains* pConstrains, wxSize nDisplaySize, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
                const wxPoint& pos = wxDefaultPosition, 
                const wxSize& size = wxDefaultSize, int style = 0);
 
@@ -337,7 +327,7 @@ public:
 
     // constructor and destructor    
     lmOneScoreCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseConstrains* pConstrains, wxSize nDisplaySize, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
                const wxPoint& pos = wxDefaultPosition, 
                const wxSize& size = wxDefaultSize, int style = 0);
 
@@ -396,7 +386,7 @@ public:
 
     // constructor and destructor    
     lmCompareMidiCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseConstrains* pConstrains, wxSize nDisplaySize, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
                const wxPoint& pos = wxDefaultPosition, 
                const wxSize& size = wxDefaultSize, int style = 0);
 

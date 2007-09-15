@@ -42,7 +42,7 @@ extern wxConfigBase *g_pPrefs;
 
 
 lmMusicReadingConstrains::lmMusicReadingConstrains(wxString sSection)
-    : lmExerciseConstrains(sSection)
+    : lmExerciseOptions(sSection)
 {
     //default values for control options
     fPlayCtrol = false;

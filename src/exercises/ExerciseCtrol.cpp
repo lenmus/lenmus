@@ -54,50 +54,95 @@ extern bool g_fAutoNewProblem;          // in Preferences.cpp
 //access to MIDI manager to play MIDI sounds
 #include "../sound/MidiManager.h"
 
+//------------------------------------------------------------------------------------
+// Implementation of lmEBookCtrol:
+//------------------------------------------------------------------------------------
 
-//--------------------------------------------------------------------------------
-// Implementation of abstract class for lmExerciseCtrol constraints
-//--------------------------------------------------------------------------------
-lmExerciseConstrains::lmExerciseConstrains(wxString sSection)
+
+BEGIN_EVENT_TABLE(lmEBookCtrol, wxWindow)
+    EVT_SIZE            (lmEBookCtrol::OnSize)
+    LM_EVT_URL_CLICK    (ID_LINK_SEE_SOURCE, lmEBookCtrol::OnDebugShowSourceScore)
+    LM_EVT_URL_CLICK    (ID_LINK_DUMP, lmEBookCtrol::OnDebugDumpScore)
+    LM_EVT_URL_CLICK    (ID_LINK_MIDI_EVENTS, lmEBookCtrol::OnDebugShowMidiEvents)
+    LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmEBookCtrol::OnPlay)
+    LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmEBookCtrol::OnSettingsButton)
+    LM_EVT_URL_CLICK    (ID_LINK_GO_BACK, lmEBookCtrol::OnGoBackButton)
+
+END_EVENT_TABLE()
+
+IMPLEMENT_CLASS(lmEBookCtrol, wxWindow)
+
+lmEBookCtrol::lmEBookCtrol(wxWindow* parent, wxWindowID id, 
+                           lmEBookCtrolOptions* pOptions, 
+                           const wxPoint& pos, const wxSize& size, int style)
+    : wxWindow(parent, id, pos, size, style )
 {
-    m_sSection = sSection;
-    m_fSettingsLink = false;
-    m_sGoBackURL = _T("");
-    m_fButtonsEnabledAfterSolution = true;
-    m_fPlayLink = true;
-    m_fSolutionLink = true;
-    m_fUseCounters = true;
-    LoadSettings();
+    //initializations
+    SetBackgroundColour(*wxWHITE);
+    m_pOptions = pOptions;
+    m_fControlsCreated = false;
+    m_rScale = 1.0;
+    m_pPlayButton = (lmUrlAuxCtrol*)NULL;
+
+}
+
+lmEBookCtrol::~lmEBookCtrol()
+{
+    //delete objects
+    if (m_pOptions) delete m_pOptions;
+}
+
+void lmEBookCtrol::OnSettingsButton(wxCommandEvent& event)
+{
+    wxDialog* pDlg = GetSettingsDlg(); 
+    if (pDlg) {
+        int retcode = pDlg->ShowModal();
+        if (retcode == wxID_OK) {
+            m_pOptions->SaveSettings();
+            // When changing settings it could be necessary to review answer buttons
+            // or other issues. Give derived classes a chance to do it.
+            OnSettingsChanged();
+        }
+        delete pDlg;
+    }
+
+}
+
+void lmEBookCtrol::OnGoBackButton(wxCommandEvent& event)
+{
+    lmMainFrame* pFrame = GetMainFrame();
+    lmTextBookController* pBookController = pFrame->GetBookController();
+    pBookController->Display( m_pOptions->GetGoBackURL() );
+}
+
+void lmEBookCtrol::OnSize(wxSizeEvent& event)
+{
+    Layout();
+}
+
+void lmEBookCtrol::OnPlay(wxCommandEvent& event)
+{
+    Play();
 }
 
 
 //------------------------------------------------------------------------------------
 // Implementation of lmExerciseCtrol:
-// An abstract class to create exercises
 //------------------------------------------------------------------------------------
 
 
-BEGIN_EVENT_TABLE(lmExerciseCtrol, wxWindow)
-    EVT_SIZE            (lmExerciseCtrol::OnSize)
-
-    LM_EVT_URL_CLICK    (ID_LINK_SEE_SOURCE, lmExerciseCtrol::OnDebugShowSourceScore)
-    LM_EVT_URL_CLICK    (ID_LINK_DUMP, lmExerciseCtrol::OnDebugDumpScore)
-    LM_EVT_URL_CLICK    (ID_LINK_MIDI_EVENTS, lmExerciseCtrol::OnDebugShowMidiEvents)
-
+BEGIN_EVENT_TABLE(lmExerciseCtrol, lmEBookCtrol)
     LM_EVT_URL_CLICK    (ID_LINK_NEW_PROBLEM, lmExerciseCtrol::OnNewProblem)
-    LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmExerciseCtrol::OnPlay)
     LM_EVT_URL_CLICK    (ID_LINK_SOLUTION, lmExerciseCtrol::OnDisplaySolution)
-    LM_EVT_URL_CLICK    (ID_LINK_SETTINGS, lmExerciseCtrol::OnSettingsButton)
-    LM_EVT_URL_CLICK    (ID_LINK_GO_BACK, lmExerciseCtrol::OnGoBackButton)
 
 END_EVENT_TABLE()
 
-IMPLEMENT_CLASS(lmExerciseCtrol, wxWindow)
+IMPLEMENT_CLASS(lmExerciseCtrol, lmEBookCtrol)
 
 lmExerciseCtrol::lmExerciseCtrol(wxWindow* parent, wxWindowID id, 
-                           lmExerciseConstrains* pConstrains, wxSize nDisplaySize,
+                           lmExerciseOptions* pConstrains, wxSize nDisplaySize,
                            const wxPoint& pos, const wxSize& size, int style)
-    : wxWindow(parent, id, pos, size, style )
+    : lmEBookCtrol(parent, id, pConstrains, pos, size, style)
 {
     //initializations
     SetBackgroundColour(*wxWHITE);
@@ -105,12 +150,9 @@ lmExerciseCtrol::lmExerciseCtrol(wxWindow* parent, wxWindowID id,
     m_nNumButtons = 0;
     m_fQuestionAsked = false;
     m_pConstrains = pConstrains;
-    m_fControlsCreated = false;
-    m_rScale = 1.0;
 
     m_pDisplayCtrol =(wxWindow*)NULL;
     m_pCounters = (lmCountersCtrol*)NULL;
-    m_pPlayButton = (lmUrlAuxCtrol*)NULL;
     m_pShowSolution = (lmUrlAuxCtrol*)NULL;
 
 }
@@ -272,44 +314,6 @@ void lmExerciseCtrol::CreateControls()
 
 lmExerciseCtrol::~lmExerciseCtrol()
 {
-    //delete objects
-    if (m_pConstrains) {
-        delete m_pConstrains;
-        m_pConstrains = (lmExerciseConstrains*) NULL;
-    }
-}
-
-void lmExerciseCtrol::OnSettingsButton(wxCommandEvent& event)
-{
-    wxDialog* pDlg = GetSettingsDlg(); 
-    if (pDlg) {
-        int retcode = pDlg->ShowModal();
-        if (retcode == wxID_OK) {
-            m_pConstrains->SaveSettings();
-            // When changing interval settings it is necessary review the buttons
-            // as number of buttons and/or its name could have changed.
-            ReconfigureButtons();
-        }
-        delete pDlg;
-    }
-
-}
-
-void lmExerciseCtrol::OnGoBackButton(wxCommandEvent& event)
-{
-    lmMainFrame* pFrame = GetMainFrame();
-    lmTextBookController* pBookController = pFrame->GetBookController();
-    pBookController->Display( m_pConstrains->GetGoBackURL() );
-}
-
-void lmExerciseCtrol::OnSize(wxSizeEvent& event)
-{
-    Layout();
-}
-
-void lmExerciseCtrol::OnPlay(wxCommandEvent& event)
-{
-    Play();
 }
 
 void lmExerciseCtrol::OnNewProblem(wxCommandEvent& event)
@@ -469,7 +473,7 @@ END_EVENT_TABLE()
 
 
 lmCompareCtrol::lmCompareCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseConstrains* pConstrains, wxSize nDisplaySize, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
                const wxPoint& pos, const wxSize& size, int style)
     : lmExerciseCtrol(parent, id, pConstrains, nDisplaySize, pos, size, style )
 {
@@ -530,7 +534,7 @@ BEGIN_EVENT_TABLE(lmCompareScoresCtrol, lmCompareCtrol)
 END_EVENT_TABLE()
 
 lmCompareScoresCtrol::lmCompareScoresCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseConstrains* pConstrains, wxSize nDisplaySize, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
                const wxPoint& pos, const wxSize& size, int style)
     : lmCompareCtrol(parent, id, pConstrains, nDisplaySize, pos, size, style )
 {
@@ -740,7 +744,7 @@ END_EVENT_TABLE()
 
 
 lmOneScoreCtrol::lmOneScoreCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseConstrains* pConstrains, wxSize nDisplaySize, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
                const wxPoint& pos, const wxSize& size, int style)
     : lmExerciseCtrol(parent, id, pConstrains, nDisplaySize, pos, size, style )
 {
@@ -910,7 +914,7 @@ BEGIN_EVENT_TABLE(lmCompareMidiCtrol, lmCompareCtrol)
 END_EVENT_TABLE()
 
 lmCompareMidiCtrol::lmCompareMidiCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseConstrains* pConstrains, wxSize nDisplaySize, 
+               lmExerciseOptions* pConstrains, wxSize nDisplaySize, 
                const wxPoint& pos, const wxSize& size, int style)
     : lmCompareCtrol(parent, id, pConstrains, nDisplaySize, pos, size, style )
 {

@@ -39,6 +39,7 @@
 
 #include "CadencesConstrains.h"
 #include "../score/Score.h"
+#include "ExerciseCtrol.h"
 
 
 

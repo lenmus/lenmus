@@ -39,11 +39,10 @@
 
 #include "../score/Score.h"
 #include "Constrains.h"
-#include "ExerciseCtrol.h"
 
 // class lmEarIntervalsConstrains:
 // Options for lmEarIntervalsCtrol control
-class lmEarIntervalsConstrains : public lmExerciseConstrains
+class lmEarIntervalsConstrains : public lmExerciseOptions
 {
 public:
     lmEarIntervalsConstrains(wxString sSection);

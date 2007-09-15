@@ -42,9 +42,10 @@
 #include "ScoreAuxCtrol.h"
 #include "UrlAuxCtrol.h"
 #include "../sound/SoundEvents.h"
+#include "ExerciseCtrol.h"
 
 
-class lmScoreCtrol : public wxWindow
+class lmScoreCtrol : public lmEBookCtrol
 {
    DECLARE_DYNAMIC_CLASS(lmScoreCtrol)
 
@@ -59,8 +60,6 @@ public:
     ~lmScoreCtrol();
 
     // event handlers
-    void OnSize(wxSizeEvent& event);
-    void OnPlay(wxCommandEvent& event);
     void OnSolfa(wxCommandEvent& event);
     void OnPlayMeasure(wxCommandEvent& event);
 
@@ -72,15 +71,24 @@ public:
     // event handlers related with playing a score
     void OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event));
 
+protected:
+    //implementation of virtual pure methods
+    void InitializeStrings() {}   
+    wxDialog* GetSettingsDlg() { return (wxDialog*)NULL; }
+    void Play() { DoPlay(ePM_NormalInstrument, m_pPlayLink); }
+    void StopSounds();
+    void OnSettingsChanged() {}
+    void CreateControls();
 
 private:
-    void Play(EPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeasure=0);
+    void DoPlay(EPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeasure=0);
 
         // member variables
 
     lmScoreAuxCtrol*        m_pScoreCtrol;
     lmScoreCtrolOptions*    m_pOptions;
     lmScore*                m_pScore;       //the score to display
+    wxSize                  m_nScoreSize;
 
     //to control play back
     lmUrlAuxCtrol*      m_CurPlayLink;      // link that is being played back

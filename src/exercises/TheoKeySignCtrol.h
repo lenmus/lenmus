@@ -40,6 +40,7 @@
 #include "Constrains.h"
 #include "TheoKeySignConstrains.h"
 #include "../score/Score.h"
+#include "ExerciseCtrol.h"
 
 
 class lmTheoKeySignCtrol : public lmOneScoreCtrol

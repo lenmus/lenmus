@@ -38,17 +38,16 @@
 #endif
 
 #include "wx/html/htmltag.h"
-//#include "wx/html/winpars.h"
-
+class lmEBookCtrolOptions;
 class wxHtmlWinParser;
 
-class lmObjectParams
+class lmEBookCtrolParams
 {
 public:
-    lmObjectParams(const wxHtmlTag& tag, int nWidth, int nHeight, int nPercent);
-    virtual ~lmObjectParams() {}
+    lmEBookCtrolParams(const wxHtmlTag& tag, int nWidth, int nHeight, int nPercent);
+    virtual ~lmEBookCtrolParams() {}
 
-    virtual void AddParam(const wxHtmlTag& tag)=0;
+    virtual void AddParam(const wxHtmlTag& tag);
     virtual void CreateHtmlCell(wxHtmlWinParser *pHtmlParser);
 
 protected:
@@ -58,6 +57,23 @@ protected:
     int                m_nWidth;
     int                m_nHeight;
     int                m_nPercent;
+    
+    // other
+    lmEBookCtrolOptions* m_pOptions;        // control options object
+    wxString            m_sParamErrors;     // error string if param parsing error
+
+};
+
+class lmExerciseParams : public lmEBookCtrolParams
+{
+public:
+    lmExerciseParams(const wxHtmlTag& tag, int nWidth, int nHeight, int nPercent);
+    virtual ~lmExerciseParams() {}
+
+    virtual void AddParam(const wxHtmlTag& tag);
+
+protected:
+
 };
 
 

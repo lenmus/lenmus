@@ -71,7 +71,7 @@
 // settings mode (default mode). For other modes ('UserSettings' and 'ReadingNotes')
 // the settings must be read/setup by the TheoMusicReadingCtrol object.
 
-class lmTheoMusicReadingCtrolParms : public lmObjectParams
+class lmTheoMusicReadingCtrolParms : public lmExerciseParams
 {
 public:
     lmTheoMusicReadingCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
@@ -121,7 +121,6 @@ protected:
     long                        m_nWindowStyle;
     lmScoreConstrains*          m_pScoreConstrains;
     lmMusicReadingConstrains*   m_pConstrains;
-    wxString                    m_sParamErrors;
 
     DECLARE_NO_COPY_CLASS(lmTheoMusicReadingCtrolParms)
 
@@ -131,7 +130,7 @@ protected:
 
 lmTheoMusicReadingCtrolParms::lmTheoMusicReadingCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
                                    int nPercent, long nStyle)
-    : lmObjectParams(tag, nWidth, nHeight, nPercent)
+    : lmExerciseParams(tag, nWidth, nHeight, nPercent)
 {
 
     // html object window attributes
@@ -142,6 +141,7 @@ lmTheoMusicReadingCtrolParms::lmTheoMusicReadingCtrolParms(const wxHtmlTag& tag,
 
     // object options
     m_pConstrains = new lmMusicReadingConstrains(_T("MusicReading"));
+    m_pOptions = m_pConstrains;
 
 
     // initializations
@@ -251,25 +251,9 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
 
-    // control_play
-    if ( sName == _T("CONTROL_PLAY") ) {
-        m_pConstrains->SetControlPlay(true, tag.GetParam(_T("VALUE")) );
-    }
-
     // control_solfa
     else if ( sName == _T("CONTROL_SOLFA") ) {
         m_pConstrains->SetControlSolfa(true, tag.GetParam(_T("VALUE")) );
-    }
-
-    // "Go back to theory" link
-    else if ( sName == _T("CONTROL_GO_BACK") ) {
-        m_pConstrains->SetGoBackLink( tag.GetParam(_T("VALUE") ));
-    }
-
-    // control_settings
-    else if ( sName == _T("CONTROL_SETTINGS") ) {
-        m_pConstrains->SetControlSettings(true, tag.GetParam(_T("VALUE")) );
-        m_pScoreConstrains->SetSection( tag.GetParam(_T("VALUE") ));
     }
 
     // metronome
@@ -364,9 +348,7 @@ Acceptable values: numeric, greater than 0\n"),
 
     // Unknown param
     else
-        m_sParamErrors += wxString::Format(
-            _("lmMusicReadingConstrains. Unknown param: <param %s >\n"),
-            tag.GetAllParams().c_str() );
+        lmExerciseParams::AddParam(tag);
 
 }
 

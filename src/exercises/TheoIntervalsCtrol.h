@@ -39,6 +39,7 @@
 
 #include "TheoIntervalsConstrains.h"
 #include "../score/Score.h"
+#include "ExerciseCtrol.h"
 
 
 class lmTheoIntervalsCtrol : public lmOneScoreCtrol        

@@ -57,29 +57,16 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 extern bool g_fShowDebugLinks;            // in TheApp.cpp
 
 
-//Layout definitions
-const int BUTTONS_DISTANCE    = 5;        //pixels
-
 //IDs for controls
 enum {
-    ID_LINK_SEE_SOURCE = 3500,
-    ID_LINK_DUMP,
-    ID_LINK_MIDI_EVENTS,
-    ID_LINK_PLAY,
-    ID_LINK_SOLFA,
+    ID_LINK_SOLFA = 3500,
     ID_LINK_MEASURE         // AWARE this one must be the last one, as its ID is going
                             // to be incremented from 0 .. 9 to deal with the 10 possible
                             // 'play_measure' links
 };
 
 
-BEGIN_EVENT_TABLE(lmScoreCtrol, wxWindow)
-    EVT_SIZE            (lmScoreCtrol::OnSize)
-    LM_EVT_URL_CLICK    (ID_LINK_SEE_SOURCE, lmScoreCtrol::OnDebugShowSourceScore)
-    LM_EVT_URL_CLICK    (ID_LINK_DUMP, lmScoreCtrol::OnDebugDumpScore)
-    LM_EVT_URL_CLICK    (ID_LINK_MIDI_EVENTS, lmScoreCtrol::OnDebugShowMidiEvents)
-
-    LM_EVT_URL_CLICK    (ID_LINK_PLAY, lmScoreCtrol::OnPlay)
+BEGIN_EVENT_TABLE(lmScoreCtrol, lmEBookCtrol)
     LM_EVT_URL_CLICK    (ID_LINK_SOLFA, lmScoreCtrol::OnSolfa)
     LM_EVT_URL_CLICK    (ID_LINK_MEASURE, lmScoreCtrol::OnPlayMeasure)
     LM_EVT_URL_CLICK    (ID_LINK_MEASURE+1, lmScoreCtrol::OnPlayMeasure)
@@ -95,17 +82,18 @@ BEGIN_EVENT_TABLE(lmScoreCtrol, wxWindow)
 
 END_EVENT_TABLE()
 
-IMPLEMENT_CLASS(lmScoreCtrol, wxWindow)
+IMPLEMENT_CLASS(lmScoreCtrol, lmEBookCtrol)
 
 
 lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore, 
                            lmScoreCtrolOptions* pOptions,
                            const wxPoint& pos, const wxSize& size, int style)
-    : wxWindow(parent, id, pos, size, style )
+    : lmEBookCtrol(parent, id, pOptions, pos, size, style)
 {
 
     // save parameters
     m_pScore = pScore;
+    m_nScoreSize = size;
     m_pOptions = pOptions;
 
     //initializations
@@ -118,20 +106,27 @@ lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
         m_pMeasureLink[i] = (lmUrlAuxCtrol*) NULL;
     }
 
+    CreateControls();
+
+}
+
+void lmScoreCtrol::CreateControls()
+{
+
         //Create the controls
 
     // ensure that sizes are properly scaled
     double rScale = m_pOptions->rScale;
     int nSpacing = (int)(5.0 * rScale);       //5 pixels, scaled
-    wxSize nScoreSize( (int)((double)size.x * rScale) ,
-                       (int)((double)size.y * rScale) );
+    wxSize nScoreSize( (int)((double)m_nScoreSize.x * rScale) ,
+                       (int)((double)m_nScoreSize.y * rScale) );
 
     //the window is divided into two regions: top, for score
     //and bottom region, for links
     wxBoxSizer* pMainSizer = new wxBoxSizer( wxVERTICAL );
 
     // create score ctrl 
-    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, pScore, wxDefaultPosition, nScoreSize,
+    m_pScoreCtrol = new lmScoreAuxCtrol(this, -1, m_pScore, wxDefaultPosition, nScoreSize,
                             (m_pOptions->fMusicBorder ? eSIMPLE_BORDER : eNO_BORDER) );
     pMainSizer->Add(m_pScoreCtrol, 1, wxGROW|wxALL, nSpacing);
 
@@ -148,19 +143,19 @@ lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
     pMainSizer->Add(pLinksSizer, 0, wxALIGN_LEFT|wxALL, nSpacing);
 
     // "play" link
-    if (pOptions->fPlayCtrol)
+    if (m_pOptions->fPlayCtrol)
     {
-        m_pPlayLink = new lmUrlAuxCtrol(this, ID_LINK_PLAY, rScale, pOptions->sPlayLabel,
-                                        pOptions->sStopPlayLabel );
+        m_pPlayLink = new lmUrlAuxCtrol(this, ID_LINK_PLAY, rScale, m_pOptions->sPlayLabel,
+                                        m_pOptions->sStopPlayLabel );
         pLinksSizer->Add(m_pPlayLink,
                     0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, nSpacing);
     }
 
     // "solfa" link
-    if (pOptions->fSolfaCtrol)
+    if (m_pOptions->fSolfaCtrol)
     {
-        m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, rScale, pOptions->sSolfaLabel,
-                                         pOptions->sStopSolfaLabel );
+        m_pSolfaLink = new lmUrlAuxCtrol(this, ID_LINK_SOLFA, rScale, m_pOptions->sSolfaLabel,
+                                         m_pOptions->sStopSolfaLabel );
         pLinksSizer->Add(m_pSolfaLink,
                     0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, nSpacing);
     }
@@ -172,14 +167,14 @@ lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
         For now, play-measure links are positioned at regular intervals. This is
         the v2.0 behaviour
     */
-    if (pOptions->fMeasuresCtrol)
+    if (m_pOptions->fMeasuresCtrol)
     {
-        int nNumMeasures = wxMin(pScore->GetNumMeasures(), 10);
+        int nNumMeasures = wxMin(m_pScore->GetNumMeasures(), 10);
         for (int i=0; i < nNumMeasures; i++) {
             m_pMeasureLink[i] =
                 new lmUrlAuxCtrol(this, ID_LINK_MEASURE+i, rScale,
-                        wxString::Format(pOptions->sMeasuresLabel, i+1),
-                        wxString::Format(pOptions->sStopMeasureLabel, i+1) );
+                        wxString::Format(m_pOptions->sMeasuresLabel, i+1),
+                        wxString::Format(m_pOptions->sStopMeasureLabel, i+1) );
             pLinksSizer->Add(m_pMeasureLink[i],
                         0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, nSpacing);
         }
@@ -211,51 +206,26 @@ lmScoreCtrol::lmScoreCtrol(wxWindow* parent, wxWindowID id, lmScore* pScore,
 
 lmScoreCtrol::~lmScoreCtrol()
 {
-    if (m_pScoreCtrol) {
-        delete m_pScoreCtrol;
-        m_pScoreCtrol = (lmScoreAuxCtrol*)NULL;
-    }
-
-    if (m_pOptions) {
-        delete m_pOptions;
-        m_pOptions = (lmScoreCtrolOptions*) NULL;
-    }
-
+    StopSounds();
     if (m_pScore) {
         delete m_pScore;
         m_pScore = (lmScore*)NULL;
     }
-
-}
-
-
-//----------------------------------------------------------------------------------------
-// Event handlers
-
-void lmScoreCtrol::OnSize(wxSizeEvent& event)
-{
-    //wxLogMessage(_T("OnSize en lmScoreCtrol"));
-    Layout();
-
-}
-
-void lmScoreCtrol::OnPlay(wxCommandEvent& event)
-{
-    Play(ePM_NormalInstrument, m_pPlayLink);
+    m_pScoreCtrol->SetScore((lmScore*)NULL);
 }
 
 void lmScoreCtrol::OnSolfa(wxCommandEvent& event)
 {
-    Play(ePM_RhythmHumanVoice, m_pSolfaLink);
+    DoPlay(ePM_RhythmHumanVoice, m_pSolfaLink);
 }
 
 void lmScoreCtrol::OnPlayMeasure(wxCommandEvent& event)
 {
     int i = event.GetId() - ID_LINK_MEASURE;
-    Play(ePM_NormalInstrument, m_pMeasureLink[i], i+1);
+    DoPlay(ePM_NormalInstrument, m_pMeasureLink[i], i+1);
 }
 
-void lmScoreCtrol::Play(EPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeasure)
+void lmScoreCtrol::DoPlay(EPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeasure)
 {
     if (!m_fPlaying) {
         // is not playing. "Play" pressed
@@ -290,6 +260,12 @@ void lmScoreCtrol::OnEndOfPlay(lmEndOfPlayEvent& WXUNUSED(event))
 {
     m_CurPlayLink->SetNormalLabel();
     m_fPlaying = false;
+}
+
+void lmScoreCtrol::StopSounds()
+{
+    //Stop any possible chord being played to avoid crashes
+    if (m_pScore) m_pScore->Stop();
 }
 
 void lmScoreCtrol::OnDebugShowSourceScore(wxCommandEvent& event)

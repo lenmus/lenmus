@@ -41,7 +41,7 @@
 // This class pack all parameters to set up a Ear Tunning exercise,
 // The settings must be read/setup by the lmEarTunningCtrol object.
 
-class lmEarTunningCtrolParms : public lmObjectParams
+class lmEarTunningCtrolParms : public lmExerciseParams
 {
 public:
     lmEarTunningCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
@@ -56,9 +56,8 @@ protected:
         // Member variables:
 
     // html object window attributes
-    long                    m_nWindowStyle;
-    wxString                m_sParamErrors;
-    lmExerciseConstrains*   m_pConstrains;
+    long                m_nWindowStyle;
+    lmExerciseOptions*  m_pConstrains;
 
     DECLARE_NO_COPY_CLASS(lmEarTunningCtrolParms)
 };
@@ -67,14 +66,15 @@ protected:
 
 lmEarTunningCtrolParms::lmEarTunningCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
                                    int nPercent, long nStyle)
-    : lmObjectParams(tag, nWidth, nHeight, nPercent)
+    : lmExerciseParams(tag, nWidth, nHeight, nPercent)
 {
 
     // html object window attributes
     m_nWindowStyle = nStyle;
 
     // construct constraints object
-    m_pConstrains = new lmExerciseConstrains(_T("EarTunning"));
+    m_pConstrains = new lmExerciseOptions(_T("EarTunning"));
+    m_pOptions = m_pConstrains;
 
     // initializations
     m_sParamErrors = _T("");    //no errors
@@ -113,17 +113,16 @@ void lmEarTunningCtrolParms::AddParam(const wxHtmlTag& tag)
 
     if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
 
-    // control_settings
-    if ( sName == _T("CONTROL_SETTINGS") ) {
-        m_pConstrains->SetSettingsLink(true);
-        m_pConstrains->SetSection( tag.GetParam(_T("VALUE") ));
-    }
+    //// control_settings
+    //if ( sName == _T("CONTROL_SETTINGS") ) {
+    //    m_pConstrains->SetSettingsLink(true);
+    //    m_pConstrains->SetSection( tag.GetParam(_T("VALUE") ));
+    //}
 
     // Unknown param
     else
-        m_sParamErrors += wxString::Format(
-            _("lmEarTunningCtrol. Unknown param: <param %s >\n"),
-            tag.GetAllParams().c_str() );
+        lmExerciseParams::AddParam(tag);
+
 
 }
 

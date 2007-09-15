@@ -39,6 +39,7 @@
 
 #include "ChordConstrains.h"
 #include "../score/Score.h"
+#include "ExerciseCtrol.h"
 
 
 

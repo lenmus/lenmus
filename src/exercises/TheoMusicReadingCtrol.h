@@ -39,6 +39,7 @@
 
 #include "Constrains.h"
 #include "MusicReadingConstrains.h"
+#include "ExerciseCtrol.h"
 
 // lmTheoMusicReadingCtrol is an lmOneScoreCtrol but the controls are created
 // by this class by overriding virtual method CreateControls()

@@ -130,27 +130,88 @@ private:
     bool m_fValidTimes[lmMAX_TIME_SIGN - lmMIN_TIME_SIGN + 1];
 };
 
-// Options for lmScoreCtrol control
-class lmScoreCtrolOptions
+
+//--------------------------------------------------------------------------------
+// Abstract class to create constrains/options objects for lmEBookCtrolOptions
+//--------------------------------------------------------------------------------
+class lmEBookCtrolOptions
 {
 public:
-    lmScoreCtrolOptions() {
-            //default values
-            fPlayCtrol = false;
-            fSolfaCtrol = false;
-            fMeasuresCtrol = false;
-            fBorder = false;
-            fMusicBorder = false;
-            sPlayLabel = _("Play");
-            sStopPlayLabel = _("Stop");
-            sSolfaLabel = _("Read");
-            sStopSolfaLabel = _("Stop");
-            sMeasuresLabel = _("Measure %d");
-            sStopMeasureLabel = _("Stop %d");
-            rScale = 1.0;
-            m_nMM = 0;
-        }
+    lmEBookCtrolOptions(wxString sSection);
+    virtual ~lmEBookCtrolOptions() {}
 
+    virtual void SaveSettings() {}
+
+    void SetSettingsLink(bool fValue) { m_fSettingsLink = fValue; }
+    bool IncludeSettingsLink() { return m_fSettingsLink; }
+    void SetSection(wxString sSection) {
+                m_sSection = sSection;
+                LoadSettings();
+            }
+
+    void SetGoBackLink(wxString sURL) { m_sGoBackURL = sURL; }
+    bool IncludeGoBackLink() { return m_sGoBackURL != _T(""); }
+    wxString GetGoBackURL() { return m_sGoBackURL; }
+
+    void SetPlayLink(bool fValue) { m_fPlayLink = fValue; }
+    bool IncludePlayLink() { return m_fPlayLink; }
+
+
+
+protected:
+    virtual void LoadSettings() {}
+
+    wxString    m_sSection;         //section name to save the constraints
+    wxString    m_sGoBackURL;       //URL for "Go back" link of empty string if no link
+    bool        m_fPlayLink;        //In theory mode the score could be not playable
+    bool        m_fSettingsLink;    //include 'settings' link
+
+
+};
+
+
+class lmExerciseOptions : public lmEBookCtrolOptions
+{
+public:
+    lmExerciseOptions(wxString sSection);
+    virtual ~lmExerciseOptions() {}
+
+    void SetTheoryMode(bool fValue) { m_fTheoryMode = fValue; }
+    bool IsTheoryMode() { return m_fTheoryMode; }
+
+    void SetButtonsEnabledAfterSolution(bool fValue) {
+            m_fButtonsEnabledAfterSolution = fValue;
+    }
+    bool ButtonsEnabledAfterSolution() { return m_fButtonsEnabledAfterSolution; }
+
+    void SetSolutionLink(bool fValue) { m_fSolutionLink = fValue; }
+    bool IncludeSolutionLink() { return m_fSolutionLink; }
+
+    void SetUsingCounters(bool fValue) { m_fUseCounters = fValue; }
+    bool IsUsingCounters() { return m_fUseCounters; }
+
+
+protected:
+
+    //The Ctrol could be used both for ear training exercises and for theory exercises.
+    //Following variables are used for configuration
+    bool        m_fTheoryMode;
+
+    //options
+    bool        m_fButtonsEnabledAfterSolution;
+    bool        m_fUseCounters;     //option to not use counters
+    bool        m_fSolutionLink;    //include 'show solution' link
+
+
+};
+
+
+
+// Options for lmScoreCtrol control
+class lmScoreCtrolOptions : public lmEBookCtrolOptions
+{
+public:
+    lmScoreCtrolOptions(wxString sSection);
     ~lmScoreCtrolOptions() {}
 
     void SetControlPlay(bool fValue, wxString sLabels = _T(""))

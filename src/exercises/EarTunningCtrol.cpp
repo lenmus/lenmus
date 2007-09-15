@@ -62,7 +62,7 @@ BEGIN_EVENT_TABLE(lmEarTunningCtrol, lmCompareMidiCtrol)
 END_EVENT_TABLE()
 
 lmEarTunningCtrol::lmEarTunningCtrol(wxWindow* parent, wxWindowID id, 
-                           lmExerciseConstrains* pConstrains,
+                           lmExerciseOptions* pConstrains,
                            const wxPoint& pos, const wxSize& size, int style)
     : lmCompareMidiCtrol(parent, id, pConstrains, wxSize(400, 150), pos, size, style )
 {

@@ -53,7 +53,7 @@ public:
 
     // constructor and destructor    
     lmEarTunningCtrol(wxWindow* parent, wxWindowID id,
-               lmExerciseConstrains* pConstrains, 
+               lmExerciseOptions* pConstrains, 
                const wxPoint& pos = wxDefaultPosition, 
                const wxSize& size = wxDefaultSize, int style = 0);
 

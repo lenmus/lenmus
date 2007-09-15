@@ -117,9 +117,54 @@ bool lmTimeSignConstrains::SetConstrains(wxString sTimeSign)
 
 
 
+//--------------------------------------------------------------------------------
+// Implementation of abstract class lmEBookCtrolOptions
+//--------------------------------------------------------------------------------
+lmEBookCtrolOptions::lmEBookCtrolOptions(wxString sSection)
+{
+    m_sSection = sSection;
+    m_fSettingsLink = false;
+    m_sGoBackURL = _T("");
+    m_fPlayLink = true;
+    LoadSettings();
+}
+
+
+//--------------------------------------------------------------------------------
+// Implementation of abstract class lmExerciseOptions
+//--------------------------------------------------------------------------------
+lmExerciseOptions::lmExerciseOptions(wxString sSection)
+    : lmEBookCtrolOptions(sSection)
+{
+    m_fButtonsEnabledAfterSolution = true;
+    m_fSolutionLink = true;
+    m_fUseCounters = true;
+}
+
+
+
 //-------------------------------------------------------------------------------------------
-// lmScoreCtrolOptions
+// Implementation of lmScoreCtrolOptions
 //-------------------------------------------------------------------------------------------
+
+lmScoreCtrolOptions::lmScoreCtrolOptions(wxString sSection)
+    : lmEBookCtrolOptions(sSection)
+{
+    //default values
+    fPlayCtrol = false;
+    fSolfaCtrol = false;
+    fMeasuresCtrol = false;
+    fBorder = false;
+    fMusicBorder = false;
+    sPlayLabel = _("Play");
+    sStopPlayLabel = _("Stop");
+    sSolfaLabel = _("Read");
+    sStopSolfaLabel = _("Stop");
+    sMeasuresLabel = _("Measure %d");
+    sStopMeasureLabel = _("Stop %d");
+    rScale = 1.0;
+    m_nMM = 0;
+}
 
 void lmScoreCtrolOptions::SetLabels(wxString& sLabel, wxString* pStart, wxString* pStop)
 {

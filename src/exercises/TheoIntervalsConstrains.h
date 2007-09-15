@@ -39,7 +39,6 @@
 
 #include "../score/Score.h"
 #include "Constrains.h"
-#include "ExerciseCtrol.h"
 
 
 enum EProblemTheoIntervals
@@ -50,7 +49,7 @@ enum EProblemTheoIntervals
 };
 
 
-class lmTheoIntervalsConstrains: public lmExerciseConstrains
+class lmTheoIntervalsConstrains: public lmExerciseOptions
 {
 public:
     lmTheoIntervalsConstrains(wxString sSection);

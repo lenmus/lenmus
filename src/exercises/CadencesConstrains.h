@@ -39,7 +39,6 @@
 
 #include "Generators.h"
 #include "Constrains.h"
-#include "ExerciseCtrol.h"
 
 // Cadences
 // --------
@@ -106,18 +105,18 @@ enum lmECadenceType
     lm_eCadPlagal_IImc6_I,
     lm_eCadLastPlagal,
 
-    lm_eCadLastTerminal = lm_eCadLastPlagal,    // last terminal cadence
+    // Imperfect authentic cadences
+	lm_eCadImperfect = lm_eCadLastPlagal,
+	lm_eCadImperfect_V_I = lm_eCadImperfect,
+    lm_eCadLastImperfect,
+
+    lm_eCadLastTerminal = lm_eCadLastImperfect,    // last terminal cadence
 
     // Transient cadences
     lm_eCadTransient = lm_eCadLastTerminal,
 
-    // Imperfect authentic cadences
-	lm_eCadImperfect = lm_eCadTransient,
-	lm_eCadImperfect_V_I = lm_eCadImperfect,
-    lm_eCadLastImperfect,
-
     // Deceptive cadences
-    lm_eCadDeceptive = lm_eCadLastImperfect,
+    lm_eCadDeceptive = lm_eCadTransient,
     lm_eCadDeceptive_V_IV = lm_eCadDeceptive,
     lm_eCadDeceptive_V_IVm,
     lm_eCadDeceptive_V_VI,
@@ -159,7 +158,7 @@ enum lmECadenceButtons
 };
 
 
-class lmCadencesConstrains : public lmExerciseConstrains
+class lmCadencesConstrains : public lmExerciseOptions
 {
 public:
     lmCadencesConstrains(wxString sSection);

@@ -40,7 +40,6 @@
 #include "../auxmusic/ChordManager.h"       //chord name conversion
 #include "../ldp_parser/AuxString.h"        //LDPInternalNameToKey
 
-
 wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* pKeys)
 {
     bool fError = false;

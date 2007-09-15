@@ -54,16 +54,16 @@
 
     <object type="Application/LenMus"> directives and param classes
     -------------------------------------------------------------------------------------
-                                     lmObjectParams
-    classid="Score"                  lmScoreCtrolParams : public lmObjectParams
-    classid="TheoIntervals"          lmTheoIntervalsCtrolParms : public lmObjectParams
-    classid="TheoScales"             lmTheoScalesCtrolParms : public lmObjectParams
-    classid="TheoKeySignatures"      lmTheoKeySignCtrolParms : public lmObjectParams
-    classid="EarIntervals"           lmEarIntervalsCtrolParms : public lmObjectParams
-    classid="EarCompareIntervals"    lmEarCompareIntvCtrolParms : public lmObjectParams
-    classid="IdfyChord"              lmIdfyChordCtrolParms : public lmObjectParams
-    classid="IdfyScales"             lmIdfyScalesCtrolParms : public lmObjectParams
-    classid="IdfyCadences"           lmIdfyCadencesCtrolParms : public lmObjectParams
+                                     lmEBookCtrolParams
+    classid="Score"                  lmScoreCtrolParams : public lmExerciseParams
+    classid="TheoIntervals"          lmTheoIntervalsCtrolParms : public lmExerciseParams
+    classid="TheoScales"             lmTheoScalesCtrolParms : public lmExerciseParams
+    classid="TheoKeySignatures"      lmTheoKeySignCtrolParms : public lmExerciseParams
+    classid="EarIntervals"           lmEarIntervalsCtrolParms : public lmExerciseParams
+    classid="EarCompareIntervals"    lmEarCompareIntvCtrolParms : public lmExerciseParams
+    classid="IdfyChord"              lmIdfyChordCtrolParms : public lmExerciseParams
+    classid="IdfyScales"             lmIdfyScalesCtrolParms : public lmExerciseParams
+    classid="IdfyCadences"           lmIdfyCadencesCtrolParms : public lmExerciseParams
 
 */
 
@@ -168,7 +168,7 @@ Obsolete code. Left here as reference about how to insert text into the HTML str
 */
 
 //===============================================================================================
-class lmTheoKeySignParms : public lmObjectParams
+class lmTheoKeySignParms : public lmExerciseParams
 {
 public:
     lmTheoKeySignParms(const wxHtmlTag& tag, int nWidth, int nHeight,
@@ -194,7 +194,7 @@ protected:
 
 lmTheoKeySignParms::lmTheoKeySignParms(const wxHtmlTag& tag, int nWidth, int nHeight,
                                    int nPercent, long nStyle)
-    : lmObjectParams(tag, nWidth, nHeight, nPercent)
+    : lmExerciseParams(tag, nWidth, nHeight, nPercent)
 {
 
     // html object window attributes
@@ -202,6 +202,7 @@ lmTheoKeySignParms::lmTheoKeySignParms(const wxHtmlTag& tag, int nWidth, int nHe
 
     // create constraints object (construtor initilizes it with default values for attributes)
     m_pConstrains = new lmTheoKeySignConstrains(_T("TheoKeys"));
+    m_pOptions = m_pConstrains;
 
 }
 
@@ -330,9 +331,7 @@ Acceptable values: Major | Minor | Both"),
 
     // Unknown param
     else
-        LogError(wxString::Format(
-            _T("lmTheoIntervalsCtrol. Unknown param: <param %s >\n"),
-            tag.GetAllParams().c_str() ));
+        lmExerciseParams::AddParam(tag);
 
 }
 
@@ -359,7 +358,7 @@ void lmTheoKeySignParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 
 
 //===============================================================================================
-class lmEarIntervalsCtrolParms : public lmObjectParams
+class lmEarIntervalsCtrolParms : public lmExerciseParams
 {
 public:
     lmEarIntervalsCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
@@ -385,10 +384,11 @@ protected:
 
 lmEarIntervalsCtrolParms::lmEarIntervalsCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
                                    int nPercent, long nStyle)
-    : lmObjectParams(tag, nWidth, nHeight, nPercent)
+    : lmExerciseParams(tag, nWidth, nHeight, nPercent)
 {
     m_nWindowStyle = nStyle;
     m_pConstrains = new lmEarIntervalsConstrains(_T("EarIntervals"));
+    m_pOptions = m_pConstrains;
 }
 
 
@@ -435,22 +435,9 @@ void lmEarIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
         //        tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
     }
 
-    // "Go back to theory" link
-    else if ( sName == _T("CONTROL_GO_BACK") ) {
-        m_pConstrains->SetGoBackLink( tag.GetParam(_T("VALUE") ));
-    }
-
-    // control_settings
-    else if ( sName == _T("CONTROL_SETTINGS") ) {
-        m_pConstrains->SetSettingsLink(true);
-        m_pConstrains->SetSection( tag.GetParam(_T("VALUE") ));
-    }
-
     // Unknown param
     else
-        LogError(wxString::Format(
-            _T("lmEarIntervalsCtrol. Unknown param: <param %s >\n"),
-            tag.GetAllParams().c_str() ));
+        lmExerciseParams::AddParam(tag);
 
 }
 
@@ -476,7 +463,7 @@ void lmEarIntervalsCtrolParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 
 
 //===============================================================================================
-class lmEarCompareIntvCtrolParms : public lmObjectParams
+class lmEarCompareIntvCtrolParms : public lmExerciseParams
 {
 public:
     lmEarCompareIntvCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
@@ -502,10 +489,11 @@ protected:
 
 lmEarCompareIntvCtrolParms::lmEarCompareIntvCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
                                    int nPercent, long nStyle)
-    : lmObjectParams(tag, nWidth, nHeight, nPercent)
+    : lmExerciseParams(tag, nWidth, nHeight, nPercent)
 {
     m_nWindowStyle = nStyle;
     m_pConstrains = new lmEarIntervalsConstrains(_T("EarCompare"));
+    m_pOptions = m_pConstrains;
 
     //force aural training mode
     m_pConstrains->SetTheoryMode(false);
@@ -556,22 +544,9 @@ void lmEarCompareIntvCtrolParms::AddParam(const wxHtmlTag& tag)
         //        tag.GetAllParams(), tag.GetParam(_T("VALUE")) ));
     }
 
-    // "Go back to theory" link
-    else if ( sName == _T("CONTROL_GO_BACK") ) {
-        m_pConstrains->SetGoBackLink( tag.GetParam(_T("VALUE") ));
-    }
-
-    // control_settings
-    else if ( sName == _T("CONTROL_SETTINGS") ) {
-        m_pConstrains->SetSettingsLink(true);
-        m_pConstrains->SetSection( tag.GetParam(_T("VALUE") ));
-    }
-
     // Unknown param
     else
-        LogError(wxString::Format(
-            _T("lmEarIntervalsCtrol. Unknown param: <param %s >\n"),
-            tag.GetAllParams().c_str() ));
+        lmExerciseParams::AddParam(tag);
 
 }
 
@@ -623,11 +598,11 @@ FORCE_LINK_ME(Tags)
 TAG_HANDLER_BEGIN(OBJECT, "OBJECT,PARAM")
 
 TAG_HANDLER_VARS
-    lmObjectParams* m_pObjectParams;
+    lmEBookCtrolParams* m_pObjectParams;
 
 TAG_HANDLER_CONSTR(OBJECT)
 {
-    m_pObjectParams = (lmObjectParams*) NULL;
+    m_pObjectParams = (lmEBookCtrolParams*) NULL;
 }
 
 

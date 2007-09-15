@@ -39,7 +39,6 @@
 
 #include "Generators.h"
 #include "Constrains.h"
-#include "ExerciseCtrol.h"
 
 enum EChordType
 {
@@ -83,7 +82,7 @@ enum EChordGroup
 };
 
 
-class lmChordConstrains : public lmExerciseConstrains
+class lmChordConstrains : public lmExerciseOptions
 {
 public:
     lmChordConstrains(wxString sSection);

@@ -30,13 +30,18 @@
 #pragma hdrstop
 #endif
 
-#include "ObjectParams.h"
 #include "wx/html/winpars.h"
 #include "wx/html/htmlwin.h"
 
+#include "../exercises/Constrains.h"
+#include "ObjectParams.h"
 
 
-lmObjectParams::lmObjectParams(const wxHtmlTag& tag, int nWidth, int nHeight, int nPercent)
+//---------------------------------------------------------------------------------------
+// Implementation of lmEBookCtrolParams
+//---------------------------------------------------------------------------------------
+
+lmEBookCtrolParams::lmEBookCtrolParams(const wxHtmlTag& tag, int nWidth, int nHeight, int nPercent)
 {
     // html object window attributes
     m_nWidth = nWidth;
@@ -45,13 +50,13 @@ lmObjectParams::lmObjectParams(const wxHtmlTag& tag, int nWidth, int nHeight, in
 
 }
 
-void lmObjectParams::LogError(const wxString& sMsg)
+void lmEBookCtrolParams::LogError(const wxString& sMsg)
 {
     //! @todo do something else with the error
     wxLogMessage(sMsg);
 }
 
-void lmObjectParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
+void lmEBookCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
 {
     wxWindow *wnd = new wxTextCtrl((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1,
             _T("Default <object> window: you MUST implement this virtual method!"),
@@ -60,3 +65,103 @@ void lmObjectParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     pHtmlParser->GetContainer()->InsertCell(new wxHtmlWidgetCell(wnd, m_nPercent));
 
 }
+
+void lmEBookCtrolParams::AddParam(const wxHtmlTag& tag)
+{
+    // Parse common parameters to all controls (lmEBookCtrolOptions)
+    //
+    // control_play        Include 'play' link. Default: do not include it.
+    //                     Value="play label|stop playing label". i.e.: "Play|Stop" 
+    //                     Stop label is optional. Default labels: "Play|Stop"
+    // 
+    // control_settings    Value="[key for storing the settings]"
+    //                     By coding this param it is forced the inclusion of
+    //                     the 'settings' link. Its value will be used
+    //                     as the key for saving the user settings.
+    // control_go_back     Include a 'Go back to theory' link. Value is an URL, 
+    //                     i.e.: "v2_L2_MusicReading_203.htm"
+    // 
+
+
+    // scan name and value
+    if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
+    wxString sName = tag.GetParam(_T("NAME"));
+    sName.MakeUpper();        //convert to upper case
+
+    if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
+
+    // control_settings
+    if ( sName == _T("CONTROL_SETTINGS") ) {
+        m_pOptions->SetSettingsLink(true);
+        m_pOptions->SetSection( tag.GetParam(_T("VALUE")) );
+    }
+
+    // "Go back to theory" link
+    if ( sName == _T("CONTROL_GO_BACK") ) {
+        m_pOptions->SetGoBackLink( tag.GetParam(_T("VALUE") ));
+    }
+
+    // control_play
+    if ( sName == _T("CONTROL_PLAY") ) {
+        m_pOptions->SetPlayLink(true);      //, tag.GetParam(_T("VALUE")) );
+    }
+
+    // Unknown param
+    else
+        LogError(wxString::Format(
+            _T("lmEBookCtrolParams. Unknown param: <param %s >\n"),
+            tag.GetAllParams().c_str() ));
+
+}
+
+//---------------------------------------------------------------------------------------
+// Implementation of lmExerciseParams
+//---------------------------------------------------------------------------------------
+
+lmExerciseParams::lmExerciseParams(const wxHtmlTag& tag, int nWidth, int nHeight, int nPercent)
+    : lmEBookCtrolParams(tag, nWidth, nHeight, nPercent)
+{
+}
+
+void lmExerciseParams::AddParam(const wxHtmlTag& tag)
+{
+    // Parse common parameters to all lmExerciseParams
+    //
+    // mode                'theory' | 'earTraining'  Keyword indicating type of exercise
+    //
+
+    lmExerciseOptions* pOptions = (lmExerciseOptions*)m_pOptions;
+
+    // scan name and value
+    if (!tag.HasParam(wxT("NAME"))) return;        // ignore param tag if no name attribute
+    wxString sName = tag.GetParam(_T("NAME"));
+    sName.MakeUpper();        //convert to upper case
+
+    if (!tag.HasParam(_T("VALUE"))) return;        // ignore param tag if no value attribute
+
+    // mode        'theory | earTraining'  Keyword indicating type of exercise
+    if ( sName == _T("MODE") ) {
+        wxString sMode = tag.GetParam(_T("VALUE"));
+        if (sMode == _T("theory"))
+            pOptions->SetTheoryMode(true);
+        else if (sMode == _T("earTraining"))
+            pOptions->SetTheoryMode(false);
+        else {
+            m_sParamErrors += wxString::Format( wxGetTranslation(
+                _T("Invalid param value in:\n<param %s >\n")
+                _T("Invalid value = %s \n")
+                _T("Acceptable values:  'theory | earTraining'\n")),
+                tag.GetAllParams().c_str(), sMode.c_str() );
+        }
+    }
+
+    // Unknown param
+    else
+        lmEBookCtrolParams::AddParam(tag);
+
+}
+
+
+
+
+

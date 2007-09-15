@@ -40,6 +40,8 @@
 #include "EarIntvalConstrains.h"
 #include "../score/Score.h"
 #include "../auxmusic/Interval.h"
+#include "ExerciseCtrol.h"
+
 
 
 class lmEarIntervalsCtrol : public lmOneScoreCtrol    

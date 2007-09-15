@@ -42,7 +42,7 @@
 // This class pack all parameters to set up a Cadence identification exercise,
 // The settings must be read/setup by the IdfyCadencesCtrol object.
 
-class lmIdfyCadencesCtrolParms : public lmObjectParams
+class lmIdfyCadencesCtrolParms : public lmExerciseParams
 {
 public:
     lmIdfyCadencesCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
@@ -61,7 +61,6 @@ protected:
 
     // html object window attributes
     long                    m_nWindowStyle;
-    wxString                m_sParamErrors;
     lmCadencesConstrains*   m_pConstrains;
 
     DECLARE_NO_COPY_CLASS(lmIdfyCadencesCtrolParms)
@@ -71,7 +70,7 @@ protected:
 
 lmIdfyCadencesCtrolParms::lmIdfyCadencesCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
                                    int nPercent, long nStyle)
-    : lmObjectParams(tag, nWidth, nHeight, nPercent)
+    : lmExerciseParams(tag, nWidth, nHeight, nPercent)
 {
 
     // html object window attributes
@@ -79,6 +78,7 @@ lmIdfyCadencesCtrolParms::lmIdfyCadencesCtrolParms(const wxHtmlTag& tag, int nWi
 
     // construct constraints object
     m_pConstrains = new lmCadencesConstrains(_T("IdfyCadence"));
+    m_pOptions = m_pConstrains;
 
     // initializations
     m_sParamErrors = _T("");    //no errors
@@ -153,11 +153,6 @@ void lmIdfyCadencesCtrolParms::AddParam(const wxHtmlTag& tag)
 
         // Process the parameters
 
-    // "Go back to theory" link
-    if ( sName == _T("CONTROL_GO_BACK") ) {
-        m_pConstrains->SetGoBackLink( tag.GetParam(_T("VALUE") ));
-    }
-
     // cadences      list of allowed cadences:
     else if ( sName == _T("CADENCES") ) {
         m_sParamErrors += ParseCadences(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
@@ -170,39 +165,16 @@ void lmIdfyCadencesCtrolParms::AddParam(const wxHtmlTag& tag)
                                     m_pConstrains->GetValidButtons());
     }
 
-    // mode        'theory | earTraining'  Keyword indicating type of exercise
-    else if ( sName == _T("MODE") ) {
-        wxString sMode = tag.GetParam(_T("VALUE"));
-        if (sMode == _T("theory"))
-            m_pConstrains->SetTheoryMode(true);
-        else if (sMode == _T("earTraining"))
-            m_pConstrains->SetTheoryMode(false);
-        else {
-            m_sParamErrors += wxString::Format( 
-                _T("Invalid param value in:\n<param %s >\n")
-                _T("Invalid value = %s \n")
-                _T("Acceptable values:  'theory | earTraining'\n"),
-                tag.GetAllParams().c_str(), sMode.c_str() );
-        }
-    }
-
     //keys        keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
     else if ( sName == _T("KEYS") ) {
         m_sParamErrors += ParseKeys(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
                                     m_pConstrains->GetKeyConstrains());
     }
 
-    // control_settings
-    else if ( sName == _T("CONTROL_SETTINGS") ) {
-        m_pConstrains->SetSettingsLink(true);
-        m_pConstrains->SetSection( tag.GetParam(_T("VALUE") ));
-    }
-
     // Unknown param
     else
-        m_sParamErrors += wxString::Format(
-            _T("lmIdfyCadencesCtrol. Unknown param: <param %s >\n"),
-            tag.GetAllParams().c_str() );
+        lmExerciseParams::AddParam(tag);
+
 
 }
 

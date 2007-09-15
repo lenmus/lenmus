@@ -412,7 +412,7 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
 
     // initialize status bar
     m_pStatusbar = (wxStatusBar*) NULL;
-    bool fStatusBar = true;
+    bool fStatusBar = false;			
     g_pPrefs->Read(_T("/MainFrame/ViewStatusBar"), &fStatusBar);
     if (!m_pStatusbar && fStatusBar) {
         // create a status bar (by default with 1 pane only)
@@ -563,10 +563,12 @@ void lmMainFrame::CreateMyToolBar()
             wxITEM_NORMAL, _("Zoom so that page width equals window width"));
     m_pTbZoom->AddTool(MENU_Zoom_Increase, _T("Zoom in"),
             wxArtProvider::GetBitmap(_T("tool_zoom_in"), wxART_TOOLBAR, nSize),
-            _("Enlarge image size"), wxITEM_NORMAL );
+            wxArtProvider::GetBitmap(_T("tool_zoom_in_dis"), wxART_TOOLBAR, nSize),
+            wxITEM_NORMAL, _("Enlarge image size"));
     m_pTbZoom->AddTool(MENU_Zoom_Decrease, _T("Zoom out"),
             wxArtProvider::GetBitmap(_T("tool_zoom_out"), wxART_TOOLBAR, nSize),
-            _("Reduce image size"), wxITEM_NORMAL );
+            wxArtProvider::GetBitmap(_T("tool_zoom_out_dis"), wxART_TOOLBAR, nSize),
+            wxITEM_NORMAL, _("Reduce image size"));
 
     m_pComboZoom = new wxComboBox(m_pTbZoom, ID_COMBO_ZOOM, _T(""),
                                   wxDefaultPosition, wxSize(70, -1) );
@@ -634,6 +636,7 @@ void lmMainFrame::CreateMyToolBar()
                       wxMax(sizeCombo.GetHeight(), sizeButton.GetHeight()));
 
     // add the toolbars to the manager
+	const int ROW_1 = 0;
 #if defined(__WXGTK__)
     //In gtk reverse creation order
         // row 1
@@ -656,11 +659,11 @@ void lmMainFrame::CreateMyToolBar()
         // row 2
     m_mgrAUI.AddPane(m_pTbMtr, wxAuiPaneInfo().
                 Name(wxT("Metronome")).Caption(_("Metronome tools")).
-                ToolbarPane().Top().Row(1).BestSize( sizeBest ).
+                ToolbarPane().Top().Row(ROW_1).BestSize( sizeBest ).
                 LeftDockable(false).RightDockable(false));
     m_mgrAUI.AddPane(m_pTbPlay, wxAuiPaneInfo().
                 Name(wxT("Play")).Caption(_("Play tools")).
-                ToolbarPane().Top().Row(1).
+                ToolbarPane().Top().Row(ROW_1).
                 LeftDockable(false).RightDockable(false));
 
 #else
@@ -684,14 +687,14 @@ void lmMainFrame::CreateMyToolBar()
         // row 2
     m_mgrAUI.AddPane(m_pTbPlay, wxAuiPaneInfo().
                 Name(wxT("Play")).Caption(_("Play tools")).
-                ToolbarPane().Top().Row(1).
+                ToolbarPane().Top().Row(ROW_1).
                 LeftDockable(false).RightDockable(false));
     m_mgrAUI.AddPane(m_pTbMtr, wxAuiPaneInfo().
                 Name(wxT("Metronome")).Caption(_("Metronome tools")).
-                ToolbarPane().Top().Row(1).BestSize( sizeBest ).
+                ToolbarPane().Top().Row(ROW_1).BestSize( sizeBest ).
                 LeftDockable(false).RightDockable(false));
 #endif
-    CreateTextBooksToolBar(style, nSize);
+    CreateTextBooksToolBar(style, nSize, ROW_1);
 
     // tell the manager to "commit" all the changes just made
     m_mgrAUI.Update();
@@ -752,7 +755,7 @@ void lmMainFrame::DeleteToolbar()
     m_mgrAUI.Update();
 }
 
-void lmMainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize)
+void lmMainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize, int nRow)
 {
     m_pTbTextBooks = new wxToolBar(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style);
     m_pTbTextBooks->SetToolBitmapSize(nIconSize);
@@ -786,7 +789,7 @@ void lmMainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize)
 
     m_mgrAUI.AddPane(m_pTbTextBooks, wxAuiPaneInfo().
                 Name(_T("Navigation")).Caption(_("eBooks navigation tools")).
-                ToolbarPane().Top().Row(1).
+                ToolbarPane().Top().Row(nRow).
                 LeftDockable(false).RightDockable(false));
 
 }
@@ -1216,6 +1219,14 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
             oFileIntro.GetFullPath().c_str() ));
     }
 
+    // Second, the 'General Exercises' eBook
+    wxFileName oFileExercises(sPath, _T("GeneralExercises"), _T("lmb"), wxPATH_NATIVE);
+    if (!m_pBookController->AddBook(oFileExercises)) {
+        //! @todo better error handling
+        wxMessageBox(wxString::Format(_("Failed adding book %s"),
+            oFileExercises.GetFullPath().c_str() ));
+    }
+
     // Add now any other eBook found on this folder
 
     //wxLogMessage(wxString::Format(
@@ -1225,7 +1236,8 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
     while (fFound) {
         //wxLogMessage(_T("[lmMainFrame::ScanForBooks] Encontrado %s"), sFilename);
         wxFileName oFilename(sPath, sFilename, wxPATH_NATIVE);
-        if (oFilename.GetName() != _T("help") && oFilename.GetName() != _T("intro")) {
+        if (oFilename.GetName() != _T("help") && oFilename.GetName() != _T("intro") &&
+			oFilename.GetName() != _T("GeneralExercises")) {
             if (!m_pBookController->AddBook(oFilename)) {
                 //! @todo better error handling
                 wxMessageBox(wxString::Format(_("Failed adding book %s"),

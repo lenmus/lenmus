@@ -39,7 +39,6 @@
 
 #include "../score/Score.h"
 #include "Constrains.h"
-#include "ExerciseCtrol.h"
 
 
 enum EProblemTheoKeySig
@@ -60,7 +59,7 @@ enum EScaleMode
 /*! @class lmTheoKeySignConstrains
     @brief Options for lmTheoKeySignCtrol control
 */
-class lmTheoKeySignConstrains : public lmExerciseConstrains
+class lmTheoKeySignConstrains : public lmExerciseOptions
 {
 public:
     lmTheoKeySignConstrains(wxString sSection);

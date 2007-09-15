@@ -40,10 +40,9 @@
 #include "Generators.h"
 #include "Constrains.h"
 #include "ScoreConstrains.h"
-#include "ExerciseCtrol.h"
 
 // Options for lmTheoMusicReadingCtrol control
-class lmMusicReadingConstrains : public lmExerciseConstrains
+class lmMusicReadingConstrains : public lmExerciseOptions
 {
 public:
     lmMusicReadingConstrains(wxString sSection);

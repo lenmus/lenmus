@@ -42,7 +42,7 @@ extern wxConfigBase *g_pPrefs;
 //-------------------------------------------------------------------------------------------
 
 lmTheoIntervalsConstrains::lmTheoIntervalsConstrains(wxString sSection) 
-    : lmExerciseConstrains(sSection)
+    : lmExerciseOptions(sSection)
 {
     LoadSettings();
 }

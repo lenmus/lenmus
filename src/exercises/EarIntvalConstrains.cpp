@@ -37,7 +37,7 @@ extern wxConfigBase *g_pPrefs;
 
 
 lmEarIntervalsConstrains::lmEarIntervalsConstrains(wxString sSection)
-    : lmExerciseConstrains(sSection)
+    : lmExerciseOptions(sSection)
 {
     m_sSection = sSection;
     LoadSettings();

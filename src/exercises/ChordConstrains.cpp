@@ -38,7 +38,7 @@ extern wxConfigBase *g_pPrefs;
 
 
 lmChordConstrains::lmChordConstrains(wxString sSection)
-    : lmExerciseConstrains(sSection)
+    : lmExerciseOptions(sSection)
 {
     m_sSection = sSection;
     m_fSettingsLink = false;

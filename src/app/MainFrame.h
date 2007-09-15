@@ -90,7 +90,7 @@ public:
     // tool bars
     void CreateMyToolBar();
     void DeleteToolbar();
-    void CreateTextBooksToolBar(long style, wxSize nIconSize);
+    void CreateTextBooksToolBar(long style, wxSize nIconSize, int nRow);
 
     //status bar
     void CreateMyStatusBar ();

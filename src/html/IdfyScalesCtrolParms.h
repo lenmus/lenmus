@@ -42,7 +42,7 @@
 //! This class pack all parameters to set up a Scale Identification exercise,
 //! The settings must be read/setup by the IdfyScalesCtrol object.
 
-class lmIdfyScalesCtrolParms : public lmObjectParams
+class lmIdfyScalesCtrolParms : public lmExerciseParams
 {
 public:
     lmIdfyScalesCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
@@ -58,7 +58,6 @@ protected:
 
     // html object window attributes
     long                    m_nWindowStyle;
-    wxString                m_sParamErrors;
     lmScalesConstrains*     m_pConstrains;
 
     DECLARE_NO_COPY_CLASS(lmIdfyScalesCtrolParms)
@@ -68,7 +67,7 @@ protected:
 
 lmIdfyScalesCtrolParms::lmIdfyScalesCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
                                    int nPercent, long nStyle)
-    : lmObjectParams(tag, nWidth, nHeight, nPercent)
+    : lmExerciseParams(tag, nWidth, nHeight, nPercent)
 {
 
     // html object window attributes
@@ -76,6 +75,7 @@ lmIdfyScalesCtrolParms::lmIdfyScalesCtrolParms(const wxHtmlTag& tag, int nWidth,
 
     // construct constraints object
     m_pConstrains = new lmScalesConstrains(_T("IdfyScale"));
+    m_pOptions = m_pConstrains;
 
     // initializations
     m_sParamErrors = _T("");    //no errors
@@ -183,39 +183,16 @@ void lmIdfyScalesCtrolParms::AddParam(const wxHtmlTag& tag)
                                     m_pConstrains->GetValidScales());
     }
 
-    // mode        'theory | earTraining'  Keyword indicating type of exercise
-    else if ( sName == _T("MODE") ) {
-        wxString sMode = tag.GetParam(_T("VALUE"));
-        if (sMode == _T("theory"))
-            m_pConstrains->SetTheoryMode(true);
-        else if (sMode == _T("earTraining"))
-            m_pConstrains->SetTheoryMode(false);
-        else {
-            m_sParamErrors += wxString::Format( wxGetTranslation(
-                _T("Invalid param value in:\n<param %s >\n")
-                _T("Invalid value = %s \n")
-                _T("Acceptable values:  'theory | earTraining'\n")),
-                tag.GetAllParams().c_str(), sMode.c_str() );
-        }
-    }
-
     //keys        keyword "all" or a list of allowed key signatures, i.e.: "Do,Fas"
     else if ( sName == _T("KEYS") ) {
         m_sParamErrors += ParseKeys(tag.GetParam(_T("VALUE")), tag.GetAllParams(),
                                     m_pConstrains->GetKeyConstrains());
     }
 
-    // control_settings
-    else if ( sName == _T("CONTROL_SETTINGS") ) {
-        m_pConstrains->SetSettingsLink(true);
-        m_pConstrains->SetSection( tag.GetParam(_T("VALUE") ));
-    }
-
     // Unknown param
     else
-        m_sParamErrors += wxString::Format(
-            _("lmIdfyScalesCtrol. Unknown param: <param %s >\n"),
-            tag.GetAllParams().c_str() );
+        lmExerciseParams::AddParam(tag);
+
 
 }
 

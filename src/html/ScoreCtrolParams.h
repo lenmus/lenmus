@@ -55,7 +55,7 @@ enum EHtmlScoreTypes
     eHST_fileLDP
 };
 
-class lmScoreCtrolParams : public lmObjectParams
+class lmScoreCtrolParams : public lmEBookCtrolParams
 {
 public:
     lmScoreCtrolParams(const wxHtmlTag& tag, int nWidth, int nHeight, int nPercent,
@@ -74,7 +74,6 @@ protected:
         // Member variables:
 
     lmScore*                m_pScore;           // the score to display
-    wxString                m_sParamErrors;     // error messages
     lmScoreCtrolOptions*    m_pOptions;         // the options for the ScoreCtrol
 
     // html object window attributes
@@ -93,7 +92,7 @@ protected:
 
 lmScoreCtrolParams::lmScoreCtrolParams(const wxHtmlTag& tag, int nWidth, int nHeight,
                                    int nPercent, EScoreStyles nStyle)
-    : lmObjectParams(tag, nWidth, nHeight, nPercent)
+    : lmEBookCtrolParams(tag, nWidth, nHeight, nPercent)
 {
     m_pScore = (lmScore*) NULL;
 
@@ -101,7 +100,7 @@ lmScoreCtrolParams::lmScoreCtrolParams(const wxHtmlTag& tag, int nWidth, int nHe
     m_nWindowStyle = nStyle;
 
     // create options object
-    m_pOptions = new lmScoreCtrolOptions();
+    m_pOptions = new lmScoreCtrolOptions(_T("ScoreCtrol"));
 
     // default values for attributes
     m_nScoreType = eHST_full;
@@ -259,9 +258,7 @@ Acceptable values: numeric, greater than 0\n"),
 
     // Unknown param
     else
-        m_sParamErrors += wxString::Format(
-            _("Unknown param: <param %s >\n"),
-            tag.GetAllParams().c_str() );
+        lmEBookCtrolParams::AddParam(tag);
 
 }
 

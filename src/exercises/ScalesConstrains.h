@@ -39,7 +39,6 @@
 
 #include "Generators.h"
 #include "Constrains.h"
-#include "ExerciseCtrol.h"
 
 //    Major scales            Type
 //    ---------------------   ----
@@ -132,7 +131,7 @@ enum EScaleGroup
 };
 
 
-class lmScalesConstrains : public lmExerciseConstrains
+class lmScalesConstrains : public lmExerciseOptions
 {
 public:
     lmScalesConstrains(wxString sSection);

@@ -42,7 +42,7 @@
 // This class pack all parameters to set up a Theo Intervals Identification exercise,
 // The settings must be read/setup by the TheoIntervalsCtrol object.
 
-class lmTheoIntervalsCtrolParms : public lmObjectParams
+class lmTheoIntervalsCtrolParms : public lmExerciseParams
 {
 public:
     lmTheoIntervalsCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
@@ -68,7 +68,7 @@ protected:
 
 lmTheoIntervalsCtrolParms::lmTheoIntervalsCtrolParms(const wxHtmlTag& tag, int nWidth, int nHeight,
                                    int nPercent, long nStyle)
-    : lmObjectParams(tag, nWidth, nHeight, nPercent)
+    : lmExerciseParams(tag, nWidth, nHeight, nPercent)
 {
 
     // html object window attributes
@@ -76,6 +76,7 @@ lmTheoIntervalsCtrolParms::lmTheoIntervalsCtrolParms(const wxHtmlTag& tag, int n
 
     // create the constraints object
     m_pConstrains = new lmTheoIntervalsConstrains(_T("TheoIntervals"));
+    m_pOptions = m_pConstrains;
 
 }
 
@@ -173,17 +174,9 @@ void lmTheoIntervalsCtrolParms::AddParam(const wxHtmlTag& tag)
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() ));
     }
 
-    // control_settings
-    else if ( sName == _T("CONTROL_SETTINGS") ) {
-        m_pConstrains->SetSettingsLink(true);
-        m_pConstrains->SetSection( tag.GetParam(_T("VALUE") ));
-    }
-
     // Unknown param
     else
-        LogError(wxString::Format(
-            _T("lmTheoIntervalsCtrol. Unknown param: <param %s >\n"),
-            tag.GetAllParams().c_str() ));
+        lmExerciseParams::AddParam(tag);
 
 }
 
