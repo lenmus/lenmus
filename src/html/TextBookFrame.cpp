@@ -913,7 +913,7 @@ void lmTextBookFrame::ReadCustomization(wxConfigBase *cfg, const wxString& path)
     m_Cfg.w = cfg->Read(_T("tbcW"), m_Cfg.w);
     m_Cfg.h = cfg->Read(_T("tbcH"), m_Cfg.h);
 
-    m_rScale = cfg->Read(_T("tbcScale"), m_rScale);
+    m_rScale = cfg->Read(_T("tbcScale"), (double)m_rScale);
 
     {
         int i;
@@ -1007,10 +1007,10 @@ bool lmTextBookFrame::SetActiveViewScale(double rScale)
     nFontSizes[6] = int(rFontSize * 1.8 + 0.5);
 
 	//wxLogMessage(_T("[] scale=%.4f, font[0]=%d,%d,%d,%d,%d,%d,%d , m_nFontSize=%d"), rScale,
-	//	nFontSizes[0], nFontSizes[1], nFontSizes[2], nFontSizes[3], nFontSizes[4], 
+	//	nFontSizes[0], nFontSizes[1], nFontSizes[2], nFontSizes[3], nFontSizes[4],
 	//	nFontSizes[5], nFontSizes[6], m_nFontSize);
 
-	if (nFontSizes[0] < 3) 
+	if (nFontSizes[0] < 3)
 		return false;
 	else
 	{

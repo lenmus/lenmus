@@ -97,7 +97,7 @@ void lmTheoMusicReadingCtrol::CreateControls()
     m_nDisplaySize.y = (int)((double)m_nDisplaySize.y * m_rScale);
 
     // prepare layout info for answer buttons and spacing
-    int nButtonsHeight = (int)(m_rScale * 24.0);    // 24 pixels, scaled
+    //int nButtonsHeight = (int)(m_rScale * 24.0);    // 24 pixels, scaled
     wxFont oButtonsFont = GetParent()->GetFont();
     oButtonsFont.SetPointSize( (int)((double)oButtonsFont.GetPointSize() * m_rScale) );
     int nSpacing = (int)(5.0 * m_rScale);       //5 pixels, scaled
@@ -208,7 +208,7 @@ wxDialog* lmTheoMusicReadingCtrol::GetSettingsDlg()
     return new lmDlgCfgScoreReading(this, m_pScoreConstrains, m_pConstrains->sSettingsKey);
 }
 
-wxString lmTheoMusicReadingCtrol::SetNewProblem()    
+wxString lmTheoMusicReadingCtrol::SetNewProblem()
 {
     //This method must prepare the problem score and set variables:
     //  m_pProblemScore - The score with the problem to propose

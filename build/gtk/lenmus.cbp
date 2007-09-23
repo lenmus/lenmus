@@ -141,8 +141,6 @@
 		<Unit filename="../../src/exercises/IdfyCadencesCtrol.h" />
 		<Unit filename="../../src/exercises/IdfyChordCtrol.cpp" />
 		<Unit filename="../../src/exercises/IdfyChordCtrol.h" />
-		<Unit filename="../../src/exercises/IdfyExerciseCtrol.cpp" />
-		<Unit filename="../../src/exercises/IdfyExerciseCtrol.h" />
 		<Unit filename="../../src/exercises/IdfyScalesCtrol.cpp" />
 		<Unit filename="../../src/exercises/IdfyScalesCtrol.h" />
 		<Unit filename="../../src/exercises/ScalesConstrains.cpp" />
