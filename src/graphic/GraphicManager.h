@@ -50,8 +50,8 @@ WX_DECLARE_LIST(wxBitmap, BitmapList);
 //Options for method Prepare
 enum lmGraphMngrOptions
 {
-    lmFORCE_RELAYOUT                    = 0x0010,
-    lmRELAYOUT_ON_PAPER_SIZE_CHANGE     = 0x0020,
+    lmFORCE_RELAYOUT                    = 0x0001,
+    lmRELAYOUT_ON_PAPER_SIZE_CHANGE     = 0x0002,
 };
 
 //Class lmGraphicManager stores and manages all score renderization issues

@@ -86,6 +86,7 @@ lmScore::lmScore() : lmObject((lmObject*)NULL)
     m_nRenderizationType = eRenderJustified;
 
     //default ObjOptions
+    SetOption(_T("Score.FillPageWithEmptyStaves"), false);
     SetOption(_T("StaffLines.StopAtFinalBarline"), true);
     SetOption(_T("StaffLines.Hide"), false);
     SetOption(_T("Staff.DrawLeftBarline"), true);

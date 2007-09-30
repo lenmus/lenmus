@@ -19,11 +19,22 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __SCOREVIEWH__        //to avoid nested includes
-#define __SCOREVIEWH__
+#ifndef __LM_SCOREVIEW_H__        //to avoid nested includes
+#define __LM_SCOREVIEW_H__
 
-#ifdef __GNUG__
-#pragma interface "scoreView.cpp"
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "ScoreView.cpp"
+#endif
+
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wxprec.h"
+
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
 #endif
 
 #if wxUSE_GENERIC_DRAGIMAGE
@@ -33,21 +44,43 @@
 #include "wx/dragimag.h"
 #endif
 
-
 #include "wx/docview.h"
-#include "ScoreCanvas.h"
-#include "EditFrame.h"
+
 #include "Paper.h"
-#include "../widgets/Ruler.h"
-#include "FontManager.h"
 #include "../sound/SoundEvents.h"
 #include "../graphic/GraphicManager.h"
+#include "FontManager.h"
 #include "Printout.h"
 
 class lmScoreObj;
+class lmEditFrame;
+class lmScoreCanvas;
+class lmScoreDocument;
+class lmRuler;
 
-class lmScoreView: public wxView
+
+
+//Abstract class. All views must derive from it
+class lmView : public wxView
 {
+public:
+	lmView() : wxView() {}
+	virtual ~lmView() {}
+
+	virtual lmController* GetController()=0;
+
+private:
+
+    //DECLARE_EVENT_TABLE()
+};
+
+
+
+
+class lmScoreView : public lmView
+{
+   DECLARE_DYNAMIC_CLASS(lmScoreView)
+
 public:
     lmScoreView();
     ~lmScoreView();
@@ -86,11 +119,11 @@ public:
     void DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout);
     void SaveAsImage(wxString& sFilename, wxString& sExt, int nImgType);
 
+    //access to components
+    lmController* GetController() { return (lmController*)m_pCanvas; }
+    lmScoreDocument* GetDocument() { return m_pDoc; }
 
     // sound related methods
-    void PlayScore();
-    void StopPlaying(bool fWait=false);
-    void PausePlaying();
     void OnVisualHighlight(lmScoreHighlightEvent& event);
 
 
@@ -104,8 +137,12 @@ private:
 
         ////-- variables ---
 
-    lmEditFrame*        m_pFrame;       // the frame for the view
-    lmScoreCanvas*      m_pCanvas;      // the window for rendering the view
+    // parents, managers and related
+    lmScoreDocument*    m_pDoc;             //the MVC document (M)
+    lmScoreCanvas*      m_pCanvas;          //the MVC controller (C) and the window for rendering the view
+    lmFontManager       m_fontManager;      //font management
+    lmGraphicManager    m_graphMngr;        //rederization manager
+    lmEditFrame*        m_pFrame;           //the frame for the view
 
     // controls on the window
     lmRuler*        m_pHRuler;    //rulers
@@ -114,14 +151,14 @@ private:
     wxScrollBar*    m_pVScroll;
 
     // scrolling management
-    int        m_xScrollPosition, m_yScrollPosition;    // current display origin (scroll units)
-    int        m_pixelsPerStepX, m_pixelsPerStepY;        // pixels per scroll unit
-    int        m_xMaxScrollSteps, m_yMaxScrollSteps;            // num of scroll units to scroll the full view
-    int        m_xScrollStepsPerPage, m_yScrollStepsPerPage;    // scroll units to scroll a page
-    int        m_thumbX, m_thumbY;                        // scrollbars thumbs size
+    int         m_xScrollPosition, m_yScrollPosition;           // current display origin (scroll units)
+    int         m_pixelsPerStepX, m_pixelsPerStepY;             // pixels per scroll unit
+    int         m_xMaxScrollSteps, m_yMaxScrollSteps;           // num of scroll units to scroll the full view
+    int         m_xScrollStepsPerPage, m_yScrollStepsPerPage;   // scroll units to scroll a page
+    int         m_thumbX, m_thumbY;                             // scrollbars thumbs size
 
-    double          m_rScale;       // presentation scale
-    lmPaper         m_Paper;        // the lmPaper object to use
+    double      m_rScale;       // presentation scale
+    lmPaper     m_Paper;        // the lmPaper object to use
 
     // visual options
     bool            m_fRulers;      // draw rulers
@@ -140,20 +177,17 @@ private:
 
     // dragging control variables
     int             m_dragState;
-    lmUPoint         m_dragStartPosL;
-    lmDPoint         m_dragHotSpot;        // pixels
+    lmUPoint        m_dragStartPosL;
+    lmDPoint        m_dragHotSpot;        // pixels
     wxDragImage*    m_pDragImage;
     lmScoreObj*     m_pSoDrag;            // lmScoreObj being dragged
 
-    // managers
-    lmFontManager       m_fontManager;      //font management
-    lmGraphicManager    m_graphMngr;        //rederization manager
+	//cursor positioning
 
 
-    DECLARE_DYNAMIC_CLASS(lmScoreView)
+
     DECLARE_EVENT_TABLE()
 };
 
 
-
-#endif    // __SCOREVIEWH__
+#endif    // __LM_SCOREVIEW_H__

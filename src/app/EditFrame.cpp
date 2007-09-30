@@ -38,7 +38,7 @@
 #include "TheApp.h"
 #include "MainFrame.h"
 #include "ScoreDoc.h"
-#include "scoreView.h"
+#include "ScoreView.h"
 #include "EditFrame.h"
 
 #include "global.h"
@@ -76,8 +76,8 @@ void lmEditFrame::OnSize(wxSizeEvent& WXUNUSED(event))
 void lmEditFrame::OnClose(wxCloseEvent& event)
 {
     //just in case the score is being played back, to avoid a crash
-    m_pView->StopPlaying(true); //true -> wait for termination
-    event.Skip();               //continue normal processing of the OnClose event
+    m_pView->GetController()->StopPlaying(true); //true -> wait for termination
+    event.Skip();       //continue normal processing of the OnClose event
 
 }
 

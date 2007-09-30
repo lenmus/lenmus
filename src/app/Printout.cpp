@@ -34,7 +34,7 @@
 #include "wx/wx.h"
 #endif
 
-#include "scoreview.h"
+#include "ScoreView.h"
 #include "Printout.h"
 
 lmPrintout::lmPrintout(lmScoreView* pView, wxChar *title)

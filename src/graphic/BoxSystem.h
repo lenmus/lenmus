@@ -39,10 +39,9 @@
 
 #include "../score/Score.h"
 
-/*
-    Class lmBoxSystem represents a line of music in the printed score. It is made up from
-    one or more instances of class lmBoxSysSlice.
-*/
+//
+// Class lmBoxSystem represents a line of music in the printed score. 
+//
 
 class lmBoxSystem
 {

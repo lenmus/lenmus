@@ -34,7 +34,7 @@
 #include "wx/wx.h"
 #endif
 
-#include "scoreview.h"
+#include "ScoreView.h"
 #include "../score/Score.h"
 #include "Page.h"
 #include "FontManager.h"

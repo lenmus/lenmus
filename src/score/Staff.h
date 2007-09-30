@@ -88,6 +88,10 @@ private:
     // List of contexts
     ContextList     m_cContext;
 
+	//cursor (for edition). Points to current insertion position for this staff
+
+
+
 };
 
 // declare a list of StaffObjs class

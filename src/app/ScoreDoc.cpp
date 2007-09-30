@@ -43,7 +43,7 @@
 #include "wx/filename.h"
 
 #include "ScoreDoc.h"
-#include "scoreView.h"
+#include "ScoreView.h"
 #include "../ldp_parser/LDPParser.h"
 #include "../xml_parser/MusicXMLParser.h"
 
@@ -82,7 +82,7 @@ bool lmScoreDocument::OnNewDocument()
     if (!OnSaveModified())
         return false;
 
-    if (OnCloseDocument()==false) return false;
+    if (OnCloseDocument() == false) return false;
     DeleteContents();
     Modify(false);
     SetDocumentSaved(false);
@@ -91,6 +91,12 @@ bool lmScoreDocument::OnNewDocument()
     m_pScore = new lmScore();
     m_pScore->AddInstrument(1,0,0,_T(""));        //one vstaff, MIDI channel 0, MIDI instr 0
 
+    //In scores created in the score editor, we should render a full page, 
+    //with empty staves. To this end, we need to change some options default value
+    m_pScore->SetOption(_T("Score.FillPageWithEmptyStaves"), true);
+    m_pScore->SetOption(_T("StaffLines.StopAtFinalBarline"), false);
+
+    //Assign the score a default name
     wxString name;
     GetDocumentManager()->MakeDefaultName(name);
     SetTitle(name);

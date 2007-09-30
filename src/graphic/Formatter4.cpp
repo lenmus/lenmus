@@ -498,7 +498,106 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 
     }    //while (nAbsMeasure <= nTotalMeasures)
 
+    //Here the score is prepared. Last staff lines are finished at the right margin or
+    //at the final bar, depending on flag fStopStaffLinesAtFinalBarline.
+    //If this flag is false and option 'Score.FillPageWithEmptyStaves' is true it means
+    //that the user has requested to fill the remaining page space with empty staves.
+    //Let's proceed to do it.
+#ifdef __WXDEBUG__
+
+    bool fFillPageWithEmptyStaves = m_pScore->GetOptionBool(_T("Score.FillPageWithEmptyStaves"));
+    if (!fStopStaffLinesAtFinalBarline && fFillPageWithEmptyStaves)
+    {
+        //fill the remaining page space with empty staves
+
+        while (true)      //loop is exited when reaching end of page
+        {
+            //if this is not the first system advance vertically the previous system height
+            if (nSystem != 1) {
+                //Here Paper is positioned at the start of the new current system.
+                //Lets' verify is there is space left in paper for next system
+                //! @todo It is assumed that next system height is equal to previous one.
+                //!     It is necesary to compute each system height
+                lmLUnits yNew = pPaper->GetCursorY() + nSystemHeight;
+                if (yNew > pPaper->GetMaximumY() )
+                    break;        //exit loop
+            }
+
+            //create the system container
+            pBoxSystem = pBoxPage->AddSystem(nSystem);
+            ySystemPos = pPaper->GetCursorY();  //save the start of system position
+            pBoxSystem->SetPosition(pPaper->GetCursorX(), ySystemPos);
+            pBoxSystem->SetFirstMeasure(nAbsMeasure);
+            pBoxSystem->SetIndent(((nSystem == 1) ? nFirstSystemIndent : nOtherSystemIndent ));
+
+            //Store information about this system
+            pBoxSystem->SetNumMeasures(0);
+            //staff lines go to the rigth margin
+            pBoxSystem->SetFinalX( pPaper->GetRightMarginXPos() );
+
+            // compute system height
+            if (nSystem == 1) {
+                nSystemHeight = ComputeSystemHeight(pPaper);
+            }
+
+            //advance paper
+            pPaper->SetCursorY( pPaper->GetCursorY() + nSystemHeight );
+
+            nSystem++;
+        }
+    }
+#endif
+
     return pBoxScore;
+
+}
+
+lmLUnits lmFormatter4::ComputeSystemHeight(lmPaper* pPaper)
+{
+    //compute the height of the system
+    int iVStaff;
+    lmInstrument *pInstr;
+    lmVStaff *pVStaff;
+    bool fNewSystem = false;
+
+    // save paper position to restore it at the end
+    lmLUnits xPaperStart = pPaper->GetCursorX();
+    lmLUnits yPaperStart = pPaper->GetCursorY();
+
+    // explore all instruments in the score
+    lmLUnits yPaperPos;
+    for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
+    {
+        //loop for current instrument, explore all its staves
+        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
+        {
+            pVStaff = pInstr->GetVStaff(iVStaff);
+
+            //if it is not first VStaff, set paper position for this VStaff
+            if (iVStaff != 1) {
+                if (pVStaff->IsOverlayered()) {
+                    //overlayered: restore paper position to previous VStaff position
+                    pPaper->SetCursorY( yPaperPos );
+                }
+            }
+
+            //save this VStaff paper position
+            yPaperPos = pPaper->GetCursorY();
+
+            //advance paper in height off this lmVStaff
+            pVStaff->NewLine(pPaper);
+            //! @todo add inter-staff space
+
+        }    // next lmVStaff
+    }    // next lmInstrument
+
+    lmLUnits nSystemHeight = pPaper->GetCursorY() - yPaperStart;
+    
+    //restore paper position
+    pPaper->SetCursorX( xPaperStart );
+    pPaper->SetCursorY( yPaperStart );
+
+    return nSystemHeight;
 
 }
 

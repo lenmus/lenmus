@@ -301,12 +301,6 @@
 				RelativePath="..\..\src\score\Score.h">
 			</File>
 			<File
-				RelativePath="..\..\src\score\ScoreCommand.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\score\ScoreCommand.h">
-			</File>
-			<File
 				RelativePath="..\..\src\score\Slur.cpp">
 			</File>
 			<File
@@ -516,16 +510,22 @@
 				RelativePath="..\..\src\app\ScoreCanvas.h">
 			</File>
 			<File
+				RelativePath="..\..\src\app\ScoreCommand.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\app\ScoreCommand.h">
+			</File>
+			<File
 				RelativePath="..\..\src\app\ScoreDoc.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\app\ScoreDoc.h">
 			</File>
 			<File
-				RelativePath="..\..\src\app\scoreview.cpp">
+				RelativePath="..\..\src\app\ScoreView.cpp">
 			</File>
 			<File
-				RelativePath="..\..\src\app\scoreView.h">
+				RelativePath="..\..\src\app\ScoreView.h">
 			</File>
 			<File
 				RelativePath="..\..\src\app\SplashFrame.cpp">
@@ -540,10 +540,10 @@
 				RelativePath="..\..\src\app\TheApp.h">
 			</File>
 			<File
-				RelativePath="..\..\src\app\ToolsDlg.cpp">
+				RelativePath="..\..\src\app\ToolsBox.cpp">
 			</File>
 			<File
-				RelativePath="..\..\src\app\ToolsDlg.h">
+				RelativePath="..\..\src\app\ToolsBox.h">
 			</File>
 		</Filter>
 		<Filter

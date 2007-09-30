@@ -19,41 +19,39 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __TOOLSDLG_H__        //to avoid nested includes
-#define __TOOLSDLG_H__
+#ifndef __LM_TOOLSBOX_H__        //to avoid nested includes
+#define __LM_TOOLSBOX_H__
 
 #ifdef __GNUG__
-#pragma interface "ToolsDlg.cpp"
+#pragma interface "ToolsBox.cpp"
+#endif
+
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wxprec.h"
+
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
 #endif
 
 
-#include <wx/dialog.h>
-
-class wxBoxSizer;
-class wxStaticBitmap;
-class wxBitmap;
-
-//class lmToolsDlg:public wxDialog {
-//   DECLARE_DYNAMIC_CLASS(lmToolsDlg)
-//
-// public:
-//   lmToolsDlg(wxWindow * parent);
-//   virtual ~ lmToolsDlg();
-//
-//   void OnOK(wxCommandEvent & event);
-//
-//   wxBoxSizer *topsizer;
-//   wxStaticBitmap *icon;
-//   wxBitmap *logo;
-//
-//    DECLARE_EVENT_TABLE()
-//};
-
-class lmToolsDlg: public wxFrame
+class lmToolBox: public wxPanel
 {
+   DECLARE_DYNAMIC_CLASS(lmToolBox)
+
 public:
-    wxPanel *panel;
-    lmToolsDlg(wxFrame *frame, wxChar *title, int x, int y );
+    lmToolBox(wxWindow* parent, wxWindowID id = wxID_ANY);
+    virtual ~lmToolBox() {}
+
+    void OnButtonClicked(wxCommandEvent& event);
+
+private:
+    wxPanel*    m_pOptionsPanel;
+
+    DECLARE_EVENT_TABLE()
 };
 
-#endif    // __TOOLSDLG_H__
+#endif    // __LM_TOOLSBOX_H__

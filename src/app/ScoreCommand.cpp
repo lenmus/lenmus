@@ -34,16 +34,16 @@
 #include "wx/wx.h"
 #endif
 
-#include "Score.h"
-#include "../app/global.h"
+#include "../score/Score.h"
 #include "ScoreCommand.h"
-#include "../app/TheApp.h"
+#include "ScoreDoc.h"
+#include "TheApp.h"
 
 //
 // Implementation of the score commands class
 //
 
-lmScoreCommand::lmScoreCommand(const wxString& sName, EScoreCommand nCommand, lmScoreDocument *pDoc,
+lmScoreCommand::lmScoreCommand(const wxString& sName, lmEScoreCommand nCommand, lmScoreDocument *pDoc,
          lmScoreObj* pScO):
     wxCommand(true, sName)
 {
@@ -62,11 +62,11 @@ bool lmScoreCommand::Do()
 
     switch (m_cmd)
     {
-        case CMD_SelectObject:
+        case lmCMD_SelectObject:
             fResult = CmdSelectObject();
             break;
 
-        case CMD_MoveStaffObj:
+        case lmCMD_MoveStaffObj:
         {
             lmScoreCommandMove* pSC = (lmScoreCommandMove*)this;
             fResult = pSC->DoMoveStaffObj();
@@ -91,11 +91,11 @@ bool lmScoreCommand::Undo()
 
     switch (m_cmd)
     {
-        case CMD_SelectObject:
+        case lmCMD_SelectObject:
             fResult = CmdSelectObject();
             break;
 
-        case CMD_MoveStaffObj:
+        case lmCMD_MoveStaffObj:
         {
             lmScoreCommandMove* pSC = (lmScoreCommandMove*)this;
             fResult = pSC->UndoMoveStaffObj();

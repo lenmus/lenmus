@@ -671,7 +671,7 @@
 	"BookData.h"
 	"BookContentsBox.h"
 
-1189957547 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/HtmlWindow.h
+1189957546 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/HtmlWindow.h
 	"wx/html/htmlwin.h"
 
 1180335112 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/BookContentsBox.h
@@ -828,7 +828,7 @@
 	"../score/KeySignature.h"
 	"../app/Logger.h"
 
-1189428422 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
+1190548148 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/frame.h"
@@ -1371,7 +1371,7 @@
 	"HelpController.h"
 	"../app/MainFrame.h"
 
-1189582088 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/html/ObjectParams.cpp
+1190547634 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/html/ObjectParams.cpp
 	"wx/wxprec.h"
 	"wx/html/winpars.h"
 	"wx/html/htmlwin.h"
@@ -1424,7 +1424,7 @@
 	"../exercises/MusicReadingConstrains.h"
 	"../ldp_parser/AuxString.h"
 
-1189582050 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/ScoreCtrolParams.h
+1190548148 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/ScoreCtrolParams.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"ObjectParams.h"
@@ -1433,6 +1433,7 @@
 	"../xml_parser/MusicXMLParser.h"
 	"HtmlWindow.h"
 	"../app/MainFrame.h"
+	"../app/Logger.h"
 
 1189582050 /media/sdb1/usr/Desarrollo_wx/lenmus/src/html/IdfyChordCtrolParms.h
 	"wx/wxprec.h"
@@ -2078,7 +2079,7 @@
 	"Conversion.h"
 	"ChordManager.h"
 
-1188730786 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/Cadence.cpp
+1190547634 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/auxmusic/Cadence.cpp
 	"wx/wxprec.h"
 	"Cadence.h"
 	"Conversion.h"

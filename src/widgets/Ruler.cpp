@@ -59,7 +59,7 @@
 #endif
 
 #include "Ruler.h"
-#include "../app/scoreview.h"
+#include "../app/ScoreView.h"
 
 
 //

@@ -27,24 +27,23 @@
 #endif
 
 #include "wx/cmdproc.h"
-#include "../app/global.h"
-#include "Score.h"
-#include "../app/ScoreDoc.h"
-#include "../app/scoreView.h"
 
-// Commands
-enum EScoreCommand
-{
-    CMD_SelectObject = 1,
-    CMD_MoveStaffObj,
-    SCORE_ADD
-};
+#include "global.h"
+class lmScoreObj;
+class lmScoreDocument;
 
 // base class
 class lmScoreCommand: public wxCommand
 {
 public:
-    lmScoreCommand(const wxString& name, EScoreCommand cmd, lmScoreDocument *pDoc, lmScoreObj* pScO);
+	// Commands
+	enum lmEScoreCommand
+	{
+		lmCMD_SelectObject = 1,
+		lmCMD_MoveStaffObj,
+	};
+
+    lmScoreCommand(const wxString& name, lmEScoreCommand cmd, lmScoreDocument *pDoc, lmScoreObj* pScO);
     ~lmScoreCommand();
 
     bool Do();
@@ -55,8 +54,8 @@ private:
 
 protected:
     lmScoreDocument*    m_pDoc;
-    EScoreCommand    m_cmd;
-    lmScoreObj*        m_pScO;
+    lmEScoreCommand		m_cmd;
+    lmScoreObj*			m_pScO;
 
 };
 
@@ -65,7 +64,7 @@ class lmScoreCommandMove: public lmScoreCommand
 public:
     lmScoreCommandMove(const wxString& name, lmScoreDocument *pDoc, lmScoreObj* pScO,
             const lmUPoint& uPos) :
-        lmScoreCommand(name, CMD_MoveStaffObj, pDoc, pScO)
+        lmScoreCommand(name, lmCMD_MoveStaffObj, pDoc, pScO)
         {
             m_pos = uPos;
         }

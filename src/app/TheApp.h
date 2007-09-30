@@ -37,7 +37,8 @@
 
 class wxDocManager;
 class lmMainFrame;
-class lmScoreView;
+class lmView;
+class lmController;
 
 
 // Class lmTheApp defines the lenmus application
@@ -58,12 +59,14 @@ class lmTheApp: public wxApp
 
     // Accessors
     wxBitmap& GetBackgroundBitmap() const { return (wxBitmap&) m_background; }
-    lmScoreView* GetActiveView() { return (lmScoreView *)m_pDocManager->GetCurrentView(); }
+    lmView* GetActiveView() { return (lmView*)m_pDocManager->GetCurrentView(); }
     wxDocManager* GetDocManager() { return m_pDocManager; }
     wxString GetLanguageCanonicalName() { return m_pLocale->GetCanonicalName(); }
     wxString GetLocaleName() { return m_pLocale->GetLocale(); }
     wxString GetLocaleSysName() { return m_pLocale->GetSysName(); }
     wxString GetVersionNumber();
+
+	lmController* GetViewController();
 
 private:
     void GetMainWindowPlacement(wxRect *frameRect, bool *fMaximized);

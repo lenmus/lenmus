@@ -18,15 +18,6 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-
-/*! @class lmScoreCanvas
-    @ingroup app_gui
-    @brief The lmScoreCanvas is the window on which the lmPaper object is placed.
-
-    It is just a wxWindow and it is asumed that the view will scroll and
-    modify its size according to the needs.
-*/
-
 #ifdef __GNUG__
 #pragma implementation "ScoreCanvas.h"
 #endif
@@ -47,7 +38,9 @@
 #include "TheApp.h"
 #include "MainFrame.h"
 #include "ScoreDoc.h"
-#include "scoreView.h"
+#include "ScoreView.h"
+#include "ScoreDoc.h"
+#include "ScoreCommand.h"
 
 #include "global.h"
 
@@ -56,7 +49,35 @@ extern bool g_fReleaseVersion;            // in TheApp.cpp
 extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 
 
-BEGIN_EVENT_TABLE(lmScoreCanvas, wxWindow)
+//-------------------------------------------------------------------------------------
+// implementation of lmController
+//-------------------------------------------------------------------------------------
+
+
+//BEGIN_EVENT_TABLE(lmController, wxEvtHandler)
+//    EVT_BUTTON      (wxID_ANY, lmController::OnButtonClicked)
+//END_EVENT_TABLE()
+
+IMPLEMENT_ABSTRACT_CLASS(lmController, wxWindow)
+
+
+lmController::lmController(wxWindow *pParent, lmScoreView *pView, lmScoreDocument* pDoc,
+				 wxColor colorBg, wxWindowID id, const wxPoint& pos,
+				 const wxSize& size, long style)
+        : wxWindow(pParent, -1, pos, size, style)
+{
+}
+
+
+
+//-------------------------------------------------------------------------------------
+// implementation of lmScoreCanvas
+//-------------------------------------------------------------------------------------
+
+IMPLEMENT_CLASS(lmScoreCanvas, lmController)
+
+
+BEGIN_EVENT_TABLE(lmScoreCanvas, lmController)
     EVT_ERASE_BACKGROUND(lmScoreCanvas::OnEraseBackground)
     EVT_MOUSE_EVENTS(lmScoreCanvas::OnMouseEvent)
     EVT_PAINT(lmScoreCanvas::OnPaint)
@@ -64,13 +85,13 @@ BEGIN_EVENT_TABLE(lmScoreCanvas, wxWindow)
 END_EVENT_TABLE()
 
 // Define a constructor for my canvas
-lmScoreCanvas::lmScoreCanvas(lmScoreView *v, wxWindow *parent, const wxPoint& pos,
-        const wxSize& size, long style, wxColor colorBg) :
-    wxWindow(parent, -1, pos, size, style)
+lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmScoreDocument* pDoc,
+        const wxPoint& pos, const wxSize& size, long style, wxColor colorBg)
+        : lmController(pParent, pView, pDoc, colorBg, wxID_ANY, pos, size, style)
 {
-    m_pView = v;
-    wxASSERT(parent);
-    m_pOwner = parent;
+    m_pView = pView;
+    m_pOwner = pParent;
+    m_pDoc = pDoc;
     m_colorBg = colorBg;
 
 }
@@ -125,6 +146,395 @@ void lmScoreCanvas::OnMouseEvent(wxMouseEvent& event)
 
 }
 
+
+void lmScoreCanvas::PlayScore()
+{
+    //get the score
+    lmScore* pScore = m_pDoc->GetScore();
+
+    //play the score. Use current metronome setting
+    pScore->Play(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, ePM_NormalInstrument,
+                 0, this);
+
+}
+
+void lmScoreCanvas::StopPlaying(bool fWait)
+{
+    //get the score
+    lmScore* pScore = m_pDoc->GetScore();
+
+    //request it to stop playing
+    pScore->Stop();
+    if (fWait) pScore->WaitForTermination();
+
+}
+
+void lmScoreCanvas::PausePlaying()
+{
+    //get the score
+    lmScore* pScore = m_pDoc->GetScore();
+
+    //request it to pause playing
+    pScore->Pause();
+
+}
+
+
+void lmScoreCanvas::OnVisualHighlight(lmScoreHighlightEvent& event)
+{
+    m_pView->OnVisualHighlight(event);
+}
+
+void lmScoreCanvas::MoveObject(lmScoreObj* pSO, const lmUPoint& uPos)
+{
+	//Generate move command to move the lmStaffObj and update the document
+	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+    pCP->Submit(new lmScoreCommandMove(_T("Move object"), m_pDoc, pSO, uPos));
+
+}
+
+void lmScoreCanvas::SelectObject(lmScoreObj* pSO)
+{
+	//select/deselect an ScoreObj
+    wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+	pCP->Submit(new lmScoreCommand(_T("Select object"),
+								   lmScoreCommand::lmCMD_SelectObject, m_pDoc, pSO));
+}
+
+/*
+void wxShapeCanvas::OnMouseEvent(wxMouseEvent& event)
+{
+  wxClientDC dc(this);
+
+  wxPoint logPos(event.GetLogicalPosition(dc));
+
+  double x, y;
+  x = (double) logPos.x;
+  y = (double) logPos.y;
+
+  int keys = 0;
+  if (event.ShiftDown())
+    keys = keys | KEY_SHIFT;
+  if (event.ControlDown())
+    keys = keys | KEY_CTRL;
+
+  bool dragging = event.Dragging();
+
+  // Check if we're within the tolerance for mouse movements.
+  // If we're very close to the position we started dragging
+  // from, this may not be an intentional drag at all.
+  if (dragging)
+  {
+    int dx = abs(dc.LogicalToDeviceX((long) (x - m_firstDragX)));
+    int dy = abs(dc.LogicalToDeviceY((long) (y - m_firstDragY)));
+    if (m_checkTolerance && (dx <= GetDiagram()->GetMouseTolerance()) && (dy <= GetDiagram()->GetMouseTolerance()))
+    {
+      return;
+    }
+    else
+      // If we've ignored the tolerance once, then ALWAYS ignore
+      // tolerance in this drag, even if we come back within
+      // the tolerance range.
+      m_checkTolerance = false;
+  }
+
+  // Dragging - note that the effect of dragging is left entirely up
+  // to the object, so no movement is done unless explicitly done by
+  // object.
+  if (dragging && m_draggedShape && m_dragState == StartDraggingLeft)
+  {
+    m_dragState = ContinueDraggingLeft;
+
+    // If the object isn't m_draggable, transfer message to canvas
+    if (m_draggedShape->Draggable())
+      m_draggedShape->GetEventHandler()->OnBeginDragLeft((double)x, (double)y, keys, m_draggedAttachment);
+    else
+    {
+      m_draggedShape = NULL;
+      OnBeginDragLeft((double)x, (double)y, keys);
+    }
+
+    m_oldDragX = x; m_oldDragY = y;
+  }
+  else if (dragging && m_draggedShape && m_dragState == ContinueDraggingLeft)
+  {
+    // Continue dragging
+    m_draggedShape->GetEventHandler()->OnDragLeft(false, m_oldDragX, m_oldDragY, keys, m_draggedAttachment);
+    m_draggedShape->GetEventHandler()->OnDragLeft(true, (double)x, (double)y, keys, m_draggedAttachment);
+    m_oldDragX = x; m_oldDragY = y;
+  }
+  else if (event.LeftUp() && m_draggedShape && m_dragState == ContinueDraggingLeft)
+  {
+    m_dragState = NoDragging;
+    m_checkTolerance = true;
+
+    m_draggedShape->GetEventHandler()->OnDragLeft(false, m_oldDragX, m_oldDragY, keys, m_draggedAttachment);
+
+    m_draggedShape->GetEventHandler()->OnEndDragLeft((double)x, (double)y, keys, m_draggedAttachment);
+    m_draggedShape = NULL;
+  }
+  else if (dragging && m_draggedShape && m_dragState == StartDraggingRight)
+  {
+    m_dragState = ContinueDraggingRight;
+
+    if (m_draggedShape->Draggable())
+      m_draggedShape->GetEventHandler()->OnBeginDragRight((double)x, (double)y, keys, m_draggedAttachment);
+    else
+    {
+      m_draggedShape = NULL;
+      OnBeginDragRight((double)x, (double)y, keys);
+    }
+    m_oldDragX = x; m_oldDragY = y;
+  }
+  else if (dragging && m_draggedShape && m_dragState == ContinueDraggingRight)
+  {
+    // Continue dragging
+    m_draggedShape->GetEventHandler()->OnDragRight(false, m_oldDragX, m_oldDragY, keys, m_draggedAttachment);
+    m_draggedShape->GetEventHandler()->OnDragRight(true, (double)x, (double)y, keys, m_draggedAttachment);
+    m_oldDragX = x; m_oldDragY = y;
+  }
+  else if (event.RightUp() && m_draggedShape && m_dragState == ContinueDraggingRight)
+  {
+    m_dragState = NoDragging;
+    m_checkTolerance = true;
+
+    m_draggedShape->GetEventHandler()->OnDragRight(false, m_oldDragX, m_oldDragY, keys, m_draggedAttachment);
+
+    m_draggedShape->GetEventHandler()->OnEndDragRight((double)x, (double)y, keys, m_draggedAttachment);
+    m_draggedShape = NULL;
+  }
+
+  // All following events sent to canvas, not object
+  else if (dragging && !m_draggedShape && m_dragState == StartDraggingLeft)
+  {
+    m_dragState = ContinueDraggingLeft;
+    OnBeginDragLeft((double)x, (double)y, keys);
+    m_oldDragX = x; m_oldDragY = y;
+  }
+  else if (dragging && !m_draggedShape && m_dragState == ContinueDraggingLeft)
+  {
+    // Continue dragging
+    OnDragLeft(false, m_oldDragX, m_oldDragY, keys);
+    OnDragLeft(true, (double)x, (double)y, keys);
+    m_oldDragX = x; m_oldDragY = y;
+  }
+  else if (event.LeftUp() && !m_draggedShape && m_dragState == ContinueDraggingLeft)
+  {
+    m_dragState = NoDragging;
+    m_checkTolerance = true;
+
+    OnDragLeft(false, m_oldDragX, m_oldDragY, keys);
+    OnEndDragLeft((double)x, (double)y, keys);
+    m_draggedShape = NULL;
+  }
+  else if (dragging && !m_draggedShape && m_dragState == StartDraggingRight)
+  {
+    m_dragState = ContinueDraggingRight;
+    OnBeginDragRight((double)x, (double)y, keys);
+    m_oldDragX = x; m_oldDragY = y;
+  }
+  else if (dragging && !m_draggedShape && m_dragState == ContinueDraggingRight)
+  {
+    // Continue dragging
+    OnDragRight(false, m_oldDragX, m_oldDragY, keys);
+    OnDragRight(true, (double)x, (double)y, keys);
+    m_oldDragX = x; m_oldDragY = y;
+  }
+  else if (event.RightUp() && !m_draggedShape && m_dragState == ContinueDraggingRight)
+  {
+    m_dragState = NoDragging;
+    m_checkTolerance = true;
+
+    OnDragRight(false, m_oldDragX, m_oldDragY, keys);
+    OnEndDragRight((double)x, (double)y, keys);
+    m_draggedShape = NULL;
+  }
+
+  // Non-dragging events
+  else if (event.IsButton())
+  {
+    m_checkTolerance = true;
+
+    // Find the nearest object
+    int attachment = 0;
+    wxShape *nearest_object = FindShape(x, y, &attachment);
+    if (nearest_object) // Object event
+    {
+      if (event.LeftDown())
+      {
+        m_draggedShape = nearest_object;
+        m_draggedAttachment = attachment;
+        m_dragState = StartDraggingLeft;
+        m_firstDragX = x;
+        m_firstDragY = y;
+      }
+      else if (event.LeftUp())
+      {
+        // N.B. Only register a click if the same object was
+        // identified for down *and* up.
+        if (nearest_object == m_draggedShape)
+          nearest_object->GetEventHandler()->OnLeftClick((double)x, (double)y, keys, attachment);
+
+        m_draggedShape = NULL;
+        m_dragState = NoDragging;
+      }
+      else if (event.LeftDClick())
+      {
+        nearest_object->GetEventHandler()->OnLeftDoubleClick((double)x, (double)y, keys, attachment);
+
+        m_draggedShape = NULL;
+        m_dragState = NoDragging;
+      }
+      else if (event.RightDown())
+      {
+        m_draggedShape = nearest_object;
+        m_draggedAttachment = attachment;
+        m_dragState = StartDraggingRight;
+        m_firstDragX = x;
+        m_firstDragY = y;
+      }
+      else if (event.RightUp())
+      {
+        if (nearest_object == m_draggedShape)
+          nearest_object->GetEventHandler()->OnRightClick((double)x, (double)y, keys, attachment);
+
+        m_draggedShape = NULL;
+        m_dragState = NoDragging;
+      }
+    }
+    else // Canvas event (no nearest object)
+    {
+      if (event.LeftDown())
+      {
+        m_draggedShape = NULL;
+        m_dragState = StartDraggingLeft;
+        m_firstDragX = x;
+        m_firstDragY = y;
+      }
+      else if (event.LeftUp())
+      {
+        OnLeftClick((double)x, (double)y, keys);
+
+        m_draggedShape = NULL;
+        m_dragState = NoDragging;
+      }
+      else if (event.RightDown())
+      {
+        m_draggedShape = NULL;
+        m_dragState = StartDraggingRight;
+        m_firstDragX = x;
+        m_firstDragY = y;
+      }
+      else if (event.RightUp())
+      {
+        OnRightClick((double)x, (double)y, keys);
+
+        m_draggedShape = NULL;
+        m_dragState = NoDragging;
+      }
+    }
+  }
+}
+
+void csCanvas::OnLeftClick(double x, double y, int WXUNUSED(keys))
+{
+    csEditorToolPalette *palette = wxGetApp().GetDiagramPalette();
+
+    if (palette->GetSelection() == PALETTE_ARROW)
+    {
+        GetView()->SelectAll(false);
+
+        wxClientDC dc(this);
+        PrepareDC(dc);
+
+        Redraw(dc);
+        return;
+    }
+
+    if (palette->GetSelection() == PALETTE_TEXT_TOOL)
+    {
+        wxString newLabel;
+
+#if wxUSE_WX_RESOURCES
+        // Ask for a label and create a new free-floating text region
+        csLabelEditingDialog* dialog = new csLabelEditingDialog(GetParent());
+
+        dialog->SetShapeLabel( wxEmptyString );
+        dialog->SetTitle(_T("New text box"));
+        if (dialog->ShowModal() == wxID_CANCEL)
+        {
+            dialog->Destroy();
+            return;
+        }
+
+        newLabel = dialog->GetShapeLabel();
+        dialog->Destroy();
+#endif // wxUSE_WX_RESOURCES
+
+        wxShape* shape = new csTextBoxShape;
+        shape->AssignNewIds();
+        shape->SetEventHandler(new csEvtHandler(shape, shape, newLabel));
+
+        wxComboBox* comboBox = wxGetApp().GetPointSizeComboBox();
+        wxString str(comboBox->GetValue());
+        long pointSize;
+        str.ToLong( &pointSize );
+
+        wxFont* newFont = wxTheFontList->FindOrCreateFont(pointSize,
+                shape->GetFont()->GetFamily(),
+                shape->GetFont()->GetStyle(),
+                shape->GetFont()->GetWeight(),
+                shape->GetFont()->GetUnderlined(),
+                shape->GetFont()->GetFaceName());
+
+        shape->SetFont(newFont);
+
+        shape->SetX(x);
+        shape->SetY(y);
+
+        csDiagramCommand* cmd = new csDiagramCommand(_T("Text box"),
+            (csDiagramDocument *)GetView()->GetDocument(),
+            new csCommandState(ID_CS_ADD_SHAPE, shape, NULL));
+        GetView()->GetDocument()->GetCommandProcessor()->Submit(cmd);
+
+        palette->SetSelection(PALETTE_ARROW);
+
+        return;
+    }
+
+    csSymbol* symbol = wxGetApp().GetSymbolDatabase()->FindSymbol(palette->GetSelection());
+    if (symbol)
+    {
+        wxShape* theShape = symbol->GetShape()->CreateNewCopy();
+
+        wxComboBox* comboBox = wxGetApp().GetPointSizeComboBox();
+        wxString str(comboBox->GetValue());
+        long pointSize;
+        str.ToLong( &pointSize );
+
+        wxFont* newFont = wxTheFontList->FindOrCreateFont(pointSize,
+                symbol->GetShape()->GetFont()->GetFamily(),
+                symbol->GetShape()->GetFont()->GetStyle(),
+                symbol->GetShape()->GetFont()->GetWeight(),
+                symbol->GetShape()->GetFont()->GetUnderlined(),
+                symbol->GetShape()->GetFont()->GetFaceName());
+
+        theShape->SetFont(newFont);
+
+        theShape->AssignNewIds();
+        theShape->SetX(x);
+        theShape->SetY(y);
+
+        csDiagramCommand* cmd = new csDiagramCommand(symbol->GetName(),
+            (csDiagramDocument *)GetView()->GetDocument(),
+            new csCommandState(ID_CS_ADD_SHAPE, theShape, NULL));
+        GetView()->GetDocument()->GetCommandProcessor()->Submit(cmd);
+
+        palette->SetSelection(PALETTE_ARROW);
+    }
+}
+*/
+
 void lmScoreCanvas::OnEraseBackground(wxEraseEvent& event)
 {
 #if 1
@@ -161,7 +571,7 @@ void lmScoreCanvas::OnEraseBackground(wxEraseEvent& event)
         }
     }
     else
-        event.Skip();        // The official way of doing it
+        event.Skip();      // The official way of doing it
 #endif
 }
 
@@ -177,9 +587,3 @@ bool lmScoreCanvas::TileBitmap(const wxRect& rect, wxDC& dc, wxBitmap& bitmap)
     }
     return true;
 }
-
-void lmScoreCanvas::OnVisualHighlight(lmScoreHighlightEvent& event)
-{
-    m_pView->OnVisualHighlight(event);
-}
-

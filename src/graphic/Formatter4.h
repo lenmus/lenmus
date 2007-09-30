@@ -57,6 +57,7 @@ private:
     void RedistributeFreeSpace(lmLUnits nAvailable);
     void DrawMeasure(lmVStaff* pVStaff, int iMeasure, lmPaper* pPaper);
     bool SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasure, lmPaper* pPaper);
+    lmLUnits ComputeSystemHeight(lmPaper* pPaper);
 
 
         // member variables

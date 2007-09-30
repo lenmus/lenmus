@@ -18,205 +18,9 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-
-/*
-The view displays the data and manages user interaction with it, including selection and
-editing.
-A view is attached to a document and acts as an intermediary between the document and the
-user: the view renders an image of the document on the screen and interprets user input as
-operations upon the document. The view also renders the image for both printing and print
-preview.
-
-
-
-
-*/
-
-/*
-
-Units
----------------
-
-    Logical units
-        The "logical coordinates space" represents the virtual paper on which real music
-        sheets are arranged according to the layout chossen by the user.
-
-    Device units
-        The "device coordinates space" representes the physical redering device (display,
-        printer, ...) on which the score is rendered. The pixel is the usual unit in this
-        space.
-
-    Program will operate on the logical coordinates space. Operation in device coordinates
-    and transformation to/from device coordinates will be restricted to low program
-    layers.
-
-
-
-Considerations for the choice of logical units and data types:
---------------------------------------------------------------
-
-    1. Precision
-    -------------------------------
-    Los atributos de posición, en MusicXML (common.dtd), utilizan unidades relativas:
-    décimas del espacio entre líneas de pentagrama . Ahora bien, espaciado entre líneas y,
-    en consecuencia, todos los demas valores relativos a esta medida de un pentagrama, debe
-    poder establecerse para cada pentagrama, ya que en una misma pieza pueden coexistir
-    pentagramas de distinto tamaño; por ejemplo, en partituras de piano en obras para varios
-    instrumentos, el piano va en grande mientras que la línea para el otro instrumento va en
-    pequeñito. En consecuencia, no parece una unidad adecuada para una página en la que se
-    mezclen pentagramas de distinto tamaño y habrá que utilizar una unidad que no varíe
-    entre pentagramas, al menos para  parámetros no asociados a un solo pentagrama,
-    tales como espaciados entre pentagramas o márgenes de página. Para estos parámetros
-    se decide utilizar como unidad  una décima de milímetro .
-
-    En PDF el posicionamiento en el user space se mide por defecto en 1/72 de pulgada,
-    ya que esa unidad es ampliamente utilizada en la industria tipográfica y equivale,
-    aproximadamente, a un punto tipográfico. Su valor es de 0,35 mm. (parece poco precisa).
-    Para fonts utiliza una resolución 1000 veces mayor (¿sería 0,001 mm?). Además, las unidades en el user
-    space pueden definirse con otra precisión distinta, según necesidades.
-
-    In MusicXML, units are fixed and relative
-    las unidades son fijas y relativas, y utiliza como unidad una décima del espacio entre
-    líneas de pentagrama. Suponiendo un espaciado entre líneas de 3mm tendríamos una
-    precisión de 0,3 mm, del estilo de la estándar en PDF. Como cuesta lo mismo, me decanto
-    por permitir más precisión y que pueda variarse según necesidades, según hace PDF.
-
-    One tenth of a millimeter seems to be enough precision for positioning objects but
-    cumulative truncation errors are inaceptable. Therefore, at least a couple of decimal
-    figures should be taken into account during computations.
-    Another posibilitry is to the use of one thousandth of a mm (one micron) as the choice
-    for logical units and operate always with integers.
-
-    2. Paper size
-    ---------------------------
-    Paper size: let's consider at maximum a DIN A2 paper. This is:
-        42.0 x 59.4 cm
-        420 x 590 in mm
-        4200 x 5900 in tenths of a mm
-        42,000 x 59,400 in hundredths of a mm
-        420,000 x 594,000 in thousandths of a mm (one micron)
-    so a variable of type int32 (-2,146,483,648 to +2,147,483,647) has enough precision
-    and no overflow problems (maximum paper size would be  2.1 Km using the micron
-    as logical unit !).
-    Another posibility is to use float, as 6 significative digits is enough to deal with the
-    greatest numbers expresed either in tenths of a mm or in microns.
-
-    3. wxWidgets data types
-    ---------------------------
-    wxCoord is the basic type used by wxWidgets for all screen and DC coordinates. It is
-    allways an int32 to allow for big virtual canvases. Other types extensively used in
-    DC and screen methods are wxPoint, wxRect and wxSize. They use internally type int to
-    store coordinates. In conclusion, the use of wxCoord (int32) for storing logical units
-    is adequate.
-
-    4. Device Context mapping mode
-    ------------------------------
-  -    Maximum resolution wxWidgets mapping mode is MM_LOMETRIC, whose units are tenths of a mm.
-    But greater precision can be easily achieved just by using MM_LOMETRIC and using a
-    scaling factor. For example, to use the micron as logical unit the scaling factor
-    would be 0.01. This scaling factor must multiply the scaling factor used for zooming
-    the the view.
-
-
-    Final conclusions
-    ------------------------------
-    We are going to use two units:
-      - Logical units: to use in those cases in which it is necessary to refer to real world,
-        such as when specifying the physical size of the paper to use. The choosen unit will
-        be the micron (one thousand of a millimeter) and will be called "Micron" in the
-        program.
-
-      - Relative units (tenths of distance between staff lines) for all other cases. For
-      example to specify a note position. This unit will be called "Tenth" in the program.
-
-    For future portability and to improve program legibility we are going to use our own
-    types:
-        lmLUnits - for logical units. Mapped to int32
-        lmPixels - for device units. Mapped to int32
-        lmTenths - for staff relative units. Mapped to int32
-
-    For calculations, all methods will operate (unless strictly necessary) in logical units.
-    As the precision is one micron, cumulative truncation errors are neglectable. We can
-    safely operate with integers.
-
-
-Logical units
-----------------------
-  - All internal units (the so called 'logical units') are int and represent tenths of
-    millimeter (scale mode wxMM_LOMETRIC).
-
-  - The 'logical coordinates space' represents the virtual paper on which real music
-    sheets are arranged according to the layout chossen by the user.
-
-  -    Internal cursor positions are, therefore, representing positions on this virtual paper.
-
-
-
-Virtual paper layout
-----------------------
-
-               +--- container: lmScoreView object ('logical space')
-               V
-+-------------------------------------------------------------------------------------
-|                                                           VIRTUAL PAPER
-|   +-- pageOrg
-|   |
-|   |    <-------------------------- pageSize.width ----------------------->
-|   +-->+-------------------------------------------------------------------+
-|       |                                   A               (lmPaper object)|
-|       |                                   |                               |
-|       |                               nTopMarging                         |
-|       |   +-- nLeftMarging                |             nRightMarging-+   |
-|       |   |                               V                           |   |
-|       |   |   + - - - - - - - - - - - - - - - - - - - - - - - - - - + |   |
-|       |   |   |                           A                         | |   |
-|       |   |                      MargenSupPentagrama                  |   |      dyAntesPentagrama
-|       |   |   |                           V                         | |   |
-|       |   |    -----------------------------------------------------  |   |
-|       |   V   |-----------------------------------------------------| V   |
-|       |        ----- 1er Pentagrama --------------------------------      |
-|       |       |-----------------------------------------------------|     |
-|       |        -----------------------------------------------------      |
-|       |       |                           A                         |     |
-|       |                           MargeInfPentagrama                      |      dyTrasPentagrama
-|       |       + - - - - - - - - - - - - - - - - - - - - - - - - - - +     |
-|       |                          MargenSupPentagrama                      |      dyAntesPentagrama
-|       |       |                           V                         |     |
-|       |     / ------------------------------------------------------      |
-|       |     | ------------------------------------------------------|     |
-|       |     | ------ 2º  Pentagrama --------------------------------      |
-|       |     | ------------------------------------------------------|     |
-|       |     | ------------------------------------------------------      |
-|       |    /  |                                                     |     |
-|       |   <                          Pentagramas                          |      dyEntrePentagramas
-|       |    \  |                                                     |     |
-|       |     | ------------------------------------------------------      |
-|       |     | ------------------------------------------------------|     |
-|       |     | ------ 3er Pentagrama --------------------------------      |
-|       |     | ------------------------------------------------------|     |
-|       |     \ ------------------------------------------------------      |
-|       |       |                           A                         |     |
-|       |                           MargeInfPentagrama                      |      dyTrasPentagrama
-|       |       + - - - - - - - - - - - - - - - - - - - - - - - - - - +     |
-|       |                                                                   |
-|       |                                                                   |
-|       |                                                                   |
-|       |                           EspacioEntreSistemas                    |      dyEntreSistemas
-|       |                                                                   |
-|       |                                                                   |
-|       |                                                                   |
-|       |                                                                   |
-|       |                                                                   |
-|       |                                                                   |
-|       |                                                                   |
-|       |                                                                   |
-
-*/
-
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "scoreView.h"
+#pragma implementation "ScoreView.h"
 #endif
-
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
@@ -225,24 +29,21 @@ Virtual paper layout
 #pragma hdrstop
 #endif
 
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
-
 #if !wxUSE_DOC_VIEW_ARCHITECTURE
 #error You must set wxUSE_DOC_VIEW_ARCHITECTURE to 1 in setup.h!
 #endif
 
 #include "wx/scrolbar.h"
 
+#include "global.h"
 #include "TheApp.h"
 #include "MainFrame.h"
 #include "ScoreDoc.h"
-#include "scoreView.h"
-#include "../score/ScoreCommand.h"
+#include "ScoreView.h"
+#include "ScoreCanvas.h"
+#include "EditFrame.h"
 #include "../widgets/Ruler.h"
 #include "FontManager.h"
-#include "global.h"
 #include "ArtProvider.h"
 
 
@@ -257,21 +58,33 @@ enum
     CTROL_VScroll
 };
 
-IMPLEMENT_DYNAMIC_CLASS(lmScoreView, wxView)
-
 // global variables
 bool gfDrawSelRec;        //draw selection rectangles around staff objects
 
 
-BEGIN_EVENT_TABLE(lmScoreView, wxView)
+// Dragging states
+#define DRAG_NONE     0
+#define DRAG_START    1
+#define DRAG_DRAGGING 2
+
+
+
+IMPLEMENT_DYNAMIC_CLASS(lmScoreView, lmView)
+
+BEGIN_EVENT_TABLE(lmScoreView, lmView)
     EVT_COMMAND_SCROLL(CTROL_HScroll, lmScoreView::OnScroll)
     EVT_COMMAND_SCROLL(CTROL_VScroll, lmScoreView::OnScroll)
     EVT_MOUSEWHEEL(lmScoreView::OnMouseWheel)
+
 END_EVENT_TABLE()
 
-lmScoreView::lmScoreView() {
+
+
+lmScoreView::lmScoreView()
+{
     m_pFrame = (lmEditFrame*) NULL;
     m_pCanvas = (lmScoreCanvas*) NULL;
+    m_pDoc = (lmScoreDocument*) NULL;
     m_pHRuler = (lmRuler*) NULL;
     m_pVRuler = (lmRuler*) NULL;
     m_pHScroll = (wxScrollBar*) NULL;
@@ -302,13 +115,6 @@ lmScoreView::lmScoreView() {
 
 lmScoreView::~lmScoreView()
 {
-    m_pFrame = (lmEditFrame*) NULL;
-    m_pCanvas = (lmScoreCanvas*) NULL;
-    m_pHRuler = (lmRuler*) NULL;
-    m_pVRuler = (lmRuler*) NULL;
-    m_pHScroll = (wxScrollBar*) NULL;
-    m_pVScroll = (wxScrollBar*) NULL;
-
 }
 
 // The OnCreate function, called when the window is created
@@ -318,12 +124,15 @@ lmScoreView::~lmScoreView()
 // needed controls and shown.
 bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
 {
+    //save the document
+    m_pDoc = (lmScoreDocument*)doc;
+
     // create the frame and set its icon and default title
     m_pFrame = new lmEditFrame(doc, this, GetMainFrame());
     m_pFrame->SetIcon( wxArtProvider::GetIcon(_T("app_score"), wxART_TOOLBAR, wxSize(16,16)) );
 
     // Set frame title: the score title
-    lmScore* pScore = ((lmScoreDocument*)GetDocument())->GetScore();
+    lmScore* pScore = m_pDoc->GetScore();
     if (pScore)
         m_pFrame->SetTitle( pScore->GetScoreName() );
     else
@@ -362,7 +171,7 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
     m_pVRuler->SetOffset(2);
 
     // create the canvas for the score to edit
-    m_pCanvas = new lmScoreCanvas(this, m_pFrame, wxPoint(0, 0), m_pFrame->GetSize(),
+    m_pCanvas = new lmScoreCanvas(this, m_pFrame, m_pDoc, wxPoint(0, 0), m_pFrame->GetSize(),
                         wxNO_BORDER, colorBg );
 
     // create the scrollbars
@@ -505,7 +314,7 @@ void lmScoreView::SetRulersVisible(bool fVisible)
 
 // OnDraw is a mandatory override of wxView. So we must define an OnDraw method. But the
 // repaint behaviour is controled by the OnPaint event on lmScoreCanvas and is redirected
-// to lmScoreView.RedrawScoreRectangle().
+// to lmScoreView.RepaintScoreRectangle().
 // So OnDraw is empty. It is only invoked by the print/preview architecture, for print/preview
 // the document.
 void lmScoreView::OnDraw(wxDC* pDC)
@@ -715,41 +524,6 @@ void lmScoreView::SetScaleFitFull()
 
 }
 
-void lmScoreView::PlayScore()
-{
-    //get the score
-    lmScoreDocument* pDoc = (lmScoreDocument*) GetDocument();
-    lmScore* pScore = pDoc->GetScore();
-
-    //play the score. Use current metronome setting
-    pScore->Play(lmVISUAL_TRACKING, NO_MARCAR_COMPAS_PREVIO, ePM_NormalInstrument,
-                 0, m_pCanvas);
-
-}
-
-void lmScoreView::StopPlaying(bool fWait)
-{
-    //get the score
-    lmScoreDocument* pDoc = (lmScoreDocument*) GetDocument();
-    lmScore* pScore = pDoc->GetScore();
-
-    //request it to stop playing
-    pScore->Stop();
-    if (fWait) pScore->WaitForTermination();
-
-}
-
-void lmScoreView::PausePlaying()
-{
-    //get the score
-    lmScoreDocument* pDoc = (lmScoreDocument*) GetDocument();
-    lmScore* pScore = pDoc->GetScore();
-
-    //request it to pause playing
-    pScore->Pause();
-
-}
-
 void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
 {
     EHighlightType nHighlightType = event.GetHighlightType();
@@ -779,8 +553,7 @@ void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
     }
 
     //get the score
-    lmScoreDocument* pDoc = (lmScoreDocument*) GetDocument();
-    lmScore* pScore = pDoc->GetScore();
+    lmScore* pScore = m_pDoc->GetScore();
 
     //prepare paper DC
     wxClientDC dc(m_pCanvas);
@@ -826,7 +599,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 
     // get logical coordinates of point pointed by mouse
 
-    // as wxDragImage works with unscrolled device coordinates we need current position
+    // as wxDragImage works with unscrolled device coordinates, we need current position
     // in device units. All device coordinates are referred to the lmScoreCanvas window
     lmDPoint canvasPosD(event.GetPosition());
 
@@ -866,18 +639,32 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         if (m_pVRuler) m_pVRuler->ShowPosition(pagePosD);
     }
 
+    // check if a key is pressed
+    enum {
+        lmKEY_ALT = 0x0001,
+        lmKEY_CTRL = 0x0002,
+        lmKEY_SHIFT = 0x0004,
+    };
+
+    int nKeysPressed = 0;
+    if (event.ShiftDown())
+        nKeysPressed = nKeysPressed | lmKEY_SHIFT;
+    if (event.ControlDown())
+        nKeysPressed = nKeysPressed | lmKEY_CTRL;
+    if (event.AltDown())
+        nKeysPressed = nKeysPressed | lmKEY_ALT;
+
+
     if (event.LeftDClick() ) {
         // mouse left double click: Select/deselect the object pointed by mouse
         //--------------------------------------------------------------------------
 
         // locate the object
-        lmScoreDocument* doc = (lmScoreDocument*)GetDocument();
-        lmScoreObj* pScO = doc->FindSelectableObject(pagePosL);
+        lmScoreObj* pScO = m_pDoc->FindSelectableObject(pagePosL);
 
         // If we've got a valid object on mouse left double click, select/deselect it.
         if (pScO) {
-            wxCommandProcessor* pCP = doc->GetCommandProcessor();
-            pCP->Submit(new lmScoreCommand(_T("Select object"), CMD_SelectObject, doc, pScO));
+			m_pCanvas->SelectObject(pScO);
         }
 
 
@@ -886,19 +673,30 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         // ---------------------------------------------------------------------------
 
         // locate the object
-        lmScoreDocument* doc = (lmScoreDocument*)GetDocument();
-        lmScoreObj* pScO = doc->FindSelectableObject(pagePosL);
-
-        // if we've got a valid object, tentatively start dragging
-       if (pScO && pScO->IsDraggable()) {
-             m_pSoDrag = pScO;
-            m_dragState = DRAG_START;
-            m_dragStartPosL = pagePosL;        // save mouse position (page logical coordinates)
-            // compute the location of the drag position relative to the upper-left
-            // corner of the image (pixels)
-            lmUPoint hotSpot = pagePosL - pScO->GetGlyphPosition();
-            m_dragHotSpot.x = pDC->LogicalToDeviceXRel((int)hotSpot.x);
-            m_dragHotSpot.y = pDC->LogicalToDeviceYRel((int)hotSpot.y);
+        lmScoreObj* pScO = m_pDoc->FindSelectableObject(pagePosL);
+        if (pScO)
+        {
+            //valid object pointed. 
+            if (pScO->IsDraggable())
+            {
+                //Is a draggable object. Tentatively start dragging
+                m_pSoDrag = pScO;
+                m_dragState = DRAG_START;
+                m_dragStartPosL = pagePosL;        // save mouse position (page logical coordinates)
+                // compute the location of the drag position relative to the upper-left
+                // corner of the image (pixels)
+                lmUPoint hotSpot = pagePosL - pScO->GetGlyphPosition();
+                m_dragHotSpot.x = pDC->LogicalToDeviceXRel((int)hotSpot.x);
+                m_dragHotSpot.y = pDC->LogicalToDeviceYRel((int)hotSpot.y);
+            }
+            else
+            {
+                //Non-draggable object. Possible selection?
+            }
+       }
+       else
+       {
+           //no object pointed. Possible tool box insert command
        }
 
     }
@@ -916,17 +714,12 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         delete m_pDragImage;
         m_pDragImage = (wxDragImage*) NULL;
 
-        // Generate move command to move lmStaffObj and update document
-        lmScoreDocument* doc = (lmScoreDocument*)GetDocument();
-        wxCommandProcessor* pCP = doc->GetCommandProcessor();
-        lmUPoint finalPos = m_pSoDrag->GetGlyphPosition() + pagePosL - m_dragStartPosL;
-        pCP->Submit(new lmScoreCommandMove(_T("Move object"), doc, m_pSoDrag, finalPos));
-
-        ////update document to draw final image and clean up pointers
-        //m_pSoDrag->SetFixed(true);
-        //m_pSoDrag->EndDrag(m_pSoDrag->GetGlyphPosition() + pagePosL - m_dragStartPosL);
+        // Generate move command to move lmStaffObj and update the document
         //lmScoreDocument* doc = (lmScoreDocument*)GetDocument();
-        //doc->UpdateAllViews();
+        //wxCommandProcessor* pCP = doc->GetCommandProcessor();
+        //pCP->Submit(new lmScoreCommandMove(_T("Move object"), doc, m_pSoDrag, finalPos));
+        lmUPoint finalPos = m_pSoDrag->GetGlyphPosition() + pagePosL - m_dragStartPosL;
+		m_pCanvas->MoveObject(m_pSoDrag, finalPos);
 
         m_pSoDrag = (lmScoreObj*) NULL;
 

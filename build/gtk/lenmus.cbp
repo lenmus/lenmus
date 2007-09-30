@@ -143,6 +143,8 @@
 		<Unit filename="../../src/exercises/IdfyChordCtrol.h" />
 		<Unit filename="../../src/exercises/IdfyScalesCtrol.cpp" />
 		<Unit filename="../../src/exercises/IdfyScalesCtrol.h" />
+		<Unit filename="../../src/exercises/MusicReadingConstrains.cpp" />
+		<Unit filename="../../src/exercises/MusicReadingConstrains.h" />
 		<Unit filename="../../src/exercises/ScalesConstrains.cpp" />
 		<Unit filename="../../src/exercises/ScalesConstrains.h" />
 		<Unit filename="../../src/exercises/ScoreAuxCtrol.cpp" />

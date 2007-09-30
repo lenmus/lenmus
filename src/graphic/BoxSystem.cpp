@@ -103,8 +103,20 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
             pVStaff->DrawStaffLines(DO_DRAW, pPaper, xFrom, m_xFinal);
 
             //now draw the prolog, except if this is the first system
+            int nLastMeasure = pVStaff->GetNumMeasures();
             if (nSystem != 1)
-                pVStaff->DrawProlog(DO_DRAW, m_nFirstMeasure, false, pPaper);
+            {
+                if (m_nFirstMeasure <= nLastMeasure) {
+                    pVStaff->DrawProlog(DO_DRAW, m_nFirstMeasure, false, pPaper);
+                }
+                else
+                {
+                    // we are drawing an empty system after final barline. Use
+                    // for prolog the last measure if it exists!
+                    if (nLastMeasure != 0)
+                        pVStaff->DrawProlog(DO_DRAW, nLastMeasure, false, pPaper);
+                }
+            }
 
             //draw the measures in this system
             for (int i = m_nFirstMeasure; i < m_nFirstMeasure + m_nNumMeasures; i++) {

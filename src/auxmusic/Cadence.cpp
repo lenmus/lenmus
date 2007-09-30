@@ -163,18 +163,18 @@ bool lmCadence::Create(lmECadenceType nCadenceType, EKeySignatures nKey, bool fU
         if (sFunct == _T("")) {
             if (iC > 1) break;      //no error
             //table maintenace error
-            wxLogMessage(_T("[lmCadence::Create] No harmonic function!. nCadenceType=%d, iC=%d"),
+            g_pLogger->LogTrace(_T("lmCadence"), _T("[Create] No harmonic function!. nCadenceType=%d, iC=%d"),
                     nCadenceType, iC);
             return false;
         }
 
         //get the chord intervals
         wxString sIntervals = SelectChord(sFunct, nKey, &m_nInversions[iC]);
- /*dbg*/ wxLogMessage(_T("[lmCadence::Create] sFunct='%s', chord intervals='%s'"),
+		g_pLogger->LogTrace(_T("lmCadence"), _T("[Create] sFunct='%s', chord intervals='%s'"),
                 sFunct.c_str(), sIntervals.c_str() );
         if (sIntervals == _T("")) {
             //error: no chord for choosen function
-            wxLogMessage(_T("[lmCadence::Create] No chord found for nCadenceType=%d, nKey=%d, iC=%d"),
+            g_pLogger->LogTrace(_T("lmCadence"), _T("[Create] No chord found for nCadenceType=%d, nKey=%d, iC=%d"),
                     nCadenceType, nKey, iC);
             return false;
         }
@@ -210,7 +210,7 @@ bool lmCadence::Create(lmECadenceType nCadenceType, EKeySignatures nKey, bool fU
         }
         // chord iC is the selected one.
         m_Chord[0] = aFirstChord[iC];
-        wxLogMessage(_T("[lmCadence::Create] Selected : %s, %s, %s, %s"),
+        g_pLogger->LogTrace(_T("lmCadence"), _T("[Create] Selected : %s, %s, %s, %s"),
                     aFirstChord[iC].GetPrintName(0).c_str(),
                     aFirstChord[iC].GetPrintName(1).c_str(),
                     aFirstChord[iC].GetPrintName(2).c_str(),
@@ -263,7 +263,7 @@ wxString lmCadence::SelectChord(wxString sFunction, EKeySignatures nKey, int* pI
         else if (sInv==_T("64"))
             *pInversion = 2;
         else {
-            wxLogMessage(_T("[lmCadence::SelectChord] Conversion table maintenance error. Unknown inversion code '%s'"), sInv.c_str());
+            g_pLogger->LogTrace(_T("lmCadence"), _T("[SelectChord] Conversion table maintenance error. Unknown inversion code '%s'"), sInv.c_str());
             *pInversion = 0;
         }
     }
@@ -279,7 +279,7 @@ wxString lmCadence::SelectChord(wxString sFunction, EKeySignatures nKey, int* pI
     }
     if (iF == iMax) {
         // table maintenance error
-        wxLogMessage(_T("[lmCadence::SelectChord] Conversion table maintenance error. Function '%s' not found. Key=%d"),
+        g_pLogger->LogTrace(_T("lmCadence"), _T("[SelectChord] Conversion table maintenance error. Function '%s' not found. Key=%d"),
             sFunction.c_str(), nKey);
         return _T("");      // not valid chord
     }
@@ -291,7 +291,7 @@ wxString lmCadence::SelectChord(wxString sFunction, EKeySignatures nKey, int* pI
         if (sChord == _T("nil"))
             return _T("");        // not valid chord
         if (sChord == _T("?")) {
-            wxLogMessage(_T("[lmCadence::SelectChord] Conversion table maintenance error. Undefined chord. Function '%s', Key=%d"),
+            g_pLogger->LogTrace(_T("lmCadence"), _T("[SelectChord] Conversion table maintenance error. Undefined chord. Function '%s', Key=%d"),
                 sFunction.c_str(), nKey);
             return _T("");        // not valid chord
         }
@@ -436,12 +436,17 @@ int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData
 	tChordData.nNumSteps = nNumNotes;
 
     //START DBG -------------------------------------------------------------
-    wxLogMessage(_T("[lmCadence::GenerateFirstChord] Base chord. Num notes = %d"), nNumNotes);
-    wxString sNotes = _T("cdefgabc");
-    for (int i=0; i < nNumNotes; i++) {
-        wxLogMessage(_T("[lmCadence::GenerateFirstChord] note %s"),
-                sNotes.substr(oChordNotes[i].nStep, 1).c_str() );
-    }
+#ifdef __WXDEBUG__
+	if (g_pLogger->IsAllowedTraceMask(_T("lmCadence")))
+	{
+		wxLogMessage(_T("[lmCadence::GenerateFirstChord] Base chord. Num notes = %d"), nNumNotes);
+		wxString sNotes = _T("cdefgabc");
+		for (int i=0; i < nNumNotes; i++) {
+			wxLogMessage(_T("[lmCadence::GenerateFirstChord] note %s"),
+					sNotes.substr(oChordNotes[i].nStep, 1).c_str() );
+		}
+	}
+#endif
     //END DBG ---------------------------------------------------------------
 
 
@@ -455,7 +460,7 @@ int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData
         oChordNotes[iB].nOctave = 3;      //  place note in octave 3
     oChord.nNote[0] = DPitch(oChordNotes[iB].nStep, oChordNotes[iB].nOctave);
     oChord.nAcc[0] = oChordNotes[iB].nAccidentals;
-    wxLogMessage(_T("[lmCadence::GenerateFirstChord] Bass = %s"),
+    g_pLogger->LogTrace(_T("lmCadence"), _T("[GenerateFirstChord] Bass = %s"),
                     oChord.GetPrintName(0).c_str() );
 
     // 3. Generate note for soprano voice
@@ -463,7 +468,7 @@ int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData
     int iS = GenerateSopranoNote(oChordNotes, iB, nNumNotes);
     oChord.nNote[3] = DPitch(oChordNotes[iS].nStep, oChordNotes[iS].nOctave);
     oChord.nAcc[3] = oChordNotes[iS].nAccidentals;
-    wxLogMessage(_T("[lmCadence::GenerateFirstChord] Soprano = %s"),
+    g_pLogger->LogTrace(_T("lmCadence"), _T("[GenerateFirstChord] Soprano = %s"),
                     oChord.GetPrintName(3).c_str() );
 
     // 4. Generate the set of possible notes for Alto voice.
@@ -479,7 +484,7 @@ int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData
             if (nAltoPitch >= nMinAltoPitch) {
                 nAltoSetAcc[iAS] = oChordNotes[iA].nAccidentals;
                 nAltoSet[iAS++] = nAltoPitch;
-                wxLogMessage(_T("[lmCadence::GenerateFirstChord] Alto = %s"),
+                g_pLogger->LogTrace(_T("lmCadence"), _T("[GenerateFirstChord] Alto = %s"),
                             DPitch_GetEnglishNoteName(nAltoPitch).c_str() );
             }
             nAltoPitch += 7;
@@ -498,7 +503,7 @@ int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData
             if (nTenorPitch >= nMinTenorPitch) {
                 nTenorSetAcc[iTS] = oChordNotes[iT].nAccidentals;
                 nTenorSet[iTS++] = nTenorPitch;
-                wxLogMessage(_T("[lmCadence::GenerateFirstChord] Tenor = %s"),
+                g_pLogger->LogTrace(_T("lmCadence"), _T("[GenerateFirstChord] Tenor = %s"),
                             DPitch_GetEnglishNoteName(nTenorPitch).c_str() );
             }
             nTenorPitch += 7;
@@ -533,30 +538,40 @@ int lmCadence::GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData
     aChords.resize(nNumChords);
 
     //START DBG -------------------------------------------------------------
-    wxLogMessage(_T("[lmCadence::GenerateFirstChord] Num Chords = %d"), nNumChords);
-    for (int i=0; i < nNumChords; i++) {
-        wxLogMessage(_T("[lmCadence::GenerateFirstChord] Chord %d : %s, %s, %s, %s"),
-                i,
-                aChords[i].GetPrintName(0).c_str(),
-                aChords[i].GetPrintName(1).c_str(),
-                aChords[i].GetPrintName(2).c_str(),
-                aChords[i].GetPrintName(3).c_str() );
-    }
+#ifdef __WXDEBUG__
+	if (g_pLogger->IsAllowedTraceMask(_T("lmCadence")))
+	{
+		wxLogMessage(_T("[lmCadence::GenerateFirstChord] Num Chords = %d"), nNumChords);
+		for (int i=0; i < nNumChords; i++) {
+			wxLogMessage(_T("[lmCadence::GenerateFirstChord] Chord %d : %s, %s, %s, %s"),
+					i,
+					aChords[i].GetPrintName(0).c_str(),
+					aChords[i].GetPrintName(1).c_str(),
+					aChords[i].GetPrintName(2).c_str(),
+					aChords[i].GetPrintName(3).c_str() );
+		}
+	}
+#endif
     //END DBG ---------------------------------------------------------------
 
     int nValidChords = FilterChords(aChords, nNumChords, tChordData, (lmHChord*)NULL);
     //START DBG -------------------------------------------------------------
-    wxLogMessage(_T("[lmCadence::GenerateFirstChord] Valid Chords = %d"), nValidChords);
-    for (int i=0; i < nNumChords; i++) {
-        if (aChords[i].nReason == lm_eChordValid) {
-            wxLogMessage(_T("[lmCadence::GenerateFirstChord] Valid chord %d : %s, %s, %s, %s"),
-                i,
-                aChords[i].GetPrintName(0).c_str(),
-                aChords[i].GetPrintName(1).c_str(),
-                aChords[i].GetPrintName(2).c_str(),
-                aChords[i].GetPrintName(3).c_str() );
-        }
-    }
+#ifdef __WXDEBUG__
+	if (g_pLogger->IsAllowedTraceMask(_T("lmCadence")))
+	{
+		wxLogMessage(_T("[lmCadence::GenerateFirstChord] Valid Chords = %d"), nValidChords);
+		for (int i=0; i < nNumChords; i++) {
+			if (aChords[i].nReason == lm_eChordValid) {
+				wxLogMessage(_T("[lmCadence::GenerateFirstChord] Valid chord %d : %s, %s, %s, %s"),
+					i,
+					aChords[i].GetPrintName(0).c_str(),
+					aChords[i].GetPrintName(1).c_str(),
+					aChords[i].GetPrintName(2).c_str(),
+					aChords[i].GetPrintName(3).c_str() );
+			}
+		}
+	}
+#endif
     //END DBG ---------------------------------------------------------------
 
     return nValidChords;
@@ -584,10 +599,10 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
 	tChordData.nNumSteps = nNumNotes;
 
     //dbg
-    wxLogMessage(_T("[lmCadence::GenerateNextChord] Base chord. Num notes = %d"), nNumNotes);
+    g_pLogger->LogTrace(_T("lmCadence"), _T("[GenerateNextChord] Base chord. Num notes = %d"), nNumNotes);
     wxString sNotes = _T("cdefgabc");
     for (int i=0; i < nNumNotes; i++) {
-        wxLogMessage(_T("[lmCadence::GenerateNextChord] note %s"),
+        g_pLogger->LogTrace(_T("lmCadence"), _T("[GenerateNextChord] note %s"),
                 sNotes.substr(oChordNotes[i].nStep, 1).c_str() );
     }
 
@@ -602,7 +617,7 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
     lmDPitch nBassPitch = DPitch(oChordNotes[iB].nStep, oChordNotes[iB].nOctave);
     m_Chord[iThisChord].nNote[0] = nBassPitch;
     m_Chord[iThisChord].nAcc[0] = oChordNotes[iB].nAccidentals;
-    wxLogMessage(_T("[lmCadence::GenerateNextChord] Bass = %s"),
+    g_pLogger->LogTrace(_T("lmCadence"), _T("[GenerateNextChord] Bass = %s"),
                     DPitch_GetEnglishNoteName(m_Chord[iThisChord].nNote[0]).c_str() );
 
     // generate the set of possible notes for each chord note
@@ -617,7 +632,7 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
         while (nDPitch <= nMaxPitch) {
             nSetNotes[nSet] = nDPitch;
             nSetAcc[nSet++] = oChordNotes[iN].nAccidentals;
-            //wxLogMessage(_T("[lmCadence::GenerateNextChord] Added to set = %s (%d)"),
+            //g_pLogger->LogTrace(_T("lmCadence"), _T("[GenerateNextChord] Added to set = %s (%d)"),
             //            DPitch_GetEnglishNoteName(nDPitch).c_str(), nDPitch );
             nDPitch += 7;
         }
@@ -643,7 +658,7 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
         if (!fSwap) break;
     }
     //for (int i=0; i < nSet; i++) {
-    //    wxLogMessage(_T("[lmCadence::GenerateNextChord] ordered set: note %d = %s"),
+    //    g_pLogger->LogTrace(_T("lmCadence"), _T("[GenerateNextChord] ordered set: note %d = %s"),
     //            i, DPitch_GetEnglishNoteName(nSetNotes[i]).c_str() );
     //}
 
@@ -705,27 +720,32 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
         }
     }
     //START DBG -------------------------------------------------------------
-    wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set S: Num.notes=%d, %s, %s, %s, %s, %s"),
-        nE[3],
-        DPitch_GetEnglishNoteName(nElegibleNote[3][0]).c_str(),
-        DPitch_GetEnglishNoteName(nElegibleNote[3][1]).c_str(),
-        DPitch_GetEnglishNoteName(nElegibleNote[3][2]).c_str(),
-        DPitch_GetEnglishNoteName(nElegibleNote[3][3]).c_str(),
-        DPitch_GetEnglishNoteName(nElegibleNote[3][4]).c_str() );
-    wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set A: Num.notes=%d, %s, %s, %s, %s, %s"),
-        nE[2],
-        DPitch_GetEnglishNoteName(nElegibleNote[2][0]).c_str(),
-        DPitch_GetEnglishNoteName(nElegibleNote[2][1]).c_str(),
-        DPitch_GetEnglishNoteName(nElegibleNote[2][2]).c_str(),
-        DPitch_GetEnglishNoteName(nElegibleNote[2][3]).c_str(),
-        DPitch_GetEnglishNoteName(nElegibleNote[2][4]).c_str() );
-    wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set T: Num.notes=%d, %s, %s, %s, %s, %s"),
-        nE[1],
-        DPitch_GetEnglishNoteName(nElegibleNote[1][0]).c_str(),
-        DPitch_GetEnglishNoteName(nElegibleNote[1][1]).c_str(),
-        DPitch_GetEnglishNoteName(nElegibleNote[1][2]).c_str(),
-        DPitch_GetEnglishNoteName(nElegibleNote[1][3]).c_str(),
-        DPitch_GetEnglishNoteName(nElegibleNote[1][4]).c_str() );
+#ifdef __WXDEBUG__
+	if (g_pLogger->IsAllowedTraceMask(_T("lmCadence")))
+	{
+		wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set S: Num.notes=%d, %s, %s, %s, %s, %s"),
+			nE[3],
+			DPitch_GetEnglishNoteName(nElegibleNote[3][0]).c_str(),
+			DPitch_GetEnglishNoteName(nElegibleNote[3][1]).c_str(),
+			DPitch_GetEnglishNoteName(nElegibleNote[3][2]).c_str(),
+			DPitch_GetEnglishNoteName(nElegibleNote[3][3]).c_str(),
+			DPitch_GetEnglishNoteName(nElegibleNote[3][4]).c_str() );
+		wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set A: Num.notes=%d, %s, %s, %s, %s, %s"),
+			nE[2],
+			DPitch_GetEnglishNoteName(nElegibleNote[2][0]).c_str(),
+			DPitch_GetEnglishNoteName(nElegibleNote[2][1]).c_str(),
+			DPitch_GetEnglishNoteName(nElegibleNote[2][2]).c_str(),
+			DPitch_GetEnglishNoteName(nElegibleNote[2][3]).c_str(),
+			DPitch_GetEnglishNoteName(nElegibleNote[2][4]).c_str() );
+		wxLogMessage(_T("[lmCadence::GenerateNextChord] Elegible set T: Num.notes=%d, %s, %s, %s, %s, %s"),
+			nE[1],
+			DPitch_GetEnglishNoteName(nElegibleNote[1][0]).c_str(),
+			DPitch_GetEnglishNoteName(nElegibleNote[1][1]).c_str(),
+			DPitch_GetEnglishNoteName(nElegibleNote[1][2]).c_str(),
+			DPitch_GetEnglishNoteName(nElegibleNote[1][3]).c_str(),
+			DPitch_GetEnglishNoteName(nElegibleNote[1][4]).c_str() );
+	}
+#endif
     //END DBG ---------------------------------------------------------------
 
     // create the set of possible chords
@@ -767,21 +787,26 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
     aChords.resize(nNumChords);
 
     //START DBG -------------------------------------------------------------
-    wxLogMessage(_T("[lmCadence::GenerateNextChord] Num possible chords = %d"), nNumChords);
-    for (int i=0; i < nNumChords; i++) {
-        wxLogMessage(_T("[lmCadence::GenerateNextChord] Possible chord %d : %s, %s, %s, %s"),
-                i,
-                DPitch_GetEnglishNoteName(aChords[i].nNote[0]).c_str(),
-                DPitch_GetEnglishNoteName(aChords[i].nNote[1]).c_str(),
-                DPitch_GetEnglishNoteName(aChords[i].nNote[2]).c_str(),
-                DPitch_GetEnglishNoteName(aChords[i].nNote[3]).c_str() );
-    }
+#ifdef __WXDEBUG__
+	if (g_pLogger->IsAllowedTraceMask(_T("lmCadence")))
+	{
+		wxLogMessage(_T("[lmCadence::GenerateNextChord] Num possible chords = %d"), nNumChords);
+		for (int i=0; i < nNumChords; i++) {
+			wxLogMessage(_T("[lmCadence::GenerateNextChord] Possible chord %d : %s, %s, %s, %s"),
+					i,
+					DPitch_GetEnglishNoteName(aChords[i].nNote[0]).c_str(),
+					DPitch_GetEnglishNoteName(aChords[i].nNote[1]).c_str(),
+					DPitch_GetEnglishNoteName(aChords[i].nNote[2]).c_str(),
+					DPitch_GetEnglishNoteName(aChords[i].nNote[3]).c_str() );
+		}
+	}
+#endif
     //END DBG ---------------------------------------------------------------
 
     //Filter invalid chords
     int nValidChords = FilterChords(aChords, nNumChords, tChordData, &m_Chord[iPrevHChord]);
 
-    wxLogMessage(_T("[lmCadence::GenerateNextChord] Valid Chords = %d"), nValidChords);
+    g_pLogger->LogTrace(_T("lmCadence"), _T("[GenerateNextChord] Valid Chords = %d"), nValidChords);
 	Debug_DumpAllChords(aChords);
 
     if (nValidChords < 1) return nValidChords;
@@ -797,11 +822,16 @@ int lmCadence::GenerateNextChord(std::vector<lmHChord>& aChords, lmChordAuxData&
     // chord iC is the selected one.
     m_Chord[iThisChord] = aChords[iC];
     //START DBG -------------------------------------------------------------
-    wxLogMessage(_T("[lmCadence::GenerateNextChord] Selected : %s, %s, %s, %s"),
-        DPitch_GetEnglishNoteName(aChords[iC].nNote[0]).c_str(),
-        DPitch_GetEnglishNoteName(aChords[iC].nNote[1]).c_str(),
-        DPitch_GetEnglishNoteName(aChords[iC].nNote[2]).c_str(),
-        DPitch_GetEnglishNoteName(aChords[iC].nNote[3]).c_str() );
+#ifdef __WXDEBUG__
+	if (g_pLogger->IsAllowedTraceMask(_T("lmCadence")))
+	{
+		wxLogMessage(_T("[lmCadence::GenerateNextChord] Selected : %s, %s, %s, %s"),
+			DPitch_GetEnglishNoteName(aChords[iC].nNote[0]).c_str(),
+			DPitch_GetEnglishNoteName(aChords[iC].nNote[1]).c_str(),
+			DPitch_GetEnglishNoteName(aChords[iC].nNote[2]).c_str(),
+			DPitch_GetEnglishNoteName(aChords[iC].nNote[3]).c_str() );
+	}
+#endif
     //END DBG ---------------------------------------------------------------
 
     return nValidChords;
@@ -891,7 +921,7 @@ int lmCadence::FilterChords(std::vector<lmHChord>& aChords, int nNumChords,
         for (int iN=0; iN < 4; iN++) {
             int nStep = DPitch_Step(pPrevChord->nNote[iN]);
             nPrevAlter[iN] = pPrevChord->nAcc[iN] - nKeyAccidentals[nStep];
-            wxLogMessage(_T("[lmCadence::FilterChords] nPrevAlter[%d] = %d"), iN, nPrevAlter[iN] );
+            g_pLogger->LogTrace(_T("lmCadence"), _T("[FilterChords] nPrevAlter[%d] = %d"), iN, nPrevAlter[iN] );
         }
     }
 
@@ -1137,7 +1167,7 @@ void lmCadence::SelectLessBad(std::vector<lmHChord>& aChords, lmChordAuxData& tC
 
     // chord iSel is the selected one. Move its data to m_Chord
     m_Chord[iHChord] = aChords[iSel];
-    wxLogMessage(_T("[lmCadence::SelectLessBad] Less bad chord selected:"));
+    g_pLogger->LogTrace(_T("lmCadence"), _T("[SelectLessBad] Less bad chord selected:"));
     Debug_DumpChord(aChords[iSel], iSel);
 
 }
@@ -1159,8 +1189,9 @@ void lmCadence::Debug_DumpAllChords(std::vector<lmHChord>& aChords)
 
 void lmCadence::Debug_DumpChord(lmHChord& oChord, int iChord)
 {
+	if (!g_pLogger->IsAllowedTraceMask(_T("lmCadence"))) return;
     if (oChord.nReason == lm_eChordValid) {
-        wxLogMessage(_T("[lmCadence::Debug_DumpChord] Valid chord %d : %s, %s, %s, %s"),
+		wxLogMessage(_T("[lmCadence::Debug_DumpChord] Valid chord %d : %s, %s, %s, %s"),
             iChord,
             DPitch_GetEnglishNoteName(oChord.nNote[0]).c_str(),
             DPitch_GetEnglishNoteName(oChord.nNote[1]).c_str(),

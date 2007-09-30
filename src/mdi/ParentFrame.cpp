@@ -264,7 +264,7 @@ void lmMDIParentFrame::OnSize(wxSizeEvent& event)
     if (m_pClientWindow)
         m_pClientWindow->OnSize(event);
     else
-        event.Skip();
+        event.Skip();      //continue processing the  event
 }
 
 void lmMDIParentFrame::DoGetClientSize(int *width, int *height) const

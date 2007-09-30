@@ -97,12 +97,12 @@ void lmEBookCtrolParams::AddParam(const wxHtmlTag& tag)
     }
 
     // "Go back to theory" link
-    if ( sName == _T("CONTROL_GO_BACK") ) {
+    else if ( sName == _T("CONTROL_GO_BACK") ) {
         m_pOptions->SetGoBackLink( tag.GetParam(_T("VALUE") ));
     }
 
     // control_play
-    if ( sName == _T("CONTROL_PLAY") ) {
+    else if ( sName == _T("CONTROL_PLAY") ) {
         m_pOptions->SetPlayLink(true);      //, tag.GetParam(_T("VALUE")) );
     }
 

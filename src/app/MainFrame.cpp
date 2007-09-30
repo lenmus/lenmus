@@ -49,11 +49,12 @@
 
 #include "TheApp.h"
 #include "MainFrame.h"
+#include "EditFrame.h"
 #include "ScoreDoc.h"
-#include "scoreView.h"
+#include "ScoreView.h"
 #include "AboutDialog.h"
 #include "../options/OptionsDlg.h"
-#include "ToolsDlg.h"
+#include "ToolsBox.h"
 #include "DlgDebug.h"
 #include "DlgDebugTrace.h"
 #include "Printout.h"
@@ -180,6 +181,7 @@ enum
     MENU_View_Rulers,
     MENU_View_ToolBar,
     MENU_View_StatusBar,
+    MENU_View_Page_Margins,
 
     // Menu Debug
     MENU_Debug_ForceReleaseBehaviour,
@@ -284,12 +286,15 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
 
     //View menu/toolbar
     EVT_MENU      (MENU_View_Tools, lmMainFrame::OnViewTools)
+    EVT_UPDATE_UI (MENU_View_Tools, lmMainFrame::OnEditUpdateUI)
     EVT_MENU      (MENU_View_Rulers, lmMainFrame::OnViewRulers)
     EVT_UPDATE_UI (MENU_View_Rulers, lmMainFrame::OnViewRulersUI)
     EVT_MENU      (MENU_View_ToolBar, lmMainFrame::OnViewToolBar)
     EVT_UPDATE_UI (MENU_View_ToolBar, lmMainFrame::OnToolbarsUI)
     EVT_MENU      (MENU_View_StatusBar, lmMainFrame::OnViewStatusBar)
     EVT_UPDATE_UI (MENU_View_StatusBar, lmMainFrame::OnStatusbarUI)
+    EVT_MENU      (MENU_View_Page_Margins, lmMainFrame::OnViewPageMargins)
+    EVT_UPDATE_UI (MENU_View_Page_Margins, lmMainFrame::OnEditUpdateUI)
 
     //Zoom menu/toolbar
     EVT_MENU (MENU_Zoom_100, lmMainFrame::OnZoom100)
@@ -376,7 +381,7 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
 :
   lmDocMDIParentFrame(manager, frame, -1, title, pos, size, style, _T("myFrame"))
 {
-    m_pToolsDlg = (lmToolsDlg *) NULL;
+    m_pToolBox = (wxWindow*) NULL;
     m_pHelp = (lmHelpController*) NULL;
     m_pBookController = (lmTextBookController*) NULL;
 	m_pTbTextBooks = (wxToolBar*) NULL;
@@ -460,8 +465,29 @@ void lmMainFrame::CreateControls()
 
     m_mgrAUI.AddPane(m_pClientWindow, wxAuiPaneInfo().Name(wxT("notebook")).
                   CenterPane().PaneBorder(false));
+
     m_mgrAUI.Update();
 
+}
+
+wxWindow* lmMainFrame::CreateToolBox()
+{
+   wxPanel *panel = new wxPanel(this, wxID_ANY, wxPoint(0,0), wxSize(300,300),
+                                wxNO_BORDER);
+   wxFlexGridSizer *flex = new wxFlexGridSizer( 2 );
+   flex->AddGrowableRow( 0 );
+   flex->AddGrowableRow( 3 );
+   flex->AddGrowableCol( 1 );
+   flex->Add( 5,5 );   flex->Add( 5,5 );
+   flex->Add( new wxStaticText( panel, -1, wxT("wxTextCtrl:") ), 0, wxALL|wxALIGN_CENTRE, 5 );
+   flex->Add( new wxTextCtrl( panel, -1, wxT(""), wxDefaultPosition, wxSize(100,-1)), 
+                1, wxALL|wxALIGN_CENTRE, 5 );
+   flex->Add( new wxStaticText( panel, -1, wxT("wxSpinCtrl:") ), 0, wxALL|wxALIGN_CENTRE, 5 );
+   flex->Add( new wxSpinCtrl( panel, -1, wxT("5"), wxDefaultPosition, wxSize(100,-1), 
+                wxSP_ARROW_KEYS, 5, 50, 5 ), 0, wxALL|wxALIGN_CENTRE, 5 );
+   flex->Add( 5,5 );   flex->Add( 5,5 );
+   panel->SetSizer( flex );
+   return panel;
 }
 
 void lmMainFrame::OnMetronomeOnOff(wxCommandEvent& WXUNUSED(event))
@@ -548,6 +574,13 @@ void lmMainFrame::CreateMyToolBar()
             wxArtProvider::GetBitmap(_T("tool_paste"), wxART_TOOLBAR, nSize),
             wxArtProvider::GetBitmap(_T("tool_paste_dis"), wxART_TOOLBAR, nSize),
             wxITEM_NORMAL, _("Paste"));
+#if __WXDEBUG__
+    m_pTbEdit->AddSeparator(),
+    m_pTbEdit->AddTool(MENU_View_Page_Margins, _("Page margins"),
+            wxArtProvider::GetBitmap(_T("tool_page_margins"), wxART_TOOLBAR, nSize),
+            wxArtProvider::GetBitmap(_T("tool_page_margins"), wxART_TOOLBAR, nSize),
+            wxITEM_CHECK, _("Show/hide page margins"));
+#endif
     m_pTbEdit->Realize();
 
     //Zoom toolbar
@@ -613,7 +646,10 @@ void lmMainFrame::CreateMyToolBar()
     //Metronome toolbar
     m_pTbMtr = new wxToolBar(this, -1, wxDefaultPosition, wxDefaultSize, style);
     m_pTbMtr->SetToolBitmapSize(nSize);
-    m_pTbMtr->AddTool(MENU_Metronome, _("Metronome"), wxArtProvider::GetBitmap(_T("tool_metronome"), wxART_TOOLBAR, nSize), _("Turn metronome on/off"), wxITEM_CHECK);
+    m_pTbMtr->AddTool(MENU_Metronome, _("Metronome"), 
+        wxArtProvider::GetBitmap(_T("tool_metronome"), 
+        wxART_TOOLBAR, nSize), _("Turn metronome on/off"), 
+        wxITEM_CHECK);
     m_pSpinMetronome = new wxSpinCtrl(m_pTbMtr, ID_SPIN_METRONOME, _T(""), wxDefaultPosition,
         wxSize(60, -1), wxSP_ARROW_KEYS | wxSP_WRAP, 20, 300);
     m_pSpinMetronome->SetValue( m_pMtr->GetMM() );
@@ -926,7 +962,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     view_menu->Append(MENU_View_ToolBar, _("Tool &bar"), _("Hide/show the tools bar"), wxITEM_CHECK);
     view_menu->Append(MENU_View_StatusBar, _("&Status bar"), _("Hide/show the status bar"), wxITEM_CHECK);
     file_menu->AppendSeparator();
-    //view_menu->Append(MENU_View_Tools, _("&Tools box"), _("&Tools box"), wxITEM_CHECK);
+    view_menu->Append(MENU_View_Tools, _("&Tool box"), _("Hide/show edition tool box window"), wxITEM_CHECK);
     view_menu->Append(MENU_View_Rulers, _("&Rulers"), _("Hide/show rulers"), wxITEM_CHECK);
 
     // debug menu
@@ -1262,7 +1298,7 @@ void lmMainFrame::OnBookFrame(wxCommandEvent& event)
 {
     lmTextBookFrame* pBookFrame = m_pBookController->GetFrame();
     pBookFrame->OnToolbar(event);
-    event.Skip(false);
+    event.Skip(false);      //no further processing
 }
 
 void lmMainFrame::OnBookFrameUpdateUI(wxUpdateUIEvent& event)
@@ -1356,7 +1392,7 @@ void lmMainFrame::ExportAsImage(int nImgType)
     {
         //remove extension including dot
         wxString sName = sFilename.Left( sFilename.length() - sExt.length() - 1 );
-        lmScoreView* pView = g_pTheApp->GetActiveView();
+        lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
         pView->SaveAsImage(sName, sExt, nImgType);
     }
 
@@ -1503,14 +1539,14 @@ void lmMainFrame::OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event))
 void lmMainFrame::OnDebugDumpBitmaps(wxCommandEvent& event)
 {
     // get the view
-    lmScoreView* pView = g_pTheApp->GetActiveView();
+    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
     pView->DumpBitmaps();
 }
 
 void lmMainFrame::OnDebugDumpStaffObjs(wxCommandEvent& event)
 {
     // get the score
-    lmScoreView* pView = g_pTheApp->GetActiveView();
+    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
     lmScoreDocument* pDoc = (lmScoreDocument*) pView->GetDocument();
     lmScore* pScore = pDoc->GetScore();
 
@@ -1521,14 +1557,14 @@ void lmMainFrame::OnDebugDumpStaffObjs(wxCommandEvent& event)
 
 void lmMainFrame::OnDebugScoreUI(wxUpdateUIEvent& event)
 {
-    lmScoreView* pView = g_pTheApp->GetActiveView();
+    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
     event.Enable( (pView != (lmScoreView*)NULL) );
 }
 
 void lmMainFrame::OnDebugSeeSource(wxCommandEvent& event)
 {
     // get the score
-    lmScoreView* pView = g_pTheApp->GetActiveView();
+    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
     lmScoreDocument* pDoc = (lmScoreDocument*) pView->GetDocument();
     lmScore* pScore = pDoc->GetScore();
 
@@ -1540,7 +1576,7 @@ void lmMainFrame::OnDebugSeeSource(wxCommandEvent& event)
 void lmMainFrame::OnDebugSeeXML(wxCommandEvent& event)
 {
     // get the score
-    lmScoreView* pView = g_pTheApp->GetActiveView();
+    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
     lmScoreDocument* pDoc = (lmScoreDocument*) pView->GetDocument();
     lmScore* pScore = pDoc->GetScore();
 
@@ -1560,7 +1596,7 @@ void lmMainFrame::OnDebugUnitTests(wxCommandEvent& event)
 void lmMainFrame::OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event))
 {
     // get the score
-    lmScoreView* pView = g_pTheApp->GetActiveView();
+    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
     lmScoreDocument* pDoc = (lmScoreDocument*) pView->GetDocument();
     lmScore* pScore = pDoc->GetScore();
 
@@ -1652,7 +1688,7 @@ void lmMainFrame::OnZoomUpdateUI(wxUpdateUIEvent &event)
 
 void lmMainFrame::OnZoomOther(wxCommandEvent& event)
 {
-    lmScoreView* pView = g_pTheApp->GetActiveView();
+    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
     double rScale = pView->GetScale() * 100;
     int nZoom = (int) ::wxGetNumberFromUser(_T(""),
         _("Zooming? (10 to 800)"), _T(""), (int)rScale, 10, 800);
@@ -1662,7 +1698,7 @@ void lmMainFrame::OnZoomOther(wxCommandEvent& event)
 
 void lmMainFrame::OnZoomFitWidth(wxCommandEvent& event)
 {
-    lmScoreView* pView = g_pTheApp->GetActiveView();
+    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
     pView->SetScaleFitWidth();
     double rScale = pView->GetScale() * 100;
     m_pComboZoom->SetValue(wxString::Format(_T("%.2f%%"), rScale));
@@ -1670,7 +1706,7 @@ void lmMainFrame::OnZoomFitWidth(wxCommandEvent& event)
 
 void lmMainFrame::OnZoomFitFull(wxCommandEvent& event)
 {
-    lmScoreView* pView = g_pTheApp->GetActiveView();
+    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
     pView->SetScaleFitFull();
     double rScale = pView->GetScale() * 100;
     m_pComboZoom->SetValue(wxString::Format(_T("%.2f%%"), rScale));
@@ -1705,27 +1741,39 @@ void lmMainFrame::OnComboZoom(wxCommandEvent& event)
         }
         OnZoom(event, (int)rZoom);
     }
-	event.Skip();
+	event.Skip();      //continue processing the  event
 
 }
 
 // View menu event handlers
 
-void lmMainFrame::OnViewTools(wxCommandEvent& WXUNUSED(event))
+void lmMainFrame::OnViewTools(wxCommandEvent& event)
 {
-    if (m_pToolsDlg) {
-        m_pToolsDlg->Show(false);
-        delete m_pToolsDlg;
-        m_pToolsDlg = (lmToolsDlg *) NULL;
-    } else {
-        m_pToolsDlg = new lmToolsDlg(this, _T("Tools box"), 50, 50);
-        m_pToolsDlg->Show(true);
+    if (event.IsChecked())
+    {
+        //show tools
+        if (!m_pToolBox)
+        {
+            //show tools
+            m_pToolBox =  new lmToolBox(this, wxID_ANY);
+            m_mgrAUI.AddPane(m_pToolBox, wxAuiPaneInfo(). Name(_T("ToolBox")).
+                             Caption(_("Edit tool box")).Left() );
+        }
+        else
+            m_mgrAUI.GetPane(_T("ToolBox")).Show(true);
     }
+    else
+    {
+        //hide tools
+        m_mgrAUI.GetPane(_T("ToolBox")).Show(false);
+    }
+    m_mgrAUI.Update();
+
 }
 
 void lmMainFrame::OnViewRulers(wxCommandEvent& event)
 {
-    lmScoreView* pView = g_pTheApp->GetActiveView();
+    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
     pView->SetRulersVisible(event.IsChecked());
 
 }
@@ -1827,7 +1875,7 @@ void lmMainFrame::OnPrintPreview(wxCommandEvent& WXUNUSED(event))
 
     if (fEditFrame) {
         // Get the active view
-        lmScoreView* pView = g_pTheApp->GetActiveView();
+        lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
 
         // Pass two printout objects: for preview, and possible printing.
         wxPrintDialogData printDialogData(*g_pPrintData);
@@ -1882,7 +1930,7 @@ void lmMainFrame::OnPrint(wxCommandEvent& event)
         wxPrinter printer(& printDialogData);
 
         // Get the active view and create the printout object
-        lmScoreView* pView = g_pTheApp->GetActiveView();
+        lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
         lmPrintout printout(pView);
 
         if (!printer.Print(this, &printout, true)) {
@@ -1899,16 +1947,20 @@ void lmMainFrame::OnPrint(wxCommandEvent& event)
         event.SetId(MENU_eBook_Print);
         lmTextBookFrame* pBookFrame = m_pBookController->GetFrame();
         pBookFrame->OnToolbar(event);
-        event.Skip(false);
+        event.Skip(false);      //no further processing
     }
 
 }
 
 void lmMainFrame::OnEditUpdateUI(wxUpdateUIEvent &event)
 {
-    //lmMDIChildFrame* pChild = GetActiveChild();
-    event.Enable(false);    //pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
-    //always disabled in current version
+#ifdef __WXDEBUG__
+    lmMDIChildFrame* pChild = GetActiveChild();
+    event.Enable(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
+#else
+    //Edit tools always disabled in release version
+    event.Enable(false);
+#endif
 }
 
 void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
@@ -2014,20 +2066,20 @@ void lmMainFrame::OnOptions(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnPlayStart(wxCommandEvent& WXUNUSED(event))
 {
-    lmScoreView* pView = g_pTheApp->GetActiveView();
-    pView->PlayScore();
+    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+    pView->GetController()->PlayScore();
 }
 
 void lmMainFrame::OnPlayStop(wxCommandEvent& WXUNUSED(event))
 {
-    lmScoreView* pView = g_pTheApp->GetActiveView();
-    pView->StopPlaying();
+    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+    pView->GetController()->StopPlaying();
 }
 
 void lmMainFrame::OnPlayPause(wxCommandEvent& WXUNUSED(event))
 {
-    lmScoreView* pView = g_pTheApp->GetActiveView();
-    pView->PausePlaying();
+    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+    pView->GetController()->PausePlaying();
 }
 
 void lmMainFrame::OnMetronomeTimer(wxTimerEvent& event)
@@ -2065,5 +2117,24 @@ void lmMainFrame::DumpScore(lmScore* pScore)
     lmDlgDebug dlg(this, _T("lmStaff objects dump"), pScore->Dump());
     dlg.ShowModal();
 
+}
+
+void lmMainFrame::OnViewPageMargins(wxCommandEvent& WXUNUSED(event))
+{
+}
+
+
+void lmMainFrame::OnPaneClose(wxAuiManagerEvent& event)
+{
+    //if (evt.pane->name == wxT("test10"))
+    //{
+    //    int res = wxMessageBox(wxT("Are you sure you want to close/hide this pane?"),
+    //                           wxT("wxAUI"),
+    //                           wxYES_NO,
+    //                           this);
+    //    if (res != wxYES)
+    //        evt.Veto();
+    //}
+    event.Skip();      //continue processing the  event
 }
 

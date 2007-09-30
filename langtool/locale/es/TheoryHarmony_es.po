@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.6\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-22 20:16+0100\n"
+"PO-Revision-Date: 2007-09-27 22:31+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -51,11 +51,11 @@ msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:11
 msgid "Contents"
-msgstr ""
+msgstr "Contenido"
 
 #: TheoryHarmony/TheoryHarmony.cpp:12
 msgid "Presentation"
-msgstr ""
+msgstr "Presentación"
 
 #: TheoryHarmony/TheoryHarmony.cpp:13
 msgid "It takes a lot of time to prepare an eBbook. So I have decided to publish the chapters/themes/articles as soon as we write them, instead of waiting to have the book finished. All these provisional themes and articles are boundled into this eBook. Therefore this 'Theory and harmony' eBook is just a collection of yet un-ordered/un-related themes."
@@ -64,15 +64,15 @@ msgstr ""
 #: TheoryHarmony/TheoryHarmony.cpp:14
 #: TheoryHarmony/TheoryHarmony.cpp:15
 msgid "Harmony"
-msgstr ""
+msgstr "Armonía"
 
 #: TheoryHarmony/TheoryHarmony.cpp:16
 msgid "Cadences"
-msgstr ""
+msgstr "Cadencias"
 
 #: TheoryHarmony/TheoryHarmony.cpp:17
 msgid "In music, the term 'cadence' has several meanings. In harmony we are going to refer to a particular sequence of usually two chords whose function is to create a sensation of either stability, rest and ending, or of pause, tension and unstablility. Cadences have a function similar to that of the punctuation marks (comma, period, etc.) in written language: they mark breathing places and pauses in the music, they serve to structure the musical phrases, and they also helps to establish tonality. For example listen to the following three chords:"
-msgstr ""
+msgstr "Musicalmente, el término “cadencia” puede significar varias cosas. En armonía, el uso que vamos a hacer de él es de una fórmula o secuencia armónica o melódica, más o menos estandarizada, de dos o más acordes. La cadencia tiene una función análoga a los signos de puntuación (coma, punto, punto y coma, etc.) en el lenguaje, es decir, sirve para articular el discurso musical, creando puntos de reposo y suspensión que hacen posible entenderlo. También ayuda a establecer la tonalidad. Por ejemplo, escucha los tres siguientes acordes:"
 
 #: TheoryHarmony/TheoryHarmony.cpp:18
 #: TheoryHarmony/TheoryHarmony.cpp:20
@@ -84,7 +84,7 @@ msgstr ""
 #: TheoryHarmony/TheoryHarmony.cpp:62
 #: TheoryHarmony/TheoryHarmony.cpp:93
 msgid "I"
-msgstr ""
+msgstr "I"
 
 #: TheoryHarmony/TheoryHarmony.cpp:19
 #: TheoryHarmony/TheoryHarmony.cpp:26
@@ -96,122 +96,122 @@ msgstr ""
 #: TheoryHarmony/TheoryHarmony.cpp:100
 #: TheoryHarmony/TheoryHarmony.cpp:102
 msgid "V"
-msgstr ""
+msgstr "V"
 
 #: TheoryHarmony/TheoryHarmony.cpp:21
 msgid "You will notice the feeling of conclusion, of reaching the end of a musical piece. The chord sequence does not create expectations of continuation. The composer could end the musical composition in the last played chord and the listener will perceive that the end has been reached and remain 'satisfied' with finishing at that point. On the contrary, listen to the following sequence of chords:"
-msgstr ""
+msgstr "Observa la sensación de conclusión , de que se ha llegado al final de una pieza musical. Esta secuencia de acordes no crea expectativas de continuación. El compositor puede perfectamente dar por terminada la pieza en el último acorde y el oyente percibirá que se ha llegado al final, sin quedarse con la sensación de que 'falta algo'. Por el contrario, escucha la siguiente secuencia de acordes:"
 
 #: TheoryHarmony/TheoryHarmony.cpp:24
 #: TheoryHarmony/TheoryHarmony.cpp:61
 #: TheoryHarmony/TheoryHarmony.cpp:85
 #: TheoryHarmony/TheoryHarmony.cpp:90
 msgid "6"
-msgstr ""
+msgstr "6"
 
 #: TheoryHarmony/TheoryHarmony.cpp:25
 #: TheoryHarmony/TheoryHarmony.cpp:86
 msgid "4"
-msgstr ""
+msgstr "4"
 
 #: TheoryHarmony/TheoryHarmony.cpp:27
 msgid "Now the sensation is not conclusive. It is more like a short pause and it creates expectations for continuation. If we finish the music in the last sounded chord we will leave the listener waiting for more."
-msgstr ""
+msgstr "Ahora la sensación no es conclusiva. Trasmite la idea de una corta pausa y crea expectativas de continuación. Si el compositor terminara una pieza en el último acorede escuchado el oyente se quedaría con una sensación extraña, sintiendo que falta algo. "
 
 #: TheoryHarmony/TheoryHarmony.cpp:28
 msgid "Cadences are not difficult to recognize by ear but it is sometimes harder to recognize them in written music."
-msgstr ""
+msgstr "Las cadencias son fáciles de reconocer de oido, pero su reconocimiento escrito, sobre una partitura, suele resultar más difícil. "
 
 #: TheoryHarmony/TheoryHarmony.cpp:29
 msgid "Cadence types"
-msgstr ""
+msgstr "Tipos de cadencia"
 
 #: TheoryHarmony/TheoryHarmony.cpp:30
 msgid "Depending on the sensation they create cadences are classified in two fundamental types:"
-msgstr ""
+msgstr "Dependiendo de la sensación que crean en el oyente, las cadencias se clasifican en dos grupos principales:"
 
 #: TheoryHarmony/TheoryHarmony.cpp:31
 #: TheoryHarmony/TheoryHarmony.cpp:36
 #: TheoryHarmony/TheoryHarmony.cpp:68
 #: TheoryHarmony/TheoryHarmony.cpp:71
 msgid "Terminal cadences"
-msgstr ""
+msgstr "Cadencias conclusivas"
 
 #: TheoryHarmony/TheoryHarmony.cpp:32
 msgid ". They create a sensation of stability, rest and ending of the musical phrase or sentence."
-msgstr ""
+msgstr ". Se caracterizan por crear sensación de reposo y estabilidad, de final de una pieza musical o de una frase."
 
 #: TheoryHarmony/TheoryHarmony.cpp:33
 #: TheoryHarmony/TheoryHarmony.cpp:74
 #: TheoryHarmony/TheoryHarmony.cpp:113
 msgid "Transient cadences"
-msgstr ""
+msgstr "Cadencias suspensivas"
 
 #: TheoryHarmony/TheoryHarmony.cpp:34
 msgid ". They are characterized for creating tension and sensation of unstablility, as well as creating expectations of continuation."
-msgstr ""
+msgstr ". Se caracterizan por crear inestabilidad, tensión y necesidad de continuación."
 
 #: TheoryHarmony/TheoryHarmony.cpp:35
 msgid "As a training exercise you will hear a cadence and based on the sensation it creates on you, try to identify if it is a terminal cadence is or transient one."
-msgstr ""
+msgstr "Como ejercicio de educación del oido escucha una cadencia y trata de acertar si es conclusiva o suspensiva. Para ello, básate sólo en la sensación que percibas al escucharla."
 
 #: TheoryHarmony/TheoryHarmony.cpp:37
 msgid "Terminal cadences create a sensation of stability and conclusion of the musical phrase or sentence. This feeling is achieved by moving to the tonic grade (grade I) from some other chord grades. Depending on the starting chord grade two types of cadences are considered:"
-msgstr ""
+msgstr "Las cadencias conclusivas están caracterizadas por crear reposo y estabilidad. Esta sensación se consigue llegando a la tónica  (grado I) desde algún otro grado tonal. Dependiendo del grado desde el que se llega a la tónica se distinguen dos tipos de cadencias:"
 
 #: TheoryHarmony/TheoryHarmony.cpp:38
 msgid " authentic cadences"
-msgstr ""
+msgstr " cadencias auténticas"
 
 #: TheoryHarmony/TheoryHarmony.cpp:39
 #: TheoryHarmony/TheoryHarmony.cpp:77
 msgid " and"
-msgstr ""
+msgstr " y "
 
 #: TheoryHarmony/TheoryHarmony.cpp:40
 msgid " plagal cadences"
-msgstr ""
+msgstr " cadencias plagales"
 
 #: TheoryHarmony/TheoryHarmony.cpp:41
 #: TheoryHarmony/TheoryHarmony.cpp:79
 msgid "."
-msgstr ""
+msgstr "."
 
 #: TheoryHarmony/TheoryHarmony.cpp:42
 msgid "Authentic cadences"
-msgstr ""
+msgstr "Cadencia auténtica"
 
 #: TheoryHarmony/TheoryHarmony.cpp:43
 msgid "An authentic cadence takes place when grade V, dominant, (or V7, a V chord with an added seventh) resolves in grade I (tonic). The authentic cadence is the strongest terminal cadence, with great conclusive power."
-msgstr ""
+msgstr "Se produce enlazando el V ó V7 (Dominante) y el I (Tónica), ambos grados en estado fundamental. Es la cadencia con mayor poder conclusivo. La cadencia auténtica puede verse ampliada anteponiendo el IV (Subdominante) al acorde de Dominante (con o sin séptima), esta cadencia se llama compuesta. Cuando la voz superior no va a la tónica, el poder conclusivo de esta cadencia queda reducido."
 
 #: TheoryHarmony/TheoryHarmony.cpp:46
 msgid "V7"
-msgstr ""
+msgstr "V7"
 
 #: TheoryHarmony/TheoryHarmony.cpp:48
 msgid "When the authentic cadence satisfies the following conditions:"
-msgstr ""
+msgstr "Cuando la cadencia auténtica cumple las siguientes condiciones:"
 
 #: TheoryHarmony/TheoryHarmony.cpp:49
 msgid "both chords are in root position;"
-msgstr ""
+msgstr "ambos acordes en estado fundamental;"
 
 #: TheoryHarmony/TheoryHarmony.cpp:50
 msgid "the first chord is the V or the V7 ; and"
-msgstr ""
+msgstr "el primer acorde es el V o el V7,  y "
 
 #: TheoryHarmony/TheoryHarmony.cpp:51
 msgid "the melody (soprano voice) ends on the tonic pitch."
-msgstr ""
+msgstr "la melodía (voz más alta) termina en la tónica."
 
 #: TheoryHarmony/TheoryHarmony.cpp:52
 msgid "then the cadenced has its strongest conclusive power and it is the one that creates the most final sounding of all cadences. Due to this fact, if the previously listed conditions are satisfied the cadence it is named 'perfect authentic cadence' or just 'perfect cadence'. If the conditions are not satisfied the conclusive feeling of the cadence is less strong and then the cadence is named 'imperfect authentic cadence' or just 'imperfect cadence'."
-msgstr ""
+msgstr "entonces la cadencia tiene su máximo poder conclusivo y es la que crea mayor sensación de final de todas las cadencias. Por ello, cuando las anteriores condiciones se cumplen, la cadencia recibe el nombre de 'cadencia auténtica perfecta' o, simplemente, 'cadencia perfecta'. Si las mencionadas condiciones no se cumplen la cadencia se denomina 'auténtica imperfecta' o, abreviadamente, 'cadencia imperfecta'."
 
 #: TheoryHarmony/TheoryHarmony.cpp:53
 msgid "There are theoretical discussions about considering the imperfect cadence as a terminal cadence. Nevertheless, we have opted to include it in the terminal group due to sonority considerations."
-msgstr ""
+msgstr "A nivel teórico hay discusiones sobre si la cadencia imperfecta debe o no considerarse una cadencia conclusiva. En este texto y en los ejercicios hemos optado por incluirla en el grupo de las conclusivas, debido, fundamentalmente, a que la sensación sonora que crea es similar a la de la cadencia perfecta."
 
 #: TheoryHarmony/TheoryHarmony.cpp:54
 msgid "The perfect cadence is usually found at the end of a piece of music and the end of significant sections."
@@ -219,121 +219,121 @@ msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:55
 msgid "Plagal cadences"
-msgstr ""
+msgstr "Cadencia plagal"
 
 #: TheoryHarmony/TheoryHarmony.cpp:56
 msgid "A plagal cadence takes place when grade IV (subdominant) resolves in grade I (tonic), both in root position. The plagal cadence is less strong than the authentic cadence and it is also known as the &quot;Amen&quot; cadence as it is used at the end of most church hymns."
-msgstr ""
+msgstr "Se produce enlazando el IV (Subdominante) y el I (Tónica), ambos grados en estado fundamental.  Es menos tensa que la cadencia auténtica. También se la conoce como la cadencia 'Amén', por ser esta la cadencia típica de los himnos eclesiásticos."
 
 #: TheoryHarmony/TheoryHarmony.cpp:57
 msgid "In both cadence types, authentic and plagal, it must be taken into account that other chords playing the same harmonic functions can be used. For example, in the authentic cadence the V (dominant function) can be played by the VII. And in the plagal cadence the IV (subdominant function) can be played by the II. These replacements add variety and harmonic colour to the cadence."
-msgstr ""
+msgstr "Para ambos tipos de cadencias, auténticas y plagales, se debe tener en cuenta que pueden utilizarse otros acordes que realicen la misma función armónica que aquel al que sustituyen. Por ejemplo, en la cadencia auténtica, la función del V (Dominante) puede ser llevada a cabo por el VII; y en la cadencia plgal, la función del IV (Subdominante) puede ser llevada a cabo por otros acordes, fundamentalmente el II. Estas sustituciones se hacen para obtener variedad y colorido armónico."
 
 #: TheoryHarmony/TheoryHarmony.cpp:58
 #: TheoryHarmony/TheoryHarmony.cpp:82
 #: TheoryHarmony/TheoryHarmony.cpp:89
 #: TheoryHarmony/TheoryHarmony.cpp:101
 msgid "IV"
-msgstr ""
+msgstr "IV"
 
 #: TheoryHarmony/TheoryHarmony.cpp:60
 #: TheoryHarmony/TheoryHarmony.cpp:84
 msgid "II"
-msgstr ""
+msgstr "II"
 
 #: TheoryHarmony/TheoryHarmony.cpp:63
 #: TheoryHarmony/TheoryHarmony.cpp:105
 #: TheoryHarmony/TheoryHarmony.cpp:119
 msgid "Exercises"
-msgstr ""
+msgstr "Ejercicios"
 
 #: TheoryHarmony/TheoryHarmony.cpp:64
 #: TheoryHarmony/TheoryHarmony.cpp:106
 msgid "Theory exercise"
-msgstr ""
+msgstr "Ejercicio de teoría"
 
 #: TheoryHarmony/TheoryHarmony.cpp:65
 msgid " - Practise to recognize on a score if a terminal cadence is authentic perfect or plagal."
-msgstr ""
+msgstr " - Practica el reconocimiento sobre una partitura de cadencias auténticas y plagales."
 
 #: TheoryHarmony/TheoryHarmony.cpp:66
 #: TheoryHarmony/TheoryHarmony.cpp:108
 msgid "Aural training"
-msgstr ""
+msgstr "Educación del oido"
 
 #: TheoryHarmony/TheoryHarmony.cpp:67
 msgid " - Train your ear and practise to identify if a terminal cadence is authentic perfect or plagal."
-msgstr ""
+msgstr "- Entrena el oido e identifica si una cadencia es auténtica o plagal."
 
 #: TheoryHarmony/TheoryHarmony.cpp:69
 #: TheoryHarmony/TheoryHarmony.cpp:72
 msgid "Authentic and plagal cadences"
-msgstr ""
+msgstr "Cadencias auténticas y plagales"
 
 #: TheoryHarmony/TheoryHarmony.cpp:70
 msgid "Theory: Identify if a terminal cadence is authentic perfect or plagal."
-msgstr ""
+msgstr "Teoría: Identifica si una cadencia conclusiva es perfecta o plagal."
 
 #: TheoryHarmony/TheoryHarmony.cpp:73
 msgid "Aural training: Identify if a terminal cadence is authentic perfect or plagal."
-msgstr ""
+msgstr "Educación del oido: Identifica si una cadencia conclusiva es perfecta o plagal."
 
 #: TheoryHarmony/TheoryHarmony.cpp:75
 msgid "Transient cadences are not conclusive. They create a sensation tension and unstability and expectations for continuation. They are more like a short pause in the musical flow. There are two types of transient cadences:"
-msgstr ""
+msgstr "Las cadencias suspensivas se caracterizan por crear sensaciones de inestabilidad, tensión y necesidad de continuación. Se distinguen dos tipos de cadencias cadencias suspensivas:"
 
 #: TheoryHarmony/TheoryHarmony.cpp:76
 msgid " half cadences"
-msgstr ""
+msgstr "semicadencias"
 
 #: TheoryHarmony/TheoryHarmony.cpp:78
 msgid " deceptive cadences"
-msgstr ""
+msgstr "cadencias rotas"
 
 #: TheoryHarmony/TheoryHarmony.cpp:80
 msgid "Half cadences"
-msgstr ""
+msgstr "Semicadencia"
 
 #: TheoryHarmony/TheoryHarmony.cpp:81
 msgid "A half cadence takes place when the harmony moves to the V degree (dominant) from any other degree, except the tonic (I). The ending on V causes it to sound incomplete or 'suspended' due to the unstableness of the dominant chord. It is considered as the weakest cadence and cannot be use to end a musical phrase."
-msgstr ""
+msgstr "Se produce cuando la armonía se mueve hasta el V grado (Dominante)  llegando desde cualquier grado de la escala, a excepción de la tónica (grado I).La sensación de 'no conclusión' que la cadencia crea se debe al hecho de terminar en el V grado, por la inestabilidad que tiene el acorde de dominante. La semicadencia es considerara como la cadencia más débil y no puede utilizarse para finalizar una frase musical."
 
 #: TheoryHarmony/TheoryHarmony.cpp:88
 msgid "A particular case of the half cadence is the Phrygian half cadence. It consist of a IV chord in first inversion that resolves to a V (or V7) chord in root position. It only occurs in minor keys (the IV is minor) and was widely used during the Baroque period to end a slow musical movement in minor mode, continued by a fast movement in major mode."
-msgstr ""
+msgstr "Un caso especial de esta cadencia es la cadencia frigia. Consiste en un acorde de IV, en primera inversión, que resuelve sobre el de dominante (V) . Sólo es posible en tonalidades menores (el IV grado es un acorde menor). Esta cadencia fue usada profusamente en el Barroco para finalizar un movimiento o introducción lentos en modo menor, al que continúa un movimiento rápido, preferentemente en modo mayor."
 
 #: TheoryHarmony/TheoryHarmony.cpp:92
 msgid "Another very specific case is the Andalusian cadence. It only occurs in minor keys and is given by the progression I-VII-VI-V, where the IV degree can be replaced. This cadence has a particular colour due to the chromatic half step between the root of the VII and the third of the V."
-msgstr ""
+msgstr "Otro caso muy particular es la cadencia andaluza. Se da sólo en las tonalidades menores y consiste en la progresión  I-VII-VI-V, donde el grado IV puede reemplarse por otros. El colorido particular lo otorga el semitono cromático que se produce entre la nota fundamental del VII y la tercera del V."
 
 #: TheoryHarmony/TheoryHarmony.cpp:94
 msgid "VII"
-msgstr ""
+msgstr "VII"
 
 #: TheoryHarmony/TheoryHarmony.cpp:95
 #: TheoryHarmony/TheoryHarmony.cpp:103
 msgid "VI"
-msgstr ""
+msgstr "VI"
 
 #: TheoryHarmony/TheoryHarmony.cpp:97
 msgid "#"
-msgstr ""
+msgstr "#"
 
 #: TheoryHarmony/TheoryHarmony.cpp:98
 msgid "Deceptive cadences"
-msgstr ""
+msgstr "Cadencia rota o interrumpida"
 
 #: TheoryHarmony/TheoryHarmony.cpp:99
 msgid "A deceptive cadence takes place when a V chord does not resolve to a I chord, as the ear is expecting, but instead resolves to any other chord, typically to one containing the tonic pitch (the VI or the IV degrees)."
-msgstr ""
+msgstr "La cadencia rota se inicia como la cadencia auténtica pero en vez de finalizar en el acorde de tónica, se sustituye éste por uno inesperado, generalmente VI,  el IV o cualquier grado que contenga a la nota tónica."
 
 #: TheoryHarmony/TheoryHarmony.cpp:104
 msgid "The deceptive cadence is considered a weak cadence because of the 'surprise' and 'hanging' feel it invokes, so it is never used to end a music piece. However, it provides variety and surprise by resolving to a minor chord in major keys, and to a major chord in minor keys, and when used near the end of a piece it helps to sustain the musical interest at the moment when the final authentic cadence is expected."
-msgstr ""
+msgstr "Es un proceso de cadencia auténtica en el que se sustituye el acorde de tónica por uno inesperado, generalmente VI,  el IV o cualquier grado que contenga a la tónica en sustitución de ésta."
 
 #: TheoryHarmony/TheoryHarmony.cpp:107
 msgid " - Practise to recognize on a score if a transient cadence is a half cadence or a deceptive one."
-msgstr ""
+msgstr " - Practica el reconocimiento, sobre una partitura, de semicadencias y cadencias rotas."
 
 #: TheoryHarmony/TheoryHarmony.cpp:109
 msgid " - Train your ear and practise to identify if a transient cadence is a half cadence or a deceptive one."

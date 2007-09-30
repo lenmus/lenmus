@@ -16,6 +16,8 @@ TextBookFrame: 2000-2099
 
 Dialogs: 2100-2199
 
+Tool box: 2200-2299
+
 Html: Main Controls: 3000-3499
       Aux controls:
             ScoreCtrol: 35xx

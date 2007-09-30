@@ -30,7 +30,6 @@
 #include "wx/docview.h"
 #include "wx/docmdi.h"
 #include "global.h"
-#include "ToolsDlg.h"
 #include "ScoreCanvas.h"
 
 #include "wx/wizard.h"          //to use wxWizard classes
@@ -111,13 +110,13 @@ public:
     //void OnPageSetup(wxCommandEvent& WXUNUSED(event));
     void OnPrintSetup(wxCommandEvent& WXUNUSED(event));
     void OnPrint(wxCommandEvent& event);
-    void OnFileUpdateUI(wxUpdateUIEvent &event);
+    void OnFileUpdateUI(wxUpdateUIEvent& event);
 
     void ExportAsImage(int nImgType);
 
 
     // Edit menu events
-    void OnEditUpdateUI(wxUpdateUIEvent &event);
+    void OnEditUpdateUI(wxUpdateUIEvent& event);
 
     // Debug menu events
         // general options, always enabled
@@ -147,20 +146,21 @@ public:
     void OnZoomOther(wxCommandEvent& event);
     void OnZoomIncrease(wxCommandEvent& event);
     void OnZoomDecrease(wxCommandEvent& event);
-    void OnZoomUpdateUI(wxUpdateUIEvent &event);
+    void OnZoomUpdateUI(wxUpdateUIEvent& event);
 
 
     // View menu events
-    void OnViewTools(wxCommandEvent& WXUNUSED(event));
+    void OnViewTools(wxCommandEvent& event);
     void OnViewRulers(wxCommandEvent& event);
-    void OnViewRulersUI(wxUpdateUIEvent &event);
+    void OnViewRulersUI(wxUpdateUIEvent& event);
     void OnViewToolBar(wxCommandEvent& WXUNUSED(event));
     void OnViewStatusBar(wxCommandEvent& WXUNUSED(event));
-    void OnToolbarsUI(wxUpdateUIEvent &event);
-    void OnStatusbarUI(wxUpdateUIEvent &event);
+    void OnToolbarsUI(wxUpdateUIEvent& event);
+    void OnStatusbarUI(wxUpdateUIEvent& event);
+    void OnViewPageMargins(wxCommandEvent& WXUNUSED(event));
 
     // Sound menu events
-    void OnSoundUpdateUI(wxUpdateUIEvent &event);
+    void OnSoundUpdateUI(wxUpdateUIEvent& event);
     void OnSoundTest(wxCommandEvent& WXUNUSED(event));
     void OnAllSoundsOff(wxCommandEvent& WXUNUSED(event));
     void OnRunMidiWizard(wxCommandEvent& WXUNUSED(event));
@@ -170,7 +170,7 @@ public:
     void OnPlayStart(wxCommandEvent& WXUNUSED(event));
     void OnPlayStop(wxCommandEvent& WXUNUSED(event));
     void OnPlayPause(wxCommandEvent& WXUNUSED(event));
-    void OnPlayUI(wxUpdateUIEvent &event);
+    void OnPlayUI(wxUpdateUIEvent& event);
 
     //Window menu events
     void OnWindowClose(wxCommandEvent& WXUNUSED(event));
@@ -181,7 +181,7 @@ public:
     // Other menu items events
     void OnOptions(wxCommandEvent& WXUNUSED(event));
     void OnOpenBook(wxCommandEvent& event);
-    void OnOpenBookUI(wxUpdateUIEvent &event);
+    void OnOpenBookUI(wxUpdateUIEvent& event);
     void OnAbout(wxCommandEvent& WXUNUSED(event));
     void OnOpenHelp(wxCommandEvent& event);
     void OnOpenHelpUI(wxUpdateUIEvent& event);
@@ -193,6 +193,8 @@ public:
     void OnMetronomeOnOff(wxCommandEvent& WXUNUSED(event));
     void OnMetronomeUpdate(wxSpinEvent& WXUNUSED(event));
     void OnMetronomeUpdateText(wxCommandEvent& WXUNUSED(event));
+    void OnPaneClose(wxAuiManagerEvent& event);
+
 
     //textbook events and methods
     void OnBookFrame(wxCommandEvent& event);
@@ -230,12 +232,12 @@ protected:
     void InitializeHelp();
     void InitializeBooks();
     void ScanForBooks(wxString sPath, wxString sPattern);
+    wxWindow* CreateToolBox();
 
 
-
-    wxAuiManager          m_mgrAUI;       // wxAUI manager
-
-    lmToolsDlg*             m_pToolsDlg;
+    //controllers, special windows, and other controls
+    wxAuiManager            m_mgrAUI;           // wxAUI manager
+    wxWindow*               m_pToolBox;         //tool box window
     lmTextBookController*   m_pBookController;
     lmHtmlWindow*           m_pHtmlWin;
     lmHelpController*       m_pHelp;

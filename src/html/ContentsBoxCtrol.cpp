@@ -641,7 +641,7 @@ void lmContentsBoxCtrol::OnSize(wxSizeEvent& event)
     // we need to relayout all the cached cells
     m_cache->Clear();
 
-    event.Skip();
+    event.Skip();      //continue processing the  event
 }
 
 void lmContentsBoxCtrol::RefreshLine(size_t line)
@@ -885,7 +885,7 @@ void lmContentsBoxCtrol::OnKeyDown(wxKeyEvent& event)
             // fall through to default
 #endif
         default:
-            event.Skip();
+            event.Skip();      //continue processing the  event
             current = 0; // just to silent the stupid compiler warnings
             wxUnusedVar(current);
             return;
@@ -910,7 +910,7 @@ void lmContentsBoxCtrol::OnLeftDown(wxMouseEvent& event)
 
     if ( !PhysicalCoordsToCell(pos, cell) )
     {
-        event.Skip();
+        event.Skip();      //continue processing the  event
         return;
     }
 
@@ -918,7 +918,7 @@ void lmContentsBoxCtrol::OnLeftDown(wxMouseEvent& event)
     //{
     //    // no link was clicked, so let the listbox code handle the click (e.g.
     //    // by selecting another item in the list):
-    //    event.Skip();
+    //    event.Skip();      //continue processing the  event
     //}
 
     SetFocus();

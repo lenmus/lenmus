@@ -42,6 +42,10 @@
 #include "../app/MainFrame.h"
 extern lmMainFrame* g_pMainFrame;
 
+//access to error's logger
+#include "../app/Logger.h"
+extern lmLogger* g_pLogger;
+
 // access to global external variables
 extern bool g_fBorderOnScores;            // in TheApp.cpp
 
@@ -346,7 +350,8 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     float rTextScale = g_pMainFrame->GetHtmlWindow()->GetScale();
     m_pOptions->rScale = rTextScale * 0.9;
     int nHeight = (int)((double)m_nHeight * rTextScale);
-    wxLogMessage(_T("[lmScoreCtrolParams::CreateHtmlCell] Char height = %d, rTextScale=%.4f"),
+	g_pLogger->LogTrace(_T("lmScoreCtrolParams"),
+		_T("[CreateHtmlCell] Char height = %d, rTextScale=%.4f"),
         g_pMainFrame->GetHtmlWindow()->GetCharHeight(), rTextScale);
 
     // create the lmScoreCtrol

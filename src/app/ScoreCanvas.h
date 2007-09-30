@@ -38,24 +38,64 @@
 class lmScoreHighlightEvent;
 #include "../sound/SoundEvents.h"
 
-
 class lmScoreView;
+class lmScoreDocument;
 
-class lmScoreCanvas : public wxWindow
+
+//Abstract class. All controllers must derive from it
+class lmController : public wxWindow
 {
+   DECLARE_ABSTRACT_CLASS(lmController)
+
+public:
+    lmController(wxWindow *pParent, lmScoreView *pView, lmScoreDocument* pDoc,
+				 wxColor colorBg, wxWindowID id = wxID_ANY,
+				 const wxPoint& pos = wxDefaultPosition,
+				 const wxSize& size = wxDefaultSize, long style = 0);
+	virtual ~lmController() {}
+
+	//commands without Do/Undo support
+	virtual void PlayScore() {}
+    virtual void StopPlaying(bool fWait=false) {}
+    virtual void PausePlaying() {}
+
+	// commands with Do/Undo support
+	virtual void MoveObject(lmScoreObj* pSO, const lmUPoint& uPos) {}
+	virtual void SelectObject(lmScoreObj* pSO) {}
+
+private:
+    //wxView*         m_pView;        //the associated view
+
+    //DECLARE_EVENT_TABLE()
+};
+
+
+
+class lmScoreCanvas : public lmController
+{
+	DECLARE_CLASS(lmScoreCanvas)
+
 public:
 
     // constructors and destructor
-    lmScoreCanvas(lmScoreView *v, wxWindow *parent, const wxPoint& pos,
-                  const wxSize& size, long style, wxColor colorBg);
+    lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmScoreDocument* pDoc, 
+                  const wxPoint& pos, const wxSize& size, long style, wxColor colorBg);
     ~lmScoreCanvas();
 
     // event handlers
-    //virtual void OnDraw(wxDC& dc);
     void OnPaint(wxPaintEvent &WXUNUSED(event));
     void OnMouseEvent(wxMouseEvent& event);
     void OnEraseBackground(wxEraseEvent& event);
     void OnVisualHighlight(lmScoreHighlightEvent& event);
+
+	//commands without Do/Undo support
+    void PlayScore();
+    void StopPlaying(bool fWait=false);
+    void PausePlaying();
+
+	// commands with Do/Undo support
+	void MoveObject(lmScoreObj* pSO, const lmUPoint& uPos);
+	void SelectObject(lmScoreObj* pSO);
 
 
 private:
@@ -65,18 +105,14 @@ private:
 
 
 private:
-    lmScoreView*    m_pView;        // owner view
-    wxWindow*       m_pOwner;       // parent window
-    wxColour        m_colorBg;      // colour for background
+    lmScoreView*        m_pView;        //owner view
+    wxWindow*           m_pOwner;       //parent window
+    lmScoreDocument*    m_pDoc;         //the document rendered by the view
+
+    wxColour        m_colorBg;      //colour for background
 
     DECLARE_EVENT_TABLE()
 };
-
-// Dragging states
-#define DRAG_NONE     0
-#define DRAG_START    1
-#define DRAG_DRAGGING 2
-
 
 
 #endif  // _SCORECANVAS_H
