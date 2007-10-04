@@ -63,10 +63,14 @@ public:
 	virtual void MoveObject(lmScoreObj* pSO, const lmUPoint& uPos) {}
 	virtual void SelectObject(lmScoreObj* pSO) {}
 
+    // event handlers
+    virtual void OnKeyPress(wxKeyEvent& event) { event.Skip(); }
+
+
 private:
     //wxView*         m_pView;        //the associated view
 
-    //DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 
@@ -87,6 +91,7 @@ public:
     void OnMouseEvent(wxMouseEvent& event);
     void OnEraseBackground(wxEraseEvent& event);
     void OnVisualHighlight(lmScoreHighlightEvent& event);
+	void OnKeyPress(wxKeyEvent& event);
 
 	//commands without Do/Undo support
     void PlayScore();

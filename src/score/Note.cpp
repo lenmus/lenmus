@@ -1596,6 +1596,12 @@ wxString lmNote::Dump()
         }
     }
 
+	//positioning information
+	lmURect rect = GetSelRect();
+	sDump += wxString::Format(_T("\n                    SelRect=(%.2f, %.2f, %.2f, %.2f)"),
+		rect.GetLeft(), rect.GetTop(), rect.GetRight(), rect.GetBottom() );
+    sDump += _T("\n");
+
     return sDump;
 
 }

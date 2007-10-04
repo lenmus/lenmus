@@ -83,7 +83,7 @@ lmContext* lmBarline::GetContext(int nStaff)
 // For portability it is necessary to implement dragging by means of bitmaps and wxDragImage
 wxBitmap* lmBarline::GetBitmap(double rScale)
 {
-    //create a lmPaper associated to the screen DC for creting the drag bitmap
+    //create a lmPaper associated to the screen DC for creating the drag bitmap
     lmPaper oPaper;
 
     // Get size of barline, in logical units

@@ -467,35 +467,32 @@ int lmVStaff::GetNumMeasures()
     return m_cStaffObjs.GetNumMeasures();
 }
 
-void lmVStaff::DrawStaffLines(bool fMeasuring, lmPaper* pPaper, lmLUnits xFrom, lmLUnits xTo)
+void lmVStaff::DrawStaffLines(lmPaper* pPaper,
+                              lmLUnits xFrom, lmLUnits xTo,
+                              lmLUnits* pyLinTop, lmLUnits* pyLinBottom)
 {
     // Draw all staff lines of this lmVStaff and store their sizes and positions
-
-    if (fMeasuring) return;
 
     if (GetOptionBool(_T("StaffLines.Hide")) ) return;
 
 
-    lmLUnits xRight, yCur;
+    lmLUnits yCur;
 
     ////DEBUG: draw top border of lmVStaff region
-    //m_xLeft = pPaper->GetLeftMarginXPos();
-    //xRight = pPaper->GetRightMarginXPos();
+    //xFrom = pPaper->GetLeftMarginXPos();
+    //xTo = pPaper->GetRightMarginXPos();
     //yCur = pPaper->GetCursorY();
-    //pPaper->SketchLine(m_xLeft, yCur-1, xRight, yCur-1, *wxRED);
+    //pPaper->SketchLine(xFrom, yCur-1, xTo, yCur-1, *wxRED);
     ////-----------------------------------------
 
 
     //Set left position and lenght of lines, and save these values
-    m_xLeft = xFrom;
-    xRight = xTo;
-    m_dxLin = xRight - m_xLeft;            //lenght of staff lines
-
     yCur = pPaper->GetCursorY() + m_topMargin;
     m_yLinTop = yCur;              //save y coord. for first line start point
+    *pyLinTop = yCur;
 
     ////DEBUG: draw top border of first lmStaff region
-    //pPaper->SketchLine(m_xLeft, yCur-1, xRight, yCur-1, *wxCYAN);
+    //pPaper->SketchLine(xFrom, yCur-1, xTo, yCur-1, *wxCYAN);
     ////-----------------------------------------
 
     //iterate over the collection of Staves (lmStaff Objects)
@@ -505,9 +502,12 @@ void lmVStaff::DrawStaffLines(bool fMeasuring, lmPaper* pPaper, lmLUnits xFrom, 
         //draw one staff
         for (int iL = 1; iL <= pStaff->GetNumLines(); iL++ ) {
             lmLUnits nStaffLineWidth = pStaff->GetLineThick();
-            pPaper->SolidLine(m_xLeft, yCur, xRight, yCur,
+            pPaper->SolidLine(xFrom, yCur, xTo, yCur,
                                nStaffLineWidth, eEdgeNormal, *wxBLACK);
-            m_yLinBottom = yCur;                        //save line position
+            m_yLinBottom = yCur;  
+            *pyLinBottom = yCur;
+
+            //save line position
             yCur = yCur + pStaff->GetLineSpacing();
         }
         yCur = yCur - pStaff->GetLineSpacing() + pStaff->GetAfterSpace();
@@ -516,7 +516,6 @@ void lmVStaff::DrawStaffLines(bool fMeasuring, lmPaper* pPaper, lmLUnits xFrom, 
         pNode = pNode->GetNext();
         pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
     }
-
 }
 
 void lmVStaff::SetUpFonts(lmPaper* pPaper)
@@ -709,17 +708,11 @@ wxString lmVStaff::SourceXML()
 
 }
 
-//void lmVStaff::Get GetXStartOfStaff() As Long
-//    GetXStartOfStaff = m_xLeft
-//}
-//
-//void lmVStaff::Get GetXInicioCompas() As Long
-//    GetXInicioCompas = m_xInicioCompas
-//}
-
 // the next two methods are mainly used for drawing the barlines. For that purpose it is necessary
 // to know the y coordinate of the top most upper line of first staff and the bottom most lower
 // line of the last staff.
+
+//TODO: This methods must be moved to lmBoxSystem / lmBoxSlice
 
 lmLUnits lmVStaff::GetYTop()
 {
@@ -730,10 +723,6 @@ lmLUnits lmVStaff::GetYBottom()
 {
     return m_yLinBottom;
 }
-
-//void lmVStaff::Get Largo() As Long
-//    Largo = m_dxLin
-//}
 
 lmLUnits lmVStaff::GetVStaffHeight()
 {

@@ -73,11 +73,27 @@ void lmBoxPage::Render(lmScore* pScore, lmPaper* pPaper)
     int i;
     lmBoxSystem* pBoxSystem;
     //loop to render the systems in this page
-    for(i=0, iSystem = m_nFirstSystem; iSystem <= m_nLastSystem; iSystem++, i++) {
+    for(i=0, iSystem = m_nFirstSystem; iSystem <= m_nLastSystem; iSystem++, i++)
+    {
         pBoxSystem = m_aSystems.Item(i);
         pBoxSystem->Render(iSystem, pScore, pPaper);
     }
 
 }
 
+bool lmBoxPage::FindStaffAtPosition(lmUPoint& pointL)
+{
+    //loop to look up in the systems
+    int iSystem;                //number of system in process
+    int i;
+    lmBoxSystem* pBoxSystem;
+    //loop to render the systems in this page
+    for(i=0, iSystem = m_nFirstSystem; iSystem <= m_nLastSystem; iSystem++, i++)
+    {
+        pBoxSystem = m_aSystems.Item(i);
+        if (pBoxSystem->FindStaffAtPosition(pointL))
+            return true;    //found
+    }
+    return false;
+}
 

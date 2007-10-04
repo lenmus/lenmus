@@ -51,7 +51,7 @@ extern lmMainFrame* g_pMainFrame;
 BEGIN_EVENT_TABLE(lmEditFrame, lmDocMDIChildFrame)
 	EVT_SIZE		(lmEditFrame::OnSize)
 	EVT_CLOSE		(lmEditFrame::OnClose)
-
+	EVT_CHAR        (lmEditFrame::OnKeyPress) 
 END_EVENT_TABLE()
 
 
@@ -96,5 +96,11 @@ void lmEditFrame::OnChildFrameActivated()
 {
 	//this frame is now the active frame. Inform main frame.
 	g_pMainFrame->OnActiveViewChanged(this);
+}
+
+void lmEditFrame::OnKeyPress(wxKeyEvent& event)
+{
+    //route event to the controller
+    m_pView->GetController()->OnKeyPress(event);
 }
 

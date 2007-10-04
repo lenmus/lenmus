@@ -98,7 +98,8 @@ public:
     int GetNumMeasures();
 
     // rendering methods
-    void DrawStaffLines(bool fMeasuring, lmPaper* pPaper, lmLUnits xFrom, lmLUnits xTo);
+    void DrawStaffLines(lmPaper* pPaper, lmLUnits xFrom, lmLUnits xTo,
+                        lmLUnits* pyLinTop, lmLUnits* pyLinBottom);
     void DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPaper* pPaper);
     void NewLine(lmPaper* pPaper);
     lmLUnits GetVStaffHeight();
@@ -112,7 +113,6 @@ public:
     lmLUnits TenthsToLogical(lmTenths nTenths, int nStaff);
     lmStaff* GetStaff(int nStaff);
     lmLUnits GetStaffOffset(int nStaff);
-    lmLUnits GetXStartOfStaff() { return m_xLeft; }
     lmLUnits GetYTop();
     lmLUnits GetYBottom();
 
@@ -166,11 +166,9 @@ private:
     StaffList           m_cStaves;      //list of Staves (lmStaff objects) that form this lmVStaff
     wxStaffListNode*    m_pStaffNode;   //for navigation
 
-    //to store positions and sizes of Staves
-    lmLUnits    m_xLeft;           //X coord.: start of staff lines
+    //to draw barlines, from first staff to last staff
     lmLUnits    m_yLinTop;         //Y coord. of first line (line 5, first staff)
     lmLUnits    m_yLinBottom;      //Y coord. of last line (line 1, last staff)
-    lmLUnits    m_dxLin;           //length of lines
 
     lmLUnits    m_leftMargin;      // lmVStaff margins (logical units)
     lmLUnits    m_topMargin;

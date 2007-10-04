@@ -73,6 +73,7 @@ lmStaffObj* lmStaffObjIterator::GetCurrent()
 void lmStaffObjIterator::AdvanceToMeasure(int nMeasure)
 {
     // advance cursor to first lmStaffObj in measure number nMeasure (1..n)
+	if (nMeasure > m_pColStaffobjs->GetNumMeasures()) return;
     m_pCurrentNode = m_pColStaffobjs->GetFirstInMeasure(nMeasure);
 
 }

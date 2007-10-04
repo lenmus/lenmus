@@ -97,3 +97,16 @@ int lmBoxScore::GetNumPages()
     return (int)m_aPages.GetCount();
 }
 
+bool lmBoxScore::FindStaffAtPosition(lmUPoint& pointL)
+{
+    //loop to look up in the pages
+    int iPage;
+    lmBoxPage* pBoxPage;
+    for(iPage=0; iPage < (int)m_aPages.GetCount(); iPage++) {
+        pBoxPage = m_aPages.Item(iPage);
+        if (pBoxPage->FindStaffAtPosition(pointL))
+            return true;    //found
+    }
+    return false;
+}
+

@@ -31,6 +31,7 @@
 #endif
 
 #include "BoxSystem.h"
+#include "BoxInstrSlice.h"
 
 //access to colors
 #include "../globals/Colors.h"
@@ -47,107 +48,143 @@ lmBoxSystem::lmBoxSystem(int nNumPage)
 
 lmBoxSystem::~lmBoxSystem()
 {
+    lmBoxInstrSlice* pBIS;
+    for (int i=0; i < (int)m_InstrSlices.size(); i++)
+    {
+        pBIS = m_InstrSlices[i];
+        delete pBIS;
+    }
+    m_InstrSlices.clear();
 }
 
 void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
 {
-    //At this point paper position is not in the right place as it has been advanced
-    //during the measurement operations.
-    //This is not a problem for StaffObjs as they have stored its positioning information.
-    //But for other objects such as staff lines and the prolog, that are drawn at current
-    //paper position, this caouses incorrect positioning. Therefore, we restore here the
-    //start of system position.
+    //At this point paper position is not in the right place. Therefore, we move 
+    //to the start of system position.
     pPaper->SetCursorY( m_yPos );
 
-    int iVStaff;
-    lmInstrument *pInstr;
-    lmVStaff *pVStaff;
-
     //for each lmInstrument
-    lmLUnits xPaperPos, yPaperPos;
-    lmLUnits xStartPos = m_xPos;
-    lmLUnits xFrom;
-    for (pInstr = pScore->GetFirstInstrument(); pInstr; pInstr=pScore->GetNextInstrument())
+    for (int i=0; i < (int)m_InstrSlices.size(); i++)
     {
-        pPaper->SetCursorX( xStartPos );    //align staves in system
-
-        //draw instrument name or abbreviation
-        if (m_nNumPage == 1 && nSystem == 1) {
-            pInstr->DrawName(pPaper);
-        }
-        else {
-            pInstr->DrawAbbreviation(pPaper);
-        }
-
-        //for each lmVStaff
-        xFrom = m_xPos + m_nIndent;
-        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
-        {
-            pVStaff = pInstr->GetVStaff(iVStaff);
-
-             //if it is not first VStaff, set paper position for this VStaff 
-            if (iVStaff != 1) {
-                if (pVStaff->IsOverlayered()) {
-                    //overlayered: restore paper position to previous VStaff position
-                    pPaper->SetCursorX( xPaperPos );
-                    pPaper->SetCursorY( yPaperPos );
-                }
-            }
-
-            //save this VStaff paper position
-            xPaperPos = pPaper->GetCursorX();
-            yPaperPos = pPaper->GetCursorY();
-
-            //to properly draw barlines it is necessary that staff lines are already drawn.
-            //so, start the drawing by the staff lines
-            pVStaff->DrawStaffLines(DO_DRAW, pPaper, xFrom, m_xFinal);
-
-            //now draw the prolog, except if this is the first system
-            int nLastMeasure = pVStaff->GetNumMeasures();
-            if (nSystem != 1)
-            {
-                if (m_nFirstMeasure <= nLastMeasure) {
-                    pVStaff->DrawProlog(DO_DRAW, m_nFirstMeasure, false, pPaper);
-                }
-                else
-                {
-                    // we are drawing an empty system after final barline. Use
-                    // for prolog the last measure if it exists!
-                    if (nLastMeasure != 0)
-                        pVStaff->DrawProlog(DO_DRAW, nLastMeasure, false, pPaper);
-                }
-            }
-
-            //draw the measures in this system
-            for (int i = m_nFirstMeasure; i < m_nFirstMeasure + m_nNumMeasures; i++) {
-                RenderMeasure(pVStaff, i, pPaper);
-            }
-
-            //advance paper in height off this lmVStaff
-            pVStaff->NewLine(pPaper);
-            //! @todo advance inter-staff distance
-
-        } // process next VStaff
-
-    } // process next Instrument
-
+        m_yBottomLeftLine = m_InstrSlices[i]->Render(pPaper, m_xPos, m_nNumPage, nSystem);
+    }
 
     //Draw the initial barline that joins all staffs in a system
-    if (pScore->GetOptionBool(_T("Staff.DrawLeftBarline")) ) {
-        pInstr = pScore->GetFirstInstrument();
-        pVStaff = pInstr->GetVStaff(1);                    // first lmVStaff of this system
-        lmLUnits xPos = pVStaff->GetXStartOfStaff();
-        lmLUnits yTop = pVStaff->GetYTop();
-        pInstr = pScore->GetLastInstrument();
-        pVStaff = pInstr->GetVStaff(pInstr->GetNumStaves());    //last staff of this system
-        lmLUnits yBottom = pVStaff->GetYBottom();
-
+    if (pScore->GetOptionBool(_T("Staff.DrawLeftBarline")) )
+    {
         lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
-        pPaper->SolidLine(xPos, yTop, xPos, yBottom, uLineThickness, eEdgeNormal, *wxBLACK);
+        pPaper->SolidLine(m_xLeftLine, m_yTopLeftLine,
+                          m_xLeftLine, m_yBottomLeftLine,
+                          uLineThickness, eEdgeNormal, *wxBLACK);
     }
 
 }
 
+//void lmBoxSystem::RenderOld(int nSystem, lmScore* pScore, lmPaper* pPaper)
+//{
+//    //At this point paper position is not in the right place as it has been advanced
+//    //during the measurement operations.
+//    //This is not a problem for StaffObjs as they have stored its positioning information.
+//    //But for other objects such as staff lines and the prolog, that are drawn at current
+//    //paper position, this causes incorrect positioning. Therefore, we restore here the
+//    //start of system position.
+//    pPaper->SetCursorY( m_yPos );
+//
+//    int iVStaff;
+//    lmInstrument *pInstr;
+//    lmVStaff *pVStaff;
+//
+//    //for each lmInstrument
+//    lmLUnits xPaperPos, yPaperPos;
+//    lmLUnits xStartPos = m_xPos;
+//    lmLUnits xFrom;
+//    bool fFirst = true;
+//    for (pInstr = pScore->GetFirstInstrument(); pInstr; pInstr=pScore->GetNextInstrument())
+//    {
+//        pPaper->SetCursorX( xStartPos );    //align staves in system
+//
+//        //draw instrument name or abbreviation
+//        if (m_nNumPage == 1 && nSystem == 1) {
+//            pInstr->DrawName(pPaper);
+//        }
+//        else {
+//            pInstr->DrawAbbreviation(pPaper);
+//        }
+//
+//        //for each lmVStaff
+//        xFrom = m_xPos + m_nIndent;
+//        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
+//        {
+//            pVStaff = pInstr->GetVStaff(iVStaff);
+//
+//             //if it is not first VStaff, set paper position for this VStaff 
+//            if (iVStaff != 1) {
+//                if (pVStaff->IsOverlayered()) {
+//                    //overlayered: restore paper position to previous VStaff position
+//                    pPaper->SetCursorX( xPaperPos );
+//                    pPaper->SetCursorY( yPaperPos );
+//                }
+//            }
+//
+//            //save this VStaff paper position
+//            xPaperPos = pPaper->GetCursorX();
+//            yPaperPos = pPaper->GetCursorY();
+//
+//            //to properly draw barlines it is necessary that staff lines are already drawn.
+//            //so, start the drawing by the staff lines
+//            lmLUnits yTopLeftLine;
+//            pVStaff->DrawStaffLines(pPaper, xFrom, m_xFinal, &yTopLeftLine, &m_yBottomLeftLine);
+//            m_posStartStaff.push_back( lmUPoint(xFrom, yPaperPos) );
+//            m_posEndStaff.push_back( lmUPoint(m_xFinal, pPaper->GetCursorY()) );
+//
+//            //save system start position
+//            if (fFirst) {
+//                m_xLeftLine = xFrom;
+//                m_yTopLeftLine = yTopLeftLine;
+//                fFirst = false;
+//            }
+//            
+//
+//            //now draw the prolog, except if this is the first system
+//            int nLastMeasure = pVStaff->GetNumMeasures();
+//            if (nSystem != 1)
+//            {
+//                if (m_nFirstMeasure <= nLastMeasure) {
+//                    pVStaff->DrawProlog(DO_DRAW, m_nFirstMeasure, false, pPaper);
+//                }
+//                else
+//                {
+//                    // we are drawing an empty system after final barline. Use
+//                    // for prolog the last measure if it exists!
+//                    if (nLastMeasure != 0)
+//                        pVStaff->DrawProlog(DO_DRAW, nLastMeasure, false, pPaper);
+//                }
+//            }
+//
+//            //draw the measures in this system
+//            for (int i = m_nFirstMeasure; i < m_nFirstMeasure + m_nNumMeasures; i++) {
+//                RenderMeasure(pVStaff, i, pPaper);
+//            }
+//
+//            //advance paper in height off this lmVStaff
+//            pVStaff->NewLine(pPaper);
+//            //! @todo advance inter-staff distance
+//
+//        } // process next VStaff
+//
+//    } // process next Instrument
+//
+//
+//    //Draw the initial barline that joins all staffs in a system
+//    if (pScore->GetOptionBool(_T("Staff.DrawLeftBarline")) )
+//    {
+//        lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
+//        pPaper->SolidLine(m_xLeftLine, m_yTopLeftLine,
+//                          m_xLeftLine, m_yBottomLeftLine,
+//                          uLineThickness, eEdgeNormal, *wxBLACK);
+//    }
+//
+//}
 
 void lmBoxSystem::RenderMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper)
 {
@@ -232,3 +269,49 @@ void lmBoxSystem::RenderMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper
 
 }
 
+void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)
+{ 
+    //Now we have all the information about the system. Let's create the collection
+    //of BoxSlices
+
+    m_nNumMeasures = nMeasures; 
+
+    //Build the slices
+    int iInstr = 1;
+	int nLastMeasure = m_nFirstMeasure + m_nNumMeasures - 1;
+    for (lmInstrument* pInstr = pScore->GetFirstInstrument();
+         pInstr; 
+         pInstr = pScore->GetNextInstrument(), iInstr++)
+    {
+            m_InstrSlices.push_back(
+                    new lmBoxInstrSlice(this, m_nFirstMeasure, nLastMeasure, 
+                                        pInstr, iInstr) );
+
+    }
+
+}
+
+bool lmBoxSystem::FindStaffAtPosition(lmUPoint& pointL)
+{
+    ////loop to look up in the systems
+    //int iSystem;                //number of system in process
+    //int i;
+    //lmBoxSystem* pBoxSystem;
+    ////loop to render the systems in this page
+    //for(i=0, iSystem = m_nFirstSystem; iSystem <= m_nLastSystem; iSystem++, i++)
+    //{
+    //    pBoxSystem = m_aSystems.Item(i);
+    //    if (pBoxSystem->FindStaffAtPosition(pointL))
+    //        return true;    //found
+    //}
+    //return false;
+
+    lmURect rectL(m_xLeftLine, m_yTopLeftLine, 
+                  m_xFinal - m_xLeftLine, m_yBottomLeftLine - m_yTopLeftLine);
+    if (rectL.Contains(pointL)) {
+        wxMessageBox( wxString::Format( _T("Page %d, between measure %d and %d"), 
+            m_nNumPage, m_nFirstMeasure, m_nFirstMeasure+m_nNumMeasures-1) );
+        return true;
+    }
+    return false;
+}

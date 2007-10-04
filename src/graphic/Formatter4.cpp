@@ -166,7 +166,7 @@ lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
             }
             delete pIT;
 
-            pBoxSystem->SetNumMeasures(--nAbsMeasure);
+            pBoxSystem->SetNumMeasures(--nAbsMeasure, m_pScore);
             pBoxSystem->SetFinalX( pPaper->GetCursorX() + nSpaceAfterBarline );
             pBoxSystem->SetIndent(0);
 
@@ -467,7 +467,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         //dbg ------------------------------------------------------------------------------
 
         //Store information about this system
-        pBoxSystem->SetNumMeasures(m_nMeasuresInSystem);
+        pBoxSystem->SetNumMeasures(m_nMeasuresInSystem, m_pScore);
         if (fThisIsLastSystem && fStopStaffLinesAtFinalBarline) {
             //this is the last system and it has been requested to stop staff lines
             //in last measure. So, set final x so staff lines go to final bar line
@@ -503,8 +503,6 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     //If this flag is false and option 'Score.FillPageWithEmptyStaves' is true it means
     //that the user has requested to fill the remaining page space with empty staves.
     //Let's proceed to do it.
-#ifdef __WXDEBUG__
-
     bool fFillPageWithEmptyStaves = m_pScore->GetOptionBool(_T("Score.FillPageWithEmptyStaves"));
     if (!fStopStaffLinesAtFinalBarline && fFillPageWithEmptyStaves)
     {
@@ -531,7 +529,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             pBoxSystem->SetIndent(((nSystem == 1) ? nFirstSystemIndent : nOtherSystemIndent ));
 
             //Store information about this system
-            pBoxSystem->SetNumMeasures(0);
+            pBoxSystem->SetNumMeasures(0, m_pScore);
             //staff lines go to the rigth margin
             pBoxSystem->SetFinalX( pPaper->GetRightMarginXPos() );
 
@@ -546,7 +544,6 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             nSystem++;
         }
     }
-#endif
 
     return pBoxScore;
 
@@ -604,23 +601,22 @@ lmLUnits lmFormatter4::ComputeSystemHeight(lmPaper* pPaper)
 lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem,
                                         lmPaper* pPaper, bool* pNewSystem)
 {
-    /*
-     For each instrument and staff it is computed how many measures could fit in the system.
-     All measurements are stored in the global object m_oTimepos[nRelMeasure], so that other
-     procedures can take decisions about the final number of measures to include and for
-     repositioning the StaffObjs.
-
-     Input parameters:
-       nAbsMeasure - Measure number (absolute) to size
-       nRelMeasure - Measure number (relative) to size
-       nSystem - System number
-
-     Returns:
-       - The size of this measure column.
-       - positioning information for this measure column is stored in m_oTimepos[nRelMeasure]
-       - Updates flag pointed by pNewSystem and sets it to true if newSystem tag found
-            in this measure
-    */
+    // For each instrument and staff it is computed how many measures could fit in the system.
+    // All measurements are stored in the global object m_oTimepos[nRelMeasure], so that other
+    // procedures can take decisions about the final number of measures to include and for
+    // repositioning the StaffObjs.
+    //
+    // Input parameters:
+    //   nAbsMeasure - Measure number (absolute) to size
+    //   nRelMeasure - Measure number (relative) to size
+    //   nSystem - System number
+    //
+    // Returns:
+    //   - The size of this measure column.
+    //   - positioning information for this measure column is stored in m_oTimepos[nRelMeasure]
+    //   - Updates flag pointed by pNewSystem and sets it to true if newSystem tag found
+    //        in this measure
+    //
 
     int iVStaff;
     lmInstrument *pInstr;

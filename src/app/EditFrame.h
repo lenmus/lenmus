@@ -47,6 +47,7 @@ public:
     // event handlers
     void OnSize(wxSizeEvent& WXUNUSED(event));
     void OnClose(wxCloseEvent& event);
+    void OnKeyPress(wxKeyEvent& event);
 
 	double GetActiveViewScale();
 	bool SetActiveViewScale(double rScale);

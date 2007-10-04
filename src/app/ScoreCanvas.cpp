@@ -54,9 +54,9 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 //-------------------------------------------------------------------------------------
 
 
-//BEGIN_EVENT_TABLE(lmController, wxEvtHandler)
-//    EVT_BUTTON      (wxID_ANY, lmController::OnButtonClicked)
-//END_EVENT_TABLE()
+BEGIN_EVENT_TABLE(lmController, wxEvtHandler)
+	EVT_CHAR(lmController::OnKeyPress) 
+END_EVENT_TABLE()
 
 IMPLEMENT_ABSTRACT_CLASS(lmController, wxWindow)
 
@@ -67,7 +67,6 @@ lmController::lmController(wxWindow *pParent, lmScoreView *pView, lmScoreDocumen
         : wxWindow(pParent, -1, pos, size, style)
 {
 }
-
 
 
 //-------------------------------------------------------------------------------------
@@ -200,6 +199,35 @@ void lmScoreCanvas::SelectObject(lmScoreObj* pSO)
 	pCP->Submit(new lmScoreCommand(_T("Select object"),
 								   lmScoreCommand::lmCMD_SelectObject, m_pDoc, pSO));
 }
+
+void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)
+{
+    wxLogMessage(_T("lmScoreCanvas::OnKeyPress"));
+    int nKeyCode = event.GetKeyCode();
+    switch (nKeyCode)
+    {
+        case WXK_UP:
+	        m_pView->CursorUp();
+            break;
+
+        case WXK_DOWN:
+	        m_pView->CursorDown();
+            break;
+
+        case WXK_LEFT:
+	        m_pView->CursorLeft();
+            break;
+
+        case WXK_RIGHT:
+	        m_pView->CursorRight();
+            break;
+
+        default:
+            event.Skip();
+    }
+}
+
+
 
 /*
 void wxShapeCanvas::OnMouseEvent(wxMouseEvent& event)

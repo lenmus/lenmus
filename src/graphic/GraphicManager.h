@@ -63,19 +63,25 @@ public:
     ~lmGraphicManager();
 
     void Create(lmScore* pScore, lmPaper* pPaper);
+
+    //renderization
     void Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits paperHeight, 
                  double rScale, lmPaper* pPaper, int nOptions=0);
 
     void Layout();                          //measure phase
     void Render();                          //drawing phase
     wxBitmap* Render(bool fUseBitmaps, int nPage);      //render page 1..n
-    int GetNumPages();
 
+    //bitmaps export
     void ExportAsImage(wxString& sFilename, wxString& sExt, int nImgType);
     void BitmapsToFile(wxString& sFilename, wxString& sExt, int nImgType);
 
     // highlighting
     void PrepareForHighlight();
+
+    //access
+    int GetNumPages();
+    lmBoxScore* GetBoxScore() const { return m_pBoxScore; }
 
 
 private:

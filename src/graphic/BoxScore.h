@@ -61,8 +61,10 @@ public:
     void Render(lmPaper* pPaper);                   // do the drawing phase
     void RenderPage(int nPage, lmPaper* pPaper);        // do the drawing phase
 
-    lmBoxPage* GetCurrentPage() { return m_aPages.Item( m_aPages.GetCount() - 1); }
+    inline lmBoxPage* GetCurrentPage() const { return m_aPages.Item( m_aPages.GetCount() - 1); }
+    inline lmBoxPage* GetPage(int nPage) const { return m_aPages.Item( nPage - 1); }
     int GetNumPages();
+    bool FindStaffAtPosition(lmUPoint& pointL);
 
 
 private:

@@ -19,11 +19,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __BOXPAGE_H__        //to avoid nested includes
-#define __BOXPAGE_H__
+#ifndef __LM_BOXVSTAFFSLICE_H__        //to avoid nested includes
+#define __LM_BOXVSTAFFSLICE_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "BoxPage.cpp"
+#pragma interface "BoxVStaffSlice.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -37,40 +37,41 @@
 #include "wx/wx.h"
 #endif
 
-#include "BoxSystem.h"
+#include "vector"
 
-// to manage systems let's define an array to contain pointers to systems
-#include "wx/dynarray.h"
-WX_DEFINE_ARRAY(lmBoxSystem*, ArrayBoxSystems);
+#include "../score/Score.h"
+#include "BoxInstrSlice.h"
 
+//
+// Class lmBoxVStaffSlice represents a part of the VStaff of an instrument. 
+//
 
-class lmBoxPage
+class lmBoxVStaffSlice
 {
 public:
-    lmBoxPage(int nNumPage);
-    ~lmBoxPage();
-    inline int GetFirstSystem() const { return m_nFirstSystem; }
-    inline int GetLastSystem() const { return m_nLastSystem; }
+    lmBoxVStaffSlice(lmBoxInstrSlice* pParent, int nFirstMeasure, int nLastMeasure,
+                     int nVStaff, lmVStaff* pVStaff);
+    ~lmBoxVStaffSlice();
 
-    bool FindStaffAtPosition(lmUPoint& pointL);
-    lmBoxSystem* AddSystem(int nSystem);
-    void Render(lmScore* pScore, lmPaper* pPaper);
+    lmLUnits Render(lmPaper* pPaper, int nNumPage, int nSystem);
 
 private:
-    int     m_nNumPage;         //this page number (1..n)
-    int     m_nFirstSystem;
-    int     m_nLastSystem;
+    void RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage);
 
-    // a lmBoxPage is, mainly, a collection of lmBoxSystems
-    ArrayBoxSystems  m_aSystems;       //array of ptrs to systems that form this page
+    lmBoxInstrSlice*    m_pInstrSlice;      //paren instrumet slice
+    int                 m_nFirstMeasure;    //number of first measure in this slice
+    int                 m_nLastMeasure;     //number of last measure in this slice
+    int                 m_nVStaff;
+    lmVStaff*           m_pVStaff;          //VStaff to which this slice belongs
 
-    //page origin
-    lmUPoint    m_pageOrgL;
-
+    //start and end points of the initial barline that joins all staves in a system
+    lmLUnits    m_xLeftLine;
+    lmLUnits    m_yTopLeftLine;
+    lmLUnits    m_yBottomLeftLine;
 
 };
 
 
 
-#endif  // __BOXPAGE_H__
+#endif  // __LM_BOXVSTAFFSLICE_H__
 

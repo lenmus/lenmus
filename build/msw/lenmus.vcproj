@@ -997,6 +997,12 @@
 				RelativePath="..\..\src\graphic\AggDrawer.h">
 			</File>
 			<File
+				RelativePath="..\..\src\graphic\BoxInstrSlice.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\BoxInstrSlice.h">
+			</File>
+			<File
 				RelativePath="..\..\src\graphic\BoxPage.cpp">
 			</File>
 			<File
@@ -1013,6 +1019,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\BoxSystem.h">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\BoxVStaffSlice.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\BoxVStaffSlice.h">
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\Drawer.cpp">
