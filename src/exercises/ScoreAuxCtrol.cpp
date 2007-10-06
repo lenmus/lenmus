@@ -365,6 +365,11 @@ void lmScoreAuxCtrol::OnVisualHighlight(lmScoreHighlightEvent& event)
         return;
     }
 
+    if (nHighlightType == eRemoveAllHighlight) {
+		m_pScore->RemoveAllHighlight((wxWindow*)this);
+		return;
+    }
+
     //prepare paper DC
     wxClientDC dc(this);
     dc.SetMapMode(lmDC_MODE);

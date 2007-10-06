@@ -30,7 +30,9 @@
 #pragma hdrstop
 #endif
 
+#include "BoxPage.h"
 #include "BoxSystem.h"
+#include "BoxSlice.h"
 #include "BoxInstrSlice.h"
 
 //access to colors
@@ -39,10 +41,11 @@ extern lmColors* g_pColors;
 
 //-----------------------------------------------------------------------------------------
 
-lmBoxSystem::lmBoxSystem(int nNumPage)
+lmBoxSystem::lmBoxSystem(lmBoxPage* pParent, int nNumPage)
 {
     m_nNumMeasures = 0;
     m_nNumPage = nNumPage;
+    m_pBPage = pParent;
 }
 
 
@@ -55,6 +58,15 @@ lmBoxSystem::~lmBoxSystem()
         delete pBIS;
     }
     m_InstrSlices.clear();
+
+    //delete BoxSlices
+    lmBoxSlice* pBSlice;
+    for (int i=0; i < (int)m_Slices.size(); i++)
+    {
+        pBSlice = m_Slices[i];
+        delete pBSlice;
+    }
+    m_Slices.clear();
 }
 
 void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
@@ -78,113 +90,15 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
                           uLineThickness, eEdgeNormal, *wxBLACK);
     }
 
-}
+    ////DEBUG: draw a border around system region -------------------------------------
+    ////pPaper->SketchLine(m_xLeftLine, m_yTopLeftLine,
+    ////              m_xFinal, m_yBottomLeftLine, *wxRED);
+    //pPaper->SketchRectangle(lmUPoint(m_xLeftLine, m_yTopLeftLine),
+    //                        lmUSize(m_xFinal - m_xLeftLine, m_yBottomLeftLine - m_yTopLeftLine),
+    //                        *wxRED);
+    ////-------------------------------------------------------------------------------
 
-//void lmBoxSystem::RenderOld(int nSystem, lmScore* pScore, lmPaper* pPaper)
-//{
-//    //At this point paper position is not in the right place as it has been advanced
-//    //during the measurement operations.
-//    //This is not a problem for StaffObjs as they have stored its positioning information.
-//    //But for other objects such as staff lines and the prolog, that are drawn at current
-//    //paper position, this causes incorrect positioning. Therefore, we restore here the
-//    //start of system position.
-//    pPaper->SetCursorY( m_yPos );
-//
-//    int iVStaff;
-//    lmInstrument *pInstr;
-//    lmVStaff *pVStaff;
-//
-//    //for each lmInstrument
-//    lmLUnits xPaperPos, yPaperPos;
-//    lmLUnits xStartPos = m_xPos;
-//    lmLUnits xFrom;
-//    bool fFirst = true;
-//    for (pInstr = pScore->GetFirstInstrument(); pInstr; pInstr=pScore->GetNextInstrument())
-//    {
-//        pPaper->SetCursorX( xStartPos );    //align staves in system
-//
-//        //draw instrument name or abbreviation
-//        if (m_nNumPage == 1 && nSystem == 1) {
-//            pInstr->DrawName(pPaper);
-//        }
-//        else {
-//            pInstr->DrawAbbreviation(pPaper);
-//        }
-//
-//        //for each lmVStaff
-//        xFrom = m_xPos + m_nIndent;
-//        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
-//        {
-//            pVStaff = pInstr->GetVStaff(iVStaff);
-//
-//             //if it is not first VStaff, set paper position for this VStaff 
-//            if (iVStaff != 1) {
-//                if (pVStaff->IsOverlayered()) {
-//                    //overlayered: restore paper position to previous VStaff position
-//                    pPaper->SetCursorX( xPaperPos );
-//                    pPaper->SetCursorY( yPaperPos );
-//                }
-//            }
-//
-//            //save this VStaff paper position
-//            xPaperPos = pPaper->GetCursorX();
-//            yPaperPos = pPaper->GetCursorY();
-//
-//            //to properly draw barlines it is necessary that staff lines are already drawn.
-//            //so, start the drawing by the staff lines
-//            lmLUnits yTopLeftLine;
-//            pVStaff->DrawStaffLines(pPaper, xFrom, m_xFinal, &yTopLeftLine, &m_yBottomLeftLine);
-//            m_posStartStaff.push_back( lmUPoint(xFrom, yPaperPos) );
-//            m_posEndStaff.push_back( lmUPoint(m_xFinal, pPaper->GetCursorY()) );
-//
-//            //save system start position
-//            if (fFirst) {
-//                m_xLeftLine = xFrom;
-//                m_yTopLeftLine = yTopLeftLine;
-//                fFirst = false;
-//            }
-//            
-//
-//            //now draw the prolog, except if this is the first system
-//            int nLastMeasure = pVStaff->GetNumMeasures();
-//            if (nSystem != 1)
-//            {
-//                if (m_nFirstMeasure <= nLastMeasure) {
-//                    pVStaff->DrawProlog(DO_DRAW, m_nFirstMeasure, false, pPaper);
-//                }
-//                else
-//                {
-//                    // we are drawing an empty system after final barline. Use
-//                    // for prolog the last measure if it exists!
-//                    if (nLastMeasure != 0)
-//                        pVStaff->DrawProlog(DO_DRAW, nLastMeasure, false, pPaper);
-//                }
-//            }
-//
-//            //draw the measures in this system
-//            for (int i = m_nFirstMeasure; i < m_nFirstMeasure + m_nNumMeasures; i++) {
-//                RenderMeasure(pVStaff, i, pPaper);
-//            }
-//
-//            //advance paper in height off this lmVStaff
-//            pVStaff->NewLine(pPaper);
-//            //! @todo advance inter-staff distance
-//
-//        } // process next VStaff
-//
-//    } // process next Instrument
-//
-//
-//    //Draw the initial barline that joins all staffs in a system
-//    if (pScore->GetOptionBool(_T("Staff.DrawLeftBarline")) )
-//    {
-//        lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
-//        pPaper->SolidLine(m_xLeftLine, m_yTopLeftLine,
-//                          m_xLeftLine, m_yBottomLeftLine,
-//                          uLineThickness, eEdgeNormal, *wxBLACK);
-//    }
-//
-//}
+}
 
 void lmBoxSystem::RenderMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper)
 {
@@ -269,6 +183,14 @@ void lmBoxSystem::RenderMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper
 
 }
 
+void lmBoxSystem::DrawSelRectangle(lmPaper* pPaper)
+{
+    //draw a border around system region -------------------------------------
+    pPaper->SketchRectangle(lmUPoint(m_xLeftLine, m_yTopLeftLine),
+                            lmUSize(m_xFinal - m_xLeftLine, m_yBottomLeftLine - m_yTopLeftLine),
+                            *wxRED);
+}
+
 void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)
 { 
     //Now we have all the information about the system. Let's create the collection
@@ -291,27 +213,32 @@ void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)
 
 }
 
-bool lmBoxSystem::FindStaffAtPosition(lmUPoint& pointL)
+lmBoxSlice* lmBoxSystem::FindStaffAtPosition(lmUPoint& pointL)
 {
-    ////loop to look up in the systems
-    //int iSystem;                //number of system in process
-    //int i;
-    //lmBoxSystem* pBoxSystem;
-    ////loop to render the systems in this page
-    //for(i=0, iSystem = m_nFirstSystem; iSystem <= m_nLastSystem; iSystem++, i++)
-    //{
-    //    pBoxSystem = m_aSystems.Item(i);
-    //    if (pBoxSystem->FindStaffAtPosition(pointL))
-    //        return true;    //found
-    //}
-    //return false;
-
     lmURect rectL(m_xLeftLine, m_yTopLeftLine, 
                   m_xFinal - m_xLeftLine, m_yBottomLeftLine - m_yTopLeftLine);
-    if (rectL.Contains(pointL)) {
-        wxMessageBox( wxString::Format( _T("Page %d, between measure %d and %d"), 
+    if (rectL.Contains(pointL))
+    {
+        //identify the measure
+        for (int iS=0; iS < (int)m_Slices.size(); iS++)
+        {
+            if (m_Slices[iS]->FindMeasureAt(pointL))
+            {
+                wxMessageBox( wxString::Format( _T("Page %d, in measure %d"), 
+                    m_nNumPage, m_nFirstMeasure+iS) );
+                return m_Slices[iS];
+            }
+        }
+        wxMessageBox( wxString::Format( _T("Page %d, measure not identified!!! Between measure %d and %d"), 
             m_nNumPage, m_nFirstMeasure, m_nFirstMeasure+m_nNumMeasures-1) );
-        return true;
+        return (lmBoxSlice*)NULL;
     }
-    return false;
+    return (lmBoxSlice*)NULL;
+}
+
+lmBoxSlice* lmBoxSystem::AddSlice(int nMeasure, lmLUnits xStart, lmLUnits xEnd)
+{
+    lmBoxSlice* pBSlice = new lmBoxSlice(this, nMeasure, xStart, xEnd);
+    m_Slices.push_back(pBSlice);
+    return pBSlice;
 }

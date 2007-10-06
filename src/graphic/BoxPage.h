@@ -37,29 +37,34 @@
 #include "wx/wx.h"
 #endif
 
+#include "BoxScore.h"
 #include "BoxSystem.h"
 
 // to manage systems let's define an array to contain pointers to systems
 #include "wx/dynarray.h"
 WX_DEFINE_ARRAY(lmBoxSystem*, ArrayBoxSystems);
 
+class lmBoxScore;
+class lmBoxSlice;
 
 class lmBoxPage
 {
 public:
-    lmBoxPage(int nNumPage);
+    lmBoxPage(lmBoxScore* pParent, int nNumPage);
     ~lmBoxPage();
     inline int GetFirstSystem() const { return m_nFirstSystem; }
     inline int GetLastSystem() const { return m_nLastSystem; }
 
-    bool FindStaffAtPosition(lmUPoint& pointL);
+    lmBoxSlice* FindStaffAtPosition(lmUPoint& pointL);
     lmBoxSystem* AddSystem(int nSystem);
     void Render(lmScore* pScore, lmPaper* pPaper);
 
+
 private:
-    int     m_nNumPage;         //this page number (1..n)
-    int     m_nFirstSystem;
-    int     m_nLastSystem;
+    lmBoxScore*     m_pBScore;      //parent score box
+    int             m_nNumPage;     //this page number (1..n)
+    int             m_nFirstSystem;
+    int             m_nLastSystem;
 
     // a lmBoxPage is, mainly, a collection of lmBoxSystems
     ArrayBoxSystems  m_aSystems;       //array of ptrs to systems that form this page

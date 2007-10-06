@@ -41,22 +41,26 @@
 
 #include "../score/Score.h"
 
+class lmBoxSlice;
+class lmBoxInstrSlice;
+class lmBoxPage;
+
 //
 // Class lmBoxSystem represents a line of music in the printed score. 
 //
 
-class lmBoxInstrSlice;
-
 class lmBoxSystem
 {
 public:
-    lmBoxSystem(int nNumPage);
+    lmBoxSystem(lmBoxPage* pParent, int nNumPage);
     ~lmBoxSystem();
 
     void SetNumMeasures(int nMeasures, lmScore* pScore);
     int GetNumMeasures() { return m_nNumMeasures; }
 
     void SetFirstMeasure(int nMeasure) { m_nFirstMeasure = nMeasure; }
+    lmBoxSlice* AddSlice(int nMeasure, lmLUnits xStart, lmLUnits xEnd);
+    inline lmBoxSlice* GetSlice(int nMeasure) const { return m_Slices[nMeasure - m_nFirstMeasure]; }
 
     void SetPosition(lmLUnits xPos, lmLUnits yPos) { m_xPos = xPos; m_yPos = yPos; }
     inline lmLUnits GetPositionX() const { return m_xPos; }
@@ -70,14 +74,19 @@ public:
     inline void SetXLeft(lmLUnits xLeft) { m_xLeftLine = xLeft; }
     inline void SetYTopLeft(lmLUnits yTop) { m_yTopLeftLine = yTop; }
     inline void SetYBottomLeft(lmLUnits yBottom) { m_yBottomLeftLine = yBottom; }
+    inline lmLUnits GetYTopLeft() { return m_yTopLeftLine; }
+    inline lmLUnits GetYBottomLeft() { return m_yBottomLeftLine; }
 
-    bool FindStaffAtPosition(lmUPoint& pointL);
+    lmBoxSlice* FindStaffAtPosition(lmUPoint& pointL);
 
     void Render(int nSystem, lmScore* pScore, lmPaper* pPaper);
+	void DrawSelRectangle(lmPaper* pPaper);
+
 
 private:
     void RenderMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper);
 
+    lmBoxPage*  m_pBPage;           //parent page
     int         m_nNumMeasures;     //number of measures that fit in this system
     int         m_nFirstMeasure;    //number of first measure
     lmLUnits    m_xPos, m_yPos;     //system position: pos to render first staff
@@ -85,8 +94,7 @@ private:
     lmLUnits    m_nIndent;          //indentation for this system
     int         m_nNumPage;         //page number (1..n) on which this system is included
 
-    std::vector<lmUPoint>   m_posStartStaff;    //staff positions: top left corner
-    std::vector<lmUPoint>   m_posEndStaff;      //staff positions: bottom right corner
+    std::vector<lmBoxSlice*>        m_Slices;   //collection of slices in this system
     std::vector<lmBoxInstrSlice*> m_InstrSlices; //collection of Instr slices in this system
 
     //start and end points of the initial barline that joins all staves in a system

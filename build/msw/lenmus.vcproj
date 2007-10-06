@@ -1015,6 +1015,12 @@
 				RelativePath="..\..\src\graphic\BoxScore.h">
 			</File>
 			<File
+				RelativePath="..\..\src\graphic\BoxSlice.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\BoxSlice.h">
+			</File>
+			<File
 				RelativePath="..\..\src\graphic\BoxSystem.cpp">
 			</File>
 			<File

@@ -18,20 +18,6 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Score.cpp
-    @brief Implementation file for class lmScore
-    @ingroup score_kernel
-*/
-//--------------------------------------------------------------------------------------------------
-/*! @class lmScore
-    @ingroup score_kernel
-
-    A score is a collection of instruments (\<parts\> in MusicXML).
-    An instrument is, normally, one VStaff, but more VStaves are posible (for what?)
-    And an VStaff is a collection of StaffObjs.
-
-*/
-//--------------------------------------------------------------------------------------------------
 
 #ifdef __GNUG__
 #pragma implementation "Score.h"
@@ -53,6 +39,7 @@
 #include "wx/list.h"
 #include "Score.h"
 #include "../app/global.h"
+#include "../sound/SoundEvents.h"
 
 // global unique variables used during score building
 lmNoteRest*    g_pLastNoteRest;
@@ -611,20 +598,26 @@ void lmScore::ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, EHighlightType nH
             break;
 
         case eRemoveAllHighlight:
-            //remove highlight from all staffobjs in m_cHighlighted list
-            wxStaffObjsListNode* pNode;
-            for(pNode = m_cHighlighted.GetFirst(); pNode; pNode = pNode->GetNext()) {
-                RemoveHighlight( (lmStaffObj*)pNode->GetData(), pPaper );
-            }
-            //clear the list
-            m_cHighlighted.DeleteContents(false);    //Staffobjs must not be deleted, only the list
-            m_cHighlighted.Clear();
-            break;
+			//This case value is impossible. It won't reach this method
+            wxASSERT(false);
 
         default:
+			//no more cases defined!
             wxASSERT(false);
     }
 
+}
+
+void lmScore::RemoveAllHighlight(wxWindow* pCanvas)
+{
+    //remove highlight from all staffobjs in m_cHighlighted list
+    wxStaffObjsListNode* pNode;
+    for(pNode = m_cHighlighted.GetFirst(); pNode; pNode = pNode->GetNext())
+	{
+		lmStaffObj* pSO = (lmStaffObj*)pNode->GetData();
+        lmScoreHighlightEvent event(pSO, eVisualOff);
+        ::wxPostEvent(pCanvas, event);
+    }
 }
 
 void lmScore::RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper)
@@ -637,6 +630,7 @@ void lmScore::RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper)
         to signal that XOR draw mode in RED followed by a normal
         draw in BLACK must be done.
     */
+
     pSO->Draw(DO_DRAW, pPaper, *wxWHITE, HIGHLIGHT);
     pSO->Draw(DO_DRAW, pPaper, g_pColors->ScoreNormal(), HIGHLIGHT);
 }

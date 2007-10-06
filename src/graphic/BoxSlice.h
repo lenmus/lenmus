@@ -19,11 +19,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __BOXSCORE_H__        //to avoid nested includes
-#define __BOXSCORE_H__
+#ifndef __LM_BOXSLICE_H__        //to avoid nested includes
+#define __LM_BOXSLICE_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "BoxScore.cpp"
+#pragma interface "BoxSlice.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -37,43 +37,41 @@
 #include "wx/wx.h"
 #endif
 
-#include "BoxPage.h"
+#include "vector"
+
 #include "../score/Score.h"
 
-// to manage pages let's define an array to contain pointers to pages
-#include "wx/dynarray.h"
-class lmBoxPage;
-WX_DEFINE_ARRAY(lmBoxPage*, ArrayBoxPages);
+class lmBoxSystem;
 
-// Class lmBoxScore is the main container for the renderized score. Only one instance
-// of this class is created for a score. lmBoxScore contains one or more instances of class 
-// lmBoxPage, which represent the pages of the score.
+//
+// Class lmBoxSlice represents a sytem measure
+//
 
-class lmBoxScore
+
+class lmBoxSlice
 {
 public:
-    lmBoxScore(lmScore* pScore);
-    ~lmBoxScore();
+    lmBoxSlice(lmBoxSystem* pParent, int nMeasure, lmLUnits xStart, lmLUnits xEnd);
+    ~lmBoxSlice();
 
-    lmBoxPage* AddPage();
+    lmBoxSlice* FindMeasureAt(lmUPoint& pointL);
 
-    void Render(lmPaper* pPaper);                   
-    void RenderPage(int nPage, lmPaper* pPaper); 
-
-    inline lmBoxPage* GetCurrentPage() const { return m_aPages.Item( m_aPages.GetCount() - 1); }
-    inline lmBoxPage* GetPage(int nPage) const { return m_aPages.Item( nPage - 1); }
-    int GetNumPages();
-    bool FindStaffAtPosition(lmUPoint& pointL);
+	//debug
+	void DrawSelRectangle(lmPaper* pPaper);
 
 
 private:
-    lmScore*        m_pScore;       //score to be rendered
 
-    // a lmBoxScore is, mainly, a collection of lmBoxPages
-    ArrayBoxPages  m_aPages;       //array of ptrs to pages that form this score
+    lmBoxSystem*    m_pBSystem;     //parent system box
+    int             m_nMeasure;     //number of this measure
 
+    //start and end positions
+    lmLUnits    m_xStart;
+    lmLUnits    m_xEnd;
 
 };
 
-#endif  // __BOXSCORE_H__
+
+
+#endif  // __LM_BOXSLICE_H__
 

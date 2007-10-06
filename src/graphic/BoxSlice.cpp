@@ -20,7 +20,7 @@
 //-------------------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "BoxPage.h"
+#pragma implementation "BoxSlice.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
@@ -30,74 +30,52 @@
 #pragma hdrstop
 #endif
 
-#include "BoxScore.h"
-#include "BoxPage.h"
 #include "BoxSlice.h"
+#include "BoxSystem.h"
 
 //access to colors
 #include "../globals/Colors.h"
 extern lmColors* g_pColors;
 
+//
+// Class lmBoxSlice represents a sytem measure
+//
+
 //-----------------------------------------------------------------------------------------
 
-lmBoxPage::lmBoxPage(lmBoxScore* pParent, int nNumPage)
+lmBoxSlice::lmBoxSlice(lmBoxSystem* pParent, int nMeasure, lmLUnits xStart, lmLUnits xEnd)
 {
-    m_nNumPage = nNumPage;
-    m_nFirstSystem = 0;
-    m_nLastSystem = 0;
-    m_pBScore = pParent;
+    m_pBSystem = pParent;
+    m_nMeasure = nMeasure;
+    m_xStart = xStart;
+    m_xEnd = xEnd;
 
 }
 
-lmBoxPage::~lmBoxPage()
+
+lmBoxSlice::~lmBoxSlice()
 {
-    //delete all systems
-    WX_CLEAR_ARRAY(m_aSystems);
 }
 
-lmBoxSystem* lmBoxPage::AddSystem(int nSystem)
+lmBoxSlice* lmBoxSlice::FindMeasureAt(lmUPoint& pointL)
 {
-    //Update references
-    if (m_nFirstSystem == 0) m_nFirstSystem = nSystem;
-    m_nLastSystem = nSystem;
-
-    //create the system
-    lmBoxSystem* pSystem = new lmBoxSystem(this, m_nNumPage);
-    m_aSystems.Add(pSystem);
-    return pSystem;
-
-}
-
-void lmBoxPage::Render(lmScore* pScore, lmPaper* pPaper)
-{
-    if (m_nLastSystem == 0) return;
-
-    int iSystem;                //number of system in process
-    int i;
-    lmBoxSystem* pBoxSystem;
-    //loop to render the systems in this page
-    for(i=0, iSystem = m_nFirstSystem; iSystem <= m_nLastSystem; iSystem++, i++)
+    if (m_xStart <= pointL.x && m_xEnd >= pointL.x)
     {
-        pBoxSystem = m_aSystems.Item(i);
-        pBoxSystem->Render(iSystem, pScore, pPaper);
+        //is in this measure
+        return this;
     }
-
+    return (lmBoxSlice*)NULL;
 }
 
-lmBoxSlice* lmBoxPage::FindStaffAtPosition(lmUPoint& pointL)
+void lmBoxSlice::DrawSelRectangle(lmPaper* pPaper)
 {
-    //loop to look up in the systems
-    int iSystem;                //number of system in process
-    int i;
-    lmBoxSystem* pBoxSystem;
-    //loop to render the systems in this page
-    for(i=0, iSystem = m_nFirstSystem; iSystem <= m_nLastSystem; iSystem++, i++)
-    {
-        pBoxSystem = m_aSystems.Item(i);
-        lmBoxSlice* pBSlice = pBoxSystem->FindStaffAtPosition(pointL);
-        if (pBSlice)
-			return pBSlice;    //found
-    }
-    return (lmBoxSlice*)NULL;;
-}
+    //draw a border around slice region
+	lmLUnits yTop = m_pBSystem->GetYTopLeft();
+    lmLUnits yBottom = m_pBSystem->GetYBottomLeft();
 
+    pPaper->SketchRectangle(lmUPoint(m_xStart, yTop),
+                            lmUSize(m_xEnd - m_xStart, yBottom - yTop),
+                            *wxCYAN);
+
+	m_pBSystem->DrawSelRectangle(pPaper);
+}

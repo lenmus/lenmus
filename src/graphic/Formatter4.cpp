@@ -46,6 +46,7 @@
 #include "TimeposTable.h"
 #include "Formatter4.h"
 #include "BoxSystem.h"
+#include "BoxSlice.h"
 
 //access to logger
 #include "../app/Logger.h"
@@ -482,6 +483,13 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             pBoxSystem->SetFinalX( pPaper->GetRightMarginXPos() );
         }
 
+        //create lmBoxSlices to contain the measures columns
+        for (int iAbs=iIni, iRel=1; iAbs < iIni+m_nMeasuresInSystem; iAbs++, iRel++)
+        {
+            lmLUnits xStart = m_oTimepos[iRel].GetStartOfBarPosition();
+            lmLUnits xEnd = m_oTimepos[iRel].LastFinalX();  //GetXFinal();
+            lmBoxSlice* pBoxSlice = pBoxSystem->AddSlice(iAbs, xStart, xEnd);
+        }
 
         // compute system height
         if (nSystem == 1) {

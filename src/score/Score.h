@@ -258,6 +258,7 @@ public:
 
     // serving highlight events
     void ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, EHighlightType nHighlightType);
+	void RemoveAllHighlight(wxWindow* pCanvas);
 
     lmScoreObj* FindSelectableObject(lmUPoint& pt);
 

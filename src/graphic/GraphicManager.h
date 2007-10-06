@@ -92,7 +92,11 @@ private:
 
 
     lmScore*        m_pScore;           //score to be rendered
+
+	//TODO: lmPaper contains the DC. Therefore it must not be stored and reused.
+	//Methods needing an lmPaper must receive it as parameter
     lmPaper*        m_pPaper;           //paper to use
+
     long            m_nLastScoreID;     // the ID of the last rendered score
     double          m_rScale;           // drawing scale
     lmPixels        m_xPageSize, m_yPageSize;        // size of page in pixels
