@@ -39,9 +39,12 @@ public:
     lmScoreDocument();
     ~lmScoreDocument();
 
+	//overrides for virtual methods in wxDocument
+	void UpdateAllViews(wxView* sender=(wxView*)NULL, wxObject* hint=(wxObject*)NULL);
     bool OnOpenDocument(const wxString& filename);
-    bool OnImportDocument(const wxString& filename);
     bool OnNewDocument();
+
+    bool OnImportDocument(const wxString& filename);
     inline lmScore* GetScore() {return m_pScore; };
 
     // to manage selected objects

@@ -230,8 +230,10 @@ void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits pa
     // - the first time a score is going to be rendered
     // - if paper size has changed and so requested (option lmRELAYOUT_ON_PAPER_SIZE_CHANGE)
     // - if explicitly requested (option lmFORCE_RELAYOUT)
+	// - the score has been modified ( method IsModified() returns true )
     bool fLayoutScore = !m_pScore || m_fReLayout
                 || m_nLastScoreID != pScore->GetID()
+				|| m_pScore->IsModified()
                 || (nOptions & lmFORCE_RELAYOUT)
                 || ( (nOptions & lmRELAYOUT_ON_PAPER_SIZE_CHANGE)  &&
                      (m_xPageSize != paperWidth || m_yPageSize != paperHeight) );
@@ -249,6 +251,8 @@ void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits pa
     m_yPageSize = (int)paperHeight;
     m_pScore = pScore;
     m_nLastScoreID = m_pScore->GetID();
+	m_pScore->SetModified(false);
+
 
     //re-layout the score if necesary
     if (fLayoutScore) Layout();

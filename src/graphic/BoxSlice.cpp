@@ -69,7 +69,10 @@ lmBoxSlice* lmBoxSlice::FindMeasureAt(lmUPoint& pointL)
 
 void lmBoxSlice::DrawSelRectangle(lmPaper* pPaper)
 {
-    //draw a border around slice region
+	//draw system border in red
+	m_pBSystem->DrawSelRectangle(pPaper);
+
+    //draw a border around slice region in cyan
 	lmLUnits yTop = m_pBSystem->GetYTopLeft();
     lmLUnits yBottom = m_pBSystem->GetYBottomLeft();
 
@@ -77,5 +80,4 @@ void lmBoxSlice::DrawSelRectangle(lmPaper* pPaper)
                             lmUSize(m_xEnd - m_xStart, yBottom - yTop),
                             *wxCYAN);
 
-	m_pBSystem->DrawSelRectangle(pPaper);
 }

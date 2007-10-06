@@ -484,10 +484,11 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         }
 
         //create lmBoxSlices to contain the measures columns
+		lmLUnits xEnd = m_oTimepos[1].GetStartOfBarPosition();
         for (int iAbs=iIni, iRel=1; iAbs < iIni+m_nMeasuresInSystem; iAbs++, iRel++)
         {
-            lmLUnits xStart = m_oTimepos[iRel].GetStartOfBarPosition();
-            lmLUnits xEnd = m_oTimepos[iRel].LastFinalX();  //GetXFinal();
+            lmLUnits xStart = xEnd;
+            xEnd = xStart + m_nMeasureSize[iRel];
             lmBoxSlice* pBoxSlice = pBoxSystem->AddSlice(iAbs, xStart, xEnd);
         }
 

@@ -6,10 +6,10 @@
 <title>Cadences</title>
 
 <para>
-In music, the term 'cadence' has several meanings. In harmony we are going to refer to a particular sequence of usually two chords whose function is to create a sensation of either  stability, rest and ending, or of pause, tension and unstablility. Cadences have a function similar to that of the punctuation marks (comma, period, etc.) in written language: they mark breathing places and pauses in the music, they serve to structure the musical phrases, and they also helps to establish tonality. For example listen to the following three chords:
+In music, the term 'cadence' has several meanings. In harmony we are going to refer to a particular sequence of usually two chords whose function it is to create a sensation of either stability, rest and ending, or of pause, tension and unstablility. Cadences have a function similar to that of punctuation marks (comma, period, etc.) in written language: they mark breathing places and pauses in music, they serve to structure the musical phrases and they also help to establish tonality. Listen for example to the following three chords:
 </para>
 
-<para><score width="600" height='160' border="0">
+<para><score width="600" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>80</metronome>
@@ -43,11 +43,11 @@ In music, the term 'cadence' has several meanings. In harmony we are going to re
 </score></para>
 
 <para>
-You will notice the feeling of conclusion, of reaching the end of a musical piece. The chord sequence does not create expectations of continuation. The composer could end the musical composition in the last played chord and the listener will perceive that the end has been reached and remain 'satisfied' with finishing at that point. On the contrary, listen to the following sequence of chords:
+You will notice the feeling of conclusion, of reaching the end of a musical piece. The chord sequence does not create expectations of continuation. The composer could end the musical composition in the last chord and the listener will perceive that the end has been reached and remain 'satisfied' with finishing at that point. On the contrary, listen to the following chord sequence:
 </para>
 
 
-<para><score width="600" height='160' border="0">
+<para><score width="600" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>80</metronome>
@@ -83,7 +83,7 @@ You will notice the feeling of conclusion, of reaching the end of a musical piec
 </score></para>
 
 <para>
-Now the sensation is not conclusive. It is more like a short pause and it creates expectations for continuation. If we finish the music in the last sounded chord we will leave the listener waiting for more.
+Now the sensation is not conclusive. It is more like a short pause and it creates an expectation of continuation. If we end the music piece at the last chord, we will leave the listener with a longing for more.
 <para>
 
 <para>
@@ -92,7 +92,7 @@ Cadences are not difficult to recognize by ear but it is sometimes harder to rec
 
 <part>
 <title>Cadence types</title>
-Depending on the sensation they create cadences are classified in two fundamental types:
+Depending on the sensation they create, cadences are classified in two fundamental types:
 </para>
 
 <orderedlist>
@@ -100,12 +100,12 @@ Depending on the sensation they create cadences are classified in two fundamenta
 <emphasis>Terminal cadences</emphasis>. They create a sensation of stability, rest and ending of the musical phrase or sentence. 
 </listitem>
 <listitem>
-<emphasis>Transient cadences</emphasis>. They are characterized for creating tension and sensation of unstablility, as well as creating expectations of continuation.
+<emphasis>Transient cadences</emphasis>. They typically result in creating tension and a sensation of unstablility, as well as an expectation of continuation.
 </listitem>
 </orderedlist>
 
 <para>
-As a training exercise you will hear a cadence and based on the sensation it creates on you, try to identify if it is a terminal cadence is or transient one.
+As an exercise you will hear a cadence and based on the sensation it provokes, try to identify if the cadence is terminal or transient.
 </para>
 
 <para></para>

@@ -148,3 +148,9 @@ bool lmScoreDocument::OnImportDocument(const wxString& filename)
     UpdateAllViews();
     return true;
 }
+
+void lmScoreDocument::UpdateAllViews(wxView* sender, wxObject* hint)
+{
+	m_pScore->SetModified(true);
+	wxDocument::UpdateAllViews(sender, hint);
+}

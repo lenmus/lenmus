@@ -303,6 +303,8 @@ public:
         // accessors for lmFormatter only
     ERenderizationType GetRenderizationType() const { return m_nRenderizationType; }
     //ESpacingMethod GetSpacingMethod() const { return m_nSpacingMethod; }
+	inline void SetModified(bool fValue) { m_fModified = fValue; }
+	inline bool IsModified() { return m_fModified; }
 
 
     //other methods
@@ -334,6 +336,7 @@ private:
 
     //renderization options
     ERenderizationType  m_nRenderizationType;
+	bool				m_fModified;			//to force a repaint
 
     //other variables
     wxInstrumentsListNode*  m_pNode;        //last returned instrument node

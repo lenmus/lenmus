@@ -7,7 +7,7 @@
 <title>Terminal cadences</title>
 
 <para>
-Terminal cadences create a sensation of stability and conclusion of the musical phrase or sentence. This feeling is achieved by moving to the tonic grade (grade I) from some other chord grades. Depending on the starting chord grade two types of cadences are considered:
+Terminal cadences create a sensation of stability and conclusion of the musical phrase or sentence. This feeling is achieved by moving to the tonic grade (grade I) from any other chord grade. Depending on the starting chord grade, two types of cadences are considered:
 <link linkend="authentic"> authentic cadences</link> and <link linkend="plagal"> plagal cadences</link>.</para>
 
 <part id='authentic'>
@@ -19,7 +19,7 @@ The authentic cadence is the strongest terminal cadence, with great conclusive p
 </para>
 
 <para>
-<score width="300" height='160' border="0">
+<score width="300" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>320</metronome>
@@ -44,7 +44,7 @@ The authentic cadence is the strongest terminal cadence, with great conclusive p
     </music>
 </score>
 
-<score width="300" height='160' border="0">
+<score width="300" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>320</metronome>
@@ -89,7 +89,7 @@ the melody (soprano voice) ends on the tonic pitch.
 </orderedlist>
 
 <para>
-then the cadenced has its strongest conclusive power and it is the one that creates the most final sounding of all cadences. Due to this fact, if the previously listed conditions are satisfied the cadence it is named 'perfect authentic cadence' or just 'perfect cadence'. If the conditions are not satisfied the conclusive feeling of the cadence is less strong and then the cadence is named 'imperfect authentic cadence' or just 'imperfect cadence'.
+then the cadence has its strongest conclusive power and it creates the most final sounding of all cadences. Due to this fact, if the previously listed conditions are satisfied, the cadence is named 'perfect authentic cadence' or just 'perfect cadence'. If the conditions are not satisfied, the conclusive sensation of the cadence is less strong and then the cadence is named 'imperfect authentic cadence' or just 'imperfect cadence'.
 </para>
 
 <para>
@@ -110,12 +110,12 @@ A plagal cadence takes place when grade IV (subdominant) resolves in grade I (to
 </para>
 
 <para>
-In both cadence types, authentic and plagal, it must be taken into account that other chords playing the same harmonic functions can be used. For example, in the authentic cadence the V (dominant function) can be played by the VII. And in the plagal cadence the IV (subdominant function) can be played by the II. These replacements add variety and harmonic colour to the cadence.
+In both cadence types, authentic and plagal, other chords playing the same harmonic functions can be used. For example, in the authentic cadence the V (dominant function) can be played by the VII. And in the plagal cadence the IV (subdominant function) can be played by the II. These replacements add variety and harmonic colour to the cadence.
 </para>
 
 
 <para>
-<score width="300" height='160' border="0">
+<score width="300" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>320</metronome>
@@ -140,7 +140,7 @@ In both cadence types, authentic and plagal, it must be taken into account that 
     </music>
 </score>
 
-<score width="300" height='160' border="0">
+<score width="300" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>320</metronome>
@@ -175,8 +175,7 @@ In both cadence types, authentic and plagal, it must be taken into account that 
 <title>Exercises</title>
 
 <para>
-<link linkend="terminal_E1">Theory exercise</link> - Practise to
-recognize on a score if a terminal cadence is authentic perfect or plagal.</para>
+<link linkend="terminal_E1">Theory</link> - Practise to recognize in a score if a terminal cadence is authentic perfect or plagal.</para>
 
 <para>
 <link linkend="terminal_E2">Aural training</link> - Train your ear and practise to

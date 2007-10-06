@@ -330,7 +330,7 @@ void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fH
     pPaper->SetCursorX(m_uPaperPos.x + m_uWidth);
     
     // draw selection rectangle
-    if (gfDrawSelRec && !fMeasuring)
+    if (!fMeasuring && (IsSelected() || gfDrawSelRec))
         DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
             
 }

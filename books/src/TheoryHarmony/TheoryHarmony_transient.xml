@@ -7,18 +7,18 @@
 <title>Transient cadences</title>
 
 <para>
-Transient cadences are not conclusive. They create a sensation tension and unstability and expectations for continuation. They are more like a short pause in the musical flow. There are two types of transient cadences:
+Transient cadences are not conclusive. They create a sensation of tension and unstability and an expectation of continuation. They are more like a short pause in the musical flow. There are two types of transient cadences:
 <link linkend="half_cadence"> half cadences</link> and <link linkend="deceptive"> deceptive cadences</link>.</para>
 
 <part id='half_cadence'>
 <title>Half cadences</title>
 
 <para>
-A half cadence takes place when the harmony moves to the V degree (dominant) from any other degree, except the tonic (I). The ending on V causes it to sound incomplete or 'suspended' due to the unstableness of the dominant chord. It is considered as the weakest cadence and cannot be use to end a musical phrase.
+A half cadence takes place when the harmony moves to the V degree (dominant) from any other degree, except the tonic (I). The ending on V causes it to sound incomplete or 'suspended' due to the unstableness of the dominant chord. It is considered as the weakest cadence and cannot be used to end a musical phrase.
 </para>
 
 <para>
-<score width="300" height='160' border="0">
+<score width="300" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>320</metronome>
@@ -43,7 +43,7 @@ A half cadence takes place when the harmony moves to the V degree (dominant) fro
     </music>
 </score>
 
-<score width="300" height='160' border="0">
+<score width="300" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>320</metronome>
@@ -74,10 +74,10 @@ A half cadence takes place when the harmony moves to the V degree (dominant) fro
 
 
 <para>
-A particular case of the half cadence is the Phrygian half cadence. It consist of a IV chord in first inversion that resolves to a V (or V7) chord in root position. It only occurs in minor keys (the IV is minor) and was widely used during the Baroque period to end a slow musical movement in minor mode, continued by a fast movement in major mode.
+A particular case of the half cadence is the Phrygian half cadence. It consists of a IV chord in first inversion that resolves to a V (or V7) chord in root position. It only occurs in minor keys (the IV is minor) and was widely used during the Baroque period to end a slow musical movement in minor mode, continued by a fast movement in major mode.
 </para>
 
-<para><score width="600" height='160' border="0">
+<para><score width="600" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>320</metronome>
@@ -109,7 +109,7 @@ A particular case of the half cadence is the Phrygian half cadence. It consist o
 Another very specific case is the Andalusian cadence. It only occurs in minor keys and is given by the progression I-VII-VI-V, where the IV degree can be replaced. This cadence has a particular colour due to the chromatic half step between the root of the VII and the third of the V.
 </para>
 
-<para><score width="600" height='160' border="0">
+<para><score width="600" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>320</metronome>
@@ -148,11 +148,11 @@ Another very specific case is the Andalusian cadence. It only occurs in minor ke
 <title>Deceptive cadences</title>
 
 <para>
-A deceptive cadence takes place when a V chord does not resolve to a I chord, as the ear is expecting, but instead resolves to any other chord, typically to one containing the tonic pitch (the VI or the IV degrees).
+A deceptive cadence occurs when a V chord does not resolve to a I chord, as the ear is expecting, but instead resolves to any other chord, typically to one containing the tonic pitch (the VI or the IV degrees).
 </para>
 
 <para>
-<score width="300" height='160' border="0">
+<score width="300" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>320</metronome>
@@ -177,7 +177,7 @@ A deceptive cadence takes place when a V chord does not resolve to a I chord, as
     </music>
 </score>
 
-<score width="300" height='160' border="0">
+<score width="300" height='170' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>320</metronome>
@@ -206,7 +206,7 @@ A deceptive cadence takes place when a V chord does not resolve to a I chord, as
 
 
 <para>
-The deceptive cadence is considered a weak cadence because of the 'surprise' and  'hanging' feel it invokes, so it is never used to end a music piece. However, it provides variety and surprise by resolving to a minor chord in major keys, and to a major chord in minor keys, and when used near the end of a piece it helps to sustain the musical interest at the moment when the final authentic cadence is expected.
+The deceptive cadence is considered a weak cadence because of the 'surprise' and  'hanging' feelings it invokes. Therefore, it is never used to end a piece of music. However, it provides variety and surprise by resolving to a minor chord in major keys, and to a major chord in minor keys. And when used near the end of a piece, it helps to sustain the musical interest at the moment when the final authentic cadence is expected.
 </para>
 
 
@@ -218,12 +218,10 @@ The deceptive cadence is considered a weak cadence because of the 'surprise' and
 <title>Exercises</title>
 
 <para>
-<link linkend="transient_E1">Theory exercise</link> - Practise to
-recognize on a score if a transient cadence is a half cadence or a deceptive one.</para>
+<link linkend="transient_E1">Theory</link> - Practise to recognize in a score if a transient cadence is a half cadence or a deceptive one.</para>
 
 <para>
-<link linkend="transient_E2">Aural training</link> - Train your ear and practise to
-identify if a transient cadence is a half cadence or a deceptive one.</para>
+<link linkend="transient_E2">Aural training</link> - Train your ear and practise to identify if a transient cadence is a half cadence or a deceptive cadence.</para>
 
 </part>
 
@@ -237,7 +235,7 @@ identify if a transient cadence is a half cadence or a deceptive one.</para>
 <titleabbrev>Trasient cadences</titleabbrev>
 <title>Deceptive and half cadences</title>
 
-<para>Theory: Identify if a transient cadence is a half cadence or a deceptive one.</para>
+<para>Theory: Identify if a transient cadence is a half cadence or a deceptive cadence.</para>
 
 <exercise type="IdfyCadences" width="100%" height="300" border="0">
     <control_go_back>transient</control_go_back>
@@ -258,7 +256,7 @@ identify if a transient cadence is a half cadence or a deceptive one.</para>
 <titleabbrev>Transient cadences</titleabbrev>
 <title>Deceptive and half cadences</title>
 
-<para>Aural training: Identify if a transient cadence is a half cadence or a deceptive one.</para>
+<para>Aural training: Identify if a transient cadence is a half cadence or a deceptive cadence.</para>
 
 <exercise type="IdfyCadences" width="100%" height="300" border="0">
     <control_go_back>transient</control_go_back>
