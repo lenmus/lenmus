@@ -45,17 +45,21 @@
 #include "../widgets/Ruler.h"
 #include "FontManager.h"
 #include "ArtProvider.h"
+#include "../graphic/BoxSlice.h"
 
 
 // access to main frame
 extern lmMainFrame* GetMainFrame();
 
-// IDs windows and others
+// IDs for events, windows, etc.
 enum
 {
-  // windows IDs
-    CTROL_HScroll = 1000,
-    CTROL_VScroll
+	// windows
+    lmID_HSCROLL = 1000,
+    lmID_VSCROLL,
+
+	// cursos
+	lmID_TIMER_CURSOR,
 };
 
 // global variables
@@ -63,18 +67,22 @@ bool gfDrawSelRec;        //draw selection rectangles around staff objects
 
 
 // Dragging states
-#define DRAG_NONE     0
-#define DRAG_START    1
-#define DRAG_DRAGGING 2
+enum
+{
+	lmDRAG_NONE = 0,
+	lmDRAG_START,
+	lmDRAG_DRAGGING,
+};
 
-
+#define lmCURSOR_BLINKING_RATE  750		//cursor blinking rate = 750ms
 
 IMPLEMENT_DYNAMIC_CLASS(lmScoreView, lmView)
 
 BEGIN_EVENT_TABLE(lmScoreView, lmView)
-    EVT_COMMAND_SCROLL(CTROL_HScroll, lmScoreView::OnScroll)
-    EVT_COMMAND_SCROLL(CTROL_VScroll, lmScoreView::OnScroll)
-    EVT_MOUSEWHEEL(lmScoreView::OnMouseWheel)
+    EVT_COMMAND_SCROLL	(lmID_HSCROLL, lmScoreView::OnScroll)
+    EVT_COMMAND_SCROLL	(lmID_VSCROLL, lmScoreView::OnScroll)
+    EVT_MOUSEWHEEL		(lmScoreView::OnMouseWheel)
+	EVT_TIMER			(lmID_TIMER_CURSOR, lmScoreView::OnCursorTimer)
 
 END_EVENT_TABLE()
 
@@ -94,7 +102,7 @@ lmScoreView::lmScoreView()
     m_rScale = 1.0 * lmSCALE;
 
     // drag state control initializations
-    m_dragState = DRAG_NONE;
+    m_dragState = lmDRAG_NONE;
     m_pDragImage = (wxDragImage*) NULL;
 
     //options
@@ -111,19 +119,35 @@ lmScoreView::lmScoreView()
     m_yDisplayPixelsPerLU = 1.0;
     m_xScrollPosition = 0;
     m_yScrollPosition = 0;
+
+	//cursor initializations
+	m_oCursorTimer.SetOwner(this, lmID_TIMER_CURSOR);
+	m_pCursorInstr = (lmInstrument*)NULL;
+	m_nCursorStaff = 1;
+	m_nCursorMeasure = 1;
+	m_nCursorTime = 0;
+	m_pCursorSO = (lmStaffObj*)NULL;
+    m_nCursorIdSO = -1;
+    m_fCursorEnabled = true;
+    m_fCursorShown = false;
+    m_pCursorIT = (lmStaffObjIterator*)NULL;
+
 }
 
 lmScoreView::~lmScoreView()
 {
+    if (m_pCursorIT)
+        delete m_pCursorIT;
 }
 
-// The OnCreate function, called when the window is created
-// When a view is created (via main menu 'file > new'  or 'file > open') class wxDocTemplate
-// invokes ::CreateDocument and ::CreateView. This last one invokes ::OnCreate
-// In this method a child MDI frame is created, populated with the
-// needed controls and shown.
 bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
 {
+    // The OnCreate function, called when the window is created
+    // When a view is created (via main menu 'file > new'  or 'file > open') class wxDocTemplate
+    // invokes ::CreateDocument and ::CreateView. This last one invokes ::OnCreate
+    // In this method a child MDI frame is created, populated with the
+    // needed controls and shown.
+
     //save the document
     m_pDoc = (lmScoreDocument*)doc;
 
@@ -175,13 +199,14 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
                         wxNO_BORDER, colorBg );
 
     // create the scrollbars
-    m_pHScroll = new wxScrollBar(m_pFrame, CTROL_HScroll, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
-    m_pVScroll = new wxScrollBar(m_pFrame, CTROL_VScroll, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL);
+    m_pHScroll = new wxScrollBar(m_pFrame, lmID_HSCROLL, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
+    m_pVScroll = new wxScrollBar(m_pFrame, lmID_VSCROLL, wxDefaultPosition, wxDefaultSize, wxSB_VERTICAL);
 
     SetScale(1.0);            // to create the font and resize controls and scrollbars
 
     //show the frame
-    m_pFrame->Show(true);
+    m_oCursorTimer.Start(lmCURSOR_BLINKING_RATE, wxTIMER_CONTINUOUS);
+	m_pFrame->Show(true);
     Activate(true);
 
     return true;
@@ -312,13 +337,14 @@ void lmScoreView::SetRulersVisible(bool fVisible)
 
 }
 
-// OnDraw is a mandatory override of wxView. So we must define an OnDraw method. But the
-// repaint behaviour is controled by the OnPaint event on lmScoreCanvas and is redirected
-// to lmScoreView.RepaintScoreRectangle().
-// So OnDraw is empty. It is only invoked by the print/preview architecture, for print/preview
-// the document.
 void lmScoreView::OnDraw(wxDC* pDC)
 {
+    // OnDraw is a mandatory override of wxView. So we must define an OnDraw method. But the
+    // repaint behaviour is controled by the OnPaint event on lmScoreCanvas and is redirected
+    // to lmScoreView.RepaintScoreRectangle().
+    // So OnDraw is empty. It is only invoked by the print/preview architecture, for print/preview
+    // the document.
+
     wxLogMessage(wxT("Error: llega a lmScoreView.OnDraw()"));
 }
 
@@ -413,10 +439,14 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
 
 }
 
-
-// Called from the document when an update is needed. i.e. when UpdateAllViews() has been invoked
-void lmScoreView::OnUpdate(wxView* WXUNUSED(sender), wxObject* WXUNUSED(hint))
+void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
 {
+    // Called from the document when an update is needed. i.e. when UpdateAllViews() 
+    // has been invoked
+
+	WXUNUSED(sender)
+	WXUNUSED(hint)
+
     if (m_pFrame) {
         m_pCanvas->Refresh();
         ResizeControls();
@@ -426,9 +456,10 @@ void lmScoreView::OnUpdate(wxView* WXUNUSED(sender), wxObject* WXUNUSED(hint))
 
 }
 
-// Clean up all windows used for displaying this view.
 bool lmScoreView::OnClose(bool deleteWindow)
 {
+    // Clean up all windows used for displaying this view.
+
     if (!GetDocument()->Close()) return false;
 
     Activate(false);
@@ -526,6 +557,7 @@ void lmScoreView::SetScaleFitFull()
 
 void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
 {
+	lmScore* pScore = m_pDoc->GetScore();
     EHighlightType nHighlightType = event.GetHighlightType();
     switch (nHighlightType) {
         case ePrepareForHighlight:
@@ -537,8 +569,8 @@ void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
 
         case eRemoveAllHighlight:
         {
-            //If anti-aliased is not used there is nothing to do in this method
-            //if (!g_fUseAntiAliasing) return;
+			pScore->RemoveAllHighlight((wxWindow*)m_pCanvas);
+			return;
         }
         break;
 
@@ -552,8 +584,7 @@ void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
             wxASSERT(false);
     }
 
-    //get the score
-    lmScore* pScore = m_pDoc->GetScore();
+    //AWARE: Only eVisualOff and eVisualOn events reach this point
 
     //prepare paper DC
     wxClientDC dc(m_pCanvas);
@@ -562,35 +593,190 @@ void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
     //m_Paper.SetDC(&dc);
     m_Paper.SetDrawer(new lmDirectDrawer(&dc));
 
-    //Obtain the StaffObject
-    //For events of type eRemoveAllHighlight the pSO is NULL
-    lmStaffObj* pSO = event.GetStaffObj();
-    if (pSO) {
-        int nNumPage = pSO->GetPageNumber();        // nNumPage = 1..n
+	//Obtain the StaffObject
+	//For events of type eRemoveAllHighlight the pSO is NULL
+	lmStaffObj* pSO = event.GetStaffObj();
+	int nNumPage = pSO->GetPageNumber();        // nNumPage = 1..n
+	//position DC origing according to current scrolling and page position
+	wxPoint org = GetDCOriginForPage(nNumPage);
+	dc.SetDeviceOrigin(org.x, org.y);
 
-        // Pages measure (m_xPageSizeD, m_yPageSizeD) pixels.
-        // There is a gap between pages of  m_yInterpageGap  pixels.
-        // There is a left margin:  m_xBorder  pixels
-        // And there is a top margin before the first page:  m_yBorder  pixels
+	//do the requested action:  highlight (eVisualOn) / unhighlight (eVisualOff) 
+	pScore->ScoreHighlight(pSO, &m_Paper, nHighlightType);
 
-        //First page at (m_xBorder, m_yBorder), size (m_xPageSizeD, m_yPageSizeD)
-        //Second page at (m_xBorder, m_yBorder+m_yPageSizeD+m_yInterpageGap)
-        //...
-        //Page n (1..n) at (m_xBorder, m_yBorder + (n-1) * (m_yPageSizeD+m_yInterpageGap))
-        // all this coordinates are referred to view origin (0,0), a virtual infinite
-        // paper on which all pages are rendered one after the other.
+}
 
-        lmPixels xPage = m_xBorder;
-        lmPixels yPage = m_yBorder + (nNumPage-1) * (m_yPageSizeD + m_yInterpageGap);
+wxPoint lmScoreView::GetDCOriginForPage(int nNumPage)
+{
+    // Pages measure (m_xPageSizeD, m_yPageSizeD) pixels.
+    // There is a gap between pages of  m_yInterpageGap  pixels.
+    // There is a left margin:  m_xBorder  pixels
+    // And there is a top margin before the first page:  m_yBorder  pixels
 
-        //position DC origing according to current scrolling and page position
-        int dx = xPage - m_xScrollPosition* m_pixelsPerStepX;
-        int dy = yPage - m_yScrollPosition* m_pixelsPerStepY;
-        dc.SetDeviceOrigin(dx, dy);
+    //First page at (m_xBorder, m_yBorder), size (m_xPageSizeD, m_yPageSizeD)
+    //Second page at (m_xBorder, m_yBorder+m_yPageSizeD+m_yInterpageGap)
+    //...
+    //Page n (1..n) at (m_xBorder, m_yBorder + (n-1) * (m_yPageSizeD+m_yInterpageGap))
+    // all this coordinates are referred to view origin (0,0), a virtual infinite
+    // paper on which all pages are rendered one after the other.
+
+    lmPixels xPage = m_xBorder;
+    lmPixels yPage = m_yBorder + (nNumPage-1) * (m_yPageSizeD + m_yInterpageGap);
+
+    //position DC origing according to current scrolling and page position
+    int dx = xPage - m_xScrollPosition* m_pixelsPerStepX;
+    int dy = yPage - m_yScrollPosition* m_pixelsPerStepY;
+	return wxPoint(dx, dy);
+}
+
+void lmScoreView::DeviceToLogical(lmDPoint& posDevice, lmUPoint& posLogical,
+                            lmDPoint* pPagePosD, lmUPoint* pPageNPosL, 
+							lmDPoint* pPageNOrgD, lmDPoint* pOffsetD,
+                            int* pNumPage, bool* pfInInterpageGap)
+{
+	//converts a device position (pixels), referred to the lmScoreCanvas window,
+	//to logical position (lmLUnits).
+    //Optionally (if not null pointers) returns number of page, origing of first page (in 
+    //pixel) and flag informing if position is out of page
+
+    // Set DC in logical units and scaled, so that
+    // transformations logical/device and viceversa can be computed
+    wxClientDC dc(m_pCanvas);
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale( m_rScale, m_rScale );
+
+    // We need to know how much the window has been scrolled (in pixels)
+    int xScrollUnits, yScrollUnits, xOrg, yOrg;
+    GetViewStart(&xOrg, &yOrg);
+    GetScrollPixelsPerUnit(&xScrollUnits, &yScrollUnits);
+    xOrg *= xScrollUnits;
+    yOrg *= yScrollUnits;
+    lmDPoint canvasOrgD(xOrg, yOrg);
+
+    //Pages measure (m_xPageSizeD, m_yPageSizeD) pixels.
+    //There is a gap between pages of  m_yInterpageGap  pixels.
+    //There is a left margin:  m_xBorder  pixels
+    //And there is a top margin before the first page:  m_yBorder  pixels
+    //Therefore, first page is at (m_xBorder, m_yBorder), size (m_xPageSizeD, m_yPageSizeD)
+    //Second page at (m_xBorder, m_yBorder+m_yPageSizeD+m_yInterpageGap)
+    //...
+    //Page n (1..n) at (m_xBorder, m_yBorder + (n-1) * (m_yPageSizeD+m_yInterpageGap))
+    //All this coordinates are referred to view origin (0,0), a virtual infinite
+    //paper on which all pages are rendered one after the other.
+
+    //lmPixels xPage = m_xBorder;
+    //lmPixels yPage = m_yBorder + (nNumPage-1) * (m_yPageSizeD + m_yInterpageGap);
+
+	lmPixels yPage = posDevice.y + canvasOrgD.y;
+	int nNumPage = ((yPage - m_yBorder) / (m_yPageSizeD + m_yInterpageGap)) + 1;
+    lmPixels yStartPage = m_yBorder + (nNumPage-1) * (m_yPageSizeD + m_yInterpageGap);
+    lmPixels yEndPage = yStartPage + m_yPageSizeD;
+	bool fInInterpageGap = (yPage < m_yBorder || yPage > yEndPage);
+
+	// the origin of first page is at (pixels)
+    lmDPoint pageOrgD(m_xBorder, m_yBorder);
+	// ... and the origin of current page is at (pixels)
+    lmDPoint pageNOrgD(m_xBorder, yStartPage);
+
+    // let's compute the position (pixels and logical) referred to first page origin
+    lmDPoint pagePosD(posDevice.x + canvasOrgD.x - pageOrgD.x,
+                     posDevice.y + canvasOrgD.y - pageOrgD.y);
+    lmUPoint pagePosL(dc.DeviceToLogicalXRel(pagePosD.x),
+                     dc.DeviceToLogicalYRel(pagePosD.y));
+
+	// ... and to the current page origin
+    lmDPoint pageNPosD(posDevice.x + canvasOrgD.x - pageNOrgD.x,
+                     posDevice.y + canvasOrgD.y - pageNOrgD.y);
+    lmUPoint pageNPosL(dc.DeviceToLogicalXRel(pageNPosD.x),
+                     dc.DeviceToLogicalYRel(pageNPosD.y));
+
+
+	//move requested answers
+    posLogical.x = pagePosL.x;
+    posLogical.y = pagePosL.y;
+
+    if (pPagePosD)
+        *pPagePosD = pagePosD;
+
+    if (pNumPage)
+        *pNumPage = nNumPage;
+
+    if (pfInInterpageGap)
+        *pfInInterpageGap = fInInterpageGap;
+
+    if (pPageNOrgD) {
+        (*pPageNOrgD).x = pageNOrgD.x;
+        (*pPageNOrgD).y = pageNOrgD.y;
     }
 
-    //do the requested action:  highlight / unhighlight / remove_all_highlight
-    pScore->ScoreHighlight(pSO, &m_Paper, nHighlightType);
+    if (pPageNPosL) {
+        (*pPageNPosL).x = pageNPosL.x;
+        (*pPageNPosL).y = pageNPosL.y;
+    }
+
+    if (pOffsetD) {
+        (*pOffsetD).x = pageOrgD.x - canvasOrgD.x;
+        (*pOffsetD).y = pageOrgD.y - canvasOrgD.y;
+    }
+
+    wxLogMessage(_T("[lmScoreView::DeviceToLogical] coverting canvas point (%d, %d) pixels\n")
+				 _T("     Point referred to first paper page origin (%d, %d) pixels\n")
+				 _T("     Point referred to first paper page origin (%.2f, %.2f) lmLUnits\n")
+				 _T("     Point referred to this paper page origin (%.2f, %.2f) lmLUnits\n")
+				 _T("     Point is at page %d (yStartPage=%d, yPage=%d, yEndPage=%d) %s"),
+        posDevice.x, posDevice.y, pagePosD.x, pagePosD.y, posLogical.x, pagePosL.y,
+		pageNPosL.x, pageNPosL.y,
+		nNumPage, yStartPage, yPage, yEndPage, (fInInterpageGap ? _T("in gap between pages") : _T("")) );
+
+
+
+}
+
+void lmScoreView::LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice)
+{
+	//converts a device position (pixels), referred to the lmScoreCanvas window,
+	//to logical position (lmLUnits)
+
+    // Set DC in logical units and scaled, so that
+    // transformations logical/device and viceversa can be computed
+    wxClientDC dc(m_pCanvas);
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale( m_rScale, m_rScale );
+
+    // We need to know how much the window has been scrolled (in pixels)
+    int xScrollUnits, yScrollUnits, xOrg, yOrg;
+    GetViewStart(&xOrg, &yOrg);
+    GetScrollPixelsPerUnit(&xScrollUnits, &yScrollUnits);
+    xOrg *= xScrollUnits;
+    yOrg *= yScrollUnits;
+    lmDPoint canvasOrgD(xOrg, yOrg);
+
+	//convert logical point to pixels, referred to start of first page origin
+	lmDPoint pointRelD(dc.LogicalToDeviceXRel((int)posLogical.x),
+                     dc.LogicalToDeviceYRel((int)posLogical.y));
+
+	// the origin of first page is at (pixels)
+    lmDPoint pageOrgD(m_xBorder, m_yBorder);
+
+	//therefore the point, referred to canvas origin is at
+	lmDPoint pointAbsD(pointRelD.x + pageOrgD.x, pointRelD.y + pageOrgD.y);
+
+	//now lets discount canvas scrolling
+	posDevice.x = pointAbsD.x - canvasOrgD.x;
+	posDevice.y = pointAbsD.y - canvasOrgD.y;
+
+
+    //// For transformations from page to canvas and viceversa we need to combine both origins
+    //lmDPoint offsetD(pageOrgD.x - canvasOrgD.x, pageOrgD.y - canvasOrgD.y);
+
+  //  wxLogMessage(_T("[lmScoreView::LogicalToDevice] coverting logical point (%.2f, %.2f) lmLUnits\n")
+		//		 _T("     Point referred to first paper page origin (%d, %d) pixels\n")
+		//		 _T("     Point referred to view origin (%d, %d) pixels\n")
+		//		 _T("     Point referred to canvas origin (%d, %d) pixels\n"),
+  //      posLogical.x, posLogical.y, pointRelD.x, pointRelD.y, pointAbsD.x, pointAbsD.y,
+		//posDevice.x, posDevice.y );
+
+
 
 }
 
@@ -608,29 +794,20 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
     pDC->SetMapMode(lmDC_MODE);
     pDC->SetUserScale( m_rScale, m_rScale );
 
-    // We need to know how much the window has been scrolled (in pixels)
-    int xScrollUnits, yScrollUnits, xOrg, yOrg;
-    GetViewStart(&xOrg, &yOrg);
-    GetScrollPixelsPerUnit(&xScrollUnits, &yScrollUnits);
-    xOrg *= xScrollUnits;
-    yOrg *= yScrollUnits;
-    lmDPoint canvasOrgD(xOrg, yOrg);
+    //compute click point in logical units. Get also different origins and values
+    lmDPoint pageNOrgD;     //the origin (pixels) of this page
+    lmDPoint pagePosD;      //the position (pixels) referred to this page origin
+    lmUPoint pagePosL;      //the position (logical) referred to 1st page origin
+    lmDPoint offsetD;       //offset from canvas origin
+	lmUPoint pageNPosL;     //the position (logical) referred to this page origin
+    int nNumPage;           //the score num page
+    bool fInInterpageGap;   //mouse click out of page
+	DeviceToLogical(canvasPosD, pagePosL, &pagePosD, &pageNPosL, &pageNOrgD, &offsetD, 
+                    &nNumPage, &fInInterpageGap);
 
-    // the origin of current page is
-    lmDPoint pageOrgD(m_xBorder, m_yBorder);
-    //! @todo pageOrgD is valid only for the first page.
-
-    // let's compute the position (pixels and logical) referred to the page origin
-    lmDPoint pagePosD(canvasPosD.x + canvasOrgD.x - pageOrgD.x,
-                     canvasPosD.y + canvasOrgD.y - pageOrgD.y);
-    lmUPoint pagePosL(pDC->DeviceToLogicalXRel(pagePosD.x),
-                     pDC->DeviceToLogicalYRel(pagePosD.y));
-
-    // For transformations from page to canvas and viceversa we need to combine both origins
-    lmDPoint offsetD(pageOrgD.x - canvasOrgD.x, pageOrgD.y - canvasOrgD.y);
-
-    //wxLogStatus(_T("canvasPosD=(%d, %d), pagePosD=(%d, %d), pagePosL=(%d, %d)"),
-    //    canvasPosD.x, canvasPosD.y, pagePosD.x, pagePosD.y, pagePosL.x, pagePosL.y);
+	////for testing and debugging methods DeviceToLogical [ok] and LogicalToDevice [ok]
+	//lmDPoint tempPagePosD;
+	//LogicalToDevice(tempPagePosL, tempPagePosD);
 
     // draw markers on the rulers
     if (m_fRulers) {
@@ -659,12 +836,38 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         // mouse left double click: Select/deselect the object pointed by mouse
         //--------------------------------------------------------------------------
 
-        // locate the object
-        lmScoreObj* pScO = m_pDoc->FindSelectableObject(pagePosL);
+		//ScoreObjs and other score objects (lmBoxXXXX) has all its measurements
+		//relative to each page start position
 
-        // If we've got a valid object on mouse left double click, select/deselect it.
-        if (pScO) {
+        // locate the object
+        lmScoreObj* pScO = m_pDoc->FindSelectableObject(pageNPosL);
+
+        if (pScO)
+        {
+            // we've got a valid object: select/deselect it.
 			m_pCanvas->SelectObject(pScO);
+        }
+        else
+        {
+            // no object. Perhaps it is a doble click on the staff. 
+            lmBoxScore* pBScore = m_graphMngr.GetBoxScore();
+            lmBoxPage* pBPage = pBScore->GetPage(nNumPage);
+            lmBoxSlice* pBSlice = pBPage->FindStaffAtPosition(pageNPosL);
+			if (pBSlice)
+			{
+				//prepare paper DC
+				wxClientDC dc(m_pCanvas);
+				dc.SetMapMode(lmDC_MODE);
+				dc.SetUserScale( m_rScale, m_rScale );
+				//position DC origing at current page origin
+				wxPoint org = GetDCOriginForPage(nNumPage);
+				dc.SetDeviceOrigin(org.x, org.y);
+				//set paper and draw selection rectangle
+				m_Paper.SetDrawer(new lmDirectDrawer(&dc));
+				pBSlice->DrawSelRectangle(&m_Paper);
+			}
+            else
+                wxMessageBox( wxString::Format( _T("Page %d"), nNumPage ));
         }
 
 
@@ -673,7 +876,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         // ---------------------------------------------------------------------------
 
         // locate the object
-        lmScoreObj* pScO = m_pDoc->FindSelectableObject(pagePosL);
+        lmScoreObj* pScO = m_pDoc->FindSelectableObject(pageNPosL);
         if (pScO)
         {
             //valid object pointed. 
@@ -681,11 +884,11 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
             {
                 //Is a draggable object. Tentatively start dragging
                 m_pSoDrag = pScO;
-                m_dragState = DRAG_START;
-                m_dragStartPosL = pagePosL;        // save mouse position (page logical coordinates)
+                m_dragState = lmDRAG_START;
+                m_dragStartPosL = pageNPosL;        // save mouse position (page logical coordinates)
                 // compute the location of the drag position relative to the upper-left
                 // corner of the image (pixels)
-                lmUPoint hotSpot = pagePosL - pScO->GetGlyphPosition();
+                lmUPoint hotSpot = pageNPosL - pScO->GetGlyphPosition();
                 m_dragHotSpot.x = pDC->LogicalToDeviceXRel((int)hotSpot.x);
                 m_dragHotSpot.y = pDC->LogicalToDeviceYRel((int)hotSpot.y);
             }
@@ -700,11 +903,11 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
        }
 
     }
-    else if ((event.LeftUp() && m_dragState != DRAG_NONE )) {
+    else if ((event.LeftUp() && m_dragState != lmDRAG_NONE )) {
         // Left up & dragging: Finish dragging
         //---------------------------------------------------
 
-        m_dragState = DRAG_NONE;
+        m_dragState = lmDRAG_NONE;
 
         if (!m_pSoDrag || !m_pDragImage) return;
 
@@ -718,18 +921,18 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         //lmScoreDocument* doc = (lmScoreDocument*)GetDocument();
         //wxCommandProcessor* pCP = doc->GetCommandProcessor();
         //pCP->Submit(new lmScoreCommandMove(_T("Move object"), doc, m_pSoDrag, finalPos));
-        lmUPoint finalPos = m_pSoDrag->GetGlyphPosition() + pagePosL - m_dragStartPosL;
+        lmUPoint finalPos = m_pSoDrag->GetGlyphPosition() + pageNPosL - m_dragStartPosL;
 		m_pCanvas->MoveObject(m_pSoDrag, finalPos);
 
         m_pSoDrag = (lmScoreObj*) NULL;
 
     }
 
-    else if (event.Dragging() && (m_dragState == DRAG_START)) {
+    else if (event.Dragging() && (m_dragState == lmDRAG_START)) {
         // The mouse was clicked and now has started to drag
         //-----------------------------------------------------------
 
-        m_dragState = DRAG_DRAGGING;
+        m_dragState = lmDRAG_DRAGGING;
 
         // prepare the image to drag
         if (m_pDragImage) delete m_pDragImage;
@@ -742,7 +945,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         if (!fOK) {
             delete m_pDragImage;
             m_pDragImage = (wxDragImage*) NULL;
-            m_dragState = DRAG_NONE;
+            m_dragState = lmDRAG_NONE;
 
         } else {
             //drag image started OK. Move image to current cursor position
@@ -750,12 +953,12 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
             lmDPoint offset(offsetD.x + m_dragHotSpot.x, offsetD.y + m_dragHotSpot.y);
             //m_Paper.SetDC(pDC);
             m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-            m_pSoDrag->MoveDragImage(&m_Paper, m_pDragImage, offset, pagePosL, m_dragStartPosL, canvasPosD);
+            m_pSoDrag->MoveDragImage(&m_Paper, m_pDragImage, offset, pageNPosL, m_dragStartPosL, canvasPosD);
             m_pDragImage->Show();
         }
 
     }
-    else if (event.Dragging() && (m_dragState == DRAG_DRAGGING)) {
+    else if (event.Dragging() && (m_dragState == lmDRAG_DRAGGING)) {
         // We're currently dragging. Move the image
         //------------------------------------------------------
         if (!m_pDragImage) return;
@@ -808,7 +1011,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
             lmDPoint offset(offsetD.x + m_dragHotSpot.x, offsetD.y + m_dragHotSpot.y);
             //m_Paper.SetDC(pDC);
             m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-            m_pSoDrag->MoveDragImage(&m_Paper, m_pDragImage, offset, pagePosL, m_dragStartPosL, canvasPosD);
+            m_pSoDrag->MoveDragImage(&m_Paper, m_pDragImage, offset, pageNPosL, m_dragStartPosL, canvasPosD);
         }
 
     }
@@ -939,7 +1142,6 @@ void lmScoreView::GetScrollPixelsPerUnit (int* x_unit, int* y_unit) const
         *y_unit = m_pixelsPerStepY;
 }
 
-
 int lmScoreView::CalcScrollInc(wxScrollEvent& event)
 {
     int pos = event.GetPosition();
@@ -994,11 +1196,12 @@ int lmScoreView::CalcScrollInc(wxScrollEvent& event)
     return nScrollInc;
 }
 
-// This method is invoked by lmScoreCanvas::OnPaint to repaint a rectangle of the score
-// The DC is not scrolled.
-// The rectangle to redraw is in pixels and unscrolled
 void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
 {
+    // This method is invoked by lmScoreCanvas::OnPaint to repaint a rectangle of the score
+    // The DC is not scrolled.
+    // The rectangle to redraw is in pixels and unscrolled
+
     // To draw a cast shadow for each page we need the shadow sizes
     lmPixels nRightShadowWidth = 3;      //pixels
     lmPixels nBottomShadowHeight = 3;      //pixels
@@ -1043,8 +1246,17 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
 
     // inform the paper that we are going to use it, and get the number of
     // pages needed to draw the score
-    lmScore* pScore = ((lmScoreDocument*)GetDocument())->GetScore();
+    lmScore* pScore = m_pDoc->GetScore();
     if (!pScore) return;
+	if (m_pCursorInstr == (lmInstrument*)NULL)
+	{
+		// Set initial cursor position
+		m_pCursorInstr = pScore->GetFirstInstrument();	//first instrument
+		m_nCursorStaff = 1;								//staff = 1
+		m_nCursorMeasure = 1;							//measure = 1
+		m_nCursorTime = 0;
+	}
+
 
     //m_Paper.SetDC(&memoryDC);           //the layout phase requires a DC
     m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
@@ -1172,3 +1384,181 @@ void lmScoreView::DumpBitmaps()
     m_graphMngr.BitmapsToFile(sFilename, sExt, wxBITMAP_TYPE_JPEG);
 }
 
+void lmScoreView::DrawCursor()
+{
+    if (!m_pCanvas) return;
+
+	//get pointed object
+	if (m_pCursorSO == (lmStaffObj*)NULL)
+	{
+        SetInitialCursorPosition();
+	    if (m_pCursorSO == (lmStaffObj*)NULL) return;
+    }
+
+
+	//get cursor position
+    //if we are going to show cursor. Get new position
+    //else, if we are going to hide cursor,  use current cursor pos.
+    if (!m_fCursorShown)
+    {
+        //we are going to show cursor. Get new position if object changed
+        if (m_pCursorSO->GetID() != m_nCursorIdSO)
+        {
+	        lmVStaff* pVStaff = m_pCursorInstr->GetVStaff(m_nCursorStaff);
+	        m_oCursorPos = m_pCursorSO->GetOrigin();
+	        m_oCursorPos.y -= pVStaff->TenthsToLogical(10, m_nCursorStaff);
+	        m_udyLength = pVStaff->TenthsToLogical(60, m_nCursorStaff);
+	        m_udxSegment = pVStaff->TenthsToLogical(5, m_nCursorStaff);
+            m_nCursorIdSO = m_pCursorSO->GetID();
+        }
+    }
+    m_fCursorShown = !m_fCursorShown;       //toggle status
+
+	// prepare DC
+    wxClientDC dc(m_pCanvas);
+	dc.SetBrush(*wxBLUE_BRUSH);
+	int vxlineWidth = 1;
+	wxColour color(255,255,0);		//XOR transforms it in the complementary: blue
+	wxPen pen(color, vxlineWidth);		
+	dc.SetPen(pen);
+	dc.SetLogicalFunction(wxXOR);
+ 
+	//cursor geometry
+	lmDPoint pointD;
+	LogicalToDevice(lmUPoint(m_oCursorPos.x, m_oCursorPos.y), pointD);
+	lmPixels vxLine = pointD.x;
+	lmPixels vyTop = pointD.y;
+
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale( m_rScale, m_rScale );
+	lmPixels vyBottom = vyTop + dc.LogicalToDeviceYRel(m_udyLength);
+	lmPixels vdxSegment = dc.LogicalToDeviceYRel(m_udxSegment);
+    dc.SetMapMode(wxMM_TEXT);
+    dc.SetUserScale(1.0, 1.0);
+
+	//draw vertical line
+	dc.DrawLine(vxLine, vyTop, vxLine, vyBottom);
+
+	//draw horizontal segments
+	dc.DrawLine(vxLine-vdxSegment, vyTop-1, vxLine+vdxSegment+1, vyTop-1);
+	dc.DrawLine(vxLine-vdxSegment, vyBottom, vxLine+vdxSegment+1, vyBottom);
+
+}
+
+void lmScoreView::OnCursorTimer(wxTimerEvent& event)
+{
+    if (m_fCursorEnabled)
+    	DrawCursor();
+}
+
+void lmScoreView::UpdateCursor()
+{
+    //for inmediate visual feedback, after changing cursor position,
+    //we are going to hide current cursor and to display the new one
+
+    //hide old cursor
+    if (m_fCursorShown)
+        DrawCursor();       
+
+    //show new cursor
+    DrawCursor();
+
+    //restart timer
+    m_oCursorTimer.Start(lmCURSOR_BLINKING_RATE, wxTIMER_CONTINUOUS);
+
+}
+
+void lmScoreView::SetInitialCursorPosition()
+{
+    if (m_pCursorIT) return;
+	if (m_pCursorSO == (lmStaffObj*)NULL)
+	{
+		if (m_pCursorInstr == (lmInstrument*)NULL) return;
+		lmVStaff* pVStaff = m_pCursorInstr->GetVStaff(m_nCursorStaff);
+
+		//loop to process all StaffObjs in this measure
+		m_pCursorIT = pVStaff->CreateIterator(eTR_ByTime);
+		if (m_pCursorIT->EndOfList())
+		{
+			//the score is empty. Place cursor at start of first staff
+		}
+		else
+		{
+			//place cursor at first StaffObj
+			m_pCursorSO = m_pCursorIT->GetCurrent();
+		}
+	}
+
+}
+
+void lmScoreView::EnableCursor(bool fEnable)
+{
+    //TODO
+}
+
+void lmScoreView::CursorRight()
+{
+    if (!m_pCanvas) return;
+	if (m_pCursorSO == (lmStaffObj*)NULL) return;
+	if (m_pCursorInstr == (lmInstrument*)NULL) return;
+    if (m_pCursorIT == (lmStaffObjIterator*)NULL) return;
+
+    //stopt cursor timer
+    m_oCursorTimer.Stop();
+
+	//advance to next staff obj.
+	if (!m_pCursorIT->EndOfList()) {
+        m_pCursorIT->MoveNext();
+	    if (m_pCursorIT->EndOfList()) {
+            //continue in last item
+            m_pCursorIT->MoveLast();
+        }
+        m_pCursorSO = m_pCursorIT->GetCurrent();
+    }
+
+    //for inmediate visual feedback, hide current cursor and display new one
+    UpdateCursor();
+
+}
+
+void lmScoreView::CursorLeft()
+{
+    if (!m_pCanvas) return;
+	if (m_pCursorSO == (lmStaffObj*)NULL) return;
+	if (m_pCursorInstr == (lmInstrument*)NULL) return;
+    if (m_pCursorIT == (lmStaffObjIterator*)NULL) return;
+
+    //stopt cursor timer
+    m_oCursorTimer.Stop();
+
+	//go back to previous staff obj.
+	if (!m_pCursorIT->EndOfList()) {
+        m_pCursorIT->MovePrev();
+	    if (m_pCursorIT->EndOfList()) {
+            //continue in first item
+            m_pCursorIT->MoveFirst();
+        }
+        m_pCursorSO = m_pCursorIT->GetCurrent();
+    }
+
+    //for inmediate visual feedback, hide current cursor and display new one
+    UpdateCursor();
+
+}
+
+void lmScoreView::CursorUp()
+{
+	wxMessageBox(_T("lmScoreView::CursorUp"));
+}
+
+void lmScoreView::CursorDown()
+{
+    lmBoxScore* pBS = m_graphMngr.GetBoxScore();
+    lmBoxPage* pBP = pBS->GetPage(1);
+	wxMessageBox(_T("lmScoreView::CursorDown"));
+}
+
+void lmScoreView::CursorAtPoint(lmUPoint& point)
+{
+	wxMessageBox(_T("lmScoreView::CurserAtPoint"));
+}

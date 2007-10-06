@@ -87,7 +87,7 @@ public:
 
 	//overrides of virtual methods in wxView
     bool OnClose(bool deleteWindow = true);
-    void OnUpdate(wxView* WXUNUSED(sender), wxObject* WXUNUSED(hint));
+    void OnUpdate(wxView* sender, wxObject* hint);
     bool OnCreate(wxDocument* doc, long WXUNUSED(flags));
     void OnDraw(wxDC* dc);
 
@@ -101,7 +101,10 @@ public:
     // debug options
     void DumpBitmaps();
 
-    //methods for dealing with user interaction
+	//event handlers
+	void OnCursorTimer(wxTimerEvent& event);
+
+	//methods for dealing with user interaction
     void OnMouseEvent(wxMouseEvent& event, wxDC* pDC);
     void OnMouseWheel(wxMouseEvent& event);
     void OnScroll(wxScrollEvent& event);
@@ -112,7 +115,7 @@ public:
     void GetViewStart (int* x, int* y) const;
     void GetScrollPixelsPerUnit (int* x_unit, int* y_unit) const;
     void RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect);
-
+	wxPoint GetDCOriginForPage(int nNumPage);
 
     // print/preview/export as image
     void GetPageInfo(int* pMinPage, int* pMaxPage, int* pSelPageFrom, int* pSelPageTo);
@@ -126,16 +129,36 @@ public:
     // sound related methods
     void OnVisualHighlight(lmScoreHighlightEvent& event);
 
+	//visual cursor management
+	void CursorRight();
+	void CursorLeft();
+	void CursorUp();
+	void CursorDown();
+	void CursorAtPoint(lmUPoint& point);
+
 
 
 private:
-        ////-- methods ---
+    
+	// units conversion
+    void DeviceToLogical(lmDPoint& posDevice, lmUPoint& posLogical,
+                         lmDPoint* pPagePosD, lmUPoint* pPageNPosL,
+						 lmDPoint* pPaperOrgD, lmDPoint* pOffsetD,
+						 int* pNumPage, bool* pfInInterpageGap);
+	void LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice);
 
     // Auxiliary for scrolling
     int CalcScrollInc(wxScrollEvent& event);
     void DoScroll(int orientation, int nScrollSteps);
 
-        ////-- variables ---
+	//Dealing with the cursor
+	void DrawCursor();
+    void UpdateCursor();
+    void EnableCursor(bool fEnable);
+    void SetInitialCursorPosition();
+
+
+        //-- variables ---
 
     // parents, managers and related
     lmScoreDocument*    m_pDoc;             //the MVC document (M)
@@ -182,7 +205,27 @@ private:
     wxDragImage*    m_pDragImage;
     lmScoreObj*     m_pSoDrag;            // lmScoreObj being dragged
 
-	//cursor positioning
+	    //cursor display and positioning
+
+    //cursor: current position in score
+    bool            m_fCursorEnabled;       //to supress cursor display
+    bool            m_fCursorShown;         //to know its state
+	lmInstrument*	m_pCursorInstr;			//current position: instrument
+	int				m_nCursorStaff;			//current position: staff
+	int				m_nCursorMeasure;		//current position: measure
+	int				m_nCursorTime;			//current position: time (from measure start)
+	lmStaffObj*		m_pCursorSO;			//staff object pointed by the cursor
+	int		        m_nCursorIdSO;		    //previous staff object pointed by the cursor
+	lmStaffObjIterator* m_pCursorIT;        //iterator, to speed up cursor moves
+
+    //timer for cursor blinking
+	wxTimer			m_oCursorTimer;			//for cursor blinking
+
+    //cursor position in screen and geometry
+    lmUPoint        m_oCursorPos;           //to remove old cursor image        
+	lmLUnits        m_udyLength;
+	lmLUnits        m_udxSegment;
+		
 
 
 
