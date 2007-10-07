@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.6\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-06 13:28+0100\n"
+"PO-Revision-Date: 2007-10-07 15:45+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -58,7 +58,7 @@ msgid "Presentation"
 msgstr "Presentación"
 
 #: TheoryHarmony/TheoryHarmony.cpp:13
-msgid "It takes a lot of time to prepare an eBbook. So I have decided to publish the chapters, themes and articles as soon as we write them, instead of waiting until the book is finalized. All these provisional themes and articles are bundled into this eBook. Therefore the 'Theory and harmony' eBook is currently just a collection of un-ordered/un-related themes."
+msgid "It takes a lot of time to prepare an eBbook. So we have decided to publish the chapters, themes and articles as soon as we write them, instead of waiting until the book is finalized. All these provisional themes and articles are bundled into this eBook. Therefore the 'Theory and harmony' eBook is currently just a collection of un-ordered/un-related themes."
 msgstr "Lleva mucho tiempo preparar un eBook. Asi que se ha tomado la decisión de publicar los capítulos, temas y artículos tan pronto como los vayamos teniendo preparados, sin esperar a tener finalizado un libro completo. Todos estos temas provisionales se irán incluyendo en este eBook hasta que sea conveniente moverlos, de forma ordenada y estructurada, a otro eBook. Por tanto, el eBook 'Teoría y armonía' es, ectualmente, el inicio de una colección desordenada de temas."
 
 #: TheoryHarmony/TheoryHarmony.cpp:14
