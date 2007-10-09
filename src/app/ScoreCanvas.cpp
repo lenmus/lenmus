@@ -56,6 +56,7 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 
 BEGIN_EVENT_TABLE(lmController, wxEvtHandler)
 	EVT_CHAR(lmController::OnKeyPress) 
+    EVT_ERASE_BACKGROUND(lmController::OnEraseBackground)
 END_EVENT_TABLE()
 
 IMPLEMENT_ABSTRACT_CLASS(lmController, wxWindow)
@@ -66,6 +67,15 @@ lmController::lmController(wxWindow *pParent, lmScoreView *pView, lmScoreDocumen
 				 const wxSize& size, long style)
         : wxWindow(pParent, -1, pos, size, style)
 {
+}
+
+void lmController::OnEraseBackground(wxEraseEvent& event)
+{
+	// When wxWidgets wants to update the display it emits two events: an erase 
+	// background event and a paint event.
+	// We are going to intercept the Erase Background event in order to prevent
+	// that the default implementation in wxWindow erases the background, as this
+	// will cause flickering
 }
 
 
@@ -92,6 +102,7 @@ lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmScoreDocum
     m_pOwner = pParent;
     m_pDoc = pDoc;
     m_colorBg = colorBg;
+    m_fDoEraseBackground = true;    //allow the first time, on view creation
 
 }
 
@@ -565,6 +576,16 @@ void csCanvas::OnLeftClick(double x, double y, int WXUNUSED(keys))
 
 void lmScoreCanvas::OnEraseBackground(wxEraseEvent& event)
 {
+	// When wxWidgets wants to update the display it emits two events: an erase 
+	// background event and a paint event.
+	// To prevent flickering we are not going to erase the background unless really
+    // needed. It is only needed at certain occasions, such as:
+    // - When scaling down, as more background is going to be visible
+    // - On view creation, as it is the first time and nothing is yet drawn
+    // To control these cases flag m_fDoEraseBackground will be used.
+return;
+    if (!m_fDoEraseBackground) return;
+
 #if 1
     // Code for flooding the background with a color
     wxDC* pDC = event.GetDC();
@@ -601,6 +622,8 @@ void lmScoreCanvas::OnEraseBackground(wxEraseEvent& event)
     else
         event.Skip();      // The official way of doing it
 #endif
+
+    m_fDoEraseBackground = false;
 }
 
 bool lmScoreCanvas::TileBitmap(const wxRect& rect, wxDC& dc, wxBitmap& bitmap)

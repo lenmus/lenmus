@@ -65,6 +65,7 @@ public:
 
     // event handlers
     virtual void OnKeyPress(wxKeyEvent& event) { event.Skip(); }
+	virtual void OnEraseBackground(wxEraseEvent& event);
 
 
 private:
@@ -102,6 +103,9 @@ public:
 	void MoveObject(lmScoreObj* pSO, const lmUPoint& uPos);
 	void SelectObject(lmScoreObj* pSO);
 
+    // background control
+    void EraseBackground(bool fValue) { m_fDoEraseBackground = fValue; }
+
 
 private:
 
@@ -114,7 +118,8 @@ private:
     wxWindow*           m_pOwner;       //parent window
     lmScoreDocument*    m_pDoc;         //the document rendered by the view
 
-    wxColour        m_colorBg;      //colour for background
+    wxColour        m_colorBg;              //colour for background
+    bool            m_fDoEraseBackground;   //allow to repaint the backround
 
     DECLARE_EVENT_TABLE()
 };

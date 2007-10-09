@@ -162,11 +162,11 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
     else
         m_pFrame->SetTitle(_T("New score"));
 
-    //wxColour colorBg(10,36,106);        //deep blue
+    //m_colorBg = wxColour(10,36,106);        //deep blue
     //wxColour colorBg(200, 200, 200);    // light grey
-    wxColour colorBg(127, 127, 127);    // dark grey
+    m_colorBg = wxColour(127, 127, 127);    // dark grey
 
-    m_pFrame->SetBackgroundColour(colorBg);
+    //m_pFrame->SetBackgroundColour(wxColour(10,36,106));
 
     //rulers
     m_fRulers = GetMainFrame()->ShowRulers();
@@ -196,7 +196,7 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
 
     // create the canvas for the score to edit
     m_pCanvas = new lmScoreCanvas(this, m_pFrame, m_pDoc, wxPoint(0, 0), m_pFrame->GetSize(),
-                        wxNO_BORDER, colorBg );
+                        wxNO_BORDER, m_colorBg );
 
     // create the scrollbars
     m_pHScroll = new wxScrollBar(m_pFrame, lmID_HSCROLL, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
@@ -214,51 +214,56 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
 
 void lmScoreView::ResizeControls()
 {
-
     // Get client area
-    int dxFrame, dyFrame;
-    m_pFrame->GetClientSize(&dxFrame, &dyFrame);
-    int dxFree = dxFrame,
-            dyFree = dyFrame;
+    lmPixels dxCanvas, dyCanvas;
+    m_pFrame->GetClientSize(&dxCanvas, &dyCanvas);
+    lmPixels dxFree = dxCanvas,
+             dyFree = dyCanvas;
+
 
     // Discount scrollbars
-    // default value is ugly (14 pixels). Lets have wider scrollbars
-    int dxVScroll = 16,    //m_pVScroll->GetSize().GetWidth(),
-            dyHScroll = 16;    //m_pHScroll->GetSize().GetHeight();
+    lmPixels dxVScroll = m_pVScroll->GetSize().GetWidth(),
+             dyHScroll = m_pHScroll->GetSize().GetHeight();
 
     dxFree -= dxVScroll;
     dyFree -= dyHScroll;
-
-    // Discount rulers witdth plus 2 pixels for separation
-    int vrWidth = 0, hrWidth = 0;
+	
+    // Discount rulers width plus 2 pixels for separation
+    lmPixels nVRulerWidth = 0, nHRulerWidth = 0;
     if (m_fRulers) {
         wxASSERT(m_pHRuler && m_pVRuler);
-        vrWidth = m_pVRuler->GetWidth() + 2;
-        hrWidth = m_pHRuler->GetWidth() + 2;
-        dxFree -= vrWidth;
-        dyFree -= hrWidth;
+        nVRulerWidth = m_pVRuler->GetWidth() + 2;
+        nHRulerWidth = m_pHRuler->GetWidth() + 2;
+        dxFree -= nVRulerWidth;
+        dyFree -= nHRulerWidth;
     }
 
-    // Compute space available for canvas
-    int cvMaxDx = Min(m_xPageSizeD+m_xBorder+m_xBorder, dxFree),
-            cvMaxDy = Min(m_yPageSizeD, dyFree);
+    //// Compute available space for the view and set view margin so that
+    //// the view is centered
+    //dxFree -= m_xPageSizeD;
+    //m_xBorder = (dxFree > 0 ? dxFree/2 : 13);
+
+
+    // Compute available space for the canvas
+    lmPixels cvMaxDx = Min(m_xPageSizeD+m_xBorder+m_xBorder, dxFree),
+             cvMaxDy = Min(m_yPageSizeD, dyFree);
 
     // Compute view origin, to center everything
     dxFree -= cvMaxDx;
-    int left = (dxFree > 0 ? dxFree/2 : 0);
+    lmPixels left = (dxFree > 0 ? dxFree/2 : 0);
 
     // Move controls to the computed positions
     if (m_fRulers) {
-        int dxHR = (cvMaxDx >= m_xPageSizeD+m_xBorder ? m_xPageSizeD : cvMaxDx-m_xBorder);
-        m_pHRuler->NewSize(left+vrWidth+m_xBorder, 0, dxHR);
-        m_pVRuler->NewSize(left, hrWidth, cvMaxDy);
+        lmPixels dxHR = (cvMaxDx >= m_xPageSizeD+m_xBorder ? m_xPageSizeD : cvMaxDx-m_xBorder);
+        m_pHRuler->NewSize(left+nVRulerWidth+m_xBorder, 0, dxHR);
+        m_pVRuler->NewSize(left, nHRulerWidth, cvMaxDy);
     }
-    m_pCanvas->SetSize(left+vrWidth, hrWidth, cvMaxDx, cvMaxDy);
-    m_pHScroll->SetSize(0, dyFrame - dyHScroll, dxFrame - dxVScroll, dyHScroll);
-    m_pVScroll->SetSize(dxFrame - dxVScroll, 0, dxVScroll, dyFrame - dyHScroll);
+    m_pCanvas->SetSize(left+nVRulerWidth, nHRulerWidth, cvMaxDx, dyCanvas - dyHScroll); 	//cvMaxDy);
+    m_pHScroll->SetSize(0, dyCanvas - dyHScroll, dxCanvas - dxVScroll, dyHScroll);
+    m_pVScroll->SetSize(dxCanvas - dxVScroll, 0, dxVScroll, dyCanvas - dyHScroll);
 
     //wxLogStatus(_T("Frame size(%d,%d) dxVScroll=%d, dyHScroll=%d"),
-    //    dxFrame, dyFrame,
+    //    dxCanvas, dyCanvas,
     //    dxVScroll, dyHScroll);
 
     // compute new scrollbars
@@ -441,7 +446,7 @@ void lmScoreView::DrawPage(wxDC* pDC, int nPage, lmPrintout* pPrintout)
 
 void lmScoreView::OnUpdate(wxView* sender, wxObject* hint)
 {
-    // Called from the document when an update is needed. i.e. when UpdateAllViews() 
+    // Called from the document when an update is needed. i.e. when UpdateAllViews()
     // has been invoked
 
 	WXUNUSED(sender)
@@ -477,7 +482,10 @@ bool lmScoreView::OnClose(bool deleteWindow)
 void lmScoreView::SetScale(double rScale)
 {
     wxASSERT(rScale > 0);
-    m_rScale = rScale * lmSCALE;
+    double rNewScale = rScale * lmSCALE;
+    if (rNewScale < m_rScale)
+        m_pCanvas->EraseBackground(true);
+    m_rScale = rNewScale;
 
     if (m_pCanvas) {
         // compute new paper size in pixels
@@ -601,7 +609,7 @@ void lmScoreView::OnVisualHighlight(lmScoreHighlightEvent& event)
 	wxPoint org = GetDCOriginForPage(nNumPage);
 	dc.SetDeviceOrigin(org.x, org.y);
 
-	//do the requested action:  highlight (eVisualOn) / unhighlight (eVisualOff) 
+	//do the requested action:  highlight (eVisualOn) / unhighlight (eVisualOff)
 	pScore->ScoreHighlight(pSO, &m_Paper, nHighlightType);
 
 }
@@ -630,14 +638,16 @@ wxPoint lmScoreView::GetDCOriginForPage(int nNumPage)
 }
 
 void lmScoreView::DeviceToLogical(lmDPoint& posDevice, lmUPoint& posLogical,
-                            lmDPoint* pPagePosD, lmUPoint* pPageNPosL, 
-							lmDPoint* pPageNOrgD, lmDPoint* pOffsetD,
-                            int* pNumPage, bool* pfInInterpageGap)
+                            lmDPoint* pPageNPosD, lmDPoint* pPageNOrgD,
+                            lmDPoint* pOffsetD, int* pNumPage, bool* pfInInterpageGap)
 {
 	//converts a device position (pixels), referred to the lmScoreCanvas window,
-	//to logical position (lmLUnits).
-    //Optionally (if not null pointers) returns number of page, origing of first page (in 
-    //pixel) and flag informing if position is out of page
+	//to logical position (lmLUnits) referred to current page origin.
+    //Optionally (if not null pointers) returns:
+    // pPageNPosD - device position (lmPixels) referred to current page origin.
+    // pPageNOrgD - origing of current page (lmPixels) referred to view origin.
+    // pNumPage - number of current page (1..n)
+    // pfInInterpageGap - flag informing if position is out of page
 
     // Set DC in logical units and scaled, so that
     // transformations logical/device and viceversa can be computed
@@ -673,18 +683,10 @@ void lmScoreView::DeviceToLogical(lmDPoint& posDevice, lmUPoint& posLogical,
     lmPixels yEndPage = yStartPage + m_yPageSizeD;
 	bool fInInterpageGap = (yPage < m_yBorder || yPage > yEndPage);
 
-	// the origin of first page is at (pixels)
-    lmDPoint pageOrgD(m_xBorder, m_yBorder);
-	// ... and the origin of current page is at (pixels)
+	// the origin of current page is at (pixels)
     lmDPoint pageNOrgD(m_xBorder, yStartPage);
 
-    // let's compute the position (pixels and logical) referred to first page origin
-    lmDPoint pagePosD(posDevice.x + canvasOrgD.x - pageOrgD.x,
-                     posDevice.y + canvasOrgD.y - pageOrgD.y);
-    lmUPoint pagePosL(dc.DeviceToLogicalXRel(pagePosD.x),
-                     dc.DeviceToLogicalYRel(pagePosD.y));
-
-	// ... and to the current page origin
+    // let's compute the position (pixels and logical) referred to current page origin
     lmDPoint pageNPosD(posDevice.x + canvasOrgD.x - pageNOrgD.x,
                      posDevice.y + canvasOrgD.y - pageNOrgD.y);
     lmUPoint pageNPosL(dc.DeviceToLogicalXRel(pageNPosD.x),
@@ -692,11 +694,11 @@ void lmScoreView::DeviceToLogical(lmDPoint& posDevice, lmUPoint& posLogical,
 
 
 	//move requested answers
-    posLogical.x = pagePosL.x;
-    posLogical.y = pagePosL.y;
+    posLogical.x = pageNPosL.x;
+    posLogical.y = pageNPosL.y;
 
-    if (pPagePosD)
-        *pPagePosD = pagePosD;
+    if (pPageNPosD)
+        *pPageNPosD = pageNPosD;
 
     if (pNumPage)
         *pNumPage = nNumPage;
@@ -709,24 +711,19 @@ void lmScoreView::DeviceToLogical(lmDPoint& posDevice, lmUPoint& posLogical,
         (*pPageNOrgD).y = pageNOrgD.y;
     }
 
-    if (pPageNPosL) {
-        (*pPageNPosL).x = pageNPosL.x;
-        (*pPageNPosL).y = pageNPosL.y;
-    }
-
     if (pOffsetD) {
-        (*pOffsetD).x = pageOrgD.x - canvasOrgD.x;
-        (*pOffsetD).y = pageOrgD.y - canvasOrgD.y;
+        (*pOffsetD).x = pageNOrgD.x - canvasOrgD.x;
+        (*pOffsetD).y = pageNOrgD.y - canvasOrgD.y;
     }
 
-    wxLogMessage(_T("[lmScoreView::DeviceToLogical] coverting canvas point (%d, %d) pixels\n")
-				 _T("     Point referred to first paper page origin (%d, %d) pixels\n")
-				 _T("     Point referred to first paper page origin (%.2f, %.2f) lmLUnits\n")
-				 _T("     Point referred to this paper page origin (%.2f, %.2f) lmLUnits\n")
-				 _T("     Point is at page %d (yStartPage=%d, yPage=%d, yEndPage=%d) %s"),
-        posDevice.x, posDevice.y, pagePosD.x, pagePosD.y, posLogical.x, pagePosL.y,
-		pageNPosL.x, pageNPosL.y,
-		nNumPage, yStartPage, yPage, yEndPage, (fInInterpageGap ? _T("in gap between pages") : _T("")) );
+  //  wxLogMessage(_T("[lmScoreView::DeviceToLogical] coverting canvas point (%d, %d) pixels\n")
+		//		 _T("     Point referred to first paper page origin (%d, %d) pixels\n")
+		//		 _T("     Point referred to first paper page origin (%.2f, %.2f) lmLUnits\n")
+		//		 _T("     Point referred to this paper page origin (%.2f, %.2f) lmLUnits\n")
+		//		 _T("     Point is at page %d (yStartPage=%d, yPage=%d, yEndPage=%d) %s"),
+  //      posDevice.x, posDevice.y, pageNPosD.x, pageNPosD.y, posLogical.x, pagePosL.y,
+		//pageNPosL.x, pageNPosL.y,
+		//nNumPage, yStartPage, yPage, yEndPage, (fInInterpageGap ? _T("in gap between pages") : _T("")) );
 
 
 
@@ -734,8 +731,8 @@ void lmScoreView::DeviceToLogical(lmDPoint& posDevice, lmUPoint& posLogical,
 
 void lmScoreView::LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice)
 {
-	//converts a device position (pixels), referred to the lmScoreCanvas window,
-	//to logical position (lmLUnits)
+	//converts a logical position (lmLUnits), referred to current page origin to
+	//a device position (pixels), referred to the lmScoreCanvas window,
 
     // Set DC in logical units and scaled, so that
     // transformations logical/device and viceversa can be computed
@@ -796,13 +793,12 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 
     //compute click point in logical units. Get also different origins and values
     lmDPoint pageNOrgD;     //the origin (pixels) of this page
-    lmDPoint pagePosD;      //the position (pixels) referred to this page origin
-    lmUPoint pagePosL;      //the position (logical) referred to 1st page origin
+    lmDPoint pageNPosD;      //the position (pixels) referred to current page origin
     lmDPoint offsetD;       //offset from canvas origin
-	lmUPoint pageNPosL;     //the position (logical) referred to this page origin
+	lmUPoint pageNPosL;     //the position (logical) referred to current page origin
     int nNumPage;           //the score num page
     bool fInInterpageGap;   //mouse click out of page
-	DeviceToLogical(canvasPosD, pagePosL, &pagePosD, &pageNPosL, &pageNOrgD, &offsetD, 
+	DeviceToLogical(canvasPosD, pageNPosL, &pageNPosD, &pageNOrgD, &offsetD,
                     &nNumPage, &fInInterpageGap);
 
 	////for testing and debugging methods DeviceToLogical [ok] and LogicalToDevice [ok]
@@ -812,8 +808,8 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
     // draw markers on the rulers
     if (m_fRulers) {
         //lmDPoint ptR(pDC->LogicalToDeviceX(pt.x), pDC->LogicalToDeviceY(pt.y));
-        if (m_pHRuler) m_pHRuler->ShowPosition(pagePosD);
-        if (m_pVRuler) m_pVRuler->ShowPosition(pagePosD);
+        if (m_pHRuler) m_pHRuler->ShowPosition(pageNPosD);
+        if (m_pVRuler) m_pVRuler->ShowPosition(pageNPosD);
     }
 
     // check if a key is pressed
@@ -849,7 +845,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         }
         else
         {
-            // no object. Perhaps it is a doble click on the staff. 
+            // no object. Perhaps it is a doble click on the staff.
             lmBoxScore* pBScore = m_graphMngr.GetBoxScore();
             lmBoxPage* pBPage = pBScore->GetPage(nNumPage);
             lmBoxSlice* pBSlice = pBPage->FindStaffAtPosition(pageNPosL);
@@ -879,7 +875,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         lmScoreObj* pScO = m_pDoc->FindSelectableObject(pageNPosL);
         if (pScO)
         {
-            //valid object pointed. 
+            //valid object pointed.
             if (pScO->IsDraggable())
             {
                 //Is a draggable object. Tentatively start dragging
@@ -937,6 +933,12 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         // prepare the image to drag
         if (m_pDragImage) delete m_pDragImage;
         wxBitmap* pBitmap = m_pSoDrag->GetBitmap(m_rScale);
+        if (!pBitmap) {
+            wxLogMessage(wxString::Format(_T("No drag image for object type %d"),
+                m_pSoDrag->GetType() ));
+            m_dragState = lmDRAG_NONE;
+            return;
+        }
         m_pDragImage = new wxDragImage(*pBitmap);    //, wxCursor(wxCURSOR_HAND));
         delete pBitmap;
 
@@ -1244,8 +1246,9 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     // allocate a DC in memory for using the offscreen bitmaps
     wxMemoryDC memoryDC;
 
-    // inform the paper that we are going to use it, and get the number of
-    // pages needed to draw the score
+    // Following code initializes cursor position if not yet initialized.
+    // Next code has nothing to do with repainting but I didn't find a better place to
+    // include it. And when repainting it is necessary to have cursor initialized.
     lmScore* pScore = m_pDoc->GetScore();
     if (!pScore) return;
 	if (m_pCursorInstr == (lmInstrument*)NULL)
@@ -1258,6 +1261,8 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
 	}
 
 
+    // inform the paper that we are going to use it, and get the number of
+    // pages needed to draw the score
     //m_Paper.SetDC(&memoryDC);           //the layout phase requires a DC
     m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
     m_graphMngr.Prepare(pScore, xPageSize, yPageSize, m_rScale, &m_Paper);
@@ -1273,6 +1278,45 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     // To refer it to view origin it is necessary to add scrolling origin
     wxRect drawRect(repaintRect.x + xOrg, repaintRect.y + yOrg,
                     repaintRect.width, repaintRect.height );
+
+    //verify if left background needs repaint
+    if (drawRect.x < xLeftMargin)
+    {
+        //compute left background rectangle
+        wxRect bgRect(repaintRect.x, repaintRect.y,
+                      xLeftMargin - repaintRect.x - xOrg, repaintRect.height );
+        wxBrush brush(m_colorBg, wxSOLID);
+        wxPen pen(m_colorBg);
+        pDC->SetBrush(brush);
+        pDC->SetPen(pen);
+        pDC->DrawRectangle(bgRect);
+    }
+
+    //verify if rigth background needs repaint
+    lmPixels xRight = xLeftMargin + xPageSize;
+    if (xRight < drawRect.x + drawRect.width && xRight > drawRect.x)
+    {
+        //compute right background rectangle
+        wxRect bgRect(xRight - xOrg, repaintRect.y,
+                      repaintRect.width + repaintRect.x - xRight + xOrg, repaintRect.height );
+        wxBrush brush(*wxRED, wxSOLID);
+        wxPen pen(*wxRED);
+        pDC->SetBrush(brush);
+        pDC->SetPen(pen);
+        pDC->DrawRectangle(bgRect);
+    }
+
+    //verify if top intergap needs repaint
+    wxRect bgTopGap(0, 0, xLeftMargin + xPageSize, yInterpageGap);
+    if (drawRect.x < bgTopGap.width && drawRect.y < bgTopGap.height)
+    {
+        //compute right background rectangle
+        wxBrush brush(*wxRED, wxSOLID);
+        wxPen pen(*wxRED);
+        pDC->SetBrush(brush);
+        pDC->SetPen(pen);
+        pDC->DrawRectangle(bgTopGap);
+    }
 
     // loop to verify if page nPag (0..n-1) is visible and needs redrawing.
     // To optimize, the loop is exited as soon as we find a non-visible page after
@@ -1328,6 +1372,9 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
             //pDC->SetPen(*wxRED_PEN);
             //pDC->DrawRectangle(xCanvas, yCanvas, interRect.width, interRect.height);
 
+            //paint backgroud in the remaining area
+            //TODO
+
             //draw page cast shadow
             // to refer page rectangle to canvas window coordinates we need to
             // substract scroll origin
@@ -1342,6 +1389,11 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
             pDC->DrawRectangle(xLeft + nRightShadowWidth, yBottom,
                                pageRect.width, nBottomShadowHeight);
 
+        }
+        else
+        {
+            //intersection is null. Just repaint background
+            //TODO
         }
 
         //verify if we should finish the loop
@@ -1419,10 +1471,10 @@ void lmScoreView::DrawCursor()
 	dc.SetBrush(*wxBLUE_BRUSH);
 	int vxlineWidth = 1;
 	wxColour color(255,255,0);		//XOR transforms it in the complementary: blue
-	wxPen pen(color, vxlineWidth);		
+	wxPen pen(color, vxlineWidth);
 	dc.SetPen(pen);
 	dc.SetLogicalFunction(wxXOR);
- 
+
 	//cursor geometry
 	lmDPoint pointD;
 	LogicalToDevice(lmUPoint(m_oCursorPos.x, m_oCursorPos.y), pointD);
@@ -1458,7 +1510,7 @@ void lmScoreView::UpdateCursor()
 
     //hide old cursor
     if (m_fCursorShown)
-        DrawCursor();       
+        DrawCursor();
 
     //show new cursor
     DrawCursor();

@@ -142,7 +142,7 @@ private:
     
 	// units conversion
     void DeviceToLogical(lmDPoint& posDevice, lmUPoint& posLogical,
-                         lmDPoint* pPagePosD, lmUPoint* pPageNPosL,
+                         lmDPoint* pPagePosD, 
 						 lmDPoint* pPaperOrgD, lmDPoint* pOffsetD,
 						 int* pNumPage, bool* pfInInterpageGap);
 	void LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice);
@@ -185,6 +185,7 @@ private:
 
     // visual options
     bool            m_fRulers;      // draw rulers
+    wxColour        m_colorBg;      // colour for background
 
     // positioning of page images (in pixels) onto the view space. This is
     // a virtual infinite paper on which all pages are rendered one after the other.
