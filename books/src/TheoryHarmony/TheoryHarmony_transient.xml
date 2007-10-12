@@ -92,11 +92,11 @@ A particular case of the half cadence is the Phrygian half cadence. It consists 
             (clef bass p2)
             (key C)
             (time 4 4 noVisible)
-            (chord (n f3 w p2)(n a3 w)(n d4 w p1)(n f4 w))
+            (chord (n f3 w p2)(n a3 w)(n d4 w p1)(n a4 w))
             (text ''IV'' (font 10pt) dx:-60 dy:200)
             (text ''6'' (font 7pt) dx:-35 dy:185)
             (barline)
-            (chord (n e3 w p2)(n b3 w)(n e4 w p1)(n g4 w))
+            (chord (n e3 w p2)(n b3 w)(n e4 w p1)(n +g4 w))
             (text ''V'' (font 10pt) dx:-55 dy:200)
             (barline end)
         )))
@@ -106,7 +106,7 @@ A particular case of the half cadence is the Phrygian half cadence. It consists 
 
 
 <para>
-Another very specific case is the Andalusian cadence. It only occurs in minor keys and is given by the progression I-VII-VI-V, where the IV degree can be replaced. This cadence has a particular colour due to the chromatic half step between the root of the VII and the third of the V.
+Another very specific case is the Andalusian cadence. It only occurs in minor keys and is given by the progression I-VII-VI-V, where the VI degree can be replaced. This cadence has a particular colour due to the chromatic half step between the root of the VII and the third of the V.
 </para>
 
 <para><score width="600" height='170' border="0">
@@ -127,15 +127,15 @@ Another very specific case is the Andalusian cadence. It only occurs in minor ke
             (chord (n a3 w p2)(n c4 w)(n e4 w p1)(n c5 w))
             (text ''I'' (font 10pt) dx:-60 dy:200)
             (barline)
-            (chord (n g3 w p2)(n d4 w)(n g4 w p1)(n d5 w))
+            (chord (n g3 w p2)(n b3 w)(n d4 w p1)(n d5 w))
             (text ''VII'' (font 10pt) dx:-60 dy:200)
             (barline)
-            (chord (n f3 w p2)(n f4 w)(n a4 w p1)(n c5 w))
+            (chord (n f3 w p2)(n a3 w)(n f4 w p1)(n c5 w))
             (text ''VI'' (font 10pt) dx:-55 dy:200)
             (barline)
-            (chord (n e3 w p2)(n +g3 w)(n +g4 w p1)(n b4 w))
+            (chord (n e3 w p2)(n +g3 w)(n d4 w p1)(n b4 w))
             (text ''V'' (font 10pt) dx:-50 dy:200)
-            (text ''#'' (font 7pt) dx:-30 dy:185)
+            (text ''7'' (font 7pt) dx:-30 dy:185)
             (barline end)
         )))
     </music>

@@ -41,7 +41,7 @@
 	"../score/Score.h"
 	"Constrains.h"
 
-1187187694 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Score.h
+1191679174 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Score.h
 	"wx/debug.h"
 	"defs.h"
 	"Pitch.h"
@@ -97,7 +97,7 @@
 	"wx/list.h"
 	"wx/list.h"
 
-1180688788 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.h
+1190912986 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.h
 	"wx/mdi.h"
 	"wx/docview.h"
 	"wx/docmdi.h"
@@ -153,11 +153,11 @@
 1182861020 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Accidental.h
 	"../graphic/Shape.h"
 
-1180335110 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Staff.h
+1191023684 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Staff.h
 	"Score.h"
 	"wx/list.h"
 
-1187709170 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.h
+1191393492 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.h
 	"StaffObjIterator.h"
 	"wx/list.h"
 
@@ -287,28 +287,30 @@
 	"wx/wx.h"
 	"../score/Score.h"
 
-1180336204 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/GraphicManager.h
+1191593778 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/GraphicManager.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"BoxScore.h"
 	"../score/Score.h"
 
-1180336202 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxScore.h
+1191594358 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxScore.h
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"BoxPage.h"
 	"../score/Score.h"
 	"wx/dynarray.h"
 
-1180336202 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxPage.h
+1191596652 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxPage.h
 	"wx/wxprec.h"
 	"wx/wx.h"
+	"BoxScore.h"
 	"BoxSystem.h"
 	"wx/dynarray.h"
 
-1180336202 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxSystem.h
+1191598944 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxSystem.h
 	"wx/wxprec.h"
 	"wx/wx.h"
+	"vector"
 	"../score/Score.h"
 
 1189085894 /media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/UrlAuxCtrol.h
@@ -396,12 +398,11 @@
 	"global.h"
 	"MainFrame.h"
 
-1189866610 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/MainFrame.h
+1190960460 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/MainFrame.h
 	"wx/mdi.h"
 	"wx/docview.h"
 	"wx/docmdi.h"
 	"global.h"
-	"ToolsDlg.h"
 	"ScoreCanvas.h"
 	"wx/wizard.h"
 	"wx/timer.h"
@@ -415,7 +416,7 @@
 1180335112 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ToolsDlg.h
 	<wx/dialog.h>
 
-1180335112 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCanvas.h
+1191827812 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCanvas.h
 	"wx/generic/dragimgg.h"
 	"wx/dragimag.h"
 	"wx/docview.h"

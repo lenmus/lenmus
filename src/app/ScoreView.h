@@ -139,10 +139,12 @@ public:
 
 
 private:
-    
+
 	// units conversion
+	lmDPoint GetScrollOffset();
+    lmDPoint GetPageOffset(int nNumPage);
     void DeviceToLogical(lmDPoint& posDevice, lmUPoint& posLogical,
-                         lmDPoint* pPagePosD, 
+                         lmDPoint* pPagePosD,
 						 lmDPoint* pPaperOrgD, lmDPoint* pOffsetD,
 						 int* pNumPage, bool* pfInInterpageGap);
 	void LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice);
@@ -223,10 +225,10 @@ private:
 	wxTimer			m_oCursorTimer;			//for cursor blinking
 
     //cursor position in screen and geometry
-    lmUPoint        m_oCursorPos;           //to remove old cursor image        
+    lmUPoint        m_oCursorPos;           //to remove old cursor image
 	lmLUnits        m_udyLength;
 	lmLUnits        m_udxSegment;
-		
+
 
 
 

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.6\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-07 15:45+0100\n"
+"PO-Revision-Date: 2007-10-09 22:22+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -116,11 +116,11 @@ msgstr "4"
 
 #: TheoryHarmony/TheoryHarmony.cpp:27
 msgid "Now the sensation is not conclusive. It is more like a short pause and it creates an expectation of continuation. If we end the music piece at the last chord, we will leave the listener with a longing for more."
-msgstr "Ahora la sensación no es conclusiva. Trasmite la idea de una corta pausa y crea expectativas de continuación. Si el compositor terminara una pieza en el último acorede escuchado el oyente se quedaría con una sensación extraña, sintiendo que falta algo. "
+msgstr "Ahora la sensación no es conclusiva. Trasmite la idea de una corta pausa y crea expectativas de continuación. Si el compositor terminara una pieza en el último acorde escuchado el oyente se quedaría con una sensación extraña, sintiendo que falta algo. "
 
 #: TheoryHarmony/TheoryHarmony.cpp:28
 msgid "Cadences are not difficult to recognize by ear but it is sometimes harder to recognize them in written music."
-msgstr "Las cadencias son fáciles de reconocer de oido, pero su reconocimiento escrito, sobre una partitura, suele resultar más difícil. "
+msgstr "Cuando se inicia el estudio de las cadencias, el reconocimiento auditivo suele resultar más sencillo que su reconocimiento escrito, sobre una partitura. Naturalmente, profundizar en el reconocimiento de las cadencias, sea a nivel teórico-escrito o auditivo, requiere una base teórica y práctica."
 
 #: TheoryHarmony/TheoryHarmony.cpp:29
 msgid "Cadence types"
@@ -304,7 +304,7 @@ msgstr "Un caso especial de esta cadencia es la cadencia frigia. Consiste en un 
 
 #: TheoryHarmony/TheoryHarmony.cpp:92
 msgid "Another very specific case is the Andalusian cadence. It only occurs in minor keys and is given by the progression I-VII-VI-V, where the IV degree can be replaced. This cadence has a particular colour due to the chromatic half step between the root of the VII and the third of the V."
-msgstr "Otro caso muy particular es la cadencia andaluza. Se da sólo en las tonalidades menores y consiste en la progresión  I-VII-VI-V, donde el grado IV puede reemplarse por otros. El colorido particular lo otorga el semitono cromático que se produce entre la nota fundamental del VII y la tercera del V."
+msgstr "Otro caso muy particular es la cadencia andaluza. Se da sólo en las tonalidades menores y consiste en la progresión  I-VII-VI-V, donde el grado VI puede reemplarse por otros. El colorido particular lo otorga el semitono cromático que se produce entre la nota fundamental del VII y la tercera del V."
 
 #: TheoryHarmony/TheoryHarmony.cpp:94
 msgid "VII"

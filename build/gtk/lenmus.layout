@@ -32,7 +32,7 @@
 		<Cursor position="4140" topLine="94" />
 	</File>
 	<File name="../../src/app/MainFrame.cpp" open="1" top="0" tabpos="5">
-		<Cursor position="25461" topLine="656" />
+		<Cursor position="61008" topLine="1589" />
 	</File>
 	<File name="../../src/app/MainFrame.h" open="1" top="0" tabpos="6">
 		<Cursor position="7975" topLine="217" />
@@ -48,6 +48,9 @@
 	</File>
 	<File name="../../src/app/Paper.h" open="0" top="0" tabpos="2">
 		<Cursor position="5328" topLine="107" />
+	</File>
+	<File name="../../src/app/ScoreCanvas.cpp" open="1" top="1" tabpos="55">
+		<Cursor position="6760" topLine="200" />
 	</File>
 	<File name="../../src/app/ScoreDoc.cpp" open="0" top="0" tabpos="24">
 		<Cursor position="3517" topLine="105" />
@@ -169,14 +172,17 @@
 	<File name="../../src/graphic/AggDrawer.h" open="0" top="0" tabpos="9">
 		<Cursor position="1596" topLine="33" />
 	</File>
+	<File name="../../src/graphic/BoxSystem.cpp" open="1" top="0" tabpos="53">
+		<Cursor position="2584" topLine="70" />
+	</File>
 	<File name="../../src/graphic/Drawer.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="5483" topLine="145" />
 	</File>
 	<File name="../../src/graphic/Drawer.h" open="0" top="0" tabpos="3">
 		<Cursor position="4590" topLine="111" />
 	</File>
-	<File name="../../src/graphic/Formatter4.cpp" open="0" top="0" tabpos="10">
-		<Cursor position="40256" topLine="906" />
+	<File name="../../src/graphic/Formatter4.cpp" open="1" top="0" tabpos="54">
+		<Cursor position="24457" topLine="556" />
 	</File>
 	<File name="../../src/graphic/GraphicManager.cpp" open="0" top="0" tabpos="36">
 		<Cursor position="8442" topLine="237" />
@@ -242,12 +248,12 @@
 		<Cursor position="3224" topLine="65" />
 	</File>
 	<File name="../../src/html/TextBookFrame.cpp" open="1" top="0" tabpos="8">
-		<Cursor position="32183" topLine="1006" />
+		<Cursor position="29248" topLine="905" />
 	</File>
 	<File name="../../src/html/TextBookFrame.h" open="1" top="0" tabpos="16">
 		<Cursor position="7500" topLine="201" />
 	</File>
-	<File name="../../src/html/TheoMusicReadingCtrolParms.h" open="1" top="1" tabpos="52">
+	<File name="../../src/html/TheoMusicReadingCtrolParms.h" open="1" top="0" tabpos="52">
 		<Cursor position="5569" topLine="27" />
 	</File>
 	<File name="../../src/ldp_parser/AuxString.cpp" open="0" top="0" tabpos="17">

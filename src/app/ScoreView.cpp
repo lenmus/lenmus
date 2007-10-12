@@ -215,10 +215,10 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
 void lmScoreView::ResizeControls()
 {
     // Get client area
-    lmPixels dxCanvas, dyCanvas;
-    m_pFrame->GetClientSize(&dxCanvas, &dyCanvas);
-    lmPixels dxFree = dxCanvas,
-             dyFree = dyCanvas;
+    lmPixels dxFrame, dyFrame;
+    m_pFrame->GetClientSize(&dxFrame, &dyFrame);
+    lmPixels dxFree = dxFrame,
+             dyFree = dyFrame;
 
 
     // Discount scrollbars
@@ -227,47 +227,64 @@ void lmScoreView::ResizeControls()
 
     dxFree -= dxVScroll;
     dyFree -= dyHScroll;
-	
+
     // Discount rulers width plus 2 pixels for separation
-    lmPixels nVRulerWidth = 0, nHRulerWidth = 0;
+    lmPixels dxVRuler = 0, dyHRuler = 0;
     if (m_fRulers) {
         wxASSERT(m_pHRuler && m_pVRuler);
-        nVRulerWidth = m_pVRuler->GetWidth() + 2;
-        nHRulerWidth = m_pHRuler->GetWidth() + 2;
-        dxFree -= nVRulerWidth;
-        dyFree -= nHRulerWidth;
+        dxVRuler = m_pVRuler->GetWidth() + 2;
+        dyHRuler = m_pHRuler->GetWidth() + 2;
+        dxFree -= dxVRuler;
+        dyFree -= dyHRuler;
     }
 
-    //// Compute available space for the view and set view margin so that
-    //// the view is centered
-    //dxFree -= m_xPageSizeD;
-    //m_xBorder = (dxFree > 0 ? dxFree/2 : 13);
+    // Compute available space for the view and set view margin so that
+    // the view is centered
+    dxFree -= m_xPageSizeD;
+    m_xBorder = (dxFree > 0 ? dxFree/2 : 13);
 
-
-    // Compute available space for the canvas
-    lmPixels cvMaxDx = Min(m_xPageSizeD+m_xBorder+m_xBorder, dxFree),
-             cvMaxDy = Min(m_yPageSizeD, dyFree);
-
-    // Compute view origin, to center everything
-    dxFree -= cvMaxDx;
-    lmPixels left = (dxFree > 0 ? dxFree/2 : 0);
 
     // Move controls to the computed positions
+    lmPixels xLeft = 0, yTop = 3;
+    lmPixels dyCanvas = dyFrame - yTop - dyHRuler - dyHScroll;
+    lmPixels dxCanvas = dxFrame - xLeft - dxVRuler - dxVScroll;
     if (m_fRulers) {
-        lmPixels dxHR = (cvMaxDx >= m_xPageSizeD+m_xBorder ? m_xPageSizeD : cvMaxDx-m_xBorder);
-        m_pHRuler->NewSize(left+nVRulerWidth+m_xBorder, 0, dxHR);
-        m_pVRuler->NewSize(left, nHRulerWidth, cvMaxDy);
+        lmPixels dxHRuler = m_xPageSizeD;
+        m_pHRuler->NewSize(xLeft + dxVRuler + m_xBorder, yTop, dxHRuler);
+        m_pVRuler->NewSize(xLeft, yTop + dyHRuler + m_yBorder, dyCanvas - m_yBorder);
     }
-    m_pCanvas->SetSize(left+nVRulerWidth, nHRulerWidth, cvMaxDx, dyCanvas - dyHScroll); 	//cvMaxDy);
-    m_pHScroll->SetSize(0, dyCanvas - dyHScroll, dxCanvas - dxVScroll, dyHScroll);
-    m_pVScroll->SetSize(dxCanvas - dxVScroll, 0, dxVScroll, dyCanvas - dyHScroll);
+    m_pCanvas->SetSize(xLeft + dxVRuler, yTop + dyHRuler, dxCanvas, dyCanvas);
+    m_pHScroll->SetSize(xLeft, yTop + dyHRuler + dyCanvas, dxFrame - xLeft - dxVScroll, dyHScroll);
+    m_pVScroll->SetSize(xLeft + dxVRuler + dxCanvas, yTop, dxVScroll, dyCanvas + dyHRuler);
+
+
+
+
+    //// Compute available space for the canvas
+    //lmPixels cvMaxDx = Min(m_xPageSizeD+m_xBorder+m_xBorder, dxFree),
+    //         cvMaxDy = Min(m_yPageSizeD, dyFree);
+
+    //// Compute view origin, to center everything
+    //dxFree -= cvMaxDx;
+    //lmPixels left = (dxFree > 0 ? dxFree/2 : 0);
+
+    //// Move controls to the computed positions
+    //if (m_fRulers) {
+    //    lmPixels dxHR = (cvMaxDx >= m_xPageSizeD+m_xBorder ? m_xPageSizeD : cvMaxDx-m_xBorder);
+    //    m_pHRuler->NewSize(left+dxVRuler+m_xBorder, 0, dxHR);
+    //    m_pVRuler->NewSize(left, dyHRuler, cvMaxDy);
+    //}
+    //m_pCanvas->SetSize(left+dxVRuler, dyHRuler, cvMaxDx, dyFrame - dyHScroll); 	//cvMaxDy);
+    //m_pHScroll->SetSize(0, dyFrame - dyHScroll, dxFrame - dxVScroll, dyHScroll);
+    //m_pVScroll->SetSize(dxFrame - dxVScroll, 0, dxVScroll, dyFrame - dyHScroll);
 
     //wxLogStatus(_T("Frame size(%d,%d) dxVScroll=%d, dyHScroll=%d"),
-    //    dxCanvas, dyCanvas,
+    //    dxFrame, dyFrame,
     //    dxVScroll, dyHScroll);
 
     // compute new scrollbars
     AdjustScrollbars();
+    m_pCanvas->Refresh();
 
 }
 
@@ -482,10 +499,7 @@ bool lmScoreView::OnClose(bool deleteWindow)
 void lmScoreView::SetScale(double rScale)
 {
     wxASSERT(rScale > 0);
-    double rNewScale = rScale * lmSCALE;
-    if (rNewScale < m_rScale)
-        m_pCanvas->EraseBackground(true);
-    m_rScale = rNewScale;
+    m_rScale = rScale * lmSCALE;
 
     if (m_pCanvas) {
         // compute new paper size in pixels
@@ -674,9 +688,6 @@ void lmScoreView::DeviceToLogical(lmDPoint& posDevice, lmUPoint& posLogical,
     //All this coordinates are referred to view origin (0,0), a virtual infinite
     //paper on which all pages are rendered one after the other.
 
-    //lmPixels xPage = m_xBorder;
-    //lmPixels yPage = m_yBorder + (nNumPage-1) * (m_yPageSizeD + m_yInterpageGap);
-
 	lmPixels yPage = posDevice.y + canvasOrgD.y;
 	int nNumPage = ((yPage - m_yBorder) / (m_yPageSizeD + m_yInterpageGap)) + 1;
     lmPixels yStartPage = m_yBorder + (nNumPage-1) * (m_yPageSizeD + m_yInterpageGap);
@@ -729,6 +740,56 @@ void lmScoreView::DeviceToLogical(lmDPoint& posDevice, lmUPoint& posLogical,
 
 }
 
+lmDPoint lmScoreView::GetPageOffset(int nNumPage)
+{
+	// Returns the offset to add to a display point (that is, a point in pixels referred to
+	// CanvasOrg) to convert it, so that it become referred to current PageOrg
+
+    // Set DC in logical units and scaled, so that
+    // transformations logical/device and viceversa can be computed
+    wxClientDC dc(m_pCanvas);
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale( m_rScale, m_rScale );
+
+    // We need to know how much the window has been scrolled (in pixels)
+    lmDPoint canvasOrgD = GetScrollOffset();
+
+    //Pages measure (m_xPageSizeD, m_yPageSizeD) pixels.
+    //There is a gap between pages of  m_yInterpageGap  pixels.
+    //There is a left margin:  m_xBorder  pixels
+    //And there is a top margin before the first page:  m_yBorder  pixels
+    //Therefore, first page is at (m_xBorder, m_yBorder), size (m_xPageSizeD, m_yPageSizeD)
+    //Second page at (m_xBorder, m_yBorder+m_yPageSizeD+m_yInterpageGap)
+    //...
+    //Page n (1..n) at (m_xBorder, m_yBorder + (n-1) * (m_yPageSizeD+m_yInterpageGap))
+    //All this coordinates are referred to view origin (0,0), a virtual infinite
+    //paper on which all pages are rendered one after the other.
+
+    lmPixels xStartPage = m_xBorder;
+    lmPixels yStartPage = m_yBorder + (nNumPage-1) * (m_yPageSizeD + m_yInterpageGap);
+
+	// the origin of current page is at (pixels)
+    lmDPoint pageNOrgD(xStartPage, yStartPage);
+
+    //terefore the offset is
+    return lmDPoint(pageNOrgD.x - canvasOrgD.x, pageNOrgD.y - canvasOrgD.y);
+
+}
+
+lmDPoint lmScoreView::GetScrollOffset()
+{
+	// Returns the offset to add to a display point (that is, a point in pixels referred to
+	// CanvasOrg) to convert it, so that it become referred to ViewOrg
+
+    // We need to know how much the window has been scrolled (in pixels)
+    int xScrollUnits, yScrollUnits, xOrg, yOrg;
+    GetViewStart(&xOrg, &yOrg);
+    GetScrollPixelsPerUnit(&xScrollUnits, &yScrollUnits);
+    xOrg *= xScrollUnits;
+    yOrg *= yScrollUnits;
+    return lmDPoint(xOrg, yOrg);
+}
+
 void lmScoreView::LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice)
 {
 	//converts a logical position (lmLUnits), referred to current page origin to
@@ -741,12 +802,7 @@ void lmScoreView::LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice)
     dc.SetUserScale( m_rScale, m_rScale );
 
     // We need to know how much the window has been scrolled (in pixels)
-    int xScrollUnits, yScrollUnits, xOrg, yOrg;
-    GetViewStart(&xOrg, &yOrg);
-    GetScrollPixelsPerUnit(&xScrollUnits, &yScrollUnits);
-    xOrg *= xScrollUnits;
-    yOrg *= yScrollUnits;
-    lmDPoint canvasOrgD(xOrg, yOrg);
+    lmDPoint canvasOrgD = GetScrollOffset();
 
 	//convert logical point to pixels, referred to start of first page origin
 	lmDPoint pointRelD(dc.LogicalToDeviceXRel((int)posLogical.x),
@@ -1212,36 +1268,20 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     // to redraw so that we prevent redrawing pages that don't
     // need to get redrawn.
 
-    // Pages measure (xPageSize, yPageSize) pixels.
-    // There is a gap between pages of  yInterpageGap  pixels.
-    // There is a left margin:  xLeftMargin  pixels
-    // And there is a top margin before the first page:  yTopMargin  pixels
+    // Pages measure (m_xPageSizeD, m_yPageSizeD) pixels.
+    // There is a gap between pages of  m_yInterpageGap  pixels.
+    // There is a left margin:  m_xBorder  pixels
+    // And there is a top margin before the first page:  m_yBorder pixels
 
-    // Let's set these values
-    lmPixels xPageSize = m_xPageSizeD,
-            yPageSize = m_yPageSizeD,
-            yInterpageGap = m_yInterpageGap,
-            xLeftMargin = m_xBorder,
-            yTopMargin = m_yBorder;
-
-    //First page at (xLeftMargin, yTopMargin), size (xPageSize, yPageSize)
-    //Second page at (xLeftMargin, yTopMargin+yPageSize+yInterpageGap)
+    //First page at (m_xBorder, m_yBorder), size (m_xPageSizeD, m_yPageSizeD)
+    //Second page at (m_xBorder, m_yBorder + m_yPageSizeD + m_yInterpageGap)
     //...
-    //Page n+1 at (xLeftMargin, yTopMargin + n * (yPageSize+yInterpageGap))
+    //Page n+1 at (m_xBorder, m_yBorder + n * (m_yPageSizeD + m_yInterpageGap))
     // all this coordinates are referred to view origin (0,0), a virtual infinite
     // paper on which all pages are rendered one after the other.
 
     // We need to know how much the window has been scrolled (in pixels)
-    int xScrollUnits, yScrollUnits, xOrg, yOrg;
-    GetViewStart(&xOrg, &yOrg);
-    GetScrollPixelsPerUnit(&xScrollUnits, &yScrollUnits);
-    xOrg *= xScrollUnits;
-    yOrg *= yScrollUnits;
-
-    //// We also need to know the size of the canvas window to see which
-    //// pages are completely hidden and must not get redrawn
-    //int dxCanvas = 0, dyCanvas = 0;
-    //m_pCanvas->GetClientSize(&dxCanvas, &dyCanvas);
+    wxPoint canvasOffset = GetScrollOffset();
 
     // allocate a DC in memory for using the offscreen bitmaps
     wxMemoryDC memoryDC;
@@ -1265,7 +1305,7 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     // pages needed to draw the score
     //m_Paper.SetDC(&memoryDC);           //the layout phase requires a DC
     m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
-    m_graphMngr.Prepare(pScore, xPageSize, yPageSize, m_rScale, &m_Paper);
+    m_graphMngr.Prepare(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper);
     int nTotalPages = m_graphMngr.GetNumPages();
 
     if (nTotalPages != m_numPages) {
@@ -1276,15 +1316,19 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
 
     // the repaintRect is referred to canvas window origin and is unscrolled.
     // To refer it to view origin it is necessary to add scrolling origin
-    wxRect drawRect(repaintRect.x + xOrg, repaintRect.y + yOrg,
+    wxRect drawRect(repaintRect.x + canvasOffset.x, repaintRect.y + canvasOffset.y,
                     repaintRect.width, repaintRect.height );
 
+    wxLogMessage(_T("Repainting rectangle (%d, %d, %d, %d), drawRect=(%d, %d, %d, %d)"),
+        repaintRect.x, repaintRect.y, repaintRect.width, repaintRect.height,
+        drawRect.x, drawRect.y, drawRect.width, drawRect.height );
+    
     //verify if left background needs repaint
-    if (drawRect.x < xLeftMargin)
+    if (drawRect.x < m_xBorder)
     {
         //compute left background rectangle
         wxRect bgRect(repaintRect.x, repaintRect.y,
-                      xLeftMargin - repaintRect.x - xOrg, repaintRect.height );
+                      m_xBorder - repaintRect.x - canvasOffset.x, repaintRect.height );
         wxBrush brush(m_colorBg, wxSOLID);
         wxPen pen(m_colorBg);
         pDC->SetBrush(brush);
@@ -1293,29 +1337,34 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     }
 
     //verify if rigth background needs repaint
-    lmPixels xRight = xLeftMargin + xPageSize;
-    if (xRight < drawRect.x + drawRect.width && xRight > drawRect.x)
+    lmPixels xRight = m_xBorder + m_xPageSizeD;
+    if (drawRect.x + drawRect.width  > xRight)
     {
         //compute right background rectangle
-        wxRect bgRect(xRight - xOrg, repaintRect.y,
-                      repaintRect.width + repaintRect.x - xRight + xOrg, repaintRect.height );
-        wxBrush brush(*wxRED, wxSOLID);
-        wxPen pen(*wxRED);
+        wxRect bgRect(xRight - canvasOffset.x, repaintRect.y,
+                      repaintRect.width + repaintRect.x - xRight + canvasOffset.x,
+					  repaintRect.height );
+		bgRect.Intersect(drawRect);
+        wxBrush brush(m_colorBg, wxSOLID);
+        wxPen pen(m_colorBg);
         pDC->SetBrush(brush);
         pDC->SetPen(pen);
         pDC->DrawRectangle(bgRect);
     }
 
-    //verify if top intergap needs repaint
-    wxRect bgTopGap(0, 0, xLeftMargin + xPageSize, yInterpageGap);
-    if (drawRect.x < bgTopGap.width && drawRect.y < bgTopGap.height)
+    //verify if top margin needs repaint
+    //top margin rectangle, referred to ViewOrg, is at:
+    wxRect bgTopMargin(m_xBorder, 0, m_xPageSizeD, m_yBorder);
+	bgTopMargin.Intersect(drawRect);
+    if (bgTopMargin.width > 0 && bgTopMargin.height > 0)
     {
-        //compute right background rectangle
-        wxBrush brush(*wxRED, wxSOLID);
-        wxPen pen(*wxRED);
+        //rectangle, referred to CanvasOrg is at:
+        wxRect bgRect(bgTopMargin.x - canvasOffset.x, bgTopMargin.y - canvasOffset.y, bgTopMargin.width, bgTopMargin.height);
+        wxBrush brush(m_colorBg, wxSOLID);
+        wxPen pen(m_colorBg);
         pDC->SetBrush(brush);
         pDC->SetPen(pen);
-        pDC->DrawRectangle(bgTopGap);
+        pDC->DrawRectangle(bgRect);
     }
 
     // loop to verify if page nPag (0..n-1) is visible and needs redrawing.
@@ -1325,10 +1374,10 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     int nPag=0;
     for (nPag=0; nPag < m_numPages; nPag++) {
         // Let's compute this page rectangle, referred to view origin (0,0)
-        wxRect pageRect(xLeftMargin,
-                        yTopMargin + nPag * (yPageSize+yInterpageGap),
-                        xPageSize,
-                        yPageSize);
+        wxRect pageRect(m_xBorder,
+                        m_yBorder + nPag * (m_yPageSizeD+m_yInterpageGap),
+                        m_xPageSizeD,
+                        m_yPageSizeD);
         //wxLogStatus(wxT("pageRect(%d,%d, %d, %d)"),
         //    pageRect.x, pageRect.y, pageRect.width, pageRect.height);
 
@@ -1350,15 +1399,16 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
             // Intersection rectangle is referred to view origin. To refer it
             // to bitmap coordinates we need to substract page origin
             int xBitmap = interRect.x - pageRect.x,
-                    yBitmap = interRect.y - pageRect.y;
+                yBitmap = interRect.y - pageRect.y;
             // and to refer it to canvas window coordinates we need to
             // substract scroll origin
-            int xCanvas = interRect.x - xOrg,
-                    yCanvas = interRect.y - yOrg;
+            int xCanvas = interRect.x - canvasOffset.x,
+                yCanvas = interRect.y - canvasOffset.y;
 
-            //wxLogStatus(wxT("bitmap size (%d,%d), interRec (%d, %d)"),
-            //    pPageBitmap->GetWidth(), pPageBitmap->GetHeight(),
-            //    interRect.width, interRect.height);
+            //wxLogMessage(_T("nPag=%d, canvasOrg (%d,%d), bitmapOrg (%d, %d), interRec (%d, %d, %d, %d), pageRect (%d, %d, %d, %d)"),
+            //    nPag, xCanvas, yCanvas, xBitmap, yBitmap,
+            //    interRect.x, interRect.y, interRect.width, interRect.height,
+            //    pageRect.x, pageRect.y, pageRect.width, pageRect.height);
 
             // Copy the damaged rectangle onto the device DC
             pDC->Blit(xCanvas, yCanvas, interRect.width, interRect.height,
@@ -1378,10 +1428,10 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
             //draw page cast shadow
             // to refer page rectangle to canvas window coordinates we need to
             // substract scroll origin
-            int xRight = pageRect.x + pageRect.width - xOrg,
-                yTop = pageRect.y - yOrg,
-                xLeft = pageRect.x - xOrg,
-                yBottom = pageRect.y + pageRect.height - yOrg;
+            int xRight = pageRect.x + pageRect.width - canvasOffset.x,
+                yTop = pageRect.y - canvasOffset.y,
+                xLeft = pageRect.x - canvasOffset.x,
+                yBottom = pageRect.y + pageRect.height - canvasOffset.y;
             pDC->SetBrush(*wxBLACK_BRUSH);
             pDC->SetPen(*wxBLACK_PEN);
             pDC->DrawRectangle(xRight, yTop + nBottomShadowHeight,
@@ -1395,6 +1445,48 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
             //intersection is null. Just repaint background
             //TODO
         }
+
+		//verify if intergap needs repaint
+		//intergap rectangle, referred to ViewOrg, is at:
+        wxRect bgIntergap(m_xBorder,
+						  m_yBorder + nPag * (m_yPageSizeD+m_yInterpageGap) + m_yPageSizeD,
+                          m_xPageSizeD,
+                          m_yInterpageGap);
+		bgIntergap.Intersect(drawRect);
+		if (bgIntergap.width > 0 && bgIntergap.height > 0)
+		{
+			//rectangle, referred to CanvasOrg is at:
+			wxRect bgRect(bgIntergap.x - canvasOffset.x, bgIntergap.y - canvasOffset.y, bgIntergap.width, bgIntergap.height);
+			wxBrush brush(m_colorBg, wxSOLID);
+			wxPen pen(m_colorBg);
+			pDC->SetBrush(brush);
+			pDC->SetPen(pen);
+			pDC->DrawRectangle(bgRect);
+
+			////DEBUG: Draw marks
+			//int nPoint = 0;
+			//lmPixels yPos = bgIntergap.y - canvasOffset.y;
+			//wxColour yellow(255, 255, 0);    //yellow
+			//wxPen penY(yellow);
+			//pDC->SetPen(*wxRED_PEN);
+			//pDC->DrawPoint(bgIntergap.x - canvasOffset.x, yPos++);
+			//pDC->SetPen(penY);
+			//pDC->DrawPoint(bgIntergap.x - canvasOffset.x, yPos++);
+			//nPoint += 2;
+			//while(nPoint < m_yBorder)
+			//{
+			//    pDC->SetPen((nPoint % 2 == 0 ? *wxGREEN_PEN : penY));
+			//    pDC->DrawPoint(bgIntergap.x - canvasOffset.x, yPos++);
+			//    nPoint++;
+			//}
+			//pDC->SetPen(*wxRED_PEN);
+			//pDC->DrawPoint(bgIntergap.x - canvasOffset.x, bgIntergap.y - canvasOffset.y + bgIntergap.height - 1);
+			//wxLogMessage(_T("ScoreView: drawRect=(%d, %d, %d, %d), bgRect=(%d, %d, %d, %d), xBorder=%d, yIntergap=%d, canvasOffset=(%d, %d), yPos=%d"),
+			//    drawRect.x, drawRect.y, drawRect.width, drawRect.height,
+			//    bgRect.x, bgRect.y, bgRect.width, bgRect.height,
+			//    m_xBorder, m_yInterpageGap, canvasOffset.x, canvasOffset.y, yPos-1 );
+
+		}
 
         //verify if we should finish the loop
         if (fPreviousPageVisible) break;

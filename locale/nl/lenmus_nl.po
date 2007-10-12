@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-09-23 10:47+0100\n"
+"PO-Revision-Date: 2007-10-12 16:32+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -566,9 +566,8 @@ msgstr "[lmComposer6::GenerateScore] Geen bruikbare fragmenten!"
 #: auxmusic/Cadence.cpp:1254
 #: auxmusic/Cadence.cpp:1255
 #: exercises/IdfyCadencesCtrol.cpp:156
-#, fuzzy
 msgid "Perfect"
-msgstr " rein"
+msgstr "Rein"
 
 #: auxmusic/Cadence.cpp:1257
 #: auxmusic/Cadence.cpp:1258
@@ -578,14 +577,13 @@ msgstr " rein"
 #: ../xrc/xrc_strings.cpp:356
 #: ../xrc/xrc_strings.cpp:428
 msgid "Plagal"
-msgstr ""
+msgstr "Plagaal"
 
 #: auxmusic/Cadence.cpp:1264
 #: ../xrc/xrc_strings.cpp:354
 #: ../xrc/xrc_strings.cpp:427
-#, fuzzy
 msgid "Imperfect authentic"
-msgstr "reine kwint"
+msgstr "Onvolledige authentieke"
 
 #: auxmusic/Cadence.cpp:1266
 #: auxmusic/Cadence.cpp:1267
@@ -598,7 +596,7 @@ msgstr "reine kwint"
 #: ../xrc/xrc_strings.cpp:373
 #: ../xrc/xrc_strings.cpp:430
 msgid "Deceptive"
-msgstr ""
+msgstr "Bedrieglijke"
 
 #: auxmusic/Cadence.cpp:1274
 #: auxmusic/Cadence.cpp:1275
@@ -611,9 +609,8 @@ msgstr ""
 #: auxmusic/Cadence.cpp:1282
 #: exercises/IdfyCadencesCtrol.cpp:175
 #: ../xrc/xrc_strings.cpp:431
-#, fuzzy
 msgid "Half cadence"
-msgstr "Halve noot"
+msgstr "Halve cadens"
 
 #: ldp_parser/LDPParser.cpp:162
 msgid "Warnings/errors while reading LenMus score."
@@ -1200,33 +1197,30 @@ msgstr "twee oktaven"
 #: exercises/IdfyCadencesCtrol.cpp:147
 #: ../xrc/xrc_strings.cpp:347
 msgid "Terminal"
-msgstr ""
+msgstr "Terminaal"
 
 #: exercises/IdfyCadencesCtrol.cpp:151
 #: ../xrc/xrc_strings.cpp:362
 msgid "Transient"
-msgstr ""
+msgstr "Transient"
 
 #: exercises/IdfyCadencesCtrol.cpp:165
-#, fuzzy
 msgid "Imperfect"
-msgstr " rein"
+msgstr "Onvolledig"
 
 #: exercises/IdfyCadencesCtrol.cpp:306
-#, fuzzy
 msgid "Identify the next cadence:"
-msgstr "Identificeer de volgende toonaard:"
+msgstr "Identificeer de volgende cadens:"
 
 #: exercises/IdfyCadencesCtrol.cpp:311
 msgid "An A4 note will be played before the cadence begins."
-msgstr ""
+msgstr "Een A4 noot zal afgespeeld worden voor de cadens begint."
 
 #: exercises/IdfyCadencesCtrol.cpp:313
 msgid "A tonic chord will be played before the cadence begins."
-msgstr ""
+msgstr "Een tonica akkoord zal afgespeeld worden voordat de cadens begint. "
 
 #: exercises/IdfyCadencesCtrol.cpp:315
-#, fuzzy
 msgid "Press 'Play' to hear the problem again."
 msgstr "Klik op 'Afspelen' om de oefening te herhalen"
 
@@ -1393,7 +1387,7 @@ msgstr "Mineur:"
 
 #: exercises/IdfyScalesCtrol.cpp:198
 msgid "Gregorian modes:"
-msgstr ""
+msgstr "Gregoriaanse modus:"
 
 #: exercises/IdfyScalesCtrol.cpp:202
 msgid "Other scales:"
@@ -1967,9 +1961,8 @@ msgid "7 b"
 msgstr "7 b"
 
 #: exercises/CadencesConstrains.cpp:150
-#, fuzzy
 msgid "Program error: Loop detected in lmCadencesConstrains::GetRandomCadence."
-msgstr "Programma fout: loop vastgesteld in ImScalesScalesConstrains::GetRandomChordType."
+msgstr "Programma fout: Loop vastgesteld in ImCadencesConstrains::GetRandomCadence."
 
 #: exercises/ExerciseCtrol.cpp:487
 msgid "First one greater"
@@ -2291,16 +2284,14 @@ msgid "Purpose"
 msgstr "Doelstelling"
 
 #: app/AboutDialog.cpp:130
-#, fuzzy
 msgid "LenMus is a free program to help you in the study of music theory and  ear training. It is available for Windows but soon it will be also available for Mac OS X, Linux, and other Unix-like operating systems."
-msgstr "LenMus is een gratis programma dat u helpt in de studie van muziektheorie en gehoortraining. Het is beschikbaar voor Windows, maar zal binnenkort ook beschikbaar zijn voor Mac OS X, Linux en andere Unix besturingssystemen."
+msgstr "LenMus is een gratis programma dat u helpt in de studie van de muziektheorie en gehoortraining. Het is beschikbaar voor Windows, maar zal binnenkort ook beschikbaar zijn voor Mac OS X, Linux en andere Unix besturingssystemen."
 
 #: app/AboutDialog.cpp:134
 msgid "The LenMus Project is an open project, committed to the principles of Open Source, free education, and open access to information. It has no comercial purpose. It is an open workbench for working on all areas related to teaching music, and music representation and management with computers. It aims at developing publicly available knowledge, methods and algorithms related to all these areas and at the same time provides free quality software for music students, amateurs, and teachers."
 msgstr "Het LenMus Project is een open project, toegewijd aan de principes van Open Broncode, vrije educatie en vrije toegang tot informatie. Het heeft geen commerciële doeleinden. Het is een open werkbank voor alle aspecten van het muziekonderwijs en de muziekrepresentatie met behulp van een computer. Het project streeft naar het ontwikkelen van publiek beschikbare kennis, methodes en algoritmes gerelateerd aan al deze onderwerpen. Op deze manier biedt het project vrije kwaliteitssoftware voor muziekstudenten, liefhebbers en leerkrachten."
 
 #: app/AboutDialog.cpp:142
-#, fuzzy
 msgid "If you find a bug or have a suggestion, please contact us. We depend on your feedback in order to continue to improve LenMus. So please visit our website and give us your bug reports and feature requests. Thank you very much."
 msgstr "Als u een bug tegenkomt of u een suggestie voor verbetering heeft, aarzel dan niet ons te contacteren. Uw feedback laat ons toe om LenMus te blijven verbeteren. Bezoek aub onze website en geef ons uw bugrapporten en suggesties door. Hartelijk dank voor uw input."
 
@@ -2385,36 +2376,33 @@ msgid "wxMidi Version "
 msgstr "wxMidi Version "
 
 #: app/AboutDialog.cpp:303
-#, fuzzy
 msgid "Equipment information:"
-msgstr "Build informatie"
+msgstr "Hulpmiddelen:"
 
 #: app/AboutDialog.cpp:321
 #: ../xrc/xrc_strings.cpp:233
-#, fuzzy
 msgid "Project team"
-msgstr "Reine Kwart"
+msgstr "Project team"
 
 #: app/AboutDialog.cpp:322
 msgid "(alphabetical order)"
-msgstr ""
+msgstr "(alfabetische volgorde)"
 
 #: app/AboutDialog.cpp:324
 msgid "This program has been designed and developed by volunteers. Some of them devoted a few hours, others months or years. But all them gave their time for free to the project. Thanks to all them."
-msgstr ""
+msgstr "Dit programma werd ontworpen en ontwikkeld door vrijwilligers. Sommigen besteedden er enkele uren aan, andere maanden of jaren. Allemaal hebbenze hun tijd belangeloos geïnvesteerd in het project. Dank aan hen allen."
 
 #: app/AboutDialog.cpp:330
 msgid "Management and programming:"
-msgstr ""
+msgstr "Management en ontwikkeling:"
 
 #: app/AboutDialog.cpp:340
 msgid "Music texts and exercises:"
-msgstr ""
+msgstr "Muziekteksten en -uoefeningen:"
 
 #: app/AboutDialog.cpp:346
-#, fuzzy
 msgid "Translation:"
-msgstr "Vertalers"
+msgstr "Vertaling:"
 
 #: app/AboutDialog.cpp:347
 msgid "Dutch"
@@ -2434,16 +2422,15 @@ msgstr "Turks"
 
 #: app/AboutDialog.cpp:362
 msgid "Website maintenace:"
-msgstr ""
+msgstr "Website onderhoud:"
 
 #: app/AboutDialog.cpp:368
 msgid "Thanks also to:"
-msgstr ""
+msgstr "Dank is ook verschuldigd aan:"
 
 #: app/AboutDialog.cpp:372
-#, fuzzy
 msgid "If you would like to help developing this program or join the project to help in any other way, you are indeed welcome; please, visit the LenMus website at www.lenmus.org and leave a message in the 'contact' page. Thank you and welcome."
-msgstr "Dit programma is ontworpen en ontwikkeld door Cecilio Salmer&oacute;n. Als u zou willen helpen of op een andere manier wenst bij te dragen bij de ontwikking ervan bent u van harte welkom. Bezoek aub de LenMus website op www.lenmus.org en laat een boodschap achter in de contactpagina. Op voorhand bedankt en hartelijk welkom."
+msgstr "Dit programma is ontworpen en ontwikkeld door Cecilio Salmer&oacute;n. Als u zou willen helpen of op een andere manier wenst bij te dragen bij de ontwikking ervan bent u van harte welkom. Bezoek aub de LenMus website op www.lenmus.org en laat een boodschap achter op de contactpagina. Op voorhand bedankt en hartelijk welkom."
 
 #: app/DlgCfgEarIntervals.cpp:450
 msgid "It is not possible to generate any interval. Selected notes' range interval (tab 'Other settings') is lower than minimum allowed interval (tab 'Intervals')"
@@ -2565,11 +2552,11 @@ msgstr "Zoomen zodat de pagina breedte gelijk is aan de venster breedte"
 
 #: app/MainFrame.cpp:567
 msgid "Enlarge image size"
-msgstr ""
+msgstr "Vergroot de beeldgrootte:"
 
 #: app/MainFrame.cpp:571
 msgid "Reduce image size"
-msgstr ""
+msgstr "Verklein de beeldgrootte:"
 
 #: app/MainFrame.cpp:589
 #: app/MainFrame.cpp:961
@@ -3870,14 +3857,12 @@ msgid "Licence"
 msgstr "Licentie"
 
 #: ../xrc/xrc_strings.cpp:234
-#, fuzzy
 msgid "Art design"
-msgstr "Design credits"
+msgstr "Kunst ontwerp"
 
 #: ../xrc/xrc_strings.cpp:235
-#, fuzzy
 msgid "Software used"
-msgstr "Software credits"
+msgstr "Gebruikte software"
 
 #: ../xrc/xrc_strings.cpp:236
 msgid "Build info."
@@ -3946,9 +3931,8 @@ msgid "Minor scales"
 msgstr "Mineur toonaarden"
 
 #: ../xrc/xrc_strings.cpp:303
-#, fuzzy
 msgid "Gregorian scales"
-msgstr "Griekse toonaarden"
+msgstr "Gregoriaanse toonaarden"
 
 #: ../xrc/xrc_strings.cpp:311
 msgid "Other scales"
@@ -3975,271 +3959,244 @@ msgid "&Both"
 msgstr "&Allebei"
 
 #: ../xrc/xrc_strings.cpp:345
-#, fuzzy
 msgid "Cadence settings"
-msgstr "Server instellingen"
+msgstr "Cadens instellingen"
 
 #: ../xrc/xrc_strings.cpp:346
-#, fuzzy
 msgid "Cadences"
-msgstr "Annuleren"
+msgstr "Cadenzen"
 
 #: ../xrc/xrc_strings.cpp:348
 #: ../xrc/xrc_strings.cpp:426
-#, fuzzy
 msgid "Perfect authentic"
-msgstr "Reine Kwart"
+msgstr "Volledig authentieke"
 
 #: ../xrc/xrc_strings.cpp:349
 msgid "V --> I"
-msgstr ""
+msgstr "V --> I"
 
 #: ../xrc/xrc_strings.cpp:350
 msgid "V7 --> I"
-msgstr ""
+msgstr "V7 --> I"
 
 #: ../xrc/xrc_strings.cpp:351
 msgid "V aug5 --> I"
-msgstr ""
+msgstr "V verh5 --> I"
 
 #: ../xrc/xrc_strings.cpp:352
 msgid "V dim5 --> I"
-msgstr ""
+msgstr "V verkl5 --> I"
 
 #: ../xrc/xrc_strings.cpp:353
 #: ../xrc/xrc_strings.cpp:361
 #: ../xrc/xrc_strings.cpp:372
 #: ../xrc/xrc_strings.cpp:381
 msgid "check/uncheck all"
-msgstr ""
+msgstr "alles aan/uitvinken"
 
 #: ../xrc/xrc_strings.cpp:355
 msgid "V --> I (one or both with inversions)"
-msgstr ""
+msgstr "V --> I (een of beide met inversies)"
 
 #: ../xrc/xrc_strings.cpp:357
 msgid "IV --> I"
-msgstr ""
+msgstr "IV --> I"
 
 #: ../xrc/xrc_strings.cpp:358
 msgid "IVm --> I"
-msgstr ""
+msgstr "IVm --> I"
 
 #: ../xrc/xrc_strings.cpp:359
 msgid "II/6 --> I"
-msgstr ""
+msgstr "II/6 --> I"
 
 #: ../xrc/xrc_strings.cpp:360
 msgid "IIm/6 --> I"
-msgstr ""
+msgstr "IIm/6 --> I"
 
 #: ../xrc/xrc_strings.cpp:363
-#, fuzzy
 msgid "Half cadences"
-msgstr "Halve noot"
+msgstr "Halve cadenzen"
 
 #: ../xrc/xrc_strings.cpp:364
 msgid "IIm/6 --> V"
-msgstr ""
+msgstr "IIm/6 --> V"
 
 #: ../xrc/xrc_strings.cpp:365
 msgid "IV --> V"
-msgstr ""
+msgstr "IV --> V"
 
 #: ../xrc/xrc_strings.cpp:366
 msgid "I --> V"
-msgstr ""
+msgstr "I --> V"
 
 #: ../xrc/xrc_strings.cpp:367
 msgid "I/64 --> V"
-msgstr ""
+msgstr "I/64 --> V"
 
 #: ../xrc/xrc_strings.cpp:368
 msgid "IVm/6 --> V (Phrygian half cadence)"
-msgstr ""
+msgstr "IVm/6 --> V (Frygische halve cadens)"
 
 #: ../xrc/xrc_strings.cpp:369
 msgid "II --> V"
-msgstr ""
+msgstr "II --> V"
 
 #: ../xrc/xrc_strings.cpp:370
 msgid "Neapolitan sixth --> V"
-msgstr ""
+msgstr "Neapolitaanse sext --> V"
 
 #: ../xrc/xrc_strings.cpp:371
 msgid "VI+ --> V"
-msgstr ""
+msgstr "VI+ --> V"
 
 #: ../xrc/xrc_strings.cpp:374
 msgid "V --> IV"
-msgstr ""
+msgstr "V --> IV"
 
 #: ../xrc/xrc_strings.cpp:375
 msgid "V --> IVm"
-msgstr ""
+msgstr "V --> IVm"
 
 #: ../xrc/xrc_strings.cpp:376
 msgid "V --> IIm"
-msgstr ""
+msgstr "V --> IIm"
 
 #: ../xrc/xrc_strings.cpp:377
 msgid "V --> III"
-msgstr ""
+msgstr "V --> III"
 
 #: ../xrc/xrc_strings.cpp:378
 msgid "V --> VII"
-msgstr ""
+msgstr "V --> VII"
 
 #: ../xrc/xrc_strings.cpp:379
 msgid "V --> VI"
-msgstr ""
+msgstr "V --> VI"
 
 #: ../xrc/xrc_strings.cpp:380
 msgid "V --> VIm"
-msgstr ""
+msgstr "V --> VIm"
 
 #: ../xrc/xrc_strings.cpp:390
-#, fuzzy
 msgid "F# Major"
 msgstr "Fa # Groot"
 
 #: ../xrc/xrc_strings.cpp:391
-#, fuzzy
 msgid "C# Major"
 msgstr "Do # Groot"
 
 #: ../xrc/xrc_strings.cpp:392
-#, fuzzy
 msgid "Cb Major"
 msgstr "Do b Groot"
 
 #: ../xrc/xrc_strings.cpp:393
-#, fuzzy
 msgid "Gb Major"
 msgstr "Sol b Groot"
 
 #: ../xrc/xrc_strings.cpp:394
-#, fuzzy
 msgid "Db Major"
 msgstr "Re b Groot"
 
 #: ../xrc/xrc_strings.cpp:395
-#, fuzzy
 msgid "Ab Major"
 msgstr "La b Groot"
 
 #: ../xrc/xrc_strings.cpp:396
-#, fuzzy
 msgid "Eb Major"
 msgstr "Mi b Groot"
 
 #: ../xrc/xrc_strings.cpp:397
-#, fuzzy
 msgid "Bb Major"
 msgstr "Si b Groot"
 
 #: ../xrc/xrc_strings.cpp:402
-#, fuzzy
 msgid "F# minor"
 msgstr "fa # klein"
 
 #: ../xrc/xrc_strings.cpp:403
-#, fuzzy
 msgid "C# minor"
 msgstr "do # klein"
 
 #: ../xrc/xrc_strings.cpp:404
-#, fuzzy
 msgid "G# minor"
 msgstr "sol # klein"
 
 #: ../xrc/xrc_strings.cpp:405
-#, fuzzy
 msgid "D# minor"
 msgstr "re # klein"
 
 #: ../xrc/xrc_strings.cpp:406
-#, fuzzy
 msgid "A# minor"
 msgstr "la # klein"
 
 #: ../xrc/xrc_strings.cpp:407
-#, fuzzy
 msgid "Ab minor"
 msgstr "la b klein"
 
 #: ../xrc/xrc_strings.cpp:408
-#, fuzzy
 msgid "Eb minor"
 msgstr "mi b klein"
 
 #: ../xrc/xrc_strings.cpp:409
-#, fuzzy
 msgid "Bb minor"
 msgstr "si b klein"
 
 #: ../xrc/xrc_strings.cpp:414
 msgid "check/uncheck all major"
-msgstr ""
+msgstr "alle majeur aan/uitvinken"
 
 #: ../xrc/xrc_strings.cpp:415
 msgid "check/uncheck all minor"
-msgstr ""
+msgstr "alle mineuren aan/uitvinken"
 
 #: ../xrc/xrc_strings.cpp:417
-#, fuzzy
 msgid "How to show key signature?"
-msgstr "Voortekening weergeven"
+msgstr "Hoe de voortekening weergeven?"
 
 #: ../xrc/xrc_strings.cpp:418
-#, fuzzy
 msgid "&Play A4 note"
-msgstr "Afspeel mode"
+msgstr "&Speel A4 noot"
 
 #: ../xrc/xrc_strings.cpp:419
-#, fuzzy
 msgid "Play &tonic chord"
-msgstr "Pentatonisch mineur"
+msgstr "Speel een &tonica akkoord"
 
 #: ../xrc/xrc_strings.cpp:420
-#, fuzzy
 msgid "Answer buttons"
-msgstr "Help knop"
+msgstr "Antwoordknoppen"
 
 #: ../xrc/xrc_strings.cpp:421
 msgid "Type of desired answer"
-msgstr ""
+msgstr "Gewenste antwoordtype"
 
 #: ../xrc/xrc_strings.cpp:422
 msgid "Identify cadence &group (terminal/transient)"
-msgstr ""
+msgstr "Identificeer de cadens en zijn type (terminaal/transient)"
 
 #: ../xrc/xrc_strings.cpp:423
-#, fuzzy
 msgid "Identify cadence &type"
-msgstr "Identifeer het volgende interval:"
+msgstr "Identifeer het cadens &type"
 
 #: ../xrc/xrc_strings.cpp:424
 msgid "Cadence types"
-msgstr ""
+msgstr "Cadens types"
 
 #: ../xrc/xrc_strings.cpp:425
 msgid "Terminal cadences"
-msgstr ""
+msgstr "Terminale cadens"
 
 #: ../xrc/xrc_strings.cpp:429
 msgid "Transient cadences"
-msgstr ""
+msgstr "Transiente cadens"
 
 #: ../xrc/xrc_strings.cpp:432
-#, fuzzy
 msgid "You must choose al least two buttons! "
-msgstr "U moet minstens één sleutel kiezen!"
+msgstr "U moet minstens twee knoppen kiezen!"
 
 #: ../xrc/xrc_strings.cpp:433
-#, fuzzy
 msgid "You must choose at least one cadence in tab 'cadences'! "
-msgstr "U moet minstens één voortekening kiezen!"
+msgstr "U moet minstens één cadens in de tab 'cadenzen' kiezen!"
 
 #: updater/Updater.cpp:106
 msgid "Error"

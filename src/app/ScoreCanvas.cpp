@@ -102,7 +102,6 @@ lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmScoreDocum
     m_pOwner = pParent;
     m_pDoc = pDoc;
     m_colorBg = colorBg;
-    m_fDoEraseBackground = true;    //allow the first time, on view creation
 
 }
 
@@ -576,65 +575,12 @@ void csCanvas::OnLeftClick(double x, double y, int WXUNUSED(keys))
 
 void lmScoreCanvas::OnEraseBackground(wxEraseEvent& event)
 {
+	// AWARE: This method is empty on purpose
+
 	// When wxWidgets wants to update the display it emits two events: an erase 
 	// background event and a paint event.
-	// To prevent flickering we are not going to erase the background unless really
-    // needed. It is only needed at certain occasions, such as:
-    // - When scaling down, as more background is going to be visible
-    // - On view creation, as it is the first time and nothing is yet drawn
-    // To control these cases flag m_fDoEraseBackground will be used.
-return;
-    if (!m_fDoEraseBackground) return;
-
-#if 1
-    // Code for flooding the background with a color
-    wxDC* pDC = event.GetDC();
-    wxBrush brush(m_colorBg, wxSOLID);
-    pDC->SetBackground(brush);
-    pDC->Clear();
-
-#else
-    //    Code for tiling the background with a bitmap
-
-    wxBitmap& bitmap = wxGetApp().GetBackgroundBitmap();
-    if (bitmap.Ok() ) {
-        wxSize sz = GetClientSize();    // size (pixels) of the visible area
-        int xOrg, yOrg;
-        m_pView->GetViewStart(&xOrg, &yOrg);        // start point (scroll units) of the visible portion of the window
-        int pixelsPerStepX, pixelsPerStepY;
-        m_pView->GetScrollPixelsPerUnit(&pixelsPerStepX, &pixelsPerStepY);
-        xOrg *= pixelsPerStepX;
-        yOrg *= pixelsPerStepY;
-
-        int w = bitmap.GetWidth();
-        int h = bitmap.GetHeight();
-        int xShift = xOrg % w;
-        int yShift = yOrg % h;
-        wxRect rect(-xShift, -yShift, sz.x+xShift, sz.y+yShift);
-
-        if (event.GetDC() ) {
-            TileBitmap(rect, *(event.GetDC()), bitmap);
-        } else {
-            wxClientDC dc(this);
-            TileBitmap(rect, dc, bitmap);
-        }
-    }
-    else
-        event.Skip();      // The official way of doing it
-#endif
-
-    m_fDoEraseBackground = false;
+	// To prevent flickering we are not going to erase the background and the view
+	// will paint it when needed, but only on the background areas not on all
+	// canvas areas
 }
 
-bool lmScoreCanvas::TileBitmap(const wxRect& rect, wxDC& dc, wxBitmap& bitmap)
-{
-    int w = bitmap.GetWidth();
-    int h = bitmap.GetHeight();
-
-    int i, j;
-    for (i = rect.x; i < rect.x + rect.width; i += w) {
-        for (j = rect.y; j < rect.y + rect.height; j+= h)
-            dc.DrawBitmap(bitmap, i, j);
-    }
-    return true;
-}

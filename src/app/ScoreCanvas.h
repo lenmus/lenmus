@@ -103,9 +103,6 @@ public:
 	void MoveObject(lmScoreObj* pSO, const lmUPoint& uPos);
 	void SelectObject(lmScoreObj* pSO);
 
-    // background control
-    void EraseBackground(bool fValue) { m_fDoEraseBackground = fValue; }
-
 
 private:
 
@@ -119,7 +116,6 @@ private:
     lmScoreDocument*    m_pDoc;         //the document rendered by the view
 
     wxColour        m_colorBg;              //colour for background
-    bool            m_fDoEraseBackground;   //allow to repaint the backround
 
     DECLARE_EVENT_TABLE()
 };
