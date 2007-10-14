@@ -109,9 +109,13 @@ lmScoreView::lmScoreView()
     m_fRulers = false;
 
     // view layout
-    m_xBorder = 13;
-    m_yBorder = 13;
-    m_yInterpageGap = 17;
+    m_xBorder = 6;
+    m_yBorder = 6;
+    m_yInterpageGap = 8;
+    //m_colorBg = wxColour(10,36,106);		//deep blue
+    //m_colorBg = wxColour(200, 200, 200);	//light grey
+    //m_colorBg = wxColour(127, 127, 127);	//dark grey
+    m_colorBg = wxColour(100, 100, 100);    //deep grey
 
     // initializations
     m_numPages = 0;            // no pages yet
@@ -162,12 +166,6 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
     else
         m_pFrame->SetTitle(_T("New score"));
 
-    //m_colorBg = wxColour(10,36,106);        //deep blue
-    //wxColour colorBg(200, 200, 200);    // light grey
-    m_colorBg = wxColour(127, 127, 127);    // dark grey
-
-    //m_pFrame->SetBackgroundColour(wxColour(10,36,106));
-
     //rulers
     m_fRulers = GetMainFrame()->ShowRulers();
 
@@ -196,7 +194,7 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
 
     // create the canvas for the score to edit
     m_pCanvas = new lmScoreCanvas(this, m_pFrame, m_pDoc, wxPoint(0, 0), m_pFrame->GetSize(),
-                        wxNO_BORDER, m_colorBg );
+                        wxSUNKEN_BORDER, m_colorBg );
 
     // create the scrollbars
     m_pHScroll = new wxScrollBar(m_pFrame, lmID_HSCROLL, wxDefaultPosition, wxDefaultSize, wxSB_HORIZONTAL);
@@ -1303,7 +1301,6 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
 
     // inform the paper that we are going to use it, and get the number of
     // pages needed to draw the score
-    //m_Paper.SetDC(&memoryDC);           //the layout phase requires a DC
     m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
     m_graphMngr.Prepare(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper);
     int nTotalPages = m_graphMngr.GetNumPages();
@@ -1319,36 +1316,36 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     wxRect drawRect(repaintRect.x + canvasOffset.x, repaintRect.y + canvasOffset.y,
                     repaintRect.width, repaintRect.height );
 
-    wxLogMessage(_T("Repainting rectangle (%d, %d, %d, %d), drawRect=(%d, %d, %d, %d)"),
-        repaintRect.x, repaintRect.y, repaintRect.width, repaintRect.height,
-        drawRect.x, drawRect.y, drawRect.width, drawRect.height );
-    
+    //wxLogMessage(_T("Repainting rectangle (%d, %d, %d, %d), drawRect=(%d, %d, %d, %d)"),
+    //    repaintRect.x, repaintRect.y, repaintRect.width, repaintRect.height,
+    //    drawRect.x, drawRect.y, drawRect.width, drawRect.height );
+
+	//let's prepare colours, brushes and pens
+    wxBrush bgBrush(m_colorBg, wxSOLID);
+    wxPen bgPen(m_colorBg);
+    pDC->SetBrush(bgBrush);
+    pDC->SetPen(bgPen);
+
     //verify if left background needs repaint
     if (drawRect.x < m_xBorder)
     {
-        //compute left background rectangle
+        //compute left background rectangle and paint it
         wxRect bgRect(repaintRect.x, repaintRect.y,
                       m_xBorder - repaintRect.x - canvasOffset.x, repaintRect.height );
-        wxBrush brush(m_colorBg, wxSOLID);
-        wxPen pen(m_colorBg);
-        pDC->SetBrush(brush);
-        pDC->SetPen(pen);
         pDC->DrawRectangle(bgRect);
     }
 
-    //verify if rigth background needs repaint
+    //verify if rigth background needs repaint.
+	//Right of page is at (referred to ViewOrg):
     lmPixels xRight = m_xBorder + m_xPageSizeD;
     if (drawRect.x + drawRect.width  > xRight)
     {
-        //compute right background rectangle
-        wxRect bgRect(xRight - canvasOffset.x, repaintRect.y,
-                      repaintRect.width + repaintRect.x - xRight + canvasOffset.x,
+		//Right of page, refered to CanvasOrg, is at:
+		xRight -= canvasOffset.x;
+        //so the rectangle to repaint is
+        wxRect bgRect(xRight, repaintRect.y,
+                      repaintRect.width + repaintRect.x - xRight,
 					  repaintRect.height );
-		bgRect.Intersect(drawRect);
-        wxBrush brush(m_colorBg, wxSOLID);
-        wxPen pen(m_colorBg);
-        pDC->SetBrush(brush);
-        pDC->SetPen(pen);
         pDC->DrawRectangle(bgRect);
     }
 
@@ -1360,10 +1357,9 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     {
         //rectangle, referred to CanvasOrg is at:
         wxRect bgRect(bgTopMargin.x - canvasOffset.x, bgTopMargin.y - canvasOffset.y, bgTopMargin.width, bgTopMargin.height);
-        wxBrush brush(m_colorBg, wxSOLID);
-        wxPen pen(m_colorBg);
-        pDC->SetBrush(brush);
-        pDC->SetPen(pen);
+		//and referred to canvas is
+		bgRect.x -= canvasOffset.x;
+		bgRect.y -= canvasOffset.y;
         pDC->DrawRectangle(bgRect);
     }
 
@@ -1425,67 +1421,45 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
             //paint backgroud in the remaining area
             //TODO
 
-            //draw page cast shadow
-            // to refer page rectangle to canvas window coordinates we need to
-            // substract scroll origin
-            int xRight = pageRect.x + pageRect.width - canvasOffset.x,
-                yTop = pageRect.y - canvasOffset.y,
-                xLeft = pageRect.x - canvasOffset.x,
-                yBottom = pageRect.y + pageRect.height - canvasOffset.y;
-            pDC->SetBrush(*wxBLACK_BRUSH);
-            pDC->SetPen(*wxBLACK_PEN);
-            pDC->DrawRectangle(xRight, yTop + nBottomShadowHeight,
-                               nRightShadowWidth, pageRect.height);
-            pDC->DrawRectangle(xLeft + nRightShadowWidth, yBottom,
-                               pageRect.width, nBottomShadowHeight);
+            ////draw page cast shadow
+            //// to refer page rectangle to canvas window coordinates we need to
+            //// substract scroll origin
+            //int xRight = pageRect.x + pageRect.width - canvasOffset.x,
+            //    yTop = pageRect.y - canvasOffset.y,
+            //    xLeft = pageRect.x - canvasOffset.x,
+            //    yBottom = pageRect.y + pageRect.height - canvasOffset.y;
+            //pDC->SetBrush(*wxBLACK_BRUSH);
+            //pDC->SetPen(*wxBLACK_PEN);
+            //pDC->DrawRectangle(xRight, yTop + nBottomShadowHeight,
+            //                   nRightShadowWidth, pageRect.height);
+            //pDC->DrawRectangle(xLeft + nRightShadowWidth, yBottom,
+            //                   pageRect.width, nBottomShadowHeight);
 
         }
-        else
-        {
-            //intersection is null. Just repaint background
-            //TODO
-        }
 
-		//verify if intergap needs repaint
+		//verify if background after page needs repaint
 		//intergap rectangle, referred to ViewOrg, is at:
-        wxRect bgIntergap(m_xBorder,
-						  m_yBorder + nPag * (m_yPageSizeD+m_yInterpageGap) + m_yPageSizeD,
-                          m_xPageSizeD,
-                          m_yInterpageGap);
-		bgIntergap.Intersect(drawRect);
-		if (bgIntergap.width > 0 && bgIntergap.height > 0)
+		wxRect bgRect(m_xBorder,
+					  m_yBorder + nPag * (m_yPageSizeD+m_yInterpageGap) + m_yPageSizeD,
+					  m_xPageSizeD,
+					  m_yInterpageGap);
+		if (nPag == m_numPages -1)
 		{
-			//rectangle, referred to CanvasOrg is at:
-			wxRect bgRect(bgIntergap.x - canvasOffset.x, bgIntergap.y - canvasOffset.y, bgIntergap.width, bgIntergap.height);
-			wxBrush brush(m_colorBg, wxSOLID);
-			wxPen pen(m_colorBg);
-			pDC->SetBrush(brush);
-			pDC->SetPen(pen);
+			//As this is the last page, instead of using the intergap rectangle we are enlarge
+			//the rectangle to an arbitrarily high height: two pages.
+			bgRect.height = m_yPageSizeD + m_yPageSizeD;
+		}
+		bgRect.Intersect(drawRect);
+		if (bgRect.width > 0 && bgRect.height > 0)
+		{
+			//refer rectangle to canvas
+			bgRect.x -= canvasOffset.x;
+			bgRect.y -= canvasOffset.y;
+
+			//and paint it
+			pDC->SetBrush(bgBrush);
+			pDC->SetPen(bgPen);
 			pDC->DrawRectangle(bgRect);
-
-			////DEBUG: Draw marks
-			//int nPoint = 0;
-			//lmPixels yPos = bgIntergap.y - canvasOffset.y;
-			//wxColour yellow(255, 255, 0);    //yellow
-			//wxPen penY(yellow);
-			//pDC->SetPen(*wxRED_PEN);
-			//pDC->DrawPoint(bgIntergap.x - canvasOffset.x, yPos++);
-			//pDC->SetPen(penY);
-			//pDC->DrawPoint(bgIntergap.x - canvasOffset.x, yPos++);
-			//nPoint += 2;
-			//while(nPoint < m_yBorder)
-			//{
-			//    pDC->SetPen((nPoint % 2 == 0 ? *wxGREEN_PEN : penY));
-			//    pDC->DrawPoint(bgIntergap.x - canvasOffset.x, yPos++);
-			//    nPoint++;
-			//}
-			//pDC->SetPen(*wxRED_PEN);
-			//pDC->DrawPoint(bgIntergap.x - canvasOffset.x, bgIntergap.y - canvasOffset.y + bgIntergap.height - 1);
-			//wxLogMessage(_T("ScoreView: drawRect=(%d, %d, %d, %d), bgRect=(%d, %d, %d, %d), xBorder=%d, yIntergap=%d, canvasOffset=(%d, %d), yPos=%d"),
-			//    drawRect.x, drawRect.y, drawRect.width, drawRect.height,
-			//    bgRect.x, bgRect.y, bgRect.width, bgRect.height,
-			//    m_xBorder, m_yInterpageGap, canvasOffset.x, canvasOffset.y, yPos-1 );
-
 		}
 
         //verify if we should finish the loop
@@ -1569,14 +1543,15 @@ void lmScoreView::DrawCursor()
 
 	//cursor geometry
 	lmDPoint pointD;
-	LogicalToDevice(lmUPoint(m_oCursorPos.x, m_oCursorPos.y), pointD);
+	lmUPoint cursorPos(m_oCursorPos.x, m_oCursorPos.y);
+	LogicalToDevice(cursorPos, pointD);
 	lmPixels vxLine = pointD.x;
 	lmPixels vyTop = pointD.y;
 
     dc.SetMapMode(lmDC_MODE);
     dc.SetUserScale( m_rScale, m_rScale );
-	lmPixels vyBottom = vyTop + dc.LogicalToDeviceYRel(m_udyLength);
-	lmPixels vdxSegment = dc.LogicalToDeviceYRel(m_udxSegment);
+	lmPixels vyBottom = vyTop + dc.LogicalToDeviceYRel((wxCoord)m_udyLength);
+	lmPixels vdxSegment = dc.LogicalToDeviceYRel((wxCoord)m_udxSegment);
     dc.SetMapMode(wxMM_TEXT);
     dc.SetUserScale(1.0, 1.0);
 
@@ -1697,8 +1672,8 @@ void lmScoreView::CursorUp()
 
 void lmScoreView::CursorDown()
 {
-    lmBoxScore* pBS = m_graphMngr.GetBoxScore();
-    lmBoxPage* pBP = pBS->GetPage(1);
+//    lmBoxScore* pBS = m_graphMngr.GetBoxScore();
+//    lmBoxPage* pBP = pBS->GetPage(1);
 	wxMessageBox(_T("lmScoreView::CursorDown"));
 }
 

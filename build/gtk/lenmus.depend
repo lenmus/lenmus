@@ -386,14 +386,14 @@
 1180335112 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/DlgPatternEditor.h
 	"wx/dialog.h"
 
-1189263264 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/EditFrame.cpp
+1191220802 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/EditFrame.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"global.h"
 	"TheApp.h"
 	"MainFrame.h"
 	"ScoreDoc.h"
-	"scoreView.h"
+	"ScoreView.h"
 	"EditFrame.h"
 	"global.h"
 	"MainFrame.h"
@@ -416,7 +416,7 @@
 1180335112 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ToolsDlg.h
 	<wx/dialog.h>
 
-1191827812 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCanvas.h
+1192134774 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCanvas.h
 	"wx/generic/dragimgg.h"
 	"wx/dragimag.h"
 	"wx/docview.h"
@@ -443,7 +443,7 @@
 	"../app/global.h"
 	"wx/aui/auibook.h"
 
-1180335112 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreDoc.h
+1191679698 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreDoc.h
 	"wx/docview.h"
 	"wx/cmdproc.h"
 	"../score/Score.h"
@@ -461,11 +461,11 @@
 	"../graphic/GraphicManager.h"
 	"Printout.h"
 
-1189263264 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/EditFrame.h
+1191220802 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/EditFrame.h
 	"../mdi/DocViewMDI.h"
 	"wx/docview.h"
 
-1180335112 /media/sdb1/usr/Desarrollo_wx/lenmus/src/widgets/Ruler.h
+1192286138 /media/sdb1/usr/Desarrollo_wx/lenmus/src/widgets/Ruler.h
 	<wx/dc.h>
 	<wx/event.h>
 	<wx/font.h>
@@ -552,7 +552,7 @@
 
 1154356926 /media/sdb1/usr/Desarrollo_wx/wxMidi/src/portmidi/porttime/porttime.h
 
-1189867078 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/MainFrame.cpp
+1190960460 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/MainFrame.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -565,11 +565,12 @@
 	"ArtProvider.h"
 	"TheApp.h"
 	"MainFrame.h"
+	"EditFrame.h"
 	"ScoreDoc.h"
-	"scoreView.h"
+	"ScoreView.h"
 	"AboutDialog.h"
 	"../options/OptionsDlg.h"
-	"ToolsDlg.h"
+	"ToolsBox.h"
 	"DlgDebug.h"
 	"DlgDebugTrace.h"
 	"Printout.h"
@@ -708,10 +709,10 @@
 	"wx/wx.h"
 	"Page.h"
 
-1180296728 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Paper.cpp
+1190791468 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Paper.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
-	"scoreview.h"
+	"ScoreView.h"
 	"../score/Score.h"
 	"Page.h"
 	"FontManager.h"
@@ -727,30 +728,32 @@
 	"wx/fileconf.h"
 	"wx/filename.h"
 
-1180296728 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Printout.cpp
+1190791468 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/Printout.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
-	"scoreview.h"
+	"ScoreView.h"
 	"Printout.h"
 
-1180296728 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCanvas.cpp
+1192134774 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCanvas.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"global.h"
 	"TheApp.h"
 	"MainFrame.h"
 	"ScoreDoc.h"
-	"scoreView.h"
+	"ScoreView.h"
+	"ScoreDoc.h"
+	"ScoreCommand.h"
 	"global.h"
 
-1187263886 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreDoc.cpp
+1191679698 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreDoc.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/txtstrm.h"
 	"wx/filedlg.h"
 	"wx/filename.h"
 	"ScoreDoc.h"
-	"scoreView.h"
+	"ScoreView.h"
 	"../ldp_parser/LDPParser.h"
 	"../xml_parser/MusicXMLParser.h"
 
@@ -829,7 +832,7 @@
 	"../score/KeySignature.h"
 	"../app/Logger.h"
 
-1190548148 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
+1190913174 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/TheApp.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/frame.h"
@@ -845,7 +848,7 @@
 	"TheApp.h"
 	"MainFrame.h"
 	"ScoreDoc.h"
-	"scoreView.h"
+	"ScoreView.h"
 	"AboutDialog.h"
 	"LangChoiceDlg.h"
 	"ArtProvider.h"
@@ -1004,7 +1007,7 @@
 	"../auxmusic/ChordManager.h"
 	"../globals/Colors.h"
 
-1189084776 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScoreAuxCtrol.cpp
+1191659268 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/exercises/ScoreAuxCtrol.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/font.h"
@@ -1276,18 +1279,23 @@
 	"agg_basics.h"
 	<math.h>
 
-1180336202 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxPage.cpp
+1191596652 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxPage.cpp
 	"wx/wxprec.h"
+	"BoxScore.h"
 	"BoxPage.h"
+	"BoxSlice.h"
 	"../globals/Colors.h"
 
-1180336202 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxScore.cpp
+1191593778 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxScore.cpp
 	"wx/wxprec.h"
 	"BoxScore.h"
 
-1180336202 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxSystem.cpp
+1191598944 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxSystem.cpp
 	"wx/wxprec.h"
+	"BoxPage.h"
 	"BoxSystem.h"
+	"BoxSlice.h"
+	"BoxInstrSlice.h"
 	"../globals/Colors.h"
 
 1182858484 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Drawer.cpp
@@ -1312,7 +1320,7 @@
 	"../score/Score.h"
 	<wx/dynarray.h>
 
-1184247510 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.cpp
+1191677548 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/debug.h"
@@ -1322,14 +1330,15 @@
 	"TimeposTable.h"
 	"Formatter4.h"
 	"BoxSystem.h"
+	"BoxSlice.h"
 	"../app/Logger.h"
 
-1181298132 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.h
+1190643464 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/Formatter4.h
 	"../score/Score.h"
 	"TimeposTable.h"
 	"BoxScore.h"
 
-1182716484 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/GraphicManager.cpp
+1191828468 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/GraphicManager.cpp
 	"wx/wxprec.h"
 	"wx/image.h"
 	"GraphicManager.h"
@@ -1354,7 +1363,7 @@
 	"../globals/Paths.h"
 	"wx/arrimpl.cpp"
 
-1180335112 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/html/ContentsBoxCtrol.cpp
+1190878472 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/html/ContentsBoxCtrol.cpp
 	"wx/wxprec.h"
 	"ContentsBoxCtrol.h"
 	"wx/settings.h"
@@ -1602,7 +1611,7 @@
 	"wx/wxprec.h"
 	"DocViewMDI.h"
 
-1180337426 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/mdi/ParentFrame.cpp
+1190878478 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/mdi/ParentFrame.cpp
 	"../app/global.h"
 	"wx/wxprec.h"
 	"ParentFrame.h"
@@ -1724,7 +1733,7 @@
 	"wx/config.h"
 	"../app/MainFrame.h"
 
-1182865502 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Barline.cpp
+1191517998 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Barline.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -1770,7 +1779,7 @@
 
 1180335110 /media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Notation.h
 
-1188731190 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Note.cpp
+1192290196 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Note.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -1819,7 +1828,7 @@
 	"wx/image.h"
 	"Score.h"
 
-1182874278 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Score.cpp
+1191604890 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/Score.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	<wx/file.h>
@@ -1827,6 +1836,7 @@
 	"wx/list.h"
 	"Score.h"
 	"../app/global.h"
+	"../sound/SoundEvents.h"
 	"../globals/Colors.h"
 
 1180296728 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/ScoreCommand.cpp
@@ -1849,7 +1859,7 @@
 	"../app/global.h"
 	<wx/listimpl.cpp>
 
-1182865502 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.cpp
+1191678330 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObj.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"wx/image.h"
@@ -1858,7 +1868,7 @@
 	"GraphicObj.h"
 	<wx/listimpl.cpp>
 
-1184246976 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObjIterator.cpp
+1191162928 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/StaffObjIterator.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Score.h"
@@ -1880,7 +1890,7 @@
 	"wx/wx.h"
 	"Score.h"
 
-1187709170 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.cpp
+1191393492 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/score/VStaff.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Score.h"
@@ -1954,11 +1964,11 @@
 	<wx/listctrl.h>
 	"UpdaterDlg.h"
 
-1180335112 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/widgets/Ruler.cpp
+1192286138 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/widgets/Ruler.cpp
 	"wx/wxprec.h"
 	"wx/wx.h"
 	"Ruler.h"
-	"../app/scoreview.h"
+	"../app/ScoreView.h"
 
 1180297190 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/xml_parser/XMLParser.cpp
 	"wx/wxprec.h"
@@ -2169,4 +2179,90 @@
 	"wx/wxprec.h"
 	"MusicReadingConstrains.h"
 	"Generators.h"
+
+1192017622 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreView.h
+	"wx/wxprec.h"
+	"wx/wx.h"
+	"wx/generic/dragimgg.h"
+	"wx/dragimag.h"
+	"wx/docview.h"
+	"Paper.h"
+	"../sound/SoundEvents.h"
+	"../graphic/GraphicManager.h"
+	"FontManager.h"
+	"Printout.h"
+
+1190960460 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ToolsBox.h
+	"wx/wxprec.h"
+	"wx/wx.h"
+
+1191598944 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxSlice.h
+	"wx/wxprec.h"
+	"wx/wx.h"
+	"vector"
+	"../score/Score.h"
+
+1191425260 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxInstrSlice.h
+	"wx/wxprec.h"
+	"wx/wx.h"
+	"vector"
+	"../score/Score.h"
+	"BoxSystem.h"
+
+1190902374 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCommand.h
+	"wx/cmdproc.h"
+	"global.h"
+
+1190874124 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreController.cpp
+	"wx/wxprec.h"
+	"wx/wx.h"
+	"ScoreController.h"
+
+1190874124 /media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreController.h
+	"wx/wxprec.h"
+	"wx/wx.h"
+	"wx/docview.h"
+	"wx/event.h"
+
+1190961488 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ToolsBox.cpp
+	"wx/wxprec.h"
+	"wx/wx.h"
+	"wx/cursor.h"
+	"ToolsBox.h"
+	"ArtProvider.h"
+	"TheApp.h"
+	"ScoreCanvas.h"
+
+1191430966 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxInstrSlice.cpp
+	"wx/wxprec.h"
+	"BoxInstrSlice.h"
+	"BoxVStaffSlice.h"
+	"../globals/Colors.h"
+
+1191425396 /media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxVStaffSlice.h
+	"wx/wxprec.h"
+	"wx/wx.h"
+	"vector"
+	"../score/Score.h"
+	"BoxInstrSlice.h"
+
+1191677304 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxSlice.cpp
+	"wx/wxprec.h"
+	"BoxSlice.h"
+	"BoxSystem.h"
+	"../globals/Colors.h"
+
+1191426012 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/graphic/BoxVStaffSlice.cpp
+	"wx/wxprec.h"
+	"BoxVStaffSlice.h"
+	"BoxSystem.h"
+	"../globals/Colors.h"
+
+1191679698 source:/media/sdb1/usr/Desarrollo_wx/lenmus/src/app/ScoreCommand.cpp
+	"wx/wxprec.h"
+	"wx/wx.h"
+	"../score/Score.h"
+	"ScoreCommand.h"
+	"ScoreDoc.h"
+	"TheApp.h"
 

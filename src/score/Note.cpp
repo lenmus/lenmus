@@ -1161,10 +1161,10 @@ lmUPoint lmNote::EndDrag(const lmUPoint& uPos)
     //ojo: estas dos líneas son el comportamiento de la clase base. Hay que dejarlas
     //de momento porque el flag m_fFixedPos impide que se actualice la posición
     // ¿Llevarlo a SetUpPitchRelatedVariables() ?
-    //m_uPaperPos.x = uPos.x - m_uGlyphPos.x;
-    //m_uPaperPos.y = uPos.y - m_uGlyphPos.y;
+    m_uPaperPos.x = uPos.x - m_uGlyphPos.x;
+    m_uPaperPos.y = uPos.y - m_uGlyphPos.y;
 
-    //SetFixed(false);
+    SetFixed(false);
 
     return lmUPoint(uOldPos);
 

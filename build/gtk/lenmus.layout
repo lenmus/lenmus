@@ -32,7 +32,7 @@
 		<Cursor position="4140" topLine="94" />
 	</File>
 	<File name="../../src/app/MainFrame.cpp" open="1" top="0" tabpos="5">
-		<Cursor position="61008" topLine="1589" />
+		<Cursor position="61008" topLine="1593" />
 	</File>
 	<File name="../../src/app/MainFrame.h" open="1" top="0" tabpos="6">
 		<Cursor position="7975" topLine="217" />
@@ -49,11 +49,14 @@
 	<File name="../../src/app/Paper.h" open="0" top="0" tabpos="2">
 		<Cursor position="5328" topLine="107" />
 	</File>
-	<File name="../../src/app/ScoreCanvas.cpp" open="1" top="1" tabpos="55">
-		<Cursor position="6760" topLine="200" />
+	<File name="../../src/app/ScoreCanvas.cpp" open="1" top="0" tabpos="55">
+		<Cursor position="6948" topLine="213" />
 	</File>
 	<File name="../../src/app/ScoreDoc.cpp" open="0" top="0" tabpos="24">
 		<Cursor position="3517" topLine="105" />
+	</File>
+	<File name="../../src/app/ScoreView.cpp" open="1" top="1" tabpos="56">
+		<Cursor position="58077" topLine="1575" />
 	</File>
 	<File name="../../src/app/SplashFrame.cpp" open="1" top="0" tabpos="9">
 		<Cursor position="2805" topLine="71" />
@@ -66,12 +69,6 @@
 	</File>
 	<File name="../../src/app/TheApp.h" open="0" top="0" tabpos="7">
 		<Cursor position="1398" topLine="26" />
-	</File>
-	<File name="../../src/app/scoreView.cpp" open="0" top="0" tabpos="76">
-		<Cursor position="19487" topLine="436" />
-	</File>
-	<File name="../../src/app/scoreView.h" open="0" top="0" tabpos="55">
-		<Cursor position="4338" topLine="111" />
 	</File>
 	<File name="../../src/auxmusic/Cadence.cpp" open="1" top="0" tabpos="44">
 		<Cursor position="46767" topLine="1104" />
@@ -248,7 +245,7 @@
 		<Cursor position="3224" topLine="65" />
 	</File>
 	<File name="../../src/html/TextBookFrame.cpp" open="1" top="0" tabpos="8">
-		<Cursor position="29248" topLine="905" />
+		<Cursor position="29248" topLine="909" />
 	</File>
 	<File name="../../src/html/TextBookFrame.h" open="1" top="0" tabpos="16">
 		<Cursor position="7500" topLine="201" />
@@ -366,9 +363,6 @@
 	</File>
 	<File name="../../src/score/Score.h" open="1" top="0" tabpos="20">
 		<Cursor position="8088" topLine="222" />
-	</File>
-	<File name="../../src/score/ScoreCommand.cpp" open="0" top="0" tabpos="36">
-		<Cursor position="4039" topLine="118" />
 	</File>
 	<File name="../../src/score/Slur.cpp" open="0" top="0" tabpos="63">
 		<Cursor position="2609" topLine="74" />

@@ -19,8 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __RULER_H__        //to avoid nested includes
-#define __RULER_H__
+#ifndef __LM_RULER_H__        //to avoid nested includes
+#define __LM_RULER_H__
 
 #if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "Ruler.cpp"
@@ -41,10 +41,10 @@ class lmRuler : public wxPanel
 
 public:
 
-   enum RulerFormat {
-      MetricFormat,
-      EnglishFormat,
-      PointsFormat
+   enum lmERulerFormat {
+      lm_eMetricFormat,
+      lm_eEnglishFormat,
+      lm_ePointsFormat,
    };
 
    lmRuler(wxWindow* parent, lmScoreView* view, wxWindowID id,
@@ -64,20 +64,20 @@ public:
 
     void SetBounds(int left, int top, int length);
     void SetScale(double rScale) { m_rScale = rScale; }
-    void SetFormat(RulerFormat format) { m_format = format; }
+    void SetFormat(lmERulerFormat format) { m_format = format; }
     void SetOffset(int offset) { m_offset = offset; }
 
 private:
-    int         m_left, m_top, m_width, m_height;
-    double      m_rScale;
-    int         m_Orientation;      // ruler orientation: wxHORIZONTAL || wxVERTICAL
-    wxFont*     m_pFont;            // font for numbers
-    RulerFormat m_format;
-    wxPoint     m_oldPos;           // last known mouse position over score canvas
-    lmScoreView* m_pView;           // view who controls the scrolling
-    int         m_offset;           // offset to add to the marker line
+    lmScoreView*	m_pView;		//owner view
+    wxFont*			m_pFont;		//font for numbers
+    int				m_left, m_top, m_width, m_height;
+    double			m_rScale;
+    int				m_Orientation;	//ruler orientation: wxHORIZONTAL || wxVERTICAL
+    lmERulerFormat	m_format;
+    wxPoint			m_oldPos;		//last known mouse position over score canvas
+    int				m_offset;		//offset to add to the marker line
 
     DECLARE_EVENT_TABLE()
 };
 
-#endif    // __RULER_H__
+#endif    // __LM_RULER_H__
