@@ -1513,7 +1513,6 @@ void lmScoreView::DrawCursor()
 	    if (m_pCursorSO == (lmStaffObj*)NULL) return;
     }
 
-
 	//get cursor position
     //if we are going to show cursor. Get new position
     //else, if we are going to hide cursor,  use current cursor pos.
@@ -1605,6 +1604,9 @@ void lmScoreView::SetInitialCursorPosition()
 		{
 			//place cursor at first StaffObj
 			m_pCursorSO = m_pCursorIT->GetCurrent();
+
+            lmBoxScore* pBS = m_graphMngr.GetBoxScore();
+            pBS->SetCursor(m_pCursorSO);
 		}
 	}
 
@@ -1633,6 +1635,9 @@ void lmScoreView::CursorRight()
             m_pCursorIT->MoveLast();
         }
         m_pCursorSO = m_pCursorIT->GetCurrent();
+            lmBoxScore* pBS = m_graphMngr.GetBoxScore();
+            pBS->SetCursor(m_pCursorSO);
+            m_pDoc->UpdateAllViews();       //repaint cursor
     }
 
     //for inmediate visual feedback, hide current cursor and display new one
@@ -1658,6 +1663,9 @@ void lmScoreView::CursorLeft()
             m_pCursorIT->MoveFirst();
         }
         m_pCursorSO = m_pCursorIT->GetCurrent();
+            lmBoxScore* pBS = m_graphMngr.GetBoxScore();
+            pBS->SetCursor(m_pCursorSO);
+            m_pDoc->UpdateAllViews();       //repaint cursor
     }
 
     //for inmediate visual feedback, hide current cursor and display new one

@@ -489,7 +489,8 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         {
             lmLUnits xStart = xEnd;
             xEnd = xStart + m_nMeasureSize[iRel];
-            lmBoxSlice* pBoxSlice = pBoxSystem->AddSlice(iAbs, xStart, xEnd);
+            //lmBoxSlice* pBoxSlice = pBoxSystem->AddSlice(iAbs, xStart, xEnd);
+            pBoxSystem->AddSlice(iAbs, xStart, xEnd);
         }
 
         // compute system height
@@ -564,7 +565,6 @@ lmLUnits lmFormatter4::ComputeSystemHeight(lmPaper* pPaper)
     int iVStaff;
     lmInstrument *pInstr;
     lmVStaff *pVStaff;
-    bool fNewSystem = false;
 
     // save paper position to restore it at the end
     lmLUnits xPaperStart = pPaper->GetCursorX();
@@ -598,7 +598,7 @@ lmLUnits lmFormatter4::ComputeSystemHeight(lmPaper* pPaper)
     }    // next lmInstrument
 
     lmLUnits nSystemHeight = pPaper->GetCursorY() - yPaperStart;
-    
+
     //restore paper position
     pPaper->SetCursorX( xPaperStart );
     pPaper->SetCursorY( yPaperStart );

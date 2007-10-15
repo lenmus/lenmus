@@ -38,7 +38,10 @@
 #endif
 
 #include "BoxPage.h"
-#include "../score/Score.h"
+#include "../score/defs.h"
+class lmPaper;
+class lmScore;
+class lmStaffObj;
 
 // to manage pages let's define an array to contain pointers to pages
 #include "wx/dynarray.h"
@@ -65,12 +68,19 @@ public:
     int GetNumPages();
     bool FindStaffAtPosition(lmUPoint& pointL);
 
+    //cursor management
+    void SetCursor(lmStaffObj* pSO) { m_pCursorSO = pSO; }
+    lmStaffObj* GetCursorPointedObject() const { return m_pCursorSO; }
+
 
 private:
     lmScore*        m_pScore;       //score to be rendered
 
     // a lmBoxScore is, mainly, a collection of lmBoxPages
     ArrayBoxPages  m_aPages;       //array of ptrs to pages that form this score
+
+    //cursor management
+	lmStaffObj*		m_pCursorSO;			//staff object pointed by the cursor
 
 
 };

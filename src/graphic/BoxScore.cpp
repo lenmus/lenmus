@@ -31,12 +31,16 @@
 #endif
 
 #include "BoxScore.h"
+#include "../score/Score.h"
 
 //-----------------------------------------------------------------------------------------
 
 lmBoxScore::lmBoxScore(lmScore* pScore)
 {
     m_pScore = pScore;
+
+    //initializations
+    m_pCursorSO = (lmStaffObj*)NULL;
 
     //Initially the BoxScore will have one page.
     AddPage();

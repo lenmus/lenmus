@@ -82,6 +82,7 @@ public:
     void Render(int nSystem, lmScore* pScore, lmPaper* pPaper);
 	void DrawSelRectangle(lmPaper* pPaper);
 
+    inline lmBoxPage* GetBoxPage() const { return m_pBPage; }
 
 private:
     void RenderMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper);

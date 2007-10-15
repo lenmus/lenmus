@@ -2,19 +2,19 @@
 //    LenMus Phonascus: The teacher of music
 //    Copyright (c) 2002-2007 Cecilio Salmeron
 //
-//    This program is free software; you can redistribute it and/or modify it under the 
+//    This program is free software; you can redistribute it and/or modify it under the
 //    terms of the GNU General Public License as published by the Free Software Foundation;
 //    either version 2 of the License, or (at your option) any later version.
 //
-//    This program is distributed in the hope that it will be useful, but WITHOUT ANY 
-//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+//    This program is distributed in the hope that it will be useful, but WITHOUT ANY
+//    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 //    PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 //
-//    You should have received a copy of the GNU General Public License along with this 
-//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, 
+//    You should have received a copy of the GNU General Public License along with this
+//    program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street,
 //    Fifth Floor, Boston, MA  02110-1301, USA.
 //
-//    For any comment, suggestion or feature request, please contact the manager of 
+//    For any comment, suggestion or feature request, please contact the manager of
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
@@ -71,14 +71,14 @@ lmBoxSystem::~lmBoxSystem()
 
 void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
 {
-    //At this point paper position is not in the right place. Therefore, we move 
+    //At this point paper position is not in the right place. Therefore, we move
     //to the start of system position.
     pPaper->SetCursorY( m_yPos );
 
     //for each lmInstrument
     for (int i=0; i < (int)m_InstrSlices.size(); i++)
     {
-        m_yBottomLeftLine = m_InstrSlices[i]->Render(pPaper, m_xPos, m_nNumPage, nSystem);
+        m_yBottomLeftLine = m_InstrSlices[i]->Render(pPaper, (int)m_xPos, m_nNumPage, nSystem);
     }
 
     //Draw the initial barline that joins all staffs in a system
@@ -114,15 +114,15 @@ void lmBoxSystem::RenderMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper
         code in lmFormatter4::SizeMeasure
     */
     //el posicionamiento relativo de objetos (en LDP) requiere conocer la
-    //posición de inicio del compas. Para ello, se guarda aquí, de forma
-    //que el método GetXInicioCompas pueda devolver este valor
+    //posiciÃ³n de inicio del compas. Para ello, se guarda aquÃ­, de forma
+    //que el mÃ©todo GetXInicioCompas pueda devolver este valor
     //pVStaff->SetXInicioCompas = pPaper->GetCursorX()
 
     //! @todo Review this
-    ////si no es el primer compas de la partitura avanza separación con la barra de compas
-    ////o con prólogo, si es comienzo de línea.
+    ////si no es el primer compas de la partitura avanza separaciÃ³n con la barra de compas
+    ////o con prÃ³logo, si es comienzo de lÃ­nea.
     //if (nMeasure != 1) {
-    //    m_oCanvas.Avanzar        //separación con la barra de compas
+    //    m_oCanvas.Avanzar        //separaciÃ³n con la barra de compas
     //}
 
     //space occupied by clefs is computed only when all clefs has been drawn, so that we
@@ -192,21 +192,21 @@ void lmBoxSystem::DrawSelRectangle(lmPaper* pPaper)
 }
 
 void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)
-{ 
+{
     //Now we have all the information about the system. Let's create the collection
     //of BoxSlices
 
-    m_nNumMeasures = nMeasures; 
+    m_nNumMeasures = nMeasures;
 
     //Build the slices
     int iInstr = 1;
 	int nLastMeasure = m_nFirstMeasure + m_nNumMeasures - 1;
     for (lmInstrument* pInstr = pScore->GetFirstInstrument();
-         pInstr; 
+         pInstr;
          pInstr = pScore->GetNextInstrument(), iInstr++)
     {
             m_InstrSlices.push_back(
-                    new lmBoxInstrSlice(this, m_nFirstMeasure, nLastMeasure, 
+                    new lmBoxInstrSlice(this, m_nFirstMeasure, nLastMeasure,
                                         pInstr, iInstr) );
 
     }
@@ -215,7 +215,7 @@ void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)
 
 lmBoxSlice* lmBoxSystem::FindStaffAtPosition(lmUPoint& pointL)
 {
-    lmURect rectL(m_xLeftLine, m_yTopLeftLine, 
+    lmURect rectL(m_xLeftLine, m_yTopLeftLine,
                   m_xFinal - m_xLeftLine, m_yBottomLeftLine - m_yTopLeftLine);
     if (rectL.Contains(pointL))
     {
@@ -224,12 +224,12 @@ lmBoxSlice* lmBoxSystem::FindStaffAtPosition(lmUPoint& pointL)
         {
             if (m_Slices[iS]->FindMeasureAt(pointL))
             {
-                wxMessageBox( wxString::Format( _T("Page %d, in measure %d"), 
+                wxMessageBox( wxString::Format( _T("Page %d, in measure %d"),
                     m_nNumPage, m_nFirstMeasure+iS) );
                 return m_Slices[iS];
             }
         }
-        wxMessageBox( wxString::Format( _T("Page %d, measure not identified!!! Between measure %d and %d"), 
+        wxMessageBox( wxString::Format( _T("Page %d, measure not identified!!! Between measure %d and %d"),
             m_nNumPage, m_nFirstMeasure, m_nFirstMeasure+m_nNumMeasures-1) );
         return (lmBoxSlice*)NULL;
     }

@@ -913,7 +913,9 @@ void lmTextBookFrame::ReadCustomization(wxConfigBase *cfg, const wxString& path)
     m_Cfg.w = cfg->Read(_T("tbcW"), m_Cfg.w);
     m_Cfg.h = cfg->Read(_T("tbcH"), m_Cfg.h);
 
-    m_rScale = cfg->Read(_T("tbcScale"), (double)m_rScale);
+    //TODO fix this. It doesn't accept (double) argument
+    //m_rScale = cfg->Read(_T("tbcScale"), (double)m_rScale);
+    m_rScale = cfg->Read(_T("tbcScale"), (long)m_rScale);
 
     {
         int i;

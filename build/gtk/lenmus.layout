@@ -55,7 +55,7 @@
 	<File name="../../src/app/ScoreDoc.cpp" open="0" top="0" tabpos="24">
 		<Cursor position="3517" topLine="105" />
 	</File>
-	<File name="../../src/app/ScoreView.cpp" open="1" top="1" tabpos="56">
+	<File name="../../src/app/ScoreView.cpp" open="1" top="0" tabpos="56">
 		<Cursor position="58077" topLine="1575" />
 	</File>
 	<File name="../../src/app/SplashFrame.cpp" open="1" top="0" tabpos="9">
@@ -170,7 +170,7 @@
 		<Cursor position="1596" topLine="33" />
 	</File>
 	<File name="../../src/graphic/BoxSystem.cpp" open="1" top="0" tabpos="53">
-		<Cursor position="2584" topLine="70" />
+		<Cursor position="2643" topLine="70" />
 	</File>
 	<File name="../../src/graphic/Drawer.cpp" open="0" top="0" tabpos="0">
 		<Cursor position="5483" topLine="145" />
@@ -179,7 +179,7 @@
 		<Cursor position="4590" topLine="111" />
 	</File>
 	<File name="../../src/graphic/Formatter4.cpp" open="1" top="0" tabpos="54">
-		<Cursor position="24457" topLine="556" />
+		<Cursor position="24514" topLine="586" />
 	</File>
 	<File name="../../src/graphic/GraphicManager.cpp" open="0" top="0" tabpos="36">
 		<Cursor position="8442" topLine="237" />
@@ -244,8 +244,8 @@
 	<File name="../../src/html/TextBookController.h" open="1" top="0" tabpos="11">
 		<Cursor position="3224" topLine="65" />
 	</File>
-	<File name="../../src/html/TextBookFrame.cpp" open="1" top="0" tabpos="8">
-		<Cursor position="29248" topLine="909" />
+	<File name="../../src/html/TextBookFrame.cpp" open="1" top="1" tabpos="8">
+		<Cursor position="29435" topLine="920" />
 	</File>
 	<File name="../../src/html/TextBookFrame.h" open="1" top="0" tabpos="16">
 		<Cursor position="7500" topLine="201" />

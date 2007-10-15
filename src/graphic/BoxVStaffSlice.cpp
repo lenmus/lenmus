@@ -32,6 +32,7 @@
 
 #include "BoxVStaffSlice.h"
 #include "BoxSystem.h"
+#include "BoxScore.h"
 
 //access to colors
 #include "../globals/Colors.h"
@@ -148,6 +149,12 @@ void lmBoxVStaffSlice::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage
 
     wxASSERT(nMeasure <= m_pVStaff->GetNumMeasures());
 
+        //Experimental code to render cursor
+    lmBoxSystem* pBSystem = m_pInstrSlice->GetBoxSystem();  //parent system
+    lmBoxPage* pBPage = pBSystem->GetBoxPage();             //parent page
+    lmBoxScore* pBScore = pBPage->GetBoxScore();            //parent score
+    lmStaffObj* pCursorObj = pBScore->GetCursorPointedObject();
+
     /*! @todo
         Review this commented code. Implies to review also comented
         code in lmFormatter4::SizeMeasure
@@ -213,6 +220,29 @@ void lmBoxVStaffSlice::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage
         //StaffObj
         pSO->SetPageNumber(nNumPage);
 
+            //Experimental code to render cursor
+        if (false && pCursorObj && pCursorObj->GetID() == pSO->GetID())
+        {
+            //Cursor is pointing to this StaffObj. Render it
+            pSO->Draw(DO_DRAW, pPaper, *wxBLUE);
+
+	        ////cursor geometry
+	        //lmURect SOPos = pSO->GetSelRect();
+	        //lmLUnits uxLine = SOPos.GetLeft();
+	        //lmLUnits uyTop = SOPos.GetY();
+	        //lmLUnits uyBottom = uyTop + SOPos.GetHeight();
+         //   lmLUnits uWidth = m_pVStaff->TenthsToLogical(2, 1);
+
+	        ////draw vertical line
+	        ////dc.DrawLine(vxLine, vyTop, vxLine, vyBottom);
+         //   pPaper->SolidLine(uxLine, uyTop, uxLine, uyBottom, uWidth, eEdgeNormal, *wxBLUE);
+
+	        //////draw horizontal segments
+	        ////dc.DrawLine(vxLine-vdxSegment, vyTop-1, vxLine+vdxSegment+1, vyTop-1);
+	        ////dc.DrawLine(vxLine-vdxSegment, vyBottom, vxLine+vdxSegment+1, vyBottom);
+
+        }
+
         // if barline, exit loop: end of measure reached
         if (pSO->GetClass() == eSFOT_Barline) break;
 
@@ -223,4 +253,67 @@ void lmBoxVStaffSlice::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage
 }
 
 
+/*
+void lmScoreView::DrawCursor()
+{
+    if (!m_pCanvas) return;
 
+	//get pointed object
+	if (m_pCursorSO == (lmStaffObj*)NULL)
+	{
+        SetInitialCursorPosition();
+	    if (m_pCursorSO == (lmStaffObj*)NULL) return;
+    }
+
+
+	//get cursor position
+    //if we are going to show cursor. Get new position
+    //else, if we are going to hide cursor,  use current cursor pos.
+    if (!m_fCursorShown)
+    {
+        //we are going to show cursor. Get new position if object changed
+        if (m_pCursorSO->GetID() != m_nCursorIdSO)
+        {
+	        lmVStaff* pVStaff = m_pCursorInstr->GetVStaff(m_nCursorStaff);
+	        m_oCursorPos = m_pCursorSO->GetOrigin();
+	        m_oCursorPos.y -= pVStaff->TenthsToLogical(10, m_nCursorStaff);
+	        m_udyLength = pVStaff->TenthsToLogical(60, m_nCursorStaff);
+	        m_udxSegment = pVStaff->TenthsToLogical(5, m_nCursorStaff);
+            m_nCursorIdSO = m_pCursorSO->GetID();
+        }
+    }
+    m_fCursorShown = !m_fCursorShown;       //toggle status
+
+	// prepare DC
+    wxClientDC dc(m_pCanvas);
+	dc.SetBrush(*wxBLUE_BRUSH);
+	int vxlineWidth = 1;
+	wxColour color(255,255,0);		//XOR transforms it in the complementary: blue
+	wxPen pen(color, vxlineWidth);
+	dc.SetPen(pen);
+	dc.SetLogicalFunction(wxXOR);
+
+	//cursor geometry
+	lmDPoint pointD;
+	lmUPoint cursorPos(m_oCursorPos.x, m_oCursorPos.y);
+	LogicalToDevice(cursorPos, pointD);
+	lmPixels vxLine = pointD.x;
+	lmPixels vyTop = pointD.y;
+
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale( m_rScale, m_rScale );
+	lmPixels vyBottom = vyTop + dc.LogicalToDeviceYRel((wxCoord)m_udyLength);
+	lmPixels vdxSegment = dc.LogicalToDeviceYRel((wxCoord)m_udxSegment);
+    dc.SetMapMode(wxMM_TEXT);
+    dc.SetUserScale(1.0, 1.0);
+
+	//draw vertical line
+	dc.DrawLine(vxLine, vyTop, vxLine, vyBottom);
+
+	//draw horizontal segments
+	dc.DrawLine(vxLine-vdxSegment, vyTop-1, vxLine+vdxSegment+1, vyTop-1);
+	dc.DrawLine(vxLine-vdxSegment, vyBottom, vxLine+vdxSegment+1, vyBottom);
+
+}
+
+*/

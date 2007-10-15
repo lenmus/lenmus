@@ -59,6 +59,8 @@ public:
     lmBoxSystem* AddSystem(int nSystem);
     void Render(lmScore* pScore, lmPaper* pPaper);
 
+    inline lmBoxScore* GetBoxScore() const { return m_pBScore; }
+
 
 private:
     lmBoxScore*     m_pBScore;      //parent score box
