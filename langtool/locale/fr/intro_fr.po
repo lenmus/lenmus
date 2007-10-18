@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-06-15 18:41+0100\n"
+"PO-Revision-Date: 2007-10-18 21:20+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr "Envoyez vos commentaires et suggestions à l'équipe LenMus (www.lenmus.
 
 #: intro/intro.cpp:3
 msgid "Licensed under the terms of the GNU Free Documentation License v1.2"
-msgstr "Licencié sous les tèrmes du GNU Free Documentation License v1.2"
+msgstr "Licencié sous les termes de la GNU Free Documentation License v1.2"
 
 #: intro/intro.cpp:4
 msgid "the teacher of music"
@@ -30,41 +30,41 @@ msgstr "Page de couverture"
 
 #: intro/intro.cpp:6
 msgid "LenMus presentation"
-msgstr "Presentation de LenMus"
+msgstr "Présentation de LenMus"
 
 #: intro/intro.cpp:7
 msgid "LenMus Phonascus presentation"
-msgstr "Presentation de LenMus Phonascus"
+msgstr "Présentation de LenMus Phonascus"
 
 #: intro/intro.cpp:8
 msgid "Phonascus, from Latin 'the teacher of music', is a music education software that you can use to practice your music reading skills, improve your aural recognition abilities, or just learn the fundamental principles of music theory and language. Since version 3.1 it includes new functions that, I hope, will end up with full support for the creation, display, printing, play back and interactive edition of music scores. Visit the LenMus web site for more information about the current status of the score editor."
-msgstr "Phonascus, en latin « Le professeur de musique » c'est un logiciel pour l'apprentissage du langage musical qui va te permettre d'améliorer tes compétences pour l'interprétation des partitions, avoir de l'oreille ou, tout simplement apprendre les principes fondamentaux du langage musical. "
+msgstr "Phonascus, en latin « Le professeur de musique », est un logiciel d'éducation musicale qui améliore votre lecture musicale, développe votre écoute ou qui vous donne, tout simplement, les bases de la théorie musicale.  Depuis sa version 3.1, Phonascus inclut de nouvelles fonctionnalités qui, nous l'espérons, vous fourniront tous les éléments nécessaires à la création, l'impression, la lecture et l'édition interactive de partitions. Visitez le site Web de LenMus pour plus d'informations sur les évolutions de son éditeur de partitions."
 
 #: intro/intro.cpp:9
 msgid "LenMus Phonascus allows you to focus on specific skills and exercises, on both theory and aural training. The different activities can be customized to meet your specific needs at each moment and it allows you to work at your own pace."
-msgstr "LenMus Phonascur va vous permettre de vous centrer sur des spécifiques habiletés et exercises, de part et d'autre théorie et oral entraînement. Les diverses activités peuvent être personnalisées pour trouver tes besoins spécifiques à chaque moment et cela vous permettra  de travailler à votre rythme."
+msgstr "LenMus Phonascus vous permet de travailler spécifiquement certains exercices de théorie ou de pratique auditive. Ils peuvent être personnalisés selon vos besoins à tout moment et vous permettent ainsi de travailler à votre rythme."
 
 #: intro/intro.cpp:10
 msgid "LenMus is structured as a collection of fully interactive textbooks (eMusicBooks), including theory and exercises. All exercises are fully integrated into the text. Music scores are not just images or pictures but fully interactive operational music scores that you can hear, in whole or just the measures you choose. This enables you to put concepts into practice with immediate feedback and makes the subject matter both more accessible and more rewarding, as you can hear, test and put in practise immediately any new concept introduced."
-msgstr "LenMus est structuré comme un ensemble de livres de text interactifs (eMusicBooks), y compris théorie et exercices. Tous les exercices sont complétement integrés dans le text. Le partitions ne sont pas simplement des images ou photos mais musiacl partitions complétement operationnelles que vous pouvez entendre, tout complétement ou simplement les mesures choisis. Cela vous permet de mettre en practice des concepts avec une réponse inmédiat et fait au matière sujet plus accesible et plus gratifiant, comme vous pouvez entendre, essayer et mettre en practice immediatément n'importequel concept introduit."
+msgstr "LenMus est organisé comme un ensemble de livres interactifs (eMusicBooks), contenant des parties théoriques et des exercices. Ces derniers sont complètement integrés dans le texte. Les partitions ne sont pas de simples images, elles sont interactives et peuvent donc être totalement ou partiellement jouées. Cela vous permet de mettre en pratique immédiatement les concepts étudiés facilitant ainsi votre apprentissage."
 
 #: intro/intro.cpp:11
 msgid "Teaching material is organized into levels, and each level into lessons. Book"
-msgstr "Le matériel d'enseignement est organisé en niveaux, et chaque niveau en leçons. Le livre"
+msgstr "Les cours sont organisés en niveaux, et chaque niveau en leçons. Le livre"
 
 #: intro/intro.cpp:12
 msgid " General exercises"
-msgstr "Exercices générals"
+msgstr "Exercices généraux"
 
 #: intro/intro.cpp:13
 msgid " contains some basic exercises for aural training and to practise theoretical concepts, such as intervals and scales. Unlike exercises included in the other books, you can customize all exercises included in this book. This will allow you meet your specific needs at each moment and to practise specific points."
-msgstr " contient quelques exercices basiques pour l'entraînement oral et la practice des concepts théoriques, comme des intervalles et échelles. A la difference d'exercices inclus dans des autres livres, vous pouvez personnaliser tous les exercices inclus dans ce livre. Cela vous permettra de trouver vos besoins specifiques à chaque fois et pratiquer des points spécifiques"
+msgstr " présente quelques exercices basiques pour l'entraînement oral et quelques notions théoriques, comme les intervalles et les gammes. A la difference des exercices inclus dans les autres livres, vous pouvez personnaliser tous ceux présents dans celui-ci. Cela vous permet d'adapter les exercices à vos besoins et de travailler certains sujets plus particulièrement."
 
 #: intro/intro.cpp:14
 msgid "We hope that LenMus become a useful tool in your studies."
-msgstr "Nous souhaitons que LenMus devient le plus utile aide en vos études."
+msgstr "Nous souhaitons que LenMus vous apporte toute l'aide nécessaire à votre apprentissage."
 
 #: intro/intro.cpp:15
 msgid "The LenMus team."
-msgstr "L'équipe LenMus"
+msgstr "L'équipe LenMus."
 

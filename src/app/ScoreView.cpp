@@ -43,6 +43,7 @@
 #include "ScoreCanvas.h"
 #include "EditFrame.h"
 #include "../widgets/Ruler.h"
+#include "../widgets/Cursor.h"
 #include "FontManager.h"
 #include "ArtProvider.h"
 #include "../graphic/BoxSlice.h"
@@ -57,9 +58,6 @@ enum
 	// windows
     lmID_HSCROLL = 1000,
     lmID_VSCROLL,
-
-	// cursos
-	lmID_TIMER_CURSOR,
 };
 
 // global variables
@@ -82,7 +80,6 @@ BEGIN_EVENT_TABLE(lmScoreView, lmView)
     EVT_COMMAND_SCROLL	(lmID_HSCROLL, lmScoreView::OnScroll)
     EVT_COMMAND_SCROLL	(lmID_VSCROLL, lmScoreView::OnScroll)
     EVT_MOUSEWHEEL		(lmScoreView::OnMouseWheel)
-	EVT_TIMER			(lmID_TIMER_CURSOR, lmScoreView::OnCursorTimer)
 
 END_EVENT_TABLE()
 
@@ -125,15 +122,9 @@ lmScoreView::lmScoreView()
     m_yScrollPosition = 0;
 
 	//cursor initializations
-	m_oCursorTimer.SetOwner(this, lmID_TIMER_CURSOR);
-	m_pCursorInstr = (lmInstrument*)NULL;
-	m_nCursorStaff = 1;
-	m_nCursorMeasure = 1;
-	m_nCursorTime = 0;
+    m_pCursor = (lmScoreCursor*)NULL;
 	m_pCursorSO = (lmStaffObj*)NULL;
     m_nCursorIdSO = -1;
-    m_fCursorEnabled = true;
-    m_fCursorShown = false;
     m_pCursorIT = (lmStaffObjIterator*)NULL;
 
 }
@@ -142,6 +133,8 @@ lmScoreView::~lmScoreView()
 {
     if (m_pCursorIT)
         delete m_pCursorIT;
+    if (m_pCursor)
+        delete m_pCursor;
 }
 
 bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
@@ -203,7 +196,6 @@ bool lmScoreView::OnCreate(wxDocument* doc, long WXUNUSED(flags) )
     SetScale(1.0);            // to create the font and resize controls and scrollbars
 
     //show the frame
-    m_oCursorTimer.Start(lmCURSOR_BLINKING_RATE, wxTIMER_CONTINUOUS);
 	m_pFrame->Show(true);
     Activate(true);
 
@@ -1145,6 +1137,9 @@ void lmScoreView::DoScroll(int orientation, int nScrollSteps)
     if (nScrollSteps == 0) return;        // can't scroll further
 
 
+    //hide cursor
+    m_pCursor->RemoveCursor();
+
     // save data and transform steps into pixels
     if (orientation == wxHORIZONTAL) {
         m_xScrollPosition += nScrollSteps;
@@ -1175,6 +1170,8 @@ void lmScoreView::DoScroll(int orientation, int nScrollSteps)
     m_pCanvas->MacUpdateImmediately() ;
 #endif
 
+    //Restore Cursor
+    m_pCursor->DisplayCursor(m_rScale, m_pCursorSO);
 }
 
 //------------------------------------------------------------------------------------------
@@ -1284,23 +1281,10 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
     // allocate a DC in memory for using the offscreen bitmaps
     wxMemoryDC memoryDC;
 
-    // Following code initializes cursor position if not yet initialized.
-    // Next code has nothing to do with repainting but I didn't find a better place to
-    // include it. And when repainting it is necessary to have cursor initialized.
-    lmScore* pScore = m_pDoc->GetScore();
-    if (!pScore) return;
-	if (m_pCursorInstr == (lmInstrument*)NULL)
-	{
-		// Set initial cursor position
-		m_pCursorInstr = pScore->GetFirstInstrument();	//first instrument
-		m_nCursorStaff = 1;								//staff = 1
-		m_nCursorMeasure = 1;							//measure = 1
-		m_nCursorTime = 0;
-	}
-
-
     // inform the paper that we are going to use it, and get the number of
     // pages needed to draw the score
+    lmScore* pScore = m_pDoc->GetScore();
+    if (!pScore) return;
     m_Paper.SetDrawer(new lmDirectDrawer(&memoryDC));
     m_graphMngr.Prepare(pScore, m_xPageSizeD, m_yPageSizeD, m_rScale, &m_Paper);
     int nTotalPages = m_graphMngr.GetNumPages();
@@ -1309,6 +1293,18 @@ void lmScoreView::RepaintScoreRectangle(wxDC* pDC, wxRect& repaintRect)
         // number of pages has changed. Adjust scrollbars
         m_numPages = nTotalPages;
         AdjustScrollbars();
+    }
+
+    // Following code initializes cursor position if not yet initialized.
+    // Next code has nothing to do with repainting but I didn't find a better place to
+    // include it. And when repainting it is necessary to have cursor initialized.
+    if (!m_pCursor)
+    {
+        m_pCursor = new lmScoreCursor(this, (lmCanvas*)m_pCanvas, pScore);
+        SetInitialCursorPosition();
+        //TODO: This is not the best place to start the cursor. If the PO is going to
+        //be higlighted this will force a repaint (inside the paint routine!!)
+        m_pCursor->DisplayCursor(m_rScale, m_pCursorSO);
     }
 
     // the repaintRect is referred to canvas window origin and is unscrolled.
@@ -1502,97 +1498,23 @@ void lmScoreView::DumpBitmaps()
     m_graphMngr.BitmapsToFile(sFilename, sExt, wxBITMAP_TYPE_JPEG);
 }
 
-void lmScoreView::DrawCursor()
-{
-    if (!m_pCanvas) return;
 
-	//get pointed object
-	if (m_pCursorSO == (lmStaffObj*)NULL)
-	{
-        SetInitialCursorPosition();
-	    if (m_pCursorSO == (lmStaffObj*)NULL) return;
-    }
-
-	//get cursor position
-    //if we are going to show cursor. Get new position
-    //else, if we are going to hide cursor,  use current cursor pos.
-    if (!m_fCursorShown)
-    {
-        //we are going to show cursor. Get new position if object changed
-        if (m_pCursorSO->GetID() != m_nCursorIdSO)
-        {
-	        lmVStaff* pVStaff = m_pCursorInstr->GetVStaff(m_nCursorStaff);
-	        m_oCursorPos = m_pCursorSO->GetOrigin();
-	        m_oCursorPos.y -= pVStaff->TenthsToLogical(10, m_nCursorStaff);
-	        m_udyLength = pVStaff->TenthsToLogical(60, m_nCursorStaff);
-	        m_udxSegment = pVStaff->TenthsToLogical(5, m_nCursorStaff);
-            m_nCursorIdSO = m_pCursorSO->GetID();
-        }
-    }
-    m_fCursorShown = !m_fCursorShown;       //toggle status
-
-	// prepare DC
-    wxClientDC dc(m_pCanvas);
-	dc.SetBrush(*wxBLUE_BRUSH);
-	int vxlineWidth = 1;
-	wxColour color(255,255,0);		//XOR transforms it in the complementary: blue
-	wxPen pen(color, vxlineWidth);
-	dc.SetPen(pen);
-	dc.SetLogicalFunction(wxXOR);
-
-	//cursor geometry
-	lmDPoint pointD;
-	lmUPoint cursorPos(m_oCursorPos.x, m_oCursorPos.y);
-	LogicalToDevice(cursorPos, pointD);
-	lmPixels vxLine = pointD.x;
-	lmPixels vyTop = pointD.y;
-
-    dc.SetMapMode(lmDC_MODE);
-    dc.SetUserScale( m_rScale, m_rScale );
-	lmPixels vyBottom = vyTop + dc.LogicalToDeviceYRel((wxCoord)m_udyLength);
-	lmPixels vdxSegment = dc.LogicalToDeviceYRel((wxCoord)m_udxSegment);
-    dc.SetMapMode(wxMM_TEXT);
-    dc.SetUserScale(1.0, 1.0);
-
-	//draw vertical line
-	dc.DrawLine(vxLine, vyTop, vxLine, vyBottom);
-
-	//draw horizontal segments
-	dc.DrawLine(vxLine-vdxSegment, vyTop-1, vxLine+vdxSegment+1, vyTop-1);
-	dc.DrawLine(vxLine-vdxSegment, vyBottom, vxLine+vdxSegment+1, vyBottom);
-
-}
-
-void lmScoreView::OnCursorTimer(wxTimerEvent& event)
-{
-    if (m_fCursorEnabled)
-    	DrawCursor();
-}
-
-void lmScoreView::UpdateCursor()
-{
-    //for inmediate visual feedback, after changing cursor position,
-    //we are going to hide current cursor and to display the new one
-
-    //hide old cursor
-    if (m_fCursorShown)
-        DrawCursor();
-
-    //show new cursor
-    DrawCursor();
-
-    //restart timer
-    m_oCursorTimer.Start(lmCURSOR_BLINKING_RATE, wxTIMER_CONTINUOUS);
-
-}
+//------------------------------------------------------------------------------------------
+// cursor management
+//------------------------------------------------------------------------------------------
 
 void lmScoreView::SetInitialCursorPosition()
 {
     if (m_pCursorIT) return;
-	if (m_pCursorSO == (lmStaffObj*)NULL)
+	if (!m_pCursorSO)
 	{
-		if (m_pCursorInstr == (lmInstrument*)NULL) return;
-		lmVStaff* pVStaff = m_pCursorInstr->GetVStaff(m_nCursorStaff);
+		// Set initial cursor position
+        lmScore* pScore = m_pDoc->GetScore();
+		lmInstrument* pInstr = pScore->GetFirstInstrument();	//first instrument
+		int nCursorStaff = 1;								//staff = 1
+		int nCursorMeasure = 1;							//measure = 1
+		int nCursorTime = 0;
+		lmVStaff* pVStaff = pInstr->GetVStaff(nCursorStaff);
 
 		//loop to process all StaffObjs in this measure
 		m_pCursorIT = pVStaff->CreateIterator(eTR_ByTime);
@@ -1604,28 +1526,19 @@ void lmScoreView::SetInitialCursorPosition()
 		{
 			//place cursor at first StaffObj
 			m_pCursorSO = m_pCursorIT->GetCurrent();
+            m_pCursor->SetCursorPosition(m_pCursorSO);
 
             lmBoxScore* pBS = m_graphMngr.GetBoxScore();
-            pBS->SetCursor(m_pCursorSO);
+            if (pBS)
+                pBS->SetCursor(m_pCursorSO);
 		}
 	}
 
 }
 
-void lmScoreView::EnableCursor(bool fEnable)
-{
-    //TODO
-}
-
 void lmScoreView::CursorRight()
 {
-    if (!m_pCanvas) return;
-	if (m_pCursorSO == (lmStaffObj*)NULL) return;
-	if (m_pCursorInstr == (lmInstrument*)NULL) return;
-    if (m_pCursorIT == (lmStaffObjIterator*)NULL) return;
-
-    //stopt cursor timer
-    m_oCursorTimer.Stop();
+    if (!m_pCursor) return;
 
 	//advance to next staff obj.
 	if (!m_pCursorIT->EndOfList()) {
@@ -1635,25 +1548,18 @@ void lmScoreView::CursorRight()
             m_pCursorIT->MoveLast();
         }
         m_pCursorSO = m_pCursorIT->GetCurrent();
-            lmBoxScore* pBS = m_graphMngr.GetBoxScore();
-            pBS->SetCursor(m_pCursorSO);
-            m_pDoc->UpdateAllViews();       //repaint cursor
+            //lmBoxScore* pBS = m_graphMngr.GetBoxScore();
+            //pBS->SetCursor(m_pCursorSO);
+            //m_pDoc->UpdateAllViews();       //repaint cursor
     }
 
-    //for inmediate visual feedback, hide current cursor and display new one
-    UpdateCursor();
+    m_pCursor->SetCursorPosition(m_pCursorSO);
 
 }
 
 void lmScoreView::CursorLeft()
 {
-    if (!m_pCanvas) return;
-	if (m_pCursorSO == (lmStaffObj*)NULL) return;
-	if (m_pCursorInstr == (lmInstrument*)NULL) return;
-    if (m_pCursorIT == (lmStaffObjIterator*)NULL) return;
-
-    //stopt cursor timer
-    m_oCursorTimer.Stop();
+    if (!m_pCursor) return;
 
 	//go back to previous staff obj.
 	if (!m_pCursorIT->EndOfList()) {
@@ -1663,13 +1569,12 @@ void lmScoreView::CursorLeft()
             m_pCursorIT->MoveFirst();
         }
         m_pCursorSO = m_pCursorIT->GetCurrent();
-            lmBoxScore* pBS = m_graphMngr.GetBoxScore();
-            pBS->SetCursor(m_pCursorSO);
-            m_pDoc->UpdateAllViews();       //repaint cursor
+            //lmBoxScore* pBS = m_graphMngr.GetBoxScore();
+            //pBS->SetCursor(m_pCursorSO);
+            //m_pDoc->UpdateAllViews();       //repaint cursor
     }
 
-    //for inmediate visual feedback, hide current cursor and display new one
-    UpdateCursor();
+    m_pCursor->SetCursorPosition(m_pCursorSO);
 
 }
 
@@ -1689,3 +1594,4 @@ void lmScoreView::CursorAtPoint(lmUPoint& point)
 {
 	wxMessageBox(_T("lmScoreView::CurserAtPoint"));
 }
+

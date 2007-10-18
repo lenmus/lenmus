@@ -78,7 +78,7 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     //for each lmInstrument
     for (int i=0; i < (int)m_InstrSlices.size(); i++)
     {
-        m_yBottomLeftLine = m_InstrSlices[i]->Render(pPaper, (int)m_xPos, m_nNumPage, nSystem);
+        m_yBottomLeftLine = m_InstrSlices[i]->Render(pPaper, m_xPos, m_nNumPage, nSystem);
     }
 
     //Draw the initial barline that joins all staffs in a system

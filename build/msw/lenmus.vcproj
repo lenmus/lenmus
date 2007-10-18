@@ -550,6 +550,12 @@
 			Name="widgets"
 			Filter="">
 			<File
+				RelativePath="..\..\src\widgets\Cursor.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\widgets\Cursor.h">
+			</File>
+			<File
 				RelativePath="..\..\src\widgets\Ruler.cpp">
 			</File>
 			<File

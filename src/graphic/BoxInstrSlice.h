@@ -55,7 +55,7 @@ public:
                     lmInstrument* pInstr, int nInstr);
     ~lmBoxInstrSlice();
 
-    lmLUnits Render(lmPaper* pPaper, int xStartPos, int nNumPage, int nSystem);
+    lmLUnits Render(lmPaper* pPaper, lmLUnits xStartPos, int nNumPage, int nSystem);
 
     inline lmBoxSystem* GetBoxSystem() const { return m_pSystem; }
     inline int GetNumInstrument() const { return m_nNumInstr; } 

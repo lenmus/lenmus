@@ -81,7 +81,7 @@ lmBoxInstrSlice::~lmBoxInstrSlice()
 }
 
 
-lmLUnits lmBoxInstrSlice::Render(lmPaper* pPaper, int xStartPos, int nNumPage, int nSystem)
+lmLUnits lmBoxInstrSlice::Render(lmPaper* pPaper, lmLUnits xStartPos, int nNumPage, int nSystem)
 {
     pPaper->SetCursorX( xStartPos );    //align staves in system
 

@@ -57,7 +57,7 @@ class lmEditFrame;
 class lmScoreCanvas;
 class lmScoreDocument;
 class lmRuler;
-
+class lmScoreCursor;
 
 
 //Abstract class. All views must derive from it
@@ -101,9 +101,6 @@ public:
     // debug options
     void DumpBitmaps();
 
-	//event handlers
-	void OnCursorTimer(wxTimerEvent& event);
-
 	//methods for dealing with user interaction
     void OnMouseEvent(wxMouseEvent& event, wxDC* pDC);
     void OnMouseWheel(wxMouseEvent& event);
@@ -136,6 +133,7 @@ public:
 	void CursorDown();
 	void CursorAtPoint(lmUPoint& point);
 
+	void LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice);
 
 
 private:
@@ -147,17 +145,14 @@ private:
                          lmDPoint* pPagePosD,
 						 lmDPoint* pPaperOrgD, lmDPoint* pOffsetD,
 						 int* pNumPage, bool* pfInInterpageGap);
-	void LogicalToDevice(lmUPoint& posLogical, lmDPoint& posDevice);
 
     // Auxiliary for scrolling
     int CalcScrollInc(wxScrollEvent& event);
     void DoScroll(int orientation, int nScrollSteps);
 
 	//Dealing with the cursor
-	void DrawCursor();
-    void UpdateCursor();
-    void EnableCursor(bool fEnable);
     void SetInitialCursorPosition();
+
 
 
         //-- variables ---
@@ -208,28 +203,13 @@ private:
     wxDragImage*    m_pDragImage;
     lmScoreObj*     m_pSoDrag;            // lmScoreObj being dragged
 
-	    //cursor display and positioning
+    //cursor
+    lmScoreCursor*  m_pCursor;
 
     //cursor: current position in score
-    bool            m_fCursorEnabled;       //to supress cursor display
-    bool            m_fCursorShown;         //to know its state
-	lmInstrument*	m_pCursorInstr;			//current position: instrument
-	int				m_nCursorStaff;			//current position: staff
-	int				m_nCursorMeasure;		//current position: measure
-	int				m_nCursorTime;			//current position: time (from measure start)
 	lmStaffObj*		m_pCursorSO;			//staff object pointed by the cursor
 	int		        m_nCursorIdSO;		    //previous staff object pointed by the cursor
 	lmStaffObjIterator* m_pCursorIT;        //iterator, to speed up cursor moves
-
-    //timer for cursor blinking
-	wxTimer			m_oCursorTimer;			//for cursor blinking
-
-    //cursor position in screen and geometry
-    lmUPoint        m_oCursorPos;           //to remove old cursor image
-	lmLUnits        m_udyLength;
-	lmLUnits        m_udxSegment;
-
-
 
 
     DECLARE_EVENT_TABLE()
