@@ -248,30 +248,6 @@ reliability and stability.") +
 
 }
 
-//void lmAboutDialog::OnTranslators(wxCommandEvent& WXUNUSED(event))
-//{
-//    wxString sContent = m_sHeader +
-//        _T("<center>")
-//        _T("<h3>") + _("Translation credits") +
-//        _T("</h3></center><table border='1' width='100%' cellpadding='5' cellspacing='0'>")
-//        _T("<tr><td bgcolor='#7f8adc'><font color='#ffffff'><b>") +
-//            _("Language") + _T("</b></font></td><td bgcolor='#7f8adc'><font color='#ffffff'><b>") +
-//            _("Name") + _T("</b></font></td><td bgcolor='#7f8adc'><font color='#ffffff'><b>") +
-//            _("e-mail") + _T("</b></font></td></tr>")
-//        _T("<tr><td>") + _("Dutch") + _T("</td><td>Jack Van Handenhove</td>") +
-//            _T("<td>jvanhan@gmail.com</td></tr>") +
-//        _T("<tr><td>") + _("French") + _T("</td><td>Carlos Alarcia</td>") +
-//            _T("<td>calarcia@cyltel.com</td></tr>") +
-//        _T("<tr><td>") + _("Spanish") + _T("</td><td>Cecilio Salmer&oacute;n</td>") +
-//            _T("<td>s.cecilio@gmail.com</td></tr>") +
-//        _T("<tr><td>") + _("Turkish") + _T("</td><td>Elif &Ouml;zt&uuml;rk</td>") +
-//            _T("<td>elif_ozturk23@yahoo.com</td></tr>") +
-//        _T("</table></body></html>");
-//
-//        m_pHtmlWindow->SetPage(sContent);
-//
-//}
-
 void lmAboutDialog::OnBuildInfo(wxCommandEvent& WXUNUSED(event))
 {
     // Get screen information
@@ -330,12 +306,6 @@ gave their time for free to the project. Thanks to all them.") +
         _("Management and programming:") + _T("</b></td></tr>")
     _T("  <tr><td width='40px'>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
     _T("<tr><td colspan='3'>&nbsp;</td></tr>")
-        //
-    //_T("<tr><td colspan='3'><b>") +
-    //    _("Programmers:") + _T("</b></td></tr>")
-    //_T("  <tr><td>&nbsp;</td><td colspan='2'>Cecilio Salmer&oacute;n</td></tr>")
-    //_T("<tr><td colspan='3'>&nbsp;</td></tr>")
-        //
     _T("<tr><td colspan='3'><b>") +
         _("Music texts and exercises:") + _T("</b></td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>Marcelo G&aacute;lvez</td></tr>")
@@ -350,6 +320,8 @@ gave their time for free to the project. Thanks to all them.") +
     _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("French") + _T("</td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
         _T("<td>Carlos Alarcia</td></tr>")
+        _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
+        _T("<td>Christophe Marcoux</td></tr>")
     _T("  <tr><td>&nbsp;</td><td colspan='2'>") + _("Spanish") + _T("</td></tr>")
         _T("<tr><td>&nbsp;</td><td width='40px'>&nbsp;</td>")
         _T("<td>Cecilio Salmer&oacute;n</td></tr>")

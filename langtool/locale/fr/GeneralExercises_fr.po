@@ -2,7 +2,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
+<<<<<<< .working
 "PO-Revision-Date: 2007-10-18 21:20+0100\n"
+=======
+"PO-Revision-Date: 2007-10-18 21:13+0100\n"
+>>>>>>> .merge-right.r307
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
