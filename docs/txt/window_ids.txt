@@ -10,6 +10,11 @@ same time. According wxWidgets documentation you can use wxID_HIGHEST to determi
 the number above which it is safe to define your own identifiers. Or, you can
 use identifiers below wxID_LOWEST.
 
+Also, there is the posibility of using global function ::wxNewId(). This function
+returns a unique Id (there is an internal global id counter and this function returns
+wxID_HIGHEST and increments its value).
+
+
 MainFrame: 1000 - 1299
 
 TextBookFrame: 2000-2099

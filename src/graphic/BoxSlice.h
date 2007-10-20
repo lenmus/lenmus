@@ -59,6 +59,9 @@ public:
 	//debug
 	void DrawSelRectangle(lmPaper* pPaper);
 
+    //info
+    inline int GetNumMeasure() const { return m_nMeasure; }
+
 
 private:
 

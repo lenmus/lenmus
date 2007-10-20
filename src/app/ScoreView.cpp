@@ -37,7 +37,6 @@
 
 #include "global.h"
 #include "TheApp.h"
-#include "MainFrame.h"
 #include "ScoreDoc.h"
 #include "ScoreView.h"
 #include "ScoreCanvas.h"
@@ -49,7 +48,8 @@
 #include "../graphic/BoxSlice.h"
 
 
-// access to main frame
+// access to main frame and to status bar
+#include "MainFrame.h"
 extern lmMainFrame* GetMainFrame();
 
 // IDs for events, windows, etc.
@@ -87,6 +87,7 @@ END_EVENT_TABLE()
 
 lmScoreView::lmScoreView()
 {
+    m_pMainFrame = GetMainFrame();          //for accesing StatusBar
     m_pFrame = (lmEditFrame*) NULL;
     m_pCanvas = (lmScoreCanvas*) NULL;
     m_pDoc = (lmScoreDocument*) NULL;
@@ -897,6 +898,9 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
             lmBoxSlice* pBSlice = pBPage->FindStaffAtPosition(pageNPosL);
 			if (pBSlice)
 			{
+                m_pMainFrame->SetStatusBarMsg(
+                    wxString::Format( _T("Double click on page %d, measure %d"),
+                        nNumPage, pBSlice->GetNumMeasure() ));
 				//prepare paper DC
 				wxClientDC dc(m_pCanvas);
 				dc.SetMapMode(lmDC_MODE);
@@ -909,7 +913,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 				pBSlice->DrawSelRectangle(&m_Paper);
 			}
             else
-                wxMessageBox( wxString::Format( _T("Page %d"), nNumPage ));
+                m_pMainFrame->SetStatusBarMsg( wxString::Format( _T("Double click on page %d"), nNumPage ));
         }
 
 

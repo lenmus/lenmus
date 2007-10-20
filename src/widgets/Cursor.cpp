@@ -82,6 +82,8 @@ lmScoreCursor::lmScoreCursor(lmView* pParent, lmCanvas* pCanvas, lmScore* pScore
 
 lmScoreCursor::~lmScoreCursor()
 {
+    if (m_oCursorTimer.IsRunning())
+        m_oCursorTimer.Stop();
 }
 
 void lmScoreCursor::OnCursorTimer(wxTimerEvent& event)
@@ -103,7 +105,8 @@ void lmScoreCursor::RemoveCursor()
 
     //stopt cursor timer
     m_fDisplayed = false;
-    m_oCursorTimer.Stop();
+    if (m_oCursorTimer.IsRunning())
+        m_oCursorTimer.Stop();
 
     //hide old cursor
     m_locker.Enter();
@@ -129,7 +132,8 @@ void lmScoreCursor::SetCursorPosition(lmStaffObj* pSO)
     //if position doesn't change, return. Nothing to do.
     if (m_pCursorSO && m_pCursorSO->GetID() == pSO->GetID()) return;
 
-    m_oCursorTimer.Stop();
+    if (m_oCursorTimer.IsRunning())
+        m_oCursorTimer.Stop();
     m_locker.Enter();
     RenderCursor(lmHIDDEN);     //hide old cursor
 

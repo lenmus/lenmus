@@ -55,6 +55,7 @@
 #include "AboutDialog.h"
 #include "../options/OptionsDlg.h"
 #include "ToolsBox.h"
+#include "StatusBar.h"
 #include "DlgDebug.h"
 #include "DlgDebugTrace.h"
 #include "Printout.h"
@@ -416,13 +417,13 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     m_pTbTextBooks = (wxToolBar*)NULL;
 
     // initialize status bar
-    m_pStatusbar = (wxStatusBar*) NULL;
+    m_pStatusBar = (lmStatusBar*)NULL;
     bool fStatusBar = false;			
     g_pPrefs->Read(_T("/MainFrame/ViewStatusBar"), &fStatusBar);
-    if (!m_pStatusbar && fStatusBar) {
+    if (!m_pStatusBar && fStatusBar) {
         // create a status bar (by default with 1 pane only)
-        CreateMyStatusBar();
-        SetStatusText(_("Welcome to LenMus!"));
+        CreateTheStatusBar();
+        m_pStatusBar->SetMsgText(_("Welcome to LenMus!"));
     }
 
     // initialize flags for toggle buttons status
@@ -830,25 +831,33 @@ void lmMainFrame::CreateTextBooksToolBar(long style, wxSize nIconSize, int nRow)
 
 }
 
-void lmMainFrame::CreateMyStatusBar()
+void lmMainFrame::CreateTheStatusBar(int nType)
 {
-    if (m_pStatusbar) return;
+    //if the status bar exists and it is of same type, nothing to do
+    if (m_pStatusBar && m_pStatusBar->GetType() == nType) return;
 
-    int ch = GetCharWidth();
-    const int widths[] = {-1, 20*ch};
-    m_pStatusbar = CreateStatusBar (WXSIZEOF(widths), wxST_SIZEGRIP, MENU_View_StatusBar);
-    m_pStatusbar->SetStatusWidths (WXSIZEOF(widths), widths);
+    //create the status bar
+    if (m_pStatusBar)
+        delete m_pStatusBar;
+
+    m_pStatusBar = new lmStatusBar(this, (lmEStatusBarLayout)nType, MENU_View_StatusBar);
+    SetStatusBar(m_pStatusBar);
+
+    //the status bar pane is used to display menu and toolbar help. 
+    //Using -1 disables help display.
+    SetStatusBarPane(-1);
+
     SendSizeEvent();
 }
 
-void lmMainFrame::DeleteStatusBar()
+void lmMainFrame::DeleteTheStatusBar()
 {
-    if (!m_pStatusbar) return;
+    if (!m_pStatusBar) return;
 
     //delete status bar
-    SetStatusBar (NULL);
-    delete m_pStatusbar;
-    m_pStatusbar = (wxStatusBar*)NULL;
+    SetStatusBar(NULL);
+    delete m_pStatusBar;
+    m_pStatusBar = (lmStatusBar*)NULL;
     SendSizeEvent();
 }
 
@@ -1817,11 +1826,11 @@ void lmMainFrame::OnToolbarsUI (wxUpdateUIEvent &event) {
 void lmMainFrame::OnViewStatusBar(wxCommandEvent& WXUNUSED(event))
 {
     bool fStatusBar;
-    if (!m_pStatusbar) {
-        CreateMyStatusBar ();
+    if (!m_pStatusBar) {
+        CreateTheStatusBar ();
         fStatusBar = true;
     }else{
-        DeleteStatusBar ();
+        DeleteTheStatusBar ();
         fStatusBar = false;
     }
     g_pPrefs->Write(_T("/MainFrame/ViewStatusBar"), fStatusBar);
@@ -1829,7 +1838,7 @@ void lmMainFrame::OnViewStatusBar(wxCommandEvent& WXUNUSED(event))
 }
 
 void lmMainFrame::OnStatusbarUI (wxUpdateUIEvent &event) {
-    event.Check (m_pStatusbar != NULL);
+    event.Check (m_pStatusBar != NULL);
 }
 
 
@@ -2126,15 +2135,17 @@ void lmMainFrame::OnViewPageMargins(wxCommandEvent& WXUNUSED(event))
 
 void lmMainFrame::OnPaneClose(wxAuiManagerEvent& event)
 {
-    //if (evt.pane->name == wxT("test10"))
-    //{
-    //    int res = wxMessageBox(wxT("Are you sure you want to close/hide this pane?"),
-    //                           wxT("wxAUI"),
-    //                           wxYES_NO,
-    //                           this);
-    //    if (res != wxYES)
-    //        evt.Veto();
-    //}
     event.Skip();      //continue processing the  event
 }
+
+//-----------------------------------------------------------------------------------
+// status bar
+//-----------------------------------------------------------------------------------
+
+void lmMainFrame::SetStatusBarMsg(const wxString& sText)
+{
+    if (m_pStatusBar)
+        m_pStatusBar->SetMsgText(sText);
+}
+
 

@@ -534,6 +534,12 @@
 				RelativePath="..\..\src\app\SplashFrame.h">
 			</File>
 			<File
+				RelativePath="..\..\src\app\StatusBar.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\app\StatusBar.h">
+			</File>
+			<File
 				RelativePath="..\..\src\app\TheApp.cpp">
 			</File>
 			<File

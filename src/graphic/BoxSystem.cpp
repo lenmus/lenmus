@@ -224,8 +224,6 @@ lmBoxSlice* lmBoxSystem::FindStaffAtPosition(lmUPoint& pointL)
         {
             if (m_Slices[iS]->FindMeasureAt(pointL))
             {
-                wxMessageBox( wxString::Format( _T("Page %d, in measure %d"),
-                    m_nNumPage, m_nFirstMeasure+iS) );
                 return m_Slices[iS];
             }
         }

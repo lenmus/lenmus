@@ -58,6 +58,7 @@ class lmScoreCanvas;
 class lmScoreDocument;
 class lmRuler;
 class lmScoreCursor;
+class lmMainFrame;
 
 
 //Abstract class. All views must derive from it
@@ -163,6 +164,8 @@ private:
     lmFontManager       m_fontManager;      //font management
     lmGraphicManager    m_graphMngr;        //rederization manager
     lmEditFrame*        m_pFrame;           //the frame for the view
+    lmMainFrame*        m_pMainFrame;       //for accesing StatusBar
+
 
     // controls on the window
     lmRuler*        m_pHRuler;    //rulers

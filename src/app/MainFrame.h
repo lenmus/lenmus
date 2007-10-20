@@ -52,6 +52,7 @@ class lmHtmlWindow;
 class lmHelpController;
 class lmMetronome;
 class lmMDIChildFrame;
+class lmStatusBar;
 
 
 //IDs for menu events that must be public (i.e. to generate them by program)
@@ -92,8 +93,7 @@ public:
     void CreateTextBooksToolBar(long style, wxSize nIconSize, int nRow);
 
     //status bar
-    void CreateMyStatusBar ();
-    void DeleteStatusBar ();
+    void SetStatusBarMsg(const wxString& sText);
 
     // menu bar
     wxMenuBar* CreateMenuBar(wxDocument* doc, wxView* view, bool fEdit, bool fDebug);
@@ -234,6 +234,11 @@ protected:
     void ScanForBooks(wxString sPath, wxString sPattern);
     wxWindow* CreateToolBox();
 
+    //status bar
+    void CreateTheStatusBar(int nType=0);
+    void DeleteTheStatusBar();
+
+
 
     //controllers, special windows, and other controls
     wxAuiManager            m_mgrAUI;           // wxAUI manager
@@ -261,7 +266,7 @@ protected:
     wxToolBar*      m_pTbTextBooks;     // text books navigation toolbar
 
     // status bar
-    wxStatusBar*    m_pStatusbar;
+    lmStatusBar*    m_pStatusBar;
 
     bool    m_fSilentCheck;
 
