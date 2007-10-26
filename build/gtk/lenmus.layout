@@ -2,7 +2,7 @@
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
 	<File name="../../src/app/AboutDialog.cpp" open="1" top="0" tabpos="15">
-		<Cursor position="15176" topLine="325" />
+		<Cursor position="15176" topLine="320" />
 	</File>
 	<File name="../../src/app/AboutDialog.h" open="0" top="0" tabpos="1">
 		<Cursor position="0" topLine="34" />
@@ -245,7 +245,7 @@
 		<Cursor position="3224" topLine="65" />
 	</File>
 	<File name="../../src/html/TextBookFrame.cpp" open="1" top="1" tabpos="8">
-		<Cursor position="29435" topLine="920" />
+		<Cursor position="29435" topLine="1055" />
 	</File>
 	<File name="../../src/html/TextBookFrame.h" open="1" top="0" tabpos="16">
 		<Cursor position="7500" topLine="201" />

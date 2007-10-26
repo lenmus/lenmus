@@ -40,13 +40,15 @@
 #include "vector"
 
 #include "../score/Score.h"
-#include "BoxInstrSlice.h"
+#include "GMObject.h"
+
+class lmBoxInstrSlice;
 
 //
 // Class lmBoxVStaffSlice represents a part of the VStaff of an instrument. 
 //
 
-class lmBoxVStaffSlice
+class lmBoxVStaffSlice : public lmBox
 {
 public:
     lmBoxVStaffSlice(lmBoxInstrSlice* pParent, int nFirstMeasure, int nLastMeasure,

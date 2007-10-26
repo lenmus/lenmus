@@ -30,9 +30,11 @@
 #pragma hdrstop
 #endif
 
-#include "BoxVStaffSlice.h"
-#include "BoxSystem.h"
 #include "BoxScore.h"
+#include "BoxPage.h"
+#include "BoxSystem.h"
+#include "BoxVStaffSlice.h"
+#include "BoxInstrSlice.h"
 
 //access to colors
 #include "../globals/Colors.h"
@@ -52,6 +54,7 @@ extern lmColors* g_pColors;
 
 lmBoxVStaffSlice::lmBoxVStaffSlice(lmBoxInstrSlice* pParent, int nFirstMeasure, 
                                    int nLastMeasure, int nVStaff, lmVStaff* pVStaff)
+    : lmBox(eGMO_BoxVStaffSlice)
 {
     m_pInstrSlice = pParent;
     m_nFirstMeasure = nFirstMeasure;
@@ -68,7 +71,7 @@ lmBoxVStaffSlice::~lmBoxVStaffSlice()
 
 lmLUnits lmBoxVStaffSlice::Render(lmPaper* pPaper, int nNumPage, int nSystem)
 {
-    lmLUnits xFrom = m_pInstrSlice->GetXRight();
+    lmLUnits xFrom = (m_pInstrSlice->GetBounds()).x;
     lmBoxSystem* pSystem = m_pInstrSlice->GetBoxSystem();
     lmLUnits xFinal = pSystem->GetSystemFinalX();
 
@@ -95,18 +98,25 @@ lmLUnits lmBoxVStaffSlice::Render(lmPaper* pPaper, int nNumPage, int nSystem)
     //next VStaff is overlayered with this one
     xStartPos = pPaper->GetCursorX();
     yStartPos = pPaper->GetCursorY();
+    SetXLeft(xFrom);
+    SetYTop(yStartPos);
 
     //to properly draw barlines it is necessary that staff lines are already drawn.
     //so, lets draw the staff lines
     lmLUnits yTopLeftLine;
     m_pVStaff->DrawStaffLines(pPaper, xFrom, xFinal, &yTopLeftLine, &yBottomLeft);
+
+    //save start position of instrument
+    if (m_nVStaff == 1)
+        m_pInstrSlice->SetYTop(yTopLeftLine);
+
     //m_posStartStaff.push_back( lmUPoint(xFrom, yStartPos) );
     //m_posEndStaff.push_back( lmUPoint(xFinal, pPaper->GetCursorY()) );
 
     //if this is first staff of a system, save system start position
     if (fFirstStaffInSystem) {
         pSystem->SetXLeft(xFrom);
-        pSystem->SetYTopLeft(yTopLeftLine);
+        pSystem->SetYTop(yTopLeftLine);
         fFirstStaffInSystem = false;
     }
     
@@ -135,6 +145,10 @@ lmLUnits lmBoxVStaffSlice::Render(lmPaper* pPaper, int nNumPage, int nSystem)
     //advance paper in height off this lmVStaff
     m_pVStaff->NewLine(pPaper);
     //! @todo advance inter-staff distance
+
+    //save bounds
+    SetXRight(xFinal);
+    SetYBottom(yBottomLeft);
 
     return yBottomLeft;
 

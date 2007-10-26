@@ -30,8 +30,10 @@
 #pragma hdrstop
 #endif
 
+#include "../score/Score.h"
 #include "BoxSlice.h"
 #include "BoxSystem.h"
+#include "BoxSliceInstr.h"
 
 //access to colors
 #include "../globals/Colors.h"
@@ -43,10 +45,11 @@ extern lmColors* g_pColors;
 
 //-----------------------------------------------------------------------------------------
 
-lmBoxSlice::lmBoxSlice(lmBoxSystem* pParent, int nMeasure, lmLUnits xStart, lmLUnits xEnd)
+lmBoxSlice::lmBoxSlice(lmBoxSystem* pParent, int nAbsMeasure, lmLUnits xStart, lmLUnits xEnd)
+    : lmBox(eGMO_BoxSlice)
 {
     m_pBSystem = pParent;
-    m_nMeasure = nMeasure;
+    m_nAbsMeasure = nAbsMeasure;
     m_xStart = xStart;
     m_xEnd = xEnd;
 
@@ -55,7 +58,23 @@ lmBoxSlice::lmBoxSlice(lmBoxSystem* pParent, int nMeasure, lmLUnits xStart, lmLU
 
 lmBoxSlice::~lmBoxSlice()
 {
+    //delete instrument slices
+    for (int i=0; i < (int)m_SliceInstr.size(); i++)
+    {
+        //lmBoxSliceInstr* pBSI = m_SliceInstr[i];
+        //delete pBSI;
+        delete m_SliceInstr[i];
+    }
+    m_SliceInstr.clear();
 }
+
+lmBoxSliceInstr* lmBoxSlice::AddInstrument(lmInstrument* pInstr)
+{
+    lmBoxSliceInstr* pBSI = new lmBoxSliceInstr(this, pInstr);
+    m_SliceInstr.push_back(pBSI);
+    return pBSI;
+}
+
 
 lmBoxSlice* lmBoxSlice::FindMeasureAt(lmUPoint& pointL)
 {
@@ -70,14 +89,34 @@ lmBoxSlice* lmBoxSlice::FindMeasureAt(lmUPoint& pointL)
 void lmBoxSlice::DrawSelRectangle(lmPaper* pPaper)
 {
 	//draw system border in red
-	m_pBSystem->DrawSelRectangle(pPaper);
+	m_pBSystem->DrawBoundsRectangle(pPaper, *wxRED);
 
     //draw a border around slice region in cyan
-	lmLUnits yTop = m_pBSystem->GetYTopLeft();
-    lmLUnits yBottom = m_pBSystem->GetYBottomLeft();
+	lmLUnits yTop = m_pBSystem->GetYTop();
+    lmLUnits yBottom = m_pBSystem->GetYBottom();
 
     pPaper->SketchRectangle(lmUPoint(m_xStart, yTop),
                             lmUSize(m_xEnd - m_xStart, yBottom - yTop),
                             *wxCYAN);
 
 }
+
+void lmBoxSlice::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+{
+    for (int i=0; i < (int)m_SliceInstr.size(); i++)
+    {
+        m_SliceInstr[i]->Render(pPaper, uPos, color);
+    }
+}
+
+void lmBoxSlice::SetFinalX(lmLUnits xPos)
+{ 
+	SetXRight(xPos);
+
+	//propagate change
+    for (int i=0; i < (int)m_SliceInstr.size(); i++)
+    {
+        m_SliceInstr[i]->SetFinalX(xPos);
+    }
+}
+

@@ -45,7 +45,11 @@
 #include "../widgets/Cursor.h"
 #include "FontManager.h"
 #include "ArtProvider.h"
+#include "../graphic/BoxPage.h"
 #include "../graphic/BoxSlice.h"
+#include "../graphic/BoxInstrSlice.h"
+#include "../graphic/BoxVStaffSlice.h"
+
 
 
 // access to main frame and to status bar
@@ -895,25 +899,43 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
             // no object. Perhaps it is a doble click on the staff.
             lmBoxScore* pBScore = m_graphMngr.GetBoxScore();
             lmBoxPage* pBPage = pBScore->GetPage(nNumPage);
-            lmBoxSlice* pBSlice = pBPage->FindStaffAtPosition(pageNPosL);
-			if (pBSlice)
-			{
+            //lmBoxSlice* pBSlice = pBPage->FindSliceAtPosition(pageNPosL);
+            //lmBoxInstrSlice* pBInstrSlice = pBPage->FindInstrSliceAtPosition(pageNPosL);
+            lmGMObject* pGMO = pBPage->FindGMObjectAtPosition(pageNPosL);
+            wxASSERT(pGMO);
+
+            //prepare paper DC to draw bounds rectangles
+			wxClientDC dc(m_pCanvas);
+			dc.SetMapMode(lmDC_MODE);
+			dc.SetUserScale( m_rScale, m_rScale );
+			//position DC origing at current page origin
+			wxPoint org = GetDCOriginForPage(nNumPage);
+			dc.SetDeviceOrigin(org.x, org.y);
+			//set paper and draw selection rectangle
+			m_Paper.SetDrawer(new lmDirectDrawer(&dc));
+
+            if (pGMO->GetType() == eGMO_BoxSlice)
+            {
+                lmBoxSlice* pBSlice = (lmBoxSlice*)pGMO;
                 m_pMainFrame->SetStatusBarMsg(
-                    wxString::Format( _T("Double click on page %d, measure %d"),
+                    wxString::Format( _T("BoxSlice. Double click on page %d, measure %d"),
                         nNumPage, pBSlice->GetNumMeasure() ));
-				//prepare paper DC
-				wxClientDC dc(m_pCanvas);
-				dc.SetMapMode(lmDC_MODE);
-				dc.SetUserScale( m_rScale, m_rScale );
-				//position DC origing at current page origin
-				wxPoint org = GetDCOriginForPage(nNumPage);
-				dc.SetDeviceOrigin(org.x, org.y);
-				//set paper and draw selection rectangle
-				m_Paper.SetDrawer(new lmDirectDrawer(&dc));
 				pBSlice->DrawSelRectangle(&m_Paper);
-			}
-            else
-                m_pMainFrame->SetStatusBarMsg( wxString::Format( _T("Double click on page %d"), nNumPage ));
+            }
+            else if (pGMO->GetType() == eGMO_BoxPage)
+            {
+                m_pMainFrame->SetStatusBarMsg( wxString::Format( _T("BoxPage. Double click on page %d"), nNumPage ));
+            }
+            else if (pGMO->GetType() == eGMO_BoxInstrSlice)
+            {
+                lmBoxInstrSlice* pBInstrSlice = (lmBoxInstrSlice*)pGMO;
+                pBInstrSlice->DrawBoundsRectangle(&m_Paper, *wxGREEN);
+            }
+            else if (pGMO->GetType() == eGMO_BoxVStaffSlice)
+            {
+                lmBoxVStaffSlice* pVSlice = (lmBoxVStaffSlice*)pGMO;
+                pVSlice->DrawBoundsRectangle(&m_Paper, *wxCYAN);
+            }
         }
 
 

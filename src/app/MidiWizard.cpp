@@ -231,23 +231,26 @@ bool WizardDevicesPage::Create( wxWizard* parent )
             nItem = m_pOutCombo->Append( pMidiDev->DeviceName() );
             m_pOutCombo->SetClientData(nItem, (void *)i);
         }
-        if (pMidiDev->IsInputPort()) {
-            nInput++;
-            nItem = m_pInCombo->Append( pMidiDev->DeviceName() );
-            m_pInCombo->SetClientData(nItem, (void *)i);
-        }
+		//TODO: Un-comment when ready to use MIDI input
+        //if (pMidiDev->IsInputPort()) {
+        //    nInput++;
+        //    nItem = m_pInCombo->Append( pMidiDev->DeviceName() );
+        //    m_pInCombo->SetClientData(nItem, (void *)i);
+        //}
         delete pMidiDev;
     }
-    if (nInput == 0) {
-        nItem = m_pInCombo->Append( _("None") );
-        m_pInCombo->SetClientData(nItem, (void *)(-1));
-    }
+	//TODO: Un-comment when ready to use MIDI input
+    //if (nInput == 0) {
+    //    nItem = m_pInCombo->Append( _("None") );
+    //    m_pInCombo->SetClientData(nItem, (void *)(-1));
+    //}
     if (nOutput == 0) {
         nItem = m_pOutCombo->Append( _("None") );
         m_pOutCombo->SetClientData(nItem, (void *)(-1));
     }
     m_pOutCombo->SetSelection(0);
-    m_pInCombo->SetSelection(0);
+	//TODO: Un-comment when ready to use MIDI input
+    //m_pInCombo->SetSelection(0);
 
     return true;
 }
@@ -289,12 +292,14 @@ void WizardDevicesPage::CreateControls()
     m_pOutCombo = new wxComboBox( this, ID_COMBO_OUT_DEVICES, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pOutComboStrings, wxCB_READONLY );
     itemBoxSizer11->Add(m_pOutCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
-    wxStaticText* itemStaticText14 = new wxStaticText( this, wxID_STATIC, _("Input device:"), wxDefaultPosition, wxDefaultSize, 0 );
-    itemBoxSizer11->Add(itemStaticText14, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
+	//TODO: Un-comment when ready to use MIDI input
+    //wxStaticText* itemStaticText14 = new wxStaticText( this, wxID_STATIC, _("Input device:"), wxDefaultPosition, wxDefaultSize, 0 );
+    //itemBoxSizer11->Add(itemStaticText14, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP|wxADJUST_MINSIZE, 5);
 
     wxString* m_pInComboStrings = NULL;
-    m_pInCombo = new wxComboBox( this, ID_COMBO_IN_DEVICES, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pInComboStrings, wxCB_READONLY );
-    itemBoxSizer11->Add(m_pInCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
+	//TODO: Un-comment when ready to use MIDI input
+    //m_pInCombo = new wxComboBox( this, ID_COMBO_IN_DEVICES, _T(""), wxDefaultPosition, wxSize(250, -1), 0, m_pInComboStrings, wxCB_READONLY );
+    //itemBoxSizer11->Add(m_pInCombo, 0, wxALIGN_LEFT|wxLEFT|wxRIGHT|wxBOTTOM, 5);
 
 }
 
@@ -334,10 +339,11 @@ bool WizardDevicesPage::TransferDataFromWindow()
 
     //open input device
     int nInDevId = -1;
-    if (m_pInCombo->GetStringSelection() != _("None") ) {
-        nIndex = m_pInCombo->GetSelection();
-        nInDevId = (int) m_pInCombo->GetClientData(nIndex);
-    }
+	//TODO: Un-comment when ready to use MIDI input
+    //if (m_pInCombo->GetStringSelection() != _("None") ) {
+    //    nIndex = m_pInCombo->GetSelection();
+    //    nInDevId = (int) m_pInCombo->GetClientData(nIndex);
+    //}
     g_pMidi->SetInDevice(nInDevId);
 
     return true;

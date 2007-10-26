@@ -19,11 +19,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_BOXSLICE_H__        //to avoid nested includes
-#define __LM_BOXSLICE_H__
+#ifndef __LM_BOXSLICEVSTAFF_H__        //to avoid nested includes
+#define __LM_BOXSLICEVSTAFF_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "BoxSlice.cpp"
+#pragma interface "BoxSliceVStaff.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -42,56 +42,38 @@
 #include "../score/defs.h"
 #include "GMObject.h"
 
-class lmBoxSystem;
+class lmVStaff;
 class lmBoxSliceInstr;
-class lmInstrument;
+class lmBoxSliceVStaff;
 
 //
-// Class lmBoxSlice represents a sytem measure
+// Class lmBoxSliceVStaff represents a part of the VStaff of an instrument. 
 //
 
-
-class lmBoxSlice : public lmBox
+class lmBoxSliceVStaff : public lmBox
 {
 public:
-    lmBoxSlice(lmBoxSystem* pParent, int nAbsMeasure, lmLUnits xStart=0, lmLUnits xEnd=0);
-    ~lmBoxSlice();
+    lmBoxSliceVStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff);
+    ~lmBoxSliceVStaff();
 
-    inline void UpdateSize(lmLUnits xStart, lmLUnits xEnd) {
-            m_xStart = xStart;
-            m_xEnd = xEnd;
-        }
+    void AddShape(lmShape* pShape);
 
-    lmBoxSliceInstr* AddInstrument(lmInstrument* pInstr);
-
-
-	//render
-	void DrawSelRectangle(lmPaper* pPaper);
     void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK);
-
-    //info
-    inline int GetNumMeasure() const { return m_nAbsMeasure; }
-    lmBoxSlice* FindMeasureAt(lmUPoint& pointL);
 
 	//positioning and bounds
     void SetFinalX(lmLUnits xPos);
 
-
-
 private:
+    void RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage);
 
-    lmBoxSystem*    m_pBSystem;     //parent system box
-    int             m_nAbsMeasure;     //number of this measure (absolute)
+    lmBoxSliceInstr*    m_pSliceInstr;      //paren instrumet slice
+    lmVStaff*           m_pVStaff;          //VStaff to which this slice belongs
 
-    std::vector<lmBoxSliceInstr*>   m_SliceInstr;   //collection of instr. slices
-
-    //start and end positions
-    lmLUnits    m_xStart;
-    lmLUnits    m_xEnd;
+	std::vector<lmShape*>	m_Shapes;		//list of contained shapes
 
 };
 
 
 
-#endif  // __LM_BOXSLICE_H__
+#endif  // __LM_BOXSLICEVSTAFF_H__
 

@@ -35,8 +35,9 @@
 
 #include "../score/Score.h"
 #include "TimeposTable.h"
-#include "BoxScore.h"
 
+class lmBoxScore;
+class lmBoxSystem;
 
 class lmFormatter4
 {
@@ -52,7 +53,7 @@ private:
     lmBoxScore* RenderMinimal(lmPaper *pPaper);
     lmBoxScore* RenderJustified(lmPaper* pPaper);
 
-    lmLUnits SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem, 
+    lmLUnits SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem, lmBoxSystem* pBoxSystem,
                                lmPaper* pPaper, bool* pNewSystem);
     void RedistributeFreeSpace(lmLUnits nAvailable);
     void DrawMeasure(lmVStaff* pVStaff, int iMeasure, lmPaper* pPaper);

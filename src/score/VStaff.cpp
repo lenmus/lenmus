@@ -88,6 +88,9 @@
 #include "Notation.h"
 #include "../app/global.h"
 #include "MetronomeMark.h"
+#include "../graphic/GMObject.h"
+#include "../graphic/ShapeStaff.h"
+#include "../graphic/BoxSliceVStaff.h"
 
 //implementation of the staves List
 #include <wx/listimpl.cpp>
@@ -511,6 +514,38 @@ void lmVStaff::DrawStaffLines(lmPaper* pPaper,
             yCur = yCur + pStaff->GetLineSpacing();
         }
         yCur = yCur - pStaff->GetLineSpacing() + pStaff->GetAfterSpace();
+
+        //get next lmStaff
+        pNode = pNode->GetNext();
+        pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
+    }
+}
+
+void lmVStaff::DrawStaffLines2(lmBoxSliceVStaff* pBox,
+                              lmLUnits xFrom, lmLUnits xTo, lmLUnits yPos)
+{
+    //Computes all staff lines of this lmVStaff and creates the necessary shapes
+	//to render them. Add this shapes to the received lmBox object.
+
+    if (GetOptionBool(_T("StaffLines.Hide")) ) return;
+
+    //Set left position and lenght of lines, and save these values
+    lmLUnits yCur = yPos + m_topMargin;
+    m_yLinTop = yCur;              //save y coord. for first line start point
+
+    //iterate over the collection of Staves (lmStaff Objects)
+    StaffList::Node* pNode = m_cStaves.GetFirst();
+    lmStaff* pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
+    for ( ; pStaff; )
+	{
+        //draw one staff
+		lmShapeStaff* pShape = 
+				new lmShapeStaff(pStaff, pStaff->GetNumLines(), 
+								 pStaff->GetLineThick(), pStaff->GetLineSpacing(),
+								 xFrom, yCur, xTo, *wxBLACK );
+		pBox->AddShape(pShape);
+        yCur = pShape->GetYBottom() + pStaff->GetAfterSpace();
+		m_yLinBottom = pShape->GetYBottom() - pStaff->GetLineThick();  
 
         //get next lmStaff
         pNode = pNode->GetNext();

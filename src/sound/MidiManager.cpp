@@ -250,7 +250,8 @@ void lmMidiManager::VoiceChange(int nChannel, int nInstrument)
         //! @todo error reporting eLocalError
         if (nErr) {
             wxMessageBox( wxString::Format(
-                _T("Error %d in ProgramChange\n"), nErr) );
+				_T("Error %d in ProgramChange:\n%s"),
+                    nErr, m_pMidiSystem->GetErrorText(nErr).c_str() ));
         }
     }
 

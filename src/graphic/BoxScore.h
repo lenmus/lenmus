@@ -37,22 +37,25 @@
 #include "wx/wx.h"
 #endif
 
-#include "BoxPage.h"
 #include "../score/defs.h"
+#include "GMObject.h"
+
 class lmPaper;
 class lmScore;
 class lmStaffObj;
+class lmBoxPage;
+
 
 // to manage pages let's define an array to contain pointers to pages
 #include "wx/dynarray.h"
-class lmBoxPage;
 WX_DEFINE_ARRAY(lmBoxPage*, ArrayBoxPages);
+
 
 // Class lmBoxScore is the main container for the renderized score. Only one instance
 // of this class is created for a score. lmBoxScore contains one or more instances of class 
 // lmBoxPage, which represent the pages of the score.
 
-class lmBoxScore
+class lmBoxScore : public lmBox
 {
 public:
     lmBoxScore(lmScore* pScore);
@@ -66,7 +69,7 @@ public:
     inline lmBoxPage* GetCurrentPage() const { return m_aPages.Item( m_aPages.GetCount() - 1); }
     inline lmBoxPage* GetPage(int nPage) const { return m_aPages.Item( nPage - 1); }
     int GetNumPages();
-    bool FindStaffAtPosition(lmUPoint& pointL);
+    bool FindSliceAtPosition(lmUPoint& pointL);
 
     //cursor management
     void SetCursor(lmStaffObj* pSO) { m_pCursorSO = pSO; }

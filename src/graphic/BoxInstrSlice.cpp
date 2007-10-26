@@ -51,6 +51,7 @@ extern lmColors* g_pColors;
 
 lmBoxInstrSlice::lmBoxInstrSlice(lmBoxSystem* pParent, int nFirstMeasure, int nLastMeasure,
                                  lmInstrument* pInstr, int nInstr)
+    : lmBox(eGMO_BoxInstrSlice)
 {
     m_pSystem = pParent;
     m_nFirstMeasure = nFirstMeasure;
@@ -93,9 +94,9 @@ lmLUnits lmBoxInstrSlice::Render(lmPaper* pPaper, lmLUnits xStartPos, int nNumPa
         m_pInstr->DrawAbbreviation(pPaper);
     }
 
-    //save start position of this instr slice
-    m_xRight = m_pSystem->GetPositionX() + m_pSystem->GetSystemIndent();
-    m_yTop = pPaper->GetCursorY();
+    //set start position for this instr slice. 'y' position is saved when
+    //rendering the first VStaff of this instrument
+    m_uBoundsTop.x = m_pSystem->GetPositionX() + m_pSystem->GetSystemIndent();
 
     //draw the VStaffs
     lmLUnits yBottomLeft;
@@ -104,11 +105,21 @@ lmLUnits lmBoxInstrSlice::Render(lmPaper* pPaper, lmLUnits xStartPos, int nNumPa
         yBottomLeft = m_VStaffSlices[i]->Render(pPaper, nNumPage, nSystem);
     }
 
-    //save end position of this instr slice
-    m_xLeft = pPaper->GetCursorX();
-    m_yBottom = pPaper->GetCursorY();
+    //set bounds for this instr slice
+    m_uBoundsBottom.x = m_pSystem->GetSystemFinalX();
+    m_uBoundsBottom.y = yBottomLeft;
 
     return yBottomLeft;
 
+}
+
+lmGMObject* lmBoxInstrSlice::FindGMObjectAtPosition(lmUPoint& pointL)
+{
+    for (int i = 0; i < (int)m_VStaffSlices.size(); i++)
+    {
+        if (m_VStaffSlices[i]->ContainsPoint(pointL))
+            return m_VStaffSlices[i];
+    }
+    return (lmGMObject*)NULL;
 }
 

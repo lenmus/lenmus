@@ -45,8 +45,12 @@
 #include "../score/Score.h"
 #include "TimeposTable.h"
 #include "Formatter4.h"
+#include "BoxScore.h"
+#include "BoxPage.h"
 #include "BoxSystem.h"
 #include "BoxSlice.h"
+#include "BoxSliceInstr.h"
+#include "BoxSliceVStaff.h"
 
 //access to logger
 #include "../app/Logger.h"
@@ -319,9 +323,10 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
                     ((nSystem == 1) ? nFirstSystemIndent : nOtherSystemIndent ));
             }
 
-            //size this measure column
+            //size this measure column create BoxSlice (and BoxSlice hierarchy) for 
+            //the measure being processed
             m_nMeasureSize[nRelMeasure] =
-                SizeMeasureColumn(nAbsMeasure, nRelMeasure, nSystem, pPaper, &fNewSystem);
+                SizeMeasureColumn(nAbsMeasure, nRelMeasure, nSystem, pBoxSystem, pPaper, &fNewSystem);
 
             #if defined(__WXDEBUG__)
             g_pLogger->LogTrace(_T("Formatter4.Step1"),
@@ -483,14 +488,14 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             pBoxSystem->SetFinalX( pPaper->GetRightMarginXPos() );
         }
 
-        //create lmBoxSlices to contain the measures columns
+        //update lmBoxSlices with the final measures sizes
 		lmLUnits xEnd = m_oTimepos[1].GetStartOfBarPosition();
-        for (int iAbs=iIni, iRel=1; iAbs < iIni+m_nMeasuresInSystem; iAbs++, iRel++)
+        for (int iRel=1; iRel <= m_nMeasuresInSystem; iRel++)
         {
             lmLUnits xStart = xEnd;
             xEnd = xStart + m_nMeasureSize[iRel];
-            //lmBoxSlice* pBoxSlice = pBoxSystem->AddSlice(iAbs, xStart, xEnd);
-            pBoxSystem->AddSlice(iAbs, xStart, xEnd);
+            lmBoxSlice* pBoxSlice = pBoxSystem->GetSlice(iRel);
+            pBoxSlice->UpdateSize(xStart, xEnd);
         }
 
         // compute system height
@@ -608,12 +613,14 @@ lmLUnits lmFormatter4::ComputeSystemHeight(lmPaper* pPaper)
 }
 
 lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int nSystem,
-                                        lmPaper* pPaper, bool* pNewSystem)
+                                         lmBoxSystem* pBoxSystem, lmPaper* pPaper, bool* pNewSystem)
 {
-    // For each instrument and staff it is computed how many measures could fit in the system.
+    // For each instrument and staff it is computed the size of this measure.
+    // Also the hierarchy of BoxSlice objects is created for this measure.
+    //
     // All measurements are stored in the global object m_oTimepos[nRelMeasure], so that other
-    // procedures can take decisions about the final number of measures to include and for
-    // repositioning the StaffObjs.
+    // procedures can take decisions about the final number of measures to include in a system
+    // and for repositioning the StaffObjs.
     //
     // Input parameters:
     //   nAbsMeasure - Measure number (absolute) to size
@@ -628,13 +635,17 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
     //
 
     int iVStaff;
-    lmInstrument *pInstr;
-    lmVStaff *pVStaff;
+    lmInstrument* pInstr;
+    lmVStaff* pVStaff;
     bool fNewSystem = false;
 
-    // explore all instruments in the score
     lmLUnits xPaperPos, yPaperPos;
     lmLUnits xStartPos = pPaper->GetCursorX();      //save x pos to align staves in system
+
+    // create an empty BoxSlice to contain this measure column
+    lmBoxSlice* pBoxSlice = pBoxSystem->AddSlice(nAbsMeasure);
+
+    // explore all instruments in the score
     for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
     {
         //verify that program limits are observed
@@ -645,7 +656,10 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             wxASSERT(false);
         }
 
-        pPaper->SetCursorX( xStartPos );    //align staves in system
+        pPaper->SetCursorX( xStartPos );    //align start of staves in this system
+
+        // create an empty BoxSliceInstr to contain this instrument slice
+        lmBoxSliceInstr* pBSI = pBoxSlice->AddInstrument(pInstr);
 
         //loop. For current instrument, explore all its staves to size the measure
         //column nAbsMeasure. All collected information is stored in m_oTimepos[nRelMeasure]
@@ -666,6 +680,16 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             xPaperPos = pPaper->GetCursorX();
             yPaperPos = pPaper->GetCursorY();
 
+            // create the BoxSliceVStaff
+            lmBoxSliceVStaff* pBSV = pBSI->AddVStaff(pVStaff);
+            // if first measure in system add the ShapeStaff
+			if (nRelMeasure == 1)
+			{
+				// Final xPos is yet unknown, so I use zero.
+				// It will be updated when the system is completed
+				pVStaff->DrawStaffLines2(pBSV, xPaperPos, 0.0, yPaperPos);
+			}
+
             //The prolog must be rendered on each system, but the
             //matching StaffObjs only exist in the first system. Therefore:
             //1. in the first system the prolog is rendered as part as the normal lmStaffObj
@@ -674,6 +698,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             //   are no StaffObjs representing the prolog.
             if (nSystem != 1 && nRelMeasure == 1) {
                 pVStaff->DrawProlog(DO_MEASURE, nAbsMeasure, (nSystem == 1), pPaper);
+                ///*** create a BoxProlog object and add it to this BoxSliceVStaff
             }
 
             fNewSystem |= SizeMeasure(pVStaff, nAbsMeasure, nRelMeasure, pPaper);
@@ -685,7 +710,11 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             pVStaff->NewLine(pPaper);
             //! @todo add inter-staff space
 
+            ///*** Update measures of this BoxVStaffSlice
+
         }    // next lmVStaff
+
+        ///*** Update measures of this BoxInstrSlice
 
     }    // next lmInstrument
 

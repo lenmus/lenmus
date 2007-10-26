@@ -31,6 +31,7 @@
 class StaffList;
 class lmSpacer;
 class lmMetronomeMark;
+class lmBoxSliceVStaff;
 
 
 class lmVStaff : public lmObject
@@ -100,6 +101,8 @@ public:
     // rendering methods
     void DrawStaffLines(lmPaper* pPaper, lmLUnits xFrom, lmLUnits xTo,
                         lmLUnits* pyLinTop, lmLUnits* pyLinBottom);
+    void DrawStaffLines2(lmBoxSliceVStaff* pBox, lmLUnits xFrom, lmLUnits xTo,
+						lmLUnits yPos);
     void DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPaper* pPaper);
     void NewLine(lmPaper* pPaper);
     lmLUnits GetVStaffHeight();

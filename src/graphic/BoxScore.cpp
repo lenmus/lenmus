@@ -30,12 +30,14 @@
 #pragma hdrstop
 #endif
 
-#include "BoxScore.h"
 #include "../score/Score.h"
+#include "BoxScore.h"
+#include "BoxPage.h"
 
 //-----------------------------------------------------------------------------------------
 
-lmBoxScore::lmBoxScore(lmScore* pScore)
+lmBoxScore::lmBoxScore(lmScore* pScore) 
+    : lmBox(eGMO_BoxScore)
 {
     m_pScore = pScore;
 
@@ -101,14 +103,14 @@ int lmBoxScore::GetNumPages()
     return (int)m_aPages.GetCount();
 }
 
-bool lmBoxScore::FindStaffAtPosition(lmUPoint& pointL)
+bool lmBoxScore::FindSliceAtPosition(lmUPoint& pointL)
 {
     //loop to look up in the pages
     int iPage;
     lmBoxPage* pBoxPage;
     for(iPage=0; iPage < (int)m_aPages.GetCount(); iPage++) {
         pBoxPage = m_aPages.Item(iPage);
-        if (pBoxPage->FindStaffAtPosition(pointL))
+        if (pBoxPage->FindSliceAtPosition(pointL))
             return true;    //found
     }
     return false;

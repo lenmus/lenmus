@@ -40,6 +40,7 @@
 #include "vector"
 
 #include "../score/Score.h"
+#include "GMObject.h"
 #include "BoxSystem.h"
 
 //
@@ -48,19 +49,24 @@
 
 class lmBoxVStaffSlice;
 
-class lmBoxInstrSlice
+class lmBoxInstrSlice : public lmBox
 {
 public:
     lmBoxInstrSlice(lmBoxSystem* pParent, int nFirstMeasure, int nLastMeasure,
                     lmInstrument* pInstr, int nInstr);
     ~lmBoxInstrSlice();
 
+    //drawing
     lmLUnits Render(lmPaper* pPaper, lmLUnits xStartPos, int nNumPage, int nSystem);
 
+    //access to information
     inline lmBoxSystem* GetBoxSystem() const { return m_pSystem; }
     inline int GetNumInstrument() const { return m_nNumInstr; } 
-    inline lmLUnits GetXRight() const { return m_xRight; }
     inline lmInstrument* GetInstrument() const { return m_pInstr; }
+
+    lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
+
+
 
 private:
     void RenderMeasure(int nMeasure, lmPaper* pPaper);
@@ -73,11 +79,6 @@ private:
 
     std::vector<lmBoxVStaffSlice*> m_VStaffSlices;   //collection of VStaff slices
 
-    //position of the staves of this instrument
-    lmLUnits        m_xRight;
-    lmLUnits        m_xLeft;
-    lmLUnits        m_yTop;
-    lmLUnits        m_yBottom;
 
 };
 

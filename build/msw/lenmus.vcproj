@@ -1033,6 +1033,18 @@
 				RelativePath="..\..\src\graphic\BoxSlice.h">
 			</File>
 			<File
+				RelativePath="..\..\src\graphic\BoxSliceInstr.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\BoxSliceInstr.h">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\BoxSliceVStaff.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\BoxSliceVStaff.h">
+			</File>
+			<File
 				RelativePath="..\..\src\graphic\BoxSystem.cpp">
 			</File>
 			<File
@@ -1057,6 +1069,12 @@
 				RelativePath="..\..\src\graphic\Formatter4.h">
 			</File>
 			<File
+				RelativePath="..\..\src\graphic\GMObject.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\GMObject.h">
+			</File>
+			<File
 				RelativePath="..\..\src\graphic\GraphicManager.cpp">
 			</File>
 			<File
@@ -1067,6 +1085,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\Shape.h">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeStaff.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeStaff.h">
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\TimeposTable.cpp">

@@ -33,6 +33,9 @@
 #include "BoxScore.h"
 #include "BoxPage.h"
 #include "BoxSlice.h"
+#include "BoxInstrSlice.h"
+#include "BoxSystem.h"
+
 
 //access to colors
 #include "../globals/Colors.h"
@@ -41,6 +44,7 @@ extern lmColors* g_pColors;
 //-----------------------------------------------------------------------------------------
 
 lmBoxPage::lmBoxPage(lmBoxScore* pParent, int nNumPage)
+    : lmBox(eGMO_BoxPage)
 {
     m_nNumPage = nNumPage;
     m_nFirstSystem = 0;
@@ -84,7 +88,7 @@ void lmBoxPage::Render(lmScore* pScore, lmPaper* pPaper)
 
 }
 
-lmBoxSlice* lmBoxPage::FindStaffAtPosition(lmUPoint& pointL)
+lmBoxSlice* lmBoxPage::FindSliceAtPosition(lmUPoint& pointL)
 {
     //loop to look up in the systems
     int iSystem;                //number of system in process
@@ -94,10 +98,44 @@ lmBoxSlice* lmBoxPage::FindStaffAtPosition(lmUPoint& pointL)
     for(i=0, iSystem = m_nFirstSystem; iSystem <= m_nLastSystem; iSystem++, i++)
     {
         pBoxSystem = m_aSystems.Item(i);
-        lmBoxSlice* pBSlice = pBoxSystem->FindStaffAtPosition(pointL);
+        lmBoxSlice* pBSlice = pBoxSystem->FindSliceAtPosition(pointL);
         if (pBSlice)
 			return pBSlice;    //found
     }
     return (lmBoxSlice*)NULL;;
+}
+
+lmBoxInstrSlice* lmBoxPage::FindInstrSliceAtPosition(lmUPoint& pointL)
+{
+    //loop to look up in the systems
+    int iSystem;                //number of system in process
+    int i;
+    lmBoxSystem* pBoxSystem;
+    //loop to render the systems in this page
+    for(i=0, iSystem = m_nFirstSystem; iSystem <= m_nLastSystem; iSystem++, i++)
+    {
+        pBoxSystem = m_aSystems.Item(i);
+        lmBoxInstrSlice* pBInstrSlice = pBoxSystem->FindInstrSliceAtPosition(pointL);
+        if (pBInstrSlice)
+			return pBInstrSlice;    //found
+    }
+    return (lmBoxInstrSlice*)NULL;;
+}
+
+lmGMObject* lmBoxPage::FindGMObjectAtPosition(lmUPoint& pointL)
+{
+    //locate an slice
+    lmBoxSlice* pSlice = FindSliceAtPosition(pointL);
+    if (!pSlice) return this;
+
+    //locate InstrSlice
+    lmBoxInstrSlice* pIS = FindInstrSliceAtPosition(pointL);
+    if (!pIS) return pSlice;
+
+    //locate VStaffSlice
+    lmGMObject* pGMO = pIS->FindGMObjectAtPosition(pointL);
+    if (!pGMO) return pSlice;
+
+    return (pGMO);
 }
 

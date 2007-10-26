@@ -40,6 +40,7 @@
 #include "vector"
 
 #include "../score/Score.h"
+#include "GMObject.h"
 
 class lmBoxSlice;
 class lmBoxInstrSlice;
@@ -49,7 +50,7 @@ class lmBoxPage;
 // Class lmBoxSystem represents a line of music in the printed score. 
 //
 
-class lmBoxSystem
+class lmBoxSystem : public lmBox
 {
 public:
     lmBoxSystem(lmBoxPage* pParent, int nNumPage);
@@ -58,51 +59,40 @@ public:
     void SetNumMeasures(int nMeasures, lmScore* pScore);
     int GetNumMeasures() { return m_nNumMeasures; }
 
-    void SetFirstMeasure(int nMeasure) { m_nFirstMeasure = nMeasure; }
-    lmBoxSlice* AddSlice(int nMeasure, lmLUnits xStart, lmLUnits xEnd);
-    inline lmBoxSlice* GetSlice(int nMeasure) const { return m_Slices[nMeasure - m_nFirstMeasure]; }
+    void SetFirstMeasure(int nAbsMeasure) { m_nFirstMeasure = nAbsMeasure; }
+    lmBoxSlice* AddSlice(int nAbsMeasure, lmLUnits xStart=0, lmLUnits xEnd=0);
+    inline lmBoxSlice* GetSlice(int nRelMeasure) const { return m_Slices[nRelMeasure - 1]; }
 
+    //positioning
     void SetPosition(lmLUnits xPos, lmLUnits yPos) { m_xPos = xPos; m_yPos = yPos; }
     inline lmLUnits GetPositionX() const { return m_xPos; }
     inline lmLUnits GetPositionY() const { return m_yPos; }
-
-    inline void SetFinalX(lmLUnits nLUnits) { m_xFinal = nLUnits; }
-    inline void SetIndent(lmLUnits nLUnits) { m_nIndent = nLUnits; }
+    void SetFinalX(lmLUnits xPos);
+    inline void SetIndent(lmLUnits xDsplz) { m_nIndent = xDsplz; }
     inline lmLUnits GetSystemIndent() const { return m_nIndent; }
-    inline lmLUnits GetSystemFinalX() const { return m_xFinal; }
+    inline lmLUnits GetSystemFinalX() const { return m_uBoundsBottom.x; }
 
-    inline void SetXLeft(lmLUnits xLeft) { m_xLeftLine = xLeft; }
-    inline void SetYTopLeft(lmLUnits yTop) { m_yTopLeftLine = yTop; }
-    inline void SetYBottomLeft(lmLUnits yBottom) { m_yBottomLeftLine = yBottom; }
-    inline lmLUnits GetYTopLeft() { return m_yTopLeftLine; }
-    inline lmLUnits GetYBottomLeft() { return m_yBottomLeftLine; }
+    //pointing at
+    lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
+    lmBoxInstrSlice* FindInstrSliceAtPosition(lmUPoint& pointL);
 
-    lmBoxSlice* FindStaffAtPosition(lmUPoint& pointL);
-
+    //rendering
     void Render(int nSystem, lmScore* pScore, lmPaper* pPaper);
-	void DrawSelRectangle(lmPaper* pPaper);
 
     inline lmBoxPage* GetBoxPage() const { return m_pBPage; }
 
 private:
-    void RenderMeasure(lmVStaff* pVStaff, int nMeasure, lmPaper* pPaper);
 
     lmBoxPage*  m_pBPage;           //parent page
     int         m_nNumMeasures;     //number of measures that fit in this system
     int         m_nFirstMeasure;    //number of first measure
     lmLUnits    m_xPos, m_yPos;     //system position: pos to render first staff
-    lmLUnits    m_xFinal;           //x pos for end of staff lines
     lmLUnits    m_nIndent;          //indentation for this system
     int         m_nNumPage;         //page number (1..n) on which this system is included
 
     std::vector<lmBoxSlice*>        m_Slices;   //collection of slices in this system
     std::vector<lmBoxInstrSlice*> m_InstrSlices; //collection of Instr slices in this system
 
-    //start and end points of the initial barline that joins all staves in a system
-    //Relative to this page, that is, origin is at this page start
-    lmLUnits    m_xLeftLine;
-    lmLUnits    m_yTopLeftLine;
-    lmLUnits    m_yBottomLeftLine;
 
 };
 

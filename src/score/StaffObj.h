@@ -103,23 +103,23 @@ public:
     virtual ~lmScoreObj();
 
     // methods related to type and identificaction
-    int GetID() { return m_nId; }
-    EScoreObjType GetType() { return m_nType; }
+    inline int GetID() const { return m_nId; }
+    inline EScoreObjType GetType() const { return m_nType; }
 
     // capabilities
-    inline bool IsDraggable() { return m_fIsDraggable; }
+    inline bool IsDraggable() const { return m_fIsDraggable; }
 
     // methods related to positioning
     inline lmUPoint& GetOrigin() { return m_uPaperPos; }
     bool IsAtPoint(lmUPoint& pt);
     virtual void SetLeft(lmLUnits uLeft) { m_uPaperPos.x = uLeft; }
-    bool IsFixed() const { return m_fFixedPos; }
+    inline bool IsFixed() const { return m_fFixedPos; }
     void SetFixed(bool fFixed) { m_fFixedPos = fFixed; }
     void SetPageNumber(int nNum) { m_nNumPage = nNum; }
-    int GetPageNumber() { return m_nNumPage; }
+    inline int GetPageNumber() const { return m_nNumPage; }
 
     // methods related to selection
-    inline bool IsSelected() { return m_fSelected; }
+    inline bool IsSelected() const { return m_fSelected; }
     void SetSelected(bool fValue) { m_fSelected = fValue; }
     void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight) {
                 m_uSelRect.width = uWidth;

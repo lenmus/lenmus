@@ -19,11 +19,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LM_BOXSLICE_H__        //to avoid nested includes
-#define __LM_BOXSLICE_H__
+#ifndef __LM_BOXSLICEINSTR_H__        //to avoid nested includes
+#define __LM_BOXSLICEINSTR_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma interface "BoxSlice.cpp"
+#pragma interface "BoxSliceInstr.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -39,39 +39,32 @@
 
 #include "vector"
 
-#include "../score/defs.h"
 #include "GMObject.h"
+#include "BoxSystem.h"
 
-class lmBoxSystem;
-class lmBoxSliceInstr;
 class lmInstrument;
+class lmVStaff;
+class lmPaper;
+class lmBoxSystem;
+class lmBoxSliceVStaff;
 
 //
-// Class lmBoxSlice represents a sytem measure
+// Class lmBoxSliceInstr represents a part (measure) of an instrument. 
 //
 
-
-class lmBoxSlice : public lmBox
+class lmBoxSliceInstr : public lmBox
 {
 public:
-    lmBoxSlice(lmBoxSystem* pParent, int nAbsMeasure, lmLUnits xStart=0, lmLUnits xEnd=0);
-    ~lmBoxSlice();
+    lmBoxSliceInstr(lmBoxSlice* pParent, lmInstrument* pInstr);
+    ~lmBoxSliceInstr();
 
-    inline void UpdateSize(lmLUnits xStart, lmLUnits xEnd) {
-            m_xStart = xStart;
-            m_xEnd = xEnd;
-        }
+    lmBoxSliceVStaff* AddVStaff(lmVStaff* pVStaff);
 
-    lmBoxSliceInstr* AddInstrument(lmInstrument* pInstr);
-
-
-	//render
-	void DrawSelRectangle(lmPaper* pPaper);
+    //drawing
     void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK);
 
-    //info
-    inline int GetNumMeasure() const { return m_nAbsMeasure; }
-    lmBoxSlice* FindMeasureAt(lmUPoint& pointL);
+    inline lmInstrument* GetInstrument() const { return m_pInstr; }
+    inline int GetNumMeasure() const { return m_pSlice->GetNumMeasure(); }
 
 	//positioning and bounds
     void SetFinalX(lmLUnits xPos);
@@ -80,18 +73,14 @@ public:
 
 private:
 
-    lmBoxSystem*    m_pBSystem;     //parent system box
-    int             m_nAbsMeasure;     //number of this measure (absolute)
+    lmBoxSlice*     m_pSlice;           //parent slice
+    lmInstrument*   m_pInstr;           //instrument to which this slice belongs
 
-    std::vector<lmBoxSliceInstr*>   m_SliceInstr;   //collection of instr. slices
-
-    //start and end positions
-    lmLUnits    m_xStart;
-    lmLUnits    m_xEnd;
+    std::vector<lmBoxSliceVStaff*>  m_SlicesVStaff;     //collection of VStaff slices
 
 };
 
 
 
-#endif  // __LM_BOXSLICE_H__
+#endif  // __LM_BOXSLICEINSTR_H__
 
