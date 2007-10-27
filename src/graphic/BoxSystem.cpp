@@ -188,3 +188,17 @@ void lmBoxSystem::SetFinalX(lmLUnits xPos)
     }
 }
 
+wxString lmBoxSystem::Dump()
+{
+	wxString sDump = wxString::Format(_T("lmBoxSystem. %d measures starting at %d\n"),
+						m_nNumMeasures, m_nFirstMeasure);
+
+    //loop to dump the systems in this page
+    for (int i=0; i < (int)m_Slices.size(); i++)
+    {
+        sDump += m_Slices[i]->Dump();
+    }
+
+	return sDump;
+}
+

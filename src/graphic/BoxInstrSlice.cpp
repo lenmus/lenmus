@@ -123,3 +123,9 @@ lmGMObject* lmBoxInstrSlice::FindGMObjectAtPosition(lmUPoint& pointL)
     return (lmGMObject*)NULL;
 }
 
+wxString lmBoxInstrSlice::Dump()
+{
+	//TODO
+	return(_T("lmBoxInstrSlice\n"));
+}
+

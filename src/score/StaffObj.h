@@ -27,7 +27,7 @@
 #endif
 
 #include "../app/TheApp.h"
-#include "../graphic/Shape.h"
+#include "../graphic/Shapes.h"
 
 #if wxUSE_GENERIC_DRAGIMAGE
 #include "wx/generic/dragimgg.h"
@@ -156,8 +156,8 @@ public:
     //transitional methods to shapes renderization
     void SetShapeRendered(bool fValue) { m_fShapeRendered = fValue; }
     bool IsShapeRendered() { return m_fShapeRendered; }
-    void SetShape(lmShapeObj* pShape) { m_pShape = pShape; }
-    lmShapeObj* GetShape() { return m_pShape; }
+    void SetShape(lmShape* pShape) { m_pShape = pShape; }
+    lmShape* GetShape() { return m_pShape; }
 
     // debug methods
     virtual wxString Dump()=0;
@@ -200,7 +200,7 @@ protected:
 
     //transitional variables: renderization based on shapes
     bool            m_fShapeRendered;
-    lmShapeObj*     m_pShape;
+    lmShape*     m_pShape;
 
     // grapich objects attached to this one
     GraphicObjsList*    m_pGraphObjs;   //the collection of GraphicObjs. NULL if none

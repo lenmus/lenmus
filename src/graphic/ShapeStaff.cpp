@@ -74,4 +74,13 @@ void lmShapeStaff::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
     }
 }
 
+wxString lmShapeStaff::Dump()
+{
+	//TODO
+	return(_T("lmShapeStaff\n"));
+}
+
+void lmShapeStaff::Shift(lmLUnits xIncr, lmLUnits yIncr)
+{
+}
 

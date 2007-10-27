@@ -67,6 +67,10 @@ enum lmEGMOType
     // shapes
     eGMO_Shape = eGMO_LastBox,
 	eGMO_ShapeStaff = eGMO_Shape,
+	eGMO_ShapeLine,
+	eGMO_ShapeGlyph,
+	eGMO_ShapeText,
+	eGMO_ShapeComposite,
 };
 
 
@@ -102,6 +106,10 @@ public:
     //rendering
     virtual void DrawBoundsRectangle(lmPaper* pPaper, wxColour color);
 
+	//debugging
+    virtual wxString Dump()=0;
+
+
 protected:
     lmGMObject(lmEGMOType m_nType);
 
@@ -124,7 +132,9 @@ class lmBox : public lmGMObject
 public:
     virtual ~lmBox();
 
-    //virtual void Render(lmScore* pScore, lmPaper* pPaper);
+    //implementation of virtual methods from base class
+    virtual wxString Dump()=0;
+
 
 protected:
     lmBox(lmEGMOType m_nType);
@@ -147,11 +157,29 @@ public:
 
 	virtual void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK)=0;
 
+    // methods related to selection rectangle
+    void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight);
+    void DrawSelRectangle(lmPaper* pPaper, lmUPoint uPos, wxColour colorC = *wxBLUE);
+    lmURect GetSelRectangle() const { return m_uSelRect; }
+
+    bool Collision(lmShape* pShape);
+    virtual lmLUnits GetWidth() { return m_uBoundsBottom.x - m_uBoundsTop.x; }
+
+    //methods related to position
+    virtual void Shift(lmLUnits xIncr, lmLUnits yIncr) = 0;
+
+    //Debug related methods
+    virtual wxString Dump() = 0;
+
 
 protected:
     lmShape(lmEGMOType m_nType, lmObject* pOwner);
 
 	lmObject*	m_pOwner;		//associated owner object (in lmScore representation)
+
+	//selection rectangle (logical units, relative to renderization point)
+	lmURect     m_uSelRect;     
+
 
 
 };
@@ -162,6 +190,9 @@ class lmSimpleShape : public lmShape
 public:
     virtual ~lmSimpleShape();
 
+    //implementation of virtual methods from base class
+    virtual wxString Dump() = 0;
+    virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
     virtual void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK)=0;
 
 
@@ -181,7 +212,10 @@ public:
     //dealing with components
     virtual void Add(lmShape* pShape);
 
-	virtual void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK)=0;
+    //virtual methods from base class
+    virtual wxString Dump();
+    virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
+	virtual void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK);
 
 
 protected:

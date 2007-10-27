@@ -190,6 +190,7 @@ enum
     MENU_Debug_ShowBorderOnScores,
     MENU_Debug_recSelec,
     MENU_Debug_DumpStaffObjs,
+	MENU_Debug_DumpGMObjects,
     MENU_Debug_SeeSource,
     MENU_Debug_SeeXML,
     MENU_Debug_SeeMIDIEvents,
@@ -352,6 +353,8 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
         //debug events requiring a score to be enabled
     EVT_MENU      (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugDumpStaffObjs)
     EVT_UPDATE_UI (MENU_Debug_DumpStaffObjs, lmMainFrame::OnDebugScoreUI)
+    EVT_MENU      (MENU_Debug_DumpGMObjects, lmMainFrame::OnDebugDumpGMObjects)
+    EVT_UPDATE_UI (MENU_Debug_DumpGMObjects, lmMainFrame::OnDebugScoreUI)
     EVT_MENU      (MENU_Debug_SeeSource, lmMainFrame::OnDebugSeeSource)
     EVT_UPDATE_UI (MENU_Debug_SeeSource, lmMainFrame::OnDebugScoreUI)
     EVT_MENU      (MENU_Debug_SeeXML, lmMainFrame::OnDebugSeeXML)
@@ -993,6 +996,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
         debug_menu->Append(MENU_Debug_SetTraceLevel, _T("Set trace level ...") );
         debug_menu->Append(MENU_Debug_PatternEditor, _T("Test Pattern Editor") );
         debug_menu->Append(MENU_Debug_DumpStaffObjs, _T("&Dump of score") );
+		debug_menu->Append(MENU_Debug_DumpGMObjects, _T("&Dump of graphical model") );
         debug_menu->Append(MENU_Debug_SeeSource, _T("See &LDP source") );
         debug_menu->Append(MENU_Debug_SeeXML, _T("See &XML") );
         debug_menu->Append(MENU_Debug_SeeMIDIEvents, _T("See &MIDI events") );
@@ -1560,6 +1564,18 @@ void lmMainFrame::OnDebugDumpStaffObjs(wxCommandEvent& event)
     lmScore* pScore = pDoc->GetScore();
 
     lmDlgDebug dlg(this, _T("lmStaff objects dump"), pScore->Dump());
+    dlg.ShowModal();
+
+}
+
+void lmMainFrame::OnDebugDumpGMObjects(wxCommandEvent& event)
+{
+    // get the BoxScore
+    lmScoreView* pView = (lmScoreView*)g_pTheApp->GetActiveView();
+	lmBoxScore* pBox = pView->GetBoxScore();
+	if (!pBox) return;
+
+    lmDlgDebug dlg(this, _T("lmBoxScore dump"), pBox->Dump());
     dlg.ShowModal();
 
 }

@@ -123,6 +123,8 @@ public:
     //access to components
     lmController* GetController() { return (lmController*)m_pCanvas; }
     lmScoreDocument* GetDocument() { return m_pDoc; }
+	lmBoxScore* GetBoxScore() { return m_graphMngr.GetBoxScore(); }
+
 
     // sound related methods
     void OnVisualHighlight(lmScoreHighlightEvent& event);

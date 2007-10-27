@@ -91,3 +91,16 @@ void lmBoxSliceInstr::SetFinalX(lmLUnits xPos)
         m_SlicesVStaff[i]->SetFinalX(xPos);
     }
 }
+
+wxString lmBoxSliceInstr::Dump()
+{
+	wxString sDump = _T("lmBoxSliceInstr\n");
+
+    //loop to dump the systems in this page
+    for (int i=0; i < (int)m_SlicesVStaff.size(); i++)
+    {
+        sDump += m_SlicesVStaff[i]->Dump();
+    }
+
+	return sDump;
+}

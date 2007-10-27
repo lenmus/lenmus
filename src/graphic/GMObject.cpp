@@ -112,6 +112,27 @@ lmShape::~lmShape()
 }
 
 
+void lmShape::SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight)
+{
+    m_uSelRect.x = x;
+    m_uSelRect.y = y;
+    m_uSelRect.width = uWidth;
+    m_uSelRect.height = uHeight;
+}
+
+void lmShape::DrawSelRectangle(lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
+{
+    lmUPoint uPoint = m_uSelRect.GetPosition();
+    pPaper->SketchRectangle(uPoint + uPos, m_uSelRect.GetSize(), colorC);
+}
+
+bool lmShape::Collision(lmShape* pShape)
+{
+    lmURect rect1 = GetBounds();
+    return rect1.Intersects( pShape->GetBounds() );
+}
+
+
 
 
 //========================================================================================
@@ -125,6 +146,20 @@ lmSimpleShape::lmSimpleShape(lmEGMOType nType, lmObject* pOwner)
 
 lmSimpleShape::~lmSimpleShape()
 {
+}
+
+void lmSimpleShape::Shift(lmLUnits xIncr, lmLUnits yIncr)
+{
+	//Default behaviour is to shift bounding and selection rectangles
+
+    m_uSelRect.x += xIncr;		//AWARE: As it is a rectangle, changing its origin does not
+    m_uSelRect.y += yIncr;		//       change its width/height
+
+	m_uBoundsTop.x += xIncr;
+	m_uBoundsBottom.x += xIncr;
+	m_uBoundsTop.y += yIncr;
+	m_uBoundsBottom.y += yIncr;
+
 }
 
 
@@ -158,6 +193,31 @@ void lmCompositeShape::Add(lmShape* pShape)
     //m_uSelRect.Union(pShape->GetSelRectangle());
 
     ////! @todo add boundling rectangle to bounds rectangle list
-    //m_uBoundsRect = m_uSelRect;
+    //m_uBoundsTop = m_uSelRect.GetTopLeft();
+    //m_uBoundsBottom = m_uSelRect.GetBottomRight();
 
+}
+
+void lmCompositeShape::Shift(lmLUnits xIncr, lmLUnits yIncr)
+{
+	//Default behaviour is to shift all components
+    for (int i=0; i < (int)m_Components.size(); i++)
+    {
+        m_Components[i]->Shift(xIncr, yIncr);
+    }
+}
+
+wxString lmCompositeShape::Dump()
+{
+	//TODO
+	return(_T("lmCompositeShape"));
+}
+
+void lmCompositeShape::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+{
+	//Default behaviour: render all components
+    for (int i=0; i < (int)m_Components.size(); i++)
+    {
+        m_Components[i]->Render(pPaper, uPos, color);
+    }
 }

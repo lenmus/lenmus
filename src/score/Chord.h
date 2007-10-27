@@ -53,11 +53,11 @@ private:
                       wxColour colorC, wxFont* pFont, lmVStaff* pVStaff, int nStaff);
     void ComputeStemDirection();
     void ArrangeNoteheads();
-    lmNote* CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNote, lmShapeObj* pShape);
+    lmNote* CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNote, lmShape* pShape);
 
     void ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, int iN, lmPaper* pPaper,
                                  lmUPoint uPaperPos, wxColour colorC);
-    lmNote* CheckIfNoteCollision(lmShapeObj* pShape);
+    lmNote* CheckIfNoteCollision(lmShape* pShape);
 
 
 

@@ -81,6 +81,10 @@ public:
 
     inline lmBoxPage* GetBoxPage() const { return m_pBPage; }
 
+    //implementation of virtual methods from base class
+    wxString Dump();
+
+
 private:
 
     lmBoxPage*  m_pBPage;           //parent page

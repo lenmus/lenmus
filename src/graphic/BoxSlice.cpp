@@ -120,3 +120,17 @@ void lmBoxSlice::SetFinalX(lmLUnits xPos)
     }
 }
 
+wxString lmBoxSlice::Dump()
+{
+	wxString sDump = wxString::Format(_T("lmBoxSlice. measure %d\n"),
+						m_nAbsMeasure);
+
+    //loop to dump the systems in this page
+    for (int i=0; i < (int)m_SliceInstr.size(); i++)
+    {
+        sDump += m_SliceInstr[i]->Dump();
+    }
+
+	return sDump;
+}
+

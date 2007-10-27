@@ -69,6 +69,9 @@ public:
 	//positioning and bounds
     void SetFinalX(lmLUnits xPos);
 
+    //implementation of virtual methods from base class
+    wxString Dump();
+
 
 
 private:

@@ -32,7 +32,7 @@
 
 #include "Score.h"
 #include "MetronomeMark.h"
-#include "../graphic/Shape.h"
+#include "../graphic/Shapes.h"
 
 // 'note_symbol = 80'
 lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, ENoteType nNoteType, int nDots,

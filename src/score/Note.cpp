@@ -662,10 +662,10 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
     //--------------------------------------------
     if (!fMeasuring) {
         lmLUnits uxLine = m_uNoteheadRect.x - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
-        //lmLUnits uxLine = m_pNoteheadShape->GetBoundsRectangle().x - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
+        //lmLUnits uxLine = m_pNoteheadShape->GetBounds().x - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
         lmLUnits widthLine = m_uNoteheadRect.width +
                              m_pVStaff->TenthsToLogical(8, m_nStaffNum);
-        //lmLUnits widthLine = m_pNoteheadShape->GetBoundsRectangle().width +
+        //lmLUnits widthLine = m_pNoteheadShape->GetBounds().width +
         //                     m_pVStaff->TenthsToLogical(8, m_nStaffNum);
         DrawLegerLines(pPaper, nPosOnStaff, uyStaffTopLine, uxLine, widthLine, m_nStaffNum);
     }
@@ -910,8 +910,8 @@ void lmNote::ShiftNoteShape(lmLUnits uxShift)
     //anchor pos,
     //This method does not change the accidentals position, only the note itself.
 
-    m_pNoteheadShape->Shift(uxShift);    // shift notehead
-    m_uxAnchor += uxShift;                // shift anchor line
+    m_pNoteheadShape->Shift(uxShift, 0.0);	// shift notehead horizontally
+    m_uxAnchor += uxShift;					// shift anchor line
     m_uNoteheadRect.x += uxShift;
     m_uSelRect.x += uxShift;
     m_uxStem += uxShift;

@@ -174,3 +174,16 @@ void lmBoxSliceVStaff::SetFinalX(lmLUnits xPos)
 			m_Shapes[i]->SetXRight(xPos);
     }
 }
+
+wxString lmBoxSliceVStaff::Dump()
+{
+	wxString sDump = _T("lmBoxSliceVStaff\n");
+
+    //loop to dump the shapes
+    for (int i=0; i < (int)m_Shapes.size(); i++)
+    {
+        sDump += m_Shapes[i]->Dump();
+    }
+
+	return sDump;
+}

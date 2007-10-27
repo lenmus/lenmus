@@ -46,9 +46,6 @@ class lmStaffObj;
 class lmBoxPage;
 
 
-// to manage pages let's define an array to contain pointers to pages
-#include "wx/dynarray.h"
-WX_DEFINE_ARRAY(lmBoxPage*, ArrayBoxPages);
 
 
 // Class lmBoxScore is the main container for the renderized score. Only one instance
@@ -66,8 +63,8 @@ public:
     void Render(lmPaper* pPaper);                   
     void RenderPage(int nPage, lmPaper* pPaper); 
 
-    inline lmBoxPage* GetCurrentPage() const { return m_aPages.Item( m_aPages.GetCount() - 1); }
-    inline lmBoxPage* GetPage(int nPage) const { return m_aPages.Item( nPage - 1); }
+    inline lmBoxPage* GetCurrentPage() const { return m_aPages.back(); }
+    inline lmBoxPage* GetPage(int nPage) const { return m_aPages[nPage - 1]; }
     int GetNumPages();
     bool FindSliceAtPosition(lmUPoint& pointL);
 
@@ -75,12 +72,15 @@ public:
     void SetCursor(lmStaffObj* pSO) { m_pCursorSO = pSO; }
     lmStaffObj* GetCursorPointedObject() const { return m_pCursorSO; }
 
+    //implementation of virtual methods from base class
+    wxString Dump();
+
 
 private:
     lmScore*        m_pScore;       //score to be rendered
 
     // a lmBoxScore is, mainly, a collection of lmBoxPages
-    ArrayBoxPages  m_aPages;       //array of ptrs to pages that form this score
+	std::vector<lmBoxPage*>	   m_aPages;	//array of ptrs to pages that form this score
 
     //cursor management
 	lmStaffObj*		m_pCursorSO;			//staff object pointed by the cursor

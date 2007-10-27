@@ -266,3 +266,8 @@ void lmBoxVStaffSlice::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage
 
 }
 
+wxString lmBoxVStaffSlice::Dump()
+{
+	//TODO
+	return(_T("lmBoxVStaffSlice"));
+}

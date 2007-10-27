@@ -1081,10 +1081,10 @@
 				RelativePath="..\..\src\graphic\GraphicManager.h">
 			</File>
 			<File
-				RelativePath="..\..\src\graphic\Shape.cpp">
+				RelativePath="..\..\src\graphic\Shapes.cpp">
 			</File>
 			<File
-				RelativePath="..\..\src\graphic\Shape.h">
+				RelativePath="..\..\src\graphic\Shapes.h">
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\ShapeStaff.cpp">

@@ -77,7 +77,7 @@ lmScoreObj::lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable
 
     //transitional
     SetShapeRendered(false);
-    m_pShape = (lmShapeObj*)NULL;
+    m_pShape = (lmShape*)NULL;
 
     // GraphicObjs owned by this ScoreObj
     m_pGraphObjs = (GraphicObjsList*)NULL;

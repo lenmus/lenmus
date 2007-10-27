@@ -19,11 +19,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __SHAPE_H__        //to avoid nested includes
-#define __SHAPE_H__
+#ifndef __LM_SHAPES_H__        //to avoid nested includes
+#define __LM_SHAPES_H__
 
 #ifdef __GNUG__
-#pragma interface "Shape.cpp"
+#pragma interface "Shapes.cpp"
 #endif
 
 // For compilers that support precompilation, includes "wx/wx.h".
@@ -39,98 +39,13 @@
 
 #include "../score/defs.h"      // lmLUnits
 #include "../app/Paper.h"
+#include "GMObject.h"
 class lmObject;
 class lmStaff;
 
 
 
-//
-//  An lmShape is an abstract object representing any renderizable object, such as a line,
-//  a glyph, an arch, etc.
-//  It has positioning information.
-//  lmShapes know (1) how to draw themselves, (2) what space they occupy, and (3) their
-//  structure (children and parent)
-//
-class lmShapeObj
-{
-public:
-    virtual ~lmShapeObj() {}
-
-    virtual void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK) {};
-
-    // methods related to selection rectangle
-    void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight);
-    void DrawSelRectangle(lmPaper* pPaper, lmUPoint uPos, wxColour colorC = *wxBLUE);
-    lmURect GetSelRectangle() const { return m_uSelRect; }
-
-    // methods related to bounds
-    lmURect GetBoundsRectangle() const { return m_uBoundsRect; }
-    bool Collision(lmShapeObj* pShape);
-    virtual lmLUnits GetWidth() { return m_uBoundsRect.width; }
-
-    //methods related to position
-    virtual void Shift(lmLUnits xIncr) = 0;
-
-    //Debug related methods
-    virtual wxString Dump() = 0;
-
-
-protected:
-    lmShapeObj(lmObject* pOwner);
-
-    lmObject*   m_pOwner;       //musical object owning this shape
-
-    lmURect     m_uBoundsRect;  // boundling rectangle (logical units, relative to renderization point)
-    lmURect     m_uSelRect;     // selection rectangle (logical units, relative to renderization point)
-
-};
-
-// declare a list of ShapeObjs
-#include "wx/list.h"
-WX_DECLARE_LIST(lmShapeObj, ShapesList);
-
-
-
-class lmShapeSimple : public lmShapeObj
-{
-public:
-    virtual ~lmShapeSimple() {}
-
-    //implementation of virtual methods from base class
-    virtual wxString Dump() = 0;
-    virtual void Shift(lmLUnits xIncr) = 0;
-
-
-protected:
-    lmShapeSimple(lmObject* pOwner);
-
-
-};
-
-
-class lmShapeComposite : public lmShapeObj
-{
-public:
-    lmShapeComposite(lmObject* pOwner);
-    virtual ~lmShapeComposite();
-
-    //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
-    virtual wxString Dump() { return _T("ShapeComposite"); }
-    virtual void Shift(lmLUnits xIncr);
-
-    //dealing with components
-    virtual void Add(lmShapeObj* pShape);
-
-protected:
-
-    bool            m_fGrouped;         //its component shapes must be rendered as a single object
-    ShapesList      m_Components;       //list of its component shapes
-
-};
-
-
-class lmShapeLine : public lmShapeSimple
+class lmShapeLine : public lmSimpleShape
 {
 public:
     lmShapeLine(lmObject* pOwner,
@@ -141,7 +56,7 @@ public:
     //implementation of virtual methods from base class
     void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
     wxString Dump();
-    void Shift(lmLUnits xIncr);
+    void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
 private:
     lmLUnits    m_xStart, m_yStart;
@@ -152,7 +67,7 @@ private:
 };
 
 //represents a glyph from LenMus font
-class lmShapeGlyph : public lmShapeSimple
+class lmShapeGlyph : public lmSimpleShape
 {
 public:
     lmShapeGlyph(lmObject* pOwner, int nGlyph, wxFont* pFont);
@@ -161,7 +76,7 @@ public:
     //implementation of virtual methods from base class
     void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
     wxString Dump();
-    void Shift(lmLUnits xIncr);
+    void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
     //specific methods
     void Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint shift);
@@ -177,7 +92,7 @@ private:
 
 
 //represents a text with the same font
-class lmShapeText : public lmShapeSimple
+class lmShapeText : public lmSimpleShape
 {
 public:
     lmShapeText(lmObject* pOwner, wxString sText, wxFont* pFont);
@@ -186,7 +101,7 @@ public:
     //implementation of virtual methods from base class
     void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
     wxString Dump();
-    void Shift(lmLUnits xIncr);
+    void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
     //specific methods
     void Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint shift);
@@ -203,5 +118,5 @@ private:
 
 
 
-#endif    // __SHAPE_H__
+#endif    // __LM_SHAPES_H__
 

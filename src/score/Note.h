@@ -26,7 +26,7 @@
 #pragma interface "Note.cpp"
 #endif
 
-#include "../graphic/Shape.h"
+#include "../graphic/Shapes.h"
 
 #define lmREMOVE_TIES   true
 #define lmCHANGE_TIED   false
@@ -143,7 +143,7 @@ public:
     // methods used during layout computation
     bool DrawNote(lmPaper* pPaper, bool fMeasuring,
                   lmLUnits uxOffset, lmLUnits uyOffset, wxColour colorC);
-    lmShapeObj* GetNoteheadShape() { return m_pNoteheadShape; }
+    lmShape* GetNoteheadShape() { return m_pNoteheadShape; }
     void ShiftNoteShape(lmLUnits uxShift);
 
     //other methods

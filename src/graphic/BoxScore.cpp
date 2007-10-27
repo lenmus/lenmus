@@ -52,7 +52,11 @@ lmBoxScore::lmBoxScore(lmScore* pScore)
 lmBoxScore::~lmBoxScore()
 {
     //delete all pages
-    WX_CLEAR_ARRAY(m_aPages);
+    for (int i=0; i < (int)m_aPages.size(); i++)
+    {
+        delete m_aPages[i];
+    }
+    m_aPages.clear();
 }
 
 void lmBoxScore::Render(lmPaper* pPaper)
@@ -62,12 +66,9 @@ void lmBoxScore::Render(lmPaper* pPaper)
     pPaper->RestartPageCursors();                //restore page cursors are at top-left corner
 
     //loop to render pages
-    int iPage;
-    lmBoxPage* pBoxPage;
-    for(iPage=0; iPage < (int)m_aPages.GetCount(); iPage++) {
-        pBoxPage = m_aPages.Item(iPage);
-        //if (iPage != 0) pPaper->NewPage();
-        pBoxPage->Render(m_pScore, pPaper);
+    for (int i=0; i < (int)m_aPages.size(); i++)
+    {
+        m_aPages[i]->Render(m_pScore, pPaper);
     }
 
 }
@@ -76,7 +77,7 @@ void lmBoxScore::RenderPage(int nPage, lmPaper* pPaper)
 {
     // Render page nPage (1..n)
     
-    wxASSERT(nPage > 0 && nPage <= (int)m_aPages.GetCount());
+    wxASSERT(nPage > 0 && nPage <= (int)m_aPages.size());
 
     if (nPage == 1) {
         // write score titles
@@ -85,34 +86,43 @@ void lmBoxScore::RenderPage(int nPage, lmPaper* pPaper)
     }
 
     //render the requested page
-    lmBoxPage* pBoxPage = m_aPages.Item(nPage-1);
-    pBoxPage->Render(m_pScore, pPaper);
+    m_aPages[nPage-1]->Render(m_pScore, pPaper);
 
 }
 
 lmBoxPage* lmBoxScore::AddPage()
 {
-    lmBoxPage* pPage = new lmBoxPage(this, (int)m_aPages.GetCount()+1);
-    m_aPages.Add(pPage);
+    lmBoxPage* pPage = new lmBoxPage(this, (int)m_aPages.size()+1);
+    m_aPages.push_back(pPage);
     return pPage;
 
 }
 
 int lmBoxScore::GetNumPages()
 {
-    return (int)m_aPages.GetCount();
+    return (int)m_aPages.size();
 }
 
 bool lmBoxScore::FindSliceAtPosition(lmUPoint& pointL)
 {
     //loop to look up in the pages
-    int iPage;
-    lmBoxPage* pBoxPage;
-    for(iPage=0; iPage < (int)m_aPages.GetCount(); iPage++) {
-        pBoxPage = m_aPages.Item(iPage);
-        if (pBoxPage->FindSliceAtPosition(pointL))
+    for (int i=0; i < (int)m_aPages.size(); i++)
+    {
+        if (m_aPages[i]->FindSliceAtPosition(pointL))
             return true;    //found
     }
     return false;
 }
 
+wxString lmBoxScore::Dump()
+{
+	wxString sDump = wxString::Format(_T("lmBoxScore. ID %d\n"), GetID());
+
+    //loop to dump the pages in this score
+    for (int i=0; i < (int)m_aPages.size(); i++)
+    {
+        sDump += m_aPages[i]->Dump();
+    }
+
+	return sDump;
+}

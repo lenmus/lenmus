@@ -54,6 +54,8 @@ public:
 
 	//implementation of pure virtual methods in base class
     void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK);
+    wxString Dump();
+    void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
 protected:
 

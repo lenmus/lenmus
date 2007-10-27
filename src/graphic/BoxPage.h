@@ -48,9 +48,6 @@ class lmScore;
 class lmPaper;
 
 
-// to manage systems let's define an array to contain pointers to systems
-#include "wx/dynarray.h"
-WX_DEFINE_ARRAY(lmBoxSystem*, ArrayBoxSystems);
 
 class lmBoxPage : public lmBox
 {
@@ -69,6 +66,9 @@ public:
 
     inline lmBoxScore* GetBoxScore() const { return m_pBScore; }
 
+    //implementation of virtual methods from base class
+    wxString Dump();
+
 
 private:
     lmBoxScore*     m_pBScore;      //parent score box
@@ -77,7 +77,7 @@ private:
     int             m_nLastSystem;
 
     // a lmBoxPage is, mainly, a collection of lmBoxSystems
-    ArrayBoxSystems  m_aSystems;       //array of ptrs to systems that form this page
+	std::vector<lmBoxSystem*>	m_aSystems;		//array of ptrs to systems that form this page
 
     //page origin
     lmUPoint    m_pageOrgL;

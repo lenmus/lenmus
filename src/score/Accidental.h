@@ -26,7 +26,7 @@
 #pragma interface "Accidental.cpp"
 #endif
 
-#include "../graphic/Shape.h"
+#include "../graphic/Shapes.h"
 
 
 // An lmAccidental represents an accidental sign associated to a note

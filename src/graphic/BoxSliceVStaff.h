@@ -63,6 +63,10 @@ public:
 	//positioning and bounds
     void SetFinalX(lmLUnits xPos);
 
+    //implementation of virtual methods from base class
+    wxString Dump();
+
+
 private:
     void RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage);
 

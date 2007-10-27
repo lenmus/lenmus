@@ -132,6 +132,7 @@ public:
         // methods requiring a score
     void OnDebugDumpBitmaps(wxCommandEvent& event);
     void OnDebugDumpStaffObjs(wxCommandEvent& event);
+    void OnDebugDumpGMObjects(wxCommandEvent& event);
     void OnDebugSeeSource(wxCommandEvent& event);
     void OnDebugSeeXML(wxCommandEvent& event);
     void OnDebugSeeMidiEvents(wxCommandEvent& WXUNUSED(event));

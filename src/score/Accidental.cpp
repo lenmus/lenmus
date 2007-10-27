@@ -90,7 +90,7 @@ void lmAccidental::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint uOffset)
     //set the ScoreObj shape
     if (!GetShape()) {
         if (m_pShape[1]) {
-            lmShapeComposite* pShape = new lmShapeComposite(this);
+            lmCompositeShape* pShape = new lmCompositeShape(eGMO_ShapeComposite, this);
             pShape->Add(m_pShape[0]);
             pShape->Add(m_pShape[1]);
             SetShape(pShape);

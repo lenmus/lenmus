@@ -478,7 +478,7 @@ void lmChord::ComputeLayout(lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC
 	//		test if collision
 	//	end do
 
-    lmShapeObj* pNoteHead;
+    lmShape* pNoteHead;
     lmNote* pCrashNote;
     pNode = m_cNotes.GetFirst();
     for(iN=1; pNode; pNode=pNode->GetNext(), iN++ )
@@ -535,7 +535,7 @@ void lmChord::ComputeLayout(lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC
 
 }
 
-lmNote* lmChord::CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNote, lmShapeObj* pShape)
+lmNote* lmChord::CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNote, lmShape* pShape)
 {
 	//Check to see if the shape pShape overlaps any accidental of
     //the chord, from first note to note iCurNote (excluded, range: 1..m_cNotes.GetCount())
@@ -580,7 +580,7 @@ lmNote* lmChord::CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNo
 
 }
 
-lmNote* lmChord::CheckIfNoteCollision(lmShapeObj* pShape)
+lmNote* lmChord::CheckIfNoteCollision(lmShape* pShape)
 {
 	//Check to see if the shape pShape overlaps any accidental of the chord
     //If no collision returns NULL, otherwse, returns the Note
@@ -618,7 +618,7 @@ void lmChord::ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, int iN
     //compute accidentals layout
     pNote->DrawAccidentals(pPaper, DO_MEASURE, xPos, yPos, colorC);
     lmAccidental* pAccidental = pNote->GetAccidentals();
-    lmShapeObj* pAccShape = pAccidental->GetShape();
+    lmShape* pAccShape = pAccidental->GetShape();
 
     //check if collision with any previous note accidentals
     lmNote* pCrashNote = CheckIfCollisionWithAccidentals(fOnlyLeftNotes, iN, pAccShape);
