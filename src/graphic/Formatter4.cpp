@@ -701,7 +701,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
                 ///*** create a BoxProlog object and add it to this BoxSliceVStaff
             }
 
-            fNewSystem |= SizeMeasure(pVStaff, nAbsMeasure, nRelMeasure, pPaper);
+            fNewSystem |= SizeMeasure(pBSV, pVStaff, nAbsMeasure, nRelMeasure, pPaper);
 
             //advance paper in height off this lmVStaff
             //AWARE As advancing one staff has the effect of returning
@@ -816,8 +816,8 @@ void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable)
 // Methods to deal with measures
 //=========================================================================================
 
-bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasure,
-                             lmPaper* pPaper)
+bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nAbsMeasure,
+							   int nRelMeasure, lmPaper* pPaper)
 {
     // Compute the width of the requested measure of the lmVStaff
     // Input variables:
@@ -991,8 +991,8 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
                 }
             }
 
-            //measure lmStaffObj and store its final and anchor x positions
-            pSO->Draw(DO_MEASURE, pPaper);
+            //layout this lmStaffObj and store its final and anchor x positions
+            pSO->Layout(pBSV, pPaper);
                 //store its final and anchor x positions
             oTimepos.SetCurXFinal(pPaper->GetCursorX());
             oTimepos.SetCurXAnchor(oTimepos.GetCurXLeft() + pSO->GetAnchorPos());
@@ -1056,7 +1056,7 @@ bool lmFormatter4::SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasu
 
         //Now add the barline
         m_oTimepos[nRelMeasure].AddBarline(pSO);
-        pSO->Draw(DO_MEASURE, pPaper);
+        pSO->Layout(pBSV, pPaper);
     }
     else {
         // no barline at the end of the measure. Close thread

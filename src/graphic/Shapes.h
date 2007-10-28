@@ -55,7 +55,7 @@ public:
 
     //implementation of virtual methods from base class
     void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
-    wxString Dump();
+    wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
 private:
@@ -75,7 +75,7 @@ public:
 
     //implementation of virtual methods from base class
     void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
-    wxString Dump();
+    wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
     //specific methods
@@ -100,7 +100,7 @@ public:
 
     //implementation of virtual methods from base class
     void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
-    wxString Dump();
+    wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
     //specific methods

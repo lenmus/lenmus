@@ -107,10 +107,14 @@ public:
     virtual void DrawBoundsRectangle(lmPaper* pPaper, wxColour color);
 
 	//debugging
-    virtual wxString Dump()=0;
+    virtual wxString Dump(int nIndent)=0;
 
 
 protected:
+	enum {
+		lmINDENT_STEP = 3,		//for Dump() method
+	};
+
     lmGMObject(lmEGMOType m_nType);
 
     lmEGMOType          m_nType;        //type of GMO
@@ -133,7 +137,7 @@ public:
     virtual ~lmBox();
 
     //implementation of virtual methods from base class
-    virtual wxString Dump()=0;
+    virtual wxString Dump(int nIndent)=0;
 
 
 protected:
@@ -169,7 +173,7 @@ public:
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr) = 0;
 
     //Debug related methods
-    virtual wxString Dump() = 0;
+    virtual wxString Dump(int nIndent) = 0;
 
 
 protected:
@@ -191,7 +195,7 @@ public:
     virtual ~lmSimpleShape();
 
     //implementation of virtual methods from base class
-    virtual wxString Dump() = 0;
+    virtual wxString Dump(int nIndent) = 0;
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
     virtual void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK)=0;
 
@@ -213,7 +217,7 @@ public:
     virtual void Add(lmShape* pShape);
 
     //virtual methods from base class
-    virtual wxString Dump();
+    virtual wxString Dump(int nIndent);
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
 	virtual void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK);
 

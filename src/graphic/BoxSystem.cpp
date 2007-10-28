@@ -76,7 +76,7 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     //to the start of system position.
     pPaper->SetCursorY( m_yPos );
 
-#if 1	//OLD_RENDER
+#if 1	//1 = Old renderization method, 0 = new renderization method
     //for each lmInstrument
     for (int i=0; i < (int)m_InstrSlices.size(); i++)
     {
@@ -188,15 +188,18 @@ void lmBoxSystem::SetFinalX(lmLUnits xPos)
     }
 }
 
-wxString lmBoxSystem::Dump()
+wxString lmBoxSystem::Dump(int nIndent)
 {
-	wxString sDump = wxString::Format(_T("lmBoxSystem. %d measures starting at %d\n"),
+	wxString sDump = _T("");
+	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
+	sDump += wxString::Format(_T("lmBoxSystem. %d measures starting at %d\n"),
 						m_nNumMeasures, m_nFirstMeasure);
 
     //loop to dump the systems in this page
+	nIndent++;
     for (int i=0; i < (int)m_Slices.size(); i++)
     {
-        sDump += m_Slices[i]->Dump();
+        sDump += m_Slices[i]->Dump(nIndent);
     }
 
 	return sDump;

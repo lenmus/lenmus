@@ -38,6 +38,7 @@
 
 class lmBoxScore;
 class lmBoxSystem;
+class lmBoxSliceVStaff;
 
 class lmFormatter4
 {
@@ -57,7 +58,8 @@ private:
                                lmPaper* pPaper, bool* pNewSystem);
     void RedistributeFreeSpace(lmLUnits nAvailable);
     void DrawMeasure(lmVStaff* pVStaff, int iMeasure, lmPaper* pPaper);
-    bool SizeMeasure(lmVStaff* pVStaff, int nAbsMeasure, int nRelMeasure, lmPaper* pPaper);
+    bool SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nAbsMeasure,
+					 int nRelMeasure, lmPaper* pPaper);
     lmLUnits ComputeSystemHeight(lmPaper* pPaper);
 
 

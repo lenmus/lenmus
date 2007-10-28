@@ -67,7 +67,7 @@ public:
     inline lmBoxScore* GetBoxScore() const { return m_pBScore; }
 
     //implementation of virtual methods from base class
-    wxString Dump();
+    wxString Dump(int nIndent);
 
 
 private:

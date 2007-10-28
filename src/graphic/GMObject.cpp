@@ -207,10 +207,13 @@ void lmCompositeShape::Shift(lmLUnits xIncr, lmLUnits yIncr)
     }
 }
 
-wxString lmCompositeShape::Dump()
+wxString lmCompositeShape::Dump(int nIndent)
 {
 	//TODO
-	return(_T("lmCompositeShape"));
+	wxString sDump = _T("");
+	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
+	sDump.append(_T("lmCompositeShape\n"));
+	return sDump;
 }
 
 void lmCompositeShape::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)

@@ -74,10 +74,13 @@ void lmShapeStaff::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
     }
 }
 
-wxString lmShapeStaff::Dump()
+wxString lmShapeStaff::Dump(int nIndent)
 {
 	//TODO
-	return(_T("lmShapeStaff\n"));
+	wxString sDump = _T("");
+	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
+	sDump.append(_T("lmShapeStaff\n"));
+	return sDump;
 }
 
 void lmShapeStaff::Shift(lmLUnits xIncr, lmLUnits yIncr)

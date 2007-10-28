@@ -133,15 +133,18 @@ lmGMObject* lmBoxPage::FindGMObjectAtPosition(lmUPoint& pointL)
     return (pGMO);
 }
 
-wxString lmBoxPage::Dump()
+wxString lmBoxPage::Dump(int nIndent)
 {
-	wxString sDump = wxString::Format(_T("lmBoxPage %d (systems %d to %d)\n"),
+	wxString sDump = _T("");
+	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
+	sDump += wxString::Format(_T("lmBoxPage %d (systems %d to %d)\n"),
 						m_nNumPage, m_nFirstSystem, m_nLastSystem);
 
     //loop to dump the systems in this page
+	nIndent++;
 	for(int i=0; i < (int)m_aSystems.size(); i++)
     {
-        sDump += m_aSystems[i]->Dump();
+        sDump += m_aSystems[i]->Dump(nIndent);
     }
 
 	return sDump;

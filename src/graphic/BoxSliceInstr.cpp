@@ -92,14 +92,17 @@ void lmBoxSliceInstr::SetFinalX(lmLUnits xPos)
     }
 }
 
-wxString lmBoxSliceInstr::Dump()
+wxString lmBoxSliceInstr::Dump(int nIndent)
 {
-	wxString sDump = _T("lmBoxSliceInstr\n");
+	wxString sDump = _T("");
+	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
+	sDump.append(_T("lmBoxSliceInstr\n"));
 
     //loop to dump the systems in this page
+	nIndent++;
     for (int i=0; i < (int)m_SlicesVStaff.size(); i++)
     {
-        sDump += m_SlicesVStaff[i]->Dump();
+        sDump += m_SlicesVStaff[i]->Dump(nIndent);
     }
 
 	return sDump;

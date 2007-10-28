@@ -33,6 +33,7 @@
 #include "defs.h"
 #include "GraphicObj.h"
 #include "Score.h"
+#include "../graphic/GMObject.h"
 
 
 //implementation of the lmGraphicObj List
@@ -47,6 +48,12 @@ WX_DEFINE_LIST(GraphicObjsList);
 lmGraphicObj::lmGraphicObj(lmScoreObj* pOwner, bool fIsDraggable)
     : lmScoreObj(pOwner, eSCOT_GraphicObj, fIsDraggable) 
 {
+}
+
+void lmGraphicObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+{
+	WXUNUSED(pBox);
+	Draw(DO_MEASURE, pPaper, colorC, fHighlight);
 }
 
 void lmGraphicObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)

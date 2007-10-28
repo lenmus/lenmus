@@ -73,7 +73,7 @@ public:
     lmStaffObj* GetCursorPointedObject() const { return m_pCursorSO; }
 
     //implementation of virtual methods from base class
-    wxString Dump();
+    wxString Dump(int nIndent);
 
 
 private:

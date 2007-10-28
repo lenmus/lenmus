@@ -114,14 +114,17 @@ bool lmBoxScore::FindSliceAtPosition(lmUPoint& pointL)
     return false;
 }
 
-wxString lmBoxScore::Dump()
+wxString lmBoxScore::Dump(int nIndent)
 {
-	wxString sDump = wxString::Format(_T("lmBoxScore. ID %d\n"), GetID());
+	wxString sDump = _T("");
+	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
+	sDump += wxString::Format(_T("lmBoxScore. ID %d\n"), GetID());
 
     //loop to dump the pages in this score
+	nIndent++;
     for (int i=0; i < (int)m_aPages.size(); i++)
     {
-        sDump += m_aPages[i]->Dump();
+        sDump += m_aPages[i]->Dump(nIndent);
     }
 
 	return sDump;

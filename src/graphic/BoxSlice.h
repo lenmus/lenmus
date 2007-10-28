@@ -77,7 +77,7 @@ public:
     void SetFinalX(lmLUnits xPos);
 
     //implementation of virtual methods from base class
-    wxString Dump();
+    wxString Dump(int nIndent);
 
 
 

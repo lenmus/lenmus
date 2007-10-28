@@ -175,14 +175,17 @@ void lmBoxSliceVStaff::SetFinalX(lmLUnits xPos)
     }
 }
 
-wxString lmBoxSliceVStaff::Dump()
+wxString lmBoxSliceVStaff::Dump(int nIndent)
 {
-	wxString sDump = _T("lmBoxSliceVStaff\n");
+	wxString sDump = _T("");
+	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
+	sDump.append(_T("lmBoxSliceVStaff\n"));
 
     //loop to dump the shapes
+	nIndent++;
     for (int i=0; i < (int)m_Shapes.size(); i++)
     {
-        sDump += m_Shapes[i]->Dump();
+        sDump += m_Shapes[i]->Dump(nIndent);
     }
 
 	return sDump;

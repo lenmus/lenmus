@@ -107,8 +107,9 @@ int lmGraphicManager::GetNumPages()
 
 void lmGraphicManager::Layout()
 {
-    // The goal of this method is to parse the IIR representation of a score and
-    // generate the graphical representation so that it can be displayed or printed.
+    // The goal of this method is to parse the internal representation of a score
+	// (internal model, lmScore) and generate the graphical representation so that
+	// it can be displayed or printed.
     // The result is a lmBoxScore object.
 
     if (m_pBoxScore) {

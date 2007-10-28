@@ -168,6 +168,63 @@ void lmClef::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
 
 }
 
+void lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+{
+    //
+    // This method is invoked by the base class (lmStaffObj). When reaching this point
+    // paper cursor variable (m_uPaperPos) has been updated. This value must be used
+    // as the base for any measurement / drawing operation.
+	//
+    // LayoutObject() method is responsible for:
+	// 1. Creating the shape object
+    // 2. Computing the surrounding rectangle, the glyph position and other measurements
+	//	  and storing them on the shape object
+	// For compatibility, all measures will be stored in this StaffObj. Code for this
+	// is marked with tag "//COMPATIBILITY_NO_SHAPES" to simplify future removal.
+	//
+
+	wxLogMessage(_T("[lmClef::LayoutObject]"));
+	DrawObject(DO_MEASURE, pPaper, colorC, fHighlight);
+
+#if 0		//under development
+
+	//create the shape object
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, GetGlyphIndex(), GetFont());
+	pShape->Measure(pPaper, pStaff, lmUPoint());
+	pBox->AddShape(pShape);
+
+	//COMPATIBILITY_NO_SHAPES
+	{
+		lmEGlyphIndex nGlyph = GetGlyphIndex();
+		wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
+
+		// get the shift to the staff on which the clef must be drawn
+		lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
+
+		// store glyph position
+		m_uGlyphPos.x = 0;
+		m_uGlyphPos.y = yShift + m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
+
+		// compute width
+		pPaper->SetFont(*m_pFont);
+		lmLUnits nWidth, nHeight;
+		pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
+
+		// store selection rectangle measures and position (relative to m_uPaperPos)
+		m_uSelRect.width = nWidth;
+		m_uSelRect.height = m_pVStaff->TenthsToLogical(
+							aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
+		m_uSelRect.x = m_uGlyphPos.x;
+		m_uSelRect.y = m_uGlyphPos.y + m_pVStaff->TenthsToLogical(
+							aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum );
+
+		// set total width (incremented in one line for after space)
+		m_uWidth = nWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
+	}
+
+#endif
+}
+
 // returns the width of the draw (logical units)
 lmLUnits lmClef::DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {

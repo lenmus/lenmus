@@ -40,6 +40,8 @@
 #include "defs.h"
 #include "StaffObj.h"
 
+class lmBox;
+
 
 // - An lmGraphicObj is an abstract class representing any graphical score object with
 //   no meaning for the program (appart of beign a graphic), such as a line, a text,
@@ -68,6 +70,8 @@ public:
     // implementation of virtual methods of base class lmScoreObj
     void Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK,
               bool fHighlight = false);
+    void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
+                bool fHighlight = false);
     virtual void SetFont(lmPaper* pPaper) {}
     virtual wxBitmap* GetBitmap(double rScale) = 0;
     virtual void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,

@@ -58,7 +58,7 @@ public:
     lmLUnits Render(lmPaper* pPaper, int nNumPage, int nSystem);
 
     //implementation of virtual methods from base class
-    wxString Dump();
+    wxString Dump(int nIndent);
 
 
 private:

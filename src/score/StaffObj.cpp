@@ -38,6 +38,7 @@
 #include "Score.h"
 #include "ObjOptions.h"
 #include "GraphicObj.h"
+#include "../graphic/GMObject.h"
 
 
 //implementation of the StaffObjs List
@@ -116,7 +117,6 @@ void lmScoreObj::DrawSelRectangle(lmPaper* pPaper, wxColour colorC)
         //!       between shape rendered and drawing rendered objects
     }
 }
-
 
 
 //======================================================================================
@@ -242,6 +242,12 @@ lmAuxObj::lmAuxObj(lmObject* pParent, EAuxObjType nType, bool fIsDraggable) :
     m_nClass = nType;
 }
 
+void lmAuxObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+{
+	WXUNUSED(pBox);
+	Draw(DO_MEASURE, pPaper, colorC, fHighlight);
+}
+
 void lmAuxObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
     wxASSERT(fMeasuring == DO_DRAW);    //For AuxObjs measuring phase is done by specific methods
@@ -284,6 +290,37 @@ lmStaffObj::lmStaffObj(lmObject* pParent, EStaffObjType nType, lmVStaff* pStaff,
 
 lmStaffObj::~lmStaffObj()
 {
+}
+
+void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+{
+    if (!m_fVisible) return;
+    
+    if (!m_fFixedPos) {
+        m_uPaperPos.x = pPaper->GetCursorX();
+        m_uPaperPos.y = pPaper->GetCursorY();
+    } else {
+        pPaper->SetCursorX(m_uPaperPos.x);
+        pPaper->SetCursorY(m_uPaperPos.y);
+    }
+
+    // set the font
+    SetFont(pPaper);
+
+    // ask derived object to measure itself
+    LayoutObject(pBox, pPaper, colorC, fHighlight);
+
+    // update paper cursor position
+    pPaper->SetCursorX(m_uPaperPos.x + m_uWidth);
+    
+}
+
+
+void lmStaffObj::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC,
+                              bool fHighlight)
+{
+	WXUNUSED(pBox);
+	DrawObject(DO_MEASURE, pPaper, colorC, fHighlight);
 }
 
 void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)

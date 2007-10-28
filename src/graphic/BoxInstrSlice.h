@@ -67,7 +67,7 @@ public:
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
 
     //implementation of virtual methods from base class
-    wxString Dump();
+    wxString Dump(int nIndent);
 
 
 

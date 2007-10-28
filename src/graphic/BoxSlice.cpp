@@ -120,15 +120,18 @@ void lmBoxSlice::SetFinalX(lmLUnits xPos)
     }
 }
 
-wxString lmBoxSlice::Dump()
+wxString lmBoxSlice::Dump(int nIndent)
 {
-	wxString sDump = wxString::Format(_T("lmBoxSlice. measure %d\n"),
+	wxString sDump = _T("");
+	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
+	sDump += wxString::Format(_T("lmBoxSlice. measure %d\n"),
 						m_nAbsMeasure);
 
     //loop to dump the systems in this page
+	nIndent++;
     for (int i=0; i < (int)m_SliceInstr.size(); i++)
     {
-        sDump += m_SliceInstr[i]->Dump();
+        sDump += m_SliceInstr[i]->Dump(nIndent);
     }
 
 	return sDump;

@@ -51,6 +51,7 @@
 
 class lmObjOptions;
 class GraphicObjsList;
+class lmBox;
 
 class lmObject
 {
@@ -137,6 +138,9 @@ public:
     virtual void Draw(bool fMeasuring, lmPaper* pPaper,
                       wxColour colorC = *wxBLACK,
                       bool fHighlight = false)=0;
+    virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
+                        bool fHighlight = false)=0;
+
 
     // methods for draggable objects
     virtual wxBitmap* GetBitmap(double rScale) = 0;
@@ -258,6 +262,8 @@ public:
     // implementation of pure virtual methods of base class
     virtual void Draw(bool fMeasuring, lmPaper* pPaper,
                       wxColour colorC = *wxBLACK, bool fHighlight = false);
+    virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
+                        bool fHighlight = false);
     virtual void SetFont(lmPaper* pPaper);
 
     // methods related to staff ownership
@@ -282,6 +288,9 @@ protected:
              lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,    // only for staff owned objects
              bool fVisible = true,
              bool fIsDraggable = false);
+
+    virtual void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC,
+                            bool fHighlight);
 
     //properties
     bool            m_fVisible;     // this lmScoreObj is visible on the score
@@ -320,6 +329,8 @@ public:
     // implementation of virtual methods of base class lmScoreObj
     void Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK,
               bool fHighlight = false);
+    void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
+                bool fHighlight = false);
     virtual void SetFont(lmPaper* pPaper) {}
 
     // Graphic objects can be attached to any AuxObj

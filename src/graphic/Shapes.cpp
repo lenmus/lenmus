@@ -64,9 +64,13 @@ void lmShapeLine::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
 
 }
 
-wxString lmShapeLine::Dump()
+wxString lmShapeLine::Dump(int nIndent)
 {
-    return _T("LineShape\n");
+	//TODO
+	wxString sDump = _T("");
+	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
+	sDump.append(_T("LineShape\n"));
+	return sDump;
 }
 
 void lmShapeLine::Shift(lmLUnits xIncr, lmLUnits yIncr)
@@ -131,7 +135,7 @@ void lmShapeGlyph::SetFont(wxFont *pFont)
     m_pFont = pFont;
 }
 
-wxString lmShapeGlyph::Dump()
+wxString lmShapeGlyph::Dump(int nIndent)
 {
     return wxString::Format(_T("GlyphShape: shift=(%d,%d)\n"),
         m_uShift.x, m_uShift.y);
@@ -206,7 +210,7 @@ void lmShapeText::SetFont(wxFont *pFont)
     m_pFont = pFont;
 }
 
-wxString lmShapeText::Dump()
+wxString lmShapeText::Dump(int nIndent)
 {
     return wxString::Format(_T("TextShape: shift=(%d,%d), text=%s\n"),
         m_uShift.x, m_uShift.y, m_sText.c_str() );

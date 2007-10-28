@@ -1575,7 +1575,7 @@ void lmMainFrame::OnDebugDumpGMObjects(wxCommandEvent& event)
 	lmBoxScore* pBox = pView->GetBoxScore();
 	if (!pBox) return;
 
-    lmDlgDebug dlg(this, _T("lmBoxScore dump"), pBox->Dump());
+    lmDlgDebug dlg(this, _T("lmBoxScore dump"), pBox->Dump(0));
     dlg.ShowModal();
 
 }

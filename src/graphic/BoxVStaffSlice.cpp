@@ -266,8 +266,11 @@ void lmBoxVStaffSlice::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage
 
 }
 
-wxString lmBoxVStaffSlice::Dump()
+wxString lmBoxVStaffSlice::Dump(int nIndent)
 {
 	//TODO
-	return(_T("lmBoxVStaffSlice"));
+	wxString sDump = _T("");
+	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
+	sDump.append(_T("lmBoxVStaffSlice\n"));
+	return sDump;
 }
