@@ -13,7 +13,7 @@ different ways:</para>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
-        (Metrica 2 4 NoVisible)(n * s g+)(n * s)(n * c l g-)(n * c g+)(n * c g-))
+        (Metrica 2 4 noVisible)(n * s g+)(n * s)(n * c l g-)(n * c g+)(n * c g-))
         (c (n * s g+)(n * s g-)(n * n)(n * c)(Barra Final))
     </music>
 </score></para>

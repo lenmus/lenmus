@@ -75,6 +75,7 @@ private:
     wxString ChooseLanguage(wxWindow *parent);
     void SetUpLocale(wxString lang);
     lmSplashFrame* RecreateGUI(int nMilliseconds);
+	void FindOutScreenDPI();
 
 
     wxDocManager*	m_pDocManager;
@@ -93,5 +94,7 @@ extern lmMainFrame *GetMainFrame();
 
 //extern bool singleWindowMode;
 extern lmTheApp* g_pTheApp;
+extern double	g_rScreenDPI;
+extern double	g_rPixelsPerLU;
 
 #endif    // __LENMUS_APP_H_

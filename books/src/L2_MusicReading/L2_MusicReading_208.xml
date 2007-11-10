@@ -25,7 +25,7 @@ The note occupying all the measure is the dotted whole note.
     <score_type>short</score_type>
     <control_play></control_play>
     <music>
-        (Metrica 6 8 NoVisible)(n * n)(n * c l)(n * c g+)(n * c)(n * c g-)(Barra Final))
+        (Metrica 6 8 noVisible)(n * n)(n * c l)(n * c g+)(n * c)(n * c g-)(Barra Final))
     </music>
 </score></para>
 

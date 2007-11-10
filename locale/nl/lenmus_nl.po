@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-12 16:32+0100\n"
-"Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
+"PO-Revision-Date: 2007-11-04 12:33+0100\n"
+"Last-Translator: Jack Van Handenhove <jvanhan@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -35,7 +35,7 @@ msgstr ""
 #: score/MetronomeMark.cpp:173
 #: app/FontManager.cpp:118
 msgid "Sorry, an error has occurred while allocating the font."
-msgstr "Er heeft zich een fout voorgedaan bij de allocatie van het font."
+msgstr "Er heeft zich een fout voorgedaan bij de toekenning van het font."
 
 #: score/KeySignature.cpp:70
 #: ../xrc/xrc_strings.cpp:384
@@ -1202,7 +1202,7 @@ msgstr "Terminaal"
 #: exercises/IdfyCadencesCtrol.cpp:151
 #: ../xrc/xrc_strings.cpp:362
 msgid "Transient"
-msgstr "Transient"
+msgstr "Doorgaand"
 
 #: exercises/IdfyCadencesCtrol.cpp:165
 msgid "Imperfect"
@@ -2276,7 +2276,7 @@ msgstr "<placement> element heeft een ongeldige waarde \"%s\". 'boven' veronders
 #: app/AboutDialog.cpp:105
 #: ../xrc/xrc_strings.cpp:230
 msgid "A free program for music language learning"
-msgstr "Een gratis programma voor het leren van muziektaal"
+msgstr "Een vrij programma voor het leren van muziektaal"
 
 #: app/AboutDialog.cpp:128
 #: ../xrc/xrc_strings.cpp:231
@@ -2285,7 +2285,7 @@ msgstr "Doelstelling"
 
 #: app/AboutDialog.cpp:130
 msgid "LenMus is a free program to help you in the study of music theory and  ear training. It is available for Windows but soon it will be also available for Mac OS X, Linux, and other Unix-like operating systems."
-msgstr "LenMus is een gratis programma dat u helpt in de studie van de muziektheorie en gehoortraining. Het is beschikbaar voor Windows, maar zal binnenkort ook beschikbaar zijn voor Mac OS X, Linux en andere Unix besturingssystemen."
+msgstr "LenMus is een vrij programma dat u helpt in de studie van de muziektheorie en gehoortraining. Het is beschikbaar voor Windows, maar zal binnenkort ook beschikbaar zijn voor Mac OS X, Linux en andere Unix besturingssystemen."
 
 #: app/AboutDialog.cpp:134
 msgid "The LenMus Project is an open project, committed to the principles of Open Source, free education, and open access to information. It has no comercial purpose. It is an open workbench for working on all areas related to teaching music, and music representation and management with computers. It aims at developing publicly available knowledge, methods and algorithms related to all these areas and at the same time provides free quality software for music students, amateurs, and teachers."
@@ -4188,7 +4188,7 @@ msgstr "Terminale cadens"
 
 #: ../xrc/xrc_strings.cpp:429
 msgid "Transient cadences"
-msgstr "Transiente cadens"
+msgstr "Doorgaande cadens"
 
 #: ../xrc/xrc_strings.cpp:432
 msgid "You must choose al least two buttons! "

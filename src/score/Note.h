@@ -19,14 +19,24 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __NOTE_H__        //to avoid nested includes
-#define __NOTE_H__
+#ifndef __LM_NOTE_H__        //to avoid nested includes
+#define __LM_NOTE_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "Note.cpp"
 #endif
 
-#include "../graphic/Shapes.h"
+#include "defs.h"
+
+class lmVStaff;
+class lmContext;
+class lmPaper;
+class lmBox;
+class lmScoreObj;
+class lmChord;
+class lmShape;
+class lmCompositeShape;
+class lmShapeNote;
 
 #define lmREMOVE_TIES   true
 #define lmCHANGE_TIED   false
@@ -51,10 +61,11 @@ public:
 
     //implementation of virtual methods of base classes
         // lmScoreObj
-    void SetLeft(lmLUnits uLeft);
+    void MoveShape(lmLUnits uLeft);
         // lmStaffObj
     wxBitmap*   GetBitmap(double rScale);
     void        DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
+    void		LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight);
     void        MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
                             const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels);
     lmUPoint    EndDrag(const lmUPoint& uPos);
@@ -72,6 +83,15 @@ public:
     lmLUnits GetAnchorPos() { return m_uxAnchor; }
     void SetAnchorPos(lmLUnits uxPos) { m_uxAnchor = uxPos; }
     int GetPosOnStaff();        //line/space on which note is rendered
+    void SetOrigin(lmLUnits uxPos, lmLUnits uyPos) {
+			m_uPaperPos.x = uxPos;
+			m_uPaperPos.y = uyPos;
+		}
+    void SetOrigin(lmUPoint uPoint) {
+			m_uPaperPos.x = uPoint.x;
+			m_uPaperPos.y = uPoint.y;
+		}
+
 
     // bounds of image. Abolute position (->referred to page origin)
     lmLUnits GetBoundsTop();
@@ -140,11 +160,15 @@ public:
     void    SetVolume(int nVolume) { m_nVolume = nVolume; }
     void    ComputeVolume();
 
-    // methods used during layout computation
+    // methods used during layout phase
     bool DrawNote(lmPaper* pPaper, bool fMeasuring,
                   lmLUnits uxOffset, lmLUnits uyOffset, wxColour colorC);
+    bool AddNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmLUnits uxLeft,
+                      lmLUnits uyTop, wxColour colorC);
     lmShape* GetNoteheadShape() { return m_pNoteheadShape; }
-    void ShiftNoteShape(lmLUnits uxShift);
+    void ShiftNoteHeadShape(lmLUnits uxShift);
+	lmEGlyphIndex GetGlyphForFlag();
+    //void LayoutObject(lmCompositeShape* pCS, lmPaper* pPaper, wxColour colorC);
 
     //other methods
     bool        UpdateContext(int nStep, int nNewAccidentals, lmContext* pNewContext);
@@ -163,13 +187,23 @@ public:
 private:
     // rendering
     void MakeUpPhase(lmPaper* pPaper);
-    void DrawSingleNote(lmPaper* pPaper, bool fMeasuring, ENoteType nTipoNota,
+    void DrawSingleNote(lmPaper* pPaper, bool fMeasuring, ENoteType nNoteType,
                         bool fStemAbajo, lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC);
     void DrawNoteHead(lmPaper* pPaper, bool fMeasuring, ENoteHeads nNoteheadType,
                         lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC);
     void DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits uyTopLine, lmLUnits uxPos,
                         lmLUnits uWidth, int nStaff, int nROP = wxCOPY);
     lmEGlyphIndex DrawFlag(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+
+    //layouting
+    void AddSingleNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, ENoteType nNoteType,
+                            bool fStemAbajo, lmLUnits uxLeft, lmLUnits uyTop,
+							wxColour colorC);
+    void AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, ENoteHeads nNoteheadType,
+                          lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC);
+    void AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPosOnStaff, 
+                           lmLUnits uyStaffTopLine, lmLUnits uxPos, lmLUnits uWidth, int nStaff);
+    lmEGlyphIndex AddFlagShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 
     //auxiliary
     int PosOnStaffToPitch(int nSteps);
@@ -197,7 +231,7 @@ private:
     lmContext*      m_pContext;         //context for this note
 
     // constituent shapes
-    lmShapeGlyph*   m_pNoteheadShape;
+    lmShapeGlyp2*   m_pNoteheadShape;
     lmShapeLine*    m_pStemLine;
     lmShapeGlyph*   m_pFlagShape;
 
@@ -254,4 +288,4 @@ wxString MIDINoteToLDPPattern(lmMPitch nPitchMIDI, EKeySignatures nTonalidad,
 wxString GetNoteNamePhysicists(lmDPitch nPitch);
 
 
-#endif    // __NOTE_H__
+#endif    // __LM_NOTE_H__

@@ -40,7 +40,7 @@
 #include "wx/wx.h"
 #endif
 
-#include "../score/Score.h"
+#include "../score/StaffObj.h"
 #include "wx/debug.h"
 #include "TimeposTable.h"
 
@@ -424,7 +424,7 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
             pTPE->m_uxAnchor += uShift;
             pTPE->m_xRight += uShift;
             pTPE->m_xFinal += uShift;
-            (pTPE->m_pSO)->SetLeft( pTPE->m_xLeft );
+            (pTPE->m_pSO)->MoveShape( pTPE->m_xLeft );
         }
         else if (pTPE->m_nType == eOmega)
         {
@@ -437,7 +437,7 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
                 pTPE->m_uxAnchor += nShiftBar;
                 pTPE->m_xFinal += nShiftBar;
                 pTPE->m_xRight += nShiftBar;
-                (pTPE->m_pSO)->SetLeft( pTPE->m_xLeft );
+                (pTPE->m_pSO)->MoveShape( pTPE->m_xLeft );
                 uBarPosition = pTPE->m_xLeft;
             }
         }

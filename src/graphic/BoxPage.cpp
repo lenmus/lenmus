@@ -118,27 +118,36 @@ lmBoxInstrSlice* lmBoxPage::FindInstrSliceAtPosition(lmUPoint& pointL)
 
 lmGMObject* lmBoxPage::FindGMObjectAtPosition(lmUPoint& pointL)
 {
-    //locate an slice
-    lmBoxSlice* pSlice = FindSliceAtPosition(pointL);
-    if (!pSlice) return this;
+    //if not in this Page return
+    //TODO
+    //if (!ContainsPoint(pointL)) 
+    //    return (lmGMObject*)NULL;
 
-    //locate InstrSlice
-    lmBoxInstrSlice* pIS = FindInstrSliceAtPosition(pointL);
-    if (!pIS) return pSlice;
+    //look in shapes collection
+    lmShape* pShape = FindShapeAtPosition(pointL);
+    if (pShape) return pShape;
 
-    //locate VStaffSlice
-    lmGMObject* pGMO = pIS->FindGMObjectAtPosition(pointL);
-    if (!pGMO) return pSlice;
+    //loop to look up in the systems
+	for(int i=0; i < (int)m_aSystems.size(); i++)
+    {
+        lmGMObject* pGMO = m_aSystems[i]->FindGMObjectAtPosition(pointL);
+        if (pGMO)
+			return pGMO;    //found
+    }
 
-    return (pGMO);
+    // no system found. So the point is in this page
+    return this;
+
 }
 
 wxString lmBoxPage::Dump(int nIndent)
 {
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("lmBoxPage %d (systems %d to %d)\n"),
+	sDump += wxString::Format(_T("lmBoxPage %d (systems %d to %d), "),
 						m_nNumPage, m_nFirstSystem, m_nLastSystem);
+    sDump += DumpBounds();
+    sDump += _T("\n");
 
     //loop to dump the systems in this page
 	nIndent++;

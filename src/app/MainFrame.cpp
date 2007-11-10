@@ -189,6 +189,7 @@ enum
     MENU_Debug_ShowDebugLinks,
     MENU_Debug_ShowBorderOnScores,
     MENU_Debug_recSelec,
+    MENU_Debug_DrawBounds,
     MENU_Debug_DumpStaffObjs,
 	MENU_Debug_DumpGMObjects,
     MENU_Debug_SeeSource,
@@ -348,6 +349,7 @@ BEGIN_EVENT_TABLE(lmMainFrame, lmDocMDIParentFrame)
     EVT_MENU (MENU_Debug_SetTraceLevel, lmMainFrame::OnDebugSetTraceLevel)
     EVT_MENU (MENU_Debug_PatternEditor, lmMainFrame::OnDebugPatternEditor)
     EVT_MENU (MENU_Debug_recSelec, lmMainFrame::OnDebugRecSelec)
+    EVT_MENU (MENU_Debug_DrawBounds, lmMainFrame::OnDebugDrawBounds)
     EVT_MENU (MENU_Debug_UnitTests, lmMainFrame::OnDebugUnitTests)
     EVT_MENU (MENU_Debug_UseAntiAliasing, lmMainFrame::OnDebugUseAntiAliasing)
         //debug events requiring a score to be enabled
@@ -991,6 +993,8 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
             _T("Show border on ScoreAuxCtrol"), wxITEM_CHECK);
         debug_menu->Append(MENU_Debug_recSelec, _T("&Draw recSelec"),
             _T("Force to draw selection rectangles around staff objects"), wxITEM_CHECK);
+        debug_menu->Append(MENU_Debug_DrawBounds, _T("&Draw bounds"),
+            _T("Force to draw bound rectangles around staff objects"), wxITEM_CHECK);
         debug_menu->Append(MENU_Debug_UseAntiAliasing, _T("&Use anti-aliasing"),
             _T("Use anti-aliasing for screen renderization"), wxITEM_CHECK);
         debug_menu->Append(MENU_Debug_SetTraceLevel, _T("Set trace level ...") );
@@ -1121,13 +1125,14 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
         // items initially checked
         //
 
-    gfDrawSelRec = false;    //true;
+    g_fDrawSelRect = false;    //true;
 
     //debug toolbar
     if (fDebug) {
         menu_bar->Check(MENU_Debug_ForceReleaseBehaviour, g_fReleaseBehaviour);
         menu_bar->Check(MENU_Debug_ShowDebugLinks, g_fShowDebugLinks);
-        menu_bar->Check(MENU_Debug_recSelec, gfDrawSelRec);
+        menu_bar->Check(MENU_Debug_recSelec, g_fDrawSelRect);
+        menu_bar->Check(MENU_Debug_DrawBounds, g_fDrawBounds);
         menu_bar->Check(MENU_Debug_UseAntiAliasing, g_fUseAntiAliasing);
     }
 
@@ -1533,13 +1538,14 @@ void lmMainFrame::OnDebugUseAntiAliasing(wxCommandEvent& event)
 
 void lmMainFrame::OnDebugRecSelec(wxCommandEvent& event)
 {
- //   wxString msg = wxString::Format(wxT("Menu command %d"), event.GetId());
- //   msg += wxString::Format(wxT(" (the item is currently %schecked)"),
- //                           event.IsChecked() ? "" : "not ");
-    //wxLogMessage(msg);
-    gfDrawSelRec = event.IsChecked();
+    g_fDrawSelRect = event.IsChecked();
     g_pTheApp->UpdateCurrentDocViews();
+}
 
+void lmMainFrame::OnDebugDrawBounds(wxCommandEvent& event)
+{
+    g_fDrawBounds = event.IsChecked();
+    g_pTheApp->UpdateCurrentDocViews();
 }
 
 void lmMainFrame::OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event))

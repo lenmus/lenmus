@@ -36,6 +36,7 @@
 
 #include "wx/image.h"
 #include "Score.h"
+#include "../graphic/ShapeBarline.h"
 
 //-------------------------------------------------------------------------------------------------
 // lmBarline object implementation
@@ -191,6 +192,53 @@ void lmBarline::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bo
         m_uGlyphPos.x = 0;
         m_uGlyphPos.y = pPaper->GetCursorY() - uyTop;
     }
+
+}
+
+void lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+{
+    //
+    // This method is invoked by the base class (lmStaffObj). When reaching this point
+    // paper cursor variable (m_uPaperPos) has been updated. This value must be used
+    // as the base for any measurement / drawing operation.
+	//
+    // LayoutObject() method is responsible for:
+	// 1. Creating the shape object
+    // 2. Computing the surrounding rectangle, the glyph position and other measurements
+	//	  and storing them on the shape object
+	// For compatibility, all measures will be stored in this StaffObj. Code for this
+	// is marked with tag "//COMPATIBILITY_NO_SHAPES" to simplify future removal.
+	//
+
+    lmLUnits uyTop = m_pVStaff->GetYTop();
+    lmLUnits uyBottom = m_pVStaff->GetYBottom();
+    lmLUnits uxPos = pPaper->GetCursorX();
+    //lmLUnits uWidth = DrawBarline(DO_MEASURE, pPaper, uxPos, uyTop, uyBottom, colorC);
+
+    //create the shape
+    lmShapeBarline* pShape = 
+        new lmShapeBarline(this, m_nBarlineType, uxPos, uyTop, uyBottom, m_uThinLineWidth,
+                           m_uThickLineWidth, m_uSpacing, m_uRadius, colorC);
+	pBox->AddShape(pShape);
+    m_pShape2 = pShape;
+    lmLUnits uWidth = pShape->GetBounds().GetWidth();
+
+#if  lmCOMPATIBILITY_NO_SHAPES
+
+    // store selection rectangle measures and position
+    m_uSelRect.width = uWidth;
+    m_uSelRect.height = uyBottom - uyTop;
+    m_uSelRect.x = uxPos - m_uPaperPos.x;        //relative to m_uPaperPos
+    m_uSelRect.y = uyTop - m_uPaperPos.y;
+
+    // set total width
+    m_uWidth = uWidth;
+
+    // store glyph position (relative to paper pos).
+    m_uGlyphPos.x = 0;
+    m_uGlyphPos.y = pPaper->GetCursorY() - uyTop;
+
+#endif  //lmCOMPATIBILITY_NO_SHAPES
 
 }
 

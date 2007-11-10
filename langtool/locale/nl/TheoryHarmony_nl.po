@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.6\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-20 16:19+0100\n"
+"PO-Revision-Date: 2007-11-04 17:31+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -59,7 +59,7 @@ msgstr "Voorstelling"
 
 #: TheoryHarmony/TheoryHarmony.cpp:13
 msgid "It takes a lot of time to prepare an eBbook. So we have decided to publish the chapters, themes and articles as soon as we write them, instead of waiting until the book is finalized. All these provisional themes and articles are bundled into this eBook. Therefore the 'Theory and harmony' eBook is currently just a collection of un-ordered/un-related themes."
-msgstr "Het neemt veel tijd in beslag om een eBoek voor te bereiden. Daarom is beslist om de hoofdstukken en artikels te publiceren van zodra ze geschreven zijn, zonder te wachten tot het boek alsdusdanig klaar is. Alle provisionele themas en artikels worden gebundeld in dit eBoek. Bijgevolg behandelt dit eBoek met als titel 'Theorie en harmonie' enkel een collectie van ongeordende en/of ongerelateerde themas."
+msgstr "Het neemt veel tijd in beslag om een eBoek voor te bereiden. Daarom is beslist om de hoofdstukken en artikels te publiceren van zodra ze geschreven zijn, zonder te wachten tot het boek alsdusdanig klaar is. Alle provisionele themas en artikels worden gebundeld in dit eBoek. Bijgevolg behandelt dit eBoek met als titel \"Theorie en harmonie\" enkel een collectie van ongeordende en/of ongerelateerde themas."
 
 #: TheoryHarmony/TheoryHarmony.cpp:14
 #: TheoryHarmony/TheoryHarmony.cpp:15
@@ -68,7 +68,7 @@ msgstr "Harmonie"
 
 #: TheoryHarmony/TheoryHarmony.cpp:16
 msgid "Cadences"
-msgstr "Cadens"
+msgstr "De Cadens"
 
 #: TheoryHarmony/TheoryHarmony.cpp:17
 msgid "In music, the term 'cadence' has several meanings. In harmony we are going to refer to a particular sequence of usually two chords whose function it is to create a sensation of either stability, rest and ending, or of pause, tension and unstablility. Cadences have a function similar to that of punctuation marks (comma, period, etc.) in written language: they mark breathing places and pauses in music, they serve to structure the musical phrases and they also help to establish tonality. Listen for example to the following three chords:"
@@ -120,7 +120,7 @@ msgstr "Hier wordt geen gevoel van voleinding tot stand gebracht. Er weerklinkt 
 
 #: TheoryHarmony/TheoryHarmony.cpp:28
 msgid "Cadences are not difficult to recognize by ear but it is sometimes harder to recognize them in written music."
-msgstr "De cadens is via het oor niet moelijk te herkennen, maar het is in de geschreven muziek soms moeilijker ze te herkennen."
+msgstr "De cadens is via het oor niet moelijk te herkennen, maar in de geschreven muziek is herkenning soms moeilijker."
 
 #: TheoryHarmony/TheoryHarmony.cpp:29
 msgid "Cadence types"
@@ -135,7 +135,7 @@ msgstr "Afhankelijk van het gevoel dat ze opwekken worden de cadenzen onderverde
 #: TheoryHarmony/TheoryHarmony.cpp:68
 #: TheoryHarmony/TheoryHarmony.cpp:71
 msgid "Terminal cadences"
-msgstr "Terminale Cadens"
+msgstr "De Terminale Cadens"
 
 #: TheoryHarmony/TheoryHarmony.cpp:32
 msgid ". They create a sensation of stability, rest and ending of the musical phrase or sentence."
@@ -161,7 +161,7 @@ msgstr "Terminale cadenzen creëren een gevoel van stabiliteit en voleinding van
 
 #: TheoryHarmony/TheoryHarmony.cpp:38
 msgid " authentic cadences"
-msgstr " authenktiek cadens"
+msgstr " authenktieke cadens"
 
 #: TheoryHarmony/TheoryHarmony.cpp:39
 #: TheoryHarmony/TheoryHarmony.cpp:77
@@ -183,7 +183,7 @@ msgstr "Authentieke cadens"
 
 #: TheoryHarmony/TheoryHarmony.cpp:43
 msgid "An authentic cadence takes place when grade V, dominant, (or V7, a V chord with an added seventh) resolves in grade I (tonic). The authentic cadence is the strongest terminal cadence, with great conclusive power."
-msgstr "En authentieke cadens treedt op wanneer de dominant of vijfde graad (of V7 en akkoord met een toegevoegde zevende graad) oplost in de eerste graad, de tonica. De authentieke cadens is de sterkste terminale cadens, waar een sterke besluitende kracht van uitgaat."
+msgstr "En authentieke cadens verschijnt wanneer de dominant of vijfde graad (of V7 en akkoord met een toegevoegde zevende graad) oplost in de eerste graad, de tonica. De authentieke cadens is de sterkste terminale cadens waar een sterke besluitende kracht van uitgaat."
 
 #: TheoryHarmony/TheoryHarmony.cpp:46
 msgid "V7"
@@ -195,7 +195,7 @@ msgstr "Wanneer de authentieke cadens aan de volgende voorwaarden voldoet:"
 
 #: TheoryHarmony/TheoryHarmony.cpp:49
 msgid "both chords are in root position;"
-msgstr "twee akkoorden in grondligging;"
+msgstr "Twee akkoorden in grondligging"
 
 #: TheoryHarmony/TheoryHarmony.cpp:50
 msgid "the first chord is the V or the V7 ; and"
@@ -203,7 +203,7 @@ msgstr "Het eerste akkoord is V of V7, en"
 
 #: TheoryHarmony/TheoryHarmony.cpp:51
 msgid "the melody (soprano voice) ends on the tonic pitch."
-msgstr "de melodie (soprano stem) eindigt op de toonhoogte van de tonica."
+msgstr "De melodie (soprano stem) eindigt op de toonhoogte van de tonica."
 
 #: TheoryHarmony/TheoryHarmony.cpp:52
 msgid "then the cadence has its strongest conclusive power and it creates the most final sounding of all cadences. Due to this fact, if the previously listed conditions are satisfied, the cadence is named 'perfect authentic cadence' or just 'perfect cadence'. If the conditions are not satisfied, the conclusive sensation of the cadence is less strong and then the cadence is named 'imperfect authentic cadence' or just 'imperfect cadence'."
@@ -219,15 +219,15 @@ msgstr "De perfekte cadens wordt gewoonlijk op het eind van een muziekstuk of op
 
 #: TheoryHarmony/TheoryHarmony.cpp:55
 msgid "Plagal cadences"
-msgstr "Plagale cadens"
+msgstr "De Plagale cadens"
 
 #: TheoryHarmony/TheoryHarmony.cpp:56
 msgid "A plagal cadence takes place when grade IV (subdominant) resolves in grade I (tonic), both in root position. The plagal cadence is less strong than the authentic cadence and it is also known as the &quot;Amen&quot; cadence as it is used at the end of most church hymns."
-msgstr "De plagale cadens treedt op wanneer graad IV (subdominant) opgaat in de eerste graad (tonica), beide in grondligging. De plagale cadens is minder sterk dan de autenthieke cadens en is ook gekend als de &quot;kerkelijke&quot; cadens omdat hij veel gebruikt wordt op het einde van vele kerkhymnes."
+msgstr "De plagale cadens verschijnt wanneer de IVde graad (subdominant) opgaat in de Iste graad (tonica), beide in grondligging. De plagale cadens is minder sterk dan de autenthieke cadens en is ook gekend als de &quot;kerkelijke&quot; cadens omdat hij dikwijls gebruikt wordt op het einde van vele kerkhymnes."
 
 #: TheoryHarmony/TheoryHarmony.cpp:57
 msgid "In both cadence types, authentic and plagal, other chords playing the same harmonic functions can be used. For example, in the authentic cadence the V (dominant function) can be played by the VII. And in the plagal cadence the IV (subdominant function) can be played by the II. These replacements add variety and harmonic colour to the cadence."
-msgstr "In beide cadenstypes, zowel de autenthieke als de plagale, moet ermee rekening gehouden worden dat andere akkoorden met dezelfde harmonische funkties gebruikt kunnen worden. In de autenthieke cadens bijvoorbeeld, kan graad V (dominant) gespeeld worden door graad VII. In de plagale cadens kan de IV graad (subdominant) gespeeld worden door graad II. Deze vervangingen voegen een zekere variëteit toe aan de harmonische kleur van de cadens."
+msgstr "In beide cadenstypes, zowel de autenthieke als de plagale, moet ermee rekening gehouden worden dat andere akkoorden met dezelfde harmonische funkties gebruikt kunnen worden. In de autenthieke cadens bijvoorbeeld, kan graad V (dominant) gespeeld worden door graad VII. In de plagale cadens kan de IVde graad (subdominant) gespeeld worden door graad II. Deze vervangingen voegen een zekere variëteit toe aan de harmonische kleur van de cadens."
 
 #: TheoryHarmony/TheoryHarmony.cpp:58
 #: TheoryHarmony/TheoryHarmony.cpp:82
@@ -254,7 +254,7 @@ msgstr "Theorie"
 
 #: TheoryHarmony/TheoryHarmony.cpp:65
 msgid " - Practise to recognize in a score if a terminal cadence is authentic perfect or plagal."
-msgstr "- Tracht te herkennen of een terminale cadens perfekt autenthiek is of plagaal."
+msgstr " - Tracht te herkennen of een terminale cadens perfekt autenthiek is of plagaal."
 
 #: TheoryHarmony/TheoryHarmony.cpp:66
 #: TheoryHarmony/TheoryHarmony.cpp:108
@@ -263,7 +263,7 @@ msgstr "Auditieve training"
 
 #: TheoryHarmony/TheoryHarmony.cpp:67
 msgid " - Train your ear and practise to identify if a terminal cadence is authentic perfect or plagal."
-msgstr "- Oefen uw gehoor en tracht te herkken of een terminale cadens perfekt autenthiek is of plagaal."
+msgstr " - Oefen uw gehoor en tracht te herkken of een terminale cadens perfekt autenthiek is of plagaal."
 
 #: TheoryHarmony/TheoryHarmony.cpp:69
 #: TheoryHarmony/TheoryHarmony.cpp:72
@@ -280,7 +280,7 @@ msgstr "Auditieve training: Tracht te herkennen of een cadens perfekt authentiek
 
 #: TheoryHarmony/TheoryHarmony.cpp:75
 msgid "Transient cadences are not conclusive. They create a sensation of tension and unstability and an expectation of continuation. They are more like a short pause in the musical flow. There are two types of transient cadences:"
-msgstr "De doorgaande cadens is niet besluitend. Zij creëert een gevoel van spanning en instabiliteit en een verwachting van voortzetting. Hij is meer als een korte pauze in de muzikale beweging. Er zijn twee types van doorgaande cadens:"
+msgstr "De doorgaande cadens is niet besluitend. Hij creëert een gevoel van spanning en instabiliteit en een verwachting van voortzetting. Hij is meer als een korte pauze in de muzikale beweging. Er zijn twee types van doorgaande cadens:"
 
 #: TheoryHarmony/TheoryHarmony.cpp:76
 msgid " half cadences"
@@ -288,23 +288,23 @@ msgstr "halve cadens"
 
 #: TheoryHarmony/TheoryHarmony.cpp:78
 msgid " deceptive cadences"
-msgstr "bedrieglijke cadens"
+msgstr " bedrieglijke cadens"
 
 #: TheoryHarmony/TheoryHarmony.cpp:80
 msgid "Half cadences"
-msgstr "Halve cadens"
+msgstr "De Halve cadens"
 
 #: TheoryHarmony/TheoryHarmony.cpp:81
 msgid "A half cadence takes place when the harmony moves to the V degree (dominant) from any other degree, except the tonic (I). The ending on V causes it to sound incomplete or 'suspended' due to the unstableness of the dominant chord. It is considered as the weakest cadence and cannot be used to end a musical phrase."
-msgstr "De halve cadens treedt op wanneer de harmonie zich verplaatst naar de vijfde graad (dominant) vanuit een willekeurige andere graad, behalve de tonica (I). Het eindigen op V zorgt ervoor dat zij onvolledig klinkt of 'uitgesteld'. Als gevolg van de instabiliteit van het dominant akkoord. Het wordt opgevat als de zwakste cadens en kan niet gebruikt worden om een muzikale zin te beëindigen."
+msgstr "De halve cadens treedt op wanneer de harmonie zich verplaatst naar de Vde graad (dominant) vanuit een willekeurige andere graad, behalve de tonica (I). Het eindigen op V zorgt ervoor dat hij onvolledig klinkt of 'uitgesteld'. Als gevolg van de instabiliteit van het dominant akkoord. Het wordt opgevat als de zwakste cadens en kan niet gebruikt worden om een muzikale zin te beëindigen."
 
 #: TheoryHarmony/TheoryHarmony.cpp:88
 msgid "A particular case of the half cadence is the Phrygian half cadence. It consists of a IV chord in first inversion that resolves to a V (or V7) chord in root position. It only occurs in minor keys (the IV is minor) and was widely used during the Baroque period to end a slow musical movement in minor mode, continued by a fast movement in major mode."
-msgstr "En bijzonder geval van de halve cadens is the Frygische halve cadens. Deze bestaat uit een IV akkoord in eerste inversie dat opgaat in een V (of V7) akkoord in grondligging. Het komt enkel voor in mineure toonaarden (de IV is mineur) en werd intensief gebruikt gedurende de Barok periode om een trage muzikale beweging in mineur te beëindigen om deze te laten vervolgen door een snelle majeur beweging."
+msgstr "Een bijzonder geval van de halve cadens is de Frygische halve cadens. Deze bestaat uit een IV akkoord in eerste inversie dat opgaat in een V (of V7) akkoord in grondligging. Het komt enkel voor in mineur toonaarden (de IV is mineur) en werd intensief gebruikt gedurende de Barok periode om een trage muzikale beweging in mineur te beëindigen om deze te laten vervolgen door een snelle majeur beweging."
 
 #: TheoryHarmony/TheoryHarmony.cpp:92
 msgid "Another very specific case is the Andalusian cadence. It only occurs in minor keys and is given by the progression I-VII-VI-V, where the VI degree can be replaced. This cadence has a particular colour due to the chromatic half step between the root of the VII and the third of the V."
-msgstr "Een andere bijzondere cadens is de Andalusische cadens. Deze komt enkel voor in mineure toonaarden en bestaat uit de progressie I-VII-VI-V, waarbij de VI graad vervangen kan worden. Deze cadens heeft een specifieke kleur te wijten aan de chromatische halve trap tussen de grondtoon van VII en de derde toon van V."
+msgstr "Een andere bijzondere cadens is de Andalusische cadens. Deze komt enkel voor in mineur toonaarden en bestaat uit de progressie I-VII-VI-V, waarbij deVIde graad vervangen kan worden. Deze cadens heeft een specifieke kleur te wijten aan de chromatische halve trap tussen de grondtoon van VII en de derde toon van V."
 
 #: TheoryHarmony/TheoryHarmony.cpp:94
 msgid "VII"
@@ -321,7 +321,7 @@ msgstr "7"
 
 #: TheoryHarmony/TheoryHarmony.cpp:98
 msgid "Deceptive cadences"
-msgstr "Bedrieglijke cadens"
+msgstr "De Bedrieglijke cadens"
 
 #: TheoryHarmony/TheoryHarmony.cpp:99
 msgid "A deceptive cadence occurs when a V chord does not resolve to a I chord, as the ear is expecting, but instead resolves to any other chord, typically to one containing the tonic pitch (the VI or the IV degrees)."
@@ -341,7 +341,7 @@ msgstr " - Oefen uw gehoor en tracht een halve cadens van een bedrieglijke caden
 
 #: TheoryHarmony/TheoryHarmony.cpp:110
 msgid "Trasient cadences"
-msgstr "Trasient cadenzen"
+msgstr "De Doorgaande cadens"
 
 #: TheoryHarmony/TheoryHarmony.cpp:111
 #: TheoryHarmony/TheoryHarmony.cpp:114
@@ -366,7 +366,7 @@ msgstr "Eens alle cadenstypes gekend zijn, is het belangrijk om ze te leren iden
 
 #: TheoryHarmony/TheoryHarmony.cpp:118
 msgid "In this theme we just propose you some additional exercises to identify cadences, both aurally and in written music."
-msgstr "In dit onderdeel bieden we u enkele bijkomende oefeningen aan om cadenzen te herkennen, zowel op via het gehoor als in de geschreven muziek."
+msgstr "In dit onderdeel bieden we u enkele bijkomende oefeningen aan om cadenzen te herkennen, zowel via het gehoor als in de geschreven muziek."
 
 #: TheoryHarmony/TheoryHarmony.cpp:120
 msgid "Exercise 1"

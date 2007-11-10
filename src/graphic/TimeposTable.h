@@ -26,7 +26,8 @@
 #pragma interface "TimeposTable.cpp"
 #endif
 
-#include "../score/Score.h"
+#include "../score/defs.h"
+class lmStaffObj;
 
 #include <wx/dynarray.h>
 

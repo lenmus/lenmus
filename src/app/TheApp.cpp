@@ -172,6 +172,9 @@ lmColors* g_pColors = (lmColors*)NULL;
 // Error's logger
 lmLogger* g_pLogger = (lmLogger*)NULL;
 
+// Conversion factors
+double g_rScreenDPI = 96.0;
+double g_rPixelsPerLU = 1.0;
 
 
 // Create a new application object: this macro will allow wxWindows to create
@@ -361,6 +364,9 @@ bool lmTheApp::OnInit(void)
     // Now that language code is know we can finish lmPaths initialization
     // and load locale catalogs
     SetUpLocale(lang);
+
+	// Compute some screen conversion factors
+	FindOutScreenDPI();
 
     // Define handlers for the image types managed by the application
     // BMP handler is by default always defined
@@ -783,6 +789,31 @@ wxString lmTheApp::ChooseLanguage(wxWindow *parent)
     dlog.ShowModal();
     return dlog.GetLang();
 
+}
+
+void lmTheApp::FindOutScreenDPI()
+{
+	//We need to know the real screen resolution for texts (dots per inch) so that we
+	//can set right the font size for scores.
+
+	//GetPixelsPerLU()
+    wxScreenDC dc;
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale( 1.0 * lmSCALE, 1.0 * lmSCALE );
+
+    double xPixelsPerLU = (double)dc.LogicalToDeviceXRel(100000) / 100000.0;
+    double yPixelsPerLU = (double)dc.LogicalToDeviceYRel(100000) / 100000.0;
+    // screen resolution (User settings, dots per inch) 
+    wxSize sizeDPI = dc.GetPPI();
+
+    // In order to adjust staff lines to real size we will use only yPixelsPerLU.
+	g_rPixelsPerLU = yPixelsPerLU;
+	// To adjust font size to match staff size we need sizeDPI
+	g_rScreenDPI = (double)sizeDPI.y;
+
+	wxLogMessage(_T("[lmTheApp::FindOutScreenDPI] DisplayPixelsPerLU=(%f, %f), ")
+				 _T("sizePPI=(%d, %d)"),
+				 xPixelsPerLU, yPixelsPerLU, sizeDPI.x, sizeDPI.y );
 }
 
 // Update all views of document associated to currentView

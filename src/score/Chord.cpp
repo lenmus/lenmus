@@ -18,23 +18,19 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file Chord.cpp
-    @brief Implementation file for class lmChord
-    @ingroup score_kernel
-*/
-/*! @class lmChord
-    @ingroup score_kernel
-    @brief Information and methods to group several notes into a chord.
 
-    Contains the information needed to group several notes into a chord.
-    For each chord there exist a lmChord object and a pointer to it is stored on each
-    note of the chord
-
-    The class is named lmChord instead of Chord because there is a function named "Chord"
-    defined in WinGDI.h (Microsoft), and it causes compilation problems (with MS VC)
-    as the names collide.
-
-*/
+//
+//  class lmChord
+//    Information and methods to group several notes into a chord.
+//
+//    Contains the information needed to group several notes into a chord.
+//    For each chord there exist a lmChord object and a pointer to it is stored on each
+//    note of the chord
+//
+//    The class is named lmChord instead of Chord because there is a function named "Chord"
+//    defined in WinGDI.h (Microsoft), and it causes compilation problems (with MS VC)
+//    as the names collide.
+//
 
 #ifdef __GNUG__
 #pragma implementation "Chord.h"
@@ -53,6 +49,9 @@
 
 #include "Score.h"
 #include "Glyph.h"
+#include "../graphic/Shapes.h"
+#include "../graphic/ShapeNote.h"
+#include "../graphic/GMObject.h"
 
 int GlobalPitchCompare(const void* pNote1, const void* pNote2)
 {
@@ -63,10 +62,12 @@ int GlobalPitchCompare(const void* pNote1, const void* pNote2)
 }
 
 
-/*! Creates the chord object, with only the base note.
-*/
 lmChord::lmChord(lmNote* pBaseNote)
 {
+    //
+    // Creates the chord object, with only the base note.
+    //
+
     m_cNotes.Append(pBaseNote);
 
     // as this is the only note it is the max and the min one
@@ -77,11 +78,13 @@ lmChord::lmChord(lmNote* pBaseNote)
     m_nStemType = pBaseNote->GetStemType();
 }
 
-/*! Destructor. When invoked, only from lmNote destructor, there must be only one
-    note: the base note.
-*/
 lmChord::~lmChord()
 {
+    //
+    // Destructor. When invoked, only from lmNote destructor, there must be only one
+    // note: the base note.
+    //
+
     wxASSERT(m_cNotes.GetCount() == 1);
 
     wxNotesListNode *pNode = m_cNotes.GetFirst();
@@ -114,12 +117,12 @@ wxString lmChord::Dump()
     return sDump;
 }
 
-/*!  @brief Add a note to the chord.
-*/
 void lmChord::AddNote(lmNote* pNewNote)
 {
-    //Notes will be kept ordered by pitch. First item lowest pitch
-    //When this method is invoked at least the base note is in the collection
+    // Add a note to the chord.
+    // Notes will be kept ordered by pitch. First item lowest pitch
+    // When this method is invoked at least the base note is in the collection
+
     wxASSERT(m_cNotes.GetCount() > 0);
 
     int iPos;
@@ -237,6 +240,80 @@ void lmChord::DrawStem(bool fMeasuring, lmPaper* pPaper, wxColour colorC, wxFont
     }
 
 }
+
+void lmChord::AddStemShape(lmCompositeShape* pCS, lmPaper* pPaper, wxColour colorC,
+						   wxFont* pFont, lmVStaff* pVStaff, int nStaff)
+{
+	// Create the shape for the stem of the chord.
+	// Once the shape for the last notehead of a chord has been created this method
+	// is invoked (from the last lines of lmNote::Layout() ) to create the shape for
+	// the stem of the chord.
+	// The stem position is stored in the base note.
+
+    lmNote* pBaseNote = GetBaseNote();
+    lmLUnits xStem = pBaseNote->GetXStemLeft();
+    lmLUnits yStemStart=0, yStemEnd=0;
+
+    if (!pBaseNote->IsBeamed()) {
+        //compute y positions
+        if (m_fStemDown) {
+            yStemStart = m_pMaxNote->GetYStem();
+            yStemEnd = m_pMinNote->GetFinalYStem();
+        }
+        else {
+            yStemStart = m_pMinNote->GetYStem();
+            yStemEnd = m_pMaxNote->GetFinalYStem();
+        }
+
+    }
+    else {
+        // If the chord is beamed, the stem length was computed during beam computation and
+        // stored in the base note
+        if (pBaseNote->StemGoesDown()) {
+            //stem down: line at left of noteheads
+            yStemStart = m_pMaxNote->GetYStem();
+            yStemEnd = m_pMinNote->GetYStem() + pBaseNote->GetStemLength();
+        } else {
+            //stem up: line at right of noteheads
+            yStemStart = m_pMinNote->GetYStem();
+            yStemEnd = m_pMaxNote->GetYStem() - pBaseNote->GetStemLength();
+        }
+    }
+
+	//proceed to create the stem and the flag shapes. If the flag must be added we
+	//need to create a compoite shape as container for flag and stem. Otherwise we
+	//will just add the stem shape
+	bool fFlagNeeded = !pBaseNote->IsBeamed() && pBaseNote->GetNoteType() > eQuarter;
+	lmCompositeShape* pShapeCont = pCS;		//assume no flag needed
+	if (fFlagNeeded)
+	{
+		//flag needed. Create a compoite shape as container for flag and stem
+		pShapeCont = new lmCompositeShape(pCS->Owner(), _T("Chord stem & flag"));
+		pCS->Add(pShapeCont);
+	}
+
+	//create the stem shape
+    #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
+    lmLUnits uStemThickness = pVStaff->TenthsToLogical(STEM_WIDTH, nStaff) / 10;
+    pPaper->SolidLine(xStem, yStemStart, xStem, yStemEnd, uStemThickness,
+                        eEdgeNormal, colorC);
+    lmShapeLin2* pStem = 
+        new lmShapeLin2(pCS->Owner(), xStem, yStemStart, xStem, yStemEnd, uStemThickness,
+						0.0, colorC, _T("Stem"), eEdgeHorizontal);
+	pShapeCont->Add(pStem);
+
+    //add the flag 
+	if (fFlagNeeded)
+	{
+		lmEGlyphIndex nGlyph = pBaseNote->GetGlyphForFlag();
+		lmLUnits yPos = yStemEnd + pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, nStaff);
+		lmShapeGlyp2* pShape = new lmShapeGlyp2(pCS->Owner(), nGlyph, pFont, pPaper,
+												lmUPoint(xStem, yPos), _T("Flag"));
+		pShapeCont->Add(pShape);
+	}
+
+}
+
 
 bool lmChord::IsLastNoteOfChord(lmNote* pNote)
 {
@@ -424,7 +501,7 @@ void lmChord::ArrangeNoteheads()
 
 }
 
-void lmChord::ComputeLayout(lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC)
+void lmChord::LayoutNoteHeads(lmShapeNote* pNoteShape, lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC)
 {
     //arrange noteheads at left/right of stem to avoid collisions
     ArrangeNoteheads();
@@ -443,22 +520,28 @@ void lmChord::ComputeLayout(lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC
     lmLUnits yStaffTopLine;
     lmAccidental* pAccidental;
     lmNote* pNote;
-    //first loop to process notes not shitfted to right
+    //first loop: process notes not shitfted to right
     wxNotesListNode* pNode = m_cNotes.GetFirst();
-    //wxLogMessage(_T("[lmChord::ComputeLayout] First loop to process notes not shitfted to right"));
-    for(iN=1; pNode; pNode=pNode->GetNext(), iN++ ) {
+    wxLogMessage(_T("[lmChord::ComputeLayout] First loop to process notes not shitfted to right"));
+    for(iN=1; pNode; pNode=pNode->GetNext(), iN++ )
+	{
         pNote = (lmNote*)pNode->GetData();
-        ///@aware The font to render the note and its accidentals is set in method
-        ///     lmStaffObj::Draw() before invoking lmNote->DrawObject(). To compute
-        ///     the chord layout it is necessary to have the font set, so I force
-        ///     to set it in next sentence.
+		//assign paper pos to this note.
+		//AWARE: this method (LayoutNoteHeads) is invoked while layouting the chord base
+		// note. Therefore, all chord notes, except the base note, have no paper position
+		// assigned already.
+		if (iN > 1)
+			pNote->SetOrigin(m_pBaseNote->GetOrigin());
+        //AWARE: The font to render the note and its accidentals is set in method
+        //     lmStaffObj::Draw() before invoking lmNote->LayoutObject(). To compute
+        //     the chord layout it is necessary to have the font set, so I force
+        //     to set it in next sentence.
         pNote->SetFont(pPaper);
-
         if (!pNote->IsNoteheadReversed() && pNote->HasAccidentals())
             ComputeAccidentalLayout(true, pNote, iN, pPaper, uPaperPos, colorC);
     }
-    //second loop to process notes  shitfted to right
-    //wxLogMessage(_T("[lmChord::ComputeLayout] Second loop to process notes  shitfted to right"));
+    //second loop: process notes  shitfted to right
+    wxLogMessage(_T("[lmChord::Layout] Second loop to process notes  shitfted to right"));
     pNode = m_cNotes.GetFirst();
     for(iN=1; pNode; pNode=pNode->GetNext(), iN++ ) {
         pNote = (lmNote*)pNode->GetData();
@@ -467,7 +550,7 @@ void lmChord::ComputeLayout(lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC
     }
 
     //Here all accidentals are positioned without collisions. Procceed to compute
-    //noteheads positions
+    //noteheads positions (Use also this loop to add accidental shapes)
 
     //Loop to compute noteheads' position:
 	//- Set x pos to start of chord x pos + note's accidental width (if exists)
@@ -494,17 +577,23 @@ void lmChord::ComputeLayout(lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC
             pAccidental = pNote->GetAccidentals();
             //! @todo instead of width it must be position+width
             xPos += pAccidental->GetWidth();
+            //add accidental shape
+            pNoteShape->AddAccidental(pAccidental->GetShape());
         }
 
         //compute notehead's position
-        pNote->DrawNote(pPaper, DO_MEASURE, xPos, yPos, colorC);
+        //pNote->DrawNote(pPaper, DO_MEASURE, xPos, yPos, colorC);
+		pNote->AddNoteShape(pNoteShape, pPaper, xPos + uPaperPos.x, yPos + uPaperPos.y, colorC);
+		pNote->SetAnchorPos(xPos);
         pNoteHead = pNote->GetNoteheadShape();
         //check if collision with any previous note accidentals
         pCrashNote = CheckIfNoteCollision(pNoteHead);
         while (pCrashNote) {
             //try to render at right of colliding accidental
-            xPos += (pCrashNote->GetAccidentals())->GetWidth();
-            pNote->DrawNote(pPaper, DO_MEASURE, xPos, yPos, colorC);
+            //xPos += (pCrashNote->GetAccidentals())->GetWidth();
+            //pNote->DrawNote(pPaper, DO_MEASURE, xPos, yPos, colorC);
+			lmLUnits nShift = (pCrashNote->GetAccidentals())->GetWidth();
+			pNote->ShiftNoteHeadShape(nShift);
             //check again for collision
             pCrashNote = CheckIfNoteCollision(pNoteHead);
         }
@@ -530,8 +619,9 @@ void lmChord::ComputeLayout(lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC
         pNote = (lmNote*)pNode->GetData();
         pNoteHead = pNote->GetNoteheadShape();
         nShift = nMaxAnchor - pNote->GetAnchorPos();
-        pNote->ShiftNoteShape(nShift);
+        pNote->ShiftNoteHeadShape(nShift);
     }
+
 
 }
 
@@ -616,18 +706,19 @@ void lmChord::ComputeAccidentalLayout(bool fOnlyLeftNotes, lmNote* pNote, int iN
     lmLUnits xPos = 0;
 
     //compute accidentals layout
-    pNote->DrawAccidentals(pPaper, DO_MEASURE, xPos, yPos, colorC);
     lmAccidental* pAccidental = pNote->GetAccidentals();
+    pAccidental->Layout(pPaper, xPos+pPaper->GetCursorX(), yPos+pPaper->GetCursorY());
     lmShape* pAccShape = pAccidental->GetShape();
 
     //check if collision with any previous note accidentals
     lmNote* pCrashNote = CheckIfCollisionWithAccidentals(fOnlyLeftNotes, iN, pAccShape);
     int nWatchDog = 0;
-    while (pCrashNote) {
-        //try to render at right of colliding accidental
+    while (pCrashNote)
+	{
+        //Collision. try to render at right of colliding accidental
 
         xPos += ((pCrashNote->GetAccidentals())->GetShape())->GetWidth();
-        pNote->DrawAccidentals(pPaper, DO_MEASURE, xPos, yPos, colorC);
+        pAccidental->MoveTo(xPos, yPos);
         //check again for collision
         pCrashNote = CheckIfCollisionWithAccidentals(fOnlyLeftNotes, iN, pAccShape);
         nWatchDog++;

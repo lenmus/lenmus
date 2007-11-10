@@ -88,9 +88,12 @@
 #include "Notation.h"
 #include "../app/global.h"
 #include "MetronomeMark.h"
+#include "../app/TheApp.h"		//to access g_rScreenDPI and g_rPixelsPerLU
 #include "../graphic/GMObject.h"
 #include "../graphic/ShapeStaff.h"
 #include "../graphic/BoxSliceVStaff.h"
+#include "../graphic/ShapeBarline.h"
+
 
 //implementation of the staves List
 #include <wx/listimpl.cpp>
@@ -521,13 +524,14 @@ void lmVStaff::DrawStaffLines(lmPaper* pPaper,
     }
 }
 
-void lmVStaff::DrawStaffLines2(lmBoxSliceVStaff* pBox,
+lmLUnits lmVStaff::DrawStaffLines2(lmBoxSliceVStaff* pBox,
                               lmLUnits xFrom, lmLUnits xTo, lmLUnits yPos)
 {
     //Computes all staff lines of this lmVStaff and creates the necessary shapes
 	//to render them. Add this shapes to the received lmBox object.
+    //Returns the Y coord. of last line (line 1, last staff)
 
-    if (GetOptionBool(_T("StaffLines.Hide")) ) return;
+    if (GetOptionBool(_T("StaffLines.Hide")) ) return 0.0;
 
     //Set left position and lenght of lines, and save these values
     lmLUnits yCur = yPos + m_topMargin;
@@ -551,6 +555,7 @@ void lmVStaff::DrawStaffLines2(lmBoxSliceVStaff* pBox,
         pNode = pNode->GetNext();
         pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
     }
+	return m_yLinBottom;
 }
 
 void lmVStaff::SetUpFonts(lmPaper* pPaper)
@@ -586,7 +591,7 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
     lmLUnits dyLinesL = pStaff->GetLineSpacing();
 
     // the font for drawing is scaled by the DC.
-    pStaff->SetFontDraw( pPaper->GetFont((int)(3.0 * dyLinesL), _T("LenMus Basic") ) );        //logical points
+    pStaff->SetFontDraw( pPaper->GetFont((int)(3.0 * dyLinesL * 96.0/g_rScreenDPI), _T("LenMus Basic") ) );        //logical points
 
     //wxLogMessage(_T("[lmVStaff::SetFont] dyLinesL=%d"), dyLinesL);
 
@@ -957,7 +962,8 @@ bool lmVStaff::GetXPosFinalBarline(lmLUnits* pPos)
 
     //check that a barline is found. Otherwise no barlines in the score
     if (pSO->GetClass() == eSFOT_Barline) {
-        *pPos = pSO->GetOrigin().x + pSO->GetSelRect().GetWidth();
+        //*pPos = pSO->GetOrigin().x + pSO->GetSelRect().GetWidth();
+		*pPos = ((lmShapeBarline*)pSO->GetShap2())->GetXEnd();
         return true;
     }
     else
@@ -970,6 +976,120 @@ void lmVStaff::NewLine(lmPaper* pPaper)
     //move x cursor to the left and advance y cursor the space
     //height of all stafves of this lmVStaff
     pPaper->NewLine(GetVStaffHeight());
+
+}
+void lmVStaff::AddPrologShapes(lmBoxSliceVStaff* pBSV, int nMeasure, bool fDrawTimekey,
+							   lmPaper* pPaper)
+{
+    // The prolog (clef and key signature) must be rendered on each system,
+    // but the matching StaffObjs only exist in the first system. Therefore, in the
+    // normal staffobj rendering process, the prolog would be rendered only in
+    // the first system.
+    // So, for the other systems it is necessary to force the rendering
+    // of the prolog because there are no StaffObjs representing it.
+    // This method does it.
+    //
+    // To know what clef, key and time signature to draw we take this information from the
+    // context associated to first note of the measure on each sttaf. If there are no notes,
+    // the context is taken from the barline. If, finally, no context is found, no prolog
+    // is drawn.
+
+    lmLUnits nPrologWidth = 0;
+    lmClef* pClef = (lmClef*)NULL;
+    EClefType nClef = eclvUndefined;
+    lmKeySignature* pKey = (lmKeySignature*)NULL;
+    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
+
+    //AWARE when this method is invoked the paper position must be at the left marging,
+    //at the start of a new system.
+    lmLUnits xStartPos = pPaper->GetCursorX() + m_nSpaceBeforeClef;         //Save x to align all clefs
+    lmLUnits yStartPos = pPaper->GetCursorY();
+
+    //iterate over the collection of lmStaff objects to draw current cleft and key signature
+
+    wxStaffListNode* pNode = m_cStaves.GetFirst();
+    lmStaff* pStaff = (lmStaff*)NULL;
+    lmLUnits yOffset = 0;
+    lmLUnits xPos=0;
+    lmLUnits nWidth=0;
+
+    lmContext* pContext = (lmContext*)NULL;
+    lmStaffObj* pSO = (lmStaffObj*) NULL;
+    lmNoteRest* pNR = (lmNoteRest*)NULL;
+    lmNote* pNote = (lmNote*)NULL;
+    for (int nStaff=1; pNode; pNode = pNode->GetNext(), nStaff++)
+    {
+        pStaff = (lmStaff *)pNode->GetData();
+        xPos = xStartPos;
+
+        //locate first context for this staff
+        pContext = (lmContext*)NULL;
+        lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
+        pIter->AdvanceToMeasure(nMeasure);
+        while(!pIter->EndOfList()) {
+            pSO = pIter->GetCurrent();
+            if (pSO->GetClass() == eSFOT_NoteRest) {
+                pNR = (lmNoteRest*)pSO;
+                if (!pNR->IsRest() && pNR->GetStaffNum() == nStaff) {
+                    //OK. Note fount. Take context
+                    pNote = (lmNote*)pSO;
+                    pContext = pNote->GetContext();
+                    break;
+                }
+            }
+            else if (pSO->GetClass() == eSFOT_Barline) {
+                lmBarline* pBar = (lmBarline*)pSO;
+                pContext = pBar->GetContext(nStaff);
+                break;
+            }
+            pIter->MoveNext();
+        }
+        delete pIter;
+
+        if (pContext) {
+            pClef = pContext->GetClef();
+            pKey = pContext->GeyKey();
+            pTime = pContext->GetTime();
+
+            //render clef
+            if (pClef) {
+                nClef = pClef->GetClefType();
+				if (pClef->IsVisible()) {
+					lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
+					nWidth = pClef->AddShape(pBSV, pPaper, uPos);
+					xPos += nWidth;
+				}
+            }
+
+            //render key signature
+            if (pKey && pKey->IsVisible()) {
+                wxASSERT(nClef != eclvUndefined);
+                lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
+                nWidth = pKey->DrawAt(DO_MEASURE, pPaper, uPos, nClef, nStaff);
+                xPos += nWidth;
+            }
+
+            //if requested (flag fDrawTimekey), render time key (only on first staff)
+            //if (fDrawTimekey And iStf = 1 {
+            //    if (Not m_oCurMetrica Is Nothing {
+            //        nTimeKey = m_oCurMetrica.Valor
+            //        pPaper->PintarMetrica fMeasuring, nTimeKey, yDesplz
+            //    }
+            //}
+
+        }
+
+        //compute prolog width
+        nPrologWidth = wxMax(nPrologWidth, xPos - xStartPos);
+
+        //compute vertical displacement for next staff
+        yOffset += pStaff->GetHeight();
+        yOffset += pStaff->GetAfterSpace();
+
+    }
+
+    // update paper cursor position
+    pPaper->SetCursorX(xStartPos + nPrologWidth);
 
 }
 

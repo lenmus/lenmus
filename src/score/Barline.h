@@ -45,6 +45,7 @@ public:
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
+    void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight);
     wxBitmap* GetBitmap(double rScale);
     void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
                          const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels);

@@ -100,6 +100,7 @@ public:
     bool IsBeamed() const { return m_fBeamed; }
     EBeamType GetBeamType(int level) { return m_BeamInfo[level].Type; }
     void SetBeamType(int level, EBeamType type) { m_BeamInfo[level].Type = type; }
+	inline lmBeam* GetBeam() { return m_pBeam; }
 
     //methods related to tuplets
     void SetTupletBracket(lmTupletBracket* pTB) { m_pTupletBracket = pTB; }
@@ -116,6 +117,8 @@ protected:
     wxString GetLDPNoteType();
     lmLUnits DrawDot(bool fMeasuring, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos, 
                      wxColour colorC, bool fUseFont);
+    lmLUnits AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper, lmLUnits xPos, lmLUnits yPos, 
+                         wxColour colorC);
         
         //
         // member variables

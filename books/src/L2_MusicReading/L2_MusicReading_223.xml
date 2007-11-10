@@ -14,7 +14,7 @@
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
-        (Metrica 6 8 NoVisible)
+        (Metrica 6 8 noVisible)
            (n * c)(n * n l)(n * n)(n * c)(Barra Doble))
         (c (n * n)(n * c l)(n * n.)(Barra Final))
     </music>

@@ -26,6 +26,9 @@
 #pragma interface "Chord.cpp"
 #endif
 
+class lmBox;
+class lmShapeNote;
+
 class lmChord
 {
 public:
@@ -42,9 +45,11 @@ public:
     void SetStemDirection(bool fStemDown);
     void DrawStem(bool fMeasuring, lmPaper* pPaper, wxColour colorC, wxFont* pFont,
                   lmVStaff* pVStaff, int nStaff);
-    void ComputeLayout(lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC);
+    void AddStemShape(lmCompositeShape* pCS, lmPaper* pPaper, wxColour colorC,
+					  wxFont* pFont, lmVStaff* pVStaff, int nStaff);
+    void LayoutNoteHeads(lmShapeNote* pNS, lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC);
 
-    //debug
+	//debug
     wxString Dump();
 
 

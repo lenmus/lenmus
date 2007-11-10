@@ -29,7 +29,8 @@
 extern lmColors* g_pColors;
 
 // defined in lmScoreView.cpp
-extern bool gfDrawSelRec;        //draw selection rectangles around staff objects
+extern bool g_fDrawSelRect;     //draw selection rectangles around staff objects
+extern bool g_fDrawBounds;      //draw bounds rectangle
 
 //some definitions for canvas->draw methods
 #define DO_MEASURE true

@@ -25,7 +25,7 @@ by using 16th notes:</para>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
-        (Metrica 2 4 NoVisible)(n * n)(Barra Simple))
+        (Metrica 2 4 noVisible)(n * n)(Barra Simple))
         (c (n * c g+)(n * c g-)(Barra Simple))
         (c (n * n)(Barra Simple))
         (c (n * s g+)(n * s)(n * s)(n * s g-)(Barra Simple))
@@ -46,7 +46,7 @@ the same way, reduced to 2/3 their original duration.</para>
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
-        (Metrica 3 4 NoVisible)(n * c g+)(n * c g-)(Barra Simple))
+        (Metrica 3 4 noVisible)(n * c g+)(n * c g-)(Barra Simple))
         (c (n * c g+ t3)(n * c)(n * c g- t-)(Barra Simple))
         (c (n * n)(Barra Final))
     </music>
@@ -59,7 +59,7 @@ the same way, reduced to 2/3 their original duration.</para>
     <score_type>short</score_type>
     <control_play></control_play>
     <music>
-        (Metrica 2 4 NoVisible)(n * c g+)(n * c g-))
+        (Metrica 2 4 noVisible)(n * c g+)(n * c g-))
         (c (n * c g+ t3)(n * c)(n * c g- t-)(Barra Simple))
         (c (n * c g+)(n * c g-))
         (c (n * c g+ t3)(n * c)(n * c g- t-)(Barra Simple))

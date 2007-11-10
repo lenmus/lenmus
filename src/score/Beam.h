@@ -40,17 +40,24 @@ public:
     lmBeam(lmNoteRest* pNotePrev);
     ~lmBeam();
 
-    void    Include(lmNoteRest* pNR);
-    void    Remove(lmNoteRest* pNR);
-    int     NumNotes();
-    void    ComputeStemsDirection();
-    void    TrimStems();
-    void    DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits uBeamSpacing,
+    void Include(lmNoteRest* pNR);
+    void Remove(lmNoteRest* pNR);
+    int NumNotes();
+    void ComputeStemsDirection();
+    void TrimStems();
+    void DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits uBeamSpacing,
                           wxColour color);
+    void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
+	void OnNoteMoved(lmNoteRest* pNR, lmLUnits uLeft);
 
 
 private:
     void DrawBeamSegment(lmPaper* pPaper, bool fStemDown,
+                         lmLUnits uxStart, lmLUnits uyStart,
+                         lmLUnits uxEnd, lmLUnits uyEnd, lmLUnits uThickness,
+                         lmNote* pStartNote, lmNote* pEndNote,
+                         wxColour color);
+    void AddBeamSegmentShape(lmCompositeShape* pCS, lmPaper* pPaper, bool fStemDown,
                          lmLUnits uxStart, lmLUnits uyStart,
                          lmLUnits uxEnd, lmLUnits uyEnd, lmLUnits uThickness,
                          lmNote* pStartNote, lmNote* pEndNote,

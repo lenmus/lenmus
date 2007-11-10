@@ -30,6 +30,7 @@
 #pragma hdrstop
 #endif
 
+#include "../app/global.h"
 #include "GMObject.h"
 #include "../app/Paper.h"
 #include "../score/StaffObj.h"
@@ -67,7 +68,7 @@ bool lmGMObject::ContainsPoint(lmUPoint& pointL)
 
 }
 
-void lmGMObject::DrawBoundsRectangle(lmPaper* pPaper, wxColour color)
+void lmGMObject::DrawBounds(lmPaper* pPaper, wxColour color)
 {
     //draw a border around instrSlice region
     pPaper->SketchRectangle(m_uBoundsTop,
@@ -76,7 +77,30 @@ void lmGMObject::DrawBoundsRectangle(lmPaper* pPaper, wxColour color)
 
 }
 
+wxString lmGMObject::DumpBounds()
+{
+    return wxString::Format(_T("Bounds=(%.2f, %.2f, %.2f, %.2f)"),
+        	m_uBoundsTop.x, m_uBoundsTop.y,
+            m_uBoundsBottom.x - m_uBoundsTop.x, m_uBoundsBottom.y - m_uBoundsTop.y);
+}   
 
+void lmGMObject::NormaliceBoundsRectangle()
+{
+	// Ensure that TopLeft point is at left-top of BottomRight point
+
+	if (m_uBoundsBottom.x < m_uBoundsTop.x)
+	{
+		lmLUnits uxMin = m_uBoundsBottom.x;
+		m_uBoundsBottom.x = m_uBoundsTop.x;
+		m_uBoundsTop.x = uxMin;
+	}
+	if (m_uBoundsBottom.y < m_uBoundsTop.y)
+	{
+		lmLUnits uyMin = m_uBoundsBottom.y;
+		m_uBoundsBottom.y = m_uBoundsTop.y;
+		m_uBoundsTop.y = uyMin;
+	}
+}
 
 
 //========================================================================================
@@ -90,10 +114,31 @@ lmBox::lmBox(lmEGMOType nType) : lmGMObject(nType)
 
 lmBox::~lmBox()
 {
+    //delete shapes collection
+    for (int i=0; i < (int)m_Shapes.size(); i++)
+    {
+        delete m_Shapes[i];
+    }
+    m_Shapes.clear();
 }
 
+void lmBox::AddShape(lmShape* pShape)
+{
+    m_Shapes.push_back(pShape);
+}
 
+lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
+{
+    //loop to look up in the shapes collection
+	for(int i=0; i < (int)m_Shapes.size(); i++)
+    {
+        if (m_Shapes[i]->ContainsPoint(pointL))
+			return m_Shapes[i];    //found
+    }
 
+    // no shape found.
+    return (lmShape*)NULL;      
+}
 
 //========================================================================================
 // Implementation of class lmShape: any renderizable object, such as a line,
@@ -101,14 +146,21 @@ lmBox::~lmBox()
 //========================================================================================
 
 
-lmShape::lmShape(lmEGMOType nType, lmObject* pOwner)
+lmShape::lmShape(lmEGMOType nType, lmObject* pOwner, wxString sName)
 	: lmGMObject(nType)
 {
 	m_pOwner = pOwner;
+    m_sShapeName = sName;
 }
 
 lmShape::~lmShape()
 {
+	//delete attachment data
+	for(int i=0; i < (int)m_cAttachments.size(); i++)
+    {
+		delete m_cAttachments[i];
+    }
+
 }
 
 
@@ -132,15 +184,74 @@ bool lmShape::Collision(lmShape* pShape)
     return rect1.Intersects( pShape->GetBounds() );
 }
 
+void lmShape::RenderCommon(lmPaper* pPaper)
+{
+	RenderCommon(pPaper, g_pColors->ScoreSelected());
+}
 
+void lmShape::RenderCommon(lmPaper* pPaper, wxColour colorC)
+{
+    // Code common to all shapes renderization. Must be invoked after specific code at
+    // each shape renderization method
 
+    // draw selection rectangle
+    //TODO: remove lmUPoint parameter when old shapes, relative positioned, removed
+    if (g_fDrawSelRect)      // || m_pOwner->IsSelected() )
+        DrawSelRectangle(pPaper, lmUPoint(0.0, 0.0), colorC);
+
+    if (g_fDrawBounds)
+        DrawBounds(pPaper, colorC);
+}
+            
+wxString lmShape::DumpSelRect()
+{
+    return wxString::Format(_T("SelRect=(%.2f, %.2f, %.2f, %.2f)"),
+        	m_uSelRect.x, m_uSelRect.y, m_uSelRect.width, m_uSelRect.height);     
+
+}   
+
+void lmShape::ShiftBoundsAndSelRec(lmLUnits xIncr, lmLUnits yIncr)
+{
+	// Auxiliary method to be used by derived classes to perform common actions when the
+	// shape is shifted    
+	
+	m_uSelRect.x += xIncr;		//AWARE: As it is a rectangle, changing its origin does not change
+    m_uSelRect.y += yIncr;		//       its width/height. So no need to adjust bottom right point
+
+	m_uBoundsTop.x += xIncr;
+	m_uBoundsBottom.x += xIncr;
+	m_uBoundsTop.y += yIncr;
+	m_uBoundsBottom.y += yIncr;
+}
+
+int lmShape::Attach(lmShape* pShape, lmEAttachType nTag)
+{
+	lmAtachPoint* pData = new lmAtachPoint;
+	pData->nType = nTag;
+	pData->pShape = pShape;
+
+    m_cAttachments.push_back(pData);
+
+	//return index to attached shape
+	return (int)m_cAttachments.size() - 1;
+
+}
+
+void lmShape::InformAttachedShapes()
+{
+	for(int i=0; i < (int)m_cAttachments.size(); i++)
+    {
+		lmAtachPoint* pData = m_cAttachments[i];
+        pData->pShape->OnAttachmentPointMoved(this, pData->nType);
+    }
+}
 
 //========================================================================================
 // Implementation of class lmSimpleShape
 //========================================================================================
 
-lmSimpleShape::lmSimpleShape(lmEGMOType nType, lmObject* pOwner)
-	: lmShape(nType, pOwner)
+lmSimpleShape::lmSimpleShape(lmEGMOType nType, lmObject* pOwner, wxString sName)
+	: lmShape(nType, pOwner, sName)
 {
 }
 
@@ -169,8 +280,8 @@ void lmSimpleShape::Shift(lmLUnits xIncr, lmLUnits yIncr)
 //========================================================================================
 
 
-lmCompositeShape::lmCompositeShape(lmEGMOType nType, lmObject* pOwner)
-	: lmShape(nType, pOwner)
+lmCompositeShape::lmCompositeShape(lmObject* pOwner, wxString sName, lmEGMOType nType)
+	: lmShape(nType, pOwner, sName)
 {
     m_fGrouped = true;	//by default all constituent shapes are grouped
 }
@@ -185,16 +296,35 @@ lmCompositeShape::~lmCompositeShape()
     m_Components.clear();
 }
 
-void lmCompositeShape::Add(lmShape* pShape)
+int lmCompositeShape::Add(lmShape* pShape)
 {
     m_Components.push_back(pShape);
 
-    ////compute new selection rectangle by union of individual selection rectangles
-    //m_uSelRect.Union(pShape->GetSelRectangle());
+	if (m_Components.size() == 1)
+	{
+		//compute new selection rectangle
+		m_uSelRect = pShape->GetSelRectangle();
 
-    ////! @todo add boundling rectangle to bounds rectangle list
-    //m_uBoundsTop = m_uSelRect.GetTopLeft();
-    //m_uBoundsBottom = m_uSelRect.GetBottomRight();
+		// compute outer rectangle for bounds
+		m_uBoundsTop.x = pShape->GetXLeft();
+		m_uBoundsTop.y = pShape->GetYTop();
+		m_uBoundsBottom.x = pShape->GetXRight();
+		m_uBoundsBottom.y = pShape->GetYBottom();
+	}
+	else
+	{
+		//compute new selection rectangle by union of individual selection rectangles
+		m_uSelRect.Union(pShape->GetSelRectangle());
+
+		// compute outer rectangle for bounds
+		m_uBoundsTop.x = wxMin(m_uBoundsTop.x, pShape->GetXLeft());
+		m_uBoundsTop.y = wxMin(m_uBoundsTop.y, pShape->GetYTop());
+		m_uBoundsBottom.x = wxMax(m_uBoundsBottom.x, pShape->GetXRight());
+		m_uBoundsBottom.y = wxMax(m_uBoundsBottom.y, pShape->GetYBottom());
+	}
+
+	//return index to added shape
+	return (int)m_Components.size() - 1;
 
 }
 
@@ -205,6 +335,8 @@ void lmCompositeShape::Shift(lmLUnits xIncr, lmLUnits yIncr)
     {
         m_Components[i]->Shift(xIncr, yIncr);
     }
+
+	ShiftBoundsAndSelRec(xIncr, yIncr);
 }
 
 wxString lmCompositeShape::Dump(int nIndent)
@@ -212,15 +344,54 @@ wxString lmCompositeShape::Dump(int nIndent)
 	//TODO
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump.append(_T("lmCompositeShape\n"));
+	sDump += wxString::Format(_T("%04d %s: grouped=%s, "), m_nId, m_sShapeName, 
+        (m_fGrouped ? _T("yes") : _T("no")) );
+    sDump += DumpBounds();
+    sDump += _T("\n");
+
+    //dump all its components
+    nIndent++;
+    for (int i=0; i < (int)m_Components.size(); i++)
+    {
+        sDump += m_Components[i]->Dump(nIndent);
+    }
 	return sDump;
 }
 
 void lmCompositeShape::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
 {
+	RenderCommon(pPaper, *wxGREEN);
+
 	//Default behaviour: render all components
     for (int i=0; i < (int)m_Components.size(); i++)
     {
         m_Components[i]->Render(pPaper, uPos, color);
     }
+}
+
+bool lmCompositeShape::ContainsPoint(lmUPoint& pointL)
+{
+    for (int i=0; i < (int)m_Components.size(); i++)
+    {
+        if (m_Components[i]->ContainsPoint(pointL))
+			return true;
+    }
+	return false;
+
+}
+
+bool lmCompositeShape::Collision(lmShape* pShape)
+{
+    for (int i=0; i < (int)m_Components.size(); i++)
+    {
+        if (m_Components[i]->Collision(pShape))
+			return true;
+    }
+	return false;
+}
+
+lmShape* lmCompositeShape::GetShape(int nShape)
+{
+	wxASSERT(nShape < (int)m_Components.size());
+	return m_Components[nShape];
 }

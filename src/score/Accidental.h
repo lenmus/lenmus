@@ -29,33 +29,33 @@
 #include "../graphic/Shapes.h"
 
 
-// An lmAccidental represents an accidental sign associated to a note
+// Helper class:
+//		An lmAccidental represents an accidental sign associated to a note
 
-class lmAccidental : public lmNoteRestObj
+class lmAccidental
 {
 public:
-    lmAccidental(lmNoteRest* pOwner, EAccidentals nType);
+    lmAccidental(lmNote* pOwner, EAccidentals nType);
     ~lmAccidental();
 
-    // overrides for pure virtual methods of base class lmNoteRestObj
-    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
-    void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
-                         lmLUnits xPos, lmLUnits yPos);
-
     lmLUnits GetWidth();
-    void SetAfterspace(lmLUnits nSpace) { m_uAfterSpace = nSpace; }
+    //void SetAfterspace(lmLUnits nSpace) { m_uAfterSpace = nSpace; }
 
-    void Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint uShift);
-    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
+    void Layout(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos);
+	void MoveTo(lmLUnits uxPos, lmLUnits uyPos);
+	lmShape* GetShape() { return m_pShape; }
 
 
 private:
-    void CreateShapes();
+    void CreateShapes(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos);
 
+	lmNote*		    m_pOwner;
     EAccidentals    m_nType;            //accidental type
+	lmStaff*		m_pStaff;			 
     lmLUnits        m_uAfterSpace;
-
-    lmShapeGlyph*   m_pShape[2];        //the shapes to render the accidental
+	lmLUnits        m_uxPos;
+	lmLUnits        m_uyPos;
+    lmShape*		m_pShape;			//the shape to render the accidentals
 
 
 };

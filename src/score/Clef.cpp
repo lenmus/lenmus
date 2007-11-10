@@ -183,46 +183,49 @@ void lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
 	// is marked with tag "//COMPATIBILITY_NO_SHAPES" to simplify future removal.
 	//
 
-	wxLogMessage(_T("[lmClef::LayoutObject]"));
-	DrawObject(DO_MEASURE, pPaper, colorC, fHighlight);
+	// get the shift to the staff on which the clef must be drawn
+	lmLUnits yPos = pPaper->GetCursorY() + m_pVStaff->GetStaffOffset(m_nStaffNum);
+    yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
 
-#if 0		//under development
-
-	//create the shape object
-    lmShapeGlyph* pShape = new lmShapeGlyph(this, GetGlyphIndex(), GetFont());
-	pShape->Measure(pPaper, pStaff, lmUPoint());
+    //create the shape object
+    lmShapeGlyp2* pShape = new lmShapeGlyp2(this, GetGlyphIndex(), GetFont(), pPaper,
+                                            lmUPoint(pPaper->GetCursorX(), yPos), _T("Clef"));
 	pBox->AddShape(pShape);
+    m_pShape2 = pShape;
 
-	//COMPATIBILITY_NO_SHAPES
-	{
-		lmEGlyphIndex nGlyph = GetGlyphIndex();
-		wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
+	// set total width (incremented in one line for after space)
+	lmLUnits nWidth = pShape->GetWidth();
+	m_uWidth = nWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
 
-		// get the shift to the staff on which the clef must be drawn
-		lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
+#if 0	//lmCOMPATIBILITY_NO_SHAPES
 
-		// store glyph position
-		m_uGlyphPos.x = 0;
-		m_uGlyphPos.y = yShift + m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
+    lmEGlyphIndex nGlyph = GetGlyphIndex();
+	wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
 
-		// compute width
-		pPaper->SetFont(*m_pFont);
-		lmLUnits nWidth, nHeight;
-		pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
+	// get the shift to the staff on which the clef must be drawn
+	lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
+    yShift += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
 
-		// store selection rectangle measures and position (relative to m_uPaperPos)
-		m_uSelRect.width = nWidth;
-		m_uSelRect.height = m_pVStaff->TenthsToLogical(
-							aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
-		m_uSelRect.x = m_uGlyphPos.x;
-		m_uSelRect.y = m_uGlyphPos.y + m_pVStaff->TenthsToLogical(
-							aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum );
+    // store glyph position
+	m_uGlyphPos.x = 0;
+	m_uGlyphPos.y = yShift;
 
-		// set total width (incremented in one line for after space)
-		m_uWidth = nWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
-	}
+	// compute width
+	pPaper->SetFont(*m_pFont);
+	lmLUnits nHeight;
+	pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
 
-#endif
+	// store selection rectangle measures and position (relative to m_uPaperPos)
+	m_uSelRect.width = nWidth;
+	m_uSelRect.height = m_pVStaff->TenthsToLogical(
+						aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
+	m_uSelRect.x = m_uGlyphPos.x;
+	m_uSelRect.y = m_uGlyphPos.y + m_pVStaff->TenthsToLogical(
+						aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum );
+
+
+#endif  //lmCOMPATIBILITY_NO_SHAPES
+
 }
 
 // returns the width of the draw (logical units)
@@ -259,6 +262,30 @@ lmLUnits lmClef::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, wxColou
     pPaper->SetTextForeground(colorC);
     pPaper->DrawText(sGlyph, uPos.x, uPos.y + m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum ) );
 
+    return m_uWidth;
+}
+
+lmLUnits lmClef::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
+					  wxColour colorC)
+{
+    // This method is, primarely, to be used when rendering the prolog
+    // Returns the width of the draw
+
+    //lmEGlyphIndex nGlyph = GetGlyphIndex();
+    //wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
+    //pPaper->SetFont(*m_pFont);
+    //pPaper->SetTextForeground(colorC);
+    //pPaper->DrawText(sGlyph, uPos.x, uPos.y + m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum ) );
+	
+	
+	// get the shift to the staff on which the clef must be drawn
+	lmLUnits yPos = uPos.y;	//pPaper->GetCursorY() + m_pVStaff->GetStaffOffset(m_nStaffNum);
+    yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
+
+    //create the shape object
+    lmShapeGlyp2* pShape = new lmShapeGlyp2(this, GetGlyphIndex(), GetFont(), pPaper,
+                                            lmUPoint(uPos.x, yPos), _T("Clef"));
+	pBox->AddShape(pShape);
     return m_uWidth;
 }
 

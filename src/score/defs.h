@@ -37,6 +37,9 @@
 
 #include "wx/gdicmn.h"
 
+#define lmCOMPATIBILITY_NO_SHAPES   1     //Use old code until garphic model totally decoupled
+
+
 //// Types used for portability and legibility
 
 //units
@@ -445,7 +448,7 @@ public:
     float GetBottom() const { return y + height - 1; }
     float GetRight()  const { return x + width - 1; }
 
-    void SetLeft(float left) { x = left; }
+    void MoveShape(float left) { x = left; }
     void SetRight(float right) { width = right - x + 1; }
     void SetTop(float top) { y = top; }
     void SetBottom(float bottom) { height = bottom - y + 1; }
@@ -467,7 +470,7 @@ public:
 
     wxRealPoint GetBottomLeft() const { return wxRealPoint(GetLeft(), GetBottom()); }
     wxRealPoint GetLeftBottom() const { return GetBottomLeft(); }
-    void SetBottomLeft(const wxRealPoint &p) { SetLeft(p.x); SetBottom(p.y); }
+    void SetBottomLeft(const wxRealPoint &p) { MoveShape(p.x); SetBottom(p.y); }
     void SetLeftBottom(const wxRealPoint &p) { SetBottomLeft(p); }
 
     //// operations with rect

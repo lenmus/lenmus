@@ -12,7 +12,7 @@
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
-        (Metrica 6 8 NoVisible)(n * c g+)(n * c)(n * c l g-)(n * n)(n * c))
+        (Metrica 6 8 noVisible)(n * c g+)(n * c)(n * c l g-)(n * n)(n * c))
         (c (n * c g+)(n * c)(n * c l g-)(n * n.)(Barra Final))
     </music>
 </score></para>

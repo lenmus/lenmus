@@ -191,6 +191,20 @@ lmLUnits lmNoteRest::DrawDot(bool fMeasuring, lmPaper* pPaper,
 
 }
 
+lmLUnits lmNoteRest::AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper,
+                                 lmLUnits xPos, lmLUnits yPos, wxColour colorC)
+{
+    //Creates a shape for a dot and adds it to the composite shape
+    //returns the width of the dot
+
+    yPos += m_pVStaff->TenthsToLogical(50, m_nStaffNum);
+    yPos += m_pVStaff->TenthsToLogical(aGlyphsInfo[GLYPH_DOT].GlyphOffset, m_nStaffNum);
+    lmShapeGlyp2* pShape = new lmShapeGlyp2(this, GLYPH_DOT, GetFont(), pPaper,
+                                            lmUPoint(xPos, yPos), _T("Dot"));
+	pCS->Add(pShape);
+    return pShape->GetBounds().GetWidth();
+
+}
 
 //====================================================================================================
 // methods related to associated AuxObjs management

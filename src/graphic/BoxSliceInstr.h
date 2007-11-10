@@ -58,16 +58,22 @@ public:
     lmBoxSliceInstr(lmBoxSlice* pParent, lmInstrument* pInstr);
     ~lmBoxSliceInstr();
 
+	//vstaff slices
     lmBoxSliceVStaff* AddVStaff(lmVStaff* pVStaff);
+	lmBoxSliceVStaff* GetSliceVStaff(int i) const { return m_SlicesVStaff[i]; }
 
-    //drawing
+	//drawing
     void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK);
 
     inline lmInstrument* GetInstrument() const { return m_pInstr; }
     inline int GetNumMeasure() const { return m_pSlice->GetNumMeasure(); }
+    lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
 
 	//positioning and bounds
-    void SetFinalX(lmLUnits xPos);
+    void UpdateXLeft(lmLUnits xLeft);
+    void UpdateXRight(lmLUnits xRight);
+	void SystemXRightUpdated(lmLUnits xRight);
+    void CopyYBounds(lmBoxSliceInstr* pBSI);
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);

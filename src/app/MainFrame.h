@@ -124,6 +124,7 @@ public:
     void OnDebugShowDebugLinks(wxCommandEvent& event);
     void OnDebugShowBorderOnScores(wxCommandEvent& event);
     void OnDebugRecSelec(wxCommandEvent& event);
+    void OnDebugDrawBounds(wxCommandEvent& event);
     void OnDebugTestMidi(wxCommandEvent& event);
     void OnDebugSetTraceLevel(wxCommandEvent& WXUNUSED(event));
     void OnDebugPatternEditor(wxCommandEvent& WXUNUSED(event));

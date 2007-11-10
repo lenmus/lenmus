@@ -47,6 +47,7 @@
 
 #include "vector"
 #include "Score.h"
+#include "../graphic/ShapeBeam.h"
 
 lmBeam::lmBeam(lmNoteRest* pNotePrev)
 {
@@ -91,7 +92,7 @@ int lmBeam::NumNotes()
 }
 
 //!
-//!   This method is invoked during the measurement phase, from the first note of a beamed
+//!   This method is invoked during the layout phase, from the first note of a beamed
 //!   group. Here we precompute some rendering information: stems length, m_fStemsDown
 //!   and position for rests included in the beamed group (m_nPosForRests).
 //!
@@ -220,7 +221,7 @@ void lmBeam::ComputeStemsDirection()
 }
 
 /*! In this method the lenght of note stems in a beamed group is adjusted.
-    During measurement phase all computations, except final trimming of stem' lengths, is
+    During layout phase all computations, except final trimming of stem' lengths, is
     done. Final trimming of stems' length is delayed to MakeUp phase because it is not
     posible to adjust lentghts until the x position of the notes is finally established, and
     this takes place AFTER the measurement phase, once the lines are justified.
@@ -409,6 +410,171 @@ void lmBeam::TrimStems()
 
 }
 
+void lmBeam::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
+{
+    //
+    // This method is only called from lmNote::LayoutObject(), in particular from the last
+    // note of a group of beamed notes. The purpose of this method is to create the shapes
+    // for all the beam lines of the group, and to add them to the received composite shape.
+    //
+
+    //create the beam container shape
+    lmShapeBeam* pBeamShape = new lmShapeBeam(m_pFirstNote, m_fStemsDown, NumNotes());
+    pBox->AddShape(pBeamShape);
+
+	//add the beamed notes
+    wxNoteRestsListNode *pNode;
+	int i = 1;
+    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++)
+    {
+		lmNoteRest* pNote = pNode->GetData();
+		lmShape* pNoteShape = pNote->GetShap2();
+		pBeamShape->AddNoteRest(pNoteShape, pNote->GetBeamInfo());
+
+		//attach the beam to the note
+		pNoteShape->Attach(this, (i==1 ? eGMA_StartNote : 
+									(i==NumNotes() ? eGMA_EndNote : eGMA_MiddleNote)));
+	}
+
+
+	////get staff, for scaling logical units
+ //   lmVStaff* pVStaff = m_pFirstNote->GetVStaff();
+ //   int nStaff = m_pFirstNote->GetStaffNum();
+ //   lmStaff* pStaff = pVStaff->GetStaff(nStaff);
+
+	////geometry values.
+ //   //DOC: Beam spacing
+ //   //
+ //   //  according to http://www2.coloradocollege.edu/dept/mu/Musicpress/engraving.html
+ //   //  distance between primary and secondary beams should be 1/4 space (2.5 tenths)
+ //   //  But if I use 3 tenths (2.5 up rounding) beam spacing is practicaly
+ //   //  invisible. In pictures displayed in the above mentioned www page, spacing
+ //   //  is about 1/2 space, not 1/4 space. So I will use 5 tenths.
+ //   //  So the number to put in next statement is 9:
+ //   //      4 for beam thikness + 5 for beams spacing
+ //   //
+	////TODO: User options
+	////TODO: Move to shape?
+	//lmLUnits uThickness = pStaff->TenthsToLogical(5.0);
+ //   lmLUnits uBeamSpacing = pStaff->TenthsToLogical(9.0);
+
+ //   //create the beam container shape
+ //   lmCompositeShape* pBeamShape = new lmCompositeShape(m_pFirstNote, _T("Beam"));
+ //   pBox->AddShape(pBeamShape);
+	//
+	//lmLUnits uxStart=0, uxEnd=0, uyStart=0, uyEnd=0; // start and end points for a segment
+ //   lmLUnits uxPrev=0, uyPrev=0, uxCur=0, uyCur=0;   // points for previous and current note
+ //   lmLUnits uyShift = 0;                         // shift, to separate a beam line from the previous one
+ //   lmNote* pNote = (lmNote*)NULL;          // note being processed
+ //   bool fStemDown = false;
+ //   wxNoteRestsListNode *pNode;
+ //   bool fStart = false, fEnd = false;      // we've got the start/end point.
+ //   bool fForwardPending = false;           //finish a Forward hook in prev note
+ //   lmNote* pStartNote = (lmNote*)NULL;      // origin and destination notes of a beam segment
+ //   lmNote* pEndNote = (lmNote*)NULL;
+
+ //   //! @todo set BeamHookSize equal to notehead width and allow for customization.
+
+ //   for (int iLevel=0; iLevel < 6; iLevel++) {
+ //       fStart = false;
+ //       fEnd = false;
+ //       for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext())
+ //       {
+ //           pNote = (lmNote*)pNode->GetData();
+ //           fStemDown = pNote->StemGoesDown();
+
+ //           //compute current position to optimize
+ //           uxCur = pNote->GetXStemLeft();
+ //           uyCur = ComputeYPosOfSegment(pNote, fStemDown, uyShift);
+
+ //           //Let's check if we have to finish a forward hook in prev. note
+ //           if (fForwardPending) {
+ //               //! @todo set forward hook equal to notehead width and allow for customization.
+ //               uxEnd = uxPrev + (uxCur-uxPrev)/3;
+ //               uyEnd = uyPrev + (uyCur-uyPrev)/3;
+ //               DrawBeamSegment(pPaper, fStemDown, uxStart, uyStart, uxEnd, uyEnd, uThickness,
+ //                       pStartNote, pEndNote, color);
+ //               fForwardPending = false;
+ //           }
+
+ //           // now we can deal with current note
+ //           switch (pNote->GetBeamType(iLevel)) {
+ //               case eBeamBegin:
+ //                   //start of segment. Compute initial point
+ //                   fStart = true;
+ //                   uxStart = uxCur;
+ //                   uyStart = uyCur;
+ //                   pStartNote = pNote;
+ //                   break;
+
+ //               case eBeamEnd:
+ //                   // end of segment. Compute end point
+ //                   fEnd = true;
+ //                   uxEnd = uxCur;
+ //                   uyEnd = uyCur;
+ //                   pEndNote = pNote;
+ //                   break;
+
+ //               case eBeamForward:
+ //                   // start of segment. Mark that a forward hook is pending and
+ //                   // compute initial point
+ //                   fForwardPending = true;
+ //                   uxStart = uxCur;
+ //                   uyStart = uyCur;
+ //                   pStartNote = pNote;
+ //                   break;
+
+ //               case eBeamBackward:
+ //                   // end of segment. compute start and end points
+ //                   uxEnd = uxCur;
+ //                   uyEnd = uyCur;
+ //                   pEndNote = pNote;
+ //                   //! @todo set backward hook equal to notehead width and allow for customization.
+ //                   uxStart = uxPrev + (2*(uxCur-uxPrev))/3;
+ //                   uyStart = uyPrev + (2*(uyCur-uyPrev))/3;
+ //                   fStart = true;      //mark 'segment ready to be drawn'
+ //                   fEnd = true;
+ //                  break;
+
+ //               case eBeamContinue:
+ //               case eBeamNone:
+ //                   // nothing to do.
+ //                   break;
+
+ //               default:
+ //                   wxASSERT(false);
+ //           }
+
+ //           // if we have data to draw a segment, draw it
+ //           if (fStart && fEnd) {
+ //               lmLUnits uStemWidth = pEndNote->GetStemThickness();
+ //               //DrawBeamSegment(pPaper, fStemDown,
+ //               //    uxStart, uyStart, uxEnd + uStemWidth, uyEnd, uThickness,
+ //               //    pStartNote, pEndNote, color);
+ //               AddBeamSegmentShape(pBeamShape, pPaper, fStemDown,
+ //                   uxStart, uyStart, uxEnd + uStemWidth, uyEnd, uThickness,
+ //                   pStartNote, pEndNote, color);
+ //               fStart = false;
+ //               fEnd = false;
+ //               pStartNote = (lmNote*)NULL;
+ //               pEndNote = (lmNote*)NULL;
+ //           }
+
+ //           // save position of current note
+ //           uxPrev = uxCur;
+ //           uyPrev = uyCur;
+ //       }
+
+ //       // displace y coordinate for next beamline
+ //       uyShift += (fStemDown ? - uBeamSpacing : uBeamSpacing);
+ //   }
+
+}
+
+void lmBeam::OnNoteMoved(lmNoteRest* pNR, lmLUnits uLeft)
+{
+}
+
 void lmBeam::DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits uBeamSpacing,
                            wxColour color)
 {
@@ -535,6 +701,8 @@ lmLUnits lmBeam::ComputeYPosOfSegment(lmNote* pNote, bool fStemDown, lmLUnits uy
         else {
             lmNote* pMaxNote = (pNote->GetChord())->GetMaxNote();
             uyPos = pMaxNote->GetYStem() - pNote->GetStemLength();
+            //wxLogMessage(_T("[lmBeam::ComputeYPosOfSegment] uyPos=%.2f, yStem=%.2f, stemLength=%.2f"),
+            //    uyPos, pMaxNote->GetYStem(), pNote->GetStemLength());
         }
     }
     else {
@@ -574,3 +742,36 @@ void lmBeam::DrawBeamSegment(lmPaper* pPaper, bool fStemDown,
     //    uxStart, uyStart, uxEnd, uyEnd, uThickness, yStartIncr, yEndIncr, (fStemDown ? _T("down") : _T("up")) );
 
 }
+
+void lmBeam::AddBeamSegmentShape(lmCompositeShape* pCS, lmPaper* pPaper, bool fStemDown,
+                                 lmLUnits uxStart, lmLUnits uyStart,
+                                 lmLUnits uxEnd, lmLUnits uyEnd, lmLUnits uThickness,
+                                 lmNote* pStartNote, lmNote* pEndNote, wxColour color)
+{
+    //check to see if the beam segment has to be splitted in two systems
+    if (pStartNote && pEndNote) {
+        lmUPoint paperPosStart = pStartNote->GetOrigin();
+        lmUPoint paperPosEnd = pEndNote->GetOrigin();
+        if (paperPosEnd.y != paperPosStart.y) {
+            //if start note paperPos Y is not the same than end note paperPos Y the notes are
+            //in different systems. Therefore, the beam must be splitted. Let's do it
+            wxLogMessage(_T("***** BEAM SPLIT ***"));
+            //TODO
+            //lmLUnits xLeft = pPaper->GetLeftMarginXPos();
+            //lmLUnits xRight = pPaper->GetRightMarginXPos();
+            return; //to avoid rendering bad lines across the score. It is less noticeable
+        }
+    }
+
+    //create the shape for the segment
+    //pPaper->SolidLine(uxStart, uyStart, uxEnd, uyEnd, uThickness, eEdgeVertical, color);
+    lmShapeLin2* pLine = 
+        new lmShapeLin2(pCS->Owner(), uxStart, uyStart, uxEnd, uyEnd, uThickness, 0.0,
+                        color, _T("Stem"), eEdgeVertical);
+	pCS->Add(pLine);
+
+    //wxLogMessage(_T("[lmBeam::DrawBeamSegment] uxStart=%d, uyStart=%d, uxEnd=%d, uyEnd=%d, uThickness=%d, yStartIncr=%d, yEndIncr=%d, fStemDown=%s"),
+    //    uxStart, uyStart, uxEnd, uyEnd, uThickness, yStartIncr, yEndIncr, (fStemDown ? _T("down") : _T("up")) );
+
+}
+

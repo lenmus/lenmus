@@ -102,18 +102,18 @@ const lmGlyph aGlyphsInfo[] =
     //
     //                       sel rectangle
     //       Glyph   offset  shift   height
-    lmGlyph(_T('o'), -20,      0,      0,  2956, 1570,    _T("Eight note flag down")) ,
-    lmGlyph(_T('n'), -20,      0,      0,  2606, 1310,    _T("16th note flag down")) ,
-    lmGlyph(_T('m'), -20,      0,      0,  2586,  912,    _T("32nd note flag down")) ,
-    lmGlyph(_T('l'), -20,      0,      0,  2435,  545,    _T("64th note flag down")) ,
-    lmGlyph(_T('k'), -20,      0,      0,  2437,  180,    _T("128th note flag down")) ,
-    lmGlyph(_T('j'), -20,      0,      0,  2434, -180,    _T("256th note flag down")) ,
-    lmGlyph(_T('f'), -60,      0,      0,   508, -1043,    _T("Eight note flag up")) ,
-    lmGlyph(_T('e'), -60,      0,      0,   890, -945,    _T("16th note flag up")) ,
-    lmGlyph(_T('d'), -60,      0,      0,  1120, -727,    _T("32nd note flag up")) ,
-    lmGlyph(_T('c'), -60,      0,      0,  1541, -770,    _T("64th note flag up")),
-    lmGlyph(_T('b'), -60,      0,      0,  1901, -756,    _T("128th note flag up")) ,
-    lmGlyph(_T('a'), -60,      0,      0,  2280, -766,    _T("256th note flag up")),
+    lmGlyph(_T('o'), -20,      1,     29,  2956, 1570,    _T("Eight note flag down")) ,
+    lmGlyph(_T('n'), -20,     10,     30,  2606, 1310,    _T("16th note flag down")) ,
+    lmGlyph(_T('m'), -20,     11,     39,  2586,  912,    _T("32nd note flag down")) ,
+    lmGlyph(_T('l'), -20,     16,     44,  2435,  545,    _T("64th note flag down")) ,
+    lmGlyph(_T('k'), -20,     12,     48,  2437,  180,    _T("128th note flag down")) ,
+    lmGlyph(_T('j'), -20,     14,     56,  2434, -180,    _T("256th note flag down")) ,
+    lmGlyph(_T('f'), -60,     50,     30,   508, -1043,    _T("Eight note flag up")) ,
+    lmGlyph(_T('e'), -60,     40,     35,   890, -945,    _T("16th note flag up")) ,
+    lmGlyph(_T('d'), -60,     30,     43,  1120, -727,    _T("32nd note flag up")) ,
+    lmGlyph(_T('c'), -60,     20,     53,  1541, -770,    _T("64th note flag up")),
+    lmGlyph(_T('b'), -60,     15,     58,  1901, -756,    _T("128th note flag up")) ,
+    lmGlyph(_T('a'), -60,     10,     65,  2280, -766,    _T("256th note flag up")),
 
 //accidentals
 

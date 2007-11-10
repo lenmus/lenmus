@@ -172,7 +172,7 @@ lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
             delete pIT;
 
             pBoxSystem->SetNumMeasures(--nAbsMeasure, m_pScore);
-            pBoxSystem->SetFinalX( pPaper->GetCursorX() + nSpaceAfterBarline );
+            pBoxSystem->UpdateXRight( pPaper->GetCursorX() + nSpaceAfterBarline );
             pBoxSystem->SetIndent(0);
 
         }
@@ -472,21 +472,46 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         }
         //dbg ------------------------------------------------------------------------------
 
-        //Store information about this system
+
+        //-------------------------------------------------------------------------------
+        //Step 4: Do final layout of aux objects
+		//
+		//During layout phase it is not possible to set some measurements that depend on
+		//the final x position of two or more notes. For example:
+		//	- Beams: it is not posible to adjust the lenght of note stems in a beamed 
+		//		group until the x position of the notes is finally established.
+		//	- Ties: start and end points can not be fixed until their parent notes are
+		//		fixed.
+        //-------------------------------------------------------------------------------
+        //when reaching this point all StaffObjs locations are their final locations.
+
+        //Update information about this system
         pBoxSystem->SetNumMeasures(m_nMeasuresInSystem, m_pScore);
         if (fThisIsLastSystem && fStopStaffLinesAtFinalBarline) {
             //this is the last system and it has been requested to stop staff lines
             //in last measure. So, set final x so staff lines go to final bar line
             lmLUnits xPos;
             if (pVStaff->GetXPosFinalBarline(&xPos))
-                pBoxSystem->SetFinalX( xPos - 1 );
+                pBoxSystem->UpdateXRight( xPos - 1 );
             else
-                pBoxSystem->SetFinalX( pPaper->GetRightMarginXPos() );
+                pBoxSystem->UpdateXRight( pPaper->GetRightMarginXPos() );
         }
         else {
             //staff lines go to the rigth margin
-            pBoxSystem->SetFinalX( pPaper->GetRightMarginXPos() );
+            pBoxSystem->UpdateXRight( pPaper->GetRightMarginXPos() );
         }
+
+	    //Add the shape for the initial barline that joins all staffs in a system
+	    if (m_pScore->GetOptionBool(_T("Staff.DrawLeftBarline")) )
+	    {
+		    lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
+            lmShapeLin2* pLine = 
+                new lmShapeLin2(pVStaff, pBoxSystem->GetXLeft(), pBoxSystem->GetYTop(),
+						    pBoxSystem->GetXLeft(), pBoxSystem->GetYBottom(),
+						    uLineThickness, 0.0, *wxBLACK, _T("System joining line"),
+							eEdgeHorizontal);
+	        pBoxSystem->AddShape(pLine);
+	    }
 
         //update lmBoxSlices with the final measures sizes
 		lmLUnits xEnd = m_oTimepos[1].GetStartOfBarPosition();
@@ -495,7 +520,8 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             lmLUnits xStart = xEnd;
             xEnd = xStart + m_nMeasureSize[iRel];
             lmBoxSlice* pBoxSlice = pBoxSystem->GetSlice(iRel);
-            pBoxSlice->UpdateSize(xStart, xEnd);
+			pBoxSlice->UpdateXLeft(xStart);
+			pBoxSlice->UpdateXRight(xEnd);
         }
 
         // compute system height
@@ -546,7 +572,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //Store information about this system
             pBoxSystem->SetNumMeasures(0, m_pScore);
             //staff lines go to the rigth margin
-            pBoxSystem->SetFinalX( pPaper->GetRightMarginXPos() );
+            pBoxSystem->UpdateXRight( pPaper->GetRightMarginXPos() );
 
             // compute system height
             if (nSystem == 1) {
@@ -644,8 +670,13 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
 
     // create an empty BoxSlice to contain this measure column
     lmBoxSlice* pBoxSlice = pBoxSystem->AddSlice(nAbsMeasure);
+	bool fUpdateSlice = true;
+
+	//initial conditions
+	bool fFirstStaffInSystem = true;
 
     // explore all instruments in the score
+	lmLUnits yBottomLeft = 0;
     for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
     {
         //verify that program limits are observed
@@ -660,6 +691,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
 
         // create an empty BoxSliceInstr to contain this instrument slice
         lmBoxSliceInstr* pBSI = pBoxSlice->AddInstrument(pInstr);
+		bool fUpdateInstr = true;
 
         //loop. For current instrument, explore all its staves to size the measure
         //column nAbsMeasure. All collected information is stored in m_oTimepos[nRelMeasure]
@@ -687,8 +719,35 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
 			{
 				// Final xPos is yet unknown, so I use zero.
 				// It will be updated when the system is completed
-				pVStaff->DrawStaffLines2(pBSV, xPaperPos, 0.0, yPaperPos);
+				yBottomLeft = pVStaff->DrawStaffLines2(pBSV, xPaperPos, 0.0, yPaperPos);
 			}
+
+			//save start position of this system, slice, instrument and vstaff
+			if (fFirstStaffInSystem)
+			{
+				//start of system
+				fFirstStaffInSystem = false;
+				pBoxSystem->SetXLeft(xPaperPos);
+				pBoxSystem->SetYTop(yPaperPos);
+			}
+			if (fUpdateSlice)
+			{
+				//start of slice
+				pBoxSlice->SetXLeft(xPaperPos);
+				pBoxSlice->SetYTop(yPaperPos);
+				fUpdateSlice = false;
+			}
+			if (fUpdateInstr)
+			{
+				//start of instrument
+				pBSI->SetXLeft(xPaperPos);
+				pBSI->SetYTop(yPaperPos);
+				fUpdateInstr = false;
+			}
+			//start of VStaff slice
+			pBSV->SetXLeft(xPaperPos);
+			pBSV->SetYTop(yPaperPos);
+			pBSV->SetYBottom(yBottomLeft);
 
             //The prolog must be rendered on each system, but the
             //matching StaffObjs only exist in the first system. Therefore:
@@ -697,8 +756,10 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             //2. but for the other systems we must force the rendering of the prolog because there
             //   are no StaffObjs representing the prolog.
             if (nSystem != 1 && nRelMeasure == 1) {
-                pVStaff->DrawProlog(DO_MEASURE, nAbsMeasure, (nSystem == 1), pPaper);
+                //pVStaff->DrawProlog(DO_MEASURE, nAbsMeasure, (nSystem == 1), pPaper);
                 ///*** create a BoxProlog object and add it to this BoxSliceVStaff
+				pPaper->SetCursorX(xPaperPos);
+				pVStaff->AddPrologShapes(pBSV, nAbsMeasure, (nSystem == 1), pPaper);
             }
 
             fNewSystem |= SizeMeasure(pBSV, pVStaff, nAbsMeasure, nRelMeasure, pPaper);
@@ -715,6 +776,8 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
         }    // next lmVStaff
 
         ///*** Update measures of this BoxInstrSlice
+		pBSI->SetYBottom(yBottomLeft);
+		pBoxSlice->SetYBottom(yBottomLeft);
 
     }    // next lmInstrument
 

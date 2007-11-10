@@ -67,12 +67,16 @@ enum lmEGMOType
     // shapes
     eGMO_Shape = eGMO_LastBox,
 	eGMO_ShapeStaff = eGMO_Shape,
-	eGMO_ShapeLine,
-	eGMO_ShapeGlyph,
-	eGMO_ShapeText,
+    eGMO_ShapeBarline,
+	eGMO_ShapeBeam,
 	eGMO_ShapeComposite,
+	eGMO_ShapeGlyph,
+	eGMO_ShapeLine,
+	eGMO_ShapeMultiAttached,
+	eGMO_ShapeNote,
+	eGMO_ShapeText,
+	eGMO_ShapeTuplet,
 };
-
 
 
 class lmGMObject : public wxObject
@@ -104,13 +108,17 @@ public:
 
 
     //rendering
-    virtual void DrawBoundsRectangle(lmPaper* pPaper, wxColour color);
+    virtual void DrawBounds(lmPaper* pPaper, wxColour color);
 
 	//debugging
     virtual wxString Dump(int nIndent)=0;
 
 
 protected:
+    wxString DumpBounds();
+	void NormaliceBoundsRectangle();
+
+
 	enum {
 		lmINDENT_STEP = 3,		//for Dump() method
 	};
@@ -131,10 +139,14 @@ protected:
 //An abstract container for the score graphical model
 //abstract class to derive all lmBoxXXXXX objects
 
+class lmShape;
+
 class lmBox : public lmGMObject
 {
 public:
     virtual ~lmBox();
+
+    virtual void AddShape(lmShape* pShape);
 
     //implementation of virtual methods from base class
     virtual wxString Dump(int nIndent)=0;
@@ -142,6 +154,10 @@ public:
 
 protected:
     lmBox(lmEGMOType m_nType);
+    lmShape* FindShapeAtPosition(lmUPoint& pointL);
+
+
+	std::vector<lmShape*>	m_Shapes;		//list of contained shapes
 
 
 
@@ -153,6 +169,15 @@ protected:
 // An abstract class representing any renderizable object, such as a line,
 // a glyph, a note head, an arch, etc.
 // From this class to derive all lmShapeXXXXX objects
+
+enum lmEAttachType
+{
+    eGMA_StartNote,
+	eGMA_MiddleNote,
+	eGMA_EndNote,
+};
+
+
 
 class lmShape : public lmGMObject
 {
@@ -166,24 +191,48 @@ public:
     void DrawSelRectangle(lmPaper* pPaper, lmUPoint uPos, wxColour colorC = *wxBLUE);
     lmURect GetSelRectangle() const { return m_uSelRect; }
 
-    bool Collision(lmShape* pShape);
+    virtual bool Collision(lmShape* pShape);
     virtual lmLUnits GetWidth() { return m_uBoundsBottom.x - m_uBoundsTop.x; }
 
     //methods related to position
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr) = 0;
+	virtual void OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag) {}
+
+	//shapes can be attached to other shapes
+	int Attach(lmShape* pShape, lmEAttachType nType);
 
     //Debug related methods
     virtual wxString Dump(int nIndent) = 0;
+    wxString DumpSelRect();
+
+    //info
+    inline lmObject* Owner() { return m_pOwner; }
 
 
 protected:
-    lmShape(lmEGMOType m_nType, lmObject* pOwner);
+    lmShape(lmEGMOType m_nType, lmObject* pOwner, wxString sName=_T("Shape"));
+    void RenderCommon(lmPaper* pPaper, wxColour colorC);
+    void RenderCommon(lmPaper* pPaper);
+	void ShiftBoundsAndSelRec(lmLUnits xIncr, lmLUnits yIncr);
+	void InformAttachedShapes();
+
 
 	lmObject*	m_pOwner;		//associated owner object (in lmScore representation)
+    wxString    m_sShapeName;
 
-	//selection rectangle (logical units, relative to renderization point)
-	lmURect     m_uSelRect;     
+	//selection rectangle (relative to paper origin)
+	lmURect		m_uSelRect;   
 
+	//Size: defines the height and width of the space occupied by the shape.
+	lmUSize		m_uSize;
+
+	typedef struct lmAtachPoint_Struct {
+		lmShape*		pShape;
+		lmEAttachType	nType;
+	} lmAtachPoint;
+
+	//list of shapes attached to this one
+	std::vector<lmAtachPoint*>	m_cAttachments;
 
 
 };
@@ -201,7 +250,7 @@ public:
 
 
 protected:
-    lmSimpleShape(lmEGMOType m_nType, lmObject* pOwner);
+    lmSimpleShape(lmEGMOType m_nType, lmObject* pOwner, wxString sName=_T("SimpleShape"));
 
 
 };
@@ -210,19 +259,26 @@ protected:
 class lmCompositeShape : public lmShape
 {
 public:
-    lmCompositeShape(lmEGMOType m_nType, lmObject* pOwner);
+    lmCompositeShape(lmObject* pOwner, wxString sName = _T("CompositeShape"),
+                     lmEGMOType nType = eGMO_ShapeComposite);
     virtual ~lmCompositeShape();
 
     //dealing with components
-    virtual void Add(lmShape* pShape);
+    virtual int Add(lmShape* pShape);
+	inline int GetNumComponents() const { return (int)m_Components.size(); }
 
     //virtual methods from base class
     virtual wxString Dump(int nIndent);
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
 	virtual void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK);
 
+	//overrides
+    bool ContainsPoint(lmUPoint& pointL);
+    bool Collision(lmShape* pShape);
+
 
 protected:
+	lmShape* GetShape(int nShape);
 
     bool					m_fGrouped;		//its component shapes must be rendered as a single object
 	std::vector<lmShape*>	m_Components;	//list of its constituent shapes

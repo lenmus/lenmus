@@ -101,9 +101,10 @@ public:
     // rendering methods
     void DrawStaffLines(lmPaper* pPaper, lmLUnits xFrom, lmLUnits xTo,
                         lmLUnits* pyLinTop, lmLUnits* pyLinBottom);
-    void DrawStaffLines2(lmBoxSliceVStaff* pBox, lmLUnits xFrom, lmLUnits xTo,
-						lmLUnits yPos);
+    lmLUnits DrawStaffLines2(lmBoxSliceVStaff* pBox, lmLUnits xFrom, lmLUnits xTo,
+						     lmLUnits yPos);
     void DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPaper* pPaper);
+	void AddPrologShapes(lmBoxSliceVStaff* pBSV, int nMeasure, bool fDrawTimekey, lmPaper* pPaper);
     void NewLine(lmPaper* pPaper);
     lmLUnits GetVStaffHeight();
     void SetUpFonts(lmPaper* pPaper);

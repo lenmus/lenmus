@@ -74,7 +74,7 @@ void lmGraphicObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
     }
 
     // draw selection rectangle
-    if (gfDrawSelRec) DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
+    if (g_fDrawSelRect) DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
             
 }
 

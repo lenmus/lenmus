@@ -41,88 +41,46 @@
 // lmAccidental object implementation
 //========================================================================================
 
-lmAccidental::lmAccidental(lmNoteRest* pOwner, EAccidentals nType) :
-    lmNoteRestObj(eST_Accidental, pOwner)
+lmAccidental::lmAccidental(lmNote* pOwner, EAccidentals nType)
 {
-    SetShapeRendered(true);
+	m_pOwner = pOwner;
     m_nType = nType;
-    CreateShapes();
+	m_pStaff = pOwner->GetVStaff()->GetStaff(pOwner->GetStaffNum());
+	//AWARE: Althoug shape pointer is initialized to NULL never assume that there is
+	//a shape if not NULL, as the shape is deleted in the graphic model.
+	m_pShape = (lmShape*)NULL;
+
+	//set up the after space
+    #define ACCIDENTALS_AFTERSPACE  3      //in tenths   @todo user options
+    m_uAfterSpace = m_pStaff->TenthsToLogical(ACCIDENTALS_AFTERSPACE);
 }
 
 lmAccidental::~lmAccidental()
 {
 }
 
-void lmAccidental::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
-                             lmLUnits xPos, lmLUnits yPos)
+void lmAccidental::Layout(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos)
 {
-//    // prepare glyphs and measure them
-//    lmLUnits nOffset, nWidth, nHeight, nShift, nNotUsed;
-//    wxString sGlyphs = GetAccidentalGlyphs(m_nType, &nOffset, &nWidth, &nHeight, &nShift,
-//                                           pVStaff, nStaffNum );
-//    pPaper->GetTextExtent(sGlyphs, &nWidth, &nNotUsed);
-//
-//    // store glyphs position
-//    m_uGlyphPos.x = xPos;
-//    m_uGlyphPos.y = yPos + nOffset;
-//
-//    // store selection rectangle position and size
-//    m_uSelRect.width = nWidth;
-//    m_uSelRect.height = nHeight;
-//    m_uSelRect.x = m_uGlyphPos.x;
-//    m_uSelRect.y = m_uGlyphPos.y + nShift;
-}
-
-void lmAccidental::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint uOffset)
-{
-    //set again the font, just in case the scale has changed
-    wxFont* pFont = m_pOwner->GetFont();
-    m_pShape[0]->SetFont(pFont);
-    if (m_pShape[1]) m_pShape[1]->SetFont(pFont);
-
-    //do the measurement
-    m_pShape[0]->Measure(pPaper, pStaff, uOffset);
-    if (m_pShape[1]) {
-        lmLUnits uWidth = (m_pShape[0]->GetSelRectangle()).width;
-        m_pShape[1]->Measure(pPaper, pStaff, lmUPoint(uOffset.x+uWidth, uOffset.y));
-    }
-
-    //set the ScoreObj shape
-    if (!GetShape()) {
-        if (m_pShape[1]) {
-            lmCompositeShape* pShape = new lmCompositeShape(eGMO_ShapeComposite, this);
-            pShape->Add(m_pShape[0]);
-            pShape->Add(m_pShape[1]);
-            SetShape(pShape);
-        }
-        else {
-            SetShape(m_pShape[0]);
-        }
-    }
-
-    //set up the after space
-    #define ACCIDENTALS_AFTERSPACE  7      //in tenths   @todo user options
-    m_uAfterSpace = pStaff->TenthsToLogical(ACCIDENTALS_AFTERSPACE);
+	CreateShapes(pPaper, uxPos, uyPos);
+	m_uxPos = uxPos;
+	m_uyPos = uyPos;
 
 }
 
-void lmAccidental::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
-                              bool fHighlight)
+void lmAccidental::MoveTo(lmLUnits uxPos, lmLUnits uyPos)
 {
-}
-
-void lmAccidental::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
-{
-    GetShape()->Render(pPaper, uPos, color);
+	wxASSERT(m_pShape);
+	//Shift shapes to new position
+	m_pShape->Shift(m_uxPos - uxPos, m_uyPos - uyPos);
 }
 
 lmLUnits lmAccidental::GetWidth()
 {
-    return (GetShape()->GetSelRectangle()).width + m_uAfterSpace;
+    return GetShape()->GetWidth() + m_uAfterSpace;
 
 }
 
-void lmAccidental::CreateShapes()
+void lmAccidental::CreateShapes(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos)
 {
     wxString sGlyphs;
     int nGlyph[2] = { -1, -1};
@@ -171,11 +129,27 @@ void lmAccidental::CreateShapes()
     }
 
     wxFont* pFont = m_pOwner->GetFont();
-    m_pShape[0] = new lmShapeGlyph(this, nGlyph[0], pFont);
-    if (nGlyph[1] != -1)
-        m_pShape[1] = new lmShapeGlyph(this, nGlyph[1], pFont);
-    else
-        m_pShape[1] = (lmShapeGlyph*)NULL;
 
+	//if two shapes, create a composite shape, else it is enough with one shape
+	if (nGlyph[1] != -1)
+	{
+		//two shapes
+        lmLUnits yPos = uyPos - m_pStaff->TenthsToLogical(aGlyphsInfo[nGlyph[0]].GlyphOffset);
+		m_pShape = new lmCompositeShape(m_pOwner, _T("Note accidentals"));
+		lmShapeGlyp2* pSh1 = new lmShapeGlyp2(m_pOwner, nGlyph[0], pFont, pPaper,
+										      lmUPoint(uxPos, yPos), _T("Accidental"));
+		((lmCompositeShape*)m_pShape)->Add(pSh1);
+        lmLUnits uWidth = pSh1->GetWidth();
+        yPos = uyPos - m_pStaff->TenthsToLogical(aGlyphsInfo[nGlyph[1]].GlyphOffset);
+        ((lmCompositeShape*)m_pShape)->Add(
+				new lmShapeGlyp2(m_pOwner, nGlyph[1], pFont, pPaper,
+								lmUPoint(uxPos+uWidth, yPos), _T("Accidental")) );
+	}
+	else
+	{
+        lmLUnits yPos = uyPos - m_pStaff->TenthsToLogical(aGlyphsInfo[nGlyph[0]].GlyphOffset);
+        m_pShape = new lmShapeGlyp2(m_pOwner, nGlyph[0], pFont, pPaper,
+									lmUPoint(uxPos, yPos), _T("Accidental"));
+	}
 
 }

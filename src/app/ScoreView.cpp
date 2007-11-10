@@ -64,8 +64,9 @@ enum
     lmID_VSCROLL,
 };
 
-// global variables
-bool gfDrawSelRec;        //draw selection rectangles around staff objects
+// global variables. Used for debugging
+bool g_fDrawSelRect = false;    //draw selection rectangles around staff objects
+bool g_fDrawBounds = false;     //draw bounds rectangles around staff objects
 
 
 // Dragging states
@@ -887,59 +888,49 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 		//relative to each page start position
 
         // locate the object
-        lmScoreObj* pScO = m_pDoc->FindSelectableObject(pageNPosL);
+   //     lmScoreObj* pScO = m_pDoc->FindSelectableObject(pageNPosL);
 
-        if (pScO)
-        {
-            // we've got a valid object: select/deselect it.
-			m_pCanvas->SelectObject(pScO);
-        }
-        else
-        {
-            // no object. Perhaps it is a doble click on the staff.
+   //     if (pScO)
+   //     {
+   //         // we've got a valid object: select/deselect it.
+			//m_pCanvas->SelectObject(pScO);
+   //     }
+   //     else
+   //     {
+            // locate the lmGMObject
             lmBoxScore* pBScore = m_graphMngr.GetBoxScore();
             lmBoxPage* pBPage = pBScore->GetPage(nNumPage);
-            //lmBoxSlice* pBSlice = pBPage->FindSliceAtPosition(pageNPosL);
-            //lmBoxInstrSlice* pBInstrSlice = pBPage->FindInstrSliceAtPosition(pageNPosL);
             lmGMObject* pGMO = pBPage->FindGMObjectAtPosition(pageNPosL);
-            wxASSERT(pGMO);
-
-            //prepare paper DC to draw bounds rectangles
-			wxClientDC dc(m_pCanvas);
-			dc.SetMapMode(lmDC_MODE);
-			dc.SetUserScale( m_rScale, m_rScale );
-			//position DC origing at current page origin
-			wxPoint org = GetDCOriginForPage(nNumPage);
-			dc.SetDeviceOrigin(org.x, org.y);
-			//set paper and draw selection rectangle
-			m_Paper.SetDrawer(new lmDirectDrawer(&dc));
-
-            if (pGMO->GetType() == eGMO_BoxSlice)
+            if (pGMO)
             {
-                lmBoxSlice* pBSlice = (lmBoxSlice*)pGMO;
-                m_pMainFrame->SetStatusBarMsg(
-                    wxString::Format( _T("BoxSlice. Double click on page %d, measure %d"),
-                        nNumPage, pBSlice->GetNumMeasure() ));
-				pBSlice->DrawSelRectangle(&m_Paper);
-            }
-            else if (pGMO->GetType() == eGMO_BoxPage)
-            {
-                m_pMainFrame->SetStatusBarMsg( wxString::Format( _T("BoxPage. Double click on page %d"), nNumPage ));
-            }
-            else if (pGMO->GetType() == eGMO_BoxInstrSlice)
-            {
-                lmBoxInstrSlice* pBInstrSlice = (lmBoxInstrSlice*)pGMO;
-                pBInstrSlice->DrawBoundsRectangle(&m_Paper, *wxGREEN);
-            }
-            else if (pGMO->GetType() == eGMO_BoxVStaffSlice)
-            {
-                lmBoxVStaffSlice* pVSlice = (lmBoxVStaffSlice*)pGMO;
-                pVSlice->DrawBoundsRectangle(&m_Paper, *wxCYAN);
-            }
-        }
 
+                //prepare paper DC to draw bounds rectangles
+			    wxClientDC dc(m_pCanvas);
+			    dc.SetMapMode(lmDC_MODE);
+			    dc.SetUserScale( m_rScale, m_rScale );
+			    //position DC origing at current page origin
+			    wxPoint org = GetDCOriginForPage(nNumPage);
+			    dc.SetDeviceOrigin(org.x, org.y);
+			    //set paper and draw selection rectangle
+			    m_Paper.SetDrawer(new lmDirectDrawer(&dc));
 
-    } else if (event.LeftDown() ) {
+				pGMO->DrawBounds(&m_Paper, (pGMO->IsShape() ? *wxRED : *wxGREEN));
+
+				if (pGMO->GetType() == eGMO_BoxSlice)
+                {
+                    lmBoxSlice* pBSlice = (lmBoxSlice*)pGMO;
+                    m_pMainFrame->SetStatusBarMsg(
+                        wxString::Format( _T("BoxSlice. Double click on page %d, measure %d"),
+                            nNumPage, pBSlice->GetNumMeasure() ));
+                }
+                else if (pGMO->GetType() == eGMO_BoxPage)
+                {
+                    m_pMainFrame->SetStatusBarMsg( wxString::Format( _T("BoxPage. Double click on page %d"), nNumPage ));
+                }
+            }
+        //}
+    }
+    else if (event.LeftDown() ) {
         // mouse left button down: if pointing an object posible start of dragging.
         // ---------------------------------------------------------------------------
 

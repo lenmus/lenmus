@@ -81,14 +81,63 @@ void lmBoxSliceInstr::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
     }
 }
 
-void lmBoxSliceInstr::SetFinalX(lmLUnits xPos)
-{ 
-	SetXRight(xPos);
+void lmBoxSliceInstr::UpdateXLeft(lmLUnits xLeft)
+{
+	// During layout there is a need to update initial computations about this
+	// box slice position. This update must be propagated to all contained boxes
+
+	SetXLeft(xLeft);
 
 	//propagate change
     for (int i=0; i < (int)m_SlicesVStaff.size(); i++)
     {
-        m_SlicesVStaff[i]->SetFinalX(xPos);
+        m_SlicesVStaff[i]->UpdateXLeft(xLeft);
+    }
+}
+
+void lmBoxSliceInstr::UpdateXRight(lmLUnits xRight)
+{
+	// During layout there is a need to update initial computations about this
+	// box slice position. This update must be propagated to all contained boxes
+
+	SetXRight(xRight);
+
+	//propagate change
+    for (int i=0; i < (int)m_SlicesVStaff.size(); i++)
+    {
+        m_SlicesVStaff[i]->UpdateXRight(xRight);
+    }
+}
+
+void lmBoxSliceInstr::SystemXRightUpdated(lmLUnits xRight)
+{
+	// During layout there is a need to update initial computations about this
+	// box slice position. This method is invoked when the right x position of
+	// the parent system has been updated. It is only invoked for the first
+	// slice of the system in order to update the ShapeStaff final position
+
+	//propagate change
+    for (int i=0; i < (int)m_SlicesVStaff.size(); i++)
+    {
+        m_SlicesVStaff[i]->SystemXRightUpdated(xRight);
+    }
+
+}
+
+void lmBoxSliceInstr::CopyYBounds(lmBoxSliceInstr* pBSI)
+{
+	//This method is only invoked during layout phase, when the number of measures in the
+	//system has been finally decided. There is a need to copy 'y' coordinates from first
+	//slice to all others. This method receives the first instr.slice and must copy 'y'
+	//coordinates from there
+
+	SetYTop(pBSI->GetYTop());
+	SetYBottom(pBSI->GetYBottom());
+
+	//propagate request
+    for (int i=0; i < (int)m_SlicesVStaff.size(); i++)
+    {
+        m_SlicesVStaff[i]->CopyYBounds(pBSI->GetSliceVStaff(i));
     }
 }
 
@@ -96,7 +145,9 @@ wxString lmBoxSliceInstr::Dump(int nIndent)
 {
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump.append(_T("lmBoxSliceInstr\n"));
+	sDump.append(_T("lmBoxSliceInstr "));
+    sDump += DumpBounds();
+    sDump += _T("\n");
 
     //loop to dump the systems in this page
 	nIndent++;
@@ -106,4 +157,27 @@ wxString lmBoxSliceInstr::Dump(int nIndent)
     }
 
 	return sDump;
+}
+
+lmGMObject* lmBoxSliceInstr::FindGMObjectAtPosition(lmUPoint& pointL)
+{
+    //if not in this object return
+    if (!ContainsPoint(pointL)) 
+        return (lmGMObject*)NULL;
+
+    //look in shapes collection
+    lmShape* pShape = FindShapeAtPosition(pointL);
+    if (pShape) return pShape;
+
+    //loop to look up in the VStaff slices
+	for(int i=0; i < (int)m_SlicesVStaff.size(); i++)
+    {
+        lmGMObject* pGMO = m_SlicesVStaff[i]->FindGMObjectAtPosition(pointL);
+        if (pGMO)
+			return pGMO;    //found
+    }
+
+    // no slice found. So the point is in this object
+    return this;
+
 }

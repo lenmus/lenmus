@@ -45,11 +45,13 @@ extern lmColors* g_pColors;
 
 //-----------------------------------------------------------------------------------------
 
-lmBoxSlice::lmBoxSlice(lmBoxSystem* pParent, int nAbsMeasure, lmLUnits xStart, lmLUnits xEnd)
+lmBoxSlice::lmBoxSlice(lmBoxSystem* pParent, int nAbsMeasure, int nNumInSystem,
+					   lmLUnits xStart, lmLUnits xEnd)
     : lmBox(eGMO_BoxSlice)
 {
     m_pBSystem = pParent;
     m_nAbsMeasure = nAbsMeasure;
+	m_nNumInSystem = nNumInSystem;
     m_xStart = xStart;
     m_xEnd = xEnd;
 
@@ -86,10 +88,33 @@ lmBoxSlice* lmBoxSlice::FindMeasureAt(lmUPoint& pointL)
     return (lmBoxSlice*)NULL;
 }
 
+lmGMObject* lmBoxSlice::FindGMObjectAtPosition(lmUPoint& pointL)
+{
+    //if not in this slice return
+    if (!ContainsPoint(pointL)) 
+        return (lmGMObject*)NULL;
+
+    //look in shapes collection
+    lmShape* pShape = FindShapeAtPosition(pointL);
+    if (pShape) return pShape;
+
+    //loop to look up in the instrument slices
+	for(int i=0; i < (int)m_SliceInstr.size(); i++)
+    {
+        lmGMObject* pGMO = m_SliceInstr[i]->FindGMObjectAtPosition(pointL);
+        if (pGMO)
+			return pGMO;    //found
+    }
+
+    // no instrument slice found. So the point is in this slice
+    return this;
+
+}
+
 void lmBoxSlice::DrawSelRectangle(lmPaper* pPaper)
 {
 	//draw system border in red
-	m_pBSystem->DrawBoundsRectangle(pPaper, *wxRED);
+	m_pBSystem->DrawBounds(pPaper, *wxRED);
 
     //draw a border around slice region in cyan
 	lmLUnits yTop = m_pBSystem->GetYTop();
@@ -109,14 +134,65 @@ void lmBoxSlice::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
     }
 }
 
-void lmBoxSlice::SetFinalX(lmLUnits xPos)
-{ 
-	SetXRight(xPos);
+void lmBoxSlice::UpdateXLeft(lmLUnits xLeft)
+{
+	// During layout there is a need to update initial computations about this
+	// box slice position. This update must be propagated to all contained boxes
+
+	SetXLeft(xLeft);
 
 	//propagate change
     for (int i=0; i < (int)m_SliceInstr.size(); i++)
     {
-        m_SliceInstr[i]->SetFinalX(xPos);
+        m_SliceInstr[i]->UpdateXLeft(xLeft);
+    }
+}
+
+void lmBoxSlice::UpdateXRight(lmLUnits xRight)
+{
+	// During layout there is a need to update initial computations about this
+	// box slice position. This update must be propagated to all contained boxes
+
+	SetXRight(xRight);
+
+	//propagate change
+    for (int i=0; i < (int)m_SliceInstr.size(); i++)
+    {
+        m_SliceInstr[i]->UpdateXRight(xRight);
+    }
+}
+
+void lmBoxSlice::SystemXRightUpdated(lmLUnits xRight)
+{
+	// During layout there is a need to update initial computations about this
+	// box slice position. This method is invoked when the right x position of
+	// the parent system has been updated. It is only invoked for the first
+	// slice of the system in order to update the ShapeStaff final position
+
+	//propagate change
+    for (int i=0; i < (int)m_SliceInstr.size(); i++)
+    {
+        m_SliceInstr[i]->SystemXRightUpdated(xRight);
+    }
+
+}
+
+void lmBoxSlice::CopyYBounds(lmBoxSlice* pSlice)
+{
+	//This method is only invoked during layout phase, when the number of measures in the
+	//system has been finally decided. There is a need to copy 'y' coordinates from first
+	//slice to all others. This method receives the first slice and must copy 'y' coordinates
+	//from there
+
+	SetYTop(pSlice->GetYTop());
+	SetYBottom(pSlice->GetYBottom());
+
+
+
+	//propagate request
+    for (int i=0; i < (int)m_SliceInstr.size(); i++)
+    {
+        m_SliceInstr[i]->CopyYBounds(pSlice->GetSliceInstr(i));
     }
 }
 
@@ -124,8 +200,10 @@ wxString lmBoxSlice::Dump(int nIndent)
 {
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("lmBoxSlice. measure %d\n"),
+	sDump += wxString::Format(_T("lmBoxSlice. measure %d, "),
 						m_nAbsMeasure);
+    sDump += DumpBounds();
+    sDump += _T("\n");
 
     //loop to dump the systems in this page
 	nIndent++;

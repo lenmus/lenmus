@@ -37,6 +37,7 @@
 #include "BoxSlice.h"
 #include "BoxSliceInstr.h"
 #include "BoxSliceVStaff.h"
+#include "ShapeStaff.h"
 
 //access to colors
 #include "../globals/Colors.h"
@@ -56,29 +57,45 @@ lmBoxSliceVStaff::lmBoxSliceVStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff)
 
 lmBoxSliceVStaff::~lmBoxSliceVStaff()
 {
-    //delete shapes collection
-    for (int i=0; i < (int)m_Shapes.size(); i++)
+    //delete staff shapes
+    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
     {
-        delete m_Shapes[i];
+        delete m_ShapeStaff[i];
     }
-    m_Shapes.clear();
-}
-
-void lmBoxSliceVStaff::AddShape(lmShape* pShape)
-{
-    m_Shapes.push_back(pShape);
+    m_ShapeStaff.clear();
 }
 
 void lmBoxSliceVStaff::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
 {
+    //render staff lines
+    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
+    {
+        m_ShapeStaff[i]->Render(pPaper, uPos, color);
+    }
+
+	//render shapes
     for (int i=0; i < (int)m_Shapes.size(); i++)
     {
         m_Shapes[i]->Render(pPaper, uPos, color);
     }
 
+#if 0   //1 = render also staffObjs. 
 	int nMeasure = m_pSliceInstr->GetNumMeasure();
 	int nNumPage = 1;
 	RenderMeasure(nMeasure, pPaper, nNumPage);
+#endif
+}
+
+void lmBoxSliceVStaff::AddShape(lmShape* pShape)
+{
+	//override to avoid adding the staff to the shapes list
+	if (pShape->GetType() == eGMO_ShapeStaff)
+	{
+		m_ShapeStaff.push_back( (lmShapeStaff*)pShape );
+	}
+	else
+		lmBox::AddShape(pShape);
+
 }
 
 void lmBoxSliceVStaff::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage)
@@ -165,28 +182,94 @@ void lmBoxSliceVStaff::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage
 
 }
 
-void lmBoxSliceVStaff::SetFinalX(lmLUnits xPos)
-{ 
-	//locate ShapeStaff objects
-    for (int i=0; i < (int)m_Shapes.size(); i++)
+void lmBoxSliceVStaff::UpdateXLeft(lmLUnits xLeft)
+{
+	// During layout there is a need to update initial computations about this
+	// box slice position. This update must be propagated to all contained boxes
+
+	SetXLeft(xLeft);
+
+}
+
+void lmBoxSliceVStaff::UpdateXRight(lmLUnits xRight)
+{
+	// During layout there is a need to update initial computations about this
+	// box slice position. This update must be propagated to all contained boxes
+
+	SetXRight(xRight);
+
+}
+
+void lmBoxSliceVStaff::SystemXRightUpdated(lmLUnits xRight)
+{
+	// During layout there is a need to update initial computations about this
+	// box slice position. This method is invoked when the right x position of
+	// the parent system has been updated. It is only invoked for the first
+	// slice of the system in order to update the ShapeStaff final position
+
+    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
     {
-		if (m_Shapes[i]->GetType() == eGMO_ShapeStaff)
-			m_Shapes[i]->SetXRight(xPos);
+        m_ShapeStaff[i]->SetXRight(xRight);
     }
+
+
+}
+
+void lmBoxSliceVStaff::CopyYBounds(lmBoxSliceVStaff* pBSV)
+{
+	//This method is only invoked during layout phase, when the number of measures in the
+	//system has been finally decided. There is a need to copy 'y' coordinates from first
+	//slice to all others. This method receives the first vstaff slice and must copy 'y'
+	//coordinates from there
+
+	SetYTop(pBSV->GetYTop());
+	SetYBottom(pBSV->GetYBottom());
+
 }
 
 wxString lmBoxSliceVStaff::Dump(int nIndent)
 {
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump.append(_T("lmBoxSliceVStaff\n"));
+	sDump.append(_T("lmBoxSliceVStaff "));
+    sDump += DumpBounds();
+    sDump += _T("\n");
 
-    //loop to dump the shapes
 	nIndent++;
+
+	// dump the staff
+    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
+    {
+        sDump += m_ShapeStaff[i]->Dump(nIndent);
+    }
+
+    //dump the other shapes
     for (int i=0; i < (int)m_Shapes.size(); i++)
     {
         sDump += m_Shapes[i]->Dump(nIndent);
     }
 
 	return sDump;
+}
+
+lmGMObject* lmBoxSliceVStaff::FindGMObjectAtPosition(lmUPoint& pointL)
+{
+    //if not in this object return
+    if (!ContainsPoint(pointL)) 
+        return (lmGMObject*)NULL;
+
+    //look in shapes collection
+    lmShape* pShape = FindShapeAtPosition(pointL);
+    if (pShape) return pShape;
+
+	//is it any staff?
+    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
+    {
+        if (m_ShapeStaff[i]->ContainsPoint(pointL))
+			return m_ShapeStaff[i];
+    }
+
+    // no shape found. So the point is in this object
+    return this;
+
 }

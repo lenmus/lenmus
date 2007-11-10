@@ -54,16 +54,14 @@ class lmInstrument;
 class lmBoxSlice : public lmBox
 {
 public:
-    lmBoxSlice(lmBoxSystem* pParent, int nAbsMeasure, lmLUnits xStart=0, lmLUnits xEnd=0);
+    lmBoxSlice(lmBoxSystem* pParent, int nAbsMeasure, int nNumInSystem,
+			   lmLUnits xStart=0, lmLUnits xEnd=0);
     ~lmBoxSlice();
 
     inline void UpdateSize(lmLUnits xStart, lmLUnits xEnd) {
             m_xStart = xStart;
             m_xEnd = xEnd;
         }
-
-    lmBoxSliceInstr* AddInstrument(lmInstrument* pInstr);
-
 
 	//render
 	void DrawSelRectangle(lmPaper* pPaper);
@@ -72,9 +70,17 @@ public:
     //info
     inline int GetNumMeasure() const { return m_nAbsMeasure; }
     lmBoxSlice* FindMeasureAt(lmUPoint& pointL);
+    lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
+
+	//instrument slices
+    lmBoxSliceInstr* AddInstrument(lmInstrument* pInstr);
+	lmBoxSliceInstr* GetSliceInstr(int i) const { return m_SliceInstr[i]; }
 
 	//positioning and bounds
-    void SetFinalX(lmLUnits xPos);
+    void UpdateXLeft(lmLUnits xLeft);
+    void UpdateXRight(lmLUnits xRight);
+    void CopyYBounds(lmBoxSlice* pSlice);
+	void SystemXRightUpdated(lmLUnits xRight);
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
@@ -83,8 +89,9 @@ public:
 
 private:
 
-    lmBoxSystem*    m_pBSystem;     //parent system box
-    int             m_nAbsMeasure;     //number of this measure (absolute)
+    lmBoxSystem*	m_pBSystem;			//parent system box
+    int             m_nAbsMeasure;		//number of this measure (absolute)
+	int				m_nNumInSystem;		//number of slice for this system (0..n-1)
 
     std::vector<lmBoxSliceInstr*>   m_SliceInstr;   //collection of instr. slices
 

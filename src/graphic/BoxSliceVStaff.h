@@ -45,6 +45,7 @@
 class lmVStaff;
 class lmBoxSliceInstr;
 class lmBoxSliceVStaff;
+class lmShapeStaff;
 
 //
 // Class lmBoxSliceVStaff represents a part of the VStaff of an instrument. 
@@ -56,12 +57,17 @@ public:
     lmBoxSliceVStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff);
     ~lmBoxSliceVStaff();
 
-    void AddShape(lmShape* pShape);
-
     void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK);
+	void AddShape(lmShape* pShape);
 
 	//positioning and bounds
-    void SetFinalX(lmLUnits xPos);
+	void UpdateXLeft(lmLUnits xLeft);
+    void UpdateXRight(lmLUnits xRight);
+	void SystemXRightUpdated(lmLUnits xRight);
+	void CopyYBounds(lmBoxSliceVStaff* pBSV);
+
+    //info
+    lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
@@ -70,10 +76,9 @@ public:
 private:
     void RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage);
 
-    lmBoxSliceInstr*    m_pSliceInstr;      //paren instrumet slice
+    lmBoxSliceInstr*    m_pSliceInstr;      //parent instrumet slice
     lmVStaff*           m_pVStaff;          //VStaff to which this slice belongs
-
-	std::vector<lmShape*>	m_Shapes;		//list of contained shapes
+	std::vector<lmShapeStaff*>	m_ShapeStaff;		//list of staff shapes, only in first vstaff.
 
 };
 

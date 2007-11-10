@@ -40,9 +40,10 @@
 #include "../score/defs.h"      // lmLUnits
 #include "../app/Paper.h"
 #include "GMObject.h"
+
 class lmObject;
 class lmStaff;
-
+class lmStaffObj;
 
 
 class lmShapeLine : public lmSimpleShape
@@ -66,11 +67,36 @@ private:
 
 };
 
+class lmShapeLin2 : public lmSimpleShape
+{
+public:
+    lmShapeLin2(lmObject* pOwner, lmLUnits xStart, lmLUnits yStart,
+                lmLUnits xEnd, lmLUnits yEnd, lmLUnits uWidth,
+				lmLUnits uBoundsExtraWidth, wxColour nColor, wxString sName = _T("Line"),
+				lmELineEdges nEdge = eEdgeNormal);
+    ~lmShapeLin2() {}
+
+    //implementation of virtual methods from base class
+    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
+    wxString Dump(int nIndent);
+    void Shift(lmLUnits xIncr, lmLUnits yIncr);
+
+private:
+    lmLUnits		m_xStart, m_yStart;
+    lmLUnits		m_xEnd, m_yEnd;
+    lmLUnits		m_uWidth;
+	lmELineEdges	m_nEdge;
+    wxColour		m_color;
+
+};
+
 //represents a glyph from LenMus font
 class lmShapeGlyph : public lmSimpleShape
 {
 public:
     lmShapeGlyph(lmObject* pOwner, int nGlyph, wxFont* pFont);
+    lmShapeGlyph(lmStaffObj* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
+                 lmUPoint offset);
     ~lmShapeGlyph() {}
 
     //implementation of virtual methods from base class
@@ -87,6 +113,30 @@ private:
     int         m_nGlyph;
     wxFont*     m_pFont;
     lmUPoint    m_uShift;   // to correctly position the glyph (relative to shape offset point)
+
+};
+
+//represents a glyph from LenMus font
+class lmShapeGlyp2 : public lmSimpleShape
+{
+public:
+    lmShapeGlyp2(lmObject* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
+                 lmUPoint offset, wxString sName=_T("ShapeGlyp2"));
+    ~lmShapeGlyp2() {}
+
+    //implementation of virtual methods from base class
+    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
+    wxString Dump(int nIndent);
+    void Shift(lmLUnits xIncr, lmLUnits yIncr);
+
+    //specific methods
+    void SetFont(wxFont *pFont);
+
+
+private:
+    int         m_nGlyph;
+    wxFont*     m_pFont;
+    lmUPoint    m_uGlyphPos;   //glyph position
 
 };
 

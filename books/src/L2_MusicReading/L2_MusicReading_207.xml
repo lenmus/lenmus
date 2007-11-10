@@ -12,7 +12,7 @@
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
-        (Metrica 2 4 NoVisible)(n a4 s g+)(n a4 s)(n a4 c g-))
+        (Metrica 2 4 noVisible)(n a4 s g+)(n a4 s)(n a4 c g-))
         (c (n a4 s g+)(n a4 s)(n a4 c l g-)(n a4 n)(Barra Final))
     </music>
 </score></para>

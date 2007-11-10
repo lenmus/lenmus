@@ -76,7 +76,7 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     //to the start of system position.
     pPaper->SetCursorY( m_yPos );
 
-#if 1	//1 = Old renderization method, 0 = new renderization method
+#if 0	//1 = Old renderization method, 0 = only shapes
     //for each lmInstrument
     for (int i=0; i < (int)m_InstrSlices.size(); i++)
     {
@@ -97,15 +97,42 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     {
         m_Slices[i]->Render(pPaper, lmUPoint(m_xPos, m_yPos));
     }
+
+	//render shapes
+    for (int i=0; i < (int)m_Shapes.size(); i++)
+    {
+        m_Shapes[i]->Render(pPaper, lmUPoint(m_xPos, m_yPos));
+    }
 #endif
 }
 
 void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)
 {
-    //Now we have all the information about the system. Let's create the collection
-    //of BoxSlices
+	//This method is only invoked during layout phase, when the number of measures in the
+	//system has been finally decided. We have to store this number, delete any addional
+	//slices added during measurements, and propagate 'y' coordinates from first slice to
+	//all others
 
     m_nNumMeasures = nMeasures;
+
+	//remove extra slices not needed
+	for(int i=nMeasures; i < (int)m_Slices.size(); i++)
+	{
+		delete m_Slices.back();
+		m_Slices.pop_back();
+	}
+
+	//propagate 'y' coordinates from first slice to all others
+    for (int i=1; i < (int)m_Slices.size(); i++)
+    {
+        m_Slices[i]->CopyYBounds(m_Slices[0]);
+    }
+
+	//update system yBottom position by copying yBootom from first slice
+	SetYBottom(m_Slices[0]->GetYBottom());
+
+    //Now we have all the information about the system. Let's create the collection
+    //of BoxSlices
 
     //Build the slices
     int iInstr = 1;
@@ -122,16 +149,6 @@ void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)
 
 }
 
-//bool lmBoxSystem::ContainsPoint(lmUPoint& pointL)
-//{
-//    //returns true if point received is within the limits of this System
-//
-//    lmURect bounds(m_uBoundsTop.x, m_uBoundsTop.y,
-//                   m_uBoundsBottom.x - m_uBoundsTop.x, m_uBoundsBottom.y - m_uBoundsTop.y);
-//    return bounds.Contains(pointL);
-//
-//}
-//
 lmBoxSlice* lmBoxSystem::FindSliceAtPosition(lmUPoint& pointL)
 {
     if (ContainsPoint(pointL))
@@ -170,33 +187,66 @@ lmBoxInstrSlice* lmBoxSystem::FindInstrSliceAtPosition(lmUPoint& pointL)
     return (lmBoxInstrSlice*)NULL;
 }
 
+lmGMObject* lmBoxSystem::FindGMObjectAtPosition(lmUPoint& pointL)
+{
+    //if not in this system return
+    if (!ContainsPoint(pointL)) 
+        return (lmGMObject*)NULL;
+
+    //look in shapes collection
+    lmShape* pShape = FindShapeAtPosition(pointL);
+    if (pShape) return pShape;
+
+    //loop to look up in the slices
+	for(int i=0; i < (int)m_Slices.size(); i++)
+    {
+        lmGMObject* pGMO = m_Slices[i]->FindGMObjectAtPosition(pointL);
+        if (pGMO)
+			return pGMO;    //found
+    }
+
+    // no slice found. So the point is in this system
+    return this;
+
+}
+
 lmBoxSlice* lmBoxSystem::AddSlice(int nAbsMeasure, lmLUnits xStart, lmLUnits xEnd)
 {
-    lmBoxSlice* pBSlice = new lmBoxSlice(this, nAbsMeasure, xStart, xEnd);
+    lmBoxSlice* pBSlice = new lmBoxSlice(this, nAbsMeasure, (int)m_Slices.size(),
+										 xStart, xEnd);
     m_Slices.push_back(pBSlice);
     return pBSlice;
 }
 
-void lmBoxSystem::SetFinalX(lmLUnits xPos)
+void lmBoxSystem::UpdateXRight(lmLUnits xPos)
 { 
 	SetXRight(xPos);
 
-	//propagate change
-    for (int i=0; i < (int)m_Slices.size(); i++)
-    {
-        m_Slices[i]->SetFinalX(xPos);
-    }
+	//propagate change to last slice of this system
+    m_Slices.back()->UpdateXRight(xPos);
+
+	//inform to first slice of this system so that it can update the ShapeStaff
+    m_Slices[0]->SystemXRightUpdated(xPos);
 }
 
 wxString lmBoxSystem::Dump(int nIndent)
 {
-	wxString sDump = _T("");
+	wxString sDump = _T("\n");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("lmBoxSystem. %d measures starting at %d\n"),
+	sDump += wxString::Format(_T("lmBoxSystem. %d measures starting at %d, "),
 						m_nNumMeasures, m_nFirstMeasure);
+    sDump += DumpBounds();
+    sDump += _T("\n");
+
+	nIndent++;
+
+	//dump the shapes in this system
+    for (int i=0; i < (int)m_Shapes.size(); i++)
+    {
+        sDump += m_Shapes[i]->Dump(nIndent);
+    }
 
     //loop to dump the systems in this page
-	nIndent++;
     for (int i=0; i < (int)m_Slices.size(); i++)
     {
         sDump += m_Slices[i]->Dump(nIndent);

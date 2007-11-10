@@ -79,6 +79,7 @@ lmScoreObj::lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable
     //transitional
     SetShapeRendered(false);
     m_pShape = (lmShape*)NULL;
+    m_pShape2 = (lmShape*)NULL;
 
     // GraphicObjs owned by this ScoreObj
     m_pGraphObjs = (GraphicObjsList*)NULL;
@@ -232,6 +233,14 @@ void lmScoreObj::DoRemoveGraphicObj(lmScoreObj* pGO)
     wxASSERT(pGO->GetType() == eSCOT_GraphicObj);
 }
 
+void lmScoreObj::MoveShape(lmLUnits uLeft)
+{ 
+    // update shapes' positions when the object is moved
+
+    if (m_pShape2) m_pShape2->Shift(uLeft - m_uPaperPos.x, 0.0);
+    m_uPaperPos.x = uLeft;
+}
+
 
 //-------------------------------------------------------------------------------------------------
 // lmAuxObj implementation
@@ -260,7 +269,7 @@ void lmAuxObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHig
     DrawObject(fMeasuring, pPaper, colorC, fHighlight);
 
     // draw selection rectangle
-    if (gfDrawSelRec) DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
+    if (g_fDrawSelRect) DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
 
 }
 
@@ -367,7 +376,7 @@ void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fH
     pPaper->SetCursorX(m_uPaperPos.x + m_uWidth);
     
     // draw selection rectangle
-    if (!fMeasuring && (IsSelected() || gfDrawSelRec))
+    if (!fMeasuring && (IsSelected() || g_fDrawSelRect))
         DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
             
 }
@@ -386,9 +395,15 @@ lmLUnits lmStaffObj::TenthsToLogical(lmTenths nTenths)
     return m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
 }
 
-void lmStaffObj::AddGraphicObj(lmGraphicObj* pGO) { DoAddGraphicObj(pGO); }
-void lmStaffObj::RemoveGraphicObj(lmGraphicObj* pGO) { DoRemoveGraphicObj(pGO); }
+void lmStaffObj::AddGraphicObj(lmGraphicObj* pGO) 
+{ 
+    DoAddGraphicObj(pGO);
+}
 
+void lmStaffObj::RemoveGraphicObj(lmGraphicObj* pGO)
+{ 
+    DoRemoveGraphicObj(pGO);
+}
 
 //-------------------------------------------------------------------------------------
 // lmObject implementation

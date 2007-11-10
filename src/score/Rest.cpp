@@ -350,9 +350,9 @@ lmUPoint lmRest::EndDrag(const lmUPoint& uPos)
 // implementation of virtual methods defined in base class lmScoreObj
 //====================================================================================================
 
-void lmRest::SetLeft(lmLUnits nLeft)
+void lmRest::MoveShape(lmLUnits nLeft)
 {
-    lmScoreObj::SetLeft(nLeft);
+    lmScoreObj::MoveShape(nLeft);
 }
 
 

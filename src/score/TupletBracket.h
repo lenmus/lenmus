@@ -26,96 +26,78 @@
 #pragma interface "TupletBracket.cpp"
 #endif
 
+#include <vector>
 
-/*! @class lmTupletBracket
+#include "../graphic/ShapeTuplet.h"
+
+
+/* lmTupletBracket
     A lmTupletBracket represents the optional bracket graphically associated
-    to tuplets. The lmTupletBracket object does not have any effect on sound. It is only to
-    describe how a tuplet must be displayed.
+    to tuplets. The lmTupletBracket object does not have any effect on sound. It is
+    only to describe how a tuplet must be displayed.
 
-    As it is a pure graphical object there is no need to keep links to the notes/rests
-    that are grouped by this bracket, unless needed for score edition. So I will pospone
-    any decision until I have more information. So, for now I will treat the bracket as
-    a pure graphical element, not associated to any note, and I will record here the new
-    ideas as they happen.
+    It is a auxiliary object to contain all the information for a tuplet,
+    and methods to create and control the necessary shapes.
 
     During LDP parsing the lmTupletBracket object serves to store tuplet information for
-    coming notes, as only the first note has the tuplet information and it must be
-    propagated to the remaining notes in the tuplet.
+    coming notes, as in source code only the first note has the tuplet information
+    and it must be propagated to the remaining notes in the tuplet.
 
-    1. I'm affraid that there is a need to keep, at least, links to start and end NoteRests
-    so that it is possible to stablish start and end positioning points (as in ties).
+    In the lmScore model, all notes/rests in a tuple have a pointer to the
+    lmTupletBracket. Only start and end notes are used during computations. For the
+    remaining notes (intermediate notes), having a pointer to the bracket is only
+    useful to know that they are in a tuplet, but note/rest duration is
+    updated in the note/rest, so tuplet bracket is not needed.
 
-    2. For bracket positioning it is necessry to take into consideration intermediate notes,
-    as if a tuplet where a beamed group (this is usually the case)
-
-    So for now, I will treat TupleBracket analogously to a beamed group
+    - There is a need to keep links to start and end NoteRests so that it is possible
+        to stablish start and end positioning points (as in ties).
 
 
 */
 
-class lmTupletBracket : public lmStaffObj
+class lmTupletBracket
 {
 public:
     lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket, bool fAbove,
                     int nActualNotes, int nNormalNotes);
     ~lmTupletBracket();
 
-    //overrides of virtual methods defined in base classes
-        //lmScoreObj
-    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
-    wxBitmap* GetBitmap(double rScale) { return (wxBitmap*)NULL; }
-    void SetFont(lmPaper* pPaper);
-        //lmStaffObj
-    wxString Dump();
-    wxString SourceLDP();
-    wxString SourceXML();
-
-    //specific methods of this object
     void Include(lmNoteRest* pNR);
     void Remove(lmNoteRest* pNR);
-    int NumNotes();
-    lmNoteRest* GetStartNote();
-    lmNoteRest* GetEndNote();
-    void AutoPosition();
-    int GetTupletNumber() { return m_nTupletNumber; }
-    int GetActualNotes() { return m_nActualNotes; }
-    int GetNormalNotes() { return m_nNormalNotes; }
+    inline int NumNotes() { return (int)m_cNotes.size(); }
+    inline lmNoteRest* GetStartNote() { return m_cNotes.front(); }
+    inline lmNoteRest* GetEndNote() { return m_cNotes.back(); }
+    inline int GetTupletNumber() { return m_nTupletNumber; }
+    inline int GetActualNotes() { return m_nActualNotes; }
+    inline int GetNormalNotes() { return m_nNormalNotes; }
 
+    //layout
+	lmShape* LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
+	lmShape* GetShape() { return m_pShape; }
 
 
 private:
-    void ComputePosition();
+	int FindNote(lmNoteRest* pNR);
 
-
-    NoteRestsList    m_cNotes;  // list of notes/rest grouped by this bracket.
-                                // For chords only the base note of the chord
-                                // is included in this list
-    lmLUnits    m_xPaperLeft;
-    lmLUnits    m_xPaperRight;
+	//notes/rests in this bracket (if chord, only base note)
+	std::vector<lmNoteRest*>	m_cNotes;
 
     //time modifiers
-    int     m_nActualNotes;     //number of notes to play in the tiem ...
+    int     m_nActualNotes;     //number of notes to play in the time ...
     int     m_nNormalNotes;     //... allotted for this number of normal notes
 
-
     // graphical attributes
-    bool    m_fShowNumber;      // display tuplet number
-    int     m_nTupletNumber;    // number to display
-    bool    m_fBracket;         // display bracket
-    bool    m_fAbove;           // bracket positioned above the notes
-
-    // start and end poins coordinates, relative to start note current paper position
-    lmLUnits    m_xStart;
-    lmLUnits    m_yStart;
-    lmLUnits    m_xEnd;
-    lmLUnits    m_yEnd;
-
-    //For rendering tuplet number. TODO: Replace in future by lmBasicText derivation?
-    wxString    m_sFontName;
+    bool    	m_fShowNumber;      // display tuplet number
+    int     	m_nTupletNumber;    // number to display
+    bool    	m_fBracket;         // display bracket
+    bool    	m_fAbove;           // bracket positioned above the notes
+    wxString    m_sFontName;		// font info for rendering tuplet number
     int         m_nFontSize;
     bool        m_fBold;
     bool        m_fItalic;
 
+	//
+    lmShapeTuplet*	m_pShape;			//the shape to render the tuplet bracket
 
 };
 

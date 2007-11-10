@@ -13,7 +13,7 @@
     <control_play></control_play>
     <control_measures></control_measures>
     <music>
-        (Metrica 2 4 NoVisible)
+        (Metrica 2 4 noVisible)
            (n * s g+)(n * c. g-)(Barra Doble))
         (c (n * s g+)(n * c. l g-)(n * n)(Barra Doble))
         (c (n * s g+)(n * c. l g-)(n * c g+)(n * c g-)(Barra Final))

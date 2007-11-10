@@ -20,7 +20,7 @@
 //-------------------------------------------------------------------------------------
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-#pragma implementation "ShapeStaff.h"
+#pragma implementation "ShapeNote.h"
 #endif
 
 // For compilers that support precompilation, includes "wx.h".
@@ -33,62 +33,78 @@
 #include "GMObject.h"
 #include "../score/Score.h"
 
-#include "ShapeStaff.h"
+#include "ShapeNote.h"
 
 
 //-------------------------------------------------------------------------------------
-// Implementation of lmShapeStaff: an staff (usually 5 lines)
+// Implementation of lmShapeNote: an staff (usually 5 lines)
 
 
-lmShapeStaff::lmShapeStaff(lmStaff* pStaff, int nNumLines, lmLUnits uLineWidth,
-						   lmLUnits uSpacing, lmLUnits xLeft, lmLUnits yTop,
-						   lmLUnits xRight, wxColour color)
-	: lmSimpleShape(eGMO_ShapeStaff, pStaff, _T("Staff"))
+lmShapeNote::lmShapeNote(lmNoteRest* pOwner, lmLUnits xLeft, lmLUnits yTop, wxColour color)
+	: lmCompositeShape(pOwner, _T("Note"), eGMO_ShapeNote)
 {
-	m_nNumLines = nNumLines;
-	m_uLineWidth = uLineWidth;
-	m_uSpacing = uSpacing;
+    m_uxLeft = xLeft;
+    m_uyTop = yTop;
 	m_color = color;
-	
-	//bounds
-	SetXLeft(xLeft);
-	SetYTop(yTop);
-	SetXRight(xRight);
-	SetYBottom(yTop + nNumLines * uLineWidth + (nNumLines - 1) * uSpacing);
+
+	//initializations
+	m_nNoteHead = -1;		// -1 = no shape
+	m_nStem = -1;
 
 }
 
-lmShapeStaff::~lmShapeStaff()
+lmShapeNote::~lmShapeNote()
 {
 }
 
-void lmShapeStaff::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+void lmShapeNote::AddStem(lmShape* pShape)
 {
-    //draw the staff
-	lmLUnits yPos = m_uBoundsTop.y;
-    for (int iL=0; iL < m_nNumLines; iL++ )
-	{
-        pPaper->SolidLine(m_uBoundsTop.x, yPos, m_uBoundsBottom.x, yPos,
-                          m_uLineWidth, eEdgeNormal, m_color);
-        yPos += m_uSpacing;
-    }
-    lmShape::RenderCommon(pPaper);
+	m_nStem = Add(pShape);
 }
 
-wxString lmShapeStaff::Dump(int nIndent)
+void lmShapeNote::AddNoteHead(lmShape* pShape)
 {
-	//TODO
-	wxString sDump = _T("");
-	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: "), m_nId, m_sShapeName);
-    sDump += DumpBounds();
-    sDump += _T("\n");
-	return sDump;
+	m_nNoteHead = Add(pShape);
 }
 
-void lmShapeStaff::Shift(lmLUnits xIncr, lmLUnits yIncr)
+void lmShapeNote::AddFlag(lmShape* pShape)
 {
-	//TODO
-    ShiftBoundsAndSelRec(xIncr, yIncr);
+	Add(pShape);
+}
+
+void lmShapeNote::AddAccidental(lmShape* pShape)
+{
+	Add(pShape);
+}
+
+void lmShapeNote::AddNoteInBlock(lmShape* pShape)
+{
+	Add(pShape);
+}
+
+void lmShapeNote::Shift(lmLUnits xIncr, lmLUnits yIncr)
+{
+	lmCompositeShape::Shift(xIncr, yIncr);
+
+	m_uxLeft += xIncr;
+    m_uyTop += yIncr;
+
+	InformAttachedShapes();
+}
+
+lmShape* lmShapeNote::GetNoteHead()
+{
+	if (m_nNoteHead < 0)
+		return (lmShape*)NULL;
+
+	return GetShape(m_nNoteHead);
+}
+
+lmShape* lmShapeNote::GetStem()
+{
+	if (m_nStem < 0)
+		return (lmShape*)NULL;
+
+	return GetShape(m_nStem);
 }
 

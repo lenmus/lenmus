@@ -103,23 +103,43 @@ class lmScoreObj : public lmObject
 public:
     virtual ~lmScoreObj();
 
-    // methods related to type and identificaction
+    // type and identificaction
     inline int GetID() const { return m_nId; }
     inline EScoreObjType GetType() const { return m_nType; }
 
     // capabilities
     inline bool IsDraggable() const { return m_fIsDraggable; }
 
-    // methods related to positioning
+    // graphic model
+    virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
+                        bool fHighlight = false)=0;
+	lmShape* GetShap2() { return m_pShape2; }
+
+    // methods for draggable objects
+    virtual wxBitmap* GetBitmap(double rScale) = 0;
+    virtual void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
+                         const lmUPoint& pagePosL, const lmUPoint& uDragStartPos,
+                         const lmDPoint& canvasPosD);
+    virtual lmUPoint EndDrag(const lmUPoint& uPos);
+    virtual void MoveTo(lmUPoint& pt);
+
+    // debug
+    virtual wxString Dump()=0;
+
+    // positioning
+    virtual void MoveShape(lmLUnits uLeft);
+
+#if lmCOMPATIBILITY_NO_SHAPES
+
+    // positioning
     inline lmUPoint& GetOrigin() { return m_uPaperPos; }
     bool IsAtPoint(lmUPoint& pt);
-    virtual void SetLeft(lmLUnits uLeft) { m_uPaperPos.x = uLeft; }
     inline bool IsFixed() const { return m_fFixedPos; }
     void SetFixed(bool fFixed) { m_fFixedPos = fFixed; }
     void SetPageNumber(int nNum) { m_nNumPage = nNum; }
     inline int GetPageNumber() const { return m_nNumPage; }
 
-    // methods related to selection
+    // selection
     inline bool IsSelected() const { return m_fSelected; }
     void SetSelected(bool fValue) { m_fSelected = fValue; }
     void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight) {
@@ -134,21 +154,16 @@ public:
                                                 m_uSelRect.width,
                                                 m_uSelRect.height); }
 
-    // drawing related methods
+    // drawing
     virtual void Draw(bool fMeasuring, lmPaper* pPaper,
                       wxColour colorC = *wxBLACK,
                       bool fHighlight = false)=0;
-    virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
-                        bool fHighlight = false)=0;
 
-
-    // methods for draggable objects
-    virtual wxBitmap* GetBitmap(double rScale) = 0;
-    virtual void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
-                         const lmUPoint& pagePosL, const lmUPoint& uDragStartPos,
-                         const lmDPoint& canvasPosD);
-    virtual lmUPoint EndDrag(const lmUPoint& uPos);
-    virtual void MoveTo(lmUPoint& pt);
+    //transitional methods to shapes renderization
+    void SetShapeRendered(bool fValue) { m_fShapeRendered = fValue; }
+    bool IsShapeRendered() { return m_fShapeRendered; }
+    void SetShape(lmShape* pShape) { m_pShape = pShape; }
+    lmShape* GetShape() { return m_pShape; }
 
     // methods related to font rendered objects
     virtual void SetFont(lmPaper* pPaper) {}
@@ -157,14 +172,7 @@ public:
             return lmUPoint(m_uPaperPos.x + m_uGlyphPos.x, m_uPaperPos.y + m_uGlyphPos.y);
         }
 
-    //transitional methods to shapes renderization
-    void SetShapeRendered(bool fValue) { m_fShapeRendered = fValue; }
-    bool IsShapeRendered() { return m_fShapeRendered; }
-    void SetShape(lmShape* pShape) { m_pShape = pShape; }
-    lmShape* GetShape() { return m_pShape; }
-
-    // debug methods
-    virtual wxString Dump()=0;
+#endif  //lmCOMPATIBILITY_NO_SHAPES
 
 protected:
     lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable = false);
@@ -184,6 +192,14 @@ protected:
     EScoreObjType   m_nType;        //Type of lmScoreObj
     int             m_nId;          //unique number, to identify each lmScoreObj
 
+    // Info for draggable objects
+    bool        m_fIsDraggable;
+
+    // grapich objects attached to this one
+    GraphicObjsList*    m_pGraphObjs;   //the collection of GraphicObjs. NULL if none
+
+#if lmCOMPATIBILITY_NO_SHAPES
+
     //positioning. Coordinates relative to origin of page (in logical units); updated each
     // time this object is drawn
     lmUPoint    m_uPaperPos;        // paper xPos, yBase position to render this object
@@ -195,19 +211,16 @@ protected:
     bool        m_fSelected;        // this obj is selected
     lmURect     m_uSelRect;         // selection rectangle (logical units, relative to paperPos)
 
-    // Info for draggable objects
-    bool        m_fIsDraggable;
-
     // variables related to font rendered objects
     wxFont*     m_pFont;            // font to use for drawing this object
     lmUPoint    m_uGlyphPos;        // origing to position the glyph (relative to m_uPaperPos)
 
     //transitional variables: renderization based on shapes
-    bool            m_fShapeRendered;
-    lmShape*     m_pShape;
+    bool        m_fShapeRendered;
+    lmShape*    m_pShape;
+    lmShape*    m_pShape2;          //new shape
 
-    // grapich objects attached to this one
-    GraphicObjsList*    m_pGraphObjs;   //the collection of GraphicObjs. NULL if none
+#endif  //lmCOMPATIBILITY_NO_SHAPES
 
 };
 

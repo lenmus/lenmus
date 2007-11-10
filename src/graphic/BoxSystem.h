@@ -62,12 +62,13 @@ public:
     void SetFirstMeasure(int nAbsMeasure) { m_nFirstMeasure = nAbsMeasure; }
     lmBoxSlice* AddSlice(int nAbsMeasure, lmLUnits xStart=0, lmLUnits xEnd=0);
     inline lmBoxSlice* GetSlice(int nRelMeasure) const { return m_Slices[nRelMeasure - 1]; }
+	inline int GetNumSlices() const { return (int)m_Slices.size(); }
 
     //positioning
+    void UpdateXRight(lmLUnits xPos);
     void SetPosition(lmLUnits xPos, lmLUnits yPos) { m_xPos = xPos; m_yPos = yPos; }
     inline lmLUnits GetPositionX() const { return m_xPos; }
     inline lmLUnits GetPositionY() const { return m_yPos; }
-    void SetFinalX(lmLUnits xPos);
     inline void SetIndent(lmLUnits xDsplz) { m_nIndent = xDsplz; }
     inline lmLUnits GetSystemIndent() const { return m_nIndent; }
     inline lmLUnits GetSystemFinalX() const { return m_uBoundsBottom.x; }
@@ -75,6 +76,7 @@ public:
     //pointing at
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
     lmBoxInstrSlice* FindInstrSliceAtPosition(lmUPoint& pointL);
+    lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
 
     //rendering
     void Render(int nSystem, lmScore* pScore, lmPaper* pPaper);

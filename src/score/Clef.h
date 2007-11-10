@@ -60,6 +60,8 @@ public:
 
     //rendering related methods
     lmLUnits DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, wxColour colorC = *wxBLACK);
+	lmLUnits AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
+					  wxColour colorC = *wxBLACK);
 
     //methods for hiding the clef in prologs
     void Hide(bool fHide) { m_fHidden = fHide; }

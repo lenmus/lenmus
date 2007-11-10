@@ -1081,6 +1081,24 @@
 				RelativePath="..\..\src\graphic\GraphicManager.h">
 			</File>
 			<File
+				RelativePath="..\..\src\graphic\ShapeBarline.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeBarline.h">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeBeam.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeBeam.h">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeNote.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeNote.h">
+			</File>
+			<File
 				RelativePath="..\..\src\graphic\Shapes.cpp">
 			</File>
 			<File
@@ -1091,6 +1109,12 @@
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\ShapeStaff.h">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeTuplet.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeTuplet.h">
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\TimeposTable.cpp">
