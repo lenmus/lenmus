@@ -34,105 +34,232 @@
 #include "../score/Score.h"
 #include "ShapeNote.h"
 #include "ShapeBeam.h"
+#include <vector>
 
 
 //-------------------------------------------------------------------------------------
 // Implementation of lmShapeBeam
 
 
-lmShapeBeam::lmShapeBeam(lmNoteRest* pOwner, bool fStemsDown, int nNumNotes, wxColour color)
+lmShapeBeam::lmShapeBeam(lmNoteRest* pOwner, bool fStemsDown, wxColour color)
 	: lmCompositeShape(pOwner, _T("Beam"), eGMO_ShapeBeam)
 {
 	m_color = color;
 	m_fStemsDown = fStemsDown;
-	m_nNumNotes = nNumNotes;
+
+	//initializations
+	m_fLayoutPending = true;
 }
 
 lmShapeBeam::~lmShapeBeam()
 {
+	//delete notes info
+	for(int i=0; i < (int)m_cParentNotes.size(); i++)
+    {
+		delete m_cParentNotes[i];
+    }
 }
 
-void lmShapeBeam::AddNoteRest(lmShapeNote* pShape, lmTBeamInfo* pBeamInfo[])
+void lmShapeBeam::AddNoteRest(lmShapeStem* pStem, lmShapeNote* pNote,
+							  lmTBeamInfo* pBeamInfo)
 {
 	//add the info
 	lmParentNote* pData = new lmParentNote;
 	pData->pBeamInfo = pBeamInfo;
-	pData->pShape = pShape;
+	pData->pShape = pNote;
+	pData->nStem = Add(pStem);
 	m_cParentNotes.push_back(pData);
-
-	//if finished recompute layout
-	if (m_nNumNotes <= (int)m_cParentNotes.size())
-	{
-		m_nNumNotes = (int)m_cParentNotes.size();
-		//Relayout();
-	}
-
 }
 
-void lmShapeBeam::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag)
+lmShapeStem* lmShapeBeam::GetStem(int iParentNote)
 {
-	////if intermediate note moved, nothing to do
-	//if (!(nTag == eGMA_StartNote || nTag == eGMA_EndNote)) return;
+	wxASSERT(iParentNote < (int)m_cParentNotes.size());
 
-	////computhe half notehead width
-	//lmShape* pSNH = ((lmShapeNote*)pShape)->GetNoteHead();
-	//wxASSERT(pSNH);
-	//lmLUnits uHalfNH = (pSNH->GetXRight() - pSNH->GetXLeft()) / 2.0;
+	int iShape = m_cParentNotes[iParentNote]->nStem;
+	return (lmShapeStem*)GetShape(iShape);
+}
 
-	//if (nTag == eGMA_StartNote)
-	//{
-	//	//start note moved. Recompute start of shape
-	//	//Placed on center of notehead if above, or half notehead before if below
-	//	if (m_fAbove)
-	//	{
-	//		m_uxStart = pSNH->GetXLeft() + uHalfNH;
-	//		m_uyStart = pShape->GetYTop();
-	//	}
-	//	else
-	//	{
-	//		m_uxStart = pSNH->GetXLeft() - uHalfNH;
-	//		m_uyStart = pShape->GetYBottom();
-	//	}
-	//	SetXLeft(m_uxStart);
-	//	SetYTop(m_uyStart);
-	//}
+int lmShapeBeam::FindNoteShape(lmShapeNote* pShape)
+{
+    for(int iNote=0; iNote < (int)m_cParentNotes.size(); iNote++)
+    {
+        if (m_cParentNotes[iNote]->pShape->GetID() == pShape->GetID())
+			return iNote;
+	}
+	return -1;	//not found
+}
 
-	//else if (nTag == eGMA_EndNote)
-	//{
-	//	//end note moved. Recompute end of shape
-	//	//Placed half notehead appart if above, or on center of notehead if below
-	//	if (m_fAbove)
-	//	{
-	//		m_uxEnd = pSNH->GetXRight() + uHalfNH;
-	//		m_uyEnd = pShape->GetYTop();
-	//	}
-	//	else
-	//	{
-	//		m_uxEnd = pSNH->GetXRight() - uHalfNH;
-	//		m_uyEnd = pShape->GetYBottom();
-	//	}
-	//	SetXRight(m_uxEnd);
-	//	SetYBottom(m_uyEnd);
-	//}
+void lmShapeBeam::SetStemsDown(bool fValue)
+{
+	m_fStemsDown = fValue;
+	m_fLayoutPending = true;
+}
 
-	//NormaliceBoundsRectangle();
+void lmShapeBeam::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
+										 lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent)
+{
+	m_fLayoutPending = true;
 
+	//identify note moved and move its stem
+	int i = FindNoteShape((lmShapeNote*)pShape);
+	wxASSERT(i != -1);
+	lmShapeStem* pStem = GetStem(i);
+	wxASSERT(pStem);
+
+	pStem->Shift(ux, uy);
 }
 
 void lmShapeBeam::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
 {
- //   WXUNUSED(uPos);
+	if (m_fLayoutPending)
+	{
+		m_fLayoutPending = false;
+		AdjustStems();
+	}
 
-	////get staff, for scaling logical units
- //   lmVStaff* pVStaff = m_pStartNR->GetVStaff();
- //   int nStaff = m_pStartNR->GetStaffNum();
- //   lmStaff* pStaff = pVStaff->GetStaff(nStaff);
+	//get staff, for scaling logical units
+    lmVStaff* pVStaff = ((lmNoteRest*)m_pOwner)->GetVStaff();
+    int nStaff = ((lmNoteRest*)m_pOwner)->GetStaffNum();
+    lmStaff* pStaff = pVStaff->GetStaff(nStaff);
 
- //   //Prepare pen
- //   lmLUnits uThick = pStaff->TenthsToLogical(2.0);    //! @todo user options
- //   pPaper->SetPen(color, uThick);
+	//geometry values.
+    //DOC: Beam spacing
+    //
+    //  according to http://www2.coloradocollege.edu/dept/mu/Musicpress/engraving.html
+    //  distance between primary and secondary beams should be 1/4 space (2.5 tenths)
+    //  But if I use 3 tenths (2.5 up rounding) beam spacing is practicaly
+    //  invisible. In pictures displayed in the above mentioned www page, spacing
+    //  is about 1/2 space, not 1/4 space. So I will use 5 tenths.
+    //  So the number to put in next statement is 9:
+    //      4 for beam thikness + 5 for beams spacing
+    //
+	//TODO: User options
+	//TODO: Move to shape?
+	lmLUnits uThickness = pStaff->TenthsToLogical(5.0);
+    lmLUnits uBeamSpacing = pStaff->TenthsToLogical(9.0);
 
- //   lmShape::RenderCommon(pPaper);
+
+	lmLUnits uxStart=0, uxEnd=0, uyStart=0, uyEnd=0; // start and end points for a segment
+    lmLUnits uxPrev=0, uyPrev=0, uxCur=0, uyCur=0;   // points for previous and current note
+    lmLUnits uyShift = 0;                         // shift, to separate a beam line from the previous one
+    lmShapeNote* pShapeNote = (lmShapeNote*)NULL;          // note being processed
+    bool fStart = false, fEnd = false;      // we've got the start/end point.
+    bool fForwardPending = false;           //finish a Forward hook in prev note
+    lmShapeNote* pStartNote = (lmShapeNote*)NULL;      // origin and destination notes of a beam segment
+	int iStartNote = -1;
+    lmShapeNote* pEndNote = (lmShapeNote*)NULL;
+	int iEndNote = -1;
+
+    //! @todo set BeamHookSize equal to notehead width and allow for customization.
+
+    for (int iLevel=0; iLevel < 6; iLevel++)
+	{
+        fStart = false;
+        fEnd = false;
+        for(int iNote=0; iNote < (int)m_cParentNotes.size(); iNote++)
+        {
+            pShapeNote = (lmShapeNote*)m_cParentNotes[iNote]->pShape;
+			lmShapeStem* pShapeStem = GetStem(iNote);
+			wxASSERT(pShapeStem);
+
+            //compute current position to optimize
+            uxCur = pShapeStem->GetXLeft();
+            uyCur = ComputeYPosOfSegment(pShapeStem, uyShift);
+
+            //Let's check if we have to finish a forward hook in prev. note
+            if (fForwardPending) {
+                //! @todo set forward hook equal to notehead width and allow for customization.
+                uxEnd = uxPrev + (uxCur-uxPrev)/3;
+                uyEnd = uyPrev + (uyCur-uyPrev)/3;
+                DrawBeamSegment(pPaper, uxStart, uyStart, uxEnd, uyEnd, uThickness,
+                        pStartNote, pEndNote, color);
+                fForwardPending = false;
+            }
+
+            // now we can deal with current note 
+			lmTBeamInfo tBeamInfo = *((m_cParentNotes[iNote]->pBeamInfo)+iLevel);
+			EBeamType nType = tBeamInfo.Type;
+            switch (nType) {
+                case eBeamBegin:
+                    //start of segment. Compute initial point
+                    fStart = true;
+                    uxStart = uxCur;
+                    uyStart = uyCur;
+                    pStartNote = pShapeNote;
+					iStartNote = iNote;
+                    break;
+
+                case eBeamEnd:
+                    // end of segment. Compute end point
+                    fEnd = true;
+                    uxEnd = uxCur;
+                    uyEnd = uyCur;
+                    pEndNote = pShapeNote;
+					iEndNote = iNote;
+                    break;
+
+                case eBeamForward:
+                    // start of segment. Mark that a forward hook is pending and
+                    // compute initial point
+                    fForwardPending = true;
+                    uxStart = uxCur;
+                    uyStart = uyCur;
+                    pStartNote = pShapeNote;
+					iStartNote = iNote;
+                    break;
+
+                case eBeamBackward:
+                    // end of segment. compute start and end points
+                    uxEnd = uxCur;
+                    uyEnd = uyCur;
+                    pEndNote = pShapeNote;
+					iEndNote = iNote;
+
+                    //! @todo set backward hook equal to notehead width and allow for customization.
+                    uxStart = uxPrev + (2*(uxCur-uxPrev))/3;
+                    uyStart = uyPrev + (2*(uyCur-uyPrev))/3;
+                    fStart = true;      //mark 'segment ready to be drawn'
+                    fEnd = true;
+                   break;
+
+                case eBeamContinue:
+                case eBeamNone:
+                    // nothing to do.
+                    break;
+
+                default:
+                    wxASSERT(false);
+            }
+
+            // if we have data to draw a segment, draw it
+            if (fStart && fEnd)
+			{
+                //lmLUnits uStemWidth = pEndNote->GetStemThickness();
+				pShapeStem = GetStem(iEndNote);
+				wxASSERT(pShapeStem);
+				lmLUnits uStemWidth = pShapeStem->GetXRight() - pShapeStem->GetXLeft();
+
+                DrawBeamSegment(pPaper,  uxStart, uyStart, uxEnd + uStemWidth, uyEnd,
+								uThickness, pStartNote, pEndNote, color);
+                fStart = false;
+                fEnd = false;
+                pStartNote = (lmShapeNote*)NULL;
+				iStartNote = -1;
+                pEndNote = (lmShapeNote*)NULL;
+				iEndNote = -1;
+            }
+
+            // save position of current note
+            uxPrev = uxCur;
+            uyPrev = uyCur;
+        }
+
+        // displace y coordinate for next beamline
+        uyShift += (m_fStemsDown ? - uBeamSpacing : uBeamSpacing);
+    }
+
+	//render stems
+	lmCompositeShape::Render(pPaper, uPos, color);
 
 }
 
@@ -148,191 +275,215 @@ void lmShapeBeam::Shift(lmLUnits xIncr, lmLUnits yIncr)
 
 void lmShapeBeam::AdjustStems()
 {
-//	// In this method the lenght of note stems in a beamed group is adjusted.
-//	// It is necessary to adjust stems whenever the x position of a note in the 
-//	// beam changes.
-//	
-//	
-//	//  BUG_BYPASS: There is a bug in Composer5 and it some times generate scores
-//    //    ending with a start of group. As this start is in the last note of the score,
-//    //    the group has only one note.
-//    //
-//    if (m_cNotes.GetCount()==1) {
-//        wxLogMessage(_T("*** ERROR *** Group with just one note!"));
-//        return;
-//    }
-//    // End of BUG_BYPASS
-//
-//
-//    // At this point all stems have the standard size and the stem start point (the point
-//    // nearest to the notehead) is computed. Now we are goin to compute the end point
-//    // for each stem.
-//    // As we are interested in the stems' length, not in the exact coordinates, instead
-//    // of using the real start coordinates, we are going to compute an arbitrary start
-//    // coordinate relative to zero. This has the advantage, over using the real coordinates,
-//    // that all stems will be in the same system, and this is better when we have to split
-//    // the beam into two systems.
-//    // The computed start and end positions for each stem will be stored in the auxiliary
-//    // arrays yBase and yTop, respectively.
-//
-//    int nNumNotes = m_cNotes.GetCount();
-//    std::vector<float>yBase(nNumNotes+1);   // 1 based
-//    std::vector<float>yTop(nNumNotes+1);    // 1 based
-//
-//    wxNoteRestsListNode *pNode;
-//    lmNote* pMaxNote;
-//    lmNote* pMinNote;
-//    lmNote* pNote;
-//    int i = 1;
-//
-//#if 1
-//    //code using an arbitrary start coordinate relative to zero
-//    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++)
-//    {
-//        pNote = (lmNote*)pNode->GetData();
-//         lmLUnits udyStem = pNote->GetDefaultStemLength();
-//        if (pNote->IsInChord()) {
-//             pMinNote = (pNote->GetChord())->GetMinNote();
-//             pMaxNote = (pNote->GetChord())->GetMaxNote();
-//            if (pNote->StemGoesDown()) {
-//                yBase[i] = pMaxNote->GetStaffOffset() - pMaxNote->GetPitchShift();
-//                yTop[i] = pMinNote->GetStaffOffset() - pMinNote->GetPitchShift() + udyStem;
-//            } else {
-//                yBase[i] = pMinNote->GetStaffOffset() - pMinNote->GetPitchShift();
-//                yTop[i] = pMaxNote->GetStaffOffset() - pMaxNote->GetPitchShift() - udyStem;
-//            }
-//        } else {
-//            if (pNote->IsRest()) {
-//                yBase[i] = pNote->GetStaffOffset();
-//                yTop[i] = yBase[i];
-//            }
-//            else {
-//                yBase[i] = pNote->GetStaffOffset() - pNote->GetPitchShift();
-//                yTop[i] = yBase[i] + (pNote->StemGoesDown() ? udyStem : -udyStem);
-//            }
-//        }
-//    }
-//
-//#else
-//    //  code using the real start coordinate
-//    for(pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++)
-//    {
-//        pNote = (lmNote*)pNode->GetData();
-//        lmLUnits dyStem = pNote->GetDefaultStemLength();
-//        if (pNote->IsInChord()) {
-//            pMinNote = (pNote->GetChord())->GetMinNote();
-//            pMaxNote = (pNote->GetChord())->GetMaxNote();
-//            if (pNote->StemGoesDown()) {
-//                yBase[i] = pMaxNote->GetYStem();
-//                yTop[i] = pMinNote->GetYStem() + dyStem;
-//            } else {
-//                yBase[i] = pMinNote->GetYStem();
-//                yTop[i] = pMaxNote->GetYStem() - dyStem;
-//            }
-//        } else {
-//            if (pNote->IsRest()) {
-//                yBase[i] = pNote->GetYStem();
-//                yTop[i] = yBase[i];
-//            }
-//            else {
-//                yBase[i] = pNote->GetYStem();
-//                yTop[i] = yBase[i] + (pNote->StemGoesDown() ? dyStem : -dyStem);
-//            }
-//        }
-//    }
-//#endif
-//
-//
-//    // lmBeam line position is established by the first and last notes' stems. Now
-//    // let's adjust the intermediate notes' stem lengths to end up in the beam line.
-//    // This is just a proportional share based on line slope:
-//    // If (x1,y1) and (xn,yn) are, respectively, the position of first and last notes of
-//    // the group, the y position of an intermediate note i can be computed as:
-//    //     Ay = yn-y1
-//    //     Ax = xn-x1
-//    //                Ay
-//    //     yi = y1 + ---- (xi-x1)
-//    //                Ax
-//    // The x position of the stem has beeen computed in Note object during the
-//    // measurement phase.
-//    //
-//    // The loop is also used to look for the shortest stem
-//
-//    lmLUnits Ay = yTop[nNumNotes] - yTop[1];
-//    lmLUnits x1 = m_pFirstNote->GetXStemLeft();
-//    lmLUnits Ax = m_pLastNote->GetXStemLeft() - x1;
-//    lmNoteRest* pNR;
-//    lmLUnits uMinStem;
-//    for(i=1, pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++)
-//    {
-//        pNR = (lmNoteRest*)pNode->GetData();
-//        if (!pNR->IsRest()) {
-//            pNote = (lmNote*)pNR;
-//            yTop[i] = yTop[1] + (Ay * (pNote->GetXStemLeft() - x1)) / Ax;
-//            //save the shortest stem
-//            if (i==1)
-//                uMinStem = fabs(yBase[1] - yTop[1]);
-//            else
-//                uMinStem = wxMin(uMinStem, fabs(yBase[i] - yTop[i]));
-//        }
-//    }
-//
-//    // If there is a note in the group out of the interval formed by the first note and the
-//    // last note, then stem could be too too short. For example, a group of three notes,
-//    // the first and the last ones D4 and the middle one G4; the beam is horizontal, nearly
-//    // the G4 line; so the midle notehead would be positioned just on the beam line.
-//    // So let's avoid these problems by adjusting the stems so that all stems have
-//    // a minimum height
-//
-//    lmLUnits dyStem = m_pFirstNote->GetDefaultStemLength();
-//    lmLUnits dyMin = (2 * dyStem) / 3;
-//    bool fAdjust;
-//
-//    // compare the shortest with this minimun required
-//    lmLUnits uyIncr;
-//    if (uMinStem < dyMin) {
-//        // a stem is smaller than dyMin. Increment all stems.
-//        uyIncr = dyMin - uMinStem;
-//        fAdjust = true;
-//    }
-//    else if (uMinStem > dyStem) {
-//        // all stems are greater than the standard size. Reduce them.
-//        uyIncr = -(uMinStem - dyStem);
-//        fAdjust = true;
-//    }
-//    else {
-//        fAdjust = false;
-//    }
-//    //wxLogMessage(_T("[lmBeam::TrimStems] dyMin=%d, nMinStem=%d, dyStem=%d, yIncr=%d"),
-//    //    dyMin, nMinStem, dyStem, yIncr);
-//
-//    if (fAdjust) {
-//        for (i = 1; i <= nNumNotes; i++) {
-//            //wxLogMessage(_T("[lmBeam::TrimStems] before yTop[%d]=%d"), i, yTop[i]);
-//           if (yBase[i] < yTop[i]) {
-//                yTop[i] += uyIncr;
-//            } else {
-//                yTop[i] -= uyIncr;
-//            }
-//            //wxLogMessage(_T("[lmBeam::TrimStems] after yTop[%d]=%d"), i, yTop[i]);
-//        }
-//    }
-//
-//    // At this point stems' lengths are computed and adjusted.
-//    // Transfer the computed values to the notes
-//    for(i=1, pNode = m_cNotes.GetFirst(); pNode; pNode=pNode->GetNext(), i++)
-//    {
-//        lmLUnits uLength = (yBase[i] > yTop[i] ? yBase[i] - yTop[i] : yTop[i] - yBase[i]);
-//        pNR = (lmNoteRest*)pNode->GetData();
-//        if (pNR->IsRest()) {
-//            ((lmRest*)pNR)->DoVerticalShift(m_nPosForRests);
-//        }
-//        else {
-//            pNote = (lmNote*)pNR;
-//            pNote->SetStemLength(uLength);
-//        }
-//    }
+	// In this method the lenght of note stems in a beamed group is adjusted.
+	// It is necessary to adjust stems whenever the x position of a note in the 
+	// beam changes.
+	
+    // At this point all stems have the standard size and the stem start and end points
+    // are computed (start point = nearest to notehead). In the following loop we 
+	// retrieve the start and end 'y' coordinates for each stem, 
+	// and we store them in the auxiliary arrays yStart and yEnd, respectively.
+
+    int nNumNotes = (int)m_cParentNotes.size();
+    std::vector<lmLUnits> yStart(nNumNotes);
+    std::vector<lmLUnits> yEnd(nNumNotes);
+
+	int n = nNumNotes -1;	// index to last element
+    lmLUnits x1, xn;		// x position of first and last stems, respectively
+
+    for(int i=0; i < nNumNotes; i++)
+    {
+		lmShapeNote* pShapeNote = (lmShapeNote*)m_cParentNotes[i]->pShape;
+		lmShapeStem* pShapeStem = GetStem(i);
+
+		if (pShapeStem)
+		{
+			//it is a note
+			if (i == 0)  x1 = pShapeStem->GetXLeft();
+			else if (i == n)  xn = pShapeStem->GetXLeft();
+
+			if (pShapeNote->StemGoesDown()) {
+				yStart[i] = pShapeStem->GetYTop();
+				yEnd[i] = pShapeStem->GetYBottom();
+			}
+			else {
+				yStart[i] = pShapeStem->GetYBottom();
+				yEnd[i] = pShapeStem->GetYTop();
+			}
+		}
+		else
+		{
+			//assume it is a rest
+			//TODO
+		}
+    }
+
+	// In following loop we compute each stem and update their final position. 
+    // lmShapeBeam line position is established by the first and last notes' stems. Now
+    // let's adjust the intermediate notes' stem lengths to end up in the beam line.
+    // This is just a proportional share based on line slope:
+    // If (x1,y1) and (xn,yn) are, respectively, the position of first and last notes of
+    // the group, the y position of an intermediate note i can be computed as:
+    //     Ay = yn-y1
+    //     Ax = xn-x1
+    //                Ay
+    //     yi = y1 + ---- (xi-x1)
+    //                Ax
+    //
+    // The loop is also used to look for the shortest stem
+
+    lmLUnits Ay = yEnd[n] - yEnd[0];
+    lmLUnits Ax = xn - x1;
+    lmLUnits uMinStem;
+    for(int i=0; i < nNumNotes; i++)
+    {
+		lmShapeNote* pShapeNote = (lmShapeNote*)m_cParentNotes[i]->pShape;
+		lmShapeStem* pShapeStem = GetStem(i);
+
+        if (pShapeStem)
+		{
+            yEnd[i] = yEnd[0] + (Ay * (pShapeStem->GetXLeft() - x1)) / Ax;
+            //save the shortest stem
+            if (i==0)
+                uMinStem = fabs(yStart[0] - yEnd[0]);
+            else
+                uMinStem = wxMin(uMinStem, fabs(yStart[i] - yEnd[i]));
+        }
+    }
+
+    // If there is a note in the group out of the interval formed by the first note and the
+    // last note, then stem could be too too short. For example, a group of three notes,
+    // the first and the last ones D4 and the middle one G4; the beam is horizontal, nearly
+    // the G4 line; so the midle notehead would be positioned just on the beam line.
+    // So let's avoid these problems by adjusting the stems so that all stems have
+    // a minimum height
+
+    lmLUnits dyStem = ((lmNote*)m_pOwner)->GetDefaultStemLength();
+    lmLUnits dyMin = (2 * dyStem) / 3;
+    bool fAdjust;
+
+    // compare the shortest with this minimun required
+    lmLUnits uyIncr;
+    if (uMinStem < dyMin) {
+        // a stem is smaller than dyMin. Increment all stems.
+        uyIncr = dyMin - uMinStem;
+        fAdjust = true;
+    }
+    else if (uMinStem > dyStem) {
+        // all stems are greater than the standard size. Reduce them.
+        uyIncr = -(uMinStem - dyStem);
+        fAdjust = true;
+    }
+    else {
+        fAdjust = false;
+    }
+    //wxLogMessage(_T("[lmShapeBeam::AdjustStems] dyMin=%d, nMinStem=%d, dyStem=%d, yIncr=%d"),
+    //    dyMin, nMinStem, dyStem, yIncr);
+
+    if (fAdjust) {
+        for (i = 0; i < nNumNotes; i++) {
+            //wxLogMessage(_T("[lmShapeBeam::AdjustStems] before yEnd[%d]=%d"), i, yEnd[i]);
+           if (yStart[i] < yEnd[i]) {
+                yEnd[i] += uyIncr;
+            } else {
+                yEnd[i] -= uyIncr;
+            }
+            //wxLogMessage(_T("[lmShapeBeam::AdjustStems] after yEnd[%d]=%d"), i, yEnd[i]);
+        }
+    }
+
+    // At this point stems' lengths are computed and adjusted.
+    // Transfer the computed values to the note shapes
+    for(int i=0; i < nNumNotes; i++)
+    {
+		lmShapeNote* pShapeNote = (lmShapeNote*)m_cParentNotes[i]->pShape;
+		lmShapeStem* pShapeStem = GetStem(i);
+
+        lmLUnits uLength = fabs(yEnd[i] - yStart[i]);
+		//TODO: treatment for rests
+        if (pShapeStem) {
+			SetStemLength(pShapeStem, uLength);
+        }
+        else {
+        //    ((lmRest*)pNR)->DoVerticalShift(m_nPosForRests);
+        }
+    }
+	RecomputeBounds();
 
 }
 
+void lmShapeBeam::SetStemLength(lmShapeStem* pStem, lmLUnits uLength)
+{
+	if (pStem->StemDown())
+	{
+		//adjust bottom point
+		pStem->SetLength(uLength, false);
+	}
+	else
+	{
+		//adjust top point
+		pStem->SetLength(uLength, true);
+	}
+}
+
+void lmShapeBeam::DrawBeamSegment(lmPaper* pPaper, 
+                             lmLUnits uxStart, lmLUnits uyStart,
+                             lmLUnits uxEnd, lmLUnits uyEnd, lmLUnits uThickness,
+                             lmShapeNote* pStartNote, lmShapeNote* pEndNote,
+                             wxColour color)
+{
+    //check to see if the beam segment has to be splitted in two systems
+    //if (pStartNote && pEndNote) {
+    //    lmUPoint paperPosStart = pStartNote->GetOrigin();
+    //    lmUPoint paperPosEnd = pEndNote->GetOrigin();
+    //    if (paperPosEnd.y != paperPosStart.y) {
+    //        //if start note paperPos Y is not the same than end note paperPos Y the notes are
+    //        //in different systems. Therefore, the beam must be splitted. Let's do it
+    //        wxLogMessage(_T("***** BEAM SPLIT ***"));
+    //        //TODO
+    //        //lmLUnits xLeft = pPaper->GetLeftMarginXPos();
+    //        //lmLUnits xRight = pPaper->GetRightMarginXPos();
+    //        return; //to avoid rendering bad lines across the score. It is less noticeable
+    //    }
+    //}
+
+    //draw the segment
+    pPaper->SolidLine(uxStart, uyStart, uxEnd, uyEnd, uThickness, eEdgeVertical, color);
+
+    //wxLogMessage(_T("[lmShapeBeam::DrawBeamSegment] uxStart=%d, uyStart=%d, uxEnd=%d, uyEnd=%d, uThickness=%d, yStartIncr=%d, yEndIncr=%d, m_fStemsDown=%s"),
+    //    uxStart, uyStart, uxEnd, uyEnd, uThickness, yStartIncr, yEndIncr, (m_fStemsDown ? _T("down") : _T("up")) );
+
+}
+
+lmLUnits lmShapeBeam::ComputeYPosOfSegment(lmShapeStem* pShapeStem, lmLUnits uyShift)
+{
+    lmLUnits uyPos;
+	//if ( ((lmNote*)m_pOwner)->IsInChord() )
+	//{
+	//    if (m_fStemsDown)
+	//	{
+ //   //        lmNote* pMinNote = (pNote->GetChord())->GetMinNote();
+ //   //        uyPos = pMinNote->GetYStem() + pNote->GetStemLength();
+ //       }
+ //       else
+	//	{
+ //   //        lmNote* pMaxNote = (pNote->GetChord())->GetMaxNote();
+ //   //        uyPos = pMaxNote->GetYStem() - pNote->GetStemLength();
+ //           //wxLogMessage(_T("[lmShapeBeam::ComputeYPosOfSegment] uyPos=%.2f, yStem=%.2f, stemLength=%.2f"),
+ //           //    uyPos, pMaxNote->GetYStem(), pNote->GetStemLength());
+ //       }
+ //   }
+ //   else 
+	//{
+		wxASSERT(pShapeStem);
+		if (m_fStemsDown)
+			uyPos = pShapeStem->GetYBottom();
+		else
+			uyPos = pShapeStem->GetYTop();
+    //}
+    uyPos += uyShift;
+
+    return uyPos;
+
+}
 

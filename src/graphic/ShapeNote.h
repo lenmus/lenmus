@@ -55,7 +55,7 @@ public:
 	void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
 	//specific methods
-	void AddStem(lmShape* pShape);
+	void AddStem(lmShapeStem* pShape);
 	void AddNoteHead(lmShape* pShape);
 	void AddFlag(lmShape* pShape);
 	void AddAccidental(lmShape* pShape);
@@ -63,10 +63,16 @@ public:
 
 	//access to constituent shapes
 	lmShape* GetNoteHead();
-	lmShape* GetStem();
+	lmShapeStem* GetStem();
 
 	//access to info
 	inline lmLUnits GetXEnd() const { return m_uxLeft + m_uWidth; }
+	lmLUnits GetStemThickness();
+	bool StemGoesDown();
+
+	//re-layout
+	void SetStemLength(lmLUnits uLength);
+
 
 protected:
 	//index to some important constituent shapes

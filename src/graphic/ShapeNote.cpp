@@ -57,7 +57,7 @@ lmShapeNote::~lmShapeNote()
 {
 }
 
-void lmShapeNote::AddStem(lmShape* pShape)
+void lmShapeNote::AddStem(lmShapeStem* pShape)
 {
 	m_nStem = Add(pShape);
 }
@@ -89,7 +89,7 @@ void lmShapeNote::Shift(lmLUnits xIncr, lmLUnits yIncr)
 	m_uxLeft += xIncr;
     m_uyTop += yIncr;
 
-	InformAttachedShapes();
+	InformAttachedShapes(xIncr, yIncr, lmSHIFT_EVENT);
 }
 
 lmShape* lmShapeNote::GetNoteHead()
@@ -100,11 +100,45 @@ lmShape* lmShapeNote::GetNoteHead()
 	return GetShape(m_nNoteHead);
 }
 
-lmShape* lmShapeNote::GetStem()
+lmShapeStem* lmShapeNote::GetStem()
 {
 	if (m_nStem < 0)
-		return (lmShape*)NULL;
+		return (lmShapeStem*)NULL;
 
-	return GetShape(m_nStem);
+	return (lmShapeStem*)GetShape(m_nStem);
+}
+
+void lmShapeNote::SetStemLength(lmLUnits uLength)
+{
+	lmShapeStem* pStem = GetStem();
+	if (!pStem) return;
+
+
+	if (StemGoesDown())
+	{
+		//adjust bottom point
+		pStem->SetLength(uLength, false);
+	}
+	else
+	{
+		//adjust top point
+		pStem->SetLength(uLength, true);
+	}
+
+	RecomputeBounds();
+
+}
+
+lmLUnits lmShapeNote::GetStemThickness()
+{
+	lmShapeStem* pStem = GetStem();
+	if (!pStem) return 0.0;
+
+	return pStem->GetXRight() - pStem->GetXLeft();
+}
+
+bool lmShapeNote::StemGoesDown()
+{
+	return ((lmNote*)m_pOwner)->StemGoesDown();
 }
 

@@ -40,6 +40,7 @@
 #include "../ldp_parser/AuxString.h"
 #include "../graphic/Shapes.h"
 #include "../graphic/ShapeNote.h"
+#include "../graphic/ShapeBeam.h"
 #include "../graphic/GMObject.h"
 
 #include "Glyph.h"
@@ -90,7 +91,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     m_uyStem = 0;            // will be updated in lmNote::DrawObject, in measurement phase
     m_nStemType = nStem;
     m_uStemLength = GetDefaultStemLength();     //default. If beamed note, this value will
-                                                //be updated in lmBeam::ComputeStemsDirection
+                                                //be updated in lmBeam::CreateShape
     ////DBG
     //if (fTie) {   //GetID() == 13) {
     //    // break here
@@ -266,7 +267,6 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     }
 
 //    //Parámetros gráficos independientes del papel.
-////    m_rEspacioPost = 0#     //ya se calculará
 //    m_fCabezaX = fCabezaX
 
 
@@ -521,15 +521,11 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
     else
         wxLogMessage(_T("[lmNote::LayoutObject] Note not in chord. NoteID=%d"), GetID());
 
-    //if this is the first note/rest of a beam, measure beam
+    //if this is the first note/rest of a beam, create the beam
     //AWARE This must be done before using stem information, as the beam could
     //change stem direction if it is not determined for some/all the notes in the beam
-    //During layout phase all computations, except final trimming of stem' lengths, is
-    //done. Final trimming of stems' length is delayed until the system is layouted,
-	//because it is not posible to adjust lentghts until the x position of the notes
-	//is finally established
     if (m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
-        m_pBeam->ComputeStemsDirection();
+        m_pBeam->CreateShape();
     }
 
     //create shapes for accidental signs if exist and note not in chord
@@ -647,10 +643,14 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
         //when layouting the last note of the chord
         if (fDrawStem && ! fInChord) {
             lmLUnits uxPos = GetXStemLeft() + m_uStemThickness/2;     //SolidLine centers line width on given coordinates
-            lmShapeLin2* pStem = 
-                new lmShapeLin2(this, uxPos, GetYStem(), uxPos, GetFinalYStem()+1,
-                                m_uStemThickness, 0.0, colorC, _T("Stem"), eEdgeHorizontal);
-	        pNoteShape->AddStem(pStem);
+            lmShapeStem* pStem = 
+                new lmShapeStem(this, uxPos, GetYStem(), uxPos, GetFinalYStem()+1,
+                                m_fStemDown, m_uStemThickness, colorC);
+			// if beamed, the stem shape will be owned by the beam; otherwise by the note
+			if (m_fBeamed)
+				m_pBeam->AddNoteAndStem(pStem, pNoteShape, &m_BeamInfo[0]);
+			else
+				pNoteShape->AddStem(pStem);
         }
     }
 
@@ -661,7 +661,7 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
     {
         //wxLogMessage(_T("IsLastNoteOfChord. Adding stem"));
         //m_pChord->DrawStem(fMeasuring, pPaper, colorC, m_pFont, m_pVStaff, m_nStaffNum);
-        m_pChord->AddStemShape(pNoteShape, pPaper, colorC, m_pFont, m_pVStaff, m_nStaffNum);
+        m_pChord->AddStemShape(pPaper, colorC, m_pFont, m_pVStaff, m_nStaffNum);
     }
 
 
@@ -836,7 +836,7 @@ void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
  //   //posible to adjust lentghts until the x position of the notes is finally established, and
  //   //this takes place AFTER the measurement phase, once the lines are justified.
  //   if (fMeasuring && m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
- //       m_pBeam->ComputeStemsDirection();
+ //       m_pBeam->CreateShape();
  //   }
 
  //   //render accidental signs if exist
@@ -1335,32 +1335,32 @@ void lmNote::MakeUpPhase(lmPaper* pPaper)
 {
     m_fMakeUpDone = true;
 
-    //Beams. If this is the first note/rest of a beam, do final trimming of stems' length
-    if (m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
-        m_pBeam->TrimStems();
-    }
+    ////Beams. If this is the first note/rest of a beam, do final trimming of stems' length
+    //if (m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
+    //    m_pBeam->TrimStems();
+    //}
 
-    //Ties. If this note is the end of a tie, store tie end point
-    if (m_pTiePrev) {
-        // compute end point, relative to end note paperPos (this note)
-        lmLUnits uxPos = m_uNoteheadRect.x + m_uNoteheadRect.width / 2;
-        lmLUnits uyPos = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-        uyPos = (m_pTiePrev->IsUnderNote() ?
-                m_uNoteheadRect.y + m_uNoteheadRect.height + uyPos :
-                m_uNoteheadRect.y - uyPos );
-        m_pTiePrev->SetEndPoint(uxPos, uyPos, pPaper->GetLeftMarginXPos());
-    }
+    ////Ties. If this note is the end of a tie, store tie end point
+    //if (m_pTiePrev) {
+    //    // compute end point, relative to end note paperPos (this note)
+    //    lmLUnits uxPos = m_uNoteheadRect.x + m_uNoteheadRect.width / 2;
+    //    lmLUnits uyPos = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
+    //    uyPos = (m_pTiePrev->IsUnderNote() ?
+    //            m_uNoteheadRect.y + m_uNoteheadRect.height + uyPos :
+    //            m_uNoteheadRect.y - uyPos );
+    //    m_pTiePrev->SetEndPoint(uxPos, uyPos, pPaper->GetLeftMarginXPos());
+    //}
 
-    //Ties. If this note is start of tie, store tie start point. Tie position is fixed
-    //by start note stem direction
-    if (m_pTieNext) {
-        // compute start point, relative to start note paperPos (this note)
-        lmLUnits uxPos = m_uNoteheadRect.x + m_uNoteheadRect.width / 2;
-        lmLUnits uyPos = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-        uyPos = (m_fStemDown ?
-                m_uNoteheadRect.y - uyPos : m_uNoteheadRect.y + m_uNoteheadRect.height + uyPos);
-        m_pTieNext->SetStartPoint(uxPos, uyPos, pPaper->GetRightMarginXPos(), !m_fStemDown);
-    }
+    ////Ties. If this note is start of tie, store tie start point. Tie position is fixed
+    ////by start note stem direction
+    //if (m_pTieNext) {
+    //    // compute start point, relative to start note paperPos (this note)
+    //    lmLUnits uxPos = m_uNoteheadRect.x + m_uNoteheadRect.width / 2;
+    //    lmLUnits uyPos = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
+    //    uyPos = (m_fStemDown ?
+    //            m_uNoteheadRect.y - uyPos : m_uNoteheadRect.y + m_uNoteheadRect.height + uyPos);
+    //    m_pTieNext->SetStartPoint(uxPos, uyPos, pPaper->GetRightMarginXPos(), !m_fStemDown);
+    //}
 
 }
 

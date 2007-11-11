@@ -172,9 +172,15 @@ protected:
 
 enum lmEAttachType
 {
+	eGMA_Unknown,
     eGMA_StartNote,
 	eGMA_MiddleNote,
 	eGMA_EndNote,
+};
+
+enum lmEParentEvent {
+	lmSHIFT_EVENT = 0,
+	lmMOVE_EVENT,
 };
 
 
@@ -196,10 +202,11 @@ public:
 
     //methods related to position
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr) = 0;
-	virtual void OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag) {}
+	virtual void OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
+										lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent) {}
 
 	//shapes can be attached to other shapes
-	int Attach(lmShape* pShape, lmEAttachType nType);
+	int Attach(lmShape* pShape, lmEAttachType nType = eGMA_Unknown);
 
     //Debug related methods
     virtual wxString Dump(int nIndent) = 0;
@@ -214,7 +221,7 @@ protected:
     void RenderCommon(lmPaper* pPaper, wxColour colorC);
     void RenderCommon(lmPaper* pPaper);
 	void ShiftBoundsAndSelRec(lmLUnits xIncr, lmLUnits yIncr);
-	void InformAttachedShapes();
+	void InformAttachedShapes(lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent);
 
 
 	lmObject*	m_pOwner;		//associated owner object (in lmScore representation)
@@ -278,6 +285,7 @@ public:
 
 
 protected:
+	virtual void RecomputeBounds();
 	lmShape* GetShape(int nShape);
 
     bool					m_fGrouped;		//its component shapes must be rendered as a single object

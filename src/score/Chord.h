@@ -45,7 +45,7 @@ public:
     void SetStemDirection(bool fStemDown);
     void DrawStem(bool fMeasuring, lmPaper* pPaper, wxColour colorC, wxFont* pFont,
                   lmVStaff* pVStaff, int nStaff);
-    void AddStemShape(lmCompositeShape* pCS, lmPaper* pPaper, wxColour colorC,
+    void AddStemShape(lmPaper* pPaper, wxColour colorC,
 					  wxFont* pFont, lmVStaff* pVStaff, int nStaff);
     void LayoutNoteHeads(lmShapeNote* pNS, lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC);
 

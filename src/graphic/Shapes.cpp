@@ -94,12 +94,21 @@ lmShapeLin2::lmShapeLin2(lmObject* pOwner, lmLUnits xStart, lmLUnits yStart,
 				wxColour nColor, wxString sName, lmELineEdges nEdge)
     : lmSimpleShape(eGMO_ShapeLine, pOwner, sName)
 {
+	Create(xStart, yStart, xEnd, yEnd, uWidth, uBoundsExtraWidth, nColor, nEdge);
+}
+
+void lmShapeLin2::Create(lmLUnits xStart, lmLUnits yStart,
+						 lmLUnits xEnd, lmLUnits yEnd, lmLUnits uWidth,
+						 lmLUnits uBoundsExtraWidth, wxColour nColor,
+						 lmELineEdges nEdge)
+{
     m_xStart = xStart;
     m_yStart = yStart;
     m_xEnd = xEnd;
     m_yEnd = yEnd;
     m_color = nColor;
     m_uWidth = uWidth;
+	m_uBoundsExtraWidth = uBoundsExtraWidth;
 	m_nEdge = nEdge;
 
 /*
@@ -438,5 +447,44 @@ void lmShapeText::Shift(lmLUnits xIncr, lmLUnits yIncr)
     m_uSelRect.x += xIncr;
 	m_uBoundsTop.x += xIncr;
 	m_uBoundsBottom.x += xIncr;
+}
+
+
+
+
+//========================================================================================
+// lmShapeStem object implementation: a vertical line
+//========================================================================================
+
+lmShapeStem::lmShapeStem(lmObject* pOwner, lmLUnits xStart, lmLUnits yStart,
+						 lmLUnits xEnd, lmLUnits yEnd, bool fStemDown,
+						 lmLUnits uWidth, wxColour nColor)
+	: lmShapeLin2(pOwner, xStart, yStart, xEnd, yEnd, uWidth, 0.0, nColor,
+				  _T("Stem"), eEdgeHorizontal)
+{
+	m_fStemDown = fStemDown;
+}
+
+void lmShapeStem::SetLength(lmLUnits uLenght, bool fModifyTop)
+{
+	if (fModifyTop)
+	{
+		if (m_yStart < m_yEnd)
+			m_yStart = m_yEnd - uLenght;
+		else
+			m_yEnd = m_yStart - uLenght;
+	}
+	else
+	{
+		if (m_yStart < m_yEnd)
+			m_yEnd = m_yStart + uLenght;
+		else
+			m_yStart = m_yEnd + uLenght;
+	}
+
+	//re-create the shape
+	Create(m_xStart, m_yStart, m_xEnd, m_yEnd, m_uWidth, m_uBoundsExtraWidth,
+		   m_color, m_nEdge);
+
 }
 

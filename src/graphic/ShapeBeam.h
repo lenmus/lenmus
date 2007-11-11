@@ -42,36 +42,52 @@
 #include "GMObject.h"
 
 class lmNoteRest;
+class lmShapeStem;
+class lmShapeNote;
 
 
 class lmShapeBeam : public lmCompositeShape
 {
 public:
-    lmShapeBeam(lmNoteRest* pOwner, bool fStemsDown, int nNumNotes, wxColour color = *wxBLACK);
+    lmShapeBeam(lmNoteRest* pOwner, bool fStemsDown=true, wxColour color = *wxBLACK);
 	~lmShapeBeam();
 
 	//creation
-	void AddNoteRest(lmShapeNote* pShape, lmTBeamInfo* pBeamInfo[6]);
+	void AddNoteRest(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo);
+	void SetStemsDown(bool fValue);
 
 	//implementation of pure virtual methods in base class
     void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
 	//layout changes
-	void OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag);
+	void OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
+								lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent);
 
 
 protected:
 	void AdjustStems();
+	lmShapeStem* GetStem(int iParentNote);
+	int FindNoteShape(lmShapeNote* pShape);
+	lmLUnits ComputeYPosOfSegment(lmShapeStem* pShapeStem, lmLUnits uyShift);
+	void SetStemLength(lmShapeStem* pStem, lmLUnits uLength);
+	void DrawBeamSegment(lmPaper* pPaper, 
+                         lmLUnits uxStart, lmLUnits uyStart,
+                         lmLUnits uxEnd, lmLUnits uyEnd, lmLUnits uThickness,
+                         lmShapeNote* pStartNote, lmShapeNote* pEndNote,
+                         wxColour color);
 
     //attributes for a beam
 	bool		m_fStemsDown;
-	int			m_nNumNotes;
     wxColour	m_color;
 
+	//other
+	bool		m_fLayoutPending;		//to optimize re-layouts
+
 	typedef struct lmParentNote_Struct {
-		lmShape*		pShape;
-		lmTBeamInfo*	pBeamInfo[6];
+		lmShape*		pShape;			//ptr. to parent ShapeNote
+		int				nStem;			//index to shapes collection
+		lmTBeamInfo*	pBeamInfo;		//beaming info from parent note
 	} lmParentNote;
 
 	//list of notes in this beam

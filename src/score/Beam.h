@@ -26,13 +26,17 @@
 #pragma interface "Beam.cpp"
 #endif
 
+#include <vector>
 #include "wx/dc.h"
 
-/*------------------------------------------------------------------------------------------------
- lmBeam object
-    lmBeam objects are auxiliary objects within lmNote objects to contain the information and
-    methods related to beaming: grouping the beams of several consecutive notes
-------------------------------------------------------------------------------------------------*/
+//------------------------------------------------------------------------------------------
+// lmBeam are auxiliary objects within lmNote objects to contain the information 
+// and methods related to beaming: grouping the beams of several consecutive notes
+//------------------------------------------------------------------------------------------
+
+class lmShapeBeam;
+class lmShapeStem;
+class lmShapeNote;
 
 class lmBeam
 {
@@ -42,39 +46,28 @@ public:
 
     void Include(lmNoteRest* pNR);
     void Remove(lmNoteRest* pNR);
-    int NumNotes();
-    void ComputeStemsDirection();
-    void TrimStems();
-    void DrawBeamLines(lmPaper* pPaper, lmLUnits uThickness, lmLUnits uBeamSpacing,
-                          wxColour color);
+    inline int NumNotes() { return (int)m_cNotes.size(); }
+    void CreateShape();
     void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
-	void OnNoteMoved(lmNoteRest* pNR, lmLUnits uLeft);
+	void AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo);
 
 
 private:
-    void DrawBeamSegment(lmPaper* pPaper, bool fStemDown,
-                         lmLUnits uxStart, lmLUnits uyStart,
-                         lmLUnits uxEnd, lmLUnits uyEnd, lmLUnits uThickness,
-                         lmNote* pStartNote, lmNote* pEndNote,
-                         wxColour color);
-    void AddBeamSegmentShape(lmCompositeShape* pCS, lmPaper* pPaper, bool fStemDown,
-                         lmLUnits uxStart, lmLUnits uyStart,
-                         lmLUnits uxEnd, lmLUnits uyEnd, lmLUnits uThickness,
-                         lmNote* pStartNote, lmNote* pEndNote,
-                         wxColour color);
-    lmLUnits ComputeYPosOfSegment(lmNote* pNote, bool fStemDown, lmLUnits yShift);
+	int FindNote(lmNoteRest* pNR);
 
-    lmNoteRest*     m_pNotePrev;    //the previous note to the group (for ties)
+	lmNoteRest*     m_pNotePrev;    //the previous note to the group (for ties)
     bool            m_fStemsDown;
-    NoteRestsList   m_cNotes;       // list of notes beamed. For the lmBeam object, chords are 
-                                    //      just one note and so, only the base note of the chord 
-                                    //      is included in the beam notes list
 
-    lmNote*         m_pFirstNote;   // the group could start or end with a rest. Here we 
-    lmNote*         m_pLastNote;    //      lets keep pointer to the first and last notes.    
+	//notes/rests in this beam (if chord, only base note)
+	std::vector<lmNoteRest*>	m_cNotes;
+    lmNote*         m_pFirstNote;   //As the beam could start or end with a rest, here we ...
+    lmNote*         m_pLastNote;    //... keep pointers to the first and last notes.    
 
     //beam information to be transferred to each beamed note
     int            m_nPosForRests;        //posición relativa de los silencios dentro del grupo
+
+	//
+	lmShapeBeam*	m_pBeamShape;
 
 };
 

@@ -64,7 +64,8 @@ public:
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
 	//layout changes
-	void OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag);
+	void OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
+								lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent);
 
 
 protected:

@@ -81,10 +81,15 @@ public:
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
-private:
+protected:
+	void Create(lmLUnits xStart, lmLUnits yStart, lmLUnits xEnd, lmLUnits yEnd,
+				lmLUnits uWidth, lmLUnits uBoundsExtraWidth, wxColour nColor,
+				lmELineEdges nEdge);
+
     lmLUnits		m_xStart, m_yStart;
     lmLUnits		m_xEnd, m_yEnd;
     lmLUnits		m_uWidth;
+	lmLUnits		m_uBoundsExtraWidth;
 	lmELineEdges	m_nEdge;
     wxColour		m_color;
 
@@ -163,6 +168,22 @@ private:
     wxString    m_sText;
     wxFont*     m_pFont;
     lmUPoint    m_uShift;        // to correctly position the text (relative to shape offset point)
+
+};
+
+class lmShapeStem : public lmShapeLin2
+{
+public:
+    lmShapeStem(lmObject* pOwner, lmLUnits xStart, lmLUnits yStart,
+                lmLUnits xEnd, lmLUnits yEnd, bool fStemDown, lmLUnits uWidth, wxColour nColor);
+    ~lmShapeStem() {}
+
+	//specific methods
+	void SetLength(lmLUnits uLenght, bool fModifyTop);
+	inline bool StemDown() const { return m_fStemDown; }
+
+private:
+	bool	m_fStemDown;
 
 };
 

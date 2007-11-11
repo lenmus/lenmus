@@ -241,7 +241,7 @@ void lmChord::DrawStem(bool fMeasuring, lmPaper* pPaper, wxColour colorC, wxFont
 
 }
 
-void lmChord::AddStemShape(lmCompositeShape* pCS, lmPaper* pPaper, wxColour colorC,
+void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
 						   wxFont* pFont, lmVStaff* pVStaff, int nStaff)
 {
 	// Create the shape for the stem of the chord.
@@ -284,32 +284,33 @@ void lmChord::AddStemShape(lmCompositeShape* pCS, lmPaper* pPaper, wxColour colo
 	//need to create a compoite shape as container for flag and stem. Otherwise we
 	//will just add the stem shape
 	bool fFlagNeeded = !pBaseNote->IsBeamed() && pBaseNote->GetNoteType() > eQuarter;
-	lmCompositeShape* pShapeCont = pCS;		//assume no flag needed
-	if (fFlagNeeded)
-	{
-		//flag needed. Create a compoite shape as container for flag and stem
-		pShapeCont = new lmCompositeShape(pCS->Owner(), _T("Chord stem & flag"));
-		pCS->Add(pShapeCont);
-	}
 
 	//create the stem shape
+	lmShapeNote* pShapeNote = (lmShapeNote*)pBaseNote->GetShap2(); 
     #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
     lmLUnits uStemThickness = pVStaff->TenthsToLogical(STEM_WIDTH, nStaff) / 10;
     pPaper->SolidLine(xStem, yStemStart, xStem, yStemEnd, uStemThickness,
                         eEdgeNormal, colorC);
-    lmShapeLin2* pStem = 
-        new lmShapeLin2(pCS->Owner(), xStem, yStemStart, xStem, yStemEnd, uStemThickness,
-						0.0, colorC, _T("Stem"), eEdgeHorizontal);
-	pShapeCont->Add(pStem);
+    lmShapeStem* pStem = 
+        new lmShapeStem(pShapeNote->Owner(), xStem, yStemStart, xStem, yStemEnd,
+						pBaseNote->StemGoesDown(), uStemThickness, colorC);
+
+	// if beamed, the stem shape will be owned by the beam; otherwise by the note
+	if (pBaseNote->IsBeamed()) {
+		lmBeam* pBeam = pBaseNote->GetBeam();
+		pBeam->AddNoteAndStem(pStem, pShapeNote, pBaseNote->GetBeamInfo());
+	}
+	else
+		pShapeNote->AddStem(pStem);
 
     //add the flag 
 	if (fFlagNeeded)
 	{
 		lmEGlyphIndex nGlyph = pBaseNote->GetGlyphForFlag();
 		lmLUnits yPos = yStemEnd + pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, nStaff);
-		lmShapeGlyp2* pShape = new lmShapeGlyp2(pCS->Owner(), nGlyph, pFont, pPaper,
+		lmShapeGlyp2* pShape = new lmShapeGlyp2(pShapeNote->Owner(), nGlyph, pFont, pPaper,
 												lmUPoint(xStem, yPos), _T("Flag"));
-		pShapeCont->Add(pShape);
+		pShapeNote->AddFlag(pShape);
 	}
 
 }

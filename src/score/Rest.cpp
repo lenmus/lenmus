@@ -133,7 +133,7 @@ void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool 
 
     //if measurement phase and this is the first note/rest of a beam, measure beam
     if (fMeasuring && m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
-        m_pBeam->ComputeStemsDirection();
+        m_pBeam->CreateShape();
     }
 
     // Draw rest symbol

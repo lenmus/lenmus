@@ -237,12 +237,12 @@ int lmShape::Attach(lmShape* pShape, lmEAttachType nTag)
 
 }
 
-void lmShape::InformAttachedShapes()
+void lmShape::InformAttachedShapes(lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent)
 {
 	for(int i=0; i < (int)m_cAttachments.size(); i++)
     {
 		lmAtachPoint* pData = m_cAttachments[i];
-        pData->pShape->OnAttachmentPointMoved(this, pData->nType);
+        pData->pShape->OnAttachmentPointMoved(this, pData->nType, ux, uy, nEvent);
     }
 }
 
@@ -394,4 +394,36 @@ lmShape* lmCompositeShape::GetShape(int nShape)
 {
 	wxASSERT(nShape < (int)m_Components.size());
 	return m_Components[nShape];
+}
+
+void lmCompositeShape::RecomputeBounds()
+{
+	if (m_Components.size() > 0)
+	{
+		lmShape* pShape = m_Components[0];
+
+		//initilaize selection rectangle
+		m_uSelRect = pShape->GetSelRectangle();
+
+		// initialize bounds
+		m_uBoundsTop.x = pShape->GetXLeft();
+		m_uBoundsTop.y = pShape->GetYTop();
+		m_uBoundsBottom.x = pShape->GetXRight();
+		m_uBoundsBottom.y = pShape->GetYBottom();
+	}
+
+    for (int i=1; i < (int)m_Components.size(); i++)
+    {
+		lmShape* pShape = m_Components[i];
+
+		//compute new selection rectangle by union of individual selection rectangles
+		m_uSelRect.Union(pShape->GetSelRectangle());
+
+		// compute outer rectangle for bounds
+		m_uBoundsTop.x = wxMin(m_uBoundsTop.x, pShape->GetXLeft());
+		m_uBoundsTop.y = wxMin(m_uBoundsTop.y, pShape->GetYTop());
+		m_uBoundsBottom.x = wxMax(m_uBoundsBottom.x, pShape->GetXRight());
+		m_uBoundsBottom.y = wxMax(m_uBoundsBottom.y, pShape->GetYBottom());
+	}
+
 }

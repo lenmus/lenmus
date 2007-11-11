@@ -101,6 +101,7 @@ public:
     EBeamType GetBeamType(int level) { return m_BeamInfo[level].Type; }
     void SetBeamType(int level, EBeamType type) { m_BeamInfo[level].Type = type; }
 	inline lmBeam* GetBeam() { return m_pBeam; }
+	inline lmTBeamInfo* GetBeamInfo() { return &m_BeamInfo[0]; }
 
     //methods related to tuplets
     void SetTupletBracket(lmTupletBracket* pTB) { m_pTupletBracket = pTB; }

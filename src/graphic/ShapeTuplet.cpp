@@ -56,8 +56,8 @@ lmShapeTuplet::lmShapeTuplet(lmNoteRest* pStartNR, lmNoteRest* pEndNR, int nNumN
 	m_pFont = pFont;
 
 	//compute positions and bounds
-	OnAttachmentPointMoved(pStartNR->GetShap2(), eGMA_StartNote);
-	OnAttachmentPointMoved(pEndNR->GetShap2(), eGMA_EndNote);
+	OnAttachmentPointMoved(pStartNR->GetShap2(), eGMA_StartNote, 0.0, 0.0, lmMOVE_EVENT);
+	OnAttachmentPointMoved(pEndNR->GetShap2(), eGMA_EndNote, 0.0, 0.0, lmMOVE_EVENT);
 
 }
 
@@ -65,8 +65,13 @@ lmShapeTuplet::~lmShapeTuplet()
 {
 }
 
-void lmShapeTuplet::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag)
+void lmShapeTuplet::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
+										   lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent)
 {
+	WXUNUSED(ux);
+	WXUNUSED(uy);
+	WXUNUSED(nEvent);
+
 	//if intermediate note moved, nothing to do
 	if (!(nTag == eGMA_StartNote || nTag == eGMA_EndNote)) return;
 
