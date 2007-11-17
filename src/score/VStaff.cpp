@@ -695,9 +695,12 @@ wxString lmVStaff::Dump()
 
 }
 
-wxString lmVStaff::SourceLDP()
+wxString lmVStaff::SourceLDP(int nIndent)
 {
-    wxString sSource;
+	wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(musicData\n");
+    nIndent++;
 
     //iterate over the collection of StaffObjs
     lmStaffObj* pSO;
@@ -705,10 +708,15 @@ wxString lmVStaff::SourceLDP()
     while(!pIT->EndOfList())
     {
         pSO = pIT->GetCurrent();
-        sSource += pSO->SourceLDP();
+        sSource += pSO->SourceLDP(nIndent);
         pIT->MoveNext();
     }
     delete pIT;
+
+    //close musicData
+    nIndent--;
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T(")\n");
 
     return sSource;
 
@@ -784,82 +792,6 @@ lmLUnits lmVStaff::GetVStaffHeight()
 
 }
 
-//
-//void lmVStaff::Get Contexto(iNota As Long) As Long
-//    Contexto = m_anContexto(iNota)
-//}
-//
-//void lmVStaff::Get GetNumLineas(iPent As Long) As Long
-//    wxASSERT(iPent <= m_nNumStaves
-//    GetNumLineas = m_nNumLineas(iPent)
-//}
-//
-//void lmVStaff::Get EspaciadoEntrePentagramas() As Single
-//    EspaciadoEntrePentagramas = pStaff->GetAfterSpace()
-//}
-//
-//void lmVStaff::Let EspaciadoEntrePentagramas(rDecimas As Single)
-//    pStaff->GetAfterSpace() = rDecimas
-//}
-//
-//void lmVStaff::Get EspaciadoAntesParte() As Single
-//    EspaciadoAntesParte = m_topMargin
-//}
-//
-//void lmVStaff::Let EspaciadoAntesParte(rDecimas As Single)
-//    m_topMargin = rDecimas
-//}
-//
-//void lmVStaff::Get GetCurClave(iPent As Long) As EClefType
-//    wxASSERT(iPent <= m_nNumStaves
-//    GetCurClave = m_oCurClave(iPent).Valor
-//}
-//
-//void lmVStaff::Get GetNumPentagramas() As Long
-//    GetNumPentagramas = m_nNumStaves
-//}
-//
-//void lmVStaff::AddDirectivaRepeticion(nTipo As EDirectivasRepeticion, nNum As Long, _
-//        nX As Long, nY As Long, fXAbs As Boolean, fYAbs As Boolean)
-//
-//    //construye el staffobj de tipo "repeticion"
-//    Dim oRepe As CPORepeticion
-//    Set oRepe = new CPORepeticion
-//    oRepe.ConstructorRepeticion this, nTipo, nNum, nX, nY, fXAbs, fYAbs
-//    m_cStaffObjs.Almacenar oRepe
-//
-//End Sub
-//
-//void lmVStaff::AddDirectivaTexto(sTexto As String, _
-//        nX As Long, nY As Long, fXAbs As Boolean, fYAbs As Boolean, _
-//        Optional sFontName As String = "Arial", _
-//        Optional nFontSize As Long = 10, _
-//        Optional fBold As Boolean = False, _
-//        Optional fItalic As Boolean = False)
-//
-//    //construye el staffobj de tipo "texto"
-//    Dim oTxt As CPOTexto
-//    Set oTxt = new CPOTexto
-//    oTxt.ConstructorTexto this, sTexto, nX, nY, fXAbs, fYAbs, sFontName, nFontSize, fBold, fItalic
-//    m_cStaffObjs.Almacenar oTxt
-//
-//End Sub
-//
-//void lmVStaff::AddIndicacionMetronomo(nTipoNotaIni As EMetronomo, _
-//        nTipoNotaFin As EMetronomo, nVelocidad As Long, _
-//        Optional fVisible As Boolean = True)
-//
-//    Dim oIndicacion As CPOIndicacion
-//    Set oIndicacion = new CPOIndicacion
-//    oIndicacion.ConstructorIndMetronomo nTipoNotaIni, nTipoNotaFin, nVelocidad, this, fVisible
-//    m_cStaffObjs.Almacenar oIndicacion
-//
-//End Sub
-//
-//void lmVStaff::Get MetricaInicial() As ETimeSignature
-//    MetricaInicial = m_oIniMetrica.Valor
-//}
-//
 lmBarline* lmVStaff::AddBarline(EBarline nType, bool fVisible)
 {
     //create and save the barline
@@ -923,26 +855,6 @@ void lmVStaff::ResetContexts()
     }
 
 }
-
-//void lmVStaff::AddGrafObj(nTipo As EGrafObjs, _
-//                Optional fVisible As Boolean = True, _
-//                Optional nParm1 As Long)
-//
-//    Dim oGrafObj As CPOGrafObj
-//    Set oGrafObj = new CPOGrafObj
-//    oGrafObj.ConstructorGrafObj nTipo, this, fVisible, nParm1
-//    m_cStaffObjs.Almacenar oGrafObj
-//
-//End Sub
-//
-//void lmVStaff::AddEspacio(Optional nEspacio As Long = 8)
-//    AddGrafObj eGO_Espacio, True, nEspacio
-//End Sub
-//
-//void lmVStaff::Get NumParte() As Long
-//    //Devuelve el número que hace esta parte (1..n) dentro de los de su instrumento
-//    NumParte = m_nStaff
-//}
 
 bool lmVStaff::GetXPosFinalBarline(lmLUnits* pPos)
 {
@@ -1095,116 +1007,116 @@ void lmVStaff::AddPrologShapes(lmBoxSliceVStaff* pBSV, int nMeasure, bool fDrawT
 
 void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPaper* pPaper)
 {
-    // The prolog (clef and key signature) must be rendered on each system,
-    // but the matching StaffObjs only exist in the first system. Therefore, in the
-    // normal staffobj rendering process, the prolog would be rendered only in
-    // the first system.
-    // So, for the other systems it is necessary to force the rendering
-    // of the prolog because there are no StaffObjs representing it.
-    // This method does it.
-    //
-    // To know what clef, key and time signature to draw we take this information from the
-    // context associated to first note of the measure on each sttaf. If there are no notes,
-    // the context is taken from the barline. If, finally, no context is found, no prolog
-    // is drawn.
-
-    lmLUnits nPrologWidth = 0;
-    lmClef* pClef = (lmClef*)NULL;
-    EClefType nClef = eclvUndefined;
-    lmKeySignature* pKey = (lmKeySignature*)NULL;
-    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
-
-    //AWARE when this method is invoked the paper position must be at the left marging,
-    //at the start of a new system.
-    lmLUnits xStartPos = pPaper->GetCursorX() + m_nSpaceBeforeClef;         //Save x to align all clefs
-    lmLUnits yStartPos = pPaper->GetCursorY();
-
-    //iterate over the collection of lmStaff objects to draw current cleft and key signature
-
-    wxStaffListNode* pNode = m_cStaves.GetFirst();
-    lmStaff* pStaff = (lmStaff*)NULL;
-    lmLUnits yOffset = 0;
-    lmLUnits xPos=0;
-    lmLUnits nWidth=0;
-
-    lmContext* pContext = (lmContext*)NULL;
-    lmStaffObj* pSO = (lmStaffObj*) NULL;
-    lmNoteRest* pNR = (lmNoteRest*)NULL;
-    lmNote* pNote = (lmNote*)NULL;
-    for (int nStaff=1; pNode; pNode = pNode->GetNext(), nStaff++)
-    {
-        pStaff = (lmStaff *)pNode->GetData();
-        xPos = xStartPos;
-
-        //locate first context for this staff
-        pContext = (lmContext*)NULL;
-        lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
-        pIter->AdvanceToMeasure(nMeasure);
-        while(!pIter->EndOfList()) {
-            pSO = pIter->GetCurrent();
-            if (pSO->GetClass() == eSFOT_NoteRest) {
-                pNR = (lmNoteRest*)pSO;
-                if (!pNR->IsRest() && pNR->GetStaffNum() == nStaff) {
-                    //OK. Note fount. Take context
-                    pNote = (lmNote*)pSO;
-                    pContext = pNote->GetContext();
-                    break;
-                }
-            }
-            else if (pSO->GetClass() == eSFOT_Barline) {
-                lmBarline* pBar = (lmBarline*)pSO;
-                pContext = pBar->GetContext(nStaff);
-                break;
-            }
-            pIter->MoveNext();
-        }
-        delete pIter;
-
-        if (pContext) {
-            pClef = pContext->GetClef();
-            pKey = pContext->GeyKey();
-            pTime = pContext->GetTime();
-
-            //render clef
-            if (pClef) {
-                nClef = pClef->GetClefType();
-				if (pClef->IsVisible()) {
-					lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
-					nWidth = pClef->DrawAt(fMeasuring, pPaper, uPos);
-					xPos += nWidth;
-				}
-            }
-
-            //render key signature
-            if (pKey && pKey->IsVisible()) {
-                wxASSERT(nClef != eclvUndefined);
-                lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
-                nWidth = pKey->DrawAt(fMeasuring, pPaper, uPos, nClef, nStaff);
-                xPos += nWidth;
-            }
-
-            //if requested (flag fDrawTimekey), render time key (only on first staff)
-            //if (fDrawTimekey And iStf = 1 {
-            //    if (Not m_oCurMetrica Is Nothing {
-            //        nTimeKey = m_oCurMetrica.Valor
-            //        pPaper->PintarMetrica fMeasuring, nTimeKey, yDesplz
-            //    }
-            //}
-
-        }
-
-        //compute prolog width
-        nPrologWidth = wxMax(nPrologWidth, xPos - xStartPos);
-
-        //compute vertical displacement for next staff
-        yOffset += pStaff->GetHeight();
-        yOffset += pStaff->GetAfterSpace();
-
-    }
-
-    // update paper cursor position
-    pPaper->SetCursorX(xStartPos + nPrologWidth);
-
+//    // The prolog (clef and key signature) must be rendered on each system,
+//    // but the matching StaffObjs only exist in the first system. Therefore, in the
+//    // normal staffobj rendering process, the prolog would be rendered only in
+//    // the first system.
+//    // So, for the other systems it is necessary to force the rendering
+//    // of the prolog because there are no StaffObjs representing it.
+//    // This method does it.
+//    //
+//    // To know what clef, key and time signature to draw we take this information from the
+//    // context associated to first note of the measure on each sttaf. If there are no notes,
+//    // the context is taken from the barline. If, finally, no context is found, no prolog
+//    // is drawn.
+//
+//    lmLUnits nPrologWidth = 0;
+//    lmClef* pClef = (lmClef*)NULL;
+//    EClefType nClef = eclvUndefined;
+//    lmKeySignature* pKey = (lmKeySignature*)NULL;
+//    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
+//
+//    //AWARE when this method is invoked the paper position must be at the left marging,
+//    //at the start of a new system.
+//    lmLUnits xStartPos = pPaper->GetCursorX() + m_nSpaceBeforeClef;         //Save x to align all clefs
+//    lmLUnits yStartPos = pPaper->GetCursorY();
+//
+//    //iterate over the collection of lmStaff objects to draw current cleft and key signature
+//
+//    wxStaffListNode* pNode = m_cStaves.GetFirst();
+//    lmStaff* pStaff = (lmStaff*)NULL;
+//    lmLUnits yOffset = 0;
+//    lmLUnits xPos=0;
+//    lmLUnits nWidth=0;
+//
+//    lmContext* pContext = (lmContext*)NULL;
+//    lmStaffObj* pSO = (lmStaffObj*) NULL;
+//    lmNoteRest* pNR = (lmNoteRest*)NULL;
+//    lmNote* pNote = (lmNote*)NULL;
+//    for (int nStaff=1; pNode; pNode = pNode->GetNext(), nStaff++)
+//    {
+//        pStaff = (lmStaff *)pNode->GetData();
+//        xPos = xStartPos;
+//
+//        //locate first context for this staff
+//        pContext = (lmContext*)NULL;
+//        lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_ByTime);
+//        pIter->AdvanceToMeasure(nMeasure);
+//        while(!pIter->EndOfList()) {
+//            pSO = pIter->GetCurrent();
+//            if (pSO->GetClass() == eSFOT_NoteRest) {
+//                pNR = (lmNoteRest*)pSO;
+//                if (!pNR->IsRest() && pNR->GetStaffNum() == nStaff) {
+//                    //OK. Note fount. Take context
+//                    pNote = (lmNote*)pSO;
+//                    pContext = pNote->GetContext();
+//                    break;
+//                }
+//            }
+//            else if (pSO->GetClass() == eSFOT_Barline) {
+//                lmBarline* pBar = (lmBarline*)pSO;
+//                pContext = pBar->GetContext(nStaff);
+//                break;
+//            }
+//            pIter->MoveNext();
+//        }
+//        delete pIter;
+//
+//        if (pContext) {
+//            pClef = pContext->GetClef();
+//            pKey = pContext->GeyKey();
+//            pTime = pContext->GetTime();
+//
+//            //render clef
+//            if (pClef) {
+//                nClef = pClef->GetClefType();
+//				if (pClef->IsVisible()) {
+//					lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
+//					nWidth = pClef->DrawAt(fMeasuring, pPaper, uPos);
+//					xPos += nWidth;
+//				}
+//            }
+//
+//            //render key signature
+//            if (pKey && pKey->IsVisible()) {
+//                wxASSERT(nClef != eclvUndefined);
+//                lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
+//                nWidth = pKey->DrawAt(fMeasuring, pPaper, uPos, nClef, nStaff);
+//                xPos += nWidth;
+//            }
+//
+//            //if requested (flag fDrawTimekey), render time key (only on first staff)
+//            //if (fDrawTimekey And iStf = 1 {
+//            //    if (Not m_oCurMetrica Is Nothing {
+//            //        nTimeKey = m_oCurMetrica.Valor
+//            //        pPaper->PintarMetrica fMeasuring, nTimeKey, yDesplz
+//            //    }
+//            //}
+//
+//        }
+//
+//        //compute prolog width
+//        nPrologWidth = wxMax(nPrologWidth, xPos - xStartPos);
+//
+//        //compute vertical displacement for next staff
+//        yOffset += pStaff->GetHeight();
+//        yOffset += pStaff->GetAfterSpace();
+//
+//    }
+//
+//    // update paper cursor position
+//    pPaper->SetCursorX(xStartPos + nPrologWidth);
+//
 }
 
 lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
@@ -1321,101 +1233,6 @@ lmNote* lmVStaff::FindPossibleStartOfTie(lmAPitch anPitch)
 
 }
 
-
-//Function RepositionBar(iBar As Long, nShift As Long, nBarLeft As Long, _
-//            nNewBarWidth As Long) As Long
-//    //Shift the position of all StaffObjs in bar number iBar the amount given by parameter nShift.
-//    //In addition, the position of the barline at the end of this bar is also shifted so that
-//    //the new width on the bar becames nNewBarWidth. The shift amount applied to the barline
-//    //is retuned as the result of this function.
-//    //
-//    //Parameters:
-//    //iBar - the number of this bar (absolute, that is, from the begining of the score)
-//    //nShift - the shift amount to apply to all StaffObjs of bar number iBar
-//    //nBarLeft - the new left position for the start of this bar
-//    //nNewBarWidth - the new width that this bar will have.
-//
-//
-//    wxASSERT(iBar <= this.NumCompases
-//
-//    if (nNewBarWidth = 0 { Exit Function
-//
-//    Dim i As Long, nBarlineShift As Long
-//    Dim oPo As IPentObj
-//
-//    //get staffobj on which the bar starts
-//    Dim oIT As CIterador
-//    Set oIT = m_cStaffObjs.CreateIterator(eTR_OptimizeAccess)
-//    oIT.AdvanceToMeasure iBar
-//    Do While oIT.QuedanItems
-//        Set oPo = oIT.GetItem
-//
-//        //if this staffobj is the barline, shift it and exit
-//        if (oPo.Tipo = eSFOT_Barline {
-//            nBarlineShift = (nBarLeft + nNewBarWidth) - oPo.Left
-//            oPo.Left = nBarLeft + nNewBarWidth - (oPo.Right - oPo.Left - 1)
-//            Exit Do
-//        }
-//
-//        //otherwise shift the staffobj
-//        oPo.Left = oPo.Left + nShift
-//
-//        oIT.AdvanceCursor
-//    Loop
-//    RepositionBar = nBarlineShift
-//
-//}
-//
-////Desplaza la barra de fin de compas para que quede en la posición nLeft.
-////Devuelve el desplazamiento aplicado a la barra
-//Function SetAnchoCompas(iCompas As Long, nLeft As Long) As Long
-//
-//    wxASSERT(iCompas <= this.NumCompases
-//
-//    Dim i As Long
-//    Dim oPo As IPentObj
-//
-//    //localizar el fin del compas
-//    Dim oIT As CIterador
-//    Set oIT = m_cStaffObjs.CreateIterator(eTR_OptimizeAccess)
-//    oIT.AdvanceToMeasure iCompas
-//    Do While oIT.QuedanItems
-//        Set oPo = oIT.GetItem
-//        if (oPo.Tipo = eSCOT_Barline { Exit Do
-//        oIT.AdvanceCursor
-//    Loop
-//
-//    i = nLeft - oPo.Left    //desplazamiento a aplicar
-//    oPo.Left = nLeft - (oPo.Right - oPo.Left - 1)
-//    SetAnchoCompas = i
-//
-//}
-//
-////Devuelve la duración del compas
-////Al llevarse ahora una marca de tiempo, la duración del compas viene dada por la marca de
-////tiempo de la barra de fin de compas, lo que simplifica el tratamiento
-//Function DuracionCompas(iCompas As Long) As Long
-//    wxASSERT(iCompas <= this.NumCompases
-//
-//    //Algoritmo: Localizar la barra de fin del compas y devolver su marca de tiempo
-//
-//    Dim oPo As IPentObj
-//
-//    //bucle hasta el fin del compas
-//    Dim oIT As CIterador
-//    Set oIT = m_cStaffObjs.CreateIterator(eTR_OptimizeAccess)
-//    oIT.AdvanceToMeasure iCompas
-//    Do While oIT.QuedanItems
-//        Set oPo = oIT.GetItem
-//        if (oPo.Tipo = eSCOT_Barline { Exit Do
-//        oIT.AdvanceCursor
-//    Loop
-//
-//    wxASSERT(oPo.Tipo = eSCOT_Barline      //no pueden existir compases que no acaben en barra
-//    DuracionCompas = oPo.TimePos
-//
-//}
-
 void lmVStaff::ShiftTime(float rTimeShift)
 {
     /*
@@ -1449,53 +1266,7 @@ lmSOControl* lmVStaff::AddNewSystem()
 
 }
 
-//=========================================================================================
-// Friend methods to be used only by lmFormatter objects
-//=========================================================================================
-
-//allow IViewer to navigate through the StaffObjs collection
 lmStaffObjIterator* lmVStaff::CreateIterator(ETraversingOrder nOrder)
 {
     return m_cStaffObjs.CreateIterator(nOrder);
 }
-
-////el posicionamiento relativo de objetos requiere conocer la
-////posición de inicio del compas. Para ello, las funciones de dibujo lo guardan
-//// aqui, de forma que el método GetXInicioCompas pueda devolver este valor
-//Friend void lmVStaff::Let SetXInicioCompas(xPos As Long)
-//    m_xInicioCompas = xPos
-//}
-//
-//// End of friend methods only for IViewer =================================================
-//
-//
-////==============================================================================================
-//// Funciones que añaden StaffObjs al final del pentagrama a partir de un fuente.
-////==============================================================================================
-//
-//
-////sElemento es un elemento <Compas> :
-////v1.0  <Compas> ::= ("C" [<Num>] {<Figura> | <Grupo>}* )
-//void lmVStaff::CrearCompas(ByVal sElemento As String)
-//
-//    Dim oRaiz As CNodo
-//    Set oRaiz = AnalizarFuente(sElemento)
-//    AnalizarCompas oRaiz, this
-//
-//End Sub
-
-//Devuelve una referencia al objeto CPONota creado.
-//lmNoteRest* lmVStaff::AddNoteRestFromSource(wxString sText)
-//{
-//    lmLDPParser parserLDP;
-//    lmLDPNode* pNode = parserLDP.ParseText(sText);
-//
-//    if (pNode->GetName() == _T("N")) {
-//        pNR = parserLDP.AnalyzeNote(pNode, this);
-//    } else {
-//        pNR = parserLDP.AnalyzeRest(pNode, this);
-//    }
-//
-//    return pNR;
-//
-//}

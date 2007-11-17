@@ -153,6 +153,7 @@ extern lmLocation g_tDefaultPos;          // defined in NoteRestObj.cpp
 #define lmNO_VISUAL_TRACKING        false
 #define NO_MARCAR_COMPAS_PREVIO     false
 
+#define lmLDP_INDENT_STEP   3       //indent step for Source LDP generation
 
 // forward declarations
 class lmPaper;

@@ -120,10 +120,8 @@ void lmShapeTuplet::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 
 }
 
-void lmShapeTuplet::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+void lmShapeTuplet::Render(lmPaper* pPaper, wxColour color)
 {
- //   WXUNUSED(uPos);
-
 	//get staff, for scaling logical units
     lmVStaff* pVStaff = m_pStartNR->GetVStaff();
     int nStaff = m_pStartNR->GetStaffNum();

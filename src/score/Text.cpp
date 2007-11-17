@@ -103,34 +103,34 @@ wxBitmap* lmScoreText::GetBitmap(double rScale)
     return PrepareBitMap(rScale, m_sText);
 }
 
-void lmScoreText::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+void lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    pPaper->SetFont(*m_pFont);
+    //pPaper->SetFont(*m_pFont);
 
-    if (fMeasuring) {
-        lmLUnits nWidth, nHeight;
-        pPaper->GetTextExtent(m_sText, &nWidth, &nHeight);
-        //wxLogMessage(_T("[lmScoreText::DrawObject] text='%s'. width=%d"), m_sText, nWidth);
+    //if (fMeasuring) {
+    //    lmLUnits nWidth, nHeight;
+    //    pPaper->GetTextExtent(m_sText, &nWidth, &nHeight);
+    //    //wxLogMessage(_T("[lmScoreText::DrawObject] text='%s'. width=%d"), m_sText, nWidth);
 
-         // store selection rectangle (relative to m_uPaperPos)
-        m_uSelRect.width = nWidth;
-        m_uSelRect.height = nHeight;
-        m_uSelRect.x = 0;    //remember: relative to m_uPaperPos
-        m_uSelRect.y = 0;
+    //     // store selection rectangle (relative to m_uPaperPos)
+    //    m_uSelRect.width = nWidth;
+    //    m_uSelRect.height = nHeight;
+    //    m_uSelRect.x = 0;    //remember: relative to m_uPaperPos
+    //    m_uSelRect.y = 0;
 
-        // set total width
-        m_uWidth = nWidth;
+    //    // set total width
+    //    m_uWidth = nWidth;
 
-        // store glyph position (relative to paper pos).
-        m_uGlyphPos.x = 0;
-        m_uGlyphPos.y = 0;
+    //    // store glyph position (relative to paper pos).
+    //    m_uGlyphPos.x = 0;
+    //    m_uGlyphPos.y = 0;
 
-    }
-    else {
-        lmUPoint uPos = GetGlyphPosition();
-        pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-        pPaper->DrawText(m_sText, uPos.x, uPos.y );
-    }
+    //}
+    //else {
+    //    lmUPoint uPos = GetGlyphPosition();
+    //    pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
+    //    pPaper->DrawText(m_sText, uPos.x, uPos.y );
+    //}
 
 }
 
@@ -144,7 +144,7 @@ wxString lmScoreText::Dump()
 
 }
 
-wxString lmScoreText::SourceLDP()
+wxString lmScoreText::SourceLDP(int nIndent)
 {
     wxString sSource = _T("(text ");
     sSource += m_sText;

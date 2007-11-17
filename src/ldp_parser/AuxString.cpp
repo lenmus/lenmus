@@ -238,56 +238,64 @@ int LetterToStep(wxString sStep)
 //! Receives an pattern (a group of elements) and returns its duration
 float SrcGetPatternDuracion(wxString sPattern)
 {
-    /*
-        split the segment into elements, coumpute the duration of
-        each element and return the total duration of the segment
-    */
-    int iEnd;
-    wxString sElement;
-    float rPatternDuration=0.0;
+    //OBSOLETE
+    ///*
+    //    split the segment into elements, coumpute the duration of
+    //    each element and return the total duration of the segment
+    //*/
+    //int iEnd;
+    //wxString sElement;
+    //float rPatternDuration=0.0;
 
-    wxString sSource = sPattern;
-    while (sSource != _T("") )
-    {
-        //extract the element and remove it from source
-        iEnd = SrcSplitPattern(sSource) + 1;
-        sElement = sSource.substr(0, iEnd);
-        sSource = sSource.substr(iEnd);
+    //wxString sSource = sPattern;
+    //while (sSource != _T("") )
+    //{
+    //    //extract the element and remove it from source
+    //    iEnd = SrcSplitPattern(sSource) + 1;
+    //    sElement = sSource.substr(0, iEnd);
+    //    sSource = sSource.substr(iEnd);
 
-        //compute element's duration
-        rPatternDuration += SrcGetElementDuracion(sElement);
-    }
-    return rPatternDuration;
+    //    //compute element's duration
+    //    rPatternDuration += SrcGetElementDuracion(sElement);
+    //}
+    //return rPatternDuration;
+
+    wxASSERT(false);
+    return 0;
 
 }
 
 //! Receives an element (note or rest) and returns its duration
 float SrcGetElementDuracion(wxString sElement)
 {
-    //element is either (n ppp ddd ...) or (s ddd ...). We need the ddd
+    //OBSOLETE
+    wxASSERT(false);
+    return 0;
 
-    int iStart, i;
-    wxString sAux;
-    wxString sElementType = sElement.substr(1, 1);
-    if (sElementType == _T("n") ) {
-        //skip note pitch
-        sAux = sElement.substr(3);
-    } else if (sElementType == _T("s") ) {
-        sAux = sElement;
-    }
+    ////element is either (n ppp ddd ...) or (s ddd ...). We need the ddd
 
-    // find NoteType
-    iStart = sAux.Find(_T(" ")) + 1;
+    //int iStart, i;
+    //wxString sAux;
+    //wxString sElementType = sElement.substr(1, 1);
+    //if (sElementType == _T("n") ) {
+    //    //skip note pitch
+    //    sAux = sElement.substr(3);
+    //} else if (sElementType == _T("s") ) {
+    //    sAux = sElement;
+    //}
 
-    // fin dots
-    i = iStart + 1;
-    while (sAux.substr(i, 1) == _T(".") ) i++;
+    //// find NoteType
+    //iStart = sAux.Find(_T(" ")) + 1;
 
-    //extract NoteType and dots
-    wxString sNoteType = sAux.substr(iStart, i - iStart);
+    //// fin dots
+    //i = iStart + 1;
+    //while (sAux.substr(i, 1) == _T(".") ) i++;
 
-    // compute duration
-    return LDPNoteTypeToDuration(sNoteType);
+    ////extract NoteType and dots
+    //wxString sNoteType = sAux.substr(iStart, i - iStart);
+
+    //// compute duration
+    //return LDPNoteTypeToDuration(sNoteType);
 
 }
 

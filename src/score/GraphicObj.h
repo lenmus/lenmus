@@ -74,8 +74,7 @@ public:
                 bool fHighlight = false);
     virtual void SetFont(lmPaper* pPaper) {}
     virtual wxBitmap* GetBitmap(double rScale) = 0;
-    virtual void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
-                            bool fHighlight);
+    virtual void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
 
     // properties
     virtual lmEGraphicObjectType GetGraphicObjectType() = 0;

@@ -473,14 +473,14 @@ wxString lmScore::Dump(wxString sFilename)
 
 wxString lmScore::SourceLDP(wxString sFilename)
 {
-    wxString sSource = wxString::Format(_T("Score ID: %d\n\n"), m_nID);
+    wxString sSource = wxString::Format(_T("//Score ID: %d\n\n"), m_nID);
     sSource += _T("(score\n   (vers 1.5)(language en iso-8859-1)\n");
 
     //loop for each instrument
      lmInstrument *pInstr = GetFirstInstrument();
     for (int i=1; i<= (int)m_cInstruments.GetCount(); i++, pInstr = GetNextInstrument())
     {
-        sSource += pInstr->SourceLDP();
+        sSource += pInstr->SourceLDP(1);
     }
     sSource += _T(")");
 
@@ -589,7 +589,7 @@ void lmScore::ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, EHighlightType nH
     switch (nHighlightType) {
         case eVisualOn:
             m_cHighlighted.Append(pSO);
-            pSO->Draw(DO_DRAW, pPaper, g_pColors->ScoreHighlight(), HIGHLIGHT);
+            pSO->Highlight(pPaper, g_pColors->ScoreHighlight());
             break;
 
         case eVisualOff:
@@ -631,8 +631,8 @@ void lmScore::RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper)
         draw in BLACK must be done.
     */
 
-    pSO->Draw(DO_DRAW, pPaper, *wxWHITE, HIGHLIGHT);
-    pSO->Draw(DO_DRAW, pPaper, g_pColors->ScoreNormal(), HIGHLIGHT);
+    pSO->Highlight(pPaper, *wxWHITE);
+    pSO->Highlight(pPaper, g_pColors->ScoreNormal());
 }
 
 void lmScore::ComputeMidiEvents()

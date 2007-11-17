@@ -186,61 +186,6 @@ int lmChord::GetNumNotes()
     return (int)m_cNotes.GetCount();
 }
 
-/*!    @brief Draw the stem of the chord.
-
-    Once the last notehead of a chord has been drawn this method is invoked (from the
-    last lines of lmNote::DrawObject() ) to draw the stem of the chord.
-    The stem position is stored in the base note.
-
-*/
-void lmChord::DrawStem(bool fMeasuring, lmPaper* pPaper, wxColour colorC, wxFont* pFont,
-                       lmVStaff* pVStaff, int nStaff)
-{
-    lmNote* pBaseNote = GetBaseNote();
-    lmLUnits xStem = pBaseNote->GetXStemLeft();
-    lmLUnits yStemStart=0, yStemEnd=0;
-
-    if (!pBaseNote->IsBeamed()) {
-        //compute y positions
-        if (m_fStemDown) {
-            yStemStart = m_pMaxNote->GetYStem();
-            yStemEnd = m_pMinNote->GetFinalYStem();
-        }
-        else {
-            yStemStart = m_pMinNote->GetYStem();
-            yStemEnd = m_pMaxNote->GetFinalYStem();
-        }
-
-    }
-    else {
-        // If the chord is beamed, the stem length was computed during beam computation and
-        // stored in the base note
-        if (pBaseNote->StemGoesDown()) {
-            //stem down: line at left of noteheads
-            yStemStart = m_pMaxNote->GetYStem();
-            yStemEnd = m_pMinNote->GetYStem() + pBaseNote->GetStemLength();
-        } else {
-            //stem up: line at right of noteheads
-            yStemStart = m_pMinNote->GetYStem();
-            yStemEnd = m_pMaxNote->GetYStem() - pBaseNote->GetStemLength();
-        }
-    }
-
-    if (!fMeasuring) {
-        #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
-        lmLUnits uStemThickness = pVStaff->TenthsToLogical(STEM_WIDTH, nStaff) / 10;
-        pPaper->SolidLine(xStem, yStemStart, xStem, yStemEnd, uStemThickness,
-                           eEdgeNormal, colorC);
-    }
-
-    //draw the flag for chords not beamed
-    if (!pBaseNote->IsBeamed() && pBaseNote->GetNoteType() > eQuarter) {
-        DrawFlag(fMeasuring, pPaper, pBaseNote, lmUPoint(xStem, yStemEnd), colorC, pFont,
-                 pVStaff, nStaff);
-    }
-
-}
-
 void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
 						   wxFont* pFont, lmVStaff* pVStaff, int nStaff)
 {
@@ -470,6 +415,8 @@ void lmChord::ArrangeNoteheads()
 {
     //arrange noteheads at left/right of stem to avoid collisions
     //This method asumes that the stem direction has been computed
+    //This method sets flag  pNote->SetNoteheadReversed(true); to true or false,
+    //depending on the requiered notehead position for the chord.
 
     if (m_cNotes.GetCount() < 2) return;
 
@@ -504,7 +451,10 @@ void lmChord::ArrangeNoteheads()
 
 void lmChord::LayoutNoteHeads(lmShapeNote* pNoteShape, lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC)
 {
+    wxLogMessage(_T("[lmChord::LayoutNoteHeads] ---------------------------------") );
     //arrange noteheads at left/right of stem to avoid collisions
+    //As result, flag fNoteheadReversed is set for all notes in the chord. No
+    //notehead placement takes place
     ArrangeNoteheads();
 
 	//Loop to compute position for accidentals:
@@ -583,16 +533,12 @@ void lmChord::LayoutNoteHeads(lmShapeNote* pNoteShape, lmPaper* pPaper, lmUPoint
         }
 
         //compute notehead's position
-        //pNote->DrawNote(pPaper, DO_MEASURE, xPos, yPos, colorC);
 		pNote->AddNoteShape(pNoteShape, pPaper, xPos + uPaperPos.x, yPos + uPaperPos.y, colorC);
-		pNote->SetAnchorPos(xPos);
         pNoteHead = pNote->GetNoteheadShape();
         //check if collision with any previous note accidentals
         pCrashNote = CheckIfNoteCollision(pNoteHead);
         while (pCrashNote) {
             //try to render at right of colliding accidental
-            //xPos += (pCrashNote->GetAccidentals())->GetWidth();
-            //pNote->DrawNote(pPaper, DO_MEASURE, xPos, yPos, colorC);
 			lmLUnits nShift = (pCrashNote->GetAccidentals())->GetWidth();
 			pNote->ShiftNoteHeadShape(nShift);
             //check again for collision

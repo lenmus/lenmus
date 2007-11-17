@@ -58,62 +58,61 @@ wxBitmap* lmWordsDirection::GetBitmap(double rScale)
     return PrepareBitMap(rScale, m_sText);
 }
 
-void lmWordsDirection::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
-                                  bool fHighlight)
+void lmWordsDirection::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    pPaper->SetFont(*m_pFont);
+    //pPaper->SetFont(*m_pFont);
 
-    if (fMeasuring) {
-        lmLUnits nWidth, nHeight;
-        pPaper->GetTextExtent(m_sText, &nWidth, &nHeight);
+    //if (fMeasuring) {
+    //    lmLUnits nWidth, nHeight;
+    //    pPaper->GetTextExtent(m_sText, &nWidth, &nHeight);
 
-        // set total width
-        m_uWidth = nWidth;
+    //    // set total width
+    //    m_uWidth = nWidth;
 
-        //compute paper x shift to align text
-        lmLUnits xPaperShift;
-        if (m_nAlign == lmALIGN_CENTER) {
-            xPaperShift = - nWidth/2;
-        }
-        else if (m_nAlign == lmALIGN_RIGHT) {
-            xPaperShift = - nWidth;
-        }
-        else {
-            xPaperShift = 0;
-        }
+    //    //compute paper x shift to align text
+    //    lmLUnits xPaperShift;
+    //    if (m_nAlign == lmALIGN_CENTER) {
+    //        xPaperShift = - nWidth/2;
+    //    }
+    //    else if (m_nAlign == lmALIGN_RIGHT) {
+    //        xPaperShift = - nWidth;
+    //    }
+    //    else {
+    //        xPaperShift = 0;
+    //    }
 
-        // store glyph position. Take into account that it is relative to paper pos.
-        if (m_tPos.xType == lmLOCATION_RELATIVE)
-            m_uGlyphPos.x = m_pVStaff->TenthsToLogical(m_tPos.x, m_nStaffNum) + xPaperShift;
-        else if (m_tPos.xType == lmLOCATION_ABSOLUTE)
-            m_uGlyphPos.x = m_pVStaff->TenthsToLogical(m_tPos.x, m_nStaffNum) - m_uPaperPos.x  + xPaperShift;
-        else
-            m_uGlyphPos.x = xPaperShift;
+    //    // store glyph position. Take into account that it is relative to paper pos.
+    //    if (m_tPos.xType == lmLOCATION_RELATIVE)
+    //        m_uGlyphPos.x = m_pVStaff->TenthsToLogical(m_tPos.x, m_nStaffNum) + xPaperShift;
+    //    else if (m_tPos.xType == lmLOCATION_ABSOLUTE)
+    //        m_uGlyphPos.x = m_pVStaff->TenthsToLogical(m_tPos.x, m_nStaffNum) - m_uPaperPos.x  + xPaperShift;
+    //    else
+    //        m_uGlyphPos.x = xPaperShift;
 
-        //method DC::DrawText position text with reference to its upper left
-        //corner but lenmus anchor point is lower left corner. Therefore, it
-        //is necessary to shift text up by text height
-        if (m_tPos.yType == lmLOCATION_RELATIVE)
-            m_uGlyphPos.y = m_pVStaff->TenthsToLogical(m_tPos.y, m_nStaffNum) - nHeight;
-        else if (m_tPos.yType == lmLOCATION_ABSOLUTE)
-            m_uGlyphPos.y = m_pVStaff->TenthsToLogical(m_tPos.y, m_nStaffNum) - m_uPaperPos.y - nHeight;
-        else
-            m_uGlyphPos.y = - nHeight;
+    //    //method DC::DrawText position text with reference to its upper left
+    //    //corner but lenmus anchor point is lower left corner. Therefore, it
+    //    //is necessary to shift text up by text height
+    //    if (m_tPos.yType == lmLOCATION_RELATIVE)
+    //        m_uGlyphPos.y = m_pVStaff->TenthsToLogical(m_tPos.y, m_nStaffNum) - nHeight;
+    //    else if (m_tPos.yType == lmLOCATION_ABSOLUTE)
+    //        m_uGlyphPos.y = m_pVStaff->TenthsToLogical(m_tPos.y, m_nStaffNum) - m_uPaperPos.y - nHeight;
+    //    else
+    //        m_uGlyphPos.y = - nHeight;
 
-         // store selection rectangle (relative to m_uPaperPos). Coincides with glyph rectangle
-        m_uSelRect.width = nWidth;
-        m_uSelRect.height = nHeight;
-        m_uSelRect.x = m_uGlyphPos.x;
-        m_uSelRect.y = m_uGlyphPos.y;
+    //     // store selection rectangle (relative to m_uPaperPos). Coincides with glyph rectangle
+    //    m_uSelRect.width = nWidth;
+    //    m_uSelRect.height = nHeight;
+    //    m_uSelRect.x = m_uGlyphPos.x;
+    //    m_uSelRect.y = m_uGlyphPos.y;
 
-        if (!m_fHasWidth) m_uWidth=0;
+    //    if (!m_fHasWidth) m_uWidth=0;
 
-    }
-    else {
-        lmUPoint uPos = GetGlyphPosition();
-        pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-        pPaper->DrawText(m_sText, uPos.x, uPos.y );
-    }
+    //}
+    //else {
+    //    lmUPoint uPos = GetGlyphPosition();
+    //    pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
+    //    pPaper->DrawText(m_sText, uPos.x, uPos.y );
+    //}
 
 }
 
@@ -127,7 +126,7 @@ wxString lmWordsDirection::Dump()
 
 }
 
-wxString lmWordsDirection::SourceLDP()
+wxString lmWordsDirection::SourceLDP(int nIndent)
 {
     wxString sSource = _T("         (texto ");
     sSource += m_sText;

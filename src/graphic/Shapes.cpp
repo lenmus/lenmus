@@ -52,8 +52,10 @@ lmShapeLine::lmShapeLine(lmObject* pOwner,
     m_uWidth = uWidth;
 }
 
-void lmShapeLine::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+void lmShapeLine::Render(lmPaper* pPaper, wxColour color)
 {
+    lmUPoint uPos(0.0, 0.0);    //by-pass new version with absolute positions
+
     // start and end points
     lmLUnits x1 = uPos.x + m_xStart;
     lmLUnits y1 = uPos.y + m_yStart;
@@ -164,13 +166,10 @@ void lmShapeLin2::Create(lmLUnits xStart, lmLUnits yStart,
 
 }
 
-void lmShapeLin2::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+void lmShapeLin2::Render(lmPaper* pPaper, wxColour color)
 {
-    WXUNUSED(uPos);
     pPaper->SolidLine(m_xStart, m_yStart, m_xEnd, m_yEnd, m_uWidth, m_nEdge, color);
-
     lmShape::RenderCommon(pPaper);
-
 }
 
 wxString lmShapeLin2::Dump(int nIndent)
@@ -265,8 +264,10 @@ void lmShapeGlyph::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
 }
 
 
-void lmShapeGlyph::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+void lmShapeGlyph::Render(lmPaper* pPaper, wxColour color)
 {
+    lmUPoint uPos(0.0, 0.0);    //by-pass new version with absolute positions
+
     wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
 
     pPaper->SetFont(*m_pFont);
@@ -309,8 +310,8 @@ void lmShapeGlyph::Shift(lmLUnits xIncr, lmLUnits yIncr)
 //========================================================================================
 
 lmShapeGlyp2::lmShapeGlyp2(lmObject* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
-                           lmUPoint uPos, wxString sName)
-    : lmSimpleShape(eGMO_ShapeGlyph, pOwner, sName)
+                           lmUPoint uPos, wxString sName, bool fDraggable)
+    : lmSimpleShape(eGMO_ShapeGlyph, pOwner, sName, fDraggable)
 {
     m_nGlyph = nGlyph;
     m_pFont = pFont;
@@ -337,9 +338,8 @@ lmShapeGlyp2::lmShapeGlyp2(lmObject* pOwner, int nGlyph, wxFont* pFont, lmPaper*
 
 }
 
-void lmShapeGlyp2::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+void lmShapeGlyp2::Render(lmPaper* pPaper, wxColour color)
 {
-    WXUNUSED(uPos);
     wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
 
     pPaper->SetFont(*m_pFont);
@@ -374,6 +374,78 @@ void lmShapeGlyp2::Shift(lmLUnits xIncr, lmLUnits yIncr)
     ShiftBoundsAndSelRec(xIncr, yIncr);
 }
 
+wxBitmap* lmShapeGlyp2::OnBeginDrag(double rScale)
+{
+	// A dragging operation is started. The view invokes this method to request the 
+	// bitmap to be used as drag image. No other action is required.
+	// If no bitmap is returned drag is cancelled.
+	//      
+	// So this method returns the bitmap to use with the drag image.
+
+    wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
+
+	// Get size of glyph, in logical units
+    wxCoord wText, hText;
+    wxScreenDC dc;
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale(rScale, rScale);
+    dc.SetFont(*m_pFont);
+    dc.GetTextExtent(sGlyph, &wText, &hText);
+    dc.SetFont(wxNullFont);
+
+    // allocate a memory DC for drawing into a bitmap
+    wxMemoryDC dc2;
+    dc2.SetMapMode(lmDC_MODE);
+    dc2.SetUserScale(rScale, rScale);
+    dc2.SetFont(*m_pFont);
+
+    // allocate the bitmap
+    // convert size to pixels
+    wxCoord wD = dc2.LogicalToDeviceXRel(wText),
+            hD = dc2.LogicalToDeviceYRel(hText);
+    // GetTextExtent has not enough precision. Add a couple of pixels for security
+    wxBitmap bitmap((int)(wD+2), (int)(hD+2));
+    dc2.SelectObject(bitmap);
+
+    // draw onto the bitmap
+    dc2.SetBackground(* wxWHITE_BRUSH);
+    dc2.Clear();
+    dc2.SetBackgroundMode(wxTRANSPARENT);
+    dc2.SetTextForeground(g_pColors->ScoreSelected());
+    dc2.DrawText(sGlyph, 0, 0);
+
+    dc2.SelectObject(wxNullBitmap);
+
+    // Make the bitmap masked
+    wxImage image = bitmap.ConvertToImage();
+    image.SetMaskColour(255, 255, 255);
+    wxBitmap* pBitmap = new wxBitmap(image);
+
+    return pBitmap;
+}
+
+lmUPoint lmShapeGlyp2::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
+{
+	// The view informs that the user continues dragging. We receive the new desired
+	// shape position and we must return the new allowed shape position.
+	//
+	// The default behaviour is to return the received position, so the view redraws 
+	// the drag image at that position. No action must be performed by the shape on 
+	// the score and score objects.
+	//
+	// The received new desired shape position is in logical units and referred to page
+	// origin. The returned new allowed shape position must also be in in logical units
+	// and referred to page origin.
+
+	return uPos;
+
+}
+
+lmUPoint lmShapeGlyp2::GetObjectOrigin()
+{
+	//returns the origin of this shape
+	return m_uGlyphPos;
+}
 
 
 //========================================================================================
@@ -416,8 +488,10 @@ void lmShapeText::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
 }
 
 
-void lmShapeText::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+void lmShapeText::Render(lmPaper* pPaper, wxColour color)
 {
+    lmUPoint uPos(0.0, 0.0);    //by-pass new version with absolute positions
+
     pPaper->SetFont(*m_pFont);
     pPaper->SetTextForeground(color);
     pPaper->DrawText(m_sText, uPos.x + m_uShift.x, uPos.y + m_uShift.y);
@@ -488,3 +562,45 @@ void lmShapeStem::SetLength(lmLUnits uLenght, bool fModifyTop)
 
 }
 
+
+
+
+//========================================================================================
+// lmShapeClef
+//========================================================================================
+
+lmUPoint lmShapeClef::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
+{
+	// The view informs that the user continues dragging. We receive the new desired
+	// shape position and we must return the new allowed shape position.
+	//
+	// The default behaviour is to return the received position, so the view redraws 
+	// the drag image at that position. No action must be performed by the shape on 
+	// the score and score objects.
+	//
+	// The received new desired shape position is in logical units and referred to page
+	// origin. The returned new allowed shape position must also be in in logical units
+	// and referred to page origin.
+
+	if (g_fFreeMove) return uPos;
+
+    // A clef only can be moved horizonatlly
+    return lmUPoint(uPos.x, m_uGlyphPos.y);
+
+}
+
+void lmShapeClef::OnEndDrag(wxCommandProcessor* pCP, const lmUPoint& uPos)
+{
+	// End drag. Receives the command processor associated to the view and the
+	// final position of the object (logical units referred to page origin).
+
+	if (g_fFreeMove)
+		Shift(uPos.x - m_uGlyphPos.x, uPos.y - m_uGlyphPos.y);
+	else
+	{
+		//only x position can be changed
+		Shift(uPos.x - m_uGlyphPos.x, 0.0);
+	}
+
+
+}

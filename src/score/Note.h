@@ -60,18 +60,16 @@ public:
     ~lmNote();
 
     //implementation of virtual methods of base classes
-        // lmScoreObj
-    void MoveShape(lmLUnits uLeft);
         // lmStaffObj
     wxBitmap*   GetBitmap(double rScale);
-    void        DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
-    void		LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight);
-    void        MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
+    void		LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
+    void        OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
                             const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels);
     lmUPoint    EndDrag(const lmUPoint& uPos);
+	void Highlight(lmPaper* pPaper, wxColour colorC);
 
     wxString    Dump();
-    wxString    SourceLDP();
+    wxString    SourceLDP(int nIndent);
     wxString    SourceXML();
 
         //lmStaffObj
@@ -80,8 +78,7 @@ public:
 
     // methods related to note positioning information
     lmLUnits GetPitchShift();
-    lmLUnits GetAnchorPos() { return m_uxAnchor; }
-    void SetAnchorPos(lmLUnits uxPos) { m_uxAnchor = uxPos; }
+    lmLUnits GetAnchorPos();
     int GetPosOnStaff();        //line/space on which note is rendered
     void SetOrigin(lmLUnits uxPos, lmLUnits uyPos) {
 			m_uPaperPos.x = uxPos;
@@ -92,12 +89,6 @@ public:
 			m_uPaperPos.y = uPoint.y;
 		}
 
-
-    // bounds of image. Abolute position (->referred to page origin)
-    lmLUnits GetBoundsTop();
-    lmLUnits GetBoundsBottom();
-    lmLUnits GetBoundsLeft();
-    lmLUnits GetBoundsRight();
 
     //methods related to stems
     EStemType   GetStemType() { return m_nStemType; }
@@ -131,9 +122,6 @@ public:
     //methods related to accidentals
     bool HasAccidentals() { return (m_pAccidentals != (lmAccidental*)NULL); }
     lmAccidental* GetAccidentals() { return m_pAccidentals; }
-    lmLUnits DrawAccidentals(lmPaper* pPaper, bool fMeasuring,
-                        lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC);
-
 
     //methods related to ties
     bool    CanBeTied(lmAPitch anPitch);
@@ -161,14 +149,11 @@ public:
     void    ComputeVolume();
 
     // methods used during layout phase
-    bool DrawNote(lmPaper* pPaper, bool fMeasuring,
-                  lmLUnits uxOffset, lmLUnits uyOffset, wxColour colorC);
     bool AddNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmLUnits uxLeft,
                       lmLUnits uyTop, wxColour colorC);
     lmShape* GetNoteheadShape() { return m_pNoteheadShape; }
     void ShiftNoteHeadShape(lmLUnits uxShift);
 	lmEGlyphIndex GetGlyphForFlag();
-    //void LayoutObject(lmCompositeShape* pCS, lmPaper* pPaper, wxColour colorC);
 
     //other methods
     bool        UpdateContext(int nStep, int nNewAccidentals, lmContext* pNewContext);
@@ -187,12 +172,6 @@ public:
 private:
     // rendering
     void MakeUpPhase(lmPaper* pPaper);
-    void DrawSingleNote(lmPaper* pPaper, bool fMeasuring, ENoteType nNoteType,
-                        bool fStemAbajo, lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC);
-    void DrawNoteHead(lmPaper* pPaper, bool fMeasuring, ENoteHeads nNoteheadType,
-                        lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC);
-    void DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits uyTopLine, lmLUnits uxPos,
-                        lmLUnits uWidth, int nStaff, int nROP = wxCOPY);
     lmEGlyphIndex DrawFlag(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 
     //layouting
@@ -232,13 +211,9 @@ private:
 
     // constituent shapes
     lmShapeGlyp2*   m_pNoteheadShape;
-    lmShapeLine*    m_pStemLine;
-    lmShapeGlyph*   m_pFlagShape;
 
     // additional positioning related variables
     lmLUnits        m_uSpacePrev;       // space (after accidental) before note
-    lmLUnits        m_uxAnchor;          // x position of anchor line (relative to m_uPaperPos.x)
-    lmURect         m_uNoteheadRect;    // notehead bounding rectangle (relative to paper)
 
     // flag information
     lmLUnits        m_uyFlag;            //y pos for flag
@@ -251,9 +226,6 @@ private:
     bool            m_fStemDown;       //stem direccion. true if down
     EStemType       m_nStemType;       //type of stem
 
-    // dealing with beams
-    bool            m_fMakeUpDone;      //make up phase done, to avoid doing it
-                                        //   several times
     // playback info
     int             m_nVolume;          // MIDI volume (0-127)
 
@@ -267,8 +239,8 @@ private:
     bool        m_fNoteheadReversed;      //this notehead is reversed to avoid collisions
 
     //tie related variables
-    lmTie*      m_pTiePrev;         //Tie to previous note. Null in note not tied
-    lmTie*      m_pTieNext;         //Tie to next note. Null in note not tied
+    lmTie*      m_pTiePrev;         //Tie to previous note. Null if note not tied
+    lmTie*      m_pTieNext;         //Tie to next note. Null if note not tied
     bool        m_fNeedToBeTied;    //for building tie to previous note as the score is being built
 
 

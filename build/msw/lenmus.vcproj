@@ -1081,6 +1081,12 @@
 				RelativePath="..\..\src\graphic\GraphicManager.h">
 			</File>
 			<File
+				RelativePath="..\..\src\graphic\ShapeArch.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\graphic\ShapeArch.h">
+			</File>
+			<File
 				RelativePath="..\..\src\graphic\ShapeBarline.cpp">
 			</File>
 			<File

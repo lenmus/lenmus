@@ -37,9 +37,19 @@
 #include "wx/wx.h"
 #endif
 
+#if wxUSE_GENERIC_DRAGIMAGE
+#include "wx/generic/dragimgg.h"
+#define wxDragImage wxGenericDragImage
+#else
+#include "wx/dragimag.h"
+#endif
+
+#include "wx/cmdproc.h"		//wxCommandProcessor
 #include "vector"
 
 #include "../score/defs.h"
+
+extern bool g_fFreeMove;		// the shapes can be dragged without restrictions
 
 class lmPaper;
 class lmObject;
@@ -67,6 +77,7 @@ enum lmEGMOType
     // shapes
     eGMO_Shape = eGMO_LastBox,
 	eGMO_ShapeStaff = eGMO_Shape,
+    eGMO_ShapeArch,
     eGMO_ShapeBarline,
 	eGMO_ShapeBeam,
 	eGMO_ShapeComposite,
@@ -113,17 +124,27 @@ public:
 	//debugging
     virtual wxString Dump(int nIndent)=0;
 
+    //selection
+    inline bool IsSelected() const { return m_fSelected; }
+    inline void SetSelected(bool fValue) { m_fSelected = fValue; }
+
+	//dragging
+    inline bool IsDraggable() const { return m_fDraggable; }
+	virtual wxBitmap* OnBeginDrag(double rScale) { return (wxBitmap*)NULL; }
+    virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos) { return uPos; };
+	virtual lmUPoint GetObjectOrigin();
+    virtual void OnEndDrag(wxCommandProcessor* pCP, const lmUPoint& uPos) {};
+
 
 protected:
+    lmGMObject(lmEGMOType m_nType, bool fDraggable = false);
     wxString DumpBounds();
 	void NormaliceBoundsRectangle();
-
 
 	enum {
 		lmINDENT_STEP = 3,		//for Dump() method
 	};
 
-    lmGMObject(lmEGMOType m_nType);
 
     lmEGMOType          m_nType;        //type of GMO
     int                 m_nId;          //unique identification number
@@ -132,6 +153,12 @@ protected:
 	//the rectangle is referred to page origin
     lmUPoint        m_uBoundsBottom;	//bottom right corner point
     lmUPoint        m_uBoundsTop;		//top left corner point
+
+    //selection
+    bool            m_fSelected;        //this object is selected
+
+    //dragging
+    bool			m_fDraggable;		//this object is draggable
 
 };
 
@@ -190,11 +217,11 @@ class lmShape : public lmGMObject
 public:
     virtual ~lmShape();
 
-	virtual void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK)=0;
+	virtual void Render(lmPaper* pPaper, wxColour color=*wxBLACK)=0;
 
     // methods related to selection rectangle
     void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight);
-    void DrawSelRectangle(lmPaper* pPaper, lmUPoint uPos, wxColour colorC = *wxBLUE);
+    void DrawSelRectangle(lmPaper* pPaper, wxColour colorC = *wxBLUE);
     lmURect GetSelRectangle() const { return m_uSelRect; }
 
     virtual bool Collision(lmShape* pShape);
@@ -214,10 +241,14 @@ public:
 
     //info
     inline lmObject* Owner() { return m_pOwner; }
+	inline lmBox* GetOwnerBox() { return m_pOwnerBox; }
+	inline void SetOwnerBox(lmBox* pOwnerBox) { m_pOwnerBox = pOwnerBox; }
 
+	
 
 protected:
-    lmShape(lmEGMOType m_nType, lmObject* pOwner, wxString sName=_T("Shape"));
+    lmShape(lmEGMOType m_nType, lmObject* pOwner, wxString sName=_T("Shape"),
+			bool fDraggable = false);
     void RenderCommon(lmPaper* pPaper, wxColour colorC);
     void RenderCommon(lmPaper* pPaper);
 	void ShiftBoundsAndSelRec(lmLUnits xIncr, lmLUnits yIncr);
@@ -225,6 +256,7 @@ protected:
 
 
 	lmObject*	m_pOwner;		//associated owner object (in lmScore representation)
+	lmBox*		m_pOwnerBox;	//box in which this shape is included
     wxString    m_sShapeName;
 
 	//selection rectangle (relative to paper origin)
@@ -253,11 +285,12 @@ public:
     //implementation of virtual methods from base class
     virtual wxString Dump(int nIndent) = 0;
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
-    virtual void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK)=0;
+    virtual void Render(lmPaper* pPaper, wxColour color=*wxBLACK)=0;
 
 
 protected:
-    lmSimpleShape(lmEGMOType m_nType, lmObject* pOwner, wxString sName=_T("SimpleShape"));
+    lmSimpleShape(lmEGMOType m_nType, lmObject* pOwner, wxString sName=_T("SimpleShape"),
+				  bool fDraggable = false);
 
 
 };
@@ -277,7 +310,7 @@ public:
     //virtual methods from base class
     virtual wxString Dump(int nIndent);
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
-	virtual void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK);
+	virtual void Render(lmPaper* pPaper, wxColour color=*wxBLACK);
 
 	//overrides
     bool ContainsPoint(lmUPoint& pointL);

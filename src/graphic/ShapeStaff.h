@@ -53,7 +53,7 @@ public:
 	~lmShapeStaff();
 
 	//implementation of pure virtual methods in base class
-    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK);
+    void Render(lmPaper* pPaper, wxColour color=*wxBLACK);
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 

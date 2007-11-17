@@ -37,7 +37,7 @@
 
 
 //-------------------------------------------------------------------------------------
-// Implementation of lmShapeBarline: an staff (usually 5 lines)
+// Implementation of lmShapeBarline
 
 
 lmShapeBarline::lmShapeBarline(lmBarline* pBarline, EBarline nBarlineType,
@@ -108,59 +108,62 @@ lmShapeBarline::~lmShapeBarline()
 {
 }
 
-void lmShapeBarline::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+void lmShapeBarline::Render(lmPaper* pPaper, wxColour color)
 {
-    WXUNUSED(uPos);
+    lmLUnits uxPos = m_uxPos;
+    lmLUnits uyTop = m_uyTop;
+    lmLUnits uyBottom = m_uyBottom;
+
     switch(m_nBarlineType)
     {
         case etb_DoubleBarline:
-            DrawThinLine(pPaper, m_uxPos, m_uyTop, m_uyBottom, m_color);
-            m_uxPos += m_uThinLineWidth + m_uSpacing;
-            DrawThinLine(pPaper, m_uxPos, m_uyTop, m_uyBottom, m_color);
+            DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
+            uxPos += m_uThinLineWidth + m_uSpacing;
+            DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
             break;
 
         case etb_EndRepetitionBarline:
-            m_uxPos += m_uRadius;
-            DrawTwoDots(pPaper, m_uxPos, m_uyTop);
-            m_uxPos += m_uSpacing + m_uRadius;
-            DrawThinLine(pPaper, m_uxPos, m_uyTop, m_uyBottom, m_color);
-            m_uxPos += m_uThinLineWidth + m_uSpacing;
-            DrawThickLine(pPaper, m_uxPos, m_uyTop, m_uThickLineWidth, m_uyBottom-m_uyTop, m_color);
+            uxPos += m_uRadius;
+            DrawTwoDots(pPaper, uxPos, uyTop);
+            uxPos += m_uSpacing + m_uRadius;
+            DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
+            uxPos += m_uThinLineWidth + m_uSpacing;
+            DrawThickLine(pPaper, uxPos, uyTop, m_uThickLineWidth, uyBottom-uyTop, m_color);
             break;
 
         case etb_StartRepetitionBarline:
-            DrawThickLine(pPaper, m_uxPos, m_uyTop, m_uThickLineWidth, m_uyBottom-m_uyTop, m_color);
-            m_uxPos += m_uThickLineWidth + m_uSpacing;
-            DrawThinLine(pPaper, m_uxPos, m_uyTop, m_uyBottom, m_color);
-            m_uxPos += m_uThinLineWidth + m_uSpacing + m_uRadius;
-            DrawTwoDots(pPaper, m_uxPos, m_uyTop);
+            DrawThickLine(pPaper, uxPos, uyTop, m_uThickLineWidth, uyBottom-uyTop, m_color);
+            uxPos += m_uThickLineWidth + m_uSpacing;
+            DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
+            uxPos += m_uThinLineWidth + m_uSpacing + m_uRadius;
+            DrawTwoDots(pPaper, uxPos, uyTop);
             break;
 
         case etb_DoubleRepetitionBarline:
-            m_uxPos += m_uRadius;
-            DrawTwoDots(pPaper, m_uxPos, m_uyTop);
-            m_uxPos += m_uSpacing + m_uRadius;
-            DrawThinLine(pPaper, m_uxPos, m_uyTop, m_uyBottom, m_color);
-            m_uxPos += m_uThinLineWidth + m_uSpacing;
-            DrawThinLine(pPaper, m_uxPos, m_uyTop, m_uyBottom, m_color);
-            m_uxPos += m_uThinLineWidth + m_uSpacing + m_uRadius;
-            DrawTwoDots(pPaper, m_uxPos, m_uyTop);
+            uxPos += m_uRadius;
+            DrawTwoDots(pPaper, uxPos, uyTop);
+            uxPos += m_uSpacing + m_uRadius;
+            DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
+            uxPos += m_uThinLineWidth + m_uSpacing;
+            DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
+            uxPos += m_uThinLineWidth + m_uSpacing + m_uRadius;
+            DrawTwoDots(pPaper, uxPos, uyTop);
             break;
 
         case etb_StartBarline:
-            DrawThickLine(pPaper, m_uxPos, m_uyTop, m_uThickLineWidth, m_uyBottom-m_uyTop, m_color);
-            m_uxPos += m_uThickLineWidth + m_uSpacing;
-            DrawThinLine(pPaper, m_uxPos, m_uyTop, m_uyBottom, m_color);
+            DrawThickLine(pPaper, uxPos, uyTop, m_uThickLineWidth, uyBottom-uyTop, m_color);
+            uxPos += m_uThickLineWidth + m_uSpacing;
+            DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
             break;
 
         case etb_EndBarline:
-            DrawThinLine(pPaper, m_uxPos, m_uyTop, m_uyBottom, m_color);
-            m_uxPos += m_uThinLineWidth + m_uSpacing;
-            DrawThickLine(pPaper, m_uxPos, m_uyTop, m_uThickLineWidth, m_uyBottom-m_uyTop, m_color);
+            DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
+            uxPos += m_uThinLineWidth + m_uSpacing;
+            DrawThickLine(pPaper, uxPos, uyTop, m_uThickLineWidth, uyBottom-uyTop, m_color);
             break;
 
         case etb_SimpleBarline:
-            DrawThinLine(pPaper, m_uxPos, m_uyTop, m_uyBottom, m_color);
+            DrawThinLine(pPaper, uxPos, uyTop, uyBottom, m_color);
             break;
     }
 

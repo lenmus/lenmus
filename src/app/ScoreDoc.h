@@ -43,6 +43,7 @@ public:
 	void UpdateAllViews(wxView* sender=(wxView*)NULL, wxObject* hint=(wxObject*)NULL);
     bool OnOpenDocument(const wxString& filename);
     bool OnNewDocument();
+	wxOutputStream& SaveObject(wxOutputStream& stream);
 
     bool OnImportDocument(const wxString& filename);
     inline lmScore* GetScore() {return m_pScore; };

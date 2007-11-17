@@ -139,11 +139,18 @@ void lmTimeposTable::AddBarline(lmStaffObj* pSO)
 
 void lmTimeposTable::SetCurXLeft(lmLUnits uValue)
 {
+    //initialices m_xLeft and m_xInitialLeft.
+    //If no anchor yet specified, initialices it with xLeft
+    //If it is a staffObj also initialices its size
+
     lmTimeposEntry* pEntry = m_aTimePos[m_aTimePos.GetCount() - 1];
     pEntry->m_xLeft = uValue;
+    pEntry->m_xInitialLeft = uValue;
+
     if (pEntry->m_uxAnchor == 0) {
         pEntry->m_uxAnchor = uValue;   //default value
     }
+
     if (pEntry->m_nType == eStaffobj) {
         pEntry->m_uSize = pEntry->m_xFinal - pEntry->m_xLeft;
     }
@@ -424,7 +431,7 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
             pTPE->m_uxAnchor += uShift;
             pTPE->m_xRight += uShift;
             pTPE->m_xFinal += uShift;
-            (pTPE->m_pSO)->MoveShape( pTPE->m_xLeft );
+            (pTPE->m_pSO)->ShiftObject( pTPE->m_xLeft - pTPE->m_xInitialLeft);
         }
         else if (pTPE->m_nType == eOmega)
         {
@@ -437,7 +444,7 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
                 pTPE->m_uxAnchor += nShiftBar;
                 pTPE->m_xFinal += nShiftBar;
                 pTPE->m_xRight += nShiftBar;
-                (pTPE->m_pSO)->MoveShape( pTPE->m_xLeft );
+                (pTPE->m_pSO)->ShiftObject(  pTPE->m_xLeft - pTPE->m_xInitialLeft );
                 uBarPosition = pTPE->m_xLeft;
             }
         }

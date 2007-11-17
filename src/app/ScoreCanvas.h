@@ -61,7 +61,7 @@ public:
 
 	// commands with Do/Undo support
 	virtual void MoveObject(lmScoreObj* pSO, const lmUPoint& uPos) {}
-	virtual void SelectObject(lmScoreObj* pSO) {}
+	virtual void SelectObject(lmGMObject* pGMO) {}
 
     // event handlers
     virtual void OnKeyPress(wxKeyEvent& event) { event.Skip(); }
@@ -101,7 +101,7 @@ public:
 
 	// commands with Do/Undo support
 	void MoveObject(lmScoreObj* pSO, const lmUPoint& uPos);
-	void SelectObject(lmScoreObj* pSO);
+	void SelectObject(lmGMObject* pGMO);
 
 
 private:

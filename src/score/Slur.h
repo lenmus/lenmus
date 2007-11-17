@@ -19,51 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __SLUR_H__        //to avoid nested includes
-#define __SLUR_H__
+#ifndef __LM_SLUR_H__        //to avoid nested includes
+#define __LM_SLUR_H__
 
 #ifdef __GNUG__
 #pragma interface "Slur.cpp"
 #endif
-
-
-//---------------------------------------------------------
-//   lmArch
-//---------------------------------------------------------
-
-class lmArch
-{
-public:
-    lmArch();
-    ~lmArch() {}
-
-    void SetStartPoint(lmLUnits xPos, lmLUnits yPos);
-    void SetEndPoint(lmLUnits xPos, lmLUnits yPos);
-    void SetCtrolPoint1(lmLUnits xPos, lmLUnits yPos);
-    void SetCtrolPoint2(lmLUnits xPos, lmLUnits yPos);
-    inline lmLUnits GetStartPosX() { return m_xStart; }
-    inline lmLUnits GetStartPosY() { return m_yStart; }
-    inline lmLUnits GetEndPosX() { return m_xEnd; }
-    inline lmLUnits GetEndPosY() { return m_yEnd; }
-    inline lmLUnits GetCtrol1PosX() { return m_xCtrol1; }
-    inline lmLUnits GetCtrol1PosY() { return m_yCtrol1; }
-    inline lmLUnits GetCtrol2PosX() { return m_xCtrol2; }
-    inline lmLUnits GetCtrol2PosY() { return m_yCtrol2; }
-
-    void Draw(lmPaper* pPaper, wxColour colorC);
-
-protected:
-    void CubicBezier(double* x, double* y, int nNumPoints);
-
-
-    // start, end and control poins coordinates, absolute paper position
-    lmLUnits    m_xStart, m_yStart;
-    lmLUnits    m_xEnd, m_yEnd;
-    lmLUnits    m_xCtrol1, m_yCtrol1;
-    lmLUnits    m_xCtrol2, m_yCtrol2;
-
-};
-
 
 //---------------------------------------------------------
 //   lmTie
@@ -73,7 +34,12 @@ protected:
 #define lmBACKWARDS false
 #define lmFORWARDS  true
 
-class lmTie : public lmAuxObj
+class lmShapeNote;
+class lmShape;
+class lmBox;
+class lmShapeTie;
+
+class lmTie
 {
 public:
     lmTie(lmNote* pStartNote, lmNote* pEndNote);
@@ -82,31 +48,18 @@ public:
     void Remove(lmNote* pNote);
     lmNote* GetStartNote() const { return m_pStartNote; }
     lmNote* GetEndNote() const { return m_pEndNote; }
-    void SetStartPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperRight, bool fUnderNote);
-    void SetEndPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperLeft);
-    bool IsUnderNote() { return m_fTieUnderNote; }
+
+    //layout
+	lmShape* LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
+
     void PropagateNotePitchChange(lmNote* pNote, int nStep, int nOctave, int nAlter, bool fForward);
-
-
-    void UpdateMeasurements();
-
-    // overrides for pure virtual methods of base classes
-    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
-    wxString Dump() { return _T("Tie"); }
-
-    wxBitmap* GetBitmap(double rScale) { return (wxBitmap*)NULL; }
 
 
 protected:
 
     lmNote*     m_pStartNote;        //notes tied by this lmTie object
     lmNote*     m_pEndNote;
-    lmArch      m_mainArc;          // the arc that normally renders the tie
-    lmArch*     m_pExtraArc;        // in case the tie continues in the next system
-    lmLUnits   m_xPaperLeft;
-    lmLUnits   m_xPaperRight;
-    bool        m_fTieUnderNote;    // tie must go under note
 
 };
 
-#endif    // __SLUR_H__
+#endif    // __LM_SLUR_H__

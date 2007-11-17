@@ -106,8 +106,21 @@ wxString lmSOControl::SourceXML()
     return _T("TODO: lmSOControl source XML generation method");
 }
 
-wxString lmSOControl::SourceLDP()
+wxString lmSOControl::SourceLDP(int nIndent)
 {
-    //! @todo generate SourceLDP source
-    return _T("TODO: lmSOControl source LDP generation method");
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+
+    if (m_nCtrolType == lmTIME_SHIFT)
+    {
+        if (m_rTimeShift < 0) {
+            sSource += _T("(goBack ");
+        }
+        else {
+            sSource += _T("(goFwd ");
+        }
+        sSource += wxString::Format(_T("%d)\n"), (int)fabs(m_rTimeShift));
+    }
+
+    return sSource;
 }

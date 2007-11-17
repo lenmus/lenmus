@@ -154,3 +154,13 @@ void lmScoreDocument::UpdateAllViews(wxView* sender, wxObject* hint)
 	m_pScore->SetModified(true);
 	wxDocument::UpdateAllViews(sender, hint);
 }
+
+wxOutputStream& lmScoreDocument::SaveObject(wxOutputStream& stream)
+{
+	wxDocument::SaveObject(stream);
+
+	wxTextOutputStream oTextStream(stream);
+	oTextStream << m_pScore->SourceLDP();
+
+	return stream;
+}

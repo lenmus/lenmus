@@ -45,6 +45,7 @@
 #include "../widgets/Cursor.h"
 #include "FontManager.h"
 #include "ArtProvider.h"
+#include "../graphic/BoxScore.h"
 #include "../graphic/BoxPage.h"
 #include "../graphic/BoxSlice.h"
 #include "../graphic/BoxInstrSlice.h"
@@ -880,76 +881,67 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         nKeysPressed = nKeysPressed | lmKEY_ALT;
 
 
-    if (event.LeftDClick() ) {
+    if (event.LeftDClick() )
+	{
         // mouse left double click: Select/deselect the object pointed by mouse
         //--------------------------------------------------------------------------
 
 		//ScoreObjs and other score objects (lmBoxXXXX) has all its measurements
 		//relative to each page start position
 
-        // locate the object
-   //     lmScoreObj* pScO = m_pDoc->FindSelectableObject(pageNPosL);
+        // locate the object pointed with the mouse
+        lmGMObject* pGMO = m_graphMngr.FindGMObjectAtPagePosition(nNumPage, pageNPosL);
+        if (pGMO)
+        {
+            // we've got a valid object: select/deselect it.
+			m_pCanvas->SelectObject(pGMO);
 
-   //     if (pScO)
-   //     {
-   //         // we've got a valid object: select/deselect it.
-			//m_pCanvas->SelectObject(pScO);
-   //     }
-   //     else
-   //     {
-            // locate the lmGMObject
-            lmBoxScore* pBScore = m_graphMngr.GetBoxScore();
-            lmBoxPage* pBPage = pBScore->GetPage(nNumPage);
-            lmGMObject* pGMO = pBPage->FindGMObjectAtPosition(pageNPosL);
-            if (pGMO)
+            ////prepare paper DC to draw bounds rectangles
+			//wxClientDC dc(m_pCanvas);
+			//dc.SetMapMode(lmDC_MODE);
+			//dc.SetUserScale( m_rScale, m_rScale );
+			////position DC origing at current page origin
+			//wxPoint org = GetDCOriginForPage(nNumPage);
+			//dc.SetDeviceOrigin(org.x, org.y);
+			////set paper and draw selection rectangle
+			//m_Paper.SetDrawer(new lmDirectDrawer(&dc));
+
+			//pGMO->DrawBounds(&m_Paper, (pGMO->IsShape() ? *wxRED : *wxGREEN));
+
+			if (pGMO->GetType() == eGMO_BoxSlice)
             {
-
-                //prepare paper DC to draw bounds rectangles
-			    wxClientDC dc(m_pCanvas);
-			    dc.SetMapMode(lmDC_MODE);
-			    dc.SetUserScale( m_rScale, m_rScale );
-			    //position DC origing at current page origin
-			    wxPoint org = GetDCOriginForPage(nNumPage);
-			    dc.SetDeviceOrigin(org.x, org.y);
-			    //set paper and draw selection rectangle
-			    m_Paper.SetDrawer(new lmDirectDrawer(&dc));
-
-				pGMO->DrawBounds(&m_Paper, (pGMO->IsShape() ? *wxRED : *wxGREEN));
-
-				if (pGMO->GetType() == eGMO_BoxSlice)
-                {
-                    lmBoxSlice* pBSlice = (lmBoxSlice*)pGMO;
-                    m_pMainFrame->SetStatusBarMsg(
-                        wxString::Format( _T("BoxSlice. Double click on page %d, measure %d"),
-                            nNumPage, pBSlice->GetNumMeasure() ));
-                }
-                else if (pGMO->GetType() == eGMO_BoxPage)
-                {
-                    m_pMainFrame->SetStatusBarMsg( wxString::Format( _T("BoxPage. Double click on page %d"), nNumPage ));
-                }
+                lmBoxSlice* pBSlice = (lmBoxSlice*)pGMO;
+                m_pMainFrame->SetStatusBarMsg(
+                    wxString::Format( _T("BoxSlice. Double click on page %d, measure %d"),
+                        nNumPage, pBSlice->GetNumMeasure() ));
             }
-        //}
+            else if (pGMO->GetType() == eGMO_BoxPage)
+            {
+                m_pMainFrame->SetStatusBarMsg( wxString::Format( _T("BoxPage. Double click on page %d"), nNumPage ));
+            }
+        }
     }
-    else if (event.LeftDown() ) {
+    else if (event.LeftDown() )
+	{
         // mouse left button down: if pointing an object posible start of dragging.
         // ---------------------------------------------------------------------------
 
-        // locate the object
-        lmScoreObj* pScO = m_pDoc->FindSelectableObject(pageNPosL);
-        if (pScO)
+        // locate the object pointed with the mouse
+        lmGMObject* pGMO = m_graphMngr.FindGMObjectAtPagePosition(nNumPage, pageNPosL);
+        if (pGMO)
         {
             //valid object pointed.
-            if (pScO->IsDraggable())
+            if (pGMO->IsDraggable())
             {
                 //Is a draggable object. Tentatively start dragging
-                m_pSoDrag = pScO;
+                m_pGMODrag = pGMO;
                 m_dragState = lmDRAG_START;
-                m_dragStartPosL = pageNPosL;        // save mouse position (page logical coordinates)
+                m_uDragStartPos = pageNPosL;	// save mouse position (page logical coordinates)
                 // compute the location of the drag position relative to the upper-left
                 // corner of the image (pixels)
-                lmUPoint hotSpot = pageNPosL - pScO->GetGlyphPosition();
-                m_dragHotSpot.x = pDC->LogicalToDeviceXRel((int)hotSpot.x);
-                m_dragHotSpot.y = pDC->LogicalToDeviceYRel((int)hotSpot.y);
+                m_uHotSpotShift = pageNPosL - pGMO->GetObjectOrigin();
+                m_vDragHotSpot.x = pDC->LogicalToDeviceXRel((int)m_uHotSpotShift.x);
+                m_vDragHotSpot.y = pDC->LogicalToDeviceYRel((int)m_uHotSpotShift.y);
             }
             else
             {
@@ -962,13 +954,15 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
        }
 
     }
-    else if ((event.LeftUp() && m_dragState != lmDRAG_NONE )) {
+    else if ((event.LeftUp() && m_dragState != lmDRAG_NONE ))
+	{
         // Left up & dragging: Finish dragging
         //---------------------------------------------------
+		m_pMainFrame->SetStatusBarMsg(_T("[lmScoreView::OnMouseEvent] Finishing dragging"));
 
         m_dragState = lmDRAG_NONE;
 
-        if (!m_pSoDrag || !m_pDragImage) return;
+        if (!m_pGMODrag || !m_pDragImage) return;
 
         // delete the image used for dragging
         m_pDragImage->Hide();
@@ -977,28 +971,30 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         m_pDragImage = (wxDragImage*) NULL;
 
         // Generate move command to move lmStaffObj and update the document
-        //lmScoreDocument* doc = (lmScoreDocument*)GetDocument();
-        //wxCommandProcessor* pCP = doc->GetCommandProcessor();
+        lmScoreDocument* doc = (lmScoreDocument*)GetDocument();
+        wxCommandProcessor* pCP = doc->GetCommandProcessor();
         //pCP->Submit(new lmScoreCommandMove(_T("Move object"), doc, m_pSoDrag, finalPos));
-        lmUPoint finalPos = m_pSoDrag->GetGlyphPosition() + pageNPosL - m_dragStartPosL;
-		m_pCanvas->MoveObject(m_pSoDrag, finalPos);
+		lmUPoint finalPos = m_pGMODrag->GetObjectOrigin() + pageNPosL - m_uHotSpotShift;
+		//m_pCanvas->MoveObject(m_pSoDrag, finalPos);
+		m_pGMODrag->OnEndDrag(pCP, finalPos);
 
-        m_pSoDrag = (lmScoreObj*) NULL;
+        m_pGMODrag = (lmGMObject*) NULL;
 
     }
 
-    else if (event.Dragging() && (m_dragState == lmDRAG_START)) {
+    else if (event.Dragging() && (m_dragState == lmDRAG_START))
+	{
         // The mouse was clicked and now has started to drag
         //-----------------------------------------------------------
+		m_pMainFrame->SetStatusBarMsg(_T("[lmScoreView::OnMouseEvent] Starting dragging"));
 
         m_dragState = lmDRAG_DRAGGING;
 
         // prepare the image to drag
         if (m_pDragImage) delete m_pDragImage;
-        wxBitmap* pBitmap = m_pSoDrag->GetBitmap(m_rScale);
+        wxBitmap* pBitmap = m_pGMODrag->OnBeginDrag(m_rScale);
         if (!pBitmap) {
-            wxLogMessage(wxString::Format(_T("No drag image for object type %d"),
-                m_pSoDrag->GetType() ));
+            wxLogMessage(_T("No drag image for object"));
             m_dragState = lmDRAG_NONE;
             return;
         }
@@ -1006,7 +1002,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         delete pBitmap;
 
         // show drag image
-        bool fOK = m_pDragImage->BeginDrag(m_dragHotSpot, m_pCanvas);
+        bool fOK = m_pDragImage->BeginDrag(m_vDragHotSpot, m_pCanvas);
         if (!fOK) {
             delete m_pDragImage;
             m_pDragImage = (wxDragImage*) NULL;
@@ -1015,18 +1011,26 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         } else {
             //drag image started OK. Move image to current cursor position
             //and show it (was hidden until now)
-            lmDPoint offset(offsetD.x + m_dragHotSpot.x, offsetD.y + m_dragHotSpot.y);
+            lmDPoint offset(offsetD.x + m_vDragHotSpot.x, offsetD.y + m_vDragHotSpot.y);
             //m_Paper.SetDC(pDC);
             m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-            m_pSoDrag->MoveDragImage(&m_Paper, m_pDragImage, offset, pageNPosL, m_dragStartPosL, canvasPosD);
+            lmUPoint uFinalPos = m_pGMODrag->OnDrag(&m_Paper, pageNPosL - m_uHotSpotShift) + m_uHotSpotShift;
             m_pDragImage->Show();
+			lmDPoint vNewPos(
+				m_Paper.LogicalToDeviceX(uFinalPos.x) + offsetD.x,
+				m_Paper.LogicalToDeviceY(uFinalPos.y) + offsetD.y 
+			);
+			m_pDragImage->Move(vNewPos);
         }
 
     }
-    else if (event.Dragging() && (m_dragState == lmDRAG_DRAGGING)) {
+    else if (event.Dragging() && (m_dragState == lmDRAG_DRAGGING))
+	{
         // We're currently dragging. Move the image
         //------------------------------------------------------
         if (!m_pDragImage) return;
+
+		m_pMainFrame->SetStatusBarMsg(_T("[lmScoreView::OnMouseEvent] Dragging"));
 
         // If mouse outside of canvas window let's force autoscrolling.
         bool fDoScroll = false;
@@ -1073,10 +1077,13 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 
         } else {
             // just move the image
-            lmDPoint offset(offsetD.x + m_dragHotSpot.x, offsetD.y + m_dragHotSpot.y);
-            //m_Paper.SetDC(pDC);
             m_Paper.SetDrawer(new lmDirectDrawer(pDC));
-            m_pSoDrag->MoveDragImage(&m_Paper, m_pDragImage, offset, pageNPosL, m_dragStartPosL, canvasPosD);
+            lmUPoint uFinalPos = m_pGMODrag->OnDrag(&m_Paper, pageNPosL - m_uHotSpotShift) + m_uHotSpotShift;
+			lmDPoint vNewPos(
+				m_Paper.LogicalToDeviceX(uFinalPos.x) + offsetD.x,
+				m_Paper.LogicalToDeviceY(uFinalPos.y) + offsetD.y 
+			);
+			m_pDragImage->Move(vNewPos);
         }
 
     }

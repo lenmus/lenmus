@@ -39,6 +39,9 @@
 #include "../globals/Colors.h"
 extern lmColors* g_pColors;
 
+bool g_fFreeMove = false;		// the shapes can be dragged without restrictions
+
+
 //========================================================================================
 //Implementation of class lmGMObject: the root object for the graphical model
 //========================================================================================
@@ -47,7 +50,7 @@ static int m_IdCounter = 0;        //to assign unique IDs to GMObjects
 
 
 
-lmGMObject::lmGMObject(lmEGMOType nType)
+lmGMObject::lmGMObject(lmEGMOType nType, bool fDraggable)
 {
     m_nId = m_IdCounter++;      // give it an ID
     m_nType = nType;            // save its type
@@ -55,6 +58,8 @@ lmGMObject::lmGMObject(lmEGMOType nType)
 	//initializations
 	m_uBoundsBottom = lmUPoint(0.0, 0.0);
     m_uBoundsTop = lmUPoint(0.0, 0.0);
+	m_fSelected = false;
+	m_fDraggable = fDraggable;
 }
 
 lmGMObject::~lmGMObject()
@@ -102,6 +107,12 @@ void lmGMObject::NormaliceBoundsRectangle()
 	}
 }
 
+lmUPoint lmGMObject::GetObjectOrigin()
+{
+	//returns the origin of this object
+	return m_uBoundsTop;
+}
+
 
 //========================================================================================
 //Implementation of class lmBox: the container objects root
@@ -125,6 +136,7 @@ lmBox::~lmBox()
 void lmBox::AddShape(lmShape* pShape)
 {
     m_Shapes.push_back(pShape);
+	pShape->SetOwnerBox(this);
 }
 
 lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
@@ -146,11 +158,12 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
 //========================================================================================
 
 
-lmShape::lmShape(lmEGMOType nType, lmObject* pOwner, wxString sName)
-	: lmGMObject(nType)
+lmShape::lmShape(lmEGMOType nType, lmObject* pOwner, wxString sName, bool fDraggable)
+	: lmGMObject(nType, fDraggable)
 {
 	m_pOwner = pOwner;
     m_sShapeName = sName;
+	m_pOwnerBox = (lmBox*)NULL;
 }
 
 lmShape::~lmShape()
@@ -172,10 +185,9 @@ void lmShape::SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits 
     m_uSelRect.height = uHeight;
 }
 
-void lmShape::DrawSelRectangle(lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
+void lmShape::DrawSelRectangle(lmPaper* pPaper, wxColour colorC)
 {
-    lmUPoint uPoint = m_uSelRect.GetPosition();
-    pPaper->SketchRectangle(uPoint + uPos, m_uSelRect.GetSize(), colorC);
+    pPaper->SketchRectangle(m_uSelRect.GetPosition(), m_uSelRect.GetSize(), colorC);
 }
 
 bool lmShape::Collision(lmShape* pShape)
@@ -195,9 +207,8 @@ void lmShape::RenderCommon(lmPaper* pPaper, wxColour colorC)
     // each shape renderization method
 
     // draw selection rectangle
-    //TODO: remove lmUPoint parameter when old shapes, relative positioned, removed
-    if (g_fDrawSelRect)      // || m_pOwner->IsSelected() )
-        DrawSelRectangle(pPaper, lmUPoint(0.0, 0.0), colorC);
+    if (g_fDrawSelRect || IsSelected() )
+        DrawSelRectangle(pPaper, g_pColors->ScoreSelected() );
 
     if (g_fDrawBounds)
         DrawBounds(pPaper, colorC);
@@ -250,8 +261,9 @@ void lmShape::InformAttachedShapes(lmLUnits ux, lmLUnits uy, lmEParentEvent nEve
 // Implementation of class lmSimpleShape
 //========================================================================================
 
-lmSimpleShape::lmSimpleShape(lmEGMOType nType, lmObject* pOwner, wxString sName)
-	: lmShape(nType, pOwner, sName)
+lmSimpleShape::lmSimpleShape(lmEGMOType nType, lmObject* pOwner, wxString sName,
+							 bool fDraggable)
+	: lmShape(nType, pOwner, sName, fDraggable)
 {
 }
 
@@ -358,14 +370,14 @@ wxString lmCompositeShape::Dump(int nIndent)
 	return sDump;
 }
 
-void lmCompositeShape::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+void lmCompositeShape::Render(lmPaper* pPaper,  wxColour color)
 {
 	RenderCommon(pPaper, *wxGREEN);
 
 	//Default behaviour: render all components
     for (int i=0; i < (int)m_Components.size(); i++)
     {
-        m_Components[i]->Render(pPaper, uPos, color);
+        m_Components[i]->Render(pPaper, color);
     }
 }
 

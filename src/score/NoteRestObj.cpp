@@ -110,18 +110,18 @@ void lmFermata::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNu
 
 }
 
-void lmFermata::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+void lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    //uxLeft es la coordenada x del centro del calderon
+    ////uxLeft es la coordenada x del centro del calderon
 
-    // prepare DC
-    pPaper->SetFont( *(m_pOwner->GetFont()) );
+    //// prepare DC
+    //pPaper->SetFont( *(m_pOwner->GetFont()) );
 
-    bool fAboveNote = (m_nPlacement == ep_Above);
-    wxString sGlyph = (fAboveNote ? CHAR_FERMATA_OVER : CHAR_FERMATA_UNDER );
-    lmUPoint uPos = GetGlyphPosition();
-    pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-    pPaper->DrawText(sGlyph, uPos.x, uPos.y );
+    //bool fAboveNote = (m_nPlacement == ep_Above);
+    //wxString sGlyph = (fAboveNote ? CHAR_FERMATA_OVER : CHAR_FERMATA_UNDER );
+    //lmUPoint uPos = GetGlyphPosition();
+    //pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
+    //pPaper->DrawText(sGlyph, uPos.x, uPos.y );
 
 }
 
@@ -157,15 +157,15 @@ void lmLyric::SetFont(lmPaper* pPaper)
     }
 }
 
-void lmLyric::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+void lmLyric::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    wxASSERT(fMeasuring == DO_DRAW);    //measuring pahse is done in SetSizePosition()
+    //wxASSERT(fMeasuring == DO_DRAW);    //measuring pahse is done in SetSizePosition()
 
-    pPaper->SetFont(*m_pFont);
+    //pPaper->SetFont(*m_pFont);
 
-    lmUPoint uPos = GetGlyphPosition();
-    pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-    pPaper->DrawText(m_sText, uPos.x, uPos.y );
+    //lmUPoint uPos = GetGlyphPosition();
+    //pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
+    //pPaper->DrawText(m_sText, uPos.x, uPos.y );
 
 }
 

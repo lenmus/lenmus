@@ -43,108 +43,67 @@
 // Implementation of the score commands class
 //
 
-lmScoreCommand::lmScoreCommand(const wxString& sName, lmEScoreCommand nCommand, lmScoreDocument *pDoc,
-         lmScoreObj* pScO):
-    wxCommand(true, sName)
+lmScoreCommand::lmScoreCommand(const wxString& sName, lmEScoreCommand nCommand, lmScoreDocument *pDoc)
+    : wxCommand(true, sName)
 {
     m_pDoc = pDoc;
     m_cmd = nCommand;
-    m_pScO = pScO;
 }
 
 lmScoreCommand::~lmScoreCommand()
 {
 }
 
-bool lmScoreCommand::Do()
-{
-    bool fResult = false;
-
-    switch (m_cmd)
-    {
-        case lmCMD_SelectObject:
-            fResult = CmdSelectObject();
-            break;
-
-        case lmCMD_MoveStaffObj:
-        {
-            lmScoreCommandMove* pSC = (lmScoreCommandMove*)this;
-            fResult = pSC->DoMoveStaffObj();
-            break;
-        }
-
-        default:
-            wxASSERT(false);    // cmd not implemented or error in cmd code
-
-    }
-    //if (fUpdate) {
-    //    m_pDoc->Modify(true);
-    //    m_pDoc->UpdateAllViews();
-    //}
-
-    return fResult;
-}
-
-bool lmScoreCommand::Undo()
-{
-    bool fResult = false;
-
-    switch (m_cmd)
-    {
-        case lmCMD_SelectObject:
-            fResult = CmdSelectObject();
-            break;
-
-        case lmCMD_MoveStaffObj:
-        {
-            lmScoreCommandMove* pSC = (lmScoreCommandMove*)this;
-            fResult = pSC->UndoMoveStaffObj();
-            break;
-        }
-
-        default:
-            wxASSERT(false);    // cmd not implemented or error in cmd code
-
-    }
-    return fResult;
-}
-
-bool lmScoreCommand::CmdSelectObject()
-{
-    //wxMessageDialog(GetMainFrame(), _T("Se ejecuta CmdSelectObject ") ).ShowModal();
-
-    wxASSERT( m_pScO);
-
-    //Mark as 'selected' and return 'true' to force redraw it in 'selected' color
-    bool fSelected = m_pScO->IsSelected();
-    m_pScO->SetSelected(!fSelected);
-    m_pDoc->UpdateAllViews();
-    return true;
-
-}
-
 //----------------------------------------------------------------------------------------
-// lmScoreCommandMove implementation
+// lmCmdSelectSingle implementation
 //----------------------------------------------------------------------------------------
 
-bool lmScoreCommandMove::DoMoveStaffObj()
+bool lmCmdSelectSingle::Do()
 {
-    wxASSERT_MSG( m_pScO, _T("DoMoveStaffObj: No hay objeto!"));
+    return CmdSelectObject();;
+}
 
-    m_pScO->SetFixed(true);
-    m_oldPos = m_pScO->EndDrag(m_pos);
+bool lmCmdSelectSingle::Undo()
+{
+    return CmdSelectObject();;
+}
+
+bool lmCmdSelectSingle::CmdSelectObject()
+{
+    wxASSERT( m_pGMO);
+
+    //Toggle 'selected' and return 'true' to force redraw it
+    bool fSelected = m_pGMO->IsSelected();
+    m_pGMO->SetSelected(!fSelected);
     m_pDoc->UpdateAllViews();
     return true;
 
 }
 
-bool lmScoreCommandMove::UndoMoveStaffObj()
-{
-    wxASSERT_MSG( m_pScO, _T("UndoMoveStaffObj: No hay objeto!"));
 
-    m_pScO->SetFixed(false);
-    m_pScO->EndDrag(m_oldPos);
-    m_pDoc->UpdateAllViews();
-    return true;
 
-}
+////----------------------------------------------------------------------------------------
+//// lmScoreCommandMove implementation
+////----------------------------------------------------------------------------------------
+//
+//bool lmScoreCommandMove::DoMoveStaffObj()
+//{
+//    wxASSERT_MSG( m_pScO, _T("DoMoveStaffObj: No hay objeto!"));
+//
+//    m_pScO->SetFixed(true);
+//    m_oldPos = m_pScO->EndDrag(m_pos);
+//    m_pDoc->UpdateAllViews();
+//    return true;
+//
+//}
+//
+//bool lmScoreCommandMove::UndoMoveStaffObj()
+//{
+//    wxASSERT_MSG( m_pScO, _T("UndoMoveStaffObj: No hay objeto!"));
+//
+//    m_pScO->SetFixed(false);
+//    m_pScO->EndDrag(m_oldPos);
+//    m_pDoc->UpdateAllViews();
+//    return true;
+//
+//}

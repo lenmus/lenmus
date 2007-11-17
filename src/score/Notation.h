@@ -63,13 +63,13 @@ public:
     lmENotationType GetNotationType() { return eNT_Spacer; }
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
-    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
+    void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
     wxBitmap* GetBitmap(double rScale) { return (wxBitmap*)NULL; }
     void SetFont(lmPaper* pPaper) {}        // nothing to do
 
     //    debugging
     wxString Dump();
-    wxString SourceLDP();
+    wxString SourceLDP(int nIndent);
     wxString SourceXML();
 
     //specific methods of this object

@@ -58,30 +58,30 @@ void lmGraphicObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
 
 void lmGraphicObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
-    wxASSERT(fMeasuring == DO_DRAW);    //For lmGraphicObj there is no measuring phase
+    //wxASSERT(fMeasuring == DO_DRAW);    //For lmGraphicObj there is no measuring phase
 
-    //get parent paper pos.
-    wxRealPoint rOrg = ((lmScoreObj*)m_pParent)->GetOrigin();
-    pPaper->SetCursorX(rOrg.x);
-    pPaper->SetCursorY(rOrg.y);
+    ////get parent paper pos.
+    //wxRealPoint rOrg = ((lmScoreObj*)m_pParent)->GetOrigin();
+    //pPaper->SetCursorX(rOrg.x);
+    //pPaper->SetCursorY(rOrg.y);
 
-    // ask derived object to draw itself
-    if (IsShapeRendered()) {
-        m_pShape->Render(pPaper, rOrg, colorC);
-    }
-    else {
-        DrawObject(fMeasuring, pPaper, colorC, fHighlight);
-    }
+    //// ask derived object to draw itself
+    //if (IsShapeRendered()) {
+    //    m_pShape->Render(pPaper, colorC);   //(pPaper, rOrg, colorC);
+    //}
+    //else {
+    //    DrawObject(fMeasuring, pPaper, colorC, fHighlight);
+    //}
 
-    // draw selection rectangle
-    if (g_fDrawSelRect) DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
-            
+    //// draw selection rectangle
+    //if (g_fDrawSelRect) DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
+    //        
 }
 
-void lmGraphicObj::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+void lmGraphicObj::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    wxASSERT(fMeasuring == DO_DRAW);    //For lmGraphicObj there is no measuring phase
-    wxASSERT(false);    //all GraphicObjs are shape rendered. So it should not arrive here.
+//    wxASSERT(fMeasuring == DO_DRAW);    //For lmGraphicObj there is no measuring phase
+//    wxASSERT(false);    //all GraphicObjs are shape rendered. So it should not arrive here.
 
 }
 
@@ -113,8 +113,7 @@ lmGOLine::lmGOLine(lmScoreObj* pOwner,
         wxASSERT(false);
     }
 
-    SetShape( new lmShapeLine(this, x1, y1, x2, y2, uWidth, nColor) );
-    SetShapeRendered(true);         //transitional
+    m_pShape = new lmShapeLine(this, x1, y1, x2, y2, uWidth, nColor);
 
 }
 

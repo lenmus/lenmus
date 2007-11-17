@@ -42,17 +42,15 @@ public:
     ~lmRest();
 
     //implementation of virtual methods of base classes
-        // lmScoreObj
-    void MoveShape(lmLUnits nLeft);
         // lmStaffObj
     wxBitmap*   GetBitmap(double rScale);
-    void        DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
-    void        MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
+    void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
+    void        OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
                             const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels);
     lmUPoint    EndDrag(const lmUPoint& uPos);
 
     wxString    Dump();
-    wxString    SourceLDP();
+    wxString    SourceLDP(int nIndent);
     wxString    SourceXML();
 
         //lmStaffObj

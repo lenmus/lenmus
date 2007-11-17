@@ -76,22 +76,6 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
     //to the start of system position.
     pPaper->SetCursorY( m_yPos );
 
-#if 0	//1 = Old renderization method, 0 = only shapes
-    //for each lmInstrument
-    for (int i=0; i < (int)m_InstrSlices.size(); i++)
-    {
-        m_uBoundsBottom.y = m_InstrSlices[i]->Render(pPaper, m_xPos, m_nNumPage, nSystem);
-    }
-
-    //Draw the initial barline that joins all staffs in a system
-    if (pScore->GetOptionBool(_T("Staff.DrawLeftBarline")) )
-    {
-        lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
-        pPaper->SolidLine(m_uBoundsTop.x, m_uBoundsTop.y,
-                          m_uBoundsTop.x, m_uBoundsBottom.y,
-                          uLineThickness, eEdgeNormal, *wxBLACK);
-    }
-#else
 	//for each lmBoxSlice
     for (int i=0; i < (int)m_Slices.size(); i++)
     {
@@ -101,9 +85,9 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
 	//render shapes
     for (int i=0; i < (int)m_Shapes.size(); i++)
     {
-        m_Shapes[i]->Render(pPaper, lmUPoint(m_xPos, m_yPos));
+        m_Shapes[i]->Render(pPaper);    //, lmUPoint(m_xPos, m_yPos));
     }
-#endif
+
 }
 
 void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)

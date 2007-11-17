@@ -62,7 +62,7 @@ lmShapeStaff::~lmShapeStaff()
 {
 }
 
-void lmShapeStaff::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+void lmShapeStaff::Render(lmPaper* pPaper, wxColour color)
 {
     //draw the staff
 	lmLUnits yPos = m_uBoundsTop.y;

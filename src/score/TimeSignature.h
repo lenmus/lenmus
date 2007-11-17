@@ -52,16 +52,16 @@ public:
     ~lmTimeSignature() {}
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
-    void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight);
+    void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
     wxBitmap* GetBitmap(double rScale);
-    void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
+    void OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
                          const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels);
     lmUPoint EndDrag(const lmUPoint& uPos);
 
 
     //    debugging
     wxString Dump();
-    wxString SourceLDP();
+    wxString SourceLDP(int nIndent);
     wxString SourceXML();
 
     //rendering related methods

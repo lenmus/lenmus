@@ -55,7 +55,7 @@ public:
     ~lmShapeLine() {}
 
     //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
@@ -77,7 +77,7 @@ public:
     ~lmShapeLin2() {}
 
     //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
@@ -105,7 +105,7 @@ public:
     ~lmShapeGlyph() {}
 
     //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
@@ -126,19 +126,25 @@ class lmShapeGlyp2 : public lmSimpleShape
 {
 public:
     lmShapeGlyp2(lmObject* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
-                 lmUPoint offset, wxString sName=_T("ShapeGlyp2"));
-    ~lmShapeGlyp2() {}
+                 lmUPoint offset, wxString sName=_T("ShapeGlyp2"),
+				 bool fDraggable = false);
+    virtual ~lmShapeGlyp2() {}
 
     //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
+	wxBitmap* OnBeginDrag(double rScale);
+    virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
+    virtual void OnEndDrag(wxCommandProcessor* pCP, const lmUPoint& uPos) {};
+	lmUPoint GetObjectOrigin();
+
 
     //specific methods
     void SetFont(wxFont *pFont);
 
 
-private:
+protected:
     int         m_nGlyph;
     wxFont*     m_pFont;
     lmUPoint    m_uGlyphPos;   //glyph position
@@ -154,7 +160,7 @@ public:
     ~lmShapeText() {}
 
     //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color = *wxBLACK);
+    void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
@@ -184,6 +190,21 @@ public:
 
 private:
 	bool	m_fStemDown;
+
+};
+
+class lmShapeClef : public lmShapeGlyp2
+{
+public:
+    lmShapeClef(lmObject* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
+                lmUPoint offset, wxString sName=_T("Clef"),
+				bool fDraggable = false) 
+				: lmShapeGlyp2(pOwner, nGlyph, pFont, pPaper, offset, sName, fDraggable) {}
+    ~lmShapeClef() {}
+
+	//overrides
+    lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
+    void OnEndDrag(wxCommandProcessor* pCP, const lmUPoint& uPos);
 
 };
 

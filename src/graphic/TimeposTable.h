@@ -53,6 +53,7 @@ public:
         m_rTimePos = rTimePos;
         m_uSize = 0;
         m_xLeft = 0;
+        m_xInitialLeft = 0;
         m_uxAnchor = 0;
         m_xRight = 0;
         m_xFinal = 0;
@@ -66,7 +67,8 @@ public:
     lmStaffObj*     m_pSO;          //ptr to the lmStaffObj
     float           m_rTimePos;     //timepos for this pSO or -1 if not anchored in time
     lmLUnits        m_uSize;        //size of this lmStaffObj
-    lmLUnits        m_xLeft;        //position of the left border of the object
+    lmLUnits        m_xLeft;        //current position of the left border of the object
+    lmLUnits        m_xInitialLeft; //initial position of the left border of the object
     lmLUnits        m_uxAnchor;      //position of the anchor line
     lmLUnits        m_xRight;       //position of the right border
     lmLUnits        m_xFinal;       //next position (right border position + trailing space)

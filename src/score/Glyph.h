@@ -45,15 +45,20 @@
 struct lmGlyph
 {
     // all measurements in tenths
-    wxChar      GlyphChar;
-    int         GlyphOffset;
-    int         SelRectShift;
-    int         SelRectHeight;
-    int         Top;
-    int         Bottom;
+    wxChar	GlyphChar;
+    int		GlyphOffset;
+    int		SelRectShift;
+    int		SelRectHeight;
+    int		Top;
+    int		Bottom;
+	int		xPos;
+	int		yPos;
+	int     width;
+	int     height;
     wxString    sName;
 
-    lmGlyph(const wxChar g, int yo, int ys, int h, int t, int b, const wxString n)
+    lmGlyph(const wxChar g, int yo, int ys, int h, int t, int b, 
+		    int xPos, int yPos, int width, int height, const wxString n)
         : GlyphChar(g), GlyphOffset(yo), SelRectShift(ys), SelRectHeight(h),
           Top(t), Bottom(b), sName(n)
         {

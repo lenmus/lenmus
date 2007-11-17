@@ -127,7 +127,7 @@ wxBitmap* lmBarline::GetBitmap(double rScale)
 
 }
 
-void lmBarline::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
+void lmBarline::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
         const lmUPoint& pagePosL, const lmUPoint& uDragStartPos, const lmDPoint& canvasPosD)
 {
     // A barline only can be moved horizonatlly
@@ -156,12 +156,17 @@ wxString lmBarline::Dump()
 
 }
 
-wxString lmBarline::SourceLDP()
+wxString lmBarline::SourceLDP(int nIndent)
 {
-    wxString sSource = _T("         (barline ");
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(barline ");
     sSource += GetBarlineLDPNameFromType(m_nBarlineType);
-    if (!m_fVisible) { sSource += _T(" no_visible"); }
-    sSource += _T(")\n");
+
+    //visible?
+    if (!m_fVisible) { sSource += _T(" noVisible"); }
+
+    sSource += _T(")\n\n");
     return sSource;
 }
 
@@ -171,49 +176,15 @@ wxString lmBarline::SourceXML()
     return sSource;
 }
 
-void lmBarline::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+void lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    lmLUnits uyTop = m_pVStaff->GetYTop();
-    lmLUnits uyBottom = m_pVStaff->GetYBottom();
-    lmLUnits uxPos = pPaper->GetCursorX();
-    lmLUnits uWidth = DrawBarline(fMeasuring, pPaper, uxPos, uyTop, uyBottom, colorC);
-
-    if (fMeasuring) {
-        // store selection rectangle measures and position
-        m_uSelRect.width = uWidth;
-        m_uSelRect.height = uyBottom - uyTop;
-        m_uSelRect.x = uxPos - m_uPaperPos.x;        //relative to m_uPaperPos
-        m_uSelRect.y = uyTop - m_uPaperPos.y;
-
-        // set total width
-        m_uWidth = uWidth;
-
-        // store glyph position (relative to paper pos).
-        m_uGlyphPos.x = 0;
-        m_uGlyphPos.y = pPaper->GetCursorY() - uyTop;
-    }
-
-}
-
-void lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
-{
-    //
-    // This method is invoked by the base class (lmStaffObj). When reaching this point
-    // paper cursor variable (m_uPaperPos) has been updated. This value must be used
-    // as the base for any measurement / drawing operation.
-	//
-    // LayoutObject() method is responsible for:
-	// 1. Creating the shape object
-    // 2. Computing the surrounding rectangle, the glyph position and other measurements
-	//	  and storing them on the shape object
-	// For compatibility, all measures will be stored in this StaffObj. Code for this
-	// is marked with tag "//COMPATIBILITY_NO_SHAPES" to simplify future removal.
-	//
+    // This method is invoked by the base class (lmStaffObj). It is responsible for
+    // creating the shape object and adding it to the graphical model. 
+    // Paper cursor must be used as the base for positioning.
 
     lmLUnits uyTop = m_pVStaff->GetYTop();
     lmLUnits uyBottom = m_pVStaff->GetYBottom();
     lmLUnits uxPos = pPaper->GetCursorX();
-    //lmLUnits uWidth = DrawBarline(DO_MEASURE, pPaper, uxPos, uyTop, uyBottom, colorC);
 
     //create the shape
     lmShapeBarline* pShape = 
@@ -223,30 +194,13 @@ void lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool
     m_pShape2 = pShape;
     lmLUnits uWidth = pShape->GetBounds().GetWidth();
 
-#if  lmCOMPATIBILITY_NO_SHAPES
-
-    // store selection rectangle measures and position
-    m_uSelRect.width = uWidth;
-    m_uSelRect.height = uyBottom - uyTop;
-    m_uSelRect.x = uxPos - m_uPaperPos.x;        //relative to m_uPaperPos
-    m_uSelRect.y = uyTop - m_uPaperPos.y;
-
-    // set total width
-    m_uWidth = uWidth;
-
-    // store glyph position (relative to paper pos).
-    m_uGlyphPos.x = 0;
-    m_uGlyphPos.y = pPaper->GetCursorY() - uyTop;
-
-#endif  //lmCOMPATIBILITY_NO_SHAPES
-
 }
 
-// returns the width of the barline (in logical units)
 lmLUnits lmBarline::DrawBarline(bool fMeasuring, lmPaper* pPaper,
                                 lmLUnits uxPos, lmLUnits uyTop,
                                 lmLUnits uyBottom, wxColour colorC)
 {
+	// returns the width of the barline (in logical units)
     switch(m_nBarlineType)
     {
         case etb_DoubleBarline:
@@ -371,19 +325,19 @@ wxString GetBarlineLDPNameFromType(EBarline nBarlineType)
     switch(nBarlineType)
     {
         case etb_EndRepetitionBarline:
-            return _T("FinRepeticion");
+            return _T("endRepetition");
         case etb_StartRepetitionBarline:
-            return _T("InicioRepeticion");
+            return _T("startRepetition");
         case etb_EndBarline:
-            return _T("Final");
+            return _T("end");
         case etb_DoubleBarline:
-            return _T("Doble");
+            return _T("double");
         case etb_SimpleBarline:
-            return _T("Simple");
+            return _T("simple");
         case etb_StartBarline:
-            return _T("Inicial");
+            return _T("start");
         case etb_DoubleRepetitionBarline:
-            return _T("DobleRepeticion");
+            return _T("doubleRepetition");
         default:
             wxASSERT(false);
             return _T("");        //let's keep the compiler happy

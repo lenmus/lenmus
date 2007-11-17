@@ -107,9 +107,6 @@ public:
     inline int GetID() const { return m_nId; }
     inline EScoreObjType GetType() const { return m_nType; }
 
-    // capabilities
-    inline bool IsDraggable() const { return m_fIsDraggable; }
-
     // graphic model
     virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
                         bool fHighlight = false)=0;
@@ -117,7 +114,7 @@ public:
 
     // methods for draggable objects
     virtual wxBitmap* GetBitmap(double rScale) = 0;
-    virtual void MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
+    virtual void OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
                          const lmUPoint& pagePosL, const lmUPoint& uDragStartPos,
                          const lmDPoint& canvasPosD);
     virtual lmUPoint EndDrag(const lmUPoint& uPos);
@@ -127,7 +124,7 @@ public:
     virtual wxString Dump()=0;
 
     // positioning
-    virtual void MoveShape(lmLUnits uLeft);
+    virtual void ShiftObject(lmLUnits uLeft);
 
 #if lmCOMPATIBILITY_NO_SHAPES
 
@@ -140,8 +137,6 @@ public:
     inline int GetPageNumber() const { return m_nNumPage; }
 
     // selection
-    inline bool IsSelected() const { return m_fSelected; }
-    void SetSelected(bool fValue) { m_fSelected = fValue; }
     void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight) {
                 m_uSelRect.width = uWidth;
                 m_uSelRect.height = uHeight;
@@ -159,12 +154,6 @@ public:
                       wxColour colorC = *wxBLACK,
                       bool fHighlight = false)=0;
 
-    //transitional methods to shapes renderization
-    void SetShapeRendered(bool fValue) { m_fShapeRendered = fValue; }
-    bool IsShapeRendered() { return m_fShapeRendered; }
-    void SetShape(lmShape* pShape) { m_pShape = pShape; }
-    lmShape* GetShape() { return m_pShape; }
-
     // methods related to font rendered objects
     virtual void SetFont(lmPaper* pPaper) {}
     wxFont* GetFont() { return m_pFont; }
@@ -176,8 +165,8 @@ public:
 
 protected:
     lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable = false);
-    virtual void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
-                            bool fHighlight)=0;
+    //virtual void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
+    //                        bool fHighlight)=0;
 
     // virtual methods related to draggable objects
     wxBitmap* PrepareBitMap(double rScale, const wxString sGlyph);
@@ -208,7 +197,6 @@ protected:
     int         m_nNumPage;         // page on which this SO is rendered (1..n). Set Up in BoxSystem::RenderMeasure().
 
     // selection related variables
-    bool        m_fSelected;        // this obj is selected
     lmURect     m_uSelRect;         // selection rectangle (logical units, relative to paperPos)
 
     // variables related to font rendered objects
@@ -216,7 +204,6 @@ protected:
     lmUPoint    m_uGlyphPos;        // origing to position the glyph (relative to m_uPaperPos)
 
     //transitional variables: renderization based on shapes
-    bool        m_fShapeRendered;
     lmShape*    m_pShape;
     lmShape*    m_pShape2;          //new shape
 
@@ -256,12 +243,11 @@ public:
 
     // characteristics
     virtual inline bool IsSizeable() { return false; }
-    virtual inline bool IsFontRederized() { return false; }
     inline bool IsVisible() { return m_fVisible; }
     EStaffObjType GetClass() { return m_nClass; }
 
     // source code related methods
-    virtual wxString SourceLDP() = 0;
+    virtual wxString SourceLDP(int nIndent) = 0;
     virtual wxString SourceXML() = 0;
 
     // methods related to time and duration
@@ -278,6 +264,9 @@ public:
     virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
                         bool fHighlight = false);
     virtual void SetFont(lmPaper* pPaper);
+
+	//highligh
+	virtual void Highlight(lmPaper* pPaper, wxColour colorC) {}
 
     // methods related to staff ownership
     void SetNumMeasure(int nNum) { m_numMeasure = nNum; }
@@ -302,8 +291,9 @@ protected:
              bool fVisible = true,
              bool fIsDraggable = false);
 
-    virtual void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC,
-                            bool fHighlight);
+	//rendering
+    virtual void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)=0;
+
 
     //properties
     bool            m_fVisible;     // this lmScoreObj is visible on the score
@@ -361,27 +351,5 @@ protected:
 // declare a list of AuxObjs
 #include "wx/list.h"
 WX_DECLARE_LIST(lmAuxObj, AuxObjsList);
-
-
-
-////-------------------------------------------------------------------------------------------
-//// lmContainer
-////
-////-------------------------------------------------------------------------------------------
-//class lmContainer : public lmObject
-//{
-//public:
-//    virtual ~lmContainer();
-//
-//    virtual lmScoreObj* FindSelectableObject(lmUPoint& pt)=0;
-//
-//
-//protected:
-//    lmContainer();
-//
-//
-//
-//};
-
 
 #endif    // __STAFFOBJ_H__

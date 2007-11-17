@@ -153,3 +153,33 @@ void lmAccidental::CreateShapes(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos)
 	}
 
 }
+
+wxString lmAccidental::GetLDPEncoding()
+{
+    switch(m_nType) {
+        case eNatural:		return _T("");
+        case eSharp:		return _T("+");
+        case eFlat:			return _T("-");
+        case eFlatFlat:		return _T("--");
+        case eDoubleSharp:	return _T("x");
+        case eNaturalFlat:	return _T("=-");
+        case eNaturalSharp:	return _T("=+");
+        case eSharpSharp:	return _T("++");
+
+        case eQuarterFlat:
+            wxASSERT(false);    //! @todo Not implemented
+            break;
+        case eQuarterSharp:
+            wxASSERT(false);    //! @todo Not implemented
+            break;
+        case eThreeQuartersFlat:
+            wxASSERT(false);    //! @todo Not implemented
+            break;
+        case eThreeQuartersSharp:
+            wxASSERT(false);    //! @todo Not implemented
+            break;
+        default:
+            wxASSERT(false);
+    }
+	return _T("");
+}

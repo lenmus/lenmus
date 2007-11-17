@@ -104,27 +104,26 @@ wxBitmap* lmMetronomeMark::GetBitmap(double rScale)
     return (wxBitmap*)NULL; //PrepareBitMap(rScale, m_sText);
 }
 
-void lmMetronomeMark::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
-                                  bool fHighlight)
+void lmMetronomeMark::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    lmLUnits uyPos = pPaper->GetCursorY() - m_pVStaff->TenthsToLogical(50, m_nStaffNum);
-    lmLUnits uxPos = pPaper->GetCursorX();
-    lmLUnits uWidth = DrawMetronomeMark(fMeasuring, pPaper, uxPos, uyPos, colorC);
-
-    if (fMeasuring) {
-        // store selection rectangle measures and position
-        m_uSelRect.width = uWidth;
-        m_uSelRect.height = m_pVStaff->TenthsToLogical(32, m_nStaffNum); //todo
-        m_uSelRect.x = uxPos - m_uPaperPos.x;        //relative to m_uPaperPos
-        m_uSelRect.y = uyPos - m_uPaperPos.y;;
-
-        // set total width to zero: metronome marks does not consume staff space
-        m_uWidth = 0;   // uWidth;
-
-        // store glyph position (relative to paper pos).
-        m_uGlyphPos.x = 0;
-        m_uGlyphPos.y = pPaper->GetCursorY() - uyPos;
-    }
+//    lmLUnits uyPos = pPaper->GetCursorY() - m_pVStaff->TenthsToLogical(50, m_nStaffNum);
+//    lmLUnits uxPos = pPaper->GetCursorX();
+//    lmLUnits uWidth = DrawMetronomeMark(fMeasuring, pPaper, uxPos, uyPos, colorC);
+//
+//    if (fMeasuring) {
+//        // store selection rectangle measures and position
+//        m_uSelRect.width = uWidth;
+//        m_uSelRect.height = m_pVStaff->TenthsToLogical(32, m_nStaffNum); //todo
+//        m_uSelRect.x = uxPos - m_uPaperPos.x;        //relative to m_uPaperPos
+//        m_uSelRect.y = uyPos - m_uPaperPos.y;;
+//
+//        // set total width to zero: metronome marks does not consume staff space
+//        m_uWidth = 0;   // uWidth;
+//
+//        // store glyph position (relative to paper pos).
+//        m_uGlyphPos.x = 0;
+//        m_uGlyphPos.y = pPaper->GetCursorY() - uyPos;
+//    }
 
 }
 
@@ -180,7 +179,7 @@ lmLUnits lmMetronomeMark::DrawText(bool fMeasuring, lmPaper* pPaper,
         m_pTextShape->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum), uOffset);
     }
     else {
-        m_pTextShape->Render(pPaper, m_uPaperPos, colorC);
+        m_pTextShape->Render(pPaper, colorC);  //(pPaper, m_uPaperPos, colorC);
     }
     return m_pTextShape->GetWidth();
 
@@ -198,7 +197,7 @@ lmLUnits lmMetronomeMark::DrawSymbol(bool fMeasuring, lmPaper* pPaper, lmShapeGl
         pShape->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum), offset);
     }
     else {
-        pShape->Render(pPaper, m_uPaperPos, colorC);
+        pShape->Render(pPaper, colorC);    //(pPaper, m_uPaperPos, colorC);
     }
     return pShape->GetWidth();
 }
@@ -236,7 +235,7 @@ wxString lmMetronomeMark::Dump()
     return sDump;
 }
 
-wxString lmMetronomeMark::SourceLDP()
+wxString lmMetronomeMark::SourceLDP(int nIndent)
 {
     wxString sSource = _T("         (metronome");
 

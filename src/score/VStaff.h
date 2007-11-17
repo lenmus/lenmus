@@ -123,7 +123,7 @@ public:
 
     //Debug methods
     wxString Dump();
-    wxString SourceLDP();
+    wxString SourceLDP(int nIndent);
     wxString SourceXML();
 
     // restricted methods

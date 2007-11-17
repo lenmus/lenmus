@@ -290,23 +290,23 @@ wxString lmNoteRest::GetLDPNoteType()
         case eBreve:
             return _T("d");
         case eWhole:
-            return _T("r");
+            return _T("w");
         case eHalf:
-            return _T("b");
+            return _T("h");
         case eQuarter:
-            return _T("n");
+            return _T("q");
         case eEighth:
-            return _T("c");
+            return _T("e");
         case e16th:
             return _T("s");
         case e32th:
-            return _T("f");
+            return _T("t");
         case e64th:
-            return _T("m");
+            return _T("i");
         case e128th:
-            return _T("g");
+            return _T("o");
         case e256th:
-            return _T("p");
+            return _T("f");
         default:
             wxASSERT(false);
             return _T("");        //compiler happy
@@ -321,33 +321,37 @@ wxString lmNoteRest::GetLDPNoteType()
 */
 int LDPNoteTypeToEnumNoteType(const wxString& sNoteType)
 {
-    wxChar cNoteType = sNoteType.GetChar(0);
-    switch (cNoteType) {
-        case _T('l'):
-            return eLonga;
-        case _T('d'):
-            return  eBreve;
-        case _T('r'):
-            return  eWhole;
-        case _T('b'):
-            return  eHalf;
-        case _T('n'):
-            return  eQuarter;
-        case _T('c'):
-            return  eEighth;
-        case _T('s'):
-            return  e16th;
-        case _T('f'):
-            return  e32th;
-        case _T('m'):
-            return  e64th;
-        case _T('g'):
-            return  e128th;
-        case _T('p'):
-            return  e256th;
-        default:
-            return  -1;     //error
-    }
+    //OBSOLETE
+    wxASSERT(false);
+    return -1;
+
+    //wxChar cNoteType = sNoteType.GetChar(0);
+    //switch (cNoteType) {
+    //    case _T('l'):
+    //        return eLonga;
+    //    case _T('d'):
+    //        return  eBreve;
+    //    case _T('r'):
+    //        return  eWhole;
+    //    case _T('b'):
+    //        return  eHalf;
+    //    case _T('n'):
+    //        return  eQuarter;
+    //    case _T('c'):
+    //        return  eEighth;
+    //    case _T('s'):
+    //        return  e16th;
+    //    case _T('f'):
+    //        return  e32th;
+    //    case _T('m'):
+    //        return  e64th;
+    //    case _T('g'):
+    //        return  e128th;
+    //    case _T('p'):
+    //        return  e256th;
+    //    default:
+    //        return  -1;     //error
+    //}
 }
 
 /*! Receives a string (sNoteType) with the LDP letter for the type of note and, optionally,
@@ -356,22 +360,26 @@ int LDPNoteTypeToEnumNoteType(const wxString& sNoteType)
 */
 float LDPNoteTypeToDuration(const wxString& sNoteType)
 {
-    int nNoteType = LDPNoteTypeToEnumNoteType(sNoteType);
-    if (nNoteType == -1) return -1.0;    //error
+    //OBSOLETE
+    wxASSERT(false);
+    return 0;
 
-    //analyze dots
-    bool fDotted=false, fDoubleDotted=false;
-    if (sNoteType.length() > 1) {
-        if (sNoteType.substr(1) == _T("..") ) {
-            fDoubleDotted = true;
-        } else if (sNoteType.substr(1) ==  _T(".") ) {
-            fDotted = true;
-        } else {
-            return -1.0;    //error
-        }
-    }
+    //int nNoteType = LDPNoteTypeToEnumNoteType(sNoteType);
+    //if (nNoteType == -1) return -1.0;    //error
 
-    return NoteTypeToDuration((ENoteType)nNoteType, fDotted, fDoubleDotted);
+    ////analyze dots
+    //bool fDotted=false, fDoubleDotted=false;
+    //if (sNoteType.length() > 1) {
+    //    if (sNoteType.substr(1) == _T("..") ) {
+    //        fDoubleDotted = true;
+    //    } else if (sNoteType.substr(1) ==  _T(".") ) {
+    //        fDotted = true;
+    //    } else {
+    //        return -1.0;    //error
+    //    }
+    //}
+
+    //return NoteTypeToDuration((ENoteType)nNoteType, fDotted, fDoubleDotted);
 }
 
 float NoteTypeToDuration(ENoteType nNoteType, bool fDotted, bool fDoubleDotted)

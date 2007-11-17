@@ -73,11 +73,7 @@ lmScoreObj::lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable
     m_fFixedPos = false;
     m_nNumPage = 1;
 
-    // initializations: selection related info
-    m_fSelected = false;
-
     //transitional
-    SetShapeRendered(false);
     m_pShape = (lmShape*)NULL;
     m_pShape2 = (lmShape*)NULL;
 
@@ -107,16 +103,16 @@ bool lmScoreObj::IsAtPoint(lmUPoint& pt)
 
 void lmScoreObj::DrawSelRectangle(lmPaper* pPaper, wxColour colorC)
 {
-    if (IsShapeRendered()) {
-        m_pShape->DrawSelRectangle(pPaper, m_uPaperPos, colorC);
-    }
-    else {
-        lmUPoint uPt = GetSelRect().GetPosition();
-        //lmUPoint uPoint((lmLUnits)pt.x, (lmLUnits)pt.y);
-        pPaper->SketchRectangle(uPt, GetSelRect().GetSize(), *wxRED);
-        //! @todo change *wxRED by colorC when no longer necesary to distinguise
-        //!       between shape rendered and drawing rendered objects
-    }
+    //if (IsShapeRendered()) {
+    //    m_pShape->DrawSelRectangle(pPaper, colorC);
+    //}
+    //else {
+    //    lmUPoint uPt = GetSelRect().GetPosition();
+    //    //lmUPoint uPoint((lmLUnits)pt.x, (lmLUnits)pt.y);
+    //    pPaper->SketchRectangle(uPt, GetSelRect().GetSize(), *wxRED);
+    //    //! @todo change *wxRED by colorC when no longer necesary to distinguise
+    //    //!       between shape rendered and drawing rendered objects
+    //}
 }
 
 
@@ -130,7 +126,7 @@ void lmScoreObj::MoveTo(lmUPoint& uPt)
     m_uPaperPos.x = uPt.x;
 }
 
-void lmScoreObj::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD, 
+void lmScoreObj::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD, 
                 const lmUPoint& pagePosL, const lmUPoint& uDragStartPos, const lmDPoint& canvasPosD)
 {
     /*
@@ -233,12 +229,13 @@ void lmScoreObj::DoRemoveGraphicObj(lmScoreObj* pGO)
     wxASSERT(pGO->GetType() == eSCOT_GraphicObj);
 }
 
-void lmScoreObj::MoveShape(lmLUnits uLeft)
+void lmScoreObj::ShiftObject(lmLUnits uLeft)
 { 
     // update shapes' positions when the object is moved
 
-    if (m_pShape2) m_pShape2->Shift(uLeft - m_uPaperPos.x, 0.0);
-    m_uPaperPos.x = uLeft;
+    if (m_pShape2) m_pShape2->Shift(uLeft, 0.0);    //(uLeft - m_uPaperPos.x, 0.0);
+    wxLogMessage(_T("[lmScoreObj::ShiftObject] shift=%.2f, ID=%d"), uLeft, GetID());
+    //m_uPaperPos.x = uLeft;
 }
 
 
@@ -266,7 +263,7 @@ void lmAuxObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHig
     pPaper->SetCursorY(m_uPaperPos.y);
 
     // ask derived object to draw itself
-    DrawObject(fMeasuring, pPaper, colorC, fHighlight);
+    //DrawObject(fMeasuring, pPaper, colorC, fHighlight);
 
     // draw selection rectangle
     if (g_fDrawSelRect) DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
@@ -316,20 +313,12 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
     // set the font
     SetFont(pPaper);
 
-    // ask derived object to measure itself
-    LayoutObject(pBox, pPaper, colorC, fHighlight);
+    // ask derived object to layout itself
+    LayoutObject(pBox, pPaper, colorC);
 
     // update paper cursor position
     pPaper->SetCursorX(m_uPaperPos.x + m_uWidth);
     
-}
-
-
-void lmStaffObj::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC,
-                              bool fHighlight)
-{
-	WXUNUSED(pBox);
-	DrawObject(DO_MEASURE, pPaper, colorC, fHighlight);
 }
 
 void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
@@ -347,19 +336,19 @@ void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fH
     // set the font
     if (fMeasuring) SetFont(pPaper);
 
-    if (IsShapeRendered()) {
-        if (fMeasuring) {
-            // ask derived object to measure itself
-            DrawObject(fMeasuring, pPaper, colorC, fHighlight);
-        }
-        else {
-            m_pShape->Render(pPaper, m_uPaperPos, colorC);
-        }
-    }
-    else {
-        // ask derived object to draw itself
-        DrawObject(fMeasuring, pPaper, colorC, fHighlight);
-    }
+    //if (IsShapeRendered()) {
+    //    if (fMeasuring) {
+    //        // ask derived object to measure itself
+    //        DrawObject(fMeasuring, pPaper, colorC, fHighlight);
+    //    }
+    //    //else {
+    //    //    m_pShape->Render(pPaper, m_uPaperPos, colorC);
+    //    //}
+    //}
+    //else {
+    //    // ask derived object to draw itself
+    //    DrawObject(fMeasuring, pPaper, colorC, fHighlight);
+    //}
 
     // Draw GraphicObjs owned by this StaffObj
     if (!fMeasuring && m_pGraphObjs)
@@ -375,9 +364,9 @@ void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fH
     // update paper cursor position
     pPaper->SetCursorX(m_uPaperPos.x + m_uWidth);
     
-    // draw selection rectangle
-    if (!fMeasuring && (IsSelected() || g_fDrawSelRect))
-        DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
+    //// draw selection rectangle
+    //if (!fMeasuring && (IsSelected() || g_fDrawSelRect))
+    //    DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
             
 }
 

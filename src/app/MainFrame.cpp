@@ -67,6 +67,9 @@
 #include "Preferences.h"                    //access to user preferences
 #include "../updater/Updater.h"
 
+#include "../graphic/BoxScore.h"
+
+
 //access to error's logger
 #include "../app/Logger.h"
 extern lmLogger* g_pLogger;

@@ -45,12 +45,12 @@ extern lmLogger* g_pLogger;
 
 static wxString m_sKeySignatureName[30];
 static wxString m_sLDPKeyName[30] = {
-        _T("Do"), _T("Sol"), _T("Re"), _T("La"), _T("Mi"), _T("Si"),
-        _T("Fas"), _T("Dos"), _T("Dob"), _T("Solb"), _T("Reb"), _T("Lab"),
-        _T("Mib"), _T("Sib"), _T("Fa"), _T("Lam"), _T("Mim"), _T("Sim"),
-        _T("Fasm"), _T("Dosm"), _T("Solsm"), _T("Resm"), _T("Lasm"), _T("Labm"),
-        _T("Mibm"), _T("Sibm"), _T("Fam"), _T("Dom"), _T("Solm"), _T("Rem")
-};
+        _T("C"), _T("G"), _T("D"), _T("A"), _T("E"), _T("B"),
+        _T("F+"), _T("C+"), _T("C-"), _T("G-"), _T("D-"), _T("A-"),
+        _T("E-"), _T("B-"), _T("F"), _T("a"), _T("e"), _T("b"),
+        _T("f+"), _T("c+"), _T("g+"), _T("d+"), _T("a+"), _T("a-"),
+        _T("e-"), _T("b-"), _T("f"), _T("c"), _T("g"), _T("d") };
+
 
 //-------------------------------------------------------------------------------------------------
 // lmKeySignature object implementation
@@ -114,16 +114,21 @@ lmKeySignature::lmKeySignature(int nFifths, bool fMajor, lmVStaff* pVStaff, bool
 wxString lmKeySignature::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tKey Sign. %d %s Key=%d\tTimePos=%.2f\n"),
-        m_nId, m_nFifths, (m_fMajor ? _T("major") : _T("minor")), m_nKeySignature, m_rTimePos );
+        _T("%d\tKey Sign. fifths: %d Key=%s %s\tTimePos=%.2f\n"),
+        m_nId, m_nFifths, m_sLDPKeyName[m_nKeySignature], (m_fMajor ? _T("major") : _T("minor")), m_rTimePos );
     return sDump;
 }
 
-wxString lmKeySignature::SourceLDP()
+wxString lmKeySignature::SourceLDP(int nIndent)
 {
-    wxString sSource = _T("         (key ");
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(key ");
     sSource += m_sLDPKeyName[m_nKeySignature];
-    if (!m_fVisible) { sSource += _T(" no_visible"); }
+
+    //visible?
+    if (!m_fVisible) { sSource += _T(" noVisible"); }
+
     sSource += _T(")\n");
     return sSource;
 
@@ -135,22 +140,21 @@ wxString lmKeySignature::SourceXML()
     return _T("");
 }
 
-void lmKeySignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
-                                bool fHighlight)
+void lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    if (m_fHidden) return;
+    //if (m_fHidden) return;
 
-    if (fMeasuring) {
-        // get the shift to the staff on which the key signature must be drawn
-        lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
+    //if (fMeasuring) {
+    //    // get the shift to the staff on which the key signature must be drawn
+    //    lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
 
-        // store glyph position
-        m_uGlyphPos.x = 0;
-        m_uGlyphPos.y = yShift;
-    }
+    //    // store glyph position
+    //    m_uGlyphPos.x = 0;
+    //    m_uGlyphPos.y = yShift;
+    //}
 
-    DrawKeySignature(fMeasuring, pPaper,
-            (m_fSelected ? g_pColors->ScoreSelected() : g_pColors->ScoreNormal() ));
+    //DrawKeySignature(fMeasuring, pPaper,
+    //        (m_fSelected ? g_pColors->ScoreSelected() : g_pColors->ScoreNormal() ));
 
 }
 
@@ -384,7 +388,7 @@ wxBitmap* lmKeySignature::GetBitmap(double rScale)
     return (wxBitmap*)NULL;
 }
 
-void lmKeySignature::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
+void lmKeySignature::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
                         const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels)
 {
 }

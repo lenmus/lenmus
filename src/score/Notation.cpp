@@ -51,28 +51,27 @@ lmSpacer::lmSpacer(lmVStaff* pStaff, lmTenths nWidth, int nStaff)
     m_nSpacerWidth = nWidth;
 }
 
-void lmSpacer::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
-                                  bool fHighlight)
+void lmSpacer::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    if (fMeasuring) {
-        // set total width
-        m_uWidth = m_pVStaff->TenthsToLogical(m_nSpacerWidth, m_nStaffNum);
-
-        // store glyph position. As it is relative to paper pos, it is always zero.
-        //m_uGlyphPos.x = m_pVStaff->TenthsToLogical(m_uWidth, m_nStaffNum);
-        m_uGlyphPos.x = 0;
-        m_uGlyphPos.y = 0;
-
-         // store selection rectangle (relative to m_uPaperPos).
-        //  Coincides with glyph rectangle. Height is arbitrary: staff height.
-        m_uSelRect.width = m_uWidth;
-        m_uSelRect.height = 50;      // staff height: 5 lines
-        m_uSelRect.x = m_uGlyphPos.x;
-        m_uSelRect.y = m_uGlyphPos.y;
-    }
-    else {
-        // Drawing phase. Nothing to do
-    }
+//    if (fMeasuring) {
+//        // set total width
+//        m_uWidth = m_pVStaff->TenthsToLogical(m_nSpacerWidth, m_nStaffNum);
+//
+//        // store glyph position. As it is relative to paper pos, it is always zero.
+//        //m_uGlyphPos.x = m_pVStaff->TenthsToLogical(m_uWidth, m_nStaffNum);
+//        m_uGlyphPos.x = 0;
+//        m_uGlyphPos.y = 0;
+//
+//         // store selection rectangle (relative to m_uPaperPos).
+//        //  Coincides with glyph rectangle. Height is arbitrary: staff height.
+//        m_uSelRect.width = m_uWidth;
+//        m_uSelRect.height = 50;      // staff height: 5 lines
+//        m_uSelRect.x = m_uGlyphPos.x;
+//        m_uSelRect.y = m_uGlyphPos.y;
+//    }
+//    else {
+//        // Drawing phase. Nothing to do
+//    }
 
 }
 
@@ -85,7 +84,7 @@ wxString lmSpacer::Dump()
             
 }
 
-wxString lmSpacer::SourceLDP()
+wxString lmSpacer::SourceLDP(int nIndent)
 {
     wxString sSource = wxString::Format(_T("         (spacer %.0f)\n"), m_nSpacerWidth);
     return sSource;

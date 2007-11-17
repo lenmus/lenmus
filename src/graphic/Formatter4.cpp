@@ -103,82 +103,85 @@ lmBoxScore* lmFormatter4::Layout(lmScore* pScore, lmPaper* pPaper)
 
 lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
 {
-    //drawing a score without bar justification and without breaking it into systems.
-    //That is, it draws all the score in a single system without taking into consideration
-    //paper length limitations.
-    // This very simple renderer is usefull for simple scores and in some rare occations
+	return (lmBoxScore*)NULL;
 
-    lmBoxScore* pBoxScore = new lmBoxScore(m_pScore);
+	////drawing a score without bar justification and without breaking it into systems.
+ //   //That is, it draws all the score in a single system without taking into consideration
+ //   //paper length limitations.
+ //   // This very simple renderer is usefull for simple scores and in some rare occations
 
-    pPaper->RestartPageCursors();    //ensure that page cursors are at top-left corner
+ //   lmBoxScore* pBoxScore = new lmBoxScore(m_pScore);
 
-    //for each staff size, setup fonts of right point size for that staff size
-    int iVStaff;
-    lmInstrument *pInstr;
-    lmVStaff *pVStaff;
-    for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
-    {
-        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
-            pVStaff = pInstr->GetVStaff(iVStaff);
-            pVStaff->SetUpFonts(pPaper);
-        }
-    }
+ //   pPaper->RestartPageCursors();    //ensure that page cursors are at top-left corner
 
-    // write score titles
-    m_pScore->WriteTitles(DO_MEASURE, pPaper);
-    pPaper->RestartPageCursors();                                //restore page cursors are at top-left corner
-    pPaper->IncrementCursorY(m_pScore->TopSystemDistance());    //advance to skip headers
+ //   //for each staff size, setup fonts of right point size for that staff size
+ //   int iVStaff;
+ //   lmInstrument *pInstr;
+ //   lmVStaff *pVStaff;
+ //   for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
+ //   {
+ //       for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
+ //           pVStaff = pInstr->GetVStaff(iVStaff);
+ //           pVStaff->SetUpFonts(pPaper);
+ //       }
+ //   }
 
-    //prepare the only page
-    lmBoxPage* pBoxPage = pBoxScore->GetCurrentPage();
-    lmBoxSystem* pBoxSystem;
+ //   // write score titles
+ //   m_pScore->WriteTitles(DO_MEASURE, pPaper);
+ //   pPaper->RestartPageCursors();                                //restore page cursors are at top-left corner
+ //   pPaper->IncrementCursorY(m_pScore->TopSystemDistance());    //advance to skip headers
 
-    //for each instrument
-    lmLUnits nSpaceAfterBarline;
-    int nAbsMeasure;
-    for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
-    {
-        //for each lmVStaff
-        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
-        {
-            pVStaff = pInstr->GetVStaff(iVStaff);
-            nSpaceAfterBarline = pVStaff->TenthsToLogical(20, 1);
+ //   //prepare the only page
+ //   lmBoxPage* pBoxPage = pBoxScore->GetCurrentPage();
+ //   lmBoxSystem* pBoxSystem;
 
-            pBoxSystem = pBoxPage->AddSystem(iVStaff);
-            int ySystemPos = (int)pPaper->GetCursorY();      //save the start of system position
-            pBoxSystem->SetPosition(pPaper->GetCursorX(), ySystemPos);
-            nAbsMeasure = 1;
-            pBoxSystem->SetFirstMeasure(nAbsMeasure);
+ //   //for each instrument
+ //   lmLUnits nSpaceAfterBarline;
+ //   int nAbsMeasure;
+ //   for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
+ //   {
+ //       //for each lmVStaff
+ //       for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
+ //       {
+ //           pVStaff = pInstr->GetVStaff(iVStaff);
+ //           nSpaceAfterBarline = pVStaff->TenthsToLogical(20, 1);
 
-            //loop to process all StaffObjs in this VStaff
-            lmStaffObj* pSO = (lmStaffObj*)NULL;
-            lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
-            pIT->MoveFirst();
-            while(!pIT->EndOfList())
-            {
-                pSO = pIT->GetCurrent();
-                pSO->Draw(DO_MEASURE, pPaper);  //measure the staffobj
+ //           pBoxSystem = pBoxPage->AddSystem(iVStaff);
+ //           int ySystemPos = (int)pPaper->GetCursorY();      //save the start of system position
+ //           pBoxSystem->SetPosition(pPaper->GetCursorX(), ySystemPos);
+ //           nAbsMeasure = 1;
+ //           pBoxSystem->SetFirstMeasure(nAbsMeasure);
 
-                if (pSO->GetClass() == eSFOT_Barline) {
-                    if (pSO->IsVisible()) {
-                        //add space after barline
-                        pPaper->IncrementCursorX(nSpaceAfterBarline);
-                    }
-                    nAbsMeasure++;
-                }
+ //           //loop to process all StaffObjs in this VStaff
+ //           lmStaffObj* pSO = (lmStaffObj*)NULL;
+ //           lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
+ //           pIT->MoveFirst();
+ //           while(!pIT->EndOfList())
+ //           {
+ //               pSO = pIT->GetCurrent();
+ //               pSO->Draw(DO_MEASURE, pPaper);  //measure the staffobj
 
-                pIT->MoveNext();
-            }
-            delete pIT;
+ //               if (pSO->GetClass() == eSFOT_Barline) {
+ //                   if (pSO->IsVisible()) {
+ //                       //add space after barline
+ //                       pPaper->IncrementCursorX(nSpaceAfterBarline);
+ //                   }
+ //                   nAbsMeasure++;
+ //               }
 
-            pBoxSystem->SetNumMeasures(--nAbsMeasure, m_pScore);
-            pBoxSystem->UpdateXRight( pPaper->GetCursorX() + nSpaceAfterBarline );
-            pBoxSystem->SetIndent(0);
+ //               pIT->MoveNext();
+ //           }
+ //           delete pIT;
 
-        }
-    }
+ //           pBoxSystem->SetNumMeasures(--nAbsMeasure, m_pScore);
+ //           pBoxSystem->UpdateXRight( pPaper->GetCursorX() + nSpaceAfterBarline );
+ //           pBoxSystem->SetIndent(0);
 
-    return pBoxScore;
+ //       }
+ //   }
+
+ //   return pBoxScore;
+
 
 }
 
@@ -903,9 +906,9 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
 //    pVStaff->SetXInicioCompas = pPaper->GetCursorX()
 
     //start new thread
-    m_oTimepos[nRelMeasure].NewThread();
     lmLUnits xStart = pPaper->GetCursorX();
-    m_oTimepos[nRelMeasure].SetCurXLeft( xStart );
+    m_oTimepos[nRelMeasure].NewThread();
+    m_oTimepos[nRelMeasure].SetCurXLeft(xStart);
 
     //if this is not the first measure of the score advance (horizontally) a space to leave a gap
     //between the previous barline (or the prolog, if first measure in system) and the first note
@@ -963,7 +966,7 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
             ESOCtrolType nCtrolType = pSOCtrol->GetCtrolType();
             if (lmTIME_SHIFT == nCtrolType)
             {
-                //start a new thread, returning x pos to the same x pos than the
+                //start a new thread, setting x pos to the same x pos than the
                 //previous thread
                 m_oTimepos[nRelMeasure].NewThread();
                 pPaper->SetCursorX(m_oTimepos[nRelMeasure].GetCurXLeft());
@@ -1059,6 +1062,7 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
                 //store its final and anchor x positions
             oTimepos.SetCurXFinal(pPaper->GetCursorX());
             oTimepos.SetCurXAnchor(oTimepos.GetCurXLeft() + pSO->GetAnchorPos());
+            wxLogMessage(_T("[lmFormatter4::SizeMeasure] anchor pos = %.2f, ID=%d"), pSO->GetAnchorPos(), pSO->GetID() ); 
             // add after space
             if (pSO->GetClass() == eSFOT_NoteRest) {
                 lmTenths rSpace;

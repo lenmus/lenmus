@@ -72,8 +72,8 @@ public:
              bool fDotted, bool fDoubleDotted, int nStaff, bool fVisible);
     virtual ~lmNoteRest();
 
-    virtual void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, 
-                            bool fHighlight) = 0;
+    //virtual void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, 
+    //                        bool fHighlight) = 0;
     virtual wxBitmap* GetBitmap(double rScale) = 0;
     virtual wxString Dump() = 0;
 

@@ -108,108 +108,108 @@ wxBitmap* lmRest::GetBitmap(double rScale)
 
 }
 
-void lmRest::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+void lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    /*
-    This method is invoked by the base class (lmStaffObj). When reaching this point 
-    paper cursor variable (m_uPaperPos) has been updated. This value must be used
-    as the base for any measurement / drawing operation.
+    ///*
+    //This method is invoked by the base class (lmStaffObj). When reaching this point 
+    //paper cursor variable (m_uPaperPos) has been updated. This value must be used
+    //as the base for any measurement / drawing operation.
 
-    DrawObject() method is responsible for:
-    1. In DO_MEASURE phase (fMeasuring == true):
-        - Compute the surrounding rectangle, the glyph position and other measurements
-    2. In DO_DRAW phase (fMeasuring == false):
-        - Render the object
+    //DrawObject() method is responsible for:
+    //1. In DO_MEASURE phase (fMeasuring == true):
+    //    - Compute the surrounding rectangle, the glyph position and other measurements
+    //2. In DO_DRAW phase (fMeasuring == false):
+    //    - Render the object
 
-    */
+    //*/
 
 
-    // move to right staff
-    lmLUnits uyTop = m_uPaperPos.y + GetStaffOffset();
-    lmLUnits uxLeft = m_uPaperPos.x;
+    //// move to right staff
+    //lmLUnits uyTop = m_uPaperPos.y + GetStaffOffset();
+    //lmLUnits uxLeft = m_uPaperPos.x;
 
-    // prepare DC
-    pPaper->SetFont(*m_pFont);
+    //// prepare DC
+    //pPaper->SetFont(*m_pFont);
 
-    //if measurement phase and this is the first note/rest of a beam, measure beam
-    if (fMeasuring && m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
-        m_pBeam->CreateShape();
-    }
+    ////if measurement phase and this is the first note/rest of a beam, measure beam
+    //if (fMeasuring && m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
+    //    m_pBeam->CreateShape();
+    //}
 
-    // Draw rest symbol
-    //----------------------------------------------------------------------------------
-    lmEGlyphIndex nGlyph = GetGlyphIndex();
-    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
-    if (fMeasuring) {
+    //// Draw rest symbol
+    ////----------------------------------------------------------------------------------
+    //lmEGlyphIndex nGlyph = GetGlyphIndex();
+    //wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
+    //if (fMeasuring) {
 
-        // store position
-        m_uGlyphPos.x = 0;
-        m_uGlyphPos.y = uyTop - m_uPaperPos.y +
-            m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
+    //    // store position
+    //    m_uGlyphPos.x = 0;
+    //    m_uGlyphPos.y = uyTop - m_uPaperPos.y +
+    //        m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
 
-        // store selection rectangle position and size
-        lmLUnits nWidth, nHeight;
-        pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
-        m_uSelRect.width = nWidth;
-        m_uSelRect.height = m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
-        m_uSelRect.x = m_uGlyphPos.x;
-        m_uSelRect.y = m_uGlyphPos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum );
+    //    // store selection rectangle position and size
+    //    lmLUnits nWidth, nHeight;
+    //    pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
+    //    m_uSelRect.width = nWidth;
+    //    m_uSelRect.height = m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
+    //    m_uSelRect.x = m_uGlyphPos.x;
+    //    m_uSelRect.y = m_uGlyphPos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum );
 
-        // store total width
-        lmLUnits afterSpace = m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
-        m_uWidth = nWidth + afterSpace;
+    //    // store total width
+    //    lmLUnits afterSpace = m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
+    //    m_uWidth = nWidth + afterSpace;
 
-    } else {
-        // drawing phase: do the draw
-        lmUPoint uPos = GetGlyphPosition();
-        pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-        pPaper->DrawText(sGlyph, uPos.x, uPos.y );
-    }
-    uxLeft += m_uSelRect.width;
+    //} else {
+    //    // drawing phase: do the draw
+    //    lmUPoint uPos = GetGlyphPosition();
+    //    pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
+    //    pPaper->DrawText(sGlyph, uPos.x, uPos.y );
+    //}
+    //uxLeft += m_uSelRect.width;
 
-    //draw dots
-    //------------------------------------------------------------
-    if (m_fDotted || m_fDoubleDotted)
-    {
-        lmLUnits nSpaceBeforeDot = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-        uxLeft += nSpaceBeforeDot;      //! @todo user selectable
+    ////draw dots
+    ////------------------------------------------------------------
+    //if (m_fDotted || m_fDoubleDotted)
+    //{
+    //    lmLUnits nSpaceBeforeDot = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
+    //    uxLeft += nSpaceBeforeDot;      //! @todo user selectable
 
-        lmLUnits nShift = aGlyphsInfo[nGlyph].SelRectShift + (aGlyphsInfo[nGlyph].SelRectHeight / 2);
-        nShift = m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);
-        lmLUnits yPos = m_uGlyphPos.y + m_uPaperPos.y; // + nShift;
+    //    lmLUnits nShift = aGlyphsInfo[nGlyph].SelRectShift + (aGlyphsInfo[nGlyph].SelRectHeight / 2);
+    //    nShift = m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);
+    //    lmLUnits yPos = m_uGlyphPos.y + m_uPaperPos.y; // + nShift;
 
-        uxLeft += DrawDot(fMeasuring, pPaper, uxLeft, yPos, colorC, true);
-        if (m_fDoubleDotted) {
-            uxLeft += nSpaceBeforeDot;
-            uxLeft += DrawDot(fMeasuring, pPaper, uxLeft, yPos, colorC, true);
-        }
-    }
+    //    uxLeft += DrawDot(fMeasuring, pPaper, uxLeft, yPos, colorC, true);
+    //    if (m_fDoubleDotted) {
+    //        uxLeft += nSpaceBeforeDot;
+    //        uxLeft += DrawDot(fMeasuring, pPaper, uxLeft, yPos, colorC, true);
+    //    }
+    //}
 
-    // render associated notations ----------------------------------
-    if (m_pNotations) {
-        lmNoteRestObj* pNRO;
-        wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
-        for (; pNode; pNode = pNode->GetNext() ) {
-            pNRO = (lmNoteRestObj*)pNode->GetData();
-            if (fMeasuring) {
-                 lmLUnits xPos = 0;
-                lmLUnits yPos = 0;
-                switch(pNRO->GetSymbolType()) {
-                    case eST_Fermata:
-                        // set position (relative to paperPos)
-                        xPos = m_uSelRect.x + m_uSelRect.width / 2;
-                        yPos = uyTop - m_uPaperPos.y;
-                        pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
-                        pNRO->UpdateMeasurements();
-                        break;
-                    default:
-                        wxASSERT(false);
-                }
-            }
-            else
-                pNRO->Draw(DO_DRAW, pPaper, colorC);
-        }
-    }
+    //// render associated notations ----------------------------------
+    //if (m_pNotations) {
+    //    lmNoteRestObj* pNRO;
+    //    wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
+    //    for (; pNode; pNode = pNode->GetNext() ) {
+    //        pNRO = (lmNoteRestObj*)pNode->GetData();
+    //        if (fMeasuring) {
+    //             lmLUnits xPos = 0;
+    //            lmLUnits yPos = 0;
+    //            switch(pNRO->GetSymbolType()) {
+    //                case eST_Fermata:
+    //                    // set position (relative to paperPos)
+    //                    xPos = m_uSelRect.x + m_uSelRect.width / 2;
+    //                    yPos = uyTop - m_uPaperPos.y;
+    //                    pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
+    //                    pNRO->UpdateMeasurements();
+    //                    break;
+    //                default:
+    //                    wxASSERT(false);
+    //            }
+    //        }
+    //        else
+    //            pNRO->Draw(DO_DRAW, pPaper, colorC);
+    //    }
+    //}
 
     
 }
@@ -270,16 +270,25 @@ wxString lmRest::Dump()
     return sDump;
     
 }
-wxString lmRest::SourceLDP()
+wxString lmRest::SourceLDP(int nIndent)
 {
-    wxString sSource = _T("            (s ");    
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(r ");    
 
-    //! @todo Finish lmRest LDP Source code generation method
+    //duration
+    sSource += GetLDPNoteType();
+    if (m_fDotted) sSource += _T(".");
+    if (m_fDoubleDotted) sSource += _T(".");
 
-//    if (nCalderon == eC_ConCalderon) m_sFuente = m_sFuente & " c";
-//    for (int i=1; i <= cAnotaciones.Count; i++) {
-//        m_sFuente = m_sFuente & " " & cAnotaciones.Item(i);
-//    }
+    //staff num
+    if (m_pVStaff->GetNumStaves() > 1) {
+        sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
+    }
+
+    //visible?
+    if (!m_fVisible) { sSource += _T(" noVisible"); }
+
     sSource += _T(")\n");
     return sSource;
 }
@@ -335,24 +344,14 @@ lmScoreObj* lmRest::FindSelectableObject(lmUPoint& pt)
 // implementation of virtual methods defined in base class lmStaffObj
 //====================================================================================================
 
-void lmRest::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
+void lmRest::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
             const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels)
 {
-    lmScoreObj::MoveDragImage(pPaper, pDragImage, ptOffset, ptLog, uDragStartPos, ptPixels);
+    lmScoreObj::OnDrag(pPaper, pDragImage, ptOffset, ptLog, uDragStartPos, ptPixels);
 }
 
 lmUPoint lmRest::EndDrag(const lmUPoint& uPos)
 {
     return lmScoreObj::EndDrag(uPos);
 }
-
-//====================================================================================================
-// implementation of virtual methods defined in base class lmScoreObj
-//====================================================================================================
-
-void lmRest::MoveShape(lmLUnits nLeft)
-{
-    lmScoreObj::MoveShape(nLeft);
-}
-
 

@@ -109,7 +109,7 @@ void lmShapeBeam::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 	pStem->Shift(ux, uy);
 }
 
-void lmShapeBeam::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
 {
 	if (m_fLayoutPending)
 	{
@@ -259,7 +259,7 @@ void lmShapeBeam::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
     }
 
 	//render stems
-	lmCompositeShape::Render(pPaper, uPos, color);
+	lmCompositeShape::Render(pPaper, color);
 
 }
 

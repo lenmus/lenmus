@@ -77,13 +77,6 @@ lmShape* lmTupletBracket::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour co
 	m_pShape = (lmShapeTuplet*)NULL;
     if (!m_fBracket) return m_pShape;
 
-	//lmShape* pNoteShape = GetStartNote()->GetShap2();
- //   lmLUnits xStart = pNoteShape->GetXLeft();
- //   lmLUnits yStart = (m_fAbove ? pNoteShape->GetYTop() : pNoteShape->GetYBottom() );
-	//pNoteShape = GetEndNote()->GetShap2();
- //   lmLUnits xEnd = pNoteShape->GetXRight();
- //   lmLUnits yEnd = (m_fAbove ? pNoteShape->GetYTop() : pNoteShape->GetYBottom() );
-
 	wxString sNumber = wxString::Format(_T("%d"), m_nTupletNumber);
 
 	//prepare the font

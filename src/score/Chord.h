@@ -43,15 +43,12 @@ public:
     void RemoveNote(lmNote* pNote);
     bool IsLastNoteOfChord(lmNote* pNote);
     void SetStemDirection(bool fStemDown);
-    void DrawStem(bool fMeasuring, lmPaper* pPaper, wxColour colorC, wxFont* pFont,
-                  lmVStaff* pVStaff, int nStaff);
     void AddStemShape(lmPaper* pPaper, wxColour colorC,
 					  wxFont* pFont, lmVStaff* pVStaff, int nStaff);
     void LayoutNoteHeads(lmShapeNote* pNS, lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC);
 
 	//debug
     wxString Dump();
-
 
 private:
     lmLUnits DrawFlag(bool fMeasuring, lmPaper* pPaper, lmNote* pBaseNote, lmUPoint uPos,

@@ -119,10 +119,15 @@ wxString lmTimeSignature::Dump()
     return sDump;
 }
 
-wxString lmTimeSignature::SourceLDP()
+wxString lmTimeSignature::SourceLDP(int nIndent)
 {
-    wxString sSource = wxString::Format(_T("         (time %d %d"), m_nBeats, m_nBeatType);
-    if (!m_fVisible) { sSource += _T(" no_visible"); }
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += wxString::Format(_T("(time %d %d"), m_nBeats, m_nBeatType);
+
+    //visible?
+    if (!m_fVisible) { sSource += _T(" noVisible"); }
+
     sSource += _T(")\n");
     return sSource;
 
@@ -134,21 +139,21 @@ wxString lmTimeSignature::SourceXML()
     return _T("");
 }
 
-void lmTimeSignature::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
-                                 bool fHighlight)
+void lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    if (fMeasuring) {
-        // get the shift to the staff on which the time key must be drawn
-        lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
+    //if (fMeasuring) {
+    //    // get the shift to the staff on which the time key must be drawn
+    //    lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
 
-        // store glyph position
-        m_uGlyphPos.x = 0;
-        m_uGlyphPos.y = yShift - m_pVStaff->TenthsToLogical( 40, m_nStaffNum );
-    }
+    //    // store glyph position
+    //    m_uGlyphPos.x = 0;
+    //    m_uGlyphPos.y = yShift - m_pVStaff->TenthsToLogical( 40, m_nStaffNum );
+    //}
 
-    DrawTimeSignature(fMeasuring, pPaper, (m_fSelected ? g_pColors->ScoreSelected() : *wxBLACK) );
+    //DrawTimeSignature(fMeasuring, pPaper, (m_fSelected ? g_pColors->ScoreSelected() : *wxBLACK) );
 
 }
+
 // returns the width of the draw (logical units)
 lmLUnits lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
 {
@@ -245,7 +250,7 @@ wxBitmap* lmTimeSignature::GetBitmap(double rScale)
     return (wxBitmap*)NULL;
 }
 
-void lmTimeSignature::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
+void lmTimeSignature::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
                         const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels)
 {
 }

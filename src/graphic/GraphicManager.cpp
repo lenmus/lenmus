@@ -32,10 +32,15 @@
 
 #include "wx/image.h"
 
+#include "../score/Score.h"
 #include "GraphicManager.h"
 #include "Formatter4.h"
 #include "AggDrawer.h"
 #include "../score/ObjOptions.h"
+#include "GMObject.h"
+#include "BoxScore.h"
+#include "BoxPage.h"
+
 
 //access to colors
 #include "../globals/Colors.h"
@@ -388,3 +393,8 @@ void lmGraphicManager::ExportAsImage(wxString& sFilename, wxString& sExt, int nI
 
 }
 
+lmGMObject* lmGraphicManager::FindGMObjectAtPagePosition(int nNumPage, lmUPoint uPos)
+{
+    lmBoxPage* pBPage = m_pBoxScore->GetPage(nNumPage);
+    return pBPage->FindGMObjectAtPosition(uPos);
+}

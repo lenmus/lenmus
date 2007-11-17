@@ -37,8 +37,12 @@
 #include "wx/wx.h"
 #endif
 
-#include "BoxScore.h"
-#include "../score/Score.h"
+#include "../score/defs.h"
+
+class lmScore;
+class lmPaper;
+class lmBoxScore;
+class lmGMObject;
 
 // offscreen bitmaps will be maintained in a list structure. Let's declare it
 WX_DECLARE_LIST(wxBitmap, BitmapList);
@@ -82,6 +86,8 @@ public:
     //access
     int GetNumPages();
     lmBoxScore* GetBoxScore() const { return m_pBoxScore; }
+    lmGMObject* FindGMObjectAtPagePosition(int nNumPage, lmUPoint uPos);
+
 
 
 private:

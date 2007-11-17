@@ -40,6 +40,8 @@ public:
 
     lmLUnits GetWidth();
     //void SetAfterspace(lmLUnits nSpace) { m_uAfterSpace = nSpace; }
+	inline EAccidentals GetType() { return m_nType; }
+	wxString GetLDPEncoding();
 
     void Layout(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos);
 	void MoveTo(lmLUnits uxPos, lmLUnits uyPos);

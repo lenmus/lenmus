@@ -65,30 +65,26 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     lmNoteRest(pVStaff, DEFINE_NOTE, nNoteType, rDuration, fDotted, fDoubleDotted, nStaff,
                fVisible)
 {
-    /*
-    Diatonic Pitch is determined by Step
-    This constructor is used for two kind of pitch information:
-      -    MusicXML style: sound and look information totally independent; pitch is absolute, and
-        is implied by combining Step, Octave and Alter. Accidentals are just for rendering.
-      - LDP style: notes defined as in hand writing; pitch depends on context (key signature
-        and accidentals introduced by a previous note in the same measure) and its own
-        accidentals. Therefore pitch is computred from Step, Octave, Accidentals and Context.
-        Alter is not used.
-    To support both kinds of definitions, parameter fAbsolutePitch indicates that pitch
-    information is absolute (MusicXML style) or relative (LDP style).
-    */
+    // Diatonic Pitch is determined by Step
+    // This constructor is used for two kind of pitch information:
+    //  -    MusicXML style: sound and look information totally independent; pitch is absolute, and
+    //    is implied by combining Step, Octave and Alter. Accidentals are just for rendering.
+    //  - LDP style: notes defined as in hand writing; pitch depends on context (key signature
+    //    and accidentals introduced by a previous note in the same measure) and its own
+    //    accidentals. Therefore pitch is computred from Step, Octave, Accidentals and Context.
+    //    Alter is not used.
+    // To support both kinds of definitions, parameter fAbsolutePitch indicates that pitch
+    // information is absolute (MusicXML style) or relative (LDP style).
 
-    //shapes initialization
+
+    //shape initialization
 	//AWARE: Althoug shape pointer is initialized to NULL never assume that there is
 	//a shape if not NULL, as the shape is deleted in the graphic model.
     m_pNoteheadShape = (lmShapeGlyp2*)NULL;
 
-    m_pStemLine = (lmShapeLine*)NULL;
-    m_pFlagShape = (lmShapeGlyph*)NULL;
-
     // stem information
-    m_uxStem = 0;            // will be updated in lmNote::DrawObject, in measurement phase
-    m_uyStem = 0;            // will be updated in lmNote::DrawObject, in measurement phase
+    m_uxStem = 0;            // will be updated in layout phase
+    m_uyStem = 0;            // will be updated in layout phase
     m_nStemType = nStem;
     m_uStemLength = GetDefaultStemLength();     //default. If beamed note, this value will
                                                 //be updated in lmBeam::CreateShape
@@ -102,10 +98,6 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     m_pContext = pContext;
     m_pContext->StartUsing();
     m_nClef = (m_pContext->GetClef())->GetClefType();
-//    m_nVoz = nVoz;        //! @todo parameter nVoz
-    //for (int i=0; i < 7; i++) {
-    //    m_anContext[i] = 0;    //! @todo parameter anContext[i]
-    //}
 
     //get octave, step and context accidentals for this note step
     long nAux;
@@ -272,7 +264,6 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
 
     // Generate beaming information -----------------------------------------------------
     CreateBeam(fBeamed, BeamInfo);
-    m_fMakeUpDone = false;
 
     if (!IsInChord() || IsBaseOfChord()) g_pLastNoteRest = this;
 
@@ -317,16 +308,6 @@ lmNote::~lmNote()
     if (m_pAccidentals) {
         delete m_pAccidentals;
         m_pAccidentals = (lmAccidental*)NULL;
-    }
-
-    //delete the shapes
-    if (m_pStemLine) {
-        delete m_pStemLine;
-        m_pStemLine = (lmShapeLine*)NULL;
-    }
-    if (m_pFlagShape) {
-        delete m_pFlagShape;
-        m_pFlagShape = (lmShapeGlyph*)NULL;
     }
 
 }
@@ -413,12 +394,12 @@ int lmNote::GetChordPosition() const
 // implementation of virtual methods defined in base abstract class lmNoteRest
 //====================================================================================================
 
-// Create the drag image.
-// Under wxGTK the DC logical function (ROP) is used by DrawText() but it is ignored by
-// wxMSW. Thus, it is not posible to do dragging just by redrawing the lmStaffObj using ROPs.
-// For portability it is necessary to implement dragging by means of bitmaps and wxDragImage
 wxBitmap* lmNote::GetBitmap(double rScale)
 {
+    // Create the drag image.
+    // Under wxGTK the DC logical function (ROP) is used by DrawText() but it is ignored by
+    // wxMSW. Thus, it is not posible to do dragging just by redrawing the lmStaffObj using ROPs.
+    // For portability it is necessary to implement dragging by means of bitmaps and wxDragImage
 
     lmEGlyphIndex nGlyph = GLYPH_EIGHTH_NOTE_UP;
     switch (m_nNoteType) {
@@ -467,18 +448,14 @@ wxBitmap* lmNote::GetBitmap(double rScale)
 
 }
 
-void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    // This method is invoked by the base class (lmStaffObj). When reaching this point
-    // paper cursor variable (m_uPaperPos) has been updated. This value must be used
-    // as the base for any measurement / drawing operation.
-	//
-    // LayoutObject() method is responsible for:
-	// 1. Creating the shape object
-    // 2. Computing the surrounding rectangle, the glyph position and other measurements
-	//	  and storing them on the shape object
+    // This method is invoked by the base class (lmStaffObj). It is responsible for
+    // creating the shape object and adding it to the graphical model. 
+    // Paper cursor must be used as the base for positioning.
 
-	bool fMeasuring = true;
+    //get paper reference point
+    lmUPoint uPaperPos(pPaper->GetCursorX(), pPaper->GetCursorY());
 
     bool fDrawStem = true;            // assume stem
     bool fInChord = IsInChord();
@@ -487,39 +464,29 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
     pPaper->SetFont(*m_pFont);
 
     // move to right staff
-    lmLUnits uyStaffTopLine = m_uPaperPos.y + GetStaffOffset();   // staff y position (top line)
+    lmLUnits uyStaffTopLine = uPaperPos.y + GetStaffOffset();   // staff y position (top line)
     lmLUnits uxLeft=0, uyTop=0;    // current pos. as positioning computation takes place
     int nPosOnStaff = GetPosOnStaff();
     lmLUnits uyPitchShift = GetPitchShift();
     uyTop = uyStaffTopLine - uyPitchShift;
-    uxLeft = m_uPaperPos.x;
+    uxLeft = uPaperPos.x;
 
     //create the container shape and add it to the box
     lmShapeNote* pNoteShape = new lmShapeNote(this, uxLeft, uyTop, colorC);
 	pBox->AddShape(pNoteShape);
     m_pShape2 = pNoteShape;
 
-    ////If drawing phase do first MakeUp phase
-    //if (fMeasuring)
-        m_fMakeUpDone = false;
-    //else if (!m_fMakeUpDone)
-    //    MakeUpPhase(pPaper);
-
     //if this is the first note of a chord, give lmChord the responsibility for
 	//layouting the chord (only note heads, accidentals and rests). If it is
     //any other note of a chord, do nothing and mark the note as 'already layouted'.
     bool fNoteLayouted = false;
     if (IsBaseOfChord()) {
-        wxLogMessage(_T("[lmNote::LayoutObject] Base of chord. NoteID=%d"), GetID());
-        m_pChord->LayoutNoteHeads(pNoteShape, pPaper, m_uPaperPos, colorC);
+        m_pChord->LayoutNoteHeads(pNoteShape, pPaper, uPaperPos, colorC);
         fNoteLayouted = true;
     }
     else if (IsInChord()) {
-        wxLogMessage(_T("[lmNote::LayoutObject] Note in chord. NoteID=%d"), GetID());
         fNoteLayouted = true;
     }
-    else
-        wxLogMessage(_T("[lmNote::LayoutObject] Note not in chord. NoteID=%d"), GetID());
 
     //if this is the first note/rest of a beam, create the beam
     //AWARE This must be done before using stem information, as the beam could
@@ -528,7 +495,9 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
         m_pBeam->CreateShape();
     }
 
+
     //create shapes for accidental signs if exist and note not in chord
+    //------------------------------------------------------------------
     if (m_pAccidentals) {
         if (!fNoteLayouted) {
             m_pAccidentals->Layout(pPaper, uxLeft, uyTop);
@@ -545,7 +514,7 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
 	{
         fDrawStem = AddNoteShape(pNoteShape, pPaper, uxLeft, uyTop, colorC);
     }
-    uxLeft += m_pNoteheadShape->GetWidth();     //m_uNoteheadRect.width;
+    uxLeft += m_pNoteheadShape->GetWidth();     
     //lmLUnits uxNote = uxLeft;
 
     //create shapes for dots if necessary
@@ -559,11 +528,9 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
             // notehead is over a line. Shift up the dots by half line
             uyPos -= m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         }
-        //uxLeft += DrawDot(fMeasuring, pPaper, uxLeft, uyPos, colorC, true);
         uxLeft += AddDotShape(pNoteShape, pPaper, uxLeft, uyPos, colorC);
         if (m_fDoubleDotted) {
             uxLeft += uSpaceBeforeDot;
-            //uxLeft += DrawDot(fMeasuring, pPaper, uxLeft, uyPos, colorC, true);
             uxLeft += AddDotShape(pNoteShape, pPaper, uxLeft, uyPos, colorC);
         }
     }
@@ -575,22 +542,15 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
     //set stem x position
     if (m_fStemDown) {
         //stem down: line down on the left of the notehead unless notehead reversed
-        m_uxStem = m_pNoteheadShape->GetXLeft() - m_uPaperPos.x;
+        m_uxStem = m_pNoteheadShape->GetXLeft() - uPaperPos.x;
         if (m_fNoteheadReversed) m_uxStem += m_pNoteheadShape->GetWidth();
     } else {
         //stem up: line up on the right of the notehead unless notehead reversed
-        m_uxStem = m_pNoteheadShape->GetXLeft() - m_uPaperPos.x;
+        m_uxStem = m_pNoteheadShape->GetXLeft() - uPaperPos.x;
         if (!m_fNoteheadReversed) m_uxStem += m_pNoteheadShape->GetWidth();
     }
 
-    //in chords, if nothehead is reversed the anchor point have to be at the other side
-    if (m_fNoteheadReversed) {
-        m_uxAnchor += (m_fStemDown ? m_pNoteheadShape->GetWidth() : -m_pNoteheadShape->GetWidth());
-    }
-
 	//now proceed to create the shape, if necessary
-    //wxLogMessage(_T("[lmNote::LayoutObject] stem type=%d"), m_nStemType);
-
     if (m_nStemType != eStemNone)
     {
         //! @todo move thickness to user options
@@ -600,12 +560,12 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
         if (m_fStemDown) {
             //stem down: line down on the left of the notehead
             uyTop += m_pVStaff->TenthsToLogical(51, m_nStaffNum);
-            m_uyStem = uyTop - m_uPaperPos.y;
+            m_uyStem = uyTop - uPaperPos.y;
         } else {
             //stem up: line up on the right of the notehead
             m_uxStem -= m_uStemThickness;
             uyTop += m_pVStaff->TenthsToLogical(49, m_nStaffNum);
-            m_uyStem = uyTop - m_uPaperPos.y;
+            m_uyStem = uyTop - uPaperPos.y;
         }
         //adjust stem size if flag to be drawn
         if (!m_fDrawSmallNotesInBlock && !m_fBeamed && m_nNoteType > eQuarter) {
@@ -636,7 +596,7 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
             SetStemLength(uStem + uFlag);
         }
         //wxLogMessage(_T("[lmNote::Layout] Stem=(%.2f, %.2f), paperPos=(%.2f, %.2f)"),
-        //    m_uxStem, m_uyStem, m_uPaperPos.x, m_uPaperPos.y);
+        //    m_uxStem, m_uyStem, uPaperPos.x, uPaperPos.y);
 
         //if not in a chord create the shape for the stem.
         //when the note is in a chord the stem will be created later,
@@ -655,12 +615,9 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
     }
 
     //if this last note of a chord draw the stem of the chord
-    //--------------------------------------------------------------------------------------
-    if (IsInChord() && m_pChord->IsLastNoteOfChord(this)
-        && m_nNoteType >= eHalf)
+    //-----------------------------------------------------------------------------
+    if (IsInChord() && m_pChord->IsLastNoteOfChord(this) && m_nNoteType >= eHalf)
     {
-        //wxLogMessage(_T("IsLastNoteOfChord. Adding stem"));
-        //m_pChord->DrawStem(fMeasuring, pPaper, colorC, m_pFont, m_pVStaff, m_nStaffNum);
         m_pChord->AddStemShape(pPaper, colorC, m_pFont, m_pVStaff, m_nStaffNum);
     }
 
@@ -677,19 +634,14 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
     // set total width
     #define NOTE_AFTERSPACE     0      //one line space     @todo user options
     lmLUnits uAfterSpace = m_pVStaff->TenthsToLogical(NOTE_AFTERSPACE, m_nStaffNum);
-    m_uWidth = uxLeft + uAfterSpace - m_uPaperPos.x;
+    m_uWidth = uxLeft + uAfterSpace - uPaperPos.x;
 
 
     // add shapes for leger lines if necessary
     //--------------------------------------------
     lmLUnits uxLine = m_pNoteheadShape->GetXLeft() - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
-    //lmLUnits uxLine = m_uNoteheadRect.x - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
-    //lmLUnits uxLine = m_pNoteheadShape->GetBounds().x - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
     lmLUnits widthLine = m_pNoteheadShape->GetWidth() +
                             m_pVStaff->TenthsToLogical(8, m_nStaffNum);
-    //lmLUnits widthLine = m_pNoteheadShape->GetBounds().width +
-    //                     m_pVStaff->TenthsToLogical(8, m_nStaffNum);
-    //DrawLegerLines(pPaper, nPosOnStaff, uyStaffTopLine, uxLine, widthLine, m_nStaffNum);
     AddLegerLineShape(pNoteShape, pPaper, nPosOnStaff, uyStaffTopLine, uxLine,
                         widthLine, m_nStaffNum);
 
@@ -703,24 +655,19 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
         wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
         for (; pNode; pNode = pNode->GetNext() ) {
             pNRO = (lmNoteRestObj*)pNode->GetData();
-            if (fMeasuring) {
-                lmLUnits uxPos = 0;
-                lmLUnits uyPos = 0;
-                switch(pNRO->GetSymbolType()) {
-                    case eST_Fermata:
-                        // set position (relative to paperPos)
-                        //uxPos = m_uNoteheadRect.x + m_uNoteheadRect.width / 2;
-                        uxPos = m_pNoteheadShape->GetXLeft() + m_pNoteheadShape->GetWidth() / 2.0;
-                        uyPos = uyStaffTopLine - m_uPaperPos.y;
-                        pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
-                        pNRO->UpdateMeasurements();
-                        break;
-                    default:
-                        wxASSERT(false);
-                }
+            lmLUnits uxPos = 0;
+            lmLUnits uyPos = 0;
+            switch(pNRO->GetSymbolType()) {
+                case eST_Fermata:
+                    // set position (relative to paperPos)
+                    uxPos = m_pNoteheadShape->GetXLeft() + m_pNoteheadShape->GetWidth() / 2.0;
+                    uyPos = uyStaffTopLine - uPaperPos.y;
+                    pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
+                    pNRO->UpdateMeasurements();
+                    break;
+                default:
+                    wxASSERT(false);
             }
-            else
-                pNRO->Draw(DO_DRAW, pPaper, colorC);
         }
     }
 
@@ -730,16 +677,11 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
         wxAuxObjsListNode* pNode = m_pLyrics->GetFirst();
         for (; pNode; pNode = pNode->GetNext() ) {
             pLyric = (lmLyric*)pNode->GetData();
-            if (fMeasuring) {
-                // set position (relative to paperPos)
-                //lmLUnits uxPos = m_uNoteheadRect.x;
-                lmLUnits uxPos = m_pNoteheadShape->GetXLeft();
-                lmLUnits uyPos = uyStaffTopLine - m_uPaperPos.y;
-                pLyric->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
-                pLyric->UpdateMeasurements();
-            }
-            else
-                pLyric->Draw(DO_DRAW, pPaper, colorC);
+            // set position (relative to paperPos)
+            lmLUnits uxPos = m_pNoteheadShape->GetXLeft();
+            lmLUnits uyPos = uyStaffTopLine - uPaperPos.y;
+            pLyric->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
+            pLyric->UpdateMeasurements();
         }
     }
 
@@ -760,320 +702,20 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fH
 
     // tuplet bracket
     if (m_pTupletBracket && (m_pTupletBracket->GetEndNote())->GetID() == m_nId)
-	{
 		m_pTupletBracket->LayoutObject(pBox, pPaper, colorC);
-    }
 
-    // tie to previous note
-    //if (!fMeasuring && m_pTiePrev) {
-    //    m_pTiePrev->Draw(DO_DRAW, pPaper, colorC);
-    //}
+    //ties
+    if (m_pTiePrev)
+		m_pTiePrev->LayoutObject(pBox, pPaper, colorC);
 
 }
 
-void lmNote::DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+void lmNote::Highlight(lmPaper* pPaper, wxColour colorC)
 {
-	if (!fMeasuring && fHighlight)
-	{
-		m_pNoteheadShape->Render(pPaper, lmUPoint(0.0, 0.0), colorC);
-		return;
-	}
- //   /*
- //   This method is invoked by the base class (lmStaffObj). When reaching this point
- //   paper cursor variable (m_uPaperPos) has been updated. This value must be used
- //   as the base for any measurement / drawing operation.
+	//FIX_ME: there can be many views. Should only the active view be higlighted?
+	//FIX_ME: m_pNoteheadShape is only valid during layout. And there can be many views!!
 
- //   DrawObject() method is responsible for:
- //   1. In DO_MEASURE phase (fMeasuring == true):
- //       - Compute the surrounding rectangle, the glyph position and other measurements
- //   2. In DO_DRAW phase (fMeasuring == false):
- //       - Render the object
-
- //   */
-
-
- //   bool fDrawStem = true;            // assume stem down
- //   bool fInChord = IsInChord();
-
- //   //prepare DC
- //   pPaper->SetFont(*m_pFont);
-
- //   // move to right staff
- //   lmLUnits uyStaffTopLine = m_uPaperPos.y + GetStaffOffset();   // staff y position (top line)
- //   lmLUnits uxLeft=0, uyTop=0;    // current pos. as positioning computation takes place
- //   int nPosOnStaff = GetPosOnStaff();
- //   lmLUnits uyPitchShift = GetPitchShift();
- //   uyTop = uyStaffTopLine - uyPitchShift;
- //   uxLeft = m_uPaperPos.x;
-
-
- //   //If drawing phase do first MakeUp phase
- //   if (fMeasuring)
- //       m_fMakeUpDone = false;
- //   else if (!m_fMakeUpDone)
- //       MakeUpPhase(pPaper);
-
- //   //In measuring phase, if this is the first note of a chord, give lmChord the
- //   //responsibility for computing chord layout (notes and rests' positions). If it is
- //   //any other note of a chord, do nothing and mark the note as 'already measured'.
- //   bool fMeasured = false;
- //   if (fMeasuring) {
- //       if (IsBaseOfChord()) {
- //           //wxLogMessage( m_pChord->Dump() );
- //           m_pChord->Layout(pPaper, m_uPaperPos, colorC);
- //           fMeasured = true;
- //       }
- //       else if (IsInChord()) {
- //           fMeasured = true;
- //       }
- //   }
-
- //   //if this is the first note/rest of a beam, measure beam
- //   //AWARE This must be done before using stem information, as the beam could
- //   //change stem direction if it is not determined for some/all the notes in the beam
- //   //During measurement phase all computations, except final trimming of stem' lengths, is
- //   //done. Final trimming of stems' length is delayed to MakeUp phase because it is not
- //   //posible to adjust lentghts until the x position of the notes is finally established, and
- //   //this takes place AFTER the measurement phase, once the lines are justified.
- //   if (fMeasuring && m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
- //       m_pBeam->CreateShape();
- //   }
-
- //   //render accidental signs if exist
- //   //@aware:
- //   //  Accidentals shape can not be part of note shape. This is required to allow
- //   //  independent positioning when user select the accidental and moves it.
- //   //  On the other hand, the note and its accidentals are not taken into account by the
- //   //  system justification process, as they are considered part of the note
- //   if (m_pAccidentals) {
- //       if ((!fMeasuring && !fHighlight) || !fMeasured && fMeasuring) {
- //           DrawAccidentals(pPaper, fMeasuring, uxLeft - m_uPaperPos.x, uyTop - m_uPaperPos.y, colorC);
- //       }
- //       uxLeft += m_pAccidentals->GetWidth();
- //   }
-
- //   //advance space before note
- //   uxLeft += m_uSpacePrev;
-
- //   //render the notehead (or the full note if single glyph)
- //   if (!fMeasuring || !fMeasured && fMeasuring) {
- //       fDrawStem = DrawNote(pPaper, fMeasuring, uxLeft - m_uPaperPos.x, uyTop - m_uPaperPos.y, colorC);
- //   }
- //   uxLeft += m_uNoteheadRect.width;
- //   //lmLUnits uxNote = uxLeft;
-
- //   if (!fMeasuring && fHighlight) return;  //highlight done. Finish
-
-
- ////   nxCalderon = uxLeft + m_uNoteheadRect.width / 2 ;
-
- //   //draw dots
- //   //------------------------------------------------------------
- //   if (m_fDotted || m_fDoubleDotted) {
- //       //! @todo user selectable
- //       lmLUnits uSpaceBeforeDot = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
- //       uxLeft += uSpaceBeforeDot;
- //       lmLUnits uyPos = uyTop;
- //       if (nPosOnStaff % 2 == 0) {
- //           // notehead is over a line. Shift up the dots by half line
- //           uyPos -= m_pVStaff->TenthsToLogical(5, m_nStaffNum);
- //       }
- //       uxLeft += DrawDot(fMeasuring, pPaper, uxLeft, uyPos, colorC, true);
- //       if (m_fDoubleDotted) {
- //           uxLeft += uSpaceBeforeDot;
- //           uxLeft += DrawDot(fMeasuring, pPaper, uxLeft, uyPos, colorC, true);
- //       }
- //   }
-
-
- //   //render lmTie to previous note
- //   //--------------------------------------------------------------------------------------
- //   if (!fMeasuring && m_pTiePrev) {
- //       m_pTiePrev->Draw(DO_DRAW, pPaper, colorC);
- //   }
-
- //   // draw the stem
- //   // In measurement phase the stem is measured even if it must not be drawn. This is
- //   // necessary to have information for positioning tuplets' bracket
- //   // @aware x position was set in DrawNote()
- //   //-----------------------------------------------------------------------------------
- //   if (m_nStemType != eStemNone) {
- //       if (fMeasuring)
- //       {
- //           //! @todo move thickness to user options
- //           #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
- //           m_uStemThickness = m_pVStaff->TenthsToLogical(STEM_WIDTH, m_nStaffNum) / 10;
- //           // compute and store start position of stem
- //           if (m_fStemDown) {
- //               //stem down: line down on the left of the notehead
- //               uyTop += m_pVStaff->TenthsToLogical(51, m_nStaffNum);
- //               m_uyStem = uyTop - m_uPaperPos.y;
- //           } else {
- //               //stem up: line up on the right of the notehead
- //               m_uxStem -= m_uStemThickness;
- //               uyTop += m_pVStaff->TenthsToLogical(49, m_nStaffNum);
- //               m_uyStem = uyTop - m_uPaperPos.y;
- //           }
- //           //adjust stem size if flag to be drawn
- //           if (!m_fDrawSmallNotesInBlock && !m_fBeamed && m_nNoteType > eQuarter) {
- //               int nGlyph = DrawFlag(fMeasuring, pPaper, lmUPoint(0, 0), colorC);
- //               lmLUnits uStem = GetStandardStemLenght();
- //               // to measure flag and stem I am going to use some glyph data. These
- //               // data is in FUnits but as 512 FU are 1 line (10 tenths) it is simple
- //               // to convert these data into tenths: just divide FU by 51.2
- //               float rFlag, rMinStem;
- //               if (m_fStemDown) {
- //                   rFlag = fabs((2048.0 - (float)aGlyphsInfo[nGlyph].Bottom) / 51.2 );
- //                   rMinStem = ((float)aGlyphsInfo[nGlyph].Top - 2048.0 + 128.0) / 51.2 ;
- //               }
- //               else {
- //                   if (m_nNoteType == eEighth)
- //                       rFlag = ((float)aGlyphsInfo[nGlyph].Top) / 51.2 ;
- //                   else if (m_nNoteType == e16th)
- //                       rFlag = ((float)aGlyphsInfo[nGlyph].Top + 128.0) / 51.2 ;
- //                   else
- //                       rFlag = ((float)aGlyphsInfo[nGlyph].Top + 512.0) / 51.2 ;
-
- //                   rMinStem = fabs( (float)aGlyphsInfo[nGlyph].Bottom / 51.2 );
- //               }
- //               lmLUnits uFlag = m_pVStaff->TenthsToLogical(rFlag, m_nStaffNum);
- //               lmLUnits uMinStem = m_pVStaff->TenthsToLogical(rMinStem, m_nStaffNum);
- //               uStem = wxMax((uStem > uFlag ? uStem-uFlag : 0), uMinStem);
- //               m_uyFlag = GetYStem() + (m_fStemDown ? uStem : -uStem);
- //               SetStemLength(uStem + uFlag);
- //           }
-
- //       } else {
- //           // not measuring. Do draw stem unless it is a note in chord. In this case
- //           // the stem will be drawn later, when drawing the last note of the chord
- //           if (fDrawStem && ! fInChord) {
- //               lmLUnits uxPos = GetXStemLeft() + m_uStemThickness/2;     //SolidLine centers line width on given coordinates
- //               pPaper->SolidLine(uxPos, GetYStem(), uxPos, GetFinalYStem()+1,
- //                                   m_uStemThickness, eEdgeNormal, colorC);
- //           }
- //       }
- //   }
-
- //   //Draw flag
- //   //-----------------------------------------------------------------------------
- //   if (!m_fDrawSmallNotesInBlock && !fMeasuring) {
- //       if (!m_fBeamed && m_nNoteType > eQuarter && !IsInChord()) {
- //           lmLUnits uxPos = (m_fStemDown ? GetXStemLeft() : GetXStemRight());
- //           DrawFlag(fMeasuring, pPaper, lmUPoint(uxPos, m_uyFlag), colorC);
- //       }
- //   }
-
- //   // set total width
- //   #define NOTE_AFTERSPACE     0      //one line space     @todo user options
- //   lmLUnits uAfterSpace = m_pVStaff->TenthsToLogical(NOTE_AFTERSPACE, m_nStaffNum);
- //   if (fMeasuring) m_uWidth = uxLeft + uAfterSpace - m_uPaperPos.x;
-
- //   // draw leger lines if necessary
- //   //--------------------------------------------
- //   if (!fMeasuring) {
- //       lmLUnits uxLine = m_uNoteheadRect.x - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
- //       //lmLUnits uxLine = m_pNoteheadShape->GetBounds().x - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
- //       lmLUnits widthLine = m_uNoteheadRect.width +
- //                            m_pVStaff->TenthsToLogical(8, m_nStaffNum);
- //       //lmLUnits widthLine = m_pNoteheadShape->GetBounds().width +
- //       //                     m_pVStaff->TenthsToLogical(8, m_nStaffNum);
- //       DrawLegerLines(pPaper, nPosOnStaff, uyStaffTopLine, uxLine, widthLine, m_nStaffNum);
- //   }
-
- //   // render associated notations ------------------------------------------------------
- //   if (m_pNotations) {
- //       lmNoteRestObj* pNRO;
- //       wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
- //       for (; pNode; pNode = pNode->GetNext() ) {
- //           pNRO = (lmNoteRestObj*)pNode->GetData();
- //           if (fMeasuring) {
- //               lmLUnits uxPos = 0;
- //               lmLUnits uyPos = 0;
- //               switch(pNRO->GetSymbolType()) {
- //                   case eST_Fermata:
- //                       // set position (relative to paperPos)
- //                       uxPos = m_uNoteheadRect.x + m_uNoteheadRect.width / 2;
- //                       uyPos = uyStaffTopLine - m_uPaperPos.y;
- //                       pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
- //                       pNRO->UpdateMeasurements();
- //                       break;
- //                   default:
- //                       wxASSERT(false);
- //               }
- //           }
- //           else
- //               pNRO->Draw(DO_DRAW, pPaper, colorC);
- //       }
- //   }
-
- //   // render associated lmLyric objects -------------------------------------------------
- //   if (m_pLyrics) {
- //       lmLyric* pLyric;
- //       wxAuxObjsListNode* pNode = m_pLyrics->GetFirst();
- //       for (; pNode; pNode = pNode->GetNext() ) {
- //           pLyric = (lmLyric*)pNode->GetData();
- //           if (fMeasuring) {
- //               // set position (relative to paperPos)
- //               lmLUnits uxPos = m_uNoteheadRect.x;
- //               lmLUnits uyPos = uyStaffTopLine - m_uPaperPos.y;
- //               pLyric->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
- //               pLyric->UpdateMeasurements();
- //           }
- //           else
- //               pLyric->Draw(DO_DRAW, pPaper, colorC);
- //       }
- //   }
-
- //   //if this last note of a chord draw the stem of the chord
- //   //--------------------------------------------------------------------------------------
- //   if (!fMeasuring && IsInChord() && m_pChord->IsLastNoteOfChord(this)
- //       && m_nNoteType >= eHalf)
- //   {
- //       m_pChord->DrawStem(fMeasuring, pPaper, colorC, m_pFont, m_pVStaff, m_nStaffNum);
- //   }
-
- //   //if this is the last note of a beamed group draw the beam lines
- //   //--------------------------------------------------------------------------------------
- //   if (!fMeasuring && m_fBeamed && m_BeamInfo[0].Type == eBeamEnd) {
- //       lmLUnits uThickness = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
- //       //DOC: Beam spacing
- //       // ----------------
- //       //according to http://www2.coloradocollege.edu/dept/mu/Musicpress/engraving.html
- //       //distance between primary and secondary beams should be 1/4 space (2.5 tenths)
- //       //But if I use 3 tenths (2.5 up rounding) beam spacing is practicaly
- //       //invisible. In pictures displayed in the above mentioned www page, spacing
- //       //is about 1/2 space, not 1/4 space. So I will use 5 tenths.
- //       //So the number to put in next statement is 9:
- //       //  4 for beam thikness + 5 for beams spacing
- //       lmLUnits uBeamSpacing = m_pVStaff->TenthsToLogical(9, m_nStaffNum);
- //       m_pBeam->DrawBeamLines(pPaper, uThickness, uBeamSpacing, colorC);
- //   }
-
- //   //if this is the last note of a tuplet draw the tuplet bracket
- //   //--------------------------------------------------------------------------------------
- //   if (m_pTupletBracket && (m_pTupletBracket->GetEndNote())->GetID() == m_nId) {
- //       m_pTupletBracket->Draw(fMeasuring, pPaper, colorC);
- //   }
-
- //   ////DBG
- //   //if (fMeasuring) wxLogMessage( m_pNoteheadShape->Dump() );
-
-}
-
-lmLUnits lmNote::DrawAccidentals(lmPaper* pPaper, bool fMeasuring,
-                        lmLUnits uxOffset, lmLUnits uyOffset, wxColour colorC)
-{
-    //if (fMeasuring) {
-    //    m_pAccidentals->Layout(pPaper, uxOffset, uyOffset);
-    //}
-    ////else {
-    ////    m_pAccidentals->Render(pPaper, m_uPaperPos, colorC);
-    ////    m_pAccidentals->Draw(DO_DRAW, pPaper, colorC);  //compatibility: to draw selrect
-    ////}
-
-    //return m_pAccidentals->GetWidth();
-    return 0;
-
+	m_pNoteheadShape->Render(pPaper, colorC);
 }
 
 lmLUnits lmNote::GetPitchShift()
@@ -1100,13 +742,9 @@ bool lmNote::AddNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmLUnits uxL
 {
     // creates the shape for the notehead (or for the full note if single glyph) and 
     // returns flag to draw or not the stem
-	// Updates note positioning variables:
-	//		m_uxAnchor, m_uxStem
+	// Updates note positioning variables: m_uxStem
 
     bool fDrawStem = true;
-
-    //initially set anchor point at left side of notehead
-    m_uxAnchor = uxLeft - m_uPaperPos.x;
 
     if (m_fDrawSmallNotesInBlock && !m_fBeamed && m_nNoteType > eQuarter && !IsInChord())
     {
@@ -1135,7 +773,7 @@ bool lmNote::AddNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmLUnits uxL
                 nNotehead = enh_Longa;
                 fDrawStem = false;
             } else {
-                wxLogMessage(_T("[AddNoteShape::DrawNote] Unknown note type."));
+                wxLogMessage(_T("[lmNote::AddNoteShape] Unknown note type."));
                 wxASSERT(false);
             }
         //} else {
@@ -1144,81 +782,6 @@ bool lmNote::AddNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmLUnits uxL
 
         AddNoteHeadShape(pNoteShape, pPaper, nNotehead, uxLeft, uyTop, colorC);
     }
-
-    return fDrawStem;
-
-}
-
-bool lmNote::DrawNote(lmPaper* pPaper, bool fMeasuring,
-                      lmLUnits uxOffset, lmLUnits uyOffset, wxColour colorC)
-{
-    // draws the notehead (or the full note if single glyph) and returns flag to
-    // draw or not the stem
-
-    lmLUnits uxLeft = uxOffset + m_uPaperPos.x;
-    lmLUnits uyTop = uyOffset + m_uPaperPos.y;
-    bool fDrawStem = true;
-
-    //initially set anchor point at left side of notehead
-    if (fMeasuring) { m_uxAnchor = uxOffset; }
-
-    if (m_fDrawSmallNotesInBlock && !m_fBeamed && m_nNoteType > eQuarter && !IsInChord()) {
-        // It is a single note with flag: draw it in one step with a glyph
-        DrawSingleNote(pPaper, fMeasuring, m_nNoteType, m_fStemDown,
-                       uxLeft, uyTop, (m_fSelected ? g_pColors->ScoreSelected() : colorC) );
-        fDrawStem = false;
-
-    } else {
-        // either the note is part of a group of beamed notes, is in a chord, or doesn't
-        // have stem: it must be drawn in parts
-        // Draw the notehead
-        ENoteHeads nNotehead;
-        //if (! m_fCabezaX) {
-            if (m_nNoteType > eHalf) {
-                nNotehead = enh_Quarter;
-            } else if (m_nNoteType == eHalf) {
-                nNotehead = enh_Half;
-            } else if (m_nNoteType == eWhole) {
-                nNotehead = enh_Whole;
-                fDrawStem = false;
-            } else if (m_nNoteType == eBreve) {
-                nNotehead = enh_Breve;
-                fDrawStem = false;
-            } else if (m_nNoteType == eLonga) {
-                nNotehead = enh_Longa;
-                fDrawStem = false;
-            } else {
-                wxLogMessage(_T("[lmNote::DrawNote] Unknown note type."));
-                wxASSERT(false);
-            }
-        //} else {
-        //    nNotehead = enh_Cross;
-        //}
-
-        DrawNoteHead(pPaper, fMeasuring, nNotehead, uxLeft, uyTop,
-                     (m_fSelected ? g_pColors->ScoreSelected() : colorC) );
-    }
-
-    //set stem x position
-    //x position is set even if stem must not be drawn. This is
-    //necessary to have information for positioning tuplets' bracket
-    if (fMeasuring) {
-        if (m_fStemDown) {
-            //stem down: line down on the left of the notehead unless notehead reversed
-            m_uxStem = m_uNoteheadRect.x;
-            if (m_fNoteheadReversed) m_uxStem += m_uNoteheadRect.width;
-        } else {
-            //stem up: line up on the right of the notehead unless notehead reversed
-            m_uxStem = m_uNoteheadRect.x;
-            if (!m_fNoteheadReversed) m_uxStem += m_uNoteheadRect.width;
-        }
-    }
-
-    //in chords, if nothehead is reversed the anchor point have to be at the other side
-    if (fMeasuring && m_fNoteheadReversed) {
-        m_uxAnchor += (m_fStemDown ? m_uNoteheadRect.width : -m_uNoteheadRect.width);
-    }
-
 
     return fDrawStem;
 
@@ -1319,48 +882,29 @@ lmEGlyphIndex lmNote::AddFlagShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmU
 
 void lmNote::ShiftNoteHeadShape(lmLUnits uxShift)
 {
-    //reposition the note shape and all directly related measurements: stem x pos,
-    //anchor pos,
+    //reposition the note shape and all directly related measurements: stem x pos
     //This method does not change the accidentals position, only the note head itself.
 
     m_pNoteheadShape->Shift(uxShift, 0.0);	// shift notehead horizontally
-    m_uxAnchor += uxShift;					// shift anchor line
-    //m_uNoteheadRect.x += uxShift;
-    //m_uSelRect.x += uxShift;
     m_uxStem += uxShift;
 
 }
 
-void lmNote::MakeUpPhase(lmPaper* pPaper)
-{
-    m_fMakeUpDone = true;
+lmLUnits lmNote::GetAnchorPos() 
+{ 
+    if (!IsInChord()) return 0.0;
 
-    ////Beams. If this is the first note/rest of a beam, do final trimming of stems' length
-    //if (m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
-    //    m_pBeam->TrimStems();
-    //}
+    //wxLogMessage(_T("[lmNote::GetAnchorPos()] notehead reversed=%s, xLeft=%.2f, xRight=%.2f, width=%.2f"),
+    //    (m_fNoteheadReversed ? _T("yes") : _T("no")), 
+    //    m_pNoteheadShape->GetXLeft(), m_pNoteheadShape->GetXRight(),
+    //    m_pNoteheadShape->GetWidth() );
 
-    ////Ties. If this note is the end of a tie, store tie end point
-    //if (m_pTiePrev) {
-    //    // compute end point, relative to end note paperPos (this note)
-    //    lmLUnits uxPos = m_uNoteheadRect.x + m_uNoteheadRect.width / 2;
-    //    lmLUnits uyPos = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-    //    uyPos = (m_pTiePrev->IsUnderNote() ?
-    //            m_uNoteheadRect.y + m_uNoteheadRect.height + uyPos :
-    //            m_uNoteheadRect.y - uyPos );
-    //    m_pTiePrev->SetEndPoint(uxPos, uyPos, pPaper->GetLeftMarginXPos());
-    //}
-
-    ////Ties. If this note is start of tie, store tie start point. Tie position is fixed
-    ////by start note stem direction
-    //if (m_pTieNext) {
-    //    // compute start point, relative to start note paperPos (this note)
-    //    lmLUnits uxPos = m_uNoteheadRect.x + m_uNoteheadRect.width / 2;
-    //    lmLUnits uyPos = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-    //    uyPos = (m_fStemDown ?
-    //            m_uNoteheadRect.y - uyPos : m_uNoteheadRect.y + m_uNoteheadRect.height + uyPos);
-    //    m_pTieNext->SetStartPoint(uxPos, uyPos, pPaper->GetRightMarginXPos(), !m_fStemDown);
-    //}
+    if (m_fNoteheadReversed) {
+        lmLUnits uSize = m_pNoteheadShape->GetWidth();
+        return (StemGoesDown() ? uSize : -uSize);
+    }
+    else
+        return 0.0;
 
 }
 
@@ -1370,7 +914,6 @@ void lmNote::AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPo
 {
     if (nPosOnStaff > 0 && nPosOnStaff < 12) return;
 
-    //uxPos += m_uPaperPos.x;        // make it absolute
     lmLUnits uThick = m_pVStaff->GetStaffLineThick(nStaff);
 	lmLUnits uBoundsThick = m_pVStaff->TenthsToLogical(2, nStaff);
 
@@ -1408,109 +951,6 @@ void lmNote::AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPo
 	            pNoteShape->Add(pLine);
             }
         }
-    }
-
-}
-
-void lmNote::DrawLegerLines(lmPaper* pPaper, int nPosOnStaff, lmLUnits uyStaffTopLine,
-                            lmLUnits uxPos, lmLUnits uWidth, int nStaff, int nROP)
-{
-    if (nPosOnStaff > 0 && nPosOnStaff < 12) return;
-
-    if (nROP != wxCOPY) pPaper->SetLogicalFunction(nROP);
-
-    uxPos += m_uPaperPos.x;        // make it absolute
-    lmLUnits uThick = m_pVStaff->GetStaffLineThick(nStaff);
-
-    int i;
-    lmLUnits uyPos;
-    int nTenths;
-    if (nPosOnStaff > 11) {
-        // lines at top
-        lmLUnits uDsplz = m_pVStaff->GetOptionLong(_T("Staff.UpperLegerLines.Displacement"));
-        lmLUnits uyStart = uyStaffTopLine - m_pVStaff->TenthsToLogical(uDsplz, m_nStaffNum);
-        for (i=12; i <= nPosOnStaff; i++) {
-            if (i % 2 == 0) {
-                nTenths = 5 * (i - 10);
-                uyPos = uyStart - m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                pPaper->SolidLine(uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
-                                   eEdgeNormal, *wxBLACK);
-            }
-        }
-
-    } else {
-        // nPosOnStaff < 1: lines at bottom
-        for (i=nPosOnStaff; i <= 0; i++) {
-            if (i % 2 == 0) {
-                nTenths = 5 * (10 - i);
-                uyPos = uyStaffTopLine + m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
-                pPaper->SolidLine(uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
-                                   eEdgeNormal, *wxBLACK);
-            }
-        }
-    }
-
-    if (nROP != wxCOPY) pPaper->SetLogicalFunction(wxCOPY);    // restore DC logical function
-
-}
-
-void lmNote::DrawSingleNote(lmPaper* pPaper, bool fMeasuring, ENoteType nNoteType,
-        bool fStemDown, lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC)
-{
-    /*
-    Draws a note by using a glyph.
-    In DO_MEASURE mode also stores measurements.
-    */
-
-    lmEGlyphIndex nGlyph = GLYPH_EIGHTH_NOTE_UP;
-    switch (nNoteType) {
-        case eEighth :
-            nGlyph = (m_fStemDown ? GLYPH_EIGHTH_NOTE_DOWN : GLYPH_EIGHTH_NOTE_UP);
-            break;
-        case e16th :
-            nGlyph = (m_fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
-            break;
-        case e32th :
-            nGlyph = (m_fStemDown ? GLYPH_32ND_NOTE_DOWN : GLYPH_32ND_NOTE_UP);
-            break;
-        case e64th :
-            nGlyph = (m_fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);
-            break;
-        case e128th :
-            nGlyph = (m_fStemDown ? GLYPH_128TH_NOTE_DOWN : GLYPH_128TH_NOTE_UP);
-            break;
-        case e256th :
-            nGlyph = (m_fStemDown ? GLYPH_256TH_NOTE_DOWN : GLYPH_256TH_NOTE_UP);
-            break;
-        default:
-            wxASSERT(false);
-    }
-
-    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
-
-    if (fMeasuring) {
-        // store glyph position
-        m_uGlyphPos.x = uxLeft - m_uPaperPos.x;
-        //m_uGlyphPos.y = uyTop - m_uPaperPos.y + m_pVStaff->TenthsToLogical( (fStemDown ? 30 : -10), m_nStaffNum );
-        m_uGlyphPos.y = uyTop - m_uPaperPos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
-
-
-        // define selection rectangle (relative to m_uPaperPos)
-        lmLUnits uWidth, uHeight;
-        pPaper->GetTextExtent(sGlyph, &uWidth, &uHeight);
-        m_uSelRect.width = uWidth;
-        m_uSelRect.height = m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
-        m_uSelRect.x = m_uGlyphPos.x;
-        m_uSelRect.y = m_uGlyphPos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum );
-
-        // store notehead position and size
-        m_uNoteheadRect = m_uSelRect;        //! @todo compute notehead rectangle
-
-    } else {
-        // else (drawing phase) do the draw
-        lmUPoint uPos = GetGlyphPosition();
-        pPaper->SetTextForeground(colorC);
-        pPaper->DrawText(sGlyph, uPos.x, uPos.y );
     }
 
 }
@@ -1553,87 +993,6 @@ void lmNote::AddSingleNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, ENoteT
                                             lmUPoint(uxLeft, yPos), _T("NoteSingle"));
 	pNoteShape->AddNoteInBlock(pShape);
 
-#if lmCOMPATIBILITY_NO_SHAPES
-
-    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
-
-    // store glyph position
-    m_uGlyphPos.x = uxLeft - m_uPaperPos.x;
-    m_uGlyphPos.y = uyTop - m_uPaperPos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
-
-    // define selection rectangle (relative to m_uPaperPos)
-    lmLUnits uWidth, uHeight;
-    pPaper->GetTextExtent(sGlyph, &uWidth, &uHeight);
-    m_uSelRect.width = uWidth;
-    m_uSelRect.height = m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
-    m_uSelRect.x = m_uGlyphPos.x;
-    m_uSelRect.y = m_uGlyphPos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum );
-
-    // store notehead position and size
-    m_uNoteheadRect = m_uSelRect;        //! @todo compute notehead rectangle
-
-#endif  //lmCOMPATIBILITY_NO_SHAPES
-
-}
-
-void lmNote::DrawNoteHead(lmPaper* pPaper, bool fMeasuring, ENoteHeads nNoteheadType,
-    lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC)
-{
-    //// draws a notehead of type nNoteheadType on position (uxLeft, uyTop) with color colorC.
-    //// In DO_MEASURE mode also stores measurements.
-
-    //lmEGlyphIndex nGlyph = GLYPH_NOTEHEAD_QUARTER;
-    //switch (nNoteheadType) {
-    //    case enh_Longa:
-    //        nGlyph = GLYPH_LONGA_NOTE;
-    //        break;
-    //    case enh_Breve:
-    //        nGlyph = GLYPH_BREVE_NOTE;
-    //        break;
-    //    case enh_Whole:
-    //        nGlyph = GLYPH_WHOLE_NOTE;
-    //        break;
-    //    case enh_Half:
-    //        nGlyph = GLYPH_NOTEHEAD_HALF;
-    //        break;
-    //    case enh_Quarter:
-    //        nGlyph = GLYPH_NOTEHEAD_QUARTER;
-    //        break;
-    //    case enh_Cross:
-    //        nGlyph = GLYPH_NOTEHEAD_CROSS;
-    //        break;
-    //    default:
-    //        wxASSERT(false);
-    //}
-
-    //wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
-
-    //if (fMeasuring) {
-    //    lmUPoint uOffset(uxLeft - m_uPaperPos.x, uyTop - m_uPaperPos.y);
-    //    if (!m_pNoteheadShape) m_pNoteheadShape = new lmShapeGlyph(this, nGlyph, m_pFont);
-    //    m_pNoteheadShape->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum), uOffset);
-
-    //    //COMPATIBILITY
-
-    //    // store positions
-    //    m_uGlyphPos.x = uxLeft - m_uPaperPos.x;
-    //    m_uGlyphPos.y = uyTop - m_uPaperPos.y - m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum);
-
-    //    // store selection rectangle position and size
-    //    m_uSelRect = m_pNoteheadShape->GetSelRectangle();
-
-    //    // store notehead position and size. selRect bounds the notehead, so just copy it
-    //    m_uNoteheadRect = m_uSelRect;
-
-    //    //fix for width. It is not correctly computed by DC->GetTextExtent
-    //    //m_uNoteheadRect.width -= m_pVStaff->TenthsToLogical(10, m_nStaffNum)/10;
-
-
-    //} else {
-    //    //wxLogMessage(_T("[lmNote::DrawNoteHead]"));
-    //    m_pNoteheadShape->Render(pPaper, m_uPaperPos, colorC);
-    //}
-
 }
 
 void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, ENoteHeads nNoteheadType,
@@ -1674,57 +1033,29 @@ void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, ENoteHea
                                             lmUPoint(uxLeft, yPos), _T("Notehead"));
 	pNoteShape->AddNoteHead(m_pNoteheadShape);
 
-#if 0 //lmCOMPATIBILITY_NO_SHAPES
-
-    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
-
-    lmUPoint uOffset(uxLeft - m_uPaperPos.x, uyTop - m_uPaperPos.y);
-    if (!m_pNoteheadShape) m_pNoteheadShape = new lmShapeGlyph(this, nGlyph, m_pFont);
-    m_pNoteheadShape->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum), uOffset);
-
-    //COMPATIBILITY
-
-    // store positions
-    m_uGlyphPos.x = uxLeft - m_uPaperPos.x;
-    m_uGlyphPos.y = uyTop - m_uPaperPos.y - m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum);
-
-    // store selection rectangle position and size
-    m_uSelRect = m_pNoteheadShape->GetSelRectangle();
-
-    // store notehead position and size. selRect bounds the notehead, so just copy it
-    m_uNoteheadRect = m_uSelRect;
-
-    //fix for width. It is not correctly computed by DC->GetTextExtent
-    //m_uNoteheadRect.width -= m_pVStaff->TenthsToLogical(10, m_nStaffNum)/10;
-
-#endif  //lmCOMPATIBILITY_NO_SHAPES
-
 }
 
-void lmNote::MoveDragImage(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
+void lmNote::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
                          const lmUPoint& pagePosL, const lmUPoint& uDragStartPos, const lmDPoint& canvasPosD)
 {
+    //Constraint: A note must stay on staff lines or spaces
 
-    /*
-    A note must stay on staff lines or spaces
-    */
+    lmUPoint uPaperPos(pPaper->GetCursorX(), pPaper->GetCursorY());
 
     lmLUnits dyHalfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum );
     lmUPoint nShiftVector = pagePosL - uDragStartPos;    // the displacement
     int nSteps = (int)(nShiftVector.y / dyHalfLine);        // trim the displacement to half line steps
     nShiftVector.y -= nSteps;
-    lmUPoint newPaperPos = m_uPaperPos + nShiftVector;
+    lmUPoint newPaperPos = uPaperPos + nShiftVector;
     // then the shape must be drawn at:
     lmDPoint ptNewD;
     ptNewD.x = pPaper->LogicalToDeviceX(newPaperPos.x + m_uGlyphPos.x) + offsetD.x;
     ptNewD.y = pPaper->LogicalToDeviceY(newPaperPos.y + m_uGlyphPos.y) + offsetD.y;
     pDragImage->Move(ptNewD);
 
-    /*
-    // compute new pitch
-    int nNewPitch = PosOnStaffToPitch(nSteps);
-    SetUpPitchRelatedVariables(nNewPitch);
-    */
+    //// compute new pitch
+    //int nNewPitch = PosOnStaffToPitch(nSteps);
+    //SetUpPitchRelatedVariables(nNewPitch);
 }
 
 lmUPoint lmNote::EndDrag(const lmUPoint& uPos)
@@ -2074,85 +1405,18 @@ void lmNote::PropagateNotePitchChange(int nStep, int nOctave, int nAlter, bool f
 
 }
 
-// Rectangle that bounds the image. Absolute position referred to page origin
-lmLUnits lmNote::GetBoundsTop()
-{
-    return (m_fStemDown ? m_uSelRect.GetTop() + m_uPaperPos.y : GetFinalYStem() );
-}
-
-lmLUnits lmNote::GetBoundsBottom()
-{
-    return (m_fStemDown ? GetFinalYStem() : m_uSelRect.GetBottom() + m_uPaperPos.y );
-}
-
-lmLUnits lmNote::GetBoundsLeft()
-{
-    return (m_fStemDown ? GetXStemLeft() : m_uSelRect.GetLeft() + m_uPaperPos.x );
-}
-
-lmLUnits lmNote::GetBoundsRight()
-{
-    return (m_fStemDown ? m_uSelRect.GetRight() + m_uPaperPos.x : GetXStemLeft() );
-}
-
-void lmNote::MoveShape(lmLUnits uLeft)
-{
-	// The MoveShape() method is invoked only from TimeposTable::RedistributeSpace()
-	// method, in order to assign the definitive positions to StaffObjs, during layout
-	// phase.
-    // Here, the standard MoveShape() method in StaffObj is overriden to take into 
-	// account the possible existence of associated AuxObjs, such as Ties or Beams.
-	// These AuxObjs have also to be moved when the note is moved
-
-	//TODO: This override is no longer neede. When Note shape is shifted all attached
-	//shapes will get notifications
-
-    m_pShape2->Shift(uLeft - m_uPaperPos.x, 0.0);
-    m_uPaperPos.x = uLeft;
-
-	////move beams
- //   if (m_fBeamed) {
- //       m_pBeam->OnNoteMoved(this, uLeft);
- //   }
-
- //   //move Ties
- //   if (m_pTieNext) m_pTieNext->UpdateMeasurements();
- //   if (m_pTiePrev) m_pTiePrev->UpdateMeasurements();
-
- //   //move associated AuxObjs
- //   if (m_pNotations) {
- //       lmNoteRestObj* pNRO;
- //       wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
- //       for (; pNode; pNode = pNode->GetNext() ) {
- //           pNRO = (lmNoteRestObj*)pNode->GetData();
- //           pNRO->UpdateMeasurements();
- //       }
- //   }
-
- //   // move associated lyrics
- //   if (m_pLyrics) {
- //       lmLyric* pLyric;
- //       wxAuxObjsListNode* pNode = m_pLyrics->GetFirst();
- //       for (; pNode; pNode = pNode->GetNext() ) {
- //           pLyric = (lmLyric*)pNode->GetData();
- //           pLyric->UpdateMeasurements();
- //       }
- //   }
-
- //   //move associated accidentals  
-	//if (m_pAccidentals) {
-	//	m_pAccidentals->GetShape()->Shift(uLeft - m_uPaperPos.x, 0.0);
-	//}
-
-
-}
-
 wxString lmNote::Dump()
 {
+    //get pitch relative to key signature
+    lmFPitch fp = FPitch(m_anPitch);
+    lmKeySignature* pKey = m_pContext->GeyKey();
+    EKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
+    wxString sPitch = FPitch_ToRelLDPName(fp, nKey);
+
     wxString sDump;
     sDump = wxString::Format(
         _T("%d\tNote\tType=%d, Pitch=%s, Midi=%d, Volume=%d, PosOnStaff=%d, TimePos=%.2f, rDuration=%.2f, StemType=%d"),
-        m_nId, m_nNoteType, m_anPitch.LDPName().c_str(), m_anPitch.GetMPitch(), m_nVolume, GetPosOnStaff(), m_rTimePos, m_rDuration,
+        m_nId, m_nNoteType, sPitch.c_str(), m_anPitch.GetMPitch(), m_nVolume, GetPosOnStaff(), m_rTimePos, m_rDuration,
         m_nStemType);
     if (m_pTieNext) sDump += _T(", TiedNext");
     if (m_pTiePrev) sDump += _T(", TiedPrev");
@@ -2205,25 +1469,40 @@ wxString lmNote::Dump()
 
 }
 
-wxString lmNote::SourceLDP()
+wxString lmNote::SourceLDP(int nIndent)
 {
-    wxString sSource = _T("         (n ");
-    //(fInChord ? _T("            (NA "), _T("            (N "));
-    if (IsPitchDefined())
-        sSource += m_anPitch.LDPName();
+    wxString sSource = _T("");
+    if (IsInChord() && IsBaseOfChord()) {
+        sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+        sSource += _T("(chord\n");
+    }
+
+    if (IsInChord()) nIndent++;
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(n ");
+
+    //pitch
+    if (IsPitchDefined()) {
+        //get pitch relative to context
+		lmDPitch dp = m_anPitch.ToDPitch();
+		if (m_pAccidentals)
+			sSource += m_pAccidentals->GetLDPEncoding();
+		sSource += DPitch_ToLDPName(dp);
+        //lmKeySignature* pKey = m_pContext->GeyKey();
+        //EKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
+        //lmFPitch fp = FPitch(m_anPitch);
+        //sSource += FPitch_ToRelLDPName(fp, nKey);
+    }
     else
         sSource += _T("*");
-
     sSource += _T(" ");
+
+    //duration
     sSource += GetLDPNoteType();
     if (m_fDotted) sSource += _T(".");
     if (m_fDoubleDotted) sSource += _T(".");
 
-    //! @todo take tonal key into account
-
-    //! @todo Finish lmNote LDP Source code generation method
-
-    //tied
+    //tied ?
     if (IsTiedToNext()) sSource += _T(" l");
 
     //start or end of group
@@ -2239,7 +1518,10 @@ wxString lmNote::SourceLDP()
     //tuplets
     if (m_pTupletBracket) {
         if ((lmNoteRest*)this == m_pTupletBracket->GetStartNote()) {
-            sSource += wxString::Format(_T(" t%d"), m_pTupletBracket->GetTupletNumber());
+            sSource += wxString::Format(_T(" t%d/%d"),
+                                        m_pTupletBracket->GetActualNotes(),
+                                        m_pTupletBracket->GetNormalNotes() );
+
         }
         else if((lmNoteRest*)this == m_pTupletBracket->GetEndNote()) {
             sSource += _T(" t-");
@@ -2251,12 +1533,14 @@ wxString lmNote::SourceLDP()
         sSource += wxString::Format(_T(" p%d"), m_nStaffNum);
     }
 
+    //visible?
+    if (!m_fVisible) { sSource += _T(" noVisible"); }
 
-//    if (nCalderon == eC_ConCalderon) m_sFuente = m_sFuente & " C";
-//    for (int i=1; i <= cAnotaciones.Count; i++) {
-//        m_sFuente = m_sFuente & " " & cAnotaciones.Item(i);
-//    }
-    sSource += _T(")\n");
+    if (IsInChord() && m_pChord->IsLastNoteOfChord(this)) {
+        sSource += _T(") )\n");
+    }
+    else
+        sSource += _T(")\n");
     return sSource;
 }
 
@@ -2305,9 +1589,9 @@ lmScoreObj* lmNote::FindSelectableObject(lmUPoint& pt)
 {
     if (IsAtPoint(pt)) return this;
 
-    // try with ties
-    if (m_pTieNext && m_pTieNext->IsAtPoint(pt)) return m_pTieNext;
-    if (m_pTiePrev && m_pTiePrev->IsAtPoint(pt)) return m_pTiePrev;
+    //// try with ties
+    //if (m_pTieNext && m_pTieNext->IsAtPoint(pt)) return m_pTieNext;
+    //if (m_pTiePrev && m_pTiePrev->IsAtPoint(pt)) return m_pTiePrev;
 
     // try with associated AuxObjs
     if (m_pNotations) {

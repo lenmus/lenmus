@@ -31,29 +31,10 @@
 #include "../graphic/ShapeTuplet.h"
 
 
-/* lmTupletBracket
-    A lmTupletBracket represents the optional bracket graphically associated
-    to tuplets. The lmTupletBracket object does not have any effect on sound. It is
-    only to describe how a tuplet must be displayed.
-
-    It is a auxiliary object to contain all the information for a tuplet,
-    and methods to create and control the necessary shapes.
-
-    During LDP parsing the lmTupletBracket object serves to store tuplet information for
-    coming notes, as in source code only the first note has the tuplet information
-    and it must be propagated to the remaining notes in the tuplet.
-
-    In the lmScore model, all notes/rests in a tuple have a pointer to the
-    lmTupletBracket. Only start and end notes are used during computations. For the
-    remaining notes (intermediate notes), having a pointer to the bracket is only
-    useful to know that they are in a tuplet, but note/rest duration is
-    updated in the note/rest, so tuplet bracket is not needed.
-
-    - There is a need to keep links to start and end NoteRests so that it is possible
-        to stablish start and end positioning points (as in ties).
-
-
-*/
+// lmTupletBracket
+//    A lmTupletBracket represents the optional bracket graphically associated
+//    to tuplets. The lmTupletBracket object does not have any effect on sound. It is
+//    only to describe how a tuplet must be displayed.
 
 class lmTupletBracket
 {

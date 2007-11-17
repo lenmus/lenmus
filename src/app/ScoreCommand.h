@@ -19,8 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __SCORE_COMMAND_H__        //to avoid nested includes
-#define __SCORE_COMMAND_H__
+#ifndef __LM_SCORECOMMAND_H__        //to avoid nested includes
+#define __LM_SCORECOMMAND_H__
 
 #ifdef __GNUG__
 #pragma interface "ScoreCommand.cpp"
@@ -28,55 +28,80 @@
 
 #include "wx/cmdproc.h"
 
-#include "global.h"
+#include "../score/defs.h"
 class lmScoreObj;
 class lmScoreDocument;
 
-// base class
+// base abstract class
 class lmScoreCommand: public wxCommand
 {
 public:
 	// Commands
 	enum lmEScoreCommand
 	{
-		lmCMD_SelectObject = 1,
+		lmCMD_SelectSingle = 1,
 		lmCMD_MoveStaffObj,
 	};
 
-    lmScoreCommand(const wxString& name, lmEScoreCommand cmd, lmScoreDocument *pDoc, lmScoreObj* pScO);
-    ~lmScoreCommand();
+    virtual ~lmScoreCommand();
 
+    virtual bool Do()=0;
+    virtual bool Undo()=0;
+
+protected:
+    lmScoreCommand(const wxString& name, lmEScoreCommand cmd, lmScoreDocument *pDoc);
+
+    lmScoreDocument*    m_pDoc;
+    lmEScoreCommand		m_cmd;
+
+};
+
+// Select object command
+//------------------------------------------------------------------------------------
+class lmCmdSelectSingle: public lmScoreCommand
+{
+public:
+    lmCmdSelectSingle(const wxString& name, lmScoreDocument *pDoc, lmGMObject* pGMO)
+        : lmScoreCommand(name, lmCMD_SelectSingle, pDoc)
+        {
+            m_pGMO = pGMO;
+        }
+
+    ~lmCmdSelectSingle() {}
+
+    //overrides of pure virtual methods in base class
     bool Do();
     bool Undo();
 
-private:
-    bool CmdSelectObject();
 
 protected:
-    lmScoreDocument*    m_pDoc;
-    lmEScoreCommand		m_cmd;
-    lmScoreObj*			m_pScO;
+	bool CmdSelectObject();
+
+
+    lmGMObject*		m_pGMO;
 
 };
 
-class lmScoreCommandMove: public lmScoreCommand
-{
-public:
-    lmScoreCommandMove(const wxString& name, lmScoreDocument *pDoc, lmScoreObj* pScO,
-            const lmUPoint& uPos) :
-        lmScoreCommand(name, lmCMD_MoveStaffObj, pDoc, pScO)
-        {
-            m_pos = uPos;
-        }
-    ~lmScoreCommandMove() {}
-
-    bool DoMoveStaffObj();
-    bool UndoMoveStaffObj();
 
 
-protected:
-    lmUPoint        m_pos;
-    lmUPoint        m_oldPos;        // for Undo
-};
+//class lmScoreCommandMove: public lmScoreCommand
+//{
+//public:
+//    lmScoreCommandMove(const wxString& name, lmScoreDocument *pDoc, lmScoreObj* pScO,
+//            const lmUPoint& uPos) :
+//        lmScoreCommand(name, lmCMD_MoveStaffObj, pDoc, pScO)
+//        {
+//            m_pos = uPos;
+//        }
+//    ~lmScoreCommandMove() {}
+//
+//    bool DoMoveStaffObj();
+//    bool UndoMoveStaffObj();
+//
+//
+//protected:
+//    lmUPoint        m_pos;
+//    lmUPoint        m_oldPos;        // for Undo
+//};
 
-#endif    // __SCORE_COMMAND_H__        //to avoid nested includes
+#endif    // __LM_SCORECOMMAND_H__        //to avoid nested includes

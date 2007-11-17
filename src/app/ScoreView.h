@@ -203,10 +203,12 @@ private:
 
     // dragging control variables
     int             m_dragState;
-    lmUPoint        m_dragStartPosL;
-    lmDPoint        m_dragHotSpot;        // pixels
+    lmUPoint        m_uDragStartPos;
+    lmDPoint        m_vDragHotSpot;        //absolute point (pixels)
+    lmUPoint        m_uHotSpotShift;       //distance from shape origin
     wxDragImage*    m_pDragImage;
     lmScoreObj*     m_pSoDrag;            // lmScoreObj being dragged
+	lmGMObject*		m_pGMODrag;			//GMObject being dragged
 
     //cursor
     lmScoreCursor*  m_pCursor;

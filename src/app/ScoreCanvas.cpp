@@ -196,18 +196,19 @@ void lmScoreCanvas::OnVisualHighlight(lmScoreHighlightEvent& event)
 
 void lmScoreCanvas::MoveObject(lmScoreObj* pSO, const lmUPoint& uPos)
 {
-	//Generate move command to move the lmStaffObj and update the document
-	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-    pCP->Submit(new lmScoreCommandMove(_T("Move object"), m_pDoc, pSO, uPos));
+	////Generate move command to move the lmStaffObj and update the document
+	//wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+ //   pCP->Submit(new lmScoreCommandMove(_T("Move object"), m_pDoc, pSO, uPos));
 
 }
 
-void lmScoreCanvas::SelectObject(lmScoreObj* pSO)
+void lmScoreCanvas::SelectObject(lmGMObject* pGMO)
 {
 	//select/deselect an ScoreObj
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	pCP->Submit(new lmScoreCommand(_T("Select object"),
-								   lmScoreCommand::lmCMD_SelectObject, m_pDoc, pSO));
+	//pCP->Submit(new lmScoreCommand(_T("Select object"),
+	//							   lmScoreCommand::lmCMD_SelectSingle, m_pDoc, pSO));
+	pCP->Submit(new lmCmdSelectSingle(_T("Select object"), m_pDoc, pGMO));
 }
 
 void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)

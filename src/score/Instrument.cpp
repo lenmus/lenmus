@@ -170,9 +170,11 @@ wxString lmInstrument::Dump()
 
 }
 
-wxString lmInstrument::SourceLDP()
+wxString lmInstrument::SourceLDP(int nIndent)
 {
-    wxString sSource = _T("   (instrument");
+	wxString sSource = _T("");
+	sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(instrument");
 
     //num of staves
     wxVStavesListNode *pNode = m_cStaves.GetFirst();
@@ -180,17 +182,20 @@ wxString lmInstrument::SourceLDP()
     if (pVStaff->GetNumStaves() > 1) {
         sSource += wxString::Format(_T(" (staves %d)"), pVStaff->GetNumStaves());
     }
+    sSource += _T("\n");
 
     //loop for each lmVStaff
+    nIndent++;
     for (; pNode; pNode = pNode->GetNext())
     {
         pVStaff = (lmVStaff*) pNode->GetData();
-        sSource += _T("\n      (voice\n");
-        sSource += pVStaff->SourceLDP();
-        sSource += _T("      )\n");
+        sSource += pVStaff->SourceLDP(nIndent);
     }
 
-    sSource += _T("   )\n");
+    //close instrument
+    nIndent--;
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T(")\n");
     return sSource;
 
 }
@@ -204,96 +209,51 @@ wxString lmInstrument::SourceXML()
 
 void lmInstrument::MeasureNames(lmPaper* pPaper)
 {
-    //when this method is invoked paper is positioned at top left corner of instrument
-    //renderization point (x = left margin, y = top line of first staff)
+    ////when this method is invoked paper is positioned at top left corner of instrument
+    ////renderization point (x = left margin, y = top line of first staff)
 
-    //As name/abbreviation are StaffObjs, method Draw() advances paper to
-    //end of name/abbreviation. Let's save original position to restore it
-    lmLUnits xPaper = pPaper->GetCursorX();
+    ////As name/abbreviation are StaffObjs, method Draw() advances paper to
+    ////end of name/abbreviation. Let's save original position to restore it
+    //lmLUnits xPaper = pPaper->GetCursorX();
 
-    m_nIndentFirst = 0;
-    m_nIndentOther = 0;
+    //m_nIndentFirst = 0;
+    //m_nIndentOther = 0;
 
-    if (m_pName) {
-        // measure text extent
-        m_pName->Draw(DO_MEASURE, pPaper);
-        // set indent =  text extend + after text space
-        m_nIndentFirst = m_pName->GetSelRect().width + 30;    //! @todo user options
+    //if (m_pName) {
+    //    // measure text extent
+    //    m_pName->Draw(DO_MEASURE, pPaper);
+    //    // set indent =  text extend + after text space
+    //    m_nIndentFirst = m_pName->GetSelRect().width + 30;    //! @todo user options
+    //}
 
-        //lmLUnits xPaperPos = pPaper->GetCursorX();
-        //lmLUnits yPaperPos = pPaper->GetCursorY();
+    //if (m_pAbbreviation) {
+    //    // measure text extent
+    //    m_pAbbreviation->Draw(DO_MEASURE, pPaper);
+    //    // set indent =  text extend + after text space
+    //    m_nIndentOther = m_pAbbreviation->GetSelRect().width + 30;    //! @todo user options
+    //}
 
-        ////if need to reposition paper, convert units to tenths
-        //lmLUnits xPos, yPos;
-        //lmLocation tPos = m_pName->GetLocation();
-        //if (tPos.xType != lmLOCATION_DEFAULT) {
-        //    if (tPos.xUnits == lmTENTHS)
-        //        xPos = tPos.x;
-        //    else
-        //        xPos = lmToLogicalUnits(tPos.x, tPos.xUnits);
-        //}
-
-        //if (tPos.yType != lmLOCATION_DEFAULT) {
-        //    if (tPos.yUnits == lmTENTHS)
-        //        yPos = tPos.y;
-        //    else
-        //        yPos = lmToLogicalUnits(tPos.y, tPos.yUnits);
-        //}
-
-        ////reposition paper according text required positioning info
-        //if (tPos.xType == lmLOCATION_RELATIVE) {
-        //    xPaperPos += xPos;
-        //}
-        //else if (tPos.xType == lmLOCATION_ABSOLUTE) {
-        //    xPaperPos = xPos + pPaper->GetLeftMarginXPos();
-        //}
-
-        //if (tPos.yType == lmLOCATION_RELATIVE) {
-        //    yPaperPos += yPos;
-        //}
-        //else if (tPos.yType == lmLOCATION_ABSOLUTE) {
-        //    yPaperPos = yPos + pPaper->GetPageTopMargin();
-        //}
-        //pPaper->SetCursorY( yPaperPos );
-
-        ////Ignore alignment. Always align left.
-        //if (tPos.xType == lmLOCATION_DEFAULT)
-        //    pPaper->SetCursorX(pPaper->GetLeftMarginXPos());
-        //else
-        //    pPaper->SetCursorX( xPaperPos );
-
-        //m_pName->Draw(DO_MEASURE, pPaper);
-        //m_nIndentFirst = m_pName->GetSelRect().width + 30;    //! @todo user options
-    }
-
-    if (m_pAbbreviation) {
-        // measure text extent
-        m_pAbbreviation->Draw(DO_MEASURE, pPaper);
-        // set indent =  text extend + after text space
-        m_nIndentOther = m_pAbbreviation->GetSelRect().width + 30;    //! @todo user options
-    }
-
-    //restore original paper position
-    pPaper->SetCursorX( xPaper );
+    ////restore original paper position
+    //pPaper->SetCursorX( xPaper );
 
 }
 
 void lmInstrument::DrawName(lmPaper* pPaper, wxColour colorC)
 {
-    //when this method is invoked paper is positioned at top left corner of instrument
-    //renderization point (x = left margin, y = top line of first staff)
-    //after rendering, paper position is not advanced
+    ////when this method is invoked paper is positioned at top left corner of instrument
+    ////renderization point (x = left margin, y = top line of first staff)
+    ////after rendering, paper position is not advanced
 
-    if (m_pName) {
-        //As name/abbreviation are StaffObjs, method Draw() should be invoked but
-        //it draws the object not at current paper pos but at stored m_uPaperPos.
-        //It also performs other non necessary thigs.
-        //So, I will invoke directly DarwObject and, previouly, set the text
-        //position at current paper position
-        lmUPoint rPos(pPaper->GetCursorX(), pPaper->GetCursorY());
-        m_pName->MoveTo(rPos);
-        m_pName->DrawObject(DO_DRAW, pPaper, colorC, NO_HIGHLIGHT);
-    }
+    //if (m_pName) {
+    //    //As name/abbreviation are StaffObjs, method Draw() should be invoked but
+    //    //it draws the object not at current paper pos but at stored m_uPaperPos.
+    //    //It also performs other non necessary thigs.
+    //    //So, I will invoke directly DarwObject and, previouly, set the text
+    //    //position at current paper position
+    //    lmUPoint rPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+    //    m_pName->MoveTo(rPos);
+    //    m_pName->DrawObject(DO_DRAW, pPaper, colorC, NO_HIGHLIGHT);
+    //}
 }
 
 void lmInstrument::DrawAbbreviation(lmPaper* pPaper, wxColour colorC)
@@ -312,7 +272,7 @@ void lmInstrument::DrawAbbreviation(lmPaper* pPaper, wxColour colorC)
         //position at current paper position.
         lmUPoint rPos(pPaper->GetCursorX(), pPaper->GetCursorY());
         m_pAbbreviation->MoveTo(rPos);
-        m_pAbbreviation->DrawObject(DO_DRAW, pPaper, colorC, NO_HIGHLIGHT);
+        //m_pAbbreviation->DrawObject(DO_DRAW, pPaper, colorC, NO_HIGHLIGHT);
     }
 }
 
