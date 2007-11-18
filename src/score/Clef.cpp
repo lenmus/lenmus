@@ -191,22 +191,22 @@ lmLUnits lmClef::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
 void lmClef::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
                          const lmUPoint& pagePosL, const lmUPoint& uDragStartPos, const lmDPoint& canvasPosD)
 {
-    // DragImage->Move() requires device units referred to canvas window. To compute the
-    // desired position the following coordinates are received:
-    // - canvasPosD - current mouse position (device units referred to canvas window). If the
-    //        image movement is not constrained, this is the rigth value for DragImage->Move(). See
-    //        default method in StaffObj.h
-    // - offsetD - offset to add when translating from logical units referred to page origin to
-    //        scrolled device units referred to canvas origin. It takes also into account the
-    //        offset introduced by the hotSpot point.
-    // - pagePosL - current mouse position (logical units referred to page origin).
+    //// DragImage->Move() requires device units referred to canvas window. To compute the
+    //// desired position the following coordinates are received:
+    //// - canvasPosD - current mouse position (device units referred to canvas window). If the
+    ////        image movement is not constrained, this is the rigth value for DragImage->Move(). See
+    ////        default method in StaffObj.h
+    //// - offsetD - offset to add when translating from logical units referred to page origin to
+    ////        scrolled device units referred to canvas origin. It takes also into account the
+    ////        offset introduced by the hotSpot point.
+    //// - pagePosL - current mouse position (logical units referred to page origin).
 
-    //pDragImage->Move(canvasPosD);
+    ////pDragImage->Move(canvasPosD);
 
-    // A clef only can be moved horizonatlly
-    lmDPoint ptNew = canvasPosD;
-    ptNew.y = pPaper->LogicalToDeviceY(m_uPaperPos.y + m_uGlyphPos.y) + offsetD.y;
-    pDragImage->Move(ptNew);
+    //// A clef only can be moved horizonatlly
+    //lmDPoint ptNew = canvasPosD;
+    //ptNew.y = pPaper->LogicalToDeviceY(m_uPaperPos.y + m_uGlyphPos.y) + offsetD.y;
+    //pDragImage->Move(ptNew);
 
 }
 

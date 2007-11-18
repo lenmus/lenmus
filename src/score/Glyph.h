@@ -37,6 +37,8 @@
 #include "wx/wx.h"
 #endif
 
+#include "defs.h"
+
 //---------------------------------------------------------
 //   Glyphs info
 //---------------------------------------------------------
@@ -51,18 +53,14 @@ struct lmGlyph
     int		SelRectHeight;
     int		Top;
     int		Bottom;
-	int		xPos;
-	int		yPos;
-	int     width;
-	int     height;
+	lmTenths	thxPos;
+	lmTenths	thyPos;
+	lmTenths	thWidth;
+	lmTenths	thHeight;
     wxString    sName;
 
     lmGlyph(const wxChar g, int yo, int ys, int h, int t, int b, 
-		    int xPos, int yPos, int width, int height, const wxString n)
-        : GlyphChar(g), GlyphOffset(yo), SelRectShift(ys), SelRectHeight(h),
-          Top(t), Bottom(b), sName(n)
-        {
-        }
+		    int xPos, int yPos, int width, int height, const wxString n);
 
 };
 

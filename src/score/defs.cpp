@@ -52,7 +52,7 @@
 //  b) program specific types:
 //      u - logical units (lmLUnits)
 //      v - device units (lmPixels)
-//      ? - tenths (lmTenths)
+//      th - tenths (lmTenths)
 //      ux, uy - logical units. coordinates
 //      udx, udy - logical units. distances
 //      vx, vy - device units. coordinates

@@ -54,6 +54,27 @@
 // height:  the height of the selection rectangle
 //          units: tenths (tenths of inter-line space)
 
+lmGlyph::lmGlyph(const wxChar g, int yo, int ys, int h, int t, int b, 
+		    int xPos, int yPos, int width, int height, const wxString n)
+        : GlyphChar(g), GlyphOffset(yo), Top(t), Bottom(b), sName(n)
+        {
+            // Table data is in FUnits but as 512 FU are 1 line (10 tenths) it is simple
+            // to convert these data into tenths: just divide FU by 51.2
+			thxPos = xPos / 51.2;
+			thyPos = yPos / 51.2;
+			thWidth = width / 51.2;
+			thHeight = height / 51.2;
+
+			if (ys == 0 && h == 0) {
+				SelRectShift = (int)(((3072.0 -(float)(height + yPos)) / 51.2) + 0.5);
+				SelRectHeight = (int)(((float)(height) / 51.2) + 0.5);
+			}
+			else {
+				SelRectHeight = h;
+				SelRectShift = ys; 
+			}
+		}
+
 //the glyphs table
 //IMPORTANT: The table inicialization values MUST be ordered following the
 //           enum lmEGlyphIndex, defined in Glyph.h
@@ -142,16 +163,19 @@ const lmGlyph aGlyphsInfo[] =
     lmGlyph(_T('G'), -19,     20,     35,   0,      0,      0,      0,      0,      0,   _T("Percussion clef, block")) ,
 
     //numbers for time signatures
-    lmGlyph(_T('0'), -20,      6,     71,   0,      0,      0,      0,      0,      0,   _T("Number 0")) ,
-    lmGlyph(_T('1'), -20,      6,     71,   0,      0,      0,      0,      0,      0,   _T("Number 1")) ,
-    lmGlyph(_T('2'), -20,      6,     71,   0,      0,      0,      0,      0,      0,   _T("Number 2")) ,
-    lmGlyph(_T('3'), -20,      6,     71,   0,      0,      0,      0,      0,      0,   _T("Number 3")) ,
-    lmGlyph(_T('4'), -20,      6,     71,   0,      0,      0,      0,      0,      0,   _T("Number 4")) ,
-    lmGlyph(_T('5'), -20,      6,     71,   0,      0,      0,      0,      0,      0,   _T("Number 5")) ,
-    lmGlyph(_T('6'), -20,      6,     71,   0,      0,      0,      0,      0,      0,   _T("Number 6")) ,
-    lmGlyph(_T('7'), -20,      6,     71,   0,      0,      0,      0,      0,      0,   _T("Number 7")) ,
-    lmGlyph(_T('8'), -20,      6,     71,   0,      0,      0,      0,      0,      0,   _T("Number 8")) ,
-    lmGlyph(_T('9'), -20,      6,     71,   0,      0,      0,      0,      0,      0,   _T("Number 9")) ,
+	//                                                      ----- FUnits ------------
+    //                       sel rectangle                  Position    Size 
+    //       Glyph   offset  shift   height                 x       y   width   height
+    lmGlyph(_T('0'), -20,      0,      0,   0,      0,      0,     37,    702,    950,   _T("Number 0")) ,
+    lmGlyph(_T('1'), -20,      0,      0,   0,      0,      0,     37,    612,    950,   _T("Number 1")) ,
+    lmGlyph(_T('2'), -20,      0,      0,   0,      0,      0,     37,    702,    950,   _T("Number 2")) ,
+    lmGlyph(_T('3'), -20,      0,      0,   0,      0,      0,     37,    636,    950,   _T("Number 3")) ,
+    lmGlyph(_T('4'), -20,      0,      0,   0,      0,      0,     37,    762,    950,   _T("Number 4")) ,
+    lmGlyph(_T('5'), -20,      0,      0,   0,      0,      0,     37,    666,    950,   _T("Number 5")) ,
+    lmGlyph(_T('6'), -20,      0,      0,   0,      0,      0,     37,    654,    950,   _T("Number 6")) ,
+    lmGlyph(_T('7'), -20,      0,      0,   0,      0,      0,     37,    696,    950,   _T("Number 7")) ,
+    lmGlyph(_T('8'), -20,      0,      0,   0,      0,      0,     37,    714,    950,   _T("Number 8")) ,
+    lmGlyph(_T('9'), -20,      0,      0,   0,      0,      0,     37,    648,    950,   _T("Number 9")) ,
 
 //signs
 	//                                                      ----- FUnits ------------

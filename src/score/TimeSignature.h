@@ -75,8 +75,6 @@ public:
     int GetBeatType() { return m_nBeatType; }
 
 private:
-    void PrepareGlyphs();
-
     // get fixed measures and values that depend on lmTimeSignature type
     lmTenths GetSelRectHeight();
     lmTenths GetSelRectShift();

@@ -67,7 +67,7 @@ lmTimeSignature::lmTimeSignature(ETimeSignatureType nType, lmVStaff* pVStaff, bo
     lmStaffObj(pVStaff, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = nType;
-    wxASSERT(false);    //! @todo not yet implemented
+    wxASSERT(false);    //TODO not yet implemented
 }
 
 //constructor for type eTS_SingleNumber
@@ -75,7 +75,7 @@ lmTimeSignature::lmTimeSignature(int nSingleNumber, lmVStaff* pVStaff, bool fVis
     lmStaffObj(pVStaff, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_SingleNumber;
-    wxASSERT(false);    //! @todo not yet implemented
+    wxASSERT(false);    //TODO not yet implemented
 }
 
 //constructor for type eTS_Composite
@@ -84,7 +84,7 @@ lmTimeSignature::lmTimeSignature(int nNumBeats, int nBeats[], int nBeatType, lmV
     lmStaffObj(pVStaff, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_Composite;
-    wxASSERT(false);    //! @todo not yet implemented
+    wxASSERT(false);    //TODO not yet implemented
 }
 
 //constructor for type eTS_Multiple
@@ -93,16 +93,12 @@ lmTimeSignature::lmTimeSignature(int nNumFractions, int nBeats[], int nBeatType[
     lmStaffObj(pVStaff, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_Multiple;
-    wxASSERT(false);    //! @todo not yet implemented
+    wxASSERT(false);    //TODO not yet implemented
 }
-
-//void lmTimeSignature::GetValor() As ETimeSignature
-//    Valor = m_nTimeSignature
-//}
 
 wxString lmTimeSignature::Dump()
 {
-    //! @todo take into account TimeSignatures types other than eTS_Normal
+    //TODO take into account TimeSignatures types other than eTS_Normal
     wxString sDump = _T("");
 
     switch (m_nType) {
@@ -135,22 +131,84 @@ wxString lmTimeSignature::SourceLDP(int nIndent)
 
 wxString lmTimeSignature::SourceXML()
 {
-//    IPentObj_FuenteXML = sEmpty
+	//TODO
     return _T("");
 }
 
 void lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    //if (fMeasuring) {
-    //    // get the shift to the staff on which the time key must be drawn
-    //    lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
+    // This method is invoked by the base class (lmStaffObj). It is responsible for
+    // creating the shape object and adding it to the graphical model. 
+    // Paper cursor must be used as the base for positioning.
 
-    //    // store glyph position
-    //    m_uGlyphPos.x = 0;
-    //    m_uGlyphPos.y = yShift - m_pVStaff->TenthsToLogical( 40, m_nStaffNum );
-    //}
 
-    //DrawTimeSignature(fMeasuring, pPaper, (m_fSelected ? g_pColors->ScoreSelected() : *wxBLACK) );
+    //get the position on which the time signature must be drawn
+    lmLUnits uxPosTop = pPaper->GetCursorX();
+    lmLUnits uxPosBottom = pPaper->GetCursorX();
+	lmLUnits uyPosTop = pPaper->GetCursorY() + m_pVStaff->GetStaffOffset(m_nStaffNum)
+						//- m_pVStaff->TenthsToLogical(aGlyphsInfo[GLYPH_NUMBER_0].GlyphOffset, m_nStaffNum );
+						- m_pVStaff->TenthsToLogical(20, m_nStaffNum);
+    lmLUnits uyPosBottom = uyPosTop + m_pVStaff->TenthsToLogical(20, m_nStaffNum);
+
+    //compute Beats and BeatsType positions so that one is centered on the other
+    wxString sTopGlyphs = wxString::Format(_T("%d"), m_nBeats );
+    wxString sBottomGlyphs = wxString::Format(_T("%d"), m_nBeatType );
+    lmLUnits uWidth1, uHeight1, uWidth2, uHeight2;
+    pPaper->GetTextExtent(sTopGlyphs, &uWidth1, &uHeight1);
+    pPaper->GetTextExtent(sBottomGlyphs, &uWidth2, &uHeight2);
+
+    if (uWidth2 > uWidth1) {
+        //bottom number wider
+        uxPosTop += (uWidth2 - uWidth1) / 2;
+    }
+    else {
+        //bottom number wider
+        uxPosBottom += (uWidth1 - uWidth2) / 2;
+    }
+
+	//create the shape object
+    lmCompositeShape* pShape = new lmCompositeShape(this, _T("Time signature"));
+	pBox->AddShape(pShape);
+    m_pShape2 = pShape;
+
+    //pShape->Add(new lmShapeTex2(this, sTopGlyphs, GetFont(), pPaper,
+    //                            lmUPoint(uxPosTop, uyPosTop), 
+				//				_T("Beats"), lmNO_DRAGGABLE) );
+
+    //pShape->Add(new lmShapeTex2(this, sBottomGlyphs, GetFont(), pPaper,
+    //                            lmUPoint(uxPosBottom, uyPosBottom), 
+				//				_T("BeatType"), lmNO_DRAGGABLE) );
+
+	//loop to create glyphs for the top number
+	long nDigit;
+	for (int i=0; i < (int)sTopGlyphs.length(); i++)
+	{
+		wxString sDigit = sTopGlyphs.substr(i, 1);
+		sDigit.ToLong(&nDigit);
+		int nGlyph = GLYPH_NUMBER_0 + (int)nDigit;
+		lmLUnits uyPos = uyPosTop 
+						 + m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
+		pShape->Add(new lmShapeGlyp2(this, nGlyph, GetFont(), pPaper,
+									 lmUPoint(uxPosTop, uyPos), 
+									 _T("Beats"), lmNO_DRAGGABLE) );
+		uxPosTop += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
+	}
+
+	//loop to create glyphs for the bottom number
+	for (int i=0; i < (int)sBottomGlyphs.length(); i++)
+	{
+		wxString sDigit = sBottomGlyphs.substr(i, 1);
+		sDigit.ToLong(&nDigit);
+		int nGlyph = GLYPH_NUMBER_0 + (int)nDigit;
+		lmLUnits uyPos = uyPosBottom 
+						+ m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
+		pShape->Add(new lmShapeGlyp2(this, nGlyph, GetFont(), pPaper,
+									 lmUPoint(uxPosBottom, uyPos), 
+									 _T("BeatType"), lmNO_DRAGGABLE) );
+		uxPosBottom += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
+	}
+	// set total width (incremented in one line for after space)
+	m_uWidth = pShape->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
 
 }
 
@@ -213,24 +271,10 @@ lmLUnits lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wx
 
 }
 
-
-void lmTimeSignature::PrepareGlyphs()
-{
-//
-//    if Not fMeasuring {
-//        Escribir CStr(sTopGlyphs), Int(m_xCursor), CLng(m_yCursor - 10# * m_ndyLines + yShift)
-//        Escribir CStr(sBottomGlyphs), Int(m_xCursor), CLng(m_yCursor - 8# * m_ndyLines + yShift)
-//    }
-//    m_xCursor = m_xCursor + 30# * m_rEscala     //avance tras la métrica
-//
-//}
-//
-}
-
 void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime, int nMeasure)
 {
     //  Add a MIDI event of type RhythmChange
-    //! @todo Deal with non-standard time signatures
+    //TODO Deal with non-standard time signatures
 
     float rTime = m_rTimePos + rMeasureStartTime;
 
@@ -242,11 +286,11 @@ void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime,
 
 }
 
-//! @todo Code all following methods needed for dragging and selection rectangle
+//TODO Code all following methods needed for dragging and selection rectangle
 
 wxBitmap* lmTimeSignature::GetBitmap(double rScale)
 {
-    //! @todo
+    //TODO
     return (wxBitmap*)NULL;
 }
 
@@ -257,37 +301,37 @@ void lmTimeSignature::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint&
 
 lmUPoint lmTimeSignature::EndDrag(const lmUPoint& uPos)
 {
-    //! @todo
+    //TODO
     return lmUPoint(0,0);
 }
 
 lmLUnits lmTimeSignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
-    //! @todo
+    //TODO
     return 0;
 }
 
 lmTenths lmTimeSignature::GetSelRectHeight()
 {
-    //! @todo
+    //TODO
     return 0;
 }
 
 lmTenths lmTimeSignature::GetSelRectShift()
 {
-    //! @todo
+    //TODO
     return 0;
 }
 
 lmTenths lmTimeSignature::GetGlyphOffset()
 {
-    //! @todo
+    //TODO
     return 0;
 }
 
 wxString lmTimeSignature::GetLenMusChar()
 {
-    //! @todo
+    //TODO
     return _T("4/4");
 }
 
@@ -531,7 +575,7 @@ int GetChordPosition(float rTimePos, float rDuration, int nBeats, int nBeatType)
     int nEndBeat = (int)rEndTimePos /nBeatDuration;
     float rEndShift = fabs(rEndTimePos - (float)(nBeatDuration * nEndBeat));
 
-    // note on chord if starts on beat or start point on beat N and end point on beat N+1.
+    // note is on chord if it starts on beat or start point on beat N and end point on beat N+1.
     // 1.0 is the duration of a 256th note. I use 1.0 instead of e256thDuration to avoid
     // conversions
     if (rStartShift < 1.0 )

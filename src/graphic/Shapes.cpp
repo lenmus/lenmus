@@ -490,11 +490,9 @@ void lmShapeText::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
 
 void lmShapeText::Render(lmPaper* pPaper, wxColour color)
 {
-    lmUPoint uPos(0.0, 0.0);    //by-pass new version with absolute positions
-
     pPaper->SetFont(*m_pFont);
     pPaper->SetTextForeground(color);
-    pPaper->DrawText(m_sText, uPos.x + m_uShift.x, uPos.y + m_uShift.y);
+    pPaper->DrawText(m_sText, m_uShift.x, m_uShift.y);
 
     lmShape::RenderCommon(pPaper);
 }
@@ -521,6 +519,73 @@ void lmShapeText::Shift(lmLUnits xIncr, lmLUnits yIncr)
     m_uSelRect.x += xIncr;
 	m_uBoundsTop.x += xIncr;
 	m_uBoundsBottom.x += xIncr;
+}
+
+
+
+
+//========================================================================================
+// lmShapeTex2 object implementation
+//========================================================================================
+
+lmShapeTex2::lmShapeTex2(lmObject* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
+						 lmUPoint offset, wxString sName, bool fDraggable)
+    : lmSimpleShape(eGMO_ShapeText, pOwner, sName, fDraggable)
+{
+    m_sText = sText;
+    m_pFont = pFont;
+
+    // compute and store position
+    m_uPos.x = offset.x;
+    m_uPos.y = offset.y;
+
+    // store boundling rectangle position and size
+    lmLUnits uWidth, uHeight;
+    pPaper->SetFont(*m_pFont);
+    pPaper->GetTextExtent(m_sText, &uWidth, &uHeight);
+
+    m_uBoundsTop.x = offset.x;
+    m_uBoundsTop.y = offset.y;
+    m_uBoundsBottom.x = m_uBoundsTop.x + uWidth;
+    m_uBoundsBottom.y = m_uBoundsTop.y + uHeight;
+
+    // store selection rectangle position and size
+	m_uSelRect = GetBounds();
+
+}
+
+
+void lmShapeTex2::Render(lmPaper* pPaper, wxColour color)
+{
+    pPaper->SetFont(*m_pFont);
+    pPaper->SetTextForeground(color);
+    pPaper->DrawText(m_sText, m_uPos.x, m_uPos.y);
+
+    lmShape::RenderCommon(pPaper);
+}
+
+void lmShapeTex2::SetFont(wxFont *pFont)
+{
+    m_pFont = pFont;
+}
+
+wxString lmShapeTex2::Dump(int nIndent)
+{
+	wxString sDump = _T("");
+	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
+    sDump += wxString::Format(_T("TextShape: pos=(%.2f,%.2f), text=%s, "),
+        m_uPos.x, m_uPos.y, m_sText.c_str() );
+    sDump += DumpBounds();
+    sDump += _T("\n");
+	return sDump;
+}
+
+void lmShapeTex2::Shift(lmLUnits xIncr, lmLUnits yIncr)
+{
+    m_uPos.x += xIncr;
+    m_uPos.y += yIncr;
+
+    ShiftBoundsAndSelRec(xIncr, yIncr);
 }
 
 
