@@ -409,7 +409,7 @@ void lmScoreAuxCtrol::SourceLDP()
 
 }
 
-void lmScoreAuxCtrol::SourceXML()
+void lmScoreAuxCtrol::SourceXML(int nIndent)
 {
     if (!m_pScore) return;
     lmDlgDebug dlg(this, _T("Generated MusicXML code"), m_pScore->SourceXML());

@@ -124,7 +124,7 @@ public:
     //Debug methods
     wxString Dump();
     wxString SourceLDP(int nIndent);
-    wxString SourceXML();
+    wxString SourceXML(int nIndent);
 
     // restricted methods
     lmStaffObjIterator* CreateIterator(ETraversingOrder nOrder);    //for lmFormatter objects

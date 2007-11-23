@@ -153,7 +153,7 @@ wxString lmScoreText::SourceLDP(int nIndent)
 
 }
 
-wxString lmScoreText::SourceXML()
+wxString lmScoreText::SourceXML(int nIndent)
 {
     //! @todo all
     wxString sSource = _T("TODO: lmScoreText XML Source code generation methods");

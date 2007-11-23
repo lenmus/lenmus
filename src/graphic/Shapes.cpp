@@ -401,10 +401,9 @@ wxBitmap* lmShapeGlyp2::OnBeginDrag(double rScale)
 
     // allocate the bitmap
     // convert size to pixels
-    wxCoord wD = dc2.LogicalToDeviceXRel(wText),
-            hD = dc2.LogicalToDeviceYRel(hText);
-    // GetTextExtent has not enough precision. Add a couple of pixels for security
-    wxBitmap bitmap((int)(wD+2), (int)(hD+2));
+    int wD = (int)dc2.LogicalToDeviceXRel(wText);
+    int hD = (int)dc2.LogicalToDeviceYRel(hText);
+    wxBitmap bitmap(wD+2, hD+2);
     dc2.SelectObject(bitmap);
 
     // draw onto the bitmap
@@ -416,10 +415,28 @@ wxBitmap* lmShapeGlyp2::OnBeginDrag(double rScale)
 
     dc2.SelectObject(wxNullBitmap);
 
+    //cut out the image, to discard the outside out of the bounding box
+    lmPixels vxLeft = dc2.LogicalToDeviceYRel(GetXLeft() - m_uGlyphPos.x);
+    lmPixels vyTop = dc2.LogicalToDeviceYRel(GetYTop() - m_uGlyphPos.y);
+    lmPixels vWidth = wxMin(bitmap.GetWidth() - vxLeft,
+                            dc2.LogicalToDeviceXRel(GetWidth()) );
+    lmPixels vHeight = wxMin(bitmap.GetHeight() - vyTop,
+                             dc2.LogicalToDeviceYRel(GetHeight()) );
+    const wxRect rect(vxLeft, vyTop, vWidth, vHeight);
+    //wxLogMessage(_T("[lmShapeGlyp2::OnBeginDrag] bitmap size w=%d, h=%d. Cut x=%d, y=%d, w=%d, h=%d"),
+    //    bitmap.GetWidth(), bitmap.GetHeight(), vxLeft, vyTop, vWidth, vHeight);
+    wxBitmap oShapeBitmap = bitmap.GetSubBitmap(rect);
+    wxASSERT(oShapeBitmap.IsOk());
+
     // Make the bitmap masked
-    wxImage image = bitmap.ConvertToImage();
+    wxImage image = oShapeBitmap.ConvertToImage();
     image.SetMaskColour(255, 255, 255);
     wxBitmap* pBitmap = new wxBitmap(image);
+
+    ////DBG -----------
+    //wxString sFileName = _T("ShapeGlyp2.bmp");
+    //pBitmap->SaveFile(sFileName, wxBITMAP_TYPE_BMP);
+    ////END DBG -------
 
     return pBitmap;
 }
@@ -444,7 +461,7 @@ lmUPoint lmShapeGlyp2::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 lmUPoint lmShapeGlyp2::GetObjectOrigin()
 {
 	//returns the origin of this shape
-	return m_uGlyphPos;
+	return m_uBoundsTop;    //m_uGlyphPos;
 }
 
 

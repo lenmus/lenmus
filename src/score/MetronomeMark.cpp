@@ -262,10 +262,13 @@ wxString lmMetronomeMark::SourceLDP(int nIndent)
     return sSource;
 }
 
-wxString lmMetronomeMark::SourceXML()
+wxString lmMetronomeMark::SourceXML(int nIndent)
 {
     //! @todo all
-    wxString sSource = _T("TODO: lmMetronomeMark XML Source code generation methods");
+	wxString sSource = _T("");
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+    sSource += _T("TODO: lmMetronomeMark XML Source code generation method\n");
+
     return sSource;
 }
 

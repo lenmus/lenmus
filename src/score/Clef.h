@@ -46,16 +46,12 @@ public:
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
-    wxBitmap* GetBitmap(double rScale);
-    void OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
-                         const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels);
-    lmUPoint EndDrag(const lmUPoint& uPos);
 
 
     //debugging
     wxString Dump();
     wxString SourceLDP(int nIndent);
-    wxString SourceXML();
+    wxString SourceXML(int nIndent);
 
     //rendering related methods
 	lmLUnits AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
@@ -70,7 +66,6 @@ private:
     // get fixed measures and values that depend on key type
     lmTenths GetGlyphOffset();
     lmEGlyphIndex GetGlyphIndex();
-    lmLUnits DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);
 
     //variables
     EClefType       m_nClefType;        //type of clef

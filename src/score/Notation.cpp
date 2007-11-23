@@ -91,7 +91,7 @@ wxString lmSpacer::SourceLDP(int nIndent)
 
 }
 
-wxString lmSpacer::SourceXML()
+wxString lmSpacer::SourceXML(int nIndent)
 {
     //! @todo all
     wxString sSource = _T("TODO: lmSpacer XML Source code generation methods");

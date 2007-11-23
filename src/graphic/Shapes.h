@@ -22,7 +22,7 @@
 #ifndef __LM_SHAPES_H__        //to avoid nested includes
 #define __LM_SHAPES_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "Shapes.cpp"
 #endif
 
@@ -134,7 +134,7 @@ public:
     void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
-	wxBitmap* OnBeginDrag(double rScale);
+	virtual wxBitmap* OnBeginDrag(double rScale);
     virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
     virtual void OnEndDrag(wxCommandProcessor* pCP, const lmUPoint& uPos) {};
 	lmUPoint GetObjectOrigin();

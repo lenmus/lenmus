@@ -477,7 +477,7 @@ wxString lmScore::SourceLDP(wxString sFilename)
     sSource += _T("(score\n   (vers 1.5)(language en iso-8859-1)\n");
 
     //loop for each instrument
-     lmInstrument *pInstr = GetFirstInstrument();
+    lmInstrument *pInstr = GetFirstInstrument();
     for (int i=1; i<= (int)m_cInstruments.GetCount(); i++, pInstr = GetNextInstrument())
     {
         sSource += pInstr->SourceLDP(1);
@@ -492,34 +492,46 @@ wxString lmScore::SourceLDP(wxString sFilename)
 
 wxString lmScore::SourceXML(wxString sFilename)
 {
-    wxString sSource = _T("TODO: lmScore XML Source code generation methods");
+    wxString sSource =
+		       _T("<?xml version='1.0' encoding='UTF-8' standalone='no'?>\n");
+	sSource += _T("<!DOCTYPE score-partwise PUBLIC '-//Recordare//DTD MusicXML 2.0 Partwise//EN'\n");
+	sSource += _T("   'http://www.musicxml.org/dtds/partwise.dtd'>\n");
+	sSource += _T("<score-partwise version='2.0'>\n");
 
-//    Dim i As Long, sFuente As String
-//
-//    sFuente = "<?xml version=""1.0"" standalone=""no""?>" & sCrLf & _
-//            "<!DOCTYPE score-partwise PUBLIC ""-//Recordare//DTD MusicXML 0.7 Partwise//EN"" " & _
-//            """http://www.musicxml.org/dtds/partwise.dtd"">" & sCrLf & _
-//            "<score-partwise>" & sCrLf & _
-//            "  <part-list>" & sCrLf
-////        <score-part id="P1">
-////            <part-name>Voice</part-name>
-////        </score-part>
-//
-////    sFuente = sFuente & "<Score" & sCrLf & "   (Vers 1.3)" & sCrLf & "   (NumInstrumentos " & _
-////        m_cInstruments.Count & ")" & sCrLf
-//    for (i = 1 To m_cInstruments.Count
-//        sFuente = sFuente & "    <score-part id=""P" & i & """ >" & sCrLf
-////        sFuente = sFuente & m_cInstruments.Item(i).FuenteXML
-////        sFuente = sFuente & "   )" & sCrLf
-//        sFuente = sFuente & "    </score-part>" & sCrLf
-//    }    // i
-//    sFuente = sFuente & "  </part-list>" & sCrLf
-//    for (i = 1 To m_cInstruments.Count
-//        sFuente = sFuente & "  <part id=""P" & i & """ >" & sCrLf
-//        sFuente = sFuente & m_cInstruments.Item(i).FuenteXML
-//        sFuente = sFuente & "  </part>" & sCrLf
-//    }    // i
-//    FuenteXML = sFuente & "</score-partwise>" & sCrLf
+	//part-list
+	int nIndent = 1;
+    sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+	sSource += _T("<part-list>\n");
+
+	nIndent++;
+    lmInstrument* pInstr = GetFirstInstrument();
+    for (int i=1; i<= (int)m_cInstruments.GetCount(); i++, pInstr = GetNextInstrument())
+    {
+		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+		sSource += wxString::Format(_T("<score-part id='P%d'>\n"), i);
+		sSource.append((nIndent+1) * lmXML_INDENT_STEP, _T(' '));
+		sSource += _T("<part-name>"); 
+        sSource += pInstr->GetInstrName();
+		sSource += _T("</part-name>\n"); 
+		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+		sSource += _T("</score-part>\n");
+    }
+	nIndent--;
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+	sSource += _T("</part-list>\n\n");
+
+
+	//Loop to create each instrument xml content
+    pInstr = GetFirstInstrument();
+    for (int i=1; i<= (int)m_cInstruments.GetCount(); i++, pInstr = GetNextInstrument())
+    {
+		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+		sSource += wxString::Format(_T("<part id='P%d'>\n"), i);
+        sSource += pInstr->SourceXML(nIndent+1);
+		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+		sSource += _T("</part>\n\n");
+    }
+	sSource += _T("</score-partwise>\n");
 
     //write to file, if requested
     WriteToFile(sFilename, sSource);
@@ -527,18 +539,6 @@ wxString lmScore::SourceXML(wxString sFilename)
     return sSource;
 
 }
-
-////Toca el compas nCompas (1 .. n)
-//void lmScore::PlayMeasure(nCompas As Long, fVisualTracking As Boolean, _
-//                fRecuadrarCompas As Boolean, nPlayMode As EPlayMode)
-//{
-//
-//    if (!fMIDIEnabled) return;
-//    if (m_pSoundMngr Is Nothing) { ComputeMidiEvents
-//
-//    m_pSoundMngr->PlayMeasure nCompas, fVisualTracking, fRecuadrarCompas, nPlayMode
-//
-//}
 
 void lmScore::Play(bool fVisualTracking, bool fMarcarCompasPrevio, EPlayMode nPlayMode,
                  long nMM, wxWindow* pWindow)

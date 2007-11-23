@@ -126,52 +126,16 @@ void lmScoreObj::MoveTo(lmUPoint& uPt)
     m_uPaperPos.x = uPt.x;
 }
 
-void lmScoreObj::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD, 
-                const lmUPoint& pagePosL, const lmUPoint& uDragStartPos, const lmDPoint& canvasPosD)
-{
-    /*
-     DragImage->Move() requires device units referred to canvas window. To compute the
-     desired position the following parameters are received:
-        canvasPosD:
-            Current mouse position (device units referred to canvas window). If the 
-            image movement is not constrained, this is the rigth value for DragImage->Move().
-        offsetD:
-            Offset to add when translating from logical units referred to page origin to 
-            scrolled device units referred to canvas origin. It takes also into account the 
-            offset introduced by the hotSpot point.
-        pagePosL:
-            Current mouse position (logical units referred to page origin).
-        uDragStartPos:
-            Mouse position (logical units) of the mouse point at which the dragging
-            was started.
-    */
-
-    // this is the default behaviour: just move the image to the new position
-    pDragImage->Move(canvasPosD);
-
-    // and it is equivalent to work from logical units and doing all this:
-
-//    lmUPoint nShiftVector = pagePosL - uDragStartPos;        // the displacement
-//    // as m_uGlyphPos is fixed, the displacement must be translated to paperPos
-//    lmUPoint newPaperPos = m_uPaperPos + nShiftVector;
-//    // then the shape must be drawn at:
-//    lmDPoint ptNewD;
-//    ptNewD.x = pPaper->LogicalToDeviceX(newPaperPos.x + m_uGlyphPos.x) + offsetD.x;
-//    ptNewD.y = pPaper->LogicalToDeviceY(newPaperPos.y + m_uGlyphPos.y) + offsetD.y;
-//    pDragImage->Move(ptNewD);
-
-}
-
-lmUPoint lmScoreObj::EndDrag(const lmUPoint& uPos)
-{
-    lmUPoint oldPos(m_uPaperPos + m_uGlyphPos);        // save current position for Undo command
-
-    // move object to new position
-    m_uPaperPos.x = uPos.x - m_uGlyphPos.x;
-    m_uPaperPos.y = uPos.y - m_uGlyphPos.y;
-
-    return oldPos;        //return old position
-}
+//lmUPoint lmScoreObj::EndDrag(const lmUPoint& uPos)
+//{
+//    lmUPoint oldPos(m_uPaperPos + m_uGlyphPos);        // save current position for Undo command
+//
+//    // move object to new position
+//    m_uPaperPos.x = uPos.x - m_uGlyphPos.x;
+//    m_uPaperPos.y = uPos.y - m_uGlyphPos.y;
+//
+//    return oldPos;        //return old position
+//}
 
 wxBitmap* lmScoreObj::PrepareBitMap(double rScale, const wxString sGlyph)
 {
@@ -234,7 +198,7 @@ void lmScoreObj::ShiftObject(lmLUnits uLeft)
     // update shapes' positions when the object is moved
 
     if (m_pShape2) m_pShape2->Shift(uLeft, 0.0);    //(uLeft - m_uPaperPos.x, 0.0);
-    wxLogMessage(_T("[lmScoreObj::ShiftObject] shift=%.2f, ID=%d"), uLeft, GetID());
+    //wxLogMessage(_T("[lmScoreObj::ShiftObject] shift=%.2f, ID=%d"), uLeft, GetID());
     //m_uPaperPos.x = uLeft;
 }
 

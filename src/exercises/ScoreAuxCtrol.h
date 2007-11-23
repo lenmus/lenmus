@@ -83,7 +83,7 @@ public:
     // Debug methods
     void Dump();
     void SourceLDP();
-    void SourceXML();
+    void SourceXML(int nIndent);
     void DumpMidiEvents();
 
     // info

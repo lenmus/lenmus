@@ -70,7 +70,7 @@ public:
 
     wxString    Dump();
     wxString    SourceLDP(int nIndent);
-    wxString    SourceXML();
+    wxString    SourceXML(int nIndent);
 
         //lmStaffObj
     lmScoreObj* FindSelectableObject(lmUPoint& uPt);
@@ -154,6 +154,7 @@ public:
     lmShape* GetNoteheadShape() { return m_pNoteheadShape; }
     void ShiftNoteHeadShape(lmLUnits uxShift);
 	lmEGlyphIndex GetGlyphForFlag();
+	void CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC);
 
     //other methods
     bool        UpdateContext(int nStep, int nNewAccidentals, lmContext* pNewContext);

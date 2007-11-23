@@ -112,12 +112,12 @@ public:
                         bool fHighlight = false)=0;
 	lmShape* GetShap2() { return m_pShape2; }
 
-    // methods for draggable objects
-    virtual wxBitmap* GetBitmap(double rScale) = 0;
-    virtual void OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
-                         const lmUPoint& pagePosL, const lmUPoint& uDragStartPos,
-                         const lmDPoint& canvasPosD);
-    virtual lmUPoint EndDrag(const lmUPoint& uPos);
+    //// methods for draggable objects
+    //virtual wxBitmap* GetBitmap(double rScale) = 0;
+    //virtual void OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
+    //                     const lmUPoint& pagePosL, const lmUPoint& uDragStartPos,
+    //                     const lmDPoint& canvasPosD);
+    //virtual lmUPoint EndDrag(const lmUPoint& uPos);
     virtual void MoveTo(lmUPoint& pt);
 
     // debug
@@ -248,7 +248,7 @@ public:
 
     // source code related methods
     virtual wxString SourceLDP(int nIndent) = 0;
-    virtual wxString SourceXML() = 0;
+    virtual wxString SourceXML(int nIndent) = 0;
 
     // methods related to time and duration
     float GetTimePos() { return m_rTimePos; }

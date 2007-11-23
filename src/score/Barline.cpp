@@ -170,9 +170,11 @@ wxString lmBarline::SourceLDP(int nIndent)
     return sSource;
 }
 
-wxString lmBarline::SourceXML()
+wxString lmBarline::SourceXML(int nIndent)
 {
-    wxString sSource = _T("TODO: lmBarline XML Source code generation methods");
+	wxString sSource = _T("");
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+    sSource += _T("TODO: lmBarline XML Source code generation method\n");
     return sSource;
 }
 

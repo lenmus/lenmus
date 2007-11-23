@@ -448,6 +448,15 @@ wxBitmap* lmNote::GetBitmap(double rScale)
 
 }
 
+void lmNote::CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC)
+{
+    //create the container shape and add it to the box
+    lmShapeNote* pNoteShape = new lmShapeNote(this, uxLeft, uyTop, colorC);
+	pBox->AddShape(pNoteShape);
+    m_pShape2 = pNoteShape;
+}
+
+
 void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
@@ -471,22 +480,27 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     uyTop = uyStaffTopLine - uyPitchShift;
     uxLeft = uPaperPos.x;
 
-    //create the container shape and add it to the box
-    lmShapeNote* pNoteShape = new lmShapeNote(this, uxLeft, uyTop, colorC);
-	pBox->AddShape(pNoteShape);
-    m_pShape2 = pNoteShape;
-
     //if this is the first note of a chord, give lmChord the responsibility for
 	//layouting the chord (only note heads, accidentals and rests). If it is
     //any other note of a chord, do nothing and mark the note as 'already layouted'.
     bool fNoteLayouted = false;
-    if (IsBaseOfChord()) {
-        m_pChord->LayoutNoteHeads(pNoteShape, pPaper, uPaperPos, colorC);
+    if (IsBaseOfChord())
+	{
+        m_pChord->LayoutNoteHeads(pBox, pPaper, uPaperPos, colorC);
         fNoteLayouted = true;
     }
-    else if (IsInChord()) {
+    else if (IsInChord()) 
+	{
         fNoteLayouted = true;
     }
+	else
+	{
+		//Isolated note. create the container shape and add it to the box
+		CreateContainerShape(pBox, uxLeft, uyTop, colorC);
+	}
+	lmShapeNote* pNoteShape = (lmShapeNote*)GetShap2();
+
+
 
     //if this is the first note/rest of a beam, create the beam
     //AWARE This must be done before using stem information, as the beam could
@@ -892,19 +906,30 @@ void lmNote::ShiftNoteHeadShape(lmLUnits uxShift)
 
 lmLUnits lmNote::GetAnchorPos() 
 { 
-    if (!IsInChord()) return 0.0;
+ //   if (!IsInChord())
+	//{
+	//	lmLUnits uSize = m_pShape2->GetXLeft() - m_pNoteheadShape->GetXLeft();
+	//	return (StemGoesDown() ? uSize : -uSize);
+	//}
+	//else
+	//{
 
-    //wxLogMessage(_T("[lmNote::GetAnchorPos()] notehead reversed=%s, xLeft=%.2f, xRight=%.2f, width=%.2f"),
-    //    (m_fNoteheadReversed ? _T("yes") : _T("no")), 
-    //    m_pNoteheadShape->GetXLeft(), m_pNoteheadShape->GetXRight(),
-    //    m_pNoteheadShape->GetWidth() );
+	lmLUnits uSize = m_pShape2->GetXLeft() - m_pNoteheadShape->GetXLeft();
+    return (StemGoesDown() ? uSize : -uSize);
 
-    if (m_fNoteheadReversed) {
-        lmLUnits uSize = m_pNoteheadShape->GetWidth();
-        return (StemGoesDown() ? uSize : -uSize);
-    }
-    else
-        return 0.0;
+
+    ////wxLogMessage(_T("[lmNote::GetAnchorPos()] notehead reversed=%s, xLeft=%.2f, xRight=%.2f, width=%.2f"),
+    ////    (m_fNoteheadReversed ? _T("yes") : _T("no")), 
+    ////    m_pNoteheadShape->GetXLeft(), m_pNoteheadShape->GetXRight(),
+    ////    m_pNoteheadShape->GetWidth() );
+
+    //if (!IsInChord()) return 0.0;
+    //if (m_fNoteheadReversed) {
+    //    lmLUnits uSize = m_pNoteheadShape->GetWidth();
+    //    return (StemGoesDown() ? uSize : -uSize);
+    //}
+    //else
+    //    return 0.0;
 
 }
 
@@ -1544,26 +1569,83 @@ wxString lmNote::SourceLDP(int nIndent)
     return sSource;
 }
 
-wxString lmNote::SourceXML()
+wxString lmNote::SourceXML(int nIndent)
 {
-    wxString sSource = _T("TODO: lmNote XML Source code generation methods");
-    return sSource;
-//    sPitch = GetNombreSajon(m_anPitch.ToDPitch())
-//
-//    sFuente = "            <note>" & sCrLf
-//    sFuente = sFuente & "                <pitch>" & sCrLf
-//    sFuente = sFuente & "                    <step>" & Left$(sPitch, 1) & "</step>" & sCrLf
-//    sFuente = sFuente & "                    <octave>" & Mid$(sPitch, 2) & "</octave>" & sCrLf
-//    sFuente = sFuente & "                </pitch>" & sCrLf
-//    sFuente = sFuente & "                <duration>2</duration>" & sCrLf
-//    sFuente = sFuente & "                <voice>1</voice>" & sCrLf
-//    sFuente = sFuente & "                <type>quarter</type>" & sCrLf
-//    sFuente = sFuente & "                <stem>up</stem>" & sCrLf
+	wxString sSource = _T("");
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+    sSource += _T("<note>\n");
+	nIndent++;
+
+    //pitch
+    if (IsPitchDefined())
+	{
+		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+		sSource += _T("<pitch>\n");
+		nIndent++;
+		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+		sSource += wxString::Format(_T("<step>%d</step>\n"), m_anPitch.Step() );
+		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+		sSource += wxString::Format(_T("<octave>%d</octave>\n"), m_anPitch.Octave() );
+		nIndent--;
+		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+		sSource += _T("</pitch>\n");
+    }
+
+	//TODO
+    //duration
+	//  <duration>2</duration>
+    //sSource += GetLDPNoteType();
+    //if (m_fDotted) sSource += _T(".");
+    //if (m_fDoubleDotted) sSource += _T(".");
+
+	//note type
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+	sSource += _T("<type>");
+    switch(m_nNoteType)
+	{
+        case eLonga:		sSource += _T("longa"); break;
+        case eBreve:		sSource += _T("breve"); break;
+        case eWhole:		sSource += _T("whole"); break;
+        case eHalf:			sSource += _T("half"); break;
+        case eQuarter:		sSource += _T("quarter"); break;	
+        case eEighth:		sSource += _T("eighth"); break;
+        case e16th:			sSource += _T("16th"); break;
+        case e32th:			sSource += _T("32th"); break;
+        case e64th:			sSource += _T("64th"); break;
+        case e128th:		sSource += _T("128th"); break;
+        case e256th:		sSource += _T("256th"); break;
+        default:
+            wxASSERT(false);
+            return _T("");        //compiler happy
+    }
+	sSource += _T("</type>\n");
+
+	//TODO
+	//voice
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+	sSource += _T("<<voice>1</voice>\n");
+
+	//stem
+    if (m_nStemType != eStemNone)
+	{
+		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+		sSource += _T("<stem>");
+		sSource += (m_fStemDown ? _T("down") : _T("up"));
+		sSource += _T("</stem>\n");
+    }
+
+	//TODO
 //    sFuente = sFuente & "                <notations>" & sCrLf
 //    sFuente = sFuente & "                    <slur type=""start"" number=""1""/>" & sCrLf
 //    sFuente = sFuente & "                </notations>" & sCrLf
-//    sFuente = sFuente & "            </note>" & sCrLf
-//    FuenteXML = sFuente
+
+	//close note
+	nIndent--;
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+    sSource += _T("</note>\n");
+
+    return sSource;
+
 }
 
 lmChord* lmNote::StartChord()

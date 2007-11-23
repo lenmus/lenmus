@@ -722,35 +722,103 @@ wxString lmVStaff::SourceLDP(int nIndent)
 
 }
 
-wxString lmVStaff::SourceXML()
+wxString lmVStaff::SourceXML(int nIndent)
 {
-    wxString sSource = _T("TODO: lmVStaff XML Source code generation methods");
+//    <measure number="1">
+//      <attributes>
+//        <divisions>1</divisions>
+//        <key>
+//          <fifths>0</fifths>
+//        </key>
+//        <time>
+//          <beats>4</beats>
+//          <beat-type>4</beat-type>
+//        </time>
+//        <clef>
+//          <sign>G</sign>
+//          <line>2</line>
+//        </clef>
+//      </attributes>
+//      <note>
+//        <pitch>
+//          <step>C</step>
+//          <octave>4</octave>
+//        </pitch>
+//        <duration>4</duration>
+//        <type>whole</type>
+//      </note>
+//    </measure>
 
-//    Dim oPo As IPentObj, iC As Long, sFuente As String
-//    Dim oIT As CIterador
-//
-//    Set oIT = m_cStaffObjs.CreateIterator(eTR_AsStored)
-//    iC = 1
-//    Do While oIT.QuedanItems
-//        Set oPo = oIT.GetItem
-//        //determina si empieza compas
-//        if (iC <= this.NumCompases {
-//            if (oPo.ID = m_cStaffObjs.GetFirstInMeasure(iC).ID {
-//                //si no es el primer compas cierra el precedente
-//                if (iC != 1 { sFuente = sFuente & "    </measure>" & sCrLf
-//                //inicia nuevo compas
-//                sFuente = sFuente & "    <measure number=" & iC & """>" & sCrLf
-//                iC = iC + 1
-//            }
-//        }
-//        //obtiene el fuente del staffobj
-//        sFuente = sFuente & oPo.FuenteXML & sCrLf
-//        //avanza al siguiente staffobj
-//        oIT.AdvanceCursor
-//    Loop
-//    //cierra último compas
-//    sFuente = sFuente & "    </measure>" & sCrLf
-//    FuenteXML = sFuente
+	wxString sSource = _T("");
+	bool fStartMeasure = true;
+	bool fStartAttributes = true;
+	int nMeasure = 0;
+
+    //iterate over the collection of StaffObjs
+    lmStaffObj* pSO;
+    lmStaffObjIterator* pIT = m_cStaffObjs.CreateIterator(eTR_AsStored);  //THINK: Should be eTR_ByTime?
+    while(!pIT->EndOfList())
+    {
+        pSO = pIT->GetCurrent();
+
+		if (fStartMeasure)
+		{
+			nMeasure++;
+			sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+			sSource += wxString::Format(_T("<measure number='%d'>\n"), nMeasure);
+			fStartMeasure = false;
+			nIndent++;
+		}
+
+		//check if this is the end of a measure
+		if (pSO->GetClass() == eSFOT_Barline)
+		{
+			nIndent--;
+			sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+			sSource += _T("</measure>\n");
+			fStartMeasure = true;
+		}
+
+		//check if this is a clef, tiem signature or key signature
+		else if (pSO->GetClass() == eSFOT_Clef ||
+			pSO->GetClass() == eSFOT_KeySignature ||
+			pSO->GetClass() == eSFOT_TimeSignature)
+		{
+			if (fStartAttributes)
+			{
+				sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+				sSource += _T("<attributes>\n");
+				fStartAttributes = false;
+				nIndent++;
+			}
+			//get xml source for this staffobj
+			sSource += pSO->SourceXML(nIndent);
+		}
+
+		else
+		{
+			if (!fStartAttributes)
+			{
+				nIndent--;
+				sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+				sSource += _T("</attributes>\n");
+				fStartAttributes = true;
+			}
+			//get xml source for this staffobj
+			sSource += pSO->SourceXML(nIndent);
+		}
+
+        pIT->MoveNext();
+    }
+    delete pIT;
+
+    //close last measure
+	if (!fStartMeasure)
+	{
+		nIndent--;
+		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+		sSource += _T("</measure>\n");
+	}
 
     return sSource;
 
@@ -977,17 +1045,9 @@ void lmVStaff::AddPrologShapes(lmBoxSliceVStaff* pBSV, int nMeasure, bool fDrawT
             if (pKey && pKey->IsVisible()) {
                 wxASSERT(nClef != eclvUndefined);
                 lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
-                nWidth = pKey->DrawAt(DO_MEASURE, pPaper, uPos, nClef, nStaff);
+                nWidth = pKey->AddShape(pBSV, pPaper, uPos, nClef, nStaff);
                 xPos += nWidth;
             }
-
-            //if requested (flag fDrawTimekey), render time key (only on first staff)
-            //if (fDrawTimekey And iStf = 1 {
-            //    if (Not m_oCurMetrica Is Nothing {
-            //        nTimeKey = m_oCurMetrica.Valor
-            //        pPaper->PintarMetrica fMeasuring, nTimeKey, yDesplz
-            //    }
-            //}
 
         }
 

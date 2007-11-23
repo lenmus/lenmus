@@ -45,7 +45,7 @@ public:
     void SetStemDirection(bool fStemDown);
     void AddStemShape(lmPaper* pPaper, wxColour colorC,
 					  wxFont* pFont, lmVStaff* pVStaff, int nStaff);
-    void LayoutNoteHeads(lmShapeNote* pNS, lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC);
+    void LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC);
 
 	//debug
     wxString Dump();

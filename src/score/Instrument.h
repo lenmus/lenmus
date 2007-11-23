@@ -55,11 +55,13 @@ public:
     void DrawName(lmPaper* pPaper, wxColour colorC = *wxBLACK);
     void DrawAbbreviation(lmPaper* pPaper, wxColour colorC = *wxBLACK);
 
+	wxString GetInstrName();
+
 
     //Debug methods
     wxString Dump();
     wxString SourceLDP(int nIndent);
-    wxString SourceXML();
+    wxString SourceXML(int nIndent);
 
     //MIDI configuration
     int GetMIDIChannel() { return m_nMidiChannel; }

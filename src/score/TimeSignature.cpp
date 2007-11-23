@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "TimeSignature.h"
 #endif
 
@@ -129,10 +129,14 @@ wxString lmTimeSignature::SourceLDP(int nIndent)
 
 }
 
-wxString lmTimeSignature::SourceXML()
+wxString lmTimeSignature::SourceXML(int nIndent)
 {
 	//TODO
-    return _T("");
+	wxString sSource = _T("");
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+    sSource += _T("TODO: TimeSignature\n");
+
+	return sSource;
 }
 
 void lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
@@ -166,18 +170,41 @@ void lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC
         uxPosBottom += (uWidth1 - uWidth2) / 2;
     }
 
+    //Time signature is common to all lmVStaff staves of the instrument, but the lmStaffObj
+    //representing it is only present in the first staff. Therefore, for renderization, it
+    //is necessary to repeat the shape in each staff of the instrument
+    //So in the following loop we add a time signature shape for each VStaff of the
+    //instrument
+    lmCompositeShape* pShape;
+    lmLUnits yOffset = 0;
+    lmStaff* pStaff = m_pVStaff->GetFirstStaff();
+    for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
+    {
+        // Add the shape for time signature
+        pShape = CreateShape(pBox, pPaper, colorC,
+                             sTopGlyphs, uxPosTop, uyPosTop + yOffset,
+                             sBottomGlyphs, uxPosBottom, uyPosBottom + yOffset);
+
+        //compute vertical displacement for next staff
+        yOffset += pStaff->GetHeight();
+        yOffset += pStaff->GetAfterSpace();
+    }
+
+	// set total width (incremented in one line for after space)
+	m_uWidth = pShape->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
+
+}
+
+lmCompositeShape* lmTimeSignature::CreateShape(lmBox* pBox, lmPaper* pPaper, wxColour colorC,
+                                      wxString& sTopGlyphs,
+                                      lmLUnits uxPosTop, lmLUnits uyPosTop,
+                                      wxString& sBottomGlyphs,
+                                      lmLUnits uxPosBottom, lmLUnits uyPosBottom)
+{
 	//create the shape object
-    lmCompositeShape* pShape = new lmCompositeShape(this, _T("Time signature"));
+    lmCompositeShape* pShape = new lmCompositeShape(this, _T("Time signature"), lmDRAGGABLE);
 	pBox->AddShape(pShape);
     m_pShape2 = pShape;
-
-    //pShape->Add(new lmShapeTex2(this, sTopGlyphs, GetFont(), pPaper,
-    //                            lmUPoint(uxPosTop, uyPosTop), 
-				//				_T("Beats"), lmNO_DRAGGABLE) );
-
-    //pShape->Add(new lmShapeTex2(this, sBottomGlyphs, GetFont(), pPaper,
-    //                            lmUPoint(uxPosBottom, uyPosBottom), 
-				//				_T("BeatType"), lmNO_DRAGGABLE) );
 
 	//loop to create glyphs for the top number
 	long nDigit;
@@ -207,68 +234,8 @@ void lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC
 									 _T("BeatType"), lmNO_DRAGGABLE) );
 		uxPosBottom += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
 	}
-	// set total width (incremented in one line for after space)
-	m_uWidth = pShape->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
 
-}
-
-// returns the width of the draw (logical units)
-lmLUnits lmTimeSignature::DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
-{
-    pPaper->SetFont(*m_pFont);
-
-    wxString sTopGlyphs = wxString::Format(_T("%d"), m_nBeats );
-    wxString sBottomGlyphs = wxString::Format(_T("%d"), m_nBeatType );
-
-    if (fMeasuring) {
-        lmLUnits nWidth1, nHeight1, nWidth2, nHeight2;
-        pPaper->GetTextExtent(sTopGlyphs, &nWidth1, &nHeight1);
-        pPaper->GetTextExtent(sBottomGlyphs, &nWidth2, &nHeight2);
-
-        // store selection rectangle measures and position (relative to m_uPaperPos)
-        m_uSelRect.width = wxMax(nWidth1, nWidth2);
-        m_uSelRect.height = m_pVStaff->TenthsToLogical( 40, m_nStaffNum );
-        m_uSelRect.x = m_uGlyphPos.x;
-        m_uSelRect.y = m_uGlyphPos.y + m_pVStaff->TenthsToLogical( 40, m_nStaffNum );
-
-        //compute Beats and BeatsType positions so that one is centered on the other
-        if (nWidth2 > nWidth1) {
-            //bottom number wider
-            m_xPosTop = (nWidth2 - nWidth1) / 2;
-            m_xPosBottom = 0;
-        }
-        else {
-            //bottom number wider
-            m_xPosTop = 0;
-            m_xPosBottom = (nWidth1 - nWidth2) / 2;
-        }
-
-        // set total width (incremented in one line for after space)
-        m_uWidth = m_uSelRect.width + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
-        return m_uWidth;
-    }
-    else {
-        //Time signature is common to all lmVStaff staves, but it is only present, as lmStaffObj, in
-        //the first staff. Therefore, for renderization, it is necessary to repeat it for
-        //each staff
-        //wxLogMessage(_T("[lmTimeSignature::DrawTimeSignature]"));
-        pPaper->SetTextForeground(colorC);
-        lmLUnits yOffset = 0;
-        lmStaff* pStaff = m_pVStaff->GetFirstStaff();
-        for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++) {
-            // Draw the time signature
-            lmUPoint uPos = GetGlyphPosition();
-            pPaper->DrawText(sTopGlyphs, uPos.x + m_xPosTop, uPos.y + yOffset );
-            pPaper->DrawText(sBottomGlyphs, uPos.x + m_xPosBottom,
-                            uPos.y + yOffset + m_pVStaff->TenthsToLogical( 20, nStaff ) );
-
-            //compute vertical displacement for next staff
-            yOffset += pStaff->GetHeight();
-            yOffset += pStaff->GetAfterSpace();
-        }
-        return 0;
-    }
-
+    return pShape;
 }
 
 void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime, int nMeasure)
@@ -284,55 +251,6 @@ void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime,
     //add the RhythmChange event
     pSM->StoreEvent( rTime, eSET_RhythmChange, 0, m_nBeats, 0, nBeatDuration, this, nMeasure);
 
-}
-
-//TODO Code all following methods needed for dragging and selection rectangle
-
-wxBitmap* lmTimeSignature::GetBitmap(double rScale)
-{
-    //TODO
-    return (wxBitmap*)NULL;
-}
-
-void lmTimeSignature::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
-                        const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels)
-{
-}
-
-lmUPoint lmTimeSignature::EndDrag(const lmUPoint& uPos)
-{
-    //TODO
-    return lmUPoint(0,0);
-}
-
-lmLUnits lmTimeSignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
-{
-    //TODO
-    return 0;
-}
-
-lmTenths lmTimeSignature::GetSelRectHeight()
-{
-    //TODO
-    return 0;
-}
-
-lmTenths lmTimeSignature::GetSelRectShift()
-{
-    //TODO
-    return 0;
-}
-
-lmTenths lmTimeSignature::GetGlyphOffset()
-{
-    //TODO
-    return 0;
-}
-
-wxString lmTimeSignature::GetLenMusChar()
-{
-    //TODO
-    return _T("4/4");
 }
 
 

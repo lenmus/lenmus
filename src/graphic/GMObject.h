@@ -226,6 +226,7 @@ public:
 
     virtual bool Collision(lmShape* pShape);
     virtual lmLUnits GetWidth() { return m_uBoundsBottom.x - m_uBoundsTop.x; }
+    virtual lmLUnits GetHeight() { return m_uBoundsBottom.y - m_uBoundsTop.y; }
 
     //methods related to position
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr) = 0;
@@ -300,7 +301,7 @@ class lmCompositeShape : public lmShape
 {
 public:
     lmCompositeShape(lmObject* pOwner, wxString sName = _T("CompositeShape"),
-                     lmEGMOType nType = eGMO_ShapeComposite);
+                     bool fDraggable = false, lmEGMOType nType = eGMO_ShapeComposite);
     virtual ~lmCompositeShape();
 
     //dealing with components
@@ -315,6 +316,12 @@ public:
 	//overrides
     bool ContainsPoint(lmUPoint& pointL);
     bool Collision(lmShape* pShape);
+
+    //dragging
+    virtual wxBitmap* OnBeginDrag(double rScale);
+    virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
+    virtual void OnEndDrag(wxCommandProcessor* pCP, const lmUPoint& uPos) {};
+
 
 
 protected:

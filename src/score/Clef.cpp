@@ -53,18 +53,6 @@ lmClef::lmClef(EClefType nClefType, lmVStaff* pStaff, int nNumStaff, bool fVisib
     m_fHidden = false;
 }
 
-// Create the drag image.
-// Under wxGTK the DC logical function (ROP) is used by DrawText() but it is ignored by
-// wxMSW. Thus, it is not posible to do dragging just by redrawing the lmStaffObj using ROPs.
-// For portability it is necessary to implement dragging by means of bitmaps and wxDragImage
-wxBitmap* lmClef::GetBitmap(double rScale)
-{
-    lmEGlyphIndex nGlyph = GetGlyphIndex();
-    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
-    return PrepareBitMap(rScale, sGlyph);
-
-}
-
 //--------------------------------------------------------------------------------------
 // get fixed measures and values that depend on key type
 //--------------------------------------------------------------------------------------
@@ -143,81 +131,25 @@ void lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 
 }
 
-// returns the width of the draw (logical units)
-lmLUnits lmClef::DrawClef(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
-{
-    //pPaper->SetFont(*m_pFont);
-
-    //lmEGlyphIndex nGlyph = GetGlyphIndex();
-    //wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
-    //if (fMeasuring) {
-    //    lmLUnits width, height;
-    //    pPaper->GetTextExtent(sGlyph, &width, &height);
-    //    return width;
-    //} else {
-    //    //wxLogMessage(_T("[lmClef::DrawClef]"));
-    //    lmUPoint uPos = GetGlyphPosition();
-    //    pPaper->SetTextForeground(colorC);
-    //    pPaper->DrawText(sGlyph, uPos.x, uPos.y );
-    //    return 0;
-    //}
-    return 0;
-}
-
 lmLUnits lmClef::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
 					  wxColour colorC)
 {
     // This method is, primarely, to be used when rendering the prolog
     // Returns the width of the draw
 
-    //lmEGlyphIndex nGlyph = GetGlyphIndex();
-    //wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
-    //pPaper->SetFont(*m_pFont);
-    //pPaper->SetTextForeground(colorC);
-    //pPaper->DrawText(sGlyph, uPos.x, uPos.y + m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum ) );
-	
-	
-	// get the shift to the staff on which the clef must be drawn
+
+    // get the shift to the staff on which the clef must be drawn
 	lmLUnits yPos = uPos.y;	//pPaper->GetCursorY() + m_pVStaff->GetStaffOffset(m_nStaffNum);
     yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
 
     //create the shape object
-    lmShapeGlyp2* pShape = new lmShapeGlyp2(this, GetGlyphIndex(), GetFont(), pPaper,
-                                            lmUPoint(uPos.x, yPos), _T("Clef"));
+    //lmShapeGlyp2* pShape = new lmShapeGlyp2(this, GetGlyphIndex(), GetFont(), pPaper,
+    //                                        lmUPoint(uPos.x, yPos), _T("Clef"));
+    lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetFont(), pPaper,
+                                            lmUPoint(uPos.x, yPos), 
+											_T("Clef"), lmDRAGGABLE);
 	pBox->AddShape(pShape);
     return m_uWidth;
-}
-
-void lmClef::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
-                         const lmUPoint& pagePosL, const lmUPoint& uDragStartPos, const lmDPoint& canvasPosD)
-{
-    //// DragImage->Move() requires device units referred to canvas window. To compute the
-    //// desired position the following coordinates are received:
-    //// - canvasPosD - current mouse position (device units referred to canvas window). If the
-    ////        image movement is not constrained, this is the rigth value for DragImage->Move(). See
-    ////        default method in StaffObj.h
-    //// - offsetD - offset to add when translating from logical units referred to page origin to
-    ////        scrolled device units referred to canvas origin. It takes also into account the
-    ////        offset introduced by the hotSpot point.
-    //// - pagePosL - current mouse position (logical units referred to page origin).
-
-    ////pDragImage->Move(canvasPosD);
-
-    //// A clef only can be moved horizonatlly
-    //lmDPoint ptNew = canvasPosD;
-    //ptNew.y = pPaper->LogicalToDeviceY(m_uPaperPos.y + m_uGlyphPos.y) + offsetD.y;
-    //pDragImage->Move(ptNew);
-
-}
-
-lmUPoint lmClef::EndDrag(const lmUPoint& uPos)
-{
-    lmUPoint oldPos(m_uPaperPos + m_uGlyphPos);
-
-    //Only X uPos. can be changed
-    m_uPaperPos.x = uPos.x - m_uGlyphPos.x;
-
-    return lmUPoint(oldPos);
 }
 
 wxString lmClef::Dump()
@@ -248,9 +180,11 @@ wxString lmClef::SourceLDP(int nIndent)
     return sSource;
 }
 
-wxString lmClef::SourceXML()
+wxString lmClef::SourceXML(int nIndent)
 {
-    wxString sSource = _T("TODO: lmClef XML Source code generation methods");
+	wxString sSource = _T("");
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+    sSource += _T("TODO: lmClef XML Source code generation method\n");
     return sSource;
 }
 

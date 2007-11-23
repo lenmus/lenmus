@@ -974,7 +974,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         lmScoreDocument* doc = (lmScoreDocument*)GetDocument();
         wxCommandProcessor* pCP = doc->GetCommandProcessor();
         //pCP->Submit(new lmScoreCommandMove(_T("Move object"), doc, m_pSoDrag, finalPos));
-		lmUPoint finalPos = m_pGMODrag->GetObjectOrigin() + pageNPosL - m_uHotSpotShift;
+		lmUPoint finalPos = pageNPosL - m_uHotSpotShift + m_pGMODrag->GetObjectOrigin();
 		//m_pCanvas->MoveObject(m_pSoDrag, finalPos);
 		m_pGMODrag->OnEndDrag(pCP, finalPos);
 

@@ -280,7 +280,7 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
         }
         iNext = i;       //save start index for next cicle of main loop
         ///*dbg*/    wxLogMessage(wxString::Format(
-        //            _T("[lmTimeposTable::ArrangeStaffobjsByTime] uMinStartPos=%d "),
+        //            _T("[lmTimeposTable::ArrangeStaffobjsByTime] uMinStartPos=%.2f "),
         //            uMinStartPos ));
 
         //loop to compute the shift to apply in order to align left positions, and
@@ -298,7 +298,7 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
             i++;
         }
         ///*dbg*/    wxLogMessage(wxString::Format(
-        //            _T("[lmTimeposTable::ArrangeStaffobjsByTime] uMaxAnchorCur=%d "),
+        //            _T("[lmTimeposTable::ArrangeStaffobjsByTime] uMaxAnchorCur=%.2f "),
         //            uMaxAnchorCur ));
 
         //loop to compute the final shift to apply in order to align by anchor positions
@@ -328,7 +328,7 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
 
             //process this entry at TimePos table
         ///*dbg*/    wxLogMessage(wxString::Format(
-        //            _T("[lmTimeposTable::ArrangeStaffobjsByTime] applying shift (%d) to entry %d. rTime=%.2f "),
+        //            _T("[lmTimeposTable::ArrangeStaffobjsByTime] applying shift (%.2f) to entry %.2f. rTime=%.2f "),
         //            uShift, i, pTAE->rTimePos ));
             pTPE = m_aTimePos[iItem];
             pTPE->m_xFinal += uShift;
@@ -364,7 +364,7 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
         //if trace requested dump tables to log
         if (fTrace) {
             wxLogMessage( wxString::Format(
-                _T("TimepoTable: arrange loop. iFirst=%d, uMaxFinalCur=%d"),
+                _T("TimepoTable: arrange loop. iFirst=%d, uMaxFinalCur=%.2f"),
                 iFirst, uMaxFinalCur) );
             wxLogMessage(_T("***************************************\n"));
             wxLogMessage( DumpTimeposTable() );
@@ -380,19 +380,19 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
     //return the measure column size
     lmTimeposEntry* pEnd = m_aTimePos[m_aTimePos.GetCount() - 1];
     lmTimeposEntry* pStart = m_aTimePos[0];
-    lmLUnits nColumnSize = pEnd->m_xFinal - pStart->m_xLeft;
+    lmLUnits uColumnSize = pEnd->m_xFinal - pStart->m_xLeft;
 
     //if trace requested dump tables to log
     if (fTrace) {
         wxLogMessage( wxString::Format(
-            _T("TimepoTable: After arranging. MeasureWidth=%d"),
-            nColumnSize) );
+            _T("TimepoTable: After arranging. MeasureWidth=%.2f"),
+            uColumnSize) );
         wxLogMessage(_T("***************************************\n"));
         wxLogMessage( DumpTimeposTable() );
         wxLogMessage( DumpTimeauxTable() );
     }
 
-    return nColumnSize;
+    return uColumnSize;
 
 }
 

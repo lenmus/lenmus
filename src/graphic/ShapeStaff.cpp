@@ -54,7 +54,7 @@ lmShapeStaff::lmShapeStaff(lmStaff* pStaff, int nNumLines, lmLUnits uLineWidth,
 	SetXLeft(xLeft);
 	SetYTop(yTop);
 	SetXRight(xRight);
-	SetYBottom(yTop + nNumLines * uLineWidth + (nNumLines - 1) * uSpacing);
+	SetYBottom(yTop + (nNumLines - 1) * uSpacing + uLineWidth);
 
 }
 

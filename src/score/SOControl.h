@@ -50,7 +50,7 @@ public:
     //    debugging
     wxString Dump();
     wxString SourceLDP(int nIndent);
-    wxString SourceXML();
+    wxString SourceXML(int nIndent);
 
 
 private:

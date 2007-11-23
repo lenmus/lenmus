@@ -135,10 +135,12 @@ wxString lmWordsDirection::SourceLDP(int nIndent)
 
 }
 
-wxString lmWordsDirection::SourceXML()
+wxString lmWordsDirection::SourceXML(int nIndent)
 {
     //! @todo all
-    wxString sSource = _T("TODO: lmWordsDirection XML Source code generation methods");
+	wxString sSource = _T("");
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+    sSource += _T("TODO: lmWordsDirection XML Source code generation method\n");
     return sSource;
 
 ////    <direction placement="above">

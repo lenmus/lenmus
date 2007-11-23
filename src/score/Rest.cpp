@@ -99,17 +99,86 @@ lmEGlyphIndex lmRest::GetGlyphIndex()
 // implementation of virtual methods defined in base abstract class lmNoteRest
 //====================================================================================================
 
-wxBitmap* lmRest::GetBitmap(double rScale)
-{
-    // Create the drag image.
-    lmEGlyphIndex nGlyph = GetGlyphIndex();
-    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
-    return PrepareBitMap(rScale, sGlyph);
-
-}
-
 void lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
+    // This method is invoked by the base class (lmStaffObj). It is responsible for
+    // creating the shape object and adding it to the graphical model. 
+    // Paper cursor must be used as the base for positioning.
+
+    //get paper reference point
+    lmUPoint uPaperPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+
+    // move to right staff
+    lmLUnits uyTop = uPaperPos.y + GetStaffOffset();
+    lmLUnits uxLeft = uPaperPos.x;
+
+    // prepare DC
+    pPaper->SetFont(*m_pFont);
+
+    //create the container shape and add it to the box
+    lmCompositeShape* pRestShape = new lmCompositeShape(this, _T("Rest"), lmDRAGGABLE);
+	pBox->AddShape(pRestShape);
+    m_pShape2 = pRestShape;
+
+    ////if this is the first note/rest of a beam, create the beam
+    ////AWARE This must be done before using stem information, as the beam could
+    ////change stem direction if it is not determined for some/all the notes in the beam
+    //if (m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
+    //    m_pBeam->CreateShape();
+    //}
+
+    // create shape for the rest symbol
+    lmEGlyphIndex nGlyph = GetGlyphIndex();
+    lmLUnits yPos = uyTop + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
+    lmShapeGlyp2* pShape = new lmShapeGlyp2(this, nGlyph, GetFont(), pPaper,
+                                            lmUPoint(uxLeft, yPos), _T("Rest"));
+	pRestShape->Add(pShape);
+    uxLeft += pShape->GetWidth();
+
+    //create shapes for dots if necessary
+    //------------------------------------------------------------
+    if (m_fDotted || m_fDoubleDotted)
+	{
+        //! @todo user selectable
+        lmLUnits uSpaceBeforeDot = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
+        uxLeft += uSpaceBeforeDot;
+        lmLUnits uyPos = uyTop;
+        uxLeft += AddDotShape(pRestShape, pPaper, uxLeft, uyPos, colorC);
+        if (m_fDoubleDotted) {
+            uxLeft += uSpaceBeforeDot;
+            uxLeft += AddDotShape(pRestShape, pPaper, uxLeft, uyPos, colorC);
+        }
+    }
+
+	//Add the shape for associated notations -------------------------
+    if (m_pNotations) {
+        lmNoteRestObj* pNRO;
+        wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
+        for (; pNode; pNode = pNode->GetNext() ) {
+            pNRO = (lmNoteRestObj*)pNode->GetData();
+            lmLUnits uxPos = 0;
+            lmLUnits uyPos = 0;
+            switch(pNRO->GetSymbolType()) {
+                case eST_Fermata:
+                    // set position (relative to paperPos)
+                    uxPos = m_pShape2->GetXLeft() + m_pShape2->GetWidth() / 2.0;
+                    uyPos = uyTop - uPaperPos.y;
+                    pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
+                    pNRO->UpdateMeasurements();
+                    break;
+                default:
+                    wxASSERT(false);
+            }
+        }
+    }
+
+
+
+    //====================================================================================================
+    //====================================================================================================
+    //====================================================================================================
+    //====================================================================================================
+    //====================================================================================================
     ///*
     //This method is invoked by the base class (lmStaffObj). When reaching this point 
     //paper cursor variable (m_uPaperPos) has been updated. This value must be used
@@ -293,9 +362,12 @@ wxString lmRest::SourceLDP(int nIndent)
     return sSource;
 }
 
-wxString lmRest::SourceXML()
+wxString lmRest::SourceXML(int nIndent)
 {
-    wxString sSource = _T("TODO: lmRest XML Source code generation methods");
+	wxString sSource = _T("");
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+    sSource += _T("TODO: lmRest XML Source code generation method\n");
+
     return sSource;
 //    sPitch = GetNombreSajon(m_nPitch)
 //    
@@ -338,20 +410,5 @@ lmScoreObj* lmRest::FindSelectableObject(lmUPoint& pt)
     // Not found
     return (lmScoreObj*)NULL;    //none found
 
-}
-
-//====================================================================================================
-// implementation of virtual methods defined in base class lmStaffObj
-//====================================================================================================
-
-void lmRest::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
-            const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels)
-{
-    lmScoreObj::OnDrag(pPaper, pDragImage, ptOffset, ptLog, uDragStartPos, ptPixels);
-}
-
-lmUPoint lmRest::EndDrag(const lmUPoint& uPos)
-{
-    return lmScoreObj::EndDrag(uPos);
 }
 

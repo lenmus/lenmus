@@ -298,7 +298,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //!     It is necesary to compute each system height
             lmLUnits yNew = pPaper->GetCursorY() + nSystemHeight;
             if (yNew > pPaper->GetMaximumY() ) {
-                //wxLogMessage(_T("Page break needed. yCur=%d, yNew=%d, MaximumY=%d"), pPaper->GetCursorY(), yNew, pPaper->GetMaximumY());
+                //wxLogMessage(_T("Page break needed. yCur=%.2f, yNew=%.2f, MaximumY=%.2f"), pPaper->GetCursorY(), yNew, pPaper->GetMaximumY());
                 pPaper->RestartPageCursors();       //restore page cursors are at top-left corner
                 //start a new page
                 pBoxPage = pBoxScore->AddPage();
@@ -328,12 +328,12 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 
             //size this measure column create BoxSlice (and BoxSlice hierarchy) for 
             //the measure being processed
-            m_nMeasureSize[nRelMeasure] =
+            m_uMeasureSize[nRelMeasure] =
                 SizeMeasureColumn(nAbsMeasure, nRelMeasure, nSystem, pBoxSystem, pPaper, &fNewSystem);
 
             #if defined(__WXDEBUG__)
             g_pLogger->LogTrace(_T("Formatter4.Step1"),
-                _T("m_nMeasureSize[%d] = %d"), nRelMeasure, m_nMeasureSize[nRelMeasure] );
+                _T("m_uMeasureSize[%d] = %.2f"), nRelMeasure, m_uMeasureSize[nRelMeasure] );
             #endif
 
             //if this is the first measure column compute the space available in
@@ -343,28 +343,28 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //left position of the first measure column has taken all this into account,
             //it is posible to use that value by just doing:
             if (nRelMeasure == 1) {
-                m_nFreeSpace =
+                m_uFreeSpace =
                     pPaper->GetRightMarginXPos() - m_oTimepos[nRelMeasure].GetStartOfBarPosition();
             }
 
             #if defined(__WXDEBUG__)
             g_pLogger->LogTrace(_T("Formatter4.Step1"),
-                _T("m_nFreeSpace = %d, PageRightMargin=%d, StartOfBar=%d"),
-                m_nFreeSpace, pPaper->GetPageRightMargin(),
+                _T("RelMeasure=%d, m_uFreeSpace = %.2f, PaperRightMarginXPos=%.2f, StartOfBar=%.2f"),
+                nRelMeasure, m_uFreeSpace, pPaper->GetRightMarginXPos(), 
                 m_oTimepos[nRelMeasure].GetStartOfBarPosition() );
             g_pLogger->LogTrace(_T("Formatter4.Step1"),
                 m_oTimepos[nRelMeasure].DumpTimeposTable());
             #endif
 
             //substract space ocupied by this measure from space available in the system
-            if (m_nFreeSpace < m_nMeasureSize[nRelMeasure]) {
+            if (m_uFreeSpace < m_uMeasureSize[nRelMeasure]) {
                 //there is no enough space for this measure column.
                 //exit the loop. The system is finished
                 break;
             } else {
                 //there is enough space for this measure column. Add it to current system and
                 //discount the space that the measure will take
-                m_nFreeSpace -= m_nMeasureSize[nRelMeasure];
+                m_uFreeSpace -= m_uMeasureSize[nRelMeasure];
                 m_nMeasuresInSystem++;
             }
 
@@ -388,14 +388,14 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         //and some data is stored in the following global variables:
         //
         //   m_oTimepos[1..MaxBar] - positioning information for measure columns
-        //   m_nFreeSpace - free space available on this system
-        //   m_nMeasureSize[1..MaxBar] - stores the minimum size for each measure column for
+        //   m_uFreeSpace - free space available on this system
+        //   m_uMeasureSize[1..MaxBar] - stores the minimum size for each measure column for
         //           the current system.
         //   m_nMeasuresInSystem  - the number of measures that fit in this system
         //
         //Now we preceed to re-distribute the remaining free space across all measures, so that
         //the system is justified. This step only computes the new measure column sizes and stores
-        //them in table m_nMeasureSize[1..MaxBar] but changes nothing in the StaffObjs
+        //them in table m_uMeasureSize[1..MaxBar] but changes nothing in the StaffObjs
         //-------------------------------------------------------------------------------
         if (m_nMeasuresInSystem == 0) {
             //The line width is not enough for drawing just one bar!!!
@@ -419,7 +419,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             wxLogMessage(_T("***************************************\n"));
             for (int i = 1; i <= m_nMeasuresInSystem; i++) {
                 wxLogMessage(wxString::Format(
-                    _T("Bar column %d. Size = %d"), i, m_nMeasureSize[i]));
+                    _T("Bar column %d. Size = %.2f"), i, m_uMeasureSize[i]));
             }
         }
         //dbg ---------------
@@ -429,7 +429,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //between all bars, except if this is the last bar and options flag
             //"StopStaffLinesAtFinalBar" is set.
             if (!(fThisIsLastSystem && fStopStaffLinesAtFinalBarline))
-                RedistributeFreeSpace(m_nFreeSpace);
+                RedistributeFreeSpace(m_uFreeSpace);
         }
 
         //dbg --------------
@@ -438,7 +438,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             wxLogMessage(_T("***************************************\n"));
             for (int i = 1; i <= m_nMeasuresInSystem; i++) {
                 wxLogMessage(wxString::Format(
-                    _T("Bar column %d. Size = %d"), i, m_nMeasureSize[i]));
+                    _T("Bar column %d. Size = %.2f"), i, m_uMeasureSize[i]));
             }
         }
         //dbg --------------
@@ -448,7 +448,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         //-------------------------------------------------------------------------------
         //Step 3: Re-position StaffObjs.
         //-------------------------------------------------------------------------------
-        //when reaching this point the table m_nMeasureSize[i] stores the final size that
+        //when reaching this point the table m_uMeasureSize[i] stores the final size that
         //must have each measure column of this system.
         //Now proceed to change StaffObjs locations so that they are evenly distributed across
         //the the bar.
@@ -463,8 +463,8 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 
         xStartOfMeasure = m_oTimepos[1].GetStartOfBarPosition();
         for (int i=1; i <= m_nMeasuresInSystem; i++) {
-            //GrabarTrace "RedistributeSpace: nNewSize = " & m_nMeasureSize(i) & ", newStart = " & xStartOfMeasure    //dbg
-            xStartOfMeasure = m_oTimepos[i].RedistributeSpace(m_nMeasureSize[i], xStartOfMeasure);
+            //GrabarTrace "RedistributeSpace: nNewSize = " & m_uMeasureSize(i) & ", newStart = " & xStartOfMeasure    //dbg
+            xStartOfMeasure = m_oTimepos[i].RedistributeSpace(m_uMeasureSize[i], xStartOfMeasure);
         }
 
         //dbg ------------------------------------------------------------------------------
@@ -521,7 +521,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         for (int iRel=1; iRel <= m_nMeasuresInSystem; iRel++)
         {
             lmLUnits xStart = xEnd;
-            xEnd = xStart + m_nMeasureSize[iRel];
+            xEnd = xStart + m_uMeasureSize[iRel];
             lmBoxSlice* pBoxSlice = pBoxSystem->GetSlice(iRel);
 			pBoxSlice->UpdateXLeft(xStart);
 			pBoxSlice->UpdateXRight(xEnd);
@@ -530,7 +530,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         // compute system height
         if (nSystem == 1) {
             nSystemHeight = pPaper->GetCursorY() - ySystemPos;
-            //wxLogMessage(_T("[lmFormatter4::RenderJustified] nSystemHeight = %d"),
+            //wxLogMessage(_T("[lmFormatter4::RenderJustified] nSystemHeight = %.2f"),
             //    nSystemHeight );
         }
 
@@ -805,12 +805,12 @@ void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable)
     //space is distributed.
     //
     //on entering in this function:
-    // - the table m_nMeasureSize() stores the minimum size for each measure column for the
+    // - the table m_uMeasureSize() stores the minimum size for each measure column for the
     //   current system.
     // - nAvailable stores the free space remaining at the end of this system
     //
     //on exit:
-    // - the values stored in table m_nMeasureSize() are modified to reflect the new size
+    // - the values stored in table m_uMeasureSize() are modified to reflect the new size
     //   for the bar columns, so that the line get justified.
 
     //-------------------------------------------------------------------------------------
@@ -822,7 +822,7 @@ void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable)
     //compute average measure column size
     lmLUnits nAverage = 0;
     for (int i = 1; i <= m_nMeasuresInSystem; i++) {
-        nAverage += m_nMeasureSize[i];
+        nAverage += m_uMeasureSize[i];
     }
     nAverage /= m_nMeasuresInSystem;
 
@@ -833,7 +833,7 @@ void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable)
         //sum up all the diferences in nDifTotal
         nDifTotal = 0;
         for (int i = 1; i <= m_nMeasuresInSystem; i++) {
-            nDif[i] = nAverage - m_nMeasureSize[i];
+            nDif[i] = nAverage - m_uMeasureSize[i];
             if (nDif[i] > 0) { nDifTotal += nDif[i]; }
         }
 
@@ -852,7 +852,7 @@ void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable)
         //The size of all measure columns whose size is lower than the average
         //is going to be increased by the amount stated in the differences table
         for (int i = 1; i <= m_nMeasuresInSystem; i++) {
-            if (nDif[i] > 0) { m_nMeasureSize[i] += nDif[i]; }
+            if (nDif[i] > 0) { m_uMeasureSize[i] += nDif[i]; }
         }
         nAvailable -= nDifTotal;
 
@@ -860,7 +860,7 @@ void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable)
         nMeanPrev = nAverage;
         nAverage = 0;
         for (int i = 1; i <= m_nMeasuresInSystem; i++) {
-            nAverage += m_nMeasureSize[i];
+            nAverage += m_uMeasureSize[i];
         }
         nAverage /= m_nMeasuresInSystem;
     }
@@ -869,10 +869,10 @@ void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable)
     if (nAvailable > 0) {
         nDifTotal = nAvailable / m_nMeasuresInSystem;
         for (int i = 1; i <= m_nMeasuresInSystem; i++) {
-            m_nMeasureSize[i] += nDifTotal;
+            m_uMeasureSize[i] += nDifTotal;
             nAvailable -= nDifTotal;
         }
-        m_nMeasureSize[m_nMeasuresInSystem] += nAvailable;
+        m_uMeasureSize[m_nMeasuresInSystem] += nAvailable;
     }
 
 }
@@ -1062,7 +1062,7 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
                 //store its final and anchor x positions
             oTimepos.SetCurXFinal(pPaper->GetCursorX());
             oTimepos.SetCurXAnchor(oTimepos.GetCurXLeft() + pSO->GetAnchorPos());
-            wxLogMessage(_T("[lmFormatter4::SizeMeasure] anchor pos = %.2f, ID=%d"), pSO->GetAnchorPos(), pSO->GetID() ); 
+            //wxLogMessage(_T("[lmFormatter4::SizeMeasure] anchor pos = %.2f, ID=%d"), pSO->GetAnchorPos(), pSO->GetID() ); 
             // add after space
             if (pSO->GetClass() == eSFOT_NoteRest) {
                 lmTenths rSpace;

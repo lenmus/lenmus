@@ -19,10 +19,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __TIMESIGNATURE_H__        //to avoid nested includes
-#define __TIMESIGNATURE_H__
+#ifndef __LM_TIMESIGNATURE_H__        //to avoid nested includes
+#define __LM_TIMESIGNATURE_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "TimeSignature.cpp"
 #endif
 
@@ -53,19 +53,12 @@ public:
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
-    wxBitmap* GetBitmap(double rScale);
-    void OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
-                         const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels);
-    lmUPoint EndDrag(const lmUPoint& uPos);
 
 
     //    debugging
     wxString Dump();
     wxString SourceLDP(int nIndent);
-    wxString SourceXML();
-
-    //rendering related methods
-    lmLUnits DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, wxColour colorC = *wxBLACK);
+    wxString SourceXML(int nIndent);
 
     //sound related methods
     void AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime, int nMeasure);
@@ -75,14 +68,13 @@ public:
     int GetBeatType() { return m_nBeatType; }
 
 private:
-    // get fixed measures and values that depend on lmTimeSignature type
-    lmTenths GetSelRectHeight();
-    lmTenths GetSelRectShift();
-    lmTenths GetGlyphOffset();
-    wxString GetLenMusChar();
-    lmLUnits DrawTimeSignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);
+    lmCompositeShape* CreateShape(lmBox* pBox, lmPaper* pPaper, wxColour colorC,
+                                  wxString& sTopGlyphs,
+                                  lmLUnits uxPosTop, lmLUnits uyPosTop,
+                                  wxString& sBottomGlyphs,
+                                  lmLUnits uxPosBottom, lmLUnits uyPosBottom);
 
-        // member variables
+    // member variables
 
     // attributes
     ETimeSignatureType    m_nType;
@@ -98,8 +90,6 @@ private:
 
     int         m_nBeats;
     int         m_nBeatType;
-    lmLUnits    m_xPosTop;      //x position for Beats or single char (i.e. common time)
-    lmLUnits    m_xPosBottom;   //x position for BeatsType
 
 };
 
@@ -119,5 +109,5 @@ extern int AssignVolume(float rTimePos, int nBeats, int nBeatType);
 extern int GetNoteBeatPosition(float rTimePos, int nBeats, int nBeatType);
 extern int GetChordPosition(float rTimePos, float rDuration, int nBeats, int nBeatType);
 
-#endif    // __TIMESIGNATURE_H__
+#endif    // __LM_TIMESIGNATURE_H__
 

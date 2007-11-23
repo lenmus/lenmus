@@ -154,6 +154,7 @@ extern lmLocation g_tDefaultPos;          // defined in NoteRestObj.cpp
 #define NO_MARCAR_COMPAS_PREVIO     false
 
 #define lmLDP_INDENT_STEP   3       //indent step for Source LDP generation
+#define lmXML_INDENT_STEP   3       //indent step for MusicXML generation
 
 // forward declarations
 class lmPaper;

@@ -43,15 +43,11 @@ public:
 
     //implementation of virtual methods of base classes
         // lmStaffObj
-    wxBitmap*   GetBitmap(double rScale);
     void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
-    void        OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
-                            const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels);
-    lmUPoint    EndDrag(const lmUPoint& uPos);
 
     wxString    Dump();
     wxString    SourceLDP(int nIndent);
-    wxString    SourceXML();
+    wxString    SourceXML(int nIndent);
 
         //lmStaffObj
     lmScoreObj* FindSelectableObject(lmUPoint& pt);

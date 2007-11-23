@@ -1,0 +1,15 @@
+Fonts: how to define the glyph's table
+-----------------------------------------
+
+Using Font-Creator:
+
+- Open the font
+
+- Check the transformation window (menu > view > toolbars > transformation)
+
+- Select the glyph (double click on it). This wil open a window withe glyph enlarged and a auxiliary window with measurements.
+
+- Click on the glyph to select a shape (or more) so that the glyph outline is selected
+
+- Select tabs 'Position' and 'size' and take note of the values.
+

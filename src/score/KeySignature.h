@@ -45,19 +45,15 @@ public:
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
-    wxBitmap* GetBitmap(double rScale);
-    void OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
-                         const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels);
-    lmUPoint EndDrag(const lmUPoint& uPos);
 
 
     //    debugging
     wxString Dump();
     wxString SourceLDP(int nIndent);
-    wxString SourceXML();
+    wxString SourceXML(int nIndent);
 
     //rendering related methods
-    lmLUnits DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, EClefType nClef,
+	lmLUnits AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, EClefType nClef,
                     int nStaff, wxColour colorC = *wxBLACK);
 
     //methods for hiding the key in prologs
@@ -66,15 +62,14 @@ public:
 
 
 private:
+    lmCompositeShape* CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
+					              EClefType nClef, wxColour colorC, lmStaff* pStaff);
+    lmShape* AddAccidental(bool fSharp, lmPaper* pPaper, lmUPoint uPos,
+					       wxColour colorC, lmStaff* pStaff);
+
     void SetKeySignatureType();
-    lmLUnits DrawAccidental(bool fMeasuring, lmPaper* pPaper, EAccidentals nAlter,
-                    lmLUnits uxLeft, lmLUnits uyTop, int nStaff);
 
-    // get fixed measures and values that depend on lmKeySignature type
-    lmLUnits DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK);
-
-        // member variables
-
+    // member variables
     bool              m_fHidden;          //to hide it in system prolog
     bool              m_fTraditional;     //it's a traditional signature. Encoded by the
                                           // redundant enumaeration and fifths/mode pair

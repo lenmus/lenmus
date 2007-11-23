@@ -69,8 +69,8 @@ private:
 
     //auxiliary data for computing and justifying systems.
     lmTimeposTable  m_oTimepos[MAX_MEASURES_PER_SYSTEM+1];      //timepos table for current measure column
-    lmLUnits        m_nFreeSpace;                               //free space available on current system
-    lmLUnits        m_nMeasureSize[MAX_STAVES_PER_SYSTEM+1];    //size of all measure columns of current system
+    lmLUnits        m_uFreeSpace;                               //free space available on current system
+    lmLUnits        m_uMeasureSize[MAX_STAVES_PER_SYSTEM+1];    //size of all measure columns of current system
     int             m_nMeasuresInSystem;                        //the number of measures in current system
 
     // renderization options and parameters

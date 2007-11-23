@@ -75,10 +75,11 @@ public:
     //    debugging
     wxString Dump();
     wxString SourceLDP(int nIndent);
-    wxString SourceXML();
+    wxString SourceXML(int nIndent);
 
     //specific method of this object
     void SetText(wxString text) { m_sText = text; }
+	wxString GetText() {return m_sText; }
     lmEAlignment GetAlignment() { return m_nAlignment; }
     lmLocation GetLocation() { return m_tPos; }
 

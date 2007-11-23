@@ -100,7 +100,7 @@ wxString lmSOControl::Dump()
     return sDump;
 }
 
-wxString lmSOControl::SourceXML()
+wxString lmSOControl::SourceXML(int nIndent)
 {
     //! @todo generate MusicXML source
     return _T("TODO: lmSOControl source XML generation method");

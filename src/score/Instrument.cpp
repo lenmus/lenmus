@@ -19,13 +19,12 @@
 //
 //-------------------------------------------------------------------------------------
 
-/*! class lmInstrument    A collection of Staves
+// lmInstrument    A collection of Staves
+//
+// An lmInstrument is a collection of Staves. Usually only one staff or two staves
+// (piano grand staff) but could be any other number.
 
-    An lmInstrument is a collection of Staves. Usually only one staff or two staves
-    (piano grand staff) but could be any other number.
-
-*/
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "Instrument.h"
 #endif
 
@@ -200,11 +199,25 @@ wxString lmInstrument::SourceLDP(int nIndent)
 
 }
 
-wxString lmInstrument::SourceXML()
+wxString lmInstrument::SourceXML(int nIndent)
 {
-    wxString sSource = _T("TODO: lmInstrument XML Source code generation methods");
-    return sSource;
 
+	//THINK:
+	//MusicXML can not deal with more than one VStaff so I will export only
+	//the first VStaff
+    wxVStavesListNode *pNode = m_cStaves.GetFirst();
+    lmVStaff* pVStaff = (lmVStaff*) pNode->GetData();
+	return pVStaff->SourceXML(nIndent);
+
+}
+
+wxString lmInstrument::GetInstrName()
+{
+    if (m_pName)
+		return m_pName->GetText();
+
+	wxString sName = _T("");
+	return sName;
 }
 
 void lmInstrument::MeasureNames(lmPaper* pPaper)

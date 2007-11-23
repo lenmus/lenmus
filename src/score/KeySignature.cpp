@@ -134,212 +134,139 @@ wxString lmKeySignature::SourceLDP(int nIndent)
 
 }
 
-wxString lmKeySignature::SourceXML()
+wxString lmKeySignature::SourceXML(int nIndent)
 {
-//    IPentObj_FuenteXML = sEmpty
-    return _T("");
+    //TODO
+	wxString sSource = _T("");
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+    sSource += _T("TODO: lmKeySignature::SourceXML\n");
+
+	return sSource;
 }
 
 void lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    //if (m_fHidden) return;
+    // This method is invoked by the base class (lmStaffObj). It is responsible for
+    // creating the shape object and adding it to the graphical model. 
+    // Paper cursor must be used as the base for positioning.
 
-    //if (fMeasuring) {
-    //    // get the shift to the staff on which the key signature must be drawn
-    //    lmLUnits yShift = m_pVStaff->GetStaffOffset(m_nStaffNum);
 
-    //    // store glyph position
-    //    m_uGlyphPos.x = 0;
-    //    m_uGlyphPos.y = yShift;
-    //}
+    //get the position on which the time signature must be drawn
+    lmLUnits uxLeft = pPaper->GetCursorX();
+	lmLUnits uyTop = pPaper->GetCursorY() + m_pVStaff->GetStaffOffset(m_nStaffNum);
 
-    //DrawKeySignature(fMeasuring, pPaper,
-    //        (m_fSelected ? g_pColors->ScoreSelected() : g_pColors->ScoreNormal() ));
-
-}
-
-// returns the width of the draw (logical units)
-lmLUnits lmKeySignature::DrawKeySignature(bool fMeasuring, lmPaper* pPaper, wxColour colorC)
-{
-#if !defined(__WXGTK__)
-//TODO: Linux-dbg: In linux SetTextForegroung fails !!!
-    pPaper->SetFont(*m_pFont);
-    pPaper->SetTextForeground(colorC);
-#endif
-
-    //Key signature is common to all lmVStaff staves, but it is only present, as lmStaffObj, in
-    //the first staff. Therefore, for renderization, it is necessary to repeat for
-    //each staff
-    lmLUnits yOffset = 0;
+    //Key signature is common to all lmVStaff staves of the instrument, but the lmStaffObj
+    //representing it is only present in the first staff. Therefore, for renderization, it
+    //is necessary to repeat the shape in each staff of the instrument
+    //So in the following loop we add the key signature shape for each VStaff of the
+    //instrument
+    lmCompositeShape* pShape;
     lmStaff* pStaff = m_pVStaff->GetFirstStaff();
-    for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++) {
+    for (int nStaff=1; pStaff; pStaff = m_pVStaff->GetNextStaff(), nStaff++)
+    {
         //get current clef
         lmClef* pClef = pStaff->GetCurrentClef();
         EClefType nClef = pClef->GetClefType();
 
-        // Draw the key signature
-        lmUPoint uPos = lmUPoint(m_uPaperPos.x, m_uPaperPos.y + yOffset);
-        DrawAt(fMeasuring, pPaper, uPos, nClef, nStaff);
-
-        if (nStaff==1 && fMeasuring) {
-            //AWARE DrawAt() has updated m_uWidth and the after space is included
-            // store selection rectangle measures and position (relative to m_uPaperPos)
-            m_uSelRect.width = m_uWidth - m_pVStaff->TenthsToLogical(10, nStaff); // substrac after space;
-            m_uSelRect.height = m_pVStaff->TenthsToLogical( 40, nStaff );
-            m_uSelRect.x = m_uGlyphPos.x;
-            m_uSelRect.y = m_uGlyphPos.y + m_pVStaff->TenthsToLogical( 50, nStaff );
-        }
+        // Add the shape for key signature
+        pShape = CreateShape(pBox, pPaper, lmUPoint(uxLeft, uyTop), nClef, colorC, pStaff);
 
         //compute vertical displacement for next staff
-        yOffset += pStaff->GetHeight();
-        yOffset += pStaff->GetAfterSpace();
-
+        uyTop += pStaff->GetHeight();
+        uyTop += pStaff->GetAfterSpace();
     }
 
-    return m_uWidth;
+	// set total width (incremented in one line for after space)
+	m_uWidth = pShape->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
 
 }
 
-lmLUnits lmKeySignature::DrawAccidental(bool fMeasuring, lmPaper* pPaper, EAccidentals nAlter,
-        lmLUnits uxLeft, lmLUnits uyTop, int nStaff)
+lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
+					              EClefType nClef, wxColour colorC, lmStaff* pStaff)
 {
-    //render the accidental nAlter at position uxLeft, uyTop. Returns its width
+    // This method is also used when rendering the prolog
 
-    wxString sGlyph;
-    lmLUnits nTotalWidth = 0;
-    lmLUnits nWidth, nHeight;
+    //create the container shape object
+    lmCompositeShape* pShape = new lmCompositeShape(this, _T("Key signature"), lmDRAGGABLE);
+	pBox->AddShape(pShape);
+    m_pShape2 = pShape;
 
-    lmLUnits yPos = uyTop - m_pVStaff->TenthsToLogical( 10, nStaff );
+    lmLUnits uSharpPos[8];      //sharps positions, in order of sharps appearance
+    lmLUnits uFlatPos[8];       //flats positions, in order of flats appearance
+    lmLUnits uOneLine;          //space, in logical units, for half line
 
-    switch(nAlter) {
-        case eNatural:
-            sGlyph = _T("//");
-            break;
-        case eSharp:
-            sGlyph = _T("#");
-            break;
-        case eFlat:
-            sGlyph = _T("%");
-            break;
-        case eFlatFlat:
-            sGlyph = _T("&");
-            break;
-        case eDoubleSharp:
-            sGlyph = _T("$");
-            break;
-        case eNaturalFlat:
-            sGlyph = _T("//");
-            if (!fMeasuring) pPaper->DrawText(sGlyph, uxLeft, yPos);
-            pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
-            nTotalWidth = nWidth;
-            sGlyph = _T("%");
-            break;
-        case eNaturalSharp:
-            sGlyph = _T("//");
-            if (!fMeasuring) pPaper->DrawText(sGlyph, uxLeft, yPos);
-            pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
-            nTotalWidth = nWidth;
-            sGlyph = _T("#");
-            break;
-        default:
-            wxASSERT(false);
-    }
-
-    if (!fMeasuring) {
-        pPaper->DrawText(sGlyph, uxLeft, yPos);
-    }
-    pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
-    nTotalWidth += nWidth;
-
-    return nTotalWidth;
-
-}
-
-lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos,
-                               EClefType nClef, int nStaff, wxColour colorC)
-{
-    /*
-    For rendering the prolog it is necessary to have the rendering code in a common
-    method so that it can be shared between DrawProlog() an DrawObject() methods.
-    This method returns the width of the draw
-    */
-
-    lmLUnits nSharpPos[8];        //orden de aparición de los sostenidos
-    lmLUnits nFlatPos[8];        //orden de aparición de los bemoles
-    lmLUnits nOneLine;            //space, in microns, for half line
-
-    nOneLine = m_pVStaff->TenthsToLogical( 10, nStaff );
+    uOneLine = pStaff->TenthsToLogical(10);
     EKeySignatures nKeySignature = m_nKeySignature;
 
     //Compute position of sharps and flats. Depends on the clef
-    lmLUnits yPos = uPos.y;
+	lmLUnits yPos = uPos.y;
     switch(nClef) {
         case eclvSol:
-            nSharpPos[1] = yPos - 5 * nOneLine;            //line 5 (Fa)
-            nSharpPos[2] = yPos - 3.5 * nOneLine;        //space between lines 3 y 4 (Do)
-            nSharpPos[3] = yPos - 5.5 * nOneLine;        //space above line 5 (Sol)
-            nSharpPos[4] = yPos - 4 * nOneLine;            //line 4 (Re)
-            nSharpPos[5] = yPos - 2.5 * nOneLine;        //space between lines 2 y 3 (La)
-            nSharpPos[6] = yPos - 4.5 * nOneLine;        //space between lines 4 y 5 (Mi)
-            nSharpPos[7] = yPos - 3 * nOneLine;            //line 3 (Si)
+            uSharpPos[1] = yPos - 5 * uOneLine;         //line 5 (Fa)
+            uSharpPos[2] = yPos - 3.5 * uOneLine;       //space between lines 3 y 4 (Do)
+            uSharpPos[3] = yPos - 5.5 * uOneLine;       //space above line 5 (Sol)
+            uSharpPos[4] = yPos - 4 * uOneLine;         //line 4 (Re)
+            uSharpPos[5] = yPos - 2.5 * uOneLine;       //space between lines 2 y 3 (La)
+            uSharpPos[6] = yPos - 4.5 * uOneLine;       //space between lines 4 y 5 (Mi)
+            uSharpPos[7] = yPos - 3 * uOneLine;         //line 3 (Si)
 
-            nFlatPos[1] = yPos - 3 * nOneLine;            //line 3 (Si)
-            nFlatPos[2] = yPos - 4.5 * nOneLine;        //space between lines 4 y 5 (Mi)
-            nFlatPos[3] = yPos - 2.5 * nOneLine;        //space between lines 2 y 3 (La)
-            nFlatPos[4] = yPos - 4 * nOneLine;            //line 4 (Re)
-            nFlatPos[5] = yPos - 2 * nOneLine;            //line 2 (Sol)
-            nFlatPos[6] = yPos - 3.5 * nOneLine;        //space between lines 3 y 4 (Do)
-            nFlatPos[7] = yPos - 1.5 * nOneLine;        //space between lines 1 y 2 (Fa)
+            uFlatPos[1] = yPos - 3 * uOneLine;          //line 3 (Si)
+            uFlatPos[2] = yPos - 4.5 * uOneLine;        //space between lines 4 y 5 (Mi)
+            uFlatPos[3] = yPos - 2.5 * uOneLine;        //space between lines 2 y 3 (La)
+            uFlatPos[4] = yPos - 4 * uOneLine;          //line 4 (Re)
+            uFlatPos[5] = yPos - 2 * uOneLine;          //line 2 (Sol)
+            uFlatPos[6] = yPos - 3.5 * uOneLine;        //space between lines 3 y 4 (Do)
+            uFlatPos[7] = yPos - 1.5 * uOneLine;        //space between lines 1 y 2 (Fa)
             break;
 
         case eclvFa4:
-            nSharpPos[1] = yPos - 4 * nOneLine;            //line 4 (Fa)
-            nSharpPos[2] = yPos - 2.5 * nOneLine;        //space between lines 2 y 3 (Do)
-            nSharpPos[3] = yPos - 4.5 * nOneLine;        //space between lines 4 y 5 (Sol)
-            nSharpPos[4] = yPos - 3 * nOneLine;            //line 3 (Re)
-            nSharpPos[5] = yPos - 1.5 * nOneLine;        //line 5 (La)
-            nSharpPos[6] = yPos - 3.5 * nOneLine;        //space between lines 3 y 4 (Mi)
-            nSharpPos[7] = yPos - 2 * nOneLine;            //space aboveline 5 (Si)
+            uSharpPos[1] = yPos - 4 * uOneLine;         //line 4 (Fa)
+            uSharpPos[2] = yPos - 2.5 * uOneLine;       //space between lines 2 y 3 (Do)
+            uSharpPos[3] = yPos - 4.5 * uOneLine;       //space between lines 4 y 5 (Sol)
+            uSharpPos[4] = yPos - 3 * uOneLine;         //line 3 (Re)
+            uSharpPos[5] = yPos - 1.5 * uOneLine;       //line 5 (La)
+            uSharpPos[6] = yPos - 3.5 * uOneLine;       //space between lines 3 y 4 (Mi)
+            uSharpPos[7] = yPos - 2 * uOneLine;         //space aboveline 5 (Si)
 
-            nFlatPos[1] = yPos - 2 * nOneLine;            //line 2 (Si)
-            nFlatPos[2] = yPos - 3.5 * nOneLine;        //space between lines 3 y 4 (Mi)
-            nFlatPos[3] = yPos - 1.5 * nOneLine;        //space between lines 1 y 2 (La)
-            nFlatPos[4] = yPos - 3 * nOneLine;            //line 3 (Re)
-            nFlatPos[5] = yPos - nOneLine;                //line 1 (Sol)
-            nFlatPos[6] = yPos - 2.5 * nOneLine;        //space between lines 2 y 3 (Do)
-            nFlatPos[7] = yPos - 4 * nOneLine;            //linea 4 (Fa)
+            uFlatPos[1] = yPos - 2 * uOneLine;          //line 2 (Si)
+            uFlatPos[2] = yPos - 3.5 * uOneLine;        //space between lines 3 y 4 (Mi)
+            uFlatPos[3] = yPos - 1.5 * uOneLine;        //space between lines 1 y 2 (La)
+            uFlatPos[4] = yPos - 3 * uOneLine;          //line 3 (Re)
+            uFlatPos[5] = yPos - uOneLine;              //line 1 (Sol)
+            uFlatPos[6] = yPos - 2.5 * uOneLine;        //space between lines 2 y 3 (Do)
+            uFlatPos[7] = yPos - 4 * uOneLine;          //linea 4 (Fa)
             break;
 
         case eclvFa3:
-            wxASSERT(false);        //! @todo Clef Fa3
+            wxASSERT(false);        //TODO Clef Fa3
             break;
 
         case eclvDo1:
-            nSharpPos[1] = yPos - 2.5 * nOneLine;        //space between lines 2 y 3 (Fa)
-            nSharpPos[2] = yPos - nOneLine;                //line 1 (Do)
-            nSharpPos[3] = yPos - 3 * nOneLine;            //line 3 (Sol)
-            nSharpPos[4] = yPos - 1.5 * nOneLine;        //space between lines 1 y 2 (Re)
-            nSharpPos[5] = yPos - 3.5 * nOneLine;        //space between lines 3 y 4 (La)
-            nSharpPos[6] = yPos - 2 * nOneLine;            //line 2 (Mi)
-            nSharpPos[7] = yPos - 4 * nOneLine;            //linea 4 (Si)
+            uSharpPos[1] = yPos - 2.5 * uOneLine;       //space between lines 2 y 3 (Fa)
+            uSharpPos[2] = yPos - uOneLine;             //line 1 (Do)
+            uSharpPos[3] = yPos - 3 * uOneLine;         //line 3 (Sol)
+            uSharpPos[4] = yPos - 1.5 * uOneLine;       //space between lines 1 y 2 (Re)
+            uSharpPos[5] = yPos - 3.5 * uOneLine;       //space between lines 3 y 4 (La)
+            uSharpPos[6] = yPos - 2 * uOneLine;         //line 2 (Mi)
+            uSharpPos[7] = yPos - 4 * uOneLine;         //linea 4 (Si)
 
-            nFlatPos[1] = yPos - 4 * nOneLine;            //linea 4 (Si)
-            nFlatPos[2] = yPos - 2 * nOneLine;            //line 2 (Mi)
-            nFlatPos[3] = yPos - 3.5 * nOneLine;        //space between lines 3 y 4 (La)
-            nFlatPos[4] = yPos - 1.5 * nOneLine;        //space between lines 1 y 2 (Re)
-            nFlatPos[5] = yPos - 3 * nOneLine;            //line 3 (Sol)
-            nFlatPos[6] = yPos - nOneLine;                //line 1 (Do)
-            nFlatPos[7] = yPos - 2.5 * nOneLine;        //space between lines 2 y 3 (Fa)
+            uFlatPos[1] = yPos - 4 * uOneLine;          //line 4 (Si)
+            uFlatPos[2] = yPos - 2 * uOneLine;          //line 2 (Mi)
+            uFlatPos[3] = yPos - 3.5 * uOneLine;        //space between lines 3 y 4 (La)
+            uFlatPos[4] = yPos - 1.5 * uOneLine;        //space between lines 1 y 2 (Re)
+            uFlatPos[5] = yPos - 3 * uOneLine;          //line 3 (Sol)
+            uFlatPos[6] = yPos - uOneLine;              //line 1 (Do)
+            uFlatPos[7] = yPos - 2.5 * uOneLine;        //space between lines 2 y 3 (Fa)
             break;
 
         case eclvDo2:
-            wxASSERT(false);        //! @todo Clef Do2
+            wxASSERT(false);        //TODO Clef Do2
             break;
         case eclvDo3:
-            wxASSERT(false);        //! @todo Clef Do3
+            wxASSERT(false);        //TODO Clef Do3
             break;
         case eclvDo4:
-            wxASSERT(false);        //! @todo Clef Do4
+            wxASSERT(false);        //TODO Clef Do4
             break;
         case eclvPercussion:
             nKeySignature = earmDo;    //force not to draw any accidentals
@@ -350,54 +277,63 @@ lmLUnits lmKeySignature::DrawAt(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos,
 
     // Check if it is necessary to draw sharps or flats, and how many.
     int nNumAccidentals = KeySignatureToNumFifths(nKeySignature);
-    bool fDrawFlats = (nNumAccidentals < 0);    //true if flats, false if sharps
+    bool fDrawSharps = (nNumAccidentals > 0);    //true if sharps, false if flats
 
     g_pLogger->LogTrace(_T("lmKeySignature"),
-        _T("[lmKeySignature::DrawAt] nNumAccidentals=%d, fDrawFlats=%s, m_nFifths=%d, m_fMajor=%s, nKey=%d"),
-            nNumAccidentals, (fDrawFlats ? _T("yes") : _T("no")),
+        _T("[lmKeySignature::DrawAt] nNumAccidentals=%d, fDrawSharps=%s, m_nFifths=%d, m_fMajor=%s, nKey=%d"),
+            nNumAccidentals, (fDrawSharps ? _T("yes") : _T("no")),
             m_nFifths, (m_fMajor ? _T("yes") : _T("no")), nKeySignature );
 
+    //add shapes for the required flats / sharps
     nNumAccidentals = abs(nNumAccidentals);
-
-    //Render the required flats / sharps
-    lmLUnits nWidth=0;  // nHeight=0;
-    if (fDrawFlats) {
-        for (int i=1; i <= nNumAccidentals; i++) {
-            nWidth +=
-                DrawAccidental(fMeasuring, pPaper, eFlat, uPos.x+nWidth, nFlatPos[i], nStaff);
-        }
-    }
-    else {
-        for (int i=1; i <= nNumAccidentals; i++) {
-            nWidth +=
-                DrawAccidental(fMeasuring, pPaper, eSharp, uPos.x+nWidth, nSharpPos[i], nStaff);
-        }
+    lmLUnits nWidth = 0;
+    for (int i=1; i <= nNumAccidentals; i++)
+    {
+        lmLUnits yPos = (fDrawSharps ? uSharpPos[i] : uFlatPos[i]);
+        lmShape* pSA = AddAccidental(fDrawSharps, pPaper, lmUPoint(uPos.x+nWidth, yPos),
+                                     colorC, pStaff);
+        pShape->Add(pSA);
+        nWidth += pSA->GetWidth();
     }
 
-    // save total width and increment it in one line for after space
-    if (fMeasuring) m_uWidth = nWidth + m_pVStaff->TenthsToLogical(10, nStaff);    //one line space
-
-    return m_uWidth;
+    return pShape;
 }
 
 
-//! @todo Add code for all following methods
-
-wxBitmap* lmKeySignature::GetBitmap(double rScale)
+lmShape* lmKeySignature::AddAccidental(bool fSharp, lmPaper* pPaper, lmUPoint uPos,
+					                   wxColour colorC, lmStaff* pStaff)
 {
-    return (wxBitmap*)NULL;
+    //create a shape for the accidental at position uxLeft, uyTop. 
+    //Returns it
+
+    int nGlyph;
+    if (fSharp) 
+        nGlyph = GLYPH_SHARP_ACCIDENTAL;
+    else
+        nGlyph = GLYPH_FLAT_ACCIDENTAL;
+
+    wxFont* pFont = GetFont();
+    lmLUnits yPos = uPos.y - pStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset);
+    return new lmShapeGlyp2(this, nGlyph, pFont, pPaper,
+							lmUPoint(uPos.x, yPos), _T("Accidental"));
+
 }
 
-void lmKeySignature::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset,
-                        const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels)
+lmLUnits lmKeySignature::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, EClefType nClef,
+                    int nStaff, wxColour colorC)
 {
-}
+    // This method is, primarely, to be used when rendering the prolog
+    // Returns the width of the draw
 
-lmUPoint lmKeySignature::EndDrag(const lmUPoint& uPos)
-{
-    return lmUPoint(0,0);
-}
 
+    // get the staff
+    lmStaff* pStaff = m_pVStaff->GetStaff(nStaff);
+
+    // create the shape for key signature
+    lmShape* pShape = CreateShape(pBox, pPaper, uPos, nClef, colorC, pStaff);
+
+    return pShape->GetWidth();
+}
 
 void lmKeySignature::SetKeySignatureType()
 {
@@ -453,15 +389,13 @@ void lmKeySignature::SetKeySignatureType()
 
 void ComputeAccidentals(EKeySignatures nKeySignature, int nAccidentals[])
 {
-    /*
-    Given a key signature (nKeySignature) this function fills the array
-    nAccidentals with the accidentals implied by the key signature.
-    Each element of the array refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
-    and its value can be one of:
-         0  = no accidental
-        -1  = a flat
-         1  = a sharp
-    */
+    // Given a key signature (nKeySignature) this function fills the array
+    // nAccidentals with the accidentals implied by the key signature.
+    // Each element of the array refers to one note: 0=Do, 1=Re, 2=Mi, 3=Fa, ... , 6=Si
+    // and its value can be one of:
+    //     0  = no accidental
+    //    -1  = a flat
+    //     1  = a sharp
 
     // initialize array: no accidentals
     for (int i=0; i < 7; i++) {
@@ -653,9 +587,10 @@ const wxString& GetKeySignatureName(EKeySignatures nKeySignature)
     return m_sKeySignatureName[nKeySignature - lmMIN_KEY];
 }
 
-//! Retunrs the number of fifths that corresponds to the encoded key signature
 int KeySignatureToNumFifths(EKeySignatures nKeySignature)
 {
+    // Retunrs the number of fifths that corresponds to the encoded key signature
+
     int nFifths = 0;        //num accidentals to draw (0..7)
     switch(nKeySignature) {
         case earmDo:

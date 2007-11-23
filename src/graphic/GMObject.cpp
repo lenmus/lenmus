@@ -292,8 +292,9 @@ void lmSimpleShape::Shift(lmLUnits xIncr, lmLUnits yIncr)
 //========================================================================================
 
 
-lmCompositeShape::lmCompositeShape(lmObject* pOwner, wxString sName, lmEGMOType nType)
-	: lmShape(nType, pOwner, sName)
+lmCompositeShape::lmCompositeShape(lmObject* pOwner, wxString sName, bool fDraggable,
+                                   lmEGMOType nType)
+	: lmShape(nType, pOwner, sName, fDraggable)
 {
     m_fGrouped = true;	//by default all constituent shapes are grouped
 }
@@ -437,5 +438,83 @@ void lmCompositeShape::RecomputeBounds()
 		m_uBoundsBottom.x = wxMax(m_uBoundsBottom.x, pShape->GetXRight());
 		m_uBoundsBottom.y = wxMax(m_uBoundsBottom.y, pShape->GetYBottom());
 	}
+
+}
+
+
+wxBitmap* lmCompositeShape::OnBeginDrag(double rScale)
+{
+	// A dragging operation is started. The view invokes this method to request the 
+	// bitmap to be used as drag image. No other action is required.
+	// If no bitmap is returned drag is cancelled.
+	//      
+	// So this method returns the bitmap to use with the drag image.
+
+    // allocate a memory DC for logical units to pixels conversions
+    wxMemoryDC dc1;
+    dc1.SetMapMode(lmDC_MODE);
+    dc1.SetUserScale(rScale, rScale);
+
+    // allocate a memory DC for drawing onto a bitmap
+    wxMemoryDC dc2;
+    dc2.SetMapMode(wxMM_TEXT);			// each logical unit is 1 pixel
+
+    // allocate the bitmap
+    // convert size to pixels
+    int wD = (int)dc1.LogicalToDeviceXRel( GetWidth() );
+    int hD = (int)dc1.LogicalToDeviceYRel( GetHeight() );
+    wxBitmap bitmap(wD, hD);
+
+	//clear the bitmap
+    dc2.SelectObject(bitmap);
+    dc2.SetBackground(*wxWHITE_BRUSH);
+    dc2.Clear();
+    dc2.SetBackgroundMode(wxTRANSPARENT);
+
+    //loop to get each shape bitmap and to merge it
+    for (int i=0; i < (int)m_Components.size(); i++)
+    {
+        //get shape bitmap
+        lmShape* pShape = m_Components[i];
+		wxBitmap* pBMS = pShape->OnBeginDrag(rScale);
+
+        //merge it
+        if (pBMS)
+		{
+            lmPixels vxPos = dc1.LogicalToDeviceXRel( pShape->GetXLeft() - GetXLeft() );
+            lmPixels vyPos = dc1.LogicalToDeviceXRel( pShape->GetYTop() - GetYTop() );
+            dc2.DrawBitmap(*pBMS, vxPos, vyPos, true);       //true = transparent
+
+            delete pBMS;    //bitmap no longer needed
+        }
+    }
+    dc2.SelectObject(wxNullBitmap);
+
+    // the common bitmap is prepared. Make it masked
+    wxImage image = bitmap.ConvertToImage();
+    image.SetMaskColour(255, 255, 255);
+    wxBitmap* pBitmap = new wxBitmap(image);
+    ////DBG -----------
+    //wxString sFileName = _T("CompositeShape.bmp");
+    //image.SaveFile(sFileName, wxBITMAP_TYPE_BMP);
+    ////END DBG -------
+
+    return pBitmap;
+}
+
+lmUPoint lmCompositeShape::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
+{
+	// The view informs that the user continues dragging. We receive the new desired
+	// shape position and we must return the new allowed shape position.
+	//
+	// The default behaviour is to return the received position, so the view redraws 
+	// the drag image at that position. No action must be performed by the shape on 
+	// the score and score objects.
+	//
+	// The received new desired shape position is in logical units and referred to page
+	// origin. The returned new allowed shape position must also be in in logical units
+	// and referred to page origin.
+
+	return uPos;
 
 }
