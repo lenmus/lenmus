@@ -34,6 +34,9 @@
 #include "BoxSystem.h"
 #include "BoxSlice.h"
 #include "BoxInstrSlice.h"
+#include "BoxSliceInstr.h"
+#include "BoxSliceVStaff.h"
+#include "ShapeStaff.h"
 
 //access to colors
 #include "../globals/Colors.h"
@@ -92,10 +95,10 @@ void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
 
 void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)
 {
-	//This method is only invoked during layout phase, when the number of measures in the
-	//system has been finally decided. We have to store this number, delete any addional
-	//slices added during measurements, and propagate 'y' coordinates from first slice to
-	//all others
+	// This method is only invoked during layout phase, when the number of measures in the
+	// system has been finally decided. We have to store this number, delete any addional
+	// slices added during measurements, and propagate 'y' coordinates from first slice to
+	// all others.
 
     m_nNumMeasures = nMeasures;
 
@@ -130,7 +133,16 @@ void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)
                                         pInstr, iInstr) );
 
     }
+}
 
+lmLUnits lmBoxSystem::GetYTopFirstStaff()
+{
+	// Returns the Y top position of first staff
+
+	lmBoxSliceInstr* pBSI = m_Slices[0]->GetSliceInstr(0);
+	lmBoxSliceVStaff* pBSV = pBSI->GetSliceVStaff(0);
+	lmShapeStaff* pSS = pBSV->GetStaffShape(0);
+	return pSS->GetYTop();
 }
 
 lmBoxSlice* lmBoxSystem::FindSliceAtPosition(lmUPoint& pointL)
@@ -238,4 +250,3 @@ wxString lmBoxSystem::Dump(int nIndent)
 
 	return sDump;
 }
-

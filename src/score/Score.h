@@ -19,10 +19,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __SCORE_H__        //to avoid nested includes
-#define __SCORE_H__
+#ifndef __LM_SCORE_H__        //to avoid nested includes
+#define __LM_SCORE_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "Score.cpp"
 #endif
 
@@ -192,6 +192,7 @@ class ContextList;
 class lmSoundManager;
 class lmObjOptions;
 
+class lmBox;
 
 #include "Context.h"
 #include "StaffObj.h"
@@ -282,7 +283,7 @@ public:
     // titles related methods
     void AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation pos,
                   wxString sFontName, int nFontSize, lmETextStyle nStyle);
-    void WriteTitles(bool fMeasuring, lmPaper *pPaper);
+	void LayoutTitles(lmBox* pBox, lmPaper *pPaper);
 
     // identification
     wxString GetScoreName();
@@ -317,7 +318,8 @@ private:
     void WriteToFile(wxString sFilename, wxString sContent);
     void ComputeMidiEvents();
     void RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper);
-    lmLUnits MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle, lmLUnits nPrevTitleHeight);
+	lmLUnits CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pTitle,
+							  lmLUnits nPrevTitleHeight);
 
 
         //
@@ -350,4 +352,4 @@ private:
 
 
 
-#endif    // __SCORE_H__
+#endif    // __LM_SCORE_H__

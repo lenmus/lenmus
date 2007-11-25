@@ -41,6 +41,8 @@
 
 #include "Score.h"
 #include "wx/debug.h"
+#include "../graphic/GMObject.h"
+#include "../graphic/Shapes.h"
 
 //implementation of the Instruments List
 #include <wx/listimpl.cpp>
@@ -222,37 +224,63 @@ wxString lmInstrument::GetInstrName()
 
 void lmInstrument::MeasureNames(lmPaper* pPaper)
 {
-    ////when this method is invoked paper is positioned at top left corner of instrument
-    ////renderization point (x = left margin, y = top line of first staff)
+	// This method is invoked only from lmFormatter4::RenderJustified(), in order to
+	// measure the indentation for each instrument. 
+    // When this method is invoked paper is positioned at top left corner of instrument
+    // renderization point (x = left margin, y = top line of first staff)
+	// To measure the names we have to create the shapes but we are going to delete
+	// them at the end
 
-    ////As name/abbreviation are StaffObjs, method Draw() advances paper to
-    ////end of name/abbreviation. Let's save original position to restore it
-    //lmLUnits xPaper = pPaper->GetCursorX();
+    //As name/abbreviation are StaffObjs, method Draw() advances paper to
+    //end of name/abbreviation. Let's save original position to restore it
+    lmLUnits xPaper = pPaper->GetCursorX();
 
-    //m_nIndentFirst = 0;
-    //m_nIndentOther = 0;
+    m_nIndentFirst = 0;
+    m_nIndentOther = 0;
 
-    //if (m_pName) {
-    //    // measure text extent
-    //    m_pName->Draw(DO_MEASURE, pPaper);
-    //    // set indent =  text extend + after text space
-    //    m_nIndentFirst = m_pName->GetSelRect().width + 30;    //! @todo user options
-    //}
+    if (m_pName) {
+        // measure text extent
+        lmShapeTex2* pShape = m_pName->CreateShape(pPaper);
+        // set indent =  text extend + after text space
+        m_nIndentFirst = pShape->GetWidth() + 30;    //TODO user options
+		delete pShape;
+    }
 
-    //if (m_pAbbreviation) {
-    //    // measure text extent
-    //    m_pAbbreviation->Draw(DO_MEASURE, pPaper);
-    //    // set indent =  text extend + after text space
-    //    m_nIndentOther = m_pAbbreviation->GetSelRect().width + 30;    //! @todo user options
-    //}
+    if (m_pAbbreviation) {
+        // measure text extent
+        lmShapeTex2* pShape = m_pAbbreviation->CreateShape(pPaper);
+        // set indent =  text extend + after text space
+        m_nIndentOther = pShape->GetWidth() + 30;    //TODO user options
+		delete pShape;
+    }
 
-    ////restore original paper position
-    //pPaper->SetCursorX( xPaper );
+    //restore original paper position
+    pPaper->SetCursorX( xPaper );
 
 }
 
-void lmInstrument::DrawName(lmPaper* pPaper, wxColour colorC)
+void lmInstrument::AddNameShape(lmBox* pBox, lmPaper* pPaper)
 {
+    //when this method is invoked paper is positioned at top left corner of instrument
+    //renderization point (x = left margin, y = top line of first staff)
+    //after rendering, paper position is not advanced
+
+    if (m_pName)
+	{
+		//save paper pos
+        lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+
+		//create the shape
+        pBox->AddShape( m_pName->CreateShape(pPaper) );
+
+		//restore paper position
+		pPaper->SetCursorX(uPos.x);
+		pPaper->SetCursorY(uPos.y);
+    }
+}
+
+//void lmInstrument::DrawName(lmPaper* pPaper, wxColour colorC)
+//{
     ////when this method is invoked paper is positioned at top left corner of instrument
     ////renderization point (x = left margin, y = top line of first staff)
     ////after rendering, paper position is not advanced
@@ -267,25 +295,45 @@ void lmInstrument::DrawName(lmPaper* pPaper, wxColour colorC)
     //    m_pName->MoveTo(rPos);
     //    m_pName->DrawObject(DO_DRAW, pPaper, colorC, NO_HIGHLIGHT);
     //}
-}
+//}
 
-void lmInstrument::DrawAbbreviation(lmPaper* pPaper, wxColour colorC)
+void lmInstrument::AddAbbreviationShape(lmBox* pBox, lmPaper* pPaper)
 {
     //when this method is invoked paper is positioned at top left corner of instrument
     //renderization point (x = left margin, y = top line of first staff)
     //after rendering, paper position is not advanced
 
-    if (m_pAbbreviation) {
-        //As name/abbreviation are StaffObjs, method Draw() should be invoked but
-        //it draws the object not at current paper pos but at stored m_uPaperPos.
-        //It also performs other non necessary thigs.
-        //More: Abbreviation is written on every system but Draw will always
-        //draw it at the same position.
-        //So, I will invoke directly DarwObject and, previouly, set the text
-        //position at current paper position.
-        lmUPoint rPos(pPaper->GetCursorX(), pPaper->GetCursorY());
-        m_pAbbreviation->MoveTo(rPos);
-        //m_pAbbreviation->DrawObject(DO_DRAW, pPaper, colorC, NO_HIGHLIGHT);
+    if (m_pAbbreviation)
+	{
+		//save paper pos
+        lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+
+		//create the shape
+        pBox->AddShape( m_pAbbreviation->CreateShape(pPaper) );
+
+		//restore paper position
+		pPaper->SetCursorX(uPos.x);
+		pPaper->SetCursorY(uPos.y);
     }
 }
+
+//void lmInstrument::DrawAbbreviation(lmPaper* pPaper, wxColour colorC)
+//{
+//    //when this method is invoked paper is positioned at top left corner of instrument
+//    //renderization point (x = left margin, y = top line of first staff)
+//    //after rendering, paper position is not advanced
+//
+//    if (m_pAbbreviation) {
+//        //As name/abbreviation are StaffObjs, method Draw() should be invoked but
+//        //it draws the object not at current paper pos but at stored m_uPaperPos.
+//        //It also performs other non necessary thigs.
+//        //More: Abbreviation is written on every system but Draw will always
+//        //draw it at the same position.
+//        //So, I will invoke directly DarwObject and, previouly, set the text
+//        //position at current paper position.
+//        lmUPoint rPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+//        m_pAbbreviation->MoveTo(rPos);
+//        //m_pAbbreviation->DrawObject(DO_DRAW, pPaper, colorC, NO_HIGHLIGHT);
+//    }
+//}
 

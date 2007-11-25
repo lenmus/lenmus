@@ -86,13 +86,13 @@ lmLUnits lmBoxInstrSlice::Render(lmPaper* pPaper, lmLUnits xStartPos, int nNumPa
 {
     pPaper->SetCursorX( xStartPos );    //align staves in system
 
-    //draw instrument name or abbreviation
-    if (nNumPage == 1 && nSystem == 1) {
-        m_pInstr->DrawName(pPaper);
-    }
-    else {
-        m_pInstr->DrawAbbreviation(pPaper);
-    }
+    ////draw instrument name or abbreviation
+    //if (nNumPage == 1 && nSystem == 1) {
+    //    m_pInstr->DrawName(pPaper);
+    //}
+    //else {
+    //    m_pInstr->DrawAbbreviation(pPaper);
+    //}
 
     //set start position for this instr slice. 'y' position is saved when
     //rendering the first VStaff of this instrument

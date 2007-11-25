@@ -53,7 +53,8 @@ public:
 	~lmShapeStaff();
 
 	//implementation of pure virtual methods in base class
-    void Render(lmPaper* pPaper, wxColour color=*wxBLACK);
+    void Render(lmPaper* pPaper, wxColour color);
+	void Render(lmPaper* pPaper) { Render(pPaper, m_color); }
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
@@ -62,8 +63,6 @@ protected:
 	int			m_nNumLines;		//how many staff lines
 	lmLUnits	m_uLineWidth;		//staff lines width
 	lmLUnits	m_uSpacing;			//spacing between lines
-	wxColour	m_color;
-
 
 };
 

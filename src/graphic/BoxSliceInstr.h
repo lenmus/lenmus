@@ -63,7 +63,7 @@ public:
 	lmBoxSliceVStaff* GetSliceVStaff(int i) const { return m_SlicesVStaff[i]; }
 
 	//drawing
-    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK);
+    void Render(lmPaper* pPaper, lmUPoint uPos);
 
     inline lmInstrument* GetInstrument() const { return m_pInstr; }
     inline int GetNumMeasure() const { return m_pSlice->GetNumMeasure(); }

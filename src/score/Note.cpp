@@ -81,10 +81,11 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
 	//AWARE: Althoug shape pointer is initialized to NULL never assume that there is
 	//a shape if not NULL, as the shape is deleted in the graphic model.
     m_pNoteheadShape = (lmShapeGlyp2*)NULL;
+    m_pStemShape = (lmShapeStem*)NULL;
 
     // stem information
-    m_uxStem = 0;            // will be updated in layout phase
-    m_uyStem = 0;            // will be updated in layout phase
+    //m_uxStem = 0;            // will be updated in layout phase
+    //m_uyStem = 0;            // will be updated in layout phase
     m_nStemType = nStem;
     m_uStemLength = GetDefaultStemLength();     //default. If beamed note, this value will
                                                 //be updated in lmBeam::CreateShape
@@ -480,6 +481,20 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     uyTop = uyStaffTopLine - uyPitchShift;
     uxLeft = uPaperPos.x;
 
+	// create the shape for the stem because it must be measured even if it must not be
+	// drawn. This is necessary, for example, to have information for positioning 
+	// tuplets' bracket. Or to align notes in a chord.
+	// If the shape is finally not needed (i.e. the note doesn't have stem)
+	// the shape will be deleted. Otherwise, it will be added to the note shape.
+    //-----------------------------------------------------------------------------------
+    //! @todo move thickness to user options
+    #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
+    m_uStemThickness = m_pVStaff->TenthsToLogical(STEM_WIDTH, m_nStaffNum) / 10;
+	bool fStemAdded = false;
+	m_pStemShape = new lmShapeStem(this, 0.0, 0.0, 0.0,
+                                   m_fStemDown, m_uStemThickness, colorC);
+
+
     //if this is the first note of a chord, give lmChord the responsibility for
 	//layouting the chord (only note heads, accidentals and rests). If it is
     //any other note of a chord, do nothing and mark the note as 'already layouted'.
@@ -549,42 +564,40 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
         }
     }
 
-    // create a shape for the stem, if necessary
-    // The stem must be measured even if it must not be drawn. This is
-    // necessary to have information for positioning tuplets' bracket
+    // measure the stem and add the shape for the stem, if necessary
     //-----------------------------------------------------------------------------------
     //set stem x position
+	//line is centered on stem x position, so we must add/substract half stem thickness
+	lmLUnits uxStem;
     if (m_fStemDown) {
         //stem down: line down on the left of the notehead unless notehead reversed
-        m_uxStem = m_pNoteheadShape->GetXLeft() - uPaperPos.x;
-        if (m_fNoteheadReversed) m_uxStem += m_pNoteheadShape->GetWidth();
+		uxStem = m_pNoteheadShape->GetXLeft() + m_uStemThickness / 2; 
+		if (m_fNoteheadReversed) uxStem += m_pNoteheadShape->GetWidth();
     } else {
         //stem up: line up on the right of the notehead unless notehead reversed
-        m_uxStem = m_pNoteheadShape->GetXLeft() - uPaperPos.x;
-        if (!m_fNoteheadReversed) m_uxStem += m_pNoteheadShape->GetWidth();
+		uxStem = m_pNoteheadShape->GetXRight() - m_uStemThickness / 2; 
+        if (m_fNoteheadReversed) uxStem -= m_pNoteheadShape->GetWidth();
     }
 
 	//now proceed to create the shape, if necessary
-    if (m_nStemType != eStemNone)
+    lmLUnits uyFlag = 0.0;          //y pos for flag
+	lmLUnits uyStemStart = 0.0;		//the nearest point to notehead
+	if (m_nStemType != eStemNone)
     {
-        //! @todo move thickness to user options
-        #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
-        m_uStemThickness = m_pVStaff->TenthsToLogical(STEM_WIDTH, m_nStaffNum) / 10;
         // compute and store start position of stem
         if (m_fStemDown) {
             //stem down: line down on the left of the notehead
             uyTop += m_pVStaff->TenthsToLogical(51, m_nStaffNum);
-            m_uyStem = uyTop - uPaperPos.y;
+            uyStemStart = uyTop;
         } else {
             //stem up: line up on the right of the notehead
-            m_uxStem -= m_uStemThickness;
             uyTop += m_pVStaff->TenthsToLogical(49, m_nStaffNum);
-            m_uyStem = uyTop - uPaperPos.y;
+            uyStemStart = uyTop;
         }
         //adjust stem size if flag to be drawn
         if (!m_fDrawSmallNotesInBlock && !m_fBeamed && m_nNoteType > eQuarter) {
             int nGlyph = GetGlyphForFlag();
-            lmLUnits uStem = GetStandardStemLenght();
+            lmLUnits uStemLength = GetStandardStemLenght();
             // to measure flag and stem I am going to use some glyph data. These
             // data is in FUnits but as 512 FU are 1 line (10 tenths) it is simple
             // to convert these data into tenths: just divide FU by 51.2
@@ -605,26 +618,27 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
             }
             lmLUnits uFlag = m_pVStaff->TenthsToLogical(rFlag, m_nStaffNum);
             lmLUnits uMinStem = m_pVStaff->TenthsToLogical(rMinStem, m_nStaffNum);
-            uStem = wxMax((uStem > uFlag ? uStem-uFlag : 0), uMinStem);
-            m_uyFlag = GetYStem() + (m_fStemDown ? uStem : -uStem);
-            SetStemLength(uStem + uFlag);
+            uStemLength = wxMax((uStemLength > uFlag ? uStemLength-uFlag : 0), uMinStem);
+            uyFlag = uyStemStart + (m_fStemDown ? uStemLength : -uStemLength);
+            SetStemLength(uStemLength + uFlag);
         }
-        //wxLogMessage(_T("[lmNote::Layout] Stem=(%.2f, %.2f), paperPos=(%.2f, %.2f)"),
-        //    m_uxStem, m_uyStem, uPaperPos.x, uPaperPos.y);
 
-        //if not in a chord create the shape for the stem.
-        //when the note is in a chord the stem will be created later,
-        //when layouting the last note of the chord
-        if (fDrawStem && ! fInChord) {
-            lmLUnits uxPos = GetXStemLeft() + m_uStemThickness/2;     //SolidLine centers line width on given coordinates
-            lmShapeStem* pStem = 
-                new lmShapeStem(this, uxPos, GetYStem(), uxPos, GetFinalYStem()+1,
-                                m_fStemDown, m_uStemThickness, colorC);
+		//adjust the position and size of the stem shape
+		lmLUnits uyStemEnd = uyStemStart + (m_fStemDown? m_uStemLength : -m_uStemLength); 
+		m_pStemShape->Adjust(uxStem, uyStemStart, uyStemEnd, m_fStemDown);
+		//wxLogMessage(_T("[lmNote::LayoutObject] Adjust xPos=%.2f, yTop=%.2f, yBottom=%.2f)"),
+		//	uxStem, uyStemStart, uyStemEnd);
+
+        //if not in a chord add the shape for the stem. When the note is in a chord 
+		//the stem will be created later, when layouting the last note of the chord
+        if (fDrawStem && ! fInChord)
+		{
 			// if beamed, the stem shape will be owned by the beam; otherwise by the note
 			if (m_fBeamed)
-				m_pBeam->AddNoteAndStem(pStem, pNoteShape, &m_BeamInfo[0]);
+				m_pBeam->AddNoteAndStem(m_pStemShape, pNoteShape, &m_BeamInfo[0]);
 			else
-				pNoteShape->AddStem(pStem);
+				pNoteShape->AddStem(m_pStemShape);
+			fStemAdded = true;
         }
     }
 
@@ -641,7 +655,7 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     if (!m_fDrawSmallNotesInBlock) {
         if (!m_fBeamed && m_nNoteType > eQuarter && !IsInChord()) {
             lmLUnits uxPos = (m_fStemDown ? GetXStemLeft() : GetXStemRight());
-            AddFlagShape(pNoteShape, pPaper, lmUPoint(uxPos, m_uyFlag), colorC);
+            AddFlagShape(pNoteShape, pPaper, lmUPoint(uxPos, uyFlag), colorC);
         }
     }
 
@@ -721,6 +735,10 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     //ties
     if (m_pTiePrev)
 		m_pTiePrev->LayoutObject(pBox, pPaper, colorC);
+
+	//clear temporary info
+	if (!fStemAdded && (!IsInChord() || m_nNoteType < eHalf))
+		DeleteStemShape();
 
 }
 
@@ -900,36 +918,24 @@ void lmNote::ShiftNoteHeadShape(lmLUnits uxShift)
     //This method does not change the accidentals position, only the note head itself.
 
     m_pNoteheadShape->Shift(uxShift, 0.0);	// shift notehead horizontally
-    m_uxStem += uxShift;
+    //m_uxStem += uxShift;
 
 }
 
 lmLUnits lmNote::GetAnchorPos() 
 { 
- //   if (!IsInChord())
-	//{
-	//	lmLUnits uSize = m_pShape2->GetXLeft() - m_pNoteheadShape->GetXLeft();
-	//	return (StemGoesDown() ? uSize : -uSize);
-	//}
-	//else
-	//{
-
-	lmLUnits uSize = m_pShape2->GetXLeft() - m_pNoteheadShape->GetXLeft();
-    return (StemGoesDown() ? uSize : -uSize);
-
-
     ////wxLogMessage(_T("[lmNote::GetAnchorPos()] notehead reversed=%s, xLeft=%.2f, xRight=%.2f, width=%.2f"),
     ////    (m_fNoteheadReversed ? _T("yes") : _T("no")), 
     ////    m_pNoteheadShape->GetXLeft(), m_pNoteheadShape->GetXRight(),
     ////    m_pNoteheadShape->GetWidth() );
 
-    //if (!IsInChord()) return 0.0;
-    //if (m_fNoteheadReversed) {
-    //    lmLUnits uSize = m_pNoteheadShape->GetWidth();
-    //    return (StemGoesDown() ? uSize : -uSize);
-    //}
-    //else
-    //    return 0.0;
+    if (m_fNoteheadReversed) {
+        lmLUnits uSize = m_pNoteheadShape->GetWidth();
+		lmLUnits uxPos = m_pNoteheadShape->GetXLeft();
+        return (StemGoesDown() ? uxPos+uSize : uxPos-uSize);
+    }
+    else
+		return m_pNoteheadShape->GetXLeft();
 
 }
 
@@ -1054,8 +1060,10 @@ void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, ENoteHea
     lmLUnits yPos = uyTop - m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
 
     //create the shape object
+	wxColour color = (m_fNoteheadReversed? *wxRED : colorC);
     m_pNoteheadShape = new lmShapeGlyp2(this, nGlyph, GetFont(), pPaper,
-                                            lmUPoint(uxLeft, yPos), _T("Notehead"));
+                                        lmUPoint(uxLeft, yPos), _T("Notehead"),
+										lmDRAGGABLE, color);
 	pNoteShape->AddNoteHead(m_pNoteheadShape);
 
 }
@@ -1467,11 +1475,11 @@ wxString lmNote::Dump()
         else
             sDump += _T(", In tuplet");
     }
-    //stem info
-    if (m_nStemType != eStemNone) {
-        sDump += wxString::Format(_T(", xStem=%d, yStem=%d, length=%d"),
-                    m_uxStem, m_uyStem,m_uStemLength );
-    }
+    ////stem info
+    //if (m_nStemType != eStemNone) {
+    //    sDump += wxString::Format(_T(", xStem=%d, yStem=%d, length=%d"),
+    //                m_uxStem, m_uyStem,m_uStemLength );
+    //}
     sDump += _T("\n");
 
     // Dump associated lyrics
@@ -1700,6 +1708,53 @@ lmScoreObj* lmNote::FindSelectableObject(lmUPoint& pt)
 
 }
 
+//stems: methods related to layout phase
+lmLUnits lmNote::GetXStemLeft()
+{
+	if (!m_pStemShape) return 0.0;
+
+	return m_pStemShape->GetXLeft();
+}
+
+lmLUnits lmNote::GetXStemRight()
+{
+	if (!m_pStemShape) return 0.0;
+
+	return m_pStemShape->GetXRight();
+}
+
+lmLUnits lmNote::GetXStemCenter()
+{
+	if (!m_pStemShape) return 0.0;
+	return m_pStemShape->GetXCenterStem();
+}
+
+lmLUnits lmNote::GetYStartStem()
+{
+	//Start of stem is the nearest position to the notehead
+	if (!m_pStemShape) return 0.0;
+
+	return m_pStemShape->GetYStartStem();
+	//return m_uyStem + m_uPaperPos.y; 
+}
+
+lmLUnits lmNote::GetYEndStem()
+{
+	//End of stem is the farthest position from the notehead
+	if (!m_pStemShape) return 0.0;
+
+	return m_pStemShape->GetYEndStem();
+	//return GetYStartStem() + (m_fStemDown ? m_uStemLength : -m_uStemLength); 
+}
+
+void lmNote::DeleteStemShape()
+{
+	if (m_pStemShape)
+	{
+		delete m_pStemShape;
+		m_pStemShape = (lmShapeStem*)NULL;
+	}
+}
 
 //==========================================================================================
 // Global functions related to notes

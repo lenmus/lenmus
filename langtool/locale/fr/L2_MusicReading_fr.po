@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MusicReading_L2 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-06-16 08:55+0100\n"
+"PO-Revision-Date: 2007-11-25 17:17+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -18,7 +18,7 @@ msgstr "Envoyez vos commentaires et suggestions à l'équipe LenMus (www.lenmus.
 
 #: L2_MusicReading/L2_MusicReading.cpp:3
 msgid "Licensed under the terms of the GNU Free Documentation License v1.2"
-msgstr "Licencié sous les tèrmes du GNU Free Documentation License v1.2"
+msgstr "Licencié sous les termes de la GNU Free Documentation License v1.2"
 
 #: L2_MusicReading/L2_MusicReading.cpp:4
 msgid "the teacher of music"
@@ -30,11 +30,11 @@ msgstr "Page de couverture"
 
 #: L2_MusicReading/L2_MusicReading.cpp:6
 msgid "Music reading. Level 2"
-msgstr "Lisant la musique. Niveau 2"
+msgstr "Lecture musicale. Niveau 2"
 
 #: L2_MusicReading/L2_MusicReading.cpp:7
 msgid "This eMusicBook is intended to help one improve one's reading skills, providing sort of practice and exercises that are required in order to become a good sightreader."
-msgstr "Cet eMusicBook est prévu pour vous aider dans vos habilites de lecture, donnant un tas de practiques et exercices nécessaires pour devenir un bon déchiffreur musical."
+msgstr "Cet eMusicBook est destiné à vous aider dans vos habilites de lecture, donnant un tas de practiques et exercices nécessaires pour devenir un bon déchiffreur musical."
 
 #: L2_MusicReading/L2_MusicReading.cpp:8
 msgid "Cecilio Salmeron"
@@ -42,7 +42,7 @@ msgstr "Cecilio Salmeron"
 
 #: L2_MusicReading/L2_MusicReading.cpp:9
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
-msgstr "Il est permis la copie, distribution et/ou midification de cet document sous les tèrmes du GNU Free Documentation License, Version 1.2 ou n'importequelle version posterieure publiée par le Software Libre."
+msgstr "La copie, la distribution et/ou la modification de ce document sont autorisées sous les termes de la GNU Free Documentation License, Version 1.2 ou suivante publiée par la Free Software Foundation ;"
 
 #: L2_MusicReading/L2_MusicReading.cpp:10
 msgid "http://www.gnu.org/licenses/fdl.html"
@@ -58,7 +58,7 @@ msgstr "Introduction"
 
 #: L2_MusicReading/L2_MusicReading.cpp:13
 msgid "In level 2 we continue with all concepts introduced in level 1, and new concepts are introduced in a progressive way, alternating simple time signatures and duple time ones."
-msgstr "Dans le niveau 2 nous continuons avec tous les concepts introduits dans le niveau 1, et des nouveaux concepts ont été introduits de façon progressive, alternant mesures à la clè simples et doubles."
+msgstr "Dans le niveau 2, nous poursuivons avec tous les concepts présentés dans le niveau 1, auxquels s'ajoutent de nouveaux expliqués de façon progressive, en alternant des systèmes simples et doubles."
 
 #: L2_MusicReading/L2_MusicReading.cpp:14
 msgid "Syllabus"
@@ -66,55 +66,55 @@ msgstr "Programme"
 
 #: L2_MusicReading/L2_MusicReading.cpp:15
 msgid "Appart of introducing new rhythmic cells, of increasing complexity, the main concepts introduced in Level 2 are:"
-msgstr "À part d'introduire des nouveaux cellules rythmiques, de complexité croissante, les principaux concepts introduits en Niveau 2 sont:"
+msgstr "Tout en introduisant des cellules rythmiques de complexité croissante, les principaux concepts présentés dans le niveau 2 sont :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:16
 msgid "Simple time signatures of 2/8 and 3/8."
-msgstr "Mesures à la clè simples de 2/8 et 3/8"
+msgstr "Mesures simples à 2/8 et 3/8."
 
 #: L2_MusicReading/L2_MusicReading.cpp:17
 msgid "Triplets, and triplet note groups with rests."
-msgstr "Triolets et groupes de notes de triolets avec silences"
+msgstr "Triolets et groupes de triolets avec silences."
 
 #: L2_MusicReading/L2_MusicReading.cpp:18
 msgid "Extension of the stave in treble (G) and bass (F) clefs to include two ledger lines below and above each stave."
-msgstr "Prolongation de la portéedes clès en aigu (SOL) et bas (FA)  pour inclure deux lines de guide en bas et en haut de chaque portée"
+msgstr "Prolongement de la portée pour les clés de SOL et FA pour inclure deux lignes supplémentaires au-dessus et au-dessous de chaque portée."
 
 #: L2_MusicReading/L2_MusicReading.cpp:19
 msgid "Compound time signatures of 9/8, 12/8 and the grouping of notes and rests within these times."
-msgstr "Composer des mesures à la clè de 9/8, 12/8 et les groupements de notes et silences dedans ces temps."
+msgstr "Temps composés à 9/8, 12/8 et mélanges de notes et de silences."
 
 #: L2_MusicReading/L2_MusicReading.cpp:20
 msgid "The soprano clef (C on 1st line). Names of notes on the stave."
-msgstr "Le clè de soprano (Do en 1ère ligne). Noms des notes sur le portée"
+msgstr "La clé d'UT 1ère ligne. Noms des notes sur la portée."
 
 #: L2_MusicReading/L2_MusicReading.cpp:21
 msgid "Extension of the stave in C1 clef to include one ledger line above the stave."
-msgstr "Prolongement de la portée en clè DO1 inclue une line de guide sur le portée"
+msgstr "Prolongement de la portée en clé d'UT 1ère ligne pour intégrer une ligne supplémentaire au-dessus."
 
 #: L2_MusicReading/L2_MusicReading.cpp:22
 msgid "Key signatures of all major and minor keys up to and including four sharps and flats."
-msgstr "Tonalites à l'armure de toutes les clès majeures et mineures incluant quatre dièses et bemols"
+msgstr "Armures majeures et mineures incluant jusqu'à quatre dièses et bémols."
 
 #: L2_MusicReading/L2_MusicReading.cpp:23
 msgid "Lesson's structure"
-msgstr "Estructure de la leçon"
+msgstr "Organisation de la leçon"
 
 #: L2_MusicReading/L2_MusicReading.cpp:24
 msgid "Each lesson is structured into three sections:"
-msgstr "Chaque leçon est estructurée en trois sections"
+msgstr "Chaque leçon est organisée en trois sections :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:25
 msgid "In the first one the new concepts and rhythmic patterns introduced in the lesson are explained."
-msgstr "Dans la première sont exprimés les nouveaux concepts et patrons rythmiques introduits dans la leçon."
+msgstr "Dans la première, les nouveaux concepts et patrons rythmiques introduits sont expliqués."
 
 #: L2_MusicReading/L2_MusicReading.cpp:26
 msgid "In the second section, optional, the new concepts are compared with known ones, so that the student can better relate the new material and learn it."
-msgstr "Dans la deuxième leçon, toute optionnele, les nouveaux concepts sont comparés avec ceux déjà connus, donc l'étudiant peut mieux relater le nouveau matériel et l'apprendre."
+msgstr "Dans la deuxième section, optionnelle, les nouveaux concepts sont comparés avec ceux déjà connus, ce qui permet à l'étudiant de mieux les appréhender."
 
 #: L2_MusicReading/L2_MusicReading.cpp:27
 msgid "Finally, in the third section some exercises are proposed to learn and practise the new concepts introduced."
-msgstr "Somme toute, dans la troisième section sont proposés quelques exercices pour apprendre et pratiquer les nouveaux concepts introduits."
+msgstr "Enfin, dans la troisième section, quelques exercices sont proposés pour apprendre et s'exercer avec les nouveaux concepts introduits."
 
 #: L2_MusicReading/L2_MusicReading.cpp:28
 #: L2_MusicReading/L2_MusicReading.cpp:44
@@ -142,11 +142,11 @@ msgstr "Leçon %d"
 #: L2_MusicReading/L2_MusicReading.cpp:39
 #: L2_MusicReading/L2_MusicReading.cpp:42
 msgid "8th note tied to group of one 8th and two 16th notes"
-msgstr "8ème note liée vers un group d'une croche et deux doubles crochets"
+msgstr "Croche liée avec un groupe constitué d'une croche et deux doubles croches"
 
 #: L2_MusicReading/L2_MusicReading.cpp:30
 msgid "In this lesson a new rhythmic pattern is introduced: One 8th note tied to group of one 8th and two 16th notes. Note that this new pattern can be written in two different ways:"
-msgstr "dans cette leçon on a introduit un nouveau patron rythmique: Une crochet liée à un group de une crochet et deux double crochets. Rémarquer que ce nouveau patron puet être écrit de deux façons différents"
+msgstr "Dans cette leçon, un nouveau patron rythmique est introduit : une croche liée à un groupe constitué d'une croche et deux doubles croches. Remarquez que ce nouveau patron peut être écrit de deux façons différentes :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:31
 #: L2_MusicReading/L2_MusicReading.cpp:61
@@ -165,11 +165,11 @@ msgstr "dans cette leçon on a introduit un nouveau patron rythmique: Une croche
 #: L2_MusicReading/L2_MusicReading.cpp:314
 #: L2_MusicReading/L2_MusicReading.cpp:334
 msgid "Listen and take notice of the differences"
-msgstr "Observe et rémarque les différences"
+msgstr "Ecoutez et notez les différences"
 
 #: L2_MusicReading/L2_MusicReading.cpp:32
 msgid "Listen to each measure and pay attention to the newly introduced patterns:"
-msgstr "Observe chaque mesure et rémarque comme apparaît le nouveau patron introduit:"
+msgstr "Ecoutez chaque mesure et remarquez le nouveau patron introduit :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:33
 #: L2_MusicReading/L2_MusicReading.cpp:38
@@ -270,7 +270,7 @@ msgstr "Exercice 1"
 #: L2_MusicReading/L2_MusicReading.cpp:195
 #: L2_MusicReading/L2_MusicReading.cpp:211
 msgid " - Train your ear and practise the introduced rhythmic patterns."
-msgstr " - Entraînez vos oreilles et practiquer les patrons rythmiques introduits"
+msgstr " - Entraînez votre oreille et exercez-vous avec les patrons rythmiques introduits."
 
 #: L2_MusicReading/L2_MusicReading.cpp:36
 #: L2_MusicReading/L2_MusicReading.cpp:50
@@ -315,20 +315,20 @@ msgstr " - Lisez les partitions contenant les rythmes étudiés dans cette leço
 #: L2_MusicReading/L2_MusicReading.cpp:40
 #: L2_MusicReading/L2_MusicReading.cpp:43
 msgid "Press 'Play' and listen. Train your ear and practise reading this rhythm."
-msgstr "Appuyez 'Jouer' et observe le rythme. Entraîne votres oreilles et practique lisant cet rythme."
+msgstr "Appuyez 'Jouer' et écoutez. Entraînez votre oreille et exercez-vous à lire ce rythme."
 
 #: L2_MusicReading/L2_MusicReading.cpp:45
 msgid "Compound time of 9/8. Dotted quarter note"
-msgstr "Composer Mesure de 9/8. Noire pointillée."
+msgstr "Temps composé à 9/8. Noire pointée"
 
 #: L2_MusicReading/L2_MusicReading.cpp:46
 msgid "In this lesson the compound time of 9/8 is introduced, as well as two new rhythmic patterns. The 9/8 time has three beats and each beat is occupied by a 8th note. The measure is occupied by a dotted quarter note."
-msgstr "dans cette leçon est introuit le temps composé de 9/8, ainsi que deux nouveaux patrons rytmiques. Le temps de 9/8 a trois pulsations et chaque coup est occupé par une crochet. La mesure est occupée par une noire pointillée."
+msgstr "Dans cette leçon, le temps composé à 9/8 est présenté, ainsi que deux nouveaux patrons rythmiques. La mesure à 9/8 a trois pulsations et chacune est occupée par une croche. La mesure est occupée par une noire pointée."
 
 #: L2_MusicReading/L2_MusicReading.cpp:53
 #: L2_MusicReading/L2_MusicReading.cpp:56
 msgid "Compound time of 9/8. Whole note tied to next beat"
-msgstr "Temps composé de 9/8. Une ronde liée au prochaine pulsation."
+msgstr "Temps composé à 9/8. Une ronde liée à la prochaine pulsation"
 
 #: L2_MusicReading/L2_MusicReading.cpp:54
 #: L2_MusicReading/L2_MusicReading.cpp:57
@@ -372,125 +372,125 @@ msgstr "Temps composé de 9/8. Une ronde liée au prochaine pulsation."
 #: L2_MusicReading/L2_MusicReading.cpp:347
 #: L2_MusicReading/L2_MusicReading.cpp:350
 msgid "Press 'Play' and listen. Train your ear and practise the newly introduced patterns."
-msgstr "Appuyez 'Jouer' and ecute. Entraînez vos oreilles et practiquer les patrons rythmiques introduits"
+msgstr "Appuyez 'Jouer' and écoutez. Entraînez votre oreille et exercez-vous avec les nouveaux patrons rythmiques introduits."
 
 #: L2_MusicReading/L2_MusicReading.cpp:59
 #: L2_MusicReading/L2_MusicReading.cpp:69
 #: L2_MusicReading/L2_MusicReading.cpp:72
 msgid "Two 16th notes and one 8th"
-msgstr "Deux doubles crochets  et une crochet"
+msgstr "Deux doubles croches et une croche"
 
 #: L2_MusicReading/L2_MusicReading.cpp:60
 #: L2_MusicReading/L2_MusicReading.cpp:109
 msgid "In this lesson two new rhythmic patterns are introduced:"
-msgstr "dans cette leçon ont été introduits deux nouveaux patrons rythmiques"
+msgstr "Dans cette leçon, deux nouveaux patrons rythmiques sont introduits :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:62
 msgid "Note the differences between the following rhythmic patterns and how they are formed when we tie notes in the basic four 8th notes pattern. Compare this pattern with the one in the last measure. Note the different rhythmic accent between measures 3 and 4."
-msgstr "Rémarque les differences entre les suivants patrons rythmiques et comm'ils sont formés  quand nous lierons les notes dans le patron basique patron de quatre crochets. Comparer ce patron avec celui de la dernière mesure. Rémarquer l'accent rythmique différent entre eux."
+msgstr "Remarquez les différences entre les patrons rythmiques suivants et comment ils sont formés quand nous lions les 4 croches. Comparez ce patron avec celui de la dernière mesure. Remarquez l'accent rythmique différent entre les mesures 3 et 4."
 
 #: L2_MusicReading/L2_MusicReading.cpp:70
 msgid "Press 'Play' and listen carefully the rhythm. Train your ear and practise the newly introduced patterns."
-msgstr "Appuyer 'Jouer' et observer soigneusement  le rythm . Entraînez vos oreilles et practiquez lisant ce rythm."
+msgstr "Appuyez sur 'Jouer' et écoutez attentivement le rythme. Entraînez votre oreille et exercez-vous avec ces nouveaux patrons."
 
 #: L2_MusicReading/L2_MusicReading.cpp:75
 msgid "Compound time of 12/8. 8th note tied to 16th notes"
-msgstr "Composer temps de 12/8. Croche liée à double crochets."
+msgstr "Temps composé à 12/8. Croche liée à des doubles croches"
 
 #: L2_MusicReading/L2_MusicReading.cpp:76
 msgid "The compound time of 12/8 has four parts and each beat is occupied by a dotted quarter note. The accent is on the first one. Ii is a time similar to the 6/8 and 9/8 times but with four beats. The note occupying all the measure is the dotted whole note."
-msgstr "Le temps composé de 12/8 a quatre morceaux et chaque pulsation est occupé par une noire pointillée. L'accent est placé sur la première. C'est un temps similaire aux temps de 6/8 et 9/8 mais avec quatre pulsations. La note qui occupe toute la mesure c'est la ronde pointillée."
+msgstr "Le temps composé de 12/8 a quatre unités et chaque pulsation est occupée par une noire pointée. L'accent est placé sur la première. C'est un temps similaire aux temps de 6/8 et 9/8 mais avec quatre pulsations. La note qui occupe toute la mesure est la ronde pointée."
 
 #: L2_MusicReading/L2_MusicReading.cpp:77
 msgid "In this lesson a new rhythmic pattern is introduced: the 8th note tied to next beat:"
-msgstr "dans cette leçon on introduit un noveau patron rythmique: la crochet liée à la pulsation prochaine."
+msgstr "dans cette leçon, un nouveau patron rythmique est introduit : la croche liée à la pulsation suivante :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:78
 msgid "Listen and observe the differences"
-msgstr "Observe les différences."
+msgstr "Ecoutez et observez les différences."
 
 #: L2_MusicReading/L2_MusicReading.cpp:79
 msgid "Note the differences between the following rhythmic patterns and how the second one is formed when the notes are tied."
-msgstr "Rémarquer les différences entre les patrons rythmiques suivants et comme le deuxième est formé quand les notes seront liées."
+msgstr "Remarquez les différences entre les patrons rythmiques suivants et comme le deuxième est formé quand les notes sont liées."
 
 #: L2_MusicReading/L2_MusicReading.cpp:86
 #: L2_MusicReading/L2_MusicReading.cpp:89
 msgid "Compound time. 8th note tied to 16th notes"
-msgstr "Composer temps. Croche liée aux double crochets."
+msgstr "Temps composé. Croche liée aux doubles croches"
 
 #: L2_MusicReading/L2_MusicReading.cpp:92
 #: L2_MusicReading/L2_MusicReading.cpp:102
 #: L2_MusicReading/L2_MusicReading.cpp:105
 msgid "Two 16th notes, one quarter note and one 8th note"
-msgstr "Deux double crochets, une noire et une crochet"
+msgstr "Deux doubles croches, une noire et une croche"
 
 #: L2_MusicReading/L2_MusicReading.cpp:93
 msgid "In this lesson a new rhythmic pattern is introduced. This pattern can be written in two different ways:"
-msgstr "Dans cette león on introduit un nouveau patron rytmique. Ce patron peut ètre écrit de deux façons différents:"
+msgstr "Dans cette leçon, un nouveau patron rythmique est introduit. Il peut être écrit de deux façons différentes :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:95
 msgid "Note the difference between the first measure and the others and how they are formed when putting a tie."
-msgstr "Rémarquer la différence entre la première mesure et les autres et comme elles sont formées quand on placera une liaison."
+msgstr "Remarquez la différence entre la première mesure et les autres et comme elles sont formées lorsqu'une liaison est placée."
 
 #: L2_MusicReading/L2_MusicReading.cpp:108
 #: L2_MusicReading/L2_MusicReading.cpp:118
 #: L2_MusicReading/L2_MusicReading.cpp:121
 msgid "Compound time. Three 8th notes tied to next beat"
-msgstr "Composer temps. Trois crochets liées à la pulsation prochaine."
+msgstr "Temps composé. Trois croches liées à la pulsation suivante"
 
 #: L2_MusicReading/L2_MusicReading.cpp:111
 msgid "Note the difference between the first and the second measure and between the third and the fourth. Note how they are formed when putting a tie."
-msgstr "Rémarquer la différence entre la premier et la deuxième mesure et entre la troisième et la quatrième. Rémarquer comme elles sont formées quand on placera une liaison."
+msgstr "Remarquez la différence entre la première et la deuxième mesures et entre la troisième et la quatrième. Remarquez comme elles sont formées quand une liaison est placée."
 
 #: L2_MusicReading/L2_MusicReading.cpp:124
 #: L2_MusicReading/L2_MusicReading.cpp:134
 #: L2_MusicReading/L2_MusicReading.cpp:137
 msgid "Two 16th notes, one quarter note and two 16th notes"
-msgstr "Deux double crochets, une noire et deus double crochets"
+msgstr "Deux doubles croches, une noire et deux doubles croches"
 
 #: L2_MusicReading/L2_MusicReading.cpp:125
 msgid "In this lesson a new rhythmic pattern is introduced as the result of tying a group of two 8th notes and a quarter note to a group of a quarter note and two 8th notes. Note how it can also be written with a quarter note:"
-msgstr "dans cette leçon on a introduit un nouveau patron rythmique comme le résultat le lier un group de deux crochets et une noire à un group d'une noire et deux crochets. Rémarquer comm'il est possible aussi d'être écrit avec une noire."
+msgstr "Dans cette leçon, un nouveau patron rythmique est introduit correspondant à la liaison d'un groupe de deux croches et une noire avec un groupe d'une noire et deux croches. Remarquez comme il est possible aussi de l'écrire avec une noire :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:127
 msgid "Note the difference between the first and the second measure. Note how it is formed when putting a tie."
-msgstr "Rém,arquer le différence entre la premier et la deuxième mesure. Rémarquer comm'elle est formée quand on placera une liaison."
+msgstr "Remarquez la différence entre la première et la deuxième mesures. Remarquez le résultat avec une liaison placée."
 
 #: L2_MusicReading/L2_MusicReading.cpp:140
 #: L2_MusicReading/L2_MusicReading.cpp:150
 #: L2_MusicReading/L2_MusicReading.cpp:153
 msgid "Compound time. 8th note, rest and note"
-msgstr "Composer temps. crocge, silence et note"
+msgstr "Temps composé. croche, silence et note"
 
 #: L2_MusicReading/L2_MusicReading.cpp:141
 msgid "In this lesson a new rhythmic pattern is introduced, as the result of tying a group of two 16th notes and one 8th with a group of a 8th note and two 16th notes. Note that in can also be written using a quarter note:"
-msgstr "Dans cette leçon on a introduit un nouveau patron rytmique comme le résultat de lier un group de deux double crochets avec un group de crochet et deux double crochets. Rémarquer qu'on peut aussi l'écrire avec une noire:"
+msgstr "Dans cette leçon, un nouveau patron rythmique est introduit correspondant à la liaison d'un groupe de deux doubles croches et une croche avec un groupe d'une croche et deux doubles croches. Remarquez qu'il est possible aussi de l'écrire avec une noire :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:143
 msgid "Note the difference between the first and the second measure. Note how it is formed when tying the two groups of the first measure."
-msgstr "Rémarquer le différence entre la première et la deuxième mesure. Rémarquer comm'elles sont formées quand deux groupes de la première mesure sont liés."
+msgstr "Remarquez la différence entre la première et la deuxième mesures. Remarquez le résultat quand les deux groupes de la première mesure sont liés."
 
 #: L2_MusicReading/L2_MusicReading.cpp:156
 #: L2_MusicReading/L2_MusicReading.cpp:167
 #: L2_MusicReading/L2_MusicReading.cpp:170
 msgid "Duple meter. The triplet"
-msgstr "Duple compteur. Le triolet"
+msgstr "Duolet. Triolet"
 
 #: L2_MusicReading/L2_MusicReading.cpp:157
 msgid "You know that simple time signatures tell us the number of beats in each measure. For example, in 3/4 there are three beats in each measure and each beat is occupied by a quarter note:"
-msgstr "Vous savez que les mesures à la clè simples nous indiquent le nombre de pulsations sur chaque mesure. Par exemple, en 3/4 il y a trois pulsations dans chaque mesure et chaque pulsation est occupé par une noire:"
+msgstr "Vous savez que le chiffrage simple nous indique le nombre de pulsations dans chaque mesure. Par exemple, en 3/4 il y a trois pulsations dans chaque mesure et chaque pulsation est occupée par une noire :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:158
 msgid "You also know that each beat can subdivide into smaller units. For example, we can divide it into two parts by writting two eighth notes or into four parts by using 16th notes:"
-msgstr "Vous savez aussi que chaque pulsation peut être subdivisée en unitées plus petites. Par exemple, nous pouvons le diviser en deux morceaux ecrivant  deux crochets en quatre morceaux utilisant double crochets:"
+msgstr "Vous savez aussi que chaque pulsation peut être subdivisée en unités plus petites. Par exemple, nous pouvons la diviser en deux parties avec deux croches, en quatre parties avec des doubles croches :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:159
 msgid "But, what to do if you want to divide the beat into three even parts? The answer is called a 'triplet': you write three eight notes and you group them together, using a slur or bracket, with a number '3'. The '3' indicates that the three notes must be played in the time alloted for two notes. So a triplet quarter note is 2/3 the duration of a standard quarter note. Similarly, three triplet eighth notes are equal in duration to a quarter note. If several note values appear under the triplet bracket, they are all affected the same way, reduced to 2/3 their original duration."
-msgstr "Mais, qu'est ce qu'on peut faire si vous voulez diviser la pulsation en trois morceaux identiques? la réponse c'est 'un triolet' : vous écrivez trois crochets les agroupant ensembles, utilisant une liaison ou un parenthèse avec un numero '3'. Le '3' indique que les trois notes doiven être jouées dans un temps designé pour deux notes. Donc un triolet est 2/3 la durée d'une noire. De la même façon trois triolets de crochets son egaux en durée à une noire. Si plusieurs valeurs de notes apparaissent sous le parenthèse de triolet elles son toutes affectées de la même façon, reduisant à 2/3 sa durée originale."
+msgstr "Mais, que faire si vous voulez diviser la pulsation en trois parties identiques ? la réponse est 'un triolet' : vous écrivez trois croches groupées ensemble, en utilisant une liaison ou une parenthèse, avec le nombre '3'. Il indique que les trois notes doivent être jouées dans le temps assigné à deux notes. Donc une noire de triolet représente 2/3 de la durée d'une noire normale. De la même façon, un triolet de croches est egal en durée à une noire. Si plusieurs valeurs de notes apparaissent sous la parenthèse du triolet, elles sont toutes affectées de la même façon, reduites au 2/3 de leur durée initiale."
 
 #: L2_MusicReading/L2_MusicReading.cpp:165
 msgid " - Read scores with triplets."
-msgstr " - Lire partitions avec triolets."
+msgstr " - Lisez les partitions avec des triolets."
 
 #: L2_MusicReading/L2_MusicReading.cpp:173
 #: L2_MusicReading/L2_MusicReading.cpp:183
@@ -500,69 +500,69 @@ msgstr "Notes liées à un triolet"
 
 #: L2_MusicReading/L2_MusicReading.cpp:174
 msgid "In this lesson a new rhythmic pattern is introduced, by tying a note to a triplet:"
-msgstr "Dans cette leçon on introduit un nouveau patron rythmique, liant une note à un triolet:"
+msgstr "Dans cette leçon, un nouveau patron rythmique est introduit, en liant une note à un triolet :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:176
 msgid "Note the difference between the first and the second measure, and between the third and the fourth. Note how they are formed when tying the note to the triplet:"
-msgstr "Rémarquer la difference entre la tre la première et la deuxième mesure, et entre la troisième et la quatrième. Rémarquer comm'elles sont formées lians la note au triolet:"
+msgstr "Remarquez la différence entre la première et la deuxième mesures, et entre la troisième et la quatrième. Remarquez comme elles sont formées avec le triolet :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:189
 #: L2_MusicReading/L2_MusicReading.cpp:199
 #: L2_MusicReading/L2_MusicReading.cpp:202
 msgid "Compound time. Three quarter notes"
-msgstr "Composer temps. Trois noires."
+msgstr "Temps composé. Trois noires."
 
 #: L2_MusicReading/L2_MusicReading.cpp:190
 msgid "In this lesson a new rhythmic pattern is introduced, as the result of tying the notes, in pairs, of two triplets. Note that in can also be written using a quarter note:"
-msgstr "Dans cette leçon on a introduit un nouveau patron rythmique comme le résultat de lier les notes, en couples de deux triolets. Rémarquer qu'on peut aussi l'écrire utilisant une noire:"
+msgstr "Dans cette leçon, un nouveau patron rythmique est introduit en reliant les notes, en paires de deux triolets. Remarquez qu'il est possible de l'écrire aussi en utilisant une noire :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:192
 msgid "Note the difference between the first and the second measure, and between the third and the fourth ones. Note how measures 2 and 4 are similar to measures 1 and 3 and are formed by tying the triplets."
-msgstr "Rémarquer la différence entre la premiere et la deuxième mesure et entre la troisième et la quatrième. Rémarquer comme les mesures 2 et 4 sont similaires aux mesures 1 et 3 et sont formées liant les triolets."
+msgstr "Remarquez la différence entre la première et la deuxième mesures, et entre la troisième et la quatrième. Remarquez comme les mesures 2 et 4 sont similaires aux mesures 1 et 3 et sont formées en liant les triolets."
 
 #: L2_MusicReading/L2_MusicReading.cpp:205
 #: L2_MusicReading/L2_MusicReading.cpp:215
 #: L2_MusicReading/L2_MusicReading.cpp:218
 msgid "Triplet tied to next note"
-msgstr "Triolet liée à la note prochaine"
+msgstr "Triolet lié à la note suivante"
 
 #: L2_MusicReading/L2_MusicReading.cpp:206
 msgid "In this lesson two new rhythmic patterns are introduced. They are the result of tying a triplet to the next note:"
-msgstr "Dans cette leçon son introduits deux nouveaux patrons rythmiques. Sont le résultat de lier un  triolet à la prochaine note:"
+msgstr "Dans cette leçon, deux nouveaux patrons rythmiques sont introduits. Ils correspondent à la liaison d'un triolet avec la prochaine note :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:208
 msgid "Note the difference between the first and the second measure, and between the third and the fourth ones. Note how measures 2 and 4 are similar to measures 1 and 3 but tying the triplets."
-msgstr "Rémarquer la différence entre la première et la deuxième mesure et entre la troisième et la quatrième. Rémarquer comme les mesures 2 et 4 sont similaires aux mesures 1 et 3 mais liant les triolets."
+msgstr "Remarquez la différence entre la première et la deuxième mesures et entre la troisième et la quatrième. Remarquez comme les mesures 2 et 4 sont similaires aux mesures 1 et 3 mais en liant les triolets."
 
 #: L2_MusicReading/L2_MusicReading.cpp:221
 #: L2_MusicReading/L2_MusicReading.cpp:235
 #: L2_MusicReading/L2_MusicReading.cpp:244
 msgid "Dotted 8th note"
-msgstr "Crochet pointillée"
+msgstr "Croche pointée"
 
 #: L2_MusicReading/L2_MusicReading.cpp:222
 msgid "In this lesson the dotted 8th note pattern in simple times is introduced:"
-msgstr "Dans cette leçon on introduit la crochet pointillée en temps simples:"
+msgstr "Dans cette leçon, la croche pointée est présentée dans un temps simple :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:224
 msgid "Note how the rhythm of dotted 8th note can be obtained from one 8th note and two 16th notes, when tying the 8th note."
-msgstr "Rémarquer comme le rythme de la crochet pointillée peut être obtenu à partir d'une crochet et deux double crochet quand on liera la crochet."
+msgstr "Remarquez comme le rythme de la croche pointée peut être obtenu à partir d'une croche et une double croche liées."
 
 #: L2_MusicReading/L2_MusicReading.cpp:225
 msgid "Always that you find a trouble with a rhythmic pattern, study it first without the ties. When learned without the ties it will be easier to learn the original one with ties."
-msgstr "Toujours que vous cherchez quelque problème avec un patron rythmique vous essayez de le faire liant notes and l'étudiant  d'abord  sans les liaisons."
+msgstr "A chaque fois que vous rencontrez des difficultés avec un patron rythmique, étudiez le d'abord sans liaison. Quand il est compris sans liaison, il est ensuite plus facile de l'apprendre avec."
 
 #: L2_MusicReading/L2_MusicReading.cpp:226
 msgid "In a similar way you can get and learn the other patterns of this lesson:"
-msgstr "De façon similaire vous pouvez obtenir et apprendre les autres patrons de cette leçon"
+msgstr "De façon similaire, vous pouvez apprendre les autres patrons de cette leçon :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:229
 msgid " - Train your ear: the dotted 8th note pattern."
-msgstr " - Entraînez vos  oreilles : Le patron de crochet pointillée."
+msgstr " - Entraînez votre oreille : la croche pointée."
 
 #: L2_MusicReading/L2_MusicReading.cpp:231
 msgid " - Train your ear: a quarter note tied to a dotted 8th note."
-msgstr " -Entraînez vos oreilles: Une noire liée à une crochet pointillée."
+msgstr " - Entraînez votre oreille : une noire liée à une croche pointée."
 
 #: L2_MusicReading/L2_MusicReading.cpp:232
 #: L2_MusicReading/L2_MusicReading.cpp:255
@@ -575,21 +575,21 @@ msgstr "Exercice 3"
 
 #: L2_MusicReading/L2_MusicReading.cpp:233
 msgid " - Train your ear: Group of two 8th notes tied to a dotted 8th note."
-msgstr " - Entraînez vos oreilles: Un Group de deux crochets liées à une crochet pointillée."
+msgstr " - Entraînez votre oreille : un groupe de deux croches lié à une croche pointée."
 
 #: L2_MusicReading/L2_MusicReading.cpp:238
 msgid "A quarter note tied to a dotted 8th note"
-msgstr "Une noire liée à une crochet pointillée"
+msgstr "Une noire liée à une croche pointée"
 
 #: L2_MusicReading/L2_MusicReading.cpp:241
 msgid "Group of two 8th notes tied to a dotted 8th note"
-msgstr "Un Group de deux notes liées à une crochet pointillée"
+msgstr "Un groupe de deux croches lié à une croche pointée"
 
 #: L2_MusicReading/L2_MusicReading.cpp:247
 #: L2_MusicReading/L2_MusicReading.cpp:258
 #: L2_MusicReading/L2_MusicReading.cpp:264
 msgid "Compound time. 8th note tied to next beat"
-msgstr "Composer temps. Crochet liée à la pulsation suivant."
+msgstr "Temps composé. Croche liée à la pulsation suivante"
 
 #: L2_MusicReading/L2_MusicReading.cpp:248
 #: L2_MusicReading/L2_MusicReading.cpp:268
@@ -597,36 +597,36 @@ msgstr "Composer temps. Crochet liée à la pulsation suivant."
 #: L2_MusicReading/L2_MusicReading.cpp:313
 #: L2_MusicReading/L2_MusicReading.cpp:333
 msgid "In this lesson the next patterns are introduced:"
-msgstr "Dans cette leçon sont introduits les patrons suivants:"
+msgstr "Dans cette leçon, les patrons suivants sont introduits :"
 
 #: L2_MusicReading/L2_MusicReading.cpp:252
 msgid " - Train your ear: 8th note tied to next beat."
-msgstr " - Entraînez vos oreilles: Crochet liée à la pulsation suivant."
+msgstr " - Entraînez votre oreille : croche liée à la pulsation suivante."
 
 #: L2_MusicReading/L2_MusicReading.cpp:254
 msgid " - Train your ear: Dotted quarter note tied to group of 8th note, 8th rest and 8th note."
-msgstr " - Entraînez vos oreilles: noire pointillée liée 'a un group de crochet, demi-soupir et crochet"
+msgstr " - Entraînez votre oreille : noire pointée liée à un groupe d'une croche, un demi-soupir et une croche."
 
 #: L2_MusicReading/L2_MusicReading.cpp:261
 msgid "Dotted quarter note tied to group of 8th note, 8th rest and 8th note"
-msgstr "Noire pointillée liée à un group de crochet, demi-soupir et crochet"
+msgstr "Noire pointée liée à un groupe d'une croche, un demi-soupir et une croche"
 
 #: L2_MusicReading/L2_MusicReading.cpp:267
 #: L2_MusicReading/L2_MusicReading.cpp:289
 msgid "Tied dotted 8th note"
-msgstr "Crochet pointillée liée"
+msgstr "Croche pointée liée"
 
 #: L2_MusicReading/L2_MusicReading.cpp:272
 msgid " - Train your ear: Pattern of 16th note and dotted 8th note."
-msgstr " - Entraînez vos oreilles: Patron de double crochet et crochet pointillée."
+msgstr " - Entraînez votre oreille : double croche et croche pointée."
 
 #: L2_MusicReading/L2_MusicReading.cpp:274
 msgid " - Train your ear: 16th note and dotted 8th note tied to quarter note."
-msgstr " - Entraînez vos oreilles: Double crochet et crochet pointillée liée à une noire."
+msgstr " - Entraînez votre oreille : double croche et croche pointée liée à une noire."
 
 #: L2_MusicReading/L2_MusicReading.cpp:276
 msgid " - Train your ear: 16th note and dotted 8th note tied to 8th note."
-msgstr " - Entraînez vos oreilles: Double crochet et crochet pointillée liée à une crochet."
+msgstr " - Entraînez votre oreille : double croche et croche pointée liée à une croche."
 
 #: L2_MusicReading/L2_MusicReading.cpp:277
 msgid "Exercise 4"
@@ -634,49 +634,49 @@ msgstr "Exercice 4"
 
 #: L2_MusicReading/L2_MusicReading.cpp:280
 msgid "16th note and dotted 8th note"
-msgstr "Double crochet et crochet pointillée"
+msgstr "Double croche et croche pointée"
 
 #: L2_MusicReading/L2_MusicReading.cpp:283
 msgid "16th note and dotted 8th note tied to quarter note"
-msgstr "Double crochet et crochet pointillée liée à une noire"
+msgstr "Double croche et croche pointée liée à une noire"
 
 #: L2_MusicReading/L2_MusicReading.cpp:286
 msgid "16th note and dotted 8th note tied to 8th note"
-msgstr "Double crochet et crochet pointillée liée à une crochet"
+msgstr "Double croche et croche pointée liée à une croche"
 
 #: L2_MusicReading/L2_MusicReading.cpp:292
 #: L2_MusicReading/L2_MusicReading.cpp:309
 msgid "Groups of two 16th notes"
-msgstr "Groups de deux double crochets"
+msgstr "Groupes de deux doubles croches"
 
 #: L2_MusicReading/L2_MusicReading.cpp:297
 msgid " - Train your ear: 8th rest and two 16th notes."
-msgstr " - Entraînez vos oreilles: demi-soupir et deux double crochets."
+msgstr " - Entraînez votre oreille : demi-soupir et deux doubles croches."
 
 #: L2_MusicReading/L2_MusicReading.cpp:299
 msgid " - Train your ear: Two 16th notes and 8th rest."
-msgstr " - Entraînez vos oreilles: deux double crochets et un demi-soupir"
+msgstr " - Entraînez votre oreille : deux doubles croches et un demi-soupir."
 
 #: L2_MusicReading/L2_MusicReading.cpp:303
 msgid "8th rest and two 16th notes"
-msgstr "Demi soupir et deux doubles crochets"
+msgstr "Demi soupir et deux doubles croches"
 
 #: L2_MusicReading/L2_MusicReading.cpp:306
 msgid "Two 16th notes and 8th rest"
-msgstr "Deux double crochets et un demi-soupir"
+msgstr "Deux doubles croches et un demi-soupir"
 
 #: L2_MusicReading/L2_MusicReading.cpp:312
 #: L2_MusicReading/L2_MusicReading.cpp:329
 msgid "Compound time. 8th note tied to next beat (2)"
-msgstr "Composer temps. Crochet liée à la pulsation suivant (2)"
+msgstr "Temps composé. Croche liée à la pulsation suivante (2)"
 
 #: L2_MusicReading/L2_MusicReading.cpp:317
 msgid " - Train your ear: Quarter note tied to 8th note."
-msgstr " - Entraînez vos oreilles: Noire liée à une croche."
+msgstr " - Entraînez votre oreille : noire liée à une croche."
 
 #: L2_MusicReading/L2_MusicReading.cpp:319
 msgid " - Train your ear: 8th note tied to quarter note in next beat."
-msgstr " - Entraînez vos oreilles: Crochet liée à une noire dans la pulsation suivant."
+msgstr " - Entraînez votre oreille : croche liée à une noire sur la pulsation suivante."
 
 #: L2_MusicReading/L2_MusicReading.cpp:323
 msgid "Quarter note tied to 8th note"
@@ -684,26 +684,26 @@ msgstr "Noire liée à une crochet"
 
 #: L2_MusicReading/L2_MusicReading.cpp:326
 msgid "8th note tied to quarter note in next beat"
-msgstr "Crochet liée à une noire dans la pulsation suivant"
+msgstr "Croche liée à une noire sur la pulsation suivante"
 
 #: L2_MusicReading/L2_MusicReading.cpp:332
 #: L2_MusicReading/L2_MusicReading.cpp:349
 msgid "Note tied to four 16th notes"
-msgstr "Note liée aux quatre double crochets"
+msgstr "Note liée à quatre doubles croches"
 
 #: L2_MusicReading/L2_MusicReading.cpp:337
 msgid " - Train your ear: Quarter note tied to four 16th notes."
-msgstr " - Entraînez vos oreilles: Noire liée aux quatre double crochets."
+msgstr " - Entraînez votre oreille : noire liée à quatre doubles croches."
 
 #: L2_MusicReading/L2_MusicReading.cpp:339
 msgid " - Train your ear: 8th note tied to four 16th notes."
-msgstr " - Entraînez vos oreilles: Crochet"
+msgstr " - Entraînez votre oreille : croche liée à quatre doubles croches."
 
 #: L2_MusicReading/L2_MusicReading.cpp:343
 msgid "Quarter note tied to four 16th notes"
-msgstr "Noire liée aux quatre double crochets"
+msgstr "Noire liée à quatre doubles croches"
 
 #: L2_MusicReading/L2_MusicReading.cpp:346
 msgid "8th note tied to four 16th notes"
-msgstr "Crochet liée aux quatre double crochets"
+msgstr "Croche liée à quatre doubles croches"
 

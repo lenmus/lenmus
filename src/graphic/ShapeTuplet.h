@@ -59,7 +59,7 @@ public:
 	~lmShapeTuplet();
 
 	//implementation of pure virtual methods in base class
-    void Render(lmPaper* pPaper, wxColour color=*wxBLACK);
+    void Render(lmPaper* pPaper, wxColour color);
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
@@ -78,7 +78,6 @@ protected:
     lmLUnits		m_uxStart, m_uyStart;
     lmLUnits		m_uxEnd, m_uyEnd;
     wxString		m_sNumber;
-    wxColour		m_color;
 	bool			m_fAbove;
     bool			m_fShowNumber;
     lmETupletDesign	m_nTupletDesign;

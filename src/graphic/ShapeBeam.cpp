@@ -371,6 +371,7 @@ void lmShapeBeam::AdjustStems()
     }
     else if (uMinStem > dyStem) {
         // all stems are greater than the standard size. Reduce them.
+		//TODO. For chords the size must be measured from highest/lowest pitch note
         uyIncr = -(uMinStem - dyStem);
         fAdjust = true;
     }
@@ -463,14 +464,14 @@ lmLUnits lmShapeBeam::ComputeYPosOfSegment(lmShapeStem* pShapeStem, lmLUnits uyS
 	//    if (m_fStemsDown)
 	//	{
  //   //        lmNote* pMinNote = (pNote->GetChord())->GetMinNote();
- //   //        uyPos = pMinNote->GetYStem() + pNote->GetStemLength();
+ //   //        uyPos = pMinNote->GetYStartStem() + pNote->GetStemLength();
  //       }
  //       else
 	//	{
  //   //        lmNote* pMaxNote = (pNote->GetChord())->GetMaxNote();
- //   //        uyPos = pMaxNote->GetYStem() - pNote->GetStemLength();
+ //   //        uyPos = pMaxNote->GetYStartStem() - pNote->GetStemLength();
  //           //wxLogMessage(_T("[lmShapeBeam::ComputeYPosOfSegment] uyPos=%.2f, yStem=%.2f, stemLength=%.2f"),
- //           //    uyPos, pMaxNote->GetYStem(), pNote->GetStemLength());
+ //           //    uyPos, pMaxNote->GetYStartStem(), pNote->GetStemLength());
  //       }
  //   }
  //   else 

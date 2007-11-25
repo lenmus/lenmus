@@ -115,7 +115,7 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
     // default lmVStaff margins (logical units = tenths of mm)
     m_nHeight = 0;          //a value of 0 means 'compute it'
     m_leftMargin = 0;
-    m_topMargin = 0;
+    m_topMargin = 2000;
     m_rightMargin = 0;
     m_bottomMargin = lmToLogicalUnits(1, lmCENTIMETERS);    // 1 cm
 
@@ -989,7 +989,7 @@ void lmVStaff::AddPrologShapes(lmBoxSliceVStaff* pBSV, int nMeasure, bool fDrawT
 
     wxStaffListNode* pNode = m_cStaves.GetFirst();
     lmStaff* pStaff = (lmStaff*)NULL;
-    lmLUnits yOffset = 0;
+    lmLUnits yOffset = m_topMargin;
     lmLUnits xPos=0;
     lmLUnits nWidth=0;
 

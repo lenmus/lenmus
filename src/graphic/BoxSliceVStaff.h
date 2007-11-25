@@ -57,7 +57,7 @@ public:
     lmBoxSliceVStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff);
     ~lmBoxSliceVStaff();
 
-    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK);
+    void Render(lmPaper* pPaper, lmUPoint uPos);
 	void AddShape(lmShape* pShape);
 
 	//positioning and bounds
@@ -68,6 +68,7 @@ public:
 
     //info
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
+	lmShapeStaff* GetStaffShape(int i) const { return m_ShapeStaff[i]; }
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);

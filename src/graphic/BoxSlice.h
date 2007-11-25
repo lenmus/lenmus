@@ -65,7 +65,7 @@ public:
 
 	//render
 	void DrawSelRectangle(lmPaper* pPaper);
-    void Render(lmPaper* pPaper, lmUPoint uPos, wxColour color=*wxBLACK);
+    void Render(lmPaper* pPaper, lmUPoint uPos);
 
     //info
     inline int GetNumMeasure() const { return m_nAbsMeasure; }

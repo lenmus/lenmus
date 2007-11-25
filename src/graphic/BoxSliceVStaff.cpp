@@ -65,18 +65,18 @@ lmBoxSliceVStaff::~lmBoxSliceVStaff()
     m_ShapeStaff.clear();
 }
 
-void lmBoxSliceVStaff::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+void lmBoxSliceVStaff::Render(lmPaper* pPaper, lmUPoint uPos)
 {
     //render staff lines
     for (int i=0; i < (int)m_ShapeStaff.size(); i++)
     {
-        m_ShapeStaff[i]->Render(pPaper, color);   //(pPaper, uPos, color);
+        m_ShapeStaff[i]->Render(pPaper);
     }
 
 	//render shapes
     for (int i=0; i < (int)m_Shapes.size(); i++)
     {
-        m_Shapes[i]->Render(pPaper, color);   //(pPaper, uPos, color);
+        m_Shapes[i]->Render(pPaper);
     }
 
 #if 0   //1 = render also staffObjs. 

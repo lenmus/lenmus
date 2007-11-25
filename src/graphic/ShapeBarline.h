@@ -54,7 +54,7 @@ public:
 	~lmShapeBarline();
 
 	//implementation of pure virtual methods in base class
-    void Render(lmPaper* pPaper, wxColour color=*wxBLACK);
+    void Render(lmPaper* pPaper, wxColour color);
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
@@ -76,15 +76,11 @@ protected:
     lmLUnits m_uSpacing;            // between lines and lines-dots
     lmLUnits m_uRadius;             // for dots
 
-    //position
+    //position and size
     lmLUnits    m_uxPos;
     lmLUnits    m_uyTop;
     lmLUnits    m_uyBottom;
-
 	lmLUnits	m_uWidth;
-
-    wxColour    m_color;
-
 
 };
 

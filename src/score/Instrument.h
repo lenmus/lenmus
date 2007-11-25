@@ -26,7 +26,7 @@
 #pragma interface "Instrument.cpp"
 #endif
 
-
+class lmBox;
 
 class lmInstrument : public lmObject
 {
@@ -52,8 +52,8 @@ public:
     lmLUnits GetIndentOther() { return m_nIndentOther; }
 
     void MeasureNames(lmPaper* pPaper);
-    void DrawName(lmPaper* pPaper, wxColour colorC = *wxBLACK);
-    void DrawAbbreviation(lmPaper* pPaper, wxColour colorC = *wxBLACK);
+	void AddNameShape(lmBox* pBox, lmPaper* pPaper);
+	void AddAbbreviationShape(lmBox* pBox, lmPaper* pPaper);
 
 	wxString GetInstrName();
 

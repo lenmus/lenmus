@@ -59,8 +59,6 @@ public:
     ~lmBoxScore();
 
     lmBoxPage* AddPage();
-
-    void Render(lmPaper* pPaper);                   
     void RenderPage(int nPage, lmPaper* pPaper); 
 
     inline lmBoxPage* GetCurrentPage() const { return m_aPages.back(); }

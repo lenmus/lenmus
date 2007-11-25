@@ -40,6 +40,8 @@
 #include "Score.h"
 #include "../app/global.h"
 #include "../sound/SoundEvents.h"
+#include "../graphic/GMObject.h"
+#include "../graphic/Shapes.h"
 
 // global unique variables used during score building
 lmNoteRest*    g_pLastNoteRest;
@@ -66,7 +68,7 @@ lmScore::lmScore() : lmObject((lmObject*)NULL)
     m_pSoundMngr = (lmSoundManager*)NULL;
     m_sScoreName = _T("New score");
 
-    //! @todo user options, not a constant
+    //TODO user options, not a constant
     m_nTopSystemDistance = lmToLogicalUnits(2, lmCENTIMETERS);    // 2 cm
 
     //default renderization options
@@ -91,7 +93,6 @@ lmScore::lmScore() : lmObject((lmObject*)NULL)
 
 lmScore::~lmScore()
 {
-    //wxLogMessage(_T("[lmScore::~lmScore] Deleting lmScore object"));
     m_cInstruments.DeleteContents(true);
     m_cInstruments.Clear();
 
@@ -106,8 +107,8 @@ lmScore::~lmScore()
     m_cHighlighted.DeleteContents(false);    //Staffobjs must not be deleted, only the list
     m_cHighlighted.Clear();
 
-    //@aware:   titles must not be deleted. As they are included in global list they
-    //          have been deleted a couple of lines above. Following lines produce a crash.
+    //AWARE:   titles must not be deleted. As they are included in global list they
+    //         have been deleted a couple of lines above. Following lines produce a crash.
     //m_cTitles.DeleteContents(true);
     //m_cTitles.Clear();
 
@@ -146,7 +147,8 @@ void lmScore::SetScoreName(wxString sName)
 
 int lmScore::GetNumMeasures()
 {
-    //! @limit it is being assumed that all instruments and staves have the same number of bars
+    //LIMIT
+	//it is being assumed that all instruments and staves have the same number of bars
     InstrumentsList::Node *node = m_cInstruments.GetFirst();
     lmInstrument *pInstr = node->GetData();
     lmVStaff *pStaff = pInstr->GetVStaff(1);
@@ -159,6 +161,7 @@ lmInstrument* lmScore::AddInstrument(int nVStaves,
 {
     //add an lmInstrument with nVStaves (1..m) empty VStaves.
     //nMIDIChannel is the MIDI channel to use for playing this instrument
+
     lmInstrument* pInstr = new lmInstrument(this, nVStaves, nMIDIChannel, nMIDIInstr,
                                             sName, sAbbrev);
     m_cInstruments.Append(pInstr);
@@ -171,6 +174,7 @@ lmInstrument* lmScore::AddInstrument(int nVStaves, int nMIDIChannel, int nMIDIIn
 {
     //add an lmInstrument with nVStaves (1..m) empty VStaves.
     //nMIDIChannel is the MIDI channel to use for playing this instrument
+
     lmInstrument* pInstr = new lmInstrument(this, nVStaves, nMIDIChannel, nMIDIInstr,
                                             pName, pAbbrev);
     m_cInstruments.Append(pInstr);
@@ -178,16 +182,16 @@ lmInstrument* lmScore::AddInstrument(int nVStaves, int nMIDIChannel, int nMIDIIn
 
 }
 
-//returns lmVStaff number nVStaff (1..n), of lmInstrument nInstr (1..m)
 lmVStaff* lmScore::GetVStaff(int nInstr, int nVStaff)
 {
-    int i;
+	//returns lmVStaff number nVStaff (1..n), of lmInstrument nInstr (1..m)
+
+	int i;
     InstrumentsList::Node *node;
     lmInstrument *pInstr;
-    //iterate over the list to locate lmInstrument nInstr
+    //iterate over the list to locate instrument nInstr
     for (i=1, node = m_cInstruments.GetFirst();
         node && i < nInstr; node = node->GetNext(), i++ ) {}
-//    wxASSERT_MSG{pInstr != 0, _T("No existe el Instrumento num. nInstr"));
     pInstr = node->GetData();
     return(pInstr->GetVStaff(nVStaff));
 }
@@ -204,35 +208,33 @@ lmInstrument* lmScore::XML_FindInstrument(wxString sId)
     return pInstr;
 }
 
-void lmScore::WriteTitles(bool fMeasuring, lmPaper *pPaper)
+void lmScore::LayoutTitles(lmBox* pBox, lmPaper *pPaper)
 {
-    lmLUnits yPaperPos;
-
-    if (fMeasuring) yPaperPos = pPaper->GetCursorY();
+    lmLUnits uyStartPos = pPaper->GetCursorY();		//save, to measure height
 
     lmScoreText* pTitle;
     lmLUnits nPrevTitleHeight = 0;
     wxStaffObjsListNode* pNode;
-    for(pNode = m_cTitles.GetFirst(); pNode; pNode = pNode->GetNext()) {
+    for(pNode = m_cTitles.GetFirst(); pNode; pNode = pNode->GetNext())
+	{
         pTitle = (lmScoreText*)pNode->GetData();
-        if (fMeasuring)
-            nPrevTitleHeight = MeasureTitle(pPaper, pTitle, nPrevTitleHeight);
-        else
-            pTitle->Draw(DO_DRAW, pPaper);
+		nPrevTitleHeight = CreateTitleShape(pBox, pPaper, pTitle, nPrevTitleHeight);
     }
 
-   if (fMeasuring)
-       m_nHeadersHeight = pPaper->GetCursorY() - yPaperPos;
+	m_nHeadersHeight = pPaper->GetCursorY() - uyStartPos;
 
 }
 
-lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle, lmLUnits nPrevTitleHeight)
+lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pTitle,
+								   lmLUnits nPrevTitleHeight)
 {
-    // returns height of title
+    // Creates the shape for the title and adds it to the box.
+	// Returns height of title
 
     lmLUnits nWidth, nHeight;
+	lmShapeTex2* pShape = (lmShapeTex2*)NULL;
 
-    // measure title
+    // if not yet measured and positioned do it
     if (!pTitle->IsFixed())
     {
         lmEAlignment nAlign = pTitle->GetAlignment();
@@ -274,11 +276,11 @@ lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle, lmLUnits nP
         pPaper->SetCursorY( yPaperPos );
 
         //measure the text so that it can be properly positioned
-        pTitle->Draw(DO_MEASURE, pPaper);
-        pPaper->SetCursorX(xInitPaperPos);      //restore value altered by Draw sentence
+        pShape = pTitle->CreateShape(pPaper);
+        pPaper->SetCursorX(xInitPaperPos);      //restore values altered by CreateShape
         pPaper->SetCursorY(yPaperPos);
-        nWidth = pTitle->GetSelRect().width;
-        nHeight = pTitle->GetSelRect().height;
+        nWidth = pShape->GetWidth();
+        nHeight = pShape->GetHeight();
 
         //Force new line if no space in current line
         lmLUnits xSpace = pPaper->GetRightMarginXPos() - xInitPaperPos;
@@ -324,17 +326,22 @@ lmLUnits lmScore::MeasureTitle(lmPaper *pPaper, lmScoreText* pTitle, lmLUnits nP
         }
     }
 
-    pTitle->Draw(DO_MEASURE, pPaper);
+	//the position has been computed. Create the shape if not yet created or
+	//update it, if its was created during measurements 
+	if (pShape) delete pShape;
+	pShape = pTitle->CreateShape(pPaper);
+
+	//add shape to the box
+	pBox->AddShape(pShape);
+
     pTitle->SetFixed(true);
-    nWidth = pTitle->GetSelRect().width;
-    nHeight = pTitle->GetSelRect().height;
+    nHeight = pShape->GetHeight();
 
     //if rigth aligned, advance new line
     if (pTitle->GetAlignment() == lmALIGN_RIGHT) {
         pPaper->SetCursorX(pPaper->GetLeftMarginXPos());
         pPaper->IncrementCursorY( nHeight );
     }
-
 
     return nHeight;
 

@@ -327,9 +327,9 @@ lmLUnits lmTimeposTable::ArrangeStaffobjsByTime(bool fTrace)
             uShift = pTAE->uShift;
 
             //process this entry at TimePos table
-        ///*dbg*/    wxLogMessage(wxString::Format(
-        //            _T("[lmTimeposTable::ArrangeStaffobjsByTime] applying shift (%.2f) to entry %.2f. rTime=%.2f "),
-        //            uShift, i, pTAE->rTimePos ));
+			///*dbg*/    wxLogMessage(wxString::Format(
+			//            _T("[lmTimeposTable::ArrangeStaffobjsByTime] applying shift (%.2f) to entry %d. rTime=%.2f "),
+			//            uShift, i, pTAE->rTimePos ));
             pTPE = m_aTimePos[iItem];
             pTPE->m_xFinal += uShift;
             pTPE->m_uxAnchor += uShift;

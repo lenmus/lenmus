@@ -38,7 +38,8 @@ class lmClef: public lmStaffObj
 {
 public:
     //constructor and destructor
-    lmClef(EClefType nClefType, lmVStaff* pStaff, int nNumStaff=1, bool fVisible=true);
+    lmClef(EClefType nClefType, lmVStaff* pStaff, int nNumStaff=1, bool fVisible=true,
+		   wxColour colorC = *wxBLACK);
     ~lmClef() {}
 
     //other methods
@@ -70,6 +71,7 @@ private:
     //variables
     EClefType       m_nClefType;        //type of clef
     bool            m_fHidden;          //to hide it in system prolog
+	wxColour		m_color;			//clef color
 
 };
 

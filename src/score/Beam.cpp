@@ -19,16 +19,11 @@
 //
 //-------------------------------------------------------------------------------------
 
-// @class lmBeam
+// class lmBeam
 //    lmBeam objects are auxiliary objects within lmNote objects to contain the information and
 //    methods related to beaming: i.e. grouping the beams of several consecutive notes.
 //
 //    A beamed group can contain rests, but can not start or end with a rest.
-
-// @todo   Beamed groups can not start nor end with a rest. I am not sure if this is
-//		    has been systematically enforced; I belive that there is still code to
-//		    support rests in the begining or in the end. This code has to be identified
-//		    and removed.
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "Beam.h"

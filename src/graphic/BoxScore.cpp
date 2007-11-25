@@ -59,30 +59,19 @@ lmBoxScore::~lmBoxScore()
     m_aPages.clear();
 }
 
-void lmBoxScore::Render(lmPaper* pPaper)
-{
-    // write score titles
-    m_pScore->WriteTitles(DO_DRAW, pPaper);
-    pPaper->RestartPageCursors();                //restore page cursors are at top-left corner
-
-    //loop to render pages
-    for (int i=0; i < (int)m_aPages.size(); i++)
-    {
-        m_aPages[i]->Render(m_pScore, pPaper);
-    }
-
-}
-
 void lmBoxScore::RenderPage(int nPage, lmPaper* pPaper)
 {
     // Render page nPage (1..n)
+	// This method is invoked from lmGraphicManager::Render()
     
     wxASSERT(nPage > 0 && nPage <= (int)m_aPages.size());
 
     if (nPage == 1) {
-        // write score titles
-        m_pScore->WriteTitles(DO_DRAW, pPaper);
-        pPaper->RestartPageCursors();                //restore page cursors are at top-left corner
+		//render score titles
+		for (int i=0; i < (int)m_Shapes.size(); i++)
+		{
+			m_Shapes[i]->Render(pPaper);
+		}
     }
 
     //render the requested page

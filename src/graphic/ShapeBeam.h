@@ -57,7 +57,7 @@ public:
 	void SetStemsDown(bool fValue);
 
 	//implementation of pure virtual methods in base class
-    void Render(lmPaper* pPaper, wxColour color=*wxBLACK);
+    void Render(lmPaper* pPaper, wxColour color);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
 	//layout changes

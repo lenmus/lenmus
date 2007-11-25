@@ -217,7 +217,8 @@ class lmShape : public lmGMObject
 public:
     virtual ~lmShape();
 
-	virtual void Render(lmPaper* pPaper, wxColour color=*wxBLACK)=0;
+	virtual void Render(lmPaper* pPaper, wxColour color)=0;
+	virtual void Render(lmPaper* pPaper) { Render(pPaper, m_color); }
 
     // methods related to selection rectangle
     void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight);
@@ -249,7 +250,7 @@ public:
 
 protected:
     lmShape(lmEGMOType m_nType, lmObject* pOwner, wxString sName=_T("Shape"),
-			bool fDraggable = false);
+			bool fDraggable = false, wxColour color=*wxBLACK);
     void RenderCommon(lmPaper* pPaper, wxColour colorC);
     void RenderCommon(lmPaper* pPaper);
 	void ShiftBoundsAndSelRec(lmLUnits xIncr, lmLUnits yIncr);
@@ -273,7 +274,8 @@ protected:
 
 	//list of shapes attached to this one
 	std::vector<lmAtachPoint*>	m_cAttachments;
-
+	
+	wxColour	m_color;
 
 };
 
@@ -286,12 +288,13 @@ public:
     //implementation of virtual methods from base class
     virtual wxString Dump(int nIndent) = 0;
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
-    virtual void Render(lmPaper* pPaper, wxColour color=*wxBLACK)=0;
+    virtual void Render(lmPaper* pPaper, wxColour color)=0;
+	virtual void Render(lmPaper* pPaper) { Render(pPaper, m_color); }
 
 
 protected:
     lmSimpleShape(lmEGMOType m_nType, lmObject* pOwner, wxString sName=_T("SimpleShape"),
-				  bool fDraggable = false);
+				  bool fDraggable = false, wxColour color=*wxBLACK);
 
 
 };
@@ -311,7 +314,7 @@ public:
     //virtual methods from base class
     virtual wxString Dump(int nIndent);
     virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
-	virtual void Render(lmPaper* pPaper, wxColour color=*wxBLACK);
+	virtual void Render(lmPaper* pPaper, wxColour color);
 
 	//overrides
     bool ContainsPoint(lmUPoint& pointL);

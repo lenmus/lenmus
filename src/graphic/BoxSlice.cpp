@@ -126,11 +126,11 @@ void lmBoxSlice::DrawSelRectangle(lmPaper* pPaper)
 
 }
 
-void lmBoxSlice::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+void lmBoxSlice::Render(lmPaper* pPaper, lmUPoint uPos)
 {
     for (int i=0; i < (int)m_SliceInstr.size(); i++)
     {
-        m_SliceInstr[i]->Render(pPaper, uPos, color);
+        m_SliceInstr[i]->Render(pPaper, uPos);
     }
 }
 

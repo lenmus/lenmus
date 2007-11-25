@@ -896,17 +896,19 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
             // we've got a valid object: select/deselect it.
 			m_pCanvas->SelectObject(pGMO);
 
-            ////prepare paper DC to draw bounds rectangles
-			//wxClientDC dc(m_pCanvas);
-			//dc.SetMapMode(lmDC_MODE);
-			//dc.SetUserScale( m_rScale, m_rScale );
-			////position DC origing at current page origin
-			//wxPoint org = GetDCOriginForPage(nNumPage);
-			//dc.SetDeviceOrigin(org.x, org.y);
-			////set paper and draw selection rectangle
-			//m_Paper.SetDrawer(new lmDirectDrawer(&dc));
+			//DBG ---------------------------------------------------------------------
+            //prepare paper DC to draw bounds rectangles
+			wxClientDC dc(m_pCanvas);
+			dc.SetMapMode(lmDC_MODE);
+			dc.SetUserScale( m_rScale, m_rScale );
+			//position DC origing at current page origin
+			wxPoint org = GetDCOriginForPage(nNumPage);
+			dc.SetDeviceOrigin(org.x, org.y);
+			//set paper and draw selection rectangle
+			m_Paper.SetDrawer(new lmDirectDrawer(&dc));
 
-			//pGMO->DrawBounds(&m_Paper, (pGMO->IsShape() ? *wxRED : *wxGREEN));
+			pGMO->DrawBounds(&m_Paper, (pGMO->IsShape() ? *wxRED : *wxGREEN));
+			//END DBG ------------------------------------------------------------------
 
 			if (pGMO->GetType() == eGMO_BoxSlice)
             {

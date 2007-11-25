@@ -46,11 +46,13 @@
 //constructors and destructor
 //
 
-lmClef::lmClef(EClefType nClefType, lmVStaff* pStaff, int nNumStaff, bool fVisible) :
+lmClef::lmClef(EClefType nClefType, lmVStaff* pStaff, int nNumStaff, bool fVisible,
+			   wxColour colorC) :
     lmStaffObj(pStaff, eSFOT_Clef, pStaff, nNumStaff, fVisible, lmDRAGGABLE)
 {
     m_nClefType = nClefType;
     m_fHidden = false;
+	m_color = colorC;
 }
 
 //--------------------------------------------------------------------------------------
@@ -121,7 +123,7 @@ void lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     //create the shape object
     lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetFont(), pPaper,
                                             lmUPoint(pPaper->GetCursorX(), yPos), 
-											_T("Clef"), lmDRAGGABLE);
+											_T("Clef"), lmDRAGGABLE, m_color);
 	pBox->AddShape(pShape);
     m_pShape2 = pShape;
 
@@ -139,7 +141,7 @@ lmLUnits lmClef::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
 
 
     // get the shift to the staff on which the clef must be drawn
-	lmLUnits yPos = uPos.y;	//pPaper->GetCursorY() + m_pVStaff->GetStaffOffset(m_nStaffNum);
+	lmLUnits yPos = uPos.y;	// + m_pVStaff->GetStaffOffset(m_nStaffNum);
     yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
 
     //create the shape object

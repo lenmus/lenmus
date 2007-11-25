@@ -73,7 +73,6 @@ public:
                  double rScale, lmPaper* pPaper, int nOptions=0);
 
     void Layout();                          //measure phase
-    void Render();                          //drawing phase
     wxBitmap* Render(bool fUseBitmaps, int nPage);      //render page 1..n
 
     //bitmaps export

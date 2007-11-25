@@ -92,7 +92,6 @@ protected:
     lmUPoint        m_uEnd;
     lmUPoint        m_uCtrol1;
     lmUPoint        m_uCtrol2;
-    wxColour		m_color;
     bool            m_fArchUnder;       //arch under notes (like an U)
 
 };

@@ -128,13 +128,6 @@ void lmGraphicManager::Layout()
 
 }
 
-void lmGraphicManager::Render()
-{
-    if (!m_pBoxScore) return;
-    m_pBoxScore->Render(m_pPaper);
-
-}
-
 wxBitmap* lmGraphicManager::Render(bool fUseBitmaps, int nPage)
 {
     //Renders page 1..n.

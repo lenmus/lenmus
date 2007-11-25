@@ -73,11 +73,17 @@ lmBoxSliceVStaff* lmBoxSliceInstr::AddVStaff(lmVStaff* pVStaff)
     return pBSV;
 }
 
-void lmBoxSliceInstr::Render(lmPaper* pPaper, lmUPoint uPos, wxColour color)
+void lmBoxSliceInstr::Render(lmPaper* pPaper, lmUPoint uPos)
 {
+	//render instrument names, bracet/bracket
+	for (int i=0; i < (int)m_Shapes.size(); i++)
+	{
+		m_Shapes[i]->Render(pPaper);
+	}
+
     for (int i=0; i < (int)m_SlicesVStaff.size(); i++)
     {
-        m_SlicesVStaff[i]->Render(pPaper, uPos, color);
+        m_SlicesVStaff[i]->Render(pPaper, uPos);
     }
 }
 

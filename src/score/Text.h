@@ -55,11 +55,14 @@ protected:
 };
 
 
+class lmShapeTex2;
+class lmBox;
+
 class lmScoreText :  public lmStaffObj
 {
 public:
     lmScoreText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,
-           lmLocation tPos, lmFontInfo tFont);
+           lmLocation tPos, lmFontInfo tFont, wxColour colorC = *wxBLACK);
 
     ~lmScoreText() {}
 
@@ -69,7 +72,6 @@ public:
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
-    wxBitmap* GetBitmap(double rScale);
     void SetFont(lmPaper* pPaper);
 
     //    debugging
@@ -82,6 +84,7 @@ public:
 	wxString GetText() {return m_sText; }
     lmEAlignment GetAlignment() { return m_nAlignment; }
     lmLocation GetLocation() { return m_tPos; }
+	lmShapeTex2* CreateShape(lmPaper* pPaper);
 
 private:
     wxString        m_sText;
@@ -89,6 +92,7 @@ private:
 
     lmLocation      m_tPos;
     lmEAlignment    m_nAlignment;
+	wxColour		m_color;
 
     wxString        m_sFontName;
     int             m_nFontSize;

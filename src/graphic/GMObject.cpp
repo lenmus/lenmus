@@ -158,12 +158,14 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
 //========================================================================================
 
 
-lmShape::lmShape(lmEGMOType nType, lmObject* pOwner, wxString sName, bool fDraggable)
+lmShape::lmShape(lmEGMOType nType, lmObject* pOwner, wxString sName, bool fDraggable,
+				 wxColour color)
 	: lmGMObject(nType, fDraggable)
 {
 	m_pOwner = pOwner;
     m_sShapeName = sName;
 	m_pOwnerBox = (lmBox*)NULL;
+	m_color = color;
 }
 
 lmShape::~lmShape()
@@ -262,8 +264,8 @@ void lmShape::InformAttachedShapes(lmLUnits ux, lmLUnits uy, lmEParentEvent nEve
 //========================================================================================
 
 lmSimpleShape::lmSimpleShape(lmEGMOType nType, lmObject* pOwner, wxString sName,
-							 bool fDraggable)
-	: lmShape(nType, pOwner, sName, fDraggable)
+							 bool fDraggable, wxColour color)
+	: lmShape(nType, pOwner, sName, fDraggable, color)
 {
 }
 
@@ -373,12 +375,13 @@ wxString lmCompositeShape::Dump(int nIndent)
 
 void lmCompositeShape::Render(lmPaper* pPaper,  wxColour color)
 {
+	WXUNUSED(color);
 	RenderCommon(pPaper, *wxGREEN);
 
 	//Default behaviour: render all components
     for (int i=0; i < (int)m_Components.size(); i++)
     {
-        m_Components[i]->Render(pPaper, color);
+        m_Components[i]->Render(pPaper);
     }
 }
 

@@ -73,6 +73,9 @@ public:
     inline lmLUnits GetSystemIndent() const { return m_nIndent; }
     inline lmLUnits GetSystemFinalX() const { return m_uBoundsBottom.x; }
 
+	//miscellaneous info 
+	lmLUnits GetYTopFirstStaff();
+
     //pointing at
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
     lmBoxInstrSlice* FindInstrSliceAtPosition(lmUPoint& pointL);

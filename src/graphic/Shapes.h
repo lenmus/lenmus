@@ -63,7 +63,6 @@ private:
     lmLUnits    m_xStart, m_yStart;
     lmLUnits    m_xEnd, m_yEnd;
     lmLUnits    m_uWidth;
-    wxColour    m_color;
 
 };
 
@@ -91,7 +90,6 @@ protected:
     lmLUnits		m_uWidth;
 	lmLUnits		m_uBoundsExtraWidth;
 	lmELineEdges	m_nEdge;
-    wxColour		m_color;
 
 };
 
@@ -127,7 +125,7 @@ class lmShapeGlyp2 : public lmSimpleShape
 public:
     lmShapeGlyp2(lmObject* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
                  lmUPoint offset, wxString sName=_T("ShapeGlyp2"),
-				 bool fDraggable = false);
+				 bool fDraggable = false, wxColour color = *wxBLACK);
     virtual ~lmShapeGlyp2() {}
 
     //implementation of virtual methods from base class
@@ -183,7 +181,7 @@ class lmShapeTex2 : public lmSimpleShape
 public:
     lmShapeTex2(lmObject* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
                 lmUPoint offset, wxString sName=_T("ShapeTex2"),
-				bool fDraggable = false);
+				bool fDraggable = false, wxColour color = *wxBLACK);
     ~lmShapeTex2() {}
 
     //implementation of virtual methods from base class
@@ -206,13 +204,17 @@ private:
 class lmShapeStem : public lmShapeLin2
 {
 public:
-    lmShapeStem(lmObject* pOwner, lmLUnits xStart, lmLUnits yStart,
-                lmLUnits xEnd, lmLUnits yEnd, bool fStemDown, lmLUnits uWidth, wxColour nColor);
+    lmShapeStem(lmObject* pOwner, lmLUnits xPos, lmLUnits yStart, lmLUnits yEnd,
+				bool fStemDown, lmLUnits uWidth, wxColour nColor);
     ~lmShapeStem() {}
 
 	//specific methods
 	void SetLength(lmLUnits uLenght, bool fModifyTop);
 	inline bool StemDown() const { return m_fStemDown; }
+	void Adjust(lmLUnits xPos, lmLUnits yStart, lmLUnits yEnd, bool fStemDown);
+	lmLUnits GetYStartStem();
+	lmLUnits GetYEndStem();
+	lmLUnits GetXCenterStem();
 
 private:
 	bool	m_fStemDown;
@@ -224,8 +226,9 @@ class lmShapeClef : public lmShapeGlyp2
 public:
     lmShapeClef(lmObject* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
                 lmUPoint offset, wxString sName=_T("Clef"),
-				bool fDraggable = false) 
-				: lmShapeGlyp2(pOwner, nGlyph, pFont, pPaper, offset, sName, fDraggable) {}
+				bool fDraggable = false, wxColour color = *wxBLACK) 
+				: lmShapeGlyp2(pOwner, nGlyph, pFont, pPaper, offset, sName,
+				               fDraggable, color) {}
     ~lmShapeClef() {}
 
 	//overrides

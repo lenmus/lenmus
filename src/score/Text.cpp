@@ -36,6 +36,9 @@
 
 #include "Score.h"
 #include "Text.h"
+#include "../graphic/GMObject.h"
+#include "../graphic/Shapes.h"
+
 
 //Aux. function to convert font pointsize to lmLUnits
 int PointsToLUnits(lmLUnits nPoints)
@@ -77,7 +80,7 @@ lmBasicText::lmBasicText(wxString sText, wxString sLanguage,
 //==========================================================================================
 
 lmScoreText::lmScoreText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,
-               lmLocation tPos, lmFontInfo tFont) :
+               lmLocation tPos, lmFontInfo tFont, wxColour colorC) :
     lmStaffObj(pScore, eSFOT_Text, (lmVStaff*)NULL, 0, true, lmDRAGGABLE)
 {
     m_pScore = pScore;
@@ -88,24 +91,42 @@ lmScoreText::lmScoreText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,
     m_fItalic = (tFont.nStyle == lmTEXT_ITALIC || tFont.nStyle == lmTEXT_ITALIC_BOLD);
     m_tPos = tPos;
     m_nAlignment = nAlign;
+	m_color = colorC;
 
 }
 
-
-
-
-//-----------------------------------------------------------------------------------------
-// implementation of virtual methods defined in base abstract class lmStaffObj
-//-----------------------------------------------------------------------------------------
-
-wxBitmap* lmScoreText::GetBitmap(double rScale)
+lmShapeTex2* lmScoreText::CreateShape(lmPaper* pPaper)
 {
-    return PrepareBitMap(rScale, m_sText);
+    // Creates the shape and returns it
+
+	if (!m_pFont) SetFont(pPaper);
+	lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+    return new lmShapeTex2(this, m_sText, m_pFont, pPaper,
+                           uPos, _T("ScoreText"), lmDRAGGABLE, m_color);
 }
 
 void lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    //pPaper->SetFont(*m_pFont);
+    // This method is invoked by the base class (lmStaffObj). It is responsible for
+    // creating the shape object and adding it to the graphical model. 
+    // Paper cursor must be used as the base for positioning.
+
+	WXUNUSED(colorC);
+
+    //create the shape object
+    lmShapeTex2* pShape = CreateShape(pPaper);
+	pBox->AddShape(pShape);
+    m_pShape2 = pShape;
+
+	// set total width
+	m_uWidth = pShape->GetWidth();
+
+
+	//--------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------
+
+	//pPaper->SetFont(*m_pFont);
 
     //if (fMeasuring) {
     //    lmLUnits nWidth, nHeight;
@@ -146,6 +167,7 @@ wxString lmScoreText::Dump()
 
 wxString lmScoreText::SourceLDP(int nIndent)
 {
+	//TODO
     wxString sSource = _T("(text ");
     sSource += m_sText;
     sSource += _T(")");
@@ -155,7 +177,7 @@ wxString lmScoreText::SourceLDP(int nIndent)
 
 wxString lmScoreText::SourceXML(int nIndent)
 {
-    //! @todo all
+    //TODO
     wxString sSource = _T("TODO: lmScoreText XML Source code generation methods");
     return sSource;
 

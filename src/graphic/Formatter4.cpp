@@ -223,7 +223,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     }
 
     // write score titles
-    m_pScore->WriteTitles(DO_MEASURE, pPaper);
+    m_pScore->LayoutTitles(pBoxScore, pPaper);
     pPaper->RestartPageCursors();                                //restore page cursors are at top-left corner
     pPaper->IncrementCursorY(m_pScore->TopSystemDistance());    //advance to skip headers
 
@@ -231,19 +231,20 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
     int nAbsMeasure;    //number of bar in process (absolute, counted from the start of the score)
     int nRelMeasure;        //number of bar in process (relative, counted from the start of current system)
     lmLUnits ySystemPos;    //paper y position at which current system starts
-    /*
-    The algorithm has two independent loops:
+    
 
-        1. Phase DO_MEASURE
-            In the first one the number of measures that fits in the system is calculated, as
-            well as their size and the position of all their StaffObjs.
-            The number of measures per system is stored in .... and the positioning information is stored
-            in each lmStaffObj.
-
-        2. Phase DO_DRAW
-            In the second loop the StaffObjs are just rendered using the information compiled
-            in first loop.
-    */
+    // The algorithm has two independent loops:
+	//
+    //	1. Layout phase
+    //		In the first one the number of measures that fits in the system is finded out,
+	//		as well as their size and the position of all their StaffObjs.
+    //		The number of measures per system is stored in .... , the shapes are created 
+	//		and the positioning information is stored in the shapes.
+	//
+    //	2. Reder phase
+    //		In the second loop the StaffObjs are just rendered using the information compiled
+    //		in first loop.
+    //-------------------------------------------------------------------------------------
 
     //compute systems indentation
     lmLUnits nFirstSystemIndent = 0;
@@ -289,13 +290,14 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         //-------------------------------------------------------------------------------
 
         //if this is not the first system advance vertically the previous system height
-        if (nSystem != 1) {
+        if (nSystem != 1)
+		{
             //Here Paper is positioned at the start of the new current system. No
             //computation for this is needed as staves' height and spacing have been
             //added to paper as renderization took place.
             //Lets' verify is there is space left in paper for next system
-            //! @todo It is assumed that next system height is equal to previous one.
-            //!     It is necesary to compute each system height
+            //TODO It is assumed that next system height is equal to previous one.
+            //     It is necesary to compute each system height
             lmLUnits yNew = pPaper->GetCursorY() + nSystemHeight;
             if (yNew > pPaper->GetMaximumY() ) {
                 //wxLogMessage(_T("Page break needed. yCur=%.2f, yNew=%.2f, MaximumY=%.2f"), pPaper->GetCursorY(), yNew, pPaper->GetMaximumY());
@@ -310,7 +312,6 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         ySystemPos = pPaper->GetCursorY();  //save the start of system position
         pBoxSystem->SetPosition(pPaper->GetCursorX(), ySystemPos);
         pBoxSystem->SetFirstMeasure(nAbsMeasure);
-        pBoxSystem->SetIndent(((nSystem == 1) ? nFirstSystemIndent : nOtherSystemIndent ));
 
         bool fNewSystem = false;
         nRelMeasure = 1;    // the first measure in current system
@@ -320,10 +321,12 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //when sizing the previous measure column
             pPaper->SetCursorY( ySystemPos );
 
-            //if start of system, add system indentation to paper x pos.
-            if (nRelMeasure == 1) {
-                pPaper->IncrementCursorX(
-                    ((nSystem == 1) ? nFirstSystemIndent : nOtherSystemIndent ));
+			//if start of system, set initial spacing
+            if (nRelMeasure == 1)
+			{
+				pBoxSystem->SetIndent(((nSystem == 1) ? nFirstSystemIndent : nOtherSystemIndent ));
+				pPaper->IncrementCursorX(
+					((nSystem == 1) ? nFirstSystemIndent : nOtherSystemIndent ));
             }
 
             //size this measure column create BoxSlice (and BoxSlice hierarchy) for 
@@ -400,7 +403,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         if (m_nMeasuresInSystem == 0) {
             //The line width is not enough for drawing just one bar!!!
             pPaper->RestartPageCursors();    //as cursors has been modified by measurements
-            /*! @todo
+            /*TODO
                 this is too simple as RenderMinimal only produces good rendering
                 in simple short scores (no multi-line or multi-instrument)
             */
@@ -504,13 +507,16 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             pBoxSystem->UpdateXRight( pPaper->GetRightMarginXPos() );
         }
 
-	    //Add the shape for the initial barline that joins all staffs in a system
+	    //Add the shape for the initial barline that joins all staves in a system
 	    if (m_pScore->GetOptionBool(_T("Staff.DrawLeftBarline")) )
 	    {
+			//GetSliceVStaff(int i)
+			lmLUnits uxPos = pBoxSystem->GetXLeft() + 
+						     (nSystem == 1 ? nFirstSystemIndent : nOtherSystemIndent);
 		    lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
             lmShapeLin2* pLine = 
-                new lmShapeLin2(pVStaff, pBoxSystem->GetXLeft(), pBoxSystem->GetYTop(),
-						    pBoxSystem->GetXLeft(), pBoxSystem->GetYBottom(),
+                new lmShapeLin2(pVStaff, uxPos, pBoxSystem->GetYTopFirstStaff(),
+						    uxPos, pBoxSystem->GetYBottom(),
 						    uLineThickness, 0.0, *wxBLACK, _T("System joining line"),
 							eEdgeHorizontal);
 	        pBoxSystem->AddShape(pLine);
@@ -558,7 +564,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             if (nSystem != 1) {
                 //Here Paper is positioned at the start of the new current system.
                 //Lets' verify is there is space left in paper for next system
-                //! @todo It is assumed that next system height is equal to previous one.
+                //TODO It is assumed that next system height is equal to previous one.
                 //!     It is necesary to compute each system height
                 lmLUnits yNew = pPaper->GetCursorY() + nSystemHeight;
                 if (yNew > pPaper->GetMaximumY() )
@@ -626,7 +632,7 @@ lmLUnits lmFormatter4::ComputeSystemHeight(lmPaper* pPaper)
 
             //advance paper in height off this lmVStaff
             pVStaff->NewLine(pPaper);
-            //! @todo add inter-staff space
+            //TODO add inter-staff space
 
         }    // next lmVStaff
     }    // next lmInstrument
@@ -684,7 +690,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
     {
         //verify that program limits are observed
         if (pInstr->GetNumStaves() > MAX_STAVES_PER_SYSTEM) {
-            //! @todo log and display message properly
+            //TODO log and display message properly
             wxLogMessage(
                 _("[lmFormatter4::RenderJustified]: Program limitation: Maximum number of staves per system has been exceeded."));
             wxASSERT(false);
@@ -758,9 +764,8 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             //   rendering process and the available space for measures is all the paper width.
             //2. but for the other systems we must force the rendering of the prolog because there
             //   are no StaffObjs representing the prolog.
-            if (nSystem != 1 && nRelMeasure == 1) {
-                //pVStaff->DrawProlog(DO_MEASURE, nAbsMeasure, (nSystem == 1), pPaper);
-                ///*** create a BoxProlog object and add it to this BoxSliceVStaff
+            if (nSystem != 1 && nRelMeasure == 1)
+			{
 				pPaper->SetCursorX(xPaperPos);
 				pVStaff->AddPrologShapes(pBSV, nAbsMeasure, (nSystem == 1), pPaper);
             }
@@ -772,7 +777,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
             //x position to the left marging, all x position information stored
             //in m_timepos is relative to the start of the measure
             pVStaff->NewLine(pPaper);
-            //! @todo add inter-staff space
+            //TODO add inter-staff space
 
             ///*** Update measures of this BoxVStaffSlice
 
@@ -781,6 +786,15 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
         ///*** Update measures of this BoxInstrSlice
 		pBSI->SetYBottom(yBottomLeft);
 		pBoxSlice->SetYBottom(yBottomLeft);
+
+        // if first measure in system add instrument names and brackets/bracets
+		if (nRelMeasure == 1)
+		{
+			if (nSystem == 1)
+				pInstr->AddNameShape(pBSI, pPaper);
+			else
+				pInstr->AddAbbreviationShape(pBSI, pPaper);
+		}
 
     }    // next lmInstrument
 
@@ -897,7 +911,7 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
 
     wxASSERT(nAbsMeasure <= pVStaff->GetNumMeasures());
 
-    //! @todo Review this commented code. Must review also DrawMeasure
+    //TODO Review this commented code. Must review also DrawMeasure
     //      I think this code is only for positioning text relative to barline
     //StaffObjs could have positioning information relative to the start of barline position.
     //Therfore, it is necessary to store start of barline position so that relative positioned
@@ -1061,7 +1075,8 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
             pSO->Layout(pBSV, pPaper);
                 //store its final and anchor x positions
             oTimepos.SetCurXFinal(pPaper->GetCursorX());
-            oTimepos.SetCurXAnchor(oTimepos.GetCurXLeft() + pSO->GetAnchorPos());
+            oTimepos.SetCurXAnchor(pSO->GetAnchorPos());
+            //oTimepos.SetCurXAnchor(oTimepos.GetCurXLeft() + pSO->GetAnchorPos());
             //wxLogMessage(_T("[lmFormatter4::SizeMeasure] anchor pos = %.2f, ID=%d"), pSO->GetAnchorPos(), pSO->GetID() ); 
             // add after space
             if (pSO->GetClass() == eSFOT_NoteRest) {

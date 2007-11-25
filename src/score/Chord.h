@@ -71,6 +71,7 @@ private:
     lmNote*     m_pBaseNote;        //base note (first note in chord definition)
     lmNote*     m_pMinNote;         //lowest pitch note
     lmNote*     m_pMaxNote;         //highest pitch note
+    lmNote*     m_pLastNote;        //the last note added the chord
     bool        m_fStemDown;        //chord stem direction
     EStemType   m_nStemType;        //type of stem
 

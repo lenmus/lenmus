@@ -310,8 +310,8 @@ void lmShapeGlyph::Shift(lmLUnits xIncr, lmLUnits yIncr)
 //========================================================================================
 
 lmShapeGlyp2::lmShapeGlyp2(lmObject* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
-                           lmUPoint uPos, wxString sName, bool fDraggable)
-    : lmSimpleShape(eGMO_ShapeGlyph, pOwner, sName, fDraggable)
+                           lmUPoint uPos, wxString sName, bool fDraggable, wxColour color)
+    : lmSimpleShape(eGMO_ShapeGlyph, pOwner, sName, fDraggable, color)
 {
     m_nGlyph = nGlyph;
     m_pFont = pFont;
@@ -546,8 +546,8 @@ void lmShapeText::Shift(lmLUnits xIncr, lmLUnits yIncr)
 //========================================================================================
 
 lmShapeTex2::lmShapeTex2(lmObject* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
-						 lmUPoint offset, wxString sName, bool fDraggable)
-    : lmSimpleShape(eGMO_ShapeText, pOwner, sName, fDraggable)
+						 lmUPoint offset, wxString sName, bool fDraggable, wxColour color)
+    : lmSimpleShape(eGMO_ShapeText, pOwner, sName, fDraggable, color)
 {
     m_sText = sText;
     m_pFont = pFont;
@@ -612,10 +612,10 @@ void lmShapeTex2::Shift(lmLUnits xIncr, lmLUnits yIncr)
 // lmShapeStem object implementation: a vertical line
 //========================================================================================
 
-lmShapeStem::lmShapeStem(lmObject* pOwner, lmLUnits xStart, lmLUnits yStart,
-						 lmLUnits xEnd, lmLUnits yEnd, bool fStemDown,
+lmShapeStem::lmShapeStem(lmObject* pOwner, lmLUnits xPos, lmLUnits yStart,
+						 lmLUnits yEnd, bool fStemDown,
 						 lmLUnits uWidth, wxColour nColor)
-	: lmShapeLin2(pOwner, xStart, yStart, xEnd, yEnd, uWidth, 0.0, nColor,
+	: lmShapeLin2(pOwner, xPos, yStart, xPos, yEnd, uWidth, 0.0, nColor,
 				  _T("Stem"), eEdgeHorizontal)
 {
 	m_fStemDown = fStemDown;
@@ -644,7 +644,33 @@ void lmShapeStem::SetLength(lmLUnits uLenght, bool fModifyTop)
 
 }
 
+void lmShapeStem::Adjust(lmLUnits xPos, lmLUnits yStart, lmLUnits yEnd, bool fStemDown)
+{
+	m_fStemDown = fStemDown;
+	//re-create the shape
+	Create(xPos, yStart, xPos, yEnd, m_uWidth, m_uBoundsExtraWidth,
+		   m_color, m_nEdge);
+}
 
+lmLUnits lmShapeStem::GetYStartStem()
+{
+	//Start of stem is the nearest position to the notehead
+
+	return (m_fStemDown ? GetYTop() : GetYBottom());
+}
+
+lmLUnits lmShapeStem::GetYEndStem()
+{
+	//End of stem is the farthest position from the notehead
+
+	return (m_fStemDown ? GetYBottom() : GetYTop());
+}
+
+lmLUnits lmShapeStem::GetXCenterStem()
+{
+	//returns the stem x position. This position is in the middle of the line width
+	return m_xStart;
+}
 
 
 //========================================================================================

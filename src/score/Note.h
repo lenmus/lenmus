@@ -96,19 +96,18 @@ public:
     lmLUnits    GetStandardStemLenght();
     void        SetStemLength(lmLUnits uLength) { m_uStemLength = uLength; };
     void        SetStemDirection(bool fStemDown);
-    lmLUnits    GetXStemLeft() {return m_uxStem + m_uPaperPos.x; }
-    lmLUnits    GetXStemRight() {return m_uxStem + m_uStemThickness + m_uPaperPos.x; }
     lmLUnits    GetStemThickness() {return m_uStemThickness; }
-    lmLUnits    GetYStem() {return m_uyStem + m_uPaperPos.y; }
     lmLUnits    GetStemLength() { return m_uStemLength; }
-    lmLUnits    GetFinalYStem() {
-                    return GetYStem() + (m_fStemDown ? m_uStemLength : -m_uStemLength); }
     bool        StemGoesDown() { return m_fStemDown; }
-    void        SetStemInfo(lmLUnits uxStem, lmLUnits uyStem, lmLUnits uLength) {
-                    m_uxStem = uxStem;
-                    m_uyStem = uyStem;
-                    m_uStemLength = uLength;
-                }
+
+	//stems: methods related to layout phase
+    lmLUnits    GetXStemLeft();
+	lmLUnits	GetXStemCenter();
+    lmLUnits    GetXStemRight();
+    lmLUnits    GetYStartStem();
+    lmLUnits    GetYEndStem();
+	void		DeleteStemShape();
+
 
     // methods related to chords
     bool        IsInChord() { return (m_pChord != (lmChord*)NULL); }        
@@ -210,18 +209,10 @@ private:
     EClefType       m_nClef;            //clef to draw this note
     lmContext*      m_pContext;         //context for this note
 
-    // constituent shapes
-    lmShapeGlyp2*   m_pNoteheadShape;
-
     // additional positioning related variables
     lmLUnits        m_uSpacePrev;       // space (after accidental) before note
 
-    // flag information
-    lmLUnits        m_uyFlag;            //y pos for flag
-
     // stem information
-    lmLUnits        m_uxStem;           //pos and length of stem (relative to m_uPaperPos)
-    lmLUnits        m_uyStem;           //yStem refers to the notehead nearest position
     lmLUnits        m_uStemThickness;
     lmLUnits        m_uStemLength;     //length of stem;
     bool            m_fStemDown;       //stem direccion. true if down
@@ -245,6 +236,16 @@ private:
     bool        m_fNeedToBeTied;    //for building tie to previous note as the score is being built
 
 
+    // temporary information. Only valid during layout phase 
+    //-----------------------------------------------------------------------
+
+    // constituent shapes
+    lmShapeGlyp2*   m_pNoteheadShape;
+    lmShapeStem*    m_pStemShape;
+
+    // stem information
+    //lmLUnits        m_uxStem;           //pos and length of stem (relative to m_uPaperPos)
+    //lmLUnits        m_uyStem;           //yStem refers to the notehead nearest position
 
 
 };
