@@ -49,7 +49,7 @@
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(NotesList);
 
-const bool m_fDrawSmallNotesInBlock = false;    //! @todo option depending on used font
+const bool m_fDrawSmallNotesInBlock = false;    //TODO option depending on used font
 
 lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         wxString& sStep, wxString& sOctave, wxString& sAlter,
@@ -225,7 +225,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     m_fNoteheadReversed = false;
     if (fInChord) {
         if (!g_pLastNoteRest || g_pLastNoteRest->IsRest()) {
-            ; //! @todo
+            ; //TODO
             wxLogMessage(_T("[lmNote::lmNote] Specified 'note in chord' but no base note yet defined. Chord ignored"));
         }
         else {
@@ -326,7 +326,7 @@ bool lmNote::UpdateContext(int nStep, int nNewAccidentals, lmContext* pNewContex
     if (nAccidentals == nNewAccidentals) {
         //are equal. No need to update context for this note.
         //Verify if this note alters current context
-        //! @todo
+        //TODO
         return true;
     }
     else {
@@ -391,64 +391,6 @@ int lmNote::GetChordPosition() const
         return lmNON_CHORD_NOTE;
 }
 
-//====================================================================================================
-// implementation of virtual methods defined in base abstract class lmNoteRest
-//====================================================================================================
-
-wxBitmap* lmNote::GetBitmap(double rScale)
-{
-    // Create the drag image.
-    // Under wxGTK the DC logical function (ROP) is used by DrawText() but it is ignored by
-    // wxMSW. Thus, it is not posible to do dragging just by redrawing the lmStaffObj using ROPs.
-    // For portability it is necessary to implement dragging by means of bitmaps and wxDragImage
-
-    lmEGlyphIndex nGlyph = GLYPH_EIGHTH_NOTE_UP;
-    switch (m_nNoteType) {
-        case eEighth :
-            nGlyph = (m_fStemDown ? GLYPH_EIGHTH_NOTE_DOWN : GLYPH_EIGHTH_NOTE_UP);
-            break;
-        case e16th :
-            nGlyph = (m_fStemDown ? GLYPH_16TH_NOTE_DOWN : GLYPH_16TH_NOTE_UP);
-            break;
-        case e32th :
-            nGlyph = (m_fStemDown ? GLYPH_32ND_NOTE_DOWN : GLYPH_32ND_NOTE_UP);
-            break;
-        case e64th :
-            nGlyph = (m_fStemDown ? GLYPH_64TH_NOTE_DOWN : GLYPH_64TH_NOTE_UP);
-            break;
-        case e128th :
-            nGlyph = (m_fStemDown ? GLYPH_128TH_NOTE_DOWN : GLYPH_128TH_NOTE_UP);
-            break;
-        case e256th :
-            nGlyph = (m_fStemDown ? GLYPH_256TH_NOTE_DOWN : GLYPH_256TH_NOTE_UP);
-            break;
-        case eLonga:
-            nGlyph = GLYPH_LONGA_NOTE;
-            break;
-        case eBreve:
-            nGlyph = GLYPH_BREVE_NOTE;
-            break;
-        case eWhole:
-            nGlyph = GLYPH_WHOLE_NOTE;
-            break;
-        case eHalf:
-            nGlyph = GLYPH_NOTEHEAD_HALF;
-            break;
-        case eQuarter:
-            nGlyph = GLYPH_NOTEHEAD_QUARTER;
-            break;
-        //case enh_Cross:                    /// @todo enh_Cross is a notehead type not a note type
-        //    nGlyph = GLYPH_NOTEHEAD_CROSS;
-        //    break;
-        default:
-            wxASSERT(false);
-    }
-
-    wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
-    return PrepareBitMap(rScale, sGlyph);
-
-}
-
 void lmNote::CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC)
 {
     //create the container shape and add it to the box
@@ -457,6 +399,10 @@ void lmNote::CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, 
     m_pShape2 = pNoteShape;
 }
 
+
+//====================================================================================================
+// implementation of virtual methods defined in base abstract class lmNoteRest
+//====================================================================================================
 
 void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
@@ -487,7 +433,7 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 	// If the shape is finally not needed (i.e. the note doesn't have stem)
 	// the shape will be deleted. Otherwise, it will be added to the note shape.
     //-----------------------------------------------------------------------------------
-    //! @todo move thickness to user options
+    //TODO move thickness to user options
     #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
     m_uStemThickness = m_pVStaff->TenthsToLogical(STEM_WIDTH, m_nStaffNum) / 10;
 	bool fStemAdded = false;
@@ -549,7 +495,7 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     //create shapes for dots if necessary
     //------------------------------------------------------------
     if (m_fDotted || m_fDoubleDotted) {
-        //! @todo user selectable
+        //TODO user selectable
         lmLUnits uSpaceBeforeDot = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         uxLeft += uSpaceBeforeDot;
         lmLUnits uyPos = uyTop;
@@ -677,41 +623,41 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 	//Add the shape for single-attached AuxObjs
     //----------------------------------------------------------------------------------
 
-    // layout associated notations -------------------------
-    if (m_pNotations) {
-        lmNoteRestObj* pNRO;
-        wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
-        for (; pNode; pNode = pNode->GetNext() ) {
-            pNRO = (lmNoteRestObj*)pNode->GetData();
-            lmLUnits uxPos = 0;
-            lmLUnits uyPos = 0;
-            switch(pNRO->GetSymbolType()) {
-                case eST_Fermata:
-                    // set position (relative to paperPos)
-                    uxPos = m_pNoteheadShape->GetXLeft() + m_pNoteheadShape->GetWidth() / 2.0;
-                    uyPos = uyStaffTopLine - uPaperPos.y;
-                    pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
-                    pNRO->UpdateMeasurements();
-                    break;
-                default:
-                    wxASSERT(false);
-            }
-        }
-    }
+    //// layout associated notations -------------------------
+    //if (m_pNotations) {
+    //    lmNoteRestObj* pNRO;
+    //    wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
+    //    for (; pNode; pNode = pNode->GetNext() ) {
+    //        pNRO = (lmNoteRestObj*)pNode->GetData();
+    //        lmLUnits uxPos = 0;
+    //        lmLUnits uyPos = 0;
+    //        switch(pNRO->GetSymbolType()) {
+    //            case eST_Fermata:
+    //                // set position (relative to paperPos)
+    //                uxPos = m_pNoteheadShape->GetXLeft() + m_pNoteheadShape->GetWidth() / 2.0;
+    //                uyPos = uyStaffTopLine - uPaperPos.y;
+    //                pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
+    //                pNRO->UpdateMeasurements();
+    //                break;
+    //            default:
+    //                wxASSERT(false);
+    //        }
+    //    }
+    //}
 
-    // layout associated lmLyric objects -------------------
-    if (m_pLyrics) {
-        lmLyric* pLyric;
-        wxAuxObjsListNode* pNode = m_pLyrics->GetFirst();
-        for (; pNode; pNode = pNode->GetNext() ) {
-            pLyric = (lmLyric*)pNode->GetData();
-            // set position (relative to paperPos)
-            lmLUnits uxPos = m_pNoteheadShape->GetXLeft();
-            lmLUnits uyPos = uyStaffTopLine - uPaperPos.y;
-            pLyric->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
-            pLyric->UpdateMeasurements();
-        }
-    }
+    //// layout associated lmLyric objects -------------------
+    //if (m_pLyrics) {
+    //    lmLyric* pLyric;
+    //    wxAuxObjsListNode* pNode = m_pLyrics->GetFirst();
+    //    for (; pNode; pNode = pNode->GetNext() ) {
+    //        pLyric = (lmLyric*)pNode->GetData();
+    //        // set position (relative to paperPos)
+    //        lmLUnits uxPos = m_pNoteheadShape->GetXLeft();
+    //        lmLUnits uyPos = uyStaffTopLine - uPaperPos.y;
+    //        pLyric->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
+    //        pLyric->UpdateMeasurements();
+    //    }
+    //}
 
 	//if this is the last note of a multi-attached AuxObj add the shape for the aux obj
     //----------------------------------------------------------------------------------
@@ -1068,58 +1014,58 @@ void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, ENoteHea
 
 }
 
-void lmNote::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
-                         const lmUPoint& pagePosL, const lmUPoint& uDragStartPos, const lmDPoint& canvasPosD)
-{
-    //Constraint: A note must stay on staff lines or spaces
-
-    lmUPoint uPaperPos(pPaper->GetCursorX(), pPaper->GetCursorY());
-
-    lmLUnits dyHalfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum );
-    lmUPoint nShiftVector = pagePosL - uDragStartPos;    // the displacement
-    int nSteps = (int)(nShiftVector.y / dyHalfLine);        // trim the displacement to half line steps
-    nShiftVector.y -= nSteps;
-    lmUPoint newPaperPos = uPaperPos + nShiftVector;
-    // then the shape must be drawn at:
-    lmDPoint ptNewD;
-    ptNewD.x = pPaper->LogicalToDeviceX(newPaperPos.x + m_uGlyphPos.x) + offsetD.x;
-    ptNewD.y = pPaper->LogicalToDeviceY(newPaperPos.y + m_uGlyphPos.y) + offsetD.y;
-    pDragImage->Move(ptNewD);
-
-    //// compute new pitch
-    //int nNewPitch = PosOnStaffToPitch(nSteps);
-    //SetUpPitchRelatedVariables(nNewPitch);
-}
-
-lmUPoint lmNote::EndDrag(const lmUPoint& uPos)
-{
-    lmUPoint uOldPos(m_uPaperPos + m_uGlyphPos);
-
-    /*
-    Notes can not freely moved. They must stay on staff lines or spaces
-    */
-    lmLUnits udyHalfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum );
-    lmLUnits uShift = - (uPos.y - GetGlyphPosition().y);
-    int nSteps = (int)(uShift / udyHalfLine);        // trim the displacement to half line steps
-
-    // compute new pitch
-    int nNewPitch = PosOnStaffToPitch(nSteps);
-    SetUpPitchRelatedVariables(nNewPitch);
-
-    //wxLogMessage( wxString::Format(wxT("EndDrag: nShift=%d, nSteps=%d, nNewPitch=%d"),
-    //    nShift, nSteps, nNewPitch ) );
-
-    //ojo: estas dos líneas son el comportamiento de la clase base. Hay que dejarlas
-    //de momento porque el flag m_fFixedPos impide que se actualice la posición
-    // ¿Llevarlo a SetUpPitchRelatedVariables() ?
-    m_uPaperPos.x = uPos.x - m_uGlyphPos.x;
-    m_uPaperPos.y = uPos.y - m_uGlyphPos.y;
-
-    SetFixed(false);
-
-    return lmUPoint(uOldPos);
-
-}
+//void lmNote::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
+//                         const lmUPoint& pagePosL, const lmUPoint& uDragStartPos, const lmDPoint& canvasPosD)
+//{
+//    //Constraint: A note must stay on staff lines or spaces
+//
+//    lmUPoint uPaperPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+//
+//    lmLUnits dyHalfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum );
+//    lmUPoint nShiftVector = pagePosL - uDragStartPos;    // the displacement
+//    int nSteps = (int)(nShiftVector.y / dyHalfLine);        // trim the displacement to half line steps
+//    nShiftVector.y -= nSteps;
+//    lmUPoint newPaperPos = uPaperPos + nShiftVector;
+//    // then the shape must be drawn at:
+//    lmDPoint ptNewD;
+//    ptNewD.x = pPaper->LogicalToDeviceX(newPaperPos.x + m_uGlyphPos.x) + offsetD.x;
+//    ptNewD.y = pPaper->LogicalToDeviceY(newPaperPos.y + m_uGlyphPos.y) + offsetD.y;
+//    pDragImage->Move(ptNewD);
+//
+//    //// compute new pitch
+//    //int nNewPitch = PosOnStaffToPitch(nSteps);
+//    //SetUpPitchRelatedVariables(nNewPitch);
+//}
+//
+//lmUPoint lmNote::EndDrag(const lmUPoint& uPos)
+//{
+//    lmUPoint uOldPos(m_uPaperPos + m_uGlyphPos);
+//
+//    /*
+//    Notes can not freely moved. They must stay on staff lines or spaces
+//    */
+//    lmLUnits udyHalfLine = m_pVStaff->TenthsToLogical(5, m_nStaffNum );
+//    lmLUnits uShift = - (uPos.y - GetGlyphPosition().y);
+//    int nSteps = (int)(uShift / udyHalfLine);        // trim the displacement to half line steps
+//
+//    // compute new pitch
+//    int nNewPitch = PosOnStaffToPitch(nSteps);
+//    SetUpPitchRelatedVariables(nNewPitch);
+//
+//    //wxLogMessage( wxString::Format(wxT("EndDrag: nShift=%d, nSteps=%d, nNewPitch=%d"),
+//    //    nShift, nSteps, nNewPitch ) );
+//
+//    //ojo: estas dos líneas son el comportamiento de la clase base. Hay que dejarlas
+//    //de momento porque el flag m_fFixedPos impide que se actualice la posición
+//    // ¿Llevarlo a SetUpPitchRelatedVariables() ?
+//    m_uPaperPos.x = uPos.x - m_uGlyphPos.x;
+//    m_uPaperPos.y = uPos.y - m_uGlyphPos.y;
+//
+//    SetFixed(false);
+//
+//    return lmUPoint(uOldPos);
+//
+//}
 
 int lmNote::PosOnStaffToPitch(int nSteps)
 {
@@ -1171,7 +1117,7 @@ void lmNote::SetUpStemDirection()
             m_fStemDown = (GetPosOnStaff() >= 6);
             break;
         case eStemDouble:
-            /*! @todo
+            /*TODO
                 I understand that "eStemDouble" means two stems: one up and one down.
                 This is not yet implemented and is treated as eDefaultStem
             */
@@ -1492,10 +1438,10 @@ wxString lmNote::Dump()
         }
     }
 
-	//positioning information
-	lmURect rect = GetSelRect();
-	sDump += wxString::Format(_T("\n                    SelRect=(%.2f, %.2f, %.2f, %.2f)"),
-		rect.GetLeft(), rect.GetTop(), rect.GetRight(), rect.GetBottom() );
+	////positioning information
+	//lmURect rect = GetSelRect();
+	//sDump += wxString::Format(_T("\n                    SelRect=(%.2f, %.2f, %.2f, %.2f)"),
+	//	rect.GetLeft(), rect.GetTop(), rect.GetRight(), rect.GetBottom() );
     sDump += _T("\n");
 
     return sDump;
@@ -1674,39 +1620,6 @@ bool lmNote::CanBeTied(lmAPitch anPitch)
 //======================================================================================
 // lmStaffObj virtual functions implementation
 //======================================================================================
-
-lmScoreObj* lmNote::FindSelectableObject(lmUPoint& pt)
-{
-    if (IsAtPoint(pt)) return this;
-
-    //// try with ties
-    //if (m_pTieNext && m_pTieNext->IsAtPoint(pt)) return m_pTieNext;
-    //if (m_pTiePrev && m_pTiePrev->IsAtPoint(pt)) return m_pTiePrev;
-
-    // try with associated AuxObjs
-    if (m_pNotations) {
-        lmNoteRestObj* pNRO;
-        wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
-        for (; pNode; pNode = pNode->GetNext() ) {
-            pNRO = (lmNoteRestObj*)pNode->GetData();
-            if (pNRO->IsAtPoint(pt)) return pNRO;
-        }
-    }
-
-    // try with associated lyrics
-    if (m_pLyrics) {
-        lmLyric* pLyric;
-        wxAuxObjsListNode* pNode = m_pLyrics->GetFirst();
-        for (; pNode; pNode = pNode->GetNext() ) {
-            pLyric = (lmLyric*)pNode->GetData();
-            if (pLyric->IsAtPoint(pt)) return pLyric;
-        }
-    }
-
-    // Not found
-    return (lmScoreObj*)NULL;    //none found
-
-}
 
 //stems: methods related to layout phase
 lmLUnits lmNote::GetXStemLeft()

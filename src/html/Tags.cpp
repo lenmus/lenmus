@@ -700,7 +700,7 @@ TAG_HANDLER_PROC(tag)
         // create object to store param data, depending of object type
         switch (nType) {
             case eHO_Control:
-                //! @todo no specific param container object
+                //TODO no specific param container object
                 m_pObjectParams = new lmScoreCtrolParams(tag, nWidth, nHeight, nPercent, nStyle);
                 break;
 

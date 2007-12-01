@@ -39,11 +39,11 @@
   XPStyle on
 
 ;some helper defines and variables
-  !define APP_VERSION "3.6b2"
+  !define APP_VERSION "3.6"
   !define APP_NAME "LenMus Phonascus ${APP_VERSION}"
   !define APP_HOME_PAGE "http://www.lenmus.org/"
 
-  Name "lenmus v3.6b2"     ;product name displayed by the installer
+  Name "lenmus v3.6"     ;product name displayed by the installer
 
 
 ;support for Modern UI
@@ -242,6 +242,7 @@ Section  "-" "MainSection"
      
      File "..\..\docs\html\licence.htm"
      File "..\..\docs\html\installation.htm"
+     File "..\..\docs\html\release_notes.htm"
      File "..\..\docs\html\singledoc.css"
      File "..\..\docs\html\GNU_Free_doc_license_FDL.htm"
      
@@ -334,7 +335,7 @@ Section  "-" "MainSection"
   ;-----------------------------------------------------------------------------------
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_EXEC).lnk" "$INSTDIR\bin\lenmus_u.exe"
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_EXEC).lnk" "$INSTDIR\bin\lenmus.exe"
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\$(SHORTCUT_NAME_UNINSTALL).lnk" "$INSTDIR\bin\${UNINSTALLER_NAME}"
   !insertmacro MUI_STARTMENU_WRITE_END
 
@@ -354,7 +355,7 @@ Section $(TITLE_CreateIcon) CreateIcon
 
   CreateIcon:
      ClearErrors
-     CreateShortCut "$DESKTOP\lenmus ${APP_VERSION}.lnk" "$INSTDIR\bin\lenmus_u.exe"
+     CreateShortCut "$DESKTOP\lenmus ${APP_VERSION}.lnk" "$INSTDIR\bin\lenmus.exe"
      IfErrors +1 EndCreateIcon
         StrCmp $STEP "ErrorCreatingIcon" "Error_CreateIcon"
         StrCpy "$STEP" "ErrorCreatingIcon" 
@@ -435,7 +436,7 @@ FunctionEnd
 Function un.onInit
   FindWindow $R0 "THMNISEdit2_MainWindowClass"
   IsWindow $R0 0 +3
-  MessageBox MB_ICONEXCLAMATION|MB_OK "lenmus est√° ejecut√°ndose. Antes de desinstalar lenmus debe cerrarlo."
+  MessageBox MB_ICONEXCLAMATION|MB_OK "lenmus est· ejecut·ndose. Antes de desinstalar lenmus debe cerrarlo."
   Abort
 
   UserInfo::GetAccountType

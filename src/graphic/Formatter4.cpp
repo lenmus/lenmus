@@ -103,7 +103,8 @@ lmBoxScore* lmFormatter4::Layout(lmScore* pScore, lmPaper* pPaper)
 
 lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
 {
-	return (lmBoxScore*)NULL;
+    lmBoxScore* pBoxScore = new lmBoxScore(m_pScore);
+	return pBoxScore;   //(lmBoxScore*)NULL;
 
 	////drawing a score without bar justification and without breaking it into systems.
  //   //That is, it draws all the score in a single system without taking into consideration
@@ -508,7 +509,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         }
 
 	    //Add the shape for the initial barline that joins all staves in a system
-	    if (m_pScore->GetOptionBool(_T("Staff.DrawLeftBarline")) )
+	    if (m_pScore->GetOptionBool(_T("Staff.DrawLeftBarline")) && !pVStaff->HideStaffLines() )
 	    {
 			//GetSliceVStaff(int i)
 			lmLUnits uxPos = pBoxSystem->GetXLeft() + 
@@ -728,7 +729,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
 			{
 				// Final xPos is yet unknown, so I use zero.
 				// It will be updated when the system is completed
-				yBottomLeft = pVStaff->DrawStaffLines2(pBSV, xPaperPos, 0.0, yPaperPos);
+				yBottomLeft = pVStaff->LayoutStaffLines(pBSV, xPaperPos, 0.0, yPaperPos);
 			}
 
 			//save start position of this system, slice, instrument and vstaff

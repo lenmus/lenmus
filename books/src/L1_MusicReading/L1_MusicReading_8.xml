@@ -22,7 +22,7 @@ a rhythm such as 'ONE-two-three-and-ONE-two-three-and- ...', stressing the
 ONE syllable. This is the typical waltz rhythm.
 </para>
 
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -47,7 +47,7 @@ ONE syllable. This is the typical waltz rhythm.
 the dotted half note, equivalent to a half note tied to a quarter note:
 </para>
 
-<para><score width="685" height="70" border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music>
         (score (vers 1.5)(language en iso-8859-1)

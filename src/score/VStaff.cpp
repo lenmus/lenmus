@@ -115,7 +115,7 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
     // default lmVStaff margins (logical units = tenths of mm)
     m_nHeight = 0;          //a value of 0 means 'compute it'
     m_leftMargin = 0;
-    m_topMargin = 2000;
+    m_topMargin = 0;
     m_rightMargin = 0;
     m_bottomMargin = lmToLogicalUnits(1, lmCENTIMETERS);    // 1 cm
 
@@ -124,7 +124,7 @@ lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
     m_cStaves.Append(pStaff);
 
     //default value
-    //! @todo review this fixed space before the clef
+    //TODO review this fixed space before the clef
     m_nSpaceBeforeClef = TenthsToLogical(10, 1);    // one line of first staff
 
     g_pLastNoteRest = (lmNoteRest*)NULL;
@@ -210,7 +210,7 @@ void lmVStaff::UpdateContext(lmNote* pStartNote, int nStaff, int nStep,
     //lmContext* pNewContext = pStaff->NewContext(pCurrentContext, nNewAccidentals, nStep);
     pStaff->NewContext(pCurrentContext, nNewAccidentals, nStep);
 
-    /*! @todo
+    /*TODO
     For now, as we are not yet dealing with edition, it is not possible to
     insert notes in a score. Therefore, there are no notes after the one being
     processed (pStartNote). So the treatment to propagate accidentals until the
@@ -288,6 +288,25 @@ lmSpacer* lmVStaff::AddSpacer(lmTenths nWidth)
     lmSpacer* pSpacer = new lmSpacer(this, nWidth);
     m_cStaffObjs.Store(pSpacer);
     return pSpacer;
+
+}
+
+lmStaffObj* lmVStaff::AddAnchorObj()
+{
+    // adds an anchor StaffObj to the end of current StaffObjs collection
+
+    if (IsGlobalStaff())
+    {
+        lmScoreAnchor* pAnchor = new lmScoreAnchor(this);
+        m_cStaffObjs.Store(pAnchor);
+        return pAnchor;
+    }
+    else
+    {
+        lmAnchor* pAnchor = new lmAnchor(this);
+        m_cStaffObjs.Store(pAnchor);
+        return pAnchor;
+    }
 
 }
 
@@ -473,65 +492,14 @@ int lmVStaff::GetNumMeasures()
     return m_cStaffObjs.GetNumMeasures();
 }
 
-void lmVStaff::DrawStaffLines(lmPaper* pPaper,
-                              lmLUnits xFrom, lmLUnits xTo,
-                              lmLUnits* pyLinTop, lmLUnits* pyLinBottom)
-{
-    // Draw all staff lines of this lmVStaff and store their sizes and positions
-
-    if (GetOptionBool(_T("StaffLines.Hide")) ) return;
-
-
-    lmLUnits yCur;
-
-    ////DEBUG: draw top border of lmVStaff region
-    //xFrom = pPaper->GetLeftMarginXPos();
-    //xTo = pPaper->GetRightMarginXPos();
-    //yCur = pPaper->GetCursorY();
-    //pPaper->SketchLine(xFrom, yCur-1, xTo, yCur-1, *wxRED);
-    ////-----------------------------------------
-
-
-    //Set left position and lenght of lines, and save these values
-    yCur = pPaper->GetCursorY() + m_topMargin;
-    m_yLinTop = yCur;              //save y coord. for first line start point
-    *pyLinTop = yCur;
-
-    ////DEBUG: draw top border of first lmStaff region
-    //pPaper->SketchLine(xFrom, yCur-1, xTo, yCur-1, *wxCYAN);
-    ////-----------------------------------------
-
-    //iterate over the collection of Staves (lmStaff Objects)
-    StaffList::Node* pNode = m_cStaves.GetFirst();
-    lmStaff* pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
-    for ( ; pStaff; ) {
-        //draw one staff
-        for (int iL = 1; iL <= pStaff->GetNumLines(); iL++ ) {
-            lmLUnits nStaffLineWidth = pStaff->GetLineThick();
-            pPaper->SolidLine(xFrom, yCur, xTo, yCur,
-                               nStaffLineWidth, eEdgeNormal, *wxBLACK);
-            m_yLinBottom = yCur;  
-            *pyLinBottom = yCur;
-
-            //save line position
-            yCur = yCur + pStaff->GetLineSpacing();
-        }
-        yCur = yCur - pStaff->GetLineSpacing() + pStaff->GetAfterSpace();
-
-        //get next lmStaff
-        pNode = pNode->GetNext();
-        pStaff = (pNode ? (lmStaff *)pNode->GetData() : (lmStaff *)pNode);
-    }
-}
-
-lmLUnits lmVStaff::DrawStaffLines2(lmBoxSliceVStaff* pBox,
+lmLUnits lmVStaff::LayoutStaffLines(lmBoxSliceVStaff* pBox,
                               lmLUnits xFrom, lmLUnits xTo, lmLUnits yPos)
 {
     //Computes all staff lines of this lmVStaff and creates the necessary shapes
 	//to render them. Add this shapes to the received lmBox object.
     //Returns the Y coord. of last line (line 1, last staff)
 
-    if (GetOptionBool(_T("StaffLines.Hide")) ) return 0.0;
+    if (HideStaffLines()) return 0.0;
 
     //Set left position and lenght of lines, and save these values
     lmLUnits yCur = yPos + m_topMargin;
@@ -610,40 +578,6 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
 }
 
 
-
-//=========================================================================================
-// Methods for finding StaffObjs
-//=========================================================================================
-
-lmScoreObj* lmVStaff::FindSelectableObject(lmUPoint& pt)
-{
-    lmStaffObj* pSO;
-    lmScoreObj* pChildSO;
-    lmStaffObj* pCO;
-    lmStaffObjIterator* pIter = m_cStaffObjs.CreateIterator(eTR_OptimizeAccess);
-    //iterate over the collection of StaffObjs to look for a suitable lmStaffObj
-    while(!pIter->EndOfList()) {
-        pSO = pIter->GetCurrent();
-        if (pSO->IsComposite()) {
-            pCO = (lmStaffObj*)pSO;
-            pChildSO = pCO->FindSelectableObject(pt);
-            if (pChildSO) {
-                delete pIter;
-                return pChildSO;
-            }
-        }
-        else {
-            if (pSO->IsAtPoint(pt)) {
-                delete pIter;
-                return pSO;
-            }
-        }
-        pIter->MoveNext();
-    }
-    delete pIter;
-    return (lmScoreObj*) NULL;
-
-}
 
 lmLUnits lmVStaff::GetStaffOffset(int nStaff)
 {
@@ -942,8 +876,9 @@ bool lmVStaff::GetXPosFinalBarline(lmLUnits* pPos)
 
     //check that a barline is found. Otherwise no barlines in the score
     if (pSO->GetClass() == eSFOT_Barline) {
-        //*pPos = pSO->GetOrigin().x + pSO->GetSelRect().GetWidth();
-		*pPos = ((lmShapeBarline*)pSO->GetShap2())->GetXEnd();
+        lmShapeBarline* pShape = (lmShapeBarline*)pSO->GetShap2();
+        if (!pShape) return false;
+		*pPos = pShape->GetXEnd();
         return true;
     }
     else
@@ -1187,7 +1122,7 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
     responsibility to delete it when no longer needed.
     */
 
-    //! @todo review this commented code
+    //TODO review this commented code
 //    Dim nMetrica As ETimeSignature, nDurCompas As Long, nTiempoIni As Long
 //
 //    nMetrica = this.MetricaInicial
@@ -1202,7 +1137,7 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
 
     //Create lmSoundManager and initialize MIDI events table
     lmSoundManager* pSM = new lmSoundManager();
-    //! @todo review next line
+    //TODO review next line
 //    pSM->Inicializar GetStaffsCompas(nMetrica), nTiempoIni, nDurCompas, this.NumCompases
 
     //iterate over the collection to create the MIDI events

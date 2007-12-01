@@ -151,7 +151,7 @@ void lmMusicXMLParser::TagError(const wxString sElement, const wxString sTagName
     g_pLogger->LogDataError(sMsg);
 
     if (pElement) {
-        //! @todo Log source code or reference to source line. But how?
+        //TODO Log source code or reference to source line. But how?
         //g_pLogger->LogDataError(pElement->));
     }
 }
@@ -197,11 +197,11 @@ void lmMusicXMLParser::ParseScorePartwise(wxXmlNode* pNode, lmScore* pScore)
             ParseIdentification(pElement, pScore);
         }
         else if (pElement->GetName() == _T("movement-number")) {
-            //! @todo
+            //TODO
             g_pLogger->LogTrace(_T("lmMusicXMLParser"), _T("movement-number not yet implemented"), _T(""));
         }
         else if (pElement->GetName() == _T("movement-title")) {
-            //! @todo
+            //TODO
             g_pLogger->LogTrace(_T("lmMusicXMLParser"), _T("movement-title not yet implemented"), _T(""));
         } else {
             TagError(sElement, pElement->GetName(), pElement);
@@ -357,7 +357,7 @@ float lmMusicXMLParser::ParseMusicDataBackupForward(wxXmlNode* pNode, lmVStaff* 
         if (sTag == _T("duration")) {
             nDuration = ParseDuration(pElement);
         }
-        //! @todo elements voice, staff (only for <forward>)
+        //TODO elements voice, staff (only for <forward>)
         else {
             TagError(sElement, pElement->GetName());
         }
@@ -456,7 +456,7 @@ bool lmMusicXMLParser::ParseMusicDataAttributes(wxXmlNode* pNode, lmVStaff* pVSt
                 sStaffNumber.c_str(), sClef.c_str(), sLine.c_str() );
 
             // Add clef to score
-            //! @todo verify numeric and not greater than NumStaves
+            //TODO verify numeric and not greater than NumStaves
             long nStaff = 1;
             EClefType nClef = eclvSol;
             sStaffNumber.ToLong(&nStaff);
@@ -473,7 +473,7 @@ bool lmMusicXMLParser::ParseMusicDataAttributes(wxXmlNode* pNode, lmVStaff* pVSt
                 _("Parsing <staves>: num_staves=%s"), sNumStaves.c_str() );
 
             //Define how many staves the instrument has
-            //! @todo verify numeric
+            //TODO verify numeric
             if (sNumStaves != _T("1")) {
                 long nNumStaves, i;
                 sNumStaves.ToLong(&nNumStaves);
@@ -520,7 +520,7 @@ bool lmMusicXMLParser::ParseMusicDataAttributes(wxXmlNode* pNode, lmVStaff* pVSt
 
             */
 
-            /*! @todo Here I am dealing only with "traditional" key signatures:
+            /*TODO Here I am dealing only with "traditional" key signatures:
                 chromatic scale in major and minor modes)
             */
              wxString sFifths = _T("0");            //<key> default value: C major
@@ -543,7 +543,7 @@ bool lmMusicXMLParser::ParseMusicDataAttributes(wxXmlNode* pNode, lmVStaff* pVSt
                 _("Parsing <key>: fifths=%s, mode=%s"),
                 sFifths.c_str(), sMode.c_str() );
 
-            //! @todo Change this for dealing with non-traditional key signatures
+            //TODO Change this for dealing with non-traditional key signatures
             fMajor = (sMode == _T("major"));
             nFifths = 0;
             bool fError = !sFifths.ToLong(&nFifths);
@@ -609,7 +609,7 @@ bool lmMusicXMLParser::ParseMusicDataAttributes(wxXmlNode* pNode, lmVStaff* pVSt
                 _("Parsing <time>: beats=%s, beat-type=%s"),
                 sBeats.c_str(), sBeatType.c_str() );
 
-            //! @todo Change this for a more general treatment
+            //TODO Change this for a more general treatment
             bool fError = !sBeats.ToLong(&nBeats) || !sBeatType.ToLong(&nBeatType);
 
             if (fError) {
@@ -629,7 +629,7 @@ bool lmMusicXMLParser::ParseMusicDataAttributes(wxXmlNode* pNode, lmVStaff* pVSt
         else if (sTag == _T("divisions")) {
             int nDivisions = ParseDivisions(pNode);
             m_nCurrentDivisions = nDivisions;
-            //! @todo Do something else with divisions
+            //TODO Do something else with divisions
         }
 
         // Other tags within <attributes> -----------------------------------
@@ -691,7 +691,7 @@ bool lmMusicXMLParser::ParseMusicDataBarline(wxXmlNode* pNode, lmVStaff* pVStaff
             g_pLogger->LogTrace(_T("lmMusicXMLParser"),
                 _("Parsing <bar-style>: bar_style=%s"), sBarStyle.c_str() );
             fError = XmlDataToBarStyle(sBarStyle, &nBarStyle);
-            //! @todo verify error
+            //TODO verify error
         }
 
         // Other tags within <barline> -----------------------------------
@@ -799,7 +799,7 @@ bool lmMusicXMLParser::ParseMusicDataDirection(wxXmlNode* pNode, lmVStaff* pVSta
                     ParseFont(pElmnt, &oFontData);
                     ParsePosition(pElmnt, &tPos);
 
-                    //! @todo Verify attributes
+                    //TODO Verify attributes
 
                     nDirectionType = eWords;
                 }
@@ -836,7 +836,7 @@ bool lmMusicXMLParser::ParseMusicDataDirection(wxXmlNode* pNode, lmVStaff* pVSta
 
             if (!sOffset.IsEmpty()) {
                 fError = !sOffset.ToLong(&nOffset);
-                //! @todo control error and range
+                //TODO control error and range
                 wxASSERT(!fError);
             }
         }
@@ -1024,7 +1024,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
             long nLevel = 1;
             if (!sLevel.IsEmpty()) {
                 fError = !sLevel.ToLong(&nLevel);
-                //! @todo control error
+                //TODO control error
                 wxASSERT(!fError);
                 wxASSERT(nLevel > 0 && nLevel < 7);
             }
@@ -1100,7 +1100,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
 
             if (!sNumStaff.IsEmpty()) {
                 fError = !sNumStaff.ToLong(&nNumStaff);
-                //! @todo control error and range
+                //TODO control error and range
                 wxASSERT(!fError);
                 wxASSERT(nNumStaff > 0);
             }
@@ -1275,8 +1275,8 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
                     */
                     wxString sTupletType = GetAttribute(pElmnt, _T("type"));
                     bool fTupletBracket = GetYesNoAttribute(pElmnt, _T("bracket"), true);
-                    bool fShowNumber = true;        //! @todo
-                    int nTupletNumber = 3;            //! @todo
+                    bool fShowNumber = true;        //TODO
+                    int nTupletNumber = 3;            //TODO
                     bool fTupletAbove = ParsePlacement(pElmnt);
 
                     g_pLogger->LogTrace(_T("lmMusicXMLParser"),
@@ -1292,7 +1292,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
                         wxASSERT(!m_pTupletBracket);
                         m_pTupletBracket = new lmTupletBracket(fShowNumber, nTupletNumber,
                                 fTupletBracket, fTupletAbove, nTupletNumber, nTupletNumber);
-                        //! @todo Get nActualNotes and nNormalNotes
+                        //TODO Get nActualNotes and nNormalNotes
                     }
                     else if (sTupletType == _T("stop")) {
                         //signal that bracket must be ended
@@ -1364,7 +1364,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
             long nNumber;
             bool fError = !sNumber.ToLong(&nNumber);
             wxASSERT(!fError);
-            //! @todo Verify number and display error msg
+            //TODO Verify number and display error msg
             wxString sName = GetAttribute(pElement, _T("name"), _T(""));
 
             wxXmlNode* pChild = GetFirstChild(pNode);
@@ -1390,7 +1390,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
                 }
                 else if (sChildName == _T("text")) {
                     sText = GetText(pElmnt);
-                    //! @todo Get language and font
+                    //TODO Get language and font
                 }
      //           else if (sChildName == _T("elision"))
                     //;    //TODO    sAlter = GetText(pElmnt);
@@ -1486,7 +1486,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
         pElement = pNode;
     }
 
-    //! @todo verify beaming information
+    //TODO verify beaming information
     if (g_pLogger->IsAllowedTraceMask(_T("lmMusicXMLParser")) ) {
         wxString sDump = wxString::Format(
             _T("AddNote fBeamed=%s"), (fBeamed ? _T("Y") : _T("N")) );
@@ -1499,7 +1499,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
         g_pLogger->LogTrace(_T("lmMusicXMLParser"), sDump, _T(""));
     }
 
-    //! @todo Remove this and treat cue and grace notes properly
+    //TODO Remove this and treat cue and grace notes properly
     //For now ignore grace notes and cue notes
     if (fGraceNote || fCueNote) return false;
 
@@ -1627,7 +1627,7 @@ void lmMusicXMLParser::ParseWork(wxXmlNode* pNode, lmScore* pScore)
 
         //----------------------------------------------------------------------------
         else if (sTag == _T("opus")) {
-            ;    //! @todo what to do with the <opus> information?
+            ;    //TODO what to do with the <opus> information?
         }
 
         //----------------------------------------------------------------------------
@@ -1896,7 +1896,7 @@ void lmMusicXMLParser::ParsePosition(wxXmlNode* pElement, lmLocation* pPos)
     if (sXDef != _T("NoData")) {
         pPos->xType = lmLOCATION_ABSOLUTE;
         fError = !sXDef.ToLong(&nValue);
-        //! @todo control error and range
+        //TODO control error and range
         wxASSERT(!fError);
         pPos->x = (int)nValue;
     }
@@ -1905,7 +1905,7 @@ void lmMusicXMLParser::ParsePosition(wxXmlNode* pElement, lmLocation* pPos)
     if (sYDef != _T("NoData")) {
         pPos->yType = lmLOCATION_ABSOLUTE;
         fError = !sYDef.ToLong(&nValue);
-        //! @todo control error and range
+        //TODO control error and range
         wxASSERT(!fError);
         pPos->y = (int)nValue;
     }
@@ -1914,7 +1914,7 @@ void lmMusicXMLParser::ParsePosition(wxXmlNode* pElement, lmLocation* pPos)
     if (sXRel != _T("NoData")) {
         pPos->xType = lmLOCATION_RELATIVE;
         fError = !sXRel.ToLong(&nValue);
-        //! @todo control error and range
+        //TODO control error and range
         wxASSERT(!fError);
         pPos->x = (int)nValue;
     }
@@ -1923,7 +1923,7 @@ void lmMusicXMLParser::ParsePosition(wxXmlNode* pElement, lmLocation* pPos)
     if (sYRel != _T("NoData")) {
         pPos->yType = lmLOCATION_RELATIVE;
         fError = !sYRel.ToLong(&nValue);
-        //! @todo control error and range
+        //TODO control error and range
         wxASSERT(!fError);
         pPos->y = -(int)nValue;     // reverse sign as, for LenMus, positive y is down, negative y is up
         // as relative-y refers to the top line of the staff, so 5 lines must be
@@ -1954,14 +1954,14 @@ void lmMusicXMLParser::ParseFont(wxXmlNode* pElement, lmFontInfo* pFontData)
 
     */
 
-    //! @todo font-family and font-size
+    //TODO font-family and font-size
     wxString sValue;
     wxString sName = GetAttribute(pElement, _T("font-family"), _T("NoData"));
     wxString sSize = GetAttribute(pElement, _T("font-size"), _T("12"));
     pFontData->nFontSize = 12;
     pFontData->sFontName = _T("Arial");
 
-    //! @todo verify values
+    //TODO verify values
     //weight: normal or bold
     sValue = GetAttribute(pElement, _T("font-weight"), _T("normal"));
     bool fBold = (sValue == _T("bold"));
@@ -1998,7 +1998,7 @@ int lmMusicXMLParser::ParseDuration(wxXmlNode* pElement)
     g_pLogger->LogTrace(_T("lmMusicXMLParser"), _("Parsing <duration>: duration=%s"), sDuration.c_str() );
     bool fError = !sDuration.ToLong(&nDuration);
     wxASSERT(!fError);
-    //! @todo display error message
+    //TODO display error message
     return (int)nDuration;
 
 }
@@ -2024,7 +2024,7 @@ int lmMusicXMLParser::ParseDivisions(wxXmlNode* pElement)
                         sDivisions.c_str() );
     bool fError = !sDivisions.ToLong(&nDivisions);
     wxASSERT(!fError);
-    //! @todo display error message
+    //TODO display error message
     return (int)nDivisions;
 
 }

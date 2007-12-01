@@ -366,7 +366,7 @@ void lmChord::ComputeStemDirection()
 
     lmNote* pBaseNote = GetBaseNote();
 
-    #define TWO_NOTES_DEFAULT true          //! @todo move to layout user options
+    #define TWO_NOTES_DEFAULT true          //TODO move to layout user options
 
     if (m_nStemType == eStemUp) {          //force stem up
         m_fStemDown = false;

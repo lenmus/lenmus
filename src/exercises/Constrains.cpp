@@ -139,6 +139,7 @@ lmExerciseOptions::lmExerciseOptions(wxString sSection)
     m_fButtonsEnabledAfterSolution = true;
     m_fSolutionLink = true;
     m_fUseCounters = true;
+	m_fTheoryMode = true;
 }
 
 

@@ -19,12 +19,14 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __STAFFOBJ_H__        //to avoid nested includes
-#define __STAFFOBJ_H__
+#ifndef __LM_STAFFOBJ_H__        //to avoid nested includes
+#define __LM_STAFFOBJ_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "StaffObj.cpp"
 #endif
+
+#include <vector>
 
 #include "../app/TheApp.h"
 #include "../graphic/Shapes.h"
@@ -50,7 +52,6 @@
 //-------------------------------------------------------------------------------------------
 
 class lmObjOptions;
-class GraphicObjsList;
 class lmBox;
 
 class lmObject
@@ -93,8 +94,7 @@ protected:
 enum EScoreObjType
 {
     eSCOT_StaffObj = 1,         // staff objects (lmStaffObj). Main objects. Consume time
-    eSCOT_AuxObj,               // aux objects (lmAuxObj). Auxiliary. Owned by staffObjs
-    eSCOT_GraphicObj,           // graphic objects (lmGraphicObj). Has subtype
+    eSCOT_AuxObj,               // aux objects (lmAuxObj). Auxiliary. Owned by StaffObjs
 };
 
 
@@ -112,12 +112,7 @@ public:
                         bool fHighlight = false)=0;
 	lmShape* GetShap2() { return m_pShape2; }
 
-    //// methods for draggable objects
-    //virtual wxBitmap* GetBitmap(double rScale) = 0;
-    //virtual void OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
-    //                     const lmUPoint& pagePosL, const lmUPoint& uDragStartPos,
-    //                     const lmDPoint& canvasPosD);
-    //virtual lmUPoint EndDrag(const lmUPoint& uPos);
+    // methods for draggable objects
     virtual void MoveTo(lmUPoint& pt);
 
     // debug
@@ -130,51 +125,24 @@ public:
 
     // positioning
     inline lmUPoint& GetOrigin() { return m_uPaperPos; }
-    bool IsAtPoint(lmUPoint& pt);
     inline bool IsFixed() const { return m_fFixedPos; }
     void SetFixed(bool fFixed) { m_fFixedPos = fFixed; }
     void SetPageNumber(int nNum) { m_nNumPage = nNum; }
     inline int GetPageNumber() const { return m_nNumPage; }
 
-    // selection
-    void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight) {
-                m_uSelRect.width = uWidth;
-                m_uSelRect.height = uHeight;
-                m_uSelRect.x = x;
-                m_uSelRect.y = y;
-        }
-    void DrawSelRectangle(lmPaper* pPaper, wxColour colorC = *wxRED);
-    lmURect GetSelRect() const { return lmURect(m_uSelRect.x + m_uPaperPos.x,
-                                                m_uSelRect.y + m_uPaperPos.y,
-                                                m_uSelRect.width,
-                                                m_uSelRect.height); }
-
-    // drawing
-    virtual void Draw(bool fMeasuring, lmPaper* pPaper,
-                      wxColour colorC = *wxBLACK,
-                      bool fHighlight = false)=0;
-
     // methods related to font rendered objects
     virtual void SetFont(lmPaper* pPaper) {}
     wxFont* GetFont() { return m_pFont; }
-    lmUPoint GetGlyphPosition() const {
-            return lmUPoint(m_uPaperPos.x + m_uGlyphPos.x, m_uPaperPos.y + m_uGlyphPos.y);
-        }
 
 #endif  //lmCOMPATIBILITY_NO_SHAPES
 
 protected:
     lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable = false);
-    //virtual void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
-    //                        bool fHighlight)=0;
 
-    // virtual methods related to draggable objects
-    wxBitmap* PrepareBitMap(double rScale, const wxString sGlyph);
-
-    // Graphic objects can be attached to StaffObjs and AuxObj. The methods are
-    // defined here, as they are common to both.
-    void DoAddGraphicObj(lmScoreObj* pGO);
-    void DoRemoveGraphicObj(lmScoreObj* pGO);
+    //// Graphic objects can be attached to StaffObjs and AuxObj. The methods are
+    //// defined here, as they are common to both.
+    //void DoAddGraphicObj(lmScoreObj* pGO);
+    //void DoRemoveGraphicObj(lmScoreObj* pGO);
 
 
     // type and identification
@@ -184,8 +152,8 @@ protected:
     // Info for draggable objects
     bool        m_fIsDraggable;
 
-    // grapich objects attached to this one
-    GraphicObjsList*    m_pGraphObjs;   //the collection of GraphicObjs. NULL if none
+    //// grapich objects attached to this one
+    //GraphicObjsList*    m_pGraphObjs;   //the collection of GraphicObjs. NULL if none
 
 #if lmCOMPATIBILITY_NO_SHAPES
 
@@ -196,15 +164,10 @@ protected:
     lmLUnits    m_uWidth;           // total width of the image, including after space
     int         m_nNumPage;         // page on which this SO is rendered (1..n). Set Up in BoxSystem::RenderMeasure().
 
-    // selection related variables
-    lmURect     m_uSelRect;         // selection rectangle (logical units, relative to paperPos)
-
     // variables related to font rendered objects
     wxFont*     m_pFont;            // font to use for drawing this object
-    lmUPoint    m_uGlyphPos;        // origing to position the glyph (relative to m_uPaperPos)
 
     //transitional variables: renderization based on shapes
-    lmShape*    m_pShape;
     lmShape*    m_pShape2;          //new shape
 
 #endif  //lmCOMPATIBILITY_NO_SHAPES
@@ -234,7 +197,7 @@ enum EStaffObjType
 
 
 class lmVStaff;
-class lmGraphicObj;
+class lmAuxObj;
 
 class lmStaffObj : public lmScoreObj
 {
@@ -259,8 +222,6 @@ public:
     virtual lmLUnits GetAnchorPos() {return 0; }
 
     // implementation of pure virtual methods of base class
-    virtual void Draw(bool fMeasuring, lmPaper* pPaper,
-                      wxColour colorC = *wxBLACK, bool fHighlight = false);
     virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
                         bool fHighlight = false);
     virtual void SetFont(lmPaper* pPaper);
@@ -274,12 +235,11 @@ public:
     lmVStaff* GetVStaff() { return m_pVStaff; }
 
     // methods related to AuxObj/GraphObj ownership
-    virtual lmScoreObj* FindSelectableObject(lmUPoint& pt) { return (lmScoreObj*)NULL; }
     virtual bool IsComposite() { return false; }
 
-    // Graphic objects can be attached to any StaffObj
-    void AddGraphicObj(lmGraphicObj* pGO);
-    void RemoveGraphicObj(lmGraphicObj* pGO);
+    // StaffObjs can have attached AuxObjs 
+    void AttachAuxObj(lmAuxObj* pAO);
+    void DetachAuxObj(lmAuxObj* pAO);
 
     //helper methods
     lmLUnits TenthsToLogical(lmTenths nTenths);
@@ -307,6 +267,9 @@ protected:
     int         m_nStaffNum;        // lmStaff (1..n) on which this object is located
     int         m_numMeasure;       // measure number in which this lmStaffObj is included
 
+    //StaffObjs can have attached AuxObjs 
+    std::vector<lmAuxObj*>	m_AuxObjs;	    //list of attached AuxObjs
+
 };
 
 // declare a list of StaffObjs class
@@ -318,10 +281,13 @@ WX_DECLARE_LIST(lmStaffObj, StaffObjsList);
 //    lmAuxObj
 //-------------------------------------------------------------------------------------------
 
-enum EAuxObjType
+enum lmEAuxObjType
 {
-    eAXOT_Symbol = 1,           // notations (lmNoteRestObj)
-    eAXOT_Tie,                  // tie (lmTie)
+    eAXOT_Fermata,
+    eAXOT_Lyric,
+
+    //graphic objects
+    eAXOT_Line,
 };
 
 class lmAuxObj : public lmScoreObj
@@ -330,21 +296,20 @@ public:
     virtual ~lmAuxObj() {}
 
     // implementation of virtual methods of base class lmScoreObj
-    void Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC = *wxBLACK,
-              bool fHighlight = false);
-    void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
+    virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
                 bool fHighlight = false);
     virtual void SetFont(lmPaper* pPaper) {}
 
-    // Graphic objects can be attached to any AuxObj
-    void AddGraphicObj(lmGraphicObj* pGO);
-    void RemoveGraphicObj(lmGraphicObj* pGO);
+    // class info
+    virtual lmEAuxObjType GetAuxObjType()=0;
+
+    // debug methods
+    virtual wxString Dump();
 
 
 protected:
-    lmAuxObj(lmObject* pParent, EAuxObjType nType, bool fIsDraggable = false);
-
-    EAuxObjType     m_nClass;
+    lmAuxObj(lmObject* pParent, bool fIsDraggable = false);
+    virtual void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)=0;
 
 };
 
@@ -352,4 +317,4 @@ protected:
 #include "wx/list.h"
 WX_DECLARE_LIST(lmAuxObj, AuxObjsList);
 
-#endif    // __STAFFOBJ_H__
+#endif    // __LM_STAFFOBJ_H__

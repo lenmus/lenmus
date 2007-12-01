@@ -493,7 +493,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeFragments(wxString sLine)
      }
     // verify fragment to avoid program failures
     lmLDPParser parserLDP;
-    //! @todo strong verification
+    //TODO strong verification
     //lmLDPNode* pRoot = parserLDP.ParseText(sFragment);
     //if (! pRoot) {
     if (!parserLDP.ParenthesisMatch(sFragment)) {

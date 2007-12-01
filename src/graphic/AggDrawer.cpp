@@ -276,7 +276,7 @@ void lmAggDrawer::SetFont(wxFont& font)
 
 void lmAggDrawer::SetLogicalFunction(int function)
 {
-    //! @todo
+    //TODO
     //wxLogMessage(_T("[lmAggDrawer::SetLogicalFunction]"));
     m_pDC->SetLogicalFunction(function);
 }
@@ -365,21 +365,21 @@ void lmAggDrawer::DrawText(const wxString& text, lmLUnits x, lmLUnits y)
 
 void lmAggDrawer::SetTextForeground(const wxColour& colour)
 {
-    //! @todo
+    //TODO
     //wxLogMessage(_T("[lmAggDrawer::SetTextForeground]"));
     m_pDC->SetTextForeground(colour);
 }
 
 void lmAggDrawer::SetTextBackground(const wxColour& colour)
 {
-    //! @todo
+    //TODO
     //wxLogMessage(_T("[lmAggDrawer::SetTextBackground]"));
     m_pDC->SetTextBackground(colour);
 }
 
 void lmAggDrawer::GetTextExtent(const wxString& string, lmLUnits* w, lmLUnits* h)
 {
-    //! @todo
+    //TODO
     //wxLogMessage(_T("[lmAggDrawer::GetTextExtent]"));
     wxCoord width, height;
     m_pDC->GetTextExtent(string, &width, &height);

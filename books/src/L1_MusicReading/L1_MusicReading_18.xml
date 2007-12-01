@@ -12,7 +12,7 @@ In this lesson a new rhythmic pattern is introduced:
 One eighth note and two 16th notes.
 </para>
 
-<para><score width="685" height="70" border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>

@@ -240,7 +240,7 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
     //select all usable fragments for current time signature
     //int nBeatType= GetBeatTypeFromTimeSignType(m_nTimeSign);
     if (m_pConstrains->SelectFragments(m_nTimeSign) == 0) {
-        //! @todo error logging. Suppress message
+        //TODO error logging. Suppress message
         wxMessageBox(_("[lmComposer5::GenerateScore] No usable fragments!"));
         return pScore;
     }
@@ -248,7 +248,7 @@ lmScore* lmComposer5::GenerateScore(lmScoreConstrains* pConstrains)
     //chose ramdomly a fragment satisfying the constraints, and take the first segment
     pConstrains->ChooseRandomFragment();
     pSegment = pConstrains->GetNextSegment();
-    //! @todo what if no fragment satisfies the constraints?
+    //TODO what if no fragment satisfies the constraints?
 
     int nSegmentLoopCounter = 0;
     while (nNumMeasures < nMeasuresToGenerate) {

@@ -103,19 +103,6 @@ lmBoxSlice* lmBoxPage::FindSliceAtPosition(lmUPoint& pointL)
     return (lmBoxSlice*)NULL;;
 }
 
-lmBoxInstrSlice* lmBoxPage::FindInstrSliceAtPosition(lmUPoint& pointL)
-{
-    //loop to look up in the systems
-
-	for(int i=0; i < (int)m_aSystems.size(); i++)
-    {
-        lmBoxInstrSlice* pBInstrSlice = m_aSystems[i]->FindInstrSliceAtPosition(pointL);
-        if (pBInstrSlice)
-			return pBInstrSlice;    //found
-    }
-    return (lmBoxInstrSlice*)NULL;;
-}
-
 lmGMObject* lmBoxPage::FindGMObjectAtPosition(lmUPoint& pointL)
 {
     //if not in this Page return

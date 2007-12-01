@@ -200,7 +200,7 @@ class lmBox;
 #include "ColStaffObjs.h"
 #include "SOControl.h"
 #include "Text.h"
-#include "NoteRestObj.h"
+#include "AuxObj.h"
 #include "Accidental.h"
 #include "Staff.h"
 #include "VStaff.h"
@@ -263,8 +263,6 @@ public:
     void ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, EHighlightType nHighlightType);
 	void RemoveAllHighlight(wxWindow* pCanvas);
 
-    lmScoreObj* FindSelectableObject(lmUPoint& pt);
-
     // Debug methods. If filename provided writes also to file
     wxString Dump(wxString sFilename = _T(""));
     wxString SourceLDP(wxString sFilename = _T(""));
@@ -296,10 +294,6 @@ public:
     lmLUnits TopSystemDistance() { return m_nTopSystemDistance + m_nHeadersHeight; }
     void SetTopSystemDistance(lmLUnits nDistance) { m_nTopSystemDistance = nDistance; }
 
-    //global lmStaffObj list related methods
-    void IncludeInGlobalList(lmStaffObj* pSO);
-    void RemoveFromGlobalList(lmStaffObj* pSO);
-
     //renderization options
     void SetRenderizationType(ERenderizationType nType) { m_nRenderizationType = nType; }
     //SetSpacingMethod(ESpacingMethod nMethod) { m_nSpacingMethod = nMethod; }
@@ -329,6 +323,7 @@ private:
     // a lmScore is, mainly, a collection of Instruments plus some data (composer, title, ...)
     InstrumentsList     m_cInstruments;     //list of instruments that form this score
     StaffObjsList       m_cTitles;          //list of score titles
+    lmVStaff*           m_pGlobalStaff;     //Instrumental VStaff object to allow the score to own StaffObjs
 
     //Variables related to polyphonic interpretation
     lmSoundManager*     m_pSoundMngr;       //Sound events table & manager
@@ -344,7 +339,6 @@ private:
 
     //other variables
     wxInstrumentsListNode*  m_pNode;        //last returned instrument node
-    StaffObjsList   m_cGlobalStaffobjs;     //list of other StaffObjs not included in an lmVStaff
     long            m_nID;                  //unique ID for this score
     wxString        m_sScoreName;           //for user identification
 

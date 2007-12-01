@@ -120,7 +120,7 @@ void lmScoreConstrains::SaveSettings()
         g_pPrefs->Write(sKey, m_oValidKeys.IsValid((EKeySignatures)i) );
     }
 
-    //! @todo save remaining data: fragments
+    //TODO save remaining data: fragments
 
 }
 
@@ -192,7 +192,7 @@ void lmScoreConstrains::LoadSettings()
     }
 
 
-    //! @todo load remaining data: fragments
+    //TODO load remaining data: fragments
 
 }
 
@@ -232,7 +232,7 @@ wxString lmScoreConstrains::Verify()
         sError += _("Global error: No key signature constraints specified\n");
     }
 
-    //! @todo verify remaining data: fragments
+    //TODO verify remaining data: fragments
 
     return sError;
 

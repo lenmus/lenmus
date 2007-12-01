@@ -113,16 +113,16 @@ void lmAccidental::CreateShapes(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos)
             nGlyph[1] = GLYPH_SHARP_ACCIDENTAL;
             break;
         case eQuarterFlat:
-            wxASSERT(false);    //! @todo Not implemented
+            wxASSERT(false);    //TODO Not implemented
             break;
         case eQuarterSharp:
-            wxASSERT(false);    //! @todo Not implemented
+            wxASSERT(false);    //TODO Not implemented
             break;
         case eThreeQuartersFlat:
-            wxASSERT(false);    //! @todo Not implemented
+            wxASSERT(false);    //TODO Not implemented
             break;
         case eThreeQuartersSharp:
-            wxASSERT(false);    //! @todo Not implemented
+            wxASSERT(false);    //TODO Not implemented
             break;
         default:
             wxASSERT(false);
@@ -167,16 +167,16 @@ wxString lmAccidental::GetLDPEncoding()
         case eSharpSharp:	return _T("++");
 
         case eQuarterFlat:
-            wxASSERT(false);    //! @todo Not implemented
+            wxASSERT(false);    //TODO Not implemented
             break;
         case eQuarterSharp:
-            wxASSERT(false);    //! @todo Not implemented
+            wxASSERT(false);    //TODO Not implemented
             break;
         case eThreeQuartersFlat:
-            wxASSERT(false);    //! @todo Not implemented
+            wxASSERT(false);    //TODO Not implemented
             break;
         case eThreeQuartersSharp:
-            wxASSERT(false);    //! @todo Not implemented
+            wxASSERT(false);    //TODO Not implemented
             break;
         default:
             wxASSERT(false);

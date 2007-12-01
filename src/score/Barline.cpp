@@ -78,75 +78,6 @@ lmContext* lmBarline::GetContext(int nStaff)
     return m_aContexts.Item(nStaff-1);
 }
 
-// Create the drag image.
-// Under wxGTK the DC logical function (ROP) is used by DrawText() but it is ignored by
-// wxMSW. Thus, it is not posible to do dragging just by redrawing the lmStaffObj using ROPs.
-// For portability it is necessary to implement dragging by means of bitmaps and wxDragImage
-wxBitmap* lmBarline::GetBitmap(double rScale)
-{
-    //create a lmPaper associated to the screen DC for creating the drag bitmap
-    lmPaper oPaper;
-
-    // Get size of barline, in logical units
-    wxScreenDC dc;
-    dc.SetMapMode(lmDC_MODE);
-    dc.SetUserScale(rScale, rScale);
-    lmLUnits hL = m_pVStaff->GetYBottom() - m_pVStaff->GetYTop();
-    //oPaper.SetDC(&dc);
-    oPaper.SetDrawer(new lmDirectDrawer(&dc));
-    lmLUnits wL = DrawBarline(DO_MEASURE, &oPaper, 0, 0, hL, g_pColors->ScoreSelected());
-
-    // allocate a memory DC for drawing into a bitmap
-    wxMemoryDC dc2;
-    dc2.SetMapMode(lmDC_MODE);
-    dc2.SetUserScale(rScale, rScale);
-
-    // allocate the bitmap
-    // convert size to pixels
-    wxCoord wD = dc2.LogicalToDeviceXRel((int)wL),
-            hD = dc2.LogicalToDeviceYRel((int)hL);
-    // Add a couple of pixels to the bitmap for security
-    wxBitmap bitmap((int)(wD+2), (int)(hD+2));
-    dc2.SelectObject(bitmap);
-
-    // draw onto the bitmap
-    dc2.SetBackground(* wxWHITE_BRUSH);
-    dc2.Clear();
-    dc2.SetBackgroundMode(wxTRANSPARENT);
-    //oPaper.SetDC(&dc2);
-    oPaper.SetDrawer(new lmDirectDrawer(&dc2));
-    DrawBarline(DO_DRAW, &oPaper, 0, 0, hL, g_pColors->ScoreSelected());
-
-    dc2.SelectObject(wxNullBitmap);
-
-    // Make the bitmap masked
-    wxImage image = bitmap.ConvertToImage();
-    image.SetMaskColour(255, 255, 255);
-    wxBitmap* pBitmap = new wxBitmap(image);
-    return pBitmap;
-
-}
-
-void lmBarline::OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& offsetD,
-        const lmUPoint& pagePosL, const lmUPoint& uDragStartPos, const lmDPoint& canvasPosD)
-{
-    // A barline only can be moved horizonatlly
-    lmDPoint ptNew = canvasPosD;
-    ptNew.y = pPaper->LogicalToDeviceY(m_uPaperPos.y + m_uGlyphPos.y) + offsetD.y;
-    pDragImage->Move(ptNew);
-
-}
-
-lmUPoint lmBarline::EndDrag(const lmUPoint& uPos)
-{
-    lmUPoint oldPos(m_uPaperPos + m_uGlyphPos);
-
-    //Only X uPos. can be changed
-    m_uPaperPos.x = uPos.x - m_uGlyphPos.x;
-
-    return lmUPoint(oldPos);
-}
-
 wxString lmBarline::Dump()
 {
     wxString sDump = wxString::Format(
@@ -194,7 +125,7 @@ void lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
                            m_uThickLineWidth, m_uSpacing, m_uRadius, colorC);
 	pBox->AddShape(pShape);
     m_pShape2 = pShape;
-    lmLUnits uWidth = pShape->GetBounds().GetWidth();
+    m_uWidth = pShape->GetBounds().GetWidth();
 
 }
 

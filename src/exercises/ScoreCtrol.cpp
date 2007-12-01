@@ -160,7 +160,7 @@ void lmScoreCtrol::CreateControls()
                     0, wxALIGN_CENTER_VERTICAL|wxALL|wxADJUST_MINSIZE, nSpacing);
     }
 
-    /*! @todo Play_measure links are not positioned under each measure, as the lmScoreCtrol
+    /*TODO Play_measure links are not positioned under each measure, as the lmScoreCtrol
         has no knowledge of measure boundaries. Perhaps this information have to be
         provided by the Score and the links have to be repositioned after the score
         is rendered.
@@ -252,7 +252,7 @@ void lmScoreCtrol::DoPlay(EPlayMode nPlayMode, lmUrlAuxCtrol* pLink, int nMeasur
         // is playing. "Stop playing" button pressed
         m_pScoreCtrol->Stop();
     }
-    //! @todo Piano form
+    //TODO Piano form
     //    if (FMain.fFrmPiano) { FPiano.HabilitarMarcado = false;
 }
 

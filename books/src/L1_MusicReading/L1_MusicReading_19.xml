@@ -76,7 +76,7 @@ Also note that two dotted quarter note equals a dotted half note. Therefore, in 
 As the 6/8 has two beats per measure, it is called a compound duple meter. The  accent is strong on the first eighth note of the first beat, a medium accent on the first eighth note of the second beat, and the remaining pulses are week.
 </para>
 
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>

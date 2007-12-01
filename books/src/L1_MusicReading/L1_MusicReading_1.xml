@@ -34,7 +34,7 @@ and rests. These rhythms are very simple, as each note or rest gets a beat. List
 example to the following song:
 </para>
 
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>

@@ -39,7 +39,7 @@ This is represented in the score by the letters 'm.m.' followed by the beats per
 This indication is normally written at the beginning:
 </para>
 
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -59,7 +59,7 @@ Instead of letters 'm.m.' also note symbols are used:
 </para>
 
 
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>

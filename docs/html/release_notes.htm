@@ -1,108 +1,31 @@
 <html>
 <head>
-<title>LenMus 3.5 Release Notes</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>LenMus 3.6 Release Notes</title>
 <link rel="stylesheet" media="all" href="singledoc.css" type="text/css" >
 </head>
 <body>
 
-<h1>LenMus Phonascus 3.5 Release Notes</h1>
+<h1>LenMus Phonascus 3.6 Release Notes</h1>
 
-<h2>What's new in 3.5</h2>
+<h2>What's new in 3.6</h2>
 
-<p>From a user point of view the main changes are the new features introduced:</p>
-
-<ul>
-  <li>A new eMusicBook included: Music Reading level 1</li>
-  <li>Playback: added rhythmic accent. Higher volume on stronger beats.</li>
-  <li>Replaced MDI user interface by a notebook tabbed interface.</li>
-  <li>The lenmus program now includes the Dutch language translation.</li>
-</ul>
-
-<p>But the new version has a lot of technical changes an some bug fixes:</p>
+<p>Some new features and changes are introduced:</p>
 
 <ul>
-  <li>Added support to include images on eMusicBooks texts.</li>
-  <li>Score parameters in eBooks: added tag <metronome> to specify a fixed metronome
-        rate to play the score, instead of using user specified value in metronome
-        control.</li>
-  <li>Improvements in automatic music composer:
-        <ul>
-          <li>Modified so that in final measure it never adds a note longer
-            that a quarter note if the composed piece only uses quarter notes. This was
-            needed for Music Reading Level 1 eBook, for the initial lessons.</li>
-        </ul></li>
-  <li>Improvements in the Score internal model to support more features:
-    <ul>
-      <li>Support to include graphical objects (arrows, lines, circles,
-        etc.) on a score. For now only lines are implemented.</li>
-      <li>Implemented metronome marks notations.</li>
-      <li>Added support to set up the size of a measure by specifying barline
-        position.</li>
-      <li>Added support for fermatas on notes and rests.</li>
-      <li>Added support to have global, inheritable options in all score elements.
-        Implemented support for the following options:
-        <ul>
-          <li>Option 'Staff.DrawLeftBarline' to control left barline drawing.</li>
-          <li>Option 'StaffLines.Hide' to control staff lines drawing.</li>
-          <li>Option 'StaffLines.StopAtFinalBarline' to allow for staff lines
-            going to the right paper margin instead of finishing at the final
-            barline.</li>
-          <li>Option 'Staff.UpperLegerLines.Displacement' to shift the first upper leger
-            line so that it is closer/further than normal spacing.
-            The other leger lines spacing is not changed.</li>
-        <li>Options 'Render.SpacingMethod' and 'Render.SpacingValue', to allow for
-            more control of score renderization.</li>
-        </ul></li>
-    </ul></li>
-  <li>Improvements in score renderization:
-    <ul>
-      <li>Fixed spacing method implemented.</li>
-      <li>Fixed bug [#1715968]. Proportional spacing of notes is now working.</li>
-      <li>Do not add spacing after barline if barline is not visible.</li>
-    </ul></li>
-  <li>Improvements in LDP language to support the new features. New tags added:
-    <ul>
-      <li>Implemented simple notation 'fermata', and compound notation
-        '(fermata [above | below])' on notes and rests.</li>
-      <li>tag 'metronome' to define metronome notations.</li>
-      <li>tag 'graphic line' to add lines on a score.</li>
-      <li>tag 'spacer' for better controlling staff space.</li>
-      <li>tag 'opt' to add global, inheritable options to all other tags.</li>
-      <li>Added support for strings enclosed in double simple quotes as
-        an alternative to double quotes.</li>
-    </ul></li>
-  <li>Several bug fixes and other technical improvements.</li>
-</ul>
-
-
-<p>&nbsp;</p>
-
-
-<h2>Bug fixed details</h2>
-
-<ul>
-  <li>Bug fixed [#1724988]: Crash if program is closed while playing intervals
-        in aural training compare intervals exercise.</li>
-  <li>Bug fixed [#1715979]: When you have a score open, the 'show/hide navigation panel'
-        button shows as active but you cannot click on it.</li>
-  <li>Bug fixed [#1715953]: In the Midi configuration wizard the drop downs in
-        the wizard should not be editable.</li>
-  <li>Bug fixed [#1715959]: Focus problem. In the configuration window when you check
-        the proxy configuration but do not fill it in and then change the focus to
-        section 'language', the category selector changes but the focus remains on
-        the Internet section. Alternatively you could generate a warning message and
-        leave the focus on the Internet section.</li>
-  <li>Bug fixed [#1715963]: Repeated quick acceleration letters in options, menu
-        labels. The English text has the same letter as quick key for bottom
-        and right labels.</li>
-  <li>Bug fixed [#1715965]: Rests in a group of tied notes are not rendered in the right
-        position.</li>
-  <li>Bug fixed [#1715968]: Proportional spacing of notes is not working.</li>
-  <li>Bug fixed [#176634]: Program crash if closed while playing a score.</li>
-  <li>Bug fixed [#176635]: Crash if program is closed while playing an exercise
-        (L2_MusicReading).</li>
-  <li>Bug fixed [#1590088]: Program crash if move to another exercise while playing an
-        exercise.</li>
+  <li>A new eBook with theory and exercises on cadences.</li>
+  <li>The automatic composer algorithm has been rewritten to take into account harmony
+    rules. Scores in music reading exercises are now 'singable' and takes tonality
+    into account.</li>
+  <li>Some errors corrected in Music Reading Level 1 eBook</li>
+  <li>French translation has been totally reviewed.</li>
+  <li>Some bug fixes and other technical improvements:
+	<ul>
+	  <li>Bug fixed [#1742061]: Occasional crash on Ear Interval exercise.</li>
+	  <li>Bug fixed [#1742062]: Intervals: theory exercise. No button for 2dim answer.</li>
+	  <li>Bug fixed [#1823932]: Score symbols bad positioned when no standard screen resolution.</li>
+	  <li>Bug fixed [#1742064]: Scales identification: ambiguity in answer buttons.</li>
+	</ul></li>
 </ul>
 
 </body>

@@ -15,7 +15,7 @@ the quarter notes are shifted by the initial eighth note, so that they
 are placed 'off-beat':
 </para>
 
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <control_play></control_play>
     <music_border>0</music_border>
@@ -49,7 +49,7 @@ In this lesson we are going to start studying the syncopated rhythms that
 result by using the following patterns::
 </para>
 
-<para><score width="685" height="70" border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music>
         (score (vers 1.5)(language en iso-8859-1)
@@ -69,7 +69,7 @@ result by using the following patterns::
 
 <para>Listen to each measure and pay attention to the newly introduced patterns:</para>
 
-<para><score width="685" height="70" border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <control_play></control_play>
     <control_measures></control_measures>

@@ -309,7 +309,7 @@ void lmScoreCtrolParams::PrepareScore()
             break;
 
         case eHST_pattern:
-            //! @todo
+            //TODO
     //        Dim nMetricaPatron As ETimeSignature
     //        nMetricaPatron = MetricaQueDura(SrcDuracionPatron(sPatron))
     //        sPatron = "(metrica " & GetNombreMetrica(nMetricaPatron) & ")" & sPatron
@@ -319,7 +319,7 @@ void lmScoreCtrolParams::PrepareScore()
 
         default:
             //wxASSERT(false);
-            //! @todo
+            //TODO
             m_pScore = parserXML.ParseMusicXMLFile(_T("../Scores/MusicXML/02. Triplet.xml"));
     }
 

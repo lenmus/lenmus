@@ -98,12 +98,6 @@ lmMetronomeMark::~lmMetronomeMark()
 // implementation of virtual methods defined in base abstract class lmStaffObj
 //-----------------------------------------------------------------------------------------
 
-wxBitmap* lmMetronomeMark::GetBitmap(double rScale)
-{
-    //todo
-    return (wxBitmap*)NULL; //PrepareBitMap(rScale, m_sText);
-}
-
 void lmMetronomeMark::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
 //    lmLUnits uyPos = pPaper->GetCursorY() - m_pVStaff->TenthsToLogical(50, m_nStaffNum);
@@ -120,9 +114,6 @@ void lmMetronomeMark::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC
 //        // set total width to zero: metronome marks does not consume staff space
 //        m_uWidth = 0;   // uWidth;
 //
-//        // store glyph position (relative to paper pos).
-//        m_uGlyphPos.x = 0;
-//        m_uGlyphPos.y = pPaper->GetCursorY() - uyPos;
 //    }
 
 }
@@ -170,7 +161,7 @@ lmLUnits lmMetronomeMark::DrawText(bool fMeasuring, lmPaper* pPaper,
         wxFont* pFont = pPaper->GetFont(nFontSize, _T("Times New Roman"), wxDEFAULT, nStyle, nWeight, false);
         if (!pFont) {
             wxMessageBox(_("Sorry, an error has occurred while allocating the font."),
-                _T("lmScoreText::SetFont"), wxOK);
+                _T("lmMetronomeMark::DrawText"), wxOK);
             ::wxExit();
         }
         m_pTextShape->SetFont(pFont);
@@ -264,7 +255,7 @@ wxString lmMetronomeMark::SourceLDP(int nIndent)
 
 wxString lmMetronomeMark::SourceXML(int nIndent)
 {
-    //! @todo all
+    //TODO all
 	wxString sSource = _T("");
 	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
     sSource += _T("TODO: lmMetronomeMark XML Source code generation method\n");

@@ -19,10 +19,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __TUPLETBRACKET_H__        //to avoid nested includes
-#define __TUPLETBRACKET_H__
+#ifndef __LM_TUPLETBRACKET_H__        //to avoid nested includes
+#define __LM_TUPLETBRACKET_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "TupletBracket.cpp"
 #endif
 
@@ -82,5 +82,5 @@ private:
 
 };
 
-#endif    // __TUPLETBRACKET_H__
+#endif    // __LM_TUPLETBRACKET_H__
 

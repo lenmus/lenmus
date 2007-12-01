@@ -19,10 +19,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __VSTAFFT_H__        //to avoid nested includes
-#define __VSTAFFT_H__
+#ifndef __LM_VSTAFF_H__        //to avoid nested includes
+#define __LM_VSTAFF_H__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "VStaff.cpp"
 #endif
 
@@ -37,12 +37,11 @@ class lmBoxSliceVStaff;
 class lmVStaff : public lmObject
 {
 public:
-    //ctor and dtor
     lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered);
     ~lmVStaff();
 
     lmStaff*    AddStaff(int nNumLines=5, lmLUnits nMicrons=0);
-    lmClef*    AddClef(EClefType nClefType, int nStaff = 1, bool fVisible = true);
+    lmClef*     AddClef(EClefType nClefType, int nStaff = 1, bool fVisible = true);
 
     lmTimeSignature* AddTimeSignature(int nBeats, int nBeatType,
                         bool fVisible = true);    //for type eTS_Normal
@@ -91,6 +90,8 @@ public:
 
     lmSpacer* AddSpacer(lmTenths nWidth);
 
+    lmStaffObj* AddAnchorObj();
+
     lmWordsDirection* AddWordsDirection(wxString sText, lmEAlignment nAlign,
                         lmLocation* pPos, lmFontInfo oFontData, bool fHasWidth);
 
@@ -99,9 +100,7 @@ public:
     int GetNumMeasures();
 
     // rendering methods
-    void DrawStaffLines(lmPaper* pPaper, lmLUnits xFrom, lmLUnits xTo,
-                        lmLUnits* pyLinTop, lmLUnits* pyLinBottom);
-    lmLUnits DrawStaffLines2(lmBoxSliceVStaff* pBox, lmLUnits xFrom, lmLUnits xTo,
+    lmLUnits LayoutStaffLines(lmBoxSliceVStaff* pBox, lmLUnits xFrom, lmLUnits xTo,
 						     lmLUnits yPos);
     void DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPaper* pPaper);
 	void AddPrologShapes(lmBoxSliceVStaff* pBSV, int nMeasure, bool fDrawTimekey, lmPaper* pPaper);
@@ -110,8 +109,8 @@ public:
     void SetUpFonts(lmPaper* pPaper);
     bool IsOverlayered() { return m_fOverlayered; }
     lmLUnits GetStaffLineThick(int nStaff);
+    inline bool HideStaffLines() { return GetOptionBool(_T("StaffLines.Hide")); }
 
-    lmScoreObj* FindSelectableObject(lmUPoint& pt);
     lmNote* FindPossibleStartOfTie(lmAPitch anPitch);
 
     lmLUnits TenthsToLogical(lmTenths nTenths, int nStaff);
@@ -147,6 +146,9 @@ public:
     void SetSpaceBeforeClef(lmLUnits nSpace) { m_nSpaceBeforeClef = nSpace; }
     lmLUnits GetSpaceBeforeClef() { return m_nSpaceBeforeClef; }
 
+    //miscellaneous
+    inline bool IsGlobalStaff() const { return (m_pInstrument == (lmInstrument*)NULL); }
+
 
 private:
     void SetFont(lmStaff* pStaff, lmPaper* pPaper);
@@ -160,8 +162,8 @@ private:
 
         // member variables
 
-    lmScore        *m_pScore;           //lmScore to which this lmVStaff belongs
-    lmInstrument   *m_pInstrument;      //lmInstrument to which this lmVStaff belongs
+    lmScore*        m_pScore;           //lmScore to which this lmVStaff belongs
+    lmInstrument*   m_pInstrument;      //lmInstrument to which this lmVStaff belongs
     bool            m_fOverlayered;     //this VStaff is overlayered on previous one
 
     lmColStaffObjs    m_cStaffObjs;        //collection of StaffObjs that form this lmVStaff
@@ -190,4 +192,4 @@ private:
 WX_DECLARE_LIST(lmVStaff, VStavesList);
 
 
-#endif    // __VSTAFFT_H__
+#endif    // __LM_VSTAFF_H__

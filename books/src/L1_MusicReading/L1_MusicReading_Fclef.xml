@@ -12,7 +12,7 @@ following symbol:
 </para>
 
 <!-- Empty staff with a F clef -->
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -30,7 +30,7 @@ following symbol:
 The bass clef assigns the F note to the 4th line, as shown in following picture:
 </para>
 
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>

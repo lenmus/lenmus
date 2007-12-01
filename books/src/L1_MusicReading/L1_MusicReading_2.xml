@@ -69,7 +69,7 @@ example, the tie joins two quarter notes, creating a note of double
 duration (a half note). Listen to the following score:
 </para>
 
-<para><score width="685" height="70" border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <control_play></control_play>
     <music>

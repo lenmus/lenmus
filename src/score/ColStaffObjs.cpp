@@ -272,8 +272,8 @@ void lmColStaffObjs::ShiftTime(float rTimeShift)
     //update time counters and check that shift is inside current measure
     m_rTimePos += rTimeShift;
     if (m_rTimePos < 0) { m_rTimePos = 0; }      //can not jump back before the start of current measure
-    //! @todo Check that does not go to the next measure
-    //! @todo Display error message if jump out of current measure boundaries
+    //TODO Check that does not go to the next measure
+    //TODO Display error message if jump out of current measure boundaries
 //    if (m_rTimePos > m_rMaxTimePos) { m_rTimePos = m_rMaxTimePos   //can not jump out of this bar
 
 }

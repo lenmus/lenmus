@@ -38,6 +38,7 @@
 #include "wx/debug.h"
 #include "wx/list.h"
 #include "Score.h"
+#include "VStaff.h"
 #include "../app/global.h"
 #include "../sound/SoundEvents.h"
 #include "../graphic/GMObject.h"
@@ -66,6 +67,7 @@ lmScore::lmScore() : lmObject((lmObject*)NULL)
 
     //initializations
     m_pSoundMngr = (lmSoundManager*)NULL;
+    m_pGlobalStaff = new lmVStaff(this, (lmInstrument*)NULL, false);
     m_sScoreName = _T("New score");
 
     //TODO user options, not a constant
@@ -96,8 +98,7 @@ lmScore::~lmScore()
     m_cInstruments.DeleteContents(true);
     m_cInstruments.Clear();
 
-    m_cGlobalStaffobjs.DeleteContents(true);
-    m_cGlobalStaffobjs.Clear();
+    delete m_pGlobalStaff;
 
     if (m_pSoundMngr) {
         m_pSoundMngr->DeleteEventsTable();
@@ -127,7 +128,10 @@ void lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation tPos,
     tFont.sFontName = sFontName;
 
     lmScoreText* pTitle = new lmScoreText(this, sTitle, nAlign, tPos, tFont);
-    IncludeInGlobalList(pTitle);    //so that it is selectable for edition
+    //TODO
+    //lmStaffObj* pAnchor = m_pGlobalStaff->AddAnchorObj();
+    //pAnchor->AttachAuxObj(pTitle);
+
     m_cTitles.Append(pTitle);
 
 }
@@ -347,58 +351,6 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
 
 }
 
-void lmScore::IncludeInGlobalList(lmStaffObj* pSO)
-{
-    m_cGlobalStaffobjs.Append(pSO);
-}
-
-void lmScore::RemoveFromGlobalList(lmStaffObj* pSO)
-{
-    m_cGlobalStaffobjs.DeleteObject(pSO);
-}
-
-//=========================================================================================
-// Methods for finding StaffObjs
-//=========================================================================================
-
-lmScoreObj* lmScore::FindSelectableObject(lmUPoint& pt)
-{
-    int iVStaff;
-    lmInstrument *pInstr;
-    lmVStaff *pStaff;
-    InstrumentsList::Node *node;
-    lmScoreObj* pScO;
-
-    //Look up in the global StaffObjs list
-    wxStaffObjsListNode* pNode;
-    for(pNode = m_cGlobalStaffobjs.GetFirst(); pNode; pNode = pNode->GetNext()) {
-        pScO = (lmScoreObj*)pNode->GetData();
-        if (pScO->IsAtPoint(pt)) {
-            return pScO;
-        }
-    }
-
-    //Not found in global list. Look up in the VStaffs' lists
-
-    //for each instrument
-    for (node = m_cInstruments.GetFirst(); node; node=node->GetNext()) {
-        pInstr = node->GetData();
-
-        //for each lmVStaff
-        for (iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
-            pStaff = pInstr->GetVStaff(iVStaff);
-
-            //look for posible lmStaffObj and exit if any found
-            pScO = pStaff->FindSelectableObject(pt);
-            if (pScO) return(pScO);
-        }
-    }
-    return (lmScoreObj *)NULL;    //none found
-}
-
-////Friend methods for lmFormatter object and for internal use
-////=========================================================================================
-
 lmInstrument* lmScore::GetFirstInstrument()
 {
     m_pNode = m_cInstruments.GetFirst();
@@ -418,20 +370,6 @@ lmInstrument* lmScore::GetLastInstrument()
     m_pNode = m_cInstruments.GetLast();
     return (m_pNode ? (lmInstrument *)m_pNode->GetData() : (lmInstrument *)m_pNode);
 }
-
-////Returns the lmInstrument number nInstr (1..n)
-//Friend Property Get lmInstrument(nInstr As Long) As CInstrumento
-//    Set lmInstrument = m_cInstruments.Item(nInstr)
-//
-//}
-//
-////Returns the number of Instruments in the Score
-//Friend Property Get InstrumentsCount() As Long
-//    InstrumentsCount = m_cInstruments.Count
-//
-//}
-//
-////== End of Friend methods for lmFormatter object ============================================
 
 void lmScore::WriteToFile(wxString sFilename, wxString sContent)
 {
@@ -453,15 +391,9 @@ void lmScore::WriteToFile(wxString sFilename, wxString sContent)
 
 wxString lmScore::Dump(wxString sFilename)
 {
+    //dump global VStaff
     wxString sDump = wxString::Format(_T("Score ID: %d\nGlobal objects:\n"), GetID());
-
-    //loop to dump global StaffObjs
-    lmStaffObj* pSO;
-    wxStaffObjsListNode* pNode;
-    for(pNode = m_cGlobalStaffobjs.GetFirst(); pNode; pNode = pNode->GetNext()) {
-        pSO = (lmStaffObj*)pNode->GetData();
-        sDump += pSO->Dump();
-    }
+    m_pGlobalStaff->Dump();
 
     //loop to dump all instruments
     sDump += _T("\nLocal objects:\n");
@@ -629,14 +561,13 @@ void lmScore::RemoveAllHighlight(wxWindow* pCanvas)
 
 void lmScore::RemoveHighlight(lmStaffObj* pSO, lmPaper* pPaper)
 {
-    /*! @todo
-        If we paint in black it remains a red aureole around
-        the note. By painting it first in white the size of the aureole
-        is smaller but still visible. A posible better solution is to
-        modify Draw() method to accept an additional parameter: a flag
-        to signal that XOR draw mode in RED followed by a normal
-        draw in BLACK must be done.
-    */
+    //TODO
+    // If we paint in black it remains a red aureole around
+    // the note. By painting it first in white the size of the aureole
+    // is smaller but still visible. A posible better solution is to
+    // modify Render method to accept an additional parameter: a flag
+    // to signal that XOR draw mode in RED followed by a normal
+    // draw in BLACK must be done.
 
     pSO->Highlight(pPaper, *wxWHITE);
     pSO->Highlight(pPaper, g_pColors->ScoreNormal());

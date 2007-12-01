@@ -168,7 +168,7 @@ void lmXmlParser::TagError(const wxString sElement, const wxString sTagName, wxX
     wxLogMessage(sMsg);
 
     if (pElement) {
-        //! @todo Log source code or reference to source line. But how?
+        //TODO Log source code or reference to source line. But how?
         //wxLogMessage(pElement->));
     }
 }

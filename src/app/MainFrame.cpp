@@ -441,7 +441,7 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     m_fSilentCheck = false;     //default: visible 'check for updates' process
 
 
-    //! @todo metronome LED
+    //TODO metronome LED
     // Set picMetronomoOn = LoadResPicture("METRONOMO_ON", vbResBitmap)
     //Set picMetronomoOff = LoadResPicture("METRONOMO_OFF", vbResBitmap)
     //configurar controles en el frame Metrónomo
@@ -503,7 +503,7 @@ void lmMainFrame::OnMetronomeOnOff(wxCommandEvent& WXUNUSED(event))
 {
     if (m_pMtr->IsRunning()) {
         m_pMtr->Stop();
-        //! @todo switch off metronome LED
+        //TODO switch off metronome LED
     }
     else {
         m_pMtr->Start();
@@ -1271,7 +1271,7 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
     // Add firts the 'intro' eBook
     wxFileName oFileIntro(sPath, _T("intro"), _T("lmb"), wxPATH_NATIVE);
     if (!m_pBookController->AddBook(oFileIntro)) {
-        //! @todo better error handling
+        //TODO better error handling
         wxMessageBox(wxString::Format(_("Failed adding book %s"),
             oFileIntro.GetFullPath().c_str() ));
     }
@@ -1279,7 +1279,7 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
     // Second, the 'General Exercises' eBook
     wxFileName oFileExercises(sPath, _T("GeneralExercises"), _T("lmb"), wxPATH_NATIVE);
     if (!m_pBookController->AddBook(oFileExercises)) {
-        //! @todo better error handling
+        //TODO better error handling
         wxMessageBox(wxString::Format(_("Failed adding book %s"),
             oFileExercises.GetFullPath().c_str() ));
     }
@@ -1296,7 +1296,7 @@ void lmMainFrame::ScanForBooks(wxString sPath, wxString sPattern)
         if (oFilename.GetName() != _T("help") && oFilename.GetName() != _T("intro") &&
 			oFilename.GetName() != _T("GeneralExercises")) {
             if (!m_pBookController->AddBook(oFilename)) {
-                //! @todo better error handling
+                //TODO better error handling
                 wxMessageBox(wxString::Format(_("Failed adding book %s"),
                     oFilename.GetFullPath().c_str() ));
             }
@@ -2008,10 +2008,10 @@ void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)
         // Print related commands: enabled if EditFrame or TextBookFrame
         case MENU_Print_Preview:
             event.Enable(fEditFrame);
-            //! @todo Add print preview capabilities to TextBookFrame
+            //TODO Add print preview capabilities to TextBookFrame
             break;
         case wxID_PRINT_SETUP:
-            //! @todo: disabled in 3.3. Incompatibilities with wx2.7.1
+            //TODO: disabled in 3.3. Incompatibilities with wx2.7.1
             event.Enable(false);    //fEditFrame || fTextBookFrame);
             break;
         case MENU_Print:
@@ -2124,7 +2124,7 @@ void lmMainFrame::OnMetronomeTimer(wxTimerEvent& event)
     Do not generate sounds as they are done by the lmMetronome object
     */
 
-    //! @todo flash metronome LED
+    //TODO flash metronome LED
   //  Me.picMtrLEDOff.Visible = false;
   //  Me.picMtrLEDRojoOn.Visible = true;
 //    ::wxMilliSleep(100);

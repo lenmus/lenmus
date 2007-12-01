@@ -43,7 +43,6 @@
 class lmBoxScore;
 class lmBoxSystem;
 class lmBoxSlice;
-class lmBoxInstrSlice;
 class lmScore;
 class lmPaper;
 
@@ -58,7 +57,6 @@ public:
     inline int GetLastSystem() const { return m_nLastSystem; }
 
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
-    lmBoxInstrSlice* FindInstrSliceAtPosition(lmUPoint& pointL);
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
 
     lmBoxSystem* AddSystem(int nSystem);

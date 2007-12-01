@@ -118,7 +118,7 @@ wxString lmLdpTagsTable::GetInternalTag(wxString sTag, wxString sContext)
 //load tags set for given language
 void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
 {
-    //! @todo For now charset is ignored
+    //TODO For now charset is ignored
 
     //clear tables
     m_Contexts.clear();
@@ -128,10 +128,10 @@ void lmLdpTagsTable::LoadTags(wxString sLanguage, wxString sCharset)
     }
 
 
-    //! @todo   For now I will load tags from program. This must be changed to load them
+    //TODO   For now I will load tags from program. This must be changed to load them
     //!         from file ''LDP_Tags.txt' in given language directory.
 
-    //! @todo   For now I will load Spanish tags as default. This must not be changed
+    //TODO   For now I will load Spanish tags as default. This must not be changed
     //!         while program generated tags are in Spanish.
     if (sLanguage == _T("en")) {
         m_Tags[0][_T("abbrev")] = _T("abbrev");

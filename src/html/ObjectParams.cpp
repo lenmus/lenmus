@@ -52,7 +52,7 @@ lmEBookCtrolParams::lmEBookCtrolParams(const wxHtmlTag& tag, int nWidth, int nHe
 
 void lmEBookCtrolParams::LogError(const wxString& sMsg)
 {
-    //! @todo do something else with the error
+    //TODO do something else with the error
     wxLogMessage(sMsg);
 }
 

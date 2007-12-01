@@ -99,10 +99,10 @@ void lmInstrument::Create(lmScore* pScore, int nNumStaves, int nMIDIChannel, int
         AddVStaff( (i!=1) );    //second and remaining overlayered
     }
 
-    //include name/abbrev. in global list so that they are selectable for edition
-    //the owner of them is now the score. Do not delete them.
-    if (m_pName) pScore->IncludeInGlobalList(m_pName);
-    if (m_pAbbreviation) pScore->IncludeInGlobalList(m_pAbbreviation);
+    ////include name/abbrev. in global list so that they are selectable for edition
+    ////the owner of them is now the score. Do not delete them.
+    //if (m_pName) pScore->IncludeInGlobalList(m_pName);
+    //if (m_pAbbreviation) pScore->IncludeInGlobalList(m_pAbbreviation);
 
 
 }
@@ -110,17 +110,6 @@ void lmInstrument::Create(lmScore* pScore, int nNumStaves, int nMIDIChannel, int
 lmInstrument::~lmInstrument()
 {
     m_cStaves.DeleteContents(true);
-
-    //remove name/abbrev. from global list and delete them
-    if (m_pName) {
-        m_pScore->RemoveFromGlobalList(m_pName);
-        delete m_pName;
-    }
-    if (m_pAbbreviation) {
-        m_pScore->RemoveFromGlobalList(m_pAbbreviation);
-        delete m_pAbbreviation;
-    }
-
 }
 
 void lmInstrument::SetIndent(lmLUnits* pIndent, lmLocation* pPos)
@@ -231,8 +220,7 @@ void lmInstrument::MeasureNames(lmPaper* pPaper)
 	// To measure the names we have to create the shapes but we are going to delete
 	// them at the end
 
-    //As name/abbreviation are StaffObjs, method Draw() advances paper to
-    //end of name/abbreviation. Let's save original position to restore it
+    //Save original position to restore it later
     lmLUnits xPaper = pPaper->GetCursorX();
 
     m_nIndentFirst = 0;
@@ -279,24 +267,6 @@ void lmInstrument::AddNameShape(lmBox* pBox, lmPaper* pPaper)
     }
 }
 
-//void lmInstrument::DrawName(lmPaper* pPaper, wxColour colorC)
-//{
-    ////when this method is invoked paper is positioned at top left corner of instrument
-    ////renderization point (x = left margin, y = top line of first staff)
-    ////after rendering, paper position is not advanced
-
-    //if (m_pName) {
-    //    //As name/abbreviation are StaffObjs, method Draw() should be invoked but
-    //    //it draws the object not at current paper pos but at stored m_uPaperPos.
-    //    //It also performs other non necessary thigs.
-    //    //So, I will invoke directly DarwObject and, previouly, set the text
-    //    //position at current paper position
-    //    lmUPoint rPos(pPaper->GetCursorX(), pPaper->GetCursorY());
-    //    m_pName->MoveTo(rPos);
-    //    m_pName->DrawObject(DO_DRAW, pPaper, colorC, NO_HIGHLIGHT);
-    //}
-//}
-
 void lmInstrument::AddAbbreviationShape(lmBox* pBox, lmPaper* pPaper)
 {
     //when this method is invoked paper is positioned at top left corner of instrument
@@ -316,24 +286,4 @@ void lmInstrument::AddAbbreviationShape(lmBox* pBox, lmPaper* pPaper)
 		pPaper->SetCursorY(uPos.y);
     }
 }
-
-//void lmInstrument::DrawAbbreviation(lmPaper* pPaper, wxColour colorC)
-//{
-//    //when this method is invoked paper is positioned at top left corner of instrument
-//    //renderization point (x = left margin, y = top line of first staff)
-//    //after rendering, paper position is not advanced
-//
-//    if (m_pAbbreviation) {
-//        //As name/abbreviation are StaffObjs, method Draw() should be invoked but
-//        //it draws the object not at current paper pos but at stored m_uPaperPos.
-//        //It also performs other non necessary thigs.
-//        //More: Abbreviation is written on every system but Draw will always
-//        //draw it at the same position.
-//        //So, I will invoke directly DarwObject and, previouly, set the text
-//        //position at current paper position.
-//        lmUPoint rPos(pPaper->GetCursorX(), pPaper->GetCursorY());
-//        m_pAbbreviation->MoveTo(rPos);
-//        //m_pAbbreviation->DrawObject(DO_DRAW, pPaper, colorC, NO_HIGHLIGHT);
-//    }
-//}
 

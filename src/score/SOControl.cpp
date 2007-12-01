@@ -18,18 +18,11 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*! @file SOControl.cpp
-    @brief Implementation file for class lmSOControl
-    @ingroup score_kernel
-*/
-/*! @class lmSOControl
-    @ingroup score_kernel
-    @brief This object represents a control operation (i.e. a timepos shift)
 
-    This object represents a control operation, currently:
-      - a timepos shift.
-      - a 'new system' tag
-*/
+// class lmSOControl
+//    This object represents a control operation, currently:
+//      - a timepos shift.
+//      - a 'new system' tag
 
 #ifdef __GNUG__
 #pragma implementation "SOControl.h"
@@ -102,12 +95,13 @@ wxString lmSOControl::Dump()
 
 wxString lmSOControl::SourceXML(int nIndent)
 {
-    //! @todo generate MusicXML source
-    return _T("TODO: lmSOControl source XML generation method");
+    //TODO generate MusicXML source
+    return _T("TODO: lmSOControl source XML generation method\n");
 }
 
 wxString lmSOControl::SourceLDP(int nIndent)
 {
+    //TODO
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
 

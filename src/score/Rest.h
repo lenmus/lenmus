@@ -49,9 +49,6 @@ public:
     wxString    SourceLDP(int nIndent);
     wxString    SourceXML(int nIndent);
 
-        //lmStaffObj
-    lmScoreObj* FindSelectableObject(lmUPoint& pt);
-
         //lmNoteRest
     bool IsInChord() { return false; }        
 

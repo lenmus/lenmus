@@ -157,7 +157,7 @@ void lmMidiManager::SetOutDevice(int nOutDevId)
             nErr = g_pMidiOut->Close();
             delete g_pMidiOut;
             g_pMidiOut = (wxMidiOutDevice*) NULL;
-            //! @todo better error reporting
+            //TODO better error reporting
             if (nErr) {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n"),
@@ -173,7 +173,7 @@ void lmMidiManager::SetOutDevice(int nOutDevId)
             g_pMidiOut = new wxMidiOutDevice(m_nOutDevId);
             // open output device
             nErr = g_pMidiOut->Open(0, NULL);        // 0 latency, no driver user info
-            //! @todo better error reporting
+            //TODO better error reporting
             if (nErr) {
 				wxLogMessage(_T("Error %d opening Midi device"));
                 //wxMessageBox( wxString::Format(
@@ -199,7 +199,7 @@ void lmMidiManager::SetInDevice(int nInDevId)
             nErr = g_pMidiIn->Close();
             delete g_pMidiIn;
             g_pMidiIn = (wxMidiInDevice*) NULL;
-            //! @todo better error reporting
+            //TODO better error reporting
             if (nErr) {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n"),
@@ -215,7 +215,7 @@ void lmMidiManager::SetInDevice(int nInDevId)
             g_pMidiIn = new wxMidiInDevice(m_nInDevId);
             // open input device
             nErr = g_pMidiIn->Open(NULL);        // 0 latency, no driver user info
-            //! @todo better error reporting
+            //TODO better error reporting
             if (nErr) {
                 wxMessageBox( wxString::Format(
                     _T("Error %d in Open: %s \n"),
@@ -247,7 +247,7 @@ void lmMidiManager::VoiceChange(int nChannel, int nInstrument)
     //program new voices
     if (g_pMidiOut) {
         wxMidiError nErr = g_pMidiOut->ProgramChange(m_nVoiceChannel, m_nVoiceInstr);
-        //! @todo error reporting eLocalError
+        //TODO error reporting eLocalError
         if (nErr) {
             wxMessageBox( wxString::Format(
 				_T("Error %d in ProgramChange:\n%s"),

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.6\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-11-04 17:31+0100\n"
+"PO-Revision-Date: 2007-11-30 17:31+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -135,7 +135,7 @@ msgstr "Afhankelijk van het gevoel dat ze opwekken worden de cadenzen onderverde
 #: TheoryHarmony/TheoryHarmony.cpp:68
 #: TheoryHarmony/TheoryHarmony.cpp:71
 msgid "Terminal cadences"
-msgstr "De Terminale Cadens"
+msgstr "De Slotadens"
 
 #: TheoryHarmony/TheoryHarmony.cpp:32
 msgid ". They create a sensation of stability, rest and ending of the musical phrase or sentence."
@@ -153,11 +153,11 @@ msgstr ". Deze heeft als doel een spanning op te wekken en een gevoel van instab
 
 #: TheoryHarmony/TheoryHarmony.cpp:35
 msgid "As an exercise you will hear a cadence and based on the sensation it provokes, try to identify if the cadence is terminal or transient."
-msgstr "De oefening bestaat uit het beluisteren van een cadens. Op basis van het gevoel dat de cadens achterlaat, kan u trachten te bepalen of het om een terminale dan wel doorgaande cadens gaat."
+msgstr "De oefening bestaat uit het beluisteren van een cadens. Op basis van het gevoel dat de cadens achterlaat, kan u trachten te bepalen of het om een slot-  dan wel doorgaande cadens gaat."
 
 #: TheoryHarmony/TheoryHarmony.cpp:37
 msgid "Terminal cadences create a sensation of stability and conclusion of the musical phrase or sentence. This feeling is achieved by moving to the tonic grade (grade I) from any other chord grade. Depending on the starting chord grade, two types of cadences are considered:"
-msgstr "Terminale cadenzen creëren een gevoel van stabiliteit en voleinding van de muzikale frasering. Dit gevoel komt tot stand door, vertrekkende van een andere graad, de toonhoogte te verplaatsen naar de tonica. Afhankelijk van de startgraad worden twee types onderscheiden: "
+msgstr "Slotcadenzen creëren een gevoel van stabiliteit en voleinding van de muzikale frasering. Dit gevoel komt tot stand door, vertrekkende van een andere graad, de toonhoogte te verplaatsen naar de tonica. Afhankelijk van de startgraad worden twee types onderscheiden: "
 
 #: TheoryHarmony/TheoryHarmony.cpp:38
 msgid " authentic cadences"
@@ -183,7 +183,7 @@ msgstr "Authentieke cadens"
 
 #: TheoryHarmony/TheoryHarmony.cpp:43
 msgid "An authentic cadence takes place when grade V, dominant, (or V7, a V chord with an added seventh) resolves in grade I (tonic). The authentic cadence is the strongest terminal cadence, with great conclusive power."
-msgstr "En authentieke cadens verschijnt wanneer de dominant of vijfde graad (of V7 en akkoord met een toegevoegde zevende graad) oplost in de eerste graad, de tonica. De authentieke cadens is de sterkste terminale cadens waar een sterke besluitende kracht van uitgaat."
+msgstr "En authentieke cadens verschijnt wanneer de dominant of vijfde graad (of V7 en akkoord met een toegevoegde zevende graad) oplost in de eerste graad, de tonica. De authentieke cadens is de sterkste slotcadens waar een sterke besluitende kracht van uitgaat."
 
 #: TheoryHarmony/TheoryHarmony.cpp:46
 msgid "V7"
@@ -211,7 +211,7 @@ msgstr "Hier heeft de cadens de sterkste besluitende kracht. Indien aan de voorw
 
 #: TheoryHarmony/TheoryHarmony.cpp:53
 msgid "There are theoretical discussions about considering the imperfect cadence as a terminal cadence. Nevertheless, we have opted to include it in the terminal group due to sonority considerations."
-msgstr "Er worden theoretische discussies gevoerd omtrent de onvolledige cadens als terminale cadens. Niettemin hebben we ervoor gekozen om de deze in de terminale groep op te nemen omwille van de sonoriteit."
+msgstr "Er worden theoretische discussies gevoerd omtrent de onvolledige cadens als slotcadens. Niettemin hebben we ervoor gekozen om de deze in de terminale groep op te nemen omwille van de sonoriteit."
 
 #: TheoryHarmony/TheoryHarmony.cpp:54
 msgid "The perfect cadence is usually found at the end of a piece of music and the end of significant sections."
@@ -254,7 +254,7 @@ msgstr "Theorie"
 
 #: TheoryHarmony/TheoryHarmony.cpp:65
 msgid " - Practise to recognize in a score if a terminal cadence is authentic perfect or plagal."
-msgstr " - Tracht te herkennen of een terminale cadens perfekt autenthiek is of plagaal."
+msgstr " - Tracht te herkennen of een slotcadens perfekt autenthiek is of plagaal."
 
 #: TheoryHarmony/TheoryHarmony.cpp:66
 #: TheoryHarmony/TheoryHarmony.cpp:108
@@ -263,7 +263,7 @@ msgstr "Auditieve training"
 
 #: TheoryHarmony/TheoryHarmony.cpp:67
 msgid " - Train your ear and practise to identify if a terminal cadence is authentic perfect or plagal."
-msgstr " - Oefen uw gehoor en tracht te herkken of een terminale cadens perfekt autenthiek is of plagaal."
+msgstr " - Oefen uw gehoor en tracht te herkken of een slotcadens perfekt autenthiek is of plagaal."
 
 #: TheoryHarmony/TheoryHarmony.cpp:69
 #: TheoryHarmony/TheoryHarmony.cpp:72
@@ -272,7 +272,7 @@ msgstr "Autenthieke en plagale cadens"
 
 #: TheoryHarmony/TheoryHarmony.cpp:70
 msgid "Theory: Identify if a terminal cadence is authentic perfect or plagal."
-msgstr "Theorie: tracht te herkennen of een terminale cadens perfekt autenthiek is of plagaal."
+msgstr "Theorie: tracht te herkennen of een slotcadens perfekt autenthiek is of plagaal."
 
 #: TheoryHarmony/TheoryHarmony.cpp:73
 msgid "Aural training: Identify if a terminal cadence is authentic perfect or plagal."
@@ -304,7 +304,7 @@ msgstr "Een bijzonder geval van de halve cadens is de Frygische halve cadens. De
 
 #: TheoryHarmony/TheoryHarmony.cpp:92
 msgid "Another very specific case is the Andalusian cadence. It only occurs in minor keys and is given by the progression I-VII-VI-V, where the VI degree can be replaced. This cadence has a particular colour due to the chromatic half step between the root of the VII and the third of the V."
-msgstr "Een andere bijzondere cadens is de Andalusische cadens. Deze komt enkel voor in mineur toonaarden en bestaat uit de progressie I-VII-VI-V, waarbij deVIde graad vervangen kan worden. Deze cadens heeft een specifieke kleur te wijten aan de chromatische halve trap tussen de grondtoon van VII en de derde toon van V."
+msgstr "Een andere bijzondere cadens is de Andalusische cadens. Deze komt enkel voor in mineur toonaarden en bestaat uit de progressie I-VII-VI-V, waarbij de IVde graad vervangen kan worden. Deze cadens heeft een specifieke kleur te wijten aan de chromatische halve trap tussen de grondtoon van VII en de derde toon van V."
 
 #: TheoryHarmony/TheoryHarmony.cpp:94
 msgid "VII"

@@ -377,7 +377,7 @@ void lmScoreAuxCtrol::OnVisualHighlight(lmScoreHighlightEvent& event)
     //m_Paper.SetDC(&dc);
     m_Paper.SetDrawer(new lmDirectDrawer(&dc));
 
-    /*! @todo
+    /*TODO
         Position DC origing according to current scrolling and page position
         For now it is assumed that all score is displayed
     */

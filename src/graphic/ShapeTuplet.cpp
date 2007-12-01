@@ -133,7 +133,7 @@ void lmShapeTuplet::Render(lmPaper* pPaper, wxColour color)
     //Prepare pen
     lmLUnits uOldThick = pPaper->GetLineWidth();
     wxColour oldColor = pPaper->GetLineColor();
-    lmLUnits uThick = pStaff->TenthsToLogical(2.0);    //! @todo user options
+    lmLUnits uThick = pStaff->TenthsToLogical(2.0);    //TODO user options
     pPaper->SetPen(color, uThick);
 
 	lmLUnits yLineStart;

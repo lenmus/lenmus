@@ -104,7 +104,7 @@ lmLUnits lmBoxVStaffSlice::Render(lmPaper* pPaper, int nNumPage, int nSystem)
     //to properly draw barlines it is necessary that staff lines are already drawn.
     //so, lets draw the staff lines
     lmLUnits yTopLeftLine;
-    m_pVStaff->DrawStaffLines(pPaper, xFrom, xFinal, &yTopLeftLine, &yBottomLeft);
+    //m_pVStaff->DrawStaffLines(pPaper, xFrom, xFinal, &yTopLeftLine, &yBottomLeft);
 
     //save start position of instrument
     if (m_nVStaff == 1)
@@ -144,7 +144,7 @@ lmLUnits lmBoxVStaffSlice::Render(lmPaper* pPaper, int nNumPage, int nSystem)
 
     //advance paper in height off this lmVStaff
     m_pVStaff->NewLine(pPaper);
-    //! @todo advance inter-staff distance
+    //TODO advance inter-staff distance
 
     //save bounds
     SetXRight(xFinal);
@@ -169,7 +169,7 @@ void lmBoxVStaffSlice::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage
     lmBoxScore* pBScore = pBPage->GetBoxScore();            //parent score
     lmStaffObj* pCursorObj = pBScore->GetCursorPointedObject();
 
-    /*! @todo
+    /*TODO
         Review this commented code. Implies to review also comented
         code in lmFormatter4::SizeMeasure
     */
@@ -178,7 +178,7 @@ void lmBoxVStaffSlice::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage
     //que el método GetXInicioCompas pueda devolver este valor
     //m_pVStaff->SetXInicioCompas = pPaper->GetCursorX()
 
-    //! @todo Review this
+    //TODO Review this
     ////si no es el primer compas de la partitura avanza separación con la barra de compas
     ////o con prólogo, si es comienzo de línea.
     //if (nMeasure != 1) {
@@ -208,7 +208,7 @@ void lmBoxVStaffSlice::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage
                 fSpacePending = true;
                 nMaxClefWidth = 0;
             } else {
-                /*! @todo
+                /*TODO
                     Review this. I thing that now, with lmTimeposTable mechanism,
                     it is useless.
                 */

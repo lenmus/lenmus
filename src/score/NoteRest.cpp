@@ -60,6 +60,7 @@
 #endif
 
 #include "Score.h"
+
 #include "wx/debug.h"
 #include "../ldp_parser/AuxString.h"
 #include <math.h>
@@ -142,7 +143,7 @@ void lmNoteRest::CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[])
         } else {
             m_pBeam = g_pCurBeam;
             if (!m_pBeam) {
-                //! @todo Show message. Error: ¡se pide finalizar un grupo que no ha sido abierto!
+                //TODO Show message. Error: ¡se pide finalizar un grupo que no ha sido abierto!
                 fBeamed = false;
             } else {
                 if (IsRest())

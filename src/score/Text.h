@@ -19,12 +19,25 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __SBTEXT__H__        //to avoid nested includes
-#define __SBTEXT__H__
+#ifndef __LM_TEXT_H__        //to avoid nested includes
+#define __LM_TEXT_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "Text.cpp"
 #endif
+
+// For compilers that support precompilation, includes "wx/wx.h".
+#include "wx/wxprec.h"
+
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
+#include "Score.h"
 
 
 class lmBasicText
@@ -54,9 +67,9 @@ protected:
 
 };
 
-
 class lmShapeTex2;
 class lmBox;
+
 
 class lmScoreText :  public lmStaffObj
 {
@@ -104,5 +117,5 @@ private:
 //global functions defined in this module
 extern int PointsToLUnits(lmLUnits nPoints);
 
-#endif    // __SBTEXT__H__
+#endif    // __LM_TEXT_H__
 

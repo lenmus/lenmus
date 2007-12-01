@@ -44,14 +44,14 @@ END_EVENT_TABLE()
 lmColorsOptPanel::lmColorsOptPanel(wxWindow* parent) :
     lmOptionsPanel(parent)
 {
-    //! @todo  GetLanguages(m_cLangCodes, m_cLangNames);
+    //TODO  GetLanguages(m_cLangCodes, m_cLangNames);
     wxString* m_cLangCodes = new wxString[2];
     wxString* m_cLangNames = new wxString[2];
     m_cLangCodes[0] = _T("en");        m_cLangNames[0] = _T("Green");
     m_cLangCodes[1] = _T("sp");        m_cLangNames[1] =  _T("Blue");
-    int nNumLangs = 2;    //! @todo  m_cLangNames.GetCount();
+    int nNumLangs = 2;    //TODO  m_cLangNames.GetCount();
 
-    wxString sysLang = _T("en");    //! @todo GetSystemLanguageCode();
+    wxString sysLang = _T("en");    //TODO GetSystemLanguageCode();
 
     wxBoxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer *hSizer;
@@ -85,7 +85,7 @@ lmColorsOptPanel::lmColorsOptPanel(wxWindow* parent) :
     mainSizer->Fit(this);
     mainSizer->SetSizeHints(this);
 
-    //! @todo Delete this debug code
+    //TODO Delete this debug code
     delete [] m_cLangNames;
     delete [] m_cLangCodes;
 

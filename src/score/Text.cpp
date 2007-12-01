@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "Text.h"
 #endif
 
@@ -121,38 +121,6 @@ void lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 	// set total width
 	m_uWidth = pShape->GetWidth();
 
-
-	//--------------------------------------------------------------------------------
-	//--------------------------------------------------------------------------------
-	//--------------------------------------------------------------------------------
-
-	//pPaper->SetFont(*m_pFont);
-
-    //if (fMeasuring) {
-    //    lmLUnits nWidth, nHeight;
-    //    pPaper->GetTextExtent(m_sText, &nWidth, &nHeight);
-    //    //wxLogMessage(_T("[lmScoreText::DrawObject] text='%s'. width=%d"), m_sText, nWidth);
-
-    //     // store selection rectangle (relative to m_uPaperPos)
-    //    m_uSelRect.width = nWidth;
-    //    m_uSelRect.height = nHeight;
-    //    m_uSelRect.x = 0;    //remember: relative to m_uPaperPos
-    //    m_uSelRect.y = 0;
-
-    //    // set total width
-    //    m_uWidth = nWidth;
-
-    //    // store glyph position (relative to paper pos).
-    //    m_uGlyphPos.x = 0;
-    //    m_uGlyphPos.y = 0;
-
-    //}
-    //else {
-    //    lmUPoint uPos = GetGlyphPosition();
-    //    pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-    //    pPaper->DrawText(m_sText, uPos.x, uPos.y );
-    //}
-
 }
 
 wxString lmScoreText::Dump()
@@ -167,7 +135,7 @@ wxString lmScoreText::Dump()
 
 wxString lmScoreText::SourceLDP(int nIndent)
 {
-	//TODO
+	//TODO Add location
     wxString sSource = _T("(text ");
     sSource += m_sText;
     sSource += _T(")");

@@ -65,7 +65,6 @@ public:
 
     // implementation of virtual methods defined in abstract base class lmStaffObj
     void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
-    wxBitmap* GetBitmap(double rScale);
 
     // debugging
     wxString Dump();

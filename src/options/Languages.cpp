@@ -117,7 +117,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     language names (like "Español", "Français", and "Português").
     */
 
-    /*! @todo
+    /*TODO
         The language names are translated to the locale name (in occidental chars) but
         I have not a clear idea of how these translated strings will be displayed in a system
         whose system language is, for example, chinesse. Will display correctly
@@ -128,7 +128,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     Language files are expected to be found in lenmus\locale\ folder.
     */
 
-    /*! @todo
+    /*TODO
         This code is designed to work well with all languages that wxWindows supports.
         Other languages will only be supported if they're added to
         the database using wxLocale::AddLanguage.
@@ -146,7 +146,7 @@ void GetLanguages(wxArrayString &langCodes, wxArrayString &langNames)
     LangHash localLanguageName;
     LangHash reverseHash;
 
-    //List of local translations. //! @todo Add more languages
+    //List of local translations. //TODO Add more languages
 
     // AWARE: I am having problems with GCC as it doesn't 
     // Look for list of entities codes in file include/wx/html/htmlpars.h

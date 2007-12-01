@@ -29,7 +29,7 @@
 //constants to define some tables' size
 //! @limit a system can not have more than 30 staves
 //! @limit a system can not have more than 20 measures
-//! @todo Review all code to avoid limits: dynamic tables
+//TODO Review all code to avoid limits: dynamic tables
 #define MAX_STAVES_PER_SYSTEM        30    //max number of staves in a system
 #define MAX_MEASURES_PER_SYSTEM        20    //max number of measures in a system
 

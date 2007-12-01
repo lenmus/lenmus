@@ -43,7 +43,6 @@
 #include "GMObject.h"
 
 class lmBoxSlice;
-class lmBoxInstrSlice;
 class lmBoxPage;
 
 //
@@ -78,7 +77,6 @@ public:
 
     //pointing at
     lmBoxSlice* FindSliceAtPosition(lmUPoint& pointL);
-    lmBoxInstrSlice* FindInstrSliceAtPosition(lmUPoint& pointL);
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
 
     //rendering
@@ -100,7 +98,6 @@ private:
     int         m_nNumPage;         //page number (1..n) on which this system is included
 
     std::vector<lmBoxSlice*>        m_Slices;   //collection of slices in this system
-    std::vector<lmBoxInstrSlice*> m_InstrSlices; //collection of Instr slices in this system
 
 
 };

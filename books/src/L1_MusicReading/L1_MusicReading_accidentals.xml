@@ -61,7 +61,7 @@ If, for example, a piece of music is written based on the D major scale, all F a
 C notes will have sharp signs placed before them. For example (play it):
 </para>
 
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -95,7 +95,7 @@ place accidental signs in front of each note. So, the previous score can also be
 written as follows:
 </para>
 
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>

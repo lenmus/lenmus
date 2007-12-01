@@ -19,7 +19,7 @@ continuing it to the next beat, and
 preceding it by a rest on the strong part. The rest reinforces the accent on the weak part.
 </para>
 
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -49,7 +49,7 @@ preceding it by a rest on the strong part. The rest reinforces the accent on the
 
 <para>Listen to each measure and pay attention to the newly introduced patterns:</para>
 
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -103,9 +103,7 @@ this rhythm.</para>
     <control_go_back>mr1_thm16</control_go_back>
     <control_play></control_play>
     <control_solfa></control_solfa>
-	<fragment>24;(s n)(n * n)</fragment>
-	<fragment>24;(s c)(n * c)(s c)(n * c)</fragment>
-	<fragment>24;(s c)(n * c)(n * n)</fragment>
+    <fragment>24;(n * c g+)(n * c l g-),(n * c g+)(n * s)(n * s g-)</fragment>
     <clef>Sol;a3;a5</clef>
     <clef>Fa4;a2;f4</clef>
     <time>24</time>

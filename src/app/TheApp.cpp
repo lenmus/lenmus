@@ -109,7 +109,7 @@
 #include "TheApp.h"
 #include "MainFrame.h"
 #include "ScoreDoc.h"
-#include "ScoreView.h"
+#include "scoreView.h"
 #include "AboutDialog.h"
 #include "LangChoiceDlg.h"
 #include "ArtProvider.h"
@@ -331,7 +331,6 @@ bool lmTheApp::OnInit(void)
     g_pLogger->DefineTraceMask(_T("LDPParser_beams"));
     g_pLogger->DefineTraceMask(_T("lmMusicXMLParser"));
     g_pLogger->DefineTraceMask(_T("lmScoreAuxCtrol"));
-	g_pLogger->DefineTraceMask(_T("lmScoreCtrolParams"));
     g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
     g_pLogger->DefineTraceMask(_T("lmUpdater"));
 #endif
@@ -827,7 +826,7 @@ void lmTheApp::UpdateCurrentDocViews(void)
 wxString lmTheApp::GetVersionNumber()
 {
     // Increment this every time you release a new version
-    wxString sVersion = _T("3.6b2");
+    wxString sVersion = _T("3.6");
     return sVersion;
 }
 
@@ -914,18 +913,6 @@ wxString lmTheApp::GetInstallerLanguage()
     sLang = _T("");
     return sLang;
 }
-
-lmController* lmTheApp::GetViewController()
-{
-	//returns the controller associated to the active view
-    lmView* pView = GetActiveView();
-	if (pView)
-		return pView->GetController();
-	else
-		return (lmController*)NULL;
-}
-
-
 
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------

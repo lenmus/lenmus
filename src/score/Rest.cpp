@@ -139,7 +139,7 @@ void lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     //------------------------------------------------------------
     if (m_fDotted || m_fDoubleDotted)
 	{
-        //! @todo user selectable
+        //TODO user selectable
         lmLUnits uSpaceBeforeDot = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
         uxLeft += uSpaceBeforeDot;
         lmLUnits uyPos = uyTop;
@@ -150,137 +150,28 @@ void lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
         }
     }
 
-	//Add the shape for associated notations -------------------------
-    if (m_pNotations) {
-        lmNoteRestObj* pNRO;
-        wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
-        for (; pNode; pNode = pNode->GetNext() ) {
-            pNRO = (lmNoteRestObj*)pNode->GetData();
-            lmLUnits uxPos = 0;
-            lmLUnits uyPos = 0;
-            switch(pNRO->GetSymbolType()) {
-                case eST_Fermata:
-                    // set position (relative to paperPos)
-                    uxPos = m_pShape2->GetXLeft() + m_pShape2->GetWidth() / 2.0;
-                    uyPos = uyTop - uPaperPos.y;
-                    pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
-                    pNRO->UpdateMeasurements();
-                    break;
-                default:
-                    wxASSERT(false);
-            }
-        }
-    }
+	////Add the shape for associated notations -------------------------
+ //   if (m_pNotations) {
+ //       lmNoteRestObj* pNRO;
+ //       wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
+ //       for (; pNode; pNode = pNode->GetNext() ) {
+ //           pNRO = (lmNoteRestObj*)pNode->GetData();
+ //           lmLUnits uxPos = 0;
+ //           lmLUnits uyPos = 0;
+ //           switch(pNRO->GetSymbolType()) {
+ //               case eST_Fermata:
+ //                   // set position (relative to paperPos)
+ //                   uxPos = m_pShape2->GetXLeft() + m_pShape2->GetWidth() / 2.0;
+ //                   uyPos = uyTop - uPaperPos.y;
+ //                   pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
+ //                   pNRO->UpdateMeasurements();
+ //                   break;
+ //               default:
+ //                   wxASSERT(false);
+ //           }
+ //       }
+ //   }
 
-
-
-    //====================================================================================================
-    //====================================================================================================
-    //====================================================================================================
-    //====================================================================================================
-    //====================================================================================================
-    ///*
-    //This method is invoked by the base class (lmStaffObj). When reaching this point 
-    //paper cursor variable (m_uPaperPos) has been updated. This value must be used
-    //as the base for any measurement / drawing operation.
-
-    //DrawObject() method is responsible for:
-    //1. In DO_MEASURE phase (fMeasuring == true):
-    //    - Compute the surrounding rectangle, the glyph position and other measurements
-    //2. In DO_DRAW phase (fMeasuring == false):
-    //    - Render the object
-
-    //*/
-
-
-    //// move to right staff
-    //lmLUnits uyTop = m_uPaperPos.y + GetStaffOffset();
-    //lmLUnits uxLeft = m_uPaperPos.x;
-
-    //// prepare DC
-    //pPaper->SetFont(*m_pFont);
-
-    ////if measurement phase and this is the first note/rest of a beam, measure beam
-    //if (fMeasuring && m_fBeamed && m_BeamInfo[0].Type == eBeamBegin) {
-    //    m_pBeam->CreateShape();
-    //}
-
-    //// Draw rest symbol
-    ////----------------------------------------------------------------------------------
-    //lmEGlyphIndex nGlyph = GetGlyphIndex();
-    //wxString sGlyph( aGlyphsInfo[nGlyph].GlyphChar );
-    //if (fMeasuring) {
-
-    //    // store position
-    //    m_uGlyphPos.x = 0;
-    //    m_uGlyphPos.y = uyTop - m_uPaperPos.y +
-    //        m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
-
-    //    // store selection rectangle position and size
-    //    lmLUnits nWidth, nHeight;
-    //    pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
-    //    m_uSelRect.width = nWidth;
-    //    m_uSelRect.height = m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectHeight, m_nStaffNum );
-    //    m_uSelRect.x = m_uGlyphPos.x;
-    //    m_uSelRect.y = m_uGlyphPos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].SelRectShift, m_nStaffNum );
-
-    //    // store total width
-    //    lmLUnits afterSpace = m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
-    //    m_uWidth = nWidth + afterSpace;
-
-    //} else {
-    //    // drawing phase: do the draw
-    //    lmUPoint uPos = GetGlyphPosition();
-    //    pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-    //    pPaper->DrawText(sGlyph, uPos.x, uPos.y );
-    //}
-    //uxLeft += m_uSelRect.width;
-
-    ////draw dots
-    ////------------------------------------------------------------
-    //if (m_fDotted || m_fDoubleDotted)
-    //{
-    //    lmLUnits nSpaceBeforeDot = m_pVStaff->TenthsToLogical(5, m_nStaffNum);
-    //    uxLeft += nSpaceBeforeDot;      //! @todo user selectable
-
-    //    lmLUnits nShift = aGlyphsInfo[nGlyph].SelRectShift + (aGlyphsInfo[nGlyph].SelRectHeight / 2);
-    //    nShift = m_pVStaff->TenthsToLogical(nShift, m_nStaffNum);
-    //    lmLUnits yPos = m_uGlyphPos.y + m_uPaperPos.y; // + nShift;
-
-    //    uxLeft += DrawDot(fMeasuring, pPaper, uxLeft, yPos, colorC, true);
-    //    if (m_fDoubleDotted) {
-    //        uxLeft += nSpaceBeforeDot;
-    //        uxLeft += DrawDot(fMeasuring, pPaper, uxLeft, yPos, colorC, true);
-    //    }
-    //}
-
-    //// render associated notations ----------------------------------
-    //if (m_pNotations) {
-    //    lmNoteRestObj* pNRO;
-    //    wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
-    //    for (; pNode; pNode = pNode->GetNext() ) {
-    //        pNRO = (lmNoteRestObj*)pNode->GetData();
-    //        if (fMeasuring) {
-    //             lmLUnits xPos = 0;
-    //            lmLUnits yPos = 0;
-    //            switch(pNRO->GetSymbolType()) {
-    //                case eST_Fermata:
-    //                    // set position (relative to paperPos)
-    //                    xPos = m_uSelRect.x + m_uSelRect.width / 2;
-    //                    yPos = uyTop - m_uPaperPos.y;
-    //                    pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, xPos, yPos);
-    //                    pNRO->UpdateMeasurements();
-    //                    break;
-    //                default:
-    //                    wxASSERT(false);
-    //            }
-    //        }
-    //        else
-    //            pNRO->Draw(DO_DRAW, pPaper, colorC);
-    //    }
-    //}
-
-    
 }
 
 void lmRest::DoVerticalShift(lmTenths yShift)
@@ -292,9 +183,9 @@ void lmRest::DoVerticalShift(lmTenths yShift)
     // compute shift in logical units
     lmLUnits uShift = m_pVStaff->TenthsToLogical(yShift, m_nStaffNum);
 
-    // apply shift to rest object
-    m_uGlyphPos.y += uShift;
-    m_uSelRect.y += uShift;
+    //// apply shift to rest object
+    //m_uGlyphPos.y += uShift;
+    //m_uSelRect.y += uShift;
 
     // apply shift to associated notations
     // todo: there is a problem with following code: I need pointer pPaper
@@ -385,30 +276,5 @@ wxString lmRest::SourceXML(int nIndent)
 //    sFuente = sFuente & "                </notations>" & sCrLf
 //    sFuente = sFuente & "            </note>" & sCrLf
 //    FuenteXML = sFuente
-}
-
-
-//====================================================================================================
-// implementation of virtual methods defined in base class lmStaffObj
-//====================================================================================================
-
-lmScoreObj* lmRest::FindSelectableObject(lmUPoint& pt)
-{
-    //THINK: Rests aren't really composite obj
-    if (IsAtPoint(pt)) return this;
-
-    // try with associated AuxObjs
-    if (m_pNotations) {
-        lmNoteRestObj* pNRO;
-        wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
-        for (; pNode; pNode = pNode->GetNext() ) {
-            pNRO = (lmNoteRestObj*)pNode->GetData();
-            if (pNRO->IsAtPoint(pt)) return pNRO;
-        }
-    }
-
-    // Not found
-    return (lmScoreObj*)NULL;    //none found
-
 }
 

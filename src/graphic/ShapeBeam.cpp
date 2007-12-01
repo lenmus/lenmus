@@ -150,7 +150,7 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
     lmShapeNote* pEndNote = (lmShapeNote*)NULL;
 	int iEndNote = -1;
 
-    //! @todo set BeamHookSize equal to notehead width and allow for customization.
+    //TODO set BeamHookSize equal to notehead width and allow for customization.
 
     for (int iLevel=0; iLevel < 6; iLevel++)
 	{
@@ -168,7 +168,7 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
 
             //Let's check if we have to finish a forward hook in prev. note
             if (fForwardPending) {
-                //! @todo set forward hook equal to notehead width and allow for customization.
+                //TODO set forward hook equal to notehead width and allow for customization.
                 uxEnd = uxPrev + (uxCur-uxPrev)/3;
                 uyEnd = uyPrev + (uyCur-uyPrev)/3;
                 DrawBeamSegment(pPaper, uxStart, uyStart, uxEnd, uyEnd, uThickness,
@@ -215,7 +215,7 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
                     pEndNote = pShapeNote;
 					iEndNote = iNote;
 
-                    //! @todo set backward hook equal to notehead width and allow for customization.
+                    //TODO set backward hook equal to notehead width and allow for customization.
                     uxStart = uxPrev + (2*(uxCur-uxPrev))/3;
                     uyStart = uyPrev + (2*(uyCur-uyPrev))/3;
                     fStart = true;      //mark 'segment ready to be drawn'

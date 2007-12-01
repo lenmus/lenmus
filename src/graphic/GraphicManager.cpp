@@ -169,7 +169,7 @@ wxBitmap* lmGraphicManager::Render(bool fUseBitmaps, int nPage)
                 delete pBitmap;
 
                 //Make room for the new bitmap
-                //! @todo
+                //TODO
 
                 //Add bitmap to the offscreen collection
                 pBitmap = new wxBitmap(pDrawer->GetImageBuffer());
@@ -307,7 +307,7 @@ wxBitmap* lmGraphicManager::NewBitmap(int nPage)
     //wxLogMessage(_T("[lmGraphicManager::NewBitmap] Page = %d"), nPage);
 
     //Make room for the new bitmap
-    //! @todo
+    //TODO
 
     //Allocate the new bit map
     wxBitmap* pBitmap = new wxBitmap(m_xPageSize, m_yPageSize);

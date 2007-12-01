@@ -53,25 +53,8 @@ lmSpacer::lmSpacer(lmVStaff* pStaff, lmTenths nWidth, int nStaff)
 
 void lmSpacer::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-//    if (fMeasuring) {
-//        // set total width
-//        m_uWidth = m_pVStaff->TenthsToLogical(m_nSpacerWidth, m_nStaffNum);
-//
-//        // store glyph position. As it is relative to paper pos, it is always zero.
-//        //m_uGlyphPos.x = m_pVStaff->TenthsToLogical(m_uWidth, m_nStaffNum);
-//        m_uGlyphPos.x = 0;
-//        m_uGlyphPos.y = 0;
-//
-//         // store selection rectangle (relative to m_uPaperPos).
-//        //  Coincides with glyph rectangle. Height is arbitrary: staff height.
-//        m_uSelRect.width = m_uWidth;
-//        m_uSelRect.height = 50;      // staff height: 5 lines
-//        m_uSelRect.x = m_uGlyphPos.x;
-//        m_uSelRect.y = m_uGlyphPos.y;
-//    }
-//    else {
-//        // Drawing phase. Nothing to do
-//    }
+    // set total width
+    m_uWidth = m_pVStaff->TenthsToLogical(m_nSpacerWidth, m_nStaffNum);
 
 }
 
@@ -86,16 +69,112 @@ wxString lmSpacer::Dump()
 
 wxString lmSpacer::SourceLDP(int nIndent)
 {
-    wxString sSource = wxString::Format(_T("         (spacer %.0f)\n"), m_nSpacerWidth);
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += wxString::Format(_T("(spacer %.0f)\n"), m_nSpacerWidth);
     return sSource;
 
 }
 
 wxString lmSpacer::SourceXML(int nIndent)
 {
-    //! @todo all
-    wxString sSource = _T("TODO: lmSpacer XML Source code generation methods");
+    // THINK:
+    // MusicXML doesn't have the spacer concept. Instead, each element have positioning 
+    // information. To covert to MusicXML it is enough to save positioning information.
+
+    wxString sSource = _T("");
     return sSource;
 
 }
 
+
+//-----------------------------------------------------------------------------------------
+// lmAnchor implementation
+//-----------------------------------------------------------------------------------------
+
+lmAnchor::lmAnchor(lmVStaff* pStaff, int nStaff)
+    : lmNotation(pStaff, nStaff, lmVISIBLE, lmNO_DRAGGABLE)
+{
+}
+
+void lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+{
+    // set total width
+    m_uWidth = 0;
+
+}
+
+wxString lmAnchor::Dump()
+{
+    wxString sDump = wxString::Format(
+        _T("%d\tAnchor    \tTimePos=%.2f, fixed=%s\n"),
+        m_nId, m_rTimePos, (m_fFixedPos ? _T("yes") : _T("no")) );
+    return sDump;
+            
+}
+
+wxString lmAnchor::SourceLDP(int nIndent)
+{
+    //TODO
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(anchor)\n");
+    return sSource;
+
+}
+
+wxString lmAnchor::SourceXML(int nIndent)
+{
+    // TODO
+    wxString sSource = _T("");
+    return sSource;
+
+}
+
+
+
+//-----------------------------------------------------------------------------------------
+// lmScoreAnchor implementation
+//-----------------------------------------------------------------------------------------
+
+lmScoreAnchor::lmScoreAnchor(lmVStaff* pStaff, int nStaff)
+    : lmNotation(pStaff, nStaff, lmVISIBLE, lmNO_DRAGGABLE)
+{
+}
+
+void lmScoreAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+{
+    //force paper pos. to page origin
+    pPaper->RestartPageCursors();
+
+    // set total width
+    m_uWidth = 0;
+
+}
+
+wxString lmScoreAnchor::Dump()
+{
+    wxString sDump = wxString::Format(
+        _T("%d\tScoreAnchor\tTimePos=%.2f, fixed=%s\n"),
+        m_nId, m_rTimePos, (m_fFixedPos ? _T("yes") : _T("no")) );
+    return sDump;
+            
+}
+
+wxString lmScoreAnchor::SourceLDP(int nIndent)
+{
+    //TODO
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(score_anchor)\n");
+    return sSource;
+
+}
+
+wxString lmScoreAnchor::SourceXML(int nIndent)
+{
+    // TODO
+    wxString sSource = _T("");
+    return sSource;
+
+}

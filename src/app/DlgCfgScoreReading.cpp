@@ -353,7 +353,7 @@ lmDlgCfgScoreReading::lmDlgCfgScoreReading(wxWindow * parent,
         // all panels visible
     }
 
-    //! @todo open last used panel
+    //TODO open last used panel
 
     CentreOnParent();
 
@@ -407,7 +407,7 @@ void lmDlgCfgScoreReading::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     }
 
     //terminate the dialog
-    //! @todo save the currently shown panel number to open this panel next time
+    //TODO save the currently shown panel number to open this panel next time
     EndModal(wxID_OK);
 }
 
@@ -522,7 +522,7 @@ bool lmDlgCfgScoreReading::VerifyData()
 
     }
 
-    //! @todo verify that there are fragments for the choosen time signatures
+    //TODO verify that there are fragments for the choosen time signatures
 
     //
     //enable / disable accept button

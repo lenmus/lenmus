@@ -64,7 +64,7 @@ In this lesson we will start the study of rhythms with eighth notes. Play the
 following score and take note of the new rhythmic patterns introduced in each measure:
 </para>
 
-<para><score width="685" height="70" border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>

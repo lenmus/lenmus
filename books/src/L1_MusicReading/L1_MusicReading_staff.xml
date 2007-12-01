@@ -53,7 +53,7 @@ The four spaces between the staff lines are also important and are also numbered
 bottom to top:</para>
 
 <!-- staff with labelled spaces: 1,2,3,4 -->
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <metronome>320</metronome>

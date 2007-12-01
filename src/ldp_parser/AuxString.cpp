@@ -118,7 +118,7 @@ bool PitchNameToData(wxString sPitch, int* pPitch, EAccidentals* pAccidentals)
         wxASSERT(!fError);
         *pPitch = (int)nAux;
         *pAccidentals = eNoAccidentals;
-        /*! @todo
+        /*TODO
             analizar la nota MIDI y determinar las
             alteraciones en función de la armadura
         */
@@ -565,8 +565,8 @@ bool XmlDataToBarStyle(wxString sBarStyle, EBarline* pType)
     } else if (sBarStyle == _T("DOBLEREPETICION")) {
         *pType = etb_DoubleRepetitionBarline;
     } else {
-        //! @todo Add styles dotted, heavy, heavy-heavy, none
-        //! @todo Remove styles FINREPETICION, INICIOREPETICION, DOBLEREPETICION
+        //TODO Add styles dotted, heavy, heavy-heavy, none
+        //TODO Remove styles FINREPETICION, INICIOREPETICION, DOBLEREPETICION
         return true;    //error
     }
 

@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "ScoreDoc.h"
 #endif
 
@@ -65,11 +65,6 @@ lmScoreDocument::~lmScoreDocument()
 {
     delete m_pScore;
 
-}
-
-lmScoreObj* lmScoreDocument::FindSelectableObject(lmUPoint& pt)
-{
-    return m_pScore->FindSelectableObject(pt);
 }
 
 bool lmScoreDocument::OnNewDocument()

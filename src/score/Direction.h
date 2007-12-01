@@ -26,6 +26,7 @@
 #pragma interface "Direction.cpp"
 #endif
 
+
 class lmWordsDirection : public lmStaffObj, public lmBasicText
 {
 public:
@@ -38,7 +39,6 @@ public:
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
-    wxBitmap* GetBitmap(double rScale);
     void SetFont(lmPaper* pPaper);
 
     //    debugging

@@ -76,6 +76,7 @@ lmTheoMusicReadingCtrol::lmTheoMusicReadingCtrol(wxWindow* parent, wxWindowID id
     m_pConstrains = pConstrains;
 
     //configuration options
+    m_pConstrains->SetTheoryMode(true);
     m_pConstrains->SetSolutionLink(false);
     m_pConstrains->SetUsingCounters(false);
     m_nPlayMM = 0;       //use metronome settings

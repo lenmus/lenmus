@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.6\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-20 16:21+0100\n"
+"PO-Revision-Date: 2007-12-01 11:01+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -92,7 +92,6 @@ msgstr ""
 #: TheoryHarmony/TheoryHarmony.cpp:83
 #: TheoryHarmony/TheoryHarmony.cpp:87
 #: TheoryHarmony/TheoryHarmony.cpp:91
-#: TheoryHarmony/TheoryHarmony.cpp:96
 #: TheoryHarmony/TheoryHarmony.cpp:100
 #: TheoryHarmony/TheoryHarmony.cpp:102
 msgid "V"
@@ -303,7 +302,7 @@ msgid "A particular case of the half cadence is the Phrygian half cadence. It co
 msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:92
-msgid "Another very specific case is the Andalusian cadence. It only occurs in minor keys and is given by the progression I-VII-VI-V, where the IV degree can be replaced. This cadence has a particular colour due to the chromatic half step between the root of the VII and the third of the V."
+msgid "Another very specific case is the Andalusian cadence. It only occurs in minor keys and is given by the progression I-VII-VI-V, where the VI degree can be replaced. This cadence has a particular colour due to the chromatic half step between the root of the VII and the third of the V."
 msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:94
@@ -311,12 +310,13 @@ msgid "VII"
 msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:95
+#: TheoryHarmony/TheoryHarmony.cpp:96
 #: TheoryHarmony/TheoryHarmony.cpp:103
 msgid "VI"
 msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:97
-msgid "#"
+msgid "7"
 msgstr ""
 
 #: TheoryHarmony/TheoryHarmony.cpp:98

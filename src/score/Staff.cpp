@@ -52,7 +52,7 @@ lmStaff::lmStaff(lmScore* pScore, int nNumLines, lmLUnits nMicrons)
     : lmObject(pScore)
 {
     m_numLines = nNumLines;
-    m_lineThick = lmToLogicalUnits(0.15, lmMILLIMETERS);     //! @todo user option
+    m_lineThick = lmToLogicalUnits(0.15, lmMILLIMETERS);     //TODO user option
     if (nMicrons == 0)
         m_spacing = lmToLogicalUnits(1.8, lmMILLIMETERS);   //Default 1.8 mm -> lmStaff height = 7.2 mm
     else

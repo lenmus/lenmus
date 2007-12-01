@@ -45,10 +45,6 @@ public:
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
-    wxBitmap* GetBitmap(double rScale);
-    void OnDrag(lmPaper* pPaper, wxDragImage* pDragImage, lmDPoint& ptOffset, 
-                         const lmUPoint& ptLog, const lmUPoint& uDragStartPos, const lmDPoint& ptPixels);
-    lmUPoint EndDrag(const lmUPoint& uPos);
 
         //specific methods for barline
 

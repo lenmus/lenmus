@@ -43,7 +43,6 @@
 #include <math.h>        // for function pow()
 
 #include "../score/Score.h"
-#include "../score/GraphicObj.h"
 #include "../score/MetronomeMark.h"
 #include "LDPParser.h"
 #include "AuxString.h"
@@ -80,14 +79,14 @@ void lmLDPParser::Create(const wxString& sLanguage, const wxString& sCharset)
     m_pTags = lmLdpTagsTable::GetInstance();
     m_pTags->LoadTags(sLanguage, sCharset);
     // default values for font and aligment for <title> elements
-    //! @todo user options instead of fixed values
+    //TODO user options instead of fixed values
     m_nTitleAlignment = lmALIGN_CENTER;
     m_sTitleFontName = _T("Times New Roman");
     m_nTitleFontSize = 14;
     m_nTitleStyle = lmTEXT_BOLD;
 
     // default values for font and aligment for <text> elements
-    //! @todo user options instead of fixed values
+    //TODO user options instead of fixed values
     m_sTextFontName = _T("Times New Roman");
     m_nTextFontSize = 10;
     m_nTextStyle = lmTEXT_NORMAL;
@@ -366,7 +365,7 @@ lmLDPNode* lmLDPParser::LexicalAnalysis()
 
     // exit if error
     if (m_nState == A5_ExitError) {
-        //! @todo delete node objects. Clear() is not enough. Something else is needed.
+        //TODO delete node objects. Clear() is not enough. Something else is needed.
         return (lmLDPNode*) NULL;
     }
 
@@ -597,7 +596,7 @@ lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)
     iP = 2;      //first parameter is always the version and is already analyzed. So, skip it
     pX = pNode->GetParameter(iP);
     if (pX->GetName() == _T("Credits") ) {
-        //! @todo no treatment yet. Ignore
+        //TODO no treatment yet. Ignore
         iP++;
     }
 
@@ -716,7 +715,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     wxString sNumStaves = _T("1");          //one staff
 
     //default values for name
-    //! @todo user options instead of fixed values
+    //TODO user options instead of fixed values
     wxString sInstrName = _T("");           //no name for instrument
     lmEAlignment nNameAlign = lmALIGN_LEFT;
     bool fNameHasWidth = false;
@@ -724,7 +723,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     lmLocation tNamePos = g_tDefaultPos;
 
     //default values for abbreviation
-    //! @todo user options instead of fixed values
+    //TODO user options instead of fixed values
     wxString sInstrAbbrev = _T("");         //no abreviated name for instrument
     lmEAlignment nAbbrevAlign = lmALIGN_LEFT;
     bool fAbbrevHasWidth = false;
@@ -748,7 +747,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
                               &tAbbrevFont, &fAbbrevHasWidth);
         }
         else if (pX->GetName() == m_pTags->TagName(_T("infoMIDI")) ) {
-            //! @todo No treatment for now
+            //TODO No treatment for now
             //    nMIDIChannel = nMidiCanalVoz
             //    nMIDIInstr = nMidiInstrVoz
             //
@@ -911,7 +910,7 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 void lmLDPParser::AnalyzeSplit(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
-    //! @todo   AnalyzeSplit code
+    //TODO   AnalyzeSplit code
 
 }
 
@@ -970,7 +969,7 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
     // parse element [<NombreInstrumento> | num ]
     pX = pNode->GetParameter(iP);
     if (pX->GetName() = _T("NombreInstrumento")) {
-        //! @todo de momento no hay tratamiento
+        //TODO de momento no hay tratamiento
         iP++;
     } else {
         //if { IsNumeric(pX->GetName())) {
@@ -1521,7 +1520,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     //allow to close the beamed group
                     bool fCloseBeam = true;
 
-                    //! @todo   Beaming information only allowed in base note of chords
+                    //TODO   Beaming information only allowed in base note of chords
                     //!         This program should move this information to base note
                     //!         as this restriction is un-coherent with forcing the t- flag
                     //!         to be in the last note of the chord.
@@ -1935,7 +1934,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
                     fShowTupletBracket = false;
                 }
                 else if (sData == m_pTags->TagName(_T("squaredBracket"), _T("Tuplets")) ) {
-                    //! @todo implement different kinds of brackets
+                    //TODO implement different kinds of brackets
                     fShowTupletBracket = true;
                 }
                 else if (sData == m_pTags->TagName(_T("curvedBracket"), _T("Tuplets")) ) {
@@ -1945,7 +1944,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
                     fShowNumber = false;
                 }
                 else if (sData == m_pTags->TagName(_T("numActual"), _T("Tuplets")) ) {
-                    //! @todo implement different options to display numbers
+                    //TODO implement different options to display numbers
                     fShowNumber = true;
                 }
                 else if (sData == m_pTags->TagName(_T("numBoth"), _T("Tuplets")) ) {
@@ -2226,7 +2225,7 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
         else if (sName == _T("-8va") || sName == _T("+8va")
                     || sName == _T("+15ma") || sName == _T("-15ma") )
         {
-            //! @todo tessiture option in clef
+            //TODO tessiture option in clef
         }
         else {
             AnalysisError( _("[AnalyzeMusicData]: Unknown or not allowed element '%s' found. Element ignored."),
@@ -2653,7 +2652,7 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 
     wxString sText;
-    lmEAlignment nAlign = lmALIGN_LEFT;     //! @todo user options instead of fixed values
+    lmEAlignment nAlign = lmALIGN_LEFT;     //TODO user options instead of fixed values
     bool fHasWidth = false;
     lmFontInfo tFont = {m_sTextFontName, m_nTextFontSize, m_nTextStyle};
     lmLocation tPos;
@@ -2850,11 +2849,12 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
         //@todo
         wxColour nColor = *wxBLACK;
 
-        // create the GraphicObj attached to a null lmSpacer
-        lmStaffObj* pSpacer = (lmStaffObj*) pVStaff->AddSpacer(0);
-        lmGOLine* pLine = new lmGOLine(pSpacer, rPos[0], rPos[1], rPos[2], rPos[3],
+        // create the GraphicObj and attach it to the VStaff
+        lmStaffObj* pAnchor = (lmStaffObj*) pVStaff->AddAnchorObj();
+        lmScoreLine* pLine = new lmScoreLine(pAnchor, rPos[0], rPos[1], rPos[2], rPos[3],
                                        rWidth, nColor);
-        pSpacer->AddGraphicObj(pLine);
+        //pAnchor->AddGraphicObj(pLine);
+        pAnchor->AttachAuxObj(pLine);
 
     }
     else {

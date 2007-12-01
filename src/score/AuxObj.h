@@ -19,62 +19,59 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __NOTERESTOBJ_H__        //to avoid nested includes
-#define __NOTERESTOBJ_H__
+#ifndef __LM_AUXOBJ_H__        //to avoid nested includes
+#define __LM_AUXOBJ_H__
 
-#ifdef __GNUG__
-#pragma interface "NoteRestObj.cpp"
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "AuxObj.cpp"
 #endif
 
-enum ESymbolType {
-    eST_Fermata = 0,        // ESP: calderón
-    eST_Lyric,
-    eST_Accidental            // ESP: alteración
-    //Public Enum EGrafObjs
-    //    eGO_Espacio = 1     'espaciado fijo
-    //    eGO_Respiracion     'marca de respiración
-};
+#include "defs.h"
+#include "StaffObj.h"
+#include "Text.h"
 
-enum ESyllabicTypes {
-    eSyllabicSingle = 0,
-    eSyllabicBegin,
-    eSyllabicMiddle,
-    eSyllabicEnd
-};
+class lmBox;
+class lmScoreObj;
+class lmPaper;
 
+//========================================================================================
+// lmScoreLine: a line (graphic)
+//========================================================================================
 
-
-class lmNoteRestObj : public lmAuxObj
+class lmScoreLine : public lmAuxObj
 {
 public:
-    lmNoteRestObj(ESymbolType nType, lmNoteRest* pOwner);
-    ~lmNoteRestObj() {}
+    lmScoreLine(lmScoreObj* pOwner,
+             lmTenths xStart, lmTenths yStart, 
+             lmTenths xEnd, lmTenths yEnd, lmTenths nWidth, wxColour nColor);
+    ~lmScoreLine() {}
 
-    // overrides for pure virtual methods of base classes
-        // lmScoreObj
-    virtual void SetFont(lmPaper* pPaper) {}
-    //virtual void DrawObject(bool fMeasuring, lmPaper* pPaper, wxColour colorC,
-    //                        bool fHighlight)=0;
-    virtual wxString Dump() { return _T(""); }
+    //implementation of virtual methods from base class
+    lmEAuxObjType GetAuxObjType() { return eAXOT_Line; }
 
-    // specific methods of this class
-    ESymbolType GetSymbolType() { return m_nSymbolType; }
-    virtual void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
-                         lmLUnits xPos, lmLUnits yPos)=0;
-    virtual void UpdateMeasurements();
+    wxString Dump();
+    void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
 
-    virtual void SetOwner(lmNoteRest* pOwner) { m_pOwner = pOwner; }
+private:
+    lmLUnits    m_uxStart;
+    lmLUnits    m_uyStart; 
+    lmLUnits    m_uxEnd;
+    lmLUnits    m_uyEnd;
+    lmLUnits    m_uWidth;
+    wxColour    m_nColor;
 
 
-protected:
-    ESymbolType        m_nSymbolType;
-    lmNoteRest*        m_pOwner;            // lmNoteRest to which this lmNoteRestObj is associated
-
-    // specific data for lmFermata symbol
-    bool    m_fOverNote;
 };
 
-class lmFermata : public lmNoteRestObj
+
+//========================================================================================
+// lmFermata
+//========================================================================================
+
+class lmNoteRest;
+class lmVStaff;
+
+class lmFermata : public lmAuxObj
 {
 public:
     lmFermata(lmNoteRest* pOwner, lmEPlacement nPlacement);
@@ -84,6 +81,7 @@ public:
     void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
     void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
                          lmLUnits xPos, lmLUnits yPos);
+    lmEAuxObjType GetAuxObjType() { return eAXOT_Fermata; }
 
 private:
     lmEPlacement    m_nPlacement;
@@ -91,19 +89,30 @@ private:
 };
 
 
+//========================================================================================
+// lmLyric
+//========================================================================================
 
+enum ESyllabicTypes {
+    eSyllabicSingle = 0,
+    eSyllabicBegin,
+    eSyllabicMiddle,
+    eSyllabicEnd
+};
 
-class lmLyric : public lmNoteRestObj, public lmBasicText
+class lmLyric : public lmAuxObj, public lmBasicText
 {
 public:
     lmLyric(lmNoteRest* pOwner, wxString sText, ESyllabicTypes nSyllabic = eSyllabicSingle,
             int nNumLine=1, wxString sLanguage=_T("it") );
     ~lmLyric() {}
 
-    // definitions for pure virtual methods of base class lmNoteRestObj
+    // implementation of pure virtual methods in base class
     void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
     void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
                          lmLUnits xPos, lmLUnits yPos);
+    lmEAuxObjType GetAuxObjType() { return eAXOT_Lyric; }
+
 
     // overrides for virtual methods of base class lmNoteRestObj
     void SetOwner(lmNoteRest* pOwner);
@@ -114,11 +123,11 @@ public:
 
 
 private:
-    int                m_nNumLine;
-    lmVStaff*            m_pVStaff;            // lmVStaff to which the owner NoterRest belongs
-    int            m_nStaffNum;        // Staff (1..n) on which owner NoterRest is located
+    int             m_nNumLine;
+    lmVStaff*       m_pVStaff;          // lmVStaff to which the owner NoterRest belongs
+    int             m_nStaffNum;        // Staff (1..n) on which owner NoterRest is located
 
 };
 
-#endif    // __NOTERESTOBJ_H__
+#endif    // __LM_AUXOBJ_H__
 

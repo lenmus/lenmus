@@ -58,13 +58,6 @@ lmBoxSystem::lmBoxSystem(lmBoxPage* pParent, int nNumPage)
 
 lmBoxSystem::~lmBoxSystem()
 {
-    //delete  InstrSlices collection
-    for (int i=0; i < (int)m_InstrSlices.size(); i++)
-    {
-        delete m_InstrSlices[i];
-    }
-    m_InstrSlices.clear();
-
     //delete BoxSlices collection
     for (int i=0; i < (int)m_Slices.size(); i++)
     {
@@ -118,21 +111,6 @@ void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)
 	//update system yBottom position by copying yBootom from first slice
 	SetYBottom(m_Slices[0]->GetYBottom());
 
-    //Now we have all the information about the system. Let's create the collection
-    //of BoxSlices
-
-    //Build the slices
-    int iInstr = 1;
-	int nLastMeasure = m_nFirstMeasure + m_nNumMeasures - 1;
-    for (lmInstrument* pInstr = pScore->GetFirstInstrument();
-         pInstr;
-         pInstr = pScore->GetNextInstrument(), iInstr++)
-    {
-            m_InstrSlices.push_back(
-                    new lmBoxInstrSlice(this, m_nFirstMeasure, nLastMeasure,
-                                        pInstr, iInstr) );
-
-    }
 }
 
 lmLUnits lmBoxSystem::GetYTopFirstStaff()
@@ -162,25 +140,6 @@ lmBoxSlice* lmBoxSystem::FindSliceAtPosition(lmUPoint& pointL)
         return (lmBoxSlice*)NULL;
     }
     return (lmBoxSlice*)NULL;
-}
-
-lmBoxInstrSlice* lmBoxSystem::FindInstrSliceAtPosition(lmUPoint& pointL)
-{
-    if (ContainsPoint(pointL))
-    {
-        //identify the InstrSlice
-        for (int iIS=0; iIS < (int)m_InstrSlices.size(); iIS++)
-        {
-            if (m_InstrSlices[iIS]->ContainsPoint(pointL))
-            {
-                return m_InstrSlices[iIS];
-            }
-        }
-        wxMessageBox( wxString::Format( _T("Page %d, InstrSlice not identified!!!"),
-            m_nNumPage ));
-        return (lmBoxInstrSlice*)NULL;
-    }
-    return (lmBoxInstrSlice*)NULL;
 }
 
 lmGMObject* lmBoxSystem::FindGMObjectAtPosition(lmUPoint& pointL)

@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "Slur.h"
 #endif
 
@@ -187,7 +187,7 @@ void lmTie::PropagateNotePitchChange(lmNote* pNote, int nStep, int nOctave, int 
 //    */
 //    lmUPoint startOffset = m_pStartNote->GetOrigin();
 //
-//    //! @todo Adjust selRect to sourround control points
+//    //TODO Adjust selRect to sourround control points
 //    m_uPaperPos = startOffset;
 //    SetSelRectangle(m_mainArc.GetStartPosX() - m_uPaperPos.x,
 //                    m_mainArc.GetStartPosY() - m_uPaperPos.y,

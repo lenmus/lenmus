@@ -19,10 +19,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __BEAM_H__        //to avoid nested includes
-#define __BEAM_H__
+#ifndef __LM_BEAM_H__        //to avoid nested includes
+#define __LM_BEAM_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "Beam.cpp"
 #endif
 
@@ -71,5 +71,5 @@ private:
 
 };
 
-#endif    // __BEAM_H__
+#endif    // __LM_BEAM_H__
 

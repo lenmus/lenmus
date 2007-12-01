@@ -19,8 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __NOTATION_H__        //to avoid nested includes
-#define __NOTATION_H__
+#ifndef __LM_NOTATION_H__        //to avoid nested includes
+#define __LM_NOTATION_H__
 
 #if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "Notation.cpp"
@@ -32,7 +32,9 @@
 
 enum lmENotationType
 {
-    eNT_Spacer = 1,            // spacer (lmSpacer)
+    eNT_Anchor = 1,         // anchor to attach AuxObjs to a VStaff
+    eNT_ScoreAnchor,        // anchor to attach AuxObjs to the score
+    eNT_Spacer,             // spacer (lmSpacer)
 };
 
 class lmNotation : public lmStaffObj
@@ -64,7 +66,6 @@ public:
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
-    wxBitmap* GetBitmap(double rScale) { return (wxBitmap*)NULL; }
     void SetFont(lmPaper* pPaper) {}        // nothing to do
 
     //    debugging
@@ -80,5 +81,47 @@ private:
 
 };
 
-#endif    // __NOTATION_H__
+class lmAnchor: public lmNotation
+{
+public:
+    lmAnchor(lmVStaff* pStaff, int nStaff=1);
+    ~lmAnchor() {}
+
+    // properties
+    lmENotationType GetNotationType() { return eNT_Anchor; }
+
+    //implementation of virtual methods defined in abstract base class lmStaffObj
+    void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
+    void SetFont(lmPaper* pPaper) {}
+
+    //    debugging
+    wxString Dump();
+    wxString SourceLDP(int nIndent);
+    wxString SourceXML(int nIndent);
+
+};
+
+class lmScoreAnchor: public lmNotation
+{
+public:
+    lmScoreAnchor(lmVStaff* pStaff, int nStaff=1);
+    ~lmScoreAnchor() {}
+
+    // properties
+    lmENotationType GetNotationType() { return eNT_ScoreAnchor; }
+
+    //implementation of virtual methods defined in abstract base class lmStaffObj
+    void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
+    void SetFont(lmPaper* pPaper) {}
+
+    //    debugging
+    wxString Dump();
+    wxString SourceLDP(int nIndent);
+    wxString SourceXML(int nIndent);
+
+};
+
+
+
+#endif    // __LM_NOTATION_H__
 

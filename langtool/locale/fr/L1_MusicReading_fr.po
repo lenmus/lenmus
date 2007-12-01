@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.5\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-11-25 17:13+0100\n"
+"PO-Revision-Date: 2007-11-26 18:47+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -38,7 +38,7 @@ msgstr "Cet eMusicBook est un cours d'auto-apprentissage de lecture de musique, 
 
 #: L1_MusicReading/L1_MusicReading.cpp:8
 msgid "LenMus project"
-msgstr ""
+msgstr "Projet LenMus"
 
 #: L1_MusicReading/L1_MusicReading.cpp:9
 msgid "Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.2 or any later version published by the Free Software Foundation; with no Invariant Sections, with no Front-Cover Texts, and with no Back-Cover Texts. A copy of the license is included in the documentation received with this program, and it is also available at"
@@ -391,9 +391,8 @@ msgid "Most music has a rhythm that you can perceive as a repetitive pattern of 
 msgstr "La plupart des musiques ont un rhytme que vous pouvez percevoir comme une répétition de pulsations. Il est facile de les identifier : c'est ce que nous faisons tous quand nous tapons des mains ou des pieds en écoutant une chanson. Ces coups sont les battements de la musique et sont à la base de l'écriture musicale."
 
 #: L1_MusicReading/L1_MusicReading.cpp:92
-#, fuzzy
 msgid "We said in previous lesson that written music is divided on the staff into parts named 'measures'. Although there are exceptions, in general all the measures of a piece of music have the same number of beats. Therefore, we must learn that written music is organized by dividing it into small groups of beats, and these groups are called 'measures'."
-msgstr "Nous avons déjà dit dans les leçons précédentes que les portées sont divisées en parties appelées 'mesures'. Toutes les mesures d'une partition auront le même nombre de pulsations. Donc nous devons apprendre que la musique écrite est organisée en la divisant en petits groupes de pulsations, et ces groupes sont appelés 'Mesures'."
+msgstr "Nous avons déjà dit dans les leçons précédentes que les portées sont divisées en parties appelées 'mesures'. Bien qu'il y ait des exceptions, toutes les mesures d'une partition ont le même nombre de pulsations. Donc nous devons apprendre que la musique écrite est organisée en la divisant en petits groupes de pulsations, et ces groupes sont appelés 'Mesures'."
 
 #: L1_MusicReading/L1_MusicReading.cpp:93
 msgid "To know how many beats are there in a measure, a 'time signature' is placed at the beginning of the staff, after the clef. The time signature is the two numbers placed above and below the third line:"
@@ -409,7 +408,7 @@ msgstr "Le chiffre supérieur indique le nombre de pulsations dans chaque mesure
 
 #: L1_MusicReading/L1_MusicReading.cpp:96
 msgid "So the time signature is just an arbitary device to help us to understand and write the rhythm. But remeber that rhythm is something natural that exists by itsel in the music."
-msgstr ""
+msgstr "Ainsi le chiffrage est juste une indication arbitraire qui nous permet de comprendre et d'écrire le rythme. Mais rappelez-vous que le rythme est quelquechose de naturel qui existe naturellement en musique."
 
 #: L1_MusicReading/L1_MusicReading.cpp:97
 msgid "Not all beats in a measure are equal: there are strong beats (louder), medium and weak beats. The first beat of a measure is normally the strongest one and the other beats are weaker. The pattern of strong and weak beats is what makes rhythmic patterns different. It is important to learn to recognize the time signature when listening to a piece of music. This may take some practice but it is a useful practice for anyone who is learning music."
@@ -824,9 +823,8 @@ msgid "The eighth note"
 msgstr "La croche"
 
 #: L1_MusicReading/L1_MusicReading.cpp:191
-#, fuzzy
 msgid "The next figure we are going to study is the eighth note (also called 'quaver' in British English). Its symbols are shown in the followig score, and are like a quarter note with a flag added to its stem:"
-msgstr "La prochaine figure de note que nous allons étudier est la croche. Sa représentation est montrée dans la partition suivante et ressemble à la noire avec un crochet sur la hampe ; les croches sont souvent dessinées avec une poutre :"
+msgstr "La prochaine figure de note que nous allons étudier est la croche. Sa représentation est montrée dans la partition suivante et ressemble à la noire avec un crochet sur la hampe  :"
 
 #: L1_MusicReading/L1_MusicReading.cpp:192
 msgid "Many times eighth notes are drawn beamed:"
@@ -834,7 +832,7 @@ msgstr "Souvent les croches sont dessinées avec une poutre :"
 
 #: L1_MusicReading/L1_MusicReading.cpp:193
 msgid "Beaming is not done at random or by personal taste. The rules for beaming depend on the time signature."
-msgstr ""
+msgstr "Le groupement n'est pas fait par hasard ou selon la bonne envie de chacun. Les règles du groupement sont dépendantes du chiffrage."
 
 #: L1_MusicReading/L1_MusicReading.cpp:194
 msgid "One quarter note equals two eighth notes and one quarter rest equals two eighth rests. So in 2/4 time signature an eighth note or rest gets half a beats, and, therefore, there are two eighth notes in a beat. So in 2/4 they are usually drawn beamed, occupying a beat."
@@ -971,7 +969,7 @@ msgstr "L'armure, au-delà de la simplification de la notation, renseigne sur la
 
 #: L1_MusicReading/L1_MusicReading.cpp:222
 msgid "The accidentals on the key signature are named 'proper accidentals' whereas those added in addition to individual notes are named 'chromatic accidentals'."
-msgstr ""
+msgstr "Les altérations à l'armure sont appelées 'altérations naturelles' alors que celles apparaissant sur des notes individuelles sont appelées 'altérations accidentelles'."
 
 #: L1_MusicReading/L1_MusicReading.cpp:224
 msgid "In this lesson we will continue with exercises containing the rhythmic patterns of the previous lessons, but introducing the key signatures of G major and E minor (one sharp) and F major and D minor (one flat)."

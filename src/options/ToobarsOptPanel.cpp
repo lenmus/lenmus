@@ -79,7 +79,7 @@ lmToolbarsOptPanel::lmToolbarsOptPanel(wxWindow* parent)
     pOptIconSize->SetSelection(m_nSizeIndex);
 
     //For now isable large size option
-    //! @todo create large icons set for toolbar buttons
+    //TODO create large icons set for toolbar buttons
     pOptIconSize->Enable(2, false);
 
 

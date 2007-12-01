@@ -121,7 +121,7 @@ void lmStaffObjIterator::GoToItem(lmStaffObj* pSO)
 {
     //locate staffObj received as parameter and leave iterator positioned on that item.
 
-    /*! @todo
+    /*TODO
         Review implementation and usage. Is it still true what is said in the
         "aware" note?
     */

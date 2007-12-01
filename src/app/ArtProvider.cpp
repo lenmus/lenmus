@@ -204,7 +204,7 @@ wxBitmap lmArtProvider::CreateBitmap(const wxArtID& id,
         return oBitmap;
     }
     else {
-        /*! @todo if file not found we need to return something. Otherwise, for tool bars
+        /*TODO if file not found we need to return something. Otherwise, for tool bars
             and other objects a crash will be produced
         */
         wxLogMessage(_T("[lmArtProvider::CreateBitmap] File %s not found. Error icon returned"),

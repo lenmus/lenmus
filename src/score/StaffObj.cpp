@@ -37,7 +37,6 @@
 #include "wx/image.h"
 #include "Score.h"
 #include "ObjOptions.h"
-#include "GraphicObj.h"
 #include "../graphic/GMObject.h"
 
 
@@ -63,8 +62,6 @@ lmScoreObj::lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable
     m_fIsDraggable = fIsDraggable;
 
     // initializations: font related info
-    m_uGlyphPos.x = 0;
-    m_uGlyphPos.y = 0;
     m_pFont = (wxFont *)NULL;
 
     // initializations: positioning related info
@@ -74,51 +71,23 @@ lmScoreObj::lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable
     m_nNumPage = 1;
 
     //transitional
-    m_pShape = (lmShape*)NULL;
     m_pShape2 = (lmShape*)NULL;
 
-    // GraphicObjs owned by this ScoreObj
-    m_pGraphObjs = (GraphicObjsList*)NULL;
+    //// GraphicObjs owned by this ScoreObj
+    //m_pGraphObjs = (GraphicObjsList*)NULL;
 
 }
 
 lmScoreObj::~lmScoreObj()
 {
-    if (m_pShape) delete m_pShape;
-
-    if (m_pGraphObjs) {
-        m_pGraphObjs->DeleteContents(true);
-        m_pGraphObjs->Clear();
-        delete m_pGraphObjs;
-        m_pGraphObjs = (GraphicObjsList*)NULL;
-    }
-
-}
-
-bool lmScoreObj::IsAtPoint(lmUPoint& pt)
-{
-    lmURect rect(GetSelRect());
-    return rect.Contains(pt.x, pt.y);
-}
-
-void lmScoreObj::DrawSelRectangle(lmPaper* pPaper, wxColour colorC)
-{
-    //if (IsShapeRendered()) {
-    //    m_pShape->DrawSelRectangle(pPaper, colorC);
+    //if (m_pGraphObjs) {
+    //    m_pGraphObjs->DeleteContents(true);
+    //    m_pGraphObjs->Clear();
+    //    delete m_pGraphObjs;
+    //    m_pGraphObjs = (GraphicObjsList*)NULL;
     //}
-    //else {
-    //    lmUPoint uPt = GetSelRect().GetPosition();
-    //    //lmUPoint uPoint((lmLUnits)pt.x, (lmLUnits)pt.y);
-    //    pPaper->SketchRectangle(uPt, GetSelRect().GetSize(), *wxRED);
-    //    //! @todo change *wxRED by colorC when no longer necesary to distinguise
-    //    //!       between shape rendered and drawing rendered objects
-    //}
+
 }
-
-
-//======================================================================================
-// methods only for daggable objects
-//======================================================================================
 
 void lmScoreObj::MoveTo(lmUPoint& uPt)
 {
@@ -126,72 +95,19 @@ void lmScoreObj::MoveTo(lmUPoint& uPt)
     m_uPaperPos.x = uPt.x;
 }
 
-//lmUPoint lmScoreObj::EndDrag(const lmUPoint& uPos)
+//// Management of GraphicObjs attached to this object
+//
+//void lmScoreObj::DoAddGraphicObj(lmScoreObj* pGO)
 //{
-//    lmUPoint oldPos(m_uPaperPos + m_uGlyphPos);        // save current position for Undo command
-//
-//    // move object to new position
-//    m_uPaperPos.x = uPos.x - m_uGlyphPos.x;
-//    m_uPaperPos.y = uPos.y - m_uGlyphPos.y;
-//
-//    return oldPos;        //return old position
+//    wxASSERT(pGO->GetType() == eSCOT_GraphicObj);
+//    if (!m_pGraphObjs) m_pGraphObjs = new GraphicObjsList();
+//    m_pGraphObjs->Append((lmGraphicObj*)pGO);
 //}
-
-wxBitmap* lmScoreObj::PrepareBitMap(double rScale, const wxString sGlyph)
-{
-    // Get size of glyph, in logical units
-    wxCoord wText, hText;
-    wxScreenDC dc;
-    dc.SetMapMode(lmDC_MODE);
-    dc.SetUserScale(rScale, rScale);
-    dc.SetFont(*m_pFont);
-    dc.GetTextExtent(sGlyph, &wText, &hText);
-    dc.SetFont(wxNullFont);
-
-    // allocate a memory DC for drawing into a bitmap
-    wxMemoryDC dc2;
-    dc2.SetMapMode(lmDC_MODE);
-    dc2.SetUserScale(rScale, rScale);
-    dc2.SetFont(*m_pFont);
-
-    // allocate the bitmap
-    // convert size to pixels
-    wxCoord wD = dc2.LogicalToDeviceXRel(wText),
-            hD = dc2.LogicalToDeviceYRel(hText);
-    // GetTextExtent has not enough precision. Add a couple of pixels for security
-    wxBitmap bitmap((int)(wD+2), (int)(hD+2));
-    dc2.SelectObject(bitmap);
-
-    // draw onto the bitmap
-    dc2.SetBackground(* wxWHITE_BRUSH);
-    dc2.Clear();
-    dc2.SetBackgroundMode(wxTRANSPARENT);
-    dc2.SetTextForeground(g_pColors->ScoreSelected());
-    dc2.DrawText(sGlyph, 0, 0);
-
-    dc2.SelectObject(wxNullBitmap);
-
-    // Make the bitmap masked
-    wxImage image = bitmap.ConvertToImage();
-    image.SetMaskColour(255, 255, 255);
-    wxBitmap* pBitmap = new wxBitmap(image);
-    return pBitmap;
-
-}
-
-// Management of GraphicObjs attached to this object
-
-void lmScoreObj::DoAddGraphicObj(lmScoreObj* pGO)
-{
-    wxASSERT(pGO->GetType() == eSCOT_GraphicObj);
-    if (!m_pGraphObjs) m_pGraphObjs = new GraphicObjsList();
-    m_pGraphObjs->Append((lmGraphicObj*)pGO);
-}
-
-void lmScoreObj::DoRemoveGraphicObj(lmScoreObj* pGO)
-{
-    wxASSERT(pGO->GetType() == eSCOT_GraphicObj);
-}
+//
+//void lmScoreObj::DoRemoveGraphicObj(lmScoreObj* pGO)
+//{
+//    wxASSERT(pGO->GetType() == eSCOT_GraphicObj);
+//}
 
 void lmScoreObj::ShiftObject(lmLUnits uLeft)
 { 
@@ -202,40 +118,6 @@ void lmScoreObj::ShiftObject(lmLUnits uLeft)
     //m_uPaperPos.x = uLeft;
 }
 
-
-//-------------------------------------------------------------------------------------------------
-// lmAuxObj implementation
-//-------------------------------------------------------------------------------------------------
-lmAuxObj::lmAuxObj(lmObject* pParent, EAuxObjType nType, bool fIsDraggable) :
-    lmScoreObj(pParent, eSCOT_AuxObj, fIsDraggable)
-{
-    m_nClass = nType;
-}
-
-void lmAuxObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
-{
-	WXUNUSED(pBox);
-	Draw(DO_MEASURE, pPaper, colorC, fHighlight);
-}
-
-void lmAuxObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
-{
-    wxASSERT(fMeasuring == DO_DRAW);    //For AuxObjs measuring phase is done by specific methods
-
-    //restore paper pos.
-    pPaper->SetCursorX(m_uPaperPos.x);
-    pPaper->SetCursorY(m_uPaperPos.y);
-
-    // ask derived object to draw itself
-    //DrawObject(fMeasuring, pPaper, colorC, fHighlight);
-
-    // draw selection rectangle
-    if (g_fDrawSelRect) DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
-
-}
-
-void lmAuxObj::AddGraphicObj(lmGraphicObj* pGO) { DoAddGraphicObj(pGO); }
-void lmAuxObj::RemoveGraphicObj(lmGraphicObj* pGO) { DoRemoveGraphicObj(pGO); }
 
 //-------------------------------------------------------------------------------------------------
 // lmStaffObj implementation
@@ -260,6 +142,12 @@ lmStaffObj::lmStaffObj(lmObject* pParent, EStaffObjType nType, lmVStaff* pStaff,
 
 lmStaffObj::~lmStaffObj()
 {
+    //delete the attached AuxObjs
+    for (int i=0; i < (int)m_AuxObjs.size(); i++)
+    {
+        delete m_AuxObjs[i];
+    }
+    m_AuxObjs.clear();
 }
 
 void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
@@ -280,58 +168,26 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
     // ask derived object to layout itself
     LayoutObject(pBox, pPaper, colorC);
 
-    // update paper cursor position
-    pPaper->SetCursorX(m_uPaperPos.x + m_uWidth);
-    
-}
-
-void lmStaffObj::Draw(bool fMeasuring, lmPaper* pPaper, wxColour colorC, bool fHighlight)
-{
-    if (!m_fVisible) return;
-    
-    if (fMeasuring && !m_fFixedPos) {
-        m_uPaperPos.x = pPaper->GetCursorX();
-        m_uPaperPos.y = pPaper->GetCursorY();
-    } else {
-        pPaper->SetCursorX(m_uPaperPos.x);
-        pPaper->SetCursorY(m_uPaperPos.y);
+    // layout AuxObjs attached to this StaffObj
+    for (int i=0; i < (int)m_AuxObjs.size(); i++)
+    { 
+        m_AuxObjs[i]->Layout(pBox, pPaper, colorC, fHighlight);
     }
 
-    // set the font
-    if (fMeasuring) SetFont(pPaper);
-
-    //if (IsShapeRendered()) {
-    //    if (fMeasuring) {
-    //        // ask derived object to measure itself
-    //        DrawObject(fMeasuring, pPaper, colorC, fHighlight);
+    //// Layout GraphicObjs owned by this StaffObj
+    //if (m_pGraphObjs)
+    //{
+    //    lmGraphicObj* pGO;
+    //    wxGraphicObjsListNode* pNode = m_pGraphObjs->GetFirst();
+    //    for (; pNode; pNode = pNode->GetNext() ) {
+    //        pGO = (lmGraphicObj*)pNode->GetData();
+    //        pGO->Layout(pBox, pPaper, colorC, fHighlight);
     //    }
-    //    //else {
-    //    //    m_pShape->Render(pPaper, m_uPaperPos, colorC);
-    //    //}
     //}
-    //else {
-    //    // ask derived object to draw itself
-    //    DrawObject(fMeasuring, pPaper, colorC, fHighlight);
-    //}
-
-    // Draw GraphicObjs owned by this StaffObj
-    if (!fMeasuring && m_pGraphObjs)
-    {
-        lmGraphicObj* pGO;
-        wxGraphicObjsListNode* pNode = m_pGraphObjs->GetFirst();
-        for (; pNode; pNode = pNode->GetNext() ) {
-            pGO = (lmGraphicObj*)pNode->GetData();
-            pGO->Draw(DO_DRAW, pPaper, colorC, fHighlight);
-        }
-    }
 
     // update paper cursor position
     pPaper->SetCursorX(m_uPaperPos.x + m_uWidth);
     
-    //// draw selection rectangle
-    //if (!fMeasuring && (IsSelected() || g_fDrawSelRect))
-    //    DrawSelRectangle(pPaper, g_pColors->ScoreSelected());
-            
 }
 
 // default behaviour
@@ -348,15 +204,26 @@ lmLUnits lmStaffObj::TenthsToLogical(lmTenths nTenths)
     return m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
 }
 
-void lmStaffObj::AddGraphicObj(lmGraphicObj* pGO) 
-{ 
-    DoAddGraphicObj(pGO);
+//void lmStaffObj::AddGraphicObj(lmGraphicObj* pGO) 
+//{ 
+//    DoAddGraphicObj(pGO);
+//}
+//
+//void lmStaffObj::RemoveGraphicObj(lmGraphicObj* pGO)
+//{ 
+//    DoRemoveGraphicObj(pGO);
+//}
+
+void lmStaffObj::AttachAuxObj(lmAuxObj* pAO)
+{
+    m_AuxObjs.push_back(pAO);
 }
 
-void lmStaffObj::RemoveGraphicObj(lmGraphicObj* pGO)
-{ 
-    DoRemoveGraphicObj(pGO);
+void lmStaffObj::DetachAuxObj(lmAuxObj* pAO)
+{
+    //TODO
 }
+
 
 //-------------------------------------------------------------------------------------
 // lmObject implementation

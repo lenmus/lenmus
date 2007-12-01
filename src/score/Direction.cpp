@@ -53,66 +53,59 @@ lmWordsDirection::lmWordsDirection(lmVStaff* pVStaff, wxString sText, lmEAlignme
 // implementation of virtual methods defined in base abstract class lmStaffObj
 //-----------------------------------------------------------------------------------------
 
-wxBitmap* lmWordsDirection::GetBitmap(double rScale)
-{
-    return PrepareBitMap(rScale, m_sText);
-}
-
 void lmWordsDirection::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    //pPaper->SetFont(*m_pFont);
+    pPaper->SetFont(*m_pFont);
 
-    //if (fMeasuring) {
-    //    lmLUnits nWidth, nHeight;
-    //    pPaper->GetTextExtent(m_sText, &nWidth, &nHeight);
+    lmLUnits uWidth, uHeight;
+    pPaper->GetTextExtent(m_sText, &uWidth, &uHeight);
 
-    //    // set total width
-    //    m_uWidth = nWidth;
+    //compute paper x shift to align text
+    lmLUnits xPaperShift;
+    if (m_nAlign == lmALIGN_CENTER) {
+        xPaperShift = - uWidth/2;
+    }
+    else if (m_nAlign == lmALIGN_RIGHT) {
+        xPaperShift = - uWidth;
+    }
+    else {
+        xPaperShift = 0;
+    }
 
-    //    //compute paper x shift to align text
-    //    lmLUnits xPaperShift;
-    //    if (m_nAlign == lmALIGN_CENTER) {
-    //        xPaperShift = - nWidth/2;
-    //    }
-    //    else if (m_nAlign == lmALIGN_RIGHT) {
-    //        xPaperShift = - nWidth;
-    //    }
-    //    else {
-    //        xPaperShift = 0;
-    //    }
+    // Compute X position. Take into account if it is relative or absolute to paper pos.
+    lmLUnits uxPos = m_pVStaff->TenthsToLogical(m_tPos.x, m_nStaffNum)
+                     + xPaperShift;
+    if (m_tPos.xType == lmLOCATION_RELATIVE)
+        uxPos += pPaper->GetCursorX();
+    else if (m_tPos.xType == lmLOCATION_ABSOLUTE)
+        ;
+    else
+        uxPos = xPaperShift;
 
-    //    // store glyph position. Take into account that it is relative to paper pos.
-    //    if (m_tPos.xType == lmLOCATION_RELATIVE)
-    //        m_uGlyphPos.x = m_pVStaff->TenthsToLogical(m_tPos.x, m_nStaffNum) + xPaperShift;
-    //    else if (m_tPos.xType == lmLOCATION_ABSOLUTE)
-    //        m_uGlyphPos.x = m_pVStaff->TenthsToLogical(m_tPos.x, m_nStaffNum) - m_uPaperPos.x  + xPaperShift;
-    //    else
-    //        m_uGlyphPos.x = xPaperShift;
+    //Compute Y position. 
+    //method DC::DrawText position text with reference to its upper left
+    //corner but lenmus anchor point is lower left corner. Therefore, it
+    //is necessary to shift text up by text height
+    lmLUnits uyPos = m_pVStaff->TenthsToLogical(m_tPos.y, m_nStaffNum) - uHeight;
+    if (m_tPos.yType == lmLOCATION_RELATIVE)
+        uyPos += pPaper->GetCursorY();
+    else if (m_tPos.yType == lmLOCATION_ABSOLUTE)
+        ;
+    else
+        uyPos = - uHeight;
 
-    //    //method DC::DrawText position text with reference to its upper left
-    //    //corner but lenmus anchor point is lower left corner. Therefore, it
-    //    //is necessary to shift text up by text height
-    //    if (m_tPos.yType == lmLOCATION_RELATIVE)
-    //        m_uGlyphPos.y = m_pVStaff->TenthsToLogical(m_tPos.y, m_nStaffNum) - nHeight;
-    //    else if (m_tPos.yType == lmLOCATION_ABSOLUTE)
-    //        m_uGlyphPos.y = m_pVStaff->TenthsToLogical(m_tPos.y, m_nStaffNum) - m_uPaperPos.y - nHeight;
-    //    else
-    //        m_uGlyphPos.y = - nHeight;
+    // create the shape
+    lmShapeTex2* pShape = 
+        new lmShapeTex2(this, m_sText, m_pFont, pPaper,
+                        lmUPoint(uxPos, uyPos), _T("WordsDirection"), lmDRAGGABLE, colorC);
+	pBox->AddShape(pShape);
+    m_pShape2 = pShape;
 
-    //     // store selection rectangle (relative to m_uPaperPos). Coincides with glyph rectangle
-    //    m_uSelRect.width = nWidth;
-    //    m_uSelRect.height = nHeight;
-    //    m_uSelRect.x = m_uGlyphPos.x;
-    //    m_uSelRect.y = m_uGlyphPos.y;
-
-    //    if (!m_fHasWidth) m_uWidth=0;
-
-    //}
-    //else {
-    //    lmUPoint uPos = GetGlyphPosition();
-    //    pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-    //    pPaper->DrawText(m_sText, uPos.x, uPos.y );
-    //}
+	// set total width
+    if (!m_fHasWidth)
+        m_uWidth=0;
+    else
+        m_uWidth = pShape->GetWidth();
 
 }
 
@@ -128,16 +121,18 @@ wxString lmWordsDirection::Dump()
 
 wxString lmWordsDirection::SourceLDP(int nIndent)
 {
-    wxString sSource = _T("         (texto ");
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(text \"");
     sSource += m_sText;
-    sSource += _T(")\n");
+    sSource += _T("\")\n");
     return sSource;
 
 }
 
 wxString lmWordsDirection::SourceXML(int nIndent)
 {
-    //! @todo all
+    //TODO all
 	wxString sSource = _T("");
 	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
     sSource += _T("TODO: lmWordsDirection XML Source code generation method\n");

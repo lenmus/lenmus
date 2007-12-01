@@ -175,6 +175,12 @@
 				RelativePath="..\..\src\score\Accidental.h">
 			</File>
 			<File
+				RelativePath="..\..\src\score\AuxObj.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\score\AuxObj.h">
+			</File>
+			<File
 				RelativePath="..\..\src\score\Barline.cpp">
 			</File>
 			<File
@@ -229,12 +235,6 @@
 				RelativePath="..\..\src\score\Glyph.h">
 			</File>
 			<File
-				RelativePath="..\..\src\score\GraphicObj.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\score\GraphicObj.h">
-			</File>
-			<File
 				RelativePath="..\..\src\score\Instrument.cpp">
 			</File>
 			<File
@@ -269,12 +269,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\score\NoteRest.h">
-			</File>
-			<File
-				RelativePath="..\..\src\score\NoteRestObj.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\score\NoteRestObj.h">
 			</File>
 			<File
 				RelativePath="..\..\src\score\ObjOptions.cpp">
@@ -1009,12 +1003,6 @@
 				RelativePath="..\..\src\graphic\AggDrawer.h">
 			</File>
 			<File
-				RelativePath="..\..\src\graphic\BoxInstrSlice.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\graphic\BoxInstrSlice.h">
-			</File>
-			<File
 				RelativePath="..\..\src\graphic\BoxPage.cpp">
 			</File>
 			<File
@@ -1049,12 +1037,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\BoxSystem.h">
-			</File>
-			<File
-				RelativePath="..\..\src\graphic\BoxVStaffSlice.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\graphic\BoxVStaffSlice.h">
 			</File>
 			<File
 				RelativePath="..\..\src\graphic\Drawer.cpp">

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LenMus 3.6\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2007-10-20 16:13+0100\n"
+"PO-Revision-Date: 2007-11-30 21:12+0100\n"
 "Last-Translator: Cecilio Salmeron <s.cecilio@gmail.com>\n"
 "Language-Team:  <cecilios@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -303,7 +303,7 @@ msgid "A particular case of the half cadence is the Phrygian half cadence. It co
 msgstr "Un caso especial de esta cadencia es la cadencia frigia. Consiste en un acorde de IV, en primera inversión, que resuelve sobre el de dominante (V) . Sólo es posible en tonalidades menores (el IV grado es un acorde menor). Esta cadencia fue usada profusamente en el Barroco para finalizar un movimiento o introducción lentos en modo menor, al que continúa un movimiento rápido, preferentemente en modo mayor."
 
 #: TheoryHarmony/TheoryHarmony.cpp:92
-msgid "Another very specific case is the Andalusian cadence. It only occurs in minor keys and is given by the progression I-VII-VI-V, where the IV degree can be replaced. This cadence has a particular colour due to the chromatic half step between the root of the VII and the third of the V."
+msgid "Another very specific case is the Andalusian cadence. It only occurs in minor keys and is given by the progression I-VII-VI-V, where the VI degree can be replaced. This cadence has a particular colour due to the chromatic half step between the root of the VII and the third of the V."
 msgstr "Otro caso muy particular es la cadencia andaluza. Se da sólo en las tonalidades menores y consiste en la progresión  I-VII-VI-V, donde el grado VI puede reemplarse por otros. El colorido particular lo otorga el semitono cromático que se produce entre la nota fundamental del VII y la tercera del V."
 
 #: TheoryHarmony/TheoryHarmony.cpp:94
@@ -316,8 +316,8 @@ msgid "VI"
 msgstr "VI"
 
 #: TheoryHarmony/TheoryHarmony.cpp:97
-msgid "#"
-msgstr "#"
+msgid "7"
+msgstr "7"
 
 #: TheoryHarmony/TheoryHarmony.cpp:98
 msgid "Deceptive cadences"

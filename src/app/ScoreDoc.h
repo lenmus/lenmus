@@ -19,10 +19,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __SCOREDOC_H__
-#define __SCOREDOC_H__
+#ifndef __LM_SCORECDOC_H__
+#define __LM_SCORECDOC_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "ScoreDoc.cpp"
 #endif
 
@@ -48,9 +48,6 @@ public:
     bool OnImportDocument(const wxString& filename);
     inline lmScore* GetScore() {return m_pScore; };
 
-    // to manage selected objects
-    lmScoreObj* FindSelectableObject(lmUPoint& pt);
-
 private:
     // data to store
     lmScore*            m_pScore;        // the score this document represents
@@ -59,4 +56,4 @@ private:
 };
 
 
-#endif    // __SCOREDOC_H__
+#endif    // __LM_SCORECDOC_H__

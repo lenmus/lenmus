@@ -436,7 +436,7 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
         else if (pTPE->m_nType == eOmega)
         {
             //there might be no barline.
-            //! @todo this was true in previous versions but, is it still true?
+            //TODO this was true in previous versions but, is it still true?
             if (pTPE->m_pSO)
             {
                 nShiftBar = uNewStart + uNewBarSize - pTPE->m_xFinal + 1;
@@ -533,7 +533,7 @@ wxString lmTimeposTable::DumpTimeposTable()
             case eOmega:
                 sMsg += _T("  Omega");
                 if (pTE->m_pSO) {
-                    sMsg += wxString::Format(_T("%3d "), (pTE->m_pSO)->GetClass() );    //! @todo convert to string
+                    sMsg += wxString::Format(_T("%3d "), (pTE->m_pSO)->GetClass() );    //TODO convert to string
                 } else {
                     sMsg += _T("  -        ");
                 }
@@ -541,7 +541,7 @@ wxString lmTimeposTable::DumpTimeposTable()
 
             default:
                 //lmStaffObj entry
-                sMsg += wxString::Format(_T("  pSO %4d "), (pTE->m_pSO)->GetClass() );     //! @todo convert to string
+                sMsg += wxString::Format(_T("  pSO %4d "), (pTE->m_pSO)->GetClass() );     //TODO convert to string
         }
 
         sMsg += wxString::Format(_T("%11.2f %.2f %.2f %.2f %.2f %.2f\n"),

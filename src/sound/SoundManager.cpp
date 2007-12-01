@@ -430,7 +430,7 @@ void lmSoundManager::PlaySegment(int nEvStart, int nEvEnd,
                         fMarcarUnCompasPrevio, nMM, pWindow);
 
     if ( m_pThread->Create() != wxTHREAD_NO_ERROR ) {
-        //! @todo proper error handling
+        //TODO proper error handling
         wxMessageBox(_("Can't create a thread!"));
 
         m_pThread->Delete();    //to free the memory occupied by the thread object
@@ -442,7 +442,7 @@ void lmSoundManager::PlaySegment(int nEvStart, int nEvEnd,
     //Start the thread execution. This will cause that thread method Enter() is invoked
     //and it will do the job to play the segment.
     if (m_pThread->Run() != wxTHREAD_NO_ERROR ) {
-        //! @todo proper error handling
+        //TODO proper error handling
         wxMessageBox(_("Can't start the thread!"));
 
         m_pThread->Delete();    //to free the memory occupied by the thread object
@@ -508,7 +508,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
         return;
     }
 
-    //! @todo All issues related to sol-fa voice
+    //TODO All issues related to sol-fa voice
 
     wxASSERT(nEvStart >= 0 && nEvEnd < (int)m_aEvents.GetCount() );
     if (m_aEvents.GetCount() == 0) return;                  //tabla empty
@@ -606,7 +606,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
 	//will start before the first note
     nMtrEvDeltaTime = (m_aEvents[i]->DeltaTime / nMtrBeatDuration) * nMtrBeatDuration;
 
-    /*! @todo
+    /*TODO
         Si el metrónomo no está activo o se solicita que no se marque un compás completo antes de empezar
         hay que avanzar el contador de tiempo hasta la primera nota
     */
@@ -802,7 +802,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
             else
             {
                 //program error. Unknown event type
-                //wxASSERT(false);        //! @todo remove comment
+                //wxASSERT(false);        //TODO remove comment
             }
 
             nTime = wxMax(nTime, nEvTime);        //to avoid going backwards when no metronome
@@ -829,7 +829,7 @@ void lmSoundManager::DoPlaySegment(int nEvStart, int nEvEnd,
 
     //ensure that all sounds are off and that metronome LED is switched off
     g_pMidiOut->AllSoundsOff();
-    //! @todo    metronome LED
+    //TODO    metronome LED
     //FMain.picMtrLEDOff.Visible = true;
     //FMain.picMtrLEDRojoOn.Visible = false;
 

@@ -27,7 +27,7 @@ such as 'ONE-two-three-four-and-ONE-two-three-four-and- ...', stressing the ONE
 syllable and the 'three' syllable a little less.
 </para>
 
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <control_play></control_play>
@@ -62,7 +62,7 @@ In this lesson we are going also to learn a new note symbol and its rest: the wh
 The following score shows a whole note and a whole rest:
 </para>
 
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>
@@ -84,7 +84,7 @@ So in time 4/4 a whole note or rest gets four beats, and, therefore, takes a who
 measure. Two tied half notes equals a whole note:
 </para>
 
-<para><score width="685" height='70' border="0">
+<para><score width="685" height='90' border="0">
     <score_type>full</score_type>
     <music_border>0</music_border>
     <music>

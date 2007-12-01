@@ -96,6 +96,13 @@ void lmBoxSliceVStaff::AddShape(lmShape* pShape)
 	else
 		lmBox::AddShape(pShape);
 
+    //for visual highlight we need to know the page in wich the StaffObj to highlight
+    //is located. To this end we are going to store the page number in each
+    //StaffObj
+    //lmObject* pSO = pShape->Owner();
+    //if (pSO->G
+    //pSO->SetPageNumber(nNumPage);
+
 }
 
 void lmBoxSliceVStaff::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage)
@@ -108,7 +115,7 @@ void lmBoxSliceVStaff::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage
     //wxASSERT(nMeasure <= m_pVStaff->GetNumMeasures());
 
 
-    ///*! @todo
+    ///*TODO
     //    Review this commented code. Implies to review also comented
     //    code in lmFormatter4::SizeMeasure
     //*/
@@ -117,7 +124,7 @@ void lmBoxSliceVStaff::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage
     ////que el método GetXInicioCompas pueda devolver este valor
     ////m_pVStaff->SetXInicioCompas = pPaper->GetCursorX()
 
-    ////! @todo Review this
+    ////TODO Review this
     //////si no es el primer compas de la partitura avanza separación con la barra de compas
     //////o con prólogo, si es comienzo de línea.
     ////if (nMeasure != 1) {
@@ -147,7 +154,7 @@ void lmBoxSliceVStaff::RenderMeasure(int nMeasure, lmPaper* pPaper, int nNumPage
     //            fSpacePending = true;
     //            nMaxClefWidth = 0;
     //        } else {
-    //            /*! @todo
+    //            /*TODO
     //                Review this. I thing that now, with lmTimeposTable mechanism,
     //                it is useless.
     //            */

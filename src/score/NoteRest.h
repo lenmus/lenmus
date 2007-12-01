@@ -52,6 +52,7 @@
 #pragma interface "NoteRest.cpp"
 #endif
 
+
 #define DEFINE_REST        true
 #define DEFINE_NOTE        false
 
@@ -63,6 +64,7 @@ struct lmTBeamInfo
     bool        Repeat;
 };
 
+class lmLyric;
 
 class lmNoteRest:  public lmStaffObj
 {
@@ -78,7 +80,6 @@ public:
     virtual bool IsInChord() = 0;    
 
     //implementation of virtual methods of base class lmStaffObj
-    virtual lmScoreObj* FindSelectableObject(lmUPoint& pt)=0;
     virtual bool IsComposite() { return true; }
 
 

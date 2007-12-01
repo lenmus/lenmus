@@ -1,7 +1,7 @@
-<html>
-<!-- $Updated: 2007/06/05 -->
+<html><!-- $Updated: 2007/12/01 -->
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>LenMus installation procedure</title>
 <link rel="stylesheet" media="all" href="singledoc.css" type="text/css" />
 </head>
@@ -11,32 +11,85 @@
 
 <p>
 <a href="#MSWin">Microsoft Windows installation</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-<a href="#Linux">GNU/Linux installation</a><br />
+<a href="#Linux">Linux installation</a><br />
 </p>
 
 
-<h2><img src="images/linux.gif" alt="Linux logo" style="MARGING-RIGHT: 2em">
-<a name="Linux">GNU/Linux installation</a></h2>
+<h2><img src="/images/linux.gif" alt="Linux logo" style="MARGING-RIGHT: 2em">
+<a name="Linux">Linux installation</a></h2>
 
 <p>In preparation</p>
+<!--
+<p>LenMus ... Optionally, create any desired shortcuts on desktop, programs menu, etc.</p>
+
+
+<h3>Default installation folders</h3>
+
+<br />
+
+<h5>Software and essentials</h5>
+<table cellspacing='0' cellpadding='0'>
+<tr><td colspan='2'><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>/usr/bin</b></td></tr>
+<tr><td colspan='2'><img src="images/tree-L.png"    alt="(1st level)" width="20" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>lenmus</b></td></tr>
+<tr><td colspan='2'><img src="images/tree-ST.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>bin</b> - Executable files.</td></tr>
+<tr><td colspan='2'><img src="images/tree-ST.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>xrc</b> - XRC resources used by the program.</td></tr>
+<tr><td colspan='2'><img src="images/tree-ST.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>res</b> - Icons, bitmaps and related files.</td></tr>
+<tr><td colspan='2'><img src="images/tree-ST.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>locale</b> - Language dependent files.</td></tr>
+<tr><td colspan='2'><img src="images/tree-SV.png"   alt="(3rd level)" width="40" height="20" /><img src="images/tree-SL.png"   alt="(3rd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>xx</b> - Language xx (note 1).</td></tr>
+<tr><td colspan='2'><img src="images/tree-SL.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>books</b> - eMusicBooks.</td></tr>
+<tr><td colspan='2'><img src="images/tree-SS.png"   alt="(3rd level)" width="40" height="20" /><img src="images/tree-SL.png"   alt="(3rd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>xx</b> - Language xx (note 1).</td></tr>
+</table>
 
 <p>&nbsp;</p>
-<h2><img src="images/winXP.jpg" alt="Windows XP logo" style="MARGING-RIGHT: 2em">
+<h5>Logs and temporal files</h5>
+<table>
+<tr><td colspan='2'><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>/var</b></td></tr>
+<tr><td colspan='2'><img src="images/tree-L.png"    alt="(1st level)" width="20" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>lenmus</b></td></tr>
+<tr><td colspan='2'><img src="images/tree-ST.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>temp</b> - Used during LenMus execution.</td></tr>
+<tr><td colspan='2'><img src="images/tree-SL.png"   alt="(2nd level)" width="40" height="20" /><img src="images/file-document.png" alt="[DIR]" width="20" height="20" />&nbsp;<b>*.txt</b> - log files (note 2).</td></tr>
+</table>
+
+<p>&nbsp;</p>
+<h5>User configuration files</h5>
+<table>
+<tr><td colspan='2'><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>$HOME</b></td></tr>
+<tr><td colspan='2'><img src="images/tree-L.png"    alt="(1st level)" width="20" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>.lenmus</b></td></tr>
+<tr><td colspan='2'><img src="images/tree-SL.png"   alt="(2nd level)" width="40" height="20" /><img src="images/file-document.png" alt="[DIR]" width="20" height="20" />&nbsp;<b>lenmus.ini</b> - user options file.</td></tr>
+</table>
+
+<p>&nbsp;</p>
+<h5>User content files</h5>
+<table>
+<tr><td colspan='2'><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>$HOME</b></td></tr>
+<tr><td colspan='2'><img src="images/tree-L.png"    alt="(1st level)" width="20" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>lenmus</b></td></tr>
+<tr><td colspan='2'><img src="images/tree-ST.png"   alt="(2nd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>scores</b> - user scores</td></tr>
+<tr><td colspan='2'><img src="images/tree-SV.png"   alt="(3rd level)" width="40" height="20" /><img src="images/tree-ST.png"   alt="(3rd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>MusicXML</b>  - MusicXML scores; load them using File/Import.</td></tr>
+<tr><td colspan='2'><img src="images/tree-SV.png"   alt="(3rd level)" width="40" height="20" /><img src="images/tree-SL.png"   alt="(3rd level)" width="40" height="20" /><img src="images/folder-open.png" alt="[DIR]" width="16" height="16" />&nbsp;<b>samples</b> - LenMus scores; load them using File/Open.</td></tr>
+<tr><td colspan='2'><img src="images/tree-ST.png"   alt="(2nd level)" width="40" height="20" /><img src="images/file-document.png" alt="[DIR]" width="20" height="20" />&nbsp;<b>*.txt</b> - some documentation (license, installation guide, ...)</td></tr>
+<tr><td colspan='2'><img src="images/tree-SL.png"   alt="(2nd level)" width="40" height="20" /><img src="images/file-html.png" alt="[DIR]" width="20" height="20" />&nbsp;<b>*.htm</b> - some documentation (license, installation guide, ...)</td></tr>
+</table>
+
+<p><b>Notes</b></p>
+<p><b>1. </b>
+There is a subdirectory (xx) for each supported language. Subdirectories are named, following RFC 1766, with the two letter language code (.i.e. 'en' for English, 'es' for Spanish, etc.) or with the five chars language-culture code (i.e. 'en-EN' for USA English or 'es-ES' for the Modern Spanish).
+</p>
+<p><b>2. </b>
+Log files are prefixed with user name, for better control in multi-user environments</p>
+
+-->
+
+
+<p>&nbsp;</p>
+<h2><img src="/images/winXP.jpg" alt="Windows XP logo" style="MARGING-RIGHT: 2em">
 <a name="MSWin">Microsoft Windows installation</a></h2>
 
 <h3>Automatic installation</h3>
 
 <p>Only modern Windows versions (NT/2000/XP/Vista) are supported. Just run the installer
-(lenmus_3.5_setup.exe).</p>
-<p>It will ask you the language to use (for the installer and also as default LenMus language),
-the path to install LenMus
-and ask you about installing optional components.</p>
+(lenmus_3.6_setup.exe).</p>
+<p>It will ask you which language to use (for the installer and also as the default LenMus language), the path to install LenMus and ask you about installing optional components.</p>
 
-<p><b style="color:red">Important:</b> I don't know why but sometimes, just after the installation, Windows
-does not recognize the new installed font and instead of notes and musical symbols
-you get letters and other signs on the scores. This can be solved just by opening
-the 'windows/font' folder with MSExplorer. With this action, Windows 'recognizes' the new font.
-Now close MSExplorer and restart LenMus.</p>
+<p><b style="color:red">Important:</b> I don't know why but sometimes, just after installation, Windows does not recognize the newly installed font and instead of notes and musical symbols you get letters and other signs on the scores. This can be solved just by opening the 'windows/font' folder with MSExplorer. With this action, Windows 'recognizes' the new font. Now close MSExplorer and restart LenMus.</p>
 
 
 <h3>Manual installation</h3>
@@ -51,20 +104,21 @@ Follow this procedure:<p/>
     next section.</li>
 
 <li>Install the font <em>lmbasic.ttf</em> contained in folder <em>/bin</em>. For example:
-    <ol>
-        <li>Open Windows Control Panel</li>
+
+
+<ol>
+        <li>Open the Windows Control Panel</li>
         <li>Open Fonts</li>
-        <li>Choose "File/install font" and follow instructions</li>
+        <li>Choose "File/install font" and follow the instructions</li>
     </ol>
     </li>
 
-<li>Optionally, create any desired shortcuts on desktop, programs menu, etc.</li>
+<li>Optionally, create any desired shortcuts on your Desktop, Program Menu, etc.</li>
 </ol>
 
 
-<h3>LenMus 3.5 directories</h3>
-<p>After installation, in the chosen installation folder you will find some documentation,
-such as licence and installation procedure, and the following folders and content: </p>
+<h3>LenMus 3.6 directories</h3>
+<p>You will find some documentation in the installation folder after installation, such as licence and installation procedure, and the following folders and content:</p>
 
 
 <br />
