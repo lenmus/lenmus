@@ -59,7 +59,7 @@ static long m_nCounterID = 0;
 // lmScore constructors and destructor
 //---------------------------------------------------------------------------------------
 
-lmScore::lmScore() : lmObject((lmObject*)NULL)
+lmScore::lmScore() : lmScoreObj((lmScoreObj*)NULL)
 {
     //Set up an empty score, that is, without any lmInstrument.
 
@@ -115,9 +115,23 @@ lmScore::~lmScore()
 
 }
 
-//---------------------------------------------------------------------------------------
-// score object methods
-//---------------------------------------------------------------------------------------
+lmUPoint lmScore::GetReferencePos(lmPaper* pPaper)
+{
+	//TODO
+	return lmUPoint(0.0, 0.0);
+}
+
+lmLUnits lmScore::TenthsToLogical(lmTenths nTenths)
+{
+	//TODO
+	return 0.0;
+}
+
+lmTenths lmScore::LogicalToTenths(lmLUnits uUnits)
+{
+	//TODO
+	return 0.0;
+}
 
 void lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation tPos,
                        wxString sFontName, int nFontSize, lmETextStyle nStyle)

@@ -18,17 +18,13 @@
 //    the project at cecilios@users.sourceforge.net
 //
 //-------------------------------------------------------------------------------------
-/*
-    @brief lmTheApp class represents the application itself
 
-    Derived from wxApp class, lmTheApp class represents the application itself. Takes care of
-    implementing the main event loop and to handle events not handled by other objects in
-    the application. The two main visible responsibilities are:
+// lmTheApp class represents the application itself. Takes care of
+// implementing the main event loop and to handle events not handled by other objects in
+// the application. The two main visible responsibilities are:
+//    - To set and get application-wide properties.
+//    - To initiate application processing via wxApp::OnInit()
 
-    - To set and get application-wide properties;
-    - To initiate application processing via wxApp::OnInit;
-
-*/
 
 #ifdef __GNUG__
 #pragma implementation "TheApp.h"
@@ -96,20 +92,10 @@
 #define wxUSE_GENERIC_DRAGIMAGE 1
 
 
-//#ifdef __WXDEBUG__
-//    #if !wxUSE_UNICODE
-//        #error "You must set wxUSE_UNICODE to 1 in setup.h!"
-//    #endif
-//    #if !wxUSE_UNICODE_MSLU
-//        #error "You must set wxUSE_UNICODE_MSLU to 1 in setup.h!"
-//    #endif
-//#endif
-
-
 #include "TheApp.h"
 #include "MainFrame.h"
 #include "ScoreDoc.h"
-#include "scoreView.h"
+#include "ScoreView.h"
 #include "AboutDialog.h"
 #include "LangChoiceDlg.h"
 #include "ArtProvider.h"
@@ -331,6 +317,7 @@ bool lmTheApp::OnInit(void)
     g_pLogger->DefineTraceMask(_T("LDPParser_beams"));
     g_pLogger->DefineTraceMask(_T("lmMusicXMLParser"));
     g_pLogger->DefineTraceMask(_T("lmScoreAuxCtrol"));
+	g_pLogger->DefineTraceMask(_T("lmScoreCtrolParams"));
     g_pLogger->DefineTraceMask(_T("lmTheoKeySignCtrol"));
     g_pLogger->DefineTraceMask(_T("lmUpdater"));
 #endif
@@ -826,7 +813,7 @@ void lmTheApp::UpdateCurrentDocViews(void)
 wxString lmTheApp::GetVersionNumber()
 {
     // Increment this every time you release a new version
-    wxString sVersion = _T("3.6");
+    wxString sVersion = _T("4.0a0");
     return sVersion;
 }
 
@@ -913,6 +900,18 @@ wxString lmTheApp::GetInstallerLanguage()
     sLang = _T("");
     return sLang;
 }
+
+lmController* lmTheApp::GetViewController()
+{
+	//returns the controller associated to the active view
+    lmView* pView = GetActiveView();
+	if (pView)
+		return pView->GetController();
+	else
+		return (lmController*)NULL;
+}
+
+
 
 //---------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------

@@ -41,7 +41,7 @@
 #include "GMObject.h"
 
 class lmPaper;
-class lmObject;
+class lmScoreObj;
 class lmStaff;
 class lmStaffObj;
 
@@ -49,12 +49,12 @@ class lmStaffObj;
 class lmShapeArch : public lmSimpleShape
 {
 public:
-    lmShapeArch(lmObject* pOwner, lmUPoint uStart, lmUPoint uEnd,
+    lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd,
                 lmUPoint uCtrol1, lmUPoint uCtrol2, wxColour nColor,
                 wxString sName = _T("Arch"));
-    lmShapeArch(lmObject* pOwner, lmUPoint uStart, lmUPoint uEnd, bool fArchUnder,
+    lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd, bool fArchUnder,
                 wxColour nColor, wxString sName = _T("Arch"));
-    lmShapeArch(lmObject* pOwner, bool fArchUnder, wxColour nColor,
+    lmShapeArch(lmScoreObj* pOwner, bool fArchUnder, wxColour nColor,
                 wxString sName = _T("Arch"));
 
     virtual ~lmShapeArch() {}
@@ -119,7 +119,6 @@ public:
 
 private:
     bool        m_fTieUnderNote;
-    lmStaff*    m_pStaff;           //for logical units conversion
 
 };
 

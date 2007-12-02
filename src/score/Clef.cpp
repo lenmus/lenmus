@@ -110,7 +110,7 @@ lmEGlyphIndex lmClef::GetGlyphIndex()
 // implementation of virtual methods defined in base abstract class lmStaffObj
 //-----------------------------------------------------------------------------------------
 
-void lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model. 
@@ -129,7 +129,7 @@ void lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 
 	// set total width (incremented in one line for after space)
 	lmLUnits nWidth = pShape->GetWidth();
-	m_uWidth = nWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
+	return nWidth + m_pVStaff->TenthsToLogical(10, m_nStaffNum);    //one line space
 
 }
 
@@ -145,13 +145,13 @@ lmLUnits lmClef::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
     yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
 
     //create the shape object
-    //lmShapeGlyp2* pShape = new lmShapeGlyp2(this, GetGlyphIndex(), GetFont(), pPaper,
+    //lmShapeGlyph* pShape = new lmShapeGlyph(this, GetGlyphIndex(), GetFont(), pPaper,
     //                                        lmUPoint(uPos.x, yPos), _T("Clef"));
     lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetFont(), pPaper,
                                             lmUPoint(uPos.x, yPos), 
 											_T("Clef"), lmDRAGGABLE);
 	pBox->AddShape(pShape);
-    return m_uWidth;
+    return pShape->GetWidth();
 }
 
 wxString lmClef::Dump()

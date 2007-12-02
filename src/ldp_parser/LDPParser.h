@@ -69,7 +69,7 @@ public:
     bool        AnalyzeNewSystem(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmNote*     AnalyzeNote(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);
     lmNoteRest* AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bool fChord=false);
-    void        AnalyzeOption(lmLDPNode* pNode, lmObject* pObject);
+    void        AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject);
     lmRest*     AnalyzeRest(lmLDPNode* pNode, lmVStaff* pVStaff);
     lmScore*    AnalyzeScore(lmLDPNode* pNode);
     void        AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff);

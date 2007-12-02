@@ -60,7 +60,7 @@ public:
     virtual void PausePlaying() {}
 
 	// commands with Do/Undo support
-	virtual void MoveObject(lmScoreObj* pSO, const lmUPoint& uPos) {}
+	virtual void MoveObject(lmComponentObj* pSO, const lmUPoint& uPos) {}
 	virtual void SelectObject(lmGMObject* pGMO) {}
 
     // event handlers
@@ -100,7 +100,7 @@ public:
     void PausePlaying();
 
 	// commands with Do/Undo support
-	void MoveObject(lmScoreObj* pSO, const lmUPoint& uPos);
+	void MoveObject(lmComponentObj* pSO, const lmUPoint& uPos);
 	void SelectObject(lmGMObject* pGMO);
 
 

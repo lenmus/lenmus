@@ -52,7 +52,7 @@
 #include "FontManager.h"
 #include "Printout.h"
 
-class lmScoreObj;
+class lmComponentObj;
 class lmEditFrame;
 class lmScoreCanvas;
 class lmScoreDocument;
@@ -207,7 +207,7 @@ private:
     lmDPoint        m_vDragHotSpot;        //absolute point (pixels)
     lmUPoint        m_uHotSpotShift;       //distance from shape origin
     wxDragImage*    m_pDragImage;
-    lmScoreObj*     m_pSoDrag;            // lmScoreObj being dragged
+    lmComponentObj*     m_pSoDrag;            // lmComponentObj being dragged
 	lmGMObject*		m_pGMODrag;			//GMObject being dragged
 
     //cursor

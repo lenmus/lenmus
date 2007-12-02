@@ -99,7 +99,7 @@ void lmBoxSliceVStaff::AddShape(lmShape* pShape)
     //for visual highlight we need to know the page in wich the StaffObj to highlight
     //is located. To this end we are going to store the page number in each
     //StaffObj
-    //lmObject* pSO = pShape->Owner();
+    //lmScoreObj* pSO = pShape->Owner();
     //if (pSO->G
     //pSO->SetPageNumber(nNumPage);
 

@@ -39,59 +39,7 @@
 // lmShapeLine object implementation
 //========================================================================================
 
-lmShapeLine::lmShapeLine(lmObject* pOwner,
-                lmLUnits xStart, lmLUnits yStart,
-                lmLUnits xEnd, lmLUnits yEnd, lmLUnits uWidth, wxColour nColor)
-    : lmSimpleShape(eGMO_ShapeLine, pOwner)
-{
-    m_xStart = xStart;
-    m_yStart = yStart;
-    m_xEnd = xEnd;
-    m_yEnd = yEnd;
-    m_color = nColor;
-    m_uWidth = uWidth;
-}
-
-void lmShapeLine::Render(lmPaper* pPaper, wxColour color)
-{
-    lmUPoint uPos(0.0, 0.0);    //by-pass new version with absolute positions
-
-    // start and end points
-    lmLUnits x1 = uPos.x + m_xStart;
-    lmLUnits y1 = uPos.y + m_yStart;
-    lmLUnits x2 = uPos.x + m_xEnd;
-    lmLUnits y2 = uPos.y + m_yEnd;
-
-    pPaper->SolidLine(x1, y1, x2, y2, m_uWidth, eEdgeNormal, color);
-
-    lmShape::RenderCommon(pPaper);
-
-}
-
-wxString lmShapeLine::Dump(int nIndent)
-{
-	wxString sDump = _T("");
-	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("lmShapeLine: start=(%.2f, %.2f), end=(%.2f, %.2f), line width=%.2f, "),
-                m_xStart, m_yStart, m_xEnd, m_yEnd, m_uWidth );
-    sDump += DumpBounds();
-    sDump += _T("\n");
-	return sDump;
-}
-
-void lmShapeLine::Shift(lmLUnits xIncr, lmLUnits yIncr)
-{
-	//TODO
-}
-
-
-
-
-//========================================================================================
-// lmShapeLin2 object implementation
-//========================================================================================
-
-lmShapeLin2::lmShapeLin2(lmObject* pOwner, lmLUnits xStart, lmLUnits yStart,
+lmShapeLine::lmShapeLine(lmScoreObj* pOwner, lmLUnits xStart, lmLUnits yStart,
                 lmLUnits xEnd, lmLUnits yEnd, lmLUnits uWidth, lmLUnits uBoundsExtraWidth,
 				wxColour nColor, wxString sName, lmELineEdges nEdge)
     : lmSimpleShape(eGMO_ShapeLine, pOwner, sName)
@@ -99,7 +47,7 @@ lmShapeLin2::lmShapeLin2(lmObject* pOwner, lmLUnits xStart, lmLUnits yStart,
 	Create(xStart, yStart, xEnd, yEnd, uWidth, uBoundsExtraWidth, nColor, nEdge);
 }
 
-void lmShapeLin2::Create(lmLUnits xStart, lmLUnits yStart,
+void lmShapeLine::Create(lmLUnits xStart, lmLUnits yStart,
 						 lmLUnits xEnd, lmLUnits yEnd, lmLUnits uWidth,
 						 lmLUnits uBoundsExtraWidth, wxColour nColor,
 						 lmELineEdges nEdge)
@@ -166,13 +114,13 @@ void lmShapeLin2::Create(lmLUnits xStart, lmLUnits yStart,
 
 }
 
-void lmShapeLin2::Render(lmPaper* pPaper, wxColour color)
+void lmShapeLine::Render(lmPaper* pPaper, wxColour color)
 {
     pPaper->SolidLine(m_xStart, m_yStart, m_xEnd, m_yEnd, m_uWidth, m_nEdge, color);
     lmShape::RenderCommon(pPaper);
 }
 
-wxString lmShapeLin2::Dump(int nIndent)
+wxString lmShapeLine::Dump(int nIndent)
 {
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
@@ -183,7 +131,7 @@ wxString lmShapeLin2::Dump(int nIndent)
 	return sDump;
 }
 
-void lmShapeLin2::Shift(lmLUnits xIncr, lmLUnits yIncr)
+void lmShapeLine::Shift(lmLUnits xIncr, lmLUnits yIncr)
 {
     m_xStart += xIncr;
     m_yStart += yIncr;
@@ -193,37 +141,20 @@ void lmShapeLin2::Shift(lmLUnits xIncr, lmLUnits yIncr)
     ShiftBoundsAndSelRec(xIncr, yIncr);
 }
 
-
 //========================================================================================
 // lmShapeGlyph object implementation
 //========================================================================================
 
-lmShapeGlyph::lmShapeGlyph(lmObject* pOwner, int nGlyph, wxFont* pFont)
-    : lmSimpleShape(eGMO_ShapeGlyph, pOwner)
-{
-    m_nGlyph = nGlyph;
-    m_pFont = pFont;
-
-    //default values
-    m_uShift.x = 0;
-    m_uShift.y = 0;
-
-
-
-}
-
-lmShapeGlyph::lmShapeGlyph(lmStaffObj* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
-                           lmUPoint offset)
-    : lmSimpleShape(eGMO_ShapeGlyph, pOwner)
+lmShapeGlyph::lmShapeGlyph(lmScoreObj* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
+                           lmUPoint uPos, wxString sName, bool fDraggable, wxColour color)
+    : lmSimpleShape(eGMO_ShapeGlyph, pOwner, sName, fDraggable, color)
 {
     m_nGlyph = nGlyph;
     m_pFont = pFont;
 
     // compute and store position
-    lmVStaff* pVStaff = pOwner->GetVStaff();
-    int nStaff = pOwner->GetStaffNum();
-    m_uShift.x = offset.x;
-    m_uShift.y = offset.y - pVStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].GlyphOffset, nStaff);
+    m_uGlyphPos.x = uPos.x;
+    m_uGlyphPos.y = uPos.y; // - pVStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].GlyphOffset, nStaff);
 
     // store boundling rectangle position and size
     lmLUnits uWidth, uHeight;
@@ -231,48 +162,23 @@ lmShapeGlyph::lmShapeGlyph(lmStaffObj* pOwner, int nGlyph, wxFont* pFont, lmPape
     pPaper->SetFont(*m_pFont);
     pPaper->GetTextExtent(sGlyph, &uWidth, &uHeight);
 
-	m_uBoundsTop.x = m_uShift.x;
-	m_uBoundsTop.y = m_uShift.y + pVStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectShift, nStaff);
+	m_uBoundsTop.x = m_uGlyphPos.x;
+	m_uBoundsTop.y = m_uGlyphPos.y + ((lmStaffObj*)m_pOwner)->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectShift);
 	m_uBoundsBottom.x = m_uBoundsTop.x + uWidth;
-	m_uBoundsBottom.y = m_uBoundsTop.y + pVStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectHeight, nStaff);
+	m_uBoundsBottom.y = m_uBoundsTop.y + ((lmStaffObj*)m_pOwner)->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectHeight);
 
     // store selection rectangle position and size
 	m_uSelRect = GetBounds();
 
 }
-
-void lmShapeGlyph::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
-{
-    // compute and store position
-    m_uShift.x = offset.x;
-    m_uShift.y = offset.y - pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].GlyphOffset);
-
-    // store boundling rectangle position and size
-    lmLUnits uWidth, uHeight;
-    wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
-    pPaper->SetFont(*m_pFont);
-    pPaper->GetTextExtent(sGlyph, &uWidth, &uHeight);
-
-	m_uBoundsTop.x = m_uShift.x;
-	m_uBoundsTop.y = m_uShift.y + pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectShift);
-	m_uBoundsBottom.x = m_uBoundsTop.x + uWidth;
-	m_uBoundsBottom.y = m_uBoundsTop.y + pStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectHeight);
-
-    // store selection rectangle position and size
-	m_uSelRect = GetBounds();
-
-}
-
 
 void lmShapeGlyph::Render(lmPaper* pPaper, wxColour color)
 {
-    lmUPoint uPos(0.0, 0.0);    //by-pass new version with absolute positions
-
     wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
 
     pPaper->SetFont(*m_pFont);
     pPaper->SetTextForeground(color);
-    pPaper->DrawText(sGlyph, uPos.x + m_uShift.x, uPos.y + m_uShift.y);
+    pPaper->DrawText(sGlyph, m_uGlyphPos.x, m_uGlyphPos.y);
 
     lmShape::RenderCommon(pPaper);
 
@@ -287,78 +193,6 @@ wxString lmShapeGlyph::Dump(int nIndent)
 {
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("lmShapeGlyph: shift=(%d,%d), "),
-        m_uShift.x, m_uShift.y);
-    sDump += DumpBounds();
-    sDump += _T("\n");
-	return sDump;
-}
-
-void lmShapeGlyph::Shift(lmLUnits xIncr, lmLUnits yIncr)
-{
-    m_uShift.x += xIncr;
-    m_uShift.y += yIncr;
-
-    ShiftBoundsAndSelRec(xIncr, yIncr);
-}
-
-
-
-
-//========================================================================================
-// lmShapeGlyp2 object implementation
-//========================================================================================
-
-lmShapeGlyp2::lmShapeGlyp2(lmObject* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
-                           lmUPoint uPos, wxString sName, bool fDraggable, wxColour color)
-    : lmSimpleShape(eGMO_ShapeGlyph, pOwner, sName, fDraggable, color)
-{
-    m_nGlyph = nGlyph;
-    m_pFont = pFont;
-
-    // compute and store position
-    lmVStaff* pVStaff = ((lmStaffObj*)pOwner)->GetVStaff();
-    int nStaff = ((lmStaffObj*)pOwner)->GetStaffNum();
-    m_uGlyphPos.x = uPos.x;
-    m_uGlyphPos.y = uPos.y; // - pVStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].GlyphOffset, nStaff);
-
-    // store boundling rectangle position and size
-    lmLUnits uWidth, uHeight;
-    wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
-    pPaper->SetFont(*m_pFont);
-    pPaper->GetTextExtent(sGlyph, &uWidth, &uHeight);
-
-	m_uBoundsTop.x = m_uGlyphPos.x;
-	m_uBoundsTop.y = m_uGlyphPos.y + pVStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectShift, nStaff);
-	m_uBoundsBottom.x = m_uBoundsTop.x + uWidth;
-	m_uBoundsBottom.y = m_uBoundsTop.y + pVStaff->TenthsToLogical(aGlyphsInfo[m_nGlyph].SelRectHeight, nStaff);
-
-    // store selection rectangle position and size
-	m_uSelRect = GetBounds();
-
-}
-
-void lmShapeGlyp2::Render(lmPaper* pPaper, wxColour color)
-{
-    wxString sGlyph( aGlyphsInfo[m_nGlyph].GlyphChar );
-
-    pPaper->SetFont(*m_pFont);
-    pPaper->SetTextForeground(color);
-    pPaper->DrawText(sGlyph, m_uGlyphPos.x, m_uGlyphPos.y);
-
-    lmShape::RenderCommon(pPaper);
-
-}
-
-void lmShapeGlyp2::SetFont(wxFont *pFont)
-{
-    m_pFont = pFont;
-}
-
-wxString lmShapeGlyp2::Dump(int nIndent)
-{
-	wxString sDump = _T("");
-	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
 	sDump += wxString::Format(_T("%04d %s: pos=(%.2f,%.2f), "),
         m_nId, m_sShapeName, m_uGlyphPos.x, m_uGlyphPos.y);
     sDump += DumpBounds();
@@ -366,7 +200,7 @@ wxString lmShapeGlyp2::Dump(int nIndent)
 	return sDump;
 }
 
-void lmShapeGlyp2::Shift(lmLUnits xIncr, lmLUnits yIncr)
+void lmShapeGlyph::Shift(lmLUnits xIncr, lmLUnits yIncr)
 {
     m_uGlyphPos.x += xIncr;
     m_uGlyphPos.y += yIncr;
@@ -374,7 +208,7 @@ void lmShapeGlyp2::Shift(lmLUnits xIncr, lmLUnits yIncr)
     ShiftBoundsAndSelRec(xIncr, yIncr);
 }
 
-wxBitmap* lmShapeGlyp2::OnBeginDrag(double rScale)
+wxBitmap* lmShapeGlyph::OnBeginDrag(double rScale)
 {
 	// A dragging operation is started. The view invokes this method to request the 
 	// bitmap to be used as drag image. No other action is required.
@@ -423,7 +257,7 @@ wxBitmap* lmShapeGlyp2::OnBeginDrag(double rScale)
     lmPixels vHeight = wxMin(bitmap.GetHeight() - vyTop,
                              dc2.LogicalToDeviceYRel(GetHeight()) );
     const wxRect rect(vxLeft, vyTop, vWidth, vHeight);
-    //wxLogMessage(_T("[lmShapeGlyp2::OnBeginDrag] bitmap size w=%d, h=%d. Cut x=%d, y=%d, w=%d, h=%d"),
+    //wxLogMessage(_T("[lmShapeGlyph::OnBeginDrag] bitmap size w=%d, h=%d. Cut x=%d, y=%d, w=%d, h=%d"),
     //    bitmap.GetWidth(), bitmap.GetHeight(), vxLeft, vyTop, vWidth, vHeight);
     wxBitmap oShapeBitmap = bitmap.GetSubBitmap(rect);
     wxASSERT(oShapeBitmap.IsOk());
@@ -441,7 +275,7 @@ wxBitmap* lmShapeGlyp2::OnBeginDrag(double rScale)
     return pBitmap;
 }
 
-lmUPoint lmShapeGlyp2::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
+lmUPoint lmShapeGlyph::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 {
 	// The view informs that the user continues dragging. We receive the new desired
 	// shape position and we must return the new allowed shape position.
@@ -458,7 +292,7 @@ lmUPoint lmShapeGlyp2::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 
 }
 
-lmUPoint lmShapeGlyp2::GetObjectOrigin()
+lmUPoint lmShapeGlyph::GetObjectOrigin()
 {
 	//returns the origin of this shape
 	return m_uBoundsTop;    //m_uGlyphPos;
@@ -469,7 +303,7 @@ lmUPoint lmShapeGlyp2::GetObjectOrigin()
 // lmShapeText object implementation
 //========================================================================================
 
-lmShapeText::lmShapeText(lmObject* pOwner, wxString sText, wxFont* pFont)
+lmShapeText::lmShapeText(lmScoreObj* pOwner, wxString sText, wxFont* pFont)
     : lmSimpleShape(eGMO_ShapeText, pOwner)
 {
     m_sText = sText;
@@ -545,7 +379,7 @@ void lmShapeText::Shift(lmLUnits xIncr, lmLUnits yIncr)
 // lmShapeTex2 object implementation
 //========================================================================================
 
-lmShapeTex2::lmShapeTex2(lmObject* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
+lmShapeTex2::lmShapeTex2(lmScoreObj* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
 						 lmUPoint offset, wxString sName, bool fDraggable, wxColour color)
     : lmSimpleShape(eGMO_ShapeText, pOwner, sName, fDraggable, color)
 {
@@ -612,10 +446,10 @@ void lmShapeTex2::Shift(lmLUnits xIncr, lmLUnits yIncr)
 // lmShapeStem object implementation: a vertical line
 //========================================================================================
 
-lmShapeStem::lmShapeStem(lmObject* pOwner, lmLUnits xPos, lmLUnits yStart,
+lmShapeStem::lmShapeStem(lmScoreObj* pOwner, lmLUnits xPos, lmLUnits yStart,
 						 lmLUnits yEnd, bool fStemDown,
 						 lmLUnits uWidth, wxColour nColor)
-	: lmShapeLin2(pOwner, xPos, yStart, xPos, yEnd, uWidth, 0.0, nColor,
+	: lmShapeLine(pOwner, xPos, yStart, xPos, yEnd, uWidth, 0.0, nColor,
 				  _T("Stem"), eEdgeHorizontal)
 {
 	m_fStemDown = fStemDown;
@@ -712,3 +546,25 @@ void lmShapeClef::OnEndDrag(wxCommandProcessor* pCP, const lmUPoint& uPos)
 
 
 }
+
+
+//========================================================================================
+// lmShapeInvisible
+//========================================================================================
+
+lmShapeInvisible::lmShapeInvisible(lmScoreObj* pOwner, lmUPoint offset, wxString sName) 
+	: lmSimpleShape(eGMO_ShapeInvisible, pOwner, sName, lmNO_DRAGGABLE)
+{
+    m_uBoundsTop.x = offset.x;
+    m_uBoundsTop.y = offset.y;
+    m_uBoundsBottom.x = m_uBoundsTop.x;
+    m_uBoundsBottom.y = m_uBoundsTop.y;
+}
+
+wxString lmShapeInvisible::Dump(int nIndent)
+{
+	//TODO
+	return _T("lmShapeInvisible\n");
+}
+
+

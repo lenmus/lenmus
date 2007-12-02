@@ -51,10 +51,10 @@ lmSpacer::lmSpacer(lmVStaff* pStaff, lmTenths nWidth, int nStaff)
     m_nSpacerWidth = nWidth;
 }
 
-void lmSpacer::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmSpacer::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
     // set total width
-    m_uWidth = m_pVStaff->TenthsToLogical(m_nSpacerWidth, m_nStaffNum);
+    return m_pVStaff->TenthsToLogical(m_nSpacerWidth, m_nStaffNum);
 
 }
 
@@ -97,10 +97,10 @@ lmAnchor::lmAnchor(lmVStaff* pStaff, int nStaff)
 {
 }
 
-void lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
     // set total width
-    m_uWidth = 0;
+    return 0;
 
 }
 
@@ -109,18 +109,14 @@ wxString lmAnchor::Dump()
     wxString sDump = wxString::Format(
         _T("%d\tAnchor    \tTimePos=%.2f, fixed=%s\n"),
         m_nId, m_rTimePos, (m_fFixedPos ? _T("yes") : _T("no")) );
+	sDump += lmStaffObj::Dump();
     return sDump;
             
 }
 
 wxString lmAnchor::SourceLDP(int nIndent)
 {
-    //TODO
-    wxString sSource = _T("");
-    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(anchor)\n");
-    return sSource;
-
+    return lmStaffObj::SourceLDP(nIndent);
 }
 
 wxString lmAnchor::SourceXML(int nIndent)
@@ -142,13 +138,13 @@ lmScoreAnchor::lmScoreAnchor(lmVStaff* pStaff, int nStaff)
 {
 }
 
-void lmScoreAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmScoreAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
     //force paper pos. to page origin
     pPaper->RestartPageCursors();
 
     // set total width
-    m_uWidth = 0;
+    return 0;
 
 }
 
@@ -157,18 +153,13 @@ wxString lmScoreAnchor::Dump()
     wxString sDump = wxString::Format(
         _T("%d\tScoreAnchor\tTimePos=%.2f, fixed=%s\n"),
         m_nId, m_rTimePos, (m_fFixedPos ? _T("yes") : _T("no")) );
+	sDump += lmStaffObj::Dump();
     return sDump;
-            
 }
 
 wxString lmScoreAnchor::SourceLDP(int nIndent)
 {
-    //TODO
-    wxString sSource = _T("");
-    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += _T("(score_anchor)\n");
-    return sSource;
-
+    return lmStaffObj::SourceLDP(nIndent);
 }
 
 wxString lmScoreAnchor::SourceXML(int nIndent)

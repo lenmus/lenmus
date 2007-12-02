@@ -46,7 +46,7 @@
 
 
 //-------------------------------------------------------------------------------------------
-// class lmObject
+// class lmScoreObj
 //  This is the most abstract object. An object has an associated  context options obj.
 //  and a parent
 //-------------------------------------------------------------------------------------------
@@ -54,10 +54,10 @@
 class lmObjOptions;
 class lmBox;
 
-class lmObject
+class lmScoreObj
 {
 public:
-    virtual ~lmObject();
+    virtual ~lmScoreObj();
 
     // Options: access and set value
     lmObjOptions* GetCurrentObjOptions();
@@ -74,11 +74,17 @@ public:
     bool GetOptionBool(wxString sOptName);
     wxString GetOptionString(wxString sOptName);
 
+	//Any ScoreObj can own AuxObjs. Therefore, the derived class must So they must
+	//provide origin position and TenthsToLogical conversion methods
+	virtual lmUPoint GetReferencePos(lmPaper* pPaper)=0;
+    virtual lmLUnits TenthsToLogical(lmTenths nTenths)=0;
+    virtual lmTenths LogicalToTenths(lmLUnits uUnits)=0;
+
 
 protected:
-    lmObject(lmObject* pParent);
+    lmScoreObj(lmScoreObj* pParent);
 
-    lmObject*       m_pParent;          //the parent for the ObjOptions chain
+    lmScoreObj*		m_pParent;          //the parent for the ObjOptions chain
 
     // options
     lmObjOptions*   m_pObjOptions;      //the options object associated to this object or
@@ -88,7 +94,7 @@ protected:
 
 
 //-------------------------------------------------------------------------------------------
-// class lmScoreObj
+// class lmComponentObj
 //-------------------------------------------------------------------------------------------
 
 enum EScoreObjType
@@ -98,12 +104,25 @@ enum EScoreObjType
 };
 
 
-class lmScoreObj : public lmObject
+class lmComponentObj : public lmScoreObj
 {
 public:
-    virtual ~lmScoreObj();
+    virtual ~lmComponentObj();
 
-    // type and identificaction
+	//---- virtual methods of base class -------------------------
+
+	//owning AuxObjs
+	virtual lmUPoint GetReferencePos(lmPaper* pPaper)=0;
+
+    // units conversion
+    virtual lmLUnits TenthsToLogical(lmTenths nTenths)=0;
+    virtual lmTenths LogicalToTenths(lmLUnits uUnits)=0;
+
+
+
+	//---- specific methods of this class ------------------------
+
+	// type and identificaction
     inline int GetID() const { return m_nId; }
     inline EScoreObjType GetType() const { return m_nType; }
 
@@ -121,6 +140,7 @@ public:
     // positioning
     virtual void ShiftObject(lmLUnits uLeft);
 
+
 #if lmCOMPATIBILITY_NO_SHAPES
 
     // positioning
@@ -137,17 +157,17 @@ public:
 #endif  //lmCOMPATIBILITY_NO_SHAPES
 
 protected:
-    lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable = false);
+    lmComponentObj(lmScoreObj* pParent, EScoreObjType nType, bool fIsDraggable = false);
 
     //// Graphic objects can be attached to StaffObjs and AuxObj. The methods are
     //// defined here, as they are common to both.
-    //void DoAddGraphicObj(lmScoreObj* pGO);
-    //void DoRemoveGraphicObj(lmScoreObj* pGO);
+    //void DoAddGraphicObj(lmComponentObj* pGO);
+    //void DoRemoveGraphicObj(lmComponentObj* pGO);
 
 
     // type and identification
-    EScoreObjType   m_nType;        //Type of lmScoreObj
-    int             m_nId;          //unique number, to identify each lmScoreObj
+    EScoreObjType   m_nType;        //Type of lmComponentObj
+    int             m_nId;          //unique number, to identify each lmComponentObj
 
     // Info for draggable objects
     bool        m_fIsDraggable;
@@ -161,7 +181,6 @@ protected:
     // time this object is drawn
     lmUPoint    m_uPaperPos;        // paper xPos, yBase position to render this object
     bool        m_fFixedPos;        // its position is fixed. Do not recalculate it
-    lmLUnits    m_uWidth;           // total width of the image, including after space
     int         m_nNumPage;         // page on which this SO is rendered (1..n). Set Up in BoxSystem::RenderMeasure().
 
     // variables related to font rendered objects
@@ -199,10 +218,28 @@ enum EStaffObjType
 class lmVStaff;
 class lmAuxObj;
 
-class lmStaffObj : public lmScoreObj
+class lmStaffObj : public lmComponentObj
 {
 public:
     virtual ~lmStaffObj();
+
+	//---- virtual methods of base class -------------------------
+
+    virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
+                        bool fHighlight = false);
+    virtual void SetFont(lmPaper* pPaper);
+
+	//owning AuxObjs
+	virtual lmUPoint GetReferencePos(lmPaper* pPaper);
+
+    // units conversion
+    lmLUnits TenthsToLogical(lmTenths nTenths);
+    lmTenths LogicalToTenths(lmLUnits uUnits);
+
+    // debug
+    virtual wxString Dump();
+
+	//---- specific methods of this class ------------------------
 
     // characteristics
     virtual inline bool IsSizeable() { return false; }
@@ -210,8 +247,8 @@ public:
     EStaffObjType GetClass() { return m_nClass; }
 
     // source code related methods
-    virtual wxString SourceLDP(int nIndent) = 0;
-    virtual wxString SourceXML(int nIndent) = 0;
+    virtual wxString SourceLDP(int nIndent);
+    virtual wxString SourceXML(int nIndent);
 
     // methods related to time and duration
     float GetTimePos() { return m_rTimePos; }
@@ -220,11 +257,7 @@ public:
 
     // methods related to positioning
     virtual lmLUnits GetAnchorPos() {return 0; }
-
-    // implementation of pure virtual methods of base class
-    virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
-                        bool fHighlight = false);
-    virtual void SetFont(lmPaper* pPaper);
+    virtual void ShiftObject(lmLUnits uLeft);
 
 	//highligh
 	virtual void Highlight(lmPaper* pPaper, wxColour colorC) {}
@@ -241,22 +274,20 @@ public:
     void AttachAuxObj(lmAuxObj* pAO);
     void DetachAuxObj(lmAuxObj* pAO);
 
-    //helper methods
-    lmLUnits TenthsToLogical(lmTenths nTenths);
 
 
 protected:
-    lmStaffObj(lmObject* pParent, EStaffObjType nType,
+    lmStaffObj(lmScoreObj* pParent, EStaffObjType nType,
              lmVStaff* pStaff = (lmVStaff*)NULL, int nStaff=1,    // only for staff owned objects
              bool fVisible = true,
              bool fIsDraggable = false);
 
 	//rendering
-    virtual void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)=0;
+    virtual lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)=0;
 
 
     //properties
-    bool            m_fVisible;     // this lmScoreObj is visible on the score
+    bool            m_fVisible;     // this lmComponentObj is visible on the score
     EStaffObjType   m_nClass;       // type of StaffObj
 
     // time related variables
@@ -290,26 +321,41 @@ enum lmEAuxObjType
     eAXOT_Line,
 };
 
-class lmAuxObj : public lmScoreObj
+class lmAuxObj : public lmComponentObj
 {
 public:
     virtual ~lmAuxObj() {}
 
-    // implementation of virtual methods of base class lmScoreObj
+	//---- virtual methods of base class -------------------------
+
     virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
                 bool fHighlight = false);
     virtual void SetFont(lmPaper* pPaper) {}
 
+	//owning AuxObjs
+	lmUPoint GetReferencePos(lmPaper* pPaper);
+
+    // units conversion
+    lmLUnits TenthsToLogical(lmTenths nTenths);
+    lmTenths LogicalToTenths(lmLUnits uUnits);
+
+    // debug methods
+    virtual wxString Dump()=0;
+
+
+	//---- specific methods of this class ------------------------
+
     // class info
     virtual lmEAuxObjType GetAuxObjType()=0;
 
-    // debug methods
-    virtual wxString Dump();
+    // source code related methods
+    virtual wxString SourceLDP(int nIndent)=0;
+    virtual wxString SourceXML(int nIndent)=0;
 
 
 protected:
-    lmAuxObj(lmObject* pParent, bool fIsDraggable = false);
-    virtual void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)=0;
+    lmAuxObj(lmScoreObj* pParent, bool fIsDraggable = false);
+    virtual lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)=0;
 
 };
 

@@ -36,17 +36,6 @@
 
 #include "Glyph.h"
 
-////Juego de caracteres
-//const wxString CHAR_RESPIRACION = _T(":");
-//const wxString CHAR_DACAPO = _T("+");
-//const wxString CHAR_DALSEGNO = _T("*");
-//const wxString CHAR_CODA = _T("-");
-//const wxString CHAR_SEGNO = _T(",");
-//const wxString CHAR_OCTAVA = _T(">");
-//const wxString CHAR_FERMATA_OVER = _T(";");
-//const wxString CHAR_FERMATA_UNDER = _T("<");
-
-
 // offset:  the y-axis offset from paper cursor position so that shape get correctly
 //          positioned over a five-lines staff (units: tenths of inter-line space)
 // shift:   the y-axis offset from bitmap rectangle to the selection rectangle origin
@@ -187,6 +176,16 @@ const lmGlyph aGlyphsInfo[] =
     lmGlyph(_T(']'),   0,     32,    32,  1432,  -205,      0,      0,      0,      0,   _T("small eighth note up")) ,
     lmGlyph(_T('^'),   0,     32,    32,  1432,  -205,      0,      0,      0,      0,   _T("small dotted eighth note up")) ,
     lmGlyph(_T('['),   0,      5,    32,   143,  -113,      0,      0,      0,      0,   _T("small equal sign")) ,
+
+    lmGlyph(_T(':'),   0,      0,      0,   0,      0,      0,      0,    469,    854,   _T("V breath-mark")) ,
+    lmGlyph(_T('+'),   0,      0,      0,   0,      0,      0,      0,      0,      0,   _T("Da Capo sign")) ,
+    lmGlyph(_T('*'),   0,      0,      0,   0,      0,      0,      0,      0,      0,   _T("Dal Segno sign")) ,
+    lmGlyph(_T('-'),   0,      0,      0,   0,      0,      0,      0,      0,      0,   _T("Coda sign")) ,
+    lmGlyph(_T(','),   0,      0,      0,   0,      0,      0,      0,      0,      0,   _T("Segno sign")) ,
+    lmGlyph(_T('>'),   0,      0,      0,   0,      0,      0,      0,      0,      0,   _T("Octava sign")) ,
+    lmGlyph(_T(';'),   0,      0,      0,   0,      0,      5,      8,   1359,    778,   _T("Fermata over (arch)")) ,
+    lmGlyph(_T('<'),   0,      0,      0,   0,      0,      0,   -796,   1359,    781,   _T("Fermata under (arch)")) ,
+
 
 //em=2048
 //ascender=3072

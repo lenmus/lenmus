@@ -211,9 +211,8 @@ void lmShapeBarline::DrawThickLine(lmPaper* pPaper, lmLUnits xLeft, lmLUnits uyT
 
 void lmShapeBarline::DrawTwoDots(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos)
 {
-    lmVStaff* pVStaff = ((lmStaffObj*)m_pOwner)->GetVStaff();
-    lmLUnits uShift1 = pVStaff->TenthsToLogical(15, 1);    // 1.5 lines
-    lmLUnits uShift2 = pVStaff->TenthsToLogical(25, 1);    // 2.5 lines
+    lmLUnits uShift1 = ((lmStaffObj*)m_pOwner)->TenthsToLogical(15);	// 1.5 lines
+    lmLUnits uShift2 = ((lmStaffObj*)m_pOwner)->TenthsToLogical(25);    // 2.5 lines
     pPaper->SolidCircle(uxPos, uyPos + uShift1, m_uRadius);
     pPaper->SolidCircle(uxPos, uyPos + uShift2, m_uRadius);
 }

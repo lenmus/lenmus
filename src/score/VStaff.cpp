@@ -102,7 +102,7 @@ WX_DEFINE_LIST(VStavesList);
 
 //constructor
 lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
-    : lmObject(pScore)
+    : lmScoreObj(pScore)
 {
     //pScore is the lmScore to which this vstaff belongs.
     //Initially the lmVStaff will have only one standard five-lines staff. This can be
@@ -135,6 +135,22 @@ lmVStaff::~lmVStaff()
 {
     m_cStaves.DeleteContents(true);
     m_cStaves.Clear();
+}
+
+lmUPoint lmVStaff::GetReferencePos(lmPaper* pPaper)
+{
+	//TODO
+	return lmUPoint(0.0, 0.0);
+}
+
+lmLUnits lmVStaff::TenthsToLogical(lmTenths nTenths)
+{
+	return TenthsToLogical(nTenths, 1);
+}
+
+lmTenths lmVStaff::LogicalToTenths(lmLUnits uUnits)
+{
+	return LogicalToTenths(uUnits, 1);
 }
 
 lmStaff* lmVStaff::AddStaff(int nNumLines, lmLUnits nMicrons)
@@ -184,7 +200,13 @@ lmLUnits lmVStaff::TenthsToLogical(lmTenths nTenths, int nStaff)
     lmStaff* pStaff = GetStaff(nStaff);
     wxASSERT(pStaff);
     return pStaff->TenthsToLogical(nTenths);
+}
 
+lmTenths lmVStaff::LogicalToTenths(lmLUnits uUnits, int nStaff)
+{
+    lmStaff* pStaff = GetStaff(nStaff);
+    wxASSERT(pStaff);
+    return pStaff->LogicalToTenths(uUnits);
 }
 
 lmLUnits lmVStaff::GetStaffLineThick(int nStaff)
@@ -876,9 +898,9 @@ bool lmVStaff::GetXPosFinalBarline(lmLUnits* pPos)
 
     //check that a barline is found. Otherwise no barlines in the score
     if (pSO->GetClass() == eSFOT_Barline) {
-        lmShapeBarline* pShape = (lmShapeBarline*)pSO->GetShap2();
+        lmShape* pShape = (lmShape*)pSO->GetShap2();
         if (!pShape) return false;
-		*pPos = pShape->GetXEnd();
+		*pPos = pShape->GetXRight();
         return true;
     }
     else

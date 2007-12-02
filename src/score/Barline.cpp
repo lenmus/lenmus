@@ -109,7 +109,7 @@ wxString lmBarline::SourceXML(int nIndent)
     return sSource;
 }
 
-void lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model. 
@@ -125,7 +125,7 @@ void lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
                            m_uThickLineWidth, m_uSpacing, m_uRadius, colorC);
 	pBox->AddShape(pShape);
     m_pShape2 = pShape;
-    m_uWidth = pShape->GetBounds().GetWidth();
+    return pShape->GetBounds().GetWidth();
 
 }
 

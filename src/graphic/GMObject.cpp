@@ -158,7 +158,7 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
 //========================================================================================
 
 
-lmShape::lmShape(lmEGMOType nType, lmObject* pOwner, wxString sName, bool fDraggable,
+lmShape::lmShape(lmEGMOType nType, lmScoreObj* pOwner, wxString sName, bool fDraggable,
 				 wxColour color)
 	: lmGMObject(nType, fDraggable)
 {
@@ -263,7 +263,7 @@ void lmShape::InformAttachedShapes(lmLUnits ux, lmLUnits uy, lmEParentEvent nEve
 // Implementation of class lmSimpleShape
 //========================================================================================
 
-lmSimpleShape::lmSimpleShape(lmEGMOType nType, lmObject* pOwner, wxString sName,
+lmSimpleShape::lmSimpleShape(lmEGMOType nType, lmScoreObj* pOwner, wxString sName,
 							 bool fDraggable, wxColour color)
 	: lmShape(nType, pOwner, sName, fDraggable, color)
 {
@@ -294,7 +294,7 @@ void lmSimpleShape::Shift(lmLUnits xIncr, lmLUnits yIncr)
 //========================================================================================
 
 
-lmCompositeShape::lmCompositeShape(lmObject* pOwner, wxString sName, bool fDraggable,
+lmCompositeShape::lmCompositeShape(lmScoreObj* pOwner, wxString sName, bool fDraggable,
                                    lmEGMOType nType)
 	: lmShape(nType, pOwner, sName, fDraggable)
 {

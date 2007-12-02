@@ -28,7 +28,7 @@
 
 class lmBox;
 
-class lmInstrument : public lmObject
+class lmInstrument : public lmScoreObj
 {
 public:
     //ctors and dtor
@@ -37,6 +37,18 @@ public:
     lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel, int nMIDIInstr,
                  lmScoreText* pName, lmScoreText* pAbbrev);
     ~lmInstrument();
+
+	//---- virtual methods of base class -------------------------
+
+	//owning AuxObjs
+	lmUPoint GetReferencePos(lmPaper* pPaper);
+
+    // units conversion
+    lmLUnits TenthsToLogical(lmTenths nTenths);
+    lmTenths LogicalToTenths(lmLUnits uUnits);
+
+
+	//---- specific methods of this class ------------------------
 
     lmVStaff* AddVStaff(bool fOverlayered);
     //returns lmVStaff number nStaff (1..n)

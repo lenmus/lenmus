@@ -19,12 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-/*! @class lmStaff
-    @ingroup score_kernel
-    @brief A lmStaff is a collection of consecutive lines and spaces.
-*/
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "Staff.h"
 #endif
 
@@ -46,22 +42,23 @@
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(StaffList);
 
+// A lmStaff is a collection of consecutive lines and spaces.
 
 //constructor
-lmStaff::lmStaff(lmScore* pScore, int nNumLines, lmLUnits nMicrons)
-    : lmObject(pScore)
+lmStaff::lmStaff(lmScore* pScore, int nNumLines, lmLUnits uUnits)
+    : lmScoreObj(pScore)
 {
-    m_numLines = nNumLines;
-    m_lineThick = lmToLogicalUnits(0.15, lmMILLIMETERS);     //TODO user option
-    if (nMicrons == 0)
-        m_spacing = lmToLogicalUnits(1.8, lmMILLIMETERS);   //Default 1.8 mm -> lmStaff height = 7.2 mm
+    m_nNumLines = nNumLines;
+    m_uLineThickness = lmToLogicalUnits(0.15, lmMILLIMETERS);     //TODO user option
+    if (uUnits == 0)
+        m_uSpacing = lmToLogicalUnits(1.8, lmMILLIMETERS);   //Default 1.8 mm -> lmStaff height = 7.2 mm
     else
-        m_spacing = nMicrons;        // in logical units
+        m_uSpacing = uUnits;        // in logical units
 
     // margins
-    m_afterSpace = lmToLogicalUnits(10, lmMILLIMETERS);    // 10 mm
-    m_leftMargin = 0;
-    m_rightMargin = 0;
+    m_uAfterSpace = lmToLogicalUnits(10, lmMILLIMETERS);    // 10 mm
+    m_uLeftMargin = 0;
+    m_uRightMargin = 0;
 
 }
 
@@ -74,11 +71,17 @@ lmStaff::~lmStaff()
 
 }
 
+lmUPoint lmStaff::GetReferencePos(lmPaper* pPaper)
+{
+	//TODO
+	return lmUPoint(0.0, 0.0);
+}
+
 lmLUnits lmStaff::GetHeight()
 {
     // returns the height (in logical units) of the staff without margins, that is, the
     // distance between first and last line
-    return (m_numLines - 1) * m_spacing;
+    return (m_nNumLines - 1) * m_uSpacing;
 
 }
 

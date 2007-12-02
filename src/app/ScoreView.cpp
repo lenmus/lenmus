@@ -886,7 +886,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         // mouse left double click: Select/deselect the object pointed by mouse
         //--------------------------------------------------------------------------
 
-		//ScoreObjs and other score objects (lmBoxXXXX) has all its measurements
+		//ComponentObjs and other score objects (lmBoxXXXX) has all its measurements
 		//relative to each page start position
 
         // locate the object pointed with the mouse

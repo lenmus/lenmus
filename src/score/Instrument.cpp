@@ -55,7 +55,7 @@ lmFontInfo g_tInstrumentDefaultFont = { _T("Times New Roman"), 14, lmTEXT_BOLD }
 
 lmInstrument::lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel,
                            int nMIDIInstr, wxString sName, wxString sAbbrev)
-    : lmObject(pScore)
+    : lmScoreObj(pScore)
 {
     //create objects for name and abbreviation
     lmScoreText* pName = (lmScoreText*)NULL;
@@ -76,7 +76,7 @@ lmInstrument::lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel,
 
 lmInstrument::lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel, int nMIDIInstr,
                  lmScoreText* pName, lmScoreText* pAbbrev)
-    : lmObject(pScore)
+    : lmScoreObj(pScore)
 {
     Create(pScore, nNumStaves, nMIDIChannel, nMIDIInstr, pName, pAbbrev);
 }
@@ -110,6 +110,24 @@ void lmInstrument::Create(lmScore* pScore, int nNumStaves, int nMIDIChannel, int
 lmInstrument::~lmInstrument()
 {
     m_cStaves.DeleteContents(true);
+}
+
+lmUPoint lmInstrument::GetReferencePos(lmPaper* pPaper)
+{
+	//TODO
+	return lmUPoint(0.0, 0.0);
+}
+
+lmLUnits lmInstrument::TenthsToLogical(lmTenths nTenths)
+{
+	//TODO
+	return 0.0;
+}
+
+lmTenths lmInstrument::LogicalToTenths(lmLUnits uUnits)
+{
+	//TODO
+	return 0.0;
 }
 
 void lmInstrument::SetIndent(lmLUnits* pIndent, lmLocation* pPos)

@@ -105,7 +105,7 @@ lmShapeTex2* lmScoreText::CreateShape(lmPaper* pPaper)
                            uPos, _T("ScoreText"), lmDRAGGABLE, m_color);
 }
 
-void lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model. 
@@ -119,7 +119,7 @@ void lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     m_pShape2 = pShape;
 
 	// set total width
-	m_uWidth = pShape->GetWidth();
+	return pShape->GetWidth();
 
 }
 

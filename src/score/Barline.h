@@ -44,7 +44,7 @@ public:
     EBarline GetBarlineType() {return m_nBarlineType;}
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
-    void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
 
         //specific methods for barline
 

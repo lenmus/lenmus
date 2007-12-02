@@ -41,7 +41,7 @@
 #include "../app/Paper.h"
 #include "GMObject.h"
 
-class lmObject;
+class lmScoreObj;
 class lmStaff;
 class lmStaffObj;
 
@@ -49,31 +49,11 @@ class lmStaffObj;
 class lmShapeLine : public lmSimpleShape
 {
 public:
-    lmShapeLine(lmObject* pOwner,
-                lmLUnits xStart, lmLUnits yStart,
-                lmLUnits xEnd, lmLUnits yEnd, lmLUnits uWidth, wxColour nColor);
-    ~lmShapeLine() {}
-
-    //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
-    wxString Dump(int nIndent);
-    void Shift(lmLUnits xIncr, lmLUnits yIncr);
-
-private:
-    lmLUnits    m_xStart, m_yStart;
-    lmLUnits    m_xEnd, m_yEnd;
-    lmLUnits    m_uWidth;
-
-};
-
-class lmShapeLin2 : public lmSimpleShape
-{
-public:
-    lmShapeLin2(lmObject* pOwner, lmLUnits xStart, lmLUnits yStart,
+    lmShapeLine(lmScoreObj* pOwner, lmLUnits xStart, lmLUnits yStart,
                 lmLUnits xEnd, lmLUnits yEnd, lmLUnits uWidth,
 				lmLUnits uBoundsExtraWidth, wxColour nColor, wxString sName = _T("Line"),
 				lmELineEdges nEdge = eEdgeNormal);
-    ~lmShapeLin2() {}
+    ~lmShapeLine() {}
 
     //implementation of virtual methods from base class
     void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
@@ -97,36 +77,10 @@ protected:
 class lmShapeGlyph : public lmSimpleShape
 {
 public:
-    lmShapeGlyph(lmObject* pOwner, int nGlyph, wxFont* pFont);
-    lmShapeGlyph(lmStaffObj* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
-                 lmUPoint offset);
-    ~lmShapeGlyph() {}
-
-    //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
-    wxString Dump(int nIndent);
-    void Shift(lmLUnits xIncr, lmLUnits yIncr);
-
-    //specific methods
-    void Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint shift);
-    void SetFont(wxFont *pFont);
-
-
-private:
-    int         m_nGlyph;
-    wxFont*     m_pFont;
-    lmUPoint    m_uShift;   // to correctly position the glyph (relative to shape offset point)
-
-};
-
-//represents a glyph from LenMus font
-class lmShapeGlyp2 : public lmSimpleShape
-{
-public:
-    lmShapeGlyp2(lmObject* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
+    lmShapeGlyph(lmScoreObj* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
                  lmUPoint offset, wxString sName=_T("ShapeGlyp2"),
 				 bool fDraggable = false, wxColour color = *wxBLACK);
-    virtual ~lmShapeGlyp2() {}
+    virtual ~lmShapeGlyph() {}
 
     //implementation of virtual methods from base class
     void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
@@ -154,7 +108,7 @@ protected:
 class lmShapeText : public lmSimpleShape
 {
 public:
-    lmShapeText(lmObject* pOwner, wxString sText, wxFont* pFont);
+    lmShapeText(lmScoreObj* pOwner, wxString sText, wxFont* pFont);
     ~lmShapeText() {}
 
     //implementation of virtual methods from base class
@@ -179,7 +133,7 @@ private:
 class lmShapeTex2 : public lmSimpleShape
 {
 public:
-    lmShapeTex2(lmObject* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
+    lmShapeTex2(lmScoreObj* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
                 lmUPoint offset, wxString sName=_T("ShapeTex2"),
 				bool fDraggable = false, wxColour color = *wxBLACK);
     ~lmShapeTex2() {}
@@ -201,10 +155,10 @@ private:
 
 };
 
-class lmShapeStem : public lmShapeLin2
+class lmShapeStem : public lmShapeLine
 {
 public:
-    lmShapeStem(lmObject* pOwner, lmLUnits xPos, lmLUnits yStart, lmLUnits yEnd,
+    lmShapeStem(lmScoreObj* pOwner, lmLUnits xPos, lmLUnits yStart, lmLUnits yEnd,
 				bool fStemDown, lmLUnits uWidth, wxColour nColor);
     ~lmShapeStem() {}
 
@@ -221,19 +175,32 @@ private:
 
 };
 
-class lmShapeClef : public lmShapeGlyp2
+class lmShapeClef : public lmShapeGlyph
 {
 public:
-    lmShapeClef(lmObject* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
+    lmShapeClef(lmScoreObj* pOwner, int nGlyph, wxFont* pFont, lmPaper* pPaper,
                 lmUPoint offset, wxString sName=_T("Clef"),
 				bool fDraggable = false, wxColour color = *wxBLACK) 
-				: lmShapeGlyp2(pOwner, nGlyph, pFont, pPaper, offset, sName,
+				: lmShapeGlyph(pOwner, nGlyph, pFont, pPaper, offset, sName,
 				               fDraggable, color) {}
     ~lmShapeClef() {}
 
 	//overrides
     lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
     void OnEndDrag(wxCommandProcessor* pCP, const lmUPoint& uPos);
+
+};
+
+class lmShapeInvisible : public lmSimpleShape
+{
+public:
+    lmShapeInvisible(lmScoreObj* pOwner, lmUPoint offset, wxString sName=_T("Invisible")); 
+    ~lmShapeInvisible() {}
+
+	//overrides
+    wxString Dump(int nIndent);
+	void Render(lmPaper* pPaper, wxColour color) {};
+
 
 };
 

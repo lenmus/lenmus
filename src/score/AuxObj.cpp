@@ -35,49 +35,41 @@
 #endif
 
 #include "Score.h"
-
-
-const wxString CHAR_FERMATA_OVER = _T(";");
-const wxString CHAR_FERMATA_UNDER = _T("<");
-
-//lmNoteRestObj::lmNoteRestObj(ESymbolType nType, lmNoteRest* pOwner)
-//    : lmAuxObj(pOwner, eAXOT_Symbol, lmDRAGGABLE)
-//{
-//    m_nSymbolType = nType;
-//    m_pOwner = pOwner;
-//
-//}
-
-//void lmNoteRestObj::UpdateMeasurements()
-//{
-//    m_uPaperPos = m_pOwner->GetOrigin();
-//}
+#include "../graphic/GMObject.h"
+#include "../graphic/Shapes.h"
+#include "../graphic/ShapeNote.h"
 
 
 //-----------------------------------------------------------------------------------------
 // lmAuxObj implementation
 //-----------------------------------------------------------------------------------------
 
-lmAuxObj::lmAuxObj(lmObject* pParent, bool fIsDraggable) :
-    lmScoreObj(pParent, eSCOT_AuxObj, fIsDraggable)
+lmAuxObj::lmAuxObj(lmScoreObj* pParent, bool fIsDraggable) :
+    lmComponentObj(pParent, eSCOT_AuxObj, fIsDraggable)
 {
 }
 
 void lmAuxObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
-    //get parent paper pos.
-    lmUPoint uOrg = ((lmScoreObj*)m_pParent)->GetOrigin();
-    pPaper->SetCursorX(uOrg.x);
-    pPaper->SetCursorY(uOrg.y);
-
     // ask derived object to layout itself
     LayoutObject(pBox, pPaper, colorC);
 
 }
 
-wxString lmAuxObj::Dump()
-{ 
-    return _T("AuxObj");
+lmUPoint lmAuxObj::GetReferencePos(lmPaper* pPaper)
+{
+	//TODO
+	return lmUPoint(0.0, 0.0);
+}
+
+lmLUnits lmAuxObj::TenthsToLogical(lmTenths nTenths)
+{
+	return ((lmStaffObj*)m_pParent)->TenthsToLogical(nTenths);
+}
+
+lmTenths lmAuxObj::LogicalToTenths(lmLUnits uUnits)
+{
+	return ((lmStaffObj*)m_pParent)->LogicalToTenths(uUnits);
 }
 
 
@@ -137,18 +129,83 @@ void lmFermata::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNu
 
 }
 
-void lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
-    ////uxLeft es la coordenada x del centro del calderon
+    // This method is invoked by the base class (lmStaffObj). It is responsible for
+    // creating the shape object and adding it to the graphical model. 
+    // Paper cursor must be used as the base for positioning.
 
-    //// prepare DC
-    //pPaper->SetFont( *(m_pOwner->GetFont()) );
+	lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+    bool fAboveNote = (m_nPlacement == ep_Above);
 
-    //bool fAboveNote = (m_nPlacement == ep_Above);
-    //wxString sGlyph = (fAboveNote ? CHAR_FERMATA_OVER : CHAR_FERMATA_UNDER );
-    //lmUPoint uPos = GetGlyphPosition();
-    //pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
-    //pPaper->DrawText(sGlyph, uPos.x, uPos.y );
+	//TODO
+	////if no positioning information do our best!
+	if (true)
+	{
+		if (fAboveNote)
+		    uPos.y -= ((lmStaffObj*)m_pParent)->TenthsToLogical(70);
+		else
+		    uPos.y -= ((lmStaffObj*)m_pParent)->TenthsToLogical(5);
+	}
+	//else
+	//{
+	//	// just position fermata on specified pos.
+	//}
+
+    //create the shape object
+    int nGlyphIndex = (fAboveNote ? GLYPH_FERMATA_OVER : GLYPH_FERMATA_UNDER);
+    lmShapeGlyph* pShape = 
+		new lmShapeGlyph(this, nGlyphIndex, ((lmStaffObj*)m_pParent)->GetFont(), pPaper, uPos,
+						_T("Fermata"), lmDRAGGABLE, colorC);
+	pBox->AddShape(pShape);
+    m_pShape2 = pShape;
+
+	//if position isn't fixed, shift the shape to center it on the owner and
+	//avoid placing it over the note if surpasses the staff
+	//TODO
+	if (true)
+	{
+		lmShape* pPS = ((lmStaffObj*)m_pParent)->GetShap2();
+		lmLUnits uCenterPos;
+		if (((lmStaffObj*)m_pParent)->GetClass() == eSFOT_NoteRest &&
+			!((lmNoteRest*)m_pParent)->IsRest() )
+		{
+			//it is a note. Center fermata on notehead shape
+			lmShape* pNHS = ((lmShapeNote*)pPS)->GetNoteHead();
+			uCenterPos = pNHS->GetXLeft() + pNHS->GetWidth() / 2.0;
+		}
+		else
+		{
+			//it is not a note. Center fermata on StaffObj shape
+			uCenterPos = pPS->GetXLeft() + pPS->GetWidth() / 2.0;
+		}
+        lmLUnits uxShift = uCenterPos - (pShape->GetXLeft() + pShape->GetWidth() / 2.0);
+		pShape->Shift(uxShift, 0.0);
+	}
+
+	return pShape->GetWidth();
+}
+
+wxString lmFermata::SourceLDP(int nIndent)
+{
+	//TODO
+    wxString sSource = _T("");
+	sSource += _T("lmFermata");
+    return sSource;
+}
+wxString lmFermata::SourceXML(int nIndent)
+{
+	//TODO
+    wxString sSource = _T("");
+	sSource += _T("lmFermata");
+    return sSource;
+}
+
+wxString lmFermata::Dump()
+{
+	//TODO
+    wxString sDump = _T("lmFermata");
+    return sDump;
 
 }
 
@@ -184,7 +241,7 @@ void lmLyric::SetFont(lmPaper* pPaper)
     }
 }
 
-void lmLyric::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmLyric::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
     //wxASSERT(fMeasuring == DO_DRAW);    //measuring pahse is done in SetSizePosition()
 
@@ -193,7 +250,7 @@ void lmLyric::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     //lmUPoint uPos = GetGlyphPosition();
     //pPaper->SetTextForeground((m_fSelected ? g_pColors->ScoreSelected() : colorC));
     //pPaper->DrawText(m_sText, uPos.x, uPos.y );
-
+	return 0;
 }
 
 void lmLyric::SetOwner(lmNoteRest* pOwner)
@@ -247,8 +304,24 @@ void lmLyric::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
 
 }
 
+wxString lmLyric::SourceLDP(int nIndent)
+{
+	//TODO
+    wxString sSource = _T("");
+	sSource += _T("lmLyric");
+    return sSource;
+}
+wxString lmLyric::SourceXML(int nIndent)
+{
+	//TODO
+    wxString sSource = _T("");
+	sSource += _T("lmLyric");
+    return sSource;
+}
+
 wxString lmLyric::Dump()
 {
+	//TODO
     wxString sDump = wxString::Format(
         _T("\t-->lmLyric\t%s\tnumLine=%d, paperPos=(%d, %d)\n"),
         m_sText.c_str(), m_nNumLine, m_uPaperPos.x, m_uPaperPos.y);
@@ -260,39 +333,56 @@ wxString lmLyric::Dump()
 // lmScoreLine object implementation
 //========================================================================================
 
-lmScoreLine::lmScoreLine(lmScoreObj* pOwner,
+lmScoreLine::lmScoreLine(lmStaffObj* pOwner,
                    lmTenths xStart, lmTenths yStart, 
                    lmTenths xEnd, lmTenths yEnd,
                    lmTenths nWidth, wxColour nColor)
     : lmAuxObj(pOwner, lmDRAGGABLE) 
 {
     // convert data to logical units
-    if (pOwner->GetType() == eSCOT_StaffObj)
-    {
-        lmStaffObj* pSO = (lmStaffObj*)pOwner;
-        m_uxStart = pSO->TenthsToLogical(xStart);
-        m_uyStart = pSO->TenthsToLogical(yStart);
-        m_uxEnd = pSO->TenthsToLogical(xEnd);
-        m_uyEnd = pSO->TenthsToLogical(yEnd);
-        m_uWidth = pSO->TenthsToLogical(nWidth);
-    }
-    else
-    {
-        //TODO
-        // Owner is an StaffObj or an AuxObj. For StaffObj we can convert to logical units
-        // but, how to do it for AuxObjs?
-        wxASSERT(false);
-    }
-    m_nColor = nColor;
+    lmStaffObj* pSO = (lmStaffObj*)pOwner;
+    m_uxStart = pSO->TenthsToLogical(xStart);
+    m_uyStart = pSO->TenthsToLogical(yStart);
+    m_uxEnd = pSO->TenthsToLogical(xEnd);
+    m_uyEnd = pSO->TenthsToLogical(yEnd);
+    m_uWidth = pSO->TenthsToLogical(nWidth);
 
+	m_nColor = nColor;
+
+}
+
+wxString lmScoreLine::SourceLDP(int nIndent)
+{
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+	lmStaffObj* pSO = (lmStaffObj*)m_pParent;
+	sSource += wxString::Format(_T("(graphic line %d %d %d %d)\n"),
+					(int)(pSO->LogicalToTenths(m_uxStart) + 0.5),
+					(int)(pSO->LogicalToTenths(m_uyStart) + 0.5),
+					(int)(pSO->LogicalToTenths(m_uxEnd) + 0.5),
+					(int)(pSO->LogicalToTenths(m_uyEnd) + 0.5) );
+    return sSource;
+}
+
+wxString lmScoreLine::SourceXML(int nIndent)
+{
+	//TODO
+    wxString sSource = _T("");
+	sSource += _T("lmScoreLine");
+    return sSource;
 }
 
 wxString lmScoreLine::Dump()
 {
-    return _T("GraphLine");
+	//TODO
+    wxString sDump = wxString::Format(
+        _T("\t-->lmScoreLine\tstart=(%.2f, %.2f), end=(%.2f, %.2f), width=%.2f\n"),
+            m_uxStart, m_uyStart, m_uxEnd, m_uyEnd, m_uWidth);
+    return sDump;
+
 }
 
-void lmScoreLine::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmScoreLine::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
     WXUNUSED(colorC);
 
@@ -304,12 +394,12 @@ void lmScoreLine::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     lmLUnits uBoundsExtraWidth = 0.0;
 
     //create the shape
-    lmShapeLin2* pShape = new lmShapeLin2(this, uxStart, uyStart, uxEnd, uyEnd,
+    lmShapeLine* pShape = new lmShapeLine(this, uxStart, uyStart, uxEnd, uyEnd,
                                           m_uWidth, uBoundsExtraWidth, m_nColor,
                                           _T("GraphLine"), eEdgeNormal);
 	pBox->AddShape(pShape);
     m_pShape2 = pShape;
-    lmLUnits uWidth = pShape->GetBounds().GetWidth();
+    return pShape->GetBounds().GetWidth();
 
 }
 

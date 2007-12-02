@@ -60,7 +60,7 @@ enum lmObjOptionsDataType
     lmE_Double,
 };
 
-class lmObject;
+class lmScoreObj;
 
 class lmObjOptions
 {
@@ -83,7 +83,7 @@ public:
 
 private:
     
-    lmObject*                   m_pOwner;      //the owner of this context
+    lmScoreObj*                   m_pOwner;      //the owner of this context
     
     //options are kept as pairs property/value
     lmObjOptionsTable           m_aItems;   //list of properties with indexes to type and value

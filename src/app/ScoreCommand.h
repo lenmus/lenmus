@@ -29,7 +29,7 @@
 #include "wx/cmdproc.h"
 
 #include "../score/defs.h"
-class lmScoreObj;
+class lmComponentObj;
 class lmScoreDocument;
 
 // base abstract class
@@ -87,7 +87,7 @@ protected:
 //class lmScoreCommandMove: public lmScoreCommand
 //{
 //public:
-//    lmScoreCommandMove(const wxString& name, lmScoreDocument *pDoc, lmScoreObj* pScO,
+//    lmScoreCommandMove(const wxString& name, lmScoreDocument *pDoc, lmComponentObj* pScO,
 //            const lmUPoint& uPos) :
 //        lmScoreCommand(name, lmCMD_MoveStaffObj, pDoc, pScO)
 //        {

@@ -52,7 +52,7 @@
 extern bool g_fFreeMove;		// the shapes can be dragged without restrictions
 
 class lmPaper;
-class lmObject;
+class lmScoreObj;
 
 
 //------------------------------------------------------------------------------
@@ -87,6 +87,7 @@ enum lmEGMOType
 	eGMO_ShapeNote,
 	eGMO_ShapeText,
 	eGMO_ShapeTuplet,
+	eGMO_ShapeInvisible,
 };
 
 
@@ -242,14 +243,14 @@ public:
     wxString DumpSelRect();
 
     //info
-    inline lmObject* Owner() { return m_pOwner; }
+    inline lmScoreObj* Owner() { return m_pOwner; }
 	inline lmBox* GetOwnerBox() { return m_pOwnerBox; }
 	inline void SetOwnerBox(lmBox* pOwnerBox) { m_pOwnerBox = pOwnerBox; }
 
 	
 
 protected:
-    lmShape(lmEGMOType m_nType, lmObject* pOwner, wxString sName=_T("Shape"),
+    lmShape(lmEGMOType m_nType, lmScoreObj* pOwner, wxString sName=_T("Shape"),
 			bool fDraggable = false, wxColour color=*wxBLACK);
     void RenderCommon(lmPaper* pPaper, wxColour colorC);
     void RenderCommon(lmPaper* pPaper);
@@ -257,7 +258,7 @@ protected:
 	void InformAttachedShapes(lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent);
 
 
-	lmObject*	m_pOwner;		//associated owner object (in lmScore representation)
+	lmScoreObj*	m_pOwner;		//associated owner object (in lmScore representation)
 	lmBox*		m_pOwnerBox;	//box in which this shape is included
     wxString    m_sShapeName;
 
@@ -293,7 +294,7 @@ public:
 
 
 protected:
-    lmSimpleShape(lmEGMOType m_nType, lmObject* pOwner, wxString sName=_T("SimpleShape"),
+    lmSimpleShape(lmEGMOType m_nType, lmScoreObj* pOwner, wxString sName=_T("SimpleShape"),
 				  bool fDraggable = false, wxColour color=*wxBLACK);
 
 
@@ -303,7 +304,7 @@ protected:
 class lmCompositeShape : public lmShape
 {
 public:
-    lmCompositeShape(lmObject* pOwner, wxString sName = _T("CompositeShape"),
+    lmCompositeShape(lmScoreObj* pOwner, wxString sName = _T("CompositeShape"),
                      bool fDraggable = false, lmEGMOType nType = eGMO_ShapeComposite);
     virtual ~lmCompositeShape();
 

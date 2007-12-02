@@ -117,11 +117,6 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
 		AdjustStems();
 	}
 
-	//get staff, for scaling logical units
-    lmVStaff* pVStaff = ((lmNoteRest*)m_pOwner)->GetVStaff();
-    int nStaff = ((lmNoteRest*)m_pOwner)->GetStaffNum();
-    lmStaff* pStaff = pVStaff->GetStaff(nStaff);
-
 	//geometry values.
     //DOC: Beam spacing
     //
@@ -135,8 +130,8 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
     //
 	//TODO: User options
 	//TODO: Move to shape?
-	lmLUnits uThickness = pStaff->TenthsToLogical(5.0);
-    lmLUnits uBeamSpacing = pStaff->TenthsToLogical(9.0);
+	lmLUnits uThickness = ((lmStaffObj*)m_pOwner)->TenthsToLogical(5.0);
+    lmLUnits uBeamSpacing = ((lmStaffObj*)m_pOwner)->TenthsToLogical(9.0);
 
 
 	lmLUnits uxStart=0, uxEnd=0, uyStart=0, uyEnd=0; // start and end points for a segment

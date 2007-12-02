@@ -257,7 +257,7 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
 		lmLUnits uxFlag = pBaseNote->GetXStemLeft();
 		lmEGlyphIndex nGlyph = pBaseNote->GetGlyphForFlag();
 		lmLUnits yPos = uyStemEnd + pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, nStaff);
-		lmShapeGlyp2* pShape = new lmShapeGlyp2(pShapeNote->Owner(), nGlyph, pFont, pPaper,
+		lmShapeGlyph* pShape = new lmShapeGlyph(pShapeNote->Owner(), nGlyph, pFont, pPaper,
 												lmUPoint(uxFlag, yPos), _T("Flag"));
 		pShapeNote->AddFlag(pShape);
 	}

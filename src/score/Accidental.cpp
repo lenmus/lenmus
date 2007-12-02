@@ -136,19 +136,19 @@ void lmAccidental::CreateShapes(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos)
 		//two shapes
         lmLUnits yPos = uyPos - m_pStaff->TenthsToLogical(aGlyphsInfo[nGlyph[0]].GlyphOffset);
 		m_pShape = new lmCompositeShape(m_pOwner, _T("Note accidentals"));
-		lmShapeGlyp2* pSh1 = new lmShapeGlyp2(m_pOwner, nGlyph[0], pFont, pPaper,
+		lmShapeGlyph* pSh1 = new lmShapeGlyph(m_pOwner, nGlyph[0], pFont, pPaper,
 										      lmUPoint(uxPos, yPos), _T("Accidental"));
 		((lmCompositeShape*)m_pShape)->Add(pSh1);
         lmLUnits uWidth = pSh1->GetWidth();
         yPos = uyPos - m_pStaff->TenthsToLogical(aGlyphsInfo[nGlyph[1]].GlyphOffset);
         ((lmCompositeShape*)m_pShape)->Add(
-				new lmShapeGlyp2(m_pOwner, nGlyph[1], pFont, pPaper,
+				new lmShapeGlyph(m_pOwner, nGlyph[1], pFont, pPaper,
 								lmUPoint(uxPos+uWidth, yPos), _T("Accidental")) );
 	}
 	else
 	{
         lmLUnits yPos = uyPos - m_pStaff->TenthsToLogical(aGlyphsInfo[nGlyph[0]].GlyphOffset);
-        m_pShape = new lmShapeGlyp2(m_pOwner, nGlyph[0], pFont, pPaper,
+        m_pShape = new lmShapeGlyph(m_pOwner, nGlyph[0], pFont, pPaper,
 									lmUPoint(uxPos, yPos), _T("Accidental"));
 	}
 

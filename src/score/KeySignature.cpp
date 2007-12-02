@@ -144,7 +144,7 @@ wxString lmKeySignature::SourceXML(int nIndent)
 	return sSource;
 }
 
-void lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model. 
@@ -177,7 +177,7 @@ void lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     }
 
 	// set total width (incremented in one line for after space)
-	m_uWidth = pShape->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
+	return pShape->GetWidth() + m_pVStaff->TenthsToLogical(10, m_nStaffNum);
 
 }
 
@@ -195,7 +195,7 @@ lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUP
     lmLUnits uFlatPos[8];       //flats positions, in order of flats appearance
     lmLUnits uOneLine;          //space, in logical units, for half line
 
-    uOneLine = pStaff->TenthsToLogical(10);
+    uOneLine = pStaff->TenthsToLogical(10.0);
     EKeySignatures nKeySignature = m_nKeySignature;
 
     //Compute position of sharps and flats. Depends on the clef
@@ -314,7 +314,7 @@ lmShape* lmKeySignature::AddAccidental(bool fSharp, lmPaper* pPaper, lmUPoint uP
 
     wxFont* pFont = GetFont();
     lmLUnits yPos = uPos.y - pStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset);
-    return new lmShapeGlyp2(this, nGlyph, pFont, pPaper,
+    return new lmShapeGlyph(this, nGlyph, pFont, pPaper,
 							lmUPoint(uPos.x, yPos), _T("Accidental"));
 
 }

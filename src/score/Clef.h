@@ -46,7 +46,7 @@ public:
     EClefType GetClefType() {return m_nClefType;}
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
-    void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
 
 
     //debugging

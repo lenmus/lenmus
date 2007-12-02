@@ -40,7 +40,7 @@
 // lmShapeArch object implementation
 //========================================================================================
 
-lmShapeArch::lmShapeArch(lmObject* pOwner, lmUPoint uStart, lmUPoint uEnd, bool fArchUnder,
+lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd, bool fArchUnder,
                 wxColour nColor, wxString sName)
     : lmSimpleShape(eGMO_ShapeArch, pOwner, sName)
 {
@@ -53,7 +53,7 @@ lmShapeArch::lmShapeArch(lmObject* pOwner, lmUPoint uStart, lmUPoint uEnd, bool 
     Create();
 }
 
-lmShapeArch::lmShapeArch(lmObject* pOwner, lmUPoint uStart, lmUPoint uEnd,
+lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd,
                          lmUPoint uCtrol1, lmUPoint uCtrol2, wxColour nColor,
                          wxString sName)
     : lmSimpleShape(eGMO_ShapeArch, pOwner, sName)
@@ -68,7 +68,7 @@ lmShapeArch::lmShapeArch(lmObject* pOwner, lmUPoint uStart, lmUPoint uEnd,
     Create();
 }
 
-lmShapeArch::lmShapeArch(lmObject* pOwner, bool fArchUnder, wxColour nColor,
+lmShapeArch::lmShapeArch(lmScoreObj* pOwner, bool fArchUnder, wxColour nColor,
                          wxString sName)
     : lmSimpleShape(eGMO_ShapeArch, pOwner, sName)
 {
@@ -265,11 +265,6 @@ lmShapeTie::lmShapeTie(lmNote* pOwner, lmShapeNote* pShapeStart, lmShapeNote* pS
     //store parameters
     m_fTieUnderNote = fTieUnderNote;
 
-	//get staff, for scaling logical units
-    lmVStaff* pVStaff = ((lmNote*)m_pOwner)->GetVStaff();
-    int nStaff = ((lmNote*)m_pOwner)->GetStaffNum();
-    m_pStaff = pVStaff->GetStaff(nStaff);
-
     //compute the arch
     OnAttachmentPointMoved(pShapeStart, eGMA_StartNote, 0.0, 0.0, lmSHIFT_EVENT);
     OnAttachmentPointMoved(pShapeEnd, eGMA_EndNote, 0.0, 0.0, lmSHIFT_EVENT);
@@ -307,7 +302,7 @@ void lmShapeTie::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 	lmLUnits uHalfNH = (pSNH->GetXRight() - pSNH->GetXLeft()) / 2.0;
     lmLUnits uHeightNH = pSNH->GetYBottom() - pSNH->GetYTop();
     lmLUnits uxPos = pSNH->GetXLeft() + uHalfNH;
-    lmLUnits uyPos = m_pStaff->TenthsToLogical(5.0);
+    lmLUnits uyPos = ((lmStaffObj*)m_pOwner)->TenthsToLogical(5.0);
     uyPos = (m_fTieUnderNote ?
             pSNH->GetYTop() + uHeightNH + uyPos : pSNH->GetYTop() - uyPos );
 

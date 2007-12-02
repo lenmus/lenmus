@@ -200,7 +200,7 @@ lmLUnits lmNoteRest::AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper,
 
     yPos += m_pVStaff->TenthsToLogical(50, m_nStaffNum);
     yPos += m_pVStaff->TenthsToLogical(aGlyphsInfo[GLYPH_DOT].GlyphOffset, m_nStaffNum);
-    lmShapeGlyp2* pShape = new lmShapeGlyp2(this, GLYPH_DOT, GetFont(), pPaper,
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, GLYPH_DOT, GetFont(), pPaper,
                                             lmUPoint(xPos, yPos), _T("Dot"));
 	pCS->Add(pShape);
     return pShape->GetBounds().GetWidth();
@@ -215,7 +215,8 @@ void lmNoteRest::AddFermata(const lmEPlacement nPlacement)
     if (!m_pNotations) m_pNotations = new AuxObjsList();
 
     lmFermata* pFermata = new lmFermata(this, nPlacement);
-    m_pNotations->Append(pFermata);
+	AttachAuxObj(pFermata);
+    //m_pNotations->Append(pFermata);
 
 }
 

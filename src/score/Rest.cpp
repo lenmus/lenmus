@@ -99,7 +99,7 @@ lmEGlyphIndex lmRest::GetGlyphIndex()
 // implementation of virtual methods defined in base abstract class lmNoteRest
 //====================================================================================================
 
-void lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model. 
@@ -130,7 +130,7 @@ void lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     // create shape for the rest symbol
     lmEGlyphIndex nGlyph = GetGlyphIndex();
     lmLUnits yPos = uyTop + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
-    lmShapeGlyp2* pShape = new lmShapeGlyp2(this, nGlyph, GetFont(), pPaper,
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, nGlyph, GetFont(), pPaper,
                                             lmUPoint(uxLeft, yPos), _T("Rest"));
 	pRestShape->Add(pShape);
     uxLeft += pShape->GetWidth();
@@ -171,7 +171,7 @@ void lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
  //           }
  //       }
  //   }
-
+	return m_pShape2->GetWidth();
 }
 
 void lmRest::DoVerticalShift(lmTenths yShift)

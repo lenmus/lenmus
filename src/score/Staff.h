@@ -19,44 +19,52 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __STAFFT_H__        //to avoid nested includes
-#define __STAFFT_H__
+#ifndef __LM_STAFF_H__        //to avoid nested includes
+#define __LM_STAFF_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "Staff.cpp"
 #endif
 
 #include "Score.h"
 
-class lmStaff : public lmObject
+class lmStaff : public lmScoreObj
 {
 public:
     //ctor and dtor
     lmStaff(lmScore* pScore, int nNumLines=5, lmLUnits nMicrons=0);
     ~lmStaff();
 
-    // margins
-    lmLUnits GetAfterSpace() { return m_afterSpace; }
-    lmLUnits GetLeftMargin() { return m_leftMargin; }
-    lmLUnits GetRightMargin() { return m_rightMargin; }
-    void SetAfterSpace(lmLUnits nLogicalUnits) { m_afterSpace = nLogicalUnits; }
-    void SetLeftMargin(lmLUnits nLogicalUnits) { m_leftMargin = nLogicalUnits; }
-    void SetRightMargin(lmLUnits nLogicalUnits) { m_rightMargin = nLogicalUnits; }
+	//---- virtual methods of base class -------------------------
+
+	//owning AuxObjs
+	lmUPoint GetReferencePos(lmPaper* pPaper);
+
+	//units conversion
+    inline lmLUnits TenthsToLogical(lmTenths rTenths) { return (m_uSpacing * rTenths)/10.0; }
+	inline lmTenths LogicalToTenths(lmLUnits uUnits) { return (uUnits * 10.0) / m_uSpacing; }
+
+	//---- specific methods of this class ------------------------
+
+	// margins
+    lmLUnits GetAfterSpace() { return m_uAfterSpace; }
+    lmLUnits GetLeftMargin() { return m_uLeftMargin; }
+    lmLUnits GetRightMargin() { return m_uRightMargin; }
+    void SetAfterSpace(lmLUnits nLogicalUnits) { m_uAfterSpace = nLogicalUnits; }
+    void SetLeftMargin(lmLUnits nLogicalUnits) { m_uLeftMargin = nLogicalUnits; }
+    void SetRightMargin(lmLUnits nLogicalUnits) { m_uRightMargin = nLogicalUnits; }
     void SetMargins(lmLUnits nLeft, lmLUnits nRight, lmLUnits nAfter) {
-                m_afterSpace = nAfter;
-                m_leftMargin = nLeft;
-                m_rightMargin = nRight;
+                m_uAfterSpace = nAfter;
+                m_uLeftMargin = nLeft;
+                m_uRightMargin = nRight;
     }
 
     // sizes
     lmLUnits GetHeight();
 
-    lmLUnits GetLineSpacing() { return m_spacing; }
-    lmLUnits GetLineThick() { return m_lineThick; }
-    int GetNumLines() { return m_numLines; }
-
-    lmLUnits TenthsToLogical(int nTenths) { return (m_spacing * (lmLUnits)nTenths)/10.0; }
-    lmLUnits TenthsToLogical(double rTenths) { return (m_spacing * rTenths)/10.0; }
+    lmLUnits GetLineSpacing() { return m_uSpacing; }
+    lmLUnits GetLineThick() { return m_uLineThickness; }
+    int GetNumLines() { return m_nNumLines; }
 
     wxFont* GetFontDraw() { return m_pFontDraw; }
     void SetFontDraw(wxFont* pFont) { m_pFontDraw = pFont; }
@@ -76,14 +84,14 @@ public:
     lmContext* GetLastContext();
 
 private:
-    lmLUnits    m_lineThick;        // in logical units
-    int         m_numLines;
-    lmLUnits    m_spacing;          // in logical units (thousandths of a mm.,microns)
+    lmLUnits    m_uLineThickness;	// in logical units
+    int         m_nNumLines;
+    lmLUnits    m_uSpacing;			// in logical units (thousandths of a mm.,microns)
     wxFont*     m_pFontDraw;        // font to use for drawing on this staff
 
-    lmLUnits    m_leftMargin;       // lmStaff margins (logical units))
-    lmLUnits    m_rightMargin;
-    lmLUnits    m_afterSpace;
+    lmLUnits    m_uLeftMargin;       // lmStaff margins (logical units))
+    lmLUnits    m_uRightMargin;
+    lmLUnits    m_uAfterSpace;
 
     // List of contexts
     ContextList     m_cContext;
@@ -99,4 +107,4 @@ private:
 WX_DECLARE_LIST(lmStaff, StaffList);
 
 
-#endif    // __STAFFT_H__
+#endif    // __LM_STAFF_H__

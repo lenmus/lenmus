@@ -48,7 +48,7 @@ public:
     void Remove(lmNoteRest* pNR);
     inline int NumNotes() { return (int)m_cNotes.size(); }
     void CreateShape();
-    void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color);
 	void AddNoteAndStem(lmShapeStem* pStem, lmShapeNote* pNote, lmTBeamInfo* pBeamInfo);
 
 

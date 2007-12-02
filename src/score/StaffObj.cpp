@@ -38,6 +38,7 @@
 #include "Score.h"
 #include "ObjOptions.h"
 #include "../graphic/GMObject.h"
+#include "../graphic/Shapes.h"
 
 
 //implementation of the StaffObjs List
@@ -47,13 +48,13 @@ WX_DEFINE_LIST(StaffObjsList);
 //implementation of the AuxObjs List
 WX_DEFINE_LIST(AuxObjsList);
 
-static int m_IdCounter = 0;        //to assign unique IDs to ScoreObjs
+static int m_IdCounter = 0;        //to assign unique IDs to ComponentObjs
 
 //-------------------------------------------------------------------------------------------------
-// lmScoreObj implementation
+// lmComponentObj implementation
 //-------------------------------------------------------------------------------------------------
-lmScoreObj::lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable) :
-    lmObject(pParent)
+lmComponentObj::lmComponentObj(lmScoreObj* pParent, EScoreObjType nType, bool fIsDraggable) :
+    lmScoreObj(pParent)
 {
     m_nId = m_IdCounter++;        // give it an ID
     m_nType = nType;            // save type
@@ -73,12 +74,12 @@ lmScoreObj::lmScoreObj(lmObject* pParent, EScoreObjType nType, bool fIsDraggable
     //transitional
     m_pShape2 = (lmShape*)NULL;
 
-    //// GraphicObjs owned by this ScoreObj
+    //// GraphicObjs owned by this ComponentObj
     //m_pGraphObjs = (GraphicObjsList*)NULL;
 
 }
 
-lmScoreObj::~lmScoreObj()
+lmComponentObj::~lmComponentObj()
 {
     //if (m_pGraphObjs) {
     //    m_pGraphObjs->DeleteContents(true);
@@ -89,7 +90,7 @@ lmScoreObj::~lmScoreObj()
 
 }
 
-void lmScoreObj::MoveTo(lmUPoint& uPt)
+void lmComponentObj::MoveTo(lmUPoint& uPt)
 {
     m_uPaperPos.y = uPt.y;
     m_uPaperPos.x = uPt.x;
@@ -97,24 +98,24 @@ void lmScoreObj::MoveTo(lmUPoint& uPt)
 
 //// Management of GraphicObjs attached to this object
 //
-//void lmScoreObj::DoAddGraphicObj(lmScoreObj* pGO)
+//void lmComponentObj::DoAddGraphicObj(lmComponentObj* pGO)
 //{
 //    wxASSERT(pGO->GetType() == eSCOT_GraphicObj);
 //    if (!m_pGraphObjs) m_pGraphObjs = new GraphicObjsList();
 //    m_pGraphObjs->Append((lmGraphicObj*)pGO);
 //}
 //
-//void lmScoreObj::DoRemoveGraphicObj(lmScoreObj* pGO)
+//void lmComponentObj::DoRemoveGraphicObj(lmComponentObj* pGO)
 //{
 //    wxASSERT(pGO->GetType() == eSCOT_GraphicObj);
 //}
 
-void lmScoreObj::ShiftObject(lmLUnits uLeft)
+void lmComponentObj::ShiftObject(lmLUnits uLeft)
 { 
     // update shapes' positions when the object is moved
 
     if (m_pShape2) m_pShape2->Shift(uLeft, 0.0);    //(uLeft - m_uPaperPos.x, 0.0);
-    //wxLogMessage(_T("[lmScoreObj::ShiftObject] shift=%.2f, ID=%d"), uLeft, GetID());
+    //wxLogMessage(_T("[lmComponentObj::ShiftObject] shift=%.2f, ID=%d"), uLeft, GetID());
     //m_uPaperPos.x = uLeft;
 }
 
@@ -123,16 +124,13 @@ void lmScoreObj::ShiftObject(lmLUnits uLeft)
 // lmStaffObj implementation
 //-------------------------------------------------------------------------------------------------
 
-lmStaffObj::lmStaffObj(lmObject* pParent, EStaffObjType nType, lmVStaff* pStaff, int nStaff,
+lmStaffObj::lmStaffObj(lmScoreObj* pParent, EStaffObjType nType, lmVStaff* pStaff, int nStaff,
                    bool fVisible, bool fIsDraggable) :
-    lmScoreObj(pParent, eSCOT_StaffObj, fIsDraggable)
+    lmComponentObj(pParent, eSCOT_StaffObj, fIsDraggable)
 {
     // store parameters
     m_fVisible = fVisible;
     m_nClass = nType;
-
-    //default values
-    m_uWidth = 0;
 
     // initializations: staff ownership info
     m_pVStaff = pStaff;
@@ -150,10 +148,8 @@ lmStaffObj::~lmStaffObj()
     m_AuxObjs.clear();
 }
 
-void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+lmUPoint lmStaffObj::GetReferencePos(lmPaper* pPaper)
 {
-    if (!m_fVisible) return;
-    
     if (!m_fFixedPos) {
         m_uPaperPos.x = pPaper->GetCursorX();
         m_uPaperPos.y = pPaper->GetCursorY();
@@ -161,34 +157,60 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
         pPaper->SetCursorX(m_uPaperPos.x);
         pPaper->SetCursorY(m_uPaperPos.y);
     }
+	return lmUPoint(pPaper->GetCursorX(), pPaper->GetCursorY());
+}
 
-    // set the font
-    SetFont(pPaper);
+void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+{
+	lmUPoint uOrg = GetReferencePos(pPaper);
 
-    // ask derived object to layout itself
-    LayoutObject(pBox, pPaper, colorC);
+	lmLUnits uWidth;
+    if (m_fVisible) 
+	{
+		// set the font
+		SetFont(pPaper);
 
-    // layout AuxObjs attached to this StaffObj
-    for (int i=0; i < (int)m_AuxObjs.size(); i++)
-    { 
-        m_AuxObjs[i]->Layout(pBox, pPaper, colorC, fHighlight);
-    }
+		// ask derived object to layout itself
+		uWidth = LayoutObject(pBox, pPaper, colorC);
+	}
+	else
+	{
+		//Create an invisible shape, to store the StaffObj position
+		
+		lmShapeInvisible* pShape = new lmShapeInvisible(this, uOrg);
+		pBox->AddShape(pShape);
+		m_pShape2 = pShape;
+		uWidth = 0;
+	}
 
-    //// Layout GraphicObjs owned by this StaffObj
-    //if (m_pGraphObjs)
-    //{
-    //    lmGraphicObj* pGO;
-    //    wxGraphicObjsListNode* pNode = m_pGraphObjs->GetFirst();
-    //    for (; pNode; pNode = pNode->GetNext() ) {
-    //        pGO = (lmGraphicObj*)pNode->GetData();
-    //        pGO->Layout(pBox, pPaper, colorC, fHighlight);
-    //    }
-    //}
+	// layout AuxObjs attached to this StaffObj
+	for (int i=0; i < (int)m_AuxObjs.size(); i++)
+	{ 
+		//restore this object paper pos.
+		pPaper->SetCursorX(uOrg.x);
+		pPaper->SetCursorY(uOrg.y);
+
+		m_AuxObjs[i]->Layout(pBox, pPaper, colorC, fHighlight);
+	}
 
     // update paper cursor position
-    pPaper->SetCursorX(m_uPaperPos.x + m_uWidth);
+    pPaper->SetCursorX(m_uPaperPos.x + uWidth);
     
 }
+
+void lmStaffObj::ShiftObject(lmLUnits uLeft)
+{ 
+    // update this StaffObj shape position
+    if (m_pShape2) m_pShape2->Shift(uLeft, 0.0);    //(uLeft - m_uPaperPos.x, 0.0);
+
+    // shift also AuxObjs attached to this StaffObj
+    for (int i=0; i < (int)m_AuxObjs.size(); i++)
+    { 
+        m_AuxObjs[i]->ShiftObject(uLeft);
+    }
+
+}
+
 
 // default behaviour
 void lmStaffObj::SetFont(lmPaper* pPaper)
@@ -204,15 +226,10 @@ lmLUnits lmStaffObj::TenthsToLogical(lmTenths nTenths)
     return m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
 }
 
-//void lmStaffObj::AddGraphicObj(lmGraphicObj* pGO) 
-//{ 
-//    DoAddGraphicObj(pGO);
-//}
-//
-//void lmStaffObj::RemoveGraphicObj(lmGraphicObj* pGO)
-//{ 
-//    DoRemoveGraphicObj(pGO);
-//}
+lmTenths lmStaffObj::LogicalToTenths(lmLUnits uUnits)
+{ 
+    return m_pVStaff->LogicalToTenths(uUnits, m_nStaffNum);
+}
 
 void lmStaffObj::AttachAuxObj(lmAuxObj* pAO)
 {
@@ -224,23 +241,55 @@ void lmStaffObj::DetachAuxObj(lmAuxObj* pAO)
     //TODO
 }
 
+wxString lmStaffObj::SourceLDP(int nIndent)
+{
+    // Generate source code for AuxObjs attached to this StaffObj
+	wxString sSource = _T("");
+    for (int i=0; i < (int)m_AuxObjs.size(); i++)
+    { 
+        sSource += m_AuxObjs[i]->SourceLDP(nIndent);
+    }
+	return sSource;
+}
+
+wxString lmStaffObj::SourceXML(int nIndent)
+{
+    // Generate source code for AuxObjs attached to this StaffObj
+	wxString sSource = _T("");
+    for (int i=0; i < (int)m_AuxObjs.size(); i++)
+    { 
+        sSource += m_AuxObjs[i]->SourceXML(nIndent);
+    }
+	return sSource;
+}
+
+wxString lmStaffObj::Dump()
+{
+    // Dump AuxObjs attached to this StaffObj
+	wxString sSource = _T("");
+    for (int i=0; i < (int)m_AuxObjs.size(); i++)
+    { 
+        sSource += m_AuxObjs[i]->Dump();
+    }
+	return sSource;
+}
 
 //-------------------------------------------------------------------------------------
-// lmObject implementation
+// lmScoreObj implementation
 //-------------------------------------------------------------------------------------
-lmObject::lmObject(lmObject* pParent)
+lmScoreObj::lmScoreObj(lmScoreObj* pParent)
 { 
     m_pParent = pParent;
     m_pObjOptions = (lmObjOptions*)NULL;
 }
 
-lmObject::~lmObject()
+lmScoreObj::~lmScoreObj()
 { 
     if (m_pObjOptions) delete m_pObjOptions;
 
 }
 
-lmObjOptions* lmObject::GetCurrentObjOptions()
+lmObjOptions* lmScoreObj::GetCurrentObjOptions()
 {
     //recurse in the parents chain to find the first non-null CtxObject
     //and return it
@@ -252,25 +301,25 @@ lmObjOptions* lmObject::GetCurrentObjOptions()
 
 //Set value for option in this object context. If no context exist, create it
 
-void lmObject::SetOption(wxString sName, long nLongValue)
+void lmScoreObj::SetOption(wxString sName, long nLongValue)
 {
     if (!m_pObjOptions) m_pObjOptions = new lmObjOptions();
     m_pObjOptions->SetOption(sName, nLongValue);
 }
 
-void lmObject::SetOption(wxString sName, wxString sStringValue)
+void lmScoreObj::SetOption(wxString sName, wxString sStringValue)
 {
     if (!m_pObjOptions) m_pObjOptions = new lmObjOptions();
     m_pObjOptions->SetOption(sName, sStringValue);
 }
 
-void lmObject::SetOption(wxString sName, double nDoubleValue)
+void lmScoreObj::SetOption(wxString sName, double nDoubleValue)
 {
     if (!m_pObjOptions) m_pObjOptions = new lmObjOptions();
     m_pObjOptions->SetOption(sName, nDoubleValue);
 }
 
-void lmObject::SetOption(wxString sName, bool fBoolValue)
+void lmScoreObj::SetOption(wxString sName, bool fBoolValue)
 {
     if (!m_pObjOptions) m_pObjOptions = new lmObjOptions();
     m_pObjOptions->SetOption(sName, fBoolValue);
@@ -279,22 +328,22 @@ void lmObject::SetOption(wxString sName, bool fBoolValue)
 //Look for the value of an option. A method for each supported data type.
 //Recursive search throug the ObjOptions chain
 
-long lmObject::GetOptionLong(wxString sOptName)
+long lmScoreObj::GetOptionLong(wxString sOptName)
 { 
     return GetCurrentObjOptions()->GetOptionLong(sOptName);
 }
 
-double lmObject::GetOptionDouble(wxString sOptName) 
+double lmScoreObj::GetOptionDouble(wxString sOptName) 
 { 
     return GetCurrentObjOptions()->GetOptionDouble(sOptName); 
 }
 
-bool lmObject::GetOptionBool(wxString sOptName) 
+bool lmScoreObj::GetOptionBool(wxString sOptName) 
 { 
     return GetCurrentObjOptions()->GetOptionBool(sOptName); 
 }
 
-wxString lmObject::GetOptionString(wxString sOptName) 
+wxString lmScoreObj::GetOptionString(wxString sOptName) 
 {   
     return GetCurrentObjOptions()->GetOptionString(sOptName);
 }

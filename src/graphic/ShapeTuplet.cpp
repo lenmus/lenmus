@@ -122,18 +122,13 @@ void lmShapeTuplet::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 
 void lmShapeTuplet::Render(lmPaper* pPaper, wxColour color)
 {
-	//get staff, for scaling logical units
-    lmVStaff* pVStaff = m_pStartNR->GetVStaff();
-    int nStaff = m_pStartNR->GetStaffNum();
-    lmStaff* pStaff = pVStaff->GetStaff(nStaff);
-
-	lmLUnits BORDER_LENGHT = pStaff->TenthsToLogical(10.0);
-    lmLUnits BRACKET_DISTANCE = pStaff->TenthsToLogical(10.0);
+	lmLUnits BORDER_LENGHT = ((lmStaffObj*)m_pOwner)->TenthsToLogical(10.0);
+    lmLUnits BRACKET_DISTANCE = ((lmStaffObj*)m_pOwner)->TenthsToLogical(10.0);
 
     //Prepare pen
     lmLUnits uOldThick = pPaper->GetLineWidth();
     wxColour oldColor = pPaper->GetLineColor();
-    lmLUnits uThick = pStaff->TenthsToLogical(2.0);    //TODO user options
+    lmLUnits uThick = ((lmStaffObj*)m_pOwner)->TenthsToLogical(2.0);    //TODO user options
     pPaper->SetPen(color, uThick);
 
 	lmLUnits yLineStart;
@@ -154,7 +149,7 @@ void lmShapeTuplet::Render(lmPaper* pPaper, wxColour color)
     }
 
 	//number placement
-    lmLUnits NUMBER_DISTANCE = pStaff->TenthsToLogical(5.0);
+    lmLUnits NUMBER_DISTANCE = ((lmStaffObj*)m_pOwner)->TenthsToLogical(5.0);
     lmLUnits nNumberWidth=0, nNumberHeight=0;
     if (m_fShowNumber) {
         pPaper->SetFont(*m_pFont);
@@ -171,7 +166,7 @@ void lmShapeTuplet::Render(lmPaper* pPaper, wxColour color)
 	{
 		//horizontal broken line shape
 		float rTanAlpha = (yLineEnd - yLineStart) / (m_uxEnd - m_uxStart);
-		lmLUnits uxGap = pStaff->TenthsToLogical(3.0);
+		lmLUnits uxGap = ((lmStaffObj*)m_pOwner)->TenthsToLogical(3.0);
 		lmLUnits x1 = xNumber - uxGap;
 		lmLUnits y1 = yLineStart + (x1 - m_uxStart) * rTanAlpha;
 		lmLUnits x2 = xNumber + nNumberWidth + uxGap;

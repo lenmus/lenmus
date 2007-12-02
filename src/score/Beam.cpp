@@ -236,7 +236,7 @@ void lmBeam::CreateShape()
 
 }
 
-void lmBeam::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
+lmLUnits lmBeam::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
 {
     // This method is only called from lmNote::LayoutObject(), in particular from the last
     // note of a group of beamed notes. The purpose of this method is to add the beam shape
@@ -250,12 +250,14 @@ void lmBeam::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
     //
     if (m_cNotes.size() == 1) {
         wxLogMessage(_T("*** ERROR *** Group with just one note!"));
-        return;
+        return 0;
     }
     // End of BUG_BYPASS -----------------------------------------------------------
 
     //add the beam shape to graphic model
     m_pBeamShape->SetStemsDown(m_fStemsDown);
     pBox->AddShape(m_pBeamShape);
+
+	return m_pBeamShape->GetWidth();
 
 }

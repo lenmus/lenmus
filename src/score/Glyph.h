@@ -148,6 +148,16 @@ enum lmEGlyphIndex {
     GLYPH_SMALL_EIGHTH_NOTE_DOTTED,     //small dotted eighth note up
     GLYPH_SMALL_EQUAL_SIGN,             //small equal sign, for metronome marks
 
+	GLYPH_BREATH_MARK_V,				//breath-mark  V
+    GLYPH_DACAPO,
+    GLYPH_DALSEGNO,
+    GLYPH_CODA,
+    GLYPH_SEGNO,
+    GLYPH_OCTAVA,
+    GLYPH_FERMATA_OVER,
+    GLYPH_FERMATA_UNDER,
+
+
 
 };
 

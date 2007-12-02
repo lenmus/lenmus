@@ -32,7 +32,7 @@ class lmVStaff;
 class lmContext;
 class lmPaper;
 class lmBox;
-class lmScoreObj;
+class lmComponentObj;
 class lmChord;
 class lmShape;
 class lmCompositeShape;
@@ -61,7 +61,7 @@ public:
 
     //implementation of virtual methods of base classes
         // lmStaffObj
-    void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
 	void Highlight(lmPaper* pPaper, wxColour colorC);
 
     wxString    Dump();
@@ -233,7 +233,7 @@ private:
     //-----------------------------------------------------------------------
 
     // constituent shapes
-    lmShapeGlyp2*   m_pNoteheadShape;
+    lmShapeGlyph*   m_pNoteheadShape;
     lmShapeStem*    m_pStemShape;
 
     // stem information

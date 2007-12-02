@@ -228,12 +228,24 @@ class lmBox;
 extern lmNoteRest* g_pLastNoteRest;
 extern lmBeam* g_pCurBeam;
 
-class lmScore : public lmObject
+class lmScore : public lmScoreObj
 {
 public:
     //ctor and dtor
     lmScore();
     ~lmScore();
+
+	//---- virtual methods of base class -------------------------
+
+	//owning AuxObjs
+	lmUPoint GetReferencePos(lmPaper* pPaper);
+
+    // units conversion
+    lmLUnits TenthsToLogical(lmTenths nTenths);
+    lmTenths LogicalToTenths(lmLUnits uUnits);
+
+
+	//---- specific methods of this class ------------------------
 
     lmInstrument* AddInstrument(int nVStaves, int nMIDIChannel, int nMIDIInstr,
                                 wxString sName, wxString sAbbrev=_T(""));

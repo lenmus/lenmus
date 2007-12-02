@@ -48,7 +48,7 @@ lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, ENoteType nNoteType, int nDo
     m_pTextShape = new lmShapeText(this, sText, (wxFont*)NULL);
 
     m_pRightNoteShape = (lmShapeGlyph*)NULL;
-    m_pLeftNoteShape = new lmShapeGlyph(this, SelectGlyph(nNoteType, nDots), m_pFont);
+    //m_pLeftNoteShape = new lmShapeGlyph(this, SelectGlyph(nNoteType, nDots), m_pFont);
 
 }
 
@@ -83,8 +83,8 @@ lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff,
     m_fParentheses = fParentheses;
     m_pTextShape = new lmShapeText(this, _T(" =  "), (wxFont*)NULL);
 
-    m_pLeftNoteShape = new lmShapeGlyph(this, SelectGlyph(nLeftNoteType, nLeftDots), m_pFont);
-    m_pRightNoteShape = new lmShapeGlyph(this, SelectGlyph(nRightNoteType, nRightDots), m_pFont);
+    //m_pLeftNoteShape = new lmShapeGlyph(this, SelectGlyph(nLeftNoteType, nLeftDots), m_pFont);
+    //m_pRightNoteShape = new lmShapeGlyph(this, SelectGlyph(nRightNoteType, nRightDots), m_pFont);
 }
 
 lmMetronomeMark::~lmMetronomeMark()
@@ -98,7 +98,7 @@ lmMetronomeMark::~lmMetronomeMark()
 // implementation of virtual methods defined in base abstract class lmStaffObj
 //-----------------------------------------------------------------------------------------
 
-void lmMetronomeMark::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmMetronomeMark::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
 //    lmLUnits uyPos = pPaper->GetCursorY() - m_pVStaff->TenthsToLogical(50, m_nStaffNum);
 //    lmLUnits uxPos = pPaper->GetCursorX();
@@ -115,6 +115,7 @@ void lmMetronomeMark::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC
 //        m_uWidth = 0;   // uWidth;
 //
 //    }
+	return 0;
 
 }
 
@@ -185,7 +186,7 @@ lmLUnits lmMetronomeMark::DrawSymbol(bool fMeasuring, lmPaper* pPaper, lmShapeGl
     if (fMeasuring) {
         lmUPoint offset(uxPos - m_uPaperPos.x, uyPos - m_uPaperPos.y - m_pVStaff->TenthsToLogical(35, m_nStaffNum));
         pShape->SetFont(m_pFont);
-        pShape->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum), offset);
+        //pShape->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum), offset);
     }
     else {
         pShape->Render(pPaper, colorC);    //(pPaper, m_uPaperPos, colorC);

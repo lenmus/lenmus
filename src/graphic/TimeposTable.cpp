@@ -20,7 +20,7 @@
 //-------------------------------------------------------------------------------------
 
 // @class lmTimeposTable
-// @brief Table and management algoritms to compute the positioning data for ScoreObjs.
+// @brief Table and management algoritms to compute the positioning data for ComponentObjs.
 //
 // Encapsulation of the table and of management algoritms to compute the positioning
 // data for each lmStaffObj, when a bar column must be rendered.

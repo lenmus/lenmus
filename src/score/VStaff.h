@@ -34,11 +34,23 @@ class lmMetronomeMark;
 class lmBoxSliceVStaff;
 
 
-class lmVStaff : public lmObject
+class lmVStaff : public lmScoreObj
 {
 public:
     lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered);
     ~lmVStaff();
+
+	//---- virtual methods of base class -------------------------
+
+	//owning AuxObjs
+	lmUPoint GetReferencePos(lmPaper* pPaper);
+
+    // units conversion
+    lmLUnits TenthsToLogical(lmTenths nTenths);
+    lmTenths LogicalToTenths(lmLUnits uUnits);
+
+
+	//---- specific methods of this class ------------------------
 
     lmStaff*    AddStaff(int nNumLines=5, lmLUnits nMicrons=0);
     lmClef*     AddClef(EClefType nClefType, int nStaff = 1, bool fVisible = true);
@@ -113,7 +125,10 @@ public:
 
     lmNote* FindPossibleStartOfTie(lmAPitch anPitch);
 
+	//units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths, int nStaff);
+	lmTenths LogicalToTenths(lmLUnits uUnits, int nStaff);
+
     lmStaff* GetStaff(int nStaff);
     lmLUnits GetStaffOffset(int nStaff);
     lmLUnits GetYTop();

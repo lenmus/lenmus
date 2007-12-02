@@ -53,7 +53,7 @@ lmWordsDirection::lmWordsDirection(lmVStaff* pVStaff, wxString sText, lmEAlignme
 // implementation of virtual methods defined in base abstract class lmStaffObj
 //-----------------------------------------------------------------------------------------
 
-void lmWordsDirection::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmWordsDirection::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
     pPaper->SetFont(*m_pFont);
 
@@ -103,9 +103,9 @@ void lmWordsDirection::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color
 
 	// set total width
     if (!m_fHasWidth)
-        m_uWidth=0;
+        return 0;
     else
-        m_uWidth = pShape->GetWidth();
+        return pShape->GetWidth();
 
 }
 

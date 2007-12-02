@@ -194,7 +194,7 @@ void lmScoreCanvas::OnVisualHighlight(lmScoreHighlightEvent& event)
     m_pView->OnVisualHighlight(event);
 }
 
-void lmScoreCanvas::MoveObject(lmScoreObj* pSO, const lmUPoint& uPos)
+void lmScoreCanvas::MoveObject(lmComponentObj* pSO, const lmUPoint& uPos)
 {
 	////Generate move command to move the lmStaffObj and update the document
 	//wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
@@ -204,7 +204,7 @@ void lmScoreCanvas::MoveObject(lmScoreObj* pSO, const lmUPoint& uPos)
 
 void lmScoreCanvas::SelectObject(lmGMObject* pGMO)
 {
-	//select/deselect an ScoreObj
+	//select/deselect an ComponentObj
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
 	//pCP->Submit(new lmScoreCommand(_T("Select object"),
 	//							   lmScoreCommand::lmCMD_SelectSingle, m_pDoc, pSO));

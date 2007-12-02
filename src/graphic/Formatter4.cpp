@@ -515,8 +515,8 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
 			lmLUnits uxPos = pBoxSystem->GetXLeft() + 
 						     (nSystem == 1 ? nFirstSystemIndent : nOtherSystemIndent);
 		    lmLUnits uLineThickness = lmToLogicalUnits(0.2, lmMILLIMETERS);        // thin line width will be 0.2 mm @todo user options
-            lmShapeLin2* pLine = 
-                new lmShapeLin2(pVStaff, uxPos, pBoxSystem->GetYTopFirstStaff(),
+            lmShapeLine* pLine = 
+                new lmShapeLine(pVStaff, uxPos, pBoxSystem->GetYTopFirstStaff(),
 						    uxPos, pBoxSystem->GetYBottom(),
 						    uLineThickness, 0.0, *wxBLACK, _T("System joining line"),
 							eEdgeHorizontal);

@@ -80,7 +80,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     //shape initialization
 	//AWARE: Althoug shape pointer is initialized to NULL never assume that there is
 	//a shape if not NULL, as the shape is deleted in the graphic model.
-    m_pNoteheadShape = (lmShapeGlyp2*)NULL;
+    m_pNoteheadShape = (lmShapeGlyph*)NULL;
     m_pStemShape = (lmShapeStem*)NULL;
 
     // stem information
@@ -404,7 +404,7 @@ void lmNote::CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, 
 // implementation of virtual methods defined in base abstract class lmNoteRest
 //====================================================================================================
 
-void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model. 
@@ -608,7 +608,7 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     // set total width
     #define NOTE_AFTERSPACE     0      //one line space     @todo user options
     lmLUnits uAfterSpace = m_pVStaff->TenthsToLogical(NOTE_AFTERSPACE, m_nStaffNum);
-    m_uWidth = uxLeft + uAfterSpace - uPaperPos.x;
+    lmLUnits uTotalWidth = uxLeft + uAfterSpace - uPaperPos.x;
 
 
     // add shapes for leger lines if necessary
@@ -686,6 +686,7 @@ void lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 	if (!fStemAdded && (!IsInChord() || m_nNoteType < eHalf))
 		DeleteStemShape();
 
+	return uTotalWidth;
 }
 
 void lmNote::Highlight(lmPaper* pPaper, wxColour colorC)
@@ -851,7 +852,7 @@ lmEGlyphIndex lmNote::AddFlagShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmU
     lmEGlyphIndex nGlyph = GetGlyphForFlag();
 
     lmLUnits yPos = uPos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
-    lmShapeGlyp2* pShape = new lmShapeGlyp2(this, nGlyph, GetFont(), pPaper,
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, nGlyph, GetFont(), pPaper,
                                             lmUPoint(uPos.x, yPos), _T("Flag"));
 	pNoteShape->AddFlag(pShape);
     return nGlyph;
@@ -907,8 +908,8 @@ void lmNote::AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPo
                 uyPos = uyStart - m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
                 //pPaper->SolidLine(uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
                 //                   eEdgeNormal, *wxBLACK);
-                lmShapeLin2* pLine = 
-                    new lmShapeLin2(this, uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
+                lmShapeLine* pLine = 
+                    new lmShapeLine(this, uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
                                     uBoundsThick, *wxBLACK, _T("Leger line"), eEdgeVertical);
 	            pNoteShape->Add(pLine);
            }
@@ -922,8 +923,8 @@ void lmNote::AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPo
                 uyPos = uyStaffTopLine + m_pVStaff->TenthsToLogical(nTenths, m_nStaffNum);
                 pPaper->SolidLine(uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
                                    eEdgeNormal, *wxBLACK);
-                lmShapeLin2* pLine = 
-                    new lmShapeLin2(this, uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
+                lmShapeLine* pLine = 
+                    new lmShapeLine(this, uxPos, uyPos, uxPos + uWidth, uyPos, uThick,
                                     uBoundsThick, *wxBLACK, _T("Leger line"), eEdgeVertical);
 	            pNoteShape->Add(pLine);
             }
@@ -966,7 +967,7 @@ void lmNote::AddSingleNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, ENoteT
     lmLUnits yPos = uyTop + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
 
     //create the shape object
-    lmShapeGlyp2* pShape = new lmShapeGlyp2(this, nGlyph, GetFont(), pPaper,
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, nGlyph, GetFont(), pPaper,
                                             lmUPoint(uxLeft, yPos), _T("NoteSingle"));
 	pNoteShape->AddNoteInBlock(pShape);
 
@@ -1007,7 +1008,7 @@ void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, ENoteHea
 
     //create the shape object
 	wxColour color = (m_fNoteheadReversed? *wxRED : colorC);
-    m_pNoteheadShape = new lmShapeGlyp2(this, nGlyph, GetFont(), pPaper,
+    m_pNoteheadShape = new lmShapeGlyph(this, nGlyph, GetFont(), pPaper,
                                         lmUPoint(uxLeft, yPos), _T("Notehead"),
 										lmDRAGGABLE, color);
 	pNoteShape->AddNoteHead(m_pNoteheadShape);
@@ -1428,15 +1429,17 @@ wxString lmNote::Dump()
     //}
     sDump += _T("\n");
 
-    // Dump associated lyrics
-    if (m_pLyrics) {
-        lmLyric* pLyric;
-        wxAuxObjsListNode* pNode = m_pLyrics->GetFirst();
-        for (; pNode; pNode = pNode->GetNext() ) {
-            pLyric = (lmLyric*)pNode->GetData();
-            sDump += pLyric->Dump();
-        }
-    }
+	//attached AuxObjs
+	sDump += lmStaffObj::Dump();
+    //// Dump associated lyrics
+    //if (m_pLyrics) {
+    //    lmLyric* pLyric;
+    //    wxAuxObjsListNode* pNode = m_pLyrics->GetFirst();
+    //    for (; pNode; pNode = pNode->GetNext() ) {
+    //        pLyric = (lmLyric*)pNode->GetData();
+    //        sDump += pLyric->Dump();
+    //    }
+    //}
 
 	////positioning information
 	//lmURect rect = GetSelRect();
@@ -1467,10 +1470,6 @@ wxString lmNote::SourceLDP(int nIndent)
 		if (m_pAccidentals)
 			sSource += m_pAccidentals->GetLDPEncoding();
 		sSource += DPitch_ToLDPName(dp);
-        //lmKeySignature* pKey = m_pContext->GeyKey();
-        //EKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
-        //lmFPitch fp = FPitch(m_anPitch);
-        //sSource += FPitch_ToRelLDPName(fp, nKey);
     }
     else
         sSource += _T("*");
@@ -1515,11 +1514,16 @@ wxString lmNote::SourceLDP(int nIndent)
     //visible?
     if (!m_fVisible) { sSource += _T(" noVisible"); }
 
+	//attached AuxObjs
+	sSource += lmStaffObj::SourceLDP(nIndent+1);
+
+	//close element
     if (IsInChord() && m_pChord->IsLastNoteOfChord(this)) {
         sSource += _T(") )\n");
     }
     else
         sSource += _T(")\n");
+
     return sSource;
 }
 

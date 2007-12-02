@@ -2346,7 +2346,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 }
 
-void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmObject* pObject)
+void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
 {
     //  <opt> := <name><value>
 

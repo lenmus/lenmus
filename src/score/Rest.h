@@ -43,7 +43,7 @@ public:
 
     //implementation of virtual methods of base classes
         // lmStaffObj
-    void LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
 
     wxString    Dump();
     wxString    SourceLDP(int nIndent);
