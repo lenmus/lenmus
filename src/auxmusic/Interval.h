@@ -68,11 +68,11 @@ enum EIntervalDirection
 
 //global methods defined in this module
 extern wxString ComputeInterval(wxString sRootNote, wxString sIntvCode,
-                                bool fAscending, EKeySignatures nKey = earmDo);
+                                bool fAscending, lmEKeySignatures nKey = earmDo);
 extern void ComputeInterval(lmNoteBits* pRoot, wxString sIntvCode,
                             bool fAscending, lmNoteBits* pNewNote);
 extern void AddSemitonesToNote(lmNoteBits* pRoot, wxString sIntvCode,
-                               EKeySignatures nKey,
+                               lmEKeySignatures nKey,
                                EIntervalDirection nDirection,
                                lmNoteBits* pNewNote);
 extern wxString IntervalBitsToCode(lmIntvBits& tIntv);
@@ -84,10 +84,10 @@ class lmInterval
 {
 public:
     //build from two notes
-    lmInterval(lmNote* pNote1, lmNote* pNote2, EKeySignatures nKey = earmDo);
+    lmInterval(lmNote* pNote1, lmNote* pNote2, lmEKeySignatures nKey = earmDo);
     //buid from constraints
     lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax, bool fAllowedIntervals[],
-             bool fAscending, EKeySignatures nKey = earmDo, int nMidiStartNote=0);
+             bool fAscending, lmEKeySignatures nKey = earmDo, int nMidiStartNote=0);
     //destructor
     ~lmInterval() {};
 
@@ -125,7 +125,7 @@ private:
 
     //data variables
     int               m_nSemi;
-    EKeySignatures    m_nKey;            //key signature
+    lmEKeySignatures    m_nKey;            //key signature
     lmMPitch          m_MPitch1;
     lmMPitch          m_MPitch2;
     lmDPitch          m_DPitch1;

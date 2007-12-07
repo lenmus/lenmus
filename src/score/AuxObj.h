@@ -41,9 +41,8 @@ class lmPaper;
 class lmScoreLine : public lmAuxObj
 {
 public:
-    lmScoreLine(lmStaffObj* pOwner,
-             lmTenths xStart, lmTenths yStart, 
-             lmTenths xEnd, lmTenths yEnd, lmTenths nWidth, wxColour nColor);
+    lmScoreLine(lmTenths xStart, lmTenths yStart, 
+                lmTenths xEnd, lmTenths yEnd, lmTenths nWidth, wxColour nColor);
     ~lmScoreLine() {}
 
     //implementation of virtual methods from base class
@@ -59,11 +58,11 @@ public:
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
 
 private:
-    lmLUnits    m_uxStart;
-    lmLUnits    m_uyStart; 
-    lmLUnits    m_uxEnd;
-    lmLUnits    m_uyEnd;
-    lmLUnits    m_uWidth;
+    lmTenths    m_txStart;
+    lmTenths    m_tyStart; 
+    lmTenths    m_txEnd;
+    lmTenths    m_tyEnd;
+    lmTenths    m_tWidth;
     wxColour    m_nColor;
 
 
@@ -80,7 +79,7 @@ class lmVStaff;
 class lmFermata : public lmAuxObj
 {
 public:
-    lmFermata(lmNoteRest* pOwner, lmEPlacement nPlacement);
+    lmFermata(lmEPlacement nPlacement);
     ~lmFermata() {}
 
     // overrides for pure virtual methods of base class lmNoteRestObj
@@ -116,7 +115,7 @@ enum ESyllabicTypes {
 class lmLyric : public lmAuxObj, public lmBasicText
 {
 public:
-    lmLyric(lmNoteRest* pOwner, wxString sText, ESyllabicTypes nSyllabic = eSyllabicSingle,
+    lmLyric(wxString sText, ESyllabicTypes nSyllabic = eSyllabicSingle,
             int nNumLine=1, wxString sLanguage=_T("it") );
     ~lmLyric() {}
 

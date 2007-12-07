@@ -49,18 +49,18 @@ private:
     wxString CreateNoteRest(int nNoteRestDuration, bool fNote);
     wxString CreateNote(int nNoteDuration) { return CreateNoteRest(nNoteDuration, true); }
     wxString CreateRest(int nRestDuration) { return CreateNoteRest(nRestDuration, false); }
-    wxString CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign, bool fOnlyQuarterNotes);
+    wxString CreateLastMeasure(int nNumMeasure, lmETimeSignature nTimeSign, bool fOnlyQuarterNotes);
 
     // pitch related methods
-    bool InstantiateNotes(lmScore* pScore, EKeySignatures nKey);
+    bool InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey);
     void GetRandomHarmony(int nFunctions, std::vector<long>& aFunction);
-    void FunctionToChordNotes(EKeySignatures nKey, long nFunction, lmAPitch aNotes[4]);
+    void FunctionToChordNotes(lmEKeySignatures nKey, long nFunction, lmAPitch aNotes[4]);
 
-    void GenerateScale(EKeySignatures nKey, lmAPitch aNotes[7]);
-    lmAPitch GenerateInChordList(EKeySignatures nKey, long nFunction,
+    void GenerateScale(lmEKeySignatures nKey, lmAPitch aNotes[7]);
+    lmAPitch GenerateInChordList(lmEKeySignatures nKey, long nFunction,
                                     std::vector<lmAPitch>& aValidPitch);
 
-    int GetRootStep(const EKeySignatures nKey) const;
+    int GetRootStep(const lmEKeySignatures nKey) const;
 
         // contour
     void GenerateContour(int nNumPoints, std::vector<lmDPitch>& nContour);
@@ -93,9 +93,9 @@ private:
 
 
 
-    ETimeSignature      m_nTimeSign;
-    EClefType           m_nClef;
-    EKeySignatures      m_nKey;
+    lmETimeSignature      m_nTimeSign;
+    lmEClefType           m_nClef;
+    lmEKeySignatures      m_nKey;
     lmScoreConstrains*  m_pConstrains;
 
     //variables to control note pitch generation

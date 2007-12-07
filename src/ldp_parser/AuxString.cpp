@@ -105,7 +105,7 @@
     @param[out] pAccidentals parameter represents chromatic accidentals (does not
                 include key signature accidentals)
 */
-bool PitchNameToData(wxString sPitch, int* pPitch, EAccidentals* pAccidentals)
+bool PitchNameToData(wxString sPitch, int* pPitch, lmEAccidentals* pAccidentals)
 {
 
     //It is assumed that sPitch is Trimed (no spaces before or after real data) and lower case
@@ -349,7 +349,7 @@ int SrcSplitPattern(wxString sSource)
 //----------------------------------------------------------------------------------------
 
 
-bool LDPDataToPitch(wxString sPitch, EAccidentals* pAccidentals,
+bool LDPDataToPitch(wxString sPitch, lmEAccidentals* pAccidentals,
                     wxString* sStep, wxString* sOctave)
 {
     /*
@@ -443,30 +443,30 @@ bool LDPDataToPitch(wxString sPitch, EAccidentals* pAccidentals,
 }
 
 /// Returns -1 if error
-EClefType LDPNameToClef(wxString sClefName)
+lmEClefType LDPNameToClef(wxString sClefName)
 {
     if (sClefName == _T("Do1")) {
-        return eclvDo1;
+        return lmE_Do1;
     } else if (sClefName == _T("Do2")) {
-        return eclvDo2;
+        return lmE_Do2;
     } else if (sClefName == _T("Do3")) {
-        return eclvDo3;
+        return lmE_Do3;
     } else if (sClefName == _T("Do4")) {
-        return eclvDo4;
+        return lmE_Do4;
     } else if (sClefName == _T("Sol")) {
-        return eclvSol;
+        return lmE_Sol;
     } else if (sClefName == _T("Fa3")) {
-        return eclvFa3;
+        return lmE_Fa3;
     } else if (sClefName == _T("Fa4")) {
-        return eclvFa4;
+        return lmE_Fa4;
     } else if (sClefName == _T("SinClave")) {
-        return eclvPercussion;
+        return lmE_Percussion;
     } else {
-        return (EClefType)-1;
+        return (lmEClefType)-1;
     }
 }
 
-EKeySignatures LDPInternalNameToKey(wxString sKeyName)
+lmEKeySignatures LDPInternalNameToKey(wxString sKeyName)
 {
     //Internal names are the original Spanish tags
     static wxString m_sLDPKeyNames[lmMAX_KEY - lmMIN_KEY + 1];
@@ -510,9 +510,9 @@ EKeySignatures LDPInternalNameToKey(wxString sKeyName)
 
     int i;
     for (i = lmMIN_KEY; i <= lmMAX_KEY; i++) {
-        if (m_sLDPKeyNames[i-lmMIN_KEY] == sKeyName) return (EKeySignatures)i;
+        if (m_sLDPKeyNames[i-lmMIN_KEY] == sKeyName) return (lmEKeySignatures)i;
     }
-    return (EKeySignatures)-1;
+    return (lmEKeySignatures)-1;
 
 }
 
@@ -522,24 +522,24 @@ EKeySignatures LDPInternalNameToKey(wxString sKeyName)
 // MusicXML
 //----------------------------------------------------------------------------------------
 
-bool XmlDataToClef(wxString sClefLine, EClefType* pClef)
+bool XmlDataToClef(wxString sClefLine, lmEClefType* pClef)
 {
     if (sClefLine == _T("C1")) {
-        *pClef = eclvDo1;
+        *pClef = lmE_Do1;
     } else if (sClefLine == _T("C2")) {
-        *pClef = eclvDo2;
+        *pClef = lmE_Do2;
     } else if (sClefLine == _T("C3")) {
-        *pClef = eclvDo3;
+        *pClef = lmE_Do3;
     } else if (sClefLine == _T("C4")) {
-        *pClef = eclvDo4;
+        *pClef = lmE_Do4;
     } else if (sClefLine == _T("G2")) {
-        *pClef = eclvSol;
+        *pClef = lmE_Sol;
     } else if (sClefLine == _T("F3")) {
-        *pClef = eclvFa3;
+        *pClef = lmE_Fa3;
     } else if (sClefLine == _T("F4")) {
-        *pClef = eclvFa4;
+        *pClef = lmE_Fa4;
     } else if (sClefLine == _T("SINCLAVE")) {
-        *pClef = eclvPercussion;
+        *pClef = lmE_Percussion;
     } else {
         return true;    //error
     }
@@ -548,7 +548,7 @@ bool XmlDataToClef(wxString sClefLine, EClefType* pClef)
 
 }
 
-bool XmlDataToBarStyle(wxString sBarStyle, EBarline* pType)
+bool XmlDataToBarStyle(wxString sBarStyle, lmEBarline* pType)
 {
     if (sBarStyle == _T("FINREPETICION")) {
         *pType = etb_EndRepetitionBarline;

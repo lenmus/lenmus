@@ -71,21 +71,21 @@ class lmShapeTex2;
 class lmBox;
 
 
-class lmScoreText :  public lmStaffObj
+class lmScoreText :  public lmAuxObj
 {
 public:
-    lmScoreText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,
-           lmLocation tPos, lmFontInfo tFont, wxColour colorC = *wxBLACK);
+    lmScoreText(wxString sTitle, lmEAlignment nAlign, lmLocation tPos, lmFontInfo tFont,
+                wxColour colorC = *wxBLACK);
 
     ~lmScoreText() {}
-
-    // properties related to the clasification of this lmStaffObj
-    //EPositioningType GetPositioningType() { return ePos_Predefined; }
-    float GetTimePosIncrement() { return 0; }
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
     void SetFont(lmPaper* pPaper);
+
+    //implementation of virtual methods from base class
+    lmEAuxObjType GetAuxObjType() { return eAXOT_Text; }
+
 
     //    debugging
     wxString Dump();
@@ -101,9 +101,7 @@ public:
 
 private:
     wxString        m_sText;
-    lmScore*        m_pScore;
 
-    lmLocation      m_tPos;
     lmEAlignment    m_nAlignment;
 	wxColour		m_color;
 

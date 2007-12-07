@@ -19,10 +19,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __DLGDEBUG_H__        //to avoid nested includes
-#define __DLGDEBUG_H__
+#ifndef __LM_DLGDEBUG_H__        //to avoid nested includes
+#define __LM_DLGDEBUG_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "DlgDebug.cpp"
 #endif
 
@@ -37,6 +37,7 @@ public:
     virtual ~lmDlgDebug();
 
     void OnOK(wxCommandEvent& WXUNUSED(event));
+    void OnSave(wxCommandEvent& WXUNUSED(event));
 
     void AppendText(wxString sText);
 
@@ -46,4 +47,4 @@ private:
     DECLARE_EVENT_TABLE()
 };
 
-#endif    // __DLGDEBUG_H__
+#endif    // __LM_DLGDEBUG_H__

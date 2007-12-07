@@ -87,7 +87,7 @@ private:
     wxStaticText*   m_pColumnLabel[m_NUM_COLS];
 
     //to give the answer
-    EClefType       m_nClef;
+    lmEClefType       m_nClef;
 
     DECLARE_EVENT_TABLE()
 };

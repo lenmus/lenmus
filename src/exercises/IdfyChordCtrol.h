@@ -65,7 +65,7 @@ protected:
     void ReconfigureButtons();
 
 private:
-    wxString PrepareScore(EClefType nClef, EChordType nType, lmScore** pScore);
+    wxString PrepareScore(lmEClefType nClef, EChordType nType, lmScore** pScore);
 
         // member variables
 
@@ -78,7 +78,7 @@ private:
     lmChordConstrains* m_pConstrains;       //constraints for the exercise
 
     //problem asked
-    EKeySignatures  m_nKey;
+    lmEKeySignatures  m_nKey;
     wxString        m_sRootNote;
     int             m_nInversion;
     int             m_nMode;

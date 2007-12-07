@@ -1122,10 +1122,10 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
             lmLUnits xPos = pBarline->GetLocationPos();
 
             //compute user required barline position
-            if (pBarline->GetLocationType() == lmLOCATION_RELATIVE) {
+            if (pBarline->GetLocationType() == lmLOCATION_USER_RELATIVE) {
                 xFinalPos = xStart + xPos;
             }
-            else {  //lmLOCATION_ABSOLUTE
+            else {  //lmLOCATION_USER_ABSOLUTE
                 xFinalPos = xPos + pPaper->GetLeftMarginXPos();
             }
             xEnd = wxMax(xEnd, xFinalPos);

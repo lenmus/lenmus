@@ -50,7 +50,7 @@ static lmLUnits m_uRadius;            // for dots
 //constructors and destructor
 //
 
-lmBarline::lmBarline(EBarline nBarlineType, lmVStaff* pVStaff, bool fVisible) :
+lmBarline::lmBarline(lmEBarline nBarlineType, lmVStaff* pVStaff, bool fVisible) :
     lmStaffObj(pVStaff, eSFOT_Barline, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nBarlineType = nBarlineType;
@@ -96,6 +96,9 @@ wxString lmBarline::SourceLDP(int nIndent)
 
     //visible?
     if (!m_fVisible) { sSource += _T(" noVisible"); }
+
+	//attached AuxObjs
+	sSource += lmStaffObj::SourceLDP(nIndent+1);
 
     sSource += _T(")\n\n");
     return sSource;
@@ -253,7 +256,7 @@ void lmBarline::SetLocation(lmLUnits uxPos, lmELocationType nType)
 // global functions related to barlines
 //-------------------------------------------------------------------------------------------------
 
-wxString GetBarlineLDPNameFromType(EBarline nBarlineType)
+wxString GetBarlineLDPNameFromType(lmEBarline nBarlineType)
 {
     switch(nBarlineType)
     {

@@ -89,7 +89,7 @@ private:
     wxString            m_sIntvCode;
     bool                m_fAscending;
     bool                m_fHarmonic;
-    EKeySignatures      m_nKey;
+    lmEKeySignatures      m_nKey;
     lmNoteBits          m_tNote[2];
 
     DECLARE_EVENT_TABLE()

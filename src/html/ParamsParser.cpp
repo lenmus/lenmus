@@ -48,7 +48,7 @@ wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* p
         // allow all key signatures
         int i;
         for (i=0; i <= lmMAX_KEY; i++) {
-            pKeys->SetValid((EKeySignatures)i, true);
+            pKeys->SetValid((lmEKeySignatures)i, true);
         }
     }
 
@@ -56,7 +56,7 @@ wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* p
         //loop to get all keys
         int iColon;
         wxString sKey;
-        EKeySignatures nKey;
+        lmEKeySignatures nKey;
         while (sParamValue != _T("")) {
             //get key
             iColon = sParamValue.Find(_T(","));
@@ -69,7 +69,7 @@ wxString ParseKeys(wxString sParamValue, wxString sFullParam, lmKeyConstrains* p
                 sParamValue = _T("");
             }
             nKey = LDPInternalNameToKey(sKey);
-            if (nKey == (EKeySignatures)-1) {
+            if (nKey == (lmEKeySignatures)-1) {
                 fError = true;
                 break;
             }

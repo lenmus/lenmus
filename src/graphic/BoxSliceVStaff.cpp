@@ -48,7 +48,7 @@ extern lmColors* g_pColors;
 //
 
 lmBoxSliceVStaff::lmBoxSliceVStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff)
-    : lmBox(eGMO_BoxSliceVStaff)
+    : lmBox(pParent->GetScoreOwner(), eGMO_BoxSliceVStaff)
 {
     m_pSliceInstr = pParent;
     m_pVStaff = pVStaff;
@@ -99,7 +99,7 @@ void lmBoxSliceVStaff::AddShape(lmShape* pShape)
     //for visual highlight we need to know the page in wich the StaffObj to highlight
     //is located. To this end we are going to store the page number in each
     //StaffObj
-    //lmScoreObj* pSO = pShape->Owner();
+    //lmScoreObj* pSO = pShape->GetScoreOwner();
     //if (pSO->G
     //pSO->SetPageNumber(nNumPage);
 
@@ -261,10 +261,6 @@ wxString lmBoxSliceVStaff::Dump(int nIndent)
 
 lmGMObject* lmBoxSliceVStaff::FindGMObjectAtPosition(lmUPoint& pointL)
 {
-    //if not in this object return
-    if (!ContainsPoint(pointL)) 
-        return (lmGMObject*)NULL;
-
     //look in shapes collection
     lmShape* pShape = FindShapeAtPosition(pointL);
     if (pShape) return pShape;
@@ -276,7 +272,10 @@ lmGMObject* lmBoxSliceVStaff::FindGMObjectAtPosition(lmUPoint& pointL)
 			return m_ShapeStaff[i];
     }
 
-    // no shape found. So the point is in this object
-    return this;
+    // no object found. Verify if the point is in this object
+    if (ContainsPoint(pointL)) 
+        return this;
+    else
+        return (lmGMObject*)NULL;
 
 }

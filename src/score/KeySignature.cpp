@@ -129,6 +129,9 @@ wxString lmKeySignature::SourceLDP(int nIndent)
     //visible?
     if (!m_fVisible) { sSource += _T(" noVisible"); }
 
+	//attached AuxObjs
+	sSource += lmStaffObj::SourceLDP(nIndent+1);
+
     sSource += _T(")\n");
     return sSource;
 
@@ -166,7 +169,7 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour col
     {
         //get current clef
         lmClef* pClef = pStaff->GetCurrentClef();
-        EClefType nClef = pClef->GetClefType();
+        lmEClefType nClef = pClef->GetClefType();
 
         // Add the shape for key signature
         pShape = CreateShape(pBox, pPaper, lmUPoint(uxLeft, uyTop), nClef, colorC, pStaff);
@@ -182,7 +185,7 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour col
 }
 
 lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
-					              EClefType nClef, wxColour colorC, lmStaff* pStaff)
+					              lmEClefType nClef, wxColour colorC, lmStaff* pStaff)
 {
     // This method is also used when rendering the prolog
 
@@ -196,12 +199,12 @@ lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUP
     lmLUnits uOneLine;          //space, in logical units, for half line
 
     uOneLine = pStaff->TenthsToLogical(10.0);
-    EKeySignatures nKeySignature = m_nKeySignature;
+    lmEKeySignatures nKeySignature = m_nKeySignature;
 
     //Compute position of sharps and flats. Depends on the clef
 	lmLUnits yPos = uPos.y;
     switch(nClef) {
-        case eclvSol:
+        case lmE_Sol:
             uSharpPos[1] = yPos - 5 * uOneLine;         //line 5 (Fa)
             uSharpPos[2] = yPos - 3.5 * uOneLine;       //space between lines 3 y 4 (Do)
             uSharpPos[3] = yPos - 5.5 * uOneLine;       //space above line 5 (Sol)
@@ -219,7 +222,7 @@ lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUP
             uFlatPos[7] = yPos - 1.5 * uOneLine;        //space between lines 1 y 2 (Fa)
             break;
 
-        case eclvFa4:
+        case lmE_Fa4:
             uSharpPos[1] = yPos - 4 * uOneLine;         //line 4 (Fa)
             uSharpPos[2] = yPos - 2.5 * uOneLine;       //space between lines 2 y 3 (Do)
             uSharpPos[3] = yPos - 4.5 * uOneLine;       //space between lines 4 y 5 (Sol)
@@ -237,11 +240,11 @@ lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUP
             uFlatPos[7] = yPos - 4 * uOneLine;          //linea 4 (Fa)
             break;
 
-        case eclvFa3:
+        case lmE_Fa3:
             wxASSERT(false);        //TODO Clef Fa3
             break;
 
-        case eclvDo1:
+        case lmE_Do1:
             uSharpPos[1] = yPos - 2.5 * uOneLine;       //space between lines 2 y 3 (Fa)
             uSharpPos[2] = yPos - uOneLine;             //line 1 (Do)
             uSharpPos[3] = yPos - 3 * uOneLine;         //line 3 (Sol)
@@ -259,16 +262,16 @@ lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUP
             uFlatPos[7] = yPos - 2.5 * uOneLine;        //space between lines 2 y 3 (Fa)
             break;
 
-        case eclvDo2:
+        case lmE_Do2:
             wxASSERT(false);        //TODO Clef Do2
             break;
-        case eclvDo3:
+        case lmE_Do3:
             wxASSERT(false);        //TODO Clef Do3
             break;
-        case eclvDo4:
+        case lmE_Do4:
             wxASSERT(false);        //TODO Clef Do4
             break;
-        case eclvPercussion:
+        case lmE_Percussion:
             nKeySignature = earmDo;    //force not to draw any accidentals
             break;
         default:
@@ -319,7 +322,7 @@ lmShape* lmKeySignature::AddAccidental(bool fSharp, lmPaper* pPaper, lmUPoint uP
 
 }
 
-lmLUnits lmKeySignature::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, EClefType nClef,
+lmLUnits lmKeySignature::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, lmEClefType nClef,
                     int nStaff, wxColour colorC)
 {
     // This method is, primarely, to be used when rendering the prolog
@@ -387,7 +390,7 @@ void lmKeySignature::SetKeySignatureType()
 // Global methods related to Key signatures
 //---------------------------------------------------------------------------------------
 
-void ComputeAccidentals(EKeySignatures nKeySignature, int nAccidentals[])
+void ComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[])
 {
     // Given a key signature (nKeySignature) this function fills the array
     // nAccidentals with the accidentals implied by the key signature.
@@ -516,7 +519,7 @@ void ComputeAccidentals(EKeySignatures nKeySignature, int nAccidentals[])
 
 }
 
-int GetRootNoteIndex(EKeySignatures nKeySignature)
+int GetRootNoteIndex(lmEKeySignatures nKeySignature)
 {
     //returns the index (0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si) to the root note for
     //the Key signature. For example, if nKeySignature is La sharp minor it returns
@@ -577,17 +580,17 @@ int GetRootNoteIndex(EKeySignatures nKeySignature)
 
 }
 
-bool IsMajor(EKeySignatures nKeySignature)
+bool IsMajor(lmEKeySignatures nKeySignature)
 {
     return (nKeySignature < earmLam);
 }
 
-const wxString& GetKeySignatureName(EKeySignatures nKeySignature)
+const wxString& GetKeySignatureName(lmEKeySignatures nKeySignature)
 {
     return m_sKeySignatureName[nKeySignature - lmMIN_KEY];
 }
 
-int KeySignatureToNumFifths(EKeySignatures nKeySignature)
+int KeySignatureToNumFifths(lmEKeySignatures nKeySignature)
 {
     // Retunrs the number of fifths that corresponds to the encoded key signature
 
@@ -664,7 +667,7 @@ int KeySignatureToNumFifths(EKeySignatures nKeySignature)
 
 }
 
-EKeySignatures GetRelativeMinorKey(EKeySignatures nMajorKey)
+lmEKeySignatures GetRelativeMinorKey(lmEKeySignatures nMajorKey)
 {
     switch(nMajorKey) {
         case earmDo:

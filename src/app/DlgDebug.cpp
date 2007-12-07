@@ -19,7 +19,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "DlgDebug.h"
 #endif
 
@@ -42,8 +42,11 @@
 
 #include "DlgDebug.h"
 
+const int lmID_SAVE = wxNewId();
+
 BEGIN_EVENT_TABLE(lmDlgDebug, wxDialog)
    EVT_BUTTON(wxID_OK, lmDlgDebug::OnOK)
+   EVT_BUTTON(lmID_SAVE, lmDlgDebug::OnSave)
 END_EVENT_TABLE()
 
 IMPLEMENT_CLASS(lmDlgDebug, wxDialog)
@@ -54,7 +57,7 @@ lmDlgDebug::lmDlgDebug(wxWindow * parent, wxString sTitle, wxString sData)
 {
     Centre();
 
-    wxBoxSizer * pMainSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* pMainSizer = new wxBoxSizer(wxVERTICAL);
 
     m_pTxtData = new wxTextCtrl(this, -1, sData,
                                 wxPoint(10, 10),
@@ -68,14 +71,20 @@ lmDlgDebug::lmDlgDebug(wxWindow * parent, wxString sTitle, wxString sData)
                     wxALL,        //   and make border all around
                     10 );         // set border width to 10
 
+    wxBoxSizer* pButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    wxButton *cmdOK = new wxButton(this, wxID_OK,
-                                _("OK"),
-                                wxPoint(150, 390),
-                                wxSize(80, 25));
-    cmdOK->SetDefault();
+    wxButton *cmdOK = new wxButton(this, wxID_OK, _("OK"), wxPoint(150, 390),
+								   wxSize(80, 25));
+	cmdOK->SetDefault();
     cmdOK->SetFocus();
-    pMainSizer->Add(cmdOK, 0, wxALIGN_CENTER | wxALL, 10);
+
+	wxButton *cmdSave = new wxButton(this, lmID_SAVE, _("Save"), wxPoint(150, 390),
+									 wxSize(80, 25));
+
+	pButtonsSizer->Add(cmdOK, 0, wxALIGN_CENTER | wxALL, 10);
+	pButtonsSizer->Add(cmdSave, 0, wxALIGN_CENTER | wxALL, 10);
+
+    pMainSizer->Add(pButtonsSizer, 0, wxALIGN_CENTER | wxALL, 10);
 
     // set autolayout based on sizers
     SetAutoLayout(true);
@@ -97,3 +106,14 @@ void lmDlgDebug::AppendText(wxString sText)
     m_pTxtData->AppendText(sText);
 }
 
+void lmDlgDebug::OnSave(wxCommandEvent& WXUNUSED(event))
+{
+	wxString sFilename = wxFileSelector(_T("File to save"));
+	if ( !sFilename.empty() )
+	{
+		// save the file
+		m_pTxtData->SaveFile(sFilename);
+	}
+	//else: cancelled by user
+
+}

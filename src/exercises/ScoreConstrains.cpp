@@ -87,13 +87,13 @@ void lmScoreConstrains::SaveSettings()
     for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Clef%d"),
             m_sSection.c_str(), i);
-        g_pPrefs->Write(sKey, m_oClefs.IsValid( (EClefType)i ));
+        g_pPrefs->Write(sKey, m_oClefs.IsValid( (lmEClefType)i ));
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MinNote%d"),
             m_sSection.c_str(), i);
-        g_pPrefs->Write(sKey, m_oClefs.GetLowerPitch( (EClefType)i ));
+        g_pPrefs->Write(sKey, m_oClefs.GetLowerPitch( (lmEClefType)i ));
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxNote%d"),
             m_sSection.c_str(), i);
-        g_pPrefs->Write(sKey, m_oClefs.GetUpperPitch( (EClefType)i ));
+        g_pPrefs->Write(sKey, m_oClefs.GetUpperPitch( (lmEClefType)i ));
     }
 
     // max interval in two consecutive notes
@@ -110,14 +110,14 @@ void lmScoreConstrains::SaveSettings()
     for (i = lmMIN_TIME_SIGN; i <= lmMAX_TIME_SIGN; i++) {
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Time%d"),
                     m_sSection.c_str(), i);
-        g_pPrefs->Write(sKey, m_oValidTimeSign.IsValid( (ETimeSignature)i ));
+        g_pPrefs->Write(sKey, m_oValidTimeSign.IsValid( (lmETimeSignature)i ));
     }
 
     // allowed key signatures
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/KeySignature%d"),
                     m_sSection.c_str(), i);
-        g_pPrefs->Write(sKey, m_oValidKeys.IsValid((EKeySignatures)i) );
+        g_pPrefs->Write(sKey, m_oValidKeys.IsValid((lmEKeySignatures)i) );
     }
 
     //TODO save remaining data: fragments
@@ -160,14 +160,14 @@ void lmScoreConstrains::LoadSettings()
     for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Clef%d"),
                     m_sSection.c_str(), i);
-        g_pPrefs->Read(sKey, &fValue, ((EClefType)i == eclvSol));
-        m_oClefs.SetValid((EClefType)i, fValue);
+        g_pPrefs->Read(sKey, &fValue, ((lmEClefType)i == lmE_Sol));
+        m_oClefs.SetValid((lmEClefType)i, fValue);
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MinNote%d"),
                     m_sSection.c_str(), i);
-        m_oClefs.SetLowerPitch((EClefType)i, g_pPrefs->Read(sKey, _T("a3")));
+        m_oClefs.SetLowerPitch((lmEClefType)i, g_pPrefs->Read(sKey, _T("a3")));
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/MaxNote%d"),
                     m_sSection.c_str(), i);
-        m_oClefs.SetUpperPitch((EClefType)i, g_pPrefs->Read(sKey, _T("a5")));
+        m_oClefs.SetUpperPitch((lmEClefType)i, g_pPrefs->Read(sKey, _T("a5")));
     }
 
     // max interval in two consecutive notes
@@ -180,15 +180,15 @@ void lmScoreConstrains::LoadSettings()
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/Time%d"),
                     m_sSection.c_str(), i);
         g_pPrefs->Read(sKey, &fValue, true);
-        m_oValidTimeSign.SetValid((ETimeSignature)i, fValue);
+        m_oValidTimeSign.SetValid((lmETimeSignature)i, fValue);
     }
 
     // allowed key signatures
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
         sKey = wxString::Format(_T("/Constrains/ScoreConstrains/%s/KeySignature%d"),
             m_sSection.c_str(), i );
-        g_pPrefs->Read(sKey, &fValue, (bool)((EKeySignatures)i == earmDo) );
-        m_oValidKeys.SetValid((EKeySignatures)i, fValue);
+        g_pPrefs->Read(sKey, &fValue, (bool)((lmEKeySignatures)i == earmDo) );
+        m_oValidKeys.SetValid((lmEKeySignatures)i, fValue);
     }
 
 
@@ -205,7 +205,7 @@ wxString lmScoreConstrains::Verify()
     // ensure that at least a Clef is selected
     fAtLeastOne = false;
     for (i=lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
-        fAtLeastOne = fAtLeastOne || m_oClefs.IsValid((EClefType)i);
+        fAtLeastOne = fAtLeastOne || m_oClefs.IsValid((lmEClefType)i);
         if (fAtLeastOne) break;
     }
     if (!fAtLeastOne) {
@@ -215,7 +215,7 @@ wxString lmScoreConstrains::Verify()
     // ensure that at least a time signature is selected
     fAtLeastOne = false;
     for (i = lmMIN_TIME_SIGN; i <= lmMAX_TIME_SIGN; i++) {
-        fAtLeastOne = fAtLeastOne || m_oValidTimeSign.IsValid((ETimeSignature)i);
+        fAtLeastOne = fAtLeastOne || m_oValidTimeSign.IsValid((lmETimeSignature)i);
         if (fAtLeastOne) break;
     }
     if (!fAtLeastOne) {
@@ -225,7 +225,7 @@ wxString lmScoreConstrains::Verify()
     // ensure that at least a key signature is selected
     fAtLeastOne = false;
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
-        fAtLeastOne = fAtLeastOne || m_oValidKeys.IsValid((EKeySignatures)i);
+        fAtLeastOne = fAtLeastOne || m_oValidKeys.IsValid((lmEKeySignatures)i);
         if (fAtLeastOne) break;
     }
     if (!fAtLeastOne) {
@@ -360,7 +360,7 @@ int lmFragmentsTable::SplitPattern(wxString sSource)
     variable m_aSelectionSet so that
     @return The number of fragments selected
 */
-int lmFragmentsTable::SelectFragments(ETimeSignature nTimeSign)
+int lmFragmentsTable::SelectFragments(lmETimeSignature nTimeSign)
 {
     m_aSelectionSet.Clear();
     int i;
@@ -497,7 +497,7 @@ float lmFragmentsTable::GetPatternDuracion(wxString sPattern, lmTimeSignConstrai
     pScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
 						  g_pMidi->DefaultVoiceInstr(), _T(""));
     lmVStaff *pVStaff = pScore->GetVStaff(1, 1);   //get first vstaff of instr.1
-    pVStaff->AddClef(eclvSol);
+    pVStaff->AddClef(lmE_Sol);
     pVStaff->AddKeySignature(earmDo);
     //pVStaff->AddTimeSignature( m_nTimeSign );
     pNode = parserLDP.ParseText(sSource);
@@ -548,7 +548,7 @@ wxString lmFragmentsTable::GetFirstSegmentDuracion(wxString sSegment,
     pScore->AddInstrument(1, g_pMidi->DefaultVoiceChannel(),
 						  g_pMidi->DefaultVoiceInstr(), _T(""));
     lmVStaff *pVStaff = pScore->GetVStaff(1, 1);   //get first vstaff of instr.1
-    pVStaff->AddClef(eclvSol);
+    pVStaff->AddClef(lmE_Sol);
     pVStaff->AddKeySignature(earmDo);
     //pVStaff->AddTimeSignature( m_nTimeSign );
     pNode = parserLDP.ParseText(sSource);

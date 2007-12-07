@@ -74,8 +74,8 @@ public:
     EScaleMode GetScaleMode() { return m_nMode; }
     void SetScaleMode(EScaleMode nMode) { m_nMode = nMode; }
 
-    bool IsValidClef(EClefType nClef) { return m_oClefs.IsValid(nClef); }
-    void SetClef(EClefType nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
+    bool IsValidClef(lmEClefType nClef) { return m_oClefs.IsValid(nClef); }
+    void SetClef(lmEClefType nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
     lmClefConstrain* GetClefConstrains() { return &m_oClefs; }
 
     lmKeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }

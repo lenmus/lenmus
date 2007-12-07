@@ -50,19 +50,19 @@ public:
     static bool FlipCoin();
 
     // clefs
-    static EClefType GenerateClef(lmClefConstrain* pValidClefs);
+    static lmEClefType GenerateClef(lmClefConstrain* pValidClefs);
 
     // key signature
-    static EKeySignatures GenerateKey(lmKeyConstrains* pValidKeys);
-    static EKeySignatures RandomKeySignature();
+    static lmEKeySignatures GenerateKey(lmKeyConstrains* pValidKeys);
+    static lmEKeySignatures RandomKeySignature();
 
     //time signature
-    static ETimeSignature GenerateTimeSign(lmTimeSignConstrains* pValidTimeSignatures);
-    static ETimeSignature RandomTimeSignature();
+    static lmETimeSignature GenerateTimeSign(lmTimeSignConstrains* pValidTimeSignatures);
+    static lmETimeSignature RandomTimeSignature();
 
     //notes
-    static lmDPitch GenerateRandomDPitch(int nMinLine, int nRange, bool fRests, EClefType nClef);
-    static wxString GenerateRandomRootNote(EClefType nClef, EKeySignatures nKey, bool fAllowAccidentals);
+    static lmDPitch GenerateRandomDPitch(int nMinLine, int nRange, bool fRests, lmEClefType nClef);
+    static wxString GenerateRandomRootNote(lmEClefType nClef, lmEKeySignatures nKey, bool fAllowAccidentals);
 
 };
 

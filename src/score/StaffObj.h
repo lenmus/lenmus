@@ -45,21 +45,27 @@
 
 
 
+
 //-------------------------------------------------------------------------------------------
 // class lmScoreObj
 //  This is the most abstract object. An object has an associated  context options obj.
 //  and a parent
 //-------------------------------------------------------------------------------------------
 
+class lmAuxObj;
+typedef std::vector<lmAuxObj*> lmAuxObjsCol; 
 class lmObjOptions;
 class lmBox;
+class lmController;
 
 class lmScoreObj
 {
 public:
     virtual ~lmScoreObj();
 
-    // Options: access and set value
+    //--- Options --------------------------------------------
+    
+    // get and set the value of an option
     lmObjOptions* GetCurrentObjOptions();
     lmObjOptions* GetObjOptions() { return m_pObjOptions; }
     void SetOption(wxString sName, long nLongValue);
@@ -74,21 +80,42 @@ public:
     bool GetOptionBool(wxString sOptName);
     wxString GetOptionString(wxString sOptName);
 
-	//Any ScoreObj can own AuxObjs. Therefore, the derived class must So they must
-	//provide origin position and TenthsToLogical conversion methods
+    //--- Any ScoreObj can own AuxObjs -----------------------
+    
+	//provide origin position for owned AuxObjs
 	virtual lmUPoint GetReferencePos(lmPaper* pPaper)=0;
+
+    //provide units conversion
     virtual lmLUnits TenthsToLogical(lmTenths nTenths)=0;
     virtual lmTenths LogicalToTenths(lmLUnits uUnits)=0;
+
+    //attach and detach AuxObjs
+    int AttachAuxObj(lmAuxObj* pAO);
+    void DetachAuxObj(lmAuxObj* pAO);
+
+	//position and main shape
+    virtual void ShiftObject(lmLUnits uLeft);
+	virtual lmLocation SetUserLocation(lmLocation tPos);
+	inline lmShape* GetShap2() { return m_pShape2; }
+
+	//contextual menu
+	virtual void PopupMenu(lmController* pCanvas, lmGMObject* pGMO, const lmDPoint& vPos);
+	virtual void CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO);
+
+	virtual void OnProperties(lmGMObject* pGMO);
+
 
 
 protected:
     lmScoreObj(lmScoreObj* pParent);
 
     lmScoreObj*		m_pParent;          //the parent for the ObjOptions chain
+    lmObjOptions*   m_pObjOptions;      //the collection of options or NULL if none
+    lmAuxObjsCol*   m_pAuxObjs;         //the collection of attached AuxObjs or NULL if none
 
-    // options
-    lmObjOptions*   m_pObjOptions;      //the options object associated to this object or
-                                        //   NULL if none
+	//position
+    lmLocation      m_tPos;         //desired position for this object
+    lmShape*		m_pShape2;		//new shape
 
 };
 
@@ -129,16 +156,10 @@ public:
     // graphic model
     virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
                         bool fHighlight = false)=0;
-	lmShape* GetShap2() { return m_pShape2; }
-
-    // methods for draggable objects
-    virtual void MoveTo(lmUPoint& pt);
 
     // debug
     virtual wxString Dump()=0;
 
-    // positioning
-    virtual void ShiftObject(lmLUnits uLeft);
 
 
 #if lmCOMPATIBILITY_NO_SHAPES
@@ -157,23 +178,14 @@ public:
 #endif  //lmCOMPATIBILITY_NO_SHAPES
 
 protected:
-    lmComponentObj(lmScoreObj* pParent, EScoreObjType nType, bool fIsDraggable = false);
+    lmComponentObj(lmScoreObj* pParent, EScoreObjType nType, lmLocation* pPos = &g_tDefaultPos,
+                   bool fIsDraggable = false);
+    wxString SourceLDP_Location(lmUPoint uPaperPos);
 
-    //// Graphic objects can be attached to StaffObjs and AuxObj. The methods are
-    //// defined here, as they are common to both.
-    //void DoAddGraphicObj(lmComponentObj* pGO);
-    //void DoRemoveGraphicObj(lmComponentObj* pGO);
-
-
-    // type and identification
-    EScoreObjType   m_nType;        //Type of lmComponentObj
+    EScoreObjType   m_nType;        //type of ComponentObj
     int             m_nId;          //unique number, to identify each lmComponentObj
+    bool            m_fIsDraggable;
 
-    // Info for draggable objects
-    bool        m_fIsDraggable;
-
-    //// grapich objects attached to this one
-    //GraphicObjsList*    m_pGraphObjs;   //the collection of GraphicObjs. NULL if none
 
 #if lmCOMPATIBILITY_NO_SHAPES
 
@@ -186,8 +198,6 @@ protected:
     // variables related to font rendered objects
     wxFont*     m_pFont;            // font to use for drawing this object
 
-    //transitional variables: renderization based on shapes
-    lmShape*    m_pShape2;          //new shape
 
 #endif  //lmCOMPATIBILITY_NO_SHAPES
 
@@ -209,8 +219,6 @@ enum EStaffObjType
     eSFOT_Text,                 // texts (lmScoreText)
     eSFOT_Control,              // control element (backup, forward) (lmSOControl)
     eSFOT_MetronomeMark,        // metronome mark (lmMetronomeMark)
-    eSFOT_WordsDirection,       // texts (lmWordsDirection)
-
     eSFOT_TupletBracket,        // tuplet bracket (lmTupletBracket)
 };
 
@@ -270,10 +278,6 @@ public:
     // methods related to AuxObj/GraphObj ownership
     virtual bool IsComposite() { return false; }
 
-    // StaffObjs can have attached AuxObjs 
-    void AttachAuxObj(lmAuxObj* pAO);
-    void DetachAuxObj(lmAuxObj* pAO);
-
 
 
 protected:
@@ -298,8 +302,6 @@ protected:
     int         m_nStaffNum;        // lmStaff (1..n) on which this object is located
     int         m_numMeasure;       // measure number in which this lmStaffObj is included
 
-    //StaffObjs can have attached AuxObjs 
-    std::vector<lmAuxObj*>	m_AuxObjs;	    //list of attached AuxObjs
 
 };
 
@@ -316,6 +318,7 @@ enum lmEAuxObjType
 {
     eAXOT_Fermata,
     eAXOT_Lyric,
+    eAXOT_Text,
 
     //graphic objects
     eAXOT_Line,
@@ -345,6 +348,9 @@ public:
 
 	//---- specific methods of this class ------------------------
 
+    // ownership
+    void SetOwner(lmScoreObj* pOwner);
+
     // class info
     virtual lmEAuxObjType GetAuxObjType()=0;
 
@@ -354,7 +360,7 @@ public:
 
 
 protected:
-    lmAuxObj(lmScoreObj* pParent, bool fIsDraggable = false);
+    lmAuxObj(bool fIsDraggable = false);
     virtual lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)=0;
 
 };

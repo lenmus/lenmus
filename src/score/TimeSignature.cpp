@@ -54,7 +54,7 @@ lmTimeSignature::lmTimeSignature(int nBeats, int nBeatType, lmVStaff* pVStaff, b
     m_nBeatType = nBeatType;
 }
 
-lmTimeSignature::lmTimeSignature(ETimeSignature nTimeSign, lmVStaff* pVStaff, bool fVisible) :
+lmTimeSignature::lmTimeSignature(lmETimeSignature nTimeSign, lmVStaff* pVStaff, bool fVisible) :
     lmStaffObj(pVStaff, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = eTS_Normal;
@@ -63,7 +63,7 @@ lmTimeSignature::lmTimeSignature(ETimeSignature nTimeSign, lmVStaff* pVStaff, bo
 }
 
 //constructor for types eTS_Common, eTS_Cut and eTS_SenzaMisura
-lmTimeSignature::lmTimeSignature(ETimeSignatureType nType, lmVStaff* pVStaff, bool fVisible) :
+lmTimeSignature::lmTimeSignature(lmETimeSignatureType nType, lmVStaff* pVStaff, bool fVisible) :
     lmStaffObj(pVStaff, eSFOT_TimeSignature, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
     m_nType = nType;
@@ -123,6 +123,9 @@ wxString lmTimeSignature::SourceLDP(int nIndent)
 
     //visible?
     if (!m_fVisible) { sSource += _T(" noVisible"); }
+
+	//attached AuxObjs
+	sSource += lmStaffObj::SourceLDP(nIndent+1);
 
     sSource += _T(")\n");
     return sSource;
@@ -259,7 +262,7 @@ void lmTimeSignature::AddMidiEvent(lmSoundManager* pSM, float rMeasureStartTime,
 //----------------------------------------------------------------------------------------
 
 //! returns the numerator of time signature fraction
-int GetNumUnitsFromTimeSignType(ETimeSignature nTimeSign)
+int GetNumUnitsFromTimeSignType(lmETimeSignature nTimeSign)
 {
     switch (nTimeSign) {
         case emtr24:
@@ -288,7 +291,7 @@ int GetNumUnitsFromTimeSignType(ETimeSignature nTimeSign)
     }
 }
 
-int GetNumBeatsFromTimeSignType(ETimeSignature nTimeSign)
+int GetNumBeatsFromTimeSignType(lmETimeSignature nTimeSign)
 {
     switch (nTimeSign) {
         case emtr24:
@@ -317,7 +320,7 @@ int GetNumBeatsFromTimeSignType(ETimeSignature nTimeSign)
     }
 }
 
-int GetBeatTypeFromTimeSignType(ETimeSignature nTimeSign)
+int GetBeatTypeFromTimeSignType(lmETimeSignature nTimeSign)
 {
     switch (nTimeSign) {
         case emtr24:
@@ -343,7 +346,7 @@ int GetBeatTypeFromTimeSignType(ETimeSignature nTimeSign)
 }
 
 //! returns beat duration (in LDP notes duration units)
-float GetBeatDuration(ETimeSignature nTimeSign)
+float GetBeatDuration(lmETimeSignature nTimeSign)
 {
     int nBeatType = GetBeatTypeFromTimeSignType(nTimeSign);
     return GetBeatDuration(nBeatType);
@@ -370,13 +373,13 @@ float GetBeatDuration(int nBeatType)
 }
 
 //! Returns the required duration for a measure in the received time signature
-float GetMeasureDuration(ETimeSignature nTimeSign)
+float GetMeasureDuration(lmETimeSignature nTimeSign)
 {
     float rNumBeats = (float)GetNumBeatsFromTimeSignType(nTimeSign);
     return rNumBeats * GetBeatDuration(nTimeSign);
 }
 
-//bool IsBinaryTimeSignature(ETimeSignature nTimeSign)
+//bool IsBinaryTimeSignature(lmETimeSignature nTimeSign)
 //{
 //    switch (nTimeSign) {
 //        case emtr24:

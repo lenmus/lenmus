@@ -40,7 +40,7 @@ public:
 	enum lmEScoreCommand
 	{
 		lmCMD_SelectSingle = 1,
-		lmCMD_MoveStaffObj,
+		lmCMD_MoveScoreObj,
 	};
 
     virtual ~lmScoreCommand();
@@ -75,33 +75,31 @@ public:
 
 
 protected:
-	bool CmdSelectObject();
+	bool DoSelectObject();
 
 
     lmGMObject*		m_pGMO;
 
 };
 
+// Move object command
+//------------------------------------------------------------------------------------
+class lmScoreCommandMove: public lmScoreCommand
+{
+public:
+    lmScoreCommandMove(const wxString& name, lmScoreDocument *pDoc, lmScoreObj* pSO,
+					   const lmUPoint& uPos);
+    ~lmScoreCommandMove() {}
+
+    //overrides of pure virtual methods in base class
+    bool Do();
+    bool Undo();
 
 
-//class lmScoreCommandMove: public lmScoreCommand
-//{
-//public:
-//    lmScoreCommandMove(const wxString& name, lmScoreDocument *pDoc, lmComponentObj* pScO,
-//            const lmUPoint& uPos) :
-//        lmScoreCommand(name, lmCMD_MoveStaffObj, pDoc, pScO)
-//        {
-//            m_pos = uPos;
-//        }
-//    ~lmScoreCommandMove() {}
-//
-//    bool DoMoveStaffObj();
-//    bool UndoMoveStaffObj();
-//
-//
-//protected:
-//    lmUPoint        m_pos;
-//    lmUPoint        m_oldPos;        // for Undo
-//};
+protected:
+    lmLocation      m_tPos;
+    lmLocation		m_tOldPos;        // for Undo
+	lmScoreObj*		m_pSO;
+};
 
 #endif    // __LM_SCORECOMMAND_H__        //to avoid nested includes

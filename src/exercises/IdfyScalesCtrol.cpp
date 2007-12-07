@@ -244,7 +244,7 @@ wxDialog* lmIdfyScalesCtrol::GetSettingsDlg()
 
 void lmIdfyScalesCtrol::PrepareAuxScore(int nButton)
 {
-    PrepareScore(eclvSol, (EScaleType)m_nRealScale[nButton], &m_pAuxScore);
+    PrepareScore(lmE_Sol, (EScaleType)m_nRealScale[nButton], &m_pAuxScore);
 }
 
 wxString lmIdfyScalesCtrol::SetNewProblem()
@@ -274,7 +274,7 @@ wxString lmIdfyScalesCtrol::SetNewProblem()
         m_nKey = GetRelativeMinorKey(m_nKey);
 
     //Generate a random root note
-    EClefType nClef = eclvSol;
+    lmEClefType nClef = lmE_Sol;
     m_sRootNote = oGenerator.GenerateRandomRootNote(nClef, m_nKey, false);  //false = do not allow accidentals. Only those in the key signature
 
     //create the score
@@ -303,7 +303,7 @@ wxString lmIdfyScalesCtrol::SetNewProblem()
 
 }
 
-wxString lmIdfyScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmScore** pScore)
+wxString lmIdfyScalesCtrol::PrepareScore(lmEClefType nClef, EScaleType nType, lmScore** pScore)
 {
 //    //create the scale object
     lmScalesManager oScaleMngr(m_sRootNote, nType, m_nKey);
@@ -334,7 +334,7 @@ wxString lmIdfyScalesCtrol::PrepareScore(EClefType nClef, EScaleType nType, lmSc
 							 g_pMidi->DefaultVoiceInstr(), _T(""));
     pVStaff = (*pScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
     (*pScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
-    pVStaff->AddClef( eclvSol );
+    pVStaff->AddClef( lmE_Sol );
     pVStaff->AddKeySignature( m_nKey );
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
 

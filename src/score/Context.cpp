@@ -38,7 +38,7 @@
 WX_DEFINE_LIST(ContextList);
 
 //access to global functions
-extern void ComputeAccidentals(EKeySignatures nKeySignature, int    nAccidentals[]);
+extern void ComputeAccidentals(lmEKeySignatures nKeySignature, int    nAccidentals[]);
 
 lmContext::lmContext(lmClef* pClef, lmKeySignature* pKey, lmTimeSignature* pTime)
 {

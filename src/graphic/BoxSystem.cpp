@@ -48,7 +48,7 @@ extern lmColors* g_pColors;
 //-----------------------------------------------------------------------------------------
 
 lmBoxSystem::lmBoxSystem(lmBoxPage* pParent, int nNumPage)
-    : lmBox(eGMO_BoxSystem)
+    : lmBox(pParent->GetScoreOwner(), eGMO_BoxSystem)
 {
     m_nNumMeasures = 0;
     m_nNumPage = nNumPage;
@@ -144,10 +144,6 @@ lmBoxSlice* lmBoxSystem::FindSliceAtPosition(lmUPoint& pointL)
 
 lmGMObject* lmBoxSystem::FindGMObjectAtPosition(lmUPoint& pointL)
 {
-    //if not in this system return
-    if (!ContainsPoint(pointL)) 
-        return (lmGMObject*)NULL;
-
     //look in shapes collection
     lmShape* pShape = FindShapeAtPosition(pointL);
     if (pShape) return pShape;
@@ -160,8 +156,11 @@ lmGMObject* lmBoxSystem::FindGMObjectAtPosition(lmUPoint& pointL)
 			return pGMO;    //found
     }
 
-    // no slice found. So the point is in this system
-    return this;
+    // no object found. Verify if the point is in this object
+    if (ContainsPoint(pointL)) 
+        return this;
+    else
+        return (lmGMObject*)NULL;
 
 }
 

@@ -324,7 +324,7 @@ void lmEarIntervalsCtrol::PrepareScore(wxString& sIntvCode, lmScore** pScore)
 							 g_pMidi->DefaultVoiceInstr(), _T(""));
     lmVStaff *pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
     (*pScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
-    pVStaff->AddClef( eclvSol );
+    pVStaff->AddClef( lmE_Sol );
     pVStaff->AddKeySignature(m_nKey);
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
 //    pVStaff->AddSpacer(30);       // 3 lines

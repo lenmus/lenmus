@@ -173,7 +173,7 @@ void lmShapeBeam::Render(lmPaper* pPaper, wxColour color)
 
             // now we can deal with current note 
 			lmTBeamInfo tBeamInfo = *((m_cParentNotes[iNote]->pBeamInfo)+iLevel);
-			EBeamType nType = tBeamInfo.Type;
+			lmEBeamType nType = tBeamInfo.Type;
             switch (nType) {
                 case eBeamBegin:
                     //start of segment. Compute initial point

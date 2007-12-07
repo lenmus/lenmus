@@ -44,18 +44,18 @@ private:
     wxString CreateNoteRest(int nNoteRestDuration, bool fNote);
     wxString CreateNote(int nNoteDuration) { return CreateNoteRest(nNoteDuration, true); }
     wxString CreateRest(int nRestDuration) { return CreateNoteRest(nRestDuration, false); }
-    wxString CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign, bool fOnlyQuarterNotes);
+    wxString CreateLastMeasure(int nNumMeasure, lmETimeSignature nTimeSign, bool fOnlyQuarterNotes);
 
     // pitch related methods
     wxString    InstantiateNotes(wxString sBeats, bool fRootPtich=false);
-    lmDPitch    RootNote(EKeySignatures nKey);
+    lmDPitch    RootNote(lmEKeySignatures nKey);
 
 
 
 
-    ETimeSignature      m_nTimeSign;
-    EClefType           m_nClef;
-    EKeySignatures      m_nKey;
+    lmETimeSignature      m_nTimeSign;
+    lmEClefType           m_nClef;
+    lmEKeySignatures      m_nKey;
     lmScoreConstrains*  m_pConstrains;
 
     //variables to control note pitch generation

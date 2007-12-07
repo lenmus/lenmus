@@ -41,7 +41,7 @@ public:
     ~lmKeySignature() {}
 
     //other methods
-    EKeySignatures GetKeyType() { return m_nKeySignature; }
+    lmEKeySignatures GetKeyType() { return m_nKeySignature; }
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
@@ -53,7 +53,7 @@ public:
     wxString SourceXML(int nIndent);
 
     //rendering related methods
-	lmLUnits AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, EClefType nClef,
+	lmLUnits AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, lmEClefType nClef,
                     int nStaff, wxColour colorC = *wxBLACK);
 
     //methods for hiding the key in prologs
@@ -63,7 +63,7 @@ public:
 
 private:
     lmCompositeShape* CreateShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
-					              EClefType nClef, wxColour colorC, lmStaff* pStaff);
+					              lmEClefType nClef, wxColour colorC, lmStaff* pStaff);
     lmShape* AddAccidental(bool fSharp, lmPaper* pPaper, lmUPoint uPos,
 					       wxColour colorC, lmStaff* pStaff);
 
@@ -73,7 +73,7 @@ private:
     bool              m_fHidden;          //to hide it in system prolog
     bool              m_fTraditional;     //it's a traditional signature. Encoded by the
                                           // redundant enumaeration and fifths/mode pair
-    EKeySignatures    m_nKeySignature;
+    lmEKeySignatures    m_nKeySignature;
     int               m_nFifths;
     bool              m_fMajor;
 
@@ -82,12 +82,12 @@ private:
 //
 // global functions related to KeySignatures
 //
-extern void ComputeAccidentals(EKeySignatures nKeySignature, int nAccidentals[]);
-extern int GetRootNoteIndex(EKeySignatures nKeySignature);
-extern bool IsMajor(EKeySignatures nKeySignature);
-extern const wxString& GetKeySignatureName(EKeySignatures nKeySignature);
-extern int KeySignatureToNumFifths(EKeySignatures nKeySignature);
-extern EKeySignatures GetRelativeMinorKey(EKeySignatures nMajorKey);
+extern void ComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[]);
+extern int GetRootNoteIndex(lmEKeySignatures nKeySignature);
+extern bool IsMajor(lmEKeySignatures nKeySignature);
+extern const wxString& GetKeySignatureName(lmEKeySignatures nKeySignature);
+extern int KeySignatureToNumFifths(lmEKeySignatures nKeySignature);
+extern lmEKeySignatures GetRelativeMinorKey(lmEKeySignatures nMajorKey);
 
 #endif    // __KEYSIGNATURE_H__
 

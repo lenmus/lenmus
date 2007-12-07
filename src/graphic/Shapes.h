@@ -88,7 +88,7 @@ public:
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 	virtual wxBitmap* OnBeginDrag(double rScale);
     virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
-    virtual void OnEndDrag(wxCommandProcessor* pCP, const lmUPoint& uPos) {};
+    virtual void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos) {};
 	lmUPoint GetObjectOrigin();
 
 
@@ -187,7 +187,7 @@ public:
 
 	//overrides
     lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
-    void OnEndDrag(wxCommandProcessor* pCP, const lmUPoint& uPos);
+    void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
 
 };
 

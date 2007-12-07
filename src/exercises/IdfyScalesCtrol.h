@@ -64,7 +64,7 @@ public:
     void ReconfigureButtons();
 
 private:
-    wxString PrepareScore(EClefType nClef, EScaleType nType, lmScore** pScore);
+    wxString PrepareScore(lmEClefType nClef, EScaleType nType, lmScore** pScore);
     int ReconfigureGroup(int iBt, int iStartC, int iEndC, wxString sRowLabel);
     void DisableGregorianMajorMinor(EScaleType nType);
 
@@ -79,7 +79,7 @@ private:
     lmScalesConstrains* m_pConstrains;       //constraints for the exercise
 
     //problem asked
-    EKeySignatures  m_nKey;
+    lmEKeySignatures  m_nKey;
     wxString        m_sRootNote;
     bool            m_fAscending;
 

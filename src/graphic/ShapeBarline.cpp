@@ -40,7 +40,7 @@
 // Implementation of lmShapeBarline
 
 
-lmShapeBarline::lmShapeBarline(lmBarline* pBarline, EBarline nBarlineType,
+lmShapeBarline::lmShapeBarline(lmBarline* pBarline, lmEBarline nBarlineType,
                                lmLUnits xPos, lmLUnits yTop,
 						       lmLUnits yBottom, lmLUnits uThinLineWidth,
                                lmLUnits uThickLineWidth, lmLUnits uSpacing,

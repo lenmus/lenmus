@@ -207,6 +207,7 @@ public:
     void SetOpenHelpButton(bool fButtonPressed);
     void UpdateToolbarsLayout();
     void SilentlyCheckForUpdates(bool fSilent);
+	inline wxMenu* GetEditMenu() {return m_pMenuEdit; }
 
     //other events
     void OnCloseWindow(wxCloseEvent& event);
@@ -257,6 +258,9 @@ protected:
     //flags for toggle buttons/menus
     bool m_fBookOpened;
     bool m_fHelpOpened;
+
+	// menus
+	wxMenu*			m_pMenuEdit;
 
     // tool bars
     wxToolBar*      m_pTbFile;          // file toolbar

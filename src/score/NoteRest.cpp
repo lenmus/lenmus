@@ -74,7 +74,7 @@ WX_DEFINE_LIST(NoteRestsList);
 //====================================================================================================
 //Constructors and destructors
 //====================================================================================================
-lmNoteRest::lmNoteRest(lmVStaff* pVStaff, bool IsRest, ENoteType nNoteType, float rDuration,
+lmNoteRest::lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, float rDuration,
                    bool fDotted, bool fDoubleDotted, int nStaff, bool fVisible) :
     lmStaffObj(pVStaff, eSFOT_NoteRest, pVStaff, nStaff, fVisible, lmDRAGGABLE)
 {
@@ -214,7 +214,7 @@ void lmNoteRest::AddFermata(const lmEPlacement nPlacement)
 {
     if (!m_pNotations) m_pNotations = new AuxObjsList();
 
-    lmFermata* pFermata = new lmFermata(this, nPlacement);
+    lmFermata* pFermata = new lmFermata(nPlacement);
 	AttachAuxObj(pFermata);
     //m_pNotations->Append(pFermata);
 
@@ -381,10 +381,10 @@ float LDPNoteTypeToDuration(const wxString& sNoteType)
     //    }
     //}
 
-    //return NoteTypeToDuration((ENoteType)nNoteType, fDotted, fDoubleDotted);
+    //return NoteTypeToDuration((lmENoteType)nNoteType, fDotted, fDoubleDotted);
 }
 
-float NoteTypeToDuration(ENoteType nNoteType, bool fDotted, bool fDoubleDotted)
+float NoteTypeToDuration(lmENoteType nNoteType, bool fDotted, bool fDoubleDotted)
 {
     //compute duration without modifiers
     float rDuration = pow(2, (10 - nNoteType));

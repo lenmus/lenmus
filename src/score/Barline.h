@@ -37,11 +37,11 @@ class lmBarline:  public lmStaffObj
 {
 public:
     //constructor and destructor
-    lmBarline(EBarline nBarlineType, lmVStaff* pStaff, bool fVisible);
+    lmBarline(lmEBarline nBarlineType, lmVStaff* pStaff, bool fVisible);
     ~lmBarline() {}
 
     //other methods
-    EBarline GetBarlineType() {return m_nBarlineType;}
+    lmEBarline GetBarlineType() {return m_nBarlineType;}
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
@@ -74,7 +74,7 @@ private:
     void DrawTwoDots(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos);
 
 private:
-    EBarline            m_nBarlineType;     //type of barline
+    lmEBarline            m_nBarlineType;     //type of barline
     ArrayOfContexts     m_aContexts;        //pointers to contexts at barline position
 
     lmLUnits            m_uxUserPos;
@@ -84,7 +84,7 @@ private:
 //
 // global functions related to barlines
 //
-wxString GetBarlineLDPNameFromType(EBarline nBarlineType);
+wxString GetBarlineLDPNameFromType(lmEBarline nBarlineType);
 
 
 #endif    // __BARLINE_H__

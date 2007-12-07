@@ -310,7 +310,7 @@ void lmScoreCtrolParams::PrepareScore()
 
         case eHST_pattern:
             //TODO
-    //        Dim nMetricaPatron As ETimeSignature
+    //        Dim nMetricaPatron As lmETimeSignature
     //        nMetricaPatron = MetricaQueDura(SrcDuracionPatron(sPatron))
     //        sPatron = "(metrica " & GetNombreMetrica(nMetricaPatron) & ")" & sPatron
     //        m_oAjPartitura(m_iPartitura).sMusica = FinishShortScore(sPatron)

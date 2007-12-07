@@ -44,7 +44,7 @@ extern lmColors* g_pColors;
 //-----------------------------------------------------------------------------------------
 
 lmBoxPage::lmBoxPage(lmBoxScore* pParent, int nNumPage)
-    : lmBox(eGMO_BoxPage)
+    : lmBox(pParent->GetScoreOwner(), eGMO_BoxPage)
 {
     m_nNumPage = nNumPage;
     m_nFirstSystem = 0;
@@ -105,11 +105,6 @@ lmBoxSlice* lmBoxPage::FindSliceAtPosition(lmUPoint& pointL)
 
 lmGMObject* lmBoxPage::FindGMObjectAtPosition(lmUPoint& pointL)
 {
-    //if not in this Page return
-    //TODO
-    //if (!ContainsPoint(pointL)) 
-    //    return (lmGMObject*)NULL;
-
     //look in shapes collection
     lmShape* pShape = FindShapeAtPosition(pointL);
     if (pShape) return pShape;
@@ -122,8 +117,12 @@ lmGMObject* lmBoxPage::FindGMObjectAtPosition(lmUPoint& pointL)
 			return pGMO;    //found
     }
 
-    // no system found. So the point is in this page
-    return this;
+    // no object found. Verify if the point is in this object
+    //TODO
+    //if (ContainsPoint(pointL)) 
+    //    return this;
+    //else
+        return (lmGMObject*)NULL;
 
 }
 

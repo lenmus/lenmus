@@ -103,7 +103,7 @@ void lmScalesConstrains::SaveSettings()
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
         sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/KeySignature%d"),
             m_sSection.c_str(), i );
-        fValid = m_oValidKeys.IsValid((EKeySignatures)i);
+        fValid = m_oValidKeys.IsValid((lmEKeySignatures)i);
         g_pPrefs->Write(sKey, fValid);
     }
 
@@ -135,8 +135,8 @@ void lmScalesConstrains::LoadSettings()
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
         sKey = wxString::Format(_T("/Constrains/IdfyScale/%s/KeySignature%d"),
             m_sSection.c_str(), i );
-        g_pPrefs->Read(sKey, &fValid, (bool)((EKeySignatures)i == earmDo) );
-        m_oValidKeys.SetValid((EKeySignatures)i, fValid);
+        g_pPrefs->Read(sKey, &fValid, (bool)((lmEKeySignatures)i == earmDo) );
+        m_oValidKeys.SetValid((lmEKeySignatures)i, fValid);
     }
 
     // other settings:

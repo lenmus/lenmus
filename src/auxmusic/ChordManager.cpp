@@ -81,13 +81,13 @@ lmChordManager::lmChordManager()
 }
 
 lmChordManager::lmChordManager(wxString sRootNote, EChordType nChordType,
-                               int nInversion, EKeySignatures nKey)
+                               int nInversion, lmEKeySignatures nKey)
 {
     Create(sRootNote, nChordType, nInversion, nKey);
 }
 
 void lmChordManager::Create(wxString sRootNote, EChordType nChordType,
-                            int nInversion, EKeySignatures nKey)
+                            int nInversion, lmEKeySignatures nKey)
 {
     //parameter 'nInversion' is encoded as follows:
     //  0 - root position
@@ -153,7 +153,7 @@ void lmChordManager::Create(wxString sRootNote, EChordType nChordType,
 
 }
 
-void lmChordManager::Create(lmFPitch fpRootNote, int nNumNotes, lmFIntval nIntervals[], EKeySignatures nKey)
+void lmChordManager::Create(lmFPitch fpRootNote, int nNumNotes, lmFIntval nIntervals[], lmEKeySignatures nKey)
 {
     // save data
     m_nKey = nKey;
@@ -164,7 +164,7 @@ void lmChordManager::Create(lmFPitch fpRootNote, int nNumNotes, lmFIntval nInter
 }
 
 
-void lmChordManager::Create(wxString sRootNote, wxString sIntervals, EKeySignatures nKey)
+void lmChordManager::Create(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey)
 {
     // save data
     m_nKey = nKey;

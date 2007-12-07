@@ -47,7 +47,7 @@ extern lmColors* g_pColors;
 
 lmBoxSlice::lmBoxSlice(lmBoxSystem* pParent, int nAbsMeasure, int nNumInSystem,
 					   lmLUnits xStart, lmLUnits xEnd)
-    : lmBox(eGMO_BoxSlice)
+    : lmBox(pParent->GetScoreOwner(), eGMO_BoxSlice)
 {
     m_pBSystem = pParent;
     m_nAbsMeasure = nAbsMeasure;
@@ -90,10 +90,6 @@ lmBoxSlice* lmBoxSlice::FindMeasureAt(lmUPoint& pointL)
 
 lmGMObject* lmBoxSlice::FindGMObjectAtPosition(lmUPoint& pointL)
 {
-    //if not in this slice return
-    if (!ContainsPoint(pointL)) 
-        return (lmGMObject*)NULL;
-
     //look in shapes collection
     lmShape* pShape = FindShapeAtPosition(pointL);
     if (pShape) return pShape;
@@ -106,8 +102,11 @@ lmGMObject* lmBoxSlice::FindGMObjectAtPosition(lmUPoint& pointL)
 			return pGMO;    //found
     }
 
-    // no instrument slice found. So the point is in this slice
-    return this;
+    // no object found. Verify if the point is in this slice
+    if (ContainsPoint(pointL)) 
+        return this;
+    else
+        return (lmGMObject*)NULL;
 
 }
 

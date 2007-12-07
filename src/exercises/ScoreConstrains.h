@@ -183,7 +183,7 @@ public:
     void AddEntry(lmTimeSignConstrains* pValidTimeSigns, wxString sPattern);
 
     // methods for accesing entries
-    int SelectFragments(ETimeSignature nTimeSign);
+    int SelectFragments(lmETimeSignature nTimeSign);
     void ChooseRandom();
     lmSegmentEntry* GetNextSegment();
 
@@ -227,10 +227,10 @@ public:
     lmScoreConstrains();
     ~lmScoreConstrains() {}
 
-    bool IsValidClef(EClefType nClef) { return m_oClefs.IsValid(nClef); }
-    void SetClef(EClefType nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
-    void SetMaxNote(EClefType nClef, wxString sNote) { m_oClefs.SetUpperPitch(nClef, sNote); }
-    void SetMinNote(EClefType nClef, wxString sNote) { m_oClefs.SetLowerPitch(nClef, sNote); }
+    bool IsValidClef(lmEClefType nClef) { return m_oClefs.IsValid(nClef); }
+    void SetClef(lmEClefType nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
+    void SetMaxNote(lmEClefType nClef, wxString sNote) { m_oClefs.SetUpperPitch(nClef, sNote); }
+    void SetMinNote(lmEClefType nClef, wxString sNote) { m_oClefs.SetLowerPitch(nClef, sNote); }
     lmClefConstrain* GetClefConstrains() { return &m_oClefs; }
 
     lmKeyConstrains* GetKeyConstrains() { return &m_oValidKeys; }
@@ -249,7 +249,7 @@ public:
 
 
     // Fragments table
-    int SelectFragments(ETimeSignature nTimeSign) {
+    int SelectFragments(lmETimeSignature nTimeSign) {
                 return(m_aFragmentsTable.SelectFragments(nTimeSign));
             }
     void ChooseRandomFragment() { return m_aFragmentsTable.ChooseRandom(); }

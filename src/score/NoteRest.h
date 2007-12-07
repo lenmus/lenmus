@@ -60,7 +60,7 @@
 // present on a <beam> MusicXML tag.
 struct lmTBeamInfo
 {
-    EBeamType    Type;
+    lmEBeamType    Type;
     bool        Repeat;
 };
 
@@ -70,7 +70,7 @@ class lmNoteRest:  public lmStaffObj
 {
 public:
     //ctors and dtor
-    lmNoteRest(lmVStaff* pVStaff, bool IsRest, ENoteType nNoteType, float rDuration,
+    lmNoteRest(lmVStaff* pVStaff, bool IsRest, lmENoteType nNoteType, float rDuration,
              bool fDotted, bool fDoubleDotted, int nStaff, bool fVisible);
     virtual ~lmNoteRest();
 
@@ -96,8 +96,8 @@ public:
     // methods related to beams
     void CreateBeam(bool fBeamed, lmTBeamInfo BeamInfo[]);
     bool IsBeamed() const { return m_fBeamed; }
-    EBeamType GetBeamType(int level) { return m_BeamInfo[level].Type; }
-    void SetBeamType(int level, EBeamType type) { m_BeamInfo[level].Type = type; }
+    lmEBeamType GetBeamType(int level) { return m_BeamInfo[level].Type; }
+    void SetBeamType(int level, lmEBeamType type) { m_BeamInfo[level].Type = type; }
 	inline lmBeam* GetBeam() { return m_pBeam; }
 	inline lmTBeamInfo* GetBeamInfo() { return &m_BeamInfo[0]; }
 
@@ -109,7 +109,7 @@ public:
                        int nMeasure);
 
     //accessors
-    ENoteType GetNoteType() const { return m_nNoteType; }
+    lmENoteType GetNoteType() const { return m_nNoteType; }
 
 
 protected:
@@ -124,7 +124,7 @@ protected:
         //
 
     bool        m_fIsRest;          //This lmNoteRest is a rest
-    ENoteType   m_nNoteType;        //type of note / rest
+    lmENoteType   m_nNoteType;        //type of note / rest
     
     //duration and time modifiers
     float       m_rDuration;            //duration as defined in MusicXML: duration/divisions
@@ -153,7 +153,7 @@ WX_DECLARE_LIST(lmNoteRest, NoteRestsList);
 // global functions related to noterests
 extern int LDPNoteTypeToEnumNoteType(const wxString& sNoteType);
 extern float LDPNoteTypeToDuration(const wxString& sNoteType);
-extern float NoteTypeToDuration(ENoteType nNoteType, bool fDotted, bool fDoubleDotted);
+extern float NoteTypeToDuration(lmENoteType nNoteType, bool fDotted, bool fDoubleDotted);
 
 
 

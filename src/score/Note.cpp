@@ -53,15 +53,15 @@ const bool m_fDrawSmallNotesInBlock = false;    //TODO option depending on used 
 
 lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         wxString& sStep, wxString& sOctave, wxString& sAlter,
-        EAccidentals nAccidentals,
-        ENoteType nNoteType, float rDuration,
+        lmEAccidentals nAccidentals,
+        lmENoteType nNoteType, float rDuration,
         bool fDotted, bool fDoubleDotted,
         int nStaff, bool fVisible,
         lmContext* pContext,
         bool fBeamed, lmTBeamInfo BeamInfo[],
         bool fInChord,
         bool fTie,
-        EStemType nStem)  :
+        lmEStemType nStem)  :
     lmNoteRest(pVStaff, DEFINE_NOTE, nNoteType, rDuration, fDotted, fDoubleDotted, nStaff,
                fVisible)
 {
@@ -107,7 +107,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     int nStep = LetterToStep(sStep);
     int nCurContextAcc = m_pContext->GetAccidentals(nStep);
     int nNewContextAcc = nCurContextAcc;
-    EAccidentals nDisplayAcc = nAccidentals;
+    lmEAccidentals nDisplayAcc = nAccidentals;
 
     //update context with displayed accidentals or with alterations,
     //and store all pitch related info
@@ -255,7 +255,7 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         pNtPrev->SetTie(m_pTiePrev);
 
         //if stem direction is not forced, choose it to be as that of the start of tie note
-        if (nStem == eDefaultStem)
+        if (nStem == lmSTEM_DEFAULT)
             m_fStemDown = pNtPrev->StemGoesDown();
     }
 
@@ -528,7 +528,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 	//now proceed to create the shape, if necessary
     lmLUnits uyFlag = 0.0;          //y pos for flag
 	lmLUnits uyStemStart = 0.0;		//the nearest point to notehead
-	if (m_nStemType != eStemNone)
+	if (m_nStemType != lmSTEM_NONE)
     {
         // compute and store start position of stem
         if (m_fStemDown) {
@@ -736,7 +736,7 @@ bool lmNote::AddNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmLUnits uxL
         // either the note is part of a group of beamed notes, is in a chord, or doesn't
         // have stem: it must be drawn in parts
         // Create the notehead shape
-        ENoteHeads nNotehead;
+        lmENoteHeads nNotehead;
         //if (! m_fCabezaX) {
             if (m_nNoteType > eHalf) {
                 nNotehead = enh_Quarter;
@@ -933,7 +933,7 @@ void lmNote::AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPo
 
 }
 
-void lmNote::AddSingleNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, ENoteType nNoteType,
+void lmNote::AddSingleNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENoteType nNoteType,
         bool fStemDown, lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC)
 {
     // Creates the shape for a note (including stem) using a single glyph.
@@ -973,7 +973,7 @@ void lmNote::AddSingleNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, ENoteT
 
 }
 
-void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, ENoteHeads nNoteheadType,
+void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENoteHeads nNoteheadType,
                               lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC)
 {
     // creates the shape for a notehead of type nNoteheadType on position (uxLeft, uyTop)
@@ -1079,19 +1079,19 @@ int lmNote::PosOnStaffToPitch(int nSteps)
 
     int nPos = GetPosOnStaff() + nSteps;
     switch (m_nClef) {
-        case eclvSol :
+        case lmE_Sol :
             return nPos + lmC4_DPITCH;
-        case eclvFa4 :
+        case lmE_Fa4 :
             return nPos + lmC4_DPITCH - 12;
-        case eclvFa3 :
+        case lmE_Fa3 :
             return nPos + lmC4_DPITCH - 10;
-        case eclvDo1 :
+        case lmE_Do1 :
             return nPos + lmC4_DPITCH - 2;
-        case eclvDo2 :
+        case lmE_Do2 :
             return nPos + lmC4_DPITCH - 4;
-        case eclvDo3 :
+        case lmE_Do3 :
             return nPos + lmC4_DPITCH - 6;
-        case eclvDo4 :
+        case lmE_Do4 :
             return nPos + lmC4_DPITCH - 8;
         default:
             wxASSERT(false);
@@ -1114,23 +1114,23 @@ void lmNote::SetUpPitchRelatedVariables(lmDPitch nNewPitch)
 void lmNote::SetUpStemDirection()
 {
     switch (m_nStemType) {
-        case eDefaultStem:
+        case lmSTEM_DEFAULT:
             m_fStemDown = (GetPosOnStaff() >= 6);
             break;
-        case eStemDouble:
+        case lmSTEM_DOUBLE:
             /*TODO
-                I understand that "eStemDouble" means two stems: one up and one down.
-                This is not yet implemented and is treated as eDefaultStem
+                I understand that "lmSTEM_DOUBLE" means two stems: one up and one down.
+                This is not yet implemented and is treated as lmSTEM_DEFAULT
             */
             m_fStemDown = (GetPosOnStaff() >= 6);
             break;
-        case eStemUp:
+        case lmSTEM_UP:
             m_fStemDown = false;
             break;
-        case eStemDown:
+        case lmSTEM_DOWN:
             m_fStemDown = true;
             break;
-        case eStemNone:
+        case lmSTEM_NONE:
             m_fStemDown = false;       //false or true. The value doesn't matter.
             break;
         default:
@@ -1224,37 +1224,37 @@ int lmNote::GetPosOnStaff()
 
     // pitch is defined. Position will depend on key
     switch (m_nClef) {
-        case eclvSol :
+        case lmE_Sol :
             return m_anPitch.ToDPitch() - lmC4_DPITCH;
-        case eclvFa4 :
+        case lmE_Fa4 :
             return m_anPitch.ToDPitch() - lmC4_DPITCH + 12;
-        case eclvFa3 :
+        case lmE_Fa3 :
             return m_anPitch.ToDPitch() - lmC4_DPITCH + 10;
-        case eclvFa5 :
+        case lmE_Fa5 :
             return m_anPitch.ToDPitch() - lmC4_DPITCH + 14;
-        case eclvDo1 :
+        case lmE_Do1 :
             return m_anPitch.ToDPitch() - lmC4_DPITCH + 2;
-        case eclvDo2 :
+        case lmE_Do2 :
             return m_anPitch.ToDPitch() - lmC4_DPITCH + 4;
-        case eclvDo3 :
+        case lmE_Do3 :
             return m_anPitch.ToDPitch() - lmC4_DPITCH + 6;
-        case eclvDo4 :
+        case lmE_Do4 :
             return m_anPitch.ToDPitch() - lmC4_DPITCH + 8;
-        case eclvDo5 :
+        case lmE_Do5 :
             return m_anPitch.ToDPitch() - lmC4_DPITCH + 10;
         default:
-            // no key, assume eclvSol
+            // no key, assume lmE_Sol
             return m_anPitch.ToDPitch() - lmC4_DPITCH;
     }
 }
 
-const EAccidentals  lmNote::ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const
+const lmEAccidentals  lmNote::ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const
 {
     //Current context accidentals for considered step is nCurContextAcc.
     //Note has nNewAcc. This method computes the accidentals to display so that
     //sound has nNewAcc
 
-    EAccidentals nDisplayAcc;
+    lmEAccidentals nDisplayAcc;
     if (nNewAcc == nCurContextAcc)
         nDisplayAcc = eNoAccidentals;
     else if (nNewAcc == 1 && nCurContextAcc == 2)
@@ -1358,7 +1358,7 @@ void lmNote::DoChangePitch(int nStep, int nOctave, int nAlter)
     else {
         // need to add/change displayed accidentals
         if (m_pAccidentals) delete m_pAccidentals;
-        EAccidentals nNewAcc = ComputeAccidentalsToDisplay(nCurAcc, nAlter);
+        lmEAccidentals nNewAcc = ComputeAccidentalsToDisplay(nCurAcc, nAlter);
         m_pAccidentals = new lmAccidental(this, nNewAcc);
         // update context
         m_pVStaff->UpdateContext(this, GetStaffNum(), nStep, nAlter, m_pContext);
@@ -1390,7 +1390,7 @@ wxString lmNote::Dump()
     //get pitch relative to key signature
     lmFPitch fp = FPitch(m_anPitch);
     lmKeySignature* pKey = m_pContext->GeyKey();
-    EKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
+    lmEKeySignatures nKey = (pKey ? pKey->GetKeyType() : earmDo);
     wxString sPitch = FPitch_ToRelLDPName(fp, nKey);
 
     wxString sDump;
@@ -1423,7 +1423,7 @@ wxString lmNote::Dump()
             sDump += _T(", In tuplet");
     }
     ////stem info
-    //if (m_nStemType != eStemNone) {
+    //if (m_nStemType != lmSTEM_NONE) {
     //    sDump += wxString::Format(_T(", xStem=%d, yStem=%d, length=%d"),
     //                m_uxStem, m_uyStem,m_uStemLength );
     //}
@@ -1584,7 +1584,7 @@ wxString lmNote::SourceXML(int nIndent)
 	sSource += _T("<<voice>1</voice>\n");
 
 	//stem
-    if (m_nStemType != eStemNone)
+    if (m_nStemType != lmSTEM_NONE)
 	{
 		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
 		sSource += _T("<stem>");
@@ -1678,7 +1678,7 @@ void lmNote::DeleteStemShape()
 //    See AuxString.cpp for details about note pitch encoding
 //==========================================================================================
 
-wxString MIDINoteToLDPPattern(lmMPitch nPitchMIDI, EKeySignatures nTonalidad, lmDPitch* pPitch)
+wxString MIDINoteToLDPPattern(lmMPitch nPitchMIDI, lmEKeySignatures nTonalidad, lmDPitch* pPitch)
 {
     /*
     Returns the LDP pattern (accidentals, note name and octave) representing the MIDI pitch

@@ -26,7 +26,7 @@
 //
 //-------------------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma implementation "defs.h"
 #endif
 
@@ -52,7 +52,7 @@
 //  b) program specific types:
 //      u - logical units (lmLUnits)
 //      v - device units (lmPixels)
-//      th - tenths (lmTenths)
+//      t - tenths (lmTenths)
 //      ux, uy - logical units. coordinates
 //      udx, udy - logical units. distances
 //      vx, vy - device units. coordinates
@@ -65,6 +65,10 @@
 //      fp - lmFPitch
 //
 //
+
+
+//Global variables used for default initialization
+lmLocation g_tDefaultPos = {0.0, 0.0, lmLOCATION_DEFAULT,lmLOCATION_DEFAULT,lmTENTHS,lmTENTHS};
 
 //-------------------------------------------------------------------------------------
 // implementation of class lmURect code. A real rectangle (lmLUnits). Based on wxRect
@@ -212,5 +216,28 @@ bool lmURect::Intersects(const lmURect& rect) const
 
     // if there is no floatersection, both width and height are 0
     return r.width != 0;
+}
+
+
+//---------------------------------------------------------------------------------------
+//Helper functions for common operations
+//---------------------------------------------------------------------------------------
+
+float round(float val)
+{
+	if (val > 0) {
+		return ceil(val+0.5);
+	} else {
+		return floor(val-0.5);
+	}
+}
+
+double round(double val)
+{
+	if (val > 0) {
+		return ceil(val+0.5);
+	} else {
+		return floor(val-0.5);
+	}
 }
 

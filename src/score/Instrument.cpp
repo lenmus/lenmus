@@ -61,12 +61,14 @@ lmInstrument::lmInstrument(lmScore* pScore, int nNumStaves, int nMIDIChannel,
     lmScoreText* pName = (lmScoreText*)NULL;
     lmScoreText* pAbbreviation = (lmScoreText*)NULL;
     if (sName != _T("")) {
-        pName = new lmScoreText(pScore, sName, lmALIGN_LEFT,
+        pName = new lmScoreText(sName, lmALIGN_LEFT,
                            g_tDefaultPos, g_tInstrumentDefaultFont);
+        pName->SetOwner(this);
     }
     if (sAbbrev != _T("")) {
-        pAbbreviation = new lmScoreText(pScore, sAbbrev, lmALIGN_LEFT,
+        pAbbreviation = new lmScoreText(sAbbrev, lmALIGN_LEFT,
                                    g_tDefaultPos, g_tInstrumentDefaultFont);
+        pAbbreviation->SetOwner(this);
     }
 
     //create the instrument

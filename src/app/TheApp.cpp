@@ -934,13 +934,14 @@ lmLUnits lmToLogicalUnits(double rValue, lmEUnits nUnits)
 {
     // first convert to tenths of millimeter (mode MM_LOMETRIC), then divide by SCALE factor
     switch(nUnits) {
-        case lmMICRONS:         return (int)((rValue / 100.) / lmSCALE);      break;
-        case lmMILLIMETERS:     return (int)((rValue * 10.) / lmSCALE);       break;
-        case lmCENTIMETERS:     return (int)((rValue * 100.) / lmSCALE);      break;
-        case lmINCHES:          return (int)((rValue * 254.) / lmSCALE);      break;
+		case lmLUNITS:			return (lmLUnits)rValue; 
+        case lmMICRONS:         return (lmLUnits)((rValue / 100.) / lmSCALE);      break;
+        case lmMILLIMETERS:     return (lmLUnits)((rValue * 10.) / lmSCALE);       break;
+        case lmCENTIMETERS:     return (lmLUnits)((rValue * 100.) / lmSCALE);      break;
+        case lmINCHES:          return (lmLUnits)((rValue * 254.) / lmSCALE);      break;
         default:
             wxASSERT(false);
-            return 10;
+            return 10.0;
     }
 
 }

@@ -59,15 +59,15 @@ public:
     lmChordManager();
     //build a chord from root note and type
     lmChordManager(wxString sRootNote, EChordType nChordType, int nInversion = 0,
-                   EKeySignatures nKey = earmDo);
+                   lmEKeySignatures nKey = earmDo);
     //destructor
     ~lmChordManager();
 
     //creation
     void Create(wxString sRootNote, EChordType nChordType, int nInversion,
-                EKeySignatures nKey);
-    void Create(wxString sRootNote, wxString sIntervals, EKeySignatures nKey);
-    void Create(lmFPitch fpRootNote, int nNumNotes, lmFIntval nIntervals[], EKeySignatures nKey);
+                lmEKeySignatures nKey);
+    void Create(wxString sRootNote, wxString sIntervals, lmEKeySignatures nKey);
+    void Create(lmFPitch fpRootNote, int nNumNotes, lmFIntval nIntervals[], lmEKeySignatures nKey);
 
     EChordType GetChordType() { return m_nType; }
     wxString GetNameFull();
@@ -93,7 +93,7 @@ private:
 //member variables
 
     EChordType      m_nType;
-    EKeySignatures  m_nKey;
+    lmEKeySignatures  m_nKey;
     int             m_nInversion;
     int             m_nNumNotes;                    //num notes in the chord
     lmFPitch        m_fpNote[lmNOTES_IN_CHORD];     //the chord notes

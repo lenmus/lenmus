@@ -446,7 +446,7 @@ void lmComposer6::GetNotesRange()
 
 
 
-int lmComposer6::GetRootStep(const EKeySignatures nKey) const
+int lmComposer6::GetRootStep(const lmEKeySignatures nKey) const
 {
     // returns the step of root note for the given key signature.
     // For example, for C major returns lmSTEP_C (0); for A sharp minor returns lmSTEP_A (6).
@@ -613,7 +613,7 @@ wxString lmComposer6::CreateNoteRest(int nNoteRestDuration, bool fNote)
 
 }
 
-wxString lmComposer6::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
+wxString lmComposer6::CreateLastMeasure(int nNumMeasure, lmETimeSignature nTimeSign,
                                         bool fOnlyQuarterNotes)
 {
     // Returns a final meaure. This final measure has only a note, long enough, and
@@ -640,7 +640,7 @@ wxString lmComposer6::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSig
 // Methods to deal with tonality
 //----------------------------------------------------------------------------------
 
-bool lmComposer6::InstantiateNotes(lmScore* pScore, EKeySignatures nKey)
+bool lmComposer6::InstantiateNotes(lmScore* pScore, lmEKeySignatures nKey)
 {
     // Returns true if error
 
@@ -806,7 +806,7 @@ void lmComposer6::GetRandomHarmony(int nFunctions, std::vector<long>& aFunction)
 
 }
 
-void lmComposer6::FunctionToChordNotes(EKeySignatures nKey, long nFunction,
+void lmComposer6::FunctionToChordNotes(lmEKeySignatures nKey, long nFunction,
                                        lmAPitch aNotes[4])
 {
     //Given a key signature and an harmonic function returns the notes to build the
@@ -894,7 +894,7 @@ lmAPitch lmComposer6::MoveByChromaticStep(bool fUpStep, lmAPitch nPitch)
 
 }
 
-void lmComposer6::GenerateScale(EKeySignatures nKey, lmAPitch aNotes[7])
+void lmComposer6::GenerateScale(lmEKeySignatures nKey, lmAPitch aNotes[7])
 {
     int nAcc[7];
     ComputeAccidentals(nKey, nAcc);
@@ -905,7 +905,7 @@ void lmComposer6::GenerateScale(EKeySignatures nKey, lmAPitch aNotes[7])
     }
 }
 
-lmAPitch lmComposer6::GenerateInChordList(EKeySignatures nKey, long nChord,
+lmAPitch lmComposer6::GenerateInChordList(lmEKeySignatures nKey, long nChord,
                                              std::vector<lmAPitch>& aValidPitch)
 {
     // Returns the root note in octave 4

@@ -458,7 +458,7 @@ bool lmMusicXMLParser::ParseMusicDataAttributes(wxXmlNode* pNode, lmVStaff* pVSt
             // Add clef to score
             //TODO verify numeric and not greater than NumStaves
             long nStaff = 1;
-            EClefType nClef = eclvSol;
+            lmEClefType nClef = lmE_Sol;
             sStaffNumber.ToLong(&nStaff);
             fError = XmlDataToClef(sClef+sLine, &nClef);
             pVStaff->AddClef(nClef, nStaff);
@@ -669,7 +669,7 @@ bool lmMusicXMLParser::ParseMusicDataBarline(wxXmlNode* pNode, lmVStaff* pVStaff
 
     //default values
     bool fVisible = true;
-    EBarline nBarStyle = etb_SimpleBarline;
+    lmEBarline nBarStyle = etb_SimpleBarline;
 
     bool fError = false;
 
@@ -857,7 +857,7 @@ bool lmMusicXMLParser::ParseMusicDataDirection(wxXmlNode* pNode, lmVStaff* pVSta
             return false;    //nothing added to lmVStaff
             break;
         case eWords:
-            pVStaff->AddWordsDirection(sText, lmALIGN_LEFT, &tPos, oFontData, false);
+            pVStaff->AddText(sText, lmALIGN_LEFT, &tPos, oFontData, false);
             break;
         default:
             wxASSERT(false);
@@ -889,11 +889,11 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
     wxASSERT(pNode->GetName() == sElement);
 
     //default values
-    EAccidentals nAccidentals = eNoAccidentals;
-    EStemType nStem = eDefaultStem;
+    lmEAccidentals nAccidentals = eNoAccidentals;
+    lmEStemType nStem = lmSTEM_DEFAULT;
     bool fDotted = false;
     bool fDoubleDotted = false;
-    ENoteType nNoteType = eQuarter;
+    lmENoteType nNoteType = eQuarter;
     bool fBeamed = false;
     lmTBeamInfo BeamInfo[6];
     for (int i=0; i < 6; i++) {
@@ -1066,13 +1066,13 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
             wxString sValue = GetText(pElement);
 
             if (sValue == _T("none") )
-                nStem = eStemNone;
+                nStem = lmSTEM_NONE;
             else if (sValue == _T("up") )
-                nStem = eStemUp;
+                nStem = lmSTEM_UP;
             else if (sValue == _T("down") )
-                nStem = eStemDown;
+                nStem = lmSTEM_DOWN;
             else if (sValue == _T("double") )
-                nStem = eStemDouble;
+                nStem = lmSTEM_DOUBLE;
             else
                 ParseError(
                     _("Parsing <note>.<stem>: unknown type %s"),
@@ -1412,7 +1412,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
             }
 
             // create de lmLyric object
-            lmLyric* pLyric = new lmLyric((lmNoteRest*)NULL, sText, nSyllabic, (int)nNumber);
+            lmLyric* pLyric = new lmLyric(sText, nSyllabic, (int)nNumber);
 
             //Add the lmLyric to the list of lyrics
             fLyrics = true;
@@ -1889,12 +1889,12 @@ void lmMusicXMLParser::ParsePosition(wxXmlNode* pElement, lmLocation* pPos)
     pPos->y = 0;
     pPos->xUnits = lmTENTHS;
     pPos->yUnits = lmTENTHS;
-    pPos->xType = lmLOCATION_RELATIVE;
-    pPos->yType = lmLOCATION_RELATIVE;
+    pPos->xType = lmLOCATION_USER_RELATIVE;
+    pPos->yType = lmLOCATION_USER_RELATIVE;
 
     // default-x (Absolute position)
     if (sXDef != _T("NoData")) {
-        pPos->xType = lmLOCATION_ABSOLUTE;
+        pPos->xType = lmLOCATION_USER_ABSOLUTE;
         fError = !sXDef.ToLong(&nValue);
         //TODO control error and range
         wxASSERT(!fError);
@@ -1903,7 +1903,7 @@ void lmMusicXMLParser::ParsePosition(wxXmlNode* pElement, lmLocation* pPos)
 
     // default-y  (Absolute position)
     if (sYDef != _T("NoData")) {
-        pPos->yType = lmLOCATION_ABSOLUTE;
+        pPos->yType = lmLOCATION_USER_ABSOLUTE;
         fError = !sYDef.ToLong(&nValue);
         //TODO control error and range
         wxASSERT(!fError);
@@ -1912,7 +1912,7 @@ void lmMusicXMLParser::ParsePosition(wxXmlNode* pElement, lmLocation* pPos)
 
     // relative-x (relative position)
     if (sXRel != _T("NoData")) {
-        pPos->xType = lmLOCATION_RELATIVE;
+        pPos->xType = lmLOCATION_USER_RELATIVE;
         fError = !sXRel.ToLong(&nValue);
         //TODO control error and range
         wxASSERT(!fError);
@@ -1921,7 +1921,7 @@ void lmMusicXMLParser::ParsePosition(wxXmlNode* pElement, lmLocation* pPos)
 
     // relative-y (relative position)
     if (sYRel != _T("NoData")) {
-        pPos->yType = lmLOCATION_RELATIVE;
+        pPos->yType = lmLOCATION_USER_RELATIVE;
         fError = !sYRel.ToLong(&nValue);
         //TODO control error and range
         wxASSERT(!fError);

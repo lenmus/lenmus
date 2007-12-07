@@ -176,7 +176,7 @@ wxString lmTheoKeySignCtrol::SetNewProblem()
     bool fFlats = oGenerator.FlipCoin();
     int nAnswer;
     int nAccidentals = oGenerator.RandomNumber(0, m_pConstrains->GetMaxAccidentals());
-    EKeySignatures nKey;
+    lmEKeySignatures nKey;
     if (m_fMajorMode) {
         if (fFlats) {
             // Major mode, flats
@@ -386,7 +386,7 @@ wxString lmTheoKeySignCtrol::SetNewProblem()
     }
 
     // choose clef
-    EClefType nClef = oGenerator.GenerateClef(m_pConstrains->GetClefConstrains());
+    lmEClefType nClef = oGenerator.GenerateClef(m_pConstrains->GetClefConstrains());
 
     // write buttons' labels, depending on mode
     if (m_fIdentifyKey) {

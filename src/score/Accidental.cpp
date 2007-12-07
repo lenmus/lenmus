@@ -41,7 +41,7 @@
 // lmAccidental object implementation
 //========================================================================================
 
-lmAccidental::lmAccidental(lmNote* pOwner, EAccidentals nType)
+lmAccidental::lmAccidental(lmNote* pOwner, lmEAccidentals nType)
 {
 	m_pOwner = pOwner;
     m_nType = nType;

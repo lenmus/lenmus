@@ -42,7 +42,7 @@
 #include "Glyph.h"
 
 
-lmRest::lmRest(lmVStaff* pVStaff, ENoteType nNoteType, float rDuration, bool fDotted, bool fDoubleDotted,
+lmRest::lmRest(lmVStaff* pVStaff, lmENoteType nNoteType, float rDuration, bool fDotted, bool fDoubleDotted,
         int nStaff, bool fVisible, lmContext* pContext, bool fBeamed, lmTBeamInfo BeamInfo[])
     : lmNoteRest(pVStaff, DEFINE_REST, nNoteType, rDuration, fDotted, fDoubleDotted, 
                  nStaff, fVisible)
@@ -248,6 +248,9 @@ wxString lmRest::SourceLDP(int nIndent)
 
     //visible?
     if (!m_fVisible) { sSource += _T(" noVisible"); }
+
+	//attached AuxObjs
+	sSource += lmStaffObj::SourceLDP(nIndent+1);
 
     sSource += _T(")\n");
     return sSource;

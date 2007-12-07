@@ -207,8 +207,8 @@ int lmFontManager::AnalyzeGlyphLine(int nLine, wxString sLine)
     //get clef
     iSemicolon = sLine.Find(_T(";"));
     wxString sClef = sLine.Left(iSemicolon);
-    EClefType nClef = LDPNameToClef(sClef);
-    wxASSERT(nClef != (EClefType)-1);
+    lmEClefType nClef = LDPNameToClef(sClef);
+    wxASSERT(nClef != (lmEClefType)-1);
 
     //get lower scope
     iSemicolon = sLine.Find(_T(";"));

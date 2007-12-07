@@ -28,10 +28,10 @@
 
 // Common definitions for all score kernel
 
-#ifndef __DEFS_H__        //to avoid nested includes
-#define __DEFS_H__
+#ifndef __LM_DEFS_H__        //to avoid nested includes
+#define __LM_DEFS_H__
 
-#if defined(__GNUG__) && !defined(__APPLE__)
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "defs.cpp"
 #endif
 
@@ -68,7 +68,8 @@ enum lmEUnits {
     lmMILLIMETERS,
     lmCENTIMETERS,
     lmINCHES,
-    lmTENTHS
+    lmTENTHS,
+	lmLUNITS
 };
 
 // defined in TheApp.cpp
@@ -76,45 +77,45 @@ extern lmLUnits lmToLogicalUnits(int nValue, lmEUnits nUnits);
 extern lmLUnits lmToLogicalUnits(double rValue, lmEUnits nUnits);
 
 
-enum EClefType
+enum lmEClefType
 {
-    eclvUndefined = 0,
-    eclvSol,
-    eclvFa4,
-    eclvFa3,
-    eclvDo1,
-    eclvDo2,
-    eclvDo3,
-    eclvDo4,
-    eclvPercussion,
+    lmE_Undefined = 0,
+    lmE_Sol,
+    lmE_Fa4,
+    lmE_Fa3,
+    lmE_Do1,
+    lmE_Do2,
+    lmE_Do3,
+    lmE_Do4,
+    lmE_Percussion,
     // other clefs not available for exercises
-    eclvDo5,
-    eclvFa5,
-    eclvSol1,
-    eclv8Sol,       //8 above
-    eclvSol8,       //8 below
-    eclv8Fa,        //8 above
-    eclvFa8,        //8 below
+    lmE_Do5,
+    lmE_Fa5,
+    lmE_Sol1,
+    lmE_8Sol,       //8 above
+    lmE_Sol8,       //8 below
+    lmE_8Fa,        //8 above
+    lmE_Fa8,        //8 below
 
 };
-// AWARE enum constats EClefType are going to be ramdomly generated in object
+// AWARE enum constats lmEClefType are going to be ramdomly generated in object
 // Generators. The next constants defines de range.
-#define lmMIN_CLEF        eclvSol
-#define lmMAX_CLEF        eclvPercussion
-// AWARE enum constats EClefType are going to be used as indexes in ClefConstrains
+#define lmMIN_CLEF        lmE_Sol
+#define lmMAX_CLEF        lmE_Percussion
+// AWARE enum constats lmEClefType are going to be used as indexes in ClefConstrains
 
 
-enum EStemType
+enum lmEStemType
 {
-    eDefaultStem = 0,   //default: as decided by program
-    eStemUp,            //up: force stem up
-    eStemDown,          //down: force stem down
-    eStemNone,          //none: force no stem
-    eStemDouble         //double: force doble line. Direction as decided by program
+    lmSTEM_DEFAULT = 0,   //default: as decided by program
+    lmSTEM_UP,            //up: force stem up
+    lmSTEM_DOWN,          //down: force stem down
+    lmSTEM_NONE,          //none: force no stem
+    lmSTEM_DOUBLE         //double: force doble line. Direction as decided by program
 };
 
 // Beaming: type of beaming
-enum EBeamType {
+enum lmEBeamType {
     eBeamNone = 0,
     eBeamBegin,
     eBeamContinue,
@@ -137,7 +138,7 @@ enum EBeamType {
 //                            So the longest one (longa) last 1024 units and
 //                            the shortest one (256th, semigarrapatea) last 1 unit.
 //-----------------------------------------------------------------------------------------------
-enum ENoteType
+enum lmENoteType
 {
     eLonga = 0,     // es: longa            en-UK: longa                    en-USA: long
     eBreve,         // es: breve, cuadrada  en-UK: breve                    en-USA: double whole
@@ -153,7 +154,7 @@ enum ENoteType
 };
 
 // to facilitate access to standard notes' duration.
-enum ENoteDuration
+enum lmENoteDuration
 {
     eLongaDuration = 1024,
     eBreveDottedDuration = 768,
@@ -180,7 +181,7 @@ enum ENoteDuration
 
 
 // accidental signs
-enum EAccidentals
+enum lmEAccidentals
 {
     eNoAccidentals = 0,
     eNatural,               // es: becuadro
@@ -198,7 +199,7 @@ enum EAccidentals
 };
 
 //! key signatures
-enum EKeySignatures
+enum lmEKeySignatures
 {
     earmDo = 0,
     earmSol,
@@ -233,20 +234,20 @@ enum EKeySignatures
     earmSolm,
     earmRem
 };
-// AWARE enum constats EKeySignatures are going to be ramdomly generated in object
+// AWARE enum constats lmEKeySignatures are going to be ramdomly generated in object
 // Generators. The next constant defines de maximum and minimum values.
 #define lmMIN_KEY  earmDo
 #define lmMAX_KEY  earmRem
 #define lmNUM_KEYS lmMAX_KEY - lmMIN_KEY + 1
 // AWARE names for key signatures are defined in object lmKeySignature. There is an
 // array, named sKeySignatureName, and the key signatures names are defined
-// assuming a predefined order in the enum EKeySignatures
+// assuming a predefined order in the enum lmEKeySignatures
 // AWARE items 'earmDo' to 'earmFa' are used as indexes in DlgCfgEarIntervals.
 //  'earmDo' must be 0 and consecutive orden must be kept.
 
 
 //! TimeSignatureType indicates the signature encoding being used
-enum ETimeSignatureType
+enum lmETimeSignatureType
 {
     eTS_Normal = 1,        // it is a single fraction
     eTS_Common,            // it is 4/4 but represented by a C symbol
@@ -257,7 +258,7 @@ enum ETimeSignatureType
     eTS_SenzaMisura        // no time signature is present
 };
 
-enum ETimeSignature
+enum lmETimeSignature
 {
     emtr24 = 1,  //  2/4
     emtr34,      //  3/4
@@ -270,7 +271,7 @@ enum ETimeSignature
     emtr22,      //  2/2
     emtr32,      //  3/2
 };
-// AWARE enum constats ETimeSignature are going to be ramdomly generated in object
+// AWARE enum constats lmETimeSignature are going to be ramdomly generated in object
 // Generators. The next constant defines de maximum and minimum values.
 #define lmMIN_TIME_SIGN  emtr24
 #define lmMAX_TIME_SIGN  emtr32
@@ -280,12 +281,6 @@ enum ETimeSignature
 #define lmUNKNOWN_BEAT  -2      //unknown (possibly, time signature is not set)
 #define lmOFF_BEAT      -1      //off-beat
 
-
-enum ETies
-{
-    eL_NotTied = 0,
-    eL_Tied
-};
 
 // Placement indicates whether something is above or below another element,
 // such as a note or a notation.
@@ -297,7 +292,7 @@ enum lmEPlacement
 };
 
 //noteheads
-enum ENoteHeads
+enum lmENoteHeads
 {
     enh_Longa = 1,
     enh_Breve,
@@ -316,7 +311,7 @@ enum lmEPitchType
 };
 
 // barlines
-enum EBarline
+enum lmEBarline
 {
     etb_SimpleBarline = 1,          //thin line
     etb_DoubleBarline,              //two thin lines
@@ -566,4 +561,37 @@ public:
 
 
 
-#endif    // __DEFS_H__
+//---------------------------------------------------------------------------------------
+//Location data
+//---------------------------------------------------------------------------------------
+
+enum lmELocationType
+{
+	lmLOCATION_DEFAULT = 0,			//user didn't specify location
+	lmLOCATION_USER_RELATIVE,		//user specified a relative location
+    lmLOCATION_USER_ABSOLUTE,		//user specified an absolute location
+	lmLOCATION_COMPUTED,			//computed default location
+};
+
+typedef struct lmLocationStruct {
+    float x;
+    float y;
+    lmELocationType xType;
+    lmELocationType yType;
+    lmEUnits xUnits;
+    lmEUnits yUnits;
+} lmLocation;
+
+//global variables used as default initializators
+extern lmLocation g_tDefaultPos;          // defined in StaffObj.cpp
+
+
+
+//---------------------------------------------------------------------------------------
+//Helper functions for common operations
+//---------------------------------------------------------------------------------------
+
+extern double round(double val);
+extern float round(float val);
+
+#endif    // __LM_DEFS_H__

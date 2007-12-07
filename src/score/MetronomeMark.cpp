@@ -35,7 +35,7 @@
 #include "../graphic/Shapes.h"
 
 // 'note_symbol = 80'
-lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, ENoteType nNoteType, int nDots,
+lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, lmENoteType nNoteType, int nDots,
                     int nTicksPerMinute, bool fParentheses, bool fVisible)
     : lmStaffObj(pVStaff, eSFOT_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
@@ -69,8 +69,8 @@ lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, int nTicksPerMinute,
 
 // 'note_symbol = note_symbol'
 lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff,
-                    ENoteType nLeftNoteType, int nLeftDots,
-                    ENoteType nRightNoteType, int nRightDots,
+                    lmENoteType nLeftNoteType, int nLeftDots,
+                    lmENoteType nRightNoteType, int nRightDots,
                     bool fParentheses, bool fVisible)
     : lmStaffObj(pVStaff, eSFOT_MetronomeMark, pVStaff, 1, fVisible, lmDRAGGABLE)
 {
@@ -194,7 +194,7 @@ lmLUnits lmMetronomeMark::DrawSymbol(bool fMeasuring, lmPaper* pPaper, lmShapeGl
     return pShape->GetWidth();
 }
 
-lmEGlyphIndex lmMetronomeMark::SelectGlyph(ENoteType nNoteType, int nDots)
+lmEGlyphIndex lmMetronomeMark::SelectGlyph(lmENoteType nNoteType, int nDots)
 {
     lmEGlyphIndex nGlyph = GLYPH_SMALL_QUARTER_NOTE;
     switch (nNoteType) {
@@ -264,7 +264,7 @@ wxString lmMetronomeMark::SourceXML(int nIndent)
     return sSource;
 }
 
-wxString lmMetronomeMark::GetLDPNote(ENoteType nNoteType, int nDots)
+wxString lmMetronomeMark::GetLDPNote(lmENoteType nNoteType, int nDots)
 {
     // returns LDP data (English) starting with an space
 

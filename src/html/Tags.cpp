@@ -290,19 +290,19 @@ Acceptable values: DeduceKey | WriteKey | Both"),
         wxString sClef = tag.GetParam(_T("VALUE"));
         sClef.MakeUpper();
         if (sClef == _T("SOL"))
-            m_pConstrains->SetClef(eclvSol, true);
+            m_pConstrains->SetClef(lmE_Sol, true);
         else if (sClef == _T("FA4"))
-            m_pConstrains->SetClef(eclvFa4, true);
+            m_pConstrains->SetClef(lmE_Fa4, true);
         else if (sClef == _T("FA3"))
-            m_pConstrains->SetClef(eclvFa3, true);
+            m_pConstrains->SetClef(lmE_Fa3, true);
         else if (sClef == _T("DO4"))
-            m_pConstrains->SetClef(eclvDo4, true);
+            m_pConstrains->SetClef(lmE_Do4, true);
         else if (sClef == _T("DO3"))
-            m_pConstrains->SetClef(eclvDo3, true);
+            m_pConstrains->SetClef(lmE_Do3, true);
         else if (sClef == _T("DO2"))
-            m_pConstrains->SetClef(eclvDo2, true);
+            m_pConstrains->SetClef(lmE_Do2, true);
         else if (sClef == _T("DO1"))
-            m_pConstrains->SetClef(eclvDo1, true);
+            m_pConstrains->SetClef(lmE_Do1, true);
         else
             LogError(wxString::Format(
 _T("Invalid param value in:\n<param %s >\n \
@@ -340,11 +340,11 @@ void lmTheoKeySignParms::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     // ensure that at least a Clef is selected
     bool fClefSpecified = false;
     for (int i=lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
-        fClefSpecified = fClefSpecified || m_pConstrains->IsValidClef((EClefType)i);
+        fClefSpecified = fClefSpecified || m_pConstrains->IsValidClef((lmEClefType)i);
         if (fClefSpecified) break;
     }
     if (!fClefSpecified) {
-        m_pConstrains->SetClef(eclvSol, true);
+        m_pConstrains->SetClef(lmE_Sol, true);
     }
 
     // create the window

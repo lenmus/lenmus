@@ -393,7 +393,7 @@ void lmComposer5::ChooseRangeOfNotes()
     //set the minimum note and the range
     wxString sMinPitch = (m_pConstrains->GetClefConstrains())->GetLowerPitch(m_nClef);
     wxString sMaxPitch = (m_pConstrains->GetClefConstrains())->GetUpperPitch(m_nClef);
-    EAccidentals nAccidentals;
+    lmEAccidentals nAccidentals;
     PitchNameToData(sMinPitch, &m_minPitch, &nAccidentals);
     PitchNameToData(sMaxPitch, &m_maxPitch, &nAccidentals);
 }
@@ -449,7 +449,7 @@ wxString lmComposer5::GenerateNewNote(bool fRepeat, bool fRootPitch)
 }
 
 
-lmDPitch lmComposer5::RootNote(EKeySignatures nKey)
+lmDPitch lmComposer5::RootNote(lmEKeySignatures nKey)
 {
     // returns the pitch of root note (in octave 4) for the given key signature.
     // For example, for C major returns 29 (c4); for A sharp minor returns 34 (a4).
@@ -644,7 +644,7 @@ wxString lmComposer5::CreateNoteRest(int nNoteRestDuration, bool fNote)
 
 }
 
-wxString lmComposer5::CreateLastMeasure(int nNumMeasure, ETimeSignature nTimeSign,
+wxString lmComposer5::CreateLastMeasure(int nNumMeasure, lmETimeSignature nTimeSign,
                                         bool fOnlyQuarterNotes)
 {
     // Returns a final meaure. This final measure has only a note, long enough, and

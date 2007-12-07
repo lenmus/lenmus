@@ -93,7 +93,7 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
     //generate the two intervals to compare
     //
 
-    EClefType nClef = eclvSol;
+    lmEClefType nClef = lmE_Sol;
 
     // select interval type: ascending, descending or both
     lmRandomGenerator oGenerator;
@@ -114,7 +114,7 @@ wxString lmEarCompareIntvCtrol::SetNewProblem()
         fAscending = false;
     }
     // select a random key signature satisfying the constraints
-    EKeySignatures nKey;
+    lmEKeySignatures nKey;
     if (m_pConstrains->OnlyNatural()) {
         nKey = oGenerator.GenerateKey(m_pConstrains->GetKeyConstrains());
     }

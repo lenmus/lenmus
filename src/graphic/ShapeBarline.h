@@ -47,7 +47,7 @@ class lmBarline;
 class lmShapeBarline : public lmSimpleShape
 {
 public:
-    lmShapeBarline(lmBarline* pBarline, EBarline nBarlineType, lmLUnits xPos, lmLUnits yTop,
+    lmShapeBarline(lmBarline* pBarline, lmEBarline nBarlineType, lmLUnits xPos, lmLUnits yTop,
 				   lmLUnits yBottom, lmLUnits uThinLineWidth, lmLUnits uThickLineWidth,
                    lmLUnits uSpacing, lmLUnits uRadius, wxColour color);
 
@@ -68,7 +68,7 @@ protected:
                        lmLUnits uHeight, wxColour color);
     void DrawTwoDots(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos);
 
-    EBarline    m_nBarlineType;     //type of barline
+    lmEBarline    m_nBarlineType;     //type of barline
 
     //geometry
     lmLUnits m_uThinLineWidth;

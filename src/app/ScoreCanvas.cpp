@@ -41,6 +41,7 @@
 #include "ScoreView.h"
 #include "ScoreDoc.h"
 #include "ScoreCommand.h"
+#include "ArtProvider.h"        // to use ArtProvider for managing icons
 
 #include "global.h"
 
@@ -53,10 +54,25 @@ extern bool g_fReleaseBehaviour;        // in TheApp.cpp
 // implementation of lmController
 //-------------------------------------------------------------------------------------
 
+//IDs for contextual menus
+const int lmID_CUT = wxNewId();
+const int lmID_COPY = wxNewId();
+const int lmID_PASTE = wxNewId();
+const int lmID_COLOR = wxNewId();
+const int lmID_PROPERTIES = wxNewId();
+
 
 BEGIN_EVENT_TABLE(lmController, wxEvtHandler)
 	EVT_CHAR(lmController::OnKeyPress) 
     EVT_ERASE_BACKGROUND(lmController::OnEraseBackground)
+
+	//contextual menus
+	EVT_MENU	(lmID_CUT, lmController::OnCut)
+    EVT_MENU	(lmID_COPY, lmController::OnCopy)
+    EVT_MENU	(lmID_PASTE, lmController::OnPaste)
+    EVT_MENU	(lmID_COLOR, lmController::OnColor)
+    EVT_MENU	(lmID_PROPERTIES, lmController::OnProperties)
+
 END_EVENT_TABLE()
 
 IMPLEMENT_ABSTRACT_CLASS(lmController, wxWindow)
@@ -67,6 +83,12 @@ lmController::lmController(wxWindow *pParent, lmScoreView *pView, lmScoreDocumen
 				 const wxSize& size, long style)
         : wxWindow(pParent, -1, pos, size, style)
 {
+	m_pMenu = (wxMenu*)NULL;		//no contextual menu
+}
+
+lmController::~lmController()
+{
+	if (m_pMenu) delete m_pMenu;
 }
 
 void lmController::OnEraseBackground(wxEraseEvent& event)
@@ -78,6 +100,19 @@ void lmController::OnEraseBackground(wxEraseEvent& event)
 	// will cause flickering
 }
 
+
+void lmController::ShowContextualMenu(lmScoreObj* pOwner, lmGMObject* pGMO, wxMenu* pMenu,
+									  int x, int y)
+{
+	m_pMenuOwner = pOwner;
+	m_pMenuGMO = pGMO;
+	PopupMenu(pMenu, x, y);
+}
+
+wxMenu* lmController::GetContextualMenu()
+{
+	return (wxMenu*)NULL;
+}
 
 //-------------------------------------------------------------------------------------
 // implementation of lmScoreCanvas
@@ -91,6 +126,7 @@ BEGIN_EVENT_TABLE(lmScoreCanvas, lmController)
     EVT_MOUSE_EVENTS(lmScoreCanvas::OnMouseEvent)
     EVT_PAINT(lmScoreCanvas::OnPaint)
     LM_EVT_SCORE_HIGHLIGHT(lmScoreCanvas::OnVisualHighlight)
+
 END_EVENT_TABLE()
 
 // Define a constructor for my canvas
@@ -102,6 +138,9 @@ lmScoreCanvas::lmScoreCanvas(lmScoreView *pView, wxWindow *pParent, lmScoreDocum
     m_pOwner = pParent;
     m_pDoc = pDoc;
     m_colorBg = colorBg;
+
+	//attach the edit menu to the command processor
+	m_pDoc->GetCommandProcessor()->SetEditMenu( GetMainFrame()->GetEditMenu() );
 
 }
 
@@ -194,20 +233,20 @@ void lmScoreCanvas::OnVisualHighlight(lmScoreHighlightEvent& event)
     m_pView->OnVisualHighlight(event);
 }
 
-void lmScoreCanvas::MoveObject(lmComponentObj* pSO, const lmUPoint& uPos)
+void lmScoreCanvas::MoveObject(lmGMObject* pGMO, const lmUPoint& uPos)
 {
-	////Generate move command to move the lmStaffObj and update the document
-	//wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
- //   pCP->Submit(new lmScoreCommandMove(_T("Move object"), m_pDoc, pSO, uPos));
+	//Generate move command to move the lmComponentObj and update the document
 
+	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
+    lmScoreObj* pSO = pGMO->GetScoreOwner();
+	pCP->Submit(new lmScoreCommandMove(_T("Move object"), m_pDoc, pSO, uPos));
 }
 
 void lmScoreCanvas::SelectObject(lmGMObject* pGMO)
 {
-	//select/deselect an ComponentObj
+	//select/deselect a ComponentObj
+
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	//pCP->Submit(new lmScoreCommand(_T("Select object"),
-	//							   lmScoreCommand::lmCMD_SelectSingle, m_pDoc, pSO));
 	pCP->Submit(new lmCmdSelectSingle(_T("Select object"), m_pDoc, pGMO));
 }
 
@@ -247,5 +286,79 @@ void lmScoreCanvas::OnEraseBackground(wxEraseEvent& event)
 	// To prevent flickering we are not going to erase the background and the view
 	// will paint it when needed, but only on the background areas not on all
 	// canvas areas
+}
+
+wxMenu* lmScoreCanvas::GetContextualMenu()
+{
+	if (m_pMenu) delete m_pMenu;
+	m_pMenu = new wxMenu();
+
+#if defined(__WXMSW__) || defined(__WXGTK__)
+
+    wxMenuItem* pItem;
+    wxSize nIconSize(16, 16);
+
+    pItem = new wxMenuItem(m_pMenu, lmID_CUT, _("&Cut"));
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_cut"), wxART_TOOLBAR, nIconSize) );
+    m_pMenu->Append(pItem);
+
+    pItem = new wxMenuItem(m_pMenu, lmID_COPY, _("&Copy"));
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_copy"), wxART_TOOLBAR, nIconSize) );
+    m_pMenu->Append(pItem);
+
+    pItem = new wxMenuItem(m_pMenu, lmID_PASTE, _("&Paste"));
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("tool_paste"), wxART_TOOLBAR, nIconSize) );
+    m_pMenu->Append(pItem);
+
+	m_pMenu->AppendSeparator();
+
+    pItem = new wxMenuItem(m_pMenu, lmID_COLOR, _("Colour"));
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("opt_colors"), wxART_TOOLBAR, nIconSize) );
+    m_pMenu->Append(pItem);
+
+    pItem = new wxMenuItem(m_pMenu, lmID_PROPERTIES, _("Properties"));
+    pItem->SetBitmap( wxArtProvider::GetBitmap(_T("opt_tools"), wxART_TOOLBAR, nIconSize) );
+    m_pMenu->Append(pItem);
+
+	//m_pMenu->AppendSeparator();
+
+
+#else
+	m_pMenu->Append(lmID_CUT, _("&Cut"));
+	m_pMenu->Append(lmID_COPY, _("&Copy"));
+	m_pMenu->Append(lmID_PASTE, _("&Paste"));
+	m_pMenu->AppendSeparator();
+	m_pMenu->Append(lmID_COLOR, _("Colour"));
+	//m_pMenu->AppendSeparator();
+
+#endif
+
+	return m_pMenu;
+}
+
+void lmScoreCanvas::OnCut(wxCommandEvent& event)
+{
+	WXUNUSED(event);
+}
+
+void lmScoreCanvas::OnCopy(wxCommandEvent& event)
+{
+	WXUNUSED(event);
+}
+
+void lmScoreCanvas::OnPaste(wxCommandEvent& event)
+{
+	WXUNUSED(event);
+}
+
+void lmScoreCanvas::OnColor(wxCommandEvent& event)
+{
+	WXUNUSED(event);
+}
+
+void lmScoreCanvas::OnProperties(wxCommandEvent& event)
+{
+	WXUNUSED(event);
+	m_pMenuOwner->OnProperties(m_pMenuGMO);
 }
 

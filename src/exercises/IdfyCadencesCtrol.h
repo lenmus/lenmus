@@ -65,7 +65,7 @@ public:
 
 
 private:
-    wxString PrepareScore(EClefType nClef, lmECadenceType nType, lmScore** pProblemScore,
+    wxString PrepareScore(lmEClefType nClef, lmECadenceType nType, lmScore** pProblemScore,
                           lmScore** pSolutionScore = NULL );
     int DisplayButton(int iBt, lmECadenceType iStartC, lmECadenceType iEndC, wxString sButtonLabel);
 
@@ -80,7 +80,7 @@ private:
     lmCadencesConstrains* m_pConstrains;       //constraints for the exercise
 
     //problem asked
-    EKeySignatures  m_nKey;
+    lmEKeySignatures  m_nKey;
 
     //answer
     wxButton*       m_pAnswerButton[m_NUM_BUTTONS];     //buttons for the answers

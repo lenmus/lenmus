@@ -412,7 +412,8 @@ lmMainFrame::lmMainFrame(wxDocManager *manager, wxFrame *frame, const wxString& 
     m_pMtr = m_pMainMtr;
 
     // create main menu
-    wxMenuBar* menu_bar = CreateMenuBar(NULL, NULL, false, !g_fReleaseVersion);        //fEdit, fDebug
+	m_pMenuEdit = (wxMenu*)NULL;
+    wxMenuBar* menu_bar = CreateMenuBar(NULL, NULL, true, !g_fReleaseVersion);        //fEdit, fDebug
     SetMenuBar(menu_bar);
 
     // initialize tool bars
@@ -964,14 +965,12 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     //m_pDocManager->FileHistoryUseMenu(file_menu);
 
     // edit menu
-    wxMenu* edit_menu;
     if (fEdit) {
-        edit_menu = (wxMenu *) NULL;
-        edit_menu = new wxMenu;
-        edit_menu->Append(wxID_UNDO, _("&Undo"));
-        edit_menu->Append(wxID_REDO, _("&Redo"));
-        //edit_menu->AppendSeparator();
-        doc->GetCommandProcessor()->SetEditMenu(edit_menu);
+        m_pMenuEdit = new wxMenu;
+        m_pMenuEdit->Append(wxID_UNDO, _("&Undo"));
+        m_pMenuEdit->Append(wxID_REDO, _("&Redo"));
+        //m_pMenuEdit->AppendSeparator();
+        //doc->GetCommandProcessor()->SetEditMenu(m_pMenuEdit);
     }
 
     // View menu
@@ -1113,7 +1112,7 @@ wxMenuBar* lmMainFrame::CreateMenuBar(wxDocument* doc, wxView* pView,
     // in frame creation.
     wxMenuBar *menu_bar = new wxMenuBar;
     menu_bar->Append(file_menu, _("&File"));
-    if (fEdit) menu_bar->Append(edit_menu, _("&Edit"));
+    if (fEdit) menu_bar->Append(m_pMenuEdit, _("&Edit"));
     menu_bar->Append(view_menu, _("&View"));
     menu_bar->Append(sound_menu, _("&Sound"));
     if (fDebug) menu_bar->Append(debug_menu, _T("&Debug"));     //DO NOT TRANSLATE
@@ -1988,13 +1987,9 @@ void lmMainFrame::OnPrint(wxCommandEvent& event)
 
 void lmMainFrame::OnEditUpdateUI(wxUpdateUIEvent &event)
 {
-#ifdef __WXDEBUG__
     lmMDIChildFrame* pChild = GetActiveChild();
-    event.Enable(pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
-#else
-    //Edit tools always disabled in release version
-    event.Enable(false);
-#endif
+	bool fEnable = (pChild && pChild->IsKindOf(CLASSINFO(lmEditFrame)));
+    event.Enable(fEnable);
 }
 
 void lmMainFrame::OnFileUpdateUI(wxUpdateUIEvent &event)

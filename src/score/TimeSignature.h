@@ -36,12 +36,12 @@ public:
     //constructors and destructor
 
         //constructor for types eTS_Common, eTS_Cut and eTS_SenzaMisura
-    lmTimeSignature(ETimeSignatureType nType, lmVStaff* pVStaff, bool fVisible = true);
+    lmTimeSignature(lmETimeSignatureType nType, lmVStaff* pVStaff, bool fVisible = true);
         //constructor for type eTS_SingleNumber
     lmTimeSignature(int nSingleNumber, lmVStaff* pVStaff, bool fVisible = true);
         //constructors for type eTS_Normal
     lmTimeSignature(int nBeats, int nBeatType, lmVStaff* pVStaff, bool fVisible = true);
-    lmTimeSignature(ETimeSignature nTimeSign, lmVStaff* pVStaff, bool fVisible = true);
+    lmTimeSignature(lmETimeSignature nTimeSign, lmVStaff* pVStaff, bool fVisible = true);
         //constructor for type eTS_Composite
     lmTimeSignature(int nNumBeats, int nBeats[], int nBeatType, lmVStaff* pVStaff,
                   bool fVisible = true);
@@ -77,7 +77,7 @@ private:
     // member variables
 
     // attributes
-    ETimeSignatureType    m_nType;
+    lmETimeSignatureType    m_nType;
 
     int        m_nNumFractions;    // for type eTS_Multiple and eTS_Normal
         //eTS_Normal = 1,       // it is a single fraction
@@ -98,13 +98,13 @@ private:
 //
 #define lmNON_CHORD_NOTE    -1
 
-extern int GetNumUnitsFromTimeSignType(ETimeSignature nTimeSign);
-extern int GetBeatTypeFromTimeSignType(ETimeSignature nTimeSign);
-extern int GetNumBeatsFromTimeSignType(ETimeSignature nTimeSign);
-extern float GetBeatDuration(ETimeSignature nTimeSign);
+extern int GetNumUnitsFromTimeSignType(lmETimeSignature nTimeSign);
+extern int GetBeatTypeFromTimeSignType(lmETimeSignature nTimeSign);
+extern int GetNumBeatsFromTimeSignType(lmETimeSignature nTimeSign);
+extern float GetBeatDuration(lmETimeSignature nTimeSign);
 extern float GetBeatDuration(int nBeatType);
-extern float GetMeasureDuration(ETimeSignature nTimeSign);
-//extern bool IsBinaryTimeSignature(ETimeSignature nTimeSign);
+extern float GetMeasureDuration(lmETimeSignature nTimeSign);
+//extern bool IsBinaryTimeSignature(lmETimeSignature nTimeSign);
 extern int AssignVolume(float rTimePos, int nBeats, int nBeatType);
 extern int GetNoteBeatPosition(float rTimePos, int nBeats, int nBeatType);
 extern int GetChordPosition(float rTimePos, float rDuration, int nBeats, int nBeatType);

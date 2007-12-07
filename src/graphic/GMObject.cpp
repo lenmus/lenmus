@@ -34,6 +34,7 @@
 #include "GMObject.h"
 #include "../app/Paper.h"
 #include "../score/StaffObj.h"
+#include "../app/ScoreCanvas.h"
 
 //access to colors
 #include "../globals/Colors.h"
@@ -50,10 +51,11 @@ static int m_IdCounter = 0;        //to assign unique IDs to GMObjects
 
 
 
-lmGMObject::lmGMObject(lmEGMOType nType, bool fDraggable)
+lmGMObject::lmGMObject(lmScoreObj* pOwner, lmEGMOType nType, bool fDraggable)
 {
     m_nId = m_IdCounter++;      // give it an ID
     m_nType = nType;            // save its type
+	m_pOwner = pOwner;
 
 	//initializations
 	m_uBoundsBottom = lmUPoint(0.0, 0.0);
@@ -113,13 +115,69 @@ lmUPoint lmGMObject::GetObjectOrigin()
 	return m_uBoundsTop;
 }
 
+void lmGMObject::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
+{
+	// End drag. Receives the command processor associated to the view and the
+	// final position of the object (logical units referred to page origin).
+	// This method must validate/adjust final position and, if ok, it must move
+	// the shape and send a move object command to the controller.
+
+	Shift(uPos.x - GetXLeft(), uPos.y - GetYTop());
+
+	pCanvas->MoveObject(this, uPos);
+
+}
+
+void lmGMObject::Shift(lmLUnits xIncr, lmLUnits yIncr)
+{
+    ShiftBoundsAndSelRec(xIncr, yIncr);
+}
+
+void lmGMObject::ShiftBoundsAndSelRec(lmLUnits xIncr, lmLUnits yIncr)
+{
+	// Auxiliary method to be used by derived classes to perform common actions when the
+	// shape is shifted    
+	
+	m_uSelRect.x += xIncr;		//AWARE: As it is a rectangle, changing its origin does not change
+    m_uSelRect.y += yIncr;		//       its width/height. So no need to adjust bottom right point
+
+	m_uBoundsTop.x += xIncr;
+	m_uBoundsBottom.x += xIncr;
+	m_uBoundsTop.y += yIncr;
+	m_uBoundsBottom.y += yIncr;
+}
+
+void lmGMObject::SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight)
+{
+    m_uSelRect.x = x;
+    m_uSelRect.y = y;
+    m_uSelRect.width = uWidth;
+    m_uSelRect.height = uHeight;
+}
+
+void lmGMObject::DrawSelRectangle(lmPaper* pPaper, wxColour colorC)
+{
+    pPaper->SketchRectangle(m_uSelRect.GetPosition(), m_uSelRect.GetSize(), colorC);
+}
+
+void lmGMObject::OnRightClick(lmController* pCanvas, const lmDPoint& vPos, int nKeys)
+{
+	WXUNUSED(nKeys);
+    m_pOwner->PopupMenu(pCanvas, this, vPos);
+}
+
+
+
+
+
+
 
 //========================================================================================
 //Implementation of class lmBox: the container objects root
 //========================================================================================
 
 
-lmBox::lmBox(lmEGMOType nType) : lmGMObject(nType)
+lmBox::lmBox(lmScoreObj* pOwner, lmEGMOType nType) : lmGMObject(pOwner, nType)
 {
 }
 
@@ -160,9 +218,8 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
 
 lmShape::lmShape(lmEGMOType nType, lmScoreObj* pOwner, wxString sName, bool fDraggable,
 				 wxColour color)
-	: lmGMObject(nType, fDraggable)
+	: lmGMObject(pOwner, nType, fDraggable)
 {
-	m_pOwner = pOwner;
     m_sShapeName = sName;
 	m_pOwnerBox = (lmBox*)NULL;
 	m_color = color;
@@ -176,20 +233,6 @@ lmShape::~lmShape()
 		delete m_cAttachments[i];
     }
 
-}
-
-
-void lmShape::SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight)
-{
-    m_uSelRect.x = x;
-    m_uSelRect.y = y;
-    m_uSelRect.width = uWidth;
-    m_uSelRect.height = uHeight;
-}
-
-void lmShape::DrawSelRectangle(lmPaper* pPaper, wxColour colorC)
-{
-    pPaper->SketchRectangle(m_uSelRect.GetPosition(), m_uSelRect.GetSize(), colorC);
 }
 
 bool lmShape::Collision(lmShape* pShape)
@@ -222,20 +265,6 @@ wxString lmShape::DumpSelRect()
         	m_uSelRect.x, m_uSelRect.y, m_uSelRect.width, m_uSelRect.height);     
 
 }   
-
-void lmShape::ShiftBoundsAndSelRec(lmLUnits xIncr, lmLUnits yIncr)
-{
-	// Auxiliary method to be used by derived classes to perform common actions when the
-	// shape is shifted    
-	
-	m_uSelRect.x += xIncr;		//AWARE: As it is a rectangle, changing its origin does not change
-    m_uSelRect.y += yIncr;		//       its width/height. So no need to adjust bottom right point
-
-	m_uBoundsTop.x += xIncr;
-	m_uBoundsBottom.x += xIncr;
-	m_uBoundsTop.y += yIncr;
-	m_uBoundsBottom.y += yIncr;
-}
 
 int lmShape::Attach(lmShape* pShape, lmEAttachType nTag)
 {

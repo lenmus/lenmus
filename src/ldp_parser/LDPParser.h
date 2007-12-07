@@ -19,10 +19,10 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LMPARSER_H        //to avoid nested includes
-#define __LMPARSER_H
+#ifndef __LM_LDPPARSER_H        //to avoid nested includes
+#define __LM_LDPPARSER_H
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "LDPParser.cpp"
 #endif
 
@@ -36,9 +36,19 @@
 
 #include "../score/Score.h"
 
-// The stack of states will be implemented by an array of integers. Let's declare this array
-//WX_DEFINE_ARRAY(int, wxArrayInt);
 
+enum lmETagLDP
+{
+	lm_eTag_Visible = 0,
+	lm_eTag_Location_x,
+	lm_eTag_Location_y,
+	lm_eTag_StaffNum,
+	//
+	lm_eTag_Max				//to know the number of tags defined
+};
+
+
+//The parser
 class lmLDPParser
 {
 public:
@@ -74,13 +84,15 @@ public:
     lmScore*    AnalyzeScore(lmLDPNode* pNode);
     void        AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeSplit(lmLDPNode* pNode, lmVStaff* pVStaff);
-    EStemType   AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff);
+    lmEStemType   AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore);
     bool        AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode);
     void        AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff);
 
+	//analyze options
+    int         AnalyzeNumStaff(const wxString& sNotation, long nNumStaves);
 
     // for lmLDPToken
     const wxString& GetNewBuffer();
@@ -91,9 +103,9 @@ public:
 
 
     // auxiliary methods
-    float   GetDefaultDuration(ENoteType nNoteType, bool fDotted, bool fDoubleDotted,
+    float   GetDefaultDuration(lmENoteType nNoteType, bool fDotted, bool fDoubleDotted,
                       int nActualNotes, int nNormalNotes);
-    int     GetBeamingLevel(ENoteType nNoteType);
+    int     GetBeamingLevel(lmENoteType nNoteType);
     bool    ParenthesisMatch(const wxString& sSource);
 
 
@@ -110,9 +122,8 @@ private:
 
     void        Create(const wxString& sLanguage, const wxString& sCharset);
     lmLDPNode*  LexicalAnalysis();
-    bool        AnalyzeNoteType(wxString& sNoteType, ENoteType* pnNoteType, 
+    bool        AnalyzeNoteType(wxString& sNoteType, lmENoteType* pnNoteType, 
                                 bool* pfDotted, bool* pfDoubleDotted);
-    int         AnalyzeNumStaff(const wxString& sNotation, long nNumStaves);
     lmScore*    AnalyzeScoreV102(lmLDPNode* pNode);
     lmScore*    AnalyzeScoreV105(lmLDPNode* pNode);
     bool        AnalyzeTextString(lmLDPNode* pNode, wxString* pText, 
@@ -197,5 +208,29 @@ private:
 
 
 };
-    
-#endif    // __LMPARSER_H
+
+
+// Helper class to analyze optional elements
+class lmLDPOptionalTags
+{
+public:
+	lmLDPOptionalTags(lmLDPParser* pParser, lmLdpTagsTable* pTags);
+	~lmLDPOptionalTags();
+
+	void SetValid(lmETagLDP nTag, ...);
+	void AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff* pVStaff,
+							  bool* pfVisible, int* pStaffNum, lmLocation* pLocation);
+
+private:
+	bool VerifyAllowed(lmETagLDP nTag, wxString sName);
+
+	lmLDPParser*		m_pParser;					//owner parser
+    lmLdpTagsTable*     m_pTags;
+	std::vector<bool>	m_ValidTags;
+
+
+};
+
+
+
+#endif    // __LM_LDPPARSER_H

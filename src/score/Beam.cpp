@@ -197,7 +197,7 @@ void lmBeam::CreateShape()
             nNumNotes++;
             if (pNote->StemGoesDown()) nStemDown++;
 
-            if (pNote->GetStemType() != eDefaultStem) {
+            if (pNote->GetStemType() != lmSTEM_DEFAULT) {
                 fStemForced = true;
                 m_fStemsDown = pNote->StemGoesDown();
             }

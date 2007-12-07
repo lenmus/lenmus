@@ -125,7 +125,7 @@ lmDlgCfgTheoIntervals::lmDlgCfgTheoIntervals(wxWindow * parent,
     // check boxes for allowed clefs
     int i;
     for (i=0; i < 7; i++) {
-        m_pChkClef[i]->SetValue( m_pConstrains->IsValidClef((EClefType)((int)lmMIN_CLEF+i) ));
+        m_pChkClef[i]->SetValue( m_pConstrains->IsValidClef((lmEClefType)((int)lmMIN_CLEF+i) ));
     }
 
     // allowed accidentals.
@@ -157,7 +157,7 @@ void lmDlgCfgTheoIntervals::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     // save allowed clefs
     int i;
     for (i=0; i < 7; i++) {
-        m_pConstrains->SetClef((EClefType)((int)lmMIN_CLEF+i), m_pChkClef[i]->GetValue());
+        m_pConstrains->SetClef((lmEClefType)((int)lmMIN_CLEF+i), m_pChkClef[i]->GetValue());
     }
 
     // save allowed accidentals

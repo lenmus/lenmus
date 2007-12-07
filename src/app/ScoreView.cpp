@@ -972,14 +972,11 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         delete m_pDragImage;
         m_pDragImage = (wxDragImage*) NULL;
 
-        // Generate move command to move lmStaffObj and update the document
-        lmScoreDocument* doc = (lmScoreDocument*)GetDocument();
-        wxCommandProcessor* pCP = doc->GetCommandProcessor();
-        //pCP->Submit(new lmScoreCommandMove(_T("Move object"), doc, m_pSoDrag, finalPos));
-		lmUPoint finalPos = pageNPosL - m_uHotSpotShift + m_pGMODrag->GetObjectOrigin();
-		//m_pCanvas->MoveObject(m_pSoDrag, finalPos);
-		m_pGMODrag->OnEndDrag(pCP, finalPos);
+        //inform shape to do whatever it likes
+		lmUPoint finalPos = pageNPosL - m_uHotSpotShift;
+		m_pGMODrag->OnEndDrag(m_pCanvas, finalPos);
 
+		//no object being dragged
         m_pGMODrag = (lmGMObject*) NULL;
 
     }
@@ -1090,7 +1087,24 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
 
     }
 
-    else if (event.GetEventType() == wxEVT_MOUSEWHEEL ) {
+    else if (event.RightDown() )
+	{
+        // mouse right button down: if pointing an object show contextual menu
+        // ---------------------------------------------------------------------------
+
+        // locate the object pointed with the mouse
+        lmGMObject* pGMO = m_graphMngr.FindGMObjectAtPagePosition(nNumPage, pageNPosL);
+        if (pGMO)
+        {
+            //valid object pointed.
+			pGMO->OnRightClick(m_pCanvas, canvasPosD, nKeysPressed);
+       }
+       //else
+       //   no object pointed. Ignore
+
+    }
+
+	else if (event.GetEventType() == wxEVT_MOUSEWHEEL ) {
         OnMouseWheel(event);
     }
 

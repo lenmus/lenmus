@@ -33,6 +33,7 @@
 #include "Shapes.h"
 #include "../score/Glyph.h"      //access to glyphs table
 #include "../score/Score.h"
+#include "../app/ScoreCanvas.h"
 
 
 //========================================================================================
@@ -527,23 +528,26 @@ lmUPoint lmShapeClef::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 	if (g_fFreeMove) return uPos;
 
     // A clef only can be moved horizonatlly
-    return lmUPoint(uPos.x, m_uGlyphPos.y);
+    return lmUPoint(uPos.x, GetYTop());
 
 }
 
-void lmShapeClef::OnEndDrag(wxCommandProcessor* pCP, const lmUPoint& uPos)
+void lmShapeClef::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 {
 	// End drag. Receives the command processor associated to the view and the
 	// final position of the object (logical units referred to page origin).
+	// This method must validate/adjust final position and, if ok, it must move
+	// the shape and send a move object command to the controller.
 
 	if (g_fFreeMove)
-		Shift(uPos.x - m_uGlyphPos.x, uPos.y - m_uGlyphPos.y);
+		Shift(uPos.x - GetXLeft(), uPos.y - GetYTop());
 	else
 	{
 		//only x position can be changed
-		Shift(uPos.x - m_uGlyphPos.x, 0.0);
+		Shift(uPos.x - m_uBoundsTop.x, 0.0);
 	}
 
+	pCanvas->MoveObject(this, uPos);
 
 }
 

@@ -42,14 +42,14 @@ lmTheoKeySignConstrains::lmTheoKeySignConstrains(wxString sSection)
     // all key signatures allowed
     int i;
     for (i=lmMIN_KEY; i <= lmMAX_KEY; i++) {
-        m_oValidKeys.SetValid((EKeySignatures)i, true);
+        m_oValidKeys.SetValid((lmEKeySignatures)i, true);
     }
 
     // only G clef allowed
     for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
-        m_oClefs.SetValid((EClefType) i, false);
+        m_oClefs.SetValid((lmEClefType) i, false);
     }
-    m_oClefs.SetValid(eclvSol, true);
+    m_oClefs.SetValid(lmE_Sol, true);
 
     // other settings
     m_nProblemType = eBothKeySignProblems;      // both problems allowed

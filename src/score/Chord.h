@@ -73,7 +73,7 @@ private:
     lmNote*     m_pMaxNote;         //highest pitch note
     lmNote*     m_pLastNote;        //the last note added the chord
     bool        m_fStemDown;        //chord stem direction
-    EStemType   m_nStemType;        //type of stem
+    lmEStemType   m_nStemType;        //type of stem
 
     lmNote*     m_oNotaPrevia;      //nota que precede a la primera del acorde
                         //m_oNotaPrevia es la nota que precede al comienzo del acorde. Es preciso tener acceso

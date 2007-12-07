@@ -33,7 +33,7 @@ class lmRest: public lmNoteRest
 {
 public:
     lmRest(lmVStaff* pVStaff, 
-        ENoteType nNoteType, float rDuration,
+        lmENoteType nNoteType, float rDuration,
         bool fDotted, bool fDoubleDotted,
         int nStaff, bool fVisible,
         lmContext* pContext, 

@@ -79,11 +79,10 @@ lmBasicText::lmBasicText(wxString sText, wxString sLanguage,
 // lmScoreText implementation
 //==========================================================================================
 
-lmScoreText::lmScoreText(lmScore* pScore, wxString sTitle, lmEAlignment nAlign,
+lmScoreText::lmScoreText(wxString sTitle, lmEAlignment nAlign,
                lmLocation tPos, lmFontInfo tFont, wxColour colorC) :
-    lmStaffObj(pScore, eSFOT_Text, (lmVStaff*)NULL, 0, true, lmDRAGGABLE)
+    lmAuxObj(lmDRAGGABLE)
 {
-    m_pScore = pScore;
     m_sText = sTitle;
     m_sFontName = tFont.sFontName;
     m_nFontSize = PointsToLUnits(tFont.nFontSize);
@@ -135,10 +134,30 @@ wxString lmScoreText::Dump()
 
 wxString lmScoreText::SourceLDP(int nIndent)
 {
-	//TODO Add location
-    wxString sSource = _T("(text ");
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(text \"");
     sSource += m_sText;
-    sSource += _T(")");
+    sSource += _T("\"");
+
+    //location
+    sSource += SourceLDP_Location(m_uPaperPos);
+
+    //alignment
+    if (m_nAlignment == lmALIGN_CENTER)
+        sSource += _T(" center");
+    else if (m_nAlignment == lmALIGN_LEFT)
+        sSource += _T(" left");
+    else
+        sSource += _T(" right");
+
+    //font info
+    //add font info only if font changed since previous (text) element
+    //TODO
+
+
+    //close element
+    sSource += _T(")\n");
     return sSource;
 
 }

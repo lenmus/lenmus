@@ -209,7 +209,7 @@ wxDialog* lmIdfyCadencesCtrol::GetSettingsDlg()
 
 void lmIdfyCadencesCtrol::PrepareAuxScore(int nButton)
 {
-    PrepareScore(eclvSol, m_nStartCadence[nButton], &m_pAuxScore);
+    PrepareScore(lmE_Sol, m_nStartCadence[nButton], &m_pAuxScore);
 }
 
 wxString lmIdfyCadencesCtrol::SetNewProblem()
@@ -225,7 +225,7 @@ wxString lmIdfyCadencesCtrol::SetNewProblem()
     m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
 
     //create the score
-    EClefType nClef = eclvSol;
+    lmEClefType nClef = lmE_Sol;
     if (m_pConstrains->IsTheoryMode())
         m_sAnswer = PrepareScore(nClef, nCadenceType, &m_pProblemScore);
     else
@@ -318,7 +318,7 @@ wxString lmIdfyCadencesCtrol::SetNewProblem()
 
 }
 
-wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType,
+wxString lmIdfyCadencesCtrol::PrepareScore(lmEClefType nClef, lmECadenceType nType,
                                            lmScore** pProblemScore,
                                            lmScore** pSolutionScore)
 {
@@ -350,8 +350,8 @@ wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType
     pVStaff = (*pProblemScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
     (*pProblemScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
     pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
-    pVStaff->AddClef( eclvSol, 1 );
-    pVStaff->AddClef( eclvFa4, 2 );
+    pVStaff->AddClef( lmE_Sol, 1 );
+    pVStaff->AddClef( lmE_Fa4, 2 );
     pVStaff->AddKeySignature( m_nKey );
     pVStaff->AddTimeSignature(2 ,4);
 
@@ -424,8 +424,8 @@ wxString lmIdfyCadencesCtrol::PrepareScore(EClefType nClef, lmECadenceType nType
         pVStaff = (*pSolutionScore)->GetVStaff(1, 1);       //get first vstaff of instr.1
         (*pSolutionScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
         pVStaff->AddStaff(5);                       //add second staff: five lines, standard size
-        pVStaff->AddClef( eclvSol, 1 );
-        pVStaff->AddClef( eclvFa4, 2 );
+        pVStaff->AddClef( lmE_Sol, 1 );
+        pVStaff->AddClef( lmE_Fa4, 2 );
         pVStaff->AddKeySignature( m_nKey );
         pVStaff->AddTimeSignature(2 ,4);
 

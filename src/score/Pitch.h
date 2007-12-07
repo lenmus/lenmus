@@ -186,7 +186,7 @@ extern wxString DPitch_ToLDPName(lmDPitch dp);
 
 
 extern wxString MPitch_ToLDPName(lmMPitch nMidiPitch);
-extern bool MPitch_IsNaturalNote(lmMPitch ntMidi, EKeySignatures nKey);
+extern bool MPitch_IsNaturalNote(lmMPitch ntMidi, lmEKeySignatures nKey);
 
 
 //-------------------------------------------------------------------------
@@ -211,13 +211,13 @@ extern int FPitch_Accidentals(lmFPitch fp);
 
 //conversion
 extern wxString FPitch_ToAbsLDPName(lmFPitch fp);
-extern wxString FPitch_ToRelLDPName(lmFPitch fp, EKeySignatures nKey);
+extern wxString FPitch_ToRelLDPName(lmFPitch fp, lmEKeySignatures nKey);
 extern lmMPitch FPitch_ToMPitch(lmFPitch fp);
 extern lmDPitch FPitch_ToDPitch(lmFPitch fp);
 extern lmAPitch FPitch_ToAPitch(lmFPitch fp);
 
 //operations
-extern lmFPitch FPitch_AddSemitone(lmFPitch fpNote, EKeySignatures nKey);
+extern lmFPitch FPitch_AddSemitone(lmFPitch fpNote, lmEKeySignatures nKey);
 extern lmFPitch FPitch_AddSemitone(lmFPitch fpNote, bool fUseSharps);
 
 

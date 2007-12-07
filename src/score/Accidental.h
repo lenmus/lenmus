@@ -35,12 +35,12 @@
 class lmAccidental
 {
 public:
-    lmAccidental(lmNote* pOwner, EAccidentals nType);
+    lmAccidental(lmNote* pOwner, lmEAccidentals nType);
     ~lmAccidental();
 
     lmLUnits GetWidth();
     //void SetAfterspace(lmLUnits nSpace) { m_uAfterSpace = nSpace; }
-	inline EAccidentals GetType() { return m_nType; }
+	inline lmEAccidentals GetType() { return m_nType; }
 	wxString GetLDPEncoding();
 
     void Layout(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos);
@@ -52,7 +52,7 @@ private:
     void CreateShapes(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos);
 
 	lmNote*		    m_pOwner;
-    EAccidentals    m_nType;            //accidental type
+    lmEAccidentals    m_nType;            //accidental type
 	lmStaff*		m_pStaff;			 
     lmLUnits        m_uAfterSpace;
 	lmLUnits        m_uxPos;

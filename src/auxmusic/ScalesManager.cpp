@@ -87,7 +87,7 @@ static const lmScaleInfo tData[est_Max] = {
 
 
 lmScalesManager::lmScalesManager(wxString sRootNote, EScaleType nScaleType,
-                                 EKeySignatures nKey)
+                                 lmEKeySignatures nKey)
 {
     //save parameters
     m_nType = nScaleType;

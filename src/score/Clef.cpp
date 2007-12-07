@@ -46,7 +46,7 @@
 //constructors and destructor
 //
 
-lmClef::lmClef(EClefType nClefType, lmVStaff* pStaff, int nNumStaff, bool fVisible,
+lmClef::lmClef(lmEClefType nClefType, lmVStaff* pStaff, int nNumStaff, bool fVisible,
 			   wxColour colorC) :
     lmStaffObj(pStaff, eSFOT_Clef, pStaff, nNumStaff, fVisible, lmDRAGGABLE)
 {
@@ -69,12 +69,12 @@ lmTenths lmClef::GetGlyphOffset()
     //add offset to move the clef up/down the required lines
     switch(m_nClefType)
     {
-        case eclvFa3: yOffset += 10;    break;
-        case eclvFa5: yOffset -= 10;    break;
-        case eclvDo1: yOffset += 20;    break;
-        case eclvDo2: yOffset += 10;    break;
-        case eclvDo4: yOffset -= 10;    break;
-        case eclvDo5: yOffset -= 20;    break;
+        case lmE_Fa3: yOffset += 10;    break;
+        case lmE_Fa5: yOffset -= 10;    break;
+        case lmE_Do1: yOffset += 20;    break;
+        case lmE_Do2: yOffset += 10;    break;
+        case lmE_Do4: yOffset -= 10;    break;
+        case lmE_Do5: yOffset -= 20;    break;
         default:
             ;
     }
@@ -89,14 +89,14 @@ lmEGlyphIndex lmClef::GetGlyphIndex()
     // the clef (LenMus font)
 
     switch (m_nClefType) {
-        case eclvSol: return GLYPH_G_CLEF;
-        case eclvFa4: return GLYPH_F_CLEF;
-        case eclvFa3: return GLYPH_F_CLEF;
-        case eclvDo1: return GLYPH_C_CLEF;
-        case eclvDo2: return GLYPH_C_CLEF;
-        case eclvDo3: return GLYPH_C_CLEF;
-        case eclvDo4: return GLYPH_C_CLEF;
-        case eclvPercussion: return GLYPH_PERCUSSION_CLEF_BLOCK;
+        case lmE_Sol: return GLYPH_G_CLEF;
+        case lmE_Fa4: return GLYPH_F_CLEF;
+        case lmE_Fa3: return GLYPH_F_CLEF;
+        case lmE_Do1: return GLYPH_C_CLEF;
+        case lmE_Do2: return GLYPH_C_CLEF;
+        case lmE_Do3: return GLYPH_C_CLEF;
+        case lmE_Do4: return GLYPH_C_CLEF;
+        case lmE_Percussion: return GLYPH_PERCUSSION_CLEF_BLOCK;
         default:
             wxASSERT_MSG( false, _T("Invalid value for attribute m_nClefType"));
             return GLYPH_G_CLEF;
@@ -116,14 +116,98 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     // creating the shape object and adding it to the graphical model. 
     // Paper cursor must be used as the base for positioning.
 
-	// get the shift to the staff on which the clef must be drawn
-	lmLUnits yPos = pPaper->GetCursorY() + m_pVStaff->GetStaffOffset(m_nStaffNum);
-    yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
+	lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+
+    if (m_tPos.xType == lmLOCATION_DEFAULT)
+	{
+		//default location. Lets' compute a position for the object
+
+		//save the computed location
+		m_tPos.x = uPos.x;
+		m_tPos.xType = lmLOCATION_COMPUTED;
+		m_tPos.xUnits = lmLUNITS;
+    }
+
+	else if (m_tPos.xType == lmLOCATION_COMPUTED)
+	{
+		//the default position was computed in a previous invocation. Use it
+		//The computed location is always absolute, in tenths
+		uPos.x = m_tPos.x;
+    }
+
+	else if (m_tPos.xType == lmLOCATION_USER_ABSOLUTE)
+	{
+		//the position was fixed by user (either in source file or by dragging object)
+		//Use it
+		if (m_tPos.xUnits == lmLUNITS)
+			uPos.x = m_tPos.x;
+		if (m_tPos.xUnits == lmTENTHS)
+			uPos.x = m_pVStaff->TenthsToLogical( m_tPos.x, m_nStaffNum );
+	}
+
+	else if (m_tPos.xType == lmLOCATION_USER_RELATIVE)
+	{
+		//the position was fixed by user (either in source file or by dragging object)
+		//Use it
+		if (m_tPos.xUnits == lmLUNITS)
+			uPos.x += m_tPos.x;
+	}
+	else
+		wxASSERT(false);
+
+
+    if (m_tPos.yType == lmLOCATION_DEFAULT)
+	{
+		//default location. Lets' compute a position for the object
+
+		// get the shift to the staff on which the clef must be drawn
+		uPos.y += m_pVStaff->GetStaffOffset(m_nStaffNum) +
+				  m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
+
+		//save the computed location
+		m_tPos.y = uPos.y;
+		m_tPos.yType = lmLOCATION_COMPUTED;
+		m_tPos.yUnits = lmLUNITS;
+    }
+
+	else if (m_tPos.yType == lmLOCATION_COMPUTED)
+	{
+		//the position was computed in a previous invocation or was fixed by user.
+		//Use it
+		//The computed location is always absolute, in tenths
+		uPos.y = m_tPos.y;
+    }
+
+	else if (m_tPos.yType == lmLOCATION_USER_ABSOLUTE)
+	{
+		//the position was fixed by user (either in source file or by dragging object)
+		//Use it
+		if (m_tPos.yUnits == lmLUNITS)
+			uPos.y = m_tPos.y;
+	}
+
+	else if (m_tPos.yType == lmLOCATION_USER_RELATIVE)
+	{
+		//the position was fixed by user (either in source file or by dragging object)
+		//Use it
+		if (m_tPos.yUnits == lmLUNITS)
+			uPos.y += m_tPos.y;
+	}
+	else
+		wxASSERT(false);
+
+
+
+
+
+
+	//// get the shift to the staff on which the clef must be drawn
+	//lmLUnits yPos = pPaper->GetCursorY() + m_pVStaff->GetStaffOffset(m_nStaffNum);
+ //   yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
 
     //create the shape object
     lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetFont(), pPaper,
-                                            lmUPoint(pPaper->GetCursorX(), yPos), 
-											_T("Clef"), lmDRAGGABLE, m_color);
+                                          uPos, _T("Clef"), lmDRAGGABLE, m_color);
 	pBox->AddShape(pShape);
     m_pShape2 = pShape;
 
@@ -178,6 +262,12 @@ wxString lmClef::SourceLDP(int nIndent)
     //visible?
     if (!m_fVisible) { sSource += _T(" noVisible"); }
 
+    //location
+    sSource += SourceLDP_Location(m_uPaperPos);
+
+	//attached AuxObjs
+	sSource += lmStaffObj::SourceLDP(nIndent+1);
+
     sSource += _T(")\n");
     return sSource;
 }
@@ -194,9 +284,9 @@ wxString lmClef::SourceXML(int nIndent)
 // global functions related to clefs
 //------------------------------------------------------------------------------------------
 
-wxString GetClefLDPNameFromType(EClefType nType)
+wxString GetClefLDPNameFromType(lmEClefType nType)
 {
-    //AWARE: indexes in correspondence with enum EClefType
+    //AWARE: indexes in correspondence with enum lmEClefType
     static wxString sName[] = {
         _T("Undefined"),
         _T("G"),
@@ -213,12 +303,12 @@ wxString GetClefLDPNameFromType(EClefType nType)
     };
 
     //TODO: Not yet included in LDP
-    //eclv8Sol,       //8 above
-    //eclvSol8,       //8 below
-    //eclv8Fa,        //8 above
-    //eclvFa8,        //8 below
+    //lmE_8Sol,       //8 above
+    //lmE_Sol8,       //8 below
+    //lmE_8Fa,        //8 above
+    //lmE_Fa8,        //8 below
 
-    wxASSERT(nType <= eclvSol1);
+    wxASSERT(nType <= lmE_Sol1);
     return sName[nType];
 
 }

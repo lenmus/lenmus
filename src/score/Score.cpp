@@ -67,7 +67,6 @@ lmScore::lmScore() : lmScoreObj((lmScoreObj*)NULL)
 
     //initializations
     m_pSoundMngr = (lmSoundManager*)NULL;
-    m_pGlobalStaff = new lmVStaff(this, (lmInstrument*)NULL, false);
     m_sScoreName = _T("New score");
 
     //TODO user options, not a constant
@@ -98,8 +97,6 @@ lmScore::~lmScore()
     m_cInstruments.DeleteContents(true);
     m_cInstruments.Clear();
 
-    delete m_pGlobalStaff;
-
     if (m_pSoundMngr) {
         m_pSoundMngr->DeleteEventsTable();
         delete m_pSoundMngr;
@@ -108,10 +105,8 @@ lmScore::~lmScore()
     m_cHighlighted.DeleteContents(false);    //Staffobjs must not be deleted, only the list
     m_cHighlighted.Clear();
 
-    //AWARE:   titles must not be deleted. As they are included in global list they
-    //         have been deleted a couple of lines above. Following lines produce a crash.
-    //m_cTitles.DeleteContents(true);
-    //m_cTitles.Clear();
+    //delete list of title indexes
+    m_nTitles.clear();
 
 }
 
@@ -141,12 +136,8 @@ void lmScore::AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation tPos,
     tFont.nStyle = nStyle;
     tFont.sFontName = sFontName;
 
-    lmScoreText* pTitle = new lmScoreText(this, sTitle, nAlign, tPos, tFont);
-    //TODO
-    //lmStaffObj* pAnchor = m_pGlobalStaff->AddAnchorObj();
-    //pAnchor->AttachAuxObj(pTitle);
-
-    m_cTitles.Append(pTitle);
+    lmScoreText* pTitle = new lmScoreText(sTitle, nAlign, tPos, tFont);
+    m_nTitles.push_back( AttachAuxObj(pTitle) );
 
 }
 
@@ -232,10 +223,9 @@ void lmScore::LayoutTitles(lmBox* pBox, lmPaper *pPaper)
 
     lmScoreText* pTitle;
     lmLUnits nPrevTitleHeight = 0;
-    wxStaffObjsListNode* pNode;
-    for(pNode = m_cTitles.GetFirst(); pNode; pNode = pNode->GetNext())
-	{
-        pTitle = (lmScoreText*)pNode->GetData();
+    for (int i=0; i < (int)m_nTitles.size(); i++)
+    {
+        pTitle = (lmScoreText*)(*m_pAuxObjs)[m_nTitles[i]];
 		nPrevTitleHeight = CreateTitleShape(pBox, pPaper, pTitle, nPrevTitleHeight);
     }
 
@@ -278,17 +268,17 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
         }
 
         //reposition paper according text required positioning info
-        if (tPos.xType == lmLOCATION_RELATIVE) {
+        if (tPos.xType == lmLOCATION_USER_RELATIVE) {
             xPaperPos += xPos;
         }
-        else if (tPos.xType == lmLOCATION_ABSOLUTE) {
+        else if (tPos.xType == lmLOCATION_USER_ABSOLUTE) {
             xPaperPos = xPos + pPaper->GetLeftMarginXPos();
         }
 
-        if (tPos.yType == lmLOCATION_RELATIVE) {
+        if (tPos.yType == lmLOCATION_USER_RELATIVE) {
             yPaperPos += yPos;
         }
-        else if (tPos.yType == lmLOCATION_ABSOLUTE) {
+        else if (tPos.yType == lmLOCATION_USER_ABSOLUTE) {
             yPaperPos = yPos + pPaper->GetPageTopMargin();
         }
         pPaper->SetCursorY( yPaperPos );
@@ -407,7 +397,6 @@ wxString lmScore::Dump(wxString sFilename)
 {
     //dump global VStaff
     wxString sDump = wxString::Format(_T("Score ID: %d\nGlobal objects:\n"), GetID());
-    m_pGlobalStaff->Dump();
 
     //loop to dump all instruments
     sDump += _T("\nLocal objects:\n");

@@ -58,58 +58,58 @@ bool lmRandomGenerator::FlipCoin()
 }
 
 //! Generates a random clef, choosen to satisfy the received constraints
-EClefType lmRandomGenerator::GenerateClef(lmClefConstrain* pValidClefs)
+lmEClefType lmRandomGenerator::GenerateClef(lmClefConstrain* pValidClefs)
 {
     int nWatchDog = 0;
     int nClef = RandomNumber(lmMIN_CLEF, lmMAX_CLEF);
-    while (!pValidClefs->IsValid((EClefType)nClef)) {
+    while (!pValidClefs->IsValid((lmEClefType)nClef)) {
         nClef = RandomNumber(lmMIN_CLEF, lmMAX_CLEF);
         if (nWatchDog++ == 1000) {
             wxMessageBox(_("Program error: Loop detected in lmRandomGenerator::GenerateClef."));
             return lmMIN_CLEF;
         }
     }
-    return (EClefType)nClef;
+    return (lmEClefType)nClef;
 }
 
 //! Generates a random key signature, choosen to satisfy the received constraints
-EKeySignatures lmRandomGenerator::GenerateKey(lmKeyConstrains* pValidKeys)
+lmEKeySignatures lmRandomGenerator::GenerateKey(lmKeyConstrains* pValidKeys)
 {
     int nWatchDog = 0;
     int nKey = RandomNumber(lmMIN_KEY, lmMAX_KEY);
-    while (!pValidKeys->IsValid((EKeySignatures)nKey)) {
+    while (!pValidKeys->IsValid((lmEKeySignatures)nKey)) {
         nKey = RandomNumber(lmMIN_KEY, lmMAX_KEY);
         if (nWatchDog++ == 1000) {
             wxMessageBox(_("Program error: Loop detected in lmRandomGenerator::GenerateKey."));
             return lmMIN_KEY;
         }
     }
-    return (EKeySignatures)nKey;
+    return (lmEKeySignatures)nKey;
 }
 
-EKeySignatures lmRandomGenerator::RandomKeySignature()
+lmEKeySignatures lmRandomGenerator::RandomKeySignature()
 {
-    return (EKeySignatures)RandomNumber(lmMIN_KEY, lmMAX_KEY);
+    return (lmEKeySignatures)RandomNumber(lmMIN_KEY, lmMAX_KEY);
 }
 
 //! Generates a random time signature, choosen to satisfy the received constraints
-ETimeSignature lmRandomGenerator::GenerateTimeSign(lmTimeSignConstrains* pValidTimeSignatures)
+lmETimeSignature lmRandomGenerator::GenerateTimeSign(lmTimeSignConstrains* pValidTimeSignatures)
 {
     int nWatchDog = 0;
     int nKey = RandomNumber(lmMIN_TIME_SIGN, lmMAX_TIME_SIGN);
-    while (!pValidTimeSignatures->IsValid((ETimeSignature)nKey)) {
+    while (!pValidTimeSignatures->IsValid((lmETimeSignature)nKey)) {
         nKey = RandomNumber(lmMIN_TIME_SIGN, lmMAX_TIME_SIGN);
         if (nWatchDog++ == 1000) {
             wxMessageBox(_("Program error: Loop detected in lmRandomGenerator::GenerateTime."));
             return lmMIN_TIME_SIGN;
         }
     }
-    return (ETimeSignature)nKey;
+    return (lmETimeSignature)nKey;
 }
 
-ETimeSignature lmRandomGenerator::RandomTimeSignature()
+lmETimeSignature lmRandomGenerator::RandomTimeSignature()
 {
-    return (ETimeSignature)RandomNumber(lmMIN_TIME_SIGN, lmMAX_TIME_SIGN);
+    return (lmETimeSignature)RandomNumber(lmMIN_TIME_SIGN, lmMAX_TIME_SIGN);
 }
 
 
@@ -118,7 +118,7 @@ ETimeSignature lmRandomGenerator::RandomTimeSignature()
     If fRest==true also pitch = 0 (rest) can be generated.
 */
 lmDPitch lmRandomGenerator::GenerateRandomDPitch(int nMinLine, int nRange, bool fRests,
-                                     EClefType nClef)
+                                     lmEClefType nClef)
 {
     int nPitch;
 
@@ -135,14 +135,14 @@ lmDPitch lmRandomGenerator::GenerateRandomDPitch(int nMinLine, int nRange, bool 
 
     //correct note pitch to suit key signature base line
     switch (nClef) {
-        case eclvSol:        nPitch += 29;    break;
-        case eclvFa4:        nPitch += 17;    break;
-        case eclvFa3:        nPitch += 19;    break;
-        case eclvDo1:        nPitch += 27;    break;
-        case eclvDo2:        nPitch += 25;    break;
-        case eclvDo3:        nPitch += 23;    break;
-        case eclvDo4:        nPitch += 21;    break;
-        case eclvPercussion:    nPitch = 34;    break;
+        case lmE_Sol:        nPitch += 29;    break;
+        case lmE_Fa4:        nPitch += 17;    break;
+        case lmE_Fa3:        nPitch += 19;    break;
+        case lmE_Do1:        nPitch += 27;    break;
+        case lmE_Do2:        nPitch += 25;    break;
+        case lmE_Do3:        nPitch += 23;    break;
+        case lmE_Do4:        nPitch += 21;    break;
+        case lmE_Percussion:    nPitch = 34;    break;
         default:
             wxLogMessage(_T("[lmRandomGenerator::GenerateRandomDPitch] No treatment for clef %s"),
                         nClef);
@@ -152,8 +152,8 @@ lmDPitch lmRandomGenerator::GenerateRandomDPitch(int nMinLine, int nRange, bool 
     return nPitch;
 
 }
-wxString lmRandomGenerator::GenerateRandomRootNote(EClefType nClef,
-                                                   EKeySignatures nKey,
+wxString lmRandomGenerator::GenerateRandomRootNote(lmEClefType nClef,
+                                                   lmEKeySignatures nKey,
                                                    bool fAllowAccidentals)
 {
     // Get the index (0..6, 0=Do, 1=Re, 3=Mi, ... , 6=Si) to the root note for

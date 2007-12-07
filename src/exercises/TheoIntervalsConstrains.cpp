@@ -59,7 +59,7 @@ void lmTheoIntervalsConstrains::SaveSettings()
     for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
         sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/Clef%d"),
             m_sSection.c_str(), i );
-        g_pPrefs->Write(sKey, IsValidClef((EClefType)i) );
+        g_pPrefs->Write(sKey, IsValidClef((lmEClefType)i) );
     }
 
     // allowed accidentals
@@ -87,8 +87,8 @@ void lmTheoIntervalsConstrains::LoadSettings()
     for (i = lmMIN_CLEF; i <= lmMAX_CLEF; i++) {
         sKey = wxString::Format(_T("/Constrains/TheoIntval/%s/Clef%d"),
             m_sSection.c_str(), i );
-        g_pPrefs->Read(sKey, &fValid, (i == eclvSol) );
-        SetClef((EClefType)i, fValid);
+        g_pPrefs->Read(sKey, &fValid, (i == lmE_Sol) );
+        SetClef((lmEClefType)i, fValid);
     }
 
     // allowed accidentals. Defaul: none

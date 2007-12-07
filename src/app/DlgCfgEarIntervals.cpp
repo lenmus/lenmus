@@ -252,7 +252,7 @@ lmDlgCfgEarIntervals::lmDlgCfgEarIntervals(wxWindow * parent,
     // selected key signatures
     lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
     for (i=0; i < earmFa+1; i++) {
-        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((EKeySignatures)i) );
+        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((lmEKeySignatures)i) );
     }
 
     // As this dialog is shared by two exercises (EarCompareIntvCtrol and 
@@ -293,7 +293,7 @@ void lmDlgCfgEarIntervals::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     //save notes range
     wxString sPitch = m_pCboFromNote->GetValue();
     lmDPitch nPitch;
-    EAccidentals nAccidentals;
+    lmEAccidentals nAccidentals;
     PitchNameToData(sPitch, &nPitch, &nAccidentals);
     m_pConstrains->SetMinNote(nPitch);
 
@@ -314,7 +314,7 @@ void lmDlgCfgEarIntervals::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
         // store selected key signatures
         lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
         for (i=0; i < earmFa+1; i++) {
-            pKeyConstrains->SetValid((EKeySignatures)i, m_pChkKeySign[i]->GetValue());
+            pKeyConstrains->SetValid((lmEKeySignatures)i, m_pChkKeySign[i]->GetValue());
         }
     }
     
@@ -369,7 +369,7 @@ bool lmDlgCfgEarIntervals::VerifyData()
     wxString sFromPitch = m_pCboFromNote->GetValue();
     wxString sToPitch = m_pCboToNote->GetValue();
     lmDPitch nToPitch, nFromPitch;
-    EAccidentals nAccidentals;
+    lmEAccidentals nAccidentals;
     PitchNameToData(sFromPitch, &nFromPitch, &nAccidentals);
     PitchNameToData(sToPitch, &nToPitch, &nAccidentals);
     if (nFromPitch > nToPitch) {

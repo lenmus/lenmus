@@ -28,7 +28,7 @@
 
 #include "../score/Score.h"
 
-extern bool PitchNameToData(wxString sPitch, int* pPitch, EAccidentals* pAccidentals);
+extern bool PitchNameToData(wxString sPitch, int* pPitch, lmEAccidentals* pAccidentals);
 extern bool StringToPitch(wxString sStep, wxString sOctave, int* pPitch);
 extern int LetterToStep(wxString sStep);
 extern void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, lmDPitch nSelNote);
@@ -36,7 +36,7 @@ extern void LoadCboBoxWithNoteNames(wxComboBox* pCboBox, wxString sNoteName);
 
 
 // LDP related
-extern bool LDPDataToPitch(wxString sPitch, EAccidentals* pAccidentals,
+extern bool LDPDataToPitch(wxString sPitch, lmEAccidentals* pAccidentals,
                            wxString* sStep, wxString* sOctave);
 
 extern float SrcGetPatternDuracion(wxString sPattern);
@@ -45,13 +45,13 @@ extern int SrcSplitPattern(wxString sSource);
 extern bool SrcIsRest(wxString sElement);
 
 
-extern EClefType LDPNameToClef(wxString sClefName);
-extern EKeySignatures LDPInternalNameToKey(wxString sKeyName);
+extern lmEClefType LDPNameToClef(wxString sClefName);
+extern lmEKeySignatures LDPInternalNameToKey(wxString sKeyName);
 
 
 
 // MusicXML related
-extern bool XmlDataToClef(wxString sClefLine, EClefType* pClef);
-extern bool XmlDataToBarStyle(wxString sBarStyle, EBarline* pType);
+extern bool XmlDataToClef(wxString sClefLine, lmEClefType* pClef);
+extern bool XmlDataToBarStyle(wxString sBarStyle, lmEBarline* pType);
 
 #endif    // __AUXSTRING_H

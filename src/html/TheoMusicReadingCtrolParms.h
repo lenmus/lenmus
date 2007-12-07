@@ -385,8 +385,8 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeClef(wxString sLine)
     //get clef
     int iSemicolon = sLine.Find(_T(";"));
     wxString sClef = sLine.Left(iSemicolon);
-    EClefType nClef = LDPNameToClef(sClef);
-    if (nClef == (EClefType)-1) return true;    //error
+    lmEClefType nClef = LDPNameToClef(sClef);
+    if (nClef == (lmEClefType)-1) return true;    //error
 
     //get lower scope
     sLine = sLine.substr(iSemicolon+1);
@@ -418,9 +418,9 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeTime(wxString sLine)
     //Replace information about allowed time signatures
     lmTimeSignConstrains* pOldTimeSigns = m_pScoreConstrains->GetTimeSignConstrains();
     int i;
-    ETimeSignature nTime;
+    lmETimeSignature nTime;
     for (i=lmMIN_TIME_SIGN; i <= lmMAX_TIME_SIGN; i++) {
-        nTime = (ETimeSignature)i;
+        nTime = (lmETimeSignature)i;
         pOldTimeSigns->SetValid(nTime, pTimeSigns->IsValid(nTime) );
     }
     delete pTimeSigns;
@@ -439,7 +439,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeKeys(wxString sLine)
         lmKeyConstrains* pKeys = m_pScoreConstrains->GetKeyConstrains();
         int i;
         for (i=0; i <= earmFa; i++) {
-            pKeys->SetValid((EKeySignatures)i, true);
+            pKeys->SetValid((lmEKeySignatures)i, true);
         }
     }
 
@@ -450,7 +450,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeKeys(wxString sLine)
         //loop to get all keys
         int iColon;
         wxString sKey;
-        EKeySignatures nKey;
+        lmEKeySignatures nKey;
         while (sLine != _T("")) {
             //get key
             iColon = sLine.Find(_T(","));
@@ -463,7 +463,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeKeys(wxString sLine)
                 sLine = _T("");
             }
             nKey = LDPInternalNameToKey(sKey);
-            if (nKey == (EKeySignatures)-1) return true;
+            if (nKey == (lmEKeySignatures)-1) return true;
             pKeys->SetValid(nKey, true);
         }
     }

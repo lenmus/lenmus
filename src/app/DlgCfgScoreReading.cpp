@@ -314,14 +314,14 @@ lmDlgCfgScoreReading::lmDlgCfgScoreReading(wxWindow * parent,
     // combos for minimum and maximun notes
     lmClefConstrain* pClefs = m_pConstrains->GetClefConstrains();
     for (i=0; i < 7; i++) {
-        LoadCboBoxWithNoteNames(m_pCboMinNote[i], pClefs->GetLowerPitch((EClefType)((int)lmMIN_CLEF+i)));
-        LoadCboBoxWithNoteNames(m_pCboMaxNote[i], pClefs->GetUpperPitch((EClefType)((int)lmMIN_CLEF+i)));
+        LoadCboBoxWithNoteNames(m_pCboMinNote[i], pClefs->GetLowerPitch((lmEClefType)((int)lmMIN_CLEF+i)));
+        LoadCboBoxWithNoteNames(m_pCboMaxNote[i], pClefs->GetUpperPitch((lmEClefType)((int)lmMIN_CLEF+i)));
     }
 
     //check boxes for allowed clefs
     bool fSelected;
     for (i=0; i < 7; i++) {
-        fSelected = m_pConstrains->IsValidClef( (EClefType)((int)lmMIN_CLEF+i) );
+        fSelected = m_pConstrains->IsValidClef( (lmEClefType)((int)lmMIN_CLEF+i) );
         m_pChkClef[i]->SetValue( fSelected );
         m_pCboMinNote[i]->Enable(fSelected);
         m_pCboMaxNote[i]->Enable(fSelected);
@@ -333,14 +333,14 @@ lmDlgCfgScoreReading::lmDlgCfgScoreReading(wxWindow * parent,
     // page 1: time signatures
     lmTimeSignConstrains* pTimeSigns = m_pConstrains->GetTimeSignConstrains();
     for (i=0; i < lmMAX_TIME_SIGN - lmMIN_TIME_SIGN + 1; i++) {
-        fSelected = pTimeSigns->IsValid((ETimeSignature)(i+lmMIN_TIME_SIGN));
+        fSelected = pTimeSigns->IsValid((lmETimeSignature)(i+lmMIN_TIME_SIGN));
         m_pChkTime[i]->SetValue( fSelected );
     }
 
     // page 2: key signatures
     lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
     for (i=0; i < earmFa+1; i++) {
-        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((EKeySignatures)i) );
+        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((lmEKeySignatures)i) );
     }
 
     //Reconfigure dialog depending on needed type
@@ -373,10 +373,10 @@ void lmDlgCfgScoreReading::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     //
 
     // save allowed clefs and notes ranges
-    EClefType nClef;
+    lmEClefType nClef;
     int i;
     for (i=0; i < 7; i++) {
-        nClef = (EClefType)((int)lmMIN_CLEF+i);
+        nClef = (lmEClefType)((int)lmMIN_CLEF+i);
         m_pConstrains->SetClef(nClef, m_pChkClef[i]->GetValue());
         m_pConstrains->SetMinNote(nClef, m_pCboMinNote[i]->GetValue());
         m_pConstrains->SetMaxNote(nClef, m_pCboMaxNote[i]->GetValue());
@@ -393,7 +393,7 @@ void lmDlgCfgScoreReading::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
         //
         lmTimeSignConstrains* pTimeSigns = m_pConstrains->GetTimeSignConstrains();
         for (i=0; i < lmMAX_TIME_SIGN - lmMIN_TIME_SIGN + 1; i++) {
-            pTimeSigns->SetValid((ETimeSignature)(i+lmMIN_TIME_SIGN), m_pChkTime[i]->GetValue() );
+            pTimeSigns->SetValid((lmETimeSignature)(i+lmMIN_TIME_SIGN), m_pChkTime[i]->GetValue() );
         }
 
         //
@@ -401,7 +401,7 @@ void lmDlgCfgScoreReading::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
         //
         lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
         for (i=0; i < earmFa+1; i++) {
-            pKeyConstrains->SetValid((EKeySignatures)i, m_pChkKeySign[i]->GetValue());
+            pKeyConstrains->SetValid((lmEKeySignatures)i, m_pChkKeySign[i]->GetValue());
         }
 
     }
@@ -458,7 +458,7 @@ bool lmDlgCfgScoreReading::VerifyData()
     fError = false;
     wxString sMinPitch, sMaxPitch;
     lmDPitch nMaxPitch, nMinPitch;
-    EAccidentals nAccidentals;
+    lmEAccidentals nAccidentals;
     for (i=0; i < 7; i++) {
         sMinPitch = m_pCboMinNote[i]->GetValue();
         sMaxPitch = m_pCboMaxNote[i]->GetValue();

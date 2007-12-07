@@ -49,9 +49,9 @@ extern lmMainFrame* g_pMainFrame;
 
 
 // access to global functions
-extern void ComputeAccidentals(EKeySignatures nKeySignature, int nAccidentals[]);
-extern int GetRootNoteIndex(EKeySignatures nKeySignature);
-extern const wxString& GetKeySignatureName(EKeySignatures nKeySignature);
+extern void ComputeAccidentals(lmEKeySignatures nKeySignature, int nAccidentals[]);
+extern int GetRootNoteIndex(lmEKeySignatures nKeySignature);
+extern const wxString& GetKeySignatureName(lmEKeySignatures nKeySignature);
 
 // access to global external variables
 extern bool g_fReleaseVersion;            // in TheApp.cpp

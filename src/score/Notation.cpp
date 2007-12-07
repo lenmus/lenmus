@@ -71,7 +71,12 @@ wxString lmSpacer::SourceLDP(int nIndent)
 {
     wxString sSource = _T("");
     sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
-    sSource += wxString::Format(_T("(spacer %.0f)\n"), m_nSpacerWidth);
+    sSource += wxString::Format(_T("(spacer %.0f"), m_nSpacerWidth);
+
+	//attached AuxObjs
+	sSource += lmStaffObj::SourceLDP(nIndent+1);
+
+    sSource += _T(")\n");
     return sSource;
 
 }

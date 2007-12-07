@@ -292,7 +292,7 @@ void lmVStaff::UpdateContext(lmNote* pStartNote, int nStaff, int nStep,
 //---------------------------------------------------------------------------------------
 
 // adds a clef to the end of current StaffObjs collection
-lmClef* lmVStaff::AddClef(EClefType nClefType, int nStaff, bool fVisible)
+lmClef* lmVStaff::AddClef(lmEClefType nClefType, int nStaff, bool fVisible)
 {
     wxASSERT(nStaff <= GetNumStaves());
 
@@ -335,14 +335,14 @@ lmStaffObj* lmVStaff::AddAnchorObj()
 // returns a pointer to the lmNote object just created
 lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
                     wxString sStep, wxString sOctave, wxString sAlter,
-                    EAccidentals nAccidentals,
-                    ENoteType nNoteType, float rDuration,
+                    lmEAccidentals nAccidentals,
+                    lmENoteType nNoteType, float rDuration,
                     bool fDotted, bool fDoubleDotted,
                     int nStaff, bool fVisible,
                     bool fBeamed, lmTBeamInfo BeamInfo[],
                     bool fInChord,
                     bool fTie,
-                    EStemType nStem)
+                    lmEStemType nStem)
 {
 
     wxASSERT(nStaff <= GetNumStaves() );
@@ -361,7 +361,7 @@ lmNote* lmVStaff::AddNote(lmEPitchType nPitchType,
 }
 
 // returns a pointer to the lmRest object just created
-lmRest* lmVStaff::AddRest(ENoteType nNoteType, float rDuration,
+lmRest* lmVStaff::AddRest(lmENoteType nNoteType, float rDuration,
                       bool fDotted, bool fDoubleDotted,
                       int nStaff, bool fVisible,
                       bool fBeamed, lmTBeamInfo BeamInfo[])
@@ -379,14 +379,26 @@ lmRest* lmVStaff::AddRest(ENoteType nNoteType, float rDuration,
 
 }
 
-lmWordsDirection* lmVStaff::AddWordsDirection(wxString sText, lmEAlignment nAlign,
+lmStaffObj* lmVStaff::AddText(wxString sText, lmEAlignment nAlign,
                             lmLocation* pPos, lmFontInfo tFontData, bool fHasWidth)
 {
-    lmWordsDirection* pWD = new lmWordsDirection(this, sText, nAlign,
-                                                 pPos, tFontData, fHasWidth);
+    lmScoreText* pText = new lmScoreText(sText, nAlign, *pPos, tFontData);
 
-    m_cStaffObjs.Store(pWD);
-    return pWD;
+    // create an anchor object
+    lmStaffObj* pAnchor;
+    if (fHasWidth)
+    {
+        //attach it to a spacer
+        pAnchor = this->AddSpacer( pText->GetShap2()->GetWidth() );
+    }
+    else
+    {
+        //No width. Attach it to an anchor
+        pAnchor = AddAnchorObj();
+    }
+    pAnchor->AttachAuxObj(pText);
+
+    return pAnchor;
 
 }
 
@@ -400,8 +412,8 @@ lmMetronomeMark* lmVStaff::AddMetronomeMark(int nTicksPerMinute,
 
 }
 
-lmMetronomeMark* lmVStaff::AddMetronomeMark(ENoteType nLeftNoteType, int nLeftDots,
-                        ENoteType nRightNoteType, int nRightDots,
+lmMetronomeMark* lmVStaff::AddMetronomeMark(lmENoteType nLeftNoteType, int nLeftDots,
+                        lmENoteType nRightNoteType, int nRightDots,
                         bool fParentheses, bool fVisible)
 {
     lmMetronomeMark* pMM = new lmMetronomeMark(this, nLeftNoteType, nLeftDots,
@@ -412,7 +424,7 @@ lmMetronomeMark* lmVStaff::AddMetronomeMark(ENoteType nLeftNoteType, int nLeftDo
 
 }
 
-lmMetronomeMark* lmVStaff::AddMetronomeMark(ENoteType nLeftNoteType, int nLeftDots,
+lmMetronomeMark* lmVStaff::AddMetronomeMark(lmENoteType nLeftNoteType, int nLeftDots,
                         int nTicksPerMinute, bool fParentheses, bool fVisible)
 {
     lmMetronomeMark* pMM = new lmMetronomeMark(this, nLeftNoteType, nLeftDots,
@@ -425,7 +437,7 @@ lmMetronomeMark* lmVStaff::AddMetronomeMark(ENoteType nLeftNoteType, int nLeftDo
 
 
 //for types eTS_Common, eTS_Cut and eTS_SenzaMisura
-lmTimeSignature* lmVStaff::AddTimeSignature(ETimeSignatureType nType, bool fVisible)
+lmTimeSignature* lmVStaff::AddTimeSignature(lmETimeSignatureType nType, bool fVisible)
 {
     lmTimeSignature* pTS = new lmTimeSignature(nType, this, fVisible);
     return AddTimeSignature(pTS);
@@ -461,7 +473,7 @@ lmTimeSignature* lmVStaff::AddTimeSignature(int nBeats, int nBeatType, bool fVis
     return AddTimeSignature(pTS);
 }
 
-lmTimeSignature* lmVStaff::AddTimeSignature(ETimeSignature nTimeSign, bool fVisible)
+lmTimeSignature* lmVStaff::AddTimeSignature(lmETimeSignature nTimeSign, bool fVisible)
 {
     lmTimeSignature* pTS = new lmTimeSignature(nTimeSign, this, fVisible);
     return AddTimeSignature(pTS);
@@ -502,7 +514,7 @@ lmKeySignature* lmVStaff::AddKeySignature(int nFifths, bool fMajor, bool fVisibl
     return pKS;
 }
 
-lmKeySignature* lmVStaff::AddKeySignature(EKeySignatures nKeySignature, bool fVisible)
+lmKeySignature* lmVStaff::AddKeySignature(lmEKeySignatures nKeySignature, bool fVisible)
 {
     int nFifths = KeySignatureToNumFifths(nKeySignature);
     bool fMajor = IsMajor(nKeySignature);
@@ -816,7 +828,7 @@ lmLUnits lmVStaff::GetVStaffHeight()
 
 }
 
-lmBarline* lmVStaff::AddBarline(EBarline nType, bool fVisible)
+lmBarline* lmVStaff::AddBarline(lmEBarline nType, bool fVisible)
 {
     //create and save the barline
     lmBarline* pBarline = new lmBarline(nType, this, fVisible);
@@ -933,7 +945,7 @@ void lmVStaff::AddPrologShapes(lmBoxSliceVStaff* pBSV, int nMeasure, bool fDrawT
 
     lmLUnits nPrologWidth = 0;
     lmClef* pClef = (lmClef*)NULL;
-    EClefType nClef = eclvUndefined;
+    lmEClefType nClef = lmE_Undefined;
     lmKeySignature* pKey = (lmKeySignature*)NULL;
     lmTimeSignature* pTime = (lmTimeSignature*)NULL;
 
@@ -1000,7 +1012,7 @@ void lmVStaff::AddPrologShapes(lmBoxSliceVStaff* pBSV, int nMeasure, bool fDrawT
 
             //render key signature
             if (pKey && pKey->IsVisible()) {
-                wxASSERT(nClef != eclvUndefined);
+                wxASSERT(nClef != lmE_Undefined);
                 lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
                 nWidth = pKey->AddShape(pBSV, pPaper, uPos, nClef, nStaff);
                 xPos += nWidth;
@@ -1039,7 +1051,7 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
 //
 //    lmLUnits nPrologWidth = 0;
 //    lmClef* pClef = (lmClef*)NULL;
-//    EClefType nClef = eclvUndefined;
+//    lmEClefType nClef = lmE_Undefined;
 //    lmKeySignature* pKey = (lmKeySignature*)NULL;
 //    lmTimeSignature* pTime = (lmTimeSignature*)NULL;
 //
@@ -1106,7 +1118,7 @@ void lmVStaff::DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPa
 //
 //            //render key signature
 //            if (pKey && pKey->IsVisible()) {
-//                wxASSERT(nClef != eclvUndefined);
+//                wxASSERT(nClef != lmE_Undefined);
 //                lmUPoint uPos = lmUPoint(xPos, yStartPos+yOffset);        //absolute position
 //                nWidth = pKey->DrawAt(fMeasuring, pPaper, uPos, nClef, nStaff);
 //                xPos += nWidth;
@@ -1145,7 +1157,7 @@ lmSoundManager* lmVStaff::ComputeMidiEvents(int nChannel)
     */
 
     //TODO review this commented code
-//    Dim nMetrica As ETimeSignature, nDurCompas As Long, nTiempoIni As Long
+//    Dim nMetrica As lmETimeSignature, nDurCompas As Long, nTiempoIni As Long
 //
 //    nMetrica = this.MetricaInicial
 //    nDurCompas = GetDuracionMetrica(nMetrica)

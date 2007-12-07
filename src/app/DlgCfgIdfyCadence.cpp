@@ -278,7 +278,7 @@ lmDlgCfgIdfyCadence::lmDlgCfgIdfyCadence(wxWindow* parent,
     // allowed key signatures
     lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
     for (int i=0; i <= lmMAX_KEY; i++) {
-        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((EKeySignatures)i) );
+        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((lmEKeySignatures)i) );
     }
 
     //initialize check boxes for allowed cadences with current settings
@@ -371,7 +371,7 @@ void lmDlgCfgIdfyCadence::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     // save selected key signatures
     lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
     for (i=0; i <= lmMAX_KEY; i++) {
-        pKeyConstrains->SetValid((EKeySignatures)i, m_pChkKeySign[i]->GetValue());
+        pKeyConstrains->SetValid((lmEKeySignatures)i, m_pChkKeySign[i]->GetValue());
     }
 
     // save answer buttons

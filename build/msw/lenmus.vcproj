@@ -223,12 +223,6 @@
 				RelativePath="..\..\src\score\defs.h">
 			</File>
 			<File
-				RelativePath="..\..\src\score\Direction.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\score\Direction.h">
-			</File>
-			<File
 				RelativePath="..\..\src\score\Glyph.cpp">
 			</File>
 			<File

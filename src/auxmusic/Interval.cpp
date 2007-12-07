@@ -49,7 +49,7 @@ static bool fStringsInitialized = false;
 // Implementation of lmInterval class
 
 
-lmInterval::lmInterval(lmNote* pNote1, lmNote* pNote2, EKeySignatures nKey)
+lmInterval::lmInterval(lmNote* pNote1, lmNote* pNote2, lmEKeySignatures nKey)
 {
     if (!fStringsInitialized) InitializeStrings();
 
@@ -65,7 +65,7 @@ lmInterval::lmInterval(lmNote* pNote1, lmNote* pNote2, EKeySignatures nKey)
 
 //Generate a random interval satisfying the received constraints.
 lmInterval::lmInterval(bool fDiatonic, int ntDiatMin, int ntDiatMax, bool fAllowedIntervals[],
-             bool fAscending, EKeySignatures nKey, int nMidiStartNote)
+             bool fAscending, lmEKeySignatures nKey, int nMidiStartNote)
 {
     if (!fStringsInitialized) InitializeStrings();
 
@@ -444,7 +444,7 @@ void lmInterval::GetNoteBits(int i, lmNoteBits* pBits)
 //-------------------------------------------------------------------------------------
 
 wxString ComputeInterval(wxString sRootNote, wxString sIntvCode,
-                         bool fAscending, EKeySignatures nKey)
+                         bool fAscending, lmEKeySignatures nKey)
 {
     //Root note elements. i.e.: '+d4' -> (1, 4, 1)
     lmNoteBits tRoot;
@@ -516,7 +516,7 @@ void ComputeInterval(lmNoteBits* pRoot, wxString sIntvCode,
 
 }
 
-void AddSemitonesToNote(lmNoteBits* pRoot, wxString sIntvCode, EKeySignatures nKey,
+void AddSemitonesToNote(lmNoteBits* pRoot, wxString sIntvCode, lmEKeySignatures nKey,
                                EIntervalDirection nDirection, lmNoteBits* pNewNote)
 {
     // This function adds the requested semitones to note *pRoot and returns the resulting

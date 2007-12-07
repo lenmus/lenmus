@@ -42,7 +42,7 @@ class lmMetronomeMark : public lmStaffObj
 public:
     // constructors / destructor
     lmMetronomeMark(lmVStaff* pVStaff,          // 'note_symbol = 80'
-                    ENoteType nNoteType,
+                    lmENoteType nNoteType,
                     int nDots,
                     int nTicksPerMinute,
                     bool fParentheses = false,
@@ -52,9 +52,9 @@ public:
                     bool fParentheses = false,
                     bool fVisible = true);
     lmMetronomeMark(lmVStaff* pVStaff,          // 'note_symbol = note_symbol'
-                    ENoteType nLeftNoteType,
+                    lmENoteType nLeftNoteType,
                     int nLeftDots,
-                    ENoteType nRightNoteType,
+                    lmENoteType nRightNoteType,
                     int nRightDots,
                     bool fParentheses = false,
                     bool fVisible = true);
@@ -75,19 +75,19 @@ public:
 
 
 private:
-    wxString GetLDPNote(ENoteType nNoteType, int nDots);
+    wxString GetLDPNote(lmENoteType nNoteType, int nDots);
     lmLUnits DrawMetronomeMark(bool fMeasuring, lmPaper* pPaper,
                                lmLUnits uxPos, lmLUnits uyPos, wxColour colorC = *wxBLACK);
     lmLUnits DrawText(bool fMeasuring, lmPaper* pPaper,
                       lmLUnits uxPos, lmLUnits uyPos, wxColour colorC);
     lmLUnits DrawSymbol(bool fMeasuring, lmPaper* pPaper, lmShapeGlyph* pShape,
                         lmLUnits uxPos, lmLUnits uyPos, wxColour colorC);
-    lmEGlyphIndex SelectGlyph(ENoteType nNoteType, int nDots);
+    lmEGlyphIndex SelectGlyph(lmENoteType nNoteType, int nDots);
 
     EMetronomeMarkType  m_nMarkType;
-    ENoteType           m_nLeftNoteType;
+    lmENoteType           m_nLeftNoteType;
     int                 m_nLeftDots;
-    ENoteType           m_nRightNoteType;
+    lmENoteType           m_nRightNoteType;
     int                 m_nRightDots;
     int                 m_nTicksPerMinute;
     bool                m_fParentheses;         // enclose metronome mark between parentheses

@@ -204,7 +204,7 @@ wxString FPitch_ToAbsLDPName(lmFPitch fp)
     return sAnswer;
 }
 
-wxString FPitch_ToRelLDPName(lmFPitch fp, EKeySignatures nKey)
+wxString FPitch_ToRelLDPName(lmFPitch fp, lmEKeySignatures nKey)
 {
     // The note LDP name, relative to received key signature, is returned
 
@@ -289,7 +289,7 @@ lmAPitch FPitch_ToAPitch(lmFPitch fp)
     return lmAPitch(FPitch_ToDPitch(fp), FPitch_Accidentals(fp));
 }
 
-lmFPitch FPitch_AddSemitone(lmFPitch fpNote, EKeySignatures nKey)
+lmFPitch FPitch_AddSemitone(lmFPitch fpNote, lmEKeySignatures nKey)
 {
     // This function adds one semitone to note fpNote and returns the resulting
     // note.
@@ -616,7 +616,7 @@ wxString DPitch_GetEnglishNoteName(lmDPitch dp)
 // lmMPitch: MIDI pitch
 //---------------------------------------------------------------------------------------
 
-bool MPitch_IsNaturalNote(lmMPitch ntMidi, EKeySignatures nKey)
+bool MPitch_IsNaturalNote(lmMPitch ntMidi, lmEKeySignatures nKey)
 {
     // Returns true if the Midi note corresponds to natural note of the key signature scale
 

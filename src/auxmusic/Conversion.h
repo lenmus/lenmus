@@ -51,7 +51,7 @@ public:
 
     //note parts
     static bool         NoteToBits(wxString sNote, lmNoteBits* pBits);
-    static wxString     NoteBitsToName(lmNoteBits& tBits, EKeySignatures nKey);
+    static wxString     NoteBitsToName(lmNoteBits& tBits, lmEKeySignatures nKey);
     static int          StepToSemitones(int nStep);
     static int          AccidentalsToInt(wxString sAccidentals);
     static int          StepToInt(wxString sStep);

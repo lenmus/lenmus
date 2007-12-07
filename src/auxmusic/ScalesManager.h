@@ -60,7 +60,7 @@ class lmScalesManager
 public:
     //build a scale from root note and type
     lmScalesManager(wxString sRootNote, EScaleType nScaleType,
-                   EKeySignatures nKey = earmDo);
+                   lmEKeySignatures nKey = earmDo);
     //destructor
     ~lmScalesManager();
 
@@ -76,7 +76,7 @@ private:
     //member variables
 
     EScaleType      m_nType;
-    EKeySignatures  m_nKey;
+    lmEKeySignatures  m_nKey;
     lmFPitch        m_fpNote[lmNOTES_IN_SCALE];     //the scale
 
 };

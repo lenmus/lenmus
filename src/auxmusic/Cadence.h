@@ -132,7 +132,7 @@ public:
     lmCadence();
     ~lmCadence();
 
-    bool Create(lmECadenceType nCadenceType, EKeySignatures nKey, bool fUseGrandStaff);
+    bool Create(lmECadenceType nCadenceType, lmEKeySignatures nKey, bool fUseGrandStaff);
     bool IsCreated() { return m_fCreated; }
 
     lmECadenceType GetCadenceType() { return m_nType; }
@@ -144,8 +144,8 @@ public:
 
 
 private:
-    wxString SelectChord(wxString sFunction, EKeySignatures nKey, int* pInversion);
-    wxString GetRootNote(wxString sFunct, EKeySignatures nKey, EClefType nClef,
+    wxString SelectChord(wxString sFunction, lmEKeySignatures nKey, int* pInversion);
+    wxString GetRootNote(wxString sFunct, lmEKeySignatures nKey, lmEClefType nClef,
                          bool fUseGrandStaff);
 
     int GenerateFirstChord(std::vector<lmHChord>& aChords, lmChordAuxData& tChordData,
@@ -170,7 +170,7 @@ private:
     bool            m_fCreated;
     lmECadenceType  m_nType;
 	int				m_nImperfectCad;		
-    EKeySignatures  m_nKey;
+    lmEKeySignatures  m_nKey;
     bool            m_fTonicCreated;
     lmChordManager  m_oTonicChord;
     lmChordManager  m_aChord[lmCHORDS_IN_CADENCE];

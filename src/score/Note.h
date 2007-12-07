@@ -47,15 +47,15 @@ public:
 
     lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         wxString& sStep, wxString& sOctave, wxString& sAlter,
-        EAccidentals nAccidentals,
-        ENoteType nNoteType, float rDuration,
+        lmEAccidentals nAccidentals,
+        lmENoteType nNoteType, float rDuration,
         bool fDotted, bool fDoubleDotted,
         int nStaff, bool fVisible,
         lmContext* pContext, 
         bool fBeamed, lmTBeamInfo BeamInfo[],
         bool fInChord,
         bool fTie,
-        EStemType nStem);
+        lmEStemType nStem);
 
     ~lmNote();
 
@@ -84,7 +84,7 @@ public:
 
 
     //methods related to stems
-    EStemType   GetStemType() { return m_nStemType; }
+    lmEStemType   GetStemType() { return m_nStemType; }
     lmLUnits    GetDefaultStemLength();
     lmLUnits    GetStandardStemLenght();
     void        SetStemLength(lmLUnits uLength) { m_uStemLength = uLength; };
@@ -168,10 +168,10 @@ private:
     lmEGlyphIndex DrawFlag(bool fMeasuring, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 
     //layouting
-    void AddSingleNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, ENoteType nNoteType,
+    void AddSingleNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENoteType nNoteType,
                             bool fStemAbajo, lmLUnits uxLeft, lmLUnits uyTop,
 							wxColour colorC);
-    void AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, ENoteHeads nNoteheadType,
+    void AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENoteHeads nNoteheadType,
                           lmLUnits uxLeft, lmLUnits uyTop, wxColour colorC);
     void AddLegerLineShape(lmShapeNote* pNoteShape, lmPaper* pPaper, int nPosOnStaff, 
                            lmLUnits uyStaffTopLine, lmLUnits uxPos, lmLUnits uWidth, int nStaff);
@@ -181,7 +181,7 @@ private:
     int PosOnStaffToPitch(int nSteps);
     void SetUpPitchRelatedVariables(lmDPitch nNewPitch);
     void SetUpStemDirection();
-    const EAccidentals ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const;
+    const lmEAccidentals ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const;
 
     //pitch
     void DoChangePitch(int nStep, int nOctave, int nAlter);
@@ -199,7 +199,7 @@ private:
 
     lmAPitch        m_anPitch;          //real absolute pitch. Accidentals and context already included
     lmAccidental*   m_pAccidentals;     //accidentals to be drawn
-    EClefType       m_nClef;            //clef to draw this note
+    lmEClefType       m_nClef;            //clef to draw this note
     lmContext*      m_pContext;         //context for this note
 
     // additional positioning related variables
@@ -209,7 +209,7 @@ private:
     lmLUnits        m_uStemThickness;
     lmLUnits        m_uStemLength;     //length of stem;
     bool            m_fStemDown;       //stem direccion. true if down
-    EStemType       m_nStemType;       //type of stem
+    lmEStemType       m_nStemType;       //type of stem
 
     // playback info
     int             m_nVolume;          // MIDI volume (0-127)
@@ -250,7 +250,7 @@ WX_DECLARE_LIST(lmNote, NotesList);
 
 // Global functions related to notes
 
-wxString MIDINoteToLDPPattern(lmMPitch nPitchMIDI, EKeySignatures nTonalidad, 
+wxString MIDINoteToLDPPattern(lmMPitch nPitchMIDI, lmEKeySignatures nTonalidad, 
                               lmDPitch* pPitch = (lmDPitch*)NULL);
 wxString GetNoteNamePhysicists(lmDPitch nPitch);
 

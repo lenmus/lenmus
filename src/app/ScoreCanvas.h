@@ -52,7 +52,7 @@ public:
 				 wxColor colorBg, wxWindowID id = wxID_ANY,
 				 const wxPoint& pos = wxDefaultPosition,
 				 const wxSize& size = wxDefaultSize, long style = 0);
-	virtual ~lmController() {}
+	virtual ~lmController();
 
 	//commands without Do/Undo support
 	virtual void PlayScore() {}
@@ -60,18 +60,33 @@ public:
     virtual void PausePlaying() {}
 
 	// commands with Do/Undo support
-	virtual void MoveObject(lmComponentObj* pSO, const lmUPoint& uPos) {}
+	virtual void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos) {}
 	virtual void SelectObject(lmGMObject* pGMO) {}
 
     // event handlers
     virtual void OnKeyPress(wxKeyEvent& event) { event.Skip(); }
 	virtual void OnEraseBackground(wxEraseEvent& event);
 
+	//contextual menus
+	void ShowContextualMenu(lmScoreObj* pOwner, lmGMObject* pGMO, wxMenu* pMenu, int x, int y);
+	virtual wxMenu* GetContextualMenu();
+
+	//event handlers for contextual menus
+	virtual void OnCut(wxCommandEvent& event) {}
+    virtual void OnCopy(wxCommandEvent& event) {}
+    virtual void OnPaste(wxCommandEvent& event) {}
+    virtual void OnColor(wxCommandEvent& event) {}
+    virtual void OnProperties(wxCommandEvent& event) {}
+
+
+protected:
+	wxMenu*			m_pMenu;			//contextual menu
+	lmScoreObj*		m_pMenuOwner;		//contextual menu owner
+	lmGMObject*		m_pMenuGMO;			//graphic object who displayed the contextual menu
 
 private:
-    //wxView*         m_pView;        //the associated view
 
-    DECLARE_EVENT_TABLE()
+	DECLARE_EVENT_TABLE()
 };
 
 
@@ -100,8 +115,19 @@ public:
     void PausePlaying();
 
 	// commands with Do/Undo support
-	void MoveObject(lmComponentObj* pSO, const lmUPoint& uPos);
+	void MoveObject(lmGMObject* pGMO, const lmUPoint& uPos);
 	void SelectObject(lmGMObject* pGMO);
+
+	//contextual menus
+	wxMenu* GetContextualMenu();
+
+	//event handlers for contextual menus
+	void OnCut(wxCommandEvent& event);
+    void OnCopy(wxCommandEvent& event);
+    void OnPaste(wxCommandEvent& event);
+    void OnColor(wxCommandEvent& event);
+    void OnProperties(wxCommandEvent& event);
+
 
 
 private:
@@ -115,7 +141,8 @@ private:
     wxWindow*           m_pOwner;       //parent window
     lmScoreDocument*    m_pDoc;         //the document rendered by the view
 
-    wxColour        m_colorBg;              //colour for background
+    wxColour        m_colorBg;			//colour for background
+
 
     DECLARE_EVENT_TABLE()
 };

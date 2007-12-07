@@ -255,7 +255,7 @@ void lmIdfyChordCtrol::PrepareAuxScore(int nButton)
     // This method is then invoked to prepare the score with the requested sound.
     // At return, base class will play it
 
-    PrepareScore(eclvSol, (EChordType)m_nRealChord[nButton], &m_pAuxScore);
+    PrepareScore(lmE_Sol, (EChordType)m_nRealChord[nButton], &m_pAuxScore);
 }
 
 wxString lmIdfyChordCtrol::SetNewProblem()
@@ -279,7 +279,7 @@ wxString lmIdfyChordCtrol::SetNewProblem()
     m_nKey = oGenerator.GenerateKey( m_pConstrains->GetKeyConstrains() );
 
     //Generate a random root note
-    EClefType nClef = eclvSol;
+    lmEClefType nClef = lmE_Sol;
     bool fAllowAccidentals = false;
     m_sRootNote = oGenerator.GenerateRandomRootNote(nClef, m_nKey, fAllowAccidentals);
 
@@ -310,7 +310,7 @@ wxString lmIdfyChordCtrol::SetNewProblem()
 
 }
 
-wxString lmIdfyChordCtrol::PrepareScore(EClefType nClef, EChordType nType, lmScore** pScore)
+wxString lmIdfyChordCtrol::PrepareScore(lmEClefType nClef, EChordType nType, lmScore** pScore)
 {
     //create the chord
     lmChordManager oChordMngr(m_sRootNote, nType, m_nInversion, m_nKey);
@@ -335,7 +335,7 @@ wxString lmIdfyChordCtrol::PrepareScore(EClefType nClef, EChordType nType, lmSco
 							 g_pMidi->DefaultVoiceInstr(), _T(""));
     pVStaff = (*pScore)->GetVStaff(1, 1);      //get first vstaff of instr.1
     (*pScore)->SetTopSystemDistance( pVStaff->TenthsToLogical(30, 1) );     // 3 lines
-    pVStaff->AddClef( eclvSol );
+    pVStaff->AddClef( lmE_Sol );
     pVStaff->AddKeySignature( m_nKey );
     pVStaff->AddTimeSignature(4 ,4, lmNO_VISIBLE );
 

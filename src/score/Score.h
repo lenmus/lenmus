@@ -124,27 +124,6 @@ extern lmFontInfo g_tInstrumentDefaultFont;       // defined in Instrument.cpp
 extern lmFontInfo tBasicTextDefaultFont;        // defined in NoteRestObj.cpp
 
 
-//Location source data
-enum lmELocationType
-{
-    lmLOCATION_RELATIVE = 0,
-    lmLOCATION_ABSOLUTE,
-    lmLOCATION_DEFAULT
-};
-
-typedef struct lmLocationStruct {
-    int x;
-    int y;
-    lmELocationType xType;
-    lmELocationType yType;
-    lmEUnits xUnits;
-    lmEUnits yUnits;
-} lmLocation;
-
-    //global variables used as default initializators
-extern lmLocation g_tDefaultPos;          // defined in NoteRestObj.cpp
-
-
 //Constants
 #define XML_DURATION_TO_LDP  64        //factor to convert between LDP duration and MusicXML duration
 
@@ -170,7 +149,6 @@ class StaffObjsList;
 
 class lmBasicText;
 class lmScoreText;
-class lmWordsDirection;
 class lmSOControl;
 class lmClef;
 class lmTimeSignature;
@@ -334,8 +312,8 @@ private:
 
     // a lmScore is, mainly, a collection of Instruments plus some data (composer, title, ...)
     InstrumentsList     m_cInstruments;     //list of instruments that form this score
-    StaffObjsList       m_cTitles;          //list of score titles
-    lmVStaff*           m_pGlobalStaff;     //Instrumental VStaff object to allow the score to own StaffObjs
+    //StaffObjsList       m_cTitles;          //list of score titles
+    std::vector<int>    m_nTitles;          //indexes (over attached AuxObjs) to titles 
 
     //Variables related to polyphonic interpretation
     lmSoundManager*     m_pSoundMngr;       //Sound events table & manager

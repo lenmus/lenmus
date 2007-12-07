@@ -44,7 +44,6 @@
 #include "wx/dragimag.h"
 #endif
 
-#include "wx/cmdproc.h"		//wxCommandProcessor
 #include "vector"
 
 #include "../score/defs.h"
@@ -53,6 +52,7 @@ extern bool g_fFreeMove;		// the shapes can be dragged without restrictions
 
 class lmPaper;
 class lmScoreObj;
+class lmController;
 
 
 //------------------------------------------------------------------------------
@@ -118,6 +118,11 @@ public:
 
     virtual bool ContainsPoint(lmUPoint& pointL);
 
+    // methods related to selection rectangle
+    void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight);
+    void DrawSelRectangle(lmPaper* pPaper, wxColour colorC = *wxBLUE);
+    lmURect GetSelRectangle() const { return m_uSelRect; }
+
 
     //rendering
     virtual void DrawBounds(lmPaper* pPaper, wxColour color);
@@ -129,17 +134,25 @@ public:
     inline bool IsSelected() const { return m_fSelected; }
     inline void SetSelected(bool fValue) { m_fSelected = fValue; }
 
-	//dragging
+	//dragging and moving
     inline bool IsDraggable() const { return m_fDraggable; }
 	virtual wxBitmap* OnBeginDrag(double rScale) { return (wxBitmap*)NULL; }
     virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos) { return uPos; };
 	virtual lmUPoint GetObjectOrigin();
-    virtual void OnEndDrag(wxCommandProcessor* pCP, const lmUPoint& uPos) {};
+    virtual void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
+    virtual void Shift(lmLUnits xIncr, lmLUnits yIncr);
+
+    //info
+    inline lmScoreObj* GetScoreOwner() { return m_pOwner; }
+
+	//contextual menu
+	virtual void OnRightClick(lmController* pCanvas, const lmDPoint& vPos, int nKeys);
 
 
 protected:
-    lmGMObject(lmEGMOType m_nType, bool fDraggable = false);
+    lmGMObject(lmScoreObj* pOwner, lmEGMOType m_nType, bool fDraggable = false);
     wxString DumpBounds();
+	void ShiftBoundsAndSelRec(lmLUnits xIncr, lmLUnits yIncr);
 	void NormaliceBoundsRectangle();
 
 	enum {
@@ -147,13 +160,17 @@ protected:
 	};
 
 
-    lmEGMOType          m_nType;        //type of GMO
-    int                 m_nId;          //unique identification number
+	lmScoreObj*	    m_pOwner;		//associated owner object (in lmScore representation)
+    lmEGMOType      m_nType;        //type of GMO
+    int             m_nId;          //unique identification number
 
     //bounding box: rectangle delimiting the visual representation
 	//the rectangle is referred to page origin
     lmUPoint        m_uBoundsBottom;	//bottom right corner point
     lmUPoint        m_uBoundsTop;		//top left corner point
+
+	//selection rectangle
+	lmURect		m_uSelRect;   
 
     //selection
     bool            m_fSelected;        //this object is selected
@@ -181,7 +198,7 @@ public:
 
 
 protected:
-    lmBox(lmEGMOType m_nType);
+    lmBox(lmScoreObj* pOwner, lmEGMOType m_nType);
     lmShape* FindShapeAtPosition(lmUPoint& pointL);
 
 
@@ -221,17 +238,11 @@ public:
 	virtual void Render(lmPaper* pPaper, wxColour color)=0;
 	virtual void Render(lmPaper* pPaper) { Render(pPaper, m_color); }
 
-    // methods related to selection rectangle
-    void SetSelRectangle(lmLUnits x, lmLUnits y, lmLUnits uWidth, lmLUnits uHeight);
-    void DrawSelRectangle(lmPaper* pPaper, wxColour colorC = *wxBLUE);
-    lmURect GetSelRectangle() const { return m_uSelRect; }
-
     virtual bool Collision(lmShape* pShape);
     virtual lmLUnits GetWidth() { return m_uBoundsBottom.x - m_uBoundsTop.x; }
     virtual lmLUnits GetHeight() { return m_uBoundsBottom.y - m_uBoundsTop.y; }
 
     //methods related to position
-    virtual void Shift(lmLUnits xIncr, lmLUnits yIncr) = 0;
 	virtual void OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 										lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent) {}
 
@@ -243,7 +254,6 @@ public:
     wxString DumpSelRect();
 
     //info
-    inline lmScoreObj* Owner() { return m_pOwner; }
 	inline lmBox* GetOwnerBox() { return m_pOwnerBox; }
 	inline void SetOwnerBox(lmBox* pOwnerBox) { m_pOwnerBox = pOwnerBox; }
 
@@ -254,19 +264,11 @@ protected:
 			bool fDraggable = false, wxColour color=*wxBLACK);
     void RenderCommon(lmPaper* pPaper, wxColour colorC);
     void RenderCommon(lmPaper* pPaper);
-	void ShiftBoundsAndSelRec(lmLUnits xIncr, lmLUnits yIncr);
 	void InformAttachedShapes(lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent);
 
 
-	lmScoreObj*	m_pOwner;		//associated owner object (in lmScore representation)
 	lmBox*		m_pOwnerBox;	//box in which this shape is included
     wxString    m_sShapeName;
-
-	//selection rectangle (relative to paper origin)
-	lmURect		m_uSelRect;   
-
-	//Size: defines the height and width of the space occupied by the shape.
-	lmUSize		m_uSize;
 
 	typedef struct lmAtachPoint_Struct {
 		lmShape*		pShape;
@@ -324,7 +326,7 @@ public:
     //dragging
     virtual wxBitmap* OnBeginDrag(double rScale);
     virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
-    virtual void OnEndDrag(wxCommandProcessor* pCP, const lmUPoint& uPos) {};
+    virtual void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos) {};
 
 
 

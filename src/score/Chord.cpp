@@ -240,7 +240,7 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
 	wxLogMessage(_T("[lmChord::AddStemShape] Shape xPos=%.2f, yTop=%.2f, yBottom=%.2f, fDown=%s)"),
 		uxStem, uyStemStart, uyStemEnd, (pBaseNote->StemGoesDown() ? _T("down") : _T("up")) );
     lmShapeStem* pStem = 
-        new lmShapeStem(pShapeNote->Owner(), uxStem, uyStemStart, uyStemEnd,
+        new lmShapeStem(pShapeNote->GetScoreOwner(), uxStem, uyStemStart, uyStemEnd,
 						pBaseNote->StemGoesDown(), uStemThickness, colorC);
 
 	// if beamed, the stem shape will be owned by the beam; otherwise by the note
@@ -257,8 +257,8 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
 		lmLUnits uxFlag = pBaseNote->GetXStemLeft();
 		lmEGlyphIndex nGlyph = pBaseNote->GetGlyphForFlag();
 		lmLUnits yPos = uyStemEnd + pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, nStaff);
-		lmShapeGlyph* pShape = new lmShapeGlyph(pShapeNote->Owner(), nGlyph, pFont, pPaper,
-												lmUPoint(uxFlag, yPos), _T("Flag"));
+		lmShapeGlyph* pShape = new lmShapeGlyph(pShapeNote->GetScoreOwner(), nGlyph, pFont,
+                                                pPaper, lmUPoint(uxFlag, yPos), _T("Flag"));
 		pShapeNote->AddFlag(pShape);
 	}
 
@@ -285,7 +285,7 @@ lmLUnits lmChord::DrawFlag(bool fMeasuring, lmPaper* pPaper, lmNote* pBaseNote,
 {
     //Draws the flag using a glyph. Returns the flag width
 
-    ENoteType nNoteType = pBaseNote->GetNoteType();
+    lmENoteType nNoteType = pBaseNote->GetNoteType();
     bool fStemDown = pBaseNote->StemGoesDown();
 
     lmEGlyphIndex nGlyph = GLYPH_EIGHTH_FLAG_DOWN;
@@ -368,16 +368,16 @@ void lmChord::ComputeStemDirection()
 
     #define TWO_NOTES_DEFAULT true          //TODO move to layout user options
 
-    if (m_nStemType == eStemUp) {          //force stem up
+    if (m_nStemType == lmSTEM_UP) {          //force stem up
         m_fStemDown = false;
     }
-    else if (m_nStemType == eStemDown) {   //force stem down
+    else if (m_nStemType == lmSTEM_DOWN) {   //force stem down
         m_fStemDown = true;
     }
-    else if (m_nStemType == eStemNone) {   //force no stem
+    else if (m_nStemType == lmSTEM_NONE) {   //force no stem
         m_fStemDown = false;
     }
-    else if (m_nStemType == eDefaultStem) {    //as decided by program
+    else if (m_nStemType == lmSTEM_DEFAULT) {    //as decided by program
         //Rules
         int nWeight = m_pMinNote->GetPosOnStaff() + m_pMaxNote->GetPosOnStaff();
         if (nWeight > 12)

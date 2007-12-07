@@ -55,8 +55,8 @@ public:
     lmTheoIntervalsConstrains(wxString sSection);
     ~lmTheoIntervalsConstrains() {}
 
-    bool IsValidClef(EClefType nClef) { return m_oClefs.IsValid(nClef); }
-    void SetClef(EClefType nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
+    bool IsValidClef(lmEClefType nClef) { return m_oClefs.IsValid(nClef); }
+    void SetClef(lmEClefType nClef, bool fValid) { m_oClefs.SetValid(nClef, fValid); }
 
     EProblemTheoIntervals GetProblemType() { return m_nProblemType; }
     void SetProblemType(EProblemTheoIntervals nType) { m_nProblemType = nType; }

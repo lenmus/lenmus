@@ -60,15 +60,15 @@ lmScoreCommand::~lmScoreCommand()
 
 bool lmCmdSelectSingle::Do()
 {
-    return CmdSelectObject();;
+    return DoSelectObject();
 }
 
 bool lmCmdSelectSingle::Undo()
 {
-    return CmdSelectObject();;
+    return DoSelectObject();
 }
 
-bool lmCmdSelectSingle::CmdSelectObject()
+bool lmCmdSelectSingle::DoSelectObject()
 {
     wxASSERT( m_pGMO);
 
@@ -82,28 +82,40 @@ bool lmCmdSelectSingle::CmdSelectObject()
 
 
 
-////----------------------------------------------------------------------------------------
-//// lmScoreCommandMove implementation
-////----------------------------------------------------------------------------------------
-//
-//bool lmScoreCommandMove::DoMoveStaffObj()
-//{
-//    wxASSERT_MSG( m_pScO, _T("DoMoveStaffObj: No hay objeto!"));
-//
-//    m_pScO->SetFixed(true);
-//    m_oldPos = m_pScO->EndDrag(m_pos);
-//    m_pDoc->UpdateAllViews();
-//    return true;
-//
-//}
-//
-//bool lmScoreCommandMove::UndoMoveStaffObj()
-//{
-//    wxASSERT_MSG( m_pScO, _T("UndoMoveStaffObj: No hay objeto!"));
-//
-//    m_pScO->SetFixed(false);
-//    m_pScO->EndDrag(m_oldPos);
-//    m_pDoc->UpdateAllViews();
-//    return true;
-//
-//}
+//----------------------------------------------------------------------------------------
+// lmScoreCommandMove implementation
+//----------------------------------------------------------------------------------------
+
+lmScoreCommandMove::lmScoreCommandMove(const wxString& sName, lmScoreDocument *pDoc,
+									   lmScoreObj* pSO, const lmUPoint& uPos)
+	: lmScoreCommand(sName, lmCMD_MoveScoreObj, pDoc)
+{
+	m_tPos.x = uPos.x;
+	m_tPos.y = uPos.y;
+	m_tPos.xType = lmLOCATION_USER_ABSOLUTE;
+	m_tPos.yType = lmLOCATION_USER_ABSOLUTE;
+	m_tPos.xUnits = lmLUNITS;
+	m_tPos.yUnits = lmLUNITS;
+
+	m_pSO = pSO;
+}
+
+bool lmScoreCommandMove::Do()
+{
+    wxASSERT_MSG( m_pSO, _T("[lmScoreCommandMove::Do] No ScoreObj to move!"));
+
+    m_tOldPos = m_pSO->SetUserLocation(m_tPos);
+    m_pDoc->UpdateAllViews();
+    return true;
+
+}
+
+bool lmScoreCommandMove::Undo()
+{
+    wxASSERT_MSG( m_pSO, _T("[lmScoreCommandMove::Undo]: No ScoreObj to move!"));
+
+    m_pSO->SetUserLocation(m_tOldPos);
+    m_pDoc->UpdateAllViews();
+    return true;
+
+}

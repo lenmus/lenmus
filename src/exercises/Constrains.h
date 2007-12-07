@@ -79,16 +79,16 @@ class lmClefConstrain
 public:
     lmClefConstrain();
     ~lmClefConstrain() {}
-    bool IsValid(EClefType nClef) { return m_fValidClefs[nClef-lmMIN_CLEF]; }
-    void SetValid(EClefType nClef, bool fValid) { m_fValidClefs[nClef-lmMIN_CLEF] = fValid; }
+    bool IsValid(lmEClefType nClef) { return m_fValidClefs[nClef-lmMIN_CLEF]; }
+    void SetValid(lmEClefType nClef, bool fValid) { m_fValidClefs[nClef-lmMIN_CLEF] = fValid; }
 
     //pitch scope
-    wxString GetLowerPitch(EClefType nClef)  { return m_aLowerPitch[nClef-lmMIN_CLEF]; }
-    wxString GetUpperPitch(EClefType nClef)  { return m_aUpperPitch[nClef-lmMIN_CLEF]; }
-    void SetLowerPitch(EClefType nClef, wxString sPitch)  {
+    wxString GetLowerPitch(lmEClefType nClef)  { return m_aLowerPitch[nClef-lmMIN_CLEF]; }
+    wxString GetUpperPitch(lmEClefType nClef)  { return m_aUpperPitch[nClef-lmMIN_CLEF]; }
+    void SetLowerPitch(lmEClefType nClef, wxString sPitch)  {
                 m_aLowerPitch[nClef-lmMIN_CLEF] = sPitch;
             }
-    void SetUpperPitch(EClefType nClef, wxString sPitch)  {
+    void SetUpperPitch(lmEClefType nClef, wxString sPitch)  {
                 m_aUpperPitch[nClef-lmMIN_CLEF] = sPitch;
             }
 
@@ -106,8 +106,8 @@ class lmKeyConstrains
 public:
     lmKeyConstrains();
     ~lmKeyConstrains() {}
-    bool IsValid(EKeySignatures nKey) { return m_fValidKeys[nKey-lmMIN_KEY]; }
-    void SetValid(EKeySignatures nKey, bool fValid) { m_fValidKeys[nKey-lmMIN_KEY] = fValid; }
+    bool IsValid(lmEKeySignatures nKey) { return m_fValidKeys[nKey-lmMIN_KEY]; }
+    void SetValid(lmEKeySignatures nKey, bool fValid) { m_fValidKeys[nKey-lmMIN_KEY] = fValid; }
 
 private:
     bool m_fValidKeys[lmMAX_KEY - lmMIN_KEY + 1];
@@ -120,8 +120,8 @@ class lmTimeSignConstrains
 public:
     lmTimeSignConstrains();
     ~lmTimeSignConstrains() {}
-    bool IsValid(ETimeSignature nTime) { return m_fValidTimes[nTime-lmMIN_TIME_SIGN]; }
-    void SetValid(ETimeSignature nTime, bool fValid) {
+    bool IsValid(lmETimeSignature nTime) { return m_fValidTimes[nTime-lmMIN_TIME_SIGN]; }
+    void SetValid(lmETimeSignature nTime, bool fValid) {
             m_fValidTimes[nTime-lmMIN_TIME_SIGN] = fValid;
         }
     bool SetConstrains(wxString sTimeSigns);

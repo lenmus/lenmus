@@ -114,7 +114,7 @@ bool lmConverter::DPitchToBits(lmDPitch nPitch, lmNoteBits* pBits)
 }
 
 
-wxString lmConverter::NoteBitsToName(lmNoteBits& tBits, EKeySignatures nKey)
+wxString lmConverter::NoteBitsToName(lmNoteBits& tBits, lmEKeySignatures nKey)
 {
     static wxString m_sSteps = _T("cdefgab");
 

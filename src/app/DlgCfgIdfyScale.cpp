@@ -199,7 +199,7 @@ lmDlgCfgIdfyScale::lmDlgCfgIdfyScale(wxWindow* parent,
     // allowed key signatures
     lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
     for (i=0; i < earmFa+1; i++) {
-        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((EKeySignatures)i) );
+        m_pChkKeySign[i]->SetValue( pKeyConstrains->IsValid((lmEKeySignatures)i) );
     }
 
     // other
@@ -242,7 +242,7 @@ void lmDlgCfgIdfyScale::OnAcceptClicked(wxCommandEvent& WXUNUSED(event))
     // save selected key signatures
     lmKeyConstrains* pKeyConstrains = m_pConstrains->GetKeyConstrains();
     for (i=0; i < earmFa+1; i++) {
-        pKeyConstrains->SetValid((EKeySignatures)i, m_pChkKeySign[i]->GetValue());
+        pKeyConstrains->SetValid((lmEKeySignatures)i, m_pChkKeySign[i]->GetValue());
     }
 
     //save other options

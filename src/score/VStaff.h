@@ -53,13 +53,13 @@ public:
 	//---- specific methods of this class ------------------------
 
     lmStaff*    AddStaff(int nNumLines=5, lmLUnits nMicrons=0);
-    lmClef*     AddClef(EClefType nClefType, int nStaff = 1, bool fVisible = true);
+    lmClef*     AddClef(lmEClefType nClefType, int nStaff = 1, bool fVisible = true);
 
     lmTimeSignature* AddTimeSignature(int nBeats, int nBeatType,
                         bool fVisible = true);    //for type eTS_Normal
-    lmTimeSignature* AddTimeSignature(ETimeSignature nTimeSign,
+    lmTimeSignature* AddTimeSignature(lmETimeSignature nTimeSign,
                         bool fVisible = true);    //for type eTS_Normal
-    lmTimeSignature* AddTimeSignature(ETimeSignatureType nType,
+    lmTimeSignature* AddTimeSignature(lmETimeSignatureType nType,
                         bool fVisible = true);    //for types eTS_Common, eTS_Cut and eTS_SenzaMisura
     lmTimeSignature* AddTimeSignature(int nSingleNumber,
                         bool fVisible = true);    //for type eTS_SingleNumber
@@ -69,32 +69,32 @@ public:
                         bool fVisible = true);    //for type eTS_Multiple
 
     lmKeySignature* AddKeySignature(int nFifths, bool fMajor, bool fVisible = true);
-    lmKeySignature* AddKeySignature(EKeySignatures nKeySignature, bool fVisible = true);
+    lmKeySignature* AddKeySignature(lmEKeySignatures nKeySignature, bool fVisible = true);
 
-    lmRest*     AddRest(ENoteType nNoteType, float rDuration,
+    lmRest*     AddRest(lmENoteType nNoteType, float rDuration,
                       bool fDotted, bool fDoubleDotted,
                       int nStaff, bool fVisible = true,
                       bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL);
 
     lmNote*     AddNote(lmEPitchType nPitchType,
                     wxString sStep, wxString sOctave, wxString sAlter,
-                    EAccidentals nAccidentals,
-                    ENoteType nNoteType, float rDuration,
+                    lmEAccidentals nAccidentals,
+                    lmENoteType nNoteType, float rDuration,
                     bool fDotted, bool fDoubleDotted,
                     int nStaff, bool fVisible = true,
                     bool fBeamed = false, lmTBeamInfo BeamInfo[] = NULL,
                     bool fInChord = false,
                     bool fTie = false,
-                    EStemType nStem = eDefaultStem);
+                    lmEStemType nStem = lmSTEM_DEFAULT);
 
-    lmBarline*  AddBarline(EBarline nType = etb_SimpleBarline, bool fVisible = true);
+    lmBarline*  AddBarline(lmEBarline nType = etb_SimpleBarline, bool fVisible = true);
 
     lmMetronomeMark* AddMetronomeMark(int nTicksPerMinute,
                             bool fParentheses = false, bool fVisible = true);
-    lmMetronomeMark* AddMetronomeMark(ENoteType nLeftNoteType, int nLeftDots,
-                            ENoteType nRightNoteType, int nRightDots,
+    lmMetronomeMark* AddMetronomeMark(lmENoteType nLeftNoteType, int nLeftDots,
+                            lmENoteType nRightNoteType, int nRightDots,
                             bool fParentheses = false, bool fVisible = true);
-    lmMetronomeMark* AddMetronomeMark(ENoteType nLeftNoteType, int nLeftDots,
+    lmMetronomeMark* AddMetronomeMark(lmENoteType nLeftNoteType, int nLeftDots,
                             int nTicksPerMinute,
                             bool fParentheses = false, bool fVisible = true);
 
@@ -104,7 +104,7 @@ public:
 
     lmStaffObj* AddAnchorObj();
 
-    lmWordsDirection* AddWordsDirection(wxString sText, lmEAlignment nAlign,
+    lmStaffObj* AddText(wxString sText, lmEAlignment nAlign,
                         lmLocation* pPos, lmFontInfo oFontData, bool fHasWidth);
 
     void ShiftTime(float rTimeShift);

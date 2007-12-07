@@ -38,12 +38,12 @@ class lmClef: public lmStaffObj
 {
 public:
     //constructor and destructor
-    lmClef(EClefType nClefType, lmVStaff* pStaff, int nNumStaff=1, bool fVisible=true,
+    lmClef(lmEClefType nClefType, lmVStaff* pStaff, int nNumStaff=1, bool fVisible=true,
 		   wxColour colorC = *wxBLACK);
     ~lmClef() {}
 
     //other methods
-    EClefType GetClefType() {return m_nClefType;}
+    lmEClefType GetClefType() {return m_nClefType;}
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
@@ -69,7 +69,7 @@ private:
     lmEGlyphIndex GetGlyphIndex();
 
     //variables
-    EClefType       m_nClefType;        //type of clef
+    lmEClefType       m_nClefType;        //type of clef
     bool            m_fHidden;          //to hide it in system prolog
 	wxColour		m_color;			//clef color
 
@@ -78,7 +78,7 @@ private:
 //
 // global functions related to clefs
 //
-wxString GetClefLDPNameFromType(EClefType nType);
+wxString GetClefLDPNameFromType(lmEClefType nType);
 
 #endif    // __CLEF_H__
 

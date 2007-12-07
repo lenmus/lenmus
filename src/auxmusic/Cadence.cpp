@@ -138,7 +138,7 @@ lmCadence::lmCadence()
     m_fTonicCreated = false;
 }
 
-bool lmCadence::Create(lmECadenceType nCadenceType, EKeySignatures nKey, bool fUseGrandStaff)
+bool lmCadence::Create(lmECadenceType nCadenceType, lmEKeySignatures nKey, bool fUseGrandStaff)
 {
     // return true if cadence created
     // if fUseGrandStaff is true chords will have 4 notes, with root note in 2/3 octaves
@@ -180,7 +180,7 @@ bool lmCadence::Create(lmECadenceType nCadenceType, EKeySignatures nKey, bool fU
         }
 
         //Get root note for this key signature and clef
-        wxString sRootNote = GetRootNote(sFunct, nKey, eclvSol, fUseGrandStaff);
+        wxString sRootNote = GetRootNote(sFunct, nKey, lmE_Sol, fUseGrandStaff);
         g_pLogger->LogTrace(_T("lmCadence"),
                 _T("[lmCadence::Create] sFunc='%s', nKey=%d, sRootNote='%s'"),
 				sFunct.c_str(), nKey, sRootNote.c_str());
@@ -246,7 +246,7 @@ lmChordManager* lmCadence::GetChord(int iC)
 }
 
 
-wxString lmCadence::SelectChord(wxString sFunction, EKeySignatures nKey, int* pInversion)
+wxString lmCadence::SelectChord(wxString sFunction, lmEKeySignatures nKey, int* pInversion)
 {
     // returns the intervals that form the chord, or empty string if errors
     // and updates variable pointed by pInversion to place the number of the
@@ -317,7 +317,7 @@ wxString lmCadence::SelectChord(wxString sFunction, EKeySignatures nKey, int* pI
     }
 }
 
-wxString lmCadence::GetRootNote(wxString sFunct, EKeySignatures nKey, EClefType nClef,
+wxString lmCadence::GetRootNote(wxString sFunct, lmEKeySignatures nKey, lmEClefType nClef,
                                 bool fUseGrandStaff)
 {
     // TODO: Take clef into account
@@ -373,7 +373,7 @@ wxString lmCadence::GetRootNote(wxString sFunct, EKeySignatures nKey, EClefType 
         sNotes = _T("c3d3e3f3g2a2b2");
     }
     else {
-        if (nClef == eclvSol)
+        if (nClef == lmE_Sol)
             sNotes = _T("c4d4e4f4g4a4b4");
         else
             wxASSERT(false);
@@ -1249,7 +1249,7 @@ lmChordManager* lmCadence::GetTonicChord()
         //Create tonic chord
 
         //Get root note for this key signature and clef
-        wxString sRootNote = GetRootNote(_T("I"), m_nKey, eclvSol, false);  //false = don't use Grand Staff
+        wxString sRootNote = GetRootNote(_T("I"), m_nKey, lmE_Sol, false);  //false = don't use Grand Staff
         wxString sIntervals = _T("");
         if (IsMajor(m_nKey))
             sIntervals = _T("M3,p5");

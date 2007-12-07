@@ -49,7 +49,7 @@ extern lmColors* g_pColors;
 
 
 lmBoxSliceInstr::lmBoxSliceInstr(lmBoxSlice* pParent, lmInstrument* pInstr)
-    : lmBox(eGMO_BoxSliceInstr)
+    : lmBox(pParent->GetScoreOwner(), eGMO_BoxSliceInstr)
 {
     m_pSlice = pParent;
     m_pInstr = pInstr;
@@ -167,10 +167,6 @@ wxString lmBoxSliceInstr::Dump(int nIndent)
 
 lmGMObject* lmBoxSliceInstr::FindGMObjectAtPosition(lmUPoint& pointL)
 {
-    //if not in this object return
-    if (!ContainsPoint(pointL)) 
-        return (lmGMObject*)NULL;
-
     //look in shapes collection
     lmShape* pShape = FindShapeAtPosition(pointL);
     if (pShape) return pShape;
@@ -183,7 +179,10 @@ lmGMObject* lmBoxSliceInstr::FindGMObjectAtPosition(lmUPoint& pointL)
 			return pGMO;    //found
     }
 
-    // no slice found. So the point is in this object
-    return this;
+    // no object found. Verify if the point is in this object
+    if (ContainsPoint(pointL)) 
+        return this;
+    else
+        return (lmGMObject*)NULL;
 
 }
