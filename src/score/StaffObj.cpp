@@ -342,14 +342,16 @@ wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
 
 lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
 { 
-	lmUPoint uPos;
+	lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+
+	//if default location, ask derived object to compute the best position for itself
+    if (m_tPos.xType == lmLOCATION_DEFAULT || m_tPos.yType == lmLOCATION_DEFAULT)
+		uPos = ComputeBestLocation(uPos);
+
 
     if (m_tPos.xType == lmLOCATION_DEFAULT)
 	{
-		//default location. Ask derived object to compute the best position for itself
-		uPos.x = ComputeXLocation(pPaper);
-
-		//save the computed location
+		//use the computed best location
 		m_tPos.x = uPos.x;
 		m_tPos.xType = lmLOCATION_COMPUTED;
 		m_tPos.xUnits = lmLUNITS;
@@ -387,10 +389,7 @@ lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
 
     if (m_tPos.yType == lmLOCATION_DEFAULT)
 	{
-		//default location. Ask derived object to compute the best position for itself
-		uPos.y = ComputeYLocation(pPaper);
-
-		//save the computed location
+		//use the computed best location
 		m_tPos.y = uPos.y;
 		m_tPos.yType = lmLOCATION_COMPUTED;
 		m_tPos.yUnits = lmLUNITS;

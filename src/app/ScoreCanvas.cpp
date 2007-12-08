@@ -63,7 +63,7 @@ const int lmID_PROPERTIES = wxNewId();
 
 
 BEGIN_EVENT_TABLE(lmController, wxEvtHandler)
-	EVT_CHAR(lmController::OnKeyPress) 
+	EVT_CHAR(lmController::OnKeyPress)
     EVT_ERASE_BACKGROUND(lmController::OnEraseBackground)
 
 	//contextual menus
@@ -93,7 +93,7 @@ lmController::~lmController()
 
 void lmController::OnEraseBackground(wxEraseEvent& event)
 {
-	// When wxWidgets wants to update the display it emits two events: an erase 
+	// When wxWidgets wants to update the display it emits two events: an erase
 	// background event and a paint event.
 	// We are going to intercept the Erase Background event in order to prevent
 	// that the default implementation in wxWindow erases the background, as this
@@ -239,7 +239,7 @@ void lmScoreCanvas::MoveObject(lmGMObject* pGMO, const lmUPoint& uPos)
 
 	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
     lmScoreObj* pSO = pGMO->GetScoreOwner();
-	wxString sName = wxString::Format(_T("Move %s"), pGMO->GetName() );
+	wxString sName = wxString::Format(_T("Move %s"), pGMO->GetName().c_str() );
 	pCP->Submit(new lmScoreCommandMove(sName, m_pDoc, pSO, uPos));
 }
 
@@ -248,7 +248,7 @@ void lmScoreCanvas::SelectObject(lmGMObject* pGMO)
 	//select/deselect a ComponentObj
 
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	wxString sName = wxString::Format(_T("Select %s"), pGMO->GetName() );
+	wxString sName = wxString::Format(_T("Select %s"), pGMO->GetName().c_str() );
 	pCP->Submit(new lmCmdSelectSingle(sName, m_pDoc, pGMO));
 }
 
@@ -283,7 +283,7 @@ void lmScoreCanvas::OnEraseBackground(wxEraseEvent& event)
 {
 	// AWARE: This method is empty on purpose
 
-	// When wxWidgets wants to update the display it emits two events: an erase 
+	// When wxWidgets wants to update the display it emits two events: an erase
 	// background event and a paint event.
 	// To prevent flickering we are not going to erase the background and the view
 	// will paint it when needed, but only on the background areas not on all

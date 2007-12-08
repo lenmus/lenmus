@@ -37,8 +37,8 @@
 	<File name="../../src/app/MainFrame.h" open="1" top="0" tabpos="6">
 		<Cursor position="7975" topLine="217" />
 	</File>
-	<File name="../../src/app/MidiWizard.cpp" open="0" top="0" tabpos="13">
-		<Cursor position="2650" topLine="76" />
+	<File name="../../src/app/MidiWizard.cpp" open="1" top="0" tabpos="57">
+		<Cursor position="10366" topLine="288" />
 	</File>
 	<File name="../../src/app/MidiWizard.h" open="0" top="0" tabpos="30">
 		<Cursor position="1357" topLine="17" />
@@ -50,10 +50,10 @@
 		<Cursor position="5328" topLine="107" />
 	</File>
 	<File name="../../src/app/ScoreCanvas.cpp" open="1" top="0" tabpos="55">
-		<Cursor position="6948" topLine="213" />
+		<Cursor position="7903" topLine="231" />
 	</File>
-	<File name="../../src/app/ScoreDoc.cpp" open="0" top="0" tabpos="24">
-		<Cursor position="3517" topLine="105" />
+	<File name="../../src/app/ScoreDoc.cpp" open="1" top="1" tabpos="58">
+		<Cursor position="4756" topLine="139" />
 	</File>
 	<File name="../../src/app/ScoreView.cpp" open="1" top="0" tabpos="56">
 		<Cursor position="58077" topLine="1567" />
@@ -244,7 +244,7 @@
 	<File name="../../src/html/TextBookController.h" open="1" top="0" tabpos="11">
 		<Cursor position="3224" topLine="65" />
 	</File>
-	<File name="../../src/html/TextBookFrame.cpp" open="1" top="1" tabpos="8">
+	<File name="../../src/html/TextBookFrame.cpp" open="1" top="0" tabpos="8">
 		<Cursor position="29435" topLine="1010" />
 	</File>
 	<File name="../../src/html/TextBookFrame.h" open="1" top="0" tabpos="16">
@@ -334,9 +334,6 @@
 	<File name="../../src/score/Clef.cpp" open="0" top="0" tabpos="18">
 		<Cursor position="5745" topLine="153" />
 	</File>
-	<File name="../../src/score/Direction.cpp" open="0" top="0" tabpos="19">
-		<Cursor position="4706" topLine="117" />
-	</File>
 	<File name="../../src/score/Instrument.cpp" open="0" top="0" tabpos="22">
 		<Cursor position="9872" topLine="282" />
 	</File>
@@ -351,9 +348,6 @@
 	</File>
 	<File name="../../src/score/NoteRest.cpp" open="0" top="0" tabpos="71">
 		<Cursor position="6496" topLine="162" />
-	</File>
-	<File name="../../src/score/NoteRestObj.cpp" open="0" top="0" tabpos="26">
-		<Cursor position="7867" topLine="199" />
 	</File>
 	<File name="../../src/score/SOControl.cpp" open="0" top="0" tabpos="61">
 		<Cursor position="3047" topLine="78" />

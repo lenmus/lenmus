@@ -110,16 +110,20 @@ lmEGlyphIndex lmClef::GetGlyphIndex()
 // implementation of virtual methods defined in base abstract class lmStaffObj
 //-----------------------------------------------------------------------------------------
 
-lmLUnits lmClef::ComputeXLocation(lmPaper* pPaper)
+lmUPoint lmClef::ComputeBestLocation(lmUPoint& uOrg)
 {
-	return pPaper->GetCursorX();
-}
+	// if no location is specified in LDP source file, this method is invoked from
+	// base class to ask derived object to compute a suitable position to
+	// place itself.
+	// uOrg is the assigned paper position for this object.
 
-lmLUnits lmClef::ComputeYLocation(lmPaper* pPaper)
-{
+	lmUPoint uPos = uOrg;
+
 	// get the shift to the staff on which the clef must be drawn
-	return pPaper->GetCursorY() + m_pVStaff->GetStaffOffset(m_nStaffNum) +
-				m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
+	uPos.y += m_pVStaff->GetStaffOffset(m_nStaffNum) +
+			  m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
+
+	return uPos;
 }
 
 lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)

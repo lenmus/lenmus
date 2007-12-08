@@ -119,13 +119,15 @@ wxString lmSOControl::SourceLDP(int nIndent)
     return sSource;
 }
 
-lmLUnits lmSOControl::ComputeXLocation(lmPaper* pPaper)
+lmUPoint lmSOControl::ComputeBestLocation(lmUPoint& uOrg)
 {
-	return pPaper->GetCursorX();
-}
+	// if no location is specified in LDP source file, this method is invoked from
+	// base class to ask derived object to compute a suitable position to
+	// place itself.
+	// uOrg is the assigned paper position for this object.
 
-lmLUnits lmSOControl::ComputeYLocation(lmPaper* pPaper)
-{
-	return pPaper->GetCursorY();
+	lmUPoint uPos = uOrg;
+	//TODO
+	return uPos;
 }
 

@@ -98,16 +98,16 @@ lmMetronomeMark::~lmMetronomeMark()
 // implementation of virtual methods defined in base abstract class lmStaffObj
 //-----------------------------------------------------------------------------------------
 
-lmLUnits lmMetronomeMark::ComputeXLocation(lmPaper* pPaper)
+lmUPoint lmMetronomeMark::ComputeBestLocation(lmUPoint& uOrg)
 {
-	//TODO
-	return pPaper->GetCursorX();
-}
+	// if no location is specified in LDP source file, this method is invoked from
+	// base class to ask derived object to compute a suitable position to
+	// place itself.
+	// uOrg is the assigned paper position for this object.
 
-lmLUnits lmMetronomeMark::ComputeYLocation(lmPaper* pPaper)
-{
+	lmUPoint uPos = uOrg;
 	//TODO
-	return pPaper->GetCursorY();
+	return uPos;
 }
 
 lmLUnits lmMetronomeMark::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)

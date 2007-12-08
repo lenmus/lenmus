@@ -95,17 +95,42 @@ lmFermata::lmFermata(lmEPlacement nPlacement)
     m_nPlacement = nPlacement;
 }
 
-lmLUnits lmFermata::ComputeXLocation(lmPaper* pPaper)
+lmUPoint lmFermata::ComputeBestLocation(lmUPoint& uOrg)
 {
-	return pPaper->GetCursorX();
-}
+	// if no location is specified in LDP source file, this method is invoked from
+	// base class to ask derived object to compute a suitable position to
+	// place itself.
+	// uOrg is the assigned paper position for this object.
 
-lmLUnits lmFermata::ComputeYLocation(lmPaper* pPaper)
-{
+	lmUPoint uPos = uOrg;
+
+	// compute y location
 	if (m_nPlacement == ep_Above)
-		return pPaper->GetCursorY() - ((lmStaffObj*)m_pParent)->TenthsToLogical(70);
+		uPos.y -= ((lmStaffObj*)m_pParent)->TenthsToLogical(70);
 	else
-		return pPaper->GetCursorY() - ((lmStaffObj*)m_pParent)->TenthsToLogical(5);
+		uPos.y -= ((lmStaffObj*)m_pParent)->TenthsToLogical(5);
+
+	//shift the shape to center it on the owner and
+	//avoid placing it over the note if surpasses the staff
+	//TODO
+	//	lmShape* pPS = ((lmStaffObj*)m_pParent)->GetShap2();
+	//	lmLUnits uCenterPos;
+	//	if (((lmStaffObj*)m_pParent)->GetClass() == eSFOT_NoteRest &&
+	//		!((lmNoteRest*)m_pParent)->IsRest() )
+	//	{
+	//		//it is a note. Center fermata on notehead shape
+	//		lmShape* pNHS = ((lmShapeNote*)pPS)->GetNoteHead();
+	//		uCenterPos = pNHS->GetXLeft() + pNHS->GetWidth() / 2.0;
+	//	}
+	//	else
+	//	{
+	//		//it is not a note. Center fermata on StaffObj shape
+	//		uCenterPos = pPS->GetXLeft() + pPS->GetWidth() / 2.0;
+	//	}
+ //       lmLUnits uxShift = uCenterPos - (pShape->GetXLeft() + pShape->GetWidth() / 2.0);
+	//	pShape->Shift(uxShift, 0.0);
+	return uPos;
+
 }
 
 lmLUnits lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
@@ -136,29 +161,6 @@ lmLUnits lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
 						 pPaper, uPos, _T("Fermata"), lmDRAGGABLE, colorC);
 	pBox->AddShape(pShape);
     m_pShape2 = pShape;
-
-	//if position isn't fixed, shift the shape to center it on the owner and
-	//avoid placing it over the note if surpasses the staff
-	//TODO
-	//if (true)
-	//{
-	//	lmShape* pPS = ((lmStaffObj*)m_pParent)->GetShap2();
-	//	lmLUnits uCenterPos;
-	//	if (((lmStaffObj*)m_pParent)->GetClass() == eSFOT_NoteRest &&
-	//		!((lmNoteRest*)m_pParent)->IsRest() )
-	//	{
-	//		//it is a note. Center fermata on notehead shape
-	//		lmShape* pNHS = ((lmShapeNote*)pPS)->GetNoteHead();
-	//		uCenterPos = pNHS->GetXLeft() + pNHS->GetWidth() / 2.0;
-	//	}
-	//	else
-	//	{
-	//		//it is not a note. Center fermata on StaffObj shape
-	//		uCenterPos = pPS->GetXLeft() + pPS->GetWidth() / 2.0;
-	//	}
- //       lmLUnits uxShift = uCenterPos - (pShape->GetXLeft() + pShape->GetWidth() / 2.0);
-	//	pShape->Shift(uxShift, 0.0);
-	//}
 
 	return pShape->GetWidth();
 }
@@ -228,16 +230,16 @@ wxFont* lmLyric::GetSuitableFont(lmPaper* pPaper)
 	return pFont;
 }
 
-lmLUnits lmLyric::ComputeXLocation(lmPaper* pPaper)
+lmUPoint lmLyric::ComputeBestLocation(lmUPoint& uOrg)
 {
-	//TODO
-	return pPaper->GetCursorX();
-}
+	// if no location is specified in LDP source file, this method is invoked from
+	// base class to ask derived object to compute a suitable position to
+	// place itself.
+	// uOrg is the assigned paper position for this object.
 
-lmLUnits lmLyric::ComputeYLocation(lmPaper* pPaper)
-{
+	lmUPoint uPos = uOrg;
 	//TODO
-	return pPaper->GetCursorY();
+	return uPos;
 }
 
 lmLUnits lmLyric::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
@@ -374,16 +376,16 @@ wxString lmScoreLine::Dump()
 
 }
 
-lmLUnits lmScoreLine::ComputeXLocation(lmPaper* pPaper)
+lmUPoint lmScoreLine::ComputeBestLocation(lmUPoint& uOrg)
 {
-	//TODO
-	return pPaper->GetCursorX();
-}
+	// if no location is specified in LDP source file, this method is invoked from
+	// base class to ask derived object to compute a suitable position to
+	// place itself.
+	// uOrg is the assigned paper position for this object.
 
-lmLUnits lmScoreLine::ComputeYLocation(lmPaper* pPaper)
-{
+	lmUPoint uPos = uOrg;
 	//TODO
-	return pPaper->GetCursorY();
+	return uPos;
 }
 
 lmLUnits lmScoreLine::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)

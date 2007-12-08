@@ -65,8 +65,7 @@ public:
 
     // implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
-	lmLUnits ComputeXLocation(lmPaper* pPaper);
-	lmLUnits ComputeYLocation(lmPaper* pPaper);
+	lmUPoint ComputeBestLocation(lmUPoint& uOrg);
 
     // debugging
     wxString Dump();

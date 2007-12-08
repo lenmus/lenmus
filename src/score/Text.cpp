@@ -103,16 +103,16 @@ lmShapeTex2* lmScoreText::CreateShape(lmPaper* pPaper)
                            uPos, _T("ScoreText"), lmDRAGGABLE, m_color);
 }
 
-lmLUnits lmScoreText::ComputeXLocation(lmPaper* pPaper)
+lmUPoint lmScoreText::ComputeBestLocation(lmUPoint& uOrg)
 {
-	//TODO
-	return pPaper->GetCursorX();
-}
+	// if no location is specified in LDP source file, this method is invoked from
+	// base class to ask derived object to compute a suitable position to
+	// place itself.
+	// uOrg is the assigned paper position for this object.
 
-lmLUnits lmScoreText::ComputeYLocation(lmPaper* pPaper)
-{
+	lmUPoint uPos = uOrg;
 	//TODO
-	return pPaper->GetCursorY();
+	return uPos;
 }
 
 lmLUnits lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)

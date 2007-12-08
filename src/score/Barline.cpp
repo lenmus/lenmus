@@ -112,16 +112,16 @@ wxString lmBarline::SourceXML(int nIndent)
     return sSource;
 }
 
-lmLUnits lmBarline::ComputeXLocation(lmPaper* pPaper)
+lmUPoint lmBarline::ComputeBestLocation(lmUPoint& uOrg)
 {
-	//TODO
-	return pPaper->GetCursorX();
-}
+	// if no location is specified in LDP source file, this method is invoked from
+	// base class to ask derived object to compute a suitable position to
+	// place itself.
+	// uOrg is the assigned paper position for this object.
 
-lmLUnits lmBarline::ComputeYLocation(lmPaper* pPaper)
-{
+	lmUPoint uPos = uOrg;
 	//TODO
-	return pPaper->GetCursorY();
+	return uPos;
 }
 
 lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)

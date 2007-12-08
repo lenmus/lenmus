@@ -66,9 +66,7 @@ public:
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
-	lmLUnits ComputeXLocation(lmPaper* pPaper);
-	lmLUnits ComputeYLocation(lmPaper* pPaper);
-    //void SetFont(lmPaper* pPaper) {}        // nothing to do
+	lmUPoint ComputeBestLocation(lmUPoint& uOrg);
 
     //    debugging
     wxString Dump();
@@ -94,9 +92,7 @@ public:
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
-	lmLUnits ComputeXLocation(lmPaper* pPaper);
-	lmLUnits ComputeYLocation(lmPaper* pPaper);
-    //void SetFont(lmPaper* pPaper) {}
+	lmUPoint ComputeBestLocation(lmUPoint& uOrg);
 
     //    debugging
     wxString Dump();
@@ -116,9 +112,7 @@ public:
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
-	lmLUnits ComputeXLocation(lmPaper* pPaper);
-	lmLUnits ComputeYLocation(lmPaper* pPaper);
-    //void SetFont(lmPaper* pPaper) {}
+	lmUPoint ComputeBestLocation(lmUPoint& uOrg);
 
     //    debugging
     wxString Dump();

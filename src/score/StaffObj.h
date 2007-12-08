@@ -166,8 +166,7 @@ public:
     // graphic model
     virtual void Layout(lmBox* pBox, lmPaper* pPaper, 
 						wxColour colorC = *wxBLACK, bool fHighlight = false)=0;
-	virtual lmLUnits ComputeXLocation(lmPaper* pPaper)=0;
-	virtual lmLUnits ComputeYLocation(lmPaper* pPaper)=0;
+	virtual lmUPoint ComputeBestLocation(lmUPoint& uOrg)=0;
 
     // debug
     virtual wxString Dump()=0;

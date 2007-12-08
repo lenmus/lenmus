@@ -51,16 +51,16 @@ lmSpacer::lmSpacer(lmVStaff* pStaff, lmTenths nWidth, int nStaff)
     m_nSpacerWidth = nWidth;
 }
 
-lmLUnits lmSpacer::ComputeXLocation(lmPaper* pPaper)
+lmUPoint lmSpacer::ComputeBestLocation(lmUPoint& uOrg)
 {
-	//TODO
-	return pPaper->GetCursorX();
-}
+	// if no location is specified in LDP source file, this method is invoked from
+	// base class to ask derived object to compute a suitable position to
+	// place itself.
+	// uOrg is the assigned paper position for this object.
 
-lmLUnits lmSpacer::ComputeYLocation(lmPaper* pPaper)
-{
+	lmUPoint uPos = uOrg;
 	//TODO
-	return pPaper->GetCursorY();
+	return uPos;
 }
 
 lmLUnits lmSpacer::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
@@ -114,16 +114,16 @@ lmAnchor::lmAnchor(lmVStaff* pStaff, int nStaff)
 {
 }
 
-lmLUnits lmAnchor::ComputeXLocation(lmPaper* pPaper)
+lmUPoint lmAnchor::ComputeBestLocation(lmUPoint& uOrg)
 {
-	//TODO
-	return pPaper->GetCursorX();
-}
+	// if no location is specified in LDP source file, this method is invoked from
+	// base class to ask derived object to compute a suitable position to
+	// place itself.
+	// uOrg is the assigned paper position for this object.
 
-lmLUnits lmAnchor::ComputeYLocation(lmPaper* pPaper)
-{
+	lmUPoint uPos = uOrg;
 	//TODO
-	return pPaper->GetCursorY();
+	return uPos;
 }
 
 lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
@@ -167,16 +167,16 @@ lmScoreAnchor::lmScoreAnchor(lmVStaff* pStaff, int nStaff)
 {
 }
 
-lmLUnits lmScoreAnchor::ComputeXLocation(lmPaper* pPaper)
+lmUPoint lmScoreAnchor::ComputeBestLocation(lmUPoint& uOrg)
 {
-	//TODO
-	return pPaper->GetCursorX();
-}
+	// if no location is specified in LDP source file, this method is invoked from
+	// base class to ask derived object to compute a suitable position to
+	// place itself.
+	// uOrg is the assigned paper position for this object.
 
-lmLUnits lmScoreAnchor::ComputeYLocation(lmPaper* pPaper)
-{
+	lmUPoint uPos = uOrg;
 	//TODO
-	return pPaper->GetCursorY();
+	return uPos;
 }
 
 lmLUnits lmScoreAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)

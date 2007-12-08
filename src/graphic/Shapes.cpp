@@ -536,10 +536,9 @@ void lmShapeClef::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 {
 	// End drag. Receives the command processor associated to the view and the
 	// final position of the object (logical units referred to page origin).
-	// This method must validate/adjust final position and, if ok, it must move
-	// the shape and send a move object command to the controller.
+	// This method must validate/adjust final position and, if ok, it must 
+	// send a move object command to the controller.
 
-	//lmUPoint uFinalPos(uPos.x - GetXLeft(), uPos.y - GetYTop());
 	lmUPoint uFinalPos(uPos.x, uPos.y);
 	if (!g_fFreeMove)
 	{
@@ -551,7 +550,7 @@ void lmShapeClef::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 	uFinalPos.x += m_uGlyphPos.x - GetXLeft();
 	uFinalPos.y += m_uGlyphPos.y - GetYTop();
 
-	//Shift(uFinalPos.x, uFinalPos.y);
+	//send a move object command to the controller
 	pCanvas->MoveObject(this, uFinalPos);
 
 }

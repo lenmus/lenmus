@@ -175,7 +175,6 @@
 		<Unit filename="../../src/globals/Paths.h" />
 		<Unit filename="../../src/graphic/AggDrawer.cpp" />
 		<Unit filename="../../src/graphic/AggDrawer.h" />
-		<Unit filename="../../src/graphic/BoxInstrSlice.cpp" />
 		<Unit filename="../../src/graphic/BoxInstrSlice.h" />
 		<Unit filename="../../src/graphic/BoxPage.cpp" />
 		<Unit filename="../../src/graphic/BoxPage.h" />
@@ -183,9 +182,12 @@
 		<Unit filename="../../src/graphic/BoxScore.h" />
 		<Unit filename="../../src/graphic/BoxSlice.cpp" />
 		<Unit filename="../../src/graphic/BoxSlice.h" />
+		<Unit filename="../../src/graphic/BoxSliceInstr.cpp" />
+		<Unit filename="../../src/graphic/BoxSliceInstr.h" />
+		<Unit filename="../../src/graphic/BoxSliceVStaff.cpp" />
+		<Unit filename="../../src/graphic/BoxSliceVStaff.h" />
 		<Unit filename="../../src/graphic/BoxSystem.cpp" />
 		<Unit filename="../../src/graphic/BoxSystem.h" />
-		<Unit filename="../../src/graphic/BoxVStaffSlice.cpp" />
 		<Unit filename="../../src/graphic/BoxVStaffSlice.h" />
 		<Unit filename="../../src/graphic/Drawer.cpp" />
 		<Unit filename="../../src/graphic/Drawer.h" />
@@ -268,12 +270,8 @@
 		<Unit filename="../../src/score/ColStaffObjs.h" />
 		<Unit filename="../../src/score/Context.cpp" />
 		<Unit filename="../../src/score/Context.h" />
-		<Unit filename="../../src/score/Direction.cpp" />
-		<Unit filename="../../src/score/Direction.h" />
 		<Unit filename="../../src/score/Glyph.cpp" />
 		<Unit filename="../../src/score/Glyph.h" />
-		<Unit filename="../../src/score/GraphicObj.cpp" />
-		<Unit filename="../../src/score/GraphicObj.h" />
 		<Unit filename="../../src/score/Instrument.cpp" />
 		<Unit filename="../../src/score/Instrument.h" />
 		<Unit filename="../../src/score/KeySignature.cpp" />
@@ -286,8 +284,6 @@
 		<Unit filename="../../src/score/Note.h" />
 		<Unit filename="../../src/score/NoteRest.cpp" />
 		<Unit filename="../../src/score/NoteRest.h" />
-		<Unit filename="../../src/score/NoteRestObj.cpp" />
-		<Unit filename="../../src/score/NoteRestObj.h" />
 		<Unit filename="../../src/score/ObjOptions.cpp" />
 		<Unit filename="../../src/score/ObjOptions.h" />
 		<Unit filename="../../src/score/Pitch.cpp" />
