@@ -66,6 +66,7 @@ public:
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
+	inline int GetPageNumber() const { return m_nNumPage; }
 
 
 private:

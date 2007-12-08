@@ -84,6 +84,7 @@ public:
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
+	int GetPageNumber() const;
 
 
 

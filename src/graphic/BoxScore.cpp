@@ -37,7 +37,7 @@
 //-----------------------------------------------------------------------------------------
 
 lmBoxScore::lmBoxScore(lmScore* pScore) 
-    : lmBox(pScore, eGMO_BoxScore)
+    : lmBox(pScore, eGMO_BoxScore, _("score"))
 {
     m_pScore = pScore;
 

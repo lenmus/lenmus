@@ -56,6 +56,8 @@ lmScoreObj::lmScoreObj(lmScoreObj* pParent)
     // initializations: positioning related info
     m_uPaperPos.y = 0;
     m_uPaperPos.x = 0;
+
+    m_pShape2 = (lmShape*)NULL;
 }
 
 lmScoreObj::~lmScoreObj()
@@ -202,6 +204,26 @@ void lmScoreObj::OnProperties(lmGMObject* pGMO)
 	wxMessageBox(pGMO->Dump(0));
 }
 
+int lmScoreObj::GetPageNumber()
+{
+    //For visual highlight we need to know the page in wich the StaffObj to highlight
+    //is located. To get it we are going to access this object main shape.
+	//Returns the page number in whith the shape for this ScoreObj is rendered
+	//if no shape returns 0
+
+	if (!m_pShape2) return 0;
+	return m_pShape2->GetPageNumber();
+}
+
+wxFont* lmScoreObj::GetSuitableFont(lmPaper* pPaper)
+{
+	//returns the font to use to render this ScoreObj
+	return (wxFont*)NULL;
+}
+
+
+
+
 //-------------------------------------------------------------------------------------------------
 // lmComponentObj implementation
 //-------------------------------------------------------------------------------------------------
@@ -227,14 +249,7 @@ lmComponentObj::lmComponentObj(lmScoreObj* pParent, EScoreObjType nType, lmLocat
     m_fIsDraggable = fIsDraggable;
 
     // initializations: font related info
-    m_pFont = (wxFont *)NULL;
-
-    // initializations: positioning related info
-    m_fFixedPos = false;
-    m_nNumPage = 1;
-
-    //transitional
-    m_pShape2 = (lmShape*)NULL;
+    //m_pFont = (wxFont *)NULL;
 
 }
 
@@ -441,13 +456,8 @@ lmStaffObj::~lmStaffObj()
 
 lmUPoint lmStaffObj::GetReferencePos(lmPaper* pPaper)
 {
-    if (!m_fFixedPos) {
-        m_uPaperPos.x = pPaper->GetCursorX();
-        m_uPaperPos.y = pPaper->GetCursorY();
-    } else {
-        pPaper->SetCursorX(m_uPaperPos.x);
-        pPaper->SetCursorY(m_uPaperPos.y);
-    }
+    m_uPaperPos.x = pPaper->GetCursorX();
+    m_uPaperPos.y = pPaper->GetCursorY();
 	return lmUPoint(pPaper->GetCursorX(), pPaper->GetCursorY());
 }
 
@@ -459,7 +469,7 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
 	lmLUnits uWidth;
     if (m_fVisible) 
 	{
-		SetFont(pPaper);										// set the font
+		//SetFont(pPaper);										// set the font
 		uWidth = LayoutObject(pBox, pPaper, uPos, colorC);		// layout derived object
 	}
 	else
@@ -505,12 +515,13 @@ void lmStaffObj::ShiftObject(lmLUnits uLeft)
 
 }
 
-void lmStaffObj::SetFont(lmPaper* pPaper)
+wxFont* lmStaffObj::GetSuitableFont(lmPaper* pPaper)
 {
+	WXUNUSED(pPaper);
     wxASSERT(m_pVStaff);
     wxASSERT(m_nStaffNum > 0);
     lmStaff* pStaff = m_pVStaff->GetStaff(m_nStaffNum);
-    m_pFont = pStaff->GetFontDraw();
+    return pStaff->GetFontDraw();
 }
 
 lmLUnits lmStaffObj::TenthsToLogical(lmTenths nTenths)

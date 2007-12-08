@@ -101,6 +101,7 @@ public:
     inline lmEGMOType GetType() const { return m_nType; }
     inline bool IsBox() const { return m_nType < eGMO_LastBox; }
     inline bool IsShape() const { return m_nType >= eGMO_Shape; }
+	inline wxString GetName() const { return m_sGMOName; }
 
     //bounding box
     inline void SetXLeft(lmLUnits xLeft) { m_uBoundsTop.x = xLeft; }
@@ -144,13 +145,15 @@ public:
 
     //info
     inline lmScoreObj* GetScoreOwner() { return m_pOwner; }
+	virtual int GetPageNumber() const { return 0; }
 
 	//contextual menu
 	virtual void OnRightClick(lmController* pCanvas, const lmDPoint& vPos, int nKeys);
 
 
 protected:
-    lmGMObject(lmScoreObj* pOwner, lmEGMOType m_nType, bool fDraggable = false);
+    lmGMObject(lmScoreObj* pOwner, lmEGMOType m_nType, bool fDraggable = false,
+		       wxString sName = _("Object"));
     wxString DumpBounds();
 	void ShiftBoundsAndSelRec(lmLUnits xIncr, lmLUnits yIncr);
 	void NormaliceBoundsRectangle();
@@ -163,6 +166,7 @@ protected:
 	lmScoreObj*	    m_pOwner;		//associated owner object (in lmScore representation)
     lmEGMOType      m_nType;        //type of GMO
     int             m_nId;          //unique identification number
+	wxString		m_sGMOName;
 
     //bounding box: rectangle delimiting the visual representation
 	//the rectangle is referred to page origin
@@ -195,10 +199,11 @@ public:
 
     //implementation of virtual methods from base class
     virtual wxString Dump(int nIndent)=0;
+	virtual int GetPageNumber() const { return 0; }
 
 
 protected:
-    lmBox(lmScoreObj* pOwner, lmEGMOType m_nType);
+    lmBox(lmScoreObj* pOwner, lmEGMOType m_nType, wxString sName = _("Box"));
     lmShape* FindShapeAtPosition(lmUPoint& pointL);
 
 
@@ -256,7 +261,7 @@ public:
     //info
 	inline lmBox* GetOwnerBox() { return m_pOwnerBox; }
 	inline void SetOwnerBox(lmBox* pOwnerBox) { m_pOwnerBox = pOwnerBox; }
-	inline wxString GetName() const { return m_sShapeName; }
+	virtual int GetPageNumber() const;
 
 	
 
@@ -269,7 +274,6 @@ protected:
 
 
 	lmBox*		m_pOwnerBox;	//box in which this shape is included
-    wxString    m_sShapeName;
 
 	typedef struct lmAtachPoint_Struct {
 		lmShape*		pShape;

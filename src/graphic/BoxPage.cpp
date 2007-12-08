@@ -44,7 +44,7 @@ extern lmColors* g_pColors;
 //-----------------------------------------------------------------------------------------
 
 lmBoxPage::lmBoxPage(lmBoxScore* pParent, int nNumPage)
-    : lmBox(pParent->GetScoreOwner(), eGMO_BoxPage)
+    : lmBox(pParent->GetScoreOwner(), eGMO_BoxPage, _("page"))
 {
     m_nNumPage = nNumPage;
     m_nFirstSystem = 0;

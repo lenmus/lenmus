@@ -204,7 +204,7 @@ wxString lmShapeTuplet::Dump(int nIndent)
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
 	sDump += wxString::Format(_T("%04d %s: "),
-		m_nId, m_sShapeName );
+		m_nId, m_sGMOName );
     sDump += DumpBounds();
     sDump += _T("\n");
 	return sDump;

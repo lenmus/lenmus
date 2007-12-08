@@ -19,8 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __BOXSYSTEM_H__        //to avoid nested includes
-#define __BOXSYSTEM_H__
+#ifndef __LM_BOXSYSTEM_H__        //to avoid nested includes
+#define __LM_BOXSYSTEM_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "BoxSystem.cpp"
@@ -86,6 +86,7 @@ public:
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
+	int GetPageNumber() const;
 
 
 private:
@@ -104,5 +105,5 @@ private:
 
 
 
-#endif  // __BOXSYSTEM_H__
+#endif  // __LM_BOXSYSTEM_H__
 

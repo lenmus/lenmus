@@ -47,7 +47,7 @@ extern lmColors* g_pColors;
 
 lmBoxSlice::lmBoxSlice(lmBoxSystem* pParent, int nAbsMeasure, int nNumInSystem,
 					   lmLUnits xStart, lmLUnits xEnd)
-    : lmBox(pParent->GetScoreOwner(), eGMO_BoxSlice)
+    : lmBox(pParent->GetScoreOwner(), eGMO_BoxSlice, _T("slice"))
 {
     m_pBSystem = pParent;
     m_nAbsMeasure = nAbsMeasure;
@@ -214,3 +214,7 @@ wxString lmBoxSlice::Dump(int nIndent)
 	return sDump;
 }
 
+int lmBoxSlice::GetPageNumber() const
+{ 
+	return m_pBSystem->GetPageNumber(); 
+}

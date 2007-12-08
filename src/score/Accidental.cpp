@@ -128,7 +128,7 @@ void lmAccidental::CreateShapes(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos)
             wxASSERT(false);
     }
 
-    wxFont* pFont = m_pOwner->GetFont();
+    wxFont* pFont = m_pOwner->GetSuitableFont(pPaper);
 
 	//if two shapes, create a composite shape, else it is enough with one shape
 	if (nGlyph[1] != -1)

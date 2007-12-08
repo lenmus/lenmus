@@ -73,8 +73,8 @@ lmLUnits lmSpacer::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxC
 wxString lmSpacer::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tSpacer %.2f\tTimePos=%.2f, fixed=%s\n"),
-        m_nId, m_nSpacerWidth, m_rTimePos, (m_fFixedPos ? _T("yes") : _T("no")) );
+        _T("%d\tSpacer %.2f\tTimePos=%.2f\n"),
+        m_nId, m_nSpacerWidth, m_rTimePos );
     return sDump;
             
 }
@@ -136,8 +136,8 @@ lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxC
 wxString lmAnchor::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tAnchor    \tTimePos=%.2f, fixed=%s\n"),
-        m_nId, m_rTimePos, (m_fFixedPos ? _T("yes") : _T("no")) );
+        _T("%d\tAnchor    \tTimePos=%.2f\n"),
+        m_nId, m_rTimePos );
 	sDump += lmStaffObj::Dump();
     return sDump;
             
@@ -192,8 +192,8 @@ lmLUnits lmScoreAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos
 wxString lmScoreAnchor::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tScoreAnchor\tTimePos=%.2f, fixed=%s\n"),
-        m_nId, m_rTimePos, (m_fFixedPos ? _T("yes") : _T("no")) );
+        _T("%d\tScoreAnchor\tTimePos=%.2f\n"),
+        m_nId, m_rTimePos );
 	sDump += lmStaffObj::Dump();
     return sDump;
 }

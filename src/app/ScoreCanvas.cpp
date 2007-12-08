@@ -239,9 +239,7 @@ void lmScoreCanvas::MoveObject(lmGMObject* pGMO, const lmUPoint& uPos)
 
 	wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
     lmScoreObj* pSO = pGMO->GetScoreOwner();
-	wxString sName = _T("Move object");
-	if (pGMO->IsShape())
-		sName = wxString::Format(_T("Move %s"), ((lmShape*)pGMO)->GetName() );
+	wxString sName = wxString::Format(_T("Move %s"), pGMO->GetName() );
 	pCP->Submit(new lmScoreCommandMove(sName, m_pDoc, pSO, uPos));
 }
 
@@ -250,7 +248,8 @@ void lmScoreCanvas::SelectObject(lmGMObject* pGMO)
 	//select/deselect a ComponentObj
 
     wxCommandProcessor* pCP = m_pDoc->GetCommandProcessor();
-	pCP->Submit(new lmCmdSelectSingle(_T("Select object"), m_pDoc, pGMO));
+	wxString sName = wxString::Format(_T("Select %s"), pGMO->GetName() );
+	pCP->Submit(new lmCmdSelectSingle(sName, m_pDoc, pGMO));
 }
 
 void lmScoreCanvas::OnKeyPress(wxKeyEvent& event)

@@ -37,7 +37,6 @@
 
 #include "wx/gdicmn.h"
 
-#define lmCOMPATIBILITY_NO_SHAPES   1     //Use old code until garphic model totally decoupled
 
 
 //// Types used for portability and legibility

@@ -49,7 +49,7 @@ extern lmColors* g_pColors;
 
 
 lmBoxSliceInstr::lmBoxSliceInstr(lmBoxSlice* pParent, lmInstrument* pInstr)
-    : lmBox(pParent->GetScoreOwner(), eGMO_BoxSliceInstr)
+    : lmBox(pParent->GetScoreOwner(), eGMO_BoxSliceInstr, _T("SliceInstr"))
 {
     m_pSlice = pParent;
     m_pInstr = pInstr;
@@ -185,4 +185,9 @@ lmGMObject* lmBoxSliceInstr::FindGMObjectAtPosition(lmUPoint& pointL)
     else
         return (lmGMObject*)NULL;
 
+}
+
+int lmBoxSliceInstr::GetPageNumber() const
+{ 
+	return m_pSlice->GetPageNumber();
 }

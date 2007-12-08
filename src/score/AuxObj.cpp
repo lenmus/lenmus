@@ -77,6 +77,14 @@ void lmAuxObj::SetOwner(lmScoreObj* pOwner)
     m_pParent = pOwner;
 }
 
+wxFont* lmAuxObj::GetSuitableFont(lmPaper* pPaper)
+{
+    return m_pParent->GetSuitableFont(pPaper);
+}
+
+
+
+
 //========================================================================================
 // lmFermata implementation
 //========================================================================================
@@ -124,8 +132,8 @@ lmLUnits lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
     //create the shape object
     int nGlyphIndex = (fAboveNote ? GLYPH_FERMATA_OVER : GLYPH_FERMATA_UNDER);
     lmShapeGlyph* pShape = 
-		new lmShapeGlyph(this, nGlyphIndex, ((lmStaffObj*)m_pParent)->GetFont(), pPaper, uPos,
-						_T("Fermata"), lmDRAGGABLE, colorC);
+		new lmShapeGlyph(this, nGlyphIndex, m_pParent->GetSuitableFont(pPaper),
+						 pPaper, uPos, _T("Fermata"), lmDRAGGABLE, colorC);
 	pBox->AddShape(pShape);
     m_pShape2 = pShape;
 
@@ -203,20 +211,21 @@ lmLyric::lmLyric(wxString sText, ESyllabicTypes nSyllabic, int nNumLine, wxStrin
     m_nNumLine = nNumLine;
 }
 
-void lmLyric::SetFont(lmPaper* pPaper)
+wxFont* lmLyric::GetSuitableFont(lmPaper* pPaper)
 {
-    //wxLogMessage(wxString::Format(
-    //    _T("[lmLyric::SetFont]: size=%d, name=%s"), m_nFontSize, m_sFontName));
+    //wxLogMessage(_T("[lmLyric::GetSuitableFont]: size=%d, name=%s"),
+	//             m_nFontSize, m_sFontName );
 
     int nWeight = (m_fBold ? wxBOLD : wxNORMAL);
     int nStyle = (m_fItalic ? wxITALIC : wxNORMAL);
-    m_pFont = pPaper->GetFont(m_nFontSize, m_sFontName, wxDEFAULT, nStyle, nWeight, false);
+    wxFont* pFont = pPaper->GetFont(m_nFontSize, m_sFontName, wxDEFAULT, nStyle, nWeight, false);
 
-    if (!m_pFont) {
+    if (!pFont) {
         wxMessageBox(_("Sorry, an error has occurred while allocating the font."),
-            _T("lmLyric::SetFont"), wxOK);
+            _T("lmLyric::GetSuitableFont"), wxOK);
         ::wxExit();
     }
+	return pFont;
 }
 
 lmLUnits lmLyric::ComputeXLocation(lmPaper* pPaper)

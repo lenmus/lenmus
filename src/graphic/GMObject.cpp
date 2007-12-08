@@ -51,11 +51,13 @@ static int m_IdCounter = 0;        //to assign unique IDs to GMObjects
 
 
 
-lmGMObject::lmGMObject(lmScoreObj* pOwner, lmEGMOType nType, bool fDraggable)
+lmGMObject::lmGMObject(lmScoreObj* pOwner, lmEGMOType nType, bool fDraggable,
+					   wxString sName)
 {
     m_nId = m_IdCounter++;      // give it an ID
     m_nType = nType;            // save its type
 	m_pOwner = pOwner;
+	m_sGMOName = sName;
 
 	//initializations
 	m_uBoundsBottom = lmUPoint(0.0, 0.0);
@@ -177,7 +179,8 @@ void lmGMObject::OnRightClick(lmController* pCanvas, const lmDPoint& vPos, int n
 //========================================================================================
 
 
-lmBox::lmBox(lmScoreObj* pOwner, lmEGMOType nType) : lmGMObject(pOwner, nType)
+lmBox::lmBox(lmScoreObj* pOwner, lmEGMOType nType, wxString sName)
+	: lmGMObject(pOwner, nType, lmNO_DRAGGABLE, sName)
 {
 }
 
@@ -218,9 +221,8 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
 
 lmShape::lmShape(lmEGMOType nType, lmScoreObj* pOwner, wxString sName, bool fDraggable,
 				 wxColour color)
-	: lmGMObject(pOwner, nType, fDraggable)
+	: lmGMObject(pOwner, nType, fDraggable, sName)
 {
-    m_sShapeName = sName;
 	m_pOwnerBox = (lmBox*)NULL;
 	m_color = color;
 }
@@ -287,6 +289,15 @@ void lmShape::InformAttachedShapes(lmLUnits ux, lmLUnits uy, lmEParentEvent nEve
         pData->pShape->OnAttachmentPointMoved(this, pData->nType, ux, uy, nEvent);
     }
 }
+
+int lmShape::GetPageNumber() const
+{
+	if (!m_pOwnerBox || !m_pOwnerBox->IsBox() ) return 0;
+	return m_pOwnerBox->GetPageNumber();
+}
+
+
+
 
 //========================================================================================
 // Implementation of class lmSimpleShape
@@ -388,7 +399,7 @@ wxString lmCompositeShape::Dump(int nIndent)
 	//TODO
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-	sDump += wxString::Format(_T("%04d %s: grouped=%s, "), m_nId, m_sShapeName, 
+	sDump += wxString::Format(_T("%04d %s: grouped=%s, "), m_nId, m_sGMOName, 
         (m_fGrouped ? _T("yes") : _T("no")) );
     sDump += DumpBounds();
     sDump += _T("\n");

@@ -48,7 +48,7 @@ extern lmColors* g_pColors;
 //
 
 lmBoxSliceVStaff::lmBoxSliceVStaff(lmBoxSliceInstr* pParent, lmVStaff* pVStaff)
-    : lmBox(pParent->GetScoreOwner(), eGMO_BoxSliceVStaff)
+    : lmBox(pParent->GetScoreOwner(), eGMO_BoxSliceVStaff, _T("SliceVStaff"))
 {
     m_pSliceInstr = pParent;
     m_pVStaff = pVStaff;
@@ -95,13 +95,6 @@ void lmBoxSliceVStaff::AddShape(lmShape* pShape)
 	}
 	else
 		lmBox::AddShape(pShape);
-
-    //for visual highlight we need to know the page in wich the StaffObj to highlight
-    //is located. To this end we are going to store the page number in each
-    //StaffObj
-    //lmScoreObj* pSO = pShape->GetScoreOwner();
-    //if (pSO->G
-    //pSO->SetPageNumber(nNumPage);
 
 }
 
@@ -278,4 +271,9 @@ lmGMObject* lmBoxSliceVStaff::FindGMObjectAtPosition(lmUPoint& pointL)
     else
         return (lmGMObject*)NULL;
 
+}
+
+int lmBoxSliceVStaff::GetPageNumber() const
+{ 
+	return m_pSliceInstr->GetPageNumber();
 }

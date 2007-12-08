@@ -242,9 +242,9 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
     lmLUnits nWidth, nHeight;
 	lmShapeTex2* pShape = (lmShapeTex2*)NULL;
 
-    // if not yet measured and positioned do it
-    if (!pTitle->IsFixed())
-    {
+    //// if not yet measured and positioned do it
+    //if (!pTitle->IsFixed())
+    //{
         lmEAlignment nAlign = pTitle->GetAlignment();
         lmLUnits xInitPaperPos = pPaper->GetCursorX();
         lmLUnits xPaperPos = xInitPaperPos;
@@ -332,7 +332,7 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
             else
                 pPaper->SetCursorX(xPaperPos - nWidth);
         }
-    }
+    //}
 
 	//the position has been computed. Create the shape if not yet created or
 	//update it, if its was created during measurements 
@@ -342,7 +342,6 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
 	//add shape to the box
 	pBox->AddShape(pShape);
 
-    pTitle->SetFixed(true);
     nHeight = pShape->GetHeight();
 
     //if rigth aligned, advance new line

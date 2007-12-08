@@ -125,7 +125,7 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     lmLUnits uxLeft = uPaperPos.x;
 
     // prepare DC
-    pPaper->SetFont(*m_pFont);
+    pPaper->SetFont(*GetSuitableFont(pPaper));
 
     //create the container shape and add it to the box
     lmCompositeShape* pRestShape = new lmCompositeShape(this, _T("Rest"), lmDRAGGABLE);
@@ -142,7 +142,7 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     // create shape for the rest symbol
     lmEGlyphIndex nGlyph = GetGlyphIndex();
     lmLUnits yPos = uyTop + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
-    lmShapeGlyph* pShape = new lmShapeGlyph(this, nGlyph, GetFont(), pPaper,
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
                                             lmUPoint(uxLeft, yPos), _T("Rest"));
 	pRestShape->Add(pShape);
     uxLeft += pShape->GetWidth();

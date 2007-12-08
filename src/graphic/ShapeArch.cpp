@@ -101,7 +101,7 @@ wxString lmShapeArch::Dump(int nIndent)
 	sDump += wxString::Format(_T("%04d %s: start=(%.2f, %.2f), end=(%.2f, %.2f), ")
                 _T("ctrol1=(%.2f, %.2f), ctrol2=(%.2f, %.2f), ")
                 _T("Arch under note = %s, "),
-                m_nId, m_sShapeName, m_uStart.x, m_uStart.y, m_uEnd.x, m_uEnd.y,
+                m_nId, m_sGMOName, m_uStart.x, m_uStart.y, m_uEnd.x, m_uEnd.y,
                 m_uCtrol1.x, m_uCtrol1.y, m_uCtrol2.x, m_uCtrol2.y,
                 (m_fArchUnder ? _T("yes") : _T("no")) );
     sDump += DumpBounds();

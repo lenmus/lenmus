@@ -487,7 +487,7 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
 			pNote->SetOrigin(m_pBaseNote->GetOrigin());
 		}
 		//set the font
-		pNote->SetFont(pPaper);
+		//pNote->SetFont(pPaper);
 		//create the shape container
 		pNote->CreateContainerShape(pBox, uPaperPos.x, uPaperPos.y, colorC);
     }

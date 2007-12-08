@@ -429,7 +429,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     bool fInChord = IsInChord();
 
     //prepare paper for measurements
-    pPaper->SetFont(*m_pFont);
+    pPaper->SetFont(*GetSuitableFont(pPaper));
 
     // move to right staff
     lmLUnits uyStaffTopLine = uPaperPos.y + GetStaffOffset();   // staff y position (top line)
@@ -604,7 +604,8 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //-----------------------------------------------------------------------------
     if (IsInChord() && m_pChord->IsLastNoteOfChord(this) && m_nNoteType >= eHalf)
     {
-        m_pChord->AddStemShape(pPaper, colorC, m_pFont, m_pVStaff, m_nStaffNum);
+        m_pChord->AddStemShape(pPaper, colorC, GetSuitableFont(pPaper), m_pVStaff,
+							   m_nStaffNum);
     }
 
 
@@ -825,7 +826,7 @@ lmEGlyphIndex lmNote::AddFlagShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmU
     lmEGlyphIndex nGlyph = GetGlyphForFlag();
 
     lmLUnits yPos = uPos.y + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
-    lmShapeGlyph* pShape = new lmShapeGlyph(this, nGlyph, GetFont(), pPaper,
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
                                             lmUPoint(uPos.x, yPos), _T("Flag"));
 	pNoteShape->AddFlag(pShape);
     return nGlyph;
@@ -940,7 +941,7 @@ void lmNote::AddSingleNoteShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENot
     lmLUnits yPos = uyTop + m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
 
     //create the shape object
-    lmShapeGlyph* pShape = new lmShapeGlyph(this, nGlyph, GetFont(), pPaper,
+    lmShapeGlyph* pShape = new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
                                             lmUPoint(uxLeft, yPos), _T("NoteSingle"));
 	pNoteShape->AddNoteInBlock(pShape);
 
@@ -981,7 +982,7 @@ void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENoteH
 
     //create the shape object
 	wxColour color = (m_fNoteheadReversed? *wxRED : colorC);
-    m_pNoteheadShape = new lmShapeGlyph(this, nGlyph, GetFont(), pPaper,
+    m_pNoteheadShape = new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
                                         lmUPoint(uxLeft, yPos), _T("Notehead"),
 										lmDRAGGABLE, color);
 	pNoteShape->AddNoteHead(m_pNoteheadShape);
@@ -1035,7 +1036,6 @@ void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENoteH
 //    m_uPaperPos.x = uPos.x - m_uGlyphPos.x;
 //    m_uPaperPos.y = uPos.y - m_uGlyphPos.y;
 //
-//    SetFixed(false);
 //
 //    return lmUPoint(uOldPos);
 //

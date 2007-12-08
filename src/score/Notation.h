@@ -68,7 +68,7 @@ public:
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmLUnits ComputeXLocation(lmPaper* pPaper);
 	lmLUnits ComputeYLocation(lmPaper* pPaper);
-    void SetFont(lmPaper* pPaper) {}        // nothing to do
+    //void SetFont(lmPaper* pPaper) {}        // nothing to do
 
     //    debugging
     wxString Dump();
@@ -96,7 +96,7 @@ public:
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmLUnits ComputeXLocation(lmPaper* pPaper);
 	lmLUnits ComputeYLocation(lmPaper* pPaper);
-    void SetFont(lmPaper* pPaper) {}
+    //void SetFont(lmPaper* pPaper) {}
 
     //    debugging
     wxString Dump();
@@ -118,7 +118,7 @@ public:
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	lmLUnits ComputeXLocation(lmPaper* pPaper);
 	lmLUnits ComputeYLocation(lmPaper* pPaper);
-    void SetFont(lmPaper* pPaper) {}
+    //void SetFont(lmPaper* pPaper) {}
 
     //    debugging
     wxString Dump();

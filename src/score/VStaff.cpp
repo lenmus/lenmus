@@ -602,16 +602,7 @@ void lmVStaff::SetFont(lmStaff* pStaff, lmPaper* pPaper)
     //int dyLinesD = pPaper->LogicalToDeviceY(100 * dyLinesL);
     //pStaff->SetFontDrag( pPaper->GetFont((3 * dyLinesD) / 100) );
 
-    ////Calcula, en pixels, el grosor de las líneas (es de 51 FUnits, la décima parte de la distancia entre líneas)
-    //m_nGrosorLineas = FUnitsToTwips(51) * nResolucion \ 1440
-    //if (m_nGrosorLineas < 1) m_nGrosorLineas = 1;
-    //sDbgFonts = sDbgFonts & "nGrosorLineas = " & m_nGrosorLineas & sCrLf
-    //xUnits = m_nGrosorLineas
-
-
 }
-
-
 
 lmLUnits lmVStaff::GetStaffOffset(int nStaff)
 {

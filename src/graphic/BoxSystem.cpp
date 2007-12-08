@@ -48,7 +48,7 @@ extern lmColors* g_pColors;
 //-----------------------------------------------------------------------------------------
 
 lmBoxSystem::lmBoxSystem(lmBoxPage* pParent, int nNumPage)
-    : lmBox(pParent->GetScoreOwner(), eGMO_BoxSystem)
+    : lmBox(pParent->GetScoreOwner(), eGMO_BoxSystem, _("system"))
 {
     m_nNumMeasures = 0;
     m_nNumPage = nNumPage;
@@ -207,4 +207,9 @@ wxString lmBoxSystem::Dump(int nIndent)
     }
 
 	return sDump;
+}
+
+int lmBoxSystem::GetPageNumber() const
+{ 
+	return m_pBPage->GetPageNumber();
 }

@@ -121,8 +121,9 @@ public:
             int nNumLine=1, wxString sLanguage=_T("it") );
     ~lmLyric() {}
 
-    // implementation of pure virtual methods in base class
+    // implementation of pure virtual methods in base classes
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+	wxFont* GetSuitableFont(lmPaper* pPaper);
 	lmLUnits ComputeXLocation(lmPaper* pPaper);
 	lmLUnits ComputeYLocation(lmPaper* pPaper);
     lmEAuxObjType GetAuxObjType() { return eAXOT_Lyric; }
@@ -132,7 +133,7 @@ public:
     void SetOwner(lmNoteRest* pOwner);
 
     // overrides for virtual methods of base class lmComponentObj
-    void SetFont(lmPaper* pPaper);
+    //void SetFont(lmPaper* pPaper);
 
     // source code related methods
     wxString SourceLDP(int nIndent);

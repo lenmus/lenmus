@@ -79,11 +79,12 @@ public:
 
     ~lmScoreText() {}
 
-    //implementation of virtual methods defined in abstract base class lmStaffObj
+    //implementation of virtual methods defined in abstract base class
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+	wxFont* GetSuitableFont(lmPaper* pPaper);
 	lmLUnits ComputeXLocation(lmPaper* pPaper);
 	lmLUnits ComputeYLocation(lmPaper* pPaper);
-    void SetFont(lmPaper* pPaper);
+    //void SetFont(lmPaper* pPaper);
 
     //implementation of virtual methods from base class
     lmEAuxObjType GetAuxObjType() { return eAXOT_Text; }

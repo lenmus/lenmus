@@ -230,7 +230,7 @@ lmCompositeShape* lmTimeSignature::CreateShape(lmBox* pBox, lmPaper* pPaper, wxC
 		int nGlyph = GLYPH_NUMBER_0 + (int)nDigit;
 		lmLUnits uyPos = uyPosTop 
 						 + m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
-		pShape->Add(new lmShapeGlyph(this, nGlyph, GetFont(), pPaper,
+		pShape->Add(new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
 									 lmUPoint(uxPosTop, uyPos), 
 									 _T("Beats"), lmNO_DRAGGABLE) );
 		uxPosTop += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );
@@ -244,7 +244,7 @@ lmCompositeShape* lmTimeSignature::CreateShape(lmBox* pBox, lmPaper* pPaper, wxC
 		int nGlyph = GLYPH_NUMBER_0 + (int)nDigit;
 		lmLUnits uyPos = uyPosBottom 
 						+ m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, m_nStaffNum );
-		pShape->Add(new lmShapeGlyph(this, nGlyph, GetFont(), pPaper,
+		pShape->Add(new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
 									 lmUPoint(uxPosBottom, uyPos), 
 									 _T("BeatType"), lmNO_DRAGGABLE) );
 		uxPosBottom += m_pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].thWidth, m_nStaffNum );

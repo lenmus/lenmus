@@ -327,9 +327,8 @@ lmShape* lmKeySignature::AddAccidental(bool fSharp, lmPaper* pPaper, lmUPoint uP
     else
         nGlyph = GLYPH_FLAT_ACCIDENTAL;
 
-    wxFont* pFont = GetFont();
     lmLUnits yPos = uPos.y - pStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset);
-    return new lmShapeGlyph(this, nGlyph, pFont, pPaper,
+    return new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
 							lmUPoint(uPos.x, yPos), _T("Accidental"));
 
 }

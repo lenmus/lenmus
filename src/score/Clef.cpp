@@ -129,8 +129,8 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     // Paper cursor must be used as the base for positioning.
 
     //create the shape object
-    lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetFont(), pPaper,
-                                          uPos, _T("Clef"), lmDRAGGABLE, m_color);
+    lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetSuitableFont(pPaper),
+										  pPaper, uPos, _T("Clef"), lmDRAGGABLE, m_color);
 	pBox->AddShape(pShape);
     m_pShape2 = pShape;
 
@@ -152,11 +152,11 @@ lmLUnits lmClef::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
     yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
 
     //create the shape object
-    //lmShapeGlyph* pShape = new lmShapeGlyph(this, GetGlyphIndex(), GetFont(), pPaper,
+    //lmShapeGlyph* pShape = new lmShapeGlyph(this, GetGlyphIndex(), GetSuitableFont(pPaper), pPaper,
     //                                        lmUPoint(uPos.x, yPos), _T("Clef"));
-    lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetFont(), pPaper,
-                                            lmUPoint(uPos.x, yPos), 
-											_T("Clef"), lmDRAGGABLE);
+    lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetSuitableFont(pPaper),
+										  pPaper, lmUPoint(uPos.x, yPos), 
+										  _T("Clef"), lmDRAGGABLE);
 	pBox->AddShape(pShape);
     return pShape->GetWidth();
 }

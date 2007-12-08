@@ -192,18 +192,19 @@ lmLUnits lmMetronomeMark::DrawText(bool fMeasuring, lmPaper* pPaper,
 lmLUnits lmMetronomeMark::DrawSymbol(bool fMeasuring, lmPaper* pPaper, lmShapeGlyph* pShape,
                                      lmLUnits uxPos, lmLUnits uyPos, wxColour colorC)
 {
-    // returns the width of the note (in logical units)
+    //// returns the width of the note (in logical units)
 
-    wxASSERT(pShape);
-    if (fMeasuring) {
-        lmUPoint offset(uxPos - m_uPaperPos.x, uyPos - m_uPaperPos.y - m_pVStaff->TenthsToLogical(35, m_nStaffNum));
-        pShape->SetFont(m_pFont);
-        //pShape->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum), offset);
-    }
-    else {
-        pShape->Render(pPaper, colorC);    //(pPaper, m_uPaperPos, colorC);
-    }
-    return pShape->GetWidth();
+    //wxASSERT(pShape);
+    //if (fMeasuring) {
+    //    lmUPoint offset(uxPos - m_uPaperPos.x, uyPos - m_uPaperPos.y - m_pVStaff->TenthsToLogical(35, m_nStaffNum));
+    //    pShape->SetFont(m_pFont);
+    //    //pShape->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum), offset);
+    //}
+    //else {
+    //    pShape->Render(pPaper, colorC);    //(pPaper, m_uPaperPos, colorC);
+    //}
+    //return pShape->GetWidth();
+	return 0;
 }
 
 lmEGlyphIndex lmMetronomeMark::SelectGlyph(lmENoteType nNoteType, int nDots)
@@ -233,9 +234,9 @@ wxString lmMetronomeMark::Dump()
 {
     wxString sDump = wxString::Format(
         _T("%d\tMetronome %d\tTicksPerMinute=%d, fParentheses=%s,")
-        _T(" TimePos=%.2f, fixed=%s\n"),
+        _T(" TimePos=%.2f\n"),
         m_nId, m_nMarkType, m_nTicksPerMinute, (m_fParentheses ? _T("yes") : _T("no")),
-        m_rTimePos, (m_fFixedPos ? _T("yes") : _T("no")) );
+        m_rTimePos );
     return sDump;
 }
 

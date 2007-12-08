@@ -312,7 +312,6 @@ private:
 
     // a lmScore is, mainly, a collection of Instruments plus some data (composer, title, ...)
     InstrumentsList     m_cInstruments;     //list of instruments that form this score
-    //StaffObjsList       m_cTitles;          //list of score titles
     std::vector<int>    m_nTitles;          //indexes (over attached AuxObjs) to titles 
 
     //Variables related to polyphonic interpretation
@@ -320,17 +319,17 @@ private:
     StaffObjsList       m_cHighlighted;     //list of highlighted staffobjs
 
     //Layout related variables
-    lmLUnits        m_nTopSystemDistance;
-    lmLUnits        m_nHeadersHeight;
+    lmLUnits			m_nTopSystemDistance;
+    lmLUnits			m_nHeadersHeight;
 
     //renderization options
     ERenderizationType  m_nRenderizationType;
-	bool				m_fModified;			//to force a repaint
+	bool				m_fModified;		//to force a repaint
 
     //other variables
     wxInstrumentsListNode*  m_pNode;        //last returned instrument node
-    long            m_nID;                  //unique ID for this score
-    wxString        m_sScoreName;           //for user identification
+    long				m_nID;				//unique ID for this score
+    wxString			m_sScoreName;		//for user identification
 
 };
 

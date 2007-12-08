@@ -98,9 +98,8 @@ lmShapeTex2* lmScoreText::CreateShape(lmPaper* pPaper)
 {
     // Creates the shape and returns it
 
-	if (!m_pFont) SetFont(pPaper);
 	lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
-    return new lmShapeTex2(this, m_sText, m_pFont, pPaper,
+    return new lmShapeTex2(this, m_sText, GetSuitableFont(pPaper), pPaper,
                            uPos, _T("ScoreText"), lmDRAGGABLE, m_color);
 }
 
@@ -137,9 +136,8 @@ lmLUnits lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
 wxString lmScoreText::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tText %s\tfixed=%s paperPos=(%d, %d)\n"),
-        m_nId, m_sText.Left(15).c_str(), (m_fFixedPos ? _T("yes") : _T("no")),
-        m_uPaperPos.x, m_uPaperPos.y);
+        _T("%d\tText %s\tpaperPos=(%d, %d)\n"),
+        m_nId, m_sText.Left(15).c_str(), m_uPaperPos.x, m_uPaperPos.y);
     return sDump;
 
 }
@@ -196,20 +194,19 @@ wxString lmScoreText::SourceXML(int nIndent)
 //
 }
 
-void lmScoreText::SetFont(lmPaper* pPaper)
+wxFont* lmScoreText::GetSuitableFont(lmPaper* pPaper)
 {
-    //wxLogMessage(wxString::Format(
-    //    _T("[lmScoreText::SetFont]: size=%d, name=%s"), m_nFontSize, m_sFontName));
+    //wxLogMessage(_T("[lmScoreText::GetSuitableFont]: size=%d, name=%s"),
+	//             m_nFontSize, m_sFontName );
 
     int nWeight = (m_fBold ? wxBOLD : wxNORMAL);
     int nStyle = (m_fItalic ? wxITALIC : wxNORMAL);
-    m_pFont = pPaper->GetFont(m_nFontSize, m_sFontName, wxDEFAULT, nStyle, nWeight, false);
+    wxFont* pFont = pPaper->GetFont(m_nFontSize, m_sFontName, wxDEFAULT, nStyle, nWeight, false);
 
-    if (!m_pFont) {
+    if (!pFont) {
         wxMessageBox(_("Sorry, an error has occurred while allocating the font."),
-            _T("lmScoreText::SetFont"), wxOK);
+            _T("lmScoreText::GetSuitableFont"), wxOK);
         ::wxExit();
     }
+	return pFont;
 }
-
-

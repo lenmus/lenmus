@@ -80,7 +80,7 @@ public:
     bool GetOptionBool(wxString sOptName);
     wxString GetOptionString(wxString sOptName);
 
-    //--- Any ScoreObj can own AuxObjs -----------------------
+    //--- a ScoreObj can own AuxObjs -----------------------
     
 	//provide origin position for owned AuxObjs
 	virtual lmUPoint GetReferencePos(lmPaper* pPaper)=0;
@@ -93,17 +93,25 @@ public:
     int AttachAuxObj(lmAuxObj* pAO);
     void DetachAuxObj(lmAuxObj* pAO);
 
+
+	//--- a ScoreObj can be renderizable
+
 	//position and main shape
     virtual void ShiftObject(lmLUnits uLeft);
 	virtual lmLocation SetUserLocation(lmLocation tPos);
 	inline lmShape* GetShap2() { return m_pShape2; }
     inline lmUPoint& GetOrigin() { return m_uPaperPos; }
+    int GetPageNumber();
 
 	//contextual menu
 	virtual void PopupMenu(lmController* pCanvas, lmGMObject* pGMO, const lmDPoint& vPos);
 	virtual void CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO);
 
+	//handlers for contextual menu
 	virtual void OnProperties(lmGMObject* pGMO);
+
+	//font to use to render the ScoreObj
+	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
 
 
 
@@ -165,22 +173,6 @@ public:
     virtual wxString Dump()=0;
 
 
-
-#if lmCOMPATIBILITY_NO_SHAPES
-
-    // positioning
-    inline bool IsFixed() const { return m_fFixedPos; }
-    void SetFixed(bool fFixed) { m_fFixedPos = fFixed; }
-    void SetPageNumber(int nNum) { m_nNumPage = nNum; }
-    inline int GetPageNumber() const { return m_nNumPage; }
-
-    // methods related to font rendered objects
-    virtual void SetFont(lmPaper* pPaper) {}
-    wxFont* GetFont() { return m_pFont; }
-
-#endif  //lmCOMPATIBILITY_NO_SHAPES
-
-
 protected:
     lmComponentObj(lmScoreObj* pParent, EScoreObjType nType, lmLocation* pPos = &g_tDefaultPos,
                    bool fIsDraggable = false);
@@ -192,19 +184,6 @@ protected:
     int             m_nId;          //unique number, to identify each lmComponentObj
     bool            m_fIsDraggable;
 
-
-#if lmCOMPATIBILITY_NO_SHAPES
-
-    //positioning. Coordinates relative to origin of page (in logical units); updated each
-    // time this object is drawn
-    bool        m_fFixedPos;        // its position is fixed. Do not recalculate it
-    int         m_nNumPage;         // page on which this SO is rendered (1..n). Set Up in BoxSystem::RenderMeasure().
-
-    // variables related to font rendered objects
-    wxFont*     m_pFont;            // font to use for drawing this object
-
-
-#endif  //lmCOMPATIBILITY_NO_SHAPES
 
 };
 
@@ -240,7 +219,8 @@ public:
 
     virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
                         bool fHighlight = false);
-    virtual void SetFont(lmPaper* pPaper);
+    //virtual void SetFont(lmPaper* pPaper);
+	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
 
 	//owning AuxObjs
 	virtual lmUPoint GetReferencePos(lmPaper* pPaper);
@@ -338,7 +318,8 @@ public:
 
     virtual void Layout(lmBox* pBox, lmPaper* pPaper, 
 						wxColour colorC = *wxBLACK, bool fHighlight = false);
-    virtual void SetFont(lmPaper* pPaper) {}
+    //virtual void SetFont(lmPaper* pPaper) {}
+	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
 
 	//owning AuxObjs
 	lmUPoint GetReferencePos(lmPaper* pPaper);
