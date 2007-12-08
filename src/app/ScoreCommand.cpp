@@ -48,6 +48,7 @@ lmScoreCommand::lmScoreCommand(const wxString& sName, lmEScoreCommand nCommand, 
 {
     m_pDoc = pDoc;
     m_cmd = nCommand;
+	m_fDocModified = false;
 }
 
 lmScoreCommand::~lmScoreCommand()
@@ -90,10 +91,11 @@ lmScoreCommandMove::lmScoreCommandMove(const wxString& sName, lmScoreDocument *p
 									   lmScoreObj* pSO, const lmUPoint& uPos)
 	: lmScoreCommand(sName, lmCMD_MoveScoreObj, pDoc)
 {
-	m_tPos.x = uPos.x;
-	m_tPos.y = uPos.y;
-	m_tPos.xType = lmLOCATION_USER_ABSOLUTE;
-	m_tPos.yType = lmLOCATION_USER_ABSOLUTE;
+	lmUPoint uOrg = pSO->GetOrigin();
+	m_tPos.x = uPos.x - uOrg.x;
+	m_tPos.y = uPos.y - uOrg.y;
+	m_tPos.xType = lmLOCATION_USER_RELATIVE;
+	m_tPos.yType = lmLOCATION_USER_RELATIVE;
 	m_tPos.xUnits = lmLUNITS;
 	m_tPos.yUnits = lmLUNITS;
 
@@ -105,6 +107,8 @@ bool lmScoreCommandMove::Do()
     wxASSERT_MSG( m_pSO, _T("[lmScoreCommandMove::Do] No ScoreObj to move!"));
 
     m_tOldPos = m_pSO->SetUserLocation(m_tPos);
+	m_fDocModified = m_pDoc->IsModified();
+	m_pDoc->Modify(true);
     m_pDoc->UpdateAllViews();
     return true;
 
@@ -115,6 +119,7 @@ bool lmScoreCommandMove::Undo()
     wxASSERT_MSG( m_pSO, _T("[lmScoreCommandMove::Undo]: No ScoreObj to move!"));
 
     m_pSO->SetUserLocation(m_tOldPos);
+	m_pDoc->Modify(m_fDocModified);
     m_pDoc->UpdateAllViews();
     return true;
 

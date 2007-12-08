@@ -19,18 +19,18 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __LMNODE_H        //to avoid nested includes
-#define __LMNODE_H
+#ifndef __LM_LDPNODE_H__        //to avoid nested includes
+#define __LM_LDPNODE_H__
 
-#ifdef __GNUG__
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "LDPNode.cpp"
 #endif
 
+#include <vector>
+
 class lmLDPNode;
-
 #include "wx/dynarray.h"
-WX_DEFINE_ARRAY(lmLDPNode*, ArrayNodePtrs);
-
+WX_DEFINE_ARRAY(lmLDPNode*, lmArrayNodePtrs);
 
 
 
@@ -39,26 +39,24 @@ class lmLDPNode
 public:
     lmLDPNode(wxString sData);
     ~lmLDPNode();
-    //void Copy(lmLDPNode* pNode);
-    void        DumpNode(wxString sIndent=_T(""));
-    wxString    ToString();
 
+	void DumpNode(wxString sIndent=_T(""));
+    wxString ToString();
 
-    bool        IsSimple() { return m_fIsSimple; }
-    wxString    GetName() { return m_sName; }
-    int            GetNumParms();
-    lmLDPNode*        GetParameter(long i);
-    void        AddParameter(wxString sData);
-    void        AddNode(lmLDPNode* pNode);
+    inline bool IsSimple() const { return m_fIsSimple; }
+    inline wxString GetName() const { return m_sName; }
+    int GetNumParms();
+
+    lmLDPNode* GetParameter(long i);
+    void AddParameter(wxString sData);
+    void AddNode(lmLDPNode* pNode);
+
 
 private:
-    //int AssignID();
-
-    wxString        m_sName;            // node name
-    bool            m_fIsSimple;        // the node is simple (just a string)
-    ArrayNodePtrs    m_cNodes;            // Parameters of this node
-    int                m_nID;
-
+    wxString        m_sName;            //node name
+    bool            m_fIsSimple;        //the node is simple (just a string)
+    //lmArrayNodePtrs	m_cNodes;			//Parameters of this node
+	std::vector<lmLDPNode*> m_cNodes;	//Parameters of this node
 };
 
-#endif    // __LMNODE_H
+#endif    // __LM_LDPNODE_H__

@@ -53,6 +53,9 @@ lmScoreObj::lmScoreObj(lmScoreObj* pParent)
     m_pObjOptions = (lmObjOptions*)NULL;
     m_pAuxObjs = (lmAuxObjsCol*)NULL;
 
+    // initializations: positioning related info
+    m_uPaperPos.y = 0;
+    m_uPaperPos.x = 0;
 }
 
 lmScoreObj::~lmScoreObj()
@@ -227,8 +230,6 @@ lmComponentObj::lmComponentObj(lmScoreObj* pParent, EScoreObjType nType, lmLocat
     m_pFont = (wxFont *)NULL;
 
     // initializations: positioning related info
-    m_uPaperPos.y = 0;
-    m_uPaperPos.x = 0;
     m_fFixedPos = false;
     m_nNumPage = 1;
 
@@ -251,7 +252,12 @@ wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
     {
         //value
         if (m_tPos.xType == lmLOCATION_USER_RELATIVE)
-            sPosX = wxString::Format(_T("dx:%.0f"), round(m_tPos.x));
+		{
+			if (m_tPos.xUnits == lmLUNITS)
+				sPosX = wxString::Format(_T("dx:%.0f"), round(LogicalToTenths(m_tPos.x)) );
+			else if (m_tPos.xUnits == lmTENTHS)
+				sPosX = wxString::Format(_T("dx:%.0f"), round(m_tPos.x) );
+		}
         else
 		{
 			//absolute. Convert to relative
@@ -284,7 +290,12 @@ wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
     {
         //value
         if (m_tPos.yType == lmLOCATION_USER_RELATIVE)
-            sPosY = wxString::Format(_T("dy:%.0f"), round(m_tPos.y));
+		{
+			if (m_tPos.xUnits == lmLUNITS)
+				sPosY = wxString::Format(_T("dy:%.0f"), round(LogicalToTenths(m_tPos.y)) );
+			else if (m_tPos.xUnits == lmTENTHS)
+				sPosY = wxString::Format(_T("dy:%.0f"), round(m_tPos.y) );
+		}
         else 
 		{
 			//absolute. Convert to relative
@@ -313,6 +324,98 @@ wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
 
     return sSource;
 }
+
+lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
+{ 
+	lmUPoint uPos;
+
+    if (m_tPos.xType == lmLOCATION_DEFAULT)
+	{
+		//default location. Ask derived object to compute the best position for itself
+		uPos.x = ComputeXLocation(pPaper);
+
+		//save the computed location
+		m_tPos.x = uPos.x;
+		m_tPos.xType = lmLOCATION_COMPUTED;
+		m_tPos.xUnits = lmLUNITS;
+    }
+
+	else if (m_tPos.xType == lmLOCATION_COMPUTED)
+	{
+		//the default position was computed in a previous invocation. Use it
+		//The computed location is always absolute, in tenths
+		uPos.x = m_tPos.x;
+    }
+
+	else if (m_tPos.xType == lmLOCATION_USER_ABSOLUTE)
+	{
+		//the position was fixed by user (either in source file or by dragging object)
+		//Use it
+		if (m_tPos.xUnits == lmLUNITS)
+			uPos.x = m_tPos.x;
+		else if (m_tPos.xUnits == lmTENTHS)
+			uPos.x = TenthsToLogical( m_tPos.x );
+	}
+
+	else if (m_tPos.xType == lmLOCATION_USER_RELATIVE)
+	{
+		//the position was fixed by user (either in source file or by dragging object)
+		//Use it
+		if (m_tPos.xUnits == lmLUNITS)
+			uPos.x = pPaper->GetCursorX() + m_tPos.x;
+		else if (m_tPos.xUnits == lmTENTHS)
+			uPos.x = pPaper->GetCursorX() + TenthsToLogical( m_tPos.x );
+	}
+	else
+		wxASSERT(false);
+
+
+    if (m_tPos.yType == lmLOCATION_DEFAULT)
+	{
+		//default location. Ask derived object to compute the best position for itself
+		uPos.y = ComputeYLocation(pPaper);
+
+		//save the computed location
+		m_tPos.y = uPos.y;
+		m_tPos.yType = lmLOCATION_COMPUTED;
+		m_tPos.yUnits = lmLUNITS;
+    }
+
+	else if (m_tPos.yType == lmLOCATION_COMPUTED)
+	{
+		//the position was computed in a previous invocation or was fixed by user.
+		//Use it
+		//The computed location is always absolute, in tenths
+		uPos.y = m_tPos.y;
+    }
+
+	else if (m_tPos.yType == lmLOCATION_USER_ABSOLUTE)
+	{
+		//the position was fixed by user (either in source file or by dragging object)
+		//Use it
+		if (m_tPos.yUnits == lmLUNITS)
+			uPos.y = m_tPos.y;
+		else if (m_tPos.yUnits == lmTENTHS)
+			uPos.y = TenthsToLogical( m_tPos.y );
+	}
+
+	else if (m_tPos.yType == lmLOCATION_USER_RELATIVE)
+	{
+		//the position was fixed by user (either in source file or by dragging object)
+		//Use it
+		if (m_tPos.yUnits == lmLUNITS)
+			uPos.y = pPaper->GetCursorY() + m_tPos.y;
+		else if (m_tPos.xUnits == lmTENTHS)
+			uPos.y = pPaper->GetCursorY() + TenthsToLogical( m_tPos.y );
+	}
+	else
+		wxASSERT(false);
+
+	return uPos;
+
+}
+
+
 
 //-------------------------------------------------------------------------------------------------
 // lmStaffObj implementation
@@ -351,20 +454,17 @@ lmUPoint lmStaffObj::GetReferencePos(lmPaper* pPaper)
 void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
 	lmUPoint uOrg = GetReferencePos(pPaper);
+	lmUPoint uPos = ComputeObjectLocation(pPaper);			// compute location
 
 	lmLUnits uWidth;
     if (m_fVisible) 
 	{
-		// set the font
-		SetFont(pPaper);
-
-		// ask derived object to layout itself
-		uWidth = LayoutObject(pBox, pPaper, colorC);
+		SetFont(pPaper);										// set the font
+		uWidth = LayoutObject(pBox, pPaper, uPos, colorC);		// layout derived object
 	}
 	else
 	{
 		//Create an invisible shape, to store the StaffObj position
-		
 		lmShapeInvisible* pShape = new lmShapeInvisible(this, uOrg);
 		pBox->AddShape(pShape);
 		m_pShape2 = pShape;
@@ -377,8 +477,8 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
 	    for (int i=0; i < (int)m_pAuxObjs->size(); i++)
 	    { 
 		    //restore this object paper pos.
-		    pPaper->SetCursorX(uOrg.x);
-		    pPaper->SetCursorY(uOrg.y);
+		    pPaper->SetCursorX(uPos.x);
+		    pPaper->SetCursorY(uPos.y);
 
 		    (*m_pAuxObjs)[i]->Layout(pBox, pPaper, colorC, fHighlight);
 	    }

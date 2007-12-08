@@ -49,11 +49,11 @@ lmAuxObj::lmAuxObj(bool fIsDraggable) :
 {
 }
 
-void lmAuxObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
+void lmAuxObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC,
+					  bool fHighlight)
 {
-    // ask derived object to layout itself
-    LayoutObject(pBox, pPaper, colorC);
-
+	lmUPoint uPos = ComputeObjectLocation(pPaper);
+    LayoutObject(pBox, pPaper, uPos, colorC);
 }
 
 lmUPoint lmAuxObj::GetReferencePos(lmPaper* pPaper)
@@ -87,47 +87,24 @@ lmFermata::lmFermata(lmEPlacement nPlacement)
     m_nPlacement = nPlacement;
 }
 
-void lmFermata::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
-                             lmLUnits xPos, lmLUnits yPos)
+lmLUnits lmFermata::ComputeXLocation(lmPaper* pPaper)
 {
-    ///*
-    //This method does the measurement phase
-    //*/
-
-    //m_uPaperPos = m_pOwner->GetOrigin();
-
-    //// prepare DC
-    //pPaper->SetFont( *(m_pOwner->GetFont()) );
-
-    //// prepare glyph and measure it
-    //bool fAboveNote = (m_nPlacement == ep_Above);
-    //wxString sGlyph = (fAboveNote ? CHAR_FERMATA_OVER : CHAR_FERMATA_UNDER );
-    //lmLUnits nWidth, nHeight;
-    //pPaper->GetTextExtent(sGlyph, &nWidth, &nHeight);
-
-    //// store glyph position
-    //m_uGlyphPos.x = xPos - nWidth/2;
-    //if (fAboveNote)
-    //    m_uGlyphPos.y = yPos - pVStaff->TenthsToLogical( 70, nStaffNum );
-    //else
-    //    m_uGlyphPos.y = yPos - pVStaff->TenthsToLogical( 5, nStaffNum );
-
-
-    //// store selection rectangle position and size
-    //m_uSelRect.width = nWidth;
-    //m_uSelRect.height = pVStaff->TenthsToLogical( 20, nStaffNum );
-    //m_uSelRect.x = m_uGlyphPos.x;
-    //m_uSelRect.y = m_uGlyphPos.y + pVStaff->TenthsToLogical( (fAboveNote ? 45 : 40), nStaffNum );
-
+	return pPaper->GetCursorX();
 }
 
-lmLUnits lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmFermata::ComputeYLocation(lmPaper* pPaper)
+{
+	if (m_nPlacement == ep_Above)
+		return pPaper->GetCursorY() - ((lmStaffObj*)m_pParent)->TenthsToLogical(70);
+	else
+		return pPaper->GetCursorY() - ((lmStaffObj*)m_pParent)->TenthsToLogical(5);
+}
+
+lmLUnits lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model. 
     // Paper cursor must be used as the base for positioning.
-
-	lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
 
     bool fAboveNote = true;
     if (m_nPlacement == ep_Default) {
@@ -144,20 +121,6 @@ lmLUnits lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     else
         fAboveNote = (m_nPlacement == ep_Above);
 
-	//TODO
-	////if no positioning information do our best!
-	if (true)
-	{
-		if (fAboveNote)
-		    uPos.y -= ((lmStaffObj*)m_pParent)->TenthsToLogical(70);
-		else
-		    uPos.y -= ((lmStaffObj*)m_pParent)->TenthsToLogical(5);
-	}
-	//else
-	//{
-	//	// just position fermata on specified pos.
-	//}
-
     //create the shape object
     int nGlyphIndex = (fAboveNote ? GLYPH_FERMATA_OVER : GLYPH_FERMATA_UNDER);
     lmShapeGlyph* pShape = 
@@ -169,25 +132,25 @@ lmLUnits lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
 	//if position isn't fixed, shift the shape to center it on the owner and
 	//avoid placing it over the note if surpasses the staff
 	//TODO
-	if (true)
-	{
-		lmShape* pPS = ((lmStaffObj*)m_pParent)->GetShap2();
-		lmLUnits uCenterPos;
-		if (((lmStaffObj*)m_pParent)->GetClass() == eSFOT_NoteRest &&
-			!((lmNoteRest*)m_pParent)->IsRest() )
-		{
-			//it is a note. Center fermata on notehead shape
-			lmShape* pNHS = ((lmShapeNote*)pPS)->GetNoteHead();
-			uCenterPos = pNHS->GetXLeft() + pNHS->GetWidth() / 2.0;
-		}
-		else
-		{
-			//it is not a note. Center fermata on StaffObj shape
-			uCenterPos = pPS->GetXLeft() + pPS->GetWidth() / 2.0;
-		}
-        lmLUnits uxShift = uCenterPos - (pShape->GetXLeft() + pShape->GetWidth() / 2.0);
-		pShape->Shift(uxShift, 0.0);
-	}
+	//if (true)
+	//{
+	//	lmShape* pPS = ((lmStaffObj*)m_pParent)->GetShap2();
+	//	lmLUnits uCenterPos;
+	//	if (((lmStaffObj*)m_pParent)->GetClass() == eSFOT_NoteRest &&
+	//		!((lmNoteRest*)m_pParent)->IsRest() )
+	//	{
+	//		//it is a note. Center fermata on notehead shape
+	//		lmShape* pNHS = ((lmShapeNote*)pPS)->GetNoteHead();
+	//		uCenterPos = pNHS->GetXLeft() + pNHS->GetWidth() / 2.0;
+	//	}
+	//	else
+	//	{
+	//		//it is not a note. Center fermata on StaffObj shape
+	//		uCenterPos = pPS->GetXLeft() + pPS->GetWidth() / 2.0;
+	//	}
+ //       lmLUnits uxShift = uCenterPos - (pShape->GetXLeft() + pShape->GetWidth() / 2.0);
+	//	pShape->Shift(uxShift, 0.0);
+	//}
 
 	return pShape->GetWidth();
 }
@@ -199,11 +162,16 @@ wxString lmFermata::SourceLDP(int nIndent)
     if (m_nPlacement == ep_Default)
         sSource += _T(")");
     else if (m_nPlacement == ep_Above)
-        sSource += _T(" above)");
+        sSource += _T(" above");
     else
-        sSource += _T(" below)");
+        sSource += _T(" below");
 
-    return sSource;
+	//location
+    sSource += SourceLDP_Location( ((lmStaffObj*)m_pParent)->GetOrigin() );
+
+	//close element
+	sSource += _T(")");
+	return sSource;
 }
 wxString lmFermata::SourceXML(int nIndent)
 {
@@ -251,7 +219,19 @@ void lmLyric::SetFont(lmPaper* pPaper)
     }
 }
 
-lmLUnits lmLyric::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmLyric::ComputeXLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorX();
+}
+
+lmLUnits lmLyric::ComputeYLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorY();
+}
+
+lmLUnits lmLyric::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     //wxASSERT(fMeasuring == DO_DRAW);    //measuring pahse is done in SetSizePosition()
 
@@ -271,49 +251,49 @@ void lmLyric::SetOwner(lmNoteRest* pOwner)
     //m_nStaffNum = pOwner->GetStaffNum();
 }
 
-void lmLyric::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
-                        lmLUnits xPos, lmLUnits yPos)
-{
-    ///*
-    //This method does the measurement phase
-    //*/
-
-    //// save paper position and prepare font
-    //m_uPaperPos = m_pOwner->GetOrigin();
-    //SetFont(pPaper);
-
-    //// prepare DC
-    //pPaper->SetFont(*m_pFont);
-
-    //// prepare the text and measure it
-    //lmLUnits nWidth, nHeight;
-    //pPaper->GetTextExtent(m_sText, &nWidth, &nHeight);
-    //m_uWidth = nWidth;
-
-    //// store glyph position (relative to paper pos).
-    ////// Remember: XML positioning values origin is the left-hand side of the note
-    ////// or the musical position within the bar (x) and the top line of the staff (y)
-    ////m_uGlyphPos.x = m_pVStaff->TenthsToLogical(m_xRel, m_nStaffNum);
-    ////// as relative-y refers to the top line of the staff, so 5 lines must be
-    ////// substracted from yBase position
-    ////m_uGlyphPos.y = m_pVStaff->TenthsToLogical(m_yRel-50, m_nStaffNum);
-    ////if (m_fOverrideDefaultX) {
-    ////    m_uGlyphPos.x += m_pVStaff->TenthsToLogical(m_xDef, m_nStaffNum) - m_uPaperPos.x;
-    ////}
-    ////if (m_fOverrideDefaultY) {
-    ////    m_uGlyphPos.y += m_pVStaff->TenthsToLogical(m_yDef, m_nStaffNum) - m_uPaperPos.y;
-    ////}
-    //m_uGlyphPos.x = xPos;
-    //m_uGlyphPos.y = yPos + pVStaff->TenthsToLogical( 40, nStaffNum ) * m_nNumLine;
-
-    // // store selection rectangle (relative to m_uPaperPos). Coincides with glyph rectangle
-    //m_uSelRect.width = nWidth;
-    //m_uSelRect.height = nHeight;
-    //m_uSelRect.x = m_uGlyphPos.x;
-    //m_uSelRect.y = m_uGlyphPos.y;
-
-}
-
+//void lmLyric::SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
+//                        lmLUnits xPos, lmLUnits yPos)
+//{
+//    ///*
+//    //This method does the measurement phase
+//    //*/
+//
+//    //// save paper position and prepare font
+//    //m_uPaperPos = m_pOwner->GetOrigin();
+//    //SetFont(pPaper);
+//
+//    //// prepare DC
+//    //pPaper->SetFont(*m_pFont);
+//
+//    //// prepare the text and measure it
+//    //lmLUnits nWidth, nHeight;
+//    //pPaper->GetTextExtent(m_sText, &nWidth, &nHeight);
+//    //m_uWidth = nWidth;
+//
+//    //// store glyph position (relative to paper pos).
+//    ////// Remember: XML positioning values origin is the left-hand side of the note
+//    ////// or the musical position within the bar (x) and the top line of the staff (y)
+//    ////m_uGlyphPos.x = m_pVStaff->TenthsToLogical(m_xRel, m_nStaffNum);
+//    ////// as relative-y refers to the top line of the staff, so 5 lines must be
+//    ////// substracted from yBase position
+//    ////m_uGlyphPos.y = m_pVStaff->TenthsToLogical(m_yRel-50, m_nStaffNum);
+//    ////if (m_fOverrideDefaultX) {
+//    ////    m_uGlyphPos.x += m_pVStaff->TenthsToLogical(m_xDef, m_nStaffNum) - m_uPaperPos.x;
+//    ////}
+//    ////if (m_fOverrideDefaultY) {
+//    ////    m_uGlyphPos.y += m_pVStaff->TenthsToLogical(m_yDef, m_nStaffNum) - m_uPaperPos.y;
+//    ////}
+//    //m_uGlyphPos.x = xPos;
+//    //m_uGlyphPos.y = yPos + pVStaff->TenthsToLogical( 40, nStaffNum ) * m_nNumLine;
+//
+//    // // store selection rectangle (relative to m_uPaperPos). Coincides with glyph rectangle
+//    //m_uSelRect.width = nWidth;
+//    //m_uSelRect.height = nHeight;
+//    //m_uSelRect.x = m_uGlyphPos.x;
+//    //m_uSelRect.y = m_uGlyphPos.y;
+//
+//}
+//
 wxString lmLyric::SourceLDP(int nIndent)
 {
 	//TODO
@@ -385,7 +365,19 @@ wxString lmScoreLine::Dump()
 
 }
 
-lmLUnits lmScoreLine::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmScoreLine::ComputeXLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorX();
+}
+
+lmLUnits lmScoreLine::ComputeYLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorY();
+}
+
+lmLUnits lmScoreLine::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     WXUNUSED(colorC);
 

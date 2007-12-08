@@ -371,7 +371,7 @@ lmLDPNode* lmLDPParser::LexicalAnalysis()
 
     // at this point m_pCurNode is all the tree. Verify it.
     if (m_pCurNode->GetName() != _T("Root Node")) {
-        AnalysisError( _("Element RAIZ expected but found element %s. Analysis stopped."),
+        AnalysisError( _T("Element RAIZ expected but found element %s. Analysis stopped."),
             m_pCurNode->GetName().c_str() );
         m_pCurNode->DumpNode();
         return (lmLDPNode*) NULL;
@@ -504,7 +504,7 @@ bool lmLDPParser::PopNode()
     i = m_stackStates.GetCount();
     if (i == 0) {
         //more closing parenthesis than parenthesis opened
-        AnalysisError(_("Syntax error: more closing parenthesis than parenthesis opened. Analysis stopped."));
+        AnalysisError(_T("Syntax error: more closing parenthesis than parenthesis opened. Analysis stopped."));
         return true;    //error
     }
     i--;    // the array is 0 based
@@ -529,7 +529,7 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
     int i;
 
     if (!(pNode->GetName() == _T("score") || pNode->GetName() == _T("Score")) ) {
-        AnalysisError( _("Element 'score' expected but found element %s. Analysis stopped."),
+        AnalysisError( _T("Element 'score' expected but found element %s. Analysis stopped."),
             pNode->GetName().c_str() );
         return pScore;
     }
@@ -543,7 +543,7 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
     iP = 1;
     pX = pNode->GetParameter(iP);     //version
     if (!(pX->GetName() == _T("Vers") || pX->GetName() == _T("vers"))) {
-        AnalysisError( _("Element 'vers' expected but found element %s. Analysis stopped."),
+        AnalysisError( _T("Element 'vers' expected but found element %s. Analysis stopped."),
             pX->GetName().c_str() );
         return pScore;
     } else {
@@ -570,7 +570,7 @@ lmScore* lmLDPParser::AnalyzeScore(lmLDPNode* pNode)
             pScore = AnalyzeScoreV105(pNode);
             break;
         default:
-            AnalysisError( _("Error analysing LDP score: LDP version (%d) not supported. Analysis stopped."),
+            AnalysisError( _T("Error analysing LDP score: LDP version (%d) not supported. Analysis stopped."),
                 m_nVersion );
             return pScore;
     }
@@ -604,7 +604,7 @@ lmScore* lmLDPParser::AnalyzeScoreV102(lmLDPNode* pNode)
     long nInstruments = 0;
     pX = pNode->GetParameter(iP);
     if (pX->GetName() != _T("NumInstrumentos")) {
-        AnalysisError( _("Element 'NumInstrumentos' expected but found element %s. Analysis stopped."),
+        AnalysisError( _T("Element 'NumInstrumentos' expected but found element %s. Analysis stopped."),
             pX->GetName().c_str() );
         return pScore;
     } else {
@@ -703,7 +703,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
     iP = 1;
 
     if (pNode->GetName() != m_pTags->TagName(_T("instrument")) ) {
-        AnalysisError( _("Element '%s' expected but found element %s. Analysis stopped."),
+        AnalysisError( _T("Element '%s' expected but found element %s. Analysis stopped."),
             m_pTags->TagName(_T("instrument")).c_str(), pNode->GetName().c_str() );
         return;
     }
@@ -761,18 +761,18 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             if (pX->IsSimple()) {
                 sNumStaves = pX->GetName();
                 if (!sNumStaves.IsNumber()) {
-                    AnalysisError( _("Number of staves expected but found '%s'. Element '%s' ignored."),
+                    AnalysisError( _T("Number of staves expected but found '%s'. Element '%s' ignored."),
                         sNumStaves.c_str(), m_pTags->TagName(_T("staves")).c_str() );
                     sNumStaves = _T("1");
                 }
             }
             else {
-                AnalysisError( _("Expected value for %s but found element '%s'. Ignored."),
+                AnalysisError( _T("Expected value for %s but found element '%s'. Ignored."),
                     m_pTags->TagName(_T("staves")).c_str(), pX->GetName().c_str() );
            }
         }
         else {
-            AnalysisError( _("[%s]: unknown element '%s' found. Element ignored."),
+            AnalysisError( _T("[%s]: unknown element '%s' found. Element ignored."),
                 m_pTags->TagName(_T("instrument")).c_str(), pX->GetName().c_str() );
         }
     }
@@ -782,7 +782,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
 
     //process firts voice
     if (!fMusicFound) {
-        AnalysisError( _("Expected '%s' but found element %s. Analysis stopped."),
+        AnalysisError( _T("Expected '%s' but found element %s. Analysis stopped."),
             m_pTags->TagName(_T("musicData")).c_str(), pX->GetName().c_str() );
         return;
     }
@@ -811,7 +811,7 @@ void lmLDPParser::AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nI
             AnalyzeMusicData(pX, pVStaff);
         }
         else {
-            AnalysisError( _("Expected '%s' but found element %s. Element ignored."),
+            AnalysisError( _T("Expected '%s' but found element %s. Element ignored."),
                 m_pTags->TagName(_T("musicData")).c_str(), pX->GetName().c_str() );
         }
     }
@@ -901,7 +901,7 @@ void lmLDPParser::AnalyzeMusicData(lmLDPNode* pNode, lmVStaff* pVStaff)
         }
         //error or non-supported elements
         else {
-            AnalysisError( _("[AnalyzeMusicData]: Unknown or not allowed element '%s' found. Element ignored."),
+            AnalysisError( _T("[AnalyzeMusicData]: Unknown or not allowed element '%s' found. Element ignored."),
                 sName.c_str() );
         }
     }
@@ -932,7 +932,7 @@ void lmLDPParser::AnalyzeChord(lmLDPNode* pNode, lmVStaff* pVStaff)
             AnalyzeNote(pX, pVStaff, (iP != 1));     //first note is base of chord
         }
         else {
-            AnalysisError( _("[AnalyzeChord]: Expecting notes found element '%s'. Element ignored."),
+            AnalysisError( _T("[AnalyzeChord]: Expecting notes found element '%s'. Element ignored."),
                 sName.c_str() );
         }
     }
@@ -961,7 +961,7 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
     iP = 1;
 
     if (pNode->GetName() != _T("Instrumento") ) {
-        AnalysisError( _("Element '%s' expected but found element %s. Analysis stopped."),
+        AnalysisError( _T("Element '%s' expected but found element %s. Analysis stopped."),
             _T("Instrumento"), pNode->GetName().c_str() );
         return;
     }
@@ -981,7 +981,7 @@ void lmLDPParser::AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInst
     long nVStaves=0;
     pX = pNode->GetParameter(iP);
     if (pX->GetName() != sLabelNumVStaves) {
-        AnalysisError( _("Element %s expected but found element %s. Analysis stopped."),
+        AnalysisError( _T("Element %s expected but found element %s. Analysis stopped."),
             sLabelNumVStaves.c_str(), pX->GetName().c_str() );
         return;
     } else {
@@ -1033,7 +1033,7 @@ void lmLDPParser::AnalyzeVStaff(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 
     if (pNode->GetName() != sLabel) {
-        AnalysisError( _("Expected node '%s' but found node '%s'. Analysis ended."),
+        AnalysisError( _T("Expected node '%s' but found node '%s'. Analysis ended."),
             sLabel.c_str(), pNode->GetName().c_str() );
         return;
     }
@@ -1052,7 +1052,7 @@ void lmLDPParser::AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff)
     //analyze first parameter: num of this lmVStaff
     wxString sData1 = (pNode->GetParameter(iP))->GetName();
     if (! sData1.IsNumber()) {
-        AnalysisError( _("Expected 'numero de parte' but found '%s'. Analysis stopped."),
+        AnalysisError( _T("Expected 'numero de parte' but found '%s'. Analysis stopped."),
             pNode->GetName().c_str() );
         return;
     }
@@ -1064,7 +1064,7 @@ void lmLDPParser::AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff)
     if (pX->IsSimple()) {
         sNumStaves = pX->GetName();
         if (!sNumStaves.IsNumber()) {
-            AnalysisError( _("Number of staves expected but found '%s'. Analysis stopped."),
+            AnalysisError( _T("Number of staves expected but found '%s'. Analysis stopped."),
                 pX->GetName().c_str() );
             return;
         } else {
@@ -1145,7 +1145,7 @@ void lmLDPParser::AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff)
             //case "TEXTO"
             //    AnalizarDirectivaTexto pVStaff, pX
         } else {
-            AnalysisError( _("[AnalyzeMeasure]: Expected node 'Figura', 'Grupo', 'Atributo' or 'Desplazamiento' but found node '%s'. Node ignored."),
+            AnalysisError( _T("[AnalyzeMeasure]: Expected node 'Figura', 'Grupo', 'Atributo' or 'Desplazamiento' but found node '%s'. Node ignored."),
                 sName.c_str() );
         }
     }
@@ -1178,7 +1178,7 @@ void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //check that there are parameters
     if(pNode->GetNumParms() < 1) {
-        AnalysisError( _("Element '%s' has less parameters than the minimum required. Element ignored."),
+        AnalysisError( _T("Element '%s' has less parameters than the minimum required. Element ignored."),
             sElmName.c_str());
         return;
     }
@@ -1190,7 +1190,7 @@ void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
         if (!fForward)
             rShift = 1000000.0;
         else {
-            AnalysisError( _("Element '%s' has an incoherent value: go forward to start?. Element ignored"),
+            AnalysisError( _T("Element '%s' has an incoherent value: go forward to start?. Element ignored"),
                 sElmName.c_str());
             return;
         }
@@ -1199,7 +1199,7 @@ void lmLDPParser::AnalyzeTimeShift(lmLDPNode* pNode, lmVStaff* pVStaff)
         if (fForward)
             rShift = 1000000.0;
         else {
-            AnalysisError( _("Element '%s' has an incoherent value: go backwards to end?. Element ignored"),
+            AnalysisError( _T("Element '%s' has an incoherent value: go backwards to end?. Element ignored"),
                 sElmName.c_str());
             return;
         }
@@ -1259,7 +1259,7 @@ bool lmLDPParser::AnalyzeTimeExpression(const wxString& sData, float* pValue)
             bool fDotted, fDoubleDotted;
             lmENoteType nNoteType;
             if (AnalyzeNoteType(sChar, &nNoteType, &fDotted, &fDoubleDotted)) {
-                AnalysisError(_("Time shift: Letter %s is not a valid note duration. Replaced by a quarter note"), sChar.c_str());
+                AnalysisError(_T("Time shift: Letter %s is not a valid note duration. Replaced by a quarter note"), sChar.c_str());
                 rValue = (float)eQuarter;
             }
             else {
@@ -1406,7 +1406,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         //full notation. Get parameters
         if (fIsRest) {
             if (nParms < 1) {
-                AnalysisError( _("Missing parameters in rest '%s'. Replaced by '(%s %s)'."),
+                AnalysisError( _T("Missing parameters in rest '%s'. Replaced by '(%s %s)'."),
                     pNode->ToString().c_str(), sElmName.c_str(), m_pTags->TagName(_T("n"), _T("NoteType")).c_str() );
                 return pVStaff->AddRest(nNoteType, rDuration, fDotted, fDoubleDotted,
                                         m_nCurStaff, fVisible);
@@ -1414,7 +1414,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         }
         else {
             if (nParms < 2) {
-                AnalysisError( _("Missing parameters in note '%s'. Assumed (%s c4 %s)."),
+                AnalysisError( _T("Missing parameters in note '%s'. Assumed (%s c4 %s)."),
                     pNode->ToString().c_str(), sElmName.c_str(), m_pTags->TagName(_T("n"), _T("NoteType")).c_str() );
                 return pVStaff->AddNote(lm_ePitchRelative,
                                         _T("c"), _T("4"), _T("0"), nAccidentals,
@@ -1452,7 +1452,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         }
         else {
             if (LDPDataToPitch(sPitch, &nAccidentals, &sStep, &sOctave)) {
-                AnalysisError( _("Unknown note pitch '%s'. Assumed 'c4'."),
+                AnalysisError( _T("Unknown note pitch '%s'. Assumed 'c4'."),
                     sPitch.c_str() );
             }
         }
@@ -1460,7 +1460,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
 
     //analyze duration and dots
     if (AnalyzeNoteType(sDuration, &nNoteType, &fDotted, &fDoubleDotted)) {
-        AnalysisError( _("Unknown note/rest duration '%s'. A quarter note assumed."),
+        AnalysisError( _T("Unknown note/rest duration '%s'. A quarter note assumed."),
             sDuration.c_str() );
     }
     m_sLastDuration = sDuration;
@@ -1468,9 +1468,8 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
     //analyze remaining parameters: annotations
     bool fFermata = false;
     lmEPlacement nFermataPlacement = ep_Default;
-//    Dim nTipoStem As lmEStemType
-//    nTipoStem = lmSTEM_DEFAULT
-//
+	lmLocation tFermataPos = g_tDefaultPos;
+
     wxString sData;
     lmLDPNode* pX;
     int iLevel, nLevel;
@@ -1592,7 +1591,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                 }
 
                 else {
-                    AnalysisError(_("Error: notation '%s' unknown. It will be ignored."), sData.c_str() );
+                    AnalysisError(_T("Error: notation '%s' unknown. It will be ignored."), sData.c_str() );
                 }
 
             }
@@ -1625,25 +1624,25 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                 fVisible = false;
             }
             else {
-                AnalysisError(_("Error: notation '%s' unknown. It will be ignored."), sData.c_str() );
+                AnalysisError(_T("Error: notation '%s' unknown. It will be ignored."), sData.c_str() );
             }
 
        }
 
-        else {
+       else {
             //
             // Analysis of compound notations
             //
             sData = pX->GetName();
             if (sData == m_pTags->TagName(_T("g"), _T("SingleChar")) ) {       //Start of group element
-                AnalysisError(_("Notation '%s' unknown or not implemented. Old (g + t3) syntax?"), sData.c_str());
+                AnalysisError(_T("Notation '%s' unknown or not implemented. Old (g + t3) syntax?"), sData.c_str());
             }
             else if (sData == m_pTags->TagName(_T("stem")) ) {       //stem attributes
                 nStem = AnalyzeStem(pX, pVStaff);
             }
             else if (sData == m_pTags->TagName(_T("fermata")) ) {   //fermata attributes
                 fFermata = true;
-                nFermataPlacement = AnalyzeFermata(pX);
+                nFermataPlacement = AnalyzeFermata(pX, pVStaff, &tFermataPos);
             }
             else if (sData == m_pTags->TagName(_T("t"), _T("SingleChar"))) {       //start/end of tuplet. Simple parameter (tn / t-)
                 lmTupletBracket* pTuplet;
@@ -1660,7 +1659,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                 }
             }
             else {
-                AnalysisError(_("Notation '%s' unknown or not implemented."), sData.c_str());
+                AnalysisError(_T("Notation '%s' unknown or not implemented."), sData.c_str());
             }
 
         }
@@ -1755,7 +1754,10 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
         }
     }
 
-    if (fFermata) pNR->AddFermata(nFermataPlacement);
+	if (fFermata) {
+		lmFermata* pFermata = pNR->AddFermata(nFermataPlacement);
+		pFermata->SetUserLocation(tFermataPos);
+	}
 
     return pNR;
 
@@ -1800,14 +1802,14 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
             int nSlash = sNumTuplet.Find(_T("/"));
             if (nSlash == 0) {
                 //error: invalid element 't/num'
-                AnalysisError(_("[%s] Found unknown tag '%s'. Ignored."),
+                AnalysisError(_T("[%s] Found unknown tag '%s'. Ignored."),
                     sParent.c_str(), sData.c_str());
                 return true;
             }
             else if (nSlash == -1) {
                 //abbreviated tuplet: 'tn'
                 if (!sNumTuplet.IsNumber()) {
-                    AnalysisError(_("[%s] Found unknown tag '%s'. Ignored."),
+                    AnalysisError(_T("[%s] Found unknown tag '%s'. Ignored."),
                         sParent.c_str(), sData.c_str());
                     return true;
                 }
@@ -1825,7 +1827,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
                     else if (nActualNum == 5)
                         nNormalNum = 6;
                     else {
-                        AnalysisError(_("[%s] Found tag '%s' but no default value exists for NormalNotes. Ignored."),
+                        AnalysisError(_T("[%s] Found tag '%s' but no default value exists for NormalNotes. Ignored."),
                             sParent.c_str(), sData.c_str());
                         return true;
                     }
@@ -1837,7 +1839,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
                 wxString sNormalNum = sNumTuplet.substr(nSlash+1);
 
                 if (!sActualNum.IsNumber() || !sNormalNum.IsNumber() ) {
-                    AnalysisError(_("[%s] Found unknown tag '%s'. Ignored."),
+                    AnalysisError(_T("[%s] Found unknown tag '%s'. Ignored."),
                         sParent.c_str(), sData.c_str());
                     return true;
                 }
@@ -1848,7 +1850,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
                     sNormalNum.ToLong(&nNum);
                     nNormalNum = (int)nNum;
                     if (nNormalNum < 1 || nActualNum < 1) {
-                        AnalysisError(_("[%s] Tag '%s'. Numbers must be greater than 0. Tag ignored."),
+                        AnalysisError(_T("[%s] Tag '%s'. Numbers must be greater than 0. Tag ignored."),
                             sParent.c_str(), sData.c_str());
                         return true;
                     }
@@ -1885,7 +1887,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
         // get actual notes number
         wxString sNumTuplet = (pNode->GetParameter(2))->GetName();
         if (!sNumTuplet.IsNumber()) {
-            AnalysisError(_("Element '%s': Expected number but found '%s'. Tuplet ignored."),
+            AnalysisError(_T("Element '%s': Expected number but found '%s'. Tuplet ignored."),
                 sElmName.c_str(), sData.c_str());
             return true;
         }
@@ -1912,7 +1914,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
         for(; iP <= pNode->GetNumParms(); iP++) {
             sData = (pNode->GetParameter(iP))->GetName();
             if (fEndTuplet) {
-                AnalysisError(_("Element '%s': Found unknown data '%s'. Data ignored."),
+                AnalysisError(_T("Element '%s': Found unknown data '%s'. Data ignored."),
                     sElmName.c_str(), sData.c_str());
             }
             else {
@@ -1922,7 +1924,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
                     sData.ToLong(&nNum);
                     nNormalNum = (int)nNum;
                     if (nNormalNum < 1) {
-                        AnalysisError(_("Element '%s': Number for 'normal notes' must be greater than 0. Number ignored."),
+                        AnalysisError(_T("Element '%s': Number for 'normal notes' must be greater than 0. Number ignored."),
                             sElmName.c_str(), sData.c_str());
                         return true;
                     }
@@ -1948,7 +1950,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
                     fShowNumber = true;
                 }
                 else {
-                    AnalysisError(_("Element '%s': Found unknown data '%s'. Data ignored."),
+                    AnalysisError(_T("Element '%s': Found unknown data '%s'. Data ignored."),
                         sElmName.c_str(), sData.c_str());
                 }
            }
@@ -1960,7 +1962,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
     if (fEndTuplet) {
         if (!fCloseAllowed) {
             // there isn't an open tuplet
-            AnalysisError(_("[%s] Requesting to end a tuplet but there is not an open tuplet or it is not possible to close it here. Tag '%s' ignored."),
+            AnalysisError(_T("[%s] Requesting to end a tuplet but there is not an open tuplet or it is not possible to close it here. Tag '%s' ignored."),
                 sParent.c_str(), sData.c_str());
             return true;
         }
@@ -1969,7 +1971,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
     else {
         if (!fOpenAllowed) {
             //there is already a tuplet open and not closed
-            AnalysisError(_("[%s] Requesting to start a tuplet but there is already a tuplet open. Tag '%s' ignored."),
+            AnalysisError(_T("[%s] Requesting to start a tuplet but there is already a tuplet open. Tag '%s' ignored."),
                 sParent.c_str(), sData.c_str());
             return true;
         }
@@ -2068,7 +2070,7 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
     } else if (sType == m_pTags->TagName(_T("doubleRepetition"), _T("Barlines")) ) {
         nType = etb_DoubleRepetitionBarline;
     } else {
-        AnalysisError( _("Unknown barline type '%s'. '%s' barline assumed."),
+        AnalysisError( _T("Unknown barline type '%s'. '%s' barline assumed."),
             sType.c_str(), m_pTags->TagName(_T("simple"), _T("Barlines")).c_str() );
     }
 
@@ -2106,7 +2108,7 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
                 }
             }
             else {
-                AnalysisError( _("Unknown parameter '%s'. Ignored."), sName.c_str());
+                AnalysisError( _T("Unknown parameter '%s'. Ignored."), sName.c_str());
             }
         }
     }
@@ -2198,7 +2200,7 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
     //    nClef = lmE_Sol1;
     //}
     else {
-        AnalysisError( _("Unknown clef '%s'. Assumed '%s'."),
+        AnalysisError( _T("Unknown clef '%s'. Assumed '%s'."),
             sName.c_str(), m_pTags->TagName(_T("G")).c_str() );
         nClef = lmE_Sol;
     }
@@ -2263,7 +2265,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
     else {
         //string value. Assume it is mark type (note duration and dots)
         if (AnalyzeNoteType(sData, &nLeftNoteType, &fDotted, &fDoubleDotted)) {
-            AnalysisError( _("Unknown note/rest duration '%s'. A quarter note assumed."),
+            AnalysisError( _T("Unknown note/rest duration '%s'. A quarter note assumed."),
                 sData.c_str() );
         }
         if (fDotted) nLeftDots++;
@@ -2286,7 +2288,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
             //string value. Assume it is mark type (note duration and dots)
             nMarkType = eMMT_Note_Note;
             if (AnalyzeNoteType(sData, &nRightNoteType, &fDotted, &fDoubleDotted)) {
-                AnalysisError( _("Unknown note/rest duration '%s'. A quarter note assumed."),
+                AnalysisError( _T("Unknown note/rest duration '%s'. A quarter note assumed."),
                     sData.c_str() );
             }
             if (fDotted) nRightDots++;
@@ -2305,7 +2307,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
         else if (pX->GetName() == m_pTags->TagName(_T("parentheses")) )
             fParentheses = true;
         else {
-            AnalysisError( _("Unknown parameter '%s'. Ignored."), pX->GetName().c_str());
+            AnalysisError( _T("Unknown parameter '%s'. Ignored."), pX->GetName().c_str());
         }
     }
 
@@ -2347,7 +2349,7 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
 
     //check that there are 2 parameters (name and value)
     if(pNode->GetNumParms() != 2) {
-        AnalysisError( _("Element '%s' needs exactly %d parameters. Tag ignored."),
+        AnalysisError( _T("Element '%s' needs exactly %d parameters. Tag ignored."),
             m_pTags->TagName(_T("opt")).c_str(), 2);
         return;
     }
@@ -2374,7 +2376,7 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
         nDataType = lmNumberLong;
     else
     {
-        AnalysisError( _("Option '%s' unknown. Ignored."), sName.c_str());
+        AnalysisError( _T("Option '%s' unknown. Ignored."), sName.c_str());
         return;
     }
 
@@ -2397,7 +2399,7 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
             }
             else {
                 wxString sError = _("a 'yes/no' or 'true/false' value");
-                AnalysisError( _("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
+                AnalysisError( _T("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
                     sName.c_str(), sError.c_str(), sValue.c_str());
             }
             return;
@@ -2409,7 +2411,7 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
             }
             else {
                 sError = _("an integer number");
-                AnalysisError( _("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
+                AnalysisError( _T("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
                     sName.c_str(), sError.c_str(), sValue.c_str());
             }
             return;
@@ -2445,7 +2447,7 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
                 return;
             }
             sError = _("a real number");
-            AnalysisError( _("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
+            AnalysisError( _T("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
                 sName.c_str(), sError.c_str(), sValue.c_str());
 			return;
 
@@ -2457,7 +2459,7 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
                 else if (sValue == _T("propConstantFixed"))
                     pObject->SetOption(sName, (long)esm_PropConstantFixed);
                 else
-                    AnalysisError( _("Error in data value for option '%s'.  Value '%s' ignored."),
+                    AnalysisError( _T("Error in data value for option '%s'.  Value '%s' ignored."),
                         sName.c_str(), sValue.c_str());
             }
             else
@@ -2502,7 +2504,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     else if (sName == m_pTags->TagName(_T("center")) )
         nAlign = lmALIGN_CENTER;
     else {
-        AnalysisError( _("Invalid alignment value '%s'. Assumed '%s'."),
+        AnalysisError( _T("Invalid alignment value '%s'. Assumed '%s'."),
             sName.c_str(), m_pTags->TagName(_T("center")).c_str() );
         nAlign = lmALIGN_CENTER;
     }
@@ -2533,7 +2535,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
             AnalyzeLocation(pX, &tPos);
         }
         else {
-            AnalysisError( _("Unknown parameter '%s'. Ignored."), sName.c_str());
+            AnalysisError( _T("Unknown parameter '%s'. Ignored."), sName.c_str());
         }
     }
 
@@ -2606,7 +2608,7 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText,
             fHasWidth = true;
         }
         else {
-            AnalysisError( _("[Element '%s'. Invalid parameter '%s'. Ignored."),
+            AnalysisError( _T("[Element '%s'. Invalid parameter '%s'. Ignored."),
                 pNode->GetName().c_str(), sName.c_str() );
         }
     }
@@ -2686,7 +2688,7 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
     wxString sKey = m_pTags->GetInternalTag(sName, _T("Keys"));
     if (sKey == _T("")) {
         //not found.
-        AnalysisError( _("Unknown key '%s'. Assumed '%s'."),
+        AnalysisError( _T("Unknown key '%s'. Assumed '%s'."),
             sName.c_str(), m_pTags->TagName(_T("Do"), _T("Keys")).c_str() );
         nKey = earmDo;
     }
@@ -2720,7 +2722,7 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
 
     //check that the two numbers are specified
     if(pNode->GetNumParms() < 2) {
-        AnalysisError( _("Element '%s' has less parameters than the minimum required. Assumed '(Metrica 4 4)'."),
+        AnalysisError( _T("Element '%s' has less parameters than the minimum required. Assumed '(Metrica 4 4)'."),
             m_pTags->TagName(_T("time")).c_str() );
         pVStaff->AddTimeSignature(emtr44);
         return false;
@@ -2760,7 +2762,7 @@ void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //check that the width is specified
     if(pNode->GetNumParms() < 1) {
-        AnalysisError( _("Element '%s' has less parameters than the minimum required. Ignored."),
+        AnalysisError( _T("Element '%s' has less parameters than the minimum required. Ignored."),
             sElmName.c_str());
         return;
     }
@@ -2788,7 +2790,7 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //check that type is specified
     if(nNumParms < 2) {
-        AnalysisError( _("Element '%s' has less parameters than the minimum required. Element ignored."),
+        AnalysisError( _T("Element '%s' has less parameters than the minimum required. Element ignored."),
             sElmName.c_str());
         return;
     }
@@ -2806,7 +2808,7 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
 
         // get parameters
         if(nNumParms < 5) {
-            AnalysisError( _("Element '%s' has less parameters than the minimum required. Element ignored."),
+            AnalysisError( _T("Element '%s' has less parameters than the minimum required. Element ignored."),
                 sElmName.c_str());
             return;
         }
@@ -2879,7 +2881,7 @@ lmEStemType lmLDPParser::AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff)
 
     //check that there are parameters
     if(pNode->GetNumParms() < 1) {
-        AnalysisError( _("Element '%s' has less parameters than the minimum required. Tag ignored. Assumed default stem."),
+        AnalysisError( _T("Element '%s' has less parameters than the minimum required. Tag ignored. Assumed default stem."),
             m_pTags->TagName(_T("stem")).c_str());
         return nStem;
     }
@@ -2891,14 +2893,14 @@ lmEStemType lmLDPParser::AnalyzeStem(lmLDPNode* pNode, lmVStaff* pVStaff)
     else if (sDir == m_pTags->TagName(_T("down")) )
         nStem = lmSTEM_DOWN;
     else {
-        AnalysisError( _("Invalid stem direction '%s'. Default direction taken."), sDir.c_str());
+        AnalysisError( _T("Invalid stem direction '%s'. Default direction taken."), sDir.c_str());
     }
 
     return nStem;
 
 }
 
-lmEPlacement lmLDPParser::AnalyzeFermata(lmLDPNode* pNode)
+lmEPlacement lmLDPParser::AnalyzeFermata(lmLDPNode* pNode, lmVStaff* pVStaff, lmLocation* pPos)
 {
     //<Fermata> ::= (fermata [above | below]}
 
@@ -2908,7 +2910,7 @@ lmEPlacement lmLDPParser::AnalyzeFermata(lmLDPNode* pNode)
 
     //check that there are parameters
     if(pNode->GetNumParms() < 1) {
-        AnalysisError( _("Element '%s' has less parameters than the minimum required. Tag ignored. Assumed default stem."),
+        AnalysisError( _T("Element '%s' has less parameters than the minimum required. Tag ignored. Assumed default stem."),
             m_pTags->TagName(_T("fermata")).c_str() );
         return nPlacement;
     }
@@ -2920,14 +2922,13 @@ lmEPlacement lmLDPParser::AnalyzeFermata(lmLDPNode* pNode)
     else if (sDir == m_pTags->TagName(_T("below")) )
         nPlacement = ep_Below;
     else {
-        AnalysisError( _("Invalid fermata placement '%s'. Default placement assumed."), sDir.c_str());
+        AnalysisError( _T("Invalid fermata placement '%s'. Default placement assumed."), sDir.c_str());
     }
 
- //   //analyze optional parameters
-	//lmLDPOptionalTags oOptTags(this, m_pTags);
-	//oOptTags.SetValid(lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
-	//lmLocation tPos = g_tDefaultPos;
-	//oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, &nStaff, &tPos);
+    //analyze optional parameters
+	lmLDPOptionalTags oOptTags(this, m_pTags);
+	oOptTags.SetValid(lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
+	oOptTags.AnalyzeCommonOptions(pNode, 2, pVStaff, NULL, NULL, pPos);
 
     return nPlacement;
 
@@ -2945,7 +2946,7 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
 
     //check that there are parameters
     if (!(pNode->GetNumParms() > 0)) {
-        AnalysisError( _("Element '%s' has less parameters than the minimum required. Tag ignored."),
+        AnalysisError( _T("Element '%s' has less parameters than the minimum required. Tag ignored."),
             pNode->GetName().c_str() );
     }
 
@@ -3005,7 +3006,7 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
         }
 
         if (!fProcessed) {
-            AnalysisError( _("Element '%s': invalid parameter '%s'. It is ignored."),
+            AnalysisError( _T("Element '%s': invalid parameter '%s'. It is ignored."),
                 m_pTags->TagName(_T("font")).c_str(), sParm.c_str() );
         }
     }
@@ -3024,7 +3025,7 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, int* pValue, lmEUnits* pUnit
 
     //check that there are parameters
     if (pNode->GetNumParms()!= 1) {
-        AnalysisError( _("Element '%s' has less or more parameters than required. Tag ignored."),
+        AnalysisError( _T("Element '%s' has less or more parameters than required. Tag ignored."),
             pNode->GetName().c_str() );
         return;
     }
@@ -3046,7 +3047,7 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, int* pValue, lmEUnits* pUnit
             *pUnits = lmINCHES;
         }
         else {
-            AnalysisError( _("Element '%s': Invalid units '%s'. Ignored"),
+            AnalysisError( _T("Element '%s': Invalid units '%s'. Ignored"),
                 pNode->GetName().c_str(), sUnits.c_str() );
             return;
         }
@@ -3056,7 +3057,7 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, int* pValue, lmEUnits* pUnit
         *pValue = (int)nValue;
     }
     else {
-        AnalysisError( _("Element '%s': Invalid value '%s'. It must be a number with optional units. Zero assumed."),
+        AnalysisError( _T("Element '%s': Invalid value '%s'. It must be a number with optional units. Zero assumed."),
             pNode->GetName().c_str(), sParm.c_str() );
         *pValue = 0;
     }
@@ -3259,14 +3260,14 @@ int lmLDPParser::AnalyzeNumStaff(const wxString& sNotation, long nNumStaves)
     //analyzes a notation Pxx.  xx must be lower or equal than nNumStaves
 
     if (sNotation.Left(1) != m_pTags->TagName(_T("p"), _T("SingleChar")) ) {
-        AnalysisError( _("Staff number expected but found '%s'. Replaced by '%s1'"),
+        AnalysisError( _T("Staff number expected but found '%s'. Replaced by '%s1'"),
             sNotation.c_str(), m_pTags->TagName(_T("p"), _T("SingleChar")).c_str() );
         return 1;
     }
 
     wxString sData = sNotation.substr(1);         //remove char 'p'
     if (!sData.IsNumber()) {
-        AnalysisError( _("Staff number not followed by number (%s). Replaced by '%s1'"),
+        AnalysisError( _T("Staff number not followed by number (%s). Replaced by '%s1'"),
             sNotation.c_str(), m_pTags->TagName(_T("p"), _T("SingleChar")).c_str() );
         return 1;
     }
@@ -3274,7 +3275,7 @@ int lmLDPParser::AnalyzeNumStaff(const wxString& sNotation, long nNumStaves)
     long nValue;
     sData.ToLong(&nValue);
     if (nValue > nNumStaves) {
-        AnalysisError( _("Notation '%s': number is greater than number of staves defined (%d). Replaced by '%s1'."),
+        AnalysisError( _T("Notation '%s': number is greater than number of staves defined (%d). Replaced by '%s1'."),
             sNotation.c_str(), nNumStaves, m_pTags->TagName(_T("p"), _T("SingleChar")).c_str() );
         return 1;
     }
@@ -3536,7 +3537,6 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
 				_T("[AnalyzeCommonOptions]: Unknown element '%s' found. Element ignored."),
                 sName.c_str() );
         }
-		iP++;
     }
 
 }

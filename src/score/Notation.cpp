@@ -51,7 +51,19 @@ lmSpacer::lmSpacer(lmVStaff* pStaff, lmTenths nWidth, int nStaff)
     m_nSpacerWidth = nWidth;
 }
 
-lmLUnits lmSpacer::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmSpacer::ComputeXLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorX();
+}
+
+lmLUnits lmSpacer::ComputeYLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorY();
+}
+
+lmLUnits lmSpacer::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // set total width
     return m_pVStaff->TenthsToLogical(m_nSpacerWidth, m_nStaffNum);
@@ -102,7 +114,19 @@ lmAnchor::lmAnchor(lmVStaff* pStaff, int nStaff)
 {
 }
 
-lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmAnchor::ComputeXLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorX();
+}
+
+lmLUnits lmAnchor::ComputeYLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorY();
+}
+
+lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // set total width
     return 0;
@@ -143,7 +167,19 @@ lmScoreAnchor::lmScoreAnchor(lmVStaff* pStaff, int nStaff)
 {
 }
 
-lmLUnits lmScoreAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmScoreAnchor::ComputeXLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorX();
+}
+
+lmLUnits lmScoreAnchor::ComputeYLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorY();
+}
+
+lmLUnits lmScoreAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     //force paper pos. to page origin
     pPaper->RestartPageCursors();

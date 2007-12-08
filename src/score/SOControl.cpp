@@ -118,3 +118,14 @@ wxString lmSOControl::SourceLDP(int nIndent)
 
     return sSource;
 }
+
+lmLUnits lmSOControl::ComputeXLocation(lmPaper* pPaper)
+{
+	return pPaper->GetCursorX();
+}
+
+lmLUnits lmSOControl::ComputeYLocation(lmPaper* pPaper)
+{
+	return pPaper->GetCursorY();
+}
+

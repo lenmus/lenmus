@@ -48,6 +48,7 @@ enum lmETagLDP
 };
 
 
+
 //The parser
 class lmLDPParser
 {
@@ -66,7 +67,7 @@ public:
     bool        AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeChord(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode);
-    lmEPlacement AnalyzeFermata(lmLDPNode* pNode);
+    lmEPlacement AnalyzeFermata(lmLDPNode* pNode, lmVStaff* pVStaff, lmLocation* pPos);
     void        AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont);
     void        AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff);
     void        AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInstr);
@@ -165,7 +166,7 @@ private:
     EParsingStates      m_nState;           //estado actual del autómata
     int                 m_nLevel;           //numero de nodos
     wxArrayInt          m_stackStates;      //Nodo de retorno tras un PopNodo
-    ArrayNodePtrs       m_stackNodes;       //Pila de nodos
+    lmArrayNodePtrs		m_stackNodes;       //Pila de nodos
     lmLDPNode*          m_pCurNode;         //nodo en proceso
     wxString            m_sVersion;         //versión del lenguaje en que está la partitura en proceso
     int                 m_nVersion;         //versión convertida a numerico 100*num+rev. Ej. 1.2 = 102

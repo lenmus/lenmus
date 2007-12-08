@@ -41,7 +41,9 @@ public:
     ~lmSOControl() {}
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
-    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC) { return 0;};
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC) { return 0;};
+	lmLUnits ComputeXLocation(lmPaper* pPaper);
+	lmLUnits ComputeYLocation(lmPaper* pPaper);
 
     //SOControl specfic methods
     ESOCtrolType GetCtrolType() { return m_nCtrolType; }

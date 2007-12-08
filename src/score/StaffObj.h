@@ -97,6 +97,7 @@ public:
     virtual void ShiftObject(lmLUnits uLeft);
 	virtual lmLocation SetUserLocation(lmLocation tPos);
 	inline lmShape* GetShap2() { return m_pShape2; }
+    inline lmUPoint& GetOrigin() { return m_uPaperPos; }
 
 	//contextual menu
 	virtual void PopupMenu(lmController* pCanvas, lmGMObject* pGMO, const lmDPoint& vPos);
@@ -115,6 +116,7 @@ protected:
 
 	//position
     lmLocation      m_tPos;         //desired position for this object
+    lmUPoint		m_uPaperPos;	//origin to render tiho object: paper position
     lmShape*		m_pShape2;		//new shape
 
 };
@@ -154,8 +156,10 @@ public:
     inline EScoreObjType GetType() const { return m_nType; }
 
     // graphic model
-    virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
-                        bool fHighlight = false)=0;
+    virtual void Layout(lmBox* pBox, lmPaper* pPaper, 
+						wxColour colorC = *wxBLACK, bool fHighlight = false)=0;
+	virtual lmLUnits ComputeXLocation(lmPaper* pPaper)=0;
+	virtual lmLUnits ComputeYLocation(lmPaper* pPaper)=0;
 
     // debug
     virtual wxString Dump()=0;
@@ -165,7 +169,6 @@ public:
 #if lmCOMPATIBILITY_NO_SHAPES
 
     // positioning
-    inline lmUPoint& GetOrigin() { return m_uPaperPos; }
     inline bool IsFixed() const { return m_fFixedPos; }
     void SetFixed(bool fFixed) { m_fFixedPos = fFixed; }
     void SetPageNumber(int nNum) { m_nNumPage = nNum; }
@@ -177,10 +180,13 @@ public:
 
 #endif  //lmCOMPATIBILITY_NO_SHAPES
 
+
 protected:
     lmComponentObj(lmScoreObj* pParent, EScoreObjType nType, lmLocation* pPos = &g_tDefaultPos,
                    bool fIsDraggable = false);
     wxString SourceLDP_Location(lmUPoint uPaperPos);
+	lmUPoint ComputeObjectLocation(lmPaper* pPaper);
+
 
     EScoreObjType   m_nType;        //type of ComponentObj
     int             m_nId;          //unique number, to identify each lmComponentObj
@@ -191,7 +197,6 @@ protected:
 
     //positioning. Coordinates relative to origin of page (in logical units); updated each
     // time this object is drawn
-    lmUPoint    m_uPaperPos;        // paper xPos, yBase position to render this object
     bool        m_fFixedPos;        // its position is fixed. Do not recalculate it
     int         m_nNumPage;         // page on which this SO is rendered (1..n). Set Up in BoxSystem::RenderMeasure().
 
@@ -287,7 +292,7 @@ protected:
              bool fIsDraggable = false);
 
 	//rendering
-    virtual lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)=0;
+    virtual lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)=0;
 
 
     //properties
@@ -331,8 +336,8 @@ public:
 
 	//---- virtual methods of base class -------------------------
 
-    virtual void Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC = *wxBLACK,
-                bool fHighlight = false);
+    virtual void Layout(lmBox* pBox, lmPaper* pPaper, 
+						wxColour colorC = *wxBLACK, bool fHighlight = false);
     virtual void SetFont(lmPaper* pPaper) {}
 
 	//owning AuxObjs
@@ -361,7 +366,7 @@ public:
 
 protected:
     lmAuxObj(bool fIsDraggable = false);
-    virtual lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)=0;
+    virtual lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)=0;
 
 };
 

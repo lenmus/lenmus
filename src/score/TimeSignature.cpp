@@ -142,7 +142,19 @@ wxString lmTimeSignature::SourceXML(int nIndent)
 	return sSource;
 }
 
-lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmTimeSignature::ComputeXLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorX();
+}
+
+lmLUnits lmTimeSignature::ComputeYLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorY();
+}
+
+lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model. 

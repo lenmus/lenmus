@@ -112,7 +112,19 @@ wxString lmBarline::SourceXML(int nIndent)
     return sSource;
 }
 
-lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmBarline::ComputeXLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorX();
+}
+
+lmLUnits lmBarline::ComputeYLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorY();
+}
+
+lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model. 

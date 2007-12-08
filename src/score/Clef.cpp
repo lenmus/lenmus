@@ -110,100 +110,23 @@ lmEGlyphIndex lmClef::GetGlyphIndex()
 // implementation of virtual methods defined in base abstract class lmStaffObj
 //-----------------------------------------------------------------------------------------
 
-lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmClef::ComputeXLocation(lmPaper* pPaper)
+{
+	return pPaper->GetCursorX();
+}
+
+lmLUnits lmClef::ComputeYLocation(lmPaper* pPaper)
+{
+	// get the shift to the staff on which the clef must be drawn
+	return pPaper->GetCursorY() + m_pVStaff->GetStaffOffset(m_nStaffNum) +
+				m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
+}
+
+lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model. 
     // Paper cursor must be used as the base for positioning.
-
-	lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
-
-    if (m_tPos.xType == lmLOCATION_DEFAULT)
-	{
-		//default location. Lets' compute a position for the object
-
-		//save the computed location
-		m_tPos.x = uPos.x;
-		m_tPos.xType = lmLOCATION_COMPUTED;
-		m_tPos.xUnits = lmLUNITS;
-    }
-
-	else if (m_tPos.xType == lmLOCATION_COMPUTED)
-	{
-		//the default position was computed in a previous invocation. Use it
-		//The computed location is always absolute, in tenths
-		uPos.x = m_tPos.x;
-    }
-
-	else if (m_tPos.xType == lmLOCATION_USER_ABSOLUTE)
-	{
-		//the position was fixed by user (either in source file or by dragging object)
-		//Use it
-		if (m_tPos.xUnits == lmLUNITS)
-			uPos.x = m_tPos.x;
-		if (m_tPos.xUnits == lmTENTHS)
-			uPos.x = m_pVStaff->TenthsToLogical( m_tPos.x, m_nStaffNum );
-	}
-
-	else if (m_tPos.xType == lmLOCATION_USER_RELATIVE)
-	{
-		//the position was fixed by user (either in source file or by dragging object)
-		//Use it
-		if (m_tPos.xUnits == lmLUNITS)
-			uPos.x += m_tPos.x;
-	}
-	else
-		wxASSERT(false);
-
-
-    if (m_tPos.yType == lmLOCATION_DEFAULT)
-	{
-		//default location. Lets' compute a position for the object
-
-		// get the shift to the staff on which the clef must be drawn
-		uPos.y += m_pVStaff->GetStaffOffset(m_nStaffNum) +
-				  m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
-
-		//save the computed location
-		m_tPos.y = uPos.y;
-		m_tPos.yType = lmLOCATION_COMPUTED;
-		m_tPos.yUnits = lmLUNITS;
-    }
-
-	else if (m_tPos.yType == lmLOCATION_COMPUTED)
-	{
-		//the position was computed in a previous invocation or was fixed by user.
-		//Use it
-		//The computed location is always absolute, in tenths
-		uPos.y = m_tPos.y;
-    }
-
-	else if (m_tPos.yType == lmLOCATION_USER_ABSOLUTE)
-	{
-		//the position was fixed by user (either in source file or by dragging object)
-		//Use it
-		if (m_tPos.yUnits == lmLUNITS)
-			uPos.y = m_tPos.y;
-	}
-
-	else if (m_tPos.yType == lmLOCATION_USER_RELATIVE)
-	{
-		//the position was fixed by user (either in source file or by dragging object)
-		//Use it
-		if (m_tPos.yUnits == lmLUNITS)
-			uPos.y += m_tPos.y;
-	}
-	else
-		wxASSERT(false);
-
-
-
-
-
-
-	//// get the shift to the staff on which the clef must be drawn
-	//lmLUnits yPos = pPaper->GetCursorY() + m_pVStaff->GetStaffOffset(m_nStaffNum);
- //   yPos += m_pVStaff->TenthsToLogical( GetGlyphOffset(), m_nStaffNum );
 
     //create the shape object
     lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetFont(), pPaper,

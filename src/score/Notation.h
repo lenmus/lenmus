@@ -65,7 +65,9 @@ public:
     lmENotationType GetNotationType() { return eNT_Spacer; }
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
-    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+	lmLUnits ComputeXLocation(lmPaper* pPaper);
+	lmLUnits ComputeYLocation(lmPaper* pPaper);
     void SetFont(lmPaper* pPaper) {}        // nothing to do
 
     //    debugging
@@ -91,7 +93,9 @@ public:
     lmENotationType GetNotationType() { return eNT_Anchor; }
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
-    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+	lmLUnits ComputeXLocation(lmPaper* pPaper);
+	lmLUnits ComputeYLocation(lmPaper* pPaper);
     void SetFont(lmPaper* pPaper) {}
 
     //    debugging
@@ -111,7 +115,9 @@ public:
     lmENotationType GetNotationType() { return eNT_ScoreAnchor; }
 
     //implementation of virtual methods defined in abstract base class lmStaffObj
-    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+	lmLUnits ComputeXLocation(lmPaper* pPaper);
+	lmLUnits ComputeYLocation(lmPaper* pPaper);
     void SetFont(lmPaper* pPaper) {}
 
     //    debugging

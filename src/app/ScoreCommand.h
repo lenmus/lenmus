@@ -52,6 +52,7 @@ protected:
     lmScoreCommand(const wxString& name, lmEScoreCommand cmd, lmScoreDocument *pDoc);
 
     lmScoreDocument*    m_pDoc;
+	bool				m_fDocModified;
     lmEScoreCommand		m_cmd;
 
 };

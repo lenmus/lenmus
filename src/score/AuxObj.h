@@ -55,7 +55,9 @@ public:
     // debug methods
     wxString Dump();
 
-    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+	lmLUnits ComputeXLocation(lmPaper* pPaper);
+	lmLUnits ComputeYLocation(lmPaper* pPaper);
 
 private:
     lmTenths    m_txStart;
@@ -83,9 +85,9 @@ public:
     ~lmFermata() {}
 
     // overrides for pure virtual methods of base class lmNoteRestObj
-    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
-    void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
-                         lmLUnits xPos, lmLUnits yPos);
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+	lmLUnits ComputeXLocation(lmPaper* pPaper);
+	lmLUnits ComputeYLocation(lmPaper* pPaper);
     lmEAuxObjType GetAuxObjType() { return eAXOT_Fermata; }
 
     // source code related methods
@@ -120,9 +122,9 @@ public:
     ~lmLyric() {}
 
     // implementation of pure virtual methods in base class
-    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
-    void SetSizePosition(lmPaper* pPaper, lmVStaff* pVStaff, int nStaffNum,
-                         lmLUnits xPos, lmLUnits yPos);
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+	lmLUnits ComputeXLocation(lmPaper* pPaper);
+	lmLUnits ComputeYLocation(lmPaper* pPaper);
     lmEAuxObjType GetAuxObjType() { return eAXOT_Lyric; }
 
 

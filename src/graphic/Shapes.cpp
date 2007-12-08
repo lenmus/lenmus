@@ -539,15 +539,20 @@ void lmShapeClef::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
 	// This method must validate/adjust final position and, if ok, it must move
 	// the shape and send a move object command to the controller.
 
-	if (g_fFreeMove)
-		Shift(uPos.x - GetXLeft(), uPos.y - GetYTop());
-	else
+	//lmUPoint uFinalPos(uPos.x - GetXLeft(), uPos.y - GetYTop());
+	lmUPoint uFinalPos(uPos.x, uPos.y);
+	if (!g_fFreeMove)
 	{
-		//only x position can be changed
-		Shift(uPos.x - m_uBoundsTop.x, 0.0);
+		//free movement not allowed. Only x position can be changed
+		uFinalPos.y = GetYTop();
 	}
 
-	pCanvas->MoveObject(this, uPos);
+	//correct glyph displacement
+	uFinalPos.x += m_uGlyphPos.x - GetXLeft();
+	uFinalPos.y += m_uGlyphPos.y - GetYTop();
+
+	//Shift(uFinalPos.x, uFinalPos.y);
+	pCanvas->MoveObject(this, uFinalPos);
 
 }
 

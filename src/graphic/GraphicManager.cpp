@@ -227,10 +227,12 @@ void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits pa
     //Is it necessary to force a re-layout?
     // Yes in following cases:
     // - the first time a score is going to be rendered
+	// - if the score has been modified since last re-layout
     // - if paper size has changed and so requested (option lmRELAYOUT_ON_PAPER_SIZE_CHANGE)
     // - if explicitly requested (option lmFORCE_RELAYOUT)
     bool fLayoutScore = !m_pScore || m_fReLayout
                 || m_nLastScoreID != pScore->GetID()
+				|| m_pScore->IsModified()
                 || (nOptions & lmFORCE_RELAYOUT)
                 || ( (nOptions & lmRELAYOUT_ON_PAPER_SIZE_CHANGE)  &&
                      (m_xPageSize != paperWidth || m_yPageSize != paperHeight) );
@@ -255,7 +257,12 @@ void lmGraphicManager::Prepare(lmScore* pScore, lmLUnits paperWidth, lmLUnits pa
 
 
     //re-layout the score if necesary
-    if (fLayoutScore) Layout();
+	if (fLayoutScore)
+	{
+		Layout();
+		m_pScore->SetModified(false);		//reset flag to avoid new relayouts until new changes
+	}
+
 
     //delete existing offscreen bitmaps if necessary
     if (fDeleteBitmaps) DeleteBitmaps();

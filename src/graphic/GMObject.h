@@ -256,6 +256,7 @@ public:
     //info
 	inline lmBox* GetOwnerBox() { return m_pOwnerBox; }
 	inline void SetOwnerBox(lmBox* pOwnerBox) { m_pOwnerBox = pOwnerBox; }
+	inline wxString GetName() const { return m_sShapeName; }
 
 	
 
@@ -326,7 +327,6 @@ public:
     //dragging
     virtual wxBitmap* OnBeginDrag(double rScale);
     virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
-    virtual void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos) {};
 
 
 

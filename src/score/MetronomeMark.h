@@ -64,7 +64,9 @@ public:
     float GetTimePosIncrement() { return 0; }
 
     // implementation of virtual methods defined in abstract base class lmStaffObj
-    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC);
+    lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
+	lmLUnits ComputeXLocation(lmPaper* pPaper);
+	lmLUnits ComputeYLocation(lmPaper* pPaper);
 
     // debugging
     wxString Dump();

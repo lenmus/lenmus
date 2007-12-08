@@ -125,6 +125,7 @@ bool lmScoreDocument::OnOpenDocument(const wxString& filename)
     wxFileName oFN(filename);
     m_pScore->SetScoreName(oFN.GetFullName());
     SetFilename(filename, true);
+    SetDocumentSaved(true);
     Modify(false);
     UpdateAllViews();
     return true;

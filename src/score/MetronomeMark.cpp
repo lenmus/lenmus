@@ -98,7 +98,19 @@ lmMetronomeMark::~lmMetronomeMark()
 // implementation of virtual methods defined in base abstract class lmStaffObj
 //-----------------------------------------------------------------------------------------
 
-lmLUnits lmMetronomeMark::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmMetronomeMark::ComputeXLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorX();
+}
+
+lmLUnits lmMetronomeMark::ComputeYLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorY();
+}
+
+lmLUnits lmMetronomeMark::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
 //    lmLUnits uyPos = pPaper->GetCursorY() - m_pVStaff->TenthsToLogical(50, m_nStaffNum);
 //    lmLUnits uxPos = pPaper->GetCursorX();

@@ -87,7 +87,7 @@ public:
     lmLUnits GetStaffOffset() const { return m_pVStaff->GetStaffOffset(m_nStaffNum); }
 
     //methods related to associated AuxObjs management
-    void AddFermata(const lmEPlacement nPlacement);
+    lmFermata* AddFermata(const lmEPlacement nPlacement);
     void AddLyric(lmLyric* pLyric);
 
     //methods related to duration

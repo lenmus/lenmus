@@ -99,7 +99,19 @@ lmEGlyphIndex lmRest::GetGlyphIndex()
 // implementation of virtual methods defined in base abstract class lmNoteRest
 //====================================================================================================
 
-lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmRest::ComputeXLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorX();
+}
+
+lmLUnits lmRest::ComputeYLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorY();
+}
+
+lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model. 
@@ -150,27 +162,6 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
         }
     }
 
-	////Add the shape for associated notations -------------------------
- //   if (m_pNotations) {
- //       lmNoteRestObj* pNRO;
- //       wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
- //       for (; pNode; pNode = pNode->GetNext() ) {
- //           pNRO = (lmNoteRestObj*)pNode->GetData();
- //           lmLUnits uxPos = 0;
- //           lmLUnits uyPos = 0;
- //           switch(pNRO->GetSymbolType()) {
- //               case eST_Fermata:
- //                   // set position (relative to paperPos)
- //                   uxPos = m_pShape2->GetXLeft() + m_pShape2->GetWidth() / 2.0;
- //                   uyPos = uyTop - uPaperPos.y;
- //                   pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
- //                   pNRO->UpdateMeasurements();
- //                   break;
- //               default:
- //                   wxASSERT(false);
- //           }
- //       }
- //   }
 	return m_pShape2->GetWidth();
 }
 

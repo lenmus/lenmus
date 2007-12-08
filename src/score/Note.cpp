@@ -404,7 +404,19 @@ void lmNote::CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, 
 // implementation of virtual methods defined in base abstract class lmNoteRest
 //====================================================================================================
 
-lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
+lmLUnits lmNote::ComputeXLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorX();
+}
+
+lmLUnits lmNote::ComputeYLocation(lmPaper* pPaper)
+{
+	//TODO
+	return pPaper->GetCursorY();
+}
+
+lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model. 
@@ -619,45 +631,6 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour colorC)
     AddLegerLineShape(pNoteShape, pPaper, nPosOnStaff, uyStaffTopLine, uxLine,
                         widthLine, m_nStaffNum);
 
-
-	//Add the shape for single-attached AuxObjs
-    //----------------------------------------------------------------------------------
-
-    //// layout associated notations -------------------------
-    //if (m_pNotations) {
-    //    lmNoteRestObj* pNRO;
-    //    wxAuxObjsListNode* pNode = m_pNotations->GetFirst();
-    //    for (; pNode; pNode = pNode->GetNext() ) {
-    //        pNRO = (lmNoteRestObj*)pNode->GetData();
-    //        lmLUnits uxPos = 0;
-    //        lmLUnits uyPos = 0;
-    //        switch(pNRO->GetSymbolType()) {
-    //            case eST_Fermata:
-    //                // set position (relative to paperPos)
-    //                uxPos = m_pNoteheadShape->GetXLeft() + m_pNoteheadShape->GetWidth() / 2.0;
-    //                uyPos = uyStaffTopLine - uPaperPos.y;
-    //                pNRO->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
-    //                pNRO->UpdateMeasurements();
-    //                break;
-    //            default:
-    //                wxASSERT(false);
-    //        }
-    //    }
-    //}
-
-    //// layout associated lmLyric objects -------------------
-    //if (m_pLyrics) {
-    //    lmLyric* pLyric;
-    //    wxAuxObjsListNode* pNode = m_pLyrics->GetFirst();
-    //    for (; pNode; pNode = pNode->GetNext() ) {
-    //        pLyric = (lmLyric*)pNode->GetData();
-    //        // set position (relative to paperPos)
-    //        lmLUnits uxPos = m_pNoteheadShape->GetXLeft();
-    //        lmLUnits uyPos = uyStaffTopLine - uPaperPos.y;
-    //        pLyric->SetSizePosition(pPaper, m_pVStaff, m_nStaffNum, uxPos, uyPos);
-    //        pLyric->UpdateMeasurements();
-    //    }
-    //}
 
 	//if this is the last note of a multi-attached AuxObj add the shape for the aux obj
     //----------------------------------------------------------------------------------

@@ -210,14 +210,13 @@ lmLUnits lmNoteRest::AddDotShape(lmCompositeShape* pCS, lmPaper* pPaper,
 //====================================================================================================
 // methods related to associated AuxObjs management
 //====================================================================================================
-void lmNoteRest::AddFermata(const lmEPlacement nPlacement)
+lmFermata* lmNoteRest::AddFermata(const lmEPlacement nPlacement)
 {
     if (!m_pNotations) m_pNotations = new AuxObjsList();
 
     lmFermata* pFermata = new lmFermata(nPlacement);
 	AttachAuxObj(pFermata);
-    //m_pNotations->Append(pFermata);
-
+    return pFermata;
 }
 
 void lmNoteRest::AddLyric(lmLyric* pLyric)
