@@ -114,12 +114,6 @@ lmInstrument::~lmInstrument()
     m_cStaves.DeleteContents(true);
 }
 
-lmUPoint lmInstrument::GetReferencePos(lmPaper* pPaper)
-{
-	//TODO
-	return lmUPoint(0.0, 0.0);
-}
-
 lmLUnits lmInstrument::TenthsToLogical(lmTenths nTenths)
 {
 	//TODO

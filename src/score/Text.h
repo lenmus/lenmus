@@ -82,7 +82,7 @@ public:
     //implementation of virtual methods defined in abstract base class
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
 	wxFont* GetSuitableFont(lmPaper* pPaper);
-	lmUPoint ComputeBestLocation(lmUPoint& uOrg);
+	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 
     //implementation of virtual methods from base class
     lmEAuxObjType GetAuxObjType() { return eAXOT_Text; }

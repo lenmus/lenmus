@@ -51,7 +51,7 @@ lmSpacer::lmSpacer(lmVStaff* pStaff, lmTenths nWidth, int nStaff)
     m_nSpacerWidth = nWidth;
 }
 
-lmUPoint lmSpacer::ComputeBestLocation(lmUPoint& uOrg)
+lmUPoint lmSpacer::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
 	// if no location is specified in LDP source file, this method is invoked from
 	// base class to ask derived object to compute a suitable position to
@@ -114,7 +114,7 @@ lmAnchor::lmAnchor(lmVStaff* pStaff, int nStaff)
 {
 }
 
-lmUPoint lmAnchor::ComputeBestLocation(lmUPoint& uOrg)
+lmUPoint lmAnchor::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
 	// if no location is specified in LDP source file, this method is invoked from
 	// base class to ask derived object to compute a suitable position to
@@ -167,7 +167,7 @@ lmScoreAnchor::lmScoreAnchor(lmVStaff* pStaff, int nStaff)
 {
 }
 
-lmUPoint lmScoreAnchor::ComputeBestLocation(lmUPoint& uOrg)
+lmUPoint lmScoreAnchor::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
 	// if no location is specified in LDP source file, this method is invoked from
 	// base class to ask derived object to compute a suitable position to

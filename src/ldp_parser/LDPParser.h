@@ -73,7 +73,7 @@ public:
     void        AnalyzeInstrument(lmLDPNode* pNode, lmScore* pScore, int nInstr);
     void        AnalyzeInstrument105(lmLDPNode* pNode, lmScore* pScore, int nInstr);
     bool        AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff);
-    void        AnalyzeLocation(lmLDPNode* pNode, int* pValue, lmEUnits* pUnit);
+    void        AnalyzeLocation(lmLDPNode* pNode, float* pValue, lmEUnits* pUnit);
     void        AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos);
     void        AnalyzeMeasure(lmLDPNode* pNode, lmVStaff* pVStaff);
     bool        AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff);
@@ -136,6 +136,7 @@ private:
                               bool fCloseAllowed,
                               lmTupletBracket** pTuplet, int* pActual, int* pNormal);
     void        AnalyzeVStaff_V103(lmLDPNode* pNode, lmVStaff* pVStaff);
+
 
     void Clear();
     void FileParsingError(const wxString& sMsg);

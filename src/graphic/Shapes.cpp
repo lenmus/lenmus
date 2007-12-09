@@ -293,6 +293,24 @@ lmUPoint lmShapeGlyph::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
 
 }
 
+void lmShapeGlyph::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
+{
+	// End drag. Receives the command processor associated to the view and the
+	// final position of the object (logical units referred to page origin).
+	// This method must validate/adjust final position and, if ok, it must 
+	// send a move object command to the controller.
+
+
+	//correct for glyph displacement
+	lmUPoint uFinalPos = uPos;
+	uFinalPos.x += m_uGlyphPos.x - GetXLeft();
+	uFinalPos.y += m_uGlyphPos.y - GetYTop();
+
+	//send a move object command to the controller
+	pCanvas->MoveObject(this, uFinalPos);
+}
+
+
 lmUPoint lmShapeGlyph::GetObjectOrigin()
 {
 	//returns the origin of this shape

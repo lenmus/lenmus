@@ -32,6 +32,7 @@
 
 #include "Score.h"
 #include "MetronomeMark.h"
+#include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
 
 // 'note_symbol = 80'
@@ -44,12 +45,6 @@ lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, lmENoteType nNoteType, int n
     m_nLeftDots = nDots;
     m_nTicksPerMinute = nTicksPerMinute;
     m_fParentheses = fParentheses;
-    wxString sText = wxString::Format(_T(" = %d"), m_nTicksPerMinute);
-    m_pTextShape = new lmShapeText(this, sText, (wxFont*)NULL);
-
-    m_pRightNoteShape = (lmShapeGlyph*)NULL;
-    //m_pLeftNoteShape = new lmShapeGlyph(this, SelectGlyph(nNoteType, nDots), m_pFont);
-
 }
 
 // 'm.m. = 80'
@@ -60,11 +55,6 @@ lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff, int nTicksPerMinute,
     m_nMarkType = eMMT_MM_Value;
     m_nTicksPerMinute = nTicksPerMinute;
     m_fParentheses = fParentheses;
-    wxString sText = wxString::Format(_T("m.m. = %d"), m_nTicksPerMinute);
-    m_pTextShape = new lmShapeText(this, sText, (wxFont*)NULL);
-
-    m_pLeftNoteShape = (lmShapeGlyph*)NULL;
-    m_pRightNoteShape = (lmShapeGlyph*)NULL;
 }
 
 // 'note_symbol = note_symbol'
@@ -81,16 +71,10 @@ lmMetronomeMark::lmMetronomeMark(lmVStaff* pVStaff,
     m_nRightDots = nRightDots;
     m_nTicksPerMinute = 0;
     m_fParentheses = fParentheses;
-    m_pTextShape = new lmShapeText(this, _T(" =  "), (wxFont*)NULL);
-
-    //m_pLeftNoteShape = new lmShapeGlyph(this, SelectGlyph(nLeftNoteType, nLeftDots), m_pFont);
-    //m_pRightNoteShape = new lmShapeGlyph(this, SelectGlyph(nRightNoteType, nRightDots), m_pFont);
 }
 
 lmMetronomeMark::~lmMetronomeMark()
 {
-    if (m_pLeftNoteShape) delete m_pLeftNoteShape;
-    if (m_pRightNoteShape) delete m_pRightNoteShape;
 }
 
 
@@ -98,7 +82,7 @@ lmMetronomeMark::~lmMetronomeMark()
 // implementation of virtual methods defined in base abstract class lmStaffObj
 //-----------------------------------------------------------------------------------------
 
-lmUPoint lmMetronomeMark::ComputeBestLocation(lmUPoint& uOrg)
+lmUPoint lmMetronomeMark::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
 	// if no location is specified in LDP source file, this method is invoked from
 	// base class to ask derived object to compute a suitable position to
@@ -106,111 +90,98 @@ lmUPoint lmMetronomeMark::ComputeBestLocation(lmUPoint& uOrg)
 	// uOrg is the assigned paper position for this object.
 
 	lmUPoint uPos = uOrg;
-	//TODO
+    uPos.y -= m_pVStaff->TenthsToLogical(50, m_nStaffNum);
 	return uPos;
 }
 
 lmLUnits lmMetronomeMark::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
-//    lmLUnits uyPos = pPaper->GetCursorY() - m_pVStaff->TenthsToLogical(50, m_nStaffNum);
-//    lmLUnits uxPos = pPaper->GetCursorX();
-//    lmLUnits uWidth = DrawMetronomeMark(fMeasuring, pPaper, uxPos, uyPos, colorC);
-//
-//    if (fMeasuring) {
-//        // store selection rectangle measures and position
-//        m_uSelRect.width = uWidth;
-//        m_uSelRect.height = m_pVStaff->TenthsToLogical(32, m_nStaffNum); //todo
-//        m_uSelRect.x = uxPos - m_uPaperPos.x;        //relative to m_uPaperPos
-//        m_uSelRect.y = uyPos - m_uPaperPos.y;;
-//
-//        // set total width to zero: metronome marks does not consume staff space
-//        m_uWidth = 0;   // uWidth;
-//
-//    }
-	return 0;
+	//create the container shape and add it to the box
+	lmCompositeShape* pShape = new lmCompositeShape(this, _("metronome mark"), lmDRAGGABLE);
+	pBox->AddShape(pShape);
+	m_pShape = pShape;
 
-}
+	wxFont* pFont = GetSuitableFont(pPaper);
 
-// returns the width of the metronome mark (in logical units)
-lmLUnits lmMetronomeMark::DrawMetronomeMark(bool fMeasuring, lmPaper* pPaper,
-                                lmLUnits uxPos, lmLUnits uyPos, wxColour colorC)
-{
-    lmLUnits xStart = uxPos;
     switch(m_nMarkType)
     {
         case eMMT_MM_Value:         // 'm.m. = 80'
-            return DrawText(fMeasuring, pPaper, uxPos, uyPos, colorC);
+			AddTextShape(pShape, pPaper, wxString::Format(_T("m.m. = %d"), m_nTicksPerMinute),
+						uPos, colorC);
             break;
 
         case eMMT_Note_Note:        // 'note_symbol = note_symbol'
-            uxPos += DrawSymbol(fMeasuring, pPaper, m_pLeftNoteShape, uxPos, uyPos, colorC);
-            uxPos += DrawText(fMeasuring, pPaper, uxPos, uyPos, colorC);
-            uxPos += DrawSymbol(fMeasuring, pPaper, m_pRightNoteShape, uxPos, uyPos, colorC);
-            return uxPos - xStart;
+			uPos.x += AddSymbolShape(pShape, pPaper, SelectGlyph(m_nLeftNoteType, m_nLeftDots),
+									 pFont, uPos, colorC);
+			uPos.x += AddTextShape(pShape, pPaper, _T(" =  "), uPos, colorC);
+			AddSymbolShape(pShape, pPaper, SelectGlyph(m_nRightNoteType, m_nRightDots),
+				           pFont, uPos, colorC);
             break;
 
         case eMMT_Note_Value:       // 'note_symbol = 80'
-            uxPos += DrawSymbol(fMeasuring, pPaper, m_pLeftNoteShape, uxPos, uyPos, colorC);
-            uxPos += DrawText(fMeasuring, pPaper, uxPos, uyPos, colorC);
-            return uxPos - xStart;
+            uPos.x += AddSymbolShape(pShape, pPaper, SelectGlyph(m_nLeftNoteType, m_nLeftDots),
+									 pFont, uPos, colorC);
+            AddTextShape(pShape, pPaper, wxString::Format(_T(" = %d"), m_nTicksPerMinute),
+						 uPos, colorC);
             break;
 
         default:
             wxASSERT(false);
-            return 0;            // to keep compiler happy
-
     }
+
+	return pShape->GetWidth();
 }
 
-lmLUnits lmMetronomeMark::DrawText(bool fMeasuring, lmPaper* pPaper,
-                               lmLUnits uxPos, lmLUnits uyPos, wxColour colorC)
+lmLUnits lmMetronomeMark::AddTextShape(lmCompositeShape* pShape, lmPaper* pPaper,
+									   wxString sText, lmUPoint uPos, wxColour colorC)
 {
-    // returns the width of the text (in logical units)
+   // returns the width of the text shape
 
-    if (fMeasuring) {
-        int nWeight = wxNORMAL;
-        int nStyle = wxNORMAL;
-        int nFontSize = PointsToLUnits(8);
-        wxFont* pFont = pPaper->GetFont(nFontSize, _T("Times New Roman"), wxDEFAULT, nStyle, nWeight, false);
-        if (!pFont) {
-            wxMessageBox(_("Sorry, an error has occurred while allocating the font."),
-                _T("lmMetronomeMark::DrawText"), wxOK);
-            ::wxExit();
-        }
-        m_pTextShape->SetFont(pFont);
-        lmUPoint uOffset(uxPos - m_uPaperPos.x,
-                        uyPos - m_uPaperPos.y + m_pVStaff->TenthsToLogical(10, m_nStaffNum));
-        m_pTextShape->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum), uOffset);
+    int nWeight = wxNORMAL;
+    int nStyle = wxNORMAL;
+    int nFontSize = PointsToLUnits(8);
+    wxFont* pFont = pPaper->GetFont(nFontSize, _T("Times New Roman"), wxDEFAULT, nStyle, nWeight, false);
+    if (!pFont) {
+        wxMessageBox(_("Sorry, an error has occurred while allocating the font."),
+            _T("lmMetronomeMark::AddTextShape"), wxOK);
+        ::wxExit();
     }
-    else {
-        m_pTextShape->Render(pPaper, colorC);  //(pPaper, m_uPaperPos, colorC);
-    }
-    return m_pTextShape->GetWidth();
+    uPos.y += m_pVStaff->TenthsToLogical(10, m_nStaffNum);
 
+	//create the shape
+    lmShapeTex2* pTS =
+		new lmShapeTex2(this, sText, pFont, pPaper, uPos, _T("equal sign"), lmDRAGGABLE,
+						colorC);
+
+	//add the shape to the composite parent shape
+	pShape->Add(pTS);
+
+	return pTS->GetWidth();
 }
 
-lmLUnits lmMetronomeMark::DrawSymbol(bool fMeasuring, lmPaper* pPaper, lmShapeGlyph* pShape,
-                                     lmLUnits uxPos, lmLUnits uyPos, wxColour colorC)
+lmLUnits lmMetronomeMark::AddSymbolShape(lmCompositeShape* pShape, lmPaper* pPaper, lmEGlyphIndex nGlyph,
+									     wxFont* pFont, lmUPoint uPos, wxColour colorC)
 {
-    //// returns the width of the note (in logical units)
+    // returns the width of the symbol shape
 
-    //wxASSERT(pShape);
-    //if (fMeasuring) {
-    //    lmUPoint offset(uxPos - m_uPaperPos.x, uyPos - m_uPaperPos.y - m_pVStaff->TenthsToLogical(35, m_nStaffNum));
-    //    pShape->SetFont(m_pFont);
-    //    //pShape->Measure(pPaper, m_pVStaff->GetStaff(m_nStaffNum), offset);
-    //}
-    //else {
-    //    pShape->Render(pPaper, colorC);    //(pPaper, m_uPaperPos, colorC);
-    //}
-    //return pShape->GetWidth();
-	return 0;
+    uPos.y -= m_pVStaff->TenthsToLogical(35, m_nStaffNum);
+
+	//create the shape
+    lmShapeGlyph* pSG = 
+		new lmShapeGlyph(this, nGlyph, pFont, pPaper, uPos, _T("metronome mark symbol"),
+				         lmDRAGGABLE, colorC);
+
+	//add the shape to the composite parent shape
+	pShape->Add(pSG);
+
+	return pSG->GetWidth();
 }
 
 lmEGlyphIndex lmMetronomeMark::SelectGlyph(lmENoteType nNoteType, int nDots)
 {
     lmEGlyphIndex nGlyph = GLYPH_SMALL_QUARTER_NOTE;
-    switch (nNoteType) {
+    switch (nNoteType)
+	{
         case eQuarter:
             if (nDots == 0)
                 nGlyph = GLYPH_SMALL_QUARTER_NOTE;

@@ -137,12 +137,6 @@ lmVStaff::~lmVStaff()
     m_cStaves.Clear();
 }
 
-lmUPoint lmVStaff::GetReferencePos(lmPaper* pPaper)
-{
-	//TODO
-	return lmUPoint(0.0, 0.0);
-}
-
 lmLUnits lmVStaff::TenthsToLogical(lmTenths nTenths)
 {
 	return TenthsToLogical(nTenths, 1);

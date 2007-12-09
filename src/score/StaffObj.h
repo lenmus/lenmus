@@ -82,9 +82,6 @@ public:
 
     //--- a ScoreObj can own AuxObjs -----------------------
     
-	//provide origin position for owned AuxObjs
-	virtual lmUPoint GetReferencePos(lmPaper* pPaper)=0;
-
     //provide units conversion
     virtual lmLUnits TenthsToLogical(lmTenths nTenths)=0;
     virtual lmTenths LogicalToTenths(lmLUnits uUnits)=0;
@@ -99,8 +96,8 @@ public:
 	//position and main shape
     virtual void ShiftObject(lmLUnits uLeft);
 	virtual lmLocation SetUserLocation(lmLocation tPos);
-	inline lmShape* GetShap2() { return m_pShape2; }
-    inline lmUPoint& GetOrigin() { return m_uPaperPos; }
+	inline lmShape* GetShap2() { return m_pShape; }
+    virtual lmUPoint& GetOrigin() { return m_uPaperPos; }
     int GetPageNumber();
 
 	//contextual menu
@@ -117,15 +114,18 @@ public:
 
 protected:
     lmScoreObj(lmScoreObj* pParent);
+	virtual lmUPoint SetReferencePos(lmPaper* pPaper);
 
     lmScoreObj*		m_pParent;          //the parent for the ObjOptions chain
     lmObjOptions*   m_pObjOptions;      //the collection of options or NULL if none
     lmAuxObjsCol*   m_pAuxObjs;         //the collection of attached AuxObjs or NULL if none
 
-	//position
+	//information only valid for rendering as score: position and shape
+    // this variables are only valid for the Formatter algorithm and, therefore, are not
+	// valid for other views using different formats.
     lmLocation      m_tPos;         //desired position for this object
     lmUPoint		m_uPaperPos;	//origin to render tiho object: paper position
-    lmShape*		m_pShape2;		//new shape
+    lmShape*		m_pShape;		//new shape
 
 };
 
@@ -148,9 +148,6 @@ public:
 
 	//---- virtual methods of base class -------------------------
 
-	//owning AuxObjs
-	virtual lmUPoint GetReferencePos(lmPaper* pPaper)=0;
-
     // units conversion
     virtual lmLUnits TenthsToLogical(lmTenths nTenths)=0;
     virtual lmTenths LogicalToTenths(lmLUnits uUnits)=0;
@@ -166,7 +163,7 @@ public:
     // graphic model
     virtual void Layout(lmBox* pBox, lmPaper* pPaper, 
 						wxColour colorC = *wxBLACK, bool fHighlight = false)=0;
-	virtual lmUPoint ComputeBestLocation(lmUPoint& uOrg)=0;
+	virtual lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)=0;
 
     // debug
     virtual wxString Dump()=0;
@@ -221,9 +218,6 @@ public:
     //virtual void SetFont(lmPaper* pPaper);
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
 
-	//owning AuxObjs
-	virtual lmUPoint GetReferencePos(lmPaper* pPaper);
-
     // units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths);
     lmTenths LogicalToTenths(lmLUnits uUnits);
@@ -274,6 +268,7 @@ protected:
     virtual lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)=0;
 
 
+
     //properties
     bool            m_fVisible;     // this lmComponentObj is visible on the score
     EStaffObjType   m_nClass;       // type of StaffObj
@@ -317,11 +312,7 @@ public:
 
     virtual void Layout(lmBox* pBox, lmPaper* pPaper, 
 						wxColour colorC = *wxBLACK, bool fHighlight = false);
-    //virtual void SetFont(lmPaper* pPaper) {}
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
-
-	//owning AuxObjs
-	lmUPoint GetReferencePos(lmPaper* pPaper);
 
     // units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths);
@@ -347,6 +338,7 @@ public:
 protected:
     lmAuxObj(bool fIsDraggable = false);
     virtual lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)=0;
+	virtual lmUPoint SetReferencePos(lmPaper* pPaper);
 
 };
 

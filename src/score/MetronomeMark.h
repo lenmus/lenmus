@@ -19,8 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __METRONOMEMARK_H__        //to avoid nested includes
-#define __METRONOMEMARK_H__
+#ifndef __LM_METRONOMEMARK_H__        //to avoid nested includes
+#define __LM_METRONOMEMARK_H__
 
 #if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "MetronomeMark.cpp"
@@ -65,7 +65,7 @@ public:
 
     // implementation of virtual methods defined in abstract base class lmStaffObj
     lmLUnits LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC);
-	lmUPoint ComputeBestLocation(lmUPoint& uOrg);
+	lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper);
 
     // debugging
     wxString Dump();
@@ -77,29 +77,23 @@ public:
 
 private:
     wxString GetLDPNote(lmENoteType nNoteType, int nDots);
-    lmLUnits DrawMetronomeMark(bool fMeasuring, lmPaper* pPaper,
-                               lmLUnits uxPos, lmLUnits uyPos, wxColour colorC = *wxBLACK);
-    lmLUnits DrawText(bool fMeasuring, lmPaper* pPaper,
-                      lmLUnits uxPos, lmLUnits uyPos, wxColour colorC);
-    lmLUnits DrawSymbol(bool fMeasuring, lmPaper* pPaper, lmShapeGlyph* pShape,
-                        lmLUnits uxPos, lmLUnits uyPos, wxColour colorC);
     lmEGlyphIndex SelectGlyph(lmENoteType nNoteType, int nDots);
 
+	lmLUnits AddSymbolShape(lmCompositeShape* pShape, lmPaper* pPaper, lmEGlyphIndex nGlyph,
+							wxFont* pFont, lmUPoint uPos, wxColour colorC = *wxBLACK);
+	lmLUnits AddTextShape(lmCompositeShape* pShape, lmPaper* pPaper,
+							wxString sText, lmUPoint uPos, wxColour colorC = *wxBLACK);
+
+
     EMetronomeMarkType  m_nMarkType;
-    lmENoteType           m_nLeftNoteType;
+    lmENoteType			m_nLeftNoteType;
     int                 m_nLeftDots;
-    lmENoteType           m_nRightNoteType;
+    lmENoteType			m_nRightNoteType;
     int                 m_nRightDots;
     int                 m_nTicksPerMinute;
     bool                m_fParentheses;         // enclose metronome mark between parentheses
 
-    //shapes for rendering note symbols
-    lmShapeGlyph*       m_pLeftNoteShape;
-    lmShapeGlyph*       m_pRightNoteShape;
-    lmShapeText*        m_pTextShape;
-
-
 };
 
-#endif    // __METRONOMEMARK_H__
+#endif    // __LM_METRONOMEMARK_H__
 

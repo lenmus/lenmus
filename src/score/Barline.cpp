@@ -112,7 +112,7 @@ wxString lmBarline::SourceXML(int nIndent)
     return sSource;
 }
 
-lmUPoint lmBarline::ComputeBestLocation(lmUPoint& uOrg)
+lmUPoint lmBarline::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
 	// if no location is specified in LDP source file, this method is invoked from
 	// base class to ask derived object to compute a suitable position to
@@ -139,7 +139,7 @@ lmLUnits lmBarline::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
         new lmShapeBarline(this, m_nBarlineType, uxPos, uyTop, uyBottom, m_uThinLineWidth,
                            m_uThickLineWidth, m_uSpacing, m_uRadius, colorC);
 	pBox->AddShape(pShape);
-    m_pShape2 = pShape;
+    m_pShape = pShape;
     return pShape->GetBounds().GetWidth();
 
 }

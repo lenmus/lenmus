@@ -71,12 +71,6 @@ lmStaff::~lmStaff()
 
 }
 
-lmUPoint lmStaff::GetReferencePos(lmPaper* pPaper)
-{
-	//TODO
-	return lmUPoint(0.0, 0.0);
-}
-
 lmLUnits lmStaff::GetHeight()
 {
     // returns the height (in logical units) of the staff without margins, that is, the

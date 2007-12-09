@@ -52,14 +52,9 @@ lmAuxObj::lmAuxObj(bool fIsDraggable) :
 void lmAuxObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC,
 					  bool fHighlight)
 {
+	SetReferencePos(pPaper);
 	lmUPoint uPos = ComputeObjectLocation(pPaper);
     LayoutObject(pBox, pPaper, uPos, colorC);
-}
-
-lmUPoint lmAuxObj::GetReferencePos(lmPaper* pPaper)
-{
-	//TODO
-	return lmUPoint(0.0, 0.0);
 }
 
 lmLUnits lmAuxObj::TenthsToLogical(lmTenths nTenths)
@@ -82,6 +77,15 @@ wxFont* lmAuxObj::GetSuitableFont(lmPaper* pPaper)
     return m_pParent->GetSuitableFont(pPaper);
 }
 
+lmUPoint lmAuxObj::SetReferencePos(lmPaper* pPaper)
+{
+	// AuxObj origin is its parent origin
+
+	m_uPaperPos = m_pParent->GetOrigin();
+	return m_uPaperPos;
+}
+
+
 
 
 
@@ -95,7 +99,7 @@ lmFermata::lmFermata(lmEPlacement nPlacement)
     m_nPlacement = nPlacement;
 }
 
-lmUPoint lmFermata::ComputeBestLocation(lmUPoint& uOrg)
+lmUPoint lmFermata::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
 	// if no location is specified in LDP source file, this method is invoked from
 	// base class to ask derived object to compute a suitable position to
@@ -105,32 +109,60 @@ lmUPoint lmFermata::ComputeBestLocation(lmUPoint& uOrg)
 	lmUPoint uPos = uOrg;
 
 	// compute y location
-	if (m_nPlacement == ep_Above)
+	bool fAbove = IsAbove();
+	if (fAbove)
 		uPos.y -= ((lmStaffObj*)m_pParent)->TenthsToLogical(70);
 	else
 		uPos.y -= ((lmStaffObj*)m_pParent)->TenthsToLogical(5);
 
-	//shift the shape to center it on the owner and
+    //create a temporal shape object to get its measurements
+    int nGlyphIndex = (fAbove ? GLYPH_FERMATA_OVER : GLYPH_FERMATA_UNDER);
+    lmShape* pPS = m_pParent->GetShap2();
+    lmShapeGlyph* pFS = 
+		new lmShapeGlyph(this, nGlyphIndex, m_pParent->GetSuitableFont(pPaper),
+						 pPaper, uPos, _T("Fermata"), lmDRAGGABLE);
+
+	//center it on the owner
+	lmLUnits uCenterPos;
+	if (((lmStaffObj*)m_pParent)->GetClass() == eSFOT_NoteRest &&
+		!((lmNoteRest*)m_pParent)->IsRest() )
+	{
+		//it is a note. Center fermata on notehead shape
+		lmShape* pNHS = ((lmShapeNote*)pPS)->GetNoteHead();
+		uCenterPos = pNHS->GetXLeft() + pNHS->GetWidth() / 2.0;
+	}
+	else
+	{
+		//it is not a note. Center fermata on parent shape
+		uCenterPos = pPS->GetXLeft() + pPS->GetWidth() / 2.0;
+	}
+    uPos.x += uCenterPos - (pFS->GetXLeft() + pFS->GetWidth() / 2.0);
+
 	//avoid placing it over the note if surpasses the staff
 	//TODO
-	//	lmShape* pPS = ((lmStaffObj*)m_pParent)->GetShap2();
-	//	lmLUnits uCenterPos;
-	//	if (((lmStaffObj*)m_pParent)->GetClass() == eSFOT_NoteRest &&
-	//		!((lmNoteRest*)m_pParent)->IsRest() )
-	//	{
-	//		//it is a note. Center fermata on notehead shape
-	//		lmShape* pNHS = ((lmShapeNote*)pPS)->GetNoteHead();
-	//		uCenterPos = pNHS->GetXLeft() + pNHS->GetWidth() / 2.0;
-	//	}
-	//	else
-	//	{
-	//		//it is not a note. Center fermata on StaffObj shape
-	//		uCenterPos = pPS->GetXLeft() + pPS->GetWidth() / 2.0;
-	//	}
- //       lmLUnits uxShift = uCenterPos - (pShape->GetXLeft() + pShape->GetWidth() / 2.0);
-	//	pShape->Shift(uxShift, 0.0);
+
+	delete pFS;
 	return uPos;
 
+}
+
+bool lmFermata::IsAbove()
+{
+	//returns true if fermata should be placed above parent object
+
+    if (m_nPlacement == ep_Default) {
+        if (((lmNoteRest*)m_pParent)->IsRest())
+            return true;
+        else {
+            lmNote* pNote = (lmNote*)m_pParent;
+            if (pNote->GetNoteType() <= eWhole || pNote->StemGoesDown())
+                return true;
+            else
+                return false;
+        }
+    }
+    else
+        return (m_nPlacement == ep_Above);
 }
 
 lmLUnits lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
@@ -139,28 +171,13 @@ lmLUnits lmFermata::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wx
     // creating the shape object and adding it to the graphical model. 
     // Paper cursor must be used as the base for positioning.
 
-    bool fAboveNote = true;
-    if (m_nPlacement == ep_Default) {
-        if (((lmNoteRest*)m_pParent)->IsRest())
-            fAboveNote = true;
-        else {
-            lmNote* pNote = (lmNote*)m_pParent;
-            if (pNote->GetNoteType() <= eWhole || pNote->StemGoesDown())
-                fAboveNote = true;
-            else
-                fAboveNote = false;
-        }
-    }
-    else
-        fAboveNote = (m_nPlacement == ep_Above);
-
     //create the shape object
-    int nGlyphIndex = (fAboveNote ? GLYPH_FERMATA_OVER : GLYPH_FERMATA_UNDER);
+    int nGlyphIndex = (IsAbove() ? GLYPH_FERMATA_OVER : GLYPH_FERMATA_UNDER);
     lmShapeGlyph* pShape = 
 		new lmShapeGlyph(this, nGlyphIndex, m_pParent->GetSuitableFont(pPaper),
 						 pPaper, uPos, _T("Fermata"), lmDRAGGABLE, colorC);
 	pBox->AddShape(pShape);
-    m_pShape2 = pShape;
+    m_pShape = pShape;
 
 	return pShape->GetWidth();
 }
@@ -230,7 +247,7 @@ wxFont* lmLyric::GetSuitableFont(lmPaper* pPaper)
 	return pFont;
 }
 
-lmUPoint lmLyric::ComputeBestLocation(lmUPoint& uOrg)
+lmUPoint lmLyric::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
 	// if no location is specified in LDP source file, this method is invoked from
 	// base class to ask derived object to compute a suitable position to
@@ -376,7 +393,7 @@ wxString lmScoreLine::Dump()
 
 }
 
-lmUPoint lmScoreLine::ComputeBestLocation(lmUPoint& uOrg)
+lmUPoint lmScoreLine::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
 	// if no location is specified in LDP source file, this method is invoked from
 	// base class to ask derived object to compute a suitable position to
@@ -405,7 +422,7 @@ lmLUnits lmScoreLine::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
                                           uWidth, uBoundsExtraWidth, m_nColor,
                                           _T("GraphLine"), eEdgeNormal);
 	pBox->AddShape(pShape);
-    m_pShape2 = pShape;
+    m_pShape = pShape;
     return pShape->GetBounds().GetWidth();
 
 }

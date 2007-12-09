@@ -110,12 +110,6 @@ lmScore::~lmScore()
 
 }
 
-lmUPoint lmScore::GetReferencePos(lmPaper* pPaper)
-{
-	//TODO
-	return lmUPoint(0.0, 0.0);
-}
-
 lmLUnits lmScore::TenthsToLogical(lmTenths nTenths)
 {
 	//TODO

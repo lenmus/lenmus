@@ -396,7 +396,7 @@ void lmNote::CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, 
     //create the container shape and add it to the box
     lmShapeNote* pNoteShape = new lmShapeNote(this, uxLeft, uyTop, colorC);
 	pBox->AddShape(pNoteShape);
-    m_pShape2 = pNoteShape;
+    m_pShape = pNoteShape;
 }
 
 
@@ -404,7 +404,7 @@ void lmNote::CreateContainerShape(lmBox* pBox, lmLUnits uxLeft, lmLUnits uyTop, 
 // implementation of virtual methods defined in base abstract class lmNoteRest
 //====================================================================================================
 
-lmUPoint lmNote::ComputeBestLocation(lmUPoint& uOrg)
+lmUPoint lmNote::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
 	// if no location is specified in LDP source file, this method is invoked from
 	// base class to ask derived object to compute a suitable position to
@@ -1221,7 +1221,7 @@ int lmNote::GetPosOnStaff()
     }
 }
 
-const lmEAccidentals  lmNote::ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const
+const lmEAccidentals lmNote::ComputeAccidentalsToDisplay(int nCurContextAcc, int nNewAcc) const
 {
     //Current context accidentals for considered step is nCurContextAcc.
     //Note has nNewAcc. This method computes the accidentals to display so that
@@ -1242,8 +1242,10 @@ const lmEAccidentals  lmNote::ComputeAccidentalsToDisplay(int nCurContextAcc, in
         nDisplayAcc = eSharp;
     else if (nNewAcc == -1)
         nDisplayAcc = eFlat;
+    else if (nNewAcc == 0)
+        nDisplayAcc = eNatural;
     else {
-        wxLogMessage(_T("[lmNote::ComputeAccidentalsToDisplay] Non prgrammed case: nNewAcc=%d, nCurContextAcc=%d"),
+        wxLogMessage(_T("[lmNote::ComputeAccidentalsToDisplay] Non programmed case: nNewAcc=%d, nCurContextAcc=%d"),
             nNewAcc, nCurContextAcc );
         wxASSERT(false);
     }

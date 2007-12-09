@@ -37,6 +37,7 @@
     #pragma hdrstop
 #endif
 
+#include <math.h>
 #include "wx/utils.h"
 #include "defs.h"
 
@@ -239,5 +240,67 @@ double round(double val)
 	} else {
 		return floor(val-0.5);
 	}
+}
+
+bool StrToDouble(wxString sValue, double* pNumber)
+{
+    // There is a problem with wxString::ToDouble(). The issue is that apparently
+    // the expected number format varies with locale settings. For example,
+    // in my computer (Spanish locale) instead of decimal point (dot) it only
+    // accepts comma. In LenMus, the real number format is always with dot. Therefore,
+    // I cannot use ToDouble(). So I will look for the dot, extract the integer
+    // part and the fraction part, convert both to double, and combine the results
+	// Returns true if error.
+
+	bool fError = false;
+	int i = sValue.Find(_T("."));
+	if (i != wxNOT_FOUND)
+	{
+		if (i > 0)
+		{
+			wxString sLeft = sValue.Left(i);
+			fError |= !sLeft.ToDouble(pNumber);
+		}
+		else
+			*pNumber = 0.0;
+
+		double rRight;
+		wxString sRight = sValue.substr(i+1);
+		fError |= !sRight.ToDouble(&rRight);
+		if (!fError)
+		{
+			*pNumber += rRight / pow(10.0, (int)sRight.length());
+			return false;
+		}
+	}
+    else if (sValue.ToDouble(pNumber))
+	{
+        return false;
+    }
+	return true;
+
+}
+
+wxString DoubleToStr(double rNumber, int nDecimalDigits)
+{
+    // In LenMus, the real number format is always with dot. Therefore,
+    // I cannot use standard formatting sprintf %f, as decimal point could be
+	// replaced by comma, depending on locale.
+	// So this method edit the number using always a dot and the requested
+	// decimal digits  %.Nf
+
+	//I will use standard C funcion
+	//	double modf(double x, double* intpart);
+	//Breaks x into two parts: the integer part (stored in the object pointed by intpart)
+	//and the fractional part (returned by the function). Each part has the same sign
+	//as x.
+
+	double rIntegerPart;
+	double rDecimalPart = modf(rNumber, &rIntegerPart);
+	double rDecimals = fabs(rDecimalPart) * pow(10.0, nDecimalDigits);
+	//wxLogMessage(_T("[DoubleToStr] number=%.5f, integer=%.2f, decimal part=%.5f, num.decimal=%d, decimals=%.2f"),
+	//	rNumber, rIntegerPart, rDecimalPart, nDecimalDigits, rDecimals);
+	return wxString::Format(_T("%0.f.%0.f"), rIntegerPart, rDecimals );
+
 }
 

@@ -2385,7 +2385,6 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
     double rNumberDouble;
     bool fError = false;
 	wxString sError;
-	int i;
 
     switch(nDataType) {
         case lmBoolean:
@@ -2417,32 +2416,8 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
             return;
 
         case lmNumberDouble:
-            // There is a problem with wxString::ToDouble(). The issue is that apparently
-            // the expected number format varies with locale settings. For example,
-            // in my computer (Spanish locale) instead of decimal point (dot) it only
-            // accepts comma. As, for LenMus, the real number format is always with dot,
-            // I cannot use ToDouble(). So I will look for the dot, extract the integer
-            // part and the fraction part, convert both to double, and combine the results
-			fError = false;
-			i = sValue.Find(_T("."));
-			if (i != wxNOT_FOUND) {
-				if (i > 0) {
-					wxString sLeft = sValue.Left(i);
-					fError |= !sLeft.ToDouble(&rNumberDouble);
-				}
-				else
-					rNumberDouble = 0.0;
-
-				double rRight;
-				wxString sRight = sValue.substr(i+1);
-				fError |= !sRight.ToDouble(&rRight);
-				if (!fError) {
-					rNumberDouble += rRight / (double)(10 ^ sRight.length());
-					pObject->SetOption(sName, rNumberDouble);
-					return;
-				}
-			}
-            else if (sValue.ToDouble(&rNumberDouble)) {
+			if (!StrToDouble(sValue, &rNumberDouble))
+			{
                 pObject->SetOption(sName, rNumberDouble);
                 return;
             }
@@ -3015,7 +2990,7 @@ void lmLDPParser::AnalyzeFont(lmLDPNode* pNode, lmFontInfo* pFont)
 
 }
 
-void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, int* pValue, lmEUnits* pUnits)
+void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, float* pValue, lmEUnits* pUnits)
 {
     // <location> = (x num) | (y num) | (dx num) | (dy num)
     // <num> = number [units]
@@ -3032,11 +3007,11 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, int* pValue, lmEUnits* pUnit
 
     //get value
     wxString sParm = (pNode->GetParameter(1))->GetName();
-    long nValue;
     wxString sValue = sParm;
-    if (!sValue.IsNumber()) {
-        wxString sUnits = sParm.Right(2);
-        sValue = sParm.Left(sParm.length() - 2);
+    wxString sUnits = sParm.Right(2);
+	if (sUnits.at(0) != _T('.') && !sUnits.IsNumber() )
+	{
+		sValue = sParm.Left(sParm.length() - 2);
         if (sUnits == _T("mm")) {
             *pUnits = lmMILLIMETERS;
         }
@@ -3052,14 +3027,20 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, int* pValue, lmEUnits* pUnit
             return;
         }
     }
-    if (sValue.IsNumber()) {
-        sValue.ToLong(&nValue);
-        *pValue = (int)nValue;
+
+	double rNumberDouble;
+	if (!StrToDouble(sValue, &rNumberDouble))
+	{
+        *pValue = (float)rNumberDouble;
     }
+    //if (sValue.IsNumber()) {
+    //    sValue.ToLong(&nValue);
+    //    *pValue = (int)nValue;
+    //}
     else {
         AnalysisError( _T("Element '%s': Invalid value '%s'. It must be a number with optional units. Zero assumed."),
             pNode->GetName().c_str(), sParm.c_str() );
-        *pValue = 0;
+        *pValue = 0.0;
     }
 
 }
@@ -3072,113 +3053,36 @@ void lmLDPParser::AnalyzeLocation(lmLDPNode* pNode, lmLocation* pPos)
     wxASSERT(sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) ||
         sName == m_pTags->TagName(_T("y")) || sName == m_pTags->TagName(_T("dy")) );
 
-    int nValue;
+    float rValue;
     lmEUnits nUnits = lmTENTHS;     //default value
-    AnalyzeLocation(pNode, &nValue, &nUnits);
+    AnalyzeLocation(pNode, &rValue, &nUnits);
     if (sName == m_pTags->TagName(_T("x")) ) {
         //x
-        pPos->x = nValue;
+        pPos->x = rValue;
         pPos->xType = lmLOCATION_USER_ABSOLUTE;
         pPos->xUnits = nUnits;
     }
     else if (sName == m_pTags->TagName(_T("dx")) ) {
         //dx
-        pPos->x = nValue;
+        pPos->x = rValue;
         pPos->xType = lmLOCATION_USER_RELATIVE;
         pPos->xUnits = nUnits;
     }
     else if (sName == m_pTags->TagName(_T("y")) ) {
         //y
-        pPos->y = nValue;
+        pPos->y = rValue;
         pPos->yType = lmLOCATION_USER_ABSOLUTE;
         pPos->yUnits = nUnits;
     }
     else {
         //dy
-        pPos->y = nValue;
+        pPos->y = rValue;
         pPos->yType = lmLOCATION_USER_RELATIVE;
         pPos->yUnits = nUnits;
     }
 
 }
 
-
-////Devuelve, en las variables nX, nY, fXabs y fYabs, los valores obtenidos tras el análisis
-//void lmLDPParser::AnalizarPosicion(lmLDPNode* pNode, _
-//        ByRef nX As Long, ByRef nY As Long, _
-//        ByRef fXAbs As Boolean, ByRef fYAbs As Boolean)
-//
-////<posicion> = (xy ["x<modo><pos>"] ["y<modo><pos>"])
-////
-////<modo> = { r | a }
-////<pos> = num entero con signo opcional
-////
-////R = relativa a origen del compás, A = absoluta, referida a origen del papel.
-////Ejemplos:
-////(xy xa54) // coordenada x: 54 décimas de línea desde el origen del lienzo
-////(xy xr-54) // coordenada x: 54 décimas de línea menos que la x de origen de la barra de inicio del compas
-//
-//    wxASSERT(pNode->GetName() = "XY"
-//    wxASSERT(pNode->GetNumParms() = 1 Or pNode->GetNumParms() = 2
-//
-//    Dim sNum As String, nNum As Long, wxString sData
-//    Dim fAbsoluta As Boolean                //modo: true=absoluta, false=relativa
-//    Dim long iP
-//
-//    //inicializa valores a devolver
-//    nX = 0
-//    fXAbs = false
-//    nY = 0
-//    fYAbs = false
-//
-//    //bucle de análisis de parámetros
-//    for (iP = 1 To pNode->GetNumParms()
-//        //comprueba que el parámetro consta de al menos tres caracteres
-//        sData = (pNode->GetParameter(iP))->GetName();;
-//        if (Len(sData) < 3) {
-//            AnalysisError(wxString::Format(_T("Parámetro de coordenada erróneo <" & sData & _
-//                ">. Se sustituye por xr0."
-//            sData = "xr0"
-//        }
-//
-//        //obtiene el valor numérico de la coordenada
-//        sNum = Mid$(sData, 3)
-//        if (Not IsNumeric(sNum)) {
-//            AnalysisError(wxString::Format(_T("Se esperaba un número con signo opcional (valor de la coordenada) " & _
-//                "pero viene <" & sNum & ">. se supone 0."
-//            sNum = "0"
-//        }
-//        nNum = CLng(sNum)
-//
-//        //analiza la segunda letra para determinar el modo
-//        switch (UCase$(Mid$(sData, 2, 1))
-//            case "R"
-//                fAbsoluta = false
-//            case "A"
-//                fAbsoluta = true
-//            default:
-//                AnalysisError(wxString::Format(_T("Segunda letra de coordena <" & sData & _
-//                    "> no es r ni a. Se supone r: relativa"
-//                fAbsoluta = false
-//        }
-//
-//        //analiza la primera letra y guarda el valor de la coordenada
-//        switch (UCase$(Left$(sData, 1))
-//            case "X"
-//                nX = nNum
-//                fXAbs = fAbsoluta
-//            case "Y"
-//                nY = nNum
-//                fYAbs = fAbsoluta
-//            default:
-//                AnalysisError(wxString::Format(_T("Primera letra de coordena <" & sData & _
-//                    "> no es x ni y. Se ignora esta coordenada."
-//        }
-//
-//    }   // iP
-//
-//}
-//
 ////Devuelve true si hay error, es decir si no añade objeto al pentagrama
 //Function AnalizarDirectivaRepeticion(lmVStaff* pVStaff, lmLDPNode* pNode) As Boolean
 ////<repeticion> = (repeticion <valor> <posicion> )

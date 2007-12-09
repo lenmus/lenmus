@@ -147,7 +147,7 @@ wxString lmKeySignature::SourceXML(int nIndent)
 	return sSource;
 }
 
-lmUPoint lmKeySignature::ComputeBestLocation(lmUPoint& uOrg)
+lmUPoint lmKeySignature::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
 	// if no location is specified in LDP source file, this method is invoked from
 	// base class to ask derived object to compute a suitable position to
@@ -204,7 +204,7 @@ lmCompositeShape* lmKeySignature::CreateShape(lmBox* pBox, lmPaper* pPaper, lmUP
     //create the container shape object
     lmCompositeShape* pShape = new lmCompositeShape(this, _T("Key signature"), lmDRAGGABLE);
 	pBox->AddShape(pShape);
-    m_pShape2 = pShape;
+    m_pShape = pShape;
 
     lmLUnits uSharpPos[8];      //sharps positions, in order of sharps appearance
     lmLUnits uFlatPos[8];       //flats positions, in order of flats appearance

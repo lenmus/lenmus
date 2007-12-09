@@ -142,7 +142,7 @@ wxString lmTimeSignature::SourceXML(int nIndent)
 	return sSource;
 }
 
-lmUPoint lmTimeSignature::ComputeBestLocation(lmUPoint& uOrg)
+lmUPoint lmTimeSignature::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
 	// if no location is specified in LDP source file, this method is invoked from
 	// base class to ask derived object to compute a suitable position to
@@ -219,7 +219,7 @@ lmCompositeShape* lmTimeSignature::CreateShape(lmBox* pBox, lmPaper* pPaper, wxC
 	//create the shape object
     lmCompositeShape* pShape = new lmCompositeShape(this, _T("Time signature"), lmDRAGGABLE);
 	pBox->AddShape(pShape);
-    m_pShape2 = pShape;
+    m_pShape = pShape;
 
 	//loop to create glyphs for the top number
 	long nDigit;

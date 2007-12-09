@@ -593,4 +593,11 @@ extern lmLocation g_tDefaultPos;          // defined in StaffObj.cpp
 extern double round(double val);
 extern float round(float val);
 
+// string methods
+
+extern bool StrToDouble(wxString sValue, double* pNumber);
+extern wxString DoubleToStr(double rNumber, int nDecimalDigits);
+
+
+
 #endif    // __LM_DEFS_H__

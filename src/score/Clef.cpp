@@ -110,7 +110,7 @@ lmEGlyphIndex lmClef::GetGlyphIndex()
 // implementation of virtual methods defined in base abstract class lmStaffObj
 //-----------------------------------------------------------------------------------------
 
-lmUPoint lmClef::ComputeBestLocation(lmUPoint& uOrg)
+lmUPoint lmClef::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
 	// if no location is specified in LDP source file, this method is invoked from
 	// base class to ask derived object to compute a suitable position to
@@ -136,7 +136,7 @@ lmLUnits lmClef::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     lmShapeClef* pShape = new lmShapeClef(this, GetGlyphIndex(), GetSuitableFont(pPaper),
 										  pPaper, uPos, _T("Clef"), lmDRAGGABLE, m_color);
 	pBox->AddShape(pShape);
-    m_pShape2 = pShape;
+    m_pShape = pShape;
 
 	// set total width (incremented in one line for after space)
 	lmLUnits nWidth = pShape->GetWidth();

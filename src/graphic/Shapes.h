@@ -88,6 +88,7 @@ public:
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 	virtual wxBitmap* OnBeginDrag(double rScale);
     virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
+	virtual void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
 	lmUPoint GetObjectOrigin();
 
 

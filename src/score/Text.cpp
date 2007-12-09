@@ -103,7 +103,7 @@ lmShapeTex2* lmScoreText::CreateShape(lmPaper* pPaper)
                            uPos, _T("ScoreText"), lmDRAGGABLE, m_color);
 }
 
-lmUPoint lmScoreText::ComputeBestLocation(lmUPoint& uOrg)
+lmUPoint lmScoreText::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
 	// if no location is specified in LDP source file, this method is invoked from
 	// base class to ask derived object to compute a suitable position to
@@ -126,7 +126,7 @@ lmLUnits lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
     //create the shape object
     lmShapeTex2* pShape = CreateShape(pPaper);
 	pBox->AddShape(pShape);
-    m_pShape2 = pShape;
+    m_pShape = pShape;
 
 	// set total width
 	return pShape->GetWidth();

@@ -57,7 +57,7 @@ lmScoreObj::lmScoreObj(lmScoreObj* pParent)
     m_uPaperPos.y = 0;
     m_uPaperPos.x = 0;
 
-    m_pShape2 = (lmShape*)NULL;
+    m_pShape = (lmShape*)NULL;
 }
 
 lmScoreObj::~lmScoreObj()
@@ -165,7 +165,7 @@ void lmScoreObj::ShiftObject(lmLUnits uLeft)
 { 
     // update shapes' positions when the object is moved
 
-    if (m_pShape2) m_pShape2->Shift(uLeft, 0.0);
+    if (m_pShape) m_pShape->Shift(uLeft, 0.0);
     //wxLogMessage(_T("[lmScoreObj::ShiftObject] shift=%.2f, ID=%d"), uLeft, GetID());
 
 }
@@ -211,14 +211,21 @@ int lmScoreObj::GetPageNumber()
 	//Returns the page number in whith the shape for this ScoreObj is rendered
 	//if no shape returns 0
 
-	if (!m_pShape2) return 0;
-	return m_pShape2->GetPageNumber();
+	if (!m_pShape) return 0;
+	return m_pShape->GetPageNumber();
 }
 
 wxFont* lmScoreObj::GetSuitableFont(lmPaper* pPaper)
 {
 	//returns the font to use to render this ScoreObj
 	return (wxFont*)NULL;
+}
+
+lmUPoint lmScoreObj::SetReferencePos(lmPaper* pPaper)
+{
+    m_uPaperPos.x = pPaper->GetCursorX();
+    m_uPaperPos.y = pPaper->GetCursorY();
+	return m_uPaperPos;
 }
 
 
@@ -269,19 +276,20 @@ wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
         if (m_tPos.xType == lmLOCATION_USER_RELATIVE)
 		{
 			if (m_tPos.xUnits == lmLUNITS)
-				sPosX = wxString::Format(_T("dx:%.0f"), round(LogicalToTenths(m_tPos.x)) );
+				sPosX = wxString::Format(_T("dx:%s"), 
+							DoubleToStr((double)LogicalToTenths(m_tPos.x), 4) );
 			else if (m_tPos.xUnits == lmTENTHS)
-				sPosX = wxString::Format(_T("dx:%.0f"), round(m_tPos.x) );
+				sPosX = wxString::Format(_T("dx:%s"), DoubleToStr((double)m_tPos.x, 4) );
 		}
         else
 		{
 			//absolute. Convert to relative
 			if (m_tPos.xUnits == lmLUNITS)
-				sPosX = wxString::Format(_T("dx:%.0f"), 
-							round(LogicalToTenths(m_tPos.x - uPaperPos.x)));
+				sPosX = wxString::Format(_T("dx:%s"), 
+							DoubleToStr((double)LogicalToTenths(m_tPos.x - uPaperPos.x), 4) );
 			else if (m_tPos.xUnits == lmTENTHS)
-				sPosX = wxString::Format(_T("dx:%.0f"), 
-							round(m_tPos.x - LogicalToTenths(uPaperPos.x)));
+				sPosX = wxString::Format(_T("dx:%.4f"), 
+							DoubleToStr((double)(m_tPos.x - LogicalToTenths(uPaperPos.x)), 4) );
 		}
 
         //units
@@ -307,19 +315,20 @@ wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
         if (m_tPos.yType == lmLOCATION_USER_RELATIVE)
 		{
 			if (m_tPos.xUnits == lmLUNITS)
-				sPosY = wxString::Format(_T("dy:%.0f"), round(LogicalToTenths(m_tPos.y)) );
+				sPosY = wxString::Format(_T("dy:%s"), 
+								DoubleToStr((double)LogicalToTenths(m_tPos.y), 4) );
 			else if (m_tPos.xUnits == lmTENTHS)
-				sPosY = wxString::Format(_T("dy:%.0f"), round(m_tPos.y) );
+				sPosY = wxString::Format(_T("dy:%s"), DoubleToStr((double)m_tPos.y, 4) );
 		}
         else 
 		{
 			//absolute. Convert to relative
 			if (m_tPos.yUnits == lmLUNITS)
-				sPosY = wxString::Format(_T("dy:%.0f"), 
-							round(LogicalToTenths(m_tPos.y - uPaperPos.y)));
+				sPosY = wxString::Format(_T("dy:%s"), 
+							DoubleToStr((double)LogicalToTenths(m_tPos.y - uPaperPos.y), 4) );
 			else if (m_tPos.yUnits == lmTENTHS)
-				sPosY = wxString::Format(_T("dy:%.0f"), 
-							round(m_tPos.y - LogicalToTenths(uPaperPos.y)));
+				sPosY = wxString::Format(_T("dy:%s"), 
+							DoubleToStr((double)(m_tPos.y - LogicalToTenths(uPaperPos.y)), 4) );
 		}
 
         //units
@@ -342,11 +351,11 @@ wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
 
 lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
 { 
-	lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+	lmUPoint uPos = GetOrigin();
 
 	//if default location, ask derived object to compute the best position for itself
     if (m_tPos.xType == lmLOCATION_DEFAULT || m_tPos.yType == lmLOCATION_DEFAULT)
-		uPos = ComputeBestLocation(uPos);
+		uPos = ComputeBestLocation(uPos, pPaper);
 
 
     if (m_tPos.xType == lmLOCATION_DEFAULT)
@@ -379,9 +388,9 @@ lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
 		//the position was fixed by user (either in source file or by dragging object)
 		//Use it
 		if (m_tPos.xUnits == lmLUNITS)
-			uPos.x = pPaper->GetCursorX() + m_tPos.x;
+			uPos.x += m_tPos.x;
 		else if (m_tPos.xUnits == lmTENTHS)
-			uPos.x = pPaper->GetCursorX() + TenthsToLogical( m_tPos.x );
+			uPos.x += TenthsToLogical( m_tPos.x );
 	}
 	else
 		wxASSERT(false);
@@ -418,9 +427,9 @@ lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
 		//the position was fixed by user (either in source file or by dragging object)
 		//Use it
 		if (m_tPos.yUnits == lmLUNITS)
-			uPos.y = pPaper->GetCursorY() + m_tPos.y;
+			uPos.y += m_tPos.y;
 		else if (m_tPos.xUnits == lmTENTHS)
-			uPos.y = pPaper->GetCursorY() + TenthsToLogical( m_tPos.y );
+			uPos.y += TenthsToLogical( m_tPos.y );
 	}
 	else
 		wxASSERT(false);
@@ -453,16 +462,9 @@ lmStaffObj::~lmStaffObj()
 {
 }
 
-lmUPoint lmStaffObj::GetReferencePos(lmPaper* pPaper)
-{
-    m_uPaperPos.x = pPaper->GetCursorX();
-    m_uPaperPos.y = pPaper->GetCursorY();
-	return lmUPoint(pPaper->GetCursorX(), pPaper->GetCursorY());
-}
-
 void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHighlight)
 {
-	lmUPoint uOrg = GetReferencePos(pPaper);
+	lmUPoint uOrg = SetReferencePos(pPaper);
 	lmUPoint uPos = ComputeObjectLocation(pPaper);			// compute location
 
 	lmLUnits uWidth;
@@ -476,7 +478,7 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
 		//Create an invisible shape, to store the StaffObj position
 		lmShapeInvisible* pShape = new lmShapeInvisible(this, uOrg);
 		pBox->AddShape(pShape);
-		m_pShape2 = pShape;
+		m_pShape = pShape;
 		uWidth = 0;
 	}
 
@@ -501,7 +503,7 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
 void lmStaffObj::ShiftObject(lmLUnits uLeft)
 { 
     // update this StaffObj shape position
-    if (m_pShape2) m_pShape2->Shift(uLeft, 0.0);    //(uLeft - m_uPaperPos.x, 0.0);
+    if (m_pShape) m_pShape->Shift(uLeft, 0.0);    //(uLeft - m_uPaperPos.x, 0.0);
 
     // shift also AuxObjs attached to this StaffObj
     if (m_pAuxObjs)

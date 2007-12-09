@@ -99,7 +99,7 @@ lmEGlyphIndex lmRest::GetGlyphIndex()
 // implementation of virtual methods defined in base abstract class lmNoteRest
 //====================================================================================================
 
-lmUPoint lmRest::ComputeBestLocation(lmUPoint& uOrg)
+lmUPoint lmRest::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
 	// if no location is specified in LDP source file, this method is invoked from
 	// base class to ask derived object to compute a suitable position to
@@ -130,7 +130,7 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     //create the container shape and add it to the box
     lmCompositeShape* pRestShape = new lmCompositeShape(this, _T("Rest"), lmDRAGGABLE);
 	pBox->AddShape(pRestShape);
-    m_pShape2 = pRestShape;
+    m_pShape = pRestShape;
 
     ////if this is the first note/rest of a beam, create the beam
     ////AWARE This must be done before using stem information, as the beam could
@@ -162,7 +162,7 @@ lmLUnits lmRest::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
         }
     }
 
-	return m_pShape2->GetWidth();
+	return m_pShape->GetWidth();
 }
 
 void lmRest::DoVerticalShift(lmTenths yShift)

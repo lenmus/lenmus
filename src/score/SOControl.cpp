@@ -119,7 +119,7 @@ wxString lmSOControl::SourceLDP(int nIndent)
     return sSource;
 }
 
-lmUPoint lmSOControl::ComputeBestLocation(lmUPoint& uOrg)
+lmUPoint lmSOControl::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 {
 	// if no location is specified in LDP source file, this method is invoked from
 	// base class to ask derived object to compute a suitable position to

@@ -215,9 +215,6 @@ public:
 
 	//---- virtual methods of base class -------------------------
 
-	//owning AuxObjs
-	lmUPoint GetReferencePos(lmPaper* pPaper);
-
     // units conversion
     lmLUnits TenthsToLogical(lmTenths nTenths);
     lmTenths LogicalToTenths(lmLUnits uUnits);
