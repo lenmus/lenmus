@@ -44,7 +44,8 @@
 #include "wx/dragimag.h"
 #endif
 
-#include "vector"
+#include <vector>
+#include <list>
 
 #include "../score/defs.h"
 
@@ -69,10 +70,7 @@ enum lmEGMOType
     eGMO_BoxSliceInstr,
     eGMO_BoxSliceVStaff,
 
-    eGMO_BoxInstrSlice,
-    eGMO_BoxVStaffSlice,
-
-    eGMO_LastBox,   //end of box objects
+	eGMO_LastBox,   //end of box objects
 
     // shapes
     eGMO_Shape = eGMO_LastBox,
@@ -146,6 +144,8 @@ public:
     //info
     inline lmScoreObj* GetScoreOwner() { return m_pOwner; }
 	virtual int GetPageNumber() const { return 0; }
+    inline lmUPoint GetOrigin() const { return m_uOrigin; }
+    inline void SetOrigin(lmUPoint& uOrg) {m_uOrigin = uOrg; } 
 
 	//contextual menu
 	virtual void OnRightClick(lmController* pCanvas, const lmDPoint& vPos, int nKeys);
@@ -182,6 +182,9 @@ protected:
     //dragging
     bool			m_fDraggable;		//this object is draggable
 
+    //origin
+    lmUPoint        m_uOrigin;          //origin point to use as reference
+
 };
 
 //------------------------------------------------------------------------------
@@ -189,6 +192,7 @@ protected:
 //abstract class to derive all lmBoxXXXXX objects
 
 class lmShape;
+class lmBoxSystem;
 
 class lmBox : public lmGMObject
 {
@@ -200,6 +204,9 @@ public:
     //implementation of virtual methods from base class
     virtual wxString Dump(int nIndent)=0;
 	virtual int GetPageNumber() const { return 0; }
+
+	//owners and related
+	virtual lmBoxSystem* GetOwnerSystem()=0;
 
 
 protected:
@@ -253,27 +260,37 @@ public:
 
 	//shapes can be attached to other shapes
 	int Attach(lmShape* pShape, lmEAttachType nType = eGMA_Unknown);
+	void Detach(lmShape* pShape);
 
     //Debug related methods
     virtual wxString Dump(int nIndent) = 0;
     wxString DumpSelRect();
 
+	//visibility
+	inline bool IsVisible() const { return m_fVisible; }
+	void SetVisible(bool fVisible) { m_fVisible = fVisible; }
+
     //info
+	virtual int GetPageNumber() const;
+
+	//owners and related
 	inline lmBox* GetOwnerBox() { return m_pOwnerBox; }
 	inline void SetOwnerBox(lmBox* pOwnerBox) { m_pOwnerBox = pOwnerBox; }
-	virtual int GetPageNumber() const;
+	lmBoxSystem* GetOwnerSystem() { return m_pOwnerBox->GetOwnerSystem(); }
 
 	
 
 protected:
     lmShape(lmEGMOType m_nType, lmScoreObj* pOwner, wxString sName=_T("Shape"),
-			bool fDraggable = false, wxColour color=*wxBLACK);
+			bool fDraggable = false, wxColour color = *wxBLACK,
+			bool fVisible = true);
     void RenderCommon(lmPaper* pPaper, wxColour colorC);
     void RenderCommon(lmPaper* pPaper);
 	void InformAttachedShapes(lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent);
 
 
 	lmBox*		m_pOwnerBox;	//box in which this shape is included
+	bool		m_fVisible;
 
 	typedef struct lmAtachPoint_Struct {
 		lmShape*		pShape;
@@ -281,7 +298,7 @@ protected:
 	} lmAtachPoint;
 
 	//list of shapes attached to this one
-	std::vector<lmAtachPoint*>	m_cAttachments;
+	std::list<lmAtachPoint*>	m_cAttachments;
 	
 	wxColour	m_color;
 
@@ -299,10 +316,14 @@ public:
     virtual void Render(lmPaper* pPaper, wxColour color)=0;
 	virtual void Render(lmPaper* pPaper) { Render(pPaper, m_color); }
 
+    //dragging
+	virtual wxBitmap* OnBeginDrag(double rScale) { return (wxBitmap*)NULL; }
+    virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos) { return uPos; };
 
 protected:
     lmSimpleShape(lmEGMOType m_nType, lmScoreObj* pOwner, wxString sName=_T("SimpleShape"),
-				  bool fDraggable = false, wxColour color=*wxBLACK);
+				  bool fDraggable = false, wxColour color = *wxBLACK,
+				  bool fVisible = true);
 
 
 };
@@ -312,7 +333,8 @@ class lmCompositeShape : public lmShape
 {
 public:
     lmCompositeShape(lmScoreObj* pOwner, wxString sName = _T("CompositeShape"),
-                     bool fDraggable = false, lmEGMOType nType = eGMO_ShapeComposite);
+                     bool fDraggable = false, lmEGMOType nType = eGMO_ShapeComposite,
+					 bool fVisible = true);
     virtual ~lmCompositeShape();
 
     //dealing with components

@@ -233,12 +233,60 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
 	//will just add the stem shape
 	bool fFlagNeeded = !pBaseNote->IsBeamed() && pBaseNote->GetNoteType() > eQuarter;
 
+//_______________________________
+//
+
+	//if flag to be drawn, adjust stem size and compute flag position
+	lmLUnits uxFlag, uyFlag;
+	lmEGlyphIndex nGlyph;
+    if (fFlagNeeded) {
+		nGlyph = pBaseNote->GetGlyphForFlag();
+        lmLUnits uStemLength = fabs(uyStemStart - uyStemEnd);
+        // to measure flag and stem I am going to use some glyph data. These
+        // data is in FUnits but as 512 FU are 1 line (10 tenths) it is simple
+        // to convert these data into tenths: just divide FU by 51.2
+        float rFlag, rMinStem;
+        if (pBaseNote->StemGoesDown()) {
+            rFlag = fabs((2048.0 - (float)aGlyphsInfo[nGlyph].Bottom) / 51.2 );
+            //rMinStem = ((float)aGlyphsInfo[nGlyph].Top - 2048.0 + 128.0) / 51.2 ;
+        }
+        else {
+            if (pBaseNote->GetNoteType() == eEighth)
+                rFlag = ((float)aGlyphsInfo[nGlyph].Top) / 51.2 ;
+            else if (pBaseNote->GetNoteType() == e16th)
+                rFlag = ((float)aGlyphsInfo[nGlyph].Top + 128.0) / 51.2 ;
+            else
+                rFlag = ((float)aGlyphsInfo[nGlyph].Top + 512.0) / 51.2 ;
+
+            //rMinStem = fabs( (float)aGlyphsInfo[nGlyph].Bottom / 51.2 );
+        }
+        lmLUnits uFlag = pVStaff->TenthsToLogical(rFlag, nStaff);
+        //lmLUnits uMinStem = pVStaff->TenthsToLogical(rMinStem, nStaff);
+        //uStemLength = wxMax((uStemLength > uFlag ? uStemLength-uFlag : 0), uMinStem);
+        if (pBaseNote->StemGoesDown()) {
+			//uyStemEnd = m_pMinNote->GetYStartStem() + uStemLength;
+			uyFlag = uyStemEnd - uFlag - pVStaff->TenthsToLogical(20);
+		}
+		else {
+            //uyStemEnd = m_pMaxNote->GetYStartStem() - uStemLength;
+			uyFlag = uyStemEnd - (pVStaff->TenthsToLogical(60) -uFlag);	//uyStemEnd - uFlag ;
+		}
+
+  //      uyFlag = uyStemStart + (pBaseNote->StemGoesDown() ? uStemLength : -uStemLength);
+		//uyStemEnd = uyFlag + (pBaseNote->StemGoesDown() ? uFlag : -uFlag);;
+  //      //SetStemLength(uStemLength + uFlag);
+		//uyFlag = uyStemEnd - (pBaseNote->StemGoesDown() ? -uFlag : uFlag);
+    }
+
+//________________________________
+//
+
 	//create the stem shape
 	lmShapeNote* pShapeNote = (lmShapeNote*)pBaseNote->GetShap2(); 
     #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
     lmLUnits uStemThickness = pVStaff->TenthsToLogical(STEM_WIDTH, nStaff) / 10;
-	wxLogMessage(_T("[lmChord::AddStemShape] Shape xPos=%.2f, yTop=%.2f, yBottom=%.2f, fDown=%s)"),
-		uxStem, uyStemStart, uyStemEnd, (pBaseNote->StemGoesDown() ? _T("down") : _T("up")) );
+	wxLogMessage(_T("[lmChord::AddStemShape] Shape xPos=%.2f, yStart=%.2f, yEnd=%.2f, yFlag=%.2f, fDown=%s)"),
+		uxStem, uyStemStart, uyStemEnd, uyFlag, (pBaseNote->StemGoesDown() ? _T("down") : _T("up")) );
     lmShapeStem* pStem = 
         new lmShapeStem(pShapeNote->GetScoreOwner(), uxStem, uyStemStart, uyStemEnd,
 						pBaseNote->StemGoesDown(), uStemThickness, colorC);
@@ -254,11 +302,13 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
     //add the flag 
 	if (fFlagNeeded)
 	{
-		lmLUnits uxFlag = pBaseNote->GetXStemLeft();
+		uxFlag = (pBaseNote->StemGoesDown() ?
+					pBaseNote->GetXStemLeft() : pBaseNote->GetXStemRight());
 		lmEGlyphIndex nGlyph = pBaseNote->GetGlyphForFlag();
-		lmLUnits yPos = uyStemEnd + pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, nStaff);
+		//lmLUnits yPos = uyStemEnd + pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, nStaff);
+		wxLogMessage(_T("[lmChord::AddStemShape] yFlag=%.2f)"), uyFlag);
 		lmShapeGlyph* pShape = new lmShapeGlyph(pShapeNote->GetScoreOwner(), nGlyph, pFont,
-                                                pPaper, lmUPoint(uxFlag, yPos), _T("Flag"));
+                                                pPaper, lmUPoint(uxFlag, uyFlag), _T("Flag"));
 		pShapeNote->AddFlag(pShape);
 	}
 
@@ -484,7 +534,7 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
 		if (iN > 1) //skip base note
 		{
 			//assign paper pos to this note.
-			pNote->SetOrigin(m_pBaseNote->GetOrigin());
+			pNote->SetReferencePos(m_pBaseNote->GetReferencePaperPos());
 		}
 		//set the font
 		//pNote->SetFont(pPaper);

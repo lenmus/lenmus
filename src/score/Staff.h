@@ -80,6 +80,8 @@ public:
     lmTimeSignature* GetLastTime();
     lmContext* GetLastContext();
 
+    wxString Dump();
+
 private:
     lmLUnits    m_uLineThickness;	// in logical units
     int         m_nNumLines;

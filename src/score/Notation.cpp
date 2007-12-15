@@ -128,6 +128,22 @@ lmUPoint lmAnchor::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 
 lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxColour colorC)
 {
+    //DBG ------------------------------------------------------------------------------
+    //compute position
+    lmLUnits uyStart = uPos.y - m_pParent->TenthsToLogical(10);
+    lmLUnits uyEnd = uPos.y + m_pParent->TenthsToLogical(60);
+    lmLUnits uWidth = m_pParent->TenthsToLogical(1);
+    lmLUnits uBoundsExtraWidth = m_pParent->TenthsToLogical(2);
+
+    //create the shape
+    lmShapeLine* pShape = new lmShapeLine(this, uPos.x, uyStart, uPos.x, uyEnd,
+                                          uWidth, uBoundsExtraWidth, *wxRED,
+                                          _T("Anchor"), eEdgeNormal);
+	pBox->AddShape(pShape);
+    m_pShape = pShape;
+
+    //END DBG --------------------------------------------------------------------------
+
     // set total width
     return 0;
 
@@ -136,8 +152,8 @@ lmLUnits lmAnchor::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxC
 wxString lmAnchor::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tAnchor    \tTimePos=%.2f\n"),
-        m_nId, m_rTimePos );
+        _T("%d\tAnchor    \tTimePos=%.2f, Org=(%.2f, %.2f)\n"),
+        m_nId, m_rTimePos, m_uOrg.x, m_uOrg.y );
 	sDump += lmStaffObj::Dump();
     return sDump;
             

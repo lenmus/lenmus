@@ -90,6 +90,7 @@ lmBoxSlice* lmBoxSlice::FindMeasureAt(lmUPoint& pointL)
 
 lmGMObject* lmBoxSlice::FindGMObjectAtPosition(lmUPoint& pointL)
 {
+	wxLogMessage(_T("[lmBoxSlice::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
     //look in shapes collection
     lmShape* pShape = FindShapeAtPosition(pointL);
     if (pShape) return pShape;
@@ -161,21 +162,6 @@ void lmBoxSlice::UpdateXRight(lmLUnits xRight)
     }
 }
 
-void lmBoxSlice::SystemXRightUpdated(lmLUnits xRight)
-{
-	// During layout there is a need to update initial computations about this
-	// box slice position. This method is invoked when the right x position of
-	// the parent system has been updated. It is only invoked for the first
-	// slice of the system in order to update the ShapeStaff final position
-
-	//propagate change
-    for (int i=0; i < (int)m_SliceInstr.size(); i++)
-    {
-        m_SliceInstr[i]->SystemXRightUpdated(xRight);
-    }
-
-}
-
 void lmBoxSlice::CopyYBounds(lmBoxSlice* pSlice)
 {
 	//This method is only invoked during layout phase, when the number of measures in the
@@ -185,8 +171,6 @@ void lmBoxSlice::CopyYBounds(lmBoxSlice* pSlice)
 
 	SetYTop(pSlice->GetYTop());
 	SetYBottom(pSlice->GetYBottom());
-
-
 
 	//propagate request
     for (int i=0; i < (int)m_SliceInstr.size(); i++)

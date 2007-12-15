@@ -81,13 +81,31 @@ lmUPoint lmAuxObj::SetReferencePos(lmPaper* pPaper)
 {
 	// AuxObj origin is its parent origin
 
-	m_uPaperPos = m_pParent->GetOrigin();
+	m_uPaperPos = m_pParent->GetReferencePaperPos();
 	return m_uPaperPos;
 }
 
+void lmAuxObj::SetOrigin(lmUPoint uPos)
+{
+	// AuxObj origin is its parent origin, so ignore received point
+    m_uOrg = GetOrigin();
+    wxLogMessage(_T("[lmAuxObj::SetOrigin] %.2f, %.2f"), m_uOrg.x, m_uOrg.y);
+}
 
+lmUPoint lmAuxObj::GetOrigin()
+{
+	// AuxObj origin is its parent origin
+	lmUPoint uOrg = m_pParent->GetOrigin();
+    return m_pParent->GetOrigin();
+}
 
+void lmAuxObj::StoreOriginAndShiftShapes(lmLUnits uLeft)
+{ 
+    // update this StaffObj origin and shape position
+    SetOrigin(lmUPoint(0.0, 0.0));   //the parameter value desn't matter
+    if (m_pShape) m_pShape->Shift(uLeft, 0.0);
 
+}
 
 //========================================================================================
 // lmFermata implementation
@@ -194,7 +212,7 @@ wxString lmFermata::SourceLDP(int nIndent)
         sSource += _T(" below");
 
 	//location
-    sSource += SourceLDP_Location( ((lmStaffObj*)m_pParent)->GetOrigin() );
+    sSource += SourceLDP_Location( ((lmStaffObj*)m_pParent)->GetReferencePaperPos() );
 
 	//close element
 	sSource += _T(")");
@@ -210,8 +228,8 @@ wxString lmFermata::SourceXML(int nIndent)
 
 wxString lmFermata::Dump()
 {
-	//TODO
-    wxString sDump = _T("lmFermata");
+    wxString sDump = wxString::Format(
+        _T("Fermata: org=(%.2f, %.2f)\n"), m_uOrg.x, m_uOrg.y);
     return sDump;
 
 }
@@ -287,7 +305,7 @@ void lmLyric::SetOwner(lmNoteRest* pOwner)
 //    //*/
 //
 //    //// save paper position and prepare font
-//    //m_uPaperPos = m_pOwner->GetOrigin();
+//    //m_uPaperPos = m_pOwner->GetReferencePaperPos();
 //    //SetFont(pPaper);
 //
 //    //// prepare DC
@@ -341,8 +359,8 @@ wxString lmLyric::Dump()
 {
 	//TODO
     wxString sDump = wxString::Format(
-        _T("\t-->lmLyric\t%s\tnumLine=%d, paperPos=(%d, %d)\n"),
-        m_sText.c_str(), m_nNumLine, m_uPaperPos.x, m_uPaperPos.y);
+        _T("\t-->lmLyric\t%s\tnumLine=%d, Org=(%.2f, %.2f)\n"),
+        m_sText.c_str(), m_nNumLine, m_uOrg.x, m_uOrg.y);
     return sDump;
 
 }

@@ -58,6 +58,9 @@ public:
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
+	wxBitmap* OnBeginDrag(double rScale);
+
+
 	//access to info
 	inline lmLUnits GetXEnd() const { return m_uxPos + m_uWidth; }
 

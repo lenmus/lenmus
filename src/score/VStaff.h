@@ -34,6 +34,7 @@ class lmMetronomeMark;
 class lmBoxSliceVStaff;
 
 
+
 class lmVStaff : public lmScoreObj
 {
 public:
@@ -109,8 +110,7 @@ public:
     int GetNumMeasures();
 
     // rendering methods
-    lmLUnits LayoutStaffLines(lmBoxSliceVStaff* pBox, lmLUnits xFrom, lmLUnits xTo,
-						     lmLUnits yPos);
+    lmLUnits LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, lmLUnits yPos);
     void DrawProlog(bool fMeasuring, int nMeasure, bool fDrawTimekey, lmPaper* pPaper);
 	void AddPrologShapes(lmBoxSliceVStaff* pBSV, int nMeasure, bool fDrawTimekey, lmPaper* pPaper);
     void NewLine(lmPaper* pPaper);
@@ -199,9 +199,6 @@ private:
 
 };
 
-// declare a list of staves class
-#include "wx/list.h"
-WX_DECLARE_LIST(lmVStaff, VStavesList);
 
 
 #endif    // __LM_VSTAFF_H__

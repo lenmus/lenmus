@@ -64,13 +64,39 @@ lmBoxSystem::~lmBoxSystem()
         delete m_Slices[i];
     }
     m_Slices.clear();
+
+    //delete staff shapes
+    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
+    {
+        delete m_ShapeStaff[i];
+    }
+    m_ShapeStaff.clear();
 }
+
+void lmBoxSystem::AddShape(lmShape* pShape)
+{
+	//override to avoid adding the staff to the shapes list
+	if (pShape->GetType() == eGMO_ShapeStaff)
+	{
+		m_ShapeStaff.push_back( (lmShapeStaff*)pShape );
+	}
+	else
+		lmBox::AddShape(pShape);
+
+}
+
 
 void lmBoxSystem::Render(int nSystem, lmScore* pScore, lmPaper* pPaper)
 {
     //At this point paper position is not in the right place. Therefore, we move
     //to the start of system position.
     pPaper->SetCursorY( m_yPos );
+
+    //render staff lines
+    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
+    {
+        m_ShapeStaff[i]->Render(pPaper);
+    }
 
 	//for each lmBoxSlice
     for (int i=0; i < (int)m_Slices.size(); i++)
@@ -108,7 +134,7 @@ void lmBoxSystem::SetNumMeasures(int nMeasures, lmScore* pScore)
         m_Slices[i]->CopyYBounds(m_Slices[0]);
     }
 
-	//update system yBottom position by copying yBootom from first slice
+	//update system yBottom position by copying yBottom from first slice
 	SetYBottom(m_Slices[0]->GetYBottom());
 
 }
@@ -117,10 +143,7 @@ lmLUnits lmBoxSystem::GetYTopFirstStaff()
 {
 	// Returns the Y top position of first staff
 
-	lmBoxSliceInstr* pBSI = m_Slices[0]->GetSliceInstr(0);
-	lmBoxSliceVStaff* pBSV = pBSI->GetSliceVStaff(0);
-	lmShapeStaff* pSS = pBSV->GetStaffShape(0);
-	return pSS->GetYTop();
+	return m_ShapeStaff[0]->GetYTop();
 }
 
 lmBoxSlice* lmBoxSystem::FindSliceAtPosition(lmUPoint& pointL)
@@ -156,6 +179,13 @@ lmGMObject* lmBoxSystem::FindGMObjectAtPosition(lmUPoint& pointL)
 			return pGMO;    //found
     }
 
+	//is it any staff?
+    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
+    {
+        if (m_ShapeStaff[i]->ContainsPoint(pointL))
+			return m_ShapeStaff[i];
+    }
+
     // no object found. Verify if the point is in this object
     if (ContainsPoint(pointL)) 
         return this;
@@ -177,10 +207,14 @@ void lmBoxSystem::UpdateXRight(lmLUnits xPos)
 	SetXRight(xPos);
 
 	//propagate change to last slice of this system
-    m_Slices.back()->UpdateXRight(xPos);
+	if (m_Slices.size() > 0)
+		m_Slices.back()->UpdateXRight(xPos);
 
-	//inform to first slice of this system so that it can update the ShapeStaff
-    m_Slices[0]->SystemXRightUpdated(xPos);
+	//update the ShapeStaff final position
+    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
+    {
+        m_ShapeStaff[i]->SetXRight(xPos);
+    }
 }
 
 wxString lmBoxSystem::Dump(int nIndent)
@@ -194,13 +228,19 @@ wxString lmBoxSystem::Dump(int nIndent)
 
 	nIndent++;
 
+	// dump the staff
+    for (int i=0; i < (int)m_ShapeStaff.size(); i++)
+    {
+        sDump += m_ShapeStaff[i]->Dump(nIndent);
+    }
+
 	//dump the shapes in this system
     for (int i=0; i < (int)m_Shapes.size(); i++)
     {
         sDump += m_Shapes[i]->Dump(nIndent);
     }
 
-    //loop to dump the systems in this page
+    //loop to dump the slices in this system
     for (int i=0; i < (int)m_Slices.size(); i++)
     {
         sDump += m_Slices[i]->Dump(nIndent);

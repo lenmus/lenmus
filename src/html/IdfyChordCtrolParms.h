@@ -154,7 +154,7 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
         bool fOK = tag.GetParamAsInt(_T("VALUE"), &nValue);
         if (!fOK)
             m_sParamErrors += wxString::Format(
-                _("Invalid param value in:\n<param %s >\nAcceptable values: 1 | 0 \n"),
+                _T("Invalid param value in:\n<param %s >\nAcceptable values: 1 | 0 \n"),
                 tag.GetAllParams().c_str() );
         else
             m_pConstrains->SetInversionsAllowed( nValue != 0 );
@@ -166,7 +166,7 @@ void lmIdfyChordCtrolParms::AddParam(const wxHtmlTag& tag)
         bool fOK = tag.GetParamAsInt(_T("VALUE"), &nValue);
         if (!fOK)
             m_sParamErrors += wxString::Format(
-                _("Invalid param value in:\n<param %s >\nAcceptable values: 1 | 0 \n"),
+                _T("Invalid param value in:\n<param %s >\nAcceptable values: 1 | 0 \n"),
                 tag.GetAllParams().c_str() );
         else
             m_pConstrains->SetDisplayKey( nValue != 0 );

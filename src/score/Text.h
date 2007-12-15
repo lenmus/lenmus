@@ -67,7 +67,7 @@ protected:
 
 };
 
-class lmShapeTex2;
+class lmShapeText;
 class lmBox;
 
 
@@ -98,7 +98,7 @@ public:
 	wxString GetText() {return m_sText; }
     lmEAlignment GetAlignment() { return m_nAlignment; }
     lmLocation GetLocation() { return m_tPos; }
-	lmShapeTex2* CreateShape(lmPaper* pPaper);
+	lmShapeText* CreateShape(lmPaper* pPaper, lmUPoint uPos);
 
 private:
     wxString        m_sText;

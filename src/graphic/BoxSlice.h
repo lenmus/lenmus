@@ -45,6 +45,7 @@
 class lmBoxSystem;
 class lmBoxSliceInstr;
 class lmInstrument;
+class lmBoxSystem;
 
 //
 // Class lmBoxSlice represents a sytem measure
@@ -80,11 +81,14 @@ public:
     void UpdateXLeft(lmLUnits xLeft);
     void UpdateXRight(lmLUnits xRight);
     void CopyYBounds(lmBoxSlice* pSlice);
-	void SystemXRightUpdated(lmLUnits xRight);
+	//void SystemXRightUpdated(lmLUnits xRight);
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
 	int GetPageNumber() const;
+
+	//owners and related
+	lmBoxSystem* GetOwnerSystem() { return m_pBSystem; }
 
 
 

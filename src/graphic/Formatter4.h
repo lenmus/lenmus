@@ -19,8 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __FORMATTER4_H__        //to avoid nested includes
-#define __FORMATTER4_H__
+#ifndef __LM_FORMATTER4_H__        //to avoid nested includes
+#define __LM_FORMATTER4_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "Formatter4.cpp"
@@ -61,6 +61,8 @@ private:
     bool SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nAbsMeasure,
 					 int nRelMeasure, lmPaper* pPaper);
     lmLUnits ComputeSystemHeight(lmPaper* pPaper);
+	void ResetLocation(int nAbsMeasure);
+
 
 
         // member variables
@@ -84,7 +86,7 @@ private:
 };
 
 
-#endif    // __FORMATTER4_H__
+#endif    // __LM_FORMATTER4_H__
 
 
 

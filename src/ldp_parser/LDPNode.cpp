@@ -52,12 +52,6 @@ lmLDPNode::lmLDPNode(wxString sData)
 
 lmLDPNode::~lmLDPNode()
 {
-    //long i = m_cNodes.GetCount();
-    //for(; i > 0; i--) {
-    //    delete m_cNodes.Item(i-1);
-    //    m_cNodes.RemoveAt(i-1);
-    //}
-
 	for(int i=0; i < (int)m_cNodes.size(); i++)
 	{	
 		delete m_cNodes[i];
@@ -73,24 +67,30 @@ void lmLDPNode::AddParameter(wxString sData)
 
 void lmLDPNode::AddNode(lmLDPNode* pNode)
 {
-    //m_cNodes.Add(pNode);
 	m_cNodes.push_back(pNode);
     m_fIsSimple = false;
 }
 
 int lmLDPNode::GetNumParms()
 {
-    //return m_cNodes.GetCount();
 	return (int)m_cNodes.size();
 }
 
 lmLDPNode* lmLDPNode::GetParameter(long i)
 {
     // parameter numbers are 1 based
-    //wxASSERT(i > 0 && i <= (long)m_cNodes.GetCount());
-    //return (lmLDPNode*)m_cNodes.Item(i-1);
     wxASSERT(i > 0 && i <= (int)m_cNodes.size());
     return m_cNodes[i-1];
+}
+
+lmLDPNode* lmLDPNode::GetParameter(wxString& sName) const
+{
+	for(int i=0; i < (int)m_cNodes.size(); i++)
+	{	
+        if (m_cNodes[i]->GetName() == sName)
+            return m_cNodes[i];
+    }
+    return (lmLDPNode*)NULL;
 }
 
 void lmLDPNode::DumpNode(wxString sIndent)
@@ -102,7 +102,6 @@ void lmLDPNode::DumpNode(wxString sIndent)
     wxLogMessage( _T("**DUMP OF NODE** %s"), sMsg.c_str() );
     wxString sSpaces = sIndent;
     sSpaces += _T("   ");
-    //for (int i = 1; i <= (int)m_cNodes.GetCount(); i++) {
 	for(int i=1; i <= (int)m_cNodes.size(); i++)
 	{	
         pX = this->GetParameter(i);

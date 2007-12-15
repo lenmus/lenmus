@@ -84,8 +84,6 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     m_pStemShape = (lmShapeStem*)NULL;
 
     // stem information
-    //m_uxStem = 0;            // will be updated in layout phase
-    //m_uyStem = 0;            // will be updated in layout phase
     m_nStemType = nStem;
     m_uStemLength = GetDefaultStemLength();     //default. If beamed note, this value will
                                                 //be updated in lmBeam::CreateShape
@@ -194,25 +192,6 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     //initialize stem
     SetUpStemDirection();       // standard lenght
 
-//    Set m_cPentobjs = new Collection
-//
-//    //Analiza los flags
-//    m_fCalderon = (nCalderon = eC_ConCalderon)
-
-//    //analiza las anotaciones
-//    Dim sDato As String, oGrafObj As CPOGrafObj
-//    for (i = 1 To cAnotaciones.Count
-//        sDato = cAnotaciones.Item(i)
-//        switch (sDato) {
-//            case "AMR":     //marca de pausa
-//                Set oGrafObj = new CPOGrafObj
-//                oGrafObj.ConstructorGrafObj eGO_Respiracion, oStaff, true
-//                m_cPentobjs.Add oGrafObj
-//            default:
-//                Debug.Assert false
-//        }
-//    }
-
     // MIDI volume information can not be computed until the note is created (constructor
     // method finished) and the note added to the VStaff collection. Otherwise
     // timing information is not valid.
@@ -220,8 +199,8 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
     m_nVolume = -1;
 
     //if the note is part of a chord find the base note and take some values from it
-    m_fIsNoteBase = true;        //by default all notes are base notes
-    m_pChord = (lmChord*)NULL;    //by defaul note is not in chord
+    m_fIsNoteBase = true;			//by default all notes are base notes
+    m_pChord = (lmChord*)NULL;		//by defaul note is not in chord
     m_fNoteheadReversed = false;
     if (fInChord) {
         if (!g_pLastNoteRest || g_pLastNoteRest->IsRest()) {
@@ -248,8 +227,8 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
 
     // verify if a previous note is tied to this one and if so, build the tie
     lmNote* pNtPrev = m_pVStaff->FindPossibleStartOfTie(m_anPitch);
-    if (pNtPrev && pNtPrev->NeedToBeTied()) {
-
+    if (pNtPrev && pNtPrev->NeedToBeTied())
+	{
         //do the tie between previous note and this one
         m_pTiePrev = new lmTie(pNtPrev, this);
         pNtPrev->SetTie(m_pTiePrev);
@@ -258,10 +237,6 @@ lmNote::lmNote(lmVStaff* pVStaff, lmEPitchType nPitchType,
         if (nStem == lmSTEM_DEFAULT)
             m_fStemDown = pNtPrev->StemGoesDown();
     }
-
-//    //Parámetros gráficos independientes del papel.
-//    m_fCabezaX = fCabezaX
-
 
     // Generate beaming information -----------------------------------------------------
     CreateBeam(fBeamed, BeamInfo);
@@ -420,10 +395,12 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model. 
-    // Paper cursor must be used as the base for positioning.
 
-    //get paper reference point
-    lmUPoint uPaperPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+ //   //DBG
+ //   if (GetID() == 25)
+	//{
+ //       int nDbg = 0;	// set break point here
+ //   }
 
     bool fDrawStem = true;            // assume stem
     bool fInChord = IsInChord();
@@ -432,12 +409,12 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     pPaper->SetFont(*GetSuitableFont(pPaper));
 
     // move to right staff
-    lmLUnits uyStaffTopLine = uPaperPos.y + GetStaffOffset();   // staff y position (top line)
+    lmLUnits uyStaffTopLine = uPos.y + GetStaffOffset();   // staff y position (top line)
     lmLUnits uxLeft=0, uyTop=0;    // current pos. as positioning computation takes place
     int nPosOnStaff = GetPosOnStaff();
     lmLUnits uyPitchShift = GetPitchShift();
     uyTop = uyStaffTopLine - uyPitchShift;
-    uxLeft = uPaperPos.x;
+    uxLeft = uPos.x;
 
 	// create the shape for the stem because it must be measured even if it must not be
 	// drawn. This is necessary, for example, to have information for positioning 
@@ -459,7 +436,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     bool fNoteLayouted = false;
     if (IsBaseOfChord())
 	{
-        m_pChord->LayoutNoteHeads(pBox, pPaper, uPaperPos, colorC);
+        m_pChord->LayoutNoteHeads(pBox, pPaper, uPos, colorC);
         fNoteLayouted = true;
     }
     else if (IsInChord()) 
@@ -552,7 +529,8 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
             uyTop += m_pVStaff->TenthsToLogical(49, m_nStaffNum);
             uyStemStart = uyTop;
         }
-        //adjust stem size if flag to be drawn
+
+		//if flag to be drawn, adjust stem size and compute flag position
         if (!m_fDrawSmallNotesInBlock && !m_fBeamed && m_nNoteType > eQuarter) {
             int nGlyph = GetGlyphForFlag();
             lmLUnits uStemLength = GetStandardStemLenght();
@@ -621,7 +599,7 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
     // set total width
     #define NOTE_AFTERSPACE     0      //one line space     @todo user options
     lmLUnits uAfterSpace = m_pVStaff->TenthsToLogical(NOTE_AFTERSPACE, m_nStaffNum);
-    lmLUnits uTotalWidth = uxLeft + uAfterSpace - uPaperPos.x;
+    lmLUnits uTotalWidth = uxLeft + uAfterSpace - uPos.x;
 
 
     // add shapes for leger lines if necessary
@@ -1043,12 +1021,10 @@ void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENoteH
 
 int lmNote::PosOnStaffToPitch(int nSteps)
 {
-    /*
-    When the note is dragged it is necessary to compute the new pitch from the
-    its new position on the paper. From the paper displacement it is computed how
-    many half line steps the note has been moved. This method receives the steps
-    and computes the new pitch
-    */
+    // When the note is dragged it is necessary to compute the new pitch from the
+    // its new position on the paper. From the paper displacement it is computed how
+    // many half line steps the note has been moved. This method receives the steps
+    // and computes the new pitch
 
     int nPos = GetPosOnStaff() + nSteps;
     switch (m_nClef) {
@@ -1370,9 +1346,11 @@ wxString lmNote::Dump()
 
     wxString sDump;
     sDump = wxString::Format(
-        _T("%d\tNote\tType=%d, Pitch=%s, Midi=%d, Volume=%d, PosOnStaff=%d, TimePos=%.2f, rDuration=%.2f, StemType=%d"),
-        m_nId, m_nNoteType, sPitch.c_str(), m_anPitch.GetMPitch(), m_nVolume, GetPosOnStaff(), m_rTimePos, m_rDuration,
-        m_nStemType);
+        _T("%d\tNote\tType=%d, Pitch=%s, Midi=%d, Volume=%d, PosOnStaff=%d, TimePos=%.2f, ")
+        _T("org=(%.2f, %.2f), rDuration=%.2f, StemType=%d"),
+        m_nId, m_nNoteType, sPitch.c_str(), m_anPitch.GetMPitch(), m_nVolume, GetPosOnStaff(),
+        m_rTimePos, m_uOrg.x, m_uOrg.y, m_rDuration, m_nStemType);
+
     if (m_pTieNext) sDump += _T(", TiedNext");
     if (m_pTiePrev) sDump += _T(", TiedPrev");
     if (IsBaseOfChord())

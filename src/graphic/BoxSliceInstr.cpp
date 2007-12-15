@@ -115,21 +115,6 @@ void lmBoxSliceInstr::UpdateXRight(lmLUnits xRight)
     }
 }
 
-void lmBoxSliceInstr::SystemXRightUpdated(lmLUnits xRight)
-{
-	// During layout there is a need to update initial computations about this
-	// box slice position. This method is invoked when the right x position of
-	// the parent system has been updated. It is only invoked for the first
-	// slice of the system in order to update the ShapeStaff final position
-
-	//propagate change
-    for (int i=0; i < (int)m_SlicesVStaff.size(); i++)
-    {
-        m_SlicesVStaff[i]->SystemXRightUpdated(xRight);
-    }
-
-}
-
 void lmBoxSliceInstr::CopyYBounds(lmBoxSliceInstr* pBSI)
 {
 	//This method is only invoked during layout phase, when the number of measures in the
@@ -167,6 +152,7 @@ wxString lmBoxSliceInstr::Dump(int nIndent)
 
 lmGMObject* lmBoxSliceInstr::FindGMObjectAtPosition(lmUPoint& pointL)
 {
+	wxLogMessage(_T("[lmBoxSliceInstr::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
     //look in shapes collection
     lmShape* pShape = FindShapeAtPosition(pointL);
     if (pShape) return pShape;

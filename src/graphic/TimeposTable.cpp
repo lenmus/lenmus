@@ -431,7 +431,7 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
             pTPE->m_uxAnchor += uShift;
             pTPE->m_xRight += uShift;
             pTPE->m_xFinal += uShift;
-            (pTPE->m_pSO)->ShiftObject( pTPE->m_xLeft - pTPE->m_xInitialLeft);
+            (pTPE->m_pSO)->StoreOriginAndShiftShapes( pTPE->m_xLeft - pTPE->m_xInitialLeft);
         }
         else if (pTPE->m_nType == eOmega)
         {
@@ -444,7 +444,7 @@ lmLUnits lmTimeposTable::RedistributeSpace(lmLUnits uNewBarSize, lmLUnits uNewSt
                 pTPE->m_uxAnchor += nShiftBar;
                 pTPE->m_xFinal += nShiftBar;
                 pTPE->m_xRight += nShiftBar;
-                (pTPE->m_pSO)->ShiftObject(  pTPE->m_xLeft - pTPE->m_xInitialLeft );
+                (pTPE->m_pSO)->StoreOriginAndShiftShapes(  pTPE->m_xLeft - pTPE->m_xInitialLeft );
                 uBarPosition = pTPE->m_xLeft;
             }
         }

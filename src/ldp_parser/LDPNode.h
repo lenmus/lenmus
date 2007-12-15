@@ -48,6 +48,7 @@ public:
     int GetNumParms();
 
     lmLDPNode* GetParameter(long i);
+    lmLDPNode* GetParameter(wxString& sName) const;
     void AddParameter(wxString sData);
     void AddNode(lmLDPNode* pNode);
 
@@ -55,7 +56,6 @@ public:
 private:
     wxString        m_sName;            //node name
     bool            m_fIsSimple;        //the node is simple (just a string)
-    //lmArrayNodePtrs	m_cNodes;			//Parameters of this node
 	std::vector<lmLDPNode*> m_cNodes;	//Parameters of this node
 };
 

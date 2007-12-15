@@ -44,6 +44,7 @@
 
 class lmBoxSlice;
 class lmBoxPage;
+class lmShapeStaff;
 
 //
 // Class lmBoxSystem represents a line of music in the printed score. 
@@ -88,6 +89,13 @@ public:
     wxString Dump(int nIndent);
 	int GetPageNumber() const;
 
+	//overrides
+	void AddShape(lmShape* pShape);
+
+	//owners and related
+	lmBoxSystem* GetOwnerSystem() { return this; }
+
+
 
 private:
 
@@ -99,6 +107,8 @@ private:
     int         m_nNumPage;         //page number (1..n) on which this system is included
 
     std::vector<lmBoxSlice*>        m_Slices;   //collection of slices in this system
+
+	std::vector<lmShapeStaff*>		m_ShapeStaff;		//list of staff shapes, only in first vstaff.
 
 
 };

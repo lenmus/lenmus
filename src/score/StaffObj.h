@@ -94,13 +94,18 @@ public:
 	//--- a ScoreObj can be renderizable
 
 	//position and main shape
-    virtual void ShiftObject(lmLUnits uLeft);
+    virtual void StoreOriginAndShiftShapes(lmLUnits uLeft);
 	virtual lmLocation SetUserLocation(lmLocation tPos);
 	inline lmShape* GetShap2() { return m_pShape; }
-    virtual lmUPoint& GetOrigin() { return m_uPaperPos; }
+    virtual lmUPoint& GetReferencePaperPos() { return m_uPaperPos; }
     int GetPageNumber();
+    virtual void SetOrigin(lmUPoint uPos) { m_uOrg = uPos; }
+    virtual lmUPoint GetOrigin() { return m_uOrg; }
+	virtual lmUPoint SetReferencePos(lmPaper* pPaper);
+	virtual void SetReferencePos(lmUPoint& uPos);
+	void ResetObjectLocation();
 
-	//contextual menu
+    //contextual menu
 	virtual void PopupMenu(lmController* pCanvas, lmGMObject* pGMO, const lmDPoint& vPos);
 	virtual void CustomizeContextualMenu(wxMenu* pMenu, lmGMObject* pGMO);
 
@@ -110,22 +115,25 @@ public:
 	//font to use to render the ScoreObj
 	virtual wxFont* GetSuitableFont(lmPaper* pPaper);
 
+    //debug methods
+    virtual wxString Dump()=0;
 
 
 protected:
     lmScoreObj(lmScoreObj* pParent);
-	virtual lmUPoint SetReferencePos(lmPaper* pPaper);
 
     lmScoreObj*		m_pParent;          //the parent for the ObjOptions chain
     lmObjOptions*   m_pObjOptions;      //the collection of options or NULL if none
     lmAuxObjsCol*   m_pAuxObjs;         //the collection of attached AuxObjs or NULL if none
 
 	//information only valid for rendering as score: position and shape
-    // this variables are only valid for the Formatter algorithm and, therefore, are not
-	// valid for other views using different formats.
+    //These variables are only valid for the Formatter algorithm and, therefore, are not
+	//valid for other views using different formats.
     lmLocation      m_tPos;         //desired position for this object
-    lmUPoint		m_uPaperPos;	//origin to render tiho object: paper position
+	lmLocation		m_tOldPos;
+    lmUPoint		m_uPaperPos;	//relative origin to render this object: paper position
     lmShape*		m_pShape;		//new shape
+    lmUPoint		m_uOrg;	        //real origin to render this object: paper position
 
 };
 
@@ -164,9 +172,6 @@ public:
     virtual void Layout(lmBox* pBox, lmPaper* pPaper, 
 						wxColour colorC = *wxBLACK, bool fHighlight = false)=0;
 	virtual lmUPoint ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)=0;
-
-    // debug
-    virtual wxString Dump()=0;
 
 
 protected:
@@ -243,7 +248,6 @@ public:
 
     // methods related to positioning
     virtual lmLUnits GetAnchorPos() {return 0; }
-    virtual void ShiftObject(lmLUnits uLeft);
 
 	//highligh
 	virtual void Highlight(lmPaper* pPaper, wxColour colorC) {}
@@ -321,11 +325,14 @@ public:
     // debug methods
     virtual wxString Dump()=0;
 
+    virtual void StoreOriginAndShiftShapes(lmLUnits uLeft);
 
 	//---- specific methods of this class ------------------------
 
     // ownership
     void SetOwner(lmScoreObj* pOwner);
+    virtual void SetOrigin(lmUPoint uPos);
+    virtual lmUPoint GetOrigin();
 
     // class info
     virtual lmEAuxObjType GetAuxObjType()=0;

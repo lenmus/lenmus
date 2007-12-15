@@ -168,8 +168,9 @@ lmLUnits lmClef::AddShape(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos,
 wxString lmClef::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tClef %s\tTimePos=%.2f\n"),
-        m_nId, GetClefLDPNameFromType(m_nClefType).c_str(), m_rTimePos );
+        _T("%d\tClef %s\tTimePos=%.2f, org=(%.2f, %.2f)\n"),
+        m_nId, GetClefLDPNameFromType(m_nClefType).c_str(), m_rTimePos,
+        m_uOrg.x, m_uOrg.y);
     return sDump;
 
 }

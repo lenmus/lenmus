@@ -95,11 +95,6 @@
 #include "../graphic/ShapeBarline.h"
 
 
-//implementation of the staves List
-#include <wx/listimpl.cpp>
-WX_DEFINE_LIST(VStavesList);
-
-
 //constructor
 lmVStaff::lmVStaff(lmScore* pScore, lmInstrument* pInstr, bool fOverlayered)
     : lmScoreObj(pScore)
@@ -520,8 +515,7 @@ int lmVStaff::GetNumMeasures()
     return m_cStaffObjs.GetNumMeasures();
 }
 
-lmLUnits lmVStaff::LayoutStaffLines(lmBoxSliceVStaff* pBox,
-                              lmLUnits xFrom, lmLUnits xTo, lmLUnits yPos)
+lmLUnits lmVStaff::LayoutStaffLines(lmBox* pBox, lmLUnits xFrom, lmLUnits xTo, lmLUnits yPos)
 {
     //Computes all staff lines of this lmVStaff and creates the necessary shapes
 	//to render them. Add this shapes to the received lmBox object.

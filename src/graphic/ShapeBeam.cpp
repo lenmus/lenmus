@@ -430,8 +430,8 @@ void lmShapeBeam::DrawBeamSegment(lmPaper* pPaper,
 {
     //check to see if the beam segment has to be splitted in two systems
     //if (pStartNote && pEndNote) {
-    //    lmUPoint paperPosStart = pStartNote->GetOrigin();
-    //    lmUPoint paperPosEnd = pEndNote->GetOrigin();
+    //    lmUPoint paperPosStart = pStartNote->GetReferencePaperPos();
+    //    lmUPoint paperPosEnd = pEndNote->GetReferencePaperPos();
     //    if (paperPosEnd.y != paperPosStart.y) {
     //        //if start note paperPos Y is not the same than end note paperPos Y the notes are
     //        //in different systems. Therefore, the beam must be splitted. Let's do it

@@ -26,7 +26,11 @@
 #pragma interface "StaffObjIterator.cpp"
 #endif
 
-#include "Score.h"
+//#include "Score.h"
+#include "StaffObj.h"
+
+class lmColStaffObjs;
+
 
 // Para facilitar las futuras modificaciones en las estructuras de datos que implementan esta
 // clase, cuando se crea un iterador se especifica el tipo de recorrido necesario. La implementación

@@ -94,12 +94,11 @@ lmScoreText::lmScoreText(wxString sTitle, lmEAlignment nAlign,
 
 }
 
-lmShapeTex2* lmScoreText::CreateShape(lmPaper* pPaper)
+lmShapeText* lmScoreText::CreateShape(lmPaper* pPaper, lmUPoint uPos)
 {
     // Creates the shape and returns it
 
-	lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
-    return new lmShapeTex2(this, m_sText, GetSuitableFont(pPaper), pPaper,
+    return new lmShapeText(this, m_sText, GetSuitableFont(pPaper), pPaper,
                            uPos, _T("ScoreText"), lmDRAGGABLE, m_color);
 }
 
@@ -111,7 +110,6 @@ lmUPoint lmScoreText::ComputeBestLocation(lmUPoint& uOrg, lmPaper* pPaper)
 	// uOrg is the assigned paper position for this object.
 
 	lmUPoint uPos = uOrg;
-	//TODO
 	return uPos;
 }
 
@@ -119,14 +117,32 @@ lmLUnits lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model. 
-    // Paper cursor must be used as the base for positioning.
 
 	WXUNUSED(colorC);
 
     //create the shape object
-    lmShapeTex2* pShape = CreateShape(pPaper);
+    lmShapeText* pShape = CreateShape(pPaper, uPos);
 	pBox->AddShape(pShape);
     m_pShape = pShape;
+
+
+    ////Reposition object to take into account alignment and text height
+    ////method DC::DrawText position text with reference to its upper left
+    ////corner but lenmus anchor point is lower left corner. Therefore, it
+    ////is necessary to shift text up by text height
+    //lmLUnits uxShift;
+    //lmLUnits uWidth = pShape->GetWidth();
+    //if (m_nAlignment == lmALIGN_CENTER) {
+    //    uxShift = - uWidth/2;
+    //}
+    //else if (m_nAlignment == lmALIGN_RIGHT) {
+    //    uxShift = - uWidth;
+    //}
+    //else {
+    //    uxShift = 0.0;
+    //}
+    //pShape->Shift(uxShift,  - pShape->GetHeight());
+
 
 	// set total width
 	return pShape->GetWidth();
@@ -136,8 +152,8 @@ lmLUnits lmScoreText::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, 
 wxString lmScoreText::Dump()
 {
     wxString sDump = wxString::Format(
-        _T("%d\tText %s\tpaperPos=(%d, %d)\n"),
-        m_nId, m_sText.Left(15).c_str(), m_uPaperPos.x, m_uPaperPos.y);
+        _T("%d\tText %s\tOrg=(%.2f, %.2f)\n"),
+        m_nId, m_sText.Left(15).c_str(), m_uOrg.x, m_uOrg.y);
     return sDump;
 
 }
@@ -151,7 +167,7 @@ wxString lmScoreText::SourceLDP(int nIndent)
     sSource += _T("\"");
 
     //location
-    sSource += SourceLDP_Location(m_uPaperPos);
+    sSource += SourceLDP_Location( ((lmStaffObj*)m_pParent)->GetReferencePaperPos() );
 
     //alignment
     if (m_nAlignment == lmALIGN_CENTER)

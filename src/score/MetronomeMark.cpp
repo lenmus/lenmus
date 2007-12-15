@@ -149,8 +149,8 @@ lmLUnits lmMetronomeMark::AddTextShape(lmCompositeShape* pShape, lmPaper* pPaper
     uPos.y += m_pVStaff->TenthsToLogical(10, m_nStaffNum);
 
 	//create the shape
-    lmShapeTex2* pTS =
-		new lmShapeTex2(this, sText, pFont, pPaper, uPos, _T("equal sign"), lmDRAGGABLE,
+    lmShapeText* pTS =
+		new lmShapeText(this, sText, pFont, pPaper, uPos, _T("equal sign"), lmDRAGGABLE,
 						colorC);
 
 	//add the shape to the composite parent shape
@@ -213,7 +213,9 @@ wxString lmMetronomeMark::Dump()
 
 wxString lmMetronomeMark::SourceLDP(int nIndent)
 {
-    wxString sSource = _T("         (metronome");
+    wxString sSource = _T("");
+    sSource.append(nIndent * lmLDP_INDENT_STEP, _T(' '));
+    sSource += _T("(metronome ");
 
     switch (m_nMarkType)
     {
@@ -234,6 +236,11 @@ wxString lmMetronomeMark::SourceLDP(int nIndent)
 
     if (m_fParentheses) sSource += _T(" parentheses");
     if (!m_fVisible) sSource += _T(" noVisible");
+
+	//location
+    sSource += SourceLDP_Location( ((lmStaffObj*)m_pParent)->GetReferencePaperPos() );
+
+	//close element
     sSource += _T(")\n");
     return sSource;
 }

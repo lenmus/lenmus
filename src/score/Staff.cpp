@@ -249,3 +249,8 @@ lmContext* lmStaff::GetLastContext()
         return (lmContext*)NULL;
 }
 
+wxString lmStaff::Dump()
+{
+    wxString sDump = _T("Staff\n");
+    return sDump;
+}

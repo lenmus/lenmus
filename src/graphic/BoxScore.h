@@ -19,8 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __BOXSCORE_H__        //to avoid nested includes
-#define __BOXSCORE_H__
+#ifndef __LM_BOXSCORE_H__        //to avoid nested includes
+#define __LM_BOXSCORE_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "BoxScore.cpp"
@@ -44,6 +44,7 @@ class lmPaper;
 class lmScore;
 class lmStaffObj;
 class lmBoxPage;
+class lmBoxSystem;
 
 
 
@@ -73,6 +74,9 @@ public:
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
 
+	//owners and related
+	lmBoxSystem* GetOwnerSystem() { return (lmBoxSystem*)NULL; }
+
 
 private:
     lmScore*        m_pScore;       //score to be rendered
@@ -86,5 +90,5 @@ private:
 
 };
 
-#endif  // __BOXSCORE_H__
+#endif  // __LM_BOXSCORE_H__
 

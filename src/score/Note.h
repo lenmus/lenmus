@@ -74,14 +74,14 @@ public:
     lmLUnits GetPitchShift();
     lmLUnits GetAnchorPos();
     int GetPosOnStaff();        //line/space on which note is rendered
-    void SetOrigin(lmLUnits uxPos, lmLUnits uyPos) {
-			m_uPaperPos.x = uxPos;
-			m_uPaperPos.y = uyPos;
-		}
-    void SetOrigin(lmUPoint uPoint) {
-			m_uPaperPos.x = uPoint.x;
-			m_uPaperPos.y = uPoint.y;
-		}
+  //  void SetOrigin(lmLUnits uxPos, lmLUnits uyPos) {
+		//	m_uPaperPos.x = uxPos;
+		//	m_uPaperPos.y = uyPos;
+		//}
+  //  void SetOrigin(lmUPoint uPoint) {
+		//	m_uPaperPos.x = uPoint.x;
+		//	m_uPaperPos.y = uPoint.y;
+		//}
 
 
     //methods related to stems

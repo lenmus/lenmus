@@ -37,7 +37,6 @@
 #include "wx/wx.h"
 #endif
 
-#include "vector"
 
 #include "../score/defs.h"
 #include "GMObject.h"
@@ -45,7 +44,7 @@
 class lmVStaff;
 class lmBoxSliceInstr;
 class lmBoxSliceVStaff;
-class lmShapeStaff;
+class lmBoxSystem;
 
 //
 // Class lmBoxSliceVStaff represents a part of the VStaff of an instrument. 
@@ -58,21 +57,21 @@ public:
     ~lmBoxSliceVStaff();
 
     void Render(lmPaper* pPaper, lmUPoint uPos);
-	void AddShape(lmShape* pShape);
 
 	//positioning and bounds
 	void UpdateXLeft(lmLUnits xLeft);
     void UpdateXRight(lmLUnits xRight);
-	void SystemXRightUpdated(lmLUnits xRight);
 	void CopyYBounds(lmBoxSliceVStaff* pBSV);
 
     //info
     lmGMObject* FindGMObjectAtPosition(lmUPoint& pointL);
-	lmShapeStaff* GetStaffShape(int i) const { return m_ShapeStaff[i]; }
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
 	int GetPageNumber() const;
+
+	//owners and related
+	lmBoxSystem* GetOwnerSystem();
 
 
 private:
@@ -80,7 +79,6 @@ private:
 
     lmBoxSliceInstr*    m_pSliceInstr;      //parent instrumet slice
     lmVStaff*           m_pVStaff;          //VStaff to which this slice belongs
-	std::vector<lmShapeStaff*>	m_ShapeStaff;		//list of staff shapes, only in first vstaff.
 
 };
 

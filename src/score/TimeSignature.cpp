@@ -124,6 +124,9 @@ wxString lmTimeSignature::SourceLDP(int nIndent)
     //visible?
     if (!m_fVisible) { sSource += _T(" noVisible"); }
 
+    //location
+    sSource += SourceLDP_Location(m_uPaperPos);
+
 	//attached AuxObjs
 	sSource += lmStaffObj::SourceLDP(nIndent+1);
 
@@ -158,14 +161,12 @@ lmLUnits lmTimeSignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uP
 {
     // This method is invoked by the base class (lmStaffObj). It is responsible for
     // creating the shape object and adding it to the graphical model. 
-    // Paper cursor must be used as the base for positioning.
 
 
     //get the position on which the time signature must be drawn
-    lmLUnits uxPosTop = pPaper->GetCursorX();
-    lmLUnits uxPosBottom = pPaper->GetCursorX();
-	lmLUnits uyPosTop = pPaper->GetCursorY() + m_pVStaff->GetStaffOffset(m_nStaffNum)
-						//- m_pVStaff->TenthsToLogical(aGlyphsInfo[GLYPH_NUMBER_0].GlyphOffset, m_nStaffNum );
+    lmLUnits uxPosTop = uPos.x;
+    lmLUnits uxPosBottom = uPos.x;
+	lmLUnits uyPosTop = uPos.y + m_pVStaff->GetStaffOffset(m_nStaffNum)
 						- m_pVStaff->TenthsToLogical(20, m_nStaffNum);
     lmLUnits uyPosBottom = uyPosTop + m_pVStaff->TenthsToLogical(20, m_nStaffNum);
 

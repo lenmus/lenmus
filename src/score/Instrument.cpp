@@ -44,10 +44,6 @@
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
 
-//implementation of the Instruments List
-#include <wx/listimpl.cpp>
-WX_DEFINE_LIST(InstrumentsList);
-
 
 //Global variables used as default initializators
 lmFontInfo g_tInstrumentDefaultFont = { _T("Times New Roman"), 14, lmTEXT_BOLD };
@@ -111,7 +107,11 @@ void lmInstrument::Create(lmScore* pScore, int nNumStaves, int nMIDIChannel, int
 
 lmInstrument::~lmInstrument()
 {
-    m_cStaves.DeleteContents(true);
+	for (int i=0; i < (int)m_cStaves.size(); i++)
+	{
+		delete m_cStaves[i];
+	}
+    m_cStaves.clear();
 }
 
 lmLUnits lmInstrument::TenthsToLogical(lmTenths nTenths)
@@ -141,34 +141,26 @@ void lmInstrument::SetIndent(lmLUnits* pIndent, lmLocation* pPos)
 lmVStaff* lmInstrument::AddVStaff(bool fOverlayered)
 {
     lmVStaff *pStaff = new lmVStaff(m_pScore, this, fOverlayered);
-    m_cStaves.Append(pStaff);
+    m_cStaves.push_back(pStaff);
     return pStaff;
 
 }
 
-//returns lmVStaff number nStaff (1..n)
 lmVStaff* lmInstrument::GetVStaff(int nStaff)
 {
-    int i;
-    VStavesList::Node *node;
-    //iterate over the list to locate lmVStaff nStaff
-    for (i=1, node = m_cStaves.GetFirst(); node && i < nStaff; node = node->GetNext(), i++ ) {}
-//    wxASSERT_MSG{i != nStaff, _T("No existe el lmVStaff num. nStaff"));
-    return node->GetData();
+	//returns lmVStaff number nStaff (1..n)
+	wxASSERT(nStaff > 0 && nStaff <= (int)m_cStaves.size() );
+	return m_cStaves[nStaff-1];
 }
 
 wxString lmInstrument::Dump()
 {
     wxString sDump;
-    wxVStavesListNode *pNode;
-    lmVStaff* pVStaff;
-    int i;
     //iterate over the list of lmVStaff to dump them
-    for (i=1, pNode = m_cStaves.GetFirst(); pNode; pNode = pNode->GetNext(), i++)
+    for (int i=0; i < (int)m_cStaves.size(); i++)
     {
-        pVStaff = (lmVStaff*) pNode->GetData();
         sDump += wxString::Format(_T("\nVStaff %d\n"), i );
-        sDump += pVStaff->Dump();
+        sDump += m_cStaves[i]->Dump();
     }
     return sDump;
 
@@ -181,19 +173,16 @@ wxString lmInstrument::SourceLDP(int nIndent)
     sSource += _T("(instrument");
 
     //num of staves
-    wxVStavesListNode *pNode = m_cStaves.GetFirst();
-    lmVStaff* pVStaff = (lmVStaff*) pNode->GetData();
-    if (pVStaff->GetNumStaves() > 1) {
-        sSource += wxString::Format(_T(" (staves %d)"), pVStaff->GetNumStaves());
+    if (m_cStaves.size() > 0) {
+        sSource += wxString::Format(_T(" (staves %d)"), m_cStaves[0]->GetNumStaves());
     }
     sSource += _T("\n");
 
     //loop for each lmVStaff
     nIndent++;
-    for (; pNode; pNode = pNode->GetNext())
+    for (int i=0; i < (int)m_cStaves.size(); i++)
     {
-        pVStaff = (lmVStaff*) pNode->GetData();
-        sSource += pVStaff->SourceLDP(nIndent);
+        sSource += m_cStaves[i]->SourceLDP(nIndent);
     }
 
     //close instrument
@@ -210,9 +199,11 @@ wxString lmInstrument::SourceXML(int nIndent)
 	//THINK:
 	//MusicXML can not deal with more than one VStaff so I will export only
 	//the first VStaff
-    wxVStavesListNode *pNode = m_cStaves.GetFirst();
-    lmVStaff* pVStaff = (lmVStaff*) pNode->GetData();
-	return pVStaff->SourceXML(nIndent);
+	wxString sSource = _T("");
+	sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
+    if (m_cStaves.size() > 0)
+        sSource += m_cStaves[0]->SourceXML(nIndent);
+	return sSource;
 
 }
 
@@ -242,7 +233,7 @@ void lmInstrument::MeasureNames(lmPaper* pPaper)
 
     if (m_pName) {
         // measure text extent
-        lmShapeTex2* pShape = m_pName->CreateShape(pPaper);
+        lmShapeText* pShape = m_pName->CreateShape(pPaper, m_uPaperPos);
         // set indent =  text extend + after text space
         m_nIndentFirst = pShape->GetWidth() + 30;    //TODO user options
 		delete pShape;
@@ -250,7 +241,7 @@ void lmInstrument::MeasureNames(lmPaper* pPaper)
 
     if (m_pAbbreviation) {
         // measure text extent
-        lmShapeTex2* pShape = m_pAbbreviation->CreateShape(pPaper);
+        lmShapeText* pShape = m_pAbbreviation->CreateShape(pPaper, m_uPaperPos);
         // set indent =  text extend + after text space
         m_nIndentOther = pShape->GetWidth() + 30;    //TODO user options
 		delete pShape;
@@ -269,15 +260,13 @@ void lmInstrument::AddNameShape(lmBox* pBox, lmPaper* pPaper)
 
     if (m_pName)
 	{
-		//save paper pos
-        lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
-
 		//create the shape
-        pBox->AddShape( m_pName->CreateShape(pPaper) );
+        lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+        pBox->AddShape( m_pName->CreateShape(pPaper, uPos) );
 
-		//restore paper position
-		pPaper->SetCursorX(uPos.x);
-		pPaper->SetCursorY(uPos.y);
+		////restore paper position
+		//pPaper->SetCursorX(uPos.x);
+		//pPaper->SetCursorY(uPos.y);
     }
 }
 
@@ -289,15 +278,13 @@ void lmInstrument::AddAbbreviationShape(lmBox* pBox, lmPaper* pPaper)
 
     if (m_pAbbreviation)
 	{
-		//save paper pos
-        lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
-
 		//create the shape
-        pBox->AddShape( m_pAbbreviation->CreateShape(pPaper) );
+        lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+        pBox->AddShape( m_pAbbreviation->CreateShape(pPaper, uPos) );
 
-		//restore paper position
-		pPaper->SetCursorX(uPos.x);
-		pPaper->SetCursorY(uPos.y);
+		////restore paper position
+		//pPaper->SetCursorX(uPos.x);
+		//pPaper->SetCursorY(uPos.y);
     }
 }
 

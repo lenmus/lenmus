@@ -45,7 +45,7 @@ lmShapeBarline::lmShapeBarline(lmBarline* pBarline, lmEBarline nBarlineType,
 						       lmLUnits yBottom, lmLUnits uThinLineWidth,
                                lmLUnits uThickLineWidth, lmLUnits uSpacing,
                                lmLUnits uRadius, wxColour color)
-	: lmSimpleShape(eGMO_ShapeBarline, pBarline, _T("Barline"))
+	: lmSimpleShape(eGMO_ShapeBarline, pBarline, _T("Barline"), lmDRAGGABLE)
 {
     m_nBarlineType = nBarlineType;
     m_uxPos = xPos;
@@ -217,4 +217,46 @@ void lmShapeBarline::DrawTwoDots(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos
     pPaper->SolidCircle(uxPos, uyPos + uShift2, m_uRadius);
 }
 
+wxBitmap* lmShapeBarline::OnBeginDrag(double rScale)
+{
+	// A dragging operation is started. The view invokes this method to request the 
+	// bitmap to be used as drag image. No other action is required.
+	// If no bitmap is returned drag is cancelled.
+	//      
+	// So this method returns the bitmap to use with the drag image.
+
+
+    // allocate a memory DC for drawing into a bitmap
+    wxMemoryDC dc2;
+    dc2.SetMapMode(lmDC_MODE);
+    dc2.SetUserScale(rScale, rScale);
+
+    // allocate the bitmap
+    // convert size to pixels
+    int wD = (int)dc2.LogicalToDeviceXRel(m_uWidth);
+    int hD = (int)dc2.LogicalToDeviceYRel(m_uyBottom - m_uyTop);
+    wxBitmap bitmap(wD+2, hD+2);
+    dc2.SelectObject(bitmap);
+
+    // draw onto the bitmap
+    dc2.SetBackground(*wxRED_BRUSH);	//*wxWHITE_BRUSH);
+    dc2.Clear();
+    dc2.SetBackgroundMode(wxTRANSPARENT);
+    dc2.SetTextForeground(g_pColors->ScoreSelected());
+    //dc2.DrawText(sGlyph, 0, 0);
+
+    dc2.SelectObject(wxNullBitmap);
+
+    // Make the bitmap masked
+    wxImage image = bitmap.ConvertToImage();
+    image.SetMaskColour(255, 255, 255);
+    wxBitmap* pBitmap = new wxBitmap(image);
+
+    ////DBG -----------
+    //wxString sFileName = _T("ShapeGlyp2.bmp");
+    //pBitmap->SaveFile(sFileName, wxBITMAP_TYPE_BMP);
+    ////END DBG -------
+
+    return pBitmap;
+}
 

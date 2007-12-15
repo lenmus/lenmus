@@ -175,7 +175,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
         m_sMusic = tag.GetParam(_T("VALUE"));
         //do some checks
         if (m_sMusic.Find(_T("(g(")) != -1 || m_sMusic.Find(_T("(g (")) != -1) {
-            m_sParamErrors += _("Invalid score: old G syntax.\n");
+            m_sParamErrors += _T("Invalid score: old G syntax.\n");
         }
     }
 
@@ -191,7 +191,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
             else {
                 if (sType.Left(6) != _T("SHORT_")) {
                     m_sParamErrors += wxString::Format(
-                        _("Invalid param value in:\n<param %s >\nAcceptable value: 'short_nn'\n"),
+                        _T("Invalid param value in:\n<param %s >\nAcceptable value: 'short_nn'\n"),
                         tag.GetAllParams().c_str() );
                 }
                 else {
@@ -216,7 +216,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
             m_nScoreType = eHST_fileLDP;
         else
             m_sParamErrors += wxString::Format(
-                _("Invalid param value in:\n<param %s >\nAcceptable values: short | full | pattern\n"),
+                _T("Invalid param value in:\n<param %s >\nAcceptable values: short | full | pattern\n"),
                 tag.GetAllParams().c_str() );
     }
 
@@ -237,7 +237,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
         fOK = tag.GetParamAsInt(_T("VALUE"), &nBorder);
         if (!fOK)
             m_sParamErrors += wxString::Format(
-                _("Invalid param value in:\n<param %s >\nAcceptable values: 1 | 0 \n"),
+                _T("Invalid param value in:\n<param %s >\nAcceptable values: 1 | 0 \n"),
                 tag.GetAllParams().c_str() );
         else
             m_pOptions->fMusicBorder = (nBorder != 0);
@@ -250,7 +250,7 @@ void lmScoreCtrolParams::AddParam(const wxHtmlTag& tag)
         bool fOK = sMM.ToLong(&nMM);
         if (!fOK || nMM < 0 ) {
             m_sParamErrors += wxString::Format(
-_("Invalid param value in:\n<param %s >\n \
+_T("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: numeric, greater than 0\n"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() );
@@ -289,7 +289,7 @@ void lmScoreCtrolParams::PrepareScore()
             {
             m_sMusic = FinishShortScore(m_sMusic);
             if (!parserLDP.ParenthesisMatch(m_sMusic)) {
-                m_sParamErrors += _("Invalid score: unmatched parenthesis.\n");
+                m_sParamErrors += _T("Invalid score: unmatched parenthesis.\n");
             }
             else {
                 lmLDPNode* pRoot = parserLDP.ParseText(m_sMusic);
@@ -300,7 +300,7 @@ void lmScoreCtrolParams::PrepareScore()
 
         case eHST_full:
             if (!parserLDP.ParenthesisMatch(m_sMusic)) {
-                m_sParamErrors += _("Invalid score: unmatched parenthesis.\n");
+                m_sParamErrors += _T("Invalid score: unmatched parenthesis.\n");
             }
             else {
                 lmLDPNode* pRoot = parserLDP.ParseText(m_sMusic);
@@ -334,7 +334,7 @@ void lmScoreCtrolParams::CreateHtmlCell(wxHtmlWinParser *pHtmlParser)
     //if errors display a text box with an error message and finish
     if (!m_pScore || m_sParamErrors != _T("")) {
         m_sParamErrors += wxString::Format(
-            _("Errors in score: it can not be created. Score:\n%s\n"), m_sMusic.c_str());
+            _T("Errors in score: it can not be created. Score:\n%s\n"), m_sMusic.c_str());
         wnd = new wxTextCtrl((wxWindow*)pHtmlParser->GetWindowInterface()->GetHTMLWindow(), -1, m_sParamErrors,
             wxPoint(0,0), wxSize(300, 100), wxTE_MULTILINE);
         wnd->Show(true);

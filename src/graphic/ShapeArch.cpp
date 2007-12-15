@@ -34,6 +34,7 @@
 #include "GMObject.h"
 #include "ShapeNote.h"
 #include "ShapeArch.h"
+#include "BoxSystem.h"
 
 
 //========================================================================================
@@ -41,8 +42,8 @@
 //========================================================================================
 
 lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd, bool fArchUnder,
-                wxColour nColor, wxString sName)
-    : lmSimpleShape(eGMO_ShapeArch, pOwner, sName)
+                wxColour nColor, wxString sName, bool fDraggable, bool fVisible)
+    : lmSimpleShape(eGMO_ShapeArch, pOwner, sName, fDraggable, nColor, fVisible)
 {
     m_uStart = uStart;
     m_uEnd = uEnd;
@@ -55,8 +56,8 @@ lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd, boo
 
 lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd,
                          lmUPoint uCtrol1, lmUPoint uCtrol2, wxColour nColor,
-                         wxString sName)
-    : lmSimpleShape(eGMO_ShapeArch, pOwner, sName)
+                         wxString sName, bool fDraggable, bool fVisible)
+    : lmSimpleShape(eGMO_ShapeArch, pOwner, sName, fDraggable, nColor, fVisible)
 {
     m_uStart = uStart;
     m_uEnd = uEnd;
@@ -69,8 +70,8 @@ lmShapeArch::lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd,
 }
 
 lmShapeArch::lmShapeArch(lmScoreObj* pOwner, bool fArchUnder, wxColour nColor,
-                         wxString sName)
-    : lmSimpleShape(eGMO_ShapeArch, pOwner, sName)
+                         wxString sName, bool fDraggable, bool fVisible)
+    : lmSimpleShape(eGMO_ShapeArch, pOwner, sName, fDraggable, nColor, fVisible)
 {
     m_uStart = lmUPoint(0.0, 0.0);
     m_uEnd = lmUPoint(0.0, 0.0);
@@ -151,6 +152,8 @@ void lmShapeArch::SetCtrolPoint2(lmLUnits xPos, lmLUnits yPos)
 
 void lmShapeArch::Render(lmPaper* pPaper, wxColour colorC)
 {
+	if (!m_fVisible) return;
+
     //wxLogMessage(_T("[lmShapeArch::Render]"));
     lmLUnits uWidth = lmToLogicalUnits(0.2, lmMILLIMETERS);         // width = 0.2 mm
 
@@ -259,11 +262,12 @@ void lmShapeArch::SetDefaultControlPoints()
 
 
 lmShapeTie::lmShapeTie(lmNote* pOwner, lmShapeNote* pShapeStart, lmShapeNote* pShapeEnd,
-                       bool fTieUnderNote, wxColour color)
-    : lmShapeArch(pOwner, fTieUnderNote, color, _T("Tie"))
+                       bool fTieUnderNote, wxColour color, bool fVisible)
+    : lmShapeArch(pOwner, fTieUnderNote, color, _T("Tie"), lmDRAGGABLE, fVisible)
 {
     //store parameters
     m_fTieUnderNote = fTieUnderNote;
+	m_pBrotherTie = (lmShapeTie*)NULL;
 
     //compute the arch
     OnAttachmentPointMoved(pShapeStart, eGMA_StartNote, 0.0, 0.0, lmSHIFT_EVENT);
@@ -315,62 +319,48 @@ void lmShapeTie::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 
 	//NormaliceBoundsRectangle();
 
-//    // check if the tie have to be splitted
-//    lmLUnits xStart, yStart;
-//    lmUPoint paperPosStart = m_pStartNote->GetOrigin();
-//    if (paperPosEnd.y != paperPosStart.y) {
-//        //if start note paperPos Y is not the same than end note paperPos Y the notes are
-//        //in different systems. Therefore, the tie must be splitted. Let's do it
-//        m_pExtraArc = new lmArch();
-//
-//        //recompute the end of the first arc
-//        xEnd = m_xPaperRight;
-//        yEnd = m_mainArc.GetStartPosY();
-//        m_mainArc.SetEndPoint(xEnd, yEnd);
-//
-//        //compute the start of the second arc
-//        xStart = m_xPaperLeft;
-//        yStart = yPos + paperPosEnd.y;
-//        m_pExtraArc->SetStartPoint(xStart, yStart);
-//
-//        //comute the end of the second arc
-//        xEnd = xPos + paperPosEnd.x;
-//        yEnd = yStart;
-//        m_pExtraArc->SetEndPoint(xEnd, yEnd);
-//    }
-//
-//
-//    // compute the default control points for the first arc
-//    xStart = m_mainArc.GetStartPosX();
-//    yStart = m_mainArc.GetStartPosY();
-//    xEnd = m_mainArc.GetEndPosX();
-//    yEnd = m_mainArc.GetEndPosY();
-//
-//    lmLUnits xCtrol = xStart + (xEnd - xStart) / 3;
-//    lmLUnits yDsplz = lmToLogicalUnits(2, lmMILLIMETERS);
-//    lmLUnits yCtrol = yStart + (m_fTieUnderNote ? yDsplz : -yDsplz);
-//    m_mainArc.SetCtrolPoint1(xCtrol, yCtrol);
-//
-//    xCtrol += (xEnd - xStart) / 3;
-//    yCtrol = yEnd + (m_fTieUnderNote ? yDsplz : -yDsplz);
-//    m_mainArc.SetCtrolPoint2(xCtrol, yCtrol);
-//
-//
-//    // compute the default control points for the second arc, if it exists
-//    if (m_pExtraArc) {
-//        xStart = m_pExtraArc->GetStartPosX();
-//        yStart = m_pExtraArc->GetStartPosY();
-//        xEnd = m_pExtraArc->GetEndPosX();
-//        yEnd = m_pExtraArc->GetEndPosY();
-//
-//        lmLUnits xCtrol = xStart + (xEnd - xStart) / 3;
-//        lmLUnits yCtrol = yStart + (m_fTieUnderNote ? yDsplz : -yDsplz);
-//        m_pExtraArc->SetCtrolPoint1(xCtrol, yCtrol);
-//
-//        xCtrol += (xEnd - xStart) / 3;
-//        yCtrol = yEnd + (m_fTieUnderNote ? yDsplz : -yDsplz);
-//        m_pExtraArc->SetCtrolPoint2(xCtrol, yCtrol);
-//    }
+    // check if the tie have to be splitted
+	if (!m_pBrotherTie) return;		//creating the tie. Not information yet
+
+    lmUPoint paperPosStart = m_pOwner->GetReferencePaperPos();
+    lmUPoint paperPosEnd = m_pBrotherTie->m_pOwner->GetReferencePaperPos();
+    if (paperPosEnd.y != paperPosStart.y)
+	{
+        //if start note paperPos Y is not the same than end note paperPos Y the
+		//notes are in different systems. Therefore, the tie must be splitted. 
+		//To do it:
+		//	- detach the two intermediate points.
+		//	- make both shapes visible.
+		//	
+		// As there is no controller object to perform these actions, the first tie
+		// detecting the need must co-ordinate the necessary actions.
+
+		//determine which tie is the first one
+		lmShapeTie* pFirstTie = this;		//assume this is the first one
+		lmShapeTie* pSecondTie = m_pBrotherTie;
+		if (paperPosStart.y > paperPosEnd.y)
+		{
+			//wrong assumption. Reverse asignment
+			pFirstTie = m_pBrotherTie;
+			pSecondTie = this;
+		}
+
+        //first tie end point is right paper margin
+		lmBoxSystem* pSystem = this->GetOwnerSystem();
+		lmUPoint uEnd;
+		uEnd.x = pSystem->GetSystemFinalX();
+		uEnd.y = pFirstTie->GetStartPosY();
+		pFirstTie->SetEndPoint(uEnd.x, uEnd.y);
+		pFirstTie->SetVisible(true);
+
+		//second tie start point is begining of system
+		lmUPoint uStart;
+		uStart.x = pSystem->GetPositionX();
+		uStart.y = pSecondTie->GetEndPosY();
+		pSecondTie->SetStartPoint(uStart.x, uStart.y);
+		pSecondTie->SetVisible(true);
+
+	}
 
 }
 

@@ -36,13 +36,16 @@
 
 #include <wx/file.h>
 #include "wx/debug.h"
-#include "wx/list.h"
+//#include "wx/list.h"
+#include <algorithm>
+
 #include "Score.h"
 #include "VStaff.h"
 #include "../app/global.h"
 #include "../sound/SoundEvents.h"
 #include "../graphic/GMObject.h"
 #include "../graphic/Shapes.h"
+
 
 // global unique variables used during score building
 lmNoteRest*    g_pLastNoteRest;
@@ -94,16 +97,19 @@ lmScore::lmScore() : lmScoreObj((lmScoreObj*)NULL)
 
 lmScore::~lmScore()
 {
-    m_cInstruments.DeleteContents(true);
-    m_cInstruments.Clear();
+	for(int i=0; i < (int)m_cInstruments.size(); i++)
+	{
+		delete m_cInstruments[i];
+	}
+    m_cInstruments.clear();
 
     if (m_pSoundMngr) {
         m_pSoundMngr->DeleteEventsTable();
         delete m_pSoundMngr;
     }
 
-    m_cHighlighted.DeleteContents(false);    //Staffobjs must not be deleted, only the list
-    m_cHighlighted.Clear();
+    //Staffobjs must not be deleted, only the list
+	m_cHighlighted.clear();
 
     //delete list of title indexes
     m_nTitles.clear();
@@ -150,11 +156,10 @@ void lmScore::SetScoreName(wxString sName)
 
 int lmScore::GetNumMeasures()
 {
-    //LIMIT
-	//it is being assumed that all instruments and staves have the same number of bars
-    InstrumentsList::Node *node = m_cInstruments.GetFirst();
-    lmInstrument *pInstr = node->GetData();
-    lmVStaff *pStaff = pInstr->GetVStaff(1);
+    //LIMIT: it is being assumed that all instruments and staves have the same number of bars
+    //InstrumentsList::Node *node = m_cInstruments.GetFirst();
+    //lmInstrument *pInstr = node->GetData();
+    lmVStaff *pStaff = m_cInstruments[0]->GetVStaff(1);
     return(pStaff->GetNumMeasures());
 }
 
@@ -167,7 +172,7 @@ lmInstrument* lmScore::AddInstrument(int nVStaves,
 
     lmInstrument* pInstr = new lmInstrument(this, nVStaves, nMIDIChannel, nMIDIInstr,
                                             sName, sAbbrev);
-    m_cInstruments.Append(pInstr);
+    m_cInstruments.push_back(pInstr);
     return pInstr;
 
 }
@@ -180,7 +185,7 @@ lmInstrument* lmScore::AddInstrument(int nVStaves, int nMIDIChannel, int nMIDIIn
 
     lmInstrument* pInstr = new lmInstrument(this, nVStaves, nMIDIChannel, nMIDIInstr,
                                             pName, pAbbrev);
-    m_cInstruments.Append(pInstr);
+    m_cInstruments.push_back(pInstr);
     return pInstr;
 
 }
@@ -189,25 +194,20 @@ lmVStaff* lmScore::GetVStaff(int nInstr, int nVStaff)
 {
 	//returns lmVStaff number nVStaff (1..n), of lmInstrument nInstr (1..m)
 
-	int i;
-    InstrumentsList::Node *node;
-    lmInstrument *pInstr;
-    //iterate over the list to locate instrument nInstr
-    for (i=1, node = m_cInstruments.GetFirst();
-        node && i < nInstr; node = node->GetNext(), i++ ) {}
-    pInstr = node->GetData();
-    return(pInstr->GetVStaff(nVStaff));
+	wxASSERT(nInstr > 0 && nInstr <= (int)m_cInstruments.size() );
+    return(m_cInstruments[nInstr-1]->GetVStaff(nVStaff));
 }
 
 lmInstrument* lmScore::XML_FindInstrument(wxString sId)
 {
     // iterate over instrument list to find the one with id == sId
-    wxInstrumentsListNode *node;
-    lmInstrument* pInstr = (lmInstrument*)NULL;
-    for (node = m_cInstruments.GetFirst(); node; node = node->GetNext()) {
-        pInstr = (lmInstrument*)node->GetData();
+
+	lmInstrument* pInstr = (lmInstrument*)NULL;
+	for (int i=0; i < (int)m_cInstruments.size(); i++)
+	{
+		pInstr = m_cInstruments[i];
         if (pInstr->XML_GetId() == sId) break;
-    }
+	}
     return pInstr;
 }
 
@@ -234,7 +234,7 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
 	// Returns height of title
 
     lmLUnits nWidth, nHeight;
-	lmShapeTex2* pShape = (lmShapeTex2*)NULL;
+	lmShapeText* pShape = (lmShapeText*)NULL;
 
     //// if not yet measured and positioned do it
     //if (!pTitle->IsFixed())
@@ -278,7 +278,8 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
         pPaper->SetCursorY( yPaperPos );
 
         //measure the text so that it can be properly positioned
-        pShape = pTitle->CreateShape(pPaper);
+        lmUPoint uPos(pPaper->GetCursorX(), pPaper->GetCursorY());
+        pShape = pTitle->CreateShape(pPaper, uPos);
         pPaper->SetCursorX(xInitPaperPos);      //restore values altered by CreateShape
         pPaper->SetCursorY(yPaperPos);
         nWidth = pShape->GetWidth();
@@ -331,7 +332,7 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
 	//the position has been computed. Create the shape if not yet created or
 	//update it, if its was created during measurements 
 	if (pShape) delete pShape;
-	pShape = pTitle->CreateShape(pPaper);
+	pShape = pTitle->CreateShape(pPaper, lmUPoint(pPaper->GetCursorX(), pPaper->GetCursorY()) );
 
 	//add shape to the box
 	pBox->AddShape(pShape);
@@ -350,22 +351,21 @@ lmLUnits lmScore::CreateTitleShape(lmBox* pBox, lmPaper *pPaper, lmScoreText* pT
 
 lmInstrument* lmScore::GetFirstInstrument()
 {
-    m_pNode = m_cInstruments.GetFirst();
-    return (m_pNode ? (lmInstrument *)m_pNode->GetData() : (lmInstrument *)m_pNode);
+	m_nCurNode = 0;
+	if (m_cInstruments.size() > 0)
+		return m_cInstruments[0];
+	else
+		return (lmInstrument*)NULL;
 }
 
 lmInstrument* lmScore::GetNextInstrument()
 {
-    wxASSERT(m_pNode);
-    m_pNode = m_pNode->GetNext();
-    return (m_pNode ? (lmInstrument *)m_pNode->GetData() : (lmInstrument *)m_pNode);
-}
+	m_nCurNode++;
+	if (++m_nCurNode < (int)m_cInstruments.size())
+		return m_cInstruments[m_nCurNode];
+	else
+		return (lmInstrument*)NULL;
 
-lmInstrument* lmScore::GetLastInstrument()
-{
-    wxASSERT(m_pNode);
-    m_pNode = m_cInstruments.GetLast();
-    return (m_pNode ? (lmInstrument *)m_pNode->GetData() : (lmInstrument *)m_pNode);
 }
 
 void lmScore::WriteToFile(wxString sFilename, wxString sContent)
@@ -393,11 +393,10 @@ wxString lmScore::Dump(wxString sFilename)
 
     //loop to dump all instruments
     sDump += _T("\nLocal objects:\n");
-    lmInstrument *pInstr = GetFirstInstrument();
-    for (int i=1; i<= (int)m_cInstruments.GetCount(); i++, pInstr = GetNextInstrument())
+    for (int i=0; i < (int)m_cInstruments.size(); i++)
     {
-        sDump += wxString::Format(_T("\nInstrument %d\n"), i );
-        sDump += pInstr->Dump();
+        sDump += wxString::Format(_T("\nInstrument %d\n"), i+1 );
+        sDump += m_cInstruments[i]->Dump();
     }
 
     //write to file, if requested
@@ -412,10 +411,9 @@ wxString lmScore::SourceLDP(wxString sFilename)
     sSource += _T("(score\n   (vers 1.5)(language en iso-8859-1)\n");
 
     //loop for each instrument
-    lmInstrument *pInstr = GetFirstInstrument();
-    for (int i=1; i<= (int)m_cInstruments.GetCount(); i++, pInstr = GetNextInstrument())
+    for (int i=0; i < (int)m_cInstruments.size(); i++)
     {
-        sSource += pInstr->SourceLDP(1);
+        sSource += m_cInstruments[i]->SourceLDP(1);
     }
     sSource += _T(")");
 
@@ -439,14 +437,13 @@ wxString lmScore::SourceXML(wxString sFilename)
 	sSource += _T("<part-list>\n");
 
 	nIndent++;
-    lmInstrument* pInstr = GetFirstInstrument();
-    for (int i=1; i<= (int)m_cInstruments.GetCount(); i++, pInstr = GetNextInstrument())
+    for (int i=0; i < (int)m_cInstruments.size(); i++)
     {
 		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
 		sSource += wxString::Format(_T("<score-part id='P%d'>\n"), i);
 		sSource.append((nIndent+1) * lmXML_INDENT_STEP, _T(' '));
 		sSource += _T("<part-name>"); 
-        sSource += pInstr->GetInstrName();
+        sSource += m_cInstruments[i]->GetInstrName();
 		sSource += _T("</part-name>\n"); 
 		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
 		sSource += _T("</score-part>\n");
@@ -457,12 +454,11 @@ wxString lmScore::SourceXML(wxString sFilename)
 
 
 	//Loop to create each instrument xml content
-    pInstr = GetFirstInstrument();
-    for (int i=1; i<= (int)m_cInstruments.GetCount(); i++, pInstr = GetNextInstrument())
+    for (int i=0; i < (int)m_cInstruments.size(); i++)
     {
 		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
 		sSource += wxString::Format(_T("<part id='P%d'>\n"), i);
-        sSource += pInstr->SourceXML(nIndent+1);
+        sSource += m_cInstruments[i]->SourceXML(nIndent+1);
 		sSource.append(nIndent * lmXML_INDENT_STEP, _T(' '));
 		sSource += _T("</part>\n\n");
     }
@@ -523,12 +519,12 @@ void lmScore::ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, EHighlightType nH
 {
     switch (nHighlightType) {
         case eVisualOn:
-            m_cHighlighted.Append(pSO);
+            m_cHighlighted.push_back(pSO);
             pSO->Highlight(pPaper, g_pColors->ScoreHighlight());
             break;
 
         case eVisualOff:
-            m_cHighlighted.DeleteObject(pSO);
+			m_cHighlighted.erase( std::find(m_cHighlighted.begin(), m_cHighlighted.end(), pSO) );
             RemoveHighlight(pSO, pPaper);
             break;
 
@@ -546,11 +542,11 @@ void lmScore::ScoreHighlight(lmStaffObj* pSO, lmPaper* pPaper, EHighlightType nH
 void lmScore::RemoveAllHighlight(wxWindow* pCanvas)
 {
     //remove highlight from all staffobjs in m_cHighlighted list
-    wxStaffObjsListNode* pNode;
-    for(pNode = m_cHighlighted.GetFirst(); pNode; pNode = pNode->GetNext())
+
+	std::list<lmStaffObj*>::iterator pItem;
+	for (pItem = m_cHighlighted.begin(); pItem != m_cHighlighted.end(); pItem++)
 	{
-		lmStaffObj* pSO = (lmStaffObj*)pNode->GetData();
-        lmScoreHighlightEvent event(pSO, eVisualOff);
+        lmScoreHighlightEvent event(*pItem, eVisualOff);
         ::wxPostEvent(pCanvas, event);
     }
 }
@@ -580,16 +576,16 @@ void lmScore::ComputeMidiEvents()
         m_pSoundMngr = new lmSoundManager();
 
     //Loop to generate Midi events for each instrument
-    lmVStaff* pVStaff;
-     lmInstrument *pInstr = GetFirstInstrument();
-    for (int i=1; i<= (int)m_cInstruments.GetCount(); i++, pInstr = GetNextInstrument())
+    for (int i=0; i < (int)m_cInstruments.size(); i++)
     {
+		lmInstrument* pInstr = m_cInstruments[i];
         nChannel = pInstr->GetMIDIChannel();
         nInstr = pInstr->GetMIDIInstrument();
 
        //for each lmVStaff
-        for (int iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++) {
-            pVStaff = pInstr->GetVStaff(iVStaff);
+        for (int iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
+		{
+            lmVStaff* pVStaff = pInstr->GetVStaff(iVStaff);
             pSM = pVStaff->ComputeMidiEvents(nChannel);
             m_pSoundMngr->Append(pSM);
             delete pSM;

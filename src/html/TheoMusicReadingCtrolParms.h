@@ -263,7 +263,7 @@ void lmTheoMusicReadingCtrolParms::AddParam(const wxHtmlTag& tag)
         bool fOK = sMM.ToLong(&nMM);
         if (!fOK || nMM < 0 ) {
             m_sParamErrors += wxString::Format(
-_("Invalid param value in:\n<param %s >\n \
+_T("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: numeric, greater than 0\n"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() );
@@ -292,7 +292,7 @@ Acceptable values: numeric, greater than 0\n"),
         wxString sClef = tag.GetParam(_T("VALUE"));
         if (AnalyzeClef(sClef)) {
             m_sParamErrors += wxString::Format(
-_("Invalid param value in:\n<param %s >\n \
+_T("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable format: <Clef,LowerNote,UpperNote> \n \
 Acceptable clef values: Sol | Fa4 | Fa3 | Do4 | Do3 | Do2 | Do1 \n \
@@ -308,7 +308,7 @@ Acceptable note pitch: c0 - c9"),
         wxString sTime = tag.GetParam(_T("VALUE"));
         if (AnalyzeTime(sTime)) {
             m_sParamErrors += wxString::Format(
-_("Invalid param value in:\n<param %s >\n \
+_T("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable format: list of time signatures \n"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() );
@@ -322,7 +322,7 @@ Acceptable format: list of time signatures \n"),
         wxString sKeys = tag.GetParam(_T("VALUE"));
         if (AnalyzeKeys(sKeys)) {
             m_sParamErrors += wxString::Format(
-_("Invalid param value in:\n<param %s >\n \
+_T("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable format: list of key signatures or keyword 'all' \n"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() );
@@ -336,7 +336,7 @@ Acceptable format: list of key signatures or keyword 'all' \n"),
         bool fOK = sMaxInterval.ToLong(&nMaxInterval);
         if (!fOK || nMaxInterval < 0 ) {
             m_sParamErrors += wxString::Format(
-_("Invalid param value in:\n<param %s >\n \
+_T("Invalid param value in:\n<param %s >\n \
 Invalid value = %s \n \
 Acceptable values: numeric, greater than 0\n"),
                 tag.GetAllParams().c_str(), tag.GetParam(_T("VALUE")).c_str() );
@@ -487,7 +487,7 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeFragments(wxString sLine)
     //build time signatures constraints object
     lmTimeSignConstrains* pTimeSigns = new lmTimeSignConstrains();
     if (pTimeSigns->SetConstrains(sTimeSign)) {
-        m_sParamErrors += wxString::Format(_("Error in fragment. Invalid time signature list '%s'\nIn fragment: '%s'\n"),
+        m_sParamErrors += wxString::Format(_T("Error in fragment. Invalid time signature list '%s'\nIn fragment: '%s'\n"),
                 sTimeSign.c_str(), sFragment.c_str());
         return true;
      }
@@ -497,12 +497,12 @@ bool lmTheoMusicReadingCtrolParms::AnalyzeFragments(wxString sLine)
     //lmLDPNode* pRoot = parserLDP.ParseText(sFragment);
     //if (! pRoot) {
     if (!parserLDP.ParenthesisMatch(sFragment)) {
-        m_sParamErrors += wxString::Format(_("Invalid fragment. Unmatched parenthesis: '%s'\n"),
+        m_sParamErrors += wxString::Format(_T("Invalid fragment. Unmatched parenthesis: '%s'\n"),
                                 sFragment.c_str());
         return true;
      }
     if (sFragment.Find(_T("(g (")) != -1 || sFragment.Find(_T("(g(")) != -1) {
-        m_sParamErrors += wxString::Format(_("Invalid fragment. Old G syntax: '%s'\n"),
+        m_sParamErrors += wxString::Format(_T("Invalid fragment. Old G syntax: '%s'\n"),
                                 sFragment.c_str());
         return true;
      }

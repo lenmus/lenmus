@@ -30,6 +30,8 @@
 #pragma hdrstop
 #endif
 
+#include <algorithm>
+
 #include "../app/global.h"
 #include "GMObject.h"
 #include "../app/Paper.h"
@@ -199,6 +201,7 @@ void lmBox::AddShape(lmShape* pShape)
 
 lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
 {
+	wxLogMessage(_T("[lmBox::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
     //loop to look up in the shapes collection
 	for(int i=0; i < (int)m_Shapes.size(); i++)
     {
@@ -210,6 +213,7 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
     return (lmShape*)NULL;      
 }
 
+
 //========================================================================================
 // Implementation of class lmShape: any renderizable object, such as a line,
 // a glyph, a note head, an arch, etc.
@@ -217,21 +221,22 @@ lmShape* lmBox::FindShapeAtPosition(lmUPoint& pointL)
 
 
 lmShape::lmShape(lmEGMOType nType, lmScoreObj* pOwner, wxString sName, bool fDraggable,
-				 wxColour color)
+				 wxColour color, bool fVisible)
 	: lmGMObject(pOwner, nType, fDraggable, sName)
 {
 	m_pOwnerBox = (lmBox*)NULL;
 	m_color = color;
+	m_fVisible = fVisible;
 }
 
 lmShape::~lmShape()
 {
 	//delete attachment data
-	for(int i=0; i < (int)m_cAttachments.size(); i++)
-    {
-		delete m_cAttachments[i];
+	std::list<lmAtachPoint*>::iterator pItem;
+	for (pItem = m_cAttachments.begin(); pItem != m_cAttachments.end(); pItem++)
+	{
+		delete *pItem;
     }
-
 }
 
 bool lmShape::Collision(lmShape* pShape)
@@ -278,11 +283,24 @@ int lmShape::Attach(lmShape* pShape, lmEAttachType nTag)
 
 }
 
+void lmShape::Detach(lmShape* pShape)
+{
+	std::list<lmAtachPoint*>::iterator pItem;
+	for (pItem = m_cAttachments.begin(); pItem != m_cAttachments.end(); pItem++)
+	{
+		if ( (*pItem)->pShape->GetID() == pShape->GetID() ) break;
+    }
+	if (pItem != m_cAttachments.end())
+		m_cAttachments.erase(pItem);
+}
+
+
 void lmShape::InformAttachedShapes(lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent)
 {
-	for(int i=0; i < (int)m_cAttachments.size(); i++)
-    {
-		lmAtachPoint* pData = m_cAttachments[i];
+	std::list<lmAtachPoint*>::iterator pItem;
+	for (pItem = m_cAttachments.begin(); pItem != m_cAttachments.end(); pItem++)
+	{
+		lmAtachPoint* pData = *pItem;
         pData->pShape->OnAttachmentPointMoved(this, pData->nType, ux, uy, nEvent);
     }
 }
@@ -295,14 +313,13 @@ int lmShape::GetPageNumber() const
 
 
 
-
 //========================================================================================
 // Implementation of class lmSimpleShape
 //========================================================================================
 
 lmSimpleShape::lmSimpleShape(lmEGMOType nType, lmScoreObj* pOwner, wxString sName,
-							 bool fDraggable, wxColour color)
-	: lmShape(nType, pOwner, sName, fDraggable, color)
+							 bool fDraggable, wxColour color, bool fVisible)
+	: lmShape(nType, pOwner, sName, fDraggable, color, fVisible)
 {
 }
 
@@ -332,8 +349,8 @@ void lmSimpleShape::Shift(lmLUnits xIncr, lmLUnits yIncr)
 
 
 lmCompositeShape::lmCompositeShape(lmScoreObj* pOwner, wxString sName, bool fDraggable,
-                                   lmEGMOType nType)
-	: lmShape(nType, pOwner, sName, fDraggable)
+                                   lmEGMOType nType, bool fVisible)
+	: lmShape(nType, pOwner, sName, fDraggable, *wxBLACK, fVisible)
 {
     m_fGrouped = true;	//by default all constituent shapes are grouped
 }

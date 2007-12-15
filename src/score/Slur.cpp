@@ -56,21 +56,36 @@ lmTie::~lmTie()
 
 lmShape* lmTie::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour color)
 {
+	// Create two arch shapes, one onwed by start note and the other one by 
+	// end note.
+	// Both notes' shapes will have attached both tie shapes.
+	// One of the tie shapes will be invisible
+
     //prepare information
     lmShapeNote* pShapeStart = (lmShapeNote*)m_pStartNote->GetShap2();
     lmShapeNote* pShapeEnd = (lmShapeNote*)m_pEndNote->GetShap2();
     bool fTieUnderNote = !m_pStartNote->StemGoesDown();
 
-	//create the shape
-    lmShapeTie* pShape = new lmShapeTie(m_pStartNote, pShapeStart, pShapeEnd,
-                                        fTieUnderNote, color);
-	pBox->AddShape(pShape);
+	//create the first tie shape, attached to both notes' shapes
+    lmShapeTie* pShape1 = new lmShapeTie(m_pEndNote, pShapeStart, pShapeEnd,
+                                        fTieUnderNote, color, lmVISIBLE);
+	pBox->AddShape(pShape1);
+	pShapeStart->Attach(pShape1, eGMA_StartNote);
+	pShapeEnd->Attach(pShape1, eGMA_EndNote);
 
-	//attach the tie to start and end notes
-	pShapeStart->Attach(pShape, eGMA_StartNote);
-	pShapeEnd->Attach(pShape, eGMA_EndNote);
+	//create the second tie shape, attached to both notes' shapes
+    lmShapeTie* pShape2 = new lmShapeTie(m_pStartNote, pShapeStart, pShapeEnd,
+                                        fTieUnderNote, color, lmNO_VISIBLE);
+	pBox->AddShape(pShape2);
+	pShapeStart->Attach(pShape2, eGMA_StartNote);
+	pShapeEnd->Attach(pShape2, eGMA_EndNote);
 
-	return pShape;
+	//link both ties
+	pShape1->SetBrotherTie(pShape2);
+	pShape2->SetBrotherTie(pShape1);
+
+	//return the visible shape
+	return pShape1;
 }
 
 void lmTie::Remove(lmNote* pNote)
@@ -104,7 +119,7 @@ void lmTie::PropagateNotePitchChange(lmNote* pNote, int nStep, int nOctave, int 
 //{
 //    m_fTieUnderNote = fUnderNote;
 //
-//    lmUPoint paperPos = m_pStartNote->GetOrigin();
+//    lmUPoint paperPos = m_pStartNote->GetReferencePaperPos();
 //    m_mainArc.SetStartPoint(xPos + paperPos.x, yPos + paperPos.y);
 //    m_xPaperRight = xPaperRight;
 //
@@ -112,7 +127,7 @@ void lmTie::PropagateNotePitchChange(lmNote* pNote, int nStep, int nOctave, int 
 //
 //void lmTie::SetEndPoint(lmLUnits xPos, lmLUnits yPos, lmLUnits xPaperLeft)
 //{
-//    lmUPoint paperPosEnd = m_pEndNote->GetOrigin();
+//    lmUPoint paperPosEnd = m_pEndNote->GetReferencePaperPos();
 //    lmLUnits xEnd = xPos + paperPosEnd.x;
 //    lmLUnits yEnd = yPos + paperPosEnd.y;
 //    m_mainArc.SetEndPoint(xEnd, yEnd);
@@ -120,7 +135,7 @@ void lmTie::PropagateNotePitchChange(lmNote* pNote, int nStep, int nOctave, int 
 //
 //    // check if the tie have to be splitted
 //    lmLUnits xStart, yStart;
-//    lmUPoint paperPosStart = m_pStartNote->GetOrigin();
+//    lmUPoint paperPosStart = m_pStartNote->GetReferencePaperPos();
 //    if (paperPosEnd.y != paperPosStart.y) {
 //        //if start note paperPos Y is not the same than end note paperPos Y the notes are
 //        //in different systems. Therefore, the tie must be splitted. Let's do it
@@ -185,7 +200,7 @@ void lmTie::PropagateNotePitchChange(lmNote* pNote, int nStep, int nOctave, int 
 //    /*
 //    the position of one of the owner notes has changed. Update tie position and size
 //    */
-//    lmUPoint startOffset = m_pStartNote->GetOrigin();
+//    lmUPoint startOffset = m_pStartNote->GetReferencePaperPos();
 //
 //    //TODO Adjust selRect to sourround control points
 //    m_uPaperPos = startOffset;

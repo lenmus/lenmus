@@ -32,6 +32,7 @@
 
 #include "GMObject.h"
 #include "../score/Score.h"
+#include "../app/ScoreCanvas.h"
 
 #include "ShapeNote.h"
 
@@ -41,7 +42,7 @@
 
 
 lmShapeNote::lmShapeNote(lmNoteRest* pOwner, lmLUnits xLeft, lmLUnits yTop, wxColour color)
-	: lmCompositeShape(pOwner, _T("Note"), lmNO_DRAGGABLE, eGMO_ShapeNote)
+	: lmCompositeShape(pOwner, _T("Note"), lmDRAGGABLE, eGMO_ShapeNote)
 {
     m_uxLeft = xLeft;
     m_uyTop = yTop;
@@ -141,4 +142,54 @@ bool lmShapeNote::StemGoesDown()
 {
 	return ((lmNote*)m_pOwner)->StemGoesDown();
 }
+
+wxBitmap* lmShapeNote::OnBeginDrag(double rScale)
+{
+	return lmCompositeShape::OnBeginDrag(rScale);
+}
+
+lmUPoint lmShapeNote::OnDrag(lmPaper* pPaper, const lmUPoint& uPos)
+{
+	// The view informs that the user continues dragging. We receive the new desired
+	// shape position and we must return the new allowed shape position.
+	//
+	// The default behaviour is to return the received position, so the view redraws 
+	// the drag image at that position. No action must be performed by the shape on 
+	// the score and score objects.
+	//
+	// The received new desired shape position is in logical units and referred to page
+	// origin. The returned new allowed shape position must also be in in logical units
+	// and referred to page origin.
+
+	if (g_fFreeMove) return uPos;
+
+    // A note only can be moved in discrete vertical steps (staff lines/spaces)
+    //return lmUPoint(uPos.x, GetYTop());
+    return lmUPoint(uPos.x, uPos.y);
+
+}
+
+void lmShapeNote::OnEndDrag(lmController* pCanvas, const lmUPoint& uPos)
+{
+	// End drag. Receives the command processor associated to the view and the
+	// final position of the object (logical units referred to page origin).
+	// This method must validate/adjust final position and, if ok, it must 
+	// send a move object command to the controller.
+
+	lmUPoint uFinalPos(uPos.x, uPos.y);
+	if (!g_fFreeMove)
+	{
+		//free movement not allowed. Must end on a staff line/space
+		uFinalPos.y = GetYTop();
+	}
+
+	////correct glyph displacement
+	//uFinalPos.x += m_uGlyphPos.x - GetXLeft();
+	//uFinalPos.y += m_uGlyphPos.y - GetYTop();
+
+	//send a move object command to the controller
+	pCanvas->MoveObject(this, uFinalPos);
+
+}
+
 

@@ -75,18 +75,14 @@ lmFormatter4::lmFormatter4()
 
 lmFormatter4::~lmFormatter4()
 {
-    //wxLogMessage(_T("[lmFormatter4::~lmFormatter4] Deleting lmFormatter4 object"));
-
     //clear Timepos tables
     for (int i=1; i <= MAX_MEASURES_PER_SYSTEM; i++) {
         m_oTimepos[i].CleanTable();
     }
-
 }
 
 lmBoxScore* lmFormatter4::Layout(lmScore* pScore, lmPaper* pPaper)
 {
-
     m_pScore = pScore;
     switch (pScore->GetRenderizationType())
     {
@@ -98,7 +94,6 @@ lmBoxScore* lmFormatter4::Layout(lmScore* pScore, lmPaper* pPaper)
             wxASSERT(false);
             return (lmBoxScore*)NULL;
     }
-
 }
 
 lmBoxScore* lmFormatter4::RenderMinimal(lmPaper* pPaper)
@@ -223,8 +218,8 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         }
     }
 
-    // write score titles
-    m_pScore->LayoutTitles(pBoxScore, pPaper);
+    // write score titles. Titles will be attached to current page (the fisr one)
+    m_pScore->LayoutTitles(pBoxScore->GetCurrentPage(), pPaper);
     pPaper->RestartPageCursors();                                //restore page cursors are at top-left corner
     pPaper->IncrementCursorY(m_pScore->TopSystemDistance());    //advance to skip headers
 
@@ -322,12 +317,13 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             //when sizing the previous measure column
             pPaper->SetCursorY( ySystemPos );
 
-			//if start of system, set initial spacing
+			//if start of system, set initial spacing and size
             if (nRelMeasure == 1)
 			{
 				pBoxSystem->SetIndent(((nSystem == 1) ? nFirstSystemIndent : nOtherSystemIndent ));
 				pPaper->IncrementCursorX(
 					((nSystem == 1) ? nFirstSystemIndent : nOtherSystemIndent ));
+				pBoxSystem->UpdateXRight( pPaper->GetRightMarginXPos() );
             }
 
             //size this measure column create BoxSlice (and BoxSlice hierarchy) for 
@@ -361,8 +357,13 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
             #endif
 
             //substract space ocupied by this measure from space available in the system
-            if (m_uFreeSpace < m_uMeasureSize[nRelMeasure]) {
+            if (m_uFreeSpace < m_uMeasureSize[nRelMeasure])
+			{
                 //there is no enough space for this measure column.
+
+				//for this measure ScoreObjs, remove 'position computed' mark
+                ResetLocation(nAbsMeasure);
+
                 //exit the loop. The system is finished
                 break;
             } else {
@@ -397,7 +398,7 @@ lmBoxScore* lmFormatter4::RenderJustified(lmPaper* pPaper)
         //           the current system.
         //   m_nMeasuresInSystem  - the number of measures that fit in this system
         //
-        //Now we preceed to re-distribute the remaining free space across all measures, so that
+        //Now we proceed to re-distribute the remaining free space across all measures, so that
         //the system is justified. This step only computes the new measure column sizes and stores
         //them in table m_uMeasureSize[1..MaxBar] but changes nothing in the StaffObjs
         //-------------------------------------------------------------------------------
@@ -729,7 +730,7 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
 			{
 				// Final xPos is yet unknown, so I use zero.
 				// It will be updated when the system is completed
-				yBottomLeft = pVStaff->LayoutStaffLines(pBSV, xPaperPos, 0.0, yPaperPos);
+				yBottomLeft = pVStaff->LayoutStaffLines(pBoxSystem, xPaperPos, 0.0, yPaperPos);
 			}
 
 			//save start position of this system, slice, instrument and vstaff
@@ -808,6 +809,33 @@ lmLUnits lmFormatter4::SizeMeasureColumn(int nAbsMeasure, int nRelMeasure, int n
     return m_oTimepos[nRelMeasure].ArrangeStaffobjsByTime(fTrace);      //true = debug on
 
 }
+
+void lmFormatter4::ResetLocation(int nAbsMeasure)
+{
+    // explore all instruments in the score
+    lmInstrument* pInstr;
+    for (pInstr = m_pScore->GetFirstInstrument(); pInstr; pInstr=m_pScore->GetNextInstrument())
+    {
+        //loop. For current instrument, explore all its staves
+        for (int iVStaff=1; iVStaff <= pInstr->GetNumStaves(); iVStaff++)
+        {
+            lmVStaff* pVStaff = pInstr->GetVStaff(iVStaff);
+
+			//loop to process all StaffObjs in this measure
+			lmStaffObjIterator* pIT = pVStaff->CreateIterator(eTR_AsStored);
+			pIT->AdvanceToMeasure(nAbsMeasure);
+			while(!pIT->EndOfList())
+			{
+				lmStaffObj* pSO = pIT->GetCurrent();
+				pSO->ResetObjectLocation();
+				if (pSO->GetType() == eSFOT_Barline) break;	//End of measure: exit loop.
+				pIT->MoveNext();
+			}
+			delete pIT;
+		}
+    }
+}
+
 
 void lmFormatter4::RedistributeFreeSpace(lmLUnits nAvailable)
 {
@@ -1119,7 +1147,7 @@ bool lmFormatter4::SizeMeasure(lmBoxSliceVStaff* pBSV, lmVStaff* pVStaff, int nA
             lmLUnits xEnd = pPaper->GetCursorX();
             //wxLogMessage(_T("[lmFormatter4::SizeMeasure] xStart=%.2f, xEnd=%.2f"), xStart, xEnd);
             lmLUnits xFinalPos = 0;
-            lmLUnits xPos = pBarline->GetLocationPos();
+            lmLUnits xPos = (pBarline->GetOrigin()).x;  //pBarline->GetLocationPos();
 
             //compute user required barline position
             if (pBarline->GetLocationType() == lmLOCATION_USER_RELATIVE) {

@@ -129,6 +129,7 @@ wxString lmShapeLine::Dump(int nIndent)
                 m_nId, m_sGMOName, m_xStart, m_yStart, m_xEnd, m_yEnd, m_uWidth );
     sDump += DumpBounds();
     sDump += _T("\n");
+
 	return sDump;
 }
 
@@ -198,6 +199,7 @@ wxString lmShapeGlyph::Dump(int nIndent)
         m_nId, m_sGMOName, m_uGlyphPos.x, m_uGlyphPos.y);
     sDump += DumpBounds();
     sDump += _T("\n");
+
 	return sDump;
 }
 
@@ -322,83 +324,7 @@ lmUPoint lmShapeGlyph::GetObjectOrigin()
 // lmShapeText object implementation
 //========================================================================================
 
-lmShapeText::lmShapeText(lmScoreObj* pOwner, wxString sText, wxFont* pFont)
-    : lmSimpleShape(eGMO_ShapeText, pOwner)
-{
-    m_sText = sText;
-    m_pFont = pFont;
-
-    //default values
-    m_uShift.x = 0;
-    m_uShift.y = 0;
-
-
-
-}
-
-void lmShapeText::Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint offset)
-{
-    // compute and store position
-    m_uShift.x = offset.x;
-    m_uShift.y = offset.y;
-
-    // store boundling rectangle position and size
-    lmLUnits uWidth, uHeight;
-    pPaper->SetFont(*m_pFont);
-    pPaper->GetTextExtent(m_sText, &uWidth, &uHeight);
-
-    m_uBoundsTop.x = m_uShift.x;
-    m_uBoundsTop.y = m_uShift.y;
-    m_uBoundsBottom.x = m_uBoundsTop.x + uWidth;
-    m_uBoundsBottom.y = m_uBoundsTop.y + uHeight;
-
-    // store selection rectangle position and size
-	m_uSelRect = GetBounds();
-
-}
-
-
-void lmShapeText::Render(lmPaper* pPaper, wxColour color)
-{
-    pPaper->SetFont(*m_pFont);
-    pPaper->SetTextForeground(color);
-    pPaper->DrawText(m_sText, m_uShift.x, m_uShift.y);
-
-    lmShape::RenderCommon(pPaper);
-}
-
-void lmShapeText::SetFont(wxFont *pFont)
-{
-    m_pFont = pFont;
-}
-
-wxString lmShapeText::Dump(int nIndent)
-{
-	wxString sDump = _T("");
-	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
-    sDump += wxString::Format(_T("TextShape: shift=(%d,%d), text=%s, "),
-        m_uShift.x, m_uShift.y, m_sText.c_str() );
-    sDump += DumpBounds();
-    sDump += _T("\n");
-	return sDump;
-}
-
-void lmShapeText::Shift(lmLUnits xIncr, lmLUnits yIncr)
-{
-    m_uShift.x += xIncr;
-    m_uSelRect.x += xIncr;
-	m_uBoundsTop.x += xIncr;
-	m_uBoundsBottom.x += xIncr;
-}
-
-
-
-
-//========================================================================================
-// lmShapeTex2 object implementation
-//========================================================================================
-
-lmShapeTex2::lmShapeTex2(lmScoreObj* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
+lmShapeText::lmShapeText(lmScoreObj* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
 						 lmUPoint offset, wxString sName, bool fDraggable, wxColour color)
     : lmSimpleShape(eGMO_ShapeText, pOwner, sName, fDraggable, color)
 {
@@ -425,7 +351,7 @@ lmShapeTex2::lmShapeTex2(lmScoreObj* pOwner, wxString sText, wxFont* pFont, lmPa
 }
 
 
-void lmShapeTex2::Render(lmPaper* pPaper, wxColour color)
+void lmShapeText::Render(lmPaper* pPaper, wxColour color)
 {
     pPaper->SetFont(*m_pFont);
     pPaper->SetTextForeground(color);
@@ -434,12 +360,12 @@ void lmShapeTex2::Render(lmPaper* pPaper, wxColour color)
     lmShape::RenderCommon(pPaper);
 }
 
-void lmShapeTex2::SetFont(wxFont *pFont)
+void lmShapeText::SetFont(wxFont *pFont)
 {
     m_pFont = pFont;
 }
 
-wxString lmShapeTex2::Dump(int nIndent)
+wxString lmShapeText::Dump(int nIndent)
 {
 	wxString sDump = _T("");
 	sDump.append(nIndent * lmINDENT_STEP, _T(' '));
@@ -447,15 +373,85 @@ wxString lmShapeTex2::Dump(int nIndent)
         m_uPos.x, m_uPos.y, m_sText.c_str() );
     sDump += DumpBounds();
     sDump += _T("\n");
+
 	return sDump;
 }
 
-void lmShapeTex2::Shift(lmLUnits xIncr, lmLUnits yIncr)
+void lmShapeText::Shift(lmLUnits xIncr, lmLUnits yIncr)
 {
     m_uPos.x += xIncr;
     m_uPos.y += yIncr;
 
     ShiftBoundsAndSelRec(xIncr, yIncr);
+}
+
+wxBitmap* lmShapeText::OnBeginDrag(double rScale)
+{
+	// A dragging operation is started. The view invokes this method to request the 
+	// bitmap to be used as drag image. No other action is required.
+	// If no bitmap is returned drag is cancelled.
+	//      
+	// So this method returns the bitmap to use with the drag image.
+
+
+	// Get size of text, in logical units
+    wxCoord wText, hText;
+    wxScreenDC dc;
+    dc.SetMapMode(lmDC_MODE);
+    dc.SetUserScale(rScale, rScale);
+    dc.SetFont(*m_pFont);
+    dc.GetTextExtent(m_sText, &wText, &hText);
+    dc.SetFont(wxNullFont);
+
+    // allocate a memory DC for drawing into a bitmap
+    wxMemoryDC dc2;
+    dc2.SetMapMode(lmDC_MODE);
+    dc2.SetUserScale(rScale, rScale);
+    dc2.SetFont(*m_pFont);
+
+    // allocate the bitmap
+    // convert size to pixels
+    int wD = (int)dc2.LogicalToDeviceXRel(wText);
+    int hD = (int)dc2.LogicalToDeviceYRel(hText);
+    wxBitmap bitmap(wD+2, hD+2);
+    dc2.SelectObject(bitmap);
+
+    // draw onto the bitmap
+    dc2.SetBackground(* wxWHITE_BRUSH);
+    dc2.Clear();
+    dc2.SetBackgroundMode(wxTRANSPARENT);
+    dc2.SetTextForeground(g_pColors->ScoreSelected());
+    dc2.DrawText(m_sText, 0, 0);
+
+
+    dc2.SelectObject(wxNullBitmap);
+
+ //   //cut out the image, to discard the outside out of the bounding box
+ //   lmPixels vxLeft = dc2.LogicalToDeviceYRel(GetXLeft() - m_uGlyphPos.x);
+ //   lmPixels vyTop = dc2.LogicalToDeviceYRel(GetYTop() - m_uGlyphPos.y);
+ //   lmPixels vWidth = wxMin(bitmap.GetWidth() - vxLeft,
+ //                           dc2.LogicalToDeviceXRel(GetWidth()) );
+ //   lmPixels vHeight = wxMin(bitmap.GetHeight() - vyTop,
+ //                            dc2.LogicalToDeviceYRel(GetHeight()) );
+ //   const wxRect rect(vxLeft, vyTop, vWidth, vHeight);
+ //   //wxLogMessage(_T("[lmShapeGlyph::OnBeginDrag] bitmap size w=%d, h=%d. Cut x=%d, y=%d, w=%d, h=%d"),
+ //   //    bitmap.GetWidth(), bitmap.GetHeight(), vxLeft, vyTop, vWidth, vHeight);
+ //   wxBitmap oShapeBitmap = bitmap.GetSubBitmap(rect);
+ //   wxASSERT(oShapeBitmap.IsOk());
+
+    // Make the bitmap masked
+    //wxImage image = oShapeBitmap.ConvertToImage();
+    wxImage image = bitmap.ConvertToImage();
+    image.SetMaskColour(255, 255, 255);
+    wxBitmap* pBitmap = new wxBitmap(image);
+
+ //   ////DBG -----------
+ //   //wxString sFileName = _T("ShapeGlyp2.bmp");
+ //   //pBitmap->SaveFile(sFileName, wxBITMAP_TYPE_BMP);
+ //   ////END DBG -------
+
+    return pBitmap;
+
 }
 
 

@@ -30,6 +30,8 @@
 #include "defs.h"
 #include "Pitch.h"
 #include "../app/global.h"
+#include <vector>
+#include <list>
 
 // aligments
 enum lmEAlignment
@@ -143,9 +145,7 @@ class lmInstrument;
 class lmStaffObj;
 class lmColStaffObjs;
 class lmStaffObjIterator;
-class InstrumentsList;
-class VStavesList;
-class StaffObjsList;
+//class StaffObjsList;
 
 class lmBasicText;
 class lmScoreText;
@@ -172,8 +172,10 @@ class lmObjOptions;
 
 class lmBox;
 
-#include "Context.h"
+
 #include "StaffObj.h"
+
+#include "Context.h"
 #include "StaffObjIterator.h"
 #include "ColStaffObjs.h"
 #include "SOControl.h"
@@ -198,7 +200,6 @@ class lmBox;
 #include "../app/global.h"
 #include "../app/Paper.h"
 #include "../sound/SoundManager.h"
-
 
 
 // global unique variables used during score building
@@ -251,19 +252,19 @@ public:
 	void RemoveAllHighlight(wxWindow* pCanvas);
 
     // Debug methods. If filename provided writes also to file
-    wxString Dump(wxString sFilename = _T(""));
+    wxString Dump() { return Dump(_T("")); }
+    wxString Dump(wxString sFilename);
     wxString SourceLDP(wxString sFilename = _T(""));
     wxString SourceXML(wxString sFilename = _T(""));
     wxString DumpMidiEvents(wxString sFilename = _T(""));
 
-    int GetNumInstruments() { return (int)m_cInstruments.GetCount(); }
+    int GetNumInstruments() { return (int)m_cInstruments.size(); }
 
     //// Friend methods for lmFormatter object
 
     //iterator over instruments list
     lmInstrument* GetFirstInstrument();
     lmInstrument* GetNextInstrument();
-    lmInstrument* GetLastInstrument();
 
     // titles related methods
     void AddTitle(wxString sTitle, lmEAlignment nAlign, lmLocation pos,
@@ -308,12 +309,12 @@ private:
         //
 
     // a lmScore is, mainly, a collection of Instruments plus some data (composer, title, ...)
-    InstrumentsList     m_cInstruments;     //list of instruments that form this score
-    std::vector<int>    m_nTitles;          //indexes (over attached AuxObjs) to titles 
+    std::vector<lmInstrument*>	m_cInstruments;     //list of instruments that form this score
+    std::vector<int>			m_nTitles;          //indexes (over attached AuxObjs) to titles 
 
     //Variables related to polyphonic interpretation
-    lmSoundManager*     m_pSoundMngr;       //Sound events table & manager
-    StaffObjsList       m_cHighlighted;     //list of highlighted staffobjs
+    lmSoundManager*			m_pSoundMngr;       //Sound events table & manager
+    std::list<lmStaffObj*>	m_cHighlighted;     //list of highlighted staffobjs
 
     //Layout related variables
     lmLUnits			m_nTopSystemDistance;
@@ -324,7 +325,7 @@ private:
 	bool				m_fModified;		//to force a repaint
 
     //other variables
-    wxInstrumentsListNode*  m_pNode;        //last returned instrument node
+	int					m_nCurNode;			 //last returned instrument node
     long				m_nID;				//unique ID for this score
     wxString			m_sScoreName;		//for user identification
 

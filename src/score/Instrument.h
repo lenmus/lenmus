@@ -19,12 +19,14 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __INSTRUMENT_H__        //to avoid nested includes
-#define __INSTRUMENT_H__
+#ifndef __LM_INSTRUMENT_H__        //to avoid nested includes
+#define __LM_INSTRUMENT_H__
 
 #ifdef __GNUG__
 #pragma interface "Instrument.cpp"
 #endif
+
+#include <vector>
 
 class lmBox;
 
@@ -52,7 +54,7 @@ public:
     lmVStaff* GetVStaff(int nStaff);
 
     //Returns the number of VStaves that this lmInstrument has (1..n)
-    inline int GetNumStaves() {return (int)m_cStaves.GetCount(); }
+    inline int GetNumStaves() {return (int)m_cStaves.size(); }
 
     //layout
     void SetIndentFirst(lmLocation* pPos) { SetIndent(&m_nIndentFirst, pPos); }
@@ -86,7 +88,7 @@ private:
     void SetIndent(lmLUnits* pIndent, lmLocation* pPos);
 
     lmScore*        m_pScore;           //score to whith this instrument belongs
-    VStavesList     m_cStaves;          //wxList of VStaves that this instrument has
+	std::vector<lmVStaff*>	m_cStaves;	//list of VStaffs that this instrument has
     int             m_nMidiInstr;       //num. of MIDI instrument no use for this lmInstrument
     int             m_nMidiChannel;     //MIDI channel to use
 
@@ -100,10 +102,6 @@ private:
     wxString    m_xmlId;            // part id
 };
 
-// declare a list of Instruments class
-#include "wx/list.h"
-WX_DECLARE_LIST(lmInstrument, InstrumentsList);
 
 
-
-#endif    // __INSTRUMENT_H__
+#endif    // __LM_INSTRUMENT_H__

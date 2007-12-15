@@ -129,6 +129,9 @@ wxString lmKeySignature::SourceLDP(int nIndent)
     //visible?
     if (!m_fVisible) { sSource += _T(" noVisible"); }
 
+    //location
+    sSource += SourceLDP_Location(m_uPaperPos);
+
 	//attached AuxObjs
 	sSource += lmStaffObj::SourceLDP(nIndent+1);
 
@@ -167,8 +170,8 @@ lmLUnits lmKeySignature::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPo
 
 
     //get the position on which the time signature must be drawn
-    lmLUnits uxLeft = pPaper->GetCursorX();
-	lmLUnits uyTop = pPaper->GetCursorY() + m_pVStaff->GetStaffOffset(m_nStaffNum);
+    lmLUnits uxLeft = uPos.x;
+	lmLUnits uyTop = uPos.y + m_pVStaff->GetStaffOffset(m_nStaffNum);
 
     //Key signature is common to all lmVStaff staves of the instrument, but the lmStaffObj
     //representing it is only present in the first staff. Therefore, for renderization, it

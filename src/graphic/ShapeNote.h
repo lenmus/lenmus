@@ -42,6 +42,7 @@
 #include "GMObject.h"
 
 class lmNoteRest;
+class lmController;
 
 
 class lmShapeNote : public lmCompositeShape
@@ -72,6 +73,12 @@ public:
 
 	//re-layout
 	void SetStemLength(lmLUnits uLength);
+
+	//dragging
+    wxBitmap* OnBeginDrag(double rScale);
+	lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
+	void OnEndDrag(lmController* pCanvas, const lmUPoint& uPos);
+
 
 
 protected:

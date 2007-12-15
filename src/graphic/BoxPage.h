@@ -19,8 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __BOXPAGE_H__        //to avoid nested includes
-#define __BOXPAGE_H__
+#ifndef __LM_BOXPAGE_H__        //to avoid nested includes
+#define __LM_BOXPAGE_H__
 
 #if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
 #pragma interface "BoxPage.cpp"
@@ -68,6 +68,10 @@ public:
     wxString Dump(int nIndent);
 	inline int GetPageNumber() const { return m_nNumPage; }
 
+	//owners and related
+	lmBoxSystem* GetOwnerSystem() { return (lmBoxSystem*)NULL; }
+
+
 
 private:
     lmBoxScore*     m_pBScore;      //parent score box
@@ -86,5 +90,5 @@ private:
 
 
 
-#endif  // __BOXPAGE_H__
+#endif  // __LM_BOXPAGE_H__
 

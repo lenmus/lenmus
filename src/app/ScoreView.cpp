@@ -1097,6 +1097,7 @@ void lmScoreView::OnMouseEvent(wxMouseEvent& event, wxDC* pDC)
         if (pGMO)
         {
             //valid object pointed.
+			m_pCanvas->SelectObject(pGMO);	//select/deselect it.
 			pGMO->OnRightClick(m_pCanvas, canvasPosD, nKeysPressed);
        }
        //else

@@ -108,40 +108,16 @@ protected:
 class lmShapeText : public lmSimpleShape
 {
 public:
-    lmShapeText(lmScoreObj* pOwner, wxString sText, wxFont* pFont);
+    lmShapeText(lmScoreObj* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
+                lmUPoint offset, wxString sName=_T("ShapeTex2"),
+				bool fDraggable = false, wxColour color = *wxBLACK);
     ~lmShapeText() {}
 
     //implementation of virtual methods from base class
     void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
     wxString Dump(int nIndent);
     void Shift(lmLUnits xIncr, lmLUnits yIncr);
-
-    //specific methods
-    void Measure(lmPaper* pPaper, lmStaff* pStaff, lmUPoint shift);
-    void SetFont(wxFont *pFont);
-    wxString* GetText() { return &m_sText; }
-
-
-private:
-    wxString    m_sText;
-    wxFont*     m_pFont;
-    lmUPoint    m_uShift;        // to correctly position the text (relative to shape offset point)
-
-};
-
-//represents a text with the same font
-class lmShapeTex2 : public lmSimpleShape
-{
-public:
-    lmShapeTex2(lmScoreObj* pOwner, wxString sText, wxFont* pFont, lmPaper* pPaper,
-                lmUPoint offset, wxString sName=_T("ShapeTex2"),
-				bool fDraggable = false, wxColour color = *wxBLACK);
-    ~lmShapeTex2() {}
-
-    //implementation of virtual methods from base class
-    void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
-    wxString Dump(int nIndent);
-    void Shift(lmLUnits xIncr, lmLUnits yIncr);
+	virtual wxBitmap* OnBeginDrag(double rScale);
 
     //specific methods
     void SetFont(wxFont *pFont);

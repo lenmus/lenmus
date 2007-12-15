@@ -80,10 +80,15 @@ void lmBoxPage::Render(lmScore* pScore, lmPaper* pPaper)
 {
     if (m_nLastSystem == 0) return;
 
-    int iSystem;                //number of system in process
-    int i;
+	//render score titles
+	for (int i=0; i < (int)m_Shapes.size(); i++)
+	{
+		m_Shapes[i]->Render(pPaper);
+	}
+
     //loop to render the systems in this page
-    for(i=0, iSystem = m_nFirstSystem; i < (int)m_aSystems.size(); iSystem++, i++)
+	int iSystem = m_nFirstSystem;	//number of system in process
+    for(int i=0; i < (int)m_aSystems.size(); iSystem++, i++)
     {
         m_aSystems[i]->Render(iSystem, pScore, pPaper);
     }
@@ -105,6 +110,7 @@ lmBoxSlice* lmBoxPage::FindSliceAtPosition(lmUPoint& pointL)
 
 lmGMObject* lmBoxPage::FindGMObjectAtPosition(lmUPoint& pointL)
 {
+	wxLogMessage(_T("[lmBoxPage::FindShapeAtPosition] GMO %s - %d"), m_sGMOName, m_nId); 
     //look in shapes collection
     lmShape* pShape = FindShapeAtPosition(pointL);
     if (pShape) return pShape;

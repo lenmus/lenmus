@@ -72,12 +72,15 @@ public:
 	//positioning and bounds
     void UpdateXLeft(lmLUnits xLeft);
     void UpdateXRight(lmLUnits xRight);
-	void SystemXRightUpdated(lmLUnits xRight);
+	//void SystemXRightUpdated(lmLUnits xRight);
     void CopyYBounds(lmBoxSliceInstr* pBSI);
 
     //implementation of virtual methods from base class
     wxString Dump(int nIndent);
 	int GetPageNumber() const;
+
+	//owners and related
+	lmBoxSystem* GetOwnerSystem() { return m_pSlice->GetOwnerSystem(); }
 
 
 

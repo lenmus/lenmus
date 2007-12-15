@@ -19,8 +19,8 @@
 //
 //-------------------------------------------------------------------------------------
 
-#ifndef __BARLINE_H__        //to avoid nested includes
-#define __BARLINE_H__
+#ifndef __LM_BARLINE_H__        //to avoid nested includes
+#define __LM_BARLINE_H__
 
 #if defined(__GNUG__) && !defined(__APPLE__)
 #pragma interface "Barline.cpp"
@@ -54,8 +54,8 @@ public:
     lmContext* GetContext(int nStaff);
 
     //positioning
-    void SetLocation(lmLUnits uxPos, lmELocationType nType);
-    lmLUnits GetLocationPos() { return m_uxUserPos; }
+    //void SetLocation(lmLUnits uxPos, lmELocationType nType);
+    //lmLUnits GetLocationPos() { return m_uxUserPos; }
     lmELocationType GetLocationType() { return m_xUserPosType; }
 
 
@@ -66,16 +66,7 @@ public:
 
 
 private:
-    lmLUnits DrawBarline(bool fMeasuring, lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyTop,
-                         lmLUnits uyBottom, wxColour colorC = *wxBLACK);
-    void DrawThinLine(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyTop, lmLUnits uyBottom,
-                      wxColour color);
-    void DrawThickLine(lmPaper* pPaper, lmLUnits uxLeft, lmLUnits uyTop, lmLUnits uWidth,
-                       lmLUnits uHeight, wxColour color);
-    void DrawTwoDots(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyPos);
-
-private:
-    lmEBarline            m_nBarlineType;     //type of barline
+    lmEBarline          m_nBarlineType;     //type of barline
     ArrayOfContexts     m_aContexts;        //pointers to contexts at barline position
 
     lmLUnits            m_uxUserPos;
@@ -88,5 +79,5 @@ private:
 wxString GetBarlineLDPNameFromType(lmEBarline nBarlineType);
 
 
-#endif    // __BARLINE_H__
+#endif    // __LM_BARLINE_H__
 

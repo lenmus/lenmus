@@ -158,7 +158,7 @@ lmScore* lmLDPParser::ParseFile(const wxString& filename)
     // report errors
     bool fShowLog = true;
     if (fShowLog && m_nErrors != 0) {
-        g_pLogger->ShowDataErrors(_("Warnings/errors while reading LenMus score."));
+        g_pLogger->ShowDataErrors(_T("Warnings/errors while reading LenMus score."));
     }
 
     //if (pScore) pScore->Dump(_T("lenmus_score_dump.txt"));      //dbg
@@ -1494,14 +1494,14 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     nLevel = GetBeamingLevel(nNoteType);
                     if (nLevel == -1) {
                         AnalysisError(
-                            _("Requesting beaming a note longer than eight. Beaming ignored."));
+                            _T("Requesting beaming a note longer than eight. Beaming ignored."));
                     }
                     else {
                         // and the previous note must be beamed
                         if (g_pLastNoteRest && g_pLastNoteRest->IsBeamed() &&
                             g_pLastNoteRest->GetBeamType(0) != eBeamEnd) {
                             AnalysisError(
-                                _("Requesting to start a beamed group but there is already an open group. Beaming ignored."));
+                                _T("Requesting to start a beamed group but there is already an open group. Beaming ignored."));
                         }
                         fBeamed = true;
                         for (iLevel=0; iLevel <= nLevel; iLevel++) {
@@ -1522,14 +1522,14 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                     //!         to be in the last note of the chord.
                     if (fInChord) {
                         AnalysisError(
-                            _("Request to end beaming a group in a note that is note the first one of a chord. Beaming ignored."));
+                            _T("Request to end beaming a group in a note that is note the first one of a chord. Beaming ignored."));
                         fCloseBeam = false;
                     }
 
                     //There must exist a previous note/rest
                     if (!g_pLastNoteRest) {
                         AnalysisError(
-                            _("Request to end beaming a group but there is not a  previous note. Beaming ignored."));
+                            _T("Request to end beaming a group but there is not a  previous note. Beaming ignored."));
                         fCloseBeam = false;
                     }
                     else {
@@ -1537,7 +1537,7 @@ lmNoteRest* lmLDPParser::AnalyzeNoteRest(lmLDPNode* pNode, lmVStaff* pVStaff, bo
                         if (!g_pLastNoteRest->IsBeamed() ||
                             g_pLastNoteRest->GetBeamType(0) == eBeamEnd) {
                             AnalysisError(
-                                _("Request to end beaming a group but previous note is not beamed. Beaming ignored."));
+                                _T("Request to end beaming a group but previous note is not beamed. Beaming ignored."));
                             fCloseBeam = false;
                         }
                     }
@@ -1867,7 +1867,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
         //check that at least one parameters (+, - sign) is specified
         if(pNode->GetNumParms() < 2) {
             AnalysisError(
-                _("Element '%s' has less parameters than the minimum required. Element ignored."),
+                _T("Element '%s' has less parameters than the minimum required. Element ignored."),
                 sElmName.c_str() );
             return true;
         }
@@ -2051,7 +2051,6 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
         return false;
     }
 
-    bool fVisible = true;
     lmEBarline nType = etb_SimpleBarline;
 
     wxString sType = (pNode->GetParameter(1))->GetName();
@@ -2075,59 +2074,25 @@ bool lmLDPParser::AnalyzeBarline(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
 
     //analyze remaining optional parameters
-    lmLUnits            xUserPos;
-    lmELocationType     xUserPosType;
+    int iP = 2;
+	lmLDPOptionalTags oOptTags(this, m_pTags);
+	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
+	lmLocation tPos = g_tDefaultPos;
+    bool fVisible = true;
+	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, NULL, &tPos);
 
-    if (pNode->GetNumParms() > 1) {
-        int iP = 2;
-        lmLDPNode* pX;
-        for(; iP <= pNode->GetNumParms(); iP++) {
-            pX = pNode->GetParameter(iP);
-            wxString sName = pX->GetName();
-
-            if (sName == m_pTags->TagName(_T("noVisible")) ) {
-                fVisible = false;
-            }
-            else if (sName == m_pTags->TagName(_T("x")) || sName == m_pTags->TagName(_T("dx")) )
-            {
-                lmLocation tPos;
-                tPos.xType = lmLOCATION_DEFAULT;
-                tPos.xUnits = lmTENTHS;
-                tPos.yType = lmLOCATION_DEFAULT;
-                tPos.yUnits = lmTENTHS;
-                AnalyzeLocation(pX, &tPos);
-
-                //convert tenths to logical units (referred to first staff of this VStaff)
-                xUserPosType = tPos.xType;
-                if (xUserPosType != lmLOCATION_DEFAULT) {
-                    if (tPos.xUnits == lmTENTHS) {
-                        xUserPos = pVStaff->TenthsToLogical((lmTenths)tPos.x, 1);
-                    }
-                    else
-                        xUserPos = lmToLogicalUnits((double)tPos.x, tPos.xUnits);
-                }
-            }
-            else {
-                AnalysisError( _T("Unknown parameter '%s'. Ignored."), sName.c_str());
-            }
-        }
-    }
-
+	//create the tiem signature
     lmBarline* pBarline = pVStaff->AddBarline(nType, fVisible);
-
-    //add location
-    if (xUserPosType != lmLOCATION_DEFAULT)
-        pBarline->SetLocation(xUserPos, xUserPosType);
-
+	pBarline->SetUserLocation(tPos);
     return false;
 
 }
 
-//returns true if error; in this case nothing is added to the lmVStaff
 bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
 {
-//  <Clave> = ("Clave" {"Sol" | "Fa4" | "Fa3" | "Do1" | "Do2" | "Do3" | "Do4" | "SinClave" }
-//                [<numStaff>] [<Visible>] )
+    //returns true if error; in this case nothing is added to the lmVStaff
+    //  <clef> = ("clef" {"Sol" | "Fa4" | "Fa3" | "Do1" | "Do2" | "Do3" | "Do4" | "SinClave" }
+    //                [<numStaff>] [<Visible>] )
 
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == _T("Clave") || sElmName == m_pTags->TagName(_T("clef")) );
@@ -2136,7 +2101,7 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
     //check that clef type is specified
     if(pNode->GetNumParms() < 1) {
         AnalysisError(
-            _("Element '%s' has less parameters than the minimum required. Assumed '(%s Sol)'."),
+            _T("Element '%s' has less parameters than the minimum required. Assumed '(%s Sol)'."),
             m_pTags->TagName(_T("clef")).c_str(), m_pTags->TagName(_T("clef")).c_str() );
         pVStaff->AddClef(lmE_Sol, 1, true);
         return false;
@@ -2228,10 +2193,10 @@ bool lmLDPParser::AnalyzeClef(lmVStaff* pVStaff, lmLDPNode* pNode)
 //returns true if error; in this case nothing is added to the lmVStaff
 bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
-//  <metronome> = (metronome
-//                    { <NoteType> {<TicksPerMinute> | <NoteType>}  |
-//                      <TicksPerMinute> }
-//                    (parentheses) (<Visible>) )
+    //  <metronome> = (metronome
+    //                    { <NoteType> {<TicksPerMinute> | <NoteType>}  |
+    //                      <TicksPerMinute> }
+    //                    (parentheses) (<Visible>) )
 
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == m_pTags->TagName(_T("metronome")) );
@@ -2240,7 +2205,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
     int nNumParms = pNode->GetNumParms();
     if(nNumParms < 1) {
         AnalysisError(
-            _("Element '%s' has less parameters than the minimum required. Ignored'."),
+            _T("Element '%s' has less parameters than the minimum required. Ignored'."),
             sElmName.c_str() );
         return true;    //error
     }
@@ -2274,7 +2239,7 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
         // Get right part
         if (iP > nNumParms) {
             AnalysisError(
-                _("Element '%s' has less parameters than the minimum required. Ignored'."),
+                _T("Element '%s' has less parameters than the minimum required. Ignored'."),
                 sElmName.c_str() );
             return true;    //error
         }
@@ -2296,38 +2261,54 @@ bool lmLDPParser::AnalyzeMetronome(lmLDPNode* pNode, lmVStaff* pVStaff)
         }
     }
 
-    //Get optional parameters
+    //Get optional 'parentheses' parameter
     bool fParentheses = false;
+    lmLDPNode* pX = pNode->GetParameter( (wxString&)m_pTags->TagName(_T("parentheses")) );
+    if (pX) fParentheses = true;
+
+    //Get common optional parameters
+	lmLDPOptionalTags oOptTags(this, m_pTags);
+	oOptTags.SetValid(lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
+	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
+	
+	lmLocation tPos = g_tDefaultPos;
     bool fVisible = true;
-    lmLDPNode* pX;
-    for (; iP <= nNumParms; iP++) {
-        pX = pNode->GetParameter(iP);
-        if (pX->GetName() == m_pTags->TagName(_T("noVisible")) )
-            fVisible = false;
-        else if (pX->GetName() == m_pTags->TagName(_T("parentheses")) )
-            fParentheses = true;
-        else {
-            AnalysisError( _T("Unknown parameter '%s'. Ignored."), pX->GetName().c_str());
-        }
-    }
+
+	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, NULL, &tPos);
+
+    //bool fVisible = true;
+    //for (; iP <= nNumParms; iP++) {
+    //    pX = pNode->GetParameter(iP);
+    //    if (pX->GetName() == m_pTags->TagName(_T("noVisible")) )
+    //        fVisible = false;
+    //    else if (pX->GetName() == m_pTags->TagName(_T("parentheses")) )
+    //        fParentheses = true;
+    //    else {
+    //        AnalysisError( _T("Unknown parameter '%s'. Ignored."), pX->GetName().c_str());
+    //    }
+    //}
 
     //create the metronome mark StaffObj
+    lmMetronomeMark* pMM;
     switch (nMarkType)
     {
         case eMMT_MM_Value:
-            pVStaff->AddMetronomeMark(nTicksPerMinute, fParentheses, fVisible);
+            pMM = pVStaff->AddMetronomeMark(nTicksPerMinute, fParentheses, fVisible);
             break;
         case eMMT_Note_Note:
-            pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nRightNoteType, nRightDots,
+            pMM = pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nRightNoteType, nRightDots,
                             fParentheses, fVisible);
             break;
         case eMMT_Note_Value:
-            pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nTicksPerMinute,
+            pMM = pVStaff->AddMetronomeMark(nLeftNoteType, nLeftDots, nTicksPerMinute,
                             fParentheses, fVisible);
             break;
         default:
             wxASSERT(false);
     }
+
+    //set location
+	pMM->SetUserLocation(tPos);
 
     return false;    //no error
 
@@ -2397,7 +2378,7 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
                 return;
             }
             else {
-                wxString sError = _("a 'yes/no' or 'true/false' value");
+                wxString sError = _T("a 'yes/no' or 'true/false' value");
                 AnalysisError( _T("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
                     sName.c_str(), sError.c_str(), sValue.c_str());
             }
@@ -2409,7 +2390,7 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
                 return;
             }
             else {
-                sError = _("an integer number");
+                sError = _T("an integer number");
                 AnalysisError( _T("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
                     sName.c_str(), sError.c_str(), sValue.c_str());
             }
@@ -2421,7 +2402,7 @@ void lmLDPParser::AnalyzeOption(lmLDPNode* pNode, lmScoreObj* pObject)
                 pObject->SetOption(sName, rNumberDouble);
                 return;
             }
-            sError = _("a real number");
+            sError = _T("a real number");
             AnalysisError( _T("Error in data value for option '%s'.  It requires %s. Value '%s' ignored."),
                 sName.c_str(), sError.c_str(), sValue.c_str());
 			return;
@@ -2455,7 +2436,7 @@ bool lmLDPParser::AnalyzeTitle(lmLDPNode* pNode, lmScore* pScore)
     //check that at least two parameters (aligment and text string) are specified
     if(pNode->GetNumParms() < 2) {
         AnalysisError(
-            _("Element '%s' has less parameters than the minimum required. Element ignored."),
+            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
             m_pTags->TagName(_T("title")).c_str() );
         return true;
     }
@@ -2537,7 +2518,7 @@ bool lmLDPParser::AnalyzeTextString(lmLDPNode* pNode, wxString* pText,
     //check that at least one parameter (text string) is specified
     if(pNode->GetNumParms() < 1) {
         AnalysisError(
-            _("Element '%s' has less parameters than the minimum required. Element ignored."),
+            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
             pNode->GetName().c_str() );
         return true;
     }
@@ -2608,7 +2589,7 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
     //check that at least two parameters (location and text string) are specified
     if(pNode->GetNumParms() < 2) {
         AnalysisError(
-            _("Element '%s' has less parameters than the minimum required. Element ignored."),
+            _T("Element '%s' has less parameters than the minimum required. Element ignored."),
             m_pTags->TagName(_T("text")).c_str() );
         return true;
     }
@@ -2638,9 +2619,9 @@ bool lmLDPParser::AnalyzeText(lmLDPNode* pNode, lmVStaff* pVStaff)
 
 }
 
-//returns true if error; in this case nothing is added to the lmVStaff
 bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
 {
+    //returns true if error; in this case nothing is added to the lmVStaff
     //  <KeySignature> ::= (key {"Do" | "Sol" | "Re" | "La" | "Mi" | "Si" | "Fa+" |
     //                        | "Sol-" | "Re-" | "La-" | "Mi-" | "Si-" | "Fa" } [<Visible>])
 
@@ -2651,7 +2632,7 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
     //check that key value is specified
     if(pNode->GetNumParms() < 1) {
         AnalysisError(
-            _("Element '%s' has less parameters than the minimum required. Assumed '(%s %s)'."),
+            _T("Element '%s' has less parameters than the minimum required. Assumed '(%s %s)'."),
             sElmName.c_str(), sElmName.c_str(), m_pTags->TagName(_T("Do"), _T("Keys")).c_str() );
         pVStaff->AddKeySignature(earmDo);
         return false;
@@ -2673,23 +2654,24 @@ bool lmLDPParser::AnalyzeKeySignature(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
     iP++;
 
-    //analyze second parameter (optional): visible or not
-    lmLDPNode* pX;
+    //analyze optional parameters
+	lmLDPOptionalTags oOptTags(this, m_pTags);
+	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
+	lmLocation tPos = g_tDefaultPos;
     bool fVisible = true;
-    if (pNode->GetNumParms() >= iP) {
-        pX = pNode->GetParameter(iP);
-        if (pX->GetName() == m_pTags->TagName(_T("noVisible")) ) fVisible = false;
-    }
+	oOptTags.AnalyzeCommonOptions(pNode, iP, pVStaff, &fVisible, NULL, &tPos);
 
-    pVStaff->AddKeySignature(nKey, fVisible);
+	//create the tiem signature
+    lmKeySignature* pKS = pVStaff->AddKeySignature(nKey, fVisible);
+	pKS->SetUserLocation(tPos);
     return false;
 
 }
 
-//returns true if error and in this case nothing is added to the lmVStaff
 bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
 {
-//  <Métrica> ::= ("Metrica" <num> <num> [<Visible>])
+    //returns true if error and in this case nothing is added to the lmVStaff
+    //  <timeSignature> ::= ("time" <num> <num> [<visible>])
 
     wxString sElmName = pNode->GetName();
     wxASSERT(sElmName == _T("Metrica") || sElmName == m_pTags->TagName(_T("time")) );
@@ -2707,7 +2689,7 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
     wxString sNum2 = (pNode->GetParameter(2))->GetName();
     if (!sNum1.IsNumber() || !sNum2.IsNumber()) {
         AnalysisError(
-            _("Element '%s': Two numbers expected but found '%s' and '%s'. Assumed '(%s 4 4)'."),
+            _T("Element '%s': Two numbers expected but found '%s' and '%s'. Assumed '(%s 4 4)'."),
             m_pTags->TagName(_T("time")).c_str(), sNum1.c_str(),
             sNum2.c_str(), m_pTags->TagName(_T("time")).c_str() );
         pVStaff->AddTimeSignature(emtr44);
@@ -2718,15 +2700,18 @@ bool lmLDPParser::AnalyzeTimeSignature(lmVStaff* pVStaff, lmLDPNode* pNode)
     sNum1.ToLong(&nBeats);
     sNum2.ToLong(&nBeatType);
 
-    //analyze third parameter (optional): visible or not
+    //analyze optional parameters
+	lmLDPOptionalTags oOptTags(this, m_pTags);
+	oOptTags.SetValid(lm_eTag_Visible, lm_eTag_Location_x, lm_eTag_Location_y, -1);		//finish list with -1
+	lmLocation tPos = g_tDefaultPos;
     bool fVisible = true;
-    if (pNode->GetNumParms() > 2) {
-        lmLDPNode* pX = pNode->GetParameter(3);
-        if (pX->GetName() == m_pTags->TagName(_T("noVisible")) ) fVisible = false;
-    }
+	oOptTags.AnalyzeCommonOptions(pNode, 3, pVStaff, &fVisible, NULL, &tPos);
 
-    pVStaff->AddTimeSignature((int)nBeats, (int)nBeatType, fVisible);
+	//create the tiem signature
+    lmTimeSignature* pTS = pVStaff->AddTimeSignature((int)nBeats, (int)nBeatType, fVisible);
+	pTS->SetUserLocation(tPos);
     return false;
+
 }
 
 void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
@@ -2745,7 +2730,7 @@ void lmLDPParser::AnalyzeSpacer(lmLDPNode* pNode, lmVStaff* pVStaff)
     wxString sNum1 = (pNode->GetParameter(1))->GetName();
     if (!sNum1.IsNumber()) {
         AnalysisError(
-            _("Element '%s': Width expected but found '%s'. Ignored."),
+            _T("Element '%s': Width expected but found '%s'. Ignored."),
             sElmName.c_str(), sNum1.c_str());
         return;
     }
@@ -2795,7 +2780,7 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
             sNum = (pNode->GetParameter(iP))->GetName();
             if (!sNum.IsNumber()) {
                 AnalysisError(
-                    _("Element '%s': Coordinate expected but found '%s'. Ignored."),
+                    _T("Element '%s': Coordinate expected but found '%s'. Ignored."),
                     sElmName.c_str(), sNum.c_str());
                 return;
             }
@@ -2820,7 +2805,7 @@ void lmLDPParser::AnalyzeGraphicObj(lmLDPNode* pNode, lmVStaff* pVStaff)
     }
     else {
         AnalysisError(
-            _("Element '%s': Type of graphic (%s) unknown. Ignored."),
+            _T("Element '%s': Type of graphic (%s) unknown. Ignored."),
             sElmName.c_str(), sType.c_str());
     }
 
@@ -3389,7 +3374,7 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
 {
     //analyze optional parameters
 	//if the optional tag is valid fills corresponding received variables
-	//if tag is not allowed, logs an error and continues with the next option 
+	//if tag is not allowed, ignore it and continue with the next option 
 
 	for(; iP <= pNode->GetNumParms(); iP++)
 	{
@@ -3435,12 +3420,8 @@ void lmLDPOptionalTags::AnalyzeCommonOptions(lmLDPNode* pNode, int iP, lmVStaff*
             //TODO tessiture option in clef
         }
 
-		// Unknown tag
-        else {
-            m_pParser->AnalysisError(
-				_T("[AnalyzeCommonOptions]: Unknown element '%s' found. Element ignored."),
-                sName.c_str() );
-        }
+        //else
+			// Unknown tag. Ignore it
     }
 
 }

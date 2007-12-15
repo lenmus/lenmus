@@ -56,6 +56,7 @@ lmScoreObj::lmScoreObj(lmScoreObj* pParent)
     // initializations: positioning related info
     m_uPaperPos.y = 0;
     m_uPaperPos.x = 0;
+	m_tOldPos = g_tDefaultPos;
 
     m_pShape = (lmShape*)NULL;
 }
@@ -154,19 +155,65 @@ void lmScoreObj::DetachAuxObj(lmAuxObj* pAO)
     //TODO
 }
 
-
 lmLocation lmScoreObj::SetUserLocation(lmLocation tPos)
 {
-	lmLocation tOldPos = m_tPos;
+	m_tOldPos = m_tPos;
 	m_tPos = tPos;
-	return tOldPos;
+	return m_tOldPos;
 }
-void lmScoreObj::ShiftObject(lmLUnits uLeft)
-{ 
-    // update shapes' positions when the object is moved
 
+void lmScoreObj::ResetObjectLocation() 
+{
+	m_tPos = m_tOldPos; 
+
+ //   // X position
+ //   wxString sType = _T("");
+	//switch (m_tPos.xType) {
+	//	case lmLOCATION_DEFAULT:		sType = _T("LOCATION_DEFAULT"); break;
+	//	case lmLOCATION_COMPUTED:		sType = _T("LOCATION_COMPUTED"); break;
+	//	case lmLOCATION_USER_RELATIVE:	sType = _T("LOCATION_USER_RELATIVE"); break;
+	//	case lmLOCATION_USER_ABSOLUTE:	sType = _T("LOCATION_USER_ABSOLUTE"); break;
+	//	default:
+	//		sType = wxString::Format(_T("LOCATION %d"), m_tPos.xType);
+	//}
+
+	//wxString sSource = wxString::Format(_T("x: %.2f %.2f - "), m_tPos.x, m_tPos.xUnits);
+	//sSource += sType;
+
+	//// Y position
+ //   sType = _T("");
+	//switch (m_tPos.yType) {
+	//	case lmLOCATION_DEFAULT:		sType = _T("LOCATION_DEFAULT"); break;
+	//	case lmLOCATION_COMPUTED:		sType = _T("LOCATION_COMPUTED"); break;
+	//	case lmLOCATION_USER_RELATIVE:	sType = _T("LOCATION_USER_RELATIVE"); break;
+	//	case lmLOCATION_USER_ABSOLUTE:	sType = _T("LOCATION_USER_ABSOLUTE"); break;
+	//	default:
+	//		sType = wxString::Format(_T("LOCATION %d"), m_tPos.yType);
+	//}
+
+	//sSource += wxString::Format(_T("  /  y: %.2f %.2f - %s\n"), m_tPos.y, m_tPos.yUnits, sType.c_str());
+
+	//wxLogMessage(sSource);
+}
+
+void lmScoreObj::StoreOriginAndShiftShapes(lmLUnits uLeft)
+{ 
+    // update this StaffObj origin and shape position
+    SetOrigin(lmUPoint(m_uPaperPos.x + uLeft, m_uPaperPos.y));
+    //wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] org=(%.2f, %.2f), paper=(%.2f, %.2f), uLeft=%.2f"),
+    //    m_uOrg.x, m_uOrg.y, m_uPaperPos.x, m_uPaperPos.y, uLeft);
+    //wxLogMessage( Dump() );
     if (m_pShape) m_pShape->Shift(uLeft, 0.0);
-    //wxLogMessage(_T("[lmScoreObj::ShiftObject] shift=%.2f, ID=%d"), uLeft, GetID());
+
+    // shift also AuxObjs attached to this StaffObj
+    if (m_pAuxObjs)
+    {
+        for (int i=0; i < (int)m_pAuxObjs->size(); i++)
+        { 
+            //wxLogMessage(_T("[lmScoreObj::StoreOriginAndShiftShapes] asking AuxObj to update origin"));
+            (*m_pAuxObjs)[i]->StoreOriginAndShiftShapes(uLeft);
+        }
+    }
 
 }
 
@@ -228,6 +275,10 @@ lmUPoint lmScoreObj::SetReferencePos(lmPaper* pPaper)
 	return m_uPaperPos;
 }
 
+void lmScoreObj::SetReferencePos(lmUPoint& uPos)
+{
+    m_uPaperPos = uPos;
+}
 
 
 
@@ -351,7 +402,8 @@ wxString lmComponentObj::SourceLDP_Location(lmUPoint uPaperPos)
 
 lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
 { 
-	lmUPoint uPos = GetOrigin();
+	m_tOldPos = m_tPos;
+	lmUPoint uPos = GetReferencePaperPos();
 
 	//if default location, ask derived object to compute the best position for itself
     if (m_tPos.xType == lmLOCATION_DEFAULT || m_tPos.yType == lmLOCATION_DEFAULT)
@@ -440,6 +492,7 @@ lmUPoint lmComponentObj::ComputeObjectLocation(lmPaper* pPaper)
 
 
 
+
 //-------------------------------------------------------------------------------------------------
 // lmStaffObj implementation
 //-------------------------------------------------------------------------------------------------
@@ -498,22 +551,6 @@ void lmStaffObj::Layout(lmBox* pBox, lmPaper* pPaper, wxColour colorC, bool fHig
     // update paper cursor position
     pPaper->SetCursorX(uOrg.x + uWidth);
     
-}
-
-void lmStaffObj::ShiftObject(lmLUnits uLeft)
-{ 
-    // update this StaffObj shape position
-    if (m_pShape) m_pShape->Shift(uLeft, 0.0);    //(uLeft - m_uPaperPos.x, 0.0);
-
-    // shift also AuxObjs attached to this StaffObj
-    if (m_pAuxObjs)
-    {
-        for (int i=0; i < (int)m_pAuxObjs->size(); i++)
-        { 
-            (*m_pAuxObjs)[i]->ShiftObject(uLeft);
-        }
-    }
-
 }
 
 wxFont* lmStaffObj::GetSuitableFont(lmPaper* pPaper)

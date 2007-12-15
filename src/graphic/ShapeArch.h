@@ -51,11 +51,14 @@ class lmShapeArch : public lmSimpleShape
 public:
     lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd,
                 lmUPoint uCtrol1, lmUPoint uCtrol2, wxColour nColor,
-                wxString sName = _T("Arch"));
+                wxString sName = _T("Arch"), bool fDraggable = true,
+				bool fVisible = true);
     lmShapeArch(lmScoreObj* pOwner, lmUPoint uStart, lmUPoint uEnd, bool fArchUnder,
-                wxColour nColor, wxString sName = _T("Arch"));
+                wxColour nColor, wxString sName = _T("Arch"),
+				bool fDraggable = true, bool fVisible = true);
     lmShapeArch(lmScoreObj* pOwner, bool fArchUnder, wxColour nColor,
-                wxString sName = _T("Arch"));
+                wxString sName = _T("Arch"), bool fDraggable = true,
+				bool fVisible = true);
 
     virtual ~lmShapeArch() {}
 
@@ -106,7 +109,8 @@ class lmShapeTie : public lmShapeArch
 {
 public:
     lmShapeTie(lmNote* pOwner, lmShapeNote* pShapeStart, lmShapeNote* pShapeEnd,
-                bool fTieUnderNote, wxColour color = *wxBLACK);
+                bool fTieUnderNote, wxColour color = *wxBLACK,
+				bool fVisible = true);
 	~lmShapeTie();
 
 	//implementation of virtual methods in base class
@@ -117,8 +121,12 @@ public:
 	void OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 								lmLUnits ux, lmLUnits uy, lmEParentEvent nEvent);
 
+	//splitting
+	void SetBrotherTie(lmShapeTie* pBrotherTie) { m_pBrotherTie = pBrotherTie; }
+
 private:
-    bool        m_fTieUnderNote;
+    bool			m_fTieUnderNote;
+	lmShapeTie*		m_pBrotherTie;		//when tie is splitted
 
 };
 
