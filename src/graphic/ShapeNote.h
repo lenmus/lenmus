@@ -43,6 +43,7 @@
 
 class lmNoteRest;
 class lmController;
+class lmShapeBeam;
 
 
 class lmShapeNote : public lmCompositeShape
@@ -62,9 +63,14 @@ public:
 	void AddAccidental(lmShape* pShape);
 	void AddNoteInBlock(lmShape* pShape);
 
+	//info about related shapes
+	inline void SetBeamShape(lmShapeBeam* pBeamShape) { m_pBeamShape = pBeamShape; }
+	inline lmShapeBeam* GetBeamShape() const { return m_pBeamShape; }
+	inline void SetStemShape(lmShapeStem* pStemShape) { m_pStemShape = pStemShape; }
+
 	//access to constituent shapes
 	lmShape* GetNoteHead();
-	lmShapeStem* GetStem();
+	inline lmShapeStem* GetStem() const { return m_pStemShape; }
 
 	//access to info
 	inline lmLUnits GetXEnd() const { return m_uxLeft + m_uWidth; }
@@ -84,7 +90,6 @@ public:
 protected:
 	//index to some important constituent shapes
 	int		m_nNoteHead;
-	int		m_nStem;
 
     //position
     lmLUnits    m_uxLeft;
@@ -93,6 +98,10 @@ protected:
 	lmLUnits	m_uWidth;
 
     wxColour    m_color;
+
+	//related shapes
+	lmShapeBeam*	m_pBeamShape;
+	lmShapeStem*	m_pStemShape;
 
 
 };

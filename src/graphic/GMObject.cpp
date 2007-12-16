@@ -227,6 +227,7 @@ lmShape::lmShape(lmEGMOType nType, lmScoreObj* pOwner, wxString sName, bool fDra
 	m_pOwnerBox = (lmBox*)NULL;
 	m_color = color;
 	m_fVisible = fVisible;
+	m_pParentShape = (lmShape*)NULL;
 }
 
 lmShape::~lmShape()
@@ -339,6 +340,9 @@ void lmSimpleShape::Shift(lmLUnits xIncr, lmLUnits yIncr)
 	m_uBoundsTop.y += yIncr;
 	m_uBoundsBottom.y += yIncr;
 
+	//if included in a composite shape update parent bounding and selection rectangles
+	if (this->IsChildShape())
+		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
 }
 
 
@@ -353,6 +357,7 @@ lmCompositeShape::lmCompositeShape(lmScoreObj* pOwner, wxString sName, bool fDra
 	: lmShape(nType, pOwner, sName, fDraggable, *wxBLACK, fVisible)
 {
     m_fGrouped = true;	//by default all constituent shapes are grouped
+	m_fDoingShift = false;
 }
 
 lmCompositeShape::~lmCompositeShape()
@@ -392,6 +397,9 @@ int lmCompositeShape::Add(lmShape* pShape)
 		m_uBoundsBottom.y = wxMax(m_uBoundsBottom.y, pShape->GetYBottom());
 	}
 
+	//link to parent
+	pShape->SetParentShape(this);
+
 	//return index to added shape
 	return (int)m_Components.size() - 1;
 
@@ -400,10 +408,12 @@ int lmCompositeShape::Add(lmShape* pShape)
 void lmCompositeShape::Shift(lmLUnits xIncr, lmLUnits yIncr)
 {
 	//Default behaviour is to shift all components
+	m_fDoingShift = true;		//semaphore to avoid recomputing constantly the bounds
     for (int i=0; i < (int)m_Components.size(); i++)
     {
         m_Components[i]->Shift(xIncr, yIncr);
     }
+	m_fDoingShift = false;
 
 	ShiftBoundsAndSelRec(xIncr, yIncr);
 }
@@ -468,6 +478,8 @@ lmShape* lmCompositeShape::GetShape(int nShape)
 
 void lmCompositeShape::RecomputeBounds()
 {
+	if (m_fDoingShift) return;
+
 	if (m_Components.size() > 0)
 	{
 		lmShape* pShape = m_Components[0];

@@ -76,7 +76,8 @@ void lmShapeTuplet::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 	if (!(nTag == eGMA_StartNote || nTag == eGMA_EndNote)) return;
 
 	//computhe half notehead width
-	lmShape* pSNH = ((lmShapeNote*)pShape)->GetNoteHead();
+	lmShapeNote* pNoteShape = (lmShapeNote*)pShape;
+	lmShape* pSNH = pNoteShape->GetNoteHead();
 	wxASSERT(pSNH);
 	lmLUnits uHalfNH = (pSNH->GetXRight() - pSNH->GetXLeft()) / 2.0;
 
@@ -84,15 +85,22 @@ void lmShapeTuplet::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 	{
 		//start note moved. Recompute start of shape
 		//Placed on center of notehead if above, or half notehead before if below
+		lmShapeStem* pStem = pNoteShape->GetStem();
 		if (m_fAbove)
 		{
 			m_uxStart = pSNH->GetXLeft() + uHalfNH;
-			m_uyStart = pShape->GetYTop();
+			if (pStem)
+				m_uyStart = pStem->GetYEndStem();
+			else
+				m_uyStart = pShape->GetYTop();
 		}
 		else
 		{
 			m_uxStart = pSNH->GetXLeft() - uHalfNH;
-			m_uyStart = pShape->GetYBottom();
+			if (pStem)
+				m_uyStart = pStem->GetYEndStem();
+			else
+				m_uyStart = pShape->GetYBottom();
 		}
 		SetXLeft(m_uxStart);
 		SetYTop(m_uyStart);
@@ -102,15 +110,22 @@ void lmShapeTuplet::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,
 	{
 		//end note moved. Recompute end of shape
 		//Placed half notehead appart if above, or on center of notehead if below
+		lmShapeStem* pStem = pNoteShape->GetStem();
 		if (m_fAbove)
 		{
 			m_uxEnd = pSNH->GetXRight() + uHalfNH;
-			m_uyEnd = pShape->GetYTop();
+			if (pStem)
+				m_uyEnd = pStem->GetYEndStem();
+			else
+				m_uyEnd = pShape->GetYTop();
 		}
 		else
 		{
 			m_uxEnd = pSNH->GetXRight() - uHalfNH;
-			m_uyEnd = pShape->GetYBottom();
+			if (pStem)
+				m_uyEnd = pStem->GetYEndStem();
+			else
+				m_uyEnd = pShape->GetYBottom();
 		}
 		SetXRight(m_uxEnd);
 		SetYBottom(m_uyEnd);
@@ -218,5 +233,9 @@ void lmShapeTuplet::Shift(lmLUnits xIncr, lmLUnits yIncr)
 	m_uyEnd += yIncr;
 
     ShiftBoundsAndSelRec(xIncr, yIncr);
+
+	//if included in a composite shape update parent bounding and selection rectangles
+	if (this->IsChildShape())
+		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
 }
 

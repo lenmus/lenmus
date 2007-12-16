@@ -40,13 +40,13 @@
 //   lmTupletBracket implementation
 //---------------------------------------------------------
 
-lmTupletBracket::lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket, bool fAbove,
-                                 int nActualNotes, int nNormalNotes)
+lmTupletBracket::lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket,
+								 lmEPlacement nAbove, int nActualNotes, int nNormalNotes)
 {
     m_fShowNumber = fShowNumber;
     m_nTupletNumber = nNumber;
     m_fBracket = fBracket;
-    m_fAbove = fAbove;
+    m_nAbove = nAbove;
     m_nActualNotes = nActualNotes;
     m_nNormalNotes = nNormalNotes;
 	m_pShape = (lmShapeTuplet*)NULL;
@@ -91,7 +91,9 @@ lmShape* lmTupletBracket::LayoutObject(lmBox* pBox, lmPaper* pPaper, wxColour co
     }
 
 	//create the shape
-	m_pShape = new lmShapeTuplet(GetStartNote(), GetEndNote(), NumNotes(), m_fAbove,
+	bool fAbove = (m_nAbove == ep_Above) || (m_nAbove == ep_Default && 
+					!((lmNote*)m_cNotes[0])->StemGoesDown() );
+	m_pShape = new lmShapeTuplet(GetStartNote(), GetEndNote(), NumNotes(), fAbove,
 								 m_fShowNumber, sNumber, pFont, color, lm_eSquared);
 	pBox->AddShape(m_pShape);
 

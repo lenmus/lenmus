@@ -90,5 +90,9 @@ void lmShapeStaff::Shift(lmLUnits xIncr, lmLUnits yIncr)
 {
 	//TODO
     ShiftBoundsAndSelRec(xIncr, yIncr);
+
+	//if included in a composite shape update parent bounding and selection rectangles
+	if (this->IsChildShape())
+		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
 }
 

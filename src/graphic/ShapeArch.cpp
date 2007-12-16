@@ -122,6 +122,10 @@ void lmShapeArch::Shift(lmLUnits xIncr, lmLUnits yIncr)
     m_uCtrol2.y += yIncr;
 
     ShiftBoundsAndSelRec(xIncr, yIncr);
+
+	//if included in a composite shape update parent bounding and selection rectangles
+	if (this->IsChildShape())
+		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
 }
 
 void lmShapeArch::SetStartPoint(lmLUnits xPos, lmLUnits yPos)
@@ -282,10 +286,6 @@ lmShapeTie::~lmShapeTie()
 void lmShapeTie::Render(lmPaper* pPaper, wxColour color)
 {
     lmShapeArch::Render(pPaper, color);
-}
-
-void lmShapeTie::Shift(lmLUnits xIncr, lmLUnits yIncr)
-{
 }
 
 void lmShapeTie::OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,

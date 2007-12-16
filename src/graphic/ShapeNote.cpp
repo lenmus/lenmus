@@ -50,7 +50,8 @@ lmShapeNote::lmShapeNote(lmNoteRest* pOwner, lmLUnits xLeft, lmLUnits yTop, wxCo
 
 	//initializations
 	m_nNoteHead = -1;		// -1 = no shape
-	m_nStem = -1;
+	m_pBeamShape = (lmShapeBeam*)NULL;
+	m_pStemShape = (lmShapeStem*)NULL;
 
 }
 
@@ -60,7 +61,8 @@ lmShapeNote::~lmShapeNote()
 
 void lmShapeNote::AddStem(lmShapeStem* pShape)
 {
-	m_nStem = Add(pShape);
+	Add(pShape);
+	m_pStemShape = pShape;
 }
 
 void lmShapeNote::AddNoteHead(lmShape* pShape)
@@ -91,6 +93,10 @@ void lmShapeNote::Shift(lmLUnits xIncr, lmLUnits yIncr)
     m_uyTop += yIncr;
 
 	InformAttachedShapes(xIncr, yIncr, lmSHIFT_EVENT);
+
+	//if included in a composite shape update parent bounding and selection rectangles
+	if (this->IsChildShape())
+		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
 }
 
 lmShape* lmShapeNote::GetNoteHead()
@@ -99,14 +105,6 @@ lmShape* lmShapeNote::GetNoteHead()
 		return (lmShape*)NULL;
 
 	return GetShape(m_nNoteHead);
-}
-
-lmShapeStem* lmShapeNote::GetStem()
-{
-	if (m_nStem < 0)
-		return (lmShapeStem*)NULL;
-
-	return (lmShapeStem*)GetShape(m_nStem);
 }
 
 void lmShapeNote::SetStemLength(lmLUnits uLength)

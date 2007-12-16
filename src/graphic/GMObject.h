@@ -278,6 +278,11 @@ public:
 	inline void SetOwnerBox(lmBox* pOwnerBox) { m_pOwnerBox = pOwnerBox; }
 	lmBoxSystem* GetOwnerSystem() { return m_pOwnerBox->GetOwnerSystem(); }
 
+	//for composite shapes
+	inline bool IsChildShape() const { return (bool)(m_pParentShape != (lmShape*)NULL ); }
+	inline lmShape* GetParentShape() { return m_pParentShape; }
+	inline void SetParentShape(lmShape* pShape) { m_pParentShape = pShape; }
+
 	
 
 protected:
@@ -301,6 +306,10 @@ protected:
 	std::list<lmAtachPoint*>	m_cAttachments;
 	
 	wxColour	m_color;
+
+	//for composite shapes
+	lmShape*	m_pParentShape;
+
 
 };
 
@@ -340,6 +349,7 @@ public:
     //dealing with components
     virtual int Add(lmShape* pShape);
 	inline int GetNumComponents() const { return (int)m_Components.size(); }
+	virtual void RecomputeBounds();
 
     //virtual methods from base class
     virtual wxString Dump(int nIndent);
@@ -355,11 +365,10 @@ public:
     virtual lmUPoint OnDrag(lmPaper* pPaper, const lmUPoint& uPos);
 
 
-
 protected:
-	virtual void RecomputeBounds();
 	lmShape* GetShape(int nShape);
 
+	bool					m_fDoingShift;	//semaphore to avoid recomputing constantly the bounds
     bool					m_fGrouped;		//its component shapes must be rendered as a single object
 	std::vector<lmShape*>	m_Components;	//list of its constituent shapes
 

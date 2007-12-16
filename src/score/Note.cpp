@@ -596,12 +596,6 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
         }
     }
 
-    // set total width
-    #define NOTE_AFTERSPACE     0      //one line space     @todo user options
-    lmLUnits uAfterSpace = m_pVStaff->TenthsToLogical(NOTE_AFTERSPACE, m_nStaffNum);
-    lmLUnits uTotalWidth = uxLeft + uAfterSpace - uPos.x;
-
-
     // add shapes for leger lines if necessary
     //--------------------------------------------
     lmLUnits uxLine = m_pNoteheadShape->GetXLeft() - m_pVStaff->TenthsToLogical(4, m_nStaffNum);
@@ -638,7 +632,15 @@ lmLUnits lmNote::LayoutObject(lmBox* pBox, lmPaper* pPaper, lmUPoint uPos, wxCol
 	if (!fStemAdded && (!IsInChord() || m_nNoteType < eHalf))
 		DeleteStemShape();
 
-	return uTotalWidth;
+	//for chords it must return the maximum width
+    #define NOTE_AFTERSPACE     0      //TODO user options
+    lmLUnits uAfterSpace = m_pVStaff->TenthsToLogical(NOTE_AFTERSPACE, m_nStaffNum);
+
+	if (IsInChord())
+		return m_pChord->GetXRight() - uPos.x + uAfterSpace;
+	else
+		return m_pShape->GetXRight() - uPos.x + uAfterSpace;
+
 }
 
 void lmNote::Highlight(lmPaper* pPaper, wxColour colorC)
@@ -959,10 +961,9 @@ void lmNote::AddNoteHeadShape(lmShapeNote* pNoteShape, lmPaper* pPaper, lmENoteH
     lmLUnits yPos = uyTop - m_pVStaff->TenthsToLogical( aGlyphsInfo[nGlyph].GlyphOffset , m_nStaffNum );
 
     //create the shape object
-	wxColour color = (m_fNoteheadReversed? *wxRED : colorC);
     m_pNoteheadShape = new lmShapeGlyph(this, nGlyph, GetSuitableFont(pPaper), pPaper,
                                         lmUPoint(uxLeft, yPos), _T("Notehead"),
-										lmDRAGGABLE, color);
+										lmDRAGGABLE, colorC);
 	pNoteShape->AddNoteHead(m_pNoteheadShape);
 
 }
@@ -1099,7 +1100,7 @@ lmLUnits lmNote::GetDefaultStemLength()
     // starting point for stem computations, for example, to compute the stem in beams.
 
     // According to engraving rules, normal length is one octave (3.5 spaces)
-    #define DEFAULT_STEM_LEGHT      35      //! in tenths. @todo move to user options
+    #define DEFAULT_STEM_LEGHT      35      //! in tenths. TODO move to user options
 
     return m_pVStaff->TenthsToLogical(DEFAULT_STEM_LEGHT, m_nStaffNum);
 }

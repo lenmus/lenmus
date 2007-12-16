@@ -39,7 +39,7 @@
 class lmTupletBracket
 {
 public:
-    lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket, bool fAbove,
+    lmTupletBracket(bool fShowNumber, int nNumber, bool fBracket, lmEPlacement nAbove,
                     int nActualNotes, int nNormalNotes);
     ~lmTupletBracket();
 
@@ -69,16 +69,14 @@ private:
 
     // graphical attributes
     bool    	m_fShowNumber;      // display tuplet number
-    int     	m_nTupletNumber;    // number to display
     bool    	m_fBracket;         // display bracket
-    bool    	m_fAbove;           // bracket positioned above the notes
-    wxString    m_sFontName;		// font info for rendering tuplet number
-    int         m_nFontSize;
     bool        m_fBold;
     bool        m_fItalic;
-
-	//
-    lmShapeTuplet*	m_pShape;			//the shape to render the tuplet bracket
+    int     	m_nTupletNumber;    // number to display
+    int         m_nFontSize;
+    lmEPlacement	m_nAbove;		// bracket positioned above the notes
+    wxString    m_sFontName;		// font info for rendering tuplet number
+	lmShapeTuplet*	m_pShape;		//the shape to render the tuplet bracket
 
 };
 

@@ -69,6 +69,8 @@ void lmShapeBeam::AddNoteRest(lmShapeStem* pStem, lmShapeNote* pNote,
 	pData->pShape = pNote;
 	pData->nStem = Add(pStem);
 	m_cParentNotes.push_back(pData);
+	pNote->SetBeamShape(this);
+	pNote->SetStemShape(pStem);
 }
 
 lmShapeStem* lmShapeBeam::GetStem(int iParentNote)
@@ -266,6 +268,10 @@ void lmShapeBeam::Shift(lmLUnits xIncr, lmLUnits yIncr)
 	//m_uyEnd += yIncr;
 
     ShiftBoundsAndSelRec(xIncr, yIncr);
+
+	//if included in a composite shape update parent bounding and selection rectangles
+	if (this->IsChildShape())
+		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
 }
 
 void lmShapeBeam::AdjustStems()

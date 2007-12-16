@@ -1277,13 +1277,13 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
                     bool fTupletBracket = GetYesNoAttribute(pElmnt, _T("bracket"), true);
                     bool fShowNumber = true;        //TODO
                     int nTupletNumber = 3;            //TODO
-                    bool fTupletAbove = ParsePlacement(pElmnt);
+					lmEPlacement nTupletAbove = (ParsePlacement(pElmnt) ? ep_Above : ep_Below);
 
                     g_pLogger->LogTrace(_T("lmMusicXMLParser"),
                         _("Parsing <tuplet>. Type=%s, bracket=%s, above=%s, showNumber=%s, number=%d"),
                         sTupletType.c_str(),
                         (fTupletBracket ? _T("yes") : _T("no")),
-                        (fTupletAbove ? _T("yes") : _T("no")),
+                        (nTupletAbove == ep_Above ? _T("yes") : _T("no")),
                         (fShowNumber ? _T("yes") : _T("no")),
                         nTupletNumber );
 
@@ -1291,7 +1291,7 @@ bool lmMusicXMLParser::ParseMusicDataNote(wxXmlNode* pNode, lmVStaff* pVStaff)
                     if (sTupletType == _T("start")) {
                         wxASSERT(!m_pTupletBracket);
                         m_pTupletBracket = new lmTupletBracket(fShowNumber, nTupletNumber,
-                                fTupletBracket, fTupletAbove, nTupletNumber, nTupletNumber);
+                                fTupletBracket, nTupletAbove, nTupletNumber, nTupletNumber);
                         //TODO Get nActualNotes and nNormalNotes
                     }
                     else if (sTupletType == _T("stop")) {

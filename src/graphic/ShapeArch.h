@@ -115,7 +115,6 @@ public:
 
 	//implementation of virtual methods in base class
     void Render(lmPaper* pPaper, wxColour color = *wxBLACK);
-    void Shift(lmLUnits xIncr, lmLUnits yIncr);
 
 	//layout changes
 	void OnAttachmentPointMoved(lmShape* pShape, lmEAttachType nTag,

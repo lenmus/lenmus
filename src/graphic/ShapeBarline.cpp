@@ -190,6 +190,10 @@ void lmShapeBarline::Shift(lmLUnits xIncr, lmLUnits yIncr)
     m_uyBottom += yIncr;
 
     ShiftBoundsAndSelRec(xIncr, yIncr);
+
+	//if included in a composite shape update parent bounding and selection rectangles
+	if (this->IsChildShape())
+		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
 }
 
 void lmShapeBarline::DrawThinLine(lmPaper* pPaper, lmLUnits uxPos, lmLUnits uyTop, lmLUnits uyBottom,

@@ -141,6 +141,10 @@ void lmShapeLine::Shift(lmLUnits xIncr, lmLUnits yIncr)
     m_yEnd += yIncr;
 
     ShiftBoundsAndSelRec(xIncr, yIncr);
+
+	//if included in a composite shape update parent bounding and selection rectangles
+	if (this->IsChildShape())
+		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
 }
 
 //========================================================================================
@@ -209,6 +213,10 @@ void lmShapeGlyph::Shift(lmLUnits xIncr, lmLUnits yIncr)
     m_uGlyphPos.y += yIncr;
 
     ShiftBoundsAndSelRec(xIncr, yIncr);
+
+	//if included in a composite shape update parent bounding and selection rectangles
+	if (this->IsChildShape())
+		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
 }
 
 wxBitmap* lmShapeGlyph::OnBeginDrag(double rScale)
@@ -383,6 +391,10 @@ void lmShapeText::Shift(lmLUnits xIncr, lmLUnits yIncr)
     m_uPos.y += yIncr;
 
     ShiftBoundsAndSelRec(xIncr, yIncr);
+
+	//if included in a composite shape update parent bounding and selection rectangles
+	if (this->IsChildShape())
+		((lmCompositeShape*)GetParentShape())->RecomputeBounds();
 }
 
 wxBitmap* lmShapeText::OnBeginDrag(double rScale)

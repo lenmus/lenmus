@@ -46,6 +46,7 @@ public:
     void AddStemShape(lmPaper* pPaper, wxColour colorC,
 					  wxFont* pFont, lmVStaff* pVStaff, int nStaff);
     void LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, wxColour colorC);
+    lmLUnits GetXRight();
 
 	//debug
     wxString Dump();
@@ -67,18 +68,13 @@ private:
         // member variables
 
 
-    NotesList   m_cNotes;           //list of notes that form the chord
-    lmNote*     m_pBaseNote;        //base note (first note in chord definition)
-    lmNote*     m_pMinNote;         //lowest pitch note
-    lmNote*     m_pMaxNote;         //highest pitch note
-    lmNote*     m_pLastNote;        //the last note added the chord
-    bool        m_fStemDown;        //chord stem direction
-    lmEStemType   m_nStemType;        //type of stem
-
-    lmNote*     m_oNotaPrevia;      //nota que precede a la primera del acorde
-                        //m_oNotaPrevia es la nota que precede al comienzo del acorde. Es preciso tener acceso
-                        //a ella porque si está ligada a la primera del acorde la dirección de las plicas del acorde
-                        //debería hacerse coincidir con la de la nota previa.
+    NotesList		m_cNotes;		//list of notes that form the chord
+    lmNote*			m_pBaseNote;	//base note (first note in chord definition)
+    lmNote*			m_pMinNote;		//lowest pitch note
+    lmNote*			m_pMaxNote;		//highest pitch note
+    lmNote*			m_pLastNote;	//the last note added the chord
+    bool			m_fStemDown;	//chord stem direction
+    lmEStemType		m_nStemType;	//type of stem
 };
 
 #endif    // __LM_CHORD_H__

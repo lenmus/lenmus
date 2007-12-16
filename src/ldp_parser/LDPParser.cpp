@@ -1785,7 +1785,7 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
 
     bool fShowTupletBracket = m_fShowTupletBracket;
     bool fShowNumber = m_fShowNumber;
-    bool fTupletAbove = m_fTupletAbove;
+	lmEPlacement nTupletAbove = ep_Default;
 
     wxString sData = pNode->GetName();
 
@@ -1979,11 +1979,10 @@ bool lmLDPParser::AnalyzeTuplet(lmLDPNode* pNode, const wxString& sParent,
         //save new options
         m_fShowTupletBracket = fShowTupletBracket;
         m_fShowNumber = fShowNumber;
-        m_fTupletAbove = fTupletAbove;
 
         // create tuplet braket
         *pTuplet = new lmTupletBracket(fShowNumber, nActualNum, fShowTupletBracket,
-                            fTupletAbove, nActualNum, nNormalNum);
+                            nTupletAbove, nActualNum, nNormalNum);
         *pActual = nActualNum;
         *pNormal = nNormalNum;
     }

@@ -232,61 +232,48 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
 	//need to create a compoite shape as container for flag and stem. Otherwise we
 	//will just add the stem shape
 	bool fFlagNeeded = !pBaseNote->IsBeamed() && pBaseNote->GetNoteType() > eQuarter;
+	bool fStemDown = pBaseNote->StemGoesDown();
 
-//_______________________________
-//
-
-	//if flag to be drawn, adjust stem size and compute flag position
-	lmLUnits uxFlag, uyFlag;
+	//if flag to be drawn, compute flag position
+	lmUPoint uFlag;
 	lmEGlyphIndex nGlyph;
-    if (fFlagNeeded) {
+    if (fFlagNeeded)
+	{
 		nGlyph = pBaseNote->GetGlyphForFlag();
         lmLUnits uStemLength = fabs(uyStemStart - uyStemEnd);
         // to measure flag and stem I am going to use some glyph data. These
         // data is in FUnits but as 512 FU are 1 line (10 tenths) it is simple
         // to convert these data into tenths: just divide FU by 51.2
-        float rFlag, rMinStem;
-        if (pBaseNote->StemGoesDown()) {
+        float rFlag;
+        if (fStemDown)
+		{
             rFlag = fabs((2048.0 - (float)aGlyphsInfo[nGlyph].Bottom) / 51.2 );
-            //rMinStem = ((float)aGlyphsInfo[nGlyph].Top - 2048.0 + 128.0) / 51.2 ;
         }
-        else {
+        else
+		{
             if (pBaseNote->GetNoteType() == eEighth)
                 rFlag = ((float)aGlyphsInfo[nGlyph].Top) / 51.2 ;
             else if (pBaseNote->GetNoteType() == e16th)
                 rFlag = ((float)aGlyphsInfo[nGlyph].Top + 128.0) / 51.2 ;
             else
                 rFlag = ((float)aGlyphsInfo[nGlyph].Top + 512.0) / 51.2 ;
-
-            //rMinStem = fabs( (float)aGlyphsInfo[nGlyph].Bottom / 51.2 );
         }
-        lmLUnits uFlag = pVStaff->TenthsToLogical(rFlag, nStaff);
-        //lmLUnits uMinStem = pVStaff->TenthsToLogical(rMinStem, nStaff);
-        //uStemLength = wxMax((uStemLength > uFlag ? uStemLength-uFlag : 0), uMinStem);
-        if (pBaseNote->StemGoesDown()) {
-			//uyStemEnd = m_pMinNote->GetYStartStem() + uStemLength;
-			uyFlag = uyStemEnd - uFlag - pVStaff->TenthsToLogical(20);
-		}
-		else {
-            //uyStemEnd = m_pMaxNote->GetYStartStem() - uStemLength;
-			uyFlag = uyStemEnd - (pVStaff->TenthsToLogical(60) -uFlag);	//uyStemEnd - uFlag ;
-		}
+        lmLUnits uSizeFlag = pVStaff->TenthsToLogical(rFlag, nStaff);
+        if (fStemDown)
+			uFlag.y = uyStemEnd - uSizeFlag - pVStaff->TenthsToLogical(20, nStaff);
+		else
+			uFlag.y = uyStemEnd - (pVStaff->TenthsToLogical(60, nStaff) - uSizeFlag);
 
-  //      uyFlag = uyStemStart + (pBaseNote->StemGoesDown() ? uStemLength : -uStemLength);
-		//uyStemEnd = uyFlag + (pBaseNote->StemGoesDown() ? uFlag : -uFlag);;
-  //      //SetStemLength(uStemLength + uFlag);
-		//uyFlag = uyStemEnd - (pBaseNote->StemGoesDown() ? -uFlag : uFlag);
+		uFlag.x = (pBaseNote->StemGoesDown() ?
+					pBaseNote->GetXStemLeft() : pBaseNote->GetXStemRight());
     }
-
-//________________________________
-//
 
 	//create the stem shape
 	lmShapeNote* pShapeNote = (lmShapeNote*)pBaseNote->GetShap2(); 
     #define STEM_WIDTH   12     //stem line width (cents = tenths x10)
     lmLUnits uStemThickness = pVStaff->TenthsToLogical(STEM_WIDTH, nStaff) / 10;
-	wxLogMessage(_T("[lmChord::AddStemShape] Shape xPos=%.2f, yStart=%.2f, yEnd=%.2f, yFlag=%.2f, fDown=%s)"),
-		uxStem, uyStemStart, uyStemEnd, uyFlag, (pBaseNote->StemGoesDown() ? _T("down") : _T("up")) );
+	//wxLogMessage(_T("[lmChord::AddStemShape] Shape xPos=%.2f, yStart=%.2f, yEnd=%.2f, yFlag=%.2f, fDown=%s)"),
+	//	uxStem, uyStemStart, uyStemEnd, uyFlag, (pBaseNote->StemGoesDown() ? _T("down") : _T("up")) );
     lmShapeStem* pStem = 
         new lmShapeStem(pShapeNote->GetScoreOwner(), uxStem, uyStemStart, uyStemEnd,
 						pBaseNote->StemGoesDown(), uStemThickness, colorC);
@@ -302,13 +289,8 @@ void lmChord::AddStemShape(lmPaper* pPaper, wxColour colorC,
     //add the flag 
 	if (fFlagNeeded)
 	{
-		uxFlag = (pBaseNote->StemGoesDown() ?
-					pBaseNote->GetXStemLeft() : pBaseNote->GetXStemRight());
-		lmEGlyphIndex nGlyph = pBaseNote->GetGlyphForFlag();
-		//lmLUnits yPos = uyStemEnd + pVStaff->TenthsToLogical(aGlyphsInfo[nGlyph].GlyphOffset, nStaff);
-		wxLogMessage(_T("[lmChord::AddStemShape] yFlag=%.2f)"), uyFlag);
 		lmShapeGlyph* pShape = new lmShapeGlyph(pShapeNote->GetScoreOwner(), nGlyph, pFont,
-                                                pPaper, lmUPoint(uxFlag, uyFlag), _T("Flag"));
+                                                pPaper, uFlag, _T("Flag"));
 		pShapeNote->AddFlag(pShape);
 	}
 
@@ -662,6 +644,18 @@ void lmChord::LayoutNoteHeads(lmBox* pBox, lmPaper* pPaper, lmUPoint uPaperPos, 
     }
 
 
+}
+
+lmLUnits lmChord::GetXRight()
+{
+	lmLUnits uxRight = 0.0;
+    wxNotesListNode* pNode = m_cNotes.GetFirst();
+    for(; pNode; pNode=pNode->GetNext())
+	{
+        lmNote* pNote = (lmNote*)pNode->GetData();
+		uxRight = wxMax(uxRight, pNote->GetShap2()->GetXRight());
+    }
+	return uxRight;
 }
 
 lmNote* lmChord::CheckIfCollisionWithAccidentals(bool fOnlyLeftNotes, int iCurNote, lmShape* pShape)

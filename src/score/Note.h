@@ -85,7 +85,7 @@ public:
 
 
     //methods related to stems
-    lmEStemType   GetStemType() { return m_nStemType; }
+    lmEStemType GetStemType() { return m_nStemType; }
     lmLUnits    GetDefaultStemLength();
     lmLUnits    GetStandardStemLenght();
     void        SetStemLength(lmLUnits uLength) { m_uStemLength = uLength; };
